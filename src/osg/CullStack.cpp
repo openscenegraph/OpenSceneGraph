@@ -109,13 +109,28 @@ void CullStack::pushProjectionMatrix(Matrix* matrix)
     _projectionStack.push_back(matrix);
     
     osg::CullingSet* cullingSet = osgNew osg::CullingSet();
+    // set up view frustum.
     cullingSet->getFrustum().setToUnitFrustumWithoutNearFar();
     cullingSet->getFrustum().transformProvidingInverse(*matrix);
+    
+    // set the small feature culling.
     cullingSet->setSmallFeatureCullingPixelSize(_smallFeatureCullingPixelSize);
     
-    _projectionCullingStack.push_back(cullingSet);
+    // set up the relevant occluders which a related to this projection.
+    for(ShadowVolumeOccluderList::iterator itr=_occluderList.begin();
+        itr!=_occluderList.end();
+        ++itr)
+    {
+        //std::cout << " ** testing occluder"<<std::endl;
+        if (itr->matchProjectionMatrix(*matrix))
+        {
+            //std::cout << " ** activating occluder"<<std::endl;
+            cullingSet->addOccluder(*itr);
+        }
+    }
     
-    //_projectionCullingStack.push_back(osgNew osg::CullingSet(*_clipspaceCullingStack.back(),*matrix));
+    
+    _projectionCullingStack.push_back(cullingSet);
 
 
     pushCullingSet();

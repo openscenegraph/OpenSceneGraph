@@ -12,6 +12,8 @@
 
 namespace osg {
 
+class CullStack;
+
 /** ShadowVolumeOccluder is a helper class for implementating shadow occlusion culling. */
 class SG_EXPORT ShadowVolumeOccluder
 {
@@ -21,25 +23,35 @@ class SG_EXPORT ShadowVolumeOccluder
     
         typedef std::vector<Polytope> HoleList;
 
-        ShadowVolumeOccluder(const ShadowVolumeOccluder& soc):
-            _quality(soc._quality),
-            _nodePath(soc._nodePath),
-            _occluderVolume(soc._occluderVolume),
-            _holeList(soc._holeList) {}
+        ShadowVolumeOccluder(const ShadowVolumeOccluder& svo):
+            _volume(svo._volume),
+            _nodePath(svo._nodePath),
+            _projectionMatrix(svo._projectionMatrix),
+            _occluderVolume(svo._occluderVolume),
+            _holeList(svo._holeList) {}
 
-        ShadowVolumeOccluder(const NodePath& nodePath,const ConvexPlanerOccluder& occluder,const Matrix& MV,const Matrix& P)
-        {
-            computeOccluder(nodePath,occluder,MV,P);
-        }
+        ShadowVolumeOccluder():
+            _volume(0.0f) {}
+
 
         /** compute the shadow volume occluder. */
-        void computeOccluder(const NodePath& nodePath,const ConvexPlanerOccluder& occluder,const Matrix& MV,const Matrix& P);
+        bool computeOccluder(const NodePath& nodePath,const ConvexPlanerOccluder& occluder,CullStack& cullStack);
         
 
         inline void disableResultMasks();
         
         inline void pushCurrentMask();
         inline void popCurrentMask();
+        
+        
+        /** return true if the matrix passed in matches the projection matrix that this ShaowVolumeOccluder is
+          * associated with.*/
+        bool matchProjectionMatrix(const osg::Matrix& matrix) const
+        {
+            if (_projectionMatrix.valid()) return matrix==*_projectionMatrix;
+            else return false;
+        }
+        
 
         /** Set the NodePath which describes the which node in the scene graph
           * that this occluder was attached to.*/
@@ -47,7 +59,9 @@ class SG_EXPORT ShadowVolumeOccluder
         inline NodePath& getNodePath() { return _nodePath; }
         inline const NodePath& getNodePath() const { return _nodePath; }
 
-        float quality() { return _quality; }
+        float volume() { return _volume; }
+        
+        
 
         /** return true if the specified vertex list is contaned entirely
           * within this shadow occluder volume.*/
@@ -75,11 +89,17 @@ class SG_EXPORT ShadowVolumeOccluder
 
     protected:
 
-        float       _quality;
-        NodePath    _nodePath;
-        Polytope    _occluderVolume;
-        HoleList    _holeList;
+        float                   _volume;
+        NodePath                _nodePath;
+        ref_ptr<const Matrix>   _projectionMatrix;
+        Polytope                _occluderVolume;
+        HoleList                _holeList;
 };
+
+
+/** A list of ShadowVolumeOccluder, used by CollectOccluderVisitor and CullVistor's.*/
+typedef std::vector<ShadowVolumeOccluder> ShadowVolumeOccluderList;
+
 
 inline void ShadowVolumeOccluder::disableResultMasks()
 {

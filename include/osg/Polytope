@@ -70,6 +70,18 @@ class SG_EXPORT Polytope
         
         inline void add(const osg::Plane& pl) { _planeList.push_back(pl); setupMask(); }
 
+        /** flip/reverse the orientation of all the planes.*/
+        inline void flip()
+        {
+            for(PlaneList::iterator itr=_planeList.begin();
+                itr!=_planeList.end();
+                ++itr)
+            {
+                itr->flip();
+            }
+        }
+
+
         inline PlaneList& getPlaneList() { return _planeList; }
 
         inline const PlaneList& getPlaneList() const { return _planeList; }

@@ -77,22 +77,7 @@ class SG_EXPORT CullingSet : public Referenced
         /** Compute the pixel of an bounding sphere.*/
         float pixelSize(const BoundingSphere& bs) const { return bs.radius()/(bs.center()*_pixelSizeVector); }
 
-        inline void disableOccluder(NodePath& nodePath)
-        {
-            for(OccluderList::iterator itr=_occluderList.begin();
-                itr!=_occluderList.end();
-                ++itr)
-            {
-                if (itr->getNodePath()==nodePath)
-                {
-                    // we have trapped for the case an occlude potentially occluding itself,
-                    // to prevent this we disable the results mask so that no subsequnt 
-                    // when the next pushCurrentMask calls happens this occluder is switched off.
-                    itr->disableResultMasks();
-                }
-            }
-        }
-
+        void disableOccluder(NodePath& nodePath);
 
         inline bool isCulled(const std::vector<Vec3>& vertices)
         {

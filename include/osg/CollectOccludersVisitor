@@ -30,10 +30,9 @@ class SG_EXPORT CollectOccludersVisitor : public osg::NodeVisitor, public osg::C
         virtual void apply(osg::LOD& node);
         virtual void apply(osg::OccluderNode& node);
 
-        typedef std::vector<ShadowVolumeOccluder> OccluderList;
-
-        OccluderList& getOccluderList() { return _occluderList; }
-        const OccluderList& getOccluderList() const { return _occluderList; }
+        void setCollectedOcculderList(const ShadowVolumeOccluderList& svol) { _occluderList = svol; }
+        ShadowVolumeOccluderList& getCollectedOccluderList() { return _occluderList; }
+        const ShadowVolumeOccluderList& getCollectedOccluderList() const { return _occluderList; }
 
 
     protected:
@@ -44,7 +43,7 @@ class SG_EXPORT CollectOccludersVisitor : public osg::NodeVisitor, public osg::C
         /** prevent unwanted copy operator.*/
         CollectOccludersVisitor& operator = (const CollectOccludersVisitor&) { return *this; }
         
-        OccluderList _occluderList;
+        ShadowVolumeOccluderList _collectedOccluderList;
 
 };
 

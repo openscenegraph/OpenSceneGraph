@@ -170,7 +170,7 @@ ifeq ($(OS),IRIX)
                       -lpfflt -lpfgds -lpfgfo -lpfim -lpflsa -lpflsb \
                       -lpfnff -lpfobj -lpfpegg -lpfpfb -lpfphd -lpfpts \
                       -lpfrot -lpfscale -lpfsgf -lpfsgo -lpfsphere -lpfsv \
-                      -lpftri -lpfunc -lpfvct -lpfdu -lpfutil -lpf -limage
+                      -lpftri -lpfunc -lpfvct -lpfdu -lpfutil -lpf -all -limage
     FREETYPE_LIB      = -lfreetype
 ifeq ($(ARCH),64)
     ARCHARGS          = -64 -DARCH64

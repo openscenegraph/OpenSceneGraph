@@ -241,8 +241,8 @@ void readConfFile(char* confFile)                                               
     
     while (!in.eof())
     {
-        getline(in, imageBuffer);
-        getline(in, appBuffer);
+        std::getline(in, imageBuffer);
+        std::getline(in, appBuffer);
         if(imageBuffer == "" || appBuffer == "");
         else
         {

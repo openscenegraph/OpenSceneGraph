@@ -1594,7 +1594,7 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
 
         #ifdef _DEBUG
 
-        osg::notify( osg::WARN ) << "flt::ConvertFromFLT::visitFace: "
+        osg::notify( osg::NOTICE) << "flt::ConvertFromFLT::visitFace: "
             << "Unhandled opcode: " << child->getOpcode() << "\n";
         #endif
 
@@ -1707,7 +1707,7 @@ int ConvertFromFLT::visitVertexList(GeoSetBuilder* pBuilder, VertexListRecord* r
 
         #ifdef _DEBUG
 
-        osg::notify( osg::WARN )
+        osg::notify( osg::NOTICE )
             << "flt::ConvertFromFLT::visitVertexList: "
             << "Unhandled opcode: " << child->getOpcode() << "\n";
 
@@ -1989,7 +1989,7 @@ void ConvertFromFLT::visitMesh ( osg::Group &parent, GeoSetBuilder *pBuilder, Me
 
         #ifdef _DEBUG
 
-        osg::notify( osg::WARN ) << "flt::ConvertFromFLT::visitMesh: "
+        osg::notify( osg::NOTICE ) << "flt::ConvertFromFLT::visitMesh: "
             << "Unhandled opcode: " << child->getOpcode() << "\n";
 
         #endif

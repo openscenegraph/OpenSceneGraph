@@ -59,7 +59,7 @@
 #include <stdarg.h>
 #include <new>
 
-#ifndef    WIN32
+#if defined(__CYGWIN__) || !defined(WIN32)
 #include <unistd.h>
 #endif
 
@@ -145,7 +145,7 @@ static    const    unsigned int    paddingSize            = 4;
 // simply declares a forced breakpoint.
 // ---------------------------------------------------------------------------------------------------------------------------------
 
-#ifdef    WIN32
+#if defined(WIN32) && !defined(__CYGWIN__)
     #ifdef    _DEBUG
     #define    m_assert(x) if ((x) == false) __asm { int 3 }
     #else
@@ -203,7 +203,7 @@ static        unsigned int    reservoirBufferSize    = 0;
 // ---------------------------------------------------------------------------------------------------------------------------------
 static    void    dumpLeakReport();
 static    void    doCleanupLogOnFirstRun();
-static    void    stressTest();
+static    void    activateStressTest();
 
 #ifdef OSG_USE_MEMORY_MANAGER
 
@@ -217,6 +217,7 @@ class    MemStaticTimeTracker
             char *ptr;
             if( (ptr = getenv("OSG_MM_STRESS_TEST")) != 0)
             {
+                activateStressTest();
             }
 
             if( (ptr = getenv("OSG_MM_BREAK_ON_ALLOCATION")) != 0)
@@ -246,7 +247,7 @@ static MemStaticTimeTracker mstt;
 // Local functions only
 // ---------------------------------------------------------------------------------------------------------------------------------
 
-static    void stressTest()
+static void activateStressTest()
 {
     randomWipe             = true;
     alwaysValidateAll      = true;

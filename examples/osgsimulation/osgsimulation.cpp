@@ -90,12 +90,12 @@ public:
     ModelPositionCallback():
         _latitude(0.0),
         _longitude(0.0),
-        _height(1000.0)
+        _height(10000.0)
          {}
 
     void updateParameters()
     {
-        _longitude += (2.0*osg::PI)/360.0;
+        _latitude -= ((2.0*osg::PI)/360.0)/100.0;
     }
 
 
@@ -174,12 +174,6 @@ public:
 };
 
 
-void addModel(osgProducer::Viewer* viewer,osg::Node* model)
-{
-    
-}
-
-
 int main(int argc, char **argv)
 {
     // use an ArgumentParser object to manage the program arguments.
@@ -197,7 +191,8 @@ int main(int argc, char **argv)
     // set up the value with sensible default event handlers.
     viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
 
-
+    viewer.getCullSettings().setComputeNearFarMode(osg::CullSettings::COMPUTE_NEAR_FAR_USING_PRIMITIVES);
+    viewer.getCullSettings().setNearFarRatio(0.0001f);
 
     // get details on keyboard and mouse bindings used by the viewer.
     viewer.getUsage(*arguments.getApplicationUsage());
@@ -219,29 +214,38 @@ int main(int argc, char **argv)
         return 1;
     }
     
-    osg::Node *root = createEarth();
-
-    if (!root) return 0;
-   
-    // add a viewport to the viewer and attach the scene graph.
-    viewer.setSceneData(root);
-        
-        
-    FindNamedNodeVisitor fnnv("cessna");
-    root->accept(fnnv);
+    osg::ref_ptr<osg::Node> root = createEarth();
     
-    if (!fnnv._foundNodes.empty())
+    if (!root) return 0;
+
+    // add a viewport to the viewer and attach the scene graph.
+    viewer.setSceneData(root.get());
+
+    osg::CoordinateSystemNode* csn = dynamic_cast<osg::CoordinateSystemNode*>(root.get());
+    if (csn)
     {
-        osgGA::NodeTrackerManipulator* tm = new osgGA::NodeTrackerManipulator;
-        tm->setTrackNode(fnnv._foundNodes[0].get());
-        
-        std::cout<<"Found "<<std::endl;
-        
-        unsigned int num = viewer.addCameraManipulator(tm);
-        viewer.selectCameraManipulator(num);
-    }
+        osg::Node* cessna = osgDB::readNodeFile("cessna.osg");
+        if (cessna)
+        {
+            osg::MatrixTransform* mt = new osg::MatrixTransform;
+            mt->addChild(cessna);
+            mt->setUpdateCallback(new ModelPositionCallback);
 
+            csn->addChild(mt);
 
+            osgGA::NodeTrackerManipulator* tm = new osgGA::NodeTrackerManipulator;
+            tm->setTrackNode(cessna);
+
+            unsigned int num = viewer.addCameraManipulator(tm);
+            viewer.selectCameraManipulator(num);
+        }
+        else
+        {
+             std::cout<<"Failed to read cessna.osg"<<std::endl;
+        }
+    }    
+
+        
 
     // create the windows and run the threads.
     viewer.realize();

@@ -24,6 +24,7 @@
 #include <osg/StateSet>
 #include <osg/FrameStamp>
 #include <osg/DisplaySettings>
+#include <osg/CullSettings>
 #include <osg/Matrixd>
 
 #include <osgProducer/OsgSceneHandler>
@@ -88,6 +89,13 @@ class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
         osg::DisplaySettings *getDisplaySettings() { return _ds.get(); }
         
         const osg::DisplaySettings *getDisplaySettings() const { return _ds.get(); }
+        
+        
+        void setCullSettings( const osg::CullSettings& cs) { _cullSettings = cs; }
+        
+        osg::CullSettings& getCullSettings() { return _cullSettings; }
+        
+        const osg::CullSettings& getCullSettings() const { return _cullSettings; }
         
         
         
@@ -202,6 +210,8 @@ class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
         
         osg::ref_ptr<osg::DisplaySettings>      _ds;
         bool                                    _initialized;
+        
+        osg::CullSettings                       _cullSettings;
 
         unsigned int    _frameNumber;
         osg::Timer      _timer;

@@ -10,9 +10,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
  * OpenSceneGraph Public License for more details.
 */
-#if 0 // defined(__APPLE__)
-#include "FileUtils_Mac.cpp" // this is not functional yet -- fix!
-#else
 
 // currently this impl is for _all_ platforms, execpt as defined.
 // the mac version will change soon to reflect the path scheme under osx, but
@@ -338,9 +335,6 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
     }
 
 #endif // unix getDirectoryContexts
-
-#endif // ! target mac carbon
-
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////

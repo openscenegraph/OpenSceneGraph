@@ -34,6 +34,10 @@ void OrientationConverter::ConvertVisitor::apply( Geode &geode )
    for( int i = 0; i < numdrawables; i++ )
    {
    	GeoSet *gset = dynamic_cast<GeoSet *>(geode.getDrawable(i));
+
+	if( gset == NULL )
+	    continue;
+
 	int numcoords = gset->getNumCoords();
 	Vec3 *vertex = gset->getCoords();
 

@@ -20,7 +20,6 @@ class OSGUTIL_EXPORT OptimizeStateVisitor : public osg::NodeVisitor
         /** empty visitor, make it ready for next traversal.*/        
         virtual void reset();
 
-        void addStateSet(osg::StateSet* stateset);
 
         virtual void apply(osg::Node& node);
 
@@ -30,8 +29,12 @@ class OSGUTIL_EXPORT OptimizeStateVisitor : public osg::NodeVisitor
         
     protected:
     
-        typedef std::set<osg::StateSet*> StateSetList;
-        StateSetList _statesets;
+        void addStateSet(osg::StateSet* stateset,osg::Object* obj);
+
+        typedef std::set<osg::Object*>              ObjectSet;
+        typedef std::map<osg::StateSet*,ObjectSet>  StateSetMap;
+        
+        StateSetMap _statesets;
 
 };
 

@@ -7,7 +7,7 @@
 #include <osg/Vec3>
 #include <osg/Transform>
 
-#include <osgUtil/TrackballManipulator>
+#include <osgGA/TrackballManipulator>
 
 #include <osgGLUT/Viewer>
 #include <osgGLUT/glut>
@@ -210,7 +210,7 @@ int main( int argc, char **argv )
     viewer.addViewport( myTransform );
 
     // register trackball maniupulators.
-    viewer.registerCameraManipulator(new osgUtil::TrackballManipulator);
+    viewer.registerCameraManipulator(new osgGA::TrackballManipulator);
     
     viewer.open();
 

@@ -4,7 +4,7 @@
 #include <osg/Notify>
 
 using namespace osg;
-using namespace osgUtil;
+using namespace osgGA;
 
 GliderManipulator::GliderManipulator()
 {

@@ -11,8 +11,9 @@
 #include <osg/Timer>
 #include <osg/DisplaySettings>
 
-#include <osgUtil/GUIEventAdapter>
-#include <osgUtil/CameraManipulator>
+#include <osgGA/GUIEventAdapter>
+#include <osgGA/CameraManipulator>
+
 #include <osgUtil/SceneView>
 
 #include <osgGLUT/Window>
@@ -28,7 +29,7 @@ namespace osgGLUT
   * but shouldn't be viewed as the be all and end of osg viewer classes.
   * Someone please rewrite it :-)
   */
-class OSGGLUT_EXPORT Viewer : public Window, public osgUtil::GUIActionAdapter
+class OSGGLUT_EXPORT Viewer : public Window, public osgGA::GUIActionAdapter
 {
     public:
 
@@ -75,12 +76,12 @@ class OSGGLUT_EXPORT Viewer : public Window, public osgUtil::GUIActionAdapter
         void help(std::ostream& fout);
 
         // handle multiple camera.
-        unsigned int registerCameraManipulator(osgUtil::CameraManipulator* cm,
+        unsigned int registerCameraManipulator(osgGA::CameraManipulator* cm,
 					       unsigned int viewport = 0);
         void selectCameraManipulator(unsigned int pos, 
 				     unsigned int viewport = 0);
 
-        // derived from osgUtil::GUIActionAdapter
+        // derived from osgGA::GUIActionAdapter
         virtual void requestRedraw() {} // redraw always by idle callback done.
         virtual void requestContinuousUpdate(bool /*needed*/) {} // continuous update always
         virtual void requestWarpPointer(int x,int y);
@@ -92,7 +93,7 @@ class OSGGLUT_EXPORT Viewer : public Window, public osgUtil::GUIActionAdapter
         osg::DisplaySettings* getDisplaySettings() { return _displaySettings.get(); }
         const osg::DisplaySettings* getDisplaySettings() const { return _displaySettings.get(); }
 
-        typedef std::vector<osg::ref_ptr<osgUtil::CameraManipulator> > CameraManipList;
+        typedef std::vector<osg::ref_ptr<osgGA::CameraManipulator> > CameraManipList;
 
     protected:
 
@@ -112,13 +113,14 @@ class OSGGLUT_EXPORT Viewer : public Window, public osgUtil::GUIActionAdapter
 
         static Viewer*    s_theViewer;
 
+        typedef std::vector<osg::ref_ptr<osgGA::CameraManipulator> > CameraManipList;
 
         struct ViewportDef 
         {
             osg::ref_ptr<osgUtil::SceneView> sceneView;
             float viewport[4];                        // Win-size-relative [0,1]
 
-            osg::ref_ptr<osgUtil::CameraManipulator>    _cameraManipulator;
+            osg::ref_ptr<osgGA::CameraManipulator>    _cameraManipulator;
             CameraManipList                             _cameraManipList;
         };
 
@@ -143,7 +145,6 @@ class OSGGLUT_EXPORT Viewer : public Window, public osgUtil::GUIActionAdapter
             osg::Timer_t frameend;
         } times[3]; // store up to 3 frames worth of times
         bool _useDisplayLists;
-        
         
         osg::Timer   _timer;
         osg::Timer_t _tickRatePerSecond;

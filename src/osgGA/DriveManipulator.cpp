@@ -65,7 +65,7 @@ void DriveManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
 
         bool cameraSet = false;
 
-        osg::ref_ptr<osg::LineSegment> segDown = new osg::LineSegment;
+        osg::ref_ptr<osg::LineSegment> segDown = osgNew osg::LineSegment;
         segDown->set(ep,bp);
         iv.addLineSegment(segDown.get());
 
@@ -104,7 +104,7 @@ void DriveManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
             bp = ep;
             bp.z() += _modelScale;
 
-            osg::ref_ptr<osg::LineSegment> segUp = new osg::LineSegment;
+            osg::ref_ptr<osg::LineSegment> segUp = osgNew osg::LineSegment;
             segUp->set(ep,bp);
             iv.addLineSegment(segUp.get());
 
@@ -180,7 +180,7 @@ void DriveManipulator::init(const GUIEventAdapter& ea,GUIActionAdapter& us)
 
     bool cameraSet = false;
 
-    osg::ref_ptr<osg::LineSegment> segDown = new osg::LineSegment;
+    osg::ref_ptr<osg::LineSegment> segDown = osgNew osg::LineSegment;
     segDown->set(ep,bp);
     iv.addLineSegment(segDown.get());
 
@@ -219,7 +219,7 @@ void DriveManipulator::init(const GUIEventAdapter& ea,GUIActionAdapter& us)
         bp = ep;
         bp.z() += _modelScale;
 
-        osg::ref_ptr<osg::LineSegment> segUp = new osg::LineSegment;
+        osg::ref_ptr<osg::LineSegment> segUp = osgNew osg::LineSegment;
         segUp->set(ep,bp);
         iv.addLineSegment(segUp.get());
 
@@ -375,7 +375,7 @@ bool DriveManipulator::calcMovement()
     // return if less then two events have been added.
     if (_ga_t0.get()==NULL || _ga_t1.get()==NULL) return false;
 
-    float dt = _ga_t0->time()-_ga_t1->time();
+    double dt = _ga_t0->time()-_ga_t1->time();
 
     if (dt<0.0f)
     {
@@ -457,7 +457,7 @@ bool DriveManipulator::calcMovement()
 
         // check to see if any obstruction in front.
         osgUtil::IntersectVisitor iv;
-        osg::ref_ptr<osg::LineSegment> segForward = new osg::LineSegment;
+        osg::ref_ptr<osg::LineSegment> segForward = osgNew osg::LineSegment;
         segForward->set(ep,ep+lv*(signedBuffer+distanceToMove));
         iv.addLineSegment(segForward.get());
 
@@ -482,7 +482,7 @@ bool DriveManipulator::calcMovement()
 
         iv.reset();
 
-        osg::ref_ptr<osg::LineSegment> segNormal = new osg::LineSegment;
+        osg::ref_ptr<osg::LineSegment> segNormal = osgNew osg::LineSegment;
         segNormal->set(fp,lfp);
         iv.addLineSegment(segNormal.get());
 
@@ -520,7 +520,7 @@ bool DriveManipulator::calcMovement()
 
         iv.reset();
 
-        osg::ref_ptr<osg::LineSegment> segFall = new osg::LineSegment;
+        osg::ref_ptr<osg::LineSegment> segFall = osgNew osg::LineSegment;
         segFall->set(lfp,dp);
         iv.addLineSegment(segFall.get());
 

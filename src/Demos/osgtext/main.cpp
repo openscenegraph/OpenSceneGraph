@@ -20,9 +20,9 @@
 #include <osg/Depth>
 #include <osg/Notify>
 
-#include <osgUtil/TrackballManipulator>
-#include <osgUtil/FlightManipulator>
-#include <osgUtil/DriveManipulator>
+#include <osgGA/TrackballManipulator>
+#include <osgGA/FlightManipulator>
+#include <osgGA/DriveManipulator>
 
 #include <osgGLUT/Viewer>
 #include <osgGLUT/glut>
@@ -604,9 +604,9 @@ int main( int argc, char **argv )
     viewer.addHUD(scene2d);
 
     // register trackball, flight and drive.
-    viewer.registerCameraManipulator(osgNew osgUtil::TrackballManipulator);
-    viewer.registerCameraManipulator(osgNew osgUtil::FlightManipulator);
-    viewer.registerCameraManipulator(osgNew osgUtil::DriveManipulator);
+    viewer.registerCameraManipulator(osgNew osgGA::TrackballManipulator);
+    viewer.registerCameraManipulator(osgNew osgGA::FlightManipulator);
+    viewer.registerCameraManipulator(osgNew osgGA::DriveManipulator);
 
     viewer.open();
     viewer.run();

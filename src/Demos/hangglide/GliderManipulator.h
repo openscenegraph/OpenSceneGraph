@@ -1,9 +1,9 @@
 #ifndef HANGGLIDE_GLIDERMANIPULATOR
 #define HANGGLIDE_GLIDERMANIPULATOR 1
 
-#include <osgUtil/CameraManipulator>
+#include <osgGA/CameraManipulator>
 
-class GliderManipulator : public osgUtil::CameraManipulator
+class GliderManipulator : public osgGA::CameraManipulator
 {
     public:
 
@@ -21,13 +21,13 @@ class GliderManipulator : public osgUtil::CameraManipulator
 
         /** Move the camera to the default position. 
             May be ignored by manipulators if home functionality is not appropriate.*/
-        virtual void home(const osgUtil::GUIEventAdapter& ea,osgUtil::GUIActionAdapter& us);
+        virtual void home(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& us);
         
         /** Start/restart the manipulator.*/
-        virtual void init(const osgUtil::GUIEventAdapter& ea,osgUtil::GUIActionAdapter& us);
+        virtual void init(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& us);
 
         /** handle events, return true if handled, false otherwise.*/
-	virtual bool handle(const osgUtil::GUIEventAdapter& ea,osgUtil::GUIActionAdapter& us);
+	virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& us);
 
         enum YawControlMode {
             YAW_AUTOMATICALLY_WHEN_BANKED,
@@ -42,15 +42,15 @@ class GliderManipulator : public osgUtil::CameraManipulator
         /** Reset the internal GUIEvent stack.*/
         void flushMouseEventStack();
         /** Add the current mouse GUIEvent to internal stack.*/
-        void addMouseEvent(const osgUtil::GUIEventAdapter& ea);
+        void addMouseEvent(const osgGA::GUIEventAdapter& ea);
 
         /** For the give mouse movement calculate the movement of the camera.
             Return true is camera has moved and a redraw is required.*/
         bool calcMovement();
 
         // Internal event stack comprising last three mouse events.
-        osg::ref_ptr<const osgUtil::GUIEventAdapter> _ga_t1;
-        osg::ref_ptr<const osgUtil::GUIEventAdapter> _ga_t0;
+        osg::ref_ptr<const osgGA::GUIEventAdapter> _ga_t1;
+        osg::ref_ptr<const osgGA::GUIEventAdapter> _ga_t0;
 
         osg::ref_ptr<osg::Node>       _node;
 

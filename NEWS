@@ -3,6 +3,13 @@
 OSG News (most significant items from ChangeLog)
 ================================================
 
+
+    Added osgProducer library which integrates the OpenSceneGraph seemlessly
+    with OpenProducer to provide runtime configurable management of windows
+    and multipipe graphic systems.  The osgproducer demo illustrate how
+    developers can write applications very simply that harness the power
+    of the OpenProducer and OpenSceneGraph in an extremely flexible way.
+
     Support added for dynamic paging of Terrage databases, the required
     multi-threading is set up by defult.  All the end user application need
     to do is load the database and the paging then happens automatically -

@@ -22,7 +22,7 @@ Camera::Camera(DisplaySettings* ds)
     setPerspective(fovy,1.0,1.0,1000.0);
     
     // look at details.
-    _lookAtType =USE_HOME_POSITON;
+    _lookAtType =USE_HOME_POSITION;
 
     _eye.set(0.0f,0.0f,0.0f);
     _center.set(0.0f,0.0f,-1.0f);
@@ -291,7 +291,7 @@ Matrix Camera::getProjectionMatrix() const
 void Camera::home()
 {
     // OpenGL default position.
-    _lookAtType = USE_HOME_POSITON;
+    _lookAtType = USE_HOME_POSITION;
     _eye.set(0.0f,0.0f,0.0f);
     _center.set(0.0f,0.0f,-1.0f);
     _up.set(0.0f,1.0f,0.0f);
@@ -442,7 +442,7 @@ Matrix Camera::getModelViewMatrix() const
     // set up the model view matrix.
     switch(_lookAtType)
     {
-    case(USE_HOME_POSITON):
+    case(USE_HOME_POSITION):
         {
             if (_eyeToModelTransform.valid()) 
                 modelViewMatrix.invert(*_eyeToModelTransform);

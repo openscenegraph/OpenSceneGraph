@@ -129,11 +129,9 @@ class SG_EXPORT Camera: public osg::Referenced
 
 
 
-
-
         enum LookAtType
         {
-            USE_HOME_POSITON,
+            USE_HOME_POSITION,
             USE_EYE_AND_QUATERNION,
             USE_EYE_CENTER_AND_UP
         };

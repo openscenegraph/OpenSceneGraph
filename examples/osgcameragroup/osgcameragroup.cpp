@@ -146,8 +146,13 @@ int main( int argc, char **argv )
     // set the scene to render
     cg.setSceneData(loadedModel.get());
 
+
+    const osg::BoundingSphere& bs = loadedModel->getBound();
+
     Producer::Trackball tb;
     tb.setOrientation( Producer::Trackball::Z_UP );
+    tb.setDistance(bs.radius()*3.0f);
+    tb.translate(-bs.center().x(),-bs.center().y(),-bs.center().z());
 
     // create the windows and run the threads.
     cg.realize();

@@ -61,8 +61,8 @@ class CameraPacket {
             if( _byte_order == 0x78563412 )  // We're backwards
             {
                 swapBytes( _byte_order );
-            swapBytes( _masterKilled );
-            for( int i = 0; i < 16; i++ )
+                swapBytes( _masterKilled );
+                for( int i = 0; i < 16; i++ )
                 swapBytes( _matrix.ptr()[i] );
 
                     // umm.. we should byte swap _frameStamp too...
@@ -73,7 +73,7 @@ class CameraPacket {
         void setMasterKilled(const bool flag) { _masterKilled = flag; }
         const bool getMasterKilled() const { return _masterKilled; }
         
-    unsigned long   _byte_order;
+        unsigned int    _byte_order;
         bool            _masterKilled;
         osg::Matrix     _matrix;
 

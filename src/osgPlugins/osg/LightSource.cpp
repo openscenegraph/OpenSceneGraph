@@ -27,13 +27,16 @@ bool LightSource_readLocalData(Object& obj, Input& fr)
 
     LightSource& lightsource = static_cast<LightSource&>(obj);
 
-    if (fr[0].matchWord("referenceFrame")) {
-        if (fr[1].matchWord("RELATIVE_TO_ABSOLUTE") || fr[1].matchWord("ABSOLUTE")) {
+    if (fr[0].matchWord("referenceFrame"))
+    {
+        if (fr[1].matchWord("RELATIVE_TO_ABSOLUTE") || fr[1].matchWord("ABSOLUTE"))
+        {
             lightsource.setReferenceFrame(LightSource::ABSOLUTE_RF);
             fr += 2;
             iteratorAdvanced = true;
         }
-        if (fr[1].matchWord("RELATIVE_TO_PARENTS") || fr[1].matchWord("RELATIVE")) {
+        if (fr[1].matchWord("RELATIVE_TO_PARENTS") || fr[1].matchWord("RELATIVE"))
+        {
             lightsource.setReferenceFrame(LightSource::RELATIVE_RF);
             fr += 2;
             iteratorAdvanced = true;
@@ -57,9 +60,10 @@ bool LightSource_writeLocalData(const Object& obj, Output& fw)
     const LightSource& lightsource = static_cast<const LightSource&>(obj);
 
     fw.indent() << "referenceFrame ";
-    switch (lightsource.getReferenceFrame()) {
+    switch (lightsource.getReferenceFrame())
+    {
         case LightSource::ABSOLUTE_RF:
-            fw << "RELATIVE_TO_ABSOLUTE\n";
+            fw << "ABSOLUTE\n";
             break;
         case LightSource::RELATIVE_RF:
         default:

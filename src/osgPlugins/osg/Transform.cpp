@@ -25,7 +25,6 @@ RegisterDotOsgWrapperProxy g_TransformProxy
     DotOsgWrapper::READ_AND_WRITE
 );
 
-
 bool Transform_readLocalData(Object& obj, Input& fr)
 {
     bool iteratorAdvanced = false;
@@ -46,16 +45,19 @@ bool Transform_readLocalData(Object& obj, Input& fr)
             fr +=2 ;
             iteratorAdvanced = true;
         }
-        
-    }    
 
-    if (fr[0].matchWord("referenceFrame")) {
-        if (fr[1].matchWord("RELATIVE_TO_ABSOLUTE") || fr[1].matchWord("ABSOLUTE") ) {
+    }
+
+    if (fr[0].matchWord("referenceFrame"))
+    {
+        if (fr[1].matchWord("RELATIVE_TO_ABSOLUTE") || fr[1].matchWord("ABSOLUTE") )
+        {
             transform.setReferenceFrame(Transform::ABSOLUTE_RF);
             fr += 2;
             iteratorAdvanced = true;
         }
-        if (fr[1].matchWord("RELATIVE_TO_PARENTS") || fr[1].matchWord("RELATIVE")) {
+        if (fr[1].matchWord("RELATIVE_TO_PARENTS") || fr[1].matchWord("RELATIVE"))
+        {
             transform.setReferenceFrame(Transform::RELATIVE_RF);
             fr += 2;
             iteratorAdvanced = true;
@@ -71,7 +73,8 @@ bool Transform_writeLocalData(const Object& obj, Output& fw)
     const Transform& transform = static_cast<const Transform&>(obj);
 
     fw.indent() << "referenceFrame ";
-    switch (transform.getReferenceFrame()) {
+    switch (transform.getReferenceFrame())
+    {
         case Transform::ABSOLUTE_RF:
             fw << "ABSOLUTE\n";
             break;

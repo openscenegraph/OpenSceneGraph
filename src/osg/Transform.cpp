@@ -118,8 +118,7 @@ void Transform::setReferenceFrame(ReferenceFrame rf)
     _referenceFrame = rf;
     
     // switch off culling if transform is absolute.
-    if (_referenceFrame==RELATIVE_RF) setCullingActive(false);
-    else setCullingActive(true);
+    setCullingActive(_referenceFrame==RELATIVE_RF);
 }
 
 bool Transform::computeBound() const

@@ -40,6 +40,7 @@ CXXFILES =\
         Projection.cpp\
         ReaderWriterOSG.cpp\
         ShadeModel.cpp\
+        ShapeDrawable.cpp\
         StateSet.cpp\
         Sequence.cpp\
         Stencil.cpp\
@@ -56,8 +57,7 @@ CXXFILES =\
         Transform.cpp\
 
 
-###LIBS   += $(OSG_LIBS) $(OTHER_LIBS)
-LIBS = -losg -lCstd
+LIBS   += $(OSG_LIBS) $(OTHER_LIBS)
 
 TARGET_BASENAME = osg
 include $(TOPDIR)/Make/cygwin_plugin_def

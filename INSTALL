@@ -63,6 +63,14 @@ Compiling under Linux
     To get full details of make options, type:
     
         make help
+        
+        
+    The osgText library now depends upon GLU1.3 functionality, and only
+    the recent Mesa version have this as stanadard. Unfortnately not all
+    Linux distribtions are upto date even recent ones.  If you have problems
+    compiling osgText due to GLU problems then check out the details at the
+    bottom of this file, under the title RedHat7.1 & GLU1.3 for a quick
+    way of installing GLU1.3 in the right place.
 
 
 Compiling under FreeBSD
@@ -90,16 +98,11 @@ Compiling under IRIX
 --------------------
 
     Since the OSG uses Standard C++ features such as STL it is important
-    to have an up to date version of the MIPSPro compilers. The library
-    has been tested under MIPSPro7.3 & MIPSPro7.2.1, and *may* compile
-    under previous versions but has yet to be tested.  It is recommended
-    to use MIPSPro7.3.1.1m.
+    to have an up to date version of the MIPSPro compilers, ie. 7.3 or later.
+    Support for MIPSPro7.2.1 has now been dropped since it was becoming to
+    unwildy to support and is very rarely used in the OSG commiunity.
+    It is recommended to use MIPSPro7.3.1.1m.
     
-    When compiling with MIPSPro7.2.1 you will need to use STLport for its
-    proper implementation of Standard C++ iostreams which are missing 
-    from compiler own implementation.  See the bottom of this file for
-    further information on STLport.
-
     To compile, from the OSG root directory, type :
 
         make
@@ -107,8 +110,7 @@ Compiling under IRIX
     Note, make should automatically detect IRIX and copy the 
     Make/makerules.irix.std and Make/makedefs.irix.std over the 
     default Make/makerules and Make/makedefs.  If autodetection
-    does not work type 'make irix' for MIPSPro7.3 or 'make irix.old'
-    for MIPSPro7.2.1 and before.
+    does not work type 'make irix'.
 
     And if you wish to install the OSG to /usr/include/ &
     /usr/lib then su root, and type:
@@ -243,80 +245,6 @@ Compiling under MacOS X (instructions written by Phil Atkin)
     gone in 10.1 or it may be a weirdy in the Mac GLUT implementation, but
     forewarned is forearmed.
 
---
-
-
-    Compiling under MacOS X
-    ------------------------------------------------------------
-
-    OpenSceneGraph requires libdl which is the dynamic library loader. For 
-    some strange reason it's not part of the OSX or the Apple Developer 
-    Tools. It is available from the Apple Darwin site but, even stranger, I 
-    haven't met anyone who could get it to compile. So the best thing to do 
-    is get Fink. This isn't a major hassle because if you're serious about 
-    osx development you should have it anyway and it's a pretty painless 
-    install. Go to...
-
-    fink.sourceforge.net
-
-    download the binary .dmg and follow the instructions.
-
-    Once it's installed you can then get the libdl package which is actually 
-    called dlcompat
-
-    % fink install dlcompat
-
-    fink will download, patch, compile and install the libdl stuff. It 
-    should take about 30 seconds.
-    That's not all though because fink installs stuff in it's own 
-    directories rather than the standard /usr/local so you have to make a 
-    few minor changes to the make files.
-
-    Edit...
-
-    ${OSGHOME}/Make/makedefs.macosx
-
-    and change the following lines. Note the '/sw' bits.
-
-    10: LCINCS += -I/usr/local/include -I/sw/include
-
-    20: FRAMEWORKS =  -L/sw/lib -framework GLUT -framework Carbon -framework 
-    OpenGL
-
-    "Why didn't you put '-L/sw/lib' in 'LDFLAGS'?" you ask. Well I tried 
-    that and it didn't work.
-
-    While your editing Makefiles check out the OSG docs for the 
-    dependencies. Some parts of OSG rely on other libraries (eg. libpng) so 
-    if you don't have these you might want to comment some stuff out in the 
-    build lists, or get the libs. OSG has a quicktime module so you don't 
-    need most of the image plugins anyway.
-
-    OSG needs a bunch of environment variables to compile and run so you 
-    might as well set these up now. Here's my .cshrc file.
-
-    source /sw/bin/init.csh
-    setenv OSGHOME /Users/henry/dev/osg-0.8.43
-    setenv OSGDATA /Users/henry/dev/OpenSceneGraph-Data
-    setenv OSG_LD_LIBRARY_PATH ${OSGHOME}/lib
-    setenv OSGFILEPATH ./:${OSGDATA}:${OSGDATA}/Images
-
-    You will recognise the first line from the fink installation 
-    instructions. Remember to source in this file after you've made the 
-    changes...
-
-    % source ~/.cshrc
-
-    and then you're ready to compile. In the terminal type...
-
-    % cd ${OSGHOME}
-    % make clean
-    % make macosx
-
-    Then go and have a cup of coffee because it takes bloody ages:)
-
-
-
 
 
 OSGFILEPATH environmental variable
@@ -411,6 +339,7 @@ Plug-in dependencies
     the problematic plugins working you may need to download support libraries 
     such as libtiff, libjpeg etc.  For further details see index.html.
 
+
 Using STLport under Windows
 ---------------------------
 
@@ -440,19 +369,6 @@ Using STLport under Windows
             D:/STLport4.5/stlport
         Then press the up array to move the entry all the way to the top of the
         list, thus overriding MS's own STL implementations.    
-
-STLport under IRIX with MipsPro7.2
-----------------------------------
-
-    This hasn't been tried yet, but STLport should allow the OSG to compile
-    with the old MipsPro7.2 compilers which don't have their own StandardC++
-    iostreams implementation (they only have iostrean.h etc).  Since the
-    OSG now only links to the StandardC++ version, STLport should be able
-    to provide the StandardC++ iostreams for us. You may need to modify 
-    include paths set up in Make/makedefs.irix.nonstd. The default option 
-    of using STLport own iostreams is required, which is in contrast to 
-    the situation under Windows as outlined above.  Let us know how you
-    get on.
 
 
 RedHat 7.1 & GLU1.3

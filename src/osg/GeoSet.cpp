@@ -645,3 +645,41 @@ void GeoSet::setInterleavedArray( const InterleaveArrayType format, float *ia, I
     set_fast_path();
 }
  
+Drawable::AttributeBitMask GeoSet::suppportsAttributeUpdate() const
+{
+    // we do support coords,normals,texcoords and colors so return true.
+    return COORDS | NORMALS | COLORS | TEXTURE_COORDS;
+}
+
+Drawable::AttributeBitMask GeoSet::applyAttributeUpdate(AttributeBitMask amb,AttributeUpdateFunctor& auf)
+{
+    computeNumVerts();
+
+    AttributeBitMask ramb = 0;
+    
+    if ((amb & COORDS) && _coords && _numcoords)
+    {
+//        cout << "number of coords = "<<_numcoords<<endl;
+//        cout << "   _coords = "<<_coords<<"  _coords+_numcoords="<<_coords+_numcoords<<endl;
+        if (auf.apply(COORDS,_coords,_coords+_numcoords)) ramb = COORDS;
+    }
+    
+    if ((amb & NORMALS) && _normals && _numnormals)
+    {
+//        cout << "number of normals = "<<_numnormals<<endl;
+//        cout << "   _normals = "<<_normals<<"  _normals+_numnormals="<<_normals+_numnormals<<endl;
+        if (auf.apply(NORMALS,_normals,_normals+_numnormals)) ramb = NORMALS;
+    }
+    
+    if ((amb & COLORS) && _colors)
+    {
+        if (auf.apply(COLORS,_colors,_colors+_numcolors)) ramb = COLORS;
+    }
+    
+    if ((amb & TEXTURE_COORDS) && _tcoords)
+    {
+        if (auf.apply(TEXTURE_COORDS,_tcoords,_tcoords+_numtcoords)) ramb = TEXTURE_COORDS;
+    }
+    
+    return ramb;
+}

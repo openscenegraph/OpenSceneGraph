@@ -688,7 +688,7 @@ osg::Group* ConvertFromFLT::visitSwitch(osg::Group& osgParent, SwitchRecord* rec
             {
                 osg::notify(osg::WARN)<<"Warning::OpenFlight loader has come across an incorrectly handled switch."<<std::endl;
                 osg::notify(osg::WARN)<<"         The number of OpenFlight children ("<<rec->getNumChildren()<<") "<<std::endl;
-                osg::notify(osg::WARN)<<"         exceeds the number convered to OSG ("<<group->getNumChildren()<<")"<<std::endl;
+                osg::notify(osg::WARN)<<"         exceeds the number converted to OSG ("<<group->getNumChildren()<<")"<<std::endl;
             }
              
              

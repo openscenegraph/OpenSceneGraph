@@ -67,7 +67,7 @@ osgText::Font* osgText::readFontFile(const std::string& filename)
     std::string foundFile = findFontFile(filename);
     if (foundFile.empty()) return 0;
 
-    osg::Object* object = osgDB::readObjectFile(foundFile);
+    osg::Object* object = osgDB::readObjectFile(foundFile, osgDB::Registry::CACHE_OBJECTS);
 
     // if the object is a font then return it.
     osgText::Font* font = dynamic_cast<osgText::Font*>(object);

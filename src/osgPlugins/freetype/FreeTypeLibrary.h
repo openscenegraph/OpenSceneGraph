@@ -17,6 +17,8 @@
 #include "FreeTypeFont.h"
 #include <osgText/Font>
 
+//#define USE_LOCAL_CACHE
+
 class FreeTypeLibrary
 {
 public:
@@ -39,7 +41,10 @@ protected:
 
 
     FT_Library  _ftlibrary;
+
+#ifdef USE_LOCAL_CACHE
     FontMap     _fontMap;
+#endif
 
 };
 

@@ -16,11 +16,67 @@
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
 
-#include <iostream>
+
+  #include <iostream>
+    #include <streambuf>
+    #include <locale>
+    #include <cstdio>
+
+template<typename _CharT, typename _Traits = std::char_traits<_CharT> >
+class proxy_basic_streambuf : public std::basic_streambuf<_CharT, _Traits>
+{
+   public:
+   
+      typedef _CharT 					char_type;
+      typedef _Traits 					traits_type;
+      typedef typename traits_type::int_type 		int_type;
+      typedef typename traits_type::pos_type 		pos_type;
+      typedef typename traits_type::off_type 		off_type;
+  
+      proxy_basic_streambuf(unsigned int numChars):
+        _numChars(numChars) {}
+   
+      /// Destructor deallocates no buffer space.
+      virtual ~proxy_basic_streambuf()  {}
+
+      unsigned int _numChars;
+
+    protected:
+
+      virtual int_type overflow (int_type __c = traits_type::eof())
+      {
+        if (_numChars==0)
+        {
+            putchar('E');
+            return traits_type::eof();
+        }
+      
+ 	 if (__c == traits_type::eof()) return '\n'; traits_type::not_eof(__c);
+         //putchar('');
+         --_numChars;
+         return putchar(__c);
+      }
+};
+
+typedef proxy_basic_streambuf<char> proxy_streambuf;
 
 int main( int argc, char **argv )
 {
+    std::ifstream fin("GNUmakefile");
+    std::istream& ins = fin;
 
+    proxy_streambuf mystreambuf(100);
+    std::cout.rdbuf(&mystreambuf);
+    
+    while (!fin.eof())
+    {
+        std::cout.put(fin.get());
+    }
+    std::cout<<"Exiting normally "<<std::endl;
+    
+    std::cout.rdbuf(0);
+
+/*
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
     
@@ -151,7 +207,7 @@ int main( int argc, char **argv )
 
     }
     
-    
+*/    
     return 0;
 }
 

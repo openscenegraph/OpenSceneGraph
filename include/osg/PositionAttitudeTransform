@@ -1,0 +1,47 @@
+//C++ header - Open Scene Graph - Copyright (C) 1998-2001 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+
+#ifndef OSG_POSITIONATTITIDETRANSFORM
+#define OSG_POSITIONATTITIDETRANSFORM 1
+
+#include <osg/Group>
+#include <osg/Transform>
+#include <osg/Quat>
+
+namespace osg {
+
+/** PositionAttitideTransform - is Transfrom the set the coordinates transform
+    up via a Vec3 position and Quat attitude.
+*/
+class SG_EXPORT PositionAttitudeTransform : public Transform
+{
+    public :
+        PositionAttitudeTransform();
+
+        META_Node(PositionAttitudeTransform);
+
+
+        void setPosition(const Vec3& pos) { _position = pos; _localToWorldDirty = _worldToLocalDirty = true; }
+        
+        const Vec3& getPosition() const { return _position; }
+
+        void setAttitude(const Quat& quat) { _attitude = quat; _localToWorldDirty = _worldToLocalDirty = true; }
+        
+        const Quat& getAttitude() const { return _attitude; }
+    
+
+    protected :
+            
+        virtual void computeLocalToWorld() const;
+
+        virtual void computeWorldToLocal() const;
+
+        Vec3 _position;
+        Quat _attitude;
+
+};
+
+};
+
+#endif

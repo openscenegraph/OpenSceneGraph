@@ -1122,13 +1122,17 @@ void Texture::Extensions::setupGLExtensions()
                                  isGLExtensionSupported("GL_ARB_multitexture") ||
                                  isGLExtensionSupported("GL_EXT_multitexture");
     _isTextureFilterAnisotropicSupported = isGLExtensionSupported("GL_EXT_texture_filter_anisotropic");
-    _isTextureCompressionARBSupported = isGLExtensionSupported("GL_ARB_texture_compression");
+    _isTextureCompressionARBSupported = ( glVersion >= 1.3 ) ||
+                                        isGLExtensionSupported("GL_ARB_texture_compression");
     _isTextureCompressionS3TCSupported = isGLExtensionSupported("GL_EXT_texture_compression_s3tc");
-    _isTextureMirroredRepeatSupported = isGLExtensionSupported("GL_IBM_texture_mirrored_repeat");
+    _isTextureMirroredRepeatSupported = ( glVersion >= 1.4 ) || 
+                                    isGLExtensionSupported("GL_IBM_texture_mirrored_repeat") ||
+                                    isGLExtensionSupported("GL_ARB_texture_mirrored_repeat");
     _isTextureEdgeClampSupported = ( glVersion >= 1.2 ) ||
                                     isGLExtensionSupported("GL_EXT_texture_edge_clamp") || 
                                     isGLExtensionSupported("GL_SGIS_texture_edge_clamp");
-    _isTextureBorderClampSupported = isGLExtensionSupported("GL_ARB_texture_border_clamp");
+    _isTextureBorderClampSupported = ( glVersion >= 1.3 ) ||
+                                    isGLExtensionSupported("GL_ARB_texture_border_clamp");
     _isGenerateMipMapSupported = (strncmp((const char*)glGetString(GL_VERSION),"1.4",3)>=0) ||
                                   isGLExtensionSupported("GL_SGIS_generate_mipmap");
     _isShadowSupported = isGLExtensionSupported("GL_ARB_shadow");

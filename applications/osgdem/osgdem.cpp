@@ -109,6 +109,7 @@ void processFile(std::string filename,
 		   bool geoTransformSet,
 		   bool geoTransformScale,
                    bool minmaxLevelSet, unsigned int min_level, unsigned int max_level,
+                   unsigned int layerNum,
 		   osg::ref_ptr<osgTerrain::DataSet> dataset) {
 
     if(filename.empty()) return;
@@ -137,6 +138,10 @@ void processFile(std::string filename,
             {
                 source->setMinMaxLevel(min_level, max_level);
             }
+            
+            source->setLayer(layerNum);
+            
+            std::cout<<"Reading as layer = "<<layerNum<<std::endl;
 	    
 	    dataset->addSource(source);
 	}
@@ -153,6 +158,7 @@ void processFile(std::string filename,
 		processFile(fullfilename, type, currentCS, 
                             geoTransform, geoTransformSet, geoTransformScale, 
                             minmaxLevelSet, min_level, max_level,
+                            layerNum,
                             dataset);
 	    }
 	}
@@ -176,6 +182,8 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("-a <archivename>","Specify the archive to place the generated database");
     arguments.getApplicationUsage()->addCommandLineOption("-o <outputfile>","Specify the output master file to generate");
     arguments.getApplicationUsage()->addCommandLineOption("-l <numOfLevels>","Specify the number of PagedLOD levels to generate");
+    arguments.getApplicationUsage()->addCommandLineOption("--levels <begin_level> <end_level>","Specify the range of lavels that the next source Texture or DEM will contribute to.");
+    arguments.getApplicationUsage()->addCommandLineOption("--layer <layer_num>","Specify the layer that the next source Texture will contribute to..");
     arguments.getApplicationUsage()->addCommandLineOption("-e <x> <y> <w> <h>","Extents of the model to generate");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
     arguments.getApplicationUsage()->addCommandLineOption("--cs <coordinates system string>","Set the coordinates system of source imagery, DEM or destination database. The string may be any of the usual GDAL/OGR forms, complete WKT, PROJ.4, EPS");     
@@ -321,6 +329,7 @@ int main( int argc, char **argv )
     double xMin, xMax, yMin, yMax;
     bool minmaxLevelSet = false;
     unsigned int min_level=0, max_level=maximumPossibleLevel;
+    unsigned int currentLayerNum = 0;
          
     int pos = 1;
     while(pos<arguments.argc())
@@ -489,22 +498,30 @@ int main( int argc, char **argv )
             minmaxLevelSet = true;
             std::cout<<"--levels, min_level="<<min_level<<"  max_level="<<max_level<<std::endl;
         }
+        
+        else if (arguments.read(pos, "--layer", currentLayerNum))
+        {
+            std::cout<<"--layer layeNumber="<<currentLayerNum<<std::endl;
+        }
 
         else if (arguments.read(pos, "-d",filename))
         {
 	    std::cout<<"-d "<<filename<<std::endl;
 	    processFile(filename, osgTerrain::DataSet::Source::HEIGHT_FIELD, currentCS, 
                         geoTransform, geoTransformSet, geoTransformScale,
-                        minmaxLevelSet, min_level, max_level, 
+                        minmaxLevelSet, min_level, max_level,
+                        currentLayerNum,
                         dataset);
 
             minmaxLevelSet = false;
             min_level=0; max_level=maximumPossibleLevel;
+            currentLayerNum = 0;
             
             currentCS = "";
             geoTransformSet = false;
             geoTransformScale = false;
-            geoTransform.makeIdentity();            
+            geoTransform.makeIdentity();
+
         }
         else if (arguments.read(pos, "-t",filename))
         {
@@ -512,10 +529,12 @@ int main( int argc, char **argv )
 	    processFile(filename, osgTerrain::DataSet::Source::IMAGE, currentCS, 
                         geoTransform, geoTransformSet, geoTransformScale, 
                         minmaxLevelSet, min_level, max_level, 
+                        currentLayerNum,
                         dataset);
 
             minmaxLevelSet = false;
             min_level=0; max_level=maximumPossibleLevel;
+            currentLayerNum = 0;
             
             currentCS = "";
             geoTransformSet = false;
@@ -525,10 +544,15 @@ int main( int argc, char **argv )
         else if (arguments.read(pos, "-m",filename))
         {
 	    std::cout<<"-m "<<filename<<std::endl;
-	    processFile(filename, osgTerrain::DataSet::Source::MODEL, currentCS, geoTransform, geoTransformSet, geoTransformScale, minmaxLevelSet, min_level, max_level, dataset);
+	    processFile(filename, osgTerrain::DataSet::Source::MODEL, currentCS, 
+                        geoTransform, geoTransformSet, geoTransformScale, 
+                        minmaxLevelSet, min_level, max_level, 
+                        currentLayerNum, 
+                        dataset);
 
             minmaxLevelSet = false;
             min_level=0; max_level=maximumPossibleLevel;
+            currentLayerNum = 0;
             
             currentCS = "";
             geoTransformSet = false;

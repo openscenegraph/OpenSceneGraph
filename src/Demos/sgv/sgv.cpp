@@ -227,7 +227,10 @@ class CombineLODsVisitor : public osg::NodeVisitor
         {
             for(int i=0;i<lod.getNumParents();++i)
             {
-                _groupList.insert(lod.getParent(i));
+                if (typeid(*lod.getParent(i))==typeid(osg::Group))
+                {
+                    _groupList.insert(lod.getParent(i));
+                }
             }
             traverse(lod);
         }
@@ -240,14 +243,10 @@ class CombineLODsVisitor : public osg::NodeVisitor
                 ++itr)
             {
                 osg::Group* group = *itr;
-                
-                typedef std::multimap<float,osg::LOD*>      RangeLODMap;
+
                 typedef std::set<osg::LOD*>                 LODSet;
-                typedef std::multimap<osg::Vec3,osg::LOD*>  CenterLODMap;
-                typedef std::set<osg::Node*>                NodeSet;
                 
-                CenterLODMap    centerLODMap;
-                NodeSet         otherChildren;
+                LODSet    lodChildren;
                 
                 for(int i=0;i<group->getNumChildren();++i)
                 {
@@ -255,33 +254,76 @@ class CombineLODsVisitor : public osg::NodeVisitor
                     osg::LOD* lod = dynamic_cast<osg::LOD*>(child);
                     if (lod)
                     {
-                        centerLODMap.insert(std::pair<osg::Vec3,osg::LOD*>(lod->getCenter(),lod));
-                    }
-                    else
-                    {
-                        otherChildren.insert(child);
+                        if (lod->getNumRanges()-1==lod->getNumChildren())
+                        {
+                            lodChildren.insert(lod);
+                        }
+                        else
+                        {
+                            // wonky LOD, numRanges should = numChildren+1
+                        }
                     }
                 }
                 
-                cout << "Group "<<group<<endl;
-                for(CenterLODMap::iterator clod_itr=centerLODMap.begin();
-                    clod_itr!=centerLODMap.end();
-                    ++clod_itr)
+                if (lodChildren.size()>=2)
                 {
-                    cout << "    center ("<<clod_itr->first<<")";
-                    osg::LOD* lod = clod_itr->second;
-                    for(int i=0;i<lod->getNumRanges();++i)
+                    osg::BoundingBox bb;
+                    LODSet::iterator lod_itr;
+                    for(lod_itr=lodChildren.begin();
+                        lod_itr!=lodChildren.end();
+                        ++lod_itr)
                     {
-                        cout << ", "<< lod->getRange(i);
-                    }
-                    cout <<endl;
-                }
 
-                for(NodeSet::iterator oc_itr=otherChildren.begin();
-                    oc_itr!=otherChildren.end();
-                    ++oc_itr)
-                {
-                    cout << "    other child "<<*oc_itr<<endl;
+                        bb.expandBy((*lod_itr)->getCenter());
+                    }
+                    if (bb.radius()<1e-2)
+                    {
+                        typedef std::pair<float,float> RangePair;
+                        typedef std::multimap<RangePair,osg::Node*> RangeMap;
+                        RangeMap rangeMap;
+                        float maxRange = 0.0f;
+                        for(lod_itr=lodChildren.begin();
+                            lod_itr!=lodChildren.end();
+                            ++lod_itr)
+                        {
+                        
+                            osg::LOD* lod = *lod_itr;
+                            for(int i=0;i<lod->getNumRanges()-1;++i)
+                            {
+                                if (maxRange<lod->getRange(i+1)) maxRange = lod->getRange(i+1);
+                                rangeMap.insert(RangeMap::value_type(RangePair(lod->getRange(i),lod->getRange(i+1)),lod->getChild(i)));
+                            }
+                            
+                        }
+
+                        // create new LOD containing all other LOD's children.
+                        osg::LOD* newLOD = new osg::LOD;
+                        newLOD->setName("newLOD");
+                        newLOD->setCenter(bb.center());
+                        
+                        int i=0;
+                        for(RangeMap::iterator c_itr=rangeMap.begin();
+                            c_itr!=rangeMap.end();
+                            ++c_itr,++i)
+                        {
+                            newLOD->setRange(i,c_itr->first.first);
+                            newLOD->addChild(c_itr->second);
+                        }
+                        newLOD->setRange(i,maxRange);
+                        
+                        // add LOD into parent.
+                        group->addChild(newLOD);
+                        
+                        // remove all the old LOD's from group.
+                        for(lod_itr=lodChildren.begin();
+                            lod_itr!=lodChildren.end();
+                            ++lod_itr)
+                        {
+                            group->removeChild(*lod_itr);
+                        }
+
+                    }
+
                 }
             }
             _groupList.clear();
@@ -419,7 +461,11 @@ int main( int argc, char **argv )
     rootnode->accept(osv);
     osv.optimize();
     #endif
-/*
+
+    CombineLODsVisitor clv;
+    rootnode->accept(clv);        
+    clv.combineLODs();
+
     FlattenStaticTransformsVisitor fstv;
     rootnode->accept(fstv);
     fstv.removeTransforms();
@@ -428,10 +474,7 @@ int main( int argc, char **argv )
     rootnode->accept(rrnv);
     rrnv.removeRedundentNodes();
 
-    CombineLODsVisitor clv;
-    rootnode->accept(clv);        
-    clv.combineLODs();
-*/     
+     
     // initialize the viewer.
     osgGLUT::Viewer viewer;
     viewer.addViewport( rootnode );

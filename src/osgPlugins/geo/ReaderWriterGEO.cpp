@@ -53,8 +53,6 @@ geoHeaderGeo::geoHeaderGeo()
 { // animations for the header - actually updates all control variables
     intVars=new internalVars; useVars=new userVars;
     extVars=new userVars;
-    _frameStamp.setFrameNumber(0);  //  vars=NULL;
-    tstart=_frameStamp.getReferenceTime();
     _initialTick = _timer.tick();
     color_palette=new colourPalette;
 };
@@ -84,15 +82,13 @@ void geoHeaderGeo::addUserVar(const georecord &gr)
     useVars->addUserVar(gr);
 }
 //== handler for updating internal variables
-void geoHeaderGeo::update(void)
+void geoHeaderGeo::update(const osg::FrameStamp *_frameStamp)
 { // update the scene
     osg::Timer_t _frameTick = _timer.tick();
     _lastFrameTick=_frameTick;
     
-    _frameStamp.setFrameNumber(_frameStamp.getFrameNumber()+1);
-    _frameStamp.setReferenceTime(_timer.delta_s(_initialTick,_frameTick));
-    double time = _frameStamp.getReferenceTime();
-    intVars->update(_timer, _frameStamp);
+    double time = _frameStamp->getReferenceTime();
+    intVars->update( _frameStamp);
     moveit(time);
 }
 void geoHeaderGeo::moveit(const double t)
@@ -125,12 +121,12 @@ public:
     virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
     { // update action vars
         geoHeaderGeo *gh=(geoHeaderGeo *)node;
-        gh->update();
+        gh->update(nv->getFrameStamp());
         nv->setNodeMaskOverride(0xffffffff); // need to make the visitor override the nodemask
             //    so that it visits 'invisible' nodes to update visibility. Or could use
             // a visitor with setTraversalMode(TraversalMode==TRAVERSE_ALL_CHILDREN)?
         traverse(node,nv);
-        //    std::cout<<"app callback - post traverse"<< (float)_frameStamp.getReferenceTime() <<std::endl;
+        //    std::cout<<"app callback - post traverse"<< (float)_frameStamp->getReferenceTime() <<std::endl;
     }
 private:
 };
@@ -1195,7 +1191,7 @@ class ReaderWriterGEO : public ReaderWriter
                 int selector_mask = 0x1;
                 for(int pos=0;pos<32;++pos)
                 {
-                    sw->setValue(pos,((imask&selector_mask)?true:false)); 
+                    sw->setValue(pos,((imask&selector_mask)!=0)); 
                     selector_mask <<= 1;
                 }
                 osg::notify(osg::WARN) << gr << " imask " << imask << std::endl;
@@ -1844,8 +1840,8 @@ void userVars::addUserVar(const georecord &gr) {
     }
 }
 
-void internalVars::update(osg::Timer  &_timer,osg::FrameStamp &_frameStamp) {
-    double stmptime=_frameStamp.getReferenceTime();
+void internalVars::update(const osg::FrameStamp *_frameStamp) {
+    double stmptime=_frameStamp->getReferenceTime();
     int iord=0;
     for (std::vector<geoValue>::const_iterator itr=vars.begin(); //gfl.begin();
     itr!=vars.end(); // gfl.end();
@@ -1854,7 +1850,7 @@ void internalVars::update(osg::Timer  &_timer,osg::FrameStamp &_frameStamp) {
         unsigned int typ=itr->getToken();
         switch (typ) {
         case GEO_DB_INTERNAL_VAR_FRAMECOUNT:
-            vars[iord].setVal((float)_frameStamp.getFrameNumber());
+            vars[iord].setVal((float)_frameStamp->getFrameNumber());
             break;
         case GEO_DB_INTERNAL_VAR_CURRENT_TIME:
             {
@@ -1867,12 +1863,12 @@ void internalVars::update(osg::Timer  &_timer,osg::FrameStamp &_frameStamp) {
                     newtime = localtime( &long_time ); // * Convert to local time.
                     timestart=newtime->tm_hour*3600 +newtime->tm_min*60+ newtime->tm_sec;
                 }
-                double timeofday=timestart+_frameStamp.getReferenceTime();
+                double timeofday=timestart+_frameStamp->getReferenceTime();
                 vars[iord].setVal(timeofday);
             }
             break;
         case GEO_DB_INTERNAL_VAR_ELAPSED_TIME:
-            vars[iord].setVal(_frameStamp.getReferenceTime());
+            vars[iord].setVal(_frameStamp->getReferenceTime());
             break;
         case GEO_DB_INTERNAL_VAR_SINE:
             vars[iord].setVal(sin(stmptime));
@@ -1884,35 +1880,35 @@ void internalVars::update(osg::Timer  &_timer,osg::FrameStamp &_frameStamp) {
             vars[iord].setVal(tan(stmptime));
             break;
         case GEO_DB_INTERNAL_VAR_MOUSE_X: // this is all windowing system dependent
-            //    vars[iord]=_frameStamp.getReferenceTime();
+            //    vars[iord]=_frameStamp->getReferenceTime();
             break;
         case GEO_DB_INTERNAL_VAR_MOUSE_Y:
-            //    vars[iord]=_frameStamp.getReferenceTime();
+            //    vars[iord]=_frameStamp->getReferenceTime();
             break;
         case GEO_DB_INTERNAL_VAR_LEFT_MOUSE:
-            //    vars[iord]=_frameStamp.getReferenceTime();
+            //    vars[iord]=_frameStamp->getReferenceTime();
             break;
         case GEO_DB_INTERNAL_VAR_MIDDLE_MOUSE:
-            //    vars[iord]=_frameStamp.getReferenceTime();
+            //    vars[iord]=_frameStamp->getReferenceTime();
             break;
         case GEO_DB_INTERNAL_VAR_RIGHT_MOUSE:
-            //    vars[iord]=_frameStamp.getReferenceTime();
+            //    vars[iord]=_frameStamp->getReferenceTime();
             break;
         case GEO_DB_INTERNAL_VAR_TEMP_FLOAT:
-            //    vars[iord]=_frameStamp.getReferenceTime();
+            //    vars[iord]=_frameStamp->getReferenceTime();
             break;
         case GEO_DB_INTERNAL_VAR_TEMP_INT:
-            //    vars[iord]=_frameStamp.getReferenceTime();
+            //    vars[iord]=_frameStamp->getReferenceTime();
             break;
         case GEO_DB_INTERNAL_VAR_TEMP_BOOL:
-            //    vars[iord]=_frameStamp.getReferenceTime();
+            //    vars[iord]=_frameStamp->getReferenceTime();
             break;
         case GEO_DB_INTERNAL_VAR_TEMP_STRING:
-            //    vars[iord]=_frameStamp.getReferenceTime();
+            //    vars[iord]=_frameStamp->getReferenceTime();
             break;
         }
     }
-    //    std::cout<<"app callback - post traverse"<< (float)_frameStamp.getReferenceTime() <<std::endl;
+    //    std::cout<<"app callback - post traverse"<< (float)_frameStamp->getReferenceTime() <<std::endl;
 }
 
 // now register with Registry to instantiate the above

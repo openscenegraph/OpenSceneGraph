@@ -56,6 +56,12 @@ public:
 
         const CameraManipulator* getCurrentCameraManipulator() const { return _current.get(); }
 
+
+        CameraManipulator* getCameraManipulator(unsigned int num);
+
+        const CameraManipulator* getCameraManipulator(unsigned int num) const;
+
+
         // Overrides from CameraManipulator...
 
 

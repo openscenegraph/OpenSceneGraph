@@ -116,6 +116,10 @@ Tino Schwarze <tino.schwarze@informatik.tu-chemnitz.de>
 
 Ruben Lopez <ryu@gpul.org>
         - Inventor ascii/VRML 1.0 loader.
+
+Pavel Moloshtan <pasha@moloshtan.com>
+        - Support for LWO2 format in the light wave loader.
+
 Indirect Contributors
 ---------------------
     

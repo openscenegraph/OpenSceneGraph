@@ -100,6 +100,14 @@ SOURCE=..\..\..\src\osgPlugins\lwo\lw.cpp
 
 SOURCE=..\..\..\src\osgPlugins\lwo\ReaderWriterLWO.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\lwo\Lwo2.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\lwo\Lwo2Layer.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -107,6 +115,14 @@ SOURCE=..\..\..\src\osgPlugins\lwo\ReaderWriterLWO.cpp
 # Begin Source File
 
 SOURCE=..\..\..\Src\osgPlugins\lwo\lw.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\Src\osgPlugins\lwo\Lwo2Layer.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\Src\osgPlugins\lwo\Lwo2.h
 # End Source File
 # End Group
 # End Target

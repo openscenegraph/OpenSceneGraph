@@ -20,6 +20,8 @@
 #endif
 #include "glm.h"
 
+#include <osg/Math>
+
 
 /* defines */
 #define T(x) model->triangles[(x)]
@@ -1091,7 +1093,7 @@ glmVertexNormals(GLMmodel* model, GLfloat angle)
   assert(model->facetnorms);
 
   /* calculate the cosine of the angle (in degrees) */
-  cos_angle = (float)cos(angle * M_PI / 180.0);
+  cos_angle = (float)cos(osg::DegreesToRadians(angle));
 
   /* nuke any previous normals */
   if (model->normals)

@@ -48,8 +48,8 @@ Node *makeSky( void )
     {
         for( j = 0; j <= 18; j++ )
         {
-            alpha = lev[i] * M_PI/180.0;
-            theta = (float)(j*20) * M_PI/180.0;
+            alpha = osg::DegreesToRadians(lev[i]);
+            theta = osg::DegreesToRadians((float)(j*20));
 
             x = radius * cosf( alpha ) * cosf( theta );
             y = radius * cosf( alpha ) * -sinf( theta );

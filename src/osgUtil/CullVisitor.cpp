@@ -22,8 +22,6 @@
 using namespace osg;
 using namespace osgUtil;
 
-#define DEG2RAD(x)    ((x)*M_PI/180.0)
-
 inline float MAX_F(float a, float b)
     { return a>b?a:b; }
 inline int EQUAL_F(float a, float b)
@@ -594,7 +592,7 @@ void CullVisitor::calcClippingDirections() const
     osg::Vec3 t_up = _camera->getUpVector();
     osg::Vec3 t_side = _camera->getSideVector();
 
-    double t_VFOV_2 = _camera->calc_fovy() * M_PI / 360.0;//half of vertical FOV in radians
+    double t_VFOV_2 = osg::DegreesToRadians(_camera->calc_fovy() * 0.5);//half of vertical FOV in radians
 
     //we need to pitch up the cameras up vector for angle that is half fovy, 
         osg::Vec3 pitched_up_up = t_up * osg::Matrix::rotate(t_VFOV_2, t_side.x(), t_side.y(), t_side.z());

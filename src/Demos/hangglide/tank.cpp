@@ -68,7 +68,7 @@ Node *makeTank( void )
     {
         float x, y, z;
         float s, t;
-        float theta = (float)i * M_PI/180.0;
+        float theta = osg::DegreesToRadians((float)i);
 
         s = (float)i/90.0;
         t = 1.0;
@@ -144,7 +144,7 @@ Node *makeTank( void )
     {
         float x, y, z;
         float s, t;
-        float theta = (float)i * M_PI/180.0;
+        float theta = osg::DegreesToRadians((float)i);
 
         //    s = (float)i/360.0;
         //   t = 1.0;

@@ -4,6 +4,8 @@
 #include <osg/NodeVisitor>
 #include <osg/Notify>
 
+#include <osgDB/FileUtils>
+
 #include "FltFile.h"
 #include "Registry.h"
 #include "Record.h"
@@ -86,7 +88,14 @@ Record* FltFile::readFile(const std::string& fileName)
 {
     FileInput fin;
 
-    if (!fin.open(fileName)) return NULL;
+    if (!fin.open(fileName)) 
+    {
+        // ok havn't found file, resort to using findFile...
+        std::string newFileName = osgDB::findFile(fileName.c_str());
+        
+        if (newFileName.empty()) return NULL;
+        if (!fin.open(newFileName)) return NULL;
+    }
 
     osg::notify(osg::INFO) << "Loading " << fileName << " ... " << endl;
 

@@ -13,7 +13,7 @@ Transform::Transform()
 
 Transform::Transform(const Transform& transform,const CopyOp& copyop):
     Group(transform,copyop),
-    _computeTransformCallback(_computeTransformCallback),
+    _computeTransformCallback(transform._computeTransformCallback),
     _referenceFrame(transform._referenceFrame),
     _matrix(osgNew Matrix(*transform._matrix)),
     _inverse(osgNew Matrix(*transform._inverse)),

@@ -219,7 +219,7 @@ class SG_EXPORT Drawable : public Object
             virtual void drawImplementation(State& state,const osg::Drawable* drawable) const { drawImmediateMode(state,const_cast<Drawable*>(drawable)); }
 
             /** do customized draw code.*/
-            virtual void drawImmediateMode(State& state,osg::Drawable* drawable) const {};
+            virtual void drawImmediateMode(State&,osg::Drawable*) const {};
 #else
             /** do customized draw code.*/
             virtual void drawImplementation(State& state,const osg::Drawable* drawable) const = 0;            

@@ -276,14 +276,18 @@ void Texture3D::copyTexSubImage3D(State& state, int xoffset, int yoffset, int zo
     }
 }
 
+typedef buffered_value< ref_ptr<Texture3D::Extensions> > BufferedExtensions;
+static BufferedExtensions s_extensions;
+
 const Texture3D::Extensions* Texture3D::getExtensions(uint contextID,bool createIfNotInitalized)
 {
-    typedef buffered_value< ref_ptr<Extensions> > BufferedExtensions;
-    static BufferedExtensions s_extensions;
-    
     if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new Extensions;
-    
     return s_extensions[contextID].get();
+}
+
+void Texture3D::setExtensions(uint contextID,Extensions* extensions)
+{
+    s_extensions[contextID] = extensions;
 }
 
 #ifndef GL_MAX_3D_TEXTURE_SIZE
@@ -291,6 +295,36 @@ const Texture3D::Extensions* Texture3D::getExtensions(uint contextID,bool create
 #endif
 
 Texture3D::Extensions::Extensions()
+{
+    setupGLExtenions();
+}
+
+Texture3D::Extensions::Extensions(const Extensions& rhs):
+    Referenced()
+{
+    _isTexture3DSupported = rhs._isTexture3DSupported;
+    _isTexture3DFast = rhs._isTexture3DFast;
+    _maxTexture3DSize = rhs._maxTexture3DSize;
+
+    _glTexImage3D = rhs._glTexImage3D;
+    _glTexSubImage3D = rhs._glTexSubImage3D;
+    _glCopyTexSubImage3D = rhs._glCopyTexSubImage3D;
+    _gluBuild3DMipmaps = rhs._gluBuild3DMipmaps;
+}
+
+void Texture3D::Extensions::lowestCommonDenominator(const Extensions& rhs)
+{
+    if (!rhs._isTexture3DSupported)                 _isTexture3DSupported = false;
+    if (!rhs._isTexture3DFast)                      _isTexture3DFast = false;
+    if (rhs._maxTexture3DSize<_maxTexture3DSize)    _maxTexture3DSize = rhs._maxTexture3DSize;
+
+    if (!rhs._glTexImage3D)                         _glTexImage3D = 0;
+    if (!rhs._glTexSubImage3D)                      _glTexSubImage3D = 0;
+    if (!rhs._glCopyTexSubImage3D)                  _glCopyTexSubImage3D = 0;
+    if (!rhs._gluBuild3DMipmaps)                    _gluBuild3DMipmaps = 0;
+}
+
+void Texture3D::Extensions::setupGLExtenions()
 {
     _isTexture3DFast = isGLExtensionSupported("GL_EXT_texture3D");
 

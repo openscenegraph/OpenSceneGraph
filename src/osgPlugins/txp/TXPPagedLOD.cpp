@@ -28,6 +28,10 @@ TXPPagedLOD::~TXPPagedLOD()
 void TXPPagedLOD::traverse(osg::NodeVisitor& nv)
 {
 
+//     PagedLOD::traverse(nv);
+//     
+//     return;
+
     double timeStamp = nv.getFrameStamp()?nv.getFrameStamp()->getReferenceTime():0.0;
     bool updateTimeStamp = nv.getVisitorType()==osg::NodeVisitor::CULL_VISITOR;
 

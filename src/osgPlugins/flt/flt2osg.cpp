@@ -453,6 +453,12 @@ osg::Node* ConvertFromFLT::visitTexturePalette(osg::Group* , TexturePaletteRecor
         if (osgStateSet == NULL)
         {
             osgStateSet = new osg::StateSet;
+
+            osg::Texture* osgTexture = new osg::Texture;
+            osgTexture->setWrap(osg::Texture::WRAP_S,osg::Texture::REPEAT);
+            osgTexture->setWrap(osg::Texture::WRAP_T,osg::Texture::REPEAT);
+            osgStateSet->setAttributeAndModes(osgTexture,osg::StateAttribute::ON);
+
             osg::TexEnv* osgTexEnv = new osg::TexEnv;
             osgTexEnv->setMode(osg::TexEnv::MODULATE);
             osgStateSet->setAttribute( osgTexEnv );
@@ -556,9 +562,9 @@ osg::Node* ConvertFromFLT::visitLOD(osg::Group* osgParent, LodRecord* rec)
         visitPrimaryNode(group, (PrimNodeRecord*)rec);
         float64x3* pCenter = &pSLOD->Center;
         lod->addChild(group);
-        lod->setCenter(osg::Vec3(pCenter->x(), pCenter->y(), pCenter->z()));
-        lod->setRange(0, pSLOD->dfSwitchOutDist);
-        lod->setRange(1, pSLOD->dfSwitchInDist);
+        lod->setCenter(osg::Vec3(pCenter->x(), pCenter->y(), pCenter->z())*_unitScale);
+        lod->setRange(0, pSLOD->dfSwitchOutDist*_unitScale);
+        lod->setRange(1, pSLOD->dfSwitchInDist*_unitScale);
         lod->setName(pSLOD->szIdent);
         osgParent->addChild( lod );
     }
@@ -582,9 +588,9 @@ osg::Node* ConvertFromFLT::visitOldLOD(osg::Group* osgParent, OldLodRecord* rec)
         lod->setCenter(osg::Vec3(
             (float)pSLOD->Center[0],
             (float)pSLOD->Center[1],
-            (float)pSLOD->Center[2]));
-        lod->setRange(0, (float)pSLOD->dwSwitchOutDist);
-        lod->setRange(1, (float)pSLOD->dwSwitchInDist);
+            (float)pSLOD->Center[2])*_unitScale);
+        lod->setRange(0, ((float)pSLOD->dwSwitchOutDist)*_unitScale);
+        lod->setRange(1, ((float)pSLOD->dwSwitchInDist)*_unitScale);
         lod->setName(pSLOD->szIdent);
         osgParent->addChild( lod );
     }
@@ -1168,7 +1174,7 @@ osg::Node* ConvertFromFLT::visitMatrix(osg::Group* osgParent, MatrixRecord* rec)
         // scale position.
         // BJ Don't know if this should be done if version > 12
         osg::Vec3 pos = m.getTrans();
-        m *= osg::Matrix::translate(-pos.x(),-pos.y(),-pos.z());
+        m *= osg::Matrix::translate(-pos);
         pos *= (float)_unitScale;
         m *= osg::Matrix::translate(pos);
 

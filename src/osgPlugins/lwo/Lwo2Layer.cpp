@@ -25,9 +25,11 @@
 
 #include "Lwo2Layer.h"
 
-Lwo2Layer::Lwo2Layer()
+Lwo2Layer::Lwo2Layer():
+  _number(0),
+  _flags(0),
+  _parent(0)
 {
-  _parent = 0;
 }
 
 Lwo2Layer::~Lwo2Layer()
@@ -37,7 +39,7 @@ Lwo2Layer::~Lwo2Layer()
   IteratorPointsList pol_itr;
   for (pol_itr = _polygons.begin(); pol_itr != _polygons.end(); pol_itr++)
     {
-      delete (*pol_itr);
+      osgDelete (*pol_itr);
     }
 }
 
@@ -48,7 +50,7 @@ Lwo2Layer::notify(NotifySeverity severity)
   osg::notify(severity) << "Current layer: " << _number << endl;
   osg::notify(severity) << "  flags  \t" << _flags << endl;
   osg::notify(severity) << "  pivot  \t" << _pivot << endl;
-  osg::notify(severity) << "  name:  \t'" << _name << "'" << endl;
+  osg::notify(severity) << "  name:  \t'" << _name.c_str() << "'" << endl;
   osg::notify(severity) << "  parent:\t" << _parent << endl;
 
   // points
@@ -108,7 +110,7 @@ Lwo2Layer::GenerateGeode( Geode& geode, short tags_count )
 
       // variables for VMAD data processing
       pair<multimap< short, Lwo2PolygonMapping >::iterator,
-    multimap< short, Lwo2PolygonMapping >::iterator> range; 
+      multimap< short, Lwo2PolygonMapping >::iterator> range; 
       multimap< short, Lwo2PolygonMapping >::iterator itr;
 
       // all polygons
@@ -155,7 +157,7 @@ Lwo2Layer::GenerateGeode( Geode& geode, short tags_count )
               (*texcoords).push_back(uv);
             }
         }
-          geometry->addPrimitive(new DrawArrays(Primitive::POLYGON, 
+          geometry->addPrimitive(osgNew DrawArrays(Primitive::POLYGON, 
                            (*coords).size() - (*pol_itr)->size(), 
                            (*pol_itr)->size()));
         }

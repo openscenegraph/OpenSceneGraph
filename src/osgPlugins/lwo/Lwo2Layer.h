@@ -51,10 +51,14 @@ typedef vector< short >::iterator IteratorShort;
 
 struct Lwo2Surface
 {
-  short image_index;
-  string name;
-  Vec3 color;
-  StateSet* state_set;
+    Lwo2Surface():
+        image_index(-1),
+        state_set(0) {}
+
+    short image_index;
+    string name;
+    Vec3 color;
+    StateSet* state_set;
 };
 
 struct Lwo2PolygonMapping

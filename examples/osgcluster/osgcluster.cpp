@@ -204,7 +204,8 @@ int main( int argc, char **argv )
                 cp.setPacket(modelview,viewer.getFrameStamp());
 
                 bc.setBuffer(&cp, sizeof( CameraPacket ));
-            bc.sync();
+                
+                bc.sync();
 
             }
             break;

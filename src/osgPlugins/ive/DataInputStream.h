@@ -77,9 +77,10 @@ public:
 	typedef std::map<int,osg::ref_ptr<osg::Node> >              NodeMap;
 
         bool                _verboseOutput;
+	std::istream*       _istream;
+       int                  _byteswap;
 
 private:
-	std::istream*       _istream;
 	int                 _version;
 	bool                _peeking;
 	int                 _peekValue; 
@@ -90,7 +91,6 @@ private:
 	ShapeMap            _shapeMap;
 	NodeMap             _nodeMap;
    
-       int                  _byteswap ;
 };
 
 }

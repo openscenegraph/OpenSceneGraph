@@ -127,6 +127,11 @@ class OSGPRODUCER_EXPORT EventAdapter : public osgGA::GUIEventAdapter
         static int _s_my;
         static int _s_modKeyMask;
         
+        typedef std::map<int,int> KeySymbolMap;
+        static KeySymbolMap s_keySymbolMap;
+        static bool s_keySymbolMapInitialized;
+        
+        bool initKeySymbolMap();
         int adaptKeySymbol(Producer::KeySymbol key);
 
 };

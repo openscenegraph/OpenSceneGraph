@@ -244,7 +244,7 @@ class Attr
                                         //    1 - TX_PACK_8
                                         //    2 - TX_PACK_16
         int32   useMips;                // TRUE if using following 8 floats for MIPMAP kernel
-        float32 mips[8];                // 8 floats for kernel of separable symmetric filter
+        float32 _mips[8];                // 8 floats for kernel of separable symmetric filter
         int32   useLodScale;            // Boolean if TRUE send:
         float32 lod0;                   // LOD0 for TX_CONTROL_POINT
         float32 scale0;                 // SCALE0 for TX_CONTROL_POINT
@@ -415,7 +415,7 @@ void Attr::init()
     intFormat = 0;                  //    0 - Default
     extFormat = 0;                  //    0 - Default
     useMips = 0;
-    // float32 mips[8];
+    // float32 _mips[8];
     useLodScale = 0;
     // float32 lod0;
     // float32 scale0;
@@ -499,7 +499,7 @@ bool Attr::readAttrFile(const char* szName)
     READ( extFormat );
     READ( useMips );
     for (n=0; n<8; n++) {
-        READ(mips[n]); }
+        READ(_mips[n]); }
     READ( useLodScale );
     READ( lod0 );
     READ( scale0 );
@@ -684,7 +684,7 @@ class ReaderWriterATTR : public osgDB::ReaderWriter
             char buf[256];
             int version=0;
 
-            const ReaderWriter::Options*  rwOptions=
+            const osgDB::ReaderWriter::Options*  rwOptions=
                 osgDB::Registry::instance()->getOptions();
 
             if (rwOptions)

@@ -565,7 +565,7 @@ void Texture::copyTexImage2D(State& state, int x, int y, int width, int height )
 //    cout<<"copyTexImage2D x="<<x<<"  y="<<y<<"  w="<<width<<"  h="<<height<< std::endl;
 
     // inform state that this texture is the current one bound.
-    state.have_applied(this);
+    state.have_applied_attribute(this);
 }
 
 void Texture::copyTexSubImage2D(State& state, int xoffset, int yoffset, int x, int y, int width, int height )
@@ -586,7 +586,7 @@ void Texture::copyTexSubImage2D(State& state, int xoffset, int yoffset, int x, i
         glBindTexture( _target, handle );
 
         // inform state that this texture is the current one bound.
-        state.have_applied(this);
+        state.have_applied_attribute(this);
 
     }
     else

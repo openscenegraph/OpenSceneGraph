@@ -512,7 +512,7 @@ void State::apply()
 }
 
 /** mode has been set externally, update state to reflect this setting.*/
-void State::have_applied(const StateAttribute::GLMode mode,const StateAttribute::GLModeValue value)
+void State::have_applied_mode(const StateAttribute::GLMode mode,const StateAttribute::GLModeValue value)
 {
     ModeStack& ms = _modeMap[mode];
 
@@ -522,8 +522,21 @@ void State::have_applied(const StateAttribute::GLMode mode,const StateAttribute:
     ms.changed = true;    
 }
 
+/** mode has been set externally, update state to reflect this setting.*/
+void State::have_applied_mode(const StateAttribute::GLMode mode)
+{
+    ModeStack& ms = _modeMap[mode];
+
+    // don't know what last applied value is can't apply it.
+    // assume that it has changed by toggle the value of last_applied_value.
+    ms.last_applied_value = !ms.last_applied_value;
+
+    // will need to disable this mode on next apply so set it to changed.
+    ms.changed = true;    
+}
+
 /** attribute has been applied externally, update state to reflect this setting.*/
-void State::have_applied(const StateAttribute* attribute)
+void State::have_applied_attribute(const StateAttribute* attribute)
 {
     if (attribute)
     {
@@ -536,3 +549,17 @@ void State::have_applied(const StateAttribute* attribute)
     }
 }
 
+void State::have_applied_attribute(const StateAttribute::Type type)
+{
+    
+    AttributeMap::iterator itr = _attributeMap.find(type);
+    if (itr!=_attributeMap.end())
+    {
+        AttributeStack& as = itr->second;
+
+        as.last_applied_attribute = 0L;
+
+        // will need to update this attribute on next apply so set it to changed.
+        as.changed = true;
+    }
+}

@@ -21,8 +21,8 @@ class Quat;
 
 class SG_EXPORT Matrix : public Object
 {
-    private:
 
+    private:
         float _mat[4][4];
         bool fully_realized;
 
@@ -160,6 +160,96 @@ class SG_EXPORT Matrix : public Object
 
         Matrix( const MatrixProduct& p ) //allows implicit evaluation of the product
             {    mult( p.A, p.B ); }
+
+
+        Matrix & operator *( Matrix &m )
+	{
+	    static osg::Matrix r;
+	    r.set(
+	    	_mat[0][0] * m._mat[0][0] +
+		_mat[0][1] * m._mat[1][0] +
+		_mat[0][2] * m._mat[2][0] +
+		_mat[0][3] * m._mat[3][0],
+
+	    	_mat[0][0] * m._mat[0][1] +
+		_mat[0][1] * m._mat[1][1] +
+		_mat[0][2] * m._mat[2][1] +
+		_mat[0][3] * m._mat[3][1],
+
+	    	_mat[0][0] * m._mat[0][2] +
+		_mat[0][1] * m._mat[1][2] +
+		_mat[0][2] * m._mat[2][2] +
+		_mat[0][3] * m._mat[3][2],
+
+	    	_mat[0][0] * m._mat[0][3] +
+		_mat[0][1] * m._mat[1][3] +
+		_mat[0][2] * m._mat[2][3] +
+		_mat[0][3] * m._mat[3][3],
+	        
+	    	_mat[1][0] * m._mat[0][0] +
+		_mat[1][1] * m._mat[1][0] +
+		_mat[1][2] * m._mat[2][0] +
+		_mat[1][3] * m._mat[3][0],
+
+	    	_mat[1][0] * m._mat[0][1] +
+		_mat[1][1] * m._mat[1][1] +
+		_mat[1][2] * m._mat[2][1] +
+		_mat[1][3] * m._mat[3][1],
+
+	    	_mat[1][0] * m._mat[0][2] +
+		_mat[1][1] * m._mat[1][2] +
+		_mat[1][2] * m._mat[2][2] +
+		_mat[1][3] * m._mat[3][2],
+
+	    	_mat[1][0] * m._mat[0][3] +
+		_mat[1][1] * m._mat[1][3] +
+		_mat[1][2] * m._mat[2][3] +
+		_mat[1][3] * m._mat[3][3],
+
+	    	_mat[2][0] * m._mat[0][0] +
+		_mat[2][1] * m._mat[1][0] +
+		_mat[2][2] * m._mat[2][0] +
+		_mat[2][3] * m._mat[3][0],
+
+	    	_mat[2][0] * m._mat[0][1] +
+		_mat[2][1] * m._mat[1][1] +
+		_mat[2][2] * m._mat[2][1] +
+		_mat[2][3] * m._mat[3][1],
+
+	    	_mat[2][0] * m._mat[0][2] +
+		_mat[2][1] * m._mat[1][2] +
+		_mat[2][2] * m._mat[2][2] +
+		_mat[2][3] * m._mat[3][2],
+
+	    	_mat[2][0] * m._mat[0][3] +
+		_mat[2][1] * m._mat[1][3] +
+		_mat[2][2] * m._mat[2][3] +
+		_mat[2][3] * m._mat[3][3],
+
+	    	_mat[3][0] * m._mat[0][0] +
+		_mat[3][1] * m._mat[1][0] +
+		_mat[3][2] * m._mat[2][0] +
+		_mat[3][3] * m._mat[3][0],
+
+	    	_mat[3][0] * m._mat[0][1] +
+		_mat[3][1] * m._mat[1][1] +
+		_mat[3][2] * m._mat[2][1] +
+		_mat[3][3] * m._mat[3][1],
+
+	    	_mat[3][0] * m._mat[0][2] +
+		_mat[3][1] * m._mat[1][2] +
+		_mat[3][2] * m._mat[2][2] +
+		_mat[3][3] * m._mat[3][2],
+
+	    	_mat[3][0] * m._mat[0][3] +
+		_mat[3][1] * m._mat[1][3] +
+		_mat[3][2] * m._mat[2][3] +
+		_mat[3][3] * m._mat[3][3]
+	    );
+	    return  r;
+	}
+
+	float * operator [] ( int i ) { return &_mat[i][0]; }
 };
 
 //static utility methods

@@ -69,6 +69,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         virtual void apply(osg::Billboard& node);
         virtual void apply(osg::LightSource& node);
         virtual void apply(osg::ClipNode& node);
+        virtual void apply(osg::TexGenNode& node);
 
         virtual void apply(osg::Group& node);
         virtual void apply(osg::Transform& node);

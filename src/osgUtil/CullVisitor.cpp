@@ -17,6 +17,7 @@
 #include <osg/Billboard>
 #include <osg/LightSource>
 #include <osg/ClipNode>
+#include <osg/TexGenNode>
 #include <osg/OccluderNode>
 #include <osg/Notify>
 #include <osg/TexEnv>
@@ -867,6 +868,22 @@ void CullVisitor::apply(ClipNode& node)
     {
         addPositionedAttribute(&matrix,itr->get());
     }
+
+    handle_cull_callbacks_and_traverse(node);
+
+    // pop the node's state off the geostate stack.    
+    if (node_state) popStateSet();
+}
+
+void CullVisitor::apply(TexGenNode& node)
+{
+    // push the node's state.
+    StateSet* node_state = node.getStateSet();
+    if (node_state) pushStateSet(node_state);
+
+    RefMatrix& matrix = getModelViewMatrix();
+
+    addPositionedAttribute(&matrix,node.getTexGen());
 
     handle_cull_callbacks_and_traverse(node);
 

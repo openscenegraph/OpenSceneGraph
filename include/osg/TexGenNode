@@ -1,0 +1,60 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSG_TexGenNode
+#define OSG_TexGenNode 1
+
+#include <osg/Group>
+#include <osg/TexGen>
+
+namespace osg {
+
+/** Node for defining the position of TexGen in the scene.*/
+class SG_EXPORT TexGenNode : public Group
+{
+
+    public:
+
+        TexGenNode();
+        TexGenNode(TexGen* texgen);
+
+        TexGenNode(const TexGenNode& tgb, const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+
+        META_Node(osg, TexGenNode);
+	
+        /** Set the TexGen.*/
+        void setTexGen(TexGen* texgen);
+
+        /** Get the TexGen.*/
+        inline TexGen* getTexGen() { return _texgen.get(); }
+
+        /** Get the const TexGen.*/
+        inline const TexGen* getTexGen() const { return _texgen.get(); }
+
+        /** Set the GLModes on StateSet associated with the TexGen.*/
+        void setStateSetModes(StateSet&,StateAttribute::GLModeValue) const;
+
+        /** Set up the local StateSet */
+        void setLocalStateSetModes(StateAttribute::GLModeValue=StateAttribute::ON);
+
+    protected:
+
+        virtual ~TexGenNode();
+
+        StateAttribute::GLModeValue _value;
+        osg::ref_ptr<TexGen> _texgen;
+};
+
+}
+
+#endif

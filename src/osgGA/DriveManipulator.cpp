@@ -55,6 +55,8 @@ osg::Node* DriveManipulator::getNode()
 void DriveManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
 {
 
+    std::cout<<"home()"<<std::endl;
+
     if(_node.get())
     {
 
@@ -97,6 +99,7 @@ void DriveManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
 
                 positionSet = true;
 
+                std::cout << "settin1"<<std::endl;
             }
 
         }
@@ -132,6 +135,8 @@ void DriveManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
 
                     positionSet = true;
 
+                    std::cout << "settin2"<<std::endl;
+
                 }
 
             }
@@ -143,6 +148,8 @@ void DriveManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
                 boundingSphere._center+osg::Vec3( 0.0,-2.0f * boundingSphere._radius,0.0f),
                 osg::Vec3(0.0f,1.0f,0.0f),
                 osg::Vec3(0.0f,0.0f,1.0f));
+                
+            std::cout << "!positionSet"<<std::endl;
         }
 
     }
@@ -167,7 +174,7 @@ void DriveManipulator::init(const GUIEventAdapter& ea,GUIActionAdapter& us)
     osg::Vec3 ep = _eye;
 
     Matrixd rotation_matrix;
-    rotation_matrix.get(_rotation);
+    rotation_matrix.set(_rotation);
     osg::Vec3 sv = osg::Vec3(1.0f,0.0f,0.0f) * rotation_matrix;
     osg::Vec3 bp = ep;
     bp.z() -= _modelScale;
@@ -202,7 +209,6 @@ void DriveManipulator::init(const GUIEventAdapter& ea,GUIActionAdapter& us)
             computePosition(ep,lv,uv);
 
             positionSet = true;
-
         }
 
     }
@@ -237,7 +243,6 @@ void DriveManipulator::init(const GUIEventAdapter& ea,GUIActionAdapter& us)
                 computePosition(ep,lv,uv);
 
                 positionSet = true;
-
             }
 
         }

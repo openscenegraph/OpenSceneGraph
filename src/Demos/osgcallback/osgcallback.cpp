@@ -83,7 +83,7 @@ class DrawableDrawCallback : public osg::Drawable::DrawCallback
 struct LODCallback : public osg::LOD::EvaluateLODCallback
 {
     /** Compute the child to select.*/
-    virtual int evaluateLODChild(const osg::LOD* lod, const osg::Vec3& eye_local, const float bias) const
+    virtual int evaluateLODChild(const osg::LOD* lod, const osg::Vec3& eye_local, float bias) const
     {
         std::cout<<"evaluateLODChild callback - pre lod->evaluateLODChild"<<std::endl;
         int result = lod->evaluateLODChild(eye_local,bias);

@@ -101,7 +101,7 @@ typedef int64 trpgllong;
 
 // These are used to export classes from a DLL
 // Definitely Windows specific
-#include <trpage_ident.h>
-#include <trdll.h>
+#include "trpage_ident.h"
+#include "trdll.h"
 
 #endif

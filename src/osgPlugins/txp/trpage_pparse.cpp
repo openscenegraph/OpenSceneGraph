@@ -22,8 +22,8 @@
     archive for the purpose of printing it out.
  */
 
-#include <trpage_print.h>
-#include <trpage_scene.h>
+#include "trpage_print.h"
+#include "trpage_scene.h"
 
 /* Set up the callbacks for the scene graph parser.
     In our case this is just one read helper with

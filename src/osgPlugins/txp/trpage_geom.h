@@ -21,10 +21,10 @@
     These are the objects that get read from and written to archives.
     */
 
-#include <trpage_sys.h>
+#include "trpage_sys.h"
 
-#include <trpage_io.h>
-#include <trpage_swap.h>
+#include "trpage_io.h"
+#include "trpage_swap.h"
 
 // Forward declarations
 

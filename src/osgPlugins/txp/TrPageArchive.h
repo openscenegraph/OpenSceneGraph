@@ -25,11 +25,11 @@
 
 
 
-#include <trpage_sys.h>
-#include <trpage_read.h>
-#include <trpage_managers.h>
+#include "trpage_sys.h"
+#include "trpage_read.h"
+#include "trpage_managers.h"
 
-#include <TrPageParser.h>
+#include "TrPageParser.h"
 
 #include <string>
 #include <vector>

@@ -24,8 +24,8 @@
      of these classes.
      */
 
-#include <trpage_geom.h>
-#include <trpage_read.h>
+#include "trpage_geom.h"
+#include "trpage_read.h"
 
 /* Write Group
     Basic group.

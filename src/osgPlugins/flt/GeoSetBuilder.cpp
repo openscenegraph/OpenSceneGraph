@@ -308,20 +308,24 @@ osg::Geode* GeoSetBuilder::createOsgGeoSets(osg::Geode* geode)
         itr!=_dynGeoSetList.end();
         ++itr)
     {
-    DynGeoSet* dgset = itr->get();
-    osg::Geometry* geom = dgset->getGeometry();
+        DynGeoSet* dgset = itr->get();
+        osg::Geometry* geom = dgset->getGeometry();
         geode->addDrawable(geom);
         dgset->addToGeometry(geom);
 
-    osg::StateSet* stateset = dgset->getStateSet();
-    assert( stateset == geom->getStateSet() );
+        osg::StateSet* stateset = dgset->getStateSet();
+        assert( stateset == geom->getStateSet() );
     }
 
     osgUtil::Tesselator tesselator;
     for(unsigned int i=0;i<geode->getNumDrawables();++i)
     {
         osg::Geometry* geom = dynamic_cast<osg::Geometry*>(geode->getDrawable(i));
-        if (geom) tesselator.retesselatePolygons(*geom);
+        if (geom) 
+        {
+            geom->computeCorrectBindingsAndArraySizes();
+            tesselator.retesselatePolygons(*geom);
+        }
     }
 
     return geode;
@@ -342,6 +346,8 @@ bool GeoSetBuilder::addPrimitive(bool dontMerge)
         return false;
 
     dgset->setBinding();
+
+    dontMerge = true;
 
     if( dontMerge == true)
     {

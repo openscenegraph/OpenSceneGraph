@@ -139,6 +139,11 @@ osg::Node* createFilterWall(osg::BoundingBox& bb,const std::string& filename)
     geom->setNormalArray(normals);
     geom->setNormalBinding(osg::Geometry::BIND_OVERALL);
     
+    osg::Vec4Array* colors = new osg::Vec4Array(1);
+    (*colors)[0].set(1.0f,1.0f,1.0f,1.0f);
+    geom->setColorArray(colors);
+    geom->setColorBinding(osg::Geometry::BIND_OVERALL);
+
     geom->addPrimitiveSet(new osg::DrawArrays(GL_QUADS,0,4));
     
     osg::Geode* geom_geode = new osg::Geode;
@@ -291,6 +296,11 @@ osg::Node* createAnisotripicWall(osg::BoundingBox& bb,const std::string& filenam
     geom->setNormalArray(normals);
     geom->setNormalBinding(osg::Geometry::BIND_OVERALL);
     
+    osg::Vec4Array* colors = new osg::Vec4Array(1);
+    (*colors)[0].set(1.0f,1.0f,1.0f,1.0f);
+    geom->setColorArray(colors);
+    geom->setColorBinding(osg::Geometry::BIND_OVERALL);
+
     geom->addPrimitiveSet(new osg::DrawArrays(GL_QUADS,0,4));
     
     osg::Geode* geom_geode = new osg::Geode;
@@ -444,6 +454,11 @@ osg::Node* createWrapWall(osg::BoundingBox& bb,const std::string& filename)
     geom->setNormalArray(normals);
     geom->setNormalBinding(osg::Geometry::BIND_OVERALL);
     
+    osg::Vec4Array* colors = new osg::Vec4Array(1);
+    (*colors)[0].set(1.0f,1.0f,1.0f,1.0f);
+    geom->setColorArray(colors);
+    geom->setColorBinding(osg::Geometry::BIND_OVERALL);
+
     geom->addPrimitiveSet(new osg::DrawArrays(GL_QUADS,0,4));
     
     osg::Geode* geom_geode = new osg::Geode;
@@ -600,6 +615,11 @@ osg::Node* createSubloadWall(osg::BoundingBox& bb)
     geom->setNormalArray(normals);
     geom->setNormalBinding(osg::Geometry::BIND_OVERALL);
     
+    osg::Vec4Array* colors = new osg::Vec4Array(1);
+    (*colors)[0].set(1.0f,1.0f,1.0f,1.0f);
+    geom->setColorArray(colors);
+    geom->setColorBinding(osg::Geometry::BIND_OVERALL);
+
     geom->addPrimitiveSet(new osg::DrawArrays(GL_QUADS,0,4));
     
     osg::Geode* geom_geode = new osg::Geode;

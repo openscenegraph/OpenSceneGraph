@@ -27,7 +27,12 @@ OSG News (most significant items from ChangeLog)
     been done to simplify users code and to solve the lack of thread safety 
     that was causing problems with the MemoryManager.
     
-    Support for reading and writing of callbacks in the .osg format.
+    Support added for reading and writing of callbacks in the .osg format.
+    
+    Support added for reading OpenFlight comment records into osg::Node description
+    fields.
+    
+    Improvements to the GEO loaders.
 
 
 13th November 2002 - OpenSceneGraph-0.9.2.tar.gz

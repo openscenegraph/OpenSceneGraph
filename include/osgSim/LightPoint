@@ -6,7 +6,7 @@
 // purchase of the Open Scene Graph Professional License (OSGPL)
 // for further information contact robert@openscenegraph.com.
 
-#ifndef OSGSIM_LGIHTPOINT
+#ifndef OSGSIM_LIGHTPOINT
 #define OSGSIM_LIGHTPOINT 1
 
 #include <osgSim/Export>

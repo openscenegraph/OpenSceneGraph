@@ -60,9 +60,6 @@ QuicktimeImageStream::QuicktimeImageStream(std::string fileName) : ImageStream()
 
     if (!fileName.empty())
         setFileName(fileName);
-
-    startThread();
-    start();
 }
 
 

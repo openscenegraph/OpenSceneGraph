@@ -507,6 +507,8 @@ class SG_EXPORT Texture : public osg::StateAttribute
         void computeRequiredTextureDimensions(State& state, const osg::Image& image,GLsizei& width, GLsizei& height,GLsizei& numMipmapLevels) const;
 
         bool isCompressedInternalFormat(GLint internalFormat) const;
+        
+        void getCompressedSize(GLenum internalFormat, GLint width, GLint height, GLint depth, GLint& blockSize, GLint& size) const;
 
         /** Helper method. Sets texture paramters. */
         void applyTexParameters(GLenum target, State& state) const;

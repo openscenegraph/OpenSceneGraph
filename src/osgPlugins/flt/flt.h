@@ -16,8 +16,8 @@
 #endif
 
 #include <osg/Notify>
-#define CERR	osg::notify( osg::INFO ) << __FILE__ << ":" << __LINE__ << ": "
-#define CERR2	osg::notify( osg::NOTICE )<< __FILE__ << ":" << __LINE__ << ": "
+#define CERR    osg::notify( osg::INFO ) << __FILE__ << ":" << __LINE__ << ": "
+#define CERR2    osg::notify( osg::NOTICE )<< __FILE__ << ":" << __LINE__ << ": "
 
 namespace flt {
 

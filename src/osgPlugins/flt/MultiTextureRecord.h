@@ -17,10 +17,10 @@ struct STextureLayer {
     uint16        mapping;
     uint16        data;
     void endian() {
-	ENDIAN( texture );
-	ENDIAN( effect );
-	ENDIAN( mapping );
-	ENDIAN( data );
+    ENDIAN( texture );
+    ENDIAN( effect );
+    ENDIAN( mapping );
+    ENDIAN( data );
     };
 };
 

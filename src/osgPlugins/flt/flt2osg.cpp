@@ -1,3 +1,8 @@
+// Modify ConvertFromFLT::setTexture to create a new osg::TexEnvCombiner in texture stateset to handle 
+// detail texture
+// Julian Ortiz, June 18th 2003.
+
+
 #include <stdio.h>
 #include <string.h>
 #include <osg/GL>
@@ -10,6 +15,7 @@
 #include <osg/StateSet>
 #include <osg/CullFace>
 #include <osg/TexEnv>
+#include <osg/TexEnvCombine>
 #include <osg/TexGen>
 #include <osg/AlphaFunc>
 #include <osg/BlendFunc>
@@ -66,6 +72,7 @@
 #include "UVListRecord.h"
 #include "LightSourceRecord.h"
 #include "LightSourcePaletteRecord.h"
+#include "AttrData.h"
 
 
 
@@ -321,7 +328,7 @@ osg::Group* ConvertFromFLT::visitPrimaryNode(osg::Group& osgParent, PrimNodeReco
 
     if( !geoSetBuilder.empty() )
     {
-        osg::Geode* geode = new osg::Geode;
+        osg::Geode* geode = new osg::Geode;        
         geoSetBuilder.createOsgGeoSets(geode );
     
         if (geode->getNumDrawables() > 0)
@@ -1267,11 +1274,52 @@ void ConvertFromFLT::setTexture ( FaceRecord *rec, SFace *pSFace, osg::StateSet 
         if (pTexturePool)
         {
             int nIndex = (int)pSFace->iTexturePattern;
-            osg::StateSet *textureStateSet = pTexturePool->getTexture(nIndex,rec->getFlightVersion());
+            flt::AttrData *textureAttrData = pTexturePool->getTexture(nIndex,rec->getFlightVersion());
 
+            osg::StateSet *textureStateSet;
+            if (textureAttrData)
+              textureStateSet = textureAttrData->stateset;
+            else
+              textureStateSet = NULL;
 
             if (textureStateSet)
             {
+                //We got detail texture, so we got detailTexture stateset and add a TexEnvCombine attribute
+                // To add simple detail texture we just use texture unit 1 to store detail
+                //As Creators help says, if Mag. Filter General is set to Modulate Detail we just
+                //add the detail, but if it set to Add Detail then we got a lighter image, so we
+                //use scale_rgb and scale_alpha of osg::TexEnvCombine to make this effect
+                // Julian Ortiz, June 18th 2003.
+
+                flt::AttrData *detailTextureAttrData;                                
+                if (pSFace->iDetailTexturePattern != -1) {                 
+                 int nIndex2 = (int)pSFace->iDetailTexturePattern;
+                 detailTextureAttrData = pTexturePool->getTexture(nIndex2,rec->getFlightVersion());
+                 if (detailTextureAttrData && detailTextureAttrData->stateset) {
+                     osg::Texture2D *detTexture = dynamic_cast<osg::Texture2D*>(detailTextureAttrData->stateset->getTextureAttribute( 0, osg::StateAttribute::TEXTURE));
+                     textureStateSet->setTextureAttributeAndModes(1,detTexture,osg::StateAttribute::ON);                    
+                     osg::TexEnvCombine *tec1 = new osg::TexEnvCombine;
+                     float scale = (detailTextureAttrData->modulateDetail==0)?2.0f:4.0f;                     
+                     tec1->setScale_RGB(scale);
+                     tec1->setScale_Alpha(scale);
+                     textureStateSet->setTextureAttribute( 1, tec1,osg::StateAttribute::ON );                                            
+                 }                 
+                }
+
+                //Now, an ugly thing,... we have detected that in Creator we defined that a texture will we used as
+                //detail texture, and we load it as it using texture unit 1,... but we also need to create texture 
+                //coordinates to map this detail texture, I found that texture coordinates assigment is made in
+                //DynGeoSet::addToGeometry and the easy way I found to create those new coordinates is to add a method
+                //to DynGeoSet class named setDetailTextureStatus that pass detail Texture AttrData class, so when 
+                //DynGeoSet::addToGeometry runs it reads this class and create new texture coordinates if we got a valid
+                //AttrData object. I now this is not a good way to do it, and I expect someone with more osg knowledge
+                //could make it in a better way.
+                // Julian Ortiz, June 18th 2003.                     
+                if (pSFace->iDetailTexturePattern != -1 && detailTextureAttrData && detailTextureAttrData->stateset)
+                 dgset->setDetailTextureAttrData(detailTextureAttrData);
+                else 
+                 dgset->setDetailTextureAttrData(NULL);
+
                 // Merge face stateset with texture stateset
                 osgStateSet->merge(*textureStateSet);
 

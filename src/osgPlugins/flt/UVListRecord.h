@@ -14,7 +14,7 @@ namespace flt {
 struct SVertexUV {
     float32x2 coords;
     void endian() {
-	ENDIAN( coords );
+    ENDIAN( coords );
     };
 };
 
@@ -22,8 +22,8 @@ struct SMorphUV {
     float32x2 coords0;
     float32x2 coords100;
     void endian() {
-	ENDIAN( coords0 );
-	ENDIAN( coords100 );
+    ENDIAN( coords0 );
+    ENDIAN( coords100 );
     };
 };
 
@@ -33,8 +33,8 @@ struct SUVList
     uint32        layers;
 
     union {
-	SVertexUV vertex[1];
-	SMorphUV  morph[1];
+    SVertexUV vertex[1];
+    SMorphUV  morph[1];
     } coords;
 };
 

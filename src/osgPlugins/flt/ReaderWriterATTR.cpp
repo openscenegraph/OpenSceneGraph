@@ -42,6 +42,8 @@
 #include <iostream>
 #include <fstream>
 
+#include "AttrData.h"
+
 typedef signed char     int8;
 typedef unsigned char   uint8;
 typedef signed short    int16;
@@ -91,7 +93,6 @@ static void endian2(void* pSrc, int nSrc, void* pDst)
 
 
 using namespace osg;
-
 
 class Attr
 {
@@ -159,7 +160,7 @@ class Attr
         void    init();
         void    readField(std::ifstream& file, void* buf, size_t size);
         bool    readAttrFile(const char* szName);
-        StateSet* createOsgStateSet();
+        flt::AttrData* createOsgStateSet();
 
 
     
@@ -466,7 +467,7 @@ bool Attr::readAttrFile(const char* szName)
     int n;
     std::ifstream file;
 
-    file.open (szName, std::ios::in | std::ios::binary);
+    file.open (szName, std::ios::in | std::ios::binary);    
 
     READ( texels_u );
     READ( textel_v );
@@ -527,9 +528,17 @@ bool Attr::readAttrFile(const char* szName)
     READ( lambertUpperLat );
     READ( lambertlowerLat );
     READ( reserved3 );
+    
     for (n=0; n<5; n++) {
         READ(spare2[n]); }
-    READ( useDetail );
+
+    // I don't know why I get a 4 bytes displacement before reading Detail Texture parameters
+    // My ATTR files have been created with Creator 2.5.1
+    // Julian Ortiz, June 18th 2003.    
+    int32 dummyAjust;
+    READ( dummyAjust);    
+
+    READ( useDetail );    
     READ( txDetail_j );
     READ( txDetail_k );
     READ( txDetail_m );
@@ -569,11 +578,11 @@ bool Attr::readAttrFile(const char* szName)
 }
 
 
-StateSet* Attr::createOsgStateSet()
-{
-    StateSet* osgStateSet = new StateSet;
+flt::AttrData* Attr::createOsgStateSet()
+{    
     TexEnv* osgTexEnv = new TexEnv;
     Texture2D* osgTexture = new Texture2D;
+    flt::AttrData* attrdata = new flt::AttrData;    
 
     if ((wrapMode_u != WRAP_CLAMP) && ((wrapMode_u != WRAP_REPEAT)))
         wrapMode_u = wrapMode;
@@ -707,10 +716,25 @@ StateSet* Attr::createOsgStateSet()
     // encapsulate ATTR files. Need to speak to Brede about this issue.
     // Robert Osfield, July 9th 2002.
     
-    osgStateSet->setTextureAttribute( 0, osgTexEnv );
-    osgStateSet->setTextureAttributeAndModes( 0, osgTexture, StateAttribute::ON );
-
-    return osgStateSet;
+    // This is now a bit diferrent. We create a new AttrData object, and StateSet object
+    // is instead with attribute information needed to setup detail texutre
+    //
+    // Julian Ortiz, June 18th 2003.    
+    attrdata->stateset = new StateSet;
+    attrdata->stateset->setTextureAttribute( 0, osgTexEnv );
+    attrdata->stateset->setTextureAttributeAndModes( 0, osgTexture, StateAttribute::ON );
+    attrdata->useDetail    = useDetail;
+    attrdata->txDetail_j  = txDetail_j;
+    attrdata->txDetail_k  = txDetail_k;
+    attrdata->txDetail_m  = txDetail_m;
+    attrdata->txDetail_n  = txDetail_n;
+    attrdata->txDetail_s  = txDetail_s;
+    if (magFilterMode == MAG_FILTER_MODULATE_DETAIL)
+     attrdata->modulateDetail = true;
+    else
+     attrdata->modulateDetail = false;
+    
+    return attrdata;
 }
 
 
@@ -749,10 +773,12 @@ class ReaderWriterATTR : public osgDB::ReaderWriter
                 return "Unable to open \""+fileName+"\"";
             }
 
-            StateSet* stateset = attr.createOsgStateSet();
+            //StateSet* stateset = attr.createOsgStateSet();
+            // Julian Ortiz, June 18th 2003.        
+            flt::AttrData* attrdata = attr.createOsgStateSet();
 
             notify(INFO) << "texture attribute read ok" << std::endl;
-            return stateset;
+            return attrdata;
         }
 
 };

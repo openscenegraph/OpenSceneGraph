@@ -17,7 +17,6 @@
 #include <osg/CullingSet>
 #include <osg/Viewport>
 #include <osg/fast_back_stack>
-#include <osg/Notify>
 
 namespace osg {
 
@@ -297,7 +296,6 @@ inline RefMatrix* CullStack::createOrReuseMatrix(const osg::Matrix& value)
     while (_currentReuseMatrixIndex<_reuseMatrixList.size() && 
            _reuseMatrixList[_currentReuseMatrixIndex]->referenceCount()>1)
     {
-        //notify(osg::NOTICE)<<"Warning:createOrReuseMatrix() skipping multiply refrenced entry."<< std::endl;
         ++_currentReuseMatrixIndex;
     }
 

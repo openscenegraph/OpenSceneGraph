@@ -24,6 +24,12 @@
 	#  define SG_EXPORT
 #endif  
 
+#ifdef _MSC_VER
+# if (_MSC_VER >= 1300)
+#  define __STL_MEMBER_TEMPLATES
+# endif
+#endif
+
 /* Define NULL pointer value */
 
 #ifndef NULL

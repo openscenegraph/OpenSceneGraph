@@ -236,7 +236,7 @@ class ReaderWriterPNM : public osgDB::ReaderWriter
 
                 unsigned char *src = data + width * height;
                 unsigned char *dst = data + width * height * 3;
-                while (src >= data)
+                while (src > data)
                 {
                     *(--dst) = *(--src);
                     *(--dst) = *src;

@@ -31,7 +31,7 @@ class Transform;
 
 /** META_Node macro define the standard clone, isSameKindAs, className
   * and accept methods.  Use when subclassing from Node to make it
-  * more convinient to define the required pure virtual methods.*/
+  * more convenient to define the required pure virtual methods.*/
 #define META_Node(library,name) \
         virtual osg::Object* cloneType() const { return new name (); } \
         virtual osg::Object* clone(const osg::CopyOp& copyop) const { return new name (*this,copyop); } \
@@ -56,7 +56,7 @@ class SG_EXPORT Node : public Object
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         Node(const Node&,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
-        /** clone the an object of the same type as the node.*/
+        /** clone an object of the same type as the node.*/
         virtual Object* cloneType() const { return new Node(); }
 
         /** return a clone of a node, with Object* return type.*/
@@ -78,7 +78,7 @@ class SG_EXPORT Node : public Object
           * Equivalent to dynamic_cast<const Group*>(this).*/
         virtual const Group* asGroup() const { return 0; }
 
-        /** convert 'this' into a Transform pointer if Node is a Transform, otherwise return 0.
+        /** Convert 'this' into a Transform pointer if Node is a Transform, otherwise return 0.
           * Equivalent to dynamic_cast<Transform*>(this).*/
         virtual Transform* asTransform() { return 0; }
         /** convert 'const this' into a const Transform pointer if Node is a Transform, otherwise return 0.
@@ -150,11 +150,11 @@ class SG_EXPORT Node : public Object
         inline const NodeCallback* getCullCallback() const { return _cullCallback.get(); }
 
         /** Set the view frustum/small feature culling of this node to be active or inactive.
-          * The default value to true for _cullingActive. Used a guide
+          * The default value is true for _cullingActive. Used as a guide
           * to the cull traversal.*/
         void setCullingActive(bool active);
 
-        /** Get the view frustum/small feature _cullingActive flag for this node. Used a guide
+        /** Get the view frustum/small feature _cullingActive flag for this node. Used as a guide
           * to the cull traversal.*/
         inline bool getCullingActive() const { return _cullingActive; }
 
@@ -162,7 +162,7 @@ class SG_EXPORT Node : public Object
         inline unsigned int getNumChildrenWithCullingDisabled() const { return _numChildrenWithCullingDisabled; }
 
         /** Return true if this node can be culled by view frustum, occlusion or small feature culling during the cull traversal.
-          * note, return true only if no children have culling disabled, and the local _cullingActive flag is true.*/
+          * Note, returns true only if no children have culling disabled, and the local _cullingActive flag is true.*/
         inline bool isCullingActive() const { return _numChildrenWithCullingDisabled==0 && _cullingActive && getBound().valid(); }
 
         /** Get the number of Children of this node which are or have OccluderNode's.*/
@@ -198,7 +198,7 @@ class SG_EXPORT Node : public Object
         void addDescription(const std::string& desc) { _descriptions.push_back(desc); }
 
 
-        /** set the node's StateSet.*/
+        /** Set the node's StateSet.*/
         inline void setStateSet(osg::StateSet* dstate) { _stateset = dstate; }
 
         /** return the node's StateSet, if one does not already exist create it
@@ -206,10 +206,10 @@ class SG_EXPORT Node : public Object
           * that a valid StateSet is always returned and can be used directly.*/
         osg::StateSet* getOrCreateStateSet();
 
-        /** return the node's StateSet. returns NULL if a stateset is not attached.*/
+        /** Return the node's StateSet. returns NULL if a stateset is not attached.*/
         inline osg::StateSet* getStateSet() { return _stateset.get(); }
 
-        /** return the node's const StateSet. returns NULL if a stateset is not attached.*/
+        /** return the node's const StateSet. Returns NULL if a stateset is not attached.*/
         inline const osg::StateSet* getStateSet() const { return _stateset.get(); }
 
         /** get the bounding sphere of node.
@@ -232,7 +232,7 @@ class SG_EXPORT Node : public Object
             be deleted other than by being dereferenced and the reference
             count being zero (see osg::Referenced), preventing the deletion
             of nodes which are still in use. This also means that
-            Node's cannot be created on stack i.e Node node will not compile,
+            Nodes cannot be created on stack i.e Node node will not compile,
             forcing all nodes to be created on the heap i.e Node* node
             = new Node().*/
         virtual ~Node();

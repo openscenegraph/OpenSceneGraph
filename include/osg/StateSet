@@ -33,7 +33,7 @@ namespace osg {
 Encapsulates OpenGL state modes and attributes. 
 Used to specific textures etc of osg::Drawable's which hold references
 to a single osg::StateSet.  StateSet can be shared between Drawable's
-and is recommend if possible as it minimize expensive state changes
+and is recommend if possible as it minimizes expensive state changes
 in the graphics pipeline.
 */
 class SG_EXPORT StateSet : public Object
@@ -76,7 +76,7 @@ class SG_EXPORT StateSet : public Object
         void setMode(StateAttribute::GLMode mode, StateAttribute::GLModeValue value);
         
         /** set this StateSet to inherit specified GLMode type from parents.
-          * has the effect of deleting any GlMode of specified type from StateSet.*/
+          * Has the effect of deleting any GlMode of specified type from StateSet.*/
         void setModeToInherit(StateAttribute::GLMode mode);
 
         /** get specified GLModeValue for specified GLMode.
@@ -150,15 +150,15 @@ class SG_EXPORT StateSet : public Object
         /** set this StateSet to contain specified attribute and set the associated GLMode's to specified value.*/
         void setTextureAttributeAndModes(unsigned int unit,StateAttribute *attribute, StateAttribute::GLModeValue value=StateAttribute::ON);
         /** set this StateSet to inherit specified attribute type from parents.
-          * has the effect of deleting any state attributes of specified type from StateSet.*/
+          * Has the effect of deleting any state attributes of specified type from StateSet.*/
         void setTextureAttributeToInherit(unsigned int unit,StateAttribute::Type type);
 
         /** get specified Texture related StateAttribute for specified type.
-          * returns NULL if no type is contained within StateSet.*/
+          * Returns NULL if no type is contained within StateSet.*/
         StateAttribute* getTextureAttribute(unsigned int unit,StateAttribute::Type type);
 
         /** get specified Texture related const StateAttribute for specified type.
-          * returns NULL if no type is contained within const StateSet.*/
+          * Returns NULL if no type is contained within const StateSet.*/
         const StateAttribute* getTextureAttribute(unsigned int unit,StateAttribute::Type type) const;
 
         /** get specified Texture related RefAttributePair for specified type.

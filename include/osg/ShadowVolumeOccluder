@@ -54,7 +54,7 @@ class SG_EXPORT ShadowVolumeOccluder
         inline void popCurrentMask();
         
         
-        /** return true if the matrix passed in matches the projection matrix that this ShaowVolumeOccluder is
+        /** return true if the matrix passed in matches the projection matrix that this ShadowVolumeOccluder is
           * associated with.*/
         bool matchProjectionMatrix(const osg::Matrix& matrix) const
         {
@@ -63,8 +63,8 @@ class SG_EXPORT ShadowVolumeOccluder
         }
         
 
-        /** Set the NodePath which describes the which node in the scene graph
-          * that this occluder was attached to.*/
+        /** Set the NodePath which describes which node in the scene graph
+          * that this occluder is attached to. */
         inline void setNodePath(NodePath& nodePath) { _nodePath = nodePath; }
         inline NodePath& getNodePath() { return _nodePath; }
         inline const NodePath& getNodePath() const { return _nodePath; }
@@ -87,11 +87,11 @@ class SG_EXPORT ShadowVolumeOccluder
         const HoleList& getHoleList() const { return _holeList; }
         
 
-        /** return true if the specified vertex list is contaned entirely
+        /** return true if the specified vertex list is contained entirely
           * within this shadow occluder volume.*/
         bool contains(const std::vector<Vec3>& vertices);
 
-        /** return true if the specified bounding sphere is contaned entirely
+        /** return true if the specified bounding sphere is contained entirely
           * within this shadow occluder volume.*/
         bool contains(const BoundingSphere& bound);
         

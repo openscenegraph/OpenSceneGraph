@@ -45,10 +45,10 @@ class SG_EXPORT Stencil : public StateAttribute
         virtual int compare(const StateAttribute& sa) const
         {
             // check the types are equal and then create the rhs variable
-            // used by the COMPARE_StateAttribute_Paramter macro's below.
+            // used by the COMPARE_StateAttribute_Parameter macro's below.
             COMPARE_StateAttribute_Types(Stencil,sa)
 
-            // compare each paramter in turn against the rhs.
+            // compare each parameter in turn against the rhs.
             COMPARE_StateAttribute_Parameter(_func)
             COMPARE_StateAttribute_Parameter(_funcRef)
             COMPARE_StateAttribute_Parameter(_funcMask)
@@ -119,10 +119,10 @@ class SG_EXPORT Stencil : public StateAttribute
         /** get the operation when the stencil test fails.*/
         inline Operation getStencilFailOperation() const { return _sfail; }
         
-        /** get the operation when the stencil test passes but the depth test fails*/
+        /** get the operation when the stencil test passes but the depth test fails.*/
         inline Operation getStencilPassAndDepthFailOperation() const { return _zfail; }
         
-        /** get the operation when both the stencil test and the depth test pass*/
+        /** get the operation when both the stencil test and the depth test pass.*/
         inline Operation getStencilPassAndDepthPassOperation() const { return _zpass; }
         
 

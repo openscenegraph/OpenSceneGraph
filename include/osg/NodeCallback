@@ -36,11 +36,11 @@ class SG_EXPORT NodeCallback : public virtual Object {
         META_Object(osg,NodeCallback)
         
         
-        /** Callback method call by the NodeVisitor when visiting a node.*/
+        /** Callback method called by the NodeVisitor when visiting a node.*/
         virtual void operator()(Node* node, NodeVisitor* nv)
         { 
-            // note, callback is repsonsible for scenegraph traversal so
-            // should always include call the traverse(node,nv) to ensure 
+            // note, callback is responsible for scenegraph traversal so
+            // should always include call traverse(node,nv) to ensure 
             // that the rest of cullbacks and the scene graph are traversed.
             traverse(node,nv);
         }

@@ -19,7 +19,7 @@
 
 namespace osg {
 
-/** Class to for setting OpenGL's polygon culling mode.
+/** State Class for setting OpenGL's polygon culling mode.
 */     
 class SG_EXPORT PolygonMode : public StateAttribute
 {
@@ -40,7 +40,7 @@ class SG_EXPORT PolygonMode : public StateAttribute
         virtual int compare(const StateAttribute& sa) const
         {
             // check the types are equal and then create the rhs variable
-            // used by the COMPARE_StateAttribute_Paramter macro's below.
+            // used by the COMPARE_StateAttribute_Parameter macros below.
             COMPARE_StateAttribute_Types(PolygonMode,sa)
 
             // compare each paramter in turn against the rhs.
@@ -48,7 +48,7 @@ class SG_EXPORT PolygonMode : public StateAttribute
             COMPARE_StateAttribute_Parameter(_modeFront)
             COMPARE_StateAttribute_Parameter(_modeBack)
 
-            return 0; // passed all the above comparison macro's, must be equal.
+            return 0; // passed all the above comparison macros, must be equal.
         }
 
         enum Face {

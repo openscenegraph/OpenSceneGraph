@@ -65,7 +65,7 @@ class SG_EXPORT Multisample : public StateAttribute
         virtual int compare(const StateAttribute& sa) const
         {
             // check the types are equal and then create the rhs variable
-            // used by the COMPARE_StateAttribute_Paramter macro's below.
+            // used by the COMPARE_StateAttribute_Parameter macro's below.
             COMPARE_StateAttribute_Types(Multisample,sa)
 
             // compare each paramter in turn against the rhs.
@@ -73,7 +73,7 @@ class SG_EXPORT Multisample : public StateAttribute
             COMPARE_StateAttribute_Parameter(_invert)
             COMPARE_StateAttribute_Parameter(_mode)
 
-            return 0; // passed all the above comparison macro's, must be equal.
+            return 0; // passed all the above comparison macros, must be equal.
         }
 
         void setSampleCoverage(float coverage, bool invert) 
@@ -89,8 +89,8 @@ class SG_EXPORT Multisample : public StateAttribute
         virtual void apply(State& state) const;
 
 
-        /** Extensions class which encapsulates the querring of extensions and
-          * associated function pointers, and provide convinience wrappers to 
+        /** Extensions class which encapsulates the querying of extensions and
+          * associated function pointers, and provide convenience wrappers to 
           * check for the extensions or use the associated functions.*/        
         class SG_EXPORT Extensions : public osg::Referenced
         {
@@ -122,15 +122,15 @@ class SG_EXPORT Multisample : public StateAttribute
         };
         
         /** Function to call to get the extension of a specified context.
-          * If the Exentsion object for that context has not yet been created then 
+          * If the Exentsion object for that context has not yet been created 
           * and the 'createIfNotInitalized' flag been set to false then returns NULL.
           * If 'createIfNotInitalized' is true then the Extensions object is 
-          * automatically created.  However, in this case the extension object 
+          * automatically created.  However, in this case the extension object will
           * only be created with the graphics context associated with ContextID..*/
         static Extensions* getExtensions(unsigned int contextID,bool createIfNotInitalized);
 
         /** setExtensions allows users to override the extensions across graphics contexts.
-          * typically used when you have different extensions supported across graphics pipes
+          * Typically used when you have different extensions supported across graphics pipes
           * but need to ensure that they all use the same low common denominator extensions.*/
         static void setExtensions(unsigned int contextID,Extensions* extensions);
 

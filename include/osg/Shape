@@ -29,7 +29,7 @@ class ConstShapeVisitor;
 
 /** META_StateAttribute macro define the standard clone, isSameKindAs,
   * className and getType methods.
-  * Use when subclassing from Object to make it more convinient to define 
+  * Use when subclassing from Object to make it more convenient to define 
   * the standard pure virtual methods which are required for all Object 
   * subclasses.*/
 #define META_Shape(library,name) \
@@ -85,7 +85,7 @@ class SG_EXPORT Shape : public Object
     	virtual ~Shape();
 };
 
-// forward declartions of Shape types.
+// forward declarations of Shape types.
 class Sphere;
 class Box;
 class Cone;
@@ -521,8 +521,8 @@ class SG_EXPORT HeightField : public Shape
 
 	
         /** Set the height of the skirt to render around the edge of HeightField.
-          * The skirt is used as a means of disguising edge boundaries between adjacent HeightField, particular
-          * of ones with different resolutions.*/
+          * The skirt is used as a means of disguising edge boundaries between adjacent HeightField, 
+          * particularly of ones with different resolutions.*/
         void setSkirtHeight(float skirtHeight) { _skirtHeight = skirtHeight; }
         
         /** Get the height of the skirt to render around the edge of HeightField.*/
@@ -541,17 +541,19 @@ class SG_EXPORT HeightField : public Shape
     	inline Matrix getRotationMatrix() const { return Matrix(_rotation); }
     	inline bool zeroRotation() const { return _rotation.zeroRotation(); } 
         
-
+    /* set a single height point in the height field */
 	inline void setHeight(unsigned int c,unsigned int r,float value)
 	{
 	   _heights[c+r*_columns] = value;
 	}
 
+    /* Get address of single height point in the height field, allows user to change. */
 	inline float& getHeight(unsigned int c,unsigned int r)
 	{
 	   return _heights[c+r*_columns];
 	}
 
+    /* Get value of single height point in the height field, not editable. */
 	inline float getHeight(unsigned int c,unsigned int r) const
 	{
 	   return _heights[c+r*_columns];
@@ -631,7 +633,7 @@ class CompositeShape : public Shape
 	void removeChild(unsigned int i) { _children.erase(_children.begin()+i); }
 
 	/** find the index number of child, if child is not found then it returns getNumChildren(),
-	  * so should be used in similar sytle of STL's result!=end().*/ 
+	  * so should be used in similar style to STL's result!=end().*/ 
 	unsigned int findChildNo(Shape* shape) const
         { 
             for (unsigned int childNo=0;childNo<_children.size();++childNo)

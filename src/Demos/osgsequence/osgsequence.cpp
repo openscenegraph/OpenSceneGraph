@@ -125,8 +125,8 @@ int main( int argc, char **argv )
 
     // create commandline args
     std::vector<std::string> commandLine;
-    for (int i = 1; i < argc; i++)
-        commandLine.push_back(argv[i]);
+    for (int ia = 1; ia < argc; ia++)
+        commandLine.push_back(argv[ia]);
 
     // initialize the viewer
     osgGLUT::Viewer viewer;
@@ -138,7 +138,8 @@ int main( int argc, char **argv )
     
     // assumes any remaining parameters are models
     std::vector<osg::Node*> model;
-    for (unsigned int i = 0; i < commandLine.size(); i++) {
+    unsigned int i;
+    for (i = 0; i < commandLine.size(); i++) {
         std::cerr << "Loading " << commandLine[i] << std::endl;
         osg::Node* node = osgDB::readNodeFile(commandLine[i]);
         if (node)
@@ -162,7 +163,7 @@ int main( int argc, char **argv )
     const int nreps[] = { -1, 5, 1 };
 
     float x = 0.0f;
-    for (unsigned int i = 0; i < (sizeof(speed) / sizeof(speed[0])); i++) {
+    for (i = 0; i < (sizeof(speed) / sizeof(speed[0])); i++) {
         osg::Sequence* seqNode = generateSeq(mode[i], speed[i], nreps[i],
                                              model);
         if (!seqNode)

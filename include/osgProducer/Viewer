@@ -91,13 +91,13 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
         virtual void update();
         
         /** set the update visitor which does the update traversal of the scene graph. Automatically called by the update() method.*/
-        void setUpdateVistor(osg::NodeVisitor* nv) { _updateVisitor = nv; }
+        void setUpdateVisitor(osg::NodeVisitor* nv) { _updateVisitor = nv; }
         
         /** get the update visitor.*/
-        osg::NodeVisitor* getUpdateVistor() { return _updateVisitor.get(); }
+        osg::NodeVisitor* getUpdateVisitor() { return _updateVisitor.get(); }
         
         /** get the const update visitor.*/
-        const osg::NodeVisitor* getUpdateVistor() const { return _updateVisitor.get(); }
+        const osg::NodeVisitor* getUpdateVisitor() const { return _updateVisitor.get(); }
         
 
         /** Dispatch the cull and draw for each of the Camera's for this frame.*/

@@ -438,7 +438,9 @@ void tri_stripper::BuildStrip(const triangle_strip TriStrip)
         }
 
         // Debug check: we must have found the next triangle
-        assert(LinkIt != TriNodeIt->out_end());
+        //assert(LinkIt != TriNodeIt->out_end());        
+        if (LinkIt == TriNodeIt->out_end()) throw "tri_stripper::BuildStrip(,) error, next triangle not found";
+
 
         // Go to the next triangle
         TriNodeIt = LinkIt->terminal();

@@ -255,7 +255,8 @@ inline void graph_array<nodetype, arctype>::setsize(const size_t NbNodes) {
 template <class nodetype, class arctype>
 inline typename graph_array<nodetype, arctype>::node & graph_array<nodetype, arctype>::operator [] (const nodeid & i) {
     // Debug check
-    assert(i < size());
+    // assert(i < size());
+    if (i >= size()) throw "graph_array<nodetype, arctype>::operator [] out of range";
 
     return m_Nodes[i];
 }
@@ -264,7 +265,8 @@ inline typename graph_array<nodetype, arctype>::node & graph_array<nodetype, arc
 template <class nodetype, class arctype>
 inline const typename graph_array<nodetype, arctype>::node & graph_array<nodetype, arctype>::operator [] (const nodeid & i) const {
     // Debug check
-    assert(i < size());
+    // assert(i < size());
+    if (i >= size()) throw "graph_array<nodetype, arctype>::operator [] out of range";
 
     return m_Nodes[i];
 }

@@ -157,7 +157,7 @@ namespace
         {
         }
 
-        META_StateAttribute(osgFX, ViewMatrixExtractor, 0x564d4548);
+        META_StateAttribute(osgFX, ViewMatrixExtractor, VIEWMATRIXEXTRACTOR);
 
         int compare(const osg::StateAttribute &sa) const
         {

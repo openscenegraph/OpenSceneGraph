@@ -50,7 +50,17 @@ void Quat::get(Matrixd& matrix) const
 /// (radians) around the axis (x,y,z)
 void Quat::makeRotate( value_type angle, value_type x, value_type y, value_type z )
 {
-    value_type inversenorm  = 1.0/sqrt( x*x + y*y + z*z );
+    const value_type epsilon = 0.0000001;
+
+    value_type length = sqrt( x*x + y*y + z*z );
+    if (length < epsilon)
+    {
+        // ~zero length axis, so reset rotation to zero.
+        *this = Quat();
+        return;
+    }
+
+    value_type inversenorm  = 1.0/length;
     value_type coshalfangle = cos( 0.5*angle );
     value_type sinhalfangle = sin( 0.5*angle );
 

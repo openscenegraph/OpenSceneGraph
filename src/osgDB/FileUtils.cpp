@@ -45,9 +45,14 @@ bool osgDB::fileExists(const std::string& filename)
 
 std::string osgDB::findFileInPath(const std::string& filename, const FilePathList& filepath)
 {
-    if (filename.empty()) return filename;
+    if (filename.empty()) 
+        return filename;
 
-    if(fileExists(filename)) return filename;
+    if(fileExists(filename)) 
+    {
+        osg::notify(osg::DEBUG_INFO) << "FindFileInPath(" << filename << "): returning " << filename << std::endl;
+        return filename;
+    }
 
     for(FilePathList::const_iterator itr=filepath.begin();
         itr!=filepath.end();
@@ -55,7 +60,11 @@ std::string osgDB::findFileInPath(const std::string& filename, const FilePathLis
     {
         std::string path = *itr + '/'+ filename;
         osg::notify(osg::DEBUG_INFO) << "FindFileInPath() : trying " << path << " ...\n";
-        if(fileExists(path)) return path;
+        if(fileExists(path)) 
+        {
+            osg::notify(osg::DEBUG_INFO) << "FindFileInPath() : USING " << path << "\n";
+            return path;
+        }
     }
 
     return std::string();
@@ -84,12 +93,14 @@ std::string osgDB::findDataFile(const std::string& filename)
 
 std::string osgDB::findLibraryFile(const std::string& filename)
 {
-    if (filename.empty()) return filename;
+    if (filename.empty()) 
+        return filename; 
 
     const FilePathList& filepath = Registry::instance()->getLibraryFilePathList();
 
     std::string fileFound = findFileInPath(filename, filepath);
-    if (!fileFound.empty()) return fileFound;
+    if (!fileFound.empty()) 
+        return fileFound;
 
     // if a directory is included in the filename, get just the (simple) filename itself and try that
     std::string simpleFileName = getSimpleFileName(filename);

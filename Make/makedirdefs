@@ -97,6 +97,7 @@ EXAMPLE_DIRS = \
 	osghangglide\
 	osghud\
 	osgimpostor\
+	osgkeyboard\
 	osglight\
 	osglightpoint\
 	osglogo\

@@ -53,6 +53,8 @@ public:
 
         enum KeySymbol
         {
+            KEY_Space           = 0x20,
+            
             KEY_BackSpace       = 0xFF08,        /* back space, back char */
             KEY_Tab             = 0xFF09,
             KEY_Linefeed        = 0xFF0A,        /* Linefeed, LF */
@@ -94,7 +96,7 @@ public:
             KEY_Help            = 0xFF6A,        /* Help */
             KEY_Break           = 0xFF6B,
             KEY_Mode_switch     = 0xFF7E,        /* Character set switch */
-            KEY_script_switch   = 0xFF7E,        /* Alias for mode_switch */
+            KEY_Script_switch   = 0xFF7E,        /* Alias for mode_switch */
             KEY_Num_Lock        = 0xFF7F,
 
             /* Keypad Functions, keypad numbers cleverly chosen to map to ascii */

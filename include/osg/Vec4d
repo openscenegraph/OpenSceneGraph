@@ -19,17 +19,17 @@
 
 namespace osg {
 
-/** General purpose float quad, uses include representation
+/** General purpose double quad, uses include representation
     of colour coordinates.
-    No support yet added for float * Vec4d - is it necessary?
+    No support yet added for double * Vec4d - is it necessary?
     Need to define a non-member non-friend operator*  etc.
-   			     Vec4d * float is okay
+   			     Vec4d * double is okay
 */
 class Vec4d
 {
     public:
 
-        typedef float value_type;
+        typedef double value_type;
 
         value_type _v[4];
 
@@ -96,18 +96,18 @@ class Vec4d
 
         inline unsigned long asABGR() const
         {
-            return (unsigned long)clampTo((_v[0]*255.0f),0.0f,255.0f)<<24 |
-                   (unsigned long)clampTo((_v[1]*255.0f),0.0f,255.0f)<<16 |
-                   (unsigned long)clampTo((_v[2]*255.0f),0.0f,255.0f)<<8  |
-                   (unsigned long)clampTo((_v[3]*255.0f),0.0f,255.0f);
+            return (unsigned long)clampTo((_v[0]*255.0),0.0,255.0)<<24 |
+                   (unsigned long)clampTo((_v[1]*255.0),0.0,255.0)<<16 |
+                   (unsigned long)clampTo((_v[2]*255.0),0.0,255.0)<<8  |
+                   (unsigned long)clampTo((_v[3]*255.0),0.0,255.0);
         }
 
         inline unsigned long asRGBA() const
         {
-            return (unsigned long)clampTo((_v[3]*255.0f),0.0f,255.0f)<<24 |
-                   (unsigned long)clampTo((_v[2]*255.0f),0.0f,255.0f)<<16 |
-                   (unsigned long)clampTo((_v[1]*255.0f),0.0f,255.0f)<<8  |
-                   (unsigned long)clampTo((_v[0]*255.0f),0.0f,255.0f);
+            return (unsigned long)clampTo((_v[3]*255.0),0.0,255.0)<<24 |
+                   (unsigned long)clampTo((_v[2]*255.0),0.0,255.0)<<16 |
+                   (unsigned long)clampTo((_v[1]*255.0),0.0,255.0)<<8  |
+                   (unsigned long)clampTo((_v[0]*255.0),0.0,255.0);
         }
 
         inline bool valid() const { return !isNaN(); }

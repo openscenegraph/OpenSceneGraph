@@ -75,9 +75,9 @@ void DynGeoSet::append(DynGeoSet* source)
 
 DynGeoSet::DynGeoSet():osg::GeoSet()
 {
-	// disable the attribute delete functor since the vectors contained in DynGeoSet
-	// will delete the memory for us.
-	_adf = NULL;
+    // disable the attribute delete functor since the vectors contained in DynGeoSet
+    // will delete the memory for us.
+    _adf = NULL;
 }
 
 void DynGeoSet::setBinding()
@@ -98,6 +98,7 @@ void DynGeoSet::setBinding()
             stateset->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
     }
 }
+
 
 
 bool DynGeoSet::setLists()
@@ -125,7 +126,6 @@ bool DynGeoSet::setLists()
     return false;
 }
 
-
 ////////////////////////////////////////////////////////////////////
 //
 //                       GeoSetBuilder
@@ -134,6 +134,7 @@ bool DynGeoSet::setLists()
 
 // OpenFlight don't save data in GeoSets.  This class tries to find
 // existing GeoSets with matching state before creating a new GeoSet.
+
 
 GeoSetBuilder::GeoSetBuilder(osg::Geode* geode)
 {
@@ -149,8 +150,12 @@ void GeoSetBuilder::initPrimData()
 }
 
 
-osg::Geode* GeoSetBuilder::createOsgGeoSets()
+osg::Geode* GeoSetBuilder::createOsgGeoSets(osg::Geode* geode)
 {
+    if( geode == NULL) geode = _geode.get();
+
+    if( geode == NULL) return geode;
+
     for(DynGeoSetList::iterator itr=_dynGeoSetList.begin();
         itr!=_dynGeoSetList.end();
         ++itr)
@@ -163,16 +168,16 @@ osg::Geode* GeoSetBuilder::createOsgGeoSets()
             {
                 dgset->setLists();
                 dgset->setNumPrims(prims);
-                _geode.get()->addDrawable(dgset);
+                geode->addDrawable(dgset);
             }
         }
     }
 
-    return _geode.get();
+    return geode;
 }
 
 
-bool GeoSetBuilder::addPrimitive()
+bool GeoSetBuilder::addPrimitive(bool dontMerge)
 {
     DynGeoSet* dgset = getDynGeoSet();  // This is the new geoset we want to add
 
@@ -185,12 +190,19 @@ bool GeoSetBuilder::addPrimitive()
 
     dgset->setBinding();
 
-    DynGeoSet* match = findMatchingGeoSet();
-    if (match)
-        match->append(dgset);
-    else
+    if( dontMerge == true)
+    {
         _dynGeoSetList.push_back(dgset);
-
+    }
+    else
+    {
+        DynGeoSet* match = findMatchingGeoSet();
+        if (match)
+            match->append(dgset);
+        else
+            _dynGeoSetList.push_back(dgset);
+    }
+    
     initPrimData();     // initialize _dynGeoSet
     return true;
 }

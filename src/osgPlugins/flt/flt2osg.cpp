@@ -158,8 +158,8 @@ osg::Node* ConvertFromFLT::visitAncillary(osg::Group* osgParent, PrimNodeRecord*
 osg::Node* ConvertFromFLT::visitPrimaryNode(osg::Group* osgParent, PrimNodeRecord* rec)
 {
     osg::Node* node = NULL;
-    osg::Geode* geode = new osg::Geode;
-    GeoSetBuilder   geoSetBuilder(geode);
+    GeoSetBuilder   geoSetBuilder;
+    GeoSetBuilder   billboardBuilder;
 
     // Visit
     for(int i=0; i < rec->getNumChildren(); i++)
@@ -169,7 +169,13 @@ osg::Node* ConvertFromFLT::visitPrimaryNode(osg::Group* osgParent, PrimNodeRecor
         if (child && child->isPrimaryNode())
         {
             if (child->isOfType(FACE_OP))
-                visitFace(&geoSetBuilder, (FaceRecord*)child);
+            {
+                FaceRecord* fr = (FaceRecord*)child;
+                if( fr->getData()->swTemplateTrans == 2)  //Axis type rotate
+                    visitFace(&billboardBuilder, fr);
+                else
+                    visitFace(&geoSetBuilder, fr);
+            }
             else if (child->isOfType(LIGHT_POINT_OP))
                 visitLightPoint(&geoSetBuilder, (LightPointRecord*)child);
             else
@@ -177,10 +183,23 @@ osg::Node* ConvertFromFLT::visitPrimaryNode(osg::Group* osgParent, PrimNodeRecor
         }
     }
 
-    geoSetBuilder.createOsgGeoSets();
+    if( !geoSetBuilder.empty() )
+    {
+        osg::Geode* geode = new osg::Geode;
+        geoSetBuilder.createOsgGeoSets(geode );
     
-    if (osgParent && (geode->getNumDrawables() > 0))
-        osgParent->addChild( geode );
+        if (osgParent && (geode->getNumDrawables() > 0))
+            osgParent->addChild( geode );
+    }
+
+    if( !billboardBuilder.empty() )
+    {
+        osg::Billboard* billboard = new osg::Billboard;
+        billboardBuilder.createOsgGeoSets(billboard );
+        
+        if (osgParent && (billboard->getNumDrawables() > 0))
+            osgParent->addChild( billboard );
+    }
 
     return node;
 }
@@ -983,10 +1002,8 @@ int ConvertFromFLT::visitVertexList(GeoSetBuilder* pBuilder, VertexListRecord* r
 
 
 // Return 1 if record is a known vertex record else return 0.
-int ConvertFromFLT::addVertex(GeoSetBuilder* pBuilder, Record* rec)
+int ConvertFromFLT::addVertex(DynGeoSet* dgset, Record* rec)
 {
-    DynGeoSet* dgset = pBuilder->getDynGeoSet();
-
     switch(rec->getOpcode())
     {
     case VERTEX_C_OP:

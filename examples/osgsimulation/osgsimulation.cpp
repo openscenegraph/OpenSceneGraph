@@ -18,6 +18,8 @@
 #include <osgParticle/FireEffect>
 #include <osgParticle/ParticleSystemUpdater>
 
+#include <osgGA/TrackerManipulator>
+
 // for the grid data..
 #include "../osghangglide/terrain_coords.h"
 
@@ -59,6 +61,8 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
     osg::Node* glider = osgDB::readNodeFile("glider.osg");
     if (glider)
     {
+        glider->setName("glider");
+
         const osg::BoundingSphere& bs = glider->getBound();
 
         float size = radius/bs.radius()*0.3f;
@@ -81,6 +85,8 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
     osg::Node* cessna = osgDB::readNodeFile("cessna.osg");
     if (cessna)
     {
+        cessna->setName("cessna");
+    
         const osg::BoundingSphere& bs = cessna->getBound();
 
         osgText::Text* text = new osgText::Text;
@@ -245,6 +251,29 @@ void build_world(osg::Group *root)
     }
 }
 
+class FindNamedNodeVisitor : public osg::NodeVisitor
+{
+public:
+    FindNamedNodeVisitor(const std::string& name):
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
+        _name(name) {}
+    
+    virtual void apply(osg::Node& node)
+    {
+        if (node.getName()==_name)
+        {
+            _foundNodes.push_back(&node);
+        }
+        traverse(node);
+    }
+    
+    typedef std::vector< osg::ref_ptr<osg::Node> > NodeList;
+
+    std::string _name;
+    NodeList _foundNodes;
+};
+
+
 
 //////////////////////////////////////////////////////////////////////////////
 // main()
@@ -267,6 +296,8 @@ int main(int argc, char **argv)
 
     // set up the value with sensible default event handlers.
     viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
+
+
 
     // get details on keyboard and mouse bindings used by the viewer.
     viewer.getUsage(*arguments.getApplicationUsage());
@@ -294,6 +325,23 @@ int main(int argc, char **argv)
     // add a viewport to the viewer and attach the scene graph.
     viewer.setSceneData(root);
         
+        
+    FindNamedNodeVisitor fnnv("cessna");
+    root->accept(fnnv);
+    
+    if (!fnnv._foundNodes.empty())
+    {
+        osgGA::TrackerManipulator* tm = new osgGA::TrackerManipulator;
+        tm->setTrackNode(fnnv._foundNodes[0].get());
+        
+        std::cout<<"Found "<<std::endl;
+        
+        unsigned int num = viewer.addCameraManipulator(tm);
+        viewer.selectCameraManipulator(num);
+    }
+
+
+
     // create the windows and run the threads.
     viewer.realize();
 

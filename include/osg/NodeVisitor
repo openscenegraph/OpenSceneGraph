@@ -184,13 +184,13 @@ class SG_EXPORT NodeVisitor : public virtual Referenced
           * from the top most node applied down the graph to the current node.
           * Note, the user does not typically call pushNodeOnPath() as it
           * will be called automatically by the Node::accept() method.*/
-        inline void pushOntoNodePath(Node* node) { _nodePath.push_back(node); }
+        inline void pushOntoNodePath(Node* node) { if (_traversalMode!=TRAVERSE_PARENTS) _nodePath.push_back(node); else _nodePath.insert(_nodePath.begin(),node); }
         
         /** Method callby osg::Node::accept() method after
           * a call the NodeVisitor::apply(..).
           * Note, the user does not typically call pushNodeOnPath() as it
           * will be called automatically by the Node::accept() method.*/
-        inline void popFromNodePath()            { _nodePath.pop_back(); }
+        inline void popFromNodePath()            { if (_traversalMode!=TRAVERSE_PARENTS) _nodePath.pop_back(); else _nodePath.erase(_nodePath.begin()); }
         
         /** Get the non const NodePath from the top most node applied down
           * to the current Node being visited.*/

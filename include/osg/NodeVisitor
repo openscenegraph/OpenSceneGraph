@@ -150,6 +150,21 @@ class SG_EXPORT NodeVisitor : public virtual Referenced
         /** Get the traversal mode.*/
         inline TraversalMode getTraversalMode() const { return _traversalMode; }
 
+        /**
+         * Set user data, data must be subclased from Referenced to allow
+         * automatic memory handling.  If you own data isn't directly 
+         * subclassed from Referenced then create and adapter object
+         * which points to your own objects and handles the memory addressing.
+         */
+        inline void setUserData(Referenced* obj) { _userData = obj; }
+        
+        /** Get user data.*/
+        inline Referenced* getUserData() { return _userData.get(); }
+        
+        /** Get const user data.*/
+        inline const Referenced* getUserData() const { return _userData.get(); }
+
+
         /** Method for handling traversal of a nodes.
             If you intend to use the visitor for actively traversing 
             the scene graph then make sure the accept() methods call
@@ -240,6 +255,8 @@ class SG_EXPORT NodeVisitor : public virtual Referenced
         Node::NodeMask          _nodeMaskOverride;
         
         NodePath                _nodePath;
+
+        ref_ptr<Referenced>     _userData;
 
 };
 

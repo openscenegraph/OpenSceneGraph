@@ -478,6 +478,40 @@ void IntersectVisitor::apply(Geode& geode)
     {
         osg::GeoSet* gset = dynamic_cast<osg::GeoSet*>(geode.getDrawable(i));
         if (gset) intersect(*gset);
+        else
+        {
+            IntersectState* cis = _intersectStateStack.back().get();
+
+            // simply default to intersecting with bounding box.
+            for(IntersectState::LineSegmentList::iterator sitr=cis->_segList.begin();
+                sitr!=cis->_segList.end();
+                ++sitr)
+            {
+                if (sitr->second->intersect(geode.getDrawable(i)->getBound()))
+                {
+                    Hit hit;
+                    hit._nodePath = _nodePath;
+                    hit._matrix = cis->_matrix;
+                    hit._inverse = cis->_inverse;
+                    hit._geoset = NULL;
+                    if (_nodePath.empty()) hit._geode = NULL;
+                    else hit._geode = dynamic_cast<Geode*>(_nodePath.back());
+
+                    hit._ratio = 0.0f;
+                    hit._primitiveIndex = -1;
+                    hit._originalLineSegment = sitr->first;
+                    hit._localLineSegment = sitr->second;
+
+                    hit._intersectPoint = geode.getDrawable(i)->getBound().center();
+
+                    hit._intersectNormal.set(0.0,0.0,1.0);
+
+                    _segHitList[sitr->first.get()].push_back(hit);
+                    std::sort(_segHitList[sitr->first.get()].begin(),_segHitList[sitr->first.get()].end());
+
+                }
+            }
+        }
     }
     
     leaveNode();

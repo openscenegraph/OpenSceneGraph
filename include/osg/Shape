@@ -436,7 +436,12 @@ class SG_EXPORT HeightField : public Shape
         
     	META_Shape(osg, HeightField)
 
-    	void allocateGrid(unsigned int numColumns,unsigned int numRows);
+    	typedef std::vector<float> HeightList;
+
+    	void allocate(unsigned int numColumns,unsigned int numRows);
+
+	// deprecated.
+    	void allocateGrid(unsigned int numColumns,unsigned int numRows) { allocate(numColumns,numRows); }
 
 	inline unsigned int getNumColumns() const { return _columns; }
 	inline unsigned int getNumRows() const { return _rows; }
@@ -466,6 +471,9 @@ class SG_EXPORT HeightField : public Shape
 	   return _heights[c+r*_columns];
 	}
 
+	HeightList& getHeightList() { return _heights; }
+	const HeightList& getHeightList() const { return _heights; }
+
         Vec3 getNormal(unsigned int c,unsigned int r) const;
 	
     	inline void setRotation(const Quat& quat) { _rotation = quat; }
@@ -484,15 +492,17 @@ class SG_EXPORT HeightField : public Shape
 	float	    _dy;
 	
 	Quat    _rotation;
-	
-    	typedef std::vector<float> HeightList;
 	HeightList _heights;
 };
+
+typedef HeightField Grid;
 
 
 class CompositeShape : public Shape
 {
     public:
+
+
     
     	typedef std::vector< ref_ptr<Shape> > ChildList;
     

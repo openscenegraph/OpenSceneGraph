@@ -67,6 +67,26 @@ inline osg::Image*  readImageFile(const std::string& filename)
     return readImageFile(filename,Registry::instance()->getUseObjectCacheHint());
 }
 
+/** Read an osg::HeightField from file. 
+  * Return valid osg::HeightField on success,
+  * return NULL on failure.
+  * Use the useObjectCache flag to override the osgDB::Regisytr::getUseObjectCacheHint().
+  * The osgDB::Registry is used to load the appropriate ReaderWriter plugin
+  * for the filename extension, and this plugin then handles the request
+  * to read the specified file.*/
+extern OSGDB_EXPORT osg::HeightField*  readHeightFieldFile(const std::string& filename,bool useObjectCache);
+
+/** Read an osg::HeightField from file. 
+  * Return valid osg::HeightField on success,
+  * return NULL on failure.
+  * The osgDB::Registry is used to load the appropriate ReaderWriter plugin
+  * for the filename extension, and this plugin then handles the request
+  * to read the specified file.*/
+inline osg::HeightField*  readHeightFieldFile(const std::string& filename)
+{
+    return readHeightFieldFile(filename,Registry::instance()->getUseObjectCacheHint());
+}
+
 /** Read an osg::Node from file. 
   * Return valid osg::Node on success,
   * return NULL on failure.

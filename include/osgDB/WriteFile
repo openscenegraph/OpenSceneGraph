@@ -15,6 +15,7 @@
 #define OSGDB_WRITEFILE 1
 
 #include <osg/Image>
+#include <osg/Shape>
 #include <osg/Node>
 
 #include <osgDB/Export>
@@ -39,6 +40,14 @@ extern OSGDB_EXPORT bool writeObjectFile(const osg::Object& object, const std::s
   * for the filename extension, and this plugin then handles the request
   * to write the specified file.*/
 extern OSGDB_EXPORT bool writeImageFile(const osg::Image& image, const std::string& filename);
+
+/** Write an osg::HeightField to file. 
+  * Return true on success,
+  * return false on failure.
+  * The osgDB::Registry is used to load the appropriate ReaderWriter plugin
+  * for the filename extension, and this plugin then handles the request
+  * to write the specified file.*/
+extern OSGDB_EXPORT bool writeHeightFieldFile(const osg::HeightField& hf, const std::string& filename);
 
 /** Write an osg::Node to file. 
   * Return true on success,

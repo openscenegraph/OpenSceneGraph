@@ -120,6 +120,9 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         ReaderWriter::ReadResult readImage(const std::string& fileName,bool useObjectCache);
         ReaderWriter::WriteResult writeImage(const osg::Image& obj, const std::string& fileName);
 
+        ReaderWriter::ReadResult readHeightField(const std::string& fileName,bool useObjectCache);
+        ReaderWriter::WriteResult writeHeightField(const osg::HeightField& obj, const std::string& fileName);
+
         ReaderWriter::ReadResult readNode(const std::string& fileName,bool useObjectCache);
         ReaderWriter::WriteResult writeNode(const osg::Node& node, const std::string& fileName);
         
@@ -231,6 +234,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
         ReaderWriter::ReadResult readObject(const std::string& fileName);
         ReaderWriter::ReadResult readImage(const std::string& fileName);
+        ReaderWriter::ReadResult readHeightField(const std::string& fileName);
         ReaderWriter::ReadResult readNode(const std::string& fileName);
 
         DotOsgWrapperMap   _objectWrapperMap;

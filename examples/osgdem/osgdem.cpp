@@ -349,7 +349,8 @@ osg::Node* createQuadTree(osg::HeightField* grid,
                           unsigned int rowBegin, unsigned int rowEnd,
                           float xTexCoordBegin, float xTexCoordEnd,
                           float yTexCoordBegin, float yTexCoordEnd,
-                          unsigned int targetNumPolygonsPerTile)
+                          unsigned int targetNumPolygonsPerTile,
+			  unsigned int numLevels)
 {
     unsigned int numPolys = (columnEnd-columnBegin)*(rowEnd-rowBegin)*2;
     
@@ -363,7 +364,7 @@ osg::Node* createQuadTree(osg::HeightField* grid,
                           yTexCoordBegin, yTexCoordEnd,
                           targetNumPolygonsPerTile);
     
-    if (numPolys<=targetNumPolygonsPerTile) 
+    if (numPolys<=targetNumPolygonsPerTile || numLevels==0) 
     {
         return tile;
     }
@@ -385,28 +386,32 @@ osg::Node* createQuadTree(osg::HeightField* grid,
                                   rowBegin, rowCenter,
                                   xTexCoordBegin, xTexCoordCenter,
                                   yTexCoordBegin, yTexCoordCenter,
-                                  targetNumPolygonsPerTile));
+                                  targetNumPolygonsPerTile,
+				  numLevels-1));
 
         group->addChild(createQuadTree(grid, 
                                   columnCenter, columnEnd,
                                   rowBegin, rowCenter,
                                   xTexCoordCenter, xTexCoordEnd,
                                   yTexCoordBegin, yTexCoordCenter,
-                                  targetNumPolygonsPerTile));
+                                  targetNumPolygonsPerTile,
+				  numLevels-1));
 
         group->addChild(createQuadTree(grid, 
                                   columnCenter, columnEnd,
                                   rowCenter, rowEnd,
                                   xTexCoordCenter, xTexCoordEnd,
                                   yTexCoordCenter, yTexCoordEnd,
-                                  targetNumPolygonsPerTile));
+                                  targetNumPolygonsPerTile,
+				  numLevels-1));
 
         group->addChild(createQuadTree(grid, 
                                   columnBegin, columnCenter,
                                   rowCenter, rowEnd,
                                   xTexCoordBegin, xTexCoordCenter,
                                   yTexCoordCenter, yTexCoordEnd,
-                                  targetNumPolygonsPerTile));
+                                  targetNumPolygonsPerTile,
+				  numLevels-1));
                                   
         osg::LOD* lod = new osg::LOD;
         lod->addChild(tile,cut_off_distance,max_visible_distance);
@@ -679,7 +684,7 @@ osg::Node* createTileAndRecurse(const std::string& filename, const std::string& 
     
 }
 
-bool createWorld(const std::string& inputFile, const std::string& baseName, unsigned int numLevels)
+bool createWorld(const std::string& inputFile, const std::string& baseName, const std::string& diffuseTextureName,unsigned int numLevels)
 {
 
     osgDB::ReaderWriter* readerWriter = osgDB::Registry::instance()->getReaderWriterForExtension("gdal");
@@ -710,7 +715,10 @@ bool createWorld(const std::string& inputFile, const std::string& baseName, unsi
 
     bool doBumpMapping = true;
     
-    int bumpMapSize = 512;
+    int bumpMapSizeWidth = 4097;
+    int bumpMapSizeHeight = 4097;
+//    int bumpMapSizeWidth = 512;
+//    int bumpMapSizeHeight = 512;
     
     if (doBumpMapping)
     {
@@ -727,28 +735,63 @@ bool createWorld(const std::string& inputFile, const std::string& baseName, unsi
             options->_sourceRatioWindow.set(0,0,1,1);
 
             options->_destinationImageWindowMode = osgDB::ImageOptions::PIXEL_WINDOW;
-            options->_destinationPixelWindow.set(0,0,512,512);
+            options->_destinationPixelWindow.set(0,0,bumpMapSizeWidth,bumpMapSizeHeight);
 
             osgDB::Registry::instance()->setOptions(options.get());
-            osg::Image* image = osgDB::readImageFile(inputFile.c_str());
-            if (image)
-            {
-                osg::HeightField* grid = createHeightField(image,osg::Vec3(0.0f,0.0f,0.0f),osg::Vec3(1.0,1.0,VERTICAL_SIZE));
-                normalMap = createNormalMap(grid);
-                normalMap->setFileName("normalmap.rgb");
-                osgDB::writeImageFile(*normalMap,"normalmap.rgb");
+	    
+	    bool useImage = false;
+	    if (useImage)
+	    {
+        	osg::Image* image = osgDB::readImageFile(inputFile.c_str());
+        	if (image)
+        	{
+                    osg::HeightField* grid = createHeightField(image,osg::Vec3(0.0f,0.0f,0.0f),osg::Vec3(1.0,1.0,VERTICAL_SIZE));
+                    normalMap = createNormalMap(grid);
+                    normalMap->setFileName("normalmap.rgb");
+                    osgDB::writeImageFile(*normalMap,"normalmap.rgb");
 
 
-                scene = createQuadTree(grid, 
-                              0, grid->getNumColumns()-1,
-                              0, grid->getNumRows()-1,
-                              0.0f, 1.0f,
-                              0.0f, 1.0f,
-                              2000);
+//                     scene = createQuadTree(grid, 
+//                         	  0, grid->getNumColumns()-1,
+//                         	  0, grid->getNumRows()-1,
+//                         	  0.0f, 1.0f,
+//                         	  0.0f, 1.0f,
+//                         	  2000, numLevels);
 
+
+
+        	}
             }
-            
+            else
+            {
+        	osg::HeightField* grid = osgDB::readHeightFieldFile(inputFile.c_str());
+        	if (grid)
+        	{
+                    osg::HeightField::HeightList& hlist = grid->getHeightList();
+                    for(osg::HeightField::HeightList::iterator itr=hlist.begin();
+                        itr!=hlist.end();
+                        ++itr)
+                    {
+                        (*itr) *= VERTICAL_SIZE;
+                    }
+                
+                    normalMap = createNormalMap(grid);
+                    normalMap->setFileName("normalmap.rgb");
+                    osgDB::writeImageFile(*normalMap,"normalmap.rgb");
 
+//                     osg::Geode* geode = new osg::Geode;
+//                     geode->addDrawable(new osg::ShapeDrawable(grid));
+// 
+//                     scene = geode;
+                     scene = createQuadTree(grid, 
+                        	  0, grid->getNumColumns()-1,
+                        	  0, grid->getNumRows()-1,
+                        	  0.0f, 1.0f,
+                        	  0.0f, 1.0f,
+                        	  2000, numLevels);
+
+        	}
+            }
         }
 
         // generate diffuse map
@@ -771,7 +814,10 @@ bool createWorld(const std::string& inputFile, const std::string& baseName, unsi
 // 
 //         }
         
-        diffuseMap = osgDB::readImageFile("LlanoTex.jpg");
+        //diffuseMap = osgDB::readImageFile(diffuseTextureName.c_str());
+	diffuseMap = new osg::Image;
+	diffuseMap->setFileName(diffuseTextureName.c_str());
+
         
         
         osg::Texture2D* diffuseMapTexture = new osg::Texture2D(diffuseMap);
@@ -782,6 +828,7 @@ bool createWorld(const std::string& inputFile, const std::string& baseName, unsi
         bumpMap->setLightNumber(0);
         bumpMap->setNormalMapTextureUnit(0);
         bumpMap->setDiffuseTextureUnit(1);
+        bumpMap->selectTechnique(1);
         bumpMap->setOverrideDiffuseTexture(diffuseMapTexture);
         bumpMap->setOverrideNormalMapTexture(normalMapTexture);
 
@@ -848,6 +895,9 @@ int main( int argc, char **argv )
 
     while (arguments.read("-v",VERTICAL_SIZE)) {}
 
+    std::string diffuseTextureName("lz.ive");
+    while (arguments.read("-t",diffuseTextureName)) {}
+
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
     {
@@ -876,7 +926,7 @@ int main( int argc, char **argv )
     // create a graphics context to allow us to use OpenGL to compress textures.    
     GraphicsContext gfx;
 
-    createWorld(inputFile,basename,(unsigned int)numLevels);
+    createWorld(inputFile,basename,diffuseTextureName,(unsigned int)numLevels);
 
     return 0;
 }

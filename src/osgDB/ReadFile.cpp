@@ -40,6 +40,15 @@ Image* osgDB::readImageFile(const std::string& filename,bool useObjectCache)
 }
 
 
+HeightField* osgDB::readHeightFieldFile(const std::string& filename,bool useObjectCache)
+{
+    ReaderWriter::ReadResult rr = Registry::instance()->readHeightField(filename,useObjectCache);
+    if (rr.validHeightField()) return rr.takeHeightField();
+    if (rr.error()) notify(WARN) << rr.message() << std::endl;
+    return NULL;
+}
+
+
 Node* osgDB::readNodeFile(const std::string& filename,bool useObjectCache)
 {
     ReaderWriter::ReadResult rr = Registry::instance()->readNode(filename,useObjectCache);

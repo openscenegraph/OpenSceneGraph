@@ -40,6 +40,13 @@ bool osgDB::writeImageFile(const Image& image,const std::string& filename)
 }
 
 
+bool osgDB::writeHeightFieldFile(const HeightField& HeightField,const std::string& filename)
+{
+    ReaderWriter::WriteResult wr = Registry::instance()->writeHeightField(HeightField,filename);
+    if (wr.error()) notify(WARN) << wr.message() << std::endl;
+    return wr.success();
+}
+
 bool osgDB::writeNodeFile(const Node& node,const std::string& filename)
 {
     ReaderWriter::WriteResult wr = Registry::instance()->writeNode(node,filename);

@@ -136,6 +136,7 @@ class SG_EXPORT StateAttribute : public Object
             POLYGONSTIPPLE,
             SHADEMODEL,
             TEXENV,
+            TEXENVFILTER,
             TEXGEN,
             TEXMAT,
             LIGHTMODEL,

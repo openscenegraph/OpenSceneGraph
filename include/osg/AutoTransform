@@ -42,28 +42,28 @@ class SG_EXPORT AutoTransform : public Transform
         virtual AutoTransform* asAutoTransform() { return this; }
         virtual const AutoTransform* asAutoTransform() const { return this; }
 
-        inline void setPosition(const Vec3& pos) { _position = pos; dirtyBound(); }
+        inline void setPosition(const Vec3& pos) { _position = pos; _matrixDirty=true; dirtyBound(); }
         inline const Vec3& getPosition() const { return _position; }
 
 
-        inline void setRotation(const Quat& quat) { _rotation = quat; dirtyBound(); }
+        inline void setRotation(const Quat& quat) { _rotation = quat; _matrixDirty=true; dirtyBound(); }
         inline const Quat& getRotation() const { return _rotation; }
         
-        inline void setScale(float scale) { _scale.set(scale,scale,scale); dirtyBound(); }
+        inline void setScale(float scale) { _scale.set(scale,scale,scale); _matrixDirty=true; dirtyBound(); }
         inline void setScale(const Vec3& scale) { _scale = scale; dirtyBound(); }
         inline const Vec3& getScale() const { return _scale; }
         
-        inline void setPivotPoint(const Vec3& pivot) { _pivotPoint = pivot; dirtyBound(); }
+        inline void setPivotPoint(const Vec3& pivot) { _pivotPoint = pivot; _matrixDirty=true; dirtyBound(); }
         inline const Vec3& getPivotPoint() const { return _pivotPoint; }
         
 
         void setAutoUpdateEyeMovementTolerance(float tolerance) { _autoUpdateEyeMovementTolerance = tolerance; }
         float getAutoUpdateEyeMovementTolerance() const { return _autoUpdateEyeMovementTolerance; }
 
-        void setAutoRotateToScreen(bool autoRotateToScreen) { _autoRotateToScreen = autoRotateToScreen; }
+        void setAutoRotateToScreen(bool autoRotateToScreen) { _autoRotateToScreen = autoRotateToScreen; _matrixDirty=true; }
         bool getAutoRotateToScreen() const { return _autoRotateToScreen; }
 
-        void setAutoScaleToScreen(bool autoScaleToScreen) { _autoScaleToScreen = autoScaleToScreen; }
+        void setAutoScaleToScreen(bool autoScaleToScreen) { _autoScaleToScreen = autoScaleToScreen; _matrixDirty=true; }
         bool getAutoScaleToScreen() const { return _autoScaleToScreen; }
 
 

@@ -481,7 +481,7 @@ void Image::scaleImage(int s,int t,int r, GLenum newDataType)
     {
        delete [] newData;
 
-        notify(WARN) << "Error Image::scaleImage() do not succeed : errorString = "<<gluErrorString((GLenum)status)<<std::endl;
+        notify(WARN) << "Error Image::scaleImage() did not succeed : errorString = "<<gluErrorString((GLenum)status)<<std::endl;
     }
     
     ++_modifiedTag;

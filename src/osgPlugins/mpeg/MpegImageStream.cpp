@@ -49,6 +49,9 @@ MpegImageStream::MpegImageStream(const char* fileName) : ImageStream()
     _len = 0;
     _mpg = 0;
 
+    _videoWriteData = 0;
+    _rows = 0;
+    
     for (int i = 0; i < NUM_CMD_INDEX; i++)
         _cmd[i] = THREAD_IDLE;
     _wrIndex = _rdIndex = 0;

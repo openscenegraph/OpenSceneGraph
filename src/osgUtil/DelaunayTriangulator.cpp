@@ -215,11 +215,13 @@ bool DelaunayTriangulator::triangulate()
 
     // find the minimum and maximum x values in the point list
     float minx = (*points)[0].x();
-    float maxx = minx;
+    float maxx = (*points)[last_valid_index].x();
+
 
     // find the minimum and maximum x values in the point list    
     float miny = (*points)[0].y();
     float maxy = miny;
+    
     osg::notify(osg::INFO) << "DelaunayTriangulator: finding minimum and maximum Y values\n";
     osg::Vec3Array::const_iterator mmi;
     for (mmi=points->begin(); mmi!=points->end(); ++mmi) {

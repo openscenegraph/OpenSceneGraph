@@ -11,6 +11,10 @@
 
 #include <osg/GLU>
 
+#ifndef PFNGLCOMPRESSEDTEXIMAGE2DARBPROC 
+    typedef void (APIENTRY * PFNGLCOMPRESSEDTEXIMAGE2DARBPROC) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid *data);
+#endif    
+
 using namespace osg;
 
 
@@ -339,6 +343,7 @@ void Texture::applyTexImage(GLenum target, Image* image, State& state) const
     static bool s_S3TC_Compression = isGLExtensionSupported("GL_EXT_texture_compression_s3tc");
 
     // select the internalFormat required for the texture.
+    bool compressed = false;
     GLint internalFormat = image->getInternalTextureFormat();
     switch(_internalFormatMode)
     {
@@ -349,6 +354,7 @@ void Texture::applyTexImage(GLenum target, Image* image, State& state) const
         case(USE_ARB_COMPRESSION):
             if (s_ARB_Compression)
             {
+                compressed = true;
                 switch(image->getPixelFormat())
                 {
                     case(1): internalFormat = GL_COMPRESSED_ALPHA_ARB; break;
@@ -369,6 +375,7 @@ void Texture::applyTexImage(GLenum target, Image* image, State& state) const
         case(USE_S3TC_DXT1_COMPRESSION):
             if (s_S3TC_Compression)
             {
+                compressed = true;
                 switch(image->getPixelFormat())
                 {
                     case(3):        internalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT; break;
@@ -384,6 +391,7 @@ void Texture::applyTexImage(GLenum target, Image* image, State& state) const
         case(USE_S3TC_DXT3_COMPRESSION):
             if (s_S3TC_Compression)
             {
+                compressed = true;
                 switch(image->getPixelFormat())
                 {
                     case(3):
@@ -399,6 +407,7 @@ void Texture::applyTexImage(GLenum target, Image* image, State& state) const
         case(USE_S3TC_DXT5_COMPRESSION):
             if (s_S3TC_Compression)
             {
+                compressed = true;
                 switch(image->getPixelFormat())
                 {
                     case(3):
@@ -421,33 +430,102 @@ void Texture::applyTexImage(GLenum target, Image* image, State& state) const
     // when use 16 bit textures rather than 24/32bit textures.
     // internalFormat = GL_RGBA4;
     
+    // an experiment to look at the changes in performance
+    // when use 16 bit textures rather than 24/32bit textures.
+    // internalFormat = GL_RGBA4;
+    static PFNGLCOMPRESSEDTEXIMAGE2DARBPROC glCompressedTexImage2D_ptr = 
+        (PFNGLCOMPRESSEDTEXIMAGE2DARBPROC)getGLExtensionFuncPtr("glCompressedTexImage2DARB");
 
     if (_subloadMode == OFF) {
         if( _min_filter == LINEAR || _min_filter == NEAREST )
         {
-            glTexImage2D( target, 0, internalFormat,
-                image->s(), image->t(), 0,
-                (GLenum)image->getPixelFormat(),
-                (GLenum)image->getDataType(),
-                image->data() );
+            if ( !compressed )
+            {
+                glTexImage2D( target, 0, internalFormat,
+                    image->s(), image->t(), 0,
+                    (GLenum)image->getPixelFormat(),
+                    (GLenum)image->getDataType(),
+                    image->data() );
 
-            // just estimate estimate it right now..
-            // note, ignores texture compression..
-            _textureObjectSize = image->s()*image->t()*4;
+                // just estimate estimate it right now..
+                // note, ignores texture compression..
+                _textureObjectSize = image->s()*image->t()*4;
+            }
+            else if(glCompressedTexImage2D_ptr)
+            {
+                GLint blockSize = ( internalFormat == GL_COMPRESSED_RGB_S3TC_DXT1_EXT ? 8 : 16 ); 
+                GLint size = ((image->s()+3)/4)*((image->t()+3)/4)*blockSize;
+                glCompressedTexImage2D_ptr(target, 0, internalFormat, 
+                      image->s(), image->t(),0, 
+                      size, 
+                      image->data());                
+
+                _textureObjectSize = size;
+            }
 
         }
         else
         {
-
-            gluBuild2DMipmaps( target, internalFormat,
+            if(!image->isMipmap())
+            {
+                gluBuild2DMipmaps( target, internalFormat,
                 image->s(),image->t(),
                 (GLenum)image->getPixelFormat(), (GLenum)image->getDataType(),
                 image->data() );
+                // just estimate size it right now..
+                // crude x2 multiplier to account for minmap storage.
+                // note, ignores texture compression..
+                _textureObjectSize = image->s()*image->t()*4;
+            }
+            else
+            {
+                _textureObjectSize = 0;
+                size_t no_mipmaps = image->getNumMipmaps();
+                int width  = image->s();
+                int height = image->t();
+ 
+                if( !compressed )
+                {
+                    for( size_t k = 0 ; k < no_mipmaps && (width || height) ;k++)
+                    {
+                        
+                        if (width == 0)
+                            width = 1;
+                        if (height == 0)
+                            height = 1;
 
-            // just estimate size it right now..
-            // crude x2 multiplier to account for minmap storage.
-            // note, ignores texture compression..
-            _textureObjectSize = image->s()*image->t()*4;
+                        glTexImage2D( target, k, internalFormat,
+                             width, height, 0,
+                            (GLenum)image->getPixelFormat(),
+                            (GLenum)image->getDataType(),
+                            image->getMipmapData(k));
+
+                        _textureObjectSize += width*height*4;
+                        width >>= 1;
+                        height >>= 1;
+                    }
+                }
+                else if(glCompressedTexImage2D_ptr)
+                {
+                    GLint blockSize = ( internalFormat == GL_COMPRESSED_RGB_S3TC_DXT1_EXT ? 8 : 16 ); 
+                    GLint size = 0; 
+                    for( size_t k = 0 ; k < no_mipmaps && (width || height) ;k++)
+                    {
+                        if (width == 0)
+                            width = 1;
+                        if (height == 0)
+                            height = 1;
+
+                        size = ((width+3)/4)*((height+3)/4)*blockSize;
+                        glCompressedTexImage2D_ptr(target, k, internalFormat, 
+                            width, height, 0, size, image->getMipmapData(k));                
+
+                        _textureObjectSize += size;
+                        width >>= 1;
+                        height >>= 1;
+                    }
+                }
+            }
 
         }
 

@@ -62,7 +62,7 @@ Texture* txp::GetLocalTexture(trpgrImageHelper& image_helper, trpgLocalMaterial*
     trpgTexture::ImageType type;
     tex->GetImageType(type);
     
-    Texture::InternalFormatMode internalFormatMode = Texture::USE_IMAGE_DATA_FORMAT;
+    Texture::InternalFormatMode internalFormat = Texture::USE_IMAGE_DATA_FORMAT;
     
     GLenum gltype = (GLenum)-1;
     switch(type)
@@ -87,33 +87,44 @@ Texture* txp::GetLocalTexture(trpgrImageHelper& image_helper, trpgLocalMaterial*
         break;
     case trpgTexture::trpg_DXT1:
         if(depth == 3)
+        {
             gltype = GL_RGB;
+        }
         else
+        {
             gltype = GL_RGBA;
-        internalFormatMode = Texture::USE_S3TC_DXT1_COMPRESSION;
+        }
+        internalFormat = Texture::USE_S3TC_DXT1_COMPRESSION;
         break;
     case trpgTexture::trpg_DXT3:
         if(depth == 3)
+        {
             gltype = GL_RGB;
+        }
         else
+        {
             gltype = GL_RGBA;
-        internalFormatMode = Texture::USE_S3TC_DXT3_COMPRESSION;
+        }
+        internalFormat = Texture::USE_S3TC_DXT3_COMPRESSION;
         break;
     case trpgTexture::trpg_DXT5:
         if(depth == 3)
+        {
             gltype = GL_RGB;
+        }
         else
+        {
             gltype = GL_RGBA;
-        internalFormatMode = Texture::USE_S3TC_DXT5_COMPRESSION;
+        }
+        internalFormat = Texture::USE_S3TC_DXT5_COMPRESSION;
         break;
     }
     
     if(gltype!=(GLenum)-1)
     {
         osg_texture = new Texture();
-        osg_texture->setInternalFormatMode(internalFormatMode);
+        osg_texture->setInternalFormatMode(internalFormat);
 
-        
         Image* image = new Image;
         char* data = 0L;
 
@@ -130,21 +141,38 @@ Texture* txp::GetLocalTexture(trpgrImageHelper& image_helper, trpgLocalMaterial*
             else
                 image_helper.GetLocalGL(tex,data,size);
 
+            image->setImage(s.x,s.y,1,depth,
+                    gltype,GL_UNSIGNED_BYTE,
+                    (unsigned char*)data);
         }
         else
         {
             int32 size = tex->CalcTotalSize();
             trpgTexture* tmp_tex = const_cast<trpgTexture*>(tex);
 
-            for( int j = 1 ; j <= num_mipmaps;j++ )
-                size -= tmp_tex->MipLevelSize(j);//s.x*s.y*depth; 
-            
             data = (char*)::malloc(size);
 
             if(locmat)            
                image_helper.GetImageForLocalMat(locmat,data,size);
             else
                image_helper.GetLocalGL(tex,data,size);
+
+            // Load entire texture including mipmaps
+            image->setImage(s.x,s.y,1,depth,
+                    gltype,GL_UNSIGNED_BYTE,
+                    (unsigned char*)data);
+
+            // now set mipmap data (offsets into image raw data)
+            Image::MipmapDataType mipmaps;
+            // number of offsets in osg is one less than num_mipmaps
+            // because it's assumed that first offset iz 0 
+            mipmaps.resize(num_mipmaps-1);
+            for( int k = 1 ; k < num_mipmaps;k++ )
+            {
+                mipmaps[k-1] = tmp_tex->MipLevelOffset(k);
+            }
+            image->setMipmapData(mipmaps);
+
         }
         //  AAAARRRGH! TOOK ME 2 DAYS TO FIGURE IT OUT
         //  EVERY IMAGE HAS TO HAVE UNIQUE NAME FOR OPTIMIZER NOT TO OPTIMIZE IT OFF
@@ -154,10 +182,6 @@ Texture* txp::GetLocalTexture(trpgrImageHelper& image_helper, trpgLocalMaterial*
         sprintf(unique_name,"TXP_TEX_UNIQUE%d",unique++);
 
         image->setFileName(unique_name);
-
-        image->setImage(s.x,s.y,1,depth,
-                gltype,GL_UNSIGNED_BYTE,
-                (unsigned char*)data);
 
         osg_texture->setImage(image);
     }

@@ -11,6 +11,7 @@
 #include <osg/GL>
 
 #include <string>
+#include <vector>
 
 namespace osg {
 
@@ -131,7 +132,31 @@ class SG_EXPORT Image : public Object
         static const unsigned int computePixelSizeInBits(GLenum format,GLenum type);
         static const unsigned int computeRowWidthInBytes(int width,GLenum format,GLenum type,int packing);
         
+        // precomputed mipmaps stuff;
+        typedef std::vector< std::size_t > MipmapDataType;
 
+        inline bool isMipmap() const {return !_mipmapData.empty();};
+
+        std::size_t getNumMipmaps() const
+        {
+            return _mipmapData.size()+1;
+        };
+
+        // send offsets into data 
+        // It is assumed that first mipmap offset (index 0) is 0
+        inline void setMipmapData(const MipmapDataType& mipmapDataVector)
+        {
+            _mipmapData = mipmapDataVector;
+        };
+        
+        inline unsigned char* getMipmapData(std::size_t mipmapNumber ) const
+        {
+            if(mipmapNumber == 0)
+                return _data;
+            else if(mipmapNumber < getNumMipmaps())
+               return _data + _mipmapData[mipmapNumber-1];
+            return 0L;
+        };
 
     protected :
 
@@ -148,6 +173,8 @@ class SG_EXPORT Image : public Object
         unsigned char *_data;
 
         unsigned int _modifiedTag;
+
+        MipmapDataType _mipmapData;
 };
 
 class Geode;

@@ -205,14 +205,14 @@ Geode* osg::createGeodeForImage(osg::Image* image,const float s,const float t)
             osg::GeoSet* gset = new osg::GeoSet;
             gset->setStateSet(dstate);
 
-            osg::Vec3* coords = new Vec3 [4];
+            osg::Vec3* coords = new Vec3[4];
             coords[0].set(-x,0.0f,y);
             coords[1].set(-x,0.0f,-y);
             coords[2].set(x,0.0f,-y);
             coords[3].set(x,0.0f,y);
             gset->setCoords(coords);
 
-            osg::Vec2* tcoords = new Vec2 [4];
+            osg::Vec2* tcoords = new Vec2[4];
             tcoords[0].set(0.0f,1.0f);
             tcoords[1].set(0.0f,0.0f);
             tcoords[2].set(1.0f,0.0f);
@@ -220,7 +220,7 @@ Geode* osg::createGeodeForImage(osg::Image* image,const float s,const float t)
             gset->setTextureCoords(tcoords);
             gset->setTextureBinding(osg::GeoSet::BIND_PERVERTEX);
 
-            osg::Vec4* colours = new Vec4;
+            osg::Vec4* colours = new Vec4[1];
             colours->set(1.0f,1.0f,1.0,1.0f);
             gset->setColors(colours);
             gset->setColorBinding(osg::GeoSet::BIND_OVERALL);

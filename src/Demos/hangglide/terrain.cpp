@@ -75,7 +75,7 @@ Node *makeTerrain( void )
     Vec3 *v    = new Vec3[m*n];
     Vec2 *t    = new Vec2[m*n];
     Vec4 *col  = new Vec4[1];
-    osg::ushort *cidx = new osg::ushort;
+    osg::ushort *cidx = new osg::ushort[1];
     osg::ushort *idx = new osg::ushort[m*n*2];
     int    *lens = new int[m];
 

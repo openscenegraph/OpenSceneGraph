@@ -11,15 +11,15 @@ YFLAGS    = -d
 LCINCS   += -I/usr/X11R6/include
 LC++INCS += ${LCINCS}
 CFLAGS    = -O2 -W -Wall $(LCINCS)
-#CFLAGS   = -g -W -Wall $(LCINCS)
+#CFLAGS   = -g -DOSG_USE_MEMORY_TRACKING -W -Wall $(LCINCS)
 C++FLAGS  = ${CFLAGS}
 CPPFLAGS  = ${CFLAGS}
 
 SO_EXT = so
 DL_EXT = so
 
-LDFLAGS = -O2 -W -Wall -L/usr/X11R6/lib
-#LDFLAGS = -g -W -Wall -L/usr/X11R6/lib
+#LDFLAGS = -O2 -W -Wall -L/usr/X11R6/lib
+LDFLAGS = -g -W -Wall -L/usr/X11R6/lib
 
 LINKERARGS =  -Xlinker
 DYNAMICLIBRARYLIB = -ldl

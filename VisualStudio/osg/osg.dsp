@@ -225,6 +225,10 @@ SOURCE=..\..\src\osg\Material.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\MemoryManager.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\Matrix.cpp
 # End Source File
 # Begin Source File
@@ -482,6 +486,10 @@ SOURCE=..\..\Include\Osg\Lod
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\Material
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\MemoryManager
 # End Source File
 # Begin Source File
 

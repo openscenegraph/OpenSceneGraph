@@ -36,6 +36,7 @@ C++FILES = \
 	LineWidth.cpp\
 	LOD.cpp\
 	Material.cpp\
+	MemoryManager.cpp\
 	Matrix.cpp\
 	Node.cpp\
 	NodeCallback.cpp\
@@ -111,6 +112,7 @@ TARGET_INCLUDE_FILES = \
 	osg/Math\
 	osg/Matrix\
 	osg/MemoryAdapter\
+	osg/MemoryManager\
 	osg/Node\
 	osg/NodeCallback\
 	osg/NodeVisitor\

@@ -68,19 +68,19 @@ osg::Drawable* createMirrorSurface(float xMin,float xMax,float yMin,float yMax,f
     // set up the geoset.
     osg::GeoSet* gset = new osg::GeoSet;
 
-    osg::Vec3* coords = new osg::Vec3 [4];
+    osg::Vec3* coords = new osg::Vec3[4];
     coords[0].set(xMin,yMax,z);
     coords[1].set(xMin,yMin,z);
     coords[2].set(xMax,yMin,z);
     coords[3].set(xMax,yMax,z);
     gset->setCoords(coords);
 
-    osg::Vec3* norms = new osg::Vec3 [1];
+    osg::Vec3* norms = new osg::Vec3[1];
     norms[0].set(0.0f,0.0f,1.0f);
     gset->setNormals(norms);
     gset->setNormalBinding(osg::GeoSet::BIND_OVERALL);
 
-    osg::Vec2* tcoords = new osg::Vec2 [4];
+    osg::Vec2* tcoords = new osg::Vec2[4];
     tcoords[0].set(0.0f,1.0f);
     tcoords[1].set(0.0f,0.0f);
     tcoords[2].set(1.0f,0.0f);
@@ -88,7 +88,7 @@ osg::Drawable* createMirrorSurface(float xMin,float xMax,float yMin,float yMax,f
     gset->setTextureCoords(tcoords);
     gset->setTextureBinding(osg::GeoSet::BIND_PERVERTEX);
     
-    osg::Vec4* colours = new osg::Vec4;
+    osg::Vec4* colours = new osg::Vec4[1];
     colours->set(1.0f,1.0f,1.0,1.0f);
     gset->setColors(colours);
     gset->setColorBinding(osg::GeoSet::BIND_OVERALL);

@@ -164,9 +164,9 @@ ifeq ($(OS),MacOSX)
 endif
 
 #### Cygwin/Mingw specific definitions
-ifeq ($(OS),Cygwin)
-  C++               = g++
-  DEPARG            = -MM
+ifeq ($(OS),CYGWIN_NT-5.0)
+  C++               = c++
+  DEPARG            = -M
   INC               += 
   DEF               += -DWIN32 -W -Wall
   OPTF              = -O2 
@@ -177,12 +177,12 @@ ifeq ($(OS),Cygwin)
 		      -Wl,--out-implib,$(TOPDIR)/lib/lib$$TARGET_BASENAME.a \
 
   ARCHARGS          = 
-  LINKARGS          = -L/usr/X11R6/lib -W -Wall
-  DYNAMICLIBRARYLIB = -ldl
+  LINKARGS          = -W -Wall
+  DYNAMICLIBRARYLIB =
 
   OSG_LIBS          = -losgGLUT -losgDB -losgUtil -losg 
-  GLUT_LIB          = -lglut32
   GL_LIBS           = -lglu32 -lopengl32
+  GLUT_LIB          = -lglut32 $(GL_LIBS)
   X_LIBS            = -lgdi32 -luser32
   OSGDB_LIBS        = -losgdb_3ds \
   		      -losgdb_bmp \
@@ -201,7 +201,7 @@ ifeq ($(OS),Cygwin)
 		      -losgdb_tiff \
 		      -losgdb_zip
   SOCKET_LIBS       = 
-  OTHER_LIBS        = 
+  OTHER_LIBS        = $(GL_LIBS)
   SO_EXT            = dll
   PLUGIN_EXT        = dll
 endif

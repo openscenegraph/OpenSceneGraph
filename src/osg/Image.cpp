@@ -309,13 +309,31 @@ void Image::scaleImage(const int s,const int t,const int r)
 
 void Image::ensureDimensionsArePowerOfTwo()
 {
-    float sp2 = logf((float)_s)/logf(2.0f);
-    float rounded_sp2 = floorf(sp2+0.5f);
-    int new_s = (int)(powf(2.0f,rounded_sp2));
+    int new_s = _s;
+    int new_t = _t;
+    
+    // check if _s is a power of 2 already.
+    if ((_s & (_s-1))!=0)
+    {
+        // it isn't so lets find the closest power of two.
+        // yes, logf and powf are slow, but this code should
+        // only be called during scene graph initilization,
+        // if at all, so not critical in the greater scheme.
+        float p2 = logf((float)_s)/logf(2.0f);
+        float rounded_p2 = floorf(p2+0.5f);
+        new_s = (int)(powf(2.0f,rounded_p2));
+    }
 
-    float tp2 = logf((float)_t)/logf(2.0f);
-    float rounded_tp2 = floorf(tp2+0.5f);
-    int new_t = (int)(powf(2.0f,rounded_tp2));
+    if ((_t & (_t-1))!=0)
+    {
+        // it isn't so lets find the closest power of two.
+        // yes, logf and powf are slow, but this code should
+        // only be called during scene graph initilization,
+        // if at all, so not critical in the greater scheme.
+        float p2 = logf((float)_t)/logf(2.0f);
+        float rounded_p2 = floorf(p2+0.5f);
+        new_t = (int)(powf(2.0f,rounded_p2));
+    }
     
     static GLint max_size=256;
 

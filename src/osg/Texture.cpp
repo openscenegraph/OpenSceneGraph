@@ -416,6 +416,11 @@ void Texture::applyTexImage(GLenum target, Image* image, State& state) const
             break;
 
     }
+    
+    // an experiment to look at the changes in performance
+    // when use 16 bit textures rather than 24/32bit textures.
+    // internalFormat = GL_RGBA4;
+    
 
     if (_subloadMode == OFF) {
         if( _min_filter == LINEAR || _min_filter == NEAREST )

@@ -27,12 +27,9 @@ class ImageReaderWriter : public osgDB::ReaderWriter
         
         virtual const char* className() { return "ImageReader"; }
 
-        void setPhotoArchive(PhotoArchive* archive) { _photoArchive = archive; }
-        PhotoArchive* getPhotoArchive() { return _photoArchive.get(); }
-        const PhotoArchive* getPhotoArchive() const { return _photoArchive.get(); }
+        void addPhotoArchive(PhotoArchive* archive) { _photoArchiveList.push_back(archive); }
 
         std::string insertReference(const std::string& fileName, unsigned int res, float width, float height, bool backPage);
-
 
         virtual ReadResult readNode(const std::string& fileName, const Options*);
         
@@ -60,10 +57,11 @@ class ImageReaderWriter : public osgDB::ReaderWriter
         
         osg::Image* readImage_DynamicSampling(DataReference& dr, float& s,float& t);
 
-        typedef std::map<std::string,DataReference> DataReferenceMap;
+        typedef std::map< std::string,DataReference > DataReferenceMap;
+        typedef std::vector< osg::ref_ptr<PhotoArchive> > PhotoArchiveList;
 
         DataReferenceMap            _dataReferences;
-        osg::ref_ptr<PhotoArchive>  _photoArchive;
+        PhotoArchiveList            _photoArchiveList;
 
 
 };

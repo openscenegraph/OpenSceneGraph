@@ -18,6 +18,8 @@
 
 #include <osgUtil/Optimizer>
 
+#include <osgDB/FileNameUtils>
+
 #include <osgText/Text>
 
 #include <osgProducer/Viewer>
@@ -447,7 +449,24 @@ Album::Album(osg::ArgumentParser& arguments, float width, float height)
 
     for(int pos=1;pos<arguments.argc();++pos)
     {
-        if (arguments.isString(pos)) fileList.push_back(arguments[pos]);
+        if (arguments.isString(pos)) 
+        {
+            std::string filename(arguments[pos]);
+            if (osgDB::getLowerCaseFileExtension(filename)=="album")
+            {
+                PhotoArchive* photoArchive = PhotoArchive::open(filename);
+                if (photoArchive)
+                {
+                    g_ImageReaderWriter.get()->addPhotoArchive(photoArchive);
+                    photoArchive->getImageFileNameList(fileList);
+                }
+                
+            }
+            else
+            {
+                fileList.push_back(arguments[pos]);
+            }
+        }
     }
     
     _radiusOfRings = 0.02;
@@ -652,6 +671,7 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("-d <float>","Time delay in sceonds between the display of successive image pairs when in auto advance mode.");
     arguments.getApplicationUsage()->addCommandLineOption("-a","Enter auto advance of image pairs on start up.");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
+    arguments.getApplicationUsage()->addCommandLineOption("--create <filename>","Create an photo archive of specified files");
     
 
     // construct the viewer.
@@ -683,6 +703,9 @@ int main( int argc, char **argv )
         return 1;
     }
 
+    std::string archiveName;
+    while (arguments.read("--create",archiveName)) {}
+    
     // any option left unread are converted into errors to write out later.
     arguments.reportRemainingOptionsAsUnrecognized();
 
@@ -699,6 +722,20 @@ int main( int argc, char **argv )
         return 1;
     }
 
+
+    if (!archiveName.empty())
+    {
+        // archive name set to create
+        PhotoArchive::FileNameList fileNameList;
+        for(int i=1;i<arguments.argc();++i)
+        {
+            if (arguments.isString(i)) fileNameList.push_back(std::string(arguments[i]));
+        }
+        
+        PhotoArchive::buildArchive(archiveName,fileNameList);
+        
+        return 0;
+    }
 
 
     // now the windows have been realized we switch off the cursor to prevent it

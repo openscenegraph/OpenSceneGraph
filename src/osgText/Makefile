@@ -28,7 +28,7 @@ C++FILES = \
 TARGET_BASENAME = osgText
 
 
-LIBS    = -L../../lib -lfreetype -losgDB -losgUtil -losg -lGLU -lGL -lm
+LIBS    = -L../../lib -lfreetype -losgDB -losg -lGLU -lGL -lm
 
 LIB	= ../../lib/lib$(TARGET_BASENAME).so
 #LIB	= ../../lib/lib$(TARGET_BASENAME).a

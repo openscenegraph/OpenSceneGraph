@@ -1,19 +1,13 @@
-#!gmake
-include $(OSGHOME)/Make/makedefs
+TOPDIR = ../../..
+include $(TOPDIR)/Make/makedefs 
 
-C++FILES = \
+CXXFILES =\
         ReaderWriterJPEG.cpp\
 
+INC += -I/usr/local/include/
 
-TARGET_BASENAME = osgdb_jpeg
+LIBS  += $(OSG_LIBS) $(OTHER_LIBS)
 
-LIB = $(OSGHOME)/lib/osgPlugins/$(TARGET_BASENAME).$(SO_EXT)
+PLUGIN = osgdb_jpeg.$(PLUGIN_EXT)
 
-TARGET_LOADER_FILES = osgPlugins/$(TARGET_BASENAME).$(SO_EXT)
-
-LIBS    =  $(GL_LIBS) -losg -losgDB -ljpeg
-
-C++FLAGS += -I. -I$(OSGHOME)/include 
-LDFLAGS += -L$(OSGHOME)/lib
-
-include $(OSGHOME)/Make/makerules
+include $(TOPDIR)/Make/makerules 

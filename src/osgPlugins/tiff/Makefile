@@ -1,22 +1,14 @@
-#!gmake
-include ../../../Make/makedefs
+TOPDIR = ../../..
+include $(TOPDIR)/Make/makedefs 
 
-C++FILES = \
-        ReaderWriterTIFF.cpp\
+CXXFILES =\
+	ReaderWriterTIFF.cpp\
 
+LIBS  += $(TIFF_LIB) $(OSG_LIBS) $(OTHER_LIBS)
 
-TARGET_BASENAME = osgdb_tiff
+INC     += -I/usr/local/include
+LDFLAGS += -L/usr/local/lib
 
-LIB=
-LOADABLE = $(OSGHOME)/lib/osgPlugins/$(TARGET_BASENAME).$(DL_EXT)
+PLUGIN = osgdb_tiff.$(PLUGIN_EXT)
 
-TARGET_LOADER_FILES = osgPlugins/$(TARGET_BASENAME).$(DL_EXT)
-
-LIBS = $(GL_LIBS) -losg -losgDB -ltiff 
-MACOSXLIBS = -L$(OSGHOME)/lib -losg -losgDB -ltiff -lstdc++
-
-C++FLAGS += -I. -I$(OSGHOME)/include 
-LDFLAGS += -L$(OSGHOME)/lib
-
-include $(OSGHOME)/Make/makerules
-
+include $(TOPDIR)/Make/makerules 

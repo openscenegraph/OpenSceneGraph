@@ -1,25 +1,13 @@
-#!gmake
-include ../../../Make/makedefs
+TOPDIR = ../../..
+include $(TOPDIR)/Make/makedefs 
 
-C++FILES = \
-        ReaderWriterQT.cpp\
+CXXFILES =\
+	ReaderWriterQT.cpp\
+	QTtexture.cpp\
 
-CFILES = \
-	QTtexture.c\
+LIBS  += $(QUICKTIME) $(OSG_LIBS) $(OTHER_LIBS)
 
-TARGET_BASENAME = osgdb_qt
+PLUGIN = osgdb_qt.$(PLUGIN_EXT)
 
-LOADABLE = $(OSGHOME)/lib/osgPlugins/$(TARGET_BASENAME).$(DL_EXT)
-LIB=
-
-TARGET_LOADER_FILES = osgPlugins/$(TARGET_BASENAME).$(DL_EXT)
-
-LIBS    =  $(GL_LIBS) -losg -losgDB
-MACOSXLIBS = -framework QuickTime -L../../../lib -losg -losgUtil -losgDB -ldl -lm -lstdc++
-
-
-C++FLAGS += -I. -I$(OSGHOME)/include 
-LDFLAGS += -L$(OSGHOME)/lib
-
-include $(OSGHOME)/Make/makerules
+include $(TOPDIR)/Make/makerules 
 

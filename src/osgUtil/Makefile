@@ -1,7 +1,8 @@
-#!gmake
-include $(OSGHOME)/Make/makedefs
+TOPDIR = ../..
+include $(TOPDIR)/Make/makedefs 
 
-C++FILES = \
+
+CXXFILES = \
 	AppVisitor.cpp\
 	CameraManipulator.cpp\
 	CullVisitor.cpp\
@@ -32,55 +33,10 @@ C++FILES = \
 	TriStripVisitor.cpp\
 	Version.cpp\
 
+DEF     += -DOSGUTIL_LIBRARY
 
-TARGET_BASENAME = osgUtil
+LIBS  += -losg $(GL_LIBS) $(OTHER_LIBS)
 
+LIB = libosgUtil.$(SO_EXT)
 
-LIBS    = -L$(OSGHOME)/lib -losg $(GL_LIBS)
-MACOSXLIBS = -L$(OSGHOME)/lib -losg -ldl -lm -lstdc++
-
-LIB	= $(OSGHOME)/lib/lib$(TARGET_BASENAME).$(SO_EXT)
-#LIB	= $(OSGHOME)/lib/lib$(TARGET_BASENAME).a
-
-TARGET_LIB_FILES = lib$(TARGET_BASENAME).$(SO_EXT)
-TARGET_INCLUDE_FILES = \
-	osgUtil/AppVisitor\
-	osgUtil/CameraManipulator\
-	osgUtil/CullVisitor\
-	osgUtil/NewCullVisitor\
-	osgUtil/CullViewState\
-	osgUtil/DepthSortedBin\
-	osgUtil/DisplayListVisitor\
-	osgUtil/DisplayRequirementsVisitor\
-	osgUtil/DriveManipulator\
-	osgUtil/Export\
-	osgUtil/FlightManipulator\
-	osgUtil/GUIActionAdapter\
-	osgUtil/GUIEventAdapter\
-	osgUtil/GUIEventHandler\
-	osgUtil/IntersectVisitor\
-	osgUtil/InsertImpostorsVisitor\
-	osgUtil/Optimizer\
-	osgUtil/RenderBin\
-	osgUtil/RenderGraph\
-	osgUtil/RenderLeaf\
-	osgUtil/RenderStage\
-	osgUtil/RenderStageLighting\
-	osgUtil/RenderToTextureStage\
-	osgUtil/SceneView\
-	osgUtil/SceneViewManipulator\
-	osgUtil/SmoothingVisitor\
-	osgUtil/StateSetManipulator\
-	osgUtil/Tesselator\
-	osgUtil/TrackballManipulator\
-	osgUtil/TransformCallback\
-	osgUtil/TriStripVisitor\
-	osgUtil/Version\
-
-
-C++FLAGS += -I $(OSGHOME)/include -DOSGUTIL_LIBRARY
-
-#LDFLAGS += --out-implib $(OSGHOME)/lib/lib$(TARGET_BASENAME).a
-
-include $(OSGHOME)/Make/makerules
-
+include $(TOPDIR)/Make/makerules 

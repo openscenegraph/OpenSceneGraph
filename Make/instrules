@@ -1,205 +1,126 @@
+install  : instbin instdev
+
+instbin :
+	@$(MAKE) INSTSRC=$(TOPDIR)/bin INSTDEST=$(INST_DEMOS) \
+		INSTALL?="$(INSTBIN)" __install
+	@$(MAKE) INSTSRC=$(TOPDIR)/lib INSTDEST=$(INST_LIBS) \
+		INSTALL?="$(INSTBIN)" __install
+	@$(MAKE) INSTSRC=$(TOPDIR)/lib/osgPlugins INSTDEST=$(INST_PLUGINS)\
+		INSTALL?="$(INSTBIN)" __install
 
 
-__install : $(TARGET) $(LIB)
-	@ [ -n "$(OSGHOME)" ] || echo Please define OSGHOME
-	@ [ -n "$(OSGHOME)" ] && echo > /dev/null;
-	@ [ `whoami` = "root" ] || echo YOU MUST BE ROOT to do this.
-	@ echo "`whoami`" | grep -q root 
-	@ for dir in $(TARGET_DIRS);\
+instdev :
+	@for d in `ls -1  $(TOPDIR)/include/ | grep -v CVS`; \
+	do\
+	  if [ -d $(TOPDIR)/include/$$d ]; \
+	  then \
+	    $(MAKE) INSTSRC=$(TOPDIR)/include/$$d INSTDEST=$(INST_INCLUDE)/$$d\
+		   INSTALL?="$(INSTDEV)" __install;\
+	  fi\
+	done
+	@for d in `ls -1  $(TOPDIR)/src/Demos | grep -v CVS`; \
+	do\
+	  if [ -d $(TOPDIR)/src/Demos/$$d ]; \
+	  then \
+	    $(MAKE) INSTSRC=$(TOPDIR)/src/Demos/$$d INSTDEST=$(INST_DEMO_SRC)/$$d\
+		   INSTALL?="$(INSTDEV)" __install;\
+	  fi\
+	done
+
+instlinks : instlinksbin instlinksdev
+
+instlinksbin :
+	$(MAKE) INSTALL="$(INSTLINKBIN)" instbin
+
+instlinksdev :
+	$(MAKE) INSTALL="$(INSTLINKDEV)" instdev
+
+instclean : instcleanbin instcleandev
+
+instcleanbin :
+	@$(MAKE) INSTSRC=$(TOPDIR)/bin INSTDEST=$(INST_DEMOS) \
+		INSTALL?="$(INSTBIN)" __instclean
+	@$(MAKE) INSTSRC=$(TOPDIR)/lib INSTDEST=$(INST_LIBS) \
+		INSTALL?="$(INSTBIN)" __instclean
+	@$(MAKE) INSTSRC=$(TOPDIR)/lib/osgPlugins INSTDEST=$(INST_PLUGINS)\
+		INSTALL?="$(INSTBIN)" __instclean
+
+instcleandev :
+	@for d in `ls -1  $(TOPDIR)/include/ | grep -v CVS`; \
+	do\
+	  if [ -d $(TOPDIR)/include/$$d ]; \
+	  then \
+	    $(MAKE) INSTSRC=$(TOPDIR)/include/$$d INSTDEST=$(INST_INCLUDE)/$$d\
+		   INSTALL?="$(INSTDEV)" __instclean;\
+	  fi\
+	done
+	@for d in `ls -1  $(TOPDIR)/src/Demos | grep -v CVS`; \
+	do\
+	  if [ -d $(TOPDIR)/src/Demos/$$d ]; \
+	  then \
+	    $(MAKE) INSTSRC=$(TOPDIR)/src/Demos/$$d INSTDEST=$(INST_DEMO_SRC)/$$d\
+		   INSTALL?="$(INSTDEV)" __instclean;\
+	  fi\
+	done
+
+
+__install :
+	@[ -n "$(INSTSRC)" ] || echo "Internal error (INSTSRC definition)"
+	@[ -n "$(INSTSRC)" ] && echo > /dev/null
+	@[ -n "$(INSTDEST)" ] || echo "Internal error (INSTDEST definition)"
+	@[ -n "$(INSTDEST)" ] && echo > /dev/null
+	@[ -d $(INSTDEST) ] || mkdir -p $(INSTDEST)
+	@echo INSTSRC is $(INSTSRC)
+	@cd $(INSTSRC);\
+	THISDIR=`pwd`;\
+	if [ -n "`ls -1 | grep -v CVS`" ]; then\
+	  for f in `ls -1 | grep -v CVS`; \
 	  do\
-	      [ -d $$dir ] || (echo Creating directory $$dir ... ;  mkdir -m 755 $$dir)\
-	  done
-	@ if [ -n "$(TARGET_LIB_FILES)" ] ;\
-	  then\
-	      for f in $(TARGET_LIB_FILES);\
-	      do\
-	          (echo copying $(OSGHOME)/lib/$$f to  $(TARGET_LIB)/$$f; \
-	          cp -f $(OSGHOME)/lib/$$f $(TARGET_LIB)/$$f;)\
-	      done\
-	  else\
-	      echo No libraries installed...;\
-	  fi
-	@ if [ -n "$(TARGET_BIN_FILES)" ] ;\
-	  then\
-	      for f in $(TARGET_BIN_FILES);\
-	      do\
-	          (echo copying $(OSGHOME)/bin/$$f to  $(TARGET_BIN)/$$f; \
-	          cp -f $(OSGHOME)/bin/$$f $(TARGET_BIN)/$$f) ;\
-	      done \
-	  else\
-	      echo No executable binaries installed...;\
-	  fi
-	@ if [ -n "$(TARGET_INCLUDE_FILES)" ] ;\
-	  then\
-	      for f in $(TARGET_INCLUDE_FILES);\
-	      do\
-	          if [ "`dirname $(TARGET_INCLUDE)/$$f`" != "$(TARGET_INCLUDE)" ];\
-		  then\
-	              (echo copying $(OSGHOME)/include/$$f to  $(TARGET_INCLUDE)/$$f; \
-	              cp -f $(OSGHOME)/include/$$f $(TARGET_INCLUDE)/$$f;) \
-		   else\
-		          echo %%%%%%%%%  PLEASE DO NOT PUT INCLUDE FILES DIRECTLY INTO $(TARGET_INCLUDE);\
-			  echo Did not copy $(OSGHOME)/include/$$f to $(TARGET_INCLUDE)/$$f;\
-		   fi\
-	      done\
-	  else\
-		echo No header files installed ...;\
+	    if [ -f $$f ] ; \
+	    then \
+	        echo $(INSTALL) $$THISDIR/$$f $(INSTDEST);\
+	        $(INSTALL) $$THISDIR/$$f $(INSTDEST);\
+	    fi\
+	  done\
 	fi
-	@ if [ -n "$(TARGET_LOADER_FILES)" ] ;\
-	  then\
-	      for f in $(TARGET_LOADER_FILES);\
-	      do\
-	          if [ "`dirname $(TARGET_LIB)/$$f`" != "$(TARGET_LIB)" ];\
-		  then\
-	              (echo copying $(OSGHOME)/lib/$$f to  $(TARGET_LIB)/$$f; \
-	              cp -f $(OSGHOME)/lib/$$f $(TARGET_LIB)/$$f;) \
-		   else\
-		          echo %%%%%%%%%  PLEASE DO NOT PUT LOADER FILES DIRECTLY INTO $(TARGET_LIB);\
-			  echo Did not copy $(OSGHOME)/include/$$f to $(TARGET_INCLUDE)/$$f;\
-		   fi\
-	      done\
-	  else\
-		echo No loaders installed ...;\
-	fi
-# deprecate OSGDATA
-#	@if [ -n "$(TARGET_DATA_FILES)" ] ;\
-#	  then\
-#	      if [ -n "$(OSGDATA)" ] ;\
-#	      then\
-#	          for f in $(TARGET_DATA_FILES);\
-#	          do\
-#	              (echo copying $(OSGDATA)/$$f to  $(TARGET_DATA)/$$f; \
-#	              cp -f $(OSGDATA)/$$f $(TARGET_DATA)/$$f; )\
-#	          done\
-#	      else\
-#		  echo;\
-#	          echo "-------------- > Please define OSGDATA";\
-#		  echo; \
-#		  [ -n "$(OSGDATA)" ] && echo > /dev/null;\
-#	      fi\
-#	  fi
-
-
-__instlinks : $(TARGET) $(LIB) 
-	@ [ -n "$(OSGHOME)" ] || echo Please define OSGHOME
-	@ [ -n "$(OSGHOME)" ] && echo > /dev/null;
-	@ [ `whoami` = "root" ] || echo YOU MUST BE ROOT to do this.
-	@ echo "`whoami`" | grep -q root 
-	@ for dir in $(TARGET_DIRS);\
-	  do\
-	      [ -d $$dir ] || (echo Creating directory $$dir ... ;  mkdir -m 755 $$dir)\
-	  done
-	@ if [ -n "$(TARGET_LIB_FILES)" ] ;\
-	  then\
-	      for f in $(TARGET_LIB_FILES);\
-	      do\
-	          (echo Linking $(OSGHOME)/lib/$$f to  $(TARGET_LIB)/$$f; \
-	          ln -sf $(OSGHOME)/lib/$$f $(TARGET_LIB)/$$f;)\
-	      done\
-	  else\
-	      echo No libraries linked...;\
-	  fi
-	@ if [ -n "$(TARGET_BIN_FILES)" ] ;\
-	  then\
-	      for f in $(TARGET_BIN_FILES);\
-	      do\
-	          (echo Linking $(OSGHOME)/bin/$$f to  $(TARGET_BIN)/$$f; \
-	          ln -sf $(OSGHOME)/bin/$$f $(TARGET_BIN)/$$f) ;\
-	      done \
-	  else\
-	      echo No executable binaries linked...;\
-	  fi
-	@ if [ -n "$(TARGET_INCLUDE_FILES)" ] ;\
-	  then\
-	      for f in $(TARGET_INCLUDE_FILES);\
-	      do\
-	          if [ "`dirname $(TARGET_INCLUDE)/$$f`" != "$(TARGET_INCLUDE)" ];\
-		  then\
-	              (echo Linking $(OSGHOME)/include/$$f to  $(TARGET_INCLUDE)/$$f; \
-	              ln -sf $(OSGHOME)/include/$$f $(TARGET_INCLUDE)/$$f;) \
-		   else\
-		          echo %%%%%%%%%  PLEASE DO NOT PUT INCLUDE FILES DIRECTLY INTO /usr/include;\
-			  echo Did not copy $(OSGHOME)/include/$$f to $(TARGET_INCLUDE)/$$f;\
-		   fi\
-	      done\
-	  else\
-		echo No header files linked ...;\
-	fi
-	@ if [ -n "$(TARGET_LOADER_FILES)" ] ;\
-	  then\
-	      for f in $(TARGET_LOADER_FILES);\
-	      do\
-	          if [ "`dirname $(TARGET_LIB)/$$f`" != "$(TARGET_LIB)" ];\
-		  then\
-	              (echo Linking $(OSGHOME)/lib/$$f to  $(TARGET_LIB)/$$f; \
-	              ln -sf $(OSGHOME)/lib/$$f $(TARGET_LIB)/$$f;) \
-		   else\
-		          echo %%%%%%%%%  PLEASE DO NOT PUT LOADER FILES DIRECTLY INTO $(TARGET_LIB);\
-			  echo Did not copy $(OSGHOME)/include/$$f to $(TARGET_INCLUDE)/$$f;\
-		   fi\
-	      done\
-	  else\
-		echo No loaders installed ...;\
-	fi
-	@if [ -n "$(TARGET_DATA_FILES)" ] ;\
-	  then\
-	      if [ -n "$(OSGDATA)" ] ;\
-	      then\
-	          for f in $(TARGET_DATA_FILES);\
-	          do\
-	              (echo Linking $(OSGDATA)/$$f to  $(TARGET_DATA)/$$f; \
-	              ln -sf $(OSGDATA)/$$f $(TARGET_DATA)/$$f; )\
-	          done\
-	      else\
-		  echo ;\
-	          echo "-------------- > Please define OSGDATA ";\
-		  echo ;\
-		  [ -n "$(OSGDATA)" ] && echo > /dev/null;\
-	      fi\
-	  fi
 
 
 __instclean :
-	@ [ `whoami` = "root" ] || echo YOU MUST BE ROOT to do this.
-	@ echo "`whoami`" | grep -q root 
-	@ for dir in $(TARGET_DIRS);\
-	  do\
-	      [ -d $$dir ] && echo Removing $$dir; \
-	      [ -d $$dir ] && rm -rf $$dir || echo > /dev/null; \
-	  done
-	@ if [ -n "$(TARGET_LIB_FILES)" ] ;\
+	@[ -n "$(INSTSRC)" ] || echo "Internal error (INSTSRC definition)"
+	@[ -n "$(INSTSRC)" ] && echo > /dev/null
+	@[ -n "$(INSTDEST)" ] || echo "Internal error (INSTDEST definition)"
+	@[ -n "$(INSTDEST)" ] && echo > /dev/null
+	@if [ -d $(INSTDEST) ] ; \
+	then\
+	  cd $(INSTSRC);\
+	  if [ -n "`ls -1 | grep -v CVS`" ]; then\
+	    for f in `ls -1 | grep -v CVS`; \
+	    do\
+	      if [ -f $$f ] ; \
+	      then \
+	          echo "rm -f $(INSTDEST)/$$f";\
+	          rm -f $(INSTDEST)/$$f;\
+	      fi\
+	    done\
+	  fi;\
+	  empty=`ls $(INSTDEST)`;\
+	  if [ -z "$$empty" ];\
 	  then\
-	      for f in $(TARGET_LIB_FILES);\
-	      do\
-	      	  ([ -L $(TARGET_LIB)/$$f ] || [ -e $(TARGET_LIB)/$$f ]) &&  \
-		  (echo removing $(TARGET_LIB)/$$f; \
-	          rm -f $(TARGET_LIB)/$$f;) || echo >/dev/null;\
-	      done\
-	  fi
-	@ if [ -n "$(TARGET_BIN_FILES)" ] ;\
-	  then\
-	      for f in $(TARGET_BIN_FILES);\
-	      do\
-	      	  ([ -L $(TARGET_BIN)/$$f ] || [ -e $(TARGET_BIN)/$$f ]) &&  \
-	          (echo removing $(TARGET_BIN)/$$f; \
-	          rm -f $(TARGET_BIN)/$$f;) || echo > /dev/null;\
-	      done\
-	  fi
-	@ if [ -n "$(TARGET_INCLUDE_FILES)" ] ;\
-	  then\
-	      for f in $(TARGET_INCLUDE_FILES);\
-	      do\
-	      	  ([ -L $(TARGET_BIN)/$$f ] || [ -e $(TARGET_BIN)/$$f ]) &&  \
-	          (echo removing $(TARGET_INCLUDE)/$$f; \
-	          rm -f $(TARGET_INCLUDE)/$$f;) || echo > /dev/null;\
-	      done\
-	  fi
-	@ if [ -n "$(TARGET_DATA_FILES)" ] ;\
-	  then\
-	      for f in $(TARGET_DATA_FILES);\
-	      do\
-	      	  ([ -L $(TARGET_DATA)/$$f ] || [ -e $(TARGET_DATA)/$$f ]) &&  \
-	          (echo removing $(TARGET_DATA)/$$f; \
-	      	  rm -f $(TARGET_DATA)/$$f;) || echo > /dev/null;\
-	      done\
-	  fi
+	    repeat=1;\
+	    while [ $$repeat = 1 ] ; \
+	    do \
+	      printf "$(INSTDEST) is empty.  Remove? (y/n) [y]: ";\
+	      read resp;\
+  	      case $$resp in  \
+	        ""|Yes|YES|yes|Y|y) rm -rf $(INSTDEST); repeat=0;; \
+	        n|N|no|NO)                              repeat=0;; \
+                *)                                      repeat=1;; \
+	      esac\
+            done\
+	  fi\
+	fi
+
+
+
+
+

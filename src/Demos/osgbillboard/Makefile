@@ -1,27 +1,12 @@
-#!gmake
-include $(OSGHOME)/Make/makedefs
+TOPDIR = ../../..
+include $(TOPDIR)/Make/makedefs 
 
-C++FILES = \
+CXXFILES =\
 	osgbillboard.cpp
 
-TARGET = $(OSGHOME)/bin/osgbillboard
-
-TARGET_BIN_FILES = osgbillboard
-
-#note, use this library list when using the Performer osgPlugin.
-#LIBS = ${PFLIBS} -losgGLUT -losgUtil -losgDB -losg $(GLUTLIB) -lGLU -lGL  -lm -lXmu  -lX11 -lXi
-
-#note, standard library list. 
-LIBS = -losgGLUT -losgUtil -losgDB -losg $(GLUTLIB) $(GL_LIBS) $(X_LIBS)
-
-#under Darwin we have to use the framework stuff to get GLUT OpenGL etc.
-MACOSXLIBS = -losgGLUT -losgUtil -losgDB -losg -lm -ldl -lstdc++ -lobjc
+LIBS     += $(OSG_LIBS) $(GLUT_LIB) $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
 
 
-C++FLAGS += -I$(OSGHOME)/include
-LDFLAGS += -L$(OSGHOME)/lib
+EXEC = osgbillboard
 
-include $(OSGHOME)/Make/makerules
-
-test :
-	osgbillboard Images/tree0.rgba Images/reflect.rgb
+include $(TOPDIR)/Make/makerules 

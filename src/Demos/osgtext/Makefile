@@ -1,25 +1,11 @@
-#!gmake
-include $(OSGHOME)/Make/makedefs
+TOPDIR = ../../..
+include $(TOPDIR)/Make/makedefs 
 
-C++FILES = \
-	main.cpp
+CXXFILES =\
+	main.cpp\
 
-TARGET = $(OSGHOME)/bin/osgtext
+LIBS     += $(OSG_LIBS) $(FREETYPE_LIB) $(GLUT_LIB) $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS)  
 
-TARGET_BIN_FILES = osgtext
+EXEC = osgtext
 
-#note, use this library list when using the Performer osgPlugin.
-#LIBS = ${PFLIBS} -losgGLUT -losgUtil -losgDB -losg $(GLUTLIB) -lGLU -lGL  -lm -lXmu  -lX11 -lXi
-
-#note, standard library list. 
-LIBS = -losgGLUT -losgText -losgUtil -losgDB -losg $(GLUTLIB) $(GL_LIBS) $(X_LIBS)
-MACOSXLIBS = -losgGLUT -losgText -losgUtil -losgDB -losg -lfreetype -ldl -lobjc -lstdc++
-
-C++FLAGS += -I$(OSGHOME)/include -I. 
-LDFLAGS += -L$(OSGHOME)/lib -L/usr/freeware/lib32
-
-
-include $(OSGHOME)/Make/makerules
-
-test :
-	osgtext 
+include $(TOPDIR)/Make/makerules 

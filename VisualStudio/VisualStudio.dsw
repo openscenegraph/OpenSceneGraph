@@ -564,7 +564,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "osgbillboard"=".\Demos\osgbilloard\osgbillboard.dsp" - Package Owner=<4>
+Project: "osgbillboard"=".\Demos\osgbillboard\osgbillboard.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{

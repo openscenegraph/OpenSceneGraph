@@ -69,9 +69,14 @@ class ref_ptr
             return (_ptr<rp._ptr);
         }
 
-        inline const bool operator < (const T* ptr) const
+        inline const bool operator > (const ref_ptr& rp) const
         {
-            return (_ptr<ptr);
+            return (_ptr>rp._ptr);
+        }
+
+        inline const bool operator > (const T* ptr) const
+        {
+            return (_ptr>ptr);
         }
 
         inline T& operator*()  { return *_ptr; }

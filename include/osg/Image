@@ -86,7 +86,7 @@ class SG_EXPORT Image : public Object
 
         virtual ~Image();
 
-        Image& operator = (const Image& image) {}
+        Image& operator = (const Image&) { return *this; }
 
         std::string _fileName;
         int _s, _t, _r;

@@ -634,46 +634,37 @@ endif
 
 #### HP-UX Specific definitions
 # contributed by tino.schwarze@informatik.tu-chemnitz.de
+# replaced by Olaf Flebb for use with aCC compiler
 
 ifeq ($(OS),HP-UX)
-
-  C++               = g++
-  DEPARG            = -M
-  INC               += 
-  DEF               += -W -Wall -fPIC
-  OPTF              = -O2 
-  # gcc 3.1 uses DWARF as default, my GDB might not yet support this...
-  # at least I've got problems everywhere
-  DBGF              = -g -gstabs+ -DOSG_COMPILE_UNIT_TESTS
-  SHARED            = -shared -fPIC
+  CXX 		    = aCC -AA -mt
+  C++  		    = $(CXX)
+  DEPARG            = -w +make -E
+  INC               += -I/opt/graphics/OpenGL/include -I/usr/contrib/X11R6/include -D_LARGEFILE64_SOURCE -D_XOPEN_SOURCE_EXTENDED
+  DEF               += +Z -z
+  OPTF              = +O2 
+  DBGF              = -g 
+  SHARED            = -b +Z -z -Wl,+s
   ARCH              = 32
-ifeq ($(ARCH),64)
-    # not yet tested
-    ARCHARGS          = -march=2.0 -DARCH64
-    ARCHINST          = 64
-else
-   # at least my gcc 3.1 defaults to HP-PA RISC 1.1
-  ARCHARGS          = 
-  ARCHINST          = 
-endif
-  LINKARGS          = 
+  LDFLAGS	    += -L/opt/graphics/OpenGL/lib -L/usr/contrib/X11R6/lib/
+  LINKARGS          = -lpthread
   LIB_EXT           = sl
   PLUGIN_EXT        = sl
   DYNAMICLIBRARYLIB = -ldld
+
+
   OSG_LIBS          = -losgGA -losgDB -losgUtil -losg 
   GL_LIBS           = -L/opt/graphics/OpenGL/lib -lGLU -lGL 
   X_INC             = -I/usr/X11R6/include
-  X_LIBS            = -L/usr/lib/X11R6 -lXext -lXi -lX11 -L/usr/lib/X11R4 -lXmu
+  X_LIBS            = -L/usr/lib/X11R6 -lXext -lXi -lX11 
   SOCKET_LIBS       = 
-  # make sure that global constructors/destructors are called upon
-  # shl_load() / shl_unload() - this is a gcc specific workaround
-  OTHER_LIBS        = -lm -Wl,+init -Wl,_GLOBAL__DI -Wl,+fini -Wl,_GLOBAL__DD -lOpenThreads
-  PNG_INCLUDE       = -I/opt/libpng/include
-  PNG_LIBS          = -L/opt/libpng/lib -lpng -L/opt/zlib/lib -lz
-  JPEG_INCLUDE		= -I/opt/jpeg-6/include
-  JPEG_LIBS         = -L/opt/jpeg-6/lib -ljpeg
-  TIFF_INCLUDE      = -I/opt/tiff-3.5/include
-  TIFF_LIB          = -L/opt/tiff-3.5/lib -ltiff
+  OTHER_LIBS        = -lm -lOpenThreads
+  PNG_INCLUDE       = -I/usr/local/include/libpng -I/usr/local/include/
+  PNG_LIBS          = -L/usr/local/lib -lpng  -lz
+  JPEG_INCLUDE		= -I/usr/local/include
+  JPEG_LIBS         = -L/usr/local/lib  -ljpeg
+  TIFF_INCLUDE      = -I/usr/local/include
+  TIFF_LIB          = -L/usr/local/lib -ltiff
   GIF_INCLUDE		= -I/opt/libungif/include
   GIF_LIBS          = -L/opt/libungif/lib -lungif
 
@@ -683,10 +674,8 @@ endif
   GDAL_INCLUDES     = `gdal-config --cflags`
   GDAL_LIBS         = `gdal-config --libs`
 
-  XINE_INCLUDES     = `xine-config --cflags`
-  XINE_LIBS         = `xine-config --libs`
-
 endif
+
 
 VPATH=..
 

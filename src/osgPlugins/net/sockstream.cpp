@@ -77,7 +77,8 @@ extern "C" {
 #	include <errno.h>
 }
 #else
-#	define socklen_t int
+
+typedef int socklen_t;
 
 #	define EWOULDBLOCK			WSAEWOULDBLOCK
 #	define EINPROGRESS			WSAEINPROGRESS
@@ -129,8 +130,8 @@ extern "C" {
 #include <sys/filio.h>
 #endif
 
-#ifdef __sgi
-#define socklen_t int
+#if defined( __sgi ) || defined (__hpux) 
+typedef int socklen_t;
 #endif
 
 #ifndef BUFSIZ
@@ -205,7 +206,7 @@ bool sockerr::op () const
   case EHOSTDOWN:
   case EHOSTUNREACH:
   case ENOTEMPTY:
-#	if !defined(__linux__) && !defined(__sun)// LN
+#	if !defined(__linux__) && !defined(__sun) && !defined(__hpux)// LN
   case EPROCLIM:
 #	endif
   case EUSERS:
@@ -505,9 +506,9 @@ void sockbuf::listen (int num)
 
 sockbuf::sockdesc sockbuf::accept (sockAddr& sa)
 {
-  int len = sa.size ();
+  socklen_t len = sa.size ();
   int soc = -1;
-  if ((soc = ::accept (rep->sock, sa.addr (), (socklen_t*) // LN
+  if ((soc = ::accept (rep->sock, sa.addr (), 
                        &len)) == -1)
     throw sockerr (errno, "sockbuf::sockdesc", sockname.c_str());
   return sockdesc (soc);
@@ -947,7 +948,7 @@ void sockbuf::closeonexec (bool set) const
 // if set is true, set close on exec flag
 // else clear close on exec flag
 {
-#ifndef __sgi
+#if !defined( __sgi) && !defined(__hpux)
   if (set) {
     if (::ioctl (rep->sock, FIOCLEX, 0) == -1)
       throw sockerr (errno, "sockbuf::closeonexec", sockname.c_str());

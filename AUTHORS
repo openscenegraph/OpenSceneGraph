@@ -80,6 +80,9 @@ Henry Maddocks <henryj@paradise.net.nz>
 Paul Fredrikson
         - new Matrix implementation.
 
+Sasa Bistrivic <sasa.bistrovic@zg.hinet.hr>
+        - option for detailed calculation of the near clipping plane during cull traversal.
+
 Indirect Contributors
 ---------------------
     

@@ -77,8 +77,8 @@ bool Transform_writeLocalData(const Object& obj, Output& fw)
 
     switch(transform.getType())
     {
-        case(osg::Transform::STATIC): fw.indent() << "Type STATIC" << std::endl;
-        default:                      fw.indent() << "Type DYNAMIC" << std::endl;
+        case(osg::Transform::STATIC): fw.indent() << "Type STATIC" << std::endl;break;
+        default:                      fw.indent() << "Type DYNAMIC" << std::endl;break;
     }
 
     fw.writeObject(transform.getMatrix());

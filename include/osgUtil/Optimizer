@@ -49,12 +49,16 @@ class OSGUTIL_EXPORT Optimizer
             public:
 
                 typedef std::vector<osg::Matrix> MatrixStack;
-                MatrixStack                      _matrixStack;
 
                 typedef std::set<osg::Transform*> TransformList;
-                TransformList                     _transformList;
+                
+                MatrixStack     _matrixStack;
+                TransformList   _transformList;
+                bool            _ignoreDynamicTransforms;
 
-                FlattenStaticTransformsVisitor():osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+                FlattenStaticTransformsVisitor(bool ignoreDynamicTransforms=true):
+                    osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
+                    _ignoreDynamicTransforms(ignoreDynamicTransforms) {}
 
                 virtual void apply(osg::Geode& geode);
                 virtual void apply(osg::Billboard& billboard);

@@ -353,25 +353,32 @@ void Optimizer::FlattenStaticTransformsVisitor::apply(osg::LOD& lod)
 
 void Optimizer::FlattenStaticTransformsVisitor::apply(osg::Transform& transform)
 {
-    if (_matrixStack.empty())
+    if (_ignoreDynamicTransforms && transform.getType()==osg::Transform::DYNAMIC) 
     {
-        _matrixStack.push_back(transform.getMatrix());
+        // simple traverse the children as if this Transform didn't exist.
+        traverse(transform);
     }
     else
-    {
-        _matrixStack.push_back(transform.getMatrix()*_matrixStack.back());
+    {        
+        if (_matrixStack.empty())
+        {
+            _matrixStack.push_back(transform.getMatrix());
+        }
+        else
+        {
+            _matrixStack.push_back(transform.getMatrix()*_matrixStack.back());
+        }
+
+        _transformList.insert(&transform);
+
+        // simple traverse the children as if this Transform didn't exist.
+        traverse(transform);
+
+        // reset the matrix to identity.
+        transform.setMatrix(osg::Matrix::identity());
+
+        _matrixStack.pop_back();
     }
-
-    traverse(transform);
-
-    _transformList.insert(&transform);
-
-    // reset the matrix to identity.
-    transform.setMatrix(osg::Matrix::identity());
-    
-    transform.dirtyBound();
-
-    _matrixStack.pop_back();
 }
 
 void Optimizer::FlattenStaticTransformsVisitor::removeTransforms()

@@ -506,6 +506,7 @@ class CollectLowestTransformsVisitor : public osg::NodeVisitor
 
         CollectLowestTransformsVisitor(Optimizer* optimizer=0):
                     osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_PARENTS),
+                    _transformFunctor(osg::Matrix()),
                     _optimizer(optimizer) {}
 
         virtual void apply(osg::Node& node)
@@ -575,8 +576,11 @@ class CollectLowestTransformsVisitor : public osg::NodeVisitor
         void disableTransform(osg::Transform* transform);
         bool removeTransforms(osg::Node* nodeWeCannotRemove);
 
-        inline bool isOperationPermissableForObject(const osg::Object* object) const
+        inline bool isOperationPermissableForObject(const osg::Object* object)
         {
+            const osg::Drawable* drawable = dynamic_cast<const osg::Drawable*>(object);
+            if (drawable && !drawable->supports(_transformFunctor)) return false;
+            
             return _optimizer ? _optimizer->isOperationPermissableForObject(object,Optimizer::FLATTEN_STATIC_TRANSFORMS) :  true; 
         }
 
@@ -661,7 +665,7 @@ class CollectLowestTransformsVisitor : public osg::NodeVisitor
         void disableObject(ObjectMap::iterator itr);
         void doTransform(osg::Object* obj,osg::Matrix& matrix);
         
-
+        osgUtil::TransformAttributeFunctor _transformFunctor;
         Optimizer*      _optimizer;
         TransformMap    _transformMap;
         ObjectMap       _objectMap;

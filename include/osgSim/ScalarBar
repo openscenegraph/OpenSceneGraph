@@ -143,6 +143,9 @@ public:
     {
     }
 
+
+    META_Node(osgSim, ScalarBar);
+
     /** Set the number of distinct colours on the ScalarBar. */
     void setNumColors(int numColors);
 
@@ -197,7 +200,8 @@ public:
     /** Get the TextProperties for the labels & title. @see TextProperties */
     const TextProperties& getTextProperties() const;
 
-    META_Node(osgSim, ScalarBar);
+    /** force update the drawables used to render the scalar bar.*/
+    void update() { createDrawables(); }
 
 private:
 

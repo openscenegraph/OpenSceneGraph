@@ -178,10 +178,10 @@ bool TestManipulator::isMouseMoving()
 {
     if (_ga_t0.get()==NULL || _ga_t1.get()==NULL) return false;
 
-    static const float velocity = 100.0f;
+    static const float velocity = 0.1f;
 
-    float dx = _ga_t0->getX()-_ga_t1->getX();
-    float dy = _ga_t0->getY()-_ga_t1->getY();
+    float dx = _ga_t0->getXnormalized()-_ga_t1->getXnormalized();
+    float dy = _ga_t0->getYnormalized()-_ga_t1->getYnormalized();
     float len = sqrtf(dx*dx+dy*dy);
     float dt = _ga_t0->time()-_ga_t1->time();
 
@@ -244,8 +244,8 @@ bool TestManipulator::calcMovement()
     // return if less then two events have been added.
     if (_ga_t0.get()==NULL || _ga_t1.get()==NULL) return false;
 
-    float dx = _ga_t0->getX()-_ga_t1->getX();
-    float dy = _ga_t0->getY()-_ga_t1->getY();
+    float dx = _ga_t0->getXnormalized()-_ga_t1->getXnormalized();
+    float dy = _ga_t0->getYnormalized()-_ga_t1->getYnormalized();
 
 
     // return if there is no movement.
@@ -257,11 +257,8 @@ bool TestManipulator::calcMovement()
 
         // rotate camera.
 
-        float rx0 = (_ga_t0->getXmax()-_ga_t0->getXmin())/2.0f;
-
         osg::Quat new_rotate;
-	float xRot = dx / rx0;
-	new_rotate.makeRotate(xRot / 5.0f, osg::Vec3(0.0f, 0.0f, 1.0f));
+	new_rotate.makeRotate(dx / 3.0f, osg::Vec3(0.0f, 0.0f, 1.0f));
         
         _rotation = _rotation*new_rotate;
 
@@ -275,7 +272,7 @@ bool TestManipulator::calcMovement()
 
         // pan model.
 
-	osg::Vec3 dv = osg::Vec3(0.0f, 0.0f, 1.0f) * dy;
+	osg::Vec3 dv = osg::Vec3(0.0f, 0.0f, 500.0f) * dy;
 
         _center += dv;
         
@@ -290,7 +287,7 @@ bool TestManipulator::calcMovement()
         osg::Vec3 uv = _camera->getUpVector();
         osg::Vec3 sv = _camera->getSideVector();
         osg::Vec3 fv = uv ^ sv;
-        osg::Vec3 dv = fv*dy-sv*dx;
+        osg::Vec3 dv = fv*(dy*500.0f)-sv*(dx*500.0f);
 
         _center += dv;
         computeCameraFromLocalData();

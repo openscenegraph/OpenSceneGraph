@@ -97,8 +97,6 @@ bool osg::isGLExtensionSupported(const char *extension)
 
                 }
                             
-                std::cout<<"render='"<<renderer<<"'"<<std::endl;
-
                 if (renderer.empty())
                 {
                     extensionDisabled = true;

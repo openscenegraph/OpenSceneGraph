@@ -115,7 +115,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
     protected :
 
-        virtual ~DatabasePager() {}
+        virtual ~DatabasePager();
         
         struct DatabaseRequest : public osg::Referenced
         {

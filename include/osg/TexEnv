@@ -25,7 +25,15 @@ class SG_EXPORT TexEnv : public StateAttribute
 {
     public :
 
-        TexEnv();
+        enum Mode {
+            DECAL     = GL_DECAL,
+            MODULATE  = GL_MODULATE,
+            BLEND     = GL_BLEND,
+            REPLACE   = GL_REPLACE,
+            ADD       = GL_ADD
+        };
+
+        TexEnv(Mode mode=MODULATE);
         
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         TexEnv(const TexEnv& texenv,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
@@ -52,13 +60,6 @@ class SG_EXPORT TexEnv : public StateAttribute
             return 0; // passed all the above comparison macro's, must be equal.
         }
 
-        enum Mode {
-            DECAL     = GL_DECAL,
-            MODULATE  = GL_MODULATE,
-            BLEND     = GL_BLEND,
-            REPLACE   = GL_REPLACE,
-            ADD       = GL_ADD
-        };
 
         void setMode( Mode mode ) { _mode = mode; }
         

@@ -1,0 +1,79 @@
+
+# TOPDIR needs to be redefined for every Makefile
+TOPDIR     ?= ../
+THISDIR    = .
+MAKEDEPEND = Makedepend
+SHELL = /bin/sh
+OSTYPE := $(shell uname)
+
+OS := $(shell uname)
+
+INC = -I$(TOPDIR)/include
+DEF = 
+
+#### SUN OS Specific definitions
+ifeq ($(OS),SunOS)
+    C++        = CC
+    DEPFLAGS   = -xM1
+    INC        += 
+    DEF        += -features=extensions 
+    OPTF       = -xO2
+    DBGF       = -g
+    SHARED     = -G
+    ARCHARGS   = 
+    LINKERARGS        =  
+    DYNAMICLIBRARYLIB = -ldl
+    OSG_LIBS          = -losgGLUT -losgDB -losgUtil -losg 
+    GLUT_LIB          = -lglut
+    GL_LIBS           = -lGLU -lGL 
+    X_LIBS            = -lXext -lXmu -lXi -lX11 
+    SOCKET_LIBS       = -lsocket -lnsl
+    OTHER_LIBS        = -lCstd
+endif
+
+#### IRIX Specific definitions
+ifeq ($(OS),IRIX)
+    C++ = CC
+    CXXFLAGS   = $(DOF)  $(INC) -LANG:std -OPT:Olimit=0 -DEBUG:wof=1682 -DEBUG:woff=3303
+    LDFLAGS    = $(DOF) -L$(TOPDIR)/lib -LANG:std
+    DEPFLAGS = -MDupdate $(MAKEFILE)
+endif
+
+#### Linux specific definitions
+ifeq ($(OS),Linux)
+    C++        = g++
+    CXXFLAGS   = $(DOF) -W -Wall $(INC)
+    LDFLAGS    = $(DOF) -W -Wall -L/usr/X11R6/lib -L$(TOPDIR)/lib
+    DEPFLAGS = -M
+endif
+
+
+OBJS       = $(C++FILES:.cpp=.o) $(CXXFILES:.cpp=.o) $(CFILES:.c=.o) $(YACCFILES:.y=.o) $(LEXFILES:.l=.o)
+DOF        = $(OPTF)
+CXXFLAGS   = $(DOF) $(DEF) $(INC)
+
+INC       += 
+
+DEBUGDIR   = $(OS).Debug
+OPTDIR     = $(OS).Opt
+BININST    = bin
+LIBINST    = lib
+PLUGININST = lib/osgPlugins
+
+LIBS       = 
+LDFLAGS    = $(DOF) -L$(TOPDIR)/lib 
+
+ALL_TARGETS = \
+	  opt\
+	  debug\
+	  clean\
+	  cleandbg\
+	  cleanopt\
+	  clobber\
+	  beautify\
+	  docs\
+	  depend\
+
+
+VPATH=..
+

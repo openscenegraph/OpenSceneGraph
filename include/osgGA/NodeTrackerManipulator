@@ -15,7 +15,9 @@
 #define OSGGA_NODETRACKERMANIPULATOR 1
 
 #include <osgGA/MatrixManipulator>
+
 #include <osg/Quat>
+#include <osg/RefNodePath>
 
 namespace osgGA{
 
@@ -27,10 +29,15 @@ class OSGGA_EXPORT NodeTrackerManipulator : public MatrixManipulator
 
         virtual const char* className() const { return "NodeTrackerManipulator"; }
 
-        void setTrackNode(osg::Node* node) { _trackNode = node; }
-        osg::Node* getTrackNode() { return _trackNode.get(); }
-        const osg::Node* getTrackNode() const { return _trackNode.get(); }
+        void setTrackNodePath(const osg::RefNodePath& nodePath) { _trackNodePath = nodePath; }
+        void setTrackNodePath(const osg::NodePath& nodePath) { _trackNodePath = nodePath; }
 
+        osg::RefNodePath& getTrackNodePath() { return _trackNodePath; }
+        const osg::RefNodePath& getTrackNodePath() const { return _trackNodePath; }
+
+        void setTrackNode(osg::Node* node);
+        osg::Node* getTrackNode() { return _trackNodePath.empty() ? 0 : _trackNodePath.back().get(); }
+        const osg::Node* getTrackNode() const { return _trackNodePath.empty() ? 0 : _trackNodePath.back().get(); }
 
         enum TrackerMode 
         {
@@ -99,6 +106,21 @@ class OSGGA_EXPORT NodeTrackerManipulator : public MatrixManipulator
     protected:
 
         virtual ~NodeTrackerManipulator();
+        
+        inline bool validateNodePath() const
+        {
+            if (!_trackNodePath.valid())
+            {
+                if (_trackNodePath.empty())
+                {
+                    osg::notify(osg::NOTICE)<<"Warning: tracked node path has been invalidated by changes in the scene graph."<<std::endl;
+                    NodeTrackerManipulator* non_const_this = const_cast<NodeTrackerManipulator*>(this);
+                    non_const_this->_trackNodePath.clear();
+                }
+                return false;
+            }
+            return true;
+        }
 
         /** Reset the internal GUIEvent stack.*/
         void flushMouseEventStack();
@@ -133,7 +155,8 @@ class OSGGA_EXPORT NodeTrackerManipulator : public MatrixManipulator
         osg::ref_ptr<const GUIEventAdapter> _ga_t0;
 
         osg::ref_ptr<osg::Node> _node;
-        osg::ref_ptr<osg::Node> _trackNode;
+        
+        osg::RefNodePath        _trackNodePath;
 
         TrackerMode             _trackerMode;
         RotationMode            _rotationMode;

@@ -46,10 +46,11 @@ class TransformVisitor : public NodeVisitor
             }
         }
         
-        void accumulate(NodePath& nodePath)
+        void accumulate(const NodePath& nodePath)
         {
-            for(NodePath::iterator itr=nodePath.begin();
-                itr!=nodePath.end();
+            NodePath& non_const_nodePath = const_cast<NodePath&>(nodePath);
+            for(NodePath::iterator itr=non_const_nodePath.begin();
+                itr!=non_const_nodePath.end();
                 ++itr)
             {
                 (*itr)->accept(*this);
@@ -58,7 +59,7 @@ class TransformVisitor : public NodeVisitor
     
 };
 
-Matrix osg::computeLocalToWorld(NodePath& nodePath)
+Matrix osg::computeLocalToWorld(const NodePath& nodePath)
 {
     Matrix matrix;
     TransformVisitor tv(matrix,TransformVisitor::LOCAL_TO_WORLD);
@@ -66,7 +67,7 @@ Matrix osg::computeLocalToWorld(NodePath& nodePath)
     return matrix;
 }
 
-Matrix osg::computeWorldToLocal(NodePath& nodePath)
+Matrix osg::computeWorldToLocal(const NodePath& nodePath)
 {
     osg::Matrix matrix;
     TransformVisitor tv(matrix,TransformVisitor::WORLD_TO_LOCAL);
@@ -74,7 +75,7 @@ Matrix osg::computeWorldToLocal(NodePath& nodePath)
     return matrix;
 }
 
-Matrix osg::computeLocalToEye(const Matrix& modelview,NodePath& nodePath)
+Matrix osg::computeLocalToEye(const Matrix& modelview,const NodePath& nodePath)
 {
     Matrix matrix(modelview);
     TransformVisitor tv(matrix,TransformVisitor::LOCAL_TO_WORLD);
@@ -82,7 +83,7 @@ Matrix osg::computeLocalToEye(const Matrix& modelview,NodePath& nodePath)
     return matrix;
 }
 
-Matrix osg::computeEyeToLocal(const Matrix& modelview,NodePath& nodePath)
+Matrix osg::computeEyeToLocal(const Matrix& modelview,const NodePath& nodePath)
 {
     Matrix matrix;
     matrix.invert(modelview);

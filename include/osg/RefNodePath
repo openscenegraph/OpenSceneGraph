@@ -37,6 +37,27 @@ class RefNodePath : public NodeList
             }
         }
         
+        RefNodePath& operator = (const RefNodePath& rhs)
+        {
+            if (&rhs == this) return *this;
+            
+            NodeList::operator = (rhs);            
+            
+            return *this;
+        }
+        
+        RefNodePath& operator = (const NodePath& rhs)
+        {
+            for(osg::NodePath::const_iterator itr=rhs.begin();
+                itr != rhs.end();
+                ++itr)
+            {
+                push_back(*itr);
+            }
+            
+            return *this;
+        }
+
         inline operator NodePath () const
         {
             NodePath nodePath;

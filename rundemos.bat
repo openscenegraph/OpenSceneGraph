@@ -61,8 +61,8 @@ osgbillboard
 echo osgcube
 osgcube
 
-echo osgcubemap glider.osg
-osgcubemap glider.osg
+echo osgcubemap cessna.osg
+osgcubemap cessna.osg
 
 echo osgclip
 osgclip cow.osg

@@ -5,9 +5,9 @@
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
 
-#include <osgUtil/TrackballManipulator>
-#include <osgUtil/FlightManipulator>
-#include <osgUtil/DriveManipulator>
+#include <osgGA/TrackballManipulator>
+#include <osgGA/FlightManipulator>
+#include <osgGA/DriveManipulator>
 
 #include <osgGLUT/glut>
 #include <osgGLUT/Viewer>
@@ -89,9 +89,9 @@ int main( int argc, char **argv )
     viewer.addViewport( rootnode,0.0,0.5,1.0,0.5);
 
     // register trackball, flight and drive.
-    viewer.registerCameraManipulator(new osgUtil::TrackballManipulator);
-    viewer.registerCameraManipulator(new osgUtil::FlightManipulator);
-    viewer.registerCameraManipulator(new osgUtil::DriveManipulator);
+    viewer.registerCameraManipulator(new osgGA::TrackballManipulator);
+    viewer.registerCameraManipulator(new osgGA::FlightManipulator);
+    viewer.registerCameraManipulator(new osgGA::DriveManipulator);
 
     viewer.open();
     viewer.run();

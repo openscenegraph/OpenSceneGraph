@@ -5,14 +5,14 @@
 #ifndef OSGGLUT_GLUTEVENTADAPTER
 #define OSGGLUT_GLUTEVENTADAPTER 1
 
-#include <osgUtil/GUIEventAdapter>
+#include <osgGA/GUIEventAdapter>
 
 #include <osgGLUT/Export>
 
 namespace osgGLUT{
 
-/** Class for adapting GLUT events so that they can be used as input to osgUtil::CameraManipulators.*/
-class OSGGLUT_EXPORT GLUTEventAdapter : public osgUtil::GUIEventAdapter
+/** Class for adapting GLUT events so that they can be used as input to osgGA::CameraManipulators.*/
+class OSGGLUT_EXPORT GLUTEventAdapter : public osgGA::GUIEventAdapter
 {
 
     public:

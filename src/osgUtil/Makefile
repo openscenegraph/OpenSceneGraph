@@ -4,13 +4,10 @@ include $(TOPDIR)/Make/makedefs
 
 CXXFILES = \
 	AppVisitor.cpp\
-	CameraManipulator.cpp\
 	CullVisitor.cpp\
 	DepthSortedBin.cpp\
 	DisplayListVisitor.cpp\
 	DisplayRequirementsVisitor.cpp\
-	DriveManipulator.cpp\
-	FlightManipulator.cpp\
 	InsertImpostorsVisitor.cpp\
 	IntersectVisitor.cpp\
 	NvTriStripObjects.cpp\
@@ -22,11 +19,8 @@ CXXFILES = \
 	RenderStageLighting.cpp\
 	RenderToTextureStage.cpp\
 	SceneView.cpp\
-	SceneViewManipulator.cpp\
 	SmoothingVisitor.cpp\
-	StateSetManipulator.cpp\
 	Tesselator.cpp\
-	TrackballManipulator.cpp\
 	TransformCallback.cpp\
 	TriStripVisitor.cpp\
 	Version.cpp\

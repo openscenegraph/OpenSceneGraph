@@ -97,10 +97,6 @@ SOURCE=..\..\src\osgUtil\AppVisitor.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgUtil\CameraManipulator.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\osgUtil\CullVisitor.cpp
 # End Source File
 # Begin Source File
@@ -114,14 +110,6 @@ SOURCE=..\..\src\osgUtil\DisplayListVisitor.cpp
 # Begin Source File
 
 SOURCE=..\..\src\osgUtil\DisplayRequirementsVisitor.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgUtil\DriveManipulator.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgUtil\FlightManipulator.cpp
 # End Source File
 # Begin Source File
 
@@ -169,23 +157,11 @@ SOURCE=..\..\src\osgUtil\SceneView.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgUtil\SceneViewManipulator.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\osgUtil\SmoothingVisitor.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgUtil\StateSetManipulator.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\osgUtil\Tesselator.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgUtil\TrackballManipulator.cpp
 # End Source File
 # Begin Source File
 
@@ -209,10 +185,6 @@ SOURCE=..\..\include\osgUtil\AppVisitor
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\osgUtil\CameraManipulator
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\Include\osgUtil\CullVisitor
 # End Source File
 # Begin Source File
@@ -229,27 +201,7 @@ SOURCE=..\..\Include\osgUtil\DisplayRequirementsVisitor
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\include\osgUtil\DriveManipulator
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\Include\osgUtil\Export
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\include\osgUtil\FlightManipulator
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\include\osgUtil\GUIActionAdapter
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\include\osgUtil\GUIEventAdapter
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\include\osgUtil\GUIEventHandler
 # End Source File
 # Begin Source File
 
@@ -297,23 +249,11 @@ SOURCE=..\..\Include\osgUtil\SceneView
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\osgUtil\SceneViewManipulator
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\include\osgUtil\SmoothingVisitor
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\osgUtil\StateSetManipulator
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\include\osgUtil\Tesselator
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\include\osgUtil\TrackballManipulator
 # End Source File
 # Begin Source File
 

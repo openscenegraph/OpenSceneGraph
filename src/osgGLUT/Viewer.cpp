@@ -41,9 +41,9 @@
 #include <osgUtil/TriStripVisitor>
 #include <osgUtil/DisplayRequirementsVisitor>
 
-#include <osgUtil/TrackballManipulator>
-#include <osgUtil/FlightManipulator>
-#include <osgUtil/DriveManipulator>
+#include <osgGA/TrackballManipulator>
+#include <osgGA/FlightManipulator>
+#include <osgGA/DriveManipulator>
 
 #include <osg/Version>
 #include <osgUtil/Version>
@@ -75,6 +75,7 @@ int writePrims( const int ypos, osg::Statistics& stats);
 using namespace osg;
 using namespace osgUtil;
 using namespace osgGLUT;
+using namespace osgGA;
 
 using namespace std;
 
@@ -166,9 +167,9 @@ bool Viewer::open()
         {
             osg::notify(osg::INFO)<<"osgGLUT::Viewer::open() called without any camara manipulators registered for a viewport,"<< std::endl;
             osg::notify(osg::INFO)<<"automatically registering trackball,flight and drive manipulators."<< std::endl;
-            registerCameraManipulator(osgNew osgUtil::TrackballManipulator, index);
-            registerCameraManipulator(osgNew osgUtil::FlightManipulator, index);
-            registerCameraManipulator(osgNew osgUtil::DriveManipulator, index);
+            registerCameraManipulator(new osgGA::TrackballManipulator, index);
+            registerCameraManipulator(new osgGA::FlightManipulator, index);
+            registerCameraManipulator(new osgGA::DriveManipulator, index);
         }
 
         if (!itr->_cameraManipulator.valid())
@@ -279,7 +280,7 @@ bool Viewer::open()
 
 
 
-unsigned int Viewer::registerCameraManipulator(osgUtil::CameraManipulator* cm,
+unsigned int Viewer::registerCameraManipulator(osgGA::CameraManipulator* cm,
                                                unsigned int viewport)
 {
     ViewportDef &viewp = _viewportList[viewport];
@@ -750,9 +751,9 @@ void Viewer::mouse(int button, int state, int x, int y)
     // Switch viewport focus if button is pressed, and it is the only one
     unsigned mask = ea->getButtonMask();
     if (state == GLUT_DOWN && 
-        (mask == osgUtil::GUIEventAdapter::LEFT_MOUSE_BUTTON   || 
-         mask == osgUtil::GUIEventAdapter::MIDDLE_MOUSE_BUTTON || 
-         mask == osgUtil::GUIEventAdapter::RIGHT_MOUSE_BUTTON))
+        (mask == osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON   || 
+         mask == osgGA::GUIEventAdapter::MIDDLE_MOUSE_BUTTON || 
+         mask == osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON))
     {
         int focus = mapWindowXYToSceneView(x,y);
         if (focus >= 0 && focus != int(_focusedViewport))

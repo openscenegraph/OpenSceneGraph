@@ -94,7 +94,7 @@ else
 endif
   LINKARGS          =  
   DYNAMICLIBRARYLIB = -ldl
-  OSG_LIBS          = -losgGLUT -losgDB -losgUtil -losg 
+  OSG_LIBS          = -losgGLUT -losgGA -losgDB -losgUtil -losg 
   FREETYPE_LIB      = -L/usr/local/lib -lfreetype
   GLUT_LIB          = -lglut
   GL_LIBS           = -lGLU -lGL 
@@ -132,7 +132,7 @@ else
 endif
   LINKARGS          = -L${TOPDIR}/lib -LANG:std -OPT:Olimit=0 
   DYNAMICLIBRARYLIB = -ldl
-  OSG_LIBS          = -losgGLUT -losgDB -losgUtil -losg 
+  OSG_LIBS          = -losgGLUT -losgGA -losgDB -losgUtil -losg 
   FREETYPE_LIB      = -L/usr/freeware/lib32 -lfreetype
   GLUT_LIB          = -lglut
   GL_LIBS           = -lGLU -lGL 
@@ -171,7 +171,7 @@ endif
   LINKARGS          = -L/usr/X11R6/lib
   LIBS              = -lstdc++
   DYNAMICLIBRARYLIB = -ldl
-  OSG_LIBS          = -losgGLUT -losgDB -losgUtil -losg 
+  OSG_LIBS          = -losgGLUT -losgGA -losgDB -losgUtil -losg 
   FREETYPE_LIB      = -lfreetype
   GLUT_LIB          = -lglut
   GL_LIBS           = -lGLU -lGL 
@@ -199,7 +199,7 @@ ifeq ($(OS),FreeBSD)
   ARCHARGS          = 
   LINKARGS          = -L/usr/X11R6/lib -L/usr/local/lib -rpath /usr/local/lib
   DYNAMICLIBRARYLIB = 
-  OSG_LIBS          = -losgGLUT -losgDB -losgUtil -losg 
+  OSG_LIBS          = -losgGLUT -losgGA -losgDB -losgUtil -losg 
   FREETYPE_LIB      = -lfreetype
   GLUT_LIB          = -lglut
   GL_LIBS           = -lGLU -lGL 
@@ -224,7 +224,7 @@ ifeq ($(OS),Darwin)
   ARCHARGS          = 
   LINKARGS          = -L/usr/lib -L/sw/lib 
   DYNAMICLIBRARYLIB = 
-  OSG_LIBS          = -losgGLUT -losgDB -losgUtil -losg 
+  OSG_LIBS          = -losgGLUT -losgGA -losgDB -losgUtil -losg 
   FREETYPE_LIB      = -lfreetype
   GLUT_LIB          = -framework GLUT
   CARBON_LIB        = -framework Carbon
@@ -258,7 +258,7 @@ ifeq ($(OS),CYGWIN)
   LINKARGS          = -W -Wall
   DYNAMICLIBRARYLIB =
 
-  OSG_LIBS          = -losgGLUT -losgDB -losgUtil -losg 
+  OSG_LIBS          = -losgGLUT -losgGA -losgDB -losgUtil -losg 
   GL_LIBS           = -lglu32 -lopengl32
   GLUT_LIB          = -lglut32 $(GL_LIBS)
   X_LIBS            = -lgdi32 -luser32

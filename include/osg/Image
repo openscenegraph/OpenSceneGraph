@@ -133,11 +133,11 @@ class SG_EXPORT Image : public Object
         static const unsigned int computeRowWidthInBytes(int width,GLenum format,GLenum type,int packing);
         
         // precomputed mipmaps stuff;
-        typedef std::vector< std::size_t > MipmapDataType;
+        typedef std::vector< unsigned int > MipmapDataType;
 
         inline bool isMipmap() const {return !_mipmapData.empty();};
 
-        std::size_t getNumMipmaps() const
+        unsigned int getNumMipmaps() const
         {
             return _mipmapData.size()+1;
         };
@@ -149,7 +149,7 @@ class SG_EXPORT Image : public Object
             _mipmapData = mipmapDataVector;
         };
         
-        inline unsigned char* getMipmapData(std::size_t mipmapNumber ) const
+        inline unsigned char* getMipmapData(unsigned int mipmapNumber) const
         {
             if(mipmapNumber == 0)
                 return _data;

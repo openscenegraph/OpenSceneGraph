@@ -37,7 +37,7 @@ class Geometry;
     a referenced counted pointer to.  Both GeoSet's and StateSet's can 
     be shared for optimal memory usage and graphics performance.
 */
-class SG_EXPORT GeoSet : public Drawable
+class GeoSet : public Drawable
 {
     public:
 
@@ -87,7 +87,7 @@ class SG_EXPORT GeoSet : public Drawable
 	};
 
 
-        struct SG_EXPORT IndexPointer
+        struct IndexPointer
         {
         
             mutable unsigned int _size;
@@ -324,7 +324,7 @@ class SG_EXPORT GeoSet : public Drawable
           * momory attached to the GeoSet is owned by this GeoSet and can be deleted
           * using delete [].  If this is not the cause derive your own AttributeDeleteFunctor
           * a specify your own memory deletion operation.*/
-        struct SG_EXPORT AttributeDeleteFunctor : public osg::Referenced
+        struct AttributeDeleteFunctor : public osg::Referenced
         {
             // see GeoSet.cpp for implemention.
             virtual void operator() (GeoSet* gset);

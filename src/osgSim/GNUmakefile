@@ -10,6 +10,8 @@ CXXFILES = \
     Sector.cpp\
     Version.cpp\
 
+#    SphereSegment.cpp\
+
 DEF     += -DOSGSIM_LIBRARY
 
 LIBS  += -losg -losgUtil $(GL_LIBS) $(OTHER_LIBS)

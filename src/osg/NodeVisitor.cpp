@@ -16,7 +16,8 @@
 
 using namespace osg;
 
-NodeVisitor::NodeVisitor(TraversalMode tm)
+NodeVisitor::NodeVisitor(TraversalMode tm):
+        Referenced()
 {
     _visitorType = NODE_VISITOR;
     _traversalNumber = -1;
@@ -26,7 +27,8 @@ NodeVisitor::NodeVisitor(TraversalMode tm)
     _nodeMaskOverride = 0x0;
 }
 
-NodeVisitor::NodeVisitor(VisitorType type,TraversalMode tm)
+NodeVisitor::NodeVisitor(VisitorType type,TraversalMode tm):
+    Referenced()
 {
     _visitorType = type;
     _traversalNumber = -1;

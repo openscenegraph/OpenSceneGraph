@@ -199,7 +199,7 @@ bool OSGPageManager::StartThread(ThreadMode mode,ThreadID &newThread)
         DWORD dwThreadId=0;
         LPVOID dwThrdParam = (LPVOID) this;
 
-        newThread = CreateThread( 
+        threadID = newThread = CreateThread( 
             NULL,                        // default security attributes 
             0,                           // use default stack size  
             ThreadFunc,                  // thread function 
@@ -223,6 +223,7 @@ bool OSGPageManager::StartThread(ThreadMode mode,ThreadID &newThread)
     threadMode = mode;
     if( pthread_create( &newThread, 0L, ThreadFunc, (void *)this ) != 0 )
         threadMode = ThreadNone;
+    threadID = newThread;
 #endif
     return threadMode != ThreadNone;
 }
@@ -232,10 +233,18 @@ bool OSGPageManager::StartThread(ThreadMode mode,ThreadID &newThread)
  */
 bool OSGPageManager::EndThread()
 {
+    cancel = true;
+    // claer the path for thred loop to finish 
+    osgSetEvent(locationChangeEvent);
 #ifdef _WIN32
+    DWORD res = STILL_ACTIVE;
+    while(res==STILL_ACTIVE){
+        GetExitCodeThread(threadID,&res);
+        Sleep(100);
+    }
 #else
     // Need a handle to the thread ID here.
-    //pthread_cancel( ?newThread? );
+    pthread_join( threadID, 0 );
 #endif
     return true;
 }
@@ -251,9 +260,10 @@ bool OSGPageManager::ThreadLoop()
     if (threadMode != ThreadFree)
         throw 1;
 
-    bool done = false;
     bool pagingActive = false;
-    while (!done) {
+    cancel = false;
+
+    while (!cancel) {
         /* Here's how we do it:
             Wait for position change
               Update manager w/ position
@@ -308,36 +318,39 @@ bool OSGPageManager::ThreadLoop()
 #endif
 
             // Now do a single load
-            tile = pageManage->GetNextLoad();
-            osg::Group *tileGroup=NULL;
-            pagingActive = false;
-            if (tile) {
-                osg::Group *parentNode = NULL;
-                tileGroup = archive->LoadTile(NULL,pageManage,tile,&parentNode);
-                pageManage->AckLoad();
-                if (tileGroup) {
+           while( (tile = pageManage->GetNextLoad()) ) // Sasa's new code - more frame drops, but less missing tiles.
+           //if( (tile = pageManage->GetNextLoad()) )  // original code (0.9.4 and before) - less frame drops, more missing tiles.
+           {
+               osg::Group *tileGroup=NULL;
+               pagingActive = false;
+               osg::Group *parentNode = NULL;
+               tileGroup = archive->LoadTile(NULL,pageManage,tile,&parentNode);
+               pageManage->AckLoad();
+               if (tileGroup) {
 #ifdef USE_THREADLOOP_DELETE
-                    // Make an extra reference to it because we want it back for deletion
-                    // RO, commenting out as we don't want to do delete here, we want it to happen in the merge thread.
-                    tileGroup->ref();
+                   // Make an extra reference to it because we want it back for deletion
+                   // RO, commenting out as we don't want to do delete here, we want it to happen in the merge thread.
+                   tileGroup->ref();
 #endif
-                } else {
-                    int x,y,lod;
-                    tile->GetTileLoc(x,y,lod);
-                    fprintf(stderr,"Failed to load tile (%d,%d,%d)\n",x,y,lod);
-                }
-
-                // Now add this tile to the merge list
-                if (tileGroup) {
-                    osgLockMutex(changeListMutex);
-                    toMerge.push_back(tileGroup);
-                    toMergeParent.push_back(parentNode);
-                    osgUnLockMutex(changeListMutex);
-                }
-                // We're not necessarily done paging, we're just handing control back
-                // It's likely we'll be back here
-                pagingActive = true;
-            }
+               } 
+               else 
+               {
+                   int x,y,lod;
+                   tile->GetTileLoc(x,y,lod);
+                   fprintf(stderr,"Failed to load tile (%d,%d,%d)\n",x,y,lod);
+               }
+               
+               // Now add this tile to the merge list
+               if (tileGroup) {
+                   osgLockMutex(changeListMutex);
+                   toMerge.push_back(tileGroup);
+                   toMergeParent.push_back(parentNode);
+                   osgUnLockMutex(changeListMutex);
+               }
+               // We're not necessarily done paging, we're just handing control back
+               // It's likely we'll be back here
+               pagingActive = true;
+           }
         }
     }
 

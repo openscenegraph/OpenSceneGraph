@@ -49,14 +49,18 @@ void TexEnvCombine::apply(State&) const
     static bool s_isTexEnvCrossbarSupported =
         isGLExtensionSupported("GL_ARB_texture_env_crossbar");
 
+    static bool s_isNVTexEnvCrossbarSupported =
+        isGLExtensionSupported("GL_NV_texture_env_combine4");
+
     static bool s_isTexEnvDot3Supported = 
         isGLExtensionSupported("GL_ARB_texture_env_dot3");
+
 
     bool needsTexEnvDot3 = (_combine_RGB==DOT3_RGB) ||
                            (_combine_RGB==DOT3_RGBA);
 
     bool supported = s_isTexEnvCombineSupported;
-    if (_needsTexEnvCrossbar && !s_isTexEnvCrossbarSupported) supported = false;
+    if (_needsTexEnvCrossbar && !(s_isTexEnvCrossbarSupported || s_isNVTexEnvCrossbarSupported)) supported = false;
     if (needsTexEnvDot3 && !s_isTexEnvDot3Supported) supported = false;
 
     if (supported)

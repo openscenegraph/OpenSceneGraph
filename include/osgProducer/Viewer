@@ -82,7 +82,18 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
 
         virtual bool realize();
 
+        /** Updated the scene.  Handle any queued up events, do an update traversal and set the CameraGroup's setViewByMatrix if any camera manipulators are active.*/
         virtual void update();
+        
+        /** set the update visitor which does the update traversal of the scene graph. Automatically called by the update() method.*/
+        void setUpdateVistor(osg::NodeVisitor* nv) { _updateVisitor = nv; }
+        
+        /** get the update visitor.*/
+        osg::NodeVisitor* getUpdateVistor() { return _updateVisitor.get(); }
+        
+        /** get the const update visitor.*/
+        const osg::NodeVisitor* getUpdateVistor() const { return _updateVisitor.get(); }
+        
 
         /** Dispatch the cull and draw for each of the Camera's for this frame.*/
         virtual void frame();

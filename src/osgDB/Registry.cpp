@@ -51,7 +51,8 @@ Registry* Registry::instance()
 // definition of the Registry
 Registry::Registry()
 {
-    notify(INFO) << "Constructing osg::Registry"<<std::endl;
+    // comment out because it was causing problems under OSX - causing it to crash osgconv when constucting ostream in osg::notify().
+    // notify(INFO) << "Constructing osg::Registry"<<std::endl;
 
     _createNodeFromImage = true;
     _openingLibrary = false;
@@ -126,16 +127,16 @@ void Registry::initDataFilePathList()
     char *ptr;
     if( (ptr = getenv( "OSG_FILE_PATH" )) )
     {
-        notify(DEBUG_INFO) << "OSG_FILE_PATH("<<ptr<<")"<<std::endl;
+        //notify(DEBUG_INFO) << "OSG_FILE_PATH("<<ptr<<")"<<std::endl;
         setDataFilePathList(ptr);
     }
     else if( (ptr = getenv( "OSGFILEPATH" )) )
     {
-        notify(DEBUG_INFO) << "OSGFILEPATH("<<ptr<<")"<<std::endl;
+        //notify(DEBUG_INFO) << "OSGFILEPATH("<<ptr<<")"<<std::endl;
         setDataFilePathList(ptr);
     }
 
-    osg::notify(INFO)<<"Data FilePathList"<<std::endl;
+    //osg::notify(INFO)<<"Data FilePathList"<<std::endl;
     PrintFilePathList(osg::notify(INFO),getDataFilePathList());
 }
 
@@ -153,12 +154,12 @@ void Registry::initLibraryFilePathList()
     char* ptr;
     if( (ptr = getenv( "OSG_LIBRARY_PATH")) )
     {
-        notify(DEBUG_INFO) << "OSG_LIBRARY_PATH("<<ptr<<")"<<std::endl;
+        //notify(DEBUG_INFO) << "OSG_LIBRARY_PATH("<<ptr<<")"<<std::endl;
         setLibraryFilePathList(ptr);
     }
     else if( (ptr = getenv( "OSG_LD_LIBRARY_PATH")) )
     {
-        notify(DEBUG_INFO) << "OSG_LD_LIBRARY_PATH("<<ptr<<")"<<std::endl;
+        //notify(DEBUG_INFO) << "OSG_LD_LIBRARY_PATH("<<ptr<<")"<<std::endl;
         setLibraryFilePathList(ptr);
     }
 
@@ -227,8 +228,8 @@ void Registry::initLibraryFilePathList()
 
 #endif
 
-    osg::notify(INFO)<<"Library FilePathList"<<std::endl;
-    PrintFilePathList(osg::notify(INFO),getLibraryFilePathList());
+    //osg::notify(INFO)<<"Library FilePathList"<<std::endl;
+    //PrintFilePathList(osg::notify(INFO),getLibraryFilePathList());
 
 }
 

@@ -32,6 +32,7 @@ public:
 	bool readBool();
 	char readChar();
 	unsigned short readUShort();
+	unsigned int readUInt();
 	int readInt();
 	int peekInt();
 	float readFloat();
@@ -46,8 +47,6 @@ public:
 	osg::Quat readQuat();
 	osg::Matrix readMatrix();
 	osg::Geometry::AttributeBinding readBinding();
-	osg::Image* readImage(std::string s);
-	osg::StateSet* readStateSet();
 	osg::Array* readArray();
 	osg::IntArray* readIntArray();
 	osg::UByteArray* readUByteArray();
@@ -59,22 +58,29 @@ public:
 	osg::Vec3Array* readVec3Array();
 	osg::Vec4Array* readVec4Array();
 
- 	// Container to map image filenames to their respective images.
-	typedef std::pair<std::string, osg::ref_ptr<osg::Image> >	ImagePair;
-	typedef std::vector<ImagePair>								ImageList;
+	osg::Image* readImage(std::string s);
+	osg::StateSet* readStateSet();
+	osg::StateAttribute* readStateAttribute();
+	osg::Drawable* readDrawable();
+	osg::Node* readNode();
 
- 	// Container to map stateset id to their respective stateset.
-	typedef std::pair<int, osg::ref_ptr<osg::StateSet> >		StateSetPair;
-	typedef std::vector<StateSetPair>							StateSetList;
+	typedef std::map<std::string, osg::ref_ptr<osg::Image> >    ImageMap;
+	typedef std::map<int,osg::ref_ptr<osg::StateSet> >          StateSetMap;
+	typedef std::map<int,osg::ref_ptr<osg::StateAttribute> >    StateAttributeMap;
+	typedef std::map<int,osg::ref_ptr<osg::Drawable> >          DrawableMap;
+	typedef std::map<int,osg::ref_ptr<osg::Node> >              NodeMap;
 
 
 private:
-	std::istream*	_istream;
-	int				_version;
-	bool			_peeking;
-	int				_peekValue; 
-	ImageList		_imageList;
-	StateSetList	_statesetList;
+	std::istream*       _istream;
+	int                 _version;
+	bool                _peeking;
+	int                 _peekValue; 
+	ImageMap            _imageMap;
+	StateSetMap         _statesetMap;
+	StateAttributeMap   _stateAttributeMap;
+	DrawableMap         _drawableMap;
+	NodeMap             _nodeMap;
 };
 
 }

@@ -24,12 +24,12 @@
 
 
 /* defines */
-#define GLM_NONE     (0)		/* render with only vertices */
-#define GLM_FLAT     (1 << 0)		/* render with facet normals */
-#define GLM_SMOOTH   (1 << 1)		/* render with vertex normals */
-#define GLM_TEXTURE  (1 << 2)		/* render with texture coords */
-#define GLM_COLOR    (1 << 3)		/* render with colors */
-#define GLM_MATERIAL (1 << 4)		/* render with materials */
+#define GLM_NONE     (0)        /* render with only vertices */
+#define GLM_FLAT     (1 << 0)        /* render with facet normals */
+#define GLM_SMOOTH   (1 << 1)        /* render with vertex normals */
+#define GLM_TEXTURE  (1 << 2)        /* render with texture coords */
+#define GLM_COLOR    (1 << 3)        /* render with colors */
+#define GLM_MATERIAL (1 << 4)        /* render with materials */
 
 
 /* structs */
@@ -38,25 +38,27 @@
  */
 struct GLMmaterial
 {
-  char*   name;				/* name of material */
-  GLfloat diffuse[4];			/* diffuse component */
-  GLfloat ambient[4];			/* ambient component */
-  GLfloat specular[4];			/* specular component */
-  GLfloat emmissive[4];			/* emmissive component */
-  GLfloat shininess;			/* specular exponent */
+  char*   name;                /* name of material */
+  GLfloat diffuse[4];            /* diffuse component */
+  GLfloat ambient[4];            /* ambient component */
+  GLfloat specular[4];            /* specular component */
+  GLfloat emmissive[4];            /* emmissive component */
+  GLfloat shininess;            /* specular exponent */
   char*   textureName;                  /* name of any attached texture, add by RO */
   bool    textureReflection;            /* true if texture is a reflection map */    
+  float   alpha;                /* alpha */
 
   void init()
   {
-	name = NULL;
-	diffuse[0] = diffuse[1] = diffuse[2] = 0.8f; diffuse[3] = 1.0f;
-	ambient[0] = ambient[1] = ambient[2] = 0.2f; ambient[3] = 1.0f;
-	specular[0] = specular[1] = specular[2] = 0.0f; specular[3] = 1.0f;
-	emmissive[0] = emmissive[1] = emmissive[2] = 0.0f; emmissive[3] = 1.0f;
-	shininess = 0.0f;
-	textureName = NULL;
-	textureReflection = false;
+    name = NULL;
+    diffuse[0] = diffuse[1] = diffuse[2] = 0.8f; diffuse[3] = 1.0f;
+    ambient[0] = ambient[1] = ambient[2] = 0.2f; ambient[3] = 1.0f;
+    specular[0] = specular[1] = specular[2] = 0.0f; specular[3] = 1.0f;
+    emmissive[0] = emmissive[1] = emmissive[2] = 0.0f; emmissive[3] = 1.0f;
+    shininess = 0.0f;
+    textureName = NULL;
+    textureReflection = false;
+    alpha = 1.0f;
   }
 
 };
@@ -64,97 +66,97 @@ struct GLMmaterial
 /* GLMtriangle: Structure that defines a triangle in a model.
  */
 struct GLMtriangle {
-  unsigned int vindices[3];			/* array of triangle vertex indices */
-  unsigned int nindices[3];			/* array of triangle normal indices */
-  unsigned int tindices[3];			/* array of triangle texcoord indices*/
-  unsigned int findex;			    /* index of triangle facet normal */
+  unsigned int vindices[3];            /* array of triangle vertex indices */
+  unsigned int nindices[3];            /* array of triangle normal indices */
+  unsigned int tindices[3];            /* array of triangle texcoord indices*/
+  unsigned int findex;                /* index of triangle facet normal */
   void init()
   {
-	vindices[0] = vindices[2] = vindices[2] = 0 ;
-	nindices[0] = nindices[2] = nindices[2] = 0 ;
-	tindices[0] = tindices[2] = tindices[2] = 0 ;
-	findex=0;
+    vindices[0] = vindices[2] = vindices[2] = 0 ;
+    nindices[0] = nindices[2] = nindices[2] = 0 ;
+    tindices[0] = tindices[2] = tindices[2] = 0 ;
+    findex=0;
   }
 };
 
 /* GLMgroup: Structure that defines a group in a model.
  */
 struct GLMgroup {
-  char*             name;		/* name of this group */
-  unsigned int            numtriangles;	/* number of triangles in this group */
-  unsigned int*           triangles;		/* array of triangle indices */
+  char*             name;        /* name of this group */
+  unsigned int            numtriangles;    /* number of triangles in this group */
+  unsigned int*           triangles;        /* array of triangle indices */
   unsigned int            material;           /* index to material for group */
   bool              hastexcoords;       /* set to true if triangles have texture coords */
-  struct GLMgroup*  next;		/* pointer to next group in model */
+  struct GLMgroup*  next;        /* pointer to next group in model */
 
   void init()
   {
-	name = NULL;		
-	numtriangles = 0;	
-	triangles = NULL;	
-	material = 0;       
+    name = NULL;        
+    numtriangles = 0;    
+    triangles = NULL;    
+    material = 0;       
         hastexcoords = false;
-	next = NULL;		
+    next = NULL;        
   }
 };
 
 /* GLMmodel: Structure that defines a model.
  */
 struct  GLMmodel {
-  char*    pathname;			/* path to this model */
-  char*    mtllibname;			/* name of the material library */
+  char*    pathname;            /* path to this model */
+  char*    mtllibname;            /* name of the material library */
 
-  unsigned int   numvertices;			/* number of vertices in model */
-  GLfloat* vertices;			/* array of vertices  */
+  unsigned int   numvertices;            /* number of vertices in model */
+  GLfloat* vertices;            /* array of vertices  */
 
-  unsigned int   numnormals;			/* number of normals in model */
-  GLfloat* normals;			/* array of normals */
+  unsigned int   numnormals;            /* number of normals in model */
+  GLfloat* normals;            /* array of normals */
 
-  unsigned int   numtexcoords;		/* number of texcoords in model */
-  GLfloat* texcoords;			/* array of texture coordinates */
+  unsigned int   numtexcoords;        /* number of texcoords in model */
+  GLfloat* texcoords;            /* array of texture coordinates */
 
-  unsigned int   numfacetnorms;		/* number of facetnorms in model */
-  GLfloat* facetnorms;			/* array of facetnorms */
+  unsigned int   numfacetnorms;        /* number of facetnorms in model */
+  GLfloat* facetnorms;            /* array of facetnorms */
 
-  unsigned int       numtriangles;		/* number of triangles in model */
-  GLMtriangle* triangles;		/* array of triangles */
+  unsigned int       numtriangles;        /* number of triangles in model */
+  GLMtriangle* triangles;        /* array of triangles */
 
-  unsigned int       nummaterials;		/* number of materials in model */
-  GLMmaterial* materials;		/* array of materials */
+  unsigned int       nummaterials;        /* number of materials in model */
+  GLMmaterial* materials;        /* array of materials */
 
-  unsigned int       numgroups;		/* number of groups in model */
-  GLMgroup*    groups;			/* linked list of groups */
+  unsigned int       numgroups;        /* number of groups in model */
+  GLMgroup*    groups;            /* linked list of groups */
 
-  GLfloat position[3];			/* position of the model */
+  GLfloat position[3];            /* position of the model */
 
 
   void init()
   {
-	pathname = NULL;	
-	mtllibname = NULL;	
+    pathname = NULL;    
+    mtllibname = NULL;    
 
-	numvertices = 0;	
-	vertices = NULL;
+    numvertices = 0;    
+    vertices = NULL;
 
-	numnormals = 0;		
-	normals = NULL;	
+    numnormals = 0;        
+    normals = NULL;    
 
-	numtexcoords = 0;	
-	texcoords = NULL;
+    numtexcoords = 0;    
+    texcoords = NULL;
 
-	numfacetnorms = 0;	
-	facetnorms = NULL;
+    numfacetnorms = 0;    
+    facetnorms = NULL;
 
-	numtriangles = 0;	
-	triangles = NULL;		
+    numtriangles = 0;    
+    triangles = NULL;        
 
-	nummaterials = 0;	
-	materials = NULL;
+    nummaterials = 0;    
+    materials = NULL;
 
-	numgroups = 0;
-	groups = NULL;
+    numgroups = 0;
+    groups = NULL;
 
-	position[0] = position[1] = position[2] = 0.0f;
+    position[0] = position[1] = position[2] = 0.0f;
 
   }
 

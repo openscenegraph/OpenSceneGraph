@@ -35,9 +35,9 @@ MAKEDEPEND = ignore
 ##
 ## Usage:
 ##     Default - VERSION_REVISION is set to the value defined here
-##     Env variable PRODUCER_VERSION_REVISION overrides default    
+##     Env variable OSG_VERSION_REVISION overrides default    
 ##           e.g.:
-##               % setenv PRODUCER_VERSION_REVISION 5
+##               % setenv OSG_VERSION_REVISION 5
 ##               % make version
 ##     Command line overrides env variable
 ##               % make VERSION_REVISION=  
@@ -386,16 +386,17 @@ ifeq ($(OS),CYGWIN)
   LIB_EXT           = dll
   PLUGIN_EXT        = dll
   LINK              = cp -f
-  INST_SYS_PREFIX   = /usr/local/OpenSceneGraph
-  INST_LIBS         = $(INST_SYS_PREFIX)/bin
-  INST_PLUGINS      = $(INST_SYS_PREFIX)/bin
-  INST_INCLUDE      = $(INST_SYS_PREFIX)/include
+  INST_LOCATION   = /usr/local/OpenSceneGraph
+  INST_LIBS         = $(INST_LOCATION)/bin
+  INST_PLUGINS      = $(INST_LOCATION)/bin
+  INST_INCLUDE      = $(INST_LOCATION)/include
   INST_SHARE_PREFIX = /usr/local/OpenSceneGraph
   INST_SRC          = $(INST_SHARE_PREFIX)/src
   INST_EXAMPLES        = $(INST_SHARE_PREFIX)/bin
   INST_EXAMPLE_SRC     = $(INST_SHARE_PREFIX)/src/demos
   INST_DOC          = $(INST_SHARE_PREFIX)/doc
   INST_DATA         = $(INST_SHARE_PREFIX)/data
+  MAKEDIST          = $(TOPDIR)/Make/makeinnosetup
 endif
 
 #### Cygwin/Mingw specific definitions
@@ -432,10 +433,10 @@ ifeq ($(OS),MINGW)
   LIB_EXT           = dll
   PLUGIN_EXT        = dll
   LINK              = cp -f
-  INST_SYS_PREFIX   = /usr/local/OpenSceneGraph
-  INST_LIBS         = $(INST_SYS_PREFIX)/bin
-  INST_PLUGINS      = $(INST_SYS_PREFIX)/bin
-  INST_INCLUDE      = $(INST_SYS_PREFIX)/include
+  INST_LOCATION   = /usr/local/OpenSceneGraph
+  INST_LIBS         = $(INST_LOCATION)/bin
+  INST_PLUGINS      = $(INST_LOCATION)/bin
+  INST_INCLUDE      = $(INST_LOCATION)/include
   INST_SHARE_PREFIX = /usr/local/OpenSceneGraph
   INST_SRC          = $(INST_SHARE_PREFIX)/src
   INST_EXAMPLES        = $(INST_SHARE_PREFIX)/bin

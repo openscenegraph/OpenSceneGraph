@@ -149,7 +149,7 @@ class InsertNewVertices : public osg::ArrayVisitor
 
 void Tesselator::retesselatePolygons(osg::Geometry& geom)
 {
-    Vec3Array* vertices = geom.getVertexArray();
+    osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geom.getVertexArray());
     if (!vertices || vertices->empty() || geom.getPrimitiveSetList().empty()) return;
 
 

@@ -32,7 +32,7 @@ void LightSource::write(DataOutputStream* out){
 	// Write LightSource's properties.
 
 	// Write out light
-	out->writeInt((int)getLight());
+	out->writeLong((long)getLight());
 	if(getLight()){
 		((ive::Light*)(getLight()))->write(out);
 	}

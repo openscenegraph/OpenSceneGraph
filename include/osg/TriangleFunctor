@@ -15,6 +15,7 @@
 #define OSG_TRIANGLEFUNCTOR 1
 
 #include <osg/Drawable>
+#include <osg/Notify>
 
 namespace osg {
 
@@ -32,11 +33,22 @@ public:
     
     virtual ~TriangleFunctor() {}
 
+    virtual void setVertexArray(unsigned int count,const Vec2* vertices) 
+    {
+        notify(WARN)<<"Triangle Functor does not support Vec2* vertex arrays"<<std::endl;
+    }
+
     virtual void setVertexArray(unsigned int count,const Vec3* vertices)
     {
         _vertexArraySize = count;
         _vertexArrayPtr = vertices;
     }
+
+    virtual void setVertexArray(unsigned int count,const Vec4* vertices) 
+    {
+        notify(WARN)<<"Triangle Functor does not support Vec4* vertex arrays"<<std::endl;
+    }
+
 
     virtual void drawArrays(GLenum mode,GLint first,GLsizei count)
     {
@@ -311,15 +323,19 @@ public:
      *  non vertex array primitives to vertex array based primitives.
      * this is done to simplify the implementation of primtive functor
      * subclasses - users only need override drawArray and drawElements.*/
-    inline void begin(GLenum mode)
+    virtual void begin(GLenum mode)
     {
         _modeCache = mode;
         _vertexCache.clear();
     }
 
-    inline void vertex(const Vec3& vert) { _vertexCache.push_back(vert); }
-    inline void vertex(float x,float y,float z) { _vertexCache.push_back(osg::Vec3(x,y,z)); }
-    inline void end()
+    virtual void vertex(const Vec2& vert) { _vertexCache.push_back(osg::Vec3(vert[0],vert[1],0.0f)); }
+    virtual void vertex(const Vec3& vert) { _vertexCache.push_back(vert); }
+    virtual void vertex(const Vec4& vert) { _vertexCache.push_back(osg::Vec3(vert[0],vert[1],vert[2])/vert[3]); }
+    virtual void vertex(float x,float y) { _vertexCache.push_back(osg::Vec3(x,y,0.0f)); }
+    virtual void vertex(float x,float y,float z) { _vertexCache.push_back(osg::Vec3(x,y,z)); }
+    virtual void vertex(float x,float y,float z,float w) { _vertexCache.push_back(osg::Vec3(x,y,z)/w); }
+    virtual void end()
     {
         if (!_vertexCache.empty())
         {

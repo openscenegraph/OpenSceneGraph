@@ -156,8 +156,11 @@ osg::Image* ReadDDSFile(const char *filename)
     fread(&ddsd, sizeof(ddsd), 1, fp);
 
     // Read image data.
-    unsigned int size = ddsd.dwMipMapCount > 1 ? ddsd.dwLinearSize * 2 : ddsd.dwLinearSize;
-    unsigned char* imageData = new unsigned char [size];
+    unsigned int size = ddsd.dwMipMapCount > 1 ? ddsd.dwLinearSize * (ddsd.ddpfPixelFormat.dwFourCC==FOURCC_DXT1 ? 2: 4) : ddsd.dwLinearSize;
+    //###################unsigned int size = ddsd.dwMipMapCount > 1 ? ddsd.dwLinearSize * 2 : ddsd.dwLinearSize;
+
+    
+	unsigned char* imageData = new unsigned char [size];
     fread(imageData, 1, size, fp);
     // Close the file.
     fclose(fp);
@@ -206,7 +209,8 @@ osg::Image* ReadDDSFile(const char *filename)
                 else
                 {
                     internalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
-                    pixelFormat    = GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
+                    //#######################pixelFormat    = GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
+                    pixelFormat    = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
                 }
                 break;
             case FOURCC_DXT3:

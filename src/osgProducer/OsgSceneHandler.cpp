@@ -18,10 +18,10 @@ using namespace osgUtil;
 using namespace osgProducer;
 
 OsgSceneHandler::OsgSceneHandler( osg::DisplaySettings *ds) :
-    osgUtil::SceneView(ds)
+    _sceneView(new osgUtil::SceneView(ds))
 {
-    setProjectionMatrix( new osg::RefMatrix );
-    setModelViewMatrix( new osg::RefMatrix );
+    _sceneView->setProjectionMatrix( new osg::RefMatrix );
+    _sceneView->setModelViewMatrix( new osg::RefMatrix );
 }
 
 void OsgSceneHandler::init()
@@ -31,7 +31,7 @@ void OsgSceneHandler::init()
     mutex.lock();
     osg::notify(osg::INFO)<<"   running "<<this<<" init."<<std::endl;
 
-    SceneView::init();
+    _sceneView->SceneView::init();
 
     osg::notify(osg::INFO)<<"   done "<<this<<" init."<<std::endl;
     mutex.unlock();
@@ -46,24 +46,24 @@ void OsgSceneHandler::clearImplementation(Producer::Camera& /*camera*/)
 void OsgSceneHandler::cullImplementation(Producer::Camera &cam) 
 {
 
-    getProjectionMatrix()->set(cam.getProjectionMatrix());
-    getModelViewMatrix()->set(cam.getPositionAndAttitudeMatrix());
+    _sceneView->getProjectionMatrix()->set(cam.getProjectionMatrix());
+    _sceneView->getModelViewMatrix()->set(cam.getPositionAndAttitudeMatrix());
 
     int x, y;
     unsigned int w, h;
     cam.getProjectionRectangle( x, y, w, h );
 
-    setViewport( x, y, w, h );
+    _sceneView->setViewport( x, y, w, h );
 
-    SceneView::cull();
+    _sceneView->cull();
 }
 
 void OsgSceneHandler::drawImplementation(Producer::Camera &) 
 {
-    SceneView::draw();
+    _sceneView->SceneView::draw();
 }
 
 void OsgSceneHandler::setContextID( int id )
 {
-    getState()->setContextID( id );
+    _sceneView->getState()->setContextID( id );
 }

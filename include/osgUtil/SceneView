@@ -163,13 +163,13 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
 
 
         void setCullMask(const osg::Node::NodeMask nm) { _cullMask = nm; }
-        const osg::Node::NodeMask getCullMask() const { return _cullMask; }
+        osg::Node::NodeMask getCullMask() const { return _cullMask; }
 
         void setCullMaskLeft(const osg::Node::NodeMask nm) { _cullMaskLeft = nm; }
-        const osg::Node::NodeMask getCullMaskLeft() const { return _cullMaskLeft; }
+        osg::Node::NodeMask getCullMaskLeft() const { return _cullMaskLeft; }
 
         void setCullMaskRight(const osg::Node::NodeMask nm) { _cullMaskRight = nm; }
-        const osg::Node::NodeMask getCullMaskRight() const { return _cullMaskRight; }
+        osg::Node::NodeMask getCullMaskRight() const { return _cullMaskRight; }
 
         /** Set the LOD bias for the CullVisitor to use.*/
         void setLODScale(float bias) { _LODScale = bias; }

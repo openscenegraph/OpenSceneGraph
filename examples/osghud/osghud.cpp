@@ -35,8 +35,17 @@ osg::Node* createHUD()
     // turn lighting off for the text and disable depth test to ensure its always ontop.
     osg::StateSet* stateset = geode->getOrCreateStateSet();
     stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
-    //stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
+
+#if 0
+    // to ensure the hud appears on top we can either use osg::Depth to force the 
+    // depth fragments to be placed at the front of the screen.
     stateset->setAttribute(new osg::Depth(osg::Depth::LESS,0.0,0.0001));
+#else
+    // or disable depth test, and make sure that the hud is drawn after everything 
+    // else so that it always appears ontop.
+    stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
+    stateset->setRenderBinDetails(11,"RenderBin");
+#endif
 
     osg::Vec3 position(150.0f,800.0f,0.0f);
     osg::Vec3 delta(0.0f,-120.0f,0.0f);

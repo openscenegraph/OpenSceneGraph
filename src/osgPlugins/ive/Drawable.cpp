@@ -33,16 +33,23 @@ void Drawable::write(DataOutputStream* out){
 
 	// Write Drawable's properties.
 	
-	// Write stateset.
-	out->writeInt((int)getStateSet());
-	if(getStateSet())
-		out->writeStateSet(getStateSet());
- 
+	// Write stateset if any
+	if (getStateSet())
+	  {
+	    out->writeInt(1); //true we have a stateset
+	    out->writeStateSet(getStateSet());
+	  }
+	else
+	  out->writeInt(0); //false we don't have a stateset
+    
 	// Write shape
-	out->writeInt((int)getShape());
-    if (getShape()){
-		//static_cast<Shape*>(getShape())->write(out);
-	}
+	if (getShape())
+	  {
+	    out->writeInt(1); //true we have a shape
+	    //static_cast<Shape*>(getShape())->write(out);
+	  }
+	else
+	  out->writeInt(0); //false we don't have a shape
 
 	// Write support display list.
 	out->writeBool(getSupportsDisplayList());

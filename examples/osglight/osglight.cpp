@@ -356,7 +356,7 @@ int main( int argc, char **argv )
         ++itr)
     {
         // switch off small feature culling to prevent the light points from being culled.
-        osgUtil::SceneView* sceneview = itr->get();
+        osgUtil::SceneView* sceneview = (*itr)->getSceneView();
         sceneview->setCullingMode( sceneview->getCullingMode() & ~osg::CullStack::SMALL_FEATURE_CULLING);
     }
 

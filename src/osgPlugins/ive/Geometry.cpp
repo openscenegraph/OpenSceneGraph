@@ -18,6 +18,7 @@
 #include "DrawArrays.h"
 #include "DrawArrayLengths.h"
 #include "DrawElementsUShort.h"
+#include "DrawElementsUInt.h"
 
 using namespace ive;
 
@@ -46,61 +47,64 @@ void Geometry::write(DataOutputStream* out){
 			((ive::DrawArrayLengths*)(getPrimitiveSet(i)))->write(out);
 		else if(dynamic_cast<osg::DrawElementsUShort*>(getPrimitiveSet(i)))
 			((ive::DrawElementsUShort*)(getPrimitiveSet(i)))->write(out);
+		else if(dynamic_cast<osg::DrawElementsUInt*>(getPrimitiveSet(i)))
+			((ive::DrawElementsUInt*)(getPrimitiveSet(i)))->write(out);
 		else
 			throw Exception("Unknown PrimitivSet in Geometry::write()");
 	}
 
 	// Write vertex array if any
-	out->writeInt((int)getVertexArray());
-    if (getVertexArray()){
-		out->writeVec3Array(getVertexArray());
+    out->writeLong((long)getVertexArray());
+    if (getVertexArray())
+    {
+	out->writeArray(getVertexArray());
     }
 	// Write vertex indices if any
-	out->writeInt((int)getVertexIndices());
+	out->writeLong((long)getVertexIndices());
     if (getVertexIndices()){
         out->writeArray(getVertexIndices());
     }
 	// Write normal array if any
-	out->writeInt((int)getNormalArray());
+	out->writeLong((long)getNormalArray());
 	if (getNormalArray()){
 		out->writeBinding(getNormalBinding());
 		out->writeVec3Array(getNormalArray());
     }
 	// Write normal indices if any
-	out->writeInt((int)getNormalIndices());
+	out->writeLong((long)getNormalIndices());
     if (getNormalIndices()){
         out->writeArray(getNormalIndices());        
     }
 	// Write color array if any.
-	out->writeInt((int)getColorArray());
+	out->writeLong((long)getColorArray());
     if (getColorArray()){
 		out->writeBinding(getColorBinding());
 		out->writeArray(getColorArray());
     }
 	// Write color indices if any
-	out->writeInt((int)getColorIndices());
+	out->writeLong((long)getColorIndices());
     if (getColorIndices()){
         out->writeArray(getColorIndices());        
     }
 	// Write secondary color array if any
-	out->writeInt((int)getSecondaryColorArray());
+	out->writeLong((long)getSecondaryColorArray());
     if (getSecondaryColorArray()){
         out->writeBinding(getSecondaryColorBinding());
         out->writeArray(getSecondaryColorArray());
     }
 	// Write second color indices if any
-	out->writeInt((int)getSecondaryColorIndices());
+	out->writeLong((long)getSecondaryColorIndices());
     if (getSecondaryColorIndices()){
 		out->writeArray(getSecondaryColorIndices());
     }
 	// Write fog coord array if any
-	out->writeInt((int)getFogCoordArray());
+	out->writeLong((long)getFogCoordArray());
 	if (getFogCoordArray()){
 		out->writeBinding(getFogCoordBinding());
 		out->writeArray(getFogCoordArray());
     }
 	// Write fog coord indices if any
-	out->writeInt((int)getFogCoordIndices());
+	out->writeLong((long)getFogCoordIndices());
     if (getFogCoordIndices()){
 		out->writeArray(getFogCoordIndices());
     }
@@ -159,6 +163,11 @@ void Geometry::read(DataInputStream* in){
 				((ive::DrawElementsUShort*)(prim))->read(in);
 				addPrimitiveSet(prim);
 			}
+			else if(primID==IVEDRAWELEMENTSUINT){
+				prim = new osg::DrawElementsUInt();
+				((ive::DrawElementsUInt*)(prim))->read(in);
+				addPrimitiveSet(prim);
+			}
 			else{
 				throw Exception("Unkown PrimitiveSet in Geometry::read()");
 			}
@@ -167,7 +176,7 @@ void Geometry::read(DataInputStream* in){
 		// Read vertex array if any
 		int va=in->readInt();
 		if (va){
-			setVertexArray(in->readVec3Array());
+			setVertexArray(in->readArray());
 		}
 		// Read vertex indices if any
 		int vi = in->readInt();

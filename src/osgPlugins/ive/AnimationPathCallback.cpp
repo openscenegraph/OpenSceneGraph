@@ -36,10 +36,15 @@ void AnimationPathCallback::write(DataOutputStream* out){
 	out->writeDouble(_firstTime);
 	out->writeDouble(_animationTime);
 	// Write animationpath if any
-	out->writeInt((int)getAnimationPath());
-	if(getAnimationPath()){
+	if(getAnimationPath())
+        {
+        	out->writeInt(1); // true we have an animation path.
 		((ive::AnimationPath*)(getAnimationPath()))->write(out);
 	}
+        else
+        {
+        	out->writeInt(0); // false we don't have an animation path.
+        }
 }
 
 void AnimationPathCallback::read(DataInputStream* in){
@@ -61,7 +66,8 @@ void AnimationPathCallback::read(DataInputStream* in){
 		_firstTime = in->readDouble();
 		_animationTime = in->readDouble();
 		// Read animationpath if any
-		if(in->readInt()){
+		if(in->readInt())
+                {
 			osg::AnimationPath* path = new osg::AnimationPath();
 			((ive::AnimationPath*)(path))->read(in);
 			setAnimationPath(path);

@@ -340,7 +340,9 @@ class SG_EXPORT Drawable : public Object
             
             virtual ~PrimitiveFunctor() {}
 
+            virtual void setVertexArray(unsigned int count,const Vec2* vertices) = 0;
             virtual void setVertexArray(unsigned int count,const Vec3* vertices) = 0;
+            virtual void setVertexArray(unsigned int count,const Vec4* vertices) = 0;
             
             virtual void drawArrays(GLenum mode,GLint first,GLsizei count) = 0;
             virtual void drawElements(GLenum mode,GLsizei count,const GLubyte* indices) = 0;
@@ -348,8 +350,12 @@ class SG_EXPORT Drawable : public Object
             virtual void drawElements(GLenum mode,GLsizei count,const GLuint* indices) = 0;
             
             virtual void begin(GLenum mode) = 0;
+            virtual void vertex(const Vec2& vert) = 0;
             virtual void vertex(const Vec3& vert) = 0;
+            virtual void vertex(const Vec4& vert) = 0;
+            virtual void vertex(float x,float y) = 0;
             virtual void vertex(float x,float y,float z) = 0;
+            virtual void vertex(float x,float y,float z,float w) = 0;
             virtual void end() = 0;
             
         };

@@ -62,8 +62,8 @@ class OSGUTIL_EXPORT UpdateVisitor : public osg::NodeVisitor
 
     protected:
 
-        /** prevent unwanted copy construction.*/
-        UpdateVisitor(const UpdateVisitor&):osg::NodeVisitor() {}
+//         /** prevent unwanted copy construction.*/
+//         UpdateVisitor(const UpdateVisitor&):osg::NodeVisitor() {}
 
         /** prevent unwanted copy operator.*/
         UpdateVisitor& operator = (const UpdateVisitor&) { return *this; }

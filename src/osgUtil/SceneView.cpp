@@ -65,6 +65,16 @@ SceneView::~SceneView()
 
 void SceneView::setDefaults()
 {
+    if (!_projectionMatrix) 
+    {
+        _projectionMatrix = new RefMatrix();
+        _projectionMatrix->makePerspective(50.0f,1.4f,1.0f,10000.0f);
+    }
+    if (!_modelviewMatrix)
+    {
+        _modelviewMatrix = new RefMatrix();
+    }
+
     _globalStateSet = new osg::StateSet;
 
     _lightingMode=HEADLIGHT;

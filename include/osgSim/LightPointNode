@@ -45,6 +45,9 @@ class OSGSIM_EXPORT LightPointNode : public osg::Node
         virtual void traverse(osg::NodeVisitor& nv);
 
 
+        unsigned int getNumLightPoints() const { return _lightPointList.size(); }
+
+
         unsigned int addLightPoint(const LightPoint& lp);
 	
         void removeLightPoint(unsigned int pos);

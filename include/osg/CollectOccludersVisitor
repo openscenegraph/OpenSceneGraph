@@ -64,7 +64,7 @@ class SG_EXPORT CollectOccludersVisitor : public osg::NodeVisitor, public osg::C
     protected:
 
         /** prevent unwanted copy construction.*/
-        CollectOccludersVisitor(const CollectOccludersVisitor&):osg::NodeVisitor(),osg::CullStack() {}
+        //CollectOccludersVisitor(const CollectOccludersVisitor&):osg::NodeVisitor(),osg::CullStack() {}
 
         /** prevent unwanted copy operator.*/
         CollectOccludersVisitor& operator = (const CollectOccludersVisitor&) { return *this; }

@@ -113,6 +113,12 @@ const double PI_4 = 0.78539816339744830962;
 template<typename T>
 inline T absolute(T v) { return v<(T)0?-v:v; }
 
+/** return true if float lhs and rhs are equivalent, meaning that the difference between then is less than an epsilon value which default to 1e-6.*/
+inline float equivalent(float lhs,float rhs,float epsilon=1e-6) { float delta = rhs-lhs; return delta<0.0f?delta>=-epsilon:delta<=epsilon; }
+
+/** return true if double lhs and rhs are equivalent, meaning that the difference between then is less than an epsilon value which default to 1e-6.*/
+inline double equivalent(double lhs,double rhs,double epsilon=1e-6) { double delta = rhs-lhs; return delta<0.0?delta>=-epsilon:delta<=epsilon; }
+
 /** return the minimum of two values, equivilant to std::min.
   * std::min not used because of STL implementation under IRIX contains no std::min.*/
 template<typename T>

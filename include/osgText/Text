@@ -100,6 +100,18 @@ public:
     float getCharacterHeight() const { return _characterHeight; }
     float getCharacterAspectRatio() const { return _characterAspectRatio; }
 
+    enum CharacterSizeMode
+    {
+        OBJECT_COORDS, /// default
+        SCREEN_COORDS, /// internally scale the characters to be constant screen size.
+        OBJECT_COORDS_WITH_MAXIMUM_SCREEN_SIZE_CAPPED_BY_FONT_HEIGHT /// text that behavaves like OBJECT_COORDS sized text when a long distance way, but has its screen sized capped automatically when the viewer gets near.
+    };
+
+    /** Set how the CharacterSize value relates to the final rendered character.*/
+    void setCharacterSizeMode(CharacterSizeMode mode) { _characterSizeMode = mode; }
+    
+    /** Get the CharacterSizeMode.*/
+    CharacterSizeMode getCharacterSizeMode() const { return _characterSizeMode; }
 
 
     /** Set the maximum width of the text box.
@@ -165,26 +177,10 @@ public:
     void setAxisAlignment(AxisAlignment axis);
     
     void setRotation(const osg::Quat& quat);
-    void setRotation(unsigned int contextID, const osg::Quat& quat);
-    const osg::Quat& getRotation(unsigned int contextID=0) const { return _rotation[contextID]; }
+    const osg::Quat& getRotation() const { return _rotation; }
 
-    void setScale(float scale);
-    void setScale(unsigned int contextID, float scale);
-    float getScale(unsigned int contextID=0) const { return _scale[contextID]; }
-
-    void setScaleAndRotation(unsigned int contextID, float scale,const osg::Quat& quat);
-
-    void setAutoUpdateEyeMovementTolerance(float tolerance) { _autoUpdateEyeMovementTolerance = tolerance; }
-    float getAutoUpdateEyeMovementTolerance() const { return _autoUpdateEyeMovementTolerance; }
-    
     void setAutoRotateToScreen(bool autoRotateToScreen);
     bool getAutoRotateToScreen() const { return _autoRotateToScreen; }
-
-    void setAutoScaleToLimitScreenSizeToFontResolution(bool autoScaleToScreen);
-    bool getAutoScaleToLimitScreenSizeToFontResolution() const { return _autoScaleToLimitScreenSizeToFontResolution; }
-    
-    
-
 
     enum Layout
     {
@@ -295,35 +291,49 @@ protected:
     unsigned int                            _fontHeight;
     float                                   _characterHeight;
     float                                   _characterAspectRatio;
+    CharacterSizeMode                       _characterSizeMode;
     float                                   _maximumWidth;
     float                                   _maximumHeight;
 
     String                                  _text;
     osg::Vec3                               _position;
     AlignmentType                           _alignment;
-    mutable osg::buffered_object<osg::Quat> _rotation;
-    mutable osg::buffered_value<float>      _scale;
-    float                                   _autoUpdateEyeMovementTolerance;
+    osg::Quat                               _rotation;
     bool                                    _autoRotateToScreen;
-    bool                                    _autoScaleToLimitScreenSizeToFontResolution;
     Layout                                  _layout;
     osg::Vec4                               _color;
     unsigned int                            _drawMode;
 
     // iternal map used for rendering. Set up by the computeGlyphRepresentation() method.
-    TextureGlyphQuadMap                     _textureGlyphQuadMap;
+    mutable TextureGlyphQuadMap            _textureGlyphQuadMap;
     
     void computeGlyphRepresentation();
 
     // internal caches of the positioning of the text.
-    mutable osg::buffered_object<osg::Matrix>   _matrix;
-    osg::Vec3                                   _offset;
-    osg::Vec3                                   _normal;
-    mutable osg::BoundingBox                    _textBB;
+    
+    struct AutoTransformCache
+    {    
+        AutoTransformCache():
+            _traversalNumber(-1),
+            _width(0),
+            _height(0) {}
+    
+        int         _traversalNumber;
+        int         _width;
+        int         _height;
+        osg::Vec3   _transformedPosition;
+        osg::Matrix _modelview;
+        osg::Matrix _projection;
+        osg::Matrix _matrix;
+    };
+    
+    mutable osg::buffered_object<AutoTransformCache>    _autoTransformCache;
+    mutable osg::Vec3                                   _offset;
+    mutable osg::Vec3                                   _normal;
+    mutable osg::BoundingBox                            _textBB;
 
-    void setUpAutoCallback();
     void computePositions();
-    void computePositions(unsigned int contextID);
+    void computePositions(unsigned int contextID) const;
 
 };
 

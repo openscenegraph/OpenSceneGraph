@@ -80,9 +80,19 @@ Henry Maddocks <henryj@paradise.net.nz>
 Paul Fredrikson
         - new Matrix implementation.
 
+Phil Atkin <philatkin@philatkin.com>
+        - MacOS X port.
+
 Sasa Bistrivic <sasa.bistrovic@zg.hinet.hr>
         - option for detailed calculation of the near clipping plane during cull traversal.
 
+Nikolaus Hanekamp <hanekamp@stn-atlas.de>
+        - added support billboards to Open Flight loader.
+ 
+Yefei He <yhe@nads-sc.uiowa.edu>
+        - added support for nested extension, instance defination and reference
+          to the Open Flight loader.
+        
 Indirect Contributors
 ---------------------
     

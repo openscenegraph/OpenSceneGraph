@@ -360,7 +360,7 @@ bool Geometry::areFastPathsUsed() const
     return _fastPath;
 }
 
-void Geometry::drawImmediateMode(State& state)
+void Geometry::drawImplementation(State& state) const
 {
     if (!_vertexArray.valid() || _vertexArray->getNumElements()==0) return;
     if (_vertexIndices.valid() && _vertexIndices->getNumElements()==0) return;
@@ -449,7 +449,7 @@ void Geometry::drawImmediateMode(State& state)
         unsigned int unit;
         for(unit=0;unit<_texCoordList.size();++unit)
         {
-            Array* array = _texCoordList[unit].first.get();
+            const Array* array = _texCoordList[unit].first.get();
             if (array)
                 state.setTexCoordPointer(unit,array->getDataSize(),array->getDataType(),0,array->getDataPointer());
             else
@@ -472,7 +472,7 @@ void Geometry::drawImmediateMode(State& state)
         //
         // draw the primitives themselves.
         //
-        for(PrimitiveSetList::iterator itr=_primitives.begin();
+        for(PrimitiveSetList::const_iterator itr=_primitives.begin();
             itr!=_primitives.end();
             ++itr)
         {
@@ -590,7 +590,7 @@ void Geometry::drawImmediateMode(State& state)
         //
         // draw the primitives themselves.
         //
-        for(PrimitiveSetList::iterator itr=_primitives.begin();
+        for(PrimitiveSetList::const_iterator itr=_primitives.begin();
             itr!=_primitives.end();
             ++itr)
         {
@@ -599,7 +599,7 @@ void Geometry::drawImmediateMode(State& state)
             if (secondaryColorBinding==BIND_PER_PRIMITIVE_SET)    drawSecondaryColor(secondaryColorIndex++);
             if (fogCoordBinding==BIND_PER_PRIMITIVE_SET)          drawFogCoord(fogCoordIndex++);
     
-            PrimitiveSet* primitiveset = itr->get();
+            const PrimitiveSet* primitiveset = itr->get();
             GLenum mode=primitiveset->getMode();
 
             unsigned int primLength;

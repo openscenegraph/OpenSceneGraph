@@ -168,19 +168,23 @@ bool Text::computeBound() const
     return true;
 }
 
-void Text::drawImmediateMode(State& state)
+void Text::drawImplementation(State& state) const
 {
     if(!_init)
         return;
     
+    // ahhhh, this is bit doddy, the draw is potentially
+    // modifying the text object, this isn't thread safe.
+    Text* this_non_const = const_cast<Text*>(this);
+    
     if(!_font->isCreated())
     {
-        _font->create(state);
-        dirtyBound();
+        this_non_const->_font->create(state);
+        this_non_const->dirtyBound();
     }
 
     if(!_initAlignment)
-        initAlignment();
+        this_non_const->initAlignment();
 
     // we must disable all the vertex arrays to prevent any state
     // propagating into text.        
@@ -229,8 +233,7 @@ void Text::drawImmediateMode(State& state)
     }
 }
 
-void Text::
-drawBoundingBox(void) 
+void Text::drawBoundingBox(void) const
 {
     if(!_init)
         return;
@@ -247,8 +250,7 @@ drawBoundingBox(void)
     glPopAttrib();
 }
 
-void Text::
-drawAlignment(void)
+void Text::drawAlignment(void) const
 {
     if(!_init)
         return;

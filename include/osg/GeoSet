@@ -305,7 +305,7 @@ class SG_EXPORT GeoSet : public Drawable
           * This is the internal draw method which does the drawing itself,
           * and is the method to override when deriving from GeoSet for user-drawn objects.
           */
-        virtual void drawImmediateMode(State& state);
+        virtual void drawImplementation(State& state) const;
 
         bool check() const;
 
@@ -330,11 +330,20 @@ class SG_EXPORT GeoSet : public Drawable
         /** get the current AttributeDeleteFunction to handle attribute arrays attached to this Geoset.*/
         const AttributeDeleteFunctor* getAttributeDeleteFunctor() const { return _adf.get(); }
 
+        /** return true, osg::GeoSet does support accept(AttributeFunctor&).*/
+        virtual bool supports(AttributeFunctor&) const { return true; }
+
         /** accept an AttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has.*/
         virtual void accept(AttributeFunctor& af);
 
+        /** return true, osg::GeoSet does support accept(ConstAttributeFunctor&).*/
+        virtual bool supports(ConstAttributeFunctor&) const { return true; }
+
         /** accept an ConstAttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has.*/
         virtual void accept(ConstAttributeFunctor& af) const;
+
+        /** return true, osg::GeoSet does support accept(PrimitiveFunctor&) .*/
+        virtual bool supports(PrimitiveFunctor&) const { return true; }
 
         /** accept a PrimtiveFunctor and call its methods to tell it about the interal primtives that this Drawable has.*/
         virtual void accept(PrimitiveFunctor& pf) const;
@@ -362,7 +371,7 @@ class SG_EXPORT GeoSet : public Drawable
 
         mutable int     _numcoords;
         Vec3            *_coords;
-        IndexPointer    _cindex;
+        mutable IndexPointer    _cindex;
 
         BindingType     _normal_binding;
         mutable int     _numnormals;
@@ -388,8 +397,8 @@ class SG_EXPORT GeoSet : public Drawable
         int         _fast_path;
         
 	void set_fast_path( void );
-	void draw_fast_path( State& state );
-	void draw_alternate_path( State& state );
+	void draw_fast_path( State& state ) const;
+	void draw_alternate_path( State& state ) const;
 
 };
 

@@ -73,7 +73,7 @@ class OSGTEXT_EXPORT Font : public osg::Object
 
         virtual bool create(osg::State& state,int  pointSize, unsigned int res = 72 );
         virtual bool create(osg::State& state);
-        virtual void output(osg::State& state,const char* text);
+        virtual void output(osg::State& state,const char* text) const;
 
         virtual bool isOk(void) const { return _init; }
         virtual bool isCreated(void) const { return isOk() && _created; }

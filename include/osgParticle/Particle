@@ -164,13 +164,13 @@ namespace osgParticle
         bool update(double dt);
 
         /// Perform some pre-rendering tasks. Called automatically by particle systems.
-        inline void beginRender();
+        inline void beginRender() const;
         
         /// Render the particle. Called automatically by particle systems.
         void render(const osg::Vec3 &xpos, const osg::Vec3 &px, const osg::Vec3 &py, float scale = 1.0f) const;
         
         /// Perform some post-rendering tasks. Called automatically by particle systems.
-        inline void endRender();
+        inline void endRender() const;
         
         /// Get the current (interpolated) polygon size. Valid only after the first call to update().
         inline float getCurrentSize() const;
@@ -369,7 +369,7 @@ namespace osgParticle
         massinv_ = 1 / m;
     }
     
-    inline void Particle::beginRender()
+    inline void Particle::beginRender() const
     {
         switch (shape_)
         {
@@ -383,7 +383,7 @@ namespace osgParticle
         }
     }
     
-    inline void Particle::endRender()
+    inline void Particle::endRender() const
     {
         switch (shape_)
         {        

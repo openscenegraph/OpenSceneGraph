@@ -51,7 +51,7 @@ class SG_EXPORT DrawPixels : public Drawable
         bool getUseSubImage() const { return _useSubImage; }
 
 
-        virtual void drawImmediateMode(State& state);
+        virtual void drawImplementation(State& state) const;
 
 
     protected:

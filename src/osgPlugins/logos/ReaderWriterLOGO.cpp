@@ -79,7 +79,7 @@ class Logos: public osg::Drawable
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Logos*>(obj)!=NULL; }
         virtual const char* className() const { return "Logos"; }
 
-        virtual void drawImmediateMode( osg::State &state )
+        virtual void drawImplementation(osg::State &state ) const
 	{
 	    if( state.getContextID() != _contextID ) return;
 
@@ -100,7 +100,7 @@ class Logos: public osg::Drawable
     	    glPushMatrix();
     	    glLoadIdentity();
 
-	    std::vector <osg::Image *>::iterator p;
+	    std::vector <osg::Image *>::const_iterator p;
 	    float th = 0.0;
 	    for( p = logos[Center].begin(); p != logos[Center].end(); p++ )
 		th += (*p)->t();

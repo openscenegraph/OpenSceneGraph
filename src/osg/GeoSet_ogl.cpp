@@ -81,7 +81,7 @@ void GeoSet::set_fast_path( void )
 }
 
 
-void GeoSet::draw_fast_path( State& state )
+void GeoSet::draw_fast_path( State& state ) const
 {
     IndexPointer ocindex = _cindex;
 
@@ -264,7 +264,7 @@ void GeoSet::draw_fast_path( State& state )
 }
 
 
-void GeoSet::draw_alternate_path( State& state  )
+void GeoSet::draw_alternate_path( State& state  ) const
 {
     if( (_color_binding == BIND_PERVERTEX) && (_colindex.null() || _colindex ==_cindex) && (_flat_shaded_skip == 0) )
     {

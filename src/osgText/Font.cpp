@@ -174,12 +174,17 @@ bool  Font::create(osg::State& state)
         return false;
 }
 
-void Font::output(osg::State& state,const char* text)
+void Font::output(osg::State& state,const char* text) const
 {
     if(_created)
         _font->render(text,state.getContextID());
     else
-        create(state,_pointSize);
+    {
+        // ahhhh, this is bit doddy, the draw is potentially
+        // modifying the text object, this isn't thread safe.
+        Font* this_non_const = const_cast<Font*>(this);
+        this_non_const->create(state,_pointSize);
+    }
 }
 
 void  Font::clear()

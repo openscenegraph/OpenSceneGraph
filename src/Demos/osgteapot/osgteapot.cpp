@@ -218,7 +218,7 @@ class Teapot : public osg::Drawable
 
         // the draw immediate mode method is where the OSG wraps up the drawing of
         // of OpenGL primitives.
-        virtual void drawImmediateMode(osg::State&)
+        virtual void drawImplementation(osg::State&) const
         {
             // teapot(..) doens't use vertex arrays at all so we don't need to toggle their state
             // if we did we'd need to something like following call

@@ -602,10 +602,10 @@ osg::Group *ac_load_object(FILE *f,const ACObject *parent)
                                 (*vgeom).push_back((*vertpool)[i1]);
                                 (*tgeom).push_back((*tcs)[i]);
                             }
-                            GLenum poltype=osg::Primitive::POLYGON;
-                            if (asurf.flags & SURFACE_TYPE_CLOSEDLINE) poltype=osg::Primitive::LINE_LOOP;
-                            if (asurf.flags & SURFACE_TYPE_LINE) poltype=osg::Primitive::LINE_STRIP;
-                            geom->addPrimitive(new osg::DrawArrays(poltype,nstart,asurf.num_vertref));
+                            GLenum poltype=osg::PrimitiveSet::POLYGON;
+                            if (asurf.flags & SURFACE_TYPE_CLOSEDLINE) poltype=osg::PrimitiveSet::LINE_LOOP;
+                            if (asurf.flags & SURFACE_TYPE_LINE) poltype=osg::PrimitiveSet::LINE_STRIP;
+                            geom->addPrimitiveSet(new osg::DrawArrays(poltype,nstart,asurf.num_vertref));
                             if (asurf.flags & 0x10) needSmooth++;
                         }
                     }

@@ -149,9 +149,9 @@ namespace osgParticle
         ParticleSystem &operator=(const ParticleSystem &) { return *this; }
 
         inline virtual bool computeBound() const;
-        virtual void drawImmediateMode(osg::State &state);
+        virtual void drawImplementation(osg::State &state) const;
         inline void update_bounds(const osg::Vec3 &p, float r);
-        void single_pass_render(osg::State &state, const osg::Matrix &modelview);
+        void single_pass_render(osg::State &state, const osg::Matrix &modelview) const;
 
     private:
         typedef std::vector<Particle> Particle_vector;
@@ -176,11 +176,11 @@ namespace osgParticle
         bool bounds_computed_;
 
         Particle def_ptemp_;
-        int last_frame_;
+        mutable int last_frame_;
         bool freeze_on_cull_;
         
         int detail_;
-        int draw_count_;
+        mutable int draw_count_;
         
     };
     

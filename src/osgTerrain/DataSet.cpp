@@ -3895,8 +3895,8 @@ void DataSet::_buildDestination(bool writeToDisk)
 
     if (!_archive && !_archiveName.empty())
     {
-        _archive = new osgDB::Archive;
-        _archive->open(_archiveName, osgDB::Archive::CREATE);
+        unsigned int indexBlockSizeHint=4096;
+        _archive = openArchive(_archiveName, osgDB::Archive::CREATE, indexBlockSizeHint);
     }
 
     if (_destinationGraph.valid())

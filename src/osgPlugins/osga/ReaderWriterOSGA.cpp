@@ -2,7 +2,9 @@
 
 #include <osgDB/FileUtils>
 #include <osgDB/FileNameUtils>
-#include <osgDB/Archive>
+
+#include "OSGA_Archive.h"
+
 
 class ReaderWriterOSGA : public osgDB::ReaderWriter
 {
@@ -23,7 +25,7 @@ public:
         std::string fileName = osgDB::findDataFile( file );
         if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
     
-        osg::ref_ptr<osgDB::Archive> archive = new osgDB::Archive;
+        osg::ref_ptr<OSGA_Archive> archive = new OSGA_Archive;
         if (!archive->open(fileName, status, indexBlockSize))
         {
             return ReadResult(ReadResult::FILE_NOT_HANDLED);

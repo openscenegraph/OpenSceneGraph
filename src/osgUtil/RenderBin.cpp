@@ -15,7 +15,6 @@
 
 #include <osg/Statistics>
 #include <osg/ImpostorSprite>
-#include <osg/Notify>
 
 #include <algorithm>
 
@@ -26,8 +25,8 @@ using namespace osgUtil;
 class RenderBinPrototypeList : public osg::Referenced, public std::map< std::string, osg::ref_ptr<RenderBin> > 
 {
     public:
-	RenderBinPrototypeList() {osg::notify(osg::DEBUG_INFO)<<"constructing RenderBinPrototypeList"<<std::endl;}
-	~RenderBinPrototypeList() { osg::notify(osg::DEBUG_INFO)<<"destructing RenderBinPrototypeList"<<std::endl;}
+	RenderBinPrototypeList() {}
+	~RenderBinPrototypeList() {}
 };
 
 // register a RenderStage prototype with the RenderBin prototype list.
@@ -65,7 +64,6 @@ RenderBin* RenderBin::createRenderBin(const std::string& binName)
 
 void RenderBin::addRenderBinPrototype(const std::string& binName,RenderBin* proto)
 {
-    osg::notify(osg::DEBUG_INFO)<<"addRenderBinPrototype "<<proto<<std::endl;
     RenderBinPrototypeList* list = renderBinPrototypeList();
     if (list && proto)
     {
@@ -75,7 +73,6 @@ void RenderBin::addRenderBinPrototype(const std::string& binName,RenderBin* prot
 
 void RenderBin::removeRenderBinPrototype(RenderBin* proto)
 {
-    osg::notify(osg::DEBUG_INFO)<<"removeRenderBinPrototype "<<proto<<std::endl;
     RenderBinPrototypeList* list = renderBinPrototypeList();
     if (list && proto)
     {

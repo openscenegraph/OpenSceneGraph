@@ -462,7 +462,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "Example osgslideshow3D"=.\examples\osgslideshow3D\osgslideshow3D.dsp - Package Owner=<4>
+Project: "Example slideshow3D"=.\examples\slideshow3D\slideshow3D.dsp - Package Owner=<4>
 
 Package=<5>
 {{{

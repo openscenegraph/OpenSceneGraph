@@ -8,22 +8,34 @@
 #include <osg/Export>
 
 
-namespace osg {
-
-#if defined(WIN32 ) && !(defined(__CYGWIN__) || defined(__MINGW32__))
-    typedef __int64 Timer_t;
+#if defined(WIN32 ) && !(defined(__CYGWIN__) || defined(__MINGW32__) || defined(__MWERKS__))
+	namespace osg {
+	    typedef __int64 Timer_t;
+	}
 #elif defined(__linux) || defined(__FreeBSD__) || defined(__CYGWIN__)|| defined(__MINGW32__)
-    typedef unsigned long long Timer_t;
+	namespace osg {
+	    typedef unsigned long long Timer_t;
+	}
 #elif defined(__sgi)
-    typedef unsigned long long Timer_t;
+	namespace osg {
+	    typedef unsigned long long Timer_t;
+	}
 #elif defined(unix)
-    typedef unsigned long long Timer_t;
+	namespace osg {
+	    typedef unsigned long long Timer_t;
+	}
 #elif defined __APPLE__ || defined macintosh
-	typedef double Timer_t;
+	namespace osg {
+		typedef double Timer_t;
+	}
 #else
     #include <ctime>
-    typedef std::clock_t Timer_t;
+	namespace osg {
+	    typedef std::clock_t Timer_t;
+	}
 #endif
+
+namespace osg {
 
 /** A high resolution, low latency time stamper.*/
 class SG_EXPORT Timer {
@@ -61,7 +73,7 @@ class SG_EXPORT Timer {
 
 }
 
-#if defined(_WIN32) && !(defined(__CYGWIN__) || defined(__MINGW32__))
+#if defined(_WIN32) && !(defined(__CYGWIN__) || defined(__MINGW32__) || defined(__MWERKS__))
     #include <time.h>
     #pragma optimize("",off)
 
@@ -169,7 +181,6 @@ namespace osg{
 #elif !defined (__DARWIN_OSX__) && !defined (macintosh)
 
     // no choice, always use std::clock()
-
 namespace osg{
 
     inline  Timer_t Timer::tick( void ) const { return std::clock(); }

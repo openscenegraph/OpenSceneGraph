@@ -10,13 +10,14 @@
 
 namespace osg {
 
-/** Transform - is group which all children are transformed by the the Transform's osg::Matrix.  
-  * Typical uses
-  * of the Transform is for positioning objects within a scene or 
-  * producing trackball functionality or for animation.
-  * The Transform node can be customized via the ComputeTransfromCallback which can be
+/** Transform - is group node which all children are transformed by 4x4 matrix 
+  * and is used for positioning objects within a scene, producing trackball functionality or for animation.
+  * Transform itself does not provide set/get functions, only the interface for
+  * defining what the 4x4 transformation is, sublcalsses, such as MatrixTransform
+  * and PositionAttitudeTransform support the use of a osg::Matrix or a osg::Vec3/osg::Quat 
+  * resprectively. The Transform node can be customized via the ComputeTransfromCallback which can be
   * attached to the node, this might be used to convert internal representations of the transformation
-  * into generic osg::Matrix'c which are used during scene grpah traversal, such as CullTraversal and IntersectionTraversal.
+  * into generic osg::Matrix's which are used during scene grpah traversal, such as CullTraversal and IntersectionTraversal.
   * Note, if the transformation matrix scales the subgraph then the
   * normals of the underlying geometry will need to be renormalized to
   * be unit vectors once more.  One can done transparently through OpenGL's 
@@ -84,7 +85,7 @@ class SG_EXPORT Transform : public Group
 
 
         /** Get the transformation matrix which moves from local coords to world coords.
-          * Return true if Matrix passed in has been modified and */
+          * Return true if Matrix passed in has been updated. */
         inline const bool getLocalToWorldMatrix(Matrix& matrix,NodeVisitor* nv) const
         {
             if (_computeTransformCallback.valid())
@@ -95,7 +96,7 @@ class SG_EXPORT Transform : public Group
         
 
         /** Get the transformation matrix which moves from world coords to local coords.
-          * Return true if Matrix passed in has been modified and */
+          * Return true if Matrix passed in has been updated. */
         inline const bool getWorldToLocalMatrix(Matrix& matrix,NodeVisitor* nv) const
         {
             if (_computeTransformCallback.valid())

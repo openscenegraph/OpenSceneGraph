@@ -39,6 +39,7 @@ FTBitmapGlyph::FTBitmapGlyph( FT_Glyph glyph)
     
     data = osgNew unsigned char[srcPitch * destHeight];
     
+    // !!!! THIS assumes a positive Pitch value.  No allowance for negative pitch
     for(int y = 0; y < srcHeight; ++y)
     {
         --destHeight;

@@ -395,7 +395,7 @@ void Camera::setLookAt(const double eyeX, const double eyeY, const double eyeZ,
   * note, does not affect any ModelTransforms that are applied.*/
 void Camera::transformLookAt(const Matrix& matrix)
 {
-//    cout << "transformLookAt"<<matrix<<endl;
+//    cout << "transformLookAt"<<matrix<<std::endl;
     _up = (_up+_eye)*matrix;
     _eye = _eye*matrix;
     _center = _center*matrix;

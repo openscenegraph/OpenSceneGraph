@@ -132,7 +132,7 @@ GeoSet::GeoSet(const GeoSet& geoset,const CopyOp& copyop):
     if (geoset._iarray)
     {
         _iarray = 0L;
-        osg::notify(osg::WARN)<<"Warning :: GeoSet copy constructor error, copying of interleaved arrays unsupported."<<endl; 
+        osg::notify(osg::WARN)<<"Warning :: GeoSet copy constructor error, copying of interleaved arrays unsupported."<<std::endl; 
     }
     else
     {
@@ -851,15 +851,11 @@ Drawable::AttributeBitMask GeoSet::applyAttributeOperation(AttributeFunctor& auf
     
     if ((amb & COORDS) && _coords && _numcoords)
     {
-//        cout << "number of coords = "<<_numcoords<<endl;
-//        cout << "   _coords = "<<_coords<<"  _coords+_numcoords="<<_coords+_numcoords<<endl;
         if (auf.apply(COORDS,_coords,_coords+_numcoords)) ramb = COORDS;
     }
     
     if ((amb & NORMALS) && _normals && _numnormals)
     {
-//        cout << "number of normals = "<<_numnormals<<endl;
-//        cout << "   _normals = "<<_normals<<"  _normals+_numnormals="<<_normals+_numnormals<<endl;
         if (auf.apply(NORMALS,_normals,_normals+_numnormals)) ramb = NORMALS;
     }
     
@@ -875,6 +871,7 @@ Drawable::AttributeBitMask GeoSet::applyAttributeOperation(AttributeFunctor& auf
     
     return ramb;
 }
+
 bool GeoSet::getStats(Statistics &stat)
 { // analyse the drawable GeoSet
     const int np=getNumPrims(); // number of primitives in this geoset

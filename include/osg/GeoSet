@@ -336,7 +336,6 @@ class SG_EXPORT GeoSet : public Drawable
 
     protected:
 
-        GeoSet(const GeoSet&):Drawable() {}
         GeoSet& operator = (const GeoSet&) { return *this;}
 
         virtual ~GeoSet();

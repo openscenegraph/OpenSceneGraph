@@ -221,13 +221,15 @@ int main( int argc, char **argv )
     osg::Node* shallow_copy = dynamic_cast<osg::Node*>(rootnode->clone(MyCopyOp(osg::CopyOp::SHALLOW_COPY)));
 
 
+    // write out the various scene graphs so that they can be browsed, either
+    // in an editor or using a graphics diff tool gdiff/xdiff/xxdiff.
     std::cout << std::endl << "Writing out the original scene graph as 'original.osg'"<<endl;
     osgDB::writeNodeFile(*rootnode,"original.osg");
 
-    std::cout << "Writing out the deep copied scene graph as 'deep_copy.osg'"<<endl;
+    std::cout << "Writing out the deep copied scene graph as 'deep_copy.osg'"<<std::endl;
     osgDB::writeNodeFile(*deep_copy,"deep_copy.osg");
 
-    std::cout << "Writing out the shallow copied scene graph as 'shallow_copy.osg'"<<endl;
+    std::cout << "Writing out the shallow copied scene graph as 'shallow_copy.osg'"<<std::endl;
     osgDB::writeNodeFile(*shallow_copy,"shallow_copy.osg");
 
 

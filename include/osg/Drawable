@@ -198,7 +198,6 @@ class SG_EXPORT Drawable : public Object
 
     protected:
 
-        Drawable(const Drawable&):Object() {}
         Drawable& operator = (const Drawable&) { return *this;}
 
         virtual ~Drawable();

@@ -212,7 +212,7 @@ public:
         }
         else
         {
-            return osg::CoordinateFrame();
+            return osg::Matrixd::translate(X,Y,Z);
         }
     }
     

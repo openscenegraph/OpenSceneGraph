@@ -614,6 +614,16 @@ void SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
     rendergraph->prune();
 }
 
+void SceneView::releaseAllGLObjects()
+{
+    if (!_sceneData) return;
+   
+    GLObjectsVisitor globjv(GLObjectsVisitor::RELEASE_DISPLAY_LISTS|GLObjectsVisitor::RELEASE_STATE_ATTRIBUTES);
+    globjv.setNodeMaskOverride(0xffffffff);
+    globjv.setState(_state.get());
+    _sceneData->accept(globjv);
+}
+
 
 void SceneView::flushAllDeletedGLObjects()
 {

@@ -343,7 +343,7 @@ ifeq ("$(COMPILE_OSG_OP_OT_WITH_SONAMES)","YES")
 endif
 
     LIBS            = -lstdc++
-    DEF             += -W -Wall -fPIC
+    DEF             += -W -Wall -fPIC -pipe
     OPTF            = -O2 
     DBGF            = -g -gstabs+ -DOSG_COMPILE_UNIT_TESTS 
     SYSARCH           := $(shell arch)

@@ -1,0 +1,175 @@
+<HTML>
+<HEAD>
+   <TITLE>class  SG_EXPORT osg::Registry</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.3">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osg::Registry</A></H2>
+<BLOCKQUOTE> Registry is a singleton factory which stores the Objects types available at runtime for loading, and any Object reader or writers which are linked in at runtime for reading non-native file formats.</BLOCKQUOTE>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<A HREF="#DOC.2.45.7"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A> <B>~Registry</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.45.8"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>static   <!1><A HREF="Registry.html#DOC.2.45.5">Registry</A>* <B>instance</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.45.9"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>addPrototype</B>(<!1><A HREF="Object.html">Object</A>* obj)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.45.10"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>removePrototype</B>(<!1><A HREF="Object.html">Object</A>* obj)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.45.11"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>addReaderWriter</B>(<!1><A HREF="ReaderWriter.html">ReaderWriter</A>* rw)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.45.12"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>removeReaderWriter</B>(<!1><A HREF="ReaderWriter.html">ReaderWriter</A>* rw)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.45.1"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>std::string <B>createLibraryNameForFile</B>(const std::string&amp; fileName)
+<DD><I>create the platform specific library name associated with file</I>
+<DT>
+<A HREF="#DOC.2.45.2"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>std::string <B>createLibraryNameForExt</B>(const std::string&amp; ext)
+<DD><I>create the platform specific library name associated with file extension</I>
+<DT>
+<A HREF="#DOC.2.45.3"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>loadLibrary</B>(const std::string&amp; fileName)
+<DD><I>find the library in the SG_LIBRARY_PATH and load it</I>
+<DT>
+<A HREF="#DOC.2.45.4"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>closeLibrary</B>(const std::string&amp; fileName)
+<DD><I>close the attached library with specified name</I>
+<DT>
+<A HREF="#DOC.2.45.13"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Object.html">Object</A>* <B>readObject</B>(<!1><A HREF="Input.html">Input</A>&amp; fr)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.45.14"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Object.html">Object</A>* <B>readObject</B>(const std::string&amp; fileName)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.45.15"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>writeObject</B>(<!1><A HREF="Object.html">Object</A>&amp; obj, const std::string&amp; fileName)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.45.16"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Image.html">Image</A>* <B>readImage</B>(<!1><A HREF="Input.html">Input</A>&amp; fr)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.45.17"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Image.html">Image</A>* <B>readImage</B>(const std::string&amp; fileName)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.45.18"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>writeImage</B>(<!1><A HREF="Image.html">Image</A>&amp; obj, const std::string&amp; fileName)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.45.19"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Node.html">Node</A>* <B>readNode</B>(<!1><A HREF="Input.html">Input</A>&amp; fr)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.45.20"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Node.html">Node</A>* <B>readNode</B>(const std::string&amp; fileName)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.45.21"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>writeNode</B>(<!1><A HREF="Node.html">Node</A>&amp; node, const std::string&amp; fileName)
+<DD><I></I>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU">
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>
+Registry is a singleton factory which stores
+the Objects types available at runtime for loading,
+and any Object reader or writers which are linked in
+at runtime for reading non-native file formats.<P>The RegisterObjectProxy defined in Object.h can be
+used to automatically register at runtime a Object
+with the Registry.<P>The RegisterReaderWriterProxy defined in ReaderWriter.h can
+be used to automatically register at runtime a reader/writer
+with the Registry.</BLOCKQUOTE>
+<DL>
+
+<A NAME="~Registry">
+<A NAME="DOC.2.45.7">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ~Registry()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="instance">
+<A NAME="DOC.2.45.8">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   <!1><A HREF="Registry.html#DOC.2.45.5">Registry</A>* instance()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="addPrototype">
+<A NAME="DOC.2.45.9">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addPrototype(<!1><A HREF="Object.html">Object</A>* obj)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="removePrototype">
+<A NAME="DOC.2.45.10">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void removePrototype(<!1><A HREF="Object.html">Object</A>* obj)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="addReaderWriter">
+<A NAME="DOC.2.45.11">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addReaderWriter(<!1><A HREF="ReaderWriter.html">ReaderWriter</A>* rw)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="removeReaderWriter">
+<A NAME="DOC.2.45.12">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void removeReaderWriter(<!1><A HREF="ReaderWriter.html">ReaderWriter</A>* rw)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="createLibraryNameForFile">
+<A NAME="DOC.2.45.1">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>std::string createLibraryNameForFile(const std::string&amp; fileName)</B></TT>
+<DD>create the platform specific library name associated with file
+<DL><DT><DD></DL><P>
+<A NAME="createLibraryNameForExt">
+<A NAME="DOC.2.45.2">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>std::string createLibraryNameForExt(const std::string&amp; ext)</B></TT>
+<DD>create the platform specific library name associated with file extension
+<DL><DT><DD></DL><P>
+<A NAME="loadLibrary">
+<A NAME="DOC.2.45.3">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool loadLibrary(const std::string&amp; fileName)</B></TT>
+<DD>find the library in the SG_LIBRARY_PATH and load it
+<DL><DT><DD></DL><P>
+<A NAME="closeLibrary">
+<A NAME="DOC.2.45.4">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool closeLibrary(const std::string&amp; fileName)</B></TT>
+<DD>close the attached library with specified name
+<DL><DT><DD></DL><P>
+<A NAME="readObject">
+<A NAME="DOC.2.45.13">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Object.html">Object</A>* readObject(<!1><A HREF="Input.html">Input</A>&amp; fr)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readObject">
+<A NAME="DOC.2.45.14">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Object.html">Object</A>* readObject(const std::string&amp; fileName)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="writeObject">
+<A NAME="DOC.2.45.15">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool writeObject(<!1><A HREF="Object.html">Object</A>&amp; obj, const std::string&amp; fileName)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readImage">
+<A NAME="DOC.2.45.16">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Image.html">Image</A>* readImage(<!1><A HREF="Input.html">Input</A>&amp; fr)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readImage">
+<A NAME="DOC.2.45.17">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Image.html">Image</A>* readImage(const std::string&amp; fileName)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="writeImage">
+<A NAME="DOC.2.45.18">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool writeImage(<!1><A HREF="Image.html">Image</A>&amp; obj, const std::string&amp; fileName)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readNode">
+<A NAME="DOC.2.45.19">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Node.html">Node</A>* readNode(<!1><A HREF="Input.html">Input</A>&amp; fr)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readNode">
+<A NAME="DOC.2.45.20">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Node.html">Node</A>* readNode(const std::string&amp; fileName)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="writeNode">
+<A NAME="DOC.2.45.21">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool writeNode(<!1><A HREF="Node.html">Node</A>&amp; node, const std::string&amp; fileName)</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I><P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

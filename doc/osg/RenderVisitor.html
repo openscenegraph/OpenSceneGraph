@@ -1,0 +1,497 @@
+<HTML>
+<HEAD>
+   <TITLE>class  SG_EXPORT osg::RenderVisitor</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.3">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osg::RenderVisitor</A>: public <!1><A HREF="NodeVisitor.html#DOC.2.28.7">NodeVisitor</A></H2>
+<BLOCKQUOTE>Basic visitor for rendering a scene.</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=65>
+<param name=classes value="CNodeVisitor,MNodeVisitor.html,CRenderVisitor,MRenderVisitor.html">
+<param name=before value="M,M">
+<param name=after value="Md_,M">
+<param name=indent value="0,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Classes</H3><DD><DT>
+<A HREF="#DOC.2.41.1"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>enum  <B>TransparencySortMode</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.2"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>enum  <B>CullingType</B>
+<DD><I></I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<A HREF="#DOC.2.41.3"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A> <B>RenderVisitor</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.4"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   <B>~RenderVisitor</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.5"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>reset</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.6"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   void <B>apply</B>(<!1><A HREF="Node.html">Node</A>&amp;)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.7"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   void <B>apply</B>(<!1><A HREF="Geode.html">Geode</A>&amp; node)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.8"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   void <B>apply</B>(<!1><A HREF="Billboard.html">Billboard</A>&amp; node)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.9"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   void <B>apply</B>(<!1><A HREF="Group.html">Group</A>&amp; node)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.10"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   void <B>apply</B>(<!1><A HREF="DCS.html">DCS</A>&amp; node)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.11"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   void <B>apply</B>(<!1><A HREF="Switch.html">Switch</A>&amp; node)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.12"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   void <B>apply</B>(<!1><A HREF="LOD.html">LOD</A>&amp; node)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.13"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   void <B>apply</B>(<!1><A HREF="Scene.html">Scene</A>&amp; node)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.14"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setGlobalState</B>(<!1><A HREF="GeoState.html">GeoState</A>* global)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.15"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setPerspective</B>(float fovy, float aspect, float znear, float zfar)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.16"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setLookAt</B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye, const <!1><A HREF="Vec3.html">Vec3</A>&amp; center, const <!1><A HREF="Vec3.html">Vec3</A>&amp; upVector)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.17"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setLookAt</B>(double eyeX, double eyeY, double eyeZ, double centerX, double centerY, double centerZ, double upX, double upY, double upZ)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.18"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setLODBias</B>(float bias)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.19"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>float <B>getLODBias</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.20"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setTransparencySortMode</B>(<!1><A HREF="RenderVisitor.html#DOC.2.41.1">TransparencySortMode</A> tsm)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.21"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setCullingActive</B>(<!1><A HREF="RenderVisitor.html#DOC.2.41.2">CullingType</A> ct, bool active)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.22"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>getCullingActive</B>(<!1><A HREF="RenderVisitor.html#DOC.2.41.2">CullingType</A> ct)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.23"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>calcNearFar</B>(double&amp; near_plane, double&amp; far_plane)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.24"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>render</B>()
+<DD><I></I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<A HREF="#DOC.2.41.32"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>_viewFrustumCullingActive</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.33"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>_smallFeatureCullingActive</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.38"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="RenderVisitor.html#DOC.2.41.37">ViewStateStack</A> <B>_viewStateStack</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.39"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="ViewState.html">ViewState</A>* <B>_tvs</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.40"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="ViewState.html">ViewState</A>* <B>_cvs</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.43"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="RenderVisitor.html#DOC.2.41.41">OpaqueList</A> <B>_opaqueGeoSets</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.44"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="RenderVisitor.html#DOC.2.41.42">TransparentList</A> <B>_transparentGeoSets</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.45"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="GeoState.html">GeoState</A>* <B>_globalState</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.46"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>float <B>_LODBias</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.47"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>float <B>_fovy</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.48"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>float <B>_aspect</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.49"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>float <B>_znear</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.50"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>float <B>_zfar</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.52"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Vec3.html">Vec3</A> <B>_frustumTop</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.53"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Vec3.html">Vec3</A> <B>_frustumBottom</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.54"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Vec3.html">Vec3</A> <B>_frustumLeft</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.55"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Vec3.html">Vec3</A> <B>_frustumRight</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.56"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="RenderVisitor.html#DOC.2.41.1">TransparencySortMode</A> <B>_tsm</B>
+<DD><I></I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<A HREF="#DOC.2.41.25"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>pushMatrix</B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; matrix)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.26"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>popMatrix</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.27"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Matrix.html">Matrix</A>* <B>getCurrentMatrix</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.28"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Matrix.html">Matrix</A>* <B>getInverseCurrentMatrix</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.29"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>const <!1><A HREF="Vec3.html">Vec3</A>&amp; <B>getEyeLocal</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.30"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>const <!1><A HREF="Vec3.html">Vec3</A>&amp; <B>getCenterLocal</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.31"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>const <!1><A HREF="Vec3.html">Vec3</A>&amp; <B>getLookVectorLocal</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.34"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>isCulled</B>(const <!1><A HREF="BoundingSphere.html">BoundingSphere</A>&amp; sp)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.35"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>isCulled</B>(const <!1><A HREF="BoundingBox.html">BoundingBox</A>&amp; bb)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.51"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>calculateClippingPlanes</B>()
+<DD><I></I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected</H3><DD><DT>
+<A HREF="#DOC.2.41.36"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>typedef  std::pair&lt;<!1><A HREF="Matrix.html">Matrix</A>*,<!1><A HREF="GeoSet.html">GeoSet</A>*&gt;  <B>MatrixGeoSet</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.37"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>typedef  std::vector&lt;<!1><A HREF="ViewState.html">ViewState</A>*&gt;  <B>ViewStateStack</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.41"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>typedef  std::multimap&lt;<!1><A HREF="GeoState.html">GeoState</A>*,<!1><A HREF="RenderVisitor.html#DOC.2.41.36">MatrixGeoSet</A>&gt;  <B>OpaqueList</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.41.42"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>typedef  std::multimap&lt;float,<!1><A HREF="RenderVisitor.html#DOC.2.41.36">MatrixGeoSet</A>&gt;  <B>TransparentList</B>
+<DD><I></I>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="NodeVisitor.html">NodeVisitor</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Classes</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>TraversalMode</B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setTraverseMode</B>(<!1><A HREF="NodeVisitor.html#DOC.2.28.1">TraversalMode</A> mode)
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="NodeVisitor.html#DOC.2.28.1">TraversalMode</A> <B>getTraverseMode</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setTraverseVisitor</B>(<!1><A HREF="NodeVisitor.html#DOC.2.28.7">NodeVisitor</A>* nv)
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="NodeVisitor.html#DOC.2.28.7">NodeVisitor</A>* <B>getTraverseVisitor</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>traverse</B>(<!1><A HREF="Node.html">Node</A>&amp; node)
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="NodeVisitor.html#DOC.2.28.7">NodeVisitor</A>* <B>_traverseVisitor</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="NodeVisitor.html#DOC.2.28.1">TraversalMode</A> <B>_traverseMode</B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU">
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>Basic visitor for rendering a scene.
+The visitor traverses the scene graph, collecting transparent
+and opaque osg::GeoSet's into a depth sorted transparent bin
+and a state sorted opaque bin.  The opaque bin is rendered first,
+and then the transparent bin in rendered in order from the furthest
+osg::GeoSet from the eye to the one nearest the eye.</BLOCKQUOTE>
+<DL>
+
+<A NAME="RenderVisitor">
+<A NAME="DOC.2.41.3">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> RenderVisitor()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~RenderVisitor">
+<A NAME="DOC.2.41.4">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~RenderVisitor()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="reset">
+<A NAME="DOC.2.41.5">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void reset()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="apply">
+<A NAME="DOC.2.41.6">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="Node.html">Node</A>&amp;)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="apply">
+<A NAME="DOC.2.41.7">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="Geode.html">Geode</A>&amp; node)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="apply">
+<A NAME="DOC.2.41.8">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="Billboard.html">Billboard</A>&amp; node)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="apply">
+<A NAME="DOC.2.41.9">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="Group.html">Group</A>&amp; node)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="apply">
+<A NAME="DOC.2.41.10">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="DCS.html">DCS</A>&amp; node)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="apply">
+<A NAME="DOC.2.41.11">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="Switch.html">Switch</A>&amp; node)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="apply">
+<A NAME="DOC.2.41.12">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="LOD.html">LOD</A>&amp; node)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="apply">
+<A NAME="DOC.2.41.13">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="Scene.html">Scene</A>&amp; node)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setGlobalState">
+<A NAME="DOC.2.41.14">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setGlobalState(<!1><A HREF="GeoState.html">GeoState</A>* global)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setPerspective">
+<A NAME="DOC.2.41.15">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setPerspective(float fovy, float aspect, float znear, float zfar)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setLookAt">
+<A NAME="DOC.2.41.16">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setLookAt(const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye, const <!1><A HREF="Vec3.html">Vec3</A>&amp; center, const <!1><A HREF="Vec3.html">Vec3</A>&amp; upVector)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setLookAt">
+<A NAME="DOC.2.41.17">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setLookAt(double eyeX, double eyeY, double eyeZ, double centerX, double centerY, double centerZ, double upX, double upY, double upZ)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setLODBias">
+<A NAME="DOC.2.41.18">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setLODBias(float bias)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getLODBias">
+<A NAME="DOC.2.41.19">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float getLODBias()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="TransparencySortMode">
+<A NAME="DOC.2.41.1">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  TransparencySortMode</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="LOOK_VECTOR_DISTANCE">
+<A NAME="DOC.2.41.1.1">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LOOK_VECTOR_DISTANCE</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="OBJECT_EYE_POINT_DISTANCE">
+<A NAME="DOC.2.41.1.2">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> OBJECT_EYE_POINT_DISTANCE</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="setTransparencySortMode">
+<A NAME="DOC.2.41.20">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setTransparencySortMode(<!1><A HREF="RenderVisitor.html#DOC.2.41.1">TransparencySortMode</A> tsm)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="CullingType">
+<A NAME="DOC.2.41.2">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  CullingType</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="VIEW_FRUSTUM_CULLING">
+<A NAME="DOC.2.41.2.1">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> VIEW_FRUSTUM_CULLING</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="SMALL_FEATURE_CULLING">
+<A NAME="DOC.2.41.2.2">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SMALL_FEATURE_CULLING</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="setCullingActive">
+<A NAME="DOC.2.41.21">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setCullingActive(<!1><A HREF="RenderVisitor.html#DOC.2.41.2">CullingType</A> ct, bool active)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getCullingActive">
+<A NAME="DOC.2.41.22">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getCullingActive(<!1><A HREF="RenderVisitor.html#DOC.2.41.2">CullingType</A> ct)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="calcNearFar">
+<A NAME="DOC.2.41.23">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool calcNearFar(double&amp; near_plane, double&amp; far_plane)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="render">
+<A NAME="DOC.2.41.24">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void render()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="pushMatrix">
+<A NAME="DOC.2.41.25">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void pushMatrix(const <!1><A HREF="Matrix.html">Matrix</A>&amp; matrix)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="popMatrix">
+<A NAME="DOC.2.41.26">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void popMatrix()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getCurrentMatrix">
+<A NAME="DOC.2.41.27">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Matrix.html">Matrix</A>* getCurrentMatrix()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getInverseCurrentMatrix">
+<A NAME="DOC.2.41.28">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Matrix.html">Matrix</A>* getInverseCurrentMatrix()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getEyeLocal">
+<A NAME="DOC.2.41.29">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec3.html">Vec3</A>&amp; getEyeLocal()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getCenterLocal">
+<A NAME="DOC.2.41.30">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec3.html">Vec3</A>&amp; getCenterLocal()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getLookVectorLocal">
+<A NAME="DOC.2.41.31">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec3.html">Vec3</A>&amp; getLookVectorLocal()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_viewFrustumCullingActive">
+<A NAME="DOC.2.41.32">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _viewFrustumCullingActive</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_smallFeatureCullingActive">
+<A NAME="DOC.2.41.33">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _smallFeatureCullingActive</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="isCulled">
+<A NAME="DOC.2.41.34">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool isCulled(const <!1><A HREF="BoundingSphere.html">BoundingSphere</A>&amp; sp)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="isCulled">
+<A NAME="DOC.2.41.35">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool isCulled(const <!1><A HREF="BoundingBox.html">BoundingBox</A>&amp; bb)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="MatrixGeoSet">
+<A NAME="DOC.2.41.36">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::pair&lt;<!1><A HREF="Matrix.html">Matrix</A>*,<!1><A HREF="GeoSet.html">GeoSet</A>*&gt;  MatrixGeoSet</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ViewStateStack">
+<A NAME="DOC.2.41.37">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="ViewState.html">ViewState</A>*&gt;  ViewStateStack</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_viewStateStack">
+<A NAME="DOC.2.41.38">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderVisitor.html#DOC.2.41.37">ViewStateStack</A> _viewStateStack</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_tvs">
+<A NAME="DOC.2.41.39">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ViewState.html">ViewState</A>* _tvs</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_cvs">
+<A NAME="DOC.2.41.40">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ViewState.html">ViewState</A>* _cvs</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="OpaqueList">
+<A NAME="DOC.2.41.41">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::multimap&lt;<!1><A HREF="GeoState.html">GeoState</A>*,<!1><A HREF="RenderVisitor.html#DOC.2.41.36">MatrixGeoSet</A>&gt;  OpaqueList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="TransparentList">
+<A NAME="DOC.2.41.42">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::multimap&lt;float,<!1><A HREF="RenderVisitor.html#DOC.2.41.36">MatrixGeoSet</A>&gt;  TransparentList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_opaqueGeoSets">
+<A NAME="DOC.2.41.43">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderVisitor.html#DOC.2.41.41">OpaqueList</A> _opaqueGeoSets</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_transparentGeoSets">
+<A NAME="DOC.2.41.44">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderVisitor.html#DOC.2.41.42">TransparentList</A> _transparentGeoSets</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_globalState">
+<A NAME="DOC.2.41.45">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GeoState.html">GeoState</A>* _globalState</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_LODBias">
+<A NAME="DOC.2.41.46">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _LODBias</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_fovy">
+<A NAME="DOC.2.41.47">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _fovy</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_aspect">
+<A NAME="DOC.2.41.48">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _aspect</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_znear">
+<A NAME="DOC.2.41.49">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _znear</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_zfar">
+<A NAME="DOC.2.41.50">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _zfar</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="calculateClippingPlanes">
+<A NAME="DOC.2.41.51">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void calculateClippingPlanes()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_frustumTop">
+<A NAME="DOC.2.41.52">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec3.html">Vec3</A> _frustumTop</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_frustumBottom">
+<A NAME="DOC.2.41.53">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec3.html">Vec3</A> _frustumBottom</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_frustumLeft">
+<A NAME="DOC.2.41.54">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec3.html">Vec3</A> _frustumLeft</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_frustumRight">
+<A NAME="DOC.2.41.55">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec3.html">Vec3</A> _frustumRight</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_tsm">
+<A NAME="DOC.2.41.56">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderVisitor.html#DOC.2.41.1">TransparencySortMode</A> _tsm</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I><P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

@@ -1,0 +1,286 @@
+<HTML>
+<HEAD>
+   <TITLE>class  SG_EXPORT osg::Quat</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.3">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osg::Quat</A></H2>
+<BLOCKQUOTE>A quaternion class.</BLOCKQUOTE>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Fields</H3><DD><DT>
+<A HREF="#DOC.2.40.8"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Vec4.html">Vec4</A> <B>_fv</B>
+<DD><I></I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<A HREF="#DOC.2.40.9"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A> <B>Quat</B>( void )
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.40.10"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A> <B>Quat</B>( float x, float y, float z, float w )
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.40.11"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A> <B>Quat</B>( const <!1><A HREF="Vec4.html">Vec4</A>&amp; vec )
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.40.12"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>inline   <!1><A HREF="Vec4.html">Vec4</A> <B>asVec4</B>( void ) const 
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.40.13"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>inline   <!1><A HREF="Vec3.html">Vec3</A> <B>asVec3</B>( void ) const 
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.40.14"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>inline   <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A> <B>operator * </B>(const float&amp; rhs) const 
+<DD><I>Multiply by scalar </I>
+<DT>
+<A HREF="#DOC.2.40.15"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>inline   <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A>&amp; <B>operator *= </B>(const float&amp; rhs)
+<DD><I>Unary multiply by scalar </I>
+<DT>
+<A HREF="#DOC.2.40.16"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>inline   <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A> <B>operator*</B>(const <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A>&amp; rhs) const 
+<DD><I>Binary multiply </I>
+<DT>
+<A HREF="#DOC.2.40.17"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>inline   <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A>&amp; <B>operator*=</B>(const <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A>&amp; rhs)
+<DD><I>Unary multiply </I>
+<DT>
+<A HREF="#DOC.2.40.18"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>inline   <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A> <B>operator / </B>(const float&amp; rhs) const 
+<DD><I>Divide by scalar </I>
+<DT>
+<A HREF="#DOC.2.40.19"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>inline   <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A>&amp; <B>operator /= </B>(const float&amp; rhs)
+<DD><I>Unary divide by scalar </I>
+<DT>
+<A HREF="#DOC.2.40.20"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>inline   <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A> <B>operator/</B>(const <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A>&amp; denom) const 
+<DD><I>Binary divide </I>
+<DT>
+<A HREF="#DOC.2.40.21"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>inline   <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A>&amp; <B>operator/=</B>(const <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A>&amp; denom)
+<DD><I>Unary divide </I>
+<DT>
+<A HREF="#DOC.2.40.22"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>inline   <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A> <B>operator + </B>(const <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A>&amp; rhs) const 
+<DD><I>Binary addition </I>
+<DT>
+<A HREF="#DOC.2.40.23"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>inline   <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A>&amp; <B>operator += </B>(const <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A>&amp; rhs)
+<DD><I>Unary addition</I>
+<DT>
+<A HREF="#DOC.2.40.24"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>inline   <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A> <B>operator - </B>(const <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A>&amp; rhs) const 
+<DD><I>Binary subtraction </I>
+<DT>
+<A HREF="#DOC.2.40.25"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>inline   <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A>&amp; <B>operator -= </B>(const <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A>&amp; rhs)
+<DD><I>Unary subtraction </I>
+<DT>
+<A HREF="#DOC.2.40.1"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>inline   <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A> <B>operator - </B>() const 
+<DD><I>Negation operator - returns the negative of the quaternion.</I>
+<DT>
+<A HREF="#DOC.2.40.26"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>float <B>length</B>( void ) const 
+<DD><I>Length of the quaternion = sqrt( vec . vec )</I>
+<DT>
+<A HREF="#DOC.2.40.27"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>float <B>length2</B>( void ) const 
+<DD><I>Length of the quaternion = vec . vec</I>
+<DT>
+<A HREF="#DOC.2.40.28"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>inline   <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A> <B>conj</B>( void ) const 
+<DD><I>Conjugate </I>
+<DT>
+<A HREF="#DOC.2.40.29"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>inline   <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A> <B>inverse</B>( void ) const 
+<DD><I>Multiplicative inverse method: q^(-1) = q^*/(q.q^*)</I>
+<DT>
+<A HREF="#DOC.2.40.30"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>makeRot</B>( const float angle, const float x, const float y, const float z )
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.40.31"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>makeRot</B>( const float angle, const <!1><A HREF="Vec3.html">Vec3</A>&amp; vec )
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.40.2"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>makeRot</B>( const <!1><A HREF="Vec3.html">Vec3</A>&amp; vec1, const <!1><A HREF="Vec3.html">Vec3</A>&amp; vec2 )
+<DD><I>Make a rotation Quat which will rotate vec1 to vec2.</I>
+<DT>
+<A HREF="#DOC.2.40.3"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>getRot</B>( float&amp; angle, float&amp; x, float&amp; y, float&amp; z ) const 
+<DD><I>Return the angle and vector components represented by the quaternion</I>
+<DT>
+<A HREF="#DOC.2.40.4"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>getRot</B>( float&amp; angle, <!1><A HREF="Vec3.html">Vec3</A>&amp; vec ) const 
+<DD><I>Return the angle and vector represented by the quaternion</I>
+<DT>
+<A HREF="#DOC.2.40.5"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>slerp</B>( const float t, const <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A>&amp; from, const <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A>&amp; to)
+<DD><I>Spherical Linear Interpolation.</I>
+<DT>
+<A HREF="#DOC.2.40.6"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>set</B>( const <!1><A HREF="Matrix.html">osg::Matrix</A>&amp; m )
+<DD><I>Set quaternion to be equivalent to specified matrix</I>
+<DT>
+<A HREF="#DOC.2.40.7"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>get</B>( <!1><A HREF="Matrix.html">osg::Matrix</A>&amp; m ) const 
+<DD><I>Get the equivalent matrix for this quaternion</I>
+<DT>
+<A HREF="#DOC.2.40.32"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>inline  friend ostream&amp; <B>operator << </B>(ostream&amp; output, const <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A>&amp; vec)
+<DD><I></I>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU">
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>A quaternion class. It can be used to represent an orientation in 3D space.</BLOCKQUOTE>
+<DL>
+
+<A NAME="_fv">
+<A NAME="DOC.2.40.8">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec4.html">Vec4</A> _fv</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Quat">
+<A NAME="DOC.2.40.9">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Quat( void )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Quat">
+<A NAME="DOC.2.40.10">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Quat( float x, float y, float z, float w )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Quat">
+<A NAME="DOC.2.40.11">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Quat( const <!1><A HREF="Vec4.html">Vec4</A>&amp; vec )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="asVec4">
+<A NAME="DOC.2.40.12">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Vec4.html">Vec4</A> asVec4( void ) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="asVec3">
+<A NAME="DOC.2.40.13">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Vec3.html">Vec3</A> asVec3( void ) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator * ">
+<A NAME="DOC.2.40.14">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A> operator * (const float&amp; rhs) const </B></TT>
+<DD>Multiply by scalar 
+<DL><DT><DD></DL><P>
+<A NAME="operator *= ">
+<A NAME="DOC.2.40.15">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A>&amp; operator *= (const float&amp; rhs)</B></TT>
+<DD>Unary multiply by scalar 
+<DL><DT><DD></DL><P>
+<A NAME="operator*">
+<A NAME="DOC.2.40.16">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A> operator*(const <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A>&amp; rhs) const </B></TT>
+<DD>Binary multiply 
+<DL><DT><DD></DL><P>
+<A NAME="operator*=">
+<A NAME="DOC.2.40.17">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A>&amp; operator*=(const <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A>&amp; rhs)</B></TT>
+<DD>Unary multiply 
+<DL><DT><DD></DL><P>
+<A NAME="operator / ">
+<A NAME="DOC.2.40.18">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A> operator / (const float&amp; rhs) const </B></TT>
+<DD>Divide by scalar 
+<DL><DT><DD></DL><P>
+<A NAME="operator /= ">
+<A NAME="DOC.2.40.19">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A>&amp; operator /= (const float&amp; rhs)</B></TT>
+<DD>Unary divide by scalar 
+<DL><DT><DD></DL><P>
+<A NAME="operator/">
+<A NAME="DOC.2.40.20">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A> operator/(const <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A>&amp; denom) const </B></TT>
+<DD>Binary divide 
+<DL><DT><DD></DL><P>
+<A NAME="operator/=">
+<A NAME="DOC.2.40.21">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A>&amp; operator/=(const <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A>&amp; denom)</B></TT>
+<DD>Unary divide 
+<DL><DT><DD></DL><P>
+<A NAME="operator + ">
+<A NAME="DOC.2.40.22">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A> operator + (const <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A>&amp; rhs) const </B></TT>
+<DD>Binary addition 
+<DL><DT><DD></DL><P>
+<A NAME="operator += ">
+<A NAME="DOC.2.40.23">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A>&amp; operator += (const <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A>&amp; rhs)</B></TT>
+<DD>Unary addition
+<DL><DT><DD></DL><P>
+<A NAME="operator - ">
+<A NAME="DOC.2.40.24">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A> operator - (const <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A>&amp; rhs) const </B></TT>
+<DD>Binary subtraction 
+<DL><DT><DD></DL><P>
+<A NAME="operator -= ">
+<A NAME="DOC.2.40.25">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A>&amp; operator -= (const <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A>&amp; rhs)</B></TT>
+<DD>Unary subtraction 
+<DL><DT><DD></DL><P>
+<A NAME="operator - ">
+<A NAME="DOC.2.40.1">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A> operator - () const </B></TT>
+<DD>Negation operator - returns the negative of the quaternion.
+Basically just calls operator - () on the Vec4 
+<DL><DT><DD></DL><P>
+<A NAME="length">
+<A NAME="DOC.2.40.26">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float length( void ) const </B></TT>
+<DD>Length of the quaternion = sqrt( vec . vec )
+<DL><DT><DD></DL><P>
+<A NAME="length2">
+<A NAME="DOC.2.40.27">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float length2( void ) const </B></TT>
+<DD>Length of the quaternion = vec . vec
+<DL><DT><DD></DL><P>
+<A NAME="conj">
+<A NAME="DOC.2.40.28">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A> conj( void ) const </B></TT>
+<DD>Conjugate 
+<DL><DT><DD></DL><P>
+<A NAME="inverse">
+<A NAME="DOC.2.40.29">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A> inverse( void ) const </B></TT>
+<DD>Multiplicative inverse method: q^(-1) = q^*/(q.q^*)
+<DL><DT><DD></DL><P>
+<A NAME="makeRot">
+<A NAME="DOC.2.40.30">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void makeRot( const float angle, const float x, const float y, const float z )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="makeRot">
+<A NAME="DOC.2.40.31">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void makeRot( const float angle, const <!1><A HREF="Vec3.html">Vec3</A>&amp; vec )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="makeRot">
+<A NAME="DOC.2.40.2">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void makeRot( const <!1><A HREF="Vec3.html">Vec3</A>&amp; vec1, const <!1><A HREF="Vec3.html">Vec3</A>&amp; vec2 )</B></TT>
+<DD>Make a rotation Quat which will rotate vec1 to vec2.
+Generally take adot product to get the angle between these
+and then use a cross product to get the rotation axis
+Watch out for the two special cases of when the vectors
+are co-incident or opposite in direction.
+<DL><DT><DD></DL><P>
+<A NAME="getRot">
+<A NAME="DOC.2.40.3">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void getRot( float&amp; angle, float&amp; x, float&amp; y, float&amp; z ) const </B></TT>
+<DD>Return the angle and vector components represented by the quaternion
+<DL><DT><DD></DL><P>
+<A NAME="getRot">
+<A NAME="DOC.2.40.4">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void getRot( float&amp; angle, <!1><A HREF="Vec3.html">Vec3</A>&amp; vec ) const </B></TT>
+<DD>Return the angle and vector represented by the quaternion
+<DL><DT><DD></DL><P>
+<A NAME="slerp">
+<A NAME="DOC.2.40.5">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void slerp( const float t, const <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A>&amp; from, const <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A>&amp; to)</B></TT>
+<DD>Spherical Linear Interpolation.
+As t goes from 0 to 1, the Quat object goes from "from" to "to". 
+<DL><DT><DD></DL><P>
+<A NAME="set">
+<A NAME="DOC.2.40.6">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void set( const <!1><A HREF="Matrix.html">osg::Matrix</A>&amp; m )</B></TT>
+<DD>Set quaternion to be equivalent to specified matrix
+<DL><DT><DD></DL><P>
+<A NAME="get">
+<A NAME="DOC.2.40.7">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void get( <!1><A HREF="Matrix.html">osg::Matrix</A>&amp; m ) const </B></TT>
+<DD>Get the equivalent matrix for this quaternion
+<DL><DT><DD></DL><P>
+<A NAME="operator << ">
+<A NAME="DOC.2.40.32">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline  friend ostream&amp; operator << (ostream&amp; output, const <!1><A HREF="Quat.html#DOC.2.40.9">Quat</A>&amp; vec)</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I><P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

@@ -1,0 +1,210 @@
+<HTML>
+<HEAD>
+   <TITLE>class  SG_EXPORT osg::Seg</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.3">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osg::Seg</A>: public <!1><A HREF="Referenced.html#DOC.2.43.4">Referenced</A></H2>
+<BLOCKQUOTE>Segment class for representing a line segment</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=65>
+<param name=classes value="CReferenced,MReferenced.html,CSeg,MSeg.html">
+<param name=before value="M,M">
+<param name=after value="Md_,M">
+<param name=indent value="0,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<A HREF="#DOC.2.49.8"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A> <B>Seg</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.49.9"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A> <B>Seg</B>(const <!1><A HREF="Seg.html#DOC.2.49.8">Seg</A>&amp; seg)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.49.10"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A> <B>Seg</B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; s, const <!1><A HREF="Vec3.html">Vec3</A>&amp; e)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.49.11"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   <B>~Seg</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.49.12"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Seg.html#DOC.2.49.8">Seg</A>&amp; <B>operator = </B>(const <!1><A HREF="Seg.html#DOC.2.49.8">Seg</A>&amp; seg)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.49.13"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>set</B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; s, const <!1><A HREF="Vec3.html">Vec3</A>&amp; e)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.49.14"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>const <!1><A HREF="Vec3.html">Vec3</A>&amp; <B>start</B>() const 
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.49.15"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Vec3.html">Vec3</A>&amp; <B>start</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.49.16"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>const <!1><A HREF="Vec3.html">Vec3</A>&amp; <B>end</B>() const 
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.49.17"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Vec3.html">Vec3</A>&amp; <B>end</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.49.1"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>intersect</B>(const <!1><A HREF="BoundingBox.html">BoundingBox</A>&amp; bb) const 
+<DD><I>return true if segment intersects BoundingBox</I>
+<DT>
+<A HREF="#DOC.2.49.2"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>intersect</B>(const <!1><A HREF="BoundingBox.html">BoundingBox</A>&amp; bb, float&amp; r1, float&amp; r2) const 
+<DD><I>return true if segment intersects BoundingSphere and return the intersection ratio's</I>
+<DT>
+<A HREF="#DOC.2.49.3"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>intersect</B>(const <!1><A HREF="BoundingSphere.html">BoundingSphere</A>&amp; bs) const 
+<DD><I>return true if segment intersects BoundingSphere</I>
+<DT>
+<A HREF="#DOC.2.49.4"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>intersect</B>(const <!1><A HREF="BoundingSphere.html">BoundingSphere</A>&amp; bs, float&amp; r1, float&amp; r2) const 
+<DD><I>return true if segment intersects BoundingSphere and return the intersection ratio's</I>
+<DT>
+<A HREF="#DOC.2.49.5"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>intersect</B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v1, const <!1><A HREF="Vec3.html">Vec3</A>&amp; v2, const <!1><A HREF="Vec3.html">Vec3</A>&amp; v3, float&amp; r)
+<DD><I>return true if segment intersects triangle and set ratio long segment.</I>
+<DT>
+<A HREF="#DOC.2.49.6"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>mult</B>(const <!1><A HREF="Seg.html#DOC.2.49.8">Seg</A>&amp; seg, const <!1><A HREF="Matrix.html">Matrix</A>&amp; m)
+<DD><I>post multiply a segment by matrix</I>
+<DT>
+<A HREF="#DOC.2.49.7"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>mult</B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; m, const <!1><A HREF="Seg.html#DOC.2.49.8">Seg</A>&amp; seg)
+<DD><I>pre multiply a segment by matrix</I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<A HREF="#DOC.2.49.19"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Vec3.html">Vec3</A> <B>_s</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.49.20"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Vec3.html">Vec3</A> <B>_e</B>
+<DD><I></I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<A HREF="#DOC.2.49.18"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>static   bool <B>intersectAndClip</B>(<!1><A HREF="Vec3.html">Vec3</A>&amp; s, <!1><A HREF="Vec3.html">Vec3</A>&amp; e, const <!1><A HREF="BoundingBox.html">BoundingBox</A>&amp; bb)
+<DD><I></I>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Referenced.html">Referenced</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>ref</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>unref</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>int <B>referenceCount</B>()
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>int <B>_refCount</B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU">
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>Segment class for representing a line segment</BLOCKQUOTE>
+<DL>
+
+<A NAME="Seg">
+<A NAME="DOC.2.49.8">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Seg()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Seg">
+<A NAME="DOC.2.49.9">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Seg(const <!1><A HREF="Seg.html#DOC.2.49.8">Seg</A>&amp; seg)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Seg">
+<A NAME="DOC.2.49.10">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Seg(const <!1><A HREF="Vec3.html">Vec3</A>&amp; s, const <!1><A HREF="Vec3.html">Vec3</A>&amp; e)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~Seg">
+<A NAME="DOC.2.49.11">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Seg()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator = ">
+<A NAME="DOC.2.49.12">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Seg.html#DOC.2.49.8">Seg</A>&amp; operator = (const <!1><A HREF="Seg.html#DOC.2.49.8">Seg</A>&amp; seg)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="set">
+<A NAME="DOC.2.49.13">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void set(const <!1><A HREF="Vec3.html">Vec3</A>&amp; s, const <!1><A HREF="Vec3.html">Vec3</A>&amp; e)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="start">
+<A NAME="DOC.2.49.14">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec3.html">Vec3</A>&amp; start() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="start">
+<A NAME="DOC.2.49.15">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec3.html">Vec3</A>&amp; start()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="end">
+<A NAME="DOC.2.49.16">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec3.html">Vec3</A>&amp; end() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="end">
+<A NAME="DOC.2.49.17">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec3.html">Vec3</A>&amp; end()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="intersect">
+<A NAME="DOC.2.49.1">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool intersect(const <!1><A HREF="BoundingBox.html">BoundingBox</A>&amp; bb) const </B></TT>
+<DD>return true if segment intersects BoundingBox
+<DL><DT><DD></DL><P>
+<A NAME="intersect">
+<A NAME="DOC.2.49.2">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool intersect(const <!1><A HREF="BoundingBox.html">BoundingBox</A>&amp; bb, float&amp; r1, float&amp; r2) const </B></TT>
+<DD>return true if segment intersects BoundingSphere and return the intersection ratio's
+<DL><DT><DD></DL><P>
+<A NAME="intersect">
+<A NAME="DOC.2.49.3">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool intersect(const <!1><A HREF="BoundingSphere.html">BoundingSphere</A>&amp; bs) const </B></TT>
+<DD>return true if segment intersects BoundingSphere
+<DL><DT><DD></DL><P>
+<A NAME="intersect">
+<A NAME="DOC.2.49.4">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool intersect(const <!1><A HREF="BoundingSphere.html">BoundingSphere</A>&amp; bs, float&amp; r1, float&amp; r2) const </B></TT>
+<DD>return true if segment intersects BoundingSphere and return the intersection ratio's
+<DL><DT><DD></DL><P>
+<A NAME="intersect">
+<A NAME="DOC.2.49.5">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool intersect(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v1, const <!1><A HREF="Vec3.html">Vec3</A>&amp; v2, const <!1><A HREF="Vec3.html">Vec3</A>&amp; v3, float&amp; r)</B></TT>
+<DD>return true if segment intersects triangle and set ratio long segment. 
+<DL><DT><DD></DL><P>
+<A NAME="mult">
+<A NAME="DOC.2.49.6">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void mult(const <!1><A HREF="Seg.html#DOC.2.49.8">Seg</A>&amp; seg, const <!1><A HREF="Matrix.html">Matrix</A>&amp; m)</B></TT>
+<DD>post multiply a segment by matrix
+<DL><DT><DD></DL><P>
+<A NAME="mult">
+<A NAME="DOC.2.49.7">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void mult(const <!1><A HREF="Matrix.html">Matrix</A>&amp; m, const <!1><A HREF="Seg.html#DOC.2.49.8">Seg</A>&amp; seg)</B></TT>
+<DD>pre multiply a segment by matrix
+<DL><DT><DD></DL><P>
+<A NAME="intersectAndClip">
+<A NAME="DOC.2.49.18">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   bool intersectAndClip(<!1><A HREF="Vec3.html">Vec3</A>&amp; s, <!1><A HREF="Vec3.html">Vec3</A>&amp; e, const <!1><A HREF="BoundingBox.html">BoundingBox</A>&amp; bb)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_s">
+<A NAME="DOC.2.49.19">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec3.html">Vec3</A> _s</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_e">
+<A NAME="DOC.2.49.20">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec3.html">Vec3</A> _e</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I><P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

@@ -1,0 +1,68 @@
+#ifndef OSG_FIELDREADERITERATOR
+#define OSG_FIELDREADERITERATOR 1
+
+#include <osg/Field>
+#include <osg/FieldReader>
+
+namespace osg {
+
+
+class SG_EXPORT FieldReaderIterator
+{
+    public:
+
+        enum {
+            MINIMUM_FIELD_READER_QUEUE_SIZE = 10
+        };
+
+        FieldReaderIterator();
+        FieldReaderIterator(const FieldReaderIterator& ic);
+        virtual ~FieldReaderIterator();
+
+        virtual FieldReaderIterator& operator = (const FieldReaderIterator& ic);
+
+        void attach(istream* input);
+        void detach();
+
+        virtual bool eof() const;
+
+        FieldReader& getFieldReader() { return _reader; }
+
+        void insert(int pos,Field* field);
+        void insert(int pos,const char* str);
+
+        Field& operator [] (int pos);
+        Field& field (int pos);
+
+        FieldReaderIterator& operator ++ ();
+        FieldReaderIterator& operator += (int no);
+
+/** increments the itetor of the next simple field or
+    whole block if the current field[0] is an open bracket */
+        void advanceOverCurrentFieldOrBlock();
+        void advanceToEndOfCurrentBlock();
+        void advanceToEndOfBlock(int noNestBrackets);
+
+        bool matchSequence(const char* str);
+
+    private:
+
+        void _init();
+        void _free();
+        void _copy(const FieldReaderIterator& ic);
+
+        FieldReader _reader;
+
+        Field _blank;
+
+        Field* _previousField;
+
+        Field** _fieldQueue;
+        int _fieldQueueSize;
+        int _fieldQueueCapacity;
+
+};
+
+};
+
+#endif                                            // __OSG_FIELD_READER_QUEUE_H

@@ -1,0 +1,501 @@
+<HTML>
+<HEAD>
+   <TITLE>class  SG_EXPORT osg::GeoState</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.3">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osg::GeoState</A>: public <!1><A HREF="Object.html#DOC.2.36.1">Object</A></H2>
+<BLOCKQUOTE> Encapsulates OpenGL state modes and attributes.</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=95>
+<param name=classes value="CReferenced,MReferenced.html,CObject,MObject.html,CGeoState,MGeoState.html">
+<param name=before value="M,M,M">
+<param name=after value="Md_SP,Md_,M">
+<param name=indent value="0,1,2">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Classes</H3><DD><DT>
+<A HREF="#DOC.2.16.1"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>enum  <B>AttributeType</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.16.2"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>enum  <B>AttributeMode</B>
+<DD><I></I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<A HREF="#DOC.2.16.5"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A> <B>GeoState</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.16.6"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>static   <!1><A HREF="GeoState.html#DOC.2.16.5">GeoState</A>* <B>instance</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.16.7"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   <!1><A HREF="Object.html#DOC.2.36.1">Object</A>* <B>clone</B>() const 
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.16.8"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   bool <B>isSameKindAs</B>(<!1><A HREF="Object.html#DOC.2.36.1">Object</A>* obj)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.16.9"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>const char* <B>className</B>() const 
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.16.3"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setGlobalDefaults</B>()
+<DD><I>set all the modes to on or off so that it defines a  complete state, typically used for a default global state</I>
+<DT>
+<A HREF="#DOC.2.16.4"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setAllToInherit</B>()
+<DD><I>set all the modes to inherit, typically used to signifiy nodes which inherit all of their modes for the global state</I>
+<DT>
+<A HREF="#DOC.2.16.10"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setMode</B>(<!1><A HREF="GeoState.html#DOC.2.16.1">AttributeType</A> type, <!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A> mode)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.16.11"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A> <B>getMode</B>(<!1><A HREF="GeoState.html#DOC.2.16.1">AttributeType</A> type) const 
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.16.12"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setAttribute</B>(<!1><A HREF="GeoState.html#DOC.2.16.1">AttributeType</A> type, <!1><A HREF="Object.html#DOC.2.36.1">Object</A> *attribute)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.16.13"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Object.html#DOC.2.36.1">Object</A>* <B>getAttribute</B>(<!1><A HREF="GeoState.html#DOC.2.16.1">AttributeType</A> type) const 
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.16.14"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>isTransparent</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.16.15"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>apply</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.16.16"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>apply</B>(<!1><A HREF="GeoState.html#DOC.2.16.5">GeoState</A>* global, <!1><A HREF="GeoState.html#DOC.2.16.5">GeoState</A>* prev)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.16.17"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>check</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.16.18"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>static   <!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A> <B>combineMode</B>(const <!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A> g, const <!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A> p, const <!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A> c)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.16.19"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>static   <!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A> <B>mergeMode</B>(const <!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A> lhs, const <!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A> rhs)
+<DD><I></I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<A HREF="#DOC.2.16.27"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A> <B>_transparencing</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.16.28"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A> <B>_face_culling</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.16.29"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A> <B>_lighting</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.16.30"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A> <B>_texturing</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.16.31"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A> <B>_fogging</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.16.32"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A> <B>_texgening</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.16.33"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A> <B>_antialiasing</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.16.34"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A> <B>_colortable</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.16.35"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A> <B>_pointSmoothing</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.16.36"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A> <B>_polygonOffsetting</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.16.37"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A> <B>_alphaTesting</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.16.38"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Texture.html">Texture</A>&gt;  <B>_texture</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.16.39"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="TexGen.html">TexGen</A>&gt;  <B>_texgen</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.16.40"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Material.html">Material</A>&gt;  <B>_material</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.16.41"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="TexEnv.html">TexEnv</A>&gt;  <B>_texenv</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.16.42"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Transparency.html">Transparency</A>&gt;  <B>_transparency</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.16.43"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="TexMat.html">TexMat</A>&gt;  <B>_texmat</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.16.44"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Fog.html">Fog</A>&gt;  <B>_fog</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.16.45"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Point.html">Point</A>&gt;  <B>_point</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.16.46"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="PolygonOffset.html">PolygonOffset</A>&gt;  <B>_polygonOffset</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.16.47"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="CullFace.html">CullFace</A>&gt;  <B>_cullFace</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.16.48"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="AlphaFunc.html">AlphaFunc</A>&gt;  <B>_alphaFunc</B>
+<DD><I></I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<A HREF="#DOC.2.16.20"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   <B>~GeoState</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.16.21"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A> <B>GeoState</B>(const <!1><A HREF="GeoState.html#DOC.2.16.5">GeoState</A>&amp;)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.16.22"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="GeoState.html#DOC.2.16.5">GeoState</A>&amp; <B>operator = </B>(const <!1><A HREF="GeoState.html#DOC.2.16.5">GeoState</A>&amp;)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.16.23"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   bool <B>readLocalData</B>(<!1><A HREF="Input.html">Input</A>&amp; fr)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.16.24"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   bool <B>writeLocalData</B>(<!1><A HREF="Output.html">Output</A>&amp; fw)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.16.25"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>matchModeStr</B>(const char* str, <!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A>&amp; mode)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.16.26"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>const char* <B>getModeStr</B>(<!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A> flag)
+<DD><I></I>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Object.html">Object</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html#DOC.2.36.1">Object</A>* <B>readClone</B>(<!1><A HREF="Input.html">Input</A>&amp; fr)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>write</B>(<!1><A HREF="Output.html">Output</A>&amp; fw)
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Referenced.html">Referenced</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>ref</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>unref</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>int <B>referenceCount</B>()
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>int <B>_refCount</B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU">
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>
+Encapsulates OpenGL state modes and attributes. 
+Used to specificy textures etc of osg::GeoSet's which hold references
+to a single osg::GeoState.  GeoState can be shared between GeoSet's
+and is recommend if possible as it minimize expensive state changes
+in the graphics pipeline.</BLOCKQUOTE>
+<DL>
+
+<A NAME="AttributeType">
+<A NAME="DOC.2.16.1">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  AttributeType</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="ANTIALIAS">
+<A NAME="DOC.2.16.1.1">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ANTIALIAS</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="FACE_CULL">
+<A NAME="DOC.2.16.1.2">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> FACE_CULL</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="FOG">
+<A NAME="DOC.2.16.1.3">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> FOG</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="LIGHTING">
+<A NAME="DOC.2.16.1.4">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LIGHTING</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="MATERIAL">
+<A NAME="DOC.2.16.1.5">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> MATERIAL</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="POINT">
+<A NAME="DOC.2.16.1.6">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> POINT</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="POLYGON_OFFSET">
+<A NAME="DOC.2.16.1.7">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> POLYGON_OFFSET</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="TEXENV">
+<A NAME="DOC.2.16.1.8">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TEXENV</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="TEXGEN">
+<A NAME="DOC.2.16.1.9">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TEXGEN</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="TEXMAT">
+<A NAME="DOC.2.16.1.10">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TEXMAT</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="TEXTURE">
+<A NAME="DOC.2.16.1.11">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TEXTURE</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="TRANSPARENCY">
+<A NAME="DOC.2.16.1.12">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TRANSPARENCY</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="WIREFRAME">
+<A NAME="DOC.2.16.1.13">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> WIREFRAME</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ALPHAFUNC">
+<A NAME="DOC.2.16.1.14">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ALPHAFUNC</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="AttributeMode">
+<A NAME="DOC.2.16.2">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  AttributeMode</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="INHERIT">
+<A NAME="DOC.2.16.2.1">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> INHERIT</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="OFF">
+<A NAME="DOC.2.16.2.2">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> OFF</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ON">
+<A NAME="DOC.2.16.2.3">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ON</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="OVERRIDE_OFF">
+<A NAME="DOC.2.16.2.4">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> OVERRIDE_OFF</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="OVERRIDE_ON">
+<A NAME="DOC.2.16.2.5">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> OVERRIDE_ON</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="GeoState">
+<A NAME="DOC.2.16.5">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> GeoState()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="instance">
+<A NAME="DOC.2.16.6">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   <!1><A HREF="GeoState.html#DOC.2.16.5">GeoState</A>* instance()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="clone">
+<A NAME="DOC.2.16.7">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html#DOC.2.36.1">Object</A>* clone() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="isSameKindAs">
+<A NAME="DOC.2.16.8">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(<!1><A HREF="Object.html#DOC.2.36.1">Object</A>* obj)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="className">
+<A NAME="DOC.2.16.9">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const char* className() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setGlobalDefaults">
+<A NAME="DOC.2.16.3">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setGlobalDefaults()</B></TT>
+<DD>set all the modes to on or off so that it defines a 
+complete state, typically used for a default global state
+<DL><DT><DD></DL><P>
+<A NAME="setAllToInherit">
+<A NAME="DOC.2.16.4">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setAllToInherit()</B></TT>
+<DD>set all the modes to inherit, typically used to signifiy
+nodes which inherit all of their modes for the global state
+<DL><DT><DD></DL><P>
+<A NAME="setMode">
+<A NAME="DOC.2.16.10">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setMode(<!1><A HREF="GeoState.html#DOC.2.16.1">AttributeType</A> type, <!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A> mode)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getMode">
+<A NAME="DOC.2.16.11">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A> getMode(<!1><A HREF="GeoState.html#DOC.2.16.1">AttributeType</A> type) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setAttribute">
+<A NAME="DOC.2.16.12">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setAttribute(<!1><A HREF="GeoState.html#DOC.2.16.1">AttributeType</A> type, <!1><A HREF="Object.html#DOC.2.36.1">Object</A> *attribute)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getAttribute">
+<A NAME="DOC.2.16.13">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Object.html#DOC.2.36.1">Object</A>* getAttribute(<!1><A HREF="GeoState.html#DOC.2.16.1">AttributeType</A> type) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="isTransparent">
+<A NAME="DOC.2.16.14">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool isTransparent()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="apply">
+<A NAME="DOC.2.16.15">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void apply()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="apply">
+<A NAME="DOC.2.16.16">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void apply(<!1><A HREF="GeoState.html#DOC.2.16.5">GeoState</A>* global, <!1><A HREF="GeoState.html#DOC.2.16.5">GeoState</A>* prev)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="check">
+<A NAME="DOC.2.16.17">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool check()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="combineMode">
+<A NAME="DOC.2.16.18">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   <!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A> combineMode(const <!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A> g, const <!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A> p, const <!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A> c)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="mergeMode">
+<A NAME="DOC.2.16.19">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   <!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A> mergeMode(const <!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A> lhs, const <!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A> rhs)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~GeoState">
+<A NAME="DOC.2.16.20">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~GeoState()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="GeoState">
+<A NAME="DOC.2.16.21">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> GeoState(const <!1><A HREF="GeoState.html#DOC.2.16.5">GeoState</A>&amp;)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator = ">
+<A NAME="DOC.2.16.22">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GeoState.html#DOC.2.16.5">GeoState</A>&amp; operator = (const <!1><A HREF="GeoState.html#DOC.2.16.5">GeoState</A>&amp;)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readLocalData">
+<A NAME="DOC.2.16.23">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool readLocalData(<!1><A HREF="Input.html">Input</A>&amp; fr)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="writeLocalData">
+<A NAME="DOC.2.16.24">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool writeLocalData(<!1><A HREF="Output.html">Output</A>&amp; fw)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="matchModeStr">
+<A NAME="DOC.2.16.25">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool matchModeStr(const char* str, <!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A>&amp; mode)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getModeStr">
+<A NAME="DOC.2.16.26">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const char* getModeStr(<!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A> flag)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_transparencing">
+<A NAME="DOC.2.16.27">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A> _transparencing</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_face_culling">
+<A NAME="DOC.2.16.28">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A> _face_culling</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_lighting">
+<A NAME="DOC.2.16.29">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A> _lighting</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_texturing">
+<A NAME="DOC.2.16.30">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A> _texturing</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_fogging">
+<A NAME="DOC.2.16.31">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A> _fogging</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_texgening">
+<A NAME="DOC.2.16.32">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A> _texgening</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_antialiasing">
+<A NAME="DOC.2.16.33">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A> _antialiasing</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_colortable">
+<A NAME="DOC.2.16.34">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A> _colortable</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_pointSmoothing">
+<A NAME="DOC.2.16.35">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A> _pointSmoothing</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_polygonOffsetting">
+<A NAME="DOC.2.16.36">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A> _polygonOffsetting</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_alphaTesting">
+<A NAME="DOC.2.16.37">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GeoState.html#DOC.2.16.2">AttributeMode</A> _alphaTesting</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_texture">
+<A NAME="DOC.2.16.38">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Texture.html">Texture</A>&gt;  _texture</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_texgen">
+<A NAME="DOC.2.16.39">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="TexGen.html">TexGen</A>&gt;  _texgen</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_material">
+<A NAME="DOC.2.16.40">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Material.html">Material</A>&gt;  _material</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_texenv">
+<A NAME="DOC.2.16.41">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="TexEnv.html">TexEnv</A>&gt;  _texenv</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_transparency">
+<A NAME="DOC.2.16.42">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Transparency.html">Transparency</A>&gt;  _transparency</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_texmat">
+<A NAME="DOC.2.16.43">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="TexMat.html">TexMat</A>&gt;  _texmat</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_fog">
+<A NAME="DOC.2.16.44">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Fog.html">Fog</A>&gt;  _fog</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_point">
+<A NAME="DOC.2.16.45">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Point.html">Point</A>&gt;  _point</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_polygonOffset">
+<A NAME="DOC.2.16.46">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="PolygonOffset.html">PolygonOffset</A>&gt;  _polygonOffset</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_cullFace">
+<A NAME="DOC.2.16.47">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="CullFace.html">CullFace</A>&gt;  _cullFace</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_alphaFunc">
+<A NAME="DOC.2.16.48">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="AlphaFunc.html">AlphaFunc</A>&gt;  _alphaFunc</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I><P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

@@ -1,0 +1,161 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.6 [en-gb]C-CCK-MCD NetscapeOnline.co.uk  (Win95; I) [Netscape]">
+   <title>OSG Distribution</title>
+</head>
+<body>
+
+<center>
+<h1>
+<b><i><u>Open Scene Graph</u></i></b></h1></center>
+The Open Scene Graph (OSG) is an Open Source (LGPL), Stanadard C++, OpenGL
+based scene graph for cross-platform 3D real-time visualisation..&nbsp;
+The OSG is simply a scene graph and by design does not attempt to encompass
+application frame works and user interface, the design is kept focused
+on the issues of representing a 3D scene and rendering it in real-time.
+<p>There are also support libraries such as osgGLUT for bringing up a basic
+UI, however this is not the focus of the OSG.&nbsp; For more sophisticated
+user interfaces it is recommended to intergrate the OSG graphics with a
+fully fledge UI toolkit, this has already been done by users for FLTK,
+WxWindows and X, with the potential for many more.
+<p>This release is a ALPHA version, and is subject to continuous development
+with the API of features subject to change.
+<p>For instructions of how to compile, install the osg libraries and to
+run the demos please read the <a href="README">README</a> file.
+<p>Regards,
+<p>Robert Osfield.
+<br>January 2001.
+<p>
+<hr WIDTH="100%">
+<p><u>Contacts</u>
+<p>The OSG's website is <a href="http://www.openscenegraph.org">http://www.openscenegraph.org</a>
+<p>The OSG's mailing list and mirror of downloads can be accessed at
+<br>source forge -&nbsp; <a href="http://sourceforge.net/projects/openscenegraph">http://sourceforge.net/projects/openscenegraph</a>
+<p>Bugs, patches, querries can be sent to the <a href="info@openscenegraph.org">info@openscenegraph.org</a>
+or to the mailing list.
+<p>
+<hr WIDTH="100%">
+<p><u>Contents of distribution</u>
+<p>./&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Root directory.
+<blockquote><a href="README">README</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+text file containing guide of how to get the OSG compiling, and running
+the demos.
+<br><a href="COPYING">COPYING</a>&nbsp;&nbsp;&nbsp; text&nbsp; file containing
+the details of the Open Source LGPL license which the OSG is released under
+<br><a href="AUTHORS">AUTHORS</a>&nbsp;&nbsp;&nbsp; text file containing
+names of contributors to the osg.
+<br><a href="NEWS">NEWS</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+text file listing coarsed grained changes between releases.
+<br><a href="ChangeLog">ChangeLog</a>&nbsp;&nbsp;&nbsp;&nbsp; text file
+listing fine grained changes between releases.
+<br><a href="TODO">TODO</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+text file listing&nbsp; left to implement/extend/rewrite.
+<br><a href="FAQ">FAQ</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+text file listing Fequently asked quesions.
+<br><a href="Makefile">Makefile</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Unix makefile.
+<br>index.html&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; This file!</blockquote>
+
+<p><br><a href="doc/">doc/</a>&nbsp;&nbsp; Documentation directory
+<blockquote><a href="doc/index.html">index.html</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Documentation index.
+<br><a href="doc/osg/HIER.html">osg/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+core scene graph reference guide.
+<br><a href="doc/osgUtil/HIER.htmll">osgUtil/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+scene graph utilities reference guide.
+<br><a href="doc/osgGLUT/HIER.html">osgGLUT/</a>&nbsp;&nbsp;&nbsp;&nbsp;
+simple GLUT based viewer base classes reference guide.</blockquote>
+
+<p><br><a href="include/">include/</a>&nbsp;&nbsp;&nbsp;&nbsp; External
+includes (i.e. files which would be installed in /usr/include)
+<blockquote><a href="include/osg">include/osg/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+The OSG library header files.
+<br><a href="include/osgUtil">include/osgUtil/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+The OSG Utility library header files.
+<br><a href="include/osgGLUT">include/osgGLUT/</a>&nbsp;&nbsp; The OSG
+GLUT library header files.</blockquote>
+
+<p><br><a href="src/">src/</a>&nbsp;&nbsp;&nbsp; source files (including
+internal includes)
+<blockquote><a href="src/osg">src/osg</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+The OSG library source files.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Contians all core osg classes, including
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+reader/writer support for the .osg ascii format,
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+and sgi's rgb image format.
+<p><a href="src/osgUtil">src/osgUtil</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+The OSG utility library source files.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Contains useful utility classes such as for setting
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+up and rendering/draw.
+<p><a href="src/osgGLUT">src/osgGLUT</a>&nbsp; The OSG GLUT library source
+files.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Contains basic GLUT viewer base classes used by
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+demo prgrams to bring up window and provide keyboard
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+and mouse interaction.
+<p><a href="src/osgPlugins/">src/osgPlugins/</a>&nbsp; Import/Export/Node
+kit plug-ins to the OSG.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="src/osgPlugins/flt/">flt/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Open
+Flight reader plugin.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="src/osgPlugins/fly">fly/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Hang
+gliding flying site reader plugin.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="src/osgPlugins/pfb">pfb/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Performer
+reader and writer plugin.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="src/osgPlugins/png">png/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PNG
+image file format reader plugin.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="src/osgPlugins/gif">gif/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; GIF
+image file format reader plugin.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="src/osgPlugins/jpeg/">jpeg/</a>&nbsp;&nbsp;&nbsp;&nbsp; JPEG image
+file format reader plugin.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="src/osgPlugins/pic">pic/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PIC
+image file format reader plugin.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="src/osgPlugins/tga">tga/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TGA
+image file format reader plugin.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="src/osgPlugins/tiff">tiff/</a>&nbsp;&nbsp;&nbsp;&nbsp; TIFF image
+file format reader plugin.
+<p><a href="src/Demos/">src/Demos/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="src/Demos/sgv">sgv/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+A basic scene graph viewer for the OSG which is able to load .osg file
+and above formats.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="src/Demos/cube/">cube/</a>&nbsp;&nbsp;&nbsp; A basic animation
+of an oscillating cube.</blockquote>
+
+<p><br><a href="lib/">lib/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+The local repository for the OSG library and plugins (files to be installed
+in /usr/lib/ or /usr/local/lib)
+<br><a href="lib/osgPlugins/">lib/osgPlugins/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+The local repository for the OSG plugins (files to be installed in /usr/lib/osgPlugins
+or
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+/usr/local/lib/osgPlugins)
+<p><a href="bin/">bin/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+The local repository for the OSG binary files (files to be installed in
+/usr/bin or /usr/local/bin)
+<p><a href="Make/">Make/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Unix platform specific make rules and dependancies.
+<p><a href="VisualStudio/">VisualStudio/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+MS VisualC++ 6.0 Make/Workspace files.
+<p><a href="dist/">dist/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Distribution make files for RedHat Linux.
+<p><a href="NSPlugin/">NSPlugin/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Netscape plugin viewer for Linux.
+<br>&nbsp;
+</body>
+</html>

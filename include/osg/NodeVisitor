@@ -1,0 +1,94 @@
+#ifndef OSG_NODEVISITOR
+#define OSG_NODEVISITOR 1
+
+#include <osg/Node>
+
+namespace osg {
+
+class Geode;
+class Billboard;
+class LightSource;
+class Group;
+class DCS;
+class LOD;
+class Sequence;
+class Scene;
+class Switch;
+
+/** Visitor for type safe operations on osg::Node's.
+    Based on GOF's Visitor pattern.*/ 
+class SG_EXPORT NodeVisitor : public Referenced
+{
+    public:
+
+        enum TraversalMode {
+            TRAVERSE_NONE,
+            TRAVERSE_PARENTS,
+            TRAVERSE_ALL_CHILDREN,
+            TRAVERSE_ACTIVE_CHILDREN,
+            TRAVERSE_VISITOR
+        };
+
+        NodeVisitor(TraversalMode tm=TRAVERSE_NONE);
+        virtual ~NodeVisitor();
+
+
+        /** Set the traversal mode for Node::traverse() to use when 
+            deciding which children of a node to traverse. If a
+            NodeVisitor has been attached via setTraverseVisitor()
+            and the new mode is not TRAVERSE_VISITOR then the attached
+            visitor is detached. Default mode is TRAVERSE_NONE.*/
+        void setTraverseMode(TraversalMode mode);
+        /** Get the traversal mode.*/
+        TraversalMode getTraverseMode() { return _traverseMode; }
+        /** Set a visitor to handle traversal.
+            Overides the traverse mode setting it to TRAVERSE_VISITOR.*/
+
+        void setTraverseVisitor(NodeVisitor* nv);
+        /** Get the traverse visitor, returns NULL if none is attached.*/
+        NodeVisitor* getTraverseVisitor() { return _traverseVisitor; }
+
+        /** Inline method for passing handling traversal of a nodes.
+            If you intend to use the visitor for actively traversing 
+            the scene graph then make sure the accept() methods call
+            this method unless they handle traversal directly.*/
+        void traverse(Node& node)
+        {
+            if (_traverseVisitor) node.accept(*_traverseVisitor);
+            else if (_traverseMode==TRAVERSE_PARENTS) node.ascend(*this);
+            else if (_traverseMode!=TRAVERSE_NONE) node.traverse(*this);
+        }
+
+        virtual void apply(Node& node)     { traverse(node);}
+        
+        virtual void apply(Geode& node)    { apply((Node&)node); }
+        virtual void apply(Billboard& node){ apply((Geode&)node); }
+        virtual void apply(LightSource& node){ apply((Node&)node); }
+        
+        virtual void apply(Group& node)    { apply((Node&)node); }
+        virtual void apply(DCS& node)      { apply((Group&)node); }
+        virtual void apply(Switch& node)   { apply((Group&)node); }
+        virtual void apply(Sequence& node) { apply((Group&)node); }
+        virtual void apply(LOD& node)      { apply((Group&)node); }
+        virtual void apply(Scene& node)    { apply((Group&)node); }
+
+    protected:
+
+        NodeVisitor* _traverseVisitor;
+        TraversalMode _traverseMode;
+
+};
+
+
+/** Convinience functor for assisting visiting of arrays of osg::Node's.*/ 
+struct NodeAcceptOp
+{
+    NodeVisitor& _nv;
+    NodeAcceptOp(NodeVisitor& nv):_nv(nv) {}
+    void operator () (Node* node) { node->accept(_nv); }
+    void operator () (ref_ptr<Node> node) { node->accept(_nv); }
+};
+
+};
+
+#endif

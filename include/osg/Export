@@ -1,0 +1,32 @@
+#ifndef OSG_EXPORT
+#define OSG_EXPORT 1
+
+#ifdef WIN32
+	#pragma warning( disable : 4251 )
+	#pragma warning( disable : 4275 )
+	#pragma warning( disable : 4786 )
+
+/* Define NULL pointer value */
+
+#ifndef NULL
+#ifdef  __cplusplus
+#define NULL    0
+#else
+#define NULL    ((void *)0)
+#endif
+#endif
+
+
+#endif
+
+#if defined(_MSC_VER)
+	#  ifdef SG_LIBRARY
+	#    define SG_EXPORT   __declspec(dllexport)
+	#  else
+	#    define SG_EXPORT   __declspec(dllimport)
+	#  endif /* SG_LIBRARY */
+#else
+	#  define SG_EXPORT
+#endif  
+
+#endif

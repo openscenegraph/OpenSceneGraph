@@ -1,0 +1,64 @@
+// GroupRecord.h
+
+#ifndef __FLT_GROUP_RECORD_H
+#define __FLT_GROUP_RECORD_H
+
+
+#include "opcodes.h"
+#include "Record.h"
+#include "RecordVisitor.h"
+
+
+namespace flt {
+
+struct SGroup
+{
+	SRecHeader	RecHeader;
+	char	szIdent[8];			// 7 char ASCII ID; 0 terminates
+	int16	iGroupRelPriority;	// Group relative priority
+	int16	iSpare;				// Spare for fullword alignment
+	uint32	dwFlags;			// Flags (bits, from left to right)
+								// 0 = Reserved
+								// 1 = Forward animation
+								// 2 = Cycling animation
+								// 3 = Bounding box follows
+								// 4 = Freeze bounding box
+								// 5 = Default parent
+								// 6-31 Spare
+	int16	iSpecialId_1;		// Special effects ID 1 - defined by real time
+	int16	iSpecialId_2;		// Special effects ID 2 - defined by real time
+	int16	iSignificance;		// Significance Flags
+	uint8	swLayer;			// Layer Number
+	uint8	swReserved[5];		// Reserved
+};
+
+
+class GroupRecord : public PrimNodeRecord
+{
+    public:
+        GroupRecord();
+
+        virtual Record* clone() const { return new GroupRecord(); }
+        virtual const char* className() const { return "GroupRecord"; }
+        virtual int classOpcode() const { return GROUP_OP; }
+        virtual int sizeofData() const { return sizeof(SGroup); }
+        virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
+//      virtual void traverse(RecordVisitor& rv);
+
+        SGroup* getData() const { return (SGroup*)_pData; }
+        virtual const std::string getName( void ) const { return std::string(getData()->szIdent); }
+
+        int childLODs();
+
+    protected:
+        virtual ~GroupRecord();
+
+        virtual void endian();
+};
+
+
+
+}; // end namespace flt
+
+#endif
+

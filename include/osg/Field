@@ -1,0 +1,100 @@
+#ifndef OSG_FIELD
+#define OSG_FIELD 1
+
+#include <osg/Export>
+#include <string>
+#include <stdlib.h>
+
+namespace osg {
+
+
+class SG_EXPORT Field
+{
+    public:
+
+        enum {
+            MIN_CACHE_SIZE = 256
+        };
+
+        Field();
+        Field(const Field& field);
+        virtual ~Field();
+
+        virtual Field& operator = (const Field& ic);
+
+        void reset();
+        void addChar(char c);
+        int getNoCharacters() const { return _fieldCacheSize; }
+
+        void setWithinQuotes(bool withinQuotes=true);
+        bool getWithinQuotes();
+
+        void setNoNestedBrackets(int no);
+        int getNoNestedBrackets();
+
+        enum FieldType
+        {
+            OPEN_BRACKET,
+            CLOSE_BRACKET,
+            STRING,
+            WORD,
+            REAL,
+            INTEGER,
+            BLANK,
+            UNINTIALISED
+        };
+
+        FieldType getFieldType() const;
+
+        bool isValid() const;
+
+        bool isOpenBracket() const;
+        bool isCloseBracket() const;
+
+        bool isWord() const;
+        bool matchWord(const char* str) const;
+        bool matchWord(const char* str,int noCharacters) const;
+
+        bool isString() const;
+        bool matchString(const char* str) const;
+        bool matchString(const char* str,int noCharacters) const;
+        bool isQuotedString() const;
+
+        const char* getStr() const;
+        char* takeStr();
+
+        bool isInt() const;
+        bool matchInt(int i) const;
+        bool getInt(int& i) const;
+
+        bool isFloat() const;
+        bool matchFloat(float f) const;
+        bool getFloat(float& f) const;
+
+        bool isDouble() const;
+        bool matchDouble(double f) const;
+        bool getDouble(double& d) const;
+
+        static FieldType calculateFieldType(const char* str,bool withinQuotes=false);
+
+    protected:
+
+        void _init();
+        void _free();
+        void _copy(const Field& ic);
+
+        int _fieldCacheCapacity;
+        int _fieldCacheSize;
+        char* _fieldCache;
+
+        mutable FieldType _fieldType;
+
+        bool _withinQuotes;
+
+        int _noNestedBrackets;
+
+};
+
+};
+
+#endif                                            // __SG_FIELD_H

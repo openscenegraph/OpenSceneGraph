@@ -1,0 +1,22 @@
+OSG News (most significant items from ChangeLog)
+================================================
+
+
+6th December 2000 - osg_src-0.8-34.tar.gz
+
+    o New osgGLUT library assist writing of osg demos.
+    o New cube demo.
+    o Improved handling of image sizes which arn't a power of 2.
+    o Performer plugin can now work as of plugin to Performer or the
+      OSG (with a few caveates:)
+    
+
+22nd December 2000 - osg_src-0.8-33.tar.gz
+
+    o Integrated Don's work on adding glVertexArrays etc to osg::GeoSet.
+    o Incorportated the following image loaders from the simage library.
+      src/osgPlugins/gif
+                    /jpeg
+                    /pic
+                    /tga
+                    /tiff

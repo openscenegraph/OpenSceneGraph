@@ -1,0 +1,18 @@
+#ifndef OSG_FILENAMEUTILS
+#define OSG_FILENAMEUTILS 1
+
+#include <osg/Export>
+
+#include <string>
+
+namespace osg {
+
+SG_EXPORT extern std::string getFilePath(const std::string& filename);
+SG_EXPORT extern std::string getFileExtension(const std::string& filename);
+SG_EXPORT extern std::string getLowerCaseFileExtension(const std::string& filename);
+SG_EXPORT extern std::string getSimpleFileName(const std::string& fileName);
+SG_EXPORT extern std::string getStrippedName(const std::string& fileName);
+
+};
+
+#endif

@@ -1,0 +1,23 @@
+#ifndef OSGUTIL_GUIACTIONADAPTER
+#define OSGUTIL_GUIACTIONADAPTER 1 
+
+#include <osgUtil/Export>
+
+namespace osgUtil{
+
+
+/** Pure virtual base class for adapting the GUI actions for use in CameraManipulators.*/
+class GUIActionAdapter
+{
+    public:
+        
+        virtual void needRedraw(bool needed=true) = 0;
+        virtual void needContinuousUpdate(bool needed=true) = 0;
+        virtual void needWarpPointer(int x,int y) = 0;
+
+};
+
+}
+
+#endif
+

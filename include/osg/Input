@@ -1,0 +1,49 @@
+#ifndef OSG_INPUT
+#define OSG_INPUT 1
+
+#include <osg/FieldReaderIterator>
+
+#include <map>
+#include <string>
+
+namespace osg {
+
+class Object;
+class Image;
+class Node;
+
+/** Class for managing the reading of ASCII .osg files.*/
+class SG_EXPORT Input : public FieldReaderIterator
+{
+    public:
+
+// Will extend to handle #DEF and use
+// functionality similar to Inventor,
+// and add the ability to handle #include
+// from within the OSG file format.
+
+        Input();
+        virtual ~Input();
+
+        virtual Object* readObject();
+        virtual Object* readObject(const std::string& fileName);
+
+        virtual Image*  readImage();
+        virtual Image*  readImage(const std::string& fileName);
+
+        virtual Node* readNode();
+        virtual Node* readNode(const std::string& fileName);
+        
+        virtual Object* getObjectForUniqueID(const std::string& uniqueID);
+        virtual void regisiterUniqueIDForObject(const std::string& uniqueID,Object* obj);
+
+    private:
+    
+        typedef std::map<std::string,Object*> UniqueIDToObjectMapping;
+        UniqueIDToObjectMapping _uniqueIDToObjectMap;
+
+};
+
+};
+
+#endif                                            // __SG_INPUT_H

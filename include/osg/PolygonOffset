@@ -1,0 +1,44 @@
+#ifndef OSG_POLYGONOFFSET
+#define OSG_POLYGONOFFSET 1
+
+#include <osg/Export>
+#include <osg/Object>
+#include <osg/Vec3>
+
+namespace osg {
+
+class Input;
+class Output;
+
+class SG_EXPORT PolygonOffset : public Object
+{
+    public :
+
+        PolygonOffset();
+        static PolygonOffset* instance();
+        virtual Object* clone() const { return new PolygonOffset(); }
+        virtual bool isSameKindAs(Object* obj) { return dynamic_cast<PolygonOffset*>(obj)!=NULL; }
+        virtual const char* className() const { return "PolygonOffset"; }
+
+        void setOffset(float factor,float units);
+
+        static void enable( void );
+        static void disable( void );
+
+        void apply( void );
+
+    protected :
+
+        virtual ~PolygonOffset();
+
+        virtual bool readLocalData(Input& fr);
+        virtual bool writeLocalData(Output& fw);
+
+        float       _factor;
+        float       _units;
+
+};
+
+};
+
+#endif

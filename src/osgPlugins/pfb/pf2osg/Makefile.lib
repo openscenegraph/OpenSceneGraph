@@ -1,0 +1,18 @@
+#!smake
+include ../../Make/makedefs
+
+C++FILES = \
+        ConvertFromPerformer.cpp\
+        osg.cpp
+#        pf2osg.cpp\
+
+
+LIB = ../../lib/libpfosg_ogl.so
+
+C++FLAGS += -I../../include
+LDFLAGS += -L../../lib
+
+include ../../Make/makerules
+
+
+

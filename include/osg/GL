@@ -1,0 +1,71 @@
+#ifndef OSG_GL
+#define OSG_GL 1
+
+#ifdef WIN32
+
+	// this works with no problems
+//    #ifndef _WINDOWS_
+//		#define  WIN32_LEAN_AND_MEAN
+//        #include <windows.h>
+//    #endif
+
+// follows lifted from glut.h, to avoid including <windows.h>
+
+//#if defined(_WIN32)
+
+// GLUT 3.7 now tries to avoid including <windows.h>
+//   to avoid name space pollution, but Win32's <GL/gl.h> 
+//   needs APIENTRY and WINGDIAPI defined properly. 
+# if 0
+#  define  WIN32_LEAN_AND_MEAN
+#  include <windows.h>
+# else
+   // XXX This is from Win32's <windef.h> 
+#  ifndef APIENTRY
+#   define GLUT_APIENTRY_DEFINED
+#   if (_MSC_VER >= 800) || defined(_STDCALL_SUPPORTED)
+#    define APIENTRY    __stdcall
+#   else
+#    define APIENTRY
+#   endif
+#  endif
+   // XXX This is from Win32's <winnt.h> 
+#  ifndef CALLBACK
+#   if (defined(_M_MRX000) || defined(_M_IX86) || defined(_M_ALPHA) || defined(_M_PPC)) && !defined(MIDL_PASS)
+#    define CALLBACK __stdcall
+#   else
+#    define CALLBACK
+#   endif
+#  endif
+   // XXX This is from Win32's <wingdi.h> and <winnt.h> 
+#  ifndef WINGDIAPI
+#   define GLUT_WINGDIAPI_DEFINED
+#   define WINGDIAPI __declspec(dllimport)
+#  endif
+   // XXX This is from Win32's <ctype.h> 
+#  ifndef _WCHAR_T_DEFINED
+typedef unsigned short wchar_t;
+#   define _WCHAR_T_DEFINED
+#  endif
+# endif
+
+
+
+    #ifndef __gl_h_
+        #include <GL/gl.h>
+    #endif
+    #ifndef __glu_h__
+        #include <GL/glu.h>
+    #endif
+  
+#else
+
+    // GL_GLEXT_LEGACY required by some Linux OpenGL implementations
+    // to allow compilation of glPointParameterfEXT.
+    #define GL_GLEXT_LEGACY 1
+    #include <GL/gl.h>
+    #include <GL/glu.h>
+    #include <GL/glx.h>
+#endif
+
+#endif  // __osgGL_h

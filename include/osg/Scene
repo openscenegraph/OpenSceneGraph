@@ -1,0 +1,39 @@
+#ifndef OSG_SCENE
+#define OSG_SCENE 1
+
+#include <osg/Group>
+#include <osg/GeoState>
+
+namespace osg {
+
+/** The top level group node in a scene graph. */
+class SG_EXPORT Scene :  public Group
+{
+    public :
+        Scene();
+
+        virtual Object* clone() const { return new Scene(); }
+        virtual bool isSameKindAs(Object* obj) { return dynamic_cast<Scene*>(obj)!=NULL; }
+        virtual const char* className() const { return "Scene"; }
+        virtual void accept(NodeVisitor& nv) { nv.apply(*this); }
+
+        /** set the scene's GeoState.*/
+        void setGState(osg::GeoState* gstate);
+
+        /** return the scene's GeoState.*/
+        osg::GeoState* getGState() { return _gstate; }
+
+    protected :
+
+        virtual ~Scene();
+
+        virtual bool readLocalData(Input& fr);
+        virtual bool writeLocalData(Output& fw);
+
+        osg::GeoState* _gstate;
+
+};
+
+};
+
+#endif

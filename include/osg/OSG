@@ -1,0 +1,15 @@
+#ifndef OSG_OSG
+#define OSG_OSG 1
+
+#include <osg/Node>
+
+namespace osg {
+
+SG_EXPORT extern void Init( void );
+SG_EXPORT extern void SetFilePath( const char *_path );
+SG_EXPORT extern char *FindFile( const char *file );
+SG_EXPORT extern char *findDSO( const char *name );
+
+};
+
+#endif

@@ -1,0 +1,66 @@
+#ifndef OSG_FOG
+#define OSG_FOG 1
+
+#include <osg/GL>
+#include <osg/Vec4>
+#include <osg/Types>
+#include <osg/Object>
+
+namespace osg {
+
+
+/** Fog - encapsulates OpenGL fog state. */ 
+class SG_EXPORT Fog : public Object
+{
+    public :
+
+        enum FogMode {
+            LINEAR = GL_LINEAR,
+            EXP    = GL_EXP,
+            EXP2   = GL_EXP2
+        };
+
+        Fog( void );
+        static Fog* instance();
+        virtual Object* clone() const { return new Fog(); }
+        virtual bool isSameKindAs(Object* obj) { return dynamic_cast<Fog*>(obj)!=NULL; }
+        virtual const char* className() const { return "Fog"; }
+
+        static void enable( void );
+        static void disable( void );
+        void apply( void );
+
+        void  setMode( uint mode ) { _mode = mode; }
+        uint getMode( void ) { return _mode; }
+
+        void  setDensity( float density ) { _density = density; }
+        float getDensity( void ) { return _density; }
+
+        void  setStart( float start ) { _start = start; }
+        float getStart( void ) { return _start; }
+
+        void  setEnd( float end ) { _end = end; }
+        float getEnd( void )      { return _end; }
+
+        void  setColor( Vec4 &color )
+        {
+            _color[0] = color[0];
+            _color[1] = color[1];
+            _color[2] = color[2];
+            _color[3] = color[3];
+        }
+
+    protected :
+
+        virtual ~Fog( void );
+
+        uint   _mode;
+        float  _density;
+        float  _start;
+        float  _end;
+        Vec4 _color;
+};
+
+};
+
+#endif

@@ -1,0 +1,51 @@
+#ifndef OSG_DYNAMICLIBRARY
+#define OSG_DYNAMICLIBRARY 1
+
+#include <string>
+#include <osg/Referenced>
+
+#ifdef WIN32
+//#include <Windows.h>
+#endif
+
+namespace osg {
+
+/** DynamicLibrary - encapsulates the loading and unloading of dynamic libraries,
+    typically used for loading ReaderWriter plug-ins.
+*/
+class SG_EXPORT DynamicLibrary : public Referenced
+{
+    public:
+
+        #ifdef WIN32
+        // from Snados.h
+        typedef void* HANDLE;
+        // from Delayimp.h
+        typedef void* PROC_ADDRESS;
+        #else
+        typedef void*   HANDLE;
+        typedef void*   PROC_ADDRESS;
+        #endif
+        
+        static DynamicLibrary* loadLibrary(const std::string& libraryName);
+
+        const std::string& getName() const     { return _name; }
+        const std::string& getFullName() const { return _fullName; }
+        HANDLE             getHandle() const   { return _handle; }
+
+        PROC_ADDRESS       getProcAddress(const std::string& procName);
+
+    protected:
+
+        DynamicLibrary(const std::string& name,HANDLE handle);
+        ~DynamicLibrary();
+
+        HANDLE          _handle;
+        std::string     _name;
+        std::string     _fullName;
+
+};
+
+};
+
+#endif // __DYNAMIC_LIBRARY_H

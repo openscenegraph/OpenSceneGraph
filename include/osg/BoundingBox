@@ -1,0 +1,116 @@
+#ifndef OSG_BOUNDINGBOX
+#define OSG_BOUNDINGBOX 1
+
+#include <osg/Export>
+#include <osg/Vec3>
+#include <float.h>
+
+namespace osg {
+
+class BoundingSphere;
+
+/** General purpose axis-aligned bounding box class for enclosing objects/vertices.
+    Used to bounding the leaf objects in the scene,
+    i.e. osg::GeoSet's to assist in view frustum culling etc.
+*/
+class SG_EXPORT BoundingBox
+{
+    public:
+    
+	/** The corner with the smallest values for each coordinate of the
+	    bounding box.*/
+	Vec3 _min;
+	/** The corner with the largest values for each coordinate of the
+	    bounding box.*/
+	Vec3 _max;
+
+        /** construct to invalid values to represent an unset bounding box.*/ 
+        BoundingBox() : _min(FLT_MAX,FLT_MAX,FLT_MAX),
+                        _max(-FLT_MAX,-FLT_MAX,-FLT_MAX) {}
+    
+        /** initialize to invalid values to represent an unset bounding box.*/ 
+        void init()
+        {
+            _min.set(FLT_MAX,FLT_MAX,FLT_MAX);
+            _max.set(-FLT_MAX,-FLT_MAX,-FLT_MAX);
+        }
+        
+        /** return true if the bounding box contains valid values,
+            false if the bounding box is effectively unset/empty.*/
+        bool isValid() const
+        {
+            return _max.x()>=_min.x();
+        }
+                
+        float& xMin() { return _min.x(); }
+        float xMin() const { return _min.x(); }
+ 
+        float& yMin() { return _min.y(); }
+        float yMin() const { return _min.y(); }
+ 
+        float& zMin() { return _min.z(); }
+        float zMin() const { return _min.z(); }
+
+        float& xMax() { return _max.x(); }
+        float xMax() const { return _max.x(); }
+ 
+        float& yMax() { return _max.y(); }
+        float yMax() const { return _max.y(); }
+ 
+        float& zMax() { return _max.z(); }
+        float zMax() const { return _max.z(); }
+
+        /** Calculate and return the center of the bounding box.*/
+        Vec3 center() const
+        {
+            return (_min+_max)*0.5f;
+        }
+
+        /** Calculate and return the radius of the bounding box.*/
+        float radius() const
+        {
+            return sqrtf(radius2());
+        }
+
+        /** Calculate and return the radius squared of the bounding box.
+            Note, radius2() is faster to calculate than radius().*/            
+        float radius2() const
+        {
+            return 0.25f*((_max-_min).length2());
+        }
+
+        /** return the corner of the bounding box.
+            Position (pos) is specfied by a number between 0 and 7,
+            the first bit toggles between x min and x max, second
+            bit toggles between y min and y max, third bit toggles
+            between z min and z max.*/
+        Vec3 corner(unsigned int pos) const
+        {
+            return Vec3(pos&1?_max.x():_min.x(),pos&2?_max.y():_min.y(),pos&4?_max.z():_min.z());
+        }
+
+        /** If the vertex is outwith the box expand to ecompass vertex.
+            If this box is empty then move set this box's min max to vertex. */
+        void expandBy(const Vec3& v);
+
+        /** If incomming box is outwith the box expand to ecompass incomming box.
+            If this box is empty then move set this box to incomming box. */
+        void expandBy(const BoundingBox& bb);
+
+        /** If incomming sphere is outwith the box expand to ecompass incomming sphere.
+            If this box is empty then move set this box to encompass the sphere. */
+        void expandBy(const BoundingSphere& sh);
+
+        /** return true is vertex v is within the box.*/
+        bool contains(const Vec3& v)
+        {
+            return isValid() && 
+                   (v.x()>=_min.x() && v.x()<=_max.x()) &&
+                   (v.y()>=_min.y() && v.y()<=_max.y()) &&
+                   (v.z()>=_min.z() && v.z()<=_max.z());
+        }
+};
+
+};
+
+#endif

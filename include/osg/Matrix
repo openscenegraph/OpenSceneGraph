@@ -1,0 +1,107 @@
+#ifndef OSG_MATRIX
+#define OSG_MATRIX 1
+
+#include <osg/Object>
+#include <osg/Types>
+
+namespace osg {
+
+class Input;
+class Output;
+
+/** 4x4 Matrix for storage & manipulation of transformations in scene graph. 
+    Provides basic maths operations, IO and via osg::Object reference counting.
+*/
+class SG_EXPORT Matrix : public Object
+{
+    public:
+        Matrix();
+        Matrix(const Matrix& matrix);
+        Matrix( float a00, float a01, float a02, float a03,
+            float a10, float a11, float a12, float a13,
+            float a20, float a21, float a22, float a23,
+            float a30, float a31, float a32, float a33);
+
+        Matrix& operator = (const Matrix& matrix);
+
+        virtual ~Matrix();
+
+        static Matrix* instance();
+        virtual Object* clone() const { return new Matrix(); }
+        virtual bool isSameKindAs(Object* obj) { return dynamic_cast<Matrix*>(obj)!=NULL; }
+        virtual const char* className() const { return "Matrix"; }
+
+        void makeIdent();
+
+        void set(const float* m);
+        void copy(const Matrix& matrix);
+
+        void makeScale(float sx, float sy, float sz);
+        void preScale( float sx, float sy, float sz, const Matrix& m );
+        void postScale( const Matrix& m, float sx, float sy, float sz );
+        
+        void preScale( float sx, float sy, float sz );
+        void postScale( float sx, float sy, float sz );
+        
+
+        void makeTrans( float tx, float ty, float tz );
+        void preTrans( float tx, float ty, float tz, const Matrix& m );
+        void postTrans( const Matrix& m, float tx, float ty, float tz );
+        
+        void preTrans( float tx, float ty, float tz );
+        void postTrans( float tx, float ty, float tz );
+        
+
+        void makeRot( float deg, float x, float y, float z );
+        void preRot( float deg, float x, float y, float z, const Matrix& m  );
+        void postRot( const Matrix& m, float deg, float x, float y, float z );
+        
+        void preRot( float deg, float x, float y, float z );
+        void postRot( float deg, float x, float y, float z );
+        
+        void setTrans( float tx, float ty, float tz );
+	void setTrans( const Vec3& v );
+        Vec3 getTrans() const { return Vec3(_mat[3][0],_mat[3][1],_mat[3][2]); } 
+        
+        void preMult(const Matrix& m);
+        void postMult(const Matrix& m);
+        void mult(const Matrix& lhs,const Matrix& rhs);
+
+        Matrix operator * (const Matrix& m) const;
+
+        inline Vec3 operator * (const Vec3& v) const;
+        inline friend Vec3 operator * (const Vec3& v,const Matrix& m);
+
+        bool invert(const Matrix& m);
+
+    public :
+        float _mat[4][4];
+
+    protected:
+
+        virtual bool readLocalData(Input& fr);
+        virtual bool writeLocalData(Output& fw);
+};
+
+// post multiple v. ie. (m*v)
+inline Vec3 Matrix::operator * (const Vec3& v) const
+{
+    float d = 1.0f/(_mat[3][0]*v.x()+_mat[3][1]*v.y()+_mat[3][2]*v.z()+_mat[3][3]) ;
+    return Vec3( (_mat[0][0]*v.x() + _mat[0][1]*v.y() + _mat[0][2]*v.z() + _mat[0][3])*d,
+        (_mat[1][0]*v.x() + _mat[1][1]*v.y() + _mat[1][2]*v.z() + _mat[1][3])*d,
+        (_mat[2][0]*v.x() + _mat[2][1]*v.y() + _mat[2][2]*v.z() + _mat[2][3])*d) ;
+}
+
+
+// pre multiple v. ie. (v*m)
+inline Vec3 operator * (const Vec3& v,const Matrix& m)
+{
+    float d = 1.0f/(m._mat[0][3]*v.x()+m._mat[1][3]*v.y()+m._mat[2][3]*v.z()+m._mat[3][3]) ;
+    return Vec3( (m._mat[0][0]*v.x() + m._mat[1][0]*v.y() + m._mat[2][0]*v.z() + m._mat[3][0])*d,
+        (m._mat[0][1]*v.x() + m._mat[1][1]*v.y() + m._mat[2][1]*v.z() + m._mat[3][1])*d,
+        (m._mat[0][2]*v.x() + m._mat[1][2]*v.y() + m._mat[2][2]*v.z() + m._mat[3][2])*d);
+}
+
+};
+
+#endif

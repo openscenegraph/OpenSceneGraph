@@ -1,0 +1,100 @@
+#ifndef OSG_MATERIAL
+#define OSG_MATERIAL 1
+
+#include <osg/GL>
+#include <osg/OSG>
+#include <osg/Vec4>
+#include <osg/Object>
+
+namespace osg {
+
+
+class Input;
+class Output;
+
+class SG_EXPORT Material : public Object
+{
+
+    public :
+
+        enum MaterialFace {
+            FACE_FRONT           = GL_FRONT,
+            FACE_BACK            = GL_BACK,
+            FACE_FRONT_AND_BACK  = GL_FRONT_AND_BACK
+        };
+
+        enum ColorMode {
+            AMBIENT = GL_AMBIENT,
+            DIFFUSE = GL_DIFFUSE,
+            SPECULAR = GL_SPECULAR,
+            EMISSION = GL_EMISSION,
+            AMBIENT_AND_DIFFUSE = GL_AMBIENT_AND_DIFFUSE,
+            OFF            
+        };
+
+        Material( void );
+        static Material* instance();
+        virtual Object* clone() const { return new Material(); }
+        virtual bool isSameKindAs(Object* obj) { return dynamic_cast<Material*>(obj)!=NULL; }
+        const char* className() const { return "Material"; }
+
+        void apply( void );
+
+        void setColorMode(ColorMode mode) { _colorMode = mode; }
+
+        void setAmbient( MaterialFace face, const Vec4& ambient );
+        const Vec4& getAmbient(MaterialFace face) const;
+        bool getAmbientFrontAndBack() { return _ambientFrontAndBack; }
+
+        void setDiffuse( MaterialFace face, const Vec4& diffuse );
+        const Vec4& getDiffuse(MaterialFace face) const;
+        bool getDiffuseFrontAndBack() { return _diffuseFrontAndBack; }
+
+        void setSpecular( MaterialFace face, const Vec4& specular );
+        const Vec4& getSpecular(MaterialFace face) const;
+        bool getSpecularFrontAndBack() { return _specularFrontAndBack; }
+
+        void setEmission( MaterialFace face, const Vec4& emission );
+        const Vec4& getEmission(MaterialFace face) const;
+        bool getEmissionFrontAndBack() { return _emissionFrontAndBack; }
+
+        void setShininess( MaterialFace face, float shininess );
+        float getShininess(MaterialFace face) const;
+        bool getShininessFrontAndBack() { return _shininessFrontAndBack; }
+
+    protected :
+
+        virtual ~Material( void );
+
+        virtual bool readLocalData(Input& fr);
+        virtual bool writeLocalData(Output& fw);
+
+        bool matchFaceAndColor(Input& fr,const char* name,MaterialFace& mf,Vec4& color);
+
+        ColorMode _colorMode;
+
+        bool _ambientFrontAndBack;
+        Vec4 _ambientFront;                          // r, g, b, w
+        Vec4 _ambientBack;                           // r, g, b, w
+
+        bool _diffuseFrontAndBack;
+        Vec4 _diffuseFront;                          // r, g, b, w
+        Vec4 _diffuseBack;                           // r, g, b, w
+
+        bool _specularFrontAndBack;
+        Vec4 _specularFront;                         // r, g, b, w
+        Vec4 _specularBack;                          // r, g, b, w
+
+        bool _emissionFrontAndBack;
+        Vec4 _emissionFront;                         // r, g, b, w
+        Vec4 _emissionBack;                          // r, g, b, w
+
+        bool _shininessFrontAndBack;
+        float  _shininessFront;                      // values 0 - 1.0
+        float  _shininessBack;                       // values 0 - 1.0
+
+};
+
+};
+
+#endif

@@ -1,0 +1,64 @@
+#ifndef OSG_NOTIFY
+#define OSG_NOTIFY 1
+
+#include <osg/Export>
+
+#ifdef OSG_USE_IO_DOT_H
+#include <iostream.h>
+#include <fstream.h>
+//#include <stdlib.h>
+#else
+#include <iostream>
+#include <fstream>
+//#include <stdlib.h>
+using namespace std;
+#endif
+
+
+namespace osg {
+
+enum NotifySeverity {
+    ALWAYS=0,
+    FATAL=1,
+    WARN=2,
+    NOTICE=3,
+    INFO=4,
+    DEBUG=5,
+    FP_DEBUG=6
+};
+
+extern NotifySeverity g_NotifyLevel;
+extern ofstream *g_absorbStreamPtr;
+
+SG_EXPORT extern void setNotifyLevel(NotifySeverity severity);
+SG_EXPORT extern int getNotifyLevel();
+
+#ifdef WIN32
+inline ostream& notify(NotifySeverity severity=INFO)
+{
+    if (severity<=osg::WARN) return cerr;
+    else return cout;
+}
+
+#else
+SG_EXPORT extern ostream& notify(NotifySeverity severity=INFO);
+#endif
+
+// A nifty_counter to ensure that the notify things are initialised before
+// they're used. Initialises g_NotifyLevel and g_absorbStreamPointer
+class SG_EXPORT NotifyInit
+{
+    public:
+
+	NotifyInit();
+        ~NotifyInit();
+
+    private:
+	static int count_;
+};
+
+static NotifyInit niftyNotifyInit;
+
+};
+
+#endif

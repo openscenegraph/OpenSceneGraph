@@ -1,0 +1,22 @@
+// The following symbole has a underscore suffix for compatibility.
+#ifndef OSGGLUT_EXPORT_
+#define OSGGLUT_EXPORT_ 1
+
+#ifdef WIN32
+	#pragma warning( disable : 4251 )
+	#pragma warning( disable : 4275 )
+	#pragma warning( disable : 4786 )
+#endif
+
+#if defined(_MSC_VER)
+	#  ifdef OSGGLUT_LIBRARY
+	#    define OSGGLUT_EXPORT   __declspec(dllexport)
+	#  else
+	#    define OSGGLUT_EXPORT   __declspec(dllimport)
+	#endif /* OSGGLUT_LIBRARY */
+#else
+	#define OSGGLUT_EXPORT 
+#endif 
+
+#endif
+

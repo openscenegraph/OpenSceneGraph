@@ -1,0 +1,76 @@
+#ifndef OSG_OBJECT
+#define OSG_OBJECT 1
+
+#include <osg/Referenced>
+
+namespace osg {
+
+class Input;
+class Output;
+
+/** Base class/standard interface for objects which require IO support, 
+    cloning and reference counting.
+    Based on GOF Composite, Prototype and Template Method patterns.
+*/
+class SG_EXPORT Object : public Referenced
+{
+    public:
+        /** Construct an object. Note Object is a pure virtual base class
+            and therefore cannot be constructed on its own, only derived
+            classes which overide the clone and className methods are
+            concrete classes and can be constructed.*/
+        Object() {}
+
+        /** return a shallow copy of a node, with Object* return type.
+            Must be defined by derived classes.*/
+        virtual Object* clone() const = 0;
+
+        virtual bool isSameKindAs(Object*) { return true; }
+
+        /** return the name of the object's class type. Must be defined
+            by derived classes.*/
+        virtual const char* className() const = 0;
+
+        /** Template Method/Prototype Pattern : create a clone and read
+            Object data from Input.  Reads Input and if it matches this 
+            objects className() then create a clone and match '{' brackets
+            and repeating calling Object::readLocalData() until the
+            matching ']' is read.*/
+        virtual Object* readClone(Input& fr);
+        /** Template Method Pattern : write out Object data to Output. 
+            Sequence of output is className() followed by Open '{'
+            and then call Object::writeLocalData() and complete with '}'.*/
+        virtual bool write(Output& fw);
+
+    protected:
+
+        /** Object destructor. Note, is protected so that Objects cannot
+            be deleted other than by being derefernced and the reference
+            count being zero (see osg::Referenced), preventing the deletion
+            of nodes which are still in use. This also means that
+            Node's cannot be created on stack i.e Node node will not compile,
+            forcing all nodes to be created on the heap i.e Node* node
+            = new Node().*/
+        virtual ~Object() {}
+
+        /** Template Method Pattern : read local data from .osg file.
+            Note should be implemented in derivied classes, which
+            call their parent class's readLocalData. Returns
+            true if the input iterator has been advanced, otherwise false.*/
+        virtual bool readLocalData(Input&) { return false; }
+        /** Template Method Pattern : write local data to .osg file.
+            Note should be implemented in derivied classes, which
+            call their parent class's writeLocalData. Returns
+            true if data has been written out, otherwise false.*/
+        virtual bool writeLocalData(Output&) { return false; }
+
+    private:
+
+        /** disallow any form of deep copy.*/
+        Object(Object&): Referenced() {}
+        Object& operator = (const Object&) { return *this; }
+};
+
+};
+
+#endif

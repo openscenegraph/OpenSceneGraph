@@ -1,0 +1,317 @@
+<HTML>
+<HEAD>
+   <TITLE>class  SG_EXPORT osg::Geode</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.3">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osg::Geode</A>: public <!1><A HREF="Node.html#DOC.2.30.1">Node</A></H2>
+<BLOCKQUOTE>Leaf Node for grouping GeoSets</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=155>
+<param name=classes value="CReferenced,MReferenced.html,CObject,MObject.html,CNode,MNode.html,CGeode,MGeode.html,CBillboard,MBillboard.html">
+<param name=before value="M,M,M,M,M^_">
+<param name=after value="Md_SPSP,Md_SP,Md_,M,M">
+<param name=indent value="0,1,2,3,3">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<A HREF="#DOC.2.17.10"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A> <B>Geode</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.17.11"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   <!1><A HREF="Object.html#DOC.2.36.1">Object</A>* <B>clone</B>() const 
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.17.12"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   bool <B>isSameKindAs</B>(<!1><A HREF="Object.html#DOC.2.36.1">Object</A>* obj)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.17.13"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   const char* <B>className</B>() const 
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.17.14"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   void <B>accept</B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.17.1"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   bool <B>addGeoSet</B>( <!1><A HREF="GeoSet.html">GeoSet</A> *gset )
+<DD><I>Add GeoSet to Geode.</I>
+<DT>
+<A HREF="#DOC.2.17.2"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   bool <B>removeGeoSet</B>( <!1><A HREF="GeoSet.html">GeoSet</A> *gset )
+<DD><I>Remove GeoSet from Geode.</I>
+<DT>
+<A HREF="#DOC.2.17.3"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   bool <B>replaceGeoSet</B>( <!1><A HREF="GeoSet.html">GeoSet</A> *origGset, <!1><A HREF="GeoSet.html">GeoSet</A> *newGset )
+<DD><I>Replace specified GeoSet with another GeoSet.</I>
+<DT>
+<A HREF="#DOC.2.17.4"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>int <B>getNumGeosets</B>( void ) const 
+<DD><I>return the number of geoset's</I>
+<DT>
+<A HREF="#DOC.2.17.5"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="GeoSet.html">GeoSet</A>* <B>getGeoSet</B>( int i )
+<DD><I>return geoset at position i</I>
+<DT>
+<A HREF="#DOC.2.17.6"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>containsGeoSet</B>( <!1><A HREF="GeoSet.html">GeoSet</A>* gset)
+<DD><I>return true is geoset is contained within Geode</I>
+<DT>
+<A HREF="#DOC.2.17.7"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>GeoSetList::iterator <B>findGeoSet</B>( <!1><A HREF="GeoSet.html">GeoSet</A>* gset)
+<DD><I>return the iterator postion for specified GeoSet.</I>
+<DT>
+<A HREF="#DOC.2.17.8"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>compileGeoSets</B>( void )
+<DD><I>complile OpenGL Display List for each geoset</I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public</H3><DD><DT>
+<A HREF="#DOC.2.17.9"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>typedef  std::vector&lt; <!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="GeoSet.html">GeoSet</A>&gt; &gt;  <B>GeoSetList</B>
+<DD><I></I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<A HREF="#DOC.2.17.19"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Geode.html#DOC.2.17.9">GeoSetList</A> <B>_geosets</B>
+<DD><I></I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<A HREF="#DOC.2.17.15"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   <B>~Geode</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.17.16"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   bool <B>readLocalData</B>(<!1><A HREF="Input.html">Input</A>&amp; fr)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.17.17"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   bool <B>writeLocalData</B>(<!1><A HREF="Output.html">Output</A>&amp; fw)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.17.18"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   bool <B>computeBound</B>( void )
+<DD><I></I>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Node.html">Node</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.30.1">Node</A>* <B>cloneNode</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>ascend</B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>traverse</B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; )
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setName</B>( const std::string&amp; name )
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setName</B>( const char* name )
+<DT>
+<IMG ALT="o" SRC=icon2.gif>const std::string&amp; <B>getName</B>( void )
+<DT>
+<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="Node.html#DOC.2.30.12">ParentList</A>&amp; <B>getParents</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.30.39">Group</A>* <B>getParent</B>(int i) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>int <B>getNumParents</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setUserData</B>(void* data, <!1><A HREF="MemoryAdapter.html">MemoryAdapter</A>* ma=0L)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void* <B>getUserData</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="MemoryAdapter.html">MemoryAdapter</A>* <B>getMemoryAdapter</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setNodeMask</B>(<!1><A HREF="Node.html#DOC.2.30.34">NodeMask</A> nm)
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.30.34">NodeMask</A> <B>getNodeMask</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="Node.html#DOC.2.30.21">DescriptionList</A>&amp; <B>getDescriptions</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.30.21">DescriptionList</A>&amp; <B>getDescriptions</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>const std::string&amp; <B>getDescription</B>(int i) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>std::string&amp; <B>getDescription</B>(int i)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>int <B>getNumDescriptions</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>addDescription</B>(const std::string&amp; desc)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="BoundingSphere.html">BoundingSphere</A>&amp; <B>getBound</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>dirtyBound</B>()
+</DL></P>
+
+<P><DL>
+<DT><H3>Public</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt;<!1><A HREF="Node.html#DOC.2.30.39">Group</A>*&gt;  <B>ParentList</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  unsigned int <B>NodeMask</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt;std::string&gt;  <B>DescriptionList</B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="BoundingSphere.html">BoundingSphere</A> <B>_bsphere</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>_bsphere_computed</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>std::string <B>_name</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.30.12">ParentList</A> <B>_parents</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>friend <B>Group</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void* <B>_userData</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="MemoryAdapter.html">MemoryAdapter</A>&gt;  <B>_memoryAdapter</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.30.34">NodeMask</A> <B>_nodeMask</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.30.21">DescriptionList</A> <B>_descriptions</B>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Object.html">Object</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html#DOC.2.36.1">Object</A>* <B>readClone</B>(<!1><A HREF="Input.html">Input</A>&amp; fr)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>write</B>(<!1><A HREF="Output.html">Output</A>&amp; fw)
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Referenced.html">Referenced</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Referenced.html#DOC.2.43.4">Referenced</A>&amp; <B>operator = </B>(<!1><A HREF="Referenced.html#DOC.2.43.4">Referenced</A>&amp;)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>ref</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>unref</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>int <B>referenceCount</B>()
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>int <B>_refCount</B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU">
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>Leaf Node for grouping GeoSets</BLOCKQUOTE>
+<DL>
+
+<A NAME="GeoSetList">
+<A NAME="DOC.2.17.9">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; <!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="GeoSet.html">GeoSet</A>&gt; &gt;  GeoSetList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Geode">
+<A NAME="DOC.2.17.10">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Geode()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="clone">
+<A NAME="DOC.2.17.11">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html#DOC.2.36.1">Object</A>* clone() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="isSameKindAs">
+<A NAME="DOC.2.17.12">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(<!1><A HREF="Object.html#DOC.2.36.1">Object</A>* obj)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="className">
+<A NAME="DOC.2.17.13">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="accept">
+<A NAME="DOC.2.17.14">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void accept(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="addGeoSet">
+<A NAME="DOC.2.17.1">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool addGeoSet( <!1><A HREF="GeoSet.html">GeoSet</A> *gset )</B></TT>
+<DD>Add GeoSet to Geode.
+If gset is not NULL and is not contained in Geode then increment its  
+reference count, add it to the geosets list and dirty the bounding 
+sphere to force it to recompute on next getBound() and return true for success.
+Otherwise return false.
+<DL><DT><DD></DL><P>
+<A NAME="removeGeoSet">
+<A NAME="DOC.2.17.2">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool removeGeoSet( <!1><A HREF="GeoSet.html">GeoSet</A> *gset )</B></TT>
+<DD>Remove GeoSet from Geode.
+If gset is contained in Geode then remove it from the geoset
+list and decrement its reference count, and dirty the 
+bounding sphere to force it to recompute on next getBound() and
+return true for success.  If gset is not found then return false
+and do not change the reference count of gset.
+<DL><DT><DD></DL><P>
+<A NAME="replaceGeoSet">
+<A NAME="DOC.2.17.3">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool replaceGeoSet( <!1><A HREF="GeoSet.html">GeoSet</A> *origGset, <!1><A HREF="GeoSet.html">GeoSet</A> *newGset )</B></TT>
+<DD>Replace specified GeoSet with another GeoSet.
+Decrement the reference count origGSet and increments the
+reference count of newGset, and dirty the bounding sphere
+to force it to recompute on next getBound() and returns true.
+If origGeoSet is not found then return false and do not 
+add newGset.  If newGset is NULL then return false and do
+not remove origGset.
+<DL><DT><DD></DL><P>
+<A NAME="getNumGeosets">
+<A NAME="DOC.2.17.4">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int getNumGeosets( void ) const </B></TT>
+<DD>return the number of geoset's
+<DL><DT><DD></DL><P>
+<A NAME="getGeoSet">
+<A NAME="DOC.2.17.5">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GeoSet.html">GeoSet</A>* getGeoSet( int i )</B></TT>
+<DD>return geoset at position i
+<DL><DT><DD></DL><P>
+<A NAME="containsGeoSet">
+<A NAME="DOC.2.17.6">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool containsGeoSet( <!1><A HREF="GeoSet.html">GeoSet</A>* gset)</B></TT>
+<DD>return true is geoset is contained within Geode
+<DL><DT><DD></DL><P>
+<A NAME="findGeoSet">
+<A NAME="DOC.2.17.7">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GeoSetList::iterator findGeoSet( <!1><A HREF="GeoSet.html">GeoSet</A>* gset)</B></TT>
+<DD>return the iterator postion for specified GeoSet.
+return _geoset.end() if gset not is contained in Geode.
+<DL><DT><DD></DL><P>
+<A NAME="compileGeoSets">
+<A NAME="DOC.2.17.8">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void compileGeoSets( void )</B></TT>
+<DD>complile OpenGL Display List for each geoset
+<DL><DT><DD></DL><P>
+<A NAME="~Geode">
+<A NAME="DOC.2.17.15">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Geode()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readLocalData">
+<A NAME="DOC.2.17.16">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool readLocalData(<!1><A HREF="Input.html">Input</A>&amp; fr)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="writeLocalData">
+<A NAME="DOC.2.17.17">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool writeLocalData(<!1><A HREF="Output.html">Output</A>&amp; fw)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="computeBound">
+<A NAME="DOC.2.17.18">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool computeBound( void )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_geosets">
+<A NAME="DOC.2.17.19">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Geode.html#DOC.2.17.9">GeoSetList</A> _geosets</B></TT>
+<DL><DT><DD></DL><P></DL>
+<HR>
+<DL><DT><B>Direct child classes:
+</B><DD><A HREF="Billboard.html">Billboard</A><BR>
+</DL>
+
+<DL><DT><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I><P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

@@ -1,0 +1,124 @@
+<HTML>
+<HEAD>
+   <TITLE>class  OSGUTIL_EXPORT osgUtil::IntersectState</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.3">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGUTIL_EXPORT <A HREF="#DOC.DOCU">osgUtil::IntersectState</A>: public osg::Referenced</H2>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=65>
+<param name=classes value="Mosg::Referenced,M,CIntersectState,MIntersectState.html">
+<param name=before value="M,M">
+<param name=after value="Md_,M">
+<param name=indent value="0,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Fields</H3><DD><DT>
+<A HREF="#DOC.2.7.2"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>osg::Matrix* <B>_matrix</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.7.3"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>osg::Matrix* <B>_inverse</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.7.5"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="IntersectState.html#DOC.2.7.4">SegList</A> <B>_segList</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.7.8"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="IntersectState.html#DOC.2.7.7">SegmentMaskStack</A> <B>_segmentMaskStack</B>
+<DD><I></I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<A HREF="#DOC.2.7.1"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A> <B>IntersectState</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.7.9"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>isCulled</B>(const osg::BoundingSphere&amp; bs, <!1><A HREF="IntersectState.html#DOC.2.7.6">SegmentMask</A>&amp; segMaskOut)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.7.10"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>isCulled</B>(const osg::BoundingBox&amp; bb, <!1><A HREF="IntersectState.html#DOC.2.7.6">SegmentMask</A>&amp; segMaskOut)
+<DD><I></I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public</H3><DD><DT>
+<A HREF="#DOC.2.7.4"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>typedef  std::vector&lt; std::pair&lt;osg::Seg*,osg::Seg*&gt; &gt;  <B>SegList</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.7.6"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>typedef  unsigned int <B>SegmentMask</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.7.7"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>typedef  std::vector&lt;<!1><A HREF="IntersectState.html#DOC.2.7.6">SegmentMask</A>&gt;  <B>SegmentMaskStack</B>
+<DD><I></I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<A HREF="#DOC.2.7.11"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A> <B>~IntersectState</B>()
+<DD><I></I>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU">
+<HR>
+<H2>Documentation</H2>
+<DL>
+
+<A NAME="IntersectState">
+<A NAME="DOC.2.7.1">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> IntersectState()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_matrix">
+<A NAME="DOC.2.7.2">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Matrix* _matrix</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_inverse">
+<A NAME="DOC.2.7.3">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Matrix* _inverse</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="SegList">
+<A NAME="DOC.2.7.4">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; std::pair&lt;osg::Seg*,osg::Seg*&gt; &gt;  SegList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_segList">
+<A NAME="DOC.2.7.5">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="IntersectState.html#DOC.2.7.4">SegList</A> _segList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="SegmentMask">
+<A NAME="DOC.2.7.6">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  unsigned int SegmentMask</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="SegmentMaskStack">
+<A NAME="DOC.2.7.7">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="IntersectState.html#DOC.2.7.6">SegmentMask</A>&gt;  SegmentMaskStack</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_segmentMaskStack">
+<A NAME="DOC.2.7.8">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="IntersectState.html#DOC.2.7.7">SegmentMaskStack</A> _segmentMaskStack</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="isCulled">
+<A NAME="DOC.2.7.9">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool isCulled(const osg::BoundingSphere&amp; bs, <!1><A HREF="IntersectState.html#DOC.2.7.6">SegmentMask</A>&amp; segMaskOut)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="isCulled">
+<A NAME="DOC.2.7.10">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool isCulled(const osg::BoundingBox&amp; bb, <!1><A HREF="IntersectState.html#DOC.2.7.6">SegmentMask</A>&amp; segMaskOut)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~IntersectState">
+<A NAME="DOC.2.7.11">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ~IntersectState()</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I><P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

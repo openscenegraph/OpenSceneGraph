@@ -1,0 +1,44 @@
+# $Id$
+#
+# The is a list of authors and contributors to the project.
+# Feel free to add your name and change list.
+
+Robert Osfield <robertosfield@yahoo.co.uk>
+        - osg and osgUtil.
+        - pfb, gif, jpeg, tiff, tga, pic plugins.
+        - sgv, various revisions, now most of code in osgGLUT.
+        - documentation?!
+        - visual studio workspace files/unix makefiles.
+        - project adim & lead.
+
+Don Burns <don_burns@sgi.com>
+        - libosg (particularily OpenGL)
+        - first version of sgv.
+        - fly database plugin.
+        - netscape plugin.
+        - unix makefiles.
+        
+Graeme Harkness <graeme@phys.strath.ac.uk>
+        - osg::Vec2,Vec3,Vec4 & osg::Quat classes.
+        - reworking of old sgv into osgGLUT and a slim line Demos/sgv.
+        - Demos/cube.
+
+Neil Salter <neil@nackle.org>
+        - first incarnation of osgUtil, Camera and Manipulators.
+        - web site.
+
+Brede Johansen <bredej@email.com>
+        - flt loader.
+        - osg::Point.
+        - bug fixes.
+        - assistance on visual studio workspace files.
+
+Ben Discoe <ben@vterrain.org>
+        - png plugin.
+        - a couple of bug fixes and code submissions.
+
+Karsten Weiss <knweiss@gmx.de>
+        - autoconfiscation of the project.
+        - rpm spec file.
+        - documentation.
+        - bug fixes.

@@ -1,0 +1,45 @@
+#ifndef OSG_DCS
+#define OSG_DCS 1
+
+#include <osg/Group>
+#include <osg/Matrix>
+
+namespace osg {
+
+/** DCS - Dynamic Coordinate System a is group which all children
+    are transformed by the the DCS's osg::Matrix.  Typical uses
+    of the DCS is for positioning objects within a scene or 
+    producing trakerball functionality.
+*/
+class SG_EXPORT DCS : public Group
+{
+    public :
+        DCS();
+        DCS(const Matrix& matix);
+
+        virtual Object* clone() const { return new DCS(); }
+        virtual bool isSameKindAs(Object* obj) { return dynamic_cast<DCS*>(obj)!=NULL; }
+        virtual const char* className() const { return "DCS"; }
+        virtual void accept(NodeVisitor& nv) { nv.apply(*this); }
+
+        void setMatrix(const Matrix& mat );
+        Matrix* getMatrix() { return _mat; }
+
+        void preTranslate( float tx, float ty, float tz );
+        void preRotate( float deg, float x, float y, float z );
+
+        bool computeBound();
+    
+    protected :
+    
+        virtual ~DCS();
+        
+        virtual bool readLocalData(Input& fr);
+        virtual bool writeLocalData(Output& fw);
+
+        Matrix *_mat;
+};
+
+};
+
+#endif

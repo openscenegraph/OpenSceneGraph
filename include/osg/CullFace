@@ -1,0 +1,51 @@
+#ifndef OSG_CULLFACE
+#define OSG_CULLFACE 1
+
+#include <osg/Export>
+#include <osg/Object>
+#include <osg/GL>
+
+namespace osg {
+
+/** Class to globally enable/disable OpenGL's polygon culling mode
+    (GL_CULL_FACE).
+*/     
+class SG_EXPORT CullFace : public Object
+{
+    public :
+    
+        enum Mode {
+            FRONT = GL_FRONT,
+            BACK = GL_BACK,
+            FRONT_AND_BACK = GL_FRONT_AND_BACK
+        };
+    
+        CullFace();
+        static CullFace* instance();
+        virtual bool isSameKindAs(Object* obj) { return dynamic_cast<CullFace*>(obj)!=NULL; }
+        virtual Object* clone() const { return new CullFace(); }
+        virtual const char* className() const { return "CullFace"; }
+    
+        void setMode(Mode mode) { _mode = mode; }
+    
+	/** Enable the polygon culling mode.*/
+        static void enable();
+	/** Disable the polygon culling mode.*/
+        static void disable();
+
+        void apply();
+        
+    protected:
+    
+        virtual ~CullFace();
+
+        virtual bool readLocalData(Input& fr);
+        virtual bool writeLocalData(Output& fw);
+        
+        Mode _mode;
+
+};
+
+};
+
+#endif

@@ -1,0 +1,50 @@
+#ifndef OSG_TRANSPARENCY
+#define OSG_TRANSPARENCY 1
+
+#include <osg/Export>
+#include <osg/Object>
+#include <osg/GL>
+
+namespace osg {
+
+
+class SG_EXPORT Transparency : public Object
+{
+    public :
+
+        enum TransparencyMode {
+            DST_ALPHA            = GL_DST_ALPHA,
+            DST_COLOR            = GL_DST_COLOR,
+            ONE                  = GL_ONE,
+            ONE_MINUS_DST_ALPHA  = GL_ONE_MINUS_DST_ALPHA,
+            ONE_MINUS_DST_COLOR  = GL_ONE_MINUS_DST_COLOR,
+            ONE_MINUS_SRC_ALPHA  = GL_ONE_MINUS_SRC_ALPHA,
+            ONE_MINUS_SRC_COLOR  = GL_ONE_MINUS_SRC_COLOR,
+            SRC_ALPHA            = GL_SRC_ALPHA,
+            SRC_ALPHA_SATURATE   = GL_SRC_ALPHA_SATURATE,
+            SRC_COLOR            = GL_SRC_COLOR,
+            ZERO                 = GL_ZERO
+        };
+
+        Transparency();
+        static Transparency * instance();
+        virtual Object* clone() const { return new Transparency(); }
+        virtual bool isSameKindAs(Object* obj) { return dynamic_cast<Transparency*>(obj)!=NULL; }
+        virtual const char* className() const { return "Transparency"; }
+
+        void setFunction( int source, int destination );
+        static void enable( void );
+        static void disable( void );
+        void apply( void );
+
+    protected :
+
+        virtual ~Transparency();
+
+        int _source_factor;
+        int _destination_factor;
+};
+
+};
+
+#endif

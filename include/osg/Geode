@@ -1,0 +1,108 @@
+#ifndef OSG_GEODE
+#define OSG_GEODE 1
+
+#include <osg/OSG>
+
+#include <osg/Node>
+#include <osg/GeoSet>
+#include <osg/NodeVisitor>
+
+#include <vector>
+
+namespace osg {
+
+/** Leaf Node for grouping GeoSets.*/
+class SG_EXPORT Geode : public Node
+{
+    public:
+
+        typedef std::vector< ref_ptr<GeoSet> > GeoSetList;
+
+        Geode();
+
+        virtual Object* clone() const { return new Geode(); }
+        virtual bool isSameKindAs(Object* obj) { return dynamic_cast<Geode*>(obj)!=NULL; }
+        virtual const char* className() const { return "Geode"; }
+        virtual void accept(NodeVisitor& nv) { nv.apply(*this); }
+
+        /** Add GeoSet to Geode.
+         *  If gset is not NULL and is not contained in Geode then increment its  
+         *  reference count, add it to the geosets list and dirty the bounding 
+         *  sphere to force it to recompute on next getBound() and return true for success.
+         *  Otherwise return false.
+         */
+        virtual bool addGeoSet( GeoSet *gset );
+
+        /** Remove GeoSet from Geode.
+         *  If gset is contained in Geode then remove it from the geoset
+         *  list and decrement its reference count, and dirty the 
+         *  bounding sphere to force it to recompute on next getBound() and
+         *  return true for success.  If gset is not found then return false
+         *  and do not change the reference count of gset.
+         */
+        virtual bool removeGeoSet( GeoSet *gset );
+
+        /** Replace specified GeoSet with another GeoSet.
+         *  Decrement the reference count origGSet and increments the
+         *  reference count of newGset, and dirty the bounding sphere
+         *  to force it to recompute on next getBound() and returns true.
+         *  If origGeoSet is not found then return false and do not 
+         *  add newGset.  If newGset is NULL then return false and do
+         *  not remove origGset.
+         */
+        virtual bool replaceGeoSet( GeoSet *origGset, GeoSet *newGset );
+
+
+        /** return the number of geoset's.*/
+        int getNumGeosets( void ) const { return _geosets.size(); }
+
+        /** return geoset at position i.*/
+        GeoSet* getGeoSet( int i ) { return _geosets[i].get(); }
+
+        /** return true is geoset is contained within Geode.*/
+        bool containsGeoSet( GeoSet* gset)
+        {
+            
+            for (GeoSetList::iterator itr=_geosets.begin();
+                 itr!=_geosets.end();
+                 ++itr)
+            {
+                if (itr->get()==gset) return true;
+            }
+            return false;
+        }
+
+        /** return the iterator postion for specified GeoSet.
+         *  return _geoset.end() if gset not is contained in Geode.
+         */
+        GeoSetList::iterator findGeoSet( GeoSet* gset)
+        {
+            
+            for (GeoSetList::iterator itr=_geosets.begin();
+                 itr!=_geosets.end();
+                 ++itr)
+            {
+                if (itr->get()==gset) return itr;
+            }
+            return _geosets.end();
+        }
+
+        /** complile OpenGL Display List for each geoset.*/
+        void compileGeoSets( void );
+
+    protected:
+
+        virtual ~Geode();
+
+        virtual bool readLocalData(Input& fr);
+        virtual bool writeLocalData(Output& fw);
+
+        virtual bool computeBound( void );
+
+        GeoSetList _geosets;
+
+};
+
+};
+
+#endif

@@ -731,6 +731,9 @@ class SG_EXPORT ClusterCullingCallback : public Drawable::CullCallback
         void setNormal(const osg::Vec3& normal) { _normal = normal; }
         const osg::Vec3& getNormal() const { return _normal; }
 
+        void setRadius(float radius) { _radius = radius; }
+        float getRadius() const { return _radius; }
+
         void setDeviation(float deviation) { _deviation = deviation; }
         float getDeviation() const { return _deviation; }
 
@@ -740,9 +743,10 @@ class SG_EXPORT ClusterCullingCallback : public Drawable::CullCallback
 
         virtual ~ClusterCullingCallback() {}
 
-        osg::Vec3 _controlPoint;
-        osg::Vec3 _normal;
-        float _deviation;
+        osg::Vec3   _controlPoint;
+        osg::Vec3   _normal;
+        float       _radius;
+        float       _deviation;
 };
 
 

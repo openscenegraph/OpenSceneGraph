@@ -122,11 +122,11 @@ class NetReader : public osgDB::ReaderWriter
         {
             switch(objectType)
             {
-            case(OBJECT): return rw->readObject(fin,options);
-            case(ARCHIVE): return rw->openArchive(fin,options);
-            case(IMAGE): return rw->readImage(fin,options);
-            case(HEIGHTFIELD): return rw->readHeightField(fin,options);
-            case(NODE): return rw->readNode(fin,options);
+            case(OBJECT): return rw->threadSafe_readObject(fin,options);
+            case(ARCHIVE): return rw->threadSafe_openArchive(fin,options);
+            case(IMAGE): return rw->threadSafe_readImage(fin,options);
+            case(HEIGHTFIELD): return rw->threadSafe_readHeightField(fin,options);
+            case(NODE): return rw->threadSafe_readNode(fin,options);
             default: break;
             }
             return ReadResult::FILE_NOT_HANDLED;

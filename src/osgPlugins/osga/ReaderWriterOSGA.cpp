@@ -61,7 +61,7 @@ public:
         osg::ref_ptr<ReaderWriter::Options> local_options = new ReaderWriter::Options;
         local_options->setDatabasePath(file);
 
-        ReadResult result_2 = result.getArchive()->readImage(result.getArchive()->getMasterFileName(),local_options.get());
+        ReadResult result_2 = result.getArchive()->threadSafe_readImage(result.getArchive()->getMasterFileName(),local_options.get());
         
 
         // register the archive so that it is cached for future use.
@@ -81,7 +81,7 @@ public:
         osg::ref_ptr<ReaderWriter::Options> local_options = new ReaderWriter::Options;
         local_options->setDatabasePath(file);
 
-        ReadResult result_2 = result.getArchive()->readNode(result.getArchive()->getMasterFileName(),local_options.get());
+        ReadResult result_2 = result.getArchive()->threadSafe_readNode(result.getArchive()->getMasterFileName(),local_options.get());
         
 
         // register the archive so that it is cached for future use.

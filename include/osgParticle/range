@@ -64,6 +64,12 @@ namespace osgParticle
             return minimum + (maximum - minimum) * rand() / RAND_MAX;
         }
 
+        /// Get a random square root value between min and max.
+        T_ get_random_sqrtf() const
+        {
+            return minimum + (maximum - minimum) * sqrtf( static_cast<float>(rand()) / static_cast<float>(RAND_MAX) );
+        }
+
     };
 
     /// Range of floats.

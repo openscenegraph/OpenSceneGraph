@@ -190,6 +190,12 @@ SOURCE=..\..\..\examples\slideshow3D\DefaultPresentation.cpp
 SOURCE=..\..\..\examples\slideshow3D\SlideEventHandler.cpp
 
 # End Source File
+# Begin Source File
+
+
+SOURCE=..\..\..\examples\slideshow3D\PointsEventHandler.cpp
+
+# End Source File
 
 # Begin Source File
 
@@ -228,6 +234,13 @@ SOURCE=..\..\..\examples\slideshow3D\SlideShowConstructor.cpp
 
 
 SOURCE=..\..\..\examples\slideshow3D\SlideEventHandler.h
+
+# End Source File
+# Begin Source File
+
+
+
+SOURCE=..\..\..\examples\slideshow3D\PointsEventHandler.h
 
 # End Source File
 

@@ -132,8 +132,41 @@ public:
 			break;
 		}
 	}
+//<<<<<<< osgGeoStructs.h
+
+	void set(unsigned short id,unsigned int fid) { // to set values
+		TypeId=DB_UINT;
+		tokenId=id;
+		storeSize=SIZEOF_UINT;
+		numItems=1;
+		storage=new unsigned char[SIZEOF_UINT];
+		memcpy(storage,&fid,SIZEOF_UINT);
+	}
+	void set(unsigned short id,float *cen,const int nsize) { // to set values
+//set(GEO_DB_ROTATE_ACTION_ORIGIN,ct,3);
+		if (nsize==3) {
+			TypeId=DB_VEC3F;
+			tokenId=id;
+			storeSize=SIZEOF_VEC3F;
+		} else if (nsize==2) {
+			TypeId=DB_VEC2F;
+			tokenId=id;
+			storeSize=SIZEOF_VEC2F;
+		} else if (nsize==4) {
+			TypeId=DB_VEC4F;
+			tokenId=id;
+			storeSize=SIZEOF_VEC4F;
+		}
+		numItems=1;
+		storage=new unsigned char[storeSize];
+		memcpy(storage,cen,storeSize);
+	}
+	void readfile(std::ifstream &fin, const unsigned int id); // is part of a record id 
+	void parseExt(std::ifstream &fin) const; // Feb 2003 parse node extension fields
+/*=======
 	void readfile(std::ifstream &fin, const uint id); // is part of a record id 
 	void parseExt(std::ifstream &fin) const; // Feb 2003 parse node extension fields
+//>>>>>>> 1.10 */
 	void writefile(std::ofstream &fout) { // write binary file
 		if (numItems<32767 && tokenId<256) {
 			unsigned char tokid=tokenId, type=TypeId;
@@ -153,7 +186,7 @@ public:
 		if (TypeId==DB_VEC3F) { // already uncompressed
 		} else {
 			float *norms=new float[numItems*SIZEOF_VEC3F]; // uncompressed size
-			for (uint i=0; i<numItems; i++) {
+			for (unsigned int i=0; i<numItems; i++) {
 				switch (TypeId) {
 				case DB_UINT:
 					norms[3*i]=storage[4*i+1]/255.0f;
@@ -204,7 +237,7 @@ public:
 			output.indent() << " Field:token " << (int)gf.tokenId << " datatype " << (int)gf.TypeId
 				<< " num its " << gf.numItems << " size " << gf.storeSize << std::endl;
 			if (gf.TypeId==DB_CHAR) output.indent();
-			for (uint i=0; i<gf.numItems; i++) {
+			for (unsigned int i=0; i<gf.numItems; i++) {
 				if (gf.storage==NULL) {
 					output.indent() << "No storage" << std::endl;
 				} else {
@@ -214,7 +247,7 @@ public:
 					char *ch;
 					float *ft;
 					int *in;
-					uint *uin;
+					unsigned int *uin;
 					short *sh;
 					unsigned short *ush;
 					long *ln;
@@ -353,7 +386,7 @@ public:
 	}
 private:
 	unsigned short tokenId, TypeId; // these are longer than standard field; are extended field length
-	uint numItems;
+	unsigned int numItems;
 	unsigned char *storage; // data relating
 	uint storeSize; // size*numItems in storage
 };
@@ -364,7 +397,7 @@ public:
 	georecord() {id=0; parent=NULL; instance=NULL; nod=NULL; }
 	~georecord() {;}
 	inline const uint getType(void) const {return id;}
-    typedef std::vector<osg::MatrixTransform *> instancelist; // list if unused instance matrices
+    typedef std::vector<osg::ref_ptr<osg::MatrixTransform> > instancelist; // list 0f unused instance matrices
 	void addInstance(osg::MatrixTransform *mtr) { mtrlist.push_back(mtr);}
 	inline  void setNode(osg::Node *n) {
 		nod=n;
@@ -372,12 +405,12 @@ public:
 			for (instancelist::iterator itr=mtrlist.begin();
 			itr!=mtrlist.end();
 			++itr) {
-				(*itr)->addChild(nod);
+				(*itr).get()->addChild(nod.get());
 			}
 			mtrlist.clear();
 		}
 	}
-	inline osg::Node *getNode() const { return nod;}
+	inline osg::Node *getNode() { return nod.get();}
 	inline void setparent(georecord *p) { parent=p;}
 	inline class georecord *getparent() const { return parent;}
 	inline std::vector<georecord *> getchildren(void) const { return children;}
@@ -481,7 +514,8 @@ public:
 	//	case DB_DSK_BILLBOARD: output << "Billboard" << std::endl; break;
 		case DB_DSK_SEQUENCE: output << "Sequence" << std::endl; break;
 		case DB_DSK_LOD: output << "LOD" << std::endl; break;
-		case DB_DSK_GEODE: output << "Geode" << std::endl; break;
+	//	case DB_DSK_GEODE: output << "Geode" << std::endl; break;
+		case DB_DSK_RENDERGROUP: output << "Rendergroup Geode" << std::endl; break;
 		case DB_DSK_POLYGON: output << "Polygon" << std::endl; break;
 		case DB_DSK_MESH: output << "Mesh" << std::endl; break;
 		case DB_DSK_CUBE: output << "Cube" << std::endl; break;
@@ -515,6 +549,7 @@ public:
 		case DB_DSK_ROTATE_ACTION: output << "rotate action" << std::endl; break;
 		case DB_DSK_TRANSLATE_ACTION: output << "translate action" << std::endl; break;
 		case DB_DSK_SCALE_ACTION: output << "scale action" << std::endl; break;
+		case DB_DSK_DCS_ACTION: output << "DCS action" << std::endl; break;
 		case DB_DSK_ARITHMETIC_ACTION: output << "arithmetic action" << std::endl; break;
 		case DB_DSK_LOGIC_ACTION: output << "logic action" << std::endl; break;
 		case DB_DSK_CONDITIONAL_ACTION: output << "conditional action" << std::endl; break;
@@ -597,15 +632,16 @@ public:
 		}
 	}
 	unsigned int getNumFields(void) const { return fields.size();}
+	void addField(geoField &gf){fields.push_back(gf);}
 private:
-	uint id;
+	unsigned int id;
 	std::vector<geoField> fields; // each geo record has a variable number of fields
 	class georecord *parent; // parent of pushed/popped records
 	class georecord *instance; // this record is an instance of the pointed to record
 	std::vector< georecord *> tmap; // texture mapping records of this record
 	std::vector< georecord *> behaviour; // behaviour & action records of this record
 	std::vector< georecord *> children; // children of this record
-	osg::Node *nod; // the node that this record has been converted to (useful for instances)
+	osg::ref_ptr<osg::Node> nod; // the node that this record has been converted to (useful for instances)
 	instancelist mtrlist; // list of matrices of instances not yet satisfied
 };
 

@@ -1,0 +1,121 @@
+//C++ header - Open Scene Graph - Copyright (C) 1998-2002 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+
+// -*-c++-*-
+
+#ifndef OSG_TEXTURE3D
+#define OSG_TEXTURE3D 1
+
+#include <osg/TextureBase>
+
+namespace osg {
+
+/** Texture state class which encapsulates OpenGl 3D texture functionality.*/
+class SG_EXPORT Texture3D : public TextureBase
+{
+
+    public :
+        
+        Texture3D();
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        Texture3D(const Texture3D& text,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+        
+        META_StateAttribute(osg, Texture3D,TEXTURE);
+
+        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
+        virtual int compare(const StateAttribute& rhs) const;
+
+        virtual void getAssociatedModes(std::vector<GLMode>& modes) const 
+        {
+            modes.push_back(GL_TEXTURE_3D);
+        }
+
+        /** Set the texture image. */
+        void setImage(Image* image);
+
+        /** Get the texture image. */
+        Image* getImage() { return _image.get(); }
+
+        /** Get the const texture image. */
+        inline const Image* getImage() const { return _image.get(); }
+
+
+        /** Set the texture width and height. If width or height are zero then
+          * the repsective size value is calculated from the source image sizes. */
+        inline void setTextureSize(const int width, const int height, const int depth) const
+        {
+            _textureWidth = width;
+            _textureHeight = height;
+            _textureDepth = depth;
+        }
+
+        /** Get the texture subload width. */
+        inline void getTextureSize(int& width, int& height, int& depth) const
+        {
+            width = _textureWidth;
+            height = _textureHeight;
+            depth = _textureDepth;
+        }
+
+
+        class SubloadCallback : public Referenced
+        {
+            public:
+                virtual void load(const Texture3D& texture,State& state) const = 0;
+                virtual void subload(const Texture3D& texture,State& state) const = 0;
+        };
+        
+        void setSubloadCallback(SubloadCallback* cb) { _subloadCallback = cb;; }
+        
+        SubloadCallback* getSubloadCallback() { return _subloadCallback.get(); }
+
+        const SubloadCallback* getSubloadCallback() const { return _subloadCallback.get(); }
+
+
+        /** Set the number of mip map levels the the texture has been created with,
+            should only be called within an osg::Texuture::apply() and custom OpenGL texture load.*/
+        void setNumMipmapLevels(unsigned int num) const { _numMimpmapLevels=num; }
+
+        /** Get the number of mip map levels the the texture has been created with.*/
+        unsigned int getNumMipmapLevels() const { return _numMimpmapLevels; }
+        
+
+        /** Copy a two-dimensional texture subimage. As per glCopyTexSubImage2D.
+          * Updates portion of an existing OpenGL texture object from the current OpenGL background
+          * framebuffer contents at pos \a x, \a y with width \a width and
+          * height \a height. */
+        void copyTexSubImage3D(State& state, int xoffset, int yoffset, int zoffset, int x, int y, int width, int height);
+
+
+        /** On first apply (unless already compiled), create the minmapped 
+          * texture and bind it, subsequent apply will simple bind to texture.*/
+        virtual void apply(State& state) const;
+
+    protected :
+
+        virtual ~Texture3D();
+
+        virtual void computeInternalFormat() const;
+
+        void applyTexImage3D(GLenum target, Image* image, State& state, GLsizei& inwidth, GLsizei& inheight, GLsizei& indepth, GLsizei& numMimpmapLevels) const;
+
+        // not ideal that _image is mutable, but its required since
+        // Image::ensureDimensionsArePowerOfTwo() can only be called
+        // in a valid OpenGL context, a therefore within an Texture::apply
+        // which is const...
+        mutable ref_ptr<Image> _image;
+
+        // subloaded images can have different texture and image sizes.
+        mutable GLsizei _textureWidth, _textureHeight, _textureDepth;
+        
+        // number of mip map levels the the texture has been created with,        
+        mutable GLsizei _numMimpmapLevels;
+
+        ref_ptr<SubloadCallback> _subloadCallback;
+};
+
+}
+
+#endif

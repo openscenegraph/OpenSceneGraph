@@ -5,7 +5,7 @@
 #ifndef OSGUTIL_RENDERTOTEXTURESTAGE
 #define OSGUTIL_RENDERTOTEXTURESTAGE 1
 
-#include <osg/Texture>
+#include <osg/Texture2D>
 
 #include <osgUtil/RenderStage>
 
@@ -31,8 +31,8 @@ class OSGUTIL_EXPORT RenderToTextureStage : public RenderStage
 
         virtual void reset();
         
-        void setTexture(osg::Texture* texture) { _texture = texture; }
-        osg::Texture* getTexture() { return _texture.get(); }
+        void setTexture(osg::Texture2D* texture) { _texture = texture; }
+        osg::Texture2D* getTexture() { return _texture.get(); }
         
         void setImage(osg::Image* image) { _image = image; }
         osg::Image* getImage() { return _image.get(); }
@@ -46,7 +46,7 @@ class OSGUTIL_EXPORT RenderToTextureStage : public RenderStage
     
         virtual ~RenderToTextureStage();
         
-        osg::ref_ptr<osg::Texture> _texture;
+        osg::ref_ptr<osg::Texture2D> _texture;
         osg::ref_ptr<osg::Image> _image;
 
 };

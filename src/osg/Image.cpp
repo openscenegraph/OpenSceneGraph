@@ -7,7 +7,7 @@
 #include <osg/Geode>
 #include <osg/Geometry>
 #include <osg/StateSet>
-#include <osg/Texture>
+#include <osg/Texture2D>
 
 
 using namespace osg;
@@ -415,7 +415,7 @@ void Image::ensureValidSizeForTexturing()
     int new_s = computeNearestPowerOfTwo(_s);
     int new_t = computeNearestPowerOfTwo(_t);
     
-    static GLint max_size=Texture::getMaxTextureSize();
+    static GLint max_size=TextureBase::getMaxTextureSize();
     
     if (new_s>max_size) new_s = max_size;
     if (new_t>max_size) new_t = max_size;
@@ -454,7 +454,7 @@ Geode* osg::createGeodeForImage(osg::Image* image,const float s,const float t)
             float x = y*(s/t);
 
             // set up the texture.
-            osg::Texture* texture = osgNew osg::Texture;
+            osg::Texture2D* texture = osgNew osg::Texture2D;
             texture->setImage(image);
 
             // set up the drawstate.

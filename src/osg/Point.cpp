@@ -1,8 +1,8 @@
 // Ideas and code borrowed from GLUT pointburst demo
 // written by Mark J. Kilgard
 
-#include <osg/GL>
 #include <osg/GLExtensions>
+#include <osg/GL>
 #include <osg/Point>
 #include <osg/Notify>
 

@@ -134,13 +134,13 @@ class MyCopyOp : public osg::CopyOp
             return ret_attr;
         }
 
-        virtual Texture*        operator() (const Texture* text) const
+        virtual TextureBase*        operator() (const TextureBase* text) const
         {
             writeIndent(); std::cout << "copying Texture "<<text;
             if (text) std::cout<<" "<<text->className();
             std::cout<<std::endl;
             moveIn();
-            osg::Texture* ret_text = CopyOp::operator()(text);
+            osg::TextureBase* ret_text = CopyOp::operator()(text);
             moveOut();
             return ret_text;
         }

@@ -4,50 +4,42 @@
 
 // -*-c++-*-
 
-#ifndef OSG_TEXTURECUBEMAP
-#define OSG_TEXTURECUBEMAP 1
+#ifndef OSG_TEXTURE2D
+#define OSG_TEXTURE2D 1
 
 #include <osg/TextureBase>
 
-#ifndef GL_TEXTURE_CUBE_MAP
-#define GL_TEXTURE_CUBE_MAP 0x8513
-#endif
-
 namespace osg {
 
-/** TextureCubeMap state class which encapsulates OpenGl texture cubemap functionality.*/
-class SG_EXPORT TextureCubeMap : public TextureBase
+/** Texture state class which encapsulates OpenGl texture functionality.*/
+class SG_EXPORT Texture2D : public TextureBase
 {
 
     public :
         
-        TextureCubeMap();
+        Texture2D();
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
-        TextureCubeMap(const TextureCubeMap& cm,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
-
-        META_StateAttribute(osg, TextureCubeMap,TEXTURE);
+        Texture2D(const Texture2D& text,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
         
+        META_StateAttribute(osg, Texture2D,TEXTURE);
+
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
         virtual int compare(const StateAttribute& rhs) const;
 
-        enum Face {
-            POSITIVE_X=0,
-            NEGATIVE_X=1,
-            POSITIVE_Y=2,
-            NEGATIVE_Y=3,
-            POSITIVE_Z=4,
-            NEGATIVE_Z=5
-        };
+        virtual void getAssociatedModes(std::vector<GLMode>& modes) const 
+        {
+            modes.push_back(GL_TEXTURE_2D);
+        }
 
-        /** Set the texture image for specified face. */
-        void setImage(const Face, Image* image);
+        /** Set the texture image. */
+        void setImage(Image* image);
 
-        /** Get the texture image for specified face. */
-        Image* getImage(const Face);
+        /** Get the texture image. */
+        Image* getImage() { return _image.get(); }
 
-        /** Get the const texture image for specified face. */
-        const Image* getImage(const Face) const;
+        /** Get the const texture image. */
+        inline const Image* getImage() const { return _image.get(); }
 
 
         /** Set the texture width and height. If width or height are zero then
@@ -69,8 +61,8 @@ class SG_EXPORT TextureCubeMap : public TextureBase
         class SubloadCallback : public Referenced
         {
             public:
-                virtual void load(const TextureCubeMap& texture,State& state) const = 0;
-                virtual void subload(const TextureCubeMap& texture,State& state) const = 0;
+                virtual void load(const Texture2D& texture,State& state) const = 0;
+                virtual void subload(const Texture2D& texture,State& state) const = 0;
         };
         
         void setSubloadCallback(SubloadCallback* cb) { _subloadCallback = cb;; }
@@ -85,21 +77,41 @@ class SG_EXPORT TextureCubeMap : public TextureBase
         void setNumMipmapLevels(unsigned int num) const { _numMimpmapLevels=num; }
 
         /** Get the number of mip map levels the the texture has been created with.*/
-        unsigned int getNumMipmapLevels() const { return _numMimpmapLevels; }        
+        unsigned int getNumMipmapLevels() const { return _numMimpmapLevels; }
+        
+
+        /** Copy pixels into a 2D texture image.As per glCopyTexImage2D.
+          * Creates an OpenGL texture object from the current OpenGL background
+          * framebuffer contents at pos \a x, \a y with width \a width and
+          * height \a height. \a width and \a height must be a power of two.
+          */
+        void copyTexImage2D(State& state, int x, int y, int width, int height );
+
+        /** Copy a two-dimensional texture subimage. As per glCopyTexSubImage2D.
+          * Updates portion of an existing OpenGL texture object from the current OpenGL background
+          * framebuffer contents at pos \a x, \a y with width \a width and
+          * height \a height. \a width and \a height must be a power of two,
+          * and writing into the texture with offset \a xoffset and \a yoffset.
+          */
+        void copyTexSubImage2D(State& state, int xoffset, int yoffset, int x, int y, int width, int height );
+
 
         /** On first apply (unless already compiled), create the minmapped 
           * texture and bind it, subsequent apply will simple bind to texture.*/
         virtual void apply(State& state) const;
-        
+
     protected :
 
-        virtual ~TextureCubeMap();
-        
-        bool imagesValid() const;
-        
+        virtual ~Texture2D();
+
         virtual void computeInternalFormat() const;
 
-        mutable ref_ptr<Image> _images[6];
+
+        // not ideal that _image is mutable, but its required since
+        // Image::ensureDimensionsArePowerOfTwo() can only be called
+        // in a valid OpenGL context, a therefore within an Texture::apply
+        // which is const...
+        mutable ref_ptr<Image> _image;
 
         // subloaded images can have different texture and image sizes.
         mutable GLsizei _textureWidth, _textureHeight;

@@ -94,164 +94,84 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-
-
 SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_AccelOperator.cpp
-
 # End Source File
-
 # Begin Source File
-
-
 
 SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_CenteredPlacer.cpp
-
 # End Source File
-
 # Begin Source File
-
-
 
 SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_Emitter.cpp
-
 # End Source File
-
 # Begin Source File
-
-
 
 SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_FluidFrictionOperator.cpp
-
 # End Source File
-
 # Begin Source File
-
-
 
 SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_ForceOperator.cpp
-
 # End Source File
-
 # Begin Source File
-
-
 
 SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_LinearInterpolator.cpp
-
 # End Source File
-
 # Begin Source File
-
-
 
 SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_ModularEmitter.cpp
-
 # End Source File
-
 # Begin Source File
-
-
 
 SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_ModularProgram.cpp
-
 # End Source File
-
 # Begin Source File
-
-
 
 SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_MultiSegmentPlacer.cpp
-
 # End Source File
-
 # Begin Source File
-
-
 
 SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_Particle.cpp
-
 # End Source File
-
 # Begin Source File
-
-
 
 SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_ParticleProcessor.cpp
-
 # End Source File
-
 # Begin Source File
-
-
 
 SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_ParticleSystem.cpp
-
 # End Source File
-
 # Begin Source File
-
-
 
 SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_ParticleSystemUpdater.cpp
-
 # End Source File
-
 # Begin Source File
-
-
 
 SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_PointPlacer.cpp
-
 # End Source File
-
 # Begin Source File
-
-
 
 SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_Program.cpp
-
 # End Source File
-
 # Begin Source File
-
-
 
 SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_RadialShooter.cpp
-
 # End Source File
-
 # Begin Source File
-
-
 
 SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_RandomRateCounter.cpp
-
 # End Source File
-
 # Begin Source File
-
-
 
 SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_SectorPlacer.cpp
-
 # End Source File
-
 # Begin Source File
-
-
 
 SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_SegmentPlacer.cpp
-
 # End Source File
-
 # Begin Source File
 
-
-
 SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_VariableRateCounter.cpp
-
 # End Source File
-
 # End Group
 # Begin Group "Header Files"
 

@@ -258,8 +258,8 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         class FindPagedLODsVisitor;
         friend class FindPagedLODsVisitor;
 
-        class SortFileRequestFunctor;
-        friend class SortFileRequestFunctor;
+        struct SortFileRequestFunctor;
+        friend struct SortFileRequestFunctor;
 
         
         OpenThreads::Mutex              _run_mutex;

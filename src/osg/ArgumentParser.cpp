@@ -15,7 +15,8 @@ bool ArgumentParser::isOption(const char* str)
 bool ArgumentParser::isString(const char* str)
 {
     if (!str) return false;
-    return !isOption(str);
+    return true;
+    //return !isOption(str);
 }
 
 bool ArgumentParser::isNumber(const char* str)

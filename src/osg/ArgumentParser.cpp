@@ -1,3 +1,4 @@
+#include <iostream>
 #include <osg/ArgumentParser>
 #include <osg/ApplicationUsage>
 
@@ -317,7 +318,7 @@ void ArgumentParser::writeErrorMessages(std::ostream& output,ErrorSeverity sever
     {
         if (itr->second>=severity)
         {
-            output<<getProgramName()<<": "<<itr->first<<std::endl;
+			output<< getProgramName() << ": " << itr->first << std::endl;
         }
     }
 }

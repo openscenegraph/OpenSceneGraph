@@ -12,10 +12,10 @@ debug : $(EXEC:=.dbg)\
 cleandepend : cleandependopt cleandependdbg
 
 cleandependopt :
-	@[ -d $(OPTDIR) ] && cd $(OPTDIR); rm -f Makedepend
+	[ -d $(OPTDIR) ] && cd $(OPTDIR); rm -f Makedepend; rm -rf .depend
 
 cleandependdbg :
-	@[ -d $(DEBUGDIR) ] && cd $(DEBUGDIR); rm -f Makedepend
+	[ -d $(DEBUGDIR) ] && cd $(DEBUGDIR); rm -f Makedepend; rm -rf .depend
 
 cleantarget : cleantargetopt cleantargetdbg
 
@@ -28,10 +28,10 @@ cleantargetdbg :
 clean : cleanopt cleandbg
 
 cleanopt : 
-	@[ -d $(OPTDIR) ] && cd $(OPTDIR); rm -f $(OBJS) Makedepend
+	[ -d $(OPTDIR) ] && cd $(OPTDIR); rm -f $(OBJS) Makedepend; rm -rf .depend
 
 cleandbg : 
-	@[ -d $(DEBUGDIR) ] && cd $(DEBUGDIR); rm -f $(OBJS) Makedepend
+	[ -d $(DEBUGDIR) ] && cd $(DEBUGDIR); rm -f $(OBJS) Makedepend; rm -rf .depend
 
 clobber : clobberdbg clobberopt
 
@@ -86,7 +86,7 @@ endif # not Darwin
 $(EXEC:=.dbg) :
 	@[ -d $(DEBUGDIR) ] || mkdir $(DEBUGDIR)
 	@cd $(DEBUGDIR); \
-	  $(MAKE) -f ../Makefile "DOF=$(DBGF)"  TOPDIR=../${TOPDIR} \
+	  $(MAKE) -f ../GNUmakefile "DOF=$(DBGF)"  TOPDIR=../${TOPDIR} \
 	      THISDIR=../$(THISDIR)\
 	      MAKEDEPEND=Makedepend $(EXEC)
 	@$(MAKE) LNSRC=$(DEBUGDIR)/$(EXEC) LNDEST=$(BININST)/$(EXEC) __link
@@ -94,7 +94,7 @@ $(EXEC:=.dbg) :
 $(LIB:=.dbg) : $(PLUGIN:=.dbg)
 	@[ -d $(DEBUGDIR) ] || mkdir $(DEBUGDIR)
 	@cd $(DEBUGDIR);\
-	  $(MAKE) -f ../Makefile "DOF=$(DBGF)"  TOPDIR=../${TOPDIR} \
+	  $(MAKE) -f ../GNUmakefile "DOF=$(DBGF)"  TOPDIR=../${TOPDIR} \
 	      THISDIR=../$(THISDIR)\
 	      MAKEDEPEND=Makedepend $(LIB)
 	@$(MAKE) LNSRC=$(DEBUGDIR)/$(LIB) LNDEST=$(LIBINST)/$(LIB) __link
@@ -102,7 +102,7 @@ $(LIB:=.dbg) : $(PLUGIN:=.dbg)
 $(PLUGIN:=.dbg) : 
 	@[ -d $(DEBUGDIR) ] || mkdir $(DEBUGDIR)
 	@cd $(DEBUGDIR); \
-	  $(MAKE) -f ../Makefile "DOF=$(DBGF)"  TOPDIR=../${TOPDIR} \
+	  $(MAKE) -f ../GNUmakefile "DOF=$(DBGF)"  TOPDIR=../${TOPDIR} \
 	      THISDIR=../$(THISDIR)\
 	      MAKEDEPEND=Makedepend $(PLUGIN)
 	@$(MAKE) LNSRC=$(DEBUGDIR)/$(PLUGIN) LNDEST=$(PLUGININST)/$(PLUGIN) __link
@@ -110,7 +110,7 @@ $(PLUGIN:=.dbg) :
 $(EXEC:=.opt) : 
 	@[ -d $(OPTDIR) ] || mkdir $(OPTDIR)
 	@cd $(OPTDIR); \
-	  $(MAKE) -f ../Makefile DOF=$(OPTF)  TOPDIR=../${TOPDIR} \
+	  $(MAKE) -f ../GNUmakefile DOF=$(OPTF)  TOPDIR=../${TOPDIR} \
 	      THISDIR=../$(THISDIR)\
 	      MAKEDEPEND=Makedepend $(EXEC)
 	@$(MAKE) LNSRC=$(OPTDIR)/$(EXEC) LNDEST=$(BININST)/$(EXEC) __link
@@ -119,7 +119,7 @@ $(EXEC:=.opt) :
 $(LIB:=.opt) : 
 	@[ -d $(OPTDIR) ] || mkdir -p $(OPTDIR)
 	@cd $(OPTDIR);\
-	  $(MAKE) -f ../Makefile DOF=$(OPTF) TOPDIR=../${TOPDIR} \
+	  $(MAKE) -f ../GNUmakefile DOF=$(OPTF) TOPDIR=../${TOPDIR} \
 	        THISDIR=../$(THISDIR)\
 	        MAKEDEPEND=Makedepend $(LIB)
 	@$(MAKE) LNSRC=$(OPTDIR)/$(LIB) LNDEST=$(LIBINST)/$(LIB) __link
@@ -127,51 +127,64 @@ $(LIB:=.opt) :
 $(PLUGIN:=.opt) : 
 	@[ -d $(OPTDIR) ] || mkdir -p $(OPTDIR)
 	@cd $(OPTDIR); \
-	  $(MAKE) -f ../Makefile DOF=$(OPTF) TOPDIR=../${TOPDIR} \
+	  $(MAKE) -f ../GNUmakefile DOF=$(OPTF) TOPDIR=../${TOPDIR} \
 	    THISDIR=../$(THISDIR)\
 	               MAKEDEPEND=Makedepend $(PLUGIN)
 	@$(MAKE) LNSRC=$(OPTDIR)/$(PLUGIN) LNDEST=$(PLUGININST)/$(PLUGIN) __link
 
 
-Makedepend : $(CXXFILES) $(CFILES) 
-ifeq ($(OS),IRIX)   
+## Revamped method for making Makedepend files
+## Under this method, Makedepend simply includes
+## all dependency files which are built for each 
+## individual source file.  At update, only the individual
+## dependency file is updated rather than the whole of Makedepend
+
+Makedepend : $(CXXFILES) $(CFILES)
+ifeq ($(OS),IRIX)
 	touch $@
 else
-ifeq (0,1) # This is an experiment
-	@ [ -d depend ] || mkdir depend
-	@ rm -f $@;
-	 for f in $?; do \
-	    ff=`basename $$f`;\
-	    $(C++) $(INC) $(DEPARG) > depend/$$ff ;\
-	    echo "include depend/$$ff" >> $@;\
-	done
-else
-	$(C++) $(INC) $(DEPARG) $^ > $(MAKEDEPEND)
+	@ touch $@
+	@if [ ! -d .depend ] ; then  \
+		mkdir .depend;\
+		depfiles="$+";\
+	else\
+		depfiles="$?";\
+	fi;\
+	if [ ! -z "$$depfiles" ]; then\
+	for f in $$depfiles; do \
+		echo "$(C++) $(DEPARG) $(INC) $$f  pipeto .depend/`basename $$f`"; \
+		$(C++) $(DEPARG) $(INC) $$f > .depend/`basename $$f`; \
+		grep $$f $@ || echo include .depend/`basename $$f` >> Makedepend ;\
+	done;\
+	fi
 endif
+
+
+ifeq (0,1) ##### OLD WAY : Keep until we've proven that this doesn't trip up
+           ##### on other OS's.
+    Makedepend : $(CXXFILES) $(CFILES) 
+    ifeq ($(OS),IRIX)   
+    	touch $@
+    else
+    ifeq (0,1) # This is an experiment
+    	@ [ -d depend ] || mkdir depend
+    	@ rm -f $@;
+    	 for f in $?; do \
+    	    ff=`basename $$f`;\
+    	    $(C++) $(INC) $(DEPARG) > depend/$$ff ;\
+    	    echo "include depend/$$ff" >> $@;\
+    	done
+    else
+    	$(C++) $(INC) $(DEPARG) $^ > $(MAKEDEPEND)
+    endif
+    endif
+
 endif
 
 
 .SUFFIXES: .cpp .o
 .cpp.o:
 	$(C++) $(CXXFLAGS) -c $<
-
-## This is an attempt at updating Makedepend file for each source
-## file compiled rather than all files each time a source file changes
-## Doesn't work too well, but leave the code here for later evaulation
-ifeq (0,1)
-ifneq ($(OS),IRIX)   
-	$(C++) $(INC) $(DEPARG) $< > .temp.dep
-	if [ -f $(MAKEDEPEND) ] ; \
-	then \
-	  grep -v $< $(MAKEDEPEND) > .temp.dep1;\
-	else \
-	    touch .temp.dep1; \
-	fi
-	cat .temp.dep1 .temp.dep > $(MAKEDEPEND)
-	rm -f .temp.dep1 .temp.dep
-endif
-endif
-
 
 depend : $(MAKEDEPEND)
 

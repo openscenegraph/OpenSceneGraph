@@ -17,7 +17,7 @@ ifeq ($(findstring MINGW,$(OS)),MINGW)
 OS := MINGW
 endif
 
-# TOPDIR needs to be redefined for every Makefile
+# TOPDIR needs to be redefined for every GNUmakefile
 TOPDIR     ?= ../
 THISDIR    = .
 MAKEDEPEND = ignore

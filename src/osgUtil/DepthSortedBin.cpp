@@ -6,8 +6,13 @@
 using namespace osg;
 using namespace osgUtil;
 
+
+#ifndef __DARWIN_OSX__
+// this is a hack to test OS X ....
 // register a RenderStage prototype with the RenderBin prototype list.
 RegisterRenderBinProxy<DepthSortedBin> s_registerDepthSortedBinProxy;
+#endif
+
 
 DepthSortedBin::DepthSortedBin()
 {

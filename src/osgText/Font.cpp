@@ -31,7 +31,7 @@ using namespace osgText;
 
 // define the default paths to look for fonts.
 // note delimator is : for unix, ; for windows.
-#if defined(__linux) || defined(__FreeBSD__) || defined (__sgi)
+#if defined(__linux) || defined(__FreeBSD__) || defined (__sgi) || defined (__DARWIN_OSX__)
     static char* s_FontFilePath = ".:/usr/share/fonts/ttf:/usr/share/fonts/ttf/western:/usr/share/fonts/ttf/decoratives";
 #elif defined(WIN32)
     static char* s_FontFilePath = ".;C:/windows/fonts";
@@ -67,6 +67,7 @@ Font()
     _created=false;
 
     _pointSize=14;
+	_textureSize=0;
     _res=72;
 }
 
@@ -246,13 +247,28 @@ createFontObj(void)
 ///////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////
-// PixmapFont
+// TextureFont
 
 TextureFont::
 TextureFont(const std::string&    font, 
             int                    point_size):
 RasterFont(font)
 {
+	_textureSize=0;
+    if(init(font))
+    {
+    }
+    _pointSize=point_size;
+}
+
+
+TextureFont::
+TextureFont(const std::string&    font, 
+            int                    point_size,
+			int textureSize ):
+RasterFont(font)
+{
+	_textureSize=textureSize;
     if(init(font))
     {
     }
@@ -260,13 +276,14 @@ RasterFont(font)
 }
     
 
+
 FTFont*  TextureFont::
 createFontObj(void)
 {
-    return (FTFont*)(new FTGLTextureFont);
+    return (FTFont*)(new FTGLTextureFont(_textureSize));
 }
     
-// PixmapFont
+// TextureFont
 ///////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -56,6 +56,7 @@ public:
     virtual int getAscender() const;
 
     int        getPointSize(void) const    { return _pointSize; }
+    int        getTextureSize(void) const    { return _textureSize; }
     const std::string& getFontName();
 
     FTFont*     getFont(void) { return _font; }
@@ -77,6 +78,7 @@ protected:
     std::string        _fontName;
     int                _pointSize;
     int                _res;
+    int 		_textureSize;
 };
 // Font
 ///////////////////////////////////////////////////////////////////////////////
@@ -167,6 +169,10 @@ public:
     
     TextureFont(const std::string&    font, 
                int                    point_size);
+
+    TextureFont(const std::string&    font, 
+               int                    point_size,
+		int textureSize );
     
     META_Object(TextureFont);
 

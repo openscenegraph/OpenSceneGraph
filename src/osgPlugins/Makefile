@@ -6,6 +6,9 @@ DIRS = osg rgb lib3ds flt obj lwo dw bmp pic tga osgtgz tgz zip
 # comment in if you have Performer installed.
 # DIRS += pfb
 
+# comment in if you have Performer installed.
+# DIRS += quicktime
+
 # comment in if you have libpng installed.
 DIRS += png
 

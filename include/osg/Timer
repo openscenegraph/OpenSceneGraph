@@ -33,7 +33,7 @@ class SG_EXPORT Timer {
         Timer();
         ~Timer() {}
 
-	#if defined __APPLE__  || defined macintosh
+	#if defined __DARWIN_OSX__  || defined macintosh
 	// PJA MAC OSX - inline Tick() pollutes namespace so badly 
 	// we cant compile, due to Carbon.h ...
         Timer_t tick();
@@ -150,7 +150,7 @@ namespace osg{
     }
 };
 
-#elif !defined (__APPLE_CC__) && !defined (macintosh)
+#elif !defined (__DARWIN_OSX__) && !defined (macintosh)
 
     // no choice, always use std::clock()
 

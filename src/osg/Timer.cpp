@@ -197,9 +197,9 @@ using namespace osg;
         }
 
     }
-#elif defined (__APPLE_CC__)  || defined (macintosh)
+#elif defined (__DARWIN_OSX__)  || defined (macintosh)
 
-#if defined (__APPLE_CC__)
+#if defined (__DARWIN_OSX__)
 	#include <Carbon/Carbon.h>         // do I really have to link against the Carbon framework just for this?
 #else	
 	#include <MacTypes.h>

@@ -9,7 +9,7 @@
 #include <osgUtil/DriveManipulator>
 #include <osgUtil/InsertImpostorsVisitor>
 
-#include <GL/glut.h>
+#include <osgGLUT/glut>
 #include <osgGLUT/Viewer>
 
 #include <osg/Quat>

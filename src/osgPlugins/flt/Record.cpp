@@ -2,7 +2,7 @@
 
 #include <algorithm>
 #include <stdio.h>
-#include <malloc.h>
+#include <string.h>
 
 #include <osg/Notify>
 

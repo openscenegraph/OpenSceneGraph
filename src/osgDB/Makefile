@@ -41,6 +41,7 @@ TARGET_INCLUDE_FILES = \
 
 #LIBS    = -L$(OSGHOME)/lib -losg -lGLU -lGL -lm -ldl
 LIBS    = -L$(OSGHOME)/lib -losg $(GL_LIBS) $(DYNAMICLIBRARYLIB)
+MACOSXLIBS = -L$(OSGHOME)/lib -losg -ldl -lm -lstdc++ $(DYNAMICLIBRARYLIB)
 
 LIB	= $(OSGHOME)/lib/lib$(TARGET_BASENAME).$(SO_EXT)
 #LIB	= $(OSGHOME)/lib/lib$(TARGET_BASENAME).a

@@ -21,6 +21,11 @@ TARGET_BIN_FILES = hangglide
 
 #note, standard library list. 
 LIBS = -losgGLUT -losgUtil -losgDB -losg $(GLUTLIB) $(GL_LIBS) $(X_LIBS)
+
+#under Darwin we have to use the framework stuff to get GLUT OpenGL etc.
+MACOSXLIBS = -losgGLUT -losgUtil -losgDB -losg -lm -ldl -lstdc++ -lobjc
+
+
 # $(OSGDB_LIBS)
 C++FLAGS += -I. -I$(OSGHOME)/include
 LDFLAGS += -L$(OSGHOME)/lib

@@ -71,6 +71,8 @@ Registry::Registry()
     addFileExtensionAlias("jpeg", "qt");
     addFileExtensionAlias("tif",  "qt");
     addFileExtensionAlias("tiff", "qt");
+    addFileExtensionAlias("gif",  "qt");
+    addFileExtensionAlias("png",  "qt");
 #else
     addFileExtensionAlias("jpg",  "jpeg");
     addFileExtensionAlias("jpe",  "jpeg");
@@ -223,79 +225,6 @@ void Registry::initLibraryFilePathList()
     osg::notify(INFO)<<"Library FilePathList"<<std::endl;
     PrintFilePathList(osg::notify(INFO),getLibraryFilePathList());
 
-}
-
-void Registry::readCommandLine(std::vector<std::string>& commandLine)
-{
-
-    bool found = true;
-    while (found)
-    {
-        found = false;
-
-        // load library option.
-        std::vector<std::string>::iterator itr = commandLine.begin();
-        for(;itr!=commandLine.end();++itr)
-        {
-            if (*itr=="-l") break;
-        }
-
-        if (itr!=commandLine.end())
-        {
-            std::vector<std::string>::iterator start = itr; 
-            ++itr;
-            if (itr!=commandLine.end())
-            {
-                loadLibrary(*itr);
-                ++itr;
-            }
-            commandLine.erase(start,itr);
-            found = true;
-        }
-        
-
-        // load library for extension 
-        itr = commandLine.begin();
-        for(;itr!=commandLine.end();++itr)
-        {
-            if (*itr=="-e") break;
-        }
-
-        if (itr!=commandLine.end())
-        {
-            std::vector<std::string>::iterator start = itr; 
-            ++itr;
-            if (itr!=commandLine.end())
-            {
-                std::string libName = osgDB::Registry::instance()->createLibraryNameForExt(*itr);
-                loadLibrary(libName);
-                ++itr;
-            }
-            commandLine.erase(start,itr);
-            found = true;
-        }
-        
-        // read any option strings that exist.
-        itr = commandLine.begin();
-        for(;itr!=commandLine.end();++itr)
-        {
-            if (*itr=="-O") break;
-        }
-
-        if (itr!=commandLine.end())
-        {
-            std::vector<std::string>::iterator start = itr; 
-            ++itr;
-            if (itr!=commandLine.end())
-            {
-                osgDB::Registry::instance()->setOptions(new osgDB::ReaderWriter::Options(*itr));
-                ++itr;
-            }
-            commandLine.erase(start,itr);
-            found = true;
-        }
-        
-    }    
 }
 
 void Registry::readCommandLine(osg::ArgumentParser& arguments)

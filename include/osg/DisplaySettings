@@ -42,11 +42,11 @@ class SG_EXPORT DisplaySettings : public osg::Referenced
             readEnvironmentalVariables();
         }
         
-        DisplaySettings(std::vector<std::string>& commandLine)
+        DisplaySettings(ArgumentParser& arguments)
         {
             setDefaults();
             readEnvironmentalVariables();
-            readCommandLine(commandLine);
+            readCommandLine(arguments);
         }
 
         DisplaySettings(const DisplaySettings& vs);
@@ -61,12 +61,8 @@ class SG_EXPORT DisplaySettings : public osg::Referenced
         
         void readEnvironmentalVariables();
 
-        /** read the command line string list, removing any matched control sequences.*/
-        void readCommandLine(std::vector<std::string>& commandLine);
-
         /** read the commandline arguments.*/
-        void readCommandLine(ArgumentParser& parser);
-        
+        void readCommandLine(ArgumentParser& arguments);
         
 
         void setStereo(bool on) { _stereo = on; }

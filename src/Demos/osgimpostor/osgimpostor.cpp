@@ -225,11 +225,11 @@ int main( int argc, char **argv )
     viewer.setWindowTitle(argv[0]);
 
     // create the commandline args.
-    std::vector<std::string> commandLine;
-    for(int i=1;i<argc;++i) commandLine.push_back(argv[i]);
+    std::vector<std::string> arguments;
+    for(int i=1;i<argc;++i) arguments.push_back(argv[i]);
 
     // load the nodes from the commandline arguments.
-    osg::Node* model = osgDB::readNodeFiles(commandLine);
+    osg::Node* model = osgDB::readNodeFiles(arguments);
     if (model)
     {
         // the osgUtil::InsertImpostorsVisitor used lower down to insert impostors

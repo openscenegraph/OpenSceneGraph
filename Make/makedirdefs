@@ -111,7 +111,6 @@ DEMOS_DIRS = \
 	osggeometry\
 	osghangglide\
 	osghud\
-	osgtext\
 	osgimpostor\
 	osglight\
 	osglightpoint\
@@ -120,13 +119,14 @@ DEMOS_DIRS = \
 	osgoccluder\
 	osgparticle\
 	osgprerender\
-	osgshadowtexture\
 	osgreflect\
 	osgscribe\
 	osgsequence\
+	osgshadowtexture\
 	osgshape\
 	osgstereoimage\
 	osgteapot\
+	osgtext\
 	osgtexture1D\
 	osgtexture2D\
 	osgtexture3D\

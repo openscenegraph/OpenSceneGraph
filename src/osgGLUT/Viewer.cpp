@@ -20,6 +20,7 @@
 #include <osgGLUT/Viewer>
 #include <osgGLUT/GLUTEventAdapter>
 
+#include <osg/ApplicationUsage>
 #include <osg/Switch>
 #include <osg/Billboard>
 #include <osg/LOD>
@@ -39,6 +40,7 @@
 #include <osg/Fog>
 
 #include <osgDB/WriteFile>
+#include <osgDB/Registry>
 
 #include <osgUtil/IntersectVisitor>
 #include <osgUtil/DisplayListVisitor>
@@ -88,6 +90,22 @@ using namespace std;
 Viewer* Viewer::s_theViewer = 0;
 
 Viewer::Viewer()
+{
+    initialize();
+}
+
+Viewer::Viewer(osg::ArgumentParser& arguments)
+{
+    initialize();
+
+    glutInit( &arguments.argc(), arguments.argv() );
+
+    setWindowTitle(arguments.getProgramName().c_str());
+    readCommandLine(arguments);
+}
+
+void Viewer::initialize()
+
 {
     s_theViewer = this;
 
@@ -147,24 +165,27 @@ void Viewer::clear()
     Window::clear();
 }
 
-
-/** read the command line string list, removing any matched control sequences.*/
-void Viewer::readCommandLine(std::vector<std::string>& commandLine)
+void Viewer::readCommandLine(osg::ArgumentParser& arguments)
 {
-    std::vector<std::string>::iterator itr = commandLine.begin();
-    for(;itr!=commandLine.end();++itr)
+    // report the usage options.
+    if (arguments.getApplicationUsage())
     {
-        if (*itr=="-f") 
-	{
-	    _fullscreen = true;
-	    break;
-	}
+        arguments.getApplicationUsage()->addCommandLineOption("-f","open the application in fullscreen mode");
     }
-    _displaySettings->readCommandLine(commandLine);
+
+    while(arguments.read("-f"))
+    {
+        _fullscreen = true;
+    }
+    
+    _displaySettings->readCommandLine(arguments);
+
+    osgDB::readCommandLine(arguments);
+
 }
 
-void
-Viewer::toggleFullScreen()
+
+void Viewer::toggleFullScreen()
 {
     _fullscreen = !_fullscreen;
     if (_fullscreen)

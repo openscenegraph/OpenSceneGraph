@@ -29,8 +29,8 @@
      is required.
      */
 
-#include <trpage_io.h>
-#include <trpage_swap.h>
+#include "trpage_io.h"
+#include "trpage_swap.h"
 
 /* **********************
    Memory Write Buffer functions

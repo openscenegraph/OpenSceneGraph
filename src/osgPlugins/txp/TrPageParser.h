@@ -31,7 +31,7 @@
 #include <osg/Group>
 #include <osg/StateSet>
 #include <vector>
-#include <trpage_read.h>
+#include "trpage_read.h"
 
 namespace txp
 {

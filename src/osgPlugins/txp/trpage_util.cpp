@@ -13,7 +13,7 @@
    ************************
    */
 
-#include <trpage_util.h>
+#include "trpage_util.h"
 
 /* trpage_util.cpp
 	This source file implements various utility routines for paging archive

@@ -21,9 +21,9 @@
     Classes that are used to write paging archives.
     */
 
-#include <trpage_sys.h>
-#include <trpage_io.h>
-#include <trpage_swap.h>
+#include "trpage_sys.h"
+#include "trpage_io.h"
+#include "trpage_swap.h"
 
 /* Geometry Stats
     Used with a Geometry Helper to keep track of what go built.

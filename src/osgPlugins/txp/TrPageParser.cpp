@@ -19,7 +19,7 @@
 * All Rights Reserved.
 *
 *****************************************************************************/
-#include <trpage_sys.h>
+#include "trpage_sys.h"
 #include <osg/AlphaFunc>
 #include <osg/Group>
 #include <osg/Material>
@@ -35,8 +35,8 @@
 #include <osg/Notify>
 
 
-#include <TrPageParser.h>
-#include <TrPageArchive.h>
+#include "TrPageParser.h"
+#include "TrPageArchive.h"
 /*
 #include <stdlib.h>
 #include <stdio.h>

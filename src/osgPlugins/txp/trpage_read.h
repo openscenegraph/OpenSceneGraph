@@ -21,9 +21,9 @@
     Classes used to represent read objects for paging files.
     */
 
-#include <trpage_sys.h>
+#include "trpage_sys.h"
 
-#include <trpage_geom.h>
+#include "trpage_geom.h"
 
 /* Callback base class
     Called when a given token is found.

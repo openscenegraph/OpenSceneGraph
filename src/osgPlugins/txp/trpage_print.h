@@ -16,7 +16,7 @@
 #ifndef trpage_print_h_
 #define trpage_print_h_
 
-#include <trpage_read.h>
+#include "trpage_read.h"
 
 /* Print Buffer for TerraPage.  Subclasses of this object
     are used to print out to stdout or disk (or whatever).

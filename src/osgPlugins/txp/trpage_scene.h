@@ -26,7 +26,7 @@
      for how to read TerraPage format into your own scene graph.
    */
 
-#include <trpage_geom.h>
+#include "trpage_geom.h"
 
 /*
     {group:Demonstration Scene Graph}

@@ -23,8 +23,8 @@
      to the header definition.
      */
 
-#include <trpage_geom.h>
-#include <trpage_read.h>
+#include "trpage_geom.h"
+#include "trpage_read.h"
 
 /* Write Header class
     Fill it in and write it out.

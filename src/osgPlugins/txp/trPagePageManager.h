@@ -27,13 +27,13 @@
 #include <osg/Object>
 #include <osg/Node>
 
-#include <trpage_geom.h>
-#include <trpage_read.h>
-#include <trpage_write.h>
-#include <trpage_scene.h>
-#include <trpage_managers.h>
+#include "trpage_geom.h"
+#include "trpage_read.h"
+#include "trpage_write.h"
+#include "trpage_scene.h"
+#include "trpage_managers.h"
 #include <WaitBlock.h>
-#include <TrPageArchive.h>
+#include "TrPageArchive.h"
 
 namespace txp
 {

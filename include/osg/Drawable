@@ -265,6 +265,28 @@ class SG_EXPORT Drawable : public Object
         const UpdateCallback* getUpdateCallback() const { return _updateCallback.get(); }
 
 
+        struct EventCallback : public virtual osg::Object
+        {
+            EventCallback() {}
+
+            EventCallback(const EventCallback&,const CopyOp&) {}
+
+            META_Object(osg,EventCallback);
+
+            /** do customized Event code.*/
+            virtual void event(osg::NodeVisitor*, osg::Drawable*) {}
+        };
+
+        /** Set the EventCallback which allows users to attach customize the updating of an object during the Event traversal.*/
+        virtual void setEventCallback(EventCallback* ac);
+
+        /** Get the non const EventCallback.*/
+        EventCallback* getEventCallback() { return _eventCallback.get(); }
+
+        /** Get the const EventCallback.*/
+        const EventCallback* getEventCallback() const { return _eventCallback.get(); }
+
+
         struct CullCallback : public virtual osg::Object
         {
             CullCallback() {}
@@ -697,6 +719,7 @@ class SG_EXPORT Drawable : public Object
         mutable GLObjectList    _vboList;
 
         ref_ptr<UpdateCallback> _updateCallback;
+        ref_ptr<EventCallback>  _eventCallback;
         ref_ptr<CullCallback>   _cullCallback;
         ref_ptr<DrawCallback>   _drawCallback;
 };

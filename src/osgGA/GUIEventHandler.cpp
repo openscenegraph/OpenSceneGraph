@@ -12,8 +12,39 @@
 */
 
 #include <osgGA/GUIEventHandler>
+#include <osgGA/EventVisitor>
 
 using namespace osgGA;
+
+
+void GUIEventHandler::operator()(osg::Node* node, osg::NodeVisitor* nv)
+{
+    osgGA::EventVisitor* ev = dynamic_cast<osgGA::EventVisitor*>(nv);
+    if (ev && ev->getActionAdapter() && !ev->getEventList().empty())
+    {
+        for(osgGA::EventVisitor::EventList::iterator itr = ev->getEventList().begin();
+            itr != ev->getEventList().end();
+            ++itr)
+        {
+            handle(*(*itr), *(ev->getActionAdapter()));
+        }
+    }
+    traverse(node,nv);
+}
+
+void GUIEventHandler::event(osg::NodeVisitor* nv, osg::Drawable* /*drawable*/)
+{
+    osgGA::EventVisitor* ev = dynamic_cast<osgGA::EventVisitor*>(nv);
+    if (ev && ev->getActionAdapter() && !ev->getEventList().empty())
+    {
+        for(osgGA::EventVisitor::EventList::iterator itr = ev->getEventList().begin();
+            itr != ev->getEventList().end();
+            ++itr)
+        {
+            handle(*(*itr), *(ev->getActionAdapter()));
+        }
+    }
+}
 
 void CompositeGUIEventHandler::getUsage(osg::ApplicationUsage& usage) const
 {

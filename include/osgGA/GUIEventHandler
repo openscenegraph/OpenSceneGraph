@@ -16,8 +16,8 @@
 
 #include <vector>
 
-#include <osg/Referenced>
-#include <osg/Object>
+#include <osg/NodeCallback>
+#include <osg/Drawable>
 #include <osg/ApplicationUsage>
 
 #include <osgGA/Export>
@@ -49,7 +49,7 @@ This request is made via the GUIActionAdapter class.
 
 */
 
-class OSGGA_EXPORT GUIEventHandler : public virtual osg::Object
+class OSGGA_EXPORT GUIEventHandler : public osg::NodeCallback, public osg::Drawable::EventCallback
 {
 public:
 
@@ -57,6 +57,12 @@ public:
         GUIEventHandler(const GUIEventHandler&,const osg::CopyOp&) {}
 
         META_Object(osgGA,GUIEventHandler);
+
+        /** Event traversal node callback method.*/
+        virtual void operator()(osg::Node* node, osg::NodeVisitor* nv);
+
+        /** Event traversal drawable callback method.*/
+        virtual void event(osg::NodeVisitor* nv, osg::Drawable* drawable);
 
 
         /** Returns 0 if this GUIEventHandler is not a CompositeGUIEventHandler. */

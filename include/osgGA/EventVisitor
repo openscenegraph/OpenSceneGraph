@@ -1,0 +1,131 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGGA_EVENTVISITOR
+#define OSGGA_EVENTVISITOR 1
+
+#include <osg/NodeVisitor>
+#include <osg/Node>
+#include <osg/Geode>
+#include <osg/Billboard>
+#include <osg/LOD>
+#include <osg/Switch>
+#include <osg/LightSource>
+#include <osg/Transform>
+#include <osg/Projection>
+#include <osg/Impostor>
+#include <osg/OccluderNode>
+
+#include <osgGA/GUIEventAdapter>
+#include <osgGA/GUIActionAdapter>
+
+#include <list>
+
+namespace osgGA {
+
+/**
+ * Basic EventVisitor implementation for animating a scene.
+ * This visitor traverses the scene graph, calling each nodes appCallback if
+ * it exists. 
+ */
+class OSGGA_EXPORT EventVisitor : public osg::NodeVisitor
+{
+    public:
+
+        EventVisitor();
+        virtual ~EventVisitor();
+        
+        
+        void setActionAdapter(osgGA::GUIActionAdapter* actionAdapter) { _actionAdapter=actionAdapter; }
+        
+        osgGA::GUIActionAdapter* getActionAdapter() { return _actionAdapter; }
+
+        const osgGA::GUIActionAdapter* getActionAdapter() const { return _actionAdapter; }
+
+
+        typedef std::list< osg::ref_ptr<GUIEventAdapter> > EventList;
+        
+        void setEventList(const EventList& events) { _events = events; }
+
+        EventList& getEventList() { return _events; }
+
+        const EventList& getEventList() const { return _events; }
+
+        void addEvent(GUIEventAdapter* event);
+        
+        void removeEvent(GUIEventAdapter* event);
+
+
+        virtual void reset();
+
+        /** During traversal each type of node calls its callbacks and its children traversed. */
+        virtual void apply(osg::Node& node)         { handle_callbacks_and_traverse(node); }
+        
+        virtual void apply(osg::Geode& node)        { handle_geode_callbacks(node); }
+        virtual void apply(osg::Billboard& node)    { handle_geode_callbacks(node); }
+        
+        virtual void apply(osg::LightSource& node)  { handle_callbacks_and_traverse(node); }
+        
+        virtual void apply(osg::Group& node)        { handle_callbacks_and_traverse(node); }
+        virtual void apply(osg::Transform& node)    { handle_callbacks_and_traverse(node); }
+        virtual void apply(osg::Projection& node)   { handle_callbacks_and_traverse(node); }
+        virtual void apply(osg::Switch& node)       { handle_callbacks_and_traverse(node); }
+        virtual void apply(osg::LOD& node)          { handle_callbacks_and_traverse(node); }
+        virtual void apply(osg::Impostor& node)     { handle_callbacks_and_traverse(node); }
+        virtual void apply(osg::OccluderNode& node) { handle_callbacks_and_traverse(node); }
+
+
+    protected:
+
+//         /** Prevent unwanted copy construction.*/
+//         EventVisitor(const EventVisitor&):osg::NodeVisitor() {}
+
+        /** Prevent unwanted copy operator.*/
+        EventVisitor& operator = (const EventVisitor&) { return *this; }
+        
+        inline void handle_callbacks_and_traverse(osg::Node& node)
+        {
+            osg::NodeCallback* callback = node.getEventCallback();
+            if (callback) (*callback)(&node,this);
+            else if (node.getNumChildrenRequiringEventTraversal()>0) traverse(node);
+        }
+
+        inline void handle_geode_callbacks(osg::Geode& node)
+        {
+            osg::NodeCallback* callback = node.getEventCallback();
+            if (callback) (*callback)(&node,this);
+            /*else if (node.getNumChildrenRequiringEventTraversal()>0)*/ 
+            traverseGeode(node);
+        }
+        
+        inline void traverseGeode(osg::Geode& geode)
+        {
+            traverse((osg::Node&)geode);
+            
+            // Call the app callbacks on the drawables.
+            for(unsigned int i=0;i<geode.getNumDrawables();++i)
+            {
+                osg::Drawable::EventCallback* callback = geode.getDrawable(i)->getEventCallback();
+                if (callback) callback->event(this,geode.getDrawable(i));
+            }
+        }
+        
+        osgGA::GUIActionAdapter*    _actionAdapter;
+        EventList                   _events;
+    
+};
+
+}
+
+#endif
+

@@ -497,6 +497,27 @@ void Drawable::setUpdateCallback(UpdateCallback* ac)
     }
 }
 
+void Drawable::setEventCallback(EventCallback* ac)
+{
+    if (_eventCallback==ac) return;
+    
+    int delta = 0;
+    if (_eventCallback.valid()) --delta;
+    if (ac) ++delta;
+
+    _eventCallback = ac;
+    
+    if (delta!=0)
+    {
+        for(ParentList::iterator itr=_parents.begin();
+            itr!=_parents.end();
+            ++itr)
+        {
+            (*itr)->setNumChildrenRequiringEventTraversal((*itr)->getNumChildrenRequiringEventTraversal()+delta);
+        }
+    }
+}
+
 struct ComputeBound : public PrimitiveFunctor
 {
         ComputeBound():_vertices(0) {}

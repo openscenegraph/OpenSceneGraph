@@ -25,7 +25,7 @@
 
 typedef std::vector<std::string> FileList;
 
-class SlideEventHandler : public osgGA::GUIEventHandler, public osg::NodeCallback
+class SlideEventHandler : public osgGA::GUIEventHandler
 {
 public:
 

@@ -35,15 +35,15 @@ extern SG_EXPORT Matrix computeLocalToWorld(const NodePath& nodePath);
 */
 extern SG_EXPORT Matrix computeWorldToLocal(const NodePath& nodePath);
 
-/** Compute the matrix which transforms objects in local coords to world coords,
+/** Compute the matrix which transforms objects in local coords to eye coords,
   * by accumulating the Transform local to world matrices along the specified node path 
-  * the supplied initial camera modelview.
+  * and multipling by the supplied initial camera modelview.
 */
 extern SG_EXPORT Matrix computeLocalToEye(const Matrix& modelview, const NodePath& nodePath);
 
-/** Compute the matrix which transforms objects in world coords to local coords,
-  * by accumulating the Transform world to local matrices along the specified node path 
-  * the inverse of the supplied initialial camera modelview.
+/** Compute the matrix which transforms objects in eye coords to local coords,
+  * by accumulating the Transform world to local matrices along the specified node path
+  * and multipling by the inverse of the supplied initialial camera modelview.
 */
 extern SG_EXPORT Matrix computeEyeToLocal(const Matrix& modelview, const NodePath& nodePath);
 

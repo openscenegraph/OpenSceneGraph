@@ -331,7 +331,7 @@ void ArgumentParser::reportRemainingOptionsAsUnrecognized(ErrorSeverity severity
         // if an option and havn't been previous querried for report as unrecognized.
         if (isOption(pos) && options.find(_argv[pos])==options.end()) 
         {
-            reportError(getApplicationName() +": unrceognized option "+_argv[pos],severity);
+            reportError(getApplicationName() +": unrecognized option "+_argv[pos],severity);
         }
     }
 }

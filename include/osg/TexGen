@@ -57,7 +57,7 @@ class SG_EXPORT TexGen : public StateAttribute
             // compare each paramter in turn against the rhs.
             COMPARE_StateAttribute_Parameter(_mode)
             COMPARE_StateAttribute_Parameter(_plane_s)
-            COMPARE_StateAttribute_Parameter(_plane_s)
+            COMPARE_StateAttribute_Parameter(_plane_t)
             COMPARE_StateAttribute_Parameter(_plane_r)
             COMPARE_StateAttribute_Parameter(_plane_q)
 

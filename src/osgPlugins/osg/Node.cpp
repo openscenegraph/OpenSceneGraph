@@ -59,22 +59,6 @@ bool Node_readLocalData(Object& obj, Input& fr)
         }
     }
 
-    //     if (fr.matchSequence("user_data {"))
-    //     {
-    //         notify(DEBUG) << "Matched user_data {"<< std::endl;
-    //         int entry = fr[0].getNoNestedBrackets();
-    //         fr += 2;
-    //
-    //         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
-    //         {
-    //             Object* object = fr.readObject();
-    //             if (object) setUserData(object);
-    //             notify(DEBUG) << "read "<<object<< std::endl;
-    //             ++fr;
-    //         }
-    //         iteratorAdvanced = true;
-    //     }
-
     while (fr.matchSequence("description {"))
     {
         int entry = fr[0].getNoNestedBrackets();
@@ -163,18 +147,6 @@ bool Node_writeLocalData(const Object& obj, Output& fw)
     if (node.getCullingActive()) fw << "TRUE"<< std::endl;
     else fw << "FALSE"<< std::endl;
 
-    //     if (_userData)
-    //     {
-    //         Object* object = dynamic_cast<Object*>(_userData);
-    //         if (object)
-    //         {
-    //             fw.indent() << "user_data {"<< std::endl;
-    //             fw.moveIn();
-    //             object->write(fw);
-    //             fw.moveOut();
-    //             fw.indent() << "}"<< std::endl;
-    //         }
-    //     }
 
     if (!node.getDescriptions().empty())
     {

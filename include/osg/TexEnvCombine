@@ -12,12 +12,9 @@
 // if not defined by gl.h use the definition found in:
 // http://oss.sgi.com/projects/ogl-sample/registry/ARB/texture_env_combine.txt
 #ifndef GL_ARB_texture_env_combine
-#define GL_ARB_texture_env_combine 1
 #define GL_COMBINE_ARB                                     0x8570
 #define GL_COMBINE_RGB_ARB                                 0x8571
 #define GL_COMBINE_ALPHA_ARB                               0x8572
-#define GL_DOT3_RGB_ARB                                    0x86AE
-#define GL_DOT3_RGBA_ARB                                   0x86AF
 #define GL_SOURCE0_RGB_ARB                                 0x8580
 #define GL_SOURCE1_RGB_ARB                                 0x8581
 #define GL_SOURCE2_RGB_ARB                                 0x8582
@@ -37,6 +34,11 @@
 #define GL_CONSTANT_ARB                                    0x8576
 #define GL_PRIMARY_COLOR_ARB                               0x8577
 #define GL_PREVIOUS_ARB                                    0x8578
+#endif
+
+#ifndef GL_ARB_texture_env_dot3
+#define GL_DOT3_RGB_ARB                                    0x86AE
+#define GL_DOT3_RGBA_ARB                                   0x86AF
 #endif
 
 #ifndef GL_TEXTURE0

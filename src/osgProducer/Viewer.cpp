@@ -371,15 +371,48 @@ public:
             
             sh.drawImplementation(camera);
 
-            double availableTime = 0.0025; //  5 ms
+#if 0
+            double availableTime = 0.0025; //  2.5 ms
 
+            // flush deleted GL objects.
+            sh.getSceneView()->flushDeletedGLObjects(availableTime);
+
+            // compile any GL objects that are required.
             _databasePager->compileRenderingObjects(*(sh.getSceneView()->getState()),availableTime);
+#endif
 
             _databasePager->signalEndFrame();
 
        }
        
        osg::ref_ptr<osgDB::DatabasePager> _databasePager;
+};
+
+class PostSwapCompileCallback : public Producer::Camera::Callback
+{
+public:
+
+        PostSwapCompileCallback(osgUtil::SceneView* sceneView,osgDB::DatabasePager* databasePager):
+            _sceneView(sceneView),
+            _databasePager(databasePager)
+        {}
+
+       virtual void operator()(const Producer::Camera&)
+       {
+            
+            double availableTime = 0.0025; //  5 ms
+
+            // compile any GL objects that are required.
+            _databasePager->compileRenderingObjects(*(_sceneView->getState()),availableTime);
+
+            // flush deleted GL objects.
+            _sceneView->flushDeletedGLObjects(availableTime);
+
+
+       }
+       
+       osg::ref_ptr<osgUtil::SceneView>     _sceneView;
+       osg::ref_ptr<osgDB::DatabasePager>   _databasePager;
 };
 
 bool Viewer::realize()
@@ -408,10 +441,20 @@ bool Viewer::realize()
             // set up a draw callback to pre compile any rendering object of database has loaded, 
             // but not yet merged with the main scene graph.
             (*p)->setDrawCallback(new DatabasePagerCompileCallback(_databasePager.get()));
+
             
             // tell the database pager which graphic context the compile of rendering objexts is needed.
             _databasePager->setCompileRenderingObjectsForContexID((*p)->getSceneView()->getState()->getContextID(),true);
         }
+
+    
+        // set up a post swap callback to flush deleted GL objects and compile new GL objects            
+        for(unsigned int cameraNum=0;cameraNum<getNumberOfCameras();++cameraNum)
+        {
+            Producer::Camera* camera=getCamera(cameraNum);
+            camera->addPostSwapCallback(new PostSwapCompileCallback(_shvec[cameraNum]->getSceneView(),_databasePager.get()));
+        }
+
     }
     
     // force a sync before we intialize the keyswitch manipulator to home

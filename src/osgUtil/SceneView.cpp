@@ -59,6 +59,7 @@ SceneView::SceneView(DisplaySettings* ds)
     
     _drawBufferValue = GL_BACK;
 
+    _requiresFlush = true;
 }
 
 
@@ -612,6 +613,17 @@ void SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
 }
 
 
+void SceneView::flushDeletedGLObjects(double& availableTime)
+{
+    _requiresFlush = false;
+
+    double currentTime = _state->getFrameStamp()?_state->getFrameStamp()->getReferenceTime():0.0;
+    osg::Texture::flushTextureObjects(_state->getContextID(),currentTime,availableTime);
+    osg::Drawable::flushDeletedDisplayLists(_state->getContextID(),currentTime,availableTime);
+    osg::Drawable::flushDeletedVertexBufferObjects(_state->getContextID(),currentTime,availableTime);
+    osg::VertexProgram::flushDeletedVertexProgramObjects(_state->getContextID(),currentTime,availableTime);
+    osg::FragmentProgram::flushDeletedFragmentProgramObjects(_state->getContextID(),currentTime,availableTime);
+}
 
 void SceneView::draw()
 {
@@ -621,19 +633,14 @@ void SceneView::draw()
     // context for when the object were originally created.  Here we know what
     // context we are in so can flush the appropriate caches.
     
-    //static osg::Timer timer;
-    //osg::Timer_t tstart = timer.tick();
-    
-    double currentTime = _state->getFrameStamp()?_state->getFrameStamp()->getReferenceTime():0.0;
-    double availableTime = 0.005; // 5 ms.
-    osg::Drawable::flushDeletedDisplayLists(_state->getContextID(),currentTime,availableTime);
-    osg::Drawable::flushDeletedVertexBufferObjects(_state->getContextID(),currentTime,availableTime);
-    osg::VertexProgram::flushDeletedVertexProgramObjects(_state->getContextID(),currentTime,availableTime);
-    osg::FragmentProgram::flushDeletedFragmentProgramObjects(_state->getContextID(),currentTime,availableTime);
-    osg::Texture::flushTextureObjects(_state->getContextID(),currentTime,availableTime);
+    if (_requiresFlush)
+    {
+        double availableTime = 0.005;
+        flushDeletedGLObjects(availableTime);
+    }
 
-    //osg::Timer_t tend = timer.tick();
-    //std::cout<<"time to flush rendering objects"<<timer.delta_m(tstart,tend)<<std::endl;
+    // assume the the draw which is about to happen could generate GL objects that need flushing in the next frame.
+    _requiresFlush = true;
 
     _state->setInitialViewMatrix(new osg::RefMatrix(_viewMatrix));
 

@@ -1326,7 +1326,7 @@ void DataSet::DestinationTile::checkNeighbouringTiles()
 void DataSet::DestinationTile::equalizeCorner(Position position)
 {
     // don't need to equalize if already done.
-    //if (_equalized[position]) return;
+    if (_equalized[position]) return;
 
     typedef std::pair<DestinationTile*,Position> TileCornerPair;
     typedef std::vector<TileCornerPair> TileCornerList;
@@ -1525,10 +1525,16 @@ const char* edgeString(DataSet::DestinationTile::Position position)
     }    
 }
 
+void DataSet::DestinationTile::setTileComplete(bool complete)
+{
+    _complete = complete;
+    std::cout<<"setTileComplete("<<complete<<") for "<<_level<<"\t"<<_tileX<<"\t"<<_tileY<<std::endl;
+}
+
 void DataSet::DestinationTile::equalizeEdge(Position position)
 {
     // don't need to equalize if already done.
-    //if (_equalized[position]) return;
+    if (_equalized[position]) return;
 
     DestinationTile* tile2 = _neighbour[position];
     Position position2 = (Position)((position+4)%NUMBER_OF_POSITIONS);
@@ -1540,10 +1546,14 @@ void DataSet::DestinationTile::equalizeEdge(Position position)
     
     tile2->_equalized[position2]=true;
     
-    osg::Image* image1 = _imagery.valid()?_imagery->_image.get():0;
-    osg::Image* image2 = tile2->_imagery.valid()?tile2->_imagery->_image.get():0;
+    osg::Image* image1 = _imagery.valid()?_imagery->_image.get() : 0;
+    osg::Image* image2 = tile2->_imagery.valid()?tile2->_imagery->_image.get() : 0;
 
-    std::cout<<"Equalizing edge "<<edgeString(position)<<" of \t"<<_level<<"\t"<<_tileX<<"\t"<<_tileY<<std::endl;
+    //std::cout<<"Equalizing edge "<<edgeString(position)<<" of \t"<<_level<<"\t"<<_tileX<<"\t"<<_tileY
+    //         <<"  neighbour "<<tile2->_level<<"\t"<<tile2->_tileX<<"\t"<<tile2->_tileY<<std::endl;
+             
+             
+//   if (_tileY==0) return;
 
     if (image1 && image2 && 
         image1->getPixelFormat()==image2->getPixelFormat() &&
@@ -1552,7 +1562,8 @@ void DataSet::DestinationTile::equalizeEdge(Position position)
         image1->getDataType()==GL_UNSIGNED_BYTE)
     {
 
-        std::cout<<"   Equalizing image"<<std::endl;
+        //std::cout<<"   Equalizing image1= "<<image1<<                         " with image2 = "<<image2<<std::endl;
+        //std::cout<<"              data1 = 0x"<<std::hex<<(int)image1->data()<<" with data2  = 0x"<<(int)image2->data()<<std::endl;
 
         unsigned char* data1 = 0;
         unsigned char* data2 = 0;
@@ -1568,7 +1579,7 @@ void DataSet::DestinationTile::equalizeEdge(Position position)
             data2 = image2->data(image2->s()-1,1); // RIGHT hand side
             delta2 = image2->getRowSizeInBytes();
             num = (image1->t()==image2->t())?image2->t()-2:0; // note miss out corners.
-            std::cout<<"       left "<<num<<std::endl;
+            //std::cout<<"       left "<<num<<std::endl;
             break;
         case BELOW:
             data1 = image1->data(1,0); // BELOW hand side
@@ -1576,7 +1587,7 @@ void DataSet::DestinationTile::equalizeEdge(Position position)
             data2 = image2->data(1,image2->t()-1); // ABOVE hand side
             delta2 = 3;
             num = (image1->s()==image2->s())?image2->s()-2:0; // note miss out corners.
-            std::cout<<"       below "<<num<<std::endl;
+            //std::cout<<"       below "<<num<<std::endl;
             break;
         case RIGHT:
             data1 = image1->data(image1->s()-1,1); // LEFT hand side
@@ -1584,7 +1595,7 @@ void DataSet::DestinationTile::equalizeEdge(Position position)
             data2 = image2->data(0,1); // RIGHT hand side
             delta2 = image2->getRowSizeInBytes();
             num = (image1->t()==image2->t())?image2->t()-2:0; // note miss out corners.
-            std::cout<<"       right "<<num<<std::endl;
+            //std::cout<<"       right "<<num<<std::endl;
             break;
         case ABOVE:
             data1 = image1->data(1,image1->t()-1); // ABOVE hand side
@@ -1592,10 +1603,10 @@ void DataSet::DestinationTile::equalizeEdge(Position position)
             data2 = image2->data(1,0); // BELOW hand side
             delta2 = 3;
             num = (image1->s()==image2->s())?image2->s()-2:0; // note miss out corners.
-            std::cout<<"       above "<<num<<std::endl;
+            //std::cout<<"       above "<<num<<std::endl;
             break;
         default :
-            std::cout<<"       default "<<num<<std::endl;
+            //std::cout<<"       default "<<num<<std::endl;
             break;
         }
 
@@ -1604,7 +1615,7 @@ void DataSet::DestinationTile::equalizeEdge(Position position)
             unsigned char red =   (unsigned char)((((int)*data1+ (int)*data2)/2));
             unsigned char green = (unsigned char)((((int)*(data1+1))+ (int)(*(data2+1)))/2);
             unsigned char blue =  (unsigned char)((((int)*(data1+2))+ (int)(*(data2+2)))/2);
-#if 0
+#if 1
             *data1 = red;
             *(data1+1) = green;
             *(data1+2) = blue;
@@ -1614,7 +1625,7 @@ void DataSet::DestinationTile::equalizeEdge(Position position)
             *(data2+2) = blue;
 #endif
 
-#if 1
+#if 0
             *data1 = 255;
             *(data1+1) = 0;
             *(data1+2) = 0;
@@ -1626,7 +1637,7 @@ void DataSet::DestinationTile::equalizeEdge(Position position)
             data1 += delta1;
             data2 += delta2;
 
-            //std::cout<<"    equalizing colour"<<std::endl;
+            //std::cout<<"    equalizing colour "<<(int)data1<<"  "<<(int)data2<<std::endl;
 
         }
 
@@ -1637,7 +1648,7 @@ void DataSet::DestinationTile::equalizeEdge(Position position)
 
     if (heightField1 && heightField2)
     {
-        std::cout<<"   Equalizing heightfield"<<std::endl;
+        //std::cout<<"   Equalizing heightfield"<<std::endl;
 
         float* data1 = 0;
         float* data2 = 0;
@@ -2264,12 +2275,27 @@ osg::Node* DataSet::CompositeDestination::createScene()
 
 bool DataSet::CompositeDestination::areSubTilesComplete()
 {
-    for(TileList::iterator itr=_tiles.begin();
-        itr!=_tiles.end();
-        ++itr)
+    std::cout<<"areSubTilesComplete() for "<<_level<<"\t"<<_tileX<<"\t"<<_tileY<<std::endl;
+
+    for(ChildList::iterator citr=_children.begin();
+        citr!=_children.end();
+        ++citr)
     {
-        if (!(*itr)->getTileComplete()) return false;
+        for(TileList::iterator itr=(*citr)->_tiles.begin();
+            itr!=(*citr)->_tiles.end();
+            ++itr)
+        {
+            std::cout<<"   subtile "<<(*itr)->_level<<"\t"<<(*itr)->_tileX<<"\t"<<(*itr)->_tileY<<std::endl;
+            if (!(*itr)->getTileComplete()) 
+            {
+                std::cout<<"  false!"<<std::endl;
+                return false;
+            }
+        }
     }
+
+    std::cout<<"  yes!"<<std::endl;
+
     return true;
 }
 
@@ -2921,7 +2947,7 @@ void DataSet::_readRow(Row& row)
 
 void DataSet::_equalizeRow(Row& row)
 {
-    std::cout<<"_equalizeRow"<<row.size()<<std::endl;
+    std::cout<<"_equalizeRow "<<row.size()<<std::endl;
     for(Row::iterator citr=row.begin();
         citr!=row.end();
         ++citr)
@@ -2941,7 +2967,7 @@ void DataSet::_equalizeRow(Row& row)
 
 void DataSet::_writeRow(Row& row)
 {
-    std::cout<<"_writeRow"<<row.size()<<std::endl;
+    std::cout<<"_writeRow "<<row.size()<<std::endl;
     for(Row::iterator citr=row.begin();
         citr!=row.end();
         ++citr)
@@ -2990,6 +3016,8 @@ void DataSet::_writeRow(Row& row)
 void DataSet::_emptyRow(Row& row)
 {
     std::cout<<"_emptyRow"<<row.size()<<std::endl;
+
+    return;
 
     for(Row::iterator citr=row.begin();
         citr!=row.end();

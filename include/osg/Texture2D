@@ -50,6 +50,11 @@ class SG_EXPORT Texture2D : public Texture
         /** Get the const texture image. */
         inline const Image* getImage() const { return _image.get(); }
 
+        inline unsigned int& getModifiedTag(unsigned int contextID) const
+        {
+            // get the modified tag for the current contextID.
+            return _modifiedTag[contextID];
+        }
 
         /** Set the texture width and height. If width or height are zero then
           * the repsective size value is calculated from the source image sizes. */
@@ -132,6 +137,10 @@ class SG_EXPORT Texture2D : public Texture
         mutable GLsizei _numMimpmapLevels;
 
         ref_ptr<SubloadCallback> _subloadCallback;
+
+        typedef buffered_value<unsigned int> ImageModifiedTag;
+        mutable ImageModifiedTag _modifiedTag;
+
 };
 
 }

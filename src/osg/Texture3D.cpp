@@ -88,6 +88,8 @@ void Texture3D::setImage(Image* image)
     // delete old texture objects.
     dirtyTextureObject();
 
+    _modifiedTag.setAllElementsTo(0);
+
     _image = image;
 }
 
@@ -123,6 +125,9 @@ void Texture3D::apply(State& state) const
         else if (_image.get() && getModifiedTag(contextID) != _image->getModifiedTag())
         {
             applyTexImage3D(GL_TEXTURE_3D,_image.get(),state, _textureWidth, _textureHeight, _textureDepth,_numMimpmapLevels);
+
+            // update the modified tag to show that it is upto date.
+            getModifiedTag(contextID) = _image->getModifiedTag();
         }
 
     }
@@ -153,6 +158,9 @@ void Texture3D::apply(State& state) const
 
         applyTexImage3D(GL_TEXTURE_3D,_image.get(),state, _textureWidth, _textureHeight, _textureDepth,_numMimpmapLevels);
 
+        // update the modified tag to show that it is upto date.
+        getModifiedTag(contextID) = _image->getModifiedTag();
+
         // in theory the following line is redundent, but in practice
         // have found that the first frame drawn doesn't apply the textures
         // unless a second bind is called?!!
@@ -181,12 +189,7 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
     // current OpenGL context.
     const unsigned int contextID = state.getContextID();
 
-    const Extensions* extensions = getExtensions(contextID,true);
-
-
-    // update the modified tag to show that it is upto date.
-    getModifiedTag(contextID) = image->getModifiedTag();
-    
+    const Extensions* extensions = getExtensions(contextID,true);    
 
     // compute the internal texture format, this set the _internalFormat to an appropriate value.
     computeInternalFormat();

@@ -107,6 +107,13 @@ TextureCubeMap::TextureCubeMap(const TextureCubeMap& text,const CopyOp& copyop):
     _images[4] = copyop(text._images[4].get());
     _images[5] = copyop(text._images[5].get());
 
+    _modifiedTag[0].setAllElementsTo(0);
+    _modifiedTag[1].setAllElementsTo(0);
+    _modifiedTag[2].setAllElementsTo(0);
+    _modifiedTag[3].setAllElementsTo(0);
+    _modifiedTag[4].setAllElementsTo(0);
+    _modifiedTag[5].setAllElementsTo(0);
+
 }    
 
 
@@ -160,6 +167,7 @@ void TextureCubeMap::setImage( Face face, Image* image)
 {
     dirtyTextureObject();
     _images[face] = image;
+    _modifiedTag[face].setAllElementsTo(0);
 }
 
 Image* TextureCubeMap::getImage(Face face)
@@ -211,6 +219,15 @@ void TextureCubeMap::apply(State& state) const
         }
         else
         {
+            for (int n=0; n<6; n++)
+            {
+                osg::Image* image = _images[n].get();
+                if (image && getModifiedTag((Face)n,contextID) != image->getModifiedTag())
+                {
+                    applyTexImage2D_subload( faceTarget[n], _images[n].get(), state, _textureWidth, _textureHeight, _numMimpmapLevels);
+                    getModifiedTag((Face)n,contextID) = image->getModifiedTag();
+                }
+            }
         }
 
     }
@@ -245,6 +262,15 @@ void TextureCubeMap::apply(State& state) const
             applyTexImage2D_load( faceTarget[n], _images[n].get(), state, _textureWidth, _textureHeight, _numMimpmapLevels);
         }
 
+        for (int n=0; n<6; n++)
+        {
+            osg::Image* image = _images[n].get();
+            if (image)
+            {
+                applyTexImage2D_load( faceTarget[n], _images[n].get(), state, _textureWidth, _textureHeight, _numMimpmapLevels);
+                getModifiedTag((Face)n,contextID) = image->getModifiedTag();
+            }
+        }
 
         // in theory the following line is redundent, but in practice
         // have found that the first frame drawn doesn't apply the textures

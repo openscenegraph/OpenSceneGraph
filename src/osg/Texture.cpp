@@ -379,16 +379,11 @@ void Texture::applyTexImage2D_load(GLenum target, const Image* image, State& sta
     
     bool generateMipMapSupported = extensions->isGenerateMipMapSupported();
 
-
-    // update the modified tag to show that it is upto date.
-    getModifiedTag(contextID) = image->getModifiedTag();
-    
-
     // compute the internal texture format, this set the _internalFormat to an appropriate value.
     computeInternalFormat();
 
     // select the internalFormat required for the texture.
-    bool compressed_image = isCompressedInternalFormat((GLenum)image->getPixelFormat());
+;    bool compressed_image = isCompressedInternalFormat((GLenum)image->getPixelFormat());
     
     glPixelStorei(GL_UNPACK_ALIGNMENT,image->getPacking());
     
@@ -591,11 +586,6 @@ void Texture::applyTexImage2D_subload(GLenum target, const Image* image, State& 
     const Extensions* extensions = getExtensions(contextID,true);
     
     bool generateMipMapSupported = extensions->isGenerateMipMapSupported();
-
-
-    // update the modified tag to show that it is upto date.
-    getModifiedTag(contextID) = image->getModifiedTag();
-    
 
     // compute the internal texture format, this set the _internalFormat to an appropriate value.
     computeInternalFormat();

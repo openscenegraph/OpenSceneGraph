@@ -2809,7 +2809,7 @@ void DataSet::computeDestinationGraphFromSources(unsigned int numLevels)
         CoordinateSystemType cst = getCoordinateSystemType(_destinationCoordinateSystem.get());
 
         std::cout<<"new DataSet::createDestination()"<<std::endl;
-        if (cst==GEOCENTRIC)
+        if (cst!=GEOGRAPHIC && getConvertFromGeographicToGeocentric())
         {
             // need to use the geocentric coordinate system as a base for creating an geographic intermediate
             // coordinate system.
@@ -2820,8 +2820,6 @@ void DataSet::computeDestinationGraphFromSources(unsigned int numLevels)
             oSRS.exportToWkt( &pszWKT );
             
             setIntermediateCoordinateSystem(pszWKT);
-
-            _convertFromGeographicToGeocentric = true;
         }
         else
         {

@@ -16,6 +16,7 @@
 
 #include <osgUtil/TransformCallback>
 #include <osgUtil/RenderToTextureStage>
+#include <osgUtil/SmoothingVisitor>
 
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
@@ -23,6 +24,25 @@
 #include <osgGLUT/glut>
 #include <osgGLUT/Viewer>
 
+
+class MyAppCallback : public osg::NodeCallback
+{
+    public:
+    
+        MyAppCallback(osg::Node* subgraph):
+            _subgraph(subgraph) {}
+
+        virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
+        {
+            // traverse the subgraph to update any nodes.
+            if (_subgraph.valid()) _subgraph->accept(*nv);
+        
+            // must traverse the Node's subgraph            
+            traverse(node,nv);
+        }
+        
+        osg::ref_ptr<osg::Node>     _subgraph;
+};
 
 class MyCullCallback : public osg::NodeCallback
 {
@@ -64,27 +84,15 @@ class MyCullCallback : public osg::NodeCallback
     
 };
 
-void MyCullCallback::doPreRender(osg::Node& node, osgUtil::CullVisitor& cv)
+void MyCullCallback::doPreRender(osg::Node&, osgUtil::CullVisitor& cv)
 {   
-    // default to true right now, will dertermine if perspective from the
-    // projection matrix...
-    bool isPerspectiveProjection = true;
-
-    const osg::Matrix& matrix = cv.getModelViewMatrix();
     const osg::BoundingSphere& bs = _subgraph->getBound();
-    osg::Vec3 eye_local = cv.getEyeLocal();
-
     if (!bs.valid())
     {
         osg::notify(osg::WARN) << "bb invalid"<<_subgraph.get()<<std::endl;
         return;
     }
-
-    osg::Vec3 eye_world(0.0,0.0,0.0);
-    osg::Vec3 center_world = bs.center()*matrix;
-
-    // no appropriate sprite has been found therefore need to create
-    // one for use.
+    
 
     // create the render to texture stage.
     osg::ref_ptr<osgUtil::RenderToTextureStage> rtts = osgNew osgUtil::RenderToTextureStage;
@@ -111,88 +119,26 @@ void MyCullCallback::doPreRender(osg::Node& node, osgUtil::CullVisitor& cv)
     // set the current renderbin to be the newly created stage.
     cv.setCurrentRenderBin(rtts.get());
 
-    // create quad coords (in local coords)
 
-    osg::Vec3 center_local = bs.center();
-    osg::Vec3 camera_up_local = cv.getUpLocal();
-    osg::Vec3 lv_local = center_local-eye_local;
-
-    float distance_local = lv_local.length();
-    lv_local /= distance_local;
-   
-    osg::Vec3 sv_local = lv_local^camera_up_local;
-    sv_local.normalize();
-    
-    osg::Vec3 up_local = sv_local^lv_local;
-    
-
-    
-    float width = bs.radius();
-    if (isPerspectiveProjection)
-    {
-        // expand the width to account for projection onto sprite.
-        width *= (distance_local/sqrtf(distance_local*distance_local-bs.radius2()));
-    }
-    
-    // scale up and side vectors to sprite width.
-    up_local *= width;
-    sv_local *= width;
-    
-    // create the corners of the sprite.
-    osg::Vec3 c00(center_local - sv_local - up_local);
-    osg::Vec3 c11(center_local + sv_local + up_local);
-    
-// adjust camera left,right,up,down to fit (in world coords)
-
-    osg::Vec3 near_local  ( center_local-lv_local*width );
-    osg::Vec3 far_local   ( center_local+lv_local*width );
-    osg::Vec3 top_local   ( center_local+up_local);
-    osg::Vec3 right_local ( center_local+sv_local);
-    
-    osg::Vec3 near_world = near_local * matrix;
-    osg::Vec3 far_world = far_local * matrix;
-    osg::Vec3 top_world = top_local * matrix;
-    osg::Vec3 right_world = right_local * matrix;
-    
-    float znear = (near_world-eye_world).length();
-    float zfar  = (far_world-eye_world).length();
+    float znear = 1.0f*bs.radius();
+    float zfar  = 3.0f*bs.radius();
         
-    float top   = (top_world-center_world).length();
-    float right = (right_world-center_world).length();
+    float top   = 0.5f*znear;
+    float right = 0.5f*znear;
 
     znear *= 0.9f;
     zfar *= 1.1f;
 
     // set up projection.
     osg::Matrix* projection = osgNew osg::Matrix;
-    if (isPerspectiveProjection)
-    {
-        // deal with projection issue move the top and right points
-        // onto the near plane.
-        float ratio = znear/(center_world-eye_world).length();
-        top *= ratio;
-        right *= ratio;
-        projection->makeFrustum(-right,right,-top,top,znear,zfar);
-    }
-    else
-    {
-        projection->makeOrtho(-right,right,-top,top,znear,zfar);
-    }
+    projection->makeFrustum(-right,right,-top,top,znear,zfar);
 
     cv.pushProjectionMatrix(projection);
 
-    osg::Vec3 rotate_from = bs.center()-eye_local;
-    osg::Vec3 rotate_to   = cv.getLookVectorLocal();
+    osg::Matrix* matrix = new osg::Matrix;
+    matrix->makeLookAt(bs.center()+osg::Vec3(0.0f,2.0f,0.0f)*bs.radius(),bs.center(),osg::Vec3(0.0f,0.0f,1.0f));
 
-    osg::Matrix* rotate_matrix = osgNew osg::Matrix(
-        osg::Matrix::translate(-eye_local)*        
-        osg::Matrix::rotate(rotate_from,rotate_to)*
-        osg::Matrix::translate(eye_local)*
-        cv.getModelViewMatrix());
-
-    // pushing the cull view state will update it so it takes
-    // into account the new camera orientation.
-    cv.pushModelViewMatrix(rotate_matrix);
+    cv.pushModelViewMatrix(matrix);
 
     osg::ref_ptr<osg::StateSet> dummyState = osgNew osg::StateSet;
 
@@ -224,47 +170,12 @@ void MyCullCallback::doPreRender(osg::Node& node, osgUtil::CullVisitor& cv)
     }
 
 
+
+    int height = 256;
+    int width  = 512;
+
+
     const osg::Viewport& viewport = *cv.getViewport();
-    
-
-    // calc texture size for eye, bs.
-
-    // convert the corners of the sprite (in world coords) into their
-    // equivilant window coordinates by using the camera's project method.
-    const osg::Matrix& MVPW = cv.getMVPW();
-    osg::Vec3 c00_win = c00 * MVPW;
-    osg::Vec3 c11_win = c11 * MVPW;
-
-// adjust texture size to be nearest power of 2.
-
-    float s  = c11_win.x()-c00_win.x();
-    float t  = c11_win.y()-c00_win.y();
-
-    // may need to reverse sign of width or height if a matrix has
-    // been applied which flips the orientation of this subgraph.
-    if (s<0.0f) s = -s;
-    if (t<0.0f) t = -t;
-
-    // bias value used to assist the rounding up or down of
-    // the texture dimensions to the nearest power of two.
-    // bias near 0.0 will almost always round down.
-    // bias near 1.0 will almost always round up. 
-    float bias = 0.7f;
-
-    float sp2 = logf((float)s)/logf(2.0f);
-    float rounded_sp2 = floorf(sp2+bias);
-    int new_s = (int)(powf(2.0f,rounded_sp2));
-
-    float tp2 = logf((float)t)/logf(2.0f);
-    float rounded_tp2 = floorf(tp2+bias);
-    int new_t = (int)(powf(2.0f,rounded_tp2));
-
-    // if dimension is bigger than window divide it down.    
-    while (new_s>viewport.width()) new_s /= 2;
-
-    // if dimension is bigger than window divide it down.    
-    while (new_t>viewport.height()) new_t /= 2;
-
 
     // offset the impostor viewport from the center of the main window
     // viewport as often the edges of the viewport might be obscured by
@@ -273,7 +184,7 @@ void MyCullCallback::doPreRender(osg::Node& node, osgUtil::CullVisitor& cv)
     int center_y = viewport.y()+viewport.height()/2;
 
     osg::Viewport* new_viewport = new osg::Viewport;
-    new_viewport->setViewport(center_x-new_s/2,center_y-new_t/2,new_s,new_t);
+    new_viewport->setViewport(center_x-width/2,center_y-height/2,width,height);
     rtts->setViewport(new_viewport);
     
     dummyState->setAttribute(new_viewport);
@@ -291,50 +202,144 @@ void MyCullCallback::doPreRender(osg::Node& node, osgUtil::CullVisitor& cv)
 }
 
 
+class MyGeometryCallback : 
+    public osg::Drawable::AppCallback, 
+    public osg::Drawable::AttributeFunctor
+{
+    public:
+    
+        MyGeometryCallback(const osg::Vec3& o,
+                           const osg::Vec3& x,const osg::Vec3& y,const osg::Vec3& z,
+                           double period,double xphase,double amplitude):
+            osg::Drawable::AttributeFunctor(osg::Drawable::COORDS),
+            _firstCall(true),
+            _startTime(0.0),
+            _time(0.0),
+            _period(period),
+            _xphase(xphase),
+            _amplitude(amplitude),
+            _origin(o),
+            _xAxis(x),
+            _yAxis(y),
+            _zAxis(z) {}
+    
+        virtual void app(osg::NodeVisitor* nv,osg::Drawable* drawable)
+        {
+            const osg::FrameStamp* fs = nv->getFrameStamp();
+            double referenceTime = fs->getReferenceTime();
+            if (_firstCall)
+            {
+                _firstCall = false;
+                _startTime = referenceTime;
+            }
+            
+            _time = referenceTime-_startTime;
+            
+            drawable->applyAttributeOperation(*this);
+            drawable->dirtyBound();
+            
+            osg::Geometry* geometry = dynamic_cast<osg::Geometry*>(drawable);
+            if (geometry)
+            {
+                osgUtil::SmoothingVisitor::smooth(*geometry);
+            }
+            
+        }
+        
+        virtual bool apply(osg::Drawable::AttributeBitMask abm,osg::Vec3* begin,osg::Vec3* end) 
+        {
+            if (abm == osg::Drawable::COORDS)
+            {
+                const float TwoPI=2.0f*osg::PI;
+                const float phase = -_time/_period;
+                
+                for (osg::Vec3* itr=begin;itr<end;++itr)
+                {
+                    osg::Vec3 dv(*itr-_origin);
+                    osg::Vec3 local(dv*_xAxis,dv*_yAxis,dv*_zAxis);
+                    
+                    local.z() = local.x()*_amplitude*
+                                sinf(TwoPI*(phase+local.x()*_xphase)); 
+                    
+                    (*itr) = _origin + 
+                             _xAxis*local.x()+
+                             _yAxis*local.y()+
+                             _zAxis*local.z();
+                }
+                return true;
+            }
+            return false;
+
+        }
+
+        bool    _firstCall;
+
+        double  _startTime;
+        double  _time;
+        
+        double  _period;
+        double  _xphase;
+        float   _amplitude;
+
+        osg::Vec3   _origin;
+        osg::Vec3   _xAxis;
+        osg::Vec3   _yAxis;
+        osg::Vec3   _zAxis;
+        
+};
 
 
 osg::Node* createPreRenderSubGraph(osg::Node* subgraph)
 {
     if (!subgraph) return 0;
  
-    const osg::BoundingSphere& bs = subgraph->getBound();
-    
     // create the quad to visualize.
     osg::Geometry* polyGeom = new osg::Geometry();
 
+    polyGeom->setSupportsDisplayList(false);
 
-    float radius = bs.radius()*1.5f;    
+    osg::Vec3 origin(0.0f,0.0f,0.0f);
+    osg::Vec3 xAxis(1.0f,0.0f,0.0f);
+    osg::Vec3 yAxis(0.0f,0.0f,1.0f);
+    osg::Vec3 zAxis(0.0f,-1.0f,0.0f);
+    float height = 100.0f;
+    float width = 200.0f;
+    int noSteps = 20;
+    
     osg::Vec3Array* vertices = new osg::Vec3Array;
-    vertices->push_back(osg::Vec3(-radius,0.0f,radius));
-    vertices->push_back(osg::Vec3(-radius,0.0f,-radius));
-    vertices->push_back(osg::Vec3(radius,0.0f,-radius));
-    vertices->push_back(osg::Vec3(radius,0.0f,radius));
+    osg::Vec3 bottom = origin;
+    osg::Vec3 top = origin; top.z()+= height;
+    osg::Vec3 dv = xAxis*(width/((float)(noSteps-1)));
+    
+    osg::Vec2Array* texcoords = new osg::Vec2Array;
+    osg::Vec2 bottom_texcoord(0.0f,0.0f);
+    osg::Vec2 top_texcoord(0.0f,1.0f);
+    osg::Vec2 dv_texcoord(1.0f/(float)(noSteps-1),0.0f);
+
+    for(int i=0;i<noSteps;++i)
+    {
+        vertices->push_back(top);
+        vertices->push_back(bottom);
+        top+=dv;
+        bottom+=dv;
+
+        texcoords->push_back(top_texcoord);
+        texcoords->push_back(bottom_texcoord);
+        top_texcoord+=dv_texcoord;
+        bottom_texcoord+=dv_texcoord;
+    }
+    
 
     // pass the created vertex array to the points geometry object.
     polyGeom->setVertexArray(vertices);
-
-    osg::Vec3Array* normals = new osg::Vec3Array;
-    normals->push_back(osg::Vec3(0.0f,-1.0f,0.0f));
-    polyGeom->setNormalArray(normals);
-    polyGeom->setNormalBinding(osg::Geometry::BIND_OVERALL);
+    polyGeom->setTexCoordArray(0,texcoords);
 
     osg::Vec4Array* colors = new osg::Vec4Array;
     colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
     polyGeom->setColorArray(colors);
     polyGeom->setColorBinding(osg::Geometry::BIND_OVERALL);
 
-    osg::Vec2 myTexCoords[] =
-    {
-        osg::Vec2(0,1),
-        osg::Vec2(0,0),
-        osg::Vec2(1,0),
-        osg::Vec2(1,1)
-    };
-
-    int numTexCoords = sizeof(myTexCoords)/sizeof(osg::Vec2);
-    polyGeom->setTexCoordArray(0,new osg::Vec2Array(numTexCoords,myTexCoords));
-
-    polyGeom->addPrimitive(new osg::DrawArrays(osg::Primitive::QUADS,0,4));
+    polyGeom->addPrimitive(new osg::DrawArrays(osg::Primitive::QUAD_STRIP,0,vertices->size()));
 
     // new we need to add the texture to the Drawable, we do so by creating a 
     // StateSet to contain the Texture StateAttribute.
@@ -349,19 +354,22 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph)
     texture->setImage(image);
     stateset->setTextureAttributeAndModes(0, texture,osg::StateAttribute::ON);
 
-    stateset->setMode(GL_LIGHTING,osg::StateAttribute::OVERRIDE_OFF);
-
     polyGeom->setStateSet(stateset);
 
-    osg::Billboard* billboard = osgNew osg::Billboard();
-    
-    billboard->setMode(osg::Billboard::POINT_ROT_EYE);
-    billboard->addDrawable(polyGeom,bs.center());
-    
+    polyGeom->setAppCallback(new MyGeometryCallback(origin,xAxis,yAxis,zAxis,1.0,1.0/width,0.2f));
+
+    osg::Geode* geode = osgNew osg::Geode();
+    geode->addDrawable(polyGeom);
+
     osg::Group* parent = new osg::Group;
-//   parent->setCullCallback(new MyCullCallback(subgraph,texture));
+    
+    parent->setAppCallback(new MyAppCallback(subgraph));
+    
+//    parent->setCullCallback(new MyCullCallback(subgraph,texture));
     parent->setCullCallback(new MyCullCallback(subgraph,image));
-    parent->addChild(billboard);
+ 
+//    parent->addChild(billboard);
+    parent->addChild(geode);
     
     return parent;
 }
@@ -444,7 +452,7 @@ int main( int argc, char **argv )
     loadedModelTransform->setAppCallback(nc);
 
     osg::Group* rootNode = new osg::Group();
-    rootNode->addChild(loadedModelTransform);
+//    rootNode->addChild(loadedModelTransform);
     rootNode->addChild(createPreRenderSubGraph(loadedModelTransform));
 
 

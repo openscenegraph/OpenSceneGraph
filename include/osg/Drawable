@@ -164,7 +164,7 @@ class SG_EXPORT Drawable : public Object
         struct AppCallback : public osg::Referenced
         {
                 /** do customized app code.*/
-                virtual void app(osg::NodeVisitor *visitor, osg::Drawable* drawable) const = 0;
+                virtual void app(osg::NodeVisitor *visitor, osg::Drawable* drawable) = 0;
         };
 
         /** Set the AppCallback which allows users to attach customize the undating of an object during the app traversal.*/

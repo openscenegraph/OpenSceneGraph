@@ -33,7 +33,7 @@ DatabasePager::DatabasePager()
     _deleteRemovedSubgraphsInDatabaseThread = false;
 #endif
     
-    _expiryDelay = 1.0;
+    _expiryDelay = 30;
 
     // make sure a SharedStateManager exists.
     //osgDB::Registry::instance()->getOrCreateSharedStateManager();

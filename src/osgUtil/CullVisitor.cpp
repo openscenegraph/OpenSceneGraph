@@ -211,7 +211,7 @@ void CullVisitor::pushProjectionMatrix(Matrix* matrix)
 void CullVisitor::popProjectionMatrix()
 {
 
-    if (_computed_zfar>0.0f)
+    if (_computeNearFar && _computed_zfar>0.0f)
     {
 
         // adjust the projection matrix so that it encompases the local coords.

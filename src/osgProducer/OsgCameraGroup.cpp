@@ -26,6 +26,9 @@
 using namespace Producer;
 using namespace osgProducer;
 
+OsgCameraGroup::RealizeCallback::~RealizeCallback()
+{
+}
 
 class RenderSurfaceRealizeCallback : public Producer::RenderSurface::Callback
 {

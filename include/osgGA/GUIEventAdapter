@@ -292,7 +292,7 @@ protected:
         GUIEventAdapter(MouseYOrientation myo=Y_INCREASING_DOWNWARDS):_mouseYOrientation(myo) {}
 
         /** Force users to create on heap, so that multiple referencing is safe.*/
-        virtual ~GUIEventAdapter() {}
+        virtual ~GUIEventAdapter(); // {}
 
         MouseYOrientation _mouseYOrientation;
 

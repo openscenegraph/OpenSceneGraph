@@ -10,10 +10,11 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
  * OpenSceneGraph Public License for more details.
 */
-#include <osg/ConvexPlanarOccluder>
 
-using namespace osg;
+#include <osgDB/ReaderWriter>
 
-ConvexPlanarOccluder::~ConvexPlanarOccluder()
+using namespace osgDB;
+
+ReaderWriter::~ReaderWriter()
 {
-};
+}

@@ -7,6 +7,7 @@ CXXFILES =\
 	FileNameUtils.cpp\
 	FileUtils.cpp\
 	ReadFile.cpp\
+	ReaderWriter.cpp\
 	Registry.cpp\
 	Version.cpp\
 	WriteFile.cpp\

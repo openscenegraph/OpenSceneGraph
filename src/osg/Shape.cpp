@@ -15,6 +15,15 @@
 
 using namespace osg;
 
+Shape::~Shape()
+{
+}
+
+HeightField::~HeightField()
+{
+}
+
+
 void HeightField::allocate(unsigned int numColumns,unsigned int numRows)
 {
     if (_columns!=numColumns || _rows!=numRows)

@@ -7,6 +7,7 @@ CXXFILES = \
 	MatrixManipulator.cpp\
 	DriveManipulator.cpp\
 	FlightManipulator.cpp\
+        GUIEventAdapter.cpp\
         GUIEventHandler.cpp\
         GUIEventHandlerVisitor.cpp\
         KeySwitchMatrixManipulator.cpp\

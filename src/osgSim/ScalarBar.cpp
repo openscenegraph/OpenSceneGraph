@@ -5,6 +5,10 @@
 
 using namespace osgSim;
 
+ScalarBar::~ScalarBar()
+{
+}
+
 std::string ScalarBar::ScalarPrinter::printScalar(float scalar)
 {
     std::stringstream ostr;

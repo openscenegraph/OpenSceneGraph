@@ -54,7 +54,7 @@ class SG_EXPORT ConvexPlanarOccluder : public Object
 
     protected:
 
-        ~ConvexPlanarOccluder() {}
+        ~ConvexPlanarOccluder(); // {}
 
         ConvexPlanarPolygon _occluder;
         HoleList _holeList;

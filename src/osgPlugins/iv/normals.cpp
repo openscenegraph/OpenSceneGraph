@@ -19,6 +19,8 @@
 
 
 #include <osg/Matrix>
+#include <osg/Notify>
+
 #include "normals.h"
 
 #define CREASE_ANGLE 3.14159265356 * 45 / 180
@@ -65,13 +67,13 @@ osg::Vec3 *calcNormals(VertexList &vertices, PolygonList &polygons, unsigned nve
             int v0,v1,v2;
             get3v(vertices,vindex,v0,v1,v2);
 	    if (v0 == v1 || v0 == v2) {
-		std::cerr << "ERROR: Vertices alineados: nv=" << vindex.size() <<  std::endl;
+		osg::notify(osg::WARN) << "ERROR: Vertices alineados: nv=" << vindex.size() <<  std::endl;
 	    }
 	    normales_polys[poly] = calcNormal(vertices[v0],
 					      vertices[v1],
 					      vertices[v2]);
 	    if (normales_polys[poly] == osg::Vec3(0,0,0) && vindex.size() > 2) {
-		std::cerr << "##***" << "Normal nula VERTICES=" << vindex.size() << " " << vertices[v0] << " " << vertices[v1] << " " << vertices[v2] << std::endl;
+		osg::notify(osg::WARN) << "##***" << "Normal nula VERTICES=" << vindex.size() << " " << vertices[v0] << " " << vertices[v1] << " " << vertices[v2] << std::endl;
 	    }
 	}
     }

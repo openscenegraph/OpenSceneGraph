@@ -28,7 +28,7 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
 
             //if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
-            std::cout << "GDAL : " << file << std::endl;
+            osg::notify(osg::INFO) << "GDAL : " << file << std::endl;
 
             std::string fileName = osgDB::findDataFile( file );
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;

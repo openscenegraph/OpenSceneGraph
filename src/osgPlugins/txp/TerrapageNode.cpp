@@ -2,6 +2,8 @@
 
 #include <osg/Notify>
 
+using namespace osg;
+
 namespace txp
 {
 

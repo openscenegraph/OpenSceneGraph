@@ -20,6 +20,9 @@
 
 namespace osg {
 
+class Matrixf;
+class Matrixd;
+
 /** A quaternion class. It can be used to represent an orientation in 3D space.*/
 class SG_EXPORT Quat
 {
@@ -87,6 +90,15 @@ class SG_EXPORT Quat
         {
             _fv = v;
         }
+        
+        void set(const Matrixf& matrix);
+        
+        void set(const Matrixd& matrix);
+        
+        void get(Matrixf& matrix) const;
+
+        void get(Matrixd& matrix) const;
+        
 
         inline float& operator [] (int i) { return _fv[i]; }
         inline float  operator [] (int i) const { return _fv[i]; }

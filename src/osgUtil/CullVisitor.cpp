@@ -58,8 +58,8 @@ class PrintVisitor : public NodeVisitor
 
         virtual void apply(Geode& node)         { apply((Node&)node); }
         virtual void apply(Billboard& node)     { apply((Geode&)node); }
-        virtual void apply(LightSource& node)   { apply((Node&)node); }
-        virtual void apply(ClipNode& node)      { apply((Node&)node); }
+        virtual void apply(LightSource& node)   { apply((Group&)node); }
+        virtual void apply(ClipNode& node)      { apply((Group&)node); }
         
         virtual void apply(Group& node)         { apply((Node&)node); }
         virtual void apply(Transform& node)     { apply((Group&)node); }
@@ -381,6 +381,8 @@ void CullVisitor::apply(LightSource& node)
     {
         addPositionedAttribute(&matrix,light);
     }
+
+    handle_cull_callbacks_and_traverse(node);
 
     // pop the node's state off the geostate stack.    
     if (node_state) popStateSet();

@@ -20,6 +20,8 @@
     using std::strlen;    
 #endif
 
+#include <osg/Notify>
+
 using namespace std;
 
 std::string osgDB::getFilePath(const std::string& fileName)
@@ -56,6 +58,54 @@ std::string osgDB::getFileExtension(const std::string& fileName)
     if (dot==std::string::npos) return std::string("");
     return std::string(fileName.begin()+dot+1,fileName.end());
 }
+
+std::string osgDB::convertFileNameToWindowsStyle(const std::string& fileName)
+{
+    std::string new_fileName(fileName);
+    
+    std::string::size_type slash = 0;
+    while( (slash=new_fileName.find_first_of('/',slash)) != std::string::npos)
+    {
+        new_fileName[slash]='\\';
+    }
+    return new_fileName;
+}
+
+std::string osgDB::convertFileNameToUnixStyle(const std::string& fileName)
+{
+    osg::notify(osg::NOTICE)<<"convertFileNameToUnixStyle("<<fileName<<")"<<std::endl;
+
+    std::string new_fileName(fileName);
+    
+    std::string::size_type slash = 0;
+    while( (slash=new_fileName.find_first_of('\\',slash)) != std::string::npos)
+    {
+        new_fileName[slash]='/';
+    }
+
+    osg::notify(osg::NOTICE)<<"convertFileNameToUnixStyle("<<new_fileName<<")"<<std::endl;
+
+    return new_fileName;
+}
+
+bool osgDB::isFileNameNativeStyle(const std::string& fileName)
+{
+#ifdef WIN32
+    return fileName.find('/') == std::string::npos; // return true if no unix style slash exist
+#else
+    return fileName.find('\\') == std::string::npos; // return true if no windows style slash exist
+#endif
+}
+
+std::string osgDB::convertFileNameToNativeStyle(const std::string& fileName)
+{
+#ifdef WIN32
+    return convertFileNameToWindowsStyle(fileName);
+#else
+    return convertFileNameToUnixStyle(fileName);
+#endif
+}
+
 
 
 std::string osgDB::getLowerCaseFileExtension(const std::string& filename)

@@ -6,17 +6,24 @@
 #include <osg/Material>
 #include <osg/TexEnv>
 #include <osg/ref_ptr>
+#include <osg/Transform>
 
 #include <osgDB/Registry>
 #include <osgDB/FileUtils>
 #include <osgDB/FileNameUtils>
 #include <osgDB/ReadFile>
 
+//MIKEC debug only for PrintVisitor
+#include <osg/NodeVisitor>
+
+
 #include <file.h>
 #include <mesh.h>
 #include <material.h>
 #include <vector.h>
 #include <matrix.h>
+#include <node.h>
+#include <quat.h>
 
 #include <stdlib.h>
 #include <string.h>
@@ -24,6 +31,52 @@
 #include <set>
 #include <map>
 
+using namespace std;
+using namespace osg;
+
+class PrintVisitor : public NodeVisitor
+{
+
+   public:
+   
+        PrintVisitor():NodeVisitor(NodeVisitor::TRAVERSE_ALL_CHILDREN)
+        {
+            _indent = 0;
+            _step = 4;
+        }
+        
+        inline void moveIn() { _indent += _step; }
+        inline void moveOut() { _indent -= _step; }
+        inline void writeIndent() 
+        {
+            for(int i=0;i<_indent;++i) std::cout << " ";
+        }
+                
+        virtual void apply(Node& node)
+        {
+            moveIn();
+            writeIndent(); std::cout << node.className() << " name=" << node.getName() << std::endl;
+            traverse(node);
+            moveOut();
+        }
+
+        virtual void apply(Geode& node)         { apply((Node&)node); }
+        virtual void apply(Billboard& node)     { apply((Geode&)node); }
+        virtual void apply(LightSource& node)   { apply((Node&)node); }
+        
+        virtual void apply(Group& node)         { apply((Node&)node); }
+        virtual void apply(Transform& node)     { apply((Group&)node); }
+        virtual void apply(Switch& node)        { apply((Group&)node); }
+        virtual void apply(LOD& node)           { apply((Group&)node); }
+        virtual void apply(Impostor& node)      { apply((LOD&)node); }
+
+   protected:
+    
+        int _indent;
+        int _step;
+};
+
+typedef std::map<std::string,osg::StateSet*> StateSetMap;
 class ReaderWriter3DS : public osgDB::ReaderWriter
 {
     public:
@@ -42,11 +95,16 @@ class ReaderWriter3DS : public osgDB::ReaderWriter
 
         osg::Texture*  createTexture(Lib3dsTextureMap *texture,const char* label,bool& transparancy);
         osg::StateSet* createStateSet(Lib3dsMaterial *materials);
-        osg::GeoSet*   createGeoSet(Lib3dsMesh *meshes,FaceList& faceList);
+        osg::GeoSet*   createGeoSet(Lib3dsMesh *meshes,FaceList& faceList, Lib3dsMatrix* matrix);
 
         std::string _directory;
         bool _useSmoothingGroups;
         bool _usePerVertexNormals;
+
+        // MIKEC
+        void processMesh(StateSetMap& drawStateMap,osg::Group* parent,Lib3dsMesh* mesh, Lib3dsMatrix* matrix);
+        osg::Node* processNode(StateSetMap drawStateMap,Lib3dsFile *f,Lib3dsNode *node);
+
 };
 
 // now register with Registry to instantiate the above
@@ -60,84 +118,127 @@ ReaderWriter3DS::ReaderWriter3DS()
 }
 
 
-osgDB::ReaderWriter::ReadResult ReaderWriter3DS::readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*)
-{
+/**
+    These print methods for 3ds hacking
+*/
+void pad(int level) {
+    for(int i=0;i<level;i++) cout<<"  ";
+}
+void print(Lib3dsMesh *mesh,int level);
+void print(Lib3dsUserData *user,int level);
+void print(Lib3dsNodeData *user,int level);
+void print(Lib3dsObjectData *object,int level);
+void print(Lib3dsNode *node, int level);
 
-    Lib3dsFile *f = lib3ds_file_load(fileName.c_str());
-    if (f==NULL) return ReadResult::FILE_NOT_HANDLED;
+void print(Lib3dsMatrix matrix,int level) {
+    pad(level); cout << matrix[0][0] <<" "<< matrix[0][1] <<" "<< matrix[0][2] <<" "<< matrix[0][3] << endl;
+    pad(level); cout << matrix[1][0] <<" "<< matrix[1][1] <<" "<< matrix[1][2] <<" "<< matrix[1][3] << endl;
+    pad(level); cout << matrix[2][0] <<" "<< matrix[2][1] <<" "<< matrix[2][2] <<" "<< matrix[2][3] << endl;
+    pad(level); cout << matrix[3][0] <<" "<< matrix[3][1] <<" "<< matrix[3][2] <<" "<< matrix[3][3] << endl;
+}
+void print(Lib3dsMesh *mesh,int level) {
+    if (mesh) {
+        pad(level); cout << "mesh name " << mesh->name  << endl;
+        print(mesh->matrix,level);
+    } else {
+        pad(level); cout << "no mesh " << endl;
+    }
+}
+void print(Lib3dsUserData *user,int level) {
+    if (user) {
+        pad(level); cout << "user data" << endl;
+        //print(user->mesh,level+1);
+    } else {
+        pad(level); cout << "no user data" << endl;
+    }
+}
+void print(Lib3dsNodeData *node,int level) {
+    if (node) {
+        pad(level); cout << "node data:" << endl;
+        // nodedata->object is a union of many types
+        print((Lib3dsObjectData *)&node->object,level+1);
+    } else {
+        pad(level); cout << "no user data" << endl;
+    }
+}
+void print(Lib3dsObjectData *object,int level) {
+    if (object) {
+        pad(level); cout << "objectdata instance [" << object->instance << "]" << endl;
+        pad(level); cout << "pivot     " << object->pivot[0] <<" "<< object->pivot[1] <<" "<< object->pivot[2] << endl;
+        pad(level); cout << "pos       " << object->pos[0] <<" "<< object->pos[1] <<" "<< object->pos[2] << endl;
+        pad(level); cout << "scl       " << object->scl[0] <<" "<< object->scl[1] <<" "<< object->scl[2] << endl;
+        pad(level); cout << "rot       " << object->rot[0] <<" "<< object->rot[1] <<" "<< object->rot[2] <<" "<< object->rot[3] << endl;
+    } else {
+        pad(level); cout << "no object data" << endl;
+    }
+}
 
-    _directory = osgDB::getFilePath(fileName);
+void print(Lib3dsNode *node, int level) {
+    
+    pad(level); cout << "node name [" << node->name << "]" << endl;
+    pad(level); cout << "node id    " << node->node_id << endl;
+    pad(level); cout << "node parent id " << node->parent_id << endl;
+    pad(level); cout << "node matrix:" << endl;
+    print(node->matrix,level+1);
+    print(&node->data,level);
+    print(&node->user,level);
+    
 
-    osg::Group* group = new osg::Group;
-    group->setName(fileName);
-
-    typedef std::map<std::string,osg::StateSet*> StateSetMap;
-    StateSetMap drawStateMap;
-
-    for (Lib3dsMaterial *mat=f->materials; mat; mat=mat->next)
-    {
-        drawStateMap[mat->name] = createStateSet(mat);
+    for(Lib3dsNode *child=node->childs; child; child=child->next) {
+        print(child,level+1);
     }
 
-    for (Lib3dsMesh *mesh=f->meshes; mesh; mesh=mesh->next)
+}
+
+// Transforms points by matrix if 'matrix' is not NULL
+// Creates a Geode and GeoSet (as parent,child) and adds the Geode to 'parent' parameter
+void ReaderWriter3DS::processMesh(StateSetMap& drawStateMap,osg::Group* parent,Lib3dsMesh* mesh, Lib3dsMatrix* matrix) {
+    typedef std::vector<int> FaceList;
+    typedef std::map<std::string,FaceList> MaterialFaceMap;
+    MaterialFaceMap materialFaceMap;
+    for (unsigned int i=0; i<mesh->faces; ++i)
+    {
+        materialFaceMap[mesh->faceL[i].material].push_back(i);
+    }
+
+    if (materialFaceMap.empty())
+    {
+        osg::notify(osg::NOTICE)<<"Warning : no triangles assigned to mesh '"<<mesh->name<<"'"<< std::endl;
+    }
+    else
     {
 
-        typedef std::vector<int> FaceList;
-        typedef std::map<std::string,FaceList> MaterialFaceMap;
-        MaterialFaceMap materialFaceMap;
-        for (unsigned int i=0; i<mesh->faces; ++i)
-        {
-            materialFaceMap[mesh->faceL[i].material].push_back(i);
-        }
+        osg::Geode* geode = new osg::Geode;
+        geode->setName(mesh->name);
 
-        if (materialFaceMap.empty())
+        for(MaterialFaceMap::iterator itr=materialFaceMap.begin();
+            itr!=materialFaceMap.end();
+            ++itr)
         {
-            osg::notify(osg::NOTICE)<<"Warning : no triangles assigned to mesh '"<<mesh->name<<"'"<< std::endl;
-        }
-        else
-        {
-
-            osg::Geode* geode = new osg::Geode;
-            geode->setName(mesh->name);
-
-            for(MaterialFaceMap::iterator itr=materialFaceMap.begin();
-                itr!=materialFaceMap.end();
-                ++itr)
+            FaceList& faceList = itr->second;
+            
+            if (_useSmoothingGroups)
             {
-                FaceList& faceList = itr->second;
-                
-                if (_useSmoothingGroups)
+
+                typedef std::map<int,FaceList> SmoothingFaceMap;
+                SmoothingFaceMap smoothingFaceMap;
+                for (FaceList::iterator flitr=faceList.begin();
+                     flitr!=faceList.end();
+                     ++flitr)
                 {
-
-                    typedef std::map<int,FaceList> SmoothingFaceMap;
-                    SmoothingFaceMap smoothingFaceMap;
-                    for (FaceList::iterator flitr=faceList.begin();
-                         flitr!=faceList.end();
-                         ++flitr)
-                    {
-                        smoothingFaceMap[mesh->faceL[*flitr].smoothing].push_back(*flitr);
-                    }
-
-                    for(SmoothingFaceMap::iterator sitr=smoothingFaceMap.begin();
-                        sitr!=smoothingFaceMap.end();
-                        ++sitr)
-                    {
-                        // each smoothing group to have its own geoset 
-                        // to ensure the vertices on adjacent groups
-                        // don't get shared.
-                        FaceList& smoothFaceMap = sitr->second;
-
-                        osg::GeoSet* geoset = createGeoSet(mesh,smoothFaceMap);
-                        if (geoset)
-                        {
-                            geoset->setStateSet(drawStateMap[itr->first]);
-                            geode->addDrawable(geoset);
-                        }
-                    }
+                    smoothingFaceMap[mesh->faceL[*flitr].smoothing].push_back(*flitr);
                 }
-                else // ignore smoothing groups.
+
+                for(SmoothingFaceMap::iterator sitr=smoothingFaceMap.begin();
+                    sitr!=smoothingFaceMap.end();
+                    ++sitr)
                 {
-                    osg::GeoSet* geoset = createGeoSet(mesh,faceList);
+                    // each smoothing group to have its own geoset 
+                    // to ensure the vertices on adjacent groups
+                    // don't get shared.
+                    FaceList& smoothFaceMap = sitr->second;
+
+                    osg::GeoSet* geoset = createGeoSet(mesh,smoothFaceMap,matrix);
                     if (geoset)
                     {
                         geoset->setStateSet(drawStateMap[itr->first]);
@@ -145,16 +246,338 @@ osgDB::ReaderWriter::ReadResult ReaderWriter3DS::readNode(const std::string& fil
                     }
                 }
             }
-
-            group->addChild(geode);
-
+            else // ignore smoothing groups.
+            {
+                osg::GeoSet* geoset = createGeoSet(mesh,faceList,matrix);
+                if (geoset)
+                {
+                    geoset->setStateSet(drawStateMap[itr->first]);
+                    geode->addDrawable(geoset);
+                }
+            }
         }
+
+        parent->addChild(geode);
 
     }
 
+}
+
+
+/**
+How to cope with pivot points in 3ds (short version)
+
+  All object coordinates in 3ds are stored in world space, this is why you can just rip out the meshes and use/draw them without devling further
+  Unfortunately, this gets a bit wonky with objects with pivot points (conjucture: PP support is retro fitted into the .3ds format and so doesn't fit perfectly?)
+
+  Objects with pivot points have a position relative to their PP, so they have to undergo this transform:
+
+    invert the mesh matrix, apply this matrix to the object. This puts the object back at the origin
+    Transform the object by the nodes (nnegative) pivot point coords, this puts the PP at the origin
+    Tranform the node by the node matrix, which does the orientation about the pivot point, (and currently) transforms the object back by a translation to the PP.
+
+  */
+osg::Node* ReaderWriter3DS::processNode(StateSetMap drawStateMap,Lib3dsFile *f,Lib3dsNode *node) {
+    
+    osg::Group* group=new osg::Group;
+    group->setName(node->name);
+
+    // Handle all children of this node for hierarchical assemblies
+    Lib3dsNode *p;
+    for (p=node->childs; p!=0; p=p->next) {
+      group->addChild(processNode(drawStateMap,f,p));
+    }
+    
+    // MIKEC: possible BUG - 3ds files APPEAR to enforce unqiue names, so this is OK, but I am not 100% sure
+    // failed to find any alternative way to do it in lib3ds though, and lib3ds player.c application uses this method
+    Lib3dsMesh *mesh=lib3ds_file_mesh_by_name(f,node->name);
+    if (mesh) {
+        Lib3dsObjectData* object=&node->data.object;
+        Lib3dsMatrix mesh_inverse;
+        osg::Matrix osgmatrix;
+        
+        lib3ds_matrix_copy(mesh_inverse,mesh->matrix); 
+        lib3ds_matrix_inv(mesh_inverse);
+        
+        Lib3dsMatrix M,N;
+        lib3ds_matrix_identity(M);
+        lib3ds_matrix_identity(N);
+        lib3ds_matrix_copy(M,node->matrix);
+        N[3][0]=-object->pivot[0];
+        N[3][1]=-object->pivot[1];
+        N[3][2]=-object->pivot[2];
+
+        // Transform object's pivot point to the world origin
+        osg::Transform* T=new osg::Transform;
+        osgmatrix.set(
+            N[0][0],N[0][1],N[0][2],N[0][3],
+            N[1][0],N[1][1],N[1][2],N[1][3],
+            N[2][0],N[2][1],N[2][2],N[2][3],
+            N[3][0],N[3][1],N[3][2],N[3][3]); 
+        T->setMatrix(osgmatrix);
+        T->setName("3DSPIVOTPOINT: Translate pivotpoint to (world) origin");
+        //cout<<"Translation for "<<node->name<<" is "<<osgmatrix<<endl;
+
+        // rotate about "origin" (after the transform this is the world origin)
+        // BUG this matrix also contains the translation to the pivot point - we should plit that out (maybe)
+        osg::Transform* R=new osg::Transform;
+        osgmatrix.set(
+            M[0][0],M[0][1],M[0][2],M[0][3],
+            M[1][0],M[1][1],M[1][2],M[1][3],
+            M[2][0],M[2][1],M[2][2],M[2][3],
+            M[3][0],M[3][1],M[3][2],M[3][3]); 
+        R->setMatrix(osgmatrix);
+        R->setName("3DSPIVOTPOINT: Rotate");
+            
+        /*
+        cout<<"Rotation for "<<node->name<<" is "<<osgmatrix<<endl;
+        osg::Quat quat;
+        quat.set(osgmatrix);
+        osg::Vec3 axis;
+        float angle;
+        quat.getRotate(angle,axis);
+        cout<<"which is "<<osg::RadiansToDegrees(angle)<<" degrees around "<<axis<<endl;
+        */
+        /*
+        printf("%s---------------\n",node->name);
+        printf("mesh matrix :\n");         print(mesh->matrix,1);
+        printf("mesh inverse:\n");         print(mesh_inverse,1);
+        printf("node matrix :\n");         print(matrix,1);
+        printf("pivot=%f,%f,%f pos=%f,%f,%f\n",object->pivot[0],object->pivot[1],object->pivot[2],object->pos[0],object->pos[1],object->pos[2]);
+        */
+
+        // Always in reverse order...
+        group->addChild(R); 
+        R->addChild(T);
+        processMesh(drawStateMap,T,mesh,&mesh_inverse); // creates geometry under modifier node
+
+    } else {
+        // no mesh for this node - probably a camera or something of that persuasion
+        //cout << "no mesh for object " << node->name << endl;
+    }
+
+    return group;
+}
+
+
+osgDB::ReaderWriter::ReadResult ReaderWriter3DS::readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*)
+{
+
+    Lib3dsFile *f = lib3ds_file_load(fileName.c_str());
+    if (f==NULL) return ReadResult::FILE_NOT_HANDLED;
+
+    // MIKEC
+    // This appears to build the matrix structures for the 3ds structure
+    // It wasn't previously necessary because all the meshes are stored in world coordinates
+    // but is VERY necessary if you want to use pivot points...
+    lib3ds_file_eval(f,0.0f); // second param is time 't' for animated files
+
+    _directory = osgDB::getFilePath(fileName);
+
+    osg::Group* group = new osg::Group;
+    group->setName(fileName);
+
+    StateSetMap drawStateMap;
+
+    for (Lib3dsMaterial *mat=f->materials; mat; mat=mat->next)
+    {
+        drawStateMap[mat->name] = createStateSet(mat);
+    }
+    
+    /*{
+        int level=0;
+        std::cout << "NODE TRAVERSAL of file "<<f->name<<std::endl;
+        for(Lib3dsNode *node=f->nodes; node; node=node->next) {
+            print(node,level+1);
+        }
+        std::cout << "MESH TRAVERSAL of file "<<f->name<<std::endl;
+        for(Lib3dsMesh *mesh=f->meshes; mesh; mesh=mesh->next) {
+            print(mesh,level+1);
+        }
+    }*/
+
+
+    // We can traverse by meshes (old method, broken for pivot points, but otherwise works), or by nodes (new method, not so well tested yet)
+    // if your model is broken, especially wrt object positions try setting this flag. If that fixes it,
+    // send me the model
+    bool traverse_nodes=false;
+    
+    // MIKEC: have found 3ds files with NO node structure - only meshes, for this case we fall back to the old traverse-by-meshes code
+    // Loading and re-exporting these files from 3DS produces a file with correct node structure, so perhaps these are not 100% conformant?
+    if (f->nodes == NULL) {
+        osg::notify(osg::WARN)<<"Warning: in 3ds loader: file has no nodes, traversing by meshes instead"<< std::endl;
+        traverse_nodes=true;
+    }
+
+    if (traverse_nodes) { // old method
+        for (Lib3dsMesh *mesh=f->meshes; mesh; mesh=mesh->next) {
+            processMesh(drawStateMap,group,mesh,NULL);
+        }
+    } else { // new method
+        for(Lib3dsNode *node=f->nodes; node; node=node->next) {
+            group->addChild(processNode(drawStateMap,f,node));
+        }
+    } 
+
+    /*
+    cout << "Final OSG node structure looks like this:"<< endl;
+    PrintVisitor pv;
+    group->accept(pv);
+    */
+    
     lib3ds_file_free(f);
 
     return group;
+}
+
+/**
+use matrix to pretransform geometry, or NULL to do nothing
+*/
+osg::GeoSet*   ReaderWriter3DS::createGeoSet(Lib3dsMesh *m,FaceList& faceList,Lib3dsMatrix *matrix)
+{
+
+    osg::GeoSet* geoset = new osg::GeoSet;
+
+    unsigned int i;
+    
+    std::vector<int> orig2NewMapping;
+    for(i=0;i<m->points;++i) orig2NewMapping.push_back(-1);
+
+    unsigned int noVertex=0;
+    FaceList::iterator fitr;
+    for (fitr=faceList.begin();
+        fitr!=faceList.end();
+        ++fitr)
+    {
+
+        Lib3dsFace& face = m->faceL[*fitr];
+
+        if (orig2NewMapping[face.points[0]]<0)
+            orig2NewMapping[face.points[0]] = noVertex++;
+
+        if (orig2NewMapping[face.points[1]]<0)
+            orig2NewMapping[face.points[1]] = noVertex++;
+
+        if (orig2NewMapping[face.points[2]]<0)
+            orig2NewMapping[face.points[2]] = noVertex++;
+
+    }
+
+    osg::Vec3* osg_coords = new osg::Vec3[noVertex];
+    Lib3dsVector c;
+       
+    for (i=0; i<m->points; ++i)
+    {
+        if (orig2NewMapping[i]>=0) {
+            if (matrix)
+            {
+                lib3ds_vector_transform(c,*matrix, m->pointL[i].pos);
+                osg_coords[orig2NewMapping[i]].set(c[0],c[1],c[2]);
+            }
+            else
+            {
+                // original no transform code.
+                osg_coords[orig2NewMapping[i]].set(m->pointL[i].pos[0],m->pointL[i].pos[1],m->pointL[i].pos[2]);
+            }
+        }
+    }
+
+    osg::Vec2* osg_tcoords = NULL;
+    if (m->texels>0)
+    {
+        if (m->texels==m->points)
+        {
+            osg_tcoords = new osg::Vec2[noVertex];
+            for (i=0; i<m->texels; ++i)
+            {
+                if (orig2NewMapping[i]>=0) osg_tcoords[orig2NewMapping[i]].set(m->texelL[i][0],m->texelL[i][1]);
+            }
+        }
+        else
+        {
+            osg::notify(osg::WARN)<<"Warning: in 3ds loader m->texels ("<<m->texels<<") != m->points ("<<m->points<<")"<< std::endl;
+        }
+    }
+
+
+    // handle normals.
+    osg::Vec3* osg_normals;
+    if (_usePerVertexNormals)
+    {
+        osg_normals = new osg::Vec3[noVertex];
+        
+        // initialize normal list to zero's.
+        for (i=0; i<noVertex; ++i)
+        {
+            osg_normals[i].set(0.0f,0.0f,0.0f);
+        }
+    }
+    else 
+    {
+        osg_normals = new osg::Vec3[faceList.size()];
+    }
+    
+    osg::Vec3* normal_ptr = osg_normals;
+
+    int numIndices = faceList.size()*3;
+    osg::ushort* osg_indices = new osg::ushort[numIndices];
+    osg::ushort* index_ptr = osg_indices;
+
+    for (fitr=faceList.begin();
+        fitr!=faceList.end();
+        ++fitr)
+    {
+        Lib3dsFace& face = m->faceL[*fitr];
+
+        *(index_ptr++) = orig2NewMapping[face.points[0]];
+        *(index_ptr++) = orig2NewMapping[face.points[1]];
+        *(index_ptr++) = orig2NewMapping[face.points[2]];
+
+        if (_usePerVertexNormals)
+        {
+            osg_normals[orig2NewMapping[face.points[0]]] += osg::Vec3(face.normal[0],face.normal[1],face.normal[2]);;
+            osg_normals[orig2NewMapping[face.points[1]]] += osg::Vec3(face.normal[0],face.normal[1],face.normal[2]);;
+            osg_normals[orig2NewMapping[face.points[2]]] += osg::Vec3(face.normal[0],face.normal[1],face.normal[2]);;
+        }
+        else
+        {
+            *(normal_ptr++) =  osg::Vec3(face.normal[0],face.normal[1],face.normal[2]);
+        }
+        
+    }
+
+    if (_usePerVertexNormals)
+    {
+        // normalize the normal list to unit length normals.
+        for (i=0; i<noVertex; ++i)
+        {
+//            osg_normals[i].normalize();
+            float len = osg_normals[i].length();
+            if (len) osg_normals[i]/=len;
+        }
+
+        geoset->setNormals(osg_normals,osg_indices);
+        geoset->setNormalBinding(osg::GeoSet::BIND_PERVERTEX);
+
+    }
+    else
+    {
+        geoset->setNormals(osg_normals);
+        geoset->setNormalBinding(osg::GeoSet::BIND_PERPRIM);
+    }
+
+
+    geoset->setCoords(osg_coords,osg_indices);
+    if (osg_tcoords)
+    {
+        geoset->setTextureBinding(osg::GeoSet::BIND_PERVERTEX);
+        geoset->setTextureCoords(osg_tcoords,osg_indices);
+    }
+
+    geoset->setPrimType(osg::GeoSet::TRIANGLES);
+    geoset->setNumPrims(faceList.size());
+
+    return geoset;
 }
 
 
@@ -285,164 +708,3 @@ osg::StateSet* ReaderWriter3DS::createStateSet(Lib3dsMaterial *mat)
     return stateset;
 }
 
-osg::GeoSet*   ReaderWriter3DS::createGeoSet(Lib3dsMesh *m,FaceList& faceList)
-{
-
-    osg::GeoSet* geoset = new osg::GeoSet;
-
-    unsigned int i;
-    
-    
-    std::vector<int> orig2NewMapping;
-    for(i=0;i<m->points;++i) orig2NewMapping.push_back(-1);
-
-    unsigned int noVertex=0;
-    FaceList::iterator fitr;
-    for (fitr=faceList.begin();
-        fitr!=faceList.end();
-        ++fitr)
-    {
-
-        Lib3dsFace& face = m->faceL[*fitr];
-
-        if (orig2NewMapping[face.points[0]]<0)
-            orig2NewMapping[face.points[0]] = noVertex++;
-
-        if (orig2NewMapping[face.points[1]]<0)
-            orig2NewMapping[face.points[1]] = noVertex++;
-
-        if (orig2NewMapping[face.points[2]]<0)
-            orig2NewMapping[face.points[2]] = noVertex++;
-
-    }
-
-    osg::Vec3* osg_coords = new osg::Vec3[noVertex];
-    Lib3dsVector c;
-    
-    // Note for Ben, 1st Jan 2002 from Robert.
-    // added code to use the matrix attached with each lib3dsMesh to
-    // multiply each coord on the mesh before passing to the OSG.
-    // however, this caused plenty of problems as applying the matrices
-    // moved the objects away from the original positions.
-    
-    bool useMatrix = false;
-    
-    if (useMatrix)
-    {
-        lib3ds_matrix_dump(m->matrix);
-    }
-    
-    for (i=0; i<m->points; ++i)
-    {
-        // lib3ds_vector_transform(pos, m->matrix, m->pointL[i].pos);
-        if (orig2NewMapping[i]>=0) {
-            if (useMatrix)
-            {
-                lib3ds_vector_transform(c,m->matrix, m->pointL[i].pos);
-                osg_coords[orig2NewMapping[i]].set(c[0],c[1],c[2]);
-            }
-            else
-            {
-                // original no transform code.
-                osg_coords[orig2NewMapping[i]].set(m->pointL[i].pos[0],m->pointL[i].pos[1],m->pointL[i].pos[2]);
-            }
-        }
-    }
-
-    osg::Vec2* osg_tcoords = NULL;
-    if (m->texels>0)
-    {
-        if (m->texels==m->points)
-        {
-            osg_tcoords = new osg::Vec2[noVertex];
-            for (i=0; i<m->texels; ++i)
-            {
-                if (orig2NewMapping[i]>=0) osg_tcoords[orig2NewMapping[i]].set(m->texelL[i][0],m->texelL[i][1]);
-            }
-        }
-        else
-        {
-            osg::notify(osg::WARN)<<"Warning: in 3ds loader m->texels ("<<m->texels<<") != m->points ("<<m->points<<")"<< std::endl;
-        }
-    }
-
-
-    // handle normals.
-    osg::Vec3* osg_normals;
-    if (_usePerVertexNormals)
-    {
-        osg_normals = new osg::Vec3[noVertex];
-        
-        // initialize normal list to zero's.
-        for (i=0; i<noVertex; ++i)
-        {
-            osg_normals[i].set(0.0f,0.0f,0.0f);
-        }
-    }
-    else 
-    {
-        osg_normals = new osg::Vec3[faceList.size()];
-    }
-    
-    osg::Vec3* normal_ptr = osg_normals;
-
-    int numIndices = faceList.size()*3;
-    osg::ushort* osg_indices = new osg::ushort[numIndices];
-    osg::ushort* index_ptr = osg_indices;
-
-    for (fitr=faceList.begin();
-        fitr!=faceList.end();
-        ++fitr)
-    {
-        Lib3dsFace& face = m->faceL[*fitr];
-
-        *(index_ptr++) = orig2NewMapping[face.points[0]];
-        *(index_ptr++) = orig2NewMapping[face.points[1]];
-        *(index_ptr++) = orig2NewMapping[face.points[2]];
-
-        if (_usePerVertexNormals)
-        {
-            osg_normals[orig2NewMapping[face.points[0]]] += osg::Vec3(face.normal[0],face.normal[1],face.normal[2]);;
-            osg_normals[orig2NewMapping[face.points[1]]] += osg::Vec3(face.normal[0],face.normal[1],face.normal[2]);;
-            osg_normals[orig2NewMapping[face.points[2]]] += osg::Vec3(face.normal[0],face.normal[1],face.normal[2]);;
-        }
-        else
-        {
-            *(normal_ptr++) =  osg::Vec3(face.normal[0],face.normal[1],face.normal[2]);
-        }
-        
-    }
-
-    if (_usePerVertexNormals)
-    {
-        // normalize the normal list to unit length normals.
-        for (i=0; i<noVertex; ++i)
-        {
-//            osg_normals[i].normalize();
-            float len = osg_normals[i].length();
-            if (len) osg_normals[i]/=len;
-        }
-
-        geoset->setNormals(osg_normals,osg_indices);
-        geoset->setNormalBinding(osg::GeoSet::BIND_PERVERTEX);
-
-    }
-    else
-    {
-        geoset->setNormals(osg_normals);
-        geoset->setNormalBinding(osg::GeoSet::BIND_PERPRIM);
-    }
-
-
-    geoset->setCoords(osg_coords,osg_indices);
-    if (osg_tcoords)
-    {
-        geoset->setTextureBinding(osg::GeoSet::BIND_PERVERTEX);
-        geoset->setTextureCoords(osg_tcoords,osg_indices);
-    }
-
-    geoset->setPrimType(osg::GeoSet::TRIANGLES);
-    geoset->setNumPrims(faceList.size());
-
-    return geoset;
-}

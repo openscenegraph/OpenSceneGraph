@@ -159,79 +159,28 @@ void Matrix::makeTrans( float x, float y, float z )
 
 void Matrix::makeRot( const Vec3& from, const Vec3& to )
 {
-    double d = from * to; // dot product == cos( angle between from & to )
-    if( d < 0.9999 ) {
-        double angle = acos(d);
-	// For right-handed rotations, cross product must be from x to, not 
-	// to x from
-        //Vec3 axis = to ^ from; //we know ((to) x (from)) is perpendicular to both
-        Vec3 axis = from ^ to; //we know ((from) x (to)) is perpendicular to both
-        makeRot( inRadians(angle) , axis );
-    }        
-    else 
-        makeIdent();
+    Quat quat;
+    quat.makeRot(from,to);
+    quat.get(*this);
 }
 
 void Matrix::makeRot( float angle, const Vec3& axis )
 {
-    makeRot( angle, axis.x(), axis.y(), axis.z() );
+    Quat quat;
+    quat.makeRot( angle, axis);
+    quat.get(*this);
 }
 
 void Matrix::makeRot( float angle, float x, float y, float z ) 
 {
-    float d = sqrt( x*x + y*y + z*z );
-    if( d == 0 )
-        return;
-
-#ifdef USE_DEGREES_INTERNALLY
-    angle = DEG2RAD(angle);
-#endif
-
-#if 0
-    float sin_half = sin( angle/2 );
-    float cos_half = cos( angle/2 );
-
-    Quat q( sin_half * (x/d),
-            sin_half * (y/d),
-            sin_half * (z/d),
-            cos_half );//NOTE: original used a private quaternion made of doubles
-#endif
-    Quat q;
-    q.makeRot( angle, x, y, z);
-    makeRot( q );        // but Quat stores the values in a Vec4 made of floats.  
+    Quat quat;
+    quat.makeRot( angle, x, y, z);
+    quat.get(*this);
 }
 
-void Matrix::makeRot( const Quat& q ) {
-    // taken from Shoemake/ACM SIGGRAPH 89
-    Vec4 v = q.asVec4();
-
-    double xs = 2 * v.x(); //assume q is already normalized? assert?
-    double ys = 2 * v.y(); // if not, xs = 2 * v.x() / d, ys = 2 * v.y() / d
-    double zs = 2 * v.z(); // and zs = 2 * v.z() /d where d = v.length2()
-
-    double xx = xs * v.x();
-    double xy = ys * v.x();
-    double xz = zs * v.x();
-    double yy = ys * v.y();
-    double yz = zs * v.y();
-    double zz = zs * v.z();
-    double wx = xs * v.w();
-    double wy = ys * v.w();
-    double wz = zs * v.w();
-
-/*
- * This is inverted - Don Burns
-    SET_ROW(0,    1.0-(yy+zz),    xy - wz,    xz + wy,    0.0 )
-    SET_ROW(1,    xy + wz,        1.0-(xx+zz),yz - wx,    0.0 )
-    SET_ROW(2,    xz - wy,        yz + wx,    1.0-(xx+yy),0.0 )
-    SET_ROW(3,    0.0,            0.0,        0.0,        1.0 )
- */
-
-    SET_ROW(0,    1.0-(yy+zz),    xy + wz,    xz - wy,    0.0 )
-    SET_ROW(1,    xy - wz,        1.0-(xx+zz),yz + wx,    0.0 )
-    SET_ROW(2,    xz + wy,        yz - wx,    1.0-(xx+yy),0.0 )
-    SET_ROW(3,    0.0,            0.0,        0.0,        1.0 )
-
+void Matrix::makeRot( const Quat& q )
+{
+    q.get(*this);    
     fully_realized = true;
 }
 
@@ -256,7 +205,8 @@ void Matrix::makeRot( float yaw, float pitch, float roll)
             cosRoll * sinPitch * cosYaw + sinRoll * cosPitch * sinYaw,
             cosRoll * cosPitch * sinYaw - sinRoll * sinPitch * cosYaw,
             cosRoll * cosPitch * cosYaw + sinRoll * sinPitch * sinYaw);
-    makeRot( q );
+            
+    q.get(*this);
 }
 
 void Matrix::mult( const Matrix& lhs, const Matrix& rhs )

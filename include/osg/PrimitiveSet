@@ -233,11 +233,11 @@ class SG_EXPORT DrawArrayLengths : public PrimitiveSet, public VectorSizei
             VectorSizei(no),
             _first(first) {}
 
-        template <class InputIterator>
-        DrawArrayLengths(GLenum mode, GLint first, InputIterator firstItr,InputIterator lastItr) : 
+        DrawArrayLengths(GLenum mode,GLint first) : 
             PrimitiveSet(DrawArrayLengthsPrimitiveType,mode),
-            VectorSizei(firstItr,lastItr),
+            VectorSizei(),
             _first(first) {}
+
 
         virtual Object* cloneType() const { return new DrawArrayLengths(); }
         virtual Object* clone(const CopyOp& copyop) const { return new DrawArrayLengths(*this,copyop); }        
@@ -300,11 +300,6 @@ class SG_EXPORT DrawElementsUByte : public PrimitiveSet, public VectorUByte
         DrawElementsUByte(GLenum mode,unsigned int no) : 
             PrimitiveSet(DrawElementsUBytePrimitiveType,mode),
             VectorUByte(no) {}
-
-        template <class InputIterator>
-        DrawElementsUByte(GLenum mode, InputIterator first,InputIterator last) : 
-            PrimitiveSet(DrawElementsUBytePrimitiveType,mode),
-            VectorUByte(first,last) {}
 
         virtual Object* cloneType() const { return new DrawElementsUByte(); }
         virtual Object* clone(const CopyOp& copyop) const { return new DrawElementsUByte(*this,copyop); }        
@@ -387,11 +382,6 @@ class SG_EXPORT DrawElementsUInt : public PrimitiveSet, public VectorUInt
         DrawElementsUInt(GLenum mode,unsigned int no) : 
             PrimitiveSet(DrawElementsUIntPrimitiveType,mode),
             VectorUInt(no) {}
-
-        template <class InputIterator>
-        DrawElementsUInt(GLenum mode, InputIterator first,InputIterator last) : 
-            PrimitiveSet(DrawElementsUIntPrimitiveType,mode),
-            VectorUInt(first,last) {}
 
         virtual Object* cloneType() const { return new DrawElementsUInt(); }
         virtual Object* clone(const CopyOp& copyop) const { return new DrawElementsUInt(*this,copyop); }        

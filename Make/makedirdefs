@@ -31,7 +31,7 @@ PLUGIN_DIRS = \
 	geo\
 	iv\
 	lib3ds\
-	logos\
+	logo\
 	lwo\
 	md2\
 	obj\

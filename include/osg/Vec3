@@ -56,6 +56,11 @@ class Vec3
             _v[0]=x; _v[1]=y; _v[2]=z;
         }
 
+        inline void set( const Vec3& rhs)
+        {
+            _v[0]=rhs._v[0]; _v[1]=rhs._v[1]; _v[2]=rhs._v[2];
+        }
+
         inline float& operator [] (int i) { return _v[i]; }
         inline float operator [] (int i) const { return _v[i]; }
 

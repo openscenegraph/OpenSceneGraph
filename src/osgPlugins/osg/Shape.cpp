@@ -358,6 +358,24 @@ bool HeightField_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
+    if (fr.matchSequence("SkirtHeight %f"))
+    {
+        float height;
+        fr[1].getFloat(height);
+        heightfield.setSkirtHeight(height);
+        fr+=2;
+        iteratorAdvanced = true;
+    }
+
+    if (fr.matchSequence("BorderWidth %i"))
+    {
+        unsigned int width;
+        fr[1].getUInt(width);
+        heightfield.setBorderWidth(width);
+        fr+=2;
+        iteratorAdvanced = true;
+    }
+
     if (fr.matchSequence("Rotation %f %f %f %f"))
     {
         osg::Quat rotation;
@@ -426,6 +444,8 @@ bool HeightField_writeLocalData(const Object& obj, Output& fw)
     fw.indent()<<"Origin "<<heightfield.getOrigin().x()<<" "<<heightfield.getOrigin().y()<<" "<<heightfield.getOrigin().z()<<std::endl;
     fw.indent()<<"XInterval "<<heightfield.getXInterval()<<std::endl;
     fw.indent()<<"YInterval "<<heightfield.getYInterval()<<std::endl;
+    fw.indent()<<"SkirtHeight "<<heightfield.getSkirtHeight()<<std::endl;
+    fw.indent()<<"BorderWidth "<<heightfield.getBorderWidth()<<std::endl;
     fw.indent()<<"Rotation "<<heightfield.getRotation()<<std::endl;
     fw.precision(prec);
 

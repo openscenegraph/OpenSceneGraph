@@ -633,6 +633,8 @@ class DataSet : public osg::Referenced
         
         
             DestinationTile();
+            
+            void computeNeighboursFromQuadMap();
 
             void setNeighbours(DestinationTile* left, DestinationTile* left_below, 
                                DestinationTile* below, DestinationTile* below_right,
@@ -675,6 +677,8 @@ class DataSet : public osg::Referenced
             
             std::string                                 _name;
             
+            DataSet*                                    _dataSet;
+            
             osg::ref_ptr<DestinationData>               _imagery;
             osg::ref_ptr<DestinationData>               _terrain;
             osg::ref_ptr<DestinationData>               _models;
@@ -712,6 +716,8 @@ class DataSet : public osg::Referenced
                 _type(GROUP),
                 _maxVisibleDistance(FLT_MAX) {}
           
+            void computeNeighboursFromQuadMap();
+
             void addRequiredResolutions(CompositeSource* sourceGraph);
             
             void readFrom(CompositeSource* sourceGraph);
@@ -729,6 +735,29 @@ class DataSet : public osg::Referenced
             float           _maxVisibleDistance;
             
         };
+
+
+        typedef std::map<unsigned int,DestinationTile*> Column;
+        typedef std::map<unsigned int,Column> Level;
+        typedef std::map<unsigned int,Level> QuadMap;
+        
+        void insertTileToQuadMap(DestinationTile* tile)
+        {
+            _quadMap[tile->_level][tile->_X][tile->_Y] = tile;
+        }
+        
+        DestinationTile* getTile(unsigned int level,unsigned int X, unsigned int Y)
+        {
+            QuadMap::iterator levelItr = _quadMap.find(level);
+            if (levelItr==_quadMap.end()) return 0;
+
+            Level::iterator columnItr = levelItr->second.find(X);
+            if (columnItr==levelItr->second.end()) return 0;
+
+            Column::iterator rowItr = columnItr->second.find(Y);
+            if (rowItr==columnItr->second.end()) return 0;
+            else return rowItr->second;
+        }
 
     public:
 
@@ -777,6 +806,8 @@ class DataSet : public osg::Referenced
         osg::ref_ptr<CompositeSource>               _sourceGraph;
         
         osg::ref_ptr<CompositeDestination>          _destinationGraph;
+        
+        QuadMap                                     _quadMap;
 
         osg::ref_ptr<osgTerrain::CoordinateSystem>  _coordinateSystem;
         osg::Matrixd                                _geoTransform;

@@ -7,7 +7,7 @@ OSG News (most significant items from ChangeLog)
     >>> Support added for Solaris, texture cube mapping & muliple projections.
    
     The OpenSceneGraph now has new Makefile systems which supports all Unix
-    compilation including the new addition to the familiy - Solaris!
+    compilation including the new addition to the family - Solaris!
     
     Support has also been added for OpenGL's texture cube mapping which
     is ideal for accurate environmental reflections and much more.
@@ -18,7 +18,7 @@ OSG News (most significant items from ChangeLog)
     an example to demonstrate how easy it is - osghud.
     
     The osgUtil::CullVisitor and osgUtil::SceneView has been revamped 
-    removing the dependancy on osg::Camera, which is now simply an
+    removing the dependency on osg::Camera, which is now simply an
     option for SceneView rather than a requirement.  This allows users
     to set the camera entirely with the scene graph or create their own
     camera classes and use them with SceneView.  The existing osg::Camera

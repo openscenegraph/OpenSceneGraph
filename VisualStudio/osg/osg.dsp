@@ -361,6 +361,10 @@ SOURCE=..\..\Include\Osg\CullFace
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\Include\Osg\DeepCopy
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\Include\Osg\Depth
 # End Source File
 # Begin Source File
@@ -518,6 +522,10 @@ SOURCE=..\..\Include\Osg\Referenced
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\ShadeModel
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\ShallowCopy
 # End Source File
 # Begin Source File
 

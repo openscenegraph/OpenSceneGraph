@@ -15,7 +15,13 @@ class SG_EXPORT TexEnv : public StateAttribute
 {
     public :
 
-        TexEnv( void );
+        TexEnv();
+        
+        /** Copy constructor using Cloner to manage deep vs shallow copy.*/
+        TexEnv(const TexEnv& texenv,const Cloner& cloner=ShallowCopy()):
+            StateAttribute(texenv,cloner),
+            _mode(texenv._mode) {}
+
 
         META_StateAttribute(TexEnv, TEXENV);
 

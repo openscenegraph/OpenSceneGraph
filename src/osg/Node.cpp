@@ -20,6 +20,22 @@ Node::Node()
 
 }
 
+Node::Node(const Node& node,const Cloner& cloner):
+        Object(node,cloner),
+        _bsphere(_bsphere),
+        _bsphere_computed(node._bsphere_computed),
+        _name(node._name),
+        _parents(), // leave empty as parentList is managed by Group.
+        _appCallback(node._appCallback),
+        _numChildrenRequiringAppTraversal(node._numChildrenRequiringAppTraversal),
+        _cullingActive(node._cullingActive),
+        _numChildrenWithCullingDisabled(node._numChildrenWithCullingDisabled),
+        _userData(cloner(node._userData.get())),
+        _nodeMask(node._nodeMask), 
+        _descriptions(node._descriptions),
+        _dstate(cloner(node._dstate.get()))
+{
+}
 
 Node::~Node()
 {

@@ -26,6 +26,12 @@ class SG_EXPORT EarthSky : public Group
         
         EarthSky();
 
+        EarthSky(const EarthSky& es, const Cloner& cloner=ShallowCopy()):
+            Group(es,cloner),
+            _requiresClear(es._requiresClear),
+            _clearColor(es._clearColor) {}  
+
+
         META_Node(EarthSky);
 
 	/** Sets the flag which control whether a glClear is required at the beginning of each frame. */

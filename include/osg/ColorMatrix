@@ -14,7 +14,13 @@ namespace osg {
 class SG_EXPORT ColorMatrix : public StateAttribute
 {
     public :
-        ColorMatrix( void );
+    
+        ColorMatrix();
+
+        /** Copy constructor using Cloner to manage deep vs shallow copy.*/
+        ColorMatrix(const ColorMatrix& cm,const Cloner& cloner=ShallowCopy()):
+            StateAttribute(cm,cloner),
+            _matrix(cm._matrix) {}
 
         META_StateAttribute(ColorMatrix, COLORMATRIX);
         

@@ -5,7 +5,7 @@
 #ifndef OSGUTIL_STATISTICS
 #define OSGUTIL_STATISTICS 1
 
-#include <osg/Object>
+#include <osg/Referenced>
 
 namespace osg {
 
@@ -22,7 +22,7 @@ namespace osg {
  * each trifan or tristrip = (length-2) triangles and so on.
  */
 
-class SG_EXPORT Statistics : public osg::Object
+class SG_EXPORT Statistics : public osg::Referenced
 {
     public:
     
@@ -52,9 +52,6 @@ class SG_EXPORT Statistics : public osg::Object
 
 
         ~Statistics() {}; // no dynamic allocations, so no need to free
-        virtual osg::Object* clone() const { return new Statistics(); }
-        virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const Statistics*>(obj)!=0L; }
-        virtual const char* className() const { return "Statistics"; }
         
         enum statsType
         {

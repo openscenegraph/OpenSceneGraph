@@ -29,7 +29,7 @@ RenderBin* RenderBin::createRenderBin(const std::string& binName)
 //    cout << "creating RB "<<binName<<std::endl;
 
     RenderBinPrototypeList::iterator itr = renderBinPrototypeList()->find(binName);
-    if (itr != renderBinPrototypeList()->end()) return dynamic_cast<RenderBin*>(itr->second->clone());
+    if (itr != renderBinPrototypeList()->end()) return dynamic_cast<RenderBin*>(itr->second->cloneType());
     else return NULL;
 }
 

@@ -18,6 +18,21 @@ class SG_EXPORT Light : public StateAttribute
     public :
 
         Light();
+
+        /** Copy constructor using Cloner to manage deep vs shallow copy.*/
+        Light(const Light& light,const Cloner& cloner=ShallowCopy()):
+            StateAttribute(light,cloner),
+            _lightnum(light._lightnum),
+            _ambient(light._ambient),
+            _diffuse(light._diffuse),
+            _specular(light._specular),
+            _position(light._position),
+            _direction(light._direction),
+            _constant_attenuation(light._constant_attenuation),
+            _linear_attenuation(light._linear_attenuation),
+            _quadratic_attenuation(light._quadratic_attenuation),
+            _spot_exponent(light._spot_exponent),
+            _spot_cutoff(light._spot_cutoff) {}
         
         META_StateAttribute(Light, (Type)(LIGHT_0+_lightnum));
 

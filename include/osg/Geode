@@ -20,6 +20,9 @@ class SG_EXPORT Geode : public Node
 
         Geode();
 
+        /** Copy constructor using Cloner to manage deep vs shallow copy.*/
+        Geode(const Geode&,const Cloner& cloner=ShallowCopy());
+
         META_Node(Geode);
 
         /** Add Drawable to Geode.

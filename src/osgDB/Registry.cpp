@@ -328,7 +328,7 @@ osg::Object* Registry::readObjectOfType(const osg::Object& compObj,Input& fr)
         fr+=2;
 
         const DotOsgWrapper::Associates& assoc = wrapper->getAssociates();
-        osg::Object* obj = proto->clone();
+        osg::Object* obj = proto->cloneType();
 
         while(!fr.eof() && fr[0].getNoNestedBrackets()>entry)
         {
@@ -396,7 +396,7 @@ osg::Object* Registry::readObject(DotOsgWrapperMap& dowMap,Input& fr)
         fr+=2;
 
         const DotOsgWrapper::Associates& assoc = wrapper->getAssociates();
-        osg::Object* obj = proto->clone();
+        osg::Object* obj = proto->cloneType();
 
         while(!fr.eof() && fr[0].getNoNestedBrackets()>entry)
         {

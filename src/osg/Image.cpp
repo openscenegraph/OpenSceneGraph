@@ -26,6 +26,30 @@ Image::Image()
     _modifiedTag = 0;
 }
 
+Image::Image(const Image& image,const Cloner& cloner):
+    Object(image,cloner),
+    _fileName(image._fileName),
+    _s(image._s), _t(image._t), _r(image._r),
+    _internalFormat(image._internalFormat),
+    _pixelFormat(image._pixelFormat),
+    _dataType(image._dataType),
+    _packing(image._packing),
+    _data(0L),
+    _modifiedTag(image._modifiedTag)
+{
+    if (image._data)
+    {
+        int num_components = 
+            _pixelFormat == GL_LUMINANCE ? 1 :
+            _pixelFormat == GL_LUMINANCE_ALPHA ? 2 :
+            _pixelFormat == GL_RGB ? 3 :
+            _pixelFormat == GL_RGBA ? 4 : 4;
+
+        int size = _s*_t*_r*num_components;
+        _data = (unsigned char*) malloc(size);
+        memcpy(_data,image._data,size);
+    }
+}
 
 Image::~Image()
 {

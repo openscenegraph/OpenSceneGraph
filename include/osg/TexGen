@@ -16,7 +16,16 @@ class SG_EXPORT TexGen : public StateAttribute
 {
     public :
     
-        TexGen( void );
+        TexGen();
+
+        /** Copy constructor using Cloner to manage deep vs shallow copy.*/
+        TexGen(const TexGen& texgen,const Cloner& cloner=ShallowCopy()):
+            StateAttribute(texgen,cloner),
+            _mode(texgen._mode),
+            _plane_s(texgen._plane_s),
+            _plane_t(texgen._plane_t),
+            _plane_r(texgen._plane_r),
+            _plane_q(texgen._plane_q) {}
 
         META_StateAttribute(TexGen, TEXGEN);
         

@@ -18,6 +18,13 @@ class SG_EXPORT Point : public StateAttribute
 
         Point();
 
+        /** Copy constructor using Cloner to manage deep vs shallow copy.*/
+        Point(const Point& point,const Cloner& cloner=ShallowCopy()):
+            StateAttribute(point,cloner),
+            _size(point._size),
+            _fadeThresholdSize(point._fadeThresholdSize),
+            _distanceAttenuation(point._distanceAttenuation) {}
+
         META_StateAttribute(Point, POINT);
         
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/

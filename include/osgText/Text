@@ -35,105 +35,108 @@ namespace osgText {
 
 class OSGTEXT_EXPORT Text : public osg::Drawable
 {
-public:
+    public:
 
-    enum AlignmentType
-    {    // from left to right, top to bottom
-        LEFT_TOP,
-        LEFT_CENTER,
-        LEFT_BOTTOM,
+        enum AlignmentType
+        {    // from left to right, top to bottom
+            LEFT_TOP,
+            LEFT_CENTER,
+            LEFT_BOTTOM,
 
-        CENTER_TOP,
-        CENTER_CENTER,
-        CENTER_BOTTOM,
+            CENTER_TOP,
+            CENTER_CENTER,
+            CENTER_BOTTOM,
 
-        RIGHT_TOP,
-        RIGHT_CENTER,
-        RIGHT_BOTTOM,
-    };
+            RIGHT_TOP,
+            RIGHT_CENTER,
+            RIGHT_BOTTOM,
+        };
 
-    enum BoundingBoxType
-    {
-        GEOMETRY,
-        GLYPH,
-    };
+        enum BoundingBoxType
+        {
+            GEOMETRY,
+            GLYPH,
+        };
 
-    enum DrawModeType
-    {    // from left to right, top to bottom
-        TEXT            =    1<<0,
-        BOUNDINGBOX        =    1<<1,
-        ALIGNEMENT        =    1<<2,
-        DEFAULT            =    TEXT,
-    };
+        enum DrawModeType
+        {    // from left to right, top to bottom
+            TEXT            =    1<<0,
+            BOUNDINGBOX        =    1<<1,
+            ALIGNEMENT        =    1<<2,
+            DEFAULT            =    TEXT,
+        };
 
-    Text();
-    Text(Font* font);
+        Text();
+        Text(const Text& text,const osg::Cloner& cloner=osg::ShallowCopy());
+        Text(Font* font);
 
-    META_Object(Text);
+        virtual osg::Object* cloneType() const { return new Text(); }
+        virtual osg::Object* clone(const osg::Cloner& cloner) const { return new Text(*this,cloner); }
+        virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const Text*>(obj)!=NULL; }
+        virtual const char* className() const { return "Text"; }
 
-    void setPosition(const osg::Vec2& pos);
-    void setPosition(const osg::Vec3& pos);
-    const osg::Vec3& getPosition() const { return _pos; }
 
-    void setDrawMode(int mode) { _drawMode=mode; }
-    int getDrawMode() const { return _drawMode; }
+        void setPosition(const osg::Vec2& pos);
+        void setPosition(const osg::Vec3& pos);
+        const osg::Vec3& getPosition() const { return _pos; }
 
-    void setBoundingBox(int mode);
-    int getBoundingBox() const { return _boundingBoxType; }
+        void setDrawMode(int mode) { _drawMode=mode; }
+        int getDrawMode() const { return _drawMode; }
 
-    void setAlignment(int alignment);
-    int getAlignment() const { return _alignment; }
+        void setBoundingBox(int mode);
+        int getBoundingBox() const { return _boundingBoxType; }
 
-    void setFont(Font* font);
-    Font* getFont() { return _font.get(); }
-    const Font* getFont() const { return _font.get(); }
+        void setAlignment(int alignment);
+        int getAlignment() const { return _alignment; }
 
-    void setText(const char* text)    { _text=text; }
-    void setText(const std::string& text) { _text=text; }
-    const std::string& getText() const { return _text; }
+        void setFont(Font* font);
+        Font* getFont() { return _font.get(); }
+        const Font* getFont() const { return _font.get(); }
 
-    virtual void drawImmediateMode(osg::State& state);
-    virtual void drawBoundingBox(void);
-    virtual void drawAlignment(void);
-    
-    const osg::Vec3& getAlignmentPos() const { return _alignmentPos; };
+        void setText(const char* text)    { _text=text; }
+        void setText(const std::string& text) { _text=text; }
+        const std::string& getText() const { return _text; }
 
-    
-protected:
+        virtual void drawImmediateMode(osg::State& state);
+        virtual void drawBoundingBox(void);
+        virtual void drawAlignment(void);
 
-    enum FontType
-    {
-        UNDEF,
-        BITMAP,
-        PIXMAP,
-        OUTLINE,
-        POLYGON,
-        TEXTURE,
-    };
-   
-    virtual    ~Text();
+        const osg::Vec3& getAlignmentPos() const { return _alignmentPos; };
 
-    virtual void        setDefaults(void);
-    virtual const bool  computeBound(void) const;
-    virtual void        calcBounds(osg::Vec3* min,osg::Vec3* max) const;
-    void                initAlignment(osg::Vec3* min,osg::Vec3* max);
-    bool                initAlignment(void);
 
-    osg::ref_ptr<Font>  _font;
+    protected:
 
-    bool                _init;
-    bool                _initAlignment;
-    std::string         _text;
-    int                 _fontType;
-    int                 _alignment;
-    int                 _drawMode;
-    int                 _boundingBoxType;
-    
-    osg::Vec3        _pos;
-    osg::Vec3        _alignmentPos;
+        enum FontType
+        {
+            UNDEF,
+            BITMAP,
+            PIXMAP,
+            OUTLINE,
+            POLYGON,
+            TEXTURE,
+        };
+
+        virtual    ~Text();
+
+        virtual void        setDefaults(void);
+        virtual const bool  computeBound(void) const;
+        virtual void        calcBounds(osg::Vec3* min,osg::Vec3* max) const;
+        void                initAlignment(osg::Vec3* min,osg::Vec3* max);
+        bool                initAlignment(void);
+
+        osg::ref_ptr<Font>  _font;
+
+        bool                _init;
+        bool                _initAlignment;
+        std::string         _text;
+        int                 _fontType;
+        int                 _alignment;
+        int                 _drawMode;
+        int                 _boundingBoxType;
+
+        osg::Vec3        _pos;
+        osg::Vec3        _alignmentPos;
 };
-// Text
-///////////////////////////////////////////////////////////////////////////////
 
 };
 

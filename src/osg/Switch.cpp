@@ -13,6 +13,11 @@ Switch::Switch()
     _value = ALL_CHILDREN_OFF;
 }
 
+Switch::Switch(const Switch& sw,const Cloner& cloner):
+    Group(sw,cloner),
+    _value(sw._value)
+{
+}
 
 void Switch::traverse(NodeVisitor& nv)
 {

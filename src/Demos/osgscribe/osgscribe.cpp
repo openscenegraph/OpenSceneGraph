@@ -124,9 +124,7 @@ int main( int argc, char **argv )
     
     // run optimization over the scene graph
     osgUtil::Optimizer optimzer;
-// turn off temporarily since the above single child decorator group gets 
-// removed as the optimizer assumes its redundent.  Will fix next. Robert.
-//    optimzer.optimize(rootnode);
+    optimzer.optimize(rootnode);
      
     // add a viewport to the viewer and attach the scene graph.
     viewer.addViewport( rootnode );

@@ -30,14 +30,27 @@ using namespace osgText;
 
 ///////////////////////////////////////////////////////////////////////////////
 // Text
-Text::
-Text()
+Text::Text()
 {
     setDefaults();
 }
 
-Text::
-Text(Font* font)
+Text::Text(const Text& text,const osg::Cloner& cloner):
+        Drawable(text,cloner),
+        _font(dynamic_cast<Font*>(cloner(text._font.get()))),
+        _init(text._init),
+        _initAlignment(text._initAlignment),
+        _text(text._text),
+        _fontType(text._fontType),
+        _alignment(text._alignment),
+        _drawMode(text._drawMode),
+        _boundingBoxType(text._boundingBoxType),
+        _pos(text._pos),
+        _alignmentPos(text._alignmentPos)
+{
+}
+
+Text::Text(Font* font)
 {
     setDefaults();
 
@@ -60,8 +73,8 @@ Text(Font* font)
     }
 }
 
-Text::
-~Text()
+
+Text::~Text()
 {
 }
 

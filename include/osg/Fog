@@ -20,6 +20,15 @@ class SG_EXPORT Fog : public StateAttribute
 
         Fog();
 
+        /** Copy constructor using Cloner to manage deep vs shallow copy.*/
+        Fog(const Fog& fog,const Cloner& cloner=ShallowCopy()):
+            StateAttribute(fog,cloner),
+            _mode(fog._mode),
+            _density(fog._density),
+            _start(fog._start),
+            _end(fog._end),
+            _color(fog._color) {}
+
         META_StateAttribute(Fog,FOG);
         
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/

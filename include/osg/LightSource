@@ -18,6 +18,10 @@ class SG_EXPORT LightSource : public Node
 
         LightSource();
 
+        LightSource(const LightSource& es, const Cloner& cloner=ShallowCopy()):
+            Node(es,cloner),
+            _light(dynamic_cast<osg::Light*>(cloner(es._light.get()))) {}
+
         META_Node(LightSource);
 
         /** Set the attached light.*/

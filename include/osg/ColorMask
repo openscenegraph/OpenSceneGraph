@@ -19,6 +19,14 @@ class SG_EXPORT ColorMask : public StateAttribute
     
     
         ColorMask();
+
+        /** Copy constructor using Cloner to manage deep vs shallow copy.*/
+        ColorMask(const ColorMask& cm,const Cloner& cloner=ShallowCopy()):
+            StateAttribute(cm,cloner),
+            _red(cm._red),
+            _green(cm._green),
+            _blue(cm._blue),
+            _alpha(cm._alpha) {}
         
         META_StateAttribute(ColorMask, COLORMASK);
         

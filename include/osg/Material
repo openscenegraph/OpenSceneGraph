@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2004 Robert Osfield 
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -21,13 +21,11 @@ namespace osg {
 /** Material - encapsulates OpenGL glMaterial state.*/
 class SG_EXPORT Material : public StateAttribute
 {
-
     public :
-
 
         Material();
         
-        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         Material(const Material& mat,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             StateAttribute(mat,copyop),
             _colorMode(mat._colorMode),
@@ -49,11 +47,11 @@ class SG_EXPORT Material : public StateAttribute
 
         META_StateAttribute(osg, Material, MATERIAL);
         
-        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
+        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
         virtual int compare(const StateAttribute& sa) const
         {
             // check the types are equal and then create the rhs variable
-            // used by the COMPARE_StateAttribute_Paramter macro's below.
+            // used by the COMPARE_StateAttribute_Parameter macros below.
             COMPARE_StateAttribute_Types(Material,sa)
 
             // compare each parameter in turn against the rhs.
@@ -74,7 +72,7 @@ class SG_EXPORT Material : public StateAttribute
             COMPARE_StateAttribute_Parameter(_shininessFront)
             COMPARE_StateAttribute_Parameter(_shininessBack)
 
-            return 0; // passed all the above comparison macro's, must be equal.
+            return 0; // passed all the above comparison macros, must be equal.
         }
 
         Material& operator = (const Material& rhs);
@@ -114,34 +112,53 @@ class SG_EXPORT Material : public StateAttribute
         inline bool getDiffuseFrontAndBack() const { return _diffuseFrontAndBack; }
 
         /** Set specular value of specified face(s) of the material, 
-          * valid specular[0..3] range is 0.0 to 1.0.*/
+          * valid specular[0..3] range is 0.0 to 1.0.
+        */
         void setSpecular( Face face, const Vec4& specular );
-        /** Get the specular value for specified face.*/
+        
+        /** Get the specular value for specified face. */
         const Vec4& getSpecular(Face face) const;
-        /** Get the whether specular values are equal for front and back faces.*/
+        
+        /** Return whether specular values are equal for front and back faces
+          * or not.
+        */
         inline bool getSpecularFrontAndBack() const { return _specularFrontAndBack; }
 
         /** Set emission value of specified face(s) of the material, 
-          * valid emmison[0..3] range is 0.0 to 1.0.*/
+          * valid emission[0..3] range is 0.0 to 1.0.
+        */
         void setEmission( Face face, const Vec4& emission );
-        /** Get the emmsion value for specified face.*/
+        
+        /** Get the emission value for specified face. */
         const Vec4& getEmission(Face face) const;
-        /** Get the whether emission values are equal for front and back faces.*/
+        
+        /** Return whether emission values are equal for front and back faces
+          * or not.
+        */
         inline bool getEmissionFrontAndBack() const { return _emissionFrontAndBack; }
 
-        /** Set shininess of specified face(s) of the material, valid shininess range is 0.0 to 128.0.*/
+        /** Set shininess of specified face(s) of the material.
+          * valid shininess range is 0.0 to 128.0.
+        */
         void setShininess(Face face, float shininess );
-        /** Get the shininess value for specified face.*/
+        
+        /** Get the shininess value for specified face. */
         float getShininess(Face face) const;
-        /** Get the whether shininess values are equal for front and back faces.*/
+        
+        /** Return whether shininess values are equal for front and back faces
+          * or not.
+        */
         inline bool getShininessFrontAndBack() const { return _shininessFrontAndBack; }
         
-        /** Set the alpha value of ambient,diffuse,specular and emission colors, 
-          * of specified face, to 1-transparency. Valid transparency range is 0.0 to 1.0.*/
+        /** Set the alpha value of ambient, diffuse, specular and emission
+          * colors of specified face, to 1-transparency.
+          * Valid transparency range is 0.0 to 1.0.
+        */
         void setTransparency(Face face,float trans);
 
-        /** Set the alpha value of ambient,diffuse,specular and emission colors.
-          * Valid transparency range is 0.0 to 1.0.*/
+        /** Set the alpha value of ambient, diffuse, specular and emission
+          * colors. Valid transparency range is 0.0 to 1.0.
+        */
         void setAlpha(Face face,float alpha);
 
     protected :
@@ -166,7 +183,7 @@ class SG_EXPORT Material : public StateAttribute
         Vec4 _emissionFront;                         // r, g, b, w
         Vec4 _emissionBack;                          // r, g, b, w
 
-        bool _shininessFrontAndBack;
+        bool   _shininessFrontAndBack;
         float  _shininessFront;                      // values 0 - 128.0
         float  _shininessBack;                       // values 0 - 128.0
 

@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2004 Robert Osfield 
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -28,11 +28,10 @@
 
 namespace osg {
 
-class Matrixd;
+class Matrixf;
 
 class SG_EXPORT Matrixf
 {
-
     public:
     
         typedef float value_type;
@@ -91,10 +90,10 @@ class SG_EXPORT Matrixf
             for(int i=0;i<16;++i) local_ptr[i]=(value_type)ptr[i];
         }
 
-        void set( value_type a00, value_type a01, value_type a02, value_type a03,
-                  value_type a10, value_type a11, value_type a12, value_type a13,
-                  value_type a20, value_type a21, value_type a22, value_type a23,
-                  value_type a30, value_type a31, value_type a32, value_type a33);
+        void set(value_type a00, value_type a01, value_type a02,value_type a03,
+                 value_type a10, value_type a11, value_type a12,value_type a13,
+                 value_type a20, value_type a21, value_type a22,value_type a23,
+                 value_type a30, value_type a31, value_type a32,value_type a33);
                   
         void set(const Quat& q);
         
@@ -128,57 +127,82 @@ class SG_EXPORT Matrixf
 
         
         
-        /** Set to a orthographic projection. See glOrtho for further details.*/
-        void makeOrtho(double left, double right,
+        /** Set to an orthographic projection.
+         * See glOrtho for further details.
+        */
+        void makeOrtho(double left,   double right,
                        double bottom, double top,
-                       double zNear, double zFar);
+                       double zNear,  double zFar);
 
-        /** Get the othorgraphic settings of the orthographic projection matrix. 
-          * Note, if matrix is not an orthographic matrix then invalid values will be returned.*/
-        bool getOrtho(double& left, double& right,
+        /** Get the othogrraphic settings of the orthographic projection matrix.
+          * Note, if matrix is not an orthographic matrix then invalid values 
+          * will be returned.
+        */
+        bool getOrtho(double& left,   double& right,
                       double& bottom, double& top,
-                      double& zNear, double& zFar) const;
+                      double& zNear,  double& zFar) const;
 
-        /** Set to a 2D orthographic projection. See glOrtho2D for further details.*/
-        inline void makeOrtho2D(double left, double right,
+        /** Set to a 2D orthographic projection.
+          * See glOrtho2D for further details.
+        */
+        inline void makeOrtho2D(double left,   double right,
                                 double bottom, double top)
         {
             makeOrtho(left,right,bottom,top,-1.0,1.0);
         }
 
 
-        /** Set to a perspective projection. See glFrustum for further details.*/
-        void makeFrustum(double left, double right,
+        /** Set to a perspective projection.
+          * See glFrustum for further details.
+        */
+        void makeFrustum(double left,   double right,
                          double bottom, double top,
-                         double zNear, double zFar);
+                         double zNear,  double zFar);
 
-        /** Get the frustum setting of a perspective projection matrix.
-          * Note, if matrix is not an perspective matrix then invalid values will be returned.*/
-        bool getFrustum(double& left, double& right,
+        /** Get the frustum settings of a perspective projection matrix.
+          * Note, if matrix is not a perspective matrix then invalid values
+          * will be returned.
+        */
+        bool getFrustum(double& left,   double& right,
                         double& bottom, double& top,
-                        double& zNear, double& zFar) const;
+                        double& zNear,  double& zFar) const;
 
-        /** Set to a symmetrical perspective projection, See gluPerspective for further details.
-          * Aspect ratio is defined as width/height.*/
-        void makePerspective(double fovy,double aspectRatio,
+        /** Set to a symmetrical perspective projection.
+          * See gluPerspective for further details.
+          * Aspect ratio is defined as width/height.
+        */
+        void makePerspective(double fovy,  double aspectRatio,
                              double zNear, double zFar);
 
-        /** Get the frustum setting of a symetric perspective projection matrix.
-          * Returns false if matrix is not a perspective matrix, where parameter values are undefined. 
-          * Note, if matrix is not a symetric perspective matrix then the shear will be lost.
-          * Asymetric metrices occur when stereo, power walls, caves and reality center display are used.
-          * In these configuration one should use the AsFrustum method instead.*/
-        bool getPerspective(double& fovy,double& aspectRatio,
+        /** Get the frustum settings of a symmetric perspective projection
+          * matrix.
+          * Return false if matrix is not a perspective matrix,
+          * where parameter values are undefined. 
+          * Note, if matrix is not a symmetric perspective matrix then the
+          * shear will be lost.
+          * Asymmetric matrices occur when stereo, power walls, caves and
+          * reality center display are used.
+          * In these configuration one should use the AsFrustum method instead.
+        */
+        bool getPerspective(double& fovy,  double& aspectRatio,
                             double& zNear, double& zFar) const;
 
-        /** Set to the position and orientation modelview matrix, using the same convention as gluLookAt. */
+        /** Set the position and orientation to be a view matrix,
+          * using the same convention as gluLookAt.
+        */
         void makeLookAt(const Vec3d& eye,const Vec3d& center,const Vec3d& up);
 
-        /** Get to the position and orientation of a modelview matrix, using the same convention as gluLookAt. */
-        void getLookAt(Vec3f& eye,Vec3f& center,Vec3f& up,value_type lookDistance=1.0f) const;
+        /** Get to the position and orientation of a modelview matrix,
+          * using the same convention as gluLookAt.
+        */
+        void getLookAt(Vec3f& eye,Vec3f& center,Vec3f& up,
+                       value_type lookDistance=1.0f) const;
 
-        /** Get to the position and orientation of a modelview matrix, using the same convention as gluLookAt. */
-        void getLookAt(Vec3d& eye,Vec3d& center,Vec3d& up,value_type lookDistance=1.0f) const;
+        /** Get to the position and orientation of a modelview matrix,
+          * using the same convention as gluLookAt.
+        */
+        void getLookAt(Vec3d& eye,Vec3d& center,Vec3d& up,
+                       value_type lookDistance=1.0f) const;
 
         /** invert the matrix rhs. */
         bool invert( const Matrixf& rhs);
@@ -211,32 +235,46 @@ class SG_EXPORT Matrixf
         inline static Matrixf rotate( const Quat& quat);
         inline static Matrixf inverse( const Matrixf& matrix);
         
-        /** Create a orthographic projection. See glOrtho for further details.*/
-        inline static Matrixf ortho(double left, double right,
-                                   double bottom, double top,
-                                   double zNear, double zFar);
+        /** Create an orthographic projection matrix.
+          * See glOrtho for further details.
+        */
+        inline static Matrixf ortho(double left,   double right,
+                                    double bottom, double top,
+                                    double zNear,  double zFar);
 
-        /** Create a 2D orthographic projection. See glOrtho for further details.*/
-        inline static Matrixf ortho2D(double left, double right,
-                                     double bottom, double top);
+        /** Create a 2D orthographic projection.
+          * See glOrtho for further details.
+        */
+        inline static Matrixf ortho2D(double left,   double right,
+                                      double bottom, double top);
 
-        /** Create a perspective projection. See glFrustum for further details.*/
-        inline static Matrixf frustum(double left, double right,
-                                     double bottom, double top,
-                                     double zNear, double zFar);
+        /** Create a perspective projection.
+          * See glFrustum for further details.
+        */
+        inline static Matrixf frustum(double left,   double right,
+                                      double bottom, double top,
+                                      double zNear,  double zFar);
 
-        /** Create a symmetrical perspective projection, See gluPerspective for further details.
-          * Aspect ratio is defined as width/height.*/
-        inline static Matrixf perspective(double fovy,double aspectRatio,
-                                         double zNear, double zFar);
+        /** Create a symmetrical perspective projection.
+          * See gluPerspective for further details.
+          * Aspect ratio is defined as width/height.
+        */
+        inline static Matrixf perspective(double fovy,  double aspectRatio,
+                                          double zNear, double zFar);
 
-        /** Create the position and orientation as per a camera, using the same convention as gluLookAt. */
-        inline static Matrixf lookAt(const Vec3f& eye,const Vec3f& center,const Vec3f& up);
+        /** Create the position and orientation as per a camera,
+          * using the same convention as gluLookAt.
+        */
+        inline static Matrixf lookAt(const Vec3f& eye,
+                                     const Vec3f& center,
+                                     const Vec3f& up);
 
-        /** Create the position and orientation as per a camera, using the same convention as gluLookAt. */
-        inline static Matrixf lookAt(const Vec3d& eye,const Vec3d& center,const Vec3d& up);
-
-
+        /** Create the position and orientation as per a camera,
+          * using the same convention as gluLookAt.
+        */
+        inline static Matrixf lookAt(const Vec3d& eye,
+                                     const Vec3d& center,
+                                     const Vec3d& up);
 
         inline Vec3f preMult( const Vec3f& v ) const;
         inline Vec3d preMult( const Vec3d& v ) const;
@@ -259,17 +297,17 @@ class SG_EXPORT Matrixf
         
         inline Vec3d getScale() const { return Vec3d(_mat[0][0],_mat[1][1],_mat[2][2]); }
         
-    	/** apply apply an 3x3 transform of v*M[0..2,0..2]  */
-    	inline static Vec3f transform3x3(const Vec3f& v,const Matrixf& m);
+        /** apply a 3x3 transform of v*M[0..2,0..2]. */
+        inline static Vec3f transform3x3(const Vec3f& v,const Matrixf& m);
 
-    	/** apply apply an 3x3 transform of v*M[0..2,0..2]  */
-    	inline static Vec3d transform3x3(const Vec3d& v,const Matrixf& m);
+        /** apply a 3x3 transform of v*M[0..2,0..2]. */
+        inline static Vec3d transform3x3(const Vec3d& v,const Matrixf& m);
 
-    	/** apply apply an 3x3 transform of M[0..2,0..2]*v  */
-    	inline static Vec3f transform3x3(const Matrixf& m,const Vec3f& v);
+        /** apply a 3x3 transform of M[0..2,0..2]*v. */
+        inline static Vec3f transform3x3(const Matrixf& m,const Vec3f& v);
 
-    	/** apply apply an 3x3 transform of M[0..2,0..2]*v  */
-    	inline static Vec3d transform3x3(const Matrixf& m,const Vec3d& v);
+        /** apply a 3x3 transform of M[0..2,0..2]*v. */
+        inline static Vec3d transform3x3(const Matrixf& m,const Vec3d& v);
 
         // basic Matrixf multiplication, our workhorse methods.
         void mult( const Matrixf&, const Matrixf& );

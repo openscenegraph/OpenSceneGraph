@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2004 Robert Osfield 
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -98,7 +98,7 @@
 
 namespace osg {
 
-// define the stand trig values
+// define the standard trig values
 #ifdef PI
 #undef PI
 #undef PI_2
@@ -108,29 +108,44 @@ const double PI   = 3.14159265358979323846;
 const double PI_2 = 1.57079632679489661923;
 const double PI_4 = 0.78539816339744830962;
 
-/** return the minimum of two values, equivilant to std::min.
-  * std::min not used because of STL implementation under IRIX contains no std::min.*/
+/** return the minimum of two values, equivalent to std::min.
+  * std::min not used because of STL implementation under IRIX not
+  * containing std::min.
+*/
 template<typename T>
 inline T absolute(T v) { return v<(T)0?-v:v; }
 
-/** return true if float lhs and rhs are equivalent, meaning that the difference between then is less than an epsilon value which default to 1e-6.*/
-inline float equivalent(float lhs,float rhs,float epsilon=1e-6) { float delta = rhs-lhs; return delta<0.0f?delta>=-epsilon:delta<=epsilon; }
+/** return true if float lhs and rhs are equivalent,
+  * meaning that the difference between them is less than an epsilon value
+  * which defaults to 1e-6.
+*/
+inline float equivalent(float lhs,float rhs,float epsilon=1e-6)
+  { float delta = rhs-lhs; return delta<0.0f?delta>=-epsilon:delta<=epsilon; }
 
-/** return true if double lhs and rhs are equivalent, meaning that the difference between then is less than an epsilon value which default to 1e-6.*/
-inline double equivalent(double lhs,double rhs,double epsilon=1e-6) { double delta = rhs-lhs; return delta<0.0?delta>=-epsilon:delta<=epsilon; }
+/** return true if double lhs and rhs are equivalent,
+  * meaning that the difference between them is less than an epsilon value
+  * which defaults to 1e-6.
+*/
+inline double equivalent(double lhs,double rhs,double epsilon=1e-6)
+  { double delta = rhs-lhs; return delta<0.0?delta>=-epsilon:delta<=epsilon; }
 
-/** return the minimum of two values, equivilant to std::min.
-  * std::min not used because of STL implementation under IRIX contains no std::min.*/
+/** return the minimum of two values, equivilent to std::min.
+  * std::min not used because of STL implementation under IRIX not containing
+  * std::min.
+*/
 template<typename T>
 inline T minimum(T lhs,T rhs) { return lhs<rhs?lhs:rhs; }
 
-/** return the maximum of two values, equivilant to std::max.
-  * std::max not used because of STL implementation under IRIX contains no std::max.*/
+/** return the maximum of two values, equivilent to std::max.
+  * std::max not used because of STL implementation under IRIX not containing
+  * std::max.
+*/
 template<typename T>
 inline T maximum(T lhs,T rhs) { return lhs>rhs?lhs:rhs; }
 
 template<typename T>
-inline T clampTo(T v,T minimum,T maximum) { return v<minimum?minimum:v>maximum?maximum:v; }
+inline T clampTo(T v,T minimum,T maximum)
+  { return v<minimum?minimum:v>maximum?maximum:v; }
 
 template<typename T>
 inline T clampAbove(T v,T minimum) { return v<minimum?minimum:v; }
@@ -139,7 +154,8 @@ template<typename T>
 inline T clampBelow(T v,T maximum) { return v>maximum?maximum:v; }
 
 template<typename T>
-inline T clampBetween(T v,T minimum, T maximum) { return clampBelow(clampAbove(v,minimum),maximum); }
+inline T clampBetween(T v,T minimum, T maximum)
+  { return clampBelow(clampAbove(v,minimum),maximum); }
 
 template<typename T>
 inline T sign(T v) { return v<(T)0?(T)-1:(T)1; }
@@ -176,14 +192,14 @@ inline double RadiansToDegrees(double angle) { return angle*180.0/PI; }
 #endif
 
 
-/** compute the volume of tetrahedron */
+/** compute the volume of a tetrahedron. */
 template<typename T>
 inline float computeVolume(const T& a,const T& b,const T& c,const T& d)
 {
     return fabsf(((b-c)^(a-b))*(d-b));
 }
 
-/** compute the volume of prism */
+/** compute the volume of a prism. */
 template<typename T>
 inline float computeVolume(const T& f1,const T& f2,const T& f3,
                            const T& b1,const T& b2,const T& b3)

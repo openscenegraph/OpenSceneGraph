@@ -1,8 +1,5 @@
 #include <osg/DOFTransform>
 
-#include <osgUtil/CullVisitor>
-#include <osgUtil/AppVisitor>
-
 using namespace osg;
 
 struct DOFCullCallback : public Transform::ComputeTransformCallback
@@ -10,36 +7,32 @@ struct DOFCullCallback : public Transform::ComputeTransformCallback
     /**/
     virtual const bool computeLocalToWorldMatrix(Matrix& matrix, const Transform* trans, NodeVisitor* nv) const
     {
-        osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(nv);
-        if(cv)
+        const DOFTransform* dof = dynamic_cast<const DOFTransform*>(trans);
+        if(dof)
         {
-            const DOFTransform* dof = dynamic_cast<const DOFTransform*>(trans);
-            if(dof)
-            {
-                //here we are:
-                //put the PUT matrix first:
-                Matrix l2w(dof->getPutMatrix());
+            //here we are:
+            //put the PUT matrix first:
+            Matrix l2w(dof->getPutMatrix());
 
-                //now the current matrix:
-                Matrix current; 
-                current.makeTranslate(dof->getCurrentTranslate());
+            //now the current matrix:
+            Matrix current; 
+            current.makeTranslate(dof->getCurrentTranslate());
 
-                //now create the local rotation:
-                current.preMult(Matrix::rotate(dof->getCurrentHPR()[1], 1.0, 0.0, 0.0));//pitch
-                current.preMult(Matrix::rotate(dof->getCurrentHPR()[2], 0.0, 1.0, 0.0));//roll
-                current.preMult(Matrix::rotate(dof->getCurrentHPR()[0], 0.0, 0.0, 1.0));//heading
+            //now create the local rotation:
+            current.preMult(Matrix::rotate(dof->getCurrentHPR()[1], 1.0, 0.0, 0.0));//pitch
+            current.preMult(Matrix::rotate(dof->getCurrentHPR()[2], 0.0, 1.0, 0.0));//roll
+            current.preMult(Matrix::rotate(dof->getCurrentHPR()[0], 0.0, 0.0, 1.0));//heading
 
-                //and scale:
-                current.preMult(Matrix::scale(dof->getCurrentScale()));
+            //and scale:
+            current.preMult(Matrix::scale(dof->getCurrentScale()));
 
-                l2w.postMult(current);
+            l2w.postMult(current);
 
-                //and impose inverse put:
-                l2w.postMult(dof->getInversePutMatrix());
+            //and impose inverse put:
+            l2w.postMult(dof->getInversePutMatrix());
 
-                //finally:
-                matrix.preMult(l2w);
-            }
+            //finally:
+            matrix.preMult(l2w);
         }
 
         return true;
@@ -48,38 +41,34 @@ struct DOFCullCallback : public Transform::ComputeTransformCallback
     /**/
     virtual const bool computeWorldToLocalMatrix(Matrix& matrix, const Transform* trans, NodeVisitor* nv) const
     {
-        osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(nv);
-        if(cv)
+        const DOFTransform* dof = dynamic_cast<const DOFTransform*>(trans);
+        if(dof)
         {
-            const DOFTransform* dof = dynamic_cast<const DOFTransform*>(trans);
-            if(dof)
-            {
-                //here we are:
-                //put the PUT matrix first:
-                Matrix w2l(dof->getInversePutMatrix());
+            //here we are:
+            //put the PUT matrix first:
+            Matrix w2l(dof->getInversePutMatrix());
 
-                //now the current matrix:
-                Matrix current; 
-                current.makeTranslate(-dof->getCurrentTranslate());
+            //now the current matrix:
+            Matrix current; 
+            current.makeTranslate(-dof->getCurrentTranslate());
 
-                //now create the local rotation:
-                
-                
-                current.postMult(Matrix::rotate(-dof->getCurrentHPR()[0], 0.0, 0.0, 1.0));//heading
-                current.postMult(Matrix::rotate(-dof->getCurrentHPR()[2], 0.0, 1.0, 0.0));//roll
-                current.postMult(Matrix::rotate(-dof->getCurrentHPR()[1], 1.0, 0.0, 0.0));//pitch
+            //now create the local rotation:
 
-                //and scale:
-                current.postMult(Matrix::scale(1./dof->getCurrentScale()[0], 1./dof->getCurrentScale()[1], 1./dof->getCurrentScale()[2]));
 
-                w2l.postMult(current);
+            current.postMult(Matrix::rotate(-dof->getCurrentHPR()[0], 0.0, 0.0, 1.0));//heading
+            current.postMult(Matrix::rotate(-dof->getCurrentHPR()[2], 0.0, 1.0, 0.0));//roll
+            current.postMult(Matrix::rotate(-dof->getCurrentHPR()[1], 1.0, 0.0, 0.0));//pitch
 
-                //and impose inverse put:
-                w2l.postMult(dof->getPutMatrix());
+            //and scale:
+            current.postMult(Matrix::scale(1./dof->getCurrentScale()[0], 1./dof->getCurrentScale()[1], 1./dof->getCurrentScale()[2]));
 
-                //finally:
-                matrix.postMult(w2l);
-            }
+            w2l.postMult(current);
+
+            //and impose inverse put:
+            w2l.postMult(dof->getPutMatrix());
+
+            //finally:
+            matrix.postMult(w2l);
         }
 
         return true;
@@ -91,14 +80,19 @@ class DOFAnimationAppCallback : public osg::NodeCallback
     /** Callback method call by the NodeVisitor when visiting a node.*/
     virtual void operator()(Node* node, NodeVisitor* nv)
     {
-        //this is aspp visitor, see if we have DOFTransform:
-        DOFTransform* dof = dynamic_cast<DOFTransform*>(node);
-        if(dof)
+        if (nv && nv->getVisitorType()==NodeVisitor::APP_VISITOR)
         {
-            //see if it is ina animation mode:
-            dof->animate();
-        }
 
+            //this is aspp visitor, see if we have DOFTransform:
+            DOFTransform* dof = dynamic_cast<DOFTransform*>(node);
+            if(dof)
+            {
+                //see if it is ina animation mode:
+                dof->animate();
+            }
+
+        }
+        
         // note, callback is repsonsible for scenegraph traversal so
         // should always include call the traverse(node,nv) to ensure 
         // that the rest of cullbacks and the scene graph are traversed.
@@ -379,4 +373,6 @@ void DOFTransform::animate()
         new_value[2] -= _incrementScale[2];
 
     setCurrentScale(new_value);
+    
+    dirtyBound();
 }

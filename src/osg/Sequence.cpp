@@ -2,8 +2,6 @@
 
 #include <osg/Sequence>
 
-#include <osgUtil/AppVisitor>
-
 using namespace osg;
 
 /**
@@ -100,8 +98,8 @@ void Sequence::setMode(SequenceMode mode)
 
 void Sequence::traverse(NodeVisitor& nv)
 {
-    osgUtil::AppVisitor* app = dynamic_cast<osgUtil::AppVisitor*>(&nv);
-    if (app && _mode == START && _nrepsremain) {
+    if (nv.getVisitorType()==NodeVisitor::APP_VISITOR && _mode == START && _nrepsremain)
+    {
         double t = nv.getFrameStamp()->getReferenceTime();
         if (_last == -1.0)
             _last = t;

@@ -3,7 +3,7 @@
 using namespace osg;
 using namespace osgUtil;
 
-AppVisitor::AppVisitor():NodeVisitor(TRAVERSE_ACTIVE_CHILDREN)
+AppVisitor::AppVisitor():NodeVisitor(APP_VISITOR,TRAVERSE_ACTIVE_CHILDREN)
 {
 }
 

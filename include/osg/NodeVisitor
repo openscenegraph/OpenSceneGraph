@@ -43,15 +43,27 @@ class SG_EXPORT NodeVisitor : public Referenced
 {
     public:
 
-        enum TraversalMode {
+        enum TraversalMode
+        {
             TRAVERSE_NONE,
             TRAVERSE_PARENTS,
             TRAVERSE_ALL_CHILDREN,
             TRAVERSE_ACTIVE_CHILDREN,
             TRAVERSE_VISITOR
         };
+        
+        enum VisitorType
+        {
+            NODE_VISITOR = 0,
+            APP_VISITOR,
+            COLLECT_OCCLUDER_VISITOR,
+            CULL_VISITOR
+        };
 
         NodeVisitor(TraversalMode tm=TRAVERSE_NONE);
+        
+        NodeVisitor(VisitorType type,TraversalMode tm=TRAVERSE_NONE);
+        
         virtual ~NodeVisitor();
 
         /** Method to call to reset visitor. Useful for your visitor accumulates
@@ -60,6 +72,14 @@ class SG_EXPORT NodeVisitor : public Referenced
             to each traversal.*/
         virtual void reset() {}
 
+
+        /** Set the VisitorType, used to distingush different visitors during
+          * traversal of the scene, typically used in the Node::traverse() method
+          * to select which behaviour to use for different types of traversal/visitors.*/
+        inline void setVisitorType(VisitorType type) { _visitorType = type; }
+        
+        /** Get the VisitorType.*/
+        inline VisitorType getVisitorType() const { return _visitorType; }
 
         /** Set the traversal number. Typically used to denote the frame count.*/
         inline void setTraversalNumber(const int fn) { _traversalNumber = fn; }
@@ -187,6 +207,7 @@ class SG_EXPORT NodeVisitor : public Referenced
 
     protected:
 
+        VisitorType             _visitorType;
         int                     _traversalNumber;
         
         ref_ptr<FrameStamp>     _frameStamp;

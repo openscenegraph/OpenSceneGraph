@@ -75,7 +75,7 @@ class PrintVisitor : public NodeVisitor
 };
 
 CullVisitor::CullVisitor():
-    NodeVisitor(NodeVisitor::TRAVERSE_ACTIVE_CHILDREN),
+    NodeVisitor(CULL_VISITOR,TRAVERSE_ACTIVE_CHILDREN),
     _currentRenderGraph(NULL),
     _currentRenderBin(NULL),
     _computeNearFar(COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES),

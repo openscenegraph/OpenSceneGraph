@@ -718,7 +718,8 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
         }
         else
         {
-            osg::notify( osg::DEBUG_INFO ) << "Couldn't find the Network Application Support Path" << std::endl;
+	    // had to comment out as it segfauls the OSX app otherwise
+            // osg::notify( osg::DEBUG_INFO ) << "Couldn't find the Network Application Support Path" << std::endl;
         }
     }
     #else

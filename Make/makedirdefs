@@ -35,6 +35,7 @@ PLUGIN_DIRS = \
 	lib3ds\
 	logo\
 	lwo\
+	lws\
 	md2\
 	obj\
 	osgParticle\

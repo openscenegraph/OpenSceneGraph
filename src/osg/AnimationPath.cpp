@@ -197,8 +197,13 @@ void AnimationPathCallback::update(osg::Node& node)
 
 void AnimationPathCallback::reset()
 {
+#if 1
+    _firstTime = DBL_MAX;
+    _pauseTime = DBL_MAX;
+#else
     _firstTime = _latestTime;
     _pauseTime = _latestTime;
+#endif
 }
 
 void AnimationPathCallback::setPause(bool pause)
@@ -209,6 +214,9 @@ void AnimationPathCallback::setPause(bool pause)
     }
     
     _pause = pause;
+
+    if (_firstTime==DBL_MAX) return;
+
     if (_pause)
     {
         _pauseTime = _latestTime;

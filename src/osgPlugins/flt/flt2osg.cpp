@@ -1365,7 +1365,7 @@ void ConvertFromFLT::setLightingAndColorBinding ( const FaceRecord *rec, const S
             case FaceRecord::FACE_COLOR:
                 // Use face color, not illuminated
                 osgStateSet->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
-                dgset->setColorBinding( osg::Geometry::BIND_OVERALL /*BIND_PERPRIM*/ );
+                dgset->setColorBinding( /*osg::Geometry::BIND_OVERALL*/ osg::Geometry::BIND_PER_PRIMITIVE );
                 break;
 
             case FaceRecord::VERTEX_COLOR:
@@ -1377,7 +1377,7 @@ void ConvertFromFLT::setLightingAndColorBinding ( const FaceRecord *rec, const S
             case FaceRecord::FACE_COLOR_LIGHTING:
                 // Use face color and vertex normal
                 osgStateSet->setMode( GL_LIGHTING, osg::StateAttribute::ON );
-                dgset->setColorBinding( osg::Geometry::BIND_OVERALL );
+                dgset->setColorBinding( /*osg::Geometry::BIND_OVERALL*/ osg::Geometry::BIND_PER_PRIMITIVE);
                 dgset->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
                 break;
 

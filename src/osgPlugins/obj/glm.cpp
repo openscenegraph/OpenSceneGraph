@@ -13,11 +13,7 @@
 #include <string.h>
 #include <assert.h>
 #include <osg/Math>
-#ifdef __DARWIN_OSX__
 #include <stdlib.h>
-#else
-#include <malloc.h>
-#endif
 #include "glm.h"
 
 #include <osg/Math>

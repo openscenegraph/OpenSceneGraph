@@ -129,12 +129,12 @@ void TriStripVisitor::stripify(Geometry& geom)
         triangle_stripper::tri_stripper::primitives_vector outPrimitives;
         stripifier.Strip(&outPrimitives);
 
-        for(triangle_stripper::tri_stripper::primitives_vector::iterator itr=outPrimitives.begin();
-            itr!=outPrimitives.end();
-            ++itr)
+        for(triangle_stripper::tri_stripper::primitives_vector::iterator pitr=outPrimitives.begin();
+            pitr!=outPrimitives.end();
+            ++pitr)
         {
-            osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(itr->m_Type);
-            elements->insert(elements->end(),itr->m_Indices.begin(),itr->m_Indices.end());
+            osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(pitr->m_Type);
+            elements->insert(elements->end(),pitr->m_Indices.begin(),pitr->m_Indices.end());
             new_primitives.push_back(elements);
         }
 

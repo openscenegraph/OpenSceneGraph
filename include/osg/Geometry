@@ -203,7 +203,7 @@ class SG_EXPORT Geometry : public Drawable
         typedef std::vector< VertexAttribNormArrayPair > VertexAttribArrayList;
         typedef std::vector< AttributeBinding > VertexAttribBindingList;
 
-        void setVertexAttribArray(unsigned int index,bool normalize,Array* array,AttributeBinding ab=BIND_OFF);
+        void setVertexAttribArray(unsigned int index,GLboolean normalize,Array* array,AttributeBinding ab=BIND_OFF);
         Array *getVertexAttribArray(unsigned int index);
         const Array *getVertexAttribArray(unsigned int index) const;
 

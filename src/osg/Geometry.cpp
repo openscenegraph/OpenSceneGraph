@@ -542,7 +542,7 @@ Geometry::AttributeBinding Geometry::getBinding(AttributeType type) const
 
 #endif
 
-void Geometry::setVertexAttribArray(unsigned int index,bool normalize,Array* array,AttributeBinding ab)
+void Geometry::setVertexAttribArray(unsigned int index,GLboolean normalize,Array* array,AttributeBinding ab)
 {
     if (_vertexAttribList.size()<=index)
     {

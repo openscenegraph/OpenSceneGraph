@@ -76,6 +76,16 @@ class Geometry;
 
 #endif
 
+#ifndef GL_NV_occlusion_query
+
+    #define GL_OCCLUSION_TEST_HP                0x8165
+    #define GL_OCCLUSION_TEST_RESULT_HP         0x8166
+    #define GL_PIXEL_COUNTER_BITS_NV            0x8864
+    #define GL_CURRENT_OCCLUSION_QUERY_ID_NV    0x8865
+    #define GL_PIXEL_COUNT_NV                   0x8866
+    #define GL_PIXEL_COUNT_AVAILABLE_NV         0x8867
+
+#endif
 
 // this is define to alter the way display lists are compiled inside the
 // the draw method, it has been found that the NVidia drivers fail completely
@@ -175,16 +185,16 @@ class SG_EXPORT Drawable : public Object
         }
 
 
-    	/** Set the Shape of the drawable. The shape can be used to
-	  * speed up collision detection or as a guide for produral
-	  * geometry generation - see osg::ProduralGeometry.*/
-    	inline void setShape(Shape* shape) { _shape = shape; }
+        /** Set the Shape of the drawable. The shape can be used to
+      * speed up collision detection or as a guide for produral
+      * geometry generation - see osg::ProduralGeometry.*/
+        inline void setShape(Shape* shape) { _shape = shape; }
 
-    	/** Get the Shape of the Drawable.*/
-    	inline Shape* getShape() { return _shape.get(); }
-	
-    	/** Get the const Shape of the const Drawable.*/
-    	inline const Shape* getShape() const { return _shape.get(); }
+        /** Get the Shape of the Drawable.*/
+        inline Shape* getShape() { return _shape.get(); }
+    
+        /** Get the const Shape of the const Drawable.*/
+        inline const Shape* getShape() const { return _shape.get(); }
 
 
 
@@ -462,8 +472,8 @@ class SG_EXPORT Drawable : public Object
             void setMultiTexSupported(bool flag) { _isMultiTexSupported=flag; }
             bool isMultiTexSupported() const { return _isMultiTexSupported; }
 
-			void setOcclusionQuerySupported(bool flag) { _isOcclusionQuerySupported=flag; }
-			bool isOcclusionQuerySupported() const { return _isOcclusionQuerySupported; }
+            void setOcclusionQuerySupported(bool flag) { _isOcclusionQuerySupported=flag; }
+            bool isOcclusionQuerySupported() const { return _isOcclusionQuerySupported; }
 
             void glSecondaryColor3ubv(const GLubyte* coord) const;
             void glSecondaryColor3fv(const GLfloat* coord) const;
@@ -489,13 +499,13 @@ class SG_EXPORT Drawable : public Object
             void glBufferSubData (GLenum target, GLintptrARB offset, GLsizeiptrARB size, const GLvoid *data) const;
             void glDeleteBuffers (GLsizei n, const GLuint *buffers) const;
 
-	    void glGenOcclusionQueries( GLsizei n, GLuint *ids ) const;
-	    void glDeleteOcclusionQueries( GLsizei n, const GLuint *ids ) const;
-	    GLboolean glIsOcclusionQuery( GLuint id ) const;
-	    void glBeginOcclusionQuery( GLuint id ) const;
-	    void glEndOcclusionQuery() const;
-	    void glGetOcclusionQueryiv( GLuint id, GLenum pname, GLint *params ) const;
-	    void glGetOcclusionQueryuiv( GLuint id, GLenum pname, GLuint *params ) const;
+            void glGenOcclusionQueries( GLsizei n, GLuint *ids ) const;
+            void glDeleteOcclusionQueries( GLsizei n, const GLuint *ids ) const;
+            GLboolean glIsOcclusionQuery( GLuint id ) const;
+            void glBeginOcclusionQuery( GLuint id ) const;
+            void glEndOcclusionQuery() const;
+            void glGetOcclusionQueryiv( GLuint id, GLenum pname, GLint *params ) const;
+            void glGetOcclusionQueryuiv( GLuint id, GLenum pname, GLuint *params ) const;
 
         protected:
 
@@ -518,21 +528,21 @@ class SG_EXPORT Drawable : public Object
             typedef void (APIENTRY * BufferSubDataProc) (GLenum target, GLintptrARB offset, GLsizeiptrARB size, const GLvoid *data);
             typedef void (APIENTRY * DeleteBuffersProc) (GLsizei n, const GLuint *buffers);
 
-	    typedef void (APIENTRY * GenOcclusionQueriesProc) ( GLsizei n, GLuint *ids );
-	    typedef void (APIENTRY * DeleteOcclusionQueriesProc) ( GLsizei n, const GLuint *ids );
-	    typedef GLboolean (APIENTRY * IsOcclusionQueryProc) ( GLuint id );
-	    typedef void (APIENTRY * BeginOcclusionQueryProc) ( GLuint id );
-	    typedef void (APIENTRY * EndOcclusionQueryProc) ();
-	    typedef void (APIENTRY * GetOcclusionQueryivProc) ( GLuint id, GLenum pname, GLint *params );
-	    typedef void (APIENTRY * GetOcclusionQueryuivProc) ( GLuint id, GLenum pname, GLuint *params );
+            typedef void (APIENTRY * GenOcclusionQueriesProc) ( GLsizei n, GLuint *ids );
+            typedef void (APIENTRY * DeleteOcclusionQueriesProc) ( GLsizei n, const GLuint *ids );
+            typedef GLboolean (APIENTRY * IsOcclusionQueryProc) ( GLuint id );
+            typedef void (APIENTRY * BeginOcclusionQueryProc) ( GLuint id );
+            typedef void (APIENTRY * EndOcclusionQueryProc) ();
+            typedef void (APIENTRY * GetOcclusionQueryivProc) ( GLuint id, GLenum pname, GLint *params );
+            typedef void (APIENTRY * GetOcclusionQueryuivProc) ( GLuint id, GLenum pname, GLuint *params );
 
-	    ~Extensions() {}
+            ~Extensions() {}
 
             bool _isVertexProgramSupported;
             bool _isSecondaryColorSupported;
             bool _isFogCoordSupported;
             bool _isMultiTexSupported;
-	    bool _isOcclusionQuerySupported;
+            bool _isOcclusionQuerySupported;
 
             FogCoordProc _glFogCoordfv;
 
@@ -606,7 +616,7 @@ class SG_EXPORT Drawable : public Object
         mutable BoundingBox     _bbox;
         mutable bool            _bbox_computed;
         
-        ref_ptr<Shape>       	_shape;
+        ref_ptr<Shape>           _shape;
 
         bool                    _supportsDisplayList;
         bool                    _useDisplayList;

@@ -131,13 +131,14 @@ unsigned short *rmap, unsigned short *gmap, unsigned short *bmap)
 
 
 static void
-copy_row(unsigned char *ptr, unsigned char *data, int n)
+copy_row(unsigned char *ptr, unsigned char *data, int n, int numSamples)
 {
     while (n--)
     {
-        *ptr++ = *data++;
-        *ptr++ = *data++;
-        *ptr++ = *data++;
+        for(int i=0;i<numSamples;++i)
+        {
+            *ptr++ = *data++;
+        }
     }
 }
 
@@ -229,7 +230,7 @@ int *numComponents_ret)
 
     if (TIFFGetField(in, TIFFTAG_SAMPLESPERPIXEL, &samplesperpixel) == 1)
     {
-        if (samplesperpixel != 1 && samplesperpixel != 3)
+        if (samplesperpixel != 1 && samplesperpixel != 3 && samplesperpixel != 4)
         {
             /* Bad samples/pixel */
             tifferror = ERR_UNSUPPORTED;
@@ -270,13 +271,17 @@ int *numComponents_ret)
         return NULL;
     }
 
+    /*
     if (photometric == PHOTOMETRIC_MINISWHITE ||
         photometric == PHOTOMETRIC_MINISBLACK)
         format = 1;
     else
         format = 3;
+    */
+    format = samplesperpixel;
 
     buffer = new unsigned char [w*h*format];
+    for(unsigned char* ptr=buffer;ptr<buffer+w*h*format;++ptr) *ptr = 0;
 
     if (!buffer)
     {
@@ -298,7 +303,6 @@ int *numComponents_ret)
         case pack(PHOTOMETRIC_MINISBLACK, PLANARCONFIG_CONTIG):
         case pack(PHOTOMETRIC_MINISWHITE, PLANARCONFIG_SEPARATE):
         case pack(PHOTOMETRIC_MINISBLACK, PLANARCONFIG_SEPARATE):
-
             inbuf = new unsigned char [TIFFScanlineSize(in)];
             for (row = 0; row < h; row++)
             {
@@ -353,18 +357,19 @@ int *numComponents_ret)
                     tifferror = ERR_READ;
                     break;
                 }
-                copy_row(currPtr, inbuf, w);
+                copy_row(currPtr, inbuf, w,samplesperpixel);
                 currPtr -= format*w;
             }
             break;
 
         case pack(PHOTOMETRIC_RGB, PLANARCONFIG_SEPARATE):
+            osg::notify(osg::NOTICE)<<"case 4"<<std::endl;
             rowsize = TIFFScanlineSize(in);
-            inbuf = new unsigned char [3*rowsize];
+            inbuf = new unsigned char [format*rowsize];
             for (row = 0; !tifferror && row < h; row++)
             {
                 int s;
-                for (s = 0; s < 3; s++)
+                for (s = 0; s < format; s++)
                 {
                     if (TIFFReadScanline(in, (tdata_t)(inbuf+s*rowsize), (uint32)row, (tsample_t)s) < 0)
                     {
@@ -406,11 +411,11 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
     public:
         virtual const char* className() { return "TIFF Image Reader"; }
         virtual bool acceptsExtension(const std::string& extension) 
-	{ 
-	    if( osgDB::equalCaseInsensitive(extension,"tiff")) return true;
-	    if( osgDB::equalCaseInsensitive(extension,"tif") ) return true;
-	    return false;
-	}
+        { 
+            if( osgDB::equalCaseInsensitive(extension,"tiff")) return true;
+            if( osgDB::equalCaseInsensitive(extension,"tif") ) return true;
+            return false;
+        }
 
         virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options*)
         {
@@ -428,12 +433,12 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
             imageData = simage_tiff_load(fileName.c_str(),&width_ret,&height_ret,&numComponents_ret);
 
             if (imageData==NULL) 
-	    {
-		char err_msg[256];
-		simage_tiff_error( err_msg, sizeof(err_msg)); 
-		osg::notify(osg::WARN) << err_msg << std::endl;
-		return ReadResult::FILE_NOT_HANDLED;
-	    }
+            {
+                char err_msg[256];
+                simage_tiff_error( err_msg, sizeof(err_msg)); 
+                osg::notify(osg::WARN) << err_msg << std::endl;
+                return ReadResult::FILE_NOT_HANDLED;
+            }
 
             int s = width_ret;
             int t = height_ret;

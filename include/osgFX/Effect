@@ -113,7 +113,7 @@ namespace osgFX
         /** select a technique or enable automatic detection */
         inline void selectTechnique(int i = AUTO_DETECT);
 
-		/** custom traversal */
+        /** custom traversal */
         virtual void traverse(osg::NodeVisitor &nv);        
 
         /** default traversal */
@@ -208,8 +208,8 @@ namespace osgFX
     
     inline void Effect::inherited_traverse(osg::NodeVisitor &nv)
     {
-		typedef osg::Group inherited;
-		inherited::traverse(nv);
+        typedef osg::Group inherited;
+        inherited::traverse(nv);
     }
 
 }

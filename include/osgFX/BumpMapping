@@ -24,7 +24,7 @@
 namespace osgFX
 {
 
-	/**
+    /**
      This effect makes surfaces appear bumpy. Children nodes must use two textures, 
      one for diffuse color and one for the normal map (which can be created 
      from a height map with tools like nVIDIA's normal map generator). Furthermore, 
@@ -120,10 +120,10 @@ namespace osgFX
 
     private:
         int lightnum_;
-		int diffuseunit_;
-		int normalunit_;
-		osg::ref_ptr<osg::Texture2D> diffuse_tex_;
-		osg::ref_ptr<osg::Texture2D> normal_tex_;
+        int diffuseunit_;
+        int normalunit_;
+        osg::ref_ptr<osg::Texture2D> diffuse_tex_;
+        osg::ref_ptr<osg::Texture2D> normal_tex_;
     };
 
     // INLINE METHODS    
@@ -141,56 +141,56 @@ namespace osgFX
     
     inline int BumpMapping::getDiffuseTextureUnit() const
     {
-		return diffuseunit_;
+        return diffuseunit_;
     }
     
     inline void BumpMapping::setDiffuseTextureUnit(int n)
     {
-		diffuseunit_ = n;
-		dirtyTechniques();
+        diffuseunit_ = n;
+        dirtyTechniques();
     }
     
     inline int BumpMapping::getNormalMapTextureUnit() const
     {
-		return normalunit_;
+        return normalunit_;
     }
     
     inline void BumpMapping::setNormalMapTextureUnit(int n)
     {
-		normalunit_ = n;
-		dirtyTechniques();
+        normalunit_ = n;
+        dirtyTechniques();
     }
     
     inline osg::Texture2D *BumpMapping::getOverrideDiffuseTexture()
     {
-		return diffuse_tex_.get();
+        return diffuse_tex_.get();
     }
 
     inline const osg::Texture2D *BumpMapping::getOverrideDiffuseTexture() const
     {
-		return diffuse_tex_.get();
+        return diffuse_tex_.get();
     }
     
     inline void BumpMapping::setOverrideDiffuseTexture(osg::Texture2D *texture)
     {
-		diffuse_tex_ = texture;
-		dirtyTechniques();
+        diffuse_tex_ = texture;
+        dirtyTechniques();
     }
 
     inline osg::Texture2D *BumpMapping::getOverrideNormalMapTexture()
     {
-		return normal_tex_.get();
+        return normal_tex_.get();
     }
 
     inline const osg::Texture2D *BumpMapping::getOverrideNormalMapTexture() const
     {
-		return normal_tex_.get();
+        return normal_tex_.get();
     }
     
     inline void BumpMapping::setOverrideNormalMapTexture(osg::Texture2D *texture)
     {
-		normal_tex_ = texture;
-		dirtyTechniques();
+        normal_tex_ = texture;
+        dirtyTechniques();
     }
 
 }

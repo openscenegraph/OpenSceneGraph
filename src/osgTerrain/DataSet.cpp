@@ -1794,8 +1794,15 @@ void DataSet::DestinationTile::optimizeResolution()
         {
             std::cout<<"******* We have a flat tile ******* "<<std::endl;
 
-            unsigned int numColumns = 8;
-            unsigned int numRows = 8;
+            unsigned int minimumSize = 8;
+
+            unsigned int numColumns = minimumSize;
+            unsigned int numRows = minimumSize;
+            
+            float ratio_y_over_x = (_extents.yMax()-_extents.yMin())/(_extents.xMax()-_extents.xMin());
+            if (ratio_y_over_x > 1.2) numRows = (unsigned int)ceilf((float)numRows*ratio_y_over_x);
+            else if (ratio_y_over_x < 0.8) numColumns = (unsigned int)ceilf((float)numColumns/ratio_y_over_x);
+            
             
             hf->allocate(numColumns,numRows);
             hf->setOrigin(osg::Vec3(_extents.xMin(),_extents.yMin(),0.0f));
@@ -1938,6 +1945,10 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
 {
     std::cout<<"--------- DataSet::DestinationTile::createDrawableGeometry() ------------- "<<std::endl;
 
+    const osg::EllipsoidModel* et = _dataSet->getEllipsoidModel();
+    bool mapLatLongsToXYZ = _dataSet->getConvertFromGeographicToGeocentric() && et;
+    bool useLocalToTileTransform = _dataSet->getUseLocalTileTransform();
+
     osg::ref_ptr<osg::HeightField> grid = 0;
     
     if (_terrain.valid() && _terrain->_heightField.valid())
@@ -1947,12 +1958,32 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
     }
     else
     {
-        unsigned int numCells = 8;
+        unsigned int minimumSize = 8;
+        unsigned int numColumns = minimumSize;
+        unsigned int numRows = minimumSize;
+        
+        if (mapLatLongsToXYZ)
+        {
+            float longitude_range = (_extents.xMax()-_extents.xMin());
+            float latitude_range = (_extents.yMax()-_extents.yMin());
+            
+            if (longitude_range>45.0) numColumns = (unsigned int)ceilf((float)numColumns*sqrtf(longitude_range/45.0));
+            if (latitude_range>45.0) numRows = (unsigned int)ceilf((float)numRows*sqrtf(latitude_range/45.0));
+            
+            std::cout<<"numColumns = "<<numColumns<<"  numRows="<<numRows<<std::endl;
+        }
+        else
+        {
+            float ratio_y_over_x = (_extents.yMax()-_extents.yMin())/(_extents.xMax()-_extents.xMin());
+            if (ratio_y_over_x > 1.2) numRows = (unsigned int)ceilf((float)numRows*ratio_y_over_x);
+            else if (ratio_y_over_x < 0.8) numColumns = (unsigned int)ceilf((float)numColumns/ratio_y_over_x);
+        }
+
         grid = new osg::HeightField;
-        grid->allocate(numCells,numCells);
+        grid->allocate(numColumns,numRows);
         grid->setOrigin(osg::Vec3(_extents.xMin(),_extents.yMin(),0.0f));
-        grid->setXInterval((_extents.xMax()-_extents.xMin())/(float)(numCells-1));
-        grid->setYInterval((_extents.yMax()-_extents.yMin())/(float)(numCells-1));
+        grid->setXInterval((_extents.xMax()-_extents.xMin())/(float)(numColumns-1));
+        grid->setYInterval((_extents.yMax()-_extents.yMin())/(float)(numRows-1));
     }
 
     if (!grid)
@@ -1988,9 +2019,6 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
     osg::Matrixd worldToLocal;
     osg::Vec3 skirtVector(0.0f,0.0f,0.0f);
 
-    const osg::EllipsoidModel* et = _dataSet->getEllipsoidModel();
-    bool mapLatLongsToXYZ = _dataSet->getConvertFromGeographicToGeocentric() && et;
-    bool useLocalToTileTransform = _dataSet->getUseLocalTileTransform();
     
     osg::Vec3 center_position(0.0f,0.0f,0.0f);
     osg::Vec3 center_normal(0.0f,0.0f,1.0f);

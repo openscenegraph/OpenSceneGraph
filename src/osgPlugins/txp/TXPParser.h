@@ -44,6 +44,8 @@
 
 #include "trpage_read.h"
 
+#include "TXPArchive.h"
+
 namespace txp
 {
 
@@ -113,6 +115,9 @@ public:
     {
         _archive = archive;
     }
+
+	// Gets the archive
+	inline TXPArchive* getArchive() { return _archive; }
     
     // Scene parser
     osg::Group *parseScene(
@@ -138,6 +143,9 @@ public:
     {
         return _materials;
     }
+
+	// Ensure material is loaded
+	inline void loadMaterial(int ix) { _archive->loadMaterial(ix); }
     
     // New to TerraPage 2.0 - local materials
     std::vector<osg::ref_ptr<osg::StateSet> >* getLocalMaterials()
@@ -444,4 +452,5 @@ protected:
 } // namespace
 
 #endif // __TXPPARSER_H_
+
 

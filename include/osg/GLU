@@ -14,7 +14,7 @@
 #ifndef OSG_GLU
 #define OSG_GLU 1
 
-#ifdef __DARWIN_OSX__
+#ifdef __APPLE__
 	#include <OpenGL/glu.h>
 #else
 	#include <GL/glu.h>

@@ -283,9 +283,9 @@ const Timer* Timer::instance()
 
     }
 
-#elif defined (__DARWIN_OSX__)  || defined (macintosh)
+#elif defined (__APPLE__)  || defined (macintosh)
 
-    #if defined (__DARWIN_OSX__)
+    #if defined (__APPLE__)
         #include <Carbon/Carbon.h>         // do I really have to link against the Carbon framework just for this?
     #else    
         #include <MacTypes.h>

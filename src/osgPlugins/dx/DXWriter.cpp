@@ -134,7 +134,7 @@
     #include <ieeefp.h>
 #else
     #include <math.h>
-    #if (defined(WIN32) || defined (__DARWIN_OSX__)) && !defined(__CYGWIN__)
+    #if (defined(WIN32) || defined (__APPLE__)) && !defined(__CYGWIN__)
         #include <float.h>
     #else
         #include <unistd.h>
@@ -604,7 +604,7 @@ inline int IsNaNorInf( float f )
   }
 #elif defined(__FreeBSD__) || defined(__linux) || defined(__CYGWIN__) 
   return isnanf(f) || isinf(f);
-#elif  defined(__DARWIN_OSX__)
+#elif  defined(__APPLE__)
   return __isnanf(f) || __isinf(f);
 #elif defined(__sun)
   return isnan(f);  // KLUDGE - hack to get this to compile w/g++. 

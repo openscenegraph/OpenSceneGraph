@@ -386,15 +386,19 @@ endif
 
 #### MacOS X specific definitions
 ifeq ($(OS),Darwin)
-  C++               = c++
+  ifeq (x$(CXX),x)
+    C++             = g++
+  else
+    C++             = $(CXX)
+  endif
   INC               += -I/usr/X11R6/include
   LDFLAGS	    += -L/usr/X11R6/lib -L/sw/lib
-  DEF               += -Wall -D__DARWIN_OSX__
+  DEF               += -Wall
   OPTF              = -O2
   DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
   DEPARG            = -M $(DEF)
   SHARED            = -dynamic
-  ARCH              =
+  ARCH              = 32
   ARCHINST          = 
   ARCHARGS          = 
   LINKARGS          =

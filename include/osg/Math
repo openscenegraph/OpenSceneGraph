@@ -19,7 +19,7 @@
 // for OSX users :
 // comment in if you want backwards compatibility with 10.1.x versions
 // otherwise you'll have problems with missing floorf and __isnan*()
-// #define DARWIN_OSX_PRE_10_2
+// #define APPLE_PRE_10_2
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1300)
     #include <float.h>
@@ -28,7 +28,7 @@
 
 #if (defined(WIN32) && !(defined(_MSC_VER) && (_MSC_VER >= 1300)) && !defined(__MINGW32__) ) || \
     defined (sun) || \
-    defined (__DARWIN_OSX__)
+    defined (__APPLE__)
     
 
     #include <float.h>
@@ -88,7 +88,7 @@
 #if (defined(WIN32) && !(defined(_MSC_VER) && (_MSC_VER >= 1300)) && !defined(__MINGW32__) ) || \
     defined (sun) || \
     defined (__hpux__) || \
-    defined (DARWIN_OSX_PRE_10_2)
+    defined (APPLE_PRE_10_2)
 
     #ifndef floorf
     #define floorf (float)floor
@@ -163,7 +163,7 @@ inline double RadiansToDegrees(double angle) { return angle*180.0/PI; }
     inline bool isNaN(float v) { return _isnan(v)!=0; }
     inline bool isNaN(double v) { return _isnan(v)!=0; }
 #else
-    # if defined(__DARWIN_OSX__) && !defined (DARWIN_OSX_PRE_10_2)
+    # if defined(__APPLE__) && !defined (APPLE_PRE_10_2)
         inline bool isNaN(float v) { return __isnanf(v); }
         inline bool isNaN(double v) { return __isnand(v); }
     #else

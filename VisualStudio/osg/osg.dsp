@@ -128,6 +128,10 @@ SOURCE=..\..\src\osg\BlendColor.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\BlendEquation.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\BlendFunc.cpp
 # End Source File
 # Begin Source File
@@ -529,6 +533,10 @@ SOURCE=..\..\Include\Osg\Billboard
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\BlendColor
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\BlendEquation
 # End Source File
 # Begin Source File
 

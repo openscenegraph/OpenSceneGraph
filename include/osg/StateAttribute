@@ -141,6 +141,7 @@ class SG_EXPORT StateAttribute : public Object
             TEXMAT,
             LIGHTMODEL,
             BLENDFUNC,
+	    BLENDEQUATION,
 	    LOGICOP,
             STENCIL,
             COLORMASK,

@@ -146,6 +146,7 @@ EXAMPLE_DIRS = \
 	osgarchive\
 	osgautotransform\
 	osgbillboard\
+	osgblendequation\
 	osgcallback\
 	osgcameragroup\
 	osgclip\
@@ -169,6 +170,7 @@ EXAMPLE_DIRS = \
 	osglight\
 	osglightpoint\
 	osglogo\
+	osglogicop\
         osgmovie\
         osgmotionblur\
 	osgmultitexture\

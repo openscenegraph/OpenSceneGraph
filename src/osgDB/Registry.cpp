@@ -224,6 +224,7 @@ void Registry::initLibraryFilePathList()
     if( !(ptr = getenv( "LD_LIBRARYN32_PATH" )))
         ptr = getenv( "LD_LIBRARY_PATH" );
 
+    if( ptr )
     {
         convertStringPathIntoFilePathList(ptr,_libraryFilePath);
     }

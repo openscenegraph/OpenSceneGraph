@@ -17,6 +17,7 @@
 #include <osg/Billboard>
 #include <osg/Notify>
 #include <osg/TriangleFunctor>
+#include <osg/Geometry>
 
 #include <float.h>
 #include <algorithm>
@@ -304,6 +305,29 @@ void IntersectVisitor::apply(Node& node)
 }
 
 
+struct TriangleHit
+{
+    TriangleHit(unsigned int index, const osg::Vec3& normal, float r1, const osg::Vec3* v1, float r2, const osg::Vec3* v2, float r3, const osg::Vec3* v3):
+        _index(index),
+        _normal(normal),
+        _r1(r1),
+        _v1(v1),        
+        _r2(r2),
+        _v2(v2),        
+        _r3(r3),
+        _v3(v3) {}
+
+    unsigned int        _index;
+    const osg::Vec3     _normal;
+    float               _r1;
+    const osg::Vec3*    _v1;        
+    float               _r2;
+    const osg::Vec3*    _v2;        
+    float               _r3;
+    const osg::Vec3*    _v3;        
+};
+
+
 struct TriangleIntersect
 {
     osg::ref_ptr<LineSegment> _seg;
@@ -315,8 +339,11 @@ struct TriangleIntersect
     int _index;
     float _ratio;
     bool _hit;
+    
+    
 
-    typedef std::multimap<float,std::pair<int,osg::Vec3> > TriangleHitList;
+    typedef std::multimap<float,TriangleHit> TriangleHitList;
+    
     TriangleHitList _thl;
 
     TriangleIntersect()
@@ -439,7 +466,7 @@ struct TriangleIntersect
             return;
         }
 
-        _thl.insert(std::pair<const float,std::pair<int,osg::Vec3> >  (r,std::pair<int,osg::Vec3>(_index-1,normal)));
+        _thl.insert(std::pair<const float,TriangleHit>(r,TriangleHit(_index-1,normal,r1,&v1,r2,&v2,r3,&v3)));
         _hit = true;
 
     }
@@ -466,11 +493,15 @@ bool IntersectVisitor::intersect(Drawable& drawable)
             drawable.accept(ti);
             if (ti._hit)
             {
+            
+                osg::Geometry* geometry = drawable.asGeometry();
+                
 
                 for(TriangleIntersect::TriangleHitList::iterator thitr=ti._thl.begin();
                     thitr!=ti._thl.end();
                     ++thitr)
                 {
+                
                     Hit hit;
                     hit._nodePath = _nodePath;
                     hit._matrix = cis->_matrix;
@@ -479,15 +510,30 @@ bool IntersectVisitor::intersect(Drawable& drawable)
                     if (_nodePath.empty()) hit._geode = NULL;
                     else hit._geode = dynamic_cast<Geode*>(_nodePath.back());
 
+                    TriangleHit& triHit = thitr->second;
+                    
                     hit._ratio = thitr->first;
-                    hit._primitiveIndex = thitr->second.first;
+                    hit._primitiveIndex = triHit._index;
                     hit._originalLineSegment = sitr->first;
                     hit._localLineSegment = sitr->second;
 
                     hit._intersectPoint = sitr->second->start()*(1.0f-hit._ratio)+
                         sitr->second->end()*hit._ratio;
 
-                    hit._intersectNormal = thitr->second.second;
+                    hit._intersectNormal = triHit._normal;
+                    
+                    if (geometry)
+                    {
+                        osg::Vec3Array* vertices = geometry->getVertexArray();
+                        if (vertices)
+                        {
+                            osg::Vec3* first = &(vertices->front());
+                            if (triHit._v1) hit._vecIndexList.push_back(triHit._v1-first);
+                            if (triHit._v2) hit._vecIndexList.push_back(triHit._v2-first);
+                            if (triHit._v2) hit._vecIndexList.push_back(triHit._v3-first);
+                        }
+                    }
+                    
 
                     _segHitList[sitr->first.get()].push_back(hit);
 

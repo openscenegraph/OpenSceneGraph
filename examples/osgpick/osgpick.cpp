@@ -28,6 +28,7 @@
 
 #include <osgText/Text>
 
+#include <sstream>
 
 // class to handle events with a pick
 class PickHandler : public osgGA::GUIEventHandler {
@@ -80,21 +81,26 @@ void PickHandler::pick(const osgGA::GUIEventAdapter& ea)
             hitr!=hlist.end();
             ++hitr)
         {
-            //osg::Vec3 ip = hitr->getLocalIntersectPoint();
-            //osg::Vec3 in = hitr->getLocalIntersectNormal();
-            osg::Geode* geode = hitr->_geode.get();
-            // the geodes are identified by name.
-            if (geode)
+            std::ostringstream os;
+            if (hitr->_geode.valid() && !hitr->_geode->getName().empty())
             {
-                if (!geode->getName().empty())
-                {
-                    gdlist=gdlist+" "+geode->getName();
-                }
-                else
-                {
-                    gdlist=gdlist+" geode";
-                }
-            } 
+                // the geodes are identified by name.
+                os<<"Object \""<<hitr->_geode->getName()<<"\""<<std::endl;
+            }
+            else if (hitr->_drawable.valid())
+            {
+                os<<"Object \""<<hitr->_drawable->className()<<"\""<<std::endl;
+            }
+
+            os<<"        local coords vertex("<< hitr->getLocalIntersectPoint()<<")"<<"  normal("<<hitr->getLocalIntersectNormal()<<")"<<std::endl;
+            os<<"        world coords vertex("<< hitr->getWorldIntersectPoint()<<")"<<"  normal("<<hitr->getWorldIntersectNormal()<<")"<<std::endl;
+            osgUtil::Hit::VecIndexList& vil = hitr->_vecIndexList;
+            for(unsigned int i=0;i<vil.size();++i)
+            {
+                os<<"        vertex indices ["<<i<<"] = "<<vil[i]<<std::endl;
+            }
+            
+            gdlist += os.str();
         }
     }
     setLabel(gdlist);
@@ -177,12 +183,14 @@ osg::Node* createHUD(osgText::Text* updateText)
         osg::StateSet* stateset = geode->getOrCreateStateSet();
         stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
         stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
-        geode->setName("whatis");
+        geode->setName("The text label");
         geode->addDrawable( updateText );
         modelview_abs->addChild(geode);
         
+        updateText->setCharacterSize(20.0f);
         updateText->setFont(timesFont);
-        updateText->setText("whatis will tell you what is under the mouse");
+        updateText->setColor(osg::Vec4(1.0f,1.0f,0.0f,1.0f));
+        updateText->setText("");
         updateText->setPosition(position);
         
         position += delta;

@@ -11,6 +11,7 @@ Billboard::Billboard()
 {
     _mode = AXIAL_ROT;
     _axis.set(0.0f,0.0f,1.0f);
+    setCachedMode();
 }
 
 
@@ -18,6 +19,29 @@ Billboard::~Billboard()
 {
 }
 
+void Billboard::setMode(const Mode mode)
+{
+    _mode = mode;
+    setCachedMode();
+}
+
+void Billboard::setAxis(const Vec3& axis)
+{
+    _axis = axis;
+    setCachedMode();
+}
+
+void Billboard::setCachedMode()
+{
+    if (_mode==AXIAL_ROT)
+    {
+        if (_axis==osg::Vec3(1.0f,0.0,0.0f))      _cachedMode = AXIAL_ROT_X_AXIS;
+        else if (_axis==osg::Vec3(0.0f,1.0,0.0f)) _cachedMode = AXIAL_ROT_Y_AXIS;
+        else if (_axis==osg::Vec3(0.0f,0.0,1.0f)) _cachedMode = AXIAL_ROT_Z_AXIS;
+        else                                      _cachedMode = AXIAL_ROT;
+    }
+    else _cachedMode = _mode;
+}
 
 const bool Billboard::addDrawable(Drawable *gset)
 {
@@ -67,21 +91,18 @@ const bool Billboard::removeDrawable( Drawable *gset )
     return false;
 }
 
-
-void Billboard::calcRotation(const Vec3& eye_local, const Vec3& pos_local,Matrix& mat) const 
+void Billboard::calcTransform(const Vec3& eye_local, const Vec3& up_local, const Vec3& pos_local, Matrix& mat) const 
 {
-    switch(_mode)
+    Vec3 ev(pos_local-eye_local);
+    switch(_cachedMode)
     {
-        case(AXIAL_ROT):
+        case(AXIAL_ROT_Z_AXIS):
         {
-            // note currently assumes that axis is (0,0,1) for speed of
-            // executation and implementation.  This will be rewritten
-            // on second pass of Billboard. Robert Osfield Jan 2001.
-            Vec3 ev = pos_local-eye_local;
             ev.z() = 0.0f;
             float ev_length = ev.length();
             if (ev_length>0.0f)
             {
+
                 mat.makeIdentity();
                 //float rotation_zrotation_z = atan2f(ev.x(),ev.y());
                 //mat.makeRotate(inRadians(rotation_z),0.0f,0.0f,1.0f);
@@ -95,6 +116,69 @@ void Billboard::calcRotation(const Vec3& eye_local, const Vec3& pos_local,Matrix
             }
             break;
         }
+
+        case(AXIAL_ROT_Y_AXIS):
+        {
+            ev.z() = 0.0f;
+            float ev_length = ev.length();
+            if (ev_length>0.0f)
+            {
+
+                mat.makeIdentity();
+                //float rotation_zrotation_z = atan2f(ev.x(),ev.y());
+                //mat.makeRotate(inRadians(rotation_z),0.0f,0.0f,1.0f);
+                float inv = 1.0f/ev_length;
+                float c = ev.y()*inv;
+                float s = ev.x()*inv;
+                mat(0,0) = c;
+                mat(0,1) = -s;
+                mat(1,0) = s;
+                mat(1,1) = c;
+            }
+            break;
+        }
+        case(AXIAL_ROT_X_AXIS):
+        {
+            ev.z() = 0.0f;
+            float ev_length = ev.length();
+            if (ev_length>0.0f)
+            {
+
+                mat.makeIdentity();
+                //float rotation_zrotation_z = atan2f(ev.x(),ev.y());
+                //mat.makeRotate(inRadians(rotation_z),0.0f,0.0f,1.0f);
+                float inv = 1.0f/ev_length;
+                float c = ev.y()*inv;
+                float s = ev.x()*inv;
+                mat(0,0) = c;
+                mat(0,1) = -s;
+                mat(1,0) = s;
+                mat(1,1) = c;
+            }
+            break;
+        }
+        
+        case(AXIAL_ROT):
+        {
+            ev.z() = 0.0f;
+            float ev_length = ev.length();
+            if (ev_length>0.0f)
+            {
+
+                mat.makeIdentity();
+                //float rotation_zrotation_z = atan2f(ev.x(),ev.y());
+                //mat.makeRotate(inRadians(rotation_z),0.0f,0.0f,1.0f);
+                float inv = 1.0f/ev_length;
+                float c = ev.y()*inv;
+                float s = ev.x()*inv;
+                mat(0,0) = c;
+                mat(0,1) = -s;
+                mat(1,0) = s;
+                mat(1,1) = c;
+            }
+            break;
+        }
+
         case(POINT_ROT_WORLD):
         case(POINT_ROT_EYE):
         {
@@ -105,15 +189,12 @@ void Billboard::calcRotation(const Vec3& eye_local, const Vec3& pos_local,Matrix
             // have to be added to the above method paramters.
             // Robert Osfield, Jan 2001.
 
-            Vec3 ev = pos_local-eye_local;
-            ev.normalize();
-
             float ev_len = ev.length();
             if (ev_len != 0.0f)
             {
                 ev /= ev_len;
 
-                Vec3 cp = ev^Vec3(0.0f,1.0f,0.0f);
+                Vec3 cp(ev^Vec3(0.0f,1.0f,0.0f));
                 float dot = ev*Vec3(0.0f,1.0f,0.0f);
 
                 float cp_len = cp.length();
@@ -128,19 +209,8 @@ void Billboard::calcRotation(const Vec3& eye_local, const Vec3& pos_local,Matrix
             break;
         }
     }
-}
 
-
-void Billboard::calcTransform(const Vec3& eye_local, const Vec3& pos_local,Matrix& mat) const 
-{
-    //    mat.makeTranslate(pos_local[0],pos_local[1],pos_local[2]);
-    //    mat.makeIdentity();
-    calcRotation(eye_local,pos_local,mat);
-
-    //    mat.postTrans(pos_local[0],pos_local[1],pos_local[2]);
-    mat(3,0) += pos_local[0];
-    mat(3,1) += pos_local[1];
-    mat(3,2) += pos_local[2];
+    mat.setTrans(pos_local);
 
 }
 

@@ -18,24 +18,25 @@ class SG_EXPORT Billboard : public Geode
     public:
 
         enum Mode {
-            AXIAL_ROT,
             POINT_ROT_EYE,
-            POINT_ROT_WORLD
+            POINT_ROT_WORLD,
+            AXIAL_ROT
         };
 
         Billboard();
         
         META_Node(Billboard);
 
-        /** Set the axis about which all the billboard's drawable rotate. */
-        inline void setAxis(const Vec3& axis)          { _axis = axis; }
-        /** Get the axis about which all the billboard's drawable rotate. */
-        inline const Vec3& getAxis() const             { return _axis; }
-
         /** Set the billboard rotation mode. */
-        inline void setMode(const Mode mode)                 { _mode = mode; }
+        void setMode(const Mode mode);
         /** Get the billboard rotation mode. */
-        inline const Mode getMode() const                     { return _mode; }
+        inline const Mode getMode() const { return _mode; }
+
+        /** Set the axis about which all the billboard's drawable rotate. */
+        void setAxis(const Vec3& axis);
+        /** Get the axis about which all the billboard's drawable rotate. */
+        inline const Vec3& getAxis() const { return _axis; }
+
 
         /** Set the position of specified drawable. */
         inline void setPos(int i,const Vec3& pos)      { _positionList[i] = pos; }
@@ -74,8 +75,7 @@ class SG_EXPORT Billboard : public Geode
          */
         virtual const bool removeDrawable( Drawable *gset );
 
-        void calcRotation(const Vec3& eye_local, const Vec3& pos_local,Matrix& mat) const;
-        void calcTransform(const Vec3& eye_local, const Vec3& pos_local,Matrix& mat) const;
+        void calcTransform(const Vec3& eye_local, const Vec3& up_local, const Vec3& pos_local,Matrix& mat) const;
 
     protected:
 
@@ -83,10 +83,23 @@ class SG_EXPORT Billboard : public Geode
 
         virtual const bool computeBound() const;
 
+        enum AxisAligned
+        {
+            AXIAL_ROT_X_AXIS=AXIAL_ROT+1,
+            AXIAL_ROT_Y_AXIS,
+            AXIAL_ROT_Z_AXIS,
+        };
+
 
         Mode            _mode;
         Vec3            _axis;
         PositionList    _positionList;
+        
+        // used internally as cache of which what _axis is aligned to help
+        // deicde which method of rotation to use.
+        int              _cachedMode;
+        
+        void setCachedMode();
 
 };
 

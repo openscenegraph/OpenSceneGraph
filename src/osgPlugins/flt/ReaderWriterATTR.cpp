@@ -613,20 +613,24 @@ StateSet* Attr::createOsgStateSet()
         osgTexture->setFilter(osg::Texture::MIN_FILTER, Texture::LINEAR_MIPMAP_NEAREST);
         break;
     case MIN_FILTER_MIPMAP_LINEAR:
-    case MIN_FILTER_MIPMAP_BILINEAR:
-    case MIN_FILTER_MIPMAP_TRILINEAR:
         osgTexture->setFilter(osg::Texture::MIN_FILTER, Texture::NEAREST_MIPMAP_LINEAR);
         break;
-
-//  case MIN_FILTER_POINT:
-//  case MIN_FILTER_BILINEAR:
-//  case MIN_FILTER_BICUBIC;
-//  case MIN_FILTER_BILINEAR_GEQUAL:
-//  case MIN_FILTER_BILINEAR_LEQUAL:
-//  case MIN_FILTER_BICUBIC_GEQUAL:
-//  case MIN_FILTER_BICUBIC_LEQUAL:
-//        osgTexture->setFilter(osg::Texture::MIN_FILTER, Texture::LINEAR_MIPMAP_LINEAR);
-//        break;
+    case MIN_FILTER_MIPMAP_BILINEAR:
+        osgTexture->setFilter(osg::Texture::MIN_FILTER, Texture::LINEAR_MIPMAP_NEAREST);
+        break;
+    case MIN_FILTER_MIPMAP_TRILINEAR:
+        osgTexture->setFilter(osg::Texture::MIN_FILTER, Texture::LINEAR_MIPMAP_LINEAR);
+        break;
+    case MIN_FILTER_POINT:
+    case MIN_FILTER_BILINEAR:
+    case MIN_FILTER_BICUBIC:
+//    case MIN_FILTER_BILINEAR_GEQUAL:
+    case MIN_FILTER_BILINEAR_LEQUAL:
+    case MIN_FILTER_BICUBIC_GEQUAL:
+    case MIN_FILTER_BICUBIC_LEQUAL:
+    default:
+          osgTexture->setFilter(osg::Texture::MIN_FILTER, Texture::LINEAR_MIPMAP_LINEAR);
+          break;
     }
 
 

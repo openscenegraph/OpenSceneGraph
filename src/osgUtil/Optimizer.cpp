@@ -28,6 +28,7 @@
 #include <osgUtil/TransformAttributeFunctor>
 #include <osgUtil/TriStripVisitor>
 #include <osgUtil/Tesselator>
+#include <osgUtil/Simplifier>
 
 #include <typeinfo>
 #include <algorithm>
@@ -215,7 +216,11 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
         node->accept(tsv);
         tsv.stripify();
     }
-
+#if 0
+    // simplify geometry
+    osgUtil::Simplifier simplifier;
+    node->accept(simplifier);
+#endif
 }
 
 

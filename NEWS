@@ -2,6 +2,9 @@
 OSG News (most significant items from ChangeLog)
 ================================================
 
+    Added new osgshadowtexture demo which illustrates how to create
+    dynamic shadow textures in your scene.
+
     Addition osgSim which is NodeKit designed for visual simulation
     market, currently features high fidelity light points support.
 

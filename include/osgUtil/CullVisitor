@@ -194,9 +194,9 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
             _currentRenderBin = rb;
         }
 
-        inline float getCalculatedNearPlane() const { return _computed_znear; }
+        inline value_type getCalculatedNearPlane() const { return _computed_znear; }
         
-        inline float getCalculatedFarPlane() const { return _computed_zfar; }
+        inline value_type getCalculatedFarPlane() const { return _computed_zfar; }
 
 	void updateCalculatedNearFar(const osg::Matrix& matrix,const osg::Drawable& drawable) { updateCalculatedNearFar(matrix,drawable.getBound()); }
 	void updateCalculatedNearFar(const osg::Matrix& matrix,const osg::BoundingBox& bb);
@@ -220,8 +220,8 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
           * can target either Matrix data type, configured at compile time.*/
         struct ClampProjectionMatrixCallback : public osg::Referenced
         {
-            virtual bool clampProjectionMatrixImplementation(osg::Matrixf& projection, double& znear, double& zfar) const = 0;
-            virtual bool clampProjectionMatrixImplementation(osg::Matrixd& projection, double& znear, double& zfar) const = 0;
+            virtual bool clampProjectionMatrixImplementation(osg::Matrixf& projection, double znear, double zfar) const = 0;
+            virtual bool clampProjectionMatrixImplementation(osg::Matrixd& projection, double znear, double zfar) const = 0;
         };
         
         /** set the ClampProjectionMatrixCallback.*/
@@ -233,14 +233,14 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
 
         /** CullVisitor's default clamping of the projection float matrix to computed near and far values.
           * Note, do not call this method directly, use clampProjectionMatrix(..) instead, unless you want to bypass the callback.*/
-        virtual bool clampProjectionMatrixImplementation(osg::Matrixf& projection, double& znear, double& zfar) const;
+        virtual bool clampProjectionMatrixImplementation(osg::Matrixf& projection, double znear, double zfar) const;
 
         /** CullVisitor's default clamping of the projection double matrix to computed near and far values.
           * Note, do not call this method directly, use clampProjectionMatrix(..) instead, unless you want to bypass the callback.*/
-        virtual bool clampProjectionMatrixImplementation(osg::Matrixd& projection, double& znear, double& zfar) const;
+        virtual bool clampProjectionMatrixImplementation(osg::Matrixd& projection, double znear, double zfar) const;
 
         /** clamp the projection float matrix to computed near and far values, use callback if it exists, otherwise use default CullVisitro implemntation.*/
-        inline bool clampProjectionMatrix(osg::Matrixf& projection, value_type& znear, value_type& zfar) const
+        inline bool clampProjectionMatrix(osg::Matrixf& projection, value_type znear, value_type zfar) const
         {
             double zn = znear;
             double zf = zfar;
@@ -259,7 +259,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         }
 
         /** clamp the projection double matrix to computed near and far values, use callback if it exists, otherwise use default CullVisitro implemntation.*/
-        inline bool clampProjectionMatrix(osg::Matrixd& projection, value_type& znear, value_type& zfar) const
+        inline bool clampProjectionMatrix(osg::Matrixd& projection, value_type znear, value_type zfar) const
         {
             double zn = znear;
             double zf = zfar;

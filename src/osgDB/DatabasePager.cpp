@@ -21,6 +21,26 @@ DatabasePager::DatabasePager()
     _expiryDelay = 1.0;
 }
 
+DatabasePager::~DatabasePager()
+{
+    if( isRunning() )
+    {
+        // cancel the thread..
+        cancel();
+        //join();
+
+        // then wait for the the thread to stop running.
+        while(isRunning())
+        {
+            std::cout<<"Waiting for RenderSurface to cancel"<<std::endl;
+            //OpenThreads::Thread::YieldCurrentThread();
+            OpenThreads::Thread::Yield();
+        }
+        
+    }
+        
+}
+
 void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* group)
 {
    

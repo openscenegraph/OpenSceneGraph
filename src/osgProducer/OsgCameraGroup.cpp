@@ -357,8 +357,8 @@ bool OsgCameraGroup::realize()
         getTopMostSceneData()->accept(sfpn);
         if (sfpn._foundParticles)
         {
-            osg::notify(osg::NOTICE)<<"Warning: disabling multi-threading of cull and draw"<<std::endl;
-            osg::notify(osg::NOTICE)<<"         to avoid threading problems in osgParticle."<<std::endl;
+            osg::notify(osg::INFO)<<"Warning: disabling multi-threading of cull and draw"<<std::endl;
+            osg::notify(osg::INFO)<<"         to avoid threading problems in osgParticle."<<std::endl;
             _thread_model = Producer::CameraGroup::SingleThreaded;
         }
     }

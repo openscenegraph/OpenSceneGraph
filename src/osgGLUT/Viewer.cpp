@@ -1009,11 +1009,14 @@ void Viewer::keyboard(unsigned char key, int x, int y)
             _printStats++; //gwm jul 2001 range of possible outputs, 0-4 = !_printStats;
             if (_printStats>=Statistics::STAT_RESTART) _printStats=0;
             if (getNumViewports()<=1 && _printStats==Statistics::STAT_PRIMSPERVIEW) _printStats++; // no need for these stats as only one view
-            if (_printStats==Statistics::STAT_DC) { // count depth complexity by incrementing the stencil buffer every 
+            if (_printStats==Statistics::STAT_DC)
+            {
+            
+                 // count depth complexity by incrementing the stencil buffer every 
                 // time a pixel is hit
                 GLint nsten=0; // Number of stencil planes available
                 glGetIntegerv(GL_STENCIL_BITS , &nsten);
-                if (nsten>0) {
+                if (_displayMode & GLUT_STENCIL && nsten>0) {
                     glEnable(GL_STENCIL_TEST);
                     glStencilOp(GL_INCR ,GL_INCR ,GL_INCR);
                 } else {// skip this option

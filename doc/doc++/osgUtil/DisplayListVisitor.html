@@ -23,13 +23,13 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.6.2">DisplayListVisitor</A></B>(<!1><A HREF="RenderStageLighting.html#DOC.2.22.7">Mode</A> mode=<!1><A HREF="DisplayListVisitor.html#DOC.2.6.1.3">COMPILE_DISPLAY_LISTS</A>|<!1><A HREF="DisplayListVisitor.html#DOC.2.6.1.4">COMPILE_STATE_ATTRIBUTES</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.6.2">DisplayListVisitor</A></B>(Mode mode=<!1><A HREF="DisplayListVisitor.html#DOC.2.6.1.3">COMPILE_DISPLAY_LISTS</A>|<!1><A HREF="DisplayListVisitor.html#DOC.2.6.1.4">COMPILE_STATE_ATTRIBUTES</A>)
 <DD><I>Construct a CompileGeoSetsVisior to traverse all child, with set specified display list mode.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.6.3">setMode</A></B>(<!1><A HREF="RenderStageLighting.html#DOC.2.22.7">Mode</A> mode)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.6.3">setMode</A></B>(Mode mode)
 <DD><I>Set the operational mode of how the visitor should set up osg::GeoSet's</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderStageLighting.html#DOC.2.22.7">Mode</A> <B><A HREF="#DOC.2.6.4">getMode</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>Mode <B><A HREF="#DOC.2.6.4">getMode</A></B>() const 
 <DD><I>Get the operational mode</I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.6.5">setState</A></B>(osg::State* state)
@@ -52,7 +52,7 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderStageLighting.html#DOC.2.22.7">Mode</A> <B><A HREF="#DOC.2.6.9">_mode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>Mode <B><A HREF="#DOC.2.6.9">_mode</A></B>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::State&gt;  <B><A HREF="#DOC.2.6.10">_state</A></B>
 </DL></P>
@@ -92,19 +92,19 @@ osg::StateAttribute's</BLOCKQUOTE>
 
 <A NAME="DisplayListVisitor"></A>
 <A NAME="DOC.2.6.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DisplayListVisitor(<!1><A HREF="RenderStageLighting.html#DOC.2.22.7">Mode</A> mode=<!1><A HREF="DisplayListVisitor.html#DOC.2.6.1.3">COMPILE_DISPLAY_LISTS</A>|<!1><A HREF="DisplayListVisitor.html#DOC.2.6.1.4">COMPILE_STATE_ATTRIBUTES</A>)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DisplayListVisitor(Mode mode=<!1><A HREF="DisplayListVisitor.html#DOC.2.6.1.3">COMPILE_DISPLAY_LISTS</A>|<!1><A HREF="DisplayListVisitor.html#DOC.2.6.1.4">COMPILE_STATE_ATTRIBUTES</A>)</B></TT>
 <DD>Construct a CompileGeoSetsVisior to traverse all child,
 with set specified display list mode.  Default mode is to
 gset->setUseDisplayList(true).
 <DL><DT><DD></DL><P>
 <A NAME="setMode"></A>
 <A NAME="DOC.2.6.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setMode(<!1><A HREF="RenderStageLighting.html#DOC.2.22.7">Mode</A> mode)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setMode(Mode mode)</B></TT>
 <DD>Set the operational mode of how the visitor should set up osg::GeoSet's
 <DL><DT><DD></DL><P>
 <A NAME="getMode"></A>
 <A NAME="DOC.2.6.4"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderStageLighting.html#DOC.2.22.7">Mode</A> getMode() const </B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>Mode getMode() const </B></TT>
 <DD>Get the operational mode
 <DL><DT><DD></DL><P>
 <A NAME="setState"></A>
@@ -129,7 +129,7 @@ _displayListMode
 <DL><DT><DD></DL><P>
 <A NAME="_mode"></A>
 <A NAME="DOC.2.6.9"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderStageLighting.html#DOC.2.22.7">Mode</A> _mode</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>Mode _mode</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_state"></A>
 <A NAME="DOC.2.6.10"></A>

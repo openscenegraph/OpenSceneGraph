@@ -2,17 +2,16 @@
 
 <HTML>
 <HEAD>
-   <TITLE>class  SG_EXPORT osg::LineWidth</TITLE>
+   <TITLE>class  SG_EXPORT osg::LineStipple</TITLE>
    <META NAME="GENERATOR" CONTENT="DOC++ 3.4.8">
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
-<H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osg::LineWidth</A></H2></H2><BLOCKQUOTE>LineWidth - encapsulates the OpenGL glLineWidth for setting the width of lines in pixels</BLOCKQUOTE>
-<HR>
+<H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osg::LineStipple</A></H2></H2><HR>
 
 <H2>Inheritance:</H2>
 <APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=125>
-<param name=classes value="CReferenced,MReferenced.html,CObject,MObject.html,CStateAttribute,MStateAttribute.html,CLineWidth,MLineWidth.html">
+<param name=classes value="CReferenced,MReferenced.html,CObject,MObject.html,CStateAttribute,MStateAttribute.html,CLineStipple,MLineStipple.html">
 <param name=before value="M,M,M,M">
 <param name=after value="Md_SPSP,Md_SP,Md_,M">
 <param name=indent value="0,1,2,3">
@@ -23,31 +22,39 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.51.1">LineWidth</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.50.1">LineStipple</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.51.2">LineWidth</A></B>(const <!1><A HREF="LineWidth.html#DOC.2.51.2">LineWidth</A>&amp; lw, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.50.2">LineStipple</A></B>(const <!1><A HREF="LineStipple.html#DOC.2.50.2">LineStipple</A>&amp; lw, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
 <DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.51.3">META_StateAttribute</A></B>(<!1><A HREF="LineWidth.html">LineWidth</A>, <!1><A HREF="StateAttribute.html#DOC.2.102.6.23">LINEWIDTH</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.50.3">META_StateAttribute</A></B>(<!1><A HREF="LineStipple.html">LineStipple</A>, <!1><A HREF="StateAttribute.html#DOC.2.102.6.24">LINESTIPPLE</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.51.4">compare</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.50.4">compare</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const 
 <DD><I>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.51.5">setWidth</A></B>(const float <!1><A HREF="Viewport.html#DOC.2.118.9">width</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.50.5">setStateSetModes</A></B>(<!1><A HREF="StateSet.html">StateSet</A>&amp; ds, const <!1><A HREF="StateAttribute.html#DOC.2.102.2">GLModeValue</A> value) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const float <B><A HREF="#DOC.2.51.6">getWidth</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.50.6">setFactor</A></B>(const int factor)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.51.7">apply</A></B>(<!1><A HREF="State.html">State</A>&amp; state) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const int <B><A HREF="#DOC.2.50.7">getFactor</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.50.8">setPattern</A></B>(const unsigned short pattern)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const unsigned short <B><A HREF="#DOC.2.50.9">getPattern</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.50.10">apply</A></B>(<!1><A HREF="State.html">State</A>&amp; state) const 
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.51.9">_width</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.50.12">_factor</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned short <B><A HREF="#DOC.2.50.13">_pattern</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.51.8">~LineWidth</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.50.11">~LineStipple</A></B>()
 </DL></P>
 
 </DL>
@@ -70,8 +77,6 @@
 <IMG ALT="o" SRC=icon2.gif>bool <B>operator == </B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; rhs) const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>bool <B>operator != </B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; rhs) const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   void <B>setStateSetModes</B>(<!1><A HREF="StateSet.html">StateSet</A>&amp;, const <!1><A HREF="StateAttribute.html#DOC.2.102.2">GLModeValue</A>) const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   void <B>compile</B>(<!1><A HREF="State.html">State</A>&amp;) const 
 </DL></P>
@@ -118,46 +123,61 @@
 <A NAME="DOC.DOCU"></A>
 <HR>
 <H2>Documentation</H2>
-<BLOCKQUOTE>LineWidth - encapsulates the OpenGL glLineWidth for setting the width of lines in pixels</BLOCKQUOTE>
 <DL>
 
-<A NAME="LineWidth"></A>
-<A NAME="DOC.2.51.1"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LineWidth()</B></TT>
+<A NAME="LineStipple"></A>
+<A NAME="DOC.2.50.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LineStipple()</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="LineWidth"></A>
-<A NAME="DOC.2.51.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LineWidth(const <!1><A HREF="LineWidth.html#DOC.2.51.2">LineWidth</A>&amp; lw, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="LineStipple"></A>
+<A NAME="DOC.2.50.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LineStipple(const <!1><A HREF="LineStipple.html#DOC.2.50.2">LineStipple</A>&amp; lw, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
 <DD>Copy constructor using CopyOp to manage deep vs shallow copy
 <DL><DT><DD></DL><P>
 <A NAME="META_StateAttribute"></A>
-<A NAME="DOC.2.51.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_StateAttribute(<!1><A HREF="LineWidth.html">LineWidth</A>, <!1><A HREF="StateAttribute.html#DOC.2.102.6.23">LINEWIDTH</A>)</B></TT>
+<A NAME="DOC.2.50.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_StateAttribute(<!1><A HREF="LineStipple.html">LineStipple</A>, <!1><A HREF="StateAttribute.html#DOC.2.102.6.24">LINESTIPPLE</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="compare"></A>
-<A NAME="DOC.2.51.4"></A>
+<A NAME="DOC.2.50.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   int compare(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const </B></TT>
 <DD>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs
 <DL><DT><DD></DL><P>
-<A NAME="setWidth"></A>
-<A NAME="DOC.2.51.5"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setWidth(const float <!1><A HREF="Viewport.html#DOC.2.118.9">width</A>)</B></TT>
+<A NAME="setStateSetModes"></A>
+<A NAME="DOC.2.50.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setStateSetModes(<!1><A HREF="StateSet.html">StateSet</A>&amp; ds, const <!1><A HREF="StateAttribute.html#DOC.2.102.2">GLModeValue</A> value) const </B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="getWidth"></A>
-<A NAME="DOC.2.51.6"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const float getWidth() const </B></TT>
+<A NAME="setFactor"></A>
+<A NAME="DOC.2.50.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setFactor(const int factor)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getFactor"></A>
+<A NAME="DOC.2.50.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const int getFactor() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setPattern"></A>
+<A NAME="DOC.2.50.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setPattern(const unsigned short pattern)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getPattern"></A>
+<A NAME="DOC.2.50.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const unsigned short getPattern() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.51.7"></A>
+<A NAME="DOC.2.50.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="State.html">State</A>&amp; state) const </B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="~LineWidth"></A>
-<A NAME="DOC.2.51.8"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~LineWidth()</B></TT>
+<A NAME="~LineStipple"></A>
+<A NAME="DOC.2.50.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~LineStipple()</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="_width"></A>
-<A NAME="DOC.2.51.9"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _width</B></TT>
+<A NAME="_factor"></A>
+<A NAME="DOC.2.50.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _factor</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_pattern"></A>
+<A NAME="DOC.2.50.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned short _pattern</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <HR><DL><DT><B>This class has no child classes.</B></DL>

@@ -23,11 +23,7 @@
 <DL>
 <P><DL>
 <DT><H3>Public Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderStageLighting.html#DOC.2.22.7">Mode</A> <B><A HREF="#DOC.2.22.15">_lightingMode</A></B>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::Light&gt;  <B><A HREF="#DOC.2.22.16">_light</A></B>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>LightList <B><A HREF="#DOC.2.22.17">_lightList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>LightList <B><A HREF="#DOC.2.22.9">_lightList</A></B>
 </DL></P>
 
 <P><DL>
@@ -44,29 +40,14 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.22.6">reset</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.22.8">setLightingMode</A></B>(<!1><A HREF="RenderStageLighting.html#DOC.2.22.7">Mode</A> mode)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; LightMatrixPair &gt;virtual  LightList void <B><A HREF="#DOC.2.22.7">addLight</A></B>(osg::Light* light, osg::Matrix* matrix)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderStageLighting.html#DOC.2.22.7">Mode</A> <B><A HREF="#DOC.2.22.9">getLightingMode</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.22.10">setLight</A></B>(osg::Light* light)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Light* <B><A HREF="#DOC.2.22.11">getLight</A></B>()
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::Light* <B><A HREF="#DOC.2.22.12">getLight</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; LightMatrixPair &gt;virtual  LightList void <B><A HREF="#DOC.2.22.13">addLight</A></B>(osg::Light* light, osg::Matrix* matrix)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.22.14">draw</A></B>(osg::State&amp; state, <!1><A HREF="RenderLeaf.html">RenderLeaf</A>*&amp; previous)
-</DL></P>
-
-<P><DL>
-<DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.22.7">Mode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.22.8">draw</A></B>(osg::State&amp; state, <!1><A HREF="RenderLeaf.html">RenderLeaf</A>*&amp; previous)
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.22.18">~RenderStageLighting</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.22.10">~RenderStageLighting</A></B>()
 </DL></P>
 
 </DL>
@@ -102,66 +83,20 @@ RenderBin base class</BLOCKQUOTE>
 <A NAME="DOC.2.22.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void reset()</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="Mode"></A>
-<A NAME="DOC.2.22.7"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  Mode</B></TT>
-<DL><DT><DD></DL><P><DL>
-
-<A NAME="HEADLIGHT"></A>
-<A NAME="DOC.2.22.7.1"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> HEADLIGHT</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="SKY_LIGHT"></A>
-<A NAME="DOC.2.22.7.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SKY_LIGHT</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="NO_SCENEVIEW_LIGHT"></A>
-<A NAME="DOC.2.22.7.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NO_SCENEVIEW_LIGHT</B></TT>
-<DL><DT><DD></DL><P></DL>
-
-<A NAME="setLightingMode"></A>
-<A NAME="DOC.2.22.8"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setLightingMode(<!1><A HREF="RenderStageLighting.html#DOC.2.22.7">Mode</A> mode)</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="getLightingMode"></A>
-<A NAME="DOC.2.22.9"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderStageLighting.html#DOC.2.22.7">Mode</A> getLightingMode() const </B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="setLight"></A>
-<A NAME="DOC.2.22.10"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setLight(osg::Light* light)</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="getLight"></A>
-<A NAME="DOC.2.22.11"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Light* getLight()</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="getLight"></A>
-<A NAME="DOC.2.22.12"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::Light* getLight() const </B></TT>
-<DL><DT><DD></DL><P>
 <A NAME="addLight"></A>
-<A NAME="DOC.2.22.13"></A>
+<A NAME="DOC.2.22.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; LightMatrixPair &gt;virtual  LightList void addLight(osg::Light* light, osg::Matrix* matrix)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="draw"></A>
-<A NAME="DOC.2.22.14"></A>
+<A NAME="DOC.2.22.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void draw(osg::State&amp; state, <!1><A HREF="RenderLeaf.html">RenderLeaf</A>*&amp; previous)</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="_lightingMode"></A>
-<A NAME="DOC.2.22.15"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderStageLighting.html#DOC.2.22.7">Mode</A> _lightingMode</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="_light"></A>
-<A NAME="DOC.2.22.16"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::Light&gt;  _light</B></TT>
-<DL><DT><DD></DL><P>
 <A NAME="_lightList"></A>
-<A NAME="DOC.2.22.17"></A>
+<A NAME="DOC.2.22.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>LightList _lightList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~RenderStageLighting"></A>
-<A NAME="DOC.2.22.18"></A>
+<A NAME="DOC.2.22.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~RenderStageLighting()</B></TT>
 <DL><DT><DD></DL><P></DL>
 

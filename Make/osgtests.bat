@@ -58,8 +58,8 @@ osghud dumptruck.osg
 echo osglight glider.osg
 osglight glider.osg
 
-echo osgimpostor Town.osg
-osgimpostor Town.osg
+echo osgimpostor
+osgimpostor
 
 echo osgmultitexture cessnafire.osg
 osgmultitexture cessnafire.osg

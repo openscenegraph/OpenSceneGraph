@@ -167,10 +167,10 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         const osg::Node::NodeMask getCullMaskRight() const { return _cullMaskRight; }
 
         /** Set the LOD bias for the CullVisitor to use.*/
-        void setLODBias(float bias) { _LODBias = bias; }
+        void setLODScale(float bias) { _LODScale = bias; }
         
         /** Get the LOD bias.*/
-        float getLODBias() const { return _LODBias; }
+        float getLODScale() const { return _LODScale; }
 
         /** Set the Small Feature Culling Pixel Size.*/
         void setSmallFeatureCullingPixelSize(float value) { _smallFeatureCullingPixelSize=value; }
@@ -319,7 +319,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
 
         CullVisitor::ComputeNearFarMode             _computeNearFar;
         osg::CullStack::CullingMode                 _cullingMode;
-        float                                       _LODBias;
+        float                                       _LODScale;
         float                                       _smallFeatureCullingPixelSize;
 
         FusionDistanceMode                          _fusionDistanceMode;

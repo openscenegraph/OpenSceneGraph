@@ -66,8 +66,8 @@ class SG_EXPORT CullStack
         /** Returns the current CullingMode.*/
         CullingMode getCullingMode() const { return _cullingMode; }
 
-        void setLODBias(float bias) { _LODBias = bias; }
-        float getLODBias() const    { return _LODBias; }
+        void setLODScale(float bias) { _LODScale = bias; }
+        float getLODScale() const    { return _LODScale; }
         
         void setSmallFeatureCullingPixelSize(float value) { _smallFeatureCullingPixelSize=value; }
         float getSmallFeatureCullingPixelSize() const { return _smallFeatureCullingPixelSize; }
@@ -163,7 +163,7 @@ class SG_EXPORT CullStack
         void popCullingSet();
 
         CullingMode                                                 _cullingMode;
-        float                                                       _LODBias;
+        float                                                       _LODScale;
         float                                                       _smallFeatureCullingPixelSize;
 
         // base set of shadow volume occluder to use in culling.

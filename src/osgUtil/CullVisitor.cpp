@@ -132,9 +132,9 @@ void CullVisitor::reset()
     
 }
 
-float CullVisitor::getDistanceToEyePoint(const Vec3& pos, bool withLODBias) const
+float CullVisitor::getDistanceToEyePoint(const Vec3& pos, bool withLODScale) const
 {
-    if (withLODBias) return (pos-getEyeLocal()).length()*getLODBias();
+    if (withLODScale) return (pos-getEyeLocal()).length()*getLODScale();
     else return (pos-getEyeLocal()).length();
 }
 
@@ -143,13 +143,13 @@ inline float distance(const osg::Vec3& coord,const osg::Matrix& matrix)
     return -(coord[0]*matrix(0,2)+coord[1]*matrix(1,2)+coord[2]*matrix(2,2)+matrix(3,2));
 }
 
-float CullVisitor::getDistanceFromEyePoint(const osg::Vec3& pos, bool withLODBias) const
+float CullVisitor::getDistanceFromEyePoint(const osg::Vec3& pos, bool withLODScale) const
 {
     const Matrix& matrix = *_modelviewStack.back();
     float dist = distance(pos,matrix);
     
-    if (withLODBias) return dist*getLODBias();
-    else return dist*getLODBias();
+    if (withLODScale) return dist*getLODScale();
+    else return dist*getLODScale();
 }
 
 void CullVisitor::popProjectionMatrix()
@@ -561,7 +561,7 @@ void CullVisitor::apply(Impostor& node)
 
     float distance2 = (eyeLocal-bs.center()).length2();
     if (!_impostorActive ||
-        distance2*_LODBias*_LODBias<node.getImpostorThreshold2() ||
+        distance2*_LODScale*_LODScale<node.getImpostorThreshold2() ||
         distance2<bs.radius2()*2.0f)
     {
         // outwith the impostor distance threshold therefore simple

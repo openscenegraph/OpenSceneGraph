@@ -82,8 +82,8 @@ echo osglight glider.osg
 osglight glider.osg
 more memleaks.log
 
-echo osgimpostor Town.osg
-osgimpostor Town.osg
+echo osgimpostor
+osgimpostor
 more memleaks.log
 
 echo osgmultitexture cessnafire.osg

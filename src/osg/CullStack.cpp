@@ -5,7 +5,7 @@ using namespace osg;
 CullStack::CullStack()
 {
     _cullingMode = ENABLE_ALL_CULLING;
-    _LODBias = 1.0f;
+    _LODScale = 1.0f;
     _smallFeatureCullingPixelSize = 2.0f;
     _frustumVolume=-1.0f;
     _bbCornerNear = 0;

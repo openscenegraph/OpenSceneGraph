@@ -64,7 +64,9 @@ class SG_EXPORT DisplaySettings : public osg::Referenced
             QUAD_BUFFER,
             ANAGLYPHIC,
             HORIZONTAL_SPLIT,
-            VERTICAL_SPLIT
+            VERTICAL_SPLIT,
+            LEFT_EYE,
+            RIGHT_EYE
         };
         
         void setStereoMode(StereoMode mode) { _stereoMode = mode; }

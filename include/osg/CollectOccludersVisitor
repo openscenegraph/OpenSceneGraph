@@ -26,8 +26,8 @@ class SG_EXPORT CollectOccludersVisitor : public osg::NodeVisitor, public osg::C
 
         virtual void reset();
 
-        virtual float getDistanceToEyePoint(const Vec3& pos, bool withLODBias) const;
-        virtual float getDistanceFromEyePoint(const Vec3& pos, bool withLODBias) const;
+        virtual float getDistanceToEyePoint(const Vec3& pos, bool withLODScale) const;
+        virtual float getDistanceFromEyePoint(const Vec3& pos, bool withLODScale) const;
 
         virtual void apply(osg::Node&);
         virtual void apply(osg::Transform& node);

@@ -1,0 +1,76 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.75C-SGI [en] (X11; I; IRIX64 6.5 IP27) [Netscape]">
+   <title>OSG Documentation</title>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" link="#0000EE" vlink="#551A8B" alink="#FF0000">
+
+<img SRC="OpenSceneGraphBanner_Distribution.jpg" height=77 width=640>
+
+<h1>
+<b><i><u>Stereo</u></i></b></h1>
+The OSG has support for stereo out of the box.  Currently both anaglyphic stereo (i.e. red/green glasses)
+and quad buffered stereo (i.e. active stereo using shutter glasses, or passive stereo using polarised
+projectors & glasses).  It is planned to extend this support horizontal and
+virtual window split based stereo implementations. 
+
+Almost all OSG applications have the potential for support simply by setting
+the relevent environmental variables, or via command line arguments.  Little or
+no code changes will be required, the support is handled transparently inside
+osgUtil::SceneView's handling of rendering.
+
+If the user is planning to use head tracked stereo, or a cave then it is
+currently recommend to set it via a VR toolkit such as VRJuggler, in this
+case refer to the VR toolkits handling of stereo, and do not invoke the
+OSG's native support, i.e. keep all the stereo specific environment set to
+OFF, or set the values to off within there own applications.
+
+The environmental variables of interest:
+
+    OSG_STEREO          ON              turn stereo on.
+    OSG_STEREO          OFF             turn stereo off (default)
+
+    OSG_STEREO_MODE     ANAGLYPHIC      use anaglyphic stereo when in stereo (default).
+    OSG_STEREO_MODE     QUAD_BUFFER     use quad buffered stereo when in stereo.
+
+    OSG_SCREEN_DISTANCE 0.50            set the distance the viewer is from screen in metres (default shown)
+    OSG_SCREEN_HEIGHT   0.26            set the height if image on the screen in metres (default shown)
+
+Command line arguments can be used to override these settings:
+
+    -stereo               Switch on stereo.
+    -stereo ON            Switch on stereo.
+    -stereo OFF           Switch off stereo.
+    -stereo ANAGLYPHIC    Switch on ANAGLYPHIC stereo.
+    -stereo QUAD_BUFFER   Switch on QUAD_BUFFER stereo.
+
+Examples:
+
+    To invoke stereo from the comandline:
+
+      sgv -stereo cow.osg
+
+    To invoke quad buffered stereo from the commandline:
+
+      sgv -stereo QUAD_BUFFER cow.osg
+
+    To force all apps to start up in quad buffered stereo (if system supports it)
+
+      export OSG_STEREO=ON
+      export OSG_STEREO_MODE=QUAD_BUFFER
+
+      sgv cow.osg
+
+    To set quad buffered stereo to the default, but use the commandline to
+    switch stereo on:
+
+      export OSG_STEREO=OFF
+      export OSG_STEREO_MODE=QUAD_BUFFER
+
+      sgv -stereo cow.osg
+  
+
+</body>
+</html>

@@ -1118,9 +1118,9 @@ void PrimitiveShapeVisitor::apply(const Box& box)
     _functor.vertex(top_2);
     _functor.vertex(top_3);
 
-    _functor.vertex(base_2);
-    _functor.vertex(base_3);
     _functor.vertex(base_4);
+    _functor.vertex(base_3);
+    _functor.vertex(base_2);
     _functor.vertex(base_1);
 
     _functor.end();

@@ -12,7 +12,7 @@
 
 <H2>Inheritance:</H2>
 <APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=95>
-<param name=classes value="Mosg::Node,M,CEffect,MEffect.html,CAnisotropicLighting,MAnisotropicLighting.html">
+<param name=classes value="Mosg::Group,M,CEffect,MEffect.html,CAnisotropicLighting,MAnisotropicLighting.html">
 <param name=before value="M,M,M">
 <param name=after value="Md_SP,Md_,M">
 <param name=indent value="0,1,2">
@@ -79,12 +79,6 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>setEnabled</B>(bool v)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const osg::Node* <B>getChild</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   osg::Node* <B>getChild</B>()
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setChild</B>(osg::Node* child)
-<DT>
 <IMG ALT="o" SRC=icon2.gif>inline   int <B>getNumTechniques</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Technique.html">Technique</A>* <B>getTechnique</B>(int i)
@@ -98,16 +92,13 @@
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>addTechnique</B>(<!1><A HREF="Technique.html">Technique</A>* tech)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>dirtyTechniques</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>inherited_traverse</B>(osg::NodeVisitor &amp;nv)
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
 <IMG ALT="o" SRC=icon2.gif>enum  <B>TechniqueSelection</B>
-</DL></P>
-
-<P><DL>
-<DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>computeBound</B>() const 
 </DL></P>
 
 </DL>

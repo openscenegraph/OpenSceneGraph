@@ -23,24 +23,31 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.9.1">Validator</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.9.2">Validator</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.9.2">Validator</A></B>(<!1><A HREF="Effect.html">Effect</A>* effect)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.9.3">Validator</A></B>(<!1><A HREF="Effect.html">Effect</A>* effect)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.9.3">Validator</A></B>(const <!1><A HREF="Validator.html#DOC.2.9.3">Validator</A> &amp;copy, const osg::CopyOp &amp;copyop = osg::CopyOp::SHALLOW_COPY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.9.4">Validator</A></B>(const <!1><A HREF="Validator.html#DOC.2.9.4">Validator</A> &amp;copy, const osg::CopyOp &amp;copyop = osg::CopyOp::SHALLOW_COPY)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.9.4">META_StateAttribute</A></B>(<!1><A HREF="osgFX.html">osgFX</A>, <!1><A HREF="Validator.html">Validator</A>, 0x56616C69)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.9.5">META_StateAttribute</A></B>(<!1><A HREF="osgFX.html">osgFX</A>, <!1><A HREF="Validator.html">Validator</A>, <!1><A HREF="Validator.html#DOC.2.9.1.1">VALIDATOR</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.9.5">apply</A></B>(osg::State &amp;state) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.9.6">apply</A></B>(osg::State &amp;state) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int <B><A HREF="#DOC.2.9.9">compare</A></B>(const osg::StateAttribute &amp;sa) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.9.7">disable</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int <B><A HREF="#DOC.2.9.11">compare</A></B>(const osg::StateAttribute &amp;sa) const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum <B><A HREF="#DOC.2.9.1"></A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.9.6">~Validator</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.9.8">~Validator</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Validator.html">Validator</A>&amp; <B><A HREF="#DOC.2.9.7">operator=</A></B>(const <!1><A HREF="Validator.html">Validator</A> &amp;)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Validator.html">Validator</A>&amp; <B><A HREF="#DOC.2.9.9">operator=</A></B>(const <!1><A HREF="Validator.html">Validator</A> &amp;)
 </DL></P>
 
 </DL>
@@ -56,36 +63,50 @@ class will then choose the first technique that could be validated in all
 active rendering contexts.</BLOCKQUOTE>
 <DL>
 
-<A NAME="Validator"></A>
+<A NAME=""></A>
 <A NAME="DOC.2.9.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum </B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="VALIDATOR"></A>
+<A NAME="DOC.2.9.1.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> VALIDATOR</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="Validator"></A>
+<A NAME="DOC.2.9.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Validator()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Validator"></A>
-<A NAME="DOC.2.9.2"></A>
+<A NAME="DOC.2.9.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Validator(<!1><A HREF="Effect.html">Effect</A>* effect)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Validator"></A>
-<A NAME="DOC.2.9.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Validator(const <!1><A HREF="Validator.html#DOC.2.9.3">Validator</A> &amp;copy, const osg::CopyOp &amp;copyop = osg::CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="DOC.2.9.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Validator(const <!1><A HREF="Validator.html#DOC.2.9.4">Validator</A> &amp;copy, const osg::CopyOp &amp;copyop = osg::CopyOp::SHALLOW_COPY)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="META_StateAttribute"></A>
-<A NAME="DOC.2.9.4"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_StateAttribute(<!1><A HREF="osgFX.html">osgFX</A>, <!1><A HREF="Validator.html">Validator</A>, 0x56616C69)</B></TT>
+<A NAME="DOC.2.9.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_StateAttribute(<!1><A HREF="osgFX.html">osgFX</A>, <!1><A HREF="Validator.html">Validator</A>, <!1><A HREF="Validator.html#DOC.2.9.1.1">VALIDATOR</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.9.5"></A>
+<A NAME="DOC.2.9.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void apply(osg::State &amp;state) const </B></TT>
 <DL><DT><DD></DL><P>
+<A NAME="disable"></A>
+<A NAME="DOC.2.9.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void disable()</B></TT>
+<DL><DT><DD></DL><P>
 <A NAME="~Validator"></A>
-<A NAME="DOC.2.9.6"></A>
+<A NAME="DOC.2.9.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Validator()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator="></A>
-<A NAME="DOC.2.9.7"></A>
+<A NAME="DOC.2.9.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Validator.html">Validator</A>&amp; operator=(const <!1><A HREF="Validator.html">Validator</A> &amp;)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="compare"></A>
-<A NAME="DOC.2.9.9"></A>
+<A NAME="DOC.2.9.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   int compare(const osg::StateAttribute &amp;sa) const </B></TT>
 <DL><DT><DD></DL><P></DL>
 

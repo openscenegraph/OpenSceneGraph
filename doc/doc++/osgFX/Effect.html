@@ -12,7 +12,7 @@
 
 <H2>Inheritance:</H2>
 <APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=215>
-<param name=classes value="Mosg::Node,M,CEffect,MEffect.html,CSpecularHighlights,MSpecularHighlights.html,CScribe,MScribe.html,CCartoon,MCartoon.html,CBumpMapping,MBumpMapping.html,CAnisotropicLighting,MAnisotropicLighting.html">
+<param name=classes value="Mosg::Group,M,CEffect,MEffect.html,CSpecularHighlights,MSpecularHighlights.html,CScribe,MScribe.html,CCartoon,MCartoon.html,CBumpMapping,MBumpMapping.html,CAnisotropicLighting,MAnisotropicLighting.html">
 <param name=before value="M,M,M|_,MR_,MR_,MR_,Mr_">
 <param name=after value="Md_,M,M,M,M,M,M">
 <param name=indent value="0,1,1,1,1,1,1">
@@ -46,42 +46,37 @@
 <DD><I> optional: set effect parameters to produce a visually significant result to be used in demo applications like osgfxbrowser.</I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.4.11">traverse</A></B>(osg::NodeVisitor &amp;nv)
+<DD><I>custom traversal </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.4.26">getEnabled</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.4.24">getEnabled</A></B>() const 
 <DD><I>get whether the effect is enabled or not </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.4.27">setEnabled</A></B>(bool v)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.4.25">setEnabled</A></B>(bool v)
 <DD><I>set whether the effect is enabled or not </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::Node* <B><A HREF="#DOC.2.4.28">getChild</A></B>() const 
-<DD><I>get the const child node </I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   osg::Node* <B><A HREF="#DOC.2.4.29">getChild</A></B>()
-<DD><I>get the child node </I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.4.30">setChild</A></B>(osg::Node* child)
-<DD><I>set the child node </I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int <B><A HREF="#DOC.2.4.31">getNumTechniques</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int <B><A HREF="#DOC.2.4.26">getNumTechniques</A></B>() const 
 <DD><I>get the number of techniques defined for this effect </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Technique.html">Technique</A>* <B><A HREF="#DOC.2.4.32">getTechnique</A></B>(int i)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Technique.html">Technique</A>* <B><A HREF="#DOC.2.4.27">getTechnique</A></B>(int i)
 <DD><I>get the i-th technique </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Technique.html">Technique</A>* <B><A HREF="#DOC.2.4.33">getTechnique</A></B>(int i) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Technique.html">Technique</A>* <B><A HREF="#DOC.2.4.28">getTechnique</A></B>(int i) const 
 <DD><I>get the i-th const technique </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int <B><A HREF="#DOC.2.4.34">getSelectedTechnique</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int <B><A HREF="#DOC.2.4.29">getSelectedTechnique</A></B>() const 
 <DD><I>get the index of the currently selected technique </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.4.35">selectTechnique</A></B>(int i)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.4.30">selectTechnique</A></B>(int i)
 <DD><I>select a technique or enable automatic detection </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.4.36">addTechnique</A></B>(<!1><A HREF="Technique.html">Technique</A>* tech)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.4.31">addTechnique</A></B>(<!1><A HREF="Technique.html">Technique</A>* tech)
 <DD><I>add a technique to the effect </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.4.37">dirtyTechniques</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.4.32">dirtyTechniques</A></B>()
 <DD><I>force rebuilding of techniques on next traversal </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.4.33">inherited_traverse</A></B>(osg::NodeVisitor &amp;nv)
+<DD><I>default traversal </I>
 </DL></P>
 
 <P><DL>
@@ -95,9 +90,7 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Effect.html">Effect</A>&amp; <B><A HREF="#DOC.2.4.13">operator=</A></B>(const <!1><A HREF="Effect.html">Effect</A> &amp;)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.4.14">computeBound</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.4.15">define_techniques</A></B>() = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.4.14">define_techniques</A></B>() = 0
 <DD><I> abstract method to be implemented in derived classes; its purpose if to create the techniques that can be used for obtaining the desired effect.</I>
 </DL></P>
 
@@ -116,10 +109,9 @@ often using different OpenGL extensions. The active technique can be
 selected either manually, with selectTechnique(), or automatically, in which
 case the first technique that is supported by all active rendering contexts 
 is chosen.
-If you are an Effect user, then simply use it as a single-child group.
-Create an instance of your desired effect, add it to your scene graph (it
-is a Node) and call its setChild() method to set its child node as you 
-would do with a Group.
+If you are an Effect user, then simply use it as a node group. Create an 
+instance of your desired effect, add it to your scene graph and call its 
+addChild() method to add a child node as you would do with a Group.
 If you are an Effect developer, you will have to implement the method
 define_techniques() to define the different techniques that can be used
 for obtaining the desired effect. In define_techniques() you will usually
@@ -185,6 +177,7 @@ is to do nothing.
 <A NAME="traverse"></A>
 <A NAME="DOC.2.4.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void traverse(osg::NodeVisitor &amp;nv)</B></TT>
+<DD>custom traversal 
 <DL><DT><DD></DL><P>
 <A NAME="~Effect"></A>
 <A NAME="DOC.2.4.12"></A>
@@ -194,12 +187,8 @@ is to do nothing.
 <A NAME="DOC.2.4.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Effect.html">Effect</A>&amp; operator=(const <!1><A HREF="Effect.html">Effect</A> &amp;)</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="computeBound"></A>
-<A NAME="DOC.2.4.14"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool computeBound() const </B></TT>
-<DL><DT><DD></DL><P>
 <A NAME="define_techniques"></A>
-<A NAME="DOC.2.4.15"></A>
+<A NAME="DOC.2.4.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool define_techniques() = 0</B></TT>
 <DD>
 abstract method to be implemented in derived classes; its purpose
@@ -208,64 +197,54 @@ desired effect. You will usually call addTechnique() inside
 this method.
 <DL><DT><DD></DL><P>
 <A NAME="getEnabled"></A>
-<A NAME="DOC.2.4.26"></A>
+<A NAME="DOC.2.4.24"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool getEnabled() const </B></TT>
 <DD>get whether the effect is enabled or not 
 <DL><DT><DD></DL><P>
 <A NAME="setEnabled"></A>
-<A NAME="DOC.2.4.27"></A>
+<A NAME="DOC.2.4.25"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setEnabled(bool v)</B></TT>
 <DD>set whether the effect is enabled or not 
 <DL><DT><DD></DL><P>
-<A NAME="getChild"></A>
-<A NAME="DOC.2.4.28"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const osg::Node* getChild() const </B></TT>
-<DD>get the const child node 
-<DL><DT><DD></DL><P>
-<A NAME="getChild"></A>
-<A NAME="DOC.2.4.29"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   osg::Node* getChild()</B></TT>
-<DD>get the child node 
-<DL><DT><DD></DL><P>
-<A NAME="setChild"></A>
-<A NAME="DOC.2.4.30"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setChild(osg::Node* child)</B></TT>
-<DD>set the child node 
-<DL><DT><DD></DL><P>
 <A NAME="getNumTechniques"></A>
-<A NAME="DOC.2.4.31"></A>
+<A NAME="DOC.2.4.26"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   int getNumTechniques() const </B></TT>
 <DD>get the number of techniques defined for this effect 
 <DL><DT><DD></DL><P>
 <A NAME="getTechnique"></A>
-<A NAME="DOC.2.4.32"></A>
+<A NAME="DOC.2.4.27"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Technique.html">Technique</A>* getTechnique(int i)</B></TT>
 <DD>get the i-th technique 
 <DL><DT><DD></DL><P>
 <A NAME="getTechnique"></A>
-<A NAME="DOC.2.4.33"></A>
+<A NAME="DOC.2.4.28"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Technique.html">Technique</A>* getTechnique(int i) const </B></TT>
 <DD>get the i-th const technique 
 <DL><DT><DD></DL><P>
 <A NAME="getSelectedTechnique"></A>
-<A NAME="DOC.2.4.34"></A>
+<A NAME="DOC.2.4.29"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   int getSelectedTechnique() const </B></TT>
 <DD>get the index of the currently selected technique 
 <DL><DT><DD></DL><P>
 <A NAME="selectTechnique"></A>
-<A NAME="DOC.2.4.35"></A>
+<A NAME="DOC.2.4.30"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void selectTechnique(int i)</B></TT>
 <DD>select a technique or enable automatic detection 
 <DL><DT><DD></DL><P>
 <A NAME="addTechnique"></A>
-<A NAME="DOC.2.4.36"></A>
+<A NAME="DOC.2.4.31"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void addTechnique(<!1><A HREF="Technique.html">Technique</A>* tech)</B></TT>
 <DD>add a technique to the effect 
 <DL><DT><DD></DL><P>
 <A NAME="dirtyTechniques"></A>
-<A NAME="DOC.2.4.37"></A>
+<A NAME="DOC.2.4.32"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void dirtyTechniques()</B></TT>
 <DD>force rebuilding of techniques on next traversal 
+<DL><DT><DD></DL><P>
+<A NAME="inherited_traverse"></A>
+<A NAME="DOC.2.4.33"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void inherited_traverse(osg::NodeVisitor &amp;nv)</B></TT>
+<DD>default traversal 
 <DL><DT><DD></DL><P></DL>
 <HR>
 <DL><DT><B>Direct child classes:

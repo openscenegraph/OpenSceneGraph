@@ -254,7 +254,11 @@ String& String::operator = (const String& str)
 void String::set(const std::string& text)
 {
     clear();
-    std::copy(text.begin(),text.end(),std::back_inserter(*this));
+    for ( std::string::const_iterator it = text.begin(); it != text.end(); ++it )
+    {
+        unsigned int charcode = (unsigned char )*it;
+        push_back( charcode );
+    }
 }
 
 void String::set(const wchar_t* text)

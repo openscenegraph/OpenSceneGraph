@@ -23,9 +23,19 @@
 
 namespace osgSim {
 
-class Sector : public osg::Referenced
+class Sector : public osg::Object
 {
     public:
+    
+        Sector() {}
+        
+        Sector(const Sector& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY):
+            osg::Object(copy,copyop) {}
+
+        virtual const char *libraryName() const { return "osgSim"; }
+        virtual const char *className() const { return "Sector"; }
+        virtual bool isSameKindAs(const osg::Object *obj) const { return dynamic_cast<const Sector *>(obj) != 0; }
+    
         virtual float operator() (const osg::Vec3& /*eyeLocal*/) const = 0;
 
     protected:
@@ -42,7 +52,7 @@ class OSGSIM_EXPORT AzimRange
             _sinAzim(0.0f),
             _cosAngle(-1.0f),
             _cosFadeAngle(-1.0f) {}
-
+            
         void setAzimuthRange(float minAzimuth,float maxAzimuth,float fadeAngle=0.0f);
 
 
@@ -116,7 +126,13 @@ class OSGSIM_EXPORT AzimSector : public Sector, public AzimRange
             Sector(),
             AzimRange() {}
     
+        AzimSector(const AzimSector& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY):
+            Sector(copy,copyop),
+            AzimRange(copy) {}
+
         AzimSector(float minAzimuth,float maxAzimuth,float fadeAngle=0.0f);
+
+        META_Object(osgSim,AzimSector)
 
         virtual float operator() (const osg::Vec3& eyeLocal) const;
 
@@ -135,9 +151,14 @@ class OSGSIM_EXPORT ElevationSector : public Sector, public ElevationRange
             Sector(),
             ElevationRange() {}
             
+        ElevationSector(const ElevationSector& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY):
+            Sector(copy,copyop),
+            ElevationRange(copy) {}
             
         ElevationSector(float minElevation,float maxElevation,float fadeAngle=0.0f);
     
+        META_Object(osgSim,ElevationSector)
+
         virtual float operator() (const osg::Vec3& eyeLocal) const;
         
     protected:
@@ -160,7 +181,14 @@ class OSGSIM_EXPORT AzimElevationSector : public Sector, public AzimRange, publi
             AzimRange(),
             ElevationRange() {}
     
+        AzimElevationSector(const AzimElevationSector& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY):
+            Sector(copy,copyop),
+            AzimRange(copy),
+            ElevationRange(copy) {}
+
         AzimElevationSector(float minAzimuth,float maxAzimuth,float minElevation,float maxElevation,float fadeAngle=0.0f);
+
+        META_Object(osgSim,AzimElevationSector)
 
         virtual float operator() (const osg::Vec3& eyeLocal) const;
 
@@ -180,7 +208,15 @@ class OSGSIM_EXPORT ConeSector : public Sector
             _cosAngle(-1.0f),
             _cosAngleFade(-1.0f) {}
 
+        ConeSector(const ConeSector& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY):
+            Sector(copy,copyop),
+            _axis(copy._axis),
+            _cosAngle(copy._cosAngle),
+            _cosAngleFade(copy._cosAngleFade) {}
+
         ConeSector(const osg::Vec3& axis,float angle,float fadeangle=0.0f);
+
+        META_Object(osgSim,ConeSector)
 
         void setAxis(const osg::Vec3& axis);
         

@@ -20,6 +20,8 @@ using namespace osgUtil;
 
 RenderToTextureStage::RenderToTextureStage()
 {
+    _imageReadPixelFormat = GL_RGBA;
+    _imageReadPixelDataType = GL_UNSIGNED_BYTE;
 }
 
 RenderToTextureStage::~RenderToTextureStage()
@@ -49,6 +51,6 @@ void RenderToTextureStage::draw(osg::State& state,RenderLeaf*& previous)
     }
     
     if (_image.valid())
-        _image->readPixels(_viewport->x(),_viewport->y(),_viewport->width(),_viewport->height(),GL_RGBA,GL_UNSIGNED_BYTE);
+        _image->readPixels(_viewport->x(),_viewport->y(),_viewport->width(),_viewport->height(),_imageReadPixelFormat,_imageReadPixelDataType);
 
 }

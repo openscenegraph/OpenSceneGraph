@@ -45,6 +45,12 @@ class OSGUTIL_EXPORT RenderToTextureStage : public RenderStage
         
         void setImage(osg::Image* image) { _image = image; }
         osg::Image* getImage() { return _image.get(); }
+        
+        void setImageReadPixelFormat(GLenum format) { _imageReadPixelFormat = format; }
+        GLenum getImageReadPixelFormat() const { return _imageReadPixelFormat; }
+
+        void setImageReadPixelDataType(GLenum type) { _imageReadPixelDataType = type; }
+        GLenum getImageReadPixelDataType() const { return _imageReadPixelDataType; }
 
         virtual void draw(osg::State& state,RenderLeaf*& previous);
 
@@ -57,6 +63,8 @@ class OSGUTIL_EXPORT RenderToTextureStage : public RenderStage
         
         osg::ref_ptr<osg::Texture2D> _texture;
         osg::ref_ptr<osg::Image> _image;
+        GLenum                   _imageReadPixelFormat;
+        GLenum                   _imageReadPixelDataType;
 
 };
 

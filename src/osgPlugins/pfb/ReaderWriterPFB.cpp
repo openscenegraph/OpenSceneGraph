@@ -195,6 +195,8 @@ ReaderWriterPFB::ReaderWriterPFB()
 
 ReaderWriterPFB::~ReaderWriterPFB()
 {
+    if (_performerInitialised)
+        pfExit();
 }
 
 
@@ -204,18 +206,18 @@ void ReaderWriterPFB::initPerformer()
 
     _performerInitialised = true;
 
-    pfMultiprocess(0);
-
     pfInit();
+
+    pfMultiprocess(0);
 
     //     FileList::iterator itr;
     //     for(itr=filelist.begin();itr!=filelist.end();++itr)
     //     {
     //         pfdInitConverter((*itr).c_str());
     //     }
+    pfdInitConverter(".pfb");
 
     pfConfig();
-
 }
 
 

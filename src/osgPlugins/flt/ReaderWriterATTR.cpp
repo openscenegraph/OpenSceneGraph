@@ -652,12 +652,13 @@ StateSet* Attr::createOsgStateSet()
     case MAG_FILTER_BICUBIC:
     case MAG_FILTER_BICUBIC_GEQUAL:
     case MAG_FILTER_BICUBIC_LEQUAL:
-        osgTexture->setFilter(osg::Texture::MAG_FILTER, Texture::ANISOTROPIC);
+        osgTexture->setFilter(osg::Texture::MAG_FILTER, Texture::LINEAR);
+        osgTexture->setMaxAnisotropy(2.0f);
         break;
 
 //  case MAG_FILTER_ADD_DETAIL:
 //  case MAG_FILTER_MODULATE_DETAIL:
-//        osgTexture->setFilter(osg::Texture::MAG_FILTER, Texture::ANISOTROPIC);
+//        osgTexture->setFilter(osg::Texture::MAG_FILTER, Texture::LINEAR);
 //        break;
     }
 

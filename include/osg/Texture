@@ -165,7 +165,6 @@ class SG_EXPORT Texture : public StateAttribute
             NEAREST                   = GL_NEAREST,
             NEAREST_MIPMAP_LINEAR     = GL_NEAREST_MIPMAP_LINEAR,
             NEAREST_MIPMAP_NEAREST    = GL_NEAREST_MIPMAP_NEAREST,
-            ANISOTROPIC               = GL_TEXTURE_MAX_ANISOTROPY_EXT
         };
 
 
@@ -175,6 +174,15 @@ class SG_EXPORT Texture : public StateAttribute
         /** Get the texture filter mode.*/
         const FilterMode getFilter(const FilterParameter which) const;
 
+        /** Set the maximum anisotropy value, default value is 1.0 for
+          * no anisotropic filtering.  If hardware does not support anisotropic
+          * filtering then normal filtering is used, equivilant to a max anisotropy value of 1.0.
+          * valid range is 1.0f upwards.  The maximum value depends on the graphics
+          * system being used.*/
+        inline void setMaxAnisotropy(float anis);
+        
+        /** Get the maximum anisotropy value.*/
+        inline float getMaxAnisotropy() const { return _maxAnisotropy; }
 
         enum InternalFormatMode {
             USE_IMAGE_DATA_FORMAT,
@@ -361,8 +369,9 @@ class SG_EXPORT Texture : public StateAttribute
         WrapMode _wrap_t;
         WrapMode _wrap_r;
 
-        FilterMode _min_filter;
-        FilterMode _mag_filter;
+        FilterMode      _min_filter;
+        FilterMode      _mag_filter;
+        float           _maxAnisotropy;
 
         // true if apply tex parameters required. 
         mutable bool _texParamtersDirty;

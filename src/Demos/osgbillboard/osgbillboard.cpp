@@ -180,8 +180,10 @@ osg::Node* createLayer(const osg::Vec3& offset,osg::Image* image,osg::Node* geom
 
         // set up anistropic filtering.
         texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR_MIPMAP_LINEAR);
-        texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::ANISOTROPIC);
+        texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
         
+        texture->setMaxAnisotropy(2.0f);
+
         // add the transform node to root group node.
         top_transform->addChild(createTexturedItem(local_offset,texture,geometry));
 

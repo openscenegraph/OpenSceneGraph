@@ -169,7 +169,7 @@ static void usage( const char *prog, const char *msg )
     osg::notify(osg::NOTICE)<< std::endl;
     osg::notify(osg::NOTICE)<<"options:"<< std::endl;
     osg::notify(osg::NOTICE)<<"    -O option          - ReaderWriter option"<< std::endl;
-    osg::notify(osg::NOTICE)<<"    --compress         - Compress textures."<< std::endl;
+    osg::notify(osg::NOTICE)<<"    --compressed       - Compress textures."<< std::endl;
     osg::notify(osg::NOTICE)<<"    -l libraryName     - load plugin of name libraryName"<< std::endl;
     osg::notify(osg::NOTICE)<<"                         i.e. -l osgdb_pfb"<< std::endl;
     osg::notify(osg::NOTICE)<<"                         Useful for loading reader/writers which can load"<< std::endl;

@@ -1247,7 +1247,7 @@ void Viewer::keyboard(unsigned char key, int x, int y)
 
                     if (density<0.0f) density=0.0f;
 
-                    std::cout<<"setting fog density "<<density<<endl;                    
+                    std::cout<<"setting fog density "<<density<<std::endl;                    
                     
                     globalFog->setDensity(density);
                 }

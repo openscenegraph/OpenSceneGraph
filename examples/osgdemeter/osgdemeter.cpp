@@ -30,8 +30,10 @@ Demeter::Terrain* loadTerrain()
     sprintf(szMediaPath,"..%cdata%cLlano",fileSeparator,fileSeparator);
     Demeter::Settings::GetInstance()->SetMediaPath(szMediaPath);
 
+    Demeter::Settings::GetInstance()->SetTessellateMethod(Demeter::Settings::TM_2D_ROLLONLY);
+
     // Load a terrain that was generated in the Demeter Texture Editor
-    Demeter::Terrain* pTerrain = new Demeter::Terrain();
+    Demeter::Terrain* pTerrain = new Demeter::Terrain(500000,0.0f,0.0f);
     try
     {
 #ifdef _DEBUG

@@ -165,10 +165,14 @@ public:
     void setAxisAlignment(AxisAlignment axis);
     
     void setRotation(const osg::Quat& quat);
-    const osg::Quat& getRotation() const { return _rotation; }
+    void setRotation(unsigned int contextID, const osg::Quat& quat);
+    const osg::Quat& getRotation(unsigned int contextID=0) const { return _rotation[contextID]; }
 
     void setScale(float scale);
-    float getScale() const { return _scale; }
+    void setScale(unsigned int contextID, float scale);
+    float getScale(unsigned int contextID=0) const { return _scale[contextID]; }
+
+    void setScaleAndRotation(unsigned int contextID, float scale,const osg::Quat& quat);
 
     void setAutoUpdateEyeMovementTolerance(float tolerance) { _autoUpdateEyeMovementTolerance = tolerance; }
     float getAutoUpdateEyeMovementTolerance() const { return _autoUpdateEyeMovementTolerance; }
@@ -176,8 +180,8 @@ public:
     void setAutoRotateToScreen(bool autoRotateToScreen);
     bool getAutoRotateToScreen() const { return _autoRotateToScreen; }
 
-    void setAutoScaleToScreen(bool autoScaleToScreen);
-    bool getAutoScaleToScreen() const { return _autoScaleToScreen; }
+    void setAutoScaleToLimitScreenSizeToFontResolution(bool autoScaleToScreen);
+    bool getAutoScaleToLimitScreenSizeToFontResolution() const { return _autoScaleToLimitScreenSizeToFontResolution; }
     
     
 
@@ -244,10 +248,10 @@ public:
         typedef std::vector<osg::Vec3> Coords3;
         typedef std::vector<osg::Vec2> TexCoords;
 
-        Glyphs      _glyphs;
-        Coords2     _coords;
-        Coords3     _transformedCoords;
-        TexCoords   _texcoords;
+        Glyphs                          _glyphs;
+        Coords2                         _coords;
+        osg::buffered_object<Coords3>   _transformedCoords;
+        TexCoords                       _texcoords;
 
         Glyphs getGlyphs() { return _glyphs; }
         const Glyphs getGlyphs() const { return _glyphs; }
@@ -256,8 +260,8 @@ public:
         Coords2& getCoords() { return _coords; }
         const Coords2& getCoords() const { return _coords; }
 
-        Coords3& getTransformedCoords() { return _transformedCoords; }
-        const Coords3& getTransformedCoords() const { return _transformedCoords; }
+        Coords3& getTransformedCoords(unsigned int contexID) { return _transformedCoords[contexID]; }
+        const Coords3& getTransformedCoords(unsigned int contexID) const { return _transformedCoords[contexID]; }
 
         TexCoords& getTexCoords() { return _texcoords; }
         const TexCoords& getTexCoords() const { return _texcoords; }
@@ -286,40 +290,40 @@ protected:
 
     
     // members which have public access.
-    osg::ref_ptr<Font>      _font;
-    unsigned int            _fontWidth;
-    unsigned int            _fontHeight;
-    float                   _characterHeight;
-    float                   _characterAspectRatio;
-    float                   _maximumWidth;
-    float                   _maximumHeight;
+    osg::ref_ptr<Font>                      _font;
+    unsigned int                            _fontWidth;
+    unsigned int                            _fontHeight;
+    float                                   _characterHeight;
+    float                                   _characterAspectRatio;
+    float                                   _maximumWidth;
+    float                                   _maximumHeight;
 
-    String                  _text;
-    osg::Vec3               _position;
-    AlignmentType           _alignment;
-    osg::Quat               _rotation;
-    float                   _scale;
-    float                   _autoUpdateEyeMovementTolerance;
-    bool                    _autoRotateToScreen;
-    bool                    _autoScaleToScreen;
-    Layout                  _layout;
-    osg::Vec4               _color;
-    unsigned int            _drawMode;
+    String                                  _text;
+    osg::Vec3                               _position;
+    AlignmentType                           _alignment;
+    mutable osg::buffered_object<osg::Quat> _rotation;
+    mutable osg::buffered_value<float>      _scale;
+    float                                   _autoUpdateEyeMovementTolerance;
+    bool                                    _autoRotateToScreen;
+    bool                                    _autoScaleToLimitScreenSizeToFontResolution;
+    Layout                                  _layout;
+    osg::Vec4                               _color;
+    unsigned int                            _drawMode;
 
     // iternal map used for rendering. Set up by the computeGlyphRepresentation() method.
-    TextureGlyphQuadMap         _textureGlyphQuadMap;
+    TextureGlyphQuadMap                     _textureGlyphQuadMap;
     
     void computeGlyphRepresentation();
 
     // internal caches of the positioning of the text.
-    osg::Matrix                 _matrix;
-    osg::Vec3                   _offset;
-    osg::Vec3                   _normal;
-    mutable osg::BoundingBox    _textBB;
+    mutable osg::buffered_object<osg::Matrix>   _matrix;
+    osg::Vec3                                   _offset;
+    osg::Vec3                                   _normal;
+    mutable osg::BoundingBox                    _textBB;
 
     void setUpAutoCallback();
-    
     void computePositions();
+    void computePositions(unsigned int contextID);
 
 };
 

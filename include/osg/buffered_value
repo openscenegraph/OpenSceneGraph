@@ -53,16 +53,19 @@ class buffered_value
 
             return _array[pos];
         }
-/* // do we implement the const version???
+
         inline T operator[] (unsigned int pos) const
         {
-            return 0;
+            // automatically resize array.
+            if (_array.size()<=pos)
+                _array.resize(pos+1,0);
+
+            return _array[pos];
         }
-*/        
 
     protected:
     
-        std::vector<T> _array;
+        mutable std::vector<T> _array;
 };
 
 template<class T>
@@ -96,16 +99,20 @@ class buffered_object
 
             return _array[pos];
         }
-/* // do we implement the const version???
-        inline T operator[] (unsigned int pos) const
+
+        inline const T& operator[] (unsigned int pos) const
         {
-            return 0;
+            // automatically resize array.
+            if (_array.size()<=pos)
+                _array.resize(pos+1);
+
+            return _array[pos];
         }
-*/        
+        
 
     protected:
     
-        std::vector<T> _array;
+        mutable std::vector<T> _array;
 };
 
 }

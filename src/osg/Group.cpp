@@ -360,7 +360,7 @@ bool Group::computeBound() const
         ++itr)
     {
         const osg::Transform* transform = (*itr)->asTransform();
-        if (!transform || transform->getReferenceFrame()==osg::Transform::RELATIVE)
+        if (!transform || transform->getReferenceFrame()==osg::Transform::RELATIVE_RF)
         {
             bb.expandBy((*itr)->getBound());
         }
@@ -379,7 +379,7 @@ bool Group::computeBound() const
         ++itr)
     {
         const osg::Transform* transform = (*itr)->asTransform();
-        if (!transform || transform->getReferenceFrame()==osg::Transform::RELATIVE)
+        if (!transform || transform->getReferenceFrame()==osg::Transform::RELATIVE_RF)
         {
             _bsphere.expandRadiusBy((*itr)->getBound());
         }

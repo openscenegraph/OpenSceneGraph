@@ -95,7 +95,7 @@ namespace osgParticle
     
     inline void AccelOperator::beginOperate(Program *prg)
     {
-        if (prg->getReferenceFrame() == ModularProgram::RELATIVE) {
+        if (prg->getReferenceFrame() == ModularProgram::RELATIVE_RF) {
             xf_accel_ = prg->rotateLocalToWorld(accel_);
         } else {
             xf_accel_ = accel_;

@@ -39,12 +39,12 @@ namespace osgParticle
     public:
     
         enum ReferenceFrame {
-            RELATIVE,
-            ABSOLUTE
+            RELATIVE_RF,
+            ABSOLUTE_RF
 #ifdef USE_DEPRECATED_API
             ,
-            RELATIVE_TO_PARENTS=RELATIVE,
-            RELATIVE_TO_ABSOLUTE=ABSOLUTE,
+            RELATIVE_RF_TO_PARENTS=RELATIVE_RF,
+            RELATIVE_RF_TO_ABSOLUTE=ABSOLUTE_RF,
 #endif
         };
         

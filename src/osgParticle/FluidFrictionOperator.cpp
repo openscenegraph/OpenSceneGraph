@@ -37,7 +37,7 @@ void osgParticle::FluidFrictionOperator::operate(Particle *P, double dt)
     
     osg::Vec3 Fr(-R * v.x(), -R * v.y(), -R * v.z());
 
-    if (current_program_->getReferenceFrame() == ModularProgram::RELATIVE) {
+    if (current_program_->getReferenceFrame() == ModularProgram::RELATIVE_RF) {
         Fr = current_program_->rotateLocalToWorld(Fr);
     }
 

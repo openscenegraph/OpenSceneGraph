@@ -52,12 +52,12 @@ bool ParticleProcessor_readLocalData(osg::Object &obj, osgDB::Input &fr)
 
     if (fr[0].matchWord("referenceFrame")) {
         if (fr[1].matchWord("RELATIVE_TO_ABSOLUTE") || fr[1].matchWord("ABSOLUTE")) {
-            myobj.setReferenceFrame(osgParticle::ParticleProcessor::ABSOLUTE);
+            myobj.setReferenceFrame(osgParticle::ParticleProcessor::ABSOLUTE_RF);
             fr += 2;
             itAdvanced = true;
         }
         if (fr[1].matchWord("RELATIVE_TO_PARENTS") || fr[1].matchWord("RELATIVE")) {
-            myobj.setReferenceFrame(osgParticle::ParticleProcessor::RELATIVE);
+            myobj.setReferenceFrame(osgParticle::ParticleProcessor::RELATIVE_RF);
             fr += 2;
             itAdvanced = true;
         }
@@ -129,10 +129,10 @@ bool ParticleProcessor_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     fw.indent() << "referenceFrame ";
     switch (myobj.getReferenceFrame())
     {
-    case osgParticle::ParticleProcessor::ABSOLUTE:
+    case osgParticle::ParticleProcessor::ABSOLUTE_RF:
         fw << "ABSOLUTE" << std::endl;
         break;
-    case osgParticle::ParticleProcessor::RELATIVE:
+    case osgParticle::ParticleProcessor::RELATIVE_RF:
     default:
         fw << "RELATIVE" << std::endl;
     }

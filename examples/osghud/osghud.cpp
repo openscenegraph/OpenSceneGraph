@@ -102,7 +102,7 @@ osg::Node* createHUD()
 
         text->setFont(timesFont);
         text->setPosition(position);
-        text->setText("And add an osg::ModelViewMatrix set to ABSOLUTE to ensure\nit remains independent from any external model view matrices.");
+        text->setText("And add an osg::ModelViewMatrix set to ABSOLUTE_RF to ensure\nit remains independent from any external model view matrices.");
         
         position += delta;
     } 
@@ -148,7 +148,7 @@ osg::Node* createHUD()
 
     // create the hud.
     osg::MatrixTransform* modelview_abs = new osg::MatrixTransform;
-    modelview_abs->setReferenceFrame(osg::Transform::ABSOLUTE);
+    modelview_abs->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
     modelview_abs->setMatrix(osg::Matrix::identity());
     modelview_abs->addChild(geode);
 

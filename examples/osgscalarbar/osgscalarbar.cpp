@@ -84,7 +84,7 @@ osg::Node * createScalarBar_HUD()
     stateset->setRenderBinDetails(11, "RenderBin");
 
     osg::MatrixTransform * modelview = new osg::MatrixTransform;
-    modelview->setReferenceFrame(osg::Transform::ABSOLUTE);
+    modelview->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
     osg::Matrixd matrix(osg::Matrixd::scale(1000,1000,1000) * osg::Matrixd::translate(120,10,0)); // I've played with these values a lot and it seems to work, but I have no idea why
     modelview->setMatrix(matrix);
     modelview->addChild(geode);

@@ -141,7 +141,7 @@ bool DOFTransform::computeLocalToWorldMatrix(osg::Matrix& matrix,osg::NodeVisito
     l2w.postMult(getInversePutMatrix());
 
     // finally.
-    if (_referenceFrame==RELATIVE)
+    if (_referenceFrame==RELATIVE_RF)
     {
         matrix.preMult(l2w);
     }
@@ -209,7 +209,7 @@ bool DOFTransform::computeWorldToLocalMatrix(osg::Matrix& matrix,osg::NodeVisito
     //and impose inverse put:
     w2l.postMult(getPutMatrix());
 
-    if (_referenceFrame==RELATIVE)
+    if (_referenceFrame==RELATIVE_RF)
     {
         //finally:
         matrix.postMult(w2l);

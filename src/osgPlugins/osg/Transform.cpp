@@ -51,12 +51,12 @@ bool Transform_readLocalData(Object& obj, Input& fr)
 
     if (fr[0].matchWord("referenceFrame")) {
         if (fr[1].matchWord("RELATIVE_TO_ABSOLUTE") || fr[1].matchWord("ABSOLUTE") ) {
-            transform.setReferenceFrame(Transform::ABSOLUTE);
+            transform.setReferenceFrame(Transform::ABSOLUTE_RF);
             fr += 2;
             iteratorAdvanced = true;
         }
         if (fr[1].matchWord("RELATIVE_TO_PARENTS") || fr[1].matchWord("RELATIVE")) {
-            transform.setReferenceFrame(Transform::RELATIVE);
+            transform.setReferenceFrame(Transform::RELATIVE_RF);
             fr += 2;
             iteratorAdvanced = true;
         }
@@ -72,10 +72,10 @@ bool Transform_writeLocalData(const Object& obj, Output& fw)
 
     fw.indent() << "referenceFrame ";
     switch (transform.getReferenceFrame()) {
-        case Transform::ABSOLUTE:
+        case Transform::ABSOLUTE_RF:
             fw << "ABSOLUTE\n";
             break;
-        case Transform::RELATIVE:
+        case Transform::RELATIVE_RF:
         default:
             fw << "RELATIVE\n";
     };

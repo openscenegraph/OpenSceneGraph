@@ -209,7 +209,7 @@ osg::Node* createHUD()
 
     // create HUD
     osg::MatrixTransform* modelview_abs = new osg::MatrixTransform;
-    modelview_abs->setReferenceFrame(osg::Transform::ABSOLUTE);
+    modelview_abs->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
     modelview_abs->setMatrix(osg::Matrix::identity());
     modelview_abs->addChild(group);
 

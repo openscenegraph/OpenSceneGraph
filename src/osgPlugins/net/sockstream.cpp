@@ -899,7 +899,7 @@ bool sockbuf::atmark () const
 // return true, if the read pointer for socket points to an
 // out of band data
 {
-#if !(defined(__CYGWIN__) || defined(WIN32))
+#if !defined(WIN32) || defined(__CYGWIN__) 
 	int arg;
   if (::ioctl (rep->sock, SIOCATMARK, &arg) == -1)
     throw sockerr (errno, "sockbuf::atmark", sockname.c_str());
@@ -911,7 +911,8 @@ bool sockbuf::atmark () const
   return arg!=0;
 }
 
-#if !(defined(__CYGWIN__) || defined(WIN32))
+#if !defined(WIN32)
+//#if !(defined(__CYGWIN__) || defined(WIN32))
 int sockbuf::pgrp () const
 // return the process group id that would receive SIGIO and SIGURG
 // signals

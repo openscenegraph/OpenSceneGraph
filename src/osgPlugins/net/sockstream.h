@@ -49,7 +49,9 @@
 #else
 #  include <windows.h>
 #  include <Wininet.h>
+#ifdef _MSC_VER 
 #  pragma comment(lib, "Wininet")
+#endif
 #endif
 
 #ifdef __sgi
@@ -316,7 +318,7 @@ class sockbuf: public streambuf
 #if defined(__CYGWIN__) || !defined(WIN32)
         void async(bool set=true) const;
 #endif
-#if !defined(__CYGWIN__) || !defined(WIN32)
+#if !defined(WIN32)
         int  pgrp() const;
         int  pgrp(int new_pgrp) const;
         void closeonexec(bool set=true) const;

@@ -1,5 +1,4 @@
 #include <osgGA/TrackballManipulator>
-#include <osg/Types>
 #include <osg/Notify>
 
 using namespace osg;

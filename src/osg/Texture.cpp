@@ -27,7 +27,7 @@ using namespace osg;
 // by completely deleted once the appropriate OpenGL context
 // is set.
 typedef std::vector<GLuint> TextureObjectVector;
-typedef std::map<osg::uint,TextureObjectVector> DeletedTextureObjectCache;
+typedef std::map<unsigned int,TextureObjectVector> DeletedTextureObjectCache;
 static DeletedTextureObjectCache s_deletedTextureObjectCache;
 
 

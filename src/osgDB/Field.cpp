@@ -297,12 +297,12 @@ bool Field::isUInt() const
 }
 
 
-bool Field::matchUInt(osg::uint i) const
+bool Field::matchUInt(unsigned int i) const
 {
     getFieldType();
     if (_fieldType==INTEGER)
     {
-        return (osg::uint) strtoul(_fieldCache,NULL,0)==i;
+        return (unsigned int) strtoul(_fieldCache,NULL,0)==i;
     }
     else
     {
@@ -311,7 +311,7 @@ bool Field::matchUInt(osg::uint i) const
 }
 
 
-bool Field::getUInt(osg::uint& i) const
+bool Field::getUInt(unsigned int& i) const
 {
     getFieldType();
     if (_fieldType==INTEGER)

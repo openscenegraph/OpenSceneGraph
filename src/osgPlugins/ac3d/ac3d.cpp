@@ -589,9 +589,9 @@ osg::Group *ac_load_object(FILE *f,const ACObject *parent)
                             /** calc surface normal **/
                             if (asurf.num_vertref >= 3) {
                                 osg::Vec3 norm;
-                                osg::ushort i1=(*nusidx)[0];
-                                osg::ushort i2=(*nusidx)[1];
-                                osg::ushort i3=(*nusidx)[2];
+                                unsigned short i1=(*nusidx)[0];
+                                unsigned short i2=(*nusidx)[1];
+                                unsigned short i3=(*nusidx)[2];
                                 osgtri_calc_normal((*vertpool)[i1], 
                                     (*vertpool)[i2], 
                                     (*vertpool)[i3], norm);

@@ -130,8 +130,8 @@ public:
 		}
 	}
 	void readfile(std::ifstream &fin) { 
-		osg::uchar tokid, type;
-		osg::ushort nits;
+		unsigned char tokid, type;
+		unsigned short nits;
 		if (!fin.eof()) {
 			fin.read((char *)&tokid,1);fin.read((char *)&type,1);
 			fin.read((char *)&nits,sizeof(unsigned short));
@@ -147,15 +147,15 @@ public:
 	}
 	void writefile(std::ofstream &fout) { // write binary file
 		if (numItems<32767 && tokenId<256) {
-			osg::uchar tokid=tokenId, type=TypeId;
+			unsigned char tokid=tokenId, type=TypeId;
 			fout.write((char *)&tokid, 1);fout.write((char *)&type,1);
 			fout.write((char *)&numItems,sizeof(unsigned short));
 		} else {
 		}
 		fout.write((char *)storage, storeSize*numItems);
 	}
-	inline osg::uchar getToken() const { return tokenId;}
-	inline osg::uchar getType() const { return TypeId;}
+	inline unsigned char getToken() const { return tokenId;}
+	inline unsigned char getType() const { return TypeId;}
 	inline unsigned short getNum() const { return numItems;}
 	inline unsigned char *getstore (unsigned int i) const {
 		return storage+i*storeSize;
@@ -224,7 +224,7 @@ public:
 					int *in;
 					uint *uin;
 					short *sh;
-					osg::ushort *ush;
+					unsigned short *ush;
 					long *ln;
 					unsigned long *uln;
 					double *dbl;
@@ -359,7 +359,7 @@ public:
 	    return output; 	// to enable cascading, monkey copy from osg\plane or \quat, Ubyte4, vec2,3,4,... 
 	}
 private:
-	osg::ushort tokenId, TypeId; // these are longer than standard field; are extended field length
+	unsigned short tokenId, TypeId; // these are longer than standard field; are extended field length
 	uint numItems;
 	unsigned char *storage; // data relating
 	uint storeSize; // size*numItems in storage

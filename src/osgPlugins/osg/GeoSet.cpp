@@ -3,7 +3,6 @@
 #endif
 
 #include "osg/GeoSet"
-#include "osg/Types"
 #include "osg/Notify"
 
 #include "osgDB/Registry"

@@ -38,7 +38,6 @@
 #include <osg/Vec2>
 
 #include <osgText/Font>
-#include <osgText/EncodedText>
 
 #include <string>
 

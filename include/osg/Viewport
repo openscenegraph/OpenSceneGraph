@@ -15,7 +15,6 @@
 #define OSG_VIEWPORT 1
 
 #include <osg/StateAttribute>
-#include <osg/Types>
 #include <osg/Matrix>
 
 namespace osg {

@@ -833,10 +833,6 @@ SOURCE=..\..\Include\Osg\BlendFunc
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\Types
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\Include\Osg\UnitTestFramework
 # End Source File
 # Begin Source File

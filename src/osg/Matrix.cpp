@@ -13,7 +13,6 @@
 #include <osg/Matrix>
 #include <osg/Quat>
 #include <osg/Notify>
-#include <osg/Types>
 #include <osg/Math>
 
 #include <stdlib.h>

@@ -14,7 +14,6 @@
 #ifndef OSGDB_FIELD
 #define OSGDB_FIELD 1
 
-#include <osg/Types>
 #include <osgDB/Export>
 
 #include <string>
@@ -83,8 +82,8 @@ class OSGDB_EXPORT Field
         bool getInt(int& i) const;
 
         bool isUInt() const;
-        bool matchUInt(osg::uint i) const;
-        bool getUInt(osg::uint& i) const;
+        bool matchUInt(unsigned int i) const;
+        bool getUInt(unsigned int& i) const;
 
         bool isFloat() const;
         bool matchFloat(float f) const;

@@ -16,7 +16,6 @@
 
 #include <osg/BoundingBox>
 #include <osg/State>
-#include <osg/Types>
 #include <osg/NodeVisitor>
 #include <osg/Shape>
 #include <osg/buffered_value>

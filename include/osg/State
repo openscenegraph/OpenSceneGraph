@@ -140,10 +140,15 @@ class SG_EXPORT State : public Referenced
 
         inline bool applyTextureMode(unsigned int unit, StateAttribute::GLMode mode,bool enabled)
         {
-            ModeMap& modeMap = getOrCreateTextureModeMap(unit);
-            ModeStack& ms = modeMap[mode];
-            ms.changed = true;
-            return applyMode(mode,enabled,ms);
+            if (setActiveTextureUnit(unit))
+            {
+                ModeMap& modeMap = getOrCreateTextureModeMap(unit);
+                ModeStack& ms = modeMap[mode];
+                ms.changed = true;
+                return applyMode(mode,enabled,ms);
+            }
+            else
+                return false;
         }
 
         /** Apply an attribute if required. */
@@ -156,10 +161,15 @@ class SG_EXPORT State : public Referenced
 
         inline bool applyTextureAttribute(unsigned int unit, const StateAttribute* attribute)
         {
-            AttributeMap& attributeMap = getOrCreateTextureAttributeMap(unit);
-            AttributeStack& as = attributeMap[attribute->getType()];
-            as.changed = true;
-            return applyAttribute(attribute,as);
+            if (setActiveTextureUnit(unit))
+            {
+                AttributeMap& attributeMap = getOrCreateTextureAttributeMap(unit);
+                AttributeStack& as = attributeMap[attribute->getType()];
+                as.changed = true;
+                return applyAttribute(attribute,as);
+            }
+            else
+                return false;
         }
        
         /** Mode has been set externally, update state to reflect this setting.*/

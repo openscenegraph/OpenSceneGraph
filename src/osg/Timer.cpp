@@ -187,11 +187,13 @@ using namespace osg;
 
             _secsPerClick = (double)(cycleval)* 1e-12;
             
+#if 0 // Obsolete
             // this is to force the use of the standard clock in
             // instances which the realtime clock is of such a small
             // size that it will loop too rapidly for proper realtime work.
             // this happens on the O2 for instance.
             if (_cycleCntrSize<=32) _useStandardClock=true;
+#endif // Obsolete
             
         }
 

@@ -29,7 +29,12 @@ void SwitchRecord::endian()
 {
     SSwitch *pSSwitch = (SSwitch*)getData();
 
-    ENDIAN( pSSwitch->dwCurrentMask );
-    ENDIAN( pSSwitch->diWordsInMask );
-    ENDIAN( pSSwitch->diMasks );
+    ENDIAN( pSSwitch->nCurrentMask );
+    ENDIAN( pSSwitch->nMasks );
+    ENDIAN( pSSwitch->nWordsInMask );
+
+    for (int m=0; m < pSSwitch->nMasks*pSSwitch->nWordsInMask; m++)
+    {
+        ENDIAN( pSSwitch->aMask[m] );
+    }
 }

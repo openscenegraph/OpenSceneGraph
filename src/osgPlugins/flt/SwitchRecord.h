@@ -14,15 +14,16 @@ namespace flt {
 struct SSwitch
 {
     SRecHeader    RecHeader;
-    char    szIdent[8];     // // 7 char ASCII ID; 0 terminates
-    uint8    reserved[4];    // Reserved
-    uint32  dwCurrentMask;  // Current mask
-    int32   diWordsInMask;  // Number of 32 bit words required for each mask
-                            // (number of children / 32 + number of children modulo 32)
-    int32   diMasks;        // Number of masks
-//  ???     Mask[1];        // Variable Mask words 
-                            // (length = number of words per mask * number of masks * 4 bytes)
+    char    szIdent[8];         // 7 char ASCII ID; 0 terminates
+    uint8   reserved[4];        // Reserved
+    uint32  nCurrentMask;       // Current mask
+    int32   nMasks;             // Number of masks
+    int32   nWordsInMask;       // Number of 32 bit words required for each mask
+                                // (number of children / 32 + number of children modulo 32)
+    uint32  aMask[1];           // Variable Mask words 
+                                // (length = number of words per mask * number of masks * 4 bytes)
 };
+
 
 
 class SwitchRecord : public PrimNodeRecord

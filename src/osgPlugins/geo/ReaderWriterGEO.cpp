@@ -194,15 +194,15 @@ class ReaderWriterGEO : public ReaderWriter
 					normal_pool= (gfd) ? (gfd->getVec3Arr()):NULL;
 				}
 				if ((*itr).getType()==DB_DSK_PUSH) {
-					curparent= itr-1;
+					curparent= &(*(itr-1));
 				} else if ((*itr).getType()==DB_DSK_POP) {
 					if (curparent) curparent=curparent->getparent();
 				} else {
 					if (curparent) {
 						(*itr).setparent(curparent);
-						curparent->addchild(itr);
+						curparent->addchild(&(*itr));
 					} else {
-						sorted.push_back(itr);
+						sorted.push_back(&(*itr));
 					}
 				}
 			}

@@ -493,8 +493,6 @@ bool SphereSegment::Surface_computeBound(osg::BoundingBox& bbox) const
 
 void SphereSegment::EdgeLine_drawImplementation(osg::State& /* state */) const
 {
-    // FIXME: Disable lighting for this draw routine
-
     const float azIncr = (_azMax - _azMin)/_density;
     const float elevIncr = (_elevMax - _elevMin)/_density;
 
@@ -553,6 +551,33 @@ void SphereSegment::EdgeLine_drawImplementation(osg::State& /* state */) const
                 _centre.z() + _radius*sin(elev));
         }
         glEnd();
+#if 0
+        // Split right
+        glBegin(GL_LINE_STRIP);
+        glVertex3f(
+                _centre.x() + _radius*cos(_elevMin)*sin(_azMax),
+                _centre.y() + _radius*cos(_elevMin)*cos(_azMax),
+                _centre.z() + _radius*sin(_elevMin));
+        glVertex3f(_centre.x(), _centre.y(), _centre.z());
+        glVertex3f(
+                _centre.x() + _radius*cos(_elevMax)*sin(_azMax),
+                _centre.y() + _radius*cos(_elevMax)*cos(_azMax),
+                _centre.z() + _radius*sin(_elevMax));
+        glEnd();
+ 
+        // Split left
+        glBegin(GL_LINE_STRIP);
+        glVertex3f(
+                _centre.x() + _radius*cos(_elevMin)*sin(_azMin),
+                _centre.y() + _radius*cos(_elevMin)*cos(_azMin),
+                _centre.z() + _radius*sin(_elevMin));
+        glVertex3f(_centre.x(), _centre.y(), _centre.z());
+        glVertex3f(
+                _centre.x() + _radius*cos(_elevMax)*sin(_azMin),
+                _centre.y() + _radius*cos(_elevMax)*cos(_azMin),
+                _centre.z() + _radius*sin(_elevMax));
+        glEnd();
+#endif
     }
 }
 

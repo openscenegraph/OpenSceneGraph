@@ -50,7 +50,7 @@ class SG_EXPORT Group : public Node
         virtual bool removeChild( Node *child );
 
         /** Replace specified Node with another Node.
-          * Equivalent to setChild(findChildNum(orignChild),node), 
+          * Equivalent to setChild(getChildIndex(orignChild),node), 
           * see docs for setChild for futher details on implementation.*/
         virtual bool replaceChild( Node *origChild, Node* newChild );
 
@@ -116,10 +116,10 @@ class SG_EXPORT Group : public Node
             return _children.end();
         }
 
-        /** Find the index number of child, return a value between
+        /** Get the index number of child, return a value between
           * 0 and _children.size()-1 if found, if not found then
           * return _children.size().*/
-        inline unsigned int findChildNum( const Node* node ) const
+        inline unsigned int getChildIndex( const Node* node ) const
         {
             for (unsigned int childNum=0;childNum<_children.size();++childNum)
             {

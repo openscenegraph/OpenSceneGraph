@@ -177,6 +177,11 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("-e <x> <y> <w> <h>","Extents of the model to generate");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
     arguments.getApplicationUsage()->addCommandLineOption("--o_cs <coordinates system string>","Set the output coordinates system. The string may be any of the usual GDAL/OGR forms, complete WKT, PROJ.4, EPS");     
+    arguments.getApplicationUsage()->addCommandLineOption("--o_wkt <WKT string>","Set the coordinates system of source imagery or DEM in WellKownText form.");     
+    arguments.getApplicationUsage()->addCommandLineOption("--o_wkt-file <WKT file>","Set the coordinates system of source imagery or DEM by as file containing WellKownText definition.");     
+    arguments.getApplicationUsage()->addCommandLineOption("--cs <coordinates system string>","Set the coordinates system of source imagery or DEM. The string may be any of the usual GDAL/OGR forms, complete WKT, PROJ.4, EPS");     
+    arguments.getApplicationUsage()->addCommandLineOption("--wkt <WKT string>","Set the coordinates system of source imagery or DEM in WellKownText form.");     
+    arguments.getApplicationUsage()->addCommandLineOption("--wkt-file <WKT file>","Set the coordinates system of source imagery or DEM by as file containing WellKownText definition.");     
     arguments.getApplicationUsage()->addCommandLineOption("--skirt-ratio <float>","Set the ratio of skirt height to tile size.");     
     arguments.getApplicationUsage()->addCommandLineOption("--HEIGHT_FIELD","Create a height field database");     
     arguments.getApplicationUsage()->addCommandLineOption("--POLYGONAL","Create a height field database");     
@@ -186,12 +191,12 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("--compressed","Use OpenGL compression on destination imagery");     
     arguments.getApplicationUsage()->addCommandLineOption("--RGB_16","Use 16bit RGB destination imagery");     
     arguments.getApplicationUsage()->addCommandLineOption("--RGB_24","Use 24bit RGB destination imagery");     
-    arguments.getApplicationUsage()->addCommandLineOption("--max-visible-distance-of-top-level","Set the maximum visiable distance that the top most tile can be viewed at");     
-    arguments.getApplicationUsage()->addCommandLineOption("--radius-to-max-visible-distance-ratio","Set the maximum visiable distance ratio for all tiles apart from the top most tile. The maximum visuble distance is computed from the ratio * tile radius.");     
-    arguments.getApplicationUsage()->addCommandLineOption("--no-mip-mapping","Disable mip mapping of textures");     
-    arguments.getApplicationUsage()->addCommandLineOption("--mip-mapping-hardware","Use mip mapped textures, and generate the mipmaps in hardware when available.");     
-    arguments.getApplicationUsage()->addCommandLineOption("--mip-mapping-imagery","Use mip mapped textures, and generate the mipmaps in imagery.");     
-    arguments.getApplicationUsage()->addCommandLineOption("--max-anisotropy","Max anisotropy level to use when texturing, defaults to 1.0.");
+    arguments.getApplicationUsage()->addCommandLineOption("--max_visible_distance_of_top_level","Set the maximum visiable distance that the top most tile can be viewed at");     
+    arguments.getApplicationUsage()->addCommandLineOption("--radius_to_max_visible_distance_ratio","Set the maximum visiable distance ratio for all tiles apart from the top most tile. The maximum visuble distance is computed from the ratio * tile radius.");     
+    arguments.getApplicationUsage()->addCommandLineOption("--no_mip_mapping","Disable mip mapping of textures");     
+    arguments.getApplicationUsage()->addCommandLineOption("--mip_mapping_hardware","Use mip mapped textures, and generate the mipmaps in hardware when available.");     
+    arguments.getApplicationUsage()->addCommandLineOption("--mip_mapping_imagery","Use mip mapped textures, and generate the mipmaps in imagery.");     
+    arguments.getApplicationUsage()->addCommandLineOption("--max_anisotropy","Max anisotropy level to use when texturing, defaults to 1.0.");
 //    arguments.getApplicationUsage()->addCommandLineOption("","");     
 
     // create DataSet.
@@ -228,12 +233,12 @@ int main( int argc, char **argv )
     while (arguments.read("--RGB_16")) { dataset->setTextureType(osgTerrain::DataSet::RGB_16_BIT); }
     while (arguments.read("--RGB_24")) { dataset->setTextureType(osgTerrain::DataSet::RGB_24_BIT); }
 
-    while (arguments.read("--no-mip-mapping")) { dataset->setMipMappingMode(osgTerrain::DataSet::NO_MIP_MAPPING); }
-    while (arguments.read("--mip-mapping-hardware")) { dataset->setMipMappingMode(osgTerrain::DataSet::MIP_MAPPING_HARDWARE); }
-    while (arguments.read("--mip-mapping-imagery")) { dataset->setMipMappingMode(osgTerrain::DataSet::MIP_MAPPING_IMAGERY); }
+    while (arguments.read("--no_mip_mapping")) { dataset->setMipMappingMode(osgTerrain::DataSet::NO_MIP_MAPPING); }
+    while (arguments.read("--mip_mapping_hardware")) { dataset->setMipMappingMode(osgTerrain::DataSet::MIP_MAPPING_HARDWARE); }
+    while (arguments.read("--mip_mapping_imagery")) { dataset->setMipMappingMode(osgTerrain::DataSet::MIP_MAPPING_IMAGERY); }
 
     float maxAnisotropy;
-    while (arguments.read("--max-anisotropy",maxAnisotropy))
+    while (arguments.read("--max_anisotropy",maxAnisotropy))
     {
         dataset->setMaxAnisotropy(maxAnisotropy);
     }
@@ -259,16 +264,51 @@ int main( int argc, char **argv )
     }
 
     float maxVisibleDistanceOfTopLevel;
-    while (arguments.read("--max-visible-distance-of-top-level",maxVisibleDistanceOfTopLevel))
+    while (arguments.read("--max_visible_distance_of_top_level",maxVisibleDistanceOfTopLevel))
     {
         dataset->setMaximumVisibleDistanceOfTopLevel(maxVisibleDistanceOfTopLevel);
     }
 
     float radiusToMaxVisibleDistanceRatio;
-    while (arguments.read("--radius-to-max-visible-distance-ratio",radiusToMaxVisibleDistanceRatio))
+    while (arguments.read("--radius_to_max_visible_distance_ratio",radiusToMaxVisibleDistanceRatio))
     {
         dataset->setRadiusToMaxVisibleDistanceRatio(radiusToMaxVisibleDistanceRatio);
     }
+
+    {
+        // handle any specification of output coordinate system.
+        std::string outputCS;
+        std::string def;
+        if (arguments.read("--o_cs",def))
+        {
+            outputCS = !def.empty() ? SanitizeSRS(def.c_str()) : "";
+            std::cout<<"--o_cs "<<outputCS<<std::endl;
+        }
+        else if (arguments.read("--o_wkt",def))
+        {
+            outputCS = def;
+            std::cout<<"--o_wkt "<<outputCS<<std::endl;
+        }
+        else if (arguments.read("--o_wkt-file",def))
+        {
+            std::ifstream in(def.c_str());
+            if (in)
+            {   
+                outputCS = "";
+                while (!in.eof())
+                {
+                    std::string line;
+                    in >> line;
+                    outputCS += line;
+                }
+                std::cout<<"--o_wkt-file "<<outputCS<<std::endl;
+            }
+        }
+        if (!outputCS.empty()) dataset->setDestinationCoordinateSystem(outputCS);
+    }   
+    
+    
+
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
@@ -276,6 +316,8 @@ int main( int argc, char **argv )
         arguments.getApplicationUsage()->write(std::cout);
         return 1;
     }
+
+
 
 
     // read the input data

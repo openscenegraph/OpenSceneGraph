@@ -235,12 +235,14 @@ void setScene(osg::Group* rootNode)
     geode->setName("BitmapFont");
     geode->addDrawable( text );
 
-//     textMaterial = new osg::Material();
-//     textMaterial->setColorMode( osg::Material::AMBIENT_AND_DIFFUSE);
-//     textMaterial->setDiffuse( osg::Material::FRONT_AND_BACK,TEXT_COL_3D);
-//     textState = new osg::StateSet();
-//     textState->setAttribute(textMaterial );
-//     geode->setStateSet( textState );
+/*
+	osg::Material*  textMaterial = new osg::Material();
+	textMaterial->setColorMode( osg::Material::AMBIENT_AND_DIFFUSE);
+	textMaterial->setDiffuse( osg::Material::FRONT_AND_BACK,TEXT_COL_3D);
+	textState = new osg::StateSet();
+	textState->setAttribute(textMaterial );
+	geode->setStateSet( textState );
+*/
 
     rootNode->addChild(geode);
 
@@ -309,7 +311,8 @@ void setScene(osg::Group* rootNode)
 //     textState->setAttribute(textMaterial );
     textState->setAttribute(transp);
 
-    //    textState->setMode(GL_BLEND,osg::StateAttribute::ON);
+    textState->setMode(GL_BLEND,osg::StateAttribute::ON);
+
     textState->setTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::ON);
     textState->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
     geode->setStateSet( textState );
@@ -463,57 +466,61 @@ protected:
     }
 
 
-    virtual void keyboard(int key, int x, int y)
+    virtual void keyboard(int key, int x, int y, bool keydown)
     {
-        switch(key)
+        if (keydown)
         {
-            case '1':
-                {    // change DrawMode
-                    std::vector<osg::ref_ptr<osgText::Text> >::iterator itr=gTextList.begin();
-                    for(;itr!=gTextList.end();itr++)
-                        (*itr)->setDrawMode(osgText::Text::TEXT ^ (*itr)->getDrawMode());
-                }
-                return;
-            case '2':
-                {    // change DrawMode
-                    std::vector<osg::ref_ptr<osgText::Text> >::iterator itr=gTextList.begin();
-                    for(;itr!=gTextList.end();itr++)
-                        (*itr)->setDrawMode(osgText::Text::BOUNDINGBOX ^ (*itr)->getDrawMode());
-                }
-                return;
-            case '3':
-                {    // change DrawMode
-                    std::vector<osg::ref_ptr<osgText::Text> >::iterator itr=gTextList.begin();
-                    for(;itr!=gTextList.end();itr++)
-                        (*itr)->setDrawMode(osgText::Text::ALIGNMENT ^ (*itr)->getDrawMode());
-                }
-                return;
-            ///////////////////////////////////////////////////////////////////
-            case '4':
-                {    // change BoundingBoxType to GEOMETRY
-                    std::vector<osg::ref_ptr<osgText::Text> >::iterator itr=gTextList.begin();
-                    osgText::Text::BoundingBoxType type=(*itr)->getBoundingBox()==osgText::Text::GLYPH ? 
-                             osgText::Text::GEOMETRY :
-                             osgText::Text::GLYPH;
-                    for(;itr!=gTextList.end();itr++)
-                        (*itr)->setBoundingBox(type);
-                }
-                return;
-            ///////////////////////////////////////////////////////////////////
-            case '5':
-                {    // change the textAlignment
-                    gAlignment=(osgText::Text::AlignmentType)((int)gAlignment+1);
-                    if(gAlignment>osgText::Text::RIGHT_BOTTOM)
-                        gAlignment=osgText::Text::LEFT_TOP;
+            switch(key)
+            {
+                case '1':
+                    {    // change DrawMode
+                        std::vector<osg::ref_ptr<osgText::Text> >::iterator itr=gTextList.begin();
+                        for(;itr!=gTextList.end();itr++)
+                            (*itr)->setDrawMode(osgText::Text::TEXT ^ (*itr)->getDrawMode());
+                    }
+                    return;
+                case '2':
+                    {    // change DrawMode
+                        std::vector<osg::ref_ptr<osgText::Text> >::iterator itr=gTextList.begin();
+                        for(;itr!=gTextList.end();itr++)
+                            (*itr)->setDrawMode(osgText::Text::BOUNDINGBOX ^ (*itr)->getDrawMode());
+                    }
+                    return;
+                case '3':
+                    {    // change DrawMode
+                        std::vector<osg::ref_ptr<osgText::Text> >::iterator itr=gTextList.begin();
+                        for(;itr!=gTextList.end();itr++)
+                            (*itr)->setDrawMode(osgText::Text::ALIGNMENT ^ (*itr)->getDrawMode());
+                    }
+                    return;
+                ///////////////////////////////////////////////////////////////////
+                case '4':
+                    {    // change BoundingBoxType to GEOMETRY
+                        std::vector<osg::ref_ptr<osgText::Text> >::iterator itr=gTextList.begin();
+                        osgText::Text::BoundingBoxType type=(*itr)->getBoundingBox()==osgText::Text::GLYPH ? 
+                                 osgText::Text::GEOMETRY :
+                                 osgText::Text::GLYPH;
+                        for(;itr!=gTextList.end();itr++)
+                            (*itr)->setBoundingBox(type);
+                    }
+                    return;
+                ///////////////////////////////////////////////////////////////////
+                case '5':
+                    {    // change the textAlignment
+                        gAlignment=(osgText::Text::AlignmentType)((int)gAlignment+1);
+                        if(gAlignment>osgText::Text::RIGHT_BOTTOM)
+                            gAlignment=osgText::Text::LEFT_TOP;
 
-                    std::vector<osg::ref_ptr<osgText::Text> >::iterator itr=gTextList.begin();
-                    for(;itr!=gTextList.end();itr++)
-                        (*itr)->setAlignment(gAlignment);
-                }
-                return;
-				default:
-					Viewer::keyboard(key,x,y);
-        };
+                        std::vector<osg::ref_ptr<osgText::Text> >::iterator itr=gTextList.begin();
+                        for(;itr!=gTextList.end();itr++)
+                            (*itr)->setAlignment(gAlignment);
+                    }
+                    return;
+	        default:
+                    break;
+            }
+        }
+	Viewer::keyboard(key,x,y,keydown);
     }
 
 };

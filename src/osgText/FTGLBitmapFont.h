@@ -43,6 +43,15 @@ class FTGL_EXPORT FTGLBitmapFont : public FTFont
         // mrn@changes
         void render( const wchar_t* string, unsigned int renderContext=0);
 
+        /**
+         * Renders a string of characters
+         * 
+         * @param string    unicode string to be output.     
+         */
+        // mrn@changes
+        void render( std::vector<int>::const_iterator first,
+                     std::vector<int>::const_iterator last,
+                     unsigned int renderContext=0);
         // attributes
         
     private:

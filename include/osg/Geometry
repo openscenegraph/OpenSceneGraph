@@ -54,17 +54,17 @@ class SG_EXPORT Geometry : public Drawable
         void setColorBinding(AttributeBinding ab) { _colorBinding = ab; }
         AttributeBinding getColorBinding() const { return _colorBinding; }
 
-        void setColorArray(AttributeArray* array) { _colorArray = array;  if (!_colorArray.valid()) _colorBinding=BIND_OFF; dirtyDisplayList(); }
-        AttributeArray* getColorArray() { return _colorArray.get(); }
-        const AttributeArray* getColorArray() const { return _colorArray.get(); }
+        void setColorArray(Array* array) { _colorArray = array;  if (!_colorArray.valid()) _colorBinding=BIND_OFF; dirtyDisplayList(); }
+        Array* getColorArray() { return _colorArray.get(); }
+        const Array* getColorArray() const { return _colorArray.get(); }
 
 
-        typedef std::vector< ref_ptr<AttributeArray> >  TexCoordArrayList;
+        typedef std::vector< ref_ptr<Array> >  TexCoordArrayList;
 
 
-        void setTexCoordArray(unsigned int unit,AttributeArray*);
-        AttributeArray* getTexCoordArray(unsigned int unit);
-        const AttributeArray* getTexCoordArray(unsigned int unit) const;
+        void setTexCoordArray(unsigned int unit,Array*);
+        Array* getTexCoordArray(unsigned int unit);
+        const Array* getTexCoordArray(unsigned int unit) const;
         
         unsigned int getNumTexCoordArrays() const {  return _texCoordList.size(); }
         TexCoordArrayList& getTexCoordArrayList() { return _texCoordList; }
@@ -118,7 +118,7 @@ class SG_EXPORT Geometry : public Drawable
         ref_ptr<Vec3Array>          _normalArray;
         
         AttributeBinding            _colorBinding;
-        ref_ptr<AttributeArray>     _colorArray;
+        ref_ptr<Array>              _colorArray;
         
         TexCoordArrayList           _texCoordList;
 

@@ -15,18 +15,18 @@
    */
 
 /* trpage_sys.h
-	System specific declarations.
-	*/
+    System specific declarations.
+    */
 
 #ifndef trpage_sys_h_
 #define trpage_sys_h_
 
-#if defined(_WIN32)
-/*	*********************
-	System Specific Section.
-	This is currently set up for win32.
-	*********************
-	*/
+#if defined(_WIN32) && !defined(__CYGWIN__)
+/*    *********************
+    System Specific Section.
+    This is currently set up for win32.
+    *********************
+    */
 
 #include <windows.h>
 
@@ -39,10 +39,19 @@
 #define TRPGDELETEFILE(file) DeleteFile((file))
 
 #ifndef int64
-// 64 bit long value.  Need this for really big files.
-typedef __int64 int64;
+ // 64 bit long value.  Need this for really big files.
+// #ifdef __CYGWIN__
+// typedef long long int64;
+// #else
+ typedef __int64 int64;
+// #endif
 #endif
 
+#ifdef __MINGW32__
+#include <stdio.h>
+#endif
+
+      
 #else   // Unix
 
 #include <stdio.h>
@@ -75,6 +84,10 @@ typedef int64_t  int64;
 
 #elif defined(__ghs__) && defined(__LL_Is_64)
 typedef long long int64;
+
+#elif defined(__CYGWIN__)
+typedef long long int64;
+#include <windows.h>
 
 #else
 typedef int int64;  // DON'T KNOW WHAT TO DO

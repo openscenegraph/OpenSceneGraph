@@ -45,6 +45,25 @@ bool FragmentProgram_readLocalData(Object& obj, Input& fr)
 	}
         fragmentProgram.setFragmentProgram(code);
     }
+
+    if( fr.matchSequence("file %s")) {
+	    std::string filename = fr[1].getStr();
+	    fr += 2;
+	    iteratorAdvanced = true;
+
+	    ifstream vfstream( filename.c_str() );
+
+	    if( vfstream ) {
+		    ostringstream vstream;
+		    char ch;
+
+		    /* xxx better way to transfer a ifstream to a string?? */
+		    while( vfstream.get(ch)) vstream.put(ch);
+
+		    fragmentProgram.setFragmentProgram( vstream.str() );
+	    }
+    }
+    
     return iteratorAdvanced;
 }
 

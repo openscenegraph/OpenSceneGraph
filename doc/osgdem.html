@@ -37,22 +37,22 @@ terrain databases</u></h2>
 </ol>
 <hr style="width: 100%; height: 2px;">
 <h3><a name="Quick_step_by_step_guide:"></a>Quick step by step guide:</h3>
-Follows are a the steps required to get osgTerrain/osgdem compiling and
-an example of how to use it to process imagery and dem's to gernerate a
+What follows are the steps required to get osgTerrain/osgdem compiling and
+an example of how to use it to process imagery and DEM's to generate a
 paged databases.<br>
 <br>
 1) Download, compile &amp; install GDAL. <br>
 &nbsp;<br>
 2) Get the latest OSG in CVS.<br>
 <br>
-3) For unix Make users, make a copy of Make/dependencies and change the
+3) For UNIX 'make' users, make a copy of Make/dependencies and change the
 GDAL_INSTALL entry to:<br>
 <br>
 <div style="margin-left: 40px;"><span style="font-weight: bold;">set
 GDAL_INSTALL = true </span><br>
 <span style="font-weight: bold;"></span></div>
 <span style="font-weight: bold;"><br>
-&nbsp;&nbsp;&nbsp; </span>Then tell the build to use you custom
+&nbsp;&nbsp;&nbsp; </span>Then tell the build to use your custom
 dependencies by setting the environmental variable OSG_DEPENDENCIES to
 the absolute path to your file i.e.:<br>
 <br>
@@ -60,12 +60,12 @@ the absolute path to your file i.e.:<br>
 OSG_DEPENDENCIES=/home/billgates/my_osg_dependencies</span><br>
 </div>
 &nbsp;<br>
-4) Rebuild the OSG &amp; install (if you havn't already used <br>
+4) Rebuild the OSG &amp; install (if you haven't already).<br>
 &nbsp;<br>
-5) Oh make sure you have a couple Gb of spare disk space,&nbsp; because
-you going need it :-) <br>
+5) Oh, make sure you have a couple of GB of spare disk space,&nbsp; because
+you're going to need it :-) <br>
 &nbsp;<br>
-6) Download some data, for this example I'm using the PegoutSound data
+6) Download some data, for this example I'm using the Puget Sound data
 at: <br>
 &nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a
@@ -77,11 +77,11 @@ at: <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Download Texture Map:
 16384 &times; 16384 PNG: 268MB &nbsp;<br>
 <br>
-7) To avoid aliasing artifcates when accessing data I use <a
+7) To avoid aliasing artifacts when accessing data I use <a
  href="http://www.remotesensing.org/gdal/gdal_utilities.html">GDAL
 utilitiy
 programs</a> to generate overviews (basically mip maps stored in the
-.tif)
+.tiff format)
 via: <br>
 &nbsp;<br>
 <br>
@@ -101,7 +101,7 @@ g<span style="font-weight: bold;">daladdo -r average ps_texture_16k.tif
 <br>
 8) Now its time to run the osgdem example to generate your PagedLOD
 database, the more levels you generate the longer it will take
-(exponentially so), osgdem is just a front end to osgTerrain::DataSet
+(exponentially so). 'osgdem' is just a front end to osgTerrain::DataSet
 where all the hard work happens. Here's what to run : <br>
 <br>
 <div style="margin-left: 40px;"><span style="font-weight: bold;">osgdem
@@ -117,7 +117,7 @@ where all the hard work happens. Here's what to run : <br>
 <span style="font-weight: bold;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp; -v 0.1 \</span><br style="font-weight: bold;">
 <span style="font-weight: bold;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
--o pegout.ive</span><br>
+-o puget.ive</span><br>
 </div>
 <br>
 Then go away for lunch, afternoon and tea, as generating this much data
@@ -129,18 +129,18 @@ The command line options used above are: <br>
 <div style="margin-left: 40px;">&nbsp;<br>
 The first part the --xx and --yy is specifying the size of the pixels
 in meters, since these png/tif don't have any geospatial data of their
-own, if you have geospetialised files then you won't need this.<br>
+own, if you have geospatialised files then you won't need this.<br>
 <br>
 The second part -t &lt;filename&gt; is the option for specificing the
-texture maps to use, you can use as many as you wish,
+texture maps to use, you can use as many times as you wish,
 osgTerrain::DataSet will moziac them into a single database. &nbsp;<br>
 <br>
-The third part -d is the option for specificying the digital elevation
+The third part -d is the option for specifying the digital elevation
 maps to use, as with the textures you can use as many as you like. <br>
 &nbsp;<br>
-The -l option specificies the maximum number of levels to generate, if
+The -l option specificies the maximum number of levels to generate. If
 you use a large number then the database generation will stop once the
-max resolution of you source data is matched by the outputed database.
+max resolution of your source data is matched by the resulting database.
 The database generation will decend further where there is high res
 source
 data, decend less where there is lower res data. <br>
@@ -148,15 +148,15 @@ data, decend less where there is lower res data. <br>
 The -v option specifies the scaling factor which the height is
 multiplied by.<br>
 <br>
-And finally the -o &lt;filename&gt; is the output format to generat the
+And finally the -o &lt;filename&gt; is the output format to generate the
 databases in. This will be the name of the topmost file in the one you
 should load. It can be a .ive or a .osg. The .ive is faster and has
 embedded files.&nbsp;<br>
 </div>
 <br>
-9) Time to play, simply load the database in your app (make sure it
-support the osgDB::DatabasePager see osgsimplepager
-example for detaiils). The standard osgviewer works just fine so
+9) Time to play. Simply load the database in your app (make sure it
+supports the osgDB::DatabasePager - see osgsimplepager
+example for details). The standard osgviewer works just fine so,
 here goes: <br>
 &nbsp;<br>
 &nbsp;&nbsp; <span style="font-weight: bold;">osgviewer output.ive </span><br>
@@ -170,13 +170,13 @@ loading tiles that are still being written by osgdem, but it doesn't
 crash
 here under Linux, so you might be lucky too. <br>
 <br>
-11) If you imagery and dem's have geospatial coords associated with
-them then the -xx, --yy and -v options will not be required making the
+11) If your imagery and DEMs have geospatial coords associated with
+them then the -xx, --yy and -v options will not be required, making 
 it much simplier to specify - you just need to specifiy options such as
 <span style="font-weight: bold;">-t imge.tif</span> and -d terran.dt0
-without any need to set to coordinate system.<br>
+without any need to set the coordinate system.<br>
 <br>
-12) osgdem can automatically handle moziacing of sets of files, these
+12) osgdem can automatically handle mosaicing of sets of files. These
 can be specified via a sequence of <span style="font-weight: bold;">-t
 &lt;filename&gt;</span> and <span style="font-weight: bold;">-d
 &lt;filename&gt;</span> pairs on the commandline, or via <span

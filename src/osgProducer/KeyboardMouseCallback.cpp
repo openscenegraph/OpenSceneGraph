@@ -16,9 +16,16 @@ void KeyboardMouseCallback::keyPress( Producer::KeySymbol key )
     osg::ref_ptr<EventAdapter> event = new EventAdapter;
     event->adaptKeyPress(getTime(),key);
 
+
+#ifdef WIN32
+    if (_escapeKeySetsDone && 
+        event->getKey()==VK_ESCAPE) _done = true;
+#endif
+
     // check against adapted key symbol.    
     if (_escapeKeySetsDone && 
         event->getKey()==osgGA::GUIEventAdapter::KEY_Escape) _done = true;
+
 
     _eventQueueMutex.lock();
     _eventQueue.push_back(event);

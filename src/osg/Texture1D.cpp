@@ -65,18 +65,7 @@ int Texture1D::compare(const StateAttribute& sa) const
 void Texture1D::setImage(Image* image)
 {
     // delete old texture objects.
-    for(TextureNameList::iterator itr=_handleList.begin();
-                               itr!=_handleList.end();
-                               ++itr)
-    {
-        if (*itr != 0)
-        {
-            // contact global texture object handler to delete texture objects
-            // in appropriate context.
-            // glDeleteTextures( 1L, (const GLuint *)itr );
-            *itr = 0;
-        }
-    }
+    dirtyTextureObject();
 
     _image = image;
 }

@@ -6,10 +6,6 @@
 
 #include <string.h>
 
-typedef void (APIENTRY * GLTexImage3DProc)      ( GLenum target, GLint level, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const GLvoid *pixels);
-typedef void (APIENTRY * GLTexSubImage3DProc)   ( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *pixels);
-typedef void (APIENTRY * GLCopyTexSubImageProc) ( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height );
-typedef void (APIENTRY * GLUBuild3DMipMapsProc) ( GLenum target, GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *data);
 
 
 using namespace osg;
@@ -78,18 +74,7 @@ int Texture3D::compare(const StateAttribute& sa) const
 void Texture3D::setImage(Image* image)
 {
     // delete old texture objects.
-    for(TextureNameList::iterator itr=_handleList.begin();
-                               itr!=_handleList.end();
-                               ++itr)
-    {
-        if (*itr != 0)
-        {
-            // contact global texture object handler to delete texture objects
-            // in appropriate context.
-            // glDeleteTextures( 1L, (const GLuint *)itr );
-            *itr = 0;
-        }
-    }
+    dirtyTextureObject();
 
     _image = image;
 }
@@ -97,18 +82,18 @@ void Texture3D::setImage(Image* image)
 
 void Texture3D::apply(State& state) const
 {
-    static bool s_texturing_supported = strncmp((const char*)glGetString(GL_VERSION),"1.2",3)>=0 ||
-                                        isGLExtensionSupported("GL_EXT_texture3D");
-                                        
-    if (!s_texturing_supported)
-    {
-        notify(WARN)<<"Warning: Texture3D::apply(..) failed, 3D texturing is not support by your OpenGL drivers."<<std::endl;
-        return;
-    }
 
     // get the contextID (user defined ID of 0 upwards) for the 
     // current OpenGL context.
     const uint contextID = state.getContextID();
+    
+    Extensions* extensions = getExtensions(contextID);
+                                        
+    if (!extensions->isTexture3DSupported)
+    {
+        notify(WARN)<<"Warning: Texture3D::apply(..) failed, 3D texturing is not support by OpenGL driver."<<std::endl;
+        return;
+    }
 
     // get the globj for the current contextID.
     GLuint& handle = getTextureObject(contextID);
@@ -176,16 +161,12 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
     if (!image || !image->data())
         return;
 
-    static GLTexImage3DProc s_glTexImage3D = (GLTexImage3DProc) getGLExtensionFuncPtr("glTexImage3D","glTexImage3DEXT");
-    if (!s_glTexImage3D)
-    {
-        notify(WARN) << "Warning:: Texture3D::applyTexImage3D(..) failed, 3D texturing not supported by your OpenGL drivers."<<std::endl;
-        return;
-    }
-
     // get the contextID (user defined ID of 0 upwards) for the 
     // current OpenGL context.
     const uint contextID = state.getContextID();
+
+    Extensions* extensions = getExtensions(contextID);
+
 
     // update the modified tag to show that it is upto date.
     getModifiedTag(contextID) = image->getModifiedTag();
@@ -209,30 +190,23 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
     if( _min_filter == LINEAR || _min_filter == NEAREST )
     {
         numMimpmapLevels = 1;
-        s_glTexImage3D( target, 0, _internalFormat,
-            image->s(), image->t(), image->r(), 0,
-            (GLenum)image->getPixelFormat(),
-            (GLenum)image->getDataType(),
-            image->data() );
+        extensions->glTexImage3D( target, 0, _internalFormat,
+                                  image->s(), image->t(), image->r(), 0,
+                                  (GLenum)image->getPixelFormat(),
+                                  (GLenum)image->getDataType(),
+                                  image->data() );
     }
     else
     {
         if(!image->isMipmap())
         {
 
-            static GLUBuild3DMipMapsProc s_gluBuild3DMipmaps = (GLUBuild3DMipMapsProc) getGLUExtensionFuncPtr("gluBuild3DMipmaps");
-            if (!s_gluBuild3DMipmaps)
-            {
-                notify(WARN) << "Warning:: Texture3D::applyTexImage3D(..) failed, gluBuild3DMipmaps not supported by your OpenGL drivers."<<std::endl;
-                return;
-            }
-
             numMimpmapLevels = 1;
 
-             s_gluBuild3DMipmaps( target, _internalFormat,
-                 image->s(),image->t(),image->r(),
-                 (GLenum)image->getPixelFormat(), (GLenum)image->getDataType(),
-                 image->data() );
+            extensions->gluBuild3DMipmaps( target, _internalFormat,
+                                           image->s(),image->t(),image->r(),
+                                           (GLenum)image->getPixelFormat(), (GLenum)image->getDataType(),
+                                           image->data() );
 
         }
         else
@@ -253,11 +227,11 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
                 if (depth == 0)
                     depth = 1;
 
-                s_glTexImage3D( target, k, _internalFormat,
-                     width, height, depth, 0,
-                    (GLenum)image->getPixelFormat(),
-                    (GLenum)image->getDataType(),
-                    image->getMipmapData(k));
+                extensions->glTexImage3D( target, k, _internalFormat,
+                                          width, height, depth, 0,
+                                          (GLenum)image->getPixelFormat(),
+                                          (GLenum)image->getDataType(),
+                                          image->getMipmapData(k));
 
                 width >>= 1;
                 height >>= 1;
@@ -275,18 +249,11 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
 
 void Texture3D::copyTexSubImage3D(State& state, int xoffset, int yoffset, int zoffset, int x, int y, int width, int height )
 {
-    static GLCopyTexSubImageProc s_glCopyTexSubImage3D = (GLCopyTexSubImageProc) getGLExtensionFuncPtr("glCopyTexSubImage3D","glCopyTexSubImage3DEXT");
-    if (!s_glCopyTexSubImage3D)
-    {
-        notify(WARN) << "Warning:: Texture3D::copyTexSubImage3D(..) failed, 3D texture copy sub image not supported by your OpenGL drivers."<<std::endl;
-        return;
-    }
-
-
     const uint contextID = state.getContextID();
 
     // get the globj for the current contextID.
     GLuint& handle = getTextureObject(contextID);
+    Extensions* extensions = getExtensions(contextID);
     
     if (handle)
     {
@@ -294,7 +261,7 @@ void Texture3D::copyTexSubImage3D(State& state, int xoffset, int yoffset, int zo
         // we have a valid image
         glBindTexture( GL_TEXTURE_3D, handle );
         applyTexParameters(GL_TEXTURE_3D,state);
-        s_glCopyTexSubImage3D( GL_TEXTURE_3D, 0, xoffset,yoffset,zoffset, x, y, width, height);
+        extensions->glCopyTexSubImage3D( GL_TEXTURE_3D, 0, xoffset,yoffset,zoffset, x, y, width, height);
 
         /* Redundant, delete later */
         glBindTexture( GL_TEXTURE_3D, handle );
@@ -306,5 +273,85 @@ void Texture3D::copyTexSubImage3D(State& state, int xoffset, int yoffset, int zo
     else
     {
         notify(WARN)<<"Warning: Texture3D::copyTexSubImage3D(..) failed, cannot not copy to a non existant texture."<<std::endl;
+    }
+}
+
+Texture3D::Extensions* Texture3D::getExtensions(uint contextID)
+{
+    typedef buffered_value< ref_ptr<Extensions> > BufferedExtensions;
+    static BufferedExtensions s_extensions;
+    
+    if (!s_extensions[contextID]) s_extensions[contextID] = new Extensions;
+    
+    return s_extensions[contextID].get();
+}
+
+Texture3D::Extensions::Extensions()
+{
+    isTexture3DFast = isGLExtensionSupported("GL_EXT_texture3D");
+
+    if (isTexture3DFast) isTexture3DSupported = true;
+    else isTexture3DSupported = strncmp((const char*)glGetString(GL_VERSION),"1.2",3)>=0;
+    
+    glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &maxTexture3DSize);
+}
+
+void Texture3D::Extensions::glTexImage3D( GLenum target, GLint level, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const GLvoid *pixels)
+{
+    typedef void (APIENTRY * GLTexImage3DProc)      ( GLenum target, GLint level, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const GLvoid *pixels);
+    static GLTexImage3DProc s_glTexImage3D = (GLTexImage3DProc) getGLExtensionFuncPtr("glTexImage3D","glTexImage3DEXT");
+    
+    if (s_glTexImage3D)
+    {
+        (*s_glTexImage3D)( target, level, internalFormat, width, height, depth, border, format, type, pixels);
+    }
+    else
+    {
+        notify(WARN)<<"Error: glTexImage3D not supported by OpenGL driver"<<std::endl;
+    }
+}
+
+void Texture3D::Extensions::glTexSubImage3D( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *pixels)
+{
+    typedef void (APIENTRY * GLTexSubImage3DProc)   ( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *pixels);
+    static GLTexSubImage3DProc s_glTexSubImage3D = (GLTexSubImage3DProc) getGLExtensionFuncPtr("glTexSubImage3D","glTexSubImage3DEXT");
+
+    if (s_glTexSubImage3D)
+    {
+        (*s_glTexSubImage3D)( target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, pixels);
+    }
+    else
+    {
+        notify(WARN)<<"Error: glTexSubImage3D not supported by OpenGL driver"<<std::endl;
+    }
+}
+
+void Texture3D::Extensions::glCopyTexSubImage3D( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height )
+{
+    typedef void (APIENTRY * GLCopyTexSubImageProc) ( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height );
+    static GLCopyTexSubImageProc s_glCopyTexSubImage3D = (GLCopyTexSubImageProc) getGLExtensionFuncPtr("glCopyTexSubImage3D","glCopyTexSubImage3DEXT");
+    
+    if (s_glCopyTexSubImage3D)
+    {
+        (*s_glCopyTexSubImage3D)(target, level, xoffset, yoffset, zoffset, x, y, width, height);
+    }
+    else
+    {
+        notify(WARN)<<"Error: glCopyTexSubImage3D not supported by OpenGL driver"<<std::endl;
+    }
+}
+
+void Texture3D::Extensions::gluBuild3DMipmaps( GLenum target, GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *data)
+{
+    typedef void (APIENTRY * GLUBuild3DMipMapsProc) ( GLenum target, GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *data);
+    static GLUBuild3DMipMapsProc s_gluBuild3DMipmaps = (GLUBuild3DMipMapsProc) getGLUExtensionFuncPtr("gluBuild3DMipmaps");
+
+    if (s_gluBuild3DMipmaps)
+    {
+        (*s_gluBuild3DMipmaps)(target, internalFormat, width, height, depth, format, type, data);
+    }
+    else
+    {
+        notify(WARN)<<"Error: gluBuild3DMipmaps not supported by OpenGL driver"<<std::endl;
     }
 }

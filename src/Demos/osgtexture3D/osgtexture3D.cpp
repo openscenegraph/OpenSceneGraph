@@ -49,7 +49,7 @@ class ConstructStateCallback : public osg::NodeCallback
             }
 
             // get max 3D texture size
-            int textureSize;
+            GLint textureSize;
             glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &textureSize);
             if (textureSize > 256)
                 textureSize = 256;

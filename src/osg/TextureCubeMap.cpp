@@ -146,23 +146,7 @@ int TextureCubeMap::compare(const StateAttribute& sa) const
 
 void TextureCubeMap::setImage( Face face, Image* image)
 {
-    // Quick and dirty implementation committed by ABJ.
-    if (face == 0)
-    {
-        // delete old texture objects.
-        for(TextureNameList::iterator itr=_handleList.begin();
-                                   itr!=_handleList.end();
-                                   ++itr)
-        {
-            if (*itr != 0)
-            {
-                // contact global texture object handler to delete texture objects
-                // in appropriate context.
-                // glDeleteTextures( 1L, (const GLuint *)itr );
-                *itr = 0;
-            }
-        }
-    }
+    dirtyTextureObject();
     _images[face] = image;
 }
 

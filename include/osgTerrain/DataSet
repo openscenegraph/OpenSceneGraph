@@ -377,6 +377,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
                 {
                     if (&rhs==this) return *this;
                     _positionStack = rhs._positionStack;
+                    return *this;
                 }
                 
                 bool operator == (const iterator& rhs) const

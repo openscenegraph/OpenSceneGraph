@@ -78,7 +78,7 @@ class SG_EXPORT ApplicationUsage
 
         void write(std::ostream& output,const UsageMap& um,unsigned int widthOfOutput=80,bool showDefaults=false,const UsageMap& ud=UsageMap());
         
-        void write(std::ostream& output,unsigned int type=COMMAND_LINE_OPTION|ENVIRONMENTAL_VARIABLE|KEYBOARD_MOUSE_BINDING, unsigned int widthOfOutput=80,bool showDefaults=false);
+        void write(std::ostream& output,unsigned int type=COMMAND_LINE_OPTION, unsigned int widthOfOutput=80,bool showDefaults=false);
 
     protected:
     

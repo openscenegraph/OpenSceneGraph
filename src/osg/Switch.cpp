@@ -163,7 +163,7 @@ bool Switch::setSingleChildOn(unsigned int pos)
     return true;
 }
 
-#ifdef USE_DEPRECTATED_API
+#ifdef USE_DEPRECATED_API
 void Switch::setValue(int value)
 {
     switch(value)

@@ -8,11 +8,13 @@
    compatibility (if implemented).  VERSION is 
    stored in the 2nd 4 bytes of the file */
 
-#define VERSION_0002 0x00000002
-#define VERSION_0003 0x00000003
-#define VERSION_0004 0x00000004
-#define VERSION_0005 0x00000005
-#define VERSION      VERSION_0005
+#define VERSION_0001 1
+#define VERSION_0002 2
+#define VERSION_0003 3
+#define VERSION_0004 4
+#define VERSION_0005 5
+#define VERSION_0006 6
+#define VERSION      VERSION_0006
 
 
 /* The BYTE_SEX tag is used to check the endian

@@ -143,6 +143,13 @@ void ClusterCullingCallback::set(const osg::Vec3& controlPoint, const osg::Vec3&
     _radius = radius;
 }
 
+void ClusterCullingCallback::transform(const osg::Matrixd& matrix)
+{
+    _controlPoint = Vec3d(_controlPoint)*matrix;
+    _normal = Matrixd::transform3x3(Matrixd::inverse(matrix),Vec3d(_normal));
+    _normal.normalize();
+}
+
 
 bool ClusterCullingCallback::cull(osg::NodeVisitor* nv, osg::Drawable* , osg::State*) const
 {
@@ -162,7 +169,10 @@ bool ClusterCullingCallback::cull(osg::NodeVisitor* nv, osg::Drawable* , osg::St
     osg::Vec3 eye_cp = nv->getEyePoint() - _controlPoint;
     float radius = eye_cp.length();
     
-    if (radius<_radius) return false;
+    if (radius<_radius)
+    {
+        return false;
+    }
     
     
     float deviation = (eye_cp * _normal)/radius;
@@ -171,4 +181,15 @@ bool ClusterCullingCallback::cull(osg::NodeVisitor* nv, osg::Drawable* , osg::St
 //    osg::notify(osg::NOTICE)<<"                             deviation="<<deviation<<" _deviation="<<_deviation<<" test="<<(deviation < _deviation)<<std::endl;
 
     return deviation < _deviation;
+}
+
+
+void ClusterCullingCallback::operator()(Node* node, NodeVisitor* nv)
+{
+    if (nv)
+    {
+        if (cull(nv,0,0)) return;
+        
+        traverse(node,nv); 
+    }
 }

@@ -42,7 +42,7 @@ class OSGUTIL_EXPORT DepthSortedBin : public RenderBin
         virtual ~DepthSortedBin();
         
         DrawOrder           _drawOrder;
-        RenderLeafList      _renderLeafList;
+        //RenderLeafList      _renderLeafList;
 };
 
 }

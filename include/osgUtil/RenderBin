@@ -72,6 +72,7 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
         RenderStage*    _stage;
         RenderBinList   _bins;
         RenderGraphList _renderGraphList;
+        RenderLeafList  _renderLeafList;
            
         typedef std::map< std::string, osg::ref_ptr<RenderBin> > RenderBinPrototypeList;
         static RenderBinPrototypeList s_renderBinPrototypeList;

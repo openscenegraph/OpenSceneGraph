@@ -16,6 +16,8 @@
 #include <osg/EarthSky>
 #include <osg/Notify>
 
+#include <osg/fast_back_stack>
+
 #include <osgUtil/RenderGraph>
 #include <osgUtil/RenderStage>
 
@@ -329,43 +331,48 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
         void popClippingVolume();
 
         
-        typedef std::vector<osg::ClippingVolume>            ClippingVolumeStack;
-        typedef std::vector<osg::ref_ptr<osg::Matrix> >     MatrixStack;
+//         typedef std::vector<osg::ClippingVolume>            ClippingVolumeStack;
+//         typedef std::vector<osg::ref_ptr<osg::Matrix> >     MatrixStack;
 
-        MatrixStack                                         _projectionStack;
-        MatrixStack                                         _PW_Stack;
-        ClippingVolumeStack                                 _projectionClippingVolumeStack;
+        typedef osg::fast_back_stack<osg::ClippingVolume>           ClippingVolumeStack;
+        typedef osg::fast_back_stack< osg::ref_ptr<osg::Matrix> >   MatrixStack;
 
-        MatrixStack                                         _modelviewStack;
-        MatrixStack                                         _MVPW_Stack;
-        ClippingVolumeStack                                 _modelviewClippingVolumeStack;
+        MatrixStack                                                 _projectionStack;
+        MatrixStack                                                 _PW_Stack;
+        ClippingVolumeStack                                         _projectionClippingVolumeStack;
+
+        MatrixStack                                                 _modelviewStack;
+        MatrixStack                                                 _MVPW_Stack;
+        ClippingVolumeStack                                         _modelviewClippingVolumeStack;
         
-        bool                                                _windowToModelFactorDirty;
-        float                                               _windowToModelFactor;
+        bool                                                        _windowToModelFactorDirty;
+        float                                                       _windowToModelFactor;
                 
-        typedef std::vector<osg::ref_ptr<osg::Viewport> >   ViewportStack;
-        ViewportStack                                       _viewportStack;
+//        typedef std::vector<osg::ref_ptr<osg::Viewport> >   ViewportStack;
+        typedef osg::fast_back_stack<osg::ref_ptr<osg::Viewport> >  ViewportStack;
+        ViewportStack                                               _viewportStack;
         
-        typedef std::vector<osg::Vec3>                      EyePointStack;
-        EyePointStack                                       _eyePointStack;
+//        typedef std::vector<osg::Vec3>                      EyePointStack;
+        typedef osg::fast_back_stack<osg::Vec3>                     EyePointStack;
+        EyePointStack                                               _eyePointStack;
         
-        typedef std::vector<CullingMode>                    CullingModeStack;
-        CullingModeStack                                    _cullingModeStack;
+        typedef osg::fast_back_stack<CullingMode>                   CullingModeStack;
+        CullingModeStack                                            _cullingModeStack;
         
-        unsigned int                                       _bbCornerNear;
-        unsigned int                                       _bbCornerFar;
+        unsigned int                                                _bbCornerNear;
+        unsigned int                                                _bbCornerFar;
 
-        osg::Matrix                                        _identity;
+        osg::Matrix                                                 _identity;
 
-        osg::ref_ptr<RenderGraph>   _rootRenderGraph;
-        RenderGraph*                _currentRenderGraph;
+        osg::ref_ptr<RenderGraph>                                   _rootRenderGraph;
+        RenderGraph*                                                _currentRenderGraph;
 
-        osg::ref_ptr<RenderStage>   _rootRenderStage;        
-        RenderBin*                  _currentRenderBin;
+        osg::ref_ptr<RenderStage>                                   _rootRenderStage;        
+        RenderBin*                                                  _currentRenderBin;
 
 
-        float   _LODBias;
-        float   _smallFeatureCullingPixelSize;
+        float                                                       _LODBias;
+        float                                                       _smallFeatureCullingPixelSize;
 
 
         ComputeNearFarMode  _computeNearFar;

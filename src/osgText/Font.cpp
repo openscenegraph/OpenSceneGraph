@@ -186,7 +186,13 @@ void Font::GlyphTexture::apply(osg::State& state) const
         // graphics contexts should be set before create text.
         for(unsigned int i=_glyphsToSubload.size();i<=contextID;++i)
         {
-            _glyphsToSubload[i] = _glyphs;
+            GlyphPtrList& glyphPtrs = _glyphsToSubload[i];
+            for(GlyphRefList::const_iterator itr=_glyphs.begin();
+                itr!=_glyphs.end();
+                ++itr)
+            {
+                glyphPtrs.push_back(itr->get());
+            }
         }
     }
 
@@ -224,12 +230,12 @@ void Font::GlyphTexture::apply(osg::State& state) const
     //glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_TRUE);
 
     // now subload the glyphs that are outstanding for this graphics context.
-    GlyphList& glyphsWereSubloading = _glyphsToSubload[contextID];
+    GlyphPtrList& glyphsWereSubloading = _glyphsToSubload[contextID];
 
     if (!glyphsWereSubloading.empty())
     {
 
-        for(GlyphList::iterator itr=glyphsWereSubloading.begin();
+        for(GlyphPtrList::iterator itr=glyphsWereSubloading.begin();
             itr!=glyphsWereSubloading.end();
             ++itr)
         {
@@ -248,7 +254,7 @@ void Font::GlyphTexture::apply(osg::State& state) const
 Font::Glyph::Glyph() {}
 Font::Glyph::~Glyph() {}
 
-void Font::Glyph::subload()
+void Font::Glyph::subload() const
 {
     GLenum errorNo = glGetError();
     if (errorNo!=GL_NO_ERROR)

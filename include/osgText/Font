@@ -117,10 +117,11 @@ public:
         int _partUsedX;
         int _partUsedY;
 
-        typedef std::vector<Glyph*> GlyphList;
-        typedef osg::buffered_object<GlyphList> GlyphBuffer;
+        typedef std::vector< osg::ref_ptr<Glyph> > GlyphRefList;
+        typedef std::vector< const Glyph* > GlyphPtrList;
+        typedef osg::buffered_object< GlyphPtrList > GlyphBuffer;
         
-        GlyphList   _glyphs;
+        GlyphRefList        _glyphs;
         mutable GlyphBuffer _glyphsToSubload;
 
     };
@@ -151,11 +152,11 @@ public:
 
 
         void setTexture(GlyphTexture* texture) { _texture = texture; }
-        GlyphTexture* getTexture() { return _texture.get(); }
-        const GlyphTexture* getTexture() const { return _texture.get(); }
+        GlyphTexture* getTexture() { return _texture; }
+        const GlyphTexture* getTexture() const { return _texture; }
 
-        osg::StateSet* getStateSet() { return _texture.valid()?_texture->getStateSet():0; }
-        const osg::StateSet* getStateSet() const { return _texture.valid()?_texture->getStateSet():0; }
+        osg::StateSet* getStateSet() { return _texture?_texture->getStateSet():0; }
+        const osg::StateSet* getStateSet() const { return _texture?_texture->getStateSet():0; }
 
         void setTexturePosition(int posX,int posY) { _texturePosX = posX; _texturePosY = posY; }
         int getTexturePositionX() const { return _texturePosX; }
@@ -167,7 +168,7 @@ public:
         void setMaxTexCoord(const osg::Vec2& coord) { _maxTexCoord=coord; }
         const osg::Vec2& getMaxTexCoord() const { return _maxTexCoord; }
         
-        void subload();
+        void subload() const;
 
     protected:
 
@@ -180,7 +181,7 @@ public:
         osg::Vec2                   _verticalBearing;
         float                       _verticalAdvance;
 
-        osg::ref_ptr<GlyphTexture>  _texture;
+        GlyphTexture*               _texture;
         int                         _texturePosX;
         int                         _texturePosY;
         osg::Vec2                   _minTexCoord;

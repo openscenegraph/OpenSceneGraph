@@ -40,14 +40,12 @@ class OSGDB_EXPORT Archive : public ReaderWriter
         enum Status
         {
             READ,
-            WRITE
+            WRITE,
+            CREATE
         };
 
         /** open the archive.*/
-        virtual bool create(const std::string& filename, unsigned int indexBlockSize=4096);
-
-        /** open the archive.*/
-        virtual bool open(const std::string& filename, Status status);
+        virtual bool open(const std::string& filename, Status status, unsigned int indexBlockSizeHint=4096);
 
         /** close the archive.*/
         virtual void close();

@@ -5,7 +5,7 @@ using namespace osg;
 Transform::Transform()
 {
     _type = DYNAMIC;
-    _matrix = new osg::Matrix();
+    _matrix = new Matrix;
     _matrix->makeIdentity();
 }
 
@@ -13,7 +13,7 @@ Transform::Transform()
 Transform::Transform(const Matrix& mat )
 {
     _type = DYNAMIC;
-    (*_matrix) = mat;
+    _matrix = new Matrix(mat);
 }
 
 

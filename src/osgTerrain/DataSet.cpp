@@ -238,6 +238,15 @@ DataSet::SourceData* DataSet::SourceData::readData(Source* source)
                 {
                     std::cout << "    No GeoTransform or GCP's - unable to compute position in space"<< std::endl;
                     
+                    data->_geoTransform.set( 512.0,    0.0,    0.0,    0.0,
+                                             0.0,    512.0,    0.0,    0.0,
+                                             0.0,    0.0,    1.0,    0.0,
+                                             0.0,    0.0,    0.0,    1.0);
+                                            
+                    data->_extents.init();
+                    data->_extents.expandBy( osg::Vec3(0.0,0.0,0.0)*data->_geoTransform);
+                    data->_extents.expandBy( osg::Vec3(data->_numValuesX,data->_numValuesY,0.0)*data->_geoTransform);
+
                 }
                 return data;
             }                

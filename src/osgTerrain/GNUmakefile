@@ -12,7 +12,7 @@ CXXFILES = \
 
 DEF     += -DOSGTERRAIN_LIBRARY
 
-LIBS  +=  -losgDB -losg -lgdal $(GL_LIBS) $(OTHER_LIBS)
+LIBS  +=  -losgDB --losgUtil losg -lgdal $(GL_LIBS) $(OTHER_LIBS)
 
 TARGET_BASENAME = osgTerrain
 LIB = $(LIB_PREFIX)$(TARGET_BASENAME).$(LIB_EXT)

@@ -7,7 +7,7 @@
 
 namespace osg {
 
-/** Encapsulte OpenGL glColorMaskFunc/Op/Mask functions.
+/** Encapsulate OpenGL glColorMaskFunc/Op/Mask functions.
 */     
 class SG_EXPORT ColorMask : public StateAttribute
 {

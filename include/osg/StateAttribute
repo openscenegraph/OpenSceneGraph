@@ -40,7 +40,7 @@ class StateSet;
         if (parameter<rhs.parameter) return -1; \
         if (rhs.parameter<parameter) return 1;
 
-/** Base class for state attribues.
+/** Base class for state attribuets.
 */     
 class SG_EXPORT StateAttribute : public Object
 {
@@ -49,7 +49,7 @@ class SG_EXPORT StateAttribute : public Object
         /** GLMode is the value used in glEnable/glDisable(mode) */
         typedef GLenum          GLMode;
         /** GLModeValue is used to specified whether an mode is enabled (ON) or disabled (OFF).
-          * GLMoveValue is also used to speficy the override behavior of modes from parent to children. 
+          * GLMoveValue is also used to specify the override behavior of modes from parent to children. 
           * See enum Value description for more details.*/
         typedef unsigned int    GLModeValue;
         /** Override is used to specified the override behavior of StateAttributes
@@ -58,7 +58,7 @@ class SG_EXPORT StateAttribute : public Object
         typedef unsigned int	OverrideValue;
 
         /** list values which can be used in to set either GLModeValues
-          * or OverrideValues. When using in conjection with GLModeValues
+          * or OverrideValues. When using in conjunction with GLModeValues
           * all Values have meaning.  When using in conjection with 
           * StateAttribute OverrideValue only OFF,OVERRIDE and INHERIT
           * are meaningful. However, they are useful when using GLModeValue 
@@ -84,7 +84,7 @@ class SG_EXPORT StateAttribute : public Object
         typedef unsigned int Type;
 
         /** Values of StateAttribute::Type used to aid identification
-          * of diffenent StateAttribute subclasses. Each subclass defines
+          * of different StateAttribute subclasses. Each subclass defines
           * it own value in the virtual Type getType() method.  When 
           * extending the osg's StateAttribute's simply define your
           * own Type value which is unique, using the StateAttribute::Type
@@ -145,7 +145,7 @@ class SG_EXPORT StateAttribute : public Object
         /** return the name of the attribute's class type.*/
         virtual const char* className() const { return "StateAttribute"; }
         
-        /** return the Type idenitifer of the attribute's class type.*/
+        /** return the Type identifier of the attribute's class type.*/
         virtual const Type getType() const = 0;
 
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
@@ -158,7 +158,7 @@ class SG_EXPORT StateAttribute : public Object
         
         virtual void setStateSetModes(StateSet&,const GLModeValue) const 
         {
-            // default to no GLMode's assocated with use of the StateAttribute.
+            // default to no GLMode's associated with use of the StateAttribute.
         }
     
         /** apply the OpenGL state attributes. 

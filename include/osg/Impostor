@@ -27,7 +27,7 @@ namespace osg {
   * All you need to do to use Impostors is to set up the visible
   * range values for each LOD child of the Impostor, as per osg::LOD,
   * and set an Impostor threshold to tell the renderer at what distance
-  * the Impsotor's image caching should cut in.  The osg::CullVisitor
+  * the Impostor's image caching should cut in.  The osg::CullVisitor
   * automatically handles all the setting of pre-rendering stages to
   * calculate the required ImpostorSprites (which encapsulates the image
   * cache and quad), and updates them as the view point changes. If you 
@@ -62,10 +62,10 @@ class SG_EXPORT Impostor : public LOD
           * sphere's radius.*/
         inline void setImpostorThresholdToBound(float ratio=1.0f) { _impostorThreshold = getBound().radius()*ratio; }
 
-        /* Get the Impostor threshold disntance.*/
+        /* Get the Impostor threshold distance.*/
         inline const float getImpostorThreshold() const { return _impostorThreshold; }
 
-        /* Get the Impostor threshold disntance squared.*/
+        /* Get the Impostor threshold distance squared.*/
         inline const float getImpostorThreshold2() const { return _impostorThreshold*_impostorThreshold; }
 
         /** Find the ImposterSprite which fits the current eye point best.*/

@@ -102,7 +102,7 @@ class SG_EXPORT Node : public Object
         inline const int getNumChildrenRequiringAppTraversal() const { return _numChildrenRequiringAppTraversal; }
 
         /**
-         * Set user data. See MemoryAdapter documention for details
+         * Set user data. See MemoryAdapter documentation for details
          * of how to specify memory management of _userData.
          */
         inline void setUserData(void* data,MemoryAdapter* ma=0L)

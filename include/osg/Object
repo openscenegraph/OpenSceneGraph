@@ -24,7 +24,7 @@ class SG_EXPORT Object : public Referenced
     public:
         /** Construct an object. Note Object is a pure virtual base class
             and therefore cannot be constructed on its own, only derived
-            classes which overide the clone and className methods are
+            classes which override the clone and className methods are
             concrete classes and can be constructed.*/
         Object() {}
 
@@ -41,7 +41,7 @@ class SG_EXPORT Object : public Referenced
     protected:
 
         /** Object destructor. Note, is protected so that Objects cannot
-            be deleted other than by being derefernced and the reference
+            be deleted other than by being dereferenced and the reference
             count being zero (see osg::Referenced), preventing the deletion
             of nodes which are still in use. This also means that
             Node's cannot be created on stack i.e Node node will not compile,

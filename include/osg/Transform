@@ -9,7 +9,7 @@ namespace osg {
 /** Transform - is group which all children
     are transformed by the the Transform's osg::Matrix.  Typical uses
     of the Transform is for positioning objects within a scene or 
-    producing trakerball functionality or for animatiion.
+    producing trakerball functionality or for animation.
 */
 class SG_EXPORT Transform : public Group
 {

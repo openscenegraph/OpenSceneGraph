@@ -117,13 +117,13 @@ class Vec3
             return *this;
         }
 
-        /// binary vector subract
+        /// binary vector subtract
         inline const Vec3 operator - (const Vec3& rhs) const
         {
             return Vec3(_v[0]-rhs._v[0], _v[1]-rhs._v[1], _v[2]-rhs._v[2]);
         }
 
-        /// unary vector subract
+        /// unary vector subtract
         inline Vec3& operator -= (const Vec3& rhs)
         {
             _v[0]-=rhs._v[0];

@@ -40,12 +40,12 @@ class SG_EXPORT TexGen : public StateAttribute
 
             // Not happy with turning all tex gen paramters on
             // as the OSG currently only supports 2D textures and therefore
-            // only S and T will only be required, R&Q would be redundent...
-            // So commenting out the following until OSG supports 3D texures.
+            // only S and T will only be required, R&Q would be redundant...
+            // So commenting out the following until OSG supports 3D textures.
             // I plan to revamp the OpenGL state management later so will
             // tidy up then.  Robert Osfield. Jan 2001.
             
-            // The tidy up is now happening, but wiil have a think before
+            // The tidy up is now happening, but will have a think before
             // resolving the below parameters.
 
             // ds.setMode(GL_TEXTURE_GEN_R,value);

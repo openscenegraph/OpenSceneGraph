@@ -89,12 +89,12 @@ class SG_EXPORT Material : public StateAttribute
         /** Get the whether specular values are equal for front and back faces.*/
         inline const bool getSpecularFrontAndBack() const { return _specularFrontAndBack; }
 
-        /** Set emmision value of specified face(s) of the material, 
+        /** Set emission value of specified face(s) of the material, 
           * valid emmison[0..3] range is 0.0 to 1.0.*/
         void setEmission( const Face face, const Vec4& emission );
         /** Get the emmsion value for specified face.*/
         const Vec4& getEmission(const Face face) const;
-        /** Get the whether emmision values are equal for front and back faces.*/
+        /** Get the whether emission values are equal for front and back faces.*/
         inline const bool getEmissionFrontAndBack() const { return _emissionFrontAndBack; }
 
         /** Set shininess of specified face(s) of the material, valid shininess range is 0.0 to 1.0.*/
@@ -104,12 +104,12 @@ class SG_EXPORT Material : public StateAttribute
         /** Get the whether shininess values are equal for front and back faces.*/
         inline const bool getShininessFrontAndBack() const { return _shininessFrontAndBack; }
         
-        /** Set the alpha value of ambient,diffuse,specular and emmission colors, 
-          * of specified face, to 1-transparancy. Valid transparancy range is 0.0 to 1.0.*/
+        /** Set the alpha value of ambient,diffuse,specular and emission colors, 
+          * of specified face, to 1-transparency. Valid transparency range is 0.0 to 1.0.*/
         void setTransparency(const Face face,float trans);
 
-        /** Set the alpha value of ambient,diffuse,specular and emmission colors.
-          * Valid transparancy range is 0.0 to 1.0.*/
+        /** Set the alpha value of ambient,diffuse,specular and emission colors.
+          * Valid transparency range is 0.0 to 1.0.*/
         void setAlpha(const Face face,float alpha);
 
     protected :

@@ -101,7 +101,7 @@ class mem_ptr
 };
 
 
-// /** Exprimental memory adapter implmentation.*/
+// /** Experimental memory adapter implementation.*/
 // template<class T>
 // class CppMemoryAdapter : public MemoryAdapter
 // {
@@ -125,7 +125,7 @@ class mem_ptr
 // 
 // };
 // 
-// /** Exprimental memory adapter implmentation.*/
+// /** Experimental memory adapter implementation.*/
 // class NewMemoryAdapter : public MemoryAdapter
 // {
 //     public:
@@ -154,7 +154,7 @@ class mem_ptr
 // 
 // };
 // 
-// /** Exprimental memory adapter implmentation.*/
+// /** Experimental memory adapter implementation.*/
 // template<class T>
 // class newMemoryAdapter : public MemoryAdapter
 // {

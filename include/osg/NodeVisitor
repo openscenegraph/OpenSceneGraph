@@ -34,7 +34,7 @@ class SG_EXPORT NodeVisitor : public Referenced
         virtual ~NodeVisitor();
 
         /** Method to call to reset visitor. Useful for your visitor accumulates
-            state during a traversal, and you plan to resuse the visitor. 
+            state during a traversal, and you plan to reuse the visitor. 
             To flush that state for the next traversal than call reset() prior
             to each traversal.*/
         virtual void reset() {}
@@ -99,7 +99,7 @@ class SG_EXPORT NodeVisitor : public Referenced
         inline const TraversalMode getTraversalMode() const { return _traversalMode; }
 
         /** Set a visitor to handle traversal.
-            Overides the traverse mode setting it to TRAVERSAL_VISITOR.*/
+            Overrides the traverse mode setting it to TRAVERSAL_VISITOR.*/
         void setTraversalVisitor(NodeVisitor* nv);
         
         /** Get the traversal visitor, returns NULL if none is attached.*/
@@ -144,7 +144,7 @@ class SG_EXPORT NodeVisitor : public Referenced
 };
 
 
-/** Convinience functor for assisting visiting of arrays of osg::Node's.*/ 
+/** Convenience functor for assisting visiting of arrays of osg::Node's.*/ 
 struct NodeAcceptOp
 {
     NodeVisitor& _nv;

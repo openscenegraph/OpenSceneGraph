@@ -88,7 +88,7 @@ class SG_EXPORT Texture : public StateAttribute
 	void copyTexImage2D(State& state, int x, int y, int width, int height );
 
         /** Copy a two-dimensional texture subimage. As per glCopyTexSubImage2D.
-          * Updates portion of an exisiting OpenGL texture object from the current OpenGL background
+          * Updates portion of an existing OpenGL texture object from the current OpenGL background
           * framebuffer contents at pos \a x, \a y with width \a width and
           * height \a height. \a width and \a height must be a power of two,
           * and writing into the texture with offset \a xoffset and \a yoffset.
@@ -181,7 +181,7 @@ class SG_EXPORT Texture : public StateAttribute
 
         /** return the memory size of texture object.
           * Texture object size can be used for estimating the cost of
-          * uploading the texture to graphics hardware, which inturn can
+          * uploading the texture to graphics hardware, which in turn can
           * be used for setting texture residence priorities. */
         inline const uint getTextureObjectSize() const { return _textureObjectSize; }
 

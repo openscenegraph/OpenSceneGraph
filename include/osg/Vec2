@@ -100,13 +100,13 @@ class Vec2
 	    return *this;
         }
 
-        /// binary vector subract
+        /// binary vector subtract
         inline const Vec2 operator - (const Vec2& rhs) const
         {
             return Vec2(_v[0]-rhs._v[0], _v[1]-rhs._v[1]);
         }
 
-        /// unary vector subract
+        /// unary vector subtract
         inline Vec2& operator -= (const Vec2& rhs)
         {
             _v[0]-=rhs._v[0];

@@ -21,7 +21,7 @@ class SG_EXPORT Quat
 	In other words, osg:Quat is composed of an osg::Vec4
 	The osg::Quat aggregates an osg::Vec4
 
-	These seem to be different jargons for the same thing :-)
+	These seem to be different jargon for the same thing :-)
 	---------------------------------------------------------- */
 	Vec4 _fv;	// a four-vector
 
@@ -191,7 +191,7 @@ class SG_EXPORT Quat
 	angle around the axis given by the vector (x,y,z).
 	Should be written to also accept an angle and a Vec3?
 
-	Define Spherical Linear intERPolation method also
+	Define Spherical Linear interpolation method also
 
 	Not inlined - see the Quat.cpp file for implementation
 	-------------------------------------------------------- */

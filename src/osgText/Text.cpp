@@ -268,6 +268,7 @@ void Text::
 setPosition(const Vec3& pos)
 { 
     _pos=pos;
+    dirtyBound();
 }
 
 void Text::

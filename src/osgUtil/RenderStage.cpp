@@ -149,7 +149,7 @@ void RenderStage::drawImplementation(osg::State& state,RenderLeaf*& previous)
 
 
     glClear( _clearMask );
-
+    
 #ifdef USE_SISSOR_TEST
     glDisable( GL_SCISSOR_TEST );
 #endif

@@ -144,6 +144,7 @@ EXAMPLE_DIRS = \
 	osgforest\
 	osgimpostor\
 	osgkeyboard\
+	osgkeyboardmouse\
 	osglight\
 	osglightpoint\
 	osglogo\
@@ -162,6 +163,7 @@ EXAMPLE_DIRS = \
 	osgscalarbar\
 	osgspheresegment\
 	osgsimulation\
+	osgsimple\
 	osgshaders\
 	osgshadowtexture\
 	osgshape\

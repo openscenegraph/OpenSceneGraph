@@ -36,7 +36,7 @@ class IVEReaderWriter : public ReaderWriter
             // code for setting up the database path so that internally referenced file are searched for on relative paths. 
             osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
             local_opt->setDatabasePath(osgDB::getFilePath(fileName));
-
+            
             std::ifstream istream(fileName.c_str(), std::ios::in | std::ios::binary);
             return readNode(istream,local_opt.get());
         }
@@ -48,24 +48,18 @@ class IVEReaderWriter : public ReaderWriter
         
         virtual ReadResult readNode(std::istream& fin, const Options* options) const
         {
-        #define IVE_CATCH_EXCEPTIONS
-        #ifdef IVE_CATCH_EXCEPTIONS
-        try{
-        #endif
+            try{
                 // Create datainputstream.
                 ive::DataInputStream in(&fin);
                 in.setOptions(options);
 
                 return in.readNode();
-        #ifdef IVE_CATCH_EXCEPTIONS
-        }
-        catch(ive::Exception e)
+            }
+            catch(ive::Exception e)
             {
-            std::cout<<"Error reading file: "<< e.getError()<<std::endl;
-            return ReadResult::FILE_NOT_HANDLED;
-        }
-            return 0;
-        #endif
+                osg::notify(osg::NOTICE)<<"Error reading file: "<< e.getError()<<std::endl;
+                return ReadResult::FILE_NOT_HANDLED;
+            }
         }
 
         

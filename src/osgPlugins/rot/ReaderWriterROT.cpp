@@ -10,8 +10,8 @@
  *
 */
 
-/* file:        src/osgPlugins/rot/ReaderWriterROT.cpp
- * author:	Mike Weiblen http://mew.cx/ 2004-04-25
+/* file:	src/osgPlugins/rot/ReaderWriterROT.cpp
+ * author:	Mike Weiblen http://mew.cx/ 2004-07-15
  * copyright:	(C) 2004 Michael Weiblen
  * license:	OpenSceneGraph Public License (OSGPL)
 */
@@ -32,8 +32,21 @@
 ///////////////////////////////////////////////////////////////////////////
 
 /**
- * An OSG reader plugin for the rotation pseudo-loader.
+ * An OSG reader plugin for the ".rot" pseudo-loader, which inserts a
+ * rotation transform above the loaded geometry.
+ * This pseudo-loader makes it simple to change the orientation of a saved
+ * model by specifying a correcting rotation as part of the filename.
+ *
+ * Usage: <modelfile.ext>.<rx>,<ry>,<rz>.globe
+ * where:
+ *	<modelfile.ext> = an model filename.
+ *	<rx> = rotation around X axis [degrees]
+ *	<ry> = rotation around Y axis [degrees]
+ *	<rz> = rotation around Z axis [degrees]
+ *
+ * example: osgviewer cow.osg.30,60,-90.rot
  */
+
 class ReaderWriterROT : public osgDB::ReaderWriter
 {
 public:
@@ -43,7 +56,7 @@ public:
 
     virtual bool acceptsExtension(const std::string& extension)
     { 
-        return osgDB::equalCaseInsensitive( extension, EXTENSION_NAME );
+	return osgDB::equalCaseInsensitive( extension, EXTENSION_NAME );
     }
 
     virtual ReadResult readNode(const std::string& fileName,

@@ -227,9 +227,11 @@ void Window::keyboard(unsigned char key, int , int )
     }
 }
 
-void Window::special(int , int , int )
+void Window::special(int k, int x, int y)
 {
-    osg::notify(osg::INFO)<<"info : Window::special() unhandled."<<std::endl;
+    // will remap to a straight keyboard event...
+    keyboard((unsigned char)k, x, y);
+//    osg::notify(osg::INFO)<<"info : Window::special() unhandled."<<std::endl;
 }
 
 void Window::spaceballMotion(int , int , int )

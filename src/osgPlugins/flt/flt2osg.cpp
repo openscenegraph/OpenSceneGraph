@@ -1229,18 +1229,16 @@ osg::Group* ConvertFromFLT::visitObject(osg::Group& osgParent, ObjectRecord* rec
     visitPrimaryNode(*object, (PrimNodeRecord*)rec);
     _wObjTransparency = wPrevTransparency;
 
-#if 0
-// submission from Yefei Hi, which alas doesn't compile due to missing
-// _ultoa(,,) function.  Will comment back in once flag is tracked down.
     if ( pSObject->dwFlags & 0xFC000000) // some of the 6 defined flag bits are set
     {
         std::string desc("flt object flags: 0x");
         char cflags[33];
 
-        desc = desc + _ultoa( pSObject->dwFlags, cflags, 16 );
+        sprintf( cflags, "%X", pSObject->dwFlags );
+        desc = desc + cflags;
+
         object->getDescriptions().push_back( desc );
     }
-#endif
 
     return object;
 }

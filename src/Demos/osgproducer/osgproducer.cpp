@@ -133,7 +133,9 @@ int main( int argc, char **argv )
     
     // register the callback with the keyboard mouse manger.
     kbm->setCallback( &kbmcb );
+    //kbm->allowContinuousMouseMotionUpdate(true);
     kbm->startThread();
+
 
 
     // set the globa state

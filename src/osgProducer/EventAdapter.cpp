@@ -134,11 +134,16 @@ void EventAdapter::adaptButtonRelease(double time,float x, float y, unsigned int
 /** method for adapting mouse motion events whilst mouse buttons are pressed.*/
 void EventAdapter::adaptMouseMotion(double time, float x, float y)
 {
-    _eventType = DRAG;
+    
+    _eventType = (_s_accumulatedButtonMask) ?
+                 DRAG :
+                 MOVE;
+
     _time = time;
     _s_mx = (int)(x*(float)(_s_Xmax-_s_Xmin))+_s_Xmin;
     _s_my = (int)(y*(float)(_s_Ymin-_s_Ymax))+_s_Ymax;
     copyStaticVariables();
+
 }
 
 

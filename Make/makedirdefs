@@ -173,6 +173,7 @@ EXAMPLE_DIRS = \
 	osgshape\
 	osgsimple\
 	osgsimplepager\
+	osgsimplifier\
 	osgsimulation\
 	osgspacewarp\
 	osgspheresegment\

@@ -52,7 +52,7 @@ public:
 
     void setTargetNumOfTriangles(unsigned int num) { _targetNumTriangles = num; }
 
-    unsigned int getNumOfTriangles() { return 0; }
+    unsigned int getNumOfTriangles() { return _triangleSet.size(); }
 
     Point* computeInterpolatedPoint(Edge* edge,float r) const
     {
@@ -1217,9 +1217,7 @@ void EdgeCollapse::copyBackToGeometry()
     std::cout<<"Number of edges= "<<_edgeSet.size()<<std::endl;
     std::cout<<"Number of boundary edges= "<<computeNumBoundaryEdges()<<std::endl;
 
-    float sampleRatio = 0.5;
-    unsigned int targetNumEdges = (unsigned int)((float)_edgeSet.size()*sampleRatio);
-    while (_edgeSet.size()>targetNumEdges)
+    while (_triangleSet.size()>_targetNumTriangles)
     {
         unsigned int numBefore = computeNumBoundaryEdges();
         bool result = collapseMinimumErrorEdge();

@@ -1924,7 +1924,7 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
         return 0;
     }
 
-    bool createSkirt = true;
+    bool createSkirt = false;
 
     // compute sizes.
     unsigned int numColumns = grid->getNumColumns();
@@ -2184,7 +2184,7 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
         geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
     }
     
-#if 0
+#if 1
     osgUtil::Simplifier simplifier;
     simplifier.simplify(*geometry,0.5f);  // this will replace the normal vector with a new one
 #endif

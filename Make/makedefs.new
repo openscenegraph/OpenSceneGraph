@@ -29,7 +29,11 @@ INST_INCLUDE  = /usr/share/OpenSceneGraph/include
 INST_DEMO_SRC = /usr/share/OpenSceneGraph/src/demos
 INST_DATA     = /usr/share/OpenSceneGraph/data
 
-LINK       = ln -sf
+LINK          = ln -sf
+INSTBIN       = install -m 755
+INSTDEV       = install -m 644
+INSTLINKBIN   = $(LINK)
+INSTLINKDEV   = $(LINK)
 
 
 ALL_TARGETS = \
@@ -65,6 +69,7 @@ ifeq ($(OS),SunOS)
   OTHER_LIBS        = -lCstd
   SO_EXT            = so
   PLUGIN_EXT        = so
+  TIFF_LIB	    = -ltiff
 
 endif
 
@@ -92,6 +97,9 @@ ifeq ($(OS),IRIX)
   OTHER_LIBS        = -lm
   SO_EXT            = so
   PLUGIN_EXT        = so
+
+  INSTLINKBIN       = install -t -m 755
+  INSTLINKDEV       = install -t -m 644
 
 endif
 
@@ -129,7 +137,7 @@ ifeq ($(OS),FreeBSD)
   SHARED            = -shared
   ARCHARGS          = 
   LINKARGS          = -L/usr/X11R6/lib -L/usr/local/lib -rpath /usr/local/lib
-  DYNAMICLIBRARYLIB = -ldl
+  DYNAMICLIBRARYLIB = 
   OSG_LIBS          = -losgGLUT -losgDB -losgUtil -losg 
   FREETYPE_LIB      = -lfreetype
   GLUT_LIB          = -lglut

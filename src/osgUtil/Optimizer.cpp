@@ -40,7 +40,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 //         bool result = false;
 //         do
 //         {
-//             cout << "************ RemoveLowestStaticTransformsVisitor "<<i<<endl;
+//             cout << "************ RemoveLowestStaticTransformsVisitor "<<i<<std::endl;
 //             RemoveLowestStaticTransformsVisitor fstv;
 //             node->accept(fstv);
 //             result = fstv.removeTransforms();
@@ -64,9 +64,9 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 
     }
     
-//     // convert the old style GeoSet to Geometry
-//     ConvertGeoSetsToGeometryVisitor cgtg;
-//     node->accept(cgtg);
+    // convert the old style GeoSet to Geometry
+    ConvertGeoSetsToGeometryVisitor cgtg;
+    node->accept(cgtg);
 
 
     if (options & SHARE_DUPLICATE_STATE)
@@ -1015,7 +1015,7 @@ void Optimizer::RemoveRedundentNodesVisitor::removeRedundentNodes()
         }
         else
         {
-            std::cout<<"failed dynamic_cast"<<endl;
+            std::cout<<"failed dynamic_cast"<<std::endl;
         }                                
     }
     _redundentNodeList.clear();

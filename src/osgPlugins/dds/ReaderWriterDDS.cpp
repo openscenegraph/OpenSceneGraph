@@ -280,6 +280,11 @@ osg::Image* ReadDDSFile(std::istream& _istream)
             internalFormat = usingAlpha ? GL_LUMINANCE_ALPHA : GL_LUMINANCE;
             pixelFormat    = usingAlpha ? GL_LUMINANCE_ALPHA : GL_LUMINANCE;              
     }
+   else if(ddsd.ddpfPixelFormat.dwFlags & DDPF_ALPHA)
+    {
+            internalFormat = GL_ALPHA;
+            pixelFormat    = GL_ALPHA;              
+    }
     // Compressed formats
     else if(ddsd.ddpfPixelFormat.dwFlags & DDPF_FOURCC)
     {

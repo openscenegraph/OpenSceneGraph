@@ -20,8 +20,6 @@
     using std::strlen;    
 #endif
 
-#include <osg/Notify>
-
 using namespace std;
 
 std::string osgDB::getFilePath(const std::string& fileName)
@@ -73,8 +71,6 @@ std::string osgDB::convertFileNameToWindowsStyle(const std::string& fileName)
 
 std::string osgDB::convertFileNameToUnixStyle(const std::string& fileName)
 {
-    osg::notify(osg::NOTICE)<<"convertFileNameToUnixStyle("<<fileName<<")"<<std::endl;
-
     std::string new_fileName(fileName);
     
     std::string::size_type slash = 0;
@@ -82,8 +78,6 @@ std::string osgDB::convertFileNameToUnixStyle(const std::string& fileName)
     {
         new_fileName[slash]='/';
     }
-
-    osg::notify(osg::NOTICE)<<"convertFileNameToUnixStyle("<<new_fileName<<")"<<std::endl;
 
     return new_fileName;
 }

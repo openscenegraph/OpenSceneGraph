@@ -140,8 +140,8 @@ int main( int argc, char **argv )
     osgUtil::RenderStage* renderstage = viewer.getViewportSceneView(0)->getRenderStage();
     if (renderstage)
     {
-//       renderstage->setSortLocalCallback(new MySortCallback);
-        renderstage->setSortMode(osgUtil::RenderBin::SORT_FRONT_TO_BACK);
+       renderstage->setSortLocalCallback(new MySortCallback);
+//        renderstage->setSortMode(osgUtil::RenderBin::SORT_FRONT_TO_BACK);
     }
     
 

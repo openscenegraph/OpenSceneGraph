@@ -18,16 +18,6 @@ class SG_EXPORT Switch : public Group
 {
     public :
         
-	/**
-	 * Special mode values for the Switch. Use these if you want to
-	 * turn on/off all child nodes.
-	 */
-        enum SwitchType {
-                /** Turn on all children. */
-		ALL_CHILDREN_ON=-1,
-                /** Turn off all children. */
-		ALL_CHILDREN_OFF=-2
-        };
 
         Switch();
 
@@ -38,6 +28,31 @@ class SG_EXPORT Switch : public Group
 
         virtual void traverse(NodeVisitor& nv);
         
+        virtual bool addChild( Node *child );
+
+        virtual bool removeChild( Node *child );
+
+        void setValue(unsigned int pos,bool value);
+
+        void setValue(const Node* child,bool value);
+        
+        bool getValue(unsigned int pos) const;
+
+        bool getValue(const Node* child) const;
+
+	/**
+	 * Special values for the Switch. Use these if you want to
+	 * turn on/off all child nodes.
+	 */
+        enum Values {
+                /** All children turned on. */
+		ALL_CHILDREN_ON=-1,
+                /** All children off. */
+		ALL_CHILDREN_OFF=-2,
+                /** Multiple children turned on.*/
+                MULTIPLE_CHILDREN_ON=-3
+        };
+
 	/**
 	 * Selects the active child Node or enables a special
 	 * SwitchType mode. 
@@ -45,18 +60,20 @@ class SG_EXPORT Switch : public Group
 	 * (first child == number 0) or SwitchType. Invalid values
 	 * will be ignored.
 	 */
-        inline void setValue(int value) { _value = value; }
-	/**
-	 * Returns the number of the active child Node or the SwitchType.
-	 */
-        inline int getValue() const { return _value; }
+        void setValue(int value);
+
+        int getValue() const;
+
+        typedef std::vector<bool>   ValueList;
+        
+        const ValueList& getValueList() const { return _values; }
 
     protected :
     
         virtual ~Switch() {}
-        
-        /** The current Switch value. */
-        int _value;  
+
+        // this is effectively a bit mask.
+        ValueList             _values;
 };
 
 }

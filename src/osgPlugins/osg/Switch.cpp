@@ -51,6 +51,31 @@ bool Switch_readLocalData(Object& obj, Input& fr)
         }
     }
 
+    if (fr.matchSequence("values {"))
+    {
+        int entry = fr[0].getNoNestedBrackets();
+
+        // move inside the brakets.
+        fr += 2;
+
+        unsigned int pos=0;
+        while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
+        {
+            int value;
+            if (fr[0].getInt(value))
+            {
+                sw.setValue(pos,value);
+                ++pos;
+            }
+            ++fr;
+        }
+
+        ++fr;
+        
+        iteratorAdvanced = true;
+        
+    }
+
     return iteratorAdvanced;
 }
 
@@ -59,12 +84,27 @@ bool Switch_writeLocalData(const Object& obj, Output& fw)
 {
     const Switch& sw = static_cast<const Switch&>(obj);
 
-    fw.indent() << "value ";
-    switch(sw.getValue())
+    int value=sw.getValue();
+    switch(value)
     {
-        case(Switch::ALL_CHILDREN_ON): fw<<"ALL_CHILDREN_ON"<< std::endl;break;
-        case(Switch::ALL_CHILDREN_OFF): fw<<"ALL_CHILDREN_OFF"<< std::endl;break;
-        default: fw<<sw.getValue()<< std::endl;break;
+        case(Switch::MULTIPLE_CHILDREN_ON):
+        {
+            fw.indent()<<"values {"<< std::endl;
+            fw.moveIn();
+            const Switch::ValueList& values = sw.getValueList();
+            for(Switch::ValueList::const_iterator itr=values.begin();
+                itr!=values.end();
+                ++itr)
+            {
+                fw.indent()<<*itr<<endl;
+            }
+            fw.moveOut();
+            fw.indent()<<"}"<< std::endl;
+            break;
+        }
+        case(Switch::ALL_CHILDREN_ON): fw.indent()<<"value ALL_CHILDREN_ON"<< std::endl;break;
+        case(Switch::ALL_CHILDREN_OFF): fw.indent()<<"value ALL_CHILDREN_OFF"<< std::endl;break;
+        default: fw.indent()<<"value "<<value<< std::endl;break;
     }
 
     return true;

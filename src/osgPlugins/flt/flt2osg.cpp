@@ -605,6 +605,9 @@ osg::Group* ConvertFromFLT::visitGroup(osg::Group& osgParent, GroupRecord* rec)
     {
         osg::Sequence* animSeq = new osg::Sequence;
         
+        visitAncillary(osgParent, *animSeq, rec)->addChild( animSeq );
+        visitPrimaryNode(*animSeq, rec);
+
         if ( forwardAnim )
             animSeq->setInterval(osg::Sequence::LOOP, 0, -1);
         else 
@@ -612,8 +615,6 @@ osg::Group* ConvertFromFLT::visitGroup(osg::Group& osgParent, GroupRecord* rec)
         
         animSeq->setName(rec->getData()->szIdent);
         
-        visitAncillary(osgParent, *animSeq, rec)->addChild( animSeq );
-        visitPrimaryNode(*animSeq, rec);
         return animSeq;
     }
      
@@ -883,6 +884,40 @@ osg::Group* ConvertFromFLT::visitDOF(osg::Group& osgParent, DofRecord* rec)
 
 osg::Group* ConvertFromFLT::visitSwitch(osg::Group& osgParent, SwitchRecord* rec)
 {
+#if 1
+    SSwitch *pSSwitch = (SSwitch*)rec->getData();
+    osg::Switch* osgSwitch = new osg::Switch;
+
+    osgSwitch->setName(pSSwitch->szIdent);
+    visitAncillary(osgParent, *osgSwitch, rec)->addChild( osgSwitch );
+    visitPrimaryNode(*osgSwitch, (PrimNodeRecord*)rec);
+
+
+    unsigned int totalNumChildren = (unsigned int)rec->getNumChildren();
+    if (totalNumChildren!=osgSwitch->getNumChildren())
+    {
+        // only convert the children we agree on.
+        if (totalNumChildren>osgSwitch->getNumChildren()) totalNumChildren=osgSwitch->getNumChildren();
+    
+        osg::notify(osg::WARN)<<"Warning::OpenFlight loader has come across an incorrectly handled switch."<<std::endl;
+        osg::notify(osg::WARN)<<"         The number of OpenFlight children ("<<rec->getNumChildren()<<") "<<std::endl;
+        osg::notify(osg::WARN)<<"         exceeds the number converted to OSG ("<<osgSwitch->getNumChildren()<<")"<<std::endl;
+    }
+
+    for(unsigned int nChild=0; nChild<totalNumChildren; nChild++)
+    {
+        unsigned int nMaskBit = nChild % 32;
+        unsigned int nMaskWord = pSSwitch->nCurrentMask * pSSwitch->nWordsInMask + nChild / 32;
+
+        if (nChild<osgSwitch->getNumChildren())
+        {
+            osgSwitch->setValue(nChild,(pSSwitch->aMask[nMaskWord] & (uint32(1) << nMaskBit)));
+        }
+    }
+
+    return osgSwitch;
+#else
+    // Old style osg::Switch couldn't handle the OpenFlight bit mask so had to resort to a group with masked out children.
     SSwitch *pSSwitch = (SSwitch*)rec->getData();
     osg::Group* group = new osg::Group;
 
@@ -915,6 +950,7 @@ osg::Group* ConvertFromFLT::visitSwitch(osg::Group& osgParent, SwitchRecord* rec
     }
 
     return group;
+#endif
 }
 
 

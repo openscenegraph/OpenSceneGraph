@@ -434,7 +434,7 @@ bool DriveManipulator::calcMovement()
             {
                 // pan model.
 
-                _velocity += dt*_modelScale*0.02;
+                _velocity += dt*_modelScale*0.01;
 
             }
             else if (buttonMask==GUIEventAdapter::MIDDLE_MOUSE_BUTTON ||
@@ -447,7 +447,7 @@ bool DriveManipulator::calcMovement()
             else if (buttonMask==GUIEventAdapter::RIGHT_MOUSE_BUTTON)
             {
 
-                _velocity -= dt*_modelScale*0.02;
+                _velocity -= dt*_modelScale*0.01;
 
             }
             break;

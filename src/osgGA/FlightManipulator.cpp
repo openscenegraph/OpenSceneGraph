@@ -237,7 +237,7 @@ bool FlightManipulator::calcMovement()
     {
         // pan model.
 
-        _velocity += dt*_modelScale*0.05f;
+        _velocity += dt*_modelScale*0.02f;
 
     }
     else if (buttonMask==GUIEventAdapter::MIDDLE_MOUSE_BUTTON ||
@@ -250,7 +250,7 @@ bool FlightManipulator::calcMovement()
     else if (buttonMask==GUIEventAdapter::RIGHT_MOUSE_BUTTON)
     {
 
-        _velocity -= dt*_modelScale*0.05f;
+        _velocity -= dt*_modelScale*0.02f;
 
     }
 

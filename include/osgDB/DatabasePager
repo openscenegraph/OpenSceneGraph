@@ -182,15 +182,11 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         void getMaxAnisotropyPolicy(bool& changeAnisotropy, float& valueAnisotropy) const { changeAnisotropy = _changeAnisotropy; valueAnisotropy = _valueAnisotropy; }
 
 
-        /** Iterate through the active PagedLOD nodes children removing 
-          * children which havn't been visited since specified expiryTime.
-          * note, should be only be called from the update thread. */
-        void removeExpiredSubgraphs(double currentFrameTime);
-
-        /** Add the loaded data to the scene graph.*/
-        void addLoadedDataToSceneGraph(double currentFrameTime);
+        /** Return trye if there are pending updates to the scene graph that require a call to updateSceneGraph(double). */
+        bool requiresUpdateSceneGraph() const;
         
-        /** Merge the changes to the scene graph by calling calling removeExpiredSubgraphs then addLoadedDataToSceneGraph*/
+        /** Merge the changes to the scene graph by calling calling removeExpiredSubgraphs then addLoadedDataToSceneGraph.
+          * Note, must only be called from single thread update phase. */
         void updateSceneGraph(double currentFrameTime)
         {
             removeExpiredSubgraphs(currentFrameTime);
@@ -204,8 +200,13 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         /** Get whether the compilation of rendering objects for specfied graphics context on (true) or off(false). */
         bool getCompileGLObjectsForContextID(unsigned int contextID);
 
+        /** Return true if there are pending compile operations that are required.
+          * If requiresCompileGLObjects() return true the application should call compileGLObjects() .*/
+        bool requiresCompileGLObjects() const;
+
         /** Compile the rendering objects (display lists,texture objects, VBO's) on loaded subgraph.
-          * note, should only be called from the draw thread.*/
+          * note, should only be called from the draw thread.
+          * Note, must only be called from a valid graphics context. */
         void compileGLObjects(osg::State& state,double& availableTime);
 
 
@@ -213,7 +214,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
         typedef std::list< osg::ref_ptr<osg::PagedLOD> >   PagedLODList;
 
-        typedef std::vector< osg::ref_ptr<osg::StateSet> > StateSetList;
+        typedef std::set< osg::ref_ptr<osg::StateSet> >    StateSetList;
         typedef std::vector< osg::ref_ptr<osg::Drawable> > DrawableList;
         typedef std::pair<StateSetList,DrawableList>       DataToCompile;
         typedef std::map< unsigned int, DataToCompile >    DataToCompileMap; 
@@ -262,6 +263,15 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         }
 
 
+        /** Iterate through the active PagedLOD nodes children removing 
+          * children which havn't been visited since specified expiryTime.
+          * note, should be only be called from the update thread. */
+        void removeExpiredSubgraphs(double currentFrameTime);
+
+        /** Add the loaded data to the scene graph.*/
+        void addLoadedDataToSceneGraph(double currentFrameTime);
+
+
         bool                            _done;
         bool                            _acceptNewRequests;
         bool                            _databasePagerThreadPaused;
@@ -274,10 +284,10 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         ThreadPriority                  _threadPriorityOutwithFrame;
 
         DatabaseRequestList             _fileRequestList;
-        OpenThreads::Mutex              _fileRequestListMutex;
+        mutable OpenThreads::Mutex      _fileRequestListMutex;
         
         DatabaseRequestList             _dataToCompileList;
-        OpenThreads::Mutex              _dataToCompileListMutex;
+        mutable OpenThreads::Mutex      _dataToCompileListMutex;
 
         bool                            _changeAutoUnRef;
         bool                            _valueAutoUnRef;
@@ -286,10 +296,10 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
         bool                            _deleteRemovedSubgraphsInDatabaseThread;
         ObjectList                      _childrenToDeleteList;
-        OpenThreads::Mutex              _childrenToDeleteListMutex;
+        mutable OpenThreads::Mutex      _childrenToDeleteListMutex;
 
         DatabaseRequestList             _dataToMergeList;
-        OpenThreads::Mutex              _dataToMergeListMutex;
+        mutable OpenThreads::Mutex      _dataToMergeListMutex;
         
         
         PagedLODList                    _activePagedLODList;

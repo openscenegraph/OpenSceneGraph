@@ -257,7 +257,7 @@ void TextureObjectManager::flushTextureObjects(unsigned int contextID,double cur
                 itr!=tol.end() && elapsedTime<availableTime && tol.size()>s_minimumNumberOfTextureObjectsToRetainInCache && numObjectsDeleted<maxNumObjectsToDelete;
                 )
             {
-                if ((*itr)->_timeStamp<expiryTime)
+                if ((*itr)->_timeStamp<=expiryTime)
                 {
                     --s_number;
                     ++Texture::s_numberDeletedTextureInLastFrame;

@@ -6,6 +6,8 @@
 #include <osg/Geometry>
 #include <osg/Geode>
 #include <osg/ShapeDrawable>
+#include <osg/Texture2D>
+
 
 #include <osgUtil/Optimizer>
 
@@ -86,16 +88,29 @@ osg::MatrixTransform* createMoonTranslation( double RorbitMoon )
 }// end createMoonTranslation
 
 
-osg::Geode* createPlanet( double radius, std::string name, osg::Vec4 color )
+osg::Geode* createPlanet( double radius, const std::string& name, const osg::Vec4& color , const std::string& textureName )
 {
     // create a cube shape
     osg::Sphere *planetSphere = new osg::Sphere( osg::Vec3( 0.0, 0.0, 0.0 ), radius );
 
     // create a container that makes the sphere drawable
     osg::ShapeDrawable *sPlanetSphere = new osg::ShapeDrawable( planetSphere );
- 
+
     // set the object color
     sPlanetSphere->setColor( color );
+
+    if( !textureName.empty() )
+    {
+        osg::Image* image = osgDB::readImageFile( textureName );
+        if ( image )
+        {
+            sPlanetSphere->getOrCreateStateSet()->setTextureAttributeAndModes( 0, new osg::Texture2D( image ), osg::StateAttribute::ON );
+
+            // reset the object color to white to allow the texture to set the colour.
+            sPlanetSphere->setColor( osg::Vec4(1.0f,1.0f,1.0f,1.0f) );
+        }
+    }
+ 
    
     // create a geode object to as a container for our drawable sphere object
     osg::Geode* geodePlanet = new osg::Geode();
@@ -106,7 +121,8 @@ osg::Geode* createPlanet( double radius, std::string name, osg::Vec4 color )
 
     return( geodePlanet );
 }// end createPlanet
-
+//--radiusSun 5.0 --radiusEarth 2.0 --RorbitEarth 10.0 --RorbitMoon 2.0 --radiusMoon 0.5 --tiltEarth 18.0 --rotateSpeedEarth 1.0 
+//--rotateSpeedMoon 1.0 --rotateSpeedEarthAndMoon 1.0
 
 class SolarSystem
 {
@@ -122,17 +138,18 @@ public:
     double _RorbitMoon;
     double _rotateSpeedMoon;
     
-    SolarSystem(
-        double _radiusSun = 20.0,
-        double _radiusEarth = 10.0,
-        double _RorbitEarth = 100.0,
-        double _tiltEarth = 5.0,
-        double _rotateSpeedEarthAndMoon = 5.0,
-        double _rotateSpeedEarth = 5.0,
-        double _radiusMoon = 2.0,
-        double _RorbitMoon = 20.0,
-        double _rotateSpeedMoon = 5.0 )
-    {}
+    SolarSystem()
+    {
+        _radiusSun = 5.0;
+        _radiusEarth = 2.0;
+        _RorbitEarth = 10.0;
+        _tiltEarth = 18.0;
+        _rotateSpeedEarthAndMoon = 1.0;
+        _rotateSpeedEarth = 1.0;
+        _radiusMoon = 0.5;
+        _RorbitMoon = 2.0;
+        _rotateSpeedMoon = 1.0;
+    }
     
     osg::Group* built()
     {
@@ -140,7 +157,7 @@ public:
         
         
         // create the sun
-        osg::Node* sun = createPlanet( _radiusSun, "Sun", osg::Vec4( 1.0f, 1.0f, 0.5f, 1.0f) );
+        osg::Node* sun = createPlanet( _radiusSun, "Sun", osg::Vec4( 1.0f, 1.0f, 0.5f, 1.0f), "" );
         
         // stick sun right under root, no transformations for the sun
         thisSystem->addChild( sun );
@@ -150,8 +167,8 @@ public:
         //creating right side of the graph with earth and moon and the rotations above it
         
         // create earth and moon
-        osg::Node* earth = createPlanet( _radiusEarth, "Earth", osg::Vec4( 0.0f, 0.0f, 1.0f, 1.0f) );
-        osg::Node* moon = createPlanet( _radiusMoon, "Moon", osg::Vec4( 1.0f, 1.0f, 1.0f, 1.0f) );
+        osg::Node* earth = createPlanet( _radiusEarth, "Earth", osg::Vec4( 0.0f, 0.0f, 1.0f, 1.0f), "Images/land_shallow_topo_2048.jpg" );
+        osg::Node* moon = createPlanet( _radiusMoon, "Moon", osg::Vec4( 1.0f, 1.0f, 1.0f, 1.0f), "Images/moon256128.TGA" );
         
         // create transformations for the earthMoonGroup
         osg::MatrixTransform* aroundSunRotation = createRotation( _RorbitEarth, _rotateSpeedEarthAndMoon );
@@ -232,8 +249,7 @@ int main( int argc, char **argv )
     while (arguments.read("--RorbitMoon",solarSystem._RorbitMoon)) { }
     while (arguments.read("--rotateSpeedMoon",solarSystem._rotateSpeedMoon)) { }
 
-
-    // solarSystem.printParameters();
+    solarSystem.printParameters();
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))

@@ -297,6 +297,7 @@ class ReaderWriterRGB : public osgDB::ReaderWriter
         virtual bool acceptsExtension(const std::string& extension)
         {
             return osgDB::equalCaseInsensitive(extension,"rgb") ||
+                osgDB::equalCaseInsensitive(extension,"sgi") ||
                 osgDB::equalCaseInsensitive(extension,"rgba") ||
                 osgDB::equalCaseInsensitive(extension,"int") || 
                 osgDB::equalCaseInsensitive(extension,"inta") ||

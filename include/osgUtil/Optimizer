@@ -8,6 +8,7 @@
 #include <osg/NodeVisitor>
 #include <osg/Matrix>
 #include <osg/Geometry>
+#include <osg/Transform>
 
 #include <osgUtil/Export>
 
@@ -65,175 +66,32 @@ class OSGUTIL_EXPORT Optimizer
 
 
 
-                FlattenStaticTransformsVisitor(bool ignoreDynamicTransforms=true):
-                    osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
-                    _ignoreDynamicTransforms(ignoreDynamicTransforms) {}
+                FlattenStaticTransformsVisitor():
+                    osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
 
                 virtual void apply(osg::Geode& geode);
-                virtual void apply(osg::Billboard& billboard);
-                virtual void apply(osg::LOD& lod);
-                virtual void apply(osg::Transform& transform);
-
-                void removeTransforms();
-
-            
-                typedef std::vector<osg::Transform*> TransformStack;
-                typedef std::vector<osg::Matrix>     MatrixStack;
-
-            protected:
-
-                struct TransformStruct
-                {
-                    typedef std::set<osg::Object*> ObjectSet;
-                    
-                    TransformStruct():_canBeApplied(true) {}
-                    
-                    void add(osg::Object* obj) { _objectSet.insert(obj); }
-                    
-                    bool        _canBeApplied;
-                    ObjectSet   _objectSet;
-                };
-
-                struct ObjectStruct
-                {
-                    typedef std::set<osg::Transform*> TransformSet;
-    
-                    ObjectStruct():_canBeApplied(true),_matrixSet(false),_moreThanOneMatrixRequired(false) {}
-                    
-                    void add(TransformStack& transforms,osg::Matrix& matrix)
-                    {
-                        _transformSet.insert(transforms.begin(),transforms.end());
-                        if (!_matrixSet)
-                        {
-                            _matrixSet = true;
-                            _moreThanOneMatrixRequired = false;
-                            _matrix = matrix;
-                        }
-                        else if (_matrix!=matrix)
-                        {
-                            _moreThanOneMatrixRequired = true;
-                        }
-                        
-                    }
-
-                    bool            _canBeApplied;
-                    bool            _matrixSet;
-                    bool            _moreThanOneMatrixRequired;
-                    osg::Matrix     _matrix;
-                    TransformSet    _transformSet;
-                    
-                };    
-            
-                typedef std::map<osg::Transform*,TransformStruct>   TransformMap;
-                typedef std::map<osg::Object*,ObjectStruct>         ObjectMap;
-                
-                void disableObject(osg::Object* object)
-                {
-                    disableObject(_objectMap.find(object));
-                }
-                
-                void disableObject(ObjectMap::iterator itr);
-                void disableTransform(osg::Transform* transform);
-                void doTransform(osg::Object* obj,osg::Matrix& matrix);
-                                                
-                bool            _ignoreDynamicTransforms;
-                MatrixStack     _matrixStack;
-                TransformStack  _transformStack;
-                
-                TransformMap    _transformMap;
-                ObjectMap       _objectMap;
-                
-
-        };
-
-        /** Remove the lowest static transforms in the scene.*/        
-        class OSGUTIL_EXPORT RemoveLowestStaticTransformsVisitor : public osg::NodeVisitor
-        {
-            public:
-
-
-
-                RemoveLowestStaticTransformsVisitor(bool ignoreDynamicTransforms=true):
-                    osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
-                    _ignoreDynamicTransforms(ignoreDynamicTransforms) {}
-
-                virtual void apply(osg::Geode& geode);
-                virtual void apply(osg::Billboard& billboard);
-                virtual void apply(osg::LOD& lod);
+                virtual void apply(osg::Billboard& geode);
                 virtual void apply(osg::Transform& transform);
 
                 bool removeTransforms();
 
             
-                typedef std::vector<osg::Transform*> TransformStack;
-                typedef std::vector<osg::Matrix>     MatrixStack;
-
             protected:
 
-                struct TransformStruct
-                {
-                    typedef std::set<osg::Object*> ObjectSet;
-                    
-                    TransformStruct():_containsTransform(false),_canBeApplied(true) {}
-                    
-                    void add(osg::Object* obj) { _objectSet.insert(obj); }
-                    
-                    bool        _containsTransform;
-                    bool        _canBeApplied;
-                    ObjectSet   _objectSet;
-                };
+                typedef std::vector<osg::Transform*>                TransformStack;
+                typedef std::set<osg::Drawable*>                    DrawableSet;
+                typedef std::set<osg::Billboard*>                   BillboardSet;
+                typedef std::set<osg::Transform*>                   TransformSet;
 
-                struct ObjectStruct
-                {
-                    typedef std::set<osg::Transform*> TransformSet;
-    
-                    ObjectStruct():_canBeApplied(true),_matrixSet(false),_moreThanOneMatrixRequired(false) {}
-                    
-                    void add(osg::Transform* transform,osg::Matrix& matrix)
-                    {
-                        _transformSet.insert(transform);
-                        if (!_matrixSet)
-                        {
-                            _matrixSet = true;
-                            _moreThanOneMatrixRequired = false;
-                            _matrix = matrix;
-                        }
-                        else if (_matrix!=matrix)
-                        {
-                            _moreThanOneMatrixRequired = true;
-                        }
-                        
-                    }
-
-                    bool            _canBeApplied;
-                    bool            _matrixSet;
-                    bool            _moreThanOneMatrixRequired;
-                    osg::Matrix     _matrix;
-                    TransformSet    _transformSet;
-                    
-                };    
-            
-                typedef std::map<osg::Transform*,TransformStruct>   TransformMap;
-                typedef std::map<osg::Object*,ObjectStruct>         ObjectMap;
-                
-                void disableObject(osg::Object* object)
-                {
-                    disableObject(_objectMap.find(object));
-                }
-                
-                void disableObject(ObjectMap::iterator itr);
-                void disableTransform(osg::Transform* transform);
-                void doTransform(osg::Object* obj,osg::Matrix& matrix);
-                                                
-                bool            _ignoreDynamicTransforms;
-                MatrixStack     _matrixStack;
                 TransformStack  _transformStack;
-                
-                TransformMap    _transformMap;
-                ObjectMap       _objectMap;
+                DrawableSet     _drawableSet;
+                BillboardSet    _billboardSet;
+                TransformSet    _transformSet;
+                                                
                 
 
         };
+
 
         /** Remove rendundent nodes, such as groups with one single child.*/
         class OSGUTIL_EXPORT RemoveEmptyNodesVisitor : public osg::NodeVisitor

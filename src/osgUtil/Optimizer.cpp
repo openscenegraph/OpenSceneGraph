@@ -21,7 +21,7 @@ using namespace osgUtil;
 
 void Optimizer::optimize(osg::Node* node, unsigned int options)
 {
-    
+
     if (options & COMBINE_ADJACENT_LODS)
     {
         CombineLODsVisitor clv;
@@ -31,25 +31,18 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
     
     if (options & FLATTEN_STATIC_TRANSFORMS)
     {
-//         FlattenStaticTransformsVisitor fstv;
-//         node->accept(fstv);
-//         fstv.removeTransforms();
 
-// the following RemoveLowestStaticTransformVisitor doesn't yet work
-// properly, will need further work.... Robert Osfield, June 2002.
-//         int i=0;
-//         bool result = false;
-//         do
-//         {
-//             std::cout << "************ RemoveLowestStaticTransformsVisitor "<<i<<std::endl;
-//             RemoveLowestStaticTransformsVisitor fstv;
-//             node->accept(fstv);
-//             result = fstv.removeTransforms();
-//             ++i;
-//         } while (result);
-        
-        
-        
+        int i=0;
+        bool result = false;
+        do
+        {
+            osg::notify(osg::DEBUG_INFO) << "** RemoveStaticTransformsVisitor *** Pass "<<i<<std::endl;
+            FlattenStaticTransformsVisitor fstv;
+            node->accept(fstv);
+            result = fstv.removeTransforms();
+            ++i;
+        } while (result);
+
     }
     
     if (options & REMOVE_REDUNDENT_NODES)
@@ -377,75 +370,172 @@ void Optimizer::StateVisitor::optimize()
 // Flatten static transforms
 ////////////////////////////////////////////////////////////////////////////
 
-void Optimizer::FlattenStaticTransformsVisitor::apply(osg::Geode& geode)
+class CollectLowestTransformsVisitor : public osg::NodeVisitor
 {
+    public:
 
-    osg::Matrix matrix;
-    if (!_matrixStack.empty()) matrix = _matrixStack.back();
 
-    for(unsigned int i=0;i<geode.getNumDrawables();++i)
-    {
-        // register each drawable with the objectMap.
-        _objectMap[geode.getDrawable(i)].add(_transformStack,matrix);
-    }
+        CollectLowestTransformsVisitor():
+            osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_PARENTS) {}
 
-}
 
-void Optimizer::FlattenStaticTransformsVisitor::apply(osg::Billboard& billboard)
-{
-    if (!_matrixStack.empty())
-    {
-        // register ourselves with the objectMap.
-        _objectMap[&billboard].add(_transformStack,_matrixStack.back());
-    }
-}
-
-void Optimizer::FlattenStaticTransformsVisitor::apply(osg::LOD& lod)
-{
-    if (!_matrixStack.empty())
-    {
-        // register ourselves with the objectMap.
-        _objectMap[&lod].add(_transformStack,_matrixStack.back());
-    }
-    
-    traverse(lod);
-}
-
-void Optimizer::FlattenStaticTransformsVisitor::apply(osg::Transform& transform)
-{
-    if (_ignoreDynamicTransforms && transform.getDataVariance()==osg::Object::DYNAMIC) 
-    {
-        // simple traverse the children as if this Transform didn't exist.
-        traverse(transform);
-    }
-    else
-    {        
-        osg::ref_ptr<osg::Matrix> matrix;
-        if (_matrixStack.empty())
+        virtual void apply(osg::Node& node)
         {
-            matrix = osgNew osg::Matrix;
-        }
-        else
-        {
-            matrix = osgNew osg::Matrix(_matrixStack.back());
+            if (node.getNumParents())
+            {
+                traverse(node);
+            }
+            else
+            {
+                // for all current objects mark a NULL transform for them.
+                registerWithCurrentObjects(0);
+            }
         }
 
-        transform.getLocalToWorldMatrix(*matrix,this);
+        virtual void apply(osg::LOD& lod)
+        {
+            _currentObjectList.push_back(&lod);
 
-        _matrixStack.push_back(*matrix);
+            traverse(lod);
 
-        _transformStack.push_back(&transform);
+            _currentObjectList.pop_back();
+        }
 
-        // simple traverse the children as if this Transform didn't exist.
-        traverse(transform);
-
-        _transformStack.pop_back();
+        virtual void apply(osg::Transform& transform)
+        {
+            // for all current objects associated this transform with them.
+            registerWithCurrentObjects(&transform);
+        }
         
-        _matrixStack.pop_back();
-    }
-}
+        virtual void apply(osg::Geode& geode)
+        {
+            traverse(geode);
+        }
+        
+        virtual void apply(osg::Billboard& geode)
+        {
+            traverse(geode);
+        }
+        
 
-void Optimizer::FlattenStaticTransformsVisitor::doTransform(osg::Object* obj,osg::Matrix& matrix)
+        void collectDataFor(osg::Billboard* billboard)
+        {
+            _currentObjectList.push_back(billboard);
+            
+            billboard->accept(*this);
+            
+            _currentObjectList.pop_back();
+        }
+        
+        void collectDataFor(osg::Drawable* drawable)
+        {
+            _currentObjectList.push_back(drawable);
+
+            const osg::Drawable::ParentList& parents = drawable->getParents();
+            for(osg::Drawable::ParentList::const_iterator itr=parents.begin();
+                itr!=parents.end();
+                ++itr)
+            {
+                (*itr)->accept(*this);
+            }
+
+            _currentObjectList.pop_back();
+        }
+
+        void setUpMaps();
+        void disableTransform(osg::Transform* transform);
+        bool removeTransforms();
+
+    protected:        
+
+        struct TransformStruct
+        {
+            typedef std::set<osg::Object*> ObjectSet;
+
+            TransformStruct():_canBeApplied(true) {}
+
+            void add(osg::Object* obj)
+            {
+                _objectSet.insert(obj);
+            }
+
+            bool        _canBeApplied;
+            ObjectSet   _objectSet;
+        };
+
+        struct ObjectStruct
+        {
+            typedef std::set<osg::Transform*> TransformSet;
+
+            ObjectStruct():_canBeApplied(true),_moreThanOneMatrixRequired(false) {}
+
+            void add(osg::Transform* transform)
+            {
+                if (transform)
+                {
+                    if (transform->getDataVariance()==osg::Transform::DYNAMIC) _moreThanOneMatrixRequired=true;
+                    else if (transform->getReferenceFrame()==osg::Transform::RELATIVE_TO_ABSOLUTE) _moreThanOneMatrixRequired=true;
+                    else
+                    {
+                        if (_transformSet.empty()) transform->getLocalToWorldMatrix(_firstMatrix,0);
+                        else
+                        {
+                            osg::Matrix matrix;
+                            transform->getLocalToWorldMatrix(_firstMatrix,0);
+                            if (_firstMatrix!=matrix) _moreThanOneMatrixRequired=true;
+                        }
+                    }
+                }
+                else
+                {
+                    if (!_transformSet.empty()) 
+                    {
+                        if (_firstMatrix!=osg::Matrix::identity()) _moreThanOneMatrixRequired=true;
+                    }
+
+                }
+                _transformSet.insert(transform);
+            }
+
+            bool            _canBeApplied;
+            bool            _moreThanOneMatrixRequired;
+            osg::Matrix     _firstMatrix;
+            TransformSet    _transformSet;
+
+        };    
+
+
+        void registerWithCurrentObjects(osg::Transform* transform)
+        {
+            for(ObjectList::iterator itr=_currentObjectList.begin();
+                itr!=_currentObjectList.end();
+                ++itr)
+            {
+                _objectMap[*itr].add(transform);
+            }
+        }
+
+        typedef std::map<osg::Transform*,TransformStruct>   TransformMap;
+        typedef std::map<osg::Object*,ObjectStruct>         ObjectMap;
+        typedef std::vector<osg::Object*>                   ObjectList;
+
+        void disableObject(osg::Object* object)
+        {
+            disableObject(_objectMap.find(object));
+        }
+
+        void disableObject(ObjectMap::iterator itr);
+        void doTransform(osg::Object* obj,osg::Matrix& matrix);
+        
+
+        TransformMap    _transformMap;
+        ObjectMap       _objectMap;
+        ObjectList      _currentObjectList;
+
+};
+
+
+void CollectLowestTransformsVisitor::doTransform(osg::Object* obj,osg::Matrix& matrix)
 {
     osg::Drawable* drawable = dynamic_cast<osg::Drawable*>(obj);
     if (drawable)
@@ -503,12 +593,10 @@ void Optimizer::FlattenStaticTransformsVisitor::doTransform(osg::Object* obj,osg
     }
 }
 
-void Optimizer::FlattenStaticTransformsVisitor::disableObject(ObjectMap::iterator itr)
+void CollectLowestTransformsVisitor::disableObject(ObjectMap::iterator itr)
 {
     if (itr==_objectMap.end())
     {
-        // Euston we have a problem..
-        osg::notify(osg::WARN)<<"Warning: internal error Optimizer::FlattenStaticTransformsVisitor::disableObject()"<<std::endl;
         return;
     }    
 
@@ -527,13 +615,11 @@ void Optimizer::FlattenStaticTransformsVisitor::disableObject(ObjectMap::iterato
     }
 }
 
-void Optimizer::FlattenStaticTransformsVisitor::disableTransform(osg::Transform* transform)
+void CollectLowestTransformsVisitor::disableTransform(osg::Transform* transform)
 {
     TransformMap::iterator itr=_transformMap.find(transform);
     if (itr==_transformMap.end())
     {
-        // Euston we have a problem..
-        osg::notify(osg::WARN)<<"Warning: internal error Optimizer::FlattenStaticTransformsVisitor::disableTransform()"<<std::endl;
         return;
     }    
 
@@ -552,7 +638,7 @@ void Optimizer::FlattenStaticTransformsVisitor::disableTransform(osg::Transform*
     }
 }
 
-void Optimizer::FlattenStaticTransformsVisitor::removeTransforms()
+void CollectLowestTransformsVisitor::setUpMaps()
 {
 
     // create the TransformMap from the ObjectMap
@@ -592,8 +678,12 @@ void Optimizer::FlattenStaticTransformsVisitor::removeTransforms()
         }
     }
 
+}
+
+bool CollectLowestTransformsVisitor::removeTransforms()
+{
     // transform the objects that can be applied.
-    for(oitr=_objectMap.begin();
+    for(ObjectMap::iterator oitr=_objectMap.begin();
         oitr!=_objectMap.end();
         ++oitr)
     {
@@ -601,10 +691,12 @@ void Optimizer::FlattenStaticTransformsVisitor::removeTransforms()
         ObjectStruct& os = oitr->second;
         if (os._canBeApplied)
         {
-            doTransform(object,os._matrix);
+            doTransform(object,os._firstMatrix);
         }
     }
 
+
+    bool transformRemoved = false;
 
     // clean up the transforms.
     for(TransformMap::iterator titr=_transformMap.begin();
@@ -613,6 +705,8 @@ void Optimizer::FlattenStaticTransformsVisitor::removeTransforms()
     {
         if (titr->second._canBeApplied)
         {
+            transformRemoved = true;
+        
             osg::ref_ptr<osg::Transform> transform = titr->first;
             osg::ref_ptr<osg::Group>     group = osgNew osg::Group;
             group->setDataVariance(osg::Object::STATIC);
@@ -632,287 +726,77 @@ void Optimizer::FlattenStaticTransformsVisitor::removeTransforms()
     }
     _objectMap.clear();
     _transformMap.clear();
-    _transformStack.clear();
-    _matrixStack.clear();
+    
+    return transformRemoved;
 }
 
-////////////////////////////////////////////////////////////////////////////
-// Flatten static transforms
-////////////////////////////////////////////////////////////////////////////
-
-void Optimizer::RemoveLowestStaticTransformsVisitor::apply(osg::Geode& geode)
+void Optimizer::FlattenStaticTransformsVisitor::apply(osg::Geode& geode)
 {
-    osg::Transform* transform = NULL;
-    if (!_transformStack.back()) transform = _transformStack.back();
 
-    osg::Matrix matrix;
-    if (!_matrixStack.empty()) matrix = _matrixStack.back();
-
-    for(unsigned int i=0;i<geode.getNumDrawables();++i)
+    if (!_transformStack.empty())
     {
-        // register each drawable with the objectMap.
-        _objectMap[geode.getDrawable(i)].add(transform,matrix);
+        for(unsigned int i=0;i<geode.getNumDrawables();++i)
+        {
+            _drawableSet.insert(geode.getDrawable(i));
+        }
     }
 }
 
-void Optimizer::RemoveLowestStaticTransformsVisitor::apply(osg::Billboard& billboard)
+void Optimizer::FlattenStaticTransformsVisitor::apply(osg::Billboard& billboard)
 {
-    if (!_matrixStack.empty())
+    if (!_transformStack.empty())
     {
-        // register ourselves with the objectMap.
-        _objectMap[&billboard].add(_transformStack.back(),_matrixStack.back());
+        _billboardSet.insert(&billboard);
     }
 }
 
-void Optimizer::RemoveLowestStaticTransformsVisitor::apply(osg::LOD& lod)
+void Optimizer::FlattenStaticTransformsVisitor::apply(osg::Transform& transform)
 {
-    if (!_matrixStack.empty())
+    if (!_transformStack.empty())
     {
-        // register ourselves with the objectMap.
-        _objectMap[&lod].add(_transformStack.back(),_matrixStack.back());
+        // we need to disable any transform higher in the list.
+        _transformSet.insert(_transformStack.back());
+    }
+
+    _transformStack.push_back(&transform);
+
+    
+
+    // simple traverse the children as if this Transform didn't exist.
+    traverse(transform);
+
+    _transformStack.pop_back();
+}
+
+bool Optimizer::FlattenStaticTransformsVisitor::removeTransforms()
+{
+    CollectLowestTransformsVisitor cltv;
+
+    for(DrawableSet::iterator ditr=_drawableSet.begin();
+        ditr!=_drawableSet.end();
+        ++ditr)
+    {
+        cltv.collectDataFor(*ditr);
+    }
+
+    for(BillboardSet::iterator bitr=_billboardSet.begin();
+        bitr!=_billboardSet.end();
+        ++bitr)
+    {
+        cltv.collectDataFor(*bitr);
     }
     
-    traverse(lod);
-}
-
-void Optimizer::RemoveLowestStaticTransformsVisitor::apply(osg::Transform& transform)
-{
-
-
-    if (_ignoreDynamicTransforms && transform.getDataVariance()==osg::Object::DYNAMIC) 
-    {
-        // simple traverse the children as if this Transform didn't exist.
-        traverse(transform);
-    }
-    else
-    {        
-        if (!_matrixStack.empty())
-        {
-            _transformMap[&transform]._containsTransform=false;
-        }
-
-        osg::Matrix matrix;
-        transform.getLocalToWorldMatrix(matrix,this);
-
-        _matrixStack.push_back(matrix);
-
-        _transformStack.push_back(&transform);
-
-        // simple traverse the children as if this Transform didn't exist.
-        traverse(transform);
-
-        _transformStack.pop_back();
-        
-        _matrixStack.pop_back();
-    }
-}
-
-void Optimizer::RemoveLowestStaticTransformsVisitor::doTransform(osg::Object* obj,osg::Matrix& matrix)
-{
-    osg::Drawable* drawable = dynamic_cast<osg::Drawable*>(obj);
-    if (drawable)
-    {
-        TransformFunctor tf(matrix);
-        drawable->accept(tf);
-        drawable->dirtyBound();
-        return;
-    }
-
-    osg::LOD* lod = dynamic_cast<osg::LOD*>(obj);
-    if (lod)
-    {
-        osg::Matrix matrix_no_trans = matrix;
-        matrix_no_trans.setTrans(0.0f,0.0f,0.0f);
-        
-        osg::Vec3 v111(1.0f,1.0f,1.0f);
-        osg::Vec3 new_v111 = v111*matrix_no_trans;
-        float ratio = new_v111.length()/v111.length();
-
-        // move center point.
-        lod->setCenter(lod->getCenter()*matrix);
-        
-        // adjust ranges to new scale.
-        for(unsigned int i=0;i<lod->getNumRanges();++i)
-        {
-            lod->setRange(i,lod->getRange(i)*ratio);
-        }
-        
-        lod->dirtyBound();
-        return;
-    }
-
-    osg::Billboard* billboard = dynamic_cast<osg::Billboard*>(obj);
-    if (billboard)
-    {
-        osg::Matrix matrix_no_trans = matrix;
-        matrix_no_trans.setTrans(0.0f,0.0f,0.0f);
-  
-        TransformFunctor tf(matrix_no_trans);
-
-        osg::Vec3 axis = osg::Matrix::transform3x3(tf._im,billboard->getAxis());
-        axis.normalize();
-        billboard->setAxis(axis);
-
-        for(unsigned int i=0;i<billboard->getNumDrawables();++i)
-        {
-            billboard->setPos(i,billboard->getPos(i)*matrix);
-            billboard->getDrawable(i)->accept(tf);
-        }
-        
-        billboard->dirtyBound();
-
-        return;
-    }
-}
-
-void Optimizer::RemoveLowestStaticTransformsVisitor::disableObject(ObjectMap::iterator itr)
-{
-    if (itr==_objectMap.end())
-    {
-        // Euston we have a problem..
-        osg::notify(osg::WARN)<<"Warning: internal error Optimizer::RemoveLowestStaticTransformsVisitor::disableObject()"<<std::endl;
-        return;
-    }    
-
-    if (itr->second._canBeApplied)
-    {
-        // we havn't been disabled yet so we need to disable,
-        itr->second._canBeApplied = false;
-
-        // and then inform everybody we have been disabled.
-        for(ObjectStruct::TransformSet::iterator titr = itr->second._transformSet.begin();
-            titr != itr->second._transformSet.end();
-            ++titr)
-        {
-            disableTransform(*titr);
-        }
-    }
-}
-
-void Optimizer::RemoveLowestStaticTransformsVisitor::disableTransform(osg::Transform* transform)
-{
-    TransformMap::iterator itr=_transformMap.find(transform);
-    if (itr==_transformMap.end())
-    {
-        // Euston we have a problem..
-        osg::notify(osg::WARN)<<"Warning: internal error Optimizer::RemoveLowestStaticTransformsVisitor::disableTransform()"<<std::endl;
-        return;
-    }    
-
-    if (itr->second._canBeApplied)
-    {
+    cltv.setUpMaps();
     
-        // we havn't been disabled yet so we need to disable,
-        itr->second._canBeApplied = false;
-        // and then inform everybody we have been disabled.
-        for(TransformStruct::ObjectSet::iterator oitr = itr->second._objectSet.begin();
-            oitr != itr->second._objectSet.end();
-            ++oitr)
-        {
-            disableObject(*oitr);
-        }
-    }
-}
-
-bool Optimizer::RemoveLowestStaticTransformsVisitor::removeTransforms()
-{
-
-    // create the TransformMap from the ObjectMap
-    ObjectMap::iterator oitr;
-    for(oitr=_objectMap.begin();
-        oitr!=_objectMap.end();
-        ++oitr)
-    {
-        osg::Object* object = oitr->first;
-        ObjectStruct& os = oitr->second;
-        
-        for(ObjectStruct::TransformSet::iterator titr = os._transformSet.begin();
-            titr != os._transformSet.end();
-            ++titr)
-        {
-            _transformMap[*titr].add(object);
-        }
-    }
-    
-    TransformMap::iterator titr;
-    for(titr=_transformMap.begin();
-        titr!=_transformMap.end();
+    for(TransformSet::iterator titr=_transformSet.begin();
+        titr!=_transformSet.end();
         ++titr)
     {
-        TransformStruct& ts = titr->second;
-        if (ts._containsTransform)
-        {
-            disableTransform(titr->first);
-        }
+        cltv.disableTransform(*titr);
     }
-
-    // disable all the objects which have more than one matrix associated 
-    // with them, and then disable all transforms which have an object associated 
-    // them that can't be applied, and then disable all objects which have
-    // disabled transforms associated, recursing until all disabled 
-    // associativity.
-    for(oitr=_objectMap.begin();
-        oitr!=_objectMap.end();
-        ++oitr)
-    {
-        ObjectStruct& os = oitr->second;
-        if (os._canBeApplied)
-        {
-            if (os._moreThanOneMatrixRequired)
-            {
-                disableObject(oitr);
-            }
-        }
-    }
-
-
-    // transform the objects that can be applied.
-    for(oitr=_objectMap.begin();
-        oitr!=_objectMap.end();
-        ++oitr)
-    {
-        osg::Object* object = oitr->first;
-        ObjectStruct& os = oitr->second;
-        if (os._canBeApplied)
-        {
-            doTransform(object,os._matrix);
-        }
-    }
-
-
-    bool transformsRemoved = false;
-
-    // clean up the transforms.
-    for(titr=_transformMap.begin();
-        titr!=_transformMap.end();
-        ++titr)
-    {
-        if (titr->second._canBeApplied && titr->first)
-        {
-            osg::ref_ptr<osg::Transform> transform = titr->first;
-            osg::ref_ptr<osg::Group>     group = osgNew osg::Group;
-            group->setDataVariance(osg::Object::STATIC);
-            for(unsigned int i=0;i<transform->getNumChildren();++i)
-            {
-                for(unsigned int j=0;j<transform->getNumParents();++j)
-                {
-                    group->addChild(transform->getChild(i));
-                }
-            }
-
-            for(int i2=transform->getNumParents()-1;i2>=0;--i2)
-            {
-                transform->getParent(i2)->replaceChild(transform.get(),group.get());
-            }                
-            transformsRemoved = true;
-        }
-    }
-    _objectMap.clear();
-    _transformMap.clear();
-    _transformStack.clear();
-    _matrixStack.clear();
     
-    return transformsRemoved;
+
+    return cltv.removeTransforms();
 }
 
 

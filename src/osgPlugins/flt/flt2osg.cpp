@@ -784,38 +784,38 @@ void ConvertFromFLT::visitLtPtAnimationPalette(osg::Group& /*osgParent*/, LtPtAn
     assert( pool );
     if (ltPtAnim && pool)
     {
-		osg::ref_ptr<LtPtAnimationPool::PoolLtPtAnimation> entry = new LtPtAnimationPool::PoolLtPtAnimation;
+        osg::ref_ptr<LtPtAnimationPool::PoolLtPtAnimation> entry = new LtPtAnimationPool::PoolLtPtAnimation;
 
-		entry->_name = std::string( ltPtAnim->name );
+        entry->_name = std::string( ltPtAnim->name );
 
-		// Support sequenced animations
-		if ( (ltPtAnim->animType == LtPtAnimationPaletteRecord::SEQ_TYPE) &&
-			 (ltPtAnim->numSequences > 0) )
-		{
-			osg::ref_ptr<osgSim::BlinkSequence> b = new osgSim::BlinkSequence;
-			for (int idx=0; idx<ltPtAnim->numSequences; idx++)
-			{
-				SLightPointAnimationSequence* seq = rec->sequence( idx );
-				osg::Vec4 color( 0.f, 0.f, 0.f, 0.f );
-				if (seq->seqState != LtPtAnimationPaletteRecord::SEQ_OFF)
-				{
-					// Sequence state is On or Color Change, so set the color to non-black
-					ColorPool* pColorPool = rec->getFltFile()->getColorPool();
-					color = pColorPool->getColor( seq->seqColor );
-				}
-				b->addPulse( seq->duration, color );
-			}
-			entry->_blink = b;
-		}
-		// Support strobe animations
-		else if (ltPtAnim->animType == LtPtAnimationPaletteRecord::STROBE_TYPE)
-		{
-			osg::ref_ptr<osgSim::BlinkSequence> b = new osgSim::BlinkSequence;
-			const float duration = .5f / ltPtAnim->period;
-			b->addPulse( duration, osg::Vec4( 0.f, 0.f, 0.f, 0.f ) );
-			b->addPulse( duration, osg::Vec4( 1.f, 1.f, 1.f, 1.f ) );
-			entry->_blink = b;
-		}
+        // Support sequenced animations
+        if ( (ltPtAnim->animType == LtPtAnimationPaletteRecord::SEQ_TYPE) &&
+             (ltPtAnim->numSequences > 0) )
+        {
+            osg::ref_ptr<osgSim::BlinkSequence> b = new osgSim::BlinkSequence;
+            for (int idx=0; idx<ltPtAnim->numSequences; idx++)
+            {
+                SLightPointAnimationSequence* seq = rec->sequence( idx );
+                osg::Vec4 color( 0.f, 0.f, 0.f, 0.f );
+                if (seq->seqState != LtPtAnimationPaletteRecord::SEQ_OFF)
+                {
+                    // Sequence state is On or Color Change, so set the color to non-black
+                    ColorPool* pColorPool = rec->getFltFile()->getColorPool();
+                    color = pColorPool->getColor( seq->seqColor );
+                }
+                b->addPulse( seq->duration, color );
+            }
+            entry->_blink = b;
+        }
+        // Support strobe animations
+        else if (ltPtAnim->animType == LtPtAnimationPaletteRecord::STROBE_TYPE)
+        {
+            osg::ref_ptr<osgSim::BlinkSequence> b = new osgSim::BlinkSequence;
+            const float duration = .5f / ltPtAnim->period;
+            b->addPulse( duration, osg::Vec4( 0.f, 0.f, 0.f, 0.f ) );
+            b->addPulse( duration, osg::Vec4( 1.f, 1.f, 1.f, 1.f ) );
+            entry->_blink = b;
+        }
 
         pool->add( ltPtAnim->index, entry.get() );
     }
@@ -2677,12 +2677,12 @@ void ConvertFromFLT::visitLightPointIndex(osg::Group& osgParent, LightPointIndex
         return; // Appearance index out of range
     LtPtAnimationPool* animPool = rec->getFltFile()->getLtPtAnimationPool();
     LtPtAnimationPool::PoolLtPtAnimation* ltPtAnim = NULL;
-	if (ltPtIdx->iAnimationIndex >= 0)
-	{
-		ltPtAnim = animPool->get( ltPtIdx->iAnimationIndex );
-		if (!ltPtAnim)
-			return; // Animation index out of range
-	}
+    if (ltPtIdx->iAnimationIndex >= 0)
+    {
+        ltPtAnim = animPool->get( ltPtIdx->iAnimationIndex );
+        if (!ltPtAnim)
+            return; // Animation index out of range
+    }
 
     GeoSetBuilder pBuilder;
     DynGeoSet* dgset = pBuilder.getDynGeoSet();
@@ -2749,14 +2749,14 @@ void ConvertFromFLT::visitLightPointIndex(osg::Group& osgParent, LightPointIndex
                 color = pColorPool->getColor( ltPtApp->_iBackColorIdx );
             }
 
-			osgSim::BlinkSequence* blink = NULL;
-			if (ltPtAnim && ltPtAnim->_blink.valid())
-				blink = ltPtAnim->_blink.get();
+            osgSim::BlinkSequence* blink = NULL;
+            if (ltPtAnim && ltPtAnim->_blink.valid())
+                blink = ltPtAnim->_blink.get();
 
             // note in corbin's code the ltPtApp->_bIntensity was set to 1.0, however,
             // I have left the original setting in place.
             osgSim::LightPoint lp( true, coords[nl], color, ltPtApp->_bIntensity, pointRadius,
-				0, blink );
+                0, blink );
 
             if (directional)
             {

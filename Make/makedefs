@@ -337,7 +337,11 @@ ifeq ($(OS),Linux)
       ARCHINST        = 
     endif
   else
+
+ifeq ("$(COMPILE_OSG_OP_OT_WITH_SONAMES)","YES")
     LDFLAGS         += -Wl,-soname -Wl,$@.0
+endif
+
     LIBS            = -lstdc++
     DEF             += -W -Wall -fPIC
     OPTF            = -O2 

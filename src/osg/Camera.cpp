@@ -33,7 +33,7 @@ Camera::Camera()
     _screenDistance = 1.0f;
 }
 
-Camera::Camera(const Camera& camera)
+Camera::Camera(const Camera& camera):Referenced()
 {
     copy(camera);
 }

@@ -20,15 +20,6 @@
 #include <osg/Shape>
 #include <osg/buffered_value>
 
-namespace osg {
-
-
-class Vec2f;
-class Vec3f;
-class Vec4f;
-class UByte4;
-class Geometry;
-
 #ifndef GL_ARB_vertex_buffer_object
 
     // for compatibility with gl.h headers that don't support VBO,
@@ -97,6 +88,16 @@ class Geometry;
     #define GL_QUERY_RESULT_AVAILABLE_ARB       0x8867
 
 #endif
+
+
+namespace osg {
+
+
+class Vec2f;
+class Vec3f;
+class Vec4f;
+class UByte4;
+class Geometry;
 
 // this is defined to alter the way display lists are compiled inside the
 // the draw method, it has been found that the NVidia drivers fail completely

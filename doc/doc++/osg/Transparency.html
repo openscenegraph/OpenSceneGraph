@@ -7,7 +7,7 @@
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
-<H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osg::Transparency</A></H2></H2><BLOCKQUOTE>Transparancy - encapsulates the OpenGL transparancy state</BLOCKQUOTE>
+<H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osg::Transparency</A></H2></H2><BLOCKQUOTE>Transparency - encapsulates the OpenGL blend/transparency state</BLOCKQUOTE>
 <HR>
 
 <H2>Inheritance:</H2>
@@ -23,43 +23,43 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.91.1">Transparency</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.107.1">Transparency</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.91.2">META_StateAttribute</A></B>(<!1><A HREF="Transparency.html">Transparency</A>, <!1><A HREF="StateAttribute.html#DOC.2.80.6.28">TRANSPARENCY</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.107.2">META_StateAttribute</A></B>(<!1><A HREF="Transparency.html">Transparency</A>, <!1><A HREF="StateAttribute.html#DOC.2.96.6.29">TRANSPARENCY</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.91.3">compare</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.107.3">compare</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const 
 <DD><I>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.91.4">setStateSetModes</A></B>(<!1><A HREF="StateSet.html">StateSet</A>&amp; ds, const <!1><A HREF="StateAttribute.html#DOC.2.80.2">GLModeValue</A> value) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.107.4">setStateSetModes</A></B>(<!1><A HREF="StateSet.html">StateSet</A>&amp; ds, const <!1><A HREF="StateAttribute.html#DOC.2.96.2">GLModeValue</A> value) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.91.6">setFunction</A></B>( const int source, const int destination )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.107.6">setFunction</A></B>( const int source, const int destination )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.91.7">setSource</A></B>(const int source)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.107.7">setSource</A></B>(const int source)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const int <B><A HREF="#DOC.2.91.8">getSource</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const int <B><A HREF="#DOC.2.107.8">getSource</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.91.9">setDestination</A></B>(const int destination)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.107.9">setDestination</A></B>(const int destination)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const int <B><A HREF="#DOC.2.91.10">getDestination</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const int <B><A HREF="#DOC.2.107.10">getDestination</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.91.11">apply</A></B>(<!1><A HREF="State.html">State</A>&amp; state) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.107.11">apply</A></B>(<!1><A HREF="State.html">State</A>&amp; state) const 
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.91.5">TransparencyMode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.107.5">TransparencyMode</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.91.13">_source_factor</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.107.13">_source_factor</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.91.14">_destination_factor</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.107.14">_destination_factor</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.91.12">~Transparency</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.107.12">~Transparency</A></B>()
 </DL></P>
 
 </DL>
@@ -73,7 +73,7 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   const <!1><A HREF="StateAttribute.html#DOC.2.80.5">Type</A> <B>getType</B>() const 
+<IMG ALT="o" SRC=icon2.gif>virtual   const <!1><A HREF="StateAttribute.html#DOC.2.96.5">Type</A> <B>getType</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>bool <B>operator <  </B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; rhs) const 
 <DT>
@@ -126,110 +126,110 @@
 <A NAME="DOC.DOCU"></A>
 <HR>
 <H2>Documentation</H2>
-<BLOCKQUOTE>Transparancy - encapsulates the OpenGL transparancy state</BLOCKQUOTE>
+<BLOCKQUOTE>Transparency - encapsulates the OpenGL blend/transparency state</BLOCKQUOTE>
 <DL>
 
 <A NAME="Transparency"></A>
-<A NAME="DOC.2.91.1"></A>
+<A NAME="DOC.2.107.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Transparency()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="META_StateAttribute"></A>
-<A NAME="DOC.2.91.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_StateAttribute(<!1><A HREF="Transparency.html">Transparency</A>, <!1><A HREF="StateAttribute.html#DOC.2.80.6.28">TRANSPARENCY</A>)</B></TT>
+<A NAME="DOC.2.107.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_StateAttribute(<!1><A HREF="Transparency.html">Transparency</A>, <!1><A HREF="StateAttribute.html#DOC.2.96.6.29">TRANSPARENCY</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="compare"></A>
-<A NAME="DOC.2.91.3"></A>
+<A NAME="DOC.2.107.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   int compare(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const </B></TT>
 <DD>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs
 <DL><DT><DD></DL><P>
 <A NAME="setStateSetModes"></A>
-<A NAME="DOC.2.91.4"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setStateSetModes(<!1><A HREF="StateSet.html">StateSet</A>&amp; ds, const <!1><A HREF="StateAttribute.html#DOC.2.80.2">GLModeValue</A> value) const </B></TT>
+<A NAME="DOC.2.107.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setStateSetModes(<!1><A HREF="StateSet.html">StateSet</A>&amp; ds, const <!1><A HREF="StateAttribute.html#DOC.2.96.2">GLModeValue</A> value) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="TransparencyMode"></A>
-<A NAME="DOC.2.91.5"></A>
+<A NAME="DOC.2.107.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  TransparencyMode</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="DST_ALPHA"></A>
-<A NAME="DOC.2.91.5.1"></A>
+<A NAME="DOC.2.107.5.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DST_ALPHA</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="DST_COLOR"></A>
-<A NAME="DOC.2.91.5.2"></A>
+<A NAME="DOC.2.107.5.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DST_COLOR</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ONE"></A>
-<A NAME="DOC.2.91.5.3"></A>
+<A NAME="DOC.2.107.5.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ONE</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ONE_MINUS_DST_ALPHA"></A>
-<A NAME="DOC.2.91.5.4"></A>
+<A NAME="DOC.2.107.5.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ONE_MINUS_DST_ALPHA</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ONE_MINUS_DST_COLOR"></A>
-<A NAME="DOC.2.91.5.5"></A>
+<A NAME="DOC.2.107.5.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ONE_MINUS_DST_COLOR</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ONE_MINUS_SRC_ALPHA"></A>
-<A NAME="DOC.2.91.5.6"></A>
+<A NAME="DOC.2.107.5.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ONE_MINUS_SRC_ALPHA</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ONE_MINUS_SRC_COLOR"></A>
-<A NAME="DOC.2.91.5.7"></A>
+<A NAME="DOC.2.107.5.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ONE_MINUS_SRC_COLOR</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="SRC_ALPHA"></A>
-<A NAME="DOC.2.91.5.8"></A>
+<A NAME="DOC.2.107.5.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SRC_ALPHA</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="SRC_ALPHA_SATURATE"></A>
-<A NAME="DOC.2.91.5.9"></A>
+<A NAME="DOC.2.107.5.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SRC_ALPHA_SATURATE</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="SRC_COLOR"></A>
-<A NAME="DOC.2.91.5.10"></A>
+<A NAME="DOC.2.107.5.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SRC_COLOR</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ZERO"></A>
-<A NAME="DOC.2.91.5.11"></A>
+<A NAME="DOC.2.107.5.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ZERO</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="setFunction"></A>
-<A NAME="DOC.2.91.6"></A>
+<A NAME="DOC.2.107.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setFunction( const int source, const int destination )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setSource"></A>
-<A NAME="DOC.2.91.7"></A>
+<A NAME="DOC.2.107.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSource(const int source)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getSource"></A>
-<A NAME="DOC.2.91.8"></A>
+<A NAME="DOC.2.107.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const int getSource() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setDestination"></A>
-<A NAME="DOC.2.91.9"></A>
+<A NAME="DOC.2.107.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDestination(const int destination)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getDestination"></A>
-<A NAME="DOC.2.91.10"></A>
+<A NAME="DOC.2.107.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const int getDestination() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.91.11"></A>
+<A NAME="DOC.2.107.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="State.html">State</A>&amp; state) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~Transparency"></A>
-<A NAME="DOC.2.91.12"></A>
+<A NAME="DOC.2.107.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Transparency()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_source_factor"></A>
-<A NAME="DOC.2.91.13"></A>
+<A NAME="DOC.2.107.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _source_factor</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_destination_factor"></A>
-<A NAME="DOC.2.91.14"></A>
+<A NAME="DOC.2.107.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _destination_factor</B></TT>
 <DL><DT><DD></DL><P></DL>
 

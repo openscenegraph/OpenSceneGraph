@@ -25,7 +25,10 @@ class  OSGUTIL_EXPORT <B><A HREF="CullVisitor.html">CullVisitor</A></B>: public 
 class  OSGUTIL_EXPORT <B><A HREF="DepthSortedBin.html">DepthSortedBin</A></B>: public <!1><A HREF="RenderBin.html">RenderBin</A>
 <DT>
 class  OSGUTIL_EXPORT <B><A HREF="DisplayListVisitor.html">DisplayListVisitor</A></B>: public osg::NodeVisitor
-<DD><I>Visitor for traversing scene graph and setting each osg::GeoSet's _useDisplayList flag,  with option to immediately compile osg::GeoSet's OpenGL Display lists.</I>
+<DD><I>Visitor for traversing scene graph and setting each osg::GeoSet's _useDisplayList flag,  with option to immediately compile osg::Drawable OpenGL Display lists and osg::StateAttribute's</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="DisplayRequirementsVisitor.html">DisplayRequirementsVisitor</A></B>: public osg::NodeVisitor
+<DD><I>A visitor for traversing a scene graph establishing the OpenGL visuals are required to support rendering of that scene graph.</I>
 <DT>
 class  OSGUTIL_EXPORT <B><A HREF="DriveManipulator.html">DriveManipulator</A></B>: public <!1><A HREF="CameraManipulator.html">CameraManipulator</A>
 <DT>
@@ -49,7 +52,7 @@ class  OSGUTIL_EXPORT <B><A HREF="Hit.html">Hit</A></B>: public osg::Referenced
 class  OSGUTIL_EXPORT <B><A HREF="IntersectVisitor.html">IntersectVisitor</A></B>: public osg::NodeVisitor
 <DD><I>Basic visitor for ray based collisions of a scene.</I>
 <DT>
-class  OSGUTIL_EXPORT <B><A HREF="OptimizeStateVisitor.html">OptimizeStateVisitor</A></B>: public osg::NodeVisitor
+class  OSGUTIL_EXPORT <B><A HREF="Optimizer.html">Optimizer</A></B>
 <DD><I>Insert impostor nodes into scene graph.</I>
 <DT>
 class  OSGUTIL_EXPORT <B><A HREF="RenderBin.html">RenderBin</A></B>: public osg::Object
@@ -73,7 +76,7 @@ class  OSGUTIL_EXPORT <B><A HREF="RenderToTextureStage.html">RenderToTextureStag
 <DD><I> RenderBin base class</I>
 <DT>
 class  OSGUTIL_EXPORT <B><A HREF="SceneView.html">SceneView</A></B>: public osg::Referenced
-<DD><I> SceneView is literaly a view of a scene, encapsulating the camera, global state, lights and the scene itself.</I>
+<DD><I> SceneView is literally a view of a scene, encapsulating the camera, global state, lights and the scene itself.</I>
 <DT>
 class  OSGUTIL_EXPORT <B><A HREF="SceneViewManipulator.html">SceneViewManipulator</A></B>: public <!1><A HREF="GUIEventHandler.html">GUIEventHandler</A>
 <DT>
@@ -82,19 +85,15 @@ class  OSGUTIL_EXPORT <B><A HREF="SmoothingVisitor.html">SmoothingVisitor</A></B
 <DT>
 class  OSGUTIL_EXPORT <B><A HREF="StateSetManipulator.html">StateSetManipulator</A></B>: public <!1><A HREF="GUIEventHandler.html">GUIEventHandler</A>
 <DT>
-class  OSGUTIL_EXPORT <B><A HREF="Statistics.html">Statistics</A></B>: public osg::Object
-<DD><I> Statistics base class.</I>
-<DT>
 class  OSGUTIL_EXPORT <B><A HREF="Tesselator.html">Tesselator</A></B>
-<DD><I>A simple class for tesselating a single polygon boundary.</I>
+<DD><I>A simple class for tessellating a single polygon boundary.</I>
 <DT>
 class  OSGUTIL_EXPORT <B><A HREF="TrackballManipulator.html">TrackballManipulator</A></B>: public <!1><A HREF="CameraManipulator.html">CameraManipulator</A>
 <DT>
+class  OSGUTIL_EXPORT <B><A HREF="TransformCallback.html">TransformCallback</A></B>: public osg::NodeCallback
+<DT>
 class  OSGUTIL_EXPORT <B><A HREF="TriStripVisitor.html">TriStripVisitor</A></B>: public osg::NodeVisitor
 <DD><I>A tri stripping visitor for converting GeoSet primitives into tri strips.</I>
-<DT>
-class  OSGUTIL_EXPORT <B><A HREF="VisualsRequirementsVisitor.html">VisualsRequirementsVisitor</A></B>: public osg::NodeVisitor
-<DD><I>A visitor for traversing a scene graph establishing the OpenGL visuals are required to support rendering of that scene graph.</I>
 </DL></P>
 
 

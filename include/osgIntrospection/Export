@@ -24,13 +24,13 @@
 #endif
 
 #if defined(_MSC_VER) || defined(__CYGWIN__) || defined(__MINGW32__) || defined( __BCPLUSPLUS__)  || defined( __MWERKS__)
-	#  ifdef OSGINTROSPECTION_LIBRARY
-	#    define OSGINTROSPECTION_EXPORT   __declspec(dllexport)
-	#  else
-	#    define OSGINTROSPECTION_EXPORT   __declspec(dllimport)
-	#  endif /* OSGINTROSPECTION_LIBRARY */
+    #  ifdef OSGINTROSPECTION_LIBRARY
+    #    define OSGINTROSPECTION_EXPORT   __declspec(dllexport)
+    #  else
+    #    define OSGINTROSPECTION_EXPORT   __declspec(dllimport)
+    #  endif /* OSGINTROSPECTION_LIBRARY */
 #else
-	#  define OSGINTROSPECTION_EXPORT
+    #  define OSGINTROSPECTION_EXPORT
 #endif  
 
 // set up define for whether member templates are supported by VisualStudio compilers.

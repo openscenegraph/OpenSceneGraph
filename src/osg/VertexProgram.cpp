@@ -140,7 +140,7 @@ void VertexProgram::apply(State& state) const
                 std::string pointAtproblem(errorposition-(start+1), ' ');
                 notify(osg::FATAL) << "             : " << pointAtproblem << '^' << std::endl;
             }
-            exit(1);
+            return;
         }
     }
 

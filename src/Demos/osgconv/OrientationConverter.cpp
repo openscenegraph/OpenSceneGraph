@@ -1,51 +1,13 @@
 #include <stdio.h>
+
 #include <osg/GeoSet>
+#include <osg/Geode>
+#include <osg/Billboard>
+#include <osg/LOD>
+
 #include "OrientationConverter.h"
 
 using namespace osg;
-
-class TransformFunctor : public osg::Drawable::AttributeFunctor
-{
-    public:
-    
-        osg::Matrix _m;
-        osg::Matrix _im;
-
-        TransformFunctor(const osg::Matrix& m):
-            osg::Drawable::AttributeFunctor(osg::Drawable::COORDS|osg::Drawable::NORMALS)
-        {
-            _m = m;
-            _im.invert(_m);
-        }
-            
-        virtual ~TransformFunctor() {}
-
-        virtual bool apply(osg::Drawable::AttributeBitMask abm,osg::Vec3* begin,osg::Vec3* end)
-        {
-            if (abm == osg::Drawable::COORDS)
-            {
-                for (osg::Vec3* itr=begin;itr<end;++itr)
-                {
-                    (*itr) = (*itr)*_m;
-                }
-                return true;
-            }
-            else if (abm == osg::Drawable::NORMALS)
-            {
-                for (osg::Vec3* itr=begin;itr<end;++itr)
-                {
-                    // note post mult by inverse for normals.
-                    (*itr) = osg::Matrix::transform3x3(_im,(*itr));
-                    (*itr).normalize();
-                }
-                return true;
-            }
-            return false;
-
-        }
-
-};
-
 
 OrientationConverter::OrientationConverter( void )
 {
@@ -69,37 +31,28 @@ void OrientationConverter::convert( Node &node )
 }
 
 
-void OrientationConverter::ConvertVisitor::apply( Geode &geode )
+void OrientationConverter::ConvertVisitor::apply(osg::Geode& geode)
 {
-   int numdrawables = geode.getNumDrawables();
-   
-   TransformFunctor tf(_mat);
+    for(int i=0;i<geode.getNumDrawables();++i)
+    {
+        geode.getDrawable(i)->applyAttributeOperation(_tf);
+    }
+}
 
-   for( int i = 0; i < numdrawables; i++ )
-   {
-        geode.getDrawable(i)->applyAttributeOperation(tf);
+void OrientationConverter::ConvertVisitor::apply(osg::Billboard& billboard)
+{
+    osg::Vec3 axis = osg::Matrix::transform3x3(_tf._im,billboard.getAxis());
+    billboard.setAxis(axis);
 
-/*
-   	GeoSet *gset = dynamic_cast<GeoSet *>(geode.getDrawable(i));
+    for(int i=0;i<billboard.getNumDrawables();++i)
+    {
+        billboard.setPos(i,billboard.getPos(i)*_tf._m);
+        billboard.getDrawable(i)->applyAttributeOperation(_tf);
+    }
+}
 
-	if( gset == NULL )
-	    continue;
-	int numcoords = gset->getNumCoords();
-	Vec3 *vertex = gset->getCoords();
-
-	for( int i = 0; i < numcoords; i++ )
-	{
-	    Vec3 vv = vertex[i];
-	    vertex[i] = vv * _mat;
-	}
-
-	int numnormals = gset->getNumNormals();
-	Vec3 *normals = gset->getNormals();
-	for( int i = 0; i < numnormals; i++ )
-	{
-	    Vec3 vv = normals[i];
-	    normals[i] = vv * _mat;
-	}
-*/
-   }
+void OrientationConverter::ConvertVisitor::apply(osg::LOD& lod)
+{
+    lod.setCenter(lod.getCenter()*_tf._m);
+    traverse(lod);
 }

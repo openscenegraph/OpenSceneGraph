@@ -3,6 +3,7 @@
 #endif
 
 #include <osg/Transform>
+#include <osg/Billboard>
 #include <osg/Geode>
 #include <osg/Group>
 #include <osg/Notify>
@@ -88,6 +89,32 @@ class FlattenStaticTransformsVisitor : public osg::NodeVisitor
             }
         }
         
+        virtual void apply(osg::Billboard& billboard)
+        {
+            if (!_matrixStack.empty())
+            {
+                osg::Matrix& matrix = _matrixStack.back();
+                TransformFunctor tf(matrix);
+
+                osg::Vec3 axis = osg::Matrix::transform3x3(tf._im,billboard.getAxis());
+                billboard.setAxis(axis);
+               
+                for(int i=0;i<billboard.getNumDrawables();++i)
+                {
+                    billboard.setPos(i,billboard.getPos(i)*matrix);
+                    billboard.getDrawable(i)->applyAttributeOperation(tf);
+                }
+            }
+        }
+
+        virtual void apply(osg::LOD& lod)
+        {
+            if (!_matrixStack.empty())
+            {
+                lod.setCenter(lod.getCenter()*_matrixStack.back());
+            }
+            traverse(lod);
+        }
 
         virtual void apply(osg::Transform& transform)
         {
@@ -187,6 +214,80 @@ class RemoveRedundentNodesVisitor : public osg::NodeVisitor
         
 };
 
+class CombineLODsVisitor : public osg::NodeVisitor
+{
+    public:
+    
+        typedef std::set<osg::Group*>  GroupList;
+        GroupList                      _groupList;
+    
+        CombineLODsVisitor():osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+
+        virtual void apply(osg::LOD& lod)
+        {
+            for(int i=0;i<lod.getNumParents();++i)
+            {
+                _groupList.insert(lod.getParent(i));
+            }
+            traverse(lod);
+        }
+
+        
+        void combineLODs()
+        {
+            for(GroupList::iterator itr=_groupList.begin();
+                itr!=_groupList.end();
+                ++itr)
+            {
+                osg::Group* group = *itr;
+                
+                typedef std::multimap<float,osg::LOD*>      RangeLODMap;
+                typedef std::set<osg::LOD*>                 LODSet;
+                typedef std::multimap<osg::Vec3,osg::LOD*>  CenterLODMap;
+                typedef std::set<osg::Node*>                NodeSet;
+                
+                CenterLODMap    centerLODMap;
+                NodeSet         otherChildren;
+                
+                for(int i=0;i<group->getNumChildren();++i)
+                {
+                    osg::Node* child = group->getChild(i);
+                    osg::LOD* lod = dynamic_cast<osg::LOD*>(child);
+                    if (lod)
+                    {
+                        centerLODMap.insert(std::pair<osg::Vec3,osg::LOD*>(lod->getCenter(),lod));
+                    }
+                    else
+                    {
+                        otherChildren.insert(child);
+                    }
+                }
+                
+                cout << "Group "<<group<<endl;
+                for(CenterLODMap::iterator clod_itr=centerLODMap.begin();
+                    clod_itr!=centerLODMap.end();
+                    ++clod_itr)
+                {
+                    cout << "    center ("<<clod_itr->first<<")";
+                    osg::LOD* lod = clod_itr->second;
+                    for(int i=0;i<lod->getNumRanges();++i)
+                    {
+                        cout << ", "<< lod->getRange(i);
+                    }
+                    cout <<endl;
+                }
+
+                for(NodeSet::iterator oc_itr=otherChildren.begin();
+                    oc_itr!=otherChildren.end();
+                    ++oc_itr)
+                {
+                    cout << "    other child "<<*oc_itr<<endl;
+                }
+            }
+            _groupList.clear();
+        }
+        
+};
 
 
 
@@ -318,7 +419,6 @@ int main( int argc, char **argv )
     rootnode->accept(osv);
     osv.optimize();
     #endif
-
 /*
     FlattenStaticTransformsVisitor fstv;
     rootnode->accept(fstv);
@@ -327,7 +427,11 @@ int main( int argc, char **argv )
     RemoveRedundentNodesVisitor rrnv;
     rootnode->accept(rrnv);
     rrnv.removeRedundentNodes();
-*/
+
+    CombineLODsVisitor clv;
+    rootnode->accept(clv);        
+    clv.combineLODs();
+*/     
     // initialize the viewer.
     osgGLUT::Viewer viewer;
     viewer.addViewport( rootnode );

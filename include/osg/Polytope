@@ -18,16 +18,18 @@ class SG_EXPORT Polytope
 
     public:
 
-        typedef unsigned int ClippingMask;
-        typedef std::vector<Plane> PlaneList;
-        typedef fast_back_stack<ClippingMask> MaskStack;
+        typedef unsigned int                    ClippingMask;
+        typedef std::vector<Plane>              PlaneList;
+        typedef std::vector<Vec3>               VertexList;
+        typedef fast_back_stack<ClippingMask>   MaskStack;
 
         inline Polytope() {setupMask();}
 
         inline Polytope(const Polytope& cv) : 
             _maskStack(cv._maskStack),
             _resultMask(cv._resultMask),
-            _planeList(cv._planeList) {}
+            _planeList(cv._planeList),
+            _referenceVertexList(cv._referenceVertexList) {}
         
         inline Polytope(const PlaneList& pl) : _planeList(pl) {setupMask();}
 
@@ -41,6 +43,7 @@ class SG_EXPORT Polytope
             _maskStack = cv._maskStack;
             _resultMask = cv._resultMask;
             _planeList = cv._planeList;
+            _referenceVertexList = cv._referenceVertexList;
             return *this;
         }
         
@@ -76,6 +79,14 @@ class SG_EXPORT Polytope
         inline PlaneList& getPlaneList() { return _planeList; }
 
         inline const PlaneList& getPlaneList() const { return _planeList; }
+
+
+        inline void setReferenceVertexList(VertexList& vertices) { _referenceVertexList=vertices; }
+
+        inline VertexList& getReferenceVertexList() { return _referenceVertexList; }
+        
+        inline const VertexList& getReferenceVertexList() const { return _referenceVertexList; }
+
 
         inline void setupMask()
         {
@@ -312,6 +323,7 @@ class SG_EXPORT Polytope
         MaskStack                           _maskStack;
         ClippingMask                        _resultMask;
         PlaneList                           _planeList;
+        VertexList                          _referenceVertexList;
 
 };
 

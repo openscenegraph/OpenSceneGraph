@@ -5,6 +5,8 @@
 #include <osg/OccluderNode>
 #include <osg/Projection>
 
+#include <algorithm>
+
 using namespace osg;
 
 CollectOccludersVisitor::CollectOccludersVisitor()
@@ -137,7 +139,7 @@ void CollectOccludersVisitor::apply(osg::OccluderNode& node)
             {
                 // need to test occluder against view frustum.
                 //std::cout << "    adding in Occluder"<<std::endl;
-                _occluderList.push_back(svo);
+                _occluderSet.insert(svo);
             }
             else
             {
@@ -155,4 +157,41 @@ void CollectOccludersVisitor::apply(osg::OccluderNode& node)
     popOccludersCurrentMask(_nodePath);
 }
 
+void CollectOccludersVisitor::removeOccludedOccluders()
+{
+    if (_occluderSet.empty()) return;
+        
+    ShadowVolumeOccluderSet::iterator occludeeItr=_occluderSet.begin();
+    
+    // skip the first element as this can't be occluded by anything else.
+    occludeeItr++;
 
+    // step through the rest of the occluders, remove occluders which are themselves occluded.
+    for(;
+        occludeeItr!=_occluderSet.end();
+        ++occludeeItr)
+    {
+        
+        // search for any occluders that occlude the current occluder,
+        // we only need to test any occluder near the front of the set since
+        // you can't be occluder by something smaller than you.
+        const ShadowVolumeOccluder& occludee = *occludeeItr;
+        for(ShadowVolumeOccluderSet::iterator occluderItr=_occluderSet.begin();
+            occluderItr!=occludeeItr;
+            ++occluderItr)
+        {
+            // cast away constness of the std::set element since ShadowVolumeOccluder::contains() is non const,
+            // and the std::set is a const, just for the invariance of the operator <!! Ahhhhh. oh well the below
+            // should be robust since contains won't change the getVolume which is used by the operator <.  Honest,  :-)
+            ShadowVolumeOccluder* occluder = const_cast<ShadowVolumeOccluder*>(&(*occluderItr));
+            if (occluder->contains(occludee._occluderVolume.getReferenceVertexList()))
+            {
+                // erase occluder from set.
+                // take a copy of the iterator then rewind it one element so to prevent invalidating the occludeeItr.
+                ShadowVolumeOccluderSet::iterator eraseItr = occludeeItr--;
+                _occluderSet.erase(eraseItr);
+                break;
+            }
+        }
+    }
+}

@@ -33,6 +33,8 @@ class SG_EXPORT ShadowVolumeOccluder
             _volume(0.0f) {}
 
 
+        bool operator < (const ShadowVolumeOccluder& svo) const { return getVolume()>svo.getVolume(); } // not greater volume first. 
+
         /** compute the shadow volume occluder. */
         bool computeOccluder(const NodePath& nodePath,const ConvexPlanerOccluder& occluder,CullStack& cullStack,bool createDrawables=false);
         
@@ -86,7 +88,7 @@ class SG_EXPORT ShadowVolumeOccluder
         }
         
 
-    protected:
+//    protected:
 
         float                   _volume;
         NodePath                _nodePath;

@@ -2,11 +2,11 @@
 
 using namespace osg;
 
-MatrixTransform::MatrixTransform()
+MatrixTransform::MatrixTransform():
+    _inverseDirty(false)
 {
     _matrix = osgNew Matrix;
     _inverse = osgNew Matrix;
-    _inverseDirty = false;
 }
 
 MatrixTransform::MatrixTransform(const MatrixTransform& transform,const CopyOp& copyop):

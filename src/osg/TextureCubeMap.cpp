@@ -79,7 +79,7 @@ static GLenum faceTarget[6] =
 #endif
 
 
-TextureCubeMap::TextureCubeMap()
+TextureCubeMap::TextureCubeMap():Texture()
 {
     _target = GL_TEXTURE_CUBE_MAP;      // default to ARB extension
 }

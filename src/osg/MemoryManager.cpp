@@ -505,8 +505,8 @@ sMStats    m_getMemoryStatistics()
         if (numMatching>0 && !allocUnit->printedOutUnintializedInfo)
         {
             // possible unitialized data?
-            std::cout<<"possible uninitilized memory numMatching="<<numMatching<<"   numNotMatching="<<numNotMatching<<std::endl;
-            std::cout<<"    allocationNumber="<<allocUnit->allocationNumber<<" sourceFile '"<<allocUnit->sourceFile<<"'  sourceLine="<<allocUnit->sourceLine<<std::endl;
+            printf("Warning: possible uninitilized memory numMatching=%d   numNotMatching=%d\n",numMatching,numNotMatching);
+            printf("         allocationNumber=%d  sourceFile '%s'  sourceLine=%d\n",allocUnit->allocationNumber,allocUnit->sourceFile,allocUnit->sourceLine);
             
             allocUnit->printedOutUnintializedInfo=true;
             

@@ -2,12 +2,12 @@
 
 using namespace osg;
 
-LightSource::LightSource()
+LightSource::LightSource():
+    _value(StateAttribute::ON)
 {
     // switch off culling of light source nodes by default.
     setCullingActive(false);
     _dstate = osgNew StateSet;
-    _value = StateAttribute::ON;
     _light = osgNew Light;
 }
 

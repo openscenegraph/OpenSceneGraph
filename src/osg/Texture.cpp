@@ -18,33 +18,28 @@ using namespace osg;
 
 Texture::DeletedTextureObjectCache Texture::s_deletedTextureObjectCache;
 
-Texture::Texture()
+Texture::Texture():
+    _target(GL_TEXTURE_2D),
+    _wrap_s(CLAMP),
+    _wrap_t(CLAMP),
+    _wrap_r(CLAMP),
+    _min_filter(LINEAR_MIPMAP_LINEAR), // trilinear
+    _mag_filter(LINEAR),
+    _texParamtersDirty(true),
+    _internalFormatMode(USE_IMAGE_DATA_FORMAT),
+    _internalFormatValue(0),
+    _borderColor(0.0, 0.0, 0.0, 0.0),
+    _textureWidth(0),
+    _textureHeight(0),
+    _subloadMode(OFF),
+    _subloadOffsX(0),
+    _subloadOffsY(0),
+    _subloadWidth(0),
+    _subloadHeight(0)
 {
     _handleList.resize(DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),0);
     _modifiedTag.resize(DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),0);
 
-    _target = GL_TEXTURE_2D;
-
-    _wrap_s    = CLAMP;
-    _wrap_t    = CLAMP;
-    _wrap_r    = CLAMP;
-    _min_filter    = LINEAR_MIPMAP_LINEAR; // trilinear
-    //_min_filter    = LINEAR_MIPMAP_NEAREST; // bilinear
-    //_min_filter     = NEAREST_MIPMAP_LINEAR; // OpenGL default
-    _mag_filter     = LINEAR;
-
-    _internalFormatMode = USE_IMAGE_DATA_FORMAT;
-    _internalFormatValue = 0;
-
-    _textureWidth = _textureHeight = 0;
-
-    _subloadMode   = OFF;
-    _subloadOffsX = _subloadOffsY = 0;
-    _subloadWidth = _subloadHeight = 0;
-
-    _borderColor.set(0.0, 0.0, 0.0, 0.0);//OpenGL default
-
-    _texParamtersDirty = true;
 }
 
 

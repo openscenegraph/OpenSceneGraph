@@ -86,7 +86,11 @@ using namespace osg;
 
     Timer::Timer()
     {
+#ifdef __ia64
+		_useStandardClock = true;
+#else
         _useStandardClock = false;
+#endif
         
         if (_useStandardClock)
         {

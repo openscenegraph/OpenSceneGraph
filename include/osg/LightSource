@@ -7,24 +7,26 @@
 
 #include <osg/NodeVisitor>
 #include <osg/Light>
+#include <osg/Group>
 
 namespace osg {
 
 /** Leaf Node for defining a light in the scene.*/
-class SG_EXPORT LightSource : public Node
+class SG_EXPORT LightSource : public Group
 {
     public:
 
         LightSource();
 
-        LightSource(const LightSource& es, const CopyOp& copyop=CopyOp::SHALLOW_COPY):
-            Node(es,copyop),
-            _light(dynamic_cast<osg::Light*>(copyop(es._light.get()))) {}
+        LightSource(const LightSource& ls, const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            Group(ls,copyop),
+            _value(ls._value),
+            _light(dynamic_cast<osg::Light*>(copyop(ls._light.get()))) {}
 
         META_Node(LightSource);
 
         /** Set the attached light.*/
-        inline void setLight(Light* light) { _light = light; }
+        void setLight(Light* light);
 
         /** Get the attached light.*/
         inline Light* getLight() { return _light.get(); }
@@ -32,12 +34,19 @@ class SG_EXPORT LightSource : public Node
         /** Get the const attached light.*/
         inline const Light* getLight() const { return _light.get(); }
 
+        /** Set the GLModes on StateSet associated with the LightSource.*/
+        void setStateSetModes(StateSet&,const StateAttribute::GLModeValue) const;
+
+        /** Set up the local StateSet */
+        void setLocalStateSetModes(const StateAttribute::GLModeValue=StateAttribute::ON);
+
     protected:
 
         virtual ~LightSource();
 
         virtual const bool computeBound() const;
 
+        StateAttribute::GLModeValue _value;
         ref_ptr<Light> _light;
 };
 

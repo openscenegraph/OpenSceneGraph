@@ -22,6 +22,10 @@ echo osgcube
 osgcube
 more memleaks.log
 
+echo osgclip
+osgclip cow.osg
+more memleaks.log
+
 echo osghud glider.osg
 osghud glider.osg
 more memleaks.log

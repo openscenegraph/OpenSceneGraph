@@ -8,6 +8,8 @@ osgbillboard lz.rgb
 
 osgcube
 
+osgclip cow.osg
+
 osghud glider.osg
 
 osgimpostor Town.osg

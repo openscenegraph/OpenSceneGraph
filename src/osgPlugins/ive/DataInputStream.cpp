@@ -377,7 +377,7 @@ osg::Matrix DataInputStream::readMatrix()
     {
         for(int c=0;c<4;c++)
         {
-            mat(r,c) = readFloat();
+            mat(r,c) = readDouble();
         }
     }
 

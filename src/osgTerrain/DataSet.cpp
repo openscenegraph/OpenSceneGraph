@@ -182,9 +182,7 @@ DataSet::SourceData* DataSet::SourceData::readData(Source* source)
                                              0.0,                0.0,                1.0,    0.0,
                                              geoTransform[0],    geoTransform[3],    0.0,    1.0);
                                             
-                    data->_extents.init();
-                    data->_extents.expandBy( osg::Vec3(0.0,0.0,0.0)*data->_geoTransform);
-                    data->_extents.expandBy( osg::Vec3(data->_numValuesX,data->_numValuesY,0.0)*data->_geoTransform);
+                    data->computeExtents();
 
                 }
                 else if (gdalDataSet->GetGCPCount()>0 && gdalDataSet->GetGCPProjection())
@@ -229,23 +227,19 @@ DataSet::SourceData* DataSet::SourceData::readData(Source* source)
                                              0.0,                0.0,                1.0,    0.0,
                                              adfDstGeoTransform[0],    adfDstGeoTransform[3],    0.0,    1.0);
 
-                    data->_extents.init();
-                    data->_extents.expandBy( osg::Vec3(0.0,0.0,0.0)*data->_geoTransform);
-                    data->_extents.expandBy( osg::Vec3(nPixels,nLines,0.0)*data->_geoTransform);
+                    data->computeExtents();
                     
                 }
                 else
                 {
                     std::cout << "    No GeoTransform or GCP's - unable to compute position in space"<< std::endl;
                     
-                    data->_geoTransform.set( 512.0,    0.0,    0.0,    0.0,
-                                             0.0,    512.0,    0.0,    0.0,
+                    data->_geoTransform.set( 1.0,    0.0,    0.0,    0.0,
+                                             0.0,    1.0,    0.0,    0.0,
                                              0.0,    0.0,    1.0,    0.0,
                                              0.0,    0.0,    0.0,    1.0);
                                             
-                    data->_extents.init();
-                    data->_extents.expandBy( osg::Vec3(0.0,0.0,0.0)*data->_geoTransform);
-                    data->_extents.expandBy( osg::Vec3(data->_numValuesX,data->_numValuesY,0.0)*data->_geoTransform);
+                    data->computeExtents();
 
                 }
                 return data;
@@ -336,9 +330,7 @@ const DataSet::SpatialProperties& DataSet::SourceData::computeSpatialProperties(
 
             GDALDestroyGenImgProjTransformer( hTransformArg );
 
-            sp._extents.init();
-            sp._extents.expandBy( osg::Vec3(0.0,0.0,0.0)*sp._geoTransform);
-            sp._extents.expandBy( osg::Vec3(nPixels,nLines,0.0)*sp._geoTransform);
+            sp.computeExtents();
 
             return sp;
         }
@@ -641,6 +633,7 @@ void DataSet::SourceData::readHeightField(DestinationData& destination)
             bool ignoreNoDataValue = true;
 
             float* heightPtr = heightData;            
+
 	    for(int r=destY+destHeight-1;r>=destY;--r)
 	    {
 		for(int c=destX;c<destX+destWidth;++c)
@@ -648,6 +641,8 @@ void DataSet::SourceData::readHeightField(DestinationData& destination)
                     float h = *heightPtr++;
                     if (h!=noDataValue) hf->setHeight(c,r,offset + h*scale);
                     else if (!ignoreNoDataValue) hf->setHeight(c,r,noDataValueFill);
+                    
+                    h = hf->getHeight(c,r);
 		}
 	    }
             
@@ -683,7 +678,41 @@ void DataSet::Source::loadSourceData()
     std::cout<<"DataSet::Source::loadSourceData() "<<_filename<<std::endl;
     
     _sourceData = SourceData::readData(this);
-    if (_sourceData.valid() && !_cs.valid()) _cs = _sourceData->_cs;
+    
+    assignCoordinateSystemAndGeoTransformAccordingToParameterPolicy();
+}    
+
+void DataSet::Source::assignCoordinateSystemAndGeoTransformAccordingToParameterPolicy()
+{
+    if (getCoordinateSystemPolicy()==PREFER_CONFIG_SETTINGS)
+    {
+        _sourceData->_cs = _cs;
+        
+        std::cout<<"assigning CS from Source to Data."<<std::endl;
+        
+    }
+    else
+    {
+        _cs = _sourceData->_cs;
+        std::cout<<"assigning CS from Data to Source."<<std::endl;
+    }
+    
+    if (getGeoTransformPolicy()==PREFER_CONFIG_SETTINGS)
+    {
+        _sourceData->_geoTransform = _geoTransform;
+
+        std::cout<<"assigning GeoTransform from Source to Data."<<_geoTransform<<std::endl;
+
+    }
+    else
+    {
+        _geoTransform = _sourceData->_geoTransform;
+        std::cout<<"assigning GeoTransform from Data to Source."<<_geoTransform<<std::endl;
+    }
+    
+    _sourceData->computeExtents();
+    
+    _extents = _sourceData->_extents;
 }
 
 bool DataSet::Source::needReproject(const osgTerrain::CoordinateSystem* cs) const
@@ -1004,25 +1033,17 @@ DataSet::Source* DataSet::Source::doReproject(const std::string& filename, osgTe
     newSource->_filename = filename;
     newSource->_temporaryFile = true;
     newSource->_cs = cs;
-    newSource->_geoTransform.set( adfDstGeoTransform[1],    adfDstGeoTransform[4],    0.0,    0.0,
-                                  adfDstGeoTransform[2],    adfDstGeoTransform[5],    0.0,    0.0,
-                                  0.0,                0.0,                1.0,    0.0,
-                                  adfDstGeoTransform[0],    adfDstGeoTransform[3],    0.0,    1.0);
+    newSource->_numValuesX = nPixels;
+    newSource->_numValuesY = nLines;
+    newSource->_geoTransform.set( adfDstGeoTransform[1],    adfDstGeoTransform[4],      0.0,    0.0,
+                                  adfDstGeoTransform[2],    adfDstGeoTransform[5],      0.0,    0.0,
+                                  0.0,                      0.0,                        1.0,    0.0,
+                                  adfDstGeoTransform[0],    adfDstGeoTransform[3],      0.0,    1.0);
 
-    newSource->_extents.init();
-    newSource->_extents.expandBy( osg::Vec3(0.0,0.0,0.0)*newSource->_geoTransform);
-    newSource->_extents.expandBy( osg::Vec3(nPixels,nLines,0.0)*newSource->_geoTransform);
+    newSource->computeExtents();
 
     // reload the newly created file.
     newSource->loadSourceData();
-
-    SourceData* newData = newSource->_sourceData.get();
-    
-    // override the values in the new source data.
-    newData->_cs = cs;
-    newData->_extents = newSource->_extents;
-    newData->_geoTransform = newSource->_geoTransform;
-
                               
     return newSource;
 }
@@ -2008,7 +2029,6 @@ osg::Node* DataSet::CompositeDestination::createPagedLODScene()
     
     if (_tiles.empty() && _children.size()==1) return _children.front()->createPagedLODScene();
     
-
     if (_type==GROUP)
     {
         osg::Group* group = new osg::Group;
@@ -2045,12 +2065,20 @@ osg::Node* DataSet::CompositeDestination::createPagedLODScene()
         if (node) tileNodes.push_back(node);
     }
 
+    float cutOffDistance = -FLT_MAX;
+    for(ChildList::iterator citr=_children.begin();
+        citr!=_children.end();
+        ++citr)
+    {
+        cutOffDistance = osg::maximum(cutOffDistance,(*citr)->_maxVisibleDistance);
+    }
+
     osg::PagedLOD* pagedLOD = new osg::PagedLOD;
  
     float farDistance = 1e8;
     if (tileNodes.size()==1)
     {
-        pagedLOD->addChild(tileNodes.front(),_maxVisibleDistance,farDistance);
+        pagedLOD->addChild(tileNodes.front(),cutOffDistance,farDistance);
     }
     else if (tileNodes.size()>1)
     {
@@ -2061,11 +2089,11 @@ osg::Node* DataSet::CompositeDestination::createPagedLODScene()
         {
             group->addChild(*itr);
         }
-        pagedLOD->addChild(group,_maxVisibleDistance,farDistance);
+        pagedLOD->addChild(group,cutOffDistance,farDistance);
     }
     
     pagedLOD->setFileName(1,getSubTileName());
-    pagedLOD->setRange(1,0,_maxVisibleDistance);
+    pagedLOD->setRange(1,0,cutOffDistance);
     
     if (pagedLOD->getNumChildren()>0)
         pagedLOD->setCenter(pagedLOD->getBound().center());

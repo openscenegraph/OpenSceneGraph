@@ -10,7 +10,7 @@ CXXFILES =\
         ViewerEventHandler.cpp\
         Viewer.cpp\
 
-LIBS += -lProducer $(GL_LIBS) -losgGA -losgUtil -losgDB -losg $(OTHER_LIBS)
+LIBS += -lProducer $(GL_LIBS) -losgText -losgGA -losgUtil -losgDB -losg $(OTHER_LIBS)
 DEF  += -DOSGPRODUCER_LIBRARY
 INC  += -I/usr/X11R6/include
 TARGET_BASENAME = osgProducer

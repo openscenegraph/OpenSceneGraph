@@ -23,7 +23,6 @@ class OSGGA_EXPORT TrackballManipulator : public CameraManipulator
     public:
 
         TrackballManipulator();
-        virtual ~TrackballManipulator();
 
         virtual const char* className() { return "Trackball"; }
 
@@ -53,6 +52,8 @@ class OSGGA_EXPORT TrackballManipulator : public CameraManipulator
         virtual void getUsage(osg::ApplicationUsage& usage) const;
 
     protected:
+
+        virtual ~TrackballManipulator();
 
         /** Reset the internal GUIEvent stack.*/
         void flushMouseEventStack();

@@ -44,7 +44,12 @@ class FrameStatsHandler : public Producer::CameraGroup::StatsHandler, public Pro
         {
             if (!camera.getInstrumentationMode()) return;
 
-	    glViewport( 0, 0, 1280, 1024 );
+            int x,y;
+            unsigned int width,height;
+            camera.getProjectionRect(x,y,width,height);
+
+	    glViewport( x, y, width, height );
+            
 	    // Set up the Orthographic view
 	    glMatrixMode( GL_PROJECTION );
 	    glPushMatrix();

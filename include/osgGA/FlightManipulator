@@ -30,7 +30,6 @@ class OSGGA_EXPORT FlightManipulator : public CameraManipulator
     public:
 
         FlightManipulator();
-        virtual ~FlightManipulator();
 
         virtual const char* className() { return "Flight"; }
 
@@ -58,6 +57,8 @@ class OSGGA_EXPORT FlightManipulator : public CameraManipulator
         void setYawControlMode(YawControlMode ycm) { _yawMode = ycm; }
 
     protected:
+
+        virtual ~FlightManipulator();
 
         /** Reset the internal GUIEvent stack.*/
         void flushMouseEventStack();

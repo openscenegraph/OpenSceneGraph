@@ -27,6 +27,13 @@ class SG_EXPORT Viewport : public StateAttribute
     
     
         Viewport();
+        
+        Viewport(int x,int y,int width,int height):
+            _x(x),
+            _y(y),
+            _width(width),
+            _height(height) {}
+            
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         Viewport(const Viewport& vp,const CopyOp& copyop=CopyOp::SHALLOW_COPY):

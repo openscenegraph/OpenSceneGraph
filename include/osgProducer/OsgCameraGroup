@@ -119,7 +119,7 @@ class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
         class OSGPRODUCER_EXPORT RealizeCallback : public osg::Referenced
         {
         public:
-            virtual void operator()( const Producer::RenderSurface & rs, OsgCameraGroup* cg, OsgSceneHandler* sh) = 0;
+            virtual void operator()( OsgCameraGroup& cg, OsgSceneHandler& sh, const Producer::RenderSurface & rs) = 0;
             
         protected:
             virtual ~RealizeCallback() {}
@@ -133,9 +133,6 @@ class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
         
         /** Get the const realize callback.*/
         const RealizeCallback* getRealizeCallback() const { return _realizeCallback.get(); }
-        
-
-
 
 
         void advance();

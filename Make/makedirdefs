@@ -12,9 +12,9 @@ SRC_DIRS = \
 	osgDB\
 	osgGA\
 	osgParticle\
-	osgProducer\
 	osgText\
 	osgSim\
+	osgProducer\
 	osgPlugins\
 	../examples
 

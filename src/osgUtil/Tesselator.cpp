@@ -38,6 +38,7 @@ void Tesselator::beginContour()
     if (_tobj)
     {
         gluTessBeginContour(_tobj);
+//        cout<<"begin"<<endl;
     }
 }
       
@@ -51,6 +52,7 @@ void Tesselator::addVertex(osg::Vec3* vertex)
         (*data)._v[1]=(*vertex)[1];
         (*data)._v[2]=(*vertex)[2];
         gluTessVertex(_tobj,data->_v,vertex);
+//        cout<<"\t"<<*vertex<<endl;
     }
 }
 
@@ -59,6 +61,7 @@ void Tesselator::endContour()
     if (_tobj)
     {
         gluTessEndContour(_tobj);
+//        cout<<"end"<<endl;
     }
 }
 

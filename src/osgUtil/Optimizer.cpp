@@ -64,20 +64,12 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 
     if (options & SHARE_DUPLICATE_STATE)
     {
-//     #if (defined(_MSC_VER) && _MSC_VER<1300 && !defined(_STLPORT_VERSION))
-//         osg::notify(osg::NOTICE)<<"Warning: this application was built with VisualStudio 6.0's native STL,"<<std::endl;
-//         osg::notify(osg::NOTICE)<<"         and due to bugs in VS's STL we are unable to run state optimizer."<<std::endl; 
-//         osg::notify(osg::NOTICE)<<"         This may impare performance significantly for larger models."<<std::endl; 
-//         osg::notify(osg::NOTICE)<<"         It is recommend that one compiles against STLport or use "<<std::endl; 
-//         osg::notify(osg::NOTICE)<<"         Visual Studio .NET compiler which also fix these VS 6.0 STL bugs "<<std::endl; 
-//     #else
         StateVisitor osv;
         node->accept(osv);
         osv.optimize();
 
         MergeGeometryVisitor mgv;
         node->accept(mgv);
-//     #endif
     }
 
 
@@ -1139,48 +1131,79 @@ struct LessGeometryPrimitiveType
 
 bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
 {
-    if (geode.getNumDrawables()<2) return false;
+    if (geode.getNumDrawables()>=2)
+    {
     
-    typedef std::vector<osg::Geometry*>                         DuplicateList;
-    typedef std::map<osg::Geometry*,DuplicateList,LessGeometry> GeometryDuplicateMap;
+        typedef std::vector<osg::Geometry*>                         DuplicateList;
+        typedef std::map<osg::Geometry*,DuplicateList,LessGeometry> GeometryDuplicateMap;
 
-    GeometryDuplicateMap geometryDuplicateMap;
-    
+        GeometryDuplicateMap geometryDuplicateMap;
+
+        unsigned int i;
+        for(i=0;i<geode.getNumDrawables();++i)
+        {
+            osg::Geometry* geom = dynamic_cast<osg::Geometry*>(geode.getDrawable(i));
+            if (geom)
+            {
+                geom->computeCorrectBindingsAndArraySizes();
+
+                geometryDuplicateMap[geom].push_back(geom);
+            }
+        }
+
+        for(GeometryDuplicateMap::iterator itr=geometryDuplicateMap.begin();
+            itr!=geometryDuplicateMap.end();
+            ++itr)
+        {
+            if (itr->second.size()>1)
+            {
+                std::sort(itr->second.begin(),itr->second.end(),LessGeometryPrimitiveType());
+                osg::Geometry* lhs = itr->second[0];
+                for(DuplicateList::iterator dupItr=itr->second.begin()+1;
+                    dupItr!=itr->second.end();
+                    ++dupItr)
+                {
+                    osg::Geometry* rhs = *dupItr;
+                    if (mergeGeometry(*lhs,*rhs))
+                    {
+                        geode.removeDrawable(rhs);
+
+                        static int co = 0;
+                        osg::notify(osg::INFO)<<"merged and removed Geometry "<<++co<<std::endl;
+                    }
+                }
+            }
+        }
+    }
+
+    // convert all polygon primitives which has 3 indices into TRIANGLES, 4 indices into QUADS.
     unsigned int i;
     for(i=0;i<geode.getNumDrawables();++i)
     {
         osg::Geometry* geom = dynamic_cast<osg::Geometry*>(geode.getDrawable(i));
         if (geom)
         {
-            geom->computeCorrectBindingsAndArraySizes();
-            
-            geometryDuplicateMap[geom].push_back(geom);
-        }
-    }
-    
-    for(GeometryDuplicateMap::iterator itr=geometryDuplicateMap.begin();
-        itr!=geometryDuplicateMap.end();
-        ++itr)
-    {
-        if (itr->second.size()>1)
-        {
-            std::sort(itr->second.begin(),itr->second.end(),LessGeometryPrimitiveType());
-            osg::Geometry* lhs = itr->second[0];
-            for(DuplicateList::iterator dupItr=itr->second.begin()+1;
-                dupItr!=itr->second.end();
-                ++dupItr)
+            osg::Geometry::PrimitiveList& primitives = geom->getPrimitiveList();
+            for(osg::Geometry::PrimitiveList::iterator itr=primitives.begin();
+                itr!=primitives.end();
+                ++itr)
             {
-                osg::Geometry* rhs = *dupItr;
-                if (mergeGeometry(*lhs,*rhs))
+                osg::Primitive* prim = itr->get();
+                if (prim->getMode()==osg::Primitive::POLYGON)
                 {
-                    geode.removeDrawable(rhs);
-
-                    static int co = 0;
-                    osg::notify(osg::INFO)<<"merged and removed Geometry "<<++co<<std::endl;
+                    if (prim->getNumIndices()==3)
+                    {
+                        prim->setMode(osg::Primitive::TRIANGLES);
+                    }
+                    else if (prim->getNumIndices()==4)
+                    {
+                        prim->setMode(osg::Primitive::QUADS);
+                    }
                 }
             }
         }
     }
+
 
     // now merge any compatible primtives.
     for(i=0;i<geode.getNumDrawables();++i)
@@ -1217,6 +1240,7 @@ bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
 
                     if (combine)
                     {
+                    
                         switch(lhs->getType())
                         {
                         case(osg::Primitive::DrawArraysPrimitiveType):

@@ -171,7 +171,7 @@ void ReaderWriterSS3D::parseSlide (SlideShowConstructor& constructor, xmlDocPtr 
 }
 
 osgDB::ReaderWriter::ReadResult ReaderWriterSS3D::readNode(const std::string& fileName,
-                                                           const osgDB::ReaderWriter::Options* options)
+                                                           const osgDB::ReaderWriter::Options*)
 {
     std::string ext = osgDB::getLowerCaseFileExtension(fileName);
     if (!acceptsExtension(ext))

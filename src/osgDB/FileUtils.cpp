@@ -45,7 +45,7 @@ bool osgDB::fileExists(const std::string& filename)
 osgDB::FileType osgDB::fileType(const std::string& filename)
 {
 #if defined(WIN32) && !defined(__CYGWIN__)
-    if (!fileExists(const std::string& filename))
+    if (!fileExists(filename))
     {
         return FILE_NOT_FOUND;
     } 

@@ -113,9 +113,9 @@ void TangentSpaceGenerator::generate(osg::Geometry *geo, int normal_map_tex_unit
 	// the triangle normal's direction
 
 	for (i=0; i<vertex_count; ++i) {
-		osg::Vec4 &vT = T_->at(i);
-		osg::Vec4 &vB = B_->at(i);
-		osg::Vec4 &vN = N_->at(i);
+		osg::Vec4 &vT = (*T_)[i];
+		osg::Vec4 &vB = (*B_)[i];
+		osg::Vec4 &vN = (*N_)[i];
 	
 		osg::Vec3 txN = osg::Vec3(vT.x(), vT.y(), vT.z()) ^ osg::Vec3(vB.x(), vB.y(), vB.z());
 		
@@ -147,23 +147,23 @@ void TangentSpaceGenerator::compute_basis_vectors(osg::PrimitiveSet *pset, const
 	{
 		case osg::Array::Vec2ArrayType:
 			for (i=0; i<2; ++i) {
-				P1.ptr()[i] = static_cast<const osg::Vec2Array *>(vx)->at(iA).ptr()[i];
-				P2.ptr()[i] = static_cast<const osg::Vec2Array *>(vx)->at(iB).ptr()[i];
-				P3.ptr()[i] = static_cast<const osg::Vec2Array *>(vx)->at(iC).ptr()[i];
+				P1.ptr()[i] = static_cast<const osg::Vec2Array&>(*vx)[iA].ptr()[i];
+				P2.ptr()[i] = static_cast<const osg::Vec2Array&>(*vx)[iB].ptr()[i];
+				P3.ptr()[i] = static_cast<const osg::Vec2Array&>(*vx)[iC].ptr()[i];
 			}
 			break;
 
 		case osg::Array::Vec3ArrayType:
-			P1 = static_cast<const osg::Vec3Array *>(vx)->at(iA);
-			P2 = static_cast<const osg::Vec3Array *>(vx)->at(iB);
-			P3 = static_cast<const osg::Vec3Array *>(vx)->at(iC);
+			P1 = static_cast<const osg::Vec3Array&>(*vx)[iA];
+			P2 = static_cast<const osg::Vec3Array&>(*vx)[iB];
+			P3 = static_cast<const osg::Vec3Array&>(*vx)[iC];
 			break;
 
 		case osg::Array::Vec4ArrayType:
 			for (i=0; i<3; ++i) {
-				P1.ptr()[i] = static_cast<const osg::Vec4Array *>(vx)->at(iA).ptr()[i];
-				P2.ptr()[i] = static_cast<const osg::Vec4Array *>(vx)->at(iB).ptr()[i];
-				P3.ptr()[i] = static_cast<const osg::Vec4Array *>(vx)->at(iC).ptr()[i];
+				P1.ptr()[i] = static_cast<const osg::Vec4Array&>(*vx)[iA].ptr()[i];
+				P2.ptr()[i] = static_cast<const osg::Vec4Array&>(*vx)[iB].ptr()[i];
+				P3.ptr()[i] = static_cast<const osg::Vec4Array&>(*vx)[iC].ptr()[i];
 			}
 			break;
 
@@ -178,24 +178,24 @@ void TangentSpaceGenerator::compute_basis_vectors(osg::PrimitiveSet *pset, const
 	switch (tx->getType())
 	{
 		case osg::Array::Vec2ArrayType:
-			uv1 = static_cast<const osg::Vec2Array *>(tx)->at(iA);
-			uv2 = static_cast<const osg::Vec2Array *>(tx)->at(iB);
-			uv3 = static_cast<const osg::Vec2Array *>(tx)->at(iC);
+			uv1 = static_cast<const osg::Vec2Array&>(*tx)[iA];
+			uv2 = static_cast<const osg::Vec2Array&>(*tx)[iB];
+			uv3 = static_cast<const osg::Vec2Array&>(*tx)[iC];
 			break;
 
 		case osg::Array::Vec3ArrayType:
 			for (i=0; i<2; ++i) {
-				uv1.ptr()[i] = static_cast<const osg::Vec3Array *>(tx)->at(iA).ptr()[i];
-				uv2.ptr()[i] = static_cast<const osg::Vec3Array *>(tx)->at(iB).ptr()[i];
-				uv3.ptr()[i] = static_cast<const osg::Vec3Array *>(tx)->at(iC).ptr()[i];
+				uv1.ptr()[i] = static_cast<const osg::Vec3Array&>(*tx)[iA].ptr()[i];
+				uv2.ptr()[i] = static_cast<const osg::Vec3Array&>(*tx)[iB].ptr()[i];
+				uv3.ptr()[i] = static_cast<const osg::Vec3Array&>(*tx)[iC].ptr()[i];
 			}
 			break;
 
 		case osg::Array::Vec4ArrayType:
 			for (i=0; i<2; ++i) {
-				uv1.ptr()[i] = static_cast<const osg::Vec4Array *>(tx)->at(iA).ptr()[i];
-				uv2.ptr()[i] = static_cast<const osg::Vec4Array *>(tx)->at(iB).ptr()[i];
-				uv3.ptr()[i] = static_cast<const osg::Vec4Array *>(tx)->at(iC).ptr()[i];
+				uv1.ptr()[i] = static_cast<const osg::Vec4Array&>(*tx)[iA].ptr()[i];
+				uv2.ptr()[i] = static_cast<const osg::Vec4Array&>(*tx)[iB].ptr()[i];
+				uv3.ptr()[i] = static_cast<const osg::Vec4Array&>(*tx)[iC].ptr()[i];
 			}
 			break;
 
@@ -211,39 +211,39 @@ void TangentSpaceGenerator::compute_basis_vectors(osg::PrimitiveSet *pset, const
 		osg::Vec3(P3.x() - P1.x(), uv3.x() - uv1.x(), uv3.y() - uv1.y());
 	if (V.x() != 0) {
 		V.normalize();
-		T_->at(iA).x() += -V.y() / V.x();
-		B_->at(iA).x() += -V.z() / V.x();
-		T_->at(iB).x() += -V.y() / V.x();
-		B_->at(iB).x() += -V.z() / V.x();
-		T_->at(iC).x() += -V.y() / V.x();
-		B_->at(iC).x() += -V.z() / V.x();			
+		(*T_)[iA].x() += -V.y() / V.x();
+		(*B_)[iA].x() += -V.z() / V.x();
+		(*T_)[iB].x() += -V.y() / V.x();
+		(*B_)[iB].x() += -V.z() / V.x();
+		(*T_)[iC].x() += -V.y() / V.x();
+		(*B_)[iC].x() += -V.z() / V.x();			
 	}
 
 	V = osg::Vec3(P2.y() - P1.y(), uv2.x() - uv1.x(), uv2.y() - uv1.y()) ^ 
 		osg::Vec3(P3.y() - P1.y(), uv3.x() - uv1.x(), uv3.y() - uv1.y());
 	if (V.x() != 0) {
 		V.normalize();
-		T_->at(iA).y() += -V.y() / V.x();
-		B_->at(iA).y() += -V.z() / V.x();
-		T_->at(iB).y() += -V.y() / V.x();
-		B_->at(iB).y() += -V.z() / V.x();
-		T_->at(iC).y() += -V.y() / V.x();
-		B_->at(iC).y() += -V.z() / V.x();			
+		(*T_)[iA].y() += -V.y() / V.x();
+		(*B_)[iA].y() += -V.z() / V.x();
+		(*T_)[iB].y() += -V.y() / V.x();
+		(*B_)[iB].y() += -V.z() / V.x();
+		(*T_)[iC].y() += -V.y() / V.x();
+		(*B_)[iC].y() += -V.z() / V.x();			
 	}
 
 	V = osg::Vec3(P2.z() - P1.z(), uv2.x() - uv1.x(), uv2.y() - uv1.y()) ^ 
 		osg::Vec3(P3.z() - P1.z(), uv3.x() - uv1.x(), uv3.y() - uv1.y());
 	if (V.x() != 0) {
 		V.normalize();
-		T_->at(iA).z() += -V.y() / V.x();
-		B_->at(iA).z() += -V.z() / V.x();
-		T_->at(iB).z() += -V.y() / V.x();
-		B_->at(iB).z() += -V.z() / V.x();
-		T_->at(iC).z() += -V.y() / V.x();
-		B_->at(iC).z() += -V.z() / V.x();			
+		(*T_)[iA].z() += -V.y() / V.x();
+		(*B_)[iA].z() += -V.z() / V.x();
+		(*T_)[iB].z() += -V.y() / V.x();
+		(*B_)[iB].z() += -V.z() / V.x();
+		(*T_)[iC].z() += -V.y() / V.x();
+		(*B_)[iC].z() += -V.z() / V.x();			
 	}
 
-	N_->at(iA) += osg::Vec4(face_normal, 0);
-	N_->at(iB) += osg::Vec4(face_normal, 0);
-	N_->at(iC) += osg::Vec4(face_normal, 0);
+	(*N_)[iA] += osg::Vec4(face_normal, 0);
+	(*N_)[iB] += osg::Vec4(face_normal, 0);
+	(*N_)[iC] += osg::Vec4(face_normal, 0);
 }

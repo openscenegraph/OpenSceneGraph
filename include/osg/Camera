@@ -125,15 +125,8 @@ class SG_EXPORT Camera: public osg::Referenced
 
         const Matrix& getProjectionMatrix() const;
 
-        
-        /** set the fusion distance, the distance in model coords, when viewing stereo, that the
-          * left and right eye images converge.  This value is dual of the screen distance, 
-          * which is distance between viewers eyes and display device, while the fusion distance is
-          * this equivilant distance but in the virtual world (model coords.)*/
-        inline const double setFusionDistance() const { return _fusionDistance; }
 
-        /** get fusion distance.*/
-        inline const double getFusionDistance() const { return _fusionDistance; }
+
 
 
         enum LookAtType
@@ -195,7 +188,8 @@ class SG_EXPORT Camera: public osg::Referenced
         /** calculate side vector.*/
         const Vec3 getSideVector() const;
 
-        
+        /** calculate the look distance which is the distance between the eye and the center.*/
+        inline float getLookDistance() const { return (_center-_eye).length(); }
 
         enum TransformMode
         {
@@ -274,11 +268,46 @@ class SG_EXPORT Camera: public osg::Referenced
         const bool unproject(const Vec3& win,const Viewport& viewport,Vec3& obj) const;
 
 
+
+        enum FusionDistanceMode
+        {
+            PROPORTIONAL_TO_LOOK_DISTANCE,
+            PROPORTIONAL_TO_SCREEN_DISTANCE
+        };
+        
+        /** Set the fusion distance function which in use to calculate the
+          * fusion distance used in stereo rendering. Default value is
+          * PROPORTIONAL_TO_LOOK_DISTANCE, 1.0f.*/
+        void setFusionDistanceFunction(FusionDistanceMode mode, float ratio=1.0f)
+        {
+            _fusionDistanceMode = mode;
+            _fusionDistanceRatio = ratio;
+             _dirty = true;
+        }
+
+        /** Get the fusion distance function.*/
+        void getFusionDistanceFunction(FusionDistanceMode& mode, float& ratio)
+        {
+            mode = _fusionDistanceMode;
+            ratio = _fusionDistanceRatio;
+        }
+
+        /** Calculate and return the fusion distance, using the FusionDistanceFunction.*/
+        const float getFusionDistance() const;
+                
+        /** Set the physical distance between the viewers eyes and the display system.
+           * Note, only used when rendering in stereo.*/
+        void setScreenDistance(float screenDistance) { _screenDistance = screenDistance; _dirty = true; }
+
+        /** Get the physical distance between the viewers eyes and the display system.*/
+        const float getScreenDistance() const { return _screenDistance; }
+
         /** Convinience method for adjusting the project and model view to account for
           * and eye offset, as used in stereo work, assumes that the users will use
           * a seperate camera for each eye, adjustEyePointForStereo(..) being used to
           * specialize the camera for each eye view.*/ 
-        void adjustEyeOffsetForStereo(const osg::Vec3& offset,float screenDistance);
+        void adjustEyeOffsetForStereo(const osg::Vec3& offset);
+
 
         /** Set up the OpenGL projection and model view matrices.*/
         virtual void apply(State& state);
@@ -312,8 +341,6 @@ class SG_EXPORT Camera: public osg::Referenced
         Vec3            _center;
         Vec3            _up;
         
-        double          _fusionDistance;
-        
         TransformMode   _attachedTransformMode;
         ref_ptr<Matrix> _eyeToModelTransform;
         ref_ptr<Matrix> _modelToEyeTransform;
@@ -334,9 +361,12 @@ class SG_EXPORT Camera: public osg::Referenced
         void calculateMatricesAndClippingVolume() const;
 
         // used for offsetting camera to ajust for left and right stereo views.
-        bool        _useEyeOffset;
-        osg::Vec3   _eyeOffset;
-        float       _screenDistance;
+        bool                _useEyeOffset;
+        osg::Vec3           _eyeOffset;
+        float               _screenDistance;
+        
+        FusionDistanceMode  _fusionDistanceMode;
+        float               _fusionDistanceRatio;
 
 };
 

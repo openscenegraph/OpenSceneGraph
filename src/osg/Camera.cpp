@@ -24,14 +24,15 @@ Camera::Camera()
     _center.set(0.0f,0.0f,-1.0f);
     _up.set(0.0f,1.0f,0.0f);
 
-    _fusionDistance = 1.0f;
-
     _useNearClippingPlane = false;
     _useFarClippingPlane = false;
 
     _useEyeOffset = false;
     _eyeOffset.set(0.0f,0.0f,0.0f);
+
     _screenDistance = 1.0f;
+    _fusionDistanceMode = PROPORTIONAL_TO_LOOK_DISTANCE;
+    _fusionDistanceRatio = 1.0f;
 }
 
 Camera::Camera(const Camera& camera):Referenced()
@@ -74,8 +75,6 @@ void Camera::copy(const Camera& camera)
     _center = camera._center;
     _up = camera._up;
 
-    _fusionDistance = camera._fusionDistance;
-
     _attachedTransformMode = camera._attachedTransformMode;
     _eyeToModelTransform = camera._eyeToModelTransform;
     _modelToEyeTransform = camera._modelToEyeTransform;
@@ -92,6 +91,14 @@ void Camera::copy(const Camera& camera)
 
     _mp = camera._mp;
     _inversemp = camera._inversemp;
+
+    _useEyeOffset = camera._useEyeOffset;
+    _eyeOffset = camera._eyeOffset;
+
+    _screenDistance = camera._screenDistance;
+    _fusionDistanceMode = camera._fusionDistanceMode;
+    _fusionDistanceRatio = camera._fusionDistanceRatio;
+
 }
 
 Camera::~Camera()
@@ -333,10 +340,7 @@ void Camera::home()
     _eye.set(0.0f,0.0f,0.0f);
     _center.set(0.0f,0.0f,-1.0f);
     _up.set(0.0f,1.0f,0.0f);
-    
-    // need to set to appropriate values..
-    _fusionDistance = 1.0f;
-    
+        
     _dirty = true;
 }
 
@@ -582,6 +586,16 @@ const ClippingVolume& Camera::getClippingVolume() const
     return _clippingVolume;
 }
 
+const float Camera::getFusionDistance() const
+{
+    switch(_fusionDistanceMode)
+    {
+        case(PROPORTIONAL_TO_SCREEN_DISTANCE): return _screenDistance*_fusionDistanceRatio;
+        case(PROPORTIONAL_TO_LOOK_DISTANCE): 
+        default: return getLookDistance()*_fusionDistanceRatio;
+    }        
+}
+
 void Camera::calculateMatricesAndClippingVolume() const
 {
 
@@ -695,7 +709,7 @@ void Camera::calculateMatricesAndClippingVolume() const
 
     if (_useEyeOffset)
     {
-        (*_modelViewMatrix) = (*_modelViewMatrix) * Matrix::translate(-_eyeOffset*_fusionDistance/_screenDistance);
+        (*_modelViewMatrix) = (*_modelViewMatrix) * Matrix::translate(-_eyeOffset*(getFusionDistance()/_screenDistance));
     }
 
 
@@ -804,11 +818,10 @@ const bool Camera::unproject(const Vec3& win,const Viewport& viewport,Vec3& obj)
         return false;
 }
 
-void Camera::adjustEyeOffsetForStereo(const osg::Vec3& offset,float screenDistance)
+void Camera::adjustEyeOffsetForStereo(const osg::Vec3& offset)
 {
     _useEyeOffset = true;
     _eyeOffset = offset;
-    _screenDistance = screenDistance;
     _dirty = true;
 }
 

@@ -46,14 +46,10 @@ bool AnimationPathManipulator::handle(const osgGA::GUIEventAdapter& ea,osgGA::GU
     {
 	case GUIEventAdapter::FRAME:
 	    handleFrame( ea.time() );
-
+            retval =  true;
 	    break;
 	case GUIEventAdapter::KEYBOARD:
-	    switch( ea.getKey())
-	    {
-		default:
-		    retval =  false;
-	    }
+	    retval =  false;
 	    break;
         default:
             break;

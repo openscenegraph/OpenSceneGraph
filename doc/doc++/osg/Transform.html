@@ -30,7 +30,7 @@
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.106.3">META_Node</A></B>(<!1><A HREF="Transform.html">Transform</A>)
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.106.5">setType</A></B>(<!1><A HREF="Transform.html#DOC.2.106.4">Type</A> type)
-<DD><I>Set the Transform Type, which can be DYNAMIC - the Marix value is updated duing the main loop, or STATIC - the Matrix is constant throughut the life of the main loop.</I>
+<DD><I>Set the Transform Type, which can be DYNAMIC - the Matrix value is updated during the main loop, or STATIC - the Matrix is constant throughout the life of the main loop.</I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Transform.html#DOC.2.106.4">Type</A> <B><A HREF="#DOC.2.106.6">getType</A></B>() const 
 <DD><I>Get the Transform Type</I>
@@ -244,7 +244,15 @@
 <BLOCKQUOTE>Transform - is group which all children
 are transformed by the the Transform's osg::Matrix.  Typical uses
 of the Transform is for positioning objects within a scene or 
-producing trakerball functionality or for animation.</BLOCKQUOTE>
+producing trackball functionality or for animation.
+Note, if the transformation matrix scales the subgraph then the
+normals of the underlying geometry will need to be renormalized to
+be unit vectors once more.  One can done transparently through OpenGL's 
+use of either GL_NORMALIZE and GL_SCALE_NORMALIZE modes.  Further
+background reading see the glNormalize documentation in the OpenGL Reference 
+Guide (the blue book). To enable it in the OSG, you simple need to
+attach a local osg::StateSet to the osg::Transform, and set the appropriate
+mode to on via stateset->setMode(GL_NORMALIZE,osg::StateAttribute::ON);.</BLOCKQUOTE>
 <DL>
 
 <A NAME="Transform"></A>
@@ -277,12 +285,12 @@ producing trakerball functionality or for animation.</BLOCKQUOTE>
 <A NAME="setType"></A>
 <A NAME="DOC.2.106.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setType(<!1><A HREF="Transform.html#DOC.2.106.4">Type</A> type)</B></TT>
-<DD>Set the Transform Type, which can be DYNAMIC - the Marix
-value is updated duing the main loop, or STATIC - the Matrix
-is constant throughut the life of the main loop.  STATIC 
+<DD>Set the Transform Type, which can be DYNAMIC - the Matrix
+value is updated during the main loop, or STATIC - the Matrix
+is constant throughout the life of the main loop.  STATIC 
 Transforms can be optimized away is some instances, which
-can improve performanc so unless you plan to modify the
-Matrix explicity set the Matrix to STATIC.  The default
+can improve performance so unless you plan to modify the
+Matrix explicitly set the Matrix to STATIC.  The default
 value is DYNAMIC.
 <DL><DT><DD></DL><P>
 <A NAME="getType"></A>

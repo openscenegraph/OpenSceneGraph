@@ -1,33 +1,110 @@
+// -*-c++-*-
+
 #ifndef OSG_TEXTURE
 #define OSG_TEXTURE 1
 
-#include <osg/Export>
 #include <osg/GL>
-#include <osg/OSG>
+#include <osg/Types>
 #include <osg/Image>
+#include <osg/StateAttribute>
+#include <osg/StateSet>
+#include <osg/ref_ptr>
+
+#include <vector>
+#include <map>
+#include <set>
+
+// if not defined by gl.h use the definition found in:
+// http://oss.sgi.com/projects/ogl-sample/registry/EXT/texture_filter_anisotropic.txt
+#ifndef GL_TEXTURE_MAX_ANISOTROPY_EXT
+#define GL_TEXTURE_MAX_ANISOTROPY_EXT (GLenum)0x84fe
+#endif
+
+#ifndef GL_ARB_texture_compression
+#define GL_COMPRESSED_ALPHA_ARB           0x84E9
+#define GL_COMPRESSED_LUMINANCE_ARB       0x84EA
+#define GL_COMPRESSED_LUMINANCE_ALPHA_ARB 0x84EB
+#define GL_COMPRESSED_INTENSITY_ARB       0x84EC
+#define GL_COMPRESSED_RGB_ARB             0x84ED
+#define GL_COMPRESSED_RGBA_ARB            0x84EE
+#define GL_TEXTURE_COMPRESSION_HINT_ARB   0x84EF
+#define GL_TEXTURE_IMAGE_SIZE_ARB         0x86A0
+#define GL_TEXTURE_COMPRESSED_ARB         0x86A1
+#define GL_NUM_COMPRESSED_TEXTURE_FORMATS_ARB 0x86A2
+#define GL_COMPRESSED_TEXTURE_FORMATS_ARB 0x86A3
+#endif
+
+#ifndef GL_EXT_texture_compression_s3tc
+#define GL_COMPRESSED_RGB_S3TC_DXT1_EXT   0x83F0
+#define GL_COMPRESSED_RGBA_S3TC_DXT1_EXT  0x83F1
+#define GL_COMPRESSED_RGBA_S3TC_DXT3_EXT  0x83F2
+#define GL_COMPRESSED_RGBA_S3TC_DXT5_EXT  0x83F3
+#endif
+
+#ifndef GL_MIRRORED_REPEAT_IBM
+#define GL_MIRRORED_REPEAT_IBM            0x8370
+#endif
+
+#ifndef GL_GENERATE_MIPMAP_SGIS
+#define GL_GENERATE_MIPMAP_SGIS           (GLenum)0x8191
+#define GL_GENERATE_MIPMAP_HINT_SGIS      0x8192
+#endif
+
 
 namespace osg {
 
-
-class Input;
-class Output;
-
 /** Texture state class which encapsulates OpenGl texture functionality.*/
-class SG_EXPORT Texture : public Object
+class SG_EXPORT Texture : public StateAttribute
 {
 
     public :
         
         Texture();
-        static Texture* instance();
         virtual Object* clone() const { return new Texture(); }
-        virtual bool isSameKindAs(Object* obj) { return dynamic_cast<Texture*>(obj)!=NULL; }
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Texture*>(obj)!=0L; }
         virtual const char* className() const { return "Texture"; }
+
+        virtual const Type getType() const { return (Type)(TEXTURE_0+_textureUnit); }
+        
+        virtual void setStateSetModes(StateSet& ds,const GLModeValue value) const
+        {
+            ds.setMode(GL_TEXTURE_2D,value);
+        }
 
         /** Set the texture image. */
         void setImage(Image* image);
+
         /** Get the texture image. */
-        Image* getImage() const { return _image.get(); }
+        Image* getImage() { return _image.get(); }
+
+        /** Get the const texture image. */
+        inline const Image* getImage() const { return _image.get(); }
+
+        /** Copy pixels into a 2D texture image.As per glCopyTexImage2D.
+          * Creates an OpenGL texture object from the current OpenGL background
+          * framebuffer contents at pos \a x, \a y with width \a width and
+          * height \a height. \a width and \a height must be a power of two.
+          */
+	void copyTexImage2D(State& state, int x, int y, int width, int height );
+
+        /** Copy a two-dimensional texture subimage. As per glCopyTexSubImage2D.
+          * Updates portion of an exisiting OpenGL texture object from the current OpenGL background
+          * framebuffer contents at pos \a x, \a y with width \a width and
+          * height \a height. \a width and \a height must be a power of two,
+          * and writing into the texture with offset \a xoffset and \a yoffset.
+          */
+	void copyTexSubImage2D(State& state, int xoffset, int yoffset, int x, int y, int width, int height );
+
+        /** Set the texture unit.
+          * Valid values are 0,1,2,3.
+          * Default value of texture unit is 0.
+          * note, multi-texturing not fully implemented yet... April 2001.
+          */        
+        inline void setTextureUnit(const unsigned int textureUnit) { _textureUnit = textureUnit; }
+        
+        /** get the texture unit.*/
+        inline const unsigned int getTextureUnit() const { return _textureUnit; }
+
 
         enum WrapParameter {
             WRAP_S,
@@ -36,14 +113,15 @@ class SG_EXPORT Texture : public Object
         };
 
         enum WrapMode {
-            CLAMP                     = GL_CLAMP,
-            REPEAT                    = GL_REPEAT
+            CLAMP  = GL_CLAMP,
+            REPEAT = GL_REPEAT,
+            MIRROR = GL_MIRRORED_REPEAT_IBM
         };
 
         /** Set the texture wrap mode.*/
-        void setWrap(WrapParameter which, WrapMode wrap);
+        void setWrap(const WrapParameter which, const WrapMode wrap);
         /** Get the texture wrap mode.*/
-        WrapMode getWrap(WrapParameter which) const;
+        const WrapMode getWrap(const WrapParameter which) const;
 
 
         enum FilterParameter {
@@ -57,46 +135,161 @@ class SG_EXPORT Texture : public Object
             LINEAR_MIPMAP_NEAREST     = GL_LINEAR_MIPMAP_NEAREST,
             NEAREST                   = GL_NEAREST,
             NEAREST_MIPMAP_LINEAR     = GL_NEAREST_MIPMAP_LINEAR,
-            NEAREST_MIPMAP_NEAREST    = GL_NEAREST_MIPMAP_NEAREST
+            NEAREST_MIPMAP_NEAREST    = GL_NEAREST_MIPMAP_NEAREST,
+	    ANISOTROPIC               = GL_TEXTURE_MAX_ANISOTROPY_EXT
         };
 
         /** Set the texture filter mode.*/
-        void setFilter(FilterParameter which, FilterMode filter);
+        void setFilter(const FilterParameter which, const FilterMode filter);
         /** Get the texture filter mode.*/
-        FilterMode getFilter(FilterParameter which) const;
+        const FilterMode getFilter(const FilterParameter which) const;
 
 
-        /** Enable OpenGL texturing.*/
-        static void enable( void );
-        /** Disable OpenGL texturing.*/
-        static void disable( void );
+        enum InternalFormatMode {
+            USE_IMAGE_DATA_FORMAT,
+            USE_USER_DEFINED_FORMAT,
+            USE_ARB_COMPRESSION,
+            USE_S3TC_DXT1_COMPRESSION,
+            USE_S3TC_DXT3_COMPRESSION,
+            USE_S3TC_DXT5_COMPRESSION
+        };
 
-        /** On first apply, create the minmapped texture and bind it,
-            subsequent apply will simple bind to texture.*/
-        void apply( void );
+        /** Set the internal format mode.
+          * Note, If the mode is set USE_IMAGE_DATA_FORMAT, USE_ARB_COMPRESSION,
+          * USE_S3TC_COMPRESSION the internalFormat is automatically selected,
+          * and will overwrite the previous _internalFormatValue.
+          */
+        inline void setInternalFormatMode(const InternalFormatMode mode) { _internalFormatMode = mode; }
+
+        /** Get the internal format mode.*/
+        inline const InternalFormatMode getInternalFormatMode() const { return _internalFormatMode; }
+
+        /** Set the internal format to use when creating OpenGL textures.
+          * Also sets the internalFormatMode to USE_USER_DEFINED_FORMAT.
+          */
+        inline void setInternalFormatValue(const int internalFormat)
+        {
+            _internalFormatMode = USE_USER_DEFINED_FORMAT;
+            _internalFormatValue = internalFormat;
+        }
+
+        /** Get the internal format to use when creating OpenGL textures.*/
+        inline const int getInternalFormatValue() const { return _internalFormatValue; }
+        
+        /** return the OpenGL texture object for specified context.*/
+        inline const uint getTextureObject(const uint contextID) const { if (contextID<_handleList.size()) return _handleList[contextID]; else return 0;}
+
+        /** return the memory size of texture object.
+          * Texture object size can be used for estimating the cost of
+          * uploading the texture to graphics hardware, which inturn can
+          * be used for setting texture residence priorities. */
+        inline const uint getTextureObjectSize() const { return _textureObjectSize; }
+
+        enum SubloadMode {
+            OFF,
+            AUTO,
+            IF_DIRTY
+        };
+
+        /** Set the texture subload mode. */
+        inline void setSubloadMode(const SubloadMode mode) { _subloadMode = mode; }
+
+        /** Get the texture subload mode. */
+        inline const SubloadMode getSubloadMode() const { return _subloadMode; }
+
+        /** Set the texture subload offsets. */
+        inline void setSubloadOffset(const int x, const int y) {
+            _subloadOffsX = x;
+            _subloadOffsY = y;
+        }
+
+        /** Get the texture subload offsets. */
+        inline void getSubloadOffset(int& x, int& y) const {
+            x = _subloadOffsX;
+            y = _subloadOffsY;
+        }
+        
+        /** Get the handle to the texture object for the current context.*/
+        inline uint& getHandle(const uint contextID) const
+        {
+            // pad out handle list if required.
+            while (_handleList.size()<=contextID)
+                _handleList.push_back(0);
+
+            // get the globj for the current contextID.
+            return _handleList[contextID];
+        }
+
+        /** Force a recompile on next apply() of associated OpenGL texture objects.*/
+        void dirtyTextureObject();
+
+        /** On first apply (unless already compiled), create the minmapped 
+          * texture and bind it, subsequent apply will simple bind to texture.*/
+        virtual void apply(State& state) const;
+        
+        /** Compile the texture mip maps.  Implemented by simply calling apply().*/
+        virtual void compile(State& state) const;
+
+
+        /** Method which does the creation of the texture itself, and
+          * does not set or use texture binding. */
+        virtual void applyImmediateMode(State& state) const;
+
+
+        /** use deleteTextureObject instead of glDeleteTextures to allow
+          * OpenGL texture objects to cached until they can be deleted
+          * by the OpenGL context in which they were created, specified
+          * by contextID.*/
+        static void deleteTextureObject(uint contextID,uint handle);
+
+        /** flush all the cached display list which need to be deleted
+          * in the OpenGL context related to contextID.*/
+        static void flushDeletedTextureObjects(uint contextID);
+        
 
     protected :
 
         virtual ~Texture();
 
-        virtual bool readLocalData(Input& fr);
-        virtual bool writeLocalData(Output& fw);
+        typedef std::vector<uint> TextureNameList;
+        mutable TextureNameList _handleList;
 
-        uint _handle;
+        typedef std::vector<uint> ImageModifiedTag;
+        mutable ImageModifiedTag _modifiedTag;
 
-        ref_ptr<Image> _image;
+        // size of the created OpenGL texture object, may be estimated. 
+        mutable uint _textureObjectSize;
 
-        bool matchWrapStr(const char* str,WrapMode& wrap);
-        const char* getWrapStr(WrapMode wrap);
+        // not ideal that _image is mutable, but its required since
+        // Image::ensureDimensionsArePowerOfTwo() can only be called
+        // in a valid OpenGL context, a therefore within an Texture::apply
+        // which is const...
+        mutable ref_ptr<Image> _image;
 
-        bool matchFilterStr(const char* str,FilterMode& filter);
-        const char* getFilterStr(FilterMode filter);
+        unsigned int _textureUnit;
 
         WrapMode _wrap_s;
         WrapMode _wrap_t;
         WrapMode _wrap_r;
+
         FilterMode _min_filter;
         FilterMode _mag_filter;
+
+        InternalFormatMode  _internalFormatMode;
+        int                 _internalFormatValue;
+
+        // subloaded images can have different texture and image sizes.
+        mutable unsigned int _textureWidth, _textureHeight;
+
+        SubloadMode _subloadMode;
+        unsigned int _subloadOffsX, _subloadOffsY;
+
+        // static cache of deleted display lists which can only 
+        // by completely deleted once the appropriate OpenGL context
+        // is set.
+        typedef std::map<uint,std::set<uint> > DeletedTextureObjectCache;
+        static DeletedTextureObjectCache s_deletedTextureObjectCache;
+
 };
 
 };

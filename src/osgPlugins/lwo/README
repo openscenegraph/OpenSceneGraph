@@ -1,0 +1,22 @@
+AUTHOR
+
+ lw is Copyright (C) 1999 by Janne Löf <jlof@mail.student.oulu.fi>
+
+
+WHAT IS lw?
+ lw is a LightWave mesh reader, I lifted this source from one of the
+ examples of GtkGLArea. This is why you will also need glib from gtk+,
+ I will remove this restriction in the next release.
+
+
+LICENSE
+
+ lw is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public
+ License as published by the Free Software Foundation; either
+ version 2 of the License, or (at your option) any later version.
+
+DOCUMENTATION
+
+ Use the source!
+

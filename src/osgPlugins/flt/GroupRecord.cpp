@@ -1,6 +1,5 @@
 // GroupRecord.cpp
 
-
 #include "flt.h"
 #include "Registry.h"
 #include "GroupRecord.h"
@@ -15,7 +14,6 @@ using namespace flt;
 
 RegisterRecordProxy<GroupRecord> g_GroupProxy;
 
-
 GroupRecord::GroupRecord()
 {
 }
@@ -29,7 +27,7 @@ GroupRecord::~GroupRecord()
 
 void GroupRecord::endian()
 {
-	SGroup *pSGroup = (SGroup*)getData();
+    SGroup *pSGroup = (SGroup*)getData();
 
     ENDIAN( pSGroup->iGroupRelPriority );
     ENDIAN( pSGroup->dwFlags );
@@ -37,8 +35,3 @@ void GroupRecord::endian()
     ENDIAN( pSGroup->iSpecialId_2 );
     ENDIAN( pSGroup->iSignificance );
 }
-
-
-
-
-

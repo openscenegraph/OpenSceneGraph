@@ -5,9 +5,6 @@
 
 namespace osg {
 
-class Input;
-class Output;
-
 /** Base class/standard interface for objects which require IO support, 
     cloning and reference counting.
     Based on GOF Composite, Prototype and Template Method patterns.
@@ -25,22 +22,11 @@ class SG_EXPORT Object : public Referenced
             Must be defined by derived classes.*/
         virtual Object* clone() const = 0;
 
-        virtual bool isSameKindAs(Object*) { return true; }
+        virtual bool isSameKindAs(const Object*) const { return true; }
 
         /** return the name of the object's class type. Must be defined
             by derived classes.*/
         virtual const char* className() const = 0;
-
-        /** Template Method/Prototype Pattern : create a clone and read
-            Object data from Input.  Reads Input and if it matches this 
-            objects className() then create a clone and match '{' brackets
-            and repeating calling Object::readLocalData() until the
-            matching ']' is read.*/
-        virtual Object* readClone(Input& fr);
-        /** Template Method Pattern : write out Object data to Output. 
-            Sequence of output is className() followed by Open '{'
-            and then call Object::writeLocalData() and complete with '}'.*/
-        virtual bool write(Output& fw);
 
     protected:
 
@@ -52,17 +38,6 @@ class SG_EXPORT Object : public Referenced
             forcing all nodes to be created on the heap i.e Node* node
             = new Node().*/
         virtual ~Object() {}
-
-        /** Template Method Pattern : read local data from .osg file.
-            Note should be implemented in derivied classes, which
-            call their parent class's readLocalData. Returns
-            true if the input iterator has been advanced, otherwise false.*/
-        virtual bool readLocalData(Input&) { return false; }
-        /** Template Method Pattern : write local data to .osg file.
-            Note should be implemented in derivied classes, which
-            call their parent class's writeLocalData. Returns
-            true if data has been written out, otherwise false.*/
-        virtual bool writeLocalData(Output&) { return false; }
 
     private:
 

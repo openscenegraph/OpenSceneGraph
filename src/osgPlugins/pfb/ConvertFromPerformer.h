@@ -9,7 +9,9 @@
 #include <osg/Node>
 #include <osg/Group>
 #include <osg/GeoSet>
-#include <osg/GeoState>
+#include <osg/StateSet>
+#include <osg/Texture>
+#include <osg/Material>
 
 // Performer includes.
 #include <Performer/pf/pfNode.h>
@@ -44,19 +46,15 @@ class ConvertFromPerformer {
 
         int getNumVerts(pfGeoSet *gset);
         osg::GeoSet* visitGeoSet(osg::Geode* osgParent,pfGeoSet* geoset);
-        osg::GeoState* visitGeoState(osg::GeoSet* osgGeoSet,pfGeoState* geostate);
-        osg::Material* visitMaterial(osg::GeoState* osgGeoState,pfMaterial* front_mat,pfMaterial* back_mat);
-        osg::Texture* visitTexture(osg::GeoState* osgGeoState,pfTexture* tex);
+        osg::StateSet* visitGeoState(osg::GeoSet* osgGeoSet,pfGeoState* geostate);
+        osg::Material* visitMaterial(osg::StateSet* osgStateSet,pfMaterial* front_mat,pfMaterial* back_mat);
+        osg::Texture* visitTexture(osg::StateSet* osgStateSet,pfTexture* tex);
 
         typedef std::map<int,osg::GeoSet::PrimitiveType> GSetPrimitiveMap;
         typedef std::map<int,osg::GeoSet::BindingType> GSetBindingMap;
-        typedef std::map<int,osg::GeoState::AttributeType> GStateTypeMap;
-        typedef std::map<int,osg::GeoState::AttributeMode> GStateModeMap;
 
         GSetPrimitiveMap    _gsetPrimMap;
         GSetBindingMap      _gsetBindMap;
-        GStateTypeMap       _gstateTypeMap;
-        GStateModeMap       _gstateModeMap;
 
         bool _saveImagesAsRGB;
         bool _saveAbsoluteImagePath;

@@ -4,20 +4,27 @@
 # Feel free to add your name and change list.
 
 Robert Osfield <robertosfield@yahoo.co.uk>
-        - osg and osgUtil.
-        - pfb, gif, jpeg, tiff, tga, pic plugins.
+        - osg, osgUtil and osgDB.
+        - pfb, 3ds, gif, jpeg, tiff, tga, pic, tgz & zip plugins.
         - sgv, various revisions, now most of code in osgGLUT.
+        - 2nd iteration of impostor implemtentation.
         - documentation?!
         - visual studio workspace files/unix makefiles.
         - project adim & lead.
 
-Don Burns <don_burns@sgi.com>
-        - libosg (particularily OpenGL)
+Don Burns <don@keyholecorp.com>
+        - osg (particularily OpenGL)
         - first version of sgv.
-        - fly database plugin.
-        - netscape plugin.
+        - fly database & osgtgz plugins.
         - unix makefiles.
         
+Karsten Weiss <knweiss@gmx.de>
+        - 1st iteration of impostor implemtentation.
+        - autoconfiscation of the project (currently a seperate branch.)
+        - rpm spec file.
+        - documentation.
+        - bug fixes.
+
 Graeme Harkness <graeme@phys.strath.ac.uk>
         - osg::Vec2,Vec3,Vec4 & osg::Quat classes.
         - reworking of old sgv into osgGLUT and a slim line Demos/sgv.
@@ -34,11 +41,47 @@ Brede Johansen <bredej@email.com>
         - assistance on visual studio workspace files.
 
 Ben Discoe <ben@vterrain.org>
+        - osgWX and wxsgv demos for integration of OSG with wxWindows.
         - png plugin.
-        - a couple of bug fixes and code submissions.
 
-Karsten Weiss <knweiss@gmx.de>
-        - autoconfiscation of the project.
-        - rpm spec file.
-        - documentation.
-        - bug fixes.
+
+Byan Woods <byran@tapestrysolutions.com>
+        - Port to MacOS, various code changes to support this.
+        - Metrowerks CodeWarrior makefiles.
+
+Randall Hopper <aa8vb@yahoo.com>
+        - port to FreeBSD.
+        - warning fixes to IRIX compilation.
+
+Ulrich Hertlein <u.hertlein@bit-side.com>
+        - support for IBM Mirror Repeat extension in osg::Texture
+        - support for texture subloading in osg::Texture
+        - .lwo and .obj plugins.
+
+Axel Volley <volley@acm.org>
+        - support for OBJECT_LINEAR and EYE_LINEAR TexGen modes.
+        - support for the Anistropic texture filter extension.
+
+Geoff Michel
+        - .dw (design workshop) loader plugin.
+        - OpenGL based stats reporting added to osgGLUT::Viewer.
+
+Indirect Contributors
+---------------------
+    
+J.E. Hoffmann <je-h@gmx.net>
+    - lib3ds library.
+    
+Systems in Motion <http://www.sim.no>
+    Peder Blekken <pederb@sim.no>
+    Morten Eriksen <mortene@sim.no>
+    Marius Bugge Monsen <mariusbu@sim.no>
+    - simage library which provide base for gif,jpg,pic,tga,tiff image loaders.
+    
+Janne Löf <jlof@mail.student.oulu.fi>
+    - lw is a LightWave mesh reader, used to develop osgPlugins/lwo.
+
+Nate Robins - http://www.pobox.com/~ndr/
+    - glm file format reader, usedf to develop osgPlugin/obj. 
+
+

@@ -6,16 +6,13 @@
 
 using namespace flt;
 
-
 ////////////////////////////////////////////////////////////////////
 //
 //                       LightSourcePaletteRecord
 //
 ////////////////////////////////////////////////////////////////////
 
-
 RegisterRecordProxy<LightSourcePaletteRecord> g_LightSourcePaletteProxy;
-
 
 LightSourcePaletteRecord::LightSourcePaletteRecord()
 {
@@ -32,7 +29,3 @@ LightSourcePaletteRecord::~LightSourcePaletteRecord()
 void LightSourcePaletteRecord::endian()
 {
 }
-
-
-
-

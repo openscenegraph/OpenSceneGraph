@@ -1,12 +1,7 @@
 #ifndef OSGGLUT_VIEWER
 #define OSGGLUT_VIEWER 1
 
-#include <osg/OSG>
-#include <osg/GeoState>
-#include <osg/Scene>
 #include <osg/Light>
-#include <osg/DCS>
-#include <osg/GL>
 #include <osg/NodeVisitor>
 #include <osg/Geode>
 #include <osg/Timer>
@@ -33,9 +28,9 @@ using namespace std;
 namespace osgGLUT{
 
 /** A basic viewer base class which provides a window, simple keyboard and mouse interaction.
-  * Please note, this viewer class has been developed via a rather haphazzard
-  * path and *needs* a total rewrite.  It currently surfices for osg demo's
-  * but shouldn't be viewed as the be all or end of osg viewer classes.
+  * Please note, this viewer class has been developed via a rather haphazard
+  * path and <i>needs</i> a total rewrite.  It currently suffices for osg demo's
+  * but shouldn't be viewed as the be all and end of osg viewer classes.
   * Someone please rewrite it :-)
   */
 class OSGGLUT_EXPORT Viewer : public osgUtil::GUIActionAdapter
@@ -45,14 +40,34 @@ class OSGGLUT_EXPORT Viewer : public osgUtil::GUIActionAdapter
         Viewer();
         virtual ~Viewer();
 
-        virtual bool init( osg::Node* );
+        void setWindowOrigin(int x, int y) { wx = x, wy = y; };
+        void setWindowSize(int width, int height) { ww = width, wh = height; };
+        void setWindowTitle(const std::string& title) { _title = title; }
 
+        /** init is deprecated, you should use addViewport instead. init is
+          * only available for backwards compatibility.*/
+        virtual void init(osg::Node* rootnode);
+
+        virtual void addViewport(osgUtil::SceneView* sv,
+                                 float x     = 0.0, float y      = 0.0,        
+                                 float width = 1.0, float height = 1.0);
+
+        virtual void addViewport(osg::Node*,
+                                 float x     = 0.0, float y      = 0.0,        
+                                 float width = 1.0, float height = 1.0);
+
+        const int getNumViewports() const { return _viewportList.size(); }
+
+        osgUtil::SceneView* getViewportSceneView(unsigned int pos) 
+            { return _viewportList[pos].sceneView.get(); }
+
+        virtual bool open();
         virtual bool run();
 
-        // called on each frame redraw..
-        virtual bool update();
-        virtual bool traverse();
-        virtual bool draw();
+        // called on each frame redraw..return the time in ms for each operation.
+        virtual float app(unsigned int viewport); 
+        virtual float cull(unsigned int viewport);
+        virtual float draw(unsigned int viewport);
 
         // initialize the clock.
         long initClock();
@@ -69,18 +84,20 @@ class OSGGLUT_EXPORT Viewer : public osgUtil::GUIActionAdapter
         void help(ostream& fout);
 
         // hande multiple camera.
-        void registerCameraManipulator(osgUtil::CameraManipulator* cm);
-        void selectCameraManipulator(unsigned int pos);
+        unsigned int registerCameraManipulator(osgUtil::CameraManipulator* cm,
+					       unsigned int viewport = 0);
+        void selectCameraManipulator(unsigned int pos, 
+				     unsigned int viewport = 0);
 
         // derived from osgUtil::GUIActionAdapter
-        virtual void needRedraw(bool /*needed*/) {} // redraw always done.
-        virtual void needContinuousUpdate(bool /*needed*/) {} // continous update always
-        virtual void needWarpPointer(int x,int y);
+        virtual void requestRedraw() {} // redraw always by iddle callback done.
+        virtual void requestContinuousUpdate(bool /*needed*/) {} // continous update always
+        virtual void requestWarpPointer(int x,int y);
 
     protected:
 
         static void displayCB();
-        static void reshapeCB(GLint w, GLint h);
+        static void reshapeCB(int w, int h);
         static void visibilityCB(int state);
         static void mouseMotionCB(int x, int y);
         static void mousePassiveMotionCB(int x, int y);
@@ -94,25 +111,39 @@ class OSGGLUT_EXPORT Viewer : public osgUtil::GUIActionAdapter
         virtual void mousePassiveMotion(int x, int y);
         virtual void mouse(int button, int state, int x, int y);
         virtual void keyboard(unsigned char key, int x, int y);
+
+        void setFocusedViewport(unsigned int pos);
+        int mapWindowXYToSceneView(int x, int y);
         
+        void showStats(void);
 
         static Viewer*    s_theViewer;
 
-        osg::ref_ptr<osgUtil::SceneView> _sceneView;
-                
         typedef std::vector<osg::ref_ptr<osgUtil::CameraManipulator> > CameraManipList;
 
-        osg::ref_ptr<osgUtil::CameraManipulator>    _cameraManipulator;
-        CameraManipList                             _cameraManipList;
+        struct ViewportDef 
+        {
+            osg::ref_ptr<osgUtil::SceneView> sceneView;
+            float viewport[4];                        // Win-size-relative [0,1]
 
+            osg::ref_ptr<osgUtil::CameraManipulator>    _cameraManipulator;
+            CameraManipList                             _cameraManipList;
+        };
+
+        typedef std::vector<ViewportDef> ViewportList;
+        ViewportList _viewportList;
+        unsigned int _focusedViewport;
+                
         std::string                                 _saveFileName;
 
-        int ww, wh;
+        std::string _title;
+        int wx, wy, ww, wh;
+        int _is_open;
 
         #ifdef SGV_USE_RTFS
-	unsigned int frame_rate;
-	RTfs *fs;
-	#endif
+        unsigned int frame_rate;
+        RTfs *fs;
+        #endif
         
         bool _viewFrustumCullingActive;
         bool _smallFeatureCullingActive;
@@ -125,8 +156,13 @@ class OSGGLUT_EXPORT Viewer : public osgUtil::GUIActionAdapter
         int flat_shade;
         int _two_sided_lighting;
         bool fullscreen;
-        int _saved_ww,_saved_wh;
-        bool _printStats;
+        int _saved_wx, _saved_wy, _saved_ww,_saved_wh;
+        float frRate; // gwm Jul 2001 added convolved ('averaged') frame rate
+        int _printStats; // gwm Jul 2001 change from bool
+        struct { // gwm Jul 2001, added for display of statistics
+            float timeApp, timeCull, timeDraw, timeFrame;
+            osg::Timer_t frameend;
+        } times[3]; // store up to 3 frames worth of times
         bool _useDisplayLists;
         
         osg::Timer   _timer;

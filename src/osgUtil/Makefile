@@ -2,21 +2,37 @@
 include ../../Make/makedefs
 
 C++FILES = \
-        DisplayListVisitor.cpp\
-	RenderVisitor.cpp\
-	SceneView.cpp\
+	CameraManipulator.cpp\
+	CullVisitor.cpp\
+	CullViewState.cpp\
+	DisplayListVisitor.cpp\
+	DepthSortedBin.cpp\
+	DriveManipulator.cpp\
+	FlightManipulator.cpp\
 	IntersectVisitor.cpp\
-        CameraManipulator.cpp\
+        InsertImpostorsVisitor.cpp\
+	NvTriStripObjects.cpp\
+	RenderBin.cpp\
+	RenderGraph.cpp\
+	RenderLeaf.cpp\
+	RenderStage.cpp\
+	RenderStageLighting.cpp\
+	RenderToTextureStage.cpp\
+	SceneView.cpp\
+        SceneViewManipulator.cpp\
+        SmoothingVisitor.cpp\
+        StateSetManipulator.cpp\
+        Tesselator.cpp\
         TrackballManipulator.cpp\
-        FlightManipulator.cpp\
-        DriveManipulator.cpp\
+        TriStripVisitor.cpp\
         Version.cpp\
+	VisualsRequirementsVisitor.cpp\
 
 
 TARGET_BASENAME = osgUtil
 
 
-LIBS    = -ldl
+LIBS    = -L../../lib -losg -lGLU -lGL -lm
 
 LIB	= ../../lib/lib$(TARGET_BASENAME).so
 #LIB	= ../../lib/lib$(TARGET_BASENAME).a
@@ -24,17 +40,34 @@ LIB	= ../../lib/lib$(TARGET_BASENAME).so
 TARGET_LIB_FILES = lib$(TARGET_BASENAME).so
 TARGET_INCLUDE_FILES = \
 	osgUtil/CameraManipulator\
+	osgUtil/CullVisitor\
+	osgUtil/CullViewState\
+	osgUtil/DepthSortedBin\
 	osgUtil/DisplayListVisitor\
 	osgUtil/DriveManipulator\
 	osgUtil/Export\
+	osgUtil/FlightManipulator\
 	osgUtil/GUIActionAdapter\
 	osgUtil/GUIEventAdapter\
+	osgUtil/GUIEventHandler\
 	osgUtil/IntersectVisitor\
-	osgUtil/RenderVisitor\
+        osgUtil/InsertImpostorsVisitor\
+	osgUtil/RenderBin\
+	osgUtil/RenderGraph\
+	osgUtil/RenderLeaf\
+	osgUtil/RenderStage\
+	osgUtil/RenderStageLighting\
+        osgUtil/RenderToTextureStage\
 	osgUtil/SceneView\
+	osgUtil/SceneViewManipulator\
+	osgUtil/SmoothingVisitor\
+	osgUtil/StateSetManipulator\
+	osgUtil/Statistics\
+	osgUtil/Tesselator\
 	osgUtil/TrackballManipulator\
-	osgUtil/FlightManipulator\
+	osgUtil/TriStripVisitor\
 	osgUtil/Version\
+	osgUtil/VisualsRequirementsVisitor\
 
 
 C++FLAGS += -I ../../include

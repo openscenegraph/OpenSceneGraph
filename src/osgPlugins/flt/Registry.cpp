@@ -1,7 +1,7 @@
 
-#include "osg/Node"
-#include "osg/Group"
-#include "osg/Output"
+#include <osg/Node>
+#include <osg/Group>
+//#include <osg/Output>
 #include <osg/Notify>
 
 #include <algorithm>
@@ -9,6 +9,7 @@
 
 #include "Record.h"
 #include "Input.h"
+#include "FltFile.h"
 #include "Registry.h"
 
 #ifdef OSG_USE_IO_DOT_H
@@ -19,7 +20,6 @@ using namespace std;
 #endif
 
 #include <stdio.h>
-
 
 using namespace flt;
 
@@ -32,7 +32,7 @@ Registry::Registry()
 
 Registry::~Registry()
 {
-    
+
     osg::notify(osg::INFO) << "Destructing flt flt::Registry"<< endl;
 
     // note, do not need to unrefence records as the combination of
@@ -96,7 +96,6 @@ Registry::RecordProtoList::iterator Registry::getRecordProtoItr(const int opcode
 }
 
 
-
 Record* Registry::getRecordProto(const int opcode)
 {
     RecordProtoList::iterator itr = getRecordProtoItr(opcode);
@@ -104,5 +103,75 @@ Record* Registry::getRecordProto(const int opcode)
         return NULL;
 
     return itr->get();
+}
+
+///////////////////////////////////////////////////////////////////
+
+
+void Registry::addTexture(osg::Texture* texture)
+{
+    if (texture==0L) return;
+
+    osg::notify(osg::INFO) << "flt::Registry::addTexture("<< texture->className()<<")\n";
+
+    TextureList::iterator pitr = std::find(_textureList.begin(),_textureList.end(),texture);
+    if (pitr==_textureList.end())
+        _textureList.push_back(texture);
+    else
+        osg::notify(osg::INFO) << "failed - flt::Registry::addTexture() - texture already exists"<<")\n";
+}
+
+
+void Registry::removeTexture(osg::Texture* texture)
+{
+    if (texture==0L) return;
+
+    osg::notify(osg::INFO) << "flt::Registry::removeTexture("<< texture->className()<<")\n";
+
+    TextureList::iterator itr = std::find(_textureList.begin(),_textureList.end(),texture);
+    if (itr!=_textureList.end())
+    {
+        _textureList.erase(itr);
+    }
+}
+
+
+Registry::TextureList::iterator Registry::getTextureItr(const std::string name)
+{
+    for(TextureList::iterator itr=_textureList.begin();
+        itr!=_textureList.end();
+        ++itr)
+    {
+        osg::Image* image = (*itr)->getImage();
+        if (image && name == image->getFileName())
+            return itr;
+    }
+
+    return _textureList.end();
+}
+
+
+osg::Texture* Registry::getTexture(const std::string name)
+{
+    TextureList::iterator itr = getTextureItr(name);
+    if (itr==_textureList.end())
+        return NULL;
+
+    return *itr;
+}
+
+
+FltFile* Registry::getFltFile(const std::string& name)
+{
+    FltFileMap::iterator itr = _fltFileMap.find(name);
+    if (itr != _fltFileMap.end())
+        return (*itr).second.get();
+    else
+        return NULL;
+}
+
+void Registry::addFltFile(const std::string& name, FltFile* file)
+{
+    _fltFileMap[name] = file;
 }
 

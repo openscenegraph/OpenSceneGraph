@@ -7,6 +7,7 @@
 #include <vector>
 
 #include <osg/GeoSet>
+#include <osg/Material>
 #include <osg/Vec2>
 #include <osg/Vec3>
 #include <osg/Vec4>
@@ -15,10 +16,8 @@
 namespace osg {
 class Node;
 class LOD;
-class GeoSet;
 class Geode;
 class GeoState;
-class Material;
 class Texture;
 }
 
@@ -52,7 +51,7 @@ public:
         _primtype = osg::GeoSet::NO_TYPE;
         _material = NULL;
         _texture = NULL;
-        _color = osg::Vec4(1,1,1,1);
+        _face_color = osg::Vec4(1,1,1,1);
         _color_binding = osg::GeoSet::BIND_OFF;
         _cullface = false;
         _transparency = false;
@@ -66,11 +65,11 @@ public:
     void setPrimType(PrimitiveType pt)          { _primtype = pt; }
     PrimitiveType getPrimType()                 { return _primtype; }
 
-    void setColor(osg::Vec4 color)              { _color = color; }
-    osg::Vec4& getColor()                       { return _color; }
+    void setFaceColor(osg::Vec4 color)          { _face_color = color; }
+    osg::Vec4& getFaceColor()                   { return _face_color; }
 
-    void setColorBinding( BindingType binding ) { _color_binding = binding; }
-    BindingType getColorBinding()               { return _color_binding; }
+    inline void setColorBinding( BindingType binding ) { _color_binding = binding; }
+    inline const BindingType getColorBinding() const { return _color_binding; }
     
     void setMaterial(osg::Material *material)   { _material = material; }
     osg::Material* getMaterial()                { return _material; }
@@ -102,7 +101,7 @@ public:
         if (_color_binding != b)
             return false;
         if (_color_binding == osg::GeoSet::BIND_OVERALL)
-            return (_color == c);
+            return (_face_color == c);
         return true;
     }
     
@@ -111,7 +110,7 @@ public:
         return ((_nVertexOp == a._nVertexOp)
             &&  (_primtype == a._primtype)
             &&  mat_equal(a._material)
-            &&  col_equal(a._color_binding, a._color)
+            &&  col_equal(a._color_binding, a._face_color)
             &&  (_texture == a._texture)
             &&  (_cullface == a._cullface)
             &&  (_transparency == a._transparency)
@@ -125,7 +124,7 @@ private:
     PrimitiveType   _primtype;
     osg::Material*  _material;
     osg::Texture*   _texture;
-    osg::Vec4       _color;         // BIND_OVERALL
+    osg::Vec4       _face_color;
     BindingType     _color_binding;
     bool            _cullface;
     bool            _transparency;
@@ -152,8 +151,8 @@ public:
 
     void addVertex(Record* vertex);
     void setPrimType(PrimitiveType pt)              { _appearance.setPrimType(pt); }
-    void setColor(osg::Vec4 color)                  { _appearance.setColor(color); }
-    void setColorBinding(BindingType binding )      { _appearance.setColorBinding(binding); }
+    void setFaceColor(osg::Vec4 color)              { _appearance.setFaceColor(color); }
+    void setColorBinding(const BindingType binding) { _appearance.setColorBinding(binding); }
     void setMaterial(osg::Material *material)       { _appearance.setMaterial(material); }
     void setTexture(osg::Texture *texture)          { _appearance.setTexture(texture); }
     void setCullface(bool cullface)                 { _appearance.setCullface(cullface); }
@@ -162,7 +161,7 @@ public:
     void setSubface(int level)                      { _appearance.setSubface(level); }
 
     PrimitiveType  getPrimType()                    { return _appearance.getPrimType(); }
-    osg::Vec4&     getColor()                       { return _appearance.getColor(); }
+    osg::Vec4&     getFaceColor()                   { return _appearance.getFaceColor(); }
     BindingType    getColorBinding()                { return _appearance.getColorBinding(); }
     osg::Material* getMaterial()                    { return _appearance.getMaterial(); }
     osg::Texture*  getTexture()                     { return _appearance.getTexture(); }
@@ -226,7 +225,7 @@ private:
 
 
 
-}	// end of namespace flt
+}    // end of namespace flt
 
 
 

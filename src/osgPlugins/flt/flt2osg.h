@@ -30,6 +30,7 @@ class Record;
 class HeaderRecord;
 class ColorPaletteRecord;
 class MaterialPaletteRecord;
+class OldMaterialPaletteRecord;
 class TexturePaletteRecord;
 class VertexPaletteRecord;
 class VertexRecord;
@@ -73,6 +74,7 @@ public:
     osg::Node* visitHeader(osg::Group* osgParent, HeaderRecord* rec);
     osg::Node* visitColorPalette(osg::Group* osgParent, ColorPaletteRecord* rec);
     osg::Node* visitMaterialPalette(osg::Group* osgParent, MaterialPaletteRecord* rec);
+    osg::Node* visitOldMaterialPalette(osg::Group* osgParent, OldMaterialPaletteRecord* rec);
     osg::Node* visitTexturePalette(osg::Group* osgParent, TexturePaletteRecord* rec);
     osg::Node* visitVertexPalette(osg::Group* osgParent, VertexPaletteRecord* rec);
     osg::Node* visitVertex(osg::Group* osgParent, VertexRecord* rec);
@@ -106,6 +108,8 @@ private:
     int             _diCurrentOffset;
     unsigned short  _wObjTransparency;
     int             _nSubfaceLevel;
+    float           _sfHdrUnitScale;       // iMultDivUnit
+    bool            _bHdrRgbMode;
 
 };
 

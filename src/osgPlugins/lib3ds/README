@@ -1,0 +1,25 @@
+
+This 3ds loader is based on lib3ds, details below.  ReaderWriter3DS.cpp is the
+OSG code which adapts the library into a osg plugin.
+
+Robert Osfield, Feburary 2001.
+
+--
+
+Lib3ds is a free alternative to Autodesk's 3DS File Toolkit for handling 
+3DS files It's main goal is to simplify the creation of 3DS import and 
+export filters. 
+
+This project is not related in any form to Autodesk. The library is 
+based on unofficial information about the 3DS format found on the web. 
+ 
+This  program  is  distributed in  the  hope that it will  be useful,  but
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+License for more details.
+
+The official Lib3ds Homepage can be found under:
+  http://lib3ds.sourceforge.net
+
+J.E. Hoffmann <je-h@gmx.net>
+

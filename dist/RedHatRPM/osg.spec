@@ -1,11 +1,11 @@
 
 Summary: Open Scene Graph
 Name: OpenSceneGraph
-Version: 0.8
-Release: 2
-Copyright: GLPL
+Version: 0.8.39
+Release: 1
+Copyright: LGPL
 Group: Graphics
-Source: osg-0.8-2.tar.gz
+Source: osg-0.8.39.tar.gz
 URL: http://www.openscenegraph.org 
 Packager: Robert Osfield
 

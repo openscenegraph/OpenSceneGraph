@@ -1,10 +1,21 @@
-#include "osg/OSG"
-#include "osg/Node"
-#include "osg/Registry"
-#include "osg/Notify"
+#ifdef USE_MEM_CHECK
+#include <mcheck.h>
+#endif
+
+#include <osg/Group>
+#include <osg/Notify>
+
+#include <osgDB/Registry>
+#include <osgDB/ReadFile>
+
+#include <osgUtil/TrackballManipulator>
+#include <osgUtil/FlightManipulator>
+#include <osgUtil/DriveManipulator>
 
 #include <GL/glut.h>
-#include "osgGLUT/Viewer"
+#include <osgGLUT/Viewer>
+
+#include <osg/Quat>
 
 /*
  * Function to read several files (typically one) as specified on the command
@@ -25,33 +36,33 @@ osg::Node* getNodeFromFiles(int argc,char **argv)
         {
             switch(argv[i][1])
             {
-            case('l'):
-                ++i;
-                if (i<argc)
-                {
-                    osg::Registry::instance()->loadLibrary(argv[i]);
-                }
-                break;
-            case('e'):
-                ++i;
-                if (i<argc)
-                {
-                    std::string libName = osg::Registry::instance()->createLibraryNameForExt(argv[i]);
-                    osg::Registry::instance()->loadLibrary(libName);
-                }
-                break;
+                case('l'):
+                    ++i;
+                    if (i<argc)
+                    {
+                        osgDB::Registry::instance()->loadLibrary(argv[i]);
+                    }
+                    break;
+                case('e'):
+                    ++i;
+                    if (i<argc)
+                    {
+                        std::string libName = osgDB::Registry::instance()->createLibraryNameForExt(argv[i]);
+                        osgDB::Registry::instance()->loadLibrary(libName);
+                    }
+                    break;
             }
         } else
         {
-            osg::Node *node = osg::loadNodeFile( argv[i] );
+            osg::Node *node = osgDB::readNodeFile( argv[i] );
 
             if( node != (osg::Node *)0L )
             {
                 if (node->getName().empty()) node->setName( argv[i] );
                 nodeList.push_back(node);
-            }   
+            }
         }
-        
+
     }
 
     if (nodeList.size()==0)
@@ -59,12 +70,12 @@ osg::Node* getNodeFromFiles(int argc,char **argv)
         osg::notify(osg::WARN) << "No data loaded."<<endl;
         exit(0);
     }
-    
+
     if (nodeList.size()==1)
     {
         rootnode = nodeList.front();
     }
-    else // size >1
+    else                         // size >1
     {
         osg::Group* group = new osg::Group();
         for(NodeList::iterator itr=nodeList.begin();
@@ -76,13 +87,20 @@ osg::Node* getNodeFromFiles(int argc,char **argv)
 
         rootnode = group;
     }
-    
+
     return rootnode;
 }
 
 
 int main( int argc, char **argv )
 {
+
+#ifdef USE_MEM_CHECK
+    mtrace();
+#endif
+
+    // initialize the GLUT
+    glutInit( &argc, argv );
 
     if (argc<2)
     {
@@ -104,15 +122,25 @@ int main( int argc, char **argv )
         return 0;
     }
 
-
-    osg::Node* rootnode = getNodeFromFiles( argc, argv);
-
-    osgGLUT::Viewer viewer;
-    glutInit( &argc, argv );
-    viewer.init( rootnode );
-    viewer.run();
+    osg::Timer timer;
+    osg::Timer_t before_load = timer.tick();
     
+    osg::Node* rootnode = getNodeFromFiles( argc, argv);
+    
+    osg::Timer_t after_load = timer.tick();
+    cout << "Time for load = "<<timer.delta_s(before_load,after_load)<<" seconds"<<endl;
+
+    // initialize the viewer.
+    osgGLUT::Viewer viewer;
+    viewer.addViewport( rootnode );
+
+    // register trackball, flight and drive.
+    viewer.registerCameraManipulator(new osgUtil::TrackballManipulator);
+    viewer.registerCameraManipulator(new osgUtil::FlightManipulator);
+    viewer.registerCameraManipulator(new osgUtil::DriveManipulator);
+
+    viewer.open();
+    viewer.run();
+
     return 0;
 }
-
-

@@ -1,0 +1,33 @@
+#ifndef OSGDB_READERWRITER
+#define OSGDB_READERWRITER 1
+
+#include <osg/Referenced>
+#include <osg/Image>
+#include <osg/Node>
+
+#include <string>
+
+namespace osgDB {
+
+
+/** pure virtual base class for reading and writing of non native formats. */
+class OSGDB_EXPORT ReaderWriter : public osg::Referenced
+{
+    public:
+        virtual ~ReaderWriter() {}
+        virtual const char* className() = 0;
+        virtual bool acceptsExtension(const std::string& /*extension*/) { return false; }
+
+        virtual osg::Object* readObject(const std::string& /*fileName*/) { return NULL; }
+        virtual osg::Image* readImage(const std::string& /*fileName*/) { return NULL; }
+        virtual osg::Node* readNode(const std::string& /*fileName*/) { return NULL; }
+
+        virtual bool writeObject(const osg::Object& /*obj*/,const std::string& /*fileName*/) {return false; }
+        virtual bool writeImage(const osg::Image& /*image*/,const std::string& /*fileName*/) {return false; }
+        virtual bool writeNode(const osg::Node& /*node*/,const std::string& /*fileName*/) { return false; }
+};
+
+
+};
+
+#endif // OSG_READERWRITER

@@ -1,15 +1,17 @@
 #ifndef OSGUTIL_CAMERAMANIPULATOR
 #define OSGUTIL_CAMERAMANIPULATOR 1
 
-#include <osg/Referenced>
 #include <osg/Camera>
+#include <osg/Node>
+
 #include <osgUtil/Export>
+#include <osgUtil/GUIEventHandler>
 #include <osgUtil/GUIEventAdapter>
 #include <osgUtil/GUIActionAdapter>
 
 namespace osgUtil{
 
-class OSGUTIL_EXPORT CameraManipulator : public osg::Referenced
+class OSGUTIL_EXPORT CameraManipulator : public GUIEventHandler
 {
     public:
 
@@ -20,7 +22,7 @@ class OSGUTIL_EXPORT CameraManipulator : public osg::Referenced
 	virtual void setCamera(osg::Camera*);
 
         /** get the attached a camera.*/
-	virtual osg::Camera * getCamera() const;
+	virtual const osg::Camera * getCamera() const;
 
         /** Attach a node to the manipulator. 
             Automatically detaches previously attached node.
@@ -29,17 +31,17 @@ class OSGUTIL_EXPORT CameraManipulator : public osg::Referenced
         virtual void setNode(osg::Node*) {}
 
         /** Return node if attached.*/
-        virtual osg::Node* getNode() const { return NULL; }
+        virtual const osg::Node* getNode() const { return NULL; }
 
         /** Move the camera to the default position. 
             May be ignored by manipulators if home functionality is not appropriate.*/
-        virtual void home(GUIEventAdapter& ,GUIActionAdapter&) {}
+        virtual void home(const GUIEventAdapter& ,GUIActionAdapter&) {}
         
         /** Start/restart the manipulator.*/
-        virtual void init(GUIEventAdapter& ,GUIActionAdapter&) {}
+        virtual void init(const GUIEventAdapter& ,GUIActionAdapter&) {}
 
         /** Handle events, return true if handled, false otherwise.*/
-	virtual bool update(GUIEventAdapter& ea,GUIActionAdapter& us);        
+	virtual bool handle(const GUIEventAdapter& ea,GUIActionAdapter& us);
 
 
     protected:

@@ -5,7 +5,6 @@
 #include "FaceRecord.h"
 #include "Input.h"
 
-
 using namespace flt;
 
 ////////////////////////////////////////////////////////////////////
@@ -15,7 +14,6 @@ using namespace flt;
 ////////////////////////////////////////////////////////////////////
 
 RegisterRecordProxy<FaceRecord> g_FaceProxy;
-
 
 FaceRecord::FaceRecord()
 {
@@ -56,7 +54,7 @@ int FaceRecord::getVertexPoolOffset(int index)
 
 void FaceRecord::endian()
 {
-	SFace *pSFace = (SFace*)getData();
+    SFace *pSFace = (SFace*)getData();
 
     ENDIAN( pSFace->diIRColor );
     ENDIAN( pSFace->iObjectRelPriority );
@@ -69,15 +67,18 @@ void FaceRecord::endian()
     ENDIAN( pSFace->iFeature );
     ENDIAN( pSFace->diIRMaterial );
     ENDIAN( pSFace->wTransparency );
-    ENDIAN( pSFace->diFlags );
-//  ENDIAN( pSFace->PrimaryPackedColor );
-//  ENDIAN( pSFace->SecondaryPackedColor );
-    ENDIAN( pSFace->iTextureMapIndex );
-    ENDIAN( pSFace->dwPrimaryColorIndex );
-    ENDIAN( pSFace->dwAlternateColorIndex );
+
+    // Added after version 13
+    if (getSize() >= sizeof(SFace))
+    {
+        ENDIAN( pSFace->dwFlags );
+        //  ENDIAN( pSFace->PrimaryPackedColor );
+        //  ENDIAN( pSFace->SecondaryPackedColor );
+        ENDIAN( pSFace->iTextureMapIndex );
+        ENDIAN( pSFace->dwPrimaryColorIndex );
+        ENDIAN( pSFace->dwAlternateColorIndex );
+    }
 }
-
-
 
 
 // virtual
@@ -114,7 +115,6 @@ bool FaceRecord::readLocalData(Input& fr)
 }
 
 
-
 ////////////////////////////////////////////////////////////////////
 //
 //                       VertexListRecord
@@ -122,7 +122,6 @@ bool FaceRecord::readLocalData(Input& fr)
 ////////////////////////////////////////////////////////////////////
 
 RegisterRecordProxy<VertexListRecord> g_VertexListProxy;
-
 
 VertexListRecord::VertexListRecord()
 {
@@ -143,7 +142,7 @@ int VertexListRecord::numberOfVertices()
 
 int VertexListRecord::getVertexPoolOffset(int index)
 {
-	SSingleVertexList *pSVertexList = (SSingleVertexList*)getData();
+    SSingleVertexList *pSVertexList = (SSingleVertexList*)getData();
 
     if ((index >= 0) && (index < numberOfVertices()))
         return pSVertexList->diSOffset[index];
@@ -154,27 +153,14 @@ int VertexListRecord::getVertexPoolOffset(int index)
 
 void VertexListRecord::endian()
 {
-	SSingleVertexList *pSVertexList = (SSingleVertexList*)getData();
-    int  nNumberOfVertices = numberOfVertices();	
+    SSingleVertexList *pSVertexList = (SSingleVertexList*)getData();
+    int  nNumberOfVertices = numberOfVertices();
 
-	for(int i=0; i < nNumberOfVertices; i++)
-	{
+    for(int i=0; i < nNumberOfVertices; i++)
+    {
         ENDIAN( pSVertexList->diSOffset[i] );
     }
 }
-
-
-
-
-
-// virtual
-bool VertexListRecord::readLocalData(Input& fr)
-{
-    // A vertex node is a leaf node in the database and 
-    // therefore cannot have any children.
-    return true;
-}
-
 
 
 ////////////////////////////////////////////////////////////////////
@@ -184,7 +170,6 @@ bool VertexListRecord::readLocalData(Input& fr)
 ////////////////////////////////////////////////////////////////////
 
 RegisterRecordProxy<MorphVertexListRecord> g_MorphVertexListRecordProxy;
-
 
 MorphVertexListRecord::MorphVertexListRecord()
 {
@@ -205,60 +190,8 @@ int MorphVertexListRecord::numberOfVertices()
 
 void MorphVertexListRecord::endian()
 {
-//	SMorphVertexList *pSMorpVertexList = (SMorphVertexList*)getData();
+    //    SMorphVertexList *pSMorpVertexList = (SMorphVertexList*)getData();
 }
-
-
-
-
-
-// virtual
-bool MorphVertexListRecord::readLocalData(Input& fr)
-{
-    // A vertex node is a leaf node in the database and 
-    // therefore cannot have any children.
-    return true;
-}
-
-
-////////////////////////////////////////////////////////////////////
-//
-//                       UnknownListRecord
-//
-////////////////////////////////////////////////////////////////////
-
-//RegisterRecordProxy<UnknownListRecord> g_UnknownListProxy;
-
-
-UnknownListRecord::UnknownListRecord()
-{
-}
-
-
-// virtual
-UnknownListRecord::~UnknownListRecord()
-{
-}
-
-
-void UnknownListRecord::endian()
-{
-}
-
-
-
-
-
-// virtual
-bool UnknownListRecord::readLocalData(Input& fr)
-{
-    // A vertex node is a leaf node in the database and 
-    // therefore cannot have any children.
-    return true;
-}
-
-
-
 
 
 ////////////////////////////////////////////////////////////////////
@@ -268,7 +201,6 @@ bool UnknownListRecord::readLocalData(Input& fr)
 ////////////////////////////////////////////////////////////////////
 
 RegisterRecordProxy<VectorRecord> g_VectorProxy;
-
 
 VectorRecord::VectorRecord()
 {
@@ -283,10 +215,7 @@ VectorRecord::~VectorRecord()
 
 void VectorRecord::endian()
 {
-	SVector *pSVector = (SVector*)getData();
+    SVector *pSVector = (SVector*)getData();
 
     pSVector->Vec.endian();
 }
-
-
-

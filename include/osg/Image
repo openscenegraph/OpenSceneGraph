@@ -1,13 +1,13 @@
+// -*-c++-*-
+
 #ifndef OSG_IMAGE
 #define OSG_IMAGE 1
 
 #include <osg/Object>
-#include <osg/OSG>
+
+#include <string>
 
 namespace osg {
-
-class Output;
-class Input;
 
 /** Image class for encapsulating the storage texture image data.*/
 class SG_EXPORT Image : public Object
@@ -18,50 +18,56 @@ class SG_EXPORT Image : public Object
         Image();
 
         virtual Object* clone() const { return new Image(); }
-        virtual bool isSameKindAs(Object* obj) { return dynamic_cast<Image*>(obj)!=NULL; }
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Image*>(obj)!=0; }
         virtual const char* className() const { return "Image"; }
 
 
-        const char* getFileName() { return _fileName; }
-        void setFileName(const char* fileName);
+        inline const std::string& getFileName() const { return _fileName; }
+        void setFileName(const std::string& fileName);
         
         /** set the image data and format.
-          * note, when no packing value is negative (the default is -1) this method assumes
+          * note, when the packing value is negative (the default is -1) this method assumes
           * a _packing width of 1 if the width is not a multiple of 4,
           * otherwise automatically sets to _packing to 4. If a postive
           * value of packing is supplied than _packing is simply set to that value.
           */
-        void setImage(int s,int t,int r,
-            int internalFormat,
-            unsigned int pixelFormat,
-            unsigned int dataType,
+        void setImage(const int s,const int t,const int r,
+            const int internalFormat,
+            const unsigned int pixelFormat,
+            const unsigned int dataType,
             unsigned char *data,
-            int packing=-1);
+            const int packing=-1);
 
         /** Width of image.*/
-        int s() { return _s; }
+        inline const int s() const { return _s; }
         /** Height of image.*/
-        int t() { return _t; }
+        inline const int t() const { return _t; }
         /** Depth of image.*/
-        int r() { return _r; }
+        inline const int r() const { return _r; }
         
-        int internalFormat() { return _internalFormat; }
-        unsigned int pixelFormat() { return _pixelFormat; }
-        unsigned int dataType() { return _dataType; }
-        unsigned int packing() { return _packing; }
+        inline const int internalFormat() const { return _internalFormat; }
+        inline const unsigned int pixelFormat() const { return _pixelFormat; }
+        inline const unsigned int dataType() const { return _dataType; }
+        inline const unsigned int packing() const { return _packing; }
         
         /** raw image data.*/
-        unsigned char *data() { return _data; }
+        inline unsigned char *data() { return _data; }
         
+        /** raw const image data.*/
+        inline const unsigned char *data() const { return _data; }
+
         /** Scale image to specified size. */
-        void scaleImage(int s,int t,int r);
+        void scaleImage(const int s,const int t,const int r);
 
         /** Ensure image dimensions are a power of two.
           * Mip Mapped texture require the image dimensions to be
           * power of two.
           */
         void ensureDimensionsArePowerOfTwo();
-        
+      
+        /** Get modified tag value. */
+        inline const unsigned int getModifiedTag() const { return _modifiedTag; }
+
     protected :
 
         virtual ~Image();
@@ -69,10 +75,7 @@ class SG_EXPORT Image : public Object
 //	Image(const Image&) {}
 //        Image& operator = (const Image& image) {}
 
-        virtual bool readLocalData(Input& fr);
-        virtual bool writeLocalData(Output& fw);
-
-        char* _fileName;
+        std::string _fileName;
         int _s, _t, _r;
         int _internalFormat;
         unsigned int _pixelFormat;
@@ -80,18 +83,21 @@ class SG_EXPORT Image : public Object
         unsigned int _packing;
         unsigned char *_data;
 
+        unsigned int _modifiedTag;
 };
 
 class Geode;
 
-/** Convinience function to be used by images loaders to generate a valid geode  to return for readNode().  
-  * Use the images s and t values scale the dimensions of the image.
-  */
+/** Convenience function to be used by images loaders to generate a valid geode
+ * to return for readNode().  
+ * Use the images s and t values scale the dimensions of the image.
+ */
 SG_EXPORT extern Geode* createGeodeForImage(Image* image);
-/** Convinience function to be used by images loaders to generate a valid geode  to return for readNode().  
-  * Use the specified s and t values scale the dimensions of the image.
-  */
-SG_EXPORT extern Geode* createGeodeForImage(Image* image,float s,float t);
+/** Convenience function to be used by images loaders to generate a valid geode
+ * to return for readNode().  
+ * Use the specified s and t values scale the dimensions of the image.
+ */
+SG_EXPORT extern Geode* createGeodeForImage(Image* image,const float s,const float t);
 
 };
 

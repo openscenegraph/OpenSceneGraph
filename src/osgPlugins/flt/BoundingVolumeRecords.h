@@ -21,7 +21,7 @@ namespace flt {
 
 typedef struct BoundingBoxTag
 {
-	SRecHeader	RecHeader;
+    SRecHeader    RecHeader;
 #if 0
 Int 4 Reserved
 Double 8 x coordinate of lowest corner
@@ -65,7 +65,7 @@ class BoundingBoxRecord : public AncillaryRecord
 
 typedef struct BoundingSphereTag
 {
-	SRecHeader	RecHeader;
+    SRecHeader    RecHeader;
 #if 0
 Unsigned Int 2 Length of the record
 Int 4 Reserved
@@ -105,7 +105,7 @@ class BoundingSphereRecord : public AncillaryRecord
 
 typedef struct BoundingCylinderTag
 {
-	SRecHeader	RecHeader;
+    SRecHeader    RecHeader;
 #if 0
 Int 4 Reserved
 Double 8 Radius of the cylinder base
@@ -144,7 +144,7 @@ class BoundingCylinderRecord : public AncillaryRecord
 
 typedef struct BoundingVolumeCenterTag
 {
-	SRecHeader	RecHeader;
+    SRecHeader    RecHeader;
 #if 0
 Int 4 Reserved
 Double 8 x coordinate of center
@@ -184,7 +184,7 @@ class BoundingVolumeCenterRecord : public AncillaryRecord
 
 typedef struct BoundingVolumeOrientationTag
 {
-	SRecHeader	RecHeader;
+    SRecHeader    RecHeader;
 #if 0
 Int 2 Bounding Volume Orientation Opcode 109
 Unsigned Int 2 Length of the record

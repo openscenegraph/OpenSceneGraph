@@ -22,9 +22,6 @@ using namespace std;
 
 using namespace flt;
 
-
-
-
 FileInput::FileInput()
 {
     _init();
@@ -63,7 +60,6 @@ bool FileInput::eof()
 }
 
 
-
 bool FileInput::open(const std::string& fileName)
 {
     _file=::fopen( fileName.c_str(), "rb");
@@ -99,12 +95,13 @@ bool FileInput::_readHeader(SRecHeader* pHdr)
 {
     int nItemsRead;
 
-    _lRecOffset = ::ftell( _file );     // Save file position for rewind operation
+                                 // Save file position for rewind operation
+    _lRecOffset = ::ftell( _file );
 
     // Read record header (4 bytes)
     nItemsRead = _read(pHdr, sizeof(SRecHeader));
     if (nItemsRead != 1)
-		return false;
+        return false;
 
     if (isLittleEndianMachine())
         pHdr->endian();
@@ -112,22 +109,22 @@ bool FileInput::_readHeader(SRecHeader* pHdr)
     if ((unsigned)pHdr->length() < sizeof(SRecHeader))
         return false;
 
-	return true;
+    return true;
 }
 
 
 bool FileInput::_readBody(SRecHeader* pData)
 {
-	// Read record body
+    // Read record body
     int nBodySize = pData->length() - sizeof(SRecHeader);
     if (nBodySize > 0)
     {
         int nItemsRead = _read(pData+1, nBodySize);
-	    if (nItemsRead != 1)
-		    return false;
+        if (nItemsRead != 1)
+            return false;
     }
 
-	return true;
+    return true;
 }
 
 
@@ -139,7 +136,9 @@ SRecHeader* FileInput::readRecord()
     if (!_readHeader(&hdr))
         return NULL;
 
-	// Allocate buffer for record (including header)
+    // Allocate buffer for record (including header)
+    // This buffer is extended later in Record::cloneRecord()
+    // if defined struct is bigger than read.
     pData = (SRecHeader*)::malloc(hdr.length());
     if (pData == NULL)
         return NULL;
@@ -186,17 +185,15 @@ Record* Input::readCreateRecord()
         return NULL;
     }
 
-#if 0
-    osg::notify(osg::INFO) << "class=" << pRec->className();
-    osg::notify(osg::INFO) << " op=" << pRec->getOpcode();
-    osg::notify(osg::INFO) << " name=" << pRec->getName();
-    osg::notify(osg::INFO) << " offset=" << offset() << endl;
-#endif
+    #if 0
+    osg::notify(osg::ALWAYS) << "class=" << pRec->className();
+    osg::notify(osg::ALWAYS) << " op=" << pRec->getOpcode();
+    osg::notify(osg::ALWAYS) << " name=" << pRec->getName();
+    osg::notify(osg::ALWAYS) << " offset=" << offset() << endl;
+    #endif
 
-    if (isLittleEndianMachine())    // From Intel with love  :-(
+    if (isLittleEndianMachine()) // From Intel with love  :-(
         pRec->endian();
 
     return pRec;
 }
-
-

@@ -18,16 +18,21 @@ using namespace std;
 
 namespace flt {
 
+#define V_HARD_EDGE_BIT         BIT15
+#define V_NORMAL_FROZEN_BIT     BIT14
+#define V_NO_COLOR_BIT          BIT13
+#define V_PACKED_COLOR_BIT      BIT12
+
 ////////////////////////////////////////////////////////////////////
 //
 //                    VertexPaletteRecord
 //
 ////////////////////////////////////////////////////////////////////
 
-typedef struct VertexTableHeaderTag	//Vertex Palette Header record
+typedef struct VertexTableHeaderTag    //Vertex Palette Header record
 {
-	SRecHeader	RecHeader;
-	int32	diVertexTableLength;	//Length of this record plus pool
+    SRecHeader    RecHeader;
+    int32    diVertexTableLength;    //Length of this record plus pool
 } SVertexTableHeader;
 
 
@@ -43,7 +48,7 @@ class VertexPaletteRecord : public AncillaryRecord
         virtual int sizeofData() const { return sizeof(SVertexTableHeader); }
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
-    	friend ostream& operator << (ostream& output, const VertexPaletteRecord& rec);
+        friend ostream& operator << (ostream& output, const VertexPaletteRecord& rec);
 
     protected:
         virtual ~VertexPaletteRecord();
@@ -58,19 +63,19 @@ class VertexPaletteRecord : public AncillaryRecord
 //
 ////////////////////////////////////////////////////////////////////
 
-typedef struct VertexTag		// Vertex with Color Record Format
+typedef struct VertexTag        // Vertex with Color Record Format
 {
-	SRecHeader	RecHeader;
-	uint16	swColor;			// Color Name Index
-	uint16	swFlags;			// Flags (bits, from left to right)
-								// 0 = Start Hard Edge
-								// 1 = Normal frozen
-								// 2 = no Vertex Color
-								// 3 = Packed Color
-								// 4-15 Spare
-	float64x3	Coord;		    // x,y,z coordinate
-	color32     PackedColor;	// Packed color (A, B, G, R)
-	uint32	    dwVertexColorIndex;
+    SRecHeader    RecHeader;
+    uint16    swColor;            // Color Name Index
+    uint16    swFlags;            // Flags (bits, from left to right)
+                                // 0 = Start Hard Edge
+                                // 1 = Normal frozen
+                                // 2 = no Vertex Color
+                                // 3 = Packed Color
+                                // 4-15 Spare
+    float64x3    Coord;            // x,y,z coordinate
+    color32     PackedColor;    // Packed color (A, B, G, R)
+    uint32        dwVertexColorIndex;
 } SVertex;
 
 
@@ -85,7 +90,7 @@ class VertexRecord : public AncillaryRecord
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
         virtual SVertex* getData() const { return (SVertex*)_pData; }
-    	friend ostream& operator << (ostream& output, const VertexRecord& rec);
+        friend ostream& operator << (ostream& output, const VertexRecord& rec);
 
     protected:
         virtual ~VertexRecord();
@@ -101,20 +106,20 @@ class VertexRecord : public AncillaryRecord
 ////////////////////////////////////////////////////////////////////
 
 
-typedef struct NormalVertexTag			// Vertex with Normal Record Format
+typedef struct NormalVertexTag            // Vertex with Normal Record Format
 {
-	SRecHeader	RecHeader;
-	uint16	    swColor;			// Color Name Index
-	uint16	    swFlags;			// Flags (bits, from left to right)
-									// 0 = Start Hard Edge
-									// 1 = Normal frozen
-									// 2 = no Vertex Color
-									// 3 = Packed Color
-									// 4-15 Spare
-	float64x3	Coord;			    // x,y,z coordinate
-	float32x3	Normal;	            // Vertex normal
-	color32     PackedColor;	    // Packed color (A, B, G, R)
-	uint32	    dwVertexColorIndex;
+    SRecHeader    RecHeader;
+    uint16        swColor;            // Color Name Index
+    uint16        swFlags;            // Flags (bits, from left to right)
+                                    // 0 = Start Hard Edge
+                                    // 1 = Normal frozen
+                                    // 2 = no Vertex Color
+                                    // 3 = Packed Color
+                                    // 4-15 Spare
+    float64x3    Coord;                // x,y,z coordinate
+    float32x3    Normal;                // Vertex normal
+    color32     PackedColor;        // Packed color (A, B, G, R)
+    uint32        dwVertexColorIndex;
 } SNormalVertex;
 
 
@@ -129,7 +134,7 @@ class NormalVertexRecord : public AncillaryRecord
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
         virtual SNormalVertex* getData() const { return (SNormalVertex*)_pData; }
-    	friend ostream& operator << (ostream& output, const NormalVertexRecord& rec);
+        friend ostream& operator << (ostream& output, const NormalVertexRecord& rec);
 
     protected:
         virtual ~NormalVertexRecord();
@@ -144,20 +149,20 @@ class NormalVertexRecord : public AncillaryRecord
 //
 ////////////////////////////////////////////////////////////////////
 
-typedef struct TextureVertexTag	// Vertex with Texture Record Format
+typedef struct TextureVertexTag    // Vertex with Texture Record Format
 {
-	SRecHeader	RecHeader;
-	uint16	    swColor;		// Color Name Index
-	uint16	    swFlags;		// Flags (bits, from left to right)
-								// 0 = Start Hard Edge
-								// 1 = Normal frozen
-								// 2 = no Vertex Color
-								// 3 = Packed Color
-								// 4-15 Spare
-	float64x3	Coord;		    // x,y,z coordinate
-	float32x2	Texture;        // Texture (u,v)
-	color32     PackedColor;    // Packed color (A, B, G, R)
-	uint32      dwVertexColorIndex;
+    SRecHeader    RecHeader;
+    uint16        swColor;        // Color Name Index
+    uint16        swFlags;        // Flags (bits, from left to right)
+                                // 0 = Start Hard Edge
+                                // 1 = Normal frozen
+                                // 2 = no Vertex Color
+                                // 3 = Packed Color
+                                // 4-15 Spare
+    float64x3    Coord;            // x,y,z coordinate
+    float32x2    Texture;        // Texture (u,v)
+    color32     PackedColor;    // Packed color (A, B, G, R)
+    uint32      dwVertexColorIndex;
 } STextureVertex;
 
 
@@ -172,7 +177,7 @@ class TextureVertexRecord : public AncillaryRecord
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
         virtual STextureVertex* getData() const { return (STextureVertex*)_pData; }
-    	friend ostream& operator << (ostream& output, const TextureVertexRecord& rec);
+        friend ostream& operator << (ostream& output, const TextureVertexRecord& rec);
 
     protected:
         virtual ~TextureVertexRecord();
@@ -187,21 +192,21 @@ class TextureVertexRecord : public AncillaryRecord
 //
 ////////////////////////////////////////////////////////////////////
 
-typedef struct NormalTextureVertexTag	//Vertex with Normal and Texture Format
+typedef struct NormalTextureVertexTag    //Vertex with Normal and Texture Format
 {
-	SRecHeader	RecHeader;
-	uint16	    swColor;		// Color Name Index
-	uint16	    swFlags;		// Flags (bits, from left to right)
-								// 0 = Start Hard Edge
-								// 1 = Normal frozen
-								// 2 = no Vertex Color
-								// 3 = Packed Color
-								// 4-15 Spare
-	float64x3   Coord;          // x,y,z coordinate
-	float32x3   Normal;	        // Vertex normal
-	float32x2   Texture;        // Texture (u,v)
-	color32	    PackedColor;	// Packed color (A, B, G, R)
-	uint32	    dwVertexColorIndex;
+    SRecHeader    RecHeader;
+    uint16        swColor;        // Color Name Index
+    uint16        swFlags;        // Flags (bits, from left to right)
+                                // 0 = Start Hard Edge
+                                // 1 = Normal frozen
+                                // 2 = no Vertex Color
+                                // 3 = Packed Color
+                                // 4-15 Spare
+    float64x3   Coord;          // x,y,z coordinate
+    float32x3   Normal;            // Vertex normal
+    float32x2   Texture;        // Texture (u,v)
+    color32        PackedColor;    // Packed color (A, B, G, R)
+    uint32        dwVertexColorIndex;
 } SNormalTextureVertex;
 
 
@@ -216,7 +221,7 @@ class NormalTextureVertexRecord : public AncillaryRecord
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
         virtual SNormalTextureVertex* getData() const { return (SNormalTextureVertex*)_pData; }
-    	friend ostream& operator << (ostream& output, const NormalTextureVertexRecord& rec);
+        friend ostream& operator << (ostream& output, const NormalTextureVertexRecord& rec);
 
     protected:
         virtual ~NormalTextureVertexRecord();

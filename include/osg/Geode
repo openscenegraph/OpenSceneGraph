@@ -1,70 +1,69 @@
 #ifndef OSG_GEODE
 #define OSG_GEODE 1
 
-#include <osg/OSG>
-
 #include <osg/Node>
-#include <osg/GeoSet>
 #include <osg/NodeVisitor>
-
-#include <vector>
+#include <osg/Drawable>
 
 namespace osg {
 
-/** Leaf Node for grouping GeoSets.*/
+/** Leaf Node for grouping Drawables.*/
 class SG_EXPORT Geode : public Node
 {
     public:
 
-        typedef std::vector< ref_ptr<GeoSet> > GeoSetList;
+        typedef std::vector< ref_ptr<Drawable> > DrawableList;
 
         Geode();
 
         virtual Object* clone() const { return new Geode(); }
-        virtual bool isSameKindAs(Object* obj) { return dynamic_cast<Geode*>(obj)!=NULL; }
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Geode*>(obj)!=NULL; }
         virtual const char* className() const { return "Geode"; }
         virtual void accept(NodeVisitor& nv) { nv.apply(*this); }
 
-        /** Add GeoSet to Geode.
+        /** Add Drawable to Geode.
          *  If gset is not NULL and is not contained in Geode then increment its  
-         *  reference count, add it to the geosets list and dirty the bounding 
+         *  reference count, add it to the drawables list and dirty the bounding 
          *  sphere to force it to recompute on next getBound() and return true for success.
          *  Otherwise return false.
          */
-        virtual bool addGeoSet( GeoSet *gset );
+        virtual const bool addDrawable( Drawable *drawable );
 
-        /** Remove GeoSet from Geode.
+        /** Remove Drawable from Geode.
          *  If gset is contained in Geode then remove it from the geoset
          *  list and decrement its reference count, and dirty the 
          *  bounding sphere to force it to recompute on next getBound() and
          *  return true for success.  If gset is not found then return false
          *  and do not change the reference count of gset.
          */
-        virtual bool removeGeoSet( GeoSet *gset );
+        virtual const bool removeDrawable( Drawable *drawable );
 
-        /** Replace specified GeoSet with another GeoSet.
+        /** Replace specified Drawable with another Drawable.
          *  Decrement the reference count origGSet and increments the
          *  reference count of newGset, and dirty the bounding sphere
          *  to force it to recompute on next getBound() and returns true.
-         *  If origGeoSet is not found then return false and do not 
+         *  If origDrawable is not found then return false and do not 
          *  add newGset.  If newGset is NULL then return false and do
          *  not remove origGset.
          */
-        virtual bool replaceGeoSet( GeoSet *origGset, GeoSet *newGset );
+        virtual const bool replaceDrawable( Drawable *origDraw, Drawable *newDraw );
 
 
         /** return the number of geoset's.*/
-        int getNumGeosets( void ) const { return _geosets.size(); }
+        inline const int getNumDrawables() const { return _drawables.size(); }
 
         /** return geoset at position i.*/
-        GeoSet* getGeoSet( int i ) { return _geosets[i].get(); }
+        inline Drawable* getDrawable( const int i ) { return _drawables[i].get(); }
+
+        /** return geoset at position i.*/
+        inline const Drawable* getDrawable( const int i ) const { return _drawables[i].get(); }
 
         /** return true is geoset is contained within Geode.*/
-        bool containsGeoSet( GeoSet* gset)
+        inline const bool containsDrawable(const Drawable* gset) const
         {
             
-            for (GeoSetList::iterator itr=_geosets.begin();
-                 itr!=_geosets.end();
+            for (DrawableList::const_iterator itr=_drawables.begin();
+                 itr!=_drawables.end();
                  ++itr)
             {
                 if (itr->get()==gset) return true;
@@ -72,34 +71,46 @@ class SG_EXPORT Geode : public Node
             return false;
         }
 
-        /** return the iterator postion for specified GeoSet.
+        /** return the iterator postion for specified Drawable.
          *  return _geoset.end() if gset not is contained in Geode.
          */
-        GeoSetList::iterator findGeoSet( GeoSet* gset)
+        inline DrawableList::iterator findDrawable(const Drawable* gset)
         {
             
-            for (GeoSetList::iterator itr=_geosets.begin();
-                 itr!=_geosets.end();
+            for (DrawableList::iterator itr=_drawables.begin();
+                 itr!=_drawables.end();
                  ++itr)
             {
                 if (itr->get()==gset) return itr;
             }
-            return _geosets.end();
+            return _drawables.end();
+        }
+
+        /** return the const_iterator postion for specified Drawable.
+         *  return _geoset.end() if gset not is contained in Geode.
+         */
+        inline DrawableList::const_iterator findDrawable(const Drawable* gset) const
+        {
+            
+            for (DrawableList::const_iterator itr=_drawables.begin();
+                 itr!=_drawables.end();
+                 ++itr)
+            {
+                if (itr->get()==gset) return itr;
+            }
+            return _drawables.end();
         }
 
         /** complile OpenGL Display List for each geoset.*/
-        void compileGeoSets( void );
+        void compileDrawables(State& state);
 
     protected:
 
         virtual ~Geode();
 
-        virtual bool readLocalData(Input& fr);
-        virtual bool writeLocalData(Output& fw);
+        virtual const bool computeBound() const;
 
-        virtual bool computeBound( void );
-
-        GeoSetList _geosets;
+        DrawableList _drawables;
 
 };
 

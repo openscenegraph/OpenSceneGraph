@@ -1,5 +1,6 @@
-#include "osgUtil/FlightManipulator"
-#include "osg/Notify"
+#include <osgUtil/FlightManipulator>
+#include <osg/Types>
+#include <osg/Notify>
 
 using namespace osg;
 using namespace osgUtil;
@@ -11,127 +12,135 @@ FlightManipulator::FlightManipulator()
     _yawMode = YAW_AUTOMATICALLY_WHEN_BANKED;
 }
 
+
 FlightManipulator::~FlightManipulator()
 {
 }
+
 
 void FlightManipulator::setNode(osg::Node* node)
 {
     _node = node;
     if (_node.get())
     {
-	const osg::BoundingSphere& boundingSphere=_node->getBound();
+        const osg::BoundingSphere& boundingSphere=_node->getBound();
         _modelScale = boundingSphere._radius;
     }
 }
 
-osg::Node* FlightManipulator::getNode() const
+
+const osg::Node* FlightManipulator::getNode() const
 {
     return _node.get();
 }
 
-void FlightManipulator::home(GUIEventAdapter& ea,GUIActionAdapter& us)
+
+void FlightManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
 {
     if(_node.get() && _camera.get())
     {
 
-	const osg::BoundingSphere& boundingSphere=_node->getBound();
+        const osg::BoundingSphere& boundingSphere=_node->getBound();
 
-        _camera->setView(boundingSphere._center+osg::Vec3( 0.0,-2.0f * boundingSphere._radius,0.0f),	// eye
-                         boundingSphere._center,                                // look
-                         osg::Vec3(0.0f,0.0f,1.0f));	                        // up
-                         
+        _camera->setLookAt(
+            boundingSphere._center+osg::Vec3( 0.0,-2.0f * boundingSphere._radius,0.0f),
+            boundingSphere._center,
+            osg::Vec3(0.0f,0.0f,1.0f));
+
         _velocity = 0.0f;
 
-        us.needRedraw();
+        us.requestRedraw();
 
-        us.needWarpPointer((ea.getXmin()+ea.getXmax())/2,(ea.getYmin()+ea.getYmax())/2);
+        us.requestWarpPointer((ea.getXmin()+ea.getXmax())/2,(ea.getYmin()+ea.getYmax())/2);
 
         flushMouseEventStack();
 
     }
-    
+
 }
 
-void FlightManipulator::init(GUIEventAdapter& ea,GUIActionAdapter& us)
+
+void FlightManipulator::init(const GUIEventAdapter& ea,GUIActionAdapter& us)
 {
     flushMouseEventStack();
 
-    us.needContinuousUpdate(false);
+    us.requestContinuousUpdate(false);
 
     _velocity = 0.0f;
 
-    us.needWarpPointer((ea.getXmin()+ea.getXmax())/2,(ea.getYmin()+ea.getYmax())/2);
+    us.requestWarpPointer((ea.getXmin()+ea.getXmax())/2,(ea.getYmin()+ea.getYmax())/2);
 
 }
 
-bool FlightManipulator::update(GUIEventAdapter& ea,GUIActionAdapter& us)
+
+bool FlightManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
 {
     if(!_camera.get()) return false;
-    
+
     switch(ea.getEventType())
     {
-    case(GUIEventAdapter::PUSH):
+        case(GUIEventAdapter::PUSH):
         {
-            
+
             addMouseEvent(ea);
-            us.needContinuousUpdate(true);
-            if (calcMovement()) us.needRedraw();
+            us.requestContinuousUpdate(true);
+            if (calcMovement()) us.requestRedraw();
 
         }
         return true;
-    case(GUIEventAdapter::RELEASE):
+        case(GUIEventAdapter::RELEASE):
         {
-            
+
             addMouseEvent(ea);
-            us.needContinuousUpdate(true);
-            if (calcMovement()) us.needRedraw();
+            us.requestContinuousUpdate(true);
+            if (calcMovement()) us.requestRedraw();
 
         }
         return true;
-    case(GUIEventAdapter::DRAG):
+        case(GUIEventAdapter::DRAG):
         {
-            
+
             addMouseEvent(ea);
-            us.needContinuousUpdate(true);
-            if (calcMovement()) us.needRedraw();
+            us.requestContinuousUpdate(true);
+            if (calcMovement()) us.requestRedraw();
 
         }
         return true;
-    case(GUIEventAdapter::MOVE):
+        case(GUIEventAdapter::MOVE):
         {
-            
+
             addMouseEvent(ea);
-            us.needContinuousUpdate(true);
-            if (calcMovement()) us.needRedraw();
+            us.requestContinuousUpdate(true);
+            if (calcMovement()) us.requestRedraw();
 
         }
         return true;
 
-    case(GUIEventAdapter::KEYBOARD):
-        if (ea.getKey()==' ') 
-        {
-            flushMouseEventStack();
-            home(ea,us);
-            us.needRedraw();
-            us.needContinuousUpdate(false);
+        case(GUIEventAdapter::KEYBOARD):
+            if (ea.getKey()==' ')
+            {
+                flushMouseEventStack();
+                home(ea,us);
+                us.requestRedraw();
+                us.requestContinuousUpdate(false);
+                return true;
+            }
+            return false;
+        case(GUIEventAdapter::FRAME):
+            addMouseEvent(ea);
+            if (calcMovement()) us.requestRedraw();
             return true;
-        }
-        return false;
-    case(GUIEventAdapter::FRAME):
-        addMouseEvent(ea);
-        if (calcMovement()) us.needRedraw();
-        return true;
-    case(GUIEventAdapter::RESIZE):
+        case(GUIEventAdapter::RESIZE):
         {
             init(ea,us);
-            us.needRedraw();
+            us.requestRedraw();
         }
         return true;
-    default:
-        return false;
+        default:
+            return false;
     }
 }
+
 
 void FlightManipulator::flushMouseEventStack()
 {
@@ -139,11 +148,13 @@ void FlightManipulator::flushMouseEventStack()
     _ga_t0 = NULL;
 }
 
-void FlightManipulator::addMouseEvent(GUIEventAdapter& ea)
+
+void FlightManipulator::addMouseEvent(const GUIEventAdapter& ea)
 {
     _ga_t1 = _ga_t0;
     _ga_t0 = &ea;
 }
+
 
 bool FlightManipulator::calcMovement()
 {
@@ -152,11 +163,10 @@ bool FlightManipulator::calcMovement()
 
     float dt = _ga_t0->time()-_ga_t1->time();
 
-
     if (dt<0.0f)
     {
-	    notify(WARN) << "warning dt = "<<dt<<endl;
-	    dt = 0.0f;
+        notify(WARN) << "warning dt = "<<dt<<endl;
+        dt = 0.0f;
     }
 
     unsigned int buttonMask = _ga_t1->getButtonMask();
@@ -167,8 +177,8 @@ bool FlightManipulator::calcMovement()
         _velocity += dt*_modelScale*0.05f;
 
     }
-    else if (buttonMask==GUIEventAdapter::MIDDLE_BUTTON || 
-             buttonMask==(GUIEventAdapter::LEFT_BUTTON|GUIEventAdapter::RIGHT_BUTTON))
+    else if (buttonMask==GUIEventAdapter::MIDDLE_BUTTON ||
+        buttonMask==(GUIEventAdapter::LEFT_BUTTON|GUIEventAdapter::RIGHT_BUTTON))
     {
 
         _velocity = 0.0f;
@@ -180,7 +190,7 @@ bool FlightManipulator::calcMovement()
         _velocity -= dt*_modelScale*0.05f;
 
     }
-    
+
     float mx = (_ga_t0->getXmin()+_ga_t0->getXmax())/2.0f;
     float my = (_ga_t0->getYmin()+_ga_t0->getYmax())/2.0f;
 
@@ -206,12 +216,11 @@ bool FlightManipulator::calcMovement()
     }
     mat.postTrans(center.x(),center.y(),center.z());
 
-
     lv *= (_velocity*dt);
 
     mat.postTrans(lv.x(),lv.y(),lv.z());
 
-    _camera->mult(*_camera,mat);
+    _camera->transformLookAt(mat);
 
     return true;
 }

@@ -1,51 +1,72 @@
 #ifndef OSG_TEXGEN
 #define OSG_TEXGEN 1
 
-#include <osg/Export>
-#include <osg/GL>
-#include <osg/OSG>
-#include <osg/Object>
+#include <osg/Vec4>
+#include <osg/StateAttribute>
+#include <osg/StateSet>
 
 namespace osg {
 
-
-class Input;
-class Output;
-
-class SG_EXPORT TexGen : public Object
+/** TexGen - encapsulates the OpenGL glTexGen (texture coordinate generation) state.*/
+class SG_EXPORT TexGen : public StateAttribute
 {
     public :
     
-        enum TexGenMode {
+        TexGen( void );
+        virtual Object* clone() const { return new TexGen(); }
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const TexGen*>(obj)!=NULL; }
+        virtual const char* className() const { return "TexGen"; }
+        
+        virtual const Type getType() const { return TEXGEN; }
+        
+        virtual void setStateSetModes(StateSet& ds,const GLModeValue value) const
+        {
+            ds.setMode(GL_TEXTURE_GEN_S,value);
+            ds.setMode(GL_TEXTURE_GEN_T,value);
+
+            // Not happy with turning all tex gen paramters on
+            // as the OSG currently only supports 2D textures and therefore
+            // only S and T will only be required, R&Q would be redundent...
+            // So commenting out the following until OSG supports 3D texures.
+            // I plan to revamp the OpenGL state management later so will
+            // tidy up then.  Robert Osfield. Jan 2001.
+            
+            // The tidy up is now happening, but wiil have a think before
+            // resolving the below parameters.
+
+            // ds.setMode(GL_TEXTURE_GEN_R,value);
+            // ds.setMode(GL_TEXTURE_GEN_Q,value);
+            
+        }
+
+        virtual void apply(State& state) const;
+
+        enum Mode {
             OBJECT_LINEAR = GL_OBJECT_LINEAR,
             EYE_LINEAR    = GL_EYE_LINEAR,
             SPHERE_MAP    = GL_SPHERE_MAP
         };
 
-        TexGen( void );
-        static TexGen* instance();
-        virtual Object* clone() const { return new TexGen(); }
-        virtual bool isSameKindAs(Object* obj) { return dynamic_cast<TexGen*>(obj)!=NULL; }
-        virtual const char* className() const { return "TexGen"; }
+        inline void setMode( const Mode mode ) { _mode = mode; }
 
-        static void enable( void );
-        static void disable( void );
-        
-        void apply( void );
+        const Mode getMode() const { return _mode; }
 
-        void setMode( TexGenMode mode ) { _mode = mode; }
+        enum Coord {
+	  S, T, R, Q
+        };
+
+        void setPlane(const Coord which, const Vec4& plane);
+
+        const Vec4& getPlane(const Coord which) const;
 
     protected :
 
         virtual ~TexGen( void );
 
-        virtual bool readLocalData(Input& fr);
-        virtual bool writeLocalData(Output& fw);
+        Mode _mode;
 
-        bool matchModeStr(const char* str,TexGenMode& mode);
-        const char* getModeStr(TexGenMode mode);
-
-        TexGenMode _mode;
+        /// additional texgen coefficents for GL_OBJECT_PLANE or GL_EYE_PLANE,
+        Vec4 _plane_s, _plane_t, _plane_r, _plane_q;
 
 };
 

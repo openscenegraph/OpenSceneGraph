@@ -4,12 +4,10 @@
 #include <osg/Node>
 #include <osg/NodeVisitor>
 
-#include <vector>
-
 namespace osg {
 
 /** General group node which maintains a list of children.
-    Children are reference counted to allow children to be shared
+    Children are reference counted. This allows children to be shared
     with memory management handled automatically via osg::Referenced.
 */
 class SG_EXPORT Group : public Node
@@ -21,7 +19,7 @@ class SG_EXPORT Group : public Node
         Group();
 
         virtual Object* clone() const { return new Group(); }
-        virtual bool isSameKindAs(Object* obj) { return dynamic_cast<Group*>(obj)!=NULL; }
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Group*>(obj)!=NULL; }
         virtual const char* className() const { return "Group"; }
         virtual void accept(NodeVisitor& nv) { nv.apply(*this); }
         
@@ -31,7 +29,7 @@ class SG_EXPORT Group : public Node
          *  If node is not NULL and is not contained in Group then increment its  
          *  reference count, add it to the child list and dirty the bounding 
          *  sphere to force it to recompute on next getBound() and return true for success.
-         *  Otherwise return false.
+         *  Otherwise return false. Scene nodes can't be added as child nodes.
          */
         virtual bool addChild( Node *child );
 
@@ -50,21 +48,24 @@ class SG_EXPORT Group : public Node
          *  to force it to recompute on next getBound() and returns true.
          *  If origNode is not found then return false and do not 
          *  add newNode.  If newNode is NULL then return false and do
-         *  not remove origNode.
+         *  not remove origNode. Also returns false if newChild is a Scene node.
          */
         virtual bool replaceChild( Node *origChild, Node* newChild );
 
         /** return the number of chilren nodes.*/
-        int  getNumChildren( void )       { return _children.size(); }
+        inline const int  getNumChildren() const { return _children.size(); }
 
         /** return child node at position i.*/
-        Node *getChild( int i )     { return _children[i].get(); }
+        inline Node *getChild( const int i ) { return _children[i].get(); }
 
-        /** return true is node is contained within Group.*/
-        bool containsNode( Node* node )
+        /** return child node at position i.*/
+        inline const Node *getChild( const int i ) const { return _children[i].get(); }
+
+        /** return true if node is contained within Group.*/
+        inline bool containsNode( const Node* node ) const
         {
             
-            for (ChildList::iterator itr=_children.begin();
+            for (ChildList::const_iterator itr=_children.begin();
                  itr!=_children.end();
                  ++itr)
             {
@@ -73,13 +74,27 @@ class SG_EXPORT Group : public Node
             return false;
         }
 
+
         /** return the iterator postion for specified Node.
          *  return _chilren.end() if node is not contained in Group.
          */
-        ChildList::iterator findNode( Node* node )
+        inline ChildList::iterator findNode( const Node* node )
         {
-            
             for (ChildList::iterator itr=_children.begin();
+                 itr!=_children.end();
+                 ++itr)
+            {
+                if (itr->get()==node) return itr;
+            }
+            return _children.end();
+        }
+
+        /** return the const_iterator postion for specified Node.
+         *  return _chilren.end() if node is not contained in Group.
+         */
+        inline ChildList::const_iterator findNode( const Node* node ) const
+        {
+            for (ChildList::const_iterator itr=_children.begin();
                  itr!=_children.end();
                  ++itr)
             {
@@ -92,12 +107,10 @@ class SG_EXPORT Group : public Node
 
         virtual ~Group();
 
-        virtual bool readLocalData(Input& fr);
-        virtual bool writeLocalData(Output& fw);
+        virtual const bool computeBound() const;
 
         ChildList _children;
 
-        bool computeBound( void );
 
 };
 

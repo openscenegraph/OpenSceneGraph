@@ -6,16 +6,13 @@
 
 using namespace flt;
 
-
 ////////////////////////////////////////////////////////////////////
 //
 //                       TextureMappingPaletteRecord
 //
 ////////////////////////////////////////////////////////////////////
 
-
 RegisterRecordProxy<TextureMappingPaletteRecord> g_TextureMappingPaletteProxy;
-
 
 TextureMappingPaletteRecord::TextureMappingPaletteRecord()
 {
@@ -31,7 +28,7 @@ TextureMappingPaletteRecord::~TextureMappingPaletteRecord()
 // virtual
 void TextureMappingPaletteRecord::endian()
 {
-	STextureMapping *pSMapping = (STextureMapping*)getData();
+    STextureMapping *pSMapping = (STextureMapping*)getData();
 
     if (pSMapping)
     {
@@ -48,8 +45,3 @@ void TextureMappingPaletteRecord::endian()
         }
     }
 }
-
-
-
-
-

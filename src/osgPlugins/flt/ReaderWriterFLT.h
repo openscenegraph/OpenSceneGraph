@@ -34,25 +34,25 @@
 
 #include <string>
 
-#include <osg/Registry>
 #include <osg/Object>
 #include <osg/Node>
 
-#include "export.h"
+#include <osgDB/Registry>
+#include <osgDB/FileNameUtils>
 
 
 namespace flt {
 
 
-class FLT_EXPORT ReaderWriterFLT : public osg::ReaderWriter
+class ReaderWriterFLT : public osgDB::ReaderWriter
 {
 public:
 
     virtual const char* className() { return "FLT Reader/Writer"; }
-    virtual bool acceptsExtension(const std::string& extension) { return extension=="flt"; }
-
-    virtual bool writeObject(osg::Object& obj,const std::string& fileName) { return false; }
-    virtual bool writeNode(osg::Node& node,const std::string& fileName) { return false; }
+    virtual bool acceptsExtension(const std::string& extension)
+    {
+        return osgDB::equalCaseInsensitive(extension,"flt");
+    }
 
     virtual osg::Object* readObject(const std::string& fileName);
     virtual osg::Node* readNode(const std::string& fileName);

@@ -1,11 +1,9 @@
 #include "osg/Material"
-#include "osg/Input"
-#include "osg/Output"
-#include "osg/Notify"
+#include "osg/BoundsChecking"
 
 using namespace osg;
 
-Material::Material( void )
+Material::Material()
 {
     _colorMode = OFF;
 
@@ -31,467 +29,309 @@ Material::Material( void )
 }
 
 
-Material::~Material( void )
+Material::~Material()
 {
 }
 
 
-Material* Material::instance()
+void Material::setAmbient( const Face face, const Vec4& ambient )
 {
-    static ref_ptr<Material> s_Material(new Material);
-    return s_Material.get();
-}
-
-void Material::setAmbient( MaterialFace face, const Vec4& ambient )
-{
-    switch(face) {
-    case(FACE_FRONT):
-        _ambientFrontAndBack = false;
-        _ambientFront = ambient;
-        break;    
-    case(FACE_BACK):
-        _ambientFrontAndBack = false;
-        _ambientBack = ambient;
-        break;
-    case(FACE_FRONT_AND_BACK):
-        _ambientFrontAndBack = true;
-        _ambientFront = ambient;
-        _ambientBack = ambient;
-        break;
-    default:
-        notify(NOTICE)<<"Notice: invalid MaterialFace passed to Material::setAmbient()."<<endl;
+    switch(face)
+    {
+        case(FRONT):
+            _ambientFrontAndBack = false;
+            _ambientFront = ambient;
+            clampArray4BetweenRange(_ambientFront,0.0f,1.0f,"osg::Material::setAmbient(..)");
+            break;
+        case(BACK):
+            _ambientFrontAndBack = false;
+            _ambientBack = ambient;
+            clampArray4BetweenRange(_ambientBack,0.0f,1.0f,"Material::setAmbient(..)");
+            break;
+        case(FRONT_AND_BACK):
+            _ambientFrontAndBack = true;
+            _ambientFront = ambient;
+            clampArray4BetweenRange(_ambientFront,0.0f,1.0f,"Material::setAmbient(..)");
+            _ambientBack = _ambientFront;
+            break;
+        default:
+            notify(NOTICE)<<"Notice: invalid Face passed to Material::setAmbient()."<<endl;
     }
 }
 
-const Vec4& Material::getAmbient(MaterialFace face) const
+
+const Vec4& Material::getAmbient(const Face face) const
 {
-    switch(face) {
-    case(FACE_FRONT):
-        return _ambientFront;
-    case(FACE_BACK):
-        return _ambientBack;
-    case(FACE_FRONT_AND_BACK):
-        if (!_ambientFrontAndBack)
-        {
-             notify(NOTICE)<<"Notice: Material::getAmbient(FRONT_AND_BACK) called on material "<<endl;
-             notify(NOTICE)<<"        with seperate FRONT and BACK ambient colors."<<endl;
-        }
-        return _ambientFront;
+    switch(face)
+    {
+        case(FRONT):
+            return _ambientFront;
+        case(BACK):
+            return _ambientBack;
+        case(FRONT_AND_BACK):
+            if (!_ambientFrontAndBack)
+            {
+                notify(NOTICE)<<"Notice: Material::getAmbient(FRONT_AND_BACK) called on material "<<endl;
+                notify(NOTICE)<<"        with seperate FRONT and BACK ambient colors."<<endl;
+            }
+            return _ambientFront;
     }
-    notify(NOTICE)<<"Notice: invalid MaterialFace passed to Material::getAmbient()."<<endl;
+    notify(NOTICE)<<"Notice: invalid Face passed to Material::getAmbient()."<<endl;
     return _ambientFront;
 }
 
-void Material::setDiffuse( MaterialFace face, const Vec4& diffuse )
+
+void Material::setDiffuse( const Face face, const Vec4& diffuse )
 {
-    switch(face) {
-    case(FACE_FRONT):
-        _diffuseFrontAndBack = false;
-        _diffuseFront = diffuse;
-        break;    
-    case(FACE_BACK):
-        _diffuseFrontAndBack = false;
-        _diffuseBack = diffuse;
-        break;
-    case(FACE_FRONT_AND_BACK):
-        _diffuseFrontAndBack = true;
-        _diffuseFront = diffuse;
-        _diffuseBack = diffuse;
-        break;
-    default:
-        notify(NOTICE)<<"Notice: invalid MaterialFace passed to Material::setDiffuse()."<<endl;
-        break;
+    switch(face)
+    {
+        case(FRONT):
+            _diffuseFrontAndBack = false;
+            _diffuseFront = diffuse;
+            clampArray4BetweenRange(_diffuseFront,0.0f,1.0f,"Material::setDiffuse(..)");
+            break;
+        case(BACK):
+            _diffuseFrontAndBack = false;
+            _diffuseBack = diffuse;
+            clampArray4BetweenRange(_diffuseBack,0.0f,1.0f,"Material::setDiffuse(..)");
+            break;
+        case(FRONT_AND_BACK):
+            _diffuseFrontAndBack = true;
+            _diffuseFront = diffuse;
+            clampArray4BetweenRange(_diffuseFront,0.0f,1.0f,"Material::setDiffuse(..)");
+            _diffuseBack = _diffuseFront;
+            break;
+        default:
+            notify(NOTICE)<<"Notice: invalid Face passed to Material::setDiffuse()."<<endl;
+            break;
     }
 }
 
-const Vec4& Material::getDiffuse(MaterialFace face) const
+
+const Vec4& Material::getDiffuse(const Face face) const
 {
-    switch(face) {
-    case(FACE_FRONT):
-        return _diffuseFront;
-    case(FACE_BACK):
-        return _diffuseBack;
-    case(FACE_FRONT_AND_BACK):
-        if (!_diffuseFrontAndBack)
-        {
-             notify(NOTICE)<<"Notice: Material::getDiffuse(FRONT_AND_BACK) called on material "<<endl;
-             notify(NOTICE)<<"        with seperate FRONT and BACK diffuse colors."<<endl;
-        }
-        return _diffuseFront;
+    switch(face)
+    {
+        case(FRONT):
+            return _diffuseFront;
+        case(BACK):
+            return _diffuseBack;
+        case(FRONT_AND_BACK):
+            if (!_diffuseFrontAndBack)
+            {
+                notify(NOTICE)<<"Notice: Material::getDiffuse(FRONT_AND_BACK) called on material "<<endl;
+                notify(NOTICE)<<"        with seperate FRONT and BACK diffuse colors."<<endl;
+            }
+            return _diffuseFront;
     }
-    notify(NOTICE)<<"Notice: invalid MaterialFace passed to Material::getDiffuse()."<<endl;
+    notify(NOTICE)<<"Notice: invalid Face passed to Material::getDiffuse()."<<endl;
     return _diffuseFront;
 }
 
-void Material::setSpecular( MaterialFace face, const Vec4& specular )
+
+void Material::setSpecular( const Face face, const Vec4& specular )
 {
-    switch(face) {
-    case(FACE_FRONT):
-        _specularFrontAndBack = false;
-        _specularFront = specular;
-        break;    
-    case(FACE_BACK):
-        _specularFrontAndBack = false;
-        _specularBack = specular;
-        break;
-    case(FACE_FRONT_AND_BACK):
-        _specularFrontAndBack = true;
-        _specularFront = specular;
-        _specularBack = specular;
-        break;
-    default:
-        notify(NOTICE)<<"Notice: invalid MaterialFace passed to Material::setSpecular()."<<endl;
-        break;
+    switch(face)
+    {
+        case(FRONT):
+            _specularFrontAndBack = false;
+            _specularFront = specular;
+            clampArray4BetweenRange(_specularFront,0.0f,1.0f,"Material::setSpecular(..)");
+            break;
+        case(BACK):
+            _specularFrontAndBack = false;
+            _specularBack = specular;
+            clampArray4BetweenRange(_specularBack,0.0f,1.0f,"Material::setSpecular(..)");
+            break;
+        case(FRONT_AND_BACK):
+            _specularFrontAndBack = true;
+            _specularFront = specular;
+            clampArray4BetweenRange(_specularFront,0.0f,1.0f,"Material::setSpecular(..)");
+            _specularBack = _specularFront;
+            break;
+        default:
+            notify(NOTICE)<<"Notice: invalid Face passed to Material::setSpecular()."<<endl;
+            break;
     }
 }
 
-const Vec4& Material::getSpecular(MaterialFace face) const
+
+const Vec4& Material::getSpecular(const Face face) const
 {
-    switch(face) {
-    case(FACE_FRONT):
-        return _specularFront;
-    case(FACE_BACK):
-        return _specularBack;
-    case(FACE_FRONT_AND_BACK):
-        if (!_specularFrontAndBack)
-        {
-             notify(NOTICE)<<"Notice: Material::getSpecular(FRONT_AND_BACK) called on material "<<endl;
-             notify(NOTICE)<<"        with seperate FRONT and BACK specular colors."<<endl;
-        }
-        return _specularFront;
+    switch(face)
+    {
+        case(FRONT):
+            return _specularFront;
+        case(BACK):
+            return _specularBack;
+        case(FRONT_AND_BACK):
+            if (!_specularFrontAndBack)
+            {
+                notify(NOTICE)<<"Notice: Material::getSpecular(FRONT_AND_BACK) called on material "<<endl;
+                notify(NOTICE)<<"        with seperate FRONT and BACK specular colors."<<endl;
+            }
+            return _specularFront;
     }
-    notify(NOTICE)<<"Notice: invalid MaterialFace passed to Material::getSpecular()."<<endl;
+    notify(NOTICE)<<"Notice: invalid Face passed to Material::getSpecular()."<<endl;
     return _specularFront;
 }
 
-void Material::setEmission( MaterialFace face, const Vec4& emission )
+
+void Material::setEmission( const Face face, const Vec4& emission )
 {
-    switch(face) {
-    case(FACE_FRONT):
-        _emissionFrontAndBack = false;
-        _emissionFront = emission;
-        break;    
-    case(FACE_BACK):
-        _emissionFrontAndBack = false;
-        _emissionBack = emission;
-        break;
-    case(FACE_FRONT_AND_BACK):
-        _emissionFrontAndBack = true;
-        _emissionFront = emission;
-        _emissionBack = emission;
-        break;
-    default:
-        notify(NOTICE)<<"Notice: invalid MaterialFace passed to Material::setEmission()."<<endl;
-        break;
+    switch(face)
+    {
+        case(FRONT):
+            _emissionFrontAndBack = false;
+            _emissionFront = emission;
+            clampArray4BetweenRange(_emissionFront,0.0f,1.0f,"Material::setEmission(..)");
+            break;
+        case(BACK):
+            _emissionFrontAndBack = false;
+            _emissionBack = emission;
+            clampArray4BetweenRange(_emissionBack,0.0f,1.0f,"Material::setEmission(..)");
+            break;
+        case(FRONT_AND_BACK):
+            _emissionFrontAndBack = true;
+            _emissionFront = emission;
+            clampArray4BetweenRange(_emissionFront,0.0f,1.0f,"Material::setEmission(..)");
+            _emissionBack = _emissionFront;
+            break;
+        default:
+            notify(NOTICE)<<"Notice: invalid Face passed to Material::setEmission()."<<endl;
+            break;
     }
 }
 
-const Vec4& Material::getEmission(MaterialFace face) const
+
+const Vec4& Material::getEmission(const Face face) const
 {
-    switch(face) {
-    case(FACE_FRONT):
-        return _emissionFront;
-    case(FACE_BACK):
-        return _emissionBack;
-    case(FACE_FRONT_AND_BACK):
-        if (!_emissionFrontAndBack)
-        {
-             notify(NOTICE)<<"Notice: Material::getEmission(FRONT_AND_BACK) called on material "<<endl;
-             notify(NOTICE)<<"        with seperate FRONT and BACK emission colors."<<endl;
-        }
-        return _emissionFront;
+    switch(face)
+    {
+        case(FRONT):
+            return _emissionFront;
+        case(BACK):
+            return _emissionBack;
+        case(FRONT_AND_BACK):
+            if (!_emissionFrontAndBack)
+            {
+                notify(NOTICE)<<"Notice: Material::getEmission(FRONT_AND_BACK) called on material "<<endl;
+                notify(NOTICE)<<"        with seperate FRONT and BACK emission colors."<<endl;
+            }
+            return _emissionFront;
     }
-    notify(NOTICE)<<"Notice: invalid MaterialFace passed to Material::getEmission()."<<endl;
+    notify(NOTICE)<<"Notice: invalid Face passed to Material::getEmission()."<<endl;
     return _emissionFront;
 }
 
-void Material::setShininess( MaterialFace face, float shininess )
+
+void Material::setShininess( const Face face, float shininess )
 {
-    switch(face) {
-    case(FACE_FRONT):
-        _shininessFrontAndBack = false;
-        _shininessFront = shininess;
-        break;    
-    case(FACE_BACK):
-        _shininessFrontAndBack = false;
-        _shininessBack = shininess;
-        break;
-    case(FACE_FRONT_AND_BACK):
-        _shininessFrontAndBack = true;
-        _shininessFront = shininess;
-        _shininessBack = shininess;
-        break;
-    default:
-        notify(NOTICE)<<"Notice: invalid MaterialFace passed to Material::setShininess()."<<endl;
-        break;
+    clampBetweenRange(shininess,0.0f,1.0f,"Material::setShininess()");
+    
+    switch(face)
+    {
+        case(FRONT):
+            _shininessFrontAndBack = false;
+            _shininessFront = shininess;
+            break;
+        case(BACK):
+            _shininessFrontAndBack = false;
+            _shininessBack = shininess;
+            break;
+        case(FRONT_AND_BACK):
+            _shininessFrontAndBack = true;
+            _shininessFront = shininess;
+            _shininessBack = shininess;
+            break;
+        default:
+            notify(NOTICE)<<"Notice: invalid Face passed to Material::setShininess()."<<endl;
+            break;
     }
 }
 
-float Material::getShininess(MaterialFace face) const
+
+const float Material::getShininess(const Face face) const
 {
-    switch(face) {
-    case(FACE_FRONT):
-        return _shininessFront;
-    case(FACE_BACK):
-        return _shininessBack;
-    case(FACE_FRONT_AND_BACK):
-        if (!_shininessFrontAndBack)
-        {
-             notify(NOTICE)<<"Notice: Material::getShininess(FRONT_AND_BACK) called on material "<<endl;
-             notify(NOTICE)<<"        with seperate FRONT and BACK shininess colors."<<endl;
-        }
-        return _shininessFront;
+    switch(face)
+    {
+        case(FRONT):
+            return _shininessFront;
+        case(BACK):
+            return _shininessBack;
+        case(FRONT_AND_BACK):
+            if (!_shininessFrontAndBack)
+            {
+                notify(NOTICE)<<"Notice: Material::getShininess(FRONT_AND_BACK) called on material "<<endl;
+                notify(NOTICE)<<"        with seperate FRONT and BACK shininess colors."<<endl;
+            }
+            return _shininessFront;
     }
-    notify(NOTICE)<<"Notice: invalid MaterialFace passed to Material::getShininess()."<<endl;
+    notify(NOTICE)<<"Notice: invalid Face passed to Material::getShininess()."<<endl;
     return _shininessFront;
 }
 
-
-bool Material::matchFaceAndColor(Input& fr,const char* name,MaterialFace& mf,Vec4& color)
+void Material::setTransparency(const Face face,float transparency)
 {
-    bool iteratorAdvanced = false;
+   clampBetweenRange(transparency,0.0f,1.0f,"Material::setTransparency()");
 
-    if (fr[0].matchWord(name))
-    {
-        int fr_inc = 1;
-        if (fr[1].matchWord("FRONT"))
-        {
-            mf = FACE_FRONT;
-            ++fr_inc;
-        }
-        else if (fr[1].matchWord("BACK"))
-        {
-            mf = FACE_BACK;
-            ++fr_inc;
-        }
-
-        if (fr[fr_inc].getFloat(color[0]) && fr[fr_inc+1].getFloat(color[1]) && fr[fr_inc+2].getFloat(color[2]))
-        {
-            fr_inc += 3;
-
-            if (fr[fr_inc].getFloat(color[3])) ++fr_inc;
-            else color[3] = 1.0f;
-
-            fr+=fr_inc;
-
-            iteratorAdvanced = true;
-        }
-    }
-
-    return iteratorAdvanced;
-}
-
-
-bool Material::readLocalData(Input& fr)
-{
-    bool iteratorAdvanced = false;
-
-    Vec4 data(0.0f,  0.0f, 0.0f, 1.0f);
-    MaterialFace mf = FACE_FRONT_AND_BACK;
-
-    if (fr[0].matchWord("ColorMode"))
-    {
-        if (fr[1].matchWord("AMBIENT"))
-        {
-            setColorMode(AMBIENT);
-            fr+=2;
-            iteratorAdvanced = true;
-        }
-        else if (fr[1].matchWord("DIFFUSE"))
-        {
-            setColorMode(DIFFUSE);
-            fr+=2;
-            iteratorAdvanced = true;
-        }
-        else if (fr[1].matchWord("SPECULAR"))
-        {
-            setColorMode(SPECULAR);
-            fr+=2;
-            iteratorAdvanced = true;
-        }
-        else if (fr[1].matchWord("EMISSION"))
-        {
-            setColorMode(EMISSION);
-            fr+=2;
-            iteratorAdvanced = true;
-        }
-        else if (fr[1].matchWord("AMBIENT_AND_DIFFUSE"))
-        {
-            setColorMode(AMBIENT_AND_DIFFUSE);
-            fr+=2;
-            iteratorAdvanced = true;
-        }
-        else if (fr[1].matchWord("OFF"))
-        {
-            setColorMode(OFF);
-            fr+=2;
-            iteratorAdvanced = true;
-        }
-
-    }
-
-
-    if (matchFaceAndColor(fr,"ambientColor",mf,data))
-    {
-        setAmbient(mf,data);
-        iteratorAdvanced = true;
-    }
-
-    if (matchFaceAndColor(fr,"diffuseColor",mf,data))
-    {
-        setDiffuse(mf,data);
-        iteratorAdvanced = true;
-    }
-
-    if (matchFaceAndColor(fr,"specularColor",mf,data))
-    {
-        setSpecular(mf,data);
-        iteratorAdvanced = true;
-    }
-
-    if (matchFaceAndColor(fr,"emissionColor",mf,data))
-    {
-        setEmission(mf,data);
-        iteratorAdvanced = true;
-    }
-
-    if (matchFaceAndColor(fr,"ambientColor",mf,data))
-    {
-        setAmbient(mf,data);
-        iteratorAdvanced = true;
-    }
-
-    float shininess = 0.0f;
-    if (fr[0].matchWord("shininess"))
-    {
-
-        mf = FACE_FRONT_AND_BACK;
-        int fr_inc = 1;
-
-        if (fr[1].matchWord("FRONT"))
-        {
-            mf = FACE_FRONT;
-            ++fr_inc;
-        }
-        else if (fr[1].matchWord("BACK"))
-        {
-            mf = FACE_BACK;
-            ++fr_inc;
-        }
-
-        if (fr[fr_inc].getFloat(shininess))
-        {
-            fr+=(fr_inc+1);
-            setShininess(mf,shininess);
-            iteratorAdvanced = true;
-        }
-
-    }
-
-    float transparency = 0.0f;
-    if (fr[0].matchWord("transparency") && fr[1].getFloat(transparency))
-    {
-
+   if (face==FRONT || face==FRONT_AND_BACK)
+   {
         _ambientFront[3] = 1.0f-transparency;
         _diffuseFront[3] = 1.0f-transparency;
         _specularFront[3] = 1.0f-transparency;
         _emissionFront[3] = 1.0f-transparency;
+    }
 
+    if (face==BACK || face==FRONT_AND_BACK)
+    {
         _ambientBack[3] = 1.0f-transparency;
         _diffuseBack[3] = 1.0f-transparency;
         _specularBack[3] = 1.0f-transparency;
         _emissionBack[3] = 1.0f-transparency;
-
-        fr+=2;
-        iteratorAdvanced = true;
     }
+}        
 
-    return iteratorAdvanced;
-
-}
-
-
-bool Material::writeLocalData(Output& fw)
+void Material::setAlpha(const Face face,float alpha)
 {
-    switch(_colorMode)
-    {
-        case(AMBIENT): fw.indent() << "ColorMode AMBIENT" << endl; break;
-        case(DIFFUSE): fw.indent() << "ColorMode DIFFUSE" << endl; break;
-        case(SPECULAR): fw.indent() << "ColorMode SPECULAR" << endl; break;
-        case(EMISSION): fw.indent() << "ColorMode EMISSION" << endl; break;
-        case(AMBIENT_AND_DIFFUSE): fw.indent() << "ColorMode AMBIENT_AND_DIFFUSE" << endl; break;
-        case(OFF): fw.indent() << "ColorMode OFF" << endl; break;
+   clampBetweenRange(alpha,0.0f,1.0f,"Material::setAlpha()");
+
+   if (face==FRONT || face==FRONT_AND_BACK)
+   {
+        _ambientFront[3] = alpha;
+        _diffuseFront[3] = alpha;
+        _specularFront[3] = alpha;
+        _emissionFront[3] = alpha;
     }
 
-    if (_ambientFrontAndBack)
+    if (face==BACK || face==FRONT_AND_BACK)
     {
-        fw.indent() << "ambientColor " << _ambientFront << endl;
+        _ambientBack[3] = alpha;
+        _diffuseBack[3] = alpha;
+        _specularBack[3] = alpha;
+        _emissionBack[3] = alpha;
     }
-    else
-    {
-        fw.indent() << "ambientColor FRONT " << _ambientFront <<  endl;
-        fw.indent() << "ambientColor BACK  " << _ambientBack  << endl;
-    }
-
-    if (_diffuseFrontAndBack)
-    {
-        fw.indent() << "diffuseColor " << _diffuseFront << endl;
-    }
-    else
-    {
-        fw.indent() << "diffuseColor FRONT " << _diffuseFront <<  endl;
-        fw.indent() << "diffuseColor BACK  " << _diffuseBack  << endl;
-    }
-
-    if (_specularFrontAndBack)
-    {
-        fw.indent() << "specularColor " << _specularFront << endl;
-    }
-    else
-    {
-        fw.indent() << "specularColor FRONT " << _specularFront <<  endl;
-        fw.indent() << "specularColor BACK  " << _specularBack  << endl;
-    }
-
-    if (_emissionFrontAndBack)
-    {
-        fw.indent() << "emissionColor " << _emissionFront << endl;
-    }
-    else
-    {
-        fw.indent() << "emissionColor FRONT " << _emissionFront <<  endl;
-        fw.indent() << "emissionColor BACK  " << _emissionBack  << endl;
-    }
-
-    if (_shininessFrontAndBack)
-    {
-        fw.indent() << "shininess " << _shininessFront << endl;
-    }
-    else
-    {
-        fw.indent() << "shininess FRONT " << _shininessFront <<  endl;
-        fw.indent() << "shininess BACK  " << _shininessBack  << endl;
-    }
-
-    return true;
 }
-void Material::apply( void )
+
+void Material::apply(State&) const
 {
     if (_colorMode==OFF)
     {
         glDisable(GL_COLOR_MATERIAL);
+        glColor4fv(_diffuseFront.ptr());
     }
     else
     {
-        glEnable(GL_COLOR_MATERIAL);  
+        glEnable(GL_COLOR_MATERIAL);
         glColorMaterial(GL_FRONT_AND_BACK,(GLenum)_colorMode);
-        switch(_colorMode) {
-        case(AMBIENT): glColor4fv(_ambientFront.ptr()); break;
-        case(DIFFUSE): glColor4fv(_diffuseFront.ptr()); break;
-        case(SPECULAR): glColor4fv(_specularFront.ptr()); break;
-        case(EMISSION): glColor4fv(_emissionFront.ptr()); break;
-        case(AMBIENT_AND_DIFFUSE): glColor4fv(_diffuseFront.ptr()); break;
-        case(OFF): break;
+        switch(_colorMode)
+        {
+            case(AMBIENT): glColor4fv(_ambientFront.ptr()); break;
+            case(DIFFUSE): glColor4fv(_diffuseFront.ptr()); break;
+            case(SPECULAR): glColor4fv(_specularFront.ptr()); break;
+            case(EMISSION): glColor4fv(_emissionFront.ptr()); break;
+            case(AMBIENT_AND_DIFFUSE): glColor4fv(_diffuseFront.ptr()); break;
+            case(OFF): break;
         }
     }
 
@@ -507,7 +347,7 @@ void Material::apply( void )
             glMaterialfv( GL_BACK, GL_AMBIENT, _ambientBack.ptr() );
         }
     }
-    
+
     if (_colorMode!=DIFFUSE && _colorMode!=AMBIENT_AND_DIFFUSE)
     {
         if (_diffuseFrontAndBack)
@@ -520,7 +360,7 @@ void Material::apply( void )
             glMaterialfv( GL_BACK, GL_DIFFUSE, _diffuseBack.ptr() );
         }
     }
-    
+
     if (_colorMode!=SPECULAR)
     {
         if (_specularFrontAndBack)
@@ -533,7 +373,7 @@ void Material::apply( void )
             glMaterialfv( GL_BACK, GL_SPECULAR, _specularBack.ptr() );
         }
     }
-    
+
     if (_colorMode!=EMISSION)
     {
         if (_emissionFrontAndBack)
@@ -546,7 +386,7 @@ void Material::apply( void )
             glMaterialfv( GL_BACK, GL_EMISSION, _emissionBack.ptr() );
         }
     }
-    
+
     if (_shininessFrontAndBack)
     {
         glMaterialf( GL_FRONT_AND_BACK, GL_SHININESS, _shininessFront* 128.0f );

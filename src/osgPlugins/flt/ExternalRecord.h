@@ -8,23 +8,25 @@
 #include "Record.h"
 #include "RecordVisitor.h"
 
+#include <osg/ref_ptr>
 
 namespace flt {
 
 struct SExternalReference
 {
-	SRecHeader	RecHeader;
-	char	szPath[200];	// 199 char ASCII Path; 0 terminates
-	uint8	swReserved[4];	// Reserved
-	int32	diFlags;		// Flags (bits from left to right)
-							// 0 = Color Palette Override
-							// 1 = Material Palette Override
-							// 2 = Texture Palette Override
-							// 3 = Line Palette Override
-							// 4 = Sound Palette Override
-							// 5 = Light source Palette Override
-							// 6-31 Spare
-	int16	iReserved;		// Reserved
+    SRecHeader    RecHeader;
+    char    szPath[200];    // 199 char ASCII Path; 0 terminates
+    // version 11, 12 & 13 stops here!
+    uint8    swReserved[4];    // Reserved
+    int32    diFlags;        // Flags (bits from left to right)
+                            // 0 = Color Palette Override
+                            // 1 = Material Palette Override
+                            // 2 = Texture Palette Override
+                            // 3 = Line Palette Override
+                            // 4 = Sound Palette Override
+                            // 5 = Light source Palette Override
+                            // 6-31 Spare
+//    int16    iReserved;        // Reserved
 };
 
 
@@ -42,7 +44,7 @@ class ExternalRecord : public PrimNodeRecord
         SExternalReference* getData() const { return (SExternalReference*)_pData; }
 
         void setExternal(FltFile* pExternal);
-        FltFile* getExternal() { return _pExternal; }
+        FltFile* getExternal() { return _fltfile.get(); }
         const std::string getFilename( void ) const { return std::string(getData()->szPath); }
 
     protected:
@@ -53,7 +55,7 @@ class ExternalRecord : public PrimNodeRecord
 
         virtual void endian();
 
-        FltFile*    _pExternal;
+        osg::ref_ptr<FltFile>    _fltfile;
 };
 
 

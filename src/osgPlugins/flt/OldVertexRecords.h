@@ -3,11 +3,11 @@
 #ifndef __FLT_OLD_VERTEX_RECORDS_H
 #define __FLT_OLD_VERTEX_RECORDS_H
 
-#include <map>
-
 #include "opcodes.h"
 #include "Record.h"
 #include "RecordVisitor.h"
+
+#include <map>
 
 #ifdef OSG_USE_IO_DOT_H
 #include <iostream.h>
@@ -26,11 +26,13 @@ namespace flt {
 //
 ////////////////////////////////////////////////////////////////////
 
-typedef struct OldVertexTag
+struct SOldVertex
 {
-	SRecHeader  RecHeader;
+    SRecHeader  RecHeader;
     int32       v[3];
-} SOldVertex;
+    float32x2   t;          // optional texture u,v
+                            // check record size.
+};
 
 
 class OldVertexRecord : public PrimNodeRecord
@@ -44,12 +46,14 @@ class OldVertexRecord : public PrimNodeRecord
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
         virtual SOldVertex* getData() const { return (SOldVertex*)_pData; }
-//    	friend ostream& operator << (ostream& output, const OldVertexRecord& rec);
+//        friend ostream& operator << (ostream& output, const OldVertexRecord& rec);
 
     protected:
         virtual ~OldVertexRecord();
 
         virtual void endian();
+        virtual bool readLocalData(Input& fr);
+//      virtual bool writeLocalData(Output& fw);
 };
 
 
@@ -60,20 +64,16 @@ class OldVertexRecord : public PrimNodeRecord
 ////////////////////////////////////////////////////////////////////
 
 
-typedef struct OldVertexColorTag
+struct SOldVertexColor
 {
-	SRecHeader	RecHeader;
+    SRecHeader    RecHeader;
     int32       v[3];
-/*
-    float64_t   x;
-    float64_t   y;
-    float64_t   z;
-    uint16_t    color_name_index;
-    uint16_t    flags;
-    uint32_t    packed_color;
-    uint32_t    color_index;
-*/
-} SOldVertexColor;
+    uint8       edge_flag;          // Hard edge flag
+    uint8       shading_flag;       // Don’t touch normal when shading flag.
+    uint16      color_index;        // Vertex color.
+    float32x2   t;                  // optional texture u,v
+                                    // check record size.
+};
 
 
 class OldVertexColorRecord : public PrimNodeRecord
@@ -87,12 +87,14 @@ class OldVertexColorRecord : public PrimNodeRecord
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
         virtual SOldVertexColor* getData() const { return (SOldVertexColor*)_pData; }
-//    	friend ostream& operator << (ostream& output, const OldVertexColorRecord& rec);
+//        friend ostream& operator << (ostream& output, const OldVertexColorRecord& rec);
 
     protected:
         virtual ~OldVertexColorRecord();
 
         virtual void endian();
+        virtual bool readLocalData(Input& fr);
+//      virtual bool writeLocalData(Output& fw);
 };
 
 
@@ -102,14 +104,17 @@ class OldVertexColorRecord : public PrimNodeRecord
 //
 ////////////////////////////////////////////////////////////////////
 
-typedef struct OldVertexColorNormalTag
+struct SOldVertexColorNormal
 {
-	SRecHeader	RecHeader;
-    int32       Coord[3];
-	uint16	    swColor;			// Color Name Index
-	uint16	    swFlags;			// Flags (bits, from left to right)
-    int16       Normal[3];
-} SOldVertexColorNormal;
+    SRecHeader    RecHeader;
+    int32       v[3];
+    uint8       edge_flag;          // Hard edge flag
+    uint8       shading_flag;       // Don’t touch normal when shading flag.
+    uint16      color_index;        // Vertex color.
+    int32       n[3];               // Normal scaled  2**30
+    float32x2   t;                  // optional texture u,v
+                                    // check record size.
+};
 
 
 class OldVertexColorNormalRecord : public PrimNodeRecord
@@ -123,12 +128,14 @@ class OldVertexColorNormalRecord : public PrimNodeRecord
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
         virtual SOldVertexColorNormal* getData() const { return (SOldVertexColorNormal*)_pData; }
-//    	friend ostream& operator << (ostream& output, const OldVertexColorNormalRecord& rec);
+//        friend ostream& operator << (ostream& output, const OldVertexColorNormalRecord& rec);
 
     protected:
         virtual ~OldVertexColorNormalRecord();
 
         virtual void endian();
+        virtual bool readLocalData(Input& fr);
+//      virtual bool writeLocalData(Output& fw);
 };
 
 

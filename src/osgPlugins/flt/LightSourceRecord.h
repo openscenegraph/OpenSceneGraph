@@ -22,22 +22,22 @@ namespace flt {
 
 typedef struct LightSourceTag
 {
-	SRecHeader	RecHeader;
-	char		szIdent[8];		// 7 char ASCII ID; 0 terminates
-	int32		diReserved_1;
-	int32		diIndex;		//index into lightpalette
-	int32		diReserved_2;
-	uint32		dwFlags;		//bits from left to right
-								//0=enabled
-								//1=global
-								//2=reserve
-								//3=export
-								//4=reserved
-								//5-31 spare
-	int32		diReserved_3;
-	float64x3   Coord;		// x,y,z coordinate
-	float32		sfYaw;
-	float32		sfPitch;
+    SRecHeader    RecHeader;
+    char        szIdent[8];        // 7 char ASCII ID; 0 terminates
+    int32        diReserved_1;
+    int32        diIndex;        //index into lightpalette
+    int32        diReserved_2;
+    uint32        dwFlags;        //bits from left to right
+                                //0=enabled
+                                //1=global
+                                //2=reserve
+                                //3=export
+                                //4=reserved
+                                //5-31 spare
+    int32        diReserved_3;
+    float64x3   Coord;        // x,y,z coordinate
+    float32        sfYaw;
+    float32        sfPitch;
 } SLightSource;
 
 

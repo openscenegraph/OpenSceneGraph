@@ -1,0 +1,48 @@
+#ifndef OSGDB_INPUT
+#define OSGDB_INPUT 1
+
+#include <osg/Image>
+#include <osg/Node>
+#include <osg/Drawable>
+#include <osg/StateAttribute>
+
+#include <osgDB/FieldReaderIterator>
+
+#include <map>
+#include <string>
+
+namespace osgDB {
+
+/** Class for managing the reading of ASCII .osg files.*/
+class OSGDB_EXPORT Input : public FieldReaderIterator
+{
+    public:
+
+        Input();
+        virtual ~Input();
+
+        virtual osg::Object*         readObjectOfType(const osg::Object& compObj);
+
+        virtual osg::Object*         readObject();
+        virtual osg::Image*          readImage();
+        virtual osg::Drawable*       readDrawable();
+        virtual osg::StateAttribute* readStateAttribute();
+        virtual osg::Node*           readNode();
+
+        virtual osg::Object*         readObject(const std::string& fileName);
+        virtual osg::Image*          readImage(const std::string& fileName);
+        virtual osg::Node*           readNode(const std::string& fileName);
+        
+        virtual osg::Object*         getObjectForUniqueID(const std::string& uniqueID);
+        virtual void                 regisiterUniqueIDForObject(const std::string& uniqueID,osg::Object* obj);
+
+    private:
+    
+        typedef std::map<std::string,osg::Object*> UniqueIDToObjectMapping;
+        UniqueIDToObjectMapping _uniqueIDToObjectMap;
+
+};
+
+};
+
+#endif                                            // __SG_INPUT_H

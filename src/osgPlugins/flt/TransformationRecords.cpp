@@ -1,12 +1,10 @@
 // TransformationRecords.cpp
 
-
 #include "flt.h"
 #include "Registry.h"
 #include "TransformationRecords.h"
 
 using namespace flt;
-
 
 ////////////////////////////////////////////////////////////////////
 //
@@ -15,7 +13,6 @@ using namespace flt;
 ////////////////////////////////////////////////////////////////////
 
 RegisterRecordProxy<MatrixRecord> g_MatrixProxy;
-
 
 MatrixRecord::MatrixRecord()
 {
@@ -45,7 +42,7 @@ void MatrixRecord::endian()
     }
 }
 
-
+#if 0
 ////////////////////////////////////////////////////////////////////
 //
 //                           RotatAboutEdgeRecord
@@ -53,7 +50,6 @@ void MatrixRecord::endian()
 ////////////////////////////////////////////////////////////////////
 
 RegisterRecordProxy<RotatAboutEdgeRecord> g_RotatAboutEdgeProxy;
-
 
 RotatAboutEdgeRecord::RotatAboutEdgeRecord()
 {
@@ -80,7 +76,6 @@ void RotatAboutEdgeRecord::endian()
 
 RegisterRecordProxy<TranslateRecord> g_TranslateProxy;
 
-
 TranslateRecord::TranslateRecord()
 {
 }
@@ -105,7 +100,6 @@ void TranslateRecord::endian()
 ////////////////////////////////////////////////////////////////////
 
 RegisterRecordProxy<ScaleRecord> g_ScaleProxy;
-
 
 ScaleRecord::ScaleRecord()
 {
@@ -132,7 +126,6 @@ void ScaleRecord::endian()
 
 RegisterRecordProxy<RotatAboutPointRecord> g_RotatAboutPointProxy;
 
-
 RotatAboutPointRecord::RotatAboutPointRecord()
 {
 }
@@ -142,7 +135,6 @@ RotatAboutPointRecord::RotatAboutPointRecord()
 RotatAboutPointRecord::~RotatAboutPointRecord()
 {
 }
-
 
 
 // virtual
@@ -158,7 +150,6 @@ void RotatAboutPointRecord::endian()
 ////////////////////////////////////////////////////////////////////
 
 RegisterRecordProxy<RotatScaleToPointRecord> g_RotatScaleToPointProxy;
-
 
 RotatScaleToPointRecord::RotatScaleToPointRecord()
 {
@@ -185,7 +176,6 @@ void RotatScaleToPointRecord::endian()
 
 RegisterRecordProxy<PutTransformRecord> g_PutTransformProxy;
 
-
 PutTransformRecord::PutTransformRecord()
 {
 }
@@ -197,21 +187,20 @@ PutTransformRecord::~PutTransformRecord()
 }
 
 
-
 // virtual
 void PutTransformRecord::endian()
 {
-	SPutTransform *pSPutTransform = (SPutTransform*)getData();
+    SPutTransform *pSPutTransform = (SPutTransform*)getData();
 
-	ENDIAN( pSPutTransform->tmp1 );
-	pSPutTransform->FromOrigin.endian();
-	pSPutTransform->FromAlign.endian();
-	pSPutTransform->FromTrack.endian();
-	pSPutTransform->ToOrigin.endian();
-	pSPutTransform->ToAlign.endian();
-	pSPutTransform->ToTrack.endian();
+    ENDIAN( pSPutTransform->tmp1 );
+    pSPutTransform->FromOrigin.endian();
+    pSPutTransform->FromAlign.endian();
+    pSPutTransform->FromTrack.endian();
+    pSPutTransform->ToOrigin.endian();
+    pSPutTransform->ToAlign.endian();
+    pSPutTransform->ToTrack.endian();
 }
-
+#endif
 
 ////////////////////////////////////////////////////////////////////
 //
@@ -220,7 +209,6 @@ void PutTransformRecord::endian()
 ////////////////////////////////////////////////////////////////////
 
 RegisterRecordProxy<GeneralMatrixRecord> g_GeneralMatrixProxy;
-
 
 GeneralMatrixRecord::GeneralMatrixRecord()
 {
@@ -231,7 +219,6 @@ GeneralMatrixRecord::GeneralMatrixRecord()
 GeneralMatrixRecord::~GeneralMatrixRecord()
 {
 }
-
 
 
 // virtual
@@ -250,4 +237,3 @@ void GeneralMatrixRecord::endian()
         }
     }
 }
-

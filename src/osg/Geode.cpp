@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <math.h>
 #include "osg/Geode"
-#include "osg/Input"
-#include "osg/Output"
 
 #include <algorithm>
 
@@ -13,101 +11,51 @@ using std::for_each;
 
 #define square(x)   ((x)*(x))
 
-#include "osg/Registry"
-
 using namespace osg;
-
-RegisterObjectProxy<Geode> g_GeodeProxy;
 
 Geode::Geode()
 {
-    _bsphere_computed = false;
 }
 
 
 Geode::~Geode()
 {
-    // ref_ptr<> automactially decrements the reference count of all geosets.
+    // ref_ptr<> automactially decrements the reference count of all drawables.
 }
 
-
-bool Geode::readLocalData(Input& fr)
+const bool Geode::addDrawable( Drawable *gset )
 {
-
-    bool iteratorAdvanced = false;
-
-    if (Node::readLocalData(fr)) iteratorAdvanced = true;
-
-    int num_geosets;
-    if (fr[0].matchWord("num_geosets") &&
-        fr[1].getInt(num_geosets))
-    {
-        // could allocate space for children here...
-        fr+=2;
-        iteratorAdvanced = true;
-    }
-
-    GeoSet* gset_read = NULL;
-    do
-    {
-        if ((gset_read=static_cast<GeoSet*>(GeoSet::instance()->readClone(fr))))
-        {
-            addGeoSet(gset_read);
-            iteratorAdvanced = true;
-        }
-
-    } while(gset_read != NULL);
-
-    return iteratorAdvanced;
-}
-
-
-bool Geode::writeLocalData(Output& fw)
-{
-    Node::writeLocalData(fw);
-
-    fw.indent() << "num_geosets " << getNumGeosets() << endl;
-    for(GeoSetList::iterator itr = _geosets.begin();
-        itr!=_geosets.end();
-        ++itr)
-    {
-        (*itr)->write(fw);
-    }
-    return true;
-}
-
-
-bool Geode::addGeoSet( GeoSet *gset )
-{
-    if (gset && !containsGeoSet(gset))
+    if (gset && !containsDrawable(gset))
     {
         // note ref_ptr<> automatically handles incrementing gset's reference count.
-        _geosets.push_back(gset);
+        _drawables.push_back(gset);
         dirtyBound();
         return true;
     }
     else return false;
 }
 
-bool Geode::removeGeoSet( GeoSet *gset )
+
+const bool Geode::removeDrawable( Drawable *gset )
 {
-    GeoSetList::iterator itr = findGeoSet(gset);
-    if (itr!=_geosets.end())
+    DrawableList::iterator itr = findDrawable(gset);
+    if (itr!=_drawables.end())
     {
         // note ref_ptr<> automatically handles decrementing gset's reference count.
-        _geosets.erase(itr);
+        _drawables.erase(itr);
         dirtyBound();
         return true;
     }
     else return false;
 }
 
-bool Geode::replaceGeoSet( GeoSet *origGset, GeoSet *newGset )
+
+const bool Geode::replaceDrawable( Drawable *origGset, Drawable *newGset )
 {
     if (newGset==NULL || origGset==newGset) return false;
 
-    GeoSetList::iterator itr = findGeoSet(origGset);
-    if (itr!=_geosets.end())
+    DrawableList::iterator itr = findDrawable(origGset);
+    if (itr!=_drawables.end())
     {
         // note ref_ptr<> automatically handles decrementing origGset's reference count,
         // and inccrementing newGset's reference count.
@@ -116,46 +64,56 @@ bool Geode::replaceGeoSet( GeoSet *origGset, GeoSet *newGset )
         return true;
     }
     else return false;
-    
+
 }
 
 
-bool Geode::computeBound( void )
-{    
+const bool Geode::computeBound() const
+{
     BoundingBox bb;
-    GeoSetList::iterator itr;
-    for(itr=_geosets.begin();
-        itr!=_geosets.end();
+
+    DrawableList::const_iterator itr;
+    for(itr=_drawables.begin();
+        itr!=_drawables.end();
         ++itr)
     {
         bb.expandBy((*itr)->getBound());
     }
-    
-    _bsphere._center = bb.center();
-    _bsphere._radius = 0.0f;
-    
-    for(itr=_geosets.begin();
-        itr!=_geosets.end();
-        ++itr)
-    {
-        const BoundingBox& bbox = (*itr)->getBound();
-        for(unsigned int c=0;c<8;++c)
-        {
-            _bsphere.expandRadiusBy(bbox.corner(c));
-        }
-    }
 
-    _bsphere_computed=true;
-    return true;
+    if (bb.isValid())
+    {
+
+        _bsphere._center = bb.center();
+        _bsphere._radius = 0.0f;
+
+        for(itr=_drawables.begin();
+            itr!=_drawables.end();
+            ++itr)
+        {
+            const BoundingBox& bbox = (*itr)->getBound();
+            for(unsigned int c=0;c<8;++c)
+            {
+                _bsphere.expandRadiusBy(bbox.corner(c));
+            }
+        }
+
+        _bsphere_computed=true;
+        return true;
+    }
+    else
+    {
+        _bsphere.init();
+        _bsphere_computed=true;
+        return false;
+    }
 }
 
-
-void Geode::compileGeoSets( void )
+void Geode::compileDrawables(State& state)
 {
-    for(GeoSetList::iterator itr = _geosets.begin();
-        itr!=_geosets.end();
+    for(DrawableList::iterator itr = _drawables.begin();
+        itr!=_drawables.end();
         ++itr)
     {
-        (*itr)->compile();
+        (*itr)->compile(state);
     }
 }

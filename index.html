@@ -5,157 +5,355 @@
    <meta name="GENERATOR" content="Mozilla/4.6 [en-gb]C-CCK-MCD NetscapeOnline.co.uk  (Win95; I) [Netscape]">
    <title>OSG Distribution</title>
 </head>
-<body>
-
-<center>
-<h1>
-<b><i><u>Open Scene Graph</u></i></b></h1></center>
-The Open Scene Graph (OSG) is an Open Source (LGPL), Stanadard C++, OpenGL
-based scene graph for cross-platform 3D real-time visualisation..&nbsp;
+<body text="#000000" bgcolor="#FFFFFF" link="#0000FF" vlink="#990066" alink="#FF0000">
+<img SRC="doc/OpenSceneGraphBanner_Distribution.jpg" height=77 width=640>
+<br><a href="INSTALL">Installation&nbsp;</a>&nbsp;&nbsp; <a href="#Contents of distribution">Contents
+of Distribution</a>&nbsp;&nbsp;&nbsp; <a href="doc/index.html">Documentation</a>&nbsp;&nbsp;&nbsp;<a href="#Plug-in dependancies">Plugin
+Dependencies</a>&nbsp;&nbsp; <a href="#Data Sources">Data Sources</a>&nbsp;&nbsp;
+<a href="#Contacts">Contacts</a>
+<p>The Open Scene Graph (OSG) is an Open Source (LGPL), Standard C++, OpenGL
+based scene graph for cross platform 3D real-time visualisation.&nbsp;
 The OSG is simply a scene graph and by design does not attempt to encompass
 application frame works and user interface, the design is kept focused
 on the issues of representing a 3D scene and rendering it in real-time.
-<p>There are also support libraries such as osgGLUT for bringing up a basic
+The OSG currently supports Linux, IRIX, Windows and FreeBSD platforms with
+the potential of support for further platforms. A Mac port is already underway.
+<p>The OSG is composed of a core scene graph library (osg) which is the
+basis for all osg apps, an optional scene graph utility library (osgUtil)
+which can be used for higher level functionality such cullers and renderers
+and a database utility library (osgDB) coupled with a set of plug-ins
+(osgPlugins) which are dynamically loaded by the osgDB library to support
+the reading and writing of file formats or node toolkits.
+<p>There are also support libraries such as osgGLUT  for bringing up a basic
 UI, however this is not the focus of the OSG.&nbsp; For more sophisticated
-user interfaces it is recommended to intergrate the OSG graphics with a
-fully fledge UI toolkit, this has already been done by users for FLTK,
-WxWindows and X, with the potential for many more.
-<p>This release is a ALPHA version, and is subject to continuous development
-with the API of features subject to change.
+user interfaces it is recommended to integrate the OSG graphics with a
+fully fledge UI toolkit, this has already been done by users for FLTK, SDL, 
+WxWindows, Qt and X, with the potential for many more. For example, osgWX is 
+also included to assist integration of wxWindows with the OSG and demonstrated
+in the wxsgv demo,  however both these libraries are not compiled by default 
+since most systems won't have wxWindows installed.  Check the mailing list 
+archives for info on these developments.  
+<p>For the purpose of demonstating the functionality of the osg, nine demo
+apps are provided, sgv (a scene graph viewer), osgconv (a command line
+utility for converted multiple input files into a native .osg target file),&nbsp;
+hangglide (a flight simulation demo over small hang gliding site), osgcube
+(a very simple demo of an animated cube) and osgreflect (a demo of how planar
+reflections can be achieved), osgtexture (a demo of some of the various
+texture modes that the OSG supports), osgimpostor (a demo of impostors in 
+action) and osgviews (a demo of using mulitple viewports on the same or
+multiple scenes), and finally wxsgv a viewer demostrating osg integration 
+with wxWindows applications (not compiled by default.)
+<p>This release is a ALPHA version, and is under continuous development
+with the API and features subject to change.  If you plan to use the OSG
+then please join the mailing list and provide us with feedback on how
+you're getting on or the problems that you come across.  This helps keep
+the OSG development going in the right direction and ensures the problems
+are fixed as early on in the development as possible.</p>
+
 <p>For instructions of how to compile, install the osg libraries and to
-run the demos please read the <a href="README">README</a> file.
-<p>Regards,
+run the demos please read the <a href="INSTALL">INSTALL</a> file.
+
+
 <p>Robert Osfield.
-<br>January 2001.
+<p>robert@openscenegraph.com.
+<br>August 2001.
 <p>
 <hr WIDTH="100%">
-<p><u>Contacts</u>
-<p>The OSG's website is <a href="http://www.openscenegraph.org">http://www.openscenegraph.org</a>
+<p><a NAME="Contacts"></a><u>Contacts</u>
+<p>The OSG's web site is <a href="http://www.openscenegraph.org/">http://www.openscenegraph.org/</a>
 <p>The OSG's mailing list and mirror of downloads can be accessed at
 <br>source forge -&nbsp; <a href="http://sourceforge.net/projects/openscenegraph">http://sourceforge.net/projects/openscenegraph</a>
-<p>Bugs, patches, querries can be sent to the <a href="info@openscenegraph.org">info@openscenegraph.org</a>
+<p>Bugs, patches, queries can be sent to the <a href="mailto:robert@openscenegraph.com">robert@openscenegraph.com</a>
 or to the mailing list.
+<p>Patches are best sent as complete files, as tarball if numerous file
+changes have been made.
 <p>
 <hr WIDTH="100%">
-<p><u>Contents of distribution</u>
-<p>./&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Root directory.
-<blockquote><a href="README">README</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-text file containing guide of how to get the OSG compiling, and running
-the demos.
-<br><a href="COPYING">COPYING</a>&nbsp;&nbsp;&nbsp; text&nbsp; file containing
-the details of the Open Source LGPL license which the OSG is released under
-<br><a href="AUTHORS">AUTHORS</a>&nbsp;&nbsp;&nbsp; text file containing
-names of contributors to the osg.
-<br><a href="NEWS">NEWS</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-text file listing coarsed grained changes between releases.
-<br><a href="ChangeLog">ChangeLog</a>&nbsp;&nbsp;&nbsp;&nbsp; text file
-listing fine grained changes between releases.
-<br><a href="TODO">TODO</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-text file listing&nbsp; left to implement/extend/rewrite.
-<br><a href="FAQ">FAQ</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-text file listing Fequently asked quesions.
-<br><a href="Makefile">Makefile</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-Unix makefile.
-<br>index.html&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; This file!</blockquote>
+<h3>
+<a NAME="Contents of distribution"></a><u>Contents of distribution</u></h3>
+./&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Root directory.
+<blockquote><tt><a href="README">README</a>&nbsp;&nbsp;&nbsp;&nbsp; </tt>text
+bare bones readme file.
+<br><tt><a href="INSTALL">INSTALL</a>&nbsp;&nbsp;&nbsp; </tt>text file
+containing guide of how to get the OSG compiling, and running the demos.
+<br><tt><a href="COPYING">COPYING</a>&nbsp;&nbsp;&nbsp; </tt>text&nbsp;
+file containing the details of the OSG's Open Source LGPL license.
+<br><tt><a href="AUTHORS">AUTHORS</a>&nbsp;&nbsp;&nbsp; </tt>text file
+containing names of contributors to the osg.
+<br><tt><a href="NEWS">NEWS</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </tt>text
+file listing coarse grained changes between releases.
+<br><tt><a href="ChangeLog">ChangeLog</a>&nbsp; </tt>text file listing
+fine grained changes between releases.
+<br><tt><a href="TODO">TODO</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </tt>text
+file listing&nbsp; left to implement/extend/rewrite.
+<br><tt><a href="FAQ">FAQ</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>text file listing Frequently asked questions.
+<br><tt><a href="Makefile">Makefile</a>&nbsp;&nbsp; </tt>Unix makefile.
+<br><tt>index.html </tt>This file!</blockquote>
 
 <p><br><a href="doc/">doc/</a>&nbsp;&nbsp; Documentation directory
-<blockquote><a href="doc/index.html">index.html</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-Documentation index.
-<br><a href="doc/osg/HIER.html">osg/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-core scene graph reference guide.
-<br><a href="doc/osgUtil/HIER.htmll">osgUtil/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-scene graph utilities reference guide.
-<br><a href="doc/osgGLUT/HIER.html">osgGLUT/</a>&nbsp;&nbsp;&nbsp;&nbsp;
-simple GLUT based viewer base classes reference guide.</blockquote>
+<blockquote><tt><a href="doc/index.html">index.html</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>Documentation index
+<br><tt><a href="doc/doc++/osg/HIER.html">osg/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>Scene graph reference guide.
+<br><tt><a href="doc/doc++/osgUtil/HIER.html">osgUtil/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>Scene graph utilities reference guide.
+<br><tt><a href="doc/doc++/osgDB/HIER.html">osgDB/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>Scene graph database utilities reference guide.
+<br><tt><a href="doc/doc++/osgGLUT/HIER.html">osgGLUT/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>Simple GLUT based viewer base classes reference guide.
+<br><tt><a href="doc/doc++/osgWX/HIER.html">osgWX/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>wxWindows integration classes reference guide</blockquote>
 
-<p><br><a href="include/">include/</a>&nbsp;&nbsp;&nbsp;&nbsp; External
-includes (i.e. files which would be installed in /usr/include)
-<blockquote><a href="include/osg">include/osg/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-The OSG library header files.
-<br><a href="include/osgUtil">include/osgUtil/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-The OSG Utility library header files.
-<br><a href="include/osgGLUT">include/osgGLUT/</a>&nbsp;&nbsp; The OSG
-GLUT library header files.</blockquote>
 
-<p><br><a href="src/">src/</a>&nbsp;&nbsp;&nbsp; source files (including
-internal includes)
-<blockquote><a href="src/osg">src/osg</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-The OSG library source files.
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-Contians all core osg classes, including
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-reader/writer support for the .osg ascii format,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-and sgi's rgb image format.
-<p><a href="src/osgUtil">src/osgUtil</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-The OSG utility library source files.
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-Contains useful utility classes such as for setting
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-up and rendering/draw.
-<p><a href="src/osgGLUT">src/osgGLUT</a>&nbsp; The OSG GLUT library source
-files.
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-Contains basic GLUT viewer base classes used by
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-demo prgrams to bring up window and provide keyboard
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-and mouse interaction.
-<p><a href="src/osgPlugins/">src/osgPlugins/</a>&nbsp; Import/Export/Node
-kit plug-ins to the OSG.
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a href="src/osgPlugins/flt/">flt/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Open
-Flight reader plugin.
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a href="src/osgPlugins/fly">fly/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Hang
-gliding flying site reader plugin.
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a href="src/osgPlugins/pfb">pfb/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Performer
-reader and writer plugin.
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a href="src/osgPlugins/png">png/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PNG
-image file format reader plugin.
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a href="src/osgPlugins/gif">gif/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; GIF
-image file format reader plugin.
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a href="src/osgPlugins/jpeg/">jpeg/</a>&nbsp;&nbsp;&nbsp;&nbsp; JPEG image
-file format reader plugin.
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a href="src/osgPlugins/pic">pic/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PIC
-image file format reader plugin.
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a href="src/osgPlugins/tga">tga/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TGA
-image file format reader plugin.
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a href="src/osgPlugins/tiff">tiff/</a>&nbsp;&nbsp;&nbsp;&nbsp; TIFF image
-file format reader plugin.
-<p><a href="src/Demos/">src/Demos/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="src/Demos/sgv">sgv/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-A basic scene graph viewer for the OSG which is able to load .osg file
-and above formats.
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a href="src/Demos/cube/">cube/</a>&nbsp;&nbsp;&nbsp; A basic animation
-of an oscillating cube.</blockquote>
+<p><a href="include/">include/</a>&nbsp;&nbsp;&nbsp;&nbsp; External includes
+(i.e. files which would be installed in /usr/include)
+<blockquote><tt><a href="include/osg">include/osg/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>The OSG library header files.
+<br><tt><a href="include/osgUtil">include/osgUtil/</a>&nbsp; </tt>The OSG
+Util library header files.
+<br><tt><a href="include/osgDB">include/osgDB/</a>&nbsp;&nbsp;&nbsp; </tt>The
+OSG Database library header files.
+<br><tt><a href="include/osgGLUT">include/osgGLUT/</a>&nbsp; </tt>The OSG
+GLUT utiltiy library header files.
+<br><tt><a href="include/osgWX">include/osgWX/</a>&nbsp;&nbsp;&nbsp; </tt>The OSG
+WX utiltiy library header files.</blockquote>
 
-<p><br><a href="lib/">lib/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-The local repository for the OSG library and plugins (files to be installed
-in /usr/lib/ or /usr/local/lib)
-<br><a href="lib/osgPlugins/">lib/osgPlugins/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-The local repository for the OSG plugins (files to be installed in /usr/lib/osgPlugins
-or
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-/usr/local/lib/osgPlugins)
-<p><a href="bin/">bin/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-The local repository for the OSG binary files (files to be installed in
-/usr/bin or /usr/local/bin)
-<p><a href="Make/">Make/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-Unix platform specific make rules and dependancies.
-<p><a href="VisualStudio/">VisualStudio/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-MS VisualC++ 6.0 Make/Workspace files.
-<p><a href="dist/">dist/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-Distribution make files for RedHat Linux.
-<p><a href="NSPlugin/">NSPlugin/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-Netscape plugin viewer for Linux.
+
+<p><a href="src/">src/</a>&nbsp;&nbsp;&nbsp; source files (including internal
+includes)
+<blockquote><tt><a href="src/osg">src/osg</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>The OSG library source files.
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>Contains all core osg classes, including reader/writer support for
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>the .osg ascii format, and sgi's rgb image format.
+<p><tt><a href="src/osgUtil">src/osgUtil</a>&nbsp; </tt>The OSG utility
+library source files.
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>Contains useful utility classes such as for setting
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>up and rendering/draw.
+<p><tt><a href="src/osgDB">src/osgDB</a>&nbsp;&nbsp;&nbsp; </tt>The OSG
+database utility library source files.
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>Contains useful utility classes such as for reading
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>and writing 3D databases and image files.
+<p><tt><a href="src/osgGLUT">src/osgGLUT</a>&nbsp; </tt>The OSG GLUT library
+source files.
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>Contains basic GLUT viewer base classes used by
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>demo programs to bring up window and provide keyboard
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>and mouse interaction.
+<p><tt><a href="src/osgWX">src/osgWX</a>&nbsp; &nbsp; </tt>The OSG WX library
+source files.
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>Contains WXEventAdapter to assist integration of wxWindnows with the OSG.
+<p><tt><a href="src/osgPlugins/">src/osgPlugins/</a>&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>Import/Export/Node kit plug-ins to the OSG.</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="src/osgPlugins/osg/">osg/</a>&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>.osg native ASCII reader/write plugin.</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="src/osgPlugins/flt/">flt/</a>&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>.flt Open Flight reader plugin.</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="src/osgPlugins/lib3ds/">lib3ds/</a>&nbsp;
+</tt>.3ds Auto Studio Maxx reader plugin.</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="src/osgPlugins/lwo/">lwo/</a>&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>.lwo Light Wave binary (.lwo,.lw & .geo) reader plugin.</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="src/osgPlugins/obj/">obj/</a>&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>.obj Alias Wavefront reader plugin.</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="src/osgPlugins/pfb">pfb/</a>&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>.pfb (and others) Performer reader and writer plugin.</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="src/osgPlugins/dw/">dw/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>.dw Design Workshop reader plugin.</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="src/osgPlugins/rgb">rgb/</a>&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>.rgb RGB image file format reader plugin.</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="src/osgPlugins/png">png/</a>&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>.png PNG image file format reader plugin.</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="src/osgPlugins/gif">gif/</a>&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>.gif GIF image file format reader plugin.</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="src/osgPlugins/jpeg/">jpeg/</a>&nbsp;&nbsp;&nbsp;
+</tt>.jpg JPEG image file format reader plugin.</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="src/osgPlugins/pic">pic/</a>&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>.pic PIC image file format reader plugin.</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="src/osgPlugins/tga">tga/</a>&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>.tga TGA image file format reader plugin.</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="src/osgPlugins/tiff">tiff/</a>&nbsp;&nbsp;&nbsp;
+</tt>.tif TIFF image file format reader plugin.</tt>
+<p><tt><a href="src/Demos/">src/Demos/</a> <a href="src/Demos/sgv">sgv/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>A basic scene graph viewer for the OSG which is loads .osg files and
+above formats.
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="src/Demos/osgconv">osgconv/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>A program which reads input files into a single scene graph and outputs
+the results.
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="src/Demos/hangglide/">hangglide/</a>&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>A program which of creates a flying site and allows users to fly over
+the scene.
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="src/Demos/osgtexture">osgtexture/</a>&nbsp;&nbsp;&nbsp;
+</tt>A simple program which demonstrates how to use various textures modes.
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="src/Demos/osgcube/">osgcube/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>A basic animation of an oscillating cube.
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="src/Demos/osgreflect/">osgreflect/</a>&nbsp;&nbsp;&nbsp;
+</tt>A demonstration of multi-pass stencil buffer based planar reflections.
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="src/Demos/osgimpostor/">osgimpostor/</a>&nbsp;&nbsp;
+</tt>A basic demo to show how to use the osg::Impostor node.
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="src/Demos/osgviews/">osgviews/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>A demo of multiple views of the same or multiple scenes.
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="src/Demos/wxsgv/">wxsgv/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>A demo of wxWindows viewer integrated with the OSG.
+</blockquote>
+
+<p><br><tt><a href="lib/">lib/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>The local repository for the OSG library and plugins (files to be
+installed in /usr/lib/ or<tt> </tt>/usr/local/lib)
+<p><tt><a href="lib/osgPlugins/">lib/osgPlugins/</a>&nbsp; </tt>The local
+repository for the OSG plugins (files to be installed in /usr/lib/osgPlugins
+or<tt> </tt>/usr/local/lib/osgPlugins)
+<p><tt><a href="bin/">bin/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>The local repository for the OSG binary files (files to be installed
+in /usr/bin or /usr/local/bin)
+<p><tt><a href="Make/">Make/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>Unix platform specific make rules and dependencies.
+<p><tt><a href="VisualStudio/">VisualStudio/</a>&nbsp;&nbsp;&nbsp; </tt>MS
+VisualC++ 6.0 Make/Workspace files for Windows.
+<p><tt><a href="Metrowerks/">Metrowerks/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+CodeWarroir's</tt> Make/Workspace files for Mac.
+<p><tt><a href="dist/">dist/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>Distribution make files for RedHat Linux and IRIX.
+<br>.
+<br>
+<hr WIDTH="100%">
+<h3>
+<a NAME="Plug-in dependencies"></a><u>Plug-in dependencies</u></h3>
+Follows is the list of depedencies which some of the osgPlugins require,
+note the core osg and viewer do not need the following dependencies, you
+only need the following if you require each specific plugin.&nbsp; Note,
+the flt, 3ds, pic, tga, do not have any dependencies other than Standard
+C++ so will compile straight of the bag.&nbsp; Under Linux the majority
+of the depedancies below come as standard
+<br>with distributions so you may not need to download them at all.&nbsp;
+Its best to try out a straight compile of the osg, if you get missing includes/libs
+errors then chase up the below.
+<ul>
+<li>
+src/osgPlugins/pfb</li>
+
+<br>There is a Performer plugin in this distribution for converting from
+Performer to OSG and from OSG to Performer.&nbsp; This plugin requires
+Performer to be installed and therefore is not compiled by default. If
+you have Performer (available under Linux and IRIX) then edit src/osgPlugins/Make
+to compile under the plugin.&nbsp; Performer can be downloaded from :
+<ul><i><a href="http://www.sgi.com/">http://www.sgi.com/</a></i>
+<br><i><a href="http://www.sgi.com/"></a></i>&nbsp;</ul>
+
+<li>
+src/osgPlugins/png</li>
+
+<br>The png plugin depends upon the libpng and zlib (for compression) libraries,
+if you don't already have it installed, you'll need to download, compile
+and install it. Project home pages are:
+<ul><i><a href="http://www.libpng.org/pub/png/libpng.html">http://www.libpng.org/pub/png/libpng.html</a></i>
+<br><i><a href="http://www.info-zip.org/pub/infozip/zlib/">http://www.info-zip.org/pub/infozip/zlib/</a></i>
+<br><i><a href="http://www.info-zip.org/pub/infozip/zlib/"></a></i>&nbsp;</ul>
+
+<li>
+src/osgPlugins/gif</li>
+
+<br>The gif plugin depends upon the libungif library, if you don't already
+have it installed, you'll need to download, compile and install it. Project
+home page is:
+<ul><i><a href="http://prtr-13.ucsc.edu/~badger/software/libungif/">http://prtr-13.ucsc.edu/~badger/software/libungif/</a></i>
+<br><i><a href="http://prtr-13.ucsc.edu/~badger/software/libungif/"></a></i>&nbsp;</ul>
+Ftp download at :
+<ul><i><a href="ftp://prtr-13.ucsc.edu/pub/libungif/">ftp://prtr-13.ucsc.edu/pub/libungif/</a></i>
+<br><i><a href="ftp://prtr-13.ucsc.edu/pub/libungif/"></a></i>&nbsp;</ul>
+
+<li>
+src/osgPlugins/jpeg</li>
+
+<br>The jpeg plugin depends upon the libjpeg library, if you don't already
+have it installed, you'll need to download, compile and install it. Project
+home page is:
+<ul><i><a href="http://www.ijg.org/">http://www.ijg.org/</a></i>
+<br><i><a href="http://www.ijg.org/"></a></i>&nbsp;</ul>
+
+<li>
+src/osgPlugins/tiff</li>
+
+<br>The tiff plugin depends upon the libtiff library, if you don't already
+have it installed, you'll need to download, compile and install it. Project
+home page is:
+<ul><i><a href="http://www.libtiff.org">http://www.libtiff.org</a></i>
+<br><i><a href="http://www.libtiff.org"></a></i>&nbsp;</ul>
+
+<li>
+src/osgPlugins/zip</li>
+
+<br>The zip compressed archive plugin depends upon the unzip executable
+being available on your system.&nbsp; If it is not then you'll be able
+to find binaries at:
+<ul><i><a href="http://www.freesoftware.com/pub/infozip/">http://www.freesoftware.com/pub/infozip/</a></i>
+<br><i><a href="http://www.freesoftware.com/pub/infozip/"></a></i>&nbsp;</ul>
+
+<li>
+src/osgPlugins/tgz</li>
+
+<br>The tgz compressed archive plugin depends upon the unzip executable
+being available on your system.&nbsp; If it is not then you'll be able
+to find binaries at:
+<ul><i><a href="http://www.gzip.org/">http://www.gzip.org/</a></i>
+<br><a href="ftp://prep.ai.mit.edu/pub/gnu/tar/">ftp://prep.ai.mit.edu/pub/gnu/tar/</a>
+<br><a href="ftp://prep.ai.mit.edu/pub/gnu/tar/"></a>&nbsp;</ul>
+
+<li>
+src/osgPlugins/osgtgz</li>
+
+<br>Has the same dependencies as the tgz plugin above.</ul>
+
+<p><br>
+<hr WIDTH="100%">
+<h3>
+<a NAME="Data Sources"></a>Data Sources</h3>
+
+<ul>
+<li>
+Open scene graph .osg demo data set can downloaded here:</li>
+
+<br><i><a href="http://www.openscenegraph.org/downloads/osg_data-0.8-24.tar.gz">http://www.openscenegraph.org/downloads/osg_data-0.8-25.tar.gz</a></i>
 <br>&nbsp;
+<li>
+Various 3d models, many in .3ds format at 3D Cafe.</li>
+
+<br><i><a href="http://www.3dcafe.com">http://www.3dcafe.com</a></i>
+<br>&nbsp;
+<li>
+Various 3d models, many in .3ds format at 3D Rocket Fuel.</li>
+
+<br><i><a href="http://www.3drocketfuel.com">http://www.3drocketfuel.com</a></i>
+<br>&nbsp;
+<li>
+Character models in OpenFlight .flt format from MultiGen (www.multigen.com)</li>
+
+<br>Select the download link on their homepage or go directly to
+<br><a href="ftp://ftp.ca.com/pub/multigen/ftp2-multigen/downloads/models">ftp://ftp.ca.com/pub/multigen/ftp2-multigen/downloads/models</a>
+<br>&nbsp;
+<li>
+Vehicle models in OpenFlight .flt format at Full Sail (spinnercar &amp;
+veritech):</li>
+
+<br><a href="http://www.fullsail.com/loader/models.html">http://www.fullsail.com/loader/models.html</a>
+<br>&nbsp;
+<li>
+Terrain models in OpenFlight .flt format at Grime:</li>
+
+<br><a href="http://www.grime.net/sim/default.htm">http://www.grime.net/sim/default.htm</a>
+<br>&nbsp;
+<li>
+Terrain models in OpenFlight .flt format at Terrex:</li>
+
+<br><a href="http://www.terrex.com/downloads/index.htm">http://www.terrex.com/downloads/index.htm</a></ul>
+
 </body>
 </html>

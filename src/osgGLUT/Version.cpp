@@ -1,10 +1,10 @@
 #include "osgGLUT/Version"
 
-
 const char* osgGLUTGetVersion()
 {
-    return "0.8.34";
+    return "0.8.42";
 }
+
 
 const char* osgGLUTGetLibraryName()
 {

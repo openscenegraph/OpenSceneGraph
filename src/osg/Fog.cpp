@@ -1,9 +1,8 @@
-#include "osg/GL"
 #include "osg/Fog"
 
 using namespace osg;
 
-Fog::Fog( void )
+Fog::Fog()
 {
     _mode = EXP;
     _density = 1.0f;
@@ -13,31 +12,11 @@ Fog::Fog( void )
 }
 
 
-Fog::~Fog( void )
+Fog::~Fog()
 {
 }
 
-
-Fog* Fog::instance()
-{
-    static ref_ptr<Fog> s_fog(new Fog);
-    return s_fog.get();
-}
-
-
-void Fog::enable( void )
-{
-    glEnable( GL_FOG );
-}
-
-
-void Fog::disable( void )
-{
-    glDisable( GL_FOG );
-}
-
-
-void Fog::apply( void )
+void Fog::apply(State&) const
 {
     glFogi( GL_FOG_MODE,     _mode );
     glFogf( GL_FOG_DENSITY,  _density );

@@ -17,23 +17,23 @@ namespace flt {
 //
 ////////////////////////////////////////////////////////////////////
 
-typedef struct LevelOfDetailTag
+struct SLevelOfDetail
 {
-	SRecHeader	RecHeader;
-	char	    szIdent[8]; 	// 7 char ASCII ID; 0 terminates
-	int32	    iSpare;			// Spare
-	float64	    dfSwitchInDist;	// Switch in distance
-	float64	    dfSwitchOutDist;// Switch out distance
-	int16	    iSpecialId_1;	// Special effects ID 1 - defined by real time
-	int16	    iSpecialId_2;	// Special effects ID 2 - defined by real time
-	int32	    diFlags;		// Flags (bits, from left to right)
-							// 0 = Use previous slant range
-							// 1 = SPT flag: 0 if replacement LOD, 1 for additive LOD
-							// 2 = Freeze center (don't recalculate)
-							// 3-31 Spare
-	float64x3	Center;	    // Center coordinate (x,y,z) of LOD block
-	float64	dfTransitionRange;			// Transition Range for Morphing
-} SLevelOfDetail;
+    SRecHeader    RecHeader;
+    char        szIdent[8];     // 7 char ASCII ID; 0 terminates
+    int32        iSpare;            // Spare
+    float64        dfSwitchInDist;    // Switch in distance
+    float64        dfSwitchOutDist;// Switch out distance
+    int16        iSpecialId_1;    // Special effects ID 1 - defined by real time
+    int16        iSpecialId_2;    // Special effects ID 2 - defined by real time
+    int32        diFlags;        // Flags (bits, from left to right)
+                            // 0 = Use previous slant range
+                            // 1 = SPT flag: 0 if replacement LOD, 1 for additive LOD
+                            // 2 = Freeze center (don't recalculate)
+                            // 3-31 Spare
+    float64x3    Center;        // Center coordinate (x,y,z) of LOD block
+    float64    dfTransitionRange;            // Transition Range for Morphing
+};
 
 
 
@@ -67,23 +67,22 @@ class LodRecord : public PrimNodeRecord
 ////////////////////////////////////////////////////////////////////
 
 
-typedef struct OldLodTag
+struct SOldLOD
 {
-	SRecHeader	RecHeader;
-	char	    szIdent[8]; 	// 7 char ASCII ID; 0 terminates
-	int32	    iSpare;			// Spare
-	float64	    dfSwitchInDist;	// Switch in distance
-	float64	    dfSwitchOutDist;// Switch out distance
-	int16	    iSpecialId_1;	// Special effects ID 1 - defined by real time
-	int16	    iSpecialId_2;	// Special effects ID 2 - defined by real time
-	int32	    diFlags;		// Flags (bits, from left to right)
-							// 0 = Use previous slant range
-							// 1 = SPT flag: 0 if replacement LOD, 1 for additive LOD
-							// 2 = Freeze center (don't recalculate)
-							// 3-31 Spare
-	float64x3	Center;	    // Center coordinate (x,y,z) of LOD block
-	float64	dfTransitionRange;			// Transition Range for Morphing
-} SOldLOD;
+    SRecHeader    RecHeader;
+    char        szIdent[8];         // 7 char ASCII ID; 0 terminates
+    uint32        dwSwitchInDist;     // Switch in distance
+    uint32        dwSwitchOutDist;    // Switch out distance
+    int16        iSpecialId_1;       // Special effects ID 1 - defined by real time
+    int16        iSpecialId_2;       // Special effects ID 2 - defined by real time
+    int32        diFlags;            // Flags (bits, from left to right)
+                                    // 0 = Use previous slant range
+                                    // 1 = SPT flag: 0 if replacement LOD, 1 for additive LOD
+                                    // 2 = Freeze center (don't recalculate)
+                                    // 3-31 Spare
+    int32       Center[3];          // Center coordinate (x,y,z) of LOD block
+//  int32       spare[14];
+};
 
 
 

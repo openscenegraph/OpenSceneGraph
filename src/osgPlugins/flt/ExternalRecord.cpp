@@ -1,6 +1,5 @@
 // ExternalRecord.cpp
 
-
 #include "flt.h"
 #include "Registry.h"
 #include "FltFile.h"
@@ -16,37 +15,33 @@ using namespace flt;
 
 RegisterRecordProxy<ExternalRecord> g_ExternalProxy;
 
-
 ExternalRecord::ExternalRecord()
 {
-    _pExternal = NULL;
 }
 
 
 // virtual
 ExternalRecord::~ExternalRecord()
 {
-    if (_pExternal)
-        _pExternal->unref();
 }
 
 
 void ExternalRecord::setExternal(FltFile* pExternal)
 {
-    if (_pExternal)
-        _pExternal->unref();
-
-    _pExternal = pExternal;
-    _pExternal->ref();
+    _fltfile = pExternal;
 }
 
 
 void ExternalRecord::endian()
 {
-	SExternalReference *pSExternal = (SExternalReference*)getData();
+    SExternalReference *pSExternal = (SExternalReference*)getData();
 
-    ENDIAN( pSExternal->diFlags );
+    if (getSize() >= sizeof(SExternalReference))
+    {
+        ENDIAN( pSExternal->diFlags );
+    }
+    else
+    {
+        pSExternal->diFlags = 0;
+    }
 }
-
-
-

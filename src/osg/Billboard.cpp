@@ -1,20 +1,15 @@
 #include <stdio.h>
 #include <math.h>
 #include "osg/Billboard"
-#include "osg/Input"
-#include "osg/Output"
-#include "osg/Registry"
 
 using namespace osg;
-
-RegisterObjectProxy<Billboard> g_BillboardProxy;
 
 #define square(x)   ((x)*(x))
 
 Billboard::Billboard()
 {
     _mode = AXIAL_ROT;
-//    _mode = POINT_ROT_WORLD;
+    //    _mode = POINT_ROT_WORLD;
     _axis.set(0.0f,0.0f,1.0f);
 }
 
@@ -23,12 +18,13 @@ Billboard::~Billboard()
 {
 }
 
-bool Billboard::addGeoSet(GeoSet *gset)
+
+const bool Billboard::addDrawable(Drawable *gset)
 {
-    if (Geode::addGeoSet(gset))
+    if (Geode::addDrawable(gset))
     {
         Vec3 pos(0.0f,0.0f,0.0f);
-        while (_positionList.size()<_geosets.size())
+        while (_positionList.size()<_drawables.size())
         {
             _positionList.push_back(pos);
         }
@@ -37,11 +33,12 @@ bool Billboard::addGeoSet(GeoSet *gset)
     return false;
 }
 
-bool Billboard::addGeoSet(GeoSet *gset,const Vec3& pos)
+
+const bool Billboard::addDrawable(Drawable *gset,const Vec3& pos)
 {
-    if (Geode::addGeoSet(gset))
+    if (Geode::addDrawable(gset))
     {
-        while (_positionList.size()<_geosets.size())
+        while (_positionList.size()<_drawables.size())
         {
             _positionList.push_back(pos);
         }
@@ -50,36 +47,41 @@ bool Billboard::addGeoSet(GeoSet *gset,const Vec3& pos)
     return false;
 }
 
-bool Billboard::removeGeoSet( GeoSet *gset )
+
+const bool Billboard::removeDrawable( Drawable *gset )
 {
     PositionList::iterator pitr = _positionList.begin();
-    for (GeoSetList::iterator itr=_geosets.begin();
-         itr!=_geosets.end();
-         ++itr,++pitr)
+    for (DrawableList::iterator itr=_drawables.begin();
+        itr!=_drawables.end();
+        ++itr,++pitr)
     {
         if (itr->get()==gset)
         {
             // note ref_ptr<> automatically handles decrementing gset's reference count.
-            _geosets.erase(itr);
+            _drawables.erase(itr);
             _positionList.erase(pitr);
             _bsphere_computed = false;
             return true;
         }
     }
-    return false;    
+    return false;
 }
 
 
-void Billboard::calcRotation(const Vec3& eye_local, const Vec3& pos_local,Matrix& mat)
+void Billboard::calcRotation(const Vec3& eye_local, const Vec3& pos_local,Matrix& mat) const 
 {
     switch(_mode)
     {
         case(AXIAL_ROT):
         {
+            // note currently assumes that axis is (0,0,1) for speed of
+            // executation and implementation.  This will be rewritten
+            // on second pass of Billboard. Robert Osfield Jan 2001.
             Vec3 ev = pos_local-eye_local;
             ev.z() = 0.0f;
             float ev_length = ev.length();
-            if (ev_length>0.0f) {
+            if (ev_length>0.0f)
+            {
                 //float rotation_zrotation_z = atan2f(ev.x(),ev.y());
                 //mat.makeRot(rotation_z*180.0f/M_PI,0.0f,0.0f,1.0f);
                 float inv = 1.0f/ev_length;
@@ -92,9 +94,16 @@ void Billboard::calcRotation(const Vec3& eye_local, const Vec3& pos_local,Matrix
             }
             break;
         }
-        case(POINT_ROT_WORLD): 
+        case(POINT_ROT_WORLD):
         case(POINT_ROT_EYE):
         {
+            // currently treat both POINT_ROT_WORLD and POINT_ROT_EYE the same,
+            // this is only a temporary and 'incorrect' implementation, will
+            // implement fully on second pass of Billboard.
+            // Will also need up vector to calc POINT_ROT_EYE, so this will
+            // have to be added to the above method paramters.
+            // Robert Osfield, Jan 2001.
+
             Vec3 ev = pos_local-eye_local;
             ev.normalize();
 
@@ -120,122 +129,24 @@ void Billboard::calcRotation(const Vec3& eye_local, const Vec3& pos_local,Matrix
     }
 }
 
-void Billboard::calcTransform(const Vec3& eye_local, const Vec3& pos_local,Matrix& mat)
+
+void Billboard::calcTransform(const Vec3& eye_local, const Vec3& pos_local,Matrix& mat) const 
 {
-//    mat.makeTrans(pos_local[0],pos_local[1],pos_local[2]);
-//    mat.makeIdent();
+    //    mat.makeTrans(pos_local[0],pos_local[1],pos_local[2]);
+    //    mat.makeIdent();
     calcRotation(eye_local,pos_local,mat);
 
-//    mat.postTrans(pos_local[0],pos_local[1],pos_local[2]);
+    //    mat.postTrans(pos_local[0],pos_local[1],pos_local[2]);
     mat._mat[3][0] += pos_local[0];
     mat._mat[3][1] += pos_local[1];
     mat._mat[3][2] += pos_local[2];
 
 }
 
-bool Billboard::readLocalData(Input& fr)
-{
-    // note, free done by Node::read(Input& fr)
-    
-    bool iteratorAdvanced = false;
-
-    if (fr[0].matchWord("Mode"))
-    {
-        if (fr[1].matchWord("AXIAL_ROT"))
-        {
-            _mode = AXIAL_ROT;
-            fr+=2;
-            iteratorAdvanced = true;
-        }
-        else if  (fr[1].matchWord("POINT_ROT_EYE"))
-        {
-            _mode = POINT_ROT_EYE;
-            fr+=2;
-            iteratorAdvanced = true;
-        }
-        else if  (fr[1].matchWord("POINT_ROT_WORLD"))
-        {
-            _mode = POINT_ROT_WORLD;
-            fr+=2;
-            iteratorAdvanced = true;
-        }
-    }
-
-    // read the position data.
-    bool matchFirst = false;
-    if ((matchFirst=fr.matchSequence("Positions {")) || fr.matchSequence("Positions %i {"))
-    {
-
-        // set up coordinates.
-        int entry = fr[0].getNoNestedBrackets();
-
-        if (matchFirst)
-        {
-            fr += 2;
-        }
-        else
-        {
-            //_positionList.(capacity);
-            fr += 3;
-        }
-
-        Vec3 pos;
-        while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
-        {
-            if (fr[0].getFloat(pos[0]) && fr[1].getFloat(pos[1]) && fr[2].getFloat(pos[2]))
-            {
-                fr += 3;
-                _positionList.push_back(pos);
-            }
-            else
-            {
-                ++fr;
-            }
-        }
-
-        iteratorAdvanced = true;
-        ++fr;
-
-    }
-    
-    if (Geode::readLocalData(fr)) iteratorAdvanced = true;
-
-    return iteratorAdvanced;
-}
-
-bool Billboard::writeLocalData(Output& fw)
-{
-    
-    switch(_mode)
-    {
-    case(AXIAL_ROT): fw.indent() << "Mode AXIAL_ROT"<<endl; break;
-    case(POINT_ROT_EYE): fw.indent() << "Mode POINT_ROT_EYE"<<endl; break;
-    case(POINT_ROT_WORLD): fw.indent() << "Mode POINT_ROT_WORLD"<<endl; break;
-    }
-
-    fw.indent() << "Axis " << _axis[0] << " "<<_axis[1]<<" "<<_axis[2]<<endl;
-    
-    fw.indent() << "Positions {"<<endl;
-    fw.moveIn();
-    for(PositionList::iterator piter = _positionList.begin();
-                               piter != _positionList.end();
-                               ++piter)
-    {
-        fw.indent() << (*piter)[0] << " "<<(*piter)[1]<<" "<<(*piter)[2]<<endl;
-    }
-    fw.moveOut();
-    fw.indent() << "}"<<endl;
-    
-    Geode::writeLocalData(fw);
-    
-    return true;
-}
-
-
-bool Billboard::computeBound( void )
+const bool Billboard::computeBound() const
 {
     int i;
-    int ngsets = _geosets.size();
+    int ngsets = _drawables.size();
 
     if( ngsets == 0 ) return false;
 
@@ -243,7 +154,7 @@ bool Billboard::computeBound( void )
 
     for( i = 0; i < ngsets; i++ )
     {
-        GeoSet *gset = _geosets[i].get();
+        const Drawable *gset = _drawables[i].get();
         const BoundingBox& bbox = gset->getBound();
 
         _bsphere._center += bbox.center();
@@ -255,7 +166,7 @@ bool Billboard::computeBound( void )
     float maxd = 0.0;
     for( i = 0; i < ngsets; ++i )
     {
-        GeoSet *gset = _geosets[i].get();
+        const Drawable *gset = _drawables[i].get();
         const BoundingBox& bbox = gset->getBound();
         Vec3 local_center = _bsphere._center-_positionList[i];
         for(unsigned int c=0;c<8;++c)

@@ -13,10 +13,10 @@ namespace flt {
 
 struct SSwitch
 {
-	SRecHeader	RecHeader;
-	char	szIdent[8];     // // 7 char ASCII ID; 0 terminates
-	uint8	reserved[4];    // Reserved
-	uint32  dwCurrentMask;  // Current mask
+    SRecHeader    RecHeader;
+    char    szIdent[8];     // // 7 char ASCII ID; 0 terminates
+    uint8    reserved[4];    // Reserved
+    uint32  dwCurrentMask;  // Current mask
     int32   diWordsInMask;  // Number of 32 bit words required for each mask
                             // (number of children / 32 + number of children modulo 32)
     int32   diMasks;        // Number of masks

@@ -1,5 +1,9 @@
 // GeoSetBuilder.cpp
 
+#ifdef WIN32
+#pragma warning( disable : 4786 )
+#endif
+
 #include "flt.h"
 #include "FltFile.h"
 #include "Pool.h"
@@ -11,21 +15,21 @@
 
 #include <osg/Object>
 #include <osg/LOD>
-#include <osg/GeoState>
 #include <osg/Transparency>
 #include <osg/GeoSet>
-#include <osg/GeoState>
 #include <osg/Geode>
 #include <osg/Material>
 #include <osg/Texture>
 #include <osg/TexEnv>
+#include <osg/CullFace>
+#include <osg/PolygonOffset>
+#include <osg/Point>
 #include <osg/Notify>
 
-#include <algorithm>
 #include <map>
+#include <algorithm>
 
 using namespace flt;
-
 
 ////////////////////////////////////////////////////////////////////
 //
@@ -58,7 +62,7 @@ GeoSetBuilder::~GeoSetBuilder()
 void GeoSetBuilder::initPrimData()
 {
     _appearance.init();
-    _aVertex.erase(_aVertex.begin(), _aVertex.end());
+    _aVertex.clear();
 }
 
 
@@ -82,10 +86,10 @@ osg::Geode* GeoSetBuilder::createOsgGeoSets(osg::Geode* geode)
     {
         osg::GeoSet* gset = (*itr)->createOsgGeoSet();
         if (gset)
-            geode->addGeoSet(gset);
+            geode->addDrawable(gset);
     }
 
-    if (bInternalGeodeAllocation && (geode->getNumGeosets() == 0))
+    if (bInternalGeodeAllocation && (geode->getNumDrawables() == 0))
     {
         geode->unref();
         return NULL;
@@ -132,7 +136,6 @@ bool GeoSetBuilder::addPrimitive()
 
 //////////////////////// protected /////////////////////////////////
 
-
 TmpGeoSet* GeoSetBuilder::findMatchingGeoSet()
 {
 
@@ -143,7 +146,7 @@ TmpGeoSet* GeoSetBuilder::findMatchingGeoSet()
         if (_appearance == (*itr)->_appearance)
             return *itr;
     }
-    
+
     return NULL;
 }
 
@@ -181,21 +184,21 @@ PrimitiveType GeoSetBuilder::findPrimType( int nVertices)
 
     switch (nVertices)
     {
-    case 1:
-        primtype = osg::GeoSet::POINTS;
-        break;
-    case 2:
-        primtype = osg::GeoSet::LINES;
-        break;
-    case 3:
-        primtype = osg::GeoSet::TRIANGLES;
-        break;
-    case 4:
-        primtype = osg::GeoSet::QUADS;
-        break;
-    default:
-        if (nVertices >= 5) primtype = osg::GeoSet::POLYGON;
-        break;
+        case 1:
+            primtype = osg::GeoSet::POINTS;
+            break;
+        case 2:
+            primtype = osg::GeoSet::LINES;
+            break;
+        case 3:
+            primtype = osg::GeoSet::TRIANGLES;
+            break;
+        case 4:
+            primtype = osg::GeoSet::QUADS;
+            break;
+        default:
+            if (nVertices >= 5) primtype = osg::GeoSet::POLYGON;
+            break;
     }
 
     return primtype;
@@ -209,7 +212,6 @@ PrimitiveType GeoSetBuilder::findPrimType( int nVertices)
 ////////////////////////////////////////////////////////////////////
 
 // GeoSet with dynamic size.  Used by GeoSetBuilder as a temp. buffer.
-
 
 TmpGeoSet::TmpGeoSet(FltFile* pFltFile)
 {
@@ -248,37 +250,39 @@ osg::GeoSet* TmpGeoSet::createOsgGeoSet()
     gset->setNumPrims(prims);
     gset->setPrimType(_appearance.getPrimType());
 
-    osg::GeoState* gstate = new osg::GeoState;
-    gset->setGeoState(gstate);
+    osg::StateSet* gstate = new osg::StateSet;
+    gset->setStateSet(gstate);
 
     // Material
     osg::Material* osgMaterial = _appearance.getMaterial();
     if (osgMaterial)
-    {
-        gstate->setAttribute(osg::GeoState::MATERIAL, osgMaterial);
-    }
+        gstate->setAttribute(osgMaterial);
 
-    // Color BIND_OVERALL
-    if (_appearance.getColorBinding() == osg::GeoSet::BIND_OVERALL)
+    // Color
+    switch(_appearance.getColorBinding())
     {
-        osg::Vec4* color = new osg::Vec4[1];
-        *color = _appearance.getColor();
-        gset->setColorBinding(_appearance.getColorBinding());
-        gset->setColors(color);
-    }
+    case osg::GeoSet::BIND_OVERALL:
+        {
+            osg::Vec4* color = new osg::Vec4[1];
+            *color = _appearance.getFaceColor();
+            gset->setColorBinding(osg::GeoSet::BIND_OVERALL);
+            gset->setColors(color);
+        }
+        break;
 
-    // Color BIND_PERVERTEX
-    if (_appearance.getColorBinding() == osg::GeoSet::BIND_PERVERTEX)
-    {
-        gset->setColorBinding(_appearance.getColorBinding());
-        gset->setColors(new osg::Vec4[indices]);
+    case osg::GeoSet::BIND_PERVERTEX:
+        {
+            gset->setColorBinding(osg::GeoSet::BIND_PERVERTEX);
+            gset->setColors(new osg::Vec4[indices]);
+        }
+        break;
     }
 
     // Transparency
     if (_appearance.getTransparency())
     {
-        gstate->setMode(osg::GeoState::TRANSPARENCY, osg::GeoState::ON);
-        gstate->setAttribute(osg::GeoState::TRANSPARENCY, new osg::Transparency);
+        gstate->setMode(GL_BLEND,osg::StateAttribute::ON);
+        gstate->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
     }
 
     // Cull face
@@ -287,29 +291,27 @@ osg::GeoSet* TmpGeoSet::createOsgGeoSet()
         osg::CullFace* cullface = new osg::CullFace;
         if (cullface)
         {
-            gstate->setMode(osg::GeoState::FACE_CULL, osg::GeoState::ON);
             cullface->setMode(osg::CullFace::BACK);
-            gstate->setAttribute(osg::GeoState::FACE_CULL, cullface);
+            gstate->setAttributeAndModes(cullface, osg::StateAttribute::ON);
         }
     }
     else
     {
-        gstate->setMode(osg::GeoState::FACE_CULL, osg::GeoState::OFF);
+        gstate->setMode(GL_CULL_FACE, osg::StateAttribute::OFF);
     }
 
     // Texture
     if (_appearance.getTexture())
     {
-        gstate->setMode(      osg::GeoState::TEXTURE, osg::GeoState::ON );
-        gstate->setAttribute( osg::GeoState::TEXTURE, _appearance.getTexture() );
-        gstate->setAttribute( osg::GeoState::TEXENV, new osg::TexEnv );
+        gstate->setAttributeAndModes( _appearance.getTexture(), osg::StateAttribute::ON );
+        gstate->setAttribute( new osg::TexEnv );
     }
 
     // Lighting
     if (_appearance.getLighting())
-        gstate->setMode( osg::GeoState::LIGHTING, osg::GeoState::ON );
+        gstate->setMode( GL_LIGHTING, osg::StateAttribute::ON );
     else
-        gstate->setMode( osg::GeoState::LIGHTING, osg::GeoState::OFF );
+        gstate->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
 
     // Subface
     if (_appearance.getSubface() > 0)
@@ -318,9 +320,9 @@ osg::GeoSet* TmpGeoSet::createOsgGeoSet()
         if (polyoffset)
         {
             int level = _appearance.getSubface();
-            gstate->setMode(osg::GeoState::POLYGON_OFFSET,osg::GeoState::ON);
-            polyoffset->setOffset(-1*level, -20*level);
-            gstate->setAttribute(osg::GeoState::POLYGON_OFFSET, polyoffset);
+            polyoffset->setFactor(-1*level);
+            polyoffset->setUnits(-20*level);
+            gstate->setAttributeAndModes(polyoffset,osg::StateAttribute::ON);
         }
     }
 
@@ -330,10 +332,8 @@ osg::GeoSet* TmpGeoSet::createOsgGeoSet()
         osg::Point* point = new osg::Point;
         if (point)
         {
-            gstate->setMode(osg::GeoState::POINT,osg::GeoState::ON);
             point->setSize(8);
-            point->enableSmooth();
-            gstate->setAttribute(osg::GeoState::POINT, point);
+            gstate->setAttributeAndModes(point,osg::StateAttribute::ON);
         }
     }
 
@@ -350,36 +350,52 @@ osg::GeoSet* TmpGeoSet::createOsgGeoSet()
     // Vertices
     switch(_appearance.getVertexOp())
     {
-    case VERTEX_C_OP:
-        gset->setCoords(new osg::Vec3[indices]);
-       break;
-    case VERTEX_CN_OP:
-        gset->setNormalBinding(osg::GeoSet::BIND_PERVERTEX);
-        gset->setCoords(new osg::Vec3[indices]);
-        gset->setNormals(new osg::Vec3[indices]);
-        break;
-    case VERTEX_CT_OP:
-        gset->setTextureBinding(osg::GeoSet::BIND_PERVERTEX);
-        gset->setCoords(new osg::Vec3[indices]);
-        gset->setTextureCoords(new osg::Vec2[indices]);
-        break;
-    case VERTEX_CNT_OP:
-        gset->setNormalBinding(osg::GeoSet::BIND_PERVERTEX);
-        gset->setTextureBinding(osg::GeoSet::BIND_PERVERTEX);
-        gset->setCoords(new osg::Vec3[indices]);
-        gset->setNormals(new osg::Vec3[indices]);
-        gset->setTextureCoords(new osg::Vec2[indices]);
-        break;
-    case OLD_VERTEX_OP:
-        gset->setCoords(new osg::Vec3[indices]);
-       break;
-    case OLD_VERTEX_COLOR_OP:
-        gset->setCoords(new osg::Vec3[indices]);
-       break;
-    case OLD_VERTEX_COLOR_NORMAL_OP:
-        gset->setCoords(new osg::Vec3[indices]);
-//      gset->setNormals(new osg::Vec3[indices]);
-       break;
+        case VERTEX_C_OP:
+            gset->setCoords(new osg::Vec3[indices]);
+            break;
+        case VERTEX_CN_OP:
+            gset->setNormalBinding(osg::GeoSet::BIND_PERVERTEX);
+            gset->setCoords(new osg::Vec3[indices]);
+            gset->setNormals(new osg::Vec3[indices]);
+            break;
+        case VERTEX_CT_OP:
+            gset->setTextureBinding(osg::GeoSet::BIND_PERVERTEX);
+            gset->setCoords(new osg::Vec3[indices]);
+            gset->setTextureCoords(new osg::Vec2[indices]);
+            break;
+        case VERTEX_CNT_OP:
+            gset->setNormalBinding(osg::GeoSet::BIND_PERVERTEX);
+            gset->setTextureBinding(osg::GeoSet::BIND_PERVERTEX);
+            gset->setCoords(new osg::Vec3[indices]);
+            gset->setNormals(new osg::Vec3[indices]);
+            gset->setTextureCoords(new osg::Vec2[indices]);
+            break;
+        case OLD_VERTEX_OP:
+            gset->setCoords(new osg::Vec3[indices]);
+            if (_appearance.getTexture())
+            {
+                gset->setTextureBinding(osg::GeoSet::BIND_PERVERTEX);
+                gset->setTextureCoords(new osg::Vec2[indices]);
+            }
+            break;
+        case OLD_VERTEX_COLOR_OP:
+            gset->setCoords(new osg::Vec3[indices]);
+            if (_appearance.getTexture())
+            {
+                gset->setTextureBinding(osg::GeoSet::BIND_PERVERTEX);
+                gset->setTextureCoords(new osg::Vec2[indices]);
+            }
+            break;
+        case OLD_VERTEX_COLOR_NORMAL_OP:
+            gset->setCoords(new osg::Vec3[indices]);
+            gset->setNormalBinding(osg::GeoSet::BIND_PERVERTEX);
+            gset->setNormals(new osg::Vec3[indices]);
+            if (_appearance.getTexture())
+            {
+                gset->setTextureBinding(osg::GeoSet::BIND_PERVERTEX);
+                gset->setTextureCoords(new osg::Vec2[indices]);
+            }
+            break;
 
     }
 
@@ -401,14 +417,13 @@ osg::GeoSet* TmpGeoSet::createOsgGeoSet()
 
 ///////////////////////// private //////////////////////////////////
 
-
 void TmpGeoSet::setVertex(osg::GeoSet* gset, int index, Record* vertex)
 {
     bool bColorBindPerVertex = _appearance.getColorBinding() == osg::GeoSet::BIND_PERVERTEX;
 
     switch(_appearance.getVertexOp())
     {
-    case VERTEX_C_OP:
+        case VERTEX_C_OP:
         {
             SVertex* pVert = (SVertex*)vertex->getData();
             osg::Vec3* coords = gset->getCoords();
@@ -417,23 +432,28 @@ void TmpGeoSet::setVertex(osg::GeoSet* gset, int index, Record* vertex)
                 (float)pVert->Coord.x(),
                 (float)pVert->Coord.y(),
                 (float)pVert->Coord.z());
+
             if (bColorBindPerVertex)
             {
                 osg::Vec4* colors = gset->getColors();
 
-                if (pVert->swFlags & BIT3)
-                     colors[index] = pVert->PackedColor.get();
+                if (pVert->swFlags & V_NO_COLOR_BIT)
+                    colors[index] = _appearance.getFaceColor();
                 else
                 {
-                    ColorPool* pColorPool = _pFltFile->getColorPool();
-                    if (pColorPool)
+                    if (pVert->swFlags & V_PACKED_COLOR_BIT)
+                        colors[index] = pVert->PackedColor.get();
+                    else
+                    {
+                        ColorPool* pColorPool = _pFltFile->getColorPool();
                         colors[index] = pColorPool->getColor(pVert->dwVertexColorIndex);
+                    }
                 }
             }
         }
         break;
 
-    case VERTEX_CN_OP:
+        case VERTEX_CN_OP:
         {
             SNormalVertex* pVert = (SNormalVertex*)vertex->getData();
             osg::Vec3* coords = gset->getCoords();
@@ -447,28 +467,33 @@ void TmpGeoSet::setVertex(osg::GeoSet* gset, int index, Record* vertex)
                 (float)pVert->Normal.x(),
                 (float)pVert->Normal.y(),
                 (float)pVert->Normal.z());
+
             if (bColorBindPerVertex)
             {
                 osg::Vec4* colors = gset->getColors();
 
-                if (pVert->swFlags & BIT3)
-                     colors[index] = pVert->PackedColor.get();
+                if (pVert->swFlags & V_NO_COLOR_BIT)
+                    colors[index] = _appearance.getFaceColor();
                 else
                 {
-                    ColorPool* pColorPool = _pFltFile->getColorPool();
-                    if (pColorPool)
+                    if (pVert->swFlags & V_PACKED_COLOR_BIT)
+                        colors[index] = pVert->PackedColor.get();
+                    else
+                    {
+                        ColorPool* pColorPool = _pFltFile->getColorPool();
                         colors[index] = pColorPool->getColor(pVert->dwVertexColorIndex);
+                    }
                 }
             }
         }
         break;
 
-    case VERTEX_CNT_OP:
+        case VERTEX_CNT_OP:
         {
             SNormalTextureVertex* pVert = (SNormalTextureVertex*)vertex->getData();
             osg::Vec3* coords = gset->getCoords();
             osg::Vec3* normals = gset->getNormals();
-            osg::Vec2* texuv = gset->getTCoords();
+            osg::Vec2* texuv = gset->getTextureCoords();
 
             coords[index].set(
                 (float)pVert->Coord.x(),
@@ -481,27 +506,32 @@ void TmpGeoSet::setVertex(osg::GeoSet* gset, int index, Record* vertex)
             texuv[index].set(
                 (float)pVert->Texture.x(),
                 (float)pVert->Texture.y());
+
             if (bColorBindPerVertex)
             {
                 osg::Vec4* colors = gset->getColors();
 
-                if (pVert->swFlags & BIT3)
-                     colors[index] = pVert->PackedColor.get();
+                if (pVert->swFlags & V_NO_COLOR_BIT)
+                    colors[index] = _appearance.getFaceColor();
                 else
                 {
-                    ColorPool* pColorPool = _pFltFile->getColorPool();
-                    if (pColorPool)
+                    if (pVert->swFlags & V_PACKED_COLOR_BIT)
+                        colors[index] = pVert->PackedColor.get();
+                    else
+                    {
+                        ColorPool* pColorPool = _pFltFile->getColorPool();
                         colors[index] = pColorPool->getColor(pVert->dwVertexColorIndex);
+                    }
                 }
             }
         }
         break;
 
-    case VERTEX_CT_OP:
+        case VERTEX_CT_OP:
         {
             STextureVertex* pVert = (STextureVertex*)vertex->getData();
             osg::Vec3* coords = gset->getCoords();
-            osg::Vec2* texuv = gset->getTCoords();
+            osg::Vec2* texuv = gset->getTextureCoords();
 
             coords[index].set(
                 (float)pVert->Coord.x(),
@@ -510,65 +540,111 @@ void TmpGeoSet::setVertex(osg::GeoSet* gset, int index, Record* vertex)
             texuv[index].set(
                 (float)pVert->Texture.x(),
                 (float)pVert->Texture.y());
+
             if (bColorBindPerVertex)
             {
                 osg::Vec4* colors = gset->getColors();
 
-                if (pVert->swFlags & BIT3)
-                     colors[index] = pVert->PackedColor.get();
+                if (pVert->swFlags & V_NO_COLOR_BIT)
+                    colors[index] = _appearance.getFaceColor();
                 else
                 {
-                    ColorPool* pColorPool = _pFltFile->getColorPool();
-                    if (pColorPool)
+                    if (pVert->swFlags & V_PACKED_COLOR_BIT)
+                        colors[index] = pVert->PackedColor.get();
+                    else
+                    {
+                        ColorPool* pColorPool = _pFltFile->getColorPool();
                         colors[index] = pColorPool->getColor(pVert->dwVertexColorIndex);
+                    }
                 }
             }
         }
         break;
 
-    case OLD_VERTEX_OP:
+        case OLD_VERTEX_OP:
         {
             SOldVertex* pVert = (SOldVertex*)vertex->getData();
             osg::Vec3* coords = gset->getCoords();
+            osg::Vec2* texuv = gset->getTextureCoords();
 
             coords[index].set(
                 (float)pVert->v[0],
                 (float)pVert->v[1],
                 (float)pVert->v[2]);
+
+            if (texuv && vertex->getSize() >= sizeof(SOldVertex))
+            {
+                texuv[index].set(
+                    (float)pVert->t[0],
+                    (float)pVert->t[1]);
+            }
         }
         break;
 
-    case OLD_VERTEX_COLOR_OP:
+        case OLD_VERTEX_COLOR_OP:
         {
             SOldVertexColor* pVert = (SOldVertexColor*)vertex->getData();
             osg::Vec3* coords = gset->getCoords();
+            osg::Vec2* texuv = gset->getTextureCoords();
 
             coords[index].set(
                 (float)pVert->v[0],
                 (float)pVert->v[1],
                 (float)pVert->v[2]);
+
+            if (bColorBindPerVertex)
+            {
+                osg::Vec4* colors = gset->getColors();
+                ColorPool* pColorPool = _pFltFile->getColorPool();
+                if (pColorPool && (pVert->color_index >= 0))
+                    colors[index] = pColorPool->getColor(pVert->color_index);
+                else
+                    colors[index] = _appearance.getFaceColor();
+            }
+
+            if (texuv && vertex->getSize() >= sizeof(SOldVertexColor))
+            {
+                texuv[index].set(
+                    (float)pVert->t[0],
+                    (float)pVert->t[1]);
+            }
         }
         break;
 
-    case OLD_VERTEX_COLOR_NORMAL_OP:
+        case OLD_VERTEX_COLOR_NORMAL_OP:
         {
             SOldVertexColorNormal* pVert = (SOldVertexColorNormal*)vertex->getData();
             osg::Vec3* coords = gset->getCoords();
-//          osg::Vec3* normals = gset->getNormals();
+            osg::Vec3* normals = gset->getNormals();
+            osg::Vec2* texuv = gset->getTextureCoords();
 
             coords[index].set(
-                (float)pVert->Coord[0],
-                (float)pVert->Coord[1],
-                (float)pVert->Coord[2]);
-/*
+                (float)pVert->v[0],
+                (float)pVert->v[1],
+                (float)pVert->v[2]);
             normals[index].set(
-                (float)pVert->Normal[0],
-                (float)pVert->Normal[1],
-                (float)pVert->Normal[2]);
-*/
+                (float)pVert->n[0] / (1<<30),    // =pow(2,30)
+                (float)pVert->n[1] / (1<<30),
+                (float)pVert->n[2] / (1<<30));
+
+            if (bColorBindPerVertex)
+            {
+                osg::Vec4* colors = gset->getColors();
+                ColorPool* pColorPool = _pFltFile->getColorPool();
+                if (pColorPool && (pVert->color_index >= 0))
+                    colors[index] = pColorPool->getColor(pVert->color_index);
+                else
+                    colors[index] = _appearance.getFaceColor();
+            }
+
+            if (texuv && vertex->getSize() >= sizeof(SOldVertexColorNormal))
+            {
+                texuv[index].set(
+                    (float)pVert->t[0],
+                    (float)pVert->t[1]);
+            }
         }
         break;
     }
 }
-
 

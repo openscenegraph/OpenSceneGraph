@@ -2,55 +2,51 @@
 include ../../Make/makedefs
 
 C++FILES = \
-	Registry.cpp\
-	OSG.cpp\
 	AlphaFunc.cpp\
-	Group.cpp\
-	Field.cpp\
-	FieldReader.cpp\
-	FieldReaderIterator.cpp\
+	Billboard.cpp\
+	BoundingBox.cpp\
+	BoundingSphere.cpp\
+	Camera.cpp\
+	ClipPlane.cpp \
+	ColorMask.cpp \
+	CullFace.cpp\
+	Depth.cpp \
+	Drawable.cpp\
+	Fog.cpp\
+	FrontFace.cpp\
+	Geode.cpp\
 	GeoSet.cpp\
 	GeoSet_ogl.cpp\
-	GeoState.cpp\
-	Geode.cpp\
-	Input.cpp\
-        FileNameUtils.cpp\
+        GLExtensions.cpp\
+	Group.cpp\
+	Image.cpp\
+	Impostor.cpp\
+	ImpostorSprite.cpp\
 	Light.cpp\
 	LightSource.cpp\
-	Lighting.cpp\
+        LineSegment.cpp\
+	LOD.cpp\
 	Material.cpp\
 	Matrix.cpp\
-        Quat.cpp\
-        Seg.cpp\
 	Node.cpp\
 	NodeVisitor.cpp\
+        Notify.cpp\
 	Object.cpp\
-	Output.cpp\
-        DynamicLibrary.cpp\
+        Point.cpp\
+	PolygonMode.cpp\
+        PolygonOffset.cpp\
+        Quat.cpp\
+	State.cpp\
+	StateSet.cpp\
+	Stencil.cpp \
+	Switch.cpp\
 	TexEnv.cpp\
 	TexGen.cpp\
-	Image.cpp\
-	Texture.cpp\
-	DCS.cpp\
-	Scene.cpp\
-	Switch.cpp\
-	Sequence.cpp\
-	LOD.cpp\
-	Billboard.cpp\
-	BoundingSphere.cpp\
-	BoundingBox.cpp\
-	Transparency.cpp\
-	CullFace.cpp\
 	TexMat.cpp\
+	Texture.cpp\
 	Timer.cpp\
-	Fog.cpp\
-	ReaderWriterOSG.cpp\
-	ReaderWriterRGB.cpp\
-	Camera.cpp\
-        Notify.cpp\
-        ExtensionSupported.cpp\
-        Point.cpp\
-        PolygonOffset.cpp\
+	Transform.cpp\
+	Transparency.cpp\
         Version.cpp\
         
 
@@ -63,56 +59,61 @@ TARGET_INCLUDE_FILES = \
 	osg/Billboard\
 	osg/BoundingBox\
 	osg/BoundingSphere\
+	osg/BoundsChecking\
 	osg/Camera\
+	osg/ClipPlane\
+	osg/ClippingVolume\
+	osg/ColorMask\
 	osg/CullFace\
-	osg/DCS\
-	osg/DynamicLibrary\
+	osg/Depth\
+	osg/Drawable\
 	osg/Export\
-	osg/Field\
-	osg/FieldReader\
-	osg/FieldReaderIterator\
-	osg/FileNameUtils\
 	osg/Fog\
+	osg/FrontFace\
+	osg/GL\
+	osg/GLExtensions\
 	osg/GeoSet\
-	osg/GeoState\
 	osg/Geode\
 	osg/Group\
-	osg/GL\
 	osg/Image\
-	osg/Input\
+	osg/Impostor\
+	osg/ImpostorSprite\
 	osg/LOD\
 	osg/Light\
 	osg/LightSource\
-	osg/Lighting\
+	osg/LineSegment\
 	osg/Material\
 	osg/Matrix\
+	osg/MemoryAdapter\
 	osg/Node\
-	osg/Notify\
 	osg/NodeVisitor\
-	osg/OSG\
+	osg/Notify\
 	osg/Object\
-	osg/Output\
 	osg/Point\
+	osg/PolygonMode\
 	osg/PolygonOffset\
+	osg/Plane\
 	osg/Quat\
 	osg/Referenced\
-	osg/Registry\
-	osg/Scene\
-	osg/Seg\
-	osg/Sequence\
 	osg/State\
+	osg/StateAttribute\
+	osg/StateSet\
+	osg/Stencil\
 	osg/Switch\
 	osg/TexEnv\
 	osg/TexGen\
 	osg/TexMat\
 	osg/Texture\
-	osg/Transparency\
 	osg/Timer\
+	osg/Transform\
+	osg/Transparency\
 	osg/Types\
 	osg/Vec2\
 	osg/Vec3\
 	osg/Vec4\
 	osg/Version\
+	osg/mem_ptr\
+	osg/ref_ptr\
 
 
 TARGET_DATA_FILES = \
@@ -137,7 +138,7 @@ TARGET_DATA_FILES = \
 	Images/white.rgb\
 
 
-LIBS    = -ldl
+LIBS    =  -lGLU -lGL -lm
 
 LIB	= ../../lib/lib$(TARGET_BASENAME).so
 #LIB	= ../../lib/lib$(TARGET_BASENAME).a

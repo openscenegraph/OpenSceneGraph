@@ -1,5 +1,6 @@
-#include "osgUtil/TrackballManipulator"
-#include "osg/Notify"
+#include <osgUtil/TrackballManipulator>
+#include <osg/Types>
+#include <osg/Notify>
 
 using namespace osg;
 using namespace osgUtil;
@@ -11,71 +12,79 @@ TrackballManipulator::TrackballManipulator()
     _thrown = false;
 }
 
+
 TrackballManipulator::~TrackballManipulator()
 {
 }
+
 
 void TrackballManipulator::setNode(osg::Node* node)
 {
     _node = node;
     if (_node.get())
     {
-	const osg::BoundingSphere& boundingSphere=_node->getBound();
+        const osg::BoundingSphere& boundingSphere=_node->getBound();
         _modelScale = boundingSphere._radius;
     }
 }
 
-osg::Node* TrackballManipulator::getNode() const
+
+const osg::Node* TrackballManipulator::getNode() const
 {
     return _node.get();
 }
 
-void TrackballManipulator::home(GUIEventAdapter& /*ea*/,GUIActionAdapter& us)
+
+                                 /*ea*/
+void TrackballManipulator::home(const GUIEventAdapter& ,GUIActionAdapter& us)
 {
     if(_node.get() && _camera.get())
     {
 
-	const osg::BoundingSphere& boundingSphere=_node->getBound();
+        const osg::BoundingSphere& boundingSphere=_node->getBound();
 
-        _camera->setView(boundingSphere._center+osg::Vec3( 0.0,-2.0f * boundingSphere._radius,0.0f),	// eye
-                         boundingSphere._center,                                // look
-                         osg::Vec3(0.0f,0.0f,1.0f));	                        // up
-                         
-        us.needRedraw();
+        _camera->setView(boundingSphere._center+osg::Vec3( 0.0,-2.0f * boundingSphere._radius,0.0f),
+                        boundingSphere._center,
+                        osg::Vec3(0.0f,0.0f,1.0f));
+
+        us.requestRedraw();
     }
-    
+
 }
 
-void TrackballManipulator::init(GUIEventAdapter& /*ea*/,GUIActionAdapter& /*us*/)
+
+void TrackballManipulator::init(const GUIEventAdapter& ,GUIActionAdapter& )
 {
     flushMouseEventStack();
 }
 
-bool TrackballManipulator::update(GUIEventAdapter& ea,GUIActionAdapter& us)
+
+bool TrackballManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
 {
     if(!_camera.get()) return false;
-    
+
     switch(ea.getEventType())
     {
-    case(GUIEventAdapter::PUSH):
+        case(GUIEventAdapter::PUSH):
         {
             flushMouseEventStack();
             addMouseEvent(ea);
-            if (calcMovement()) us.needRedraw();
-            us.needContinuousUpdate(false);
+            if (calcMovement()) us.requestRedraw();
+            us.requestContinuousUpdate(false);
             _thrown = false;
         }
         return true;
-    case(GUIEventAdapter::RELEASE):
+        case(GUIEventAdapter::RELEASE):
         {
-            if (ea.getButtonMask()==0) {
+            if (ea.getButtonMask()==0)
+            {
 
                 if (isMouseMoving())
                 {
                     if (calcMovement())
                     {
-                        us.needRedraw();
-                        us.needContinuousUpdate(true);
+                        us.requestRedraw();
+                        us.requestContinuousUpdate(true);
                         _thrown = true;
                     }
                 }
@@ -83,8 +92,8 @@ bool TrackballManipulator::update(GUIEventAdapter& ea,GUIActionAdapter& us)
                 {
                     flushMouseEventStack();
                     addMouseEvent(ea);
-                    if (calcMovement()) us.needRedraw();
-                    us.needContinuousUpdate(false);
+                    if (calcMovement()) us.requestRedraw();
+                    us.requestContinuousUpdate(false);
                     _thrown = false;
                 }
 
@@ -93,46 +102,47 @@ bool TrackballManipulator::update(GUIEventAdapter& ea,GUIActionAdapter& us)
             {
                 flushMouseEventStack();
                 addMouseEvent(ea);
-                if (calcMovement()) us.needRedraw();
-                us.needContinuousUpdate(false);
+                if (calcMovement()) us.requestRedraw();
+                us.requestContinuousUpdate(false);
                 _thrown = false;
             }
         }
         return true;
-    case(GUIEventAdapter::DRAG):
+        case(GUIEventAdapter::DRAG):
         {
             addMouseEvent(ea);
-            if (calcMovement()) us.needRedraw();
-            us.needContinuousUpdate(false);
+            if (calcMovement()) us.requestRedraw();
+            us.requestContinuousUpdate(false);
             _thrown = false;
         }
         return true;
-    case(GUIEventAdapter::MOVE):
+        case(GUIEventAdapter::MOVE):
         {
         }
         return false;
-    case(GUIEventAdapter::KEYBOARD):
-        if (ea.getKey()==' ') 
-        {
-            flushMouseEventStack();
-            _thrown = false;
-            home(ea,us);
-            us.needRedraw();
-            us.needContinuousUpdate(false);
-            return true;
-        }
-        return false;
-    case(GUIEventAdapter::FRAME):
-        if (_thrown)
-        {
-            if (calcMovement()) us.needRedraw();
-            return true;
-        }
-        return false;
-    default:
-        return false;
+        case(GUIEventAdapter::KEYBOARD):
+            if (ea.getKey()==' ')
+            {
+                flushMouseEventStack();
+                _thrown = false;
+                home(ea,us);
+                us.requestRedraw();
+                us.requestContinuousUpdate(false);
+                return true;
+            }
+            return false;
+        case(GUIEventAdapter::FRAME):
+            if (_thrown)
+            {
+                if (calcMovement()) us.requestRedraw();
+                return true;
+            }
+            return false;
+        default:
+            return false;
     }
 }
+
 
 bool TrackballManipulator::isMouseMoving()
 {
@@ -142,11 +152,12 @@ bool TrackballManipulator::isMouseMoving()
 
     float dx = _ga_t0->getX()-_ga_t1->getX();
     float dy = _ga_t0->getY()-_ga_t1->getY();
-    float len = sqrtf(dx*dx+dy*dy);    
+    float len = sqrtf(dx*dx+dy*dy);
     float dt = _ga_t0->time()-_ga_t1->time();
 
     return (len>dt*velocity);
 }
+
 
 void TrackballManipulator::flushMouseEventStack()
 {
@@ -154,11 +165,13 @@ void TrackballManipulator::flushMouseEventStack()
     _ga_t0 = NULL;
 }
 
-void TrackballManipulator::addMouseEvent(GUIEventAdapter& ea)
+
+void TrackballManipulator::addMouseEvent(const GUIEventAdapter& ea)
 {
     _ga_t1 = _ga_t0;
     _ga_t0 = &ea;
 }
+
 
 bool TrackballManipulator::calcMovement()
 {
@@ -167,7 +180,6 @@ bool TrackballManipulator::calcMovement()
 
     float dx = dx = _ga_t0->getX()-_ga_t1->getX();
     float dy = _ga_t0->getY()-_ga_t1->getY();
-
 
     // return if there is no movement.
     if (dx==0 && dy==0) return false;
@@ -178,7 +190,7 @@ bool TrackballManipulator::calcMovement()
 
         // rotate camera.
 
-        osg::Vec3 center = _camera->getLookPoint();
+        osg::Vec3 center = _camera->getCenterPoint();
         osg::Vec3 axis;
         float angle;
 
@@ -207,18 +219,18 @@ bool TrackballManipulator::calcMovement()
         mat.postRot(angle,axis.x(),axis.y(),axis.z());
         mat.postTrans(center.x(),center.y(),center.z());
 
-        _camera->mult(*_camera,mat);
+        _camera->transformLookAt(mat);
 
         return true;
 
     }
-    else if (buttonMask==GUIEventAdapter::MIDDLE_BUTTON || 
-             buttonMask==(GUIEventAdapter::LEFT_BUTTON|GUIEventAdapter::RIGHT_BUTTON))
+    else if (buttonMask==GUIEventAdapter::MIDDLE_BUTTON ||
+        buttonMask==(GUIEventAdapter::LEFT_BUTTON|GUIEventAdapter::RIGHT_BUTTON))
     {
 
         // pan model.
 
-        float scale = 0.0015f*_camera->getFocalDistance();
+        float scale = 0.0015f*_camera->getFocalLength();
 
         osg::Vec3 uv = _camera->getUpVector();
         osg::Vec3 sv = _camera->getSideVector();
@@ -227,8 +239,8 @@ bool TrackballManipulator::calcMovement()
         osg::Matrix mat;
         mat.makeTrans(dv.x(),dv.y(),dv.z());
 
-        _camera->mult(*_camera,mat);
-        
+        _camera->transformLookAt(mat);
+
         return true;
 
     }
@@ -237,42 +249,43 @@ bool TrackballManipulator::calcMovement()
 
         // zoom model.
 
-        float fd = _camera->getFocalDistance();
+        float fd = _camera->getFocalLength();
         float scale = 1.0f-dy*0.001f;
         if (fd*scale>_modelScale*_minimumZoomScale)
         {
             // zoom camera in.
-            osg::Vec3 center = _camera->getLookPoint();
+            osg::Vec3 center = _camera->getCenterPoint();
 
             osg::Matrix mat;
             mat.makeTrans(-center.x(),-center.y(),-center.z());
             mat.postScale(scale,scale,scale);
             mat.postTrans(center.x(),center.y(),center.z());
 
-            _camera->mult(*_camera,mat);
+            _camera->transformLookAt(mat);
 
         }
-        else 
+        else
         {
 
-//            notify(DEBUG) << "Pushing forward"<<endl;
+            //            notify(DEBUG_INFO) << "Pushing forward"<<endl;
             // push the camera forward.
             float scale = 0.0015f*fd;
             osg::Vec3 dv = _camera->getLookVector()*(dy*scale);
-            
+
             osg::Matrix mat;
             mat.makeTrans(dv.x(),dv.y(),dv.z());
 
-            _camera->mult(*_camera,mat);
+            _camera->transformLookAt(mat);
 
         }
 
         return true;
 
     }
-    
+
     return false;
 }
+
 
 /*
  * This size should really be based on the distance from the center of
@@ -329,6 +342,7 @@ void TrackballManipulator::trackball(osg::Vec3& axis,float& angle, float p1x, fl
 
 }
 
+
 /*
  * Project an x,y pair onto a sphere of radius r OR a hyperbolic sheet
  * if we are away from the center of the sphere.
@@ -338,9 +352,13 @@ float TrackballManipulator::tb_project_to_sphere(float r, float x, float y)
     float d, t, z;
 
     d = sqrt(x*x + y*y);
-    if (d < r * 0.70710678118654752440) {    /* Inside sphere */
+                                 /* Inside sphere */
+    if (d < r * 0.70710678118654752440)
+    {
         z = sqrt(r*r - d*d);
-    } else {           /* On hyperbola */
+    }                            /* On hyperbola */
+    else
+    {
         t = r / 1.41421356237309504880;
         z = t*t / d;
     }

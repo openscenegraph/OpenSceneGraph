@@ -1,0 +1,27 @@
+/* XPM */
+static char *icon4_xpm[] = {
+/* width height ncolors chars_per_pixel */
+"16 16 4 1",
+/* colors */
+"` c #000000",
+"a c #FFFFFF",
+"b c #FFFF00",
+"c c #808000",
+/* pixels */
+"aaaaaaaaaaaaaaaa",
+"aaaaac````caaaaa",
+"aaac`bbbbbb`caaa",
+"aac`bbbbbbbb`caa",
+"aa`bbbc``cbbb`aa",
+"accbb`caac`bbcca",
+"a`bbccaaaaccbbca",
+"a`bb`aaaaaa`bb`a",
+"a`bb`aaaaaa`bb`a",
+"a`bbccaaaaccbbca",
+"accbb`caac`bbcca",
+"aa`bbbc``cbbb`aa",
+"aaa`bbbbbbbb`aaa",
+"aaaa`bbbbbb`aaaa",
+"aaaaac````caaaaa",
+"aaaaaaaaaaaaaaaa"
+};

@@ -1,0 +1,22 @@
+// The following symbole has a underscore suffix for compatibility.
+#ifndef OSGWX_EXPORT_
+#define OSGWX_EXPORT_ 1
+
+#ifdef WIN32
+	#pragma warning( disable : 4251 )
+	#pragma warning( disable : 4275 )
+	#pragma warning( disable : 4786 )
+#endif
+
+#if defined(_MSC_VER)
+	#  ifdef OSGWX_LIBRARY
+	#    define OSGWX_EXPORT   __declspec(dllexport)
+	#  else
+	#    define OSGWX_EXPORT   __declspec(dllimport)
+	#endif /* OSGWX_LIBRARY */
+#else
+	#define OSGWX_EXPORT 
+#endif 
+
+#endif
+

@@ -7,13 +7,12 @@
 #include "ReaderWriterFLT.h"
 #include "FltFile.h"
 
-#include <osg/Registry>
 #include <osg/Object>
 #include <osg/Node>
 
+#include <osgDB/Registry>
 
 using namespace flt;
-
 
 osg::Object* ReaderWriterFLT::readObject(const std::string& fileName)
 {
@@ -33,9 +32,4 @@ osg::Node* ReaderWriterFLT::readNode(const std::string& fileName)
 
 // now register with Registry to instantiate the above
 // reader/writer.
-osg::RegisterReaderWriterProxy<ReaderWriterFLT> g_fltReaderWriterProxy;
-
-
-
-
-
+osgDB::RegisterReaderWriterProxy<ReaderWriterFLT> g_fltReaderWriterProxy;

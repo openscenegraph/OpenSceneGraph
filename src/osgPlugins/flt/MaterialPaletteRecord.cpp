@@ -6,16 +6,13 @@
 
 using namespace flt;
 
-
 ////////////////////////////////////////////////////////////////////
 //
 //                       MaterialPaletteRecord
 //
 ////////////////////////////////////////////////////////////////////
 
-
 RegisterRecordProxy<MaterialPaletteRecord> g_MaterialPaletteProxy;
-
 
 MaterialPaletteRecord::MaterialPaletteRecord()
 {
@@ -31,7 +28,7 @@ MaterialPaletteRecord::~MaterialPaletteRecord()
 // virtual
 void MaterialPaletteRecord::endian()
 {
-	SMaterial *pSMaterial = (SMaterial*)getData();
+    SMaterial *pSMaterial = (SMaterial*)getData();
 
     ENDIAN( pSMaterial->diIndex );
     ENDIAN( pSMaterial->diFlags );
@@ -42,8 +39,3 @@ void MaterialPaletteRecord::endian()
     ENDIAN( pSMaterial->sfShininess );
     ENDIAN( pSMaterial->sfAlpha );
 }
-
-
-
-
-

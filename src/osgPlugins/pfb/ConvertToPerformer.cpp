@@ -1,19 +1,19 @@
 #include "ConvertToPerformer.h"
 
-#include <osg/Scene>
 #include <osg/Group>
-#include <osg/DCS>
+#include <osg/Transform>
 #include <osg/LOD>
 #include <osg/Switch>
-#include <osg/Sequence>
 #include <osg/Geode>
 #include <osg/Billboard>
 #include <osg/Texture>
 #include <osg/Image>
-#include <osg/FileNameUtils>
-#include <osg/Registry>
-
 #include <osg/Notify>
+
+#include <osgDB/Registry>
+#include <osgDB/FileNameUtils>
+#include <osgDB/ReadFile>
+
 
 #include <Performer/pf/pfNode.h>
 #include <Performer/pf/pfGeode.h>
@@ -36,24 +36,24 @@
 using namespace std;
 #endif
 
-extern "C" {
-
-extern pfNode *
-pfdLoadFile_osg (char *fileName)
+extern "C"
 {
-    osg::Node* node = osg::loadNodeFile(fileName);
-    if (node==NULL) return 0;
 
-    ConvertToPerformer converter;
-    return converter.convert(node);
-}
+    extern pfNode *
+        pfdLoadFile_osg (char *fileName)
+    {
+        osg::Node* node = osgDB::readNodeFile(fileName);
+        if (node==NULL) return 0;
+
+        ConvertToPerformer converter;
+        return converter.convert(node);
+    }
 
 };
 
-
 ConvertToPerformer::ConvertToPerformer()
 {
-    setTraverseMode(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN);
+    setTraversalMode(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN);
 
     _pfParent = NULL;
     _pfRoot = NULL;
@@ -75,44 +75,39 @@ ConvertToPerformer::ConvertToPerformer()
     _gsetBindMap[osg::GeoSet::BIND_OVERALL] = PFGS_OVERALL;
     _gsetBindMap[osg::GeoSet::BIND_PERPRIM] = PFGS_PER_PRIM;
     _gsetBindMap[osg::GeoSet::BIND_PERVERTEX] = PFGS_PER_VERTEX;
-
-              
-    _gstateTypeMap[osg::GeoState::TRANSPARENCY] = PFSTATE_TRANSPARENCY;
-    _gstateTypeMap[osg::GeoState::ANTIALIAS] = PFSTATE_ANTIALIAS;
-    _gstateTypeMap[osg::GeoState::LIGHTING] = PFSTATE_ENLIGHTING;
-    _gstateTypeMap[osg::GeoState::TEXTURE] = PFSTATE_ENTEXTURE;
-    _gstateTypeMap[osg::GeoState::FOG] = PFSTATE_ENFOG;
-    _gstateTypeMap[osg::GeoState::FACE_CULL] = PFSTATE_CULLFACE;
-    _gstateTypeMap[osg::GeoState::WIREFRAME] = PFSTATE_ENWIREFRAME;
-    _gstateTypeMap[osg::GeoState::TEXGEN] = PFSTATE_ENTEXGEN;
-    _gstateTypeMap[osg::GeoState::TEXMAT] = PFSTATE_ENTEXMAT;
-
 }
+
 
 ConvertToPerformer::~ConvertToPerformer()
 {
 }
 
-pfNode* ConvertToPerformer::convert(osg::Node* node)
+
+pfNode* ConvertToPerformer::convert(const osg::Node* node)
 {
     _pfRoot = NULL;
     if (node)
     {
-        node->accept(*this);
+        // a hack to get round current limitation of node visitor which
+        // only handles non const operations.
+        osg::Node* non_const_node = const_cast<osg::Node*>(node);
+        non_const_node->accept(*this);
     }
     return _pfRoot;
 }
+
 
 pfObject* ConvertToPerformer::getPfObject(osg::Object* osgObj)
 {
     OsgObjectToPfObjectMap::iterator fitr = _osgToPfMap.find(osgObj);
     if (fitr != _osgToPfMap.end())
     {
-        osg::notify(osg::DEBUG) << "Found shared object"<<endl;
+        osg::notify(osg::DEBUG_INFO) << "Found shared object"<<endl;
         return (*fitr).second;
     }
     else return NULL;
 }
+
 
 void ConvertToPerformer::regisiterOsgObjectForPfObject(osg::Object* osgObj,pfObject* pfObj)
 {
@@ -124,6 +119,7 @@ void ConvertToPerformer::apply(osg::Node& node)
 {
     node.traverse(*this);
 }
+
 
 void ConvertToPerformer::apply(osg::Group& node)
 {
@@ -151,11 +147,12 @@ void ConvertToPerformer::apply(osg::Group& node)
     _pfParent = parent;
 }
 
-void ConvertToPerformer::apply(osg::DCS& osgDCS)
+
+void ConvertToPerformer::apply(osg::Transform& osgTransform)
 {
     pfGroup* parent = _pfParent;
 
-    pfDCS* pf_dcs = dynamic_cast<pfDCS*>(getPfObject(&osgDCS));
+    pfDCS* pf_dcs = dynamic_cast<pfDCS*>(getPfObject(&osgTransform));
     if (pf_dcs)
     {
         if (_pfParent) _pfParent->addChild(pf_dcs);
@@ -166,27 +163,27 @@ void ConvertToPerformer::apply(osg::DCS& osgDCS)
     if (!_pfRoot) _pfRoot = pf_dcs;
     if (_pfParent) _pfParent->addChild(pf_dcs);
 
-    regisiterOsgObjectForPfObject(&osgDCS,pf_dcs);
+    regisiterOsgObjectForPfObject(&osgTransform,pf_dcs);
 
-    if (!osgDCS.getName().empty()) pf_dcs->setName(osgDCS.getName().c_str());
+    if (!osgTransform.getName().empty()) pf_dcs->setName(osgTransform.getName().c_str());
 
-    osg::Matrix* matrix = osgDCS.getMatrix();
-    
-    pfMatrix pf_matrix(matrix->_mat[0][0],matrix->_mat[0][1],matrix->_mat[0][2],matrix->_mat[0][3],
-                       matrix->_mat[1][0],matrix->_mat[1][1],matrix->_mat[1][2],matrix->_mat[1][3],
-                       matrix->_mat[2][0],matrix->_mat[2][1],matrix->_mat[2][2],matrix->_mat[2][3],
-                       matrix->_mat[3][0],matrix->_mat[3][1],matrix->_mat[3][2],matrix->_mat[3][3]);
-    
+    osg::Matrix& matrix = osgTransform.getMatrix();
+
+    pfMatrix pf_matrix(matrix._mat[0][0],matrix._mat[0][1],matrix._mat[0][2],matrix._mat[0][3],
+        matrix._mat[1][0],matrix._mat[1][1],matrix._mat[1][2],matrix._mat[1][3],
+        matrix._mat[2][0],matrix._mat[2][1],matrix._mat[2][2],matrix._mat[2][3],
+        matrix._mat[3][0],matrix._mat[3][1],matrix._mat[3][2],matrix._mat[3][3]);
+
     pf_dcs->setMat(pf_matrix);
-
 
     _pfParent = pf_dcs;
 
-    osgDCS.traverse(*this);
+    osgTransform.traverse(*this);
 
     _pfParent = parent;
-    
+
 }
+
 
 void ConvertToPerformer::apply(osg::Switch& node)
 {
@@ -214,6 +211,7 @@ void ConvertToPerformer::apply(osg::Switch& node)
     _pfParent = parent;
 }
 
+
 void ConvertToPerformer::apply(osg::LOD& node)
 {
     pfGroup* parent = _pfParent;
@@ -240,33 +238,6 @@ void ConvertToPerformer::apply(osg::LOD& node)
     _pfParent = parent;
 }
 
-void ConvertToPerformer::apply(osg::Scene& scene)
-{
-    pfGroup* parent = _pfParent;
-
-    pfScene* pf_scene = dynamic_cast<pfScene*>(getPfObject(&scene));
-    if (pf_scene)
-    {
-        if (_pfParent) _pfParent->addChild(pf_scene);
-        return;
-    }
-
-    pf_scene = new pfScene;
-    if (!_pfRoot) _pfRoot = pf_scene;
-    if (_pfParent) _pfParent->addChild(pf_scene);
-
-    regisiterOsgObjectForPfObject(&scene,pf_scene);
-
-    if (!scene.getName().empty()) pf_scene->setName(scene.getName().c_str());
-
-    _pfParent = pf_scene;
-
-    scene.traverse(*this);
-
-    _pfParent = parent;
-}
-
-
 void ConvertToPerformer::apply(osg::Billboard& node)
 {
     pfGroup* parent = _pfParent;
@@ -286,14 +257,19 @@ void ConvertToPerformer::apply(osg::Billboard& node)
 
     if (!node.getName().empty()) pf_billboard->setName(node.getName().c_str());
 
-    for(int i=0;i<node.getNumGeosets();++i)
+    for(int i=0;i<node.getNumDrawables();++i)
     {
-        pfGeoSet* pf_geoset = visitGeoSet(node.getGeoSet(i));
-        if (pf_geoset) pf_billboard->addGSet(pf_geoset);
+        osg::GeoSet* osg_gset = dynamic_cast<osg::GeoSet*>(node.getDrawable(i));
+        if (osg_gset)
+        {
+            pfGeoSet* pf_geoset = visitGeoSet(osg_gset);
+            if (pf_geoset) pf_billboard->addGSet(pf_geoset);
+        }
     }
 
     _pfParent = parent;
 }
+
 
 void ConvertToPerformer::apply(osg::Geode& node)
 {
@@ -314,24 +290,50 @@ void ConvertToPerformer::apply(osg::Geode& node)
 
     if (!node.getName().empty()) pf_geode->setName(node.getName().c_str());
 
-    for(int i=0;i<node.getNumGeosets();++i)
+    for(int i=0;i<node.getNumDrawables();++i)
     {
-        pfGeoSet* pf_geoset = visitGeoSet(node.getGeoSet(i));
-        if (pf_geoset) pf_geode->addGSet(pf_geoset);
+        osg::GeoSet* osg_gset = dynamic_cast<osg::GeoSet*>(node.getDrawable(i));
+        if (osg_gset)
+        {
+            pfGeoSet* pf_geoset = visitGeoSet(osg_gset);
+            if (pf_geoset) pf_geode->addGSet(pf_geoset);
+        }
     }
 
     _pfParent = parent;
 }
 
+
 pfGeoSet* ConvertToPerformer::visitGeoSet(osg::GeoSet* geoset)
 {
     if (geoset==NULL) return NULL;
+
+    osg::GeoSet::IndexPointer& cindex = geoset->getCoordIndices();
+    if (cindex.valid() && !cindex._is_ushort) 
+    {
+        osg::notify(osg::WARN)<<"Warning: Cannot convert osg::GeoSet to pfGeoSet due to uint coord index."<<endl;
+        return NULL;
+    }
+
+    osg::GeoSet::IndexPointer& nindex = geoset->getNormalIndices();
+    if (nindex.valid() && !nindex._is_ushort) 
+    {
+        osg::notify(osg::WARN)<<"Warning: Cannot convert osg::GeoSet to pfGeoSet due to uint normal index."<<endl;
+        return NULL;
+    }
+
+    osg::GeoSet::IndexPointer& colindex = geoset->getColorIndices();
+    if (colindex.valid() && !colindex._is_ushort) 
+    {
+        osg::notify(osg::WARN)<<"Warning: Cannot convert osg::GeoSet to pfGeoSet due to uint color index."<<endl;
+        return NULL;
+    }
 
     void* arena = pfGetSharedArena();
 
     pfGeoSet* pf_geoset = new pfGeoSet();
 
-    pf_geoset->setGState(visitGeoState(geoset->getGeoState()));
+    pf_geoset->setGState(visitStateSet(geoset->getStateSet()));
 
     int i;
 
@@ -354,8 +356,7 @@ pfGeoSet* ConvertToPerformer::visitGeoSet(osg::GeoSet* geoset)
     }
 
     osg::Vec3 *coords = geoset->getCoords();
-    osg::ushort *ilist = geoset->getCIndex();
-
+    osg::ushort *ilist = cindex._ptr._ushort;
 
     // copy the vertex coordinates across.
     if( coords )
@@ -374,7 +375,7 @@ pfGeoSet* ConvertToPerformer::visitGeoSet(osg::GeoSet* geoset)
 
         if(ilist)
         {
-            int ni=geoset->getNumIndices();
+            int ni=geoset->getNumCoordIndices();
             ushort* pf_cindex = (ushort*) pfMalloc(sizeof(ushort) * ni, arena);
             for( i = 0; i < ni; i++ )
             {
@@ -390,7 +391,7 @@ pfGeoSet* ConvertToPerformer::visitGeoSet(osg::GeoSet* geoset)
     }
 
     osg::Vec3 *norms = geoset->getNormals();
-    ilist = geoset->getNIndex();
+    ilist = nindex._ptr._ushort;
 
     // copy normals
     if(norms)
@@ -410,7 +411,7 @@ pfGeoSet* ConvertToPerformer::visitGeoSet(osg::GeoSet* geoset)
 
         if(ilist)
         {
-            int ni=geoset->getNumNIndices();
+            int ni=geoset->getNumNormalIndices();
             ushort* pf_nindex = (ushort*) pfMalloc(sizeof(ushort) * ni, arena);
             for( i = 0; i < ni; i++ )
             {
@@ -426,7 +427,7 @@ pfGeoSet* ConvertToPerformer::visitGeoSet(osg::GeoSet* geoset)
     }
 
     osg::Vec4 *colors = geoset->getColors();
-    ilist = geoset->getColIndex();
+    ilist = colindex._ptr._ushort;
 
     // copy colors
     if(colors)
@@ -447,7 +448,7 @@ pfGeoSet* ConvertToPerformer::visitGeoSet(osg::GeoSet* geoset)
 
         if(ilist)
         {
-            int ni=geoset->getNumCIndices();
+            int ni=geoset->getNumColorIndices();
             ushort* pf_cindex = (ushort*) pfMalloc(sizeof(ushort) * ni, arena);
             for( i = 0; i < ni; i++ )
             {
@@ -462,140 +463,90 @@ pfGeoSet* ConvertToPerformer::visitGeoSet(osg::GeoSet* geoset)
 
     }
 
-// 
-//     pfVec2 *tcoords;
-//     geoset->getAttrLists( PFGS_TEXCOORD2,  (void **)&tcoords, &ilist );
-// 
-//     // copy texture coords
-//     if(tcoords)
-//     {
-//         int bind = geoset->getAttrBind( PFGS_TEXCOORD2 );
-//         int nn = bind == PFGS_OFF ? 0 :
-//                  bind == PFGS_OVERALL ? 1 :
-//                  bind == PFGS_PER_PRIM ? geoset->getNumPrims() :
-//                  bind == PFGS_PER_VERTEX ? nv : 0;
-// 
-//         // set the normal binding type.
-//         pf_geoset->setTextureBinding(_gsetBindMap[bind]);
-// 
-//         // calc the maximum num of vertex from the index list.
-//         int cc;
-//         if (ilist)
-//         {
-//             cc = 0;
-//             for( i = 0; i < nv; i++ )
-//                 if( ilist[i] > cc ) cc = ilist[i];
-//             cc++;
-//         }
-//         else
-//             cc = nn;
-// 
-// 
-//         osg::Vec2* osg_tcoords = new osg::Vec2 [cc];
-//         for( i = 0; i < cc; i++ )
-//         {
-//             osg_tcoords[i][0] = tcoords[i][0];
-//             osg_tcoords[i][1] = tcoords[i][1];
-//         }
-// 
-//         if(ilist)
-//         {
-//             osg::ushort* osg_cindex = new osg::ushort [nn];
-//             for( i = 0; i < nn; i++ )
-//             {
-//                 osg_cindex[i] = ilist[i];
-//             }
-//             pf_geoset->setTextureCoords(osg_tcoords, osg_cindex );
-//         }
-//         else
-//         {
-//             pf_geoset->setTextureCoords(osg_tcoords);
-//         }
-// 
-//     }
-// 
-//     pfVec4 *colors;
-//     geoset->getAttrLists( PFGS_COLOR4,  (void **)&colors, &ilist );
-// 
-//     // copy color coords
-//     if(colors)
-//     {
-//         int bind = geoset->getAttrBind( PFGS_COLOR4 );
-//         int nn = bind == PFGS_OFF ? 0 :
-//                  bind == PFGS_OVERALL ? 1 :
-//                  bind == PFGS_PER_PRIM ? geoset->getNumPrims() :
-//                  bind == PFGS_PER_VERTEX ? nv-flat_shaded_offset : 0;
-// 
-//         // set the normal binding type.
-//         pf_geoset->setColorBinding(_gsetBindMap[bind]);
-// 
-//         // calc the maximum num of vertex from the index list.
-//         int cc;
-//         if (ilist)
-//         {
-//             cc = 0;
-//             for( i = 0; i < nn; i++ )
-//                 if( ilist[i] > cc ) cc = ilist[i];
-//             cc++;
-//         }
-//         else
-//             cc = nn;
-// 
-// 
-//         osg::Vec4* osg_colors = new osg::Vec4 [cc];
-//         for( i = 0; i < cc; i++ )
-//         {
-//             osg_colors[i][0] = colors[i][0];
-//             osg_colors[i][1] = colors[i][1];
-//             osg_colors[i][2] = colors[i][2];
-//             osg_colors[i][3] = colors[i][3];
-//         }
-// 
-//         if(ilist)
-//         {
-//             osg::ushort* osg_cindex = new osg::ushort [nn];
-//             for( i = 0; i < nn; i++ )
-//             {
-//                 osg_cindex[i] = ilist[i];
-//             }
-//             pf_geoset->setColors(osg_colors, osg_cindex );
-//         }
-//         else
-//         {
-//             pf_geoset->setColors(osg_colors);
-//         }
-// 
-//     }
-// 
+    // Copy texture coords
+
+    osg::Vec2 *tcoords = geoset->getTextureCoords();
+    ilist = geoset->getTextureIndices()._ptr._ushort;
+    if( tcoords )
+    {
+	int bind = _gsetBindMap[geoset->getTextureBinding()];
+	int ct = geoset->getNumTextureCoords();
+	pfVec2 *pf_tcoords = (pfVec2 *)pfMalloc( sizeof( pfVec2 ) * ct, arena );
+	for( i = 0; i < ct; i++ )
+	{
+	    pf_tcoords[i].set( tcoords[i][0], tcoords[i][1] );
+	}
+	if( ilist )
+	{
+	    int nt = geoset->getNumTextureIndices();
+	    ushort *pf_tindex = (ushort *)pfMalloc( sizeof( ushort ) * nt, arena );
+	    for( i = 0; i < nt; i++ )
+		pf_tindex[i] = ilist[i];
+	
+	    pf_geoset->setAttr( PFGS_TEXCOORD2, bind, pf_tcoords, pf_tindex );
+	}
+	else
+	    pf_geoset->setAttr( PFGS_TEXCOORD2, bind, pf_tcoords, NULL );
+    }
 
 
     return pf_geoset;
 }
 
-pfGeoState* ConvertToPerformer::visitGeoState(osg::GeoState* geostate)
+
+pfGeoState* ConvertToPerformer::visitStateSet(osg::StateSet* stateset)
 {
-    if (geostate==NULL) return NULL;
+    if (stateset==NULL) return NULL;
 
     pfGeoState* pf_geostate = new pfGeoState();
 
-    switch(geostate->getMode(osg::GeoState::LIGHTING))
+    switch(stateset->getMode(GL_LIGHTING))
     {
-        case(osg::GeoState::OVERRIDE_ON): 
-        case(osg::GeoState::ON): pf_geostate->setMode(PFSTATE_ENLIGHTING,PF_ON);break;
-        case(osg::GeoState::OVERRIDE_OFF): 
-        case(osg::GeoState::OFF): pf_geostate->setMode(PFSTATE_ENLIGHTING,PF_OFF);break;
+        case(osg::StateAttribute::OVERRIDE_ON):
+        case(osg::StateAttribute::ON): pf_geostate->setMode(PFSTATE_ENLIGHTING,PF_ON);break;
+        case(osg::StateAttribute::OVERRIDE_OFF):
+        case(osg::StateAttribute::OFF): pf_geostate->setMode(PFSTATE_ENLIGHTING,PF_OFF);break;
+        // pfGeostate value as default inherit.
+        case(osg::StateAttribute::INHERIT): break;
     }
 
-    switch(geostate->getMode(osg::GeoState::TEXTURE))
+    switch(stateset->getMode(GL_TEXTURE_2D))
     {
-        case(osg::GeoState::OVERRIDE_ON): 
-        case(osg::GeoState::ON): pf_geostate->setMode(PFSTATE_ENTEXTURE,PF_ON);break;
-        case(osg::GeoState::OVERRIDE_OFF): 
-        case(osg::GeoState::OFF): pf_geostate->setMode(PFSTATE_ENTEXTURE,PF_OFF);break;
+        case(osg::StateAttribute::OVERRIDE_ON):
+        case(osg::StateAttribute::ON): pf_geostate->setMode(PFSTATE_ENTEXTURE,PF_ON);break;
+        case(osg::StateAttribute::OVERRIDE_OFF):
+        case(osg::StateAttribute::OFF): pf_geostate->setMode(PFSTATE_ENTEXTURE,PF_OFF);break;
+        // pfGeostate value as default inherit.
+        case(osg::StateAttribute::INHERIT): break;
+    }
+
+    const osg::Texture *tex = dynamic_cast<const osg::Texture *>(stateset->getAttribute( osg::StateAttribute::TEXTURE));
+
+    if( tex != NULL )
+    {
+	pfTexture *pf_tex = new pfTexture;
+	const osg::Image *img = tex->getImage();
+	int ns = img->s();
+	int nt = img->t();
+	int ncomp = 
+		img->pixelFormat() == GL_LUMINANCE  ? 1 :
+		img->pixelFormat() == GL_LUMINANCE_ALPHA  ? 2 :
+		img->pixelFormat() == GL_RGB  ? 3 :
+		img->pixelFormat() == GL_RGBA ? 4 : 3;
+
+  	uint *uim = (uint *)pfMalloc( ns * nt * ncomp, pfGetSharedArena() );
+
+	memcpy( uim, img->data(), ns * nt * ncomp );
+
+    	pf_tex->setImage( uim, ncomp, ns, nt, 0 );
+
+	pf_geostate->setAttr( PFSTATE_TEXTURE, pf_tex );
+	pf_geostate->setAttr( PFSTATE_TEXENV, new pfTexEnv );
     }
 
     return pf_geostate;
 }
+
 
 pfMaterial* ConvertToPerformer::visitMaterial(osg::Material* material)
 {
@@ -606,6 +557,7 @@ pfMaterial* ConvertToPerformer::visitMaterial(osg::Material* material)
     return pf_material;
 }
 
+
 pfTexture* ConvertToPerformer::visitTexture(osg::Texture* tex)
 {
     if (tex==NULL) return NULL;
@@ -614,4 +566,3 @@ pfTexture* ConvertToPerformer::visitTexture(osg::Texture* tex)
 
     return pf_texture;
 }
-

@@ -6,14 +6,42 @@
 namespace osgUtil{
 
 
-/** Pure virtual base class for adapting the GUI actions for use in CameraManipulators.*/
+/** Pure virtual base class for adapting the GUI actions requested by CameraManipulators
+  * into actions which are handled by the GUI toolkit of the users application.
+  *
+  * There are several was of using the ActionAdapter either inheriting it as 
+  * done with osgGLUT::Viewer class or passing a simple struct to the camera 
+  * manipulator then unpacking the results and working out what to do to respond
+  * to the requests.
+  * 
+  * Also there are several ways to run your app and handle the updating of
+  * the window.  osgGLUT::Viewer always has a idle callback registered which does a
+  * redraw all the time.  osgGLUT::Viewer can safely ignore both requestRedraw() and
+  * requestContinousUpdate() as these are happening all the time anyway.
+  * 
+  * Other apps will probably want to respond to the requestRedraw() and
+  * requestContinousUpdate(bool) and again there is more than one way to handle it.
+  * You can override requestRedraw() and implement to call your own window
+  * redraw straight away. Or you can implement so that a flag is set and
+  * then you then respond the flag being set in your own leisure.
+  * 
+  * requestContinousUpdate(bool) is for enabling a throw or idle 
+  * callback to be requested by the camera manipulator.  Again you can respond 
+  * to this immediately by registering a idle callback or a timed callback, or
+  * you can delay setting the callback and do at you own leisure.
+  * 
+  * requestWarpPointer(int,int) is requesting a respositioning of a mouse pointer
+  * to a specified x,y location on the window.  Used by some camera manipulators
+  * to initialize the mouse pointer when mouse position relative to a controls
+  * neutral mouse position is required, i.e when mimicking a aircrafts joystick.
+  */
 class GUIActionAdapter
 {
     public:
         
-        virtual void needRedraw(bool needed=true) = 0;
-        virtual void needContinuousUpdate(bool needed=true) = 0;
-        virtual void needWarpPointer(int x,int y) = 0;
+        virtual void requestRedraw() = 0;
+        virtual void requestContinuousUpdate(bool needed=true) = 0;
+        virtual void requestWarpPointer(int x,int y) = 0;
 
 };
 

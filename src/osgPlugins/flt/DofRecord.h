@@ -15,10 +15,10 @@ namespace flt {
 
 struct SRange
 {
-	float64	_dfMin;			// Minimum value with respect to the local coord system
-	float64	_dfMax;			// Maximum value with respect to the local coordsystem
-	float64	_dfCurrent;		// Current value with respect to the local coord system
-	float64	_dfIncrement;	// Increment
+    float64    _dfMin;            // Minimum value with respect to the local coord system
+    float64    _dfMax;            // Maximum value with respect to the local coordsystem
+    float64    _dfCurrent;        // Current value with respect to the local coord system
+    float64    _dfIncrement;    // Increment
 
     inline float64 minRange()   { return _dfMin; }
     inline float64 maxRange()   { return _dfMax; }
@@ -35,22 +35,22 @@ struct SRange
 
 typedef struct DegreeOfFreedomTag
 {
-	SRecHeader	RecHeader;
-	char	szIdent[8];				// 7 char ASCII ID; 0 terminates
-	int32	diReserved;				// Reserved
-	float64x3	OriginLocalDOF;	// Origin (x,y,z) of the DOF's local coordinate system
-	float64x3	PointOnXaxis;	// Point (x,y,z) on the x-axis of the DOF's local coord system
-	float64x3	PointInXYplane;	// Point (x,y,z) in xy plane of the DOF's local coord system
-	SRange	dfZ;					// Legal z values with respect to the local coord system
-	SRange	dfY;					// Legal y values with respect to the local coord system
-	SRange	dfX;					// Legal x values with respect to the local coord system
-	SRange	dfPitch;				// Legal pitch values (rotation about the x-axis)
-	SRange	dfRoll;					// Legal roll values( rotation about the y-axis)
-	SRange	dfYaw;					// Legal yaw values (rotation about the z-axis)
-	SRange	dfZscale;				// Legal z scale values (about local origin)
-	SRange	dfYscale;				// Legal y scale values about local origin)
-	SRange	dfXscale;				// Legal x scale values (about local origin)
-	uint32	dwFlags;				// Flags, bits from left to right (see OF doc)
+    SRecHeader    RecHeader;
+    char    szIdent[8];                // 7 char ASCII ID; 0 terminates
+    int32    diReserved;                // Reserved
+    float64x3    OriginLocalDOF;    // Origin (x,y,z) of the DOF's local coordinate system
+    float64x3    PointOnXaxis;    // Point (x,y,z) on the x-axis of the DOF's local coord system
+    float64x3    PointInXYplane;    // Point (x,y,z) in xy plane of the DOF's local coord system
+    SRange    dfZ;                    // Legal z values with respect to the local coord system
+    SRange    dfY;                    // Legal y values with respect to the local coord system
+    SRange    dfX;                    // Legal x values with respect to the local coord system
+    SRange    dfPitch;                // Legal pitch values (rotation about the x-axis)
+    SRange    dfRoll;                    // Legal roll values( rotation about the y-axis)
+    SRange    dfYaw;                    // Legal yaw values (rotation about the z-axis)
+    SRange    dfZscale;                // Legal z scale values (about local origin)
+    SRange    dfYscale;                // Legal y scale values about local origin)
+    SRange    dfXscale;                // Legal x scale values (about local origin)
+    uint32    dwFlags;                // Flags, bits from left to right (see OF doc)
 } SDegreeOfFreedom;
 
 

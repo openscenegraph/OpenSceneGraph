@@ -1,17 +1,19 @@
 #ifndef OSG_CAMERA
 #define OSG_CAMERA 1
 
-#include <osg/Export>
-#include <osg/Scene>
+#include <osg/ref_ptr>
+#include <osg/Referenced>
+#include <osg/Matrix>
+#include <osg/Quat>
+#include <osg/ClippingVolume>
 
 namespace osg {
 
-/** Camera class for encapsulating the view position and orientation.
- *  This is the first implementation of osg::Camera class and
- *  currently is a perspective camera, but in future will be
- *  a base class from which PerpsectivCamera,FrustumCamera and OrthoCamera
- *  will be derived.
- */
+/** Camera class for encapsulating the view position and orientation and
+  * projection (lens) used.  Creates a projection and modelview matrices
+  * which can be used to set OpenGL's PROJECTION and MODELVIEW matrices
+  * represectively.
+  */
 class SG_EXPORT Camera: public osg::Referenced
 {
 
@@ -20,19 +22,91 @@ class SG_EXPORT Camera: public osg::Referenced
         Camera();
         virtual ~Camera();
 
+        /** Range of projection types.
+          * OTHO2D is a special case of OTHO where the near and far planes
+          * are equal to -1 and 1 respectively.
+          * PRESPECTIVE is a special case of FRUSTUM where the left & right
+          * and bottom and top and symetrical.*/
+        enum ProjectionType
+        {
+            ORTHO,
+            ORTHO2D,
+            FRUSTUM,
+            PERSPECTIVE
+        };
 
-        /**
-         * Set field of view and window aspect ratio.
-         * The parameters have the same meaning as their counterparts
-         * in gluPerspective(fovy,aspectRatio
-         */
-        void setFieldOfView(double fovy,double aspectRatio);
+        /** Get the projection type set by setOtho,setOtho2D,setFrustum,
+          * and set perspective methods.*/
+        const ProjectionType getProjectionType() const { return _projectionType; }
+
+        /** Set a orthographics projection. See glOrtho for further details.*/
+        void setOrtho(const double left, const double right,
+                      const double bottom, const double top,
+                      const double zNear, const double zFar);
+                      
+        /** Set a 2D orthographics projection. See gluOrtho2D for further details.*/
+        void setOrtho2D(const double left, const double right,
+                        const double bottom, const double top);
+
+        /** Set a perspective projection. See glFrustum for further details.*/
+        void setFrustum(const double left, const double right,
+                        const double bottom, const double top,
+                        const double zNear, const double zFar);
+
+        /** Set a sysmetical perspective projection, See gluPerspective for further details.
+          * Aspect ratio is defined as width/height.*/
+        void setPerspective(const double fovy,const double aspectRatio,
+                            const double zNear, const double zFar);
+
         
-        void setFieldOfViewY(double fovy) { _fovy = fovy; }
-        double getFieldOfViewY() const { return _fovy; }
+        /** Set the near and far clipping planes.*/
+        void setNearFar(const double zNear, const double zFar);
 
-        void setAspectRatio(double aspectRatio) { _aspectRatio = aspectRatio; }
-        double getAspectRatio() const { return _aspectRatio; }
+        /** Use in combination with adjustAspectRatio, to control
+          * the change in frustum clipping planes to account for
+          * changes in windows aspect ratio,*/
+        enum AdjustAxis
+        {
+            ADJUST_VERTICAL,
+            ADJUST_HORIZONTAL
+        };
+        
+        /** Adjust the clipping planes to account for a new window aspcect ratio.
+          * Typicall used after resizeing a window. Aspect ratio is defined as
+          * width/height.*/
+        void adjustAspectRatio(const double newAspectRatio, const AdjustAxis aa = ADJUST_HORIZONTAL);
+
+        const double left() const;
+        const double right() const;
+        const double top() const;
+        const double bottom() const;
+        const double zNear() const;
+        const double zFar() const;
+
+        /** Calculate and return the equivilant fovx for the current project setting.
+          * This value is only valid for when a symetric persepctive projection exists.
+          * i.e. getProjectionType()==PERSPECTIVE.*/
+        const double calc_fovy() const;
+
+        /** Calculate and return the equivilant fovy for the current project setting.
+          * This value is only valid for when a symetric persepctive projection exists.
+          * i.e. getProjectionType()==PERSPECTIVE.*/
+        const double calc_fovx() const;
+        
+        /** Calculate and return the projection aspect ratio.
+          * Aspect ratio is defined as width/height.*/
+        const double calc_aspectRatio() const;
+        
+        const Matrix& getProjectionMatrix() const;
+        
+        enum LookAtType
+        {
+            USE_HOME_POSITON,
+            USE_EYE_AND_QUATERNION,
+            USE_EYE_CENTER_AND_UP
+        };
+        
+        const LookAtType getLookAtType() const { return _lookAtType; }
 
         /**
          * hardwired home view for now, looking straight down the
@@ -41,96 +115,171 @@ class SG_EXPORT Camera: public osg::Referenced
         void home();
 
         /**
-         * Set the View, the up vector should be orthogonal to the
-         * look vector.
-         */
-        void setView(Vec3 eyePoint,
-	             Vec3 lookPoint,
-	             Vec3 upVector);
+          * Set the View, the up vector should be orthogonal to the look vector.
+          * setView is now mapped to setLookAt(eye,center,up), and is only
+          * kept for backwards compatibility.
+          */
+        void setView(const Vec3& eyePoint,
+	             const Vec3& lookPoint,
+	             const Vec3& upVector);
+        
+        /** set the position and orientaion of the camera, using the same convention as
+          * gluLookAt.
+          */
+        void setLookAt(const Vec3& eye,
+                       const Vec3& center,
+                       const Vec3& up);
+        
+        /** set the position and orientaion of the camera, using the same convention as
+          * gluLookAt.
+          */
+        void setLookAt(const double eyeX, const double eyeY, const double eyeZ,
+                       const double centerX, const double centerY, const double centerZ,
+                       const double upX, const double upY, const double upZ);
+        
+        /** post multiple the existing eye point and orientation by matrix.
+          * note, does not affect any ModelTransforms that are applied.*/
+        void transformLookAt(const Matrix& matrix);
+        
+        void ensureOrthogonalUpVector();        
 
-        /** get the eyepoint. */
-        const Vec3& getEyePoint() const	{return _eyePoint;}
+        /** get the eye point. */
+        inline const Vec3& getEyePoint() const      { return _eye; }
 
-        /** get the lookpoint. */
-        const Vec3& getLookPoint() const {return _lookPoint;}
+        /** get the center point. */
+        inline const Vec3& getCenterPoint() const   { return _center; }
 
-        /** which way is up? */
-        const Vec3& getUpVector() const	{return _upVector;}
-
-        /** calculate side vector.*/
-        Vec3 getSideVector() const
-        {
-            Vec3 sv = (_lookPoint-_eyePoint)^_upVector;
-            sv.normalize();
-            return sv;
-        }
+        /** get the up vector */
+        inline const Vec3& getUpVector() const      { return _up; }
 
         /** calculate look vector.*/
-        Vec3 getLookVector() const
+        const Vec3 getLookVector() const;
+
+        /** calculate side vector.*/
+        const Vec3 getSideVector() const;
+
+        /** get focal distance.*/
+        inline const float getFocalLength() const { return _focalLength; }
+        
+
+        enum TransformMode
         {
-            Vec3 lv = (_lookPoint-_eyePoint);
-            lv.normalize();
-            return lv;
-        }
+            EYE_TO_MODEL,
+            MODEL_TO_EYE,
+            NO_ATTACHED_TRANSFORM
+        };
+            
 
-        /** calculate focal distance.*/
-        float getFocalDistance() const
-        {
-            return (_lookPoint-_eyePoint).length();
-        }
+        /** Attach a transform matrix which is applied after the camera look at.
+          * The attached matrix can work in two ways, either as transform of the eye
+          * into the model coordinates - EYE_TO_MODEL, or as a transform of the
+          * model to the eye - MODEL_TO_EYE.  The former is equivilant to attaching
+          * a camera internal to the scene graph.  The later is equivilant to adding 
+          * a osg::Transform at root of the scene to move the scene to the eye point.
+          * Typical used in conjunction with the LookAt position set to home,
+          * in which case it is simply treated as a model view matrix.
+          * If the same behaviour as IRIS Performer's setViewMat is desired 
+          * then set the LookAt to be (0,0,0),(0,1,0),(0,0,1) since Performer's
+          * default direction is along the y axis, unlike OpenGL and the default OSG.
+          * If modelTransfor is NULL then do not use any model transform - just use the
+          * basic LookAt values.
+          * note: Camera internals maintains the both EYE_TO_MODEL and MODEL_TO_EYE
+          * internally and ensures that they are the inverse of one another.  However,
+          * if you modify the attached transform then you must call dirtyTransform, to
+          * allow the OSG to update matrices accordingly.*/
+        void attachTransform(const TransformMode mode, Matrix* modelTransform=0);
 
-        /** set the near plane. */
-        void setNearPlane(double nearPlane)	{_nearPlane=nearPlane;}
-
-        /**get the near plane. */
-        double getNearPlane() const		{return _nearPlane;}
-
-        /** set the far plane. */
-        void setFarPlane(double farPlane)	{_farPlane=farPlane;}
-
-        /** get the far plane. */
-        double getFarPlane() const		{return _farPlane;}
-
-
-
-        /** Set up the OpenGL GL_PROJECTION matrix. 
-            Enters the GL_PROJECTION mode, sets up matrix, then
-            resets model GL_MODELVIEW, which is by OpenGL convention the default.*/
-        void draw_PROJECTION() const;
-
-        /** Set up the OpenGL GL_MODELVIEW matrix. 
-         *  Enters the GL_MODELVIEW mode, sets matrix to identity
-         *  and then sets matrix up according to camera, eye point, center
-         *  point and upvector.
-         */
-        void draw_MODELVIEW() const;
+        /** must be called after you modify an attachedTransform. */        
+        void dirtyTransform();
+        
+        Matrix* getTransform(const TransformMode mode);
+        
+        const Matrix* getTransform(const TransformMode mode) const;
 
 
+        const Vec3 getEyePoint_Model() const;
+        const Vec3 getCenterPoint_Model() const;
+        const Vec3 getLookVector_Model() const;
+        const Vec3 getUpVector_Model() const;
+        const Vec3 getSideVector_Model() const;
+        
+        /** Get the ModelView matrix. 
+          * If a ModelTransform is supplied then the ModelView matrix is
+          * created by multipling the current LookAt by ModelTransform.
+          * Otherwise it is simply created by using the current LookAt,
+          * equivialent to using gluLookAt.*/
+        const Matrix& getModelViewMatrix() const;
+        
+        
+        void setUseNearClippingPlane(const bool use);
+        const bool getUseNearClippingPlane() const { return _useNearClippingPlane; }
+        
+        void setUseFarClippingPlane(const bool use);
+        const bool getUseFarClippingPlane() const { return _useFarClippingPlane; }
+        
+        /** get the view frustum clipping in model coordinates */
+        const ClippingVolume& getClippingVolume() const;
 
-        /** post multiply a camera by matrix.*/
-        void mult(const Camera& camera,const Matrix& m);
 
-        /** pre multiply a camera by matrix.*/
-        void mult(const Matrix& m,const Camera& camera);
+        /** Map object coordinates into windows coordinates.
+          * Equivilant to gluProject(...). */
+        const bool project(const Vec3& obj,const int* viewport,Vec3& win) const;
+        
+        /** Map window coordinates into object coordinates. 
+          * Equivilant to gluUnProject(...). */
+        const bool unproject(const Vec3& win,const int* viewport,Vec3& obj) const;
 
-        void ensureOrthogonalUpVector();
 
-
-    private:
-
+    protected:
+    
         // Disallow copy construction & assignment (for now)
         Camera(const Camera&);
         Camera& operator=(const Camera&);
 
-        Vec3	_eyePoint;
-        Vec3	_lookPoint;
-        Vec3	_upVector;
+        // projection details.
+        ProjectionType  _projectionType;
 
-        double  _fovy;
-        double  _aspectRatio;
+        // note, in Frustum/Perspective mode these values are scaled
+        // by the zNear from when they were initialised to ensure that
+        // subsequent changes in zNear do not affect them.
+        double          _left;
+        double          _right;
+        double          _bottom;
+        double          _top;
 
-        double	_nearPlane;	// No Dougal, these are small... but those...
-        double	_farPlane;	// are far away
+        double          _zNear;
+        double          _zFar;
+
+        
+        // look at details.
+        LookAtType      _lookAtType;
+        
+        Vec3            _eye;
+        Vec3            _center;
+        Vec3            _up;
+        
+        double          _focalLength;
+        
+        TransformMode   _attachedTransformMode;
+        ref_ptr<Matrix> _eyeToModelTransform;
+        ref_ptr<Matrix> _modelToEyeTransform;
+        
+        // flags to determin if near and far clipping planes are required.
+        bool            _useNearClippingPlane;
+        bool            _useFarClippingPlane;
+
+        // cached matrix and clipping volume derived from above settings.
+        mutable bool            _dirty;
+        mutable ref_ptr<Matrix> _projectionMatrix;
+        mutable ref_ptr<Matrix> _modelViewMatrix;
+        mutable ClippingVolume  _clippingVolume;
+
+        mutable ref_ptr<Matrix> _MP;
+        mutable ref_ptr<Matrix> _inverseMP;
+
+        void calculateMatricesAndClippingVolume() const;
+        
+
 
 
 };

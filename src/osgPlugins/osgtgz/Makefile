@@ -2,7 +2,7 @@
 include ../../../Make/makedefs
 
 C++FILES = \
-	osgtgz.cpp\
+	ReaderWriterOSGTGZ.cpp\
 
 
 LIB = ../../../lib/osgPlugins/osgdb_osgtgz.so

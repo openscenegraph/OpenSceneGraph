@@ -6,7 +6,6 @@
 
 using namespace flt;
 
-
 ////////////////////////////////////////////////////////////////////
 //
 //                              BoundingBoxRecord
@@ -14,7 +13,6 @@ using namespace flt;
 ////////////////////////////////////////////////////////////////////
 
 RegisterRecordProxy<BoundingBoxRecord> g_BoundingBoxProxy;
-
 
 BoundingBoxRecord::BoundingBoxRecord()
 {
@@ -32,7 +30,6 @@ void BoundingBoxRecord::endian()
 }
 
 
-
 ////////////////////////////////////////////////////////////////////
 //
 //                              BoundingSphereRecord
@@ -40,7 +37,6 @@ void BoundingBoxRecord::endian()
 ////////////////////////////////////////////////////////////////////
 
 RegisterRecordProxy<BoundingSphereRecord> g_BoundingSphereProxy;
-
 
 BoundingSphereRecord::BoundingSphereRecord()
 {
@@ -58,7 +54,6 @@ void BoundingSphereRecord::endian()
 }
 
 
-
 ////////////////////////////////////////////////////////////////////
 //
 //                              BoundingCylinderRecord
@@ -66,7 +61,6 @@ void BoundingSphereRecord::endian()
 ////////////////////////////////////////////////////////////////////
 
 RegisterRecordProxy<BoundingCylinderRecord> g_BoundingCylinderProxy;
-
 
 BoundingCylinderRecord::BoundingCylinderRecord()
 {
@@ -92,7 +86,6 @@ void BoundingCylinderRecord::endian()
 
 RegisterRecordProxy<BoundingVolumeCenterRecord> g_BoundingVolumeCenterProxy;
 
-
 BoundingVolumeCenterRecord::BoundingVolumeCenterRecord()
 {
 }
@@ -117,7 +110,6 @@ void BoundingVolumeCenterRecord::endian()
 
 RegisterRecordProxy<BoundingVolumeOrientationRecord> g_BoundingVolumeOrientationProxy;
 
-
 BoundingVolumeOrientationRecord::BoundingVolumeOrientationRecord()
 {
 }
@@ -132,5 +124,3 @@ BoundingVolumeOrientationRecord::~BoundingVolumeOrientationRecord()
 void BoundingVolumeOrientationRecord::endian()
 {
 }
-
-

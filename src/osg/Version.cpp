@@ -2,8 +2,9 @@
 
 const char* osgGetVersion()
 {
-    return "0.8.34";
+    return "0.8.42";
 }
+
 
 const char* osgGetLibraryName()
 {

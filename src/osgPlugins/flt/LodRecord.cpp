@@ -14,7 +14,6 @@ using namespace flt;
 
 RegisterRecordProxy<LodRecord> g_LodProxy;
 
-
 LodRecord::LodRecord()
 {
 }
@@ -28,17 +27,16 @@ LodRecord::~LodRecord()
 
 void LodRecord::endian()
 {
-	SLevelOfDetail *pSLod = (SLevelOfDetail*)getData();
+    SLevelOfDetail *pSLod = (SLevelOfDetail*)getData();
 
-	ENDIAN( pSLod->dfSwitchInDist );
-	ENDIAN( pSLod->dfSwitchOutDist );
-	ENDIAN( pSLod->iSpecialId_1 );
-	ENDIAN( pSLod->iSpecialId_2 );
-	ENDIAN( pSLod->diFlags );
-	pSLod->Center.endian();
-	ENDIAN( pSLod->dfTransitionRange );
+    ENDIAN( pSLod->dfSwitchInDist );
+    ENDIAN( pSLod->dfSwitchOutDist );
+    ENDIAN( pSLod->iSpecialId_1 );
+    ENDIAN( pSLod->iSpecialId_2 );
+    ENDIAN( pSLod->diFlags );
+    pSLod->Center.endian();
+    ENDIAN( pSLod->dfTransitionRange );
 }
-
 
 
 ////////////////////////////////////////////////////////////////////
@@ -48,7 +46,6 @@ void LodRecord::endian()
 ////////////////////////////////////////////////////////////////////
 
 RegisterRecordProxy<OldLodRecord> g_OldLodProxy;
-
 
 OldLodRecord::OldLodRecord()
 {
@@ -63,16 +60,14 @@ OldLodRecord::~OldLodRecord()
 
 void OldLodRecord::endian()
 {
-	SOldLOD *pSLod = (SOldLOD*)getData();
+    SOldLOD *pSLod = (SOldLOD*)getData();
 
-	ENDIAN( pSLod->dfSwitchInDist );
-	ENDIAN( pSLod->dfSwitchOutDist );
-	ENDIAN( pSLod->iSpecialId_1 );
-	ENDIAN( pSLod->iSpecialId_2 );
-	ENDIAN( pSLod->diFlags );
-	pSLod->Center.endian();
-	ENDIAN( pSLod->dfTransitionRange );
+    ENDIAN( pSLod->dwSwitchInDist );
+    ENDIAN( pSLod->dwSwitchOutDist );
+    ENDIAN( pSLod->iSpecialId_1 );
+    ENDIAN( pSLod->iSpecialId_2 );
+    ENDIAN( pSLod->diFlags );
+    ENDIAN( pSLod->Center[0] );
+    ENDIAN( pSLod->Center[1] );
+    ENDIAN( pSLod->Center[2] );
 }
-
-
-

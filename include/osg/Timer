@@ -3,14 +3,22 @@
 
 #include <osg/Export>
 
+#ifdef macintosh
+//#define __TIMESIZE_DOUBLE__
+#include <ctime>
+#endif
+
 namespace osg {
 
 #ifdef WIN32
 	typedef __int64 Timer_t;
+#elif defined macintosh
+	typedef double Timer_t;
 #else
 	typedef unsigned long long Timer_t;
 #endif
 
+/** A high resolution, low latency time stamper.*/
 class SG_EXPORT Timer {
 
     public:
@@ -23,8 +31,8 @@ class SG_EXPORT Timer {
         #pragma optimize("",off)
         inline Timer_t tick( void )
         {
-	    volatile Timer_t ts;
-			volatile unsigned int HighPart;
+            volatile Timer_t ts;
+            volatile unsigned int HighPart;
             volatile unsigned int LowPart;
             _asm
             {
@@ -32,22 +40,28 @@ class SG_EXPORT Timer {
                 xor edx, edx        //  not supported or minimal overhead
                 _emit 0x0f          //  desired
                 _emit 0x31          //
-				mov HighPart,edx
-				mov LowPart,eax
+		                mov HighPart,edx
+		                mov LowPart,eax
             }
-			//ts = LowPart | HighPart >> 32;
-			*((unsigned int*)&ts) = LowPart;
+            //ts = LowPart | HighPart >> 32;
+            *((unsigned int*)&ts) = LowPart;
             *((unsigned int*)&ts+1) = HighPart;
             return ts;
         }
         #pragma optimize("",on)
 #endif
-#ifdef __linux
+#if defined(__linux) || defined(__FreeBSD__)
         #define CLK(x)	  __asm__ volatile (".byte 0x0f, 0x31" : "=A" (x))
 	inline Timer_t tick( void ) {Timer_t x;CLK(x);return x;}
 #endif
 #ifdef __sgi
         inline  Timer_t tick( void ) { return *clk; }
+#endif
+
+#ifdef macintosh
+        // because __TIMESIZE_DOUBLE__ is defined
+        // clock resolution is now: 100000 CLOCKS_PER_SEC instead of 60
+        inline  Timer_t tick( void ) { return std::clock(); }
 #endif
         double delta_s( Timer_t t1, Timer_t t2 );
         double delta_m( Timer_t t1, Timer_t t2 );

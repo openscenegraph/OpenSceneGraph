@@ -5,6 +5,7 @@
 #include <vector>
 
 #include <osg/Referenced>
+#include <osg/ref_ptr>
 
 #include "FltRecords.h"
 
@@ -65,7 +66,7 @@ class Record : public osg::Referenced
         bool            isOfType(int op) const;
         Record*         getParent() const { return _pParent; }
 
-    	friend ostream& operator << (ostream& output, const Record& rec);
+        friend ostream& operator << (ostream& output, const Record& rec);
 
     protected:
 
@@ -168,9 +169,9 @@ class PrimNodeRecord : public Record
         virtual bool readLocalData(Input& fr);
 
     private:
-        bool readExtensions(Input& fr);
+        bool readExtensionLevel(Input& fr);
         bool readLevel(Input& fr);
-        Record* readNextRecord(Input& fr);
+        Record* readRecord(Input& fr);
 
         typedef std::vector<osg::ref_ptr<Record> > ChildList;
         ChildList _children;

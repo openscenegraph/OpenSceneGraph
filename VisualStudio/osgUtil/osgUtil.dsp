@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIBOSGUTIL_EXPORTS" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /vd1 /GR /GX /O2 /I "../../include" /D "NDEBUG" /D "_MBCS" /D "_USRDLL" /D "LIBOSGUTIL_EXPORTS" /D "OSGUTIL_LIBRARY" /D "WIN32" /D "_WINDOWS" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "../../include" /D "NDEBUG" /D "_MBCS" /D "_USRDLL" /D "LIBOSGUTIL_EXPORTS" /D "OSGUTIL_LIBRARY" /D "WIN32" /D "_WINDOWS" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "NDEBUG"
@@ -70,7 +70,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIBOSGUTIL_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /vmg /vd0 /GR /GX /ZI /Od /I "../../include" /D "_DEBUG" /D "OSGUTIL_LIBRARY" /D "WIN32" /D "_WINDOWS" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /vmg /vd0 /GR /GX /ZI /Od /I "../../include" /D "_DEBUG" /D "OSGUTIL_LIBRARY" /D "WIN32" /D "_WINDOWS" /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
@@ -94,11 +94,31 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\..\Src\osgUtil\CameraManipulator.cpp
+SOURCE=..\..\src\osgUtil\VisualsRequirementsVisitor.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\osgUtil\DisplayListVisitor.cpp
+SOURCE=..\..\src\osgUtil\CameraManipulator.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgUtil\CullVisitor.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgUtil\CullViewState.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgUtil\DisplayListVisitor.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgUtil\DepthSortedBin.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Src\osgUtil\StateSetManipulator.cpp
 # End Source File
 # Begin Source File
 
@@ -110,23 +130,67 @@ SOURCE=..\..\src\osgUtil\FlightManipulator.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\osgUtil\IntersectVisitor.cpp
+SOURCE=..\..\src\osgUtil\InsertImpostorsVisitor.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\osgUtil\RenderVisitor.cpp
+SOURCE=..\..\src\osgUtil\IntersectVisitor.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\osgUtil\SceneView.cpp
+SOURCE=..\..\src\osgUtil\NvTriStripObjects.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\osgUtil\Version.cpp
+SOURCE=..\..\src\osgUtil\RenderBin.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\osgUtil\TrackballManipulator.cpp
+SOURCE=..\..\src\osgUtil\RenderLeaf.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgUtil\RenderGraph.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgUtil\RenderStage.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgUtil\RenderStageLighting.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgUtil\RenderToTextureStage.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgUtil\SceneView.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgUtil\SceneViewManipulator.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgUtil\SmoothingVisitor.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgUtil\TrackballManipulator.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgUtil\TriStripVisitor.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgUtil\Tesselator.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgUtil\Version.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -134,11 +198,31 @@ SOURCE=..\..\Src\osgUtil\TrackballManipulator.cpp
 # PROP Default_Filter ";h;hpp;hxx;hm;inl"
 # Begin Source File
 
+SOURCE=..\..\Include\osgUtil\VisualsRequirementsVisitor
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\Include\osgUtil\CameraManipulator
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\Include\osgUtil\CullVisitor
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\osgUtil\CullViewState
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\Include\osgUtil\DisplayListVisitor
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\osgUtil\DepthSortedBin
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\osgUtil\StateSetManipulator
 # End Source File
 # Begin Source File
 
@@ -162,11 +246,43 @@ SOURCE=..\..\include\osgUtil\GUIEventAdapter
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\osgUtil\GUIEventHandler
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\Include\osgUtil\IntersectVisitor
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\osgUtil\RenderVisitor
+SOURCE=..\..\Include\osgUtil\InsertImpostorsVisitor
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgUtil\NvTriStripObjects.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgUtil\RenderBin
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgUtil\RenderLeaf
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgUtil\RenderGraph
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgUtil\RenderStage
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgUtil\RenderStageLighting
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgUtil\RenderToTextureStage
 # End Source File
 # Begin Source File
 
@@ -174,11 +290,31 @@ SOURCE=..\..\Include\osgUtil\SceneView
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\osgUtil\Version
+SOURCE=..\..\Include\osgUtil\SceneViewManipulator
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgUtil\SmoothingVisitor
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgUtil\Statistics
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgUtil\Tesselator
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\include\osgUtil\TrackballManipulator
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgUtil\TriStripVisitor
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\osgUtil\Version
 # End Source File
 # End Group
 # Begin Group "Resource Files"

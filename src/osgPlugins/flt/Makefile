@@ -10,6 +10,7 @@ C++FILES = \
 	ObjectRecord.cpp\
 	ControlRecord.cpp\
 	OldVertexRecords.cpp\
+	OldMaterialPaletteRecord.cpp\
 	DofRecord.cpp\
 	ExtensionRecord.cpp\
 	ExternalRecord.cpp\

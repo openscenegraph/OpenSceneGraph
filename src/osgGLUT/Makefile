@@ -9,7 +9,7 @@ C++FILES = \
 TARGET_BASENAME = osgGLUT
 
 
-LIBS    = -ldl
+LIBS    = -L../../lib -losgDB -losgUtil -losg $(GLUTLIB) -lGLU -lGL -lm
 
 LIB	= ../../lib/lib$(TARGET_BASENAME).so
 #LIB	= ../../lib/lib$(TARGET_BASENAME).a
@@ -17,8 +17,9 @@ LIB	= ../../lib/lib$(TARGET_BASENAME).so
 TARGET_LIB_FILES = lib$(TARGET_BASENAME).so
 TARGET_INCLUDE_FILES = \
 	osgGLUT/Export\
-	osgGLUT/Viewer\
 	osgGLUT/GLUTEventAdapter\
+	osgGLUT/Version\
+	osgGLUT/Viewer\
 
 C++FLAGS += -I ../../include
 

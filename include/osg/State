@@ -2,19 +2,181 @@
 #define OSG_STATE 1
 
 #include <osg/Export>
+#include <osg/StateSet>
+#include <osg/Matrix>
+
+#include <vector>
+#include <map>
 
 namespace osg {
 
-class SG_EXPORT State
+/** macro for use with osg::StateAttrbiute::apply methods for detected and 
+  * reporting OpenGL error messages.*/
+#define OSG_GL_DEBUG(message) \
+    if (state.getFineGrainedErrorDetection()) \
+    { \
+        GLenum errorNo = glGetError(); \
+        if (errorNo!=GL_NO_ERROR) \
+        { \
+            osg::notify(WARN)<<"Warning: detected OpenGL error '"<<gluErrorString(errorNo)<<" "<<message<<endl; \
+        }\
+    }
+
+/** State class for managing a state stack.
+  * Lazy state updating is used to minize state changes.
+  */
+class SG_EXPORT State : public Referenced
 {
     public :
-        State( void );
-        ~State( void );
+    
+        State();
+        
+        virtual ~State();
 
-    private :
-        GeoState *initial;
-        GeoState *req;
-        GeoState *current;
+        /** push stateset onto state stack.*/
+        void pushStateSet(const StateSet* dstate);
+
+        /** pop drawstate off state stack.*/
+        void popStateSet();
+       
+        /** reset the state object to an empty stack.*/
+        void reset();
+
+
+        /** apply an OpenGL mode if required. */
+        inline const bool apply_mode(const StateAttribute::GLMode mode,const bool enabled)
+        {
+            return apply_mode(mode,enabled,_modeMap[mode]);
+        }
+
+
+        /** apply an attribute if required. */
+        inline const bool apply_attribute(const StateAttribute* attribute)
+        {
+            return apply_attribute(attribute,_attributeMap[attribute->getType()]);
+        }
+
+
+        /** apply stateset.*/
+        void apply(const StateSet* dstate);
+
+        /** apply the state.*/
+        void apply();
+       
+        /** mode has been set externally, update state to reflect this setting.*/
+        void have_applied(const StateAttribute::GLMode mode,const StateAttribute::GLModeValue value);
+        
+        /** attribute has been applied externally, update state to reflect this setting.*/
+        void have_applied(const StateAttribute* attribute);
+
+        
+        /** Set the current OpenGL context uniqueID.
+            Note, it is the application developers responsiblity to
+            set up unique ID for each OpenGL context.  This value is
+            then used by osg::StateAttribure's and osg::Drawable's to
+            help manage OpenGL display list and texture binds appropriate
+            for each context.*/ 
+        inline void setContextID(unsigned int contextID) { _contextID=contextID; }
+
+        /** Get the current OpenGL context unique ID.*/ 
+        inline const unsigned int getContextID() const { return _contextID; }
+        
+        
+        
+        /** Set the frame number.*/
+        inline void setFrameNumber(unsigned int fn) { _frameNumber = fn; }
+        
+        /** Get the frame number.*/
+        inline unsigned int getFrameNumber() const { return _frameNumber; }
+        
+        /** Increment the frame number. Done once per frame.*/
+        inline void incrementFrameNumber() { ++_frameNumber; }
+        
+
+        /** Set the hint to OpenGL routines to do fine grained OpenGL error checking.*/
+        void setFineGrainedErrorDetection(const bool flag) { _fineGrainedErrorDetection = flag; }
+
+        /** Get the hint to OpenGL routines to do fine grained OpenGL error checking.*/
+        const bool getFineGrainedErrorDetection() const { return _fineGrainedErrorDetection; }
+
+    private:
+    
+        unsigned int _contextID;
+        unsigned int _frameNumber;
+        
+        typedef std::vector<StateAttribute::GLModeValue>  ValueVec;
+
+        struct ModeStack
+        {
+            ModeStack()
+            {
+                changed = false;
+                last_applied_value = false;
+            }
+        
+            bool        changed;
+            bool        last_applied_value;
+            ValueVec    valueVec;
+        };
+
+
+        typedef std::pair<const StateAttribute*,StateAttribute::OverrideValue> AttributePair;
+        typedef std::vector<AttributePair>                                     AttributeVec;
+
+        struct AttributeStack
+        {
+            AttributeStack()
+            {
+                changed = false;
+                last_applied_attribute = 0L;
+            }
+
+
+            bool                    changed;
+            const StateAttribute*   last_applied_attribute;
+            AttributeVec            attributeVec;
+        };
+
+        /** apply an OpenGL mode if required, passing in mode, enable flag and appropriate mode stack */
+        inline const bool apply_mode(const StateAttribute::GLMode mode,const bool enabled,ModeStack& ms)
+        {
+            if (ms.last_applied_value != enabled)
+            {
+                ms.last_applied_value = enabled;
+
+                if (enabled) glEnable(mode);
+                else glDisable(mode);
+
+                return true;
+            }
+            else
+                return false;
+        }
+
+        /** apply an attribute if required, passing in attribute and appropriate attribute stack */
+        inline const bool apply_attribute(const StateAttribute* attribute,AttributeStack& as)
+        {
+            if (as.last_applied_attribute != attribute)
+            {
+                as.last_applied_attribute = attribute;
+                attribute->apply(*this);
+                return true;
+            }
+            else
+                return false;
+        }
+
+        typedef std::map<StateAttribute::GLMode,ModeStack>      ModeMap;
+        typedef std::map<StateAttribute::Type,AttributeStack>   AttributeMap;
+        typedef std::vector<ref_ptr<const StateSet> >           StateSetStack;
+        typedef std::vector<ref_ptr<const Matrix> >             MatrixStack;
+
+        ModeMap         _modeMap;
+        AttributeMap    _attributeMap;
+        StateSetStack   _drawStateStack;        
+
+        bool _fineGrainedErrorDetection;
+
 };
 
 };

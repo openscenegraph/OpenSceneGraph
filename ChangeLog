@@ -1,6 +1,1026 @@
 OSG Change log
 ==============
 
+9th August 2001 - osg-0.8.42.tar.gz
+
+  o Toned down the specular light values set by default in osgUtil::SceneView::
+    setDefaults from 0.8 to .1, this reduces the effect of scaling of
+    normals on lighting - which was causing a bad flikering affect on 
+    models contains scaling.  This points to a need to automatically 
+    scale the normals, but more on this in a future release.
+  o Removed WXFLAGS from Make/makedefs.* since it is nolonger required.
+  o From Randall Hopper - fixed compliations problems under IRIX on flt plugin.
+  o Fixed bugs in osg::Camera::calc_fovx() and calc_fovy() which causing 
+    them to return incorrect values.
+  o Added code to osgimpostor demo to insert an Impostor above models
+    which don't have an osg::Group at their root.
+  o Fixed bug in osgUtil::VisualsRequirementsVisitor so that by default the
+    alpha and stencil buffers are not required.
+  o Added reporting of visuals requested in osgGLUT::Viewer::open(), accessible
+    only as INFO, so doesn't get reported by default.  To see the reporting
+    set the environmental variable OSGNOTIFYLEVEL INFO
+
+  8th August 2001 - osg-20010808.tar.gz
+
+  o Made the new flt loader the standard flt loader for the release,
+    deleted the old one.
+  o From Brede Johansen - fix to material sharing in new flt loader.
+                        - new default values for the light source in 
+                          SceneView::setDefaults.
+  o From Randall Hopper - fixes to osgWX and wxsgv.
+
+  7th August 2001 - osg-20010807.tar.gz
+
+  o Updated version numbers to reflect the imminent 0.8.42 release.
+  o Fixes to osg::Camera::calc_fovx() and calc_fovy() which were incorrectly
+    takening into account zNear in calculation of field of view.
+  o From Randall Hopper - fixes to warnings under IRIX in the .dw plugin.
+  o From Randall Hopper/Robert Osfield - fixes for the unix Makefile and
+    source files in src/Demos/wxsgv demo.
+  o From Karsten Weiss - bug fixes to osg::Group::removeChild and replaceChild.
+
+  6th August 2001 - osg-20010806.tar.gz
+
+  o From Ben Discoe - integated osgWX library and Demos wxsgv viewer, which
+                      demonstrates osg integration with wxWindows!!!
+                      note, Unix Makefiles have not been tested yet, and the
+                      the MS projects are not linked up by default.
+  o From Ben Discoe - fixed a misleading typo in src/osgUtil/Registry.cpp.
+                    - added a guard into SceneView::draw() to prevent
+                      a crash when no scene data is attached to the
+                      scene view and the draw method is called.
+  o Fixed waning in osg::CullingVolume::operator = (..) related to a missing
+    return *this;
+  o Renamed osgUtil::BufferRequirementsVisitor to 
+    osgUtil::VisualsRequirmentsVisitor to make it more in keeping with the
+    setting up of OpenGL 'visuals', and changed the apply(StateSet&)
+    method to applyStateSet(StateSet&) to prevent warnings under IRIX.
+  o Converted src/osgPlugin/newflt/Makefile from dos style text into unix 
+    style text.
+
+  5th August 2001 - osg-20010805.tar.gz
+
+  o Fixed culling bug related to having osg::Transform within the
+    scene graph which scale dramatically - the bug was in osg::Plane
+    which didn't renormalize the plane equation after transformation.
+    Renormalization is required for the isCulled(BoundingSphere&,..) 
+    method.
+  o From Geoff Michel - primitive and depth complextity statistics added
+    to osgUtil::RenderBin/RenderStage and osgGLUT::Viewer. New class
+    osgUtil::Statistics records no of primitive etc per frame.
+  o Fixed bug in osgUtil::CullVisitor::pushCullViewState(..) where
+    the up vector was being incorrectly transformed, resulting in
+    sporadic impostor orientations.
+  o From Randall Hooper - fixes to CullVisitor to solve inappropriate warnings
+    which occured when the near and far values were calculated  with the
+    range numerically rounding errors.  Also fix to osg::Matrix::transform3x3
+    which was implementated incorrectly.
+  o From Brede Johansen 
+    - integrated update flt loader which will allow it
+      to handle old Open Flight file versions.
+    - also Integrated a small patch to osgPlugins/flt/flt2osg.cpp from
+      Judd Tracy w.r.t converting ConvertFromFLT::visitDOF(..) to use
+      osg::Transform instead or osg::Group.  I have added a comment
+      to this method as it still isn't complete, and will need the
+      osg::Transform's matrix to be set up to refelct the DOFRecord.
+    - Testing with Berkleys dataset revealled that the new flt loader was
+      creating one triangle per geoset which causes a massive loss in performance,
+      I've look for an obvious cause for this, but don't understand the code
+      enough to track it down.  I have reverted to the old flt (0.8.41) plugin 
+      and moved the new flt plugin to src/osgPlugins/newflt.  I will make it
+      the default once the problem has been fixed. RO.
+  o Added osg::Matrix::set(const float* ) implemention to src/osg/Matrix.cpp.
+  o Fixed typos of "spshere","albiet","overiden" & "completly" in include/osg.
+
+
+25th July 2001 - osg-0.8.41
+
+  o Replaced osg::Camera::setModelTransform(..) with more flexible
+    osg::Camera::attachTransform(TransformMode,Matrix*) which allows
+    for setting of both a EYE_TO_MODEL or MODEL_TO_EYE transforms.
+    osg::Camera::getTransform(TransformMode) and dirtyTransform()
+    has also been added, the later to allow the Camera to know about
+    external modifications to attach transforms.
+  o Updated NEWS file.
+  o Removed second entry for png plugin from src/osgPlugins/Makefile.
+    
+  24th July 2001 - osg-20010724.tar.gz
+
+  o Updated the INSTALL file to include mention of make install and 
+    make help.
+  o Fixed two bugs in the osg::Impostor implementation, the first related
+    to the handling of empty impostors, the second was the handling of
+    impostors composed of depth sorted bins.
+
+  23rd July 2001 - osg-20010723.tar.gz
+
+  o Bumped version numbers up to 0.8.41 in preperation for the release.
+  o Fixed a bug in src/osgPlugin/pfb's conversion of Performer texture
+    filter modes into osg, the mag filter was being set with a invalid
+    enumerant.  The bug resolved itself as OpenGL errors being reported
+    to the console on loading some .pfb files.
+  o Added osgUtil::RenderStageLighting to encapsulate the lighting
+    of the osgUtil::RenderStage, and to allow sharing of lighting
+    between RenderStages, such when using pre-rendering stages.
+  o Added osg::Drawable::s/getSupportDisplayList() which can be used
+    to prevent display lists from being used on specified drawables.
+    Typical use would be to protect dynamic drawables such as continous 
+    level of details drawables from being encapsulated with a display
+    list.  Attempts to turn on display lists on such a drawable will
+    now results in a warning, and will have no affect on the drawable.
+  o Added osgUtil::BufferRequirementsVisitor to traverse a scene graph
+    establishing the OpenGL buffers required to support rendering of 
+    that scene graph. The results can then be used by applications to
+    set up there windows with the corret visuals. Modified osgGLUT::
+    Viewer::open()  to use the new visitor and set up the buffers
+    accordingly.  The calls to gluInitDisplayString in the demos are 
+    now redundent and have been removed.
+
+  21th July 2001 - osg-20010721.tar.gz
+
+  o Added support for depth sorting of impostor sprites into 
+    osgUtil::CullVisitor and added public methods to osg::CullVisitor
+    to allow the switching on or off or impostor depth sorting, and
+    the turning on or off of impostors.
+  o Added demo osgviews to demostrate multiple views of single scene, 
+    not currently functional, will fix later.
+  o From Randall Hopper - support for multiple viewports in osgGLUT::Viewer.
+  o From Geoff Mitchel - new OpenGL based stats reporting added to
+    osgGLUT::Viewer. Similar in style to Performer's perfly stats.
+  o Fixed the osg::Camera::home() method so its sets to the OpenGL
+    defaults position of looking down the z axis, with the upvector
+    along the +ve y axis.
+  o Fixed a warning in osg::State.
+
+  18th July 2001 - osg-20010718.tar.gz
+
+  o Further improvements to the osg::Impostor implementation, various
+    bugs have been fixed and out of date ImpostorSprite's can now be
+    reused via an osg::ImpostorSpriteManager, which is stored in the
+    osgUtil::CullVisitor.
+  o Added an osgUtil::InsertImpostorsVisitor which traverses the 
+    scene graph inserting osg::Impostor nodes above osg::Group's
+    (and its subclasses such osg::Transform) and converts osg::LOD
+    nodes into osg::Impostor nodes.  The demo osgimpostor has been
+    modified to use the new InsertImpostorsVisitor.
+
+  13th July 2001 - osg-20010713.tar.gz
+
+  o Various improvements to the osg::Imposter implementation, now includes
+    pixel error calculation which will work for both perspective and
+    othographic projections.  The Impostor doesn't currently support
+    texture reuse, but the much of the code to support is implemented,
+    yet have to tie up the loose ends for the next release now.
+  o Fixes to osg::Texture::copyTexSubImage2D to ensure that _mag_filter
+    was set to LINEAR, to ensure that mipmaps arn't used.
+  o Fixed Visual C++ workspace file for .dw plugin, to ensure under
+    debug build it correctly links to glu library.
+
+  12th July 2001 - osg-20010712.tar.gz
+
+  o Added src/Demo/osgimpostor to demonstrate how to use the new osg::Imppostor
+    node and to test the impostor implementation.
+  o Implemented first cut of osg::Impostor, ImpostorSprite, 
+    and RenderToTextureStage.  Implemention not complete, and bugs exists
+    which prevent the textured quad appearing with its texture?! 
+  o Fixed osg::Camera::zNear()/zFar() methods which returning the wrong values.
+  o Updated AUTHORS file.
+  o From Geoff Mitchel, .dw (design workshop) loader plugin.
+  o Fixed coordinate transformation in osgPlugins/obj - Alias Wave OBJ loader.
+  o Fixed minor unsigned to signed comparision warning in osg::Texture.
+
+  1st July 2001 - osg-20010701.tar.gz
+
+  o Rewritten osg::Camera class to support Otho, Frustum and Perspective
+    projection modes.  Significant API changes have been made, the new
+    Camera implementation is not backwards compatible.
+  o Added osg::ClippingVolume to represent a convex clipping volume.
+  o Added osg::Plane class to support view frustum clipping and other operations
+    requiring plane operations.
+  o Made corrections to osgtexture usage details.
+  o From Ulrich Hertlein - fixes to osg::Texture to prevent bind of textures
+    to NULL image data and added missing #include<osg/GeoSet> to 
+    osgUtil::IntersectVistor.
+  o Removed the erroneous inline keyword from infront of 
+    osg::StateSet::setRenderBinToInherit(..) which was causing compilation
+    errors under IRIX.
+  o Fixed file permission problems in include/osg/Object, and osgDB.
+  o Fixed a bug in osgGlut::Viewer where view frustum culling and small
+    feature culling could be toggled off, 
+  o Fixed a bug in osg::Quat::makeRot(Vec3,Vec3) where the angle
+    calculated was incorrectly calculated.  Also added a couple of
+    set methods and made the constructors inline.
+  o Added osg::Drawable::dirtyBound() which should be called when geometry
+    is updated. Note it does not dirty geodes above - this will have to be
+    done by caller.
+
+  June 26th osg-20010626.tar.gz
+
+  o Several changes related to making the NewCullVisitor now the
+    standard CullVisitor, since it now has greater functionalility,
+    performance and more robust than the previous incarnation of
+    CullVistor.
+    - Removed osgUtil::Renderer as this is now rendundent thanks to
+      the new RenderStage functionality.
+    - Replaced osgUtil::CullVisitor by osgUtil::NewCullVisitor and
+      removed NewCullVisitor references as these are nolnger needed.
+    - Moved osgUtil::CullViewState out of osgUtil::CullVisitor header
+      and into its only file header and source files.
+    - Updated osgUtil::SceneView to only refer to new standard CullVisitor.
+    - Updated Unix and VisualStudio files accordingly.
+  o Fixed problem related to calculation of the near far planes when
+    a non-uniform transformation exists in the scene graph.
+  o Fixed problem related to view fustum culling when a non-uniform
+    transformation exists in the scene graph.  Solution was to use
+    the transpose of the inverse transformation matrix to transform
+    plane normals rather than the transformation matrix as used for
+    points.
+  o Fixed two bugs in osg::notify(), pinpointed by Randall Hooper.
+    The first was in osg::initNotifyLevel() - the check for DEBUG was 
+    hidding the settings for DEBUG_FP and DEBUG_INFO since it was first
+    of these in the if/else code and all contain the word DEBUG.  The
+    solution was to move DEBUG check to the last entry.
+    The second bug was related to osg::setNotifyLevel() - if this method
+    was called before the first call to osg::notify() then osg::notify
+    would automatically call initNotifyLevel and overwrite the 
+    setNotifyLevel value.  The fix was to make setNotifyLevel call
+    initNotifyLevel itself before setting the value, and add protection
+    into initNotifyLevel so that the internal code is never executed
+    more than once.
+
+  June 22nd - osg-20010622.tar.gz
+
+  o Added osgUtil::NewCullVisitor::createOrReuseMatrix() and
+    createOrReuseRenderLeaf() methods to allow reuse of what was temporary
+    memory from frame to frame.   Combined with the new near and far
+    plane code, the cull traversal for models like Performer town is
+    now 40-60% faster, and on models with a large nuber of internal
+    transforms the figure can be 80+% faster :-)
+  o Changed the techinique for calculating the near and far planes inside
+    NewCullVsitor to be more efficient - now about up to and over 4 times
+    faster!  Makes a particular difference on models with large numbers
+    of transform nodes.
+  o Changed osg::Draw::drawImmediateMode() so that it takes an osg::State
+    as a parameter.
+  o Changed the referencs to -glut in unix Makefiles so that is is specified
+    by a $(GLUTLIB) paramter, which is now set in the Make/makedefs.* files.
+    This allows the GLUTLIB to be changed to allow linking to static glut
+    libraries.  It defaults still defaults to -glut as before, so no change
+    in standard behavior will be noticed.
+  o Added osgUtil::RenderToTextureStage in preperation for support for
+    Imposters.
+  o Added osg::Impostor, ImpostorSprite header and source files, these files
+    are simply shells for future integration work, and do not currently function
+    as Impostors. Modified osg::NodeVisitor and osg::CullVisitor so that
+    they now recognise the Impostor node.
+
+  June 18th - osg-20010618.tar.gz
+
+  o Reverted to the prev_ReaderWriterPNG.cpp since I was having problems
+    loading png files that used to work.  This will break other png files
+    for which the new_ReaderWriterPNG.cpp was created to handle. Both
+    clearly arn't up to job and need a rewrite. Will do this later...
+  o Made osg::Camera::draw_PROJECTION() and osg::Camera::draw_MODELVIEW()
+    virtial functions to allow subclassing.
+  o Removed the references to opengl.lib and glu.lib from the lwo loaders
+    as they arn't required.
+  o Under Unix, changed the names of the jpeg and tiff plugins from libdb_jpg.so
+    and libdb_tif.so to libdb_jpeg.so and libdb_tiff.so respectively, and 
+    used the new addFileExtensionAlias to alias the common file etension to
+    use these new names.  This makes it consistent with the name of the
+    directories and source files in the distribution.  Windows already used
+    this convention.
+  o Added osgDB::Registry::addFileExtensionAlias(,) to allow file extension
+    to be aliased to appropriate osgPlugins.  Current default aliases are:
+       addFileExtensionAlias("rgba", "rgb");
+       addFileExtensionAlias("int",  "rgb");
+       addFileExtensionAlias("inta", "rgb");
+       addFileExtensionAlias("bw",   "rgb");
+       addFileExtensionAlias("jpg",  "jpeg");
+       addFileExtensionAlias("jpe",  "jpeg");
+       addFileExtensionAlias("tif",  "tiff");
+       addFileExtensionAlias("geo",  "lwo");
+       addFileExtensionAlias("lw",   "lwo");
+  o Pulled libtiff, libpng and libjpg win32 image libraries from the 
+    OpenIL image library distrbution and placed them into a zip archive
+    for win32 users to install, instead of having to trawl the internet
+    for them. 
+
+  June 15th 2001 - osg-20010615.tar.gz
+
+  o Updated the TARGET_INCLUDE_FILES to reflect current set of include
+    files so that make install works properly once more.
+  o Fixed the src/osgUtil/Tesselate.cpp so that it detects the
+    defination of GLU_VERSION_1_2 and use modern glu tesselation
+    functions rather than the old style deprecated glu tess functions.
+    This fixed compilation problems under recent versions of Mesa.
+  o Fixed the texture coordinates of the top of the tank in the hangglide
+    demo - the center point texture coords were not being initiliaed
+  o Fixed a crash in osg::Texture::apply() which occurred when it was
+    called without a valid image being attached.  The fix is simply
+    to add an _image.valid() check at the begining of the method.
+  o Changed src/Demos/sgv/Makefile so that it defaulted to *not* linking
+    with Performer - the previous dev release had this as default which
+    it shouldn't have.
+
+
+  June 13th 2001 - osg-20010613.tar.gz
+
+  o Added support osg::StateSet::RenderBinDetails into .osg 
+    reader/writer plugin. This now allows multi-pass models to be saved
+    and loaded, such as osfreflect demo can now be reproduced in a .osg
+    file.
+  o Added support for osg::Stencil, osg::Depth, osg::ClipPlane and 
+    osg::ColorMask classes to .osg reader/writer plugin.
+  o Added support osg::Drawable:UseDisplayList into .osg reader/writer plugin.
+  o Fixed the src/osgPlugins/pfb/ConvertFromPerformer.cpp so that is scales
+    the shininess value correctly when converting materials to osg.
+  o Added checks to osg::Material::set*(..) methods to use the new bounds
+    checking utilties to clamp values to valid ranges.
+  o Added include/osg/BoudingChecking header file with template definitions for
+    clamping paramters to specified ranges.  template functions provided are:
+    clampGEQUAL(...), clampLEQUAL(..) amd clampBetweenRange().
+
+
+  11th June 2001 - osg-20010611.tar.gz 
+
+  o Went through library source adding, where required to suppress spurious
+    warnings in during MSVC++ debug compilation, pragma warning ( disable 4786)
+  o Changed the mapping of coordinates in the .obj and .lwo loaders from
+    +x east, +y upwards, +z north (as specified in file specs) to the OSG's
+    +x east,+y north,+z updwards. The windings of triangles has also been 
+    flipped to handle this change.
+  o Added a RegistryPtr class to handle the destruction of the the
+    registry, assinging NULL to the pointer once the registry is
+    deleted.  Subsequent calls to the get() of RegistryPtr will
+    return NULL, which can be used for testing whether the registry
+    still exists or not.  This means that Registry::instance() will
+    now return NULL if the registry has been automatically deleted.
+    The RegisterDotOsgWrapperProxy and RegistryReaderWriterProxy have
+    been modified to use this new property to prevent the registry
+    being called once it has been deleted.  This has been done to
+    prevent out of order destruction causes seg faults on exit.
+  o Added Tesselator to src/osgUtil to be used in for breaking up
+    concave polygons into triangles - uses the glu tesselator.
+  o Reimplemeted src/osgPlugins/lwo to use new tesselator and allocate 
+    seperate vertex lists for each  material type.
+  o From Randall Hopper - Added missing int from static definition in 
+    src/GLUT/Viewer.cpp. 
+  o Removed use to OSGHOME from  src/osgPlugins/lwo & obj Makefiles,
+    replacing with normal relative include paths for makedefs and rules.
+  o Removed unnecessary glib reference from src/osgPlugins/lwo/Makefile. 
+
+  7th June 20001 - osg-200010607.tar.gz
+
+  o From Ulrich Hertlein - .obj and .lwo loaders. Various fixes and porting
+    to Windows done by Robert Osfield.
+  o Fixed bug in osgcube related to the color of the cube having an alpha
+    value of 0.0, which resulted in all OpenGL fragmennts failing the
+    AlphaFunc test which is now on by default.  Changed the alpha to 1.0
+    for opaque. 
+  o Implemented a multi-pass reflection demo in src/Demos/osgreflect which
+    uses the stencil buffer to tag mirror bits, and 5 render bins to order rendering
+    as Mark Kilgard's paper "Improving Shadow and Reflections via the
+    Stencil Buffer" which can be download at the NVidia website.
+  o Moved osg::Stencil, osg::Depth and osg::ColorMask from src/Demos/osgreflect
+    into the core osg library.
+  o Added osg::ClipPlane StateAttribute subclass to encapsulate OpenGL's
+    glClipPlane function.
+
+
+  31st May 2001 - osg-20010531.tar.gz
+
+  o Added osg::Stencil, osg::Depth and osg::ColorMask StateAttribute
+    subclasses to the osgreflect demo to enable multi-pass use of the
+    stencil buffer.  osgreflect.cpp has yet to be modified to take
+    advatange of these new state class or multi-bin functionality,
+    this will be done for the next dev release.  The Stencil, Depth
+    and ColorMask classes will be added into the core osg for the
+    next release.
+  o Added beginings of osgUtil::NewCullVisitor which will support the 
+    new multi-pass/stage functionality, and replace osgUtil::CullVisitor
+    once the functionality is finalised. osgUtil::SceneView has been
+    modified to use either NewCullVisitor & RenderBin etc or the
+    previous CullVisitor/Renderer functionality.  SceneView defaults
+    to the NewCullVisitor.
+  o Added beginings of osgUtil::RenderBin,osgUtil::DepthSortedBin and 
+    osg::RenderStage to support multi-pass and multi-stage rendering.
+  o Fixed bug in osg::Matrix::mult(const Matrix& lhs,const Matrix& rhs) 
+    which occured when either the lhs or rhs paramters were the same
+    matrix and 'this'.  The osg::Matrix::invert(const Matrix& m) also
+    sufferd the potential problem.  In both methods I've added checks
+    against the 'this' pointer to trap these cases and create a temporary
+    copy of 'this' before proceeding.
+  o From Ulrich Hertlein - support for texture subloading in osg::Texture. 
+
+  25th May 20001 - osg-20010525.tar.gz
+
+  o Added new osgUtil::RenderLeaf class for storing drawable, matrix &
+    depth data and for rendering in conjunction with osgUtil::Renderer.
+    RenderLeaves are themselves stored inside the RenderGraph and
+    replace the previous pair<Drawable,Matrix> which did a similar job.
+    The new class allows extension, via subclassing, of the data stored 
+    in a RenderLeaf, such as id's for picking, and also override of
+    the local rendering behavior via a its virtual render(..) method. 
+  o Changed the printing of frame rate stats so that it prints out
+    appropriately every second rather than every frame, therefore
+    reducing the overhead of printing out to the terminal.
+  o Added prioritizeTextures() method to osgUtil::Renderer which parses
+    the draw bins and calculates the most appropriate texture priotization.
+  o Added getTextureObject(..) and getTextureObjectSize() to osg::Texture
+    to allow details of the texture object to be publicly accessed.
+  o Implemented view frustum culling that switches of redundent checks
+    against the side sides of the view frustum when traversing children.
+
+19th May 2001 - osg-0.8.40 (minor updates made to release of 18th May)
+
+  o Small correction to NEWS file.
+  o Small updates to index.html.
+  o Removed '-ldl' from makedefs.irix.* as it is not required.
+
+  18th May 2001 - osg-0.8.40 
+  
+  o Updated Make/makedefs.* to better support FreeBSD compilation.
+  o Updated index.html and doc/Doxyfiles/* to include references to 
+    the osgDB library and osgtexture demo program.
+  o Changed the default IRIX make to make.std, and make.nonstd to 
+    make irix.old.
+  o Added src/Demos/osgtexture - a demo to demostrate the various texture
+    modes possible with osg::Texture.
+  o Fixed CullVisitor::setCullingActive(..) so that it now sets
+    the current CullViewState's modes as it should, previously only the
+    CullVisitor::pushMatrix() was setting these values.  
+  o From Zang Zong Shan - bug fix to osg::Group::removeChild() to ensure that 
+    the parent is removed from its child properly.
+  o From Karsten Wiess (with small mods for to avoid sqrt by Robert Osfield)
+    added osg::BoundingSphere::intersects( const BoundingSphere& bs )
+  o Add comments to methods include/osg/StateSet and StateAttribute.
+  o Added osg::Texture::readImageFromFramebuffer(...) from Karsten Weiss'
+    Imposter code. Note, name of method has been changed (from get..) and
+    State parameter added to allow the handling of multiple contexts.
+  o Changed the png plugin to use code from simage rather than previous
+    png code that the osg used, solving a crash reported on some png
+    files.
+  o Added temporary fixes into include/osg/StateSet, src/osg/StateSet.cpp
+    and src/osgPlugins/osg/StateSet.cpp to get round a crash under Windows
+    when saving a dot osg file.  Actual problem has not been isolated,
+    so fix will be removed once real problem has been solved.
+  o From  - added support for IMB_MIRROR_REPAT extension into 
+    osg::Texture and .osg plugin.
+  o Added code to osgPlugins/osg/Texture.cpp to record the original
+    name of the image filename to be passed onto the image filename,
+    instead of the absolute path with name as recorded by the image
+    plugins themselves.  This changes preserves the name from loaded
+    .osg through to any subsequent save .osg.
+
+  10th May 2001 - osg_20010510.tar.gz
+
+  o Bumped version numbers up to 0.8.40
+  o Added #include<osg/GeoSet> to osgUtil/SmoothingVisitor.
+
+  9th May 2001 - osg-20010509.tar.gz
+
+  o From Randall Hooper - modifications to osg::Timer, Makefile's and 
+    the addition of Makefile/makedefs.freebsd Makefile/makerules.freebsd
+    to add support for the FreeBSD flavor of Unix!
+  o From Axel Volley - fixes to FieldReader and RenderGraph headers and
+    to Make/makedefs.irix.* to fix compilation problems which have
+    occurred under IRIX with the latest dev versions.
+  o Added the ability to clean and reuse the RenderGraph tree from
+    frame to frame, thus reducing the memory overhead of allocation
+    and deleting on each frame.
+
+  8th May 2001 - osg-20010508.tar.gz
+
+  o Added osg::StateAttribute::clone()=0 to the StateAttribute header file
+    to complete the overriding of osg::Object's virtual methods.
+  o Revised the StateAttribute/StateSet/State API a small amount to make
+    it more consistent.
+  o Fixed memory leak in new version of CullVisitor where more Matrices 
+    were being allocated than required, and were left unreferenced.
+  o Fixed viewing bug in hangglide, introduced in osg-20010418.tar.gz
+    with the modifications to the osg::CameraManipulator base class.
+  o Added const and inline to methods in include/osg/* header files, 
+    making it more explicit which methods are inline, and which paramters
+    and returns types are const.  The later can help compilers produce
+    appropriate compiler errors when inappripriate things are done with
+    return types, which is good for compile error detection, and also
+    allows the compiler to more aggressive optimizer code.
+  o Fixed compilation error in osg::Output::open(,,,) under windows by
+    removing method.  This is not a problem to end users since the 
+    method was only added for absolute completness of overriding the 
+    ofstream::open() method.
+
+  6th May 2001 - osg-20010506.tar.gz
+
+  o Added osg::State::apply(const osg::StateSet*) to apply a StateSet
+    without requiring a pushStateSet(),apply(),popStateSet() as required
+    in previous dev version.  Combined with the two changes changes
+    below draw traversal times have been reduced significantly on
+    models with large number of state changes (such as billboarded trees 
+    in Performer town.)  Both Cull and Draw traversal times are now 
+    faster than previous releases.
+  o Moved the support for tranform Matrices in the osgUtil::RenderGraph
+    into a Drawable/Matrix pair rather than one per RenderGraph element.
+    Modifed osgUtil::CullVisitor and osgUtil::Renderer to reflect this
+    change.
+  o Added 'inline' keyword to numerous methods in osg and osgUtil header
+    files to give a less subtle hints to compilers than a inline method
+    is indeed inline.  VisualC++ particularily seems to need inline
+    to specified explicitly.
+  o Added osgDB::Output::s/getPathNameHint() and Output::setPathNameHint(..) 
+    to to help future support for absolute filepaths, relative file paths
+    in the .osg outout. Currently only implements AS_IS and FILENAME_ONLY.
+
+  3rd May 2001 - osg-20010503.tar.gz
+
+  o Modified osgUtil::SceneView to reference the RenderGraph and Renderer's.
+  o Modified osgUtil::CullVisitor so it creates a RenderGraph instead on
+    the previous DrawBin.
+  o Added osg::StateSet::g/setRenderingHint(..) to allow hints to be passed
+    on to the Renderer to allow it place the drawables in the appropriate
+    rendering bin for rendering.  This allows, for instance the rendering
+    transparent bin to be addressed independantly from the current GL_BLEND
+    mode.  An int is used so more than just Opqaue or Transparent bins could
+    be referenced from within the scene graph (but these must be handled
+    by Renderer subclasses.)
+  o Replaced osgUtil::DrawBin by osg::Renderer which traverses a RenderGraph
+    to generate its own render bins, supports basic coursed grained state 
+    sorting.  Designed to subclassed to allow users to modify the rendering
+    behaviour.
+  o Implemented new osgUtil::RenderGraph class for storing state, matrix and
+    drawable data produced from a cull traversal (such as by CullVisitor.)
+  o Removed all osg::StateAttribute subclasses static void enable()/disable()
+    as these have been made redundent by the new osg::State/StateSet &
+    StateAttribute functionality.
+  o Removed osg::Lighting since it is now redundent thanks to new 
+    functionality of osg::State/StateSet & StateAttribute functionality.
+  o Reworked the .osg, .pfb, .3ds and .flt loaders to use the new 
+    osg::StateSet class.
+  o Reworked osgUtil, osgDB, osgGLUT, Demos/osgcube, osgreflect and hanglide
+    to use the new osg::StateSet class.
+    osg::StateSet class.
+  o Renamed osgUtil::GeoStateManipulator to osgUtil::StateSetManipulator
+    be consitent with GeoState's replacement.
+  o Replaced osg::GeoState with new more flexible osg::StateSet.  
+    osg::GeoState nolonger exists so users will have to port to use the
+    new osg::StateSet.  Functionality can easily be mapped across to the
+    StateSet so this should not be difficult task.
+  o Removed the deprecated RenderVisitor since it has now been replaced
+    by the more flexible and powerful CullVisitor/DrawBin pair (which
+    themselves may be replaced later by more flexible and powerful...:)
+  o Fixed osg:Geode::computeBound() method so that it handled empty geode's
+    correctly setting the Bounding Sphere to default initialized state to
+    represent and empty sphere.  Previous (nan,nan,nan) was calculated for
+    the center of the bounding sphere for empty data.
+  o To fix a compliation collision when #define DEBUG is used and Notify is
+    included, have changed enum NotifySeverity { ... DEBUG=5, FP_DEBUG=6 }
+    to enum NotifySeverity { ... DEBUG_INFO=5, DEBUG_FP=6 }
+
+  18th April 2001 - osg-20010418.tar.gz
+
+  o From Neil Salter, additions to osgUtil of new 
+        osgUtil::GUIEventHandler,
+        osgUtil::SceneViewManipulator and
+        osgUtil::GeoStateManipulator.
+  o Fixed date problems in distribution which occured in osg-20010416.tar.gz.
+  o Added make stats option to the root Makefile to allow the number of lines
+    of code in each component of the OSG to be logged.
+
+  16th April 2001 - osg-20010416.tar.gz
+
+  o Added Don Burns sgv key bindings documentaiton into doc/sgv.html
+  o Added s/getState() to osgUtil::DisplayListVisitor to provide state
+    for the compile display list method to use.  Added new DisplayListMode
+    COMPILE_ON_DISPLAY_LISTS which is implemented so that if display
+    lists are already switched on in the traversed scene graph are 
+    compiled.
+  o Added support for multiple OpenGL contexts (and hence multiple seperate 
+    texture object and display lists) into osg::Texture::apply(State&) and
+    osg::Drawable::draw(State&).  This allows the OSG to work in multipipe
+    systems.
+  o Added (State& state) parameter to both osg::StateAttribute::apply(State&)
+    and osg::Drawable::draw(State&) to allow the handling multiple OpenGL
+    context.  All subclass' of StateAttribute and Drawable have been updated
+    to reflect this new paramter.
+  o Added s/getContextID() to osg::State to handle the specification of
+    a unique unsigned int to specifiy the current active OpenGL context.
+    This value is in turn used by osg::Texture and osg::Drawable to
+    manage multiple texture binds and display lists, one for each 
+    OpenGL context, thus enabling multi-pipe support.
+  o Fixed the osgDB::Registry::writeObject() so that it supports the
+    writing of osg::Object UniqueID out to .osg.
+
+  7th April 2001 - osg-20010407.tar.gz
+
+  o Added numerous get and set methods to a large proportion of classes in 
+    the core osg library.  Made methods const correct where appropriate.
+    Also modifed several enum type names to be more consistent from class
+    to class.
+  o From Karsten Wiess - added osg::Matrix::makeRot(Vec3,Vec3).
+  o Added ostream << operator to osg::Matrix for debugging purposes.
+  o Changed osg::Object::isSameKindAs(Object*) to be const correct i.e
+    isSameKindAs(const Object*) const.  All subclasses of osg::Object
+    have been updated to reflect this change.
+  o Changed the osg::Billboard::get* functions so that they return
+    values rather than requiring the paramter passesing. This has been
+    done to be more consistent with the rest of the osg, make it easier
+    to use and improve the potential for compiler optimization.
+  o Moved loadObject/Image/NodeFile from include/osg/Registry into
+    include/osgDB/ReadFile, and renamed them readObject/Image/NodeFile
+    to keep consistency with ReaderWriter & Registry.
+  o Moved saveObject/Image/NodeFile from include/osg/Registry into
+    include/osgDB/ReadFile, and renamed them writeObject/Image/NodeFile
+    to keep consistency with ReaderWriter & Registry.
+  o Moved database & dynamic plugin support out of core osg library into
+    seperate osgDB library which is now an optional layer above the core osg.
+  o Moved osg ascii support & ReaderWriter out of core osg library and into
+    a seperate osgPlugins osg plugin.
+  o Moved rgb image reader out of core osg library and into a seperate
+    osgPlugins osg plugin.
+  o Removed osg::Scene since it is now redundent thanks to the new ability
+    to attach osg::GeoState to all internal nodes within the scene graph.
+  o Removed osg::Sequence as it was nothing more than a shell implemention,
+    which could be inappropriately used.  Will implement properly later.
+
+  29th March 2001 - osg-20010329.tar.gz
+
+  o renamed the following methods in osg::GeoSet for consistancy:
+    getNumIndices() ->          getNumCoordIndices()
+    getCIndex() ->              getCoordIndices()
+    getNumNIndices() ->         getNumNormalIndices()
+    getNIndices() ->            getNormalIndices()
+    getNumCIndices() ->         getNumColorIndices()
+    getColIndex() ->            getColorIndices()
+    getNumTIndices() ->         getNumTextureIndices()
+    getTIndex() ->              getTextureIndices()
+  o Itegrated changes from Bryan Woods for Mac port:
+    - include/osg/Timer - small macintosh #define comment out.
+    - src/osg/FileNameUtils.cpp - added using std::tolower,std::stlen 
+         within #machintosh guards.
+    - src/osgGLUT/Viewier.cpp - #ifndef machintosh printing out
+         of library name and version in constructor.
+    - src/sgv.cpp & repsective files osgcube,osgreflect and hanglide have
+      moved the glutInit(,) call to the top of each main function.
+    - updated the Metroworks file
+  o Added a src/Demos/sgv/Makefile.performer and Makefile.standard to
+    all the direct linking to Performer hack to be easily applied to
+    sgv to get round the know problems with dynamically linking to
+    Peformer.
+  o Changed osgUtil::SceneViewer::draw() method so it would clear background
+    even if no model have been attached to the scene view.
+  o Changed include/osg/Notify to use #ifdef __GNUC__ instead of __linux
+    as guard for dummy code required to prevent a gcc warning.
+   
+
+
+25th March 2001 - osg-0.8.39.tar.gz
+
+  o Added option for uint indices in osg::GeoSet to allow very large models
+    to be represented.
+  o Moved the distribution version numbering from previous osg-0.8-39.tar.gz
+    style to more standard osg-0.8.39.tar.gz The distribution directory also
+    now reflects the new version numbering, so rather than the 
+    OpenSceneGraph-0.8 the directory will be osg-0.8.39.  These two changes
+    bring the OSG into line with established conventions in the open source
+    world.
+  o From Karsten Wiess - added small piece of dummy code into 
+    include/osg/Notify to prevent inappropriate gcc warnings.
+  o From Neil Salter
+    - updated the doc/Doxyfiles directory to handle the
+      proposed version number i.e. osg-0.8.39 for next version.
+    - updated NEWS file to be compatibile with new automated scripts for
+      generating Doxygen documentation for distribution.
+    - updated osg banner in html pages to indicate documentation is
+      from the distribution.
+  o Fixed typo in src/osgPlugins/lib3ds/track.cpp which caused the lib3ds
+    to fail to build.
+
+  21st March 2001 - osg_src-20010321.tar.gz 
+
+  o Added osg::StateAttribute base class, changed all state attribute
+    classes so that they now inherit from osg::StateAttribute and
+    changed osg::GeoSet to work with osg::StateAttribute.  All
+    StateAttrbute subclasses (Texture/TexGen...) all now register
+    with the osg::Registry, and all .osg file reading uses these
+    prototype as per image,node, and drawable prototypes. Although
+    osg::GeoState is still hardwired to certain state attributes
+    as before much of the infrastructure around it has be upgraded
+    to pave the way for a more flexible osg::GeoState.
+  o Removed _drawBin->reset() from CullVisitor::reset() since it
+    should be reset extrenal to the CullVisitor.
+  o Added osgUtil::SceneView::s/getDrawBin() methods.
+  o Changed the lib3ds includes to be local header paths and
+    changed lib3ds/float.h to lib3ds/lib3ds_float.h to avoid
+    collisions with the system float.h.  Note, the changes to
+    path required changes to both the source, Unix Makefile and
+    VisualStudio lib3ds.dsp files.
+  o Changed the usage text to reflect the name of osgreflect.
+  o Removed app and cull traversal calls from osgGLUT::Viewer::draw(),
+    since there are now handled by their own app() and cull() methods.
+
+  18th March 2001 - osg_src-20010318.tar.gz 
+
+  o Implemented base class osg::Drawable from which osg::GeoSet is now
+    derived.  osg::Geode now contains a list of osg::Drawables, and
+    osg::Registry and osg::Input have been extended to handle dynamic
+    exensions of osg::Drawable in file IO.  Numerous files have been
+    modified to support the new structure, it is also likely to break
+    user code, look at the code with the plugins and demos to see how
+    adapt code to the new style.  The changes are likely to be minimal -
+    for instance geode->addGeoSet(geoset) would change to 
+    geode->addDrawable(geoset).  Some .osg files no longer load due to
+    a bug introduced with the above changes - still investigating it,
+    likely to be just a typo somewhere...
+  o Renamed DCS -> Transform.
+  o Renamed Seg -> LineSegment.
+
+  15th March 2001 - osg_src-20010315.tar.gz 
+
+  o Added osgUtil::SceneView::setAppVisitor(), getAppVisitor() and
+    app() to support user defined app traversal.
+  o Added support for the new SceneView::app() traversal into osgGLUT/Viewer
+    and cleaned up the app(),cull() and draw() methods.
+  o Added an AppVisitor to the Demos/osgreflect which rotates the loaded
+    model about its center point.
+  o Added a osg::NodeVisitor::reset() to be called prior to each traversal
+    to allow subclasses to flush internal set for each traversal.
+
+  14th March 2001 - osg_src-20010314.tar.gz 
+
+  o Added reflection demo, which can be found in Demos/osgreflect.
+  o Made osg::Reference::_refCount mutable and the ref() & unref() const
+    methods, to faciliate the referencing of const objects.
+  o Added support for attaching osg::GeoState to internal nodes in the 
+    scene graph.  This enables subgraph's state to be overridden, which
+    enables several multipass techniques, such as planar reflections.
+  o Added src/osg/State.cpp to help manage pushing and popping of current
+    state. include/osg/State previously existed but was just a shell,
+    and has now been updated to provide funcitonal interface!
+
+  o Fixed a typo in VisualStudio/Demos/osgcube/osgcube.dsp which caused debug 
+    build link time errors - a space was missing between two library names.
+  o Added osg::FrontFace state attribute class for managing the OpenGL
+    glFrontFace(,) on a per osg::GeoState basis.
+    Added files include/osg/FrontFace and src/osg/FrontFace.cpp and
+    modified include/osg/GeoState, src/osg/GeoState.cpp.
+  o Added osg::GeoState::merge(osg::GeoState* lhs,osg::GeoState* rhs)
+    method to osg::GeoState, for use in the new osgUtil::DrawBin.
+  o Updated comments in include/osgUtil/SmoothingVisitor, TriStripVisitor
+    and include/osg/Scene.
+  o Corrected header guards in DisplayListVisitor to be consistent with rest
+    of library, and updated comments.
+  o Update NEWS with small revisions.
+  o Fixed crash in NvTriStrip due to TriStripVisitor calculating the 
+    number of vertices one to small, which resulted in memory errors.
+
+  6th March 2001 - osg_src-20010306.tar.gz 
+
+  o Added new class osgUtil::CullVisitor and osgUtil::DrawBin which are
+    steps towards spliting up the osgUtil::RenderVisitor into its component
+    parts.
+  o Updated NvTriStripObject.cpp with patch from NVidia.
+  o Updated the NEWS information to allow automatic parsing of the file
+    for NEWS and headlines on the osg website implmented by Neil Salter.
+  o From Karsten Weiss - added comments and correct typo's in
+    include/osg/Scene and include/osg/Group
+  o Added osg::PolygonMode state attribute class for managing the OpenGL
+    glPolygonMode(,) on a per osg::GeoState basis.
+    Added files include/osg/PolygonMode and src/osg/PolygonMode.cpp and
+    modified include/osg/GeoState, src/osg/GeoState.cpp and 
+    src/osgGLUT/Viewer.cpp to utilize the new class.
+
+
+  4th March 2001 - osg_src-20010304.tar.gz 
+
+  o Changed osg::Scene and osg::DCS to use osg::ref_ptr<> instead of
+    directly managing dynamically memory.
+  o Fixed crash due memory errors in osgUtil::IntersectVistor.
+  o Updated NEWS with main items for ChangeLog dating back to the first 
+    days of the ChangeLog.
+  o Changed the file extension checking methods in ReaderWriterOSG,
+    ReaderWriterRGB, ReaderWriterOSGTGZ, ReaderWriterTGZ, ReaderWriterZIP
+    to use use new function osg::equalCaseInsensitive(lhs,rhs).
+  o General purge of warnings in libs and plugins.
+  o From Neil Salter
+    - spelling corrections to include/osgGLUT/Viewer.
+    - updates to doc/Doxyfiles/*.
+  o Added extensions guard to src/Demos/hangglide/ReaderWriterFLY.cpp
+    which fixes the bug where the hangglide demo does can only read
+    .osg or .fly input files.
+  o Updated the index.html and doc/index.html with the OSG banner and
+    new text and various clean ups. Added doc/OpenSceneGraphBanner.jpg
+  o Fixes to get dev version below compiling under IRIX std and non std
+    compile options - FileNameUtils.cpp, Seg.cpp, NvTriStrip.cpp and
+    lib3ds/quat.cpp.
+
+    1st March 2001 - osg_src-20010301.tar.gz 
+
+  o Macintosh port of osg from Bryan with mods for integration by Robert.
+    - Added Metrowerks make files.
+    - Added strdup defintion into src/osg/FileUtils.cpp to ensure compatiblity
+      under mac.
+    - Added #defined(macintosh) into include/osg/Types to define M_PI etc.
+    - Integrated changes to src/osg/DynamicLibrary.cpp for macintosh port.
+    - Integrated changes to src/osg/FileNameUtils.cpp for macintosh port.
+    - Integrated changes to src/osg/FileUtils.cpp for macintosh port.
+    - Integrated changes to src/osg/Registry.cpp for macintosh port.
+    - Integrated changes to src/osg/Texture.cpp for macintosh port.
+    - Integrated changes to src/osg/Timer.cpp for macintosh port.
+    - Integrated changes to src/osg/GLExtensions.cpp for macintosh port.
+    - Integrated changes to src/osgUtil/RenderVisitor.cpp for macintosh port.
+    - Integrated changes to src/osgUtil/IntersectVisitor.cpp for macintosh port.
+    - Integrated changes to include/osgGLUT/Viewer for macintosh port.
+    - Integrated changes to src/osgGLUT/Viewer.cpp for macintosh port.
+    - Integrated macintosh timmer support into include/osg/Timer
+    - Modified src/osg/Texture.cpp to take account of the new file
+      name type in osg::Image.
+    - Converted osg::Image::_fileName from char* to std::string to
+      avoid issues with portability due to strdup not being availble
+      on mac.
+
+    28th Faburary 2001 - osg_src-20010228.tar.gz
+
+  o Updated the osgUtil::TriStripVisitor to create seperate tri strips,
+    which fixes crashes which occured under Windows.  Significant 
+    speed up is can be achieved for many datasets by applying the
+    tri stripper.  However, right now it can flip triangle orientation
+    which if back face culling is on may cause a model to apparantly
+    disapper...  Turn off back face culling to see all surfaces. This
+    'feature' will be fixed to maintain surface orientation before and
+    after tri stripping.
+
+    24th Feburary 2001 - osg_src-20010224.tar.gz
+
+  o Modified osg::GeoSet to support sharing of the coord, normal, texture and
+    colour index list in both the .osg IO and the handling fast paths for
+    rendering.
+  o Added support for smoothing groups to 3ds plugin.
+  o Added support for beautify to unix makefiles and ran it on .cpp files.
+  o Added osgUtil::TriStripVisitor which use NvTriStrip to create 
+    optimized triangular strips.  Modified osgGLUT::Viewer to tri
+    strip when 'R' is pressed (for tRi strip). *Note* this is work in 
+    progress and its is known to crash in certain circumstances.
+  o From Karsten Weiss - added comments to osg::Switch.
+  o Removed redundent src/Demos/hangglide/Trees.cpp.
+  o Added < operator to osg::Vec2,3 & 4.
+  o Changed the implementation of osgUtil::SmoothingVisitor to fix a bug 
+    and to increase algorithm speed - now O(nlogn) rather than O(n^2). 
+
+17th Feburary 2001 - osg_src-0.8-38.tar.gz
+
+  o Added REPLACE to osg::TexEnv which supports the equivilant GL_REPLACE
+    texture environment mode.
+  o Fixed osg::GeoSet rendering bug which occurs when an coord index
+    list is mixed with normals (or colors) which are attached to the
+    geoset on a per vertex basis.
+  o Made appropriate osgUtil::RenderVisitor get methods const.
+  o Changed osg::Geode::getNumGeosets() to osg::Geode::getNumGeoSets() for
+    consistentcy and made it and several other osg::Geode methods const.
+
+    15th Feburary 2001 - osg_src-20010215.tar.gz
+
+  o Added beginings of a 3ds loader, based on lib3ds, can now load meshes
+    and textures.
+  o Added file search function osg::findFileInDirectory(..) which has
+    the option of doing case insensitve comparisons of names. Useful for
+    handling dos mixed case filenames under unix.  3ds files are particularily
+    prone to incorret case between filename in .3ds file and file on disk,
+    this method allows these problem filename to be handled gracefully 
+    under unix.  Also add osg::equalCaseInsensitive() which takes two
+    strings and compares them for equality ignoring case to support the
+    above osg::findFileInDirectory(..)
+  o Added new demo app - osgconv which takes loads specified files, and then
+    writes out the resultant model to a specified file.
+  o Updated version number in doc/Doxyfiles/Doxyfile_all, src/osg/Version.cpp
+    src/osgUtil/Version.cpp and src/osgGLUT/Version.cpp.
+  o Added include/osgGLUT into the TARGET_DIRS list in Make/makedefs.linux
+    and Make/makedefs.irix.nonstd & makedefs.irix.std
+
+10th Feburary 2001 - osg_src-0.8-37.tar.gz
+
+  o Moved camera manipulator registration from osgGLUT::Viewer::constructor,
+    and setting of home in osgGLUT::Viewer::init() to happen in 
+    osgGLUT::Viewer::run() and only when not other initialized.  This allows
+    programs with use the the osgGLUT::Viewer class can set up there own
+    camera manipulators as in src/Demos/hangglide.
+  o Moved src/osgPlugins/fly to src/Demos/hangglide and created a simply
+    hang glider flight simulator.
+  o Added support for ARB and S3TC texture compression into osg::Texture and
+    methods to control the way that the internalFormat is used for OpenGL
+    textures.
+  o Updated version numbers in src/osg/Version.cpp, osgUtil/Version.cpp,
+    osgGLUT/Version.cpp and doc/Doxyfile.
+  o Removed src/osgPlugins/matrix.h&.cpp,vector.h&.cpp,oldtrees.cpp.
+  o From Karsten Wies - fix to src/osg/Switch.cpp to solve IO bug, 
+                        corrections to comments in include/osg/Registry.
+  o From Neil Salter - changes to support both doc++ and doxygen documention.
+
+    29th January 2001 - osg_src-20010129.tar.gz
+
+  o Moved src/Demos/cube to src/Demos/osgcube to remove install conflicts
+    under RH7, changed cube.cpp to osgcube.cpp, changed src/Demos/osgcube/Makefile
+    changed VisualStudio/VisualStudio.dsw and VisualStudio/Demos/cube etc..
+  o Removed two obsolete object files in src/osg/{ExtensionSupported.o,OSG.o}
+  o Removed vi swp file OpenSceneGraph-0.8/dist/.osg.spec.swp
+  o Fixed file permission of in doc/MindMap and doc/UML.
+  o Removed comma's at end of enumerator list in include/osg/GeoState 
+    and src/osgPlugins/FaceRecord.h
+
+28th January 2001 - osg_src-0.8-36.tar.gz
+
+  o Rewrote the implementation of osg::notify() once again to solve
+    a crash under Windows when an int is passed to the absorb stream.
+    Have moved the ofstream to a local static definition in osg::notify()
+    rather than a global in Notify.cpp.  Note, the absorb stream is
+    now always set to "nul" or "/dev/null" under Windows and Unix 
+    respectively, and can no longer be set to a user file.
+  o Did spell check on include/osg/Notify, Notify.cpp, FAQ.
+  o Added a couple of comments to src/osg/Billboard.cpp to explain
+    current incomplete implementation.
+  o Fixed minor warning in include/osg/mem_ptr.
+  o Updated src/osg/Version.cpp,  src/osgUtil/Version.cpp & src/osgGLUT/Version.cpp
+    to version 0.8.36.
+
+25th January 2001 - osg_src-0.8-35.tar.gz
+
+  o Added basic comments to osgUtil::GUIActionAdapter explain a little of
+    how it might be used in.
+  o Added reading from .osg files of the "Axis x y z" for osg::Billboard,
+    previously osg::Billboard::readLocalData ignored the Axis paramter 
+    even though it was saved.
+  o From Karsten Weiss : 
+        - Spelling corrections to comments in include/osg/Object & Node.
+        - Extra comments to include/osg/Matrix.
+  o Fixed bug in osg::Image::ensureDimensionsArePowerOfTwo() where
+    message was being written out without guarding against the
+    image name being NULL.
+  o Fixed the osg::notify() messaging function under Windows, with
+    same functionality that has exisited under unix - allowing users 
+    to absorb messages, send them to cerr, cout or to a nominated file,
+    controlled via environmental variables, or set functions with the
+    application.
+  o Went through all include/osg header files removing redundent
+    includes to minimize compile time.  Removed include's
+    of glu.h and glx.h in the include/osg/GL header file as these
+    are only required in specific cases.
+  o Removed UnrefOp functor from inclide/osg/Referenced and changed
+    all dependent files to use osg::ref_ptr<> instead for handling memory.
+  o From Don Burns :
+        -code for smoothing normals on osg::GeoSet's, integrated code
+         into osgUtil::SmoothingVisitor (RO)
+        -Bug fix for for_each_triangle() to ensure that
+         orientation of triangles is correct.
+  o Added new osg::mem_ptr template class (include/osg/mem_ptr) for
+    refence counting with data which does not internally support 
+    ref/unref  themselves (as required my ref_ptr and supplied normally
+    by deriving form osg::Referenced) instead delagating the 
+    responisbility of reference counting and deleting unreferenced
+    memory to an associated osg::MemoryAdapter.
+  o Moved osg::ref_ptr from include/osg/Referenced into its own 
+    header file include/osg/ref_ptr.  Cleaned up numerous files
+    to include the new header file.
+  o Moved osg::MemoryAdapter from osg::Node into its own file,
+    include/osg/MemoryAdapter, and moved osg::ReaderWriter from
+    osg::Registry into its own file include/osg/ReaderWriter.
+  o Clean up most warnings associated with the new -W -Wall pedantic 
+    warnings option.
+  o Rename include/osg/OSG to FileUtils to reflect its now less central
+    role in the OSG scene graph, renamed osg::FindFile osg::findFile,
+    osg::SetFilePath to osg::setFilePath, added osg::getFilePath() and
+    add osg::getDirectoryContents.  Removed most references to the
+    old include/osg/OSG as they wern't required!  Renamed the references
+    which were required.
+  o Renamed osgUtil::GUIActionAdapter::needRedraw() to requestRedraw(),
+    needContinuousUpdate() to requestContinuousUpdate() and
+    needWarpPointer to requestWarpPointer.  Removed the redundent bool 
+    paramter from requestRedraw.  Updated Trackball, Drive and Flight
+    manipulators and osgGLUT to reflect new names.
+    Changed the default drive mode so it uses left and right mouse
+    buttons for speed control instead of using the mouse y position.
+    Both are still availble via original 'A' and 'Q' keybindings.
+  o Moved contents of README to INSTALL, and made README a bare bones
+    readme.  Updated index.html to link to both.
+  o Moved include/osg/ExtensionSupported to include/osg/GLExtensions.
+    Renamed osg::ExtensionSupported to osg::isGLExtensionSupported, 
+    reimplemented osg::isGLExtensionSupported to use std::set's for 
+    increased speed. Added osg::getGLExtensionFuncPtr() as a cross 
+    platform way to get OpenGL extension functions.  Updated Point.cpp 
+    and Texture.cpp to use the new methods and clean up the support 
+    for OpenGL extensions. Cleaned up include/OSG/GL.
+  o From Axel Volley:
+        Added support for OBJECT_LINEAR and EYE_LINEAR TexGen modes,
+        Added support for the Anistropic texture filter extension to
+        Texture.cpp.   
+  o Moved the information about plugin dependancies from README to index.html
+    and made the links to the appropriate web sites.  Added links for data
+    sources.
+  o Updated the FAQ in to reflect progress to beta and new documetation details.
+  o Moved the createNodeFromImage functionality from the image readers
+    into osg::Registry::readNode(), removing readers readNode() functions.
+    Added osg::Registry::setCreateNodeFromImage(bool flag) and equivilant
+    get function to support the switching on and off of this functionality.
+    This is then is by the new archieve functionality.
   o Added src/osgPlugins/tgz for general tarball models.
   o Added src/osgPlugins/zip for general zipped models.
   o From Don, src/osgPlugins/osgtgz for a osg tarball models.

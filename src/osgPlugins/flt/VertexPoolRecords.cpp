@@ -4,9 +4,7 @@
 #include "Registry.h"
 #include "VertexPoolRecords.h"
 
-
 using namespace flt;
-
 
 ////////////////////////////////////////////////////////////////////
 //
@@ -15,7 +13,6 @@ using namespace flt;
 ////////////////////////////////////////////////////////////////////
 
 RegisterRecordProxy<VertexPaletteRecord> g_VertexPaletteProxy;
-
 
 VertexPaletteRecord::VertexPaletteRecord()
 {
@@ -28,23 +25,20 @@ VertexPaletteRecord::~VertexPaletteRecord()
 }
 
 
-
 // virtual
 void VertexPaletteRecord::endian()
 {
-	SVertexTableHeader *pVertexTableHeader = (SVertexTableHeader*)getData();
+    SVertexTableHeader *pVertexTableHeader = (SVertexTableHeader*)getData();
 
     ENDIAN( pVertexTableHeader->diVertexTableLength );
 }
 
 
-
 ostream& operator << (ostream& output, const VertexPaletteRecord& rec)
 {
-	output << rec.className();
-	return output; 	// to enable cascading
+    output << rec.className();
+    return output;               // to enable cascading
 }
-
 
 
 ////////////////////////////////////////////////////////////////////
@@ -54,7 +48,6 @@ ostream& operator << (ostream& output, const VertexPaletteRecord& rec)
 ////////////////////////////////////////////////////////////////////
 
 RegisterRecordProxy<VertexRecord> g_VertexProxy;
-
 
 VertexRecord::VertexRecord()
 {
@@ -66,26 +59,26 @@ VertexRecord::~VertexRecord()
 {
 }
 
+
 // virtual
 void VertexRecord::endian()
 {
-	SVertex *pVertex = (SVertex*)getData();
+    SVertex *pVertex = (SVertex*)getData();
 
     ENDIAN( pVertex->swColor );
-	ENDIAN( pVertex->swFlags );
-	pVertex->Coord.endian();
-	ENDIAN( pVertex->dwVertexColorIndex );
+    ENDIAN( pVertex->swFlags );
+    pVertex->Coord.endian();
+    ENDIAN( pVertex->dwVertexColorIndex );
 }
 
 
 ostream& operator << (ostream& output, const VertexRecord& rec)
 {
-	output << rec.className() << " "
-           << rec.getData()->swFlags << " "
-           << rec.getData()->Coord;
-	return output; 	// to enable cascading
+    output << rec.className() << " "
+        << rec.getData()->swFlags << " "
+        << rec.getData()->Coord;
+    return output;               // to enable cascading
 }
-
 
 
 ////////////////////////////////////////////////////////////////////
@@ -95,7 +88,6 @@ ostream& operator << (ostream& output, const VertexRecord& rec)
 ////////////////////////////////////////////////////////////////////
 
 RegisterRecordProxy<NormalVertexRecord> g_NormalVertexProxy;
-
 
 NormalVertexRecord::NormalVertexRecord()
 {
@@ -107,27 +99,27 @@ NormalVertexRecord::~NormalVertexRecord()
 {
 }
 
+
 // virtual
 void NormalVertexRecord::endian()
 {
-	SNormalVertex *pVertex = (SNormalVertex*)getData();
+    SNormalVertex *pVertex = (SNormalVertex*)getData();
 
     ENDIAN( pVertex->swColor );
-	ENDIAN( pVertex->swFlags );
-	pVertex->Coord.endian();
-	pVertex->Normal.endian();
-//	ENDIAN( pVertex->PackedColor );
-	ENDIAN( pVertex->dwVertexColorIndex );
+    ENDIAN( pVertex->swFlags );
+    pVertex->Coord.endian();
+    pVertex->Normal.endian();
+    //    ENDIAN( pVertex->PackedColor );
+    ENDIAN( pVertex->dwVertexColorIndex );
 }
-
 
 
 ostream& operator << (ostream& output, const NormalVertexRecord& rec)
 {
-	output << rec.className() << " "
-           << rec.getData()->swFlags << " "
-           << rec.getData()->Coord;
-	return output; 	// to enable cascading
+    output << rec.className() << " "
+        << rec.getData()->swFlags << " "
+        << rec.getData()->Coord;
+    return output;               // to enable cascading
 }
 
 
@@ -138,7 +130,6 @@ ostream& operator << (ostream& output, const NormalVertexRecord& rec)
 ////////////////////////////////////////////////////////////////////
 
 RegisterRecordProxy<TextureVertexRecord> g_TextureVertexProxy;
-
 
 TextureVertexRecord::TextureVertexRecord()
 {
@@ -154,25 +145,24 @@ TextureVertexRecord::~TextureVertexRecord()
 // virtual
 void TextureVertexRecord::endian()
 {
-	STextureVertex *pVertex = (STextureVertex*)getData();
+    STextureVertex *pVertex = (STextureVertex*)getData();
 
     ENDIAN( pVertex->swColor );
-	ENDIAN( pVertex->swFlags );
-	pVertex->Coord.endian();
-	pVertex->Texture.endian();
-//	ENDIAN( pVertex->PackedColor );
-	ENDIAN( pVertex->dwVertexColorIndex );
+    ENDIAN( pVertex->swFlags );
+    pVertex->Coord.endian();
+    pVertex->Texture.endian();
+    //    ENDIAN( pVertex->PackedColor );
+    ENDIAN( pVertex->dwVertexColorIndex );
 }
 
 
 ostream& operator << (ostream& output, const TextureVertexRecord& rec)
 {
-	output << rec.className() << " "
-           << rec.getData()->swFlags << " "
-           << rec.getData()->Coord;
-	return output; 	// to enable cascading
+    output << rec.className() << " "
+        << rec.getData()->swFlags << " "
+        << rec.getData()->Coord;
+    return output;               // to enable cascading
 }
-
 
 
 ////////////////////////////////////////////////////////////////////
@@ -182,7 +172,6 @@ ostream& operator << (ostream& output, const TextureVertexRecord& rec)
 ////////////////////////////////////////////////////////////////////
 
 RegisterRecordProxy<NormalTextureVertexRecord> g_NormalTextureVertexProxy;
-
 
 NormalTextureVertexRecord::NormalTextureVertexRecord()
 {
@@ -194,27 +183,26 @@ NormalTextureVertexRecord::~NormalTextureVertexRecord()
 {
 }
 
+
 // virtual
 void NormalTextureVertexRecord::endian()
 {
-	SNormalTextureVertex *pVertex = (SNormalTextureVertex*)getData();
+    SNormalTextureVertex *pVertex = (SNormalTextureVertex*)getData();
 
-	ENDIAN( pVertex->swColor );
-	ENDIAN( pVertex->swFlags );
-	pVertex->Coord.endian();
-	pVertex->Normal.endian();
-	pVertex->Texture.endian();
-//	ENDIAN( pVertex->PackedColor );
-	ENDIAN( pVertex->dwVertexColorIndex );
+    ENDIAN( pVertex->swColor );
+    ENDIAN( pVertex->swFlags );
+    pVertex->Coord.endian();
+    pVertex->Normal.endian();
+    pVertex->Texture.endian();
+    //    ENDIAN( pVertex->PackedColor );
+    ENDIAN( pVertex->dwVertexColorIndex );
 }
 
 
 ostream& operator << (ostream& output, const NormalTextureVertexRecord& rec)
 {
-	output << rec.className() << " "
-           << rec.getData()->swFlags << " "
-           << rec.getData()->Coord;
-	return output; 	// to enable cascading
+    output << rec.className() << " "
+        << rec.getData()->swFlags << " "
+        << rec.getData()->Coord;
+    return output;               // to enable cascading
 }
-
-

@@ -1,15 +1,17 @@
-#ifndef OSGUTIL_COMPILEGEOSETVISITOR
-#define OSGUTIL_COMPILEGEOSETVISITOR 1
+#ifndef OSGUTIL_DISPLAYLISTVISITOR
+#define OSGUTIL_DISPLAYLISTVISITOR 1
 
 #include <osg/NodeVisitor>
 #include <osg/Geode>
+#include <osg/State>
 
 #include <osgUtil/Export>
 
 namespace osgUtil {
 
-/** Visitor for traversing scene set each osg::GeoSet's _useDisplayList flag, or
-  * immediately compiling osg::GeoSet's OpenGL Display lists. The mode of operation
+/** Visitor for traversing scene graph and setting each osg::GeoSet's _useDisplayList flag, 
+  * with option to immediately compile osg::GeoSet's OpenGL Display lists.
+  * The mode of operation
   * of the vistor is controlled by setting the DisplayListMode either on visitor
   * constructor or via the setDisplayListMode() method.  DisplayListMode options are:
   * _displayListMode == SWITCH_ON_AND_COMPILE_DISPLAY_LISTS cals gset->compile() on
@@ -33,6 +35,7 @@ class OSGUTIL_EXPORT DisplayListVisitor : public osg::NodeVisitor
         enum DisplayListMode
         {
             SWITCH_ON_AND_COMPILE_DISPLAY_LISTS,
+            COMPILE_ON_DISPLAY_LISTS,
             SWITCH_ON_DISPLAY_LISTS,
             SWITCH_OFF_DISPLAY_LISTS
         };
@@ -48,6 +51,20 @@ class OSGUTIL_EXPORT DisplayListVisitor : public osg::NodeVisitor
 
         /** Get the operational mode.*/
         DisplayListMode getDisplayListMode() const { return _displayListMode; }
+        
+        /** Set the State to use during traversal. */
+        void setState(osg::State* state)
+        {
+            _externalState = state;
+            if (_externalState.valid()) _activeState = _externalState;
+            else _activeState = _localState;
+        }
+        
+        osg::State* getState()
+        {
+            return _activeState.get();
+        }
+        
 
         /** Simply traverse using standard NodeVisitor traverse method.*/
         virtual void apply(osg::Node& node)
@@ -63,6 +80,13 @@ class OSGUTIL_EXPORT DisplayListVisitor : public osg::NodeVisitor
     protected:
 
         DisplayListMode _displayListMode;
+        
+        /** local state is created in constructor and used as the default state during traversal.*/
+        osg::ref_ptr<osg::State> _localState;
+        /** external state is used to override the default state.*/
+        osg::ref_ptr<osg::State> _externalState;
+        /** active state is equal to _externalState when it is valid, otherwise defaults to _localState.*/
+        osg::ref_ptr<osg::State> _activeState;
 
 };
 

@@ -14,11 +14,11 @@ namespace flt {
 
 typedef struct TexturePaletteTag
 {
-	SRecHeader	RecHeader;
-	char	szFilename[200];    // Filename of texture pattern
-	int32	diIndex;	        // Pattern index
-	int32	diX;	            // x location in texture palette
-	int32	diY;	            // y location in texture palette
+    SRecHeader    RecHeader;
+    char    szFilename[200];    // Filename of texture pattern
+    int32    diIndex;            // Pattern index
+    int32    diX;                // x location in texture palette
+    int32    diY;                // y location in texture palette
 } STexturePalette;
 
 

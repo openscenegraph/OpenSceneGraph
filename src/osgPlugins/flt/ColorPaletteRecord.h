@@ -30,11 +30,19 @@ struct SColorName
 
 struct SColorPalette
 {
-	SRecHeader	    RecHeader;
-	char			szReserved[128];    // Reserved
-	color32		    Colors[1024];	    // Color 0 - 1023
-    int32           nNames;
+    SRecHeader  RecHeader;
+    char        szReserved[128];    // Reserved
+    color32     Colors[1024];        // Color 0 - 1023
+    int32       nNames;
 //  Followed by SColorName. SColorName is of valiable length!
+};
+
+
+struct SOldColorPalette
+{
+    SRecHeader    RecHeader;
+    color48     Colors[32];            // Color 0 - 31
+    color48     FixedColors[56];    // Fixed Intensity Color 0 - 55 (4096-> )
 };
 
 

@@ -7,8 +7,8 @@
 extern "C" {
 
 /**
- * getVersion_osgGLUT() returns the library version number.
- * Numbering conventon : osg_src-0.8-31 will return 0.8.31 from getVersion_osgGLUT.
+ * osgGLUTGetVersion() returns the library version number.
+ * Numbering conventon : osg_src-0.8.31 will return 0.8.31.
  *
  * This C function can be also used to check for the existance of the OpenSceneGraph
  * library using autoconf and its m4 macro AC_CHECK_LIB.

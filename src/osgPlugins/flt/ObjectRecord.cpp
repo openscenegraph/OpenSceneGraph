@@ -14,7 +14,6 @@ using namespace flt;
 
 RegisterRecordProxy<ObjectRecord> g_ObjectProxy;
 
-
 ObjectRecord::ObjectRecord()
 {
 }
@@ -28,7 +27,7 @@ ObjectRecord::~ObjectRecord()
 
 void ObjectRecord::endian()
 {
-	SObject *pSObject = (SObject*)getData();
+    SObject *pSObject = (SObject*)getData();
 
     ENDIAN( pSObject->dwFlags );
     ENDIAN( pSObject->iObjectRelPriority );
@@ -37,6 +36,3 @@ void ObjectRecord::endian()
     ENDIAN( pSObject->iSpecialId_2 );
     ENDIAN( pSObject->iSignificance );
 }
-
-
-

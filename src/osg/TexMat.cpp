@@ -3,23 +3,17 @@
 
 using namespace osg;
 
-TexMat::TexMat( void )
+TexMat::TexMat()
 {
 }
 
 
-TexMat::~TexMat( void )
+TexMat::~TexMat()
 {
 }
 
-TexMat* TexMat::instance()
-{
-    static ref_ptr<TexMat> s_texmat(new TexMat);
-    return s_texmat.get();
-}
-
-void TexMat::apply( void )
+void TexMat::apply(State&) const
 {
     glMatrixMode( GL_TEXTURE );
-    glLoadMatrixf( (GLfloat *)_mat );
+    glLoadMatrixf( (GLfloat *)_matrix._mat );
 }

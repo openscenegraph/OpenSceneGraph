@@ -6,7 +6,6 @@
 
 using namespace flt;
 
-
 ////////////////////////////////////////////////////////////////////
 //
 //                          ExtensionRecord
@@ -14,7 +13,6 @@ using namespace flt;
 ////////////////////////////////////////////////////////////////////
 
 RegisterRecordProxy<ExtensionRecord> g_ExtensionProxy;
-
 
 ExtensionRecord::ExtensionRecord()
 {
@@ -29,11 +27,8 @@ ExtensionRecord::~ExtensionRecord()
 
 void ExtensionRecord::endian()
 {
-	SExtension	*pExtension = (SExtension*)getData();
+    SExtension  *pExtension = (SExtension*)getData();
 
-//  VALID_RECORD(SHeader, pRecHdr)
-	ENDIAN( pExtension->code );
+    //  VALID_RECORD(SHeader, pRecHdr)
+    ENDIAN( pExtension->code );
 }
-
-
-

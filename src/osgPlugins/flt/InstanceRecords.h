@@ -21,7 +21,7 @@ namespace flt {
 
 typedef struct InstanceDefinitionTag
 {
-	SRecHeader	RecHeader;
+    SRecHeader    RecHeader;
 }SInstanceDefinition;
 
 
@@ -54,7 +54,7 @@ class InstanceDefinitionRecord : public PrimNodeRecord
 
 typedef struct InstanceReferenceTag
 {
-	SRecHeader	RecHeader;
+    SRecHeader    RecHeader;
 }SInstanceReference;
 
 

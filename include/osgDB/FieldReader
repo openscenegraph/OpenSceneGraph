@@ -1,0 +1,63 @@
+#ifndef OSGDB_FIELDREADER
+#define OSGDB_FIELDREADER 1
+
+#include <osgDB/Export>
+
+#include <string.h>
+#include <stdlib.h>
+
+#ifdef OSG_USE_IO_DOT_H
+#include <iostream.h>
+#else
+#include <iostream>
+using namespace std;
+#endif
+
+namespace osgDB {
+
+class Field;
+
+class OSGDB_EXPORT FieldReader
+{
+    public:
+
+        FieldReader();
+        FieldReader(const FieldReader& ic);
+        virtual ~FieldReader();
+
+        virtual FieldReader& operator = (const FieldReader& ic);
+
+        void attach(istream* input);
+        void detach();
+
+        virtual bool eof() const;
+
+        bool readField(Field& fieldPtr);
+        void ignoreField();
+        
+        /** no of unmatched `{' encounterd so far in file*/
+        int getNoNestedBrackets() const;
+
+    private:
+
+        bool _readField(Field* fieldPtr);
+
+        void _init();
+        void _free();
+        void _copy(const FieldReader& ic);
+
+        istream* _fin;
+        bool _eof;
+
+        bool findStartOfNextField();
+
+        int _noNestedBrackets;
+
+        bool _delimiterEatLookUp[256];
+        bool _delimiterKeepLookUp[256];
+
+};
+
+};
+
+#endif                                            // __SG_FIELD_READER_H

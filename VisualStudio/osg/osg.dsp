@@ -43,14 +43,14 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIBSCENEGRAPH_EXPORTS" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GR /GX /O2 /I "../../include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "SG_LIBRARY" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "../../include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "SG_LIBRARY" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
-# ADD BSC32 /nologo /o"../../lib/osg.bsc"
+# ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
 # ADD LINK32 opengl32.lib glu32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /pdb:"../../bin/osg.pdb" /machine:I386 /out:"../../bin/osg.dll"
@@ -70,14 +70,14 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIBSCENEGRAPH_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /vmg /vd0 /GR /GX /ZI /Od /I "../../include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "SG_LIBRARY" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /vmg /vd0 /GR /GX /ZI /Od /I "../../include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "SG_LIBRARY" /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
-# ADD BSC32 /nologo /o"../../lib/osg.bsc"
+# ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
 # ADD LINK32 opengl32.lib glu32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /pdb:"../../bin/osgd.pdb" /debug /machine:I386 /out:"../../bin/osgd.dll" /pdbtype:sept
@@ -94,139 +94,135 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\AlphaFunc.cpp
+SOURCE=..\..\src\osg\AlphaFunc.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\Billboard.cpp
+SOURCE=..\..\src\osg\Billboard.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\BoundingBox.cpp
+SOURCE=..\..\src\osg\BoundingBox.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\BoundingSphere.cpp
+SOURCE=..\..\src\osg\BoundingSphere.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\Camera.cpp
+SOURCE=..\..\src\osg\Camera.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\CullFace.cpp
+SOURCE=..\..\src\osg\ClipPlane.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\DCS.cpp
+SOURCE=..\..\src\osg\ColorMask.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\DynamicLibrary.cpp
+SOURCE=..\..\src\osg\CullFace.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\ExtensionSupported.cpp
+SOURCE=..\..\src\osg\Depth.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\Field.cpp
+SOURCE=..\..\src\osg\Drawable.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\FieldReader.cpp
+SOURCE=..\..\src\osg\Fog.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\FieldReaderIterator.cpp
+SOURCE=..\..\Src\Osg\FrontFace.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\FileNameUtils.cpp
+SOURCE=..\..\src\osg\Geode.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\Fog.cpp
+SOURCE=..\..\src\osg\GeoSet.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\Geode.cpp
+SOURCE=..\..\src\osg\GeoSet_ogl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\GeoSet.cpp
+SOURCE=..\..\src\osg\StateSet.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\GeoSet_ogl.cpp
+SOURCE=..\..\src\osg\GLExtensions.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\GeoState.cpp
+SOURCE=..\..\src\osg\Group.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\Group.cpp
+SOURCE=..\..\src\osg\Image.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\Image.cpp
+SOURCE=..\..\src\osg\Impostor.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\Input.cpp
+SOURCE=..\..\src\osg\ImpostorSprite.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\Light.cpp
+SOURCE=..\..\src\osg\Light.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\LightSource.cpp
+SOURCE=..\..\src\osg\LightSource.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\Lighting.cpp
+SOURCE=..\..\src\osg\LineSegment.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\LOD.cpp
+SOURCE=..\..\src\osg\LOD.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\Material.cpp
+SOURCE=..\..\src\osg\Material.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\Matrix.cpp
+SOURCE=..\..\src\osg\Matrix.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\Node.cpp
+SOURCE=..\..\src\osg\Node.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\NodeVisitor.cpp
+SOURCE=..\..\src\osg\NodeVisitor.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\Notify.cpp
+SOURCE=..\..\src\osg\Notify.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\Object.cpp
+SOURCE=..\..\src\osg\Object.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\OSG.cpp
+SOURCE=..\..\src\osg\Point.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\Output.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\Src\Osg\Point.cpp
+SOURCE=..\..\src\osg\PolygonMode.cpp
 # End Source File
 # Begin Source File
 
@@ -234,63 +230,51 @@ SOURCE=..\..\src\osg\PolygonOffset.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\Quat.cpp
+SOURCE=..\..\src\osg\Quat.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\ReaderWriterOSG.cpp
+SOURCE=..\..\src\osg\State.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\ReaderWriterRGB.cpp
+SOURCE=..\..\src\osg\Stencil.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\Registry.cpp
+SOURCE=..\..\src\osg\Switch.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\Scene.cpp
+SOURCE=..\..\src\osg\TexEnv.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\Seg.cpp
+SOURCE=..\..\src\osg\TexGen.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\Sequence.cpp
+SOURCE=..\..\src\osg\TexMat.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\Switch.cpp
+SOURCE=..\..\src\osg\Texture.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\TexEnv.cpp
+SOURCE=..\..\src\osg\Timer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\TexGen.cpp
+SOURCE=..\..\src\osg\Transform.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\TexMat.cpp
+SOURCE=..\..\src\osg\Transparency.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\Texture.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\Src\Osg\Timer.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\Src\Osg\Version.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\Src\Osg\Transparency.cpp
+SOURCE=..\..\src\osg\Version.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -318,15 +302,27 @@ SOURCE=..\..\Include\Osg\Camera
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\Include\Osg\ClipPlane
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\ClippingVolume
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\ColorMask
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\Include\Osg\CullFace
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\Dcs
+SOURCE=..\..\Include\Osg\Depth
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\DynamicLibrary
+SOURCE=..\..\Include\Osg\Drawable
 # End Source File
 # Begin Source File
 
@@ -334,27 +330,11 @@ SOURCE=..\..\Include\Osg\Export
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\ExtensionSupported
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\Include\Osg\Field
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\Include\Osg\FieldReader
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\Include\Osg\FieldReaderIterator
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\Include\Osg\FileNameUtils
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\Include\Osg\Fog
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\FrontFace
 # End Source File
 # Begin Source File
 
@@ -366,11 +346,19 @@ SOURCE=..\..\Include\Osg\GeoSet
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\GeoState
+SOURCE=..\..\Include\Osg\StateSet
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\Stencil
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\Gl
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\GLExtensions
 # End Source File
 # Begin Source File
 
@@ -379,6 +367,14 @@ SOURCE=..\..\Include\Osg\Group
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\Image
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\Impostor
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\ImpostorSprite
 # End Source File
 # Begin Source File
 
@@ -394,7 +390,7 @@ SOURCE=..\..\Include\Osg\LightSource
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\Lighting
+SOURCE=..\..\Include\Osg\LineSegment
 # End Source File
 # Begin Source File
 
@@ -407,6 +403,14 @@ SOURCE=..\..\Include\Osg\Material
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\Matrix
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osg\mem_ptr
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osg\MemoryAdapter
 # End Source File
 # Begin Source File
 
@@ -426,15 +430,15 @@ SOURCE=..\..\Include\Osg\Object
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\Osg
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\Include\Osg\Output
+SOURCE=..\..\Include\Osg\Plane
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\Point
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\PolygonMode
 # End Source File
 # Begin Source File
 
@@ -446,27 +450,19 @@ SOURCE=..\..\Include\Osg\Quat
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\osg\ref_ptr
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\Include\Osg\Referenced
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\Registry
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\Include\Osg\Scene
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\Include\Osg\Seg
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\Include\Osg\Sequence
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\Include\Osg\State
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\StateAttribute
 # End Source File
 # Begin Source File
 
@@ -494,6 +490,10 @@ SOURCE=..\..\Include\Osg\Timer
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\Include\Osg\Transform
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\Include\Osg\Transparency
 # End Source File
 # Begin Source File
@@ -510,11 +510,11 @@ SOURCE=..\..\Include\Osg\Vec3
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\Version
+SOURCE=..\..\Include\Osg\Vec4
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\Vec4
+SOURCE=..\..\Include\Osg\Version
 # End Source File
 # End Group
 # Begin Group "Resource Files"

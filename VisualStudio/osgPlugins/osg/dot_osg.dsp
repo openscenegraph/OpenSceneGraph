@@ -110,6 +110,10 @@ SOURCE=..\..\..\src\osgPlugins\osg\ColorMask.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\osg\ColorMatrix.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\osg\CullFace.cpp
 # End Source File
 # Begin Source File

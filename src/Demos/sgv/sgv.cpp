@@ -1,7 +1,3 @@
-#ifdef USE_MEM_CHECK
-#include <mcheck.h>
-#endif
-
 #include <osg/Transform>
 #include <osg/Billboard>
 #include <osg/Geode>
@@ -21,87 +17,8 @@
 #include <osgUtil/Optimizer>
 
 
-/*
- * Function to read several files (typically one) as specified on the command
- * line, and return them in an osg::Node
- */
-osg::Node* getNodeFromFiles(int argc,char **argv)
-{
-    osg::Node *rootnode = new osg::Node;
-
-    int i;
-
-    typedef std::vector<osg::Node*> NodeList;
-    NodeList nodeList;
-    for( i = 1; i < argc; i++ )
-    {
-
-        if (argv[i][0]=='-')
-        {
-            switch(argv[i][1])
-            {
-                case('l'):
-                    ++i;
-                    if (i<argc)
-                    {
-                        osgDB::Registry::instance()->loadLibrary(argv[i]);
-                    }
-                    break;
-                case('e'):
-                    ++i;
-                    if (i<argc)
-                    {
-                        std::string libName = osgDB::Registry::instance()->createLibraryNameForExt(argv[i]);
-                        osgDB::Registry::instance()->loadLibrary(libName);
-                    }
-                    break;
-            }
-        } else
-        {
-            osg::Node *node = osgDB::readNodeFile( argv[i] );
-
-            if( node != (osg::Node *)0L )
-            {
-                if (node->getName().empty()) node->setName( argv[i] );
-                nodeList.push_back(node);
-            }
-        }
-
-    }
-
-    if (nodeList.size()==0)
-    {
-        osg::notify(osg::WARN) << "No data loaded."<< std::endl;
-        exit(0);
-    }
-
-    if (nodeList.size()==1)
-    {
-        rootnode = nodeList.front();
-    }
-    else                         // size >1
-    {
-        osg::Group* group = new osg::Group();
-        for(NodeList::iterator itr=nodeList.begin();
-            itr!=nodeList.end();
-            ++itr)
-        {
-            group->addChild(*itr);
-        }
-
-        rootnode = group;
-    }
-
-    return rootnode;
-}
-
-
 int main( int argc, char **argv )
 {
-
-#ifdef USE_MEM_CHECK
-    mtrace();
-#endif
 
     // initialize the GLUT
     glutInit( &argc, argv );
@@ -125,39 +42,46 @@ int main( int argc, char **argv )
 
         return 0;
     }
-
-    osg::Timer timer;
-    osg::Timer_t before_load = timer.tick();
     
-    // comment out right now, but the following allos users to pass option data to
+    // create the commandline args.
+    std::vector<std::string> commandLine;
+    for(int i=1;i<argc;++i) commandLine.push_back(argv[i]);
+    
+
+    // initialize the viewer.
+    osgGLUT::Viewer viewer;
+    
+    // configure the viewer from the commandline arguments.
+    viewer.readCommandLine(commandLine);
+    
+    // configure the plguin registry from the commandline arguments.
+    osgDB::readCommandLine(commandLine);
+
+    // comment out right now, but the following allows users to pass option data to
     // the ReaderWriter plugins. By default the options are set to NULL. The basic
     // osgDB::ReaderWriter::Options stucture has just a string, but this can be
     // subclassed to extend it to handle any options that a user desires.
     // osgDB::Registry::instance()->setOptions(new osgDB::ReaderWriter::Options("test options"));
-
-    osg::Node* rootnode = getNodeFromFiles( argc, argv);
     
-    osg::Timer_t after_load = timer.tick();
-	std::cout << "Time for load = "<<timer.delta_s(before_load,after_load)<<" seconds"<< std::endl;
-
-
+    // load the nodes from the commandline arguments.
+    osg::Node* rootnode = osgDB::readNodeFiles(commandLine);
+    
     // run optimization over the scene graph
     osgUtil::Optimizer optimzer;
     optimzer.optimize(rootnode);
      
-    // initialize the viewer.
-    osgGLUT::Viewer viewer;
+    // add a viewport to the viewer and attah the scene graph.
     viewer.addViewport( rootnode );
     
-//    osgUtil::SceneView* sceneview = viewer.getViewportSceneView(0);
-//    sceneview->setStereoMode(osgUtil::SceneView::ANAGLYPHIC_STEREO);
-
     // register trackball, flight and drive.
     viewer.registerCameraManipulator(new osgUtil::TrackballManipulator);
     viewer.registerCameraManipulator(new osgUtil::FlightManipulator);
     viewer.registerCameraManipulator(new osgUtil::DriveManipulator);
 
+    // open the viewer window.
     viewer.open();
+    
+    // fire up the event loop.
     viewer.run();
 
     return 0;

@@ -6,6 +6,7 @@ C++FILES = \
         Billboard.cpp\
         ClipPlane.cpp\
         ColorMask.cpp\
+        ColorMatrix.cpp\
         CullFace.cpp\
         Depth.cpp\
         Drawable.cpp\

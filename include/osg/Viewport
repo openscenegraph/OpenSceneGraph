@@ -59,8 +59,11 @@ class SG_EXPORT Viewport : public StateAttribute
         inline const int width() const { return _width; }
         inline const int height() const { return _height; }
 
-        /** return the aspcetRatio of the viewport, which is equal to width/height.*/
-        inline const float aspectRatio() const { return (float)_width/(float)_height; }
+        inline const bool valid() const { return _width!=0 && _height!=0; }
+
+        /** Return the aspcetRatio of the viewport, which is equal to width/height.
+          * If height is zero, the potental division by zero is avoid by simply returning 1.0f.*/
+        inline const float aspectRatio() const { if (_height!=0) return (float)_width/(float)_height; else return 1.0f; }
 
         virtual void apply(State& state) const;
 

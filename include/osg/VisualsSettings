@@ -1,0 +1,115 @@
+//C++ header - Open Scene Graph - Copyright (C) 1998-2001 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+
+#ifndef OSG_VISUALSSETTINGS
+#define OSG_VISUALSSETTINGS 1
+
+#include <osg/Referenced>
+
+#include <string>
+#include <vector>
+
+namespace osg {
+
+/** VisualsSettings class for encapsulating what visuals are required and
+  * have been set up, and the status of stereo viewing.*/
+class SG_EXPORT VisualsSettings : public osg::Referenced
+{
+
+    public:
+
+        VisualsSettings()
+        {
+            setDefaults();
+            readEnvironmentalVariables();
+        }
+        
+        VisualsSettings(std::vector<std::string>& commandLine)
+        {
+            setDefaults();
+            readEnvironmentalVariables();
+            readCommandLine(commandLine);
+        }
+
+        VisualsSettings(const VisualsSettings& vs);
+        
+        virtual ~VisualsSettings();
+
+        VisualsSettings& operator = (const VisualsSettings& vs);
+        
+        void merge(const VisualsSettings& vs);
+
+        void setDefaults();
+        
+        void readEnvironmentalVariables();
+
+        /** read the command line string list, removing any matched control sequences.*/
+        void readCommandLine(std::vector<std::string>& commandLine);
+        
+        
+
+        void setStereo(const bool on) { _stereo = on; }
+        const bool getStereo() const { return _stereo; }
+
+        enum StereoMode
+        {
+            QUAD_BUFFER,
+            ANAGLYPHIC,
+            HORIZONTAL_SPLIT,
+            VERTICAL_SPLIT
+        };
+        
+        void setStereoMode(const StereoMode mode) { _stereoMode = mode; }
+        const StereoMode getStereoMode() const { return _stereoMode; }
+
+        void setEyeSeperation(const float eyeSeperation) { _eyeSeperation = eyeSeperation; }
+        const float getEyeSeperation() const { return _eyeSeperation; }
+
+        void setScreenDistance(const float distance) { _screenDistance = distance; }
+        const float getScreenDistance() const { return _screenDistance; }
+
+
+
+        void setDoubleBuffer(const bool flag) { _doubleBuffer = flag; }
+        const bool getDoubleBuffer() const { return _doubleBuffer; }
+
+
+        void setRGB(const bool flag) { _RGB = flag; }
+        const bool getRGB() const { return _RGB; }
+
+
+        void setDepthBuffer(const bool flag) { _depthBuffer = flag; }
+        const bool getDepthBuffer() const { return _depthBuffer; }
+
+
+        void setMinimumNumAlphaBits(const unsigned int bits) { _minimumNumberAlphaBits = bits; }
+        const unsigned int getMinimumNumAlphaBits() const { return _minimumNumberAlphaBits; }
+        const bool getAlphaBuffer() const { return _minimumNumberAlphaBits!=0; }
+
+
+        void setMinimumNumStencilBits(const unsigned int bits) { _minimumNumberStencilBits = bits; }
+        const unsigned int getMinimumNumStencilBits() const { return _minimumNumberStencilBits; }
+        const bool getStencilBuffer() const { return _minimumNumberStencilBits!=0; }
+
+    protected:
+    
+        void copy(const VisualsSettings& vs);
+
+        bool            _stereo;
+        StereoMode      _stereoMode;
+        float           _eyeSeperation;
+        float           _screenDistance;
+    
+        bool            _doubleBuffer;
+        bool            _RGB;
+        bool            _depthBuffer;
+        unsigned int    _minimumNumberAlphaBits;
+        unsigned int    _minimumNumberStencilBits;
+
+
+};
+
+}
+
+# endif

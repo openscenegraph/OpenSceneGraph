@@ -11,6 +11,7 @@
 
 #include <osg/FrameStamp>
 #include <osg/Camera>
+#include <osg/VisualsSettings>
 
 #include <vector>
 #include <map>
@@ -107,11 +108,20 @@ class SG_EXPORT State : public Referenced
         /** Get the camera */
         inline const Camera* getCamera() const { return _camera.get(); }
         
+        /** Set the VisualsSettings. Note, nothing is applied, the visual settings are just used
+          * used in the State object to pass the current visual settings to Drawables
+          * during rendering. */
+        inline void setVisualsSettings(VisualsSettings* vs) { _visualsSettings = vs; }
+        
+        /** Get the VisualsSettings */
+        inline const VisualsSettings* getVisualsSettings() const { return _visualsSettings.get(); }
+
     private:
     
-        unsigned int        _contextID;
-        ref_ptr<FrameStamp> _frameStamp;
-        ref_ptr<Camera>    _camera;
+        unsigned int                _contextID;
+        ref_ptr<FrameStamp>         _frameStamp;
+        ref_ptr<Camera>             _camera;
+        ref_ptr<VisualsSettings>    _visualsSettings;
         
         typedef std::vector<StateAttribute::GLModeValue>  ValueVec;
 

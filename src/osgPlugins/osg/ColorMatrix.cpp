@@ -1,4 +1,4 @@
-#include <osg/TexMat>
+#include <osg/ColorMatrix>
 
 #include <osgDB/Registry>
 #include <osgDB/Input>
@@ -8,25 +8,25 @@ using namespace osg;
 using namespace osgDB;
 
 // forward declare functions to use later.
-bool TexMat_readLocalData(Object& obj, Input& fr);
-bool TexMat_writeLocalData(const Object& obj, Output& fw);
+bool ColorMatrix_readLocalData(Object& obj, Input& fr);
+bool ColorMatrix_writeLocalData(const Object& obj, Output& fw);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_TexMatProxy
+RegisterDotOsgWrapperProxy g_ColorMatrixProxy
 (
-    new osg::TexMat,
-    "TexMat",
-    "Object StateAttribute TexMat",
-    &TexMat_readLocalData,
-    &TexMat_writeLocalData
+    new osg::ColorMatrix,
+    "ColorMatrix",
+    "Object StateAttribute ColorMatrix",
+    &ColorMatrix_readLocalData,
+    &ColorMatrix_writeLocalData
 );
 
 
-bool TexMat_readLocalData(Object& obj, Input& fr)
+bool ColorMatrix_readLocalData(Object& obj, Input& fr)
 {
     bool iteratorAdvanced = false;
 
-    TexMat& texmat = static_cast<TexMat&>(obj);
+    ColorMatrix& colorMatrix = static_cast<ColorMatrix&>(obj);
 
     bool matched = true;
     for(int k=0;k<16 && matched;++k)
@@ -36,7 +36,7 @@ bool TexMat_readLocalData(Object& obj, Input& fr)
     if (matched)
     {
     
-        Matrix& matrix = texmat.getMatrix();
+        Matrix& matrix = colorMatrix.getMatrix();
     
         int k=0;
         for(int i=0;i<4;++i)
@@ -55,10 +55,10 @@ bool TexMat_readLocalData(Object& obj, Input& fr)
 }
 
 
-bool TexMat_writeLocalData(const Object& obj, Output& fw)
+bool ColorMatrix_writeLocalData(const Object& obj, Output& fw)
 {
-    const TexMat& texmat = static_cast<const TexMat&>(obj);
-    const Matrix& matrix = texmat.getMatrix();
+    const ColorMatrix& colorMatrix = static_cast<const ColorMatrix&>(obj);
+    const Matrix& matrix = colorMatrix.getMatrix();
     fw.indent() << matrix(0,0) << " " << matrix(0,1) << " " << matrix(0,2) << " " << matrix(0,3) << std::endl;
     fw.indent() << matrix(1,0) << " " << matrix(1,1) << " " << matrix(1,2) << " " << matrix(1,3) << std::endl;
     fw.indent() << matrix(2,0) << " " << matrix(2,1) << " " << matrix(2,2) << " " << matrix(2,3) << std::endl;

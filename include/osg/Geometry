@@ -22,7 +22,7 @@ class SG_EXPORT Geometry : public Drawable
         Geometry();
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
-        Geometry(const Geometry& Geometry,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+        Geometry(const Geometry& geometry,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
             
         virtual Object* cloneType() const { return osgNew Geometry(); }
         virtual Object* clone(const CopyOp& copyop) const { return osgNew Geometry(*this,copyop); }        

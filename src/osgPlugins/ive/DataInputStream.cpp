@@ -48,7 +48,10 @@
 using namespace ive;
 using namespace std;
 
-DataInputStream::DataInputStream(std::istream* istream){
+DataInputStream::DataInputStream(std::istream* istream)
+{
+    _verboseOutput = true;
+
     _istream = istream;
     _peeking = false;
     _peekValue = 0;
@@ -70,16 +73,24 @@ DataInputStream::~DataInputStream(){}
 bool DataInputStream::readBool(){
     char c;
     _istream->read(&c, CHARSIZE);
+    
     if (_istream->rdstate() & _istream->failbit)
         throw Exception("DataInputStream::readBool(): Failed to read boolean value.");
+
+    if (_verboseOutput) std::cout<<"read/writeBool() ["<<(int)c<<"]"<<std::endl;
+    
     return c!=0;
 }
 
 char DataInputStream::readChar(){
     char c;
     _istream->read(&c, CHARSIZE);
+
     if (_istream->rdstate() & _istream->failbit)
         throw Exception("DataInputStream::readChar(): Failed to read char value.");
+
+    if (_verboseOutput) std::cout<<"read/writeChar() ["<<(int)c<<"]"<<std::endl;
+    
     return c;
 }
 
@@ -88,6 +99,9 @@ unsigned short DataInputStream::readUShort(){
     _istream->read((char*)&s, SHORTSIZE);
     if (_istream->rdstate() & _istream->failbit)
         throw Exception("DataInputStream::readUShort(): Failed to read unsigned short value.");
+
+    if (_verboseOutput) std::cout<<"read/writeUShort() ["<<s<<"]"<<std::endl;
+    
     return s;
 }
 
@@ -96,6 +110,9 @@ unsigned int DataInputStream::readUInt(){
     _istream->read((char*)&s, INTSIZE);
     if (_istream->rdstate() & _istream->failbit)
         throw Exception("DataInputStream::readUInt(): Failed to read unsigned int value.");
+
+    if (_verboseOutput) std::cout<<"read/writeUInt() ["<<s<<"]"<<std::endl;
+    
     return s;
 }
 
@@ -108,6 +125,9 @@ int DataInputStream::readInt(){
     _istream->read((char*)&i, INTSIZE);
     if (_istream->rdstate() & _istream->failbit)
         throw Exception("DataInputStream::readInt(): Failed to read int value.");
+
+    if (_verboseOutput) std::cout<<"read/writeInt() ["<<i<<"]"<<std::endl;
+    
     return i;
 }
 
@@ -130,6 +150,9 @@ float DataInputStream::readFloat(){
     _istream->read((char*)&f, FLOATSIZE);
     if (_istream->rdstate() & _istream->failbit)
         throw Exception("DataInputStream::readFloat(): Failed to read float value.");
+
+    if (_verboseOutput) std::cout<<"read/writeFloat() ["<<f<<"]"<<std::endl;
+    
     return f;
 }
 
@@ -138,6 +161,9 @@ long DataInputStream::readLong(){
     _istream->read((char*)&l, LONGSIZE);
     if (_istream->rdstate() & _istream->failbit)
         throw Exception("DataInputStream::readLong(): Failed to read long value.");
+
+    if (_verboseOutput) std::cout<<"read/writeLong() ["<<l<<"]"<<std::endl;
+    
     return l;
 }
 
@@ -146,6 +172,9 @@ double DataInputStream::readDouble(){
     _istream->read((char*)&d, DOUBLESIZE);
     if (_istream->rdstate() & _istream->failbit)
         throw Exception("DataInputStream::readDouble(): Failed to read double value.");
+
+    if (_verboseOutput) std::cout<<"read/writeDouble() ["<<d<<"]"<<std::endl;
+    
     return d;
 }
 
@@ -156,6 +185,9 @@ std::string DataInputStream::readString(){
     _istream->read((char*)s.c_str(), size);
     if (_istream->rdstate() & _istream->failbit)
         throw Exception("DataInputStream::readString(): Failed to read string value.");
+
+    if (_verboseOutput) std::cout<<"read/writeString() ["<<s<<"]"<<std::endl;
+    
     return s;
 }
 
@@ -163,44 +195,62 @@ void DataInputStream::readCharArray(char* data, int size){
     _istream->read(data, size);
     if (_istream->rdstate() & _istream->failbit)
         throw Exception("DataInputStream::readCharArray(): Failed to read char value.");
+
+    if (_verboseOutput) std::cout<<"read/writeCharArray() ["<<data<<"]"<<std::endl;
 }
 
-osg::Vec2 DataInputStream::readVec2(){
+osg::Vec2 DataInputStream::readVec2()
+{
     osg::Vec2 v;
-        v.x()=readFloat();
+    v.x()=readFloat();
     v.y()=readFloat();
+
+    if (_verboseOutput) std::cout<<"read/writeVec2() ["<<v<<"]"<<std::endl;
+    
     return v;
 }
 
 osg::Vec3 DataInputStream::readVec3(){
     osg::Vec3 v;
-        v.x()=readFloat();
+    v.x()=readFloat();
     v.y()=readFloat();
     v.z()=readFloat();
+
+    if (_verboseOutput) std::cout<<"read/writeVec3() ["<<v<<"]"<<std::endl;
+
     return v;
 }
 
 osg::Vec4 DataInputStream::readVec4(){
     osg::Vec4 v;
-        v.x()=readFloat();
+    v.x()=readFloat();
     v.y()=readFloat();
     v.z()=readFloat();
     v.w()=readFloat();
+
+    if (_verboseOutput) std::cout<<"read/writeVec4() ["<<v<<"]"<<std::endl;
+    
     return v;
 }
 
 osg::UByte4 DataInputStream::readUByte4(){
     osg::UByte4 v;
-        v.r()=readChar();
+    v.r()=readChar();
     v.g()=readChar();
     v.b()=readChar();
     v.a()=readChar();
+
+    if (_verboseOutput) std::cout<<"read/writeUByte4() ["<<v<<"]"<<std::endl;
+    
     return v;
 }
 
 osg::Quat DataInputStream::readQuat(){
     osg::Quat q;
     q.set(readFloat(), readFloat(), readFloat(), readFloat());
+
+    if (_verboseOutput) std::cout<<"read/writeQuat() ["<<q<<"]"<<std::endl;
+    
     return q;
 }
 
@@ -209,6 +259,9 @@ osg::Quat DataInputStream::readQuat(){
 
 osg::Geometry::AttributeBinding DataInputStream::readBinding(){
     char c = readChar();
+
+    if (_verboseOutput) std::cout<<"read/writeBinding() ["<<(int)c<<"]"<<std::endl;
+    
     switch((int)c){
         case 0:    return osg::Geometry::BIND_OFF;
         case 1: return osg::Geometry::BIND_OVERALL;
@@ -221,6 +274,7 @@ osg::Geometry::AttributeBinding DataInputStream::readBinding(){
 
 osg::Array* DataInputStream::readArray(){
     char c = readChar();
+
     switch((int)c){
         case 0: return readIntArray();
         case 1: return readUByteArray();
@@ -240,13 +294,12 @@ osg::IntArray* DataInputStream::readIntArray(){
     osg::IntArray* a = new osg::IntArray(size);
     
     _istream->read((char*)&((*a)[0]), INTSIZE*size);
+
     if (_istream->rdstate() & _istream->failbit)
         throw Exception("DataInputStream::readIntArray(): Failed to read Int array.");
 
-//     a->reserve(size);
-//     for(int i =0; i<size;i++){
-//         a->push_back(readInt());
-//     }
+    if (_verboseOutput) std::cout<<"read/writeIntArray() ["<<size<<"]"<<std::endl;  
+
     return a;
 }
 
@@ -255,13 +308,12 @@ osg::UByteArray* DataInputStream::readUByteArray(){
     osg::UByteArray* a = new osg::UByteArray(size);
 
     _istream->read((char*)&((*a)[0]), CHARSIZE*size);
+
     if (_istream->rdstate() & _istream->failbit)
         throw Exception("DataInputStream::readUByteArray(): Failed to read UByte array.");
 
-//     a->reserve(size);
-//     for(int i =0; i<size;i++){
-//         a->push_back(readChar());
-//     }
+    if (_verboseOutput) std::cout<<"read/writeUByteArray() ["<<size<<"]"<<std::endl;
+    
     return a;
 }
 
@@ -270,13 +322,12 @@ osg::UShortArray* DataInputStream::readUShortArray(){
     osg::UShortArray* a = new osg::UShortArray(size);
 
     _istream->read((char*)&((*a)[0]), SHORTSIZE*size);
+
     if (_istream->rdstate() & _istream->failbit)
         throw Exception("DataInputStream::readUShortArray(): Failed to read UShort array.");
-// 
-//     a->reserve(size);
-//     for(int i =0; i<size;i++){
-//         a->push_back(readUShort());
-//     }
+
+    if (_verboseOutput) std::cout<<"read/writeUShortArray() ["<<size<<"]"<<std::endl;
+    
     return a;
 }
 
@@ -285,13 +336,12 @@ osg::UIntArray* DataInputStream::readUIntArray(){
     osg::UIntArray* a = new osg::UIntArray(size);
 
     _istream->read((char*)&((*a)[0]), INTSIZE*size);
+
     if (_istream->rdstate() & _istream->failbit)
         throw Exception("DataInputStream::readUIntArray(): Failed to read UInt array.");
-// 
-//     a->reserve(size);
-//     for(int i =0; i<size;i++){
-//         a->push_back((unsigned int)readInt());
-//     }
+
+    if (_verboseOutput) std::cout<<"read/writeUIntArray() ["<<size<<"]"<<std::endl;
+    
     return a;
 }
 
@@ -300,13 +350,12 @@ osg::UByte4Array* DataInputStream::readUByte4Array(){
     osg::UByte4Array* a = new osg::UByte4Array(size);
 
     _istream->read((char*)&((*a)[0]), INTSIZE*size);
+
     if (_istream->rdstate() & _istream->failbit)
         throw Exception("DataInputStream::readUbyte4Array(): Failed to read UByte4 array.");
 
-//     a->reserve(size);
-//     for(int i =0; i<size;i++){
-//         a->push_back(readUByte4());
-//     }
+    if (_verboseOutput) std::cout<<"read/writeUByte4Array() ["<<size<<"]"<<std::endl;
+    
     return a;
 }
 
@@ -315,13 +364,12 @@ osg::FloatArray* DataInputStream::readFloatArray(){
     osg::FloatArray* a = new osg::FloatArray(size);
     
     _istream->read((char*)&((*a)[0]), FLOATSIZE*size);
+
     if (_istream->rdstate() & _istream->failbit)
         throw Exception("DataInputStream::readFloatArray(): Failed to read float array.");
 
-//     a->reserve(size);
-//     for(int i =0; i<size;i++){
-//         a->push_back(readFloat());
-//     }
+    if (_verboseOutput) std::cout<<"read/writeFloatArray() ["<<size<<"]"<<std::endl;
+    
     return a;
 }
 
@@ -330,12 +378,12 @@ osg::Vec2Array* DataInputStream::readVec2Array(){
     osg::Vec2Array* a = new osg::Vec2Array(size);
     
     _istream->read((char*)&((*a)[0]), FLOATSIZE*2*size);
+
     if (_istream->rdstate() & _istream->failbit)
         throw Exception("DataInputStream::readVec2Array(): Failed to read Vec2 array.");
 
-//     for(int i = 0; i < size; i++){
-//         (*a)[i] = (readVec2());
-//     }
+    if (_verboseOutput) std::cout<<"read/writeVec2Array() ["<<size<<"]"<<std::endl;
+    
     return a;
 }
 
@@ -344,12 +392,13 @@ osg::Vec3Array* DataInputStream::readVec3Array(){
     osg::Vec3Array* a = new osg::Vec3Array(size);
 
     _istream->read((char*)&((*a)[0]), FLOATSIZE*3*size);
+    
     if (_istream->rdstate() & _istream->failbit)
         throw Exception("DataInputStream::readVec3Array(): Failed to read Vec3 array.");
 
-//     for(int i = 0; i < size; i++){
-//         (*a)[i] = readVec3();
-//     }
+    if (_verboseOutput) std::cout<<"read/writeVec3Array() ["<<size<<"]"<<std::endl;
+    
+
     return a;
 }
 
@@ -358,14 +407,11 @@ osg::Vec4Array* DataInputStream::readVec4Array(){
     osg::Vec4Array* a = new osg::Vec4Array(size);
 
     _istream->read((char*)&((*a)[0]), FLOATSIZE*4*size);
+
     if (_istream->rdstate() & _istream->failbit)
         throw Exception("DataInputStream::readVec4Array(): Failed to read Vec4 array.");
 
-
-//     for(int i = 0; i < size; i++){
-//         (*a)[i] = (readVec4());
-//     }
-    
+    if (_verboseOutput) std::cout<<"read/writeVec4Array() ["<<size<<"]"<<std::endl;
     
     return a;
 }
@@ -384,6 +430,9 @@ osg::Matrix DataInputStream::readMatrix()
     if (_istream->rdstate() & _istream->failbit)
         throw Exception("DataInputStream::readMatrix(): Failed to read Matrix array.");
 
+    if (_verboseOutput) std::cout<<"read/writeMatrix() ["<<mat<<"]"<<std::endl;
+    
+
     return mat;
 }
 
@@ -401,6 +450,9 @@ osg::Image* DataInputStream::readImage(std::string filename)
     // add it to the imageList,
     _imageMap[filename] = image;
     // and return image pointer.
+
+    if (_verboseOutput) std::cout<<"read/writeImage() ["<<image<<"]"<<std::endl;
+    
     return image;
 }
 
@@ -422,6 +474,9 @@ osg::StateSet* DataInputStream::readStateSet()
     // and add it to the stateset map,
     _statesetMap[id] = stateset;
         
+
+    if (_verboseOutput) std::cout<<"read/writeStateSet() ["<<id<<"]"<<std::endl;
+    
     return stateset;
 }
 
@@ -490,6 +545,9 @@ osg::StateAttribute* DataInputStream::readStateAttribute()
     // and add it to the stateattribute map,
     _stateAttributeMap[id] = attribute;
         
+
+    if (_verboseOutput) std::cout<<"read/writeStateAttribute() ["<<id<<"]"<<std::endl;
+    
     return attribute;
 }
 
@@ -517,6 +575,9 @@ osg::Drawable* DataInputStream::readDrawable()
     // and add it to the stateattribute map,
     _drawableMap[id] = drawable;
         
+
+    if (_verboseOutput) std::cout<<"read/writeDrawable() ["<<id<<"]"<<std::endl;
+    
     return drawable;
 }
 
@@ -597,5 +658,8 @@ osg::Node* DataInputStream::readNode()
     // and add it to the stateattribute map,
     _nodeMap[id] = node;
         
+
+    if (_verboseOutput) std::cout<<"read/writeNode() ["<<id<<"]"<<std::endl;
+    
     return node;
 }

@@ -63,6 +63,8 @@ public:
 	void setIncludeImageData(bool b) {_includeImageData=b;};
 	bool getIncludeImageData() {return _includeImageData;};
 
+        bool                _verboseOutput;
+
 private:
 	std::ostream* _ostream;
 

@@ -28,7 +28,8 @@
 #ifndef _MPEGIMAGESTREAM_H_
 #define _MPEGIMAGESTREAM_H_
 
-#include "ImageStream.h"
+#include <osg/ImageStream>
+//#include "ImageStream.h"
 
 #include <pthread.h>
 
@@ -39,7 +40,7 @@ namespace osg {
     /**
      * MPEG1/2 Image Stream class.
      */
-    class SG_EXPORT MpegImageStream : public ImageStream
+    class SG_EXPORT MpegImageStream : public osg::ImageStream
     {
     public:
         MpegImageStream(const char* fileName = NULL);
@@ -77,6 +78,8 @@ namespace osg {
 
         /// Get total length in seconds.
         inline float getLength() const { return _len; }
+        
+        void load(const char* fileName);
 
     protected:
         virtual ~MpegImageStream();
@@ -114,6 +117,10 @@ namespace osg {
         /// Decoder hook.
         static void* s_decode(void*);
         void* decode(void*);
+        
+        void* _mpg;
+        unsigned char** _rows;
+
     };
 
 } // namespace

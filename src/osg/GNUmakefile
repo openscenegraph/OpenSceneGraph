@@ -38,6 +38,7 @@ CXXFILES =\
 	Geode.cpp\
 	Group.cpp\
 	Image.cpp\
+	ImageStream.cpp\
 	Impostor.cpp\
 	ImpostorSprite.cpp\
 	LOD.cpp\

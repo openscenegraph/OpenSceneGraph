@@ -27,6 +27,7 @@
 
 #include "MpegImageStream.h"
 #include <osg/Notify>
+#include <osg/Timer>
 
 #include <stdio.h>
 #include <unistd.h>
@@ -42,20 +43,25 @@ using namespace osg;
 // Constructor: setup and start thread
 MpegImageStream::MpegImageStream(const char* fileName) : ImageStream()
 {
-    _useMMX = true;
+    _useMMX = false;
     _fps = 0.0f;
     _frames = 0;
     _len = 0;
+    _mpg = 0;
 
     for (int i = 0; i < NUM_CMD_INDEX; i++)
         _cmd[i] = THREAD_IDLE;
     _wrIndex = _rdIndex = 0;
+
+    load(fileName);
 
     ::pthread_mutex_init(&_mutex, NULL);
     ::pthread_create(&_id, NULL, MpegImageStream::s_decode, this);
 
     if (fileName)
         setFileName(fileName);
+
+
 }
 
 
@@ -66,6 +72,17 @@ MpegImageStream::~MpegImageStream()
     setCmd(THREAD_QUIT);
     ::pthread_join(_id, NULL);
     ::pthread_mutex_destroy(&_mutex);
+
+    mpeg3_t* mpg = (mpeg3_t*)_mpg;
+    if (mpg) {
+        mpeg3_close(mpg);
+        mpg = NULL;
+    }
+    if (_rows) {
+        ::free(_rows);
+        _rows = NULL;
+    }
+
 }
 
 
@@ -101,16 +118,102 @@ void* MpegImageStream::s_decode(void* vp)
     return ((MpegImageStream*) vp)->decode(vp);
 }
 
+void MpegImageStream::load(const char* fileName)
+{
+    mpeg3_t* mpg = mpeg3_open((char*) fileName);
+    if (!mpg) {
+        osg::notify(WARN) << "Unable to open " << fileName << std::endl;
+        return;
+    }
+
+    if (!mpeg3_has_video(mpg)) {
+        osg::notify(WARN) << "No video streams in" << fileName << std::endl;
+        return;
+    }
+    if (mpeg3_has_audio(mpg)) {
+        osg::notify(NOTICE) << "Stream has audio" << std::endl;
+    }
+
+    _mpg = (void*)mpg;
+
+    mpeg3_set_cpus(mpg, 1);
+    mpeg3_set_mmx(mpg, _useMMX);
+
+    int str = 0; //mpeg3_total_vstreams(mpg) - 1;
+
+    _fps = mpeg3_frame_rate(mpg, str);
+    _frames = mpeg3_video_frames(mpg, str);
+    _len = (float) _frames / _fps;
+
+
+    int s = mpeg3_video_width(mpg, str);
+    int t = mpeg3_video_height(mpg, str);
+
+    // Calculate texture size
+    // these are also calculated and stored within osg::Texture but
+    // too late (on the first apply) to be of any use...
+    int texWidth = 1;
+    for (; texWidth < s; texWidth <<= 1)
+        ;
+    int texHeight = 1;
+    for (; texHeight < t; texHeight <<= 1)
+        ;
+
+
+    // Allocate image data
+    // maybe use BGR888 and save some conversion somewhere?
+    unsigned char* data = (unsigned char*) ::malloc(s * t * 3);
+
+
+    setImage(s, t, 0,
+             GL_RGB,
+             GL_RGB, GL_UNSIGNED_BYTE, data,
+             osg::Image::USE_MALLOC_FREE);
+
+    // Allocate decoder rows
+    // documentation says we need add'l bytes at the end of each
+    // row for MMX but this is more efficient and works so far.
+    _rows = (unsigned char**) ::malloc(t * sizeof(unsigned char*));
+    unsigned char* dp = data;
+    for (int i = 0; i < t; i++) {
+        _rows[i] = dp;
+        dp += (s * 3);
+    }
+
+    //  
+    // #if 0
+    //                     // Setup texture matrix
+    //                     Matrix mat;
+    //                     mat.makeScale((float) s / (float) texWidth,
+    //                                   ((float) t / (float) texHeight) * -1.0f, 1.0f);
+    //                     mat = mat * Matrix::translate(0.0f, (float) t / (float) texHeight, 0.0f);
+    //                     _texMat->setMatrix(mat);
+    // #else
+    //                     _texMat->setMatrix(osg::Matrix::scale(s,-t,1.0f)*osg::Matrix::translate(0.0f,t,0.0f));
+    // #endif
+    // XXX
+    osg::notify(NOTICE) << _frames << " @ " << _fps << " " << _len << "s" << std::endl;
+    osg::notify(NOTICE) << "img " << s << "x" << t << std::endl;
+    osg::notify(NOTICE) << "tex " << texWidth << "x" << texHeight << std::endl;
+}
+
+
 void* MpegImageStream::decode(void*)
 {
     bool playing = false;
-    mpeg3_t* mpg = NULL;
+    mpeg3_t* mpg = (mpeg3_t*)_mpg;
     int str = 0;
     float t0 = 0.0f;
-    unsigned long delay = 0;
-    unsigned char** rows = NULL;
+    unsigned long delay = (unsigned long) ((1.0f / _fps) * 1000.0f);
 
     bool done = false;
+    
+    const osg::Timer* timer = osg::Timer::instance();
+    osg::Timer_t start_tick = timer->tick();
+    osg::Timer_t last_frame_tick = start_tick;
+    double timePerFrame = 1.0f/_fps;
+    double frameNumber = 0.0;
+    
     while (!done) {
 
         // Handle commands
@@ -118,94 +221,17 @@ void* MpegImageStream::decode(void*)
         if (cmd != THREAD_IDLE) {
             switch (cmd) {
             case THREAD_START: // Start or continue stream
-                playing = false;
-                if (!mpg) {
-                    mpg = mpeg3_open((char*) _fileName.c_str());
-                    if (!mpg) {
-                        osg::notify(WARN) << "Unable to open " << _fileName << std::endl;
-                        continue;
-                    }
-
-                    if (!mpeg3_has_video(mpg)) {
-                        osg::notify(WARN) << "No video streams in" << _fileName << std::endl;
-                        continue;
-                    }
-                    if (mpeg3_has_audio(mpg)) {
-                        std::cerr << "Stream has audio" << std::endl;
-                    }
-
-                    mpeg3_set_cpus(mpg, 1);
-                    mpeg3_set_mmx(mpg, _useMMX);
-
-                    str = 0; //mpeg3_total_vstreams(mpg) - 1;
-
-                    _fps = mpeg3_frame_rate(mpg, str);
-                    _frames = mpeg3_video_frames(mpg, str);
-                    _len = (float) _frames / _fps;
-
-                    t0 = 0.0f;
-                    delay = (unsigned long) ((1.0f / _fps) * 1000L);
-
-                    int s = mpeg3_video_width(mpg, str);
-                    int t = mpeg3_video_height(mpg, str);
-
-                   // Calculate texture size
-                    // these are also calculated and stored within osg::Texture but
-                    // too late (on the first apply) to be of any use...
-                    int texWidth = 1;
-                    for (; texWidth < s; texWidth <<= 1)
-                        ;
-                    int texHeight = 1;
-                    for (; texHeight < t; texHeight <<= 1)
-                        ;
-                        
-                    
-                    // Allocate image data
-                    // maybe use BGR888 and save some conversion somewhere?
-                    unsigned char* data = (unsigned char*) ::malloc(s * t * 3);
-                    
-                    
-                    setImage(s, t, 0,
-                             GL_RGB,
-                             GL_RGB, GL_UNSIGNED_BYTE, data,
-                             osg::Image::USE_MALLOC_FREE);
-
-                    // Allocate decoder rows
-                    // documentation says we need add'l bytes at the end of each
-                    // row for MMX but this is more efficient and works so far.
-                    rows = (unsigned char**) ::malloc(t * sizeof(unsigned char*));
-                    unsigned char* dp = data;
-                    for (int i = 0; i < t; i++) {
-                        rows[i] = dp;
-                        dp += (s * 3);
-                    }
-
- 
-#if 0
-                    // Setup texture matrix
-                    Matrix mat;
-                    mat.makeScale((float) s / (float) texWidth,
-                                  ((float) t / (float) texHeight) * -1.0f, 1.0f);
-                    mat = mat * Matrix::translate(0.0f, (float) t / (float) texHeight, 0.0f);
-                    _texMat->setMatrix(mat);
-#else
-                    _texMat->setMatrix(osg::Matrix::scale(s,-t,1.0f)*osg::Matrix::translate(0.0f,t,0.0f));
-#endif
-                    // XXX
-                    std::cerr << _frames << " @ " << _fps << " " << _len << "s" << std::endl;
-                    std::cerr << "img " << s << "x" << t << std::endl;
-                    std::cerr << "tex " << texWidth << "x" << texHeight << std::endl;
-                    std::cerr << "delay " << delay << "ms" << std::endl;
-                }
                 playing = true;
                 break;
             case THREAD_STOP: // XXX
-                std::cerr << "stop at " << t0 << std::endl;
+                osg::notify(NOTICE) << "stop at " << t0 << std::endl;
                 playing = false;
                 break;
             case THREAD_REWIND: // XXX
                 t0 = 0.0;
                 mpeg3_seek_percentage(mpg, 0.0);
+                start_tick = timer->tick();                
+                frameNumber = 0;
                 break;
             case THREAD_CLOSE: // Stop and close
                 playing = false;
@@ -215,7 +241,7 @@ void* MpegImageStream::decode(void*)
                 }
                 break;
             case THREAD_QUIT: // XXX
-                std::cerr << "quit" << std::endl;
+                osg::notify(NOTICE) << "quit" << std::endl;
                 done = true;
                 break;
             default:
@@ -225,18 +251,32 @@ void* MpegImageStream::decode(void*)
         }
 
         if (playing) {
+
+
+            last_frame_tick = timer->tick();
+            
             // XXX needs more work to be real-time
-            mpeg3_read_frame(mpg, rows,
+            mpeg3_read_frame(mpg, _rows,
                              0, 0, _s, _t,
                              _s, _t,
                              MPEG3_RGB888, str);
             dirty(); //Image();
-
-            if (mpeg3_get_time(mpg) > _len) {
-                rewind(); //stop();
+            
+            ++frameNumber;
+            
+            if (frameNumber>=_frames)
+            {
+            
+                rewind(); 
+                //stop();
             }
             else
-                ::usleep(delay);
+            {
+                while (timePerFrame*(frameNumber+1)>timer->delta_s(start_tick,timer->tick()))
+                {
+                    ::usleep(delay);
+                }
+            }
         }
         else {
             ::usleep(IDLE_TIMEOUT);
@@ -244,14 +284,6 @@ void* MpegImageStream::decode(void*)
     }
 
     // Cleanup decoder
-    if (mpg) {
-        mpeg3_close(mpg);
-        mpg = NULL;
-    }
-    if (rows) {
-        ::free(rows);
-        rows = NULL;
-    }
 
     return NULL;
 }

@@ -124,7 +124,7 @@ public:
         }
         
         /** Get the mnaully set home position. */
-        virtual void getHomePosition(osg::Vec3d& eye, osg::Vec3d& center, osg::Vec3d& up)
+        virtual void getHomePosition(osg::Vec3d& eye, osg::Vec3d& center, osg::Vec3d& up) const
         {
             eye = _homeEye;
             center = _homeCenter;

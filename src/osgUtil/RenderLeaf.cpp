@@ -38,7 +38,7 @@ void RenderLeaf::render(State& state,RenderLeaf* previous)
             if (_matrix.valid())
             {
                 glPushMatrix();
-                glMultMatrixf((GLfloat*)_matrix->_mat);
+                glMultMatrixf(_matrix->ptr());
             }
 
         }
@@ -55,7 +55,7 @@ void RenderLeaf::render(State& state,RenderLeaf* previous)
         if (_matrix.valid())
         {
             glPushMatrix();
-            glMultMatrixf((GLfloat*)_matrix->_mat);
+            glMultMatrixf(_matrix->ptr());
         }
 
         _drawable->draw(state);

@@ -172,7 +172,7 @@ void Quat::set( const Matrix& m )
 
     int nxt[3] = {1, 2, 0};
 
-    tr = m._mat[0][0] + m._mat[1][1] + m._mat[2][2];
+    tr = m(0,0) + m(1,1) + m(2,2);
 
     // check the diagonal
     if (tr > 0.0)
@@ -180,31 +180,31 @@ void Quat::set( const Matrix& m )
         s = (float)sqrt (tr + 1.0);
         QW = s / 2.0f;
         s = 0.5f / s;
-        QX = (m._mat[1][2] - m._mat[2][1]) * s;
-        QY = (m._mat[2][0] - m._mat[0][2]) * s;
-        QZ = (m._mat[0][1] - m._mat[1][0]) * s;
+        QX = (m(1,2) - m(2,1)) * s;
+        QY = (m(2,0) - m(0,2)) * s;
+        QZ = (m(0,1) - m(1,0)) * s;
     }
     else
     {
         // diagonal is negative
         i = 0;
-        if (m._mat[1][1] > m._mat[0][0])
+        if (m(1,1) > m(0,0))
             i = 1;
-        if (m._mat[2][2] > m._mat[i][i])
+        if (m(2,2) > m(i,i))
             i = 2;
         j = nxt[i];
         k = nxt[j];
 
-        s = (float)sqrt ((m._mat[i][i] - (m._mat[j][j] + m._mat[k][k])) + 1.0);
+        s = (float)sqrt ((m(i,i) - (m(j,j) + m(k,k))) + 1.0);
 
         tq[i] = s * 0.5f;
 
         if (s != 0.0f)
             s = 0.5f / s;
 
-        tq[3] = (m._mat[j][k] - m._mat[k][j]) * s;
-        tq[j] = (m._mat[i][j] + m._mat[j][i]) * s;
-        tq[k] = (m._mat[i][k] + m._mat[k][i]) * s;
+        tq[3] = (m(j,k) - m(k,j)) * s;
+        tq[j] = (m(i,j) + m(j,i)) * s;
+        tq[k] = (m(i,k) + m(k,i)) * s;
 
         QX = tq[0];
         QY = tq[1];
@@ -239,23 +239,23 @@ void Quat::get( Matrix& m ) const
     wy = QW * y2;
     wz = QW * z2;
 
-    m._mat[0][0] = 1.0f - (yy + zz);
-    m._mat[0][1] = xy - wz;
-    m._mat[0][2] = xz + wy;
-    m._mat[0][3] = 0.0f;
+    m(0,0) = 1.0f - (yy + zz);
+    m(0,1) = xy - wz;
+    m(0,2) = xz + wy;
+    m(0,3) = 0.0f;
 
-    m._mat[1][0] = xy + wz;
-    m._mat[1][1] = 1.0f - (xx + zz);
-    m._mat[1][2] = yz - wx;
-    m._mat[1][3] = 0.0f;
+    m(1,0) = xy + wz;
+    m(1,1) = 1.0f - (xx + zz);
+    m(1,2) = yz - wx;
+    m(1,3) = 0.0f;
 
-    m._mat[2][0] = xz - wy;
-    m._mat[2][1] = yz + wx;
-    m._mat[2][2] = 1.0f - (xx + yy);
-    m._mat[2][3] = 0.0f;
+    m(2,0) = xz - wy;
+    m(2,1) = yz + wx;
+    m(2,2) = 1.0f - (xx + yy);
+    m(2,3) = 0.0f;
 
-    m._mat[3][0] = 0;
-    m._mat[3][1] = 0;
-    m._mat[3][2] = 0;
-    m._mat[3][3] = 1;
+    m(3,0) = 0;
+    m(3,1) = 0;
+    m(3,2) = 0;
+    m(3,3) = 1;
 }

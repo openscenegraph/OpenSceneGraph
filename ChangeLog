@@ -1,6 +1,11 @@
 OSG Change log
 ==============
 
+  o Placed #ifdef USE_DEPRECATED_MATRIX_METHODS about pre/postScale,
+    pre/postTrans and pre/postRot methods since these are now 
+    deprecated, there functionality replace by scale,trans,rotate
+    static methods which create matices to do pre and post multiplication
+    by.  Converted the rest of the OSG to use thse new methods.
   o Converted hangglide to use the sky and base as an earth/sky implementation
     which replaces the standard glClear done in RenderStage, therefore 
     reducing the fill rate requirements for each frame, and increasing

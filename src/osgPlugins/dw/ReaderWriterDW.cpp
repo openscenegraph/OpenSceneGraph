@@ -265,24 +265,24 @@ public:
 			r2=r3^r1;
 		}
 		for (int j=0; j<3; j++) { // and create the transpose matrix (inverse of rotation matrix)
-			mx._mat[0][j]=r1[j];
-			mx._mat[1][j]=r2[j];
-			mx._mat[2][j]=r3[j];
+			mx(0,j)=r1[j];
+			mx(1,j)=r2[j];
+			mx(2,j)=r3[j];
 		}		
 		//		mx.postTrans(mx,0.5f,0.5f,0.0f);
-		mx._mat[0][0]*=1.0f/wid;
-		mx._mat[1][0]*=1.0f/wid;
-		mx._mat[0][1]*=1.0f/ht;
-		mx._mat[1][1]*=1.0f/ht;
+		mx(0,0)*=1.0f/wid;
+		mx(1,0)*=1.0f/wid;
+		mx(0,1)*=1.0f/ht;
+		mx(1,1)*=1.0f/ht;
 		if (mat->isFullFace()) { // set offset such that mx*verts[idx[0]] -> uv=(0,0)
 			Vec3 pos;
 			pos=mx*verts[idx[0]];
-			mx._mat[0][3]=pos.x();
-			mx._mat[1][3]=pos.y();
-			mx._mat[2][3]=pos.z();
+			mx(0,3)=pos.x();
+			mx(1,3)=pos.y();
+			mx(2,3)=pos.z();
 		} else { // scale inversely to the texture preferred repeat size
-			mx._mat[0][3]=0.5f/wid;
-			mx._mat[1][3]=0.5f/ht;
+			mx(0,3)=0.5f/wid;
+			mx(1,3)=0.5f/ht;
 		}
 		//		mx.postScale(mx,1.0f/themat->TextureWidth, 1.0f/themat->TextureHeight,1);
 	}
@@ -1002,9 +1002,9 @@ class ReaderWriterDW : public osgDB::ReaderWriter
 					} else if( strncmp(buff,"UVW:",4)==0) { // texture application matrix
 						Matrix mx;
 						sscanf(buff+4,"%f %f %f%f %f %f%f %f %f", 
-							&mx._mat[0][0], &mx._mat[0][1], &mx._mat[0][2],
-							&mx._mat[1][0], &mx._mat[1][1], &mx._mat[1][2],
-							&mx._mat[2][0], &mx._mat[2][1], &mx._mat[2][2]);
+							&mx(0,0), &mx(0,1), &mx(0,2),
+							&mx(1,0), &mx(1,1), &mx(1,2),
+							&mx(2,0), &mx(2,1), &mx(2,2));
 						obj.settmat(&mx);
 					}
 				}

@@ -14,9 +14,10 @@ using namespace osg;
 #define DEG2RAD(x)    ((x)*M_PI/180.0)
 #define RAD2DEG(x)    ((x)*180.0/M_PI)
 
-
+// temporary #define's for warning that deprecated methods are being
+// used which should be replaced by the new variants.
 #define WARN_DEPRECATED
-#define ABORT_DEPRECATED
+//#define ABORT_DEPRECATED
 
 #ifdef WARN_DEPRECATED
     #ifdef ABORT_DEPRECATED

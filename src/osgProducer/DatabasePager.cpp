@@ -1,7 +1,10 @@
 #include <osgProducer/DatabasePager>
 #include <osgDB/ReadFile>
+#include <osg/Geode>
 
-#ifndef WIN32
+#ifdef WIN32
+#include <windows.h>
+#else
 #include <unistd.h>
 #endif
 
@@ -76,6 +79,56 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
         startThread();
     }
 }
+
+class DatabasePager::FindRenderingObjectsVisitor : public osg::NodeVisitor
+{
+public:
+    FindRenderingObjectsVisitor(DatabasePager::DataToCompile& dataToCompile):
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
+        _dataToCompile(dataToCompile)
+    {
+    }
+    
+    virtual void apply(osg::Node& node)
+    {
+        apply(node.getStateSet());
+
+        traverse(node);
+    }
+    
+    virtual void apply(osg::Geode& geode)
+    {
+        apply(geode.getStateSet());
+    
+        for(unsigned int i=0;i<geode.getNumDrawables();++i)
+        {
+            apply(geode.getDrawable(i));
+        }
+
+        traverse(geode);
+    }
+    
+    inline void apply(osg::StateSet* stateset)
+    {
+        if (stateset)
+        {
+            _dataToCompile.first.push_back(stateset);
+        }
+    }
+    
+    inline void apply(osg::Drawable* drawable)
+    {
+        apply(drawable->getStateSet());
+
+        if (drawable->getUseDisplayList() || drawable->getUseVertexBufferObjects())
+        {
+            _dataToCompile.second.push_back(drawable);
+        }
+    }
+    
+    DatabasePager::DataToCompile& _dataToCompile;
+};
+
 
 void DatabasePager::run()
 {
@@ -206,7 +259,7 @@ void DatabasePager::removeExpiredSubgraphs(double currentFrameTime)
 }
 
 
-class FindPagedLODsVisitor : public osg::NodeVisitor
+class DatabasePager::FindPagedLODsVisitor : public osg::NodeVisitor
 {
 public:
     FindPagedLODsVisitor(DatabasePager::PagedLODList& pagedLODList):

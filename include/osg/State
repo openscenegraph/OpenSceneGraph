@@ -87,13 +87,10 @@ class SG_EXPORT State : public Referenced
         }
         
 
-        inline void setInitialViewMatrix(const osg::RefMatrix* matrix)
-        {
-            if (matrix) _initialViewMatrix = matrix;
-            else _initialViewMatrix = _identity;
-        }
+        inline void setInitialViewMatrix(const osg::RefMatrix* matrix);
 
         inline const osg::Matrix& getInitialViewMatrix() const { return *_initialViewMatrix; }
+        inline const osg::Matrix& getInitialInverseViewMatrix() const { return _initialInverseViewMatrix; }
 
         inline void applyProjectionMatrix(const osg::RefMatrix* matrix)
         {
@@ -620,15 +617,12 @@ class SG_EXPORT State : public Referenced
           * if true steps should be taken to complete rendering early.*/
         bool getAbortRendering() const { return _abortRenderingPtr!=0?(*_abortRenderingPtr):false; }
 
-        
         void setReportGLErrors(bool flag) { _reportGLErrors = flag; }
         bool getReportGLErrors() const { return _reportGLErrors; }
 
         bool checkGLErrors(const char* str) const;
         bool checkGLErrors(StateAttribute::GLMode mode) const;
         bool checkGLErrors(const StateAttribute* attribute) const;
-
-
 
     protected:
 
@@ -642,6 +636,8 @@ class SG_EXPORT State : public Referenced
         ref_ptr<const RefMatrix>    _projection;
         ref_ptr<const RefMatrix>    _modelView;
         
+        Matrix                      _initialInverseViewMatrix;
+
         ref_ptr<DisplaySettings>    _displaySettings;
         
         bool*                       _abortRenderingPtr;

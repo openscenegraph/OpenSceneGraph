@@ -28,7 +28,7 @@ Texture2D::Texture2D():
     setUseHardwareMipMapGeneration(true);
 }
 
-Texture2D::Texture2D(osg::Image* image):
+Texture2D::Texture2D(Image* image):
             _textureWidth(0),
             _textureHeight(0),
             _numMipmapLevels(0)

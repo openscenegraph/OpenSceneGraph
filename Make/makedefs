@@ -134,6 +134,8 @@ endif
 RECURSIVE_TARGETS = \
 	  opt\
 	  debug\
+      static\
+      staticdebug\
 	  clean\
 	  cleandepend\
 	  cleandependopt\
@@ -150,13 +152,18 @@ RECURSIVE_TARGETS = \
 	  docs\
 	  depend\
 
+STATICLIB    = $(LIB:.$(LIB_EXT)=.a)
+STATICPLUGIN = $(PLUGIN:.$(PLUGIN_EXT)=.a)
+
 #### SUN OS Specific definitions 
 ifeq ($(OS),SunOS)
 
-  #### if useing g++ on a sun
+  #### if using g++ on a sun
   ifeq ($(COMPILER),gnu)
     C++               = g++
     DEPARG            = -M
+    INC               += 
+    DEF               += -W -Wall -fPIC -fpermissive
     OPTF              = -O2
     DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
     SHARED            = -shared -fPIC 
@@ -230,10 +237,10 @@ ifeq ($(OS),IRIX)
 	  C++               = CC
 	  DEPARG            = -M
 	  INC               += -I${TOPDIR}/include -I/usr/freeware/include
-	  LDFLAGS	    += -L/usr/local/lib
+	  LDFLAGS	        += -L/usr/local/lib
 	  DEF               += -LANG:std -OPT:Olimit=0 \
-		             -DEBUG:woff=1681 -DEBUG:woff=1682 -DEBUG:woff=3303\
-		             -MDupdate $(MAKEDEPEND)
+		                    -DEBUG:woff=1681 -DEBUG:woff=1682 -DEBUG:woff=3303\
+		                    -MDupdate $(MAKEDEPEND)
 	  OPTF              = -O2 
 	  DBGF              = -g -DOSG_COMPILE_UNIT_TESTS  
 	  SHARED            = -shared
@@ -322,7 +329,6 @@ ifeq ($(OS),Linux)
     C++             = $(CXX)
   endif
 
-
   DEPARG            = -M
   INC               += 
 
@@ -346,7 +352,7 @@ ifeq ($(OS),Linux)
 ifeq ("$(COMPILE_OSG_OP_OT_WITH_SONAMES)","YES")
     LDFLAGS         += -Wl,-soname -Wl,$@.0
 endif
-    
+
     LDFLAGS         += `getconf LFS_LDFLAGS`
     DEF             += `getconf LFS_CFLAGS`
 

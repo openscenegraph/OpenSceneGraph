@@ -1,17 +1,6 @@
 distribution : 
-	@$(MAKEDIST) \
-		$(OS)\
-		$(TOPDIR)\
-		$(INST_LIBS)\
-		$(INST_PLUGINS)\
-		$(INST_INCLUDE)\
-		$(INST_EXAMPLES)\
-		$(INST_SRC)\
-		$(INST_EXAMPLE_SRC)\
-		$(INST_DOC)\
-		$(INST_DATA)
+	@sh $(MAKEDIST) OpenSceneGraph Make/rpm.header Make/rpm.files
 
-	
 
 cleandist:
 	@$(MAKECLEANDIST)

@@ -1,0 +1,13 @@
+TOPDIR = ../..
+include $(TOPDIR)/Make/makedefs
+
+CXXFILES =\
+	osgarchive.cpp\
+
+LIBS     += -losgDB losgUtil -losg $(X_LIBS) $(OTHER_LIBS) 
+
+EXEC = osgarchive
+
+INC += $(X_INC)
+
+include $(TOPDIR)/Make/makerules

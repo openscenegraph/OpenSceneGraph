@@ -52,7 +52,7 @@ void printTriangles(const std::string& name, osg::Drawable& drawable)
     std::cout<<name<<std::endl;
     
     osg::TriangleFunctor<NormalPrint> tf;
-    drawable.applyPrimitiveOperation(tf);
+    drawable.accept(tf);
  
     std::cout<<std::endl;
 }

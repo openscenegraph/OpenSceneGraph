@@ -8,7 +8,6 @@
 #include <osg/BoundingBox>
 #include <osg/State>
 #include <osg/Types>
-#include <osg/Vec2>
 #include <osg/NodeVisitor>
 
 #include <vector>
@@ -20,6 +19,7 @@ namespace osg {
 class Vec2;
 class Vec3;
 class Vec4;
+class UByte4;
 class Node;
 
 // this is define to alter the way display lists are compiled inside the
@@ -218,50 +218,54 @@ class SG_EXPORT Drawable : public Object
           * in the OpenGL context related to contextID.*/
         static void flushDeletedDisplayLists(uint contextID);
 
-        typedef uint AttributeBitMask;
-
-        enum AttributeBitMaskValues
+        enum AttributeType
         {
-            COORDS              = 0x1,
-            NORMALS             = 0x2,
-            COLORS              = 0x4,
-            TEXTURE_COORDS      = 0x8,
+            VERTICES,
+            NORMALS,
+            COLORS,
+            TEXTURE_COORDS,
             TEXTURE_COORDS_0    = TEXTURE_COORDS,
-            TEXTURE_COORDS_1    = 0x10,
-            TEXTURE_COORDS_2    = 0x20,
-            TEXTURE_COORDS_3    = 0x40
+            TEXTURE_COORDS_1    = TEXTURE_COORDS_0+1,
+            TEXTURE_COORDS_2    = TEXTURE_COORDS_0+2,
+            TEXTURE_COORDS_3    = TEXTURE_COORDS_0+3,
+            TEXTURE_COORDS_4    = TEXTURE_COORDS_0+4,
+            TEXTURE_COORDS_5    = TEXTURE_COORDS_0+5,
+            TEXTURE_COORDS_6    = TEXTURE_COORDS_0+6,
+            TEXTURE_COORDS_7    = TEXTURE_COORDS_0+7 
+            // only eight texture coord examples provided here, but underlying code can handle any no of texure units,
+            // simply co them as (TEXTURE_COORDS_0+unit).
         };
         
         class AttributeFunctor
         {
         public:
         
-            AttributeFunctor(AttributeBitMask abm):_abm(abm) {}
             virtual ~AttributeFunctor() {}
-        
-            void setAttributeBitMask(AttributeBitMask abm) { _abm=abm; }
-            AttributeBitMask getAttributeBitMask() const { return _abm; }
-        
-            virtual bool apply(AttributeBitMask,Vec2*,Vec2*) { return false; }
-            virtual bool apply(AttributeBitMask,Vec3*,Vec3*) { return false; }
-            virtual bool apply(AttributeBitMask,Vec4*,Vec4*) { return false; }
             
-        protected:
-        
-            AttributeBitMask _abm;
+            virtual void apply(AttributeType,unsigned int,GLbyte*) {}
+            virtual void apply(AttributeType,unsigned int,GLshort*) {}
+            virtual void apply(AttributeType,unsigned int,GLint*) {}
+
+            virtual void apply(AttributeType,unsigned int,GLubyte*) {}
+            virtual void apply(AttributeType,unsigned int,GLushort*) {}
+            virtual void apply(AttributeType,unsigned int,GLuint*) {}
+
+            virtual void apply(AttributeType,unsigned int,float*) {}
+            virtual void apply(AttributeType,unsigned int,Vec2*) {}
+            virtual void apply(AttributeType,unsigned int,Vec3*) {}
+            virtual void apply(AttributeType,unsigned int,Vec4*) {}
+            virtual void apply(AttributeType,unsigned int,UByte4*) {}
         };
 
-        /** return the attributes supported by applyAttrbuteOperation() as an AttributeBitMask.*/
-        virtual AttributeBitMask suppportsAttributeOperation() const { return (AttributeBitMask)0; }
-
-        /** return the attributes successully applied in applyAttributeUpdate.*/
-        virtual AttributeBitMask applyAttributeOperation(AttributeFunctor&) { return 0; }
+        /** accept an AttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has.*/
+        virtual void accept(AttributeFunctor&) {}
         
-
         class PrimitiveFunctor
         {
         public:
             
+            virtual ~PrimitiveFunctor() {}
+
             virtual void setVertexArray(unsigned int count,Vec3* vertices) = 0;
             
             virtual void drawArrays(GLenum mode,GLint first,GLsizei count) = 0;
@@ -276,8 +280,8 @@ class SG_EXPORT Drawable : public Object
             
         };
         
-        /** apply the internal geometry as basic primitives to a PrimitiveFunctor.*/
-        virtual void applyPrimitiveOperation(PrimitiveFunctor&) {}
+        /** accept a PrimtiveFunctor and call its methods to tell it about the interal primtives that this Drawable has.*/
+        virtual void accept(PrimitiveFunctor&) {}
 
 
     protected:

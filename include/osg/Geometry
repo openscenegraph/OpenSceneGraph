@@ -91,14 +91,11 @@ class SG_EXPORT Geometry : public Drawable
           */
         virtual void drawImmediateMode(State& state);
 
+        /** accept an AttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has.*/
+        virtual void accept(AttributeFunctor& af);
 
-        /** return the attributes supported by applyAttrbuteUpdate() as an AttributeBitMask.*/
-        virtual AttributeBitMask suppportsAttributeOperation() const;
-
-        /** return the attributes successully applied in applyAttributeUpdate.*/
-        virtual AttributeBitMask applyAttributeOperation(AttributeFunctor& auf);
-
-        virtual void applyPrimitiveOperation(PrimitiveFunctor&);
+        /** accept a PrimtiveFunctor and call its methods to tell it about the interal primtives that this Drawable has.*/
+        virtual void accept(PrimitiveFunctor& pf);
 
     protected:
 

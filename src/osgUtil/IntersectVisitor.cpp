@@ -449,7 +449,7 @@ bool IntersectVisitor::intersect(Drawable& drawable)
 
             TriangleFunctor<TriangleIntersect> ti;
             ti.set(*sitr->second);
-            drawable.applyPrimitiveOperation(ti);
+            drawable.accept(ti);
             if (ti._hit)
             {
 

@@ -99,8 +99,7 @@ class TransformFunctor : public osg::Drawable::AttributeFunctor
         osg::Matrix _m;
         osg::Matrix _im;
 
-        TransformFunctor(const osg::Matrix& m):
-            osg::Drawable::AttributeFunctor(osg::Drawable::COORDS|osg::Drawable::NORMALS)
+        TransformFunctor(const osg::Matrix& m)
         {
             _m = m;
             _im.invert(_m);
@@ -108,28 +107,26 @@ class TransformFunctor : public osg::Drawable::AttributeFunctor
             
         virtual ~TransformFunctor() {}
 
-        virtual bool apply(osg::Drawable::AttributeBitMask abm,osg::Vec3* begin,osg::Vec3* end)
+        virtual void apply(osg::Drawable::AttributeType type,unsigned int count,osg::Vec3* begin)
         {
-            if (abm == osg::Drawable::COORDS)
+            if (type == osg::Drawable::VERTICES)
             {
+                osg::Vec3* end = begin+count;
                 for (osg::Vec3* itr=begin;itr<end;++itr)
                 {
                     (*itr) = (*itr)*_m;
                 }
-                return true;
             }
-            else if (abm == osg::Drawable::NORMALS)
+            else if (type == osg::Drawable::NORMALS)
             {
+                osg::Vec3* end = begin+count;
                 for (osg::Vec3* itr=begin;itr<end;++itr)
                 {
                     // note post mult by inverse for normals.
                     (*itr) = osg::Matrix::transform3x3(_im,(*itr));
                     (*itr).normalize();
                 }
-                return true;
             }
-            return false;
-
         }
 
 };
@@ -455,7 +452,7 @@ void Optimizer::FlattenStaticTransformsVisitor::doTransform(osg::Object* obj,osg
     if (drawable)
     {
         TransformFunctor tf(matrix);
-        drawable->applyAttributeOperation(tf);
+        drawable->accept(tf);
         drawable->dirtyBound();
         return;
     }
@@ -498,7 +495,7 @@ void Optimizer::FlattenStaticTransformsVisitor::doTransform(osg::Object* obj,osg
         for(unsigned int i=0;i<billboard->getNumDrawables();++i)
         {
             billboard->setPos(i,billboard->getPos(i)*matrix);
-            billboard->getDrawable(i)->applyAttributeOperation(tf);
+            billboard->getDrawable(i)->accept(tf);
         }
         
         billboard->dirtyBound();
@@ -717,7 +714,7 @@ void Optimizer::RemoveLowestStaticTransformsVisitor::doTransform(osg::Object* ob
     if (drawable)
     {
         TransformFunctor tf(matrix);
-        drawable->applyAttributeOperation(tf);
+        drawable->accept(tf);
         drawable->dirtyBound();
         return;
     }
@@ -760,7 +757,7 @@ void Optimizer::RemoveLowestStaticTransformsVisitor::doTransform(osg::Object* ob
         for(unsigned int i=0;i<billboard->getNumDrawables();++i)
         {
             billboard->setPos(i,billboard->getPos(i)*matrix);
-            billboard->getDrawable(i)->applyAttributeOperation(tf);
+            billboard->getDrawable(i)->accept(tf);
         }
         
         billboard->dirtyBound();

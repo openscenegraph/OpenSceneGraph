@@ -210,7 +210,6 @@ class MyGeometryCallback :
         MyGeometryCallback(const osg::Vec3& o,
                            const osg::Vec3& x,const osg::Vec3& y,const osg::Vec3& z,
                            double period,double xphase,double amplitude):
-            osg::Drawable::AttributeFunctor(osg::Drawable::COORDS),
             _firstCall(true),
             _startTime(0.0),
             _time(0.0),
@@ -234,7 +233,7 @@ class MyGeometryCallback :
             
             _time = referenceTime-_startTime;
             
-            drawable->applyAttributeOperation(*this);
+            drawable->accept(*this);
             drawable->dirtyBound();
             
             osg::Geometry* geometry = dynamic_cast<osg::Geometry*>(drawable);
@@ -245,13 +244,14 @@ class MyGeometryCallback :
             
         }
         
-        virtual bool apply(osg::Drawable::AttributeBitMask abm,osg::Vec3* begin,osg::Vec3* end) 
+        virtual void apply(osg::Drawable::AttributeType type,unsigned int count,osg::Vec3* begin) 
         {
-            if (abm == osg::Drawable::COORDS)
+            if (type == osg::Drawable::VERTICES)
             {
                 const float TwoPI=2.0f*osg::PI;
                 const float phase = -_time/_period;
                 
+                osg::Vec3* end = begin+count;
                 for (osg::Vec3* itr=begin;itr<end;++itr)
                 {
                     osg::Vec3 dv(*itr-_origin);
@@ -265,10 +265,7 @@ class MyGeometryCallback :
                              _yAxis*local.y()+
                              _zAxis*local.z();
                 }
-                return true;
             }
-            return false;
-
         }
 
         bool    _firstCall;

@@ -150,8 +150,8 @@ bool Viewer::open()
     {
         if (itr->_cameraManipList.empty())
         {
-            osg::notify(osg::NOTICE)<<"osgGLUT::Viewer::open() called without any camara manipulators registered for a viewport,"<< std::endl;
-            osg::notify(osg::NOTICE)<<"automatically registering trackball,flight and drive manipulators."<< std::endl;
+            osg::notify(osg::INFO)<<"osgGLUT::Viewer::open() called without any camara manipulators registered for a viewport,"<< std::endl;
+            osg::notify(osg::INFO)<<"automatically registering trackball,flight and drive manipulators."<< std::endl;
             registerCameraManipulator(new osgUtil::TrackballManipulator, index);
             registerCameraManipulator(new osgUtil::FlightManipulator, index);
             registerCameraManipulator(new osgUtil::DriveManipulator, index);

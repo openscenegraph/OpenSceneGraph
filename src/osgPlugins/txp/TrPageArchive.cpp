@@ -1,5 +1,9 @@
-#include "TrPageArchive.h"
-#include "TrPageParser.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+#include <osgTXP/TrPageArchive.h>
+#include <osgTXP/TrPageParser.h>
 
 #include <osg/AlphaFunc>
 #include <osg/Group>
@@ -19,14 +23,12 @@
 #include <osgDB/WriteFile>
 #include <osgDB/FileNameUtils>
 
-#include "trpage_geom.h"
-#include "trpage_read.h"
-#include "trpage_write.h"
-#include "trpage_scene.h"
+#include <osgTXP/trpage_geom.h>
+#include <osgTXP/trpage_read.h>
+#include <osgTXP/trpage_write.h>
+#include <osgTXP/trpage_scene.h>
+#include <osgTXP/trpage_managers.h>
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 
 using namespace txp;
 using namespace osg;
@@ -39,7 +41,8 @@ using namespace osg;
 
 TrPageArchive::TrPageArchive()
 : trpgr_Archive()
-, parse(new TrPageParser(this)) 
+, parse(new TrPageParser(this))
+, buf(GetEndian())
 {
 }
 
@@ -83,6 +86,29 @@ bool TrPageArchive::OpenFile(const char* file)
     parse->SetMaxGroupID(maxID);
     
     return true;
+}
+
+/* Calculate the center of the database (including Z)
+ */
+void TrPageArchive::GetCenter(Vec3 &center)
+{
+	trpg2dPoint sw,ne;
+    const trpgHeader *head = GetHeader();
+	const trpgTileTable *tileTable = GetTileTable();
+	head->GetExtents(sw,ne);
+	trpg2dPoint tileSize;
+	head->GetTileSize(0,tileSize);
+
+	center[0] = (ne.x+sw.x)/2.0;
+	center[1] = (ne.y+sw.y)/2.0;
+
+	trpg2iPoint loc;
+	loc.x = int((center[0]-sw.x)/tileSize.x);
+	loc.y = int((center[1]-sw.y)/tileSize.y);
+	trpgwAppAddress foo;
+	float zmin,zmax;
+	tileTable->GetTile(loc.x, loc.y,0,foo,zmin,zmax);
+	center[2] = (zmin+zmax)/2.0;
 }
 
 // load textures and materials
@@ -174,6 +200,8 @@ void TrPageArchive::LoadMaterials()
             // TODO : multitextuting
             // also note that multitexturing in terrapage can came from two sides
             // - multiple textures per material, and multiple materials per geometry
+			// Note: Only in theory.  The only type you'll encounter is multiple
+			//		 materials per polygon.
             if( numMatTex )
             {
                 Material     *osg_material     = new Material;
@@ -337,6 +365,7 @@ bool TrPageArchive::LoadModels()
    return true;
 }
 
+// Group* TrPageArchive::LoadTile(int x,int y,int lod,int &parentID,vector<GroupIDInfo> **groupList)
 Group* TrPageArchive::LoadTile(int x,int y,int lod,int &parentID)
 {
    trpgMemReadBuffer buf(GetEndian());
@@ -352,8 +381,69 @@ Group* TrPageArchive::LoadTile(int x,int y,int lod,int &parentID)
       // This is where you would page in textures and models
    }
 
+   // Also return the list of IDs and their groups we read in for this tile
+//   *groupList = parse->GetGroupList();
+
    // That's it
    return tile;
+}
+
+// Group* TrPageArchive::LoadTile(Group *rootNode,trpgPageManager *pageManage,trpgManagedTile *tile,vector<)
+Group* TrPageArchive::LoadTile(Group *rootNode,
+		trpgPageManager * /*pageManage*/,
+		trpgManagedTile *tile,osg::Group **parentNode)
+{
+	int x,y,lod;
+	tile->GetTileLoc(x,y,lod);
+	std::vector<osg::Group *> *groupList = parse->GetGroupList();
+
+	// Fetch the tile data (but don't parse it)
+	if (!ReadTile(x,y,lod,buf))
+		return NULL;
+
+	// Now parse it
+	Group *gTile = parse->ParseScene(buf, m_gstates, m_models);
+	if (gTile && rootNode) {
+		// Hook it into its parent
+		int parentID = parse->GetParentID();
+		if (parentID >= 0) {
+			(*groupList)[parentID]->addChild(gTile);
+		} else
+			rootNode->addChild(gTile);
+
+		// Note: Need to page in the textures
+		//		They're being forced in during the parse right now
+	}
+	if (parentNode) {
+		int parentID = parse->GetParentID();
+		if (parentID >= 0)
+			*parentNode = (*groupList)[parentID];
+		else
+			*parentNode = rootNode;
+	}
+
+	// Add the tile to the local data in the managed tile
+	tile->SetLocalData(gTile);
+
+	return gTile;
+}
+
+bool TrPageArchive::UnLoadTile(trpgPageManager * /*pageManage*/,
+		  	       trpgManagedTile *tile)
+{
+	// The local tile data will have the group we need
+	Group *gTile = (Group *)tile->GetLocalData();
+	if (gTile) {
+		// Remove it from the parent list
+		// We're only expecting on parent
+		const Group::ParentList &pList = gTile->getParents();
+		if (pList.size() != 1)
+			return false;
+		pList[0]->removeChild(gTile);
+	} else
+		return false;
+
+	return true;
 }
 
 //----------------------------------------------------------------------------
@@ -372,6 +462,7 @@ Group* TrPageArchive::LoadAllTiles()
    trpg2iPoint tileSize;
 
    // The group list is used to map parent IDs to pfGroup nodes
+   //std::vector<Group *> groupList;
    std::vector<Group *> *groupList = parse->GetGroupList();
 
    for (int nl=0;nl<numLod;nl++)
@@ -401,7 +492,7 @@ Group* TrPageArchive::LoadAllTiles()
                else
                {
                   // Added below some other node
-                  (*groupList)[parentID]->addChild(tile);
+                   (*groupList)[parentID]->addChild(tile);
                }
             }
          }

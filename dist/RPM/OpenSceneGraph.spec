@@ -1,11 +1,11 @@
 
 Summary: A C++ scene graph API on OpenGL for real time graphics
 Name: OpenSceneGraph
-Version: 0.9.1
+Version: 0.9.2
 Release: 1
 Copyright: LGPL
 Group: Graphics
-Source: OpenSceneGraph-0.9.1.tar.gz
+Source: OpenSceneGraph-0.9.2.tar.gz
 URL: http://www.openscenegraph.org
 Packager: Don Burns
 
@@ -26,7 +26,7 @@ graphics rendering, protability, and extensibility
 
 %install
 
-cd /usr/src/redhat/BUILD/OpenSceneGraph-0.9.1 
+cd /usr/src/redhat/BUILD/OpenSceneGraph-0.9.2 
 tar cvf - . | tar xvfC - /
 
 # ---------------------
@@ -37,14 +37,17 @@ tar cvf - . | tar xvfC - /
 %attr(755, root, root) /usr/local/lib/libosgGA.so
 %attr(755, root, root) /usr/local/lib/libosgGLUT.so
 %attr(755, root, root) /usr/local/lib/libosgParticle.so
+%attr(755, root, root) /usr/local/lib/libosgSim.so
 %attr(755, root, root) /usr/local/lib/libosg.so
 %attr(755, root, root) /usr/local/lib/libosgText.so
 %attr(755, root, root) /usr/local/lib/libosgUtil.so
 %attr(755, root, root) /usr/local/lib/osgPlugins/osgdb_3ds.so
+%attr(755, root, root) /usr/local/lib/osgPlugins/osgdb_ac.so
 %attr(755, root, root) /usr/local/lib/osgPlugins/osgdb_bmp.so
 %attr(755, root, root) /usr/local/lib/osgPlugins/osgdb_dw.so
 %attr(755, root, root) /usr/local/lib/osgPlugins/osgdb_dx.so
 %attr(755, root, root) /usr/local/lib/osgPlugins/osgdb_flt.so
+%attr(755, root, root) /usr/local/lib/osgPlugins/osgdb_geo.so
 %attr(755, root, root) /usr/local/lib/osgPlugins/osgdb_gif.so
 %attr(755, root, root) /usr/local/lib/osgPlugins/osgdb_iv.so
 %attr(755, root, root) /usr/local/lib/osgPlugins/osgdb_jpeg.so
@@ -64,6 +67,8 @@ tar cvf - . | tar xvfC - /
 %attr(755, root, root) /usr/local/lib/osgPlugins/osgdb_tiff.so
 %attr(755, root, root) /usr/local/lib/osgPlugins/osgdb_txp.so
 %attr(755, root, root) /usr/local/lib/osgPlugins/osgdb_zip.so
+%attr(755, root, root) /usr/share/OpenSceneGraph/bin/memleaks.log
+%attr(755, root, root) /usr/share/OpenSceneGraph/bin/osganimate
 %attr(755, root, root) /usr/share/OpenSceneGraph/bin/osgbillboard
 %attr(755, root, root) /usr/share/OpenSceneGraph/bin/osgcallback
 %attr(755, root, root) /usr/share/OpenSceneGraph/bin/osgclip
@@ -71,11 +76,14 @@ tar cvf - . | tar xvfC - /
 %attr(755, root, root) /usr/share/OpenSceneGraph/bin/osgconv
 %attr(755, root, root) /usr/share/OpenSceneGraph/bin/osgcopy
 %attr(755, root, root) /usr/share/OpenSceneGraph/bin/osgcube
+%attr(755, root, root) /usr/share/OpenSceneGraph/bin/osgcubemap
+%attr(755, root, root) /usr/share/OpenSceneGraph/bin/osggeodemo
 %attr(755, root, root) /usr/share/OpenSceneGraph/bin/osggeometry
 %attr(755, root, root) /usr/share/OpenSceneGraph/bin/osghangglide
 %attr(755, root, root) /usr/share/OpenSceneGraph/bin/osghud
 %attr(755, root, root) /usr/share/OpenSceneGraph/bin/osgimpostor
 %attr(755, root, root) /usr/share/OpenSceneGraph/bin/osglight
+%attr(755, root, root) /usr/share/OpenSceneGraph/bin/osglightpoint
 %attr(755, root, root) /usr/share/OpenSceneGraph/bin/osgmultitexture
 %attr(755, root, root) /usr/share/OpenSceneGraph/bin/osgoccluder
 %attr(755, root, root) /usr/share/OpenSceneGraph/bin/osgparticle
@@ -83,7 +91,10 @@ tar cvf - . | tar xvfC - /
 %attr(755, root, root) /usr/share/OpenSceneGraph/bin/osgreflect
 %attr(755, root, root) /usr/share/OpenSceneGraph/bin/osgscribe
 %attr(755, root, root) /usr/share/OpenSceneGraph/bin/osgsequence
+%attr(755, root, root) /usr/share/OpenSceneGraph/bin/osgshadowtexture
+%attr(755, root, root) /usr/share/OpenSceneGraph/bin/osgshape
 %attr(755, root, root) /usr/share/OpenSceneGraph/bin/osgstereoimage
+%attr(755, root, root) /usr/share/OpenSceneGraph/bin/osgteapot
 %attr(755, root, root) /usr/share/OpenSceneGraph/bin/osgtext
 %attr(755, root, root) /usr/share/OpenSceneGraph/bin/osgtexture
 %attr(755, root, root) /usr/share/OpenSceneGraph/bin/osgtexture1D

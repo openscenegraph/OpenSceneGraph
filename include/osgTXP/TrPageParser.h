@@ -31,13 +31,22 @@
 #include <osg/Group>
 #include <osg/StateSet>
 #include <vector>
-#include "trpage_read.h"
+#include <osgTXP/trpage_read.h>
+
+#include <osgTXP/Export.h>
 
 namespace txp
 {
     class TrPageArchive;
     
-    class TrPageParser : public trpgSceneParser
+	// Group ID Info
+	// Used to keep track of which groups are which IDs for parents
+	typedef struct {
+		osg::Group *group;
+		int id;
+	} GroupIDInfo;
+
+    class OSGTXP_EXPORT TrPageParser : public trpgSceneParser
     {
     public:
         TrPageParser(TrPageArchive* parent);
@@ -62,18 +71,17 @@ namespace txp
         std::vector<osg::ref_ptr<osg::StateSet> >* GetLocalMaterials() { return &local_materials; }
         std::vector<osg::ref_ptr<osg::Node> >*     GetModels()    { return models; }
         
-        // Add the Group to the group list
+        // Add the Group to the current group list
         bool AddToGroupList(int id,osg::Group *);
         
         // Return the group list
-        std::vector< osg::Group* > *GetGroupList() { return &groupList; }
+        std::vector< osg::Group *> *GetGroupList() { return &groupList; }
         
-        // Set the maximum number of groups (once per archive)
-        void SetMaxGroupID(int);
-
         /// TXP 2.0  - local materials
         void LoadLocalMaterials();
-        
+     
+		void SetMaxGroupID(int maxGroupID);
+		
     protected:
         bool StartChildren(void *);
         bool EndChildren(void *);
@@ -88,7 +96,7 @@ namespace txp
         int parentID;                   
         std::vector<osg::ref_ptr<osg::StateSet> >* materials;
         std::vector<osg::ref_ptr<osg::StateSet> >  local_materials;
-        std::vector<osg::Group *>    groupList;
+        std::vector<osg::Group *>   groupList;
         std::vector<osg::ref_ptr<osg::Node> >*    models;
     };
 

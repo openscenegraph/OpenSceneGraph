@@ -20,7 +20,7 @@
     Token definitions and basic classes.
   */
 
-#include "trpage_sys.h"
+#include <osgTXP/trpage_sys.h>
 
 // Macros we may need
 #ifndef MIN

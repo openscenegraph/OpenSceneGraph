@@ -25,10 +25,13 @@
 
 
 
-#include "trpage_sys.h"
-#include "trpage_read.h"
+#include <osgTXP/trpage_sys.h>
+#include <osgTXP/trpage_read.h>
+#include <osgTXP/trpage_managers.h>
 
-#include "TrPageParser.h"
+#include <osgTXP/TrPageParser.h>
+
+#include <osgTXP/Export.h>
 
 #include <string>
 #include <vector>
@@ -37,7 +40,7 @@
 namespace txp
 {
     /// main class for loading terrapage archives  
-    class TrPageArchive : public trpgr_Archive
+    class OSGTXP_EXPORT TrPageArchive : public trpgr_Archive
     {
     public:
         TrPageArchive();
@@ -67,11 +70,25 @@ namespace txp
 
         */
         osg::Group *LoadTile(int x,int y,int lod,int &parent);
+
+		/* This version is used during the paging and takes a Managed Tile
+			instead of location.  These are used to keep track of what to
+			page in and out.
+		 */
+        osg::Group *LoadTile(osg::Group *rootNode,trpgPageManager *,trpgManagedTile *,osg::Group **parentNode=NULL);
+
+		/* Unload Tile
+			This is called to get rid of a tile from the scenegraph
+		 */
+		bool UnLoadTile(trpgPageManager *,trpgManagedTile *);
         
         /** Load all the tiles . No paging.
         @return The parent of the complete scene graph.
         */
         osg::Group *LoadAllTiles();
+
+		// Calculate the center
+		void GetCenter(osg::Vec3 &center);
 
     protected:
         /// This class does most of the actual parsing. 
@@ -81,6 +98,7 @@ namespace txp
         std::vector< osg::ref_ptr<osg::StateSet> >  m_gstates;
         std::vector< osg::ref_ptr<osg::Node> >      m_models;
         std::string   m_alternate_path;
+		trpgMemReadBuffer buf;
     };
 }; // end namespace
 

@@ -23,8 +23,8 @@
      the front of an archive) or the Tile Header (at the beginning of each tile).
      */
 
-#include "trpage_geom.h"
-#include "trpage_read.h"
+#include <osgTXP/trpage_geom.h>
+#include <osgTXP/trpage_read.h>
 
 /* Write Tile Table
     Keeps track of tiles written to disk.

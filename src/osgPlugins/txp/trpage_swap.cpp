@@ -20,7 +20,7 @@
     Byte swapping utility functions.
     */
 
-#include "trpage_swap.h"
+#include <osgTXP/trpage_swap.h>
 
 /*
 ** func:    swap_two( in, out )

@@ -119,7 +119,7 @@ make_osg()
     print_attr $INST_PLUGINS 755 >> $TOPDIR/dist/RPM/OpenSceneGraph.spec
     print_attr $INST_DEMOS 755   >> $TOPDIR/dist/RPM/OpenSceneGraph.spec
 
-    rpm -bb --clean $TOPDIR/dist/RPM/OpenSceneGraph.spec
+    rpmbuild -bb --clean $TOPDIR/dist/RPM/OpenSceneGraph.spec
 
     mv /usr/src/redhat/RPMS/i386/OpenSceneGraph-$REV-$REL.i386.rpm dist/RPM
 }

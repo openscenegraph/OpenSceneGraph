@@ -28,8 +28,8 @@
      implement a trpgDiskReadBuffer as a subclass of trpgReadBuffer.
      */
 
-#include "trpage_io.h"
-#include "trpage_swap.h"
+#include <osgTXP/trpage_io.h>
+#include <osgTXP/trpage_swap.h>
 
 /* **********************
    Read buffer base class functions

@@ -13,30 +13,15 @@
    ************************
    */
 
-/* trpage_basic.cpp
-    Methods for checkable base class.
-    */
+#include <osgTXP/trpage_util.h>
 
-#include <stdlib.h>
-#include <stdio.h>
+/* trpage_util.cpp
+	This source file implements various utility routines for paging archive
+	*/
 
-#include <osgTXP/trpage_io.h>
-
-/* Checkable
-    This is just a class that checks validity.
-    Starts out invalid.
-    */
-
-trpgCheckable::trpgCheckable()
-{
-    valid = false;
-}
-trpgCheckable::~trpgCheckable()
-{
-    valid = false;
-}
-bool trpgCheckable::isValid() const
-{
-    return valid;
-}
-
+/*  The merge routine used to be in here.
+    However, merge isn't actually general enough to be part of the library.
+    Only portable code should be in the TerraPage API.
+    Instead, there's a Windows specific program that merges TerraPage archives in
+    the merge/ directory of this distribution.
+ */

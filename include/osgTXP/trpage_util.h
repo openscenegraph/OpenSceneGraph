@@ -13,30 +13,21 @@
    ************************
    */
 
-/* trpage_basic.cpp
-    Methods for checkable base class.
-    */
+/* trpage_sys.h
+	System specific declarations.
+	*/
 
+#ifndef trpage_util_h_
+#define trpage_util_h_
 #include <stdlib.h>
-#include <stdio.h>
+#include <osgTXP/trpage_read.h>
+#include <osgTXP/trpage_write.h>
+#include <osgTXP/trpage_scene.h>
 
-#include <osgTXP/trpage_io.h>
-
-/* Checkable
-    This is just a class that checks validity.
-    Starts out invalid.
-    */
-
-trpgCheckable::trpgCheckable()
-{
-    valid = false;
-}
-trpgCheckable::~trpgCheckable()
-{
-    valid = false;
-}
-bool trpgCheckable::isValid() const
-{
-    return valid;
-}
+TX_EXDECL class TX_CLDECL trpgUtil {
+public:
+	enum {DoReport = 1<<0,DoCopy = 1<<1, DoTileOpt = 1<<2};
+	int merge(trpgr_Archive &inArch1,trpgr_Archive &inArch2,trpgwArchive &outArch, int flags = 0);
+};
+#endif
 

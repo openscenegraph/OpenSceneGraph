@@ -26,6 +26,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "trdll.h"
+#include <osgTXP/trdll.h>
 
 TXDUMMY_DLL_MAIN

@@ -138,7 +138,7 @@ Registry::Registry()
     _createNodeFromImage = false;
     _openingLibrary = false;
     
-    _useObjectCacheHint = CACHE_ARCHIVES;
+    _useObjectCacheHint = ReaderWriter::Options::CACHE_ARCHIVES;
 
     initFilePathLists();
 
@@ -1185,7 +1185,7 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
         osg::notify(osg::INFO)<<"         archive : "<<archiveName<<std::endl;
         osg::notify(osg::INFO)<<"         filename : "<<fileName<<std::endl;
         
-        ReaderWriter::ReadResult result = openArchiveImplementation(archiveName,ReaderWriter::READ, 4096, CACHE_ARCHIVES);
+        ReaderWriter::ReadResult result = openArchiveImplementation(archiveName,ReaderWriter::READ, 4096, readFunctor._options);
         
         if (!result.validArchive()) return result;
 
@@ -1316,8 +1316,6 @@ ReaderWriter::ReadResult Registry::readImplementation(const ReadFunctor& readFun
             }
         }
         
-        PushAndPopDataPath tmpfile(getFilePath(file));
-
         ReaderWriter::ReadResult rr = read(readFunctor);
         if (rr.validObject()) 
         {
@@ -1342,8 +1340,6 @@ ReaderWriter::ReadResult Registry::readImplementation(const ReadFunctor& readFun
             tmpObjectCache.swap(_objectCache);
         }
         
-        PushAndPopDataPath tmpfile(getFilePath(file));
-
         ReaderWriter::ReadResult rr = read(readFunctor);
 
         {
@@ -1356,14 +1352,14 @@ ReaderWriter::ReadResult Registry::readImplementation(const ReadFunctor& readFun
 }
 
 
-ReaderWriter::ReadResult Registry::openArchiveImplementation(const std::string& fileName, ReaderWriter::ArchiveStatus status, unsigned int indexBlockSizeHint, CacheHintOptions useObjectCache)
+ReaderWriter::ReadResult Registry::openArchiveImplementation(const std::string& fileName, ReaderWriter::ArchiveStatus status, unsigned int indexBlockSizeHint, const ReaderWriter::Options* options)
 {
-    if (useObjectCache&CACHE_ARCHIVES)
+    if (options && (options->getUseObjectCacheHint() & ReaderWriter::Options::CACHE_ARCHIVES))
     {
         osgDB::Archive* archive = getFromArchiveCache(fileName);
         if (archive) return archive;
 
-        ReaderWriter::ReadResult result = readImplementation(ReadArchiveFunctor(fileName, status, indexBlockSizeHint, _options.get()),false);
+        ReaderWriter::ReadResult result = readImplementation(ReadArchiveFunctor(fileName, status, indexBlockSizeHint, options),false);
         if (result.validArchive())
         {
             addToArchiveCache(fileName,result.getArchive());
@@ -1377,9 +1373,10 @@ ReaderWriter::ReadResult Registry::openArchiveImplementation(const std::string& 
 }
 
 
-ReaderWriter::ReadResult Registry::readObjectImplementation(const std::string& fileName,CacheHintOptions useObjectCache)
+ReaderWriter::ReadResult Registry::readObjectImplementation(const std::string& fileName,const ReaderWriter::Options* options)
 {
-    return readImplementation(ReadObjectFunctor(fileName, _options.get()),(useObjectCache&CACHE_OBJECTS)!=0);
+    return readImplementation(ReadObjectFunctor(fileName, options),
+                              options ? (options->getUseObjectCacheHint()&ReaderWriter::Options::CACHE_OBJECTS): false);
 }
 
 ReaderWriter::WriteResult Registry::writeObjectImplementation(const Object& obj,const std::string& fileName)
@@ -1419,9 +1416,10 @@ ReaderWriter::WriteResult Registry::writeObjectImplementation(const Object& obj,
 
 
 
-ReaderWriter::ReadResult Registry::readImageImplementation(const std::string& fileName,CacheHintOptions useObjectCache)
+ReaderWriter::ReadResult Registry::readImageImplementation(const std::string& fileName,const ReaderWriter::Options* options)
 {
-    return readImplementation(ReadImageFunctor(fileName, _options.get()),(useObjectCache&CACHE_IMAGES)!=0);
+    return readImplementation(ReadImageFunctor(fileName, options),
+                              options ? (options->getUseObjectCacheHint()&ReaderWriter::Options::CACHE_IMAGES): false);
 }
 
 ReaderWriter::WriteResult Registry::writeImageImplementation(const Image& image,const std::string& fileName)
@@ -1460,9 +1458,10 @@ ReaderWriter::WriteResult Registry::writeImageImplementation(const Image& image,
 }
 
 
-ReaderWriter::ReadResult Registry::readHeightFieldImplementation(const std::string& fileName,CacheHintOptions useObjectCache)
+ReaderWriter::ReadResult Registry::readHeightFieldImplementation(const std::string& fileName,const ReaderWriter::Options* options)
 {
-    return readImplementation(ReadHeightFieldFunctor(fileName, _options.get()),(useObjectCache&CACHE_HEIGHTFIELDS)!=0);
+    return readImplementation(ReadHeightFieldFunctor(fileName, options),
+                              options ? (options->getUseObjectCacheHint()&ReaderWriter::Options::CACHE_HEIGHTFIELDS): false);
 }
 
 ReaderWriter::WriteResult Registry::writeHeightFieldImplementation(const HeightField& HeightField,const std::string& fileName)
@@ -1501,9 +1500,10 @@ ReaderWriter::WriteResult Registry::writeHeightFieldImplementation(const HeightF
 }
 
 
-ReaderWriter::ReadResult Registry::readNodeImplementation(const std::string& fileName,CacheHintOptions useObjectCache)
+ReaderWriter::ReadResult Registry::readNodeImplementation(const std::string& fileName,const ReaderWriter::Options* options)
 {
-    return readImplementation(ReadNodeFunctor(fileName, _options.get()),(useObjectCache&CACHE_NODES)!=0);
+    return readImplementation(ReadNodeFunctor(fileName, options),
+                              options ? (options->getUseObjectCacheHint()&ReaderWriter::Options::CACHE_NODES): false);
 }
 
 ReaderWriter::WriteResult Registry::writeNodeImplementation(const Node& node,const std::string& fileName)

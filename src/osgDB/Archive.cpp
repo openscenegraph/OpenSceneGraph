@@ -24,12 +24,12 @@ using namespace osgDB;
 
 osgDB::Archive* osgDB::openArchive(const std::string& filename, Archive::ArchiveStatus status, unsigned int indexBlockSizeHint)
 {
-    return openArchive(filename, status, indexBlockSizeHint, Registry::instance()->getUseObjectCacheHint());
+    return openArchive(filename, status, indexBlockSizeHint, Registry::instance()->getOptions());
 }
 
-osgDB::Archive* osgDB::openArchive(const std::string& filename, Archive::ArchiveStatus status, unsigned int indexBlockSizeHint,Registry::CacheHintOptions useObjectCache)
+osgDB::Archive* osgDB::openArchive(const std::string& filename, Archive::ArchiveStatus status, unsigned int indexBlockSizeHint,ReaderWriter::Options* options)
 {
-    ReaderWriter::ReadResult result = osgDB::Registry::instance()->openArchive(filename, status, indexBlockSizeHint, useObjectCache);
+    ReaderWriter::ReadResult result = osgDB::Registry::instance()->openArchive(filename, status, indexBlockSizeHint, options);
     return result.takeArchive();
 }
 

@@ -153,6 +153,9 @@ public:
     Model():
         currentElementList(0) {}
     
+    void setDatabasePath(const std::string& path) { databasePath = path; }
+    const std::string& getDatabasePath() const { return databasePath; }
+
     bool readMTL(std::istream& fin);
     bool readOBJ(std::istream& fin);
     
@@ -173,6 +176,8 @@ public:
     typedef std::vector< osg::ref_ptr<Element> >    ElementList;
     typedef std::map< ElementState,ElementList >    ElementStateMap;
     
+
+    std::string     databasePath;
     MaterialMap     materialMap;
        
     Vec3Array       vertices;

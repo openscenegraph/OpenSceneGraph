@@ -98,9 +98,9 @@ void PagedLOD::read(DataInputStream* in){
                     throw Exception("Group::read(): Could not cast this osg::Group to an osg::Node.");
 
 
-                if (getDatabasePath().empty() && in->getOptions())
+                if (getDatabasePath().empty() && in->getOptions() && !in->getOptions()->getDatabasePathList().empty())
                 {
-                    const std::string& path = in->getOptions()->getDatabasePath();
+                    const std::string& path = in->getOptions()->getDatabasePathList().front();
                     if (!path.empty()) 
                     {
                         setDatabasePath(path);

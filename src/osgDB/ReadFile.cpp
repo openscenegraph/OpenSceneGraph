@@ -24,42 +24,42 @@
 using namespace osg;
 using namespace osgDB;
 
-Object* osgDB::readObjectFile(const std::string& filename,Registry::CacheHintOptions useObjectCache)
+Object* osgDB::readObjectFile(const std::string& filename,const ReaderWriter::Options* options)
 {
-    ReaderWriter::ReadResult rr = Registry::instance()->readObject(filename,useObjectCache);
+    ReaderWriter::ReadResult rr = Registry::instance()->readObject(filename,options);
     if (rr.validObject()) return rr.takeObject();
     if (rr.error()) notify(WARN) << rr.message() << std::endl;
     return NULL;
 }
 
 
-Image* osgDB::readImageFile(const std::string& filename,Registry::CacheHintOptions useObjectCache)
+Image* osgDB::readImageFile(const std::string& filename,const ReaderWriter::Options* options)
 {
-    ReaderWriter::ReadResult rr = Registry::instance()->readImage(filename,useObjectCache);
+    ReaderWriter::ReadResult rr = Registry::instance()->readImage(filename,options);
     if (rr.validImage()) return rr.takeImage();
     if (rr.error()) notify(WARN) << rr.message() << std::endl;
     return NULL;
 }
 
 
-HeightField* osgDB::readHeightFieldFile(const std::string& filename,Registry::CacheHintOptions useObjectCache)
+HeightField* osgDB::readHeightFieldFile(const std::string& filename,const ReaderWriter::Options* options)
 {
-    ReaderWriter::ReadResult rr = Registry::instance()->readHeightField(filename,useObjectCache);
+    ReaderWriter::ReadResult rr = Registry::instance()->readHeightField(filename,options);
     if (rr.validHeightField()) return rr.takeHeightField();
     if (rr.error()) notify(WARN) << rr.message() << std::endl;
     return NULL;
 }
 
 
-Node* osgDB::readNodeFile(const std::string& filename,Registry::CacheHintOptions useObjectCache)
+Node* osgDB::readNodeFile(const std::string& filename,const ReaderWriter::Options* options)
 {
-    ReaderWriter::ReadResult rr = Registry::instance()->readNode(filename,useObjectCache);
+    ReaderWriter::ReadResult rr = Registry::instance()->readNode(filename,options);
     if (rr.validNode()) return rr.takeNode();
     if (rr.error()) notify(WARN) << rr.message() << std::endl;
     return NULL;
 }
 
-Node* osgDB::readNodeFiles(std::vector<std::string>& commandLine,Registry::CacheHintOptions useObjectCache)
+Node* osgDB::readNodeFiles(std::vector<std::string>& commandLine,const ReaderWriter::Options* options)
 {
     typedef std::vector<osg::Node*> NodeList;
     NodeList nodeList;
@@ -73,7 +73,7 @@ Node* osgDB::readNodeFiles(std::vector<std::string>& commandLine,Registry::Cache
         if ((*itr)[0]!='-')
         {
             // not an option so assume string is a filename.
-            osg::Node *node = osgDB::readNodeFile( *itr ,useObjectCache );
+            osg::Node *node = osgDB::readNodeFile( *itr , options );
 
             if( node != (osg::Node *)0L )
             {
@@ -108,7 +108,7 @@ Node* osgDB::readNodeFiles(std::vector<std::string>& commandLine,Registry::Cache
     
 }
 
-Node* osgDB::readNodeFiles(osg::ArgumentParser& arguments,Registry::CacheHintOptions useObjectCache)
+Node* osgDB::readNodeFiles(osg::ArgumentParser& arguments,const ReaderWriter::Options* options)
 {
 
     typedef std::vector<osg::Node*> NodeList;
@@ -117,13 +117,13 @@ Node* osgDB::readNodeFiles(osg::ArgumentParser& arguments,Registry::CacheHintOpt
     std::string filename;
     while (arguments.read("--image",filename))
     {
-        osg::Image* image = readImageFile(filename.c_str(), useObjectCache);
+        osg::Image* image = readImageFile(filename.c_str(), options);
         if (image) nodeList.push_back(osg::createGeodeForImage(image));
     }
 
     while (arguments.read("--dem",filename))
     {
-        osg::HeightField* hf = readHeightFieldFile(filename.c_str(), useObjectCache);
+        osg::HeightField* hf = readHeightFieldFile(filename.c_str(), options);
         if (hf)
         {
             osg::Geode* geode = new osg::Geode;
@@ -138,7 +138,7 @@ Node* osgDB::readNodeFiles(osg::ArgumentParser& arguments,Registry::CacheHintOpt
         if (!arguments.isOption(pos))
         {
             // not an option so assume string is a filename.
-            osg::Node *node = osgDB::readNodeFile( arguments[pos], useObjectCache);
+            osg::Node *node = osgDB::readNodeFile( arguments[pos], options);
 
             if(node)
             {

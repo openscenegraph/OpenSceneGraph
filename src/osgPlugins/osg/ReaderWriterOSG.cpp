@@ -40,7 +40,7 @@ class OSGReaderWriter : public ReaderWriter
             osg::ref_ptr<Options> local_opt = const_cast<Options*>(opt);
             if (!local_opt) local_opt = new Options;
 
-            if (local_opt.valid() && local_opt->getDatabasePath().empty())
+            if (local_opt.valid() && local_opt->getDatabasePathList().empty())
             {
                 local_opt->setDatabasePath(osgDB::getFilePath(fileName));
             } 

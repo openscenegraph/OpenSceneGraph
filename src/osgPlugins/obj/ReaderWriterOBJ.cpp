@@ -104,7 +104,18 @@ void ReaderWriterOBJ::buildMaterialToStateSetMap(obj::Model& model, MaterialToSt
         if (!material.map_Kd.empty())
         {
             std::string filename = material.map_Kd;
-            osg::Image* image = osgDB::readImageFile(filename);
+            osg::Image* image = 0;
+            if (!model.getDatabasePath().empty()) 
+            {
+                // first try with databasr path of parent. 
+                image = osgDB::readImageFile(model.getDatabasePath()+'/'+filename);
+            }
+            
+            if (!image)
+            {
+                // if not already set then try the filename as is.
+                image = osgDB::readImageFile(filename);
+            }
             if (image)
             {
                 osg::Texture2D* texture = new osg::Texture2D(image);
@@ -448,9 +459,8 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
     if (fin)
     {
     
-        osgDB::PushAndPopDataPath papdp( osgDB::getFilePath(fileName.c_str()) );
-    
         obj::Model model;
+        model.setDatabasePath(osgDB::getFilePath(fileName.c_str()));
         model.readOBJ(fin);
         
         osg::Node* node = convertModelToSceneGraph(model);

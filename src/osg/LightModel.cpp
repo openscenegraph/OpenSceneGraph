@@ -10,6 +10,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
  * OpenSceneGraph Public License for more details.
 */
+#include <string>
 #include <osg/GL>
 #include <osg/LightModel>
 
@@ -48,7 +49,8 @@ void LightModel::apply(State&) const
 {
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT,_ambient.ptr());
 
-    static bool s_separateSpecularSupported = strcmp((const char *)glGetString(GL_VERSION),"1.2")>=0;
+    //static bool s_separateSpecularSupported = strcmp((const char *)glGetString(GL_VERSION),"1.2")>=0;
+    static bool s_separateSpecularSupported = (std::string((const char *)glGetString(GL_VERSION)) == "1.2");
     if (s_separateSpecularSupported)
     {
         if (_colorControl==SEPARATE_SPECULAR_COLOR)

@@ -457,12 +457,8 @@ printf("CORRECTO**> gtsibim:%d  grsib:%d   mi_size:%d   lPitch%d\n",
 
 
 
-bool WriteDDSFile(const osg::Image *img, const char *filename)
+bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
 {
-
-    FILE *fp = fopen(filename, "wb");
-    if (!fp) 
-        return false;
 
     // Initialize ddsd structure and its members 
     DDSURFACEDESC2 ddsd;
@@ -636,7 +632,7 @@ bool WriteDDSFile(const osg::Image *img, const char *filename)
     memcpy(header, ddsName, 4);
     memcpy(header+4, &ddsd, sizeof(ddsd));
 
-    fwrite(header, sizeof(ddsd)+4, 1, fp);  /* write file header */
+    fout.write(reinterpret_cast<char*>(header), sizeof(ddsd)+4);  /* write file header */
 
     int isize = img->getTotalSizeInBytesIncludingMipmaps();
     unsigned char *buffer = new unsigned char[isize];
@@ -685,14 +681,12 @@ bool WriteDDSFile(const osg::Image *img, const char *filename)
     }
 
     // Check for correct saving
-    if (fwrite(buffer, isize , 1, fp) != 1)
+    fout.write(reinterpret_cast<char*>(buffer), isize);
+    
+    if (fout.fail())
     {
-        fclose(fp);
         return false;
     }
-
-    // close file pointer
-    fclose(fp);
 
     // If we get that far the file was saved properly //
     return true; 
@@ -710,6 +704,16 @@ public:
     virtual bool acceptsExtension(const std::string& extension)
     { 
         return osgDB::equalCaseInsensitive(extension,"dds"); 
+    }
+
+    virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options)
+    {
+        return readImage(file,options);
+    }
+
+    virtual ReadResult readObject(std::istream& fin, const Options* options)
+    {
+        return readImage(fin,options);
     }
 
     virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options)
@@ -740,18 +744,42 @@ public:
         return osgImage;
     }
 
-    virtual WriteResult writeImage(const osg::Image &img,const std::string& file, const osgDB::ReaderWriter::Options*)
+    virtual WriteResult writeObject(const osg::Object& object,const std::string& file, const osgDB::ReaderWriter::Options* options)
+    {
+        const osg::Image* image = dynamic_cast<const osg::Image*>(&object);
+        if (!image) return WriteResult::FILE_NOT_HANDLED;
+
+        return writeImage(*image,file,options);
+    }
+
+    virtual WriteResult writeObject(const osg::Object& object,std::ostream& fout,const Options* options)
+    {
+        const osg::Image* image = dynamic_cast<const osg::Image*>(&object);
+        if (!image) return WriteResult::FILE_NOT_HANDLED;
+
+        return writeImage(*image,fout,options);
+    }
+
+
+    virtual WriteResult writeImage(const osg::Image &image,const std::string& file, const osgDB::ReaderWriter::Options* options)
     {
         std::string ext = osgDB::getFileExtension(file);
         if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
 
-        bool success = WriteDDSFile(&img, file.c_str());
+        std::ofstream fout(file.c_str(), std::ios::out | std::ios::binary);
+        if(!fout) return WriteResult::ERROR_IN_WRITING_FILE;
+
+        return writeImage(image,fout,options);
+    }
+
+    virtual WriteResult writeImage(const osg::Image& image,std::ostream& fout,const Options*)
+    {
+        bool success = WriteDDSFile(&image, fout);
 
         if(success)
             return WriteResult::FILE_SAVED;
         else
             return WriteResult::ERROR_IN_WRITING_FILE;
-
     }
 };
 

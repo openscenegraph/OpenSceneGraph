@@ -38,8 +38,10 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
 
             int destX = 0;
             int destY = 0;
-            int destWidth = osg::minimum(dataWidth,1024);
-            int destHeight = osg::minimum(dataHeight,1024);
+           int destWidth = osg::minimum(dataWidth,1024);
+           int destHeight = osg::minimum(dataHeight,1024);
+//             int destWidth = osg::minimum(dataWidth,4096);
+//             int destHeight = osg::minimum(dataHeight,4096);
 
 
             osgDB::ImageOptions::TexCoordRange* texCoordRange = 0;
@@ -128,7 +130,7 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
             
             
             double geoTransform[6];
-            if (dataset->GetGeoTransform(geoTransform)!=CE_None)
+            if (dataset->GetGeoTransform(geoTransform)==CE_None)
             {
                 std::cout << "    GetGeoTransform "<< std::endl;
                 std::cout << "        Origin = "<<geoTransform[0]<<" "<<geoTransform[3]<<std::endl;
@@ -443,13 +445,30 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
             
             
             double geoTransform[6];
-            if (dataset->GetGeoTransform(geoTransform)!=CE_None)
-            {
-                std::cout << "    GetGeoTransform "<< std::endl;
-                std::cout << "        Origin = "<<geoTransform[0]<<" "<<geoTransform[3]<<std::endl;
-                std::cout << "        Pixel X = "<<geoTransform[1]<<" "<<geoTransform[4]<<std::endl;
-                std::cout << "        Pixel Y = "<<geoTransform[2]<<" "<<geoTransform[5]<<std::endl;
-            }
+            std::cout << "   GetGeoTransform == "<< dataset->GetGeoTransform(geoTransform)<<" == CE_None"<<std::endl;
+            std::cout << "    GetGeoTransform "<< std::endl;
+            std::cout << "        Origin = "<<geoTransform[0]<<" "<<geoTransform[3]<<std::endl;
+            std::cout << "        Pixel X = "<<geoTransform[1]<<" "<<geoTransform[4]<<std::endl;
+            std::cout << "        Pixel Y = "<<geoTransform[2]<<" "<<geoTransform[5]<<std::endl;
+            
+
+            double TopLeft[2],BottomLeft[2],BottomRight[2],TopRight[2];
+            TopLeft[0] = geoTransform[0];
+            TopLeft[1] = geoTransform[1];
+            BottomLeft[0] = TopLeft[0]+geoTransform[2]*(dataHeight-1);
+            BottomLeft[1] = TopLeft[1]+geoTransform[5]*(dataHeight-1);
+            BottomRight[0] = BottomLeft[0]+geoTransform[1]*(dataWidth-1);
+            BottomRight[1] = BottomLeft[1]+geoTransform[4]*(dataWidth-1);
+            TopRight[0] = TopLeft[0]+geoTransform[1]*(dataWidth-1);
+            TopRight[1] = TopLeft[1]+geoTransform[4]*(dataWidth-1);
+            
+            
+            std::cout << "TopLeft     "<<TopLeft[0]<<"\t"<<TopLeft[1]<<std::endl;
+            std::cout << "BottomLeft  "<<BottomLeft[0]<<"\t"<<BottomLeft[1]<<std::endl;
+            std::cout << "BottomRight "<<BottomRight[0]<<"\t"<<BottomRight[1]<<std::endl;
+            std::cout << "TopRight    "<<TopRight[0]<<"\t"<<TopRight[1]<<std::endl;
+
+            std::cout<<"    GDALGetGCPCount "<<dataset->GetGCPCount()<<std::endl;
 
             int numBands = dataset->GetRasterCount();
             
@@ -471,6 +490,16 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
                 std::cout << "        GetColorTable() = "<< band->GetColorTable()<<std::endl;
                 std::cout << "        DataTypeName() = "<< GDALGetDataTypeName(band->GetRasterDataType())<<std::endl;
                 std::cout << "        ColorIntepretationName() = "<< GDALGetColorInterpretationName(band->GetColorInterpretation())<<std::endl;
+                
+                
+                std::cout << std::endl;
+                std::cout << "        GetNoDataValue() = "<< band->GetNoDataValue()<<std::endl;
+                std::cout << "        GetMinimum() = "<< band->GetMinimum()<<std::endl;
+                std::cout << "        GetMaximum() = "<< band->GetMaximum()<<std::endl;
+                std::cout << "        GetOffset() = "<< band->GetOffset()<<std::endl;
+                std::cout << "        GetScale() = "<< band->GetScale()<<std::endl;
+                std::cout << "        GetUnitType() = '"<< band->GetUnitType()<<"'"<<std::endl;
+                
                 
                 if (band->GetColorInterpretation()==GCI_GrayIndex) bandGray = band;
                 else if (band->GetColorInterpretation()==GCI_RedBand) bandRed = band;

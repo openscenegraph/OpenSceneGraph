@@ -190,6 +190,25 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         /** Get the ComputeNearFarMode.*/
         CullVisitor::ComputeNearFarMode getComputeNearFarMode() const { return _computeNearFar;} 
 
+        /** FusionDistanceMode is used only when working in stereo.*/
+        enum FusionDistanceMode
+        {
+            /** Use fusion distance from the attached camera if one exist.*/
+            USE_CAMERA_FUSION_DISTANCE,
+            /** Use fusion distance from the value set on the SceneView.*/
+            USE_FUSION_DISTANCE_VALUE,
+            /** Compute the fusion distance by multiplying the screen distance by the  fusion distance value.*/
+            PROPORTIONAL_TO_SCREEN_DISTANCE
+        };
+
+        /** Set the FusionDistanceMode and Value. Note, is used only when working in stereo.*/
+        void setFusionDistance(FusionDistanceMode mode,float value=1.0f);
+
+        /** Get the FusionDistanceMode.*/
+        FusionDistanceMode getFusionDistanceMode() const { return _fusionDistanceMode; }
+
+        /** Get the FusionDistanceValue. Note, only used for USE_FUSION_DISTANCE_VALUE & PROPORTIONAL_TO_SCREEN_DISTANCE modes.*/
+        float getFusionDistanceValue() const { return _fusionDistanceValue; }
 
 
         /** set whether the draw method should call renderer->prioritizeTexture.*/
@@ -291,20 +310,23 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         osg::ref_ptr<osgUtil::RenderGraph>          _rendergraphRight;
         osg::ref_ptr<osgUtil::RenderStage>          _renderStageRight;
 
-        osg::ref_ptr<osg::FrameStamp> _frameStamp;
+        osg::ref_ptr<osg::FrameStamp>               _frameStamp;
 
-        osg::Vec4 _backgroundColor;
+        osg::Vec4                                   _backgroundColor;
 
-        CullVisitor::ComputeNearFarMode  _computeNearFar;
-        osg::CullStack::CullingMode      _cullingMode;
-        float                            _LODBias;
-        float                            _smallFeatureCullingPixelSize;
+        CullVisitor::ComputeNearFarMode             _computeNearFar;
+        osg::CullStack::CullingMode                 _cullingMode;
+        float                                       _LODBias;
+        float                                       _smallFeatureCullingPixelSize;
 
-        osg::ref_ptr<osg::Viewport> _viewport;
+        FusionDistanceMode                          _fusionDistanceMode;
+        float                                       _fusionDistanceValue;
 
-        LightingMode _lightingMode;
+        osg::ref_ptr<osg::Viewport>                 _viewport;
+
+        LightingMode                                _lightingMode;
         
-        bool _prioritizeTextures;
+        bool                                        _prioritizeTextures;
         
 };
 

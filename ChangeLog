@@ -1,3 +1,14 @@
+2001-12-30 15:03  robert
+
+	* include/osg/GeoSet: Added osg::GeoSet::FLAT_TRIANGLE_FAN to the
+	list if primitive handled by the for_each_triangle template
+	function.
+
+2001-12-30 14:04  robert
+
+	* ChangeLog, src/osgDB/FileUtils.cpp: Added /usr/local/lib to the
+	s_default_dso_path search path for plugins.
+
 2001-12-30 12:13  robert
 
 	* src/osgGLUT/Viewer.cpp: Made the output message related to not

@@ -158,12 +158,24 @@ void Text::setAxisAlignment(AxisAlignment axis)
     case XZ_PLANE:
         setRotation(osg::Quat(osg::inDegrees(90.0f),osg::Vec3(1.0f,0.0f,0.0f))); 
         break;
+    case REVERSED_XZ_PLANE:
+        setRotation(osg::Quat(osg::inDegrees(180.0f),osg::Vec3(0.0f,1.0f,0.0f))*
+                    osg::Quat(osg::inDegrees(90.0f),osg::Vec3(1.0f,0.0f,0.0f))); 
+        break;
     case YZ_PLANE:  
         setRotation(osg::Quat(osg::inDegrees(90.0f),osg::Vec3(1.0f,0.0f,0.0f))*
                     osg::Quat(osg::inDegrees(90.0f),osg::Vec3(0.0f,0.0f,1.0f)));
         break;
+    case REVERSED_YZ_PLANE:  
+        setRotation(osg::Quat(osg::inDegrees(180.0f),osg::Vec3(0.0f,1.0f,0.0f))*
+                    osg::Quat(osg::inDegrees(90.0f),osg::Vec3(1.0f,0.0f,0.0f))*
+                    osg::Quat(osg::inDegrees(90.0f),osg::Vec3(0.0f,0.0f,1.0f)));
+        break;
     case XY_PLANE:
         setRotation(osg::Quat());  // nop - already on XY plane.
+        break;
+    case REVERSED_XY_PLANE:
+        setRotation(osg::Quat(osg::inDegrees(180.0f),osg::Vec3(0.0f,1.0f,0.0f)));
         break;
     case SCREEN:
         setAutoRotateToScreen(true);

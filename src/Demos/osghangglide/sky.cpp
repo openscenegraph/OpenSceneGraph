@@ -42,8 +42,7 @@ Node *makeSky( void )
     Vec2Array& tcoords = *(new Vec2Array(19*nlev));
     
     
-    int ci, ii;
-    ii = ci = 0;
+    int ci = 0;
 
     for( i = 0; i < nlev; i++ )
     {

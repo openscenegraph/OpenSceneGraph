@@ -64,7 +64,7 @@ void getDatabaseCenterRadius( float dbcenter[3], float *dbradius )
 Node *makeTerrain( void )
 {
     int m, n;
-    int  i, j, c;
+    int  i, j;
     float dbcenter[3];
     float dbradius;
 
@@ -97,7 +97,6 @@ Node *makeTerrain( void )
     geom->setColorArray( &col );
     geom->setColorBinding( Geometry::BIND_OVERALL );
 
-    c = 0;
     for( i = 0; i < m-2; i++ )
     {
         UShortDrawElements* elements = new UShortDrawElements(Primitive::TRIANGLE_STRIP);

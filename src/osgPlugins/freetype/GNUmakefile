@@ -8,7 +8,7 @@ CXXFILES =\
 
 INC += $(FREETYPE_INCLUDE)
 
-LIBS   += -losgText $(OSG_LIBS) $(FREETYPE_LIB) $(OTHER_LIBS) -L/usr/X11R6/lib -lX11
+LIBS   += -losgText $(OSG_LIBS) $(FREETYPE_LIB) $(OTHER_LIBS) 
 
 
 TARGET_BASENAME = freetype

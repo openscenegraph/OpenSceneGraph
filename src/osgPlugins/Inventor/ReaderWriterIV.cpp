@@ -56,9 +56,12 @@ ReaderWriterIV::readNode(const std::string& file,
 
     if (rootIVNode)
     {
+        rootIVNode->ref();
         // Convert the inventor scenegraph to an osg scenegraph and return it
         ConvertFromInventor convertIV;
-        return convertIV.convert(rootIVNode);
+        ReadResult result = convertIV.convert(rootIVNode);
+        rootIVNode->unref();
+        return result;
     }
 
     return ReadResult::FILE_NOT_HANDLED;

@@ -85,7 +85,7 @@ LINK32=link.exe
 # Name "Demo osgtext - Win32 Debug"
 # Begin Source File
 
-SOURCE=..\..\..\src\Demos\osgtext\osgtext.cpp
+SOURCE=..\..\..\src\Demos\osgtext\main.cpp
 # End Source File
 # End Target
 # Begin Group "Resource Files"

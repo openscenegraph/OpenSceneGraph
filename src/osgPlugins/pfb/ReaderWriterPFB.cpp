@@ -138,6 +138,9 @@ class ReaderWriterPFB : public osgDB::ReaderWriter
 
         virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*)
         {
+            std::string ext = osgDB::getLowerCaseFileExtension(fileName);
+            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
+
             osg::notify(osg::INFO)<<   "ReaderWriterPFB::readNode( "<<fileName.c_str()<<" )\n";
 
             initPerformer();

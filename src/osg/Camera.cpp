@@ -597,7 +597,6 @@ void Camera::calculateMatricesAndClippingVolume() const
         float dx = -_eyeOffset.x()*(1.0f/_screenDistance);
         left += dx;
         right += dx;
-        cout << "dx="<<dx<<" left="<<left<<" right="<<right<<endl;
     }
 
     // set up the projection matrix.
@@ -697,13 +696,7 @@ void Camera::calculateMatricesAndClippingVolume() const
 
     if (_useEyeOffset)
     {
-        cout << "    screenDistance ="<<_screenDistance<<"  focalLength="<<_focalLength<<endl;
-        cout << "    offset="<<_eyeOffset<<endl;
-//        cout << "    trans ="<<-_eyeOffset*(_screenDistance/_focalLength)<<endl;
-        cout << "    trans ="<<-_eyeOffset*(_screenDistance)<<endl;
-
-//        (*_modelViewMatrix) = (*_modelViewMatrix) * Matrix::trans(-_eyeOffset*(_screenDistance/_focalLength)) ;
-        (*_modelViewMatrix) = (*_modelViewMatrix) * Matrix::trans(-_eyeOffset*_focalLength/_screenDistance) ;
+        (*_modelViewMatrix) = (*_modelViewMatrix) * Matrix::trans(-_eyeOffset*_focalLength/_screenDistance);
     }
 
 

@@ -207,7 +207,7 @@ void Texture::apply(State& state) const
             }
         }
     }
-    else
+    else if (_image.valid() && _image->data())
     {
 
         glGenTextures( 1L, (GLuint *)&handle );
@@ -253,28 +253,30 @@ void Texture::applyImmediateMode(State& state) const
 
     glPixelStorei(GL_UNPACK_ALIGNMENT,_image->packing());
 
-    if (_wrap_s == MIRROR || _wrap_t == MIRROR)
-    {
-        static bool s_mirroredSupported = isGLExtensionSupported("GL_IBM_texture_mirrored_repeat");
+    WrapMode ws = _wrap_s, wt = _wrap_t;
 
-        // check for support of mirror-repeated textures
-        // if not supported fall back to repeated textures
-        WrapMode ws = _wrap_s, wt = _wrap_t;
-        if (!s_mirroredSupported)
-        {
-            if (ws == MIRROR)
-                ws = REPEAT;
-            if (wt == MIRROR)
-                wt = REPEAT;
-        }
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, ws );
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wt );
-    }
-    else
+    // GL_IBM_texture_mirrored_repeat, fall-back REPEAT
+    static bool s_mirroredSupported = isGLExtensionSupported("GL_IBM_texture_mirrored_repeat");
+    if (!s_mirroredSupported)
     {
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, _wrap_s );
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, _wrap_t );
+        if (ws == MIRROR)
+            ws = REPEAT;
+        if (wt == MIRROR)
+            wt = REPEAT;
     }
+
+    // GL_EXT_texture_edge_clamp, fall-back CLAMP
+    static bool s_edgeClampSupported = isGLExtensionSupported("GL_EXT_texture_edge_clamp");
+    if (!s_edgeClampSupported)
+    {
+        if (ws == CLAMP_TO_EDGE)
+            ws = CLAMP;
+        if (wt == CLAMP_TO_EDGE)
+            wt = CLAMP;
+    }
+
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, ws );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wt );
 
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _min_filter);
 

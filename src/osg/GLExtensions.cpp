@@ -149,7 +149,7 @@ bool osg::isGLUExtensionSupported(const char *extension)
     if (s_extensions==NULL)
     {
         // get the extension list from OpenGL.
-        s_extensions = (const char*)gluGetString(GL_EXTENSIONS);
+        s_extensions = (const char*)gluGetString(GLU_EXTENSIONS);
         if (s_extensions==NULL) return false;
 
         // insert the ' ' delimiated extensions words into the extensionSet.

@@ -37,9 +37,10 @@ namespace
 		x /= r;
 		float a;
 		if (x < 0 && y >= 0) a = osg::PI_2 - acosf(-x);
-		if (x < 0 && y < 0) a = acosf(-x) + osg::PI_2;
-		if (x >= 0 && y >= 0) a = acosf(x) + 3 * osg::PI_2;
-		if (x >= 0 && y < 0) a = 3 * osg::PI_2 - acosf(x);
+		else if (x < 0 && y < 0) a = acosf(-x) + osg::PI_2;
+		else if (x >= 0 && y >= 0) a = acosf(x) + 3 * osg::PI_2;
+		else if (x >= 0 && y < 0) a = 3 * osg::PI_2 - acosf(x);
+                else a = 0.0f;
 		return a/osg::PI/2;
 	}
 

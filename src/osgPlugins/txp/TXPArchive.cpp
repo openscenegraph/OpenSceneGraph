@@ -544,7 +544,7 @@ bool TXPArchive::loadTextStyles()
 	{
 		osg::notify(osg::NOTICE) << "txp:: Font map file found: " << fmapfname << std::endl;
 		std::string line;
-		while (getline(fmapfile,line))
+		while (std::getline(fmapfile,line))
 		{
 			unsigned int ix = line.find_first_of('=');
 			if (ix != std::string::npos)

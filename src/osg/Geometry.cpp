@@ -2161,14 +2161,14 @@ unsigned int _computeNumberOfPrimtives(const osg::Geometry& geom)
                     ++primItr)
                 {
                     if (primLength==0) totalNumberOfPrimitives += 1;
-                    else totalNumberOfPrimitives = *primItr/primLength;
+                    else totalNumberOfPrimitives += *primItr/primLength;
                 }
                 break;
             }
             default:
             {
                 if (primLength==0) totalNumberOfPrimitives += 1;
-                else totalNumberOfPrimitives = primitiveset->getNumIndices()/primLength;
+                else totalNumberOfPrimitives += primitiveset->getNumIndices()/primLength;
 
             }
         }
@@ -2314,7 +2314,7 @@ void _computeCorrectBindingsAndArraySizes(const osg::Geometry& geom, A& arrayDat
             {
                 notify(WARN)<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
                             <<"         "<<arrayName<<" binding is BIND_PER_PRIMITIVE but "<<std::endl
-                            <<"         "<<arrayName<< " array contains too many entries"<<std::endl;
+                            <<"         "<<arrayName<< " array contains too many entries." <<std::endl;
             }
             
             break;
@@ -2344,7 +2344,7 @@ void _computeCorrectBindingsAndArraySizes(const osg::Geometry& geom, A& arrayDat
             {
                 notify(WARN)<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
                             <<"         "<<arrayName<<" binding is BIND_PER_VERTEX but "<<std::endl
-                            <<"         "<<arrayName<< " array contains too many entries"<<std::endl;
+                            <<"         "<<arrayName<< " array contains too many entries." <<std::endl;
             }
             break;
     } 

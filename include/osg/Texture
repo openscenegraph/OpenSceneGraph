@@ -299,11 +299,11 @@ class SG_EXPORT Texture : public osg::StateAttribute
 
         /** Helper method which does the creation of the texture itself, but does not set or use texture binding. 
           * Note, do not call this method directly unless you are implementing your own Subload callback*/
-        void applyTexImage2D_load(GLenum target, Image* image, State& state, GLsizei& width, GLsizei& height,GLsizei& numMimpmapLevels) const;
+        void applyTexImage2D_load(GLenum target, const Image* image, State& state, GLsizei& width, GLsizei& height,GLsizei& numMimpmapLevels) const;
         
         /** Helper method which subloads images to the texture itself, but does not set or use texture binding. 
           * Note, do not call this method directly unless you are implementing your own Subload callback*/
-        void applyTexImage2D_subload(GLenum target, Image* image, State& state, GLsizei& width, GLsizei& height,GLsizei& numMimpmapLevels) const;
+        void applyTexImage2D_subload(GLenum target, const Image* image, State& state, GLsizei& width, GLsizei& height,GLsizei& numMimpmapLevels) const;
 
     protected :
 
@@ -311,7 +311,7 @@ class SG_EXPORT Texture : public osg::StateAttribute
 
         virtual void computeInternalFormat() const = 0;
         
-        void computeInternalFormatWithImage(osg::Image& image) const;
+        void computeInternalFormatWithImage(const osg::Image& image) const;
 
         bool isCompressedInternalFormat(GLint internalFormat) const;
 

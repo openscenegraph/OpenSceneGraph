@@ -78,6 +78,9 @@ class ReaderWriterAC : public osgDB::ReaderWriter
         }
         virtual ReadResult readNode(const std::string& file,const osgDB::ReaderWriter::Options* options) const
         {
+            std::string ext = getFileExtension(file);
+            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
+
             osg::Group *grp; // holder for all loaded objects
             // GWM added Dec 2003 - get full path name (change in osgDB handling of files).
             std::string fileName = osgDB::findDataFile( file, options );

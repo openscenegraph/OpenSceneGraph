@@ -110,6 +110,10 @@ SOURCE=..\..\..\src\osgPlugins\osg\ClipPlane.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\osg\ClipNode.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\osg\ColorMask.cpp
 # End Source File
 # Begin Source File

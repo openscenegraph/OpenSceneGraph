@@ -12,13 +12,80 @@
 */
 
 #include <osgParticle/ParticleEffect>
+#include <osgParticle/ParticleSystemUpdater>
+#include <osg/Geode>
 
 using namespace osgParticle;
 
 ParticleEffect::ParticleEffect(const ParticleEffect& copy, const osg::CopyOp& copyop):
     osg::Group(copy,copyop)/*,
-    _emitter(),
-    _program(),
     _particleSystem(copy._particleSystem.valid()?copy._particleSystem->clone():0)*/
 {
 }
+
+void ParticleEffect::setPosition(const osg::Vec3& position)
+{
+    _position = position;
+}
+
+void ParticleEffect::setScale(float scale)
+{
+    _scale = scale;
+}
+
+void ParticleEffect::setIntensity(float intensity)
+{
+    _intensity = intensity;
+}
+
+void ParticleEffect::setStartTime(double startTime)
+{
+    _startTime = startTime;
+}
+
+void ParticleEffect::setDuration(double duration)
+{
+    _duration = duration;
+}
+
+
+void ParticleEffect::setDefaults()
+{
+    _scale = 1.0f;
+    _intensity = 1.0f;
+    _startTime = 0.0;
+    _duration = 1.0;
+    _direction.set(0.0f,0.0f,1.0f);
+}
+
+void ParticleEffect::buildEffect()
+{
+    setUpEmitterAndProgram();
+
+    Emitter* emitter = getEmitter();
+    Program* program = getProgram();
+    ParticleSystem* particleSystem = getParticleSystem();
+
+    if (!emitter || !particleSystem || !program) return; 
+
+
+    // clear the children.
+    removeChild(0,getNumChildren());
+    
+    // add the emitter
+    addChild(emitter);
+    
+    // add the program to update the particles
+    addChild(program);
+
+    // add the particle system updater.
+    osgParticle::ParticleSystemUpdater *psu = new osgParticle::ParticleSystemUpdater;
+    psu->addParticleSystem(particleSystem);
+    addChild(psu);
+
+    // add the geode to the scene graph
+    osg::Geode *geode = new osg::Geode;
+    geode->addDrawable(particleSystem);
+    addChild(geode);
+}
+

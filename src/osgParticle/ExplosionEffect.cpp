@@ -27,9 +27,15 @@
 
 using namespace osgParticle;
 
-ExplosionEffect::ExplosionEffect()
+ExplosionEffect::ExplosionEffect(const osg::Vec3& position, float scale, float intensity)
 {
     setDefaults();
+    
+    _position = position;
+    _scale = scale;
+    _intensity = intensity;
+    
+    buildEffect();
 }
 
 ExplosionEffect::ExplosionEffect(const ExplosionEffect& copy, const osg::CopyOp& copyop):
@@ -38,6 +44,11 @@ ExplosionEffect::ExplosionEffect(const ExplosionEffect& copy, const osg::CopyOp&
 }
 
 void ExplosionEffect::setDefaults()
+{
+    ParticleEffect::setDefaults();
+}
+
+void ExplosionEffect::setUpEmitterAndProgram()
 {
     osgParticle::ParticleSystem *ps = new osgParticle::ParticleSystem;
     ps->setDefaultAttributes("Images/particle.rgb", false, false);
@@ -64,28 +75,28 @@ void ExplosionEffect::setDefaults()
             osg::Vec4(0.5, 0.5f, 0.0f, 0.0f)));
 
         // these are physical properties of the particle
-        ptemplate.setRadius(0.1f);    // 5 cm wide particles
-        ptemplate.setMass(1.0f);    // 1kg heavy
+        ptemplate.setRadius(0.1f*_scale);    // 5 cm wide particles
+        ptemplate.setMass(1.0f*_scale);    // 1kg heavy
 
         // assign the particle template to the system.
         ps->setDefaultParticleTemplate(ptemplate);
 
         //osgParticle::LimitedDurationRandomRateCounter* counter = new osgParticle::LimitedDurationRandomRateCounter;
         osgParticle::RandomRateCounter* counter = new osgParticle::RandomRateCounter;
-        counter->setRateRange(2000,2000);    // generate 1000 particles per second
+        counter->setRateRange(2000*_intensity,2000*_intensity);    // generate 1000 particles per second
         emitter->setCounter(counter);
 
         osgParticle::SectorPlacer* placer = new osgParticle::SectorPlacer;
-        placer->setCenter(osg::Vec3(0.0,0.0,0.0));
-        placer->setRadiusRange(0.0f,1.0f);
+        placer->setCenter(_position);
+        placer->setRadiusRange(0.0f,1.0f*_scale);
         emitter->setPlacer(placer);
 
         osgParticle::RadialShooter* shooter = new osgParticle::RadialShooter;
         shooter->setThetaRange(0.0f, osg::PI_2);
-        shooter->setInitialSpeedRange(5.0f,30.0f);
+        shooter->setInitialSpeedRange(5.0f*_scale,30.0f*_scale);
         emitter->setShooter(shooter);
         
-        emitter->setStartTime(0.0f);
+        emitter->setStartTime(_startTime);
         emitter->setResetTime(5.0f);
         emitter->setLifeTime(0.1f);
         emitter->setEndless(false);
@@ -113,29 +124,5 @@ void ExplosionEffect::setDefaults()
     }
     
     
-    buildEffect();
 }
-
-void ExplosionEffect::buildEffect()
-{
-    // clear the children.
-    removeChild(0,getNumChildren());
     
-    if (!_emitter || !_particleSystem || !_program) return; 
-    
-    // add the emitter
-    addChild(_emitter.get());
-    
-    // add the program to update the particles
-    addChild(_program.get());
-
-    // add the particle system updater.
-    osgParticle::ParticleSystemUpdater *psu = new osgParticle::ParticleSystemUpdater;
-    psu->addParticleSystem(_particleSystem.get());
-    addChild(psu);
-
-    // add the geode to the scene graph
-    osg::Geode *geode = new osg::Geode;
-    geode->addDrawable(_particleSystem.get());
-    addChild(geode);
-}

@@ -227,20 +227,29 @@ void build_world(osg::Group *root)
 
     // create particle effects
     {    
-        osg::PositionAttitudeTransform* positionEffects = new osg::PositionAttitudeTransform;
-        positionEffects->setPosition(computeTerrainIntersection(terrainGeode,100.0f,100.0f));
-        root->addChild(positionEffects);
+        osg::Vec3 position = computeTerrainIntersection(terrainGeode,100.0f,100.0f);
 
-        osgParticle::ExplosionEffect* explosion = new osgParticle::ExplosionEffect;
-        osgParticle::SmokeEffect* smoke = new osgParticle::SmokeEffect;
-        osgParticle::FireEffect* fire = new osgParticle::FireEffect;
+        osgParticle::ExplosionEffect* explosion = new osgParticle::ExplosionEffect(position, 10.0f);
+        osgParticle::SmokeEffect* smoke = new osgParticle::SmokeEffect(position, 10.0f);
+        osgParticle::FireEffect* fire = new osgParticle::FireEffect(position, 10.0f);
 
-        positionEffects->addChild(explosion);
-        positionEffects->addChild(smoke);
-        positionEffects->addChild(fire);
-
+        root->addChild(explosion);
+        root->addChild(smoke);
+        root->addChild(fire);
     }
     
+    // create particle effects
+    {    
+        osg::Vec3 position = computeTerrainIntersection(terrainGeode,200.0f,100.0f);
+
+        osgParticle::ExplosionEffect* explosion = new osgParticle::ExplosionEffect(position, 1.0f);
+        osgParticle::SmokeEffect* smoke = new osgParticle::SmokeEffect(position, 1.0f);
+        osgParticle::FireEffect* fire = new osgParticle::FireEffect(position, 1.0f);
+
+        root->addChild(explosion);
+        root->addChild(smoke);
+        root->addChild(fire);
+    }
     
     // create the moving models.
     {

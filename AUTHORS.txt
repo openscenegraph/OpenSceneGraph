@@ -50,6 +50,9 @@ Ben Discoe <ben@vterrain.org>
 Marco Jez <marco.jez@arsenal.it>
         - osgParticle
         - IO support for osgText.
+        
+Mike Weiblen <mike.weiblen@3dlabs.com>
+        - osgGL2
 
 Randall Hopper <aa8vb@yahoo.com>
         - port to FreeBSD.

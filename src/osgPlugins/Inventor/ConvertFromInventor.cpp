@@ -107,7 +107,7 @@ ConvertFromInventor::preShape(void* data, SoCallbackAction* action,
                               const SoNode* node)
 {
 #ifdef DEBUG_IV_PLUGIN
-    std::cout << "preShape()    " 
+    osg::notify(osg::INFO) << "preShape()    " 
               << node->getTypeId().getName().getString() << std::endl;
 #endif
 
@@ -203,7 +203,7 @@ ConvertFromInventor::postShape(void* data, SoCallbackAction* action,
                                const SoNode* )
 {
 #ifdef DEBUG_IV_PLUGIN
-    std::cout << "postShape()   "
+    osg::notify(osg::INFO) << "postShape()   "
               << node->getTypeId().getName().getString() << std::endl;
 #endif
 
@@ -326,7 +326,7 @@ ConvertFromInventor::preTexture(void* data, SoCallbackAction *,
                                 const SoNode* node)
 {
 #ifdef DEBUG_IV_PLUGIN
-    std::cout << "preTexture()  " 
+    osg::notify(osg::INFO) << "preTexture()  " 
               << node->getTypeId().getName().getString() << std::endl;
 #endif
     
@@ -355,7 +355,7 @@ ConvertFromInventor::preLight(void* data, SoCallbackAction* action,
                               const SoNode* node)
 {
 #ifdef DEBUG_IV_PLUGIN
-    std::cout << "preLight()  " 
+    osg::notify(osg::INFO) << "preLight()  " 
               << node->getTypeId().getName().getString() << std::endl;
 #endif
 
@@ -605,10 +605,10 @@ ConvertFromInventor::convertIVTexToOSGTex(SoTexture2* soTex,
     SbString iv_string;
     soTex->filename.get(iv_string);
     std::string str(iv_string.getString());
-    std::cout << str << " -> ";
+    osg::notify(osg::INFO) << str << " -> ";
     if (str[0]=='\"') str.erase(str.begin());
     if (str[str.size()-1]=='\"') str.erase(str.begin()+str.size()-1);
-    std::cout << str << std::endl;
+    osg::notify(osg::INFO) << str << std::endl;
     osgTexImage->setFileName(str);
     GLenum formats[] = {GL_LUMINANCE, GL_LUMINANCE_ALPHA, GL_RGB, GL_RGBA};
     osgTexImage->setImage(soTexSize[0], soTexSize[1], 0, soTexNC,
@@ -640,7 +640,7 @@ ConvertFromInventor::preGroup(void* data, SoCallbackAction* action,
                               const SoNode* node)
 {
 #ifdef DEBUG_IV_PLUGIN
-    std::cout << "preGroup()    " 
+    osg::notify(osg::INFO) << "preGroup()    " 
               << node->getTypeId().getName().getString() << std::endl;
 #endif
 
@@ -675,7 +675,7 @@ ConvertFromInventor::postGroup(void* data, SoCallbackAction *,
                                const SoNode* node)
 {
 #ifdef DEBUG_IV_PLUGIN
-    std::cout << "postGroup()   " 
+    osg::notify(osg::INFO) << "postGroup()   " 
               << node->getTypeId().getName().getString() << std::endl;
 #endif
 
@@ -710,7 +710,7 @@ ConvertFromInventor::preLOD(void* data, SoCallbackAction *,
                             const SoNode* node)
 {
 #ifdef DEBUG_IV_PLUGIN
-    std::cout << "preLOD()    " 
+    osg::notify(osg::INFO) << "preLOD()    " 
               << node->getTypeId().getName().getString() << std::endl;
 #endif
 
@@ -744,7 +744,7 @@ ConvertFromInventor::preRotor(void* data, SoCallbackAction *,
                               const SoNode* node)
 {
 #ifdef DEBUG_IV_PLUGIN
-    std::cout << "preRotor()  " 
+    osg::notify(osg::INFO) << "preRotor()  " 
               << node->getTypeId().getName().getString() << std::endl;
 #endif
 
@@ -780,7 +780,7 @@ ConvertFromInventor::prePendulum(void* data, SoCallbackAction *,
                                  const SoNode* node)
 {
 #ifdef DEBUG_IV_PLUGIN
-    std::cout << "prePendulum()  " 
+    osg::notify(osg::INFO) << "prePendulum()  " 
               << node->getTypeId().getName().getString() << std::endl;
 #endif
 
@@ -816,7 +816,7 @@ ConvertFromInventor::preShuttle(void* data, SoCallbackAction *,
                                 const SoNode* node)
 {
 #ifdef DEBUG_IV_PLUGIN
-    std::cout << "preShuttle()  " 
+    osg::notify(osg::INFO) << "preShuttle()  " 
               << node->getTypeId().getName().getString() << std::endl;
 #endif
 

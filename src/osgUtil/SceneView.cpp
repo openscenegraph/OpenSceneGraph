@@ -177,6 +177,7 @@ void SceneView::cull()
     // take a copy of camera, and init it home
     osg::Camera* camera = new Camera(*_camera);
     camera->home(); 
+    camera->attachTransform(osg::Camera::NO_ATTACHED_TRANSFORM); 
 
 
     _cullVisitor->setLODBias(_lodBias);
@@ -281,7 +282,7 @@ void SceneView::cull()
             _far_plane = 1000.0f;
         }
 
-        _camera->setNearFar(_near_plane,_far_plane);
+        camera->setNearFar(_near_plane,_far_plane);
     }
 
 }

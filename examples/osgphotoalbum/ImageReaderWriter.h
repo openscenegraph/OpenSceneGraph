@@ -37,13 +37,13 @@ class ImageReaderWriter : public osgDB::ReaderWriter
         std::string insertReference(const std::string& fileName, unsigned int res, float width, float height, bool backPage)
         {
             SERIALIZER();
-            return insertReference(fileName, res, width, height, backPage);
+            return const_cast<ImageReaderWriter*>(this)->local_insertReference(fileName, res, width, height, backPage);
         }
 
         virtual ReadResult readNode(const std::string& fileName, const Options* options) const
         {
             SERIALIZER();
-            return readNode(fileName, options);
+            return const_cast<ImageReaderWriter*>(this)->local_readNode(fileName, options);
         }
 
         

@@ -163,6 +163,10 @@ int main( int argc, char **argv )
     init_event->adaptFrame(0.0);
     keyswitchManipulator->getCurrentCameraManipulator()->home(*init_event,actionAdapter);
 
+    double previous_time_since_start = 0.0f;
+    int number_frames_since_last_print = 0;
+    int number_of_frame_samples = 10;
+    bool printOutFrameStats=true;
     while( !done )
     {
         // syncronize to screen refresh.
@@ -172,6 +176,16 @@ int main( int argc, char **argv )
         double time_since_start = timer.delta_s(start_tick,timer.tick());
         frameStamp->setFrameNumber(frameNumber);
         frameStamp->setReferenceTime(time_since_start);
+        
+        if (printOutFrameStats)
+        {
+            if (number_frames_since_last_print==number_of_frame_samples)
+            {
+                cout << "frame rate = "<< (double)number_of_frame_samples/(time_since_start-previous_time_since_start)<<endl;
+                previous_time_since_start = time_since_start;
+                number_frames_since_last_print = 0;
+            } else ++number_frames_since_last_print;
+        }
         
         // get the event since the last frame.
         osgProducer::KeyboardMouseCallback::EventQueue queue;

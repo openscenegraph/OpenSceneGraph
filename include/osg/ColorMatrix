@@ -5,8 +5,8 @@
 #ifndef OSG_COLORMATRIX
 #define OSG_COLORMATRIX 1
 
-#include <osg/StateAttribute>
 #include <osg/Matrix>
+#include <osg/StateAttribute>
 
 namespace osg {
 

@@ -1,3 +1,8 @@
+#if defined(WIN32) && !(defined(__CYGWIN__) || defined(__MINGW32__))
+    // disable the double to float errors.
+    #pragma warning( disable : 4305 )
+#endif
+
 static float vertex[][3] = {
 
     { 5998.7998, 41456.1016,   1.7800 },

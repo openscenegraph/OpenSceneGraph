@@ -5,6 +5,7 @@
 #ifndef OSG_STATEATTRIBUTE
 #define OSG_STATEATTRIBUTE 1
 
+#include <osg/Export>
 #include <osg/Object>
 #include <osg/GL>
 

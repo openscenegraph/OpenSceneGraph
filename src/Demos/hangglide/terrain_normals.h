@@ -1,3 +1,7 @@
+#if defined(WIN32) && !(defined(__CYGWIN__) || defined(__MINGW32__))
+    // disable the double to float errors.
+    #pragma warning( disable : 4305 )
+#endif
 
 static float normal[][3] = {
     {  -0.2560,  -0.1125,   0.9600 },

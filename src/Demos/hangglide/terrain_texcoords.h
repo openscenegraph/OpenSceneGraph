@@ -1,3 +1,8 @@
+#if defined(WIN32) && !(defined(__CYGWIN__) || defined(__MINGW32__))
+    // disable the double to float errors.
+    #pragma warning( disable : 4305 )
+#endif
+
 static float texcoord[][2] = {
 #ifdef _ORIGINAL_ /* [ */
     {   0.1121,   0.0171 },

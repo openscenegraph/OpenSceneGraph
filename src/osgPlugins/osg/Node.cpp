@@ -6,6 +6,7 @@
 
 using namespace osg;
 using namespace osgDB;
+using namespace std;
 
 // forward declare functions to use later.
 bool Node_readLocalData(Object& obj, Input& fr);

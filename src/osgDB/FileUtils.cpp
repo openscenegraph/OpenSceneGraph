@@ -46,39 +46,57 @@ bool osgDB::fileExists(const std::string& filename)
 
 osgDB::FileType osgDB::fileType(const std::string& filename)
 {
-#if defined(WIN32) && !defined(__CYGWIN__)
-    struct _stat fileStat;
-    if ( _stat(filename.c_str(), &fileStat) != 0 ) 
+#if 1
+
+    // proposed single code path, from Bruce Clay.
+    struct stat fileStat;
+    if ( stat(filename.c_str(), &fileStat) != 0 ) 
     {
         return FILE_NOT_FOUND;
     } // end if
-    
-    if ( fileStat.st_mode & _S_IFDIR )
+
+    if ( fileStat.st_mode & S_IFDIR )
         return DIRECTORY;
-    else if ( fileStat.st_mode & _S_IFREG )
+    else if ( fileStat.st_mode & S_IFREG )
         return REGULAR_FILE;
-    
+
     return FILE_NOT_FOUND;
 
 #else
-    struct stat fileStat;
+    #if defined(WIN32) && !defined(__CYGWIN__)
+        struct _stat fileStat;
+        if ( _stat(filename.c_str(), &fileStat) != 0 ) 
+        {
+            return FILE_NOT_FOUND;
+        } // end if
 
-    if(stat(filename.c_str(), &fileStat) == -1)
-    {
-	return FILE_NOT_FOUND;
-    }
-    
-    if(S_ISREG(fileStat.st_mode))
-    {
-	return REGULAR_FILE;
-    }
+        if ( fileStat.st_mode & _S_IFDIR )
+            return DIRECTORY;
+        else if ( fileStat.st_mode & _S_IFREG )
+            return REGULAR_FILE;
 
-    if(S_ISDIR(fileStat.st_mode))
-    {
-	return DIRECTORY;
-    }
+        return FILE_NOT_FOUND;
 
-    return FILE_NOT_FOUND;
+    #else
+        struct stat fileStat;
+
+        if(stat(filename.c_str(), &fileStat) == -1)
+        {
+	    return FILE_NOT_FOUND;
+        }
+
+        if(S_ISREG(fileStat.st_mode))
+        {
+	    return REGULAR_FILE;
+        }
+
+        if(S_ISDIR(fileStat.st_mode))
+        {
+	    return DIRECTORY;
+        }
+
+        return FILE_NOT_FOUND;
+    #endif
 #endif
 }
 

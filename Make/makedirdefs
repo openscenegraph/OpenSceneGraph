@@ -47,6 +47,8 @@ PLUGIN_DIRS = \
 	txp\
 	zip
 
+#        3dc\
+
 # comment in if you have Performer installed.
 # PLUGIN_DIRS += pfb
 
@@ -135,6 +137,7 @@ EXAMPLE_DIRS = \
 	osgtexture1D\
 	osgtexture2D\
 	osgtexture3D\
+	osgtexturerectangle\
 	osgunittests\
 	osgwindows\
 	osgversion\

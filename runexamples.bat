@@ -103,8 +103,11 @@ osgtext
 echo osgtexture1D cow.osg
 osgtexture1D cow.osg
 
-echo osgtexture2D Images/reflect.rgb Images/lz.rgb
-osgtexture2D Images/reflect.rgb Images/lz.rgb
+echo osgtexture2D 
+osgtexture2D
+
+echo osgtexturerectangle
+osgtexturerectangle
 
 echo osgtexture3D
 osgtexture3D

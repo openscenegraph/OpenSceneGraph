@@ -369,8 +369,6 @@ void DrawShapeVisitor::apply(const Cylinder& cylinder)
 	
 	float texCoordDelta = 1.0/(float)numSegments;
 	
-	osg::Vec3 top(0.0f,0.0f,cylinder.getHeight());
-
 	float r = cylinder.getRadius();
 	float h = cylinder.getHeight();
 	
@@ -487,7 +485,57 @@ void DrawShapeVisitor::apply(const ConvexHull& hull)
 
 void DrawShapeVisitor::apply(const HeightField& field)
 {
-    std::cout << "draw a field "<<&field<<std::endl;
+    if (field.getNumColumns()==0 || field.getNumRows()==0) return;
+    
+    glPushMatrix();
+
+	glTranslatef(field.getOrigin().x(),field.getOrigin().y(),field.getOrigin().z());
+
+	if (!field.zeroRotation())
+	{
+    	    Matrix rotation(field.getRotationMatrix());
+    	    glMultMatrixf(rotation.ptr());
+	}
+	
+	float dx = field.getXInterval();
+	float dy = field.getYInterval();
+
+	float du = 1.0f/((float)field.getNumColumns()-1.0f);
+	float dv = 1.0f/((float)field.getNumRows()-1.0f);
+
+    	float vBase = 0.0f;
+	for(unsigned int row=0;row<field.getNumRows()-1;++row,vBase+=dv)
+	{
+	
+	    float vTop = vBase+dv;
+	    float u = 0.0f;
+	
+    	    glBegin(GL_QUAD_STRIP);
+
+	    for(unsigned int col=0;col<field.getNumColumns();++col,u+=du)
+	    {
+    	    	Vec3 vertTop(dx*(float)col,dy*(float)row+dy,field.getHeight(col,row+1));
+    	    	Vec3 normTop(field.getNormal(col,row+1));
+
+    	    	Vec3 vertBase(dx*(float)col,dy*(float)row,field.getHeight(col,row));
+    	    	Vec3 normBase(field.getNormal(col,row));
+	
+	    	glTexCoord2f(u,vTop);
+		glNormal3fv(normTop.ptr());
+		glVertex3fv(vertTop.ptr());
+
+	    	glTexCoord2f(u,vBase);
+		glNormal3fv(normBase.ptr());
+		glVertex3fv(vertBase.ptr());
+
+	    }
+	    
+	    glEnd();
+	}
+
+
+    glPopMatrix();
+
 }
 
 void DrawShapeVisitor::apply(const CompositeShape& composite)
@@ -639,8 +687,28 @@ void ComputeBoundShapeVisitor::apply(const ConvexHull& hull)
     apply((const TriangleMesh&)hull);
 }
 
-void ComputeBoundShapeVisitor::apply(const HeightField&)
+void ComputeBoundShapeVisitor::apply(const HeightField& field)
 {
+
+    float zMin=FLT_MAX;
+    float zMax=-FLT_MAX;
+
+    for(unsigned int row=0;row<field.getNumRows();++row)
+    {
+	for(unsigned int col=0;col<field.getNumColumns();++col)
+	{
+    	    float z = field.getHeight(col,row);
+	    if (z<zMin) zMin = z;
+	    if (z>zMax) zMax = z;
+	}
+    }
+
+    _bb.set(field.getOrigin()+osg::Vec3(0.0f,0.0f,zMin),
+    	    field.getOrigin()+osg::Vec3(field.getXInterval()*field.getNumColumns(),field.getYInterval()*field.getNumRows(),zMax));
+	    
+    cout << "_bb.min"<<_bb._min;
+    cout << "_bb.max"<<_bb._max;
+
 }
 
 void ComputeBoundShapeVisitor::apply(const CompositeShape&)

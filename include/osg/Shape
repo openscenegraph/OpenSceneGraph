@@ -400,7 +400,6 @@ class HeightField : public Shape
 
         HeightField(const HeightField& mesh,const CopyOp& copyop=CopyOp::SHALLOW_COPY): 
             Shape(mesh,copyop),
-	    _zeroRotation(true),
 	    _columns(0),
 	    _rows(0),
 	    _origin(0.0f,0.0f,0.0f),
@@ -412,8 +411,6 @@ class HeightField : public Shape
         virtual const char* className() const { return "HeightFiled"; }
         virtual void accept(osg::ShapeVisitor& sv) { sv.apply(*this); }
         virtual void accept(osg::ConstShapeVisitor& csv) const { csv.apply(*this); }
-
-	virtual void setNumColumnsAndRows(unsigned int col,unsigned int rows) = 0;
 
 	inline unsigned int getNumColumns() const { return _columns; }
 	inline unsigned int getNumRows() const { return _rows; }
@@ -427,18 +424,9 @@ class HeightField : public Shape
 	inline void setYInterval(float dy) { _dy = dy; }
 	inline float getYInterval() const { return _dy; }
 
-	virtual void setHeight(unsigned int c,unsigned int r) const = 0;
 	virtual float getHeight(unsigned int c,unsigned int r) const = 0;
 	
-	virtual void setNormal(unsigned int c,unsigned int r,const osg::Vec3& normal) const = 0;
 	virtual Vec3 getNormal(unsigned int c,unsigned int r) const = 0;
-
-	inline Vec3 getVertex(unsigned int c,unsigned int r) const
-	{
-	    return Vec3(_origin.x()+_dx*(float)c,
-	    	    	_origin.y()+_dy*(float)r,
-			_origin.z()+getHeight(c,r));
-	}
 	
     	inline void setRotation(const Quat& quat) { _rotation = quat; }
     	inline const Quat& getRotation() const { return _rotation; }
@@ -448,8 +436,6 @@ class HeightField : public Shape
     protected:
     
     	~HeightField() {}
-	
-	bool _zeroRotation;
 
     	unsigned int _columns,_rows;
 
@@ -458,6 +444,44 @@ class HeightField : public Shape
 	float	    _dy;
 	
 	Quat    _rotation;
+	
+};
+
+class SG_EXPORT Grid : public HeightField
+{
+    public:
+    
+    	Grid();
+
+        Grid(const Grid& mesh,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+        
+    	META_Shape(osg,Grid)
+
+    	void allocGrid(unsigned int numColumns,unsigned int numRows, float value=0.0f);
+
+    	void populateGrid(float minValue,float maxValue);
+
+	void setHeight(unsigned int c,unsigned int r,float value)
+	{
+	   _heights[c+r*_columns] = value;
+	}
+
+	virtual float getHeight(unsigned int c,unsigned int r) const
+	{
+	   return _heights[c+r*_columns];
+	}
+	
+	virtual Vec3 getNormal(unsigned int,unsigned int) const 
+	{
+	    return osg::Vec3(0.0f,0.0f,1.0f);
+	}
+	
+    protected:
+    
+    	~Grid();
+
+    	typedef std::vector<float> HeightList;
+	HeightList _heights;
 	
 };
 

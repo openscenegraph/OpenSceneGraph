@@ -16,7 +16,7 @@
 using namespace osg;
 
 ImageStream::ImageStream():
-    _status(PAUSED),
+    _status(INVALID),
     _loopingMode(LOOPING)
 {
     setDataVariance(DYNAMIC); 

@@ -1,3 +1,5 @@
+#include <sstream>
+
 #include <osg/Image>
 #include <osg/Group>
 
@@ -79,12 +81,29 @@ class OSGReaderWriter : public ReaderWriter
 
         }
 
-        virtual WriteResult writeObject(const Object& obj,const std::string& fileName, const osgDB::ReaderWriter::Options*)
+        void setPrecision(Output& fout, const osgDB::ReaderWriter::Options* options)
         {
-            Output fout;
-            fout.open(fileName.c_str());
+            if (options)
+            {
+                std::istringstream iss(options->getOptionString());
+                std::string opt;
+                while (iss >> opt) {
+                    if(opt=="PRECISION" || opt=="precision") {
+                        int prec;
+                        iss >> prec;
+                        fout.precision(prec);
+                    }
+                }
+            }
+        }            
+
+        virtual WriteResult writeObject(const Object& obj,const std::string& fileName, const osgDB::ReaderWriter::Options* options)
+        {
+            Output fout(fileName.c_str());
             if (fout)
             {
+                setPrecision(fout,options);
+
                 fout.writeObject(obj);
                 fout.close();
                 return WriteResult::FILE_SAVED;
@@ -92,14 +111,17 @@ class OSGReaderWriter : public ReaderWriter
             return WriteResult("Unable to open file for output");
         }
 
-        virtual WriteResult writeNode(const Node& node,const std::string& fileName, const osgDB::ReaderWriter::Options*)
+        virtual WriteResult writeNode(const Node& node,const std::string& fileName, const osgDB::ReaderWriter::Options* options)
         {
             std::string ext = getFileExtension(fileName);
             if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
 
+
             Output fout(fileName.c_str());
             if (fout)
             {
+                setPrecision(fout,options);
+
                 fout.writeObject(node);
                 fout.close();
                 return WriteResult::FILE_SAVED;

@@ -2754,6 +2754,8 @@ DataSet::DataSet()
     _textureType = COMPRESSED_TEXTURE;
     _useLocalTileTransform = true;
     
+    _decorateWithCoordinateSystemNode = true;
+
     setEllipsoidModel(new osg::EllipsoidModel());
 }
 
@@ -3343,6 +3345,11 @@ void DataSet::_writeRow(Row& row)
         {
             osg::ref_ptr<osg::Node> node = cd->createPagedLODScene();
             
+            if (_decorateWithCoordinateSystemNode)
+            {
+                node = decorateWithCoordinateSystemNode(node.get());
+            }
+            
             //std::string filename = cd->_name + _tileExtension;
             std::string filename = _tileBasename+_tileExtension;
 
@@ -3368,6 +3375,27 @@ void DataSet::createDestination(unsigned int numLevels)
 
 }
 
+osg::CoordinateSystemNode* DataSet::decorateWithCoordinateSystemNode(osg::Node* subgraph)
+{
+    // don't decorate if no coord system is set.
+    if (_destinationCoordinateSystem->getCoordinateSystem().empty()) 
+        return subgraph;
+
+    osg::CoordinateSystemNode* csn = new osg::CoordinateSystemNode;
+    
+    // copy the destinate coordinate system string.
+    csn->setCoordinateSystem(_destinationCoordinateSystem->getCoordinateSystem());
+    
+    // set the ellipsoid model if geocentric coords are used.
+    if (getConvertFromGeographicToGeocentric()) csn->setEllipsoidModel(getEllipsoidModel());
+    
+    // add the a subgraph.
+    csn->addChild(subgraph);
+
+    return csn;
+}
+
+
 void DataSet::writeDestination()
 {
     if (_destinationGraph.valid())
@@ -3379,6 +3407,12 @@ void DataSet::writeDestination()
         {
             populateDestinationGraphFromSources();
             _rootNode = _destinationGraph->createScene();
+
+            if (_decorateWithCoordinateSystemNode)
+            {
+                _rootNode = decorateWithCoordinateSystemNode(_rootNode.get());
+            }
+
             osgDB::writeNodeFile(*_rootNode,filename);
         }
         else  // _databaseType==PagedLOD_DATABASE

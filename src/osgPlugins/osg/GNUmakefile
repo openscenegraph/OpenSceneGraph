@@ -7,13 +7,15 @@ CXXFILES =\
         Billboard.cpp\
         BlendFunc.cpp\
         ClipPlane.cpp\
+        ClearNode.cpp\
         ColorMask.cpp\
+        CoordinateSystemNode.cpp\
         ConvexPlanarOccluder.cpp\
         CullFace.cpp\
         ClipNode.cpp\
         Depth.cpp\
         Drawable.cpp\
-        ClearNode.cpp\
+        EllipsoidModel.cpp\
         Fog.cpp\
         FragmentProgram.cpp\
         FrontFace.cpp\

@@ -36,6 +36,7 @@ class Impostor;
 class ClearNode;
 class OccluderNode;
 class Sequence;
+class CoordinateSystemNode;
 
 /** Visitor for type safe operations on osg::Node's.
     Based on GOF's Visitor pattern. The NodeVisitor 
@@ -220,6 +221,8 @@ class SG_EXPORT NodeVisitor : public virtual Referenced
         virtual void apply(Group& node)                     { apply((Node&)node); }
 
         virtual void apply(Projection& node)                { apply((Group&)node); }
+
+        virtual void apply(CoordinateSystemNode& node)      { apply((Group&)node); }
 
         virtual void apply(ClipNode& node)                  { apply((Group&)node); }
         virtual void apply(LightSource& node)               { apply((Group&)node); }

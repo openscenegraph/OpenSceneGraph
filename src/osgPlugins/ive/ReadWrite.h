@@ -29,6 +29,8 @@ namespace ive {
 #define IVECONVEXPLANARPOLYGON          0x00000020
 #define IVEPAGEDLOD                     0x00000021
 #define IVEDOFTRANSFORM                 0x00000022
+#define IVECOORDINATESYSTEMNODE         0x00000023
+#define IVEELLIPSOIDMODEL               0x00000024
 
 // Node callbacks
 #define IVENODECALLBACK                 0x00000050

@@ -7,9 +7,6 @@
 using namespace osg;
 using namespace osgUtil;
 
-static Tesselator* s_currentTesselator=0;
-
-
 Tesselator::Tesselator()
 {
     _tobj = 0;
@@ -30,13 +27,10 @@ void Tesselator::beginTesselation()
     gluTessCallback(_tobj, GLU_TESS_VERTEX_DATA, (GLvoid (CALLBACK*)()) vertexCallback);
     gluTessCallback(_tobj, GLU_TESS_BEGIN_DATA,  (GLvoid (CALLBACK*)()) beginCallback);
     gluTessCallback(_tobj, GLU_TESS_END_DATA,    (GLvoid (CALLBACK*)()) endCallback);
-    gluTessCallback(_tobj, GLU_TESS_COMBINE,     (GLvoid (CALLBACK*)()) combineCallback);
+    gluTessCallback(_tobj, GLU_TESS_COMBINE_DATA,(GLvoid (CALLBACK*)()) combineCallback);
     gluTessCallback(_tobj, GLU_TESS_ERROR_DATA,  (GLvoid (CALLBACK*)()) errorCallback);
 
     gluTessBeginPolygon(_tobj,this);
-    
-    s_currentTesselator = this;
-    
 }    
     
 void Tesselator::beginContour()
@@ -367,12 +361,11 @@ void CALLBACK Tesselator::vertexCallback(GLvoid *data, void* userData)
 
 void CALLBACK Tesselator::combineCallback(GLdouble coords[3], void* vertex_data[4],
                               GLfloat weight[4], void** outData,
-                              void* /*userData*/)
+                              void* userData)
 {
     Vec3* newData = new osg::Vec3(coords[0],coords[1],coords[2]);
     *outData = newData;
-    //((Tesselator*)userData)->combine(newData);
-    s_currentTesselator->combine(newData,vertex_data,weight);
+    ((Tesselator*)userData)->combine(newData,vertex_data,weight);
 }
 
 void CALLBACK Tesselator::errorCallback(GLenum errorCode, void* userData)

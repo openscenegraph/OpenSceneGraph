@@ -16,6 +16,7 @@
 
 #include <osg/Notify>
 #include <osg/Texture>
+#include <osg/VertexProgram>
 #include <osg/AlphaFunc>
 #include <osg/TexEnv>
 #include <osg/ColorMatrix>
@@ -564,6 +565,7 @@ void SceneView::draw()
     // context we are in so can flush the appropriate caches.
     osg::Drawable::flushDeletedDisplayLists(_state->getContextID());
     osg::Texture::flushDeletedTextureObjects(_state->getContextID());
+    osg::VertexProgram::flushDeletedVertexProgramObjects(_state->getContextID());
 
     RenderLeaf* previous = NULL;
     if (_displaySettings.valid() && _displaySettings->getStereo()) 

@@ -13,6 +13,8 @@
 #include <osg/DisplaySettings>
 #include <osg/Polytope>
 
+#include <osg/GLExtensions>
+
 #include <vector>
 #include <map>
 
@@ -301,7 +303,7 @@ class SG_EXPORT State : public Referenced
           * note, only updates values that change.*/
         inline void disableIndexPointer()
         {
-            //if (_indexArray._enabled)
+            if (_indexArray._enabled)
             {
                 _indexArray._enabled = false;
                 glDisableClientState(GL_INDEX_ARRAY);
@@ -319,7 +321,7 @@ class SG_EXPORT State : public Referenced
                 if ( unit >= _texCoordArrayList.size()) _texCoordArrayList.resize(unit+1);
                 EnabledArrayPair& eap = _texCoordArrayList[unit];
 
-                //if (!eap._enabled)
+                if (!eap._enabled)
                 {
                     eap._enabled = true;
                     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -354,14 +356,22 @@ class SG_EXPORT State : public Referenced
           * note, only updates values that change.*/
         inline bool setClientActiveTextureUnit( unsigned int unit )
         {
-            return unit==0;
-//  will need to check for extensions etc.       
-//             if (unit!=_currentClientActiveTextureUnit)
-//             {
-//                 glClientActiveTextureARB(GL_TEXTURE0_ARB+unit);
-//                 _currentClientActiveTextureUnit = unit;
-//             }
-//             return true;
+            if (unit!=_currentClientActiveTextureUnit)
+            {
+                static ActiveTextureProc s_glClientActiveTexture =  
+                        (ActiveTextureProc) osg::getGLExtensionFuncPtr("glClientActiveTexture","glClientActiveTextureARB");
+
+                if (s_glClientActiveTexture)
+                {
+                    s_glClientActiveTexture(GL_TEXTURE0_ARB+unit);
+                    _currentClientActiveTextureUnit = unit;
+                }
+                else
+                {
+                    return unit==0;
+                }
+            }
+            return true;
         }
 
 
@@ -369,14 +379,22 @@ class SG_EXPORT State : public Referenced
           * note, only updates values that change.*/
         inline bool setActiveTextureUnit( unsigned int unit )
         {
-            return unit==0;
-// 
-//             if (unit!=_currentActiveTextureUnit)
-//             {
-//                 glActiveTextureARB(GL_TEXTURE0_ARB+unit);
-//                 _currentActiveTextureUnit = unit;
-//             }
-//             return true;
+            if (unit!=_currentActiveTextureUnit)
+            {
+                static ActiveTextureProc s_glActiveTexture =  
+                       (ActiveTextureProc) osg::getGLExtensionFuncPtr("glActiveTexture","glActiveTextureARB");
+
+                if (s_glActiveTexture)
+                {
+                    s_glActiveTexture(GL_TEXTURE0_ARB+unit);
+                    _currentActiveTextureUnit = unit;
+                }
+                else
+                {
+                    return unit==0;
+                }
+            }
+            return true;
         }
         
 
@@ -500,7 +518,8 @@ class SG_EXPORT State : public Referenced
             else
                 return false;
         }
-
+        
+        typedef void (APIENTRY * ActiveTextureProc) (GLenum texture);
 
         typedef std::map<StateAttribute::GLMode,ModeStack>      ModeMap;
         typedef std::vector<ModeMap>                            TextureModeMapList;

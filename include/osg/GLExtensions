@@ -20,6 +20,18 @@ SG_EXPORT extern const bool isGLExtensionSupported(const char *extension);
   */
 SG_EXPORT extern void* getGLExtensionFuncPtr(const char *funcName);
 
+/** return the address of the specified OpenGL function, if not found then
+  * check a second function name, if this fails then return NULL as function is
+  * not supported by OpenGL library.  This is usual for checking something
+  * like glActiveTexture (which is in OGL1.3) or glActiveTextureARB.
+  */
+inline void* getGLExtensionFuncPtr(const char *funcName,const char *fallbackFuncName)
+{
+    void* ptr = getGLExtensionFuncPtr(funcName);
+    if (ptr) return ptr;
+    return getGLExtensionFuncPtr(fallbackFuncName);
+}
+
 }
 
 #endif

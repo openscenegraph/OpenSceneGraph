@@ -542,7 +542,7 @@ bool CullVisitor::updateCalculatedNearFar(const osg::Matrix& matrix,const osg::D
                        (lookVector.y()>=0?2:0) +
                        (lookVector.z()>=0?4:0);
 
-        unsigned int bbCornerNear = (~_bbCornerFar)&7;
+        unsigned int bbCornerNear = (~bbCornerFar)&7;
 
         d_near = distance(bb.corner(bbCornerNear),matrix);
         d_far = distance(bb.corner(bbCornerFar),matrix);

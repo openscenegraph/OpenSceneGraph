@@ -58,7 +58,10 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
         virtual void draw_local(osg::State& state,RenderLeaf*& previous);
 
         /** extract stats for current draw list. */
-        void getStats(osg::Statistics& primStats);
+        bool getStats(osg::Statistics* primStats);
+        void getPrims(osg::Statistics* primStats);
+        bool getPrims(osg::Statistics* primStats, const int nbin);
+
 
     public:
 

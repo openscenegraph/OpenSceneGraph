@@ -26,42 +26,93 @@ class SG_EXPORT Statistics : public osg::Object
 {
     public:
     
-        Statistics() {
-            numOpaque=0, nummat=0;
-            nprims=0, nlights=0; nbins=0; nimpostor=0;
+        Statistics()
+        {
             reset();
         };
+        
+        enum PrimitiveType
+        {
+            NO_TYPE,
+            POINTS,
+            LINES,
+            LINE_STRIP,
+            FLAT_LINE_STRIP,
+            LINE_LOOP,
+            TRIANGLES,
+            TRIANGLE_STRIP,
+            FLAT_TRIANGLE_STRIP,
+            TRIANGLE_FAN,
+            FLAT_TRIANGLE_FAN,
+            QUADS,
+            QUAD_STRIP,
+            POLYGON,
+            IMPOSTOR
+        };
+
 
         ~Statistics() {}; // no dynamic allocations, so no need to free
         virtual osg::Object* clone() const { return new Statistics(); }
         virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const Statistics*>(obj)!=0L; }
         virtual const char* className() const { return "Statistics"; }
-
-        enum statsType {
+        
+        enum statsType
+        {
             STAT_NONE, // default
             STAT_FRAMERATE, STAT_GRAPHS,
-            STAT_PRIMS, STAT_PRIMSPERVIEW, 
+            STAT_PRIMS, STAT_PRIMSPERVIEW, STAT_PRIMSPERBIN,
             STAT_DC,
             STAT_RESTART // hint to restart the stats
         };
-        void reset() {
-            for (int i=0; i<20; i++) primverts[i]=numprimtypes[i]=primlens[i]=primtypes[i]=0;
+        void reset()
+        {
+            numOpaque=0, nummat=0; depth=0; stattype=STAT_NONE;
+            nprims=0, nlights=0; nbins=0; nimpostor=0;
+            for (int i=0; i<=POLYGON; i++) primverts[i]=numprimtypes[i]=primlens[i]=primtypes[i]=0;
         }
 
+        void setType(statsType t) {stattype=t;}
+
+        void addNumPrims(const int typ, const int nprimlen, const int numprimtype, const int primvert)
+        {
+            if (typ>NO_TYPE && typ<=POLYGON) {
+                primtypes[0]++;
+                primtypes[typ]++;
+                numprimtypes[0]+=numprimtype;
+                numprimtypes[typ]+=numprimtype;
+                primlens[0]+=nprimlen;
+                primlens[typ]+=nprimlen;
+                primverts[0]+=primvert;
+                primverts[typ]+=primvert;
+            }
+        }
+        
+        void addOpaque() { numOpaque++;}
+        void addMatrix() { nummat++;}
+        void addLight(const int np) { nlights+=np;}
+        void addNumPrims(const int np) { nprims += np; }
+        void addImpostor(const int np) { nimpostor+= np; }
+        inline const int getBins() { return nbins;}
+        void setDepth(const int d) { depth=d; }
+        void addBins(const int np) { nbins+= np; }
+
+        void setBinNo(const int n) { _binNo=n;}       
+                
 public:
                 
         int numOpaque, nummat, nbins;
         int nprims, nlights;
+        int depth; // depth into bins - eg 1.1,1.2,1.3 etc
+        int _binNo;
+        statsType stattype;
         int nimpostor; // number of impostors rendered
-        int numprimtypes[20]; // histogram of number of each type of prim
-        int primtypes[20]; // histogram of number of each type of prim
-        int primlens[20]; // histogram of lengths of each type of prim
-        int primverts[20]; // histogram of number of vertices to be transformed
+        int numprimtypes[16]; // histogram of number of each type of prim
+        int primtypes[16]; // histogram of number of each type of prim
+        int primlens[16]; // histogram of lengths of each type of prim
+        int primverts[16]; // histogram of number of vertices to be transformed
         
-    protected:
-    
 };
 
-}
+};
 
 #endif

@@ -14,10 +14,11 @@ namespace osgGA{
 class GUIEventHandler;
 class CameraManipulator;
 
-/** SetSceneViewGUIEventHandlerVisitor which visits various types of GUIEventHandler and
-sets them up appropriately, given a new scene view.
-. */
-
+/**
+SetSceneViewGUIEventHandlerVisitor which visits various types of
+GUIEventHandler and sets them up appropriately, given a new scene
+view.
+*/
 class OSGGA_EXPORT SetSceneViewVisitor: public GUIEventHandlerVisitor
 {
     public:

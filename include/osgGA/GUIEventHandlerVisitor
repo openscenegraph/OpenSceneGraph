@@ -14,7 +14,8 @@ class CompositeGUIEventHandler;
 class CameraManipulator;
 class StateSetManipulator;
 
-/** Base class primarily for visiting GUIEventHandlers.
+/**
+Base class for visiting GUIEventHandlers.
 
 A Default Visitor, (Might want to make it an Extrinsic Visitor at some point).
 By default, it does nothing to the things it visits. Sub classes of this Visitor

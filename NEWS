@@ -6,12 +6,19 @@ OSG News (most significant items from ChangeLog)
     the deprecates the original osg::Texture.  All Texture class, including
     TextureCubeMap are derived from new base class for textures - osg::TextureBase.
     
+    New osgtexture1D and osgtexture3D demos demonstrate the new texture classes in
+    action.
+    
     New PROTECTED mode for protecting local state mode and attributes from be
     overriden from state above it in the scene graph.
     
     Support for fog coord and secondary colors extensions added to osg::Geometry.
 
     Support for HP_UX.
+    
+    New Inventor and VRML1.0 loader added.
+    
+    Support added to lwo plugin for loading the new lwo2 format.
 
     Support for OpenFlight15.7 added, DOFTransforms and general enhancements and
     bug fixes.
@@ -25,13 +32,14 @@ OSG News (most significant items from ChangeLog)
 
     osg::TexEnv texture_env_add added.
 
-    osg::Sequence implemented.
+    osg::Sequence implemented, and osgsequence demo added.
 
     osg::DOFTransformNode implemented.
 
     osg::AnimationPath improved.
     
     Support for writing osg::Image's to .rgb format added.
+
 
 July 2002 - OpenSceneGraph-0.9.0.tar.gz
 

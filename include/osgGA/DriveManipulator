@@ -9,44 +9,43 @@
 
 namespace osgGA{
 
+/**
+DriveManipulator is a camera manipulator which provides drive-like
+functionality. By default, the left mouse button accelerates, the right
+mouse button decelerates, and the middle mouse button (or left and
+right simultaneously) stops dead.
+*/
+
 class OSGGA_EXPORT DriveManipulator : public CameraManipulator
 {
-    public:
+public:
 
-	DriveManipulator();
-	virtual ~DriveManipulator();
+        DriveManipulator();
 
-        /** Attach a node to the manipulator. 
-            Automatically detaches previously attached node.
-            setNode(NULL) detaches previously nodes.
-            Is ignored by manipulators which do not require a reference model.*/
-        virtual void setNode(osg::Node*);
+        virtual ~DriveManipulator();
 
-        /** Return node if attached.*/
-        virtual const osg::Node* getNode() const;
+    virtual void setNode(osg::Node*);
 
-        /** Return node if attached.*/
-        virtual osg::Node* getNode();
+    virtual const osg::Node* getNode() const;
 
-        /** Move the camera to the default position. 
-            May be ignored by manipulators if home functionality is not appropriate.*/
-        virtual void home(const GUIEventAdapter& ea,GUIActionAdapter& us);
-        
-        /** Start/restart the manipulator.*/
-        virtual void init(const GUIEventAdapter& ea,GUIActionAdapter& us);
+    virtual osg::Node* getNode();
 
-        /** handle events, return true if handled, false otherwise.*/
-	virtual bool handle(const GUIEventAdapter& ea,GUIActionAdapter& us);
+    virtual void home(const GUIEventAdapter& ea,GUIActionAdapter& us);
 
-    private:
+    virtual void init(const GUIEventAdapter& ea,GUIActionAdapter& us);
+
+        virtual bool handle(const GUIEventAdapter& ea,GUIActionAdapter& us);
+
+private:
 
         /** Reset the internal GUIEvent stack.*/
         void flushMouseEventStack();
+
         /** Add the current mouse GUIEvent to internal stack.*/
         void addMouseEvent(const GUIEventAdapter& ea);
 
         /** For the give mouse movement calculate the movement of the camera.
-            Return true is camera has moved and a redraw is required.*/
+        Return true is camera has moved and a redraw is required.*/
         bool calcMovement();
 
         // Internal event stack comprising last three mouse events.
@@ -61,8 +60,8 @@ class OSGGA_EXPORT DriveManipulator : public CameraManipulator
         float _buffer;
 
         enum SpeedControlMode {
-            USE_MOUSE_Y_FOR_SPEED,
-            USE_MOUSE_BUTTONS_FOR_SPEED
+                USE_MOUSE_Y_FOR_SPEED,
+                USE_MOUSE_BUTTONS_FOR_SPEED
         };
 
         SpeedControlMode _speedMode;
@@ -72,4 +71,3 @@ class OSGGA_EXPORT DriveManipulator : public CameraManipulator
 }
 
 #endif
-

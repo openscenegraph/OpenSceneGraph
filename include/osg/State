@@ -215,33 +215,45 @@ class SG_EXPORT State : public Referenced
         const StateAttribute* getLastAppliedTextureAttribute(unsigned int unit, StateAttribute::Type type) const;
 
 
+        /** disable the vertex, normal, color, tex coords, secenday color, fog coord and index arrays.*/
+        void disableAllVertexArrays();
+
+        /** dirty the vertex, normal, color, tex coords, secenday color, fog coord and index arrays.*/
+        void dirtyAllVertexArrays();
 
         /** wrapper around glEnableClientState(GL_VERTEX_ARRAY);glVertexPointer(..);
           * note, only updates values that change.*/
         inline void setVertexPointer( GLint size, GLenum type,
                                       GLsizei stride, const GLvoid *ptr )
         {
-            if (!_vertexArray._enabled)
+            if (!_vertexArray._enabled || _vertexArray._dirty)
             {
                 _vertexArray._enabled = true;
                 glEnableClientState(GL_VERTEX_ARRAY);
             }
-            if (_vertexArray._pointer!=ptr)
+            if (_vertexArray._pointer!=ptr || _vertexArray._dirty)
             {
                 _vertexArray._pointer=ptr;
                 glVertexPointer( size, type, stride, ptr );
             }
+            _vertexArray._dirty = false;
         }
         
         /** wrapper glDisableClientState(GL_VERTEX_ARRAY).
           * note, only updates values that change.*/
         inline void disableVertexPointer()
         {
-            if (_vertexArray._enabled)
+            if (_vertexArray._enabled || _vertexArray._dirty)
             {
                 _vertexArray._enabled = false;
+                _vertexArray._dirty = false;
                 glDisableClientState(GL_VERTEX_ARRAY);
             }
+        }
+
+        inline void dirtyVertexPointer()
+        {
+            _vertexArray._dirty = true; 
         }
 
         /** wrapper around glEnableClientState(GL_NORMAL_ARRAY);glNormalPointer(..);
@@ -249,27 +261,34 @@ class SG_EXPORT State : public Referenced
         inline void setNormalPointer( GLenum type, GLsizei stride,
                                       const GLvoid *ptr )
         {
-            if (!_normalArray._enabled)
+            if (!_normalArray._enabled || _normalArray._dirty)
             {
                 _normalArray._enabled = true;
                 glEnableClientState(GL_NORMAL_ARRAY);
             }
-            if (_normalArray._pointer!=ptr)
+            if (_normalArray._pointer!=ptr || _normalArray._dirty)
             {
                 _normalArray._pointer=ptr;
                 glNormalPointer( type, stride, ptr );
             }
+            _normalArray._dirty = false;
         }
 
         /** wrapper around glDisableClientState(GL_NORMAL_ARRAY);
           * note, only updates values that change.*/
         inline void disableNormalPointer()
         {
-            if (_normalArray._enabled)
+            if (_normalArray._enabled || _normalArray._dirty)
             {
                 _normalArray._enabled = false;
+                _normalArray._dirty = false;
                 glDisableClientState(GL_NORMAL_ARRAY);
             }
+        }
+
+        inline void dirtyNormalPointer()
+        {
+            _normalArray._dirty = true;
         }
 
         /** wrapper around glEnableClientState(GL_COLOR_ARRAY);glColorPointer(..);
@@ -277,27 +296,34 @@ class SG_EXPORT State : public Referenced
         inline void setColorPointer( GLint size, GLenum type,
                                      GLsizei stride, const GLvoid *ptr )
         {
-            if (!_colorArray._enabled)
+            if (!_colorArray._enabled || _colorArray._dirty)
             {
                 _colorArray._enabled = true;
                 glEnableClientState(GL_COLOR_ARRAY);
             }
-            if (_colorArray._pointer!=ptr)
+            if (_colorArray._pointer!=ptr || _colorArray._dirty)
             {
                 _colorArray._pointer=ptr;
                 glColorPointer( size, type, stride, ptr );
             }
+            _colorArray._dirty = false;
         }
 
         /** wrapper around glDisableClientState(GL_COLOR_ARRAY);
           * note, only updates values that change.*/
         inline void disableColorPointer()
         {
-            if (_colorArray._enabled)
+            if (_colorArray._enabled || _colorArray._dirty)
             {
                 _colorArray._enabled = false;
+                _colorArray._dirty = false;
                 glDisableClientState(GL_COLOR_ARRAY);
             }
+        }
+
+        inline void dirtyColorPointer()
+        {
+            _colorArray._dirty = true;
         }
 
         /** wrapper around glEnableClientState(GL_SECONDARY_COLOR_ARRAY);glSecondayColorPointer(..);
@@ -308,11 +334,17 @@ class SG_EXPORT State : public Referenced
           * note, only updates values that change.*/
         inline void disableSecondaryColorPointer()
         {
-            if (_secondaryColorArray._enabled)
+            if (_secondaryColorArray._enabled || _secondaryColorArray._dirty)
             {
                 _secondaryColorArray._enabled = false;
+                _secondaryColorArray._dirty = false;
                 glDisableClientState(GL_SECONDARY_COLOR_ARRAY);
             }
+        }
+
+        inline void dirtySecondaryColorPointer()
+        {
+            _secondaryColorArray._dirty = true;
         }
 
         /** wrapper around glEnableClientState(GL_INDEX_ARRAY);glIndexPointer(..);
@@ -320,28 +352,36 @@ class SG_EXPORT State : public Referenced
         inline void setIndexPointer( GLenum type, GLsizei stride,
                               const GLvoid *ptr )
         {
-            if (!_indexArray._enabled)
+            if (!_indexArray._enabled || _indexArray._dirty)
             {
                 _indexArray._enabled = true;
                 glEnableClientState(GL_INDEX_ARRAY);
             }
-            if (_indexArray._pointer!=ptr)
+            if (_indexArray._pointer!=ptr || _indexArray._dirty)
             {
                 _indexArray._pointer=ptr;
                 glIndexPointer( type, stride, ptr );
             }
+            _indexArray._dirty = false;
         }
 
         /** wrapper around glDisableClientState(GL_INDEX_ARRAY);
           * note, only updates values that change.*/
         inline void disableIndexPointer()
         {
-            if (_indexArray._enabled)
+            if (_indexArray._enabled || _indexArray._dirty)
             {
                 _indexArray._enabled = false;
+                _indexArray._dirty = false;
                 glDisableClientState(GL_INDEX_ARRAY);
             }
         }
+
+        inline void dirtyIndexPointer()
+        {
+            _indexArray._dirty = true;
+        }
+
 
         /** wrapper around glEnableClientState(GL_FOG_COORDINATE_ARRAY);glFogCoordPointer(..);
           * note, only updates values that change.*/
@@ -351,14 +391,19 @@ class SG_EXPORT State : public Referenced
           * note, only updates values that change.*/
         inline void disableFogCoordPointer()
         {
-            if (_fogArray._enabled)
+            if (_fogArray._enabled || _fogArray._dirty)
             {
                 _fogArray._enabled = false;
+                _fogArray._dirty = false;
                 glDisableClientState(GL_FOG_COORDINATE_ARRAY);
             }
         }
 
-        
+        inline void dirtyFogCoordPointer()
+        {
+            _fogArray._dirty = true;
+        }
+
 
         /** wrapper around glEnableClientState(GL_TEXTURE_COORD_ARRAY);glTexCoordPointer(..);
           * note, only updates values that change.*/
@@ -371,16 +416,17 @@ class SG_EXPORT State : public Referenced
                 if ( unit >= _texCoordArrayList.size()) _texCoordArrayList.resize(unit+1);
                 EnabledArrayPair& eap = _texCoordArrayList[unit];
 
-                if (!eap._enabled)
+                if (!eap._enabled || eap._dirty)
                 {
                     eap._enabled = true;
                     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
                 }
-                if (eap._pointer!=ptr)
+                if (eap._pointer!=ptr || eap._dirty)
                 {
                     glTexCoordPointer( size, type, stride, ptr );
                     eap._pointer = ptr;
                 }
+                eap._dirty = false;
             }
         }
         
@@ -393,27 +439,47 @@ class SG_EXPORT State : public Referenced
                 if ( unit >= _texCoordArrayList.size()) _texCoordArrayList.resize(unit+1);
                 EnabledArrayPair& eap = _texCoordArrayList[unit];
 
-                if (eap._enabled)
+                if (eap._enabled || eap._dirty)
                 {
                     eap._enabled = false;
+                    eap._dirty = false;
                     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
                 }
             }
         }
+
+        inline void dirtyTexCoordPointer( unsigned int unit )
+        {
+            if ( unit >= _texCoordArrayList.size()) return; // _texCoordArrayList.resize(unit+1);
+            EnabledArrayPair& eap = _texCoordArrayList[unit];
+            eap._dirty = true;
+        }
+
 
         inline void disableTexCoordPointersAboveAndIncluding( unsigned int unit )
         {
             while (unit<_texCoordArrayList.size())
             {
                 EnabledArrayPair& eap = _texCoordArrayList[unit];
-                if (eap._enabled)
+                if (eap._enabled || eap._dirty)
                 {
                     if (setClientActiveTextureUnit(unit))
                     {
                         eap._enabled = false;
+                        eap._dirty = false;
                         glDisableClientState(GL_TEXTURE_COORD_ARRAY);
                     }
                 }
+                ++unit;
+            }
+        }
+
+        inline void dirtyTexCoordPointersAboveAndIncluding( unsigned int unit )
+        {
+            while (unit<_texCoordArrayList.size())
+            {
+                EnabledArrayPair& eap = _texCoordArrayList[unit];
+                eap._dirty = true;
                 ++unit;
             }
         }
@@ -568,12 +634,13 @@ class SG_EXPORT State : public Referenced
         
         struct EnabledArrayPair
         {
-            EnabledArrayPair():_enabled(false),_pointer(0) {}
-            EnabledArrayPair(const EnabledArrayPair& eap):_enabled(eap._enabled),_pointer(eap._pointer) {}
-            EnabledArrayPair& operator = (const EnabledArrayPair& eap) { _enabled=eap._enabled; _pointer=eap._pointer; return *this; }
+            EnabledArrayPair():_dirty(true),_enabled(false),_pointer(0) {}
+            EnabledArrayPair(const EnabledArrayPair& eap):_dirty(eap._dirty), _enabled(eap._enabled),_pointer(eap._pointer) {}
+            EnabledArrayPair& operator = (const EnabledArrayPair& eap) { _dirty=eap._dirty; _enabled=eap._enabled; _pointer=eap._pointer; return *this; }
             
-            bool          _enabled;
-            const GLvoid* _pointer;
+            bool            _dirty;
+            bool            _enabled;
+            const GLvoid*   _pointer;
         };
         
         typedef std::vector<EnabledArrayPair>                   EnabledTexCoordArrayList;

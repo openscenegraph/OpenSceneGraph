@@ -94,6 +94,17 @@ class Vec4d
         inline value_type z() const { return _v[2]; }
         inline value_type w() const { return _v[3]; }
 
+        inline value_type& red() { return _v[0]; }
+        inline value_type& green() { return _v[1]; }
+        inline value_type& blue() { return _v[2]; }
+        inline value_type& alpha() { return _v[3]; }
+
+        inline value_type red() const { return _v[0]; }
+        inline value_type green() const { return _v[1]; }
+        inline value_type blue() const { return _v[2]; }
+        inline value_type alpha() const { return _v[3]; }
+
+
         inline unsigned long asABGR() const
         {
             return (unsigned long)clampTo((_v[0]*255.0),0.0,255.0)<<24 |

@@ -387,8 +387,15 @@ class SG_EXPORT Geometry : public Drawable
 };
 
 /** Convenience function to be used for creating quad geometry with texture coords.
-  * Tex coords go from bottom left (0,0) to top right (1,1).*/
-extern SG_EXPORT Geometry* createTexturedQuadGeometry(const Vec3& corner,const Vec3& widthVec,const Vec3& heightVec, float s=1.0f, float t=1.0f);
+  * Tex coords go from left bottom (l,b) to right top (r,t).*/
+extern SG_EXPORT Geometry* createTexturedQuadGeometry(const Vec3& corner,const Vec3& widthVec,const Vec3& heightVec, float l, float b, float r, float t);
+
+/** Convenience function to be used for creating quad geometry with texture coords.
+  * Tex coords go from bottom left (0,0) to top right (s,t).*/
+inline Geometry* createTexturedQuadGeometry(const Vec3& corner,const Vec3& widthVec,const Vec3& heightVec, float s=1.0f, float t=1.0f)
+{
+    return createTexturedQuadGeometry(corner,widthVec,heightVec, 0.0f, 0.0f, s, t);
+}
 
 
 }

@@ -113,6 +113,9 @@ class OSGReaderWriter : public ReaderWriter
 
         virtual WriteResult writeObject(const Object& obj,const std::string& fileName, const osgDB::ReaderWriter::Options* options)
         {
+            std::string ext = osgDB::getLowerCaseFileExtension(fileName);
+            if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
+
             Output fout(fileName.c_str());
             if (fout)
             {

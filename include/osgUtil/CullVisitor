@@ -329,7 +329,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
             if (!_viewportStack.empty())
             {
                 osg::Viewport* viewport = _viewportStack.back().get();
-                return osg::Matrix::scale(0.5f*viewport->width(),viewport->height(),0.5f)*osg::Matrix::translate(0.5f,0.5f,0.5f);
+                return viewport->computeWindowMatrix();
             }
             else
             {

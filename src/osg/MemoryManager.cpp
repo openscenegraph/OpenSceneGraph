@@ -203,9 +203,18 @@ static        unsigned int    reservoirBufferSize    = 0;
 // ---------------------------------------------------------------------------------------------------------------------------------
 static    void    dumpLeakReport();
 static    void    doCleanupLogOnFirstRun();
-static    void    activateStressTest();
 
 #ifdef OSG_USE_MEMORY_MANAGER
+
+static void activateStressTest()
+{
+    randomWipe             = true;
+    alwaysValidateAll      = true;
+    alwaysLogAll           = true;
+    alwaysWipeAll          = true;
+    cleanupLogOnFirstRun   = true;
+}
+
 
 class    MemStaticTimeTracker
 {
@@ -246,15 +255,6 @@ static MemStaticTimeTracker mstt;
 // ---------------------------------------------------------------------------------------------------------------------------------
 // Local functions only
 // ---------------------------------------------------------------------------------------------------------------------------------
-
-static void activateStressTest()
-{
-    randomWipe             = true;
-    alwaysValidateAll      = true;
-    alwaysLogAll           = true;
-    alwaysWipeAll          = true;
-    cleanupLogOnFirstRun   = true;
-}
 
 
 static    void doCleanupLogOnFirstRun()

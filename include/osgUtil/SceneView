@@ -248,6 +248,8 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         virtual void cullStage(osg::Matrix* projection,osg::Matrix* modelview,osgUtil::CullVisitor* cullVisitor, osgUtil::RenderGraph* rendergraph, osgUtil::RenderStage* renderStage);
         virtual void drawStage(osgUtil::RenderStage* renderStage);
 
+        const osg::Matrix computeMVPW() const;
+
         osg::ref_ptr<osg::Node>                     _sceneData;
         osg::ref_ptr<osg::StateSet>                 _globalState;
         osg::ref_ptr<osg::Light>                    _light;

@@ -551,7 +551,12 @@ void SceneView::drawStage(osgUtil::RenderStage* renderStage)
     windows coordinates are calculated relative to the bottom left of the window.*/
 bool SceneView::projectWindowIntoObject(const osg::Vec3& window,osg::Vec3& object) const
 {
-    return _camera->unproject(window,*_viewport,object);
+    osg::Matrix inverseMVPW;
+    inverseMVPW.invert(computeMVPW());
+    
+    object = window*inverseMVPW;
+    
+    return true;
 }
 
 
@@ -562,9 +567,13 @@ bool SceneView::projectWindowIntoObject(const osg::Vec3& window,osg::Vec3& objec
     windows coordinates are calculated relative to the bottom left of the window.*/
 bool SceneView::projectWindowXYIntoObject(int x,int y,osg::Vec3& near_point,osg::Vec3& far_point) const
 {
-    bool result_near = _camera->unproject(Vec3(x,y,0.0f),*_viewport,near_point);
-    bool result_far =  _camera->unproject(Vec3(x,y,1.0f),*_viewport,far_point);
-    return result_near & result_far;
+    osg::Matrix inverseMVPW;
+    inverseMVPW.invert(computeMVPW());
+    
+    near_point = osg::Vec3(x,y,0.0f)*inverseMVPW;
+    far_point = osg::Vec3(x,y,1.0f)*inverseMVPW;
+        
+    return true;
 }
 
 
@@ -574,5 +583,28 @@ bool SceneView::projectWindowXYIntoObject(int x,int y,osg::Vec3& near_point,osg:
     windows coordinates are calculated relative to the bottom left of the window.*/
 bool SceneView::projectObjectIntoWindow(const osg::Vec3& object,osg::Vec3& window) const
 {
-    return _camera->project(object,*_viewport,window);
+    window = object*computeMVPW();
+    return true;
+}
+
+const osg::Matrix SceneView::computeMVPW() const
+{
+    osg::Matrix matrix;
+    
+    if (_modelviewMatrix.valid())
+        matrix = (*_modelviewMatrix);
+    else if (_camera.valid())
+        matrix = _camera->getModelViewMatrix();
+        
+    if (_projectionMatrix.valid())
+        matrix.postMult(*_projectionMatrix);
+    else if (_camera.valid())
+        matrix.postMult(_camera->getProjectionMatrix());
+        
+    if (_viewport.valid())
+        matrix.postMult(_viewport->computeWindowMatrix());
+    else
+        osg::notify(osg::WARN)<<"osg::Matrix SceneView::computeMVPW() - error no viewport attached to SceneView, coords will be computed inccorectly."<<std::endl;
+
+    return matrix;
 }

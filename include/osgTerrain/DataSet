@@ -878,6 +878,24 @@ class DataSet : public osg::Referenced
         void setDatabaseType(DatabaseType type) { _databaseType = type; }
         DatabaseType getDatabaseType() const { return _databaseType; }
 
+        enum GeometryType
+        {
+            HEIGHT_FIELD,
+            POLYGONAL,
+        };
+        void setGeometryType(GeometryType type) { _geometryType = type; }
+        GeometryType getGeometryType() const { return _geometryType; }
+
+        enum TextureType
+        {
+            RGB_24_BIT,
+            RGB_16_BIT,
+            COMPRESSED_TEXTURE
+        };
+        void setTextureType(TextureType type) { _textureType = type; }
+        TextureType getTextureType() const { return _textureType; }
+
+
         void writeDestination();
         
         osg::Node* getDestinationRootNode() { return _rootNode.get(); }
@@ -909,6 +927,8 @@ class DataSet : public osg::Referenced
         std::string                                 _tileExtension;
         osg::Vec4                                   _defaultColor;
         DatabaseType                                _databaseType;
+        GeometryType                                _geometryType;
+        TextureType                                 _textureType;
         
         
         osg::ref_ptr<osg::Node>                     _rootNode;

@@ -136,8 +136,6 @@ int main( int argc, char **argv )
     int pos = 1;
     while(pos<arguments.argc())
     {
-        argumentRead = false;
-    
         std::string def;
         osgTerrain::DataSet::Source* source = 0;
 
@@ -149,50 +147,78 @@ int main( int argc, char **argv )
         }
         else if (arguments.read(pos, "--identity"))
         {
-            argumentRead = true;
             geoTransformSet = false;
             geoTransform.makeIdentity();            
         }
+
+        // x vector
         else if (arguments.read(pos, "--xx",geoTransform(0,0)))
         {
-            argumentRead = true;
             geoTransformSet = true;
-            std::cout<<"--xs "<<geoTransform(0,0)<<std::endl;
+            std::cout<<"--xx "<<geoTransform(0,0)<<std::endl;
+        }
+        else if (arguments.read(pos, "--xy",geoTransform(1,0)))
+        {
+            geoTransformSet = true;
+            std::cout<<"--xy "<<geoTransform(1,0)<<std::endl;
+        }
+        else if (arguments.read(pos, "--xz",geoTransform(2,0)))
+        {
+            geoTransformSet = true;
+            std::cout<<"--xz "<<geoTransform(2,0)<<std::endl;
         }
         else if (arguments.read(pos, "--xt",geoTransform(3,0)))
         {
-            argumentRead = true;
             geoTransformSet = true;
             std::cout<<"--xo "<<geoTransform(3,0)<<std::endl;
         }
+
+        // y vector
+        else if (arguments.read(pos, "--yx",geoTransform(0,1)))
+        {
+            geoTransformSet = true;
+            std::cout<<"--yx "<<geoTransform(0,1)<<std::endl;
+        }
         else if (arguments.read(pos, "--yy",geoTransform(1,1)))
         {
-            argumentRead = true;
             geoTransformSet = true;
             std::cout<<"--yy "<<geoTransform(1,1)<<std::endl;
         }
+        else if (arguments.read(pos, "--yz",geoTransform(2,1)))
+        {
+            geoTransformSet = true;
+            std::cout<<"--yz "<<geoTransform(2,1)<<std::endl;
+        }
         else if (arguments.read(pos, "--yt",geoTransform(3,1)))
         {
-            argumentRead = true;
             geoTransformSet = true;
             std::cout<<"--yt "<<geoTransform(3,1)<<std::endl;
         }
+
+        // z vector
+        else if (arguments.read(pos, "--zx",geoTransform(0,2)))
+        {
+            geoTransformSet = true;
+            std::cout<<"--zx "<<geoTransform(0,2)<<std::endl;
+        }
+        else if (arguments.read(pos, "--zy",geoTransform(1,2)))
+        {
+            geoTransformSet = true;
+            std::cout<<"--zy "<<geoTransform(1,2)<<std::endl;
+        }
         else if (arguments.read(pos, "--zz",geoTransform(2,2)))
         {
-            argumentRead = true;
             geoTransformSet = true;
             std::cout<<"--zz "<<geoTransform(2,2)<<std::endl;
         }
         else if (arguments.read(pos, "--zt",geoTransform(3,2)))
         {
-            argumentRead = true;
             geoTransformSet = true;
             std::cout<<"--zt "<<geoTransform(3,2)<<std::endl;
         }
+
         else if (arguments.read(pos, "-d",filename))
         {
-            argumentRead = true;
-
             if (!filename.empty())
             {
                 std::cout<<"-d "<<filename<<std::endl;
@@ -202,8 +228,6 @@ int main( int argc, char **argv )
         }
         else if (arguments.read(pos, "-t",filename))
         {
-            argumentRead = true;
-
             if (!filename.empty())
             {
                 std::cout<<"-t "<<filename<<std::endl;
@@ -212,8 +236,6 @@ int main( int argc, char **argv )
         }
         else if (arguments.read(pos, "-m",filename))
         {
-            argumentRead = true;
-
             if (!filename.empty())
             {
                 std::cout<<"-m "<<filename<<std::endl;
@@ -223,8 +245,6 @@ int main( int argc, char **argv )
         else if (arguments.read(pos, "-o",filename)) 
         {
             std::cout<<"-o "<<filename<<std::endl;
-
-            argumentRead = true;
 
             std::string path = osgDB::getFilePath(filename);
             std::string base = path.empty()?osgDB::getStrippedName(filename):

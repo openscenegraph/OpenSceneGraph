@@ -2147,7 +2147,9 @@ DataSet::DataSet()
     
     _defaultColor.set(0.5f,0.5f,1.0f,1.0f);
     _databaseType = PagedLOD_DATABASE;
-    
+    _geometryType = POLYGONAL;
+    _textureType = COMPRESSED_TEXTURE;
+
 }
 
 void DataSet::init()

@@ -15,9 +15,9 @@
 
 using namespace osg;
 
-TexEnv::TexEnv()
+TexEnv::TexEnv(Mode mode)
 {
-    _mode = MODULATE;
+    _mode = mode;
     _color.set(0.0f,0.0f,0.0f,0.0f);
 }
 

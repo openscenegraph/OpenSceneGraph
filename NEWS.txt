@@ -1,7 +1,7 @@
 OSG News (most significant items from ChangeLog)
 ================================================
 
-16th November 2004 - OpenSceneGraph-0.9.8
+24th November 2004 - OpenSceneGraph-0.9.8
 
     >>> Support for database archives, improved pager, 3d compressed textures
     
@@ -18,10 +18,11 @@ OSG News (most significant items from ChangeLog)
     
     Spelling and typo correction blitz on osg, osgDB and osgUtil libraries.
     
-    NodeTrackManipulator improved.
+    osgDB::ReaderWriter and osgDB::Registry have been refactored to allow
+    multi-threading of database reading and writing.        
     
+    NodeTrackManipulator improved.    
     
-
     General bug fixes.    
     
     New examples:

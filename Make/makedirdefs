@@ -152,6 +152,7 @@ EXAMPLE_DIRS = \
 	osgparticle\
 	osgpick\
 	osgpoints\
+	osgpointsprite\
 	osgprerender\
 	osgprerendercubemap\
 	osgreflect\

@@ -457,9 +457,7 @@ class SG_EXPORT Grid : public HeightField
         
     	META_Shape(osg,Grid)
 
-    	void allocGrid(unsigned int numColumns,unsigned int numRows, float value=0.0f);
-
-    	void populateGrid(float minValue,float maxValue);
+    	void allocateGrid(unsigned int numColumns,unsigned int numRows);
 
 	void setHeight(unsigned int c,unsigned int r,float value)
 	{
@@ -486,7 +484,7 @@ class CompositeShape : public Shape
     
     	typedef std::vector< ref_ptr<Shape> > ChildList;
     
-    	CompositeShape();
+    	CompositeShape() {}
 
         CompositeShape(const CompositeShape& cs,const CopyOp& copyop=CopyOp::SHALLOW_COPY): 
             Shape(cs,copyop),

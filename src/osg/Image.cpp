@@ -885,7 +885,7 @@ bool Image::isImageTranslucent() const
     {
         for(int it=0;it<t();++it)
         {
-            unsigned char* d = data(0,it,ir);
+            const unsigned char* d = data(0,it,ir);
             switch(_dataType)
             {
                 case(GL_BYTE):              return _findLowerAlphaValueInRow(s(), (char*)d +offset,            (char)127, delta);

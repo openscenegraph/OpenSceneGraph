@@ -20,6 +20,7 @@ namespace flt {
 
 
 class Record;
+class FltFile;
 
 
 class Input
@@ -33,7 +34,7 @@ class Input
         virtual bool rewindLast() = 0;
         virtual long offset() = 0;
 
-        Record* readCreateRecord();
+        Record* readCreateRecord(FltFile* pFltFile);
 
     protected:
 

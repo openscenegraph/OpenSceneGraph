@@ -38,6 +38,7 @@ C++FILES = \
 	Pool.cpp\
 	TextureMappingPaletteRecord.cpp\
 	ReaderWriterFLT.cpp\
+	ReaderWriterATTR.cpp\
 #	PointLight.cpp\
 	
 

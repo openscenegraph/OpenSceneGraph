@@ -41,3 +41,4 @@ void flt::endian2(void* pSrc, int nSrc, void* pDst, int )
         *(1 + (long *)pDst) = tmp1;
     }
 }
+

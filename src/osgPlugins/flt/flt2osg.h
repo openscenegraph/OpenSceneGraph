@@ -6,13 +6,12 @@
 #include <osg/ref_ptr>
 #include <osg/Vec4>
 
-#include "Record.h"
-#include "FltFile.h"
-
 #include <map>
 #include <vector>
 #include <string>
 
+#include "Record.h"
+#include "GeoSetBuilder.h"
 
 namespace osg {
 class Object;
@@ -52,19 +51,62 @@ class LightPointRecord;
 class VertexListRecord;
 class LongIDRecord;
 
-class GeoSetBuilder;
+//class GeoSetBuilder;
 
 struct SMaterial;
+
+#define ADD_NORMAL(DGSET,VERTEX)                                \
+        (DGSET)->addNormal(osg::Vec3(                           \
+            (float)(VERTEX)->Normal.x(),                        \
+            (float)(VERTEX)->Normal.y(),                        \
+            (float)(VERTEX)->Normal.z()));
+
+#define ADD_VERTEX_COLOR(DGSET,VERTEX,COLOR_POOL)               \
+    {                                                           \
+        if ((VERTEX)->swFlags & V_NO_COLOR_BIT)                 \
+            (DGSET)->addColor(_faceColor);                      \
+        else                                                    \
+        {                                                       \
+            if ((VERTEX)->swFlags & V_PACKED_COLOR_BIT)         \
+                (DGSET)->addColor(pVert->PackedColor.get());    \
+            else                                                \
+                (DGSET)->addColor((COLOR_POOL)->getColor((VERTEX)->dwVertexColorIndex)); \
+        }                                                       \
+    }
+
+#define ADD_TCOORD(DGSET,VERTEX)                                \
+        (DGSET)->addTCoord(osg::Vec2(                           \
+            (float)(VERTEX)->Texture.x(),                       \
+            (float)(VERTEX)->Texture.y()));
+
+#define ADD_OLD_COLOR(DGSET,VERTEX,COLOR_POOL)                  \
+    {                                                           \
+        if (COLOR_POOL)                                         \
+            (DGSET)->addColor((COLOR_POOL)->getColor((VERTEX)->color_index)); \
+        else                                                    \
+            (DGSET)->addColor(osg::Vec4(1,1,1,1));              \
+    }
+
+#define ADD_OLD_TCOORD(DGSET,VERTEX)                            \
+        (DGSET)->addTCoord(osg::Vec2(                           \
+            (float)(VERTEX)->t[0],                              \
+            (float)(VERTEX)->t[1]));
+
+#define ADD_OLD_NORMAL(DGSET,VERTEX)                            \
+        (DGSET)->addNormal(osg::Vec3(                           \
+            (float)pVert->n[0] / (1<<30),                       \
+            (float)pVert->n[1] / (1<<30),                       \
+            (float)pVert->n[2] / (1<<30)));
 
 
 class ConvertFromFLT
 {
     public:
 
-        ConvertFromFLT(FltFile* pFltFile);
+        ConvertFromFLT();
         virtual ~ConvertFromFLT();
 
-        osg::Node* convert(Record* rec);
+        osg::Node* convert(HeaderRecord* rec);
 
         osg::Node* visitNode(osg::Group* osgParent,Record* rec);
         osg::Node* visitAncillary(osg::Group* osgParent, PrimNodeRecord* rec);
@@ -97,20 +139,21 @@ class ConvertFromFLT
 
     private:
 
+        int addVertices(GeoSetBuilder* pBuilder, PrimNodeRecord* primRec);
+        int addVertex(GeoSetBuilder* pBuilder, Record* rec);
         Record* getVertexFromPool(int nOffset);
         void regisiterVertex(int nOffset, Record* pRec);
 
         typedef std::map<int,Record*> VertexPaletteOffsetMap;
         VertexPaletteOffsetMap _VertexPaletteOffsetMap;
 
-        osg::ref_ptr<FltFile>    _pFltFile;
-
         int                 _diOpenFlightVersion;
         int                 _diCurrentOffset;
         unsigned short      _wObjTransparency;
         int                 _nSubfaceLevel;
-        float               _sfHdrUnitScale;       // iMultDivUnit
+        double              _unitScale;
         bool                _bHdrRgbMode;
+        osg::Vec4           _faceColor;
 };
 
     

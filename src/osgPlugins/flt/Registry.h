@@ -7,7 +7,7 @@
 
 #include <osg/Referenced>
 #include <osg/ref_ptr>
-#include <osg/Texture>
+#include <osg/StateSet>
 
 #include "FltFile.h"
  
@@ -47,19 +47,16 @@ class Registry
         void addPrototype(Record* rec);
         Record* getPrototype(const int opcode);
 
-        void addTexture(const std::string& name, osg::Texture* texture);
-        osg::Texture* getTexture(const std::string name);
+        void addTexture(const std::string& name, osg::StateSet* texture);
+        osg::StateSet* getTexture(const std::string name);
 
         void addFltFile(const std::string& name, FltFile* file);
         FltFile* getFltFile(const std::string& name);
 
-        inline void setVersion(int ver) { _fltFileVersion = ver; }
-        inline int  getVersion() const  { return _fltFileVersion; }
-
     private:
 
         typedef std::map<int, osg::ref_ptr<Record> > RecordProtoMap;
-        typedef std::map<std::string, osg::ref_ptr<osg::Texture> > TextureMap;
+        typedef std::map<std::string, osg::ref_ptr<osg::StateSet> > TextureMap;
         typedef std::map<std::string, osg::ref_ptr<FltFile> > FltFileMap;
 
         /** constructor is private, as its a singleton, preventing
@@ -70,8 +67,6 @@ class Registry
         RecordProtoMap  _recordProtoMap;
         TextureMap      _textureMap;
         FltFileMap      _fltFileMap;
-        int             _fltFileVersion;
-
 };
 
 

@@ -54,14 +54,14 @@ Record* Registry::getPrototype(const int opcode)
 ///////////////////////////////////////////////////////////////////
 
 
-void Registry::addTexture(const std::string& name, osg::Texture* texture)
+void Registry::addTexture(const std::string& name, osg::StateSet* texture)
 {
     if (texture == NULL) return;
     _textureMap[name] = texture;
 }
 
 
-osg::Texture* Registry::getTexture(const std::string name)
+osg::StateSet* Registry::getTexture(const std::string name)
 {
     TextureMap::iterator itr = _textureMap.find(name);
     if (itr != _textureMap.end())

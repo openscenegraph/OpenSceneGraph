@@ -29,8 +29,7 @@ class FltFile : public osg::Referenced
         virtual osg::Object* readObject(const std::string& fileName);
         virtual osg::Node* readNode(const std::string& fileName);
         osg::Node* convert();
-        Record* getHeaderRecord() { return _pHeaderRecord; }
-        Record* readModel(const std::string& fileName);
+        bool readModel(const std::string& fileName);
 
         ColorPool*      getColorPool()      { return _colorPool.get(); }
         TexturePool*    getTexturePool()    { return _texturePool.get(); }
@@ -40,27 +39,30 @@ class FltFile : public osg::Referenced
         void setTexturePool(TexturePool* texturePool)   { _texturePool = texturePool; }
         void setMaterialPool(MaterialPool* materialPool){ _materialPool = materialPool; }
 
-        inline const bool useColorPalette() const       { return _useColorPalette; }
-        inline const bool useTexturePalette() const     { return _useTexturePalette; }
-        inline const bool useMaterialPalette() const    { return _useMaterialPalette; }
+        inline const bool useInternalColorPalette() const    { return _useInternalColorPalette; }
+        inline const bool useInternalTexturePalette() const  { return _useInternalTexturePalette; }
+        inline const bool useInternalMaterialPalette() const { return _useInternalMaterialPalette; }
 
         int getFlightVersion();
+        inline HeaderRecord* getHeaderRecord() { return _headerRecord.get(); }
 
     protected:
 
         virtual ~FltFile() {}
 
-        Record* readFile(const std::string& fileName);
-        void readExternals(Record* pRec);
+        bool readFile(const std::string& fileName);
+        void readExternals();
 
     private:
 
-        Record*         _pHeaderRecord;
+        osg::ref_ptr<HeaderRecord>        _headerRecord;
 
-        bool            _useColorPalette;
-        bool            _useTexturePalette;
-        bool            _useMaterialPalette;
+        bool                        _useInternalColorPalette;
+        bool                        _useInternalTexturePalette;
+        bool                        _useInternalMaterialPalette;
 
+        std::string                 _directory;
+        
         osg::ref_ptr<ColorPool>     _colorPool;
         osg::ref_ptr<TexturePool>   _texturePool;
         osg::ref_ptr<MaterialPool>  _materialPool;

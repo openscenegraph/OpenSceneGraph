@@ -68,8 +68,8 @@ void FaceRecord::endian()
     ENDIAN( pSFace->diIRMaterial );
     ENDIAN( pSFace->wTransparency );
 
-    // Added after version 13
-    if (Registry::instance()->getVersion() > 13)
+    // Face record extended after version 13
+    if (getFltFile()->getFlightVersion() > 13)
     {
         ENDIAN( pSFace->dwFlags );
         //  ENDIAN( pSFace->PrimaryPackedColor );
@@ -93,12 +93,12 @@ bool FaceRecord::readLocalData(Input& fr)
 
     Record* pRec;
 
-    if (!(pRec=fr.readCreateRecord())) return false;
+    if (!(pRec=fr.readCreateRecord(_pFltFile))) return false;
 
     if (pRec->getOpcode() != PUSH_SUBFACE_OP)
         return fr.rewindLast();
 
-    while ((pRec=fr.readCreateRecord()))
+    while ((pRec=fr.readCreateRecord(_pFltFile)))
     {
         if (pRec->getOpcode()==POP_SUBFACE_OP) return true;
 

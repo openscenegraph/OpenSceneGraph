@@ -8,12 +8,11 @@
 #include <osg/Vec4>
 #include <osg/Texture>
 #include <osg/Material>
+#include <osg/StateSet>
 
 #include <string>
 #include <algorithm>
 #include <map>
-//#include <vector>
-
 
 namespace flt {
 
@@ -59,8 +58,8 @@ class TexturePool : public osg::Referenced
 
         TexturePool() {}
 
-        osg::Texture* getTexture(int nIndex);
-        void addTexture(int nIndex, osg::Texture* osgTexture);
+        osg::StateSet* getTexture(int nIndex);
+        void addTexture(int nIndex, osg::StateSet* stateset);
 
     protected :
 
@@ -68,7 +67,7 @@ class TexturePool : public osg::Referenced
 
     private :
 
-        typedef std::map<int,osg::ref_ptr<osg::Texture> > TexturePaletteMap;
+        typedef std::map<int,osg::ref_ptr<osg::StateSet> > TexturePaletteMap;
         TexturePaletteMap _textureMap;
 };
 

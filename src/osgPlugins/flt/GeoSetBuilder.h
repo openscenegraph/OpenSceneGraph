@@ -2,11 +2,11 @@
 #define __FLT_GEOSETBUILDER_H
 
 #include <osg/ref_ptr>
-#include <osg/Referenced>
 #include <osg/Vec2>
 #include <osg/Vec3>
 #include <osg/Vec4>
 #include <osg/GeoSet>
+#include <osg/Geode>
 #include <osg/Material>
 #include <osg/StateSet>
 
@@ -20,60 +20,82 @@ class Record;
 class TmpGeoSet;
 
 
+
 ////////////////////////////////////////////////////////////////////
 //
-//                       TmpGeoSet
+//                       DynGeoSet
 //
 ////////////////////////////////////////////////////////////////////
+#if 0
+#  define COMPARE_DynGeoSet_Parameter(parameter) \
+        if (parameter<rhs.parameter) return -1; \
+        if (rhs.parameter<parameter) return 1;
+#else
+#  define COMPARE_DynGeoSet_Parameter(parameter) \
+        if (parameter != rhs.parameter) return -1;
+#endif
 
-
-/** TmpGeoSet - Temporary GeoSet with dynamic vertex array.
+/** DynGeoSet - Dynamic GeoSet.
   * Problem: osg::GeoSet use C arrays (static size) for coordinates,
   * normals, colors and texture coordinates.
   */ 
-class TmpGeoSet : public osg::Referenced
+class DynGeoSet : public osg::GeoSet
 {
     public:
 
-        TmpGeoSet(FltFile* pFltFile);
-        virtual ~TmpGeoSet() {};
+        virtual osg::Object* clone() const { return new DynGeoSet(); }
+        virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const DynGeoSet*>(obj)!=NULL; }
+        virtual const char* className() const { return "DynGeoSet"; }
 
-        void addVertex(Record* vertexRec) { _vertexRecList.push_back(vertexRec); }
-        void addPrimLen(int len) { _primLenList.push_back(len); }
-
-        // Append vertices from other TmpGeoSet
-        void addVertices(TmpGeoSet* source)
+        int compare(const DynGeoSet& rhs) const
         {
-            _vertexRecList.insert(_vertexRecList.end(),
-                source->_vertexRecList.begin(), source->_vertexRecList.end());
-            _primLenList.insert(_primLenList.end(),
-                source->_primLenList.begin(), source->_primLenList.end());
+            COMPARE_DynGeoSet_Parameter(_primtype)
+            COMPARE_DynGeoSet_Parameter(_color_binding)
+            COMPARE_DynGeoSet_Parameter(_normal_binding)
+            COMPARE_DynGeoSet_Parameter(_texture_binding)
+
+            if ((_color_binding == osg::GeoSet::BIND_OVERALL)
+            &&  (_colorList.size() >= 1) &&  (rhs._colorList.size() >= 1)
+            &&  (_colorList[0] != rhs._colorList[0]))
+                return -1;
+
+            return getStateSet()->compare(*rhs.getStateSet(), true);
         }
+        
+        bool operator <  (const DynGeoSet& rhs) const { return compare(rhs)<0; }
+        bool operator == (const DynGeoSet& rhs) const { return compare(rhs)==0; }
+        bool operator != (const DynGeoSet& rhs) const { return compare(rhs)!=0; }
 
-        inline const int numberOfVertices() const { return _vertexRecList.size(); }
-        inline osg::GeoSet* getGeoSet() { return _geoSet.get(); }
-        inline const osg::GeoSet* getGeoSet() const { return _geoSet.get(); }
+        inline void addPrimLen(const int len)           { _primLenList.push_back(len); }
+        inline void addCoord(const osg::Vec3& coord)    { _coordList.push_back(coord); }
+        inline void addNormal(const osg::Vec3& normal)  { _normalList.push_back(normal); }
+        inline void addColor(const osg::Vec4& color)    { _colorList.push_back(color); }
+        inline void addTCoord(const osg::Vec2& tcoord)  { _tcoordList.push_back(tcoord); }
 
-        // Create complete osg::GeoSet.
-        osg::GeoSet* createOsgGeoSet();
+        void append(DynGeoSet* source);
+        void setBinding();
+        bool setLists();
+
+        inline const int primLenListSize() const { return _primLenList.size(); }
+        inline const int coordListSize() const { return _coordList.size(); }
+        inline const int normalListSize() const { return _normalList.size(); }
+        inline const int colorListSize() const { return _colorList.size(); }
+        inline const int tcoordListSize() const { return _tcoordList.size(); }
 
     private:
 
-        typedef std::vector<osg::ref_ptr<Record> >  VertexRecList;
-        typedef std::vector<int>                    PrimLenList;
+        typedef std::vector<int>        PrimLenList;
+        typedef std::vector<osg::Vec3>  CoordList;
+        typedef std::vector<osg::Vec3>  NormalList;
+        typedef std::vector<osg::Vec4>  ColorList;
+        typedef std::vector<osg::Vec2>  TcoordList;
 
-        void setVertex(osg::GeoSet* gset, int index, Record* vertex);
-
-        osg::ref_ptr<osg::GeoSet>   _geoSet;
-        PrimLenList                 _primLenList;
-        VertexRecList               _vertexRecList;
-
-        osg::ref_ptr<ColorPool>     _colorPool;
-        osg::ref_ptr<TexturePool>   _texturePool;
-        osg::ref_ptr<MaterialPool>  _materialPool;
-
+        PrimLenList     _primLenList;
+        CoordList       _coordList;
+        NormalList      _normalList;
+        ColorList       _colorList;
+        TcoordList      _tcoordList;
 };
-
 
 
 
@@ -91,32 +113,28 @@ class GeoSetBuilder
 {
     public:
 
-        GeoSetBuilder(FltFile* pFltFile);
+        GeoSetBuilder(osg::Geode* geode);
         virtual ~GeoSetBuilder() {}
 
-        void addVertex(Record* vertex) { _tmpGeoSet.get()->addVertex(vertex); }
-        void addPrimLen(int len) { _tmpGeoSet.get()->addPrimLen(len); }
-
         bool addPrimitive();
-        osg::Geode* createOsgGeoSets(osg::Geode* geode=NULL);
+        osg::Geode* createOsgGeoSets();
 
-        inline osg::GeoSet* getGeoSet() { return _tmpGeoSet.get()->getGeoSet(); }
-        inline const osg::GeoSet* getGeoSet() const { return _tmpGeoSet.get()->getGeoSet(); }
-        const int numberOfVertices() const { return _tmpGeoSet.get()->numberOfVertices(); }
+        inline DynGeoSet* getDynGeoSet() { return _dynGeoSet.get(); }
+        inline const DynGeoSet* getDynGeoSet() const { return _dynGeoSet.get(); }
 
     protected:
 
         void initPrimData();
-        TmpGeoSet* findMatchingGeoSet();
+        DynGeoSet* findMatchingGeoSet();
         osg::GeoSet::PrimitiveType findPrimType(const int nVertices);
 
     private:
 
-        osg::ref_ptr<FltFile>       _pFltFile;
-        osg::ref_ptr<TmpGeoSet>     _tmpGeoSet;
+        osg::ref_ptr<osg::Geode>    _geode;
+        osg::ref_ptr<DynGeoSet>     _dynGeoSet;
 
-        typedef std::vector<osg::ref_ptr<TmpGeoSet> > TmpGeoSetList;
-        TmpGeoSetList               _tmpGeoSetList;
+        typedef std::vector<osg::ref_ptr<DynGeoSet> > DynGeoSetList;
+        DynGeoSetList               _dynGeoSetList;
 };
 
 

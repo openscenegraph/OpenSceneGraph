@@ -23,6 +23,7 @@ using namespace std;
 
 using namespace flt;
 
+
 FileInput::FileInput()
 {
     _init();
@@ -165,7 +166,7 @@ SRecHeader* FileInput::readRecord()
 }
 
 
-Record* Input::readCreateRecord()
+Record* Input::readCreateRecord(FltFile* pFltFile)
 {
     SRecHeader* pData = readRecord();
 
@@ -193,6 +194,8 @@ Record* Input::readCreateRecord()
         ::free(pData);
         return NULL;
     }
+
+    pRec->_pFltFile = pFltFile;
 
     #if 0
     osg::notify(osg::ALWAYS) << "class=" << pRec->className();

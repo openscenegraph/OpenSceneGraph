@@ -8,9 +8,6 @@
 #include "FltFile.h"
 #include "Pool.h"
 #include "opcodes.h"
-#include "VertexPoolRecords.h"
-#include "OldVertexRecords.h"
-#include "MaterialPaletteRecord.h"
 #include "GeoSetBuilder.h"
 
 #include <osg/Object>
@@ -35,323 +32,91 @@ using namespace flt;
 
 ////////////////////////////////////////////////////////////////////
 //
-//                       TmpGeoSet
+//                       DynGeoSet
 //
 ////////////////////////////////////////////////////////////////////
 
-// GeoSet with dynamic vertex size.
 
-TmpGeoSet::TmpGeoSet(FltFile* pFltFile)
+#define APPEND_DynGeoSet_List(list)                     \
+    if (source->list.size() > 0)                        \
+        list.insert(list.end(),                         \
+            source->list.begin(), source->list.end());
+
+
+void DynGeoSet::append(DynGeoSet* source)
 {
-    _geoSet = new osg::GeoSet;
-    _geoSet->setStateSet( new osg::StateSet );
-
-    _colorPool      = pFltFile->getColorPool();
-    _texturePool    = pFltFile->getTexturePool();
-    _materialPool   = pFltFile->getMaterialPool();
+    APPEND_DynGeoSet_List(_primLenList)
+    APPEND_DynGeoSet_List(_coordList)
+    APPEND_DynGeoSet_List(_normalList)
+    APPEND_DynGeoSet_List(_colorList)
+    APPEND_DynGeoSet_List(_tcoordList)
 }
 
 
-osg::GeoSet* TmpGeoSet::createOsgGeoSet()
+#define VERIFY_DynGeoSet_Binding(binding,list)          \
+        switch (binding)                                \
+        {                                               \
+        case osg::GeoSet::BIND_PERVERTEX:               \
+            if (list.size() < _coordList.size()) {      \
+                binding = osg::GeoSet::BIND_OFF;        \
+                list.clear(); }                         \
+            break;                                      \
+        case osg::GeoSet::BIND_PERPRIM:                 \
+            if (list.size() < _primLenList.size()) {    \
+                binding = osg::GeoSet::BIND_OFF;        \
+                list.clear(); }                         \
+            break;                                      \
+        case osg::GeoSet::BIND_OVERALL:                 \
+            if (list.size() < 1) {                      \
+                binding = osg::GeoSet::BIND_OFF;        \
+                list.clear(); }                         \
+            break;                                      \
+        }
+
+void DynGeoSet::setBinding()
 {
-    int prims = _primLenList.size();
-    int indices = _vertexRecList.size();
+    VERIFY_DynGeoSet_Binding(_normal_binding, _normalList)
+    VERIFY_DynGeoSet_Binding(_color_binding, _colorList)
+    VERIFY_DynGeoSet_Binding(_texture_binding, _tcoordList)
 
-    if (prims==0 || indices==0)
-        return NULL;
+    // Set bindings
+    setNormalBinding(_normal_binding);
+    setColorBinding(_color_binding);
+    setTextureBinding(_texture_binding);
 
-    osg::GeoSet* gset = getGeoSet();
-
-    gset->setNumPrims(prims);
-
-    // prim lengths
-    switch( gset->getPrimType() )
+    osg::StateSet* stateset = getStateSet();
+    if (stateset)
     {
-    case osg::GeoSet::QUAD_STRIP :
-    case osg::GeoSet::FLAT_TRIANGLE_FAN :
-    case osg::GeoSet::TRIANGLE_FAN :
-    case osg::GeoSet::LINE_LOOP :
-    case osg::GeoSet::LINE_STRIP :
-    case osg::GeoSet::FLAT_LINE_STRIP :
-    case osg::GeoSet::TRIANGLE_STRIP :
-    case osg::GeoSet::FLAT_TRIANGLE_STRIP :
-    case osg::GeoSet::POLYGON :
-        {
-            int *lens = new int[prims];
-            gset->setPrimLengths( lens );
-            for (int n=0; n < prims; n++)
-                lens[n] = _primLenList[n];
-        }
-        break;
+        if (_normal_binding == osg::GeoSet::BIND_OFF)
+            stateset->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
     }
-
-    // create osg compatible buffers
-    gset->setCoords(new osg::Vec3[indices]);
-
-    if (gset->getColorBinding() == osg::GeoSet::BIND_PERVERTEX)
-        gset->setColors(new osg::Vec4[indices]);
-
-    if (gset->getNormalBinding() == osg::GeoSet::BIND_PERVERTEX)
-        gset->setNormals(new osg::Vec3[indices]);
-
-    if (gset->getTextureBinding() == osg::GeoSet::BIND_PERVERTEX)
-        gset->setTextureCoords(new osg::Vec2[indices]);
-
-    // Copy vertices across
-    {
-        int index;
-        VertexRecList::iterator itr;
-        for(index=0, itr=_vertexRecList.begin();
-            itr!=_vertexRecList.end();
-            ++index, ++itr)
-        {
-            setVertex(gset, index, itr->get());
-        }
-    }
-
-    return gset;
 }
 
 
-void TmpGeoSet::setVertex(osg::GeoSet* gset, int index, Record* vertex)
+bool DynGeoSet::setLists()
 {
-    osg::Vec3* coords  = gset->getCoords();
-    osg::Vec4* colors  = gset->getColors();
-    osg::Vec3* normals = gset->getNormals();
-    osg::Vec2* texuv   = gset->getTextureCoords();
-
-    switch(vertex->getOpcode())
+    if ((_primLenList.size() > 0) && (_coordList.size() > 0))
     {
-        case VERTEX_C_OP:
-        {
-            SVertex* pVert = (SVertex*)vertex->getData();
+        GeoSet::setPrimLengths(_primLenList.begin());
+        GeoSet::setCoords(_coordList.begin());
 
-            coords[index].set(
-                (float)pVert->Coord.x(),
-                (float)pVert->Coord.y(),
-                (float)pVert->Coord.z());
+        if ((_normalList.size() > 0)
+        &&  (getNormalBinding() != osg::GeoSet::BIND_OFF))
+            GeoSet::setNormals(_normalList.begin());
 
-            if (gset->getColorBinding() == osg::GeoSet::BIND_PERVERTEX)
-            {
-                if (pVert->swFlags & V_NO_COLOR_BIT)
-                    colors[index] = osg::Vec4(1,1,1,1);
-                else
-                {
-                    if (pVert->swFlags & V_PACKED_COLOR_BIT)
-                        colors[index] = pVert->PackedColor.get();
-                    else
-                    {
-                        ColorPool* pColorPool = _colorPool.get();
-                        colors[index] = pColorPool->getColor(pVert->dwVertexColorIndex);
-                    }
-                }
-            }
-        }
-        break;
+        if ((_colorList.size() > 0)
+        &&  (getColorBinding() != osg::GeoSet::BIND_OFF))
+            GeoSet::setColors(_colorList.begin());
 
-        case VERTEX_CN_OP:
-        {
-            SNormalVertex* pVert = (SNormalVertex*)vertex->getData();
+        if ((_tcoordList.size() > 0)
+        &&  (getTextureBinding() != osg::GeoSet::BIND_OFF))
+            GeoSet::setTextureCoords(_tcoordList.begin());
 
-            coords[index].set(
-                (float)pVert->Coord.x(),
-                (float)pVert->Coord.y(),
-                (float)pVert->Coord.z());
-
-            if (gset->getNormalBinding() == osg::GeoSet::BIND_PERVERTEX)
-            {
-                normals[index].set(
-                    (float)pVert->Normal.x(),
-                    (float)pVert->Normal.y(),
-                    (float)pVert->Normal.z());
-                normals[index].normalize();
-            }
-
-            if (gset->getColorBinding() == osg::GeoSet::BIND_PERVERTEX)
-            {
-                if (pVert->swFlags & V_NO_COLOR_BIT)
-                    colors[index] = osg::Vec4(1,1,1,1);
-                else
-                {
-                    if (pVert->swFlags & V_PACKED_COLOR_BIT)
-                        colors[index] = pVert->PackedColor.get();
-                    else
-                    {
-                        ColorPool* pColorPool = _colorPool.get();
-                        colors[index] = pColorPool->getColor(pVert->dwVertexColorIndex);
-                    }
-                }
-            }
-        }
-        break;
-
-        case VERTEX_CNT_OP:
-        {
-            SNormalTextureVertex* pVert = (SNormalTextureVertex*)vertex->getData();
-
-            coords[index].set(
-                (float)pVert->Coord.x(),
-                (float)pVert->Coord.y(),
-                (float)pVert->Coord.z());
-
-            if (gset->getNormalBinding() == osg::GeoSet::BIND_PERVERTEX)
-            {
-                normals[index].set(
-                    (float)pVert->Normal.x(),
-                    (float)pVert->Normal.y(),
-                    (float)pVert->Normal.z());
-                normals[index].normalize();
-            }
-
-            if (gset->getTextureBinding() == osg::GeoSet::BIND_PERVERTEX)
-            {
-                texuv[index].set(
-                    (float)pVert->Texture.x(),
-                    (float)pVert->Texture.y());
-            }
-
-            if (gset->getColorBinding() == osg::GeoSet::BIND_PERVERTEX)
-            {
-                if (pVert->swFlags & V_NO_COLOR_BIT)
-                    colors[index] = osg::Vec4(1,1,1,1);
-                else
-                {
-                    if (pVert->swFlags & V_PACKED_COLOR_BIT)
-                        colors[index] = pVert->PackedColor.get();
-                    else
-                    {
-                        ColorPool* pColorPool = _colorPool.get();
-                        colors[index] = pColorPool->getColor(pVert->dwVertexColorIndex);
-                    }
-                }
-            }
-        }
-        break;
-
-        case VERTEX_CT_OP:
-        {
-            STextureVertex* pVert = (STextureVertex*)vertex->getData();
-
-            coords[index].set(
-                (float)pVert->Coord.x(),
-                (float)pVert->Coord.y(),
-                (float)pVert->Coord.z());
-
-            if (gset->getTextureBinding() == osg::GeoSet::BIND_PERVERTEX)
-            {
-                texuv[index].set(
-                    (float)pVert->Texture.x(),
-                    (float)pVert->Texture.y());
-            }
-
-            if (gset->getColorBinding() == osg::GeoSet::BIND_PERVERTEX)
-            {
-                osg::Vec4* colors = gset->getColors();
-
-                if (pVert->swFlags & V_NO_COLOR_BIT)
-                    colors[index] = osg::Vec4(1,1,1,1);
-                else
-                {
-                    if (pVert->swFlags & V_PACKED_COLOR_BIT)
-                        colors[index] = pVert->PackedColor.get();
-                    else
-                    {
-                        ColorPool* pColorPool = _colorPool.get();
-                        colors[index] = pColorPool->getColor(pVert->dwVertexColorIndex);
-                    }
-                }
-            }
-        }
-        break;
-
-        case OLD_VERTEX_OP:
-        {
-            SOldVertex* pVert = (SOldVertex*)vertex->getData();
-
-            coords[index].set(
-                (float)pVert->v[0],
-                (float)pVert->v[1],
-                (float)pVert->v[2]);
-
-            if ((gset->getTextureBinding() == osg::GeoSet::BIND_PERVERTEX)
-            &&  (vertex->getSize() >= sizeof(SOldVertex)))
-            {
-                texuv[index].set(
-                    (float)pVert->t[0],
-                    (float)pVert->t[1]);
-            }
-        }
-        break;
-
-        case OLD_VERTEX_COLOR_OP:
-        {
-            SOldVertexColor* pVert = (SOldVertexColor*)vertex->getData();
-
-            coords[index].set(
-                (float)pVert->v[0],
-                (float)pVert->v[1],
-                (float)pVert->v[2]);
-
-            if (gset->getColorBinding() == osg::GeoSet::BIND_PERVERTEX)
-            {
-                osg::Vec4* colors = gset->getColors();
-                ColorPool* pColorPool = _colorPool.get();
-                if (pColorPool)
-                    colors[index] = pColorPool->getColor(pVert->color_index);
-                else
-                    colors[index] = osg::Vec4(1,1,1,1);
-            }
-
-            if ((gset->getTextureBinding() == osg::GeoSet::BIND_PERVERTEX)
-            &&  (vertex->getSize() >= sizeof(SOldVertexColor)))
-            {
-                texuv[index].set(
-                    (float)pVert->t[0],
-                    (float)pVert->t[1]);
-            }
-        }
-        break;
-
-        case OLD_VERTEX_COLOR_NORMAL_OP:
-        {
-            SOldVertexColorNormal* pVert = (SOldVertexColorNormal*)vertex->getData();
-
-            coords[index].set(
-                (float)pVert->v[0],
-                (float)pVert->v[1],
-                (float)pVert->v[2]);
-
-            if (gset->getNormalBinding() == osg::GeoSet::BIND_PERVERTEX)
-            {
-                normals[index].set(
-                    (float)pVert->n[0] / (1<<30),    // =pow(2,30)
-                    (float)pVert->n[1] / (1<<30),
-                    (float)pVert->n[2] / (1<<30));
-                normals[index].normalize();
-            }
-
-            if (gset->getColorBinding() == osg::GeoSet::BIND_PERVERTEX)
-            {
-                osg::Vec4* colors = gset->getColors();
-                ColorPool* pColorPool = _colorPool.get();
-                if (pColorPool)
-                    colors[index] = pColorPool->getColor(pVert->color_index);
-                else
-                    colors[index] = osg::Vec4(1,1,1,1);
-            }
-
-            if ((gset->getTextureBinding() == osg::GeoSet::BIND_PERVERTEX)
-            &&  (vertex->getSize() >= sizeof(SOldVertexColorNormal)))
-            {
-                texuv[index].set(
-                    (float)pVert->t[0],
-                    (float)pVert->t[1]);
-            }
-        }
-        break;
+        return true;
     }
-}
 
+    return false;
+}
 
 
 ////////////////////////////////////////////////////////////////////
@@ -363,108 +128,77 @@ void TmpGeoSet::setVertex(osg::GeoSet* gset, int index, Record* vertex)
 // OpenFlight don't save data in GeoSets.  This class tries to find
 // existing GeoSets with matching state before creating a new GeoSet.
 
-GeoSetBuilder::GeoSetBuilder(FltFile* pFltFile)
+GeoSetBuilder::GeoSetBuilder(osg::Geode* geode)
 {
-    _pFltFile = pFltFile;
+    _geode = geode;
     initPrimData();
 }
 
 
-
 void GeoSetBuilder::initPrimData()
 {
-    _tmpGeoSet = new TmpGeoSet(_pFltFile.get());
+    _dynGeoSet = new DynGeoSet;
+    _dynGeoSet->setStateSet(new osg::StateSet);
 }
 
 
-// Convert flt::TmpGeoSet's to osg::GeoSet's and add to osg::Geode.
-// If geode parameter is NULL create new.
-// If geode created inside this function and no osg::GeoSet's
-// added free geode.
-osg::Geode* GeoSetBuilder::createOsgGeoSets(osg::Geode* geode)
+osg::Geode* GeoSetBuilder::createOsgGeoSets()
 {
-    bool bInternalGeodeAllocation = false;
-
-    if (geode == NULL)
-    {
-        geode = new osg::Geode;
-        bInternalGeodeAllocation = true;
-    }
-
-    for(TmpGeoSetList::iterator itr=_tmpGeoSetList.begin();
-        itr!=_tmpGeoSetList.end();
+    for(DynGeoSetList::iterator itr=_dynGeoSetList.begin();
+        itr!=_dynGeoSetList.end();
         ++itr)
     {
-        osg::GeoSet* gset = (*itr)->createOsgGeoSet();
-        if (gset)
-            geode->addDrawable(gset);
+        DynGeoSet* dgset = itr->get();
+        if (dgset)
+        {
+            int prims = dgset->primLenListSize();
+            if (prims > 0)
+            {
+                dgset->setLists();
+                dgset->setNumPrims(prims);
+                _geode.get()->addDrawable(dgset);
+            }
+        }
     }
 
-    if (bInternalGeodeAllocation && (geode->getNumDrawables() == 0))
-    {
-        geode->unref();
-        return NULL;
-    }
-
-    return geode;
+    return _geode.get();
 }
 
 
 bool GeoSetBuilder::addPrimitive()
 {
-    osg::GeoSet* geoset = getGeoSet();
+    DynGeoSet* dgset = getDynGeoSet();  // This is the new geoset we want to add
 
-    if (geoset->getPrimType() == osg::GeoSet::NO_TYPE)
-        geoset->setPrimType(findPrimType(numberOfVertices()));
+    if (dgset->getPrimType() == osg::GeoSet::NO_TYPE)
+        dgset->setPrimType(findPrimType(dgset->coordListSize()));
 
     // Still no primitive type?
-    if (geoset->getPrimType() == osg::GeoSet::NO_TYPE)
+    if (dgset->getPrimType() == osg::GeoSet::NO_TYPE)
         return false;
 
-    TmpGeoSet* match = findMatchingGeoSet();
+    dgset->setBinding();
+
+    DynGeoSet* match = findMatchingGeoSet();
     if (match)
-        // append vertices and prim length to match
-        match->addVertices( _tmpGeoSet.get() );
+        match->append(dgset);
     else
-        // add new GeoSet+StateSet compination
-        _tmpGeoSetList.push_back(_tmpGeoSet.get());
+        _dynGeoSetList.push_back(dgset);
 
-    initPrimData();     // initialize _tmpGeoSet
-
+    initPrimData();     // initialize _dynGeoSet
     return true;
 }
 
 
-TmpGeoSet* GeoSetBuilder::findMatchingGeoSet()
+DynGeoSet* GeoSetBuilder::findMatchingGeoSet()
 {
-    osg::GeoSet* geoSet = getGeoSet();
-    osg::StateSet* stateSet = geoSet->getStateSet();
-
-    for(TmpGeoSetList::iterator itr=_tmpGeoSetList.begin();
-        itr!=_tmpGeoSetList.end();
+    DynGeoSet* new_dgset = getDynGeoSet();
+    for(DynGeoSetList::iterator itr=_dynGeoSetList.begin();
+        itr!=_dynGeoSetList.end();
         ++itr)
     {
-        TmpGeoSet* tmpgeoset = itr->get();
-        osg::GeoSet* gset = tmpgeoset->getGeoSet();
-        osg::StateSet* sset = gset->getStateSet();
-
-        // Do we have a match?
-        if ((geoSet->getPrimType() == gset->getPrimType())
-        &&  (geoSet->getColorBinding() == gset->getColorBinding())
-        &&  (geoSet->getNormalBinding() == gset->getNormalBinding())
-        &&  (geoSet->getTextureBinding() == gset->getTextureBinding())
-        &&  (stateSet->compare(*sset, true) == 0))
-        {
-            if (geoSet->getColorBinding() == osg::GeoSet::BIND_OVERALL)
-            {
-                osg::Vec4* col1 = geoSet->getColors();
-                osg::Vec4* col2 = gset->getColors();
-                if (*col1 != *col2)
-                    return NULL;
-            }
-
-            return tmpgeoset;
-        }
+        DynGeoSet* dgset = itr->get();
+        if (*new_dgset == *dgset)
+            return dgset;
     }
 
     return NULL;
@@ -473,28 +207,16 @@ TmpGeoSet* GeoSetBuilder::findMatchingGeoSet()
 
 osg::GeoSet::PrimitiveType GeoSetBuilder::findPrimType(const int nVertices)
 {
-    osg::GeoSet::PrimitiveType primtype = osg::GeoSet::NO_TYPE;
-
     switch (nVertices)
     {
-        case 1:
-            primtype = osg::GeoSet::POINTS;
-            break;
-        case 2:
-            primtype = osg::GeoSet::LINES;
-            break;
-        case 3:
-            primtype = osg::GeoSet::TRIANGLES;
-            break;
-        case 4:
-            primtype = osg::GeoSet::QUADS;
-            break;
-        default:
-            if (nVertices >= 5) primtype = osg::GeoSet::POLYGON;
-            break;
+        case 1: return osg::GeoSet::POINTS;
+        case 2: return osg::GeoSet::LINES;
+        case 3: return osg::GeoSet::TRIANGLES;
+        case 4: return osg::GeoSet::QUADS;
     }
 
-    return primtype;
+    if (nVertices >= 5) return osg::GeoSet::POLYGON;
+    return osg::GeoSet::NO_TYPE;
 }
 
 

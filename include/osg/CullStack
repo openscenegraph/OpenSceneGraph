@@ -53,13 +53,13 @@ class SG_EXPORT CullStack : public osg::CullSettings
         inline float getFrustumVolume() { if (_frustumVolume<0.0f) computeFrustumVolume(); return _frustumVolume; }
 
 
-        /** Compute the pixel of an object at position v, with specified radius.*/
+        /** Compute the pixel size of an object at position v, with specified radius.*/
         float pixelSize(const Vec3& v,float radius) const
         {
             return getCurrentCullingSet().pixelSize(v,radius);
         }
         
-        /** Compute the pixel of the bounding sphere.*/
+        /** Compute the pixel size of the bounding sphere.*/
         float pixelSize(const BoundingSphere& bs) const
         {
             return pixelSize(bs.center(),bs.radius());

@@ -67,6 +67,7 @@ struct _Lib3dsLight {
 
 extern LIB3DSAPI Lib3dsLight* lib3ds_light_new(const char *name);
 extern LIB3DSAPI void lib3ds_light_free(Lib3dsLight *mesh);
+extern LIB3DSAPI void lib3ds_light_dump(Lib3dsLight *light);
 extern LIB3DSAPI Lib3dsBool lib3ds_light_read(Lib3dsLight *light, FILE *f);
 extern LIB3DSAPI Lib3dsBool lib3ds_light_write(Lib3dsLight *light, FILE *f);
 

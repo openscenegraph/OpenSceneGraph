@@ -28,7 +28,7 @@ LIB = ../../../lib/osgPlugins/osgdb_3ds.so
 TARGET_LOADER_FILES = osgPlugins/osgdb_3ds.so
 
 LIBS = 
-C++FLAGS += -I. -I../../../include 
+C++FLAGS += -I. -I../../../include
 LDFLAGS += -L../../../lib
 
 include ../../../Make/makerules

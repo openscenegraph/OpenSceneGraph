@@ -47,6 +47,7 @@ extern "C" {
 struct _Lib3dsFile {
     Lib3dsDword mesh_version;
     Lib3dsWord keyf_revision;
+    char name[12+1];
     Lib3dsFloat master_scale;
     Lib3dsVector construction_plane;
     Lib3dsRgb ambient;
@@ -66,40 +67,33 @@ struct _Lib3dsFile {
     Lib3dsNode *nodes;
 }; 
 
-extern LIB3DSAPI Lib3dsFile* lib3ds_open(const char *filename);
-extern LIB3DSAPI void lib3ds_close(Lib3dsFile *file);
-
+extern LIB3DSAPI Lib3dsFile* lib3ds_file_load(const char *filename);
+extern LIB3DSAPI Lib3dsBool lib3ds_file_save(Lib3dsFile *file, const char *filename);
 extern LIB3DSAPI Lib3dsFile* lib3ds_file_new();
 extern LIB3DSAPI void lib3ds_file_free(Lib3dsFile *file);
 extern LIB3DSAPI void lib3ds_file_eval(Lib3dsFile *file, Lib3dsFloat t);
-
 extern LIB3DSAPI Lib3dsBool lib3ds_file_read(Lib3dsFile *file, FILE *f);
 extern LIB3DSAPI Lib3dsBool lib3ds_file_write(Lib3dsFile *file, FILE *f);
-
 extern LIB3DSAPI void lib3ds_file_insert_material(Lib3dsFile *file, Lib3dsMaterial *material);
 extern LIB3DSAPI void lib3ds_file_remove_material(Lib3dsFile *file, Lib3dsMaterial *material);
 extern LIB3DSAPI Lib3dsMaterial* lib3ds_file_material_by_name(Lib3dsFile *file, const char *name);
 extern LIB3DSAPI void lib3ds_file_dump_materials(Lib3dsFile *file);
-
 extern LIB3DSAPI void lib3ds_file_insert_mesh(Lib3dsFile *file, Lib3dsMesh *mesh);
 extern LIB3DSAPI void lib3ds_file_remove_mesh(Lib3dsFile *file, Lib3dsMesh *mesh);
 extern LIB3DSAPI Lib3dsMesh* lib3ds_file_mesh_by_name(Lib3dsFile *file, const char *name);
 extern LIB3DSAPI void lib3ds_file_dump_meshes(Lib3dsFile *file);
 extern LIB3DSAPI void lib3ds_file_dump_instances(Lib3dsFile *file);
-  
 extern LIB3DSAPI void lib3ds_file_insert_camera(Lib3dsFile *file, Lib3dsCamera *camera);
 extern LIB3DSAPI void lib3ds_file_remove_camera(Lib3dsFile *file, Lib3dsCamera *camera);
 extern LIB3DSAPI Lib3dsCamera* lib3ds_file_camera_by_name(Lib3dsFile *file, const char *name);
 extern LIB3DSAPI void lib3ds_file_dump_cameras(Lib3dsFile *file);
-
 extern LIB3DSAPI void lib3ds_file_insert_light(Lib3dsFile *file, Lib3dsLight *light);
 extern LIB3DSAPI void lib3ds_file_remove_light(Lib3dsFile *file, Lib3dsLight *light);
 extern LIB3DSAPI Lib3dsLight* lib3ds_file_light_by_name(Lib3dsFile *file, const char *name);
 extern LIB3DSAPI void lib3ds_file_dump_lights(Lib3dsFile *file);
-
 extern LIB3DSAPI Lib3dsNode* lib3ds_file_node_by_name(Lib3dsFile *file, const char* name,
   Lib3dsNodeTypes type);
-extern LIB3DSAPI Lib3dsNode* lib3ds_file_node_by_id(Lib3dsFile *file, Lib3dsWord id);
+extern LIB3DSAPI Lib3dsNode* lib3ds_file_node_by_id(Lib3dsFile *file, Lib3dsWord node_id);
 extern LIB3DSAPI void lib3ds_file_insert_node(Lib3dsFile *file, Lib3dsNode *node);
 extern LIB3DSAPI Lib3dsBool lib3ds_file_remove_node(Lib3dsFile *file, Lib3dsNode *node);
 extern LIB3DSAPI void lib3ds_file_dump_nodes(Lib3dsFile *file);

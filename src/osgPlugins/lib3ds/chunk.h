@@ -278,6 +278,7 @@ extern LIB3DSAPI Lib3dsBool lib3ds_chunk_write_start(Lib3dsChunk *c, FILE *f);
 extern LIB3DSAPI Lib3dsBool lib3ds_chunk_write_end(Lib3dsChunk *c, FILE *f);
 extern LIB3DSAPI const char* lib3ds_chunk_name(Lib3dsWord chunk);
 extern LIB3DSAPI void lib3ds_chunk_unknown(Lib3dsWord chunk);
+extern LIB3DSAPI void lib3ds_chunk_dump_info(const char *format, ...);
 
 #ifdef __cplusplus
 };

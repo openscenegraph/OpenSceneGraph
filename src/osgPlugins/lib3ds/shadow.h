@@ -40,7 +40,7 @@ struct _Lib3dsShadow {
     Lib3dsFloat lo_bias;
     Lib3dsFloat hi_bias;
     Lib3dsIntw samples;
-    Lib3dsIntw range;
+    Lib3dsIntd range;
     Lib3dsFloat filter;
     Lib3dsFloat ray_bias;
 };

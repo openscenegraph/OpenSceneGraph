@@ -47,6 +47,8 @@ extern LIB3DSAPI void lib3ds_vector_normal(Lib3dsVector n, Lib3dsVector a,
 extern LIB3DSAPI void lib3ds_vector_transform(Lib3dsVector c, Lib3dsMatrix m, Lib3dsVector a);
 extern LIB3DSAPI void lib3ds_vector_cubic(Lib3dsVector c, Lib3dsVector a, Lib3dsVector p,
   Lib3dsVector q, Lib3dsVector b, Lib3dsFloat t);
+extern LIB3DSAPI void lib3ds_vector_min(Lib3dsVector c, Lib3dsVector a);
+extern LIB3DSAPI void lib3ds_vector_max(Lib3dsVector c, Lib3dsVector a);
 extern LIB3DSAPI void lib3ds_vector_dump(Lib3dsVector c);
 
 #ifdef __cplusplus

@@ -62,7 +62,7 @@ ReaderWriter3DS::ReaderWriter3DS()
 osgDB::ReaderWriter::ReadResult ReaderWriter3DS::readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*)
 {
 
-    Lib3dsFile *f = lib3ds_open(fileName.c_str());
+    Lib3dsFile *f = lib3ds_file_load(fileName.c_str());
     if (f==NULL) return ReadResult::FILE_NOT_HANDLED;
 
     _directory = osgDB::getFilePath(fileName);
@@ -151,7 +151,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriter3DS::readNode(const std::string& fil
 
     }
 
-    lib3ds_close(f);
+    lib3ds_file_free(f);
 
     return group;
 }

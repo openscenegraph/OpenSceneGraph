@@ -26,15 +26,19 @@
 extern "C" {
 #endif
 
-#if defined(_WIN32) && (!defined(__GNUC__))
-#ifdef LIB3DS_EXPORT
-#define LIB3DSAPI __declspec(dllexport)
-#else               
-#define LIB3DSAPI __declspec(dllimport)
-#endif           
-#else
+/*
+ * #if defined (_LIB3DS_DLL) && defined(_WIN32) && (!defined(__GNUC__))
+ * #ifdef LIB3DS_EXPORT
+ * #define LIB3DSAPI __declspec(dllexport)
+ * #else               
+ * #define LIB3DSAPI __declspec(dllimport)
+ * #endif           
+ * #else
+ * #define LIB3DSAPI
+ * #endif
+ */
+// within the OSG just use the libary inline, no need to export symbols.
 #define LIB3DSAPI
-#endif
 
 #define LIB3DS_TRUE 1
 #define LIB3DS_FALSE 0

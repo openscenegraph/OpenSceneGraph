@@ -777,6 +777,8 @@ osg::Node* ForestTechniqueManager::createScene(unsigned int numTreesToCreates)
    
     
     osg::Texture2D *tex = new osg::Texture2D;
+    tex->setWrap( osg::Texture2D::WRAP_S, osg::Texture2D::CLAMP );
+    tex->setWrap( osg::Texture2D::WRAP_T, osg::Texture2D::CLAMP );
     tex->setImage(osgDB::readImageFile("Images/tree0.rgba"));
 
     osg::StateSet *dstate = new osg::StateSet;

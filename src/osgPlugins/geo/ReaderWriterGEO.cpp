@@ -643,8 +643,8 @@ class ReaderWriterGEO : public ReaderWriter
                             ia.push_back(txidx); // look up table for which texture corresponds to which geom
                         }
                         
-                        if (dstyle==0x00000004 || dstyle & GEO_DB_SOLID || dstyle & GEO_DB_OUTLINED) geom[igeom]->addPrimitive(new osg::DrawArrays(osg::Primitive::POLYGON,nstart,nv));
-                        if (dstyle & GEO_DB_WIRE || dstyle & GEO_DB_OUTLINED) geom[igeom]->addPrimitive(new osg::DrawArrays(osg::Primitive::LINE_STRIP,nstart,nv));
+                        if (dstyle==0x00000004 || dstyle & GEO_DB_SOLID || dstyle & GEO_DB_OUTLINED) geom[igeom]->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::POLYGON,nstart,nv));
+                        if (dstyle & GEO_DB_WIRE || dstyle & GEO_DB_OUTLINED) geom[igeom]->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINE_STRIP,nstart,nv));
                         nstart+=nv;
                     }
                 }

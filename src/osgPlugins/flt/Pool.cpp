@@ -155,9 +155,14 @@ flt::AttrData* TexturePool::getTexture(int nIndex, int fltVersion)
                     char options[256];
                     sprintf(options,"FLT_VER %d",fltVersion);
 
+                    // Add this line to save the existing options
+                    osg::ref_ptr<osgDB::ReaderWriter::Options> oldOptions = osgDB::Registry::instance()->getOptions();
+
                     osgDB::Registry::instance()->setOptions(new osgDB::ReaderWriter::Options(options));
                     textureAttrData = dynamic_cast<flt::AttrData*>(osgDB::readObjectFile(attrName));
-                    osgDB::Registry::instance()->setOptions(NULL);      // Delete options
+
+                    // Changed this line to restore the old options
+                    osgDB::Registry::instance()->setOptions( oldOptions.get() );      // Restore options
 
                     // if not found create default StateSet for the AttrData
                     if (textureAttrData == NULL)

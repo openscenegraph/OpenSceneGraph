@@ -108,6 +108,8 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
             getRenderStageLighting()->addPositionedAttribute(matrix,attr);
         }
         
+        virtual void drawPreRenderStages(osg::State& state,RenderLeaf*& previous);
+        
         virtual void draw(osg::State& state,RenderLeaf*& previous);
 
         void addToDependencyList(RenderStage* rs);

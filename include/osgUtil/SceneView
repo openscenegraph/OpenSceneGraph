@@ -281,7 +281,6 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
 
         /** Do cull traversal of attached scene graph using Cull NodeVisitor.*/
         virtual void cullStage(osg::Matrix* projection,osg::Matrix* modelview,osgUtil::CullVisitor* cullVisitor, osgUtil::RenderGraph* rendergraph, osgUtil::RenderStage* renderStage);
-        virtual void drawStage(osgUtil::RenderStage* renderStage);
 
         const osg::Matrix computeMVPW() const;
 

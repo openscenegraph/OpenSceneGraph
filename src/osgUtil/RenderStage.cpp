@@ -65,6 +65,16 @@ void RenderStage::addToDependencyList(RenderStage* rs)
     if (rs) _dependencyList.push_back(rs);
 }
 
+void RenderStage::drawPreRenderStages(osg::State& state,RenderLeaf*& previous)
+{
+    for(DependencyList::iterator itr=_dependencyList.begin();
+        itr!=_dependencyList.end();
+        ++itr)
+    {
+        (*itr)->draw(state,previous);
+    }
+}
+
 void RenderStage::draw(osg::State& state,RenderLeaf*& previous)
 {
     if (_stageDrawnThisFrame) return;
@@ -76,13 +86,6 @@ void RenderStage::draw(osg::State& state,RenderLeaf*& previous)
     }
     
     _stageDrawnThisFrame = true;
-
-    for(DependencyList::iterator itr=_dependencyList.begin();
-        itr!=_dependencyList.end();
-        ++itr)
-    {
-        (*itr)->draw(state,previous);
-    }
     
     // set up the back buffer.
     state.applyAttribute(_viewport.get());

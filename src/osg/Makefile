@@ -4,6 +4,7 @@ include $(TOPDIR)/Make/makedefs
 CXXFILES =\
 	AlphaFunc.cpp\
 	AnimationPath.cpp\
+	Array.cpp\
 	Billboard.cpp\
 	BoundingBox.cpp\
 	BoundingSphere.cpp\
@@ -56,6 +57,7 @@ CXXFILES =\
 	PolygonMode.cpp\
 	PolygonOffset.cpp\
 	PositionAttitudeTransform.cpp\
+	Primitive.cpp\
 	Projection.cpp\
 	Quat.cpp\
 	ShadeModel.cpp\

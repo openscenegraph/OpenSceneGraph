@@ -101,6 +101,10 @@ SOURCE=..\..\src\osg\AnimationPath.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\Array.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\Billboard.cpp
 # End Source File
 # Begin Source File
@@ -309,6 +313,10 @@ SOURCE=..\..\src\osg\PositionAttitudeTransform.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\Primitive.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\Projection.cpp
 # End Source File
 # Begin Source File
@@ -390,6 +398,10 @@ SOURCE=..\..\Include\Osg\AlphaFunc
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\AnimationPath
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\Array
 # End Source File
 # Begin Source File
 
@@ -634,6 +646,10 @@ SOURCE=..\..\Include\Osg\PositionAttitudeTransform
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\Projection
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\Primitive
 # End Source File
 # Begin Source File
 

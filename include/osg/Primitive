@@ -1,0 +1,172 @@
+//C++ header - Open Scene Graph - Copyright (C) 1998-2001 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+
+#ifndef OSG_PRIMTIVE
+#define OSG_PRIMTIVE 1
+
+#include <osg/Drawable>
+
+namespace osg {
+
+enum PrimitiveType
+{
+    PrimitivePrimitiveType              = 0,
+    DrawArraysPrimitiveType             = 1,
+    UByteDrawElementsPrimitiveType      = 2,
+    UShortDrawElementsPrimitiveType     = 3,
+    UIntDrawElementsPrimitiveType       = 4,
+};
+
+class SG_EXPORT Primitive : public Object
+{
+    public:
+    
+        enum Mode
+        {
+            POINTS = GL_POINTS,
+            LINES = GL_LINES,
+            LINE_STRIP = GL_LINE_STRIP,
+            LINE_LOOP = GL_LINE_LOOP,
+            TRIANGLES = GL_TRIANGLES,
+            TRIANGLE_STRIP = GL_TRIANGLE_STRIP,
+            TRIANGLE_FAN = GL_TRIANGLE_FAN,
+            QUADS = GL_QUADS,
+            QUAD_STRIP = GL_QUAD_STRIP,
+            POLYGON = GL_POLYGON
+        };
+
+        Primitive(PrimitiveType primType=PrimitivePrimitiveType,GLenum mode=0):
+            _primitiveType(primType),
+            _mode(mode) {}
+    
+        Primitive(const Primitive& prim,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            Object(prim,copyop),
+            _primitiveType(prim._primitiveType),
+            _mode(prim._mode) {}
+
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Primitive*>(obj)!=NULL; }
+        virtual const char* libraryName() const { return "osg"; }
+        virtual const char* className() const;
+        
+        PrimitiveType primitiveType() const { return _primitiveType; }
+        
+        void setMode(GLenum mode) { _mode = mode; }
+        GLenum getMode() const { return _mode; }
+
+        virtual void draw() const = 0;
+        
+        virtual void applyPrimitiveOperation(Drawable::PrimitiveFunctor&) {}
+
+    protected:
+
+        PrimitiveType _primitiveType;
+        GLenum  _mode;
+};
+
+class DrawArrays : public Primitive
+{
+    public:
+
+        DrawArrays(GLenum mode=0):
+            Primitive(DrawArraysPrimitiveType,0)
+            {}
+    
+        DrawArrays(GLenum mode, GLint first, GLsizei count):
+            Primitive(DrawArraysPrimitiveType,mode),
+            _first(first),
+            _count(count) {}
+
+        DrawArrays(const DrawArrays& da,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            Primitive(da,copyop),
+            _first(da._first),
+            _count(da._count) {}
+
+        virtual Object* cloneType() const { return osgNew DrawArrays(); }
+        virtual Object* clone(const CopyOp& copyop) const { return osgNew DrawArrays(*this,copyop); }        
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const DrawArrays*>(obj)!=NULL; }
+        virtual const char* libraryName() const { return "osg"; }
+        virtual const char* className() const { return "DrawArrays"; }
+        
+
+        void set(GLenum mode,GLint first, GLsizei count)
+        {
+            _mode = mode;
+            _first = first;
+            _count = count;
+        }
+
+        void setFirst(GLint first) { _first = first; }
+        GLint getFirst() const { return _first; }
+        
+        void setCount(GLsizei count) { _count = count; }
+        GLsizei getCount() const { return _count; }
+
+        virtual void draw() const 
+        {
+            glDrawArrays(_mode,_first,_count);
+        }
+        
+        virtual void applyPrimitiveOperation(Drawable::PrimitiveFunctor& functor)
+        {
+            functor.drawArrays(_mode,_first,_count);
+        }
+
+        GLint   _first;
+        GLsizei _count;
+};
+
+template<typename T, PrimitiveType PRIMTYPE, int DataType>
+class DrawElements : public Primitive, public std::vector<T>
+{
+    public:
+
+        DrawElements(GLenum mode=0):
+            Primitive(PRIMTYPE,mode),
+            _dataType(DataType) {}
+    
+        DrawElements(const DrawElements& array,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            Primitive(array,copyop),
+            std::vector<T>(array),
+            _dataType(array._dataType) {}
+
+        DrawElements(GLenum mode,unsigned int no,T* ptr) : 
+            Primitive(PRIMTYPE,mode),
+            std::vector<T>(ptr,ptr+no),
+            _dataType(DataType) {}
+
+        DrawElements(GLenum mode,unsigned int no) : 
+            Primitive(PRIMTYPE,mode),
+            std::vector<T>(no),
+            _dataType(DataType) {}
+
+        template <class InputIterator>
+        DrawElements(GLenum mode, InputIterator first,InputIterator last) : 
+            Primitive(PRIMTYPE,mode),
+            std::vector<T>(first,last),
+            _dataType(DataType) {}
+
+        virtual Object* cloneType() const { return osgNew DrawElements(); }
+        virtual Object* clone(const CopyOp& copyop) const { return osgNew DrawElements(*this,copyop); }        
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const DrawElements*>(obj)!=NULL; }
+        virtual const char* libraryName() const { return "osg"; }
+
+        virtual void draw() const 
+        {
+            glDrawElements(_mode,size(),_dataType,&front());
+        }
+        
+        virtual void applyPrimitiveOperation(Drawable::PrimitiveFunctor& functor)
+        {
+            if (!empty()) functor.drawElements(_mode,size(),&front());
+        }
+
+        GLenum  _dataType;
+};
+
+typedef DrawElements<unsigned char,UByteDrawElementsPrimitiveType,GL_UNSIGNED_BYTE>     UByteDrawElements;
+typedef DrawElements<unsigned short,UShortDrawElementsPrimitiveType,GL_UNSIGNED_SHORT>  UShortDrawElements;
+typedef DrawElements<unsigned int,UIntDrawElementsPrimitiveType,GL_UNSIGNED_INT>        UIntDrawElements;
+}
+
+#endif

@@ -89,7 +89,7 @@ int main( int argc, char **argv )
     osg::ArgumentParser arguments(&argc,argv);
 
     // set up the usage document, in case we need to print out how to use this program.
-    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getProgramName()+" [options] filename ...");
+    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
     arguments.getApplicationUsage()->addCommandLineOption("--fov <float>","Set the Field of View");
    
@@ -119,6 +119,12 @@ int main( int argc, char **argv )
     if (arguments.errors())
     {
         arguments.writeErrorMessages(std::cout);
+        return 1;
+    }
+    
+    if (arguments.argc()<=1)
+    {
+        arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
         return 1;
     }
 

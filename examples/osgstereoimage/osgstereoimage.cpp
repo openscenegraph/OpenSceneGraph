@@ -395,7 +395,7 @@ int main( int argc, char **argv )
     osg::ArgumentParser arguments(&argc,argv);
     
     // set up the usage document, in case we need to print out how to use this program.
-    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getProgramName()+" [options] image_file_left_eye image_file_right_eye");
+    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] image_file_left_eye image_file_right_eye");
     arguments.getApplicationUsage()->addCommandLineOption("-d <float>","Time delay in sceonds between the display of successive image pairs when in auto advance mode.");
     arguments.getApplicationUsage()->addCommandLineOption("-a","Enter auto advance of image pairs on start up.");
     arguments.getApplicationUsage()->addCommandLineOption("-x <float>","Horizontal offset of left and right images.");
@@ -444,6 +444,12 @@ int main( int argc, char **argv )
     if (arguments.errors())
     {
         arguments.writeErrorMessages(std::cout);
+        return 1;
+    }
+    
+    if (arguments.argc()<=1)
+    {
+        arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
         return 1;
     }
 

@@ -168,7 +168,7 @@ int main( int argc, char **argv )
     osg::ArgumentParser arguments(&argc,argv);
 
     // set up the usage document, in case we need to print out how to use this program.
-    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getProgramName()+" [options] filename ...");
+    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
    
     // initialize the viewer.
@@ -196,7 +196,7 @@ int main( int argc, char **argv )
         arguments.writeErrorMessages(std::cout);
         return 1;
     }
-
+    
     // create a model from the images.
     osg::Node* rootNode = createModel();
 

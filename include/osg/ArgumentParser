@@ -46,8 +46,8 @@ class SG_EXPORT ArgumentParser
         /** return const char* argument at specificed position.*/
         const char* operator [] (int pos) const { return _argv[pos]; }
 
-        /** return the program name, as specified by argv[0] */
-        std::string getProgramName() const;
+        /** return the application name, as specified by argv[0] */
+        std::string getApplicationName() const;
 
         /** return the position of an occurance of a string in the argument list.
           * return -1 when no string is found.*/      

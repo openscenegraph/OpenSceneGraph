@@ -61,9 +61,9 @@ OSGA_Archive::IndexBlock* OSGA_Archive::IndexBlock::read(std::istream& in, bool 
         osg::swapBytes(reinterpret_cast<char*>(&indexBlock->_offsetOfNextAvailableSpace), sizeof(indexBlock-> _offsetOfNextAvailableSpace));
     }
 
-    osg::notify(osg::INFO)<<"indexBlock->_blockSize="<<indexBlock->_blockSize<<std::endl;
-    osg::notify(osg::INFO)<<"indexBlock->_filePositionNextIndexBlock="<<indexBlock->_filePositionNextIndexBlock<<std::endl;
-    osg::notify(osg::INFO)<<"indexBlock->_offsetOfNextAvailableSpace="<<indexBlock->_offsetOfNextAvailableSpace<<std::endl;
+//    osg::notify(osg::INFO)<<"indexBlock->_blockSize="<<indexBlock->_blockSize<<std::endl;
+//    osg::notify(osg::INFO)<<"indexBlock->_filePositionNextIndexBlock="<<indexBlock->_filePositionNextIndexBlock<<std::endl;
+//    osg::notify(osg::INFO)<<"indexBlock->_offsetOfNextAvailableSpace="<<indexBlock->_offsetOfNextAvailableSpace<<std::endl;
 
     indexBlock->allocateData(indexBlock->_blockSize);
     if (indexBlock->_data)

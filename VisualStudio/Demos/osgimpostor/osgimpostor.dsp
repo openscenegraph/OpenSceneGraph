@@ -66,7 +66,8 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MDd /W3 /Gm /vd0 /GR /GX /Zi /Od /I "../../../include" /D "_CONSOLE" /D "_MBCS" /D "FL_DLL" /D "WIN32" /D "_DEBUG" /FR /YX /FD /c
+# ADD CPP /nologo /MDd /W3 /Gm /vd0 /GR /GX /Zi /Od /I "../../../include" /D "_CONSOLE" /D "_MBCS" /D "FL_DLL" /D "WIN32" /D "_DEBUG" /YX /FD /c
+# SUBTRACT CPP /Fr
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
 # ADD RSC /l 0x809 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -83,13 +84,29 @@ LINK32=link.exe
 
 # Name "Demo osgimpostor - Win32 Release"
 # Name "Demo osgimpostor - Win32 Debug"
+# Begin Group "Source Files"
+
+# PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\..\..\src\Demos\osgimpostor\osgimpostor.cpp
+SOURCE=..\..\..\Src\Demos\osgimpostor\TestManipulator.cpp
 # End Source File
-# End Target
+# Begin Source File
+
+SOURCE=..\..\..\Src\Demos\osgimpostor\osgimpostor.cpp
+# End Source File
+# End Group
+# Begin Group "Header Files"
+
+# PROP Default_Filter ";h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=..\..\..\Src\Demos\osgimpostor\TestManipulator.h
+# End Source File
+# End Group
 # Begin Group "Resource Files"
 
-# PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
+# PROP Default_Filter ""
 # End Group
+# End Target
 # End Project

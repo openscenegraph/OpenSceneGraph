@@ -174,11 +174,16 @@ public:
         {
             Edge* edge = const_cast<Edge*>(_edgeSet.begin()->get());
 
-            if (edge->getErrorMetric()==FLT_MAX) return false;
+            if (edge->getErrorMetric()==FLT_MAX)
+            {
+                osg::notify(osg::WARN)<<"collapseMinimumErrorEdge() return false due to edge->getErrorMetric()==FLT_MAX"<<std::endl;
+                return false;
+            }
 
             osg::ref_ptr<Point> pNew = edge->_proposedPoint.valid()? edge->_proposedPoint : computeInterpolatedPoint(edge,0.5f);
             return (collapseEdge(edge,pNew.get()));
         }
+        osg::notify(osg::WARN)<<"collapseMinimumErrorEdge() return false due to _edgeSet.empty()"<<std::endl;
         return false;
     }
 
@@ -711,8 +716,8 @@ public:
 
     bool collapseEdge(Edge* edge, Point* pNew)
     {
-        if (edge->_triangles.size()<2) return false;
-        if (edge->_triangles.size()>2) return false;
+        //if (edge->_triangles.size()<2) return false;
+        //if (edge->_triangles.size()>2) return false;
 
         if (edge->getMaxNormalDeviationOnEdgeCollapse()>1.0)
         {
@@ -827,9 +832,12 @@ public:
 
             Triangle* newTri = addTriangle(p1,p2,p3);
 
-            newEdges.insert(newTri->_e1);
-            newEdges.insert(newTri->_e2);
-            newEdges.insert(newTri->_e3);
+            if (newTri)
+            {
+                newEdges.insert(newTri->_e1);
+                newEdges.insert(newTri->_e2);
+                newEdges.insert(newTri->_e3);
+            }
         }
 
 
@@ -845,10 +853,12 @@ public:
 
             Triangle* newTri = addTriangle(p1,p2,p3);
 
-            newEdges.insert(newTri->_e1);
-            newEdges.insert(newTri->_e2);
-            newEdges.insert(newTri->_e3);
-
+            if (newTri)
+            {
+                newEdges.insert(newTri->_e1);
+                newEdges.insert(newTri->_e2);
+                newEdges.insert(newTri->_e3);
+            }
         }
 
 
@@ -1457,7 +1467,7 @@ Simplifier::Simplifier(float sampleRatio, float maximumError):
 
 void Simplifier::simplify(osg::Geometry& geometry)
 {
-    osg::notify(osg::INFO)<<"++++++++++++++simplifier************"<<std::endl;
+    osg::notify(osg::WARN)<<"++++++++++++++simplifier************"<<std::endl;
 
     EdgeCollapse ec;
     ec.setGeometry(&geometry);
@@ -1470,7 +1480,7 @@ void Simplifier::simplify(osg::Geometry& geometry)
            continueSimplification((*ec._edgeSet.begin())->getErrorMetric() , numOriginalPrimitives, ec._triangleSet.size()) && 
            ec.collapseMinimumErrorEdge())
     {
-       osg::notify(osg::INFO)<<"Collapsed edge ec._triangleSet.size()="<<ec._triangleSet.size()<<" error="<<(*ec._edgeSet.begin())->getErrorMetric()<<" vs "<<getMaximumError()<<std::endl;    
+       //osg::notify(osg::WARN)<<"   Collapsed edge ec._triangleSet.size()="<<ec._triangleSet.size()<<" error="<<(*ec._edgeSet.begin())->getErrorMetric()<<" vs "<<getMaximumError()<<std::endl;
     }
 
     osg::notify(osg::INFO)<<"******* AFTER EDGE COLLAPSE *********"<<ec._triangleSet.size()<<std::endl;
@@ -1483,7 +1493,10 @@ void Simplifier::simplify(osg::Geometry& geometry)
     osg::notify(osg::INFO)<<"Number of edges= "<<ec._edgeSet.size()<<std::endl;
     osg::notify(osg::INFO)<<"Number of boundary edges= "<<ec.computeNumBoundaryEdges()<<std::endl;
 
-
+    osg::notify(osg::WARN)<<std::endl<<"Simplifier, in = "<<numOriginalPrimitives<<"\tout = "<<ec._triangleSet.size()<<"\terror="<<(*ec._edgeSet.begin())->getErrorMetric()<<"\tvs "<<getMaximumError()<<std::endl<<std::endl;
+    osg::notify(osg::WARN)<<           "        !ec._edgeSet.empty()  = "<<!ec._edgeSet.empty()<<std::endl;
+    osg::notify(osg::WARN)<<           "        continueSimplification(,,)  = "<<continueSimplification((*ec._edgeSet.begin())->getErrorMetric() , numOriginalPrimitives, ec._triangleSet.size())<<std::endl;
+    
     ec.copyBackToGeometry();
 
 }

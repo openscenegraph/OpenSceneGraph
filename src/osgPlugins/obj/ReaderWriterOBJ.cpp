@@ -323,7 +323,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
 
     // toplevel group or transform
     osg::Group* osg_top = NULL;
-    if (obj->position[0] != 0.0f || obj->position[2] != 0.0f || obj->position[2] != 0.0f) {
+    if (obj->position[0] != 0.0f || obj->position[1] != 0.0f || obj->position[2] != 0.0f) {
         osg::MatrixTransform* xform = new osg::MatrixTransform;
         // note obj_x -> osg_x,
         //      obj_y -> osg_z,

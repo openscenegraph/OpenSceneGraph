@@ -157,10 +157,12 @@ endif
 APPLICATION_DIRS = \
     osgarchive\
     osgconv\
-    osgdem\
     osgversion\
     osgviewer\
 
+ifeq ($(GDAL_INSTALLED),yes)
+    APPLICATION_DIRS += osgdem
+endif
 
 EXAMPLE_DIRS = \
 	osganimate\
@@ -237,7 +239,6 @@ EXAMPLE_DIRS = \
 
 ifeq ($(GDAL_INSTALLED),yes)
     EXAMPLE_DIRS += osgphotoalbum
-    EXAMPLE_DIRS += osgdem
     EXAMPLE_DIRS += osgbluemarble
     EXAMPLE_DIRS += osgsimulation
 endif

@@ -1,14 +1,8 @@
 #ifdef TARGET_API_MAC_CARBON
-    #include "FileUtils_Mac.cpp"
+    #include <osgDB/FileUtils_Mac.cpp>
 #else
 
 // implementations for Windows and all Unix's except Mac when TARGET_API_MAC_CARBON defined.    
-
-#include <osg/Notify>
-
-#include <osgDB/FileUtils>
-#include <osgDB/FileNameUtils>
-#include <osgDB/Registry>
 
 #if defined(WIN32) && !defined(__CYGWIN__)
     #include <Io.h>
@@ -21,6 +15,13 @@
     #include <unistd.h>
     #include <dlfcn.h>
 #endif
+
+#include <osg/Notify>
+
+#include <osgDB/FileUtils>
+#include <osgDB/FileNameUtils>
+#include <osgDB/Registry>
+
 
 bool osgDB::fileExists(const std::string& filename)
 {

@@ -1,8 +1,3 @@
-// Input.cpp
-
-#include <string>
-// #include <malloc.h>
-
 #include <osg/Notify>
 #include <osgDB/FileUtils>
 

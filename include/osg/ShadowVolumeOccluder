@@ -5,7 +5,6 @@
 #ifndef OSG_SHADOWVOLUMEOCCLUDER
 #define OSG_SHADOWVOLUMEOCCLUDER 1
 
-#include <osg/ref_ptr>
 #include <osg/Polytope>
 #include <osg/ConvexPlanerOccluder>
 #include <osg/Node>

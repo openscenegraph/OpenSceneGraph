@@ -18,7 +18,7 @@
 using namespace osg;
 using namespace osgDB;
 
-void PrintFilePathList(ostream& stream,const FilePathList& filepath)
+void PrintFilePathList(std::ostream& stream,const FilePathList& filepath)
 {
     for(FilePathList::const_iterator itr=filepath.begin();
         itr!=filepath.end();

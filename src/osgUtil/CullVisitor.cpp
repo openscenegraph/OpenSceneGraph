@@ -218,16 +218,16 @@ void CullVisitor::popProjectionMatrix()
         // so it doesn't cull them out.
         osg::Matrix& projection = *_projectionStack.back();
 
-        double desired_znear = _computed_znear*0.95;
-        double desired_zfar = _computed_zfar*1.05;
+        double desired_znear = _computed_znear;
+        double desired_zfar = _computed_zfar;
 
         double min_near_plane = _computed_zfar*0.0005f;
         if (desired_znear<min_near_plane) desired_znear=min_near_plane;
 
-        double trans_near_plane = (-desired_znear*projection(0,2)-desired_znear*projection(1,2)-desired_znear*projection(2,2)+projection(3,2))/(-desired_znear*projection(2,3));
-        double trans_far_plane = (-desired_zfar*projection(0,2)-desired_zfar*projection(1,2)-desired_zfar*projection(2,2)+projection(3,2))/(-desired_zfar*projection(2,3));
+        double trans_near_plane = (-desired_znear*projection(2,2)+projection(3,2))/(-desired_znear*projection(2,3)+projection(3,3));
+        double trans_far_plane = (-desired_zfar*projection(2,2)+projection(3,2))/(-desired_zfar*projection(2,3)+projection(3,3));
 
-        double ratio = fabs(2.0f/(trans_near_plane-trans_far_plane));
+        double ratio = fabs(2.0f/(trans_near_plane-trans_far_plane))*0.95;
         double center = -(trans_near_plane+trans_far_plane)/2.0f;
 
         projection.postMult(osg::Matrix(1.0f,0.0f,0.0f,0.0f,

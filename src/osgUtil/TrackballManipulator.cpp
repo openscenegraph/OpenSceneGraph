@@ -143,6 +143,13 @@ bool TrackballManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us
                 _camera->setFusionDistanceRatio(_camera->getFusionDistanceRatio()/1.25f);
                 return true;
             }
+// this is quick hack to test out othographic projection.            
+//             else if (ea.getKey()=='O')
+//             {
+//                 float dist = _camera->getLookDistance();
+//                 _camera->setOrtho(-dist,dist,-dist,dist,-dist,dist);
+//                 return true;
+//             }
             return false;
         case(GUIEventAdapter::FRAME):
             _camera->setFusionDistanceMode(osg::Camera::PROPORTIONAL_TO_LOOK_DISTANCE);

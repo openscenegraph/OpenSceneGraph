@@ -16,7 +16,7 @@ bool readMatrix(osg::Matrix& matrix, osgDB::Input& fr)
         double v;
         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
         {
-            if (fr[0].getDouble(v))
+            if (fr[0].getFloat(v))
             {
                 matrix(row,col)=v;
                 ++col;

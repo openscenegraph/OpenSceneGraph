@@ -46,10 +46,10 @@ bool ClipPlane_readLocalData(Object& obj, Input& fr)
     if (fr.matchSequence("plane %f %f %f %f"))
     {
         double plane[4];
-        fr[1].getDouble(plane[0]);
-        fr[2].getDouble(plane[1]);
-        fr[3].getDouble(plane[2]);
-        fr[4].getDouble(plane[3]);
+        fr[1].getFloat(plane[0]);
+        fr[2].getFloat(plane[1]);
+        fr[3].getFloat(plane[2]);
+        fr[4].getFloat(plane[3]);
         clipplane.setClipPlane(plane);
 
         fr+=5;

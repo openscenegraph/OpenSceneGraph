@@ -31,7 +31,7 @@ bool BlinkSequence_readLocalData(osg::Object &obj, osgDB::Input &fr)
     if (fr.matchSequence("phaseShift %f"))
     {
         double ps;
-        fr[1].getDouble(ps);
+        fr[1].getFloat(ps);
         fr += 2;
         seq.setPhaseShift(ps);
         iteratorAdvanced = true;
@@ -40,7 +40,7 @@ bool BlinkSequence_readLocalData(osg::Object &obj, osgDB::Input &fr)
     {
         double length;
         float r, g, b, a;
-        fr[1].getDouble(length);
+        fr[1].getFloat(length);
         fr[2].getFloat(r);
         fr[3].getFloat(g);
         fr[4].getFloat(b);
@@ -103,7 +103,7 @@ bool BlinkSequence_SequenceGroup_readLocalData(osg::Object &obj, osgDB::Input &f
 
     if (fr.matchSequence("baseTime %f"))
     {
-        fr[1].getDouble(sg._baseTime);
+        fr[1].getFloat(sg._baseTime);
         fr += 2;
         iteratorAdvanced = true;
     }

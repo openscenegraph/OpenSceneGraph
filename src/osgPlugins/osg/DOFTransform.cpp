@@ -48,7 +48,7 @@ bool DOFTransform_readLocalData(Object& obj, Input& fr)
             {
                 for(int j=0;j<4;++j)
                 {
-                    fr[k].getDouble(v);
+                    fr[k].getFloat(v);
                     matrix(i,j)=v;
                     k++;
                 }

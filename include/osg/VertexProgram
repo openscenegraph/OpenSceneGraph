@@ -136,9 +136,10 @@ class SG_EXPORT VertexProgram : public StateAttribute
             return 0; // passed all the above comparison macro's, must be equal.
         }
 
-        virtual void getAssociatedModes(std::vector<GLMode>& modes) const
+        virtual bool getModeUsage(ModeUsage& usage) const
         {
-            modes.push_back(GL_VERTEX_PROGRAM_ARB);
+            usage.usesMode(GL_VERTEX_PROGRAM_ARB);
+            return true;
         }
 
         // data access methods.

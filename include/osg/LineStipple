@@ -46,9 +46,10 @@ class SG_EXPORT LineStipple : public StateAttribute
             return 0; // passed all the above comparison macro's, must be equal.
         }
         
-        virtual void getAssociatedModes(std::vector<GLMode>& modes) const 
+        virtual bool getModeUsage(ModeUsage& usage) const
         {
-            modes.push_back(GL_LINE_STIPPLE);
+            usage.usesMode(GL_LINE_STIPPLE);
+            return true;
         }
 
         void setFactor(GLint factor);

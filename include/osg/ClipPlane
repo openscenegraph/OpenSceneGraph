@@ -59,9 +59,10 @@ class SG_EXPORT ClipPlane : public StateAttribute
             return 0; // passed all the above comparison macro's, must be equal.
         }
 
-        virtual void getAssociatedModes(std::vector<GLMode>& modes) const 
+        virtual bool getModeUsage(ModeUsage& usage) const
         {
-            modes.push_back((GLMode)(GL_CLIP_PLANE0+_clipPlaneNum));
+            usage.usesMode((GLMode)(GL_CLIP_PLANE0+_clipPlaneNum));
+            return true;
         }
 
 

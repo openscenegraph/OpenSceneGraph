@@ -67,9 +67,10 @@ class SG_EXPORT Depth : public StateAttribute
             return 0; // passed all the above comparison macro's, must be equal.
         }
 
-        virtual void getAssociatedModes(std::vector<GLMode>& modes) const 
+        virtual bool getModeUsage(ModeUsage& usage) const
         {
-            modes.push_back(GL_DEPTH_TEST);
+            usage.usesMode(GL_DEPTH_TEST);
+            return true;
         }
 
         inline void setFunction(Function func) { _func = func; }

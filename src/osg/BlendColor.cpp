@@ -14,6 +14,7 @@
 #include <osg/GLExtensions>
 #include <osg/State>
 #include <osg/Notify>
+#include <osg/buffered_value>
 
 using namespace osg;
 

@@ -49,11 +49,12 @@ class SG_EXPORT PolygonOffset : public StateAttribute
             return 0; // passed all the above comparison macro's, must be equal.
         }
 
-        virtual void getAssociatedModes(std::vector<GLMode>& modes) const 
+        virtual bool getModeUsage(ModeUsage& usage) const
         {
-            modes.push_back(GL_POLYGON_OFFSET_FILL);
-            modes.push_back(GL_POLYGON_OFFSET_LINE);
-            modes.push_back(GL_POLYGON_OFFSET_POINT);
+            usage.usesMode(GL_POLYGON_OFFSET_FILL);
+            usage.usesMode(GL_POLYGON_OFFSET_LINE);
+            usage.usesMode(GL_POLYGON_OFFSET_POINT);
+            return true;
         }
 
         inline void setFactor(float factor) { _factor = factor; }

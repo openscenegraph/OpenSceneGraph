@@ -34,9 +34,10 @@ class SG_EXPORT Texture3D : public Texture
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
         virtual int compare(const StateAttribute& rhs) const;
 
-        virtual void getAssociatedModes(std::vector<GLMode>& modes) const 
+        virtual bool getModeUsage(ModeUsage& usage) const
         {
-            modes.push_back(GL_TEXTURE_3D);
+            usage.usesTextureMode(GL_TEXTURE_3D);
+            return true;
         }
 
         /** Set the texture image. */

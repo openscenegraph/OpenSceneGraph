@@ -250,7 +250,6 @@ class SG_EXPORT StateSet : public Object
         void setMode(ModeList& modeList,StateAttribute::GLMode mode, StateAttribute::GLModeValue value);
         void setModeToInherit(ModeList& modeList,StateAttribute::GLMode mode);
         StateAttribute::GLModeValue getMode(const ModeList& modeList,StateAttribute::GLMode mode) const;
-        void setAssociatedModes(ModeList& modeList,const StateAttribute* attribute, StateAttribute::GLModeValue value);
 
         void setAttribute(AttributeList& attributeList,StateAttribute *attribute, const StateAttribute::OverrideValue value=StateAttribute::OFF);
 

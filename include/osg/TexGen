@@ -64,10 +64,10 @@ class SG_EXPORT TexGen : public StateAttribute
             return 0; // passed all the above comparison macro's, must be equal.
         }
 
-        virtual void getAssociatedModes(std::vector<GLMode>& modes) const 
+        virtual bool getModeUsage(ModeUsage& usage) const
         {
-            modes.push_back(GL_TEXTURE_GEN_S);
-            modes.push_back(GL_TEXTURE_GEN_T);
+            usage.usesTextureMode(GL_TEXTURE_GEN_S);
+            usage.usesTextureMode(GL_TEXTURE_GEN_T);
 
             // Not happy with turning all tex gen paramters on
             // as the OSG currently only supports 2D textures and therefore
@@ -79,8 +79,9 @@ class SG_EXPORT TexGen : public StateAttribute
             // The tidy up is now happening, but will have a think before
             // resolving the below parameters.
 
-            modes.push_back(GL_TEXTURE_GEN_R);
-            modes.push_back(GL_TEXTURE_GEN_Q);
+            usage.usesTextureMode(GL_TEXTURE_GEN_R);
+            usage.usesTextureMode(GL_TEXTURE_GEN_Q);
+            return true;
         }
 
         virtual void apply(State& state) const;

@@ -45,20 +45,10 @@ namespace txp
 	typedef HANDLE ThreadID;
 	typedef HANDLE ThreadMutex;
 	typedef HANDLE ThreadEvent;
-#endif
-
-#if !defined(ThreadID)
-	/*
-	// Stubs to make it compile
-	typedef int ThreadID;
-	typedef int ThreadMutex;
-	typedef int ThreadEvent;
-	*/
-
+#else
 	typedef pthread_t ThreadID;
 	typedef pthread_mutex_t ThreadMutex;
 	typedef osgTXP::WaitBlock ThreadEvent;
-
 #endif
 
 	/* OSG Page Manager

@@ -72,7 +72,7 @@ QuicktimeImageStream::~QuicktimeImageStream()
     {
 
         // cancel the thread..
-        cancel();
+        // cancel();
         //join();
 
         // then wait for the the thread to stop running.
@@ -147,6 +147,15 @@ void QuicktimeImageStream::run()
         // Handle commands
         ThreadCommand cmd = getCmd();
 
+	float currentTime=0.0f;
+	
+	if (cmd == THREAD_QUIT)
+	{
+            osg::notify(NOTICE) << "QT-ImageStream: quick quit" << std::endl;
+            playing = false;
+            done = true;
+	}
+	else if (cmd != THREAD_IDLE)
         {
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_qtMutex);
 
@@ -175,6 +184,7 @@ void QuicktimeImageStream::run()
                     case THREAD_QUIT: // TODO
                         SetMovieRate(_data->getMovie(),0);
                         osg::notify(NOTICE) << "QT-ImageStream: quit" << std::endl;
+                        playing = false;
                         done = true;
                         break;
                     default:
@@ -184,7 +194,8 @@ void QuicktimeImageStream::run()
             }
 
             MoviesTask(_data->getMovie(),0);
-            float currentTime = _data->getMovieTime();
+
+	    currentTime = _data->getMovieTime();
         }
         
 
@@ -196,7 +207,8 @@ void QuicktimeImageStream::run()
         if (playing) {
             // TODO
         }
-        else {
+        else if (!done)
+	{
             ::usleep(IDLE_TIMEOUT);
         }
     }

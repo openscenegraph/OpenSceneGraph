@@ -73,9 +73,8 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
         /** return true if the application is done and should exit.*/
         bool done() const;
 
-        /** Set the model view matrix of the camera group,
-          * by individually set all the camera groups's camera.*/
-        virtual void setView(const osg::Matrix& matrix);
+        /** Override the Producer::CameraGroup::setViewByMatrix to catch all changes to view.*/
+        virtual void setViewByMatrix( const Producer::Matrix & pm);
 
         /** Set the threading model and then call realize().*/
         virtual bool realize(ThreadingModel thread_model);

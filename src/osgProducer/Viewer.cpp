@@ -177,11 +177,17 @@ bool Viewer::done() const
     return _done;
 }
 
-void Viewer::setView(const osg::Matrix& matrix)
+void Viewer::setViewByMatrix( const Producer::Matrix & pm)
 {
-    OsgCameraGroup::setView(matrix);
+    CameraGroup::setViewByMatrix(pm);
+    
     if (_keyswitchManipulator.valid() && _old_style_osg_camera.valid())
     {
+        // now convert Producer matrix to an osg::Matrix so we can update
+        // the internal camera...
+        
+        osg::Matrix matrix(pm.ptr());
+    
         _old_style_osg_camera->home();
         _old_style_osg_camera->transformLookAt(matrix);
         osg::ref_ptr<osgProducer::EventAdapter> init_event = _kbmcb->createEventAdapter();

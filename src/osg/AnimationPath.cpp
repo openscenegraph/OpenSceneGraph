@@ -3,9 +3,9 @@
 
 using namespace osg;
 
-void AnimationPath::insert(double time,const ControlPoint& ControlPoint)
+void AnimationPath::insert(double time,const ControlPoint& controlPoint)
 {
-    _timeControlPointMap[time] = ControlPoint;
+    _timeControlPointMap[time] = controlPoint;
 }
 
 bool AnimationPath::getInterpolatedControlPoint(double time,ControlPoint& controlPoint) const

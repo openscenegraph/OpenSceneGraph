@@ -305,10 +305,13 @@ void Tesselator::retesselatePolygons(osg::Geometry& geom)
             }
             
             
+            // we don't properly handle per primitive and per primitive bindings yet
+            // will need to address this soon. Robert Oct 2002.
             {
                 osg::Vec3Array* normals = NULL; // GWM Sep 2002 - add normals for extra facets
                 int iprim=0;
-                if (geom.getNormalBinding()==osg::Geometry::BIND_PER_PRIMITIVE)
+                if (geom.getNormalBinding()==osg::Geometry::BIND_PER_PRIMITIVE ||
+                    geom.getNormalBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET)
                 {
                     normals = geom.getNormalArray(); // GWM Sep 2002
                 }

@@ -89,9 +89,9 @@ class SG_EXPORT AnimationPath : public osg::Referenced
         }
         
         /** get the local ControlPoint frame for a point in time.*/
-        virtual bool getInterpolatedControlPoint(double time,ControlPoint& ControlPoint) const;
+        virtual bool getInterpolatedControlPoint(double time,ControlPoint& controlPoint) const;
         
-        void insert(double time,const ControlPoint& ControlPoint);
+        void insert(double time,const ControlPoint& controlPoint);
         
         double getFirstTime() const { if (!_timeControlPointMap.empty()) return _timeControlPointMap.begin()->first; else return 0.0;}
         double getLastTime() const { if (!_timeControlPointMap.empty()) return _timeControlPointMap.rbegin()->first; else return 0.0;}

@@ -48,22 +48,24 @@ class OSGSIM_EXPORT LightPointDrawable : public osg::Drawable
             ColorPosition(unsigned long f,const osg::Vec3& s):first(f),second(s) {}
         };
         
-        void reset()
-        {
-            for(SizedLightPointList::iterator itr=_sizedLightPointList.begin();
-                itr!=_sizedLightPointList.end();
-                ++itr)
-            {
-                if (!itr->empty())
-                    itr->erase(itr->begin(),itr->end());
-            }
+        void reset();
 
+        inline void addOpaqueLightPoint(unsigned int pointSize,const osg::Vec3& position,const osg::Vec4& color)
+        {
+            if (pointSize>=_sizedOpaqueLightPointList.size()) _sizedOpaqueLightPointList.resize(pointSize+1);
+            _sizedOpaqueLightPointList[pointSize].push_back(ColorPosition(color.asRGBA(),position));
         }
 
-        inline void addLightPoint(unsigned int pointSize,const osg::Vec3& position,const osg::Vec4& color)
+        inline void addAdditiveLightPoint(unsigned int pointSize,const osg::Vec3& position,const osg::Vec4& color)
         {
-            if (pointSize>=_sizedLightPointList.size()) _sizedLightPointList.resize(pointSize+1);
-            _sizedLightPointList[pointSize].push_back(ColorPosition(color.asRGBA(),position));
+            if (pointSize>=_sizedAdditiveLightPointList.size()) _sizedAdditiveLightPointList.resize(pointSize+1);
+            _sizedAdditiveLightPointList[pointSize].push_back(ColorPosition(color.asRGBA(),position));
+        }
+
+        inline void addBlendedLightPoint(unsigned int pointSize,const osg::Vec3& position,const osg::Vec4& color)
+        {
+            if (pointSize>=_sizedBlendedLightPointList.size()) _sizedBlendedLightPointList.resize(pointSize+1);
+            _sizedBlendedLightPointList[pointSize].push_back(ColorPosition(color.asRGBA(),position));
         }
         
         /** draw LightPoints. */
@@ -94,14 +96,17 @@ class OSGSIM_EXPORT LightPointDrawable : public osg::Drawable
         double _referenceTime;
         double _referenceTimeInterval;
         
-        typedef std::vector<ColorPosition> LightPointList;
+        typedef std::vector<ColorPosition>  LightPointList;
         typedef std::vector<LightPointList> SizedLightPointList;
 
-        SizedLightPointList _sizedLightPointList;
+        SizedLightPointList             _sizedOpaqueLightPointList;
+        SizedLightPointList             _sizedAdditiveLightPointList;
+        SizedLightPointList             _sizedBlendedLightPointList;
 
         osg::ref_ptr<osg::Depth>        _depthOff;
         osg::ref_ptr<osg::Depth>        _depthOn;
-        osg::ref_ptr<osg::BlendFunc>    _blendOn;
+        osg::ref_ptr<osg::BlendFunc>    _blendOne;
+        osg::ref_ptr<osg::BlendFunc>    _blendOneMinusSrcAlpha;
         osg::ref_ptr<osg::ColorMask>    _colorMaskOff;
         osg::ref_ptr<osg::Point>        _point;
 

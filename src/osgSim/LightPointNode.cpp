@@ -7,7 +7,8 @@
 // for further information contact robert@openscenegraph.com.
 
 #include <osgSim/LightPointNode>
-#include <osgSim/LightPointDrawable>
+
+#include "LightPointDrawable.h"
 
 #include <osg/Timer>
 #include <osg/BoundingBox>
@@ -260,6 +261,7 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
             // adjust pixel size to account for intensity.
             if (intensity!=1.0) pixelSize *= sqrt(intensity);
             
+            osg::Vec3 xpos(position*matrix);
             if (pixelSize<1.0f)
             {
                 // need to use alpha blending...
@@ -268,7 +270,7 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
 
                 if (color[3]<=minimumIntensity) continue;
 
-                drawable->addLightPoint(0, position*matrix,color);
+                drawable->addBlendedLightPoint(0, xpos,color);
             }
             else if (pixelSize<lp._maxPixelSize)
             {
@@ -276,18 +278,17 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
                 unsigned int lowerBoundPixelSize = (unsigned int)pixelSize;
                 //float remainder = pixelSize-(float)lowerBoundPixelSize;
                 float remainder = osg::square(pixelSize-(float)lowerBoundPixelSize);
-                osg::Vec3 xpos = position*matrix;
                 float alpha = color[3];
-                color[3] = alpha*(1.0f-remainder);
-                drawable->addLightPoint(lowerBoundPixelSize-1, xpos,color);
+//                color[3] = alpha*(1.0f-remainder);
+                drawable->addBlendedLightPoint(lowerBoundPixelSize-1, xpos,color);
 
-                //color[3] = osg::square(remainder);
+//                 //color[3] = osg::square(remainder);
                 color[3] = alpha*remainder;
-                drawable->addLightPoint(lowerBoundPixelSize, xpos,color);
+                drawable->addBlendedLightPoint(lowerBoundPixelSize, xpos,color);
             }
             else // use a billboard geometry.
             {
-                drawable->addLightPoint((unsigned int)(lp._maxPixelSize-1.0), position*matrix,color);
+                drawable->addOpaqueLightPoint((unsigned int)(lp._maxPixelSize-1.0), xpos,color);
             }
         }
         

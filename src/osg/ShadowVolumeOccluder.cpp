@@ -189,7 +189,6 @@ Drawable* createOccluderDrawable(const PointList& front, const PointList& back)
 }
 
 
-
 bool ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const ConvexPlanerOccluder& occluder,CullStack& cullStack,bool createDrawables)
 {
 
@@ -273,6 +272,62 @@ bool ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const Convex
                 group->addChild(geode);
                 geode->addDrawable(createOccluderDrawable(points,farPoints));
             }
+        }
+        
+        
+        for(ConvexPlanerOccluder::HoleList::const_iterator hitr=occluder.getHoleList().begin();
+            hitr!=occluder.getHoleList().end();
+            ++hitr)
+        {
+            PointList points;
+            if (clip(cullingset.getFrustum().getPlaneList(),hitr->getVertexList(),points)>=3)
+            {
+                _holeList.push_back();
+                Polytope& polytope = _holeList.back();
+
+                // compute the points on the far plane.
+                PointList farPoints;
+                farPoints.reserve(points.size());
+                transform(points,farPoints,MVP);
+                pushToFarPlane(farPoints);
+                transform(farPoints,invP);
+
+                // move the occlude points into projection space.
+                transform(points,MV);
+
+                // create the front face of the occluder
+                Plane occludePlane = computeFrontPlane(points);
+
+                // create the sides of the occluder
+                computePlanes(points,farPoints,polytope.getPlaneList());
+
+                polytope.setupMask();
+
+                // if the front face is pointing away from the eye point flip the whole polytope.
+                if (occludePlane[3]>0.0f)
+                {
+                    polytope.flip();
+                }
+
+                if (createDrawables && !nodePath.empty())
+                {
+                    osg::Group* group = dynamic_cast<osg::Group*>(nodePath.back());
+                    if (group)
+                    {
+
+                        osg::Matrix invMV;
+                        invMV.invert(MV);
+
+                        transform(points,invMV);
+                        transform(farPoints,invMV);
+
+                        osg::Geode* geode = osgNew osg::Geode;
+                        group->addChild(geode);
+                        geode->addDrawable(createOccluderDrawable(points,farPoints));
+                    }
+                }
+            }
+            
         }
 
 

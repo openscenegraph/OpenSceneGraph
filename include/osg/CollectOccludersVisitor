@@ -50,6 +50,25 @@ class SG_EXPORT CollectOccludersVisitor : public osg::NodeVisitor, public osg::C
         bool                        _createDrawables;
         ShadowVolumeOccluderList    _collectedOccluderList;
 
+        inline void handle_callbacks_and_traverse(osg::Node& node)
+        {
+            osg::NodeCallback* callback = node.getAppCallback();
+            if (callback) (*callback)(&node,this);
+            else if (node.getNumChildrenRequiringAppTraversal()>0) traverse(node);
+        }
+        inline void handle_cull_callbacks_and_traverse(osg::Node& node)
+        {
+            /*osg::NodeCallback* callback = node.getCullCallback();
+            if (callback) (*callback)(&node,this);
+            else*/ if (node.getNumChildrenWithOccluderNodes()>0) traverse(node);
+        }
+
+        inline void handle_cull_callbacks_and_accept(osg::Node& node,osg::Node* acceptNode)
+        {
+            /*osg::NodeCallback* callback = node.getCullCallback();
+            if (callback) (*callback)(&node,this);
+            else*/ if (node.getNumChildrenWithOccluderNodes()>0) acceptNode->accept(*this);
+        }
 };
 
 }

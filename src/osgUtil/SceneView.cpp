@@ -66,15 +66,16 @@ void SceneView::setDefaults()
     _renderStage = new RenderStage;
 
 
-#ifndef __sgi
+//#ifndef __sgi
     // sgi's IR graphics has a problem with lighting and display lists, as it seems to store 
     // lighting state with the display list, and the display list visitor doesn't currently apply
     // state before creating display lists. So will disable the init visitor default, this won't
     // affect functionality since the display lists will be created as and when needed.
     DisplayListVisitor* dlv = new DisplayListVisitor();
     dlv->setState(_state.get());
+    dlv->setNodeMaskOverride(0xffffffff);
     _initVisitor = dlv;
-#endif
+//#endif
 
     _appVisitor = new AppVisitor;    
 

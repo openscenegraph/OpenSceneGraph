@@ -50,7 +50,7 @@ class OSGGLUT_EXPORT GLUTEventAdapter : public osgUtil::GUIEventAdapter
         virtual unsigned int getButtonMask() const { return _buttonMask; }
 
         /** time in seconds of event. */
-        virtual float time() const { return _time; }
+        virtual double time() const { return _time; }
 
 
         /** static method for setting window dimensions.*/
@@ -60,22 +60,22 @@ class OSGGLUT_EXPORT GLUTEventAdapter : public osgUtil::GUIEventAdapter
         static void setButtonMask(unsigned int buttonMask);
 
         /** method for adapting resize events. */
-        void adaptResize(float t, int Xmin, int Ymin, int Xmax, int Ymax);
+        void adaptResize(double t, int Xmin, int Ymin, int Xmax, int Ymax);
 
         /** method for adapting mouse motion events whilst mouse buttons are pressed.*/
-        void adaptMouseMotion(float t, int x, int y);
+        void adaptMouseMotion(double t, int x, int y);
 
         /** method for adapting mouse motion events whilst no mouse button are pressed.*/
-        void adaptMousePassiveMotion(float t,int x, int y);
+        void adaptMousePassiveMotion(double t,int x, int y);
 
         /** method for adapting mouse button pressed/released events.*/
-        void adaptMouse(float t,int button, int state, int x, int y);
+        void adaptMouse(double t,int button, int state, int x, int y);
 
         /** method for adapting keyboard events.*/
-        void adaptKeyboard(float t,unsigned char key, int x, int y );
+        void adaptKeyboard(double t,unsigned char key, int x, int y );
 
         /** method for adapting frame events, i.e. idle/display callback.*/
-        void adaptFrame(float t);
+        void adaptFrame(double t);
 
         void copyStaticVariables();
 
@@ -89,7 +89,7 @@ class OSGGLUT_EXPORT GLUTEventAdapter : public osgUtil::GUIEventAdapter
         int _mx;
         int _my;
         unsigned int _buttonMask;
-        float _time;
+        double _time;
 
         // used to accumulate the button mask state, it represents
         // the current button mask state, which is modified by the

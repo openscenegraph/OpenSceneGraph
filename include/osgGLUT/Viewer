@@ -88,6 +88,11 @@ class OSGGLUT_EXPORT Viewer : public Window, public osgUtil::GUIActionAdapter
         /** read the command line string list, removing any matched control sequences.*/
         void readCommandLine(std::vector<std::string>& commandLine);
 
+        void setDisplaySettings(osg::DisplaySettings* ds) { _displaySettings = ds; }
+        osg::DisplaySettings* getDisplaySettings() { return _displaySettings.get(); }
+        const osg::DisplaySettings* getDisplaySettings() const { return _displaySettings.get(); }
+
+
     protected:
 
         virtual void display();

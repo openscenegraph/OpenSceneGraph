@@ -150,6 +150,17 @@ void Image::ensureDimensionsArePowerOfTwo()
     float rounded_tp2 = floorf(tp2+0.5f);
     int new_t = (int)(powf(2.0f,rounded_tp2));
     
+    static int max_size=256;
+
+    static bool init = true;
+    if (init)
+    {
+        init = false;
+        glGetIntegerv(GL_MAX_TEXTURE_SIZE,&max_size);
+        std::cout<<"Max texture size "<<max_size<<std::endl;
+    }
+    if (new_s>max_size) new_s = max_size;
+    if (new_t>max_size) new_t = max_size;
     
     if (new_s!=_s || new_t!=_t)
     {

@@ -57,7 +57,7 @@ void GLUTEventAdapter::setButtonMask(unsigned int buttonMask)
 }
 
 
-void GLUTEventAdapter::adaptResize(float time, int Xmin, int Ymin, int Xmax, int Ymax)
+void GLUTEventAdapter::adaptResize(double time, int Xmin, int Ymin, int Xmax, int Ymax)
 {
     setWindowSize(Xmin,Ymin,Xmax,Ymax);
     _eventType = RESIZE;
@@ -67,7 +67,7 @@ void GLUTEventAdapter::adaptResize(float time, int Xmin, int Ymin, int Xmax, int
 
 
 /** method for adapting mouse motion events whilst mouse buttons are pressed.*/
-void GLUTEventAdapter::adaptMouseMotion(float time, int x, int y)
+void GLUTEventAdapter::adaptMouseMotion(double time, int x, int y)
 {
     _eventType = DRAG;
     _time = time;
@@ -78,7 +78,7 @@ void GLUTEventAdapter::adaptMouseMotion(float time, int x, int y)
 
 
 /** method for adapting mouse motion events whilst no mouse button are pressed.*/
-void GLUTEventAdapter::adaptMousePassiveMotion(float time, int x, int y)
+void GLUTEventAdapter::adaptMousePassiveMotion(double time, int x, int y)
 {
     _eventType = MOVE;
     _time = time;
@@ -89,7 +89,7 @@ void GLUTEventAdapter::adaptMousePassiveMotion(float time, int x, int y)
 
 
 /** method for adapting mouse button pressed/released events.*/
-void GLUTEventAdapter::adaptMouse(float time, int button, int state, int x, int y)
+void GLUTEventAdapter::adaptMouse(double time, int button, int state, int x, int y)
 {
     _time = time;
 
@@ -154,7 +154,7 @@ void GLUTEventAdapter::adaptMouse(float time, int button, int state, int x, int 
 
 
 /** method for adapting keyboard events.*/
-void GLUTEventAdapter::adaptKeyboard(float time, unsigned char key, int x, int y )
+void GLUTEventAdapter::adaptKeyboard(double time, unsigned char key, int x, int y )
 {
     _eventType = KEYBOARD;
     _time = time;
@@ -167,7 +167,7 @@ void GLUTEventAdapter::adaptKeyboard(float time, unsigned char key, int x, int y
 
 
 /** method for adapting frame events, i.e. iddle/display callback.*/
-void GLUTEventAdapter::adaptFrame(float time)
+void GLUTEventAdapter::adaptFrame(double time)
 {
     _eventType = FRAME;
     _time = time;

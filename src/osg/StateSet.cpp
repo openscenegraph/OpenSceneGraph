@@ -17,6 +17,7 @@ using namespace osg;
 StateSet::StateSet()
 {
     _renderingHint = DEFAULT_BIN;
+    _datatype = osg::StateAttribute::STATIC;
     
     setRendingBinToInherit();
 }
@@ -40,6 +41,7 @@ StateSet::StateSet(const StateSet& rhs,const CopyOp& copyop):Object(rhs,copyop)
     _binMode = rhs._binMode;
     _binNum = rhs._binNum;
     _binName = rhs._binName;
+    _datatype = rhs._datatype;
 }
 
 StateSet::~StateSet()

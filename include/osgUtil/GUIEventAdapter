@@ -73,7 +73,7 @@ class GUIEventAdapter : public osg::Referenced
         virtual unsigned int getButtonMask() const = 0;
 
         /** time in seconds of event. */
-        virtual float time() const = 0;
+        virtual double time() const = 0;
 
 
     protected:

@@ -18,7 +18,16 @@ typedef std::vector<GLuint> VectorUInt;
 
 #else // _MSC_VER
 
-// work arounds for MS linker problems.
+// Following Vector wrapper classes are work arounds for MS linker problems with
+// multiply implemented methods.
+//
+// An alternative, sent in by Clay Fowler, is workaround in VS to prevent the problem:
+// the following changes have to be made to the project to make it compile, 
+// but NO changes are required to the actual source code:
+// In the osgUtil project, go to the project properties, select the Linker/Command Line property page, 
+// and add the following switch in the "Additional Options" field:
+// FORCE:MULTIPLE
+
 class VectorSizei: public std::vector<GLsizei> {
 	typedef std::vector<value_type> inherited;
 public:

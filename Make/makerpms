@@ -197,7 +197,7 @@ shift;shift; shift;shift; shift;shift; shift;shift;
 INST_DOC=$1
 INST_DATA=$2
 
-REV="`$TOPDIR""/bin/osgversion`"
+REV="`make version`"
 [ -z "$REV" ] && die  "makerpm: requires a functional $TOPDIR/bin/osgversion"
 
 REL=1

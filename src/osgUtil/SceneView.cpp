@@ -40,7 +40,7 @@ SceneView::SceneView(DisplaySettings* ds)
     _fusionDistanceMode = PROPORTIONAL_TO_SCREEN_DISTANCE;
     _fusionDistanceValue = 1.0f;
 
-    _lightingMode=HEADLIGHT;
+    _lightingMode=NO_SCENEVIEW_LIGHT;
     
     _prioritizeTextures = false;
     

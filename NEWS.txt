@@ -1,64 +1,63 @@
 OSG News (most significant items from ChangeLog)
 ================================================
 
-6th August 2003 - OpenSceneGraph-0.9.7
+9th August 2004 - OpenSceneGraph-0.9.7
 
-    >>> support for and generation of large scale geospatial whole earth databases, support for movies, with examples shadows and volume rendering.
+    >>> support for and generation of large scale geospatial databases,
+    >>> support for movies and examples of shadows and volume rendering.
     
-    The 0.9.7 encompasses many improvements, bug fixes, new examples and significant new functionality, the most notable of which is
-    a new osgTerrain library for generation of large scale geospatial databases.
+    The 0.9.7 encompasses many improvements, bug fixes, new examples and 
+    significant new functionality, the most notable of which is a new 
+    osgTerrain library for generation of large scale geospatial databases.
     
-    The new osgTerrain library and associated osgdem utility program allow users to uses moziacs of geospatial imagery and digital elevation maps
-    to generate a complete paged database which can be used with standard OSG viewers, and users programs. By utilising GDAL to load the imagery
-    and DEM's a wide range of geospatial formats are supported.   
+    The new osgTerrain library and associated osgdem utility program 
+    allows users to use moziacs of geospatial imagery and digital elevation
+    maps to generate a complete paged database which can be used with 
+    standard OSG viewers, and users programs. By utilising GDAL to load the
+    imagery and DEM's a wide range of geospatial formats are supported.   
      
-    The TerraPage plugin has also been rewritten ontop of the OSG's osg::PagedLOD and osgDB::DatabasePager which provides support for 
-    tile fallback mechansim to ensure that no holes or cracks appear in the databases being roamed, and to achieve constant frameframe
-    via load balancing mechansisms with osgDB::DatabasePager.
+    The TerraPage plugin has also been rewritten ontop of the OSG's 
+    osg::PagedLOD and osgDB::DatabasePager which provides support for the 
+    tile fallback mechanism to ensure that no holes or cracks appear in the
+    databases being roamed, and to achieve constant frame rate via load 
+    balancing mechanisms with osgDB::DatabasePager.
     
-    The osgDB::DatabasePager has been further improved to provide more configurable load balancing to allow application developers to
-    achieve constrant framerates when using paged databases.
+    The osgDB::DatabasePager has been further improved to provide more 
+    configurable load balancing which allows application developers to achieve
+    constant frame rates when using paged databases.
     
-    Double Vec & Matrix classes & CoordinateSystemNode/EllipsoidModel class have been introduced to better support browsing of large
-    scale databases, and to provide a mechansim for tracking the local up orientation when roaming whole earth databases.
+    Double Vec & Matrix classes & CoordinateSystemNode/EllipsoidModel class
+    have been introduced to better support browsing of large scale databases,
+    and to provide a mechanism for tracking the local up orientation when 
+    roaming whole earth databases.
     
-    osgUtil has been enhanced with a improved triangle stipper class (osgUtil::TriStipVisitor), a new simplifier (osgUtil::Simplifer) for
-    reducing triangle density of osg::Geometry leaves (utilised by osgTerrain to provide simplication of terrain tiles), improved and
-    more configurable optimizer (osgUtil::Optimizer), a new utility class for compling and releasing OpenGL objects (osgUtil::GLObjectVisitor)
-    replaces the prevsous and more limited DisplayListVisitor.
+    osgUtil has been enhanced with:
+     - an improved triangle tipper class (osgUtil::TriStipVisitor),
+     - a new simplifier (osgUtil::Simplifer) for reducing triangle density of
+       osg::Geometry leaves (utilised by osgTerrain to provide simplification 
+       of terrain tiles), 
+     - improved and more configurable optimizer (osgUtil::Optimizer),
+     - a new utility class for compiling and releasing OpenGL objects 
+      (osgUtil::GLObjectVisitor) replaces the previous and more limited 
+       DisplayListVisitor.
     
-    All the osgGA::MatrxManipulator's (used for camera manipulator etc) have been revamped with usage of doubles internally, and with 
-    tracking of the current CoordinateSystem if one is active, to be better support whole earth databases.  All the MatrixManipulator 
-    have been extend to allow the setting of a user defined a home position.  Two new manipulators have been introduced 
-    osgGA::TerrainManipulator, for roaming whole earth/terrain databases, and osgGA::TrackerManipulator which allows the camera to be
+    All the osgGA::MatrxManipulator's (used for camera manipulator etc) have
+    been revamped with usage of doubles internally, and with tracking of the
+    current CoordinateSystem if one is active, to be better support whole 
+    earth databases.  All the MatrixManipulators have been extend to allow 
+    the setting of a user defined home position.  Two new manipulators have
+    been introduced osgGA::TerrainManipulator, for roaming whole earth/terrain 
+    databases, and osgGA::TrackerManipulator which allows the camera to be
     attached to a node in the scene graph.
 
-    Movie support under Linux and OSX via libMpeg3 and Quicktime respectively, which extend the new osg::ImageStream base class which
-    allows application developers access to playing, pausing and rewinding movies. 
+    Movie support under Linux and OSX via libMpeg3 and Quicktime respectively, 
+    which extend the new osg::ImageStream base class which allows application 
+    developers access to playing, pausing and rewinding movies. 
 
-    The convertion utility osgconv has been extended to allow compression of textures and mipmap generation during conversion when
-    writing to the native .ive binary format.  Texture compression and pre computer mipmaps enable faster loading of databases
-    and lower utilization of memory resources.
-
-    Examples
-        osgdem
-        osgphotoalbum
-        osgbluemarble
-        
-        osgtesselate
-        osgsimulation
-        osgdepthshadow
-        osgsimplifier
-        osgspacewarp
-        osgdistortion
-        
-        osgsimple
-        osgkeyboardmouse
-        osgsimplepager
-    
-        osgmovie
-        
-        osgvolume
+    The conversion utility osgconv has been extended to allow compression of 
+    textures and mipmap generation during conversion when writing to the native 
+    .ive binary format.  Texture compression and pre computer mipmaps enable 
+    faster loading of databases and lower utilisation of memory resources.
 
     Write support added to JPG plugin.
     
@@ -66,11 +65,62 @@ OSG News (most significant items from ChangeLog)
     
     Pseudo loaders .trans, .rot and .scale have been added.
     
-    Updated LWO, AC3D, BMP, IVE and FLT loaers.
+    Updated LWO, AC3D, BMP, IVE and FLT loaders.
     
-    osg::TexGenNode has been added to provide a mechanism for positioning OpenGL's texture coordinate generation planes.
+    osg::TexGenNode has been added to provide a mechanism for positioning 
+    OpenGL's texture coordinate generation planes.
+
+    Fourteen new examples have been added:
     
-    Bug fixes.
+        osgdem            a utility for creating large scale geospatial paged 
+                          database
+
+        osgphotoalbum     an example of how to use PagedLOD to dynamic generate 
+                          geometry for paged in imagery
+
+        osgbluemarble     an example of how to build PagedLOD database for 
+                          paging imagery
+
+        osgtesselate -    an example of how to use osgUtil::Tesselate to 
+                          tessellate polygonal boundaries
+
+        osgsimulation     an example of how to use various features in osgSim.
+
+        osgdepthshadow    an example of how to implement shadows use depth 
+                          shadow textures.
+
+        osgsimplifier     an example of how to use the new osgUtil::Simplifier.
+
+        osgspacewarp      an example of how to create a special effect that 
+                          depends upon tracking the modelview matrix.
+
+        osgdistortion     an example of how to use prerendering of a texture to 
+                          create a distortion effect.
+
+        osgsimple         a bare bones example of how to create a simple viewer
+                          using a Windowing toolkit, in this example using 
+                          Producer, but is written so the example could easily 
+                          be modified to work with other Windowing toolkit.
+
+        osgkeyboardmouse  adding to keyboard and mouse functionality on the
+                          osgsimple base.
+
+        osgsimplepager    adding database paging support to the osgsimple
+                          example.
+    
+        osgmovie          an example which creates a quad to render a loaded
+                          movie file with - requires the LibMpeg3 (Linux) or 
+                          Quicktime (OSX) plugin to work.
+        
+        osgvolume         an example that reads a stack of 2d images to create
+                          a 3D texture, and creates a scene graph using 
+                          standard OSG components (osg::ClipNode, 
+                          osg::TexGenNode, osg::Billboard and 
+                          osg::TexEnvCombine) to create a per per lit volume.
+
+    
+    Wrapping up the complete 0.9.7 release is a wide range of smaller features 
+    enhancement and many bug fixes. 
 
 
 2nd October 2003 - OpenSceneGraph-0.9.6-2

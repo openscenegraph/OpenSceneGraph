@@ -66,8 +66,8 @@ echo osgmultitexture cessnafire.osg
 osmultitexture cessnafire.osg
 more memleaks.log
 
-echo osgreflect cow.osg
-osgreflect cow.osg
+echo osgreflect cessna.osg
+osgreflect cessna.osg
 more memleaks.log
 
 echo osgscribe cow.osg

@@ -49,8 +49,8 @@ osgimpostor Town.osg
 echo osgmultitexture cessnafire.osg
 osgmultitexture cessnafire.osg
 
-echo osgreflect cow.osg
-osgreflect cow.osg
+echo osgreflect cessna.osg
+osgreflect cessna.osg
 
 echo osgscribe cow.osg
 osgscribe cow.osg

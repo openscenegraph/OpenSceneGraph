@@ -3,6 +3,8 @@
 
 #include <string>
 
+#include "FTGL.h"
+
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
@@ -30,7 +32,7 @@ using namespace std;
  * @see		FTGlyphContainer
  * @see		FTGlyph
  */
-class	FTFont
+class FTGL_EXPORT FTFont
 {
 	public:
 		/**
@@ -118,8 +120,7 @@ class	FTFont
 		 * @param string	wchar_t string to be output.	 
 		 */
 		virtual void render( const wchar_t* string );
-		
-		
+
 		/**
 		 * Queries the Font for errors.
 		 *
@@ -141,6 +142,7 @@ class	FTFont
 		 * Current face object
 		 */
 		FTFace face;
+		
 		/**
 		 * Number of faces in this font
 		 */
@@ -177,3 +179,4 @@ class	FTFont
 
 
 #endif	//	__FTFont__
+

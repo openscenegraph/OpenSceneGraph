@@ -20,6 +20,7 @@ C++FILES = \
 	FTGLBitmapFont.cpp \
         FTGlyph.cpp \
         FTPolyGlyph.cpp \
+        FTVectorGlyph.cpp \
         Text.cpp \
         Version.cpp
 
@@ -38,7 +39,7 @@ TARGET_INCLUDE_FILES = \
 	osgText/Version\
 	osgText/Text
 
-C++FLAGS += -I ../../include -I /usr/local/include/freetype2 
+C++FLAGS += -I ../../include -I /usr/include/freetype2  -I /usr/local/include/freetype2 
 
 include ../../Make/makerules
 

@@ -1,10 +1,12 @@
-#include	"FTOutlineGlyph.h"
+#include	"GL/gl.h"
+
+#include	"FTVectorGlyph.h"
 #include	"FTVectoriser.h"
 #include	"FTGL.h"
 
 
 
-FTOutlineGlyph::FTOutlineGlyph( FT_Glyph glyph)
+FTVectorGlyph::FTVectorGlyph( FT_Glyph glyph)
 :	FTGlyph(),
 	vectoriser(0),
 	numPoints(0),
@@ -24,9 +26,9 @@ FTOutlineGlyph::FTOutlineGlyph( FT_Glyph glyph)
 	numContours = vectoriser->contours();
 	contourLength = new int[ numContours];
 	
-	for( int cn = 0; cn < numContours; ++cn)
+	for( int c = 0; c < numContours; ++c)
 	{
-		contourLength[cn] = vectoriser->contourSize( cn);
+		contourLength[c] = vectoriser->contourSize( c);
 	}
 	
 	numPoints = vectoriser->points();
@@ -61,14 +63,14 @@ FTOutlineGlyph::FTOutlineGlyph( FT_Glyph glyph)
 }
 
 
-FTOutlineGlyph::~FTOutlineGlyph()
+FTVectorGlyph::~FTVectorGlyph()
 {
 	delete [] data;
 	delete [] contourLength;
 }
 
 
-float FTOutlineGlyph::Render( const FT_Vector& pen)
+float FTVectorGlyph::Render( const FT_Vector& pen)
 {
 	if( glList)
 	{
@@ -79,4 +81,7 @@ float FTOutlineGlyph::Render( const FT_Vector& pen)
 	
 	return advance;
 }
+
+
+
 

@@ -1,7 +1,4 @@
-#include	"GL/gl.h"
-
 #include	"FTBitmapGlyph.h"
-#include	"FTGL.h"
 
 
 FTBitmapGlyph::FTBitmapGlyph( FT_Glyph glyph)

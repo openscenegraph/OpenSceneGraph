@@ -1,6 +1,8 @@
 #ifndef		__FTCharmap__
 #define		__FTCharmap__
 
+#include "FTGL.h"
+
 #include <map>
 
 #include <ft2build.h>
@@ -13,11 +15,16 @@ using namespace std;
 
 
 /**
- * FTCharmap
+ * FTCharmap takes care of specifying the encodeing for a font and mapping
+ * character codes to glyph indices.
  *
-  *
+ * It doesn't preprocess all indices, only on as needed basis. This may seem
+ * like a performance penalty but it is quicker than using the 'raw'
+ * freetype calls and will save significant amounts of memory when dealing
+ * with uncode encoding
+ *
  */
-class FTCharmap
+class FTGL_EXPORT FTCharmap
 {
 	public:
 		/**
@@ -91,8 +98,16 @@ class FTCharmap
 		 */
 		FT_Encoding ftEncoding;
 		
+		/**
+		 * The current Freetype face.
+		 */
 		FT_Face ftFace;
 		
+		/**
+		 * A structure that maps glyph indices to character codes
+		 *
+		 * < character code, face glyph index>
+		 */
 		typedef map< unsigned long, unsigned long> CharacterMap;
 		CharacterMap charMap;
 		

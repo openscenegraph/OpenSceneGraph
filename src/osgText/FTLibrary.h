@@ -1,12 +1,11 @@
 #ifndef		__FTLibrary__
 #define		__FTLibrary__
 
+#include "FTGL.h"
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
 //#include FT_CACHE_H
-
-#include "FTGL.h"
 
 
 /**
@@ -27,10 +26,9 @@
  * @see	"Freetype 2 Documentation - 2.0.4"
  *
  */
-class	FTLibrary
+class FTGL_EXPORT FTLibrary
 {
 	public:
-		// methods
 		/**
 		 * Global acces point to the single FTLibrary object.
 		 * 
@@ -59,10 +57,7 @@ class	FTLibrary
 		 */
 		virtual  ~FTLibrary();
 		
-		// attributes
-		
 	private:
-		// methods
 		/**
 		 * Default constructors.
 		 *
@@ -71,7 +66,7 @@ class	FTLibrary
 		 */
 		FTLibrary();
 		FTLibrary( const FT_Library&){}
-		FTLibrary&	operator=( const FT_Library&){}
+		FTLibrary&	operator=( const FT_Library&) { return *this; }
 		
 		/**
 		 * Initialises the Freetype library
@@ -84,8 +79,6 @@ class	FTLibrary
 		 * 			otherwise.
 		 */
 		bool Init();
-		
-		// attributes
 		/**
 		 * Freetype library handle.
 		 */

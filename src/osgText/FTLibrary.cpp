@@ -1,5 +1,4 @@
 #include	"FTLibrary.h"
-#include	"FTGL.h"
 
 
 FTLibrary&	FTLibrary::Instance()

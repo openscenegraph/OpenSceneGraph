@@ -208,7 +208,7 @@ void TrPageArchive::LoadMaterials()
                 
                 if(osg_texture->getImage())
                 { 
-                    switch (osg_texture->getImage()->pixelFormat())
+                    switch (osg_texture->getImage()->getPixelFormat())
                     {
                     case GL_LUMINANCE_ALPHA:
                     case GL_RGBA:

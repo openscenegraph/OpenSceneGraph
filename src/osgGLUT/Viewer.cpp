@@ -332,10 +332,6 @@ float Viewer::app(unsigned int viewport)
 {
     osg::Timer_t beforeApp = _timer.tick();
 
-    // do app traversal.
-    
-    getViewportSceneView(viewport)->setFrameStamp(_frameStamp.get());
-    getViewportSceneView(viewport)->app();
 
     // update the camera manipulator.
     osg::ref_ptr<GLUTEventAdapter> ea = new GLUTEventAdapter;
@@ -345,6 +341,11 @@ float Viewer::app(unsigned int viewport)
     {
         //        osg::notify(osg::INFO) << "Handled update frame"<<endl;
     }
+
+    // do app traversal.
+    
+    getViewportSceneView(viewport)->setFrameStamp(_frameStamp.get());
+    getViewportSceneView(viewport)->app();
 
     osg::Timer_t beforeCull = _timer.tick();
 

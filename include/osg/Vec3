@@ -170,9 +170,10 @@ class Vec3
             float norm = Vec3::length();
             if (norm>0.0f)
             {
-                _v[0] /= norm;
-                _v[1] /= norm;
-                _v[2] /= norm;
+                float inv = 1.0f/norm;
+                _v[0] *= inv;
+                _v[1] *= inv;
+                _v[2] *= inv;
             }                
             return( norm );
         }

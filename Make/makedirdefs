@@ -142,6 +142,7 @@ EXAMPLE_DIRS = \
 	osgmultitexture\
 	osgoccluder\
 	osgparticle\
+	osgpagedlod\
 	osgpick\
 	osgpoints\
 	osgprerender\

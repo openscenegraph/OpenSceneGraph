@@ -705,7 +705,7 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
 
     }
 
-    osg::StateSet* osgStateSet = visitGeoState(osgGeoSet,geoset->getGState());
+    visitGeoState(osgGeoSet,geoset->getGState());
 
     // convert to osg::Geometry, as osg::GeoSet is now deprecated.
     osgDrawable = osgGeoSet->convertToGeometry();

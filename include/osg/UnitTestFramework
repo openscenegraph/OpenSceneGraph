@@ -25,9 +25,17 @@
 #include <list>
 #include <fstream>
 
+/**
+
+\namespace osgUtx
+
+The osgUtx is a unit test framework.
+*/
+
 namespace osgUtx{
 
 class TestVisitor;
+
 
 /**
 Test, an abstract base class, is the Composite pattern's \em component

@@ -35,5 +35,16 @@
 	#define OSGPRODUCER_EXPORT 
 #endif 
 
+/**
+
+\namespace osgProducer
+
+The osgProducer is a utility library integrates OpenProducer to provide a general purpose viewer classes.  
+osgProducer is used by all the OpenSceneGraph examples, and can also be used for client application development.
+
+Note, the core scene graph libraries and NodeKits are entirely Windowing API agnostic so you are free to implement
+your own integration with whichever Windowing toolkit you prefer.
+*/
+
 #endif
 

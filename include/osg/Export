@@ -56,4 +56,12 @@
     #endif
 #endif
 
+/**
+
+\namespace osg
+
+The core osg library provides the basic scene graph classes such as Nodes,
+State and Drawables, and maths and general helper classes.
+*/
+
 #endif

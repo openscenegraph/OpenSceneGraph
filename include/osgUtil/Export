@@ -35,5 +35,13 @@
     #define OSGUTIL_EXPORT 
 #endif 
 
+/**
+
+\namespace osgUtil
+
+The osgUtil library provides general purpose utility classes such as update, cull and draw traverses, scene graph operators such a scene graph optimisation, tri stripping, and tessellation.
+
+*/
+
 #endif
 

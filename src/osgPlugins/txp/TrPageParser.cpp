@@ -30,7 +30,7 @@
 #include <osg/Billboard>
 #include <osg/Matrix>
 #include <osg/Transform>
-#include <osg/GeoSet>
+#include <osg/Geometry>
 #include <osg/CullFace>
 #include <osg/Light>
 #include <osg/Transparency>
@@ -216,30 +216,30 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     geom.GetMaterial(0,matId, local);
     geom.GetNumNormal(numNorm);
     
-    Vec3* vertices = new Vec3[numVert];
+    Vec3Array* vertices = new Vec3Array(numVert);
     // Get vertices
-    geom.GetVertices(vertices);
+    geom.GetVertices(&(vertices->front()));
+    
     // Turn the trpgGeometry into something Performer can understand
-    GeoSet *gset      = 0L;
+    Geometry *geometry      = 0L;
     
     // Get texture coordinates
-    Vec2*  tex_coords = 0L; 
+    Vec2Array* tex_coords = 0L; 
     trpgTexData td;
     if (geom.GetTexCoordSet(0,&td))
     {
-        tex_coords = new Vec2[numVert]; 
+        tex_coords = new Vec2Array(numVert); 
         for (int i=0 ;i < numVert; i++)
         {
-            tex_coords[i][0] = td.floatData[2*i+0];
-            tex_coords[i][1] = td.floatData[2*i+1];
+            (*tex_coords)[i].set(td.floatData[2*i+0],td.floatData[2*i+1]);
         }
     }
     
-    Vec3* normals = 0L;
+    Vec3Array* normals = 0L;
     if (numNorm == numVert)
     {
-        normals = new Vec3[numVert];
-        geom.GetNormals(normals);
+        normals = new Vec3Array(numVert);
+        geom.GetNormals(&(normals->front()));
     }
     
     Geode *geode = new Geode();
@@ -248,8 +248,8 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     {
     case trpgGeometry::Triangles:
         {
-            gset = new GeoSet;
-            gset->setPrimType(GeoSet::TRIANGLES);
+            geometry = new Geometry;
+            geometry->addPrimitive(new DrawArrays(Primitive::TRIANGLES,0,numPrims*3));
         }
         break;
     case trpgGeometry::TriStrips:
@@ -258,10 +258,15 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
             int* primitives = new int[numPrims];
             geom.GetPrimLengths(primitives);
             
-            // Define GeoSet
-            gset = new GeoSet;
-            gset->setPrimType(GeoSet::TRIANGLE_STRIP);
-            gset->setPrimLengths(primitives);
+            // Define Geomtry
+            geometry = new Geometry;
+            int first=0;
+            for(int i=0;i<numPrims;++i)
+            {
+                geometry->addPrimitive(new DrawArrays(Primitive::TRIANGLE_STRIP,first,primitives[i]));
+                first += primitives[i];
+                
+            }
         }
         break;
     case trpgGeometry::TriFans:
@@ -269,10 +274,21 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
             // Need primitive lengths too
             int* primitives = new int[numPrims];
             geom.GetPrimLengths(primitives);
-            
-            // Need to flip the fans
+
+
+            // create the trifan primitives.            
+            geometry = new Geometry;
+            int first=0;
+            int i;
+            for(i=0;i<numPrims;++i)
+            {
+                geometry->addPrimitive(new DrawArrays(Primitive::TRIANGLE_FAN,first,primitives[i]));
+                first += primitives[i];
+            }
+
+            // Need to flip the fans coords.
             int ind = 0;
-            for (int i=0;i<numPrims;i++)
+            for (i=0;i<numPrims;++i)
             {
                 int start=ind+1;
                 int end=primitives[i]+ind-1;
@@ -281,20 +297,16 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
                 // Swap vertices, texture coords & normals
                 for (int j=0; j < numSwap; j++ )
                 {
-                    std::swap(vertices[start], vertices[end]);
+                    std::swap((*vertices)[start], (*vertices)[end]);
                     if( tex_coords )
-                        std::swap(tex_coords[start], tex_coords[end]);
+                        std::swap((*tex_coords)[start], (*tex_coords)[end]);
                     if(normals)
-                        std::swap(normals[start], normals[end]);
+                        std::swap((*normals)[start], (*normals)[end]);
                     start++;
                     end--;
                 }
                 ind += primitives[i];
             }
-            // Define GeoSet
-            gset = new GeoSet;
-            gset->setPrimType(GeoSet::TRIANGLE_FAN);
-            gset->setPrimLengths(primitives);
         }
         break;
     default:
@@ -305,12 +317,14 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     
     // Add it to the current parent group
     Group *top = parse->GetCurrTop();
-    if (gset)
+    if (geometry)
     {
-        gset->setCoords(vertices);
-        gset->setNumPrims(numPrims);
+        geometry->setVertexArray(vertices);
         if (normals)
-            gset->setNormals(normals);
+        {
+            geometry->setNormalArray(normals);
+            geometry->setNormalBinding(Geometry::BIND_PER_VERTEX);
+        }
         // Note: Should check number of materials first
         // Note: Should be combining multiple geosets
         ref_ptr<StateSet>  sset = 0L;
@@ -321,12 +335,11 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
 
         if (tex_coords)
         {
-            gset->setTextureCoords(tex_coords);
-            gset->setTextureBinding(GeoSet::BIND_PERVERTEX);
+            geometry->setTexCoordArray( 0, tex_coords);
         }
 
-        gset->setStateSet(sset.get());
-        geode->addDrawable(gset);
+        geometry->setStateSet(sset.get());
+        geode->addDrawable(geometry);
         top->addChild(geode);
     }
     return (void *) 1;

@@ -463,23 +463,20 @@ int ConvertFromPerformer::getNumVerts(pfGeoSet *gset)
 }
 
 
-osg::GeoSet* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* geoset)
+osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* geoset)
 {
     if (geoset==NULL) return NULL;
 
-    osg::GeoSet* osgGeoSet = dynamic_cast<osg::GeoSet*>(getOsgObject(geoset));
-    if (osgGeoSet)
+    osg::Drawable* osgDrawable = dynamic_cast<osg::Drawable*>(getOsgObject(geoset));
+    if (osgDrawable)
     {
-        if (osgGeode) osgGeode->addDrawable(osgGeoSet);
-        return osgGeoSet;
+        if (osgGeode) osgGeode->addDrawable(osgDrawable);
+        return osgDrawable;
     }
 
-    osgGeoSet = new osg::GeoSet;
-    if (osgGeode) osgGeode->addDrawable(osgGeoSet);
-
-    regisiterPfObjectForOsgObject(geoset,osgGeoSet);
-
-    visitGeoState(osgGeoSet,geoset->getGState());
+    // we'll make it easy to convert by using the Performer style osg::GeoSet,
+    // and then convert back to a osg::Geometry afterwards.
+    osg::ref_ptr<osg::GeoSet> osgGeoSet = new osg::GeoSet;
 
     int i;
 
@@ -702,11 +699,23 @@ osg::GeoSet* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* ge
 
     }
 
-    return osgGeoSet;
+    visitGeoState(osgGeoSet,geoset->getGState());
+
+
+    // convert to osg::Geometry, as osg::GeoSet is now deprecated.
+    osgDrawable = osgGeoSet->convertToGeometry();
+    if (osgDrawable)
+    {
+        osgGeode->addDrawable(osgDrawable);
+        regisiterPfObjectForOsgObject(geoset,osgDrawable);
+    }
+
+
+    return osgDrawable;
 }
 
 
-osg::StateSet* ConvertFromPerformer::visitGeoState(osg::GeoSet* osgGeoSet,pfGeoState* geostate)
+osg::StateSet* ConvertFromPerformer::visitGeoState(osg:Drawable* osgDrawable,pfGeoState* geostate)
 {
     if (geostate==NULL) return NULL;
 
@@ -718,7 +727,7 @@ osg::StateSet* ConvertFromPerformer::visitGeoState(osg::GeoSet* osgGeoSet,pfGeoS
     }
 
     osgStateSet = new osg::StateSet;
-    if (osgGeoSet) osgGeoSet->setStateSet(osgStateSet);
+    if (osgDrawable) osgDrawable->setStateSet(osgStateSet);
 
     regisiterPfObjectForOsgObject(geostate,osgStateSet);
 

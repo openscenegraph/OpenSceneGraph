@@ -2,7 +2,6 @@
 #include "osg/Notify"
 
 #include <osg/Geode>
-#include <osg/GeoSet>
 #include <osg/Texture>
 
 #include "osg/GL"

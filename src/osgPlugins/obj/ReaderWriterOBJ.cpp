@@ -24,7 +24,7 @@
 #include <osg/Transform>
 #include <osg/Geode>
 
-#include <osg/GeoSet>
+#include <osg/Geometry>
 #include <osg/StateSet>
 #include <osg/Material>
 #include <osg/Texture>
@@ -203,205 +203,87 @@ osg::Drawable* ReaderWriterOBJ::makeDrawable(GLMmodel* obj,
     unsigned int ntris = grp->numtriangles;
     unsigned int i = 0;
 
-    // geoset
-    osg::GeoSet* gset = new osg::GeoSet;
+    // geometry
+    osg::Geometry* geom = new osg::Geometry;
 
     // primitives are only triangles
-    gset->setPrimType(osg::GeoSet::TRIANGLES);
-    gset->setNumPrims(ntris);
-    int* primLen = new int[ntris];
-    gset->setPrimLengths(primLen);
-
+    geom->addPrimitive(new osg::DrawArrays(osg::Primitive::TRIANGLES,0,ntris*3));
 
     // the following code for mapping the coords, normals and texcoords
     // is complicated greatly by the need to create seperate out the
     // sets of coords etc for each drawable.
 
-    typedef std::vector<int> IndexVec;
-    
-    // fill an vector full of 0's, one for each vertex.
-    IndexVec vcount(obj->numvertices+1,0);
-    IndexVec ncount(obj->numnormals+1,0);
-    IndexVec tcount(obj->numtexcoords+1,0);
-
     bool needNormals = obj->normals && obj->normals>0;
     bool needTexcoords = obj->texcoords && obj->numtexcoords>0 && grp->hastexcoords;
+    
+    
+    osg::Vec3Array* coordArray = new osg::Vec3Array(3*ntris);
+    
+    osg::Vec3Array::iterator coords = coordArray->begin();
+    geom->setVertexArray(coordArray);
+    
+    osg::Vec3Array::iterator normals = 0;
+    if (needNormals)
+    {
+        osg::Vec3Array* normalArray = new osg::Vec3Array(3*ntris);
+        geom->setNormalArray(normalArray);
+        geom->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+        normals = normalArray->begin();
+    }
+
+    osg::Vec2Array::iterator texcoords = 0;
+    if (needTexcoords)
+    {
+        osg::Vec2Array* texCoordArray = new osg::Vec2Array(3*ntris);
+        geom->setTexCoordArray(0,texCoordArray);
+        
+        texcoords = texCoordArray->begin();
+    }
 
     // first count the number of vertices used in this group.
     for (i = 0; i < ntris; i++)
     {
         GLMtriangle* tri = &(tris[grp->triangles[i]]);
         
-        // increment the count once for each traingle corner.
-        ++vcount[tri->vindices[0]];
-        ++vcount[tri->vindices[1]];
-        ++vcount[tri->vindices[2]];
-        
-        if (needNormals)
+        for(int corner=0;corner<3;++corner)
         {
-            ++ncount[tri->nindices[0]];
-            ++ncount[tri->nindices[1]];
-            ++ncount[tri->nindices[2]];
-        }
-        
-        if (needTexcoords)
-        {
-            ++tcount[tri->tindices[0]];
-            ++tcount[tri->tindices[1]];
-            ++tcount[tri->tindices[2]];
-        }
-    }
+            int ci = tri->vindices[corner]*3;
 
-
-    IndexVec::iterator itr;
-    int numCoords = 0;
-    for(itr=vcount.begin();
-        itr!=vcount.end();
-        ++itr)
-    {
-        if ((*itr)>0) ++numCoords;
-    }
-
-    if (numCoords==0) return NULL;
-
-    int numNormals = 0;
-    for(itr=ncount.begin();
-        itr!=ncount.end();
-        ++itr)
-    {
-        if ((*itr)>0) ++numNormals;
-    }
-
-    int numTexcoords = 0;
-    for(itr=tcount.begin();
-        itr!=tcount.end();
-        ++itr)
-    {
-        if ((*itr)>0) ++numTexcoords;
-    }
-
-
-    // allocate drawables vertices.
-    osg::Vec3* coords = new osg::Vec3[numCoords];
-
-    // allocate drawables normals.
-    osg::Vec3* normals = NULL;
-    if (numNormals>0) normals = new osg::Vec3[numNormals];
-
-    // allocate drawables textcoords.
-    osg::Vec2* texcoords = NULL;
-    if (numTexcoords>0) texcoords = new osg::Vec2[numTexcoords];
-
-
-    // fill an vector full of 0's, one for each vertex.
-    IndexVec vmapping(obj->numvertices+1,-1);
-    IndexVec nmapping(obj->numnormals+1,-1);
-    IndexVec tmapping(obj->numtexcoords+1,-1);
-
-    int coordCount = 0;
-    for (i = 0; i < vcount.size(); i++)
-    {
-
-        if (vcount[i]>0)
-        {
-            
             // note obj_x -> osg_x,
             //      obj_y -> -osg_z,
             //      obj_z -> osg_y,
-            coords[coordCount].set(obj->vertices[i*3+0],
-                                   -obj->vertices[i*3+2],
-                                   obj->vertices[i*3+1]);
+            coords->set(obj->vertices[ci],-obj->vertices[ci+2],obj->vertices[ci+1]);
+            ++coords;
 
-            vmapping[i]=coordCount;
-            ++coordCount;
+            if (needNormals)
+            {
+                int ni = tri->nindices[corner]*3;
+
+                // note obj_x -> osg_x,
+                //      obj_y -> osg_z,
+                //      obj_z -> osg_y,
+                // to rotate the about x axis to have model z upwards.
+                normals->set(obj->normals[ni],-obj->normals[ni+2],obj->normals[ni+1]);
+                ++normals;
+            }
+
+            if (needTexcoords)
+            {
+                int ti = tri->tindices[corner]*2;
+                texcoords->set(obj->texcoords[ti+0], obj->texcoords[ti+1]);
+                ++texcoords;
+            }
         }
-    }
-    
-
-    int normCount = 0;
-    for (i = 0; i < ncount.size(); i++)
-    {
-
-        if (ncount[i]>0)
-        {
-            // note obj_x -> osg_x,
-            //      obj_y -> osg_z,
-            //      obj_z -> osg_y,
-            // to rotate the about x axis to have model z upwards.
-            normals[normCount].set(obj->normals[i*3+0],
-                                   -obj->normals[i*3+2],
-                                   obj->normals[i*3+1]);
-            nmapping[i]=normCount;
-            ++normCount;
-        }
-    }
-              
-    int texCount = 0;
-    for (i = 0; i < tcount.size(); i++)
-    {
-        if (tcount[i]>0)
-        {
-            texcoords[texCount].set(obj->texcoords[i*2+0], obj->texcoords[i*2+1]);
-            tmapping[i]=texCount;
-            ++texCount;
-        }
-    }
-
-    // index arrays
-    unsigned int* cindex = NULL;
-    cindex = new unsigned int[ntris * 3];
-
-    unsigned int* nindex = NULL;
-    if (normals)
-        nindex = new unsigned int[ntris * 3];
-
-    unsigned int* tindex = NULL;
-    if (texcoords)
-        tindex = new unsigned int[ntris * 3];
-
-    // setup arrays
-    for (i = 0; i < ntris; i++) {
-        primLen[i] = 3;
-        GLMtriangle* tri = &(tris[grp->triangles[i]]);
-
-        cindex[i*3+0] = vmapping[tri->vindices[0]];
-        cindex[i*3+1] = vmapping[tri->vindices[1]];
-        cindex[i*3+2] = vmapping[tri->vindices[2]];
-
-        if (nindex) {
-            nindex[i*3+0] = nmapping[tri->nindices[0]];
-            nindex[i*3+1] = nmapping[tri->nindices[1]];
-            nindex[i*3+2] = nmapping[tri->nindices[2]];
-        }
-
-        if (tindex) {
-            tindex[i*3+0] = tmapping[tri->tindices[0]];
-            tindex[i*3+1] = tmapping[tri->tindices[1]];
-            tindex[i*3+2] = tmapping[tri->tindices[2]];
-        }
-    }
-
-    if (coords && cindex)
-        gset->setCoords(coords, cindex);
-
-    if (normals && nindex) {
-        gset->setNormals(normals, nindex);
-        gset->setNormalBinding(osg::GeoSet::BIND_PERVERTEX);
-    }
-
-    if (texcoords && tindex) {
-        gset->setTextureCoords(texcoords, tindex);
-        gset->setTextureBinding(osg::GeoSet::BIND_PERVERTEX);
     }
 
     // state and material (if any)
     if (mtl) {
     
-        gset->setStateSet(mtl[grp->material]);
+        geom->setStateSet(mtl[grp->material]);
     }
     else
         osg::notify(osg::INFO) << "Group " << grp->name << " has no material" << std::endl;
 
-    return gset;
+    return geom;
 }
 

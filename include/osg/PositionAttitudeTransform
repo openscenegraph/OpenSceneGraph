@@ -22,20 +22,28 @@ class SG_EXPORT PositionAttitudeTransform : public Transform
         PositionAttitudeTransform(const PositionAttitudeTransform& pat,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             Transform(pat,copyop),
             _position(pat._position),
-            _attitude(pat._attitude) {}
+            _attitude(pat._attitude),
+            _pivotPoint(pat._pivotPoint) {}
             
 
         META_Node(osg, PositionAttitudeTransform);
 
 
-        void setPosition(const Vec3& pos) { _position = pos; }
+        void setPosition(const Vec3& pos) { _position = pos; dirtyBound(); }
         
         const Vec3& getPosition() const { return _position; }
 
-        void setAttitude(const Quat& quat) { _attitude = quat; }
+
+        void setAttitude(const Quat& quat) { _attitude = quat; dirtyBound(); }
         
         const Quat& getAttitude() const { return _attitude; }
+        
+        
+        void setPivotPoint(const Vec3& pivot) { _pivotPoint = pivot; dirtyBound(); }
     
+        const Vec3& setPivotPoint() const { return _pivotPoint; }
+        
+
         virtual const bool computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor* nv) const;
 
         virtual const bool computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor* nv) const;
@@ -45,7 +53,7 @@ class SG_EXPORT PositionAttitudeTransform : public Transform
 
         Vec3 _position;
         Quat _attitude;
-
+        Vec3 _pivotPoint;
 };
 
 }

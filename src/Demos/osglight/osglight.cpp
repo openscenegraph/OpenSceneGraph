@@ -5,11 +5,13 @@
 #include <osg/Group>
 #include <osg/Node>
 
-#include <osg/Transform>
 #include <osg/Light>
 #include <osg/LightSource>
 #include <osg/StateAttribute>
 #include <osg/Geometry>
+
+#include <osg/MatrixTransform>
+#include <osg/PositionAttitudeTransform>
 
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
@@ -19,6 +21,51 @@
 
 #include "stdio.h"
 
+
+// callback to make the loaded model oscilate up and down.
+class ModelTransformCallback : public osg::NodeCallback
+{
+    public:
+
+        ModelTransformCallback(const osg::BoundingSphere& bs)
+        {
+            _firstTime = 0.0;
+            _period = 4.0f;
+            _range = bs.radius()*0.5f;
+        }
+    
+        virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
+        {
+            osg::PositionAttitudeTransform* pat = dynamic_cast<osg::PositionAttitudeTransform*>(node);
+            const osg::FrameStamp* frameStamp = nv->getFrameStamp();
+            if (pat && frameStamp)
+            {
+                if (_firstTime==0.0) 
+                {
+                    _firstTime = frameStamp->getReferenceTime();
+                }
+                
+                double phase = (frameStamp->getReferenceTime()-_firstTime)/_period;
+                phase -= floor(phase);
+                phase *= (2.0 * osg::PI);
+            
+                osg::Quat rotation;
+                rotation.makeRotate(phase,1.0f,1.0f,1.0f);
+                
+                pat->setAttitude(rotation); 
+                
+                pat->setPosition(osg::Vec3(0.0f,0.0f,sin(phase))*_range);
+            }
+        
+            // must traverse the Node's subgraph            
+            traverse(node,nv);
+        }
+        
+        double _firstTime;
+        double _period;
+        double _range;
+
+};
 
 
 osg::Node* createLights(osg::BoundingBox& bb,osg::StateSet* rootStateSet)
@@ -60,8 +107,15 @@ osg::Node* createLights(osg::BoundingBox& bb,osg::StateSet* rootStateSet)
     lightS2->setLocalStateSetModes(osg::StateAttribute::ON); 
 
     lightS2->setStateSetModes(*rootStateSet,osg::StateAttribute::ON);
+    
+    
+    osg::Transform* pat = new osg::Transform();
+    
+    pat->addChild(lightS2);
+    
     lightGroup->addChild(lightS2);
 
+    lightGroup->addChild(pat);
 
     return lightGroup;
 }
@@ -134,9 +188,21 @@ osg::Node* createRoom(osg::Node* loadedModel)
 
     if (loadedModel)
     {
-        root->addChild(loadedModel);
-        bs = loadedModel->getBound();
+        const osg::BoundingSphere& loaded_bs = loadedModel->getBound();
+
+        osg::PositionAttitudeTransform* pat = new osg::PositionAttitudeTransform();
+        pat->setPivotPoint(loaded_bs.center());
+        
+        pat->setAppCallback(new ModelTransformCallback(loaded_bs));
+        pat->addChild(loadedModel);
+        
+        bs = pat->getBound();
+        
+        root->addChild(pat);
+
     }
+
+    bs.radius()*=1.5f;
 
     // create a bounding box, which we'll use to size the room.
     osg::BoundingBox bb;

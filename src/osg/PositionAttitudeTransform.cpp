@@ -10,16 +10,15 @@ const bool PositionAttitudeTransform::computeLocalToWorldMatrix(Matrix& matrix,N
 {
     if (_referenceFrame==RELATIVE_TO_PARENTS)
     {
-        osg::Matrix tmp;
-        tmp.makeRotate(_attitude);
-        tmp.setTrans(_position);
-
-        matrix.preMult(tmp);
+        matrix.preMult(osg::Matrix::translate(-_pivotPoint)*
+                       osg::Matrix::rotate(_attitude)*
+                       osg::Matrix::translate(_position));
     }
     else // absolute
     {
-        matrix.makeRotate(_attitude);
-        matrix.setTrans(_position);
+        matrix = osg::Matrix::translate(-_pivotPoint)*
+                 osg::Matrix::rotate(_attitude)*
+                 osg::Matrix::translate(_position);
     }
     return true;
 }
@@ -29,15 +28,15 @@ const bool PositionAttitudeTransform::computeWorldToLocalMatrix(Matrix& matrix,N
 {
     if (_referenceFrame==RELATIVE_TO_PARENTS)
     {
-        osg::Matrix tmp;
-        tmp.makeTranslate(-_position);
-        tmp.postMult(osg::Matrix::rotate(_attitude.inverse()));
-        matrix.postMult(tmp);
+        matrix.postMult(osg::Matrix::translate(-_position)*
+                        osg::Matrix::rotate(_attitude.inverse())*
+                        osg::Matrix::translate(_pivotPoint));
     }
     else // absolute
     {
-        matrix.makeTranslate(-_position);
-        matrix.postMult(osg::Matrix::rotate(_attitude.inverse()));
+        matrix = osg::Matrix::translate(-_position)*
+                 osg::Matrix::rotate(_attitude.inverse())*
+                 osg::Matrix::translate(_pivotPoint);
     }
     return true;
 }

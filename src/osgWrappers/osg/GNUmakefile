@@ -13,6 +13,8 @@ CXXFILES =\
 	StateAttribute.cpp\
 	StateSet.cpp\
 	Vec2.cpp\
+	Vec3.cpp\
+	Vec4.cpp\
 
 
 LIBS   += -losg -losgIntrospection $(OTHER_LIBS)

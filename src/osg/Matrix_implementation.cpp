@@ -14,6 +14,7 @@
 #include <osg/Quat>
 #include <osg/Notify>
 #include <osg/Math>
+#include <osg/Timer>
 
 #include <osg/GL>
 
@@ -327,6 +328,191 @@ void Matrix_implementation::postMult( const Matrix_implementation& other )
 #undef INNER_PRODUCT
 
 
+bool Matrix_implementation::invert( const Matrix_implementation& rhs)
+{
+#if 1
+    return invert_4x4_new(rhs);
+#else
+    static const osg::Timer& timer = *Timer::instance();
+
+    Matrix_implementation a;
+    Matrix_implementation b;
+
+    Timer_t t1 = timer.tick();
+
+    a.invert_4x4_new(rhs);
+    
+    Timer_t t2 = timer.tick();
+
+    b.invert_4x4_orig(rhs);
+    
+    Timer_t t3 = timer.tick();
+
+    static double new_time = 0.0;
+    static double orig_time = 0.0;
+    static double count = 0.0;
+    
+    new_time += timer.delta_u(t1,t2);
+    orig_time += timer.delta_u(t2,t3);
+    ++count;
+    
+    std::cout<<"Average new="<<new_time/count<<"  orig = "<<orig_time/count<<std::endl;
+
+    std::cout<<"new matrix invert time="<<timer.delta_u(t1,t2)<<" "<<a<<std::endl;
+    std::cout<<"orig matrix invert time="<<timer.delta_u(t2,t3)<<" "<<b<<std::endl;
+    
+    set(b);
+    
+    return true;
+#endif
+}
+
+/******************************************
+  Matrix inversion technique:
+Given a matrix mat, we want to invert it.
+mat = [ r00 r01 r02 a
+        r10 r11 r12 b
+        r20 r21 r22 c
+        tx  ty  tz  d ]
+We note that this matrix can be split into three matrices.
+mat = rot * trans * corr, where rot is rotation part, trans is translation part, and corr is the correction due to perspective (if any).
+rot = [ r00 r01 r02 0
+        r10 r11 r12 0
+        r20 r21 r22 0
+        0   0   0   1 ]
+trans = [ 1  0  0  0
+          0  1  0  0
+          0  0  1  0
+          tx ty tz 1 ]
+corr = [ 1 0 0 px
+         0 1 0 py
+         0 0 1 pz
+         0 0 0 s ]
+where the elements of corr are obtained from linear combinations of the elements of rot, trans, and mat.
+So the inverse is mat' = (trans * corr)' * rot', where rot' must be computed the traditional way, which is easy since it is only a 3x3 matrix.
+This problem is simplified if [px py pz s] = [0 0 0 1], which will happen if mat was composed only of rotations, scales, and translations (which is common).  In this case, we can ignore corr entirely which saves on a lot of computations.
+******************************************/
+
+bool Matrix_implementation::invert_4x4_new( const Matrix_implementation& mat )
+{
+    if (&mat==this)
+    {
+       Matrix_implementation tm(mat);
+       return invert_4x4_new(tm);
+    }
+
+    register value_type r00, r01, r02,
+                        r10, r11, r12,
+                        r20, r21, r22;
+      // Copy rotation components directly into registers for speed
+    r00 = mat._mat[0][0]; r01 = mat._mat[0][1]; r02 = mat._mat[0][2];
+    r10 = mat._mat[1][0]; r11 = mat._mat[1][1]; r12 = mat._mat[1][2];
+    r20 = mat._mat[2][0]; r21 = mat._mat[2][1]; r22 = mat._mat[2][2];
+
+        // Partially compute inverse of rot
+    _mat[0][0] = r11*r22 - r12*r21;
+    _mat[0][1] = r02*r21 - r01*r22;
+    _mat[0][2] = r01*r12 - r02*r11;
+
+      // Compute determinant of rot from 3 elements just computed
+    register value_type one_over_det = 1.0/(r00*_mat[0][0] + r10*_mat[0][1] + r20*_mat[0][2]);
+    r00 *= one_over_det; r10 *= one_over_det; r20 *= one_over_det;  // Saves on later computations
+
+      // Finish computing inverse of rot
+    _mat[0][0] *= one_over_det;
+    _mat[0][1] *= one_over_det;
+    _mat[0][2] *= one_over_det;
+    _mat[0][3] = 0.0;
+    _mat[1][0] = r12*r20 - r10*r22; // Have already been divided by det
+    _mat[1][1] = r00*r22 - r02*r20; // same
+    _mat[1][2] = r02*r10 - r00*r12; // same
+    _mat[1][3] = 0.0;
+    _mat[2][0] = r10*r21 - r11*r20; // Have already been divided by det
+    _mat[2][1] = r01*r20 - r00*r21; // same
+    _mat[2][2] = r00*r11 - r01*r10; // same
+    _mat[2][3] = 0.0;
+    _mat[3][3] = 1.0;
+
+// We no longer need the rxx or det variables anymore, so we can reuse them for whatever we want.  But we will still rename them for the sake of clarity.
+
+#define d r22
+    d  = mat._mat[3][3];
+
+    if( osg::square(d-1.0) > 1.0e-6 )  // Involves perspective, so we must
+    {                       // compute the full inverse
+    
+        Matrix_implementation TPinv;
+        _mat[3][0] = _mat[3][1] = _mat[3][2] = 0.0;
+
+#define px r00
+#define py r01
+#define pz r02
+#define one_over_s  one_over_det
+#define a  r10
+#define b  r11
+#define c  r12
+
+        a  = mat._mat[0][3]; b  = mat._mat[1][3]; c  = mat._mat[2][3];
+        px = _mat[0][0]*a + _mat[0][1]*b + _mat[0][2]*c;
+        py = _mat[1][0]*a + _mat[1][1]*b + _mat[1][2]*c;
+        pz = _mat[2][0]*a + _mat[2][1]*b + _mat[2][2]*c;
+
+#undef a
+#undef a
+#undef c
+#define tx r10
+#define ty r11
+#define tz r12
+
+        tx = mat._mat[3][0]; ty = mat._mat[3][1]; tz = mat._mat[3][2];
+        one_over_s  = 1.0/(d - (tx*px + ty*py + tz*pz));
+
+        tx *= one_over_s; ty *= one_over_s; tz *= one_over_s;  // Reduces number of calculations later on
+
+        // Compute inverse of trans*corr
+        TPinv._mat[0][0] = tx*px + 1.0;
+        TPinv._mat[0][1] = ty*px;
+        TPinv._mat[0][2] = tz*px;
+        TPinv._mat[0][3] = -px * one_over_s;
+        TPinv._mat[1][0] = tx*py;
+        TPinv._mat[1][1] = ty*py + 1.0;
+        TPinv._mat[1][2] = tz*py;
+        TPinv._mat[1][3] = -py * one_over_s;
+        TPinv._mat[2][0] = tx*pz;
+        TPinv._mat[2][1] = ty*pz;
+        TPinv._mat[2][2] = tz*pz + 1.0;
+        TPinv._mat[2][3] = -pz * one_over_s;
+        TPinv._mat[3][0] = -tx;
+        TPinv._mat[3][1] = -ty;
+        TPinv._mat[3][2] = -tz;
+        TPinv._mat[3][3] = one_over_s;
+
+        preMult(TPinv); // Finish computing full inverse of mat
+
+#undef px
+#undef py
+#undef pz
+#undef s
+#undef d
+    }
+    else // Rightmost column is [0; 0; 0; 1] so it can be ignored
+    {
+        tx = mat._mat[3][0]; ty = mat._mat[3][1]; tz = mat._mat[3][2];
+
+        // Compute translation components of mat'
+        _mat[3][0] = -(tx*_mat[0][0] + ty*_mat[1][0] + tz*_mat[2][0]);
+        _mat[3][1] = -(tx*_mat[0][1] + ty*_mat[1][1] + tz*_mat[2][1]);
+        _mat[3][2] = -(tx*_mat[0][2] + ty*_mat[1][2] + tz*_mat[2][2]);
+
+#undef tx
+#undef ty
+#undef tz
+    }
+
+    return true;
+}
+
+
 template <class T>
 inline T SGL_ABS(T a)
 {
@@ -337,11 +523,11 @@ inline T SGL_ABS(T a)
 #define SGL_SWAP(a,b,temp) ((temp)=(a),(a)=(b),(b)=(temp))
 #endif
 
-bool Matrix_implementation::invert( const Matrix_implementation& mat )
+bool Matrix_implementation::invert_4x4_orig( const Matrix_implementation& mat )
 {
     if (&mat==this) {
        Matrix_implementation tm(mat);
-       return invert(tm);
+       return invert_4x4_orig(tm);
     }
 
     unsigned int indxc[4], indxr[4], ipiv[4];

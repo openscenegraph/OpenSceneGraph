@@ -168,7 +168,14 @@ class SG_EXPORT Matrixd
         /** Get to the position and orientation of a modelview matrix, using the same convention as gluLookAt. */
         void getLookAt(Vec3& eye,Vec3& center,Vec3& up,value_type lookDistance=1.0f);
 
-        bool invert( const Matrixd& );
+        /** invert the matrix rhs. */
+        bool invert( const Matrixd& rhs);
+
+        /** full 4x4 matrix invert. */
+        bool invert_4x4_orig( const Matrixd& );
+
+        /** full 4x4 matrix invert. */
+        bool invert_4x4_new( const Matrixd& );
 
         //basic utility functions to create new matrices
 	inline static Matrixd identity( void );

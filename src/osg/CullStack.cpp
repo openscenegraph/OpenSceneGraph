@@ -216,10 +216,11 @@ void CullStack::pushModelViewMatrix(RefMatrix* matrix)
     
     pushCullingSet();
     
-    //osg::Timer timer;
+#if 1
+    osg::Vec3 slow_eyepoint(osg::Matrix::inverse(*matrix).getTrans());
+    _eyePointStack.push_back(slow_eyepoint);
+#else    
     
-    //osg::Timer_t tick_1 = timer.tick();
-
     // fast method for computing the eye point in local coords which doesn't require the inverse matrix.
     const float x_0 = (*matrix)(0,0);
     const float x_1 = (*matrix)(1,0);
@@ -272,9 +273,6 @@ void CullStack::pushModelViewMatrix(RefMatrix* matrix)
                                 x_1*x_scale + y_1*y_scale + z_1*z_scale,
                                 x_2*x_scale + y_2*y_scale + z_2*z_scale);
 
-        _eyePointStack.push_back(fast_eyepoint);
-        
-        // std::cout<<"fast path "<<*matrix<<std::endl;
     }
     else
     {
@@ -285,10 +283,9 @@ void CullStack::pushModelViewMatrix(RefMatrix* matrix)
         osg::Vec3 slow_eyepoint(osg::Matrix::inverse(*matrix).getTrans());
         _eyePointStack.push_back(slow_eyepoint);
         
-        //std::cout<<"slow path "<<*matrix<<std::endl;
     }
     
-                    
+#endif                    
     osg::Vec3 lookVector = getLookVectorLocal();                   
     
     _bbCornerFar = (lookVector.x()>=0?1:0) |

@@ -129,9 +129,11 @@ int main( int argc, char **argv )
                 itr!=files.end();
                 ++itr)
             {
+                std::cout<<"reading "<<*itr<<std::endl;
                 osg::ref_ptr<osg::Object> obj = osgDB::readObjectFile(*itr);
                 if (obj.valid())
                 {
+                    std::cout<<"  write to archive "<<*itr<<std::endl;
                     archive->writeObject(*obj, *itr);
                 }
             }

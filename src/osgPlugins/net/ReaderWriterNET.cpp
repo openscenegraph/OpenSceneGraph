@@ -11,6 +11,7 @@
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
 #include <osgDB/FileUtils>
+#include <osgDB/Archive>
 #include <osg/MatrixTransform>
 #include <osg/Group>
 #include <osg/Timer>
@@ -85,11 +86,18 @@ class NetReader : public osgDB::ReaderWriter
         enum ObjectType
         {
             OBJECT,
+            ARCHIVE,
             IMAGE,
             HEIGHTFIELD,
             NODE
         };
                                                                                             
+        virtual ReadResult openArchive(const std::string& fileName,ArchiveStatus status, unsigned int , const Options* options)
+        {
+            if (status!=READ) return ReadResult(ReadResult::FILE_NOT_HANDLED);
+            else return readFile(ARCHIVE,fileName,options);
+        }
+
         virtual ReadResult readObject(const std::string& fileName, const Options* options)
         {
             return readFile(OBJECT,fileName,options);
@@ -115,19 +123,20 @@ class NetReader : public osgDB::ReaderWriter
             switch(objectType)
             {
             case(OBJECT): return rw->readObject(fin,options);
+            case(ARCHIVE): return rw->openArchive(fin,options);
             case(IMAGE): return rw->readImage(fin,options);
             case(HEIGHTFIELD): return rw->readHeightField(fin,options);
             case(NODE): return rw->readNode(fin,options);
             default: break;
             }
-			return ReadResult::FILE_NOT_HANDLED;
+            return ReadResult::FILE_NOT_HANDLED;
         }
 
         virtual ReadResult readFile(ObjectType objectType, const std::string& inFileName, const Options *options)
         {
             osg::Timer_t start = osg::Timer::instance()->tick();
 
-            osg::notify(osg::DEBUG_INFO) << "osgPlugin .net: start load" << inFileName << std::endl;
+            osg::notify(osg::NOTICE) << "osgPlugin .net: start load" << inFileName << std::endl;
 
             std::string hostname;
             std::string serverPrefix;
@@ -196,6 +205,7 @@ class NetReader : public osgDB::ReaderWriter
                 return ReadResult::FILE_NOT_HANDLED;
                 */
 
+
             std::string fileName;
             int index = inFileName.find(":");
             // If we haven't been given a hostname as an option
@@ -224,6 +234,10 @@ class NetReader : public osgDB::ReaderWriter
             if( !serverPrefix.empty() )
                 fileName = serverPrefix + '/' + fileName;
 
+            osg::notify(osg::WARN) << "hostname " << hostname << std::endl;
+            osg::notify(osg::WARN) << "filename " << fileName << std::endl;
+
+
             // Invoke the reader corresponding to the extension
             osgDB::ReaderWriter *reader = 
                     osgDB::Registry::instance()->getReaderWriterForExtension( osgDB::getFileExtension(fileName));
@@ -248,9 +262,9 @@ class NetReader : public osgDB::ReaderWriter
             }
 
             // Fetch from the network
-            iosockinet  sio (sockbuf::sock_stream);
+            osg::ref_ptr<iosockinet> sio = new iosockinet(sockbuf::sock_stream);
             try {
-                sio->connect( hostname.c_str(), port );
+                sio->rdbuf()->connect( hostname.c_str(), port );
             }
             catch( sockerr e )
             {
@@ -258,13 +272,13 @@ class NetReader : public osgDB::ReaderWriter
                 return ReadResult::FILE_NOT_FOUND;
             }
 
-            sio << "GET /" << fileName << " HTTP/1.1\n" << "Host:\n\n";
-            sio.flush();
+            *sio << "GET /" << fileName << " HTTP/1.1\n" << "Host:\n\n";
+            sio->flush();
                                                                                                            
             char linebuff[256];
             do
             {
-                sio.getline( linebuff, sizeof( linebuff ));
+                sio->getline( linebuff, sizeof( linebuff ));
 
                 std::istringstream iss(linebuff);
                 std::string directive;
@@ -329,12 +343,19 @@ class NetReader : public osgDB::ReaderWriter
 
 
             if( reader != 0L )
-                readResult = readFile(objectType, reader, sio, local_opt.get() );
+                readResult = readFile(objectType, reader, *sio, local_opt.get() );
 
             double ms = osg::Timer::instance()->delta_m(start,osg::Timer::instance()->tick());
 
             osg::notify(osg::DEBUG_INFO) << "osgPlugin .net: " << fileName << 
                                          " fetched from server. in" << ms <<" ms"<< std::endl;
+
+            if (objectType==ARCHIVE && readResult.validArchive())
+            {
+                // attach the socket istream to the archive to keep it alive.
+                osgDB::Archive* archive = readResult.getArchive();
+                archive->setUserData(sio.get());
+            }
 
             if( !localCacheDir.empty() && cacheMode & Write )
             {

@@ -421,6 +421,8 @@ void Texture::computeInternalFormatWithImage(const osg::Image& image) const
     }
     
     _internalFormat = internalFormat;
+    
+    //osg::notify(osg::NOTICE)<<"Internal format="<<std::hex<<internalFormat<<std::dec<<std::endl;
 }
 
 bool Texture::isCompressedInternalFormat() const

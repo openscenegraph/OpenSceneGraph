@@ -825,7 +825,7 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
 
     if (!bs.isValid())
     {
-        cout << "bb invalid"<<&node<<endl;
+        std::cout << "bb invalid"<<&node<<std::endl;
         return NULL;
     }
 

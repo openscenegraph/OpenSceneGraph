@@ -91,10 +91,12 @@ public:
     // Gets some informations for a given tile
     struct TileInfo
     {
-        osg::Vec3            center;
+        osg::Vec3           center;
         double              minRange;
         double              maxRange;
+        double                lod0Range;
         float               radius;
+        osg::Vec3            size;
         osg::BoundingBox    bbox;
     };
     bool getTileInfo(int x, int y, int lod, TileInfo& info);
@@ -141,7 +143,8 @@ public:
         int lod,
         double realMinRange,
         double realMaxRange,
-        double usedMaxRange);
+        double usedMaxRange,
+        osg::Vec3& tileCenter);
 
     // Get the number of tiles for given LOD
     bool getLODSize(int lod, int& x, int& y);

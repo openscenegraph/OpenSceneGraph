@@ -54,9 +54,6 @@ public:
     void setArchive(TXPArchive* archive);
     bool loadTile(int x, int y, int lod);
 
-    osg::Node* seamReplacement(osg::Node* child, int x, int y, int level,
-        TXPArchive::TileInfo& info);
-
 protected:
 
     virtual ~TXPTileNode();

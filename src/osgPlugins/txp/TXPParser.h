@@ -250,7 +250,12 @@ public:
         else
             return range;
     }
-    
+
+    // gets tile center, from the top lod node
+    inline const osg::Vec3 getTileCenter() const { return _tileCenter; }
+
+    inline void setCurrentNode(osg::Node* node) { _currentNode = node; }
+
     
 protected:
 
@@ -270,6 +275,9 @@ protected:
     
     // Current parent
     osg::Group* _currentTop;
+
+    // Current node
+    osg::Node* _currentNode;
     
     // The root of the tile
     osg::ref_ptr<osg::Group> _root;
@@ -291,7 +299,7 @@ protected:
     
     // Model list
     std::vector<osg::ref_ptr<osg::Node> >*        _models;
-    
+
     // Tile header
     trpgTileHeader    _tileHeader;
     
@@ -320,7 +328,10 @@ protected:
     double _realMinRange;
     double _realMaxRange;
     double _usedMaxRange;
-    
+
+    // tile center
+    osg::Vec3 _tileCenter;
+
     // TEMP
     osg::Geode* createBoundingBox(int x,int y, int lod);
     
@@ -346,6 +357,17 @@ class groupRead : public trpgr_Callback
 {
 public:
     groupRead(TXPParser *in_parse) : _parse(in_parse)
+    {};
+    void *Parse(trpgToken tok,trpgReadBuffer &buf);
+protected:
+    TXPParser *_parse;
+};
+
+//----------------------------------------------------------------------------
+class attachRead : public trpgr_Callback
+{
+public:
+    attachRead(TXPParser *in_parse) : _parse(in_parse)
     {};
     void *Parse(trpgToken tok,trpgReadBuffer &buf);
 protected:

@@ -63,12 +63,14 @@ namespace txp
             _neighbours.push_back(n);
         }
 
-    protected:
-        virtual ~TXPPagedLOD();
-
         int _tileX;
         int _tileY;
         int _tileLOD;
+
+    protected:
+        virtual ~TXPPagedLOD();
+
+        
 
         struct Neighbour
         {

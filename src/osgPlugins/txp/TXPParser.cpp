@@ -39,6 +39,7 @@ _realMinRange(0.0),
 _realMaxRange(0.0),
 _usedMaxRange(0.0)
 {
+    AddCallback(TRPG_ATTACH,new attachRead(this));
     AddCallback(TRPG_GEOMETRY,new geomRead(this));
     AddCallback(TRPG_GROUP,new groupRead(this));
     AddCallback(TRPG_LOD,new lodRead(this));
@@ -83,6 +84,8 @@ osg::Group *TXPParser::parseScene(
     _realMaxRange = realMaxRange;
     _usedMaxRange = usedMaxRange;
 
+    _tileCenter = osg::Vec3(0.f,0.f,0.f);
+
     if (!Parse(buf))
     {
         osg::notify(osg::NOTICE) << "txp::TXPParser::parseScene(): failed to parse the given tile" << std::endl;
@@ -111,6 +114,8 @@ void TXPParser::replaceTileLod(osg::Group* group)
             if (!g) return;
             if (g->getNumChildren()) return;
 
+            _tileCenter = loLOD->getCenter();
+
             group->addChild(loLOD->getChild(0));
             group->removeChild(loLOD);
             group->removeChild(hiLOD);
@@ -120,27 +125,31 @@ void TXPParser::replaceTileLod(osg::Group* group)
 
 bool TXPParser::StartChildren(void *in)
 {
+
+    bool pushParent = true;
     if (_underBillboardSubgraph )
     {
+        if (_numBillboardLevels > 0) pushParent = false;
         _numBillboardLevels++;
     }
     else
     if (_underLayerSubgraph)
     {
+        if (_numLayerLevels > 0) pushParent = false;
         _numLayerLevels++;
     }
-    else
-    if (in && (in != (void*)1))
+    if (pushParent)
     {
-        osg::Group *parent = (osg::Group*)in;
-        _parents.push(parent);
-        _currentTop = parent;
+        _parents.push(_currentTop);
+        _currentTop = _currentNode->asGroup();
     }
+    
     return true;
 }
 
 bool TXPParser::EndChildren(void *)
 {
+    bool popParent = true;
     if (_underLayerSubgraph)
     {
         _numLayerLevels--;
@@ -148,6 +157,8 @@ bool TXPParser::EndChildren(void *)
         {
             _underLayerSubgraph = false;
         }
+        else
+            popParent = false;
     }
     else
     if (_underBillboardSubgraph)
@@ -157,18 +168,18 @@ bool TXPParser::EndChildren(void *)
         {
             _underBillboardSubgraph = false;
         }
+        else
+            popParent = false;
     }
-    else
+    if (popParent)
     {
-        _currentTop = 0;
         if (_parents.size())
         {
+            _currentTop = _parents.top();
             _parents.pop();
-            if (_parents.size())
-            {
-                _currentTop = _parents.top();
-            }
         }
+        else
+            _currentTop = _root.get();
     }
 
     return true;
@@ -475,36 +486,33 @@ void* lodRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
 
     // Create a new osg LOD
     osg::ref_ptr<osg::LOD> osgLod = new osg::LOD();
+    osg::ref_ptr<GeodeGroup> osgLodG = new GeodeGroup;
+
+    osgLod->addChild(osgLodG.get());
 
     osg::Vec3 osgCenter;
     osgCenter[0] = center.x;
     osgCenter[1] = center.y;
     osgCenter[2] = center.z;
     osgLod->setCenter(osgCenter);
-    //osgLod->setRange(0,minRange, maxRange );
+#if 1
+    osgLod->setRange(0,minRange, maxRange );
+#else
     osgLod->setRange(
         0,
         _parse->checkAndGetMinRange(minRange), 
         _parse->checkAndGetMaxRange(maxRange)
     );
+#endif
     
     // Our LODs are binary so we need to add a group under this LOD and attach stuff
-    //  to that instead of the LOD
-    osg::ref_ptr<GeodeGroup> osgLodG = new GeodeGroup();
-    osgLod->addChild(osgLodG.get());
-
+    // to that instead of the LOD
     // Add it into the scene graph
-    osg::Group *top = _parse->getCurrTop();
-    if (top)
-    {
-        top->addChild(osgLod.get());
-        _parse->setPotentionalTileGroup(top);
-        return (void *) osgLodG.get();
-    }
-    else
-    {
-        return (void*) 1;
-    }
+    _parse->setCurrentNode(osgLodG.get());
+    _parse->getCurrTop()->addChild(osgLod.get());
+    _parse->setPotentionalTileGroup(_parse->getCurrTop());
+
+    return (void*)1;
 }
 
 //----------------------------------------------------------------------------
@@ -562,12 +570,10 @@ void *modelRefRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
             osg::MatrixTransform *scs = new osg::MatrixTransform();
             scs->setMatrix(osg_Mat);
             scs->addChild(osg_Model);
+
             // Add the SCS to the hierarchy
-            osg::Group *top = _parse->getCurrTop();
-            if (top)
-            {
-                top->addChild(scs);
-            }
+            _parse->setCurrentNode(scs);
+            _parse->getCurrTop()->addChild(scs);
         }
     }
     return (void *) 1;
@@ -591,6 +597,10 @@ void* billboardRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     }
     else
     {
+        GeodeGroup* grp = new GeodeGroup;
+        _parse->setCurrentNode(grp);
+        _parse->getCurrTop()->addChild(grp);
+
         TXPParser::TXPBillboardInfo info;
         if (bill.GetType(info.type) && bill.GetMode(info.mode) && bill.GetCenter(info.center) && bill.GetAxis(info.axis))
         {
@@ -599,7 +609,6 @@ void* billboardRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
             _parse->setUnderBillboardSubgraph(true);
         }
     }
-
     return (void *)1;
 }
 
@@ -613,21 +622,29 @@ void* groupRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     trpgGroup group;
     if (!group.Read(buf)) return NULL;
 
-    // Create a new group
-    osg::ref_ptr<GeodeGroup> osgGroup = new GeodeGroup();
+    if (_parse->underLayerSubgraph()) return (void*)1;
 
-    // Add it into the scene graph
-    osg::Group *top = _parse->getCurrTop();
-    if (top)
-    {
-        top->addChild(osgGroup.get());
-        _parse->setPotentionalTileGroup(top);
-        return (void *) osgGroup.get();
-    }
-    else
-    {
-        return (void*) 1;
-    }
+    osg::ref_ptr<GeodeGroup> osgGroup = new GeodeGroup();
+    _parse->setCurrentNode(osgGroup.get());
+    _parse->getCurrTop()->addChild(osgGroup.get());
+    return (void*)1;
+}
+
+//----------------------------------------------------------------------------
+//
+// Attach Reader Class
+//
+//----------------------------------------------------------------------------
+void* attachRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
+{
+    trpgAttach group;
+    if (!group.Read(buf)) return NULL;
+
+    // Create a new group
+    osg::ref_ptr<osg::Group> osgGroup = new osg::Group();
+    _parse->setCurrentNode(osgGroup.get());
+    _parse->getCurrTop()->addChild(osgGroup.get());
+    return (void*)1;
 }
 
 //----------------------------------------------------------------------------
@@ -649,8 +666,6 @@ void* lightRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     uint32 nvert;
     light.GetNumVertices(nvert);
 
-    osg::Group *top = _parse->getCurrTop();
-
     if( node->getLightPoint(0)._sector.valid() ) // osgSim::LigthPoint is a must
     {
         for(unsigned int i = 0; i < nvert; i++)
@@ -665,10 +680,9 @@ void* lightRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
             osg::ref_ptr<osg::MatrixTransform> trans = new osg::MatrixTransform();
             trans->setMatrix(matrix);
             trans->addChild(node);
-            if (top)
-            {
-                top->addChild(trans.get());
-            }
+
+            _parse->setCurrentNode(trans.get());
+            _parse->getCurrTop()->addChild(trans.get());
         }
     }
     else
@@ -693,13 +707,10 @@ void* lightRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
         geom->setUseDisplayList(false);
         geom->setStateSet(dla.fallback.get());
 
-        if (top)
-        {
-            osg::Geode* g = new osg::Geode;
-            g->addDrawable(geom.get());
-            top->addChild(g);
-
-        }
+        osg::Geode* g = new osg::Geode;
+        g->addDrawable(geom.get());
+        _parse->setCurrentNode(g);
+        _parse->getCurrTop()->addChild(g);
     }
 
     return (void *) 1;
@@ -715,18 +726,25 @@ void* layerRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     trpgLayer group;
     if (!group.Read(buf)) return NULL;
 
+#if 0
+    osg::Group* osgGroup = new osg::Group;
+    _parse->setCurrentNode(osgGroup);
+    _parse->getCurrTop()->addChild(osgGroup);
+    _parse->addLayer(osgGroup);
+    return (void*)1;
+
+#else
     if (_parse->underLayerSubgraph()) return (void*)1;
 
     osg::ref_ptr<GeodeGroup> layer = new GeodeGroup;
-    osg::Group* top = _parse->getCurrTop();
-    if (top)
-    {
-        _parse->setLayerGeode(layer->getGeode());
-        _parse->setUnderLayerSubgraph(true);
-        top->addChild(layer.get());
-    }
 
-    return (void *) 1;
+    _parse->setLayerGeode(layer->getGeode());
+    _parse->setUnderLayerSubgraph(true);
+    _parse->setCurrentNode(layer.get());
+    _parse->getCurrTop()->addChild(layer.get());
+
+    return (void *)1;
+#endif
 }
 
 //----------------------------------------------------------------------------
@@ -785,7 +803,7 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
 {
     trpgGeometry geom;
     if (!geom.Read(buf)) return NULL;
-    
+
     // Get the necessary info out of the geom
     trpgGeometry::PrimType primType;
     int numPrims;
@@ -1050,12 +1068,15 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
             if (geodeTop)
             {
                 geodeTop->getGeode()->addDrawable(geometry);
+                _parse->setCurrentNode(geodeTop->getGeode());
             }
             else
             {
                 osg::Geode* geode = new osg::Geode;
                 geode->addDrawable(geometry);
-                top->addChild(geode);
+
+                _parse->setCurrentNode(geode);
+                _parse->getCurrTop()->addChild(geode);
             }
         }
         

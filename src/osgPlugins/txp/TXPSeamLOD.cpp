@@ -14,6 +14,8 @@ TXPSeamLOD::TXPSeamLOD() :
     _tileRef = 0;
     _txpNode = 0;
     _archive = 0;
+    _hiResPresent = false;
+    _nonSeamChildrenIndex = -1;
 }
 
 TXPSeamLOD::TXPSeamLOD(int x, int y, int lod, const osg::Vec3& center, float dmin, float dmid, float dmax) :
@@ -29,6 +31,8 @@ TXPSeamLOD::TXPSeamLOD(int x, int y, int lod, const osg::Vec3& center, float dmi
     _txpNode = 0;
     _tileRef = 0;
     _archive = 0;
+    _hiResPresent = false;
+    _nonSeamChildrenIndex = -1;
 }
 
 TXPSeamLOD::TXPSeamLOD(const TXPSeamLOD& ttg,const osg::CopyOp& copyop) :
@@ -39,6 +43,8 @@ TXPSeamLOD::TXPSeamLOD(const TXPSeamLOD& ttg,const osg::CopyOp& copyop) :
     _neighbourTileLOD = ttg._neighbourTileLOD;
     _tileRef = ttg._tileRef;
     _archive = ttg._archive;
+    _hiResPresent = ttg._hiResPresent;
+    _nonSeamChildrenIndex = ttg._nonSeamChildrenIndex;
 }
 
 void TXPSeamLOD::traverse(osg::NodeVisitor& nv)
@@ -46,12 +52,12 @@ void TXPSeamLOD::traverse(osg::NodeVisitor& nv)
     if (nv.getVisitorType()==osg::NodeVisitor::CULL_VISITOR && _children.size()==2)
     {
 
-#if 1
         osg::PagedLOD* pagedLOD = TileMapper::instance()->getPagedLOD(_neighbourTileX,_neighbourTileY, _neighbourTileLOD);
+#if 1
         bool acceptLoRes = true;
         if (pagedLOD)
         {
-
+            
             float distance = nv.getDistanceToEyePoint(_center,true);
             distance = nv.getDistanceToEyePoint(pagedLOD->getCenter(),true);
 
@@ -72,6 +78,12 @@ void TXPSeamLOD::traverse(osg::NodeVisitor& nv)
         if (acceptLoRes)
         {
             getChild(0)->accept(nv); // pick low res
+        }
+
+        if (_nonSeamChildrenIndex > -1)
+        {
+            for (int i = _nonSeamChildrenIndex; i < (int)getNumChildren(); i++ )
+                getChild(i)->accept(nv);
         }
 #else
         float distance = nv.getDistanceToEyePoint(_center,true);

@@ -544,12 +544,17 @@ bool TXPArchive::getTileInfo(int x, int y, int lod, TileInfo& info)
 
     header.GetLodRange(lod,info.maxRange);
     header.GetLodRange(lod+1,info.minRange);
+    header.GetLodRange(0,info.lod0Range);
 
     trpg2dPoint sw,ne;
     header.GetExtents(sw,ne);
 
     trpg2dPoint size;
     header.GetTileSize(lod,size);
+
+    info.size.x() = size.x;
+    info.size.y() = size.y;
+    info.size.z() = 0.f;
 
     trpgwAppAddress addr;
     float minz = 0.f;
@@ -582,7 +587,8 @@ osg::Group* TXPArchive::getTileContent(
     int x, int y, int lod,
     double realMinRange, 
     double realMaxRange, 
-    double usedMaxRange)
+    double usedMaxRange,
+    osg::Vec3& tileCenter)
 {
     if (_parser.get() == 0) 
     {
@@ -597,6 +603,7 @@ osg::Group* TXPArchive::getTileContent(
     }
 
     osg::Group *tileGroup = _parser->parseScene(buf,_gstates,_models,realMinRange,realMaxRange,usedMaxRange);
+    tileCenter = _parser->getTileCenter();
     return tileGroup;
 }
 

@@ -64,10 +64,10 @@ struct GLMmaterial
 /* GLMtriangle: Structure that defines a triangle in a model.
  */
 struct GLMtriangle {
-  GLuint vindices[3];			/* array of triangle vertex indices */
-  GLuint nindices[3];			/* array of triangle normal indices */
-  GLuint tindices[3];			/* array of triangle texcoord indices*/
-  GLuint findex;			    /* index of triangle facet normal */
+  unsigned int vindices[3];			/* array of triangle vertex indices */
+  unsigned int nindices[3];			/* array of triangle normal indices */
+  unsigned int tindices[3];			/* array of triangle texcoord indices*/
+  unsigned int findex;			    /* index of triangle facet normal */
   void init()
   {
 	vindices[0] = vindices[2] = vindices[2] = 0 ;
@@ -81,9 +81,9 @@ struct GLMtriangle {
  */
 struct GLMgroup {
   char*             name;		/* name of this group */
-  GLuint            numtriangles;	/* number of triangles in this group */
-  GLuint*           triangles;		/* array of triangle indices */
-  GLuint            material;           /* index to material for group */
+  unsigned int            numtriangles;	/* number of triangles in this group */
+  unsigned int*           triangles;		/* array of triangle indices */
+  unsigned int            material;           /* index to material for group */
   bool              hastexcoords;       /* set to true if triangles have texture coords */
   struct GLMgroup*  next;		/* pointer to next group in model */
 
@@ -104,25 +104,25 @@ struct  GLMmodel {
   char*    pathname;			/* path to this model */
   char*    mtllibname;			/* name of the material library */
 
-  GLuint   numvertices;			/* number of vertices in model */
+  unsigned int   numvertices;			/* number of vertices in model */
   GLfloat* vertices;			/* array of vertices  */
 
-  GLuint   numnormals;			/* number of normals in model */
+  unsigned int   numnormals;			/* number of normals in model */
   GLfloat* normals;			/* array of normals */
 
-  GLuint   numtexcoords;		/* number of texcoords in model */
+  unsigned int   numtexcoords;		/* number of texcoords in model */
   GLfloat* texcoords;			/* array of texture coordinates */
 
-  GLuint   numfacetnorms;		/* number of facetnorms in model */
+  unsigned int   numfacetnorms;		/* number of facetnorms in model */
   GLfloat* facetnorms;			/* array of facetnorms */
 
-  GLuint       numtriangles;		/* number of triangles in model */
+  unsigned int       numtriangles;		/* number of triangles in model */
   GLMtriangle* triangles;		/* array of triangles */
 
-  GLuint       nummaterials;		/* number of materials in model */
+  unsigned int       nummaterials;		/* number of materials in model */
   GLMmaterial* materials;		/* array of materials */
 
-  GLuint       numgroups;		/* number of groups in model */
+  unsigned int       numgroups;		/* number of groups in model */
   GLMgroup*    groups;			/* linked list of groups */
 
   GLfloat position[3];			/* position of the model */
@@ -278,7 +278,7 @@ glmReadOBJ(char* filename);
  *            GLM_FLAT and GLM_SMOOTH should not both be specified.
  */
 GLvoid
-glmWriteOBJ(GLMmodel* model, char* filename, GLuint mode);
+glmWriteOBJ(GLMmodel* model, char* filename, unsigned int mode);
 
 
 /* glmWeld: eliminate (weld) vectors that are within an epsilon of

@@ -8,7 +8,7 @@ namespace osg {
 
 /** General purpose bounding sphere class for enclosing nodes/objects/vertices.
     Used to bound internal osg::Node's in the scene,
-    to assist in view frustrum culling etc.  Similar in function to BoundingBox
+    to assist in view frustum culling etc.  Similar in function to BoundingBox
     but is quicker for evaluating culling, but generally encloses a greater volume
     than a BoundingBox so will not cull so aggressively.
 */
@@ -48,13 +48,13 @@ class SG_EXPORT BoundingSphere
         /** return the radius squared. 
             Note, for performance reasons, assumes the calling method has ensured 
             that the sphere is valid before calling radius2(), i.e. has _radius>=0.0,
-            as it does not check th validity of sphere and will eroneously return a positive value.*/
+            as it does not check th validity of sphere and will erroneously return a positive value.*/
         inline const float radius2() const { return _radius*_radius; }
         
-        /** If the vertex is outwith the sphere expand to ecompass vertex.
+        /** If the vertex is out-with the sphere expand to encompass vertex.
             Calculates the combination of movement of center and radius which
             minimizes the radius increase. If this sphere is empty then
-            move the centrer to v and set radius to 0.*/
+            move the center to v and set radius to 0.*/
         void expandBy(const Vec3& v);
 
         /** If the vertex is outwith the sphere expand radius to ecompass vertex.

@@ -6,7 +6,7 @@
 
 namespace osg {
 
-/** Encapsulte OpenGL glAlphaFunc.
+/** Encapsulate OpenGL glAlphaFunc.
 */     
 class SG_EXPORT AlphaFunc : public StateAttribute
 {

@@ -174,11 +174,11 @@ class SG_EXPORT GeoSet : public Drawable
         void setCoords( Vec3 *cp );
         /** set the coords (i.e the geometry) and ushort indices of the geoset.
             To reduce memory footprint and bandwidth for small datasets it is
-            recommended the ushort undices are used instead of unit indices.*/
+            recommended the ushort indices are used instead of unit indices.*/
         void setCoords( Vec3 *cp, ushort *ci );
         /** set the coords (i.e the geometry) and uint indices of the geoset.
             Unless your data set exceeds 65536 indices prefer ushort indices
-            over uint indices, only use this unit indices version if neccessary.*/
+            over uint indices, only use this unit indices version if necessary.*/
         void setCoords( Vec3 *cp, uint *ci );
         /** set the coords (i.e the geometry) and indices of the geoset.*/
         void setCoords( Vec3 *cp, IndexPointer& ip );
@@ -325,11 +325,7 @@ class SG_EXPORT GeoSet : public Drawable
 	InterleaveArrayType _iaformat;
 	unsigned int    _ogliaformat;
 
-
-
-
         int         _fast_path;
-
         
 	void set_fast_path( void );
 	void draw_fast_path( void );

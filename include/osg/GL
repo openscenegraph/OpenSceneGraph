@@ -3,7 +3,7 @@
 
 #ifndef WIN32
 
-    // non windows, doesn't require nonesense as seen below :-)    
+    // non windows, doesn't require nonsense as seen below :-)    
     #ifndef __gl_h_
         #include <GL/gl.h>
     #endif

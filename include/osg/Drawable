@@ -12,7 +12,7 @@
 
 namespace osg {
 
-/** Pure virtual base class for drawable Geomtery.  Contains no drawing primitives
+/** Pure virtual base class for drawable Geometry.  Contains no drawing primitives
     directly, these are provided by subclasses such as GeoSet. State attributes 
     for a Drawable are maintained in StateSet which the Drawable maintains
     a referenced counted pointer to.  Both Drawable's and StateSet's can 
@@ -39,7 +39,7 @@ class SG_EXPORT Drawable : public Object
         inline const StateSet* getStateSet() const { return _dstate.get();}
 
 
-        /** Set the drawable to it can or cannot be used inconjunction with OpenGL
+        /** Set the drawable to it can or cannot be used in conjunction with OpenGL
           * display lists.  With set to true, calls to Drawable::setUseDisplayList,
           * whereas when set to false, no display lists can be created and calls
           * to setUseDisplayList are ignored, and a warning is produced.  The later
@@ -48,7 +48,7 @@ class SG_EXPORT Drawable : public Object
           * algorithms.*/
         void setSupportsDisplayList(const bool flag);
       
-        /** Get whether display lists are supportd for this drawable instance.*/  
+        /** Get whether display lists are supported for this drawable instance.*/  
         inline const bool getSupportsDisplayList() const { return _supportsDisplayList; }
 
 
@@ -80,7 +80,7 @@ class SG_EXPORT Drawable : public Object
           * If the drawable has _useDisplayList set to true then use an OpenGL display
           * list, automatically compiling one if required.
           * Otherwise call drawImmediateMode().
-          * Note, draw method should not be overriden in subclasses as it 
+          * Note, draw method should not be overridden in subclasses as it 
           * manages the optional display list.
           */
         inline void draw(State& state)
@@ -98,7 +98,7 @@ class SG_EXPORT Drawable : public Object
                 // get the globj for the current contextID.
                 uint& globj = _globjList[contextID];
         
-                // call the globj if already set otherwise comple and execute.
+                // call the globj if already set otherwise compile and execute.
                 if( globj != 0 )
                 {
                     glCallList( globj );
@@ -120,7 +120,8 @@ class SG_EXPORT Drawable : public Object
         }
 
         /** Immediately compile this drawable into an OpenGL Display List.
-            Note, operation is ignored if _useDisplayList to false.*/
+            Note I, operation is ignored if _useDisplayList to false.
+            Note II, compile is not intended to be overridden in subclasses.*/
         void compile(State& state);
 
         /** draw directly ignoring an OpenGL display list which could be attached.
@@ -147,7 +148,7 @@ class SG_EXPORT Drawable : public Object
         virtual ~Drawable();
 
         /** compute the bounding box of the drawable. Method must be 
-            implementated by subclasses.*/
+            implemented by subclasses.*/
         virtual const bool computeBound() const = 0;
 
         ref_ptr<StateSet>      _dstate;

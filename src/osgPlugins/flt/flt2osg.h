@@ -165,6 +165,8 @@ class ConvertFromFLT
 
         void setUseTextureAlphaForTransparancyBinning(bool flag) { _useTextureAlphaForTranspancyBinning=flag; }
         bool getUseTextureAlphaForTransparancyBinning() const { return _useTextureAlphaForTranspancyBinning; }
+        void setDoUnitsConversion(bool flag) { _doUnitsConversion=flag; }
+        bool getDoUnitsConversion() const { return _doUnitsConversion; }
 
     private:
 
@@ -202,6 +204,7 @@ class ConvertFromFLT
         bool                    _bHdrRgbMode;
         osg::Vec4               _faceColor;
         bool                    _useTextureAlphaForTranspancyBinning;
+        bool                    _doUnitsConversion;
 
         osg::Group*             _osgParent;
         

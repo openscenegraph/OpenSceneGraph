@@ -48,6 +48,8 @@ class FltFile : public osg::Referenced
 
         void setUseTextureAlphaForTransparancyBinning(bool flag) { _useTextureAlphaForTransparancyBinning=flag; }
         bool getUseTextureAlphaForTransparancyBinning() const { return _useTextureAlphaForTransparancyBinning; }
+        void setDoUnitsConversion(bool flag) { _doUnitsConversion=flag; }
+        bool getDoUnitsConversion() const { return _doUnitsConversion; }
 
         int getFlightVersion() const;
         inline HeaderRecord* getHeaderRecord() { return _headerRecord.get(); }
@@ -67,6 +69,7 @@ class FltFile : public osg::Referenced
         bool                        _useInternalTexturePalette;
         bool                        _useInternalMaterialPalette;
         bool                        _useTextureAlphaForTransparancyBinning;
+        bool                        _doUnitsConversion;
 
         std::string                 _directory;
         

@@ -102,6 +102,7 @@ ConvertFromFLT::ConvertFromFLT() :
     _useTextureAlphaForTranspancyBinning = true;
     _bHdrRgbMode = false;
     _currentLocalVertexPool = 0;
+    _doUnitsConversion = true;
 }
 
 
@@ -434,24 +435,31 @@ osg::Group* ConvertFromFLT::visitHeader(HeaderRecord* rec)
     osg::notify(osg::INFO) << "Version " << _diOpenFlightVersion << std::endl;
 
     // Unit scale
-    switch (pSHeader->swVertexCoordUnit)
+    if ( _doUnitsConversion ) 
     {
-    case HeaderRecord::METERS:
-        _unitScale = 1.0;
-        break;
-    case HeaderRecord::KILOMETERS:
-        _unitScale = 1000.0;
-        break;
-    case HeaderRecord::FEET:
-        _unitScale = 0.3048;
-        break;
-    case HeaderRecord::INCHES:
-        _unitScale = 0.02540;
-        break;
-    case HeaderRecord::NAUTICAL_MILES:
-        _unitScale = 1852.0;
-        break;
-    default:
+        switch (pSHeader->swVertexCoordUnit)
+        {
+        case HeaderRecord::METERS:
+            _unitScale = 1.0;
+            break;
+        case HeaderRecord::KILOMETERS:
+            _unitScale = 1000.0;
+            break;
+        case HeaderRecord::FEET:
+            _unitScale = 0.3048;
+            break;
+        case HeaderRecord::INCHES:
+            _unitScale = 0.02540;
+            break;
+        case HeaderRecord::NAUTICAL_MILES:
+            _unitScale = 1852.0;
+            break;
+        default:
+            _unitScale = 1.0;
+        }
+    }
+    else
+    {    
         _unitScale = 1.0;
     }
 

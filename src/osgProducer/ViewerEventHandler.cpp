@@ -33,9 +33,10 @@ public:
         image->readPixels(x,y,width,height,
                           GL_RGB,GL_UNSIGNED_BYTE);
 
-        osgDB::writeImageFile(*image,_filename);
-
-        osg::notify(osg::NOTICE) << "Saved screen image to `"<<_filename<<"`"<< std::endl;
+        if (osgDB::writeImageFile(*image,_filename))
+        {
+            osg::notify(osg::NOTICE) << "Saved screen image to `"<<_filename<<"`"<< std::endl;
+        }
         
         _snapImageOnNextFrame = false;
     }
@@ -802,8 +803,10 @@ bool ViewerEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActio
                 osg::Node* node = _cg->getSceneData();
                 if (node)
                 {
-                    std::cout<<"writing file "<<_writeNodeFileName<<std::endl;
-                    osgDB::writeNodeFile(*node,_writeNodeFileName.c_str());
+                    if (osgDB::writeNodeFile(*node,_writeNodeFileName.c_str()))
+                    {
+                        std::cout<<"writen nodes to file "<<_writeNodeFileName<<std::endl;
+                    }
                 }
 
                 return true;

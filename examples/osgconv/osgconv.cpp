@@ -17,6 +17,7 @@
 #include <osgDB/ReaderWriter>
 
 #include <osgUtil/Optimizer>
+#include <osgUtil/SmoothingVisitor>
 
 #include <osgProducer/Viewer>
 
@@ -409,6 +410,9 @@ static void usage( const char *prog, const char *msg )
                               "                         where SX, SY, and SZ represent the scale factors\n"
                               "                         Caution: Scaling will be done in destination orientation\n"
                               << std::endl;
+    osg::notify(osg::NOTICE)<< std::endl;
+    osg::notify(osg::NOTICE)<<"    --smooth           - Smooth the surface by regenerating surface normals on\n"
+                              "                         all geometry"<< std::endl;
 }
 
 
@@ -539,6 +543,10 @@ int main( int argc, char **argv )
     while(arguments.read("--compressed-dxt3")) { internalFormatMode = osg::Texture::USE_S3TC_DXT3_COMPRESSION; }
     while(arguments.read("--compressed-dxt5")) { internalFormatMode = osg::Texture::USE_S3TC_DXT5_COMPRESSION; }
 
+    bool smooth = false;
+    while(arguments.read("--smooth")) { smooth = true; }
+    
+
     // any option left unread are converted into errors to write out later.
     arguments.reportRemainingOptionsAsUnrecognized();
 
@@ -583,7 +591,13 @@ int main( int argc, char **argv )
     {
         // convert the old style GeoSet to Geometry
         ConvertGeoSetsToGeometryVisitor cgtg;
-        if( root.valid() ) root->accept(cgtg);
+        root->accept(cgtg);
+    
+        if (smooth)
+        {
+            osgUtil::SmoothingVisitor sv;
+            root->accept(sv);
+        }    
     
         // optimize the scene graph, remove rendundent nodes and state etc.
         osgUtil::Optimizer optimizer;

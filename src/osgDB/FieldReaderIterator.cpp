@@ -296,6 +296,7 @@ bool FieldReaderIterator::matchSequence(const char* str)
 {
     if (str==NULL) return false;
     if (*str==0) return false;
+    
     int fieldCount = 0;
     const char* end = str;
     while((*end)!=0 && (*end)==' ') ++end;
@@ -333,6 +334,7 @@ bool FieldReaderIterator::matchSequence(const char* str)
                             if (!field(fieldCount).isQuotedString()) return false;
                             break;
                         }
+                        case('w') :
                         default :// expecting an word
                         {
                             if (!field(fieldCount).isWord()) return false;

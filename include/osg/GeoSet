@@ -276,7 +276,7 @@ class SG_EXPORT GeoSet : public Drawable
         /** get the interleaved index array. */
         inline const IndexPointer& getInterleavedIndices() const { return _iaindex; }
         /** get the interleaved array storage format. */
-        inline const InterleaveArrayType getInterleavedFromat() const  { return _iaformat; }
+        inline const InterleaveArrayType getInterleavedFormat() const  { return _iaformat; }
         
         /** set the interleaved arrays of the geoset.*/
 	void setInterleavedArray( const InterleaveArrayType format, float *ia ); 

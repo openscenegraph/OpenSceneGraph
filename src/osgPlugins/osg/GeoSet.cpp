@@ -480,8 +480,8 @@ bool GeoSet_readLocalData(Object& obj, Input& fr)
             fieldAdvanced = true;
         }
         
-        if (matchFirst=fr.matchSequence("InterleavedArray %s {") ||
-            fr.matchSequence("InterleavedArray %s %i {"))
+        if ((matchFirst=fr.matchSequence("InterleavedArray %w {")) ||
+            fr.matchSequence("InterleavedArray %w %i {"))
         {
 
             // set up coordinates.
@@ -515,7 +515,7 @@ bool GeoSet_readLocalData(Object& obj, Input& fr)
             }
             else
             {
-                fr[3].getInt(capacity);
+                fr[2].getInt(capacity);
                 fr += 4;
             }
 
@@ -530,7 +530,7 @@ bool GeoSet_readLocalData(Object& obj, Input& fr)
                 // now read the data rows between the {}.
                 const char* rowComp = GeoSet_getInterleavedRowComposition(iaType);
                 int rowLength = GeoSet_getInterleavedRowLength(iaType);
-
+                
                 int size = 0;
                 unsigned char* dataList = new unsigned char[capacity*rowLength];
 
@@ -544,11 +544,10 @@ bool GeoSet_readLocalData(Object& obj, Input& fr)
                     unsigned char* itrRowData = rowData;
                     const char* itrRowComp = rowComp;
                     int rn = 0;
-                    while (*itrRowComp!=0)
+                    while (*itrRowComp!=0 && !fr.eof() && fr[0].getNoNestedBrackets()>entry)
                     {
                         if (*itrRowComp=='f')
                         {
-
                             if (!fr[rn].getFloat(floatData)) break;
                             *(float*)itrRowData = floatData;
                             itrRowData += 4;
@@ -559,6 +558,7 @@ bool GeoSet_readLocalData(Object& obj, Input& fr)
                             *itrRowData = (unsigned char)intData;
                             itrRowData += 1;
                         }
+                        ++itrRowComp;
                         ++rn;
                     }
                     if (*itrRowComp==0)
@@ -579,9 +579,11 @@ bool GeoSet_readLocalData(Object& obj, Input& fr)
                     }
                     else
                     {
-                        ++fr;
+                        if (!fr.eof() && fr[0].getNoNestedBrackets()>entry) ++fr;
                     }
                 }
+
+                delete [] rowData;
 
                 interleavedArray = (float*)dataList;
             }
@@ -829,10 +831,10 @@ bool GeoSet_writeLocalData(const Object& obj, Output& fw)
     if (geoset.getInterleavedArray())
     {
         // write out the interleaved arrays.
-        const char* rowComp = GeoSet_getInterleavedRowComposition(geoset.getInterleavedFromat());
+        const char* rowComp = GeoSet_getInterleavedRowComposition(geoset.getInterleavedFormat());
 
         fw.indent() << "InterleavedArray ";
-        switch(geoset.getInterleavedFromat())
+        switch(geoset.getInterleavedFormat())
         {
             case(GeoSet::IA_OFF): fw << "IA_OFF"; break;
             case(GeoSet::IA_V2F): fw << "IA_V2F"; break;

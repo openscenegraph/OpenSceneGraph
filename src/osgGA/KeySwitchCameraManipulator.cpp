@@ -27,7 +27,6 @@ bool KeySwitchCameraManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapt
         KeyManipMap::iterator it=_manips.find(ea.getKey());
         if(it != _manips.end()){
             osg::notify(osg::INFO)<<"Switching to manipulator: "<<(*it).second.first<<std::endl;
-            std::cout<<"***Switching to manipulator: "<<(*it).second.first<<std::endl;
             it->second.second->setNode(_current->getNode());
             it->second.second->setCamera(_current->getCamera());
             it->second.second->init(ea,aa);

@@ -19,7 +19,13 @@ LDFLAGS = -O2 -W -Wall -L/usr/X11R6/lib
 #LDFLAGS = -g -W -Wall -L/usr/X11R6/lib
 
 DYNAMICLIBRARYLIB = -ldl
-PFLIBS = -lpfdu -lpfutil -lpf  -ldl
+PFLIBS = \
+	/usr/lib/Performer/Static/libpfdb/libpfpfb.a\
+	/usr/lib/Performer/Static/libpfdu.a\
+	/usr/lib/Performer/Static/libpfutil.a\
+	/usr/lib/Performer/Static/libpf.a\
+
+
 GLUTLIB = -lglut
 
 

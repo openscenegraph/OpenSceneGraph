@@ -86,7 +86,7 @@ namespace osgParticle
     
     inline void AngularAccelOperator::beginOperate(Program *prg)
     {
-        if (prg->getReferenceFrame() == ModularProgram::RELATIVE_TO_PARENTS) {
+        if (prg->getReferenceFrame() == ModularProgram::RELATIVE) {
             xf_angular_accel_ = prg->rotateLocalToWorld(angular_accel_);
         } else {
             xf_angular_accel_ = angular_accel_;

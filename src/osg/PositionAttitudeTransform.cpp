@@ -21,7 +21,7 @@ PositionAttitudeTransform::PositionAttitudeTransform():
 
 bool PositionAttitudeTransform::computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const
 {
-    if (_referenceFrame==RELATIVE_TO_PARENTS)
+    if (_referenceFrame==RELATIVE)
     {
         matrix.preMult(osg::Matrix::translate(-_pivotPoint)*
                        osg::Matrix::scale(_scale)*
@@ -41,7 +41,7 @@ bool PositionAttitudeTransform::computeLocalToWorldMatrix(Matrix& matrix,NodeVis
 
 bool PositionAttitudeTransform::computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor*) const
 {
-    if (_referenceFrame==RELATIVE_TO_PARENTS)
+    if (_referenceFrame==RELATIVE)
     {
         matrix.postMult(osg::Matrix::translate(-_position)*
                         osg::Matrix::rotate(_attitude.inverse())*

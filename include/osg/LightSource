@@ -38,13 +38,18 @@ class SG_EXPORT LightSource : public Group
 
         enum ReferenceFrame
         {
-            RELATIVE_TO_PARENTS,
-            RELATIVE_TO_ABSOLUTE
+            RELATIVE,
+            ABSOLUTE
+#ifdef USE_DEPRECATED_API
+            ,
+            RELATIVE_TO_PARENTS=RELATIVE,
+            RELATIVE_TO_ABSOLUTE=ABSOLUTE,
+#endif
         };
         
         /** Set the light sources's ReferenceFrame, either to be relative to its
           * parent reference frame, or relative to an absolute coordinate
-          * frame. RELATIVE_TO_PARENTS is the default.
+          * frame. RELATIVE is the default.
           * Note: setting the ReferenceFrame to be RELATIVE_TO_ABSOLUTE will
           * also set the CullingActive flag on the light source, and hence all
           * of its parents, to false, thereby disabling culling of it and

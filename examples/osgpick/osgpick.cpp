@@ -112,7 +112,7 @@ osg::Node* createHUD(osgText::Text* updateText)
     // eg to be used as a menuing/help system!
     // Can pick texts too!
     osg::MatrixTransform* modelview_abs = new osg::MatrixTransform;
-    modelview_abs->setReferenceFrame(osg::Transform::RELATIVE_TO_ABSOLUTE);
+    modelview_abs->setReferenceFrame(osg::Transform::ABSOLUTE);
     modelview_abs->setMatrix(osg::Matrix::identity());
     
     osg::Projection* projection = new osg::Projection;

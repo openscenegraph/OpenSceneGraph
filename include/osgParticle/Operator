@@ -57,7 +57,7 @@ namespace osgParticle
         
         /** Do something before processing particles via the <CODE>operate()</CODE> method.
             Overriding this method could be necessary to query the calling <CODE>Program</CODE> object
-            for the current reference frame. If the reference frame is RELATIVE_TO_PARENTS, then your
+            for the current reference frame. If the reference frame is RELATIVE, then your
             class should prepare itself to do all operations in local coordinates.
         */
         virtual void beginOperate(Program *) {}

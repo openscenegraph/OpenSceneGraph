@@ -830,7 +830,7 @@ void CullVisitor::apply(LightSource& node)
     StateAttribute* light = node.getLight();
     if (light)
     {
-        if (node.getReferenceFrame()==osg::LightSource::RELATIVE_TO_PARENTS)
+        if (node.getReferenceFrame()==osg::LightSource::RELATIVE)
         {
             RefMatrix& matrix = getModelViewMatrix();
             addPositionedAttribute(&matrix,light);

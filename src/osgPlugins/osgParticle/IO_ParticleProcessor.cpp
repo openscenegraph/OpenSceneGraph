@@ -51,13 +51,13 @@ bool ParticleProcessor_readLocalData(osg::Object &obj, osgDB::Input &fr)
     }
 
     if (fr[0].matchWord("referenceFrame")) {
-        if (fr[1].matchWord("RELATIVE_TO_ABSOLUTE")) {
-            myobj.setReferenceFrame(osgParticle::ParticleProcessor::RELATIVE_TO_ABSOLUTE);
+        if (fr[1].matchWord("RELATIVE_TO_ABSOLUTE") || fr[1].matchWord("ABSOLUTE")) {
+            myobj.setReferenceFrame(osgParticle::ParticleProcessor::ABSOLUTE);
             fr += 2;
             itAdvanced = true;
         }
-        if (fr[1].matchWord("RELATIVE_TO_PARENTS")) {
-            myobj.setReferenceFrame(osgParticle::ParticleProcessor::RELATIVE_TO_PARENTS);
+        if (fr[1].matchWord("RELATIVE_TO_PARENTS") || fr[1].matchWord("RELATIVE")) {
+            myobj.setReferenceFrame(osgParticle::ParticleProcessor::RELATIVE);
             fr += 2;
             itAdvanced = true;
         }
@@ -129,12 +129,12 @@ bool ParticleProcessor_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     fw.indent() << "referenceFrame ";
     switch (myobj.getReferenceFrame())
     {
-    case osgParticle::ParticleProcessor::RELATIVE_TO_ABSOLUTE:
-        fw << "RELATIVE_TO_ABSOLUTE" << std::endl;
+    case osgParticle::ParticleProcessor::ABSOLUTE:
+        fw << "ABSOLUTE" << std::endl;
         break;
-    case osgParticle::ParticleProcessor::RELATIVE_TO_PARENTS:
+    case osgParticle::ParticleProcessor::RELATIVE:
     default:
-        fw << "RELATIVE_TO_PARENTS" << std::endl;
+        fw << "RELATIVE" << std::endl;
     }
 
 	fw.indent() << "endless ";

@@ -25,7 +25,7 @@ void osgParticle::ModularEmitter::emit(double dt)
         if (P) {
             placer_->place(P);
             shooter_->shoot(P);
-            if (getReferenceFrame() == RELATIVE_TO_PARENTS) {
+            if (getReferenceFrame() == RELATIVE) {
                 P->transformPositionVelocity(getLocalToWorldMatrix());
             }
         }

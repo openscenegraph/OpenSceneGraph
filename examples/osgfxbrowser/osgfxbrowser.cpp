@@ -232,7 +232,7 @@ osg::Group *build_hud_base(osg::Group *root)
 	root->addChild(proj.get());
 
 	osg::ref_ptr<osg::MatrixTransform> xform = new osg::MatrixTransform(osg::Matrix::identity());
-	xform->setReferenceFrame(osg::Transform::RELATIVE_TO_ABSOLUTE);
+	xform->setReferenceFrame(osg::Transform::ABSOLUTE);
 	proj->addChild(xform.get());
 
 	osg::StateSet *ss = xform->getOrCreateStateSet();

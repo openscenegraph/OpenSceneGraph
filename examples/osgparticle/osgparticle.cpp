@@ -50,7 +50,7 @@ public:
 		// we have to check whether the reference frame is relative to parents
 		// or it's absolute; in the first case, we must transform the vectors
 		// from local to world space.
-		if (prg->getReferenceFrame() == osgParticle::Program::RELATIVE_TO_PARENTS) {
+		if (prg->getReferenceFrame() == osgParticle::Program::RELATIVE) {
 			// transform the center point (full transformation)
 			xf_center_ = prg->transformLocalToWorld(center_);
 			// transform the axis vector (only rotation and scale)

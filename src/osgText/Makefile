@@ -24,10 +24,10 @@ C++FILES = \
         Version.cpp
 
 
-TARGET_BASENAME = osgGLUT
+TARGET_BASENAME = osgText
 
 
-LIBS    = -L../../lib -losgDB -losgUtil -losg $(GLUTLIB) -lGLU -lGL -lm
+LIBS    = -L../../lib -lfreetype -losgDB -losgUtil -losg -lGLU -lGL -lm
 
 LIB	= ../../lib/lib$(TARGET_BASENAME).so
 #LIB	= ../../lib/lib$(TARGET_BASENAME).a
@@ -38,7 +38,7 @@ TARGET_INCLUDE_FILES = \
 	osgText/Version\
 	osgText/Text
 
-C++FLAGS += -I ../../include -I /usr/local/include/freetype2 -I /usr/local/include/freetype2/freetype
+C++FLAGS += -I ../../include -I /usr/local/include/freetype2 
 
 include ../../Make/makerules
 

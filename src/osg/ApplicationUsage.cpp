@@ -88,7 +88,7 @@ void ApplicationUsage::write(std::ostream& output, const ApplicationUsage::Usage
             
             firstInLine = false;
         
-            unsigned int width = std::min((unsigned int)explanation.length()-pos,explanationWidth-offset);
+            unsigned int width = minimum((unsigned int)explanation.length()-pos,explanationWidth-offset);
             unsigned int slashn_pos = explanation.find('\n',pos);
             unsigned int extraSkip = 0;
             bool concatinated = false;

@@ -5,10 +5,19 @@
 #endif
 
 #include <osg/Vec4>
+#include <osg/Texture2D>
+#include <osg/TexEnv>
+
+#include <osgDB/ReadFile>
+#include <osgDB/Registry>
 
 #include "MaterialPaletteRecord.h"
 #include "OldMaterialPaletteRecord.h"
 #include "Pool.h"
+#include "Registry.h"
+
+#include <stdio.h>
+
 
 using namespace flt;
 
@@ -100,20 +109,106 @@ ColorPool::ColorName* ColorPool::getColorName(int nIndex)
 ////////////////////////////////////////////////////////////////////
 
 
-osg::StateSet* TexturePool::getTexture(int nIndex)
+osg::StateSet* TexturePool::getTexture(int nIndex, int fltVersion)
 {
     TexturePaletteMap::iterator fitr = _textureMap.find(nIndex);
     if (fitr != _textureMap.end())
+    {
         return (*fitr).second.get();
+    }
     else
-        return NULL;
+    {
+        // no existing texture state set set up so lets look
+        // for a file name for this nIndex..
+        TextureNameMap::iterator nitr = _textureNameMap.find(nIndex);
+        if (nitr != _textureNameMap.end())
+        {
+            const std::string& textureName = (*nitr).second;
+
+            // Valid index, find the texture
+            // Get StateSet containing texture from registry pool.
+            osg::StateSet* textureStateSet = Registry::instance()->getTexture(textureName);
+
+            if (textureStateSet)
+            {
+                // Add texture to local pool to be ab121le to get by index.
+                addTexture(nIndex, textureStateSet);
+            }
+            else
+            {
+                CERR<<"setTexture attempting to load ("<<textureName<<")"<<std::endl;
+
+                unsigned int unit = 0;
+
+                // Read texture and attribute file
+                osg::ref_ptr<osg::Image> image = osgDB::readImageFile(textureName);
+                if (image.valid())
+                {
+                    std::string attrName(textureName);
+                    attrName += ".attr";
+
+                    // Read attribute file
+                    char options[256];
+                    sprintf(options,"FLT_VER %d",fltVersion);
+
+                    osgDB::Registry::instance()->setOptions(new osgDB::ReaderWriter::Options(options));
+                    textureStateSet = dynamic_cast<osg::StateSet*>(osgDB::readObjectFile(attrName));
+                    osgDB::Registry::instance()->setOptions(NULL);      // Delete options
+
+                    // if not found create default StateSet
+                    if (textureStateSet == NULL)
+                    {
+                        textureStateSet = new osg::StateSet;
+
+                        osg::Texture2D* osgTexture = new osg::Texture2D;
+                        osgTexture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::REPEAT);
+                        osgTexture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::REPEAT);
+                        textureStateSet->setTextureAttributeAndModes( unit, osgTexture,osg::StateAttribute::ON);
+
+                        osg::TexEnv* osgTexEnv = new osg::TexEnv;
+                        osgTexEnv->setMode(osg::TexEnv::MODULATE);
+                        textureStateSet->setTextureAttribute( unit, osgTexEnv );
+                    }
+
+                    osg::Texture2D *osgTexture = dynamic_cast<osg::Texture2D*>(textureStateSet->getTextureAttribute( unit, osg::StateAttribute::TEXTURE));
+                    if (osgTexture == NULL)
+                    {
+                        osgTexture = new osg::Texture2D;
+                        textureStateSet->setTextureAttributeAndModes( unit, osgTexture,osg::StateAttribute::ON);
+                    }
+
+                    osgTexture->setImage(image.get());
+
+                }
+                else
+                {
+                    // invalid image file, register an empty state set 
+                    textureStateSet = new osg::StateSet;
+                }
+
+                // Add new texture to registry pool
+                // ( umm... should this have reference to the texture unit? RO. July2002)
+                Registry::instance()->addTexture(textureName, textureStateSet);
+
+                // Also add to local pool to be able to get texture by index.
+                // ( umm... should this have reference to the texture unit? RO. July2002)
+                addTexture(nIndex, textureStateSet);
+
+                CERR<<"Registry::instance()->addTexture("<<textureName<<", "<<textureStateSet<<")"<<std::endl;
+                CERR<<"pTexturePool->addTexture("<<nIndex<<", "<<textureStateSet<<")"<<std::endl;
+            }
+            
+            return textureStateSet;
+        }
+    }
+    return NULL;
 }
 
 std::string* TexturePool::getTextureName(int nIndex)
 {
     TextureNameMap::iterator fitr = _textureNameMap.find(nIndex);
     if (fitr != _textureNameMap.end())
-        return (*fitr).second;
+        return &(*fitr).second;
     else
         return NULL;
 }
@@ -124,7 +219,7 @@ void TexturePool::addTexture(int nIndex, osg::StateSet* stateset)
     _textureMap[nIndex] = stateset;
 }
 
-void TexturePool::addTextureName(int nIndex, std::string* name)
+void TexturePool::addTextureName(int nIndex, const std::string& name)
 {
     _textureNameMap[nIndex] = name;
 }

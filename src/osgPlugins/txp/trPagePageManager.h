@@ -154,7 +154,8 @@ namespace txp
 		// Lock for the change lists (merge, unhook, delete)
 		ThreadMutex changeListMutex;
 		// Merge list is filled in by the paging thread.
-		std::vector<osg::Group *> toMerge;
+                typedef std::pair< osg::ref_ptr<osg::Group> , osg::ref_ptr<osg::Group> > MergePair;
+		std::vector< MergePair > toMerge;
 		// no need for that 
 		// std::vector<osg::Group *> toMergeParent;
 		// Unhook list is filled in by the paging thread

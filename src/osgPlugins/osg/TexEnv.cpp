@@ -66,6 +66,7 @@ bool TexEnv_writeLocalData(const Object& obj, Output& fw)
         case(TexEnv::DECAL):
         case(TexEnv::MODULATE):
         case(TexEnv::REPLACE):
+        case(TexEnv::ADD):
             break;
         case(TexEnv::BLEND):
         default:
@@ -82,6 +83,7 @@ bool TexEnv_matchModeStr(const char* str,TexEnv::Mode& mode)
     else if (strcmp(str,"MODULATE")==0) mode = TexEnv::MODULATE;
     else if (strcmp(str,"BLEND")==0)    mode = TexEnv::BLEND;
     else if (strcmp(str,"REPLACE")==0)  mode = TexEnv::REPLACE;
+    else if (strcmp(str,"ADD")==0)      mode = TexEnv::ADD;
     else return false;
     return true;
 }
@@ -95,6 +97,7 @@ const char* TexEnv_getModeStr(TexEnv::Mode mode)
         case(TexEnv::MODULATE): return "MODULATE";
         case(TexEnv::BLEND):    return "BLEND";
         case(TexEnv::REPLACE):  return "REPLACE";
+        case(TexEnv::ADD):      return "ADD";
     }
     return "";
 }

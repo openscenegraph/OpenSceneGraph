@@ -47,7 +47,8 @@ class SG_EXPORT TexEnv : public StateAttribute
             DECAL     = GL_DECAL,
             MODULATE  = GL_MODULATE,
             BLEND     = GL_BLEND,
-            REPLACE   = GL_REPLACE
+            REPLACE   = GL_REPLACE,
+            ADD       = GL_ADD
         };
 
         void setMode( const Mode mode ) { _mode = mode; }

@@ -4,6 +4,7 @@
 using namespace osg;
 
 TexEnvCombine::TexEnvCombine():
+            _needsTexEnvCrossbar(false),
             _combine_RGB(GL_MODULATE),
             _combine_Alpha(GL_MODULATE),
             _source0_RGB(GL_TEXTURE),
@@ -33,7 +34,10 @@ void TexEnvCombine::apply(State&) const
     static bool isTexEnvCombineSupported =
         isGLExtensionSupported("GL_ARB_texture_env_combine");
 
-    if (isTexEnvCombineSupported)
+    static bool isTexEnvCrossbarSupported =
+        isGLExtensionSupported("GL_ARB_texture_env_crossbar");
+
+    if (isTexEnvCrossbarSupported || (!_needsTexEnvCrossbar && isTexEnvCombineSupported))
     {
         glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_ARB);
 

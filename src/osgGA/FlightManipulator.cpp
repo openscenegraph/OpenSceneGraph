@@ -147,7 +147,7 @@ bool FlightManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
         case(GUIEventAdapter::FRAME):
             addMouseEvent(ea);
             if (calcMovement()) us.requestRedraw();
-            return true;
+            return false;
 
         case(GUIEventAdapter::RESIZE):
             init(ea,us);

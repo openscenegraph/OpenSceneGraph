@@ -152,7 +152,6 @@ bool TrackballManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us
             if (_thrown)
             {
                 if (calcMovement()) us.requestRedraw();
-                return true;
             }
             return false;
         default:

@@ -445,7 +445,7 @@ bool trpgwArchive::WriteTile(unsigned int x,unsigned int y,unsigned int lod, flo
                 return false;
         }
 
-        int32 pos = tileFile->Pos();
+        int32 pos = static_cast<int32>(tileFile->Pos());
         if (!tileFile->Append(head,buf))
             return false;
         // Keep track of the fact that this went here
@@ -1031,7 +1031,7 @@ bool trpgwImageHelper::WriteToArchive(const trpgTexture &tex,char *data,trpgwApp
 
     // Get the current address
     addr.file = texFileIDs[texFileIDs.size()-1];
-    addr.offset = texFile->Pos();
+    addr.offset = static_cast<int32>(texFile->Pos());
 
     // Write the data out to the archive.
     int totSize = tex.CalcTotalSize();

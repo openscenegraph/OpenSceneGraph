@@ -144,9 +144,9 @@ void trpgGeometry::SetVertices(int num,const float64 *data)
 void trpgGeometry::AddVertex(DataType type,trpg3dPoint &pt)
 {
     if (type == FloatData) {
-        vertDataFloat.push_back(pt.x);
-        vertDataFloat.push_back(pt.y);
-        vertDataFloat.push_back(pt.z);
+        vertDataFloat.push_back(static_cast<float>(pt.x));
+        vertDataFloat.push_back(static_cast<float>(pt.y));
+        vertDataFloat.push_back(static_cast<float>(pt.z));
     } else {
         vertDataDouble.push_back(pt.x);
         vertDataDouble.push_back(pt.y);
@@ -178,9 +178,9 @@ void trpgGeometry::SetNormals(int num,BindType bind,const float64 *data)
 void trpgGeometry::AddNormal(DataType type,trpg3dPoint &pt)
 {
     if (type == FloatData) {
-        normDataFloat.push_back(pt.x);
-        normDataFloat.push_back(pt.y);
-        normDataFloat.push_back(pt.z);
+        normDataFloat.push_back(static_cast<float>(pt.x));
+        normDataFloat.push_back(static_cast<float>(pt.y));
+        normDataFloat.push_back(static_cast<float>(pt.z));
     } else {
         normDataDouble.push_back(pt.x);
         normDataDouble.push_back(pt.y);
@@ -270,8 +270,8 @@ void trpgGeometry::AddTexCoord(DataType type,trpg2dPoint &pt)
     trpgTexData *td = &texData[0];
 
     if (type == FloatData) {
-        td->floatData.push_back(pt.x);
-        td->floatData.push_back(pt.y);
+        td->floatData.push_back(static_cast<float>(pt.x));
+        td->floatData.push_back(static_cast<float>(pt.y));
     } else {
         td->doubleData.push_back(pt.x);
         td->doubleData.push_back(pt.y);
@@ -349,7 +349,7 @@ bool trpgGeometry::GetVertices(float32 *v) const
             v[i] = vertDataFloat[i];
     else
         for (i=0;i<vertDataDouble.size();i++)
-            v[i] = vertDataDouble[i];
+            v[i] = static_cast<float>(vertDataDouble[i]);
     return true;
 }
 bool trpgGeometry::GetVertices(float64 *v) const
@@ -383,9 +383,9 @@ bool trpgGeometry::GetVertices(osg::Vec3* v) const
     {
         for (i=0;i<vertDataDouble.size()/3;i++ )
         {
-            v[i].x() = vertDataDouble[3*i+0];
-            v[i].y() = vertDataDouble[3*i+1];
-            v[i].z() = vertDataDouble[3*i+2];
+            v[i].x() = static_cast<float>(vertDataDouble[3*i+0]);
+            v[i].y() = static_cast<float>(vertDataDouble[3*i+1]);
+            v[i].z() = static_cast<float>(vertDataDouble[3*i+2]);
         }
     }
     return true;
@@ -427,7 +427,7 @@ bool trpgGeometry::GetNormals(float32 *v) const
             v[i] = normDataFloat[i];
     else
         for (i=0;i<normDataDouble.size();i++)
-            v[i] = normDataDouble[i];
+            v[i] = static_cast<float>(normDataDouble[i]);
     return true;
 }
 bool trpgGeometry::GetNormals(float64 *v) const
@@ -462,9 +462,9 @@ bool trpgGeometry::GetNormals(osg::Vec3* v) const
     {
         for (i=0;i<normDataDouble.size()/3;i++)
         {
-            v[i].x() = normDataDouble[3*i+0];
-            v[i].y() = normDataDouble[3*i+1];
-            v[i].z() = normDataDouble[3*i+2];
+            v[i].x() = static_cast<float>(normDataDouble[3*i+0]);
+            v[i].y() = static_cast<float>(normDataDouble[3*i+1]);
+            v[i].z() = static_cast<float>(normDataDouble[3*i+2]);
         }
     }
     return true;

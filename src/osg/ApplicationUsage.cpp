@@ -45,7 +45,7 @@ void ApplicationUsage::addKeyboardMouseBinding(const std::string& option,const s
     _keyboardMouse[option]=explanation;
 }
 
-void ApplicationUsage::write(std::ostream& output, const ApplicationUsage::UsageMap& um,unsigned int widthOfOutput)
+void ApplicationUsage::getFormatedString(std::string& str, const UsageMap& um,unsigned int widthOfOutput)
 {
     unsigned int maxNumCharsInOptions = 0;
     ApplicationUsage::UsageMap::const_iterator citr;
@@ -125,9 +125,8 @@ void ApplicationUsage::write(std::ostream& output, const ApplicationUsage::Usage
             }
                                               
             line.replace(explanationPos+offset,explanationWidth, explanation, pos, width);
-            if (concatinated) output << line << '-' << std::endl;
-            else output << line << std::endl;
-            
+            if (concatinated) { str += line; str += "-\n"; }
+            else { str += line; str += "\n"; }
             
             // move to the next line of output.
             line.assign(fullWidth,' ');
@@ -137,6 +136,13 @@ void ApplicationUsage::write(std::ostream& output, const ApplicationUsage::Usage
         }
                 
     }
+}
+
+void ApplicationUsage::write(std::ostream& output, const ApplicationUsage::UsageMap& um,unsigned int widthOfOutput)
+{
+    std::string str;
+    getFormatedString(str, um, widthOfOutput);
+    output << str << std::endl;
 }
 
 void ApplicationUsage::write(std::ostream& output,unsigned int widthOfOutput)

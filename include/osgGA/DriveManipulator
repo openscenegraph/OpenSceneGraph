@@ -31,8 +31,6 @@ class OSGGA_EXPORT DriveManipulator : public CameraManipulator
 
         DriveManipulator();
 
-        virtual ~DriveManipulator();
-
         virtual const char* className() { return "Drive"; }
 
         virtual void setNode(osg::Node*);
@@ -51,6 +49,8 @@ class OSGGA_EXPORT DriveManipulator : public CameraManipulator
         virtual void getUsage(osg::ApplicationUsage& usage) const;
 
     protected:
+
+        virtual ~DriveManipulator();
 
         /** Reset the internal GUIEvent stack.*/
         void flushMouseEventStack();

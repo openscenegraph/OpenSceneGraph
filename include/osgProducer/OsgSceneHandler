@@ -30,12 +30,54 @@ class OSGPRODUCER_EXPORT OsgSceneHandler : public Producer::Camera::SceneHandler
 
         /// override the init method to force it be run one at a time.
         virtual void init();
+        
+        
+        class Callback : public osg::Referenced
+        {
+        public:
+               virtual ~Callback() {}
+               virtual void operator()(OsgSceneHandler&, const Producer::Camera &) = 0;             
+        };
+        
+        virtual void clear(Producer::Camera& camera)
+        {
+            if (_clearCallback.valid()) (*_clearCallback)(*this,camera);
+            else clearImplementation(camera);
+        }
 
-        virtual void clear(Producer::Camera& camera);
+        virtual void clearImplementation(Producer::Camera& camera);
 
-        virtual void cull(Producer::Camera& camera);
+        void setClearCallback(Callback* callback) { _clearCallback = callback; }
+        Callback* getClearCallback() { return _clearCallback.get(); }
+        const Callback* getClearCallback() const { return _clearCallback.get(); }
 
-        virtual void draw(Producer::Camera& camera);
+
+        virtual void cull(Producer::Camera& camera)
+        {
+            if (_cullCallback.valid()) (*_cullCallback)(*this,camera);
+            else cullImplementation(camera);
+        }
+
+        virtual void cullImplementation(Producer::Camera& camera);
+
+        void setCullCallback(Callback* callback) { _cullCallback = callback; }
+        Callback* getCullCallback() { return _cullCallback.get(); }
+        const Callback* getCullCallback() const { return _cullCallback.get(); }
+
+
+        virtual void draw(Producer::Camera& camera)
+        {
+            if (_drawCallback.valid()) (*_drawCallback)(*this,camera);
+            else drawImplementation(camera);
+        }
+        
+        virtual void drawImplementation(Producer::Camera& camera);
+
+        void setDrawCallback(Callback* callback) { _drawCallback = callback; }
+        Callback* getDrawCallback() { return _drawCallback.get(); }
+        const Callback* getDrawCallback() const { return _drawCallback.get(); }
+
+
 
         void setContextID( int id );
 
@@ -43,8 +85,13 @@ class OSGPRODUCER_EXPORT OsgSceneHandler : public Producer::Camera::SceneHandler
     
         virtual ~OsgSceneHandler() {}
     
+
         osg::ref_ptr<osg::RefMatrix> mm; 
         osg::ref_ptr<osg::RefMatrix> pm;
+
+        osg::ref_ptr<Callback> _clearCallback;
+        osg::ref_ptr<Callback> _cullCallback;
+        osg::ref_ptr<Callback> _drawCallback;
 };
 
 }

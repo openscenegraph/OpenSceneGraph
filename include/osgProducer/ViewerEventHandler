@@ -23,7 +23,7 @@ class ViewerEventHandler : public osgGA::GUIEventHandler
 {
     public:
     
-        ViewerEventHandler(osgProducer::OsgCameraGroup* cg);
+        ViewerEventHandler(OsgCameraGroup* cg);
     
         virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa);
 
@@ -31,12 +31,25 @@ class ViewerEventHandler : public osgGA::GUIEventHandler
 
         /** Get the keyboard and mouse usage of this manipulator.*/
         virtual void getUsage(osg::ApplicationUsage& usage) const;
+        
+        OsgCameraGroup* getOsgCameraGroup() { return _cg; }
+        const OsgCameraGroup* getOsgCameraGroup() const { return _cg; }
+        
+        
+        void setWriteNodeFileName(const std::string& filename) { _writeNodeFileName = filename; }
+        const std::string& getWriteNodeFileName() const { return _writeNodeFileName; }
+        
+        
+        void setDisplayHelp(bool displayHelp) { _displayHelp = displayHelp; }
+        bool getDisplayHelp() const { return _displayHelp; }
 
     protected:
         
         osgProducer::OsgCameraGroup* _cg;
         
         std::string _writeNodeFileName;
+        
+        bool _displayHelp;
 };
 
 }

@@ -33,13 +33,9 @@ public:
     
     virtual void operator()( const Producer::RenderSurface & rs)
     {
-        if (_cameraGroup)
+        if (_cameraGroup->getRealizeCallback())
         {
-            if (_cameraGroup->getRealizeCallback())
-            {
-                (*(_cameraGroup->getRealizeCallback()))(rs,_cameraGroup,_sceneHandler);
-            }
-            else if (_sceneHandler) _sceneHandler->init();
+            (*(_cameraGroup->getRealizeCallback()))(*_cameraGroup,*_sceneHandler,rs);
         }
         else if (_sceneHandler) _sceneHandler->init();
     }

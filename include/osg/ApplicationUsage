@@ -34,6 +34,13 @@ class SG_EXPORT ApplicationUsage
 
         typedef std::map<std::string,std::string> UsageMap;
         
+
+        void setApplicatonName(const std::string& name) { _applicationName = name; }
+        const std::string& getApplicatonName() const { return _applicationName; }
+
+        void setDescription(const std::string& desc) { _description = desc; }
+        const std::string& getDescription() const { return _description; }
+
         enum Type
         {
             COMMAND_LINE_OPTION,
@@ -63,13 +70,16 @@ class SG_EXPORT ApplicationUsage
         const UsageMap& getKeyboardMouseBindings() const { return _keyboardMouse; }
 
 
+        void getFormatedString(std::string& str, const UsageMap& um,unsigned int widthOfOutput=80);
+
         void write(std::ostream& output,const UsageMap& um,unsigned int widthOfOutput=80);
         
         void write(std::ostream& output,unsigned int widthOfOutput=80);
 
     protected:
     
-
+        std::string _applicationName;
+        std::string _description;
         std::string _commandLineUsage;
         UsageMap    _commandLineOptions;
         UsageMap    _environmentalVariables;

@@ -100,7 +100,7 @@ class ConstructStateCallback : public osgProducer::OsgCameraGroup::RealizeCallba
             return stateset;
         }
 
-        virtual void operator()(const Producer::RenderSurface&, osgProducer::OsgCameraGroup* , osgProducer::OsgSceneHandler* sh)
+        virtual void operator()( osgProducer::OsgCameraGroup&, osgProducer::OsgSceneHandler& sh, const Producer::RenderSurface& )
         { 
             if (!_initialized)
             {
@@ -111,7 +111,7 @@ class ConstructStateCallback : public osgProducer::OsgCameraGroup::RealizeCallba
                 if (_node) _node->setStateSet(constructState());
             }            
             // now safe to con
-            sh->init();
+            sh.init();
             
         }
         

@@ -38,12 +38,12 @@ void OsgSceneHandler::init()
     osg::notify(osg::INFO)<<"   unlocked "<<this<<" init."<<std::endl;
 }
 
-void OsgSceneHandler::clear(Producer::Camera& /*camera*/)
+void OsgSceneHandler::clearImplementation(Producer::Camera& /*camera*/)
 {
-    // no-op right now as scene view manages its own cleaer.
+    // no-op right now as scene view manages its own clear.
 }
 
-void OsgSceneHandler::cull(Producer::Camera &cam) 
+void OsgSceneHandler::cullImplementation(Producer::Camera &cam) 
 {
 
     pm->set(cam.getProjectionMatrix());
@@ -60,7 +60,7 @@ void OsgSceneHandler::cull(Producer::Camera &cam)
     SceneView::cull();
 }
 
-void OsgSceneHandler::draw(Producer::Camera &) 
+void OsgSceneHandler::drawImplementation(Producer::Camera &) 
 {
     SceneView::draw();
 }

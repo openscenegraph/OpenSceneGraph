@@ -16,49 +16,76 @@
 
 #include <osgDB/ReaderWriter>
 
+#include <fstream>
 
 namespace osgDB {
 
 
 /** Base class for implementing database Archives. */
+
+
 class OSGDB_EXPORT Archive : public ReaderWriter
 {
     public:
         Archive();
         virtual ~Archive(); 
-        
-        virtual const char* className() { return "Archive" };
+
+        virtual const char* libraryName() const { return "osgDB"; }
+
+        virtual const char* className() const { return "Archive"; }
+
         virtual bool acceptsExtension(const std::string& /*extension*/) { return true; }
+        
+        enum Status
+        {
+            READ,
+            WRITE
+        };
 
         /** open the archive.*/
-        virtual void open(const std::string& filename) {}
-        
+        virtual void create(const std::string& filename, unsigned int indexBlockSize=4096);
+
+        /** open the archive.*/
+        virtual void open(const std::string& filename, Status status);
+
         /** close the archive.*/
-        virtual void close() {}
+        virtual void close();
 
         /** return true if file exists in archive.*/        
-        virtual bool fileExists(const std::string& filename) const {}
+        virtual bool fileExists(const std::string& filename) const;
         
 
-        virtual ReadResult readObject(const std::string& /*fileName*/,const Options* =NULL) { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
-        virtual ReadResult readImage(const std::string& /*fileName*/,const Options* =NULL) { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
-        virtual ReadResult readHeightField(const std::string& /*fileName*/,const Options* =NULL) { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
-        virtual ReadResult readNode(const std::string& /*fileName*/,const Options* =NULL) { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
+        virtual ReadResult readObject(const std::string& fileName,const Options* options=NULL);
+        virtual ReadResult readImage(const std::string& fileName,const Options* options=NULL);
+        virtual ReadResult readHeightField(const std::string& fileName,const Options* options=NULL);
+        virtual ReadResult readNode(const std::string& fileName,const Options* options=NULL);
 
-        virtual WriteResult writeObject(const osg::Object& /*obj*/,const std::string& /*fileName*/,const Options* =NULL) {return WriteResult(WriteResult::FILE_NOT_HANDLED); }
-        virtual WriteResult writeImage(const osg::Image& /*image*/,const std::string& /*fileName*/,const Options* =NULL) {return WriteResult(WriteResult::FILE_NOT_HANDLED); }
-        virtual WriteResult writeHeightField(const osg::HeightField& /*heightField*/,const std::string& /*fileName*/,const Options* =NULL) {return WriteResult(WriteResult::FILE_NOT_HANDLED); }
-        virtual WriteResult writeNode(const osg::Node& /*node*/,const std::string& /*fileName*/,const Options* =NULL) { return WriteResult(WriteResult::FILE_NOT_HANDLED); }
+        virtual WriteResult writeObject(const osg::Object& obj,const std::string& fileName,const Options* options=NULL);
+        virtual WriteResult writeImage(const osg::Image& image,const std::string& fileName,const Options* options=NULL);
+        virtual WriteResult writeHeightField(const osg::HeightField& heightField,const std::string& fileName,const Options* options=NULL);
+        virtual WriteResult writeNode(const osg::Node& node,const std::string& fileName,const Options* options=NULL);
 
-        virtual ReadResult readObject(std::istream& /*fin*/,const Options* =NULL) { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
-        virtual ReadResult readImage(std::istream& /*fin*/,const Options* =NULL) { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
-        virtual ReadResult readHeightField(std::istream& /*fin*/,const Options* =NULL) { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
-        virtual ReadResult readNode(std::istream& /*fin*/,const Options* =NULL) { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
+        virtual ReadResult readObject(std::istream& fin,const Options* options=NULL);
+        virtual ReadResult readImage(std::istream& fin,const Options* options=NULL);
+        virtual ReadResult readHeightField(std::istream& fin,const Options* options=NULL);
+        virtual ReadResult readNode(std::istream& fin,const Options* options=NULL);
 
-        virtual WriteResult writeObject(const osg::Object& /*obj*/,std::ostream& /*fout*/,const Options* =NULL) {return WriteResult(WriteResult::FILE_NOT_HANDLED); }
-        virtual WriteResult writeImage(const osg::Image& /*image*/,std::ostream& /*fout*/,const Options* =NULL) {return WriteResult(WriteResult::FILE_NOT_HANDLED); }
-        virtual WriteResult writeHeightField(const osg::HeightField& /*heightField*/,std::ostream& /*fout*/,const Options* =NULL) {return WriteResult(WriteResult::FILE_NOT_HANDLED); }
-        virtual WriteResult writeNode(const osg::Node& /*node*/,std::ostream& /*fout*/,const Options* =NULL) { return WriteResult(WriteResult::FILE_NOT_HANDLED); }
+        virtual WriteResult writeObject(const osg::Object& obj,std::ostream& fout,const Options* options=NULL);
+        virtual WriteResult writeImage(const osg::Image& image,std::ostream& fout,const Options* options=NULL);
+        virtual WriteResult writeHeightField(const osg::HeightField& heightField,std::ostream& fout,const Options* options=NULL);
+        virtual WriteResult writeNode(const osg::Node& node,std::ostream& fout,const Options* options=NULL);
+        
+    protected:
+    
+        typedef std::istream::pos_type pos_type;
+    
+        typedef std::map<std::string, pos_type> FileNamePositionMap;
+        
+        Status              _status;
+        std::ifstream       _input;
+        std::ofstream       _output;
+        
+        FileNamePositionMap _indexMap;
 
 
 };

@@ -44,25 +44,15 @@ class SG_EXPORT Polytope
         }
         
         /** Create a Polytope with is cube, centered at 0,0,0, with sides of 2 units.*/
-        void setToUnitFrustum()
+        void setToUnitFrustum(bool withNear=true, bool withFar=true)
         {
             _planeList.erase(_planeList.begin(),_planeList.end());
             _planeList.push_back(Plane(1.0f,0.0f,0.0f,1.0f)); // left plane.
             _planeList.push_back(Plane(-1.0f,0.0f,0.0f,1.0f)); // right plane.
             _planeList.push_back(Plane(0.0f,1.0f,0.0f,1.0f)); // bottom plane.
             _planeList.push_back(Plane(0.0f,-1.0f,0.0f,1.0f)); // top plane.
-            _planeList.push_back(Plane(0.0f,0.0f,-1.0f,1.0f)); // near plane
-            _planeList.push_back(Plane(0.0f,0.0f,1.0f,1.0f)); // far plane
-            setupMask();
-        }
-
-        void setToUnitFrustumWithoutNearFar()
-        {
-            _planeList.erase(_planeList.begin(),_planeList.end());
-            _planeList.push_back(Plane(1.0f,0.0f,0.0f,1.0f)); // left plane.
-            _planeList.push_back(Plane(-1.0f,0.0f,0.0f,1.0f)); // right plane.
-            _planeList.push_back(Plane(0.0f,1.0f,0.0f,1.0f)); // bottom plane.
-            _planeList.push_back(Plane(0.0f,-1.0f,0.0f,1.0f)); // top plane.
+            if (withNear) _planeList.push_back(Plane(0.0f,0.0f,-1.0f,1.0f)); // near plane
+            if (withFar) _planeList.push_back(Plane(0.0f,0.0f,1.0f,1.0f)); // far plane
             setupMask();
         }
 

@@ -30,3 +30,4 @@ void CullingSet::disableOccluder(NodePath& nodePath)
         }
     }
 }
+

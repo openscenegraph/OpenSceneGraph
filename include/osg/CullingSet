@@ -54,7 +54,7 @@ class SG_EXPORT CullingSet : public Referenced
         void setFrustum(Polytope& cv) { _frustum = cv; }
 
         Polytope& getFrustum() { return _frustum; }
-        const Polytope& getFrustum() const { return _frustum; }
+        const Polytope& getFrustum() const { return _frustum; }    
         
         void addOccluder(ShadowVolumeOccluder& cv) { _occluderList.push_back(cv); }
 

@@ -131,7 +131,7 @@ void OsgCameraGroup::_init()
     _background_color.set( 0.2f, 0.2f, 0.4f, 1.0f );
     _LODScale = 1.0f;
 
-    _fusionDistanceMode = osgUtil::SceneView::USE_CAMERA_FUSION_DISTANCE;
+    _fusionDistanceMode = osgUtil::SceneView::PROPORTIONAL_TO_SCREEN_DISTANCE;
     _fusionDistanceValue = 1.0f;
 
     _initialized = false;

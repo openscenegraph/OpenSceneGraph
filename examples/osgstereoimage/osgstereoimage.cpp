@@ -513,7 +513,6 @@ int main( int argc, char **argv )
         sceneview->setCullMaskLeft(0x00000001);
         sceneview->setCullMaskRight(0x00000002);
         sceneview->setFusionDistance(osgUtil::SceneView::USE_FUSION_DISTANCE_VALUE,radius);
-        sceneview->setCamera(0);
     }
 
 

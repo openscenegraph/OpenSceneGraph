@@ -40,7 +40,7 @@ SceneView::SceneView(DisplaySettings* ds)
     _LODScale = 1.0f;
     _smallFeatureCullingPixelSize = 3.0f;
 
-    _fusionDistanceMode = USE_CAMERA_FUSION_DISTANCE;
+    _fusionDistanceMode = PROPORTIONAL_TO_SCREEN_DISTANCE;
     _fusionDistanceValue = 1.0f;
 
     _lightingMode=HEADLIGHT;
@@ -76,8 +76,6 @@ void SceneView::setDefaults()
 
     _state = new State;
     
-    _camera = new Camera(_displaySettings.get());
-
     _rendergraph = new RenderGraph;
     _renderStage = new RenderStage;
 
@@ -209,40 +207,7 @@ void SceneView::cull()
 
     osg::ref_ptr<osg::RefMatrix> projection = _projectionMatrix.get();
     osg::ref_ptr<osg::RefMatrix> modelview = _modelviewMatrix.get();
-    
-    if (_camera.valid())
-    {
-
-        if (_displaySettings.valid() && _displaySettings->getStereo())
-        {
-            switch(_displaySettings->getStereoMode())
-            {
-            case(osg::DisplaySettings::HORIZONTAL_SPLIT):
-                _camera->adjustAspectRatio(0.5*_viewport->aspectRatio());
-                break;
-            case(osg::DisplaySettings::VERTICAL_SPLIT):
-                _camera->adjustAspectRatio(2*_viewport->aspectRatio());
-                break;
-            default:
-                _camera->adjustAspectRatio(_viewport->aspectRatio());
-                break;
-            }
-        }
-        else
-        {
-            _camera->adjustAspectRatio(_viewport->aspectRatio());
-        }
        
-        if (_displaySettings.valid())
-            _camera->setScreenDistance(_displaySettings->getScreenDistance());
-        
-        if (!projection) projection = new osg::RefMatrix(_camera->getProjectionMatrix());
-        if (!modelview)  modelview  = new osg::RefMatrix(_camera->getModelViewMatrix());
-
-        //cout <<"fovx="<<_camera->calc_fovx()<<endl;
-        
-    }
-    
     if (!projection) projection = new osg::RefMatrix();
     if (!modelview)  modelview  = new osg::RefMatrix();
 
@@ -268,12 +233,6 @@ void SceneView::cull()
         float fusionDistance = _displaySettings->getScreenDistance();
         switch(_fusionDistanceMode)
         {
-            case(USE_CAMERA_FUSION_DISTANCE):
-                if (_camera.valid())
-                {
-                    fusionDistance = _camera->getFusionDistance();
-                }
-                break;
             case(USE_FUSION_DISTANCE_VALUE):
                 fusionDistance = _fusionDistanceValue;
                 break;
@@ -305,11 +264,6 @@ void SceneView::cull()
             _cullVisitor->setTraversalMask(_cullMaskLeft);
             cullStage(projectionLeft.get(),modelviewLeft.get(),_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
 
-            if (_camera.valid() && _computeNearFar != CullVisitor::DO_NOT_COMPUTE_NEAR_FAR)
-            {
-                // clamp the camera to the near/far computed in cull traversal.
-                _camera->setNearFar(_cullVisitor->getCalculatedNearPlane(),_cullVisitor->getCalculatedFarPlane());
-            }
         }
         else if (_displaySettings->getStereoMode()==osg::DisplaySettings::RIGHT_EYE)
         {
@@ -330,11 +284,6 @@ void SceneView::cull()
             cullStage(projectionRight.get(),modelviewRight.get(),_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
 
 
-            if (_camera.valid() && _computeNearFar != CullVisitor::DO_NOT_COMPUTE_NEAR_FAR)
-            {
-                // clamp the camera to the near/far computed in cull traversal.
-                _camera->setNearFar(_cullVisitor->getCalculatedNearPlane(),_cullVisitor->getCalculatedFarPlane());
-            }
         }
         else
         {
@@ -381,14 +330,7 @@ void SceneView::cull()
 
             _cullVisitorRight->setTraversalMask(_cullMaskRight);
             cullStage(projectionRight.get(),modelviewRight.get(),_cullVisitorRight.get(),_rendergraphRight.get(),_renderStageRight.get());
-
-
-            if (_camera.valid() && _computeNearFar != CullVisitor::DO_NOT_COMPUTE_NEAR_FAR)
-            {
-                // clamp the camera to the near/far computed in cull traversal.
-                _camera->setNearFar(_cullVisitorRight->getCalculatedNearPlane(),_cullVisitorRight->getCalculatedFarPlane());
-            }
-            
+           
         }
 
     }
@@ -398,11 +340,6 @@ void SceneView::cull()
         _cullVisitor->setTraversalMask(_cullMask);
         cullStage(projection.get(),modelview.get(),_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
 
-        if (_camera.valid() && _computeNearFar != CullVisitor::DO_NOT_COMPUTE_NEAR_FAR)
-        {
-            // clamp the camera to the near/far computed in cull traversal.
-            _camera->setNearFar(_cullVisitor->getCalculatedNearPlane(),_cullVisitor->getCalculatedFarPlane());
-        }
     }
     
     
@@ -708,7 +645,7 @@ void SceneView::draw()
             break;
         default:
             {
-                osg::notify(osg::NOTICE)<<"Warning: stereo camera mode not implemented yet."<< std::endl;
+                osg::notify(osg::NOTICE)<<"Warning: stereo mode not implemented yet."<< std::endl;
             }
             break;
         }
@@ -786,13 +723,9 @@ const osg::Matrix SceneView::computeMVPW() const
     
     if (_modelviewMatrix.valid())
         matrix = (*_modelviewMatrix);
-    else if (_camera.valid())
-        matrix = _camera->getModelViewMatrix();
         
     if (_projectionMatrix.valid())
         matrix.postMult(*_projectionMatrix);
-    else if (_camera.valid())
-        matrix.postMult(_camera->getProjectionMatrix());
         
     if (_viewport.valid())
         matrix.postMult(_viewport->computeWindowMatrix());

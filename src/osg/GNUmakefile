@@ -12,7 +12,6 @@ CXXFILES =\
 	BoundingBox.cpp\
 	BoundingSphere.cpp\
 	BlendFunc.cpp\
-	Camera.cpp\
 	ClipNode.cpp\
 	ClipPlane.cpp\
 	ColorMask.cpp\

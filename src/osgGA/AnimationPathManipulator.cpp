@@ -154,12 +154,5 @@ void AnimationPathManipulator::handleFrame( double time )
         _numOfFramesSinceStartOfTimedPeriod = 0;  
     }
 
-    osg::Matrix matrix;
-    cp.getMatrix( matrix );
-    
-    if (_camera.valid())
-    {
-        _camera->home();
-        _camera->transformLookAt(matrix);
-    }
+    cp.getMatrix( _matrix );
 }

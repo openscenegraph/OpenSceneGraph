@@ -23,7 +23,7 @@ namespace osgGA{
 class GUIActionAdapter;
 class GUIEventHandler;
 class CompositeGUIEventHandler;
-class CameraManipulator;
+class MatrixManipulator;
 class StateSetManipulator;
 
 /**
@@ -42,7 +42,7 @@ class OSGGA_EXPORT GUIEventHandlerVisitor
 
         virtual void visit(GUIEventHandler&) {}
         virtual void visit(CompositeGUIEventHandler&);
-        virtual void visit(CameraManipulator&) {};
+        virtual void visit(MatrixManipulator&) {};
         virtual void visit(StateSetManipulator&) {};
 
         // Accessors

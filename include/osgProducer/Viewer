@@ -23,7 +23,7 @@
 
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventHandler>
-#include <osgGA/KeySwitchCameraManipulator>
+#include <osgGA/KeySwitchMatrixManipulator>
 
 #include <osgProducer/OsgCameraGroup>
 #include <osgProducer/KeyboardMouseCallback>
@@ -117,10 +117,10 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
         EventHandlerList& getEventHandlerList() { return _eventHandlerList; }
         const EventHandlerList& getEventHandlerList() const { return _eventHandlerList; }
         
-        osgGA::KeySwitchCameraManipulator* getKeySwitchCameraManipulator() { return _keyswitchManipulator.get(); }
-        const osgGA::KeySwitchCameraManipulator* getKeySwitchCameraManipulator() const { return _keyswitchManipulator.get(); }
+        osgGA::KeySwitchMatrixManipulator* getKeySwitchMatrixManipulator() { return _keyswitchManipulator.get(); }
+        const osgGA::KeySwitchMatrixManipulator* getKeySwitchMatrixManipulator() const { return _keyswitchManipulator.get(); }
 
-        unsigned int addCameraManipulator(osgGA::CameraManipulator* cm);
+        unsigned int addCameraManipulator(osgGA::MatrixManipulator* cm);
         void selectCameraManipulator(unsigned int no);
 
 
@@ -143,12 +143,9 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
         osgProducer::KeyboardMouseCallback* _kbmcb;
 
         EventHandlerList _eventHandlerList;
-        osg::ref_ptr<osgGA::KeySwitchCameraManipulator> _keyswitchManipulator;
+        osg::ref_ptr<osgGA::KeySwitchMatrixManipulator> _keyswitchManipulator;
 
-        osg::ref_ptr<osg::Camera> _old_style_osg_camera;
-        
         osg::ref_ptr<osg::NodeVisitor> _updateVisitor;
-
 
         bool                                _recordingAnimationPath;
         osg::ref_ptr<osg::AnimationPath>    _animationPath;

@@ -21,7 +21,7 @@ namespace osgGA{
 
 // Some forward declarations
 class GUIEventHandler;
-class CameraManipulator;
+class MatrixManipulator;
 
 /**
 SetSceneViewGUIEventHandlerVisitor which visits various types of
@@ -40,7 +40,7 @@ class OSGGA_EXPORT SetSceneViewVisitor: public GUIEventHandlerVisitor
  
         virtual ~SetSceneViewVisitor()         {}
 
-        virtual void visit(CameraManipulator& cm);
+        virtual void visit(MatrixManipulator& cm);
         virtual void visit(StateSetManipulator& cm);
 
     private:

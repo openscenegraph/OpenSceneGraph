@@ -14,17 +14,36 @@
 #ifndef OSGGA_TRACKBALLMANIPULATOR
 #define OSGGA_TRACKBALLMANIPULATOR 1
 
-#include <osgGA/CameraManipulator>
+#include <osgGA/MatrixManipulator>
+#include <osg/Quat>
 
 namespace osgGA{
 
-class OSGGA_EXPORT TrackballManipulator : public CameraManipulator
+class OSGGA_EXPORT TrackballManipulator : public MatrixManipulator
 {
     public:
 
         TrackballManipulator();
 
         virtual const char* className() const { return "Trackball"; }
+
+        /** set the position of the matrix manipulator using a 4x4 Matrix.*/
+        virtual void setByMatrix(const osg::Matrix& matrix);
+
+        /** set the position of the matrix manipulator using a 4x4 Matrix.*/
+        virtual void setByInverseMatrix(const osg::Matrix& matrix) { setByMatrix(osg::Matrix::inverse(matrix)); }
+
+        /** get the position of the manipulator as 4x4 Matrix.*/
+        virtual osg::Matrix getMatrix() const;
+
+        /** get the position of the manipulator as a inverse matrix of the manipulator, typically used as a model view matrix.*/
+        virtual osg::Matrix getInverseMatrix() const;
+
+        /** Get the FusionDistanceMode. Used by SceneView for setting up setereo convergence.*/
+        virtual osgUtil::SceneView::FusionDistanceMode getFusionDistanceMode() const { return osgUtil::SceneView::USE_FUSION_DISTANCE_VALUE; }
+
+        /** Get the FusionDistanceValue. Used by SceneView for setting up setereo convergence.*/
+        virtual float getFusionDistanceValue() const { return _distance; }
 
         /** Attach a node to the manipulator. 
             Automatically detaches previously attached node.
@@ -60,9 +79,7 @@ class OSGGA_EXPORT TrackballManipulator : public CameraManipulator
         /** Add the current mouse GUIEvent to internal stack.*/
         void addMouseEvent(const GUIEventAdapter& ea);
 
-        void computeLocalDataFromCamera();
-
-        void computeCameraFromLocalData();
+        void computePosition(const osg::Vec3& eye,const osg::Vec3& lv,const osg::Vec3& up);
 
         /** For the give mouse movement calculate the movement of the camera.
             Return true is camera has moved and a redraw is required.*/

@@ -63,7 +63,7 @@ class DofRecord : public PrimNodeRecord
         virtual Record* clone() const { return new DofRecord(); }
         virtual const char* className() const { return "DofRecord"; }
         virtual int classOpcode() const { return DOF_OP; }
-        virtual int sizeofData() const { return sizeof(SDegreeOfFreedom); }
+        virtual size_t sizeofData() const { return sizeof(SDegreeOfFreedom); }
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
 

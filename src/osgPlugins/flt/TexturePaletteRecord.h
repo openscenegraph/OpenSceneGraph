@@ -31,7 +31,7 @@ class TexturePaletteRecord : public AncillaryRecord
         virtual Record* clone() const { return new TexturePaletteRecord(); }
         virtual const char* className() const { return "TexturePaletteRecord"; }
         virtual int classOpcode() const { return TEXTURE_PALETTE_OP; }
-        virtual int sizeofData() const { return sizeof(STexturePalette); }
+        virtual size_t sizeofData() const { return sizeof(STexturePalette); }
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
 

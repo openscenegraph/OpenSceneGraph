@@ -173,7 +173,7 @@ struct SRecHeader
     uint16    _wLength;            // total length of record
 
     inline int opcode() { return (int)_wOpcode; }
-    inline int length() { return (int)_wLength; }
+    inline size_t length() { return (size_t)_wLength; }
     void endian() {
         ENDIAN( _wOpcode );
         ENDIAN( _wLength );

@@ -29,17 +29,10 @@ ColorPaletteRecord::~ColorPaletteRecord()
 // virtual
 void ColorPaletteRecord::endian()
 {
-    // note, sizeof returns unsigned int, while getSize() etc returns
-    // int, this correctly generates a warning when comparisons are made
-    // under Linux.  This really needs to be fixed so getSize() returns
-    // an unsigned int.  I won't do it now as it may well break code 
-    // which I don't fully understand.  I've made the hacky use of an
-    // (int) cast to fix the warning, I don't think this will cause an
-    // problems. RO August 2001.
-    if (getSize() > (int) sizeof(SOldColorPalette))
+    if (getSize() > sizeof(SOldColorPalette))
     {
         SColorPalette* pSColor = (SColorPalette*)getData();
-        int nOffset = sizeof(SColorPalette);
+        size_t nOffset = sizeof(SColorPalette);
 
         if (nOffset < getSize())
         {
@@ -58,7 +51,7 @@ void ColorPaletteRecord::endian()
     else    // version 11, 12 & 13
     {
         SOldColorPalette* pSColor = (SOldColorPalette*)getData();
-        unsigned int i;
+        size_t i;
         for (i=0; i < sizeof(pSColor->Colors)/sizeof(pSColor->Colors[0]); i++)
         {
             ENDIAN( pSColor->Colors[i]._red );

@@ -69,7 +69,7 @@ void FaceRecord::endian()
     ENDIAN( pSFace->wTransparency );
 
     // Added after version 13
-    if (getSize() >= sizeof(SFace))
+    if (Registry::instance()->getVersion() > 13)
     {
         ENDIAN( pSFace->dwFlags );
         //  ENDIAN( pSFace->PrimaryPackedColor );

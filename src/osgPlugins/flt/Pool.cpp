@@ -13,17 +13,6 @@
 
 using namespace flt;
 
-ColorPool::ColorPool()
-{
-}
-
-
-// virtual
-ColorPool::~ColorPool()
-{
-    eraseAll();
-}
-
 
 osg::Vec4 ColorPool::getColor(int nColorIndex)
 {
@@ -63,45 +52,20 @@ ColorPool::ColorName* ColorPool::getColorName(int nIndex)
 {
     ColorNameMap::iterator itr = _colorNameMap.find(nIndex);
     if (itr != _colorNameMap.end())
-        return (*itr).second;
+        return (*itr).second.get();
 
     return NULL;
 }
 
 
-void ColorPool::eraseAll()
-{
-    for(ColorNameMap::iterator itr=_colorNameMap.begin();
-        itr!=_colorNameMap.end();
-        ++itr)
-    {
-        ColorName* colorname = (*itr).second;
-        if (colorname)
-            delete colorname;
-    }
-    _colorNameMap.clear();
-}
-
-
 ////////////////////////////////////////////////////////////////////
-
-TexturePool::TexturePool()
-{
-}
-
-
-// virtual
-TexturePool::~TexturePool()
-{
-    eraseAll();
-}
 
 
 osg::Texture* TexturePool::getTexture(int nIndex)
 {
     TexturePaletteMap::iterator fitr = _textureMap.find(nIndex);
     if (fitr != _textureMap.end())
-        return (*fitr).second;
+        return (*fitr).second.get();
     else
         return NULL;
 }
@@ -113,32 +77,15 @@ void TexturePool::addTexture(int nIndex, osg::Texture* osgTexture)
 }
 
 
-void TexturePool::eraseAll()
-{
-    _textureMap.clear();
-}
-
-
 ////////////////////////////////////////////////////////////////////
 
-MaterialPool::MaterialPool()
-{
-}
 
-
-// virtual
-MaterialPool::~MaterialPool()
-{
-    eraseAll();
-}
-
-
-PoolMaterial* MaterialPool::getMaterial(int nIndex)
+MaterialPool::PoolMaterial* MaterialPool::getMaterial(int nIndex)
 {
     if (nIndex < 0) return NULL;
     MaterialMap::iterator fitr = _MaterialMap.find(nIndex);
     if (fitr != _MaterialMap.end())
-        return (*fitr).second;
+        return (*fitr).second.get();
 
     return NULL;
 }
@@ -150,15 +97,3 @@ void MaterialPool::addMaterial(int nIndex, PoolMaterial* material)
 }
 
 
-void MaterialPool::eraseAll()
-{
-    for(MaterialMap::iterator itr=_MaterialMap.begin();
-        itr!=_MaterialMap.end();
-        ++itr)
-    {
-        PoolMaterial* material = (*itr).second;
-        if (material)
-            delete material;
-    }
-    _MaterialMap.clear();
-}

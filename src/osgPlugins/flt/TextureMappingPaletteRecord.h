@@ -174,7 +174,7 @@ class TextureMappingPaletteRecord : public AncillaryRecord
         virtual Record* clone() const { return new TextureMappingPaletteRecord(); }
         virtual const char* className() const { return "TextureMappingPaletteRecord"; }
         virtual int classOpcode() const { return TEXTURE_MAPPING_PALETTE_OP; }
-        virtual int sizeofData() const { return sizeof(STextureMapping); }
+        virtual size_t sizeofData() const { return sizeof(STextureMapping); }
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
 

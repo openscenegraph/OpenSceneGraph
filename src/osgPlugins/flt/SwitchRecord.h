@@ -33,7 +33,7 @@ class SwitchRecord : public PrimNodeRecord
         virtual Record* clone() const { return new SwitchRecord(); }
         virtual const char* className() const { return "SwitchRecord"; }
         virtual int classOpcode() const { return SWITCH_OP; }
-        virtual int sizeofData() const { return sizeof(SSwitch); }
+        virtual size_t sizeofData() const { return sizeof(SSwitch); }
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
 

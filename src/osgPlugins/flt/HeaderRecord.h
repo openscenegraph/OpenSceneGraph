@@ -93,7 +93,7 @@ class HeaderRecord : public PrimNodeRecord
         virtual Record* clone() const { return new HeaderRecord(); }
         virtual const char* className() const { return "HeaderRecord"; }
         virtual int classOpcode() const { return HEADER_OP; }
-        virtual int sizeofData() const { return sizeof(SHeader); }
+        virtual size_t sizeofData() const { return sizeof(SHeader); }
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 
         SHeader* getData() const { return (SHeader*)_pData; }

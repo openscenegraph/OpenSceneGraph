@@ -20,45 +20,50 @@ class Record;
 class FltFile : public osg::Referenced
 {
 
-public:
-    FltFile(
-        ColorPool* pColorPool = NULL,
-        TexturePool* pTexturePool = NULL,
-        MaterialPool* pMaterialPool = NULL);
-    virtual ~FltFile();
+    public:
+        FltFile(
+            ColorPool* pColorPool = NULL,
+            TexturePool* pTexturePool = NULL,
+            MaterialPool* pMaterialPool = NULL);
 
-    virtual osg::Object* readObject(const std::string& fileName);
-    virtual osg::Node* readNode(const std::string& fileName);
-    osg::Node* convert();
-    Record* getHeaderRecord() { return _pHeaderRecord; }
-    Record* readModel(const std::string& fileName);
+        virtual osg::Object* readObject(const std::string& fileName);
+        virtual osg::Node* readNode(const std::string& fileName);
+        osg::Node* convert();
+        Record* getHeaderRecord() { return _pHeaderRecord; }
+        Record* readModel(const std::string& fileName);
 
-    ColorPool*      getColorPool()      { return _pColorPool; }
-    TexturePool*    getTexturePool()    { return _pTexturePool; }
-    MaterialPool*   getMaterialPool()   { return _pMaterialPool; }
+        ColorPool*      getColorPool()      { return _colorPool.get(); }
+        TexturePool*    getTexturePool()    { return _texturePool.get(); }
+        MaterialPool*   getMaterialPool()   { return _materialPool.get(); }
 
-    void useLocalColorPool()            { _pColorPool = &_colorPool; }
-    void useLocalTexturePool()          { _pTexturePool = &_texturePool; }
-    void useLocalMaterialPool()         { _pMaterialPool = &_materialPool; }
+        void setColorPool(ColorPool* colorPool)         { _colorPool = colorPool; }
+        void setTexturePool(TexturePool* texturePool)   { _texturePool = texturePool; }
+        void setMaterialPool(MaterialPool* materialPool){ _materialPool = materialPool; }
 
-    int getFlightVersion();
+        inline const bool useColorPalette() const       { return _useColorPalette; }
+        inline const bool useTexturePalette() const     { return _useTexturePalette; }
+        inline const bool useMaterialPalette() const    { return _useMaterialPalette; }
 
-protected:
+        int getFlightVersion();
 
-    Record* readFile(const std::string& fileName);
-    void readExternals(Record* pRec);
+    protected:
 
-private:
+        virtual ~FltFile() {}
 
-    Record*         _pHeaderRecord;
+        Record* readFile(const std::string& fileName);
+        void readExternals(Record* pRec);
 
-    ColorPool       _colorPool;
-    TexturePool     _texturePool;
-    MaterialPool    _materialPool;
+    private:
 
-    ColorPool*      _pColorPool;
-    TexturePool*    _pTexturePool;
-    MaterialPool*   _pMaterialPool;
+        Record*         _pHeaderRecord;
+
+        bool            _useColorPalette;
+        bool            _useTexturePalette;
+        bool            _useMaterialPalette;
+
+        osg::ref_ptr<ColorPool>     _colorPool;
+        osg::ref_ptr<TexturePool>   _texturePool;
+        osg::ref_ptr<MaterialPool>  _materialPool;
 };
 
 

@@ -117,6 +117,8 @@ void HeaderRecord::endian()
     ENDIAN( pHeader->dfLambertUpperLat );
     ENDIAN( pHeader->dfLambertLowerLat );
     ENDIAN( pHeader->iNextLightSource );
+
+    Registry::instance()->setVersion(pHeader->diFormatRevLev);
 }
 
 

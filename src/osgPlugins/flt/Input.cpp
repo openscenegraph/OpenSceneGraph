@@ -172,10 +172,10 @@ Record* Input::readCreateRecord()
     if (pData == NULL) return NULL;
 
     // find matching record prototype class
-    Record* pProto = Registry::instance()->getRecordProto(pData->opcode());
+    Record* pProto = Registry::instance()->getPrototype(pData->opcode());
 
     if (pProto == NULL)
-        pProto = Registry::instance()->getRecordProto(0);
+        pProto = Registry::instance()->getPrototype(0);
 
     if (pProto == NULL)
     {

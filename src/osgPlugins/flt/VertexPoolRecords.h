@@ -45,7 +45,7 @@ class VertexPaletteRecord : public AncillaryRecord
         virtual Record* clone() const { return new VertexPaletteRecord(); }
         virtual const char* className() const { return "VertexPaletteRecord"; }
         virtual int classOpcode() const { return VERTEX_PALETTE_OP; }
-        virtual int sizeofData() const { return sizeof(SVertexTableHeader); }
+        virtual size_t sizeofData() const { return sizeof(SVertexTableHeader); }
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
         friend ostream& operator << (ostream& output, const VertexPaletteRecord& rec);
@@ -86,7 +86,7 @@ class VertexRecord : public AncillaryRecord
         virtual Record* clone() const { return new VertexRecord(); }
         virtual const char* className() const { return "VertexRecord"; }
         virtual int classOpcode() const { return VERTEX_C_OP; }
-        virtual int sizeofData() const { return sizeof(SVertex); }
+        virtual size_t sizeofData() const { return sizeof(SVertex); }
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
         virtual SVertex* getData() const { return (SVertex*)_pData; }
@@ -130,7 +130,7 @@ class NormalVertexRecord : public AncillaryRecord
         virtual Record* clone() const { return new NormalVertexRecord(); }
         virtual const char* className() const { return "NormalVertexRecord"; }
         virtual int classOpcode() const { return VERTEX_CN_OP; }
-        virtual int sizeofData() const { return sizeof(SNormalVertex); }
+        virtual size_t sizeofData() const { return sizeof(SNormalVertex); }
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
         virtual SNormalVertex* getData() const { return (SNormalVertex*)_pData; }
@@ -173,7 +173,7 @@ class TextureVertexRecord : public AncillaryRecord
         virtual Record* clone() const { return new TextureVertexRecord(); }
         virtual const char* className() const { return "TextureVertexRecord"; }
         virtual int classOpcode() const { return VERTEX_CT_OP; }
-        virtual int sizeofData() const { return sizeof(STextureVertex); }
+        virtual size_t sizeofData() const { return sizeof(STextureVertex); }
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
         virtual STextureVertex* getData() const { return (STextureVertex*)_pData; }
@@ -217,7 +217,7 @@ class NormalTextureVertexRecord : public AncillaryRecord
         virtual Record* clone() const { return new NormalTextureVertexRecord(); }
         virtual const char* className() const { return "NormalTextureVertexRecord"; }
         virtual int classOpcode() const { return VERTEX_CNT_OP; }
-        virtual int sizeofData() const { return sizeof(SNormalTextureVertex); }
+        virtual size_t sizeofData() const { return sizeof(SNormalTextureVertex); }
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
         virtual SNormalTextureVertex* getData() const { return (SNormalTextureVertex*)_pData; }

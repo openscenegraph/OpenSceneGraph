@@ -45,7 +45,7 @@ class LodRecord : public PrimNodeRecord
         virtual Record* clone() const { return new LodRecord(); }
         virtual const char* className() const { return "LodRecord"; }
         virtual int classOpcode() const { return LOD_OP; }
-        virtual int sizeofData() const { return sizeof(SLevelOfDetail); }
+        virtual size_t sizeofData() const { return sizeof(SLevelOfDetail); }
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
 
@@ -94,7 +94,7 @@ class OldLodRecord : public PrimNodeRecord
         virtual Record* clone() const { return new OldLodRecord(); }
         virtual const char* className() const { return "OldLodRecord"; }
         virtual int classOpcode() const { return OLD_LOD_OP; }
-        virtual int sizeofData() const { return sizeof(SOldLOD); }
+        virtual size_t sizeofData() const { return sizeof(SOldLOD); }
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
 

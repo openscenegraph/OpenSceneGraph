@@ -41,7 +41,7 @@ class GroupRecord : public PrimNodeRecord
         virtual Record* clone() const { return new GroupRecord(); }
         virtual const char* className() const { return "GroupRecord"; }
         virtual int classOpcode() const { return GROUP_OP; }
-        virtual int sizeofData() const { return sizeof(SGroup); }
+        virtual size_t sizeofData() const { return sizeof(SGroup); }
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
 

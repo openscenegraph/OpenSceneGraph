@@ -39,7 +39,7 @@ std::string findFontFile(const std::string& str)
     {
         initialized = true;
     #if defined(WIN32)
-        osgDB::Registry::convertStringPathIntoFilePathList(
+        osgDB::convertStringPathIntoFilePathList(
             ".;C:/winnt/fonts;C:/windows/fonts",
             s_FontFilePath);
 
@@ -49,7 +49,7 @@ std::string findFontFile(const std::string& str)
             s_FontFilePath.push_back(ptr);
         }
     #else
-        osgDB::Registry::convertStringPathIntoFilePathList(
+        osgDB::convertStringPathIntoFilePathList(
             ".:/usr/share/fonts/ttf:/usr/share/fonts/ttf/western:/usr/share/fonts/ttf/decoratives",
             s_FontFilePath);
     #endif

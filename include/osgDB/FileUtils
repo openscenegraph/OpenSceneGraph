@@ -96,14 +96,10 @@ inline FilePathList& getLibraryFilePathList() { return osgDB::Registry::instance
 
 extern OSGDB_EXPORT std::string findLibraryFile(const std::string& filename,CaseSensitivity caseSensitivity=CASE_SENSITIVE);
 
-// 
-// 
-// /** Deprecated. */
-// inline std::string findFileInDirectory(const std::string& fileName,const std::string& dirName,bool caseInsensitive)
-// {
-//     return findFileInDirectory(fileName,dirName,caseInsensitive?CASE_SENSITIVE:CASE_INSENSITIVE);
-// }
-// 
+/** convert a string containing a list of paths  deliminated either with ';' (Windows) or ':' (All other platforms) into FilePath represetation.*/
+extern OSGDB_EXPORT void convertStringPathIntoFilePathList(const std::string& paths,FilePathList& filepath);
+
+extern OSGDB_EXPORT void appendPlatformSpecificLibraryFilePaths(FilePathList& filepath);
 
 }
 

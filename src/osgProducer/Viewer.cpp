@@ -132,8 +132,8 @@ void Viewer::setUpViewer(unsigned int options)
     _old_style_osg_camera = new osg::Camera;
 
     if (options&TRACKBALL_MANIPULATOR) addCameraManipulator(new osgGA::TrackballManipulator);
-    if (options&FLIGHT_MANIPULATOR) addCameraManipulator(new osgGA::FlightManipulator);
     if (options&DRIVE_MANIPULATOR) addCameraManipulator(new osgGA::DriveManipulator);
+    if (options&FLIGHT_MANIPULATOR) addCameraManipulator(new osgGA::FlightManipulator);
     
     if (options&STATE_MANIPULATOR)
     {
@@ -141,20 +141,7 @@ void Viewer::setUpViewer(unsigned int options)
         statesetManipulator->setStateSet(getGlobalStateSet());
         _eventHandlerList.push_back(statesetManipulator.get());
     }
-    
-//     if (options&STATS_MANIPULATOR)
-//     {
-//         // register the drawing of stats to pipe 0.
-//         FrameStatsHandler* fsh = new FrameStatsHandler;
-//         setStatsHandler(fsh);
-//         getCamera(0)->addPostDrawCallback(fsh);
-// 
-//         // register the event handler for stats.
-//         getEventHandlerList().push_back(new StatsEventHandler(this));
-//         
-//         
-//     }
-    
+        
     if (options&VIEWER_MANIPULATOR)
     {
         getEventHandlerList().push_back(new ViewerEventHandler(this));
@@ -192,7 +179,7 @@ void Viewer::realize( ThreadingModel thread_model)
  
     if (_keyswitchManipulator.valid() && _keyswitchManipulator->getCurrentCameraManipulator())
     {
-        osg::ref_ptr<osgProducer::EventAdapter> init_event = new osgProducer::EventAdapter;
+        osg::ref_ptr<osgProducer::EventAdapter> init_event = _kbmcb->createEventAdapter();
         init_event->adaptFrame(0.0);
 
         _keyswitchManipulator->setCamera(_old_style_osg_camera.get());

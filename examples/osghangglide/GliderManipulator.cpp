@@ -52,7 +52,7 @@ void GliderManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
 
         us.requestRedraw();
 
-        us.requestWarpPointer((ea.getXmin()+ea.getXmax())/2,(ea.getYmin()+ea.getYmax())/2);
+        us.requestWarpPointer((ea.getXmin()+ea.getXmax())/2.0f,(ea.getYmin()+ea.getYmax())/2.0f);
 
         flushMouseEventStack();
 
@@ -70,7 +70,10 @@ void GliderManipulator::init(const GUIEventAdapter& ea,GUIActionAdapter& us)
     const osg::BoundingSphere& boundingSphere=_node->getBound();
     _velocity = boundingSphere._radius*0.01f;
 
-    us.requestWarpPointer((ea.getXmin()+ea.getXmax())/2,(ea.getYmin()+ea.getYmax())/2);
+    if (ea.getEventType()!=GUIEventAdapter::RESIZE)
+    {
+        us.requestWarpPointer((ea.getXmin()+ea.getXmax())/2.0f,(ea.getYmin()+ea.getYmax())/2.0f);
+    }
 
 }
 
@@ -207,18 +210,15 @@ bool GliderManipulator::calcMovement()
 
     }
 
-    float mx = (_ga_t0->getXmin()+_ga_t0->getXmax())/2.0f;
-    float my = (_ga_t0->getYmin()+_ga_t0->getYmax())/2.0f;
-
-    float dx = _ga_t0->getX()-mx;
-    float dy = _ga_t0->getY()-my;
+    float dx = _ga_t0->getXnormalized();
+    float dy = _ga_t0->getYnormalized();
 
     osg::Vec3 center = _camera->getEyePoint();
     osg::Vec3 sv = _camera->getSideVector();
     osg::Vec3 lv = _camera->getLookVector();
 
-    float pitch = inDegrees(dy*0.15f*dt);
-    float roll = inDegrees(dx*0.1f*dt);
+    float pitch = inDegrees(dy*70.0f*dt);
+    float roll = inDegrees(dx*60.0f*dt);
 
     osg::Matrix mat;
     mat.makeTranslate(-center);

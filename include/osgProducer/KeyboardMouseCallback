@@ -76,9 +76,10 @@ class OSGPRODUCER_EXPORT KeyboardMouseCallback : public Producer::KeyboardMouseC
         Producer::KeyboardMouse* getKeyboardMouse() { return _keyboardMouse; }
         const Producer::KeyboardMouse* getKeyboardMouse() const { return _keyboardMouse; }
          
+        EventAdapter* createEventAdapter();
+
     protected:
     
-        EventAdapter* createEventAdapter();
     
         Producer::KeyboardMouse* _keyboardMouse;
         float _mx, _my;

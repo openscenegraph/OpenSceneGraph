@@ -690,6 +690,12 @@ void Drawable::Extensions::lowestCommonDenominator(const Extensions& rhs)
     if (!rhs._glBufferData) _glBufferData = 0;
     if (!rhs._glBufferSubData) _glBufferSubData = 0;
     if (!rhs._glDeleteBuffers) _glDeleteBuffers = 0;
+    if (!rhs._glIsBuffer) _glIsBuffer = 0;
+    if (!rhs._glGetBufferSubData) _glGetBufferSubData = 0;
+    if (!rhs._glMapBuffer) _glMapBuffer = 0;
+    if (!rhs._glUnmapBuffer) _glUnmapBuffer = 0;
+    if (!rhs._glGetBufferParameteriv) _glGetBufferParameteriv = 0;
+    if (!rhs._glGetBufferPointerv) _glGetBufferPointerv = 0;
 
     if (!rhs._glGenOcclusionQueries) _glGenOcclusionQueries = 0;
     if (!rhs._glDeleteOcclusionQueries) _glDeleteOcclusionQueries = 0;
@@ -739,6 +745,12 @@ void Drawable::Extensions::setupGLExtenions()
     _glBufferData = ((BufferDataProc)osg::getGLExtensionFuncPtr("glBufferData","glBufferDataARB"));
     _glBufferSubData = ((BufferSubDataProc)osg::getGLExtensionFuncPtr("glBufferSubData","glBufferSubDataARB"));
     _glDeleteBuffers = ((DeleteBuffersProc)osg::getGLExtensionFuncPtr("glDeleteBuffers","glDeleteBuffersARB"));
+    _glIsBuffer = ((IsBufferProc)osg::getGLExtensionFuncPtr("glIsBuffer","glIsBufferARB"));
+    _glGetBufferSubData = ((GetBufferSubDataProc)osg::getGLExtensionFuncPtr("glGetBufferSubData","glGetBufferSubDataARB"));
+    _glMapBuffer = ((MapBufferProc)osg::getGLExtensionFuncPtr("glMapBuffer","glMapBufferARB"));
+    _glUnmapBuffer = ((UnmapBufferProc)osg::getGLExtensionFuncPtr("glUnmapBuffer","glUnmapBufferARB"));
+    _glGetBufferParameteriv = ((GetBufferParameterivProc)osg::getGLExtensionFuncPtr("glGetBufferParameteriv","glGetBufferParameterivARB"));
+    _glGetBufferPointerv = ((GetBufferPointervProc)osg::getGLExtensionFuncPtr("glGetBufferPointerv","glGetBufferPointervARB"));
 
     _glGenOcclusionQueries = ((GenOcclusionQueriesProc)osg::getGLExtensionFuncPtr("glGenOcclusionQueries","glGenOcclusionQueriesNV"));
     _glDeleteOcclusionQueries = ((DeleteOcclusionQueriesProc)osg::getGLExtensionFuncPtr("glDeleteOcclusionQueries","glDeleteOcclusionQueriesNV"));
@@ -928,63 +940,82 @@ void Drawable::Extensions::glVertexAttrib4Nubv(unsigned int index, const GLubyte
 
 void Drawable::Extensions::glGenBuffers(GLsizei n, GLuint *buffers) const
 {
-    if (_glGenBuffers)
-    {
-        _glGenBuffers(n, buffers); 
-    }
-    else
-    {
-        notify(WARN)<<"Error: glGenBuffers not supported by OpenGL driver"<<std::endl;
-    }
+    if (_glGenBuffers) _glGenBuffers(n, buffers); 
+    else notify(WARN)<<"Error: glGenBuffers not supported by OpenGL driver"<<std::endl;
 }
 
 void Drawable::Extensions::glBindBuffer(GLenum target, GLuint buffer) const
 {
-    if (_glBindBuffer)
-    {
-        _glBindBuffer(target, buffer); 
-    }
-    else
-    {
-        notify(WARN)<<"Error: glBindBuffer not supported by OpenGL driver"<<std::endl;
-    }
+    if (_glBindBuffer) _glBindBuffer(target, buffer); 
+    else notify(WARN)<<"Error: glBindBuffer not supported by OpenGL driver"<<std::endl;
 }
 
 void Drawable::Extensions::glBufferData(GLenum target, GLsizeiptrARB size, const GLvoid *data, GLenum usage) const
 {
-    if (_glBufferData)
-    {
-        _glBufferData(target, size, data, usage); 
-    }
-    else
-    {
-        notify(WARN)<<"Error: glBufferData not supported by OpenGL driver"<<std::endl;
-    }
+    if (_glBufferData) _glBufferData(target, size, data, usage); 
+    else notify(WARN)<<"Error: glBufferData not supported by OpenGL driver"<<std::endl;
 }
 
 void Drawable::Extensions::glBufferSubData(GLenum target, GLintptrARB offset, GLsizeiptrARB size, const GLvoid *data) const
 {
-    if (_glBufferSubData)
-    {
-        _glBufferSubData(target, offset, size, data); 
-    }
-    else
-    {
-        notify(WARN)<<"Error: glBufferData not supported by OpenGL driver"<<std::endl;
-    }
+    if (_glBufferSubData) _glBufferSubData(target, offset, size, data); 
+    else notify(WARN)<<"Error: glBufferData not supported by OpenGL driver"<<std::endl;
 }
 
 void Drawable::Extensions::glDeleteBuffers(GLsizei n, const GLuint *buffers) const
 {
-    if (_glDeleteBuffers)
+    if (_glDeleteBuffers) _glDeleteBuffers(n, buffers); 
+    else notify(WARN)<<"Error: glBufferData not supported by OpenGL driver"<<std::endl;
+}
+
+GLboolean Drawable::Extensions::glIsBuffer (GLuint buffer) const
+{
+    if (_glIsBuffer) return _glIsBuffer(buffer);
+    else 
     {
-        _glDeleteBuffers(n, buffers); 
-    }
-    else
-    {
-        notify(WARN)<<"Error: glBufferData not supported by OpenGL driver"<<std::endl;
+        notify(WARN)<<"Error: glIsBuffer not supported by OpenGL driver"<<std::endl;
+        return GL_FALSE;
     }
 }
+
+void Drawable::Extensions::glGetBufferSubData (GLenum target, GLintptrARB offset, GLsizeiptrARB size, GLvoid *data) const
+{
+    if (_glGetBufferSubData) _glGetBufferSubData(target,offset,size,data);
+    else notify(WARN)<<"Error: glGetBufferSubData not supported by OpenGL driver"<<std::endl;
+}
+
+GLvoid* Drawable::Extensions::glMapBuffer (GLenum target, GLenum access) const
+{
+    if (_glMapBuffer) return _glMapBuffer(target,access);
+    else 
+    {
+        notify(WARN)<<"Error: glMapBuffer not supported by OpenGL driver"<<std::endl;
+        return 0;
+    }
+}
+
+GLboolean Drawable::Extensions::glUnmapBuffer (GLenum target) const
+{
+    if (_glUnmapBuffer) return _glUnmapBuffer(target);
+    else 
+    {
+        notify(WARN)<<"Error: glUnmapBuffer not supported by OpenGL driver"<<std::endl;
+        return GL_FALSE;
+    }
+}
+
+void Drawable::Extensions::glGetBufferParameteriv (GLenum target, GLenum pname, GLint *params) const
+{
+    if (_glGetBufferParameteriv) _glGetBufferParameteriv(target,pname,params);
+    else notify(WARN)<<"Error: glGetBufferParameteriv not supported by OpenGL driver"<<std::endl;
+}
+
+void Drawable::Extensions::glGetBufferPointerv (GLenum target, GLenum pname, GLvoid* *params) const
+{
+    if (_glGetBufferPointerv) _glGetBufferPointerv(target,pname,params);
+    else notify(WARN)<<"Error: glGetBufferPointerv not supported by OpenGL driver"<<std::endl;
+}
+
 
 void Drawable::Extensions::glGenOcclusionQueries( GLsizei n, GLuint *ids ) const
 {

@@ -1,6 +1,40 @@
 OSG News (most significant items from ChangeLog)
 ================================================
 
+
+22nd April 2002 - osg-0.8.45.tar.gz
+
+    >>> Support added for Solaris, texture cube mapping & muliple projections.
+   
+    The OpenSceneGraph now has new Makefile systems which supports all Unix
+    compilation including the new addition to the familiy - Solaris!
+    
+    Support has also been added for OpenGL's texture cube mapping which
+    is ideal for accurate environmental reflections and much more.
+    
+    The scene graph has been extended to allow multiple projection (via
+    the new osg::Projection node) and viewports within one scene graphs, 
+    this makes it much easier to set up head up displays, and we have 
+    an example to demonstrate how easy it is - osghud.
+    
+    The osgUtil::CullVisitor and osgUtil::SceneView has been revamped 
+    removing the dependancy on osg::Camera, which is now simply an
+    option for SceneView rather than a requirement.  This allows users
+    to set the camera entirely with the scene graph or create their own
+    camera classes and use them with SceneView.  The existing osg::Camera
+    has also been simplified as support for setting projection and
+    modelview matrices have been moved out to the cull traversal.
+    
+    Several sets of node callbacks have been added, including a Cull 
+    NodeCallback on each Node, ComputeTransformCallback on Transform
+    Nodes, EvaluateLODCallback on LOD nodes, ComputeBillboardCallback
+    on Billboard nodes.  These make it my easier to customize the 
+    scene graphs behavior at runtime.  
+    
+    All in all, the OpenSceneGraph is now more portable, easier to 
+    customize and cleaner.  Beta release and 1.0 is now not far away!
+    
+
 24th February 2002 - osg-0.8.44.tar.gz
 
     >>> Support added for Mac OSX, Cygwin and MinGW, and new TerraPage loader.

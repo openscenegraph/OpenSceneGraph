@@ -1,4 +1,5 @@
 #include "osg/Drawable"
+#include "osg/Notify"
 
 #include "osgDB/Registry"
 #include "osgDB/Input"
@@ -34,6 +35,16 @@ bool Drawable_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
+    ref_ptr<Object> readObject = fr.readObject();
+    if (readObject.valid())
+    {
+        osg::Shape* shape = dynamic_cast<osg::Shape*>(readObject.get());
+        if (shape) drawable.setShape(shape);
+        else notify(WARN)<<"Warning:: "<<readObject->className()<<" loaded but cannot not be attached to Drawable."<<std::endl;
+        iteratorAdvanced = true;
+    }
+
+
     if (fr[0].matchWord("supportsDisplayList"))
     {
         if (fr[1].matchWord("TRUE"))
@@ -65,6 +76,7 @@ bool Drawable_readLocalData(Object& obj, Input& fr)
             iteratorAdvanced = true;
         }
     }
+    
 
     return iteratorAdvanced;
 }
@@ -79,6 +91,11 @@ bool Drawable_writeLocalData(const Object& obj, Output& fw)
         fw.writeObject(*drawable.getStateSet());
     }
     
+    if (drawable.getShape())
+    {
+        fw.writeObject(*drawable.getShape());
+    }
+
     if (!drawable.getSupportsDisplayList())
     {
         fw.indent()<<"supportsDisplayList ";
@@ -90,5 +107,6 @@ bool Drawable_writeLocalData(const Object& obj, Output& fw)
     if (drawable.getUseDisplayList()) fw << "TRUE" << std::endl;
     else fw << "FALSE" << std::endl;
 
+    
     return true;
 }

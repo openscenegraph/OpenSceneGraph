@@ -50,6 +50,7 @@ class OSGDB_EXPORT Output : public std::ofstream
         void moveOut();
         
         virtual bool writeObject(const osg::Object& obj);
+        
 
         bool getUniqueIDForObject(const osg::Object* obj,std::string& uniqueID);
         bool createUniqueIDForObject(const osg::Object* obj,std::string& uniqueID);
@@ -68,6 +69,7 @@ class OSGDB_EXPORT Output : public std::ofstream
 
         virtual const std::string getFileNameForOutput(const std::string& filename) const;
 
+        
     protected:
 
         // prevent copy construction and assignment.
@@ -89,34 +91,6 @@ class OSGDB_EXPORT Output : public std::ofstream
         PathNameHint _pathNameHint;
 
 };
-
-template<class T>
-bool writeArrayBlock(Output& fw,T* start,T* finish)
-{
-    fw.indent() << "{" << std::endl;
-    fw.moveIn();
-    int numIndicesThisLine = 0;
-    for(T* itr=start;itr!=finish;++itr)
-    {
-        if (numIndicesThisLine>=fw.getNumIndicesPerLine()) 
-        {
-            fw << std::endl;
-            numIndicesThisLine = 0;
-        }
-
-        if (numIndicesThisLine==0) fw.indent();
-        else fw << " ";
-
-        fw << *itr;
-
-        ++numIndicesThisLine;
-
-    }
-    fw << std::endl;
-    fw.moveOut();
-    fw.indent() << "}" << std::endl;
-    return true;
-}
 
 }
 

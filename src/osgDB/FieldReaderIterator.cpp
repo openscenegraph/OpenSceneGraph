@@ -377,3 +377,164 @@ bool FieldReaderIterator::matchSequence(const char* str)
     }
     return true;
 }
+
+
+bool FieldReaderIterator::readSequence(const char* keyword,std::string& value)
+{
+    if ((*this)[0].matchWord(keyword) && (*this)[1].isString())
+    {
+        value = (*this)[1].getStr();
+        (*this)+=2;
+        return true;
+    }
+    return false;
+}
+
+bool FieldReaderIterator::readSequence(const char* keyword,unsigned int& value)
+{
+    if ((*this)[0].matchWord(keyword) && (*this)[1].getUInt(value))
+    {
+        (*this)+=2;
+        return true;
+    }
+    return false;
+}
+
+bool FieldReaderIterator::readSequence(const char* keyword,int& value)
+{
+    if ((*this)[0].matchWord(keyword) && (*this)[1].getInt(value))
+    {
+        (*this)+=2;
+        return true;
+    }
+    return false;
+}
+
+bool FieldReaderIterator::readSequence(const char* keyword,float& value)
+{
+    if ((*this)[0].matchWord(keyword) &&
+        (*this)[1].getFloat(value))
+    {
+        (*this)+=2;
+        return true;
+    }
+    return false;
+}
+
+bool FieldReaderIterator::readSequence(const char* keyword,osg::Vec2& value)
+{
+    if ((*this)[0].matchWord(keyword) &&
+        (*this)[1].getFloat(value[0]) &&
+        (*this)[2].getFloat(value[1]))
+    {
+        (*this)+=3;
+        return true;
+    }
+    return false;
+}
+
+bool FieldReaderIterator::readSequence(const char* keyword,osg::Vec3& value)
+{
+    if ((*this)[0].matchWord(keyword) &&
+        (*this)[1].getFloat(value[0]) &&
+        (*this)[2].getFloat(value[1]) &&
+        (*this)[3].getFloat(value[2]))
+    {
+        (*this)+=4;
+        return true;
+    }
+    return false;
+}
+
+bool FieldReaderIterator::readSequence(const char* keyword,osg::Vec4& value)
+{
+    if ((*this)[0].matchWord(keyword) &&
+        (*this)[1].getFloat(value[0]) &&
+        (*this)[2].getFloat(value[1]) &&
+        (*this)[3].getFloat(value[2]) &&
+        (*this)[4].getFloat(value[3]))
+    {
+        (*this)+=5;
+        return true;
+    }
+    return false;
+}
+
+bool FieldReaderIterator::readSequence(std::string& value)
+{
+    if ((*this)[0].isString())
+    {
+        value = (*this)[0].getStr();
+        (*this)+=1;
+        return true;
+    }
+    return false;
+}
+
+bool FieldReaderIterator::readSequence(unsigned int& value)
+{
+    if ((*this)[0].getUInt(value))
+    {
+        (*this)+=1;
+        return true;
+    }
+    return false;
+}
+
+bool FieldReaderIterator::readSequence(int& value)
+{
+    if ((*this)[0].getInt(value))
+    {
+        (*this)+=1;
+        return true;
+    }
+    return false;
+}
+
+bool FieldReaderIterator::readSequence(float& value)
+{
+    if ((*this)[0].getFloat(value))
+    {
+        (*this)+=1;
+        return true;
+    }
+    return false;
+}
+
+bool FieldReaderIterator::readSequence(osg::Vec2& value)
+{
+    if ((*this)[0].getFloat(value[0]) &&
+        (*this)[1].getFloat(value[1]))
+    {
+        (*this)+=2;
+        return true;
+    }
+    return false;
+}
+
+bool FieldReaderIterator::readSequence(osg::Vec3& value)
+{
+    if ((*this)[0].getFloat(value[0]) &&
+        (*this)[1].getFloat(value[1]) &&
+        (*this)[2].getFloat(value[2]))
+    {
+        (*this)+=3;
+        return true;
+    }
+    return false;
+}
+
+bool FieldReaderIterator::readSequence(osg::Vec4& value)
+{
+    if ((*this)[0].getFloat(value[0]) &&
+        (*this)[1].getFloat(value[1]) &&
+        (*this)[2].getFloat(value[2]) &&
+        (*this)[3].getFloat(value[3]))
+    {
+        (*this)+=4;
+        return true;
+    }
+    return false;
+}
+
+

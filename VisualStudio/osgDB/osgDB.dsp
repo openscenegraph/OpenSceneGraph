@@ -189,6 +189,10 @@ SOURCE=..\..\Include\osgDB\Output
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\Include\osgDB\ParameterOutput
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\include\osgDB\ReaderWriter
 # End Source File
 # Begin Source File

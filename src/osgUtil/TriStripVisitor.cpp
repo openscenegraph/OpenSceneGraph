@@ -146,7 +146,9 @@ void TriStripVisitor::stripify(Geometry& geom)
             ++pitr)
         {
             osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(pitr->m_Type);
-            elements->insert(elements->end(),pitr->m_Indices.begin(),pitr->m_Indices.end());
+            elements->reserve(pitr->m_Indices.size());
+            std::copy(pitr->m_Indices.begin(),pitr->m_Indices.end(),std::back_inserter(*elements));
+            //elements->insert(elements->end(),);
             new_primitives.push_back(elements);
         }
 

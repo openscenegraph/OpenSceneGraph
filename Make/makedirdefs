@@ -192,6 +192,7 @@ EXAMPLE_DIRS = \
 	osgversion\
 	osgvertexprogram\
 	osgviewer\
+	osgvolume\
 	osgwindows\
 
 ifeq ($(GDAL_INSTALLED),yes)

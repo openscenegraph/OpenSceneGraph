@@ -117,6 +117,7 @@ TARGET_INCLUDE_FILES = \
 	osg/Plane\
 	osg/Quat\
 	osg/Referenced\
+	osg/ShadeModel\
 	osg/State\
 	osg/StateAttribute\
 	osg/StateSet\

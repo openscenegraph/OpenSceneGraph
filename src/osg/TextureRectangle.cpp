@@ -43,6 +43,19 @@ TextureRectangle::TextureRectangle():
     setFilter(MAG_FILTER, LINEAR);
 }
 
+TextureRectangle::TextureRectangle(Image* image):
+            _textureWidth(0),
+            _textureHeight(0)
+{
+    setWrap(WRAP_S, CLAMP);
+    setWrap(WRAP_T, CLAMP);
+
+    setFilter(MIN_FILTER, LINEAR);
+    setFilter(MAG_FILTER, LINEAR);
+    
+    setImage(image);
+}
+
 TextureRectangle::TextureRectangle(const TextureRectangle& text,const CopyOp& copyop):
     Texture(text,copyop),
     _image(copyop(text._image.get())),

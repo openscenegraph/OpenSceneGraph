@@ -30,6 +30,8 @@ class SG_EXPORT TextureRectangle : public Texture
 
         TextureRectangle();
 
+        TextureRectangle(Image* image);
+
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         TextureRectangle(const TextureRectangle& text,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 

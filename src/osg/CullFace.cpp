@@ -15,12 +15,6 @@
 
 using namespace osg;
 
-CullFace::CullFace()
-{
-    _mode = BACK;
-}
-
-
 CullFace::~CullFace()
 {
 }

@@ -25,7 +25,14 @@ class SG_EXPORT CullFace : public StateAttribute
 {
     public :
     
-        CullFace();
+        enum Mode {
+            FRONT = GL_FRONT,
+            BACK = GL_BACK,
+            FRONT_AND_BACK = GL_FRONT_AND_BACK
+        };
+    
+        CullFace(Mode mode=BACK):
+            _mode(mode) {}
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         CullFace(const CullFace& cf,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
@@ -52,12 +59,6 @@ class SG_EXPORT CullFace : public StateAttribute
             modes.push_back(GL_CULL_FACE);
         }
 
-        enum Mode {
-            FRONT = GL_FRONT,
-            BACK = GL_BACK,
-            FRONT_AND_BACK = GL_FRONT_AND_BACK
-        };
-    
         inline void setMode(Mode mode) { _mode = mode; }
 
         inline Mode getMode() const { return _mode; }

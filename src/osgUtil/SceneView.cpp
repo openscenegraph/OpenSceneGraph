@@ -325,10 +325,10 @@ void SceneView::cullStage(osg::Matrix* projection,osg::Matrix* modelview,osgUtil
     switch(_lightingMode)
     {
     case(HEADLIGHT):
-        renderStage->addLight(_light.get(),NULL);
+        renderStage->addPositionedAttribute(NULL,_light.get());
         break;
     case(SKY_LIGHT):
-        renderStage->addLight(_light.get(),modelview);
+        renderStage->addPositionedAttribute(modelview,_light.get());
         break;
     case(NO_SCENEVIEW_LIGHT):
         break;

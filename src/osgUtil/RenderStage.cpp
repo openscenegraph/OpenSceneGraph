@@ -119,6 +119,11 @@ void RenderStage::draw(osg::State& state,RenderLeaf*& previous)
 // Statistics features
 bool RenderStage::getStats(Statistics* primStats)
 {
-    if (_renderStageLighting.valid()) primStats->addLight(_renderStageLighting->_lightList.size());
+    if (_renderStageLighting.valid())
+    {
+        // need to re-implement by checking for lights in the scene
+        // by downcasting the positioned attribute list. RO. May 2002.
+        //primStats->addLight(_renderStageLighting->_lightList.size());
+    }
     return RenderBin::getStats(primStats);
 }

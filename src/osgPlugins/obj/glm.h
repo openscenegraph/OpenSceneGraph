@@ -17,6 +17,7 @@
 // should be removed since all the GLfloat etc could just as easily be floats.
 // Will leave for now as it works... Robert Osfield, June 5th 2001. 
 #include <osg/GL>
+#include <osg/UByte4>
 
 #ifndef M_PI
 #define M_PI 3.14159265
@@ -109,6 +110,9 @@ struct  GLMmodel {
   unsigned int   numvertices;            /* number of vertices in model */
   GLfloat* vertices;            /* array of vertices  */
 
+  bool useColors;               /* true if per vertex colors are present.*/
+  osg::UByte4* colors;            /* array of per vertex colors  */
+
   unsigned int   numnormals;            /* number of normals in model */
   GLfloat* normals;            /* array of normals */
 
@@ -137,6 +141,9 @@ struct  GLMmodel {
 
     numvertices = 0;    
     vertices = NULL;
+    
+    useColors = false;
+    colors = NULL;
 
     numnormals = 0;        
     normals = NULL;    

@@ -95,6 +95,9 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
     osg::notify(osg::INFO)  << "tris " << obj->numtriangles << std::endl;
     osg::notify(osg::INFO)  << "materials " << obj->nummaterials << std::endl;
     osg::notify(osg::INFO)  << "groups " << obj->numgroups << std::endl;
+    
+    
+    std::cout << "useColors "<<obj->useColors<<std::endl;
 
     if (obj->numnormals==0)
     {
@@ -278,7 +281,8 @@ osg::Drawable* ReaderWriterOBJ::makeDrawable(GLMmodel* obj,
     // is complicated greatly by the need to create separate out the
     // sets of coords etc for each drawable.
 
-    bool needNormals = obj->normals && obj->normals>0;
+    bool needColors = obj->useColors && obj->colors;
+    bool needNormals = obj->normals && obj->normals;
     bool needTexcoords = obj->texcoords && obj->numtexcoords>0 && grp->hastexcoords;
     
     
@@ -287,6 +291,16 @@ osg::Drawable* ReaderWriterOBJ::makeDrawable(GLMmodel* obj,
     osg::Vec3Array::iterator coords = coordArray->begin();
     geom->setVertexArray(coordArray);
     
+    osg::UByte4Array::iterator colors = osg::UByte4Array::iterator();// dummy assignment to get round stupid compiler warnings.
+    if (needColors)
+    {
+        osg::UByte4Array* colorArray = new osg::UByte4Array(3*ntris);
+        geom->setColorArray(colorArray);
+        geom->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+        colors = colorArray->begin();
+    }
+
+
     osg::Vec3Array::iterator normals = osg::Vec3Array::iterator();// dummy assignment to get round stupid compiler warnings.
     if (needNormals)
     {
@@ -319,6 +333,12 @@ osg::Drawable* ReaderWriterOBJ::makeDrawable(GLMmodel* obj,
             //      obj_z -> osg_y,
             coords->set(obj->vertices[ci],-obj->vertices[ci+2],obj->vertices[ci+1]);
             ++coords;
+            
+            if (needColors)
+            {
+                (*colors) = obj->colors[tri->vindices[corner]];
+                ++colors;
+            }
 
             if (needNormals)
             {

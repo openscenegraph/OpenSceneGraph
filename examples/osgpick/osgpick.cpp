@@ -81,18 +81,14 @@ void PickHandler::pick(const osgGA::GUIEventAdapter& ea)
     {
         float x=ea.getXnormalized();
         float y=ea.getYnormalized();
-        osgUtil::PickVisitor iv;
-        const float *matView;
-        const float *matProj;
+
         Producer::Camera *cmm=_cg->getCamera(0);
-        matView=cmm->getViewMatrix(); 
-        matProj=cmm->getProjectionMatrix();
-        osg::Matrix vum;
-        vum.set(matView);
-        vum.postMult(osg::Matrix(matProj));
-        osg::Matrix windowmatrix=osg::Matrix::translate(1.0f,1.0f,1.0f)*
-            osg::Matrix::scale(0.5f,0.5f,0.5f);
-        vum.postMult(windowmatrix);
+        osg::Matrix vum(osg::Matrix(cmm->getViewMatrix()) *
+                        osg::Matrix(cmm->getProjectionMatrix())/* * 
+                        osg::Matrix::translate(1.0f,1.0f,1.0f) *
+                        osg::Matrix::scale(0.5f,0.5f,0.5f)*/);
+
+        osgUtil::PickVisitor iv;
         osgUtil::IntersectVisitor::HitList& hlist=iv.getHits(scene, vum, x,y);
         std::string gdlist="";
         if (iv.hits())
@@ -105,8 +101,16 @@ void PickHandler::pick(const osgGA::GUIEventAdapter& ea)
                 //osg::Vec3 in = hitr->getLocalIntersectNormal();
                 osg::Geode* geode = hitr->_geode.get();
                 // the geodes are identified by name.
-                if (geode) {
-                    gdlist=gdlist+" "+geode->getName();
+                if (geode)
+                {
+                    if (!geode->getName().empty())
+                    {
+                        gdlist=gdlist+" "+geode->getName();
+                    }
+                    else
+                    {
+                        gdlist=gdlist+" geode";
+                    }
                 } 
             }
         }

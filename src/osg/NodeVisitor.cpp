@@ -68,15 +68,11 @@ class TransformVisitor : public NodeVisitor
         {
             if (_coordMode==LOCAL_TO_WORLD)
             {
-                osg::Matrix localToWorldMat;
-                transform.getLocalToWorldMatrix(localToWorldMat,_nodeVisitor);
-                _matrix.preMult(localToWorldMat);
+                transform.getLocalToWorldMatrix(_matrix,_nodeVisitor);
             }
             else // worldToLocal
             {
-                osg::Matrix worldToLocalMat;
-                transform.getWorldToLocalMatrix(worldToLocalMat,_nodeVisitor);
-                _matrix.postMult(worldToLocalMat);
+                transform.getWorldToLocalMatrix(_matrix,_nodeVisitor);
             }
         }
     

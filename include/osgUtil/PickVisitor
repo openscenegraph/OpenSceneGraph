@@ -26,38 +26,42 @@
 namespace osgUtil {
 
 // PickIntersectVisitor simplifies picking - routines take x,y mouse pixel & detect hits
-class OSGUTIL_EXPORT PickIntersectVisitor : public IntersectVisitor {
+class OSGUTIL_EXPORT PickIntersectVisitor : public IntersectVisitor
+{
 public:
-	PickIntersectVisitor() { 
-		setNodeMaskOverride(0xffffffff); // need to make the visitor override the nodemask to visit invisible actions
-	}
-	~PickIntersectVisitor() {  }
-	HitList& getHits(osgUtil::SceneView *, int x, int y);
-	HitList& PickIntersectVisitor::getIntersections(osg::Node *scene, osg::Vec3 nr, osg::Vec3 fr);
+    PickIntersectVisitor()
+    { 
+        setNodeMaskOverride(0xffffffff); // need to make the visitor override the nodemask to visit invisible actions
+    }
+    ~PickIntersectVisitor() {  }
+    HitList& getHits(osgUtil::SceneView *, int x, int y);
+    HitList& PickIntersectVisitor::getIntersections(osg::Node *scene, osg::Vec3 nr, osg::Vec3 fr);
 private:
-	osg::ref_ptr<osg::LineSegment> _lineSegment;
+    osg::ref_ptr<osg::LineSegment> _lineSegment;
     friend class osgUtil::IntersectVisitor;
 };
 
 // PickVisitor traverses whole scene and checks below all Projection nodes
-class OSGUTIL_EXPORT PickVisitor : public osg::NodeVisitor {
+class OSGUTIL_EXPORT PickVisitor : public osg::NodeVisitor
+{
 public:
-	PickVisitor() { 
-		xp=yp=0;    
-		setNodeMaskOverride(0xffffffff); // need to make the visitor override the nodemask to visit invisible actions
-		setTraversalMode(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN);
-	}
-	~PickVisitor() { }
+    PickVisitor()
+    { 
+        xp=yp=0;    
+        setNodeMaskOverride(0xffffffff); // need to make the visitor override the nodemask to visit invisible actions
+        setTraversalMode(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN);
+    }
+    ~PickVisitor() { }
     virtual void apply(osg::Projection& pr);
-	osgUtil::IntersectVisitor::HitList& getHits(osg::Node *nd, const osg::Matrix &projm, const float x, const float y);
-	osgUtil::IntersectVisitor::HitList& getHits(osgUtil::SceneView *, double x, double y);
-	osgUtil::IntersectVisitor::HitList & getHits(osg::Node *nd, const osg::Vec3 near_point, const osg::Vec3 far_point);
-	osgUtil::IntersectVisitor::HitList& getHits(void);
-	inline void setxy(float xpt, float ypt) { xp=xpt; yp=ypt; }
-	inline bool hits() { return _PIVsegHitList.size()>0;}
+    osgUtil::IntersectVisitor::HitList& getHits(osg::Node *nd, const osg::Matrix &projm, const float x, const float y);
+    osgUtil::IntersectVisitor::HitList& getHits(osgUtil::SceneView *, double x, double y);
+    osgUtil::IntersectVisitor::HitList & getHits(osg::Node *nd, const osg::Vec3 near_point, const osg::Vec3 far_point);
+    osgUtil::IntersectVisitor::HitList& getHits(void);
+    inline void setxy(float xpt, float ypt) { xp=xpt; yp=ypt; }
+    inline bool hits() { return _PIVsegHitList.size()>0;}
 private:
-	PickIntersectVisitor _piv;
-	float xp, yp; // start point in viewport fraction coordiantes
+    PickIntersectVisitor _piv;
+    float xp, yp; // start point in viewport fraction coordiantes
     osgUtil::IntersectVisitor::HitList       _PIVsegHitList;
 };
 }// namespace osgUtil

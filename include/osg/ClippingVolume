@@ -22,6 +22,11 @@ class SG_EXPORT ClippingVolume
 
         inline ClippingVolume() {setupMask();}
 
+        inline ClippingVolume(const ClippingVolume& cs, const unsigned int mask)
+        {
+            set(cs,mask);
+        }
+
         inline ClippingVolume(const ClippingVolume& cv) : _localMask(cv._localMask), _planeList(cv._planeList)  {}
         
         inline ClippingVolume(const PlaneList& pl) : _planeList(pl) {setupMask();}
@@ -61,6 +66,19 @@ class SG_EXPORT ClippingVolume
             setupMask();
         }
 
+        inline void set(const ClippingVolume& cs, const unsigned int mask)
+        {
+            unsigned int selector_mask = 0x1;
+            for(PlaneList::const_iterator itr=cs._planeList.begin();
+                itr!=cs._planeList.end();
+                ++itr)
+            {
+                if (mask&selector_mask) _planeList.push_back(*itr);
+                selector_mask <<= 1;
+            }
+            setupMask();
+        }
+
         inline void set(const ClippingVolume& cs) { _planeList = cs._planeList; setupMask(); }
 
         inline void set(const PlaneList& pl) { _planeList = pl; setupMask(); }
@@ -89,6 +107,20 @@ class SG_EXPORT ClippingVolume
                 ++itr)
             {
                 if (itr->distance(v)<0.0f) return false;
+            }
+            return true;
+        }
+
+        inline const bool contains(const osg::Vec3& v,const unsigned int mask) const
+        {
+            if (!(mask & _localMask)) return true;
+            unsigned int selector_mask = 0x1;
+            for(PlaneList::const_iterator itr=_planeList.begin();
+                itr!=_planeList.end();
+                ++itr)
+            {
+                if (mask&selector_mask && (itr->distance(v)<0.0f)) return false;
+                selector_mask <<= 1;
             }
             return true;
         }

@@ -85,6 +85,10 @@ LINK32=link.exe
 # Name "osgconv - Win32 Debug"
 # Begin Source File
 
+SOURCE=..\..\..\src\Demos\osgconv\OrientationConverter.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\Demos\osgconv\osgconv.cpp
 # End Source File
 # End Target

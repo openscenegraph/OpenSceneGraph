@@ -68,6 +68,13 @@ void Node::ascend(NodeVisitor& nv)
     std::for_each(_parents.begin(),_parents.end(),NodeAcceptOp(nv));
 }
 
+osg::StateSet* Node::getValidStateSet()
+{
+    if (!_dstate) _dstate = osgNew StateSet;
+    return _dstate.get();
+}
+
+
 void Node::setAppCallback(NodeCallback* nc)
 {
     // if no changes just return.

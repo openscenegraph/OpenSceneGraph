@@ -431,29 +431,30 @@ Using STLport under Windows
         list, thus overriding MS's own STL implementations.    
 
 
-RedHat 7.1 & GLU1.3
+RedHat 7.2 & GLU1.3
 -------------------
 
     I have posted a simple fix for those of us who have been unable to
-    correctly build OSG 0.8.43 on Redhat 7.2. You can download it
-    at www.terrainengine.com/fixosg.tar.gz.
+    correctly build OSG 0.8.43 on Redhat 7.2. You can download it at
+    http://www.openscenegraph.org/download/dependancies/ReadHat7.2_fixglu.tar.gz
+
 
     To install it, follow these steps:
 
     English
     -----------
     1) Untar the tarball. It will create a directory called fixosg/
-    2) Change to the fixosg/ directory
+    2) Change to the ReadHat7.2_fixglu/ directory
     3) Become root
-    4) Run the script called fixosg
+    4) Run the script called fixglu
 
     Cmd line
     -------------
-    tar xvzf fixosg.tar.gz
-    cd fixosg/
+    tar xvzf ReadHat7.2_fixglu.tar.gz
+    cd ReadHat7.2_fixglu/
     su
     (your root password)
-    ./fixosg
+    ./fixglu
     exit
 
     You should then be able to do a "make" in your OSG directory and

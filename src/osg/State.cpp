@@ -198,12 +198,13 @@ void State::captureCurrentState(StateSet& stateset) const
 
 }
 
-// visual studio 6.0 doesn't appear to define std::max?!? So do our own here.. 
-template<class T>
-T mymax(const T& a,const T& b)
-{
-	return (((a) > (b)) ? (a) : (b));
-}
+// revert to using std::max for consistency, std::max should be defined by STLport on VS.
+// // visual studio 6.0 doesn't appear to define std::max?!? So do our own here.. 
+// template<class T>
+// T mymax(const T& a,const T& b)
+// {
+// 	return (((a) > (b)) ? (a) : (b));
+// }
 
 void State::apply(const StateSet* dstate)
 {
@@ -224,9 +225,9 @@ void State::apply(const StateSet* dstate)
         const StateSet::TextureAttributeList& ds_textureAttributeList = dstate->getTextureAttributeList();
 
         unsigned int unit;
-        unsigned int unitMax = mymax(static_cast<unsigned int>(ds_textureModeList.size()),static_cast<unsigned int>(ds_textureAttributeList.size()));
-        unitMax = mymax(static_cast<unsigned int>(unitMax),static_cast<unsigned int>(_textureModeMapList.size()));
-        unitMax = mymax(static_cast<unsigned int>(unitMax),static_cast<unsigned int>(_textureAttributeMapList.size()));
+        unsigned int unitMax = std::max(static_cast<unsigned int>(ds_textureModeList.size()),static_cast<unsigned int>(ds_textureAttributeList.size()));
+        unitMax = std::max(static_cast<unsigned int>(unitMax),static_cast<unsigned int>(_textureModeMapList.size()));
+        unitMax = std::max(static_cast<unsigned int>(unitMax),static_cast<unsigned int>(_textureAttributeMapList.size()));
         for(unit=0;unit<unitMax;++unit)
         {
             if (setActiveTextureUnit(unit))
@@ -261,7 +262,7 @@ void State::apply()
     applyAttributeMap(_attributeMap);
        
     unsigned int unit;
-    unsigned int unitMax = mymax(_textureModeMapList.size(),_textureAttributeMapList.size());
+    unsigned int unitMax = std::max(_textureModeMapList.size(),_textureAttributeMapList.size());
     for(unit=0;unit<unitMax;++unit)
     {
         if (setActiveTextureUnit(unit))

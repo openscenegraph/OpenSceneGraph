@@ -1,5 +1,7 @@
 #include <osg/ApplicationUsage>
 
+#include <algorithm>
+
 using namespace osg;
 
 ApplicationUsage::ApplicationUsage(const std::string& commandLineUsage):

@@ -154,6 +154,10 @@ DEP_CPP_IO_AN=\
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\osgFX\IO_BumpMapping.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\osgFX\IO_Cartoon.cpp
 DEP_CPP_IO_CA=\
 	"..\..\..\Include\osg\ArgumentParser"\

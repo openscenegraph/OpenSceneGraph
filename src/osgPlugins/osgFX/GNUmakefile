@@ -3,6 +3,7 @@ include $(TOPDIR)/Make/makedefs
 
 CXXFILES =\
 	IO_AnisotropicLighting.cpp\
+	IO_BumpMapping.cpp\
 	IO_Cartoon.cpp\
 	IO_Scribe.cpp\
 	IO_SpecularHighlights.cpp\

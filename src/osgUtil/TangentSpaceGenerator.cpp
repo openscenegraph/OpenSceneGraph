@@ -35,36 +35,67 @@ void TangentSpaceGenerator::generate(osg::Geometry *geo, int normal_map_tex_unit
 
 	unsigned i; // VC6 doesn't like for-scoped variables
 
-	for (i=0; i<geo->getNumPrimitiveSets(); ++i) {
-		osg::PrimitiveSet *pset = geo->getPrimitiveSet(i);
+	for (unsigned pri=0; pri<geo->getNumPrimitiveSets(); ++pri) {
+		osg::PrimitiveSet *pset = geo->getPrimitiveSet(pri);
+
+		unsigned N = pset->getNumIndices();
 
 		switch (pset->getMode()) {
+
 			case osg::PrimitiveSet::TRIANGLES:
-				for (i=0; i<pset->getNumIndices(); i+=3) {
+				for (i=0; i<N; i+=3) {
 					compute_basis_vectors(pset, vx, tx, i, i+1, i+2);
 				}
 				break;
 
+			case osg::PrimitiveSet::QUADS:
+				for (i=0; i<N; i+=4) {
+					compute_basis_vectors(pset, vx, tx, i, i+1, i+2);
+					compute_basis_vectors(pset, vx, tx, i+2, i+3, i);
+				}
+				break;
+
 			case osg::PrimitiveSet::TRIANGLE_STRIP:
-				for (i=0; i<pset->getNumIndices()-2; ++i) {
-					if ((i%2) == 0) {
-						compute_basis_vectors(pset, vx, tx, i, i+1, i+2);
-					} else {
-						compute_basis_vectors(pset, vx, tx, i, i+2, i+1);
+				if (pset->getType() == osg::PrimitiveSet::DrawArrayLengthsPrimitiveType) {
+					osg::DrawArrayLengths *dal = static_cast<osg::DrawArrayLengths *>(pset);
+					unsigned j = 0;
+					for (osg::DrawArrayLengths::const_iterator pi=dal->begin(); pi!=dal->end(); ++pi) {
+						unsigned iN = static_cast<unsigned>(*pi-2);
+						for (i=0; i<iN; ++i, ++j) {
+							if ((i%2) == 0) {
+								compute_basis_vectors(pset, vx, tx, j, j+1, j+2);
+							} else {
+								compute_basis_vectors(pset, vx, tx, j+1, j, j+2);
+							}
+						}
+						j += 2;
+					}
+				} else {
+					for (i=0; i<N-2; ++i) {
+						if ((i%2) == 0) {
+							compute_basis_vectors(pset, vx, tx, i, i+1, i+2);							
+						} else {
+							compute_basis_vectors(pset, vx, tx, i+1, i, i+2);
+						}
 					}
 				}
 				break;
 
 			case osg::PrimitiveSet::TRIANGLE_FAN:
-				for (i=2; i<pset->getNumIndices(); ++i) {
-					compute_basis_vectors(pset, vx, tx, 0, i-1, i);
-				}
-				break;
-
-			case osg::PrimitiveSet::QUADS:
-				for (i=0; i<pset->getNumIndices(); i+=4) {
-					compute_basis_vectors(pset, vx, tx, i, i+1, i+2);
-					compute_basis_vectors(pset, vx, tx, i+2, i+3, i);
+				if (pset->getType() == osg::PrimitiveSet::DrawArrayLengthsPrimitiveType) {
+					osg::DrawArrayLengths *dal = static_cast<osg::DrawArrayLengths *>(pset);
+					unsigned j = 0;
+					for (osg::DrawArrayLengths::const_iterator pi=dal->begin(); pi!=dal->end(); ++pi) {
+						unsigned iN = static_cast<unsigned>(*pi-2);
+						for (i=0; i<iN; ++i) {
+							compute_basis_vectors(pset, vx, tx, 0, j+1, j+2);
+						}
+						j += 2;
+					}
+				} else {
+					for (i=0; i<N-2; ++i) {
+						compute_basis_vectors(pset, vx, tx, 2, i+1, i+2);
+					}
 				}
 				break;
 

@@ -128,7 +128,7 @@ osg::Group* createHUDText()
         text->setCharacterSize(fontSizeCharacterSize);
         text->setPosition(cursor);
         
-        // use text that uses 10 by 10 texels as a target resolution for fonts.
+        // use text that uses 20 by 20 texels as a target resolution for fonts.
         text->setFontResolution(20,20); // smoother but higher texture memory usage (but still quite low).
         
         text->setText("text->setFontResolution(20,20); // smoother but higher texture memory usage (but still quite low).");
@@ -143,7 +143,7 @@ osg::Group* createHUDText()
         text->setCharacterSize(fontSizeCharacterSize);
         text->setPosition(cursor);
         
-        // use text that uses 10 by 10 texels as a target resolution for fonts.
+        // use text that uses 40 by 40 texels as a target resolution for fonts.
         text->setFontResolution(40,40); // even smoother but again higher texture memory usage.
         
         text->setText("text->setFontResolution(40,40); // even smoother but again higher texture memory usage.");
@@ -167,7 +167,7 @@ osg::Group* createHUDText()
         text->setFontResolution(20,20);
         text->setPosition(cursor);
         
-        // use text that 20 units high.
+        // use text that is 20 units high.
         text->setCharacterSize(20); // small
         
         text->setText("text->setCharacterSize(15.0f); // small");
@@ -182,7 +182,7 @@ osg::Group* createHUDText()
         text->setFontResolution(30,30);
         text->setPosition(cursor);
         
-        // use text that 20 units high.
+        // use text that is 30 units high.
         text->setCharacterSize(30.0f); // medium
         
         text->setText("text->setCharacterSize(30.0f); // medium");
@@ -197,7 +197,7 @@ osg::Group* createHUDText()
         text->setFontResolution(40,40);
         text->setPosition(cursor);
         
-        // use text that uses 10 by 10 texels as a target resolution for fonts.
+        // use text that is 60 units high.
         text->setCharacterSize(60.0f); // large
         
         text->setText("text->setCharacterSize(60.0f); // large");

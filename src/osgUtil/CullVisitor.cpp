@@ -142,6 +142,8 @@ void CullVisitor::reset()
         (*itr)->reset();
     }
     
+    if (_impostorSpriteManager.valid()) _impostorSpriteManager->reset();
+    
 }
 
 float CullVisitor::getDistanceToEyePoint(const Vec3& pos, bool withLODScale) const
@@ -802,9 +804,9 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
     // into account the new camera orientation.
     pushModelViewMatrix(rotate_matrix);
 
-    if (!_localPreRenderState) _localPreRenderState = new StateSet;
+    StateSet* localPreRenderState = _impostorSpriteManager->createOrReuseStateSet();
 
-    pushStateSet(_localPreRenderState.get());
+    pushStateSet(localPreRenderState);
 
     {
 
@@ -888,7 +890,7 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
     new_viewport->setViewport(center_x-new_s/2,center_y-new_t/2,new_s,new_t);
     rtts->setViewport(new_viewport);
     
-    _localPreRenderState->setAttribute(new_viewport);
+    localPreRenderState->setAttribute(new_viewport);
 
     // create the impostor sprite.
     ImpostorSprite* impostorSprite = 
@@ -912,7 +914,7 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
         // the depth sort bin should probably be user definable,
         // will look into this later. RO July 2001.
         StateSet* stateset = impostorSprite->getStateSet();
-        stateset->setRenderBinDetails(1,"DepthSortedBin");
+        stateset->setRenderBinDetails(10,"DepthSortedBin");
     }
     
     Texture2D* texture = impostorSprite->getTexture();

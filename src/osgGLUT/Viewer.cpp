@@ -165,7 +165,7 @@ bool Viewer::open()
             selectCameraManipulator(0,index);
     }
 
-    GLUTEventAdapter::setWindowSize( _wx, _wy, _ww, _wh );
+    GLUTEventAdapter::setWindowSize( _wx, _wy, _wx+_ww, _wx+_wh );
     GLUTEventAdapter::setButtonMask(0);
 
 

@@ -48,11 +48,20 @@ public:
     /** Get the font. Return 0 if default is being used.*/    
     const Font* getFont() const { return _font.get(); }
 
+#ifdef USE_DEPRECATED_API
+
+    /* deprecated */
+    void setFontSize(unsigned int width, unsigned int height)
+    {
+        setFontResolution(width,height);
+    }
+#endif
+    
     /** Set the Font reference width and height resolution in texels.
       * Note, the size may not be supported by current font, 
       * the closest supported font size will be selected.*/
-    void setFontSize(unsigned int width, unsigned int height);
-    
+    void setFontResolution(unsigned int width, unsigned int height);
+
     unsigned int getFontWidth() const { return _fontWidth; }
     unsigned int getFontHeight() const { return _fontWidth; }
     
@@ -142,7 +151,6 @@ public:
     };
     
     void setAlignment(AlignmentType alignment);
-
     AlignmentType getAlignment() const { return _alignment; }
 
 
@@ -156,12 +164,21 @@ public:
 
     void setAxisAlignment(AxisAlignment axis);
     
-    AxisAlignment getAxisAlignment() const { return _axisAlignment; }
-
-
     void setRotation(const osg::Quat& quat);
-    
     const osg::Quat& getRotation() const { return _rotation; }
+
+    void setAutoUpdateEyeMovementTolerance(float tolerance) { _autoUpdateEyeMovementTolerance = tolerance; }
+    float getAutoUpdateEyeMovementTolerance() const { return _autoUpdateEyeMovementTolerance; }
+    
+    void setAutoRotateToScreen(bool autoRotateToScreen);
+    bool getAutoRotateToScreen() const { return _autoRotateToScreen; }
+
+    void setAutoScaleToScreen(bool autoScaleToScreen);
+    bool getAutoScaleToScreen() const { return _autoScaleToScreen; }
+    
+    void setScale(float scale);
+    float getScale() const { return _scale; }
+    
 
 
     enum Layout
@@ -215,6 +232,40 @@ public:
     // make Font a friend to allow it set the _font to 0 if the font is 
     // forcefully unloaded.
     friend class Font;
+public:
+
+    // internal structures, variable and methods used for rendering of characters.
+    struct OSGTEXT_EXPORT GlyphQuads
+    {
+        typedef std::vector<osg::Vec2> Coords2;
+        typedef std::vector<osg::Vec3> Coords3;
+        typedef std::vector<osg::Vec2> TexCoords;
+
+        Coords2     _coords;
+        Coords3     _transformedCoords;
+        TexCoords   _texcoords;
+
+        Coords2& getCoords() { return _coords; }
+        const Coords2& getCoords() const { return _coords; }
+
+        Coords3& getTransformedCoords() { return _transformedCoords; }
+        const Coords3& getTransformedCoords() const { return _transformedCoords; }
+
+        TexCoords& getTexCoords() { return _texcoords; }
+        const TexCoords& getTexCoords() const { return _texcoords; }
+    };
+    
+    typedef std::map<osg::ref_ptr<osg::StateSet>,GlyphQuads> TextureGlyphQuadMap;
+
+    /** Direct Access to GlyphQuads */
+    const GlyphQuads* getGlyphQuad(unsigned int index) const
+    {
+        if (index>=_textureGlyphQuadMap.size()) return NULL;
+
+        TextureGlyphQuadMap::const_iterator itGlyph = _textureGlyphQuadMap.begin();
+        while((index--) && (itGlyph!=_textureGlyphQuadMap.end())) itGlyph++;
+        return &itGlyph->second;
+    }
 
 protected:
 
@@ -238,43 +289,14 @@ protected:
     String                  _text;
     osg::Vec3               _position;
     AlignmentType           _alignment;
-    AxisAlignment           _axisAlignment;
+    float                   _scale;
     osg::Quat               _rotation;
+    float                   _autoUpdateEyeMovementTolerance;
+    bool                    _autoRotateToScreen;
+    bool                    _autoScaleToScreen;
     Layout                  _layout;
     osg::Vec4               _color;
     unsigned int            _drawMode;
-
-public:
-
-    // internal structures, variable and methods used for rendering of characters.
-    struct OSGTEXT_EXPORT GlyphQuads
-    {
-        typedef std::vector<osg::Vec2> Coords;
-        typedef std::vector<osg::Vec2> TexCoords;
-
-        Coords      _coords;
-        TexCoords   _texcoords;
-
-        Coords& getCoords() { return _coords; }
-        const Coords& getCoords() const { return _coords; }
-
-        TexCoords& getTexCoords() { return _texcoords; }
-        const TexCoords& getTexCoords() const { return _texcoords; }
-    };
-    
-    typedef std::map<osg::ref_ptr<osg::StateSet>,GlyphQuads> TextureGlyphQuadMap;
-
-    /** Direct Access to GlyphQuads */
-    const GlyphQuads* getGlyphQuad(unsigned int index) const
-    {
-        if (index>=_textureGlyphQuadMap.size()) return NULL;
-
-        TextureGlyphQuadMap::const_iterator itGlyph = _textureGlyphQuadMap.begin();
-        while((index--) && (itGlyph!=_textureGlyphQuadMap.end())) itGlyph++;
-        return &itGlyph->second;
-    }
-
-protected:
 
     // iternal map used for rendering. Set up by the computeGlyphRepresentation() method.
     TextureGlyphQuadMap         _textureGlyphQuadMap;
@@ -284,7 +306,10 @@ protected:
     // internal caches of the positioning of the text.
     osg::Matrix                 _matrix;
     osg::Vec3                   _offset;
+    osg::Vec3                   _normal;
     mutable osg::BoundingBox    _textBB;
+
+    void setUpAutoCallback();
     
     void computePositions();
 

@@ -89,7 +89,7 @@ static GLenum faceTarget[6] =
 TextureCubeMap::TextureCubeMap():
             _textureWidth(0),
             _textureHeight(0),
-            _numMimpmapLevels(0)
+            _numMipmapLevels(0)
 {
     setUseHardwareMipMapGeneration(false);
 }
@@ -98,7 +98,7 @@ TextureCubeMap::TextureCubeMap(const TextureCubeMap& text,const CopyOp& copyop):
             Texture(text,copyop),
             _textureWidth(text._textureWidth),
             _textureHeight(text._textureHeight),
-            _numMimpmapLevels(text._numMimpmapLevels),
+            _numMipmapLevels(text._numMipmapLevels),
             _subloadCallback(text._subloadCallback)
 {
     _images[0] = copyop(text._images[0].get());
@@ -224,7 +224,7 @@ void TextureCubeMap::apply(State& state) const
                 const osg::Image* image = _images[n].get();
                 if (image && getModifiedTag((Face)n,contextID) != image->getModifiedTag())
                 {
-                    applyTexImage2D_subload( faceTarget[n], _images[n].get(), state, _textureWidth, _textureHeight, _numMimpmapLevels);
+                    applyTexImage2D_subload( faceTarget[n], _images[n].get(), state, _textureWidth, _textureHeight, _numMipmapLevels);
                     getModifiedTag((Face)n,contextID) = image->getModifiedTag();
                 }
             }
@@ -260,7 +260,7 @@ void TextureCubeMap::apply(State& state) const
             const osg::Image* image = _images[n].get();
             if (image)
             {
-                applyTexImage2D_load( faceTarget[n], image, state, _textureWidth, _textureHeight, _numMimpmapLevels);
+                applyTexImage2D_load( faceTarget[n], image, state, _textureWidth, _textureHeight, _numMipmapLevels);
                 getModifiedTag((Face)n,contextID) = image->getModifiedTag();
             }
 

@@ -44,8 +44,8 @@ osg::Node* createHUD()
         geode->addDrawable( text );
 
         text->setFont(timesFont);
+        text->setPosition(position);
         text->setText("Head Up Displays are simple :-)");
-        text->setPosition(position);
         
         position += delta;
     }    
@@ -56,8 +56,9 @@ osg::Node* createHUD()
         geode->addDrawable( text );
 
         text->setFont(timesFont);
+        text->setAutoScaleToScreen(true);
+        text->setPosition(position);
         text->setText("All you need to do is create your text in a subgraph.");
-        text->setPosition(position);
         
         position += delta;
     }    
@@ -68,8 +69,8 @@ osg::Node* createHUD()
         geode->addDrawable( text );
 
         text->setFont(timesFont);
+        text->setPosition(position);
         text->setText("Disable depth test in this subgraph to ensure its always ontop.");
-        text->setPosition(position);
         
         position += delta;
     }    
@@ -79,8 +80,8 @@ osg::Node* createHUD()
         geode->addDrawable( text );
 
         text->setFont(timesFont);
+        text->setPosition(position);
         text->setText("Then place an osg::Projection node above the subgraph\nto create an orthographic projection.");
-        text->setPosition(position);
         
         position += delta;
     }    
@@ -90,8 +91,8 @@ osg::Node* createHUD()
         geode->addDrawable( text );
 
         text->setFont(timesFont);
-        text->setText("And add an osg::ModelViewMatrix set to ABSOLUTE to ensure\nit remains independent from any external model view matrices.");
         text->setPosition(position);
+        text->setText("And add an osg::ModelViewMatrix set to ABSOLUTE to ensure\nit remains independent from any external model view matrices.");
         
         position += delta;
     }    

@@ -130,7 +130,7 @@ osg:: Node* createTextBelow(const osg::BoundingBox& bb)
     osgText::Text* text = new  osgText::Text;
 
     text->setFont(font);
-    text->setFontSize(64,64);
+    text->setFontResolution(64,64);
     text->setAlignment(osgText::Text::CENTER_CENTER);
     text->setAxisAlignment(osgText::Text::XZ_PLANE);
     text->setPosition(bb.center()-osg::Vec3(0.0f,0.0f,(bb.zMax()-bb.zMin())));
@@ -157,7 +157,7 @@ osg:: Node* createTextLeft(const osg::BoundingBox& bb)
     osgText::Text* text = new  osgText::Text;
  
     text->setFont(font);
-    text->setFontSize(110,120);
+    text->setFontResolution(110,120);
     text->setAlignment(osgText::Text::RIGHT_CENTER);
     text->setAxisAlignment(osgText::Text::XZ_PLANE);
     text->setCharacterSize((bb.zMax()-bb.zMin())*1.0f);

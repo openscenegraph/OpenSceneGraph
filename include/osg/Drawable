@@ -192,24 +192,6 @@ class SG_EXPORT Drawable : public Object
         /** Get the non const UpdateCallback.*/
         UpdateCallback* getUpdateCallback() { return _updateCallback.get(); }
 
-#ifdef USE_DEPRECATED_API
-        struct AppCallback : public UpdateCallback
-        {
-                /** do customized app code.*/
-                virtual void app(osg::NodeVisitor *visitor, osg::Drawable* drawable) = 0;
-
-                virtual void update(osg::NodeVisitor *visitor, osg::Drawable* drawable) { app(visitor,drawable); }
-        };
-
-        /** deprecated.*/
-        void setAppCallback(AppCallback* ac) { setUpdateCallback(ac); }
-        
-        /** deprecated.*/
-        AppCallback* getAppCallback() { return getUpdateCallback(); }
-        
-        /** deprecated.*/
-        const AppCallback* getAppCallback() const { return getUpdateCallback(); }
-#endif
 
         struct CullCallback : public virtual osg::Referenced
         {

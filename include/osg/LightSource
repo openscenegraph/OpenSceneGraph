@@ -21,7 +21,7 @@ class SG_EXPORT LightSource : public Group
         LightSource(const LightSource& ls, const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             Group(ls,copyop),
             _value(ls._value),
-            _light(dynamic_cast<osg::Light*>(copyop(ls._light.get()))) {}
+            _light(dynamic_cast<osg::StateAttribute*>(copyop(ls._light.get()))) {}
 
         META_Node(osg, LightSource);
 

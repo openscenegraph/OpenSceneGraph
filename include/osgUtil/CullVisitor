@@ -114,6 +114,17 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
           * before being recycled.*/
         const int getNumberOfFrameToKeepImpostorSprites() const { return _numFramesToKeepImpostorSprites; }
 
+        enum ComputeNearFarMode
+        {
+            DO_NOT_COMPUTE_NEAR_FAR = 0,
+            COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES,
+            COMPUTE_NEAR_FAR_USING_PRIMITIVES
+        };
+
+        void setComputeNearFarMode(ComputeNearFarMode cnfm) { _computeNearFar=cnfm; } 
+        ComputeNearFarMode getComputeNearFarMode() const { return _computeNearFar;} 
+        
+        
         enum TransparencySortMode {
             LOOK_VECTOR_DISTANCE,
             OBJECT_EYE_POINT_DISTANCE
@@ -168,37 +179,47 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
             _currentRenderGraph = _currentRenderGraph->_parent;
         }
         
-        void setRenderGraph(RenderGraph* rg)
+        inline void setRenderGraph(RenderGraph* rg)
         {
             _rootRenderGraph = rg;
             _currentRenderGraph = rg;
         }
 
-        RenderGraph* getRenderGraph()
+        inline RenderGraph* getRenderGraph()
         {
             return _rootRenderGraph.get();
         }
 
-        void setRenderStage(RenderStage* rg)
+        inline void setRenderStage(RenderStage* rg)
         {
             _rootRenderStage = rg;
             _currentRenderBin = rg;
         }
 
-        RenderStage* getRenderStage()
+        inline RenderStage* getRenderStage()
         {
             return _rootRenderStage.get();
         }
 
-        const float getCalculatedNearPlane() const { return _computed_znear; }
-        
-        const float getCalculatedFarPlane() const { return _computed_zfar; }
+        inline RenderBin* getCurrentRenderBin()
+        {
+            return _currentRenderBin;
+        }
+
+        inline osg::Viewport* getViewport();
+        inline osg::Matrix& getModelViewMatrix();
+        inline osg::Matrix& getProjectionMatrix();
+        inline const osg::Matrix getWindowMatrix();
+        inline const osg::Matrix& getMVPW();
 
         inline const osg::Vec3& getEyeLocal() const
         {
             return _eyePointStack.back();
         }
 
+        inline const float getCalculatedNearPlane() const { return _computed_znear; }
+        
+        inline const float getCalculatedFarPlane() const { return _computed_zfar; }
 
         inline float pixelSize(const osg::Vec3& v, float const radius)
         {
@@ -241,38 +262,13 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
     	void updateCalculatedNearFar(const osg::Vec3& pos);
 		
         /** Add a drawable to current render graph.*/
-        inline void addDrawable(osg::Drawable* drawable,osg::Matrix* matrix)
-        {
-            if (_currentRenderGraph->leaves_empty())
-            {
-                // this is first leaf to be added to RenderGraph
-                // and therefore should not already know to current render bin,
-                // so need to add it.
-                _currentRenderBin->addRenderGraph(_currentRenderGraph);
-            }
-            //_currentRenderGraph->addLeaf(new RenderLeaf(drawable,matrix));
-    	    _currentRenderGraph->addLeaf(createOrReuseRenderLeaf(drawable,_projectionStack.back().get(),matrix));
-        }
+        inline void addDrawable(osg::Drawable* drawable,osg::Matrix* matrix);
 
         /** Add a drawable and depth to current render graph.*/
-        inline void addDrawableAndDepth(osg::Drawable* drawable,osg::Matrix* matrix,const float depth)
-        {
-            if (_currentRenderGraph->leaves_empty())
-            {
-                // this is first leaf to be added to RenderGraph
-                // and therefore should not already know to current render bin,
-                // so need to add it.
-                _currentRenderBin->addRenderGraph(_currentRenderGraph);
-            }
-            //_currentRenderGraph->addLeaf(new RenderLeaf(drawable,matrix,depth));
-    	    _currentRenderGraph->addLeaf(createOrReuseRenderLeaf(drawable,_projectionStack.back().get(),matrix,depth));
-        }
+        inline void addDrawableAndDepth(osg::Drawable* drawable,osg::Matrix* matrix,const float depth);
 
         /** Add an attribute which is positioned related to the modelview matrix.*/
-        inline void addPositionedAttribute(osg::Matrix* matrix,const osg::StateAttribute* attr)
-        {
-            _currentRenderBin->_stage->addPositionedAttribute(matrix,attr);
-        }
+        inline void addPositionedAttribute(osg::Matrix* matrix,const osg::StateAttribute* attr);
 
     protected:
 
@@ -318,73 +314,6 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
         osg::ImpostorSprite* createImpostorSprite(osg::Impostor& node);
 
 
-        osg::Viewport* getViewport()
-        {
-            if (!_viewportStack.empty())
-            {
-                return _viewportStack.back().get();
-            }
-            else
-            {
-                return 0L;
-            }
-        }
-
-        osg::Matrix& getModelViewMatrix()
-        {
-            if (!_modelviewStack.empty())
-            {
-                return *_modelviewStack.back();
-            }
-            else
-            {
-                return _identity;
-            }
-        }
-
-        osg::Matrix& getProjectionMatrix()
-        {
-            if (!_projectionStack.empty())
-            {
-                return *_projectionStack.back();
-            }
-            else
-            {
-                return _identity;
-            }
-        }
-
-        const osg::Matrix getWindowMatrix()
-        {
-            if (!_viewportStack.empty())
-            {
-                osg::Viewport* viewport = _viewportStack.back().get();
-                return viewport->computeWindowMatrix();
-            }
-            else
-            {
-                return _identity;
-            }
-        }
-
-        const osg::Matrix& getMVPW()
-        {
-            if (!_MVPW_Stack.empty())
-            {
-                if (!_MVPW_Stack.back())
-                {
-                    _MVPW_Stack.back() = createOrReuseMatrix(getModelViewMatrix());
-                    (*_MVPW_Stack.back()) *= getProjectionMatrix();
-                    (*_MVPW_Stack.back()) *= getWindowMatrix();
-                }
-                return *_MVPW_Stack.back();
-            }
-            else
-            {
-                return _identity;
-            }
-        }
-
 
         void pushClippingVolume();
         void popClippingVolume();
@@ -428,12 +357,6 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
         float   _LODBias;
         float   _smallFeatureCullingPixelSize;
 
-        enum ComputeNearFarMode
-        {
-            DO_NOT_COMPUTE_NEAR_FAR = 0,
-            COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES,
-            COMPUTE_NEAR_FAR_USING_PRIMITIVES
-        };
 
         ComputeNearFarMode  _computeNearFar;
         float               _computed_znear;
@@ -452,65 +375,173 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
 	MatrixList _reuseMatrixList;
 	unsigned int _currentReuseMatrixIndex;
 	
-	inline osg::Matrix* createOrReuseMatrix(const osg::Matrix& value)
-	{
-            // skip of any already reused matrix.
-            while (_currentReuseMatrixIndex<_reuseMatrixList.size() && 
-                   _reuseMatrixList[_currentReuseMatrixIndex]->referenceCount()>1)
-            {
-                osg::notify(osg::NOTICE)<<"Warning:createOrReuseMatrix() skipping multiply refrenced entry."<< std::endl;
-                ++_currentReuseMatrixIndex;
-            }
-
-            // if still within list, element must be singularly referenced
-            // there return it to be reused.
-            if (_currentReuseMatrixIndex<_reuseMatrixList.size())
-            {
-                osg::Matrix* matrix = _reuseMatrixList[_currentReuseMatrixIndex++].get();
-                matrix->set(value);
-                return matrix;
-            }
-
-            // otherwise need to create new matrix.
-            osg::Matrix* matrix = new osg::Matrix(value);
-            _reuseMatrixList.push_back(matrix);
-            ++_currentReuseMatrixIndex;
-            return matrix;
-	}
-	
+	inline osg::Matrix* createOrReuseMatrix(const osg::Matrix& value);
+        
 	typedef std::vector< osg::ref_ptr<RenderLeaf> > RenderLeafList;
 	RenderLeafList _reuseRenderLeafList;
 	unsigned int _currentReuseRenderLeafIndex;
 	
-	inline RenderLeaf* createOrReuseRenderLeaf(osg::Drawable* drawable,osg::Matrix* projection,osg::Matrix* matrix, float depth=0.0f)
-	{
-            // skip of any already reused renderleaf.
-            while (_currentReuseRenderLeafIndex<_reuseRenderLeafList.size() && 
-                   _reuseRenderLeafList[_currentReuseRenderLeafIndex]->referenceCount()>1)
-            {
-                osg::notify(osg::NOTICE)<<"Warning:createOrReuseRenderLeaf() skipping multiply refrenced entry."<< std::endl;
-                ++_currentReuseRenderLeafIndex;
-            }
-
-            // if still within list, element must be singularly referenced
-            // there return it to be reused.
-            if (_currentReuseRenderLeafIndex<_reuseRenderLeafList.size())
-            {
-                RenderLeaf* renderleaf = _reuseRenderLeafList[_currentReuseRenderLeafIndex++].get();
-                renderleaf->set(drawable,projection,matrix,depth);
-                return renderleaf;
-            }
-
-            // otherwise need to create new renderleaf.
-            RenderLeaf* renderleaf = new RenderLeaf(drawable,projection,matrix,depth);
-            _reuseRenderLeafList.push_back(renderleaf);
-            ++_currentReuseRenderLeafIndex;
-            return renderleaf;
-	}
-
+	inline RenderLeaf* createOrReuseRenderLeaf(osg::Drawable* drawable,osg::Matrix* projection,osg::Matrix* matrix, float depth=0.0f);
+        
         osg::ref_ptr<osg::ImpostorSpriteManager> _impostorSpriteManager;
 	
 };
+
+
+
+inline osg::Viewport* CullVisitor::getViewport()
+{
+    if (!_viewportStack.empty())
+    {
+        return _viewportStack.back().get();
+    }
+    else
+    {
+        return 0L;
+    }
+}
+
+inline osg::Matrix& CullVisitor::getModelViewMatrix()
+{
+    if (!_modelviewStack.empty())
+    {
+        return *_modelviewStack.back();
+    }
+    else
+    {
+        return _identity;
+    }
+}
+
+inline osg::Matrix& CullVisitor::getProjectionMatrix()
+{
+    if (!_projectionStack.empty())
+    {
+        return *_projectionStack.back();
+    }
+    else
+    {
+        return _identity;
+    }
+}
+
+inline const osg::Matrix CullVisitor::getWindowMatrix()
+{
+    if (!_viewportStack.empty())
+    {
+        osg::Viewport* viewport = _viewportStack.back().get();
+        return viewport->computeWindowMatrix();
+    }
+    else
+    {
+        return _identity;
+    }
+}
+
+inline const osg::Matrix& CullVisitor::getMVPW()
+{
+    if (!_MVPW_Stack.empty())
+    {
+        if (!_MVPW_Stack.back())
+        {
+            _MVPW_Stack.back() = createOrReuseMatrix(getModelViewMatrix());
+            (*_MVPW_Stack.back()) *= getProjectionMatrix();
+            (*_MVPW_Stack.back()) *= getWindowMatrix();
+        }
+        return *_MVPW_Stack.back();
+    }
+    else
+    {
+        return _identity;
+    }
+}
+
+inline void CullVisitor::addDrawable(osg::Drawable* drawable,osg::Matrix* matrix)
+{
+    if (_currentRenderGraph->leaves_empty())
+    {
+        // this is first leaf to be added to RenderGraph
+        // and therefore should not already know to current render bin,
+        // so need to add it.
+        _currentRenderBin->addRenderGraph(_currentRenderGraph);
+    }
+    //_currentRenderGraph->addLeaf(new RenderLeaf(drawable,matrix));
+    _currentRenderGraph->addLeaf(createOrReuseRenderLeaf(drawable,_projectionStack.back().get(),matrix));
+}
+
+/** Add a drawable and depth to current render graph.*/
+inline void CullVisitor::addDrawableAndDepth(osg::Drawable* drawable,osg::Matrix* matrix,const float depth)
+{
+    if (_currentRenderGraph->leaves_empty())
+    {
+        // this is first leaf to be added to RenderGraph
+        // and therefore should not already know to current render bin,
+        // so need to add it.
+        _currentRenderBin->addRenderGraph(_currentRenderGraph);
+    }
+    //_currentRenderGraph->addLeaf(new RenderLeaf(drawable,matrix,depth));
+    _currentRenderGraph->addLeaf(createOrReuseRenderLeaf(drawable,_projectionStack.back().get(),matrix,depth));
+}
+
+/** Add an attribute which is positioned related to the modelview matrix.*/
+inline void CullVisitor::addPositionedAttribute(osg::Matrix* matrix,const osg::StateAttribute* attr)
+{
+    _currentRenderBin->_stage->addPositionedAttribute(matrix,attr);
+}
+
+inline osg::Matrix* CullVisitor::createOrReuseMatrix(const osg::Matrix& value)
+{
+    // skip of any already reused matrix.
+    while (_currentReuseMatrixIndex<_reuseMatrixList.size() && 
+           _reuseMatrixList[_currentReuseMatrixIndex]->referenceCount()>1)
+    {
+        osg::notify(osg::NOTICE)<<"Warning:createOrReuseMatrix() skipping multiply refrenced entry."<< std::endl;
+        ++_currentReuseMatrixIndex;
+    }
+
+    // if still within list, element must be singularly referenced
+    // there return it to be reused.
+    if (_currentReuseMatrixIndex<_reuseMatrixList.size())
+    {
+        osg::Matrix* matrix = _reuseMatrixList[_currentReuseMatrixIndex++].get();
+        matrix->set(value);
+        return matrix;
+    }
+
+    // otherwise need to create new matrix.
+    osg::Matrix* matrix = new osg::Matrix(value);
+    _reuseMatrixList.push_back(matrix);
+    ++_currentReuseMatrixIndex;
+    return matrix;
+}
+
+inline RenderLeaf* CullVisitor::createOrReuseRenderLeaf(osg::Drawable* drawable,osg::Matrix* projection,osg::Matrix* matrix, float depth)
+{
+    // skip of any already reused renderleaf.
+    while (_currentReuseRenderLeafIndex<_reuseRenderLeafList.size() && 
+           _reuseRenderLeafList[_currentReuseRenderLeafIndex]->referenceCount()>1)
+    {
+        osg::notify(osg::NOTICE)<<"Warning:createOrReuseRenderLeaf() skipping multiply refrenced entry."<< std::endl;
+        ++_currentReuseRenderLeafIndex;
+    }
+
+    // if still within list, element must be singularly referenced
+    // there return it to be reused.
+    if (_currentReuseRenderLeafIndex<_reuseRenderLeafList.size())
+    {
+        RenderLeaf* renderleaf = _reuseRenderLeafList[_currentReuseRenderLeafIndex++].get();
+        renderleaf->set(drawable,projection,matrix,depth);
+        return renderleaf;
+    }
+
+    // otherwise need to create new renderleaf.
+    RenderLeaf* renderleaf = new RenderLeaf(drawable,projection,matrix,depth);
+    _reuseRenderLeafList.push_back(renderleaf);
+    ++_currentReuseRenderLeafIndex;
+    return renderleaf;
+}
+
+
 
 }
 

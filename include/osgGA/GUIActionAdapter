@@ -58,7 +58,7 @@ public:
         /**
         requestRedraw() requests a single redraw.
         */
-    virtual void requestRedraw() = 0;
+        virtual void requestRedraw() = 0;
 
         /**
         requestContinousUpdate(bool) is for en/disabling a throw or idle 
@@ -67,7 +67,7 @@ public:
         GUI toolkits can respond  to this immediately by registering an idle/timed
         callback, or can delay setting the callback and update at their own leisure.
         */
-    virtual void requestContinuousUpdate(bool needed=true) = 0;
+        virtual void requestContinuousUpdate(bool needed=true) = 0;
 
         /**
         requestWarpPointer(int,int) is requesting a repositioning of the mouse pointer
@@ -75,7 +75,7 @@ public:
         to initialise the mouse pointer when mouse position relative to a controls
         neutral mouse position is required, i.e when mimicking a aircrafts joystick.
         */
-    virtual void requestWarpPointer(float x,float y) = 0;
+        virtual void requestWarpPointer(float x,float y) = 0;
 
 };
 

@@ -289,6 +289,7 @@ sockbuf::sockbuf (int domain, sockbuf::type st, int proto)
 
 sockbuf::sockbuf (const sockbuf& sb)
 :
+streambuf(),
 //streambuf (sb),
 rep (sb.rep)
 {

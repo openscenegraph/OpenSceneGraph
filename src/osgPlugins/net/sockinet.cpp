@@ -97,7 +97,7 @@ sockinetaddr::sockinetaddr(const char* hn, const char* sn, const char* pn)
   setport(sn, pn);
 }
 
-sockinetaddr::sockinetaddr (const sockinetaddr& sina)
+sockinetaddr::sockinetaddr (const sockinetaddr& sina): sockAddr()
 {
   sin_family      = sockinetbuf::af_inet;
   sin_addr.s_addr = sina.sin_addr.s_addr;

@@ -17,6 +17,7 @@
 #include <osg/LineWidth>
 #include <osg/TexEnv>
 #include <osg/TexEnvCombine>
+#include <osg/ClearNode>
 
 
 #include <osgUtil/Optimizer>
@@ -607,6 +608,10 @@ int main( int argc, char **argv )
     
     
     osg::Group* root = new osg::Group;
+    
+    osg::ClearNode* clearNode = new osg::ClearNode;
+    clearNode->setClearColor(osg::Vec4(0.0f,0.0f,0.0f,1.0f));
+    root->addChild(clearNode);
 
     osg::Group* sunLight = solarSystem.createSunLight();
     root->addChild(sunLight);
@@ -767,6 +772,7 @@ int main( int argc, char **argv )
     {
         osgDB::writeNodeFile(*root, writeFileName);
         std::cout<<"Written solar system to \""<<writeFileName<<"\""<<std::endl;
+        return 0;
     }
 
 
@@ -834,8 +840,6 @@ int main( int argc, char **argv )
     // create the windows and run the threads.
     viewer.realize();
     
-    viewer.setClearColor(osg::Vec4(0.0f,0.0f,0.0f,1.0f));
-
     while( !viewer.done() )
     {
         // wait for all cull and draw threads to complete.

@@ -1,6 +1,50 @@
 OSG News (most significant items from ChangeLog)
 ================================================
 
+
+14th December 2001 - osg-0.8.43.tar.gz
+
+    >>> Support for TrueType text, Stereo out of the box, and much more.
+    
+    Since the last release the OSG has moved to CVS based developments so
+    many users will have seen gradual increments in functionality and changes
+    to the API. Whereas a the leap from 0.8.42 to 0.8.43 is actually quite
+    significant is likely to require code changes as several significant parts
+    of the API have evolved to a more mature state.
+    
+    The most significant new functionality is the addition of the osgText
+    library which provides support for true type font rendering, as textured,
+    polygonal, pixmap, bitmap and 3D fonts.
+    
+    An new osg::Matrix class has been implemented which cleans its interface.
+    Also all angular paramters are now based on radians rather than degrees
+    as before (and as in Performer), this has been done to be more consistent
+    with the basic trignometric functions and standard maths conventions.
+    
+    Scene graph optimization has been added which can boost performance
+    on some database by as much as an order of magnititude, this is 
+    particularily noticable in .flt based databases.  Display list performance
+    has also been boosted on NVidia based machines thanks to changing the
+    compilation and execution of display list into two seperate operations.
+    
+    App callbacks are now supported on all Nodes, and there now a proper 
+    app traversal which can be used to animate the scene.
+    
+    Stereo support has been added into the osgUtil::SceneView which allows
+    quad buffered/anaglyphic stereo to enabled easily for almost all OSG
+    applications without code modifications - simple set environmental
+    variable or pass in appropriate arguments and your app will render in
+    stereo!
+
+    src/Demos/osgcluster has been added to demonstrate how easy it is
+    to set up a graphics cluster across a standard networked PC's.
+
+    There have been many minor code changes to fix bugs, bottlenecks or 
+    hinderances to extensibility have been addressed, there are too many 
+    to list, but it does represent a significant step towards API maturity
+    and a beta release which is now not far away.
+
+
 9th August 2001 - osg-0.8.42.tar.gz
 
     >>> New osgWX library for integration of OSG with wxWindows apps.

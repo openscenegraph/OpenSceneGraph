@@ -97,7 +97,7 @@ public:
 
 
     /** Set the rendered character size in object coordinates.*/
-    void setCharacterSize(float height,float ascpectRatio=1.0f);
+    void setCharacterSize(float height,float aspectRatio=1.0f);
     
     float getCharacterHeight() const { return _characterHeight; }
     float getCharacterAspectRatio() const { return _characterAspectRatio; }

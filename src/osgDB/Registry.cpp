@@ -108,9 +108,9 @@ Registry::~Registry()
 }
 
 #ifndef WIN32
-osg::ApplicationUsageProxy e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_FILE_PATH <path>[:path]..","Paths for locating datafiles");
+static osg::ApplicationUsageProxy Registry_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_FILE_PATH <path>[:path]..","Paths for locating datafiles");
 #else
-osg::ApplicationUsageProxy e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_FILE_PATH <path>[;path]..","Paths for locating datafiles");
+static osg::ApplicationUsageProxy Registry_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_FILE_PATH <path>[;path]..","Paths for locating datafiles");
 #endif
 
 void Registry::initDataFilePathList()
@@ -135,9 +135,9 @@ void Registry::initDataFilePathList()
 }
 
 #ifndef WIN32
-osg::ApplicationUsageProxy e1(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_LIBRARY_PATH <path>[:path]..","Paths for locating libraries/ plugins");
+static osg::ApplicationUsageProxy Registry_e1(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_LIBRARY_PATH <path>[:path]..","Paths for locating libraries/ plugins");
 #else
-osg::ApplicationUsageProxy e1(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_LIBRARY_PATH <path>[;path]..","Paths for locating libraries/ plugins");
+static osg::ApplicationUsageProxy Registry_e1(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_LIBRARY_PATH <path>[;path]..","Paths for locating libraries/ plugins");
 #endif
 
 void Registry::initLibraryFilePathList()

@@ -253,7 +253,7 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     case trpgGeometry::Triangles:
         {
             geometry = new Geometry;
-            geometry->addPrimitive(new DrawArrays(PrimitiveSet::TRIANGLES,0,numPrims*3));
+            geometry->addPrimitiveSet(new DrawArrays(PrimitiveSet::TRIANGLES,0,numPrims*3));
         }
         break;
     case trpgGeometry::TriStrips:
@@ -267,7 +267,7 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
             int first=0;
             for(int i=0;i<numPrims;++i)
             {
-                geometry->addPrimitive(new DrawArrays(PrimitiveSet::TRIANGLE_STRIP,first,primitives[i]));
+                geometry->addPrimitiveSet(new DrawArrays(PrimitiveSet::TRIANGLE_STRIP,first,primitives[i]));
                 first += primitives[i];
                 
             }
@@ -286,7 +286,7 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
             int i;
             for(i=0;i<numPrims;++i)
             {
-                geometry->addPrimitive(new DrawArrays(PrimitiveSet::TRIANGLE_FAN,first,primitives[i]));
+                geometry->addPrimitiveSet(new DrawArrays(PrimitiveSet::TRIANGLE_FAN,first,primitives[i]));
                 first += primitives[i];
             }
 

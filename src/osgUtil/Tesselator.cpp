@@ -135,12 +135,12 @@ class InsertNewVertices : public osg::ArrayVisitor
 void Tesselator::retesselatePolygons(osg::Geometry& geom)
 {
     Vec3Array* vertices = geom.getVertexArray();
-    if (!vertices || vertices->empty() || geom.getPrimitiveList().empty()) return;
+    if (!vertices || vertices->empty() || geom.getPrimitiveSetList().empty()) return;
 
-    int noPrimitiveAtStart = geom.getPrimitiveList().size();
+    int noPrimitiveAtStart = geom.getPrimitiveSetList().size();
     for(int primNo=0;primNo<noPrimitiveAtStart;++primNo)
     {
-        osg::PrimitiveSet* primitive = geom.getPrimitiveList()[primNo].get();
+        osg::PrimitiveSet* primitive = geom.getPrimitiveSetList()[primNo].get();
         if (primitive->getMode()==osg::PrimitiveSet::POLYGON)
         {
             beginTesselation();
@@ -230,9 +230,9 @@ void Tesselator::retesselatePolygons(osg::Geometry& geom)
                     tcalItr!=tcal.end();
                     ++tcalItr)
                 {
-                    if (tcalItr->valid()) 
+                    if (tcalItr->first.valid()) 
                     {
-                        arrays.push_back(tcalItr->get());
+                        arrays.push_back(tcalItr->first.get());
                     }
                 }
 
@@ -305,7 +305,7 @@ void Tesselator::retesselatePolygons(osg::Geometry& geom)
                     if (primItr==_primList.begin()) 
                     {
                         // first new primitive so overwrite the previous polygon.
-                        geom.getPrimitiveList()[primNo] = elements;                    
+                        geom.getPrimitiveSetList()[primNo] = elements;                    
                         if (normals) {
                             norm=(*normals)[iprim]; // GWM Sep 2002 the flat shaded normal
                         }
@@ -313,7 +313,7 @@ void Tesselator::retesselatePolygons(osg::Geometry& geom)
                     else
                     {
                         // subsequence primitives add to the back of the primitive list.
-                        geom.addPrimitive(elements);
+                        geom.addPrimitiveSet(elements);
                         if (normals) normals->push_back(norm); // GWM Sep 2002 add flat shaded normal for new facet
                     }
                     iprim++; // GWM Sep 2002 count which normal we should use

@@ -5,7 +5,6 @@
 #include <osg/Impostor>
 #include <osg/Billboard>
 #include <osg/Geometry>
-#include <osg/IndexedGeometry>
 #include <osg/GeoSet>
 #include <osg/Notify>
 #include <osg/OccluderNode>
@@ -16,8 +15,7 @@
 
 using namespace osgUtil;
 
-//#define CONVERT_GEOSET_TO_GEOMETRY
-//#define CONVERT_GEOSET_TO_INDEXEDGEOMETRY 
+// #define CONVERT_GEOSET_TO_GEOMETRY
 
 ////////////////////////////////////////////////////////////////////////////
 // Overall Optimizetion function.
@@ -63,7 +61,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 
     }
     
-#if defined(CONVERT_GEOSET_TO_GEOMETRY) || defined(CONVERT_GEOSET_TO_INDEXEDGEOMETRY) 
+#if defined(CONVERT_GEOSET_TO_GEOMETRY)
     // convert the old style GeoSet to Geometry
     ConvertGeoSetsToGeometryVisitor cgtg;
     node->accept(cgtg);
@@ -133,33 +131,17 @@ void Optimizer::ConvertGeoSetsToGeometryVisitor::apply(osg::Geode& geode)
         osg::GeoSet* geoset = dynamic_cast<osg::GeoSet*>(geode.getDrawable(i));
         if (geoset)
         {
-            #if defined(CONVERT_GEOSET_TO_GEOMETRY)
-            
-                osg::Geometry* geom = geoset->convertToGeometry();
-                if (geom)
-                {
-                    std::cout<<"Successfully converted GeoSet to Geometry"<<std::endl;
-                    geode.replaceDrawable(geoset,geom);
-                }
-                else
-                {
-                    std::cout<<"*** Failed to convert GeoSet to Geometry"<<std::endl;
-                }
+            osg::Geometry* geom = geoset->convertToGeometry();
+            if (geom)
+            {
+                std::cout<<"Successfully converted GeoSet to Geometry"<<std::endl;
+                geode.replaceDrawable(geoset,geom);
+            }
+            else
+            {
+                std::cout<<"*** Failed to convert GeoSet to Geometry"<<std::endl;
+            }
 
-            #else
-            
-                osg::IndexedGeometry* geom = geoset->convertToIndexedGeometry();
-                if (geom)
-                {
-                    std::cout<<"Successfully converted GeoSet to IndexedGeometry"<<std::endl;
-                    geode.replaceDrawable(geoset,geom);
-                }
-                else
-                {
-                    std::cout<<"*** Failed to convert GeoSet to IndexedGeometry"<<std::endl;
-                }
-                
-            #endif
         }
     }
 }
@@ -1135,21 +1117,18 @@ struct LessGeometryPrimitiveType
 {
     bool operator() (const osg::Geometry* lhs,const osg::Geometry* rhs) const
     {
-        if (lhs->getNumPrimitives()>0)
+        for(unsigned int i=0;
+            i<lhs->getNumPrimitiveSets() && i<rhs->getNumPrimitiveSets();
+            ++i)
         {
-            if (rhs->getNumPrimitives()>0)
-            {
-                if (lhs->getPrimitive(0)->getType()<rhs->getPrimitive(0)->getType()) return true;
-                else if (rhs->getPrimitive(0)->getType()<lhs->getPrimitive(0)->getType()) return false;
-                
-                if (lhs->getPrimitive(0)->getMode()<rhs->getPrimitive(0)->getMode()) return true;
-                else if (rhs->getPrimitive(0)->getMode()<lhs->getPrimitive(0)->getMode()) return false;
-                
-            }
-            return false;
+            if (lhs->getPrimitiveSet(i)->getType()<rhs->getPrimitiveSet(i)->getType()) return true;
+            else if (rhs->getPrimitiveSet(i)->getType()<lhs->getPrimitiveSet(i)->getType()) return false;
+
+            if (lhs->getPrimitiveSet(i)->getMode()<rhs->getPrimitiveSet(i)->getMode()) return true;
+            else if (rhs->getPrimitiveSet(i)->getMode()<lhs->getPrimitiveSet(i)->getMode()) return false;
+
         }
-        else if (rhs->getNumPrimitives()>0) return true;
-        return false;
+        return lhs->getNumPrimitiveSets()<rhs->getNumPrimitiveSets();
     }
 };
 
@@ -1207,8 +1186,8 @@ bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
         osg::Geometry* geom = dynamic_cast<osg::Geometry*>(geode.getDrawable(i));
         if (geom)
         {
-            osg::Geometry::PrimitiveList& primitives = geom->getPrimitiveList();
-            for(osg::Geometry::PrimitiveList::iterator itr=primitives.begin();
+            osg::Geometry::PrimitiveSetList& primitives = geom->getPrimitiveSetList();
+            for(osg::Geometry::PrimitiveSetList::iterator itr=primitives.begin();
                 itr!=primitives.end();
                 ++itr)
             {
@@ -1235,9 +1214,9 @@ bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
         osg::Geometry* geom = dynamic_cast<osg::Geometry*>(geode.getDrawable(i));
         if (geom)
         {
-            if (geom->getNumPrimitives()>0)
+            if (geom->getNumPrimitiveSets()>0)
             {
-                osg::Geometry::PrimitiveList& primitives = geom->getPrimitiveList();
+                osg::Geometry::PrimitiveSetList& primitives = geom->getPrimitiveSetList();
                 unsigned int primNo=0;
                 while(primNo+1<primitives.size())
                 {
@@ -1355,15 +1334,16 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
     }
     
     // shift the indices of the incomming primitives to account for the pre exisiting geometry.
-    for(osg::Geometry::PrimitiveList::iterator primItr=rhs.getPrimitiveList().begin();
-        primItr!=rhs.getPrimitiveList().end();
+    for(osg::Geometry::PrimitiveSetList::iterator primItr=rhs.getPrimitiveSetList().begin();
+        primItr!=rhs.getPrimitiveSetList().end();
         ++primItr)
     {
         osg::PrimitiveSet* primitive = primItr->get();
         primitive->offsetIndices(base);
     }
     
-    lhs.getPrimitiveList().insert(lhs.getPrimitiveList().end(),rhs.getPrimitiveList().begin(),rhs.getPrimitiveList().end());
+    lhs.getPrimitiveSetList().insert(lhs.getPrimitiveSetList().end(),
+                                     rhs.getPrimitiveSetList().begin(),rhs.getPrimitiveSetList().end());
     
     return true;
 }

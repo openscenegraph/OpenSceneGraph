@@ -132,7 +132,7 @@ osg::Node* createLights(osg::BoundingBox& bb,osg::StateSet* rootStateSet)
     osg::Vec3Array* vertices = new osg::Vec3Array;
     vertices->push_back(osg::Vec3(0.0,0.0,0.0));
     marker->setVertexArray(vertices);
-    marker->addPrimitive(new osg::DrawArrays(GL_POINTS,0,1));
+    marker->addPrimitiveSet(new osg::DrawArrays(GL_POINTS,0,1));
     
     osg::StateSet* stateset = new osg::StateSet;
     osg::Point* point = new osg::Point;
@@ -200,7 +200,7 @@ osg::Geometry* createWall(const osg::Vec3& v1,const osg::Vec3& v2,const osg::Vec
             quadstrip->push_back((row+1)*noXSteps+col);
             quadstrip->push_back(row*noXSteps+col);
         }   
-        geom->addPrimitive(quadstrip);
+        geom->addPrimitiveSet(quadstrip);
     }
     
     // create the normals.    

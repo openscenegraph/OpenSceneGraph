@@ -84,7 +84,7 @@ Node *makeSky( void )
             drawElements->push_back((i+0)*19+j);
         }
 
-        geom->addPrimitive(drawElements);
+        geom->addPrimitiveSet(drawElements);
     }
     
     geom->setVertexArray( &coords );

@@ -233,7 +233,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO1(const std::string
                     break;
             }
                         
-            gc._geom->addPrimitive(osgNew osg::DrawArrays(mode,gc._coordCount,face.index_cnt));
+            gc._geom->addPrimitiveSet(osgNew osg::DrawArrays(mode,gc._coordCount,face.index_cnt));
             gc._coordCount += face.index_cnt;
 
             // From the spec_low.lxt :

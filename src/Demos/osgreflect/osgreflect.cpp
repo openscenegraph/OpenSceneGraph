@@ -92,7 +92,7 @@ osg::Drawable* createMirrorSurface(float xMin,float xMax,float yMin,float yMax,f
     geom->setColorArray(colours);
     geom->setColorBinding(osg::Geometry::BIND_OVERALL);
 
-    geom->addPrimitive(osgNew osg::DrawArrays(osg::PrimitiveSet::QUADS,0,4));
+    geom->addPrimitiveSet(osgNew osg::DrawArrays(osg::PrimitiveSet::QUADS,0,4));
 
     return geom;
 }

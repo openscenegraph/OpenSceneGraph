@@ -71,8 +71,8 @@ struct SmoothTriangleFunctor
 
 void SmoothingVisitor::smooth(osg::Geometry& geom)
 {
-    Geometry::PrimitiveList& primitives = geom.getPrimitiveList();
-    Geometry::PrimitiveList::iterator itr;
+    Geometry::PrimitiveSetList& primitives = geom.getPrimitiveSetList();
+    Geometry::PrimitiveSetList::iterator itr;
     unsigned int numSurfacePrimitives=0;
     for(itr=primitives.begin();
         itr!=primitives.end();

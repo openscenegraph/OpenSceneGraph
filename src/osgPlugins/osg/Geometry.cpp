@@ -1,5 +1,3 @@
-#if 1
-
 #include <osg/Geometry>
 
 #include <osgDB/Registry>
@@ -23,7 +21,7 @@ Array* Array_readLocalData(Input& fr);
 
 bool Primitive_readLocalData(Input& fr,osg::Geometry& geom);
 
-// register the read and write functions with the osgDB::Registry.
+//register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_GeometryFuncProxy
 (
     osgNew osg::Geometry,
@@ -40,14 +38,15 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
 
     Geometry& geom = static_cast<Geometry&>(obj);
 
-    if (fr.matchSequence("Primitives %i {"))
+    bool matchedFirst = false;
+    if ((matchedFirst=fr.matchSequence("Primitives %i {")) || fr.matchSequence("PrimitiveSets %i {") )
     {
         int entry = fr[1].getNoNestedBrackets();
 
         int capacity;
         fr[1].getInt(capacity);
         
-        Geometry::PrimitiveList& primitives = geom.getPrimitiveList();
+        Geometry::PrimitiveSetList& primitives = geom.getPrimitiveSetList();
         if (capacity>0) primitives.reserve(capacity);
         
 
@@ -594,7 +593,7 @@ bool Primitive_readLocalData(Input& fr,osg::Geometry& geom)
         int count;
         fr[3].getInt(count);
 
-        geom.addPrimitive(osgNew DrawArrays(mode,first,count));
+        geom.addPrimitiveSet(osgNew DrawArrays(mode,first,count));
 
         fr += 4;
         
@@ -632,7 +631,7 @@ bool Primitive_readLocalData(Input& fr,osg::Geometry& geom)
         }
          ++fr;
          
-         geom.addPrimitive(prim);
+         geom.addPrimitiveSet(prim);
    
         iteratorAdvanced = true;
     }
@@ -663,7 +662,7 @@ bool Primitive_readLocalData(Input& fr,osg::Geometry& geom)
         }
          ++fr;
          
-         geom.addPrimitive(prim);
+         geom.addPrimitiveSet(prim);
    
         iteratorAdvanced = true;
     }
@@ -694,7 +693,7 @@ bool Primitive_readLocalData(Input& fr,osg::Geometry& geom)
         }
          ++fr;
          
-         geom.addPrimitive(prim);
+         geom.addPrimitiveSet(prim);
    
         iteratorAdvanced = true;
     }
@@ -725,7 +724,7 @@ bool Primitive_readLocalData(Input& fr,osg::Geometry& geom)
         }
          ++fr;
          
-         geom.addPrimitive(prim);
+         geom.addPrimitiveSet(prim);
    
         iteratorAdvanced = true;
     }
@@ -786,13 +785,13 @@ bool Geometry_writeLocalData(const Object& obj, Output& fw)
 {
     const Geometry& geom = static_cast<const Geometry&>(obj);
 
-    const Geometry::PrimitiveList& primitives = geom.getPrimitiveList();
+    const Geometry::PrimitiveSetList& primitives = geom.getPrimitiveSetList();
     if (!primitives.empty())
     {
-        fw.indent() << "Primitives "<<primitives.size()<<std::endl;
+        fw.indent() << "PrimitiveSets "<<primitives.size()<<std::endl;
         fw.indent() << "{"<<std::endl;
         fw.moveIn();
-        for(Geometry::PrimitiveList::const_iterator itr=primitives.begin();
+        for(Geometry::PrimitiveSetList::const_iterator itr=primitives.begin();
             itr!=primitives.end();
             ++itr)
         {
@@ -811,6 +810,11 @@ bool Geometry_writeLocalData(const Object& obj, Output& fw)
         Array_writeLocalData(fw,vertices.begin(),vertices.end(),1);
         
     }
+    if (geom.getVertexIndices())
+    {
+        fw.indent()<<"VertexIndices ";
+        Array_writeLocalData(*geom.getVertexIndices(),fw);        
+    }
 
     if (geom.getNormalArray())
     {
@@ -823,6 +827,11 @@ bool Geometry_writeLocalData(const Object& obj, Output& fw)
         Array_writeLocalData(fw,normals.begin(),normals.end(),1);
         
     }
+    if (geom.getNormalIndices())
+    {
+        fw.indent()<<"NormalIndices ";
+        Array_writeLocalData(*geom.getNormalIndices(),fw);        
+    }
 
     if (geom.getColorArray())
     {
@@ -830,12 +839,22 @@ bool Geometry_writeLocalData(const Object& obj, Output& fw)
         fw.indent()<<"ColorArray ";
         Array_writeLocalData(*geom.getColorArray(),fw);
     }
+    if (geom.getColorIndices())
+    {
+        fw.indent()<<"ColorIndices ";
+        Array_writeLocalData(*geom.getColorIndices(),fw);        
+    }
 
     if (geom.getSecondaryColorArray())
     {
         fw.indent()<<"SecondaryColorBinding "<<Geometry_getBindingTypeStr(geom.getSecondaryColorBinding())<<std::endl;
         fw.indent()<<"SecondaryColorArray ";
         Array_writeLocalData(*geom.getSecondaryColorArray(),fw);
+    }
+    if (geom.getSecondaryColorIndices())
+    {
+        fw.indent()<<"SecondayColorIndices ";
+        Array_writeLocalData(*geom.getSecondaryColorIndices(),fw);        
     }
 
     if (geom.getFogCoordArray())
@@ -846,15 +865,26 @@ bool Geometry_writeLocalData(const Object& obj, Output& fw)
         fw.indent()<<"FogCoordArray "<<fogcoords.size()<<std::endl;
         
         Array_writeLocalData(fw,fogcoords.begin(),fogcoords.end());
+        
+    }
+    if (geom.getFogCoordIndices())
+    {
+        fw.indent()<<"FogCoordIndices ";
+        Array_writeLocalData(*geom.getFogCoordIndices(),fw);        
     }
 
     const Geometry::TexCoordArrayList& tcal=geom.getTexCoordArrayList();
     for(unsigned int i=0;i<tcal.size();++i)
     {
-        if (tcal[i].valid())
+        if (tcal[i].first.valid())
         {
             fw.indent()<<"TexCoordArray "<<i<<" ";
-            Array_writeLocalData(*(tcal[i]),fw);
+            Array_writeLocalData(*(tcal[i].first),fw);
+        }
+        if (tcal[i].second.valid())
+        {
+            fw.indent()<<"TexCoordIndices "<<i<<" ";
+            Array_writeLocalData(*(tcal[i].second),fw);
         }
     }
     
@@ -867,6 +897,7 @@ bool Geometry_matchBindingTypeStr(const char* str,Geometry::AttributeBinding& mo
     if (strcmp(str,"OFF")==0) mode = Geometry::BIND_OFF;
     else if (strcmp(str,"OVERALL")==0) mode = Geometry::BIND_OVERALL;
     else if (strcmp(str,"PER_PRIMITIVE")==0) mode = Geometry::BIND_PER_PRIMITIVE;
+    else if (strcmp(str,"PER_PRIMITIVE_SET")==0) mode = Geometry::BIND_PER_PRIMITIVE_SET;
     else if (strcmp(str,"PER_VERTEX")==0) mode = Geometry::BIND_PER_VERTEX;
     else return false;
     return true;
@@ -877,11 +908,12 @@ const char* Geometry_getBindingTypeStr(Geometry::AttributeBinding mode)
 {
     switch(mode)
     {
-        case (Geometry::BIND_OVERALL)       : return "OVERALL";
-        case (Geometry::BIND_PER_PRIMITIVE) : return "PER_PRIMITIVE";
-        case (Geometry::BIND_PER_VERTEX)    : return "PER_VERTEX";
-        case (Geometry::BIND_OFF)           :
-        default                             : return "OFF";
+        case (Geometry::BIND_OVERALL)           : return "OVERALL";
+        case (Geometry::BIND_PER_PRIMITIVE)     : return "PER_PRIMITIVE";
+        case (Geometry::BIND_PER_PRIMITIVE_SET) : return "PER_PRIMITIVE_SET";
+        case (Geometry::BIND_PER_VERTEX)        : return "PER_VERTEX";
+        case (Geometry::BIND_OFF)               :
+        default                                        : return "OFF";
     }
 }
 
@@ -919,4 +951,3 @@ const char* Geometry_getPrimitiveModeStr(GLenum mode)
         default                                : return "UnknownPrimitveType";
     }
 }
-#endif

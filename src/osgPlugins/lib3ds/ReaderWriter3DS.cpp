@@ -603,7 +603,7 @@ osg::Drawable*   ReaderWriter3DS::createDrawable(Lib3dsMesh *m,FaceList& faceLis
         *(index_itr++) = orig2NewMapping[face.points[2]];
     }
    
-    geom->addPrimitive(elements);
+    geom->addPrimitiveSet(elements);
 
     return geom;
 }

@@ -106,7 +106,7 @@ Node *makeTerrain( void )
             elements->push_back((i+0)*n+j);
             elements->push_back((i+1)*n+j);
         }
-        geom->addPrimitive(elements);
+        geom->addPrimitiveSet(elements);
     }
 
 

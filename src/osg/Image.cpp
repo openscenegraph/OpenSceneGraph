@@ -527,7 +527,7 @@ Geode* osg::createGeodeForImage(osg::Image* image,float s,float t)
             geom->setColorArray(colours);
             geom->setColorBinding(Geometry::BIND_OVERALL);
 
-            geom->addPrimitive(osgNew DrawArrays(PrimitiveSet::QUADS,0,4));
+            geom->addPrimitiveSet(osgNew DrawArrays(PrimitiveSet::QUADS,0,4));
 
             // set up the geode.
             osg::Geode* geode = osgNew osg::Geode;

@@ -5,12 +5,19 @@ using namespace osg;
 PagedLOD::PagedLOD()
 {
     _centerMode = USER_DEFINED_CENTER;
+    _radius = -1;
+    _numChildrenThatCannotBeExpired = 0;
 }
 
 PagedLOD::PagedLOD(const PagedLOD& plod,const CopyOp& copyop):
-    LOD(plod,copyop)
+    LOD(plod,copyop),
+    _radius(plod._radius),
+    _numChildrenThatCannotBeExpired(plod._numChildrenThatCannotBeExpired),
+    _fileNameList(plod._fileNameList),
+    _timeStampList(plod._timeStampList)
 {
 }
+
 
 void PagedLOD::traverse(NodeVisitor& nv)
 {
@@ -70,6 +77,22 @@ void PagedLOD::traverse(NodeVisitor& nv)
         }
         default:
             break;
+    }
+}
+
+bool PagedLOD::computeBound() const
+{
+    if (_centerMode==USER_DEFINED_CENTER && _radius>=0.0f)
+    {
+        _bsphere._center = _userDefinedCenter;
+        _bsphere._radius = _radius;
+        _bsphere_computed = true;
+
+        return true;
+    }
+    else
+    {
+        return LOD::computeBound();
     }
 }
 
@@ -138,7 +161,7 @@ void PagedLOD::setTimeStamp(unsigned int childNo, double timeStamp)
 
 void PagedLOD::removeExpiredChildren(double expiryTime,NodeList& removedChildren)
 {
-    for(unsigned int i=_children.size();i>0;)
+    for(unsigned int i=_children.size();i>_numChildrenThatCannotBeExpired;)
     {
         --i;
         if (!_fileNameList[i].empty() && _timeStampList[i]<expiryTime)

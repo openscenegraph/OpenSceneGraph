@@ -74,6 +74,21 @@ class SG_EXPORT PagedLOD : public LOD
         /** return the list of time stamps.*/
         inline const TimeStampList& getTimeStampList() const { return _timeStampList; }
 
+
+        /** Set the object-space reference radius of the volume enclosed by the PagedLOD. 
+          * Used to detmine the bounding sphere of the PagedLOD in the absense of any children.*/
+        inline void setRadius(float radius) { _radius = radius; }
+        
+        /** Get the object-space radius of the volume enclosed by the PagedLOD.*/
+        inline float getRadius() const { return _radius; }
+
+
+        /** Set the number of children that the PagedLOD must keep around, even if thay are older than their expiry time.*/
+        inline void setNumChildrenThatCannotBeExpired(unsigned int num) { _numChildrenThatCannotBeExpired = num; }
+
+        /** Get the number of children that the PagedLOD must keep around, even if thay are older than their expiry time.*/
+        unsigned int getNumChildrenThatCannotBeExpired() const { return _numChildrenThatCannotBeExpired; }
+
         /** Remove the children from the PagedLOD which haven't be visited since specified expiry time.
             The removed children are added the removeChildren list passed into the method,
             this allows the children to be deleted later at the callers discression.*/
@@ -83,6 +98,10 @@ class SG_EXPORT PagedLOD : public LOD
     
         virtual ~PagedLOD() {}
 
+        virtual bool computeBound() const;
+
+        float           _radius;
+        unsigned int    _numChildrenThatCannotBeExpired;
         FileNameList    _fileNameList;
         TimeStampList   _timeStampList;
 };

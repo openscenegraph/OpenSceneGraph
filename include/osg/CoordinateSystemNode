@@ -23,7 +23,7 @@ namespace osg
 const double WGS_84_RADIUS_EQUATOR = 6378137.0;
 const double WGS_84_RADIUS_POLAR = 6356752.3142;
 
-/** EllipsoidModel encapsulates the ellipsode used to model astral bodies such as plants, moon etc.*/
+/** EllipsoidModel encapsulates the ellipsoid used to model astral bodies such as plants, moon etc.*/
 class EllipsoidModel : public Object
 {
     public:
@@ -92,7 +92,7 @@ class SG_EXPORT CoordinateSystemNode : public Group
         META_Node(osg,CoordinateSystemNode);
         
         
-        /** Set the coodinate system node up by copy the format, coordindate system string, and ellipsoid model of another coordindate system node.*/
+        /** Set the coordinate system node up by copy the format, coordinate system string, and ellipsoid model of another coordinate system node.*/
         void set(const CoordinateSystemNode& csn);
                 
         /** Set the coordinate system format string. Typical values would be WKT, PROJ4, USGS etc.*/

@@ -286,7 +286,7 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates use of convex planer occluders.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
-    arguments.getApplicationUsage()->addCommandLineOption("-c","Mannually create occluders");
+    arguments.getApplicationUsage()->addCommandLineOption("-m","Mannually create occluders");
    
     // initialize the viewer.
     osgProducer::Viewer viewer(arguments);
@@ -295,7 +295,7 @@ int main( int argc, char **argv )
     viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
 
     bool manuallyCreateOccluders = false;
-    while (arguments.read("-c")) { manuallyCreateOccluders = true; }
+    while (arguments.read("-m")) { manuallyCreateOccluders = true; }
 
     // get details on keyboard and mouse bindings used by the viewer.
     viewer.getUsage(*arguments.getApplicationUsage());

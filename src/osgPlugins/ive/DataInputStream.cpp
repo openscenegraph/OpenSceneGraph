@@ -22,6 +22,7 @@
 #include "PolygonOffset.h"
 #include "ShadeModel.h"
 #include "Point.h"
+#include "LineWidth.h"
 #include "Texture1D.h"
 #include "Texture2D.h"
 #include "TextureCubeMap.h"
@@ -629,6 +630,10 @@ osg::StateAttribute* DataInputStream::readStateAttribute()
     else if(attributeID == IVEPOINT){
         attribute = new osg::Point();
         ((ive::Point*)(attribute))->read(this);
+    }
+    else if(attributeID == IVELINEWIDTH){
+        attribute = new osg::LineWidth();
+        ((ive::LineWidth*)(attribute))->read(this);
     }
     else if(attributeID == IVETEXTURE1D){
         attribute = new osg::Texture1D();

@@ -68,11 +68,11 @@ DataInputStream::DataInputStream(std::istream* istream){
 DataInputStream::~DataInputStream(){}
 
 bool DataInputStream::readBool(){
-    bool b;
-    _istream->read((char*)&b, BOOLSIZE);
+    char c;
+    _istream->read(&c, CHARSIZE);
     if (_istream->rdstate() & _istream->failbit)
         throw Exception("DataInputStream::readBool(): Failed to read boolean value.");
-    return b;
+    return c;
 }
 
 char DataInputStream::readChar(){

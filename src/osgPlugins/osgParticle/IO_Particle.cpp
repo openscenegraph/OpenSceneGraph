@@ -32,6 +32,8 @@ bool  read_particle(osgDB::Input &fr, osgParticle::Particle &P)
                         P.setShape(osgParticle::Particle::POINT);
                     } else if (std::string(ptstr) == "QUAD_TRIANGLESTRIP") {
                         P.setShape(osgParticle::Particle::QUAD_TRIANGLESTRIP);
+                    } else if (std::string(ptstr) == "LINE") {
+                        P.setShape(osgParticle::Particle::LINE);
                     } else {
                         osg::notify(osg::WARN) << "Particle reader warning: invalid shape: " << ptstr << std::endl;
                     }
@@ -84,6 +86,22 @@ bool  read_particle(osgDB::Input &fr, osgParticle::Particle &P)
                 osg::Vec3 v;
                 if (fr[1].getFloat(v.x()) && fr[2].getFloat(v.y()) && fr[3].getFloat(v.z())) {
                     P.setVelocity(v);
+                    fr += 4;
+                    itAdvanced = true;
+                }
+            }
+			if (fr[0].matchWord("angle")) {
+				osg::Vec3 v;
+				if (fr[1].getFloat(v.x()) && fr[2].getFloat(v.y()) && fr[3].getFloat(v.z())) {
+                    P.setAngle(v);
+                    fr += 4;
+                    itAdvanced = true;
+                }
+            }
+            if (fr[0].matchWord("angularVelocity")) {
+                osg::Vec3 v;
+                if (fr[1].getFloat(v.x()) && fr[2].getFloat(v.y()) && fr[3].getFloat(v.z())) {
+                    P.setAngularVelocity(v);
                     fr += 4;
                     itAdvanced = true;
                 }
@@ -152,8 +170,9 @@ void  write_particle(const osgParticle::Particle &P, osgDB::Output &fw)
     case osgParticle::Particle::POINT: fw << "POINT" << std::endl; break;
     case osgParticle::Particle::HEXAGON: fw << "HEXAGON" << std::endl; break;
     case osgParticle::Particle::QUAD_TRIANGLESTRIP: fw << "QUAD_TRIANGLESTRIP" << std::endl; break;
-    case osgParticle::Particle::QUAD:
-    default: fw << "QUAD" << std::endl; break;
+    case osgParticle::Particle::QUAD: fw << "QUAD" << std::endl; break;
+	case osgParticle::Particle::LINE:
+    default: fw << "LINE" << std::endl; break;
     }
 
     fw.indent() << "lifeTime " << P.getLifeTime() << std::endl;
@@ -177,8 +196,16 @@ void  write_particle(const osgParticle::Particle &P, osgDB::Output &fw)
     fw.indent() << "velocity ";
     fw << v.x() << " " << v.y() << " " << v.z() << std::endl;
 
-    fw.indent() << "mass " << P.getMass() << std::endl;
+	v = P.getAngle();
+	fw.indent() << "angle ";
+	fw << v.x() << " " << v.y() << " " << v.z() << std::endl;
+
+	v = P.getAngularVelocity();
+	fw.indent() << "angularVelocity ";
+	fw << v.x() << " " << v.y() << " " << v.z() << std::endl;
+
     fw.indent() << "radius " << P.getRadius() << std::endl;
+    fw.indent() << "mass " << P.getMass() << std::endl;
 
     // interpolators
 

@@ -17,7 +17,7 @@ osgParticle::ModularEmitter::ModularEmitter(const ModularEmitter &copy, const os
 {
 }
 
-void osgParticle::ModularEmitter::emit(double dt)
+void osgParticle::ModularEmitter::emit(double dt) 
 {
     int n = counter_->numParticlesToCreate(dt);
     for (int i=0; i<n; ++i) {

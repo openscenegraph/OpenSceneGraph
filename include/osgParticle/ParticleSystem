@@ -297,8 +297,8 @@ namespace osgParticle
         if (!bounds_computed_) {
             _bbox = def_bbox_;
         } else {
-            _bbox._min = bmin_;
-            _bbox._max = bmax_;
+			_bbox._min = bmin_;
+			_bbox._max = bmax_;
         }
         _bbox_computed = true;
         return true;

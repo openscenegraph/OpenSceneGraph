@@ -472,8 +472,8 @@ void DataSet::Source::setSortValueFromSourceDataResolution()
 {
     if (_sourceData.valid())
     {
-        double dx = (_sourceData->_extents.xMax()-_sourceData->_extents.xMin())/(double)_sourceData->_numValuesX;
-        double dy = (_sourceData->_extents.yMax()-_sourceData->_extents.yMin())/(double)_sourceData->_numValuesY;
+        double dx = (_sourceData->_extents.xMax()-_sourceData->_extents.xMin())/(double)(_sourceData->_numValuesX-1);
+        double dy = (_sourceData->_extents.yMax()-_sourceData->_extents.yMin())/(double)(_sourceData->_numValuesY-1);
         
         setSortValue( sqrt( dx*dx + dy*dy ) );
     }
@@ -488,6 +488,11 @@ void DataSet::Source::loadSourceData()
 
 bool DataSet::Source::needReproject(const osgTerrain::CoordinateSystem* cs) const
 {
+    return needReproject(cs,0.0,0.0);
+}
+
+bool DataSet::Source::needReproject(const osgTerrain::CoordinateSystem* cs, double minResolution, double maxResolution) const
+{
     if (!_sourceData) return false;
     
     // handle modles by using a matrix transform only.
@@ -496,17 +501,26 @@ bool DataSet::Source::needReproject(const osgTerrain::CoordinateSystem* cs) cons
     // always need to reproject imagery with GCP's.
     if (_sourceData->_hasGCPs) return true;
 
-    // coordinate system are the same.
-    if (_sourceData->_cs == cs) return false;
-    
-    if (_sourceData->_cs.valid() && cs)
-    {
-        return (*(_sourceData->_cs) != *cs);
-    }
+    bool csTheSame = (_sourceData->_cs == cs) ||
+                     (_sourceData->_cs.valid() && cs && (*(_sourceData->_cs) != *cs));
+                     
+                     
+    if (!csTheSame) return true;
+
+    if (minResolution==0.0 && maxResolution==0.0) return false;
+
+    // now check resolutions.
+    const osg::Matrixd& m = _sourceData->_geoTransform;
+    double currentResolution = sqrt(osg::square(m(0,0))+osg::square(m(1,0))+
+                                    osg::square(m(0,1))+osg::square(m(1,1)));
+                                   
+    if (currentResolution<minResolution) return true;
+    if (currentResolution>maxResolution) return true;
+
     return false;
 }
 
-DataSet::Source* DataSet::Source::doReproject(osgTerrain::CoordinateSystem* cs,const std::string& filename) const
+DataSet::Source* DataSet::Source::doReproject(const std::string& filename, osgTerrain::CoordinateSystem* cs, double targetResolution) const
 {
     // return nothing when repoject is inappropriate.
     if (!_sourceData) return 0;
@@ -558,6 +572,31 @@ DataSet::Source* DataSet::Source::doReproject(osgTerrain::CoordinateSystem* cs,c
     {
         std::cout<<" failed to create warp"<<std::endl;
         return 0;
+    }
+    
+    if (targetResolution>=0.0f)
+    {
+        std::cout<<"recomputing the target transform size"<<std::endl;
+        
+        double currentResolution = sqrt(osg::square(adfDstGeoTransform[1])+osg::square(adfDstGeoTransform[2])+
+                                        osg::square(adfDstGeoTransform[4])+osg::square(adfDstGeoTransform[5]));
+
+        std::cout<<"        default computed resolution "<<currentResolution<<" nPixels="<<nPixels<<" nLines="<<nLines<<std::endl;
+
+        double extentsPixels = sqrt(osg::square(adfDstGeoTransform[1])+osg::square(adfDstGeoTransform[2]))*(double)(nPixels-1);
+        double extentsLines = sqrt(osg::square(adfDstGeoTransform[4])+osg::square(adfDstGeoTransform[5]))*(double)(nLines-1);
+                                        
+        double ratio = targetResolution/currentResolution;
+        adfDstGeoTransform[1] *= ratio;
+        adfDstGeoTransform[2] *= ratio;
+        adfDstGeoTransform[4] *= ratio;
+        adfDstGeoTransform[5] *= ratio;
+        
+        nPixels = (int)ceil(extentsPixels/sqrt(osg::square(adfDstGeoTransform[1])+osg::square(adfDstGeoTransform[2])))+1;
+        nLines = (int)ceil(extentsLines/sqrt(osg::square(adfDstGeoTransform[4])+osg::square(adfDstGeoTransform[5])))+1;
+
+        std::cout<<"        target computed resolution "<<targetResolution<<" nPixels="<<nPixels<<" nLines="<<nLines<<std::endl;
+        
     }
 
     
@@ -1599,7 +1638,7 @@ void DataSet::updateSourcesForDestinationGraphNeeds()
                 // do the reprojection to a tempory file.
                 std::string newFileName = temporyFilePrefix + osgDB::getStrippedName(source->getFileName()) + ".tif";
                 
-                Source* newSource = source->doReproject(_coordinateSystem.get(),newFileName);
+                Source* newSource = source->doReproject(newFileName,_coordinateSystem.get());
                 
                 // replace old source by new one.
                 if (newSource) *itr = newSource;

@@ -93,6 +93,10 @@ class OSGGLUT_EXPORT Viewer : public Window, public osgGA::GUIActionAdapter
         void selectCameraManipulator(unsigned int pos, 
 				     unsigned int viewport = 0);
 
+	/// Set focusable
+	void setFocusable( unsigned int viewp, bool focusable )
+	{ _viewportList[viewp]._focusable = focusable; };
+
         void prependEventHandler(osgGA::GUIEventHandler* handler,unsigned int viewport = 0);
         void appendEventHandler(osgGA::GUIEventHandler* handler,unsigned int viewport = 0);
 
@@ -146,6 +150,8 @@ class OSGGLUT_EXPORT Viewer : public Window, public osgGA::GUIActionAdapter
         {
             osg::ref_ptr<osgUtil::SceneView> sceneView;
             float viewport[4];                        // Win-size-relative [0,1]
+
+	    bool _focusable;
 
             osg::ref_ptr<osgGA::CameraManipulator>      _cameraManipulator;
             CameraManipList                             _cameraManipList;

@@ -396,6 +396,28 @@ Polytope State::getViewFrustum() const
     return cv;
 }
 
+void State::disableAllVertexArrays()
+{
+    disableVertexPointer();
+    disableTexCoordPointersAboveAndIncluding(0);
+    disableColorPointer();
+    disableFogCoordPointer();
+    disableIndexPointer();
+    disableNormalPointer();
+    disableSecondaryColorPointer();
+}
+
+void State::dirtyAllVertexArrays()
+{
+    dirtyVertexPointer();
+    dirtyTexCoordPointersAboveAndIncluding(0);
+    dirtyColorPointer();
+    dirtyFogCoordPointer();
+    dirtyIndexPointer();
+    dirtyNormalPointer();
+    dirtySecondaryColorPointer();
+}
+
 typedef void (APIENTRY * ActiveTextureProc) (GLenum texture);
 
 bool State::setClientActiveTextureUnit( unsigned int unit )
@@ -450,16 +472,17 @@ void State::setFogCoordPointer(GLenum type, GLsizei stride, const GLvoid *ptr)
     if (s_glFogCoordPointer)
     {
 
-        if (!_fogArray._enabled)
+        if (!_fogArray._enabled || _fogArray._dirty)
         {
             _fogArray._enabled = true;
             glEnableClientState(GL_FOG_COORDINATE_ARRAY);
         }
-        if (_fogArray._pointer!=ptr)
+        if (_fogArray._pointer!=ptr || _fogArray._dirty)
         {
             _fogArray._pointer=ptr;
             s_glFogCoordPointer( type, stride, ptr );
         }
+        _fogArray._dirty = false;
     }
     
 }
@@ -473,15 +496,16 @@ void State::setSecondaryColorPointer( GLint size, GLenum type,
 
     if (s_glSecondaryColorPointer)
     {
-        if (!_secondaryColorArray._enabled)
+        if (!_secondaryColorArray._enabled || _secondaryColorArray._dirty)
         {
             _secondaryColorArray._enabled = true;
             glEnableClientState(GL_SECONDARY_COLOR_ARRAY);
         }
-        if (_secondaryColorArray._pointer!=ptr)
+        if (_secondaryColorArray._pointer!=ptr || _secondaryColorArray._dirty)
         {
             _secondaryColorArray._pointer=ptr;
             s_glSecondaryColorPointer( size, type, stride, ptr );
         }
+        _secondaryColorArray._dirty = false;
     }
 }

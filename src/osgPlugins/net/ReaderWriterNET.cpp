@@ -118,6 +118,7 @@ class NetReader : public osgDB::ReaderWriter
             case(IMAGE): return rw->readImage(fin,options);
             case(HEIGHTFIELD): return rw->readHeightField(fin,options);
             case(NODE): return rw->readNode(fin,options);
+            default: break;
             }
         }
 
@@ -346,6 +347,7 @@ class NetReader : public osgDB::ReaderWriter
                     case(IMAGE): osgDB::writeImageFile( *(readResult.getImage()), cacheFile );
                     case(HEIGHTFIELD): osgDB::writeHeightFieldFile( *(readResult.getHeightField()), cacheFile );
                     case(NODE): osgDB::writeNodeFile( *(readResult.getNode()), cacheFile );;
+                    default: break;
                     }
  
                      

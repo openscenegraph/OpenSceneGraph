@@ -11,8 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSG_CAMERA_GROUP_H
-#define OSG_CAMERA_GROUP_H
+#ifndef OSGPRODUCER_OSGCAMERAGROUP_H
+#define OSGPRODUCER_OSGCAMERAGROUP_H 1
 
 
 #include <Producer/CameraGroup>
@@ -23,26 +23,26 @@
 #include <osg/FrameStamp>
 #include <osg/DisplaySettings>
 
-#include <osgProducer/SceneHandler>
+#include <osgProducer/OsgSceneHandler>
 
 namespace osgProducer {
 
-class OSGPRODUCER_EXPORT CameraGroup : public Producer::CameraGroup
+class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
 {
     public :
 
-        CameraGroup();
+        OsgCameraGroup();
 
-        CameraGroup(Producer::CameraConfig *cfg);
+        OsgCameraGroup(Producer::CameraConfig *cfg);
 
-        CameraGroup(const std::string& configFile);
+        OsgCameraGroup(const std::string& configFile);
 
-        CameraGroup(osg::ArgumentParser& arguments);
+        OsgCameraGroup(osg::ArgumentParser& arguments);
 
-        virtual ~CameraGroup() {}
+        virtual ~OsgCameraGroup() {}
 
 
-        typedef std::vector <osgProducer::SceneHandler *> SceneHandlerList;
+        typedef std::vector <osgProducer::OsgSceneHandler*> SceneHandlerList;
 
 
         SceneHandlerList& getSceneHandlerList() { return _shvec;}

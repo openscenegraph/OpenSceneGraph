@@ -11,8 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGPRODUCER_SCENEHANDLER
-#define OSGPRODUCER_SCENEHANDLER 1
+#ifndef OSGPRODUCER_OSGSCENEHANDLER
+#define OSGPRODUCER_OSGSCENEHANDLER 1
 
 #include <osgProducer/Export>
 
@@ -22,11 +22,11 @@
 
 namespace osgProducer {
 
-class OSGPRODUCER_EXPORT SceneHandler : public Producer::Camera::SceneHandler, public osgUtil::SceneView
+class OSGPRODUCER_EXPORT OsgSceneHandler : public Producer::Camera::SceneHandler, public osgUtil::SceneView
 {
     public :
     
-        SceneHandler( osg::DisplaySettings *ds = NULL);
+        OsgSceneHandler( osg::DisplaySettings *ds = NULL);
 
         /// override the init method to force it be run one at a time.
         virtual void init();
@@ -40,7 +40,7 @@ class OSGPRODUCER_EXPORT SceneHandler : public Producer::Camera::SceneHandler, p
 
     protected:
     
-        virtual ~SceneHandler() {}
+        virtual ~OsgSceneHandler() {}
     
         osg::ref_ptr<osg::RefMatrix> mm; 
         osg::ref_ptr<osg::RefMatrix> pm;

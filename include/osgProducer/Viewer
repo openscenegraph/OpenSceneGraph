@@ -23,14 +23,14 @@
 #include <osgGA/GUIEventHandler>
 #include <osgGA/KeySwitchCameraManipulator>
 
-#include <osgProducer/CameraGroup>
+#include <osgProducer/OsgCameraGroup>
 #include <osgProducer/KeyboardMouseCallback>
 
 #include <list>
 
 namespace osgProducer {
 
-class OSGPRODUCER_EXPORT Viewer : public CameraGroup, public osgGA::GUIActionAdapter
+class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIActionAdapter
 {
     public :
 

@@ -26,7 +26,7 @@ Viewer::Viewer():
 }
 
 Viewer::Viewer(Producer::CameraConfig *cfg):
-    CameraGroup(cfg),
+    OsgCameraGroup(cfg),
     _done(false),
     _frameNumber(0),
     _kbmcb(0)
@@ -34,7 +34,7 @@ Viewer::Viewer(Producer::CameraConfig *cfg):
 }
 
 Viewer::Viewer(const std::string& configFile):
-    CameraGroup(configFile),
+    OsgCameraGroup(configFile),
     _done(false),
     _frameNumber(0),
     _kbmcb(0)
@@ -42,7 +42,7 @@ Viewer::Viewer(const std::string& configFile):
 }
 
 Viewer::Viewer(osg::ArgumentParser& arguments):
-    CameraGroup(arguments),
+    OsgCameraGroup(arguments),
     _done(false),
     _frameNumber(0),
     _kbmcb(0)
@@ -182,14 +182,14 @@ void Viewer::realize( ThreadingModel thread_model)
         _keyswitchManipulator->home(*init_event,*this);
     }
 
-    CameraGroup::realize( thread_model );
+    OsgCameraGroup::realize( thread_model );
     
     
 }
 
 void Viewer::sync()
 {
-    CameraGroup::sync();
+    OsgCameraGroup::sync();
 
     // set the frame stamp for the new frame.
     double time_since_start = _timer.delta_s(_start_tick,_timer.tick());

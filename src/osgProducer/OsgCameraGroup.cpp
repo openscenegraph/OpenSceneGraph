@@ -1,8 +1,17 @@
-//Open Producer - Copyright (C) 2002 Don Burns
-//Distributed under the terms of the GNU LIBRARY GENERAL PUBLIC LICENSE (LGPL)
-//as published by the Free Software Foundation.
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
 
-#include <osgProducer/CameraGroup>
+#include <osgProducer/OsgCameraGroup>
 #include <osgDB/FileUtils>
 
 using namespace osgProducer;
@@ -22,30 +31,30 @@ std::string extractCameraConfigFile(osg::ArgumentParser& arguments)
 }
 
 
-CameraGroup::CameraGroup() : Producer::CameraGroup() 
+OsgCameraGroup::OsgCameraGroup() : Producer::CameraGroup() 
 {
     _init();
 }
 
-CameraGroup::CameraGroup(Producer::CameraConfig *cfg):
+OsgCameraGroup::OsgCameraGroup(Producer::CameraConfig *cfg):
     Producer::CameraGroup(cfg) 
 {
     _init();
 }
 
-CameraGroup::CameraGroup(const std::string& configFile):
+OsgCameraGroup::OsgCameraGroup(const std::string& configFile):
     Producer::CameraGroup(findCameraConfigFile(configFile)) 
 {
     _init();
 }
 
-CameraGroup::CameraGroup(osg::ArgumentParser& arguments):
+OsgCameraGroup::OsgCameraGroup(osg::ArgumentParser& arguments):
     Producer::CameraGroup(extractCameraConfigFile(arguments))
 {
     _init();
 }
 
-void CameraGroup::_init()
+void OsgCameraGroup::_init()
 {
     _scene_data = NULL;
     _global_stateset = NULL;
@@ -65,7 +74,7 @@ void CameraGroup::_init()
 
 }
 
-void CameraGroup::setSceneData( osg::Node *scene ) 
+void OsgCameraGroup::setSceneData( osg::Node *scene ) 
 { 
     if (_scene_data==scene) return;
 
@@ -84,7 +93,7 @@ void CameraGroup::setSceneData( osg::Node *scene )
     setUpSceneViewsWithData();
 }
         
-void CameraGroup::setSceneDecorator( osg::Group* decorator)
+void OsgCameraGroup::setSceneDecorator( osg::Group* decorator)
 {
     if (_scene_decorator==decorator) return;
 
@@ -98,7 +107,7 @@ void CameraGroup::setSceneDecorator( osg::Group* decorator)
 }
 
         
-void CameraGroup::setUpSceneViewsWithData()
+void OsgCameraGroup::setUpSceneViewsWithData()
 {
     for(SceneHandlerList::iterator  p = _shvec.begin(); p != _shvec.end(); p++ )
     {
@@ -122,33 +131,33 @@ void CameraGroup::setUpSceneViewsWithData()
 }
 
 
-void CameraGroup::setFrameStamp( osg::FrameStamp* fs )
+void OsgCameraGroup::setFrameStamp( osg::FrameStamp* fs )
 {
     _frameStamp = fs;
     setUpSceneViewsWithData();
 }
 
 
-void CameraGroup::setGlobalStateSet( osg::StateSet *sset ) 
+void OsgCameraGroup::setGlobalStateSet( osg::StateSet *sset ) 
 { 
     _global_stateset = sset; 
     setUpSceneViewsWithData();
 }
 
-void CameraGroup::setBackgroundColor( const osg::Vec4& backgroundColor ) 
+void OsgCameraGroup::setBackgroundColor( const osg::Vec4& backgroundColor ) 
 {
     _background_color = backgroundColor;
     setUpSceneViewsWithData();
 }
 
-void CameraGroup::setLODScale( float scale )
+void OsgCameraGroup::setLODScale( float scale )
 {
     // need to set a local variable?
     _LODScale = scale;
     setUpSceneViewsWithData();
 }
 
-void CameraGroup::setFusionDistance( osgUtil::SceneView::FusionDistanceMode mode,float value)
+void OsgCameraGroup::setFusionDistance( osgUtil::SceneView::FusionDistanceMode mode,float value)
 {
     // need to set a local variable?
     _fusionDistanceMode = mode;
@@ -156,13 +165,13 @@ void CameraGroup::setFusionDistance( osgUtil::SceneView::FusionDistanceMode mode
     setUpSceneViewsWithData();
 }
 
-void CameraGroup::advance()
+void OsgCameraGroup::advance()
 {
     if( !_initialized ) return;
     Producer::CameraGroup::advance();        
 }
 
-void CameraGroup::realize( ThreadingModel thread_model)
+void OsgCameraGroup::realize( ThreadingModel thread_model)
 {
     if( _initialized ) return;
 
@@ -174,7 +183,7 @@ void CameraGroup::realize( ThreadingModel thread_model)
     for( unsigned int i = 0; i < _cfg->getNumberOfCameras(); i++ )
     {
         Producer::Camera *cam = _cfg->getCamera(i);
-        osgProducer::SceneHandler *sh = new osgProducer::SceneHandler(_ds.get());
+        osgProducer::OsgSceneHandler *sh = new osgProducer::OsgSceneHandler(_ds.get());
         sh->setDefaults();
         if( _global_stateset != NULL )
             sh->setGlobalStateSet( _global_stateset.get() );
@@ -203,11 +212,11 @@ void CameraGroup::realize( ThreadingModel thread_model)
     }
 
 
-    Producer::CameraGroup::realize( thread_model );        
+    CameraGroup::realize( thread_model );        
     _initialized = true;
 }
 
-osg::Node* CameraGroup::getTopMostSceneData()
+osg::Node* OsgCameraGroup::getTopMostSceneData()
 {
     if (_scene_decorator.valid())
         return _scene_decorator.get();
@@ -215,7 +224,7 @@ osg::Node* CameraGroup::getTopMostSceneData()
         return _scene_data.get(); 
 }
 
-const osg::Node* CameraGroup::getTopMostSceneData() const
+const osg::Node* OsgCameraGroup::getTopMostSceneData() const
 {
     if (_scene_decorator.valid())
         return _scene_decorator.get();
@@ -223,12 +232,12 @@ const osg::Node* CameraGroup::getTopMostSceneData() const
         return _scene_data.get(); 
 }
 
-void CameraGroup::frame()
+void OsgCameraGroup::frame()
 {
     osg::Node* node = getTopMostSceneData();
     if (node) node->getBound();
 
-    Producer::CameraGroup::frame();
+    CameraGroup::frame();
     _frameStamp->setFrameNumber( _frameStamp->getFrameNumber() + 1 );
 }
 

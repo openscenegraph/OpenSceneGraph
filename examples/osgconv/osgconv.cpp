@@ -252,6 +252,9 @@ public:
             case(MAKE_ALL_STATESET_OPAQUE):
                 makeNonTransparent = true;
                 break;
+            default:
+                makeNonTransparent = false;
+                break;
             }
         
             if (makeNonTransparent)
@@ -278,6 +281,57 @@ public:
     FixTransparencyMode _mode;
 };
 
+class PruneStateSetVisitor : public osg::NodeVisitor
+{
+public:
+
+    PruneStateSetVisitor():
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
+        _numStateSetRemoved(0)
+    {
+        std::cout<<"Running PruneStateSet..."<<std::endl;
+    }
+        
+    ~PruneStateSetVisitor()
+    {
+        std::cout<<"  Number of StateState removed "<<_numStateSetRemoved<<std::endl;
+    }
+
+    virtual void apply(osg::Node& node)
+    {
+        if (node.getStateSet())
+        {
+            node.setStateSet(0);
+            ++_numStateSetRemoved;
+        }
+        traverse(node);
+    }
+    
+    virtual void apply(osg::Geode& node)
+    {
+        if (node.getStateSet())
+        {
+            node.setStateSet(0);
+            ++_numStateSetRemoved;
+        }
+        
+        for(unsigned int i=0;i<node.getNumDrawables();++i)
+        {
+            osg::Drawable* drawable = node.getDrawable(i);
+            if (drawable && drawable->getStateSet())
+            {
+                drawable->setStateSet(0);
+                ++_numStateSetRemoved;
+            }
+        }
+        
+        traverse(node);
+    }
+    
+    unsigned int _numStateSetRemoved;
+};
+
+
 
 static void usage( const char *prog, const char *msg )
 {
@@ -300,10 +354,10 @@ static void usage( const char *prog, const char *msg )
     osg::notify(osg::NOTICE)<<"    --compressed-dxt3  - Enable the usage of S3TC DXT3 compressed textures"<< std::endl;
     osg::notify(osg::NOTICE)<<"    --compressed-dxt5  - Enable the usage of S3TC DXT5 compressed textures"<< std::endl;
     osg::notify(osg::NOTICE)<< std::endl;
-    osg::notify(osg::NOTICE)<<"    --fixTransparency  - fix stateset which are curerntly declared as transprent,"<< std::endl;
+    osg::notify(osg::NOTICE)<<"    --fix-transparency  - fix stateset which are curerntly declared as transprent,"<< std::endl;
     osg::notify(osg::NOTICE)<<"                         but should be opaque. Defaults to using the "<< std::endl;
     osg::notify(osg::NOTICE)<<"                         fixTranspancyMode MAKE_OPAQUE_TEXTURE_STATESET_OPAQUE."<< std::endl;
-    osg::notify(osg::NOTICE)<<"    --fixTransparencyMode <mode_string>  - fix stateset which are curerntly declared as"<< std::endl;
+    osg::notify(osg::NOTICE)<<"    --fix-transparency-mode <mode_string>  - fix stateset which are curerntly declared as"<< std::endl;
     osg::notify(osg::NOTICE)<<"                         transprent but should be opaque. The mode_string determines"<< std::endl;
     osg::notify(osg::NOTICE)<<"                         algorithm is used to fix the transparency, options are:    "<< std::endl;
     osg::notify(osg::NOTICE)<<"                                 MAKE_OPAQUE_TEXTURE_STATESET_OPAQUE,"<<std::endl;
@@ -468,13 +522,16 @@ int main( int argc, char **argv )
     
     FixTransparencyVisitor::FixTransparencyMode fixTransparencyMode = FixTransparencyVisitor::NO_TRANSPARANCY_FIXING;
     std::string fixString;
-    while(arguments.read("--fixTransparency")) fixTransparencyMode = FixTransparencyVisitor::MAKE_OPAQUE_TEXTURE_STATESET_OPAQUE;
-    while(arguments.read("--fixTransparencyMode",fixString))
+    while(arguments.read("--fix-transparency")) fixTransparencyMode = FixTransparencyVisitor::MAKE_OPAQUE_TEXTURE_STATESET_OPAQUE;
+    while(arguments.read("--fix-transparency-mode",fixString))
     {
          if (fixString=="MAKE_OPAQUE_TEXTURE_STATESET_OPAQUE") fixTransparencyMode = FixTransparencyVisitor::MAKE_OPAQUE_TEXTURE_STATESET_OPAQUE;
          if (fixString=="MAKE_ALL_STATESET_OPAQUE") fixTransparencyMode = FixTransparencyVisitor::MAKE_ALL_STATESET_OPAQUE;
     };
     
+    bool pruneStateSet = false;
+    while(arguments.read("--prune-StateSet")) pruneStateSet = true;
+
     osg::Texture::InternalFormatMode internalFormatMode = osg::Texture::USE_IMAGE_DATA_FORMAT;
     while(arguments.read("--compressed") || arguments.read("--compressed-arb")) { internalFormatMode = osg::Texture::USE_ARB_COMPRESSION; }
 
@@ -509,6 +566,12 @@ int main( int argc, char **argv )
     }
 
     osg::ref_ptr<osg::Node> root = osgDB::readNodeFiles(fileNames);
+
+    if (pruneStateSet)
+    {
+        PruneStateSetVisitor pssv;
+        root->accept(pssv);
+    }
 
     if (fixTransparencyMode != FixTransparencyVisitor::NO_TRANSPARANCY_FIXING)
     {

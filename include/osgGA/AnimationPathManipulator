@@ -30,28 +30,26 @@ class AnimationPathManipulator : public osgGA::CameraManipulator
     	        _animationPath = new osg::AnimationPath;
     		_animationPath->setLoopMode(osg::AnimationPath::LOOP);
 
-		filebuf fb;
-		fb.open( filename.c_str(),"r");
-		if( !fb.is_open() )
+		FILE *fp = fopen( filename.c_str(), "r" );
+		if( fp == NULL )
 		{
 		    osg::notify(osg::WARN) << "AnimationPathManipulator: Cannot open animation path file \"" << filename << "\".\n";
 		    _valid = false;
 		    return;
 		}
-		istream in(&fb);
-		while( !in.eof() )
+		while( !feof( fp ))
 		{
 		    double time;
         	    osg::Vec3 position;
         	    osg::Quat rotation;
-		    in >> time;
-		    in >> position[0]; in >> position[1]; in >> position[2];
-		    in >> rotation[0]; in >> rotation[1]; in >> rotation[2]; in >> rotation[3];
+		    fscanf( fp, "%lf %f %f %f %f %f %f %f\n",
+			&time, &position[0], &position[1], &position[2],
+			&rotation[0], &rotation[1], &rotation[2], &rotation[3] );
 
-		    if( !in.eof() )
+		    if( !feof(fp))
         	        _animationPath->insert(time,osg::AnimationPath::ControlPoint(position,rotation));
 		}
-		fb.close();
+		fclose(fp);
 		_valid = true;
 	    }
 

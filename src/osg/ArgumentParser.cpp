@@ -291,7 +291,7 @@ void ArgumentParser::reportRemainingOptionsAsUnrecognized(ErrorSeverity severity
             ++itr)
         {
             const std::string& option = itr->first;
-            unsigned int prevpos = 0, pos = 0;
+            std::string::size_type prevpos = 0, pos = 0;
             while ((pos=option.find(' ',prevpos))!=std::string::npos)
             {
                 if (option[prevpos]=='-') 

@@ -15,6 +15,21 @@ Package=<4>
 
 ###############################################################################
 
+Project: "Core osgUtil"=.\osgUtil\osgUtil.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "Core osgDB"=.\osgDB\osgDB.dsp - Package Owner=<4>
 
 Package=<5>
@@ -30,7 +45,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "Core osgFX"=.\osgFX\osgFX.dsp - Package Owner=<4>
+Project: "Core osgText"=.\osgText\osgText.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -40,30 +55,9 @@ Package=<4>
 {{{
     Begin Project Dependency
     Project_Dep_Name Core osg
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgUtil
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name Core osgDB
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgGL2
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "Core osgGA"=.\osgGA\osgGA.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name Core osg
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name Core osgUtil
@@ -93,6 +87,30 @@ Package=<4>
 
 ###############################################################################
 
+Project: "Core osgFX"=.\osgFX\osgFX.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGL2
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "Core osgParticle"=.\osgParticle\osgParticle.dsp - Package Owner=<4>
 
 Package=<5>
@@ -106,6 +124,48 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name Core osgDB
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Core osgSim"=.\osgSim\osgSim.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgText
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Core osgGA"=.\osgGA\osgGA.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
     End Project Dependency
 }}}
 
@@ -138,30 +198,6 @@ Package=<4>
 
 ###############################################################################
 
-Project: "Core osgSim"=.\osgSim\osgSim.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name Core osg
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgUtil
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgDB
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgText
-    End Project Dependency
-}}}
-
-###############################################################################
-
 Project: "Core osgTerrain"=.\osgTerrain\osgTerrain.dsp - Package Owner=<4>
 
 Package=<5>
@@ -178,42 +214,6 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name Core osgDB
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "Core osgText"=.\osgText\osgText.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name Core osg
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgDB
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgUtil
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "Core osgUtil"=.\osgUtil\osgUtil.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name Core osg
     End Project Dependency
 }}}
 

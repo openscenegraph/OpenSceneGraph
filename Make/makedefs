@@ -77,6 +77,8 @@ OBJS       = $(C++FILES:.cpp=.o) \
              $(CXXFILES:.cpp=.o) \
              $(CFILES:.c=.o) \
 
+EXE_EXT    =
+
 DOF        = $(OPTF)
 DEBUGDIR   = $(OS)$(ARCH).Debug
 OPTDIR     = $(OS)$(ARCH).Opt
@@ -430,7 +432,7 @@ ifeq ($(OS),Darwin)
 
 endif
 
-#### Cygwin/Mingw specific definitions
+#### Cygwin specific definitions
 ifeq ($(OS),CYGWIN)
   C++               = c++
   DEPARG            = -M
@@ -439,9 +441,10 @@ ifeq ($(OS),CYGWIN)
   OPTF              = -O2 
   DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
   SHARED            = -shared\
-		              -Wl,--export-all-symbols  \
-		              -Wl,--output-def,lib$(TARGET_BASENAME).def \
-		              -Wl,--out-implib,$(TOPDIR)/lib/lib$(TARGET_BASENAME).dll.a 
+                        -Wl,--out-implib,$(TOPDIR)/lib/$(OS)/lib$(TARGET_BASENAME).dll.a 
+                        -Wl,--export-all-symbols
+
+  EXE_EXT           =.exe
   ARCH              = 
   ARCHINST          =
   ARCHARGS          = 
@@ -458,6 +461,10 @@ ifeq ($(OS),CYGWIN)
   GIF_LIBS          = -lungif
   TIFF_LIB          = -ltiff -lz -ljpeg
   FREETYPE_LIB      = -lfreetype
+
+  LIBINST    = bin
+  PLUGININST = bin/$(OS)$(ARCH)
+
   LIB_PREFIX        = cyg
   LIB_EXT           = dll
   PLUGIN_EXT        = dll
@@ -475,7 +482,7 @@ ifeq ($(OS),CYGWIN)
   MAKEDIST          = $(TOPDIR)/Make/makeinnosetup
 endif
 
-#### Cygwin/Mingw specific definitions
+#### Mingw specific definitions
 ifeq ($(OS),MINGW)
   C++               = c++ -mthreads
   DEPARG            = -M
@@ -485,9 +492,10 @@ ifeq ($(OS),MINGW)
   OPTF              = -O2 
   DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
   SHARED            = -shared -mthreads \
-                      -Wl,--export-all-symbols  \
-                      -Wl,--output-def,lib$(TARGET_BASENAME).def \
-                      -Wl,--out-implib,$(TOPDIR)/lib/lib$(TARGET_BASENAME).dll.a 
+                      -Wl,--out-implib,$(TOPDIR)/lib/$(OS)/lib$(TARGET_BASENAME).dll.a \
+                      -Wl,--export-all-symbols
+
+  EXE_EXT           =.exe
   ARCH              = 
   ARCHINST          =
   ARCHARGS          = 
@@ -507,18 +515,21 @@ ifeq ($(OS),MINGW)
 
   LIBXML2_INCLUDE = -I/usr/mingw/include/libxml2
 
+  LIBINST    = bin
+  PLUGININST = bin/$(OS)$(ARCH)
+
   LIB_PREFIX        = lib
   LIB_EXT           = dll
   PLUGIN_EXT        = dll
   LINK              = cp -f
-  INST_LOCATION   = /usr/local/OpenSceneGraph
+  INST_LOCATION     = /usr/local/OpenSceneGraph
   INST_LIBS         = $(INST_LOCATION)/bin
   INST_PLUGINS      = $(INST_LOCATION)/bin
   INST_INCLUDE      = $(INST_LOCATION)/include
   INST_SHARE_PREFIX = /usr/local/OpenSceneGraph
   INST_SRC          = $(INST_SHARE_PREFIX)/src
-  INST_EXAMPLES        = $(INST_SHARE_PREFIX)/bin
-  INST_EXAMPLE_SRC     = $(INST_SHARE_PREFIX)/src/examples
+  INST_EXAMPLES     = $(INST_SHARE_PREFIX)/bin
+  INST_EXAMPLE_SRC  = $(INST_SHARE_PREFIX)/src/examples
   INST_DOC          = $(INST_SHARE_PREFIX)/doc
   INST_DATA         = $(INST_SHARE_PREFIX)/data
 endif

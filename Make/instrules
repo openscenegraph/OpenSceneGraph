@@ -7,7 +7,7 @@ instbin instdev :
 	@$(MAKE) __$@
 
 __instbin:
-	@$(MAKE) INSTSRC=$(TOPDIR)/bin/$(OS)$(ARCH) INSTDEST=$(INST_DEMOS) \
+	@$(MAKE) INSTSRC=$(TOPDIR)/bin/$(OS)$(ARCH) INSTDEST=$(INST_EXAMPLES) \
 		INSTALL?="$(INSTBINCMD)" __install
 	@$(MAKE) INSTSRC=$(TOPDIR)/lib/$(OS)$(ARCH) INSTDEST=$(INST_LIBS) \
 		INSTALL?="$(INSTBINCMD)" __install
@@ -16,7 +16,7 @@ __instbin:
 	@echo  >> $(INSTLOGFILE)
 	@echo "    Run-time environment installation successful.  Add "\
 	  >> $(INSTLOGFILE)
-	@echo "        $(INST_DEMOS)"\
+	@echo "        $(INST_EXAMPLES)"\
 	  >> $(INSTLOGFILE)
 	@echo "    to your PATH environmental variable, and"\
 	  >> $(INSTLOGFILE)
@@ -36,12 +36,12 @@ __instdev:
 		   INSTALL?="$(INSTDEVCMD)" __install;\
 	  fi\
 	done
-	@$(TOPDIR)/Make/instdemosrc \
+	@$(TOPDIR)/Make/instexamplesrc \
 		$(TOPDIR)\
 		$(INST_LIBS)\
 		$(INST_INCLUDE)\
 		$(INST_SRC)\
-		$(INST_DEMO_SRC)\
+		$(INST_EXAMPLE_SRC)\
 		"$(INSTDEVCMD)"\
 		"$(C++)"\
 		"$(OPTF)"\
@@ -65,7 +65,7 @@ __instdev:
 	  >> $(INSTLOGFILE)
 	@echo "    compile flag when compiling with OSG header files."\
 	  >> $(INSTLOGFILE)
-	@echo "    Example programs can be found at $(INST_DEMO_SRC)."\
+	@echo "    Example programs can be found at $(INST_EXAMPLE_SRC)."\
 	  >> $(INSTLOGFILE)
 	@echo  >> $(INSTLOGFILE)
 	  
@@ -89,7 +89,7 @@ instlinksdev :
 instclean : instcleanbin instcleandev
 
 instcleanbin :
-	@$(MAKE) INSTSRC=$(TOPDIR)/bin/$(OS)$(ARCH) INSTDEST=$(INST_DEMOS) \
+	@$(MAKE) INSTSRC=$(TOPDIR)/bin/$(OS)$(ARCH) INSTDEST=$(INST_EXAMPLES) \
 		INSTALL?="$(INSTBINCMD)" __instclean
 	@$(MAKE) INSTSRC=$(TOPDIR)/lib/$(OS)$(ARCH) INSTDEST=$(INST_LIBS) \
 		INSTALL?="$(INSTBINCMD)" __instclean
@@ -105,11 +105,11 @@ instcleandev :
 		   INSTALL?="$(INSTDEVCMD)" __instclean;\
 	  fi\
 	done
-	@for d in `ls -1  $(TOPDIR)/src/Demos | grep -v CVS`; \
+	@for d in `ls -1  $(TOPDIR)/examples | grep -v CVS`; \
 	do\
-	  if [ -d $(TOPDIR)/src/Demos/$$d ]; \
+	  if [ -d $(TOPDIR)/examples/$$d ]; \
 	  then \
-	    $(MAKE) INSTSRC=$(TOPDIR)/src/Demos/$$d INSTDEST=$(INST_DEMO_SRC)/$$d\
+	    $(MAKE) INSTSRC=$(TOPDIR)/examples/$$d INSTDEST=$(INST_EXAMPLE_SRC)/$$d\
 		   INSTALL?="$(INSTDEVCMD)" __instclean;\
 	  fi\
 	done

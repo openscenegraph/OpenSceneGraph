@@ -7,7 +7,7 @@ echo_idb()
     #####################################################################
     #  Capture bin directory
 
-    dd=`echo $INST_DEMOS | sed -e 's/\///'`
+    dd=`echo $INST_EXAMPLES | sed -e 's/\///'`
     echo d 0755 root sys $dd $dd osg.eoe.sw
     cd bin
     for f in `find . -type l -print | grep -v CVS | sed -e 's/\.\///' | grep -v "\."`
@@ -44,7 +44,7 @@ echo_idb()
     cd ..
 
     #####################################################################
-    #  Capture installed demo source
+    #  Capture installed example source
 
      dd=`echo $INST_SRC | sed -e 's/\///'`
      THISDIR=`pwd`
@@ -129,9 +129,9 @@ TOPDIR=$2
 INST_LIBS=$3
 INST_PLUGINS=$4
 INST_INCLUDE=$5
-INST_DEMOS=$6
+INST_EXAMPLES=$6
 INST_SRC=$7
-INST_DEMO_SRC=$8
+INST_EXAMPLE_SRC=$8
 shift;shift; shift;shift; shift;shift; shift;shift;
 INST_DOC=$1
 INST_DATA=$2

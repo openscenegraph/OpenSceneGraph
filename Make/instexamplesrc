@@ -4,7 +4,7 @@ TOPDIR=$1
 INST_LIBS=$2
 INST_INCLUDE=$3
 INST_SRC=$4
-INST_DEMO_SRC=$5
+INST_EXAMPLE_SRC=$5
 INSTALLCMD=$6
 COMPILER=$7
 OPTF=$8
@@ -24,25 +24,23 @@ TIFF_LIB=$2
 [ "`uname`" = "Darwin" ] && MAKE=make || MAKE=gmake
 
 
-copy_demo_source()
+copy_example_source()
 {
-#DEMODIR=$TOPDIR/src/Demos/
-DEMODIR=$TOPDIR/examples
-    for d in `ls $DEMODIR | grep -v CVS`
+    for d in `ls $TOPDIR/examples/ | grep -v CVS`
     do
-        if [ -d $DEMODIR/$d ]
+        if [ -d $TOPDIR/examples/$d ]
         then
             THISDIR=`pwd`
-            cd $DEMODIR/$d
-            [ -d $INST_DEMO_SRC/$d ] || mkdir -m 0755 -p $INST_DEMO_SRC/$d
+            cd $TOPDIR/examples/$d
+            [ -d $INST_EXAMPLE_SRC/$d ] || mkdir -m 0755 -p $INST_EXAMPLE_SRC/$d
             echo "         installing $d"
             for f in `$MAKE __instfiles | grep -v $MAKE`
            do
                 src=`echo $f | cut -f1 -d"="`
                 dst=`echo $f | cut -f2 -d"="`
                 if [ -z "$dst" ] ; then dst=$src; fi
-                ###echo $INSTALLCMD `pwd`/$src $INST_DEMO_SRC/$d/$dst
-                $INSTALLCMD `pwd`/$src $INST_DEMO_SRC/$d/$dst
+                ###echo $INSTALLCMD `pwd`/$src $INST_EXAMPLE_SRC/$d/$dst
+                $INSTALLCMD `pwd`/$src $INST_EXAMPLE_SRC/$d/$dst
             done
             cd $THISDIR
         fi
@@ -111,13 +109,13 @@ EOF1
 
 [ -d $INST_SRC/Make ] || mkdir -m 0755 -p $INST_SRC/Make
 
-echo =========== Installing Demo Source Code =================
+echo =========== Installing Example Source Code =================
 
 echo "  generating make files ..."
 generate_makedefs > $INST_SRC/Make/makedefs
 generate_makerules > $INST_SRC/Make/makerules
 
 echo "  copying example files ..."
-copy_demo_source
+copy_example_source
 
 exit 0

@@ -50,7 +50,7 @@ int main( int argc, char **argv )
     // if user request help pritn it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
     {
-        osg::ApplicationUsage::instance()->write(cout);
+        osg::ApplicationUsage::instance()->write(std::cout);
         return 1;
     }
 
@@ -64,7 +64,7 @@ int main( int argc, char **argv )
     // report any errors if they have occured when parsing the program aguments.
     if (arguments.errors())
     {
-        arguments.writeErrorMessages(cout);
+        arguments.writeErrorMessages(std::cout);
         return 1;
     }
 

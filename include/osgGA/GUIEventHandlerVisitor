@@ -1,9 +1,9 @@
 #ifndef OSGGA_GUIEVENTHANDLERVISITOR
 #define OSGGA_GUIEVENTHANDLERVISITOR 1
 
-#include <osg/ref_ptr>
 #include <osgGA/Export>
 #include <osgGA/GUIEventAdapter>
+#include <osg/ref_ptr>
 
 namespace osgGA{
 

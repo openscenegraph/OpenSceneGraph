@@ -4,7 +4,7 @@
 #include "TXPTileNode.h"
 #include "TXPArchive.h"
 #include "TXPSeamLOD.h"
-
+#include "TXPPagedLOD.h"
 using namespace txp;
 
 class PrintVisitor : public osg::NodeVisitor
@@ -216,14 +216,26 @@ bool TXPTileNode::loadTile(int x, int y, int lod)
                 _archive->getId()
             );
 
-            osg::ref_ptr<osg::PagedLOD> pagedLOD = new osg::PagedLOD;
+            osg::ref_ptr<TXPPagedLOD> pagedLOD = new TXPPagedLOD;
             // not use maximum(info.maxRange,1e7) as just maxRange would result in some corner tiles from being culled out.
             pagedLOD->addChild(tileGroup,info.minRange,osg::maximum(info.maxRange,1e7));
             pagedLOD->setFileName(1,pagedLODfile);
             pagedLOD->setRange(1,0,info.minRange);
             pagedLOD->setCenter(info.center);
             pagedLOD->setRadius(info.radius);
+			pagedLOD->setPriorityOffset(0,numLods-lod);
+			pagedLOD->setPriorityScale(0,1.0f);
             pagedLOD->setNumChildrenThatCannotBeExpired(1);
+			pagedLOD->setTileId(x,y,lod);
+
+			int sizeX, sizeY;
+			if (_archive->getLODSize(lod,sizeX,sizeY))
+			{
+				if ((x-1) > -1) pagedLOD->addNeighbour(x-1,y);
+				if ((x+1) < sizeX) pagedLOD->addNeighbour(x+1,y);
+				if ((y-1) > -1) pagedLOD->addNeighbour(x,y-1);
+				if ((y+1) < sizeY) pagedLOD->addNeighbour(x,y+1);
+			}
 
             TileMapper::instance()->insertPagedLOD(x,y,lod,pagedLOD.get());
 

@@ -10,6 +10,7 @@ CXXFILES =\
         TXPTileNode.cpp\
         TXPParser.cpp\
         TXPSeamLOD.cpp\
+        TXPPagedLOD.cpp\
         TileMapper.cpp\
         trpage_basic.cpp\
         trpage_compat.cpp\

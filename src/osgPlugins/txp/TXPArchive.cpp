@@ -26,6 +26,8 @@
 #include "TXPArchive.h"
 #include "TXPParser.h"
 
+#include <OpenThreads/ScopedLock>
+
 using namespace txp;
 
 #define TXPArchiveERROR(s) osg::notify(osg::NOTICE) << "txp::TXPArchive::" << (s) << " error: "
@@ -538,46 +540,42 @@ bool TXPArchive::getTileInfo(int x, int y, int lod, TileInfo& info)
     info.center.set(0.f,0.f,0.f);
     info.bbox.set(0.f,0.f,0.f,0.f,0.f,0.f);
 
-    const trpgHeader *header = GetHeader();
-    const trpgTileTable *tileTable = GetTileTable();
-    if (header && tileTable)
-    {
-        header->GetLodRange(lod,info.maxRange);
-        header->GetLodRange(lod+1,info.minRange);
+	OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
-        trpg2dPoint sw,ne;
-        header->GetExtents(sw,ne);
+    header.GetLodRange(lod,info.maxRange);
+    header.GetLodRange(lod+1,info.minRange);
 
-        trpg2dPoint size;
-        header->GetTileSize(lod,size);
+    trpg2dPoint sw,ne;
+    header.GetExtents(sw,ne);
 
-        trpgwAppAddress addr;
-        float minz = 0.f;
-        float maxz = 0.f;
-        tileTable->GetTile(x,y,lod,addr,minz,maxz);
+    trpg2dPoint size;
+    header.GetTileSize(lod,size);
 
-        info.center.set(
-            sw.x+(x*size.x)+(size.x/2.f),
-            sw.y+(y*size.y)+(size.y/2.f),
-            (minz+maxz)/2.f
-        );
-        info.bbox.set(
-            osg::Vec3(
-                info.center.x()-(size.x/2.f),
-                info.center.y()-(size.y/2.f),
-                minz
-            ),
-            osg::Vec3(
-                info.center.x()+(size.x/2.f),
-                info.center.y()+(size.y/2.f),
-                maxz
-            )
-        );
-        info.radius = osg::Vec3(size.x/2.f, size.y/2.f,0.f).length() * 1.3;
+    trpgwAppAddress addr;
+    float minz = 0.f;
+    float maxz = 0.f;
+    tileTable.GetTile(x,y,lod,addr,minz,maxz);
 
-        return true;
-    }
-    return false;
+    info.center.set(
+        sw.x+(x*size.x)+(size.x/2.f),
+        sw.y+(y*size.y)+(size.y/2.f),
+        (minz+maxz)/2.f
+    );
+    info.bbox.set(
+        osg::Vec3(
+            info.center.x()-(size.x/2.f),
+            info.center.y()-(size.y/2.f),
+            minz
+        ),
+        osg::Vec3(
+            info.center.x()+(size.x/2.f),
+            info.center.y()+(size.y/2.f),
+            maxz
+        )
+    );
+    info.radius = osg::Vec3(size.x/2.f, size.y/2.f,0.f).length() * 1.3;
+
+    return true;
 }
 
 osg::Group* TXPArchive::getTileContent(
@@ -600,4 +598,20 @@ osg::Group* TXPArchive::getTileContent(
 
     osg::Group *tileGroup = _parser->parseScene(buf,_gstates,_models,realMinRange,realMaxRange,usedMaxRange);
     return tileGroup;
+}
+
+bool TXPArchive::getLODSize(int lod, int& x, int& y)
+{
+	x = y = 0;
+
+	OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+
+	trpg2iPoint size;
+	if (header.GetLodSize(lod,size))
+	{
+		x = size.x;
+		y = size.y;
+	}
+	
+	return true;
 }

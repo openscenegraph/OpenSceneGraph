@@ -110,6 +110,10 @@ SOURCE=..\..\..\src\osgPlugins\txp\TXPNode.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\txp\TXPPageLOD.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\txp\TXPPageManager.cpp
 # End Source File
 # Begin Source File
@@ -231,6 +235,10 @@ SOURCE=..\..\..\src\osgPlugins\txp\TXPArchive.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\txp\TXPNode.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\txp\TXPPagedNode.h
 # End Source File
 # Begin Source File
 

@@ -48,6 +48,7 @@ void TXPSeamLOD::traverse(osg::NodeVisitor& nv)
 
 #if 1
         osg::PagedLOD* pagedLOD = TileMapper::instance()->getPagedLOD(_neighbourTileX,_neighbourTileY, _neighbourTileLOD);
+		bool acceptLoRes = true;
         if (pagedLOD)
         {
 
@@ -63,11 +64,12 @@ void TXPSeamLOD::traverse(osg::NodeVisitor& nv)
                 if (distance<=pagedLOD->getMaxRange(i)) 
                 {
                     getChild(i)->accept(nv);
-                    return;
+					acceptLoRes = false;
+                    break;
                 }
             }
         }
-        else
+        if (acceptLoRes)
         {
             getChild(0)->accept(nv); // pick low res
         }

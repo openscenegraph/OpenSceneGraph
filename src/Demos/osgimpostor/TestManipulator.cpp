@@ -51,9 +51,8 @@ void TestManipulator::home(const GUIEventAdapter& ,GUIActionAdapter& us)
 
         const osg::BoundingSphere& boundingSphere=_node->getBound();
 
-        _camera->setView(
-			osg::Vec3(0.0f, 0.0f, 20.0f),
-			osg::Vec3(0.0f, 1.0f, 20.0f),
+        _camera->setView(boundingSphere.center()+osg::Vec3(0.0f, 0.0f, 20.0f),
+			boundingSphere.center()+osg::Vec3(0.0f, 1.0f, 20.0f),
 			osg::Vec3(0.0f,  0.0f,  1.0f));
 
         computeLocalDataFromCamera();
@@ -253,7 +252,6 @@ bool TestManipulator::calcMovement()
     // return if there is no movement.
     if (dx==0 && dy==0) return false;
 
-    float focalLength = (_camera->getCenterPoint()-_camera->getEyePoint()).length();
     unsigned int buttonMask = _ga_t1->getButtonMask();
     if (buttonMask==GUIEventAdapter::LEFT_MOUSE_BUTTON)
     {

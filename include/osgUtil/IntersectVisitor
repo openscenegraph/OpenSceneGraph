@@ -109,12 +109,12 @@ class OSGUTIL_EXPORT IntersectVisitor : public osg::NodeVisitor
                 typedef std::vector< LineSegmentPair >                                              LineSegmentList;
                 LineSegmentList _segList;
 
-                typedef unsigned int LineSegmentmentMask;
-                typedef std::vector<LineSegmentmentMask> LineSegmentmentMaskStack;
-                LineSegmentmentMaskStack _segmentMaskStack;
+                typedef unsigned int LineSegmentMask;
+                typedef std::vector<LineSegmentMask> LineSegmentMaskStack;
+                LineSegmentMaskStack _segmentMaskStack;
 
-                bool isCulled(const osg::BoundingSphere& bs,LineSegmentmentMask& segMaskOut);
-                bool isCulled(const osg::BoundingBox& bb,LineSegmentmentMask& segMaskOut);
+                bool isCulled(const osg::BoundingSphere& bs,LineSegmentMask& segMaskOut);
+                bool isCulled(const osg::BoundingBox& bb,LineSegmentMask& segMaskOut);
 
                 void addLineSegmentPair(osg::LineSegment* first,osg::LineSegment* second)
                 {

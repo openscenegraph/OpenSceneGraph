@@ -459,7 +459,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         
         // make helper classes friends to get round VS6.0 "issues"
         friend struct ReadFunctor;
-        friend struct RegReadObjectFunctor;
+        friend struct ReadObjectFunctor;
         friend struct ReadImageFunctor;
         friend struct ReadHeightFieldFunctor;
         friend struct ReadNodeFunctor;

@@ -111,6 +111,16 @@ bool Group::insertChild( unsigned int index, Node *child )
                 );
         }
 
+        // could now require app traversal thanks to the new subgraph,
+        // so need to check and update if required.
+        if (child->getNumChildrenRequiringEventTraversal()>0 ||
+            child->getEventCallback())
+        {
+            setNumChildrenRequiringEventTraversal(
+                getNumChildrenRequiringEventTraversal()+1
+                );
+        }
+
         // could now require disabling of culling thanks to the new subgraph,
         // so need to check and update if required.
         if (child->getNumChildrenWithCullingDisabled()>0 ||
@@ -151,7 +161,8 @@ bool Group::removeChild(unsigned int pos,unsigned int numChildrenToRemove)
             endOfRemoveRange=_children.size();
         }
 
-        unsigned int appCallbackRemoved = 0;
+        unsigned int updateCallbackRemoved = 0;
+        unsigned int eventCallbackRemoved = 0;
         unsigned int numChildrenWithCullingDisabledRemoved = 0;
         unsigned int numChildrenWithOccludersRemoved = 0;
 
@@ -161,7 +172,9 @@ bool Group::removeChild(unsigned int pos,unsigned int numChildrenToRemove)
             // remove this Geode from the child parent list.
             child->removeParent(this);
 
-            if (child->getNumChildrenRequiringUpdateTraversal()>0 || child->getUpdateCallback()) ++appCallbackRemoved;
+            if (child->getNumChildrenRequiringUpdateTraversal()>0 || child->getUpdateCallback()) ++updateCallbackRemoved;
+
+            if (child->getNumChildrenRequiringEventTraversal()>0 || child->getEventCallback()) ++eventCallbackRemoved;
 
             if (child->getNumChildrenWithCullingDisabled()>0 || !child->getCullingActive()) ++numChildrenWithCullingDisabledRemoved;
 
@@ -173,11 +186,16 @@ bool Group::removeChild(unsigned int pos,unsigned int numChildrenToRemove)
 
         childRemoved(pos,endOfRemoveRange-pos);
 
-        if (appCallbackRemoved)
+        if (updateCallbackRemoved)
         {
-            setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()-appCallbackRemoved);
+            setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()-updateCallbackRemoved);
         }
         
+        if (eventCallbackRemoved)
+        {
+            setNumChildrenRequiringEventTraversal(getNumChildrenRequiringEventTraversal()-eventCallbackRemoved);
+        }
+
         if (numChildrenWithCullingDisabledRemoved)
         {
             setNumChildrenWithCullingDisabled(getNumChildrenWithCullingDisabled()-numChildrenWithCullingDisabledRemoved);
@@ -229,24 +247,45 @@ bool Group::setChild( unsigned  int i, Node* newNode )
         dirtyBound();
 
 
-        // could now require app traversal thanks to the new subgraph,
+        // could now require update traversal thanks to the new subgraph,
         // so need to check and update if required.
-        int delta_numChildrenRequiringAppTraversal = 0;
+        int delta_numChildrenRequiringUpdateTraversal = 0;
         if (origNode->getNumChildrenRequiringUpdateTraversal()>0 ||
             origNode->getUpdateCallback())
         {
-            --delta_numChildrenRequiringAppTraversal;
+            --delta_numChildrenRequiringUpdateTraversal;
         }
         if (newNode->getNumChildrenRequiringUpdateTraversal()>0 ||
             newNode->getUpdateCallback())
         {
-            ++delta_numChildrenRequiringAppTraversal;
+            ++delta_numChildrenRequiringUpdateTraversal;
         }
 
-        if (delta_numChildrenRequiringAppTraversal!=0)
+        if (delta_numChildrenRequiringUpdateTraversal!=0)
         {
             setNumChildrenRequiringUpdateTraversal(
-                getNumChildrenRequiringUpdateTraversal()+delta_numChildrenRequiringAppTraversal
+                getNumChildrenRequiringUpdateTraversal()+delta_numChildrenRequiringUpdateTraversal
+                );
+        }
+
+        // could now require event traversal thanks to the new subgraph,
+        // so need to check and Event if required.
+        int delta_numChildrenRequiringEventTraversal = 0;
+        if (origNode->getNumChildrenRequiringEventTraversal()>0 ||
+            origNode->getEventCallback())
+        {
+            --delta_numChildrenRequiringEventTraversal;
+        }
+        if (newNode->getNumChildrenRequiringEventTraversal()>0 ||
+            newNode->getEventCallback())
+        {
+            ++delta_numChildrenRequiringEventTraversal;
+        }
+
+        if (delta_numChildrenRequiringEventTraversal!=0)
+        {
+            setNumChildrenRequiringEventTraversal(
+                getNumChildrenRequiringEventTraversal()+delta_numChildrenRequiringEventTraversal
                 );
         }
 

@@ -243,7 +243,7 @@ static osgGL2::ShaderObject*  MarbleFragObj;
 class AnimateCallback: public osg::NodeCallback
 {
     public:
-	AnimateCallback( osgGL2::ProgramObject* progObj ) :
+	AnimateCallback( osgGL2::ProgramObject* /*progObj*/ ) :
 		osg::NodeCallback(),
 		_enabled(true)
 	{}

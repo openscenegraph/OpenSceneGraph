@@ -706,9 +706,6 @@ void ComputeBoundShapeVisitor::apply(const HeightField& field)
     _bb.set(field.getOrigin()+osg::Vec3(0.0f,0.0f,zMin),
     	    field.getOrigin()+osg::Vec3(field.getXInterval()*field.getNumColumns(),field.getYInterval()*field.getNumRows(),zMax));
 	    
-    cout << "_bb.min"<<_bb._min;
-    cout << "_bb.max"<<_bb._max;
-
 }
 
 void ComputeBoundShapeVisitor::apply(const CompositeShape&)

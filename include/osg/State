@@ -26,7 +26,7 @@ namespace osg {
     }
 
 /** State class for managing a state stack.
-  * Lazy state updating is used to minize state changes.
+  * Lazy state updating is used to minimize state changes.
   */
 class SG_EXPORT State : public Referenced
 {
@@ -74,7 +74,7 @@ class SG_EXPORT State : public Referenced
 
         
         /** Set the current OpenGL context uniqueID.
-            Note, it is the application developers responsiblity to
+            Note, it is the application developers responsibility to
             set up unique ID for each OpenGL context.  This value is
             then used by osg::StateAttribure's and osg::Drawable's to
             help manage OpenGL display list and texture binds appropriate

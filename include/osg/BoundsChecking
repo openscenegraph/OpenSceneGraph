@@ -7,7 +7,7 @@ namespace osg {
 
 
 /** if value is greater than or equal to minValue do nothing - legal value,
-  * otherise clamp value to specified maximum value and return warning 
+  * otherwise clamp value to specified maximum value and return warning 
   * with valueName specifying which variable was clamped.*/
 template <class T>
 inline void clampGEQUAL(T& value,const T minValue,const char* valueName)
@@ -20,7 +20,7 @@ inline void clampGEQUAL(T& value,const T minValue,const char* valueName)
 }
 
 /** if value is less than or equal to maxValue do nothing - legal value,
-  * otherise clamp value to specified maximum value and return warning 
+  * otherwise clamp value to specified maximum value and return warning 
   * with valueName specifying which variable was clamped.*/
 template <class T>
 inline void clampLEQUAL(T& value,const T maxValue,const char* valueName)
@@ -33,7 +33,7 @@ inline void clampLEQUAL(T& value,const T maxValue,const char* valueName)
 }
 
 /** if value is between or equal to minValue and maxValue do nothing - legal value,
-  * otherise clamp value to specified to range and return warning 
+  * otherwise clamp value to specified to range and return warning 
   * with valueName specifying which variable was clamped. Equivilant to
   * calling clampGEQUAL(value,minValue,valueName); clampLEQUAL(value,maxValue,valueName); */
 template <class T>
@@ -54,7 +54,7 @@ inline void clampBetweenRange(T& value,const T minValue,const T maxValue,const c
 }
 
 /** if array element value[i] is greater than or equal to minValue do nothing - legal value,
-  * otherise clamp value to specified maximum value and return warning 
+  * otherwise clamp value to specified maximum value and return warning 
   * with valueName specifying which variable was clamped.*/
 template <class A, class T>
 inline void clampArrayElementGEQUAL(A& value,const unsigned int i,const T minValue,const char* valueName)
@@ -67,7 +67,7 @@ inline void clampArrayElementGEQUAL(A& value,const unsigned int i,const T minVal
 }
 
 /** if array element value[i] is less than or equal to maxValue do nothing - legal value,
-  * otherise clamp value to specified maximum value and return warning 
+  * otherwise clamp value to specified maximum value and return warning 
   * with valueName specifying which variable was clamped.*/
 template <class A, class T>
 inline void clampArrayElementLEQUAL(A& value,const unsigned int i,const T maxValue,const char* valueName)
@@ -80,7 +80,7 @@ inline void clampArrayElementLEQUAL(A& value,const unsigned int i,const T maxVal
 }
 
 /** if array element value[i] is between or equal to minValue and maxValue do nothing - legal value,
-  * otherise clamp value to specified to range and return warning 
+  * otherwise clamp value to specified to range and return warning 
   * with valueName specifying which variable was clamped. Equivilant to
   * calling clampGEQUAL(value,minValue,valueName); clampLEQUAL(value,maxValue,valueName); */
 template <class A, class T>
@@ -101,7 +101,7 @@ inline void clampArrayElementBetweenRange(A& value,const unsigned int i,const T 
 }
 
 /** if array elements are greater than or equal to minValue do nothing - legal value,
-  * otherise clamp value to specified maximum value and return warning 
+  * otherwise clamp value to specified maximum value and return warning 
   * with valueName specifying which variable was clamped.*/
 template <class A, class T>
 inline void clampArrayElementsGEQUAL(A& value,const unsigned int first,const unsigned int last,const T minValue,const char* valueName)
@@ -111,7 +111,7 @@ inline void clampArrayElementsGEQUAL(A& value,const unsigned int first,const uns
 }
 
 /** if array elements are less than or equal to maxValue do nothing - legal value,
-  * otherise clamp value to specified maximum value and return warning 
+  * otherwise clamp value to specified maximum value and return warning 
   * with valueName specifying which variable was clamped.*/
 template <class A, class T>
 inline void clampArrayElementsLEQUAL(A& value,const unsigned int first,const unsigned int last,const T maxValue,const char* valueName)
@@ -121,8 +121,8 @@ inline void clampArrayElementsLEQUAL(A& value,const unsigned int first,const uns
 }
 
 /** if array elements are between or equal to minValue and maxValue do nothing - legal value,
-  * otherise clamp value to specified to range and return warning 
-  * with valueName specifying which variable was clamped. Equivilant to
+  * otherwise clamp value to specified to range and return warning 
+  * with valueName specifying which variable was clamped. Equivalent to
   * calling clampGEQUAL(value,minValue,valueName); clampLEQUAL(value,maxValue,valueName); */
 template <class A, class T>
 inline void clampArrayElementsBetweenRange(A& value,const unsigned int first,const unsigned int last,const T minValue,const T maxValue,const char* valueName)
@@ -133,7 +133,7 @@ inline void clampArrayElementsBetweenRange(A& value,const unsigned int first,con
 
 
 /** if array4 elements are greater than or equal to minValue do nothing - legal value,
-  * otherise clamp value to specified maximum value and return warning 
+  * otherwise clamp value to specified maximum value and return warning 
   * with valueName specifying which variable was clamped.*/
 template <class A, class T>
 inline void clampArray3GEQUAL(A& value,const T minValue,const char* valueName)
@@ -142,7 +142,7 @@ inline void clampArray3GEQUAL(A& value,const T minValue,const char* valueName)
 }
 
 /** if array4 elements are is less than or equal to maxValue do nothing - legal value,
-  * otherise clamp value to specified maximum value and return warning 
+  * otherwise clamp value to specified maximum value and return warning 
   * with valueName specifying which variable was clamped.*/
 template <class A, class T>
 inline void clampArray3LEQUAL(A& value,const T maxValue,const char* valueName)
@@ -151,7 +151,7 @@ inline void clampArray3LEQUAL(A& value,const T maxValue,const char* valueName)
 }
 
 /** if array4 elements are between or equal to minValue and maxValue do nothing - legal value,
-  * otherise clamp value to specified to range and return warning 
+  * otherwise clamp value to specified to range and return warning 
   * with valueName specifying which variable was clamped. Equivilant to
   * calling clampGEQUAL(value,minValue,valueName); clampLEQUAL(value,maxValue,valueName); */
 template <class A, class T>
@@ -163,7 +163,7 @@ inline void clampArray3BetweenRange(A& value,const T minValue,const T maxValue,c
 
 
 /** if array4 elements are greater than or equal to minValue do nothing - legal value,
-  * otherise clamp value to specified maximum value and return warning 
+  * otherwise clamp value to specified maximum value and return warning 
   * with valueName specifying which variable was clamped.*/
 template <class A, class T>
 inline void clampArray4GEQUAL(A& value,const T minValue,const char* valueName)
@@ -172,7 +172,7 @@ inline void clampArray4GEQUAL(A& value,const T minValue,const char* valueName)
 }
 
 /** if array4 elements are is less than or equal to maxValue do nothing - legal value,
-  * otherise clamp value to specified maximum value and return warning 
+  * otherwise clamp value to specified maximum value and return warning 
   * with valueName specifying which variable was clamped.*/
 template <class A, class T>
 inline void clampArray4LEQUAL(A& value,const unsigned int first,const unsigned int last,const T maxValue,const char* valueName)
@@ -181,7 +181,7 @@ inline void clampArray4LEQUAL(A& value,const unsigned int first,const unsigned i
 }
 
 /** if array4 elements are between or equal to minValue and maxValue do nothing - legal value,
-  * otherise clamp value to specified to range and return warning 
+  * otherwise clamp value to specified to range and return warning 
   * with valueName specifying which variable was clamped. Equivilant to
   * calling clampGEQUAL(value,minValue,valueName); clampLEQUAL(value,maxValue,valueName); */
 template <class A, class T>

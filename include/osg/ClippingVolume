@@ -7,7 +7,7 @@
 
 namespace osg {
 
-/** A ClippingVolume class for represecting convex clipping volumes made up.*/
+/** A ClippingVolume class for representing convex clipping volumes made up.*/
 class SG_EXPORT ClippingVolume
 {
 
@@ -69,7 +69,7 @@ class SG_EXPORT ClippingVolume
             Using a mask to determine which planes should be used for the check, and
             modifying the mask to turn off planes which wouldn't contribute to clipping
             of any internal objects.  This feature is used in osgUtil::CullVisitor
-            to prevent redundent plane checking.*/
+            to prevent redundant plane checking.*/
         inline const bool contains(const osg::BoundingSphere& bs,unsigned int& mask) const
         {
             if (!(mask & _localMask)) return true;
@@ -106,7 +106,7 @@ class SG_EXPORT ClippingVolume
             Using a mask to determine which planes should be used for the check, and
             modifying the mask to turn off planes which wouldn't contribute to clipping
             of any internal objects.  This feature is used in osgUtil::CullVisitor
-            to prevent redundent plane checking.*/
+            to prevent redundant plane checking.*/
         inline const bool contains(const osg::BoundingBox& bb,unsigned int& mask) const
         {
             if (!(mask & _localMask)) return true;

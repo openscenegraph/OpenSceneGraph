@@ -13,7 +13,7 @@ namespace osg {
 
 /**
 Encapsulates OpenGL state modes and attributes. 
-Used to specificy textures etc of osg::Drawable's which hold references
+Used to specific textures etc of osg::Drawable's which hold references
 to a single osg::StateSet.  StateSet can be shared between Drawable's
 and is recommend if possible as it minimize expensive state changes
 in the graphics pipeline.
@@ -32,7 +32,7 @@ class SG_EXPORT StateSet : public Object
             complete state, typically used for a default global state.*/
         void setGlobalDefaults();
 
-        /** set all the modes to inherit, typically used to signifiy
+        /** set all the modes to inherit, typically used to signify
             nodes which inherit all of their modes for the global state.*/
         void setAllToInherit();
 
@@ -63,7 +63,7 @@ class SG_EXPORT StateSet : public Object
 
         /** set this StateSet to contain specified attribute and override flag.*/
         void setAttribute(StateAttribute *attribute, const StateAttribute::OverrideValue value=StateAttribute::OFF);
-        /** set this StateSet to contain specified attribute and set the associated GLMode's to specifed value.*/
+        /** set this StateSet to contain specified attribute and set the associated GLMode's to specified value.*/
         void setAttributeAndModes(StateAttribute *attribute, const StateAttribute::GLModeValue value=StateAttribute::ON);
         /** set this StateSet to inherit specified attribute type from parents.
           * has the effect of deleting any state attributes of specified type from StateSet.*/

@@ -83,7 +83,7 @@ class SG_EXPORT Plane
                    _fv[3];
         }
 
-        /** interesection test between plane and bounding sphere.
+        /** intersection test between plane and bounding sphere.
             return 1 if the bs is completely above plane,
             return 0 if the bs intersects the plane,
             return -1 if the bs is completely below the plane.*/
@@ -97,7 +97,7 @@ class SG_EXPORT Plane
         }
         
         
-        /** interesection test between plane and bounding sphere.
+        /** intersection test between plane and bounding sphere.
             return 1 if the bs is completely above plane,
             return 0 if the bs intersects the plane,
             return -1 if the bs is completely below the plane.*/

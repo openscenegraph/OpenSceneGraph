@@ -7,7 +7,7 @@
 
 namespace osg {
 
-/** Encapsulte OpenGL glStencilFunc/Op/Mask functions.
+/** Encapsulate OpenGL glStencilFunc/Op/Mask functions.
 */     
 class SG_EXPORT Stencil : public StateAttribute
 {
@@ -79,9 +79,9 @@ class SG_EXPORT Stencil : public StateAttribute
         };
         
         /** set the operations to apply when the various stencil and depth 
-          * tests fail or pass.  First paramater is to control the operation
-          * when the stencil test fails.  The second paramter is to control the
-          * operatiorn when the stencil test passes, but depth test fails. The
+          * tests fail or pass.  First parameter is to control the operation
+          * when the stencil test fails.  The second parameter is to control the
+          * operation when the stencil test passes, but depth test fails. The
           * third parameter controls the operation when both the stencil test
           * and depth pass.  Ordering of parameter is the same as if using
           * glStencilOp(,,).*/

@@ -6,7 +6,7 @@
 
 namespace osg {
 
-/** Transparancy - encapsulates the OpenGL transparancy state.*/
+/** Transparency - encapsulates the OpenGL blend/transparency state.*/
 class SG_EXPORT Transparency : public StateAttribute
 {
     public :

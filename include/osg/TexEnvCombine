@@ -16,6 +16,7 @@
 
 #include <osg/GL>
 #include <osg/StateAttribute>
+#include <osg/Vec3>
 #include <osg/Vec4>
 
 // if not defined by gl.h use the definition found in:
@@ -206,6 +207,16 @@ class SG_EXPORT TexEnvCombine : public StateAttribute
         void setConstantColor( const Vec4& color ) { _constantColor = color; }
         const Vec4& getConstantColor() const { return _constantColor; }
 
+        /** Set the constant color attribute up to light direction to be used in DOT3 combine operation.*/
+        void setConstantColorAsLightDirection(const Vec3& direction)
+        {
+            _constantColor.set((direction.x()+1.0f)*0.5f,(direction.y()+1.0f)*0.5f,(direction.z()+1.0f)*0.5f,1.0f);
+        }
+
+        Vec3 getConstantColorAsLightDirection() const
+        {
+            return Vec3(_constantColor.x()*2.0f-1.0f, _constantColor.y()*2.0f-1.0f, _constantColor.z()*2.0f-1.0f);
+        }
 
         virtual void apply(State& state) const;
 

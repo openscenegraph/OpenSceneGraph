@@ -140,9 +140,9 @@ Compiling under Windows
     The OSG is composed of a number of libraries and executables, to get 
     running you'll need at least to compile osg,osgUtil,osgDB,osgGLUT,
     dot_osg and sgv.  The rest of the libraries and executables are
-    optional and can be compiled if you need them.  It may well be simplest
-    to do a batch build of all the libraries and executables in the
-    distribution, some of the plug-ins which support non native file
+    optional and can be compiled if you need them, however for simplicity
+    I would recommend doing a batch build of all the libraries and executables 
+    in the distribution, some of the plug-ins which support non native file
     formats may not compile due to dependencies on other libraries (such
     as libpng), you can ignore these compilation errors unless you need
     to load the related file types.  

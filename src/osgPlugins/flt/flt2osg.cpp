@@ -1861,7 +1861,6 @@ osg::Group* ConvertFromFLT::visitExternal(osg::Group& osgParent, ExternalRecord*
 
     osgDB::PushAndPopDataPath tmpfile(osgDB::getFilePath(rec->getFilename()));
       
-        
     FltFile* pFile = rec->getExternal();
     osg::Group* external = NULL;
     if (pFile)

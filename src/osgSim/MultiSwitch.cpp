@@ -165,7 +165,7 @@ void MultiSwitch::expandToEncompassSwitchSet(unsigned int switchSet)
         _values.resize(switchSet+1);
         for(unsigned int i=originalSize;i<=switchSet;++i)
         {
-            ValueList& values = _values[switchSet];
+            ValueList& values = _values[i];
             values.resize(_children.size(),_newChildDefaultValue);
         }
     }

@@ -57,6 +57,10 @@ PLUGIN_DIRS = \
 	zip\
 	3dc\
 	ive\
+	rot\
+	scale\
+	trans\
+
 
 ifeq ($(GDAL_INSTALLED),yes)
     PLUGIN_DIRS += gdal

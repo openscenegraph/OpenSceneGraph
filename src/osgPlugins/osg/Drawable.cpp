@@ -35,11 +35,29 @@ bool Drawable_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
-	Shape* shape = static_cast<Shape *>(fr.readObjectOfType(type_wrapper<Shape>()));
-	if (shape) {
-		drawable.setShape(shape);
-		iteratorAdvanced = true;
-	}
+    Shape* shape = static_cast<Shape *>(fr.readObjectOfType(type_wrapper<Shape>()));
+    if (shape) {
+      drawable.setShape(shape);
+      iteratorAdvanced = true;
+    }
+
+    Drawable::UpdateCallback* uc = dynamic_cast<Drawable::UpdateCallback *>(fr.readObjectOfType(type_wrapper<Drawable::UpdateCallback>()));
+    if (uc) {
+      drawable.setUpdateCallback(uc);
+      iteratorAdvanced = true;
+    }
+
+    Drawable::CullCallback* cc = dynamic_cast<Drawable::CullCallback *>(fr.readObjectOfType(type_wrapper<Drawable::CullCallback>()));
+    if (cc) {
+      drawable.setCullCallback(cc);
+      iteratorAdvanced = true;
+    }
+
+    Drawable::DrawCallback* dc = dynamic_cast<Drawable::DrawCallback *>(fr.readObjectOfType(type_wrapper<Drawable::DrawCallback>()));
+    if (dc) {
+      drawable.setDrawCallback(dc);
+      iteratorAdvanced = true;
+    }
 
     if (fr[0].matchWord("supportsDisplayList"))
     {
@@ -106,6 +124,22 @@ bool Drawable_writeLocalData(const Object& obj, Output& fw)
     {
         fw.writeObject(*drawable.getShape());
     }
+
+    if (drawable.getUpdateCallback())
+    {
+        fw.writeObject(*drawable.getUpdateCallback());
+    }
+
+    if (drawable.getCullCallback())
+    {
+        fw.writeObject(*drawable.getCullCallback());
+    }
+
+    if (drawable.getDrawCallback())
+    {
+        fw.writeObject(*drawable.getDrawCallback());
+    }
+    
 
     if (!drawable.getSupportsDisplayList())
     {

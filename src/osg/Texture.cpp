@@ -30,9 +30,9 @@ Texture::Texture()
     _wrap_s    = CLAMP;
     _wrap_t    = CLAMP;
     _wrap_r    = CLAMP;
-    //_min_filter    = LINEAR_MIPMAP_LINEAR; // trilinear
+    _min_filter    = LINEAR_MIPMAP_LINEAR; // trilinear
     //_min_filter    = LINEAR_MIPMAP_NEAREST; // bilinear
-    _min_filter     = NEAREST_MIPMAP_LINEAR; // OpenGL default
+    //_min_filter     = NEAREST_MIPMAP_LINEAR; // OpenGL default
     _mag_filter     = LINEAR;
 
     _internalFormatMode = USE_IMAGE_DATA_FORMAT;

@@ -102,6 +102,10 @@ SOURCE=..\..\..\src\osgPlugins\osg\AnimationPath.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\osg\AutoTransform.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\osg\Billboard.cpp
 # End Source File
 # Begin Source File

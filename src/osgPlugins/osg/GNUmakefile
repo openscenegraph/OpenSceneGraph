@@ -4,6 +4,7 @@ include $(TOPDIR)/Make/makedefs
 CXXFILES =\
         AlphaFunc.cpp\
         AnimationPath.cpp\
+        AutoTransform.cpp\
         Billboard.cpp\
         BlendFunc.cpp\
         ClipPlane.cpp\

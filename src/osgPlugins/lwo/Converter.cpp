@@ -44,9 +44,10 @@ Converter::Converter()
 {
 }
 
-Converter::Converter(const Options &options)
+Converter::Converter(const Options &options, const osgDB::ReaderWriter::Options* db_options)
 :	root_(new osg::Group),
-	options_(options)
+	options_(options),
+	db_options_(db_options)
 {
 }
 
@@ -201,7 +202,8 @@ void Converter::build_scene_graph(Object &obj)
 						rm_rgba_maps.get(),
 						options_.max_tex_units,
 						options_.use_osgfx,
-						options_.force_arb_compression);
+						options_.force_arb_compression,
+						db_options_.get());
 					if (sgrp) {
 						sgrp->addChild(geode.get());
 						layer_group->addChild(sgrp);
@@ -241,9 +243,9 @@ osg::Group *Converter::convert(const iff::Chunk_list &data)
 	return convert(obj);
 }
 
-osg::Group *Converter::convert(const std::string &filename, const osgDB::ReaderWriter::Options* options)
+osg::Group *Converter::convert(const std::string &filename)
 {
-	std::string file = osgDB::findDataFile(filename, options);
+	std::string file = osgDB::findDataFile(filename, db_options_.get());
 	if (file.empty()) return 0;
 
 	std::ifstream ifs(file.c_str(), std::ios_base::in | std::ios_base::binary);

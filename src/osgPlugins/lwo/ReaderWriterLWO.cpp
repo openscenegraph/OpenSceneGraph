@@ -117,8 +117,8 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO2(const std::string
 {
     lwosg::Converter::Options conv_options = parse_options(options);
 
-    lwosg::Converter converter(conv_options);
-    osg::ref_ptr<osg::Node> node = converter.convert(fileName, options);
+    lwosg::Converter converter(conv_options, options);
+    osg::ref_ptr<osg::Node> node = converter.convert(fileName);
     if (node.valid()) {
         return node.take();
     }

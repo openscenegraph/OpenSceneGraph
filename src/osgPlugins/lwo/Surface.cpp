@@ -128,7 +128,7 @@ void Surface::compile(const lwo2::FORM::SURF *surf, const Clip_map &clips)
 	}
 }
 
-void Surface::generate_stateset(int max_tex_units, bool force_arb_compression) const
+void Surface::generate_stateset(int max_tex_units, bool force_arb_compression, const osgDB::ReaderWriter::Options* db_options) const
 {
 	if (!stateset_.valid()) {
 
@@ -188,7 +188,7 @@ void Surface::generate_stateset(int max_tex_units, bool force_arb_compression) c
 							osg::ref_ptr<osg::Texture2D> texture = new osg::Texture2D;
 							if (force_arb_compression)
 								texture->setInternalFormatMode(osg::Texture::USE_ARB_COMPRESSION);
-							texture->setImage(osgDB::readImageFile(image_file));
+							texture->setImage(osgDB::readImageFile(image_file, db_options));
 							texture->setWrap(osg::Texture::WRAP_S, osg_wrap_mode(block.get_image_map().width_wrap));
 							texture->setWrap(osg::Texture::WRAP_T, osg_wrap_mode(block.get_image_map().height_wrap));
 							texture->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR_MIPMAP_LINEAR);
@@ -255,7 +255,7 @@ void Surface::generate_stateset(int max_tex_units, bool force_arb_compression) c
 	}
 }
 
-osg::Group *Surface::apply(osg::Geometry *geo, const VertexMap_map *texture_maps, const VertexMap_map *rgb_maps, const VertexMap_map *rgba_maps, int max_tex_units, bool use_osgfx, bool force_arb_compression) const
+osg::Group *Surface::apply(osg::Geometry *geo, const VertexMap_map *texture_maps, const VertexMap_map *rgb_maps, const VertexMap_map *rgba_maps, int max_tex_units, bool use_osgfx, bool force_arb_compression, const osgDB::ReaderWriter::Options* db_options) const
 {
 	int num_points = 0;
 
@@ -263,7 +263,7 @@ osg::Group *Surface::apply(osg::Geometry *geo, const VertexMap_map *texture_maps
 		num_points = static_cast<int>(geo->getVertexArray()->getNumElements());
 	}
 
-	generate_stateset(max_tex_units, force_arb_compression);
+	generate_stateset(max_tex_units, force_arb_compression, db_options);
 	geo->setStateSet(stateset_.get());
 
 	int unit = 0;

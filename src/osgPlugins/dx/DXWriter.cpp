@@ -142,7 +142,9 @@
 
 #if defined(WIN32) && !defined(__CYGWIN__)
 #define vsnprintf _vsnprintf
+#define snprintf _snprintf
 #endif
+
 
 namespace dx {
 
@@ -525,7 +527,7 @@ inline int WARNING( char fmt[], ... )
 //----------------------------------------------------------------------------
 
 void GetParms( int argc, char *argv[], 
-               char infile [ PATH_MAX ], WriterParms &parms )
+               char infile [ DX_PATH_MAX ], WriterParms &parms )
 {
   WriterParms defaults;
 
@@ -581,7 +583,7 @@ void GetParms( int argc, char *argv[],
   }
 
   infile[0] = parms.outfile[0] = '\0';
-  strncat( infile       , argv[ i ], PATH_MAX-1              );
+  strncat( infile       , argv[ i ], DX_PATH_MAX-1              );
   strncat( parms.outfile, argv[i+1], sizeof(parms.outfile)-1 );
 }
 
@@ -2278,10 +2280,6 @@ void DXWriter::CollectUnhandledModesAndAttrs( osg::StateSet *sset )
 }
 
 //----------------------------------------------------------------------------
-
-#ifdef WIN32
-#define snprintf _snprintf
-#endif
 
 void DXWriter::ReportUnhandledModesAndAttrs()
 {

@@ -184,12 +184,9 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("-l <numOfLevels>","Specify the number of PagedLOD levels to generate");
     arguments.getApplicationUsage()->addCommandLineOption("-e <x> <y> <w> <h>","Extents of the model to generate");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
-    arguments.getApplicationUsage()->addCommandLineOption("--o_cs <coordinates system string>","Set the output coordinates system. The string may be any of the usual GDAL/OGR forms, complete WKT, PROJ.4, EPS");     
-    arguments.getApplicationUsage()->addCommandLineOption("--o_wkt <WKT string>","Set the coordinates system of source imagery or DEM in WellKownText form.");     
-    arguments.getApplicationUsage()->addCommandLineOption("--o_wkt-file <WKT file>","Set the coordinates system of source imagery or DEM by as file containing WellKownText definition.");     
-    arguments.getApplicationUsage()->addCommandLineOption("--cs <coordinates system string>","Set the coordinates system of source imagery or DEM. The string may be any of the usual GDAL/OGR forms, complete WKT, PROJ.4, EPS");     
-    arguments.getApplicationUsage()->addCommandLineOption("--wkt <WKT string>","Set the coordinates system of source imagery or DEM in WellKownText form.");     
-    arguments.getApplicationUsage()->addCommandLineOption("--wkt-file <WKT file>","Set the coordinates system of source imagery or DEM by as file containing WellKownText definition.");     
+    arguments.getApplicationUsage()->addCommandLineOption("--cs <coordinates system string>","Set the coordinates system of source imagery, DEM or destination database. The string may be any of the usual GDAL/OGR forms, complete WKT, PROJ.4, EPS");     
+    arguments.getApplicationUsage()->addCommandLineOption("--wkt <WKT string>","Set the coordinates system of source imagery, DEM or destination database in WellKownText form.");     
+    arguments.getApplicationUsage()->addCommandLineOption("--wkt-file <WKT file>","Set the coordinates system of source imagery, DEM or destination database by as file containing WellKownText definition.");     
     arguments.getApplicationUsage()->addCommandLineOption("--skirt-ratio <float>","Set the ratio of skirt height to tile size.");     
     arguments.getApplicationUsage()->addCommandLineOption("--HEIGHT_FIELD","Create a height field database");     
     arguments.getApplicationUsage()->addCommandLineOption("--POLYGONAL","Create a height field database");     
@@ -292,40 +289,6 @@ int main( int argc, char **argv )
     {
         dataset->setRadiusToMaxVisibleDistanceRatio(radiusToMaxVisibleDistanceRatio);
     }
-
-    {
-        // handle any specification of output coordinate system.
-        std::string outputCS;
-        std::string def;
-        if (arguments.read("--o_cs",def))
-        {
-            outputCS = !def.empty() ? SanitizeSRS(def.c_str()) : "";
-            std::cout<<"--o_cs "<<outputCS<<std::endl;
-        }
-        else if (arguments.read("--o_wkt",def))
-        {
-            outputCS = def;
-            std::cout<<"--o_wkt "<<outputCS<<std::endl;
-        }
-        else if (arguments.read("--o_wkt-file",def))
-        {
-            std::ifstream in(def.c_str());
-            if (in)
-            {   
-                outputCS = "";
-                while (!in.eof())
-                {
-                    std::string line;
-                    in >> line;
-                    outputCS += line;
-                }
-                std::cout<<"--o_wkt-file "<<outputCS<<std::endl;
-            }
-        }
-        if (!outputCS.empty()) dataset->setDestinationCoordinateSystem(outputCS);
-    }   
-    
-    
 
 
     // if user request help write it out to cout.
@@ -528,6 +491,7 @@ int main( int argc, char **argv )
             minmaxLevelSet = false;
             min_level=0; max_level=maximumPossibleLevel;
             
+            currentCS = "";
             geoTransformSet = false;
             geoTransformScale = false;
             geoTransform.makeIdentity();            
@@ -543,6 +507,7 @@ int main( int argc, char **argv )
             minmaxLevelSet = false;
             min_level=0; max_level=maximumPossibleLevel;
             
+            currentCS = "";
             geoTransformSet = false;
             geoTransformScale = false;
             geoTransform.makeIdentity();            
@@ -555,6 +520,7 @@ int main( int argc, char **argv )
             minmaxLevelSet = false;
             min_level=0; max_level=maximumPossibleLevel;
             
+            currentCS = "";
             geoTransformSet = false;
             geoTransformScale = false;
             geoTransform.makeIdentity();            
@@ -572,6 +538,15 @@ int main( int argc, char **argv )
             dataset->setDestinationTileExtension(extension);
             
             if (!currentCS.empty()) dataset->setDestinationCoordinateSystem(currentCS);
+
+            minmaxLevelSet = false;
+            min_level=0; max_level=maximumPossibleLevel;
+            
+            currentCS = "";
+            geoTransformSet = false;
+            geoTransformScale = false;
+            geoTransform.makeIdentity();            
+
         }
         else
         {

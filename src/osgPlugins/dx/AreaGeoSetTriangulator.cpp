@@ -12,19 +12,19 @@ class AreaGeoSetTriangulator
   //   Efficiently collects the various data arrays, which GeoSet can't do.
 {
 protected:
-  std::vector< osg::uint > _cindex;
-  std::vector< osg::uint > _nindex;
-  std::vector< osg::uint > _colindex;
-  std::vector< osg::uint > _tindex;
+  std::vector< unsigned int > _cindex;
+  std::vector< unsigned int > _nindex;
+  std::vector< unsigned int > _colindex;
+  std::vector< unsigned int > _tindex;
   const osg::GeoSet       &_area_geoset;
 
 public:
   AreaGeoSetTriangulator( const osg::GeoSet &area_geoset );
 
-  void operator() ( osg::uint v1, osg::uint v2, osg::uint v3,
-                    osg::uint prim_index, osg::uint prim_tri_index,
-                    osg::uint v1_geoset, osg::uint v2_geoset, 
-                    osg::uint v3_geoset );
+  void operator() ( unsigned int v1, unsigned int v2, unsigned int v3,
+                    unsigned int prim_index, unsigned int prim_tri_index,
+                    unsigned int v1_geoset, unsigned int v2_geoset, 
+                    unsigned int v3_geoset );
     // Passed triangles as primitives are triangulated
 
   osg::GeoSet *BuildGeoSet();
@@ -58,10 +58,10 @@ AreaGeoSetTriangulator::AreaGeoSetTriangulator( const osg::GeoSet &area_geoset)
 
 //---------------------------------------------------------------------------
 void AreaGeoSetTriangulator::operator() ( 
-                     osg::uint v1, osg::uint v2, osg::uint v3,
-                     osg::uint prim_index, osg::uint prim_tri_index,
-                     osg::uint v1_geoset, osg::uint v2_geoset, 
-                     osg::uint v3_geoset )
+                     unsigned int v1, unsigned int v2, unsigned int v3,
+                     unsigned int prim_index, unsigned int prim_tri_index,
+                     unsigned int v1_geoset, unsigned int v2_geoset, 
+                     unsigned int v3_geoset )
   // Passed triangles as primitives are triangulated from the original
   //   GeoSet.  Note that the v? params are indicies into the Coord array,
   //   whereas the v?_geoset params are vertex numbers relative to the
@@ -222,13 +222,13 @@ void for_each_triangle2(const osg::GeoSet& gset,T& op)
             {
                 if (gset.getCoordIndices()._is_ushort)
                 {
-                    osg::ushort* base = gset.getCoordIndices()._ptr._ushort;
-                    osg::ushort* iptr = base;
+                    unsigned short* base = gset.getCoordIndices()._ptr._ushort;
+                    unsigned short* iptr = base;
                     const int numPrim = gset.getNumPrims();
                     for(int i=0; i<numPrim; ++i )
                     {
                         const int primLength = gset.getPrimLengths()[i];
-                        osg::ushort* iend = iptr+primLength;
+                        unsigned short* iend = iptr+primLength;
                         int tri=0;
                         for(int j = 2; j < primLength; j++ )
                         {
@@ -269,12 +269,12 @@ void for_each_triangle2(const osg::GeoSet& gset,T& op)
             }
             else
             {
-                osg::uint cindex = 0;
+                unsigned int cindex = 0;
                 const int numPrim = gset.getNumPrims();
                 for(int i=0; i<numPrim; ++i )
                 {
                     const int primLength  = gset.getPrimLengths()[i];
-                    osg::uint cindex_end  = cindex+primLength;
+                    unsigned int cindex_end  = cindex+primLength;
                     int tri=0;
                     for(int j = 2; j < primLength; j++ )
                     {
@@ -298,8 +298,8 @@ void for_each_triangle2(const osg::GeoSet& gset,T& op)
             {
                 if (gset.getCoordIndices()._is_ushort)
                 {
-                    osg::ushort* base = gset.getCoordIndices()._ptr._ushort;
-                    osg::ushort* iptr = base;
+                    unsigned short* base = gset.getCoordIndices()._ptr._ushort;
+                    unsigned short* iptr = base;
                     const int numPrim = gset.getNumPrims();
                     for(int i=0; i<numPrim; ++i )
                     {
@@ -323,7 +323,7 @@ void for_each_triangle2(const osg::GeoSet& gset,T& op)
             }
             else
             {
-                osg::uint cindex = 0;
+                unsigned int cindex = 0;
                 const int numPrim = gset.getNumPrims();
                 for(int i=0; i<numPrim; ++i )
                 {
@@ -341,13 +341,13 @@ void for_each_triangle2(const osg::GeoSet& gset,T& op)
             {
                 if (gset.getCoordIndices()._is_ushort)
                 {
-                    osg::ushort* base = gset.getCoordIndices()._ptr._ushort;
-                    osg::ushort* iptr = base;
+                    unsigned short* base = gset.getCoordIndices()._ptr._ushort;
+                    unsigned short* iptr = base;
                     const int numPrim = gset.getNumPrims();
                     for(int i=0; i<numPrim; ++i )
                     {
                         const int primLength = gset.getPrimLengths()[i];
-                        osg::ushort* iend = iptr+primLength;
+                        unsigned short* iend = iptr+primLength;
                         int tri=0;
                         for(int j = 3; j < primLength; j+=2 )
                         {
@@ -385,12 +385,12 @@ void for_each_triangle2(const osg::GeoSet& gset,T& op)
             }
             else
             {
-                osg::uint cindex = 0;
+                unsigned int cindex = 0;
                 const int numPrim = gset.getNumPrims();
                 for(int i=0; i<numPrim; ++i )
                 {
                     const int primLength = gset.getPrimLengths()[i];
-                    osg::uint cindex_end = cindex+primLength;
+                    unsigned int cindex_end = cindex+primLength;
                     int tri=0;
                     for(int j = 3; j < primLength; j+=2 )
                     {
@@ -411,8 +411,8 @@ void for_each_triangle2(const osg::GeoSet& gset,T& op)
             {
                 if (gset.getCoordIndices()._is_ushort)
                 {
-                    osg::ushort* base = gset.getCoordIndices()._ptr._ushort;
-                    osg::ushort* iptr = base;
+                    unsigned short* base = gset.getCoordIndices()._ptr._ushort;
+                    unsigned short* iptr = base;
                     const int numPrim = gset.getNumPrims();
                     for(int i=0; i<numPrim; ++i )
                     {
@@ -441,7 +441,7 @@ void for_each_triangle2(const osg::GeoSet& gset,T& op)
             }
             else
             {
-                osg::uint cindex = 0;
+                unsigned int cindex = 0;
                 const int numPrim = gset.getNumPrims();
                 for(int i=0; i<numPrim; ++i )
                 {
@@ -463,8 +463,8 @@ void for_each_triangle2(const osg::GeoSet& gset,T& op)
             {
                 if (gset.getCoordIndices()._is_ushort)
                 {
-                    osg::ushort* base = gset.getCoordIndices()._ptr._ushort;
-                    osg::ushort* iptr = base;
+                    unsigned short* base = gset.getCoordIndices()._ptr._ushort;
+                    unsigned short* iptr = base;
                     const int numPrim = gset.getNumPrims();
                     for(int i=0; i<numPrim; ++i )
                     {
@@ -472,8 +472,8 @@ void for_each_triangle2(const osg::GeoSet& gset,T& op)
                         int tri=0;
                         if (primLength>0)
                         {
-                            osg::ushort *start = iptr;
-                            osg::ushort* iend = iptr+primLength;
+                            unsigned short *start = iptr;
+                            unsigned short* iend = iptr+primLength;
                             ++iptr;
                             for(int j = 2; j < primLength; ++j )
                             {
@@ -512,7 +512,7 @@ void for_each_triangle2(const osg::GeoSet& gset,T& op)
             }
             else
             {
-                osg::uint cindex = 0;
+                unsigned int cindex = 0;
                 const int numPrim = gset.getNumPrims();
                 for(int i=0; i<numPrim; ++i )
                 {
@@ -520,8 +520,8 @@ void for_each_triangle2(const osg::GeoSet& gset,T& op)
                     int tri=0;
                     if (primLength>0)
                     {
-                        osg::uint cindex_start = cindex;
-                        osg::uint cindex_end   = cindex+primLength;
+                        unsigned int cindex_start = cindex;
+                        unsigned int cindex_end   = cindex+primLength;
                         ++cindex;
                         for(int j = 2; j < primLength; ++j)
                         {

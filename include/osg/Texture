@@ -15,7 +15,6 @@
 #define OSG_TEXTURE 1
 
 #include <osg/GL>
-#include <osg/Types>
 #include <osg/Image>
 #include <osg/StateAttribute>
 #include <osg/ref_ptr>

@@ -52,7 +52,7 @@ bool Stencil_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
-    osg::uint mask = stencil.getFunctionMask();
+    unsigned int mask = stencil.getFunctionMask();
     if (fr[0].matchWord("functionMask") && fr[1].getUInt(mask))
     {
         setFunction = true;

@@ -63,7 +63,7 @@ class Texture2DCallback : public osg::NodeCallback
         
         osg::ref_ptr<osg::Texture2D>              _texture;
         std::vector<osg::Texture2D::FilterMode>   _filterRange;
-        osg::uint                               _currPos;
+        unsigned int                               _currPos;
         double                                  _prevTime;
 };
 

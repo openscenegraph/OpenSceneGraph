@@ -163,8 +163,8 @@ const float     ALPHA_OPAQUE    = 1.0;
 
 #define ARRAY_LEN(a) (sizeof(a)/sizeof((a)[0]))
 
-typedef osg::ubyte Vec4UB[4];
-typedef osg::ubyte Vec3UB[3];
+typedef unsigned char Vec4UB[4];
+typedef unsigned char Vec3UB[3];
 
 //----------------------------------------------------------------------------
 
@@ -1129,17 +1129,17 @@ void DXArrayWriter::WritePerVertexColors(
   try {
     memset( set, '\0', num_points * sizeof(int) );
 
-    osg::uint num_pt_instances    = num_pindices ? num_pindices : num_points;
-    osg::uint num_color_instances = num_cindices ? num_cindices : num_colors;
+    unsigned int num_pt_instances    = num_pindices ? num_pindices : num_points;
+    unsigned int num_color_instances = num_cindices ? num_cindices : num_colors;
     if ( num_pt_instances != num_color_instances ) {
       msg_bin->Add( "ERROR:  Incorrect number of colors found\n" );
       throw 1;
     }
 
-    for ( osg::uint i = 0; i < num_pt_instances; i++ )
+    for ( unsigned int i = 0; i < num_pt_instances; i++ )
     {
-      osg::uint pindex = pindices.valid() ? pindices[i] : i;
-      osg::uint cindex = cindices.valid() ? cindices[i] : i;
+      unsigned int pindex = pindices.valid() ? pindices[i] : i;
+      unsigned int cindex = cindices.valid() ? cindices[i] : i;
 
       if ( set[pindex] && ( pt_cindices[pindex] != cindex ) )
         msg_bin->Add( "ERROR:  Vertex color aliasing!!!  Ask somebody to expand\n"
@@ -1463,7 +1463,7 @@ std::string DXWriter::WriteImage( const osg::Image &image )
   }
 
   unsigned num_pixels = image.s() * image.t();
-  osg::ubyte opaque = osg::ubyte( ALPHA_OPAQUE * 255.0 );
+  unsigned char opaque = (unsigned char) (ALPHA_OPAQUE * 255.0 );
   Vec4UB *colors = new Vec4UB[ num_pixels ];
   unsigned i;
 

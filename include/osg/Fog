@@ -15,7 +15,6 @@
 #define OSG_FOG 1
 
 #include <osg/StateAttribute>
-#include <osg/Types>
 #include <osg/Vec4>
 
 #ifndef GL_FOG_COORDINATE

@@ -1,5 +1,4 @@
 #include <osgGA/FlightManipulator>
-#include <osg/Types>
 #include <osg/Notify>
 
 using namespace osg;

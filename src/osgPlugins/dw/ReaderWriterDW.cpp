@@ -291,7 +291,7 @@ public:
         }
         //        mx.postScale(mx,1.0f/themat->TextureWidth, 1.0f/themat->TextureHeight,1);
     }
-    inline int setnvop(const osg::ushort n) { // add a new hole in this face with n vertices
+    inline int setnvop(const unsigned short n) { // add a new hole in this face with n vertices
         _face *oldop=opening; 
         opening=new _face[nop+1]; 
         for (int i=0; i<nop; i++) opening[i].move(&oldop[i]);
@@ -433,9 +433,9 @@ public:
         GLenum mode[]= {GL_TRIANGLES, GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, 
             GL_QUADS, GL_QUAD_STRIP, GL_POLYGON};
         curmode=mode[md];
-        gsidx=new osg::ushort[6*nfnvf];
-        nrmidx=new osg::ushort[6*nfnvf];
-        txidx=new osg::ushort[6*nfnvf];
+        gsidx=new unsigned short[6*nfnvf];
+        nrmidx=new unsigned short[6*nfnvf];
+        txidx=new unsigned short[6*nfnvf];
         txcoords=new Vec2[6*nfnvf]; // one texture coord per vertex
         nrms=new Vec3[6*nfnvf]; // one normal per face or per vertex
         primlengs=new int[nfnvf]; // primitive lengths
@@ -452,9 +452,9 @@ public:
         if (nload>0 && nff>0) { // there are some strips of this type
             Geode *geode = new Geode;
             GeoSet *gset = new GeoSet;
-            osg::ushort *nunrmidx=new osg::ushort[nload];
-            osg::ushort *nutxidx = new osg::ushort[nload];
-            osg::ushort *nusidx = new osg::ushort[nload];
+            unsigned short *nunrmidx=new unsigned short[nload];
+            unsigned short *nutxidx = new unsigned short[nload];
+            unsigned short *nusidx = new unsigned short[nload];
             Vec3 *nunrms=new Vec3[nload]; // one normal per face (nff) or per vertex (nload)
             int *nuprimlengs=new int[nff]; // primitive lengths
             Vec2 *nutxc=new Vec2[nload];
@@ -551,9 +551,9 @@ private:
     int nload; // numebr of vertices loaded into these arrays
     int nff; // primitive loaded
     int *primlengs;
-    osg::ushort *gsidx;
-    osg::ushort *nrmidx;
-    osg::ushort *txidx;
+    unsigned short *gsidx;
+    unsigned short *nrmidx;
+    unsigned short *txidx;
     Vec3 *nrms; // one normal per face
     Vec2 *txcoords; // one texture coord per vertex
     const Matrix *tmat; // local texture matrix, or may be NULL for default mapping
@@ -628,8 +628,8 @@ public:
     { // read up to nexpected openings, each opening may have a number of vertices
         char buff[256];
         openings=new int[nexpected*2];
-        fc1=new osg::ushort[nexpected];
-        fc2=new osg::ushort[nexpected];
+        fc1=new unsigned short[nexpected];
+        fc2=new unsigned short[nexpected];
         nopens=0;
         int nvop=0; // current number of vertices in hole in object
         while (nopens<nexpected) { // for each opening
@@ -755,13 +755,13 @@ private:
     Vec4 colour;
     std::vector<Vec3> verts;
     dwmaterial *themat;
-    osg::ushort nverts,nfaces,nedges;
-    osg::ushort nfaceverts;
-    osg::ushort nopens;
+    unsigned short nverts,nfaces,nedges;
+    unsigned short nfaceverts;
+    unsigned short nopens;
     _face *faces;
     _dwedge *edges;
     int *openings;
-    osg::ushort *fc1, *fc2; // openings[i] is in faces[fc1[i]] to faces[fc2[i]]
+    unsigned short *fc1, *fc2; // openings[i] is in faces[fc1[i]] to faces[fc2[i]]
     Matrix *tmat;
     Matrix *mx; // current uvw transform for currently tessealting face
 };
@@ -895,7 +895,7 @@ class ReaderWriterDW : public osgDB::ReaderWriter
         {
         _dwobj obj;
         enum reading {NONE, MATERIAL, OBJECT};
-        //osg::ushort nrecs=0; // number of records read after a divider (numVerts, numFaces, numOpenings...)
+        //unsigned short nrecs=0; // number of records read after a divider (numVerts, numFaces, numOpenings...)
         int nexpected=0; // number of records to be read in a block
         dwmaterial *matpalet=NULL;
         int nmat=-1; // current element of matpalet being modified

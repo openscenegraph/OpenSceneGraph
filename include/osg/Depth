@@ -15,7 +15,6 @@
 #define OSG_DEPTH 1
 
 #include <osg/StateAttribute>
-#include <osg/Types>
 
 namespace osg {
 

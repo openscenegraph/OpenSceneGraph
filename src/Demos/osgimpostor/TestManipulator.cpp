@@ -1,5 +1,4 @@
 #include "TestManipulator.h"
-#include <osg/Types>
 #include <osg/Notify>
 
 using namespace osg;

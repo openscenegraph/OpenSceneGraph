@@ -12,7 +12,6 @@
 */
 #include <osg/GL>
 #include <osg/Camera>
-#include <osg/Types>
 #include <osg/Notify>
 #include <osg/State>
 

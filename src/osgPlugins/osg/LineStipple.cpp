@@ -38,7 +38,7 @@ bool LineStipple_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
-    osg::uint mask = linestipple.getPattern();
+    unsigned int mask = linestipple.getPattern();
     if (fr[0].matchWord("functionMask") && fr[1].getUInt(mask))
     {
         linestipple.setPattern(mask);

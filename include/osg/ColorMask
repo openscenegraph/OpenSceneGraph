@@ -16,7 +16,6 @@
 
 #include <osg/Export>
 #include <osg/StateAttribute>
-#include <osg/Types>
 
 namespace osg {
 

@@ -36,6 +36,7 @@
 #include <osg/State>
 
 #include <osgText/Export>
+#include <osgText/EncodedText>
 
 #include <string>
 
@@ -56,8 +57,6 @@ namespace osgText {
         virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const name *>(obj)!=NULL; } \
         virtual const char* libraryName() const { return #library; } \
         virtual const char* className() const { return #name; } \
-
-class EncodedText;
 
 class OSGTEXT_EXPORT Font : public osg::Object
 {

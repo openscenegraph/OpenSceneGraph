@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class IVE_EXPORT Drawable : public ReadWrite, public osg::Drawable{
+class Drawable : public ReadWrite, public osg::Drawable{
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

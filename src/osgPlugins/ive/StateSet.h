@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class IVE_EXPORT StateSet : public ReadWrite, public osg::StateSet{
+class StateSet : public ReadWrite, public osg::StateSet{
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* out);

@@ -13,7 +13,6 @@
 #include <osg/Matrix>
 #include <osg/Geometry>
 
-#include "Export.h"
 #include "DataTypeSize.h"
 #include "Exception.h"
 
@@ -22,7 +21,7 @@
 
 namespace ive {					   
 
-class IVE_EXPORT DataOutputStream{
+class DataOutputStream{
 
 public:
 	DataOutputStream(std::ostream* ostream);

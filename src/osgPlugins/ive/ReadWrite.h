@@ -55,7 +55,7 @@ namespace ive {
 // Our own classes
 #define IVEVIEWPOINT			0x00100001
 
-class IVE_EXPORT ReadWrite{
+class ReadWrite{
 
 public:
 	virtual void write(DataOutputStream* out) const = 0;

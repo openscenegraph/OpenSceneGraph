@@ -5,7 +5,7 @@
 #include <ive/ReadWrite.h>
 
 namespace ive{
-class IVE_EXPORT ViewPoint : public osgfIVE::ViewPoint, public ReadWrite {
+class ViewPoint : public osgfIVE::ViewPoint, public ReadWrite {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

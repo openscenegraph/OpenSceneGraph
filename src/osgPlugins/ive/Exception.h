@@ -1,12 +1,11 @@
 #ifndef IVE_EXCEPTION
 #define IVE_EXCEPTION 1
 
-#include "Export.h"
 #include <string>
 
 namespace ive{
 
-class IVE_EXPORT Exception{
+class Exception{
 public:
 	Exception(std::string error);
 	~Exception();

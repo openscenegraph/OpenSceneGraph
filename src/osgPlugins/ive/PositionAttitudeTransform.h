@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class IVE_EXPORT PositionAttitudeTransform : public osg::PositionAttitudeTransform, public ReadWrite {
+class PositionAttitudeTransform : public osg::PositionAttitudeTransform, public ReadWrite {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

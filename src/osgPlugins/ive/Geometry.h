@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class IVE_EXPORT Geometry : public ReadWrite, public osg::Geometry{
+class Geometry : public ReadWrite, public osg::Geometry{
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

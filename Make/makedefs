@@ -113,8 +113,6 @@ PLUGIN_EXT     = so
 MAKEDIST       = echo "   === Distribution build is not implemented yet for $(OS)"; printf "\n"
 INSTLOGFILE    = /tmp/.osg_inst_log
 
-LIBXML2_INCLUDE = -I/usr/include/libxml2
-
 ifneq ("$(OPENTHREADS_INC_DIR)","")
 INC += -I$(OPENTHREADS_INC_DIR)
 endif
@@ -216,9 +214,8 @@ ifeq ($(OS),SunOS)
   FREETYPE_INCLUDE  = `freetype-config --cflags`
   FREETYPE_LIB      = `freetype-config --libs`
 
-  GDAL_INCLUDES     = -I`gdal-config --prefix`/include
-  GDAL_LIBS         = `gdal-config --dep-libs`
-  GDAL_LIBS         += `gdal-config --libs`
+  GDAL_INCLUDES     = `gdal-config --cflags`
+  GDAL_LIBS         = `gdal-config --libs`
 
 
 endif
@@ -304,9 +301,8 @@ ifeq ($(OS),IRIX)
   FREETYPE_INCLUDE  = `freetype-config --cflags`
   FREETYPE_LIB      = `freetype-config --libs`
 
-  GDAL_INCLUDES     = -I`gdal-config --prefix`/include
-  GDAL_LIBS         = `gdal-config --dep-libs`
-  GDAL_LIBS         += `gdal-config --libs`
+  GDAL_INCLUDES     = `gdal-config --cflags`
+  GDAL_LIBS         = `gdal-config --libs`
 
 
 endif
@@ -389,9 +385,8 @@ ifeq ($(OS),Linux)
   FREETYPE_INCLUDE  = `freetype-config --cflags`
   FREETYPE_LIB      = `freetype-config --libs`
 
-  GDAL_INCLUDES     = -I`gdal-config --prefix`/include
-  GDAL_LIBS         = `gdal-config --dep-libs`
-  GDAL_LIBS         += `gdal-config --libs`
+  GDAL_INCLUDES     = `gdal-config --cflags`
+  GDAL_LIBS         = `gdal-config --libs`
 
 endif
 
@@ -423,9 +418,8 @@ ifeq ($(OS),FreeBSD)
   FREETYPE_INCLUDE  = `freetype-config --cflags`
   FREETYPE_LIB      = `freetype-config --libs`
 
-  GDAL_INCLUDES     = -I`gdal-config --prefix`/include
-  GDAL_LIBS         = `gdal-config --dep-libs`
-  GDAL_LIBS         += `gdal-config --libs`
+  GDAL_INCLUDES     = `gdal-config --cflags`
+  GDAL_LIBS         = `gdal-config --libs`
 
 endif
 
@@ -456,7 +450,6 @@ ifeq ($(OS),Darwin)
   SOCKET_LIBS       = 
   OTHER_LIBS        = -lm -lstdc++ -lobjc -lOpenThreads
   LIB_EXT           = dylib
-  LIBXML2_INCLUDE   = -I/usr/include/libxml2 -I/sw/include/libxml2 
   LIBVERSION	    = -current_version $(VERSION) \
                         -compatibility_version \
                         $(VERSION_MAJOR).$(VERSION_MINOR).0
@@ -474,9 +467,8 @@ ifeq ($(OS),Darwin)
   FREETYPE_INCLUDE  = `freetype-config --cflags`
   FREETYPE_LIB      = `freetype-config --libs`
 
-  GDAL_INCLUDES     = -I`gdal-config --prefix`/include
-  GDAL_LIBS         = `gdal-config --dep-libs`
-  GDAL_LIBS         += `gdal-config --libs`
+  GDAL_INCLUDES     = `gdal-config --cflags`
+  GDAL_LIBS         = `gdal-config --libs`
 
 endif
 
@@ -512,7 +504,7 @@ ifeq ($(OS),CYGWIN)
   FREETYPE_INCLUDE  = `freetype-config --cflags`
   FREETYPE_LIB      = `freetype-config --libs`
 
-  GDAL_INCLUDES     = -I`gdal-config --prefix`/include
+  GDAL_INCLUDES     = `gdal-config --cflags`
   GDAL_LIBS         = `gdal-config --dep-libs`
   GDAL_LIBS         += `gdal-config --libs`
 
@@ -570,8 +562,6 @@ ifeq ($(OS),MINGW)
   FREETYPE_LIB      = -lfreetype
 
   GDAL_LIB          =  -lgdal -ljpeg -lgeotiff -ltiff -lpng -lz
-
-  LIBXML2_INCLUDE = -I/usr/mingw/include/libxml2
 
   LIBINST    = bin
   PLUGININST = bin/$(OS)$(ARCH)
@@ -640,9 +630,8 @@ endif
   FREETYPE_INCLUDE  = `freetype-config --cflags`
   FREETYPE_LIB      = `freetype-config --libs`
 
-  GDAL_INCLUDES     = -I`gdal-config --prefix`/include
-  GDAL_LIBS         = `gdal-config --dep-libs`
-  GDAL_LIBS         += `gdal-config --libs`
+  GDAL_INCLUDES     = `gdal-config --cflags`
+  GDAL_LIBS         = `gdal-config --libs`
 
 endif
 

@@ -74,9 +74,9 @@ class OSGDB_EXPORT Output : public std::ofstream
         };
         
         inline void setPathNameHint(const PathNameHint pnh) { _pathNameHint = pnh; }
-        inline const PathNameHint getPathNameHint() const { return _pathNameHint; }
+        inline PathNameHint getPathNameHint() const { return _pathNameHint; }
 
-        virtual const std::string getFileNameForOutput(const std::string& filename) const;
+        virtual std::string getFileNameForOutput(const std::string& filename) const;
 
         
     protected:

@@ -85,7 +85,7 @@ osgText::Font::Glyph* FreeTypeFont::getGlyph(unsigned int charcode)
     
 
     // clear the image to zeros.
-    for(unsigned char* p=data;p!=data+dataSize;++p) *p = 0;
+    for(unsigned char* p=data;p<data+dataSize;) { *p++ = 255; *p++ = 0; }
 
     glyph->setImage(width,height,1,
                     GL_LUMINANCE_ALPHA,

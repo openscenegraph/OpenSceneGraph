@@ -157,11 +157,11 @@ osg:: Node* createTextLeft(const osg::BoundingBox& bb)
     osgText::Text* text = new  osgText::Text;
  
     text->setFont(font);
-    text->setFontSize(120,120);
+    text->setFontSize(110,120);
     text->setAlignment(osgText::Text::RIGHT_CENTER);
     text->setAxisAlignment(osgText::Text::XZ_PLANE);
-    text->setCharacterSize((bb.zMax()-bb.zMin())*0.8f);
-    text->setPosition(bb.center()-osg::Vec3((bb.xMax()-bb.xMin()),-(bb.yMax()-bb.yMin())*0.5f,(bb.zMax()-bb.zMin())*0.3f));
+    text->setCharacterSize((bb.zMax()-bb.zMin())*1.0f);
+    text->setPosition(bb.center()-osg::Vec3((bb.xMax()-bb.xMin()),-(bb.yMax()-bb.yMin())*0.5f,(bb.zMax()-bb.zMin())*0.1f));
     //text->setColor(osg::Vec4(0.37f,0.48f,0.67f,1.0f)); // Neil's orignal OSG colour
     text->setColor(osg::Vec4(0.20f,0.45f,0.60f,1.0f)); // OGL logo colour
     text->setText("OpenSceneGraph");
@@ -178,7 +178,7 @@ osg:: Node* createTextLeft(const osg::BoundingBox& bb)
         subscript->setText("Professional Services");
         subscript->setAlignment(osgText::Text::RIGHT_CENTER);
         subscript->setAxisAlignment(osgText::Text::XZ_PLANE);
-        subscript->setPosition(bb.center()-osg::Vec3((bb.xMax()-bb.xMin())*3.5f,-(bb.yMax()-bb.yMin())*0.5f,(bb.zMax()-bb.zMin())*0.6f));
+        subscript->setPosition(bb.center()-osg::Vec3((bb.xMax()-bb.xMin())*4.3f,-(bb.yMax()-bb.yMin())*0.5f,(bb.zMax()-bb.zMin())*0.6f));
         subscript->setColor(osg::Vec4(0.0f,0.0f,0.0f,1.0f)); // black
 
         geode->addDrawable( subscript );

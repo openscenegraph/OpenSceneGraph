@@ -15,7 +15,6 @@
 #include <osg/Geometry>					   
 
 #include "DataTypeSize.h"	
-#include "Export.h"
 #include "Exception.h"
 
 
@@ -25,7 +24,7 @@
 
 namespace ive{
 
-class IVE_EXPORT DataInputStream{
+class DataInputStream{
 
 public:
 	DataInputStream(std::istream* istream);

@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class IVE_EXPORT Geode : public ReadWrite, public osg::Geode{
+class Geode : public ReadWrite, public osg::Geode{
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

@@ -5,7 +5,7 @@
 #include "ReadWrite.h"
 
 namespace ive{
-class IVE_EXPORT DrawArrayLengths : public osg::DrawArrayLengths, public ReadWrite {
+class DrawArrayLengths : public osg::DrawArrayLengths, public ReadWrite {
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

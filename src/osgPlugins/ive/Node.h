@@ -6,7 +6,7 @@
 #include <iostream>
 
 namespace ive{
-class IVE_EXPORT Node :  public osg::Node, public ReadWrite{
+class Node :  public osg::Node, public ReadWrite{
 public:
 	void write(DataOutputStream* out);
 	void read(DataInputStream* in);

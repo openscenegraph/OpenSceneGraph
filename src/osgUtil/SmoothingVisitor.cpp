@@ -119,7 +119,8 @@ void SmoothingVisitor::smooth(osg::GeoSet& gset)
 
         for(j = 0; j < ncoords; j++ )
         {
-            norms[j].normalize();
+            float len = norms[j].length();
+            if (len) norms[j]/=len;
         }
 
         gset.setNormalBinding(osg::GeoSet::BIND_PERVERTEX);

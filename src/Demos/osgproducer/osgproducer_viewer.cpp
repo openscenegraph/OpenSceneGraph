@@ -15,8 +15,6 @@
 int main( int argc, char **argv )
 {
 
-    // create the camera group.
-
     // create the commandline args.
     std::string pathfile;
     std::string configfile;
@@ -43,11 +41,16 @@ int main( int argc, char **argv )
 	    commandLine.push_back(argv[i]);
     }
 
+    osg::DisplaySettings::instance()->readCommandLine(commandLine);
+    osgDB::readCommandLine(commandLine);
+
     osgProducer::Viewer* viewer = 0;
     if (!configfile.empty()) viewer = new osgProducer::Viewer(configfile);
     else viewer = new osgProducer::Viewer;
 
-    osg::DisplaySettings::instance()->readCommandLine(commandLine);
+
+    // configure the plugin registry from the commandline arguments, and 
+    // eat any parameters that have been matched.
     osgDB::readCommandLine(commandLine);
 
 

@@ -142,18 +142,18 @@ void Viewer::setUpViewer(unsigned int options)
         _eventHandlerList.push_back(statesetManipulator.get());
     }
     
-    if (options&STATS_MANIPULATOR)
-    {
-        // register the drawing of stats to pipe 0.
-        FrameStatsHandler* fsh = new FrameStatsHandler;
-        setStatsHandler(fsh);
-        getCamera(0)->addPostDrawCallback(fsh);
-
-        // register the event handler for stats.
-        getEventHandlerList().push_back(new StatsEventHandler(this));
-        
-        
-    }
+//     if (options&STATS_MANIPULATOR)
+//     {
+//         // register the drawing of stats to pipe 0.
+//         FrameStatsHandler* fsh = new FrameStatsHandler;
+//         setStatsHandler(fsh);
+//         getCamera(0)->addPostDrawCallback(fsh);
+// 
+//         // register the event handler for stats.
+//         getEventHandlerList().push_back(new StatsEventHandler(this));
+//         
+//         
+//     }
     
     if (options&VIEWER_MANIPULATOR)
     {

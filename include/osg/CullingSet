@@ -94,6 +94,35 @@ class SG_EXPORT CullingSet : public Referenced
         }
 
 
+        inline bool isCulled(const std::vector<Vec3>& vertices)
+        {
+            if (_mask&VIEW_FRUSTUM_CULLING)
+            {
+                // is it outside the view frustum...
+                if (!_frustum.contains(vertices)) return true;
+            }
+            
+            if (_mask&SMALL_FEATURE_CULLING)
+            {
+            }
+
+            if (_mask&SHADOW_OCCLUSION_CULLING)
+            {
+                // is it in one of the shadow occluder volumes.
+                if (!_occluderList.empty())
+                {
+                    for(OccluderList::iterator itr=_occluderList.begin();
+                        itr!=_occluderList.end();
+                        ++itr)
+                    {
+                        if (itr->contains(vertices)) return true;
+                    }
+                }
+            }
+                        
+            return false;
+        }
+        
         inline bool isCulled(const BoundingBox& bb)
         {
             if (_mask&VIEW_FRUSTUM_CULLING)

@@ -58,7 +58,7 @@ CXXFILES =\
 	Projection.cpp\
 	Quat.cpp\
 	ShadeModel.cpp\
-	ShadowOccluderVolume.cpp\
+	ShadowVolumeOccluder.cpp\
 	State.cpp\
 	StateSet.cpp\
 	Stencil.cpp\

@@ -1,7 +1,7 @@
 #!gmake
 SHELL=/bin/sh
 
-DIRS = sgv osgconv osgcube osgscribe osgreflect osgtexture osgimpostor osgviews osgcopy osgbillboard hangglide 
+DIRS = sgv osgconv osgcube osgscribe osgreflect osgtexture osgimpostor osgviews osgcopy osgbillboard osgstereoimage hangglide 
 
 # comment out if you don't have the freetype and GLU1.3 library installed.
 DIRS += osgtext 

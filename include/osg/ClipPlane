@@ -41,7 +41,7 @@ class SG_EXPORT ClipPlane : public StateAttribute
             _clipPlaneNum=cp._clipPlaneNum;
         }
         
-        META_StateAttribute(osg, ClipPlane, (Type)(CLIPPLANE+_clipPlaneNum));
+        META_StateAttribute(osg, ClipPlane, CLIPPLANE);
         
         /** Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
         virtual int compare(const StateAttribute& sa) const
@@ -59,6 +59,8 @@ class SG_EXPORT ClipPlane : public StateAttribute
 
             return 0; // Passed all the above comparison macros, so must be equal.
         }
+
+        virtual unsigned int getMember() { return _clipPlaneNum; }
 
         virtual bool getModeUsage(ModeUsage& usage) const
         {

@@ -313,9 +313,9 @@ void State::haveAppliedAttribute(const StateAttribute* attribute)
     haveAppliedAttribute(_attributeMap,attribute);
 }
 
-void State::haveAppliedAttribute(StateAttribute::Type type)
+void State::haveAppliedAttribute(StateAttribute::Type type, unsigned int member)
 {
-    haveAppliedAttribute(_attributeMap,type);
+    haveAppliedAttribute(_attributeMap,type,member);
 }
 
 bool State::getLastAppliedMode(StateAttribute::GLMode mode) const
@@ -323,9 +323,9 @@ bool State::getLastAppliedMode(StateAttribute::GLMode mode) const
     return getLastAppliedMode(_modeMap,mode);
 }
 
-const StateAttribute* State::getLastAppliedAttribute(StateAttribute::Type type) const
+const StateAttribute* State::getLastAppliedAttribute(StateAttribute::Type type, unsigned int member) const
 {
-    return getLastAppliedAttribute(_attributeMap,type);
+    return getLastAppliedAttribute(_attributeMap,type,member);
 }
 
 
@@ -344,9 +344,9 @@ void State::haveAppliedTextureAttribute(unsigned int unit,const StateAttribute* 
     haveAppliedAttribute(getOrCreateTextureAttributeMap(unit),attribute);
 }
 
-void State::haveAppliedTextureAttribute(unsigned int unit,StateAttribute::Type type)
+void State::haveAppliedTextureAttribute(unsigned int unit,StateAttribute::Type type, unsigned int member)
 {
-    haveAppliedAttribute(getOrCreateTextureAttributeMap(unit),type);
+    haveAppliedAttribute(getOrCreateTextureAttributeMap(unit),type,member);
 }
 
 bool State::getLastAppliedTextureMode(unsigned int unit,StateAttribute::GLMode mode) const
@@ -355,10 +355,10 @@ bool State::getLastAppliedTextureMode(unsigned int unit,StateAttribute::GLMode m
     return getLastAppliedMode(_textureModeMapList[unit],mode);
 }
 
-const StateAttribute* State::getLastAppliedTextureAttribute(unsigned int unit,StateAttribute::Type type) const
+const StateAttribute* State::getLastAppliedTextureAttribute(unsigned int unit,StateAttribute::Type type, unsigned int member) const
 {
     if (unit>=_textureAttributeMapList.size()) return false;
-    return getLastAppliedAttribute(_textureAttributeMapList[unit],type);
+    return getLastAppliedAttribute(_textureAttributeMapList[unit],type,member);
 }
 
 
@@ -390,7 +390,7 @@ void State::haveAppliedAttribute(AttributeMap& attributeMap,const StateAttribute
 {
     if (attribute)
     {
-        AttributeStack& as = attributeMap[attribute->getType()];
+        AttributeStack& as = attributeMap[attribute->getTypeMemberPair()];
 
         as.last_applied_attribute = attribute;
 
@@ -399,10 +399,10 @@ void State::haveAppliedAttribute(AttributeMap& attributeMap,const StateAttribute
     }
 }
 
-void State::haveAppliedAttribute(AttributeMap& attributeMap,StateAttribute::Type type)
+void State::haveAppliedAttribute(AttributeMap& attributeMap,StateAttribute::Type type, unsigned int member)
 {
     
-    AttributeMap::iterator itr = attributeMap.find(type);
+    AttributeMap::iterator itr = attributeMap.find(StateAttribute::TypeMemberPair(type,member));
     if (itr!=attributeMap.end())
     {
         AttributeStack& as = itr->second;
@@ -427,9 +427,9 @@ bool State::getLastAppliedMode(const ModeMap& modeMap,StateAttribute::GLMode mod
     }
 }
 
-const StateAttribute* State::getLastAppliedAttribute(const AttributeMap& attributeMap,StateAttribute::Type type) const
+const StateAttribute* State::getLastAppliedAttribute(const AttributeMap& attributeMap,StateAttribute::Type type, unsigned int member) const
 {
-    AttributeMap::const_iterator itr = attributeMap.find(type);
+    AttributeMap::const_iterator itr = attributeMap.find(StateAttribute::TypeMemberPair(type,member));
     if (itr!=attributeMap.end())
     {
         const AttributeStack& as = itr->second;

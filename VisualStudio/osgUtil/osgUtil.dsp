@@ -101,10 +101,6 @@ SOURCE=..\..\src\osgUtil\CameraManipulator.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgUtil\CullViewState.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\osgUtil\CullVisitor.cpp
 # End Source File
 # Begin Source File
@@ -214,10 +210,6 @@ SOURCE=..\..\include\osgUtil\AppVisitor
 # Begin Source File
 
 SOURCE=..\..\Include\osgUtil\CameraManipulator
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\Include\osgUtil\CullViewState
 # End Source File
 # Begin Source File
 

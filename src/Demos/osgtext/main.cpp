@@ -463,7 +463,7 @@ public:
         if(_hudSceneView.valid())
         {
             _hudSceneView->getRenderStage()->setClearMask(0);
-            _hudSceneView->getCullVisitor()->setCullingMode(osgUtil::CullViewState::NO_CULLING);
+            _hudSceneView->getCullVisitor()->setCullingMode(osgUtil::CullVisitor::NO_CULLING);
             _hudSceneView->setCalcNearFar(false);
             
             _hudCam = osgNew osg::Camera;

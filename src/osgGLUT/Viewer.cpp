@@ -1017,9 +1017,9 @@ void Viewer::keyboard(unsigned char key, int x, int y)
 
         case 'c' :
             _smallFeatureCullingActive = !_smallFeatureCullingActive;
-            sceneView->getCullVisitor()->setCullingMode((osgUtil::CullViewState::CullingMode)
-                ((_smallFeatureCullingActive ? osgUtil::CullViewState::SMALL_FEATURE_CULLING : osgUtil::CullViewState::NO_CULLING) |
-                (_viewFrustumCullingActive ? osgUtil::CullViewState::VIEW_FRUSTUM_CULLING : osgUtil::CullViewState::NO_CULLING)));
+            sceneView->getCullVisitor()->setCullingMode((osgUtil::CullVisitor::CullingMode)
+                ((_smallFeatureCullingActive ? osgUtil::CullVisitor::SMALL_FEATURE_CULLING : osgUtil::CullVisitor::NO_CULLING) |
+                (_viewFrustumCullingActive ? osgUtil::CullVisitor::VIEW_FRUSTUM_CULLING : osgUtil::CullVisitor::NO_CULLING)));
             if (_smallFeatureCullingActive)
             {
                 osg::notify(osg::NOTICE) << "Small feature culling switched on   "<< std::endl;
@@ -1040,9 +1040,9 @@ void Viewer::keyboard(unsigned char key, int x, int y)
             {
                 osg::notify(osg::NOTICE) << "View frustum culling switched off  "<< std::endl;
             }
-            sceneView->getCullVisitor()->setCullingMode((osgUtil::CullViewState::CullingMode)
-                ((_smallFeatureCullingActive ? osgUtil::CullViewState::SMALL_FEATURE_CULLING : osgUtil::CullViewState::NO_CULLING) |
-                (_viewFrustumCullingActive ? osgUtil::CullViewState::VIEW_FRUSTUM_CULLING : osgUtil::CullViewState::NO_CULLING)));
+            sceneView->getCullVisitor()->setCullingMode((osgUtil::CullVisitor::CullingMode)
+                ((_smallFeatureCullingActive ? osgUtil::CullVisitor::SMALL_FEATURE_CULLING : osgUtil::CullVisitor::NO_CULLING) |
+                (_viewFrustumCullingActive ? osgUtil::CullVisitor::VIEW_FRUSTUM_CULLING : osgUtil::CullVisitor::NO_CULLING)));
             break;
 
         case 'P' :
@@ -1065,25 +1065,18 @@ void Viewer::keyboard(unsigned char key, int x, int y)
 
         case 'O' :
             {
-                osg::Viewport* viewport = sceneView->getViewport();
-                if (viewport)
-                {
+                osg::ref_ptr<osg::Viewport> viewport = osgNew osg::Viewport;
+                viewport->setViewport(_wx,_wy,_ww,_wh);
+                std::string filename("screenshot.bmp");
 
-                    std::string filename("screenshot.bmp");
+                glReadBuffer(GL_FRONT);
+                osg::ref_ptr<Image> image = osgNew osg::Image;
+                image->readPixels(viewport->x(),viewport->y(),viewport->width(),viewport->height(),
+                                  GL_RGB,GL_UNSIGNED_BYTE);
 
-                    glReadBuffer(GL_FRONT);
-                    osg::ref_ptr<Image> image = osgNew osg::Image;
-                    image->readPixels(viewport->x(),viewport->y(),viewport->width(),viewport->height(),
-                                      GL_RGB,GL_UNSIGNED_BYTE);
+                osgDB::writeImageFile(*image,filename);
 
-                    osgDB::writeImageFile(*image,filename);
-
-                    osg::notify(osg::NOTICE) << "Saved screen image to `"<<filename<<"`"<< std::endl;
-                }
-                else
-                {
-                    osg::notify(osg::NOTICE) << "Cannot create snapshot of screen, no valid viewport attached"<< std::endl;
-                }
+                osg::notify(osg::NOTICE) << "Saved screen image to `"<<filename<<"`"<< std::endl;
             }
             break;
         case 'i' :

@@ -8,9 +8,6 @@
 
 using namespace osg;
 
-#define DEG2RAD(x)    ((x)*M_PI/180.0)
-#define RAD2DEG(x)    ((x)*180.0/M_PI)
-
 #define SET_ROW(row, v1, v2, v3, v4 )    \
     _mat[(row)][0] = (v1); \
     _mat[(row)][1] = (v2); \

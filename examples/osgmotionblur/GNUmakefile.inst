@@ -1,0 +1,13 @@
+TOPDIR = ../..
+include $(TOPDIR)/Make/makedefs
+
+CXXFILES =\
+	osgmotionblur.cpp\
+
+LIBS     += -losgProducer -lProducer -losgDB -losgText -losgUtil -losg $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
+
+EXEC = osgmotionblur
+
+INC += $(X_INC)
+
+include $(TOPDIR)/Make/makerules

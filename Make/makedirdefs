@@ -41,6 +41,7 @@ PLUGIN_DIRS = \
 	lwo\
 	lws\
 	md2\
+	net\
 	obj\
 	osgParticle\
 	osgText\
@@ -158,6 +159,7 @@ EXAMPLE_DIRS = \
 	osglightpoint\
 	osglogo\
         osgmovie\
+        osgmotionblur\
 	osgmultitexture\
 	osgoccluder\
 	osgpagedlod\

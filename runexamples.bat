@@ -43,6 +43,9 @@ osgviewer cube_mapped_torus.osg
 echo osgvertexprogram
 osgvertexprogram
 
+echo osgmotionblur cow.osg
+osgmotionblur cow.osg
+
 echo osgviewer Town.osg
 osgviewer Town.osg
 

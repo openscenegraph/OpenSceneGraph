@@ -1115,20 +1115,19 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     geom.GetNumNormal(numNorm);
     
     // Get vertices
-    osg::Vec3Array* vertices = new osg::Vec3Array(numVert);
+    osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array(numVert);
     geom.GetVertices((float *)&(vertices->front()));
     
     // Turn the trpgGeometry into something osg can understand
-    osg::Geometry *geometry = 0L;
+    osg::ref_ptr<osg::Geometry> geometry;
     
     // Get texture coordinates
     ;
     int num_tex;
     geom.GetNumTexCoordSets(num_tex);
-    osg::Vec2Array** tex_coords = new osg::Vec2Array*[num_tex];
+    std::vector< osg::ref_ptr<osg::Vec2Array> > tex_coords(num_tex);
     for (int texno = 0; texno < num_tex; texno++)
     {
-        tex_coords[texno] = 0L;
         const trpgTexData* td = geom.GetTexCoordSet(texno);
         if (td)
         {
@@ -1144,7 +1143,7 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     }
    
     // The normals
-    osg::Vec3Array* normals = 0L;
+    osg::ref_ptr<osg::Vec3Array> normals;
     if (numNorm == numVert)
     {
         normals = new osg::Vec3Array(numVert);
@@ -1196,12 +1195,12 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
                     std::swap((*vertices)[start], (*vertices)[end]);
                     for(int texno = 0; texno < num_tex; texno ++ )
                     {
-                        if( tex_coords[texno] )
+                        if( tex_coords[texno].valid() )
                         {
                             std::swap((*tex_coords[texno])[start], (*tex_coords[texno])[end]);
                         }
                     }
-                    if(normals)
+                    if(normals.valid())
                     {
                         std::swap((*normals)[start], (*normals)[end]);
                     }
@@ -1221,17 +1220,17 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     // Is this geode group
     GeodeGroup *geodeTop = dynamic_cast<GeodeGroup*>(top);
 
-    if (geometry && top)
+    if (geometry.valid() && top)
     {
         // added this set use display list off since terrapage will
         // be creating and deleting these geometry leaves on the fly
         // so we don't want to be creating short lived display lists either.
         geometry->setUseDisplayList(false);
 
-        geometry->setVertexArray(vertices);
-        if (normals)
+        geometry->setVertexArray(vertices.get());
+        if (normals.valid())
         {
-            geometry->setNormalArray(normals);
+            geometry->setNormalArray(normals.get());
             geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
         }
 
@@ -1267,11 +1266,11 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
                 sset = tmp_ss;
         }
 
-        if (tex_coords)
+        if (!tex_coords.empty())
         {
             for (int texno = 0; texno < num_tex; texno++)
             {
-                geometry->setTexCoordArray( texno, tex_coords[texno]);
+                geometry->setTexCoordArray( texno, tex_coords[texno].get());
             }
         }
 
@@ -1282,7 +1281,7 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
             TXPParser::TXPBillboardInfo info;
             _parse->getLastBillboardInfo(info);
 
-            osg::Billboard* billboard = new osg::Billboard;
+            osg::ref_ptr<osg::Billboard> billboard = new osg::Billboard;
             billboard->setAxis(osg::Vec3(0.0f,0.0,1.0f) );
             billboard->setNormal(osg::Vec3(0.0f,-1.0,0.0f));
             
@@ -1317,7 +1316,7 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
                 geometry->accept(tf);
                 geometry->dirtyBound();
 
-                billboard->addDrawable(geometry);
+                billboard->addDrawable(geometry.get());
                 billboard->setPosition(0, center);
             }
             break;
@@ -1333,17 +1332,17 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
                 geometry->accept(tf);
                 geometry->dirtyBound();
 
-                billboard->addDrawable(geometry);
+                billboard->addDrawable(geometry.get());
                 billboard->setPosition(0, center);
             }
             break;
             default:
-                billboard->addDrawable(geometry);
+                billboard->addDrawable(geometry.get());
                 osg::notify(osg::WARN) << "TerraPage loader: fell through case: " <<  __FILE__ << " " << __LINE__  << ".\n";
                 break;
             }
 
-            top->addChild(billboard);
+            top->addChild(billboard.get());
         }
         else
         if (_parse->underLayerSubgraph())
@@ -1367,20 +1366,20 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
                 geometry->setStateSet(sset.get());
             }
 
-            layer->addDrawable(geometry);
+            layer->addDrawable(geometry.get());
         }
         else
         {
             geometry->setStateSet(sset.get());
             if (geodeTop)
             {
-                geodeTop->getGeode()->addDrawable(geometry);
+                geodeTop->getGeode()->addDrawable(geometry.get());
                 _parse->setCurrentNode(geodeTop->getGeode());
             }
             else
             {
                 osg::Geode* geode = new osg::Geode;
-                geode->addDrawable(geometry);
+                geode->addDrawable(geometry.get());
 
                 _parse->setCurrentNode(geode);
                 _parse->getCurrTop()->addChild(geode);
@@ -1394,7 +1393,6 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
         osg::notify(osg::WARN)<<"Detected potential memory leak in TXPParerse.cpp"<<std::endl;
     }
     
-
     return (void *) 1;
 }
 

@@ -8,6 +8,8 @@ Transform::Transform()
     _mode = MODEL;
 
     _matrix = new Matrix;
+    _inverse = new Matrix;
+    _inverseDirty = false;
 }
 
 Transform::Transform(const Transform& transform,const CopyOp& copyop):
@@ -15,7 +17,9 @@ Transform::Transform(const Transform& transform,const CopyOp& copyop):
     _type(transform._type),
     _mode(transform._mode),
     _computeTransformCallback(_computeTransformCallback),
-    _matrix(new Matrix(*transform._matrix))
+    _matrix(new Matrix(*transform._matrix)),
+    _inverse(new Matrix(*transform._inverse)),
+    _inverseDirty(transform._inverseDirty)
 {    
 }
 
@@ -25,6 +29,8 @@ Transform::Transform(const Matrix& mat )
     _mode = MODEL;
 
     _matrix = new Matrix(mat);
+    _inverse = new Matrix();
+    _inverseDirty = false;
 }
 
 
@@ -39,7 +45,7 @@ const bool Transform::computeBound() const
     // note, NULL pointer for NodeVisitor, so compute's need
     // to handle this case gracefully, normally this should not be a problem.
     Matrix l2w;
-    if (getLocalToWorldMatrix(l2w,NULL))
+    if (_mode!=PROJECTION && getLocalToWorldMatrix(l2w,NULL))
     {
 
         Vec3 xdash = _bsphere._center;

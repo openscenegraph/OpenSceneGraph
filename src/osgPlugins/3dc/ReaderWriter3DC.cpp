@@ -41,7 +41,7 @@ class ReaderWriter3DC : public osgDB::ReaderWriter
                 if (line[0]=='#')
                 {
                     // comment line
-                    cout <<"Comment: "<<line<<std::endl;
+                    std::cout <<"Comment: "<<line<<std::endl;
                 }
                 else
                 {
@@ -75,7 +75,7 @@ class ReaderWriter3DC : public osgDB::ReaderWriter
                 if (line[0]=='#')
                 {
                     // comment line
-                    //cout <<"Comment: "<<line<<std::endl;
+                    //std::cout <<"Comment: "<<line<<std::endl;
                 }
                 else if (strlen(line)>0)
                 {

@@ -11,7 +11,7 @@
 
 #include <osg/GLU>
 
-#ifndef PFNGLCOMPRESSEDTEXIMAGE2DARBPROC 
+#ifndef GL_ARB_texture_compression
     typedef void (APIENTRY * PFNGLCOMPRESSEDTEXIMAGE2DARBPROC) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid *data);
 #endif    
 

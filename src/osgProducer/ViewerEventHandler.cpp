@@ -541,7 +541,7 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::displayStats()
                 (*itr)->draw(*(sv->getState()));
             }
             for(itr=_drawTimeText.begin(),titr = _drawTimes.begin();
-                itr!=_drawTimeText.end() && titr!=_cullTimes.end();
+                itr!=_drawTimeText.end() && titr!=_drawTimes.end();
                 ++itr,++titr)
             {
                 sprintf(tmpText,"%4.2f",1000.0*(*titr)/(double)_fs.size());

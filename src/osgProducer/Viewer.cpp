@@ -9,6 +9,7 @@
 #include <osgGA/TrackballManipulator>
 #include <osgGA/FlightManipulator>
 #include <osgGA/DriveManipulator>
+#include <osgGA/TerrainManipulator>
 #include <osgGA/StateSetManipulator>
 
 #include <osgProducer/Viewer>
@@ -166,6 +167,58 @@ public:
     }
     
     NodePath _pathToCoordinateSystemNode;
+};
+
+
+/** callback class to use to allow matrix manipulators to querry the application for the local coordinate frame.*/
+class ViewerCoordinateFrameCallback : public osgGA::MatrixManipulator::CoordinateFrameCallback
+{
+public:
+
+    ViewerCoordinateFrameCallback(Viewer* viewer):
+        _viewer(viewer) {}
+        
+    
+    virtual osg::CoordinateFrame getCoordinateFrame(double X, double Y, double Z) const
+    {
+        osg::notify(osg::NOTICE)<<"getCoordinateFrame("<<X<<","<<Y<<","<<Z<<")"<<std::endl;
+
+        const Viewer::RefNodePath& refNodePath = _viewer->getCoordindateSystemNodePath();
+        
+        if (!refNodePath.empty())
+        {        
+            osg::Matrixd coordinateFrame;
+
+            // have to crete a copy of the RefNodePath to create an osg::NodePath
+            // to allow it to be used along with the computeLocalToWorld call.
+            osg::NodePath tmpPath;
+            for(Viewer::RefNodePath::const_iterator itr=refNodePath.begin();
+                itr!=refNodePath.end();
+                ++itr)
+            {
+                tmpPath.push_back(const_cast<osg::Node*>(itr->get()));
+            }
+
+            osg::CoordinateSystemNode* csn = dynamic_cast<osg::CoordinateSystemNode*>(tmpPath.back());
+            if (csn)
+            {
+                coordinateFrame = csn->computeLocalCoordinateFrame(X,Y,Z)* osg::computeLocalToWorld(tmpPath);
+            }
+            else
+            {
+                coordinateFrame =  osg::computeLocalToWorld(tmpPath);
+            }
+            return coordinateFrame;
+        }
+        else
+        {
+            return osg::CoordinateFrame();
+        }
+    }
+    
+protected:
+    virtual ~ViewerCoordinateFrameCallback() {}
+    Viewer* _viewer;
 };
 
 
@@ -348,6 +401,7 @@ void Viewer::setUpViewer(unsigned int options)
     if (options&TRACKBALL_MANIPULATOR) addCameraManipulator(new osgGA::TrackballManipulator);
     if (options&FLIGHT_MANIPULATOR) addCameraManipulator(new osgGA::FlightManipulator);
     if (options&DRIVE_MANIPULATOR) addCameraManipulator(new osgGA::DriveManipulator);
+    if (options&TERRAIN_MANIPULATOR) addCameraManipulator(new osgGA::TerrainManipulator);
     
     if (options&STATE_MANIPULATOR)
     {
@@ -524,6 +578,8 @@ bool Viewer::realize()
  
     if (_keyswitchManipulator.valid() && _keyswitchManipulator->getCurrentMatrixManipulator())
     {
+        _keyswitchManipulator->setCoordinateFrameCallback(new ViewerCoordinateFrameCallback(this));
+
         osg::ref_ptr<osgProducer::EventAdapter> init_event = _kbmcb->createEventAdapter();
         init_event->adaptFrame(0.0);
     
@@ -548,33 +604,6 @@ void Viewer::update()
     osgProducer::KeyboardMouseCallback::EventQueue queue;
     if (_kbmcb.valid()) _kbmcb->getEventQueue(queue);
 
-    if (getKeySwitchMatrixManipulator() && !_coordinateSystemNodePath.empty())
-    {
-        osg::Matrixd coordinateFrame;
-        
-        // have to crete a copy of the RefNodePath to create an osg::NodePath
-        // to allow it to be used along with the computeLocalToWorld call.
-        osg::NodePath tmpPath;
-        for(RefNodePath::iterator itr=_coordinateSystemNodePath.begin();
-            itr!=_coordinateSystemNodePath.end();
-            ++itr)
-        {
-            tmpPath.push_back(itr->get());
-        }
-
-        osg::CoordinateSystemNode* csn = dynamic_cast<osg::CoordinateSystemNode*>(_coordinateSystemNodePath.back().get());
-        if (csn)
-        {
-            coordinateFrame = csn->computeLocalCoordinateFrame(_position[0],_position[1],_position[2])* osg::computeLocalToWorld(tmpPath);
-        }
-        else
-        {
-            coordinateFrame =  osg::computeLocalToWorld(tmpPath);
-        }
-        
-        getKeySwitchMatrixManipulator()->setCoordinateFrame(coordinateFrame);
-    }
-    
     // create an event to signal the new frame.
     osg::ref_ptr<osgProducer::EventAdapter> frame_event = new osgProducer::EventAdapter;
     frame_event->adaptFrame(_frameStamp->getReferenceTime());

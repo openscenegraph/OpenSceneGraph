@@ -53,15 +53,17 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
             TRACKBALL_MANIPULATOR   = 1,
             DRIVE_MANIPULATOR       = 2,
             FLIGHT_MANIPULATOR      = 4,
-            STATE_MANIPULATOR       = 8,
-            HEAD_LIGHT_SOURCE       = 16,
-            SKY_LIGHT_SOURCE        = 32,
-            STATS_MANIPULATOR       = 64,
-            VIEWER_MANIPULATOR      = 128,
-            ESCAPE_SETS_DONE        = 256,
+            TERRAIN_MANIPULATOR     = 8,
+            STATE_MANIPULATOR       = 16,
+            HEAD_LIGHT_SOURCE       = 32,
+            SKY_LIGHT_SOURCE        = 64,
+            STATS_MANIPULATOR       = 128,
+            VIEWER_MANIPULATOR      = 256,
+            ESCAPE_SETS_DONE        = 512,
             STANDARD_SETTINGS = TRACKBALL_MANIPULATOR|
                                 DRIVE_MANIPULATOR |
                                 FLIGHT_MANIPULATOR |
+                                TERRAIN_MANIPULATOR |
                                 STATE_MANIPULATOR |
                                 HEAD_LIGHT_SOURCE |
                                 STATS_MANIPULATOR |
@@ -106,7 +108,7 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
         
         void setCoordindateSystemNodePath(const osg::NodePath& nodePath);
         
-        const RefNodePath& getCoordindateSystemNodePath() { return _coordinateSystemNodePath; }
+        const RefNodePath& getCoordindateSystemNodePath() const { return _coordinateSystemNodePath; }
 
         /** Dispatch the cull and draw for each of the Camera's for this frame.*/
         virtual void frame();

@@ -62,7 +62,7 @@ SceneView::~SceneView()
 
 void SceneView::setDefaults()
 {
-    CullSettings::setDefaults();
+    // CullSettings::setDefaults();
 
     _projectionMatrix.makePerspective(50.0f,1.4f,1.0f,10000.0f);
     _viewMatrix.makeIdentity();

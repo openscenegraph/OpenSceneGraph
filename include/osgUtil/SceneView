@@ -202,7 +202,11 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         };
 
         /** Set the FusionDistanceMode and Value. Note, is used only when working in stereo.*/
-        void setFusionDistance(FusionDistanceMode mode,float value=1.0f);
+        void setFusionDistance(FusionDistanceMode mode,float value=1.0f)
+	{
+	    _fusionDistanceMode = mode;
+	    _fusionDistanceValue = value;
+	}
 
         /** Get the FusionDistanceMode.*/
         FusionDistanceMode getFusionDistanceMode() const { return _fusionDistanceMode; }

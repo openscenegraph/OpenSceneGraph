@@ -248,7 +248,7 @@ class SG_EXPORT State : public Referenced
         /** Wrapper around glInterleavedArrays(..).
           * also resets the internal array points and modes within osg::State to keep the other
           * vertex array operations consistent. */
-        void setInterleavedArrays( GLenum format, GLsizei stride, void* pointer);
+        void setInterleavedArrays( GLenum format, GLsizei stride, const GLvoid* pointer);
 
 
         /** wrapper around glEnableClientState(GL_VERTEX_ARRAY);glVertexPointer(..);

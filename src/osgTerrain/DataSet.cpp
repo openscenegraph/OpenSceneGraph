@@ -474,8 +474,9 @@ void DataSet::SourceData::readImage(DestinationData& destination)
         float destWindowWidthRatio = (float)destWidth/(float)windowWidth;
         float destWindowHeightRatio = (float)destHeight/(float)windowHeight;
         const float resizeTolerance = 1.1;
-        if (destWindowWidthRatio>resizeTolerance || 
-            destWindowHeightRatio>resizeTolerance)
+        
+        bool interpolateSourceImagery = true;
+        if (interpolateSourceImagery && (destWindowWidthRatio>resizeTolerance || destWindowHeightRatio>resizeTolerance))
         {
             readWidth = windowWidth;
             readHeight = windowHeight;

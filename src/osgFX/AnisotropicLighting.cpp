@@ -144,7 +144,7 @@ namespace
                 "ATTRIB v16 = vertex.position;"
                 "PARAM s259[4] = { state.matrix.mvp };"
                 "PARAM s18 = state.light[" << lightnum_ << "].position;"
-                "PARAM s223[4] = { state.matrix.modelview[0] };"
+                "PARAM s223[4] = { state.matrix.modelview };"
                 "PARAM c0[4] = { program.local[0..3] };"
                 "    DP4 result.position.x, s259[0], v16;"
                 "    DP4 result.position.y, s259[1], v16;"

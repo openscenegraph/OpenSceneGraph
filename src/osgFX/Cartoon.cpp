@@ -72,7 +72,7 @@ namespace
                     "PARAM s18 = state.light[" << lightnum_ << "].position;"
                     "PARAM s16 = state.light[" << lightnum_ << "].diffuse;"
                     "PARAM s1 = state.material.diffuse;"
-                    "PARAM s631[4] = { state.matrix.modelview[0].invtrans };"
+                    "PARAM s631[4] = { state.matrix.modelview.invtrans };"
                     "MOV R0, s1;"
                     "MUL result.color.front.primary, R0, s16;"
                     "DP4 R0.x, s18, s18;"

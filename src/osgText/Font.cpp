@@ -99,6 +99,16 @@ void Font::setImplementation(FontImplementation* implementation)
     if (_implementation.valid()) _implementation->_facade = this;
 }
 
+Font::FontImplementation* Font::getImplementation()
+{
+    return _implementation.get();
+}
+
+const Font::FontImplementation* Font::getImplementation() const
+{
+    return _implementation.get();
+}
+
 std::string Font::getFileName() const
 {
     if (_implementation.valid()) return _implementation->getFileName();
@@ -109,6 +119,66 @@ void Font::setSize(unsigned int width, unsigned int height)
 {
     if (_implementation.valid()) _implementation->setSize(width, height);
 }
+
+unsigned int Font::getWidth()
+{
+    return _width;
+}
+
+unsigned int Font::getHeight()
+{
+    return _height;
+}
+
+void Font::setGlyphImageMargin(unsigned int margin)
+{
+    _margin = margin;
+}
+
+unsigned int Font::getGlyphImageMargin() const
+{
+    return _margin;
+}
+
+void Font::setTextureSizeHint(unsigned int width,unsigned int height)
+{
+    _textureWidthHint = width;
+    _textureHeightHint = height;
+}
+
+unsigned int Font::getTextureWidthHint() const
+{
+    return _textureWidthHint;
+}
+
+unsigned int Font::getTextureHeightHint() const
+{
+    return _textureHeightHint;
+}    
+
+
+void Font::setMinFilterHint(osg::Texture::FilterMode mode)
+{
+    _minFilterHint = mode;
+}
+
+osg::Texture::FilterMode Font::getMinFilterHint() const
+{
+    return _minFilterHint;
+}
+
+/** Set the magnification texture filter to use when creating the texture to store the glyph images when rendering.
+  * Note, this doesn't affect already created Texture Glhph's.*/
+void Font::setMagFilterHint(osg::Texture::FilterMode mode)
+{
+    _magFilterHint = mode;
+}
+
+osg::Texture::FilterMode Font::getMagFilterHint() const
+{
+    return _magFilterHint;
+}
+
 
 Font::Glyph* Font::getGlyph(unsigned int charcode)
 {

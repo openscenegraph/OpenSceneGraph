@@ -70,6 +70,13 @@ std::string ImageReaderWriter::insertReference(const std::string& fileName, unsi
 
 osg::Image* ImageReaderWriter::readImage_Archive(DataReference& dr, float& s,float& t)
 {
+    for(PhotoArchiveList::iterator itr=_photoArchiveList.begin();
+        itr!=_photoArchiveList.end();
+        ++itr)
+    {
+        osg::Image* image = (*itr)->readImage(dr._fileName,dr._resolutionX,dr._resolutionY,s,t);
+        if (image) return image;
+    }
     return 0;
 }
 
@@ -100,8 +107,6 @@ osg::Image* ImageReaderWriter::readImage_DynamicSampling(DataReference& dr, floa
 
 osgDB::ReaderWriter::ReadResult ImageReaderWriter::readNode(const std::string& fileName, const Options*)
 {
-    std::cout<<"Request to read paged image "<<fileName<<std::endl;
-
     DataReferenceMap::iterator itr = _dataReferences.find(fileName);
     if (itr==_dataReferences.end()) return ReaderWriter::ReadResult::FILE_NOT_HANDLED;
 
@@ -110,9 +115,12 @@ osgDB::ReaderWriter::ReadResult ImageReaderWriter::readNode(const std::string& f
     osg::Image* image = 0;
     float s=1.0f,t=1.0f;
     
-    if (_photoArchive.valid())
+    // try to load photo from any loaded PhotoArchives
+    if (!_photoArchiveList.empty())
         image = readImage_Archive(dr,s,t);
-    else
+        
+    // not loaded yet, so try to load it directly.
+    if (!image)
         image = readImage_DynamicSampling(dr,s,t);
 
 

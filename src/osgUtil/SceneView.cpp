@@ -364,20 +364,60 @@ void SceneView::draw()
             break;
         case(osg::DisplaySettings::ANAGLYPHIC):
             {
-                osg::ref_ptr<osg::ColorMask> red = osgNew osg::ColorMask;
-                osg::ref_ptr<osg::ColorMask> green = osgNew osg::ColorMask;
-
-                red->setMask(true,false,false,true);
-                green->setMask(false,true,true,true);
                 
                 // draw left eye.
+                osg::ref_ptr<osg::ColorMask> red = osgNew osg::ColorMask;
+                red->setMask(true,false,false,true);
                 _globalState->setAttribute(red.get());
                 _renderStageLeft->setColorMask(red.get());
                 drawStage(_renderStageLeft.get());
 
                 // draw right eye.
+                osg::ref_ptr<osg::ColorMask> green = osgNew osg::ColorMask;
+                green->setMask(false,true,true,true);
                 _globalState->setAttribute(green.get());
                 _renderStageRight->setColorMask(green.get());
+                drawStage(_renderStageRight.get());
+
+            }
+            break;
+        case(osg::DisplaySettings::HORIZONTAL_SPLIT):
+            {
+                int left_half = _viewport->width()/2;
+                int right_half = _viewport->width()-left_half;
+                
+
+                // draw left eye.
+                osg::ref_ptr<osg::Viewport> viewportLeft = osgNew osg::Viewport;
+                viewportLeft->setViewport(_viewport->x(),_viewport->y(),left_half,_viewport->height());
+                _renderStageLeft->setViewport(viewportLeft.get());
+                drawStage(_renderStageLeft.get());
+
+                // draw right eye.
+                osg::ref_ptr<osg::Viewport> viewportRight = osgNew osg::Viewport;
+                viewportRight->setViewport(_viewport->x()+left_half,_viewport->y(),right_half,_viewport->height());
+                _renderStageRight->setViewport(viewportRight.get());
+                drawStage(_renderStageRight.get());
+
+            }
+            break;
+        case(osg::DisplaySettings::VERTICAL_SPLIT):
+            {
+                int bottom_half = _viewport->height()/2;
+                int top_half = _viewport->height()-bottom_half;
+
+                // draw left eye.
+                // assume left eye at top, this could be implementation dependant...
+                osg::ref_ptr<osg::Viewport> viewportLeft = osgNew osg::Viewport;
+                viewportLeft->setViewport(_viewport->x(),_viewport->y()+bottom_half,_viewport->width(),top_half);
+                _renderStageLeft->setViewport(viewportLeft.get());
+                drawStage(_renderStageLeft.get());
+
+                // draw right eye.
+                // assume right eye at top, this could be implementation dependant...
+                osg::ref_ptr<osg::Viewport> viewportRight = osgNew osg::Viewport;
+                viewportRight->setViewport(_viewport->x(),_viewport->y(),_viewport->width(),bottom_half);
+                _renderStageRight->setViewport(viewportRight.get());
                 drawStage(_renderStageRight.get());
 
             }

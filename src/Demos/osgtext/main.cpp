@@ -537,8 +537,8 @@ protected:
                         (*itr)->setAlignment(gAlignment);
                 }
                 return;
-            default:
-                Viewer::keyboard(key,x,y);
+				default:
+					Viewer::keyboard(key,x,y);
         };
     }
 

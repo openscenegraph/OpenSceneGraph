@@ -15,6 +15,9 @@
 #include <fstream>
 using std::ostream;
 using std::ofstream;
+using std::endl;
+using std::cout;
+using std::cerr;
 #endif
 
 

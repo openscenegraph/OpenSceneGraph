@@ -372,7 +372,7 @@ void IndexedGeometry::drawImmediateMode(State& state)
             {
                 if (texcoordPair.second.valid())
                 {
-                    if (!texcoordPair.second->getNumElements()>0)
+                    if (texcoordPair.second->getNumElements()>0)
                     {
                         drawTexCoordList.push_back(new DrawMultiTexCoord(GL_TEXTURE0+unit,texcoordPair.first.get(),texcoordPair.second.get(),
                                                                          s_glMultiTexCoord1f,
@@ -403,7 +403,7 @@ void IndexedGeometry::drawImmediateMode(State& state)
             {
                 if (texcoordPair.second.valid())
                 {
-                    if (!texcoordPair.second->getNumElements()>0)
+                    if (texcoordPair.second->getNumElements()>0)
                     {
                         drawTextCoord = new DrawTexCoord(texcoordPair.first.get(),texcoordPair.second.get());
 

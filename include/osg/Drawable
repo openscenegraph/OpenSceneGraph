@@ -15,58 +15,11 @@
 #define OSG_DRAWABLE 1
 
 #include <osg/BoundingBox>
-#include <osg/State>
 #include <osg/NodeVisitor>
 #include <osg/Shape>
-#include <osg/buffered_value>
+#include <osg/BufferObject>
+#include <osg/PrimitiveSet>
 
-#ifndef GL_ARB_vertex_buffer_object
-
-    // for compatibility with gl.h headers that don't support VBO,
-    #if defined(_WIN64)
-        typedef __int64 GLintptrARB;
-        typedef __int64 GLsizeiptrARB;
-    #elif defined(__ia64__) || defined(__x86_64__)
-        typedef long int GLintptrARB;
-        typedef long int GLsizeiptrARB;
-    #else
-        typedef int GLintptrARB;
-        typedef int GLsizeiptrARB;
-    #endif
-
-    #define GL_ARRAY_BUFFER_ARB               0x8892
-    #define GL_ELEMENT_ARRAY_BUFFER_ARB       0x8893
-    #define GL_ARRAY_BUFFER_BINDING_ARB       0x8894
-    #define GL_ELEMENT_ARRAY_BUFFER_BINDING_ARB 0x8895
-    #define GL_VERTEX_ARRAY_BUFFER_BINDING_ARB 0x8896
-    #define GL_NORMAL_ARRAY_BUFFER_BINDING_ARB 0x8897
-    #define GL_COLOR_ARRAY_BUFFER_BINDING_ARB 0x8898
-    #define GL_INDEX_ARRAY_BUFFER_BINDING_ARB 0x8899
-    #define GL_TEXTURE_COORD_ARRAY_BUFFER_BINDING_ARB 0x889A
-    #define GL_EDGE_FLAG_ARRAY_BUFFER_BINDING_ARB 0x889B
-    #define GL_SECONDARY_COLOR_ARRAY_BUFFER_BINDING_ARB 0x889C
-    #define GL_FOG_COORDINATE_ARRAY_BUFFER_BINDING_ARB 0x889D
-    #define GL_WEIGHT_ARRAY_BUFFER_BINDING_ARB 0x889E
-    #define GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING_ARB 0x889F
-    #define GL_STREAM_DRAW_ARB                0x88E0
-    #define GL_STREAM_READ_ARB                0x88E1
-    #define GL_STREAM_COPY_ARB                0x88E2
-    #define GL_STATIC_DRAW_ARB                0x88E4
-    #define GL_STATIC_READ_ARB                0x88E5
-    #define GL_STATIC_COPY_ARB                0x88E6
-    #define GL_DYNAMIC_DRAW_ARB               0x88E8
-    #define GL_DYNAMIC_READ_ARB               0x88E9
-    #define GL_DYNAMIC_COPY_ARB               0x88EA
-    #define GL_READ_ONLY_ARB                  0x88B8
-    #define GL_WRITE_ONLY_ARB                 0x88B9
-    #define GL_READ_WRITE_ARB                 0x88BA
-    #define GL_BUFFER_SIZE_ARB                0x8764
-    #define GL_BUFFER_USAGE_ARB               0x8765
-    #define GL_BUFFER_ACCESS_ARB              0x88BB
-    #define GL_BUFFER_MAPPED_ARB              0x88BC
-    #define GL_BUFFER_MAP_POINTER_ARB         0x88BD
-
-#endif
 
 #ifndef GL_NV_occlusion_query
 
@@ -395,7 +348,7 @@ class SG_EXPORT Drawable : public Object
           * in the OpenGL context related to contextID.*/
         static void flushDeletedDisplayLists(unsigned int contextID,double& availableTime);
 
-        /** Use deleteVertexBufferObject instead of glDeleteList to allow
+        /** Use deleteVertexBufferObject instead of glDeleteBuffers to allow
           * OpenGL buffer objects to be cached until they can be deleted
           * by the OpenGL context in which they were created, specified
           * by contextID.*/
@@ -490,50 +443,6 @@ class SG_EXPORT Drawable : public Object
         virtual void accept(ConstAttributeFunctor&) const {}
 
 
-        class PrimitiveFunctor
-        {
-        public:
-
-            virtual ~PrimitiveFunctor() {}
-
-            virtual void setVertexArray(unsigned int count,const Vec2* vertices) = 0;
-            virtual void setVertexArray(unsigned int count,const Vec3* vertices) = 0;
-            virtual void setVertexArray(unsigned int count,const Vec4* vertices) = 0;
-
-            virtual void drawArrays(GLenum mode,GLint first,GLsizei count) = 0;
-            virtual void drawElements(GLenum mode,GLsizei count,const GLubyte* indices) = 0;
-            virtual void drawElements(GLenum mode,GLsizei count,const GLushort* indices) = 0;
-            virtual void drawElements(GLenum mode,GLsizei count,const GLuint* indices) = 0;
-
-            virtual void begin(GLenum mode) = 0;
-            virtual void vertex(const Vec2& vert) = 0;
-            virtual void vertex(const Vec3& vert) = 0;
-            virtual void vertex(const Vec4& vert) = 0;
-            virtual void vertex(float x,float y) = 0;
-            virtual void vertex(float x,float y,float z) = 0;
-            virtual void vertex(float x,float y,float z,float w) = 0;
-            virtual void end() = 0;
-        };
-
-        class PrimitiveIndexFunctor
-        {
-        public:
-
-            virtual ~PrimitiveIndexFunctor() {}
-
-            virtual void setVertexArray(unsigned int count,const Vec2* vertices) = 0;
-            virtual void setVertexArray(unsigned int count,const Vec3* vertices) = 0;
-            virtual void setVertexArray(unsigned int count,const Vec4* vertices) = 0;
-
-            virtual void drawArrays(GLenum mode,GLint first,GLsizei count) = 0;
-            virtual void drawElements(GLenum mode,GLsizei count,const GLubyte* indices) = 0;
-            virtual void drawElements(GLenum mode,GLsizei count,const GLushort* indices) = 0;
-            virtual void drawElements(GLenum mode,GLsizei count,const GLuint* indices) = 0;
-
-            virtual void begin(GLenum mode) = 0;
-            virtual void vertex(unsigned int pos) = 0;
-            virtual void end() = 0;
-        };
 
         /** Return true if the Drawable subclass supports accept(PrimitiveFunctor&).*/
         virtual bool supports(PrimitiveFunctor&) const { return false; }

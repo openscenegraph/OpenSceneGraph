@@ -866,7 +866,7 @@ void Text::accept(osg::Drawable::ConstAttributeFunctor& af) const
     }
 }
 
-void Text::accept(osg::Drawable::PrimitiveFunctor& pf) const
+void Text::accept(osg::PrimitiveFunctor& pf) const
 {
     for(TextureGlyphQuadMap::const_iterator titr=_textureGlyphQuadMap.begin();
         titr!=_textureGlyphQuadMap.end();

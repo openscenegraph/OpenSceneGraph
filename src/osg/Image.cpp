@@ -41,7 +41,7 @@ Image::Image()
     _allocationMode         = USE_NEW_DELETE;
     _data                   = (unsigned char *)0L;
 
-    _modifiedTag = 0;
+    _modifiedCount = 0;
 }
 
 Image::Image(const Image& image,const CopyOp& copyop):
@@ -53,7 +53,7 @@ Image::Image(const Image& image,const CopyOp& copyop):
     _dataType(image._dataType),
     _packing(image._packing),
     _data(0L),
-    _modifiedTag(image._modifiedTag),
+    _modifiedCount(image._modifiedCount),
     _mipmapData(image._mipmapData)
 {
     if (image._data)
@@ -91,7 +91,7 @@ int Image::compare(const Image& rhs) const
     COMPARE_StateAttribute_Parameter(_pixelFormat)
     COMPARE_StateAttribute_Parameter(_dataType)
     COMPARE_StateAttribute_Parameter(_packing)
-    COMPARE_StateAttribute_Parameter(_modifiedTag)
+    COMPARE_StateAttribute_Parameter(_modifiedCount)
 
     if (_data<rhs._data) return -1;
     if (_data>rhs._data) return 1;
@@ -379,7 +379,7 @@ void Image::allocateImage(int s,int t,int r,
         _internalTextureFormat = 0;
     }
     
-    ++_modifiedTag;
+    ++_modifiedCount;
 }
 
 void Image::setImage(int s,int t,int r,
@@ -403,7 +403,7 @@ void Image::setImage(int s,int t,int r,
 
     _packing = packing;
         
-    ++_modifiedTag;
+    ++_modifiedCount;
 
 }
 
@@ -523,7 +523,7 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
             extensions->glGetCompressedTexImage(textureMode, i, getMipmapData(i));
         }
 
-        ++_modifiedTag;
+        ++_modifiedCount;
     
     }
     else
@@ -576,7 +576,7 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
             glGetTexImage(textureMode,i,_pixelFormat,_dataType,getMipmapData(i));
         }
 
-        ++_modifiedTag;
+        ++_modifiedCount;
     }    
 }
 
@@ -639,7 +639,7 @@ void Image::scaleImage(int s,int t,int r, GLenum newDataType)
         notify(WARN) << "Error Image::scaleImage() did not succeed : errorString = "<<gluErrorString((GLenum)status)<<std::endl;
     }
     
-    ++_modifiedTag;
+    ++_modifiedCount;
 }
 
 void Image::copySubImage(int s_offset,int t_offset,int r_offset,osg::Image* source)
@@ -729,7 +729,7 @@ void Image::flipHorizontal()
         }
     }
     
-    ++_modifiedTag;
+    ++_modifiedCount;
 }
 
 void flipImageVertical(unsigned char* top, unsigned char* bottom, unsigned int rowSize)
@@ -813,7 +813,7 @@ void Image::flipVertical()
        }
     }   
 
-    ++_modifiedTag;
+    ++_modifiedCount;
 }
 
 

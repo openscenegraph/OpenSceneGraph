@@ -1026,6 +1026,23 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
     }    
 
     bool useHardwareMipMapGeneration = !image->isMipmap() && _useHardwareMipMapGeneration && generateMipMapSupported;
+    
+    unsigned int dataMinusOffset=0;
+    unsigned int dataPlusOffset=0;
+
+    const PixelBufferObject* pbo = image->getPixelBufferObject();
+    if (pbo && pbo->isBufferObjectSupported(contextID) && !needImageRescale)
+    {
+        pbo->compileBuffer(state);
+        pbo->bindBuffer(contextID);
+        dataMinusOffset = (unsigned int) data;
+        dataPlusOffset=pbo->offset(); // -dataMinusOffset+dataPlusOffset
+    }
+    else
+    {
+        pbo = 0;
+    }
+    
 
     if( _min_filter == LINEAR || _min_filter == NEAREST || useHardwareMipMapGeneration)
     {
@@ -1045,7 +1062,7 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
                 inwidth, inheight,
                 (GLenum)image->getPixelFormat(),
                 (GLenum)image->getDataType(),
-                data );
+                data - dataMinusOffset+dataPlusOffset);
 
         }
         else if (extensions->isCompressedTexImage2DSupported())
@@ -1058,7 +1075,7 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
                 inwidth, inheight,
                 (GLenum)image->getPixelFormat(),
                 size,
-                data );                
+                data + -dataMinusOffset+dataPlusOffset );                
         }
 
         if (hardwareMipMapOn) glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_FALSE);
@@ -1087,7 +1104,7 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
                         width, height,
                         (GLenum)image->getPixelFormat(),
                         (GLenum)image->getDataType(),
-                        image->getMipmapData(k));
+                        image->getMipmapData(k) -dataMinusOffset+dataPlusOffset);
 
                     width >>= 1;
                     height >>= 1;
@@ -1112,7 +1129,7 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
                                                        width, height, 
                                                        (GLenum)image->getPixelFormat(),
                                                        size,
-                                                        image->getMipmapData(k));                
+                                                        image->getMipmapData(k) -dataMinusOffset+dataPlusOffset);                
 
                     //state.checkGLErrors("after extensions->glCompressedTexSubImage2D(");
 
@@ -1196,6 +1213,11 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
         }
     }
     
+    if (pbo)
+    {
+        pbo->unbindBuffer(contextID);
+    }
+
     if (needImageRescale)
     {
         // clean up the resized image.

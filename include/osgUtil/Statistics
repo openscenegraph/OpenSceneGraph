@@ -14,7 +14,7 @@
 #ifndef OSGUTIL_STATISTICS
 #define OSGUTIL_STATISTICS 1
 
-#include <osg/Referenced>
+#include <osg/PrimitiveSet>
 #include <osg/Drawable>
 
 #include <map>
@@ -34,7 +34,7 @@ namespace osgUtil {
  * each trifan or tristrip = (length-2) triangles and so on.
  */
 
-class Statistics : public osg::Drawable::PrimitiveFunctor
+class Statistics : public osg::PrimitiveFunctor
 {
     public:
 

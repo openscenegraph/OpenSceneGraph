@@ -16,6 +16,26 @@
 
 #include <osgGA/TrackballManipulator>
 
+osg::ImageStream* s_imageStream = 0;
+class PostSwapFinishCallback : public Producer::Camera::Callback
+{
+public:
+
+    PostSwapFinishCallback() {}
+
+    virtual void operator()(const Producer::Camera& camera)
+    {
+        // osg::Timer_t start_tick = osg::Timer::instance()->tick();
+        
+        osgProducer::OsgSceneHandler* sh = const_cast<osgProducer::OsgSceneHandler*>(dynamic_cast<const osgProducer::OsgSceneHandler*>(camera.getSceneHandler()));
+    
+        if (s_imageStream && s_imageStream->getPixelBufferObject()) s_imageStream->getPixelBufferObject()->compileBuffer(*(sh->getSceneView()->getState()));
+        // glFinish();
+
+        //osg::notify(osg::NOTICE)<<"callback after PBO "<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
+    }
+};
+
 class MovieEventHandler : public osgGA::GUIEventHandler
 {
 public:
@@ -77,7 +97,11 @@ protected:
         
         inline void apply(osg::ImageStream* imagestream)
         {
-            if (imagestream) _imageStreamList.push_back(imagestream); 
+            if (imagestream)
+            {
+                _imageStreamList.push_back(imagestream); 
+                s_imageStream = imagestream;
+            }
         }
         
         ImageStreamList& _imageStreamList;
@@ -256,6 +280,13 @@ int main(int argc, char** argv)
     if (arguments.errors())
     {
         arguments.writeErrorMessages(std::cout);
+    }
+
+    // set up a post swap callback to flush deleted GL objects and compile new GL objects            
+    for(unsigned int cameraNum=0;cameraNum<viewer.getNumberOfCameras();++cameraNum)
+    {
+        Producer::Camera* camera=viewer.getCamera(cameraNum);
+        camera->addPostSwapCallback(new PostSwapFinishCallback());
     }
 
     // set the scene to render

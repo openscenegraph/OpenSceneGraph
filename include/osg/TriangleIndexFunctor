@@ -14,13 +14,13 @@
 #ifndef OSG_TRIANGLEINDEXFUNCTOR
 #define OSG_TRIANGLEINDEXFUNCTOR 1
 
-#include <osg/Drawable>
+#include <osg/PrimitiveSet>
 #include <osg/Notify>
 
 namespace osg {
 
 template<class T>
-class TriangleIndexFunctor : public Drawable::PrimitiveIndexFunctor, public T
+class TriangleIndexFunctor : public PrimitiveIndexFunctor, public T
 {
 public:
 

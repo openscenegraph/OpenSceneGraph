@@ -65,10 +65,10 @@ class SG_EXPORT TextureCubeMap : public Texture
         /** Get the number of images that can be assigned to the Texture. */
         virtual unsigned int getNumImages() const { return 6; }
 
-        inline unsigned int& getModifiedTag(unsigned int face,unsigned int contextID) const
+        inline unsigned int& getModifiedCount(unsigned int face,unsigned int contextID) const
         {
-            // get the modified tag for the current contextID.
-            return _modifiedTag[face][contextID];
+            // get the modified count for the current contextID.
+            return _modifiedCount[face][contextID];
         }
 
         /** Set the texture width and height. If width or height are zero then
@@ -176,8 +176,8 @@ class SG_EXPORT TextureCubeMap : public Texture
 
         ref_ptr<SubloadCallback> _subloadCallback;
 
-        typedef buffered_value<unsigned int> ImageModifiedTag;
-        mutable ImageModifiedTag _modifiedTag[6];
+        typedef buffered_value<unsigned int> ImageModifiedCount;
+        mutable ImageModifiedCount _modifiedCount[6];
 };
 
 }

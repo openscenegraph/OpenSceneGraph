@@ -11,6 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/PrimitiveSet>
+#include <osg/BufferObject>
 
 using namespace osg;
 
@@ -19,12 +20,12 @@ void DrawArrays::draw(State&, bool) const
     glDrawArrays(_mode,_first,_count);
 }
 
-void DrawArrays::accept(Drawable::PrimitiveFunctor& functor) const
+void DrawArrays::accept(PrimitiveFunctor& functor) const
 {
     functor.drawArrays(_mode,_first,_count);
 }
 
-void DrawArrays::accept(Drawable::PrimitiveIndexFunctor& functor) const
+void DrawArrays::accept(PrimitiveIndexFunctor& functor) const
 {
     functor.drawArrays(_mode,_first,_count);
 }
@@ -41,7 +42,7 @@ void DrawArrayLengths::draw(State&, bool) const
     }
 }
 
-void DrawArrayLengths::accept(Drawable::PrimitiveFunctor& functor) const
+void DrawArrayLengths::accept(PrimitiveFunctor& functor) const
 {
     GLint first = _first;
     for(VectorSizei::const_iterator itr=begin();
@@ -53,7 +54,7 @@ void DrawArrayLengths::accept(Drawable::PrimitiveFunctor& functor) const
     }
 }
 
-void DrawArrayLengths::accept(Drawable::PrimitiveIndexFunctor& functor) const
+void DrawArrayLengths::accept(PrimitiveIndexFunctor& functor) const
 {
     GLint first = _first;
     for(VectorSizei::const_iterator itr=begin();
@@ -83,7 +84,7 @@ DrawElementsUByte::~DrawElementsUByte()
     {
         if (_vboList[i] != 0)
         {
-            Drawable::deleteVertexBufferObject(i,_vboList[i]);
+            BufferObject::deleteBufferObject(i,_vboList[i]);
             _vboList[i] = 0;
         }
     }
@@ -93,7 +94,7 @@ void DrawElementsUByte::draw(State& state, bool useVertexBufferObjects) const
 {
     if (useVertexBufferObjects)
     {
-        const Drawable::Extensions* extensions = Drawable::getExtensions(state.getContextID(), true);
+        const BufferObject::Extensions* extensions = BufferObject::getExtensions(state.getContextID(), true);
 
         GLuint& buffer = _vboList[state.getContextID()];
         if (!buffer)
@@ -116,12 +117,12 @@ void DrawElementsUByte::draw(State& state, bool useVertexBufferObjects) const
     }
 }
 
-void DrawElementsUByte::accept(Drawable::PrimitiveFunctor& functor) const
+void DrawElementsUByte::accept(PrimitiveFunctor& functor) const
 {
     if (!empty()) functor.drawElements(_mode,size(),&front());
 }
 
-void DrawElementsUByte::accept(Drawable::PrimitiveIndexFunctor& functor) const
+void DrawElementsUByte::accept(PrimitiveIndexFunctor& functor) const
 {
     if (!empty()) functor.drawElements(_mode,size(),&front());
 }
@@ -143,7 +144,7 @@ DrawElementsUShort::~DrawElementsUShort()
     {
         if (_vboList[i] != 0)
         {
-            Drawable::deleteVertexBufferObject(i,_vboList[i]);
+            BufferObject::deleteBufferObject(i,_vboList[i]);
             _vboList[i] = 0;
         }
     }
@@ -153,7 +154,7 @@ void DrawElementsUShort::draw(State& state, bool useVertexBufferObjects) const
 {
     if (useVertexBufferObjects)
     {
-        const Drawable::Extensions* extensions = Drawable::getExtensions(state.getContextID(), true);
+        const BufferObject::Extensions* extensions = BufferObject::getExtensions(state.getContextID(), true);
 
         GLuint& buffer = _vboList[state.getContextID()];
         if (!buffer)
@@ -167,8 +168,8 @@ void DrawElementsUShort::draw(State& state, bool useVertexBufferObjects) const
             extensions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, buffer);
         }
     
-        glDrawElements(_mode, size(), GL_UNSIGNED_SHORT, 0);
         extensions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+        glDrawElements(_mode, size(), GL_UNSIGNED_SHORT, 0);
     }
     else 
     {
@@ -176,12 +177,12 @@ void DrawElementsUShort::draw(State& state, bool useVertexBufferObjects) const
     }
 }
 
-void DrawElementsUShort::accept(Drawable::PrimitiveFunctor& functor) const
+void DrawElementsUShort::accept(PrimitiveFunctor& functor) const
 {
     if (!empty()) functor.drawElements(_mode,size(),&front());
 }
 
-void DrawElementsUShort::accept(Drawable::PrimitiveIndexFunctor& functor) const
+void DrawElementsUShort::accept(PrimitiveIndexFunctor& functor) const
 {
     if (!empty()) functor.drawElements(_mode,size(),&front());
 }
@@ -203,7 +204,7 @@ DrawElementsUInt::~DrawElementsUInt()
     {
         if (_vboList[i] != 0)
         {
-            Drawable::deleteVertexBufferObject(i,_vboList[i]);
+            BufferObject::deleteBufferObject(i,_vboList[i]);
             _vboList[i] = 0;
         }
     }
@@ -213,7 +214,7 @@ void DrawElementsUInt::draw(State& state, bool useVertexBufferObjects) const
 {
     if (useVertexBufferObjects)
     {
-        const Drawable::Extensions* extensions = Drawable::getExtensions(state.getContextID(), true);
+        const BufferObject::Extensions* extensions = BufferObject::getExtensions(state.getContextID(), true);
 
         GLuint& buffer = _vboList[state.getContextID()];
         if (!buffer)
@@ -236,12 +237,12 @@ void DrawElementsUInt::draw(State& state, bool useVertexBufferObjects) const
     }
 }
 
-void DrawElementsUInt::accept(Drawable::PrimitiveFunctor& functor) const
+void DrawElementsUInt::accept(PrimitiveFunctor& functor) const
 {
     if (!empty()) functor.drawElements(_mode,size(),&front());
 }
 
-void DrawElementsUInt::accept(Drawable::PrimitiveIndexFunctor& functor) const
+void DrawElementsUInt::accept(PrimitiveIndexFunctor& functor) const
 {
     if (!empty()) functor.drawElements(_mode,size(),&front());
 }

@@ -56,13 +56,15 @@ class SG_EXPORT Array : public Object
         Array(Type arrayType=ArrayType,GLint dataSize=0,GLenum dataType=0):
             _arrayType(arrayType),
             _dataSize(dataSize),
-            _dataType(dataType) {}
+            _dataType(dataType),
+            _modifiedCount(0) {}
     
         Array(const Array& array,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             Object(array,copyop),
             _arrayType(array._arrayType),
             _dataSize(array._dataSize),
-            _dataType(array._dataType) {}
+            _dataType(array._dataType),
+            _modifiedCount(0) {}
 
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Array*>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osg"; }
@@ -85,6 +87,15 @@ class SG_EXPORT Array : public Object
         virtual unsigned int    getTotalDataSize() const = 0;
         virtual unsigned int    getNumElements() const = 0;
 
+        /** Dirty the primitive, which increments the modified count, to force buffer objects to update. */
+        inline void dirty() { ++_modifiedCount; }      
+      
+        /** Set the modified count value.*/
+        inline void setModifiedCount(unsigned int value) { _modifiedCount=value; }
+
+        /** Get modified count value.*/
+        inline unsigned int getModifiedCount() const { return _modifiedCount; }
+
     protected:
     
         virtual ~Array() {}
@@ -92,6 +103,7 @@ class SG_EXPORT Array : public Object
         Type        _arrayType;
         GLint       _dataSize;
         GLenum      _dataType;
+        unsigned int    _modifiedCount;
 };
 
 template<typename T, Array::Type ARRAYTYPE, int DataSize, int DataType>

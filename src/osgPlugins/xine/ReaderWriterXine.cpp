@@ -1,7 +1,7 @@
 // (C) Robert Osfield, Feb 2004.
 // GPL'd.
 
-#include <osg/Image>
+#include <osg/ImageStream>
 #include <osg/Notify>
 #include <osg/Geode>
 #include <osg/GL>
@@ -23,8 +23,9 @@ static void my_render_frame(uint32_t width, uint32_t height, void* data, void* u
 {
     osg::Image* imageStream = (osg::Image*) userData;
     
-    GLenum pixelFormat = GL_BGR;
-    
+    GLenum pixelFormat = GL_BGRA;
+
+#if 0    
     if (!ready)
     {
         imageStream->allocateImage(width,height,1,pixelFormat,GL_UNSIGNED_BYTE,1);
@@ -39,14 +40,14 @@ static void my_render_frame(uint32_t width, uint32_t height, void* data, void* u
 
 
     imageStream->dirty();
-/*
+#else
     imageStream->setImage(width,height,1,
                       GL_RGB,
                       pixelFormat,GL_UNSIGNED_BYTE,
                       (unsigned char *)data,
                       osg::Image::NO_DELETE,
                       1);
-*/
+#endif
     ready = 1;
 }
 
@@ -99,12 +100,12 @@ class ReaderWriterXine : public osgDB::ReaderWriter
             osg::notify(osg::NOTICE)<<"ReaderWriterXine::readImage "<< file<< std::endl;
 
             //XineImageStream* imageStream = new XineImageStream(file.c_str());
-            osg::Image* imageStream = new osg::Image;
+            osg::Image* imageStream = new osg::ImageStream;
 
             // create visual
             rgbout_visual_info_t* visual = new rgbout_visual_info_t;
 	    visual->levels = PXLEVEL_ALL;
-            visual->format = PX_BGR24;
+            visual->format = PX_RGB32;
             visual->user_data = imageStream;
 	    visual->callback = my_render_frame;
 

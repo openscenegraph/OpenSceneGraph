@@ -111,14 +111,14 @@ Node* osgDB::readNodeFiles(std::vector<std::string>& commandLine,const ReaderWri
 Node* osgDB::readNodeFiles(osg::ArgumentParser& arguments,const ReaderWriter::Options* options)
 {
 
-    typedef std::vector<osg::Node*> NodeList;
+    typedef std::vector< osg::ref_ptr<osg::Node> > NodeList;
     NodeList nodeList;
 
     std::string filename;
     while (arguments.read("--image",filename))
     {
-        osg::Image* image = readImageFile(filename.c_str(), options);
-        if (image) nodeList.push_back(osg::createGeodeForImage(image));
+        osg::ref_ptr<osg::Image> image = readImageFile(filename.c_str(), options);
+        if (image.valid()) nodeList.push_back(osg::createGeodeForImage(image.get()));
     }
 
     while (arguments.read("--dem",filename))
@@ -156,7 +156,7 @@ Node* osgDB::readNodeFiles(osg::ArgumentParser& arguments,const ReaderWriter::Op
 
     if (nodeList.size()==1)
     {
-        return nodeList.front();
+        return nodeList.front().release();
     }
     else  // size >1
     {
@@ -165,7 +165,7 @@ Node* osgDB::readNodeFiles(osg::ArgumentParser& arguments,const ReaderWriter::Op
             itr!=nodeList.end();
             ++itr)
         {
-            group->addChild(*itr);
+            group->addChild((*itr).get());
         }
 
         return group;

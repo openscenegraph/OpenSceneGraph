@@ -1,4 +1,4 @@
-# Microsoft Developer Studio Project File - Name="3ds" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="osgPlugin 3ds" - Package Owner=<4>
 
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 
@@ -28,7 +28,7 @@ CFG=3ds - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE NMAKE /f "lib3ds.mak" CFG="3ds - Win32 Debug"
+!MESSAGE NMAKE /f "lib3ds.mak" CFG="osgPlugin 3ds - Win32 Debug"
 
 !MESSAGE 
 
@@ -36,9 +36,9 @@ CFG=3ds - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE "3ds - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "osgPlugin 3ds - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
 
-!MESSAGE "3ds - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "osgPlugin 3ds - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
 
 !MESSAGE 
 
@@ -60,7 +60,7 @@ RSC=rc.exe
 
 
 
-!IF  "$(CFG)" == "3ds - Win32 Release"
+!IF  "$(CFG)" == "osgPlugin 3ds - Win32 Release"
 
 
 
@@ -114,7 +114,7 @@ LINK32=link.exe
 
 
 
-!ELSEIF  "$(CFG)" == "3ds - Win32 Debug"
+!ELSEIF  "$(CFG)" == "osgPlugin 3ds - Win32 Debug"
 
 
 
@@ -176,9 +176,9 @@ LINK32=link.exe
 
 
 
-# Name "3ds - Win32 Release"
+# Name "osgPlugin 3ds - Win32 Release"
 
-# Name "3ds - Win32 Debug"
+# Name "osgPlugin 3ds - Win32 Debug"
 
 # Begin Group "Source Files"
 

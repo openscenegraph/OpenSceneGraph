@@ -7,7 +7,8 @@
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
-<H2>class  OSGGA_EXPORT <A HREF="#DOC.DOCU">osgGA::DriveManipulator</A></H2></H2><HR>
+<H2>class  OSGGA_EXPORT <A HREF="#DOC.DOCU">osgGA::DriveManipulator</A></H2></H2><BLOCKQUOTE> DriveManipulator is a camera manipulator which provides drive-like functionality.</BLOCKQUOTE>
+<HR>
 
 <H2>Inheritance:</H2>
 <APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=125>
@@ -27,22 +28,16 @@
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.2.2">~DriveManipulator</A></B>()
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.3">setNode</A></B>(osg::Node*)
-<DD><I>Attach a node to the manipulator.</I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const osg::Node* <B><A HREF="#DOC.2.2.4">getNode</A></B>() const 
-<DD><I>Return node if attached</I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Node* <B><A HREF="#DOC.2.2.5">getNode</A></B>()
-<DD><I>Return node if attached</I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.6">home</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)
-<DD><I>Move the camera to the default position.</I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.7">init</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)
-<DD><I>Start/restart the manipulator</I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.2.8">handle</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)
-<DD><I>handle events, return true if handled, false otherwise</I>
 </DL></P>
 
 </DL>
@@ -79,6 +74,11 @@
 <A NAME="DOC.DOCU"></A>
 <HR>
 <H2>Documentation</H2>
+<BLOCKQUOTE>
+DriveManipulator is a camera manipulator which provides drive-like
+functionality. By default, the left mouse button accelerates, the right
+mouse button decelerates, and the middle mouse button (or left and
+right simultaneously) stops dead.</BLOCKQUOTE>
 <DL>
 
 <A NAME="DriveManipulator"></A>
@@ -92,36 +92,26 @@
 <A NAME="setNode"></A>
 <A NAME="DOC.2.2.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setNode(osg::Node*)</B></TT>
-<DD>Attach a node to the manipulator. 
-Automatically detaches previously attached node.
-setNode(NULL) detaches previously nodes.
-Is ignored by manipulators which do not require a reference model.
 <DL><DT><DD></DL><P>
 <A NAME="getNode"></A>
 <A NAME="DOC.2.2.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const osg::Node* getNode() const </B></TT>
-<DD>Return node if attached
 <DL><DT><DD></DL><P>
 <A NAME="getNode"></A>
 <A NAME="DOC.2.2.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Node* getNode()</B></TT>
-<DD>Return node if attached
 <DL><DT><DD></DL><P>
 <A NAME="home"></A>
 <A NAME="DOC.2.2.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void home(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)</B></TT>
-<DD>Move the camera to the default position. 
-May be ignored by manipulators if home functionality is not appropriate.
 <DL><DT><DD></DL><P>
 <A NAME="init"></A>
 <A NAME="DOC.2.2.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void init(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)</B></TT>
-<DD>Start/restart the manipulator
 <DL><DT><DD></DL><P>
 <A NAME="handle"></A>
 <A NAME="DOC.2.2.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool handle(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)</B></TT>
-<DD>handle events, return true if handled, false otherwise
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="USE_MOUSE_Y_FOR_SPEED"></A>

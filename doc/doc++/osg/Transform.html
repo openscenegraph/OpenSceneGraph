@@ -7,15 +7,15 @@
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
-<H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osg::Transform</A></H2></H2><BLOCKQUOTE>Transform - is group which all children are transformed by the the Transform's osg::Matrix.</BLOCKQUOTE>
+<H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osg::Transform</A></H2></H2><BLOCKQUOTE>A Transform is a group node for which all children are transformed by a 4x4 matrix.</BLOCKQUOTE>
 <HR>
 
 <H2>Inheritance:</H2>
-<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=155>
-<param name=classes value="MNode,M,CGroup,MGroup.html,CTransform,MTransform.html,CPositionAttitudeTransform,MPositionAttitudeTransform.html,CMatrixTransform,MMatrixTransform.html">
-<param name=before value="M,M,M,M|_,Mr_">
-<param name=after value="Md_SP,Md_,M,M,M">
-<param name=indent value="0,1,2,2,2">
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=185>
+<param name=classes value="MNode,M,CGroup,MGroup.html,CTransform,MTransform.html,CPositionAttitudeTransform,MPositionAttitudeTransform.html,CMatrixTransform,MMatrixTransform.html,CDOFTransform,MDOFTransform.html">
+<param name=before value="M,M,M,M|_,MR_,Mr_">
+<param name=after value="Md_SP,Md_,M,M,M,M">
+<param name=indent value="0,1,2,2,2,2">
 <param name=arrowdir value="down">
 </APPLET>
 <HR>
@@ -23,81 +23,59 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.132.1">Transform</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.142.1">Transform</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.132.2">Transform</A></B>(const <!1><A HREF="Transform.html#DOC.2.132.2">Transform</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.142.2">Transform</A></B>(const <!1><A HREF="Transform.html#DOC.2.142.2">Transform</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
 <DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.132.3">Transform</A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; matix)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.142.3">META_Node</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Transform.html">Transform</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.132.4">META_Node</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Transform.html">Transform</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.142.5">setReferenceFrame</A></B>(<!1><A HREF="Transform.html#DOC.2.142.4">ReferenceFrame</A> rf)
+<DD><I>Set the transform's ReferenceFrame, either to be relative to its parent reference frame, or relative to an absolute coordinate frame.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.132.6">setReferenceFrame</A></B>(<!1><A HREF="Transform.html#DOC.2.132.5">ReferenceFrame</A> rf)
-<DD><I>Set the transform's ReferenceFrame, either to be realtive to its parent reference frame,  or relative to an absolute coordinate frame.</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Transform.html#DOC.2.142.4">ReferenceFrame</A> <B><A HREF="#DOC.2.142.6">getReferenceFrame</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Transform.html#DOC.2.132.5">ReferenceFrame</A> <B><A HREF="#DOC.2.132.7">getReferenceFrame</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.142.8">setComputeTransformCallback</A></B>(<!1><A HREF="Transform.html#DOC.2.142.7">ComputeTransformCallback</A>* ctc)
+<DD><I>Set the ComputerTransfromCallback which allows users to attach custom computation of the local transformation as seen by cull traversers and the like.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.132.9">setComputeTransformCallback</A></B>(<!1><A HREF="Transform.html#DOC.2.132.8">ComputeTransformCallback</A>* ctc)
-<DD><I>Set the ComputerTransfromCallback which allows users to attach custom computation of the local transformation as  seen by cull traversers and alike</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Transform.html#DOC.2.132.8">ComputeTransformCallback</A>* <B><A HREF="#DOC.2.132.10">getComputeTransformCallback</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Transform.html#DOC.2.142.7">ComputeTransformCallback</A>* <B><A HREF="#DOC.2.142.9">getComputeTransformCallback</A></B>()
 <DD><I>Get the non const ComputerTransfromCallback</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Transform.html#DOC.2.132.8">ComputeTransformCallback</A>* <B><A HREF="#DOC.2.132.11">getComputeTransformCallback</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Transform.html#DOC.2.142.7">ComputeTransformCallback</A>* <B><A HREF="#DOC.2.142.10">getComputeTransformCallback</A></B>() const 
 <DD><I>Get the const ComputerTransfromCallback</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const bool <B><A HREF="#DOC.2.132.12">getLocalToWorldMatrix</A></B>(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const bool <B><A HREF="#DOC.2.142.11">getLocalToWorldMatrix</A></B>(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv) const 
 <DD><I>Get the transformation matrix which moves from local coords to world coords.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const bool <B><A HREF="#DOC.2.132.13">getWorldToLocalMatrix</A></B>(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const bool <B><A HREF="#DOC.2.142.12">getWorldToLocalMatrix</A></B>(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv) const 
 <DD><I>Get the transformation matrix which moves from world coords to local coords.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.132.14">setMatrix</A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; mat)
-<DD><I>Set the transform's matrix</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.142.13">computeLocalToWorldMatrix</A></B>(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>*) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Matrix.html">Matrix</A>&amp; <B><A HREF="#DOC.2.132.15">getMatrix</A></B>() const 
-<DD><I>Get the transform's matrix.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.132.16">preMult</A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; mat)
-<DD><I>preMult transform</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.132.17">postMult</A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; mat)
-<DD><I>postMult transform</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.132.18">computeLocalToWorldMatrix</A></B>(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>*) const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.132.19">computeWorldToLocalMatrix</A></B>(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>*) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.142.14">computeWorldToLocalMatrix</A></B>(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>*) const 
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.132.5">ReferenceFrame</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.142.4">ReferenceFrame</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.2.132.8">ComputeTransformCallback</A></B>: public <!1><A HREF="Referenced.html">osg::Referenced</A>
-<DD><I>Callback attached to an Transform to specifiy how to compute the modelview transformation for the transform below the Transform node</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.2.142.7">ComputeTransformCallback</A></B>: public <!1><A HREF="Referenced.html">osg::Referenced</A>
+<DD><I>Callback attached to an Transform to specify how to compute the modelview transformation for the transform below the Transform node.</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Transform.html#DOC.2.132.8">ComputeTransformCallback</A>&gt;  <B><A HREF="#DOC.2.132.22">_computeTransformCallback</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Transform.html#DOC.2.142.7">ComputeTransformCallback</A>&gt;  <B><A HREF="#DOC.2.142.17">_computeTransformCallback</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Transform.html#DOC.2.132.5">ReferenceFrame</A> <B><A HREF="#DOC.2.132.23">_referenceFrame</A></B>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Matrix.html">Matrix</A>&gt;  <B><A HREF="#DOC.2.132.25">_deprecated_matrix</A></B>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Matrix.html">Matrix</A>&gt;  <B><A HREF="#DOC.2.132.26">_deprecated_inverse</A></B>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable bool <B><A HREF="#DOC.2.132.27">_deprecated_inverseDirty</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Transform.html#DOC.2.142.4">ReferenceFrame</A> <B><A HREF="#DOC.2.142.18">_referenceFrame</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.132.20">~Transform</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.142.15">~Transform</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.132.21">computeBound</A></B>() const 
-<DD><I>Override's Group's computeBound.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.132.24">computeInverse</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.142.16">computeBound</A></B>() const 
+<DD><I>Overrides Group's computeBound.</I>
 </DL></P>
 
 </DL>
@@ -136,183 +114,162 @@
 <A NAME="DOC.DOCU"></A>
 <HR>
 <H2>Documentation</H2>
-<BLOCKQUOTE>Transform - is group which all children are transformed by the the Transform's osg::Matrix.  
-Typical uses
-of the Transform is for positioning objects within a scene or 
+<BLOCKQUOTE>A Transform is a group node for which all children are transformed by
+a 4x4 matrix.  It is often used for positioning objects within a scene,
 producing trackball functionality or for animation.
-The Transform node can be customized via the ComputeTransfromCallback which can be
-attached to the node, this might be used to convert internal representations of the transformation
-into generic osg::Matrix'c which are used during scene grpah traversal, such as CullTraversal and IntersectionTraversal.
-Note, if the transformation matrix scales the subgraph then the
-normals of the underlying geometry will need to be renormalized to
-be unit vectors once more.  One can done transparently through OpenGL's 
-use of either GL_NORMALIZE and GL_SCALE_NORMALIZE modes.  Further
-background reading see the glNormalize documentation in the OpenGL Reference 
-Guide (the blue book). To enable it in the OSG, you simple need to
-attach a local osg::StateSet to the osg::Transform, and set the appropriate
-mode to on via stateset->setMode(GL_NORMALIZE,osg::StateAttribute::ON);.</BLOCKQUOTE>
+
+<P>Transform itself does not provide set/get functions, only the interface
+for defining what the 4x4 transformation is.  Subclasses, such as
+MatrixTransform and PositionAttitudeTransform support the use of an
+osg::Matrix or a osg::Vec3/osg::Quat resprectively.
+The Transform node can be customized via the ComputeTransfromCallback
+which can be attached to the node.  This might be used to convert from
+internal representations of the transformation into generic osg::Matrix
+objects which are used during scene grpah traversal, such as
+CullTraversal and IntersectionTraversal.
+
+<P>Note: if the transformation matrix scales the subgraph then the normals
+of the underlying geometry will need to be renormalized to be unit
+vectors once more.  This can be done transparently through OpenGL's 
+use of either GL_NORMALIZE and GL_SCALE_NORMALIZE modes.  For further
+background reading see the glNormalize documentation in the OpenGL
+Reference Guide (the blue book). To enable it in the OSG, you simply
+need to attach a local osg::StateSet to the osg::Transform, and set
+the appropriate mode to ON via
+stateset->setMode(GL_NORMALIZE, osg::StateAttribute::ON);</BLOCKQUOTE>
 <DL>
 
 <A NAME="Transform"></A>
-<A NAME="DOC.2.132.1"></A>
+<A NAME="DOC.2.142.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Transform()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Transform"></A>
-<A NAME="DOC.2.132.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Transform(const <!1><A HREF="Transform.html#DOC.2.132.2">Transform</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="DOC.2.142.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Transform(const <!1><A HREF="Transform.html#DOC.2.142.2">Transform</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
 <DD>Copy constructor using CopyOp to manage deep vs shallow copy
 <DL><DT><DD></DL><P>
-<A NAME="Transform"></A>
-<A NAME="DOC.2.132.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Transform(const <!1><A HREF="Matrix.html">Matrix</A>&amp; matix)</B></TT>
-<DL><DT><DD></DL><P>
 <A NAME="META_Node"></A>
-<A NAME="DOC.2.132.4"></A>
+<A NAME="DOC.2.142.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Node(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Transform.html">Transform</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ReferenceFrame"></A>
-<A NAME="DOC.2.132.5"></A>
+<A NAME="DOC.2.142.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  ReferenceFrame</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="RELATIVE_TO_PARENTS"></A>
-<A NAME="DOC.2.132.5.1"></A>
+<A NAME="DOC.2.142.4.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> RELATIVE_TO_PARENTS</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="RELATIVE_TO_ABSOLUTE"></A>
-<A NAME="DOC.2.132.5.2"></A>
+<A NAME="DOC.2.142.4.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> RELATIVE_TO_ABSOLUTE</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="setReferenceFrame"></A>
-<A NAME="DOC.2.132.6"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setReferenceFrame(<!1><A HREF="Transform.html#DOC.2.132.5">ReferenceFrame</A> rf)</B></TT>
-<DD>Set the transform's ReferenceFrame, either to be realtive to its parent reference frame, 
-or relative to an absolute coordinate frame. RELATIVE_TO_PARENTS is the default.
-Note,  setting the RefrenceFrame to be RELATIVE_TO_ABSOLUTE will also set the CullingActive flag on the
-transform, and hence all its parents, to false, therby disabling culling of it and all its
-parents.  This is neccessary to prevent inappropriate culling, but may impact of cull times
-if the absolute transform is deep in the scene graph, it is therefore recommend to only use
-abolsoute Transforms at the top of the scene, for such things as headlight LightSource's or
-Head up displays.
+<A NAME="DOC.2.142.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setReferenceFrame(<!1><A HREF="Transform.html#DOC.2.142.4">ReferenceFrame</A> rf)</B></TT>
+<DD>Set the transform's ReferenceFrame, either to be relative to its
+parent reference frame, or relative to an absolute coordinate
+frame. RELATIVE_TO_PARENTS is the default.
+Note: setting the ReferenceFrame to be RELATIVE_TO_ABSOLUTE will
+also set the CullingActive flag on the transform, and hence all
+of its parents, to false, thereby disabling culling of it and
+all its parents.  This is neccessary to prevent inappropriate
+culling, but may impact cull times if the absolute transform is
+deep in the scene graph.  It is therefore recommend to only use
+absolute Transforms at the top of the scene, for such things as
+headlight LightSources or Heads up displays. 
 <DL><DT><DD></DL><P>
 <A NAME="getReferenceFrame"></A>
-<A NAME="DOC.2.132.7"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Transform.html#DOC.2.132.5">ReferenceFrame</A> getReferenceFrame() const </B></TT>
+<A NAME="DOC.2.142.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Transform.html#DOC.2.142.4">ReferenceFrame</A> getReferenceFrame() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ComputeTransformCallback"></A>
-<A NAME="DOC.2.132.8"></A>
+<A NAME="DOC.2.142.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>struct  ComputeTransformCallback: public <!1><A HREF="Referenced.html">osg::Referenced</A></B></TT>
-<DD>Callback attached to an Transform to specifiy how to compute the modelview transformation
-for the transform below the Transform node
+<DD>Callback attached to an Transform to specify how to compute the
+modelview transformation for the transform below the Transform
+node. 
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="computeLocalToWorldMatrix"></A>
-<A NAME="DOC.2.132.8.1"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const bool computeLocalToWorldMatrix(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, const <!1><A HREF="Transform.html">Transform</A>* <!1><A HREF="Polytope.html#DOC.2.94.32">transform</A>, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv) const  = 0</B></TT>
-<DD>Get the transformation matrix which moves from local coords to world coords
+<A NAME="DOC.2.142.7.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const bool computeLocalToWorldMatrix(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, const <!1><A HREF="Transform.html">Transform</A>* <!1><A HREF="Polytope.html#DOC.2.97.32">transform</A>, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv) const  = 0</B></TT>
+<DD>Get the transformation matrix which moves from local coords
+to world coords
 <DL><DT><DD></DL><P>
 <A NAME="computeWorldToLocalMatrix"></A>
-<A NAME="DOC.2.132.8.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const bool computeWorldToLocalMatrix(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, const <!1><A HREF="Transform.html">Transform</A>* <!1><A HREF="Polytope.html#DOC.2.94.32">transform</A>, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv) const  = 0</B></TT>
-<DD>Get the transformation matrix which moves from world coords to local coords
+<A NAME="DOC.2.142.7.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const bool computeWorldToLocalMatrix(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, const <!1><A HREF="Transform.html">Transform</A>* <!1><A HREF="Polytope.html#DOC.2.97.32">transform</A>, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv) const  = 0</B></TT>
+<DD>Get the transformation matrix which moves from world coords
+to local coords
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="setComputeTransformCallback"></A>
-<A NAME="DOC.2.132.9"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setComputeTransformCallback(<!1><A HREF="Transform.html#DOC.2.132.8">ComputeTransformCallback</A>* ctc)</B></TT>
-<DD>Set the ComputerTransfromCallback which allows users to attach custom computation of the local transformation as 
-seen by cull traversers and alike
+<A NAME="DOC.2.142.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setComputeTransformCallback(<!1><A HREF="Transform.html#DOC.2.142.7">ComputeTransformCallback</A>* ctc)</B></TT>
+<DD>Set the ComputerTransfromCallback which allows users to attach
+custom computation of the local transformation as seen by cull
+traversers and the like. 
 <DL><DT><DD></DL><P>
 <A NAME="getComputeTransformCallback"></A>
-<A NAME="DOC.2.132.10"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Transform.html#DOC.2.132.8">ComputeTransformCallback</A>* getComputeTransformCallback()</B></TT>
+<A NAME="DOC.2.142.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Transform.html#DOC.2.142.7">ComputeTransformCallback</A>* getComputeTransformCallback()</B></TT>
 <DD>Get the non const ComputerTransfromCallback
 <DL><DT><DD></DL><P>
 <A NAME="getComputeTransformCallback"></A>
-<A NAME="DOC.2.132.11"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Transform.html#DOC.2.132.8">ComputeTransformCallback</A>* getComputeTransformCallback() const </B></TT>
+<A NAME="DOC.2.142.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Transform.html#DOC.2.142.7">ComputeTransformCallback</A>* getComputeTransformCallback() const </B></TT>
 <DD>Get the const ComputerTransfromCallback
 <DL><DT><DD></DL><P>
 <A NAME="getLocalToWorldMatrix"></A>
-<A NAME="DOC.2.132.12"></A>
+<A NAME="DOC.2.142.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const bool getLocalToWorldMatrix(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv) const </B></TT>
-<DD>Get the transformation matrix which moves from local coords to world coords.
-Return true if Matrix passed in has been modified and 
+<DD>Get the transformation matrix which moves from local coords to
+world coords.
+Returns true if the Matrix passed in has been updated. 
 <DL><DT><DD></DL><P>
 <A NAME="getWorldToLocalMatrix"></A>
-<A NAME="DOC.2.132.13"></A>
+<A NAME="DOC.2.142.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const bool getWorldToLocalMatrix(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv) const </B></TT>
-<DD>Get the transformation matrix which moves from world coords to local coords.
-Return true if Matrix passed in has been modified and 
-<DL><DT><DD></DL><P>
-<A NAME="setMatrix"></A>
-<A NAME="DOC.2.132.14"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setMatrix(const <!1><A HREF="Matrix.html">Matrix</A>&amp; mat)</B></TT>
-<DD>Set the transform's matrix
-<DL><DT><DD></DL><P>
-<A NAME="getMatrix"></A>
-<A NAME="DOC.2.132.15"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Matrix.html">Matrix</A>&amp; getMatrix() const </B></TT>
-<DD>Get the transform's matrix. 
-<DL><DT><DD></DL><P>
-<A NAME="preMult"></A>
-<A NAME="DOC.2.132.16"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void preMult(const <!1><A HREF="Matrix.html">Matrix</A>&amp; mat)</B></TT>
-<DD>preMult transform
-<DL><DT><DD></DL><P>
-<A NAME="postMult"></A>
-<A NAME="DOC.2.132.17"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void postMult(const <!1><A HREF="Matrix.html">Matrix</A>&amp; mat)</B></TT>
-<DD>postMult transform
+<DD>Get the transformation matrix which moves from world coords to
+local coords.
+Return true if the Matrix passed in has been updated. 
 <DL><DT><DD></DL><P>
 <A NAME="computeLocalToWorldMatrix"></A>
-<A NAME="DOC.2.132.18"></A>
+<A NAME="DOC.2.142.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const bool computeLocalToWorldMatrix(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>*) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeWorldToLocalMatrix"></A>
-<A NAME="DOC.2.132.19"></A>
+<A NAME="DOC.2.142.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const bool computeWorldToLocalMatrix(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>*) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~Transform"></A>
-<A NAME="DOC.2.132.20"></A>
+<A NAME="DOC.2.142.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Transform()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeBound"></A>
-<A NAME="DOC.2.132.21"></A>
+<A NAME="DOC.2.142.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const bool computeBound() const </B></TT>
-<DD>Override's Group's computeBound. 
-There is no need to override in subclasses from osg::Transform since this computeBound() uses 
-the underlying matrix (calling computeMatrix if required.) 
+<DD>Overrides Group's computeBound. 
+There is no need to override in subclasses from osg::Transform
+since this computeBound() uses the underlying matrix (calling
+computeMatrix if required.) 
 <DL><DT><DD></DL><P>
 <A NAME="_computeTransformCallback"></A>
-<A NAME="DOC.2.132.22"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Transform.html#DOC.2.132.8">ComputeTransformCallback</A>&gt;  _computeTransformCallback</B></TT>
+<A NAME="DOC.2.142.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Transform.html#DOC.2.142.7">ComputeTransformCallback</A>&gt;  _computeTransformCallback</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_referenceFrame"></A>
-<A NAME="DOC.2.132.23"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Transform.html#DOC.2.132.5">ReferenceFrame</A> _referenceFrame</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="computeInverse"></A>
-<A NAME="DOC.2.132.24"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void computeInverse() const </B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="_deprecated_matrix"></A>
-<A NAME="DOC.2.132.25"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Matrix.html">Matrix</A>&gt;  _deprecated_matrix</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="_deprecated_inverse"></A>
-<A NAME="DOC.2.132.26"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable <!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Matrix.html">Matrix</A>&gt;  _deprecated_inverse</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="_deprecated_inverseDirty"></A>
-<A NAME="DOC.2.132.27"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable bool _deprecated_inverseDirty</B></TT>
+<A NAME="DOC.2.142.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Transform.html#DOC.2.142.4">ReferenceFrame</A> _referenceFrame</B></TT>
 <DL><DT><DD></DL><P></DL>
 <HR>
 <DL><DT><B>Direct child classes:
 </B><DD><A HREF="PositionAttitudeTransform.html">PositionAttitudeTransform</A><BR>
 <A HREF="MatrixTransform.html">MatrixTransform</A><BR>
+<A HREF="DOFTransform.html">DOFTransform</A><BR>
 </DL>
 
 <DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>

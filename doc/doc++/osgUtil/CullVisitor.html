@@ -51,15 +51,15 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.14">apply</A></B>(osg::LOD&amp; node)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.15">apply</A></B>(osg::EarthSky&amp; node)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.15">apply</A></B>(osg::ClearNode&amp; node)
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.16">apply</A></B>(osg::OccluderNode&amp; node)
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.17">apply</A></B>(osg::Impostor&amp; node)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.18">setEarthSky</A></B>(const osg::EarthSky* earthSky)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.18">setClearNode</A></B>(const osg::ClearNode* earthSky)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::EarthSky* <B><A HREF="#DOC.2.2.19">getEarthSky</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::ClearNode* <B><A HREF="#DOC.2.2.19">getClearNode</A></B>() const 
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.20">setImpostorsActive</A></B>(const bool active)
 <DD><I>Switch the creation of Impostors on or off.</I>
@@ -165,7 +165,7 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.2.62">_computed_zfar</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;const osg::EarthSky&gt;  <B><A HREF="#DOC.2.2.63">_earthSky</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;const osg::ClearNode&gt;  <B><A HREF="#DOC.2.2.63">_clearNode</A></B>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CullVisitor.html#DOC.2.2.31">TransparencySortMode</A> <B><A HREF="#DOC.2.2.64">_tsm</A></B>
 <DT>
@@ -277,7 +277,7 @@ from the eye to the one nearest the eye. </BLOCKQUOTE>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
 <A NAME="DOC.2.2.15"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::EarthSky&amp; node)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::ClearNode&amp; node)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
 <A NAME="DOC.2.2.16"></A>
@@ -287,13 +287,13 @@ from the eye to the one nearest the eye. </BLOCKQUOTE>
 <A NAME="DOC.2.2.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::Impostor&amp; node)</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="setEarthSky"></A>
+<A NAME="setClearNode"></A>
 <A NAME="DOC.2.2.18"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setEarthSky(const osg::EarthSky* earthSky)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setClearNode(const osg::ClearNode* earthSky)</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="getEarthSky"></A>
+<A NAME="getClearNode"></A>
 <A NAME="DOC.2.2.19"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::EarthSky* getEarthSky() const </B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::ClearNode* getClearNode() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setImpostorsActive"></A>
 <A NAME="DOC.2.2.20"></A>
@@ -520,9 +520,9 @@ to generate the impostor texture.
 <A NAME="DOC.2.2.62"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _computed_zfar</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="_earthSky"></A>
+<A NAME="_clearNode"></A>
 <A NAME="DOC.2.2.63"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;const osg::EarthSky&gt;  _earthSky</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;const osg::ClearNode&gt;  _clearNode</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_tsm"></A>
 <A NAME="DOC.2.2.64"></A>

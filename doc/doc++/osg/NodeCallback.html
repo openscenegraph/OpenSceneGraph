@@ -10,11 +10,11 @@
 <H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osg::NodeCallback</A></H2></H2><HR>
 
 <H2>Inheritance:</H2>
-<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=65>
-<param name=classes value="CReferenced,MReferenced.html,CNodeCallback,MNodeCallback.html">
-<param name=before value="M,M">
-<param name=after value="Md_,M">
-<param name=indent value="0,1">
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=125>
+<param name=classes value="CReferenced,MReferenced.html,CNodeCallback,MNodeCallback.html,CAnimationPathCallback,MAnimationPathCallback.2.html,CAnimationPathCallback,MAnimationPathCallback.html">
+<param name=before value="M,M,M|_,Mr_">
+<param name=after value="Md_,M,M,M">
+<param name=indent value="0,1,1,1">
 <param name=arrowdir value="down">
 </APPLET>
 <HR>
@@ -22,28 +22,28 @@
 <DL>
 <P><DL>
 <DT><H3>Public Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="NodeCallback.html">NodeCallback</A>&gt;  <B><A HREF="#DOC.2.75.9">_nestedCallback</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="NodeCallback.html">NodeCallback</A>&gt;  <B><A HREF="#DOC.2.78.9">_nestedCallback</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.75.1">NodeCallback</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.78.1">NodeCallback</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.75.2">~NodeCallback</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.78.2">~NodeCallback</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.75.3">operator()</A></B>(Node* node, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.78.3">operator()</A></B>(Node* node, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv)
 <DD><I>Callback method call by the NodeVisitor when visiting a node</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.75.4">traverse</A></B>(Node* node, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.78.4">traverse</A></B>(Node* node, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv)
 <DD><I>Call any nested callbacks and then traverse the scene graph.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.75.5">setNestedCallback</A></B>(<!1><A HREF="NodeCallback.html">NodeCallback</A>* nc)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.78.5">setNestedCallback</A></B>(<!1><A HREF="NodeCallback.html">NodeCallback</A>* nc)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="NodeCallback.html">NodeCallback</A>* <B><A HREF="#DOC.2.75.6">getNestedCallback</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="NodeCallback.html">NodeCallback</A>* <B><A HREF="#DOC.2.78.6">getNestedCallback</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.75.7">addNestedCallback</A></B>(<!1><A HREF="NodeCallback.html">NodeCallback</A>* nc)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.78.7">addNestedCallback</A></B>(<!1><A HREF="NodeCallback.html">NodeCallback</A>* nc)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.75.8">removeNestedCallback</A></B>(<!1><A HREF="NodeCallback.html">NodeCallback</A>* nc)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.78.8">removeNestedCallback</A></B>(<!1><A HREF="NodeCallback.html">NodeCallback</A>* nc)
 </DL></P>
 
 </DL>
@@ -75,45 +75,48 @@
 <DL>
 
 <A NAME="NodeCallback"></A>
-<A NAME="DOC.2.75.1"></A>
+<A NAME="DOC.2.78.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NodeCallback()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~NodeCallback"></A>
-<A NAME="DOC.2.75.2"></A>
+<A NAME="DOC.2.78.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~NodeCallback()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator()"></A>
-<A NAME="DOC.2.75.3"></A>
+<A NAME="DOC.2.78.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void operator()(Node* node, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv)</B></TT>
 <DD>Callback method call by the NodeVisitor when visiting a node
 <DL><DT><DD></DL><P>
 <A NAME="traverse"></A>
-<A NAME="DOC.2.75.4"></A>
+<A NAME="DOC.2.78.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void traverse(Node* node, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv)</B></TT>
 <DD>Call any nested callbacks and then traverse the scene graph. 
 <DL><DT><DD></DL><P>
 <A NAME="setNestedCallback"></A>
-<A NAME="DOC.2.75.5"></A>
+<A NAME="DOC.2.78.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setNestedCallback(<!1><A HREF="NodeCallback.html">NodeCallback</A>* nc)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getNestedCallback"></A>
-<A NAME="DOC.2.75.6"></A>
+<A NAME="DOC.2.78.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="NodeCallback.html">NodeCallback</A>* getNestedCallback()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="addNestedCallback"></A>
-<A NAME="DOC.2.75.7"></A>
+<A NAME="DOC.2.78.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void addNestedCallback(<!1><A HREF="NodeCallback.html">NodeCallback</A>* nc)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="removeNestedCallback"></A>
-<A NAME="DOC.2.75.8"></A>
+<A NAME="DOC.2.78.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void removeNestedCallback(<!1><A HREF="NodeCallback.html">NodeCallback</A>* nc)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_nestedCallback"></A>
-<A NAME="DOC.2.75.9"></A>
+<A NAME="DOC.2.78.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="NodeCallback.html">NodeCallback</A>&gt;  _nestedCallback</B></TT>
 <DL><DT><DD></DL><P></DL>
-
-<HR><DL><DT><B>This class has no child classes.</B></DL>
+<HR>
+<DL><DT><B>Direct child classes:
+</B><DD><A HREF="AnimationPathCallback.2.html">AnimationPathCallback</A><BR>
+<A HREF="AnimationPathCallback.html">AnimationPathCallback</A><BR>
+</DL>
 
 <DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
 <BR>

@@ -7,7 +7,8 @@
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
-<H2>class  OSGGA_EXPORT <A HREF="#DOC.DOCU">osgGA::FlightManipulator</A></H2></H2><HR>
+<H2>class  OSGGA_EXPORT <A HREF="#DOC.DOCU">osgGA::FlightManipulator</A></H2></H2><BLOCKQUOTE> FlightManipulator is a CameraManipulator which provides flight simulator-like updating of the camera position & orientation.</BLOCKQUOTE>
+<HR>
 
 <H2>Inheritance:</H2>
 <APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=125>
@@ -27,25 +28,19 @@
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.3.2">~FlightManipulator</A></B>()
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.3.3">setNode</A></B>(osg::Node*)
-<DD><I>Attach a node to the manipulator.</I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const osg::Node* <B><A HREF="#DOC.2.3.4">getNode</A></B>() const 
-<DD><I>Return node if attached</I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Node* <B><A HREF="#DOC.2.3.5">getNode</A></B>()
-<DD><I>Return node if attached</I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.3.6">home</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)
-<DD><I>Move the camera to the default position.</I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.3.7">init</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)
-<DD><I>Start/restart the manipulator</I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.3.8">handle</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)
-<DD><I>handle events, return true if handled, false otherwise</I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.3.10">setYawControlMode</A></B>(<!1><A HREF="FlightManipulator.html#DOC.2.3.9">YawControlMode</A> ycm)
-<DD><I>Set the yaw control between no yaw and yawing when banked</I>
+<DD><I>Configure the Yaw control for the flight model.</I>
 </DL></P>
 
 <P><DL>
@@ -87,6 +82,11 @@
 <A NAME="DOC.DOCU"></A>
 <HR>
 <H2>Documentation</H2>
+<BLOCKQUOTE>
+FlightManipulator is a CameraManipulator which provides flight simulator-like
+updating of the camera position & orientation. By default, the left mouse
+button accelerates, the right mouse button decelerates, and the middle mouse
+button (or left and right simultaneously) stops dead.</BLOCKQUOTE>
 <DL>
 
 <A NAME="FlightManipulator"></A>
@@ -100,36 +100,26 @@
 <A NAME="setNode"></A>
 <A NAME="DOC.2.3.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setNode(osg::Node*)</B></TT>
-<DD>Attach a node to the manipulator. 
-Automatically detaches previously attached node.
-setNode(NULL) detaches previously nodes.
-Is ignored by manipulators which do not require a reference model.
 <DL><DT><DD></DL><P>
 <A NAME="getNode"></A>
 <A NAME="DOC.2.3.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const osg::Node* getNode() const </B></TT>
-<DD>Return node if attached
 <DL><DT><DD></DL><P>
 <A NAME="getNode"></A>
 <A NAME="DOC.2.3.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Node* getNode()</B></TT>
-<DD>Return node if attached
 <DL><DT><DD></DL><P>
 <A NAME="home"></A>
 <A NAME="DOC.2.3.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void home(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)</B></TT>
-<DD>Move the camera to the default position. 
-May be ignored by manipulators if home functionality is not appropriate.
 <DL><DT><DD></DL><P>
 <A NAME="init"></A>
 <A NAME="DOC.2.3.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void init(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)</B></TT>
-<DD>Start/restart the manipulator
 <DL><DT><DD></DL><P>
 <A NAME="handle"></A>
 <A NAME="DOC.2.3.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool handle(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)</B></TT>
-<DD>handle events, return true if handled, false otherwise
 <DL><DT><DD></DL><P>
 <A NAME="YawControlMode"></A>
 <A NAME="DOC.2.3.9"></A>
@@ -148,7 +138,7 @@ May be ignored by manipulators if home functionality is not appropriate.
 <A NAME="setYawControlMode"></A>
 <A NAME="DOC.2.3.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setYawControlMode(<!1><A HREF="FlightManipulator.html#DOC.2.3.9">YawControlMode</A> ycm)</B></TT>
-<DD>Set the yaw control between no yaw and yawing when banked
+<DD>Configure the Yaw control for the flight model.        
 <DL><DT><DD></DL><P></DL>
 
 <HR><DL><DT><B>This class has no child classes.</B></DL>

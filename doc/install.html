@@ -104,28 +104,30 @@ with <b>make help</b> to bring up help. For platform specific details:
 <h3>
 <a NAME="Compiling under Windows with Visual Studio"></a><u>Compiling under
 Windows with Visual Studio.</u></h3>
-The Microsoft Visual C++ 6.0 workspace file is VisualStudio.dsw located
-in the VisualStudio below the OSG this root directory. The OSG will compile
-with the basic VisualC++6.0, but, and this is a big but, the STL version
-which comes with VisualC++6.0 is extremely buggy and unable to handle things
-even as simple as std::mamp without crashing, even the latest service packs
-(which are recommended won't fix the STL bugs). This is a problem for the
-OpenSceneGraph since it makes proper use of Standard C++. One can struggle
-on with the MS's and expect crashes and optimization disabled, or adopt
-one of the following:
+
+<p>The Microsoft Visual C++ 6.0 workspace file is VisualStudio.dsw located
+in the VisualStudio below the OSG this root directory.  VC++6.0 workspace
+files can also be used in VisualStudio7.0 without problem.
+
+<p><b>IMPORTANT NOTE:</b> Whilst the OSG will compile cleanly with the basic VC++6.0 and
+its own STL implementation, the OSG will crash regularily due to bugs in VC++6.0's
+STL.  VC++6.0's STL is horribly broken and therefore is <b>*NOT*</b> supported.  Do not
+attempt to use the OSG in conjunction with native VC++6.0 STL implemention.
+<p>The supported combinations are:
 <ol>
-<li>
-Visual Studio .NET</li>
 
 <li>
-Dinkumware's STL bug fix patches - <a href="http://www.dinkumware.com/vc_fixes.html">http://www.dinkumware.com/vc_fixes.html</a>.</li>
+Visual Studio7.0 .NET </li>
+<li>
+Visual Studio6.0 + Dinkumware's STL bug fix patches (see details below).</li>
 
 <li>
-STLport - <a href="http://www.stlport.org">http://www.stlport.org</a></li>
+Visual Studio6.0 + STLport  (see details below)</li>
 </ol>
-The OSG is composed of a number of scene graph libraries (with Core in
+<p>The OSG is composed of a number of scene graph libraries (with Core in
 front of the project names), executables (with Demos in front of the project
-names), and plugins which read and write 3D data formats and 2D image formats.
+names), and plugins which read and write 3D data formats and 2D image formats 
+(with osgPlugins in front of the project names).
 To get the OSG running you'll need at least to compile Core osg,osgUtil,osgDB,osgGLUT,
 osgPlugin dot_osg and Demo sgv. The rest of the libraries and executables
 are optional and can be compiled if you need them, however for simplicity
@@ -136,6 +138,7 @@ libpng), you can ignore these compilation errors unless you need to load
 the related file types. To help the compilation the plugins, osgGLUT and
 osgText one can download .zip archive will all the dependencies in it.
 Further details on this .zip file can be found in <i><a href="dependencies.html">dependencies.html</a></i>
+
 <p>To execute the viewer the file path for the .dll's and .exe, both compiled
 into the OSG's bin directory, need to be setup, such as by adding the PATH
 to your autoexec.bat, its also useful to add the OSGFILEPATH to your autoexec.bat

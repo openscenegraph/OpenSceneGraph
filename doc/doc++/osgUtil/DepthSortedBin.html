@@ -76,6 +76,10 @@
 <IMG ALT="o" SRC=icon2.gif>RenderGraphList <B>_renderGraphList</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif>RenderLeafList <B>_renderLeafList</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="RenderBin.html#DOC.2.10.14">SortMode</A> <B>_sortMode</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::ref_ptr&lt;<!1><A HREF="RenderBin.html#DOC.2.10.21">SortCallback</A>&gt;  <B>_sortLocalCallback</B>
 </DL></P>
 
 <P><DL>
@@ -92,6 +96,22 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>void <B>sort</B>()
 <DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setSortMode</B>(<!1><A HREF="RenderBin.html#DOC.2.10.14">SortMode</A> mode)
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="RenderBin.html#DOC.2.10.14">SortMode</A> <B>getSortMode</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>sort_local_by_state</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>sort_local_front_to_back</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>sort_local_back_to_front</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setSortLocalCallback</B>(<!1><A HREF="RenderBin.html#DOC.2.10.21">SortCallback</A>* sortCallback)
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="RenderBin.html#DOC.2.10.21">SortCallback</A>* <B>getSortLocalCallback</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="RenderBin.html#DOC.2.10.21">SortCallback</A>* <B>getSortLocalCallback</B>() const 
+<DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   void <B>draw</B>(osg::State&amp; state, <!1><A HREF="RenderLeaf.html">RenderLeaf</A>*&amp; previous)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>bool <B>getStats</B>(osg::Statistics* primStats)
@@ -99,10 +119,16 @@
 <IMG ALT="o" SRC=icon2.gif>void <B>getPrims</B>(osg::Statistics* primStats)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>bool <B>getPrims</B>(osg::Statistics* primStats, const int nbin)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>copyLeavesFromRenderGraphListToRenderLeafList</B>()
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>SortMode</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>struct  <B>SortCallback</B>: public osg::Referenced
+<DT>
 <IMG ALT="o" SRC=icon2.gif>typedef  std::map&lt; std::string, osg::ref_ptr&lt;<!1><A HREF="RenderBin.html">RenderBin</A>&gt; &gt;static  RenderBinPrototypeList RenderBinPrototypeList <B>s_renderBinPrototypeList</B>
 </DL></P>
 

@@ -23,58 +23,58 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="ClipPlane.html">ClipPlane</A>&gt; &gt; ClipPlaneList <B><A HREF="#DOC.2.26.1">ClipNode</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="ClipPlane.html">ClipPlane</A>&gt; &gt; ClipPlaneList <B><A HREF="#DOC.2.27.1">ClipNode</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.26.2">ClipNode</A></B>(const <!1><A HREF="ClipNode.html#DOC.2.26.2">ClipNode</A>&amp; es, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.27.2">ClipNode</A></B>(const <!1><A HREF="ClipNode.html#DOC.2.27.2">ClipNode</A>&amp; es, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.26.3">META_Node</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="ClipNode.html">ClipNode</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.27.3">META_Node</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="ClipNode.html">ClipNode</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.26.4">createClipBox</A></B>(const <!1><A HREF="BoundingBox.html">BoundingBox</A>&amp; bb, unsigned int clipPlaneNumberBase=0)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.27.4">createClipBox</A></B>(const <!1><A HREF="BoundingBox.html">BoundingBox</A>&amp; bb, unsigned int clipPlaneNumberBase=0)
 <DD><I>Create a 6 clip planes to create a clip box</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const bool <B><A HREF="#DOC.2.26.5">addClipPlane</A></B>(<!1><A HREF="ClipPlane.html">ClipPlane</A>* clipplane)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const bool <B><A HREF="#DOC.2.27.5">addClipPlane</A></B>(<!1><A HREF="ClipPlane.html">ClipPlane</A>* clipplane)
 <DD><I>Add a ClipPlane to a ClipNode.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const bool <B><A HREF="#DOC.2.26.6">removeClipPlane</A></B>(<!1><A HREF="ClipPlane.html">ClipPlane</A>* clipplane)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const bool <B><A HREF="#DOC.2.27.6">removeClipPlane</A></B>(<!1><A HREF="ClipPlane.html">ClipPlane</A>* clipplane)
 <DD><I>Remove ClipPlane from a ClipNode.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const bool <B><A HREF="#DOC.2.26.7">removeClipPlane</A></B>(unsigned int pos)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const bool <B><A HREF="#DOC.2.27.7">removeClipPlane</A></B>(unsigned int pos)
 <DD><I>Remove ClipPlane, at specified index, from a ClipNode.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const unsigned int <B><A HREF="#DOC.2.26.8">getNumClipPlanes</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const unsigned int <B><A HREF="#DOC.2.27.8">getNumClipPlanes</A></B>() const 
 <DD><I>return the number of ClipPlanes</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="ClipPlane.html">ClipPlane</A>* <B><A HREF="#DOC.2.26.9">getClipPlane</A></B>(unsigned int pos)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="ClipPlane.html">ClipPlane</A>* <B><A HREF="#DOC.2.27.9">getClipPlane</A></B>(unsigned int pos)
 <DD><I>Get ClipPlane at specificed index position</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="ClipPlane.html">ClipPlane</A>* <B><A HREF="#DOC.2.26.10">getClipPlane</A></B>(unsigned int pos) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="ClipPlane.html">ClipPlane</A>* <B><A HREF="#DOC.2.27.10">getClipPlane</A></B>(unsigned int pos) const 
 <DD><I>Get const ClipPlane at specificed index position</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   ClipPlaneList&amp; <B><A HREF="#DOC.2.26.11">getClipPlaneList</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   ClipPlaneList&amp; <B><A HREF="#DOC.2.27.11">getClipPlaneList</A></B>()
 <DD><I>Get the ClipPlaneList</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const ClipPlaneList&amp; <B><A HREF="#DOC.2.26.12">getClipPlaneList</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const ClipPlaneList&amp; <B><A HREF="#DOC.2.27.12">getClipPlaneList</A></B>() const 
 <DD><I>Get the const ClipPlaneList</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.26.13">setStateSetModes</A></B>(<!1><A HREF="StateSet.html">StateSet</A>&amp;, const StateAttribute::GLModeValue) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.27.13">setStateSetModes</A></B>(<!1><A HREF="StateSet.html">StateSet</A>&amp;, const StateAttribute::GLModeValue) const 
 <DD><I>Set the GLModes on StateSet associated with the ClipPlanes</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.26.14">setLocalStateSetModes</A></B>(const StateAttribute::GLModeValue=StateAttribute::ON)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.27.14">setLocalStateSetModes</A></B>(const StateAttribute::GLModeValue=StateAttribute::ON)
 <DD><I>Set up the local StateSet </I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>StateAttribute::GLModeValue <B><A HREF="#DOC.2.26.17">_value</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>StateAttribute::GLModeValue <B><A HREF="#DOC.2.27.17">_value</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>ClipPlaneList <B><A HREF="#DOC.2.26.18">_planes</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>ClipPlaneList <B><A HREF="#DOC.2.27.18">_planes</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.26.15">~ClipNode</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.27.15">~ClipNode</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.26.16">computeBound</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.27.16">computeBound</A></B>() const 
 </DL></P>
 
 </DL>
@@ -117,89 +117,89 @@
 <DL>
 
 <A NAME="ClipNode"></A>
-<A NAME="DOC.2.26.1"></A>
+<A NAME="DOC.2.27.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="ClipPlane.html">ClipPlane</A>&gt; &gt; ClipPlaneList ClipNode()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ClipNode"></A>
-<A NAME="DOC.2.26.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ClipNode(const <!1><A HREF="ClipNode.html#DOC.2.26.2">ClipNode</A>&amp; es, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="DOC.2.27.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ClipNode(const <!1><A HREF="ClipNode.html#DOC.2.27.2">ClipNode</A>&amp; es, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="META_Node"></A>
-<A NAME="DOC.2.26.3"></A>
+<A NAME="DOC.2.27.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Node(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="ClipNode.html">ClipNode</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="createClipBox"></A>
-<A NAME="DOC.2.26.4"></A>
+<A NAME="DOC.2.27.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void createClipBox(const <!1><A HREF="BoundingBox.html">BoundingBox</A>&amp; bb, unsigned int clipPlaneNumberBase=0)</B></TT>
 <DD>Create a 6 clip planes to create a clip box
 <DL><DT><DD></DL><P>
 <A NAME="addClipPlane"></A>
-<A NAME="DOC.2.26.5"></A>
+<A NAME="DOC.2.27.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const bool addClipPlane(<!1><A HREF="ClipPlane.html">ClipPlane</A>* clipplane)</B></TT>
 <DD>Add a ClipPlane to a ClipNode. Return true if plane is added, 
 return false if plane already exists in ClipNode, or clipplane is false.
 <DL><DT><DD></DL><P>
 <A NAME="removeClipPlane"></A>
-<A NAME="DOC.2.26.6"></A>
+<A NAME="DOC.2.27.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const bool removeClipPlane(<!1><A HREF="ClipPlane.html">ClipPlane</A>* clipplane)</B></TT>
 <DD>Remove ClipPlane from a ClipNode. Return true if plane is removed, 
 return false if plane does not exists in ClipNode.
 <DL><DT><DD></DL><P>
 <A NAME="removeClipPlane"></A>
-<A NAME="DOC.2.26.7"></A>
+<A NAME="DOC.2.27.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const bool removeClipPlane(unsigned int pos)</B></TT>
 <DD>Remove ClipPlane, at specified index, from a ClipNode. Return true if plane is removed, 
 return false if plane does not exists in ClipNode.
 <DL><DT><DD></DL><P>
 <A NAME="getNumClipPlanes"></A>
-<A NAME="DOC.2.26.8"></A>
+<A NAME="DOC.2.27.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const unsigned int getNumClipPlanes() const </B></TT>
 <DD>return the number of ClipPlanes
 <DL><DT><DD></DL><P>
 <A NAME="getClipPlane"></A>
-<A NAME="DOC.2.26.9"></A>
+<A NAME="DOC.2.27.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="ClipPlane.html">ClipPlane</A>* getClipPlane(unsigned int pos)</B></TT>
 <DD>Get ClipPlane at specificed index position
 <DL><DT><DD></DL><P>
 <A NAME="getClipPlane"></A>
-<A NAME="DOC.2.26.10"></A>
+<A NAME="DOC.2.27.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="ClipPlane.html">ClipPlane</A>* getClipPlane(unsigned int pos) const </B></TT>
 <DD>Get const ClipPlane at specificed index position
 <DL><DT><DD></DL><P>
 <A NAME="getClipPlaneList"></A>
-<A NAME="DOC.2.26.11"></A>
+<A NAME="DOC.2.27.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   ClipPlaneList&amp; getClipPlaneList()</B></TT>
 <DD>Get the ClipPlaneList
 <DL><DT><DD></DL><P>
 <A NAME="getClipPlaneList"></A>
-<A NAME="DOC.2.26.12"></A>
+<A NAME="DOC.2.27.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const ClipPlaneList&amp; getClipPlaneList() const </B></TT>
 <DD>Get the const ClipPlaneList
 <DL><DT><DD></DL><P>
 <A NAME="setStateSetModes"></A>
-<A NAME="DOC.2.26.13"></A>
+<A NAME="DOC.2.27.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setStateSetModes(<!1><A HREF="StateSet.html">StateSet</A>&amp;, const StateAttribute::GLModeValue) const </B></TT>
 <DD>Set the GLModes on StateSet associated with the ClipPlanes
 <DL><DT><DD></DL><P>
 <A NAME="setLocalStateSetModes"></A>
-<A NAME="DOC.2.26.14"></A>
+<A NAME="DOC.2.27.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setLocalStateSetModes(const StateAttribute::GLModeValue=StateAttribute::ON)</B></TT>
 <DD>Set up the local StateSet 
 <DL><DT><DD></DL><P>
 <A NAME="~ClipNode"></A>
-<A NAME="DOC.2.26.15"></A>
+<A NAME="DOC.2.27.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~ClipNode()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeBound"></A>
-<A NAME="DOC.2.26.16"></A>
+<A NAME="DOC.2.27.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const bool computeBound() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_value"></A>
-<A NAME="DOC.2.26.17"></A>
+<A NAME="DOC.2.27.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>StateAttribute::GLModeValue _value</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_planes"></A>
-<A NAME="DOC.2.26.18"></A>
+<A NAME="DOC.2.27.18"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>ClipPlaneList _planes</B></TT>
 <DL><DT><DD></DL><P></DL>
 

@@ -95,7 +95,7 @@ endif
   LINKARGS          =  
   DYNAMICLIBRARYLIB = -ldl
   OSG_LIBS          = -losgGLUT -losgDB -losgUtil -losg 
-  FREETYPE_LIB      = -lfreetype
+  FREETYPE_LIB      = -L/usr/local/lib -lfreetype
   GLUT_LIB          = -lglut
   GL_LIBS           = -lGLU -lGL 
   X_LIBS            = -lXext -lXmu -lXi -lX11 

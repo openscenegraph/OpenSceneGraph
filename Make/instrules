@@ -28,7 +28,6 @@ __instbin:
 	
 
 __instdev:
-ifeq (0,1)
 	@for d in `ls -1  $(TOPDIR)/include/ | grep -v CVS`; \
 	do\
 	  if [ -d $(TOPDIR)/include/$$d ]; \
@@ -37,7 +36,6 @@ ifeq (0,1)
 		   INSTALL?="$(INSTDEVCMD)" __install;\
 	  fi\
 	done
-endif
 	@$(TOPDIR)/Make/instdemosrc \
 		$(TOPDIR)\
 		$(INST_LIBS)\

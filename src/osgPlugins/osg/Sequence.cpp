@@ -16,7 +16,7 @@ RegisterDotOsgWrapperProxy g_SequenceProxy
 (
     osgNew osg::Sequence,
     "Sequence",
-    "Object Node Group Switch Sequence",
+    "Object Node Switch Sequence Group",
     &Sequence_readLocalData,
     &Sequence_writeLocalData
 );

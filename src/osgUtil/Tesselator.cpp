@@ -111,29 +111,29 @@ class InsertNewVertices : public osg::ArrayVisitor
                             _f1(f1),_f2(f2),_f3(f3),_f4(f4),
                             _i1(i1),_i2(i2),_i3(i3),_i4(i4){}
 
-        template <class A,class Type>
-        void apply_imp(A& array)
+        template <class ARRAY,class TYPE>
+        void apply_imp(ARRAY& array,TYPE initialValue)
         {
-            Type val;
-            if (_f1) val += static_cast<Type>(array[_i1] * _f1);
-            if (_f2) val += static_cast<Type>(array[_i2] * _f2);
-            if (_f3) val += static_cast<Type>(array[_i3] * _f3);
-            if (_f4) val += static_cast<Type>(array[_i4] * _f4);
+            TYPE val = initialValue;
+            if (_f1) val += static_cast<TYPE>(array[_i1] * _f1);
+            if (_f2) val += static_cast<TYPE>(array[_i2] * _f2);
+            if (_f3) val += static_cast<TYPE>(array[_i3] * _f3);
+            if (_f4) val += static_cast<TYPE>(array[_i4] * _f4);
             
             array.push_back(val);
         }
 
-        virtual void apply(osg::ByteArray& ba) { apply_imp<ByteArray,ByteArray::value_type>(ba); }
-        virtual void apply(osg::ShortArray& ba) { apply_imp<ShortArray,ShortArray::value_type>(ba); }
-        virtual void apply(osg::IntArray& ba) { apply_imp<IntArray,IntArray::value_type>(ba); }
-        virtual void apply(osg::UByteArray& ba) { apply_imp<UByteArray,UByteArray::value_type>(ba); }
-        virtual void apply(osg::UShortArray& ba) { apply_imp<UShortArray,UShortArray::value_type>(ba); }
-        virtual void apply(osg::UIntArray& ba) { apply_imp<UIntArray,UIntArray::value_type>(ba); }
-        virtual void apply(osg::UByte4Array& ba) { apply_imp<UByte4Array,UByte4Array::value_type>(ba); }
-        virtual void apply(osg::FloatArray& ba) { apply_imp<FloatArray,FloatArray::value_type>(ba); }
-        virtual void apply(osg::Vec2Array& ba) { apply_imp<Vec2Array,Vec2Array::value_type>(ba); }
-        virtual void apply(osg::Vec3Array& ba) { apply_imp<Vec3Array,Vec3Array::value_type>(ba); }
-        virtual void apply(osg::Vec4Array& ba) { apply_imp<Vec4Array,Vec4Array::value_type>(ba); }
+        virtual void apply(osg::ByteArray& ba) { apply_imp(ba,GLbyte(0)); }
+        virtual void apply(osg::ShortArray& ba) { apply_imp(ba,GLshort(0)); }
+        virtual void apply(osg::IntArray& ba) { apply_imp(ba,GLint(0)); }
+        virtual void apply(osg::UByteArray& ba) { apply_imp(ba,GLubyte(0)); }
+        virtual void apply(osg::UShortArray& ba) { apply_imp(ba,GLushort(0)); }
+        virtual void apply(osg::UIntArray& ba) { apply_imp(ba,GLuint(0)); }
+        virtual void apply(osg::UByte4Array& ba) { apply_imp(ba,UByte4()); }
+        virtual void apply(osg::FloatArray& ba) { apply_imp(ba,float(0)); }
+        virtual void apply(osg::Vec2Array& ba) { apply_imp(ba,Vec2()); }
+        virtual void apply(osg::Vec3Array& ba) { apply_imp(ba,Vec3()); }
+        virtual void apply(osg::Vec4Array& ba) { apply_imp(ba,Vec4()); }
 
 };
             

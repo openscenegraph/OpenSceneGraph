@@ -285,6 +285,7 @@ protected:
     Font* getActiveFont();
     const Font* getActiveFont() const;
 
+    String::iterator computeLastCharacterOnLine(osg::Vec2 cursor, String::iterator first,String::iterator last);
     
     // members which have public access.
     osg::ref_ptr<Font>                      _font;

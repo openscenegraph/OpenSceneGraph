@@ -48,11 +48,11 @@ void SlideShowConstructor::setPresentationAspectRatio(const std::string& str)
 
 void SlideShowConstructor::createPresentation()
 {
-    _titleHeight = _slideHeight*0.08f;
+    _titleHeight = _slideHeight*0.06f;
     _titleWidth = _slideWidth*0.8f;
     _titleOrigin = _slideOrigin + osg::Vec3(_slideWidth*0.5f,0.0f,_slideHeight*0.98f-_titleHeight);
 
-    _textHeight = _slideHeight*0.05f;
+    _textHeight = _slideHeight*0.04f;
     _textWidth = _slideWidth*0.8f;
     
     _textOrigin = _slideOrigin + osg::Vec3(_slideWidth*0.1f,0.0f,_titleOrigin.z()-2*_textHeight);

@@ -19,7 +19,8 @@ class SG_EXPORT Polytope
     public:
 
         typedef unsigned int ClippingMask;
-        typedef std::vector<osg::Plane> PlaneList;
+        typedef std::vector<Plane> PlaneList;
+        typedef fast_back_stack<ClippingMask> MaskStack;
 
         inline Polytope() {setupMask();}
 
@@ -94,6 +95,9 @@ class SG_EXPORT Polytope
 
         inline ClippingMask getResultMask() const { return _resultMask; }
         
+        MaskStack& getMaskStack() { return _maskStack; }
+        
+        const MaskStack& getMaskStack() const { return _maskStack; }
         
         
         inline void pushCurrentMask()
@@ -305,7 +309,7 @@ class SG_EXPORT Polytope
     protected:
 
 
-        fast_back_stack<ClippingMask>       _maskStack;
+        MaskStack                           _maskStack;
         ClippingMask                        _resultMask;
         PlaneList                           _planeList;
 

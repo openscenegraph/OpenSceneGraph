@@ -138,6 +138,14 @@ void SceneView::app()
 {
     if (!_initCalled) init();
 
+
+
+    //std::cout<<std::endl;
+    //std::cout<<std::endl;
+    //std::cout<<"*************************** New frame ************"<<std::endl;
+
+
+
     if (_sceneData.valid() && _appVisitor.valid())
     { 
         _appVisitor->reset();
@@ -333,7 +341,7 @@ void SceneView::cullStage(osg::Matrix* projection,osg::Matrix* modelview,osgUtil
         cov.popProjectionMatrix();
         cov.popViewport();
         
-        // std::cout << "finished searching for occluder"<<std::endl;
+        //std::cout << "finished searching for occluder"<<std::endl;
         
         cullVisitor->setOccluderList(cov.getCollectedOccluderList());
     }

@@ -396,30 +396,44 @@ bool ShadowVolumeOccluder::contains(const std::vector<Vec3>& vertices)
 
 bool ShadowVolumeOccluder::contains(const BoundingSphere& bound)
 {
+    //std::cout << "Sphere testing occluder "<<this<<" mask="<<_occluderVolume.getCurrentMask();
     if (_occluderVolume.containsAllOf(bound))
     {
         for(HoleList::iterator itr=_holeList.begin();
             itr!=_holeList.end();
             ++itr)
         {
-            if (itr->contains(bound)) return false;
+            if (itr->contains(bound))
+            {
+                //std::cout << " - not in occluder"<<std::endl;
+                return false;
+            }
         }
+        //std::cout << " - in occluder ******"<<std::endl;
         return true;
     }
+    //std::cout << " - not in occluder"<<std::endl;
     return false;
 }
 
 bool ShadowVolumeOccluder::contains(const BoundingBox& bound)
 {
+    //std::cout << "Box testing occluder "<<this<<" mask="<<_occluderVolume.getCurrentMask();
     if (_occluderVolume.containsAllOf(bound))
     {
         for(HoleList::iterator itr=_holeList.begin();
             itr!=_holeList.end();
             ++itr)
         {
-            if (itr->contains(bound)) return false;
+            if (itr->contains(bound))
+            {
+                //std::cout << " + not in occluder"<<std::endl;
+                return false;
+            }
         }
+        //std::cout << "+ in occluder ********"<<std::endl;
         return true;
     }
+    //std::cout << "+ not in occluder"<<std::endl;
     return false;
 }

@@ -17,7 +17,7 @@ CollectOccludersVisitor::CollectOccludersVisitor()
                    FAR_PLANE_CULLING|
                    SMALL_FEATURE_CULLING);
     
-    _minimumShadowOccluderVolume = 0.01f;
+    _minimumShadowOccluderVolume = 0.005f;
     _createDrawables = false;
     
 }
@@ -107,10 +107,14 @@ void CollectOccludersVisitor::apply(osg::OccluderNode& node)
 {
     // need to check if occlusion node is in the occluder
     // list, if so disable the appropriate ShadowOccluderVolume
-    disableOccluder(_nodePath);
+    disableAndPushOccludersCurrentMask(_nodePath);
     
 
-    if (isCulled(node)) return;
+    if (isCulled(node))
+    {
+        popOccludersCurrentMask(_nodePath);
+        return;
+    }
 
 //    std::cout<<"CollectOccludersVisitor:: We have found an Occlusion node in frustum"<<&node<<std::endl;
 
@@ -132,12 +136,12 @@ void CollectOccludersVisitor::apply(osg::OccluderNode& node)
             if (svo.getVolume()>_minimumShadowOccluderVolume)
             {
                 // need to test occluder against view frustum.
-                std::cout << "    adding in Occluder"<<std::endl;
+                //std::cout << "    adding in Occluder"<<std::endl;
                 _occluderList.push_back(svo);
             }
             else
             {
-                std::cout << "    rejecting Occluder as its volume is too small "<<svo.getVolume()<<std::endl;
+                //std::cout << "    rejecting Occluder as its volume is too small "<<svo.getVolume()<<std::endl;
             }
         }
     }
@@ -146,6 +150,9 @@ void CollectOccludersVisitor::apply(osg::OccluderNode& node)
 
     // pop the culling mode.
     popCurrentMask();
+    
+    // pop the current mask for the disabled occluder
+    popOccludersCurrentMask(_nodePath);
 }
 
 

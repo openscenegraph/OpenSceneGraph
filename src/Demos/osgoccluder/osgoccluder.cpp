@@ -52,28 +52,10 @@ void write_usage(std::ostream& out,const std::string& name)
 }
 
 
-
-
-osg::Node* createOccludersAroundModel(osg::Node* model)
+osg::Node* createOccluder(const osg::Vec3& v1,const osg::Vec3& v2,const osg::Vec3& v3,const osg::Vec3& v4)
 {
-    osg::Group* scene = osgNew osg::Group;
-    scene->setName("rootgroup");
-
-
-    // add the loaded model into a the scene group.
-    scene->addChild(model);
-    model->setName("model");
-
-
-    // create and occluder which will site along side the loadmodel model.
+   // create and occluder which will site along side the loadmodel model.
     osg::OccluderNode* occluderNode = osgNew osg::OccluderNode;
-
-    // get the bounding volume of the model.
-    const osg::BoundingSphere bs = model->getBound();
-    
-    // create a bounding box around the sphere.
-    osg::BoundingBox bb;
-    bb.expandBy(bs);
 
     // create the convex planer occluder 
     osg::ConvexPlanerOccluder* cpo = osgNew osg::ConvexPlanerOccluder;
@@ -84,25 +66,11 @@ osg::Node* createOccludersAroundModel(osg::Node* model)
     
     // set the occluder up for the front face of the bounding box.
     osg::ConvexPlanerPolygon& occluder = cpo->getOccluder();
-    occluder.add(osg::Vec3(bb.xMin(),bb.yMin(),bb.zMin()));
-    occluder.add(osg::Vec3(bb.xMax(),bb.yMin(),bb.zMin()));
-    occluder.add(osg::Vec3(bb.xMax(),bb.yMin(),bb.zMax()));
-    occluder.add(osg::Vec3(bb.xMin(),bb.yMin(),bb.zMax()));
-    
-// 
-//     // create a hole in the occluder.    
-//     osg::Vec3 center((bb.xMin()+bb.xMax())*0.5f,bb.yMin(),(bb.zMin()+bb.zMax())*0.5f);
-//     float dx = (bb.xMax()-bb.xMin())*0.25f;
-//     float dz = (bb.zMax()-bb.zMin())*0.25f;
-//     
-// 
-//     cpo->getHoleList().push_back();
-//     osg::ConvexPlanerPolygon& hole = cpo->getHoleList().back();
-//     hole.add(center+osg::Vec3(-dx,0.0,-dz));
-//     hole.add(center+osg::Vec3(dx,0.0,-dz));
-//     hole.add(center+osg::Vec3(dx,0.0,dz));
-//     hole.add(center+osg::Vec3(-dx,0.0,dz));
-    
+    occluder.add(v1);
+    occluder.add(v2);
+    occluder.add(v3);
+    occluder.add(v4);
+  
 
    // create a drawable for occluder.
     osg::GeoSet* geoset = osgNew osg::GeoSet;
@@ -134,8 +102,50 @@ osg::Node* createOccludersAroundModel(osg::Node* model)
     // geode will never be occluder by this occluder.
     occluderNode->addChild(geode);    
     
-    // add the occluder node into the scene.
-    scene->addChild(occluderNode);
+    return occluderNode;
+ 
+ }
+
+osg::Node* createOccludersAroundModel(osg::Node* model)
+{
+    osg::Group* scene = osgNew osg::Group;
+    scene->setName("rootgroup");
+
+
+    // add the loaded model into a the scene group.
+    scene->addChild(model);
+    model->setName("model");
+
+    // get the bounding volume of the model.
+    const osg::BoundingSphere bs = model->getBound();
+    
+    // create a bounding box around the sphere.
+    osg::BoundingBox bb;
+    bb.expandBy(bs);
+
+   // front
+   scene->addChild(createOccluder(bb.corner(0),
+                                  bb.corner(1),
+                                  bb.corner(5),
+                                  bb.corner(4)));
+
+   // right side
+   scene->addChild(createOccluder(bb.corner(1),
+                                  bb.corner(3),
+                                  bb.corner(7),
+                                  bb.corner(5)));
+
+   // left side
+   scene->addChild(createOccluder(bb.corner(2),
+                                  bb.corner(0),
+                                  bb.corner(4),
+                                  bb.corner(6)));
+
+   // back side
+   scene->addChild(createOccluder(bb.corner(3),
+                                  bb.corner(2),
+                                  bb.corner(6),
+                                  bb.corner(7)));
 
     return scene;
 } 

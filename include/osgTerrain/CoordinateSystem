@@ -1,0 +1,96 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGTERRAIN_COORDINATESYSTEM
+#define OSGTERRAIN_COORDINATESYSTEM 1
+
+#include <osg/Object>
+#include <osg/Vec2>
+#include <osg/Vec3>
+
+#include <osgTerrain/Export>
+
+namespace osgTerrain
+{
+
+/** CoordinateSystem encapsulate the coordinate system that associated with objects in a scene.*/
+class CoordinateSystem : public osg::Object
+{
+    public:
+
+        CoordinateSystem();
+
+        CoordinateSystem(const std::string& projectionRef);
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        CoordinateSystem(const CoordinateSystem&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+        
+        META_Object(osgTerrain,CoordinateSystem);
+        
+        inline bool operator == (const CoordinateSystem& cs) const
+        {
+            if (this == &cs) return true;
+            if (_projectionRef == cs._projectionRef) return true;
+            return false;
+        }
+        
+        inline bool operator != (const CoordinateSystem& cs) const
+        {
+            return !(*this==cs);
+        }
+
+        /** Set the CoordinateSystem projection reference string, should be stored in OpenGIS Well Know Text form.*/
+        void setProjectionRef(const std::string& projectionRef) { _projectionRef = projectionRef; }
+        
+        /** Get the CoordinateSystem projection reference string.*/
+        const std::string& getProjectionRef() const { return _projectionRef; }
+        
+        
+        /** CoordinateTransformation is a helper class for transforming between two different CoodinateSystems.
+          * To use, simply constructor a CoordinateSystem::CoordinateTransformation convertor(sourceCS,destinateCS)
+          * and then convert indiviual points via v_destination = convert(v_source), or the
+          * CoordinateTransformation.convert(ptr,num) method when handling arrays of Vec2/Vec3's.*/
+        class CoordinateTransformation : public osg::Referenced
+        {
+            public:
+            
+                static CoordinateTransformation* createCoordinateTransformation(const CoordinateSystem& source, const CoordinateSystem& destination);
+                
+                static void setCoordinateTransformationPrototpe(CoordinateTransformation* ct);
+                
+                virtual osg::Vec2 operator () (const osg::Vec2& source) const = 0;
+                virtual osg::Vec3 operator () (const osg::Vec3& source) const = 0;
+                
+                virtual bool transform(unsigned int numPoints, osg::Vec2* vec2ptr) const = 0;
+                virtual bool transform(unsigned int numPoints, osg::Vec3* vec3ptr) const = 0;
+                
+            protected:
+            
+                CoordinateTransformation() {}
+                virtual ~CoordinateTransformation() {}
+                
+                virtual CoordinateTransformation* cloneCoordinateTransformation(const CoordinateSystem& source, const CoordinateSystem& destination) const = 0;
+                
+        };
+        
+    protected:
+
+        virtual ~CoordinateSystem() {}
+        
+        
+        std::string _projectionRef;
+
+};
+
+}
+#endif

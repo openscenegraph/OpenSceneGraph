@@ -4,38 +4,50 @@ OSG News (most significant items from ChangeLog)
 
 11th November 2002 - OpenSceneGraph-0.9.2.tar.gz
 
-    >>> New shape primitive support, and new AC3D and GEO loaders, 
+    >>> New AC3D and GEO loaders, new Shape primitives, improved OpenFlight support. .
 
-    Geometry has been extended to all per primtive bindings and
+    From Geoff Michel, AC3D .wc and Carbon Graphics GEO .geo loaders.
+
+    Support for multi-texturing added to OpenFlight loader.
+    
+    LOD has been revamped to allow independent min and max ranges for
+    each LOD child, bringing it inline with the OpenFlight style LOD
+    representation.
+
+    Switch has been revamped to allow independent switching on or off of
+    each Switch child, bringing it inline with the OpenFlight style Switch
+    representation.
+
+    New osg::Shape geometry primitives added which allow the specification
+    of geometry in a form that can accelerate collision detection, and as
+    a way of specifying the geometry to tessellate.  Shapes include 
+    Sphere, Oriented Box, Cone, Cylinder, Grid, TriangleMesh, ConvexHull
+    and CompositeShape which allows the storage of a hierarchy of shapes. 
+    
+    Geometry has been extended to all per primitive bindings and
     per primitive set bindings of attributes, and indexing of attributes
     with the same or different index lists for each attribute list.
 
     From Macro Jez, new cubemap helper classes.
-
-    New osg::Shape geometry primitives added which allow the specification
-    of geometry in a form that can accelerate collision detection, and as
-    a way of specifiying the geometry to tesselate.  Shapes include 
-    Shere, Orintatble Box, Cone, Cylinder, Grid, TriangleMesh, ConvexHull
-    and CompositeShape which allows the storage of a heirachy of shapes. 
-    
-    From Geoff Michel, AC3D .wc and Carbon Graphics GEO .geo loaders.
 
     Support added for handling different extensions on different graphics
     contexts.
 
     Draw and Sort callbacks added to osg::RenderStage.
 
-    Support for multitexturing added to OpenFlight loader.
-    
-    LOD has been revamped to allow independat min and max ranges for
-    each LOD child, bringing it inline with the OpenFlight style LOD
-    representation.
-
-    Switch has been revamped to allow independat switching on or off of
-    each Switch child, bringing it inline with the OpenFlight style Switch
-    representation.
-
     Added PolygonStipple class.
+    
+    Further refinement of class names and method calls:
+    Renamed classes : 
+    
+        Primitive    -> PrimitiveSet
+        
+    Renamed methods :
+    
+        Geometry::addPrimitive(..) -> addPrimitiveSet(..)
+        Drawable::drawImmediateMode(..) -> drawImplementation(..) const
+        Drawable::DrawCallback::drawImmediateMode(..) -> drawImplementation(..) const
+    
 
 30th August 2002 - OpenSceneGraph-0.9.1.tar.gz
 

@@ -326,6 +326,9 @@ class SG_EXPORT State : public Referenced
             _colorArray._dirty = true;
         }
 
+
+        inline bool isSecondaryColorSupported() const { return _isSecondColorSupportResolved?_isSecondColorSupported:computeSecondaryColorSupported(); }
+
         /** wrapper around glEnableClientState(GL_SECONDARY_COLOR_ARRAY);glSecondayColorPointer(..);
           * note, only updates values that change.*/
         void setSecondaryColorPointer( GLint size, GLenum type, GLsizei stride, const GLvoid *ptr );
@@ -338,7 +341,7 @@ class SG_EXPORT State : public Referenced
             {
                 _secondaryColorArray._enabled = false;
                 _secondaryColorArray._dirty = false;
-                glDisableClientState(GL_SECONDARY_COLOR_ARRAY);
+                if (isSecondaryColorSupported()) glDisableClientState(GL_SECONDARY_COLOR_ARRAY);
             }
         }
 
@@ -383,6 +386,8 @@ class SG_EXPORT State : public Referenced
         }
 
 
+        inline bool isFogCoordSupported() const { return _isFogCoordSupportResolved?_isFogCoordSupported:computeFogCoordSupported(); }
+
         /** wrapper around glEnableClientState(GL_FOG_COORDINATE_ARRAY);glFogCoordPointer(..);
           * note, only updates values that change.*/
         void setFogCoordPointer( GLenum type, GLsizei stride, const GLvoid *ptr );
@@ -395,7 +400,7 @@ class SG_EXPORT State : public Referenced
             {
                 _fogArray._enabled = false;
                 _fogArray._dirty = false;
-                glDisableClientState(GL_FOG_COORDINATE_ARRAY);
+                if (isFogCoordSupported()) glDisableClientState(GL_FOG_COORDINATE_ARRAY);
             }
         }
 
@@ -692,6 +697,14 @@ class SG_EXPORT State : public Referenced
         bool getLastAppliedMode(const ModeMap& modeMap,StateAttribute::GLMode mode) const;
         const StateAttribute* getLastAppliedAttribute(const AttributeMap& attributeMap,StateAttribute::Type type) const;
 
+
+        mutable bool _isSecondColorSupportResolved;
+        mutable bool _isSecondColorSupported;
+        bool computeSecondaryColorSupported() const;
+
+        mutable bool _isFogCoordSupportResolved;
+        mutable bool _isFogCoordSupported;
+        bool computeFogCoordSupported() const;
 };
 
 inline void State::pushModeList(ModeMap& modeMap,const StateSet::ModeList& modeList)

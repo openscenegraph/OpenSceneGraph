@@ -16,6 +16,12 @@ State::State()
 
     _currentActiveTextureUnit=0;
     _currentClientActiveTextureUnit=0;
+
+    _isSecondColorSupportResolved = false;
+    _isSecondColorSupported = false;
+
+    _isFogCoordSupportResolved = false;
+    _isFogCoordSupported = false;
 }
 
 State::~State()
@@ -511,4 +517,18 @@ void State::setSecondaryColorPointer( GLint size, GLenum type,
         }
         _secondaryColorArray._dirty = false;
     }
+}
+
+bool State::computeSecondaryColorSupported() const
+{
+    _isSecondColorSupportResolved = true;
+    _isSecondColorSupported = osg::isGLExtensionSupported("GL_EXT_secondary_color");;
+    return _isSecondColorSupported;
+}
+
+bool State::computeFogCoordSupported() const
+{
+    _isFogCoordSupportResolved = true;
+    _isFogCoordSupported = osg::isGLExtensionSupported("GL_EXT_fog_coord");
+    return _isFogCoordSupported;
 }

@@ -268,10 +268,16 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
 
     }
 
+    // #define USE_DRAWARRAYLENGTHS
+
     if (numPolygonElements>0)
     {
         unsigned int startPos = vertices->size();
-        osg::DrawArrayLengths* drawArrayLengths = new osg::DrawArrayLengths(GL_POLYGON,startPos);
+        
+        #ifdef USE_DRAWARRAYLENGTHS
+            osg::DrawArrayLengths* drawArrayLengths = new osg::DrawArrayLengths(GL_POLYGON,startPos);
+            geometry->addPrimitiveSet(drawArrayLengths);
+        #endif
 
         for(itr=elementList.begin();
             itr!=elementList.end();
@@ -280,7 +286,24 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
             obj::Element& element = *(*itr);
             if (element.dataType==obj::Element::POLYGON)
             {
-                drawArrayLengths->push_back(element.vertexIndices.size());
+
+                #ifdef USE_DRAWARRAYLENGTHS
+                    drawArrayLengths->push_back(element.vertexIndices.size());
+                #else
+                    if (element.vertexIndices.size()>4)
+                    {
+                        osg::DrawArrays* drawArrays = new osg::DrawArrays(GL_POLYGON,startPos,element.vertexIndices.size());
+                        startPos += element.vertexIndices.size();
+                        geometry->addPrimitiveSet(drawArrays);
+                    }
+                    else
+                    {
+                        osg::DrawArrays* drawArrays = new osg::DrawArrays(GL_TRIANGLE_FAN,startPos,element.vertexIndices.size());
+                        startPos += element.vertexIndices.size();
+                        geometry->addPrimitiveSet(drawArrays);
+                    }
+                #endif
+
             
                 if (model.needReverse(element))
                 {
@@ -341,7 +364,6 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
             }
         }
 
-        geometry->addPrimitiveSet(drawArrayLengths);
 
     }
     
@@ -375,13 +397,16 @@ osg::Node* ReaderWriterOBJ::convertModelToSceneGraph(obj::Model& model)
 
             osg::StateSet* stateset = materialToSetSetMap[es.materialName].get();
             geometry->setStateSet(stateset);
+        
+            // tesseleate any large polygons
+            osgUtil::Tesselator tesselator;
+            tesselator.retesselatePolygons(*geometry);
 
-//            osgUtil::Tesselator tesselator;
-//            tesselator.retesselatePolygons(*geometry);
-
+            // tri strip polygons to improve graphics peformance
             osgUtil::TriStripVisitor tsv;
             tsv.stripify(*geometry);
 
+            // if no normals present add them.
             if (!geometry->getNormalArray() || geometry->getNormalArray()->getNumElements()==0)
             {
                 osgUtil::SmoothingVisitor tsv;

@@ -1156,7 +1156,10 @@ bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
             {
                 geom->computeCorrectBindingsAndArraySizes();
 
-                geometryDuplicateMap[geom].push_back(geom);
+                if (!geometryContainsSharedArrays(*geom))
+                {
+                    geometryDuplicateMap[geom].push_back(geom);
+                }
             }
         }
 
@@ -1295,8 +1298,36 @@ bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
     return false;
 }
 
+bool Optimizer::MergeGeometryVisitor::geometryContainsSharedArrays(osg::Geometry& geom)
+{
+    if (geom.getVertexArray() && geom.getVertexArray()->referenceCount()>1) return true;
+    if (geom.getNormalArray() && geom.getNormalArray()->referenceCount()>1) return true;
+    if (geom.getColorArray() && geom.getColorArray()->referenceCount()>1) return true;
+    if (geom.getSecondaryColorArray() && geom.getSecondaryColorArray()->referenceCount()>1) return true;
+    if (geom.getFogCoordArray() && geom.getFogCoordArray()->referenceCount()>1) return true;
+    
+
+    for(unsigned int unit=0;unit<geom.getNumTexCoordArrays();++unit)
+    {
+        osg::Array* tex = geom.getTexCoordArray(unit);
+        if (tex && tex->referenceCount()>1) return true;
+    }
+    
+    // shift the indices of the incomming primitives to account for the pre exisiting geometry.
+    for(osg::Geometry::PrimitiveSetList::iterator primItr=geom.getPrimitiveSetList().begin();
+        primItr!=geom.getPrimitiveSetList().end();
+        ++primItr)
+    {
+        if ((*primItr)->referenceCount()>1) return true;
+    }
+    
+    
+    return false;
+}
+
 bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geometry& rhs)
 {
+ 
     unsigned int base = 0;
     if (lhs.getVertexArray() && rhs.getVertexArray())
     {

@@ -188,6 +188,8 @@ class OSGUTIL_EXPORT Optimizer
 
                 static bool mergeGeode(osg::Geode& geode);
 
+                static bool geometryContainsSharedArrays(osg::Geometry& geom);
+
                 static bool mergeGeometry(osg::Geometry& lhs,osg::Geometry& rhs);
 
                 static bool mergePrimitive(osg::DrawArrays& lhs,osg::DrawArrays& rhs);

@@ -310,7 +310,8 @@ void SceneView::cullStage(osg::Matrix* projection,osg::Matrix* modelview,osgUtil
     // collect any occluder in the view frustum.
     if (_sceneData->containsOccluderNodes())
     {
-        std::cout << "Scene graph contains occluder nodes, searching for them"<<std::endl;
+        //std::cout << "Scene graph contains occluder nodes, searching for them"<<std::endl;
+        
         osg::CollectOccludersVisitor cov;
         
         cov.setFrameStamp(_frameStamp.get());
@@ -331,8 +332,10 @@ void SceneView::cullStage(osg::Matrix* projection,osg::Matrix* modelview,osgUtil
         cov.popModelViewMatrix();
         cov.popProjectionMatrix();
         cov.popViewport();
-
-        std::cout << "finished searching for occluder"<<std::endl;
+        
+        // std::cout << "finished searching for occluder"<<std::endl;
+        
+        cullVisitor->setOccluderList(cov.getCollectedOccluderList());
     }
     
 

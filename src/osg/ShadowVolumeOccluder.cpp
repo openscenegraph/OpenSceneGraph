@@ -1,11 +1,161 @@
 #include <osg/ShadowVolumeOccluder>
+#include <osg/CullStack>
 
 using namespace osg;
 
 
-void ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const ConvexPlanerOccluder& occluder,const Matrix& MV,const Matrix& P)
+
+typedef std::pair<bool,Vec3>    Point; // bool=true signifies a newly created point, false indicates original point.
+typedef std::vector<Point>      PointList;
+typedef std::vector<Vec3>       VertexList;
+
+
+// convert a vector for Vec3 into a vector of Point's.
+void convert(const VertexList& in,PointList& out)
 {
-    std::cout<<"    Computing Occluder"<<std::endl;
+    out.reserve(in.size());
+    for(VertexList::const_iterator itr=in.begin();
+        itr!=in.end();
+        ++itr)
+    {
+        out.push_back(Point(false,*itr));
+    }
+}
+
+// clip the convex hull 'in' to plane to generate a clipped convex hull 'out'
+// return true if points remain after clipping.
+unsigned int clip(const Plane& plane,const PointList& in, PointList& out)
+{
+    std::vector<float> distance;
+    distance.reserve(in.size());
+    for(PointList::const_iterator itr=in.begin();
+        itr!=in.end();
+        ++itr)
+    {
+        distance.push_back(plane.distance(itr->second));
+    }
+
+    out.clear();
+
+    for(unsigned int i=0;i<in.size();++i)
+    {
+        unsigned int i_1 = (i+1)%in.size(); // do the mod to wrap the index round back to the start.
+        
+        if (distance[i]>=0.0f)
+        {
+            out.push_back(in[i]);
+            
+            if (distance[i_1]<0.0f)
+            {
+                float r = distance[i_1]/(distance[i_1]-distance[i]);
+                out.push_back(Point(true,in[i].second*r+in[i_1].second*(1.0f-r)));
+            }
+        
+        }
+        else if (distance[i_1]>0.0f)
+        {
+            float r = distance[i_1]/(distance[i_1]-distance[i]);
+            out.push_back(Point(true,in[i].second*r+in[i_1].second*(1.0f-r)));
+        }
+    }
+    
+    return out.size();
+}
+
+// clip the convex hull 'in' to planeList to generate a clipped convex hull 'out'
+// return true if points remain after clipping.
+unsigned int clip(const Polytope::PlaneList& planeList,const VertexList& vin,PointList& out)
+{
+    PointList in;
+    convert(vin,in);
+    
+    for(Polytope::PlaneList::const_iterator itr=planeList.begin();
+        itr!=planeList.end();
+        ++itr)
+    {
+        if (!clip(*itr,in,out)) return false;
+        in.swap(out);
+    }
+
+    in.swap(out);
+
+    return out.size();
+}
+
+void transform(PointList& points,const osg::Matrix& matrix)
+{
+    for(PointList::iterator itr=points.begin();
+        itr!=points.end();
+        ++itr)
+    {
+        itr->second = itr->second*matrix;
+    }
+}
+
+void transform(const PointList& in,PointList& out,const osg::Matrix& matrix)
+{
+    for(PointList::const_iterator itr=in.begin();
+        itr!=in.end();
+        ++itr)
+    {
+        out.push_back(Point(itr->first,itr->second * matrix));
+    }
+}
+
+void pushToFarPlane(PointList& points)
+{
+    for(PointList::iterator itr=points.begin();
+        itr!=points.end();
+        ++itr)
+    {
+        itr->second.z()=-1.0f;
+    }
+}
+
+void computePlanes(const PointList& front, const PointList& back, Polytope::PlaneList& planeList)
+{
+    for(unsigned int i=0;i<front.size();++i)
+    {
+        unsigned int i_1 = (i+1)%front.size(); // do the mod to wrap the index round back to the start.
+        if (!front[i].first || !front[i_1].first)
+        {
+            planeList.push_back(Plane(front[i].second,front[i_1].second,back[i].second));
+        }
+    }
+}
+
+Plane computeFrontPlane(const PointList& front)
+{
+    return Plane(front[2].second,front[1].second,front[0].second);
+}
+
+bool ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const ConvexPlanerOccluder& occluder,CullStack& cullStack)
+{
+
+
+//    std::cout<<"    Computing Occluder"<<std::endl;
+
+    CullingSet& cullingset = cullStack.getCurrentCullingSet();
+
+    const Matrix& MV = cullStack.getModelViewMatrix();
+    const Matrix& P = cullStack.getProjectionMatrix();
+
+    // take a reference to the NodePath to this occluder.
+    _nodePath = nodePath;
+    
+
+    // take a reference to the projection matrix.
+    _projectionMatrix = &P;
+    
+    
+
+    // compute the inverse of the projection matrix.
+    Matrix invP;
+    invP.invert(P);
+    
+    // compute the transformation matrix which takes form local coords into clip space.
+    Matrix MVP(MV);
+    MVP *= P;
     
     // for the occluder polygon and each of the holes do
     //     first transform occluder polygon into clipspace by multiple it by c[i] = v[i]*(MV*P)
@@ -15,7 +165,52 @@ void ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const Convex
     //     compute volume (quality) betwen front polygon in projection space and back polygon in projection space.
     
     
+    const VertexList& vertices_in = occluder.getOccluder().getVertexList();
     
+    PointList points;
+    
+    if (clip(cullingset.getFrustum().getPlaneList(),vertices_in,points)>=3)
+    {
+        // compute the points on the far plane.
+        PointList farPoints;
+        farPoints.reserve(points.size());
+        transform(points,farPoints,MVP);
+        pushToFarPlane(farPoints);
+        transform(farPoints,invP);
+        
+        // move the occlude points into projection space.
+        transform(points,MV);
+
+        // create the sides of the occluder
+        computePlanes(points,farPoints,_occluderVolume.getPlaneList());
+
+        // create the front face of the occluder
+        Plane occludePlane = computeFrontPlane(points);
+        _occluderVolume.add(occludePlane);
+        
+        // if the front face is pointing away from the eye point flip the whole polytope.
+        if (occludePlane[3]>0.0f)
+        {
+//            std::cout << "    flipping polytope"<<std::endl;
+            _occluderVolume.flip();
+        }
+        
+        
+        for(Polytope::PlaneList::const_iterator itr=_occluderVolume.getPlaneList().begin();
+            itr!=_occluderVolume.getPlaneList().end();
+            ++itr)
+        {
+//            std::cout << "    compute plane "<<*itr<<std::endl;
+        }
+
+
+        return true;
+    }
+    else
+    {
+//        std::cout << "    occluder clipped out of frustum."<<points.size()<<std::endl;
+        return false;
+    }
 }
 
 bool ShadowVolumeOccluder::contains(const std::vector<Vec3>& vertices)

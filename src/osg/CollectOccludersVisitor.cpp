@@ -103,18 +103,26 @@ void CollectOccludersVisitor::apply(osg::OccluderNode& node)
 
     if (isCulled(node)) return;
 
-    std::cout<<"CollectOccludersVisitor:: We have found an Occlusion node in frustum"<<&node<<std::endl;
+//    std::cout<<"CollectOccludersVisitor:: We have found an Occlusion node in frustum"<<&node<<std::endl;
 
     // push the culling mode.
     pushCurrentMask();
 
 
-    if (node.getOccluder()&& !isCulled(node.getOccluder()->getOccluder().getVertexList()))
+    if (node.getOccluder())
     {
-    
-        // need to test occluder against view frustum.
-        std::cout << "    adding in Occluder"<<std::endl;
-        _occluderList.push_back(ShadowVolumeOccluder(_nodePath, *node.getOccluder(), getModelViewMatrix(),getProjectionMatrix()));
+        // computeOccluder will check if the occluder is the view frustum,
+        // if it ins't then the it will return false, when in it will
+        // clip the occluder's polygons in clip space, then create occluder
+        // planes, all with their normals facing inward towards the volume,
+        // and then transform them back into projection space.
+        ShadowVolumeOccluder svo;
+        if (svo.computeOccluder(_nodePath, *node.getOccluder(), *this))
+        {
+            // need to test occluder against view frustum.
+//            std::cout << "    adding in Occluder"<<std::endl;
+            _occluderList.push_back(svo);
+        }
     }
 
     traverse(node);

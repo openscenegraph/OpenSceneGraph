@@ -50,6 +50,13 @@ class SG_EXPORT Plane
             _fv.set(norm[0],norm[1],norm[2],-(v1*norm));
             calculateUpperLowerBBCorners();
         }
+        
+        /** flip/reverse the orientation of the plane.*/
+        inline void flip()
+        {
+            _fv = -_fv;
+            calculateUpperLowerBBCorners();
+        }
 
 
         inline void makeUnitLength()

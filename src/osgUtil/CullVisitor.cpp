@@ -546,7 +546,7 @@ void CullVisitor::apply(osg::OccluderNode& node)
     // list, if so disable the appropriate ShadowOccluderVolume
     disableOccluder(_nodePath);
     
-    std::cout<<"CullVisitor:: We are in an Occlusion node"<<&node<<std::endl;
+    // std::cout<<"CullVisitor:: We are in an Occlusion node"<<&node<<std::endl;
 
 
     if (isCulled(node)) return;

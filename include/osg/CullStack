@@ -44,6 +44,10 @@ class SG_EXPORT CullStack
         CullingMode getCullingMode() const { return _cullingMode; }
 
         void reset();
+        
+        void setOccluderList(const ShadowVolumeOccluderList& svol) { _occluderList = svol; }
+        ShadowVolumeOccluderList& getOccluderList() { return _occluderList; }
+        const ShadowVolumeOccluderList& getOccluderList() const { return _occluderList; }
 
         void pushViewport(osg::Viewport* viewport);
         void popViewport();
@@ -110,6 +114,17 @@ class SG_EXPORT CullStack
         }
         
         
+        typedef fast_back_stack<ref_ptr<CullingSet> > CullingStack;
+
+        CullingStack& getClipSpaceCullingStack() { return _clipspaceCullingStack; }
+        
+        CullingStack& getProjectionCullingStack() { return _projectionCullingStack; }
+        
+        CullingStack& getModelViewCullingStack() { return _modelviewCullingStack; }
+        
+        CullingSet& getCurrentCullingSet() { return *_modelviewCullingStack.back(); }
+
+
         inline osg::Viewport* getViewport();
         inline osg::Matrix& getModelViewMatrix();
         inline osg::Matrix& getProjectionMatrix();
@@ -139,6 +154,9 @@ class SG_EXPORT CullStack
         float                                                       _LODBias;
         float                                                       _smallFeatureCullingPixelSize;
 
+        // base set of shadow volume occluder to use in culling.
+        ShadowVolumeOccluderList                                    _occluderList;
+
         typedef fast_back_stack< ref_ptr<Matrix> >                  MatrixStack;
 
         MatrixStack                                                 _projectionStack;
@@ -152,7 +170,6 @@ class SG_EXPORT CullStack
         typedef fast_back_stack<Vec3>                               EyePointStack;
         EyePointStack                                               _eyePointStack;
 
-        typedef fast_back_stack<ref_ptr<CullingSet> >               CullingStack;
         CullingStack                                                _clipspaceCullingStack;
         CullingStack                                                _projectionCullingStack;
         CullingStack                                                _modelviewCullingStack;

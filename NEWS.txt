@@ -1,7 +1,7 @@
 OSG News (most significant items from ChangeLog)
 ================================================
 
-15th September 2003 - OpenSceneGraph-0.9.6
+16th September 2003 - OpenSceneGraph-0.9.6
 
     >>> osgFX Special Effects nodekit (for bumping mapping & cartoon effects etc), support for double Matrix traversals, 
     >>> improved build support, thread safety and robustness.

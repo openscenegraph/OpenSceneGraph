@@ -601,6 +601,7 @@ inline int IsNaNorInf( float f )
   return _isnan(f) || !_finite(f);
 #else
 #  error Teach me how to find non-numbers on this platform.
+return 0;
 #endif
 }
 

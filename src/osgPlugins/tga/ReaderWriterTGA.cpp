@@ -428,7 +428,7 @@ int headerlen)
 {
     char * ptr;
     if (headerlen < 18) return 0;
-    ptr = strrchr(filename, '.');
+    ptr = (char *)strrchr(filename, '.');
     if (!ptr) return 0;          /* TGA files must end with .tga|.TGA */
 
     if (strcmp(ptr, ".tga") && strcmp(ptr, ".TGA")) return 0;

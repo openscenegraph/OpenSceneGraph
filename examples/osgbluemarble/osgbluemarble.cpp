@@ -69,10 +69,14 @@ osg::Node* createTile(const std::string& filename, bool leftHemisphere, double x
     options->_destinationImageWindowMode = osgDB::ImageOptions::PIXEL_WINDOW;
     options->_destinationPixelWindow.set(0,0,256,256);
 
+    osgDB::ImageOptions::TexCoordRange* texCoordRange = 0;
+
     osgDB::Registry::instance()->setOptions(options.get());
     osg::Image* image = osgDB::readImageFile(filename.c_str());
     if (image)
     {
+        texCoordRange = dynamic_cast<osgDB::ImageOptions::TexCoordRange*>(image->getUserData());
+    
 	osg::Texture2D* texture = new osg::Texture2D;
 	texture->setImage(image);
         texture->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP);
@@ -82,16 +86,18 @@ osg::Node* createTile(const std::string& filename, bool leftHemisphere, double x
         texture->setMaxAnisotropy(8);
 	stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
         
-        texture->setInternalFormatMode(osg::Texture::USE_S3TC_DXT3_COMPRESSION);
-        
-        osg::ref_ptr<osg::State> state = new osg::State;
-        texture->apply(*state);
-        
-        image->readImageFromCurrentTexture();
-        
-        texture->setInternalFormatMode(osg::Texture::USE_IMAGE_DATA_FORMAT);
-        
-        std::cout<<"glGetError()=="<<glGetError()<<std::endl;
+        bool useCompressedTextures = true;
+        if (useCompressedTextures)
+        {
+            texture->setInternalFormatMode(osg::Texture::USE_S3TC_DXT3_COMPRESSION);
+
+            osg::ref_ptr<osg::State> state = new osg::State;
+            texture->apply(*state);
+
+            image->readImageFromCurrentTexture();
+
+            texture->setInternalFormatMode(osg::Texture::USE_IMAGE_DATA_FORMAT);
+        }
         
     }
     
@@ -114,8 +120,23 @@ osg::Node* createTile(const std::string& filename, bool leftHemisphere, double x
     color[0].set(255,255,255,255);
 
 
+
+    osg::Vec2 tex_orig(0.0f,0.0f);
+
     float rowTexDelta = 1.0f/(float)(numRows-1);
     float columnTexDelta = 1.0f/(float)(numColumns-1);
+
+    if (texCoordRange)
+    {
+        tex_orig.set(texCoordRange->_x,texCoordRange->_y);
+        rowTexDelta = texCoordRange->_h/(float)(numRows-1);
+        columnTexDelta = texCoordRange->_w/(float)(numColumns-1);
+        
+        std::cout<<"setting tex values to use texCoordRange"<<std::endl;
+        std::cout<<"    tex_orig="<<tex_orig<<std::endl;
+        std::cout<<"    rowTexDelta"<<rowTexDelta<<std::endl;
+        std::cout<<"    columnTexDelta"<<columnTexDelta<<std::endl;
+    }
 
     double orig_latitude = osg::PI*x;
     double delta_latitude = osg::PI*w/(double)(numColumns-1);
@@ -124,7 +145,7 @@ osg::Node* createTile(const std::string& filename, bool leftHemisphere, double x
     double orig_longitude = osg::PI*y;
     double delta_longitude = osg::PI*h/(double)(numRows-1);
     
-    osg::Vec2 tex(0.0f,0.0f);
+    osg::Vec2 tex(tex_orig);
     int vi=0;
     double longitude = orig_longitude;
     osg::Vec3 normal;
@@ -132,7 +153,7 @@ osg::Node* createTile(const std::string& filename, bool leftHemisphere, double x
     {
         double latitude = orig_latitude;
         
-        tex.x() = 0.0f;
+        tex.x() = tex_orig.x();
 	for(c=0;c<numColumns;++c)
 	{
             double sin_longitude = sin(longitude);
@@ -302,7 +323,9 @@ bool createWorld(const std::string& left_hemisphere, const std::string& right_he
     // create the world
     
 
-    std::string base = osgDB::getFilePath(baseName)+'/'+osgDB::getStrippedName(baseName);
+    std::string path = osgDB::getFilePath(baseName);
+    std::string base = path.empty()?osgDB::getStrippedName(baseName):
+                                    path +'/'+ osgDB::getStrippedName(baseName);
     std::string extension = '.'+osgDB::getLowerCaseFileExtension(baseName);
     
     std::cout << "baseName = "<<baseName<<std::endl;
@@ -337,8 +360,19 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the standard OpenSceneGraph example which loads and visualises 3d models.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
+    arguments.getApplicationUsage()->addCommandLineOption("-i <filename>","Specify the input file to process");
+    arguments.getApplicationUsage()->addCommandLineOption("-o <outputfile>","Specify the output master file to generate");
+    arguments.getApplicationUsage()->addCommandLineOption("-l <numOfLevels>","Specify the number of PagedLOD levels to generate");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
     
+    std::string inputFile;
+    while (arguments.read("-i",inputFile)) {}
+    
+    std::string basename("output.ive");
+    while (arguments.read("-o",basename)) {}
+
+    float numLevels;
+    while (arguments.read("-l",numLevels)) {}
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
@@ -365,7 +399,6 @@ int main( int argc, char **argv )
 
     std::string left_hemisphere("land_shallow_topo_west.tif");
     std::string right_hemisphere("land_shallow_topo_east.tif");
-    std::string basename("BlueMarble/bluemarble.ive");
 
     // create a graphics context to allow us to use OpenGL to compress textures.    
     GraphicsContext gfx;

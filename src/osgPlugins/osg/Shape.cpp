@@ -305,11 +305,22 @@ bool HeightField_writeLocalData(const Object& obj, Output& fw);
 //register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_HeightFieldFuncProxy
 (
-    0,
+    new osg::HeightField,
     "HeightField",
-    "Object HieghtField",
+    "Object HeightField",
     &HeightField_readLocalData,
     &HeightField_writeLocalData,
+    DotOsgWrapper::READ_AND_WRITE
+);
+
+//register the read and write functions with the osgDB::Registry.
+RegisterDotOsgWrapperProxy g_GridFuncProxy
+(
+    new osg::HeightField,
+    "Grid",
+    "Object HeightField",
+    0,
+    0,
     DotOsgWrapper::READ_AND_WRITE
 );
 
@@ -359,49 +370,12 @@ bool HeightField_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
-    return iteratorAdvanced;
-}
-
-bool HeightField_writeLocalData(const Object& obj, Output& fw)
-{
-    const HeightField& heightfield = static_cast<const HeightField&>(obj);
-
-    fw.indent()<<"Origin "<<heightfield.getOrigin()<<std::endl;
-    fw.indent()<<"XInterval "<<heightfield.getXInterval()<<std::endl;
-    fw.indent()<<"YInterval "<<heightfield.getYInterval()<<std::endl;
-    fw.indent()<<"Rotation "<<heightfield.getRotation()<<std::endl;
-
-    return true;
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// forward declare functions to use later.
-bool Grid_readLocalData(Object& obj, Input& fr);
-bool Grid_writeLocalData(const Object& obj, Output& fw);
-
-//register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_GridFuncProxy
-(
-    new osg::Grid,
-    "Grid",
-    "Object HeightField Grid",
-    &Grid_readLocalData,
-    &Grid_writeLocalData,
-    DotOsgWrapper::READ_AND_WRITE
-);
-
-bool Grid_readLocalData(Object& obj, Input& fr)
-{
-    bool iteratorAdvanced = false;
-
-    Grid& grid = static_cast<Grid&>(obj);
-
     if (fr.matchSequence("NumColumnsAndRows %i %i"))
     {
         int numcolumns,numrows;
         fr[1].getInt(numcolumns);
         fr[2].getInt(numrows);
-        grid.allocateGrid(numcolumns,numrows);
+        heightfield.allocateGrid(numcolumns,numrows);
         fr+=3;
         iteratorAdvanced = true;
     }
@@ -421,9 +395,9 @@ bool Grid_readLocalData(Object& obj, Input& fr)
         {
             if (fr.readSequence(height))
             {
-                grid.setHeight(column,row,height);
+                heightfield.setHeight(column,row,height);
                 ++column;
-                if (column>=grid.getNumColumns())
+                if (column>=heightfield.getNumColumns())
                 {
                     column = 0;
                     ++row;
@@ -440,25 +414,29 @@ bool Grid_readLocalData(Object& obj, Input& fr)
 
     }
 
-
     return iteratorAdvanced;
 }
 
-bool Grid_writeLocalData(const Object& obj, Output& fw)
+bool HeightField_writeLocalData(const Object& obj, Output& fw)
 {
-    const Grid& grid = static_cast<const Grid&>(obj);
+    const HeightField& heightfield = static_cast<const HeightField&>(obj);
 
-    fw.indent()<<"NumColumnsAndRows "<<grid.getNumColumns()<<" "<<grid.getNumRows()<<std::endl;
+    fw.indent()<<"Origin "<<heightfield.getOrigin()<<std::endl;
+    fw.indent()<<"XInterval "<<heightfield.getXInterval()<<std::endl;
+    fw.indent()<<"YInterval "<<heightfield.getYInterval()<<std::endl;
+    fw.indent()<<"Rotation "<<heightfield.getRotation()<<std::endl;
+
+    fw.indent()<<"NumColumnsAndRows "<<heightfield.getNumColumns()<<" "<<heightfield.getNumRows()<<std::endl;
 
     fw.indent()<<"Heights"<<std::endl;
     
     ParameterOutput po(fw);
     po.begin();
-    for(unsigned int row=0;row<grid.getNumRows();++row)
+    for(unsigned int row=0;row<heightfield.getNumRows();++row)
     {
-        for(unsigned int column=0;column<grid.getNumColumns();++column)
+        for(unsigned int column=0;column<heightfield.getNumColumns();++column)
         {
-            po.write(grid.getHeight(column,row));         
+            po.write(heightfield.getHeight(column,row));         
         }
         po.newLine();
     }

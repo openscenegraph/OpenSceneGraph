@@ -42,7 +42,7 @@ osg::Geode* createShapes()
     geode->addDrawable(new osg::ShapeDrawable(new osg::Cone(osg::Vec3(4.0f,0.0f,0.0f),radius,height),hints));
     geode->addDrawable(new osg::ShapeDrawable(new osg::Cylinder(osg::Vec3(6.0f,0.0f,0.0f),radius,height),hints));
 
-    osg::Grid* grid = new osg::Grid;
+    osg::HeightField* grid = new osg::HeightField;
     grid->allocateGrid(38,39);
     grid->setXInterval(0.28f);
     grid->setYInterval(0.28f);

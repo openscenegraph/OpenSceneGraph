@@ -1,306 +1,228 @@
-<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<!DOCTYPE doctype PUBLIC "-//w3c//dtd html 4.0 transitional//en">
 <html>
 <head>
-   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <meta name="GENERATOR" content="Mozilla/4.77 [en] (X11; U; Linux 2.4.3-20mdk i686) [Netscape]">
-   <title>Native stereo support</title>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+  <meta name="GENERATOR"
+ content="Mozilla/4.77 [en] (X11; U; Linux 2.4.3-20mdk i686) [Netscape]">
+  <title>Native stereo support</title>
 </head>
-<body text="#000000" bgcolor="#FFFFFF" link="#0000EE" vlink="#551A8B" alink="#FF0000">
-<img SRC="images/OpenSceneGraphBanner_Distribution.jpg">
+<body text="#000000" bgcolor="#ffffff" link="#0000ee" vlink="#551a8b"
+ alink="#ff0000">
+<img src="images/OpenSceneGraphBanner_Distribution.jpg">
 <table>
-<tr>
-<td><a href="index.html">Index</a></td>
-
-<td><a href="introduction.html">Introduction</a></td>
-
-<td><a href="contents.html">Contents</a></td>
-
-<td><a href="install.html">Install</a></td>
-
-<td><a href="dependencies.html">Dependencies</a></td>
-
-<td><a href="examples.html">examples</a></td>
-
-<td><a href="data.html">Data</a></td>
-
-<td><a href="osgviewer.html">Viewer</a></td>
-
-<td><a href="stereo.html">Stereo</a></td>
-
-<td><a href="plan.html">Plan</a></td>
-
-<td><a href="documentation.html">Reference Guides</a></td>
-</tr>
+  <tbody>
+    <tr>
+      <td><a href="index.html">Index</a></td>
+      <td><a href="introduction.html">Introduction</a></td>
+      <td><a href="contents.html">Contents</a></td>
+      <td><a href="install.html">Install</a></td>
+      <td><a href="dependencies.html">Dependencies</a></td>
+      <td><a href="examples.html">examples</a></td>
+      <td><a href="data.html">Data</a></td>
+      <td><a href="osgviewer.html">Viewer</a></td>
+      <td><a href="stereo.html">Stereo</a></td>
+      <td><a href="plan.html">Plan</a></td>
+      <td><a href="documentation.html">Reference Guides</a></td>
+    </tr>
+  </tbody>
 </table>
-
-<h2>
-<u>Native Support for Stereo</u></h2>
-The OSG has support for anaglyphic stereo (i.e. red/green or red/cyan glasses),
-quad buffered stereo (i.e. active stereo using shutter glasses, or passive
-stereo using polarized projectors &amp; glasses) and horizontal and vertical
-split window stereo implementations. Almost all OSG applications have the
-potential for stereo support simply by setting the relevant environmental
-variables, or via command line arguments. Little or no code changes will
-be required, the support is handled transparently inside osgUtil::SceneView's
-handling of rendering. It is a simple as:
-<br><b>&nbsp;&nbsp;&nbsp; osgviewer --stereo cow.osg</b>
-<p>If the user is planning to use head tracked stereo, or a cave then it
-is currently recommend to set it up via a VR toolkit such as VRjuggler,
-in this case refer to the VR toolkits handling of stereo, and keep all
-the OSG's stereo specific environment variables (below) set to OFF, or
-set the values to off within own your own applications.
-<br>
+<h2> <u>Native Support for Stereo</u></h2>
+The OSG has support for anaglyphic stereo (i.e. red/green or red/cyan
+glasses), quad buffered stereo (i.e. active stereo using shutter
+glasses, or passive stereo using polarized projectors &amp; glasses)
+and horizontal and vertical split window stereo implementations. Almost
+all OSG applications have the potential for stereo support simply by
+setting the relevant environmental variables, or via command line
+arguments. Little or no code changes will be required, the support is
+handled transparently inside osgUtil::SceneView's handling of
+rendering. It is a simple as: <br>
+<b>&nbsp;&nbsp;&nbsp; osgviewer --stereo cow.osg</b>
+<p>If the user is planning to use head tracked stereo, or a cave then
+it is currently recommend to set it up via a VR toolkit such as
+VRjuggler, in this case refer to the VR toolkits handling of stereo,
+and keep all the OSG's stereo specific environment variables (below)
+set to OFF, or set the values to off within own your own applications. <br>
+</p>
 <hr>
-<h3>
-The environmental variables of interest:</h3>
-
+<h3> The environmental variables of interest:</h3>
 <table>
-<tr>
-<td><b>OSG_STEREO</b></td>
-
-<td><b>ON</b></td>
-
-<td>Turn stereo on&nbsp;</td>
-</tr>
-
-<tr>
-<td></td>
-
-<td><b>OFF</b></td>
-
-<td>Turn stereo off (default).&nbsp;</td>
-</tr>
-
-<tr>
-<td><b>OSG_STEREO_MODE</b></td>
-
-<td><b>ANAGLYPHIC</b></td>
-
-<td>Use anaglyphic stereo when in stereo (default).&nbsp;</td>
-</tr>
-
-<tr>
-<td></td>
-
-<td><b>QUAD_BUFFER</b></td>
-
-<td>Use quad buffered stereo when in stereo.&nbsp;</td>
-</tr>
-
-<tr>
-<td></td>
-
-<td><b>HORIZONTAL_SPLIT</b></td>
-
-<td>Use horizontal split stereo mode when in stereo&nbsp;</td>
-</tr>
-
-<tr>
-<td></td>
-
-<td><b>VERTICAL_SPLIT</b></td>
-
-<td>Use vertical split stereo mode when in stereo&nbsp;</td>
-</tr>
-
-<tr>
-<td><b>OSG_SCREEN_DISTANCE</b></td>
-
-<td><b>0.50</b></td>
-
-<td>Set the distance the viewer is from screen in metres (default shown)&nbsp;</td>
-</tr>
-
-<tr>
-<td><b>OSG_SCREEN_HEIGHT</b></td>
-
-<td><b>0.26</b></td>
-
-<td>Set the height if image on the screen in metres (default shown)&nbsp;</td>
-</tr>
-
-<tr>
-<td><b>OSG_EYE_SEPARATION</b></td>
-
-<td><b>0.06</b></td>
-
-<td>Set the eye separation - interoccular distance (default shown.)&nbsp;</td>
-</tr>
-
-<tr>
-<td><b>OSG_SPLIT_STEREO_HORIZONTAL_SEPARATION</b></td>
-
-<td><b>42</b></td>
-
-<td>Set the number of pixels between the left and right viewports (default
-shown).</td>
-</tr>
-
-<tr>
-<td><b>OSG_SPLIT_STEREO_HORIZONTAL_EYE_MAPPING</b></td>
-
-<td><b>LEFT_EYE_LEFT_VIEWPORT</b></td>
-
-<td>Set the left eye to render to left viewport, right eye to right viewport
-(default).&nbsp;</td>
-</tr>
-
-<tr>
-<td></td>
-
-<td><b>LEFT_EYE_RIGHT_VIEWPORT</b></td>
-
-<td>Set the left eye to render to right viewport, right eye to left viewport.&nbsp;</td>
-</tr>
-
-<tr>
-<td><b>OSG_SPLIT_STEREO_VERTICAL_SEPARATION</b></td>
-
-<td><b>42</b></td>
-
-<td>Set the number of pixels between the top and bottom viewports (default
-shown).</td>
-</tr>
-
-<tr>
-<td><b>OSG_SPLIT_STEREO_VERTICAL_EYE_MAPPING</b></td>
-
-<td><b>LEFT_EYE_TOP_VIEWPORT</b></td>
-
-<td>Set the left eye to render to top viewport, right eye to bottom viewport
-(default).&nbsp;</td>
-</tr>
-
-<tr>
-<td></td>
-
-<td><b>LEFT_EYE_BOTTOM_VIEWPORT</b></td>
-
-<td>Set the left eye to render to bottom viewport, right eye to top viewport.&nbsp;</td>
-</tr>
+  <tbody>
+    <tr>
+      <td><b>OSG_STEREO</b></td>
+      <td><b>ON</b></td>
+      <td>Turn stereo on&nbsp;</td>
+    </tr>
+    <tr>
+      <td><br>
+      </td>
+      <td><b>OFF</b></td>
+      <td>Turn stereo off (default).&nbsp;</td>
+    </tr>
+    <tr>
+      <td><b>OSG_STEREO_MODE</b></td>
+      <td><b>ANAGLYPHIC</b></td>
+      <td>Use anaglyphic stereo when in stereo (default).&nbsp;</td>
+    </tr>
+    <tr>
+      <td><br>
+      </td>
+      <td><b>QUAD_BUFFER</b></td>
+      <td>Use quad buffered stereo when in stereo.&nbsp;</td>
+    </tr>
+    <tr>
+      <td><br>
+      </td>
+      <td><b>HORIZONTAL_SPLIT</b></td>
+      <td>Use horizontal split stereo mode when in stereo&nbsp;</td>
+    </tr>
+    <tr>
+      <td><br>
+      </td>
+      <td><b>VERTICAL_SPLIT</b></td>
+      <td>Use vertical split stereo mode when in stereo&nbsp;</td>
+    </tr>
+    <tr>
+      <td><b>OSG_SCREEN_DISTANCE</b></td>
+      <td><b>0.50</b></td>
+      <td>Set the distance the viewer is from screen in metres (default
+shown)&nbsp;</td>
+    </tr>
+    <tr>
+      <td><b>OSG_SCREEN_HEIGHT</b></td>
+      <td><b>0.26</b></td>
+      <td>Set the height if image on the screen in metres (default
+shown)&nbsp;</td>
+    </tr>
+    <tr>
+      <td><b>OSG_EYE_SEPARATION</b></td>
+      <td><b>0.06</b></td>
+      <td>Set the eye separation - interoccular distance (default
+shown.)&nbsp;</td>
+    </tr>
+    <tr>
+      <td><b>OSG_SPLIT_STEREO_HORIZONTAL_SEPARATION</b></td>
+      <td><b>42</b></td>
+      <td>Set the number of pixels between the left and right viewports
+(default shown).</td>
+    </tr>
+    <tr>
+      <td><b>OSG_SPLIT_STEREO_HORIZONTAL_EYE_MAPPING</b></td>
+      <td><b>LEFT_EYE_LEFT_VIEWPORT</b></td>
+      <td>Set the left eye to render to left viewport, right eye to
+right viewport (default).&nbsp;</td>
+    </tr>
+    <tr>
+      <td><br>
+      </td>
+      <td><b>LEFT_EYE_RIGHT_VIEWPORT</b></td>
+      <td>Set the left eye to render to right viewport, right eye to
+left viewport.&nbsp;</td>
+    </tr>
+    <tr>
+      <td><b>OSG_SPLIT_STEREO_VERTICAL_SEPARATION</b></td>
+      <td><b>42</b></td>
+      <td>Set the number of pixels between the top and bottom viewports
+(default shown).</td>
+    </tr>
+    <tr>
+      <td><b>OSG_SPLIT_STEREO_VERTICAL_EYE_MAPPING</b></td>
+      <td><b>LEFT_EYE_TOP_VIEWPORT</b></td>
+      <td>Set the left eye to render to top viewport, right eye to
+bottom viewport (default).&nbsp;</td>
+    </tr>
+    <tr>
+      <td><br>
+      </td>
+      <td><b>LEFT_EYE_BOTTOM_VIEWPORT</b></td>
+      <td>Set the left eye to render to bottom viewport, right eye to
+top viewport.&nbsp;</td>
+    </tr>
+  </tbody>
 </table>
-
 <hr>
-<h3>
-Command line arguments can be used to override these settings:</h3>
-
+<h3> Command line arguments can be used to override these settings:</h3>
 <table>
-<tr>
-<td><b>-stereo</b></td>
-
-<td></td>
-
-<td>Switch on stereo.&nbsp;</td>
-</tr>
-
-<tr>
-<td><b>-stereo</b></td>
-
-<td><b>ON</b></td>
-
-<td>Switch on stereo.&nbsp;</td>
-</tr>
-
-<tr>
-<td></td>
-
-<td><b>OFF</b></td>
-
-<td>Switch off stereo.&nbsp;</td>
-</tr>
-
-<tr>
-<td></td>
-
-<td><b>ANAGLYPHIC</b></td>
-
-<td>Switch on ANAGLYPHIC stereo.&nbsp;</td>
-</tr>
-
-<tr>
-<td></td>
-
-<td><b>QUAD_BUFFER</b></td>
-
-<td>Switch on QUAD_BUFFER stereo.&nbsp;</td>
-</tr>
-
-<tr>
-<td></td>
-
-<td><b>VERTICAL_SPLIT</b></td>
-
-<td>Switch on VERTICAL_SPLIT stereo.&nbsp;</td>
-</tr>
-
-<tr>
-<td></td>
-
-<td><b>HORIZONTAL_SPLIT</b></td>
-
-<td>Switch on VERTICAL_SPLIT stereo.&nbsp;</td>
-</tr>
+  <tbody>
+    <tr>
+      <td><b>-stereo</b></td>
+      <td><br>
+      </td>
+      <td>Switch on stereo.&nbsp;</td>
+    </tr>
+    <tr>
+      <td><b>-stereo</b></td>
+      <td><b>ON</b></td>
+      <td>Switch on stereo.&nbsp;</td>
+    </tr>
+    <tr>
+      <td><br>
+      </td>
+      <td><b>OFF</b></td>
+      <td>Switch off stereo.&nbsp;</td>
+    </tr>
+    <tr>
+      <td><br>
+      </td>
+      <td><b>ANAGLYPHIC</b></td>
+      <td>Switch on ANAGLYPHIC stereo.&nbsp;</td>
+    </tr>
+    <tr>
+      <td><br>
+      </td>
+      <td><b>QUAD_BUFFER</b></td>
+      <td>Switch on QUAD_BUFFER stereo.&nbsp;</td>
+    </tr>
+    <tr>
+      <td><br>
+      </td>
+      <td><b>VERTICAL_SPLIT</b></td>
+      <td>Switch on VERTICAL_SPLIT stereo.&nbsp;</td>
+    </tr>
+    <tr>
+      <td><br>
+      </td>
+      <td><b>HORIZONTAL_SPLIT</b></td>
+      <td>Switch on VERTICAL_SPLIT stereo.&nbsp;</td>
+    </tr>
+  </tbody>
 </table>
-
 <hr>
-<h3>
-Examples:</h3>
-To invoke stereo from the comandline:
-<br><b>&nbsp;&nbsp;&nbsp; osgviewer -stereo cow.osg</b>
-<p>To invoke quad buffered stereo from the commandline:
-<br><b>&nbsp;&nbsp;&nbsp; osgviewer -stereo QUAD_BUFFER cow.osg</b>
-<p>To force all apps to start up in quad buffered stereo (if system supports
-it)
-<br><b>&nbsp;&nbsp;&nbsp; export OSG_STEREO=ON</b>
-<br><b>&nbsp;&nbsp;&nbsp; export OSG_STEREO_MODE=QUAD_BUFFER</b>
-<br><b>&nbsp;&nbsp;&nbsp; osgviewer cow.osg</b>
+<h3> Examples:</h3>
+To invoke stereo from the comandline: <br>
+<b>&nbsp;&nbsp;&nbsp; osgviewer -stereo cow.osg</b>
+<p>To invoke quad buffered stereo from the commandline: <br>
+<b>&nbsp;&nbsp;&nbsp; osgviewer -stereo QUAD_BUFFER cow.osg</b> </p>
+<p>To force all apps to start up in quad buffered stereo (if system
+supports it) <br>
+<b>&nbsp;&nbsp;&nbsp; export OSG_STEREO=ON</b> <br>
+<b>&nbsp;&nbsp;&nbsp; export OSG_STEREO_MODE=QUAD_BUFFER</b> <br>
+<b>&nbsp;&nbsp;&nbsp; osgviewer cow.osg</b> </p>
 <p>To set quad buffered stereo to the default, but use the commandline
-to switch stereo on:
-<br><b>&nbsp;&nbsp;&nbsp; export OSG_STEREO=OFF</b>
-<br><b>&nbsp;&nbsp;&nbsp; export OSG_STEREO_MODE=QUAD_BUFFER</b>
-<br><b>&nbsp;&nbsp;&nbsp; osgviewer -stereo cow.osg</b>
-<p>
+to switch stereo on: <br>
+<b>&nbsp;&nbsp;&nbsp; export OSG_STEREO=OFF</b> <br>
+<b>&nbsp;&nbsp;&nbsp; export OSG_STEREO_MODE=QUAD_BUFFER</b> <br>
+<b>&nbsp;&nbsp;&nbsp; osgviewer -stereo cow.osg</b> </p>
+<p> </p>
 <hr>
-<h3>
-Size matters:</h3>
+<h3> Size matters:</h3>
 For appropriate depth perception the stereo code creates separate left
 and eye views, both the frustum and modelview are shifted to account for
 the separate eye views.&nbsp; To achieve the right amount of adjustment
 the OSG requires the users eye separation, the distance from the eyes to
-the screen and the height of the screen.&nbsp; The OSG will use the defaults
-of 0.05m,0.5m and 0.26m respectively which are assumed to be reasonable
-defaults for most users workstation configurations, note the OSG_SCREEN_HEIGHT
-is the image height rather than total size of your monitor/display surface.&nbsp;
-For the best stereo effects please measure these values and set them up
-via the environmental variables.&nbsp; Once set the views you get should
-give improved depth perception.&nbsp; A good way of measuring how well
-you are configured for your display is to fly away from objects (using
-the FlightManipulator for instance, but not the TrackballManipulator, see
+the screen and the height of the screen.&nbsp; The OSG will use the
+defaults of 0.05m,0.5m and 0.26m respectively which are assumed to be
+reasonable defaults for most users workstation configurations, note the
+OSG_SCREEN_HEIGHT is the image height rather than total size of your
+monitor/display surface.&nbsp; For the best stereo effects please
+measure these values and set them up via the environmental
+variables.&nbsp; Once set the views you get should give improved depth
+perception.&nbsp; A good way of measuring how well you are configured
+for your display is to fly away from objects (using the
+FlightManipulator for instance, but not the TrackballManipulator, see
 below) so that they go of toward infinity. As they move away the offset
 between the two images should tend towards your eye separation, if you
-achieve this then the object will be perceived as at infinity.
+achieve this then the object will be perceived as at infinity. <br>
 <br>
-<hr>
-<h3>
-Camera Manipulator Modes:</h3>
-There are three osgUtil::CameraManipulator's which come with osgUtil, which
-operate as a Trackball, Drive and Flight modes of interaction (see osgviewer.html
-for how to invoke them in the scene graph viewer). The osgUtil::Trackball
-Manipulator automatically scales the fusion distance to that which will
-fusion on center point of rotation - this will appear at the middle of
-the monitor at the monitors depth. Whereas, the osgUtil::DriveManipualtor,
-osgUtil::FlightManipulator scale the fusion distance to the distance the
-viewer is from the screen, the results in a perception that the virtual
-world is scaled to physical world, this is clearly better for simulators
-and alike. You can control the fusion of the image in these two modes via
-the osg::Camera::setFusionDistanceMode(FusionDistanceMode mode) where mode
-can be osg::Camera::PROPORTIONAL_TO_LOOK_DISTANCE (used by Trackball) or
-osg::Camera::PROPORTIONAL_TO_SCREEN_DISTANCE (used by Drive and Flight),
-and osg::Camera::setFusionDistanceRatio(float). See include/osg/Camera
-for further details, and the camera manipulators for implementation details.
-The fusion distance ratio defaults to 1.0 but can be biased to move objects
-out or into screen, they will also appear to get smaller and larger respectively.
-The camera manipulators allow the user to alter this value at runtime via
-the '+' and '-' keys.
 </body>
 </html>

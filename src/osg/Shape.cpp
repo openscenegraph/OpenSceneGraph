@@ -15,6 +15,16 @@
 
 using namespace osg;
 
+void HeightField::allocateGrid(unsigned int numColumns,unsigned int numRows)
+{
+    if (_columns!=numColumns || _rows!=numRows)
+    {
+    	_heights.resize(numColumns*numRows);
+    }
+    _columns=numColumns;
+    _rows=numRows;
+}
+
 Vec3 HeightField::getNormal(unsigned int c,unsigned int r) const 
 {
     // four point normal generation.
@@ -53,27 +63,4 @@ Vec3 HeightField::getNormal(unsigned int c,unsigned int r) const
     return normal;
 }
 
-Grid::Grid()
-{
-}
-
-Grid::Grid(const Grid& mesh,const CopyOp& copyop): 
-    HeightField(mesh,copyop)
-{
-    _heights = mesh._heights;
-}
-
-Grid::~Grid()
-{
-}
-
-void Grid::allocateGrid(unsigned int numColumns,unsigned int numRows)
-{
-    if (_columns!=numColumns || _rows!=numRows)
-    {
-    	_heights.resize(numColumns*numRows);
-    }
-    _columns=numColumns;
-    _rows=numRows;
-}
 

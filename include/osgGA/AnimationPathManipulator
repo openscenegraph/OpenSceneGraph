@@ -21,7 +21,7 @@
 namespace osgGA{
 
 //
-// The AnimationPathManipulator is a Camera Manipulator that reads an
+// The AnimationPathManipulator is a Matrix Manipulator that reads an
 // animation path from a file and plays it back.  The file is expected
 // to be ascii and a succession of lines with 8 floating point values
 // per line.  The succession of values are:

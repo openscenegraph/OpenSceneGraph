@@ -221,7 +221,7 @@ class SG_EXPORT NodeVisitor : public virtual Referenced
         virtual void apply(PositionAttitudeTransform& node) { apply((Transform&)node); }
 
         virtual void apply(Switch& node)                    { apply((Group&)node); }
-        virtual void apply(Sequence& node)                  { apply((Switch&)node); }
+        virtual void apply(Sequence& node)                  { apply((Group&)node); }
         virtual void apply(LOD& node)                       { apply((Group&)node); }
         virtual void apply(Impostor& node)                  { apply((LOD&)node); }
         virtual void apply(ClearNode& node)                 { apply((Group&)node); }

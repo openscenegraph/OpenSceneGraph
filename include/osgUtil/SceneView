@@ -97,11 +97,21 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         inline osg::DisplaySettings* getDisplaySettings() { return _displaySettings.get(); }
 
 
+#ifdef USE_DEPRECATED_API
         /** Set the background color used in glClearColor().
             Defaults to an off blue color.*/
-        void setBackgroundColor(const osg::Vec4& color) { _backgroundColor=color; }
+        void setBackgroundColor(const osg::Vec4& color) { _clearColor=color; }
         /** Get the background color.*/
-        const osg::Vec4& getBackgroundColor() const { return _backgroundColor; }
+        const osg::Vec4& getBackgroundColor() const { return _clearColor; }
+#endif
+
+        /** Set the color used in glClearColor().
+            Defaults to an off blue color.*/
+        void setClearColor(const osg::Vec4& color) { _clearColor=color; }
+        /** Get the color usinged in glClearColor.*/
+        const osg::Vec4& getClearColor() const { return _clearColor; }
+
+
 
         void setGlobalStateSet(osg::StateSet* state) { _globalStateSet = state; }
         osg::StateSet* getGlobalStateSet() { return _globalStateSet.get(); }
@@ -478,7 +488,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         osg::ref_ptr<osg::FrameStamp>               _frameStamp;
 
 
-        osg::Vec4                                   _backgroundColor;
+        osg::Vec4                                   _clearColor;
 
         CullVisitor::ComputeNearFarMode             _computeNearFar;
         osg::CullStack::CullingMode                 _cullingMode;

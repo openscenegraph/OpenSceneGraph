@@ -34,7 +34,7 @@ SceneView::SceneView(DisplaySettings* ds)
 {
     _displaySettings = ds;
 
-    _backgroundColor.set(0.2f, 0.2f, 0.4f, 1.0f);
+    _clearColor.set(0.2f, 0.2f, 0.4f, 1.0f);
 
     _computeNearFar = CullVisitor::COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES;
 
@@ -132,7 +132,7 @@ void SceneView::setDefaults()
     lightmodel->setAmbientIntensity(osg::Vec4(0.1f,0.1f,0.1f,1.0f));
     _globalStateSet->setAttributeAndModes(lightmodel, osg::StateAttribute::ON);
 
-    _backgroundColor.set(0.2f, 0.2f, 0.4f, 1.0f);
+    _clearColor.set(0.2f, 0.2f, 0.4f, 1.0f);
 
     _cullMask = 0xffffffff;
     _cullMaskLeft = 0xffffffff;
@@ -550,7 +550,7 @@ void SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
     rendergraph->clean();
 
     renderStage->setViewport(_viewport.get());
-    renderStage->setClearColor(_backgroundColor);
+    renderStage->setClearColor(_clearColor);
 
 
     switch(_lightingMode)

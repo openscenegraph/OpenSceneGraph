@@ -38,6 +38,8 @@
 #include <osgDB/FileNameUtils>
 
 #include <assert.h>
+#include <map>
+
 
 /**
  * OpenSceneGraph plugin wrapper/converter.
@@ -146,6 +148,9 @@ osg::Geode* ReaderWriterDirectX::convertFromDX(DX::Object& obj,
      */
     std::vector<osg::Geometry*> geomList;
 
+    // Texture-for-Image map
+    std::map<std::string, osg::Texture2D*> texForImage;
+    
     unsigned int i;
     for (i = 0; i < meshMaterial->material.size(); i++) {
 
@@ -186,16 +191,22 @@ osg::Geode* ReaderWriterDirectX::convertFromDX(DX::Object& obj,
 
         unsigned int textureCount = mtl.texture.size();
         for (unsigned int j = 0; j < textureCount; j++) {
-            // Load image
-            osg::Image* image = osgDB::readImageFile(mtl.texture[j]);
-            if (!image)
-                continue;
 
-            // Texture
-            osg::Texture2D* texture = new osg::Texture2D;
-            texture->setImage(image);
-            texture->setWrap(osg::Texture2D::WRAP_S, osg::Texture2D::REPEAT);
-            texture->setWrap(osg::Texture2D::WRAP_T, osg::Texture2D::REPEAT);
+            // Share image/texture pairs
+            osg::Texture2D* texture = texForImage[mtl.texture[j]];
+            if (!texture) {
+                osg::Image* image = osgDB::readImageFile(mtl.texture[j]);
+                if (!image)
+                    continue;
+
+                // Texture
+                texture = new osg::Texture2D;
+                texForImage[mtl.texture[j]] = texture;
+
+                texture->setImage(image);
+                texture->setWrap(osg::Texture2D::WRAP_S, osg::Texture2D::REPEAT);
+                texture->setWrap(osg::Texture2D::WRAP_T, osg::Texture2D::REPEAT);
+            }
             state->setTextureAttributeAndModes(j, texture);
         }
 

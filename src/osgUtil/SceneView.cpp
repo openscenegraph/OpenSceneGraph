@@ -261,11 +261,11 @@ void SceneView::cull()
         cullStage(projectionRight.get(),modelviewRight.get(),_cullVisitorRight.get(),_rendergraphRight.get(),_renderStageRight.get());
 
 
-//         if (_camera.valid())
-//         {
-//             // clamp the camera to the near/far computed in cull traversal.
-//             _camera->setNearFar(_cullVisitorRight->getCalculatedNearPlane(),_cullVisitorRight->getCalculatedFarPlane());
-//         }
+        if (_camera.valid())
+        {
+            // clamp the camera to the near/far computed in cull traversal.
+            _camera->setNearFar(_cullVisitorRight->getCalculatedNearPlane(),_cullVisitorRight->getCalculatedFarPlane());
+        }
 
     }
     else

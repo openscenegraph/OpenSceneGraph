@@ -156,6 +156,10 @@ void CullVisitor::popProjectionMatrix()
 
         double min_near_plane = _computed_zfar*0.0005f;
         if (desired_znear<min_near_plane) desired_znear=min_near_plane;
+        
+        // assign the clamped values back to the computed values.
+        _computed_znear = desired_znear;
+        _computed_zfar = desired_zfar;
 
         double trans_near_plane = (-desired_znear*projection(2,2)+projection(3,2))/(-desired_znear*projection(2,3)+projection(3,3));
         double trans_far_plane = (-desired_zfar*projection(2,2)+projection(3,2))/(-desired_zfar*projection(2,3)+projection(3,3));

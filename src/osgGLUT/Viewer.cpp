@@ -1053,6 +1053,30 @@ void Viewer::keyboard(unsigned char key, int x, int y)
             help(osg::notify(osg::NOTICE));
             break;
 
+
+        case 'O' :
+            {
+                osg::Viewport* viewport = sceneView->getViewport();
+                if (viewport)
+                {
+
+                    std::string filename("screenshot.bmp");
+
+                    glReadBuffer(GL_FRONT);
+                    osg::ref_ptr<Image> image = osgNew osg::Image;
+                    image->readPixels(viewport->x(),viewport->y(),viewport->width(),viewport->height(),
+                                      GL_RGB,GL_UNSIGNED_BYTE);
+
+                    osgDB::writeImageFile(*image,filename);
+
+                    osg::notify(osg::NOTICE) << "Saved screen image to `"<<filename<<"`"<< std::endl;
+                }
+                else
+                {
+                    osg::notify(osg::NOTICE) << "Cannot create snapshot of screen, no valid viewport attached"<< std::endl;
+                }
+            }
+            break;
         case 'i' :
         case 'r' :
         {

@@ -55,6 +55,9 @@
 #include "VisibilityGroup.h"
 
 #include "Geometry.h"
+#include "ShapeDrawable.h"
+
+#include "Shape.h"
 
 using namespace ive;
 
@@ -507,10 +510,54 @@ void DataOutputStream::writeDrawable(const osg::Drawable* drawable)
         
         if(dynamic_cast<const osg::Geometry*>(drawable))
             ((ive::Geometry*)(drawable))->write(this);
-        else{
+        else if(dynamic_cast<const osg::ShapeDrawable*>(drawable))
+            ((ive::ShapeDrawable*)(drawable))->write(this);
+        else
+        {
             throw Exception("Unknown drawable in DataOutputStream::writeDrawable()");
         }
         if (_verboseOutput) std::cout<<"read/writeDrawable() ["<<id<<"]"<<std::endl;
+    }
+}
+
+void DataOutputStream::writeShape(const osg::Shape* shape)
+{
+    ShapeMap::iterator itr = _shapeMap.find(shape);
+    if (itr!=_shapeMap.end())
+    {
+        // Id already exists so just write ID.
+        writeInt(itr->second);
+
+        if (_verboseOutput) std::cout<<"read/writeShape() ["<<itr->second<<"]"<<std::endl;
+    }
+    else
+    {
+        // id doesn't exist so create a new ID and
+        // register the stateset.
+
+        int id = _shapeMap.size();
+        _shapeMap[shape] = id;
+
+        // write the id.
+        writeInt(id);
+        
+        if(dynamic_cast<const osg::Sphere*>(shape))
+            ((ive::Sphere*)(shape))->write(this);
+        else if(dynamic_cast<const osg::Box*>(shape))
+            ((ive::Box*)(shape))->write(this);
+        else if(dynamic_cast<const osg::Cone*>(shape))
+            ((ive::Cone*)(shape))->write(this);
+        else if(dynamic_cast<const osg::Cylinder*>(shape))
+            ((ive::Cylinder*)(shape))->write(this);
+        else if(dynamic_cast<const osg::Capsule*>(shape))
+            ((ive::Capsule*)(shape))->write(this);
+        else if(dynamic_cast<const osg::HeightField*>(shape))
+            ((ive::HeightField*)(shape))->write(this);
+        else
+        {
+            throw Exception("Unknown shape in DataOutputStream::writeShape()");
+        }
+        if (_verboseOutput) std::cout<<"read/writeShape() ["<<id<<"]"<<std::endl;
     }
 }
 

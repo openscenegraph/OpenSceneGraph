@@ -13,6 +13,7 @@
 
 
 #include <osg/GL>
+#include <osg/Math>
 #include <osgText/Text>
 
 #include "DefaultFont.h"
@@ -75,7 +76,7 @@ void Text::setFontSize(unsigned int width, unsigned int height)
 }
 
 
-void Text::setCharacterSize(float height,float ascpectRatio=1.0f)
+void Text::setCharacterSize(float height,float ascpectRatio)
 {
     _characterHeight = height;
     _characterAspectRatio = ascpectRatio;
@@ -95,6 +96,28 @@ void Text::setText(const std::string& text)
     _text.insert(_text.end(),text.begin(),text.end());
     computeGlyphRepresentation();
 }
+
+void Text::setText(const std::string& text,Encoding encoding)
+{
+    _text.clear();
+
+    if (text.empty()) return;
+    
+    
+    std::cerr << "Text::setText(const std::string& text,Encoding encoding) not implemented yet."<<std::endl;
+
+    //std::string::const_iterator itr = text.begin();
+
+    if ((encoding == ENCODING_SIGNATURE) || 
+        (encoding == ENCODING_UTF16) || 
+        (encoding == ENCODING_UTF32))
+    {
+//        encoding = findEncoding(text,pos);
+    }
+    
+    
+}
+    
 
 void Text::setText(const wchar_t* text)
 {
@@ -150,18 +173,34 @@ bool Text::computeBound() const
 {
     _bbox.init();
 
-
-    for(TextureGlyphQuadMap::const_iterator titr=_textureGlyphQuadMap.begin();
-        titr!=_textureGlyphQuadMap.end();
-        ++titr)
+    if (_textBB.valid())
     {
-        const GlyphQuads& glyphquad = titr->second;
-        
-        for(GlyphQuads::Coords::const_iterator citr = glyphquad._coords.begin();
-            citr != glyphquad._coords.end();
-            ++citr)
+        if (_axisAlignment==SCREEN)
         {
-            _bbox.expandBy(osg::Vec3(citr->x(),citr->y(),0.0f)*_matrix);
+            // build a sphere around the text box, centerd at the offset point.
+            float maxlength2 = (_textBB.corner(0)-_offset).length2();
+            
+            float length2 = (_textBB.corner(1)-_offset).length2();
+            maxlength2 = osg::maximum(maxlength2,length2);
+            
+            length2 = (_textBB.corner(2)-_offset).length2();
+            maxlength2 = osg::maximum(maxlength2,length2);
+
+            length2 = (_textBB.corner(3)-_offset).length2();
+            maxlength2 = osg::maximum(maxlength2,length2);
+
+            float radius = sqrtf(maxlength2);
+            osg::Vec3 center(_position);
+            
+            _bbox.set(center.x()-radius,center.y()-radius,center.z()-radius,
+                      center.x()+radius,center.y()+radius,center.z()+radius);
+        }
+        else
+        {
+            _bbox.expandBy(osg::Vec3(_textBB.xMin(),_textBB.yMin(),_textBB.zMin())*_matrix);
+            _bbox.expandBy(osg::Vec3(_textBB.xMax(),_textBB.yMin(),_textBB.zMin())*_matrix);
+            _bbox.expandBy(osg::Vec3(_textBB.xMax(),_textBB.yMax(),_textBB.zMin())*_matrix);
+            _bbox.expandBy(osg::Vec3(_textBB.xMin(),_textBB.yMax(),_textBB.zMin())*_matrix);
         }
     }
     

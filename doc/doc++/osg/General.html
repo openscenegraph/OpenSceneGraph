@@ -40,6 +40,9 @@
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_COLORMATRIX"></A>
 <B>OSG_COLORMATRIX</B><DT>
 
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_COPYOP"></A>
+<B>OSG_COPYOP</B><DT>
+
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_CULLFACE"></A>
 <B>OSG_CULLFACE</B><DT>
 
@@ -112,6 +115,9 @@
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="WINGDIAPI"></A>
 <B>WINGDIAPI</B>(dllimport)<DT>
 
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="_WCHAR_T_DEFINED"></A>
+<B>_WCHAR_T_DEFINED</B><DT>
+
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_GLEXTENSIONS"></A>
 <B>OSG_GLEXTENSIONS</B><DT>
 
@@ -151,45 +157,6 @@
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="__OSG_MATH"></A>
 <B>__OSG_MATH</B><DT>
 
-<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="M_E"></A>
-<B>M_E</B><DT>
-
-<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="M_LOG2E"></A>
-<B>M_LOG2E</B><DT>
-
-<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="M_LOG10E"></A>
-<B>M_LOG10E</B><DT>
-
-<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="M_LN2"></A>
-<B>M_LN2</B><DT>
-
-<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="M_LN10"></A>
-<B>M_LN10</B><DT>
-
-<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="M_PI"></A>
-<B>M_PI</B><DT>
-
-<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="M_PI_2"></A>
-<B>M_PI_2</B><DT>
-
-<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="M_PI_4"></A>
-<B>M_PI_4</B><DT>
-
-<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="M_1_PI"></A>
-<B>M_1_PI</B><DT>
-
-<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="M_2_PI"></A>
-<B>M_2_PI</B><DT>
-
-<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="M_2_SQRTPI"></A>
-<B>M_2_SQRTPI</B><DT>
-
-<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="M_SQRT2"></A>
-<B>M_SQRT2</B><DT>
-
-<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="M_SQRT1_2"></A>
-<B>M_SQRT1_2</B><DT>
-
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="acosf"></A>
 <B>acosf</B>(float)<DT>
 
@@ -214,6 +181,9 @@
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="sqrtf"></A>
 <B>sqrtf</B>(float)<DT>
 
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="fabs"></A>
+<B>fabs</B>(float)<DT>
+
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_MATRIX"></A>
 <B>OSG_MATRIX</B><DT>
 
@@ -225,9 +195,6 @@
 
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_NODE"></A>
 <B>OSG_NODE</B><DT>
-
-<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_NODECALLBACK"></A>
-<B>OSG_NODECALLBACK</B><DT>
 
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_NODEVISITOR"></A>
 <B>OSG_NODEVISITOR</B><DT>
@@ -250,6 +217,9 @@
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_POLYGONOFFSET"></A>
 <B>OSG_POLYGONOFFSET</B><DT>
 
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_POSITIONATTITIDETRANSFORM"></A>
+<B>OSG_POSITIONATTITIDETRANSFORM</B><DT>
+
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_QUAT"></A>
 <B>OSG_QUAT</B><DT>
 
@@ -258,6 +228,9 @@
 
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_REF_PTR"></A>
 <B>OSG_REF_PTR</B><DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_SHADEMODEL"></A>
+<B>OSG_SHADEMODEL</B><DT>
 
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_STATE"></A>
 <B>OSG_STATE</B><DT>
@@ -355,6 +328,9 @@
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>pragmaoptimize("", on)<A NAME="(x)"></A>
 <B>(x)</B>(".byte 0x0f, 0x31" : "=A" (x))<DT>
 
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>defineCLK<A NAME="(x)"></A>
+<B>(x)</B>(".byte 0x0f, 0x31" : "=A" (x))<DT>
+
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_TRANSFORM"></A>
 <B>OSG_TRANSFORM</B><DT>
 
@@ -363,9 +339,6 @@
 
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_TYPES"></A>
 <B>OSG_TYPES</B><DT>
-
-<IMG ALT="o" BORDER=0 SRC=icon1.gif>typedef  uchar<A NAME="ubyte"></A>
-<B>ubyte</B><DT>
 
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_VEC2"></A>
 <B>OSG_VEC2</B><DT>

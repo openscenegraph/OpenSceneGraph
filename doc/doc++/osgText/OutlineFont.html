@@ -22,21 +22,30 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.6.7.1">OutlineFont</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.6.8.1">OutlineFont</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.6.7.2">OutlineFont</A></B>(const std::string&amp; font, int point_size, double precision)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.6.8.2">OutlineFont</A></B>(const <!1><A HREF="OutlineFont.html#DOC.6.8.2">OutlineFont</A>&amp; font, const osg::CopyOp&amp; copyop=osg::CopyOp::SHALLOW_COPY)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.6.7.3">META_Object</A></B>(<!1><A HREF="OutlineFont.html">OutlineFont</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.6.8.3">OutlineFont</A></B>(const std::string&amp; font, int point_size, double precision)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.6.8.4">META_Font</A></B>(<!1><A HREF="OutlineFont.html">OutlineFont</A>)
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   FTFont* <B><A HREF="#DOC.6.7.4">createFontObj</A></B>(void)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   FTFont* <B><A HREF="#DOC.6.8.5">createFontObj</A></B>(void)
 </DL></P>
 
 </DL>
 <HR><H3>Inherited from <A HREF="VectorFont.html">VectorFont</A>:</H3>
 <DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isSameKindAs</B>(const osg::Object* obj) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
+</DL></P>
+
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
 <IMG ALT="o" SRC=icon2.gif>double <B>_precision</B>
@@ -47,13 +56,15 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>open</B>(const std::string&amp; font)
+<IMG ALT="o" SRC=icon2.gif>bool <B>open</B>(const char* font)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>create</B>(int pointSize, const unsigned int res = 72 )
+<IMG ALT="o" SRC=icon2.gif>bool <B>open</B>(const std::string&amp; font)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>create</B>()
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>create</B>(osg::State&amp; state, int pointSize, const unsigned int res = 72 )
 <DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   void <B>output</B>(const char* text)
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>create</B>(osg::State&amp; state)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>output</B>(osg::State&amp; state, const char* text)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isOk</B>(void) const 
 <DT>
@@ -68,6 +79,8 @@
 <IMG ALT="o" SRC=icon2.gif>virtual   int <B>getAscender</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>int <B>getPointSize</B>(void) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>int <B>getTextureSize</B>(void) const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>const std::string&amp; <B>getFontName</B>()
 <DT>
@@ -87,6 +100,8 @@
 <IMG ALT="o" SRC=icon2.gif>int <B>_pointSize</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif>int <B>_res</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>int <B>_textureSize</B>
 </DL></P>
 
 <P><DL>
@@ -104,19 +119,23 @@
 <DL>
 
 <A NAME="OutlineFont"></A>
-<A NAME="DOC.6.7.1"></A>
+<A NAME="DOC.6.8.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> OutlineFont()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="OutlineFont"></A>
-<A NAME="DOC.6.7.2"></A>
+<A NAME="DOC.6.8.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> OutlineFont(const <!1><A HREF="OutlineFont.html#DOC.6.8.2">OutlineFont</A>&amp; font, const osg::CopyOp&amp; copyop=osg::CopyOp::SHALLOW_COPY)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="OutlineFont"></A>
+<A NAME="DOC.6.8.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> OutlineFont(const std::string&amp; font, int point_size, double precision)</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="META_Object"></A>
-<A NAME="DOC.6.7.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Object(<!1><A HREF="OutlineFont.html">OutlineFont</A>)</B></TT>
+<A NAME="META_Font"></A>
+<A NAME="DOC.6.8.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Font(<!1><A HREF="OutlineFont.html">OutlineFont</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="createFontObj"></A>
-<A NAME="DOC.6.7.4"></A>
+<A NAME="DOC.6.8.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   FTFont* createFontObj(void)</B></TT>
 <DL><DT><DD></DL><P></DL>
 

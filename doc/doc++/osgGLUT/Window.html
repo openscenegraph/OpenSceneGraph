@@ -44,37 +44,37 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   <!1><A HREF="Window.html">Window</A>* <B><A HREF="#DOC.7.3.23">s_theWindow</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   <!1><A HREF="Window.html">Window</A>* <B><A HREF="#DOC.7.3.31">s_theWindow</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.7.3.24">_title</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.7.3.32">_title</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.7.3.25">_wx</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.7.3.33">_wx</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int  <B><A HREF="#DOC.7.3.26">_wy</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int  <B><A HREF="#DOC.7.3.34">_wy</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int   <B><A HREF="#DOC.7.3.27">_ww</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int   <B><A HREF="#DOC.7.3.35">_ww</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int    <B><A HREF="#DOC.7.3.28">_wh</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int    <B><A HREF="#DOC.7.3.36">_wh</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.7.3.29">_displayMode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.7.3.37">_displayMode</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.7.3.30">_is_open</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.7.3.38">_is_open</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.7.3.31">_mx</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.7.3.39">_mx</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int  <B><A HREF="#DOC.7.3.32">_my</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int  <B><A HREF="#DOC.7.3.40">_my</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int   <B><A HREF="#DOC.7.3.33">_mbutton</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int   <B><A HREF="#DOC.7.3.41">_mbutton</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.7.3.34">_fullscreen</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.7.3.42">_fullscreen</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.7.3.35">_saved_wx</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.7.3.43">_saved_wx</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int  <B><A HREF="#DOC.7.3.36">_saved_wy</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int  <B><A HREF="#DOC.7.3.44">_saved_wy</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int   <B><A HREF="#DOC.7.3.37">_saved_ww</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int   <B><A HREF="#DOC.7.3.45">_saved_ww</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int    <B><A HREF="#DOC.7.3.38">_saved_wh</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int    <B><A HREF="#DOC.7.3.46">_saved_wh</A></B>
 </DL></P>
 
 <P><DL>
@@ -93,17 +93,33 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void <B><A HREF="#DOC.7.3.16">keyboardCB</A></B>(unsigned char key, int x, int y )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.7.3.17">reshape</A></B>(GLint w, GLint h)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void <B><A HREF="#DOC.7.3.17">specialCB</A></B>(int key, int x, int y)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.7.3.18">visibility</A></B>(int state)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void <B><A HREF="#DOC.7.3.18">spaceballMotionCB</A></B>(int x, int y, int z)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.7.3.19">mouseMotion</A></B>(int x, int y)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void <B><A HREF="#DOC.7.3.19">spaceballRotateCB</A></B>(int x, int y, int z)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.7.3.20">mousePassiveMotion</A></B>(int x, int y)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void <B><A HREF="#DOC.7.3.20">spaceballButtonCB</A></B>(int button, int state)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.7.3.21">mouse</A></B>(int button, int state, int x, int y)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.7.3.21">reshape</A></B>(GLint w, GLint h)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.7.3.22">keyboard</A></B>(unsigned char key, int x, int y)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.7.3.22">visibility</A></B>(int state)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.7.3.23">mouseMotion</A></B>(int x, int y)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.7.3.24">mousePassiveMotion</A></B>(int x, int y)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.7.3.25">mouse</A></B>(int button, int state, int x, int y)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.7.3.26">keyboard</A></B>(unsigned char key, int x, int y)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.7.3.27">special</A></B>(int key, int x, int y)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.7.3.28">spaceballMotion</A></B>(int x, int y, int z)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.7.3.29">spaceballRotate</A></B>(int x, int y, int z)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.7.3.30">spaceballButton</A></B>(int button, int state)
 </DL></P>
 
 </DL>
@@ -178,92 +194,124 @@
 <A NAME="DOC.7.3.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   void keyboardCB(unsigned char key, int x, int y )</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="reshape"></A>
+<A NAME="specialCB"></A>
 <A NAME="DOC.7.3.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   void specialCB(int key, int x, int y)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="spaceballMotionCB"></A>
+<A NAME="DOC.7.3.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   void spaceballMotionCB(int x, int y, int z)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="spaceballRotateCB"></A>
+<A NAME="DOC.7.3.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   void spaceballRotateCB(int x, int y, int z)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="spaceballButtonCB"></A>
+<A NAME="DOC.7.3.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   void spaceballButtonCB(int button, int state)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="reshape"></A>
+<A NAME="DOC.7.3.21"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void reshape(GLint w, GLint h)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="visibility"></A>
-<A NAME="DOC.7.3.18"></A>
+<A NAME="DOC.7.3.22"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void visibility(int state)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="mouseMotion"></A>
-<A NAME="DOC.7.3.19"></A>
+<A NAME="DOC.7.3.23"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void mouseMotion(int x, int y)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="mousePassiveMotion"></A>
-<A NAME="DOC.7.3.20"></A>
+<A NAME="DOC.7.3.24"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void mousePassiveMotion(int x, int y)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="mouse"></A>
-<A NAME="DOC.7.3.21"></A>
+<A NAME="DOC.7.3.25"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void mouse(int button, int state, int x, int y)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="keyboard"></A>
-<A NAME="DOC.7.3.22"></A>
+<A NAME="DOC.7.3.26"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void keyboard(unsigned char key, int x, int y)</B></TT>
 <DL><DT><DD></DL><P>
+<A NAME="special"></A>
+<A NAME="DOC.7.3.27"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void special(int key, int x, int y)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="spaceballMotion"></A>
+<A NAME="DOC.7.3.28"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void spaceballMotion(int x, int y, int z)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="spaceballRotate"></A>
+<A NAME="DOC.7.3.29"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void spaceballRotate(int x, int y, int z)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="spaceballButton"></A>
+<A NAME="DOC.7.3.30"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void spaceballButton(int button, int state)</B></TT>
+<DL><DT><DD></DL><P>
 <A NAME="s_theWindow"></A>
-<A NAME="DOC.7.3.23"></A>
+<A NAME="DOC.7.3.31"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   <!1><A HREF="Window.html">Window</A>* s_theWindow</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_title"></A>
-<A NAME="DOC.7.3.24"></A>
+<A NAME="DOC.7.3.32"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>std::string _title</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_wx"></A>
-<A NAME="DOC.7.3.25"></A>
+<A NAME="DOC.7.3.33"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _wx</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_wy"></A>
-<A NAME="DOC.7.3.26"></A>
+<A NAME="DOC.7.3.34"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int  _wy</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_ww"></A>
-<A NAME="DOC.7.3.27"></A>
+<A NAME="DOC.7.3.35"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int   _ww</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_wh"></A>
-<A NAME="DOC.7.3.28"></A>
+<A NAME="DOC.7.3.36"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int    _wh</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_displayMode"></A>
-<A NAME="DOC.7.3.29"></A>
+<A NAME="DOC.7.3.37"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _displayMode</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_is_open"></A>
-<A NAME="DOC.7.3.30"></A>
+<A NAME="DOC.7.3.38"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _is_open</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_mx"></A>
-<A NAME="DOC.7.3.31"></A>
+<A NAME="DOC.7.3.39"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _mx</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_my"></A>
-<A NAME="DOC.7.3.32"></A>
+<A NAME="DOC.7.3.40"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int  _my</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_mbutton"></A>
-<A NAME="DOC.7.3.33"></A>
+<A NAME="DOC.7.3.41"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int   _mbutton</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_fullscreen"></A>
-<A NAME="DOC.7.3.34"></A>
+<A NAME="DOC.7.3.42"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _fullscreen</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_saved_wx"></A>
-<A NAME="DOC.7.3.35"></A>
+<A NAME="DOC.7.3.43"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _saved_wx</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_saved_wy"></A>
-<A NAME="DOC.7.3.36"></A>
+<A NAME="DOC.7.3.44"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int  _saved_wy</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_saved_ww"></A>
-<A NAME="DOC.7.3.37"></A>
+<A NAME="DOC.7.3.45"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int   _saved_ww</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_saved_wh"></A>
-<A NAME="DOC.7.3.38"></A>
+<A NAME="DOC.7.3.46"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int    _saved_wh</B></TT>
 <DL><DT><DD></DL><P></DL>
 <HR>

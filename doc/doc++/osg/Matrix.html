@@ -22,153 +22,152 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.60.1">META_Object</A></B>(<!1><A HREF="Matrix.html">Matrix</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.63.1">Matrix</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.60.2">Matrix</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.63.2">Matrix</A></B>( const <!1><A HREF="Matrix.html#DOC.2.63.2">Matrix</A>&amp; other)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.60.3">Matrix</A></B>( const <!1><A HREF="Matrix.html#DOC.2.60.3">Matrix</A>&amp; other )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>explicit <B><A HREF="#DOC.2.63.3">Matrix</A></B>( float const*  const def )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>explicit <B><A HREF="#DOC.2.60.4">Matrix</A></B>( float const*  const def )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.63.4">Matrix</A></B>( float a00, float a01, float a02, float a03, float a10, float a11, float a12, float a13, float a20, float a21, float a22, float a23, float a30, float a31, float a32, float a33)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.60.5">Matrix</A></B>( float a00, float a01, float a02, float a03, float a10, float a11, float a12, float a13, float a20, float a21, float a22, float a23, float a30, float a31, float a32, float a33)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.63.5">cloneType</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.60.6">~Matrix</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.63.6">clone</A></B>(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp;) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Matrix.html">Matrix</A>&amp; <B><A HREF="#DOC.2.60.7">operator = </A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.63.7">isSameKindAs</A></B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.60.8">compare</A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; m) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.63.8">className</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.60.9">operator < </A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; m) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.63.9">~Matrix</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.60.10">operator == </A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; m) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Matrix.html">Matrix</A>&amp; <B><A HREF="#DOC.2.63.10">operator = </A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.60.11">operator != </A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; m) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.63.11">compare</A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; m) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float&amp; <B><A HREF="#DOC.2.60.12">operator()</A></B>(int row, int col)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.63.12">operator < </A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; m) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.60.13">operator()</A></B>(int row, int col) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.63.13">operator == </A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; m) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.60.14">set</A></B>( float const*  const )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.63.14">operator != </A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; m) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.60.15">set</A></B>( float a00, float a01, float a02, float a03, float a10, float a11, float a12, float a13, float a20, float a21, float a22, float a23, float a30, float a31, float a32, float a33)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float&amp; <B><A HREF="#DOC.2.63.15">operator()</A></B>(int row, int col)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float* <B><A HREF="#DOC.2.60.16">ptr</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.63.16">operator()</A></B>(int row, int col) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const float* <B><A HREF="#DOC.2.60.17">ptr</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const bool <B><A HREF="#DOC.2.63.17">valid</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.60.18">ensureRealized</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const bool <B><A HREF="#DOC.2.63.18">isNaN</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.60.19">makeIdentity</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.63.19">set</A></B>( float const*  const )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.60.20">makeScale</A></B>( const <!1><A HREF="Vec3.html">Vec3</A>&amp; )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.63.20">set</A></B>( float a00, float a01, float a02, float a03, float a10, float a11, float a12, float a13, float a20, float a21, float a22, float a23, float a30, float a31, float a32, float a33)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.60.21">makeScale</A></B>( float, float, float )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float* <B><A HREF="#DOC.2.63.21">ptr</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.60.22">makeTranslate</A></B>( const <!1><A HREF="Vec3.html">Vec3</A>&amp; )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const float* <B><A HREF="#DOC.2.63.22">ptr</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.60.23">makeTranslate</A></B>( float, float, float )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.63.23">makeIdentity</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.60.24">makeRotate</A></B>( const <!1><A HREF="Vec3.html">Vec3</A>&amp; from, const <!1><A HREF="Vec3.html">Vec3</A>&amp; to )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.63.24">makeScale</A></B>( const <!1><A HREF="Vec3.html">Vec3</A>&amp; )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.60.25">makeRotate</A></B>( float angle, const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.63.25">makeScale</A></B>( float, float, float )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.60.26">makeRotate</A></B>( float angle, float <!1><A HREF="Viewport.html#DOC.2.112.6">x</A>, float <!1><A HREF="Viewport.html#DOC.2.112.7">y</A>, float <!1><A HREF="Vec4.html#DOC.2.111.14">z</A> )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.63.26">makeTranslate</A></B>( const <!1><A HREF="Vec3.html">Vec3</A>&amp; )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.60.27">makeRotate</A></B>( const <!1><A HREF="Quat.html">Quat</A>&amp; )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.63.27">makeTranslate</A></B>( float, float, float )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.60.28">makeRotate</A></B>( float, float, float )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.63.28">makeRotate</A></B>( const <!1><A HREF="Vec3.html">Vec3</A>&amp; from, const <!1><A HREF="Vec3.html">Vec3</A>&amp; to )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.60.29">invert</A></B>( const <!1><A HREF="Matrix.html">Matrix</A>&amp; )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.63.29">makeRotate</A></B>( float angle, const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.60.30">invertAffine</A></B>( const <!1><A HREF="Matrix.html">Matrix</A>&amp; )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.63.30">makeRotate</A></B>( float angle, float <!1><A HREF="Viewport.html#DOC.2.117.7">x</A>, float <!1><A HREF="Viewport.html#DOC.2.117.8">y</A>, float <!1><A HREF="Vec4.html#DOC.2.116.14">z</A> )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.60.31">identity</A></B>( void )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.63.31">makeRotate</A></B>( const <!1><A HREF="Quat.html">Quat</A>&amp; )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.60.32">scale</A></B>( const <!1><A HREF="Vec3.html">Vec3</A>&amp; )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.63.32">makeRotate</A></B>( float, float, float )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.60.33">scale</A></B>( float, float, float )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.63.33">invert</A></B>( const <!1><A HREF="Matrix.html">Matrix</A>&amp; )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.60.34">translate</A></B>( const <!1><A HREF="Vec3.html">Vec3</A>&amp; )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.63.34">invertAffine</A></B>( const <!1><A HREF="Matrix.html">Matrix</A>&amp; )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.60.35">translate</A></B>( float, float, float )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.63.35">identity</A></B>( void )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.60.36">rotate</A></B>( const <!1><A HREF="Vec3.html">Vec3</A>&amp;, const <!1><A HREF="Vec3.html">Vec3</A>&amp; )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.63.36">scale</A></B>( const <!1><A HREF="Vec3.html">Vec3</A>&amp; )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.60.37">rotate</A></B>( float, float, float, float )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.63.37">scale</A></B>( float, float, float )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.60.38">rotate</A></B>( float angle, const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.63.38">translate</A></B>( const <!1><A HREF="Vec3.html">Vec3</A>&amp; )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.60.39">rotate</A></B>( const <!1><A HREF="Quat.html">Quat</A>&amp; )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.63.39">translate</A></B>( float, float, float )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.60.40">setTrans</A></B>( float tx, float ty, float tz )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.63.40">rotate</A></B>( const <!1><A HREF="Vec3.html">Vec3</A>&amp;, const <!1><A HREF="Vec3.html">Vec3</A>&amp; )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.60.41">setTrans</A></B>( const <!1><A HREF="Vec3.html">Vec3</A>&amp; v )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.63.41">rotate</A></B>( float, float, float, float )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.60.42">getTrans</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.63.42">rotate</A></B>( float angle, const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.60.43">transform3x3</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v, const <!1><A HREF="Matrix.html">Matrix</A>&amp; m)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.63.43">rotate</A></B>( const <!1><A HREF="Quat.html">Quat</A>&amp; )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.63.44">setTrans</A></B>( float tx, float ty, float tz )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.63.45">setTrans</A></B>( const <!1><A HREF="Vec3.html">Vec3</A>&amp; v )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.63.46">getTrans</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.63.47">transform3x3</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v, const <!1><A HREF="Matrix.html">Matrix</A>&amp; m)
 <DD><I>apply apply an 3x3 transform of v*M[02,02]  </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.60.44">transform3x3</A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; m, const <!1><A HREF="Vec3.html">Vec3</A>&amp; v)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.63.48">transform3x3</A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; m, const <!1><A HREF="Vec3.html">Vec3</A>&amp; v)
 <DD><I>apply apply an 3x3 transform of M[02,02]*v  </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.60.45">mult</A></B>( const <!1><A HREF="Matrix.html">Matrix</A>&amp;, const <!1><A HREF="Matrix.html">Matrix</A>&amp; )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.63.49">mult</A></B>( const <!1><A HREF="Matrix.html">Matrix</A>&amp;, const <!1><A HREF="Matrix.html">Matrix</A>&amp; )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.60.46">preMult</A></B>( const <!1><A HREF="Matrix.html">Matrix</A>&amp; )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.63.50">preMult</A></B>( const <!1><A HREF="Matrix.html">Matrix</A>&amp; )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.60.47">postMult</A></B>( const <!1><A HREF="Matrix.html">Matrix</A>&amp; )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.63.51">postMult</A></B>( const <!1><A HREF="Matrix.html">Matrix</A>&amp; )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.60.48">operator *= </A></B>( const <!1><A HREF="Matrix.html">Matrix</A>&amp; other )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.63.52">operator *= </A></B>( const <!1><A HREF="Matrix.html">Matrix</A>&amp; other )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.60.49">operator * </A></B>( const <!1><A HREF="Matrix.html">Matrix</A> &amp;m ) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.63.53">operator * </A></B>( const <!1><A HREF="Matrix.html">Matrix</A> &amp;m ) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.60.52">identity</A></B>(void)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.63.55">identity</A></B>(void)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.60.53">scale</A></B>(float sx, float sy, float sz)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.63.56">scale</A></B>(float sx, float sy, float sz)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.60.54">scale</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.63.57">scale</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.60.55">translate</A></B>(float tx, float ty, float tz)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.63.58">translate</A></B>(float tx, float ty, float tz)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.60.56">translate</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.63.59">translate</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.60.57">rotate</A></B>( const <!1><A HREF="Quat.html">Quat</A>&amp; q )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.63.60">rotate</A></B>( const <!1><A HREF="Quat.html">Quat</A>&amp; q )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.60.58">rotate</A></B>(float angle, float <!1><A HREF="Viewport.html#DOC.2.112.6">x</A>, float <!1><A HREF="Viewport.html#DOC.2.112.7">y</A>, float <!1><A HREF="Vec4.html#DOC.2.111.14">z</A> )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.63.61">rotate</A></B>(float angle, float <!1><A HREF="Viewport.html#DOC.2.117.7">x</A>, float <!1><A HREF="Viewport.html#DOC.2.117.8">y</A>, float <!1><A HREF="Vec4.html#DOC.2.116.14">z</A> )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.60.59">rotate</A></B>(float angle, const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.63.62">rotate</A></B>(float angle, const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.60.60">rotate</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; from, const <!1><A HREF="Vec3.html">Vec3</A>&amp; to )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.63.63">rotate</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; from, const <!1><A HREF="Vec3.html">Vec3</A>&amp; to )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.60.61">postMult</A></B>( const <!1><A HREF="Vec3.html">Vec3</A>&amp; v ) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.63.64">postMult</A></B>( const <!1><A HREF="Vec3.html">Vec3</A>&amp; v ) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.60.62">preMult</A></B>( const <!1><A HREF="Vec3.html">Vec3</A>&amp; v ) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.63.65">preMult</A></B>( const <!1><A HREF="Vec3.html">Vec3</A>&amp; v ) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.60.63">postMult</A></B>( const <!1><A HREF="Vec4.html">Vec4</A>&amp; v ) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.63.66">postMult</A></B>( const <!1><A HREF="Vec4.html">Vec4</A>&amp; v ) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.60.64">preMult</A></B>( const <!1><A HREF="Vec4.html">Vec4</A>&amp; v ) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.63.67">preMult</A></B>( const <!1><A HREF="Vec4.html">Vec4</A>&amp; v ) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.60.65">transform3x3</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v, const <!1><A HREF="Matrix.html">Matrix</A>&amp; m)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.63.68">transform3x3</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v, const <!1><A HREF="Matrix.html">Matrix</A>&amp; m)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.60.66">transform3x3</A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; m, const <!1><A HREF="Vec3.html">Vec3</A>&amp; v)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.63.69">transform3x3</A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; m, const <!1><A HREF="Vec3.html">Vec3</A>&amp; v)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.60.67">operator* </A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.63.70">operator* </A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.60.68">operator* </A></B>(const <!1><A HREF="Vec4.html">Vec4</A>&amp; v) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.63.71">operator* </A></B>(const <!1><A HREF="Vec4.html">Vec4</A>&amp; v) const 
 </DL></P>
 
 </DL>
 <HR><H3>Inherited from <A HREF="Object.html">Object</A>:</H3>
 <DL>
-<P><DL>
-<DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B>clone</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isSameKindAs</B>(const <!1><A HREF="Object.html">Object</A>*) const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
-</DL></P>
-
 </DL>
 <HR><H3>Inherited from <A HREF="Referenced.html">Referenced</A>:</H3>
 <DL>
@@ -193,270 +192,286 @@
 <H2>Documentation</H2>
 <DL>
 
-<A NAME="META_Object"></A>
-<A NAME="DOC.2.60.1"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Object(<!1><A HREF="Matrix.html">Matrix</A>)</B></TT>
-<DL><DT><DD></DL><P>
 <A NAME="Matrix"></A>
-<A NAME="DOC.2.60.2"></A>
+<A NAME="DOC.2.63.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Matrix()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Matrix"></A>
-<A NAME="DOC.2.60.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Matrix( const <!1><A HREF="Matrix.html#DOC.2.60.3">Matrix</A>&amp; other )</B></TT>
+<A NAME="DOC.2.63.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Matrix( const <!1><A HREF="Matrix.html#DOC.2.63.2">Matrix</A>&amp; other)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Matrix"></A>
-<A NAME="DOC.2.60.4"></A>
+<A NAME="DOC.2.63.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>explicit Matrix( float const*  const def )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Matrix"></A>
-<A NAME="DOC.2.60.5"></A>
+<A NAME="DOC.2.63.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Matrix( float a00, float a01, float a02, float a03, float a10, float a11, float a12, float a13, float a20, float a21, float a22, float a23, float a30, float a31, float a32, float a33)</B></TT>
 <DL><DT><DD></DL><P>
+<A NAME="cloneType"></A>
+<A NAME="DOC.2.63.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html">Object</A>* cloneType() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="clone"></A>
+<A NAME="DOC.2.63.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html">Object</A>* clone(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp;) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="isSameKindAs"></A>
+<A NAME="DOC.2.63.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(const <!1><A HREF="Object.html">Object</A>* obj) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="className"></A>
+<A NAME="DOC.2.63.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
+<DL><DT><DD></DL><P>
 <A NAME="~Matrix"></A>
-<A NAME="DOC.2.60.6"></A>
+<A NAME="DOC.2.63.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Matrix()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator = "></A>
-<A NAME="DOC.2.60.7"></A>
+<A NAME="DOC.2.63.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Matrix.html">Matrix</A>&amp; operator = (const <!1><A HREF="Matrix.html">Matrix</A>&amp; )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="compare"></A>
-<A NAME="DOC.2.60.8"></A>
+<A NAME="DOC.2.63.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int compare(const <!1><A HREF="Matrix.html">Matrix</A>&amp; m) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator < "></A>
-<A NAME="DOC.2.60.9"></A>
+<A NAME="DOC.2.63.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool operator < (const <!1><A HREF="Matrix.html">Matrix</A>&amp; m) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator == "></A>
-<A NAME="DOC.2.60.10"></A>
+<A NAME="DOC.2.63.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool operator == (const <!1><A HREF="Matrix.html">Matrix</A>&amp; m) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator != "></A>
-<A NAME="DOC.2.60.11"></A>
+<A NAME="DOC.2.63.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool operator != (const <!1><A HREF="Matrix.html">Matrix</A>&amp; m) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator()"></A>
-<A NAME="DOC.2.60.12"></A>
+<A NAME="DOC.2.63.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   float&amp; operator()(int row, int col)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator()"></A>
-<A NAME="DOC.2.60.13"></A>
+<A NAME="DOC.2.63.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   float operator()(int row, int col) const </B></TT>
 <DL><DT><DD></DL><P>
+<A NAME="valid"></A>
+<A NAME="DOC.2.63.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const bool valid() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="isNaN"></A>
+<A NAME="DOC.2.63.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const bool isNaN() const </B></TT>
+<DL><DT><DD></DL><P>
 <A NAME="set"></A>
-<A NAME="DOC.2.60.14"></A>
+<A NAME="DOC.2.63.19"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void set( float const*  const )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="set"></A>
-<A NAME="DOC.2.60.15"></A>
+<A NAME="DOC.2.63.20"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void set( float a00, float a01, float a02, float a03, float a10, float a11, float a12, float a13, float a20, float a21, float a22, float a23, float a30, float a31, float a32, float a33)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ptr"></A>
-<A NAME="DOC.2.60.16"></A>
+<A NAME="DOC.2.63.21"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float* ptr()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ptr"></A>
-<A NAME="DOC.2.60.17"></A>
+<A NAME="DOC.2.63.22"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const float* ptr() const </B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="ensureRealized"></A>
-<A NAME="DOC.2.60.18"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void ensureRealized() const </B></TT>
-<DL><DT><DD></DL><P>
 <A NAME="makeIdentity"></A>
-<A NAME="DOC.2.60.19"></A>
+<A NAME="DOC.2.63.23"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void makeIdentity()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="makeScale"></A>
-<A NAME="DOC.2.60.20"></A>
+<A NAME="DOC.2.63.24"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void makeScale( const <!1><A HREF="Vec3.html">Vec3</A>&amp; )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="makeScale"></A>
-<A NAME="DOC.2.60.21"></A>
+<A NAME="DOC.2.63.25"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void makeScale( float, float, float )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="makeTranslate"></A>
-<A NAME="DOC.2.60.22"></A>
+<A NAME="DOC.2.63.26"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void makeTranslate( const <!1><A HREF="Vec3.html">Vec3</A>&amp; )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="makeTranslate"></A>
-<A NAME="DOC.2.60.23"></A>
+<A NAME="DOC.2.63.27"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void makeTranslate( float, float, float )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="makeRotate"></A>
-<A NAME="DOC.2.60.24"></A>
+<A NAME="DOC.2.63.28"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void makeRotate( const <!1><A HREF="Vec3.html">Vec3</A>&amp; from, const <!1><A HREF="Vec3.html">Vec3</A>&amp; to )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="makeRotate"></A>
-<A NAME="DOC.2.60.25"></A>
+<A NAME="DOC.2.63.29"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void makeRotate( float angle, const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="makeRotate"></A>
-<A NAME="DOC.2.60.26"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void makeRotate( float angle, float <!1><A HREF="Viewport.html#DOC.2.112.6">x</A>, float <!1><A HREF="Viewport.html#DOC.2.112.7">y</A>, float <!1><A HREF="Vec4.html#DOC.2.111.14">z</A> )</B></TT>
+<A NAME="DOC.2.63.30"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void makeRotate( float angle, float <!1><A HREF="Viewport.html#DOC.2.117.7">x</A>, float <!1><A HREF="Viewport.html#DOC.2.117.8">y</A>, float <!1><A HREF="Vec4.html#DOC.2.116.14">z</A> )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="makeRotate"></A>
-<A NAME="DOC.2.60.27"></A>
+<A NAME="DOC.2.63.31"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void makeRotate( const <!1><A HREF="Quat.html">Quat</A>&amp; )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="makeRotate"></A>
-<A NAME="DOC.2.60.28"></A>
+<A NAME="DOC.2.63.32"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void makeRotate( float, float, float )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="invert"></A>
-<A NAME="DOC.2.60.29"></A>
+<A NAME="DOC.2.63.33"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool invert( const <!1><A HREF="Matrix.html">Matrix</A>&amp; )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="invertAffine"></A>
-<A NAME="DOC.2.60.30"></A>
+<A NAME="DOC.2.63.34"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool invertAffine( const <!1><A HREF="Matrix.html">Matrix</A>&amp; )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="identity"></A>
-<A NAME="DOC.2.60.31"></A>
+<A NAME="DOC.2.63.35"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline static   <!1><A HREF="Matrix.html">Matrix</A> identity( void )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="scale"></A>
-<A NAME="DOC.2.60.32"></A>
+<A NAME="DOC.2.63.36"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline static   <!1><A HREF="Matrix.html">Matrix</A> scale( const <!1><A HREF="Vec3.html">Vec3</A>&amp; )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="scale"></A>
-<A NAME="DOC.2.60.33"></A>
+<A NAME="DOC.2.63.37"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline static   <!1><A HREF="Matrix.html">Matrix</A> scale( float, float, float )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="translate"></A>
-<A NAME="DOC.2.60.34"></A>
+<A NAME="DOC.2.63.38"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline static   <!1><A HREF="Matrix.html">Matrix</A> translate( const <!1><A HREF="Vec3.html">Vec3</A>&amp; )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="translate"></A>
-<A NAME="DOC.2.60.35"></A>
+<A NAME="DOC.2.63.39"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline static   <!1><A HREF="Matrix.html">Matrix</A> translate( float, float, float )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="rotate"></A>
-<A NAME="DOC.2.60.36"></A>
+<A NAME="DOC.2.63.40"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline static   <!1><A HREF="Matrix.html">Matrix</A> rotate( const <!1><A HREF="Vec3.html">Vec3</A>&amp;, const <!1><A HREF="Vec3.html">Vec3</A>&amp; )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="rotate"></A>
-<A NAME="DOC.2.60.37"></A>
+<A NAME="DOC.2.63.41"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline static   <!1><A HREF="Matrix.html">Matrix</A> rotate( float, float, float, float )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="rotate"></A>
-<A NAME="DOC.2.60.38"></A>
+<A NAME="DOC.2.63.42"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline static   <!1><A HREF="Matrix.html">Matrix</A> rotate( float angle, const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="rotate"></A>
-<A NAME="DOC.2.60.39"></A>
+<A NAME="DOC.2.63.43"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline static   <!1><A HREF="Matrix.html">Matrix</A> rotate( const <!1><A HREF="Quat.html">Quat</A>&amp; )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setTrans"></A>
-<A NAME="DOC.2.60.40"></A>
+<A NAME="DOC.2.63.44"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setTrans( float tx, float ty, float tz )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setTrans"></A>
-<A NAME="DOC.2.60.41"></A>
+<A NAME="DOC.2.63.45"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setTrans( const <!1><A HREF="Vec3.html">Vec3</A>&amp; v )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getTrans"></A>
-<A NAME="DOC.2.60.42"></A>
+<A NAME="DOC.2.63.46"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec3.html">Vec3</A> getTrans() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="transform3x3"></A>
-<A NAME="DOC.2.60.43"></A>
+<A NAME="DOC.2.63.47"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline static   <!1><A HREF="Vec3.html">Vec3</A> transform3x3(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v, const <!1><A HREF="Matrix.html">Matrix</A>&amp; m)</B></TT>
 <DD>apply apply an 3x3 transform of v*M[02,02]  
 <DL><DT><DD></DL><P>
 <A NAME="transform3x3"></A>
-<A NAME="DOC.2.60.44"></A>
+<A NAME="DOC.2.63.48"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline static   <!1><A HREF="Vec3.html">Vec3</A> transform3x3(const <!1><A HREF="Matrix.html">Matrix</A>&amp; m, const <!1><A HREF="Vec3.html">Vec3</A>&amp; v)</B></TT>
 <DD>apply apply an 3x3 transform of M[02,02]*v  
 <DL><DT><DD></DL><P>
 <A NAME="mult"></A>
-<A NAME="DOC.2.60.45"></A>
+<A NAME="DOC.2.63.49"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void mult( const <!1><A HREF="Matrix.html">Matrix</A>&amp;, const <!1><A HREF="Matrix.html">Matrix</A>&amp; )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="preMult"></A>
-<A NAME="DOC.2.60.46"></A>
+<A NAME="DOC.2.63.50"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void preMult( const <!1><A HREF="Matrix.html">Matrix</A>&amp; )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="postMult"></A>
-<A NAME="DOC.2.60.47"></A>
+<A NAME="DOC.2.63.51"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void postMult( const <!1><A HREF="Matrix.html">Matrix</A>&amp; )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator *= "></A>
-<A NAME="DOC.2.60.48"></A>
+<A NAME="DOC.2.63.52"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void operator *= ( const <!1><A HREF="Matrix.html">Matrix</A>&amp; other )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator * "></A>
-<A NAME="DOC.2.60.49"></A>
+<A NAME="DOC.2.63.53"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Matrix.html">Matrix</A> operator * ( const <!1><A HREF="Matrix.html">Matrix</A> &amp;m ) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="identity"></A>
-<A NAME="DOC.2.60.52"></A>
+<A NAME="DOC.2.63.55"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Matrix.html">Matrix</A> identity(void)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="scale"></A>
-<A NAME="DOC.2.60.53"></A>
+<A NAME="DOC.2.63.56"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Matrix.html">Matrix</A> scale(float sx, float sy, float sz)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="scale"></A>
-<A NAME="DOC.2.60.54"></A>
+<A NAME="DOC.2.63.57"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Matrix.html">Matrix</A> scale(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="translate"></A>
-<A NAME="DOC.2.60.55"></A>
+<A NAME="DOC.2.63.58"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Matrix.html">Matrix</A> translate(float tx, float ty, float tz)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="translate"></A>
-<A NAME="DOC.2.60.56"></A>
+<A NAME="DOC.2.63.59"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Matrix.html">Matrix</A> translate(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="rotate"></A>
-<A NAME="DOC.2.60.57"></A>
+<A NAME="DOC.2.63.60"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Matrix.html">Matrix</A> rotate( const <!1><A HREF="Quat.html">Quat</A>&amp; q )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="rotate"></A>
-<A NAME="DOC.2.60.58"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Matrix.html">Matrix</A> rotate(float angle, float <!1><A HREF="Viewport.html#DOC.2.112.6">x</A>, float <!1><A HREF="Viewport.html#DOC.2.112.7">y</A>, float <!1><A HREF="Vec4.html#DOC.2.111.14">z</A> )</B></TT>
+<A NAME="DOC.2.63.61"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Matrix.html">Matrix</A> rotate(float angle, float <!1><A HREF="Viewport.html#DOC.2.117.7">x</A>, float <!1><A HREF="Viewport.html#DOC.2.117.8">y</A>, float <!1><A HREF="Vec4.html#DOC.2.116.14">z</A> )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="rotate"></A>
-<A NAME="DOC.2.60.59"></A>
+<A NAME="DOC.2.63.62"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Matrix.html">Matrix</A> rotate(float angle, const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="rotate"></A>
-<A NAME="DOC.2.60.60"></A>
+<A NAME="DOC.2.63.63"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Matrix.html">Matrix</A> rotate(const <!1><A HREF="Vec3.html">Vec3</A>&amp; from, const <!1><A HREF="Vec3.html">Vec3</A>&amp; to )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="postMult"></A>
-<A NAME="DOC.2.60.61"></A>
+<A NAME="DOC.2.63.64"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Vec3.html">Vec3</A> postMult( const <!1><A HREF="Vec3.html">Vec3</A>&amp; v ) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="preMult"></A>
-<A NAME="DOC.2.60.62"></A>
+<A NAME="DOC.2.63.65"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Vec3.html">Vec3</A> preMult( const <!1><A HREF="Vec3.html">Vec3</A>&amp; v ) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="postMult"></A>
-<A NAME="DOC.2.60.63"></A>
+<A NAME="DOC.2.63.66"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Vec4.html">Vec4</A> postMult( const <!1><A HREF="Vec4.html">Vec4</A>&amp; v ) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="preMult"></A>
-<A NAME="DOC.2.60.64"></A>
+<A NAME="DOC.2.63.67"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Vec4.html">Vec4</A> preMult( const <!1><A HREF="Vec4.html">Vec4</A>&amp; v ) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="transform3x3"></A>
-<A NAME="DOC.2.60.65"></A>
+<A NAME="DOC.2.63.68"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Vec3.html">Vec3</A> transform3x3(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v, const <!1><A HREF="Matrix.html">Matrix</A>&amp; m)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="transform3x3"></A>
-<A NAME="DOC.2.60.66"></A>
+<A NAME="DOC.2.63.69"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Vec3.html">Vec3</A> transform3x3(const <!1><A HREF="Matrix.html">Matrix</A>&amp; m, const <!1><A HREF="Vec3.html">Vec3</A>&amp; v)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator* "></A>
-<A NAME="DOC.2.60.67"></A>
+<A NAME="DOC.2.63.70"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Vec3.html">Vec3</A> operator* (const <!1><A HREF="Vec3.html">Vec3</A>&amp; v) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator* "></A>
-<A NAME="DOC.2.60.68"></A>
+<A NAME="DOC.2.63.71"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Vec4.html">Vec4</A> operator* (const <!1><A HREF="Vec4.html">Vec4</A>&amp; v) const </B></TT>
 <DL><DT><DD></DL><P></DL>
 

@@ -14,7 +14,11 @@
 </UL>
 <H2>Functions</H2>
 <UL>
+<LI><B>(x):</B>
+<UL>
 <LI><A HREF="General.html#(x)">(x)</A>
+<LI><A HREF="General.html#(x)">(x)</A>
+</UL>
 <LI><A HREF="osgGetLibraryName.html">osgGetLibraryName</A> <I> getLibraryName_osg() returns the library name in human friendly form</I>
 <LI><A HREF="osgGetVersion.html">osgGetVersion</A> <I> getVersion_osg() returns the library version number.</I>
 </UL>
@@ -48,19 +52,6 @@
 <LI><A HREF="General.html#GL_TEXTURE_COMPRESSION_HINT_ARB">GL_TEXTURE_COMPRESSION_HINT_ARB</A>
 <LI><A HREF="General.html#GL_TEXTURE_IMAGE_SIZE_ARB">GL_TEXTURE_IMAGE_SIZE_ARB</A>
 <LI><A HREF="General.html#GL_TEXTURE_MAX_ANISOTROPY_EXT">GL_TEXTURE_MAX_ANISOTROPY_EXT</A>
-<LI><A HREF="General.html#M_1_PI">M_1_PI</A>
-<LI><A HREF="General.html#M_2_PI">M_2_PI</A>
-<LI><A HREF="General.html#M_2_SQRTPI">M_2_SQRTPI</A>
-<LI><A HREF="General.html#M_E">M_E</A>
-<LI><A HREF="General.html#M_LN10">M_LN10</A>
-<LI><A HREF="General.html#M_LN2">M_LN2</A>
-<LI><A HREF="General.html#M_LOG10E">M_LOG10E</A>
-<LI><A HREF="General.html#M_LOG2E">M_LOG2E</A>
-<LI><A HREF="General.html#M_PI">M_PI</A>
-<LI><A HREF="General.html#M_PI_2">M_PI_2</A>
-<LI><A HREF="General.html#M_PI_4">M_PI_4</A>
-<LI><A HREF="General.html#M_SQRT1_2">M_SQRT1_2</A>
-<LI><A HREF="General.html#M_SQRT2">M_SQRT2</A>
 <LI><B>NULL:</B>
 <UL>
 <LI><A HREF="General.html#NULL">NULL</A>
@@ -77,6 +68,7 @@
 <LI><A HREF="General.html#OSG_CLIPPLANE">OSG_CLIPPLANE</A>
 <LI><A HREF="General.html#OSG_COLORMASK">OSG_COLORMASK</A>
 <LI><A HREF="General.html#OSG_COLORMATRIX">OSG_COLORMATRIX</A>
+<LI><A HREF="General.html#OSG_COPYOP">OSG_COPYOP</A>
 <LI><A HREF="General.html#OSG_CULLFACE">OSG_CULLFACE</A>
 <LI><A HREF="General.html#OSG_DEPTH">OSG_DEPTH</A>
 <LI><A HREF="General.html#OSG_DRAWABLE">OSG_DRAWABLE</A>
@@ -105,7 +97,7 @@
 <LI><A HREF="General.html#OSG_MEMORYADAPTER">OSG_MEMORYADAPTER</A>
 <LI><A HREF="General.html#OSG_MEM_PTR">OSG_MEM_PTR</A>
 <LI><A HREF="General.html#OSG_NODE">OSG_NODE</A>
-<LI><A HREF="General.html#OSG_NODECALLBACK">OSG_NODECALLBACK</A>
+<LI><A HREF="OSG_NODECALLBACK.html">OSG_NODECALLBACK</A> <I>A vector of Nodes pointers which is used to describe the path from a root node to a descendant</I>
 <LI><A HREF="General.html#OSG_NODEVISITOR">OSG_NODEVISITOR</A>
 <LI><A HREF="General.html#OSG_NOTIFY">OSG_NOTIFY</A>
 <LI><A HREF="General.html#OSG_OBJECT">OSG_OBJECT</A>
@@ -113,9 +105,11 @@
 <LI><A HREF="General.html#OSG_POINT">OSG_POINT</A>
 <LI><A HREF="General.html#OSG_POLYGONMODE">OSG_POLYGONMODE</A>
 <LI><A HREF="General.html#OSG_POLYGONOFFSET">OSG_POLYGONOFFSET</A>
+<LI><A HREF="General.html#OSG_POSITIONATTITIDETRANSFORM">OSG_POSITIONATTITIDETRANSFORM</A>
 <LI><A HREF="General.html#OSG_QUAT">OSG_QUAT</A>
 <LI><A HREF="General.html#OSG_REFERENCED">OSG_REFERENCED</A>
 <LI><A HREF="General.html#OSG_REF_PTR">OSG_REF_PTR</A>
+<LI><A HREF="General.html#OSG_SHADEMODEL">OSG_SHADEMODEL</A>
 <LI><A HREF="General.html#OSG_STATE">OSG_STATE</A>
 <LI><A HREF="General.html#OSG_STATEATTRIBUTE">OSG_STATEATTRIBUTE</A>
 <LI><A HREF="General.html#OSG_STATESET">OSG_STATESET</A>
@@ -142,20 +136,17 @@
 </UL>
 <LI><A HREF="General.html#WIN32_LEAN_AND_MEAN">WIN32_LEAN_AND_MEAN</A>
 <LI><A HREF="General.html#WINGDIAPI">WINGDIAPI</A>
+<LI><A HREF="General.html#_WCHAR_T_DEFINED">_WCHAR_T_DEFINED</A>
 <LI><A HREF="General.html#__OSG_MATH">__OSG_MATH</A>
 <LI><A HREF="General.html#acosf">acosf</A>
 <LI><A HREF="General.html#asinf">asinf</A>
 <LI><A HREF="General.html#cosf">cosf</A>
+<LI><A HREF="General.html#fabs">fabs</A>
 <LI><A HREF="General.html#floorf">floorf</A>
 <LI><A HREF="General.html#logf">logf</A>
 <LI><A HREF="General.html#powf">powf</A>
 <LI><A HREF="General.html#sinf">sinf</A>
 <LI><A HREF="General.html#sqrtf">sqrtf</A>
-</UL>
-<H2>Typedefs</H2>
-<UL>
-<LI><A HREF="NodePath.html">NodePath</A> <I>A vector of Nodes pointers which is used to describe the path from a root node to a descendant</I>
-<LI><A HREF="General.html#ubyte">ubyte</A>
 </UL>
 <P><I><A HREF="HIER.html">Hierarchy of classes</A></I></P><HR>
 <BR>

@@ -11,11 +11,11 @@
 <HR>
 
 <H2>Inheritance:</H2>
-<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=275>
-<param name=classes value="CReferenced,MReferenced.html,CObject,MObject.html,CStatistics,MStatistics.html,CStateSet,MStateSet.html,CStateAttribute,MStateAttribute.html,CNode,MNode.html,CMatrix,MMatrix.html,CImage,MImage.html,CDrawable,MDrawable.html">
-<param name=before value="M,M,M|_,MR_,MR_,MR_,MR_,MR_,Mr_">
-<param name=after value="Md_,M,M,M,M,M,M,M,M">
-<param name=indent value="0,1,1,1,1,1,1,1,1">
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=245>
+<param name=classes value="CReferenced,MReferenced.html,CObject,MObject.html,CStateSet,MStateSet.html,CStateAttribute,MStateAttribute.html,CNode,MNode.html,CMatrix,MMatrix.html,CImage,MImage.html,CDrawable,MDrawable.html">
+<param name=before value="M,M,M|_,MR_,MR_,MR_,MR_,Mr_">
+<param name=after value="Md_,M,M,M,M,M,M,M">
+<param name=indent value="0,1,1,1,1,1,1,1">
 <param name=arrowdir value="down">
 </APPLET>
 <HR>
@@ -23,21 +23,27 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.81.1">Object</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.84.1">Object</A></B>()
 <DD><I>Construct an object.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.81.2">clone</A></B>() const  = 0
-<DD><I>return a shallow copy of a node, with Object* return type.</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.84.2">Object</A></B>(const <!1><A HREF="Object.html#DOC.2.84.2">Object</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<DD><I>Copy constructor, optional CopyOp object can be used to control shallow vs deep copying of dynamic data</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.81.3">isSameKindAs</A></B>(const <!1><A HREF="Object.html">Object</A>*) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.84.3">cloneType</A></B>() const  = 0
+<DD><I>Clone the type of an object, with Object* return type.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.81.4">className</A></B>() const  = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.84.4">clone</A></B>(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp;) const  = 0
+<DD><I>Clone the an object, with Object* return type.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.84.5">isSameKindAs</A></B>(const <!1><A HREF="Object.html">Object</A>*) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.84.6">className</A></B>() const  = 0
 <DD><I>return the name of the object's class type.</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.81.5">~Object</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.84.7">~Object</A></B>()
 <DD><I>Object destructor.</I>
 </DL></P>
 
@@ -71,31 +77,43 @@ Based on GOF Composite, Prototype and Template Method patterns.</BLOCKQUOTE>
 <DL>
 
 <A NAME="Object"></A>
-<A NAME="DOC.2.81.1"></A>
+<A NAME="DOC.2.84.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Object()</B></TT>
 <DD>Construct an object. Note Object is a pure virtual base class
 and therefore cannot be constructed on its own, only derived
 classes which override the clone and className methods are
 concrete classes and can be constructed.
 <DL><DT><DD></DL><P>
+<A NAME="Object"></A>
+<A NAME="DOC.2.84.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Object(const <!1><A HREF="Object.html#DOC.2.84.2">Object</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<DD>Copy constructor, optional CopyOp object can be used to control
+shallow vs deep copying of dynamic data
+<DL><DT><DD></DL><P>
+<A NAME="cloneType"></A>
+<A NAME="DOC.2.84.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html">Object</A>* cloneType() const  = 0</B></TT>
+<DD>Clone the type of an object, with Object* return type.
+Must be defined by derived classes.
+<DL><DT><DD></DL><P>
 <A NAME="clone"></A>
-<A NAME="DOC.2.81.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html">Object</A>* clone() const  = 0</B></TT>
-<DD>return a shallow copy of a node, with Object* return type.
+<A NAME="DOC.2.84.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html">Object</A>* clone(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp;) const  = 0</B></TT>
+<DD>Clone the an object, with Object* return type.
 Must be defined by derived classes.
 <DL><DT><DD></DL><P>
 <A NAME="isSameKindAs"></A>
-<A NAME="DOC.2.81.3"></A>
+<A NAME="DOC.2.84.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(const <!1><A HREF="Object.html">Object</A>*) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="className"></A>
-<A NAME="DOC.2.81.4"></A>
+<A NAME="DOC.2.84.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const  = 0</B></TT>
 <DD>return the name of the object's class type. Must be defined
 by derived classes.
 <DL><DT><DD></DL><P>
 <A NAME="~Object"></A>
-<A NAME="DOC.2.81.5"></A>
+<A NAME="DOC.2.84.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Object()</B></TT>
 <DD>Object destructor. Note, is protected so that Objects cannot
 be deleted other than by being dereferenced and the reference
@@ -107,8 +125,7 @@ forcing all nodes to be created on the heap i.e Node* node
 <DL><DT><DD></DL><P></DL>
 <HR>
 <DL><DT><B>Direct child classes:
-</B><DD><A HREF="Statistics.html">Statistics</A><BR>
-<A HREF="StateSet.html">StateSet</A><BR>
+</B><DD><A HREF="StateSet.html">StateSet</A><BR>
 <A HREF="StateAttribute.html">StateAttribute</A><BR>
 <A HREF="Node.html">Node</A><BR>
 <A HREF="Matrix.html">Matrix</A><BR>

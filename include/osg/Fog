@@ -67,7 +67,7 @@ class SG_EXPORT Fog : public StateAttribute
             EXP2   = GL_EXP2
         };
 
-        inline void  setMode( const Mode mode )         { _mode = mode; }
+        inline void  setMode( Mode mode )         { _mode = mode; }
         inline Mode getMode() const                     { return _mode; }
 
         inline void  setDensity( float density )  { _density = density; }

@@ -133,10 +133,10 @@ class SG_EXPORT Node : public Object
         /** Set cull node callback, called during cull traversal. */
         void setCullCallback(NodeCallback* nc) { _cullCallback = nc; }
 
-        /** Get app node callback, called during app traversal. */
+        /** Get cull node callback, called during cull traversal. */
         inline NodeCallback* getCullCallback() { return _cullCallback.get(); }
 
-        /** Get const app node callback, called during app traversal. */
+        /** Get const cull node callback, called during cull traversal. */
         inline const NodeCallback* getCullCallback() const { return _cullCallback.get(); }
 
         /** Set the view frustum/small feature culling of this node to be active or inactive.

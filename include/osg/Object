@@ -72,10 +72,10 @@ class SG_EXPORT Object : public Referenced
            * Can be set to either STATIC for values that do not change over the lifetime of the object,
            * or DYNAMIC for values that vary over the lifetime of the object. The DataVariance value
            * can be used be routines such as optimzation codes that wish to share static data.*/
-        inline void setDataVariance(const DataVariance dv) { _dataVariance = dv; }
+        inline void setDataVariance(DataVariance dv) { _dataVariance = dv; }
 
         /** Get the data variance of this object.*/
-        inline const DataVariance getDataVariance() const { return _dataVariance; }
+        inline DataVariance getDataVariance() const { return _dataVariance; }
 
 
         /**

@@ -518,7 +518,15 @@ class CompositeShape : public Shape
 
 	/** find the index number of child, if child is not found then it returns getNumChildren(),
 	  * so should be used in similar sytle of STL's result!=end().*/ 
-	unsigned int findChildNo(Shape* shape);
+	unsigned int findChildNo(Shape* shape) const
+        { 
+            for (unsigned int childNo=0;childNo<_children.size();++childNo)
+            {
+                if (_children[childNo]==shape) return childNo;
+            }
+            return _children.size(); // node not found.
+
+        }
 	
     protected:
     

@@ -18,7 +18,7 @@ button (or left and right simultaneously) stops dead.
 
 class OSGGA_EXPORT FlightManipulator : public CameraManipulator
 {
-public:
+    public:
 
         FlightManipulator();
         virtual ~FlightManipulator();
@@ -43,7 +43,7 @@ public:
         /**        Configure the Yaw control for the flight model.        */
         void setYawControlMode(YawControlMode ycm) { _yawMode = ycm; }
 
-private:
+    protected:
 
         /** Reset the internal GUIEvent stack.*/
         void flushMouseEventStack();

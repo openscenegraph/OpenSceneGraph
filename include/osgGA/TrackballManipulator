@@ -39,7 +39,7 @@ class OSGGA_EXPORT TrackballManipulator : public CameraManipulator
         /** handle events, return true if handled, false otherwise.*/
         virtual bool handle(const GUIEventAdapter& ea,GUIActionAdapter& us);
 
-    private:
+    protected:
 
         /** Reset the internal GUIEvent stack.*/
         void flushMouseEventStack();

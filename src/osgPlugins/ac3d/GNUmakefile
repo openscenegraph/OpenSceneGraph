@@ -2,6 +2,8 @@ TOPDIR = ../../..
 include $(TOPDIR)/Make/makedefs 
 
 CXXFILES =\
+        Exception.cpp\
+        Geode.cpp\
 	ac3d.cpp\
 
 LIBS  += $(OSG_LIBS) $(OTHER_LIBS)

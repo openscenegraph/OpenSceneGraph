@@ -96,10 +96,30 @@ LINK32=link.exe
 
 SOURCE=..\..\..\src\osgPlugins\ac3d\ac3d.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ac3d\Exception.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ac3d\Geode.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ac3d\Exception.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ac3d\Geode.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ac3d\osgac3d.h
+# End Source File
 # End Group
 # Begin Group "Resource Files"
 

@@ -32,6 +32,8 @@
 #define GL_STORAGE_SHARED_APPLE           0x85BF
 #endif
 
+// #define DO_TIMING
+
 using namespace osg;
 
 TextureRectangle::TextureRectangle():
@@ -263,7 +265,7 @@ void TextureRectangle::applyTexImage_load(GLenum target, Image* image, State& st
                  image->s(), image->t(), 0,
                  (GLenum)image->getPixelFormat(),
                  (GLenum)image->getDataType(),
-                 image->data() + -dataMinusOffset+dataPlusOffset);
+                 image->data() + dataPlusOffset-dataMinusOffset);
     
 
     if (pbo)
@@ -305,7 +307,6 @@ void TextureRectangle::applyTexImage_subload(GLenum target, Image* image, State&
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, image->getPacking());
 
-// #define DO_TIMING
 #ifdef DO_TIMING
     osg::Timer_t start_tick = osg::Timer::instance()->tick();
     osg::notify(osg::NOTICE)<<"glTexSubImage2D pixelFormat = "<<std::hex<<image->getPixelFormat()<<std::dec<<std::endl;
@@ -337,7 +338,7 @@ void TextureRectangle::applyTexImage_subload(GLenum target, Image* image, State&
                  image->s(), image->t(),
                  (GLenum)image->getPixelFormat(),
                  (GLenum)image->getDataType(),
-                 image->data() + -dataMinusOffset+dataPlusOffset);
+                 image->data() + dataPlusOffset-dataMinusOffset);
 
     if (pbo)
     {

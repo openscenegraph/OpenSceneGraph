@@ -27,6 +27,33 @@
 
 using namespace osgText;
 
+// define the default paths to look for fonts.
+// note delimator is : for unix, ; for windows.
+#if defined(__linux) || defined(__FreeBSD__) || defined (__sgi)
+    static char* s_FontFilePath = "/usr/share/fonts/ttf:/usr/share/fonts/ttf/western:/usr/share/fonts/ttf/decoratives";
+#elif defined(WIN32)
+    static char* s_FontFilePath = ".;";
+#else
+    static char* s_FontFilePath = ".:";
+#endif
+
+std::string findFontFile(const std::string& str)
+{
+    // try looking in OSGFILEPATH etc first for fonts.
+    char* filename = osgDB::findFile(str.c_str());
+    if (filename) return std::string(filename);
+
+    // else fallback into the standard font file paths.
+    if (s_FontFilePath)
+    {
+        filename = osgDB::findFileInPath(str.c_str(),s_FontFilePath);
+        if (filename) return std::string(filename);
+    }
+    
+    return std::string();
+}
+
+
 
 ///////////////////////////////////////////////////////////////////////////////
 // Font
@@ -66,20 +93,18 @@ open(const std::string& font)
 {
 	clear();
         
-        char* filename = osgDB::findFile(font.c_str());
-        if (filename)
-        {
+        std::string filename = findFontFile(font);
+        if (filename.empty()) return false;
 
-	    _font=createFontObj();
-	    if( _font!=NULL && _font->Open(filename) )
-	    {
-		    _init=true;
-		    _fontName=font;
-		    return true;
-	    }
-	    else
-		    return false;
-        }
+	_font=createFontObj();
+	if( _font!=NULL && _font->Open(filename.c_str()) )
+	{
+		_init=true;
+		_fontName=font;
+		return true;
+	}
+	else
+		return false;
 }
 
 bool Font::

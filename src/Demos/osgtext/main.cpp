@@ -49,8 +49,8 @@ std::string    ttfPath1("./fonts/verdana.ttf");
 
 #else
 
-std::string    ttfPath("/usr/share/fonts/ttf/western/fudd.ttf");
-std::string    ttfPath1("/usr/share/fonts/ttf/western/fudd.ttf");
+std::string    ttfPath("dirtydoz.ttf");
+std::string    ttfPath1("fudd.ttf");
 
 #endif
 

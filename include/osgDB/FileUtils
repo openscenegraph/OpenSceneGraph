@@ -24,6 +24,9 @@ OSGDB_EXPORT extern void setFilePath( const char *_path );
 /** set the data file path.*/
 OSGDB_EXPORT extern const char* getFilePath();
 
+/** find specified file if specified file path.*/
+OSGDB_EXPORT extern char *osgDB::findFileInPath( const char *_file, const char * filePath );
+
 /** find specified file on the set data file path.*/
 OSGDB_EXPORT extern char *findFile( const char *file );
 

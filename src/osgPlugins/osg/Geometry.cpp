@@ -230,36 +230,15 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
-    if (fr.matchSequence("FogCoordArray %i {"))
+    if (fr.matchSequence("FogCoordArray %w %i {"))
     {
-        int entry = fr[0].getNoNestedBrackets();
-
-        int capacity;
-        fr[1].getInt(capacity);
-        
-        FloatArray* fogcoords = new FloatArray;
-        fogcoords->reserve(capacity);
-
-        fr += 3;
-
-        while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
-        {
-            float fc;
-            if (fr[0].getFloat(fc))
-            {
-                ++fr;
-                fogcoords->push_back(fc);
-            }
-            else
-            {
-                ++fr;
-            }
-        }
-        
-        geom.setFogCoordArray(fogcoords);
-        
-        iteratorAdvanced = true;
         ++fr;
+        Array* fogcoords = Array_readLocalData(fr);
+        if (fogcoords)
+        {
+            geom.setFogCoordArray(fogcoords);
+            iteratorAdvanced = true;
+        }
     }
 
     if (fr.matchSequence("FogCoordIndices %w %i {"))
@@ -963,12 +942,8 @@ bool Geometry_writeLocalData(const Object& obj, Output& fw)
     if (geom.getFogCoordArray())
     {
         fw.indent()<<"FogCoordBinding "<<Geometry_getBindingTypeStr(geom.getFogCoordBinding())<<std::endl;
-
-        const FloatArray& fogcoords = *geom.getFogCoordArray();
-        fw.indent()<<"FogCoordArray "<<fogcoords.size()<<std::endl;
-        
-        Array_writeLocalData(fw,fogcoords.begin(),fogcoords.end());
-        
+        fw.indent()<<"FogCoordArray ";
+        Array_writeLocalData(*geom.getFogCoordArray(),fw);
     }
     if (geom.getFogCoordIndices())
     {

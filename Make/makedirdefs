@@ -106,5 +106,6 @@ DEMOS_DIRS = \
 	osgtexture3D\
 	osgunittests\
 	osgversion\
+	osgvertexprogram\
 	osgviews\
 	sgv

@@ -1,6 +1,14 @@
 #include <osg/ArgumentParser>
+#include <osg/ApplicationUsage>
 
 using namespace osg;
+
+ArgumentParser::ArgumentParser(int* argc,char **argv):
+    _argc(argc),
+    _argv(argv),
+    _usage(ApplicationUsage::instance())
+{
+}
 
 std::string ArgumentParser::getProgramName() const
 {

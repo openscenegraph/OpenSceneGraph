@@ -11,6 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/DisplaySettings>
+#include <osg/ArgumentParser>
 #include <osg/ApplicationUsage>
 #include <osg/ref_ptr>
 

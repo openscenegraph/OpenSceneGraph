@@ -10,6 +10,7 @@ CXXFILES =\
         ColorMask.cpp\
         ConvexPlanarOccluder.cpp\
         CullFace.cpp\
+        ClipNode.cpp\
         Depth.cpp\
         DOFTransform.cpp\
         Drawable.cpp\

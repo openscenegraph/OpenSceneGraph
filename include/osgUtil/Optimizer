@@ -326,7 +326,7 @@ class OSGUTIL_EXPORT Optimizer
                 MergeGeometryVisitor() : osg::NodeVisitor(TRAVERSE_ALL_CHILDREN) {}
 
                 virtual void apply(osg::Geode& geode) { mergeGeode(geode); }
-                virtual void apply(osg::Billboard& billboard) { /* don't do anything*/ }
+                virtual void apply(osg::Billboard&) { /* don't do anything*/ }
 
                 static bool mergeGeode(osg::Geode& geode);
                 static bool mergeGeometry(osg::Geometry& lhs,osg::Geometry& rhs);

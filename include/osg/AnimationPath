@@ -24,17 +24,18 @@ class SG_EXPORT AnimationPath : public osg::Referenced
 
         struct ControlPoint
         {
-            ControlPoint() {}
+            ControlPoint():
+                _scale(1.0f,1.0f,1.0f) {}
 
             ControlPoint(const osg::Vec3& position):
                 _position(position),
                 _rotation(),
-                _scale() {}
+                _scale(1.0f,1.0f,1.0f) {}
 
             ControlPoint(const osg::Vec3& position, const osg::Quat& rotation):
                 _position(position),
                 _rotation(rotation),
-                _scale() {}
+                _scale(1.0f,1.0f,1.0f) {}
 
             ControlPoint(const osg::Vec3& position, const osg::Quat& rotation, const osg::Vec3& scale):
                 _position(position),

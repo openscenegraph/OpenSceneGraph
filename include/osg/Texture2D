@@ -123,7 +123,7 @@ class SG_EXPORT Texture2D : public Texture
         // Image::ensureDimensionsArePowerOfTwo() can only be called
         // in a valid OpenGL context, a therefore within an Texture::apply
         // which is const...
-        mutable ref_ptr<Image> _image;
+        ref_ptr<Image> _image;
 
         // subloaded images can have different texture and image sizes.
         mutable GLsizei _textureWidth, _textureHeight;

@@ -194,7 +194,7 @@ class SG_EXPORT Image : public Object
         static unsigned int computeNumComponents(GLenum format);
         static unsigned int computePixelSizeInBits(GLenum format,GLenum type);
         static unsigned int computeRowWidthInBytes(int width,GLenum format,GLenum type,int packing);
-        static unsigned int computeNearestPowerOfTwo(unsigned int s,float bias=0.5f);
+        static int computeNearestPowerOfTwo(int s,float bias=0.5f);
                 
         // precomputed mipmaps stuff;
         typedef std::vector< unsigned int > MipmapDataType;

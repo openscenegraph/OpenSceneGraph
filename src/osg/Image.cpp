@@ -203,7 +203,7 @@ unsigned int Image::computeRowWidthInBytes(int width,GLenum format,GLenum type,i
     return (widthInBits/packingInBits + ((widthInBits%packingInBits)?1:0))*packing;
 }
 
-unsigned int Image::computeNearestPowerOfTwo(unsigned int s,float bias)
+int Image::computeNearestPowerOfTwo(int s,float bias)
 {
     if ((s & (s-1))!=0)
     {

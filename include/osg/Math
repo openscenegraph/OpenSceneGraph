@@ -13,7 +13,6 @@
 
 
 #if (defined(WIN32) && !(defined(_MSC_VER) && (_MSC_VER >= 1300)) ) || \
-    defined (macintosh)|| \
     defined (sun) || \
     defined (__DARWIN_OSX__)
 
@@ -44,7 +43,6 @@
     #define logf (float)log
     #endif
 
-
     #ifndef powf
     #define powf (float)pow
     #endif
@@ -52,21 +50,24 @@
     #ifndef sqrtf
     #define sqrtf (float)sqrt
     #endif
-
+    
     #ifndef fabsf
     #define fabsf (float)fabs
     #endif
 
-    #ifndef isnanf
-    #define isnanf (float)isnan
-    #endif
-    
 #endif
 
 #if (defined(WIN32) && !(defined(_MSC_VER) && (_MSC_VER >= 1300)) ) || \
-    defined (macintosh)|| \
+    defined (sun)
+
+    #ifndef isnanf
+    #define isnanf (float)isnan
+    #endif
+
+#endif
+
+#if (defined(WIN32) && !(defined(_MSC_VER) && (_MSC_VER >= 1300)) ) || \
     defined (sun) || \
-    defined (__DARWIN_OSX__) ||\
     defined (__hpux__)
 
     #ifndef floorf
@@ -121,8 +122,13 @@ inline double RadiansToDegrees(double angle) { return angle*180.0/PI; }
     inline bool isNaN(float v) { return _isnan(v)!=0; }
     inline bool isNaN(double v) { return _isnan(v)!=0; }
 #else
+    # if defined(__DARWIN_OSX__)
+    inline bool isNaN(float v) { return __isnanf(v); }
+    inline bool isNaN(double v) { return __isnand(v); }
+    #else
     inline bool isNaN(float v) { return isnan(v); }
     inline bool isNaN(double v) { return isnan(v); }
+    #endif
 #endif
 
 

@@ -83,17 +83,21 @@ static void ConvertLong(GLuint *array, long length)
 
 static void RawImageClose(rawImageRec *raw)
 {
-    fclose(raw->file);
-    free(raw->tmp);
-    free(raw->tmpR);
-    free(raw->tmpG);
-    free(raw->tmpB);
-    free(raw->tmpA);
-    
-    free(raw->rowStart);        
-    free(raw->rowSize);        
+    if (raw)
+    {
+        fclose(raw->file);
+        
+        if (raw->tmp) free(raw->tmp);
+        if (raw->tmpR) free(raw->tmpR);
+        if (raw->tmpG) free(raw->tmpG);
+        if (raw->tmpB) free(raw->tmpB);
+        if (raw->tmpA) free(raw->tmpA);
 
-    free(raw);
+        if (raw->rowStart) free(raw->rowStart);        
+        if (raw->rowSize) free(raw->rowSize);        
+
+        free(raw);
+    }
 }
 
 

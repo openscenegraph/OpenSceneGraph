@@ -104,14 +104,6 @@ class SG_EXPORT State : public Referenced
         /** Get the camera */
         inline const Camera* getCamera() const { return _camera.get(); }
         
-        
-
-        /** Set the hint to OpenGL routines to do fine grained OpenGL error checking.*/
-        void setFineGrainedErrorDetection(const bool flag) { _fineGrainedErrorDetection = flag; }
-
-        /** Get the hint to OpenGL routines to do fine grained OpenGL error checking.*/
-        const bool getFineGrainedErrorDetection() const { return _fineGrainedErrorDetection; }
-
     private:
     
         unsigned int        _contextID;
@@ -126,10 +118,12 @@ class SG_EXPORT State : public Referenced
             {
                 changed = false;
                 last_applied_value = false;
+                global_default_value = false;
             }
         
             bool        changed;
             bool        last_applied_value;
+            bool        global_default_value;
             ValueVec    valueVec;
         };
 
@@ -143,11 +137,13 @@ class SG_EXPORT State : public Referenced
             {
                 changed = false;
                 last_applied_attribute = 0L;
+                global_default_attribute = 0L;
             }
 
-
+            /** apply an attribute if required, passing in attribute and appropriate attribute stack */
             bool                    changed;
             const StateAttribute*   last_applied_attribute;
+            StateAttribute*         global_default_attribute;
             AttributeVec            attributeVec;
         };
 
@@ -172,8 +168,22 @@ class SG_EXPORT State : public Referenced
         {
             if (as.last_applied_attribute != attribute)
             {
+                if (!as.global_default_attribute) as.global_default_attribute = dynamic_cast<StateAttribute*>(attribute->clone());
+
                 as.last_applied_attribute = attribute;
                 attribute->apply(*this);
+                return true;
+            }
+            else
+                return false;
+        }
+
+        inline const bool apply_global_default_attribute(AttributeStack& as)
+        {
+            if (as.last_applied_attribute != as.global_default_attribute)
+            {
+                as.last_applied_attribute = as.global_default_attribute;
+                if (as.global_default_attribute) as.global_default_attribute->apply(*this);
                 return true;
             }
             else
@@ -189,9 +199,6 @@ class SG_EXPORT State : public Referenced
         AttributeMap    _attributeMap;
         StateSetStack   _drawStateStack;
         
-
-        bool _fineGrainedErrorDetection;
-
 };
 
 };

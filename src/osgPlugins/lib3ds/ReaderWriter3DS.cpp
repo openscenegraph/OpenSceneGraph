@@ -102,7 +102,7 @@ class ReaderWriter3DS : public osgDB::ReaderWriter
         bool _usePerVertexNormals;
 
         // MIKEC
-        void processMesh(StateSetMap& drawStateMap,osg::Group* parent,Lib3dsMesh* mesh, Lib3dsMatrix* matrix);
+        osg::Node* processMesh(StateSetMap& drawStateMap,osg::Group* parent,Lib3dsMesh* mesh, Lib3dsMatrix* matrix);
         osg::Node* processNode(StateSetMap drawStateMap,Lib3dsFile *f,Lib3dsNode *node);
 
 };
@@ -191,8 +191,9 @@ void print(Lib3dsNode *node, int level) {
 }
 
 // Transforms points by matrix if 'matrix' is not NULL
-// Creates a Geode and GeoSet (as parent,child) and adds the Geode to 'parent' parameter
-void ReaderWriter3DS::processMesh(StateSetMap& drawStateMap,osg::Group* parent,Lib3dsMesh* mesh, Lib3dsMatrix* matrix) {
+// Creates a Geode and GeoSet (as parent,child) and adds the Geode to 'parent' parameter iff 'parent' is non-NULL
+// Returns ptr to the Geode
+osg::Node* ReaderWriter3DS::processMesh(StateSetMap& drawStateMap,osg::Group* parent,Lib3dsMesh* mesh, Lib3dsMatrix* matrix) {
     typedef std::vector<int> FaceList;
     typedef std::map<std::string,FaceList> MaterialFaceMap;
     MaterialFaceMap materialFaceMap;
@@ -204,6 +205,7 @@ void ReaderWriter3DS::processMesh(StateSetMap& drawStateMap,osg::Group* parent,L
     if (materialFaceMap.empty())
     {
         osg::notify(osg::NOTICE)<<"Warning : no triangles assigned to mesh '"<<mesh->name<<"'"<< std::endl;
+        return NULL;
     }
     else
     {
@@ -257,18 +259,17 @@ void ReaderWriter3DS::processMesh(StateSetMap& drawStateMap,osg::Group* parent,L
             }
         }
 
-        parent->addChild(geode);
-
+        if (parent) parent->addChild(geode);
+        return geode;
     }
-
 }
 
 
 /**
 How to cope with pivot points in 3ds (short version)
 
-  All object coordinates in 3ds are stored in world space, this is why you can just rip out the meshes and use/draw them without devling further
-  Unfortunately, this gets a bit wonky with objects with pivot points (conjucture: PP support is retro fitted into the .3ds format and so doesn't fit perfectly?)
+  All object coordinates in 3ds are stored in world space, this is why you can just rip out the meshes and use/draw them without meddeling further
+  Unfortunately, this gets a bit wonky with objects with pivot points (conjecture: PP support is retro fitted into the .3ds format and so doesn't fit perfectly?)
 
   Objects with pivot points have a position relative to their PP, so they have to undergo this transform:
 
@@ -279,13 +280,17 @@ How to cope with pivot points in 3ds (short version)
   */
 osg::Node* ReaderWriter3DS::processNode(StateSetMap drawStateMap,Lib3dsFile *f,Lib3dsNode *node) {
     
-    osg::Group* group=new osg::Group;
-    group->setName(node->name);
+    osg::Group* group=NULL;// created on demand if we find we have children to group together
+    
 
     // Handle all children of this node for hierarchical assemblies
     Lib3dsNode *p;
     for (p=node->childs; p!=0; p=p->next) {
-      group->addChild(processNode(drawStateMap,f,p));
+        if (!group) {
+            group =new osg::Group;
+            group->setName(node->name);
+        }
+        group->addChild(processNode(drawStateMap,f,p));
     }
     
     // MIKEC: possible BUG - 3ds files APPEAR to enforce unqiue names, so this is OK, but I am not 100% sure
@@ -307,56 +312,85 @@ osg::Node* ReaderWriter3DS::processNode(StateSetMap drawStateMap,Lib3dsFile *f,L
         N[3][1]=-object->pivot[1];
         N[3][2]=-object->pivot[2];
 
-        // Transform object's pivot point to the world origin
-        osg::Transform* T=new osg::Transform;
-        osgmatrix.set(
-            N[0][0],N[0][1],N[0][2],N[0][3],
-            N[1][0],N[1][1],N[1][2],N[1][3],
-            N[2][0],N[2][1],N[2][2],N[2][3],
-            N[3][0],N[3][1],N[3][2],N[3][3]); 
-        T->setMatrix(osgmatrix);
-        T->setName("3DSPIVOTPOINT: Translate pivotpoint to (world) origin");
-        //cout<<"Translation for "<<node->name<<" is "<<osgmatrix<<endl;
+        bool pivoted=false;
+        if ( (object->pivot[0]!=0.0) || (object->pivot[1]!=0.0) || (object->pivot[2]!=0.0) ) {
+            pivoted=true; // there is a pivot point, so we must use it
+        }
 
-        // rotate about "origin" (after the transform this is the world origin)
-        // BUG this matrix also contains the translation to the pivot point - we should plit that out (maybe)
-        osg::Transform* R=new osg::Transform;
-        osgmatrix.set(
-            M[0][0],M[0][1],M[0][2],M[0][3],
-            M[1][0],M[1][1],M[1][2],M[1][3],
-            M[2][0],M[2][1],M[2][2],M[2][3],
-            M[3][0],M[3][1],M[3][2],M[3][3]); 
-        R->setMatrix(osgmatrix);
-        R->setName("3DSPIVOTPOINT: Rotate");
-            
-        /*
-        cout<<"Rotation for "<<node->name<<" is "<<osgmatrix<<endl;
-        osg::Quat quat;
-        quat.set(osgmatrix);
-        osg::Vec3 axis;
-        float angle;
-        quat.getRotate(angle,axis);
-        cout<<"which is "<<osg::RadiansToDegrees(angle)<<" degrees around "<<axis<<endl;
-        */
-        /*
-        printf("%s---------------\n",node->name);
-        printf("mesh matrix :\n");         print(mesh->matrix,1);
-        printf("mesh inverse:\n");         print(mesh_inverse,1);
-        printf("node matrix :\n");         print(matrix,1);
-        printf("pivot=%f,%f,%f pos=%f,%f,%f\n",object->pivot[0],object->pivot[1],object->pivot[2],object->pos[0],object->pos[1],object->pos[2]);
-        */
+        /*cout<<"M"<<node->name<<endl;
+        print(M,0);
+        cout<<"N"<<endl;
+        print(N,0);*/
 
-        // Always in reverse order...
-        group->addChild(R); 
-        R->addChild(T);
-        processMesh(drawStateMap,T,mesh,&mesh_inverse); // creates geometry under modifier node
+        if (pivoted) {
+            // Transform object's pivot point to the world origin
+            osg::Transform* T=new osg::Transform;
+            osgmatrix.set(
+                N[0][0],N[0][1],N[0][2],N[0][3],
+                N[1][0],N[1][1],N[1][2],N[1][3],
+                N[2][0],N[2][1],N[2][2],N[2][3],
+                N[3][0],N[3][1],N[3][2],N[3][3]); 
+            T->setMatrix(osgmatrix);
+            T->setName("3DSPIVOTPOINT: Translate pivotpoint to (world) origin");
+            //cout<<"Translation for "<<node->name<<" is "<<osgmatrix<<endl;
+
+            // rotate about "origin" (after the transform this is the world origin)
+            // BUG this matrix also contains the translation to the pivot point - we should plit that out (maybe)
+            osg::Transform* R=new osg::Transform;
+            osgmatrix.set(
+                M[0][0],M[0][1],M[0][2],M[0][3],
+                M[1][0],M[1][1],M[1][2],M[1][3],
+                M[2][0],M[2][1],M[2][2],M[2][3],
+                M[3][0],M[3][1],M[3][2],M[3][3]); 
+            R->setMatrix(osgmatrix);
+            R->setName("3DSPIVOTPOINT: Rotate");
+                
+            /*
+            cout<<"Rotation for "<<node->name<<" is "<<osgmatrix<<endl;
+            osg::Quat quat;
+            quat.set(osgmatrix);
+            osg::Vec3 axis;
+            float angle;
+            quat.getRotate(angle,axis);
+            cout<<"which is "<<osg::RadiansToDegrees(angle)<<" degrees around "<<axis<<endl;
+            */
+            /*
+            printf("%s---------------\n",node->name);
+            printf("mesh matrix :\n");         print(mesh->matrix,1);
+            printf("mesh inverse:\n");         print(mesh_inverse,1);
+            printf("node matrix :\n");         print(matrix,1);
+            printf("pivot=%f,%f,%f pos=%f,%f,%f\n",object->pivot[0],object->pivot[1],object->pivot[2],object->pos[0],object->pos[1],object->pos[2]);
+            */
+
+            if (group) {
+                // Always in reverse order...
+                group->addChild(R); 
+                R->addChild(T);
+                processMesh(drawStateMap,T,mesh,&mesh_inverse); // creates geometry under modifier node
+                return group;
+            } else {
+                // We are a pivoted node with no children
+                R->addChild(T);
+                processMesh(drawStateMap,T,mesh,&mesh_inverse); // creates geometry under modifier node
+                return R;
+            }
+        } else {
+            if(group) {
+                // add our geometry to group (where our children already are)
+                processMesh(drawStateMap,group,mesh,NULL); // creates geometry under modifier node
+                return group;
+            } else {
+                // didnt use group for children
+                // return a ptr directly to the Geode for this mesh
+                return processMesh(drawStateMap,NULL,mesh,NULL); 
+            }    
+        }
 
     } else {
         // no mesh for this node - probably a camera or something of that persuasion
         //cout << "no mesh for object " << node->name << endl;
+        return group; // we have no mesh, but we might have children
     }
-
-    return group;
 }
 
 
@@ -419,11 +453,11 @@ osgDB::ReaderWriter::ReadResult ReaderWriter3DS::readNode(const std::string& fil
         }
     } 
 
-    /*
-    cout << "Final OSG node structure looks like this:"<< endl;
+    
+    /*cout << "Final OSG node structure looks like this:"<< endl;
     PrintVisitor pv;
-    group->accept(pv);
-    */
+    group->accept(pv);*/
+    
     
     lib3ds_file_free(f);
 

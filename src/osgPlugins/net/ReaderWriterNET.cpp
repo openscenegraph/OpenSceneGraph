@@ -195,7 +195,7 @@ class NetReader : public osgDB::ReaderWriter
                 if( osgDB::fileExists( cacheFile ))
                 {
                     std::ifstream  in(cacheFile.c_str());
-                    readResult = reader->readNode( in );
+                    readResult = reader->readNode( in, options);
                     in.close();
                     osg::notify(osg::DEBUG_INFO) << "osgPlugin .net: " << fileName << 
                                          " fetched from local cache." << std::endl;
@@ -281,7 +281,7 @@ class NetReader : public osgDB::ReaderWriter
                                          " fetched from server." << std::endl;
 
             if( reader != 0L )
-                readResult = reader->readNode( sio );
+                readResult = reader->readNode( sio, options );
 
             if( !localCacheDir.empty() && cacheMode & Write )
             {

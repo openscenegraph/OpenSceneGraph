@@ -70,7 +70,7 @@ class SG_EXPORT Texture2D : public Texture
         }
 
 
-        class SubloadCallback : public Referenced
+        class SG_EXPORT SubloadCallback : public Referenced
         {
             public:
                 virtual void load(const Texture2D& texture,State& state) const = 0;

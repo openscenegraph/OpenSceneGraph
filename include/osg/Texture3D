@@ -67,7 +67,7 @@ class SG_EXPORT Texture3D : public Texture
         }
 
 
-        class SubloadCallback : public Referenced
+        class SG_EXPORT SubloadCallback : public Referenced
         {
             public:
                 virtual void load(const Texture3D& texture,State& state) const = 0;
@@ -104,7 +104,7 @@ class SG_EXPORT Texture3D : public Texture
         /** Extensions class which encapsulates the querring of extensions and
           * associated function pointers, and provide convinience wrappers to 
           * check for the extensions or use the associated functions.*/        
-        class Extensions : public osg::Referenced
+        class SG_EXPORT Extensions : public osg::Referenced
         {
             public:
                 Extensions();

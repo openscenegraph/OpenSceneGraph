@@ -141,9 +141,9 @@ class TemplateArray : public Array, public std::vector<T>
             return 0;
         }
         
-        virtual const GLvoid*   getDataPointer() const { if (!empty()) return &front(); else return 0; }
-        virtual unsigned int    getTotalDataSize() const { return size()*sizeof(T); }
-        virtual unsigned int    getNumElements() const { return size(); }
+        virtual const GLvoid*   getDataPointer() const { if (!this->empty()) return &this->front(); else return 0; }
+        virtual unsigned int    getTotalDataSize() const { return this->size()*sizeof(T); }
+        virtual unsigned int    getNumElements() const { return this->size(); }
 
     protected:
     
@@ -219,9 +219,9 @@ class TemplateIndexArray : public IndexArray, public std::vector<T>
             return 0;
         }
 
-        virtual const GLvoid*   getDataPointer() const { if (!empty()) return &front(); else return 0; }
-        virtual unsigned int    getTotalDataSize() const { return size()*sizeof(T); }
-        virtual unsigned int    getNumElements() const { return size(); }
+        virtual const GLvoid*   getDataPointer() const { if (!this->empty()) return &this->front(); else return 0; }
+        virtual unsigned int    getTotalDataSize() const { return this->size()*sizeof(T); }
+        virtual unsigned int    getNumElements() const { return this->size(); }
 
         virtual unsigned int    index(unsigned int pos) const { return (*this)[pos]; }
 

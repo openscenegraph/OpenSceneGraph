@@ -369,7 +369,7 @@ inline void graph_array<nodetype, arctype>::erase_arcs(const node_iterator & Ini
 template <class nodetype, class arctype>
 inline void graph_array<nodetype, arctype>::erase_arcs() {
     m_NbArcs = 0;
-    for (nodeid i = 0; i < Size(); ++i)
+    for (nodeid i = 0; i < this->Size(); ++i)
         m_Nodes[i].m_OutArcs.clear();
 }
 

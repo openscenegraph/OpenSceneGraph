@@ -894,9 +894,9 @@ namespace lwo2
 		for (int i=0; i<4; ++i) tag += *(it++);
 		unsigned int len = ((static_cast<unsigned int>(*(it++)) & 0xFF) << 8) |
 			(static_cast<unsigned int>(*(it++)) & 0xFF);
-		os() << "DEBUG INFO: lwo2parser: reading subchunk " << tag << ", length = " << len << ", context = " << context << "\n";
+		this->os() << "DEBUG INFO: lwo2parser: reading subchunk " << tag << ", length = " << len << ", context = " << context << "\n";
 		iff::Chunk *chk = parse_chunk_data(tag, context, it, it+len);
-		if (!chk) os() << "DEBUG INFO: lwo2parser: \tprevious subchunk not handled\n";
+		if (!chk) this->os() << "DEBUG INFO: lwo2parser: \tprevious subchunk not handled\n";
 		it += len;
 		if ((len % 2) != 0) ++it;
 		return chk;

@@ -65,7 +65,7 @@ public:
                 unsigned int pos=first;
                 for(GLsizei i=2;i<count;i+=3,pos+=3)
                 {
-                    operator()(pos,pos+1,pos+2);
+                    this->operator()(pos,pos+1,pos+2);
                 }
                 break;
             }
@@ -74,8 +74,8 @@ public:
                 unsigned int pos=first;
                 for(GLsizei i=2;i<count;++i,++pos)
                 {
-		    if ((i%2)) operator()(pos,pos+2,pos+1);
-		    else       operator()(pos,pos+1,pos+2);
+		    if ((i%2)) this->operator()(pos,pos+2,pos+1);
+		    else       this->operator()(pos,pos+1,pos+2);
                 }
                 break;
             }
@@ -84,8 +84,8 @@ public:
                 unsigned int pos=first;
                 for(GLsizei i=3;i<count;i+=4,pos+=4)
                 {
-                    operator()(pos,pos+1,pos+2);
-                    operator()(pos,pos+2,pos+3);
+                    this->operator()(pos,pos+1,pos+2);
+                    this->operator()(pos,pos+2,pos+3);
                 }
                 break;
             }
@@ -94,8 +94,8 @@ public:
                 unsigned int pos=first;
                 for(GLsizei i=3;i<count;i+=2,pos+=2)
                 {
-                    operator()(pos,pos+1,pos+2);
-                    operator()(pos+1,pos+3,pos+2);
+                    this->operator()(pos,pos+1,pos+2);
+                    this->operator()(pos+1,pos+3,pos+2);
                 }
                 break;
             }
@@ -105,7 +105,7 @@ public:
                 unsigned int pos=first+1;
                 for(GLsizei i=2;i<count;++i,++pos)
                 {
-                    operator()(first,pos,pos+1);
+                    this->operator()(first,pos,pos+1);
                 }
                 break;
             }
@@ -131,7 +131,7 @@ public:
             {
                 IndexPointer ilast = &indices[count];
                 for(IndexPointer  iptr=indices;iptr<ilast;iptr+=3)
-                    operator()(*iptr,*(iptr+1),*(iptr+2));
+                    this->operator()(*iptr,*(iptr+1),*(iptr+2));
                 break;
             }
             case(GL_TRIANGLE_STRIP):
@@ -139,8 +139,8 @@ public:
                 IndexPointer iptr = indices;
                 for(GLsizei i=2;i<count;++i,++iptr)
                 {
-		    if ((i%2)) operator()(*(iptr),*(iptr+2),*(iptr+1));
-		    else       operator()(*(iptr),*(iptr+1),*(iptr+2));
+		    if ((i%2)) this->operator()(*(iptr),*(iptr+2),*(iptr+1));
+		    else       this->operator()(*(iptr),*(iptr+1),*(iptr+2));
                 }
                 break;
             }
@@ -149,8 +149,8 @@ public:
                 IndexPointer iptr = indices;
                 for(GLsizei i=3;i<count;i+=4,iptr+=4)
                 {
-                    operator()(*(iptr),*(iptr+1),*(iptr+2));
-                    operator()(*(iptr),*(iptr+2),*(iptr+3));
+                    this->operator()(*(iptr),*(iptr+1),*(iptr+2));
+                    this->operator()(*(iptr),*(iptr+2),*(iptr+3));
                 }
                 break;
             }
@@ -159,8 +159,8 @@ public:
                 IndexPointer iptr = indices;
                 for(GLsizei i=3;i<count;i+=2,iptr+=2)
                 {
-                    operator()(*(iptr),*(iptr+1),*(iptr+2));
-                    operator()(*(iptr+1),*(iptr+3),*(iptr+2));
+                    this->operator()(*(iptr),*(iptr+1),*(iptr+2));
+                    this->operator()(*(iptr+1),*(iptr+3),*(iptr+2));
                 }
                 break;
             }
@@ -172,7 +172,7 @@ public:
                 ++iptr;
                 for(GLsizei i=2;i<count;++i,++iptr)
                 {
-                    operator()(first,*(iptr),*(iptr+1));
+                    this->operator()(first,*(iptr),*(iptr+1));
                 }
                 break;
             }
@@ -198,7 +198,7 @@ public:
             {
                 IndexPointer ilast = &indices[count];
                 for(IndexPointer  iptr=indices;iptr<ilast;iptr+=3)
-                    operator()(*iptr,*(iptr+1),*(iptr+2));
+                    this->operator()(*iptr,*(iptr+1),*(iptr+2));
                 break;
             }
             case(GL_TRIANGLE_STRIP):
@@ -206,8 +206,8 @@ public:
                 IndexPointer iptr = indices;
                 for(GLsizei i=2;i<count;++i,++iptr)
                 {
-		    if ((i%2)) operator()(*(iptr),*(iptr+2),*(iptr+1));
-		    else       operator()(*(iptr),*(iptr+1),*(iptr+2));
+		    if ((i%2)) this->operator()(*(iptr),*(iptr+2),*(iptr+1));
+		    else       this->operator()(*(iptr),*(iptr+1),*(iptr+2));
                 }
                 break;
             }
@@ -216,8 +216,8 @@ public:
                 IndexPointer iptr = indices;
                 for(GLsizei i=3;i<count;i+=4,iptr+=4)
                 {
-                    operator()(*(iptr),*(iptr+1),*(iptr+2));
-                    operator()(*(iptr),*(iptr+2),*(iptr+3));
+                    this->operator()(*(iptr),*(iptr+1),*(iptr+2));
+                    this->operator()(*(iptr),*(iptr+2),*(iptr+3));
                 }
                 break;
             }
@@ -226,8 +226,8 @@ public:
                 IndexPointer iptr = indices;
                 for(GLsizei i=3;i<count;i+=2,iptr+=2)
                 {
-                    operator()(*(iptr),*(iptr+1),*(iptr+2));
-                    operator()(*(iptr+1),*(iptr+3),*(iptr+2));
+                    this->operator()(*(iptr),*(iptr+1),*(iptr+2));
+                    this->operator()(*(iptr+1),*(iptr+3),*(iptr+2));
                 }
                 break;
             }
@@ -239,7 +239,7 @@ public:
                 ++iptr;
                 for(GLsizei i=2;i<count;++i,++iptr)
                 {
-                    operator()(first,*(iptr),*(iptr+1));
+                    this->operator()(first,*(iptr),*(iptr+1));
                 }
                 break;
             }
@@ -265,7 +265,7 @@ public:
             {
                 IndexPointer ilast = &indices[count];
                 for(IndexPointer  iptr=indices;iptr<ilast;iptr+=3)
-                    operator()(*iptr,*(iptr+1),*(iptr+2));
+                    this->operator()(*iptr,*(iptr+1),*(iptr+2));
                 break;
             }
             case(GL_TRIANGLE_STRIP):
@@ -273,8 +273,8 @@ public:
                 IndexPointer iptr = indices;
                 for(GLsizei i=2;i<count;++i,++iptr)
                 {
-		    if ((i%2)) operator()(*(iptr),*(iptr+2),*(iptr+1));
-		    else       operator()(*(iptr),*(iptr+1),*(iptr+2));
+		    if ((i%2)) this->operator()(*(iptr),*(iptr+2),*(iptr+1));
+		    else       this->operator()(*(iptr),*(iptr+1),*(iptr+2));
                 }
                 break;
             }
@@ -283,8 +283,8 @@ public:
                 IndexPointer iptr = indices;
                 for(GLsizei i=3;i<count;i+=4,iptr+=4)
                 {
-                    operator()(*(iptr),*(iptr+1),*(iptr+2));
-                    operator()(*(iptr),*(iptr+2),*(iptr+3));
+                    this->operator()(*(iptr),*(iptr+1),*(iptr+2));
+                    this->operator()(*(iptr),*(iptr+2),*(iptr+3));
                 }
                 break;
             }
@@ -293,8 +293,8 @@ public:
                 IndexPointer iptr = indices;
                 for(GLsizei i=3;i<count;i+=2,iptr+=2)
                 {
-                    operator()(*(iptr),*(iptr+1),*(iptr+2));
-                    operator()(*(iptr+1),*(iptr+3),*(iptr+2));
+                    this->operator()(*(iptr),*(iptr+1),*(iptr+2));
+                    this->operator()(*(iptr+1),*(iptr+3),*(iptr+2));
                 }
                 break;
             }
@@ -306,7 +306,7 @@ public:
                 ++iptr;
                 for(GLsizei i=2;i<count;++i,++iptr)
                 {
-                    operator()(first,*(iptr),*(iptr+1));
+                    this->operator()(first,*(iptr),*(iptr+1));
                 }
                 break;
             }

@@ -133,6 +133,14 @@ SOURCE=..\..\src\osg\ColorMatrix.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\ConvexPlanerOccluder.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osg\ConvexPlanerPolygon.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\CopyOp.cpp
 # End Source File
 # Begin Source File
@@ -293,6 +301,10 @@ SOURCE=..\..\src\osg\ShadeModel.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\ShadowOccluderVolume.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\State.cpp
 # End Source File
 # Begin Source File
@@ -390,6 +402,14 @@ SOURCE=..\..\Include\Osg\ClippingVolume
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\ClipPlane
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\ConvexPlanerOccluder
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\ConvexPlanerPolygon
 # End Source File
 # Begin Source File
 
@@ -594,6 +614,10 @@ SOURCE=..\..\Include\Osg\Referenced
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\ShadeModel
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\ShadowOccluderVolume
 # End Source File
 # Begin Source File
 

@@ -12,6 +12,8 @@ CXXFILES =\
 	ClipPlane.cpp\
 	ColorMask.cpp\
 	ColorMatrix.cpp\
+	ConvexPlanerPolygon.cpp\
+	ConvexPlanerOccluder.cpp\
 	CopyOp.cpp\
 	CullFace.cpp\
 	Depth.cpp\
@@ -52,6 +54,7 @@ CXXFILES =\
 	Projection.cpp\
 	Quat.cpp\
 	ShadeModel.cpp\
+	ShadowOccluderVolume.cpp\
 	State.cpp\
 	StateSet.cpp\
 	Stencil.cpp\

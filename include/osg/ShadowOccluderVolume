@@ -1,0 +1,56 @@
+//C++ header - Open Scene Graph - Copyright (C) 1998-2001 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+
+#ifndef OSG_SHADOWOCCLUDERVOLUME
+#define OSG_SHADOWOCCLUDERVOLUME 1
+
+#include <osg/ref_ptr>
+#include <osg/ClippingVolume>
+#include <osg/ConvexPlanerOccluder>
+
+namespace osg {
+
+/** ShadowOccluderVolume is a helper class for implementating shadow occlusion culling. */
+class SG_EXPORT ShadowOccluderVolume : public Referenced
+{
+
+    public:
+    
+    
+        ShadowOccluderVolume(const ShadowOccluderVolume& soc,Matrix& MVP);
+        
+        ShadowOccluderVolume(const ConvexPlanerOccluder& occluder,Matrix& MVP);
+
+        typedef std::vector<ClippingVolume> ClippingHoleList;
+        
+        /** Convert shadow occluder into local coords by multiplying the
+          * clip space occluder by the ModelViewProjectionMatrix.*/
+        void set(const ShadowOccluderVolume& soc,Matrix& MVP);
+
+        /** Initialize a ShadowOccluderVolume to a ConvexPlanerOccluder 
+          * transformed into clipspace.*/
+        void set(const ConvexPlanerOccluder& occluder,Matrix& MVP);
+        
+        /** return true if the specified bounding sphere is contaned entirely
+          * within this shadow occluder volume.*/
+        bool contains(const BoundingSphere& bs);
+        
+        /** return true if the specified bounding box is contained entirely
+          * within this shadow occluder volume.*/
+        bool contains(const BoundingBox& bs);
+        
+
+
+    protected:
+    
+        // the original shadow occluder computed in clip space
+        ref_ptr<ShadowOccluderVolume>   _clipSpaceOccluder;
+
+        ClippingVolume                  _occluderVolume;
+        ClippingHoleList                _clippingHoleList;
+};
+
+}	// end of namespace
+
+#endif 

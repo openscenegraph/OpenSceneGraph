@@ -1,0 +1,61 @@
+//C++ header - Open Scene Graph - Copyright (C) 1998-2001 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+
+#ifndef OSG_CONVEXPLANEROCCLUDER
+#define OSG_CONVEXPLANEROCCLUDER 1
+
+#include <osg/ConvexPlanerPolygon>
+#include <osg/Referenced>
+
+namespace osg {
+
+class OccluderVolume;
+
+/** A ClippingVolume class for representing convex clipping volumes made up.
+  * When adding planes, their normals should point inwards (into the volume) */
+class SG_EXPORT ConvexPlanerOccluder : public Referenced
+{
+
+    public:
+
+        inline ConvexPlanerOccluder() {}
+        
+
+
+        void setOccluder(const ConvexPlanerPolygon& cpp) { _occluder = cpp; }
+        
+        ConvexPlanerPolygon& getOccluder() { return _occluder; }
+
+        const ConvexPlanerPolygon& getOccluder() const { return _occluder; }
+        
+        
+
+        typedef std::vector<ConvexPlanerPolygon> HoleList;
+
+        void addHole(const ConvexPlanerPolygon& cpp) { _holeList.push_back(cpp); }
+
+        HoleList& getHoleList() { return _holeList; }
+        
+        const HoleList& getHoleList() const { return _holeList; }
+
+        void computeAttributes();
+        
+        void computeBound(BoundingBox& bb) const;
+
+        void computeBound(BoundingSphere& bs) const;
+
+    protected:
+
+        float       _area;
+        Vec3        _center;
+        Vec3        _normal;
+
+        ConvexPlanerPolygon _occluder;
+        HoleList _holeList;
+
+};
+
+}	// end of namespace
+
+#endif 

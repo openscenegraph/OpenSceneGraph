@@ -1,0 +1,57 @@
+//C++ header - Open Scene Graph - Copyright (C) 1998-2001 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+
+#ifndef OSG_CONVEXPLANERPOLYGON
+#define OSG_CONVEXPLANERPOLYGON 1
+
+#include <osg/Plane>
+
+#include <vector>
+
+namespace osg {
+
+class BoundingBox;
+class BoundingSphere;
+
+/** A ClippingVolume class for representing convex clipping volumes made up.
+  * When adding planes, their normals should point inwards (into the volume) */
+class SG_EXPORT ConvexPlanerPolygon
+{
+
+    public:
+
+        inline ConvexPlanerPolygon() {}
+                
+        float area() { return _area; }
+        
+        const Vec3& center() { return _center; }
+        
+        const Vec3& normal() { return _normal; }
+
+        typedef std::vector<osg::Vec3> VertexList;
+
+        void add(const Vec3& v) { _vertexList.push_back(v); }
+        
+        VertexList& getVertexList() { return _vertexList; }
+        
+        const VertexList& getVertexList() const { return _vertexList; }
+      
+        void computeAttributes();
+        
+        void computeBound(BoundingBox& bb) const;
+
+        void computeBound(BoundingSphere& bs) const;
+        
+    protected:
+
+        float       _area;
+        Vec3        _center;
+        Vec3        _normal;
+        VertexList _vertexList;
+
+};
+
+}	// end of namespace
+
+#endif 

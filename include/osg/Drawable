@@ -171,8 +171,6 @@ class SG_EXPORT Drawable : public Object
                 /** do customized draw code.*/
                 virtual void drawImmediateMode(State& state,osg::Drawable* drawable) const = 0;
         };
-        
-        friend struct osg::Drawable::DrawCallback;
 
         /** Set the DrawCallback which allows users to attach customize the drawing of existing Drawable object.*/
         void setDrawCallback(DrawCallback* dc) { _drawCallback=dc; dirtyDisplayList(); }
@@ -186,10 +184,8 @@ class SG_EXPORT Drawable : public Object
         struct CullCallback : public osg::Referenced
         {
                 /** do customized cull code.*/
-                virtual bool cull(osg::NodeVisitor *visitor, osg::Drawable* drawable) = 0;
+                virtual bool cull(osg::NodeVisitor *visitor, osg::Drawable* drawable) const = 0;
         };
-        
-        friend struct osg::Drawable::CullCallback;
 
         /** Set the CullCallback which allows users to attach customize the drawing of existing Drawable object.*/
         void setCullCallback(CullCallback* cc) { _cullCallback=cc; }

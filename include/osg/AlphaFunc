@@ -56,13 +56,13 @@ class SG_EXPORT AlphaFunc : public StateAttribute
             ALWAYS = GL_ALWAYS
         };
 
-        inline void setFunction(const ComparisonFunction func,float ref)
+        inline void setFunction(ComparisonFunction func,float ref)
         {
             _comparisonFunc = func;
             _referenceValue = ref;
         }
         
-        inline const ComparisonFunction getFunction() const { return _comparisonFunc; }
+        inline ComparisonFunction getFunction() const { return _comparisonFunc; }
         
         inline float getReferenceValue() const { return _referenceValue; }
         

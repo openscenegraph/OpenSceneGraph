@@ -208,7 +208,7 @@ void Camera::setNearFar(double zNear, double zFar)
 
 /** Adjust the clipping planes to account for a new window aspcect ratio.
   * Typicall used after resizeing a window.*/
-void Camera::adjustAspectRatio(double newAspectRatio, const AdjustAspectRatioMode aa)
+void Camera::adjustAspectRatio(double newAspectRatio, AdjustAspectRatioMode aa)
 {
     if (newAspectRatio<0.01f || newAspectRatio>100.0f)
     {
@@ -424,7 +424,7 @@ Matrix* Camera::getTransform(TransformMode mode)
     }
 }
 
-const Matrix* Camera::getTransform(const TransformMode mode) const
+const Matrix* Camera::getTransform(TransformMode mode) const
 {
     switch(mode)
     {

@@ -18,7 +18,7 @@ class SG_EXPORT ClipPlane : public StateAttribute
         ClipPlane();
         inline ClipPlane(unsigned int no,const Vec4& plane)    { setClipPlaneNum(no); setClipPlane(plane); }
         inline ClipPlane(unsigned int no,const Plane& plane)   { setClipPlaneNum(no); setClipPlane(plane); }
-        inline ClipPlane(unsigned int no,const double a,const double b,const double c,const double d)  { setClipPlaneNum(no); setClipPlane(a,b,c,d); }
+        inline ClipPlane(unsigned int no,double a,double b,double c,double d)  { setClipPlaneNum(no); setClipPlane(a,b,c,d); }
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         ClipPlane(const ClipPlane& cp,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
@@ -66,7 +66,7 @@ class SG_EXPORT ClipPlane : public StateAttribute
         void setClipPlane(const double* plane);
 
 	/** Set the clip plane, using a a to define plane. */
-        void setClipPlane(const double a,const double b,const double c,const double d)
+        void setClipPlane(double a,double b,double c,double d)
         {
             _clipPlane[0]=a;_clipPlane[1]=b;_clipPlane[2]=c;_clipPlane[3]=d;
         }

@@ -32,6 +32,7 @@
 
 #include <osgDB/DynamicLibrary>
 #include <osgDB/FileUtils>
+#include <osgDB/FileNameUtils>
 
 using namespace osg;
 using namespace osgDB;
@@ -125,9 +126,17 @@ DynamicLibrary::getLibraryHandle( const std::string& libraryName)
             BIND_DEFERRED|BIND_FIRST|BIND_VERBOSE, 0);
     return handle;
 #else // other unix
-    handle = dlopen( libraryName.c_str(), RTLD_LAZY | RTLD_GLOBAL);
+
+    // dlopen will not work with files in the current directory unless
+    // they are prefaced with './'  (DB - Nov 5, 2003).
+    std::string localLibraryName;
+    if( libraryName == osgDB::getSimpleFileName( libraryName ) )
+        localLibraryName = "./" + libraryName;
+    else
+        localLibraryName = libraryName;
+    handle = dlopen( localLibraryName.c_str(), RTLD_LAZY | RTLD_GLOBAL);
     if( handle == NULL )
-        printf( "dlopen: %s\n", dlerror() );
+        notify(WARN) << "DynamicLibrary::getLibraryHandle( "<< libraryName << ") - dlopen(): " << dlerror() << std::endl;
 #endif
     return handle;
 }

@@ -672,7 +672,7 @@ void DrawCallback::createStatsText()
 
 ViewerEventHandler::ViewerEventHandler(OsgCameraGroup* cg):
     _cg(cg),
-    _writeNodeFileName("savedmodel.osg"),
+    _writeNodeFileName("saved_model.osg"),
     _displayHelp(false),
     _frameStatsMode(NO_STATS)
 {

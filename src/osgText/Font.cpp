@@ -388,6 +388,8 @@ void Font::GlyphTexture::apply(osg::State& state) const
     // get the globj for the current contextID.
     GLuint& handle = getTextureObject(contextID);
 
+    bool generateMipMapOn = false;
+
     if (handle == 0)
     {
         // being bound for the first time, need to allocate the texture
@@ -395,6 +397,7 @@ void Font::GlyphTexture::apply(osg::State& state) const
         glBindTexture( GL_TEXTURE_2D, handle );
 
         applyTexParameters(GL_TEXTURE_2D,state);
+
         
         // need to look at generate mip map extension if mip mapping required.
         switch(_min_filter)
@@ -403,8 +406,10 @@ void Font::GlyphTexture::apply(osg::State& state) const
         case NEAREST_MIPMAP_LINEAR:
         case LINEAR_MIPMAP_NEAREST:
         case LINEAR_MIPMAP_LINEAR:
-            if (generateMipMapSupported) {
+            if (generateMipMapSupported)
+            {
                 glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_TRUE);
+                generateMipMapOn = true;
             }
             else glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, LINEAR);
             break;
@@ -419,6 +424,7 @@ void Font::GlyphTexture::apply(osg::State& state) const
                 GL_LUMINANCE_ALPHA,
                 GL_UNSIGNED_BYTE,
                 0 );
+                
     
     }
     else
@@ -428,21 +434,26 @@ void Font::GlyphTexture::apply(osg::State& state) const
         if (getTextureParameterDirty(contextID))
         {
             applyTexParameters(GL_TEXTURE_2D,state);
+        }
+        bool generateMipMapOn = false;
 
-            // need to look at generate mip map extension if mip mapping required.
-            switch(_min_filter)
+        // need to look at generate mip map extension if mip mapping required.
+        switch(_min_filter)
+        {
+        case NEAREST_MIPMAP_NEAREST:
+        case NEAREST_MIPMAP_LINEAR:
+        case LINEAR_MIPMAP_NEAREST:
+        case LINEAR_MIPMAP_LINEAR:
+            if (generateMipMapSupported)
             {
-            case NEAREST_MIPMAP_NEAREST:
-            case NEAREST_MIPMAP_LINEAR:
-            case LINEAR_MIPMAP_NEAREST:
-            case LINEAR_MIPMAP_LINEAR:
-                if (generateMipMapSupported) glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_TRUE);
-                else glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, LINEAR);
-                break;
-            default:
-                // not mip mapping so no problems.
-                break;
+                glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_TRUE);
+                generateMipMapOn = true;
             }
+            else glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, LINEAR);
+            break;
+        default:
+            // not mip mapping so no problems.
+            break;
         }
 
     }
@@ -468,6 +479,15 @@ void Font::GlyphTexture::apply(osg::State& state) const
     {
         //std::cout << "no need to subload "<<std::endl;
     }
+
+
+
+    if (generateMipMapOn)
+    {
+        glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_FALSE);
+    }
+
+
 }
 
 // all the methods in Font::Glyph have been made non inline because VisualStudio6.0 is STUPID, STUPID, STUPID PILE OF JUNK.

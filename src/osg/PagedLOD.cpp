@@ -1,4 +1,18 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
 #include <osg/PagedLOD>
+#include <osg/CullStack>
 
 using namespace osg;
 
@@ -99,13 +113,34 @@ void PagedLOD::traverse(NodeVisitor& nv)
             break;
         case(NodeVisitor::TRAVERSE_ACTIVE_CHILDREN):
         {
-            float distance = nv.getDistanceToEyePoint(getCenter(),true);
-
+            float required_range = 0;
+            if (_rangeMode==DISTANCE_FROM_EYE_POINT)
+            {
+                required_range = nv.getDistanceToEyePoint(getCenter(),true);
+            }
+            else
+            {
+                osg::CullStack* cullStack = dynamic_cast<osg::CullStack*>(&nv);
+                if (cullStack)
+                {
+                    required_range = cullStack->pixelSize(getBound());
+                }
+                else
+                {
+                    // fallback to selecting the highest res tile by
+                    // finding out the max range
+                    for(unsigned int i=0;i<_rangeList.size();++i)
+                    {
+                        required_range = osg::minimum(required_range,_rangeList[i].first);
+                    }
+                }
+            }
+ 
             int lastChildTraversed = -1;
             bool needToLoadChild = false;
             for(unsigned int i=0;i<_rangeList.size();++i)
             {    
-                if (_rangeList[i].first<=distance && distance<_rangeList[i].second)
+                if (_rangeList[i].first<=required_range && required_range<_rangeList[i].second)
                 {
                     if (i<_children.size())
                     {
@@ -136,7 +171,7 @@ void PagedLOD::traverse(NodeVisitor& nv)
                 if (nv.getDatabaseRequestHandler() && numChildren<_perRangeDataList.size())
                 {
                     // compute priority from where abouts in the required range the distance falls.
-                    float priority = (_rangeList[numChildren].second-distance)/(_rangeList[numChildren].second-_rangeList[numChildren].first);
+                    float priority = (_rangeList[numChildren].second-required_range)/(_rangeList[numChildren].second-_rangeList[numChildren].first);
                     
                     // modify the priority according to the child's priority offset and scale.
                     priority = _perRangeDataList[numChildren]._priorityOffset + priority * _perRangeDataList[numChildren]._priorityScale;

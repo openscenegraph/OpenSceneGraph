@@ -7,7 +7,7 @@
 #include <osg/Stencil>
 #include <osg/ColorMask>
 #include <osg/Depth>
-#include <osg/ClipPlane>
+#include <osg/ClipNode>
 
 #include <osgGA/TrackballManipulator>
 #include <osgGA/FlightManipulator>
@@ -97,82 +97,12 @@ osg::Drawable* createMirrorSurface(float xMin,float xMax,float yMin,float yMax,f
     return geom;
 }
 
-void write_usage(std::ostream& out,const std::string& name)
+osg::Node* createMirroredScene(osg::Node* model)
 {
-    out << std::endl;
-    out <<"usage:"<< std::endl;
-    out <<"    "<<name<<" [options] infile1 [infile2 ...]"<< std::endl;
-    out << std::endl;
-    out <<"options:"<< std::endl;
-    out <<"    -l libraryName      - load plugin of name libraryName"<< std::endl;
-    out <<"                          i.e. -l osgdb_pfb"<< std::endl;
-    out <<"                          Useful for loading reader/writers which can load"<< std::endl;
-    out <<"                          other file formats in addition to its extension."<< std::endl;
-    out <<"    -e extensionName    - load reader/wrter plugin for file extension"<< std::endl;
-    out <<"                          i.e. -e pfb"<< std::endl;
-    out <<"                          Useful short hand for specifying full library name as"<< std::endl;
-    out <<"                          done with -l above, as it automatically expands to"<< std::endl;
-    out <<"                          the full library name appropriate for each platform."<< std::endl;
-    out <<std::endl;
-    out <<"    -stereo             - switch on stereo rendering, using the default of,"<< std::endl;
-    out <<"                          ANAGLYPHIC or the value set in the OSG_STEREO_MODE "<< std::endl;
-    out <<"                          environmental variable. See doc/stereo.html for "<< std::endl;
-    out <<"                          further details on setting up accurate stereo "<< std::endl;
-    out <<"                          for your system. "<< std::endl;
-    out <<"    -stereo ANAGLYPHIC  - switch on anaglyphic(red/cyan) stereo rendering."<< std::endl;
-    out <<"    -stereo QUAD_BUFFER - switch on quad buffered stereo rendering."<< std::endl;
-    out <<std::endl;
-    out <<"    -stencil            - use a visual with stencil buffer enabled, this "<< std::endl;
-    out <<"                          also allows the depth complexity statistics mode"<< std::endl;
-    out <<"                          to be used (press 'p' three times to cycle to it)."<< std::endl;
-    out << std::endl;
-}
-
-int main( int argc, char **argv )
-{
-
-    // initialize the GLUT
-    glutInit( &argc, argv );
-
-    if (argc<2)
-    {
-        write_usage(osg::notify(osg::NOTICE),argv[0]);
-        return 0;
-    }
-
-    // create the commandline args.
-    std::vector<std::string> commandLine;
-    for(int i=1;i<argc;++i) commandLine.push_back(argv[i]);
-    
-
-    // initialize the viewer.
-    osgGLUT::Viewer viewer;
-    viewer.setWindowTitle(argv[0]);
-    
-    // configure the viewer from the commandline arguments, and eat any
-    // parameters that have been matched.
-    viewer.readCommandLine(commandLine);
-    
-    // configure the plugin registry from the commandline arguments, and 
-    // eat any parameters that have been matched.
-    osgDB::readCommandLine(commandLine);
-    
-    // load the nodes from the commandline arguments.
-    osg::Node* loadedModel = osgDB::readNodeFiles(commandLine);
-    
-
-    if (!loadedModel)
-    {
-//        write_usage(osg::notify(osg::NOTICE),argv[0]);
-        return 1;
-    }
-    
-    osg::MatrixTransform* loadedModelTransform = new osg::MatrixTransform;
-    loadedModelTransform->addChild(loadedModel);
 
     // calculate where to place the mirror according to the
     // loaded models bounding sphere.
-    const osg::BoundingSphere& bs = loadedModelTransform->getBound();
+    const osg::BoundingSphere& bs = model->getBound();
 
     float width_factor = 1.5;
     float height_factor = 0.3;
@@ -252,7 +182,7 @@ int main( int argc, char **argv )
 
         osg::Group* groupBin2 = new osg::Group();
         groupBin2->setStateSet(statesetBin2);
-        groupBin2->addChild(loadedModelTransform);
+        groupBin2->addChild(model);
         
         rootNode->addChild(groupBin2);
     }
@@ -302,9 +232,7 @@ int main( int argc, char **argv )
         // to prevert an 'inside' out view of the reflected model.
         // set up the stencil ops so that only operator on this mirrors stencil value.
 
-        osg::Stencil* stencil = new osg::Stencil;
-        stencil->setFunction(osg::Stencil::EQUAL,1,~0);
-        stencil->setOperation(osg::Stencil::KEEP, osg::Stencil::KEEP, osg::Stencil::KEEP);
+
 
         // this clip plane removes any of the scene which when mirror would
         // poke through the mirror.  However, this clip plane should really
@@ -313,21 +241,30 @@ int main( int argc, char **argv )
         clipplane->setClipPlane(osg::Vec4(0.0f,0.0f,-1.0f,z));
         clipplane->setClipPlaneNum(0);
 
-        osg::StateSet* dstate = new osg::StateSet;
+        osg::ClipNode* clipNode = new osg::ClipNode;
+        clipNode->addClipPlane(clipplane);
+
+
+        osg::StateSet* dstate = clipNode->getOrCreateStateSet();
         dstate->setRenderBinDetails(4,"RenderBin");
         dstate->setMode(GL_CULL_FACE,osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF);
-        dstate->setAttributeAndModes(stencil,osg::StateAttribute::ON);
-        dstate->setAttributeAndModes(clipplane,osg::StateAttribute::ON);
 
-        osg::MatrixTransform* dcs = new osg::MatrixTransform;
-        dcs->setStateSet(dstate);
-        dcs->preMult(osg::Matrix::translate(0.0f,0.0f,-z)*
+        osg::Stencil* stencil = new osg::Stencil;
+        stencil->setFunction(osg::Stencil::EQUAL,1,~0);
+        stencil->setOperation(osg::Stencil::KEEP, osg::Stencil::KEEP, osg::Stencil::KEEP);
+        dstate->setAttributeAndModes(stencil,osg::StateAttribute::ON);
+
+        osg::MatrixTransform* reverseMatrix = new osg::MatrixTransform;
+        reverseMatrix->setStateSet(dstate);
+        reverseMatrix->preMult(osg::Matrix::translate(0.0f,0.0f,-z)*
                      osg::Matrix::scale(1.0f,1.0f,-1.0f)*
                      osg::Matrix::translate(0.0f,0.0f,z));
 
-        dcs->addChild(loadedModelTransform);
+        reverseMatrix->addChild(model);
 
-        rootNode->addChild(dcs);
+        clipNode->addChild(reverseMatrix);
+
+        rootNode->addChild(clipNode);
     
     }
 
@@ -363,12 +300,60 @@ int main( int argc, char **argv )
         rootNode->addChild(geode);
 
     }
+    
+    return rootNode;
+}
+
+int main( int argc, char **argv )
+{
+
+    // initialize the GLUT
+    glutInit( &argc, argv );
+
+    if (argc<2)
+    {
+        //write_usage(osg::notify(osg::NOTICE),argv[0]);
+        return 0;
+    }
+
+    // create the commandline args.
+    std::vector<std::string> commandLine;
+    for(int i=1;i<argc;++i) commandLine.push_back(argv[i]);
+    
+
+    // initialize the viewer.
+    osgGLUT::Viewer viewer;
+    viewer.setWindowTitle(argv[0]);
+    
+    // configure the viewer from the commandline arguments, and eat any
+    // parameters that have been matched.
+    viewer.readCommandLine(commandLine);
+    
+    // configure the plugin registry from the commandline arguments, and 
+    // eat any parameters that have been matched.
+    osgDB::readCommandLine(commandLine);
+    
+    // load the nodes from the commandline arguments.
+    osg::Node* loadedModel = osgDB::readNodeFiles(commandLine);
+    
+
+    if (!loadedModel)
+    {
+//        write_usage(osg::notify(osg::NOTICE),argv[0]);
+        return 1;
+    }
+    
+    osg::MatrixTransform* loadedModelTransform = new osg::MatrixTransform;
+    loadedModelTransform->addChild(loadedModel);
+
+    osg::NodeCallback* nc = new osgUtil::TransformCallback(loadedModelTransform->getBound().center(),osg::Vec3(0.0f,0.0f,1.0f),osg::inDegrees(45.0f));
+    loadedModelTransform->setUpdateCallback(nc);
+
+    osg::Node* rootNode = createMirroredScene(loadedModelTransform);
 
     // add model to the viewer.
     viewer.addViewport( rootNode );
 
-    osg::NodeCallback* nc = new osgUtil::TransformCallback(loadedModelTransform->getBound().center(),osg::Vec3(0.0f,0.0f,1.0f),osg::inDegrees(45.0f));
-    loadedModelTransform->setUpdateCallback(nc);
 
     // register trackball, flight and drive.
     viewer.registerCameraManipulator(new osgGA::TrackballManipulator);

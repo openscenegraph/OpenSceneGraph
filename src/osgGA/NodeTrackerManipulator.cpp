@@ -30,7 +30,8 @@ public:
 
 NodeTrackerManipulator::NodeTrackerManipulator()
 {
-    _rotationMode =ELEVATION_AZIM; 
+    _trackerMode = NODE_CENTER_AND_ROTATION; 
+    _rotationMode = ELEVATION_AZIM; 
     _distance = 1.0;
 
     _thrown = false;
@@ -97,9 +98,9 @@ void NodeTrackerManipulator::init(const GUIEventAdapter& ,GUIActionAdapter& )
 
 void NodeTrackerManipulator::getUsage(osg::ApplicationUsage& usage) const
 {
-    usage.addKeyboardMouseBinding("Trackball: Space","Reset the viewing position to home");
-    usage.addKeyboardMouseBinding("Trackball: +","When in stereo, increase the fusion distance");
-    usage.addKeyboardMouseBinding("Trackball: -","When in stereo, reduse the fusion distance");
+    usage.addKeyboardMouseBinding("NodeTracker: Space","Reset the viewing position to home");
+    usage.addKeyboardMouseBinding("NodeTracker: +","When in stereo, increase the fusion distance");
+    usage.addKeyboardMouseBinding("NodeTracker: -","When in stereo, reduse the fusion distance");
 }
 
 bool NodeTrackerManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
@@ -314,36 +315,76 @@ void NodeTrackerManipulator::setByMatrix(const osg::Matrixd& matrix)
     clampOrientation();
 }
 
-osg::Vec3d NodeTrackerManipulator::computeCenter() const
+void NodeTrackerManipulator::computeNodeWorldToLocal(osg::Matrixd& worldToLocal) const
 {
     if (_trackNode.valid())
     {
         CollectParentPaths cpp;
-
         NodeTrackerManipulator* non_const_this = const_cast<NodeTrackerManipulator*>(this);
-        
         non_const_this->_trackNode->accept(cpp);
 
         if (!cpp._nodePaths.empty())
         {
-            osg::Matrix localToWorld;
-            localToWorld = osg::computeLocalToWorld(cpp._nodePaths[0]);
-                        
-            return _trackNode->getBound().center() * localToWorld;
-
+            worldToLocal = osg::computeWorldToLocal(cpp._nodePaths[0]);
         }
     }
-    return osg::Vec3d(0.0,0.0,0.0);
 }
+
+void NodeTrackerManipulator::computeNodeLocalToWorld(osg::Matrixd& localToWorld) const
+{
+    if (_trackNode.valid())
+    {
+        CollectParentPaths cpp;
+        NodeTrackerManipulator* non_const_this = const_cast<NodeTrackerManipulator*>(this);
+        non_const_this->_trackNode->accept(cpp);
+
+        if (!cpp._nodePaths.empty())
+        {
+            localToWorld = osg::computeLocalToWorld(cpp._nodePaths[0]);
+        }
+    }
+}
+
+void NodeTrackerManipulator::computeNodeCenterAndRotation(osg::Vec3d& nodeCenter, osg::Quat& nodeRotation) const
+{
+    osg::Matrixd localToWorld;
+    computeNodeLocalToWorld(localToWorld);
+    
+    if (_trackNode.valid())
+        nodeCenter = _trackNode->getBound().center()*localToWorld;
+    else
+        nodeCenter = osg::Vec3d(0.0f,0.0f,0.0f)*localToWorld;
+
+    // scale the matrix to get rid of any scales before we extract the rotation.
+    double sx = 1.0/sqrt(localToWorld(0,0)*localToWorld(0,0) + localToWorld(1,0)*localToWorld(1,0) + localToWorld(2,0)*localToWorld(2,0));
+    double sy = 1.0/sqrt(localToWorld(0,1)*localToWorld(0,1) + localToWorld(1,1)*localToWorld(1,1) + localToWorld(2,1)*localToWorld(2,1));
+    double sz = 1.0/sqrt(localToWorld(0,2)*localToWorld(0,2) + localToWorld(1,2)*localToWorld(1,2) + localToWorld(2,2)*localToWorld(2,2));
+    localToWorld = localToWorld*osg::Matrixd::scale(sx,sy,sz);
+
+    localToWorld.get(nodeRotation);
+}
+
 
 osg::Matrixd NodeTrackerManipulator::getMatrix() const
 {
-    return osg::Matrixd::translate(0.0,0.0,_distance)*osg::Matrixd::rotate(_rotation)*osg::Matrix::translate(computeCenter());
+    osg::Vec3d nodeCenter;
+    osg::Quat nodeRotation;
+    computeNodeCenterAndRotation(nodeCenter,nodeRotation);
+    if (_trackerMode==NODE_CENTER)
+        return osg::Matrixd::translate(0.0,0.0,_distance)*osg::Matrixd::rotate(_rotation)*osg::Matrix::translate(nodeCenter);
+    else
+        return osg::Matrixd::translate(0.0,0.0,_distance)*osg::Matrixd::rotate(_rotation)*osg::Matrixd::rotate(nodeRotation)*osg::Matrix::translate(nodeCenter);
 }
 
 osg::Matrixd NodeTrackerManipulator::getInverseMatrix() const
 {
-    return osg::Matrix::translate(-computeCenter())*osg::Matrixd::rotate(_rotation.inverse())*osg::Matrixd::translate(0.0,0.0,-_distance);
+    osg::Vec3d nodeCenter;
+    osg::Quat nodeRotation;
+    computeNodeCenterAndRotation(nodeCenter,nodeRotation);
+    if (_trackerMode==NODE_CENTER)
+        return osg::Matrixd::translate(-nodeCenter)*osg::Matrixd::rotate(_rotation.inverse())*osg::Matrixd::translate(0.0,0.0,-_distance);
+    else
+        return osg::Matrixd::translate(-nodeCenter)*osg::Matrixd::rotate(nodeRotation.inverse())*osg::Matrixd::rotate(_rotation.inverse())*osg::Matrixd::translate(0.0,0.0,-_distance);
 }
 
 void NodeTrackerManipulator::computePosition(const osg::Vec3d& eye,const osg::Vec3d& center,const osg::Vec3d& up)
@@ -424,12 +465,12 @@ bool NodeTrackerManipulator::calcMovement()
 
     if (_trackNode.valid())
     {
-        osg::notify(osg::NOTICE)<<"_trackNode="<<_trackNode->getName()<<std::endl;
+        // osg::notify(osg::NOTICE)<<"_trackNode="<<_trackNode->getName()<<std::endl;
 
         CollectParentPaths cpp;
         _trackNode->accept(cpp);
 
-        osg::notify(osg::NOTICE)<<"number of nodepaths = "<<cpp._nodePaths.size()<<std::endl;
+        // osg::notify(osg::NOTICE)<<"number of nodepaths = "<<cpp._nodePaths.size()<<std::endl;
         
         if (!cpp._nodePaths.empty())
         {

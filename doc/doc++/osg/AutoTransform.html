@@ -109,24 +109,26 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="osg.html#DOC.2.262">osg::Vec3</A> <B><A HREF="#DOC.2.42.41">_previousEyePoint</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable int <B><A HREF="#DOC.2.42.42">_previousWidth</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="osg.html#DOC.2.262">osg::Vec3</A> <B><A HREF="#DOC.2.42.42">_previousLocalUp</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable int <B><A HREF="#DOC.2.42.43">_previousHeight</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable int <B><A HREF="#DOC.2.42.43">_previousWidth</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="osg.html#DOC.2.134">osg::Matrix</A> <B><A HREF="#DOC.2.42.44">_previousProjection</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable int <B><A HREF="#DOC.2.42.44">_previousHeight</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="osg.html#DOC.2.262">osg::Vec3</A> <B><A HREF="#DOC.2.42.45">_previousPosition</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="osg.html#DOC.2.134">osg::Matrix</A> <B><A HREF="#DOC.2.42.45">_previousProjection</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable bool <B><A HREF="#DOC.2.42.47">_matrixDirty</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="osg.html#DOC.2.262">osg::Vec3</A> <B><A HREF="#DOC.2.42.46">_previousPosition</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="osg.html#DOC.2.134">osg::Matrix</A> <B><A HREF="#DOC.2.42.48">_cachedMatrix</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable bool <B><A HREF="#DOC.2.42.48">_matrixDirty</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="osg.html#DOC.2.134">osg::Matrix</A> <B><A HREF="#DOC.2.42.49">_cachedMatrix</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.42.32">~AutoTransform</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.42.46">computeMatrix</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.42.47">computeMatrix</A></B>() const 
 </DL></P>
 
 </DL>
@@ -585,32 +587,36 @@ to keep its children relative to screen space coordinates</BLOCKQUOTE>
 <A NAME="DOC.2.42.41"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable <!1><A HREF="osg.html#DOC.2.262">osg::Vec3</A> _previousEyePoint</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="_previousWidth"></A>
+<A NAME="_previousLocalUp"></A>
 <A NAME="DOC.2.42.42"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable <!1><A HREF="osg.html#DOC.2.262">osg::Vec3</A> _previousLocalUp</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_previousWidth"></A>
+<A NAME="DOC.2.42.43"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable int _previousWidth</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_previousHeight"></A>
-<A NAME="DOC.2.42.43"></A>
+<A NAME="DOC.2.42.44"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable int _previousHeight</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_previousProjection"></A>
-<A NAME="DOC.2.42.44"></A>
+<A NAME="DOC.2.42.45"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable <!1><A HREF="osg.html#DOC.2.134">osg::Matrix</A> _previousProjection</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_previousPosition"></A>
-<A NAME="DOC.2.42.45"></A>
+<A NAME="DOC.2.42.46"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable <!1><A HREF="osg.html#DOC.2.262">osg::Vec3</A> _previousPosition</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeMatrix"></A>
-<A NAME="DOC.2.42.46"></A>
+<A NAME="DOC.2.42.47"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void computeMatrix() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_matrixDirty"></A>
-<A NAME="DOC.2.42.47"></A>
+<A NAME="DOC.2.42.48"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable bool _matrixDirty</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_cachedMatrix"></A>
-<A NAME="DOC.2.42.48"></A>
+<A NAME="DOC.2.42.49"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable <!1><A HREF="osg.html#DOC.2.134">osg::Matrix</A> _cachedMatrix</B></TT>
 <DL><DT><DD></DL><P></DL>
 

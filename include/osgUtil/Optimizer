@@ -42,10 +42,12 @@ class OSGUTIL_EXPORT Optimizer
             REMOVE_REDUNDANT_NODES = 0x2,
             COMBINE_ADJACENT_LODS = 0x4,
             SHARE_DUPLICATE_STATE = 0x8,
+            MERGE_GEOMETRY = 0x10,
             ALL_OPTIMIZATIONS = FLATTEN_STATIC_TRANSFORMS |
                                 REMOVE_REDUNDANT_NODES |
                                 COMBINE_ADJACENT_LODS |
-                                SHARE_DUPLICATE_STATE
+                                SHARE_DUPLICATE_STATE |
+                                MERGE_GEOMETRY
         };
 
         /** traverse the node and its subgraph with a series of optimization

@@ -123,11 +123,11 @@ public:
         _extensions->glVertexAttrib4fv( _index, v.ptr() );
     }
 
-    const Geometry::Extensions *_extensions;
-    const Array*            _attribcoords;
-    const IndexArray*        _indices;
-    GLboolean                _normalized;
-    unsigned int            _index;
+    unsigned int                    _index;
+    GLboolean                       _normalized;
+    const Geometry::Extensions*     _extensions;
+    const Array*                    _attribcoords;
+    const IndexArray*               _indices;
 };
 
 class DrawTexCoord : public osg::Referenced, public osg::ConstValueVisitor
@@ -1681,9 +1681,11 @@ bool Geometry::verifyBindings() const
             if (_normalArray->getNumElements()!=1) return false;
             break;
         case(BIND_PER_PRIMITIVE_SET):
-        case(BIND_PER_PRIMITIVE):
             if (!_normalArray.valid()) return false;
             if (_normalArray->getNumElements()!=_primitives.size()) return false;
+            break;
+        case(BIND_PER_PRIMITIVE):
+            if (!_normalArray.valid()) return false;
             break;
         case(BIND_PER_VERTEX):
             if (_vertexArray.valid())
@@ -1705,9 +1707,11 @@ bool Geometry::verifyBindings() const
             if (_colorArray->getNumElements()!=1) return false;
             break;
         case(BIND_PER_PRIMITIVE_SET):
-        case(BIND_PER_PRIMITIVE):
             if (!_colorArray.valid()) return false;
             if (_colorArray->getNumElements()!=_primitives.size()) return false;
+            break;
+        case(BIND_PER_PRIMITIVE):
+            if (!_colorArray.valid()) return false;
             break;
         case(BIND_PER_VERTEX):
             if (_vertexArray.valid())
@@ -1780,7 +1784,6 @@ void Geometry::computeCorrectBindingsAndArraySizes()
             }
             break;
         case(BIND_PER_PRIMITIVE_SET):
-        case(BIND_PER_PRIMITIVE):
             if (!_normalArray.valid())
             {
                 _normalBinding = BIND_OFF;
@@ -1795,6 +1798,8 @@ void Geometry::computeCorrectBindingsAndArraySizes()
                 // trim the array down to size of the number of primitives.
                 _normalArray->erase(_normalArray->begin()+_primitives.size(),_normalArray->end());
             }
+            break;
+        case(BIND_PER_PRIMITIVE):
             break;
         case(BIND_PER_VERTEX):
             if (!_normalArray.valid())

@@ -367,7 +367,10 @@ CullViewState::CullingMode CullVisitor::getCullingMode() const
 void CullVisitor::apply(Node& node)
 {
     CullViewState::CullingMode mode = _cullingModeStack.back();
-    if (isCulled(node.getBound(),mode)) return;
+    
+    if (!node.getCullingActive()) mode = 0;
+    else if (node.getNumChildrenWithCullingDisabled()==0 && 
+             isCulled(node.getBound(),mode)) return;
 
     // push the culling mode.
     _cullingModeStack.push_back(mode);
@@ -391,7 +394,10 @@ void CullVisitor::apply(Geode& node)
 
     // return if object's bounding sphere is culled.
     CullViewState::CullingMode mode = _cullingModeStack.back();
-    if (isCulled(node.getBound(),mode)) return;
+
+    if (!node.getCullingActive()) mode = 0;
+    else if (node.getNumChildrenWithCullingDisabled()==0 && 
+             isCulled(node.getBound(),mode)) return;
 
     // push the node's state.
     StateSet* node_state = node.getStateSet();
@@ -465,7 +471,10 @@ void CullVisitor::apply(Billboard& node)
 {
     // return if object's bounding sphere is culled.
     CullViewState::CullingMode mode = _cullingModeStack.back();
-    if (isCulled(node.getBound(),mode)) return;
+
+    if (!node.getCullingActive()) mode = 0;
+    else if (node.getNumChildrenWithCullingDisabled()==0 && 
+             isCulled(node.getBound(),mode)) return;
 
     // push the node's state.
     StateSet* node_state = node.getStateSet();
@@ -566,7 +575,10 @@ void CullVisitor::apply(Group& node)
 {
     // return if object's bounding sphere is culled.
     CullViewState::CullingMode mode = _cullingModeStack.back();
-    if (isCulled(node.getBound(),mode)) return;
+
+    if (!node.getCullingActive()) mode = 0;
+    else if (node.getNumChildrenWithCullingDisabled()==0 && 
+             isCulled(node.getBound(),mode)) return;
 
     // push the culling mode.
     _cullingModeStack.push_back(mode);
@@ -589,7 +601,10 @@ void CullVisitor::apply(Transform& node)
 {
     // return if object's bounding sphere is culled.
     CullViewState::CullingMode mode = _cullingModeStack.back();
-    if (isCulled(node.getBound(),mode)) return;
+
+    if (!node.getCullingActive()) mode = 0;
+    else if (node.getNumChildrenWithCullingDisabled()==0 && 
+             isCulled(node.getBound(),mode)) return;
 
     // push the culling mode.
     _cullingModeStack.push_back(mode);
@@ -622,7 +637,10 @@ void CullVisitor::apply(LOD& node)
 {
     // return if object's bounding sphere is culled.
     CullViewState::CullingMode mode = _cullingModeStack.back();
-    if (isCulled(node.getBound(),mode)) return;
+
+    if (!node.getCullingActive()) mode = 0;
+    else if (node.getNumChildrenWithCullingDisabled()==0 && 
+             isCulled(node.getBound(),mode)) return;
 
     int eval = node.evaluate(getEyeLocal(),_LODBias);
     if (eval<0) return;
@@ -667,7 +685,10 @@ void CullVisitor::apply(Impostor& node)
 
     // return if object's bounding sphere is culled.
     CullViewState::CullingMode mode = _cullingModeStack.back();
-    if (isCulled(bs,mode)) return;
+
+    if (!node.getCullingActive()) mode = 0;
+    else if (node.getNumChildrenWithCullingDisabled()==0 && 
+             isCulled(node.getBound(),mode)) return;
 
     osg::Vec3 eyeLocal = getEyeLocal();
 

@@ -105,6 +105,20 @@ class SG_EXPORT Node : public Object
           * since they have an AppCallback attached to them or their children.*/
         inline const int getNumChildrenRequiringAppTraversal() const { return _numChildrenRequiringAppTraversal; }
 
+
+        /** Set the view frustum/small feature culling of this node to be active or inactive.
+          * The default value to true for _cullingActive. Used a guide
+          * to the cull traversal.*/
+        void setCullingActive(const bool active);
+
+        /** Get the view frustum/small feature _cullingActive flag. Used a guide
+          * to the cull traversal.*/
+        inline const bool getCullingActive() const { return _cullingActive; }
+
+        /** Get the number of Children of this node which have culling disabled.*/
+        inline const int getNumChildrenWithCullingDisabled() const { return _numChildrenWithCullingDisabled; }
+
+
         /**
          * Set user data. See MemoryAdapter documentation for details
          * of how to specify memory management of _userData.
@@ -201,10 +215,13 @@ class SG_EXPORT Node : public Object
         ParentList _parents;
         friend Group;
 
-        ref_ptr<NodeCallback>   _appCallback;
-        int                     _numChildrenRequiringAppTraversal;
-        
+        ref_ptr<NodeCallback> _appCallback;
+        int _numChildrenRequiringAppTraversal;
         void setNumChildrenRequiringAppTraversal(const int num);
+
+        bool _cullingActive;
+        int _numChildrenWithCullingDisabled;        
+        void setNumChildrenWithCullingDisabled(const int num);
 
         void*                   _userData;
         ref_ptr<MemoryAdapter>  _memoryAdapter;

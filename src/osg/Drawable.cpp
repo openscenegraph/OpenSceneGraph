@@ -470,6 +470,7 @@ Drawable::Extensions::Extensions(const Extensions& rhs):
     _isSecondaryColorSupported = rhs._isSecondaryColorSupported;
     _isFogCoordSupported = rhs._isFogCoordSupported;
     _isMultiTexSupported = rhs._isMultiTexSupported;
+    _isOcclusionQuerySupported = rhs._isOcclusionQuerySupported;
     _glFogCoordfv = rhs._glFogCoordfv;
     _glSecondaryColor3ubv = rhs._glSecondaryColor3ubv;
     _glSecondaryColor3fv = rhs._glSecondaryColor3fv;
@@ -489,6 +490,13 @@ Drawable::Extensions::Extensions(const Extensions& rhs):
     _glBufferData = rhs._glBufferData;
     _glBufferSubData = rhs._glBufferSubData;
     _glDeleteBuffers = rhs._glDeleteBuffers;
+    _glGenOcclusionQueries = rhs._glGenOcclusionQueries;
+    _glDeleteOcclusionQueries = rhs._glDeleteOcclusionQueries;
+    _glIsOcclusionQuery = rhs._glIsOcclusionQuery;
+    _glBeginOcclusionQuery = rhs._glBeginOcclusionQuery;
+    _glEndOcclusionQuery = rhs._glEndOcclusionQuery;
+    _glGetOcclusionQueryiv = rhs._glGetOcclusionQueryiv;
+    _glGetOcclusionQueryuiv = rhs._glGetOcclusionQueryuiv;
 }
 
 
@@ -498,6 +506,7 @@ void Drawable::Extensions::lowestCommonDenominator(const Extensions& rhs)
     if (!rhs._isSecondaryColorSupported) _isSecondaryColorSupported = false;
     if (!rhs._isFogCoordSupported) _isFogCoordSupported = false;
     if (!rhs._isMultiTexSupported) _isMultiTexSupported = false;
+    if (!rhs._isOcclusionQuerySupported) _isOcclusionQuerySupported = false;
 
     if (!rhs._glFogCoordfv) _glFogCoordfv = 0;
     if (!rhs._glSecondaryColor3ubv) _glSecondaryColor3ubv = 0;
@@ -520,6 +529,14 @@ void Drawable::Extensions::lowestCommonDenominator(const Extensions& rhs)
     if (!rhs._glBufferData) _glBufferData = 0;
     if (!rhs._glBufferSubData) _glBufferSubData = 0;
     if (!rhs._glDeleteBuffers) _glDeleteBuffers = 0;
+
+    if (!rhs._glGenOcclusionQueries) _glGenOcclusionQueries = 0;
+    if (!rhs._glDeleteOcclusionQueries) _glDeleteOcclusionQueries = 0;
+    if (!rhs._glIsOcclusionQuery) _glIsOcclusionQuery = 0;
+    if (!rhs._glBeginOcclusionQuery) _glBeginOcclusionQuery = 0;
+    if (!rhs._glEndOcclusionQuery) _glEndOcclusionQuery = 0;
+    if (!rhs._glGetOcclusionQueryiv) _glGetOcclusionQueryiv = 0;
+    if (!rhs._glGetOcclusionQueryuiv) _glGetOcclusionQueryuiv = 0;
 }
 
 void Drawable::Extensions::setupGLExtenions()
@@ -528,6 +545,7 @@ void Drawable::Extensions::setupGLExtenions()
     _isSecondaryColorSupported = isGLExtensionSupported("GL_EXT_secondary_color");
     _isFogCoordSupported = isGLExtensionSupported("GL_EXT_fog_coord");
     _isMultiTexSupported = isGLExtensionSupported("GL_ARB_multitexture");
+    _isOcclusionQuerySupported = osg::isGLExtensionSupported( "GL_NV_occlusion_query" );
 
     _glFogCoordfv = ((FogCoordProc)osg::getGLExtensionFuncPtr("glFogCoordfv","glFogCoordfvEXT"));
     _glSecondaryColor3ubv = ((SecondaryColor3ubvProc)osg::getGLExtensionFuncPtr("glSecondaryColor3ubv","glSecondaryColor3ubvEXT"));
@@ -551,7 +569,15 @@ void Drawable::Extensions::setupGLExtenions()
     _glBufferSubData = ((BufferSubDataProc)osg::getGLExtensionFuncPtr("glBufferSubData","glBufferSubDataARB"));
     _glDeleteBuffers = ((DeleteBuffersProc)osg::getGLExtensionFuncPtr("glDeleteBuffers","glDeleteBuffersARB"));
 
+    _glGenOcclusionQueries = ((GenOcclusionQueriesProc)osg::getGLExtensionFuncPtr("glGenOcclusionQueries","glGenOcclusionQueriesNV"));
+    _glDeleteOcclusionQueries = ((DeleteOcclusionQueriesProc)osg::getGLExtensionFuncPtr("glDeleteOcclusionQueries","glDeleteOcclusionQueriesNV"));
+    _glIsOcclusionQuery = ((IsOcclusionQueryProc)osg::getGLExtensionFuncPtr("glIsOcclusionQuery","_glIsOcclusionQueryNV"));
+    _glBeginOcclusionQuery = ((BeginOcclusionQueryProc)osg::getGLExtensionFuncPtr("glBeginOcclusionQuery","glBeginOcclusionQueryNV"));
+    _glEndOcclusionQuery = ((EndOcclusionQueryProc)osg::getGLExtensionFuncPtr("glEndOcclusionQuery","glEndOcclusionQueryNV"));
+    _glGetOcclusionQueryiv = ((GetOcclusionQueryivProc)osg::getGLExtensionFuncPtr("glGetOcclusionQueryiv","glGetOcclusionQueryivNV"));
+    _glGetOcclusionQueryuiv = ((GetOcclusionQueryuivProc)osg::getGLExtensionFuncPtr("glGetOcclusionQueryuiv","glGetOcclusionQueryuivNV"));
 }
+
 void Drawable::Extensions::glFogCoordfv(const GLfloat* coord) const
 {
     if (_glFogCoordfv)
@@ -778,4 +804,90 @@ void Drawable::Extensions::glDeleteBuffers(GLsizei n, const GLuint *buffers) con
     {
         notify(WARN)<<"Error: glBufferData not supported by OpenGL driver"<<std::endl;
     }
+}
+
+void Drawable::Extensions::glGenOcclusionQueries( GLsizei n, GLuint *ids ) const
+{
+    if (_glGenOcclusionQueries)
+    {
+        _glGenOcclusionQueries( n, ids );
+    }
+    else
+    {
+        osg::notify(osg::WARN)<<"Error: glGenOcclusionQueries not supported by OpenGL driver"<<std::endl;
+    }    
+}
+
+void Drawable::Extensions::glDeleteOcclusionQueries( GLsizei n, const GLuint *ids ) const
+{
+    if (_glDeleteOcclusionQueries)
+    {
+        _glDeleteOcclusionQueries( n, ids );
+    }
+    else
+    {
+        osg::notify(osg::WARN)<<"Error: glDeleteOcclusionQueries not supported by OpenGL driver"<<std::endl;
+    }    
+}
+
+GLboolean Drawable::Extensions::glIsOcclusionQuery( GLuint id ) const
+{
+    if (_glIsOcclusionQuery)
+    {
+        return _glIsOcclusionQuery( id );
+    }
+    else
+    {
+        osg::notify(osg::WARN)<<"Error: glIsOcclusionQuery not supported by OpenGL driver"<<std::endl;
+    }    
+
+    return GLboolean( 0 );
+}
+
+void Drawable::Extensions::glBeginOcclusionQuery( GLuint id ) const
+{
+    if (_glBeginOcclusionQuery)
+    {
+        _glBeginOcclusionQuery( id );
+    }
+    else
+    {
+        osg::notify(osg::WARN)<<"Error: glBeginOcclusionQuery not supported by OpenGL driver"<<std::endl;
+    }    
+}
+
+void Drawable::Extensions::glEndOcclusionQuery() const
+{
+    if (_glEndOcclusionQuery)
+    {
+        _glEndOcclusionQuery();
+    }
+    else
+    {
+        osg::notify(osg::WARN)<<"Error: glEndOcclusionQuery not supported by OpenGL driver"<<std::endl;
+    }    
+}
+
+void Drawable::Extensions::glGetOcclusionQueryiv( GLuint id, GLenum pname, GLint *params ) const
+{
+    if (_glGetOcclusionQueryiv)
+    {
+        _glGetOcclusionQueryiv( id, pname, params );
+    }
+    else
+    {
+        osg::notify(osg::WARN)<<"Error: glGetOcclusionQueryiv not supported by OpenGL driver"<<std::endl;
+    }    
+}
+
+void Drawable::Extensions::glGetOcclusionQueryuiv( GLuint id, GLenum pname, GLuint *params ) const
+{
+    if (_glGetOcclusionQueryuiv)
+    {
+        _glGetOcclusionQueryuiv( id, pname, params );
+    }
+    else
+    {
+        osg::notify(osg::WARN)<<"Error: glGetOcclusionQueryuiv not supported by OpenGL driver"<<std::endl;
+    }    
 }

@@ -683,6 +683,7 @@ osg::StateSet* ReaderWriter3DS::createStateSet(Lib3dsMaterial *mat)
     osg::Vec4 ambient(mat->ambient[0],mat->ambient[1],mat->ambient[2],alpha);
     osg::Vec4 diffuse(mat->diffuse[0],mat->diffuse[1],mat->diffuse[2],alpha);
     osg::Vec4 specular(mat->specular[0],mat->specular[1],mat->specular[2],alpha);
+    specular *= mat->shin_strength;
 
     float shininess = mat->shininess;
 

@@ -2,10 +2,27 @@
 include ../../Make/makedefs
 
 C++FILES = \
-	GLUTEventAdapter.cpp\
-        Version.cpp\
-        Window.cpp\
-        Viewer.cpp\
+	FTBitmapGlyph.cpp \
+        FTGLOutlineFont.cpp \
+        FTGlyphContainer.cpp \
+        FTSize.cpp \
+	FTCharmap.cpp \
+        FTGLPixmapFont.cpp \
+        FTLibrary.cpp \
+        FTTextureGlyph.cpp \
+	FTFace.cpp \
+        FTGLPolygonFont.cpp \
+        FTOutlineGlyph.cpp \
+        FTVectoriser.cpp \
+	FTFont.cpp \
+        FTGLTextureFont.cpp \
+        FTPixmapGlyph.cpp \
+	FTGLBitmapFont.cpp \
+        FTGlyph.cpp \
+        FTPolyGlyph.cpp \
+        Text.cpp \
+        Version.cpp
+
 
 TARGET_BASENAME = osgGLUT
 
@@ -17,13 +34,11 @@ LIB	= ../../lib/lib$(TARGET_BASENAME).so
 
 TARGET_LIB_FILES = lib$(TARGET_BASENAME).so
 TARGET_INCLUDE_FILES = \
-	osgGLUT/Export\
-	osgGLUT/GLUTEventAdapter\
-	osgGLUT/Version\
-	osgGLUT/Window\
-	osgGLUT/Viewer\
+	osgText/Export\
+	osgText/Version\
+	osgText/Text
 
-C++FLAGS += -I ../../include
+C++FLAGS += -I ../../include -I /usr/local/include/freetype2 -I /usr/local/include/freetype2/freetype
 
 include ../../Make/makerules
 

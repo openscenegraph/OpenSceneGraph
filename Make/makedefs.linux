@@ -1,7 +1,7 @@
 MAKEDIR    = $(OSGHOME)/Make
 INSTRULES  = $(MAKEDIR)/instrules
 MAKEDEPEND = Makedepend
-OBJS = $(C++FILES:.cpp=.o) $(CFILES:.c=.o) $(YACCFILES:.y=.o) $(LEXFILES:.l=.o)
+OBJS = $(C++FILES:.cpp=.o)  $(CFILES:.c=.o) $(YACCFILES:.y=.o) $(LEXFILES:.l=.o)
 
 DEPFILES = $(OBJS:.o=.d)
 

@@ -13,7 +13,15 @@
  */
 
 
-#include <osgText/Text.h>
+#include <osgText/Text>
+
+#include "FTFace.h"
+#include "FTGLBitmapFont.h"
+#include "FTGLPixmapFont.h"
+#include "FTGLOutlineFont.h"
+#include "FTGLPolygonFont.h"
+#include "FTGLTextureFont.h"
+
 
 using namespace osgText;
 
@@ -326,7 +334,7 @@ setDefaults()
 	
 	_fontType=UNDEF;
 	_alignement=LEFT_BOTTOM;
-	_drawMode=DrawModeType::DEFAULT;
+	_drawMode=DEFAULT;
 
 	_boundingBoxType=GLYPH;
 	_boundingBoxType=GEOMETRY;

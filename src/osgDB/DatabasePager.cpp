@@ -253,7 +253,7 @@ void DatabasePager::signalEndFrame()
 
 }
 
-class FindCompileableGLObjectsVisitor : public osg::NodeVisitor
+class DatabasePager::FindCompileableGLObjectsVisitor : public osg::NodeVisitor
 {
 public:
     FindCompileableGLObjectsVisitor(DatabasePager::DataToCompile& dataToCompile, 
@@ -333,7 +333,7 @@ public:
 };
 
 
-struct SortFileRequestFunctor
+struct DatabasePager::SortFileRequestFunctor
 {
     bool operator() (const osg::ref_ptr<DatabasePager::DatabaseRequest>& lhs,const osg::ref_ptr<DatabasePager::DatabaseRequest>& rhs) const
     {
@@ -726,7 +726,7 @@ void DatabasePager::removeExpiredSubgraphs(double currentFrameTime)
 }
 
 
-class FindPagedLODsVisitor : public osg::NodeVisitor
+class DatabasePager::FindPagedLODsVisitor : public osg::NodeVisitor
 {
 public:
     FindPagedLODsVisitor(DatabasePager::PagedLODList& pagedLODList):

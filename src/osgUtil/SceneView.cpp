@@ -148,7 +148,9 @@ void SceneView::init()
     {
         _initVisitor->reset();
         _initVisitor->setFrameStamp(_frameStamp.get());
-        _initVisitor->setState(_state.get());
+        
+        DisplayListVisitor* dlv = dynamic_cast<DisplayListVisitor*>(_initVisitor.get());
+        if (dlv) dlv->setState(_state.get());
         
         if (_frameStamp.valid())
         {

@@ -226,7 +226,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
         typedef std::set<unsigned int>                     ActiveGraphicsContexts;
 
-
+        friend struct DatabaseRequest;
         
         struct DatabaseRequest : public osg::Referenced
         {

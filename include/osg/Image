@@ -38,6 +38,15 @@
     #define GL_UNSIGNED_INT_2_10_10_10_REV  0x8368
 #endif
 
+#ifndef GL_COMPRESSED_ALPHA
+    #define GL_COMPRESSED_ALPHA             0x84E9
+    #define GL_COMPRESSED_LUMINANCE         0x84EA
+    #define GL_COMPRESSED_LUMINANCE_ALPHA   0x84EB
+    #define GL_COMPRESSED_INTENSITY         0x84EC
+    #define GL_COMPRESSED_RGB               0x84ED
+    #define GL_COMPRESSED_RGBA              0x84EE
+#endif
+
 namespace osg {
 
 /** Image class for encapsulating the storage texture image data. */

@@ -462,6 +462,9 @@ class SG_EXPORT Drawable : public Object
             void setMultiTexSupported(bool flag) { _isMultiTexSupported=flag; }
             bool isMultiTexSupported() const { return _isMultiTexSupported; }
 
+			void setOcclusionQuerySupported(bool flag) { _isOcclusionQuerySupported=flag; }
+			bool isOcclusionQuerySupported() const { return _isOcclusionQuerySupported; }
+
             void glSecondaryColor3ubv(const GLubyte* coord) const;
             void glSecondaryColor3fv(const GLfloat* coord) const;
 
@@ -486,6 +489,13 @@ class SG_EXPORT Drawable : public Object
             void glBufferSubData (GLenum target, GLintptrARB offset, GLsizeiptrARB size, const GLvoid *data) const;
             void glDeleteBuffers (GLsizei n, const GLuint *buffers) const;
 
+	    void glGenOcclusionQueries( GLsizei n, GLuint *ids ) const;
+	    void glDeleteOcclusionQueries( GLsizei n, const GLuint *ids ) const;
+	    GLboolean glIsOcclusionQuery( GLuint id ) const;
+	    void glBeginOcclusionQuery( GLuint id ) const;
+	    void glEndOcclusionQuery() const;
+	    void glGetOcclusionQueryiv( GLuint id, GLenum pname, GLint *params ) const;
+	    void glGetOcclusionQueryuiv( GLuint id, GLenum pname, GLuint *params ) const;
 
         protected:
 
@@ -508,13 +518,22 @@ class SG_EXPORT Drawable : public Object
             typedef void (APIENTRY * BufferSubDataProc) (GLenum target, GLintptrARB offset, GLsizeiptrARB size, const GLvoid *data);
             typedef void (APIENTRY * DeleteBuffersProc) (GLsizei n, const GLuint *buffers);
 
-            ~Extensions() {}
+	    typedef void (APIENTRY * GenOcclusionQueriesProc) ( GLsizei n, GLuint *ids );
+	    typedef void (APIENTRY * DeleteOcclusionQueriesProc) ( GLsizei n, const GLuint *ids );
+	    typedef GLboolean (APIENTRY * IsOcclusionQueryProc) ( GLuint id );
+	    typedef void (APIENTRY * BeginOcclusionQueryProc) ( GLuint id );
+	    typedef void (APIENTRY * EndOcclusionQueryProc) ();
+	    typedef void (APIENTRY * GetOcclusionQueryivProc) ( GLuint id, GLenum pname, GLint *params );
+	    typedef void (APIENTRY * GetOcclusionQueryuivProc) ( GLuint id, GLenum pname, GLuint *params );
+
+	    ~Extensions() {}
 
             bool _isVertexProgramSupported;
             bool _isSecondaryColorSupported;
             bool _isFogCoordSupported;
             bool _isMultiTexSupported;
- 
+	    bool _isOcclusionQuerySupported;
+
             FogCoordProc _glFogCoordfv;
 
             SecondaryColor3ubvProc _glSecondaryColor3ubv;
@@ -538,6 +557,14 @@ class SG_EXPORT Drawable : public Object
             BufferDataProc      _glBufferData;
             BufferSubDataProc   _glBufferSubData;
             DeleteBuffersProc   _glDeleteBuffers;
+
+            GenOcclusionQueriesProc _glGenOcclusionQueries;
+            DeleteOcclusionQueriesProc _glDeleteOcclusionQueries;
+            IsOcclusionQueryProc _glIsOcclusionQuery;
+            BeginOcclusionQueryProc _glBeginOcclusionQuery;
+            EndOcclusionQueryProc _glEndOcclusionQuery;
+            GetOcclusionQueryivProc _glGetOcclusionQueryiv;
+            GetOcclusionQueryuivProc _glGetOcclusionQueryuiv;
         };
 
         /** Function to call to get the extension of a specified context.

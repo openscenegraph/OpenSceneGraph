@@ -1,5 +1,6 @@
 For compiliation, installation and platform specific information
-read doc/install.html.
+read "Getting Started" at http://www.openscenegraph.org, under 
+"Documentation".
 
 Quick hints for Unix (including Mac OSX and Cygwin):
 

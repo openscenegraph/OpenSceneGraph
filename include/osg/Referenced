@@ -6,7 +6,6 @@
 #define OSG_REFERENCED 1
 
 #include <osg/Export>
-#include <set>
 
 namespace osg {
 
@@ -32,7 +31,7 @@ class SG_EXPORT Referenced
         inline const int referenceCount() const { return _refCount; }
 
     protected:
-        virtual ~Referenced() {}
+        virtual ~Referenced();
         mutable int _refCount;
 
 };

@@ -404,7 +404,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
 	
 };
 
-};
+}
 
 #endif
 

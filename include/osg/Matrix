@@ -288,7 +288,7 @@ inline std::ostream& operator<< (std::ostream& os, const Matrix& m )
 }
 
 
-}; //namespace osg
+} //namespace osg
 
 
 #endif

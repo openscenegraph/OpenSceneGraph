@@ -78,6 +78,6 @@ class SG_EXPORT AlphaFunc : public StateAttribute
 
 };
 
-};
+}
 
 #endif

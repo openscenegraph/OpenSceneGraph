@@ -101,6 +101,6 @@ class SG_EXPORT BoundingSphere
 
 };
 
-};
+}
 
 #endif

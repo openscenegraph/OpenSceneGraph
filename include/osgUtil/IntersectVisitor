@@ -159,7 +159,7 @@ class OSGUTIL_EXPORT IntersectVisitor : public osg::NodeVisitor
         LineSegmentHitListMap       _segHitList;
 };
 
-};
+}
 
 #endif
 

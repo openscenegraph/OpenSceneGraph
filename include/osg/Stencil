@@ -141,6 +141,6 @@ class SG_EXPORT Stencil : public StateAttribute
 
 };
 
-};
+}
 
 #endif

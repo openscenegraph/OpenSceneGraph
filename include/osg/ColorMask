@@ -76,6 +76,6 @@ class SG_EXPORT ColorMask : public StateAttribute
 
 };
 
-};
+}
 
 #endif

@@ -90,6 +90,6 @@ class SG_EXPORT ClipPlane : public StateAttribute
 
 };
 
-};
+}
 
 #endif

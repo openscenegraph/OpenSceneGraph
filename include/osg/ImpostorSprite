@@ -187,6 +187,6 @@ class SG_EXPORT ImpostorSpriteManager : public Referenced
 
 };
 
-};
+}
 
 #endif

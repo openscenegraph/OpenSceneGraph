@@ -118,6 +118,6 @@ class SG_EXPORT Geode : public Node
 
 };
 
-};
+}
 
 #endif

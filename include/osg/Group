@@ -118,6 +118,6 @@ class SG_EXPORT Group : public Node
 
 };
 
-};
+}
 
 #endif

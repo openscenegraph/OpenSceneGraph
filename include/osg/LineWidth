@@ -50,6 +50,6 @@ class SG_EXPORT LineWidth : public StateAttribute
 
 };
 
-};
+}
 
 #endif

@@ -73,6 +73,6 @@ class SG_EXPORT LOD : public Group
 
 };
 
-};
+}
 
 #endif

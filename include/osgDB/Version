@@ -32,6 +32,6 @@ extern OSGDB_EXPORT const char* osgDBGetVersion();
 */
 extern OSGDB_EXPORT const char* osgDBGetLibraryName();
 
-};
+}
 
 #endif

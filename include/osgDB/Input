@@ -47,6 +47,6 @@ class OSGDB_EXPORT Input : public FieldReaderIterator
 
 };
 
-};
+}
 
 #endif                                            // __SG_INPUT_H

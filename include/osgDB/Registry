@@ -198,6 +198,6 @@ class RegisterReaderWriterProxy
         osg::ref_ptr<T> _rw;
 };
 
-};
+}
 
 #endif

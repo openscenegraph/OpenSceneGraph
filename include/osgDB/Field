@@ -105,6 +105,6 @@ class OSGDB_EXPORT Field
 
 };
 
-};
+}
 
 #endif                                            // __SG_FIELD_H

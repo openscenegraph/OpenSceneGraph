@@ -40,6 +40,6 @@ OSGDB_EXPORT extern bool writeImageFile(const osg::Image& image, const std::stri
 OSGDB_EXPORT extern bool writeNodeFile(const osg::Node& node, const std::string& filename);
 
 
-};
+}
 
 #endif

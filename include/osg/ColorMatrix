@@ -57,7 +57,7 @@ class SG_EXPORT ColorMatrix : public StateAttribute
 
 };
 
-};
+}
 
 
 #endif

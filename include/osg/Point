@@ -70,6 +70,6 @@ class SG_EXPORT Point : public StateAttribute
 
 };
 
-};
+}
 
 #endif

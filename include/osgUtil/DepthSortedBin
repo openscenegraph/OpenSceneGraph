@@ -45,7 +45,7 @@ class OSGUTIL_EXPORT DepthSortedBin : public RenderBin
         RenderLeafList      _renderLeafList;
 };
 
-};
+}
 
 #endif
 

@@ -97,6 +97,6 @@ class SG_EXPORT TexGen : public StateAttribute
 
 };
 
-};
+}
 
 #endif

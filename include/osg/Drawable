@@ -270,6 +270,6 @@ inline void Drawable::draw(State& state)
     }
 }
 
-};
+}
 
 #endif

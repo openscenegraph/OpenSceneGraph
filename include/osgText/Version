@@ -32,6 +32,6 @@ extern OSGTEXT_EXPORT const char* osgTextGetVersion();
 */
 extern OSGTEXT_EXPORT const char* osgTextGetLibraryName();
 
-};
+}
 
 #endif

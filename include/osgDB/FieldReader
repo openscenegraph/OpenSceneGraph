@@ -57,6 +57,6 @@ class OSGDB_EXPORT FieldReader
 
 };
 
-};
+}
 
 #endif                                            // __SG_FIELD_READER_H

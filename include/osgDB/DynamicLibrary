@@ -62,6 +62,6 @@ class OSGDB_EXPORT DynamicLibrary : public osg::Referenced
 
 };
 
-};
+}
 
 #endif // __DYNAMIC_LIBRARY_H

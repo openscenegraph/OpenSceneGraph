@@ -36,6 +36,6 @@ class SG_EXPORT MemoryAdapter : public Referenced
         virtual ~MemoryAdapter() {}
 };
 
-};
+}
 
 #endif

@@ -33,7 +33,7 @@ extern OSGGLUT_EXPORT const char* osgGLUTGetVersion();
 */
 extern OSGGLUT_EXPORT const char* osgGLUTGetLibraryName();
 
-};
+}
 
 #endif
 

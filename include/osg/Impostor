@@ -101,6 +101,6 @@ class SG_EXPORT Impostor : public LOD
 
 };
 
-};
+}
 
 #endif

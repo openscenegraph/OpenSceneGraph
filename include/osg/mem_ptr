@@ -201,6 +201,6 @@ class mem_ptr
 // };
 
 
-};
+}
 
 #endif

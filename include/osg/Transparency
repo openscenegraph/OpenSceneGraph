@@ -80,6 +80,6 @@ class SG_EXPORT Transparency : public StateAttribute
         int _destination_factor;
 };
 
-};
+}
 
 #endif

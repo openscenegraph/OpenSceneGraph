@@ -59,7 +59,7 @@ class SG_EXPORT Timer {
         
 };
 
-};
+}
 
 #if defined(_WIN32) && !(defined(__CYGWIN__) || defined(__MINGW32__))
     #include <time.h>
@@ -89,7 +89,7 @@ namespace osg{
         return ts;
     }
 
-};
+}
     #pragma optimize("",on)
     
 #elif defined(__linux) || defined(__FreeBSD__) || defined(__CYGWIN__) || defined(__MINGW32__)
@@ -114,7 +114,7 @@ namespace osg{
         }
     }
 
-};
+}
   
 #elif defined(__sgi)
 
@@ -135,7 +135,7 @@ namespace osg{
             return *_clockAddress;
         }
     }
-};
+}
     
 #elif defined(unix)
 
@@ -148,7 +148,7 @@ namespace osg{
         gettimeofday(&tv, NULL);
         return ((osg::Timer_t)tv.tv_sec)*1000000+(osg::Timer_t)tv.tv_usec;
     }
-};
+}
 
 #elif !defined (__DARWIN_OSX__) && !defined (macintosh)
 
@@ -157,7 +157,7 @@ namespace osg{
 namespace osg{
 
     inline  Timer_t Timer::tick( void ) const { return std::clock(); }
-};
+}
 
 #endif
 

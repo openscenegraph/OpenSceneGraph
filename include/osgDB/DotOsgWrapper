@@ -71,6 +71,6 @@ class OSGDB_EXPORT DotOsgWrapper : public osg::Referenced
         ReadWriteMode               _readWriteMode;
 };
 
-};
+}
 
 #endif 

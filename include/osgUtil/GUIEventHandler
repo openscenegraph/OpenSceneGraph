@@ -22,6 +22,6 @@ class OSGUTIL_EXPORT GUIEventHandler : public osg::Referenced
 
 };
 
-};
+}
 
 #endif

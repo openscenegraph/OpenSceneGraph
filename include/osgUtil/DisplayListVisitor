@@ -73,7 +73,7 @@ class OSGUTIL_EXPORT DisplayListVisitor : public osg::NodeVisitor
 
 };
 
-};
+}
 
 #endif
 

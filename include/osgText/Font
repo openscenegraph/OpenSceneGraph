@@ -251,7 +251,6 @@ protected:
 
 };
 
-
-};
+}
 
 #endif // OSGTEXT_FONT

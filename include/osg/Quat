@@ -238,5 +238,6 @@ inline std::ostream& operator << (std::ostream& output, const Quat& vec)
     return output; 	// to enable cascading
 }
 
-};	// end of namespace
+}	// end of namespace
+
 #endif 

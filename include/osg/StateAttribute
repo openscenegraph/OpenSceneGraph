@@ -199,6 +199,6 @@ class SG_EXPORT StateAttribute : public Object
 
 };
 
-};
+}
 
 #endif

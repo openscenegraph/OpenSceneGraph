@@ -45,7 +45,7 @@ class OSGUTIL_EXPORT RenderToTextureStage : public RenderStage
 
 };
 
-};
+}
 
 #endif
 

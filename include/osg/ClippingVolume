@@ -177,5 +177,6 @@ class SG_EXPORT ClippingVolume
 
 };
 
-};	// end of namespace
+}	// end of namespace
+
 #endif 

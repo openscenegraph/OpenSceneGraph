@@ -87,6 +87,6 @@ class SG_EXPORT Fog : public StateAttribute
         Vec4 _color;
 };
 
-};
+}
 
 #endif

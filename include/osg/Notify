@@ -82,6 +82,6 @@ inline std::ostream& notify(const NotifySeverity severity)
 
 inline std::ostream& notify(void) { return notify(osg::INFO); }
 
-};
+}
 
 #endif

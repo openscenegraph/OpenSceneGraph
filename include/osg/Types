@@ -12,6 +12,6 @@ typedef unsigned short ushort;
 typedef unsigned char uchar;
 typedef uchar ubyte;
 
-};
+}
 
 #endif

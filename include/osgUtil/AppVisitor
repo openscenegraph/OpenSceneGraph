@@ -65,7 +65,7 @@ class OSGUTIL_EXPORT AppVisitor : public osg::NodeVisitor
 	
 };
 
-};
+}
 
 #endif
 

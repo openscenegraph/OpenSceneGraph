@@ -48,6 +48,6 @@ OSGDB_EXPORT extern std::string findFileInDirectory(const std::string& fileName,
 OSGDB_EXPORT extern DirectoryContents getDirectoryContents(const std::string& dirName);
 
 
-};
+}
 
 #endif

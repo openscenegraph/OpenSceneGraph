@@ -138,6 +138,6 @@ class OSGTEXT_EXPORT Text : public osg::Drawable
         osg::Vec3        _alignmentPos;
 };
 
-};
+}
 
 #endif // OSGTEXT_TEXT

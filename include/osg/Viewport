@@ -86,6 +86,6 @@ class SG_EXPORT Viewport : public StateAttribute
 
 };
 
-};
+}
 
 #endif

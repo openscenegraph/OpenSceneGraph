@@ -37,6 +37,6 @@ class SG_EXPORT Referenced
 
 };
 
-};
+}
 
 #endif

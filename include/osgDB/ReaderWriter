@@ -124,7 +124,6 @@ class OSGDB_EXPORT ReaderWriter : public osg::Referenced
         virtual WriteResult writeNode(const osg::Node& /*node*/,const std::string& /*fileName*/,const Options* =NULL) { return WriteResult(WriteResult::FILE_NOT_HANDLED); }
 };
 
-
-};
+}
 
 #endif // OSG_READERWRITER

@@ -69,7 +69,7 @@ class SG_EXPORT FrameStamp : public Referenced
         
 };
 
-};
+}
 
 
 #endif

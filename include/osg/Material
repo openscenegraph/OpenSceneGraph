@@ -164,6 +164,6 @@ class SG_EXPORT Material : public StateAttribute
 
 };
 
-};
+}
 
 #endif

@@ -33,7 +33,7 @@ extern OSGWX_EXPORT const char* osgWXGetVersion();
 */
 extern OSGWX_EXPORT const char* osgWXGetLibraryName();
 
-};
+}
 
 #endif
 

@@ -23,74 +23,74 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.192.7">StateAttribute</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.194.7">StateAttribute</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.192.8">StateAttribute</A></B>(const <!1><A HREF="StateAttribute.html#DOC.2.192.8">StateAttribute</A>&amp; sa, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.194.8">StateAttribute</A></B>(const <!1><A HREF="StateAttribute.html#DOC.2.194.8">StateAttribute</A>&amp; sa, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.192.9">cloneType</A></B>() const  = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.194.9">cloneType</A></B>() const  = 0
 <DD><I>Clone the type of an attribute, with Object* return type.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.192.10">clone</A></B>(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp;) const  = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.194.10">clone</A></B>(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp;) const  = 0
 <DD><I>Clone an attribute, with Object* return type.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.192.11">isSameKindAs</A></B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.194.11">isSameKindAs</A></B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
 <DD><I>return true if this and obj are of the same kind of object</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.192.12">libraryName</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.194.12">libraryName</A></B>() const 
 <DD><I>return the name of the attribute's library</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.192.13">className</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.194.13">className</A></B>() const 
 <DD><I>return the name of the attribute's class type</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="StateAttribute.html#DOC.2.192.5">Type</A> <B><A HREF="#DOC.2.192.14">getType</A></B>() const  = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="StateAttribute.html#DOC.2.194.5">Type</A> <B><A HREF="#DOC.2.194.14">getType</A></B>() const  = 0
 <DD><I>return the Type identifier of the attribute's class type</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.192.15">isTextureAttribute</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.194.15">isTextureAttribute</A></B>() const 
 <DD><I>return true if StateAttribute is a type which controls texturing and needs to be issued wrt to specific texture unit</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.192.16">compare</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const  = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.194.16">compare</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const  = 0
 <DD><I>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.192.17">operator <  </A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; rhs) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.194.17">operator <  </A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; rhs) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.192.18">operator == </A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; rhs) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.194.18">operator == </A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; rhs) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.192.19">operator != </A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; rhs) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.194.19">operator != </A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; rhs) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.192.20">getAssociatedModes</A></B>(std::vector&lt;<!1><A HREF="StateAttribute.html#DOC.2.192.1">GLMode</A>&gt;&amp; ) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.194.20">getAssociatedModes</A></B>(std::vector&lt;<!1><A HREF="StateAttribute.html#DOC.2.194.1">GLMode</A>&gt;&amp; ) const 
 <DD><I>return the modes associated with this StateSet</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.192.21">apply</A></B>(<!1><A HREF="State.html">State</A>&amp;) const  = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.194.21">apply</A></B>(<!1><A HREF="State.html">State</A>&amp;) const  = 0
 <DD><I>apply the OpenGL state attributes.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.192.22">compile</A></B>(<!1><A HREF="State.html">State</A>&amp;) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.194.22">compile</A></B>(<!1><A HREF="State.html">State</A>&amp;) const 
 <DD><I>default to nothing to compile - all state is applied immediately.</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  GLenum <B><A HREF="#DOC.2.192.1">GLMode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  GLenum <B><A HREF="#DOC.2.194.1">GLMode</A></B>
 <DD><I>GLMode is the value used in glEnable/glDisable(mode) </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  unsigned int <B><A HREF="#DOC.2.192.2">GLModeValue</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  unsigned int <B><A HREF="#DOC.2.194.2">GLModeValue</A></B>
 <DD><I>GLModeValue is used to specified whether an mode is enabled (ON) or disabled (OFF).</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  unsigned int <B><A HREF="#DOC.2.192.3">OverrideValue</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  unsigned int <B><A HREF="#DOC.2.194.3">OverrideValue</A></B>
 <DD><I>Override is used to specified the override behavior of StateAttributes from from parent to children.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.192.4">Values</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.194.4">Values</A></B>
 <DD><I>list values which can be used in to set either GLModeValues or OverrideValues.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  unsigned int <B><A HREF="#DOC.2.192.5">Type</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  unsigned int <B><A HREF="#DOC.2.194.5">Type</A></B>
 <DD><I>Type identifier to differentiate between different state types.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.192.6">Types</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.194.6">Types</A></B>
 <DD><I>Values of StateAttribute::Type used to aid identification of different StateAttribute subclasses.</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.192.23">~StateAttribute</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.194.23">~StateAttribute</A></B>()
 </DL></P>
 
 </DL>
@@ -98,9 +98,9 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.133.8">DataVariance</A> dv)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.135.8">DataVariance</A> dv)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.133.8">DataVariance</A> <B>getDataVariance</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.135.8">DataVariance</A> <B>getDataVariance</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
 <DT>
@@ -116,7 +116,7 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.133.8">DataVariance</A> <B>_dataVariance</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.135.8">DataVariance</A> <B>_dataVariance</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
 </DL></P>
@@ -155,26 +155,26 @@
 <DL>
 
 <A NAME="GLMode"></A>
-<A NAME="DOC.2.192.1"></A>
+<A NAME="DOC.2.194.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  GLenum GLMode</B></TT>
 <DD>GLMode is the value used in glEnable/glDisable(mode) 
 <DL><DT><DD></DL><P>
 <A NAME="GLModeValue"></A>
-<A NAME="DOC.2.192.2"></A>
+<A NAME="DOC.2.194.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  unsigned int GLModeValue</B></TT>
 <DD>GLModeValue is used to specified whether an mode is enabled (ON) or disabled (OFF).
 GLMoveValue is also used to specify the override behavior of modes from parent to children. 
 See enum Value description for more details.
 <DL><DT><DD></DL><P>
 <A NAME="OverrideValue"></A>
-<A NAME="DOC.2.192.3"></A>
+<A NAME="DOC.2.194.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  unsigned int OverrideValue</B></TT>
 <DD>Override is used to specified the override behavior of StateAttributes
 from from parent to children. 
 See enum Value description for more details.
 <DL><DT><DD></DL><P>
 <A NAME="Values"></A>
-<A NAME="DOC.2.192.4"></A>
+<A NAME="DOC.2.194.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  Values</B></TT>
 <DD>list values which can be used in to set either GLModeValues
 or OverrideValues. When using in conjunction with GLModeValues
@@ -186,38 +186,38 @@ StateSet::setAttributeAndModes(..).
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="OFF"></A>
-<A NAME="DOC.2.192.4.1"></A>
+<A NAME="DOC.2.194.4.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> OFF</B></TT>
 <DD>means that associated GLMode and Override is disabled
 <DL><DT><DD></DL><P>
 <A NAME="ON"></A>
-<A NAME="DOC.2.192.4.2"></A>
+<A NAME="DOC.2.194.4.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ON</B></TT>
 <DD>means that associated GLMode is enabled and Override is disabled
 <DL><DT><DD></DL><P>
 <A NAME="OVERRIDE"></A>
-<A NAME="DOC.2.192.4.3"></A>
+<A NAME="DOC.2.194.4.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> OVERRIDE</B></TT>
 <DD>Overriding of GLMode's or StateAttributes is enabled, so that state below it is overriden
 <DL><DT><DD></DL><P>
 <A NAME="PROTECTED"></A>
-<A NAME="DOC.2.192.4.4"></A>
+<A NAME="DOC.2.194.4.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> PROTECTED</B></TT>
 <DD>Protecting of GLMode's os StateAttributes is enabled, so that state from above connot override this and below state
 <DL><DT><DD></DL><P>
 <A NAME="INHERIT"></A>
-<A NAME="DOC.2.192.4.5"></A>
+<A NAME="DOC.2.194.4.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> INHERIT</B></TT>
 <DD>means that GLMode or StateAttribute should in inherited from above
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="Type"></A>
-<A NAME="DOC.2.192.5"></A>
+<A NAME="DOC.2.194.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  unsigned int Type</B></TT>
 <DD>Type identifier to differentiate between different state types. 
 <DL><DT><DD></DL><P>
 <A NAME="Types"></A>
-<A NAME="DOC.2.192.6"></A>
+<A NAME="DOC.2.194.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  Types</B></TT>
 <DD>Values of StateAttribute::Type used to aid identification
 of different StateAttribute subclasses. Each subclass defines
@@ -230,251 +230,251 @@ that types value.
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="TEXTURE"></A>
-<A NAME="DOC.2.192.6.1"></A>
+<A NAME="DOC.2.194.6.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TEXTURE</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="POLYGONMODE"></A>
-<A NAME="DOC.2.192.6.2"></A>
+<A NAME="DOC.2.194.6.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> POLYGONMODE</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="POLYGONOFFSET"></A>
-<A NAME="DOC.2.192.6.3"></A>
+<A NAME="DOC.2.194.6.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> POLYGONOFFSET</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="MATERIAL"></A>
-<A NAME="DOC.2.192.6.4"></A>
+<A NAME="DOC.2.194.6.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> MATERIAL</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ALPHAFUNC"></A>
-<A NAME="DOC.2.192.6.5"></A>
+<A NAME="DOC.2.194.6.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ALPHAFUNC</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ANTIALIAS"></A>
-<A NAME="DOC.2.192.6.6"></A>
+<A NAME="DOC.2.194.6.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ANTIALIAS</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="COLORTABLE"></A>
-<A NAME="DOC.2.192.6.7"></A>
+<A NAME="DOC.2.194.6.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> COLORTABLE</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="CULLFACE"></A>
-<A NAME="DOC.2.192.6.8"></A>
+<A NAME="DOC.2.194.6.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> CULLFACE</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="FOG"></A>
-<A NAME="DOC.2.192.6.9"></A>
+<A NAME="DOC.2.194.6.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> FOG</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="FRONTFACE"></A>
-<A NAME="DOC.2.192.6.10"></A>
+<A NAME="DOC.2.194.6.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> FRONTFACE</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="LIGHT"></A>
-<A NAME="DOC.2.192.6.11"></A>
+<A NAME="DOC.2.194.6.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LIGHT</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="LIGHT_0"></A>
-<A NAME="DOC.2.192.6.12"></A>
+<A NAME="DOC.2.194.6.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LIGHT_0</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="LIGHT_1"></A>
-<A NAME="DOC.2.192.6.13"></A>
+<A NAME="DOC.2.194.6.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LIGHT_1</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="LIGHT_2"></A>
-<A NAME="DOC.2.192.6.14"></A>
+<A NAME="DOC.2.194.6.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LIGHT_2</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="LIGHT_3"></A>
-<A NAME="DOC.2.192.6.15"></A>
+<A NAME="DOC.2.194.6.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LIGHT_3</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="LIGHT_4"></A>
-<A NAME="DOC.2.192.6.16"></A>
+<A NAME="DOC.2.194.6.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LIGHT_4</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="LIGHT_5"></A>
-<A NAME="DOC.2.192.6.17"></A>
+<A NAME="DOC.2.194.6.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LIGHT_5</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="LIGHT_6"></A>
-<A NAME="DOC.2.192.6.18"></A>
+<A NAME="DOC.2.194.6.18"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LIGHT_6</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="LIGHT_7"></A>
-<A NAME="DOC.2.192.6.19"></A>
+<A NAME="DOC.2.194.6.19"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LIGHT_7</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="POINT"></A>
-<A NAME="DOC.2.192.6.20"></A>
+<A NAME="DOC.2.194.6.20"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> POINT</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="LINEWIDTH"></A>
-<A NAME="DOC.2.192.6.21"></A>
+<A NAME="DOC.2.194.6.21"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LINEWIDTH</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="LINESTIPPLE"></A>
-<A NAME="DOC.2.192.6.22"></A>
+<A NAME="DOC.2.194.6.22"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LINESTIPPLE</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="POLYGONSTIPPLE"></A>
-<A NAME="DOC.2.192.6.23"></A>
+<A NAME="DOC.2.194.6.23"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> POLYGONSTIPPLE</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="SHADEMODEL"></A>
-<A NAME="DOC.2.192.6.24"></A>
+<A NAME="DOC.2.194.6.24"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SHADEMODEL</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="TEXENV"></A>
-<A NAME="DOC.2.192.6.25"></A>
+<A NAME="DOC.2.194.6.25"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TEXENV</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="TEXGEN"></A>
-<A NAME="DOC.2.192.6.26"></A>
+<A NAME="DOC.2.194.6.26"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TEXGEN</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="TEXMAT"></A>
-<A NAME="DOC.2.192.6.27"></A>
+<A NAME="DOC.2.194.6.27"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TEXMAT</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="LIGHTMODEL"></A>
-<A NAME="DOC.2.192.6.28"></A>
+<A NAME="DOC.2.194.6.28"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LIGHTMODEL</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="BLENDFUNC"></A>
-<A NAME="DOC.2.192.6.29"></A>
+<A NAME="DOC.2.194.6.29"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> BLENDFUNC</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="STENCIL"></A>
-<A NAME="DOC.2.192.6.30"></A>
+<A NAME="DOC.2.194.6.30"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> STENCIL</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="COLORMASK"></A>
-<A NAME="DOC.2.192.6.31"></A>
+<A NAME="DOC.2.194.6.31"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> COLORMASK</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="DEPTH"></A>
-<A NAME="DOC.2.192.6.32"></A>
+<A NAME="DOC.2.194.6.32"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DEPTH</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="VIEWPORT"></A>
-<A NAME="DOC.2.192.6.33"></A>
+<A NAME="DOC.2.194.6.33"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> VIEWPORT</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="CLIPPLANE"></A>
-<A NAME="DOC.2.192.6.34"></A>
+<A NAME="DOC.2.194.6.34"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> CLIPPLANE</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="CLIPPLANE_0"></A>
-<A NAME="DOC.2.192.6.35"></A>
+<A NAME="DOC.2.194.6.35"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> CLIPPLANE_0</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="CLIPPLANE_1"></A>
-<A NAME="DOC.2.192.6.36"></A>
+<A NAME="DOC.2.194.6.36"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> CLIPPLANE_1</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="CLIPPLANE_2"></A>
-<A NAME="DOC.2.192.6.37"></A>
+<A NAME="DOC.2.194.6.37"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> CLIPPLANE_2</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="CLIPPLANE_3"></A>
-<A NAME="DOC.2.192.6.38"></A>
+<A NAME="DOC.2.194.6.38"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> CLIPPLANE_3</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="CLIPPLANE_4"></A>
-<A NAME="DOC.2.192.6.39"></A>
+<A NAME="DOC.2.194.6.39"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> CLIPPLANE_4</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="CLIPPLANE_5"></A>
-<A NAME="DOC.2.192.6.40"></A>
+<A NAME="DOC.2.194.6.40"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> CLIPPLANE_5</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="COLORMATRIX"></A>
-<A NAME="DOC.2.192.6.41"></A>
+<A NAME="DOC.2.194.6.41"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> COLORMATRIX</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="VERTEXPROGRAM"></A>
-<A NAME="DOC.2.192.6.42"></A>
+<A NAME="DOC.2.194.6.42"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> VERTEXPROGRAM</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="FRAGMENTPROGRAM"></A>
-<A NAME="DOC.2.192.6.43"></A>
+<A NAME="DOC.2.194.6.43"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> FRAGMENTPROGRAM</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="PROGRAMOBJECT"></A>
-<A NAME="DOC.2.192.6.44"></A>
+<A NAME="DOC.2.194.6.44"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> PROGRAMOBJECT</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="StateAttribute"></A>
-<A NAME="DOC.2.192.7"></A>
+<A NAME="DOC.2.194.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> StateAttribute()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="StateAttribute"></A>
-<A NAME="DOC.2.192.8"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> StateAttribute(const <!1><A HREF="StateAttribute.html#DOC.2.192.8">StateAttribute</A>&amp; sa, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="DOC.2.194.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> StateAttribute(const <!1><A HREF="StateAttribute.html#DOC.2.194.8">StateAttribute</A>&amp; sa, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="cloneType"></A>
-<A NAME="DOC.2.192.9"></A>
+<A NAME="DOC.2.194.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html">Object</A>* cloneType() const  = 0</B></TT>
 <DD>Clone the type of an attribute, with Object* return type.
 Must be defined by derived classes.
 <DL><DT><DD></DL><P>
 <A NAME="clone"></A>
-<A NAME="DOC.2.192.10"></A>
+<A NAME="DOC.2.194.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html">Object</A>* clone(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp;) const  = 0</B></TT>
 <DD>Clone an attribute, with Object* return type.
 Must be defined by derived classes.
 <DL><DT><DD></DL><P>
 <A NAME="isSameKindAs"></A>
-<A NAME="DOC.2.192.11"></A>
+<A NAME="DOC.2.194.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(const <!1><A HREF="Object.html">Object</A>* obj) const </B></TT>
 <DD>return true if this and obj are of the same kind of object
 <DL><DT><DD></DL><P>
 <A NAME="libraryName"></A>
-<A NAME="DOC.2.192.12"></A>
+<A NAME="DOC.2.194.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* libraryName() const </B></TT>
 <DD>return the name of the attribute's library
 <DL><DT><DD></DL><P>
 <A NAME="className"></A>
-<A NAME="DOC.2.192.13"></A>
+<A NAME="DOC.2.194.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
 <DD>return the name of the attribute's class type
 <DL><DT><DD></DL><P>
 <A NAME="getType"></A>
-<A NAME="DOC.2.192.14"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="StateAttribute.html#DOC.2.192.5">Type</A> getType() const  = 0</B></TT>
+<A NAME="DOC.2.194.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="StateAttribute.html#DOC.2.194.5">Type</A> getType() const  = 0</B></TT>
 <DD>return the Type identifier of the attribute's class type
 <DL><DT><DD></DL><P>
 <A NAME="isTextureAttribute"></A>
-<A NAME="DOC.2.192.15"></A>
+<A NAME="DOC.2.194.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isTextureAttribute() const </B></TT>
 <DD>return true if StateAttribute is a type which controls texturing and needs to be issued wrt to specific texture unit
 <DL><DT><DD></DL><P>
 <A NAME="compare"></A>
-<A NAME="DOC.2.192.16"></A>
+<A NAME="DOC.2.194.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   int compare(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const  = 0</B></TT>
 <DD>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs
 <DL><DT><DD></DL><P>
 <A NAME="operator <  "></A>
-<A NAME="DOC.2.192.17"></A>
+<A NAME="DOC.2.194.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool operator <  (const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; rhs) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator == "></A>
-<A NAME="DOC.2.192.18"></A>
+<A NAME="DOC.2.194.18"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool operator == (const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; rhs) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator != "></A>
-<A NAME="DOC.2.192.19"></A>
+<A NAME="DOC.2.194.19"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool operator != (const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; rhs) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getAssociatedModes"></A>
-<A NAME="DOC.2.192.20"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void getAssociatedModes(std::vector&lt;<!1><A HREF="StateAttribute.html#DOC.2.192.1">GLMode</A>&gt;&amp; ) const </B></TT>
+<A NAME="DOC.2.194.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void getAssociatedModes(std::vector&lt;<!1><A HREF="StateAttribute.html#DOC.2.194.1">GLMode</A>&gt;&amp; ) const </B></TT>
 <DD>return the modes associated with this StateSet
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.192.21"></A>
+<A NAME="DOC.2.194.21"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="State.html">State</A>&amp;) const  = 0</B></TT>
 <DD>apply the OpenGL state attributes. 
 The global state for the current OpenGL context is passed
@@ -482,12 +482,12 @@ in to allow the StateAttribute to obtain details on the
 the current context and state.
 <DL><DT><DD></DL><P>
 <A NAME="compile"></A>
-<A NAME="DOC.2.192.22"></A>
+<A NAME="DOC.2.194.22"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void compile(<!1><A HREF="State.html">State</A>&amp;) const </B></TT>
 <DD>default to nothing to compile - all state is applied immediately. 
 <DL><DT><DD></DL><P>
 <A NAME="~StateAttribute"></A>
-<A NAME="DOC.2.192.23"></A>
+<A NAME="DOC.2.194.23"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~StateAttribute()</B></TT>
 <DL><DT><DD></DL><P></DL>
 <HR>

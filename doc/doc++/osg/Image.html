@@ -56,7 +56,7 @@
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.88.15">setImage</A></B>(int <!1><A HREF="Image.html#DOC.2.88.20">s</A>, int <!1><A HREF="Image.html#DOC.2.88.21">t</A>, int <!1><A HREF="Image.html#DOC.2.88.22">r</A>, GLint internalTextureformat, GLenum format, GLenum type, unsigned char* <!1><A HREF="Image.html#DOC.2.88.34">data</A>, <!1><A HREF="Image.html#DOC.2.88.11">AllocationMode</A> mode, int packing=1)
 <DD><I>set the image data and format.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.88.16">readPixels</A></B>(int <!1><A HREF="Viewport.html#DOC.2.230.8">x</A>, int <!1><A HREF="Viewport.html#DOC.2.230.9">y</A>, int <!1><A HREF="Viewport.html#DOC.2.230.10">width</A>, int <!1><A HREF="Viewport.html#DOC.2.230.11">height</A>, GLenum format, GLenum type)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.88.16">readPixels</A></B>(int <!1><A HREF="Viewport.html#DOC.2.232.8">x</A>, int <!1><A HREF="Viewport.html#DOC.2.232.9">y</A>, int <!1><A HREF="Viewport.html#DOC.2.232.10">width</A>, int <!1><A HREF="Viewport.html#DOC.2.232.11">height</A>, GLenum format, GLenum type)
 <DD><I>readPixels from screen at specified position and size, using glReadPixels.</I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.88.17">readImageFromCurrentTexture</A></B>(unsigned int contextID=0)
@@ -118,7 +118,7 @@
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.88.38">flipVertical</A></B>(int image=0)
 <DD><I>Flip the image vertically</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.88.39">ensureValidSizeForTexturing</A></B>(GLint <!1><A HREF="Extensions.3.html#DOC.2.202.39.22">maxTextureSize</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.88.39">ensureValidSizeForTexturing</A></B>(GLint <!1><A HREF="Extensions.3.html#DOC.2.204.39.22">maxTextureSize</A>)
 <DD><I>Ensure image dimensions are a power of two.</I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.88.40">dirty</A></B>()
@@ -136,7 +136,7 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   unsigned int <B><A HREF="#DOC.2.88.45">computePixelSizeInBits</A></B>(GLenum format, GLenum type)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   unsigned int <B><A HREF="#DOC.2.88.46">computeRowWidthInBytes</A></B>(int <!1><A HREF="Viewport.html#DOC.2.230.10">width</A>, GLenum format, GLenum type, int packing)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   unsigned int <B><A HREF="#DOC.2.88.46">computeRowWidthInBytes</A></B>(int <!1><A HREF="Viewport.html#DOC.2.232.10">width</A>, GLenum format, GLenum type, int packing)
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   int <B><A HREF="#DOC.2.88.47">computeNearestPowerOfTwo</A></B>(int <!1><A HREF="Image.html#DOC.2.88.20">s</A>, float bias=0.5f)
 <DT>
@@ -205,9 +205,9 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.133.8">DataVariance</A> dv)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.135.8">DataVariance</A> dv)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.133.8">DataVariance</A> <B>getDataVariance</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.135.8">DataVariance</A> <B>getDataVariance</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
 <DT>
@@ -223,7 +223,7 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.133.8">DataVariance</A> <B>_dataVariance</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.135.8">DataVariance</A> <B>_dataVariance</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
 </DL></P>
@@ -344,7 +344,7 @@ value of packing is supplied than _packing is simply set to that value.
 <DL><DT><DD></DL><P>
 <A NAME="readPixels"></A>
 <A NAME="DOC.2.88.16"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void readPixels(int <!1><A HREF="Viewport.html#DOC.2.230.8">x</A>, int <!1><A HREF="Viewport.html#DOC.2.230.9">y</A>, int <!1><A HREF="Viewport.html#DOC.2.230.10">width</A>, int <!1><A HREF="Viewport.html#DOC.2.230.11">height</A>, GLenum format, GLenum type)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void readPixels(int <!1><A HREF="Viewport.html#DOC.2.232.8">x</A>, int <!1><A HREF="Viewport.html#DOC.2.232.9">y</A>, int <!1><A HREF="Viewport.html#DOC.2.232.10">width</A>, int <!1><A HREF="Viewport.html#DOC.2.232.11">height</A>, GLenum format, GLenum type)</B></TT>
 <DD>readPixels from screen at specified position and size, using glReadPixels.
 Create memory for storage if required, reuse existing pixel coords if possible.
 <DL><DT><DD></DL><P>
@@ -459,7 +459,7 @@ If source is NULL then no operation happens, this Image is left unchanged.
 <DL><DT><DD></DL><P>
 <A NAME="ensureValidSizeForTexturing"></A>
 <A NAME="DOC.2.88.39"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void ensureValidSizeForTexturing(GLint <!1><A HREF="Extensions.3.html#DOC.2.202.39.22">maxTextureSize</A>)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void ensureValidSizeForTexturing(GLint <!1><A HREF="Extensions.3.html#DOC.2.204.39.22">maxTextureSize</A>)</B></TT>
 <DD>Ensure image dimensions are a power of two.
 Mip Mapped texture require the image dimensions to be
 power of two and are within the maxiumum texture size for
@@ -494,7 +494,7 @@ the host machine.
 <DL><DT><DD></DL><P>
 <A NAME="computeRowWidthInBytes"></A>
 <A NAME="DOC.2.88.46"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   unsigned int computeRowWidthInBytes(int <!1><A HREF="Viewport.html#DOC.2.230.10">width</A>, GLenum format, GLenum type, int packing)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   unsigned int computeRowWidthInBytes(int <!1><A HREF="Viewport.html#DOC.2.232.10">width</A>, GLenum format, GLenum type, int packing)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeNearestPowerOfTwo"></A>
 <A NAME="DOC.2.88.47"></A>

@@ -12,7 +12,7 @@
 
 <H2>Inheritance:</H2>
 <APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=95>
-<param name=classes value="Mosg::Node,M,CEffect,MEffect.html,CBumpMapping,MBumpMapping.html">
+<param name=classes value="Mosg::Group,M,CEffect,MEffect.html,CBumpMapping,MBumpMapping.html">
 <param name=before value="M,M,M">
 <param name=after value="Md_SP,Md_,M">
 <param name=indent value="0,1,2">
@@ -27,7 +27,7 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.2.2">BumpMapping</A></B>(const <!1><A HREF="BumpMapping.html#DOC.2.2.2">BumpMapping</A> &amp;copy, const osg::CopyOp &amp;copyop = osg::CopyOp::SHALLOW_COPY)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.2.3">META_Effect</A></B>(<!1><A HREF="osgFX.html">osgFX</A>, <!1><A HREF="BumpMapping.html">BumpMapping</A>, "Bump Mapping", "This effect makes surfaces appear bumpy. The child node must use two textures, " "one for diffuse color and one for the normal map (which can be created " "from a height map with tools like nVIDIA's normal map generator). Furthermore, " "tangent-space basis vectors must be created and assigned to each Geometry; this " "can be done quickly by calling BumpMapping::prepareChild(). Note that both " "diffuse and normal map textures must have corresponding UV maps defined in " "Geometry objects.\n" "This effect defines a preferred technique which uses ARB vertex &amp; fragment " "programs, and a fallback technique which doesn't use fragment programs. The " "latter is more limited though since it can't handle ambient and specular " "components.", "Marco Jez")
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.2.3">META_Effect</A></B>(<!1><A HREF="osgFX.html">osgFX</A>, <!1><A HREF="BumpMapping.html">BumpMapping</A>, "Bump Mapping", "This effect makes surfaces appear bumpy. Children nodes must use two textures, " "one for diffuse color and one for the normal map (which can be created " "from a height map with tools like nVIDIA's normal map generator). Furthermore, " "tangent-space basis vectors must be created and assigned to each Geometry; this " "can be done quickly by calling BumpMapping::prepareChildren(). Note that both " "diffuse and normal map textures must have corresponding UV maps defined in " "Geometry objects.\n" "This effect defines a preferred technique which uses ARB vertex &amp; fragment " "programs, and a fallback technique which doesn't use fragment programs. The " "latter is more limited though since it can't handle ambient and specular " "components.", "Marco Jez")
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.4">prepareGeometry</A></B>(osg::Geometry* geo)
 <DD><I> prepare a Geometry for bump lighting.</I>
@@ -35,8 +35,8 @@
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.5">prepareNode</A></B>(osg::Node* node)
 <DD><I>prepare a Node for bump lighting, calling prepareGeometry() for each Geometry </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.6">prepareChild</A></B>()
-<DD><I>prepare the current child for bump lighting.</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.6">prepareChildren</A></B>()
+<DD><I>prepare children for bump lighting.</I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.7">setUpDemo</A></B>()
 <DD><I>set up a demo environment with predefined diffuse and normal maps, as well as texture coordinates </I>
@@ -60,22 +60,22 @@
 <DD><I>set the texture unit that contains normal map texture.</I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   osg::Texture2D* <B><A HREF="#DOC.2.2.22">getOverrideDiffuseTexture</A></B>()
-<DD><I>get the diffuse color texture that overrides the child's texture </I>
+<DD><I>get the diffuse color texture that overrides children's texture </I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::Texture2D* <B><A HREF="#DOC.2.2.23">getOverrideDiffuseTexture</A></B>() const 
-<DD><I>get the const diffuse color texture that overrides the child's texture </I>
+<DD><I>get the const diffuse color texture that overrides children's texture </I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.2.24">setOverrideDiffuseTexture</A></B>(osg::Texture2D* texture)
-<DD><I>set the diffuse color texture that overrides the child's texture </I>
+<DD><I>set the diffuse color texture that overrides children's texture </I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   osg::Texture2D* <B><A HREF="#DOC.2.2.25">getOverrideNormalMapTexture</A></B>()
-<DD><I>get the normal map texture that overrides the child's texture </I>
+<DD><I>get the normal map texture that overrides children's texture </I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::Texture2D* <B><A HREF="#DOC.2.2.26">getOverrideNormalMapTexture</A></B>() const 
-<DD><I>get the const normal map texture that overrides the child's texture </I>
+<DD><I>get the const normal map texture that overrides children's texture </I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.2.27">setOverrideNormalMapTexture</A></B>(osg::Texture2D* texture)
-<DD><I>set the normal map texture that overrides the child's texture </I>
+<DD><I>set the normal map texture that overrides children's texture </I>
 </DL></P>
 
 <P><DL>
@@ -110,12 +110,6 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>setEnabled</B>(bool v)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const osg::Node* <B>getChild</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   osg::Node* <B>getChild</B>()
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setChild</B>(osg::Node* child)
-<DT>
 <IMG ALT="o" SRC=icon2.gif>inline   int <B>getNumTechniques</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Technique.html">Technique</A>* <B>getTechnique</B>(int i)
@@ -129,16 +123,13 @@
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>addTechnique</B>(<!1><A HREF="Technique.html">Technique</A>* tech)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>dirtyTechniques</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>inherited_traverse</B>(osg::NodeVisitor &amp;nv)
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
 <IMG ALT="o" SRC=icon2.gif>enum  <B>TechniqueSelection</B>
-</DL></P>
-
-<P><DL>
-<DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>computeBound</B>() const 
 </DL></P>
 
 </DL>
@@ -147,11 +138,11 @@
 <HR>
 <H2>Documentation</H2>
 <BLOCKQUOTE>
-This effect makes surfaces appear bumpy. The child node must use two textures, 
+This effect makes surfaces appear bumpy. Children nodes must use two textures, 
 one for diffuse color and one for the normal map (which can be created 
 from a height map with tools like nVIDIA's normal map generator). Furthermore, 
 tangent-space basis vectors must be created and assigned to each Geometry; this 
-can be done quickly by calling BumpMapping::prepareChild(). Note that both 
+can be done quickly by calling BumpMapping::prepareChildren(). Note that both 
 diffuse and normal map textures must have corresponding UV maps defined in 
 Geometry objects.
 This effect defines a preferred technique which uses ARB vertex & fragment 
@@ -170,7 +161,7 @@ components.</BLOCKQUOTE>
 <DL><DT><DD></DL><P>
 <A NAME="META_Effect"></A>
 <A NAME="DOC.2.2.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Effect(<!1><A HREF="osgFX.html">osgFX</A>, <!1><A HREF="BumpMapping.html">BumpMapping</A>, "Bump Mapping", "This effect makes surfaces appear bumpy. The child node must use two textures, " "one for diffuse color and one for the normal map (which can be created " "from a height map with tools like nVIDIA's normal map generator). Furthermore, " "tangent-space basis vectors must be created and assigned to each Geometry; this " "can be done quickly by calling BumpMapping::prepareChild(). Note that both " "diffuse and normal map textures must have corresponding UV maps defined in " "Geometry objects.\n" "This effect defines a preferred technique which uses ARB vertex &amp; fragment " "programs, and a fallback technique which doesn't use fragment programs. The " "latter is more limited though since it can't handle ambient and specular " "components.", "Marco Jez")</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Effect(<!1><A HREF="osgFX.html">osgFX</A>, <!1><A HREF="BumpMapping.html">BumpMapping</A>, "Bump Mapping", "This effect makes surfaces appear bumpy. Children nodes must use two textures, " "one for diffuse color and one for the normal map (which can be created " "from a height map with tools like nVIDIA's normal map generator). Furthermore, " "tangent-space basis vectors must be created and assigned to each Geometry; this " "can be done quickly by calling BumpMapping::prepareChildren(). Note that both " "diffuse and normal map textures must have corresponding UV maps defined in " "Geometry objects.\n" "This effect defines a preferred technique which uses ARB vertex &amp; fragment " "programs, and a fallback technique which doesn't use fragment programs. The " "latter is more limited though since it can't handle ambient and specular " "components.", "Marco Jez")</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="prepareGeometry"></A>
 <A NAME="DOC.2.2.4"></A>
@@ -184,10 +175,10 @@ generated and attached to the geometry as vertex attribute arrays.
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void prepareNode(osg::Node* node)</B></TT>
 <DD>prepare a Node for bump lighting, calling prepareGeometry() for each Geometry 
 <DL><DT><DD></DL><P>
-<A NAME="prepareChild"></A>
+<A NAME="prepareChildren"></A>
 <A NAME="DOC.2.2.6"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void prepareChild()</B></TT>
-<DD>prepare the current child for bump lighting. Actually calls prepareNode(getChild()) 
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void prepareChildren()</B></TT>
+<DD>prepare children for bump lighting. Actually calls prepareNode() for each child 
 <DL><DT><DD></DL><P>
 <A NAME="setUpDemo"></A>
 <A NAME="DOC.2.2.7"></A>
@@ -239,32 +230,32 @@ generated and attached to the geometry as vertex attribute arrays.
 <A NAME="getOverrideDiffuseTexture"></A>
 <A NAME="DOC.2.2.22"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   osg::Texture2D* getOverrideDiffuseTexture()</B></TT>
-<DD>get the diffuse color texture that overrides the child's texture 
+<DD>get the diffuse color texture that overrides children's texture 
 <DL><DT><DD></DL><P>
 <A NAME="getOverrideDiffuseTexture"></A>
 <A NAME="DOC.2.2.23"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const osg::Texture2D* getOverrideDiffuseTexture() const </B></TT>
-<DD>get the const diffuse color texture that overrides the child's texture 
+<DD>get the const diffuse color texture that overrides children's texture 
 <DL><DT><DD></DL><P>
 <A NAME="setOverrideDiffuseTexture"></A>
 <A NAME="DOC.2.2.24"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setOverrideDiffuseTexture(osg::Texture2D* texture)</B></TT>
-<DD>set the diffuse color texture that overrides the child's texture 
+<DD>set the diffuse color texture that overrides children's texture 
 <DL><DT><DD></DL><P>
 <A NAME="getOverrideNormalMapTexture"></A>
 <A NAME="DOC.2.2.25"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   osg::Texture2D* getOverrideNormalMapTexture()</B></TT>
-<DD>get the normal map texture that overrides the child's texture 
+<DD>get the normal map texture that overrides children's texture 
 <DL><DT><DD></DL><P>
 <A NAME="getOverrideNormalMapTexture"></A>
 <A NAME="DOC.2.2.26"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const osg::Texture2D* getOverrideNormalMapTexture() const </B></TT>
-<DD>get the const normal map texture that overrides the child's texture 
+<DD>get the const normal map texture that overrides children's texture 
 <DL><DT><DD></DL><P>
 <A NAME="setOverrideNormalMapTexture"></A>
 <A NAME="DOC.2.2.27"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setOverrideNormalMapTexture(osg::Texture2D* texture)</B></TT>
-<DD>set the normal map texture that overrides the child's texture 
+<DD>set the normal map texture that overrides children's texture 
 <DL><DT><DD></DL><P></DL>
 
 <HR><DL><DT><B>This class has no child classes.</B></DL>

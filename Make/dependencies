@@ -6,6 +6,8 @@ JASPER_INSTALLED ?= no
 
 FREETYPE_INSTALLED ?= yes
 
+XINE_INSTALLED ?= no
+
 ifeq ($(OS),Darwin)
     DARWIN_QUICKTIME ?= yes
 endif

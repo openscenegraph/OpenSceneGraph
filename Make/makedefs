@@ -217,7 +217,8 @@ ifeq ($(OS),SunOS)
   GDAL_INCLUDES     = `gdal-config --cflags`
   GDAL_LIBS         = `gdal-config --libs`
 
-
+  XINE_INCLUDES     = `xine-config --cflags`
+  XINE_LIBS         = `xine-config --libs`
 
 endif
 
@@ -306,6 +307,8 @@ ifeq ($(OS),IRIX)
   GDAL_INCLUDES     = `gdal-config --cflags`
   GDAL_LIBS         = `gdal-config --libs`
 
+  XINE_INCLUDES     = `xine-config --cflags`
+  XINE_LIBS         = `xine-config --libs`
 
 endif
 
@@ -399,6 +402,9 @@ endif
   GDAL_INCLUDES     = `gdal-config --cflags`
   GDAL_LIBS         = `gdal-config --libs`
 
+  XINE_INCLUDES     = `xine-config --cflags`
+  XINE_LIBS         = `xine-config --libs`
+
 endif
 
 #### FreeBSD specific definitions
@@ -431,6 +437,9 @@ ifeq ($(OS),FreeBSD)
 
   GDAL_INCLUDES     = `gdal-config --cflags`
   GDAL_LIBS         = `gdal-config --libs`
+
+  XINE_INCLUDES     = `xine-config --cflags`
+  XINE_LIBS         = `xine-config --libs`
 
 endif
 
@@ -496,6 +505,9 @@ ifeq ($(OS),Darwin)
   GDAL_INCLUDES     = `gdal-config --cflags`
   GDAL_LIBS         = `gdal-config --libs`
 
+  XINE_INCLUDES     = `xine-config --cflags`
+  XINE_LIBS         = `xine-config --libs`
+
 endif
 
 #### Cygwin specific definitions
@@ -533,6 +545,9 @@ ifeq ($(OS),CYGWIN)
   GDAL_INCLUDES     = `gdal-config --cflags`
   GDAL_LIBS         = `gdal-config --dep-libs`
   GDAL_LIBS         += `gdal-config --libs`
+
+  XINE_INCLUDES     = `xine-config --cflags`
+  XINE_LIBS         = `xine-config --libs`
 
   LIBINST    = bin/$(OS)$(ARCH)
   PLUGININST = bin/$(OS)$(ARCH)
@@ -588,6 +603,9 @@ ifeq ($(OS),MINGW)
   FREETYPE_LIB      = -lfreetype
 
   GDAL_LIB          =  -lgdal -ljpeg -lgeotiff -ltiff -lpng -lz
+
+  XINE_INCLUDES     = `xine-config --cflags`
+  XINE_LIBS         = `xine-config --libs`
 
   LIBINST    = bin
   PLUGININST = bin/$(OS)$(ARCH)
@@ -658,6 +676,9 @@ endif
 
   GDAL_INCLUDES     = `gdal-config --cflags`
   GDAL_LIBS         = `gdal-config --libs`
+
+  XINE_INCLUDES     = `xine-config --cflags`
+  XINE_LIBS         = `xine-config --libs`
 
 endif
 

@@ -177,6 +177,13 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("-e <x> <y> <w> <h>","Extents of the model to generate");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
     arguments.getApplicationUsage()->addCommandLineOption("--o_cs <coordinates system string>","Set the output coordinates system. The string may be any of the usual GDAL/OGR forms, complete WKT, PROJ.4, EPS");     
+    arguments.getApplicationUsage()->addCommandLineOption("--skirt-ratio <float>","Set the ratio of skirt height to tile size.");     
+    arguments.getApplicationUsage()->addCommandLineOption("--HEIGHT_FIELD","Create a height field database");     
+    arguments.getApplicationUsage()->addCommandLineOption("--POLYGONAL","Create a height field database");     
+    arguments.getApplicationUsage()->addCommandLineOption("--LOD","Create a LOD'd database");     
+    arguments.getApplicationUsage()->addCommandLineOption("--PagedLOD","Create a PagedLOD'd database");     
+    arguments.getApplicationUsage()->addCommandLineOption("-v","Set the vertical multiplier");     
+
     if (arguments.argc()<=1)
     {
         arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
@@ -217,7 +224,7 @@ int main( int argc, char **argv )
     dataset->setDestinationTileExtension(".ive");
 
 
-    float numLevels = 6.0f;
+    unsigned int numLevels = 6;
     while (arguments.read("-l",numLevels)) {}
 
     float verticalScale;
@@ -226,6 +233,11 @@ int main( int argc, char **argv )
         dataset->setVerticalScale(verticalScale);
     }
 
+    float skirtRatio;
+    while (arguments.read("--skirt-ratio",skirtRatio))
+    {
+        dataset->setSkirtRatio(skirtRatio);
+    }
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
@@ -259,7 +271,7 @@ int main( int argc, char **argv )
             currentCS = def;
             std::cout<<"--wkt "<<currentCS<<std::endl;
         }
-        else if (arguments.read(pos, "--wkt_file",def))
+        else if (arguments.read(pos, "--wkt-file",def))
         {
             std::ifstream in(def.c_str());
             if (in)
@@ -271,7 +283,7 @@ int main( int argc, char **argv )
                     in >> line;
                     currentCS += line;
                 }
-                std::cout<<"--wkt_file "<<currentCS<<std::endl;
+                std::cout<<"--wkt-file "<<currentCS<<std::endl;
             }
         }
         else if (arguments.read(pos, "--geocentric"))

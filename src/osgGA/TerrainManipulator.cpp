@@ -190,9 +190,84 @@ void TerrainManipulator::addMouseEvent(const GUIEventAdapter& ea)
 
 void TerrainManipulator::setByMatrix(const osg::Matrixd& matrix)
 {
-    osg::notify(osg::WARN)<<"Ignoring TerrainManipulator::setByMatrix()"<<matrix<<std::endl;
-    //_center = osg::Vec3(0.0f,0.0f,-_distance)*matrix;
-    //matrix.get(_rotation);
+    osg::Vec3 lookVector(- matrix(2,0),-matrix(2,1),-matrix(2,2));
+    osg::Vec3 eye(matrix(3,0),matrix(3,1),matrix(3,2));
+    
+    osg::notify(INFO)<<"eye point "<<eye<<std::endl;
+    osg::notify(INFO)<<"lookVector "<<lookVector<<std::endl;
+
+    // need to reintersect with the terrain
+    osgUtil::IntersectVisitor iv;
+
+    const osg::BoundingSphere& bs = _node->getBound();
+    float distance = (eye-bs.center()).length() + _node->getBound().radius();
+    osg::Vec3 start_segment = eye;
+    osg::Vec3 end_segment = eye + lookVector*distance;
+
+    osg::notify(INFO)<<"start="<<start_segment<<"\tend="<<end_segment<<"\tupVector="<<getUpVector(_coordinateFrame)<<std::endl;
+
+    osg::ref_ptr<osg::LineSegment> segLookVector = new osg::LineSegment;
+    segLookVector->set(start_segment,end_segment);
+    iv.addLineSegment(segLookVector.get());
+
+    _node->accept(iv);
+
+    bool hitFound = false;
+    if (iv.hits())
+    {
+        osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segLookVector.get());
+        if (!hitList.empty())
+        {
+            notify(INFO) << "Hit terrain ok"<< std::endl;
+            osg::Vec3 ip = hitList.front().getWorldIntersectPoint();
+            _coordinateFrame = getCoordinateFrame( ip.x(), ip.y(), ip.z());
+
+            _distance = (eye-ip).length();
+            
+            osg::Matrix rotation_matrix = osg::Matrixd::translate(0.0,0.0,-_distance)*
+                                          matrix*
+                                          osg::Matrixd::inverse(_coordinateFrame);
+
+            rotation_matrix.get(_rotation);
+
+            hitFound = true;
+        }
+    }
+
+    if (!hitFound)
+    {
+        CoordinateFrame eyePointCoordFrame = getCoordinateFrame( eye.x(), eye.y(), eye.z());
+        
+        // clear the intersect visitor ready for a new test
+        iv.reset(); 
+               
+        osg::ref_ptr<osg::LineSegment> segDowVector = new osg::LineSegment;
+        segLookVector->set(eye+getUpVector(eyePointCoordFrame)*distance,
+                           eye-getUpVector(eyePointCoordFrame)*distance);
+        iv.addLineSegment(segLookVector.get());
+
+        _node->accept(iv);
+        
+        hitFound = false;
+        if (iv.hits())
+        {
+            osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segLookVector.get());
+            if (!hitList.empty())
+            {
+                notify(INFO) << "Hit terrain ok"<< std::endl;
+                osg::Vec3 ip = hitList.front().getWorldIntersectPoint();
+
+                _coordinateFrame = getCoordinateFrame( ip.x(), ip.y(), ip.z());
+
+                _distance = (eye-ip).length();
+
+                _rotation.set(0,0,0,1);
+
+                hitFound = true;
+            }
+        }
+    }    
+
 }
 
 osg::Matrixd TerrainManipulator::getMatrix() const
@@ -226,7 +301,7 @@ void TerrainManipulator::computePosition(const osg::Vec3& eye,const osg::Vec3& c
         osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segLookVector.get());
         if (!hitList.empty())
         {
-            osg::notify(osg::NOTICE) << "Hit terrain ok"<< std::endl;
+            osg::notify(osg::INFO) << "Hit terrain ok"<< std::endl;
             osg::Vec3 ip = hitList.front().getWorldIntersectPoint();
             osg::Vec3 np = hitList.front().getWorldIntersectNormal();
 
@@ -314,7 +389,7 @@ bool TerrainManipulator::calcMovement()
                            osg::Matrixd::rotate(_rotation)*
                            _coordinateFrame;
 
-        // osg::notify(osg::NOTICE)<<"\tafter "<<_coordinateFrame.getTrans()<<std::endl;
+        // osg::notify(osg::INDFO)<<"\tafter "<<_coordinateFrame.getTrans()<<std::endl;
 
         // now reorientate the coordinate frame to the frame coords.
         _coordinateFrame = getCoordinateFrame( _coordinateFrame(3,0), _coordinateFrame(3,1), _coordinateFrame(3,2));
@@ -322,11 +397,12 @@ bool TerrainManipulator::calcMovement()
         // need to reintersect with the terrain
         osgUtil::IntersectVisitor iv;
 
-        osg::Vec3 start_segment = _coordinateFrame.getTrans() + getUpVector(_coordinateFrame) * 10000.0;
-        osg::Vec3 end_segment = start_segment - getUpVector(_coordinateFrame) * 20000.0;
+        float distance = _node->getBound().radius();
+        osg::Vec3 start_segment = _coordinateFrame.getTrans() + getUpVector(_coordinateFrame) * distance;
+        osg::Vec3 end_segment = start_segment - getUpVector(_coordinateFrame) * (2.0f*distance);
         //end_segment.set(0.0f,0.0f,0.0f);
 
-        osg::notify(osg::NOTICE)<<"start="<<start_segment<<"\tend="<<end_segment<<"\tupVector="<<getUpVector(_coordinateFrame)<<std::endl;
+        osg::notify(INFO)<<"start="<<start_segment<<"\tend="<<end_segment<<"\tupVector="<<getUpVector(_coordinateFrame)<<std::endl;
 
         osg::ref_ptr<osg::LineSegment> segLookVector = new osg::LineSegment;
         segLookVector->set(start_segment,end_segment);
@@ -340,7 +416,7 @@ bool TerrainManipulator::calcMovement()
             osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segLookVector.get());
             if (!hitList.empty())
             {
-                notify(NOTICE) << "Hit terrain ok"<< std::endl;
+                notify(INFO) << "Hit terrain ok"<< std::endl;
                 osg::Vec3 ip = hitList.front().getWorldIntersectPoint();
                 _coordinateFrame = getCoordinateFrame( ip.x(), ip.y(), ip.z());
 
@@ -351,7 +427,7 @@ bool TerrainManipulator::calcMovement()
         if (!hitFound)
         {
             // ??
-            osg::notify(osg::NOTICE)<<"TerrainManipulator unable to intersect with terrain."<<std::endl;
+            osg::notify(INFO)<<"TerrainManipulator unable to intersect with terrain."<<std::endl;
         }
         
         return true;

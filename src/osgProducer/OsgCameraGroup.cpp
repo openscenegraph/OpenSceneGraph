@@ -73,7 +73,15 @@ std::string extractCameraConfigFile(osg::ArgumentParser& arguments)
     }
 
     std::string filename;
-    if (arguments.read("-c",filename)) return filename;
+    if (arguments.read("-c",filename)) return findCameraConfigFile(filename);
+
+    char *ptr;
+    if( (ptr = getenv( "PRODUCE_CAMERA_CONFIG_FILE" )) )
+    {
+        osg::notify(osg::DEBUG_INFO) << "PRODUCE_CAMERA_CONFIG_FILE("<<ptr<<")"<<std::endl;
+        return findCameraConfigFile(ptr);
+    }
+
     return "";
 }
 
@@ -262,6 +270,8 @@ void OsgCameraGroup::realize( ThreadingModel thread_model)
         // create the scene handler.
         osgProducer::OsgSceneHandler *sh = new osgProducer::OsgSceneHandler(_ds.get());
         sh->setDefaults();
+        sh->getState()->setContextID(i);
+
         _shvec.push_back( sh );
         cam->setSceneHandler( sh );
         

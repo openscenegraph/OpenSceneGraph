@@ -27,6 +27,13 @@ class OSGGA_EXPORT TrackballManipulator : public MatrixManipulator
 
         virtual const char* className() const { return "Trackball"; }
 
+        /** set the minimum distance (as ratio) the eye point can be zoomed in towards the
+            center before the center is pushed forward.*/        
+        void setMinimumZoomScale(float minimumZoomScale) { _minimumZoomScale=minimumZoomScale; }
+
+        /** get the minimum distance (as ratio) the eye point can be zoomed in */
+        float getMinimumZoomScale() const { return _minimumZoomScale; }
+
         /** set the position of the matrix manipulator using a 4x4 Matrix.*/
         virtual void setByMatrix(const osg::Matrixd& matrix);
 

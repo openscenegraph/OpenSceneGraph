@@ -42,7 +42,7 @@ trpgLightAttr::trpgLightAttr(void)
     Reset();
 }
 
-trpgLightAttr::trpgLightAttr(const trpgLightAttr &in)
+trpgLightAttr::trpgLightAttr(const trpgLightAttr &in):trpgReadWriteable()
 {
     operator=(in);
 }
@@ -691,7 +691,7 @@ trpgLight::trpgLight(void)
     index = -1;
 }
 
-trpgLight::trpgLight(const trpgLight &in)
+trpgLight::trpgLight(const trpgLight &in):trpgReadWriteable()
 {
     operator=(in);
 }
@@ -732,7 +732,7 @@ bool trpgLight::GetVertex(uint32 ix, trpg3dPoint &pt) const
 
 bool trpgLight::GetVertices(trpg3dPoint *pts) const
 {
-    int i;
+    unsigned int i;
 
     if (!isValid()) return false;
 
@@ -745,8 +745,8 @@ bool trpgLight::GetVertices(trpg3dPoint *pts) const
 
 bool trpgLight::GetVertices(float64 *fts) const
 {
-    int i;
-    int j = 0;
+    unsigned int i;
+    unsigned int j = 0;
 
     if (!isValid()) return false;
 
@@ -762,8 +762,8 @@ bool trpgLight::GetVertices(float64 *fts) const
 
 bool trpgLight::GetVertices(float32 *fts) const
 {
-    int i;
-    int j = 0;
+    unsigned int i;
+    unsigned int j = 0;
 
     if (!isValid()) return false;
 
@@ -840,7 +840,7 @@ trpgLight& trpgLight::operator = (const trpgLight &in)
     Reset();
 
     index = in.index;
-    for ( int i = 0; i < in.lightPoints.size(); i++ )
+    for ( unsigned int i = 0; i < in.lightPoints.size(); i++ )
         lightPoints.push_back(in.lightPoints[i]);
 
     return *this;
@@ -856,7 +856,7 @@ trpgLightTable::trpgLightTable()
 {
 }
 
-trpgLightTable::trpgLightTable(const trpgLightTable &in)
+trpgLightTable::trpgLightTable(const trpgLightTable &in):trpgReadWriteable()
 {
     *this = in;
 }
@@ -891,7 +891,7 @@ int trpgLightTable::AddLightAttr(const trpgLightAttr& inLight)
 }
 int trpgLightTable::FindAddLightAttr(const trpgLightAttr& inLight)
 {
-    for (int i=0;i<lightList.size();i++)
+    for (unsigned int i=0;i<lightList.size();i++)
         if (lightList[i] == inLight)
             return i;
 
@@ -903,7 +903,7 @@ int trpgLightTable::FindAddLightAttr(const trpgLightAttr& inLight)
 trpgLightTable &trpgLightTable::operator = (const trpgLightTable &in)
 {
     Reset();
-    for (int i=0;i<in.lightList.size();i++)
+    for (unsigned int i=0;i<in.lightList.size();i++)
         AddLightAttr(in.lightList[i]);
 
     return *this;
@@ -941,7 +941,7 @@ bool trpgLightTable::GetNumLightAttrs(int &no) const
 
 const trpgLightAttr* trpgLightTable::GetLightAttrRef(int id) const
 {
-    if (id < 0 || id >= lightList.size()) return NULL;
+    if (id < 0 || id >= static_cast<int>(lightList.size())) return NULL;
     return &lightList[id];
 }
 
@@ -954,7 +954,7 @@ bool trpgLightTable::Read(trpgReadBuffer &buf)
     try {
         buf.Get(numLights);
         lightList.resize(numLights);
-        for (unsigned int i=0;i<numLights;i++) {
+        for (int i=0;i<numLights;i++) {
             buf.GetToken(lightTok,len);
             if (lightTok != TRPGLIGHTATTR) throw 1;
             buf.PushLimit(len);

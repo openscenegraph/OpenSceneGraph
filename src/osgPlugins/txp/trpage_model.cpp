@@ -34,7 +34,7 @@ trpgModel::trpgModel()
     type = External;
     useCount = 0;
 }
-trpgModel::trpgModel(const trpgModel &in)
+trpgModel::trpgModel(const trpgModel &in):trpgReadWriteable()
 {
     name = NULL;
     type = External;
@@ -233,7 +233,7 @@ void trpgModelTable::SetNumModels(int no)
 }
 void trpgModelTable::SetModel(int id,const trpgModel &mod)
 {
-    if (id < 0 || (unsigned int)id >= models.size())
+    if (id < 0 || static_cast<unsigned int>(id) >= models.size())
         return;
 
     models[id] = mod;
@@ -292,14 +292,14 @@ bool trpgModelTable::GetNumModels(int &nm) const
 }
 bool trpgModelTable::GetModel(int id,trpgModel &model) const
 {
-    if (!isValid() || id < 0 || id >= models.size())
+    if (!isValid() || id < 0 || static_cast<unsigned int>(id) >= models.size())
         return false;
     model = models[id];
     return true;
 }
 trpgModel *trpgModelTable::GetModelRef(int id)
 {
-    if (id < 0 || id >= models.size())
+    if (id < 0 || static_cast<unsigned int>(id) >= models.size())
         return NULL;
     return &models[id];
 }

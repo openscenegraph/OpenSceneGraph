@@ -107,7 +107,9 @@ void AutoTransform::accept(NodeVisitor& nv)
                 height = viewport->height();
             }
 
-            osg::Vec3 eyePoint = cs->getEyeLocal();  
+            const osg::Vec3& eyePoint = cs->getEyeLocal();    
+
+            const osg::Matrix& projection = cs->getProjectionMatrix();
 
             bool doUpdate = _firstTimeToInitEyePoint;
             if (!_firstTimeToInitEyePoint)
@@ -120,7 +122,11 @@ void AutoTransform::accept(NodeVisitor& nv)
                 else if (width!=_previousWidth || height!=_previousHeight)
                 {
                     doUpdate = true;
-                } 
+                }
+                else if (projection != _previousProjection) 
+                {
+                    doUpdate = true;
+                }                
             }
             _firstTimeToInitEyePoint = false;
 
@@ -143,6 +149,7 @@ void AutoTransform::accept(NodeVisitor& nv)
                 _previousEyePoint = eyePoint;
                 _previousWidth = width;
                 _previousHeight = height;
+                _previousProjection = projection;
 
                 _matrixDirty = true;
             }

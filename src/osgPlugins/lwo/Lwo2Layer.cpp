@@ -135,7 +135,8 @@ Lwo2Layer::GenerateGeode( Geode& geode, short tags_count, DrawableToTagMapping& 
 
       // polygons of current layer
       polygon_index = 0;
-      for (IteratorPolygonsList polygon_iterator = polygons.begin(); polygon_iterator != polygons.end(); polygon_iterator++, polygon_index++)
+      IteratorPolygonsList polygon_iterator;
+      for (polygon_iterator = polygons.begin(); polygon_iterator != polygons.end(); polygon_iterator++, polygon_index++)
 	{
 	  if ((*polygon_iterator)[0].point_index != -1)
 	    {
@@ -173,7 +174,7 @@ Lwo2Layer::GenerateGeode( Geode& geode, short tags_count, DrawableToTagMapping& 
 
       // triangle fans of current layer
       polygon_index = 0;
-      for (IteratorPolygonsList polygon_iterator = triangle_fans.begin(); polygon_iterator != triangle_fans.end(); polygon_iterator++, polygon_index++)
+      for (polygon_iterator = triangle_fans.begin(); polygon_iterator != triangle_fans.end(); polygon_iterator++, polygon_index++)
 	{
 
 	  // all points of polygon
@@ -198,7 +199,7 @@ Lwo2Layer::GenerateGeode( Geode& geode, short tags_count, DrawableToTagMapping& 
 
       // triangle strips of current layer
       polygon_index = 0;
-      for (IteratorPolygonsList polygon_iterator = triangle_strips.begin(); polygon_iterator != triangle_strips.end(); polygon_iterator++, polygon_index++)
+      for (polygon_iterator = triangle_strips.begin(); polygon_iterator != triangle_strips.end(); polygon_iterator++, polygon_index++)
 	{
 
 	  // all points of polygon

@@ -1,0 +1,25 @@
+//C++ header - Open Scene Graph - Copyright (C) 1998-2001 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+
+#ifndef OSGTEXT_EXPORT_
+#define OSGTEXT_EXPORT_ 1
+
+#ifdef WIN32
+    #pragma warning( disable : 4251 )
+    #pragma warning( disable : 4275 )
+    #pragma warning( disable : 4786 )
+
+#endif
+
+#if defined(_MSC_VER)
+    #  ifdef OSGTEXT_LIBRARY
+    #    define OSGTEXT_EXPORT   __declspec(dllexport)
+    #  else
+    #    define OSGTEXT_EXPORT   __declspec(dllimport)
+    #  endif /* OSGTEXT_LIBRARY */
+#else
+    #  define OSGTEXT_EXPORT
+#endif  
+
+#endif

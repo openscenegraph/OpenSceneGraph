@@ -186,13 +186,13 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("--compressed","Use OpenGL compression on destination imagery");     
     arguments.getApplicationUsage()->addCommandLineOption("--RGB_16","Use 16bit RGB destination imagery");     
     arguments.getApplicationUsage()->addCommandLineOption("--RGB_24","Use 24bit RGB destination imagery");     
-    arguments.getApplicationUsage()->addCommandLineOption("","");     
-
-    if (arguments.argc()<=1)
-    {
-        arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
-        return 1;
-    }
+    arguments.getApplicationUsage()->addCommandLineOption("--max-visible-distance-of-top-level","Set the maximum visiable distance that the top most tile can be viewed at");     
+    arguments.getApplicationUsage()->addCommandLineOption("--radius-to-max-visible-distance-ratio","Set the maximum visiable distance ratio for all tiles apart from the top most tile. The maximum visuble distance is computed from the ratio * tile radius.");     
+    arguments.getApplicationUsage()->addCommandLineOption("--no-mip-mapping","Disable mip mapping of textures");     
+    arguments.getApplicationUsage()->addCommandLineOption("--mip-mapping-hardware","Use mip mapped textures, and generate the mipmaps in hardware when available.");     
+    arguments.getApplicationUsage()->addCommandLineOption("--mip-mapping-imagery","Use mip mapped textures, and generate the mipmaps in imagery.");     
+    arguments.getApplicationUsage()->addCommandLineOption("--max-anisotropy","Max anisotropy level to use when texturing, defaults to 1.0.");
+//    arguments.getApplicationUsage()->addCommandLineOption("","");     
 
     // create DataSet.
     osg::ref_ptr<osgTerrain::DataSet> dataset = new osgTerrain::DataSet;
@@ -228,6 +228,17 @@ int main( int argc, char **argv )
     while (arguments.read("--RGB_16")) { dataset->setTextureType(osgTerrain::DataSet::RGB_16_BIT); }
     while (arguments.read("--RGB_24")) { dataset->setTextureType(osgTerrain::DataSet::RGB_24_BIT); }
 
+    while (arguments.read("--no-mip-mapping")) { dataset->setMipMappingMode(osgTerrain::DataSet::NO_MIP_MAPPING); }
+    while (arguments.read("--mip-mapping-hardware")) { dataset->setMipMappingMode(osgTerrain::DataSet::MIP_MAPPING_HARDWARE); }
+    while (arguments.read("--mip-mapping-imagery")) { dataset->setMipMappingMode(osgTerrain::DataSet::MIP_MAPPING_IMAGERY); }
+
+    float maxAnisotropy;
+    while (arguments.read("--max-anisotropy",maxAnisotropy))
+    {
+        dataset->setMaxAnisotropy(maxAnisotropy);
+    }
+
+
     dataset->setDestinationTileBaseName("output");
     dataset->setDestinationTileExtension(".ive");
 
@@ -245,6 +256,18 @@ int main( int argc, char **argv )
     while (arguments.read("--skirt-ratio",skirtRatio))
     {
         dataset->setSkirtRatio(skirtRatio);
+    }
+
+    float maxVisibleDistanceOfTopLevel;
+    while (arguments.read("--max-visible-distance-of-top-level",maxVisibleDistanceOfTopLevel))
+    {
+        dataset->setMaximumVisibleDistanceOfTopLevel(maxVisibleDistanceOfTopLevel);
+    }
+
+    float radiusToMaxVisibleDistanceRatio;
+    while (arguments.read("--radius-to-max-visible-distance-ratio",radiusToMaxVisibleDistanceRatio))
+    {
+        dataset->setRadiusToMaxVisibleDistanceRatio(radiusToMaxVisibleDistanceRatio);
     }
 
     // if user request help write it out to cout.

@@ -584,7 +584,7 @@ osg::Node* createBackground()
         osg::Vec2(1,1)
     };
 
-    int numTexCoords = sizeof(myCoords)/sizeof(osg::Vec2);
+    int numTexCoords = sizeof(myTexCoords)/sizeof(osg::Vec2);
 
     // pass the created tex coord array to the points geometry object,
     // and use it to set texture unit 0.

@@ -91,7 +91,7 @@ $(EXEC:=.dbg) :
 	      MAKEDEPEND=Makedepend $(EXEC)
 	@$(MAKE) LNSRC=$(DEBUGDIR)/$(EXEC) LNDEST=$(BININST)/$(EXEC) __link
 
-$(LIB:=.dbg) :
+$(LIB:=.dbg) : $(PLUGIN:=.dbg)
 	@[ -d $(DEBUGDIR) ] || mkdir $(DEBUGDIR)
 	@cd $(DEBUGDIR);\
 	  $(MAKE) -f ../Makefile "DOF=$(DBGF)"  TOPDIR=../${TOPDIR} \
@@ -116,7 +116,7 @@ $(EXEC:=.opt) :
 	@$(MAKE) LNSRC=$(OPTDIR)/$(EXEC) LNDEST=$(BININST)/$(EXEC) __link
 
 
-$(LIB:=.opt) : 
+$(LIB:=.opt) : $(PLUGIN:=.opt)
 	@[ -d $(OPTDIR) ] || mkdir $(OPTDIR)
 	@cd $(OPTDIR);\
 	  $(MAKE) -f ../Makefile DOF=$(OPTF) TOPDIR=../${TOPDIR} \

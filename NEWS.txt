@@ -78,7 +78,6 @@ OSG News (most significant items from ChangeLog)
         set OSG_GL_EXTENSION_DISABLE =
              "ATI:GL_SGIS_generate_mipmap;Sun:GL_EXT_texture_filter_anisotropic:"
 
-
     New examples include:
     
         osgforest - an example which demonstrates simple techniques for creating forests    

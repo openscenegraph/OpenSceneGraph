@@ -71,20 +71,20 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 
     if (options & SHARE_DUPLICATE_STATE)
     {
-    #if (defined(_MSC_VER) && _MSC_VER<1300 && !defined(_STLPORT_VERSION))
-        osg::notify(osg::NOTICE)<<"Warning: this application was built with VisualStudio 6.0's native STL,"<<std::endl;
-        osg::notify(osg::NOTICE)<<"         and due to bugs in VS's STL we are unable to run state optimizer."<<std::endl; 
-        osg::notify(osg::NOTICE)<<"         This may impare performance significantly for larger models."<<std::endl; 
-        osg::notify(osg::NOTICE)<<"         It is recommend that one compiles against STLport or use "<<std::endl; 
-        osg::notify(osg::NOTICE)<<"         Visual Studio .NET compiler which also fix these VS 6.0 STL bugs "<<std::endl; 
-    #else
+//     #if (defined(_MSC_VER) && _MSC_VER<1300 && !defined(_STLPORT_VERSION))
+//         osg::notify(osg::NOTICE)<<"Warning: this application was built with VisualStudio 6.0's native STL,"<<std::endl;
+//         osg::notify(osg::NOTICE)<<"         and due to bugs in VS's STL we are unable to run state optimizer."<<std::endl; 
+//         osg::notify(osg::NOTICE)<<"         This may impare performance significantly for larger models."<<std::endl; 
+//         osg::notify(osg::NOTICE)<<"         It is recommend that one compiles against STLport or use "<<std::endl; 
+//         osg::notify(osg::NOTICE)<<"         Visual Studio .NET compiler which also fix these VS 6.0 STL bugs "<<std::endl; 
+//     #else
         StateVisitor osv;
         node->accept(osv);
         osv.optimize();
 
         MergeGeometryVisitor mgv;
         node->accept(mgv);
-    #endif
+//     #endif
     }
 
 

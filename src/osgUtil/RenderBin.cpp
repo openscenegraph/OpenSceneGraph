@@ -12,8 +12,8 @@
 */
 #include <osgUtil/RenderBin>
 #include <osgUtil/RenderStage>
+#include <osgUtil/Statistics>
 
-#include <osg/Statistics>
 #include <osg/ImpostorSprite>
 #include <osg/Notify>
 
@@ -334,7 +334,7 @@ void RenderBin::drawImplementation(osg::State& state,RenderLeaf*& previous)
 }
 
 // stats
-bool RenderBin::getStats(osg::Statistics* primStats)
+bool RenderBin::getStats(Statistics* primStats)
 { // different by return type - collects the stats in this renderrBin
   bool somestats=false;
 
@@ -382,7 +382,7 @@ bool RenderBin::getStats(osg::Statistics* primStats)
     return somestats;
 }
 
-void RenderBin::getPrims(osg::Statistics* primStats)
+void RenderBin::getPrims(Statistics* primStats)
 {
     static int ndepth;
     ndepth++;
@@ -398,7 +398,7 @@ void RenderBin::getPrims(osg::Statistics* primStats)
 
 }
 
-bool RenderBin::getPrims(osg::Statistics* primStats, int nbin)
+bool RenderBin::getPrims(Statistics* primStats, int nbin)
 { // collect stats for array of bins, maximum nbin 
     // (which will be modified on next call if array of primStats is too small);
     // return 1 for OK;

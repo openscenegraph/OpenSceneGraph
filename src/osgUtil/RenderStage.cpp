@@ -12,7 +12,7 @@
 */
 #include <stdio.h>
 #include <osg/Notify>
-#include <osg/Statistics>
+#include <osgUtil/Statistics>
 
 #include <osgUtil/RenderStage>
 

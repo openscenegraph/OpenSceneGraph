@@ -785,10 +785,6 @@ SOURCE=..\..\Include\Osg\StateSet
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\include\osg\Statistics
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\Include\Osg\Stencil
 # End Source File
 # Begin Source File

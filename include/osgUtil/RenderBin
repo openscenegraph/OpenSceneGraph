@@ -20,13 +20,10 @@
 #include <vector>
 #include <string>
 
-// forward declare Statistics to remove link dependancy.
-namespace osg { class Statistics; }
-
 namespace osgUtil {
 
 class RenderStage;
-
+class Statistics;
 /**
  * RenderBin base class.
  */
@@ -110,9 +107,9 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
 
 
         /** extract stats for current draw list. */
-        bool getStats(osg::Statistics* primStats);
-        void getPrims(osg::Statistics* primStats);
-        bool getPrims(osg::Statistics* primStats, int nbin);
+        bool getStats(Statistics* primStats);
+        void getPrims(Statistics* primStats);
+        bool getPrims(Statistics* primStats, int nbin);
 
 
     public:

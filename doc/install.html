@@ -8,8 +8,22 @@
 <body text="#000000" bgcolor="#FFFFFF" link="#0000FF" vlink="#990066" alink="#FF0000">
 <img SRC="images/OpenSceneGraphBanner_Distribution.jpg" height=77 width=640>
 
-<h2>
-<a NAME="Compiling and installing the OpenSceneGraph"></a><u>Compiling and installing the OpenSceneGraph</u></h2>
+<table>
+  <tr>
+    <td><a href="index.html">Index</a>  </td>
+    <td><a href="introduction.html">Introduction</a>  </td>
+    <td><a href="contents.html">Contents</a>  </td>
+    <td><a href="install.html">Install</a>  </td>
+    <td><a href="dependencies.html">Dependencies</a>  </td>
+    <td><a href="demos.html">Demos</a>  </td>
+    <td><a href="data.html">Data</a>  </td>
+    <td><a href="sgv.html">Viewer</a>  </td>
+    <td><a href="stereo.html">Stereo</a>  </td>
+    <td><a href="documentation.html">Reference Guides</a>  </td>
+  </tr>
+</table>
+
+<h2><u>Compiling and installing the OpenSceneGraph</u></h2>
 
 
 <p>
@@ -84,8 +98,8 @@ For platform specific details:
 </ul>
 <hr>
 
-<h2>
-<u><a name="Compiling under Windows with Visual Studio">Compiling under Windows with Visual Studio.</a></u></h2>
+<h3>
+<u><a name="Compiling under Windows with Visual Studio">Compiling under Windows with Visual Studio.</a></u></h3>
 <p>The Microsoft Visual C++ 6.0 workspace file is VisualStudio.dsw located
 in the VisualStudio below the OSG this root directory. The OSG will compile
 with the basic VisualC++6.0, but, and this is a big but, the STL version which
@@ -126,14 +140,14 @@ to help the location of datafiles. For example :
 <p>To help compilation of the image reader plugins, various image libraries
 have been zipped up for your convienice, your find these on the OSG release
 download directory.
-<h2>
-Using Visual Studio .NET</h2>
+<h3>
+Using Visual Studio .NET</h3>
 <p>
 Looks like Microsoft have eventually got their act together on the compiler front,
 the compiler looks Standard C++ compilient with a solid STL implement, so this is
 the recommend route.</p>
-<h2>
-Using Dinkumware STL</h2>
+<h3>
+Using Dinkumware STL</h3>
 <p>
 The basic jist is that you'll need to download their STL implementation, and follow their
 instructions of how toforce VisualStudio to pick up the new STL implementation. More details
@@ -148,8 +162,7 @@ The #ifdef is smart enough to do this automatically when using VIsualStudio .NET
 modification by hand won't be required. Unfortunately there doesn't seem to be a special define associated
 with the Dinkumware STL for the #ifdef to pick up on.
 </p>
-<h2>
-Using STLport</h2>
+<h3>Using STLport</h3>
 </p>
 The OSG has been tested under Windows with STLport-4.5, which allows the
 users to configure the type of STL support required for STLport itself.
@@ -172,7 +185,7 @@ list, thus overriding MS's own STL implementations.
 <hr>
 
 
-<h2><u><a name="Linux">Compiling under Linux</a></u></h2>
+<h3><u><a name="Linux">Compiling under Linux</a></u></h3>
 Compile, from the OSG root directory, ('%' is UNIX csh prompt) type:
 <blockquote><tt>% make</tt></blockquote>
 Note, make should automatically detect linux and build optimized targets
@@ -189,8 +202,8 @@ distribtions are upto date even recent ones. If you have problems compiling
 osgText due to GLU problems then check out the details at the bottom of
 this file, under the title RedHat7.1 &amp; GLU1.3 for a quick way of installing
 GLU1.3 in the right place.
-<h2>
-RedHat 7.2 &amp; GLU1.3</h2>
+<h3>
+RedHat 7.2 &amp; GLU1.3</h3>
 I have posted a simple fix for those of us who have been unable to correctly
 build OSG 0.8.43 on Redhat 7.2. You can download it at http://www.openscenegraph.org/download/dependencies/ReadHat7.2_fixglu.tar.gz
 To install it, follow these steps:
@@ -217,7 +230,7 @@ osgText.) Good luck everyone. - Clay
 <br>
 <hr>
 
-<h2><u><a name="Free BSD">Compiling under FreeBSD</a></u></h2>
+<h3><u><a name="Free BSD">Compiling under FreeBSD</a></u></h3>
 Compile, from the OSG root directory, ('%' is UNIX csh prompt) type:
 <blockquote><tt>% make</tt></blockquote>
 Note, make should automatically detect linux and build optimized targets
@@ -233,7 +246,7 @@ To get full details of make options, type:
 <br>
 <hr>
 
-<h2><u><a name="IRIX">Compiling under IRIX</a></u></h2>
+<h3><u><a name="IRIX">Compiling under IRIX</a></u></h3>
 Since the OSG uses Standard C++ features such as STL it is important to
 have an up to date version of the MIPSPro compilers, ie. 7.3 or later.
 Support for MIPSPro7.2.1 has now been dropped since it was becoming to
@@ -253,7 +266,7 @@ To get full details of make options, type:
 
 <hr>
 
-<h2><u><a name="Solaris">Compiling under Solaris</a></u></h2>
+<h3><u><a name="Solaris">Compiling under Solaris</a></u></h3>
 Compile, from the OSG root directory, ('%' is UNIX csh prompt) type:
 <blockquote><tt>% make</tt></blockquote>
 Note, make should automatically detect linux and build optimized targets
@@ -268,7 +281,7 @@ To get full details of make options, type:
 
 <hr>
 
-<h2><u><a name="Mac OSX">Compiling under MacOS X (instructions written by Phil Atkin)</a></u></h2>
+<h3><u><a name="Mac OSX">Compiling under MacOS X (instructions written by Phil Atkin)</a></u></h3>
 For anyone who's ever used a Unix box for development it really is so simple
 it's insane.
 <p>You need to have installed the Developer tools from the CD that comes
@@ -331,7 +344,7 @@ forewarned is forearmed.
 
 <hr>
 
-<h2><u><a name="Cygwin">Compiling under Cygwin</a></u></h2>
+<h3><u><a name="Cygwin">Compiling under Cygwin</a></u></h3>
 To compile, from the OSG root directory, type: make Note, make should automatically
 detect your system and build optimized targets for your system. And if
 you wish to install the OSG type: make install Note that make symbolic
@@ -347,22 +360,6 @@ Add the following to your .cshrc (note paths seperated by colon's): setenv
 OSGFILEPATH ./:${OSGDATA}:${OSGDATA}/Images Or the following if you're
 using a sh compatible shell : export OSGFILEPATH=./:${OSGDATA}:${OSGDATA}/Images:
 Or under windows (note paths seperated by semi-colon's) : SET OSGFILEPATH=./:${OSGDATA};${OSGDATA}/Images
-<br>
-<br>
-<hr>
-
-<h2>
-Running the demos</h2>
-To run the viewer demo type (you made need to type rehash first under Unix)
-:
-<br>%sgv cow.osg sgv lz.rgb or sgv Spinnercar.flt sgv Alley.3ds sgv town_ogl_pfi.pfb
-or sgv -stereo cow.osg (see doc/stereo.html for further details) or sgv
--stencil cow.osg (to turn on use of the stencil buffer and enable the overdraw
-stats mode.) or sgv (with no arguments prints out usage to console.) Other
-run other demos type osgcube or hangglide hangglide master.flt or osgreflect
-cow.osg or osgconv Alley.3ds Alley.osg or osgtexture lz.rgb tree.rgb or
-osgimpostor cow.osg or osgviews glider.osg (Note: the file is picked up
-by checking the directories pointed to by $OSGFILEPATH)
 
 
 </body>

@@ -459,6 +459,24 @@ Package=<4>
 
 ###############################################################################
 
+Project: "bmp"=".\osgPlugins\bmp\bmp.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgDB
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "dot_osg"=".\osgPlugins\osg\dot_osg.dsp" - Package Owner=<4>
 
 Package=<5>

@@ -306,38 +306,35 @@ void TerrainManipulator::computePosition(const osg::Vec3d& eye,const osg::Vec3d&
     // compute rotation matrix
     osg::Vec3 lv(center-eye);
     _distance = lv.length();
-
-    // compute the itersection with the scene.
-    osgUtil::IntersectVisitor iv;
-
-    osg::ref_ptr<osg::LineSegment> segLookVector = new osg::LineSegment;
-    segLookVector->set(eye,center);
-    iv.addLineSegment(segLookVector.get());
-
-    _node->accept(iv);
-
-    bool hitFound = false;
-    if (iv.hits())
+    _center = center;
+    
+    if (_node.valid())
     {
-        osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segLookVector.get());
-        if (!hitList.empty())
-        {
-            osg::notify(osg::INFO) << "Hit terrain ok"<< std::endl;
-            osg::Vec3d ip = hitList.front().getWorldIntersectPoint();
+        // compute the itersection with the scene.
+        osgUtil::IntersectVisitor iv;
 
-            _center = ip;
-            _distance = (ip-eye).length();
-            
-            hitFound = true;
+        osg::ref_ptr<osg::LineSegment> segLookVector = new osg::LineSegment;
+        segLookVector->set(eye,center);
+        iv.addLineSegment(segLookVector.get());
+
+        _node->accept(iv);
+
+        bool hitFound = false;
+        if (iv.hits())
+        {
+            osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segLookVector.get());
+            if (!hitList.empty())
+            {
+                osg::notify(osg::INFO) << "Hit terrain ok"<< std::endl;
+                osg::Vec3d ip = hitList.front().getWorldIntersectPoint();
+
+                _center = ip;
+                _distance = (ip-eye).length();
+
+                hitFound = true;
+            }
         }
     }
-    
-    if (!hitFound)
-    {
-        // ??
-        _center = center;
-    }
-
 
     // note LookAt = inv(CF)*inv(RM)*inv(T) which is equivilant to:
     // inv(R) = CF*LookAt.

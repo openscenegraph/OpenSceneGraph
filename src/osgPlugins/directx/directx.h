@@ -40,7 +40,7 @@ namespace DX {
         float x,y,z;
 
         inline void normalize() {
-            float lenRecip = 1.0f / sqrt(x * x + y * y + z * z);
+            float lenRecip = 1.0f / (float) sqrt(x * x + y * y + z * z);
             x *= lenRecip;
             y *= lenRecip;
             z *= lenRecip;

@@ -52,6 +52,16 @@ bool MultiSwitch_readLocalData(Object& obj, Input& fr)
         }
     }
 
+    if (fr.matchSequence("ActiveSwitchSet %i"))
+    {
+        unsigned int switchSet;
+        fr[1].getUInt(switchSet);
+        fr+=2;
+        
+        sw.setActiveSwitchSet(switchSet);
+    }
+
+
     if (fr.matchSequence("ValueList %i {"))
     {
         int entry = fr[0].getNoNestedBrackets();
@@ -90,6 +100,8 @@ bool MultiSwitch_writeLocalData(const Object& obj, Output& fw)
 
 
     fw.indent()<<"NewChildDefaultValue "<<sw.getNewChildDefaultValue()<<std::endl;
+
+    fw.indent()<<"ActiveSwitchSet "<<sw.getActiveSwitchSet()<<std::endl;
 
     unsigned int pos = 0;
     const osgSim::MultiSwitch::SwitchSetList& switchset = sw.getSwitchSetList();

@@ -44,6 +44,33 @@
 
 using namespace osgTerrain;
 
+std::string osgTerrain::DataSet::coordinateSystemStringToWTK(const std::string& coordinateSystem)
+{
+    std::string wtkString;
+
+    CPLErrorReset();
+    
+    OGRSpatialReferenceH hSRS = OSRNewSpatialReference( NULL );
+    if( OSRSetFromUserInput( hSRS, coordinateSystem.c_str() ) == OGRERR_NONE )
+    {
+        char *pszResult = NULL;
+        OSRExportToWkt( hSRS, &pszResult );
+        
+        if (pszResult) wtkString = pszResult;
+
+        CPLFree(pszResult);
+
+    }
+    else
+    {
+        osg::notify(osg::WARN)<<"Warning: coordinateSystem string not recognised."<<std::endl;
+        
+    }
+    
+    OSRDestroySpatialReference( hSRS );
+
+    return wtkString;
+}
 
 enum CoordinateSystemType
 {
@@ -2987,6 +3014,17 @@ void DataSet::init()
     }
 }
 
+void DataSet::setDestinationName(const std::string& filename)
+{
+    std::string path = osgDB::getFilePath(filename);
+    std::string base = path.empty()?osgDB::getStrippedName(filename):
+                                    path +'/'+ osgDB::getStrippedName(filename);
+    std::string extension = '.'+osgDB::getLowerCaseFileExtension(filename);
+
+    setDestinationTileBaseName(base);
+    setDestinationTileExtension(extension);
+} 
+
 void DataSet::addSource(Source* source)
 {
     if (!source) return;
@@ -3612,6 +3650,10 @@ void DataSet::_writeRow(Row& row)
             {
                 osg::notify(osg::WARN)<<"   faild to write node for tile = "<<cd->_level<<" X="<<cd->_tileX<<" Y="<<cd->_tileY<<" filename="<<filename<<std::endl;
             }
+
+            // record the top nodes as the rootNode of the database
+            _rootNode = node;
+
         }
     }
 }
@@ -3648,7 +3690,7 @@ osg::Node* DataSet::decorateWithCoordinateSystemNode(osg::Node* subgraph)
 }
 
 
-void DataSet::writeDestination()
+void DataSet::_buildDestination(bool writeToDisk)
 {
     if (_destinationGraph.valid())
     {
@@ -3670,7 +3712,7 @@ void DataSet::writeDestination()
                 _rootNode->addDescription(_comment);
             }
 
-            osgDB::writeNodeFile(*_rootNode,filename);
+            if (writeToDisk) osgDB::writeNodeFile(*_rootNode,filename);
         }
         else  // _databaseType==PagedLOD_DATABASE
         {
@@ -3703,7 +3745,7 @@ void DataSet::writeDestination()
                 }
                 
                 _equalizeRow(prev_itr->second);
-                _writeRow(prev_itr->second);
+                if (writeToDisk) _writeRow(prev_itr->second);
             }
         }
         osg::notify(osg::NOTICE)<<"completed DataSet::writeDestination("<<filename<<")"<<std::endl;

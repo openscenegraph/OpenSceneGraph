@@ -136,7 +136,7 @@
 #define GL_TEXTURE_3D                     0x806F
 #endif
 
-#ifndef GL_TEXTURE_3D
+#ifndef GL_TEXTURE_BINDING_3D
 #define GL_TEXTURE_BINDING_3D             0x806A
 #endif
 

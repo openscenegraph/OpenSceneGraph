@@ -196,7 +196,7 @@ GeoSet::~GeoSet()
 }
 
 
-void GeoSet::setColorBinding( const BindingType binding )
+void GeoSet::setColorBinding( BindingType binding )
 {
     if( binding != BIND_DEFAULT &&
         binding != BIND_OFF &&
@@ -214,7 +214,7 @@ void GeoSet::setColorBinding( const BindingType binding )
 }
 
 
-void GeoSet::setNormalBinding( const BindingType binding )
+void GeoSet::setNormalBinding( BindingType binding )
 {
     if( binding != BIND_DEFAULT &&
         binding != BIND_OFF &&
@@ -232,7 +232,7 @@ void GeoSet::setNormalBinding( const BindingType binding )
 }
 
 
-void GeoSet::setTextureBinding( const BindingType binding )
+void GeoSet::setTextureBinding( BindingType binding )
 {
     if( binding != BIND_DEFAULT &&
         binding != BIND_OFF &&
@@ -559,7 +559,7 @@ bool GeoSet::check() const
 }
 
 
-void GeoSet::setPrimType( const PrimitiveType type )
+void GeoSet::setPrimType( PrimitiveType type )
 {
     switch( type )
     {
@@ -769,7 +769,7 @@ void GeoSet::setTextureCoords( Vec2 *cp, IndexPointer& ip )
         set_fast_path();
 }
 
-void GeoSet::setInterleavedArray( const InterleaveArrayType format, float *pointer )
+void GeoSet::setInterleavedArray( InterleaveArrayType format, float *pointer )
 {
     _iaformat = format;
 
@@ -797,7 +797,7 @@ void GeoSet::setInterleavedArray( const InterleaveArrayType format, float *point
 }
 
 
-void GeoSet::setInterleavedArray( const InterleaveArrayType format, float *ia, ushort *iai )
+void GeoSet::setInterleavedArray( InterleaveArrayType format, float *ia, ushort *iai )
 {
     _iaformat = format;
 
@@ -826,7 +826,7 @@ void GeoSet::setInterleavedArray( const InterleaveArrayType format, float *ia, u
     set_fast_path();
 }
 
-void GeoSet::setInterleavedArray( const InterleaveArrayType format, float *ia, IndexPointer& iai )
+void GeoSet::setInterleavedArray( InterleaveArrayType format, float *ia, IndexPointer& iai )
 {
     _iaformat = format;
 

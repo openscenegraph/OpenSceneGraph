@@ -55,8 +55,8 @@ bool OccluderEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAct
             if (ea.getKey()=='a')
             {
 
-                int x = ea.getX();
-                int y = ea.getY();
+                float x = ea.getX();
+                float y = ea.getY();
  
                 osg::Vec3 near_point,far_point;
                 if (!_sceneview->projectWindowXYIntoObject(x,ea.getYmax()-y,near_point,far_point))

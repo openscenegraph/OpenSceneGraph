@@ -201,15 +201,6 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 
     }
     
-    if (options & SPATIALIZE_GROUPS)
-    {
-        osg::notify(osg::INFO)<<"Optimizer::optimize() doing SPATIALIZE_GROUPS"<<std::endl;
-
-        SpatializeGroupsVisitor sv(this);
-        node->accept(sv);
-        sv.divide();
-    }
-
     if (options & CHECK_GEOMETRY)
     {
         osg::notify(osg::INFO)<<"Optimizer::optimize() doing CHECK_GEOMETRY"<<std::endl;
@@ -233,6 +224,15 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
         TriStripVisitor tsv(this);
         node->accept(tsv);
         tsv.stripify();
+    }
+
+    if (options & SPATIALIZE_GROUPS)
+    {
+        osg::notify(osg::INFO)<<"Optimizer::optimize() doing SPATIALIZE_GROUPS"<<std::endl;
+
+        SpatializeGroupsVisitor sv(this);
+        node->accept(sv);
+        sv.divide();
     }
     
 }

@@ -42,11 +42,12 @@ class GroupRecord : public PrimNodeRecord
     public:
 
     enum FlagBit {
-            FORWARD_ANIM        =    0x40000000,
-            SWING_ANIM            =    0x20000000,
-            BOUND_BOX_FOLLOW        =    0x10000000,
-            FREEZE_BOUND_BOX        =    0x08000000,
-            DEFAULT_PARENT        =    0x04000000            
+            FORWARD_ANIM     =    0x40000000,
+            SWING_ANIM       =    0x20000000,
+            BOUND_BOX_FOLLOW =    0x10000000,
+            FREEZE_BOUND_BOX =    0x08000000,
+            DEFAULT_PARENT   =    0x04000000,
+            BACKWARD_ANIM    =    0x02000000
         };
 
         GroupRecord();

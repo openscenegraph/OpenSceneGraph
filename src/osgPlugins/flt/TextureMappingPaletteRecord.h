@@ -57,7 +57,9 @@ struct SPutTextureMapping
                                     //  1 = Origin point
                                     //  2 = Alignment point
                                     //  3 = Shear point
-    int32       Reserved;           // should always be set to 1
+    int32       uvDisplayType;      // v15.8 (1580) UV display type
+                                    //  1 = XY
+                                    //  2 = UV
 };
 
 
@@ -92,9 +94,14 @@ struct SPointPutTextureMapping
                                     //  2 = Alignment point
                                     //  3 = Shear point
                                     //  4 = Perspective point
-    int32       Reserved;           // should always be set to 1
+    int32       uvDisplayType;      // v15.8 (1580) UV display type
+                                    //  1 = XY
+                                    //  2 = UV
     float32     sfScale;            // Depth scale factor
+	int32       reserved_0;         // New for 15.8
     float64     dfMat[4][4];        // Transformation matrix for the 4 point projection plane
+	float32     sfURep;             // U repetition
+	float32     sfVRep;             // V repetition
 };
 
 

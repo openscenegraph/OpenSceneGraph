@@ -99,7 +99,9 @@ class SG_EXPORT Texture : public StateAttribute
             _textureHeight(text._textureHeight),
             _subloadMode(text._subloadMode),
             _subloadOffsX(text._subloadOffsX),
-            _subloadOffsY(text._subloadOffsY) {}
+            _subloadOffsY(text._subloadOffsY),
+            _subloadWidth(text._subloadWidth),
+            _subloadHeight(text._subloadHeight) {}
 
         META_StateAttribute(Texture,(Type)(TEXTURE_0+_textureUnit));
         
@@ -260,6 +262,19 @@ class SG_EXPORT Texture : public StateAttribute
             y = _subloadOffsY;
         }
         
+        /** Set the texture subload width. If width or height are zero then
+          * the repsective size value is calculated from the source image sizes. */
+        inline void setSubloadSize(const int width, const int height) {
+            _subloadWidth = width;
+            _subloadHeight = height;
+        }
+
+        /** Get the texture subload width. */
+        inline void getSubloadSize(int& width, int& height) const {
+            width = _subloadWidth;
+            height = _subloadHeight;
+        }
+
         /** Get the handle to the texture object for the current context.*/
         inline GLuint& getHandle(const uint contextID) const
         {
@@ -358,7 +373,8 @@ class SG_EXPORT Texture : public StateAttribute
         mutable unsigned int _textureWidth, _textureHeight;
 
         SubloadMode _subloadMode;
-        unsigned int _subloadOffsX, _subloadOffsY;
+        unsigned GLint _subloadOffsX, _subloadOffsY;
+        unsigned GLsizei _subloadWidth, _subloadHeight;
 
         // static cache of deleted display lists which can only 
         // by completely deleted once the appropriate OpenGL context

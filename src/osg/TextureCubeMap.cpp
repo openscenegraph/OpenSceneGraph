@@ -205,7 +205,7 @@ void TextureCubeMap::apply(State& state) const
                 {
                     glTexSubImage2D(faceTarget[n], 0,
                                     _subloadOffsX, _subloadOffsY,
-                                    _images[n]->s(), _images[n]->t(),
+                                    (_subloadWidth>0)?_subloadWidth:_images[n]->s(), (_subloadHeight>0)?_subloadHeight:_images[n]->t(),
                                     (GLenum) _images[n]->pixelFormat(), (GLenum) _images[n]->dataType(),
                                     _images[n]->data());
                     // update the modified flag to show that the image has been loaded.

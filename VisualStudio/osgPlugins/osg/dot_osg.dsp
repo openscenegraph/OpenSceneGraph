@@ -226,6 +226,10 @@ SOURCE=..\..\..\src\osgPlugins\osg\Point.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\osg\PointSprite.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\osg\PolygonMode.cpp
 # End Source File
 # Begin Source File

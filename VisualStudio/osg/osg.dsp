@@ -327,6 +327,10 @@ SOURCE=..\..\src\osg\Point.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\PointSprite.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\PolygonMode.cpp
 # End Source File
 # Begin Source File
@@ -736,6 +740,10 @@ SOURCE=..\..\Include\Osg\Plane
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\Point
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\PointSprite
 # End Source File
 # Begin Source File
 

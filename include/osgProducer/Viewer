@@ -56,7 +56,7 @@ class OSGPRODUCER_EXPORT Viewer : public CameraGroup, public osgGA::GUIActionAda
                                 HEAD_LIGHT_SOURCE
         };
         
-        void setUpViewer(ViewerOptions options=STANDARD_SETTINGS);
+        void setUpViewer(unsigned int options=STANDARD_SETTINGS);
         
         bool done() const { return _done; }
 

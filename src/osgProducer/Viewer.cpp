@@ -34,7 +34,7 @@ Viewer::Viewer(const std::string& configFile):
 {
 }
 
-void Viewer::setUpViewer(Viewer::ViewerOptions options)
+void Viewer::setUpViewer(unsigned int options)
 {
 
     // set up the keyboard and mouse handling.

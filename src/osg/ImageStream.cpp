@@ -20,9 +20,13 @@ ImageStream::ImageStream():
     _loopingMode(LOOPING)
 {
     setDataVariance(DYNAMIC); 
-    #if 1
+    
+#ifndef __APPLE__
+    // disabled under OSX for time being while we resolve why PBO
+    // doesn't function properly under OSX.
     setPixelBufferObject(new PixelBufferObject(this));
-    #endif
+#endif
+
 }
 
 ImageStream::ImageStream(const ImageStream& image,const CopyOp& copyop):

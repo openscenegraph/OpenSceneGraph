@@ -430,8 +430,9 @@ ifeq ($(OS),Darwin)
   else
     C++             = $(CXX)
   endif
-  INC               += -I/usr/X11R6/include
-  LDFLAGS	    += -L/usr/X11R6/lib -L/sw/lib
+  FINC              += -F$(SDKPATH)/System/Library/Frameworks
+  INC               += $(FINC) -I$(SDKPATH)/usr/include -I$(SDKPATH)/usr/X11R6/include
+  LDFLAGS	    += $(FINC) -L$(SDKPATH)/usr/include -L$(SDKPATH)/usr/X11R6/lib -L/sw/lib
   DEF               += -Wall
   OPTF              = -O2
   DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
@@ -445,7 +446,7 @@ ifeq ($(OS),Darwin)
   OSG_LIBS          = -losgGA -losgDB -losgUtil -losg 
   CARBON_LIB        = -framework Carbon
   GL_LIBS           = -framework OpenGL $(CARBON_LIB)
-  X_INC             = -I/usr/X11R6/include
+  X_INC             = -I$(SDKPATH)/usr/X11R6/include
   X_LIBS            = -lX11 
   SOCKET_LIBS       = 
   OTHER_LIBS        = -lm -lstdc++ -lobjc -lOpenThreads

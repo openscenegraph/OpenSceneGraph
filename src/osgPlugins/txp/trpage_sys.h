@@ -14,53 +14,41 @@
    */
 
 /* trpage_sys.h
-    System specific declarations.
-    */
+	System specific declarations.
+	*/
 
 #ifndef trpage_sys_h_
 #define trpage_sys_h_
 
-#ifndef PATHSEPARATOR
+#ifndef PATHSEPERATOR
 #ifdef macintosh
-#define PATHSEPARATOR ":"
+#define PATHSEPERATOR ":"
 #else
-#define PATHSEPARATOR "/"
+#define PATHSEPERATOR "/"
 #endif
 #endif
 
 #if defined(_WIN32)
-/*    *********************
-    System Specific Section.
-    This is currently set up for win32.
-    *********************
-    */
+/*	*********************
+	System Specific Section.
+	This is currently set up for win32.
+	*********************
+	*/
 
 #include <windows.h>
-#include <stdio.h>
 
-#if !defined(__GNUC__)
 // Microsoft Developer warnings that annoy me
 #pragma warning ( disable : 4251)
 #pragma warning ( disable : 4275)
 #pragma warning ( disable : 4786)
-#endif
 
 // Somewhat system independent file deletion macro
-#ifdef __CYGWIN__
-# define TRPGDELETEFILE(file) remove((file))
-#else
-# define TRPGDELETEFILE(file) DeleteFile((file))
-#endif
+#define TRPGDELETEFILE(file) DeleteFile((file))
 
 #ifndef int64
-  // 64 bit long value.  Need this for really big files.
-#ifdef __GNUC__
- typedef long long int64;
-#else
- typedef __int64 int64;
+// 64 bit long value.  Need this for really big files.
+typedef __int64 int64;
 #endif
-#endif
-
 
 #else   // Unix
 
@@ -100,6 +88,7 @@ typedef double float64;
 
 #include <vector>
 #include <map>
+#include <string>
 
 #if defined(_WIN32)     // PJM
 // Had to take this out because of an iostream conflict
@@ -112,7 +101,7 @@ typedef int64 trpgllong;
 
 // These are used to export classes from a DLL
 // Definitely Windows specific
-#include "trpage_ident.h"
-#include "trdll.h"
+#include <trpage_ident.h>
+#include <trdll.h>
 
 #endif

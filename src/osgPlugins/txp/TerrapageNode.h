@@ -3,10 +3,11 @@
 #ifndef TERRAPAGENODE_H
 #define TERRAPAGENODE_H
 
+#include "trPagePageManager.h"
+
 #include <osg/Node>
 #include <osg/BoundingBox>
 
-#include "trPagePageManager.h"
 
 namespace txp
 {

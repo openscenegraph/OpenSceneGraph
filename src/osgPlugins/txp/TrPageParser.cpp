@@ -20,6 +20,7 @@
 *
 *****************************************************************************/
 #include "trpage_sys.h"
+
 #include <osg/AlphaFunc>
 #include <osg/Group>
 #include <osg/Material>
@@ -33,15 +34,11 @@
 #include <osg/CullFace>
 #include <osg/Light>
 #include <osg/Notify>
-
+#include <osg/PolygonOffset>
 
 #include "TrPageParser.h"
 #include "TrPageArchive.h"
-/*
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-*/
+
 #include <algorithm>
 
 using namespace txp;
@@ -49,7 +46,86 @@ using namespace osg;
 using std::vector;
 using std::string;
 
-Texture2D* txp::GetLocalTexture(trpgrImageHelper& image_helper, trpgLocalMaterial* locmat, const trpgTexture* tex)
+//----------------------------------------------------------------------------
+// Check if the node is billboard
+namespace {
+	bool is_billboard (Node* node)
+	{
+		if (node && (node!=(Node*)1) && (strcmp(node->className(),"GeodeGroup") == 0))
+		{
+			GeodeGroup* group = static_cast<GeodeGroup*>(node);
+			return (group->getNumChildren() && (strcmp(group->getChild(0)->className(),"Billboard") == 0));
+		}
+		return false;
+	};
+    
+	void check_format(trpgTexture::ImageType type, int depth, GLenum& internalFormat, GLenum& pixelFormat, GLenum&)
+	{
+		switch(type)
+		{
+		case trpgTexture::trpg_RGB8:
+			internalFormat = GL_RGB;
+			pixelFormat    = GL_RGB;
+			break;
+		case trpgTexture::trpg_RGBA8:
+			internalFormat = GL_RGBA;
+			pixelFormat    = GL_RGBA;
+			break;
+		case trpgTexture::trpg_INT8:
+			internalFormat = GL_LUMINANCE;
+			pixelFormat    = GL_LUMINANCE;
+			break;
+		case trpgTexture::trpg_INTA8:
+			internalFormat = GL_LUMINANCE_ALPHA;
+			pixelFormat    = GL_LUMINANCE_ALPHA;
+			break;
+		case trpgTexture::trpg_FXT1:
+		case trpgTexture::trpg_Filler:
+		case trpgTexture::trpg_RGBX: // MCM
+		case trpgTexture::trpg_Unknown:
+			break;
+		case trpgTexture::trpg_DDS:
+		case trpgTexture::trpg_DXT1:
+			if(depth == 3)
+			{
+				internalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
+				pixelFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
+			}
+			else
+			{
+				internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
+				pixelFormat = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
+			}
+			break;
+		case trpgTexture::trpg_DXT3:
+			if(depth == 3)
+			{
+				// not supported.
+			}
+			else
+			{
+				internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
+				pixelFormat = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
+			}
+			break;
+		case trpgTexture::trpg_DXT5:
+			if(depth == 3)
+			{
+				// not supported.
+			}
+			else
+			{
+				internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
+				pixelFormat = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
+			}
+			break;
+		}
+	}
+}
+
+//----------------------------------------------------------------------------
+// Get a template texture via the image helper
+Texture2D* txp::GetLocalTexture(trpgrImageHelper& image_helper, const trpgTexture* tex)
 {
     Texture2D* osg_texture= 0L;
 
@@ -64,65 +140,7 @@ Texture2D* txp::GetLocalTexture(trpgrImageHelper& image_helper, trpgLocalMateria
     GLenum pixelFormat = (GLenum)-1;
     GLenum dataType = GL_UNSIGNED_BYTE;
 
-    switch(type)
-    {
-    case trpgTexture::trpg_RGB8:
-        internalFormat = GL_RGB;
-        pixelFormat    = GL_RGB;
-        break;
-    case trpgTexture::trpg_RGBA8:
-        internalFormat = GL_RGBA;
-        pixelFormat    = GL_RGBA;
-        break;
-    case trpgTexture::trpg_INT8:
-        internalFormat = GL_LUMINANCE;
-        pixelFormat    = GL_LUMINANCE;
-        break;
-    case trpgTexture::trpg_INTA8:
-        internalFormat = GL_LUMINANCE_ALPHA;
-        pixelFormat    = GL_LUMINANCE_ALPHA;
-        break;
-    case trpgTexture::trpg_FXT1:
-    case trpgTexture::trpg_Filler:
-    case trpgTexture::trpg_RGBX: // MCM
-    case trpgTexture::trpg_Unknown:
-    case trpgTexture::trpg_DDS:
-        break;
-    case trpgTexture::trpg_DXT1:
-        if(depth == 3)
-        {
-            internalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
-            pixelFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
-        }
-        else
-        {
-            internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
-            pixelFormat = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
-        }
-        break;
-    case trpgTexture::trpg_DXT3:
-        if(depth == 3)
-        {
-            // not supported.
-        }
-        else
-        {
-            internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
-            pixelFormat = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
-        }
-        break;
-    case trpgTexture::trpg_DXT5:
-        if(depth == 3)
-        {
-            // not supported.
-        }
-        else
-        {
-            internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
-            pixelFormat = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
-        }
-        break;
-    }
+	check_format(type,depth,internalFormat , pixelFormat , dataType);
     
     if(pixelFormat!=(GLenum)-1)
     {
@@ -141,11 +159,76 @@ Texture2D* txp::GetLocalTexture(trpgrImageHelper& image_helper, trpgLocalMateria
             int32 size = s.x*s.y*depth; 
             // int32 size = const_cast<trpgTexture*>(tex)->MipLevelSize(1) ;
             data = new char [size];
+            image_helper.GetLocalGL(tex,data,size);
+            image->setImage(s.x,s.y,1,internalFormat, pixelFormat, dataType,
+                    (unsigned char*)data,osg::Image::USE_NEW_DELETE);
+        }
+        else
+        {
+            int32 size = tex->CalcTotalSize();
+            trpgTexture* tmp_tex = const_cast<trpgTexture*>(tex);
 
-            if(locmat)            
-               image_helper.GetImageForLocalMat(locmat,data,size);
-            else
-                image_helper.GetLocalGL(tex,data,size);
+            data = new char [size];
+            image_helper.GetLocalGL(tex,data,size);
+            // Load entire texture including mipmaps
+            image->setImage(s.x,s.y,1,internalFormat, pixelFormat, dataType,
+                    (unsigned char*)data,
+                    osg::Image::USE_NEW_DELETE);
+
+            // now set mipmap data (offsets into image raw data)
+            Image::MipmapDataType mipmaps;
+            // number of offsets in osg is one less than num_mipmaps
+            // because it's assumed that first offset iz 0 
+            mipmaps.resize(num_mipmaps-1);
+            for( int k = 1 ; k < num_mipmaps;k++ )
+            {
+                mipmaps[k-1] = tmp_tex->MipLevelOffset(k);
+            }
+            image->setMipmapData(mipmaps);
+
+        }
+
+        osg_texture->setImage(image);
+    }
+    return osg_texture;
+}
+//----------------------------------------------------------------------------
+// Get a locale texture via the image helper
+Texture2D* txp::GetTemplateTexture(trpgrImageHelper& image_helper, trpgLocalMaterial* locmat, const trpgTexture* tex, int index)
+{
+    Texture2D* osg_texture= 0L;
+
+    trpg2iPoint s;
+    tex->GetImageSize(s);
+    int32 depth;
+    tex->GetImageDepth(depth);
+    trpgTexture::ImageType type;
+    tex->GetImageType(type);
+    
+    GLenum internalFormat = (GLenum)-1;
+    GLenum pixelFormat = (GLenum)-1;
+    GLenum dataType = GL_UNSIGNED_BYTE;
+
+	check_format(type,depth,internalFormat , pixelFormat , dataType);
+    
+    if(pixelFormat!=(GLenum)-1)
+    {
+        osg_texture = new Texture2D();
+
+        Image* image = new Image;
+        char* data = 0L;
+
+        bool bMipmap;
+        tex->GetIsMipmap(bMipmap);
+        int32 num_mipmaps = bMipmap  ?  tex->CalcNumMipmaps() : 1; // this is currently line 130
+
+        // osg::Image do their own mipmaps
+        if(num_mipmaps <= 1)
+        {
+            int32 size = s.x*s.y*depth; 
+            // int32 size = const_cast<trpgTexture*>(tex)->MipLevelSize(1) ;
+            data = new char [size];
+            image_helper.GetNthImageForLocalMat(locmat,index, data,size);
 
             image->setImage(s.x,s.y,1,internalFormat, pixelFormat, dataType,
                     (unsigned char*)data,osg::Image::USE_NEW_DELETE);
@@ -157,10 +240,7 @@ Texture2D* txp::GetLocalTexture(trpgrImageHelper& image_helper, trpgLocalMateria
 
             data = new char [size];
 
-            if(locmat)            
-               image_helper.GetImageForLocalMat(locmat,data,size);
-            else
-               image_helper.GetLocalGL(tex,data,size);
+            image_helper.GetNthImageForLocalMat(locmat,index, data,size);
 
             // Load entire texture including mipmaps
             image->setImage(s.x,s.y,1,internalFormat, pixelFormat, dataType,
@@ -180,29 +260,74 @@ Texture2D* txp::GetLocalTexture(trpgrImageHelper& image_helper, trpgLocalMateria
 
         }
 
-//         //  AAAARRRGH! TOOK ME 2 DAYS TO FIGURE IT OUT
-//         //  EVERY IMAGE HAS TO HAVE UNIQUE NAME FOR OPTIMIZER NOT TO OPTIMIZE IT OFF
-//         //
-//         static int unique = 0;
-//         char unique_name[256];
-//         sprintf(unique_name,"TXP_TEX_UNIQUE%d",unique++);
-// 
-//         image->setFileName(unique_name);
-
         osg_texture->setImage(image);
     }
     return osg_texture;
 }
 
+//----------------------------------------------------------------------------
+//
+// Group Reader Class
+//
+//----------------------------------------------------------------------------
+// Apply transformation on geometry
+class TransformFunctor : public osg::Drawable::AttributeFunctor
+{
+    public:
+    
+        osg::Matrix _m;
+        osg::Matrix _im;
+
+        TransformFunctor(const osg::Matrix& m)
+        {
+            _m = m;
+            _im.invert(_m);
+        }
+            
+        virtual ~TransformFunctor() {}
+
+        virtual void apply(osg::Drawable::AttributeType type,unsigned int count,osg::Vec3* begin)
+        {
+            if (type == osg::Drawable::VERTICES)
+            {
+                osg::Vec3* end = begin+count;
+                for (osg::Vec3* itr=begin;itr<end;++itr)
+                {
+                    (*itr) = (*itr)*_m;
+                }
+            }
+            else if (type == osg::Drawable::NORMALS)
+            {
+                osg::Vec3* end = begin+count;
+                for (osg::Vec3* itr=begin;itr<end;++itr)
+                {
+                    // note post mult by inverse for normals.
+                    (*itr) = osg::Matrix::transform3x3(_im,(*itr));
+                    (*itr).normalize();
+                }
+            }
+        }
+
+		inline void SetMatrix(const osg::Matrix& m)
+		{
+			_m = m;
+            _im.invert(_m);
+		}
+
+};
+
+//----------------------------------------------------------------------------
 geomRead::geomRead(TrPageParser *in_parse)
 {
     parse = in_parse;
 }
 
+//----------------------------------------------------------------------------
 geomRead::~geomRead()
 {
 }
 
+//----------------------------------------------------------------------------
 void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
 {
     trpgGeometry geom;
@@ -222,8 +347,8 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     geom.GetMaterial(0,matId, local);
     geom.GetNumNormal(numNorm);
     
-    Vec3Array* vertices = new Vec3Array(numVert);
     // Get vertices
+	Vec3Array* vertices = new Vec3Array(numVert);
     geom.GetVertices((float *)&(vertices->front()));
     
     // Turn the trpgGeometry into something Performer can understand
@@ -246,15 +371,15 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
             }
         }
     }
-    
+   
+	// The normals
     Vec3Array* normals = 0L;
     if (numNorm == numVert)
     {
         normals = new Vec3Array(numVert);
-        geom.GetNormals(&(normals->front()));
+        geom.GetNormals((float*)&(normals->front()));
     }
     
-    Geode *geode = new Geode();
     // Set up the primitive type
     switch (primType)
     {
@@ -264,6 +389,12 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
             geometry->addPrimitiveSet(new DrawArrays(PrimitiveSet::TRIANGLES,0,numPrims*3));
         }
         break;
+	case trpgGeometry::Quads:
+		{
+			geometry = new Geometry;
+            geometry->addPrimitiveSet(new DrawArrays(PrimitiveSet::QUADS,0,numPrims*4));
+		}
+		break;
     case trpgGeometry::TriStrips:
         {
             // Need primitive lengths too
@@ -331,7 +462,8 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     
     
     // Add it to the current parent group
-    Group *top = parse->GetCurrTop();
+    GeodeGroup *top = parse->GetCurrTop();
+	Geode *geode = top->GetGeode();
     if (geometry)
     {
         // added this set use display list off since terrapage will
@@ -359,17 +491,86 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
                 geometry->setTexCoordArray( texno, tex_coords[texno]);
         }
 
-        geometry->setStateSet(sset.get());
-        geode->addDrawable(geometry);
-        top->addChild(geode);
+		if ( is_billboard(top) )
+		{
+			geometry->setStateSet(sset.get());
+
+			Billboard *billboard = static_cast<Billboard*>(top->getChild(0));
+
+			switch (parse->getBillboardType()) {
+			case trpgBillboard::Individual:
+			{
+				// compute center of billboard geometry
+				const BoundingBox& bbox = geometry->getBound();
+				Vec3 center ((bbox._min + bbox._max) * 0.5f);
+
+				// make billboard geometry coordinates relative to computed center
+				Matrix matrix;
+				matrix.makeTranslate(-center[0], -center[1], -center[2]);
+
+				TransformFunctor tf(matrix);
+				geometry->accept(tf);
+				geometry->dirtyBound();
+
+				billboard->addDrawable(geometry);
+				billboard->setPos(0, center);
+			}
+			break;
+			case trpgBillboard::Group:
+			{
+				Vec3 center(parse->getBillboardCenter());
+
+				// make billboard geometry coordinates relative to specified center
+				Matrix matrix;
+				matrix.makeTranslate(-center[0], -center[1], -center[2]);
+
+				TransformFunctor tf(matrix);
+				geometry->accept(tf);
+				geometry->dirtyBound();
+
+				billboard->addDrawable(geometry);
+				billboard->setPos(0, center);
+			}
+			break;
+			default:
+				billboard->addDrawable(geometry);
+				notify(WARN) << "TerraPage loader: fell through case: " <<  __FILE__ << " " << __LINE__  << ".\n";
+				break;
+			}
+		}
+		else
+		{
+			// if this is part of the layer we turn the PolygonOffset on
+			
+			if ( (parse->GetCurrLayer() == top) && geode->getNumDrawables() )
+			{
+				StateSet* poStateSet = new StateSet;
+				PolygonOffset* polyoffset = new PolygonOffset;
+
+				poStateSet->merge(*sset.get());
+				polyoffset->setFactor(-1.0f*geode->getNumDrawables());
+				polyoffset->setUnits(-20.0f*geode->getNumDrawables());
+				poStateSet->setAttributeAndModes(polyoffset,osg::StateAttribute::ON);
+
+				geometry->setStateSet(poStateSet);
+				
+			}
+			else 
+			{
+				geometry->setStateSet(sset.get());
+			}
+
+			geode->addDrawable(geometry);
+		}
+
     }
     return (void *) 1;
 }
 
+//----------------------------------------------------------------------------
 //
 // Group Reader Class
 //
-
 //----------------------------------------------------------------------------
 groupRead::groupRead(TrPageParser *in_parse)
 {
@@ -383,11 +584,37 @@ void* groupRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     if (!group.Read(buf))
         return NULL;
     // Create a new Performer group
-    Group *osg_Group = new Group();
+	GeodeGroup* osg_Group = new GeodeGroup();
     // Dump this group into the hierarchy
-    Group *top = parse->GetCurrTop();
-    if (top)
-        top->addChild(osg_Group);
+	parse->AddIntoSceneGraph(osg_Group);
+	// Register the group for attachements
+    int32 id;
+    group.GetID(id);
+    parse->AddToGroupList(id,osg_Group);
+    return (void *) osg_Group;
+}
+
+//----------------------------------------------------------------------------
+//
+// Layer Reader Class
+//
+//----------------------------------------------------------------------------
+layerRead::layerRead(TrPageParser *in_parse)
+{
+    parse = in_parse;
+}
+
+//----------------------------------------------------------------------------
+void* layerRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
+{
+    trpgLayer group;
+    if (!group.Read(buf))
+        return NULL;
+    // Create a new Performer group
+	Layer* osg_Group = new Layer();
+    // Dump this group into the hierarchy
+    parse->AddIntoSceneGraph(osg_Group);
+	// Register for attachements
     int32 id;
     group.GetID(id);
     parse->AddToGroupList(id,osg_Group);
@@ -398,6 +625,7 @@ void* groupRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
 //
 // Attach Reader Class
 //
+//----------------------------------------------------------------------------
 attachRead::attachRead(TrPageParser *in_parse)
 {
     parse = in_parse;
@@ -410,11 +638,10 @@ void* attachRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     if (!group.Read(buf))
         return NULL;
     // Create a new Performer group
-    Group *osg_Group = new Group();
+	GeodeGroup* osg_Group = new GeodeGroup();
     // Dump this group into the hierarchy
-    Group *top = parse->GetCurrTop();
-    if (top)
-        top->addChild(osg_Group);
+	parse->AddIntoSceneGraph(osg_Group);
+	// Register for attachements
     int32 id;
     group.GetID(id);
     parse->AddToGroupList(id,osg_Group);
@@ -429,6 +656,7 @@ void* attachRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
 //
 // Billboard Reader Class
 //
+//----------------------------------------------------------------------------
 billboardRead::billboardRead(TrPageParser *in_parse)
 {
     parse = in_parse;
@@ -437,37 +665,61 @@ billboardRead::billboardRead(TrPageParser *in_parse)
 //----------------------------------------------------------------------------
 void* billboardRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
 {
+    // Read in the txp billboard
     trpgBillboard bill;
     if (!bill.Read(buf))
         return NULL;
-    
-    Group* osg_Group = new Group;
-    int type;
-    bill.GetType(type); 
-// Note:  Must deal with the billboard type here
-    if( type == trpgBillboard::Group ) 
-    {
-        // Create a new Performer group
-        Billboard* bl = new Billboard();
-        int m;
-        bill.GetMode(m);
-        if( m == trpgBillboard::Eye) 
-            bl->setMode(Billboard::POINT_ROT_EYE);
-        else if(m == trpgBillboard::World )
-            bl->setMode(Billboard::POINT_ROT_WORLD);
-        else if(m == trpgBillboard::Axial )
-        {
-            trpg3dPoint p;
-            bill.GetAxis(p); 
-            bl->setAxis(Vec3(p.x, p.y, p.z));
-            bl->setMode(Billboard::AXIAL_ROT);
-        }
-        osg_Group->addChild(bl);
-    }
+
+	// Create a group with a geometry beneath for the billboard
+    GeodeGroup* osg_Group = new GeodeGroup();
+
+	if (parse->inBillboard()) {
+		// we don't allow anything under a billboard except geometry
+		notify(WARN) << "TerraPage loader: can only have geometry nodes beneath a billboard.\n";
+	}
+	else
+	{
+		int type, mode;
+		trpg3dPoint center, axis;
+
+		if (bill.GetType(type) && bill.GetMode(mode) && bill.GetCenter(center) && bill.GetAxis(axis)) {
+			Billboard* billboard = new Billboard();
+
+			osg_Group->SetGeode(billboard);
+
+			// save this state for processing of the geometry node(s)
+			parse->setBillboardType(type);
+			parse->setBillboardCenter(center);
+
+			// set the axis
+			// NOTE: Needs update, when the billboard implementation for
+			// arbitrary axis is ready
+			// billboard->setAxis(Vec3(axis.x, axis.y, axis.z));
+			billboard->setAxis(Vec3(0.0f,0.0,1.0f) );
+			billboard->setNormal(Vec3(0.0f,-1.0,0.0f));
+			
+			// the mode
+			switch (mode) {
+			case trpgBillboard::Axial:
+				billboard->setMode(Billboard::AXIAL_ROT);
+				break;
+			case trpgBillboard::World:
+				billboard->setMode(Billboard::POINT_ROT_WORLD);
+				break;
+			case trpgBillboard::Eye:
+				billboard->setMode(Billboard::POINT_ROT_EYE);
+				break;
+			default:
+				notify(WARN) << "TerraPage loader: Unknown billboard type.\n";
+				notify(WARN) << "TerraPage loader: fell through case: " <<  __FILE__ << " " << __LINE__  << ".\n";
+				break;
+			}
+		}
+	}
+
     // Dump this group into the hierarchy
-    Group *top = parse->GetCurrTop();
-    if (top)
-        top->addChild(osg_Group);
+	parse->AddIntoSceneGraph(osg_Group);
+	// Register
     int32 id;
     bill.GetID(id);
     parse->AddToGroupList(id,osg_Group);
@@ -479,6 +731,7 @@ void* billboardRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
 //
 // LOD Reader Class
 //
+//----------------------------------------------------------------------------
 lodRead::lodRead (TrPageParser *in_parse)
 {
     parse = in_parse;
@@ -496,10 +749,10 @@ void* lodRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     double in,out,width;
     lod.GetLOD(in,out,width);
     double minRange = MIN(in,out);
-    double maxRange = MAX(in,out);
-    
+    double maxRange = MAX(in,out+width);
+
     // Create a new Performer LOD
-    LOD *osg_Lod = new LOD();
+	LOD* osg_Lod = new LOD();
     Vec3 osg_Center;
     osg_Center[0] = center.x;  osg_Center[1] = center.y;  osg_Center[2] = center.z;
     osg_Lod->setCenter(osg_Center);
@@ -507,13 +760,12 @@ void* lodRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     
     // Our LODs are binary so we need to add a group under this LOD and attach stuff
     //  to that instead of the LOD
-    Group *osg_LodG = new Group();
+    GeodeGroup *osg_LodG = new GeodeGroup();
     osg_Lod->addChild(osg_LodG);
     
     // Dump this group into the hierarchy
-    Group *top = parse->GetCurrTop();
-    if (top)
-        top->addChild(osg_Lod);
+    parse->AddIntoSceneGraph(osg_Lod);
+	// Register for attachements
     int32 id;
     lod.GetID(id);
     // Add the sub-group to the group list, not the LOD
@@ -525,6 +777,7 @@ void* lodRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
 //
 // Model Reference Reader Class
 //
+//----------------------------------------------------------------------------
 modelRefRead::modelRefRead(TrPageParser *in_parse)
 {
     parse = in_parse;
@@ -573,6 +826,7 @@ void *modelRefRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
 //
 // Tile Header Reader Class
 //
+//----------------------------------------------------------------------------
 tileHeaderRead::tileHeaderRead(TrPageParser *in_parse)
 {
     parse = in_parse;
@@ -598,6 +852,9 @@ TrPageParser::TrPageParser(TrPageArchive* parent)
     parent_ = parent;
     currTop = NULL;
     top = NULL;
+	layerDepth = 0;
+	currLayer = NULL;
+	in_billboard = false;
     
     // Register the readers
     AddCallback(TRPG_GEOMETRY,new geomRead(this));
@@ -606,6 +863,7 @@ TrPageParser::TrPageParser(TrPageArchive* parent)
     AddCallback(TRPG_BILLBOARD,new billboardRead(this));
     AddCallback(TRPG_LOD,new lodRead(this));
     AddCallback(TRPG_MODELREF,new modelRefRead(this));
+	AddCallback(TRPG_LAYER,new layerRead(this));
     AddCallback(TRPGTILEHEADER,new tileHeaderRead(this));
 }
 
@@ -628,7 +886,7 @@ trpgTileHeader *TrPageParser::GetTileHeaderRef()
 //  scene graph.
 Group *TrPageParser::ParseScene(trpgReadBuffer &buf,vector<ref_ptr<StateSet> > &in_mat,vector<ref_ptr<Node> > &in_model)
 {
-    top = currTop = new Group();
+    top = currTop = new GeodeGroup();
     materials = &in_mat;
     local_materials.clear();
     models = &in_model;
@@ -647,6 +905,8 @@ Group *TrPageParser::ParseScene(trpgReadBuffer &buf,vector<ref_ptr<StateSet> > &
     return ret;
 }
 
+//----------------------------------------------------------------------------
+// Read local materials
 void TrPageParser::LoadLocalMaterials()
 {
     // new to 2.0 LOCAL materials
@@ -673,56 +933,79 @@ void TrPageParser::LoadLocalMaterials()
             const trpgTexture *tex;
 
             int32 size;
-            image_helper.GetImageInfoForLocalMat(&locmat,&mat,&tex,size);
+            image_helper.GetImageInfoForLocalMat(&locmat, &mat,&tex,size);
 
-            int texId;
-            trpgTextureEnv texEnv;
-            mat->GetTexture(0,texId,texEnv);
+			int num_tex;
+			mat->GetNumTexture(num_tex);
+			for (int texNo = 0 ; texNo < num_tex; ++texNo)
+			{
+	            int texId;
+		        trpgTextureEnv texEnv;
+			    mat->GetTexture(texNo,texId,texEnv);
 
-            // Set up texture environment
-            TexEnv       *osg_texenv       = new TexEnv();
-            int32 te_mode;
-            texEnv.GetEnvMode(te_mode);
-            switch( te_mode )
-            {
-            case trpgTextureEnv::Alpha :
-                osg_texenv->setMode(TexEnv::REPLACE);
+	            // Set up texture environment
+		        TexEnv       *osg_texenv       = new TexEnv();
+			    int32 te_mode;
+				texEnv.GetEnvMode(te_mode);
+	            switch( te_mode )
+		        {
+			    case trpgTextureEnv::Alpha :
+				    osg_texenv->setMode(TexEnv::REPLACE);
                 break;
-            case trpgTextureEnv::Decal:
-                osg_texenv->setMode(TexEnv::DECAL);
-                break;
-            case trpgTextureEnv::Blend :
-                osg_texenv->setMode(TexEnv::BLEND);
-                break;
-            case trpgTextureEnv::Modulate :
-                osg_texenv->setMode(TexEnv::MODULATE);
-                break;
+	            case trpgTextureEnv::Decal:
+		            osg_texenv->setMode(TexEnv::DECAL);
+			        break;
+				case trpgTextureEnv::Blend :
+					osg_texenv->setMode(TexEnv::BLEND);
+	                break;
+		        case trpgTextureEnv::Modulate :
+			        osg_texenv->setMode(TexEnv::MODULATE);
+				    break;
+				}
+            
+				osg_state_set->setTextureAttribute(texNo,osg_texenv);
+
+				image_helper.GetNthImageInfoForLocalMat(&locmat, texNo, &mat,&tex,size);
+            
+				trpgTexture::ImageMode mode;
+				tex->GetImageMode(mode);
+	            Texture2D* osg_texture = 0L;
+				if(mode == trpgTexture::Template) 
+					osg_texture = GetTemplateTexture(image_helper,&locmat, tex, texNo);
+				else if(mode == trpgTexture::Local) 
+					osg_texture = GetLocalTexture(image_helper,tex);
+				else if(mode == trpgTexture::Global)
+					osg_texture = parent_->getGlobalTexture(texId);
+
+	            if(osg_texture)
+		        {
+			        if(osg_texture->getImage())
+			        {
+				        GLenum gltype = osg_texture->getImage()->getPixelFormat();
+					    if( gltype == GL_RGBA || gltype == GL_LUMINANCE_ALPHA )
+						{
+							osg_state_set->setMode(GL_BLEND,StateAttribute::ON);
+							osg_state_set->setRenderingHint(StateSet::TRANSPARENT_BIN);
+	                    }
+		            }
+					else
+					{
+						notify(WARN) << "No image\n";
+					}
+			        osg_state_set->setTextureAttributeAndModes(texNo,osg_texture, StateAttribute::ON);
+
+					int wrap_s, wrap_t;   
+					texEnv.GetWrap(wrap_s, wrap_t);
+					osg_texture->setWrap(Texture2D::WRAP_S, wrap_s == trpgTextureEnv::Repeat ? Texture2D::REPEAT: Texture2D::CLAMP );
+					osg_texture->setWrap(Texture2D::WRAP_T, wrap_t == trpgTextureEnv::Repeat ? Texture2D::REPEAT: Texture2D::CLAMP );
+				}
+				else
+				{
+					notify(WARN) << "No texture\n";
+				}
             }
-            
-            osg_state_set->setTextureAttribute(0,osg_texenv);
-            
-            Texture2D* osg_texture = GetLocalTexture(image_helper,&locmat, tex);
 
-            if(osg_texture)
-            {
-                if(osg_texture->getImage())
-                {
-                    GLenum gltype = osg_texture->getImage()->getPixelFormat();
-                    if( gltype == GL_RGBA || gltype == GL_LUMINANCE_ALPHA )
-                    {
-                        osg_state_set->setMode(GL_BLEND,StateAttribute::ON);
-                        osg_state_set->setRenderingHint(StateSet::TRANSPARENT_BIN);
-                    }
-                }
-                osg_state_set->setTextureAttributeAndModes(0,osg_texture, StateAttribute::ON);
-
-                int wrap_s, wrap_t;   
-                texEnv.GetWrap(wrap_s, wrap_t);
-                osg_texture->setWrap(Texture2D::WRAP_S, wrap_s == trpgTextureEnv::Repeat ? Texture2D::REPEAT: Texture2D::CLAMP );
-                osg_texture->setWrap(Texture2D::WRAP_T, wrap_t == trpgTextureEnv::Repeat ? Texture2D::REPEAT: Texture2D::CLAMP );
-            }
-            
-            Material     *osg_material     = new Material;
+			Material     *osg_material     = new Material;
             
             float64 alpha;
             mat->GetAlpha(alpha);
@@ -799,9 +1082,30 @@ void TrPageParser::LoadLocalMaterials()
 // We'll want to make the node it's handing us the "top" node
 bool TrPageParser::StartChildren(void *in_node)
 {
-    Group *node = (Group *)in_node;
-    
-    currTop = node;
+	// Make a node
+	GeodeGroup *node = (GeodeGroup *)in_node;
+
+	// If we are under layer we need to drop all groups. Then
+	// the current parent is still the layer node
+	if (layerDepth==0)
+	{
+		// Set it as current parent
+		currTop = node;
+	}
+
+	// 
+	// track whether we are under a billboard in the scene graph
+	//
+	if (is_billboard(currTop))
+		in_billboard = true;
+
+	// Chek if it's layer 
+	if (node && (in_node != (void*)1) && (strcasecmp(node->className(),"Layer") == 0))
+	{
+		if (layerDepth==0)
+			currLayer = (Layer*)node;
+		layerDepth++;
+	}
     
     return true;
 }
@@ -811,25 +1115,57 @@ bool TrPageParser::StartChildren(void *in_node)
 // We'll want to look on the parent list (in trpgSceneParser)
 // for the parent above the current one.
 // If there isn't one, we'll just stick things in our top group.
-bool TrPageParser::EndChildren(void * /* in_node */)
+bool TrPageParser::EndChildren(void *in_node)
 {
-    // Get the parent above the current one
-    int pos = parents.size()-2;
-    if (pos < 0)
-    {
-        // Nothing above the current one.  Fall back on our top group
-        currTop = top;
-    }
-    else
-    {
-        currTop = (Group *)parents[pos];
-    }
+	// Chek if it's layer
+	osg::Node* node = (osg::Node*)in_node;
+	if (node && (in_node != (void*)1) && (strcasecmp(node->className(),"Layer") == 0))
+	{
+		if (layerDepth > 0)
+			layerDepth--;
+		else
+		{
+			notify(WARN) << "Layer depth < 0 ???\n";
+		}
+		if (layerDepth==0)
+		{
+			currLayer = NULL;
+			for (unsigned int i = 0; i < deadNodes.size(); i++)
+			{
+				osg::ref_ptr<Node> deadNode = deadNodes[i];
+			}
+			deadNodes.clear();
+		}
+	}
+
+	// 
+	// track whether we are under a billboard in the scene graph
+	//
+	if (is_billboard(static_cast<Billboard*>(in_node)))
+		in_billboard = false;
+
+	// if we are under layer all the groups are dropped out, so no need to do this
+	if (layerDepth==0)
+	{
+		// Get the parent above the current one
+		int pos = parents.size()-2;
+		if (pos < 0)
+		{
+			// Nothing above the current one.  Fall back on our top group
+			currTop = top;
+		}
+		else
+		{
+			currTop = (GeodeGroup *)parents[pos];
+		}
+	}
+
     return true;
 }
 
 //----------------------------------------------------------------------------
 // Return the current top node
-Group *TrPageParser::GetCurrTop()
+GeodeGroup *TrPageParser::GetCurrTop()
 {
     if (currTop)
     {
@@ -843,10 +1179,14 @@ Group *TrPageParser::GetCurrTop()
 
 //----------------------------------------------------------------------------
 // Add the given pfGroup to the group list at position ID
-bool TrPageParser::AddToGroupList(int ID,Group *group)
+bool TrPageParser::AddToGroupList(int ID,GeodeGroup *group)
 {
-    // Note: check bounds
-    groupList[ID] = group;
+	// we dont do this if we are under layer
+	if (layerDepth==0)
+	{
+		// Note: check bounds
+		groupList[ID] = group;
+	}
     
     return true;
 }
@@ -861,4 +1201,28 @@ void TrPageParser::SetMaxGroupID(int maxGroupID)
     // Note: Fix this
     for (int i=0;i<maxGroupID;i++)
         groupList.push_back(NULL);
+}
+
+//----------------------------------------------------------------------------
+// Use this to add nodes into the scenegraph
+void TrPageParser::AddIntoSceneGraph(osg::Node* node)
+{
+	// chek first if we are under some layer
+	if (layerDepth)
+	{
+		deadNodes.push_back(node);
+	}
+	else
+	{
+		Group *top = GetCurrTop();
+		if (top)
+			top->addChild(node);
+	}
+}
+
+//----------------------------------------------------------------------------
+// Return the current layer node (also used during parsing)
+Layer *TrPageParser::GetCurrLayer()
+{
+	return currLayer;
 }

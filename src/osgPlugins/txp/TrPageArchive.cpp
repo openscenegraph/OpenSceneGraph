@@ -155,20 +155,25 @@ void TrPageArchive::LoadMaterials()
                     path += _PATHD ;
                 
                 std::string theFile = path + filename ;
-                ref_ptr<Image> image = osgDB::readImageFile(theFile);
-                if (image.valid())
+                Image* image = osgDB::readImageFile(theFile);
+                if (image)
                 {
-                    osg_texture->setImage(image.get());
+                    osg_texture->setImage(image);
                 }
+				else
+				{
+			        notify(WARN) << "TrPageArchive::LoadMaterials() error: "
+					  << "couldn't open image: " << filename << std::endl;
+				}
                 m_textures[i] = osg_texture;
             }
             else if( mode == trpgTexture::Local )
             {
-                m_textures[i] = GetLocalTexture(image_helper,0, tex);
+                m_textures[i] = GetLocalTexture(image_helper,tex);
             }
             else if( mode == trpgTexture::Template )
             {
-                m_textures[i] = GetLocalTexture(image_helper,0, tex);
+                m_textures[i] = 0L; //GetTemplateTexture(image_helper,0, tex);
             }
             else
             {
@@ -436,7 +441,7 @@ Group* TrPageArchive::LoadTile(Group *rootNode,
 {
 	int x,y,lod;
 	tile->GetTileLoc(x,y,lod);
-	std::vector<osg::Group *> *groupList = parse->GetGroupList();
+	std::vector<GeodeGroup *> *groupList = parse->GetGroupList();
 
 	// Fetch the tile data (but don't parse it)
 	if (!ReadTile(x,y,lod,buf))
@@ -497,6 +502,7 @@ Group* TrPageArchive::LoadAllTiles()
 
    int32 numLod;
    head->GetNumLods(numLod);
+
    //  Iterate over the LODs.  Lower res LODs must be loaded
    //  first, otherwise there's nothing to hook the higher res
    //  LODs into.
@@ -504,7 +510,7 @@ Group* TrPageArchive::LoadAllTiles()
 
    // The group list is used to map parent IDs to pfGroup nodes
    //std::vector<Group *> groupList;
-   std::vector<Group *> *groupList = parse->GetGroupList();
+   std::vector<GeodeGroup *> *groupList = parse->GetGroupList();
 
    for (int nl=0;nl<numLod;nl++)
    {

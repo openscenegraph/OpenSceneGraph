@@ -17,15 +17,12 @@
 #ifndef _TRPAGEMANAGER_H_
 #define _TRPAGEMANAGER_H_
 
-#include <string>
-
-#if defined(__CYGWIN__) || !defined(WIN32)
-#include <pthread.h>
-#endif
-
 #include <osg/Group>
 #include <osg/Object>
 #include <osg/Node>
+
+#include <OpenThreads/Thread>
+#include <OpenThreads/Mutex>
 
 #include "trpage_geom.h"
 #include "trpage_read.h"
@@ -35,6 +32,8 @@
 #include "WaitBlock.h"
 #include "TrPageArchive.h"
 
+#include <string>
+
 // Dec 2002, Robert Osfield -> comment out now, as we actually do want to delete in the main thread
 // as the deletion of the display and texture object isn't thread safe.
 // Jan 2002, Robert osfield -> comment back in now, as I've changed the way the
@@ -42,7 +41,7 @@
 // in theory its still not thread safe, but a point swap should be much faster
 // and less likely to encounter a race condition on the static caches of display
 // and texture object lists.
-#define USE_THREADLOOP_DELETE
+// #define USE_THREADLOOP_DELETE
 
 namespace txp
 {
@@ -50,22 +49,31 @@ namespace txp
 		Fill this in for your specific platform.
 		Should be water ID you use for threads.
 	 */
-#if defined(_WIN32) && !defined(__CYGWIN__)
-	typedef HANDLE ThreadID;
-	typedef HANDLE ThreadMutex;
-	typedef HANDLE ThreadEvent;
-#else
-	typedef pthread_t ThreadID;
-	typedef pthread_mutex_t ThreadMutex;
+	typedef int ThreadID;
+	typedef OpenThreads::Mutex  ThreadMutex;
 	typedef osgTXP::WaitBlock ThreadEvent;
-#endif
+
+	class OSGPageManager;
+	class PagingThread: public OpenThreads::Thread{
+	public:
+		typedef OpenThreads::Thread super;
+		PagingThread():pager(NULL)
+		{
+		}
+
+		virtual void run();
+
+		OSGPageManager *pager;
+	private:
+		volatile bool canceled;
+	};
 
 	/* OSG Page Manager
 		This class handles the paging into 
 	 */ 
-	class OSGPageManager {
+	class OSGPageManager{
 	public:
-		/* Need a group to put things under and the archive to page.
+	    /* Need a group to put things under and the archive to page.
 			Also, optionally, a Page Manager (if you've made changes
 			to the default one).
 		 */
@@ -112,7 +120,12 @@ namespace txp
 
 		// Called by the thread start function
 		// Don't call this yourself
-		bool ThreadLoop();
+		bool ThreadLoop(PagingThread* t);
+		
+		// Load One tile
+		// @param tile managed tile
+		// @return tileGroup osg::Group representing managed tile
+		void LoadOneTile(trpgManagedTile* tile);
 
 	protected:
 		// Page Manager we'll use is ours (i.e. delete it at the end)
@@ -128,7 +141,7 @@ namespace txp
 
 		// ID of created thread and whether it's valid
 		ThreadMode threadMode;
-		ThreadID threadID;
+		PagingThread pagingThread;
 
 		// Used to notify the paging thread when the location changes
 		ThreadEvent locationChangeEvent;
@@ -142,17 +155,17 @@ namespace txp
 		ThreadMutex changeListMutex;
 		// Merge list is filled in by the paging thread.
 		std::vector<osg::Group *> toMerge;
-		std::vector<osg::Group *> toMergeParent;
+		// no need for that 
+		// std::vector<osg::Group *> toMergeParent;
 		// Unhook list is filled in by the paging thread
 		std::vector<osg::Group *> toUnhook;
-		
-		volatile bool cancel;
 
 #ifdef USE_THREADLOOP_DELETE
 		// Main thread moves groups to the delete list as soon as they are unhooked
 		std::vector<osg::Group *> toDelete;
 #endif            
 	};
+
 };
 
 #endif

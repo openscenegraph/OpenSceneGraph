@@ -20,9 +20,9 @@
 #ifndef trpage_util_h_
 #define trpage_util_h_
 #include <stdlib.h>
-#include "trpage_read.h"
-#include "trpage_write.h"
-#include "trpage_scene.h"
+#include <trpage_read.h>
+#include <trpage_write.h>
+#include <trpage_scene.h>
 
 TX_EXDECL class TX_CLDECL trpgUtil {
 public:
@@ -30,4 +30,3 @@ public:
 	int merge(trpgr_Archive &inArch1,trpgr_Archive &inArch2,trpgwArchive &outArch, int flags = 0);
 };
 #endif
-

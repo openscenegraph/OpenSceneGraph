@@ -122,6 +122,10 @@ SOURCE=..\..\..\src\osgPlugins\txp\trpage_header.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\txp\trpage_label.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\txp\trpage_light.cpp
 # End Source File
 # Begin Source File
@@ -131,6 +135,10 @@ SOURCE=..\..\..\src\osgPlugins\txp\trpage_managers.cpp
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\txp\trpage_material.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\txp\trpage_main.cpp
 # End Source File
 # Begin Source File
 

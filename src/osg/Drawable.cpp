@@ -33,13 +33,17 @@ using namespace osg;
 // is set.  Used osg::Drawable::deleteDisplayList(..) and flushDeletedDisplayLists(..) below.
 typedef std::list<GLuint> DisplayListList;
 typedef std::map<GLuint,DisplayListList> DeletedDisplayListCache;
+
+static OpenThreads::Mutex s_mutex_deletedDisplayListCache;
 static DeletedDisplayListCache s_deletedDisplayListCache;
-static DeletedDisplayListCache s_deletedVertexBufferObjectCache;
 
 void Drawable::deleteDisplayList(unsigned int contextID,GLuint globj)
 {
     if (globj!=0)
     {
+#ifdef THREAD_SAFE_DELETE_LISTS
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedDisplayListCache);
+#endif
         // insert the globj into the cache for the appropriate context.
         s_deletedDisplayListCache[contextID].push_back(globj);
     }
@@ -58,31 +62,45 @@ void Drawable::flushDeletedDisplayLists(unsigned int contextID,double /*currentT
 
     unsigned int noDeleted = 0;
 
-    DeletedDisplayListCache::iterator citr = s_deletedDisplayListCache.find(contextID);
-    if (citr!=s_deletedDisplayListCache.end())
     {
-        DisplayListList& dll = citr->second;
-       
-        for(DisplayListList::iterator ditr=dll.begin();
-            ditr!=dll.end() && elapsedTime<availableTime;
-            )
-        {
-            glDeleteLists(*ditr,1);
-            ditr = dll.erase(ditr);
-            elapsedTime = timer.delta_s(start_tick,timer.tick());
-           ++noDeleted;
-         }
-    }
+#ifdef THREAD_SAFE_DELETE_LISTS
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedDisplayListCache);
+#endif
 
+        DeletedDisplayListCache::iterator citr = s_deletedDisplayListCache.find(contextID);
+        if (citr!=s_deletedDisplayListCache.end())
+        {
+            DisplayListList& dll = citr->second;
+
+            for(DisplayListList::iterator ditr=dll.begin();
+                ditr!=dll.end() && elapsedTime<availableTime;
+                )
+            {
+                glDeleteLists(*ditr,1);
+                ditr = dll.erase(ditr);
+                elapsedTime = timer.delta_s(start_tick,timer.tick());
+               ++noDeleted;
+             }
+        }
+    }
+    
     if (noDeleted!=0) notify(INFO)<<"Number display lists deleted = "<<noDeleted<<std::endl;
 
     availableTime -= elapsedTime;
 }
 
+
+static OpenThreads::Mutex s_mutex_deletedVertexBufferObjectCache;
+static DeletedDisplayListCache s_deletedVertexBufferObjectCache;
+
 void Drawable::deleteVertexBufferObject(unsigned int contextID,GLuint globj)
 {
     if (globj!=0)
     {
+#ifdef THREAD_SAFE_DELETE_LISTS
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedVertexBufferObjectCache);
+#endif
+        
         // insert the globj into the cache for the appropriate context.
         s_deletedVertexBufferObjectCache[contextID].push_back(globj);
     }
@@ -100,28 +118,33 @@ void Drawable::flushDeletedVertexBufferObjects(unsigned int contextID,double /*c
     double elapsedTime = 0.0;
 
 
-    DeletedDisplayListCache::iterator citr = s_deletedVertexBufferObjectCache.find(contextID);
-    if (citr!=s_deletedVertexBufferObjectCache.end())
     {
-        const Extensions* extensions = getExtensions(contextID,true);
+#ifdef THREAD_SAFE_DELETE_LISTS
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedVertexBufferObjectCache);
+#endif
 
-        unsigned int noDeleted = 0;
-
-        DisplayListList& dll = citr->second;
-       
-        for(DisplayListList::iterator ditr=dll.begin();
-            ditr!=dll.end() && elapsedTime<availableTime;
-            )
+        DeletedDisplayListCache::iterator citr = s_deletedVertexBufferObjectCache.find(contextID);
+        if (citr!=s_deletedVertexBufferObjectCache.end())
         {
-            extensions->glDeleteBuffers(1,&(*ditr));
-            ditr = dll.erase(ditr);
-            elapsedTime = timer.delta_s(start_tick,timer.tick());
-            ++noDeleted;
-        }
+            const Extensions* extensions = getExtensions(contextID,true);
 
-        if (noDeleted!=0) notify(osg::INFO)<<"Number VBOs deleted = "<<noDeleted<<std::endl;
-    }
-    
+            unsigned int noDeleted = 0;
+
+            DisplayListList& dll = citr->second;
+
+            for(DisplayListList::iterator ditr=dll.begin();
+                ditr!=dll.end() && elapsedTime<availableTime;
+                )
+            {
+                extensions->glDeleteBuffers(1,&(*ditr));
+                ditr = dll.erase(ditr);
+                elapsedTime = timer.delta_s(start_tick,timer.tick());
+                ++noDeleted;
+            }
+
+            if (noDeleted!=0) notify(osg::INFO)<<"Number VBOs deleted = "<<noDeleted<<std::endl;
+        }
+    }    
     
     availableTime -= elapsedTime;
 }

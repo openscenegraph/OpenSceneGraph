@@ -25,12 +25,18 @@ using namespace osg;
 // is set.
 typedef std::list<GLuint> VertexProgramObjectList;
 typedef std::map<unsigned int,VertexProgramObjectList> DeletedVertexProgramObjectCache;
+
+static OpenThreads::Mutex              s_mutex_deletedVertexProgramObjectCache;
 static DeletedVertexProgramObjectCache s_deletedVertexProgramObjectCache;
 
 void VertexProgram::deleteVertexProgramObject(unsigned int contextID,GLuint handle)
 {
     if (handle!=0)
     {
+#ifdef THREAD_SAFE_DELETE_LISTS
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedVertexProgramObjectCache);
+#endif
+
         // insert the handle into the cache for the appropriate context.
         s_deletedVertexProgramObjectCache[contextID].push_back(handle);
     }
@@ -46,24 +52,30 @@ void VertexProgram::flushDeletedVertexProgramObjects(unsigned int contextID,doub
     osg::Timer_t start_tick = timer.tick();
     double elapsedTime = 0.0;
 
-    DeletedVertexProgramObjectCache::iterator citr = s_deletedVertexProgramObjectCache.find(contextID);
-    if (citr!=s_deletedVertexProgramObjectCache.end())
     {
-    
-        const Extensions* extensions = getExtensions(contextID,true);
+#ifdef THREAD_SAFE_DELETE_LISTS
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedVertexProgramObjectCache);
+#endif
 
-        VertexProgramObjectList& vpol = citr->second;
-    
-        for(VertexProgramObjectList::iterator titr=vpol.begin();
-            titr!=vpol.end() && elapsedTime<availableTime;
-            )
+        DeletedVertexProgramObjectCache::iterator citr = s_deletedVertexProgramObjectCache.find(contextID);
+        if (citr!=s_deletedVertexProgramObjectCache.end())
         {
-            extensions->glDeletePrograms( 1L, &(*titr ) );
-            titr = vpol.erase(titr);
-            elapsedTime = timer.delta_s(start_tick,timer.tick());
+
+            const Extensions* extensions = getExtensions(contextID,true);
+
+            VertexProgramObjectList& vpol = citr->second;
+
+            for(VertexProgramObjectList::iterator titr=vpol.begin();
+                titr!=vpol.end() && elapsedTime<availableTime;
+                )
+            {
+                extensions->glDeletePrograms( 1L, &(*titr ) );
+                titr = vpol.erase(titr);
+                elapsedTime = timer.delta_s(start_tick,timer.tick());
+            }
         }
     }
-    
+        
     availableTime -= elapsedTime;
 }
 

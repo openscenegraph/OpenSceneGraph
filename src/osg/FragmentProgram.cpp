@@ -25,12 +25,18 @@ using namespace osg;
 // is set.
 typedef std::list<GLuint> FragmentProgramObjectList;
 typedef std::map<unsigned int,FragmentProgramObjectList> DeletedFragmentProgramObjectCache;
+
+static OpenThreads::Mutex                s_mutex_deletedFragmentProgramObjectCache;
 static DeletedFragmentProgramObjectCache s_deletedFragmentProgramObjectCache;
 
 void FragmentProgram::deleteFragmentProgramObject(unsigned int contextID,GLuint handle)
 {
     if (handle!=0)
     {
+#ifdef THREAD_SAFE_DELETE_LISTS
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedFragmentProgramObjectCache);
+#endif
+
         // insert the handle into the cache for the appropriate context.
         s_deletedFragmentProgramObjectCache[contextID].push_back(handle);
     }
@@ -46,24 +52,29 @@ void FragmentProgram::flushDeletedFragmentProgramObjects(unsigned int contextID,
     osg::Timer_t start_tick = timer.tick();
     double elapsedTime = 0.0;
 
-    DeletedFragmentProgramObjectCache::iterator citr = s_deletedFragmentProgramObjectCache.find(contextID);
-    if (citr!=s_deletedFragmentProgramObjectCache.end())
     {
-    
-        const Extensions* extensions = getExtensions(contextID,true);
+#ifdef THREAD_SAFE_DELETE_LISTS
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedFragmentProgramObjectCache);
+#endif
 
-        FragmentProgramObjectList& vpol = citr->second;
-    
-        for(FragmentProgramObjectList::iterator titr=vpol.begin();
-            titr!=vpol.end() && elapsedTime<availableTime;
-            )
+        DeletedFragmentProgramObjectCache::iterator citr = s_deletedFragmentProgramObjectCache.find(contextID);
+        if (citr!=s_deletedFragmentProgramObjectCache.end())
         {
-            extensions->glDeletePrograms( 1L, &(*titr ) );
-            titr = vpol.erase(titr);
-            elapsedTime = timer.delta_s(start_tick,timer.tick());
+            const Extensions* extensions = getExtensions(contextID,true);
+
+            FragmentProgramObjectList& vpol = citr->second;
+
+            for(FragmentProgramObjectList::iterator titr=vpol.begin();
+                titr!=vpol.end() && elapsedTime<availableTime;
+                )
+            {
+                extensions->glDeletePrograms( 1L, &(*titr ) );
+                titr = vpol.erase(titr);
+                elapsedTime = timer.delta_s(start_tick,timer.tick());
+            }
         }
     }
-    
+        
     availableTime -= elapsedTime;
 }
 

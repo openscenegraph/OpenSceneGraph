@@ -125,7 +125,7 @@ class ConvertFromFLT
         osg::Group* visitMatrix(osg::Group& osgParent, const osg::Group& osgPrimary, MatrixRecord* rec);
 		osg::Group* visitGeneralMatrix(osg::Group& osgParent, const osg::Group& osgPrimary, GeneralMatrixRecord* rec);
         void visitLongID(osg::Group& osgParent, LongIDRecord* rec);
-        void visitComment(osg::Group& osgParent, CommentRecord* rec);
+        void visitComment(osg::Node& osgParent, CommentRecord* rec);
 
         // Palette records
         void visitColorPalette(osg::Group& osgParent, ColorPaletteRecord* rec);

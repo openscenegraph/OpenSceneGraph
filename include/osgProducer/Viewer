@@ -24,6 +24,7 @@
 
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventHandler>
+#include <osgGA/EventVisitor>
 #include <osgGA/KeySwitchMatrixManipulator>
 
 #include <osgProducer/OsgCameraGroup>
@@ -205,6 +206,17 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
         /** Get the const update visitor.*/
         const osg::NodeVisitor* getUpdateVisitor() const { return _updateVisitor.get(); }
 
+
+        /** Set the update visitor which does the event traversal of the scene graph. Automatically called by the update() method.*/
+        void setEventVisitor(osgGA::EventVisitor* nv) { _eventVisitor = nv; }
+
+        /** Get the update visitor.*/
+        osgGA::EventVisitor* getEventVisitor() { return _eventVisitor.get(); }
+
+        /** Get the const update visitor.*/
+        const osgGA::EventVisitor* getEventVisitor() const { return _eventVisitor.get(); }
+
+
         void computeActiveCoordindateSystemNodePath();
 
         void setCoordindateSystemNodePath(const osg::RefNodePath& nodePath) { _coordinateSystemNodePath = nodePath; }
@@ -299,6 +311,7 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
         osg::ref_ptr<osgGA::KeySwitchMatrixManipulator> _keyswitchManipulator;
 
         osg::ref_ptr<osg::NodeVisitor>      _updateVisitor;
+        osg::ref_ptr<osgGA::EventVisitor>   _eventVisitor;
 
 
         osg::RefNodePath                    _coordinateSystemNodePath;

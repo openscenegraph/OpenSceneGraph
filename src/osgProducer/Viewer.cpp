@@ -5,6 +5,7 @@
 
 #include <osgDB/Registry>
 
+#include <osgGA/EventVisitor>
 #include <osgGA/AnimationPathManipulator>
 #include <osgGA/TrackballManipulator>
 #include <osgGA/FlightManipulator>
@@ -482,6 +483,10 @@ void Viewer::setUpViewer(unsigned int options)
     
     _updateVisitor->setFrameStamp(_frameStamp.get());
 
+    if (!_eventVisitor) _eventVisitor = new osgGA::EventVisitor;
+    _eventVisitor->setActionAdapter(this);
+
+
     if (options&TRACKBALL_MANIPULATOR) addCameraManipulator(new osgGA::TrackballManipulator);
     if (options&FLIGHT_MANIPULATOR) addCameraManipulator(new osgGA::FlightManipulator);
     if (options&DRIVE_MANIPULATOR) addCameraManipulator(new osgGA::DriveManipulator);
@@ -632,6 +637,11 @@ void Viewer::update()
     frame_event->adaptFrame(_frameStamp->getReferenceTime());
     queue.push_back(frame_event);
 
+    if (_eventVisitor.valid())
+    {
+        _eventVisitor->setTraversalNumber(_frameStamp->getFrameNumber());
+    }
+
     // dispatch the events in order of arrival.
     for(osgProducer::KeyboardMouseCallback::EventQueue::iterator event_itr=queue.begin();
         event_itr!=queue.end();
@@ -644,8 +654,15 @@ void Viewer::update()
         {   
             handled = (*handler_itr)->handle(*(*event_itr),*this);
         }
+        if (!handled && _eventVisitor.valid())
+        {
+            _eventVisitor->reset();
+            _eventVisitor->addEvent(event_itr->get());
+            getTopMostSceneData()->accept(*_eventVisitor);
+        }
+        
     }
-    
+
     if (osgDB::Registry::instance()->getDatabasePager())
     {
         // update the scene graph by remove expired subgraphs and merge newly loaded subgraphs
@@ -661,6 +678,7 @@ void Viewer::update()
         getTopMostSceneData()->accept(*_updateVisitor);
     }
     
+
     // update the main producer camera
     if (_keyswitchManipulator.valid() && _keyswitchManipulator->getCurrentMatrixManipulator()) 
     {

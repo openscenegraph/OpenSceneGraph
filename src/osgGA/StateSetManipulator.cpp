@@ -7,6 +7,12 @@
 #include <osg/TextureRectangle>
 #include <osg/TextureCubeMap>
 
+
+// #define COMPILE_TEXENVFILTER_USAGE
+#if COMPILE_TEXENVFILTER_USAGE
+    #include <osg/TexEnvFilter>
+#endif
+
 using namespace osg;
 using namespace osgGA;
 
@@ -111,6 +117,21 @@ bool StateSetManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& aa)
                     }
                 }
                 break;
+#if COMPILE_TEXENVFILTER_USAGE
+            case 'm' :
+                {
+                    osg::TexEnvFilter* texenvfilter = dynamic_cast<osg::TexEnvFilter*>(_drawState->getTextureAttribute(0,osg::StateAttribute::TEXENVFILTER));
+                    if (!texenvfilter) 
+                    {
+                        texenvfilter = new osg::TexEnvFilter;
+                        _drawState->setTextureAttribute(0,texenvfilter);
+                    }
+
+                    // cycle through the available modes.
+                    texenvfilter->setLodBias(texenvfilter->getLodBias()+0.1);
+                }
+                break;
+#endif
         }
     }
     return false;

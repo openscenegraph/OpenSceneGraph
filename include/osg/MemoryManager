@@ -141,12 +141,12 @@ SG_EXPORT extern sMStats        m_getMemoryStatistics();
 
 #else
 
-    #define    osgNew            new
-    #define    osgDelete        delete
+    #define    osgNew               new
+    #define    osgDelete            delete
     #define    osgMalloc(sz)        malloc(sz)
     #define    osgCalloc(sz)        calloc(sz)
-    #define    osgRealloc(ptr,sz)  realloc(sz)
-    #define    osgFree(ptr)        free(sz)
+    #define    osgRealloc(ptr,sz)   realloc(ptr,sz)
+    #define    osgFree(ptr)         free(ptr)
 
 #endif
 

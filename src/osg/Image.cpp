@@ -208,7 +208,7 @@ void Image::createImage(int s,int t,int r,
         if (_data) ::free(_data);
         
         if (newTotalSize)
-            _data = (unsigned char *)osgMalloc (newTotalSize);
+            _data = (unsigned char *)malloc (newTotalSize);
         else
             _data = 0L;
     }
@@ -293,7 +293,7 @@ void Image::scaleImage(const int s,const int t,const int r)
     unsigned int newTotalSize = computeRowWidthInBytes(s,_pixelFormat,_dataType,_packing)*t;
 
     // need to sort out what size to really use...
-    unsigned char* newData = (unsigned char *)osgMalloc(newTotalSize);
+    unsigned char* newData = (unsigned char *)malloc(newTotalSize);
     if (!newData)
     {
         // should we throw an exception???  Just return for time being.
@@ -338,7 +338,7 @@ void Image::flipHorizontal(int image)
 {
     if (_data==NULL)
     {
-        notify(WARN) << "Error Image::flipVertical() do not succeed : cannot flip NULL image."<<std::endl;
+        notify(WARN) << "Error Image::flipHorizontal() do not succeed : cannot flip NULL image."<<std::endl;
         return;
     }
 
@@ -390,7 +390,7 @@ void Image::flipVertical(int image)
     // insert fliped image
     memcpy(imageData, tmpData, imageSizeInBytes);
 
-    ::free(tmpData);
+    osgFree(tmpData);
     ++_modifiedTag;
 }
 

@@ -162,7 +162,10 @@ void Matrix::makeRot( const Vec3& from, const Vec3& to )
     double d = from * to; // dot product == cos( angle between from & to )
     if( d < 0.9999 ) {
         double angle = acos(d);
-        Vec3 axis = to ^ from; //we know ((to) x (from)) is perpendicular to both
+	// For right-handed rotations, cross product must be from x to, not 
+	// to x from
+        //Vec3 axis = to ^ from; //we know ((to) x (from)) is perpendicular to both
+        Vec3 axis = from ^ to; //we know ((from) x (to)) is perpendicular to both
         makeRot( inRadians(angle) , axis );
     }        
     else 
@@ -174,7 +177,8 @@ void Matrix::makeRot( float angle, const Vec3& axis )
     makeRot( angle, axis.x(), axis.y(), axis.z() );
 }
 
-void Matrix::makeRot( float angle, float x, float y, float z ) {
+void Matrix::makeRot( float angle, float x, float y, float z ) 
+{
     float d = sqrt( x*x + y*y + z*z );
     if( d == 0 )
         return;

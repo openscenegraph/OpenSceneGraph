@@ -36,10 +36,13 @@ class SG_EXPORT Referenced
 
         inline Referenced& operator = (Referenced&) { return *this; }
 
-        friend struct DeleteHandler;
+        friend class DeleteHandler;
 
+        /** Set a DeleteHandler to which deletion of all referenced counted objects
+          * will be delegated to.*/
         static void setDeleteHandler(DeleteHandler* handler);
 
+        /** Get a DeleteHandler.*/
         static DeleteHandler* getDeleteHandler();
 
 
@@ -89,7 +92,11 @@ class SG_EXPORT Referenced
 
 /** Class for override the default delete behavior so that users can implment their own object
   * deletion schemes.  This might be done to help implement protection of multiple threads from deleting
-  * objects unintentionally.*/
+  * objects unintentionally.
+  * Note, the DeleteHandler cannot itself be reference counted, otherwise it
+  * would be responsible for deleting itself!
+  * An static auto_ptr<> is used internally in Referenced.cpp to manage the 
+  * DeleteHandler's memory.*/
 class DeleteHandler
 {
     public:

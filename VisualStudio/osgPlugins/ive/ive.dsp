@@ -110,6 +110,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\BlendFunc.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\ive\ClusterCullingCallback.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\ive\ConvexPlanarOccluder.cpp
 # End Source File
 # Begin Source File
@@ -323,6 +327,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\Billboard.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\BlendFunc.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\ClusterCullingCallback.h
 # End Source File
 # Begin Source File
 

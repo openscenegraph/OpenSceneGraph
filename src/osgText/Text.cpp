@@ -29,6 +29,8 @@ struct TextCullCallback : public osg::Drawable::CullCallback
         _firstTimeToInitEyePoint(true),
         _previousWidth(0),
         _previousHeight(0),
+        _lastUpdateContextID(0xffffffff),
+        _lastTraversalNumber(0xffffffff),
         _text(text) {}
 
     /** do customized cull code.*/
@@ -36,6 +38,21 @@ struct TextCullCallback : public osg::Drawable::CullCallback
     {
         osgUtil::CullVisitor* cs = static_cast<osgUtil::CullVisitor*>(nv);
         if (!cs) return false;
+        
+        
+        if (_lastTraversalNumber!=nv->getTraversalNumber())
+        {
+            _lastUpdateContextID = 0xffffffff;
+        }
+        
+        _lastTraversalNumber = nv->getTraversalNumber();
+
+        unsigned int contextID = cs->getState() ? cs->getState()->getContextID() : 0;
+        if (_lastUpdateContextID<contextID)
+        {
+//            cout << "quiting early"<<endl;
+            return false;
+        }
 
         int width = _previousWidth;
         int height = _previousHeight;
@@ -67,7 +84,9 @@ struct TextCullCallback : public osg::Drawable::CullCallback
         if (doUpdate)
         {            
 
-            if (_text->getAutoScaleToScreen())
+            _lastUpdateContextID = contextID;
+
+            if (_text->getAutoScaleToLimitScreenSizeToFontResolution())
             {
                 float numPixels = cs->pixelSize(_text->getPosition(),_text->getCharacterHeight());
                 if (numPixels>_text->getFontHeight())
@@ -100,6 +119,8 @@ struct TextCullCallback : public osg::Drawable::CullCallback
     mutable osg::Vec3       _previousEyePoint;
     mutable int             _previousWidth;
     mutable int             _previousHeight;
+    mutable unsigned int    _lastUpdateContextID;
+    mutable int             _lastTraversalNumber;
     mutable osgText::Text*  _text;
 
 };
@@ -118,7 +139,7 @@ Text::Text():
     _scale(1.0f),
     _autoUpdateEyeMovementTolerance(0.0f),
     _autoRotateToScreen(false),
-    _autoScaleToScreen(false),
+    _autoScaleToLimitScreenSizeToFontResolution(false),
     _layout(LEFT_TO_RIGHT),
     _color(1.0f,1.0f,1.0f,1.0f),
     _drawMode(TEXT)
@@ -142,7 +163,7 @@ Text::Text(const Text& text,const osg::CopyOp& copyop):
     _scale(text._scale),
     _autoUpdateEyeMovementTolerance(text._autoUpdateEyeMovementTolerance),
     _autoRotateToScreen(text._autoRotateToScreen),
-    _autoScaleToScreen(text._autoScaleToScreen),
+    _autoScaleToLimitScreenSizeToFontResolution(text._autoScaleToLimitScreenSizeToFontResolution),
     _layout(text._layout),
     _color(text._color),
     _drawMode(text._drawMode)
@@ -266,9 +287,9 @@ void Text::setRotation(const osg::Quat& quat)
     computePositions();
 }
 
-void Text::setAutoScaleToScreen(bool autoScaleToScreen)
+void Text::setAutoScaleToLimitScreenSizeToFontResolution(bool autoScaleToScreen)
 {
-    _autoScaleToScreen = autoScaleToScreen;
+    _autoScaleToLimitScreenSizeToFontResolution = autoScaleToScreen;
     setUpAutoCallback();
 }
 
@@ -281,7 +302,7 @@ void Text::setScale(float scale)
 
 void Text::setUpAutoCallback()
 {
-    if (_autoRotateToScreen || _autoScaleToScreen)
+    if (_autoRotateToScreen || _autoScaleToLimitScreenSizeToFontResolution)
     {
         if (!getCullCallback())
         {
@@ -309,7 +330,7 @@ void Text::setDrawMode(unsigned int mode)
         _drawMode=mode;
         if (_drawMode&TEXT_PIXMAP)
         {
-            setAutoScaleToScreen(true);
+            setAutoScaleToLimitScreenSizeToFontResolution(true);
             setAutoRotateToScreen(true);
         }
         computeGlyphRepresentation();
@@ -603,14 +624,6 @@ void Text::computePositions()
     dirtyBound();    
 }
 
-static unsigned char local_data[] = { 255,255,255,255,255,255,255,255,
-                                      255,255,255,255,255,255,255,255,
-                                      255,255,255,255,255,255,255,255,
-                                     255,255,255,255,255,255,255,255 };
-
-
-static osg::Image* loaded_image = osgDB::readImageFile("lz.rgb");
-
 void Text::drawImplementation(osg::State& state) const
 {
     
@@ -739,16 +752,17 @@ void Text::accept(osg::Drawable::PrimitiveFunctor& pf) const
     {
         const GlyphQuads& glyphquad = titr->second;
 
-        pf.begin(GL_QUADS);
-        for(GlyphQuads::Coords3::const_iterator itr = glyphquad._transformedCoords.begin();
-            itr!=glyphquad._transformedCoords.end();
-            ++itr)
-        {
-
-            osg::Vec3 pos(itr->x(),itr->y(),0.0f);
-            pf.vertex(pos*_matrix);
-        }
-        pf.end();
+        pf.setVertexArray(glyphquad._transformedCoords.size(),&(glyphquad._transformedCoords.front()));
+        pf.drawArrays(GL_QUADS,0,glyphquad._transformedCoords.size());
+            
+//         pf.begin(GL_QUADS);
+//         for(GlyphQuads::Coords3::const_iterator itr = glyphquad._transformedCoords.begin();
+//             itr!=glyphquad._transformedCoords.end();
+//             ++itr)
+//         {
+//             pf.vertex(*itr);
+//         }
+//         pf.end();
     }
     
 }

@@ -104,15 +104,15 @@ bool Stencil_writeLocalData(const Object& obj,Output& fw)
 {
     const Stencil& stencil = static_cast<const Stencil&>(obj);
 
-    fw.indent() << "function " << Stencil_getFuncStr(stencil.getFunction()) << endl;
-    fw.indent() << "functionRef " << stencil.getFunctionRef() << endl;
-    fw.indent() << "functionMask 0x" << std::hex << stencil.getFunctionMask() << std::dec << endl;
+    fw.indent() << "function " << Stencil_getFuncStr(stencil.getFunction()) << std::endl;
+    fw.indent() << "functionRef " << stencil.getFunctionRef() << std::endl;
+    fw.indent() << "functionMask 0x" << std::hex << stencil.getFunctionMask() << std::dec << std::endl;
     
-    fw.indent() << "stencilFailOperation " << Stencil_getOperationStr(stencil.getStencilFailOperation()) << endl;
-    fw.indent() << "stencilPassAndDepthFailOperation " << Stencil_getOperationStr(stencil.getStencilPassAndDepthFailOperation()) << endl;
-    fw.indent() << "stencilPassAndDepthPassOperation " << Stencil_getOperationStr(stencil.getStencilPassAndDepthPassOperation()) << endl;
+    fw.indent() << "stencilFailOperation " << Stencil_getOperationStr(stencil.getStencilFailOperation()) << std::endl;
+    fw.indent() << "stencilPassAndDepthFailOperation " << Stencil_getOperationStr(stencil.getStencilPassAndDepthFailOperation()) << std::endl;
+    fw.indent() << "stencilPassAndDepthPassOperation " << Stencil_getOperationStr(stencil.getStencilPassAndDepthPassOperation()) << std::endl;
     
-    fw.indent() << "writeMask 0x" << std::hex << stencil.getWriteMask() << std::dec << endl;
+    fw.indent() << "writeMask 0x" << std::hex << stencil.getWriteMask() << std::dec << std::endl;
 
     return true;
 }

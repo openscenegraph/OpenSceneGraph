@@ -53,7 +53,7 @@ bool PolygonOffset_writeLocalData(const Object& obj, Output& fw)
 {
     const PolygonOffset& polygonoffset = static_cast<const PolygonOffset&>(obj);
 
-    fw.indent() << "factor " << polygonoffset.getFactor() << endl;
-    fw.indent() << "units  " << polygonoffset.getUnits() << endl;
+    fw.indent() << "factor " << polygonoffset.getFactor() << std::endl;
+    fw.indent() << "units  " << polygonoffset.getUnits() << std::endl;
     return true;
 }

@@ -93,7 +93,7 @@ static rawImageRec *RawImageOpen(const char *fileName)
     raw = (rawImageRec *)malloc(sizeof(rawImageRec));
     if (raw == NULL)
     {
-        notify(WARN)<< "Out of memory!"<<endl;
+        notify(WARN)<< "Out of memory!"<< std::endl;
         return NULL;
     }
     if ((raw->file = fopen(fileName, "rb")) == NULL)
@@ -114,7 +114,7 @@ static rawImageRec *RawImageOpen(const char *fileName)
     raw->tmp = (unsigned char *)malloc(raw->sizeX*256);
     if (raw->tmp == NULL )
     {
-        notify(FATAL)<< "Out of memory!"<<endl;
+        notify(FATAL)<< "Out of memory!"<< std::endl;
         return NULL;
     }
 
@@ -122,7 +122,7 @@ static rawImageRec *RawImageOpen(const char *fileName)
     {
         if( (raw->tmpR = (unsigned char *)malloc(raw->sizeX)) == NULL )
         {
-            notify(FATAL)<< "Out of memory!"<<endl;
+            notify(FATAL)<< "Out of memory!"<< std::endl;
             free( raw->tmp );
             return NULL;
         }
@@ -131,7 +131,7 @@ static rawImageRec *RawImageOpen(const char *fileName)
     {
         if( (raw->tmpG = (unsigned char *)malloc(raw->sizeX)) == NULL )
         {
-            notify(FATAL)<< "Out of memory!"<<endl;
+            notify(FATAL)<< "Out of memory!"<< std::endl;
             free( raw->tmp );
             free( raw->tmpR );
             return NULL;
@@ -141,7 +141,7 @@ static rawImageRec *RawImageOpen(const char *fileName)
     {
         if( (raw->tmpB = (unsigned char *)malloc(raw->sizeX)) == NULL )
         {
-            notify(FATAL)<< "Out of memory!"<<endl;
+            notify(FATAL)<< "Out of memory!"<< std::endl;
             free( raw->tmp );
             free( raw->tmpR );
             free( raw->tmpG );
@@ -152,7 +152,7 @@ static rawImageRec *RawImageOpen(const char *fileName)
     {
         if( (raw->tmpA = (unsigned char *)malloc(raw->sizeX)) == NULL )
         {
-            notify(FATAL)<< "Out of memory!"<<endl;
+            notify(FATAL)<< "Out of memory!"<< std::endl;
             free( raw->tmp );
             free( raw->tmpR );
             free( raw->tmpG );
@@ -168,7 +168,7 @@ static rawImageRec *RawImageOpen(const char *fileName)
         raw->rowSize = (GLint *)malloc(x);
         if (raw->rowStart == NULL || raw->rowSize == NULL)
         {
-            notify(FATAL)<< "Out of memory!"<<endl;
+            notify(FATAL)<< "Out of memory!"<< std::endl;
             return NULL;
         }
         raw->rleEnd = 512 + (2 * x);
@@ -346,7 +346,7 @@ class ReaderWriterRGB : public osgDB::ReaderWriter
                 dataType,
                 data);
 
-            notify(INFO) << "image read ok "<<s<<"  "<<t<<endl;
+            notify(INFO) << "image read ok "<<s<<"  "<<t<< std::endl;
             return image;
 
         }

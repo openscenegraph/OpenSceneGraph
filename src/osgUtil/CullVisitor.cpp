@@ -43,13 +43,13 @@ class PrintVisitor : public NodeVisitor
         inline void moveOut() { _indent -= _step; }
         inline void writeIndent() 
         {
-            for(int i=0;i<_indent;++i) cout << " ";
+            for(int i=0;i<_indent;++i) std::cout << " ";
         }
                 
         virtual void apply(Node& node)
         {
             moveIn();
-            writeIndent(); cout << node.className() <<endl;
+            writeIndent(); std::cout << node.className() <<std::endl;
             traverse(node);
             moveOut();
         }
@@ -280,7 +280,7 @@ void CullVisitor::updateCalculatedNearFar(const osg::BoundingBox& bb)
 
     if (!bb.isValid())
     {
-        osg::notify(osg::WARN)<<"Warning: CullVisitor::updateCalculatedNearFar(..) passed a null bounding box."<<endl;
+        osg::notify(osg::WARN)<<"Warning: CullVisitor::updateCalculatedNearFar(..) passed a null bounding box."<< std::endl;
         return;
     }
 
@@ -314,8 +314,8 @@ void CullVisitor::updateCalculatedNearFar(const osg::BoundingBox& bb)
     {
         if ( !EQUAL_F(d_near, d_far) ) 
         {
-            osg::notify(osg::WARN)<<"Warning: CullVisitor::updateCalculatedNearFar(.) near>far in range calculation,"<<endl;
-            osg::notify(osg::WARN)<<"         correcting by swapping values d_near="<<d_near<<" dfar="<<d_far<<endl;
+            osg::notify(osg::WARN)<<"Warning: CullVisitor::updateCalculatedNearFar(.) near>far in range calculation,"<< std::endl;
+            osg::notify(osg::WARN)<<"         correcting by swapping values d_near="<<d_near<<" dfar="<<d_far<< std::endl;
         }
         // note, need to reverse the d_near/d_far association because they are
         // the wrong way around...
@@ -429,9 +429,9 @@ void CullVisitor::apply(Geode& node)
 
             if (g_debugging2)
             {
-                notify(INFO) << "center ["<<center.x()<<","<<center.y()<<","<<center.z()<<"]"<<endl;
-                notify(INFO) << "delta_center ["<<delta_center.x()<<","<<delta_center.y()<<","<<delta_center.z()<<"]"<<endl;
-                notify(INFO) << "_lookVector ["<<_tvs->_lookVector.x()<<","<<_tvs->_lookVector.y()<<","<<_tvs->_lookVector.z()<<"]"<<endl;
+                notify(INFO) << "center ["<<center.x()<<","<<center.y()<<","<<center.z()<<"]"<< std::endl;
+                notify(INFO) << "delta_center ["<<delta_center.x()<<","<<delta_center.y()<<","<<delta_center.z()<<"]"<< std::endl;
+                notify(INFO) << "_lookVector ["<<_tvs->_lookVector.x()<<","<<_tvs->_lookVector.y()<<","<<_tvs->_lookVector.z()<<"]"<< std::endl;
             }
 
             float depth;
@@ -515,9 +515,9 @@ void CullVisitor::apply(Billboard& node)
 
             if (g_debugging2)
             {
-                notify(INFO) << "center ["<<center.x()<<","<<center.y()<<","<<center.z()<<"]"<<endl;
-                notify(INFO) << "delta_center ["<<delta_center.x()<<","<<delta_center.y()<<","<<delta_center.z()<<"]"<<endl;
-                notify(INFO) << "_lookVector ["<<_tvs->_lookVector.x()<<","<<_tvs->_lookVector.y()<<","<<_tvs->_lookVector.z()<<"]"<<endl;
+                notify(INFO) << "center ["<<center.x()<<","<<center.y()<<","<<center.z()<<"]"<< std::endl;
+                notify(INFO) << "delta_center ["<<delta_center.x()<<","<<delta_center.y()<<","<<delta_center.z()<<"]"<< std::endl;
+                notify(INFO) << "_lookVector ["<<_tvs->_lookVector.x()<<","<<_tvs->_lookVector.y()<<","<<_tvs->_lookVector.z()<<"]"<< std::endl;
             }
 
             float depth;
@@ -647,7 +647,7 @@ void CullVisitor::apply(LOD& node)
     StateSet* node_state = node.getStateSet();
     if (node_state) pushStateSet(node_state);
 
-    //notify(INFO) << "selecting child "<<eval<<endl;
+    //notify(INFO) << "selecting child "<<eval<< std::endl;
     node.getChild(eval)->accept(*this);
 
     // pop the node's state off the render graph stack.    
@@ -775,9 +775,9 @@ void CullVisitor::apply(Impostor& node)
 
                 if (g_debugging2)
                 {
-                    notify(INFO) << "center ["<<center.x()<<","<<center.y()<<","<<center.z()<<"]"<<endl;
-                    notify(INFO) << "delta_center ["<<delta_center.x()<<","<<delta_center.y()<<","<<delta_center.z()<<"]"<<endl;
-                    notify(INFO) << "_lookVector ["<<_tvs->_lookVector.x()<<","<<_tvs->_lookVector.y()<<","<<_tvs->_lookVector.z()<<"]"<<endl;
+                    notify(INFO) << "center ["<<center.x()<<","<<center.y()<<","<<center.z()<<"]"<< std::endl;
+                    notify(INFO) << "delta_center ["<<delta_center.x()<<","<<delta_center.y()<<","<<delta_center.z()<<"]"<< std::endl;
+                    notify(INFO) << "_lookVector ["<<_tvs->_lookVector.x()<<","<<_tvs->_lookVector.y()<<","<<_tvs->_lookVector.z()<<"]"<< std::endl;
                 }
 
                 float depth;
@@ -896,6 +896,7 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
     _tvs = new CullViewState;
 
     // store the previous camera setting
+
     ref_ptr<const Camera> previous_camera = _camera;
 
     // sets up the _tvs to reflect the new camera.
@@ -967,7 +968,7 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
 
     if (local_znear>local_zfar)
     {
-        notify(WARN) << "Warning : problem with osg::CullVisitor::creatImpostorSprite() local_znear ("<<local_znear<<") "<<" > ("<<local_zfar<<") local_zfar"<<endl;
+        notify(WARN) << "Warning : problem with osg::CullVisitor::creatImpostorSprite() local_znear ("<<local_znear<<") "<<" > ("<<local_zfar<<") local_zfar"<< std::endl;
         return NULL;        
     }
 

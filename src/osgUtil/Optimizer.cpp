@@ -149,7 +149,7 @@ void Optimizer::StateVisitor::apply(osg::Geode& geode)
 
 void Optimizer::StateVisitor::optimize()
 {
-    osg::notify(osg::INFO) << "Num of StateSet="<<_statesets.size()<<endl;
+    osg::notify(osg::INFO) << "Num of StateSet="<<_statesets.size()<< std::endl;
 
 
     {
@@ -176,7 +176,7 @@ void Optimizer::StateVisitor::optimize()
 
         if (_attributeToStateSetMap.size()<2)
         {
-            osg::notify(osg::INFO) << "Too few state attributes to optimize."<<endl;
+            osg::notify(osg::INFO) << "Too few state attributes to optimize."<< std::endl;
             return;
         }
 
@@ -196,15 +196,15 @@ void Optimizer::StateVisitor::optimize()
         std::sort(_attributeList.begin(),_attributeList.end(),LessAttributeFunctor());
 
 
-        osg::notify(osg::INFO) << "state attribute list"<<endl;
+        osg::notify(osg::INFO) << "state attribute list"<< std::endl;
         for(AttributeList::iterator aaitr = _attributeList.begin();
             aaitr!=_attributeList.end();
             ++aaitr)
         {
-            osg::notify(osg::INFO) << "    "<<*aaitr << "  "<<(*aaitr)->className()<<endl;
+            osg::notify(osg::INFO) << "    "<<*aaitr << "  "<<(*aaitr)->className()<< std::endl;
         }
 
-        osg::notify(osg::INFO) << "searching for duplicate attributes"<<endl;
+        osg::notify(osg::INFO) << "searching for duplicate attributes"<< std::endl;
         // find the duplicates.
         AttributeList::iterator first_unique = _attributeList.begin();
         AttributeList::iterator current = first_unique; ++current;
@@ -212,13 +212,13 @@ void Optimizer::StateVisitor::optimize()
         {
             if (**current==**first_unique)
             {
-                osg::notify(osg::INFO) << "    found duplicate "<<(*current)->className()<<"  first="<<*first_unique<<"  current="<<*current<<endl;
+                osg::notify(osg::INFO) << "    found duplicate "<<(*current)->className()<<"  first="<<*first_unique<<"  current="<<*current<< std::endl;
                 StateSetList& statesetlist = _attributeToStateSetMap[*current];
                 for(StateSetList::iterator sitr=statesetlist.begin();
                     sitr!=statesetlist.end();
                     ++sitr)
                 {
-                    osg::notify(osg::INFO) << "       replace duplicate "<<*current<<" with "<<*first_unique<< endl;
+                    osg::notify(osg::INFO) << "       replace duplicate "<<*current<<" with "<<*first_unique<< std::endl;
                     osg::StateSet* stateset = *sitr;
                     stateset->setAttribute(*first_unique);
                 }
@@ -246,7 +246,7 @@ void Optimizer::StateVisitor::optimize()
         // other.
         std::sort(_statesetSortList.begin(),_statesetSortList.end(),LessStateSetFunctor());
 
-        osg::notify(osg::INFO) << "searching for duplicate attributes"<<endl;
+        osg::notify(osg::INFO) << "searching for duplicate attributes"<< std::endl;
         // find the duplicates.
         StateSetSortList::iterator first_unique = _statesetSortList.begin();
         StateSetSortList::iterator current = first_unique; ++current;
@@ -254,13 +254,13 @@ void Optimizer::StateVisitor::optimize()
         {
             if (**current==**first_unique)
             {
-                osg::notify(osg::INFO) << "    found duplicate "<<(*current)->className()<<"  first="<<*first_unique<<"  current="<<*current<<endl;
+                osg::notify(osg::INFO) << "    found duplicate "<<(*current)->className()<<"  first="<<*first_unique<<"  current="<<*current<< std::endl;
                 ObjectSet& objSet = _statesets[*current];
                 for(ObjectSet::iterator sitr=objSet.begin();
                     sitr!=objSet.end();
                     ++sitr)
                 {
-                    osg::notify(osg::INFO) << "       replace duplicate "<<*current<<" with "<<*first_unique<< endl;
+                    osg::notify(osg::INFO) << "       replace duplicate "<<*current<<" with "<<*first_unique<< std::endl;
                     osg::Object* obj = *sitr;
                     osg::Drawable* drawable = dynamic_cast<osg::Drawable*>(obj);
                     if (drawable)

@@ -272,8 +272,8 @@ void SceneView::draw()
 
     if (!_state)
     {
-        osg::notify(osg::WARN) << "Warning: no valid osgUtil::SceneView::_state"<<endl;
-        osg::notify(osg::WARN) << "         creating a state automatically."<<endl;
+        osg::notify(osg::WARN) << "Warning: no valid osgUtil::SceneView::_state"<< std::endl;
+        osg::notify(osg::WARN) << "         creating a state automatically."<< std::endl;
 
         // note the constructor for osg::State will set ContextID to 0.
         _state = new osg::State;
@@ -346,7 +346,7 @@ void SceneView::draw()
         break;
     default:
         {
-            osg::notify(osg::NOTICE)<<"Warning: stereo camera mode not implemented yet."<<endl;
+            osg::notify(osg::NOTICE)<<"Warning: stereo camera mode not implemented yet."<< std::endl;
             _renderStage->draw(*_state,previous);
         }
         break;
@@ -355,7 +355,7 @@ void SceneView::draw()
     GLenum errorNo = glGetError();
     if (errorNo!=GL_NO_ERROR)
     {
-        osg::notify(WARN)<<"Warning: detected OpenGL error '"<<gluErrorString(errorNo)<<"'"<<endl;
+        osg::notify(WARN)<<"Warning: detected OpenGL error '"<<gluErrorString(errorNo)<<"'"<< std::endl;
     }
     
 }

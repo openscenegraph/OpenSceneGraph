@@ -294,7 +294,7 @@ void TriStripVisitor::stripify(GeoSet& gset)
         }
         else
         {
-			notify(INFO) << "No triangles to stripify"<<endl;
+			notify(INFO) << "No triangles to stripify"<< std::endl;
         }
 
     }

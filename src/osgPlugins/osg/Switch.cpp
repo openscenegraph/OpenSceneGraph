@@ -62,9 +62,9 @@ bool Switch_writeLocalData(const Object& obj, Output& fw)
     fw.indent() << "value ";
     switch(sw.getValue())
     {
-        case(Switch::ALL_CHILDREN_ON): fw<<"ALL_CHILDREN_ON"<<endl;break;
-        case(Switch::ALL_CHILDREN_OFF): fw<<"ALL_CHILDREN_OFF"<<endl;break;
-        default: fw<<sw.getValue()<<endl;break;
+        case(Switch::ALL_CHILDREN_ON): fw<<"ALL_CHILDREN_ON"<< std::endl;break;
+        case(Switch::ALL_CHILDREN_OFF): fw<<"ALL_CHILDREN_OFF"<< std::endl;break;
+        default: fw<<sw.getValue()<< std::endl;break;
     }
 
     return true;

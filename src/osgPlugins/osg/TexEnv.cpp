@@ -45,7 +45,7 @@ bool TexEnv_writeLocalData(const Object& obj, Output& fw)
 {
     const TexEnv& texenv = static_cast<const TexEnv&>(obj);
 
-    fw.indent() << "mode " << TexEnv_getModeStr(texenv.getMode()) << endl;
+    fw.indent() << "mode " << TexEnv_getModeStr(texenv.getMode()) << std::endl;
 
     return true;
 }

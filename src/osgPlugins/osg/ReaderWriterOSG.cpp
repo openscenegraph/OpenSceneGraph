@@ -26,7 +26,7 @@ class OSGReaderWriter : public ReaderWriter
             std::string ext = getFileExtension(fileName);
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
-            ifstream fin(fileName.c_str());
+			std::ifstream fin(fileName.c_str());
             if (fin)
             {
                 Input fr;

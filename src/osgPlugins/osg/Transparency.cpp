@@ -53,8 +53,8 @@ bool Transparency_writeLocalData(const Object& obj, Output& fw)
 {
     const Transparency& transparency = static_cast<const Transparency&>(obj);
 
-    fw.indent() << "source " << Transparency_getModeStr(transparency.getSource()) << endl;
-    fw.indent() << "destination " << Transparency_getModeStr(transparency.getDestination()) << endl;
+    fw.indent() << "source " << Transparency_getModeStr(transparency.getSource()) << std::endl;
+    fw.indent() << "destination " << Transparency_getModeStr(transparency.getDestination()) << std::endl;
 
     return true;
 }

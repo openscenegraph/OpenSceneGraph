@@ -139,31 +139,31 @@ bool Texture_writeLocalData(const Object& obj, Output& fw)
 
     if (texture.getImage() && !(texture.getImage()->getFileName().empty()))
     {
-        fw.indent() << "file \""<<fw.getFileNameForOutput(texture.getImage()->getFileName())<<"\""<<endl;
+        fw.indent() << "file \""<<fw.getFileNameForOutput(texture.getImage()->getFileName())<<"\""<< std::endl;
     }
 
-    fw.indent() << "wrap_s " << Texture_getWrapStr(texture.getWrap(Texture::WRAP_S)) << endl;
-    fw.indent() << "wrap_t " << Texture_getWrapStr(texture.getWrap(Texture::WRAP_T)) << endl;
-    fw.indent() << "wrap_r " << Texture_getWrapStr(texture.getWrap(Texture::WRAP_R)) << endl;
+    fw.indent() << "wrap_s " << Texture_getWrapStr(texture.getWrap(Texture::WRAP_S)) << std::endl;
+    fw.indent() << "wrap_t " << Texture_getWrapStr(texture.getWrap(Texture::WRAP_T)) << std::endl;
+    fw.indent() << "wrap_r " << Texture_getWrapStr(texture.getWrap(Texture::WRAP_R)) << std::endl;
 
-    fw.indent() << "min_filter " << Texture_getFilterStr(texture.getFilter(Texture::MIN_FILTER)) << endl;
-    fw.indent() << "mag_filter " << Texture_getFilterStr(texture.getFilter(Texture::MAG_FILTER)) << endl;
+    fw.indent() << "min_filter " << Texture_getFilterStr(texture.getFilter(Texture::MIN_FILTER)) << std::endl;
+    fw.indent() << "mag_filter " << Texture_getFilterStr(texture.getFilter(Texture::MAG_FILTER)) << std::endl;
 
-    fw.indent() << "internalFormatMode " << Texture_getInternalFormatModeStr(texture.getInternalFormatMode()) << endl;
+    fw.indent() << "internalFormatMode " << Texture_getInternalFormatModeStr(texture.getInternalFormatMode()) << std::endl;
 
     if (texture.getInternalFormatMode()==Texture::USE_USER_DEFINED_FORMAT)
     {
         const char* str = Texture_getInternalFormatValueStr(texture.getInternalFormatValue());
-        if (str) fw.indent() << "internalFormatValue " << str << endl;
-        else fw.indent() << "internalFormatValue " << texture.getInternalFormatValue() << endl;
+        if (str) fw.indent() << "internalFormatValue " << str << std::endl;
+        else fw.indent() << "internalFormatValue " << texture.getInternalFormatValue() << std::endl;
     }
 
-    fw.indent() << "subloadMode " << Texture_getSubloadModeStr(texture.getSubloadMode()) << endl;
+    fw.indent() << "subloadMode " << Texture_getSubloadModeStr(texture.getSubloadMode()) << std::endl;
     if (texture.getSubloadMode()!=Texture::OFF)
     {
         int x, y;
         texture.getSubloadOffset(x, y);
-        fw.indent() << "subloadOffset " << x << " " << y << endl;
+        fw.indent() << "subloadOffset " << x << " " << y << std::endl;
     }
 
     return true;

@@ -192,7 +192,7 @@ void NvStripifier::BuildStripifyInfo(NvFaceInfoVec &faceInfos, NvEdgeInfoVec &ed
             else
             {
                 if (edgeInfo01->m_face1 != NULL)
-                    osg::notify(osg::WARN)<<"BuildStripifyInfo: > 2 triangles on an edge... uncertain consequences\n"<<endl;
+                    osg::notify(osg::WARN)<<"BuildStripifyInfo: > 2 triangles on an edge... uncertain consequences\n"<< std::endl;
                 else
                     edgeInfo01->m_face1 = faceInfo;
             }
@@ -217,7 +217,7 @@ void NvStripifier::BuildStripifyInfo(NvFaceInfoVec &faceInfos, NvEdgeInfoVec &ed
             else
             {
                 if (edgeInfo12->m_face1 != NULL)
-                    osg::notify(osg::WARN)<<"BuildStripifyInfo: > 2 triangles on an edge... uncertain consequences\n"<<endl;
+                    osg::notify(osg::WARN)<<"BuildStripifyInfo: > 2 triangles on an edge... uncertain consequences\n"<< std::endl;
                 else
                     edgeInfo12->m_face1 = faceInfo;
             }
@@ -242,7 +242,7 @@ void NvStripifier::BuildStripifyInfo(NvFaceInfoVec &faceInfos, NvEdgeInfoVec &ed
             else
             {
                 if (edgeInfo20->m_face1 != NULL)
-                    osg::notify(osg::WARN)<<"BuildStripifyInfo: > 2 triangles on an edge... uncertain consequences\n"<<endl;
+                    osg::notify(osg::WARN)<<"BuildStripifyInfo: > 2 triangles on an edge... uncertain consequences\n"<< std::endl;
                 else
                     edgeInfo20->m_face1 = faceInfo;
             }
@@ -418,8 +418,8 @@ inline int NvStripifier::GetNextIndex(const WordVec &indices, NvFaceInfo *face)
     {
         if ((fv1 != v0 && fv1 != v1) || (fv2 != v0 && fv2 != v1))
         {
-            osg::notify(osg::WARN)<<"GetNextIndex: Triangle doesn't have all of its vertices\n"<<endl;
-            osg::notify(osg::WARN)<<"GetNextIndex: Duplicate triangle probably got us derailed\n"<<endl;
+            osg::notify(osg::WARN)<<"GetNextIndex: Triangle doesn't have all of its vertices\n"<< std::endl;
+            osg::notify(osg::WARN)<<"GetNextIndex: Duplicate triangle probably got us derailed\n"<< std::endl;
         }
         return fv0;
     }
@@ -427,8 +427,8 @@ inline int NvStripifier::GetNextIndex(const WordVec &indices, NvFaceInfo *face)
     {
         if ((fv0 != v0 && fv0 != v1) || (fv2 != v0 && fv2 != v1))
         {
-            osg::notify(osg::WARN)<<"GetNextIndex: Triangle doesn't have all of its vertices\n"<<endl;
-            osg::notify(osg::WARN)<<"GetNextIndex: Duplicate triangle probably got us derailed\n"<<endl;
+            osg::notify(osg::WARN)<<"GetNextIndex: Triangle doesn't have all of its vertices\n"<< std::endl;
+            osg::notify(osg::WARN)<<"GetNextIndex: Duplicate triangle probably got us derailed\n"<< std::endl;
         }
         return fv1;
     }
@@ -436,14 +436,14 @@ inline int NvStripifier::GetNextIndex(const WordVec &indices, NvFaceInfo *face)
     {
         if ((fv0 != v0 && fv0 != v1) || (fv1 != v0 && fv1 != v1))
         {
-            osg::notify(osg::WARN)<<"GetNextIndex: Triangle doesn't have all of its vertices\n"<<endl;
-            osg::notify(osg::WARN)<<"GetNextIndex: Duplicate triangle probably got us derailed\n"<<endl;
+            osg::notify(osg::WARN)<<"GetNextIndex: Triangle doesn't have all of its vertices\n"<< std::endl;
+            osg::notify(osg::WARN)<<"GetNextIndex: Duplicate triangle probably got us derailed\n"<< std::endl;
         }
         return fv2;
     }
 
     // shouldn't get here
-    osg::notify(osg::WARN)<<"GetNextIndex: Duplicate triangle sent\n"<<endl;
+    osg::notify(osg::WARN)<<"GetNextIndex: Duplicate triangle sent\n"<< std::endl;
     return -1;
 }
 
@@ -706,7 +706,7 @@ void NvStripifier::CommitStrips(NvStripInfoVec &allStrips, const NvStripInfoVec 
         if( (faces[0]->m_v0 == 2302) &&
             (faces[0]->m_v1 == 3215) &&
             (faces[0]->m_v2 == 2603) )
-            osg::notify(osg::WARN)<<"BLEH"<<endl;
+            osg::notify(osg::WARN)<<"BLEH"<< std::endl;
 
         for (int j = 0; j < numFaces; j++)
         {

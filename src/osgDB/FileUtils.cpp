@@ -109,7 +109,7 @@ const char* osgDB::getFilePath()
 }
 
 
-static char *findFileInPath( const char *_file, const char * filePath )
+char *osgDB::findFileInPath( const char *_file, const char * filePath )
 {
 #ifdef macintosh
     return (char *)_file;

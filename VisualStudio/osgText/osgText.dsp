@@ -104,7 +104,11 @@ SOURCE=..\..\include\osgText\Export
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\include\osgText\Text.h
+SOURCE=..\..\include\osgText\Text
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgText\Version
 # End Source File
 # End Group
 # Begin Group "Ressourcendateien"

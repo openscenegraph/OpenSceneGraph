@@ -1,24 +1,24 @@
-# Microsoft Developer Studio Project File - Name="osgPlugin osgText" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="osgPlugin freetype" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
-CFG=osgPlugin osgText - Win32 Release
+CFG=osgPlugin freetype - Win32 Release
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "dot_osgText.mak".
+!MESSAGE NMAKE /f "freetype.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "dot_osgText.mak" CFG="osgPlugin osgText - Win32 Release"
+!MESSAGE NMAKE /f "freetype.mak" CFG="osgPlugin freetype - Win32 Release"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "osgPlugin osgText - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "osgPlugin osgText - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "osgPlugin freetype - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "osgPlugin freetype - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -29,7 +29,7 @@ CPP=cl.exe
 MTL=midl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "osgPlugin osgText - Win32 Release"
+!IF  "$(CFG)" == "osgPlugin freetype - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -53,10 +53,10 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 /nologo /dll /pdb:none /machine:I386 /nodefaultlib:"LIBC" /out:"../../../bin/osgdb_osgText.dll" /libpath:"../../../lib"
+# ADD LINK32 libunfreetype.lib /nologo /dll /pdb:none /machine:I386 /nodefaultlib:"LIBC" /out:"../../../bin/osgdb_freetype.dll" /libpath:"../../../lib"
 # SUBTRACT LINK32 /nodefaultlib
 
-!ELSEIF  "$(CFG)" == "osgPlugin osgText - Win32 Debug"
+!ELSEIF  "$(CFG)" == "osgPlugin freetype - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -80,30 +80,46 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 /nologo /dll /debug /machine:I386 /nodefaultlib:"LIBC" /out:"../../../bin/osgdb_osgTextd.dll" /pdbtype:sept /libpath:"../../../lib"
-# SUBTRACT LINK32 /pdb:none /nodefaultlib
+# ADD LINK32 freetype.lib /nologo /dll /debug /machine:I386 /nodefaultlib:"LIBC" /out:"../../../bin/osgdb_freetyped.dll" /pdbtype:sept /libpath:"../../../lib"
+# SUBTRACT LINK32 /nodefaultlib
 
 !ENDIF 
 
 # Begin Target
 
-# Name "osgPlugin osgText - Win32 Release"
-# Name "osgPlugin osgText - Win32 Debug"
+# Name "osgPlugin freetype - Win32 Release"
+# Name "osgPlugin freetype - Win32 Debug"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\osgText\IO_Text.cpp
+SOURCE=..\..\..\src\osgPlugins\freetype\ReaderWriterFreeType.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\freetype\FreeTypeLibrary.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\freetype\FreeTypeFont.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\freetype\FreeTypeLibrary.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\freetype\FreeTypeFont.h
+# End Source File
 # End Group
 # Begin Group "Resource Files"
 
-# PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
+# PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;freetype;jpg;jpeg;jpe"
 # End Group
 # End Target
 # End Project

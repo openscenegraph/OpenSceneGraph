@@ -289,7 +289,7 @@ void Texture::applyTexParameters(GLenum target, State& state) const
 
     glTexParameteri( target, GL_TEXTURE_WRAP_S, ws );
     glTexParameteri( target, GL_TEXTURE_WRAP_T, wt );
-    glTexParameteri( target, GL_TEXTURE_WRAP_R, wt );
+    glTexParameteri( target, GL_TEXTURE_WRAP_R, wr );
 
     glTexParameteri( target, GL_TEXTURE_MIN_FILTER, _min_filter);
     glTexParameteri( target, GL_TEXTURE_MAG_FILTER, _mag_filter);

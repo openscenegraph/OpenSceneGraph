@@ -135,6 +135,7 @@ endif
 
 EXAMPLE_DIRS = \
 	osganimate\
+	osgarchive\
 	osgautotransform\
 	osgbillboard\
 	osgcallback\

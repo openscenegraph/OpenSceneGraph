@@ -82,12 +82,6 @@ class SG_EXPORT StateAttribute : public Object
             OVERRIDE     = 0x2,
             /** Protecting of GLMode's os StateAttributes is enabled, so that state from above connot override this and below state.*/
             PROTECTED    = 0x4,            
-#ifdef USE_DEPRECATED_API            
-            /** Equivilant to OFF | OVERRIDE.*/
-            OVERRIDE_OFF = 0x2,
-            /** Equivilant to ON | OVERRIDE.*/
-            OVERRIDE_ON  = 0x3,
-#endif            
             /** means that GLMode or StateAttribute should in inherited from above.*/
             INHERIT      = 0x8
         };

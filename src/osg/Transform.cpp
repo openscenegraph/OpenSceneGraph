@@ -3,41 +3,16 @@
 using namespace osg;
 
 Transform::Transform()
-#ifdef USE_DEPRECATED_API
-    :_deprecated_inverseDirty(false)
-#endif
 {
     _referenceFrame = RELATIVE_TO_PARENTS;
-
-#ifdef USE_DEPRECATED_API
-    _deprecated_matrix = osgNew Matrix;
-    _deprecated_inverse = osgNew Matrix;
-#endif
 }
 
 Transform::Transform(const Transform& transform,const CopyOp& copyop):
     Group(transform,copyop),
     _computeTransformCallback(transform._computeTransformCallback),
     _referenceFrame(transform._referenceFrame)
-#ifdef USE_DEPRECATED_API
-    ,
-    _deprecated_matrix(osgNew Matrix(*transform._deprecated_matrix)),
-    _deprecated_inverse(osgNew Matrix(*transform._deprecated_inverse)),
-    _deprecated_inverseDirty(transform._deprecated_inverseDirty)
-#endif
 {    
 }
-
-#ifdef USE_DEPRECATED_API
-Transform::Transform(const Matrix& mat )
-{
-    _referenceFrame = RELATIVE_TO_PARENTS;
-
-    _deprecated_matrix = osgNew Matrix(mat);
-    _deprecated_inverse = osgNew Matrix();
-    _deprecated_inverseDirty = false;
-}
-#endif
 
 Transform::~Transform()
 {

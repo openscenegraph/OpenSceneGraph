@@ -12,7 +12,6 @@
 #include <osg/BlendFunc>
 #include <osg/Depth>
 
-#include <osg/TextureBase>
 #include <osg/TextureCubeMap>
 
 #include <set>

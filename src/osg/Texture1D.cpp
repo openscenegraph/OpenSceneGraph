@@ -14,7 +14,7 @@ Texture1D::Texture1D():
 }
 
 Texture1D::Texture1D(const Texture1D& text,const CopyOp& copyop):
-            TextureBase(text,copyop),
+            Texture(text,copyop),
             _image(copyop(text._image.get())),
             _textureWidth(text._textureWidth),
             _numMimpmapLevels(text._numMimpmapLevels),
@@ -52,7 +52,7 @@ int Texture1D::compare(const StateAttribute& sa) const
         }
     }
 
-    int result = compareTextureBase(rhs);
+    int result = compareTexture(rhs);
     if (result!=0) return result;
 
     // compare each paramter in turn against the rhs.

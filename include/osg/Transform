@@ -43,9 +43,6 @@ class SG_EXPORT Transform : public Group
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         Transform(const Transform&,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
-#ifdef USE_DEPRECATED_API
-        Transform(const Matrix& matix);
-#endif
         META_Node(osg, Transform);
 
         enum ReferenceFrame
@@ -118,8 +115,6 @@ class SG_EXPORT Transform : public Group
                 return computeWorldToLocalMatrix(matrix,nv);
         }
         
-#ifndef USE_DEPRECATED_API
-
         virtual const bool computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const
         {
             if (_referenceFrame==RELATIVE_TO_PARENTS)
@@ -145,47 +140,6 @@ class SG_EXPORT Transform : public Group
                 return true;
             }
         }
-
-#else
-
-        /** Set the transform's matrix.*/
-        void setMatrix(const Matrix& mat) { (*_deprecated_matrix) = mat; _deprecated_inverseDirty=true; computeInverse(); dirtyBound(); }
-        
-        /** Get the transform's matrix. */
-        inline const Matrix& getMatrix() const { return *_deprecated_matrix; }
-
-        /** preMult transform. */
-        void preMult(const Matrix& mat) { _deprecated_matrix->preMult(mat); _deprecated_inverseDirty=true; computeInverse(); dirtyBound(); }
-        
-        /** postMult transform. */
-        void postMult(const Matrix& mat)  { _deprecated_matrix->postMult(mat); _deprecated_inverseDirty=true; computeInverse(); dirtyBound(); }
-    
-        virtual const bool computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const
-        {
-            if (_referenceFrame==RELATIVE_TO_PARENTS)
-            {
-                matrix.preMult(*_deprecated_matrix);
-            }
-            else // absolute
-            {
-                matrix = *_deprecated_matrix;
-            }
-            return true;
-        }
-
-        virtual const bool computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor*) const
-        {
-            if (_referenceFrame==RELATIVE_TO_PARENTS)
-            {
-                matrix.postMult(*_deprecated_inverse);
-            }
-            else // absolute
-            {
-                matrix = *_deprecated_inverse;
-            }
-            return true;
-        }
-#endif
 
     protected :
     
@@ -201,21 +155,6 @@ class SG_EXPORT Transform : public Group
         ref_ptr<ComputeTransformCallback>   _computeTransformCallback;
 
         ReferenceFrame                      _referenceFrame;
-
-#ifdef USE_DEPRECATED_API
-        inline void computeInverse() const
-        {
-            if (_deprecated_inverseDirty)
-            {
-                _deprecated_inverse->invert(*_deprecated_matrix);
-                _deprecated_inverseDirty = false;
-            }
-        }
-
-        ref_ptr<Matrix>                     _deprecated_matrix;
-        mutable ref_ptr<Matrix>             _deprecated_inverse;
-        mutable bool                        _deprecated_inverseDirty;        
-#endif
 
 };
 

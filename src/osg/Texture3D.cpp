@@ -23,7 +23,7 @@ Texture3D::Texture3D():
 }
 
 Texture3D::Texture3D(const Texture3D& text,const CopyOp& copyop):
-            TextureBase(text,copyop),
+            Texture(text,copyop),
             _image(copyop(text._image.get())),
             _textureWidth(text._textureWidth),
             _textureHeight(text._textureHeight),
@@ -63,7 +63,7 @@ int Texture3D::compare(const StateAttribute& sa) const
         }
     }
 
-    int result = compareTextureBase(rhs);
+    int result = compareTexture(rhs);
     if (result!=0) return result;
 
     // compare each paramter in turn against the rhs.

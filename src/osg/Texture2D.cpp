@@ -15,7 +15,7 @@ Texture2D::Texture2D():
 }
 
 Texture2D::Texture2D(const Texture2D& text,const CopyOp& copyop):
-            TextureBase(text,copyop),
+            Texture(text,copyop),
             _image(copyop(text._image.get())),
             _textureWidth(text._textureWidth),
             _textureHeight(text._textureHeight),
@@ -54,7 +54,7 @@ int Texture2D::compare(const StateAttribute& sa) const
         }
     }
 
-    int result = compareTextureBase(rhs);
+    int result = compareTexture(rhs);
     if (result!=0) return result;
 
     // compare each paramter in turn against the rhs.

@@ -49,21 +49,6 @@ bool Transform_readLocalData(Object& obj, Input& fr)
         
     }    
 
-    #ifdef USE_DEPRECATED_API
-    if (!dynamic_cast<MatrixTransform*>(&obj))
-    {
-        static Matrix s_matrix;
-
-        if (Matrix* tmpMatrix = static_cast<Matrix*>(fr.readObjectOfType(s_matrix)))
-        {
-
-            transform.setMatrix(*tmpMatrix);
-            osgDelete tmpMatrix;
-            iteratorAdvanced = true;
-        }
-    }
-    #endif
-    
     if (fr[0].matchWord("referenceFrame")) {
         if (fr[1].matchWord("RELATIVE_TO_ABSOLUTE")) {
             transform.setReferenceFrame(Transform::RELATIVE_TO_ABSOLUTE);
@@ -84,13 +69,6 @@ bool Transform_readLocalData(Object& obj, Input& fr)
 bool Transform_writeLocalData(const Object& obj, Output& fw)
 {
     const Transform& transform = static_cast<const Transform&>(obj);
-
-    #ifdef USE_DEPRECATED_API
-    if (!dynamic_cast<const MatrixTransform*>(&obj))
-    {
-        fw.writeObject(transform.getMatrix());
-    }
-    #endif
 
     fw.indent() << "referenceFrame ";
     switch (transform.getReferenceFrame()) {

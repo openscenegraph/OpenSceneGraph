@@ -82,7 +82,7 @@ TextureCubeMap::TextureCubeMap():
 }
 
 TextureCubeMap::TextureCubeMap(const TextureCubeMap& text,const CopyOp& copyop):
-            TextureBase(text,copyop),
+            Texture(text,copyop),
             _textureWidth(text._textureWidth),
             _textureHeight(text._textureHeight),
             _numMimpmapLevels(text._numMimpmapLevels),
@@ -132,7 +132,7 @@ int TextureCubeMap::compare(const StateAttribute& sa) const
         }
     }
 
-    int result = compareTextureBase(rhs);
+    int result = compareTexture(rhs);
     if (result!=0) return result;
 
     // compare each paramter in turn against the rhs.

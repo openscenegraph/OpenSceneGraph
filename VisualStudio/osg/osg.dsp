@@ -381,10 +381,6 @@ SOURCE=..\..\src\osg\Texture.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osg\TextureBase.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\osg\Texture1D.cpp
 # End Source File
 # Begin Source File
@@ -530,10 +526,6 @@ SOURCE=..\..\Include\Osg\DrawPixels
 # Begin Source File
 
 SOURCE=..\..\include\osg\ClearNode
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\include\osg\EarthSky
 # End Source File
 # Begin Source File
 
@@ -774,10 +766,6 @@ SOURCE=..\..\Include\Osg\TexMat
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\Texture
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\Include\Osg\TextureBase
 # End Source File
 # Begin Source File
 

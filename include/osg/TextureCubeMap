@@ -7,7 +7,7 @@
 #ifndef OSG_TEXTURECUBEMAP
 #define OSG_TEXTURECUBEMAP 1
 
-#include <osg/TextureBase>
+#include <osg/Texture>
 
 #ifndef GL_TEXTURE_CUBE_MAP
 #define GL_TEXTURE_CUBE_MAP 0x8513
@@ -16,7 +16,7 @@
 namespace osg {
 
 /** TextureCubeMap state class which encapsulates OpenGl texture cubemap functionality.*/
-class SG_EXPORT TextureCubeMap : public TextureBase
+class SG_EXPORT TextureCubeMap : public Texture
 {
 
     public :

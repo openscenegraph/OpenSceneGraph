@@ -3,7 +3,7 @@
 #include <osg/Geode>
 #include <osg/Group>
 #include <osg/Notify>
-#include <osg/TextureBase>
+#include <osg/Texture>
 
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
@@ -134,13 +134,13 @@ class MyCopyOp : public osg::CopyOp
             return ret_attr;
         }
 
-        virtual TextureBase*        operator() (const TextureBase* text) const
+        virtual Texture*        operator() (const Texture* text) const
         {
             writeIndent(); std::cout << "copying Texture "<<text;
             if (text) std::cout<<" "<<text->className();
             std::cout<<std::endl;
             moveIn();
-            osg::TextureBase* ret_text = CopyOp::operator()(text);
+            osg::Texture* ret_text = CopyOp::operator()(text);
             moveOut();
             return ret_text;
         }

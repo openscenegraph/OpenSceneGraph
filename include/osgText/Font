@@ -23,7 +23,6 @@
 #include <osgText/Export>
 
 #include <string>
-#include <set>
 
 namespace osgText {
 
@@ -116,7 +115,6 @@ protected:
     
     typedef std::pair< unsigned int, unsigned int >         SizePair;
     typedef std::map< SizePair, GlyphMap >                  SizeGlyphMap;
-    typedef std::set< Text* >                               TextList;
     
     SizeGlyphMap                    _sizeGlyphMap;
     GlyphTextureList                _glyphTextureList;
@@ -174,6 +172,9 @@ public:
     public:
 
         GlyphTexture();
+
+        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
+        virtual int compare(const StateAttribute& rhs) const;
 
         void setStateSet(osg::StateSet* stateset) { _stateset = stateset; }
         osg::StateSet* getStateSet() { return _stateset; }

@@ -50,8 +50,8 @@ int Texture1D::compare(const StateAttribute& sa) const
         {
             if (rhs._image.valid())
             {
-                if (_image->getFileName()<rhs._image->getFileName()) return -1;
-                else if (_image->getFileName()>rhs._image->getFileName()) return 1;;
+                int result = _image->compare(*rhs._image);
+                if (result!=0) return result;
             }
             else
             {

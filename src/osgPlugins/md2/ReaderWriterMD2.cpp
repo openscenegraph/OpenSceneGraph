@@ -296,7 +296,7 @@ load_md2 (const char *filename)
     for (int curFrame = 0; curFrame < md2_header->numFrames; curFrame++) {
 	//	std::cerr << "Num vertices " << md2_header->numVertices << std::endl;
 
-	long *command = (long *) ((unsigned char *) mapbase + md2_header->offsetGlCommands);
+	//long *command = (long *) ((unsigned char *) mapbase + md2_header->offsetGlCommands);
 
 	MD2_FRAME *frame = (MD2_FRAME *) ((unsigned char *) mapbase + md2_header->offsetFrames + (md2_header->frameSize * curFrame));
 	MD2_VERTEX *frame_vertices = frame->vertices;

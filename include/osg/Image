@@ -59,6 +59,8 @@ class SG_EXPORT Image : public Object
         virtual const char* libraryName() const { return "osg"; }
         virtual const char* className() const { return "Image"; }
 
+        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
+        virtual int compare(const Image& rhs) const;
 
         void setFileName(const std::string& fileName);
         inline const std::string& getFileName() const { return _fileName; }

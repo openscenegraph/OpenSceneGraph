@@ -300,7 +300,7 @@ class DatabasePagerCompileCallback : public OsgSceneHandler::Callback
 {
 public:
 
-        DatabasePagerCompileCallback(DatabasePager* databasePager):
+        DatabasePagerCompileCallback(osgDB::DatabasePager* databasePager):
             _databasePager(databasePager)
         {}
 
@@ -314,7 +314,7 @@ public:
             _databasePager->compileRenderingObjects(*(sh.getSceneView()->getState()),availableTime);
        }
        
-       osg::ref_ptr<DatabasePager> _databasePager;
+       osg::ref_ptr<osgDB::DatabasePager> _databasePager;
 };
 
 bool Viewer::realize()
@@ -326,7 +326,7 @@ bool Viewer::realize()
 
     // by default set up the DatabasePager.
     {    
-        _databasePager = new DatabasePager;
+        _databasePager = new osgDB::DatabasePager;
         _databasePager->registerPagedLODs(getTopMostSceneData());
 
         for(SceneHandlerList::iterator p=_shvec.begin();

@@ -11,8 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGPRODUCER_DATABASEPAGER
-#define OSGPRODUCER_DATABASEPAGER 1
+#ifndef OSGDB_DATABASEPAGER
+#define OSGDB_DATABASEPAGER 1
 
 #include <osg/NodeVisitor>
 #include <osg/Group>
@@ -22,16 +22,16 @@
 #include <OpenThreads/Thread>
 #include <OpenThreads/Mutex>
 
-#include <osgProducer/Export>
+#include <osgDB/Export>
 
 #include <map>
 #include <set>
 
-namespace osgProducer {
+namespace osgDB {
 
 /** Database paging class which manages the loading of files in a background thread, 
   * and syncronizing of loaded models with the main scene graph.*/
-class OSGPRODUCER_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandler, public OpenThreads::Thread
+class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandler, public OpenThreads::Thread
 {
     public :
 

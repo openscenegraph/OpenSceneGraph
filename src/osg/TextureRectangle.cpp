@@ -305,7 +305,7 @@ void TextureRectangle::applyTexImage_subload(GLenum target, Image* image, State&
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, image->getPacking());
 
-#define DO_TIMING
+// #define DO_TIMING
 #ifdef DO_TIMING
     osg::Timer_t start_tick = osg::Timer::instance()->tick();
     osg::notify(osg::NOTICE)<<"glTexSubImage2D pixelFormat = "<<std::hex<<image->getPixelFormat()<<std::dec<<std::endl;

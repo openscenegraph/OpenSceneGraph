@@ -34,6 +34,22 @@ bool Node_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
+    if (fr[0].matchWord("cullingActive"))
+    {
+        if (fr[1].matchWord("FALSE"))
+        {
+            node.setCullingActive(false);
+            iteratorAdvanced = true;
+            fr+=2;
+        }
+        else if (fr[1].matchWord("TRUE"))
+        {
+            node.setCullingActive(true);
+            iteratorAdvanced = true;
+            fr+=2;
+        }
+    }
+
     //     if (fr.matchSequence("user_data {"))
     //     {
     //         notify(DEBUG) << "Matched user_data {"<<endl;
@@ -88,6 +104,10 @@ bool Node_writeLocalData(const Object& obj, Output& fw)
     const Node& node = static_cast<const Node&>(obj);
 
     if (!node.getName().empty()) fw.indent() << "name "<<'"'<<node.getName()<<'"'<<endl;
+
+    fw.indent() << "cullingActive ";
+    if (node.getCullingActive()) fw << "TRUE"<<endl;
+    else fw << "FALSE"<<endl;
 
     //     if (_userData)
     //     {

@@ -62,6 +62,16 @@ bool Group::addChild( Node *child )
                 );
         }
 
+        // could now require disabling of culling thanks to the new subgraph,
+        // so need to check and update if required.
+        if (child->getNumChildrenWithCullingDisabled()>0 ||
+            !child->getCullingActive())
+        {
+            setNumChildrenWithCullingDisabled(
+                getNumChildrenWithCullingDisabled()+1
+                );
+        }
+
         return true;
     }
     else return false;
@@ -86,6 +96,14 @@ bool Group::removeChild( Node *child )
         {
             setNumChildrenRequiringAppTraversal(
                 getNumChildrenRequiringAppTraversal()-1
+                );
+        }
+
+        if (child->getNumChildrenWithCullingDisabled()>0 ||
+            !child->getCullingActive())
+        {
+            setNumChildrenWithCullingDisabled(
+                getNumChildrenWithCullingDisabled()-1
                 );
         }
 
@@ -118,6 +136,50 @@ bool Group::replaceChild( Node *origNode, Node *newNode )
         newNode->_parents.push_back(this);
 
         dirtyBound();
+
+
+        // could now require app traversal thanks to the new subgraph,
+        // so need to check and update if required.
+        int delta_numChildrenRequiringAppTraversal = 0;
+        if (origNode->getNumChildrenRequiringAppTraversal()>0 ||
+            origNode->getAppCallback())
+        {
+            --delta_numChildrenRequiringAppTraversal;
+        }
+        if (newNode->getNumChildrenRequiringAppTraversal()>0 ||
+            newNode->getAppCallback())
+        {
+            ++delta_numChildrenRequiringAppTraversal;
+        }
+
+        if (delta_numChildrenRequiringAppTraversal!=0)
+        {
+            setNumChildrenRequiringAppTraversal(
+                getNumChildrenRequiringAppTraversal()+delta_numChildrenRequiringAppTraversal
+                );
+        }
+
+        // could now require disabling of culling thanks to the new subgraph,
+        // so need to check and update if required.
+        int delta_numChildrenWithCullingDisabled = 0;
+        if (origNode->getNumChildrenWithCullingDisabled()>0 ||
+            !origNode->getCullingActive())
+        {
+            --delta_numChildrenWithCullingDisabled;
+        }
+        if (newNode->getNumChildrenWithCullingDisabled()>0 ||
+            !newNode->getCullingActive())
+        {
+            ++delta_numChildrenWithCullingDisabled;
+        }
+        
+        if (delta_numChildrenWithCullingDisabled!=0)
+        {
+            setNumChildrenWithCullingDisabled(
+                getNumChildrenWithCullingDisabled()-1
+                );
+        }
+
         return true;
     }
     else return false;

@@ -235,7 +235,7 @@ void TerrainManipulator::setByMatrix(const osg::Matrixd& matrix)
         osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segLookVector.get());
         if (!hitList.empty())
         {
-            notify(NOTICE) << "Hit terrain ok A"<< std::endl;
+            notify(INFO) << "Hit terrain ok A"<< std::endl;
             osg::Vec3d ip = hitList.front().getWorldIntersectPoint();
 
             _center = ip;
@@ -272,7 +272,7 @@ void TerrainManipulator::setByMatrix(const osg::Matrixd& matrix)
             osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segLookVector.get());
             if (!hitList.empty())
             {
-                notify(NOTICE) << "Hit terrain ok B"<< std::endl;
+                notify(INFO) << "Hit terrain ok B"<< std::endl;
                 osg::Vec3d ip = hitList.front().getWorldIntersectPoint();
 
                 _center = ip;
@@ -311,7 +311,7 @@ void TerrainManipulator::computePosition(const osg::Vec3d& eye,const osg::Vec3d&
     _distance = lv.length();
     _center = center;
     
-    osg::notify(osg::NOTICE) << "In compute"<< std::endl;
+    osg::notify(osg::INFO) << "In compute"<< std::endl;
 
     if (_node.valid())
     {

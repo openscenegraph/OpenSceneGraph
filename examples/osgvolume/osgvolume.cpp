@@ -338,9 +338,9 @@ osg::Image* createTexture3D(ImageList& imageList, ProcessRow& processRow, unsign
             pixelFormat==GL_RGBA)
         {
         
-            int num_r = std::min(image->r(), (image_3d->r() - curr_dest_r));
-            int num_t = std::min(image->t(), image_3d->t());
-            int num_s = std::min(image->s(), image_3d->s());
+            int num_r = osg::minimum(image->r(), (image_3d->r() - curr_dest_r));
+            int num_t = osg::minimum(image->t(), image_3d->t());
+            int num_s = osg::minimum(image->s(), image_3d->s());
         
             for(int r=0;r<num_r;++r, ++curr_dest_r)
             {

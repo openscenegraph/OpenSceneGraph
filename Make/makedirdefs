@@ -130,6 +130,7 @@ EXAMPLE_DIRS = \
 	osgbillboard\
 	osgbluemarble\
 	osgdem\
+	osgdistortion\
 	osgcallback\
 	osgcameragroup\
 	osgclip\

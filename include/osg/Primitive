@@ -239,7 +239,7 @@ class SG_EXPORT DrawElementsUByte : public Primitive, public VectorUByte
             Primitive(array,copyop),
             VectorUByte(array) {}
 
-        DrawElementsUByte(GLenum mode,unsigned int no,unsigned char* ptr) : 
+        DrawElementsUByte(GLenum mode,unsigned int no,GLubyte* ptr) : 
             Primitive(DrawElementsUBytePrimitiveType,mode),
             VectorUByte(ptr,ptr+no) {}
 
@@ -275,7 +275,7 @@ class SG_EXPORT DrawElementsUShort : public Primitive, public VectorUShort
             Primitive(array,copyop),
             VectorUShort(array) {}
 
-        DrawElementsUShort(GLenum mode,unsigned int no,unsigned short* ptr) : 
+        DrawElementsUShort(GLenum mode,unsigned int no,GLushort* ptr) : 
             Primitive(DrawElementsUShortPrimitiveType,mode),
             VectorUShort(ptr,ptr+no) {}
 
@@ -310,7 +310,7 @@ class SG_EXPORT DrawElementsUInt : public Primitive, public VectorUInt
             Primitive(array,copyop),
             VectorUInt(array) {}
 
-        DrawElementsUInt(GLenum mode,unsigned int no,unsigned int* ptr) : 
+        DrawElementsUInt(GLenum mode,unsigned int no,GLuint* ptr) : 
             Primitive(DrawElementsUIntPrimitiveType,mode),
             VectorUInt(ptr,ptr+no) {}
 

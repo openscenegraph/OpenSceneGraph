@@ -586,11 +586,11 @@ void BumpMapping::prepareGeometry(osg::Geometry *geo)
     osg::ref_ptr<osgUtil::TangentSpaceGenerator> tsg = new osgUtil::TangentSpaceGenerator;
     tsg->generate(geo, normalunit_);
     if (!geo->getVertexAttribArray(6))
-        geo->setVertexAttribArray(6, false, tsg->getTangentArray(), osg::Geometry::BIND_PER_VERTEX);
+        geo->setVertexAttribData(6, osg::Geometry::ArrayData(tsg->getTangentArray(), osg::Geometry::BIND_PER_VERTEX,GL_TRUE));
     if (!geo->getVertexAttribArray(7))
-        geo->setVertexAttribArray(7, false, tsg->getBinormalArray(), osg::Geometry::BIND_PER_VERTEX);
+        geo->setVertexAttribData(7, osg::Geometry::ArrayData(tsg->getBinormalArray(), osg::Geometry::BIND_PER_VERTEX, GL_TRUE));
     if (!geo->getVertexAttribArray(15))
-        geo->setVertexAttribArray(15, false, tsg->getNormalArray(), osg::Geometry::BIND_PER_VERTEX);
+        geo->setVertexAttribData(15, osg::Geometry::ArrayData(tsg->getNormalArray(), osg::Geometry::BIND_PER_VERTEX, GL_TRUE));
 }
 
 void BumpMapping::prepareNode(osg::Node *node)

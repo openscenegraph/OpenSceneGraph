@@ -92,12 +92,12 @@ void DataOutputStream::writeDouble(double d){
     _ostream->write((char*)&d, DOUBLESIZE);
 }
 
-void DataOutputStream::writeString(std::string s){
+void DataOutputStream::writeString(const std::string& s){
     writeInt(s.size());
     _ostream->write(s.c_str(), s.size());
 }
 
-void DataOutputStream::writeCharArray(char* data, int size){
+void DataOutputStream::writeCharArray(const char* data, int size){
     _ostream->write(data, size);
 }
 
@@ -144,50 +144,51 @@ void DataOutputStream::writeBinding(osg::Geometry::AttributeBinding b){
     }
 }
 
-void DataOutputStream::writeArray(osg::Array* a){
+void DataOutputStream::writeArray(const osg::Array* a){
     switch(a->getType()){
         case osg::Array::IntArrayType: 
             writeChar((char)0);
-            writeIntArray(static_cast<osg::IntArray*>(a));
+            writeIntArray(static_cast<const osg::IntArray*>(a));
             break;
         case osg::Array::UByteArrayType:
             writeChar((char)1);
-            writeUByteArray(static_cast<osg::UByteArray*>(a));
+            writeUByteArray(static_cast<const osg::UByteArray*>(a));
             break;
         case osg::Array::UShortArrayType:
             writeChar((char)2);
-            writeUShortArray(static_cast<osg::UShortArray*>(a));
+            writeUShortArray(static_cast<const osg::UShortArray*>(a));
             break;
         case osg::Array::UIntArrayType:
             writeChar((char)3);
-            writeUIntArray(static_cast<osg::UIntArray*>(a));
+            writeUIntArray(static_cast<const osg::UIntArray*>(a));
             break;
         case osg::Array::UByte4ArrayType:
             writeChar((char)4);
-            writeUByte4Array(static_cast<osg::UByte4Array*>(a));
+            writeUByte4Array(static_cast<const osg::UByte4Array*>(a));
             break;
         case osg::Array::FloatArrayType:
             writeChar((char)5);
-            writeFloatArray(static_cast<osg::FloatArray*>(a));
+            writeFloatArray(static_cast<const osg::FloatArray*>(a));
             break;
         case osg::Array::Vec2ArrayType: 
             writeChar((char)6);
-            writeVec2Array(static_cast<osg::Vec2Array*>(a));
+            writeVec2Array(static_cast<const osg::Vec2Array*>(a));
             break;
         case osg::Array::Vec3ArrayType: 
             writeChar((char)7);
-            writeVec3Array(static_cast<osg::Vec3Array*>(a));
+            writeVec3Array(static_cast<const osg::Vec3Array*>(a));
             break;
          case osg::Array::Vec4ArrayType: 
             writeChar((char)8);
-            writeVec4Array(static_cast<osg::Vec4Array*>(a));
+            writeVec4Array(static_cast<const osg::Vec4Array*>(a));
             break;
         default: throw Exception("Unknown array type in DataOutputStream::writeArray()");
     }
 }
 
 
-void DataOutputStream::writeIntArray(osg::IntArray* a){
+void DataOutputStream::writeIntArray(const osg::IntArray* a)
+{
     int size = a->getNumElements();
     writeInt(size);
     for(int i =0; i<size ;i++){
@@ -195,7 +196,8 @@ void DataOutputStream::writeIntArray(osg::IntArray* a){
     }
 }
 
-void DataOutputStream::writeUByteArray(osg::UByteArray* a){
+void DataOutputStream::writeUByteArray(const osg::UByteArray* a)
+{
     int size = a->getNumElements(); 
     writeInt(size);
     for(int i =0; i<size ;i++){
@@ -203,7 +205,8 @@ void DataOutputStream::writeUByteArray(osg::UByteArray* a){
     }
 }
 
-void DataOutputStream::writeUShortArray(osg::UShortArray* a){
+void DataOutputStream::writeUShortArray(const osg::UShortArray* a)
+{
     int size = a->getNumElements(); 
     writeInt(size);
     for(int i =0; i<size ;i++){
@@ -211,7 +214,8 @@ void DataOutputStream::writeUShortArray(osg::UShortArray* a){
     }
 }
 
-void DataOutputStream::writeUIntArray(osg::UIntArray* a){
+void DataOutputStream::writeUIntArray(const osg::UIntArray* a)
+{
     int size = a->getNumElements(); 
     writeInt(size);
     for(int i =0; i<size ;i++){
@@ -219,7 +223,8 @@ void DataOutputStream::writeUIntArray(osg::UIntArray* a){
     }
 }
 
-void DataOutputStream::writeUByte4Array(osg::UByte4Array* a){
+void DataOutputStream::writeUByte4Array(const osg::UByte4Array* a)
+{
     int size = a->getNumElements(); 
     writeInt(size);
     for(int i =0; i<size ;i++){
@@ -227,7 +232,8 @@ void DataOutputStream::writeUByte4Array(osg::UByte4Array* a){
     }
 }
 
-void DataOutputStream::writeFloatArray(osg::FloatArray* a){
+void DataOutputStream::writeFloatArray(const osg::FloatArray* a)
+{
     int size = a->getNumElements(); 
     writeInt(size);
     for(int i =0; i<size ;i++){
@@ -236,7 +242,8 @@ void DataOutputStream::writeFloatArray(osg::FloatArray* a){
 }
 
 
-void DataOutputStream::writeVec2Array(osg::Vec2Array* a){
+void DataOutputStream::writeVec2Array(const osg::Vec2Array* a)
+{
     int size = a->size();
     writeInt(size);
     for(int i=0;i<size;i++){
@@ -244,7 +251,8 @@ void DataOutputStream::writeVec2Array(osg::Vec2Array* a){
     }
 }
 
-void DataOutputStream::writeVec3Array(osg::Vec3Array* a){
+void DataOutputStream::writeVec3Array(const osg::Vec3Array* a)
+{
     int size = a->size();
     writeInt(size);
     for(int i = 0; i < size; i++){
@@ -252,7 +260,8 @@ void DataOutputStream::writeVec3Array(osg::Vec3Array* a){
     }
 }
 
-void DataOutputStream::writeVec4Array(osg::Vec4Array* a){
+void DataOutputStream::writeVec4Array(const osg::Vec4Array* a)
+{
     int size = a->size();
     writeInt(size);
     for(int i=0;i<size;i++){
@@ -272,7 +281,7 @@ void DataOutputStream::writeMatrix(const osg::Matrix& mat)
 }
 
 
-void DataOutputStream::writeStateSet(osg::StateSet* stateset)
+void DataOutputStream::writeStateSet(const osg::StateSet* stateset)
 {
     StateSetMap::iterator itr = _stateSetMap.find(stateset);
     if (itr!=_stateSetMap.end())
@@ -296,7 +305,7 @@ void DataOutputStream::writeStateSet(osg::StateSet* stateset)
     }
 }
 
-void DataOutputStream::writeStateAttribute(osg::StateAttribute* attribute)
+void DataOutputStream::writeStateAttribute(const osg::StateAttribute* attribute)
 {
     StateAttributeMap::iterator itr = _stateAttributeMap.find(attribute);
     if (itr!=_stateAttributeMap.end())
@@ -316,45 +325,45 @@ void DataOutputStream::writeStateAttribute(osg::StateAttribute* attribute)
         writeInt(id);
 
         // write the stateset.
-        if(dynamic_cast<osg::BlendFunc*>(attribute)){
+        if(dynamic_cast<const osg::BlendFunc*>(attribute)){
             ((ive::BlendFunc*)(attribute))->write(this);
         }
         // This is a Material
-        else if(dynamic_cast<osg::Material*>(attribute)){
+        else if(dynamic_cast<const osg::Material*>(attribute)){
             ((ive::Material*)(attribute))->write(this);
         }
         // This is a CullFace
-        else if(dynamic_cast<osg::CullFace*>(attribute)){
+        else if(dynamic_cast<const osg::CullFace*>(attribute)){
             ((ive::CullFace*)(attribute))->write(this);
         }
         // This is a PolygonOffset
-        else if(dynamic_cast<osg::PolygonOffset*>(attribute)){
+        else if(dynamic_cast<const osg::PolygonOffset*>(attribute)){
             ((ive::PolygonOffset*)(attribute))->write(this);
         }
-        else if(dynamic_cast<osg::ShadeModel*>(attribute)){
+        else if(dynamic_cast<const osg::ShadeModel*>(attribute)){
             ((ive::ShadeModel*)(attribute))->write(this);
         }
-        else if(dynamic_cast<osg::Point*>(attribute)){
+        else if(dynamic_cast<const osg::Point*>(attribute)){
             ((ive::Point*)(attribute))->write(this);
         }
         // This is a Texture2D
-        else if(dynamic_cast<osg::Texture2D*>(attribute)){
+        else if(dynamic_cast<const osg::Texture2D*>(attribute)){
             ((ive::Texture2D*)(attribute))->write(this);
         }
         // This is a TextureCubeMap
-        else if(dynamic_cast<osg::TextureCubeMap*>(attribute)){
+        else if(dynamic_cast<const osg::TextureCubeMap*>(attribute)){
             ((ive::TextureCubeMap*)(attribute))->write(this);
         }
         // This is a TexEnv
-        else if(dynamic_cast<osg::TexEnv*>(attribute)){
+        else if(dynamic_cast<const osg::TexEnv*>(attribute)){
             ((ive::TexEnv*)(attribute))->write(this);
         }
         // This is a TexEnvCombine
-        else if(dynamic_cast<osg::TexEnvCombine*>(attribute)){
+        else if(dynamic_cast<const osg::TexEnvCombine*>(attribute)){
             ((ive::TexEnvCombine*)(attribute))->write(this);
         }
         // This is a TexGen
-        else if(dynamic_cast<osg::TexGen*>(attribute)){
+        else if(dynamic_cast<const osg::TexGen*>(attribute)){
             ((ive::TexGen*)(attribute))->write(this);
         }
         else{
@@ -364,7 +373,7 @@ void DataOutputStream::writeStateAttribute(osg::StateAttribute* attribute)
     }
 }
 
-void DataOutputStream::writeDrawable(osg::Drawable* drawable)
+void DataOutputStream::writeDrawable(const osg::Drawable* drawable)
 {
     DrawableMap::iterator itr = _drawableMap.find(drawable);
     if (itr!=_drawableMap.end())
@@ -383,7 +392,7 @@ void DataOutputStream::writeDrawable(osg::Drawable* drawable)
         // write the id.
         writeInt(id);
         
-        if(dynamic_cast<osg::Geometry*>(drawable))
+        if(dynamic_cast<const osg::Geometry*>(drawable))
             ((ive::Geometry*)(drawable))->write(this);
         else{
             throw Exception("Unknown drawable in DataOutputStream::writeDrawable()");
@@ -391,7 +400,7 @@ void DataOutputStream::writeDrawable(osg::Drawable* drawable)
     }
 }
 
-void DataOutputStream::writeNode(osg::Node* node)
+void DataOutputStream::writeNode(const osg::Node* node)
 {
     NodeMap::iterator itr = _nodeMap.find(node);
     if (itr!=_nodeMap.end())
@@ -410,46 +419,48 @@ void DataOutputStream::writeNode(osg::Node* node)
         // write the id.
         writeInt(id);
 
-        if(dynamic_cast<osg::MatrixTransform*>(node)){
+        // this follow code *really* should use a NodeVisitor... Robert Osfield August 2003.
+
+        if(dynamic_cast<const osg::MatrixTransform*>(node)){
             ((ive::MatrixTransform*)(node))->write(this);
         }
 //         else if(dynamic_cast<osgfIVE::ViewPoint*>(node)){
 //             ((ive::ViewPoint*)(node))->write(this);
 //         }
-        else if(dynamic_cast<osg::PositionAttitudeTransform*>(node)){
+        else if(dynamic_cast<const osg::PositionAttitudeTransform*>(node)){
             ((ive::PositionAttitudeTransform*)(node))->write(this);
         }
-        else if(dynamic_cast<osg::LightSource*>(node)){
+        else if(dynamic_cast<const osg::LightSource*>(node)){
             ((ive::LightSource*)(node))->write(this);
         }
-        else if(dynamic_cast<osg::Sequence*>(node)){
+        else if(dynamic_cast<const osg::Sequence*>(node)){
             ((ive::Sequence*)(node))->write(this);
         }
-        else if(dynamic_cast<osg::Impostor*>(node)){
+        else if(dynamic_cast<const osg::Impostor*>(node)){
             ((ive::Impostor*)(node))->write(this);
         }
-        else if(dynamic_cast<osg::PagedLOD*>(node)){
+        else if(dynamic_cast<const osg::PagedLOD*>(node)){
             ((ive::PagedLOD*)(node))->write(this);
         }
-        else if(dynamic_cast<osg::LOD*>(node)){
+        else if(dynamic_cast<const osg::LOD*>(node)){
             ((ive::LOD*)(node))->write(this);
         }
-        else if(dynamic_cast<osg::Switch*>(node)){
+        else if(dynamic_cast<const osg::Switch*>(node)){
             ((ive::Switch*)(node))->write(this);
         }
-        else if(dynamic_cast<osg::OccluderNode*>(node)){
+        else if(dynamic_cast<const osg::OccluderNode*>(node)){
             ((ive::OccluderNode*)(node))->write(this);
         }
-        else if(dynamic_cast<osg::Transform*>(node)){
+        else if(dynamic_cast<const osg::Transform*>(node)){
             ((ive::Transform*)(node))->write(this);
         }
-        else if(dynamic_cast<osg::Group*>(node)){
+        else if(dynamic_cast<const osg::Group*>(node)){
             ((ive::Group*)(node))->write(this);
         }
-        else if(dynamic_cast<osg::Billboard*>(node)){
+        else if(dynamic_cast<const osg::Billboard*>(node)){
             ((ive::Billboard*)(node))->write(this);
         }
-        else if(dynamic_cast<osg::Geode*>(node)){
+        else if(dynamic_cast<const osg::Geode*>(node)){
             ((ive::Geode*)(node))->write(this);
         }
         else

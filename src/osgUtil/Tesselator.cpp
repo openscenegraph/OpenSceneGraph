@@ -265,14 +265,14 @@ void Tesselator::retesselatePolygons(osg::Geometry& geom)
                     arrays.push_back(geom.getFogCoordArray());
                 }
 
-                osg::Geometry::TexCoordArrayList& tcal = geom.getTexCoordArrayList();
-                for(osg::Geometry::TexCoordArrayList::iterator tcalItr=tcal.begin();
+                osg::Geometry::ArrayList& tcal = geom.getTexCoordArrayList();
+                for(osg::Geometry::ArrayList::iterator tcalItr=tcal.begin();
                     tcalItr!=tcal.end();
                     ++tcalItr)
                 {
-                    if (tcalItr->first.valid()) 
+                    if (tcalItr->array.valid()) 
                     {
-                        arrays.push_back(tcalItr->first.get());
+                        arrays.push_back(tcalItr->array.get());
                     }
                 }
 

@@ -109,18 +109,40 @@ void Geometry::write(DataOutputStream* out){
         out->writeArray(getFogCoordIndices());
     }
     // Write texture coord arrays
-    Geometry::TexCoordArrayList& tcal = getTexCoordArrayList();
+    Geometry::ArrayList& tcal = getTexCoordArrayList();
     out->writeInt(tcal.size());
-    for(unsigned int j=0;j<tcal.size();j++){
+    unsigned int j;
+    for(j=0;j<tcal.size();j++)
+    {
         // Write coords if valid
-        out->writeBool(tcal[j].first.valid());
-        if (tcal[j].first.valid()){
-            out->writeArray(tcal[j].first.get());
+        out->writeBool(tcal[j].array.valid());
+        if (tcal[j].array.valid()){
+            out->writeArray(tcal[j].array.get());
         }
         // Write indices if valid
-        out->writeBool(tcal[j].second.valid());
-        if (tcal[j].second.valid()){
-            out->writeArray(tcal[j].second.get());
+        out->writeBool(tcal[j].indices.valid());
+        if (tcal[j].indices.valid()){
+            out->writeArray(tcal[j].indices.get());
+        }
+    }
+
+    // Write vertex attributes
+    Geometry::ArrayList& vaal = getVertexAttribArrayList();
+    out->writeInt(vaal.size());
+    for(j=0;j<vaal.size();j++)
+    {
+        // Write coords if valid
+        const osg::Geometry::ArrayData& arrayData = vaal[j];
+        out->writeBinding(arrayData.binding);
+        out->writeBool(arrayData.normalize==GL_TRUE);
+        out->writeBool(arrayData.array.valid());
+        if (arrayData.array.valid()){
+            out->writeArray(arrayData.array.get());
+        }
+        // Write indices if valid
+        out->writeBool(arrayData.indices.valid());
+        if (arrayData.indices.valid()){
+            out->writeArray(arrayData.indices.get());
         }
     }
 }
@@ -223,7 +245,8 @@ void Geometry::read(DataInputStream* in){
         }
         // Read texture coord arrays
         size = in->readInt();
-        for(i =0;i<size;i++){
+        for(i =0;i<size;i++)
+        {
             // Read coords if valid
             bool coords_valid = in->readBool();
             if(coords_valid)
@@ -233,6 +256,25 @@ void Geometry::read(DataInputStream* in){
             if(indices_valid)
                 setTexCoordIndices(i, static_cast<osg::IndexArray*>(in->readArray()));
         }
+
+        // Read vertex attrib arrays
+        size = in->readInt();
+        for(i =0;i<size;i++)
+        {
+            setVertexAttribBinding(i,in->readBinding());
+            setVertexAttribNormalize(i,in->readBool()?GL_TRUE:GL_FALSE);
+            
+            // Read coords if valid
+            bool coords_valid = in->readBool();
+            if(coords_valid)
+                setVertexAttribArray(i, in->readArray());
+                
+            // Read Indices if valid
+            bool indices_valid = in->readBool();
+            if(indices_valid)
+                setVertexAttribIndices(i, static_cast<osg::IndexArray*>(in->readArray()));
+        }
+
     }
     else{
         throw Exception("Geometry::read(): Expected Geometry identification.");

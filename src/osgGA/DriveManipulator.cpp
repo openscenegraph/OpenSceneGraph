@@ -9,12 +9,25 @@
 using namespace osg;
 using namespace osgGA;
 
+#define DRIVER_HEIGHT 15
+
+static float getHeightOfDriver()
+{
+    float height = 1.5f;
+    if (getenv("OSG_DRIVE_MANIPULATOR_HEIGHT"))
+    {
+        height = atof(getenv("OSG_DRIVE_MANIPULATOR_HEIGHT"));
+    }
+    osg::notify(osg::INFO)<<"DriveManipulator::_height set to =="<<height<<std::endl;
+    return height;
+}
+
 DriveManipulator::DriveManipulator()
 {
     _modelScale = 0.01f;
     _velocity = 0.0f;
-    _height = 1.5f;
-    _buffer = 2.0f;
+    _height = getHeightOfDriver();
+    _buffer = _height*1.3;
     //_speedMode = USE_MOUSE_Y_FOR_SPEED;
     _speedMode = USE_MOUSE_BUTTONS_FOR_SPEED;
 }
@@ -35,8 +48,8 @@ void DriveManipulator::setNode(osg::Node* node)
         //_height = sqrtf(_modelScale)*0.03f;
         //_buffer = sqrtf(_modelScale)*0.05f;
         
-        _height = 1.5f;
-        _buffer = 2.0f;
+        _height = getHeightOfDriver();
+        _buffer = _height*1.3;
     }
 }
 
@@ -143,8 +156,6 @@ void DriveManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
                 boundingSphere._center+osg::Vec3( 0.0,-2.0f * boundingSphere._radius,0.0f),
                 osg::Vec3(0.0f,1.0f,0.0f),
                 osg::Vec3(0.0f,0.0f,1.0f));
-                
-            std::cout << "!positionSet"<<std::endl;
         }
 
     }
@@ -510,6 +521,7 @@ bool DriveManipulator::calcMovement()
                 else up = -np;
 
                 _eye = ip+up*_height;
+
                 lv = up^sv;
 
                 computePosition(_eye,lv,up);
@@ -519,7 +531,7 @@ bool DriveManipulator::calcMovement()
             }
 
         }
-
+        
         // no hit on the terrain found therefore resort to a fall under
         // under the influence of gravity.
         osg::Vec3 dp = lfp;
@@ -547,6 +559,7 @@ bool DriveManipulator::calcMovement()
                 else up = -np;
 
                 _eye = ip+up*_height;
+
                 lv = up^sv;
 
                 computePosition(_eye,lv,up);
@@ -560,8 +573,6 @@ bool DriveManipulator::calcMovement()
         lv *= (_velocity*dt);
         
         _eye += lv;
-
-
     }
 
     return true;

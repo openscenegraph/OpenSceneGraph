@@ -70,6 +70,11 @@ bool Window::open()
     glutMotionFunc( mouseMotionCB );
     glutPassiveMotionFunc( mousePassiveMotionCB );
 
+    glutSpecialFunc( specialCB );
+    glutSpaceballMotionFunc( spaceballMotionCB );
+    glutSpaceballRotateFunc( spaceballRotateCB );
+    glutSpaceballButtonFunc( spaceballButtonCB );
+
     _is_open = 1;
     return true;
 }
@@ -116,9 +121,30 @@ void Window::keyboardCB(unsigned char key, int x, int y)
     s_theWindow->keyboard(key,x,y);
 }
 
+void Window::specialCB(int key, int x, int y)
+{
+    s_theWindow->special(key,x,y);
+}
+
+void Window::spaceballMotionCB(int x, int y, int z)
+{
+    s_theWindow->spaceballMotion(x,y,z);
+}
+
+void Window::spaceballRotateCB(int x, int y, int z)
+{
+    s_theWindow->spaceballRotate(x,y,z);
+}
+
+void Window::spaceballButtonCB(int button, int state)
+{
+    s_theWindow->spaceballButton(button,state);
+}
+
 
 void Window::display()
 {
+    osg::notify(osg::INFO)<<"info : Window::display() unhandled."<<endl;
 }
 
 
@@ -140,16 +166,19 @@ void Window::visibility(int state)
 
 void Window::mouseMotion(int , int )
 {
+    osg::notify(osg::INFO)<<"info : Window::mouseMotion() unhandled."<<endl;
 }
 
 
 void Window::mousePassiveMotion(int , int )
 {
+    osg::notify(osg::INFO)<<"info : Window::mousePassiveMotion() unhandled."<<endl;
 }
 
 
 void Window::mouse(int , int , int , int )
 {
+    osg::notify(osg::INFO)<<"info : mouse::() unhandled."<<endl;
 }
 
 
@@ -172,6 +201,28 @@ void Window::keyboard(unsigned char key, int , int )
             break;
     }
 }
+
+void Window::special(int , int , int )
+{
+    osg::notify(osg::INFO)<<"info : Window::special() unhandled."<<endl;
+}
+
+void Window::spaceballMotion(int , int , int )
+{
+    osg::notify(osg::INFO)<<"info : Window::spaceballMotion() unhandled."<<endl;
+}
+
+void Window::spaceballRotate(int , int , int )
+{
+    osg::notify(osg::INFO)<<"info : Window::spaceballRotate() unhandled."<<endl;
+}
+
+void Window::spaceballButton(int , int )
+{
+    osg::notify(osg::INFO)<<"info : Window::spaceballButton() unhandled."<<endl;
+}
+
+
 
 bool Window::run()
 {

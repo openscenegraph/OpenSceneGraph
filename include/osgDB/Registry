@@ -29,6 +29,24 @@
 
 namespace osgDB {
 
+/** basic structure for custom runtime inheritance checking */
+struct basic_type_wrapper {
+	virtual bool matches(const osg::Object *proto) const = 0;
+};
+
+/** a class template that checks inheritance between a given
+    Object's class and a class defined at compile time through
+		the template parameter T.
+		This is used in conjunction with readObjectOfType() to
+		specify an abstract class as reference type.
+**/
+template<class T>
+struct type_wrapper: basic_type_wrapper {
+	bool matches(const osg::Object *proto) const
+	{
+		return dynamic_cast<const T*>(proto) != 0;
+	}
+};
 
 /** list of directories to search through which searching for files. */
 typedef std::deque<std::string> FilePathList;
@@ -84,7 +102,8 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         /** get a reader writer which handles specified extension.*/
         ReaderWriter* getReaderWriterForExtension(const std::string& ext);
  
-        osg::Object*         readObjectOfType(const osg::Object& compObj,Input& fr);
+        osg::Object*         readObjectOfType(const osg::Object& compObj,Input& fr);       
+        osg::Object*         readObjectOfType(const basic_type_wrapper &btw, Input& fr);
 
         osg::Object*         readObject(Input& fr);
         osg::Image*          readImage(Input& fr);

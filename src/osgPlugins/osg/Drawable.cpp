@@ -35,15 +35,11 @@ bool Drawable_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
-    ref_ptr<Object> readObject = fr.readObject();
-    if (readObject.valid())
-    {
-        osg::Shape* shape = dynamic_cast<osg::Shape*>(readObject.get());
-        if (shape) drawable.setShape(shape);
-        else notify(WARN)<<"Warning:: "<<readObject->className()<<" loaded but cannot not be attached to Drawable."<<std::endl;
-        iteratorAdvanced = true;
-    }
-
+	Shape* shape = static_cast<Shape *>(fr.readObjectOfType(type_wrapper<Shape>()));
+	if (shape) {
+		drawable.setShape(shape);
+		iteratorAdvanced = true;
+	}
 
     if (fr[0].matchWord("supportsDisplayList"))
     {

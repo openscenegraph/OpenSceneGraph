@@ -25,7 +25,7 @@ bool ModularProgram_readLocalData(osg::Object &obj, osgDB::Input &fr)
     osgParticle::ModularProgram &myobj = static_cast<osgParticle::ModularProgram &>(obj);
     bool itAdvanced = false;
 
-    osgParticle::Operator *op = dynamic_cast<osgParticle::Operator *>(fr.readObject());
+	osgParticle::Operator *op = static_cast<osgParticle::Operator *>(fr.readObjectOfType(osgDB::type_wrapper<osgParticle::Operator>()));
     if (op) {
         myobj.addOperator(op);
         itAdvanced = true;

@@ -567,6 +567,20 @@ ReaderWriter* Registry::getReaderWriterForExtension(const std::string& ext)
 
 osg::Object* Registry::readObjectOfType(const osg::Object& compObj,Input& fr)
 {
+	struct concrete_wrapper: basic_type_wrapper {
+		concrete_wrapper(const osg::Object *myobj) : myobj_(myobj) {}
+		bool matches(const osg::Object *proto) const
+		{
+			return myobj_->isSameKindAs(proto);
+		}
+		const osg::Object *myobj_;
+	};
+        
+	return readObjectOfType(concrete_wrapper(&compObj), fr);
+}
+
+osg::Object* Registry::readObjectOfType(const basic_type_wrapper &btw,Input& fr)
+{
     const char *str = fr[0].getStr();
     if (str==NULL) return NULL;
 
@@ -575,7 +589,7 @@ osg::Object* Registry::readObjectOfType(const osg::Object& compObj,Input& fr)
         if (fr[1].isString())
         {
             Object* obj = fr.getObjectForUniqueID(fr[1].getStr());
-            if (obj && compObj.isSameKindAs(obj))
+            if (obj && btw.matches(obj))
             {
                 fr+=2;
                 return obj;
@@ -602,11 +616,11 @@ osg::Object* Registry::readObjectOfType(const osg::Object& compObj,Input& fr)
 
             // first try the standard nodekit library.
             std::string nodeKitLibraryName = createLibraryNameForNodeKit(libraryName);
-            if (loadLibrary(nodeKitLibraryName)) return readObjectOfType(compObj,fr);
+            if (loadLibrary(nodeKitLibraryName)) return readObjectOfType(btw,fr);
             
             // otherwise try the osgdb_ plugin library.
             std::string pluginLibraryName = createLibraryNameForExtension(libraryName);
-            if (loadLibrary(pluginLibraryName)) return readObjectOfType(compObj,fr);
+            if (loadLibrary(pluginLibraryName)) return readObjectOfType(btw,fr);
         }
     }
     else if (fr[1].isOpenBracket())
@@ -620,7 +634,7 @@ osg::Object* Registry::readObjectOfType(const osg::Object& compObj,Input& fr)
             return NULL;
         }
         
-        if (!compObj.isSameKindAs(proto))
+        if (!btw.matches(proto))
         {
             return NULL;
         }
@@ -671,6 +685,7 @@ osg::Object* Registry::readObjectOfType(const osg::Object& compObj,Input& fr)
     return 0L;
     
 }
+
 
 //
 // read object from input iterator.

@@ -42,13 +42,10 @@ bool ShapeDrawable_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
-    ref_ptr<Object> readObject = fr.readObject();
+    ref_ptr<Object> readObject = fr.readObjectOfType(type_wrapper<TessellationHints>());
     if (readObject.valid()) {
-        TessellationHints* hints = dynamic_cast<TessellationHints*>(readObject.get());
-        if (hints)
-            geom.setTessellationHints(hints);
-        else
-            notify(WARN) << "Warning: " << readObject->className() << " loaded but cannot be attached to ShapeDrawable.\n";
+        TessellationHints* hints = static_cast<TessellationHints*>(readObject.get());
+        geom.setTessellationHints(hints);
         iteratorAdvanced = true;
     }
 

@@ -502,11 +502,10 @@ bool CompositeShape_readLocalData(Object& obj, Input& fr)
         }
     }
     
-    while((readObject=fr.readObject()).valid())
+	while((readObject=fr.readObjectOfType(type_wrapper<osg::Shape>())).valid())
     {
-        osg::Shape* shape = dynamic_cast<osg::Shape*>(readObject.get());
-        if (shape) composite.addChild(shape);
-        else notify(WARN)<<"Warning:: "<<readObject->className()<<" loaded but cannot not be attached to Drawable."<<std::endl;
+        osg::Shape* shape = static_cast<osg::Shape*>(readObject.get());
+        composite.addChild(shape);
         iteratorAdvanced = true;
     }
     

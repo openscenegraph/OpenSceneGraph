@@ -39,8 +39,10 @@ CXXFILES =\
 	FrameStamp.cpp\
 	FrontFace.cpp\
 	GLExtensions.cpp\
-	Geometry.cpp\
 	Geode.cpp\
+	Geometry.cpp\
+	Program.cpp\
+	Uniform.cpp\
 	Group.cpp\
         dxtctool.cpp\
 	Image.cpp\
@@ -78,6 +80,7 @@ CXXFILES =\
 	Quat.cpp\
 	Referenced.cpp\
 	Sequence.cpp\
+	Shader.cpp\
 	ShadeModel.cpp\
 	ShadowVolumeOccluder.cpp\
 	Shape.cpp\

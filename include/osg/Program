@@ -1,0 +1,447 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2005 Robert Osfield 
+ * Copyright (C) 2003-2005 3Dlabs Inc. Ltd.
+ *
+ * This application is open source and may be redistributed and/or modified   
+ * freely and without restriction, both in commericial and non commericial
+ * applications, as long as this copyright notice is maintained.
+ * 
+ * This application is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+*/
+
+/* file:	include/osg/Program
+ * author:	Mike Weiblen 2005-02-20
+*/
+
+// NOTICE: This code is CLOSED during construction and/or renovation!
+// It is in active development, so DO NOT yet use in application code.
+// This notice will be removed when the code is open for business.
+// For development plan and status see:
+// http://www.openscenegraph.org/index.php?page=Community.DevelopmentWork
+
+
+#ifndef OSG_PROGRAM
+#define OSG_PROGRAM 1
+
+#include <osg/State>
+#include <osg/StateAttribute>
+#include <osg/buffered_value>
+#include <osg/ref_ptr>
+#include <osg/Vec2>
+#include <osg/Vec3>
+#include <osg/Vec4>
+#include <osg/Referenced>
+#include <osg/GL>
+#include <osg/Uniform>
+
+#include <string>
+#include <vector>
+
+
+namespace osg {
+
+class SG_EXPORT GL2Extensions : public osg::Referenced
+{
+    public:
+	GL2Extensions();
+	GL2Extensions(const GL2Extensions& rhs);
+
+	void lowestCommonDenominator(const GL2Extensions& rhs);
+
+	void setupGL2Extensions();
+
+	/** Does the GL driver support OpenGL Shading Language? */
+	bool isGlslSupported() const;
+
+	float getGlVersion() const { return _glVersion; }
+	float getLanguageVersion() const { return _glslLanguageVersion; }
+
+	void setShaderObjectsSupported(bool flag) { _isShaderObjectsSupported = flag; }
+	bool isShaderObjectsSupported() const { return _isShaderObjectsSupported; }
+
+	void setVertexShaderSupported(bool flag) { _isVertexShaderSupported = flag; }
+	bool isVertexShaderSupported() const { return _isVertexShaderSupported; }
+
+	void setFragmentShaderSupported(bool flag) { _isFragmentShaderSupported = flag; }
+	bool isFragmentShaderSupported() const { return _isFragmentShaderSupported; }
+
+	void setLanguage100Supported(bool flag) { _isLanguage100Supported = flag; }
+	bool isLanguage100Supported() const { return _isLanguage100Supported; }
+
+	/** Function to call to get the extension of a specified context.
+	  * If the Exentsion object for that context has not yet been created then
+	  * and the 'createIfNotInitalized' flag been set to false then returns NULL.
+	  * If 'createIfNotInitalized' is true then the Extensions object is
+	  * automatically created.  However, in this case the extension object
+	  * only be created with the graphics context associated with ContextID..*/
+	static GL2Extensions* Get(unsigned int contextID,bool createIfNotInitalized);
+
+	/** allows users to override the extensions across graphics contexts.
+	  * typically used when you have different extensions supported across graphics pipes
+	  * but need to ensure that they all use the same low common denominator extensions.*/
+	static void Set(unsigned int contextID, GL2Extensions* extensions);
+
+
+	void glBlendEquationSeparate(GLenum modeRGB, GLenum modeAlpha) const;
+	void glDrawBuffers(GLsizei n, const GLenum *bufs) const;
+	void glStencilOpSeparate(GLenum face, GLenum sfail, GLenum dpfail, GLenum dppass) const;
+	void glStencilFuncSeparate(GLenum frontfunc, GLenum backfunc, GLint ref, GLuint mask) const;
+	void glStencilMaskSeparate(GLenum face, GLuint mask) const;
+	void glAttachShader(GLuint program, GLuint shader) const;
+	void glBindAttribLocation(GLuint program, GLuint index, const GLchar *name) const;
+	void glCompileShader(GLuint shader) const;
+	GLuint glCreateProgram(void) const;
+	GLuint glCreateShader(GLenum type) const;
+	void glDeleteProgram(GLuint program) const;
+	void glDeleteShader(GLuint shader) const;
+	void glDetachShader(GLuint program, GLuint shader) const;
+	void glDisableVertexAttribArray(GLuint index) const;
+	void glEnableVertexAttribArray(GLuint index) const;
+	void glGetActiveAttrib(GLuint program, GLuint index, GLsizei bufSize, GLsizei *length, GLint *size, GLenum *type, GLchar *name) const;
+	void glGetActiveUniform(GLuint program, GLuint index, GLsizei bufSize, GLsizei *length, GLint *size, GLenum *type, GLchar *name) const;
+	void glGetAttachedShaders(GLuint program, GLsizei maxCount, GLsizei *count, GLuint *obj) const;
+	GLint glGetAttribLocation(GLuint program, const GLchar *name) const;
+	void glGetProgramiv(GLuint program, GLenum pname, GLint *params) const;
+	void glGetProgramInfoLog(GLuint program, GLsizei bufSize, GLsizei *length, GLchar *infoLog) const;
+	void glGetShaderiv(GLuint shader, GLenum pname, GLint *params) const;
+	void glGetShaderInfoLog(GLuint shader, GLsizei bufSize, GLsizei *length, GLchar *infoLog) const;
+	void glGetShaderSource(GLuint shader, GLsizei bufSize, GLsizei *length, GLchar *source) const;
+	GLint glGetUniformLocation(GLuint program, const GLchar *name) const;
+	void glGetUniformfv(GLuint program, GLint location, GLfloat *params) const;
+	void glGetUniformiv(GLuint program, GLint location, GLint *params) const;
+	void glGetVertexAttribdv(GLuint index, GLenum pname, GLdouble *params) const;
+	void glGetVertexAttribfv(GLuint index, GLenum pname, GLfloat *params) const;
+	void glGetVertexAttribiv(GLuint index, GLenum pname, GLint *params) const;
+	void glGetVertexAttribPointerv(GLuint index, GLenum pname, GLvoid* *pointer) const;
+	GLboolean glIsProgram(GLuint program) const;
+	GLboolean glIsShader(GLuint shader) const;
+	void glLinkProgram(GLuint program) const;
+	void glShaderSource(GLuint shader, GLsizei count, const GLchar* *string, const GLint *length) const;
+	void glUseProgram(GLuint program) const;
+	void glUniform1f(GLint location, GLfloat v0) const;
+	void glUniform2f(GLint location, GLfloat v0, GLfloat v1) const;
+	void glUniform3f(GLint location, GLfloat v0, GLfloat v1, GLfloat v2) const;
+	void glUniform4f(GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3) const;
+	void glUniform1i(GLint location, GLint v0) const;
+	void glUniform2i(GLint location, GLint v0, GLint v1) const;
+	void glUniform3i(GLint location, GLint v0, GLint v1, GLint v2) const;
+	void glUniform4i(GLint location, GLint v0, GLint v1, GLint v2, GLint v3) const;
+	void glUniform1fv(GLint location, GLsizei count, const GLfloat *value) const;
+	void glUniform2fv(GLint location, GLsizei count, const GLfloat *value) const;
+	void glUniform3fv(GLint location, GLsizei count, const GLfloat *value) const;
+	void glUniform4fv(GLint location, GLsizei count, const GLfloat *value) const;
+	void glUniform1iv(GLint location, GLsizei count, const GLint *value) const;
+	void glUniform2iv(GLint location, GLsizei count, const GLint *value) const;
+	void glUniform3iv(GLint location, GLsizei count, const GLint *value) const;
+	void glUniform4iv(GLint location, GLsizei count, const GLint *value) const;
+	void glUniformMatrix2fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value) const;
+	void glUniformMatrix3fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value) const;
+	void glUniformMatrix4fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value) const;
+	void glValidateProgram(GLuint program) const;
+	void glVertexAttrib1d(GLuint index, GLdouble x) const;
+	void glVertexAttrib1dv(GLuint index, const GLdouble *v) const;
+	void glVertexAttrib1f(GLuint index, GLfloat x) const;
+	void glVertexAttrib1fv(GLuint index, const GLfloat *v) const;
+	void glVertexAttrib1s(GLuint index, GLshort x) const;
+	void glVertexAttrib1sv(GLuint index, const GLshort *v) const;
+	void glVertexAttrib2d(GLuint index, GLdouble x, GLdouble y) const;
+	void glVertexAttrib2dv(GLuint index, const GLdouble *v) const;
+	void glVertexAttrib2f(GLuint index, GLfloat x, GLfloat y) const;
+	void glVertexAttrib2fv(GLuint index, const GLfloat *v) const;
+	void glVertexAttrib2s(GLuint index, GLshort x, GLshort y) const;
+	void glVertexAttrib2sv(GLuint index, const GLshort *v) const;
+	void glVertexAttrib3d(GLuint index, GLdouble x, GLdouble y, GLdouble z) const;
+	void glVertexAttrib3dv(GLuint index, const GLdouble *v) const;
+	void glVertexAttrib3f(GLuint index, GLfloat x, GLfloat y, GLfloat z) const;
+	void glVertexAttrib3fv(GLuint index, const GLfloat *v) const;
+	void glVertexAttrib3s(GLuint index, GLshort x, GLshort y, GLshort z) const;
+	void glVertexAttrib3sv(GLuint index, const GLshort *v) const;
+	void glVertexAttrib4Nbv(GLuint index, const GLbyte *v) const;
+	void glVertexAttrib4Niv(GLuint index, const GLint *v) const;
+	void glVertexAttrib4Nsv(GLuint index, const GLshort *v) const;
+	void glVertexAttrib4Nub(GLuint index, GLubyte x, GLubyte y, GLubyte z, GLubyte w) const;
+	void glVertexAttrib4Nubv(GLuint index, const GLubyte *v) const;
+	void glVertexAttrib4Nuiv(GLuint index, const GLuint *v) const;
+	void glVertexAttrib4Nusv(GLuint index, const GLushort *v) const;
+	void glVertexAttrib4bv(GLuint index, const GLbyte *v) const;
+	void glVertexAttrib4d(GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w) const;
+	void glVertexAttrib4dv(GLuint index, const GLdouble *v) const;
+	void glVertexAttrib4f(GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w) const;
+	void glVertexAttrib4fv(GLuint index, const GLfloat *v) const;
+	void glVertexAttrib4iv(GLuint index, const GLint *v) const;
+	void glVertexAttrib4s(GLuint index, GLshort x, GLshort y, GLshort z, GLshort w) const;
+	void glVertexAttrib4sv(GLuint index, const GLshort *v) const;
+	void glVertexAttrib4ubv(GLuint index, const GLubyte *v) const;
+	void glVertexAttrib4uiv(GLuint index, const GLuint *v) const;
+	void glVertexAttrib4usv(GLuint index, const GLushort *v) const;
+	void glVertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer) const;
+
+	// C++-friendly convenience wrapper methods
+	GLuint getCurrentProgram() const;
+	bool getProgramInfoLog( GLuint program, std::string& result ) const;
+	bool getShaderInfoLog( GLuint shader, std::string& result ) const;
+
+    protected:
+	~GL2Extensions() {}
+
+	float _glVersion;
+	float _glslLanguageVersion;
+
+	bool _isShaderObjectsSupported;
+	bool _isVertexShaderSupported;
+	bool _isFragmentShaderSupported;
+	bool _isLanguage100Supported;
+
+	void* _glBlendEquationSeparate;
+	void* _glDrawBuffers;
+	void* _glStencilOpSeparate;
+	void* _glStencilFuncSeparate;
+	void* _glStencilMaskSeparate;
+	void* _glAttachShader;
+	void* _glBindAttribLocation;
+	void* _glCompileShader;
+	void* _glCreateProgram;
+	void* _glCreateShader;
+	void* _glDeleteProgram;
+	void* _glDeleteShader;
+	void* _glDetachShader;
+	void* _glDisableVertexAttribArray;
+	void* _glEnableVertexAttribArray;
+	void* _glGetActiveAttrib;
+	void* _glGetActiveUniform;
+	void* _glGetAttachedShaders;
+	void* _glGetAttribLocation;
+	void* _glGetProgramiv;
+	void* _glGetProgramInfoLog;
+	void* _glGetShaderiv;
+	void* _glGetShaderInfoLog;
+	void* _glGetShaderSource;
+	void* _glGetUniformLocation;
+	void* _glGetUniformfv;
+	void* _glGetUniformiv;
+	void* _glGetVertexAttribdv;
+	void* _glGetVertexAttribfv;
+	void* _glGetVertexAttribiv;
+	void* _glGetVertexAttribPointerv;
+	void* _glIsProgram;
+	void* _glIsShader;
+	void* _glLinkProgram;
+	void* _glShaderSource;
+	void* _glUseProgram;
+	void* _glUniform1f;
+	void* _glUniform2f;
+	void* _glUniform3f;
+	void* _glUniform4f;
+	void* _glUniform1i;
+	void* _glUniform2i;
+	void* _glUniform3i;
+	void* _glUniform4i;
+	void* _glUniform1fv;
+	void* _glUniform2fv;
+	void* _glUniform3fv;
+	void* _glUniform4fv;
+	void* _glUniform1iv;
+	void* _glUniform2iv;
+	void* _glUniform3iv;
+	void* _glUniform4iv;
+	void* _glUniformMatrix2fv;
+	void* _glUniformMatrix3fv;
+	void* _glUniformMatrix4fv;
+	void* _glValidateProgram;
+	void* _glVertexAttrib1d;
+	void* _glVertexAttrib1dv;
+	void* _glVertexAttrib1f;
+	void* _glVertexAttrib1fv;
+	void* _glVertexAttrib1s;
+	void* _glVertexAttrib1sv;
+	void* _glVertexAttrib2d;
+	void* _glVertexAttrib2dv;
+	void* _glVertexAttrib2f;
+	void* _glVertexAttrib2fv;
+	void* _glVertexAttrib2s;
+	void* _glVertexAttrib2sv;
+	void* _glVertexAttrib3d;
+	void* _glVertexAttrib3dv;
+	void* _glVertexAttrib3f;
+	void* _glVertexAttrib3fv;
+	void* _glVertexAttrib3s;
+	void* _glVertexAttrib3sv;
+	void* _glVertexAttrib4Nbv;
+	void* _glVertexAttrib4Niv;
+	void* _glVertexAttrib4Nsv;
+	void* _glVertexAttrib4Nub;
+	void* _glVertexAttrib4Nubv;
+	void* _glVertexAttrib4Nuiv;
+	void* _glVertexAttrib4Nusv;
+	void* _glVertexAttrib4bv;
+	void* _glVertexAttrib4d;
+	void* _glVertexAttrib4dv;
+	void* _glVertexAttrib4f;
+	void* _glVertexAttrib4fv;
+	void* _glVertexAttrib4iv;
+	void* _glVertexAttrib4s;
+	void* _glVertexAttrib4sv;
+	void* _glVertexAttrib4ubv;
+	void* _glVertexAttrib4uiv;
+	void* _glVertexAttrib4usv;
+	void* _glVertexAttribPointer;
+
+	void* _glGetInfoLogARB;
+	void* _glGetObjectParameterivARB;
+	void* _glDeleteObjectARB;
+	void* _glGetHandleARB;
+};
+
+class Program;
+typedef osg::ref_ptr<Program> ProgramPtr;
+
+class Shader;
+typedef osg::ref_ptr<Shader> ShaderPtr;
+typedef std::vector< ShaderPtr > ShaderList;
+
+///////////////////////////////////////////////////////////////////////////
+/** osg::Program is an application-level abstraction of an OpenGL glProgram.
+  * It is an osg::StateAttribute that, when applied, will activate a
+  * glProgram for subsequent rendering.
+  * osg::Shaders containing the actual shader source code are
+  * attached to a Program, which will then manage the compilation,
+  * linking, and activation of the GLSL program.
+  * Program will automatically manage per-context instancing of the
+  * OpenGL objects, if that is necessary for a particular display
+  * configuration.
+  */
+
+class SG_EXPORT Program : public osg::StateAttribute
+{
+    public:
+        Program();
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        Program(const Program& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+
+        META_StateAttribute(osg, Program, PROGRAM);
+
+        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
+        virtual int compare(const osg::StateAttribute& sa) const;
+
+	/** If enabled, activate our program in the GL pipeline,
+	  * performing any rebuild operations that might be pending. */
+	virtual void apply(osg::State& state) const;
+
+	virtual void compileGLObjects(osg::State& state) const;
+
+        /** release OpenGL objects in specified graphics context if State
+            object is passed, otherwise release OpenGL objects for all graphics context if
+            State object pointer NULL.*/
+        virtual void releaseGLObjects(osg::State* state=0) const;
+
+        // data access methods.
+
+	/** Mark us as "dirty" and in need of relinking. */
+	void dirtyProgram();
+
+	/** Mark our attached Shaders as "dirty" and in need of recompilation. */
+	void dirtyShaders();
+
+	/** Attach a Shader to this Program */
+	void addShader( Shader* shader );
+
+        /** Mark internal GL glProgram for deletion.
+	  * Deletion requests are queued until they can be executed
+	  * in the proper GL context. */
+        static void deleteProgram(unsigned int contextID, GLuint program);
+
+        /** flush all the cached glPrograms which need to be deleted
+          * in the OpenGL context related to contextID.*/
+        static void flushDeletedGlslObjects(unsigned int contextID,double currentTime, double& availableTime);
+
+	/** An annotation/comment for use by the application */
+	void setComment( const std::string& comment ) { _comment = comment; }
+	void setComment( const char* comment ) { _comment = comment; }
+	const std::string& getComment() const { return _comment; }
+
+	/** should Uniform values be tested to avoid redundant setting? */
+	void setAvoidRedundantUniformSetting( bool flag ) { _avoidRedundantUniformSetting = flag; }
+	bool getAvoidRedundantUniformSetting() const { return _avoidRedundantUniformSetting; }
+
+	// TODO glBindAttribLocation
+
+
+    protected:
+	/** An OSG-internal encapsulation of glProgram's active uniforms */
+	class ActiveUniform : public osg::Referenced
+	{
+	    public:
+		ActiveUniform( const GLchar* name, GLenum type );
+
+	    protected:
+		virtual ~ActiveUniform() {}
+
+		Uniform::Value _value;
+		GLint _location;
+
+	    private:
+		ActiveUniform();	// disallowed
+	};
+	typedef osg::ref_ptr< ActiveUniform > ActiveUniformPtr;
+	typedef std::vector< ActiveUniformPtr > ActiveUniformList;
+
+
+    protected:
+	/** PCPO is an OSG-internal encapsulation of glPrograms per-GL context.  */
+	class PerContextProgObj : public osg::Referenced
+	{
+	    public:
+		PerContextProgObj(const Program* program, unsigned int contextID);
+		PerContextProgObj(const PerContextProgObj& rhs);
+
+		const GLuint getHandle() {return _glProgramHandle;}
+
+		bool isDirty() const {return _dirty;}
+		void markAsDirty();
+		void linkProgram();
+		void useProgram() const;
+
+		void applyUniforms( osg::State& state ) const;
+
+	    protected:	/*methods*/
+		PerContextProgObj();
+		~PerContextProgObj();
+
+	    protected:	/*data*/
+		/** Pointer to our parent Program */
+		const Program* _program;
+		/** Pointer to this context's extension functions */
+		osg::ref_ptr<GL2Extensions> _extensions;
+		/** Handle to the actual OpenGL glProgram */
+		GLuint _glProgramHandle;
+		/** Do we need to be linked? */
+		bool _dirty;
+		/** Queue of UniformValues awaiting assignment */
+		const unsigned int _contextID;
+		/** List of PCPO's active uniforms */
+		ActiveUniformList _activeUniformList;
+	};
+
+    protected:	/*methods*/
+        virtual ~Program();
+	/** Get the PCPO for a particular GL context */
+        PerContextProgObj* getPCPO(unsigned int contextID) const;
+
+    protected:	/*data*/
+	bool _avoidRedundantUniformSetting;
+	std::string _comment;
+	ShaderList _shaderList;
+        mutable osg::buffered_value< osg::ref_ptr<PerContextProgObj> > _pcpoList;
+
+    private:
+        const Program& operator=(const Program&);
+};
+
+
+}
+
+#endif
+
+/*EOF*/

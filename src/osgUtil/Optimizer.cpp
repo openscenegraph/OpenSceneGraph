@@ -829,6 +829,7 @@ bool CollectLowestTransformsVisitor::removeTransforms(osg::Node* nodeWeCannotRem
 
                 osg::ref_ptr<osg::Transform> transform = titr->first;
                 osg::ref_ptr<osg::Group>     group = new osg::Group;
+                group->setName( transform->getName() );
                 group->setDataVariance(osg::Object::STATIC);
                 for(unsigned int i=0;i<transform->getNumChildren();++i)
                 {

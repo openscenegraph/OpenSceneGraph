@@ -127,6 +127,8 @@ osg::Node* TXPTileNode::seamReplacement(osg::Node* child,int x, int y, int level
             
  //                std::cout<<"seamReplacement lod1 min="<<lod1->getMinRange(0)<<" max="<<lod1->getMaxRange(0)<<std::endl;
 //                 std::cout<<"                lod2 min="<<lod2->getMinRange(0)<<" max="<<lod2->getMaxRange(0)<<std::endl;
+
+#if 0
                 
                 if (lod1->getMaxRange(0)<lod2->getMaxRange(0))
                 {
@@ -144,7 +146,7 @@ osg::Node* TXPTileNode::seamReplacement(osg::Node* child,int x, int y, int level
                     // don't replace with seam LOD node, leave as a standard LOD
                     return 0;
                 }
-                
+#endif                
             
                 TXPSeamLOD* seam = new TXPSeamLOD(x,y,level,lod1->getCenter(),lod1->getMinRange(0),lod1->getMaxRange(0),lod2->getMaxRange(0));
                 seam->setArchive(_archive);

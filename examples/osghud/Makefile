@@ -4,7 +4,7 @@ include $(TOPDIR)/Make/makedefs
 CXXFILES =\
 	osghud.cpp\
 
-LIBS     += -losgText -losgProducer -lProducer $(OSG_LIBS) -L/usr/local/lib $(FREETYPE_LIB) $(GLUT_LIB) $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS)  
+LIBS     += -losgProducer -lProducer $(OSG_LIBS) $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
 
 INSTFILES = \
 	$(CXXFILES)\
@@ -12,4 +12,8 @@ INSTFILES = \
 
 EXEC = osghud
 
+CXXFLAGS += $(PRODUCER_INCLUDE_DIR)
+LDFLAGS  += $(PRODUCER_LIB_DIR)
+
 include $(TOPDIR)/Make/makerules 
+

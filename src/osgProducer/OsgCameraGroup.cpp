@@ -11,8 +11,10 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#include <osgProducer/OsgCameraGroup>
+#include <osg/ApplicationUsage>
 #include <osgDB/FileUtils>
+
+#include <osgProducer/OsgCameraGroup>
 
 using namespace Producer;
 using namespace osgProducer;
@@ -26,6 +28,12 @@ std::string findCameraConfigFile(const std::string& configFile)
 
 std::string extractCameraConfigFile(osg::ArgumentParser& arguments)
 {
+    // report the usage options.
+    if (arguments.getApplicationUsage())
+    {
+        arguments.getApplicationUsage()->addCommandLineOption("-c <filename>","Specify camera config file");
+    }
+
     std::string filename;
     if (arguments.read("-c",filename)) return filename;
     return "";

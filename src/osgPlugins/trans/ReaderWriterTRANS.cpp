@@ -10,8 +10,8 @@
  *
 */
 
-/* file:        src/osgPlugins/trans/ReaderWriterTRANS.cpp
- * author:	Mike Weiblen http://mew.cx/ 2004-04-25
+/* file:	src/osgPlugins/trans/ReaderWriterTRANS.cpp
+ * author:	Mike Weiblen http://mew.cx/ 2004-07-15
  * copyright:	(C) 2004 Michael Weiblen
  * license:	OpenSceneGraph Public License (OSGPL)
 */
@@ -32,8 +32,21 @@
 ///////////////////////////////////////////////////////////////////////////
 
 /**
- * An OSG reader plugin for the translation pseudo-loader.
+ * An OSG reader plugin for the ".trans" pseudo-loader, which inserts a
+ * translation transform above the loaded geometry.
+ * This pseudo-loader make it simple to change the origin of a saved model
+ * by specifying a correcting translation as part of the filename.
+ *
+ * Usage: <modelfile.ext>.<tx>,<ty>,<tz>.globe
+ * where:
+ *	<modelfile.ext> = an model filename.
+ *	<tx> = translation along the X axis.
+ *	<ty> = translation along the Y axis.
+ *	<tz> = translation along the Z axis.
+ *
+ * example: osgviewer cow.osg.25,0,0.trans cessna.osg
  */
+
 class ReaderWriterTRANS : public osgDB::ReaderWriter
 {
 public:
@@ -43,7 +56,7 @@ public:
 
     virtual bool acceptsExtension(const std::string& extension)
     { 
-        return osgDB::equalCaseInsensitive( extension, EXTENSION_NAME );
+	return osgDB::equalCaseInsensitive( extension, EXTENSION_NAME );
     }
 
     virtual ReadResult readNode(const std::string& fileName,

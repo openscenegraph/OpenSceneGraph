@@ -10,8 +10,8 @@
  *
 */
 
-/* file:        src/osgPlugins/scale/ReaderWriterSCALE.cpp
- * author:	Mike Weiblen http://mew.cx/ 2004-04-25
+/* file:	src/osgPlugins/scale/ReaderWriterSCALE.cpp
+ * author:	Mike Weiblen http://mew.cx/ 2004-07-15
  * copyright:	(C) 2004 Michael Weiblen
  * license:	OpenSceneGraph Public License (OSGPL)
 */
@@ -32,8 +32,23 @@
 ///////////////////////////////////////////////////////////////////////////
 
 /**
- * An OSG reader plugin for the scaling pseudo-loader.
+ * An OSG reader plugin for the ".scale" pseudo-loader, which inserts a
+ * scale transform above the loaded geometry.
+ * This pseudo-loader make it simple to change the size of a saved model
+ * by specifying a correcting scale factor as part of the filename.
+ *
+ * Usage: <modelfile.ext>.<sx>,<sy>,<sz>.globe
+ *	  <modelfile.ext>.<su>.globe
+ * where:
+ *	<modelfile.ext> = an model filename.
+ *	<sx> = scale factor along the X axis.
+ *	<sy> = scale factor along the Y axis.
+ *	<sz> = scale factor along the Z axis.
+ *	<su> = uniform scale factor applied to all axes.
+ *
+ * example: osgviewer cow.osg.5.scale cessna.osg
  */
+
 class ReaderWriterSCALE : public osgDB::ReaderWriter
 {
 public:
@@ -43,7 +58,7 @@ public:
 
     virtual bool acceptsExtension(const std::string& extension)
     { 
-        return osgDB::equalCaseInsensitive( extension, EXTENSION_NAME );
+	return osgDB::equalCaseInsensitive( extension, EXTENSION_NAME );
     }
 
     virtual ReadResult readNode(const std::string& fileName,
@@ -79,11 +94,11 @@ public:
 	int sx, sy, sz;
 	int count = sscanf( params.c_str(), "%d,%d,%d", &sx, &sy, &sz );
 	if( count == 1 )
-        {
-            // if only one value supplied, apply uniform scaling
-            sy = sx;
-            sz = sx;
-        }
+	{
+	    // if only one value supplied, apply uniform scaling
+	    sy = sx;
+	    sz = sx;
+	}
 	else if( count != 3 )
 	{
 	    osg::notify(osg::WARN) << "Bad parameters for " EXTENSION_NAME " pseudo-loader: \"" << params << "\"" << std::endl;
@@ -104,12 +119,9 @@ public:
 	xform->setMatrix( osg::Matrix::scale( sx, sy, sz ) );
 	xform->addChild( node );
 
-        // TODO: should we force GL_NORMALIZE on?
-        //      osg::StateSet* ss = xform->getOrCreateStateSet();
-        //      ss->setMode( GL_NORMALIZE, osg::StateAttribute::ON );
-        // Or since the scale is static, perhaps renormalization
-        // would be better performed once at loadtime with a
-        // .normalize pseudo-loader?
+	// turn on GL_NORMALIZE to prevent problems with scaled normals
+	osg::StateSet* ss = xform->getOrCreateStateSet();
+	ss->setMode( GL_NORMALIZE, osg::StateAttribute::ON );
 
 	return xform;
     }

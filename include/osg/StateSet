@@ -75,6 +75,7 @@ class SG_EXPORT StateSet : public Object
         inline const ModeList& getModeList() const { return _modeList; }
 
 
+
         /** simple pairing between an attribute and its override flag.*/
         typedef std::pair<ref_ptr<StateAttribute>,StateAttribute::OverrideValue> RefAttributePair;
         /** a container to map StateAttribyte::Types to their respective RefAttributePair.*/
@@ -105,6 +106,58 @@ class SG_EXPORT StateSet : public Object
 
         /** return the const list of all StateAttributes contained in this const StateSet.*/
         inline const AttributeList& getAttributeList() const { return _attributeList; }
+
+
+
+        typedef std::vector<ModeList>       TextureModeList;
+
+        /** set this StateSet to contain specified GLMode and value.*/
+        void setTextureMode(unsigned int unit,const StateAttribute::GLMode mode, const StateAttribute::GLModeValue value);
+        /** set this StateSet to inherit specified GLMode type from parents.
+          * has the effect of deleting any GlMode of specified type from StateSet.*/
+        void setTextureModeToInherit(unsigned int unit,const StateAttribute::GLMode mode);
+
+        /** get specified GLModeValue for specified GLMode.
+          * returns INHERIT if no GLModeValue is contained within StateSet.*/
+        const StateAttribute::GLModeValue getTextureMode(unsigned int unit,const StateAttribute::GLMode mode) const;
+
+        /** return the list of all Texture related GLModes contained in this StateSet.*/
+        inline TextureModeList& getTextureModeList() { return _textureModeList; }
+
+        /** return the const list of all Texture related GLModes contained in this const StateSet.*/
+        inline const TextureModeList& getTextureModeList() const  { return _textureModeList; }
+
+
+        typedef std::vector<AttributeList>  TextureAttributeList;
+
+        /** set this StateSet to contain specified attribute and override flag.*/
+        void setTextureAttribute(unsigned int unit,StateAttribute *attribute, const StateAttribute::OverrideValue value=StateAttribute::OFF);
+        /** set this StateSet to contain specified attribute and set the associated GLMode's to specified value.*/
+        void setTextureAttributeAndModes(unsigned int unit,StateAttribute *attribute, const StateAttribute::GLModeValue value=StateAttribute::ON);
+        /** set this StateSet to inherit specified attribute type from parents.
+          * has the effect of deleting any state attributes of specified type from StateSet.*/
+        void setTextureAttributeToInherit(unsigned int unit,const StateAttribute::Type type);
+
+        /** get specified Texture related StateAttribute for specified type.
+          * returns NULL if no type is contained within StateSet.*/
+        StateAttribute* getTextureAttribute(unsigned int unit,const StateAttribute::Type type);
+
+        /** get specified Texture related const StateAttribute for specified type.
+          * returns NULL if no type is contained within const StateSet.*/
+        const StateAttribute* getTextureAttribute(unsigned int unit,const StateAttribute::Type type) const;
+
+        /** get specified Texture related RefAttributePair for specified type.
+          * returns NULL if no type is contained within StateSet.*/
+        const RefAttributePair* getTextureAttributePair(unsigned int unit,const StateAttribute::Type type) const;
+        
+        /** return the list of all Texture related StateAttributes contained in this StateSet.*/
+        inline TextureAttributeList& getTextureAttributeList() { return _textureAttributeList; }
+
+        /** return the const list of all Texture related StateAttributes contained in this const StateSet.*/
+        inline const TextureAttributeList& getTextureAttributeList() const { return _textureAttributeList; }
+
+
+
 
         enum RenderingHint
         {
@@ -159,16 +212,30 @@ class SG_EXPORT StateSet : public Object
         virtual ~StateSet();
 
         StateSet& operator = (const StateSet&) { return *this; }
-
-
-        ModeList        _modeList;
-        AttributeList   _attributeList;
         
-        int             _renderingHint;
+        ModeList                            _modeList;
+        AttributeList                       _attributeList;
 
-        RenderBinMode   _binMode;
-        int             _binNum;
-        std::string     _binName;
+        TextureModeList                     _textureModeList;
+        TextureAttributeList                _textureAttributeList;
+        
+        inline ModeList& getOrCreateTextureModeList(unsigned int unit)
+        {
+            if (unit>=_textureModeList.size()) _textureModeList.resize(unit+1);
+            return _textureModeList[unit];
+        }
+        
+        inline AttributeList& getOrCreateTextureAttributeList(unsigned int unit)
+        {
+            if (unit>=_textureAttributeList.size()) _textureAttributeList.resize(unit+1);
+            return _textureAttributeList[unit];
+        }
+
+        int                                 _renderingHint;
+
+        RenderBinMode                       _binMode;
+        int                                 _binNum;
+        std::string                         _binName;
 
 };
 

@@ -101,10 +101,6 @@ class SG_EXPORT StateAttribute : public Object
         enum Types
         {
             TEXTURE,
-            TEXTURE_0       =TEXTURE,
-            TEXTURE_1,
-            TEXTURE_2,
-            TEXTURE_3,
             
             POLYGONMODE,
             POLYGONOFFSET,

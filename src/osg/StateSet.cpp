@@ -37,6 +37,30 @@ StateSet::StateSet(const StateSet& rhs,const CopyOp& copyop):Object(rhs,copyop)
         if (attr) _attributeList[type]=RefAttributePair(attr,rap.second);
     }
     
+    // copy texture related modes.
+    _textureModeList = rhs._textureModeList;
+    
+    // set up the size of the texture attribute list.
+    _textureAttributeList.resize(rhs._textureAttributeList.size());
+    
+    // copy the contents across.
+    for(unsigned int i=0;i<rhs._textureAttributeList.size();++i)
+    {
+        
+        AttributeList& lhs_attributeList = _textureAttributeList[i];
+        const AttributeList& rhs_attributeList = rhs._textureAttributeList[i];
+        for(AttributeList::const_iterator itr=rhs_attributeList.begin();
+            itr!=rhs_attributeList.end();
+            ++itr)
+        {
+            StateAttribute::Type type = itr->first;
+            const RefAttributePair& rap = itr->second;
+            StateAttribute* attr = copyop(rap.first.get());
+            if (attr) lhs_attributeList[type]=RefAttributePair(attr,rap.second);
+        }
+    }
+    
+    
     _renderingHint = rhs._renderingHint;
 
     _binMode = rhs._binMode;
@@ -54,6 +78,61 @@ StateSet::~StateSet()
 int StateSet::compare(const StateSet& rhs,bool compareAttributeContents) const
 {
 
+    if (_textureAttributeList.size()<rhs._textureAttributeList.size()) return -1;
+    if (_textureAttributeList.size()>rhs._textureAttributeList.size()) return 1;
+    
+    for(unsigned int ai=0;ai<_textureAttributeList.size();++ai)
+    {
+        const AttributeList& rhs_attributeList = _textureAttributeList[ai];
+        const AttributeList& lhs_attributeList = rhs._textureAttributeList[ai];
+        if (compareAttributeContents)
+        {
+            // now check to see how the attributes compare.
+            AttributeList::const_iterator lhs_attr_itr = lhs_attributeList.begin();
+            AttributeList::const_iterator rhs_attr_itr = rhs_attributeList.begin();
+            while (lhs_attr_itr!=lhs_attributeList.end() && rhs_attr_itr!=rhs_attributeList.end())
+            {
+                if      (lhs_attr_itr->first<rhs_attr_itr->first) return -1;
+                else if (rhs_attr_itr->first<lhs_attr_itr->first) return 1;
+                if      (*(lhs_attr_itr->second.first)<*(rhs_attr_itr->second.first)) return -1;
+                else if (*(rhs_attr_itr->second.first)<*(lhs_attr_itr->second.first)) return 1;
+                if      (lhs_attr_itr->second.second<rhs_attr_itr->second.second) return -1;
+                else if (rhs_attr_itr->second.second<lhs_attr_itr->second.second) return 1;
+                ++lhs_attr_itr;
+                ++rhs_attr_itr;
+            }
+            if (lhs_attr_itr==lhs_attributeList.end())
+            {
+                if (rhs_attr_itr!=rhs_attributeList.end()) return -1;
+            }
+            else if (rhs_attr_itr == rhs_attributeList.end()) return 1;
+        }
+        else // just compare pointers.
+        {
+            // now check to see how the attributes compare.
+            AttributeList::const_iterator lhs_attr_itr = lhs_attributeList.begin();
+            AttributeList::const_iterator rhs_attr_itr = rhs_attributeList.begin();
+            while (lhs_attr_itr!=lhs_attributeList.end() && rhs_attr_itr!=rhs_attributeList.end())
+            {
+                if      (lhs_attr_itr->first<rhs_attr_itr->first) return -1;
+                else if (rhs_attr_itr->first<lhs_attr_itr->first) return 1;
+                if      (lhs_attr_itr->second.first<rhs_attr_itr->second.first) return -1;
+                else if (rhs_attr_itr->second.first<lhs_attr_itr->second.first) return 1;
+                if      (lhs_attr_itr->second.second<rhs_attr_itr->second.second) return -1;
+                else if (rhs_attr_itr->second.second<lhs_attr_itr->second.second) return 1;
+                ++lhs_attr_itr;
+                ++rhs_attr_itr;
+            }
+            if (lhs_attr_itr==lhs_attributeList.end())
+            {
+                if (rhs_attr_itr!=rhs_attributeList.end()) return -1;
+            }
+            else if (rhs_attr_itr == rhs_attributeList.end()) return 1;
+        }
+    }
+
+    
+    // now check the rest of the non texture attributes
     if (compareAttributeContents)
     {
         // now check to see how the attributes compare.
@@ -101,8 +180,36 @@ int StateSet::compare(const StateSet& rhs,bool compareAttributeContents) const
     
     // we've got here so attributes must be equal...    
 
-    // check to see how the modes compare.
 
+    if (_textureModeList.size()<rhs._textureModeList.size()) return -1;
+    if (_textureModeList.size()>rhs._textureModeList.size()) return 1;
+
+    // check to see how the modes compare.
+    // first check the rest of the texture modes
+    for(unsigned int ti=0;ti<_textureModeList.size();++ti)
+    {
+        const ModeList& lhs_modeList = _textureModeList[ti];
+        const ModeList& rhs_modeList = rhs._textureModeList[ti];
+
+        ModeList::const_iterator lhs_mode_itr = lhs_modeList.begin();
+        ModeList::const_iterator rhs_mode_itr = rhs_modeList.begin();
+        while (lhs_mode_itr!=lhs_modeList.end() && rhs_mode_itr!=rhs_modeList.end())
+        {
+            if      (lhs_mode_itr->first<rhs_mode_itr->first) return -1;
+            else if (rhs_mode_itr->first<lhs_mode_itr->first) return 1;
+            if      (lhs_mode_itr->second<rhs_mode_itr->second) return -1;
+            else if (rhs_mode_itr->second<lhs_mode_itr->second) return 1;
+            ++lhs_mode_itr;
+            ++rhs_mode_itr;
+        }
+        if (lhs_mode_itr==lhs_modeList.end())
+        {
+            if (rhs_mode_itr!=rhs_modeList.end()) return -1;
+        }
+        else if (rhs_mode_itr == rhs_modeList.end()) return 1;
+    }
+
+    // check non texture modes.
     ModeList::const_iterator lhs_mode_itr = _modeList.begin();
     ModeList::const_iterator rhs_mode_itr = rhs._modeList.begin();
     while (lhs_mode_itr!=_modeList.end() && rhs_mode_itr!=rhs._modeList.end())
@@ -172,6 +279,10 @@ void StateSet::setAllToInherit()
 
     _modeList.clear();
     _attributeList.clear();
+    
+    _textureModeList.clear();
+    _textureAttributeList.clear();
+    
 }
 
 void StateSet::merge(const StateSet& rhs)
@@ -219,6 +330,66 @@ void StateSet::merge(const StateSet& rhs)
         {
             // entry doesn't exist so insert it.
             _attributeList.insert(*rhs_aitr);
+        }
+    }
+
+
+    if (_textureModeList.size()<rhs._textureModeList.size()) _textureModeList.resize(rhs._textureModeList.size());
+    for(unsigned int mi=0;mi<rhs._textureModeList.size();++mi)
+    {
+        ModeList& lhs_modeList = _textureModeList[mi];
+        const ModeList& rhs_modeList = rhs._textureModeList[mi];
+        // merge the modes of rhs into this, 
+        // this overrides rhs if OVERRIDE defined in this.
+        for(ModeList::const_iterator rhs_mitr = rhs_modeList.begin();
+            rhs_mitr != rhs_modeList.end();
+            ++rhs_mitr)
+        {
+            ModeList::iterator lhs_mitr = lhs_modeList.find(rhs_mitr->first);
+            if (lhs_mitr!=lhs_modeList.end())
+            {
+                if (!(lhs_mitr->second & StateAttribute::OVERRIDE)) 
+                {
+                    // override isn't on in rhs, so overrite it with incomming
+                    // value.
+                    lhs_mitr->second = rhs_mitr->second;
+                }
+            }
+            else
+            {
+                // entry doesn't exist so insert it.
+                lhs_modeList.insert(*rhs_mitr);
+            }
+        }
+    }
+    
+    if (_textureAttributeList.size()<rhs._textureAttributeList.size()) _textureAttributeList.resize(rhs._textureAttributeList.size());
+    for(unsigned int ai=0;ai<rhs._textureAttributeList.size();++ai)
+    {
+        AttributeList& lhs_attributeList = _textureAttributeList[ai];
+        const AttributeList& rhs_attributeList = rhs._textureAttributeList[ai];
+        
+        // merge the attributes of rhs into this, 
+        // this overrides rhs if OVERRIDE defined in this.
+        for(AttributeList::const_iterator rhs_aitr = rhs_attributeList.begin();
+            rhs_aitr != rhs_attributeList.end();
+            ++rhs_aitr)
+        {
+            AttributeList::iterator lhs_aitr = lhs_attributeList.find(rhs_aitr->first);
+            if (lhs_aitr!=lhs_attributeList.end())
+            {
+                if (!(lhs_aitr->second.second & StateAttribute::OVERRIDE)) 
+                {
+                    // override isn't on in rhs, so overrite it with incomming
+                    // value.
+                    lhs_aitr->second = rhs_aitr->second;
+                }
+            }
+            else
+            {
+                // entry doesn't exist so insert it.
+                lhs_attributeList.insert(*rhs_aitr);
+            }
         }
     }
 
@@ -316,6 +487,119 @@ const StateSet::RefAttributePair* StateSet::getAttributePair(const StateAttribut
         return NULL;
 }
 
+
+
+void StateSet::setTextureMode(unsigned int unit,const StateAttribute::GLMode mode, const StateAttribute::GLModeValue value)
+{
+    ModeList& modeList = getOrCreateTextureModeList(unit);
+    if ((value&StateAttribute::INHERIT)) setTextureModeToInherit(unit,mode);
+    else modeList[mode] = value;
+}
+
+void StateSet::setTextureModeToInherit(unsigned int unit,const StateAttribute::GLMode mode)
+{
+    if (unit>=_textureModeList.size()) return;
+    ModeList& modeList = _textureModeList[unit];
+    ModeList::iterator itr = modeList.find(mode);
+    if (itr!=modeList.end())
+    {
+        modeList.erase(itr);
+    }
+}
+
+
+const StateAttribute::GLModeValue StateSet::getTextureMode(unsigned int unit,const StateAttribute::GLMode mode) const
+{
+    if (unit>=_textureModeList.size()) return StateAttribute::INHERIT;
+    
+    const ModeList& modeList = _textureModeList[unit];
+    ModeList::const_iterator itr = modeList.find(mode);
+    if (itr!=modeList.end())
+    {
+        return itr->second;
+    }
+    else
+        return StateAttribute::INHERIT;
+}
+
+void StateSet::setTextureAttribute(unsigned int unit,StateAttribute *attribute, const StateAttribute::OverrideValue value=StateAttribute::OFF)
+{
+    if (attribute)
+    {
+        AttributeList& attributeList = getOrCreateTextureAttributeList(unit);
+        if ((value&StateAttribute::INHERIT)) setAttributeToInherit(attribute->getType());
+        else attributeList[attribute->getType()] = RefAttributePair(attribute,value&StateAttribute::OVERRIDE);
+    }
+}
+
+
+void StateSet::setTextureAttributeAndModes(unsigned int unit,StateAttribute *attribute, const StateAttribute::GLModeValue value=StateAttribute::ON)
+{
+    if (attribute)
+    {
+        AttributeList& attributeList = getOrCreateTextureAttributeList(unit);
+        attributeList[attribute->getType()] = RefAttributePair(attribute,value&StateAttribute::OVERRIDE);
+        attribute->setStateSetModes(*this,value);
+    }
+}
+
+
+void StateSet::setTextureAttributeToInherit(unsigned int unit,const StateAttribute::Type type)
+{
+    if (unit>=_textureAttributeList.size()) return;
+    AttributeList& attributeList = _textureAttributeList[unit];
+    AttributeList::iterator itr = attributeList.find(type);
+    if (itr!=attributeList.end())
+    {
+        itr->second.first->setStateSetModes(*this,StateAttribute::INHERIT);
+        attributeList.erase(itr);
+    }
+}
+
+
+StateAttribute* StateSet::getTextureAttribute(unsigned int unit,const StateAttribute::Type type)
+{
+    if (unit>=_textureAttributeList.size()) return 0;
+    AttributeList& attributeList = _textureAttributeList[unit];
+    AttributeList::iterator itr = attributeList.find(type);
+    if (itr!=attributeList.end())
+    {
+        return itr->second.first.get();
+    }
+    else
+        return NULL;
+}
+
+
+const StateAttribute* StateSet::getTextureAttribute(unsigned int unit,const StateAttribute::Type type) const
+{
+    if (unit>=_textureAttributeList.size()) return 0;
+    const AttributeList& attributeList = _textureAttributeList[unit];
+    AttributeList::const_iterator itr = attributeList.find(type);
+    if (itr!=attributeList.end())
+    {
+        return itr->second.first.get();
+    }
+    else
+        return NULL;
+}
+
+
+const StateSet::RefAttributePair* StateSet::getTextureAttributePair(unsigned int unit,const StateAttribute::Type type) const
+{
+    if (unit>=_textureAttributeList.size()) return 0;
+    const AttributeList& attributeList = _textureAttributeList[unit];
+    AttributeList::const_iterator itr = attributeList.find(type);
+    if (itr!=attributeList.end())
+    {
+        return &(itr->second);
+    }
+    else
+        return NULL;
+}
+
+
+
 void StateSet::compile(State& state) const
 {
     for(AttributeList::const_iterator itr = _attributeList.begin();
@@ -323,6 +607,18 @@ void StateSet::compile(State& state) const
         ++itr)
     {
         itr->second.first->compile(state);
+    }
+
+    for(TextureAttributeList::const_iterator taitr=_textureAttributeList.begin();
+        taitr!=_textureAttributeList.end();
+        ++taitr)
+    {
+        for(AttributeList::const_iterator itr = taitr->begin();
+            itr!=taitr->end();
+            ++itr)
+        {
+            itr->second.first->compile(state);
+        }
     }
 }
 
@@ -352,3 +648,9 @@ void StateSet::setRendingBinToInherit()
     _binNum = 0;
     _binName = "";
 }
+
+
+
+
+
+

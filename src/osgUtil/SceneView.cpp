@@ -25,7 +25,7 @@ SceneView::SceneView(DisplaySettings* ds)
 
     _cullingMode = osg::CullStack::ENABLE_ALL_CULLING;
     _LODBias = 1.0f;
-    _smallFeatureCullingPixelSize = 2.0f;
+    _smallFeatureCullingPixelSize = 3.0f;
 
     _lightingMode=HEADLIGHT;
     

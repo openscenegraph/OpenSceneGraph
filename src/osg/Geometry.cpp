@@ -40,28 +40,30 @@ Array* Geometry::getTexCoordArray(unsigned int unit)
     else return 0;
 }
 
-void Geometry::drawImmediateMode(State& /*state*/)
+void Geometry::drawImmediateMode(State& state)
 {
     if (!_vertexArray.valid()) return;
     
     // set up the vertex arrays.
-    glEnableClientState( GL_VERTEX_ARRAY );
-    glVertexPointer(3,GL_FLOAT,0,_vertexArray->dataPointer());
+//     glEnableClientState( GL_VERTEX_ARRAY );
+//     glVertexPointer(3,GL_FLOAT,0,_vertexArray->dataPointer());
     
+    state.setVertexPointer(3,GL_FLOAT,0,_vertexArray->dataPointer());
     
     // set up texture coordinates.
     for(unsigned int i=0;i<_texCoordList.size();++i)
     {
         Array* array = _texCoordList[i].get();
-        //glClientActiveTextureARB(GL_TEXTURE0_ARB+i);
         if (array)
         {
-            glEnableClientState( GL_TEXTURE_COORD_ARRAY );
-            glTexCoordPointer(array->dataSize(),array->dataType(),0,array->dataPointer());
+//             glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+//             glTexCoordPointer(array->dataSize(),array->dataType(),0,array->dataPointer());
+            state.setTexCoordPointer(i,array->dataSize(),array->dataType(),0,array->dataPointer());
         }
         else
         {
-            glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+//             glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+            state.disableTexCoordPointer(i);
         }
     }
     
@@ -73,18 +75,22 @@ void Geometry::drawImmediateMode(State& /*state*/)
     switch (_normalBinding)
     {
         case(BIND_OFF):
-            glDisableClientState( GL_NORMAL_ARRAY );
+//            glDisableClientState( GL_NORMAL_ARRAY );
+            state.disableNormalPointer();
             break;
         case(BIND_OVERALL):
-            glDisableClientState( GL_NORMAL_ARRAY );
+//             glDisableClientState( GL_NORMAL_ARRAY );
+            state.disableNormalPointer();
             if (normalPointer) glNormal3fv(reinterpret_cast<const GLfloat*>(normalPointer));
             break;
         case(BIND_PER_PRIMITIVE):
-            glDisableClientState( GL_NORMAL_ARRAY );
+//             glDisableClientState( GL_NORMAL_ARRAY );
+            state.disableNormalPointer();
             break;
         case(BIND_PER_VERTEX):
-            glEnableClientState( GL_NORMAL_ARRAY );
-            if (normalPointer) glNormalPointer(GL_FLOAT,0,normalPointer);
+//             glEnableClientState( GL_NORMAL_ARRAY );
+//             if (normalPointer) glNormalPointer(GL_FLOAT,0,normalPointer);
+            if (normalPointer) state.setNormalPointer(GL_FLOAT,0,normalPointer);
             break;
     }
 
@@ -124,10 +130,12 @@ void Geometry::drawImmediateMode(State& /*state*/)
     switch (_colorBinding)
     {
         case(BIND_OFF):
-            glDisableClientState( GL_COLOR_ARRAY );
+//            glDisableClientState( GL_COLOR_ARRAY );
+            state.disableColorPointer();
             break;
         case(BIND_OVERALL):
-            glDisableClientState( GL_COLOR_ARRAY );
+//            glDisableClientState( GL_COLOR_ARRAY );
+            state.disableColorPointer();
             if (colorPointer)
             {
                 switch(colorType)
@@ -145,11 +153,13 @@ void Geometry::drawImmediateMode(State& /*state*/)
             }
             break;
         case(BIND_PER_PRIMITIVE):
-            glDisableClientState( GL_COLOR_ARRAY );
+//            glDisableClientState( GL_COLOR_ARRAY );
+            state.disableColorPointer();
             break;
         case(BIND_PER_VERTEX):
-            glEnableClientState( GL_COLOR_ARRAY );
-            if (colorPointer) glColorPointer(_colorArray->dataSize(),_colorArray->dataType(),0,colorPointer);
+//             glEnableClientState( GL_COLOR_ARRAY );
+//             if (colorPointer) glColorPointer(_colorArray->dataSize(),_colorArray->dataType(),0,colorPointer);
+            if (colorPointer) state.setColorPointer(_colorArray->dataSize(),_colorArray->dataType(),0,colorPointer);
     }
 
 

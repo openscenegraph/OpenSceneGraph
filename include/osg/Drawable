@@ -268,9 +268,9 @@ class SG_EXPORT Drawable : public Object
             virtual void setVertexArray(unsigned int count,Vec3* vertices) = 0;
             
             virtual void drawArrays(GLenum mode,GLint first,GLsizei count) = 0;
-            virtual void drawElements(GLenum mode,GLsizei count,unsigned char* indices) = 0;
-            virtual void drawElements(GLenum mode,GLsizei count,unsigned short* indices) = 0;
-            virtual void drawElements(GLenum mode,GLsizei count,unsigned int* indices) = 0;
+            virtual void drawElements(GLenum mode,GLsizei count,GLubyte* indices) = 0;
+            virtual void drawElements(GLenum mode,GLsizei count,GLushort* indices) = 0;
+            virtual void drawElements(GLenum mode,GLsizei count,GLuint* indices) = 0;
             
             virtual void begin(GLenum mode) = 0;
             virtual void vertex(const Vec3& vert) = 0;
@@ -460,7 +460,7 @@ public:
         }
     }
     
-    virtual void drawElements(GLenum mode,GLsizei count,unsigned char* indices)
+    virtual void drawElements(GLenum mode,GLsizei count,GLubyte* indices)
     {
         if (indices==0 || count==0) return;
     
@@ -527,7 +527,7 @@ public:
         }
     }    
 
-    virtual void drawElements(GLenum mode,GLsizei count,unsigned short* indices)
+    virtual void drawElements(GLenum mode,GLsizei count,GLushort* indices)
     {
         if (indices==0 || count==0) return;
     
@@ -596,7 +596,7 @@ public:
         }
     }    
 
-    virtual void drawElements(GLenum mode,GLsizei count,unsigned int* indices)
+    virtual void drawElements(GLenum mode,GLsizei count,GLuint* indices)
     {
         if (indices==0 || count==0) return;
     

@@ -517,7 +517,42 @@ bool Primitve_readLocalData(Input& fr,osg::Geometry& geom)
         iteratorAdvanced = true;
         
     }
-    else if (fr.matchSequence("UByteDrawElements %w %i {"))
+    else if (fr.matchSequence("DrawArrayLengths %w %i %i {"))
+    {
+        int entry = fr[1].getNoNestedBrackets();
+
+        GLenum mode;
+        Geometry_matchPrimitiveModeStr(fr[1].getStr(),mode);
+
+        int first;
+        fr[2].getInt(first);
+
+        int capacity;
+        fr[3].getInt(capacity);
+        
+        fr += 5;
+        
+        DrawArrayLengths* prim = osgNew DrawArrayLengths;
+        prim->setMode(mode);
+        prim->setFirst(first);
+        prim->reserve(capacity);
+
+        while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
+        {
+            unsigned int i;
+            if (fr[0].getUInt(i))
+            {
+                prim->push_back(i);
+                ++fr;
+            }
+        }
+         ++fr;
+         
+         geom.addPrimitive(prim);
+   
+        iteratorAdvanced = true;
+    }
+    else if (fr.matchSequence("DrawElementsUByte %w %i {"))
     {
         int entry = fr[1].getNoNestedBrackets();
 
@@ -529,7 +564,7 @@ bool Primitve_readLocalData(Input& fr,osg::Geometry& geom)
         
         fr += 4;
         
-        UByteDrawElements* prim = osgNew UByteDrawElements;
+        DrawElementsUByte* prim = osgNew DrawElementsUByte;
         prim->setMode(mode);
         prim->reserve(capacity);
 
@@ -548,7 +583,7 @@ bool Primitve_readLocalData(Input& fr,osg::Geometry& geom)
    
         iteratorAdvanced = true;
     }
-    else if (fr.matchSequence("UShortDrawElements %w %i {"))
+    else if (fr.matchSequence("DrawElementsUShort %w %i {"))
     {
         int entry = fr[1].getNoNestedBrackets();
 
@@ -560,7 +595,7 @@ bool Primitve_readLocalData(Input& fr,osg::Geometry& geom)
         
         fr += 4;
         
-        UShortDrawElements* prim = osgNew UShortDrawElements;
+        DrawElementsUShort* prim = osgNew DrawElementsUShort;
         prim->setMode(mode);
         prim->reserve(capacity);
 
@@ -579,7 +614,7 @@ bool Primitve_readLocalData(Input& fr,osg::Geometry& geom)
    
         iteratorAdvanced = true;
     }
-    else if (fr.matchSequence("UIntDrawElements %w %i {"))
+    else if (fr.matchSequence("DrawElementsUInt %w %i {"))
     {
         int entry = fr[1].getNoNestedBrackets();
 
@@ -591,7 +626,7 @@ bool Primitve_readLocalData(Input& fr,osg::Geometry& geom)
         
         fr += 4;
         
-        UIntDrawElements* prim = osgNew UIntDrawElements;
+        DrawElementsUInt* prim = osgNew DrawElementsUInt;
         prim->setMode(mode);
         prim->reserve(capacity);
 
@@ -626,25 +661,33 @@ bool Primitve_writeLocalData(const Primitive& prim,Output& fw)
                 return true;
             }
             break;
-        case(Primitive::UByteDrawElementsPrimitiveType):
+        case(Primitive::DrawArrayLengthsPrimitiveType):
             {
-                const UByteDrawElements& cprim = static_cast<const UByteDrawElements&>(prim);
+                const DrawArrayLengths& cprim = static_cast<const DrawArrayLengths&>(prim);
+                fw<<cprim.className()<<" "<<Geometry_getPrimitiveModeStr(cprim.getMode())<<" "<<cprim.getFirst()<<" "<<cprim.size()<<std::endl;
+                Array_writeLocalData(fw,cprim.begin(),cprim.end());
+                return true;
+            }
+            break;
+        case(Primitive::DrawElementsUBytePrimitiveType):
+            {
+                const DrawElementsUByte& cprim = static_cast<const DrawElementsUByte&>(prim);
                 fw<<cprim.className()<<" "<<Geometry_getPrimitiveModeStr(cprim.getMode())<<" "<<cprim.size()<<std::endl;
                 Array_writeLocalData(fw,cprim.begin(),cprim.end());
                 return true;
             }
             break;
-        case(Primitive::UShortDrawElementsPrimitiveType):
+        case(Primitive::DrawElementsUShortPrimitiveType):
             {
-                const UShortDrawElements& cprim = static_cast<const UShortDrawElements&>(prim);
+                const DrawElementsUShort& cprim = static_cast<const DrawElementsUShort&>(prim);
                 fw<<cprim.className()<<" "<<Geometry_getPrimitiveModeStr(cprim.getMode())<<" "<<cprim.size()<<std::endl;
                 Array_writeLocalData(fw,cprim.begin(),cprim.end());
                 return true;
             }
             break;
-        case(Primitive::UIntDrawElementsPrimitiveType):
+        case(Primitive::DrawElementsUIntPrimitiveType):
             {
-                const UIntDrawElements& cprim = static_cast<const UIntDrawElements&>(prim);
+                const DrawElementsUInt& cprim = static_cast<const DrawElementsUInt&>(prim);
                 fw<<cprim.className()<<" "<<Geometry_getPrimitiveModeStr(cprim.getMode())<<" "<<cprim.size()<<std::endl;
                 Array_writeLocalData(fw,cprim.begin(),cprim.end());
                 return true;

@@ -25,8 +25,6 @@ Texture::Texture()
 
     _target = GL_TEXTURE_2D;
 
-    _textureUnit = 0;
-
     _wrap_s    = CLAMP;
     _wrap_t    = CLAMP;
     _wrap_r    = CLAMP;
@@ -83,7 +81,6 @@ int Texture::compare(const StateAttribute& sa) const
     }
 
     // compare each paramter in turn against the rhs.
-    COMPARE_StateAttribute_Parameter(_textureUnit)
     COMPARE_StateAttribute_Parameter(_wrap_s)
     COMPARE_StateAttribute_Parameter(_wrap_t)
     COMPARE_StateAttribute_Parameter(_wrap_r)
@@ -190,9 +187,6 @@ void Texture::apply(State& state) const
 
     // get the globj for the current contextID.
     GLuint& handle = getHandle(contextID);
-
-    // For multi-texturing will need something like...
-    //glActiveTextureARB((GLenum)(GL_TEXTURE0_ARB+_textureUnit));
 
     if (handle != 0)
     {
@@ -611,8 +605,6 @@ void Texture::copyTexImage2D(State& state, int x, int y, int width, int height )
         // RO July 2001.
     }
     
-    // For multi-texturing will need something like...
-    // glActiveTextureARB((GLenum)(GL_TEXTURE0_ARB+_textureUnit));
     
     // remove any previously assigned images as these are nolonger valid.
     _image = NULL;
@@ -650,6 +642,7 @@ void Texture::copyTexSubImage2D(State& state, int xoffset, int yoffset, int x, i
     
     if (handle)
     {
+
         // we have a valid image
         glBindTexture( _target, handle );
         applyTexParameters(_target,state);

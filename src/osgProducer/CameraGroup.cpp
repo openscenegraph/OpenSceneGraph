@@ -27,81 +27,110 @@ void CameraGroup::_init()
     _scene_data = NULL;
     _global_stateset = NULL;
     _background_color.set( 0.2f, 0.2f, 0.4f, 1.0f );
+    _LODScale = 1.0f;
+
+    _fusionDistanceMode = osgUtil::SceneView::USE_CAMERA_FUSION_DISTANCE;
+    _fusionDistanceValue = 1.0f;
+
     _initialized = false;
+
     if (!_frameStamp) _frameStamp = new osg::FrameStamp;
+
+    // set up the maximum number of graphics contexts, before loading the scene graph
+    // to ensure that texture objects and display buffers are configured to the correct size.
+    osg::DisplaySettings::instance()->setMaxNumberOfGraphicsContexts( getNumberOfCameras() );
+
 }
 
 void CameraGroup::setSceneData( osg::Node *scene ) 
 { 
-    _scene_data = scene; 
-    if( _shvec.size() > 0 )
+    if (_scene_data==scene) return;
+
+    if (_scene_decorator.valid() && _scene_data.valid())
     {
-        SceneHandlerList::iterator p;
-        for( p = _shvec.begin(); p != _shvec.end(); p++ )
-        {
-            (*p)->setSceneData( _scene_data.get() );
-        }
+        _scene_decorator->removeChild(_scene_data.get());
     }
+    
+    _scene_data = scene; 
+    
+    if (_scene_decorator.valid() && _scene_data.valid())
+    {
+        _scene_decorator->addChild(scene);
+    }
+        
+    setUpSceneViewsWithData();
 }
         
+void CameraGroup::setSceneDecorator( osg::Group* decorator)
+{
+    if (_scene_decorator==decorator) return;
+
+    _scene_decorator = decorator;
+
+    if (_scene_data.valid() && decorator) 
+    {
+        decorator->addChild(_scene_data.get());
+    }
+    setUpSceneViewsWithData();
+}
+
         
+void CameraGroup::setUpSceneViewsWithData()
+{
+    for(SceneHandlerList::iterator  p = _shvec.begin(); p != _shvec.end(); p++ )
+    {
+        if (_scene_decorator.valid())
+        {
+            (*p)->setSceneData( _scene_decorator.get() );
+        }
+        else if (_scene_data.valid())
+        {
+            (*p)->setSceneData( _scene_data.get() );
+
+        }
+        
+        (*p)->setFrameStamp( _frameStamp.get() );
+        (*p)->setGlobalStateSet( _global_stateset.get() );
+        (*p)->setBackgroundColor( _background_color );
+        (*p)->setLODScale( _LODScale );
+        (*p)->setFusionDistance( _fusionDistanceMode, _fusionDistanceValue );
+
+    }
+}
+
+
 void CameraGroup::setFrameStamp( osg::FrameStamp* fs )
 {
     _frameStamp = fs;
-
-    for(SceneHandlerList::iterator  p = _shvec.begin(); p != _shvec.end(); p++ )
-    {
-        (*p)->setFrameStamp( fs );
-    }
+    setUpSceneViewsWithData();
 }
 
 
 void CameraGroup::setGlobalStateSet( osg::StateSet *sset ) 
 { 
     _global_stateset = sset; 
-
-    for(SceneHandlerList::iterator  p = _shvec.begin(); p != _shvec.end(); p++ )
-    {
-        (*p)->setGlobalStateSet( _global_stateset.get() );
-    }
+    setUpSceneViewsWithData();
 }
 
 void CameraGroup::setBackgroundColor( const osg::Vec4& backgroundColor ) 
 {
     _background_color = backgroundColor;
-
-    if( _shvec.size() > 0 )
-    {
-        SceneHandlerList::iterator p;
-        for( p = _shvec.begin(); p != _shvec.end(); p++ )
-        {
-            (*p)->setBackgroundColor( _background_color );
-        }
-    }
+    setUpSceneViewsWithData();
 }
 
-void CameraGroup::setLODScale( float bias )
+void CameraGroup::setLODScale( float scale )
 {
-    if( _shvec.size() > 0 )
-    {
-        SceneHandlerList::iterator p;
-        for( p = _shvec.begin(); p != _shvec.end(); p++ )
-        {
-            (*p)->setLODScale( bias );
-        }
-    }
+    // need to set a local variable?
+    _LODScale = scale;
+    setUpSceneViewsWithData();
 }
 
-void CameraGroup::setFusionDistance( osgUtil::SceneView::FusionDistanceMode mode,float value=1.0f)
+void CameraGroup::setFusionDistance( osgUtil::SceneView::FusionDistanceMode mode,float value)
 {
-    if( _shvec.size() > 0 )
-    {
-        SceneHandlerList::iterator p;
-        for( p = _shvec.begin(); p != _shvec.end(); p++ )
-        {
-            (*p)->setFusionDistance( mode, value );
-        }
-    }
+    // need to set a local variable?
+    _fusionDistanceMode = mode;
+    _fusionDistanceValue = value;
+    setUpSceneViewsWithData();
 }
 
 void CameraGroup::advance()
@@ -113,6 +142,7 @@ void CameraGroup::advance()
 void CameraGroup::realize( ThreadingModel thread_model= SingleThreaded )
 {
     if( _initialized ) return;
+
 
     if (!_ds) _ds = osg::DisplaySettings::instance();
 
@@ -136,6 +166,8 @@ void CameraGroup::realize( ThreadingModel thread_model= SingleThreaded )
     }
 
 
+    setUpSceneViewsWithData();
+
     /// Make all statesets the same as the first.
     if( _global_stateset == NULL && _shvec.size() > 0 )
     {
@@ -146,6 +178,7 @@ void CameraGroup::realize( ThreadingModel thread_model= SingleThreaded )
         for( ; p != _shvec.end(); p++ )
             (*p)->setGlobalStateSet( _global_stateset.get() );
     }
+
 
     Producer::CameraGroup::realize( thread_model );        
     _initialized = true;

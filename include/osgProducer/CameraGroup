@@ -1,13 +1,23 @@
-//C++ header - Open Producer - Copyright (C) 2002 Don Burns
-//Distributed under the terms of the GNU LIBRARY GENERAL PUBLIC LICENSE (LGPL)
-//as published by the Free Software Foundation.
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
 #ifndef OSG_CAMERA_GROUP_H
 #define OSG_CAMERA_GROUP_H
 
 
 #include <Producer/CameraGroup>
 
-#include <osg/Node>
+#include <osg/Group>
 #include <osg/StateSet>
 #include <osg/FrameStamp>
 #include <osg/DisplaySettings>
@@ -31,6 +41,7 @@ class OSGPRODUCER_EXPORT CameraGroup : public Producer::CameraGroup
         virtual ~CameraGroup() {}
 
 
+
         void setSceneData( osg::Node *scene );
         
         osg::Node *getSceneData() { return _scene_data.get(); }
@@ -38,6 +49,14 @@ class OSGPRODUCER_EXPORT CameraGroup : public Producer::CameraGroup
         const osg::Node *getSceneData() const { return _scene_data.get(); }
 
         
+
+        void setSceneDecorator( osg::Group* decorator);
+        
+        osg::Group* getSceneDecorator() { return _scene_decorator.get(); }
+
+        const osg::Group* getSceneDecorator() const { return _scene_decorator.get(); }
+
+
         
         void setDisplaySettings( osg::DisplaySettings *ds ) { _ds = ds; }
 
@@ -68,7 +87,7 @@ class OSGPRODUCER_EXPORT CameraGroup : public Producer::CameraGroup
         const osg::Vec4& getBackgroundColor() const { return _background_color; }
 
 
-        void setLODScale( float bias );
+        void setLODScale( float scale );
 
         void setFusionDistance( osgUtil::SceneView::FusionDistanceMode mode,float value=1.0f);
 
@@ -76,7 +95,7 @@ class OSGPRODUCER_EXPORT CameraGroup : public Producer::CameraGroup
         void advance();
 
 
-        void realize( ThreadingModel thread_model= SingleThreaded );
+        virtual void realize( ThreadingModel thread_model= SingleThreaded );
 
 
         virtual void frame();
@@ -84,16 +103,25 @@ class OSGPRODUCER_EXPORT CameraGroup : public Producer::CameraGroup
 
     protected :
 
+        void setUpSceneViewsWithData();
 
-        osg::ref_ptr<osg::Node>             _scene_data;
-        osg::ref_ptr<osg::StateSet>         _global_stateset;
-        osg::Vec4                           _background_color;
-        SceneHandlerList                    _shvec;
-        osg::ref_ptr<osg::DisplaySettings>  _ds;
-        bool                                _initialized;
-        osg::ref_ptr<osg::FrameStamp>       _frameStamp;
 
-        void _init();;
+        osg::ref_ptr<osg::Node>                 _scene_data;
+        osg::ref_ptr<osg::Group>                _scene_decorator;
+
+        osg::ref_ptr<osg::StateSet>             _global_stateset;
+        osg::Vec4                               _background_color;
+        float                                   _LODScale;
+        
+        osgUtil::SceneView::FusionDistanceMode  _fusionDistanceMode;
+        float                                   _fusionDistanceValue;
+        
+        SceneHandlerList                        _shvec;
+        osg::ref_ptr<osg::DisplaySettings>      _ds;
+        bool                                    _initialized;
+        osg::ref_ptr<osg::FrameStamp>           _frameStamp;
+
+        void _init();
 };
 
 }

@@ -67,6 +67,17 @@ class Vec4
         inline float z() const { return _v[2]; }
         inline float w() const { return _v[3]; }
 
+        inline unsigned long asABGR() const { return clampTo((unsigned long)(_v[0]*255),0ul,255ul)<<24 |
+                                               clampTo((unsigned long)(_v[1]*255),0ul,255ul)<<16 |
+                                               clampTo((unsigned long)(_v[2]*255),0ul,255ul)<<8  |
+                                               clampTo((unsigned long)(_v[3]*255),0ul,255ul); }
+
+        inline unsigned long asRGBA() const { return clampTo((unsigned long)(_v[3]*255),0ul,255ul)<<24 |
+                                               clampTo((unsigned long)(_v[2]*255),0ul,255ul)<<16 |
+                                               clampTo((unsigned long)(_v[1]*255),0ul,255ul)<<8  |
+                                               clampTo((unsigned long)(_v[0]*255),0ul,255ul); }
+
+
         inline const bool valid() const { return !isNaN(); }
         inline const bool isNaN() const { return osg::isNaN(_v[0]) || osg::isNaN(_v[1]) || osg::isNaN(_v[2]) || osg::isNaN(_v[3]); }
 

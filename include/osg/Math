@@ -70,12 +70,29 @@ const double PI   = 3.14159265358979323846;
 const double PI_2 = 1.57079632679489661923;
 const double PI_4 = 0.78539816339744830962;
 
+template<typename T>
+inline T clampTo(T v,T minimum,T maximum) { return v<minimum?minimum:v>maximum?maximum:v; }
 
-inline double inDegrees(double angle) { return angle*PI/180.0; }
-inline double inRadians(double angle) { return angle; }
+template<typename T>
+inline T sign(T v) { return v<0?-1:1; }
 
-inline double DegreesToRadians(double angle) { return angle*PI/180.0; }
-inline double RadiansToDegrees(double angle) { return angle*180.0/PI; }
+template<typename T>
+inline T square(T v) { return v*v; }
+
+template<typename T>
+inline T signedSquare(T v) { return v<0?-v*v:v*v;; }
+
+template<typename T>
+inline T inDegrees(T angle) { return angle*PI/180.0; }
+
+template<typename T>
+inline T inRadians(T angle) { return angle; }
+
+template<typename T>
+inline T DegreesToRadians(T angle) { return angle*PI/180.0; }
+
+template<typename T>
+inline T RadiansToDegrees(T angle) { return angle*180.0/PI; }
 
 #if defined(WIN32) && !defined(__CYGWIN__) && !defined(__MWERKS__)
     inline bool isNaN(float v) { return _isnan(v)!=0; }

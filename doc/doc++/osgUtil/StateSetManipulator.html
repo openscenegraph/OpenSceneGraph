@@ -22,32 +22,32 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.26.1">StateSetManipulator</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.27.1">StateSetManipulator</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.26.2">~StateSetManipulator</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.27.2">~StateSetManipulator</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.26.3">setStateSet</A></B>(osg::StateSet*)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.27.3">setStateSet</A></B>(osg::StateSet*)
 <DD><I>attach a geostate to the manipulator to be used for specifying view</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::StateSet* <B><A HREF="#DOC.2.26.4">getStateSet</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::StateSet* <B><A HREF="#DOC.2.27.4">getStateSet</A></B>()
 <DD><I>get the attached a geostate</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const osg::StateSet* <B><A HREF="#DOC.2.26.5">getStateSet</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const osg::StateSet* <B><A HREF="#DOC.2.27.5">getStateSet</A></B>() const 
 <DD><I>get the attached a geostate</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.26.6">handle</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.27.6">handle</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)
 <DD><I>Handle events, return true if handled, false otherwise</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::StateSet&gt;  <B><A HREF="#DOC.2.26.7">_drawState</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::StateSet&gt;  <B><A HREF="#DOC.2.27.7">_drawState</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.26.8">_backface</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.27.8">_backface</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.26.9">_lighting</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.27.9">_lighting</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.26.10">_texture</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.27.10">_texture</A></B>
 </DL></P>
 
 </DL>
@@ -61,47 +61,47 @@
 <DL>
 
 <A NAME="StateSetManipulator"></A>
-<A NAME="DOC.2.26.1"></A>
+<A NAME="DOC.2.27.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> StateSetManipulator()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~StateSetManipulator"></A>
-<A NAME="DOC.2.26.2"></A>
+<A NAME="DOC.2.27.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~StateSetManipulator()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setStateSet"></A>
-<A NAME="DOC.2.26.3"></A>
+<A NAME="DOC.2.27.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setStateSet(osg::StateSet*)</B></TT>
 <DD>attach a geostate to the manipulator to be used for specifying view
 <DL><DT><DD></DL><P>
 <A NAME="getStateSet"></A>
-<A NAME="DOC.2.26.4"></A>
+<A NAME="DOC.2.27.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::StateSet* getStateSet()</B></TT>
 <DD>get the attached a geostate
 <DL><DT><DD></DL><P>
 <A NAME="getStateSet"></A>
-<A NAME="DOC.2.26.5"></A>
+<A NAME="DOC.2.27.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const osg::StateSet* getStateSet() const </B></TT>
 <DD>get the attached a geostate
 <DL><DT><DD></DL><P>
 <A NAME="handle"></A>
-<A NAME="DOC.2.26.6"></A>
+<A NAME="DOC.2.27.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool handle(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)</B></TT>
 <DD>Handle events, return true if handled, false otherwise
 <DL><DT><DD></DL><P>
 <A NAME="_drawState"></A>
-<A NAME="DOC.2.26.7"></A>
+<A NAME="DOC.2.27.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::StateSet&gt;  _drawState</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_backface"></A>
-<A NAME="DOC.2.26.8"></A>
+<A NAME="DOC.2.27.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _backface</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_lighting"></A>
-<A NAME="DOC.2.26.9"></A>
+<A NAME="DOC.2.27.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _lighting</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_texture"></A>
-<A NAME="DOC.2.26.10"></A>
+<A NAME="DOC.2.27.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _texture</B></TT>
 <DL><DT><DD></DL><P></DL>
 

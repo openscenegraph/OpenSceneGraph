@@ -43,7 +43,7 @@
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.9">setFrustum</A></B>(const double <!1><A HREF="Camera.html#DOC.2.21.18">left</A>, const double <!1><A HREF="Camera.html#DOC.2.21.19">right</A>, const double <!1><A HREF="Camera.html#DOC.2.21.20">bottom</A>, const double <!1><A HREF="Camera.html#DOC.2.21.21">top</A>, const double <!1><A HREF="Camera.html#DOC.2.21.22">zNear</A>, const double <!1><A HREF="Camera.html#DOC.2.21.23">zFar</A>)
 <DD><I>Set a perspective projection.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.10">setPerspective</A></B>(const double fovy, const double <!1><A HREF="Viewport.html#DOC.2.111.12">aspectRatio</A>, const double <!1><A HREF="Camera.html#DOC.2.21.22">zNear</A>, const double <!1><A HREF="Camera.html#DOC.2.21.23">zFar</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.10">setPerspective</A></B>(const double fovy, const double <!1><A HREF="Viewport.html#DOC.2.120.12">aspectRatio</A>, const double <!1><A HREF="Camera.html#DOC.2.21.22">zNear</A>, const double <!1><A HREF="Camera.html#DOC.2.21.23">zFar</A>)
 <DD><I>Set a symmetrical perspective projection, See gluPerspective for further details.</I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.11">setFOV</A></B>(const double fovx, const double fovy, const double <!1><A HREF="Camera.html#DOC.2.21.22">zNear</A>, const double <!1><A HREF="Camera.html#DOC.2.21.23">zFar</A>)
@@ -93,7 +93,7 @@
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.30">setView</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; eyePoint, const <!1><A HREF="Vec3.html">Vec3</A>&amp; lookPoint, const <!1><A HREF="Vec3.html">Vec3</A>&amp; upVector)
 <DD><I> Set the View, the up vector should be orthogonal to the look vector.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.31">setLookAt</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye, const <!1><A HREF="Vec3.html">Vec3</A>&amp; <!1><A HREF="BoundingSphere.html#DOC.2.5.8">center</A>, const <!1><A HREF="Vec3.html">Vec3</A>&amp; up)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.31">setLookAt</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye, const <!1><A HREF="Vec3.html">Vec3</A>&amp; <!1><A HREF="ConvexPlanerPolygon.html#DOC.2.27.3">center</A>, const <!1><A HREF="Vec3.html">Vec3</A>&amp; up)
 <DD><I>set the position and orientation of the camera, using the same convention as gluLookAt</I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.32">setLookAt</A></B>(const double eyeX, const double eyeY, const double eyeZ, const double centerX, const double centerY, const double centerZ, const double upX, const double upY, const double upZ)
@@ -314,7 +314,7 @@ and set perspective methods
 <DL><DT><DD></DL><P>
 <A NAME="setPerspective"></A>
 <A NAME="DOC.2.21.10"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setPerspective(const double fovy, const double <!1><A HREF="Viewport.html#DOC.2.111.12">aspectRatio</A>, const double <!1><A HREF="Camera.html#DOC.2.21.22">zNear</A>, const double <!1><A HREF="Camera.html#DOC.2.21.23">zFar</A>)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setPerspective(const double fovy, const double <!1><A HREF="Viewport.html#DOC.2.120.12">aspectRatio</A>, const double <!1><A HREF="Camera.html#DOC.2.21.22">zNear</A>, const double <!1><A HREF="Camera.html#DOC.2.21.23">zFar</A>)</B></TT>
 <DD>Set a symmetrical perspective projection, See gluPerspective for further details.
 Aspect ratio is defined as width/height.
 <DL><DT><DD></DL><P>
@@ -458,7 +458,7 @@ kept for backwards compatibility.
 <DL><DT><DD></DL><P>
 <A NAME="setLookAt"></A>
 <A NAME="DOC.2.21.31"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setLookAt(const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye, const <!1><A HREF="Vec3.html">Vec3</A>&amp; <!1><A HREF="BoundingSphere.html#DOC.2.5.8">center</A>, const <!1><A HREF="Vec3.html">Vec3</A>&amp; up)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setLookAt(const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye, const <!1><A HREF="Vec3.html">Vec3</A>&amp; <!1><A HREF="ConvexPlanerPolygon.html#DOC.2.27.3">center</A>, const <!1><A HREF="Vec3.html">Vec3</A>&amp; up)</B></TT>
 <DD>set the position and orientation of the camera, using the same convention as
 gluLookAt
 <DL><DT><DD></DL><P>

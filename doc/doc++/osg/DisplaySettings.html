@@ -23,138 +23,138 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   <!1><A HREF="DisplaySettings.html">DisplaySettings</A>* <B><A HREF="#DOC.2.29.1">instance</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   <!1><A HREF="DisplaySettings.html">DisplaySettings</A>* <B><A HREF="#DOC.2.32.1">instance</A></B>()
 <DD><I>Maintain a DisplaySettings singleton for objects to querry at runtime</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.29.2">DisplaySettings</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.32.2">DisplaySettings</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.29.3">DisplaySettings</A></B>(std::vector&lt;std::string&gt;&amp; commandLine)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.32.3">DisplaySettings</A></B>(std::vector&lt;std::string&gt;&amp; commandLine)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.29.4">DisplaySettings</A></B>(const <!1><A HREF="DisplaySettings.html#DOC.2.29.4">DisplaySettings</A>&amp; vs)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.32.4">DisplaySettings</A></B>(const <!1><A HREF="DisplaySettings.html#DOC.2.32.4">DisplaySettings</A>&amp; vs)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.29.5">~DisplaySettings</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.32.5">~DisplaySettings</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DisplaySettings.html">DisplaySettings</A>&amp; <B><A HREF="#DOC.2.29.6">operator = </A></B>(const <!1><A HREF="DisplaySettings.html">DisplaySettings</A>&amp; vs)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DisplaySettings.html">DisplaySettings</A>&amp; <B><A HREF="#DOC.2.32.6">operator = </A></B>(const <!1><A HREF="DisplaySettings.html">DisplaySettings</A>&amp; vs)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.29.7">merge</A></B>(const <!1><A HREF="DisplaySettings.html">DisplaySettings</A>&amp; vs)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.32.7">merge</A></B>(const <!1><A HREF="DisplaySettings.html">DisplaySettings</A>&amp; vs)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.29.8">setDefaults</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.32.8">setDefaults</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.29.9">readEnvironmentalVariables</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.32.9">readEnvironmentalVariables</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.29.10">readCommandLine</A></B>(std::vector&lt;std::string&gt;&amp; commandLine)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.32.10">readCommandLine</A></B>(std::vector&lt;std::string&gt;&amp; commandLine)
 <DD><I>read the command line string list, removing any matched control sequences</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.29.11">setStereo</A></B>(const bool on)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.32.11">setStereo</A></B>(const bool on)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const bool <B><A HREF="#DOC.2.29.12">getStereo</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const bool <B><A HREF="#DOC.2.32.12">getStereo</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.29.14">setStereoMode</A></B>(const <!1><A HREF="DisplaySettings.html#DOC.2.29.13">StereoMode</A> mode)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.32.14">setStereoMode</A></B>(const <!1><A HREF="DisplaySettings.html#DOC.2.32.13">StereoMode</A> mode)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="DisplaySettings.html#DOC.2.29.13">StereoMode</A> <B><A HREF="#DOC.2.29.15">getStereoMode</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="DisplaySettings.html#DOC.2.32.13">StereoMode</A> <B><A HREF="#DOC.2.32.15">getStereoMode</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.29.16">setEyeSeperation</A></B>(const float eyeSeperation)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.32.16">setEyeSeperation</A></B>(const float eyeSeperation)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const float <B><A HREF="#DOC.2.29.17">getEyeSeperation</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const float <B><A HREF="#DOC.2.32.17">getEyeSeperation</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.29.18">setScreenDistance</A></B>(const float <!1><A HREF="Plane.html#DOC.2.75.21">distance</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.32.18">setScreenDistance</A></B>(const float <!1><A HREF="Plane.html#DOC.2.80.21">distance</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const float <B><A HREF="#DOC.2.29.19">getScreenDistance</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const float <B><A HREF="#DOC.2.32.19">getScreenDistance</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.29.21">setSplitStereoHorizontalEyeMapping</A></B>(<!1><A HREF="DisplaySettings.html#DOC.2.29.20">SplitStereoHorizontalEyeMapping</A> m)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.32.21">setSplitStereoHorizontalEyeMapping</A></B>(<!1><A HREF="DisplaySettings.html#DOC.2.32.20">SplitStereoHorizontalEyeMapping</A> m)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DisplaySettings.html#DOC.2.29.20">SplitStereoHorizontalEyeMapping</A> <B><A HREF="#DOC.2.29.22">getSplitStereoHorizontalEyeMapping</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DisplaySettings.html#DOC.2.32.20">SplitStereoHorizontalEyeMapping</A> <B><A HREF="#DOC.2.32.22">getSplitStereoHorizontalEyeMapping</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.29.23">setSplitStereoHorizontalSeperation</A></B>(const int <!1><A HREF="ImpostorSprite.html#DOC.2.47.23">s</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.32.23">setSplitStereoHorizontalSeperation</A></B>(const int <!1><A HREF="ImpostorSprite.html#DOC.2.51.23">s</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const int <B><A HREF="#DOC.2.29.24">getSplitStereoHorizontalSeperation</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const int <B><A HREF="#DOC.2.32.24">getSplitStereoHorizontalSeperation</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.29.26">setSplitStereoVerticalEyeMapping</A></B>(<!1><A HREF="DisplaySettings.html#DOC.2.29.25">SplitStereoVerticalEyeMapping</A> m)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.32.26">setSplitStereoVerticalEyeMapping</A></B>(<!1><A HREF="DisplaySettings.html#DOC.2.32.25">SplitStereoVerticalEyeMapping</A> m)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DisplaySettings.html#DOC.2.29.25">SplitStereoVerticalEyeMapping</A> <B><A HREF="#DOC.2.29.27">getSplitStereoVerticalEyeMapping</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DisplaySettings.html#DOC.2.32.25">SplitStereoVerticalEyeMapping</A> <B><A HREF="#DOC.2.32.27">getSplitStereoVerticalEyeMapping</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.29.28">setSplitStereoVerticalSeperation</A></B>(const int <!1><A HREF="ImpostorSprite.html#DOC.2.47.23">s</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.32.28">setSplitStereoVerticalSeperation</A></B>(const int <!1><A HREF="ImpostorSprite.html#DOC.2.51.23">s</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const int <B><A HREF="#DOC.2.29.29">getSplitStereoVerticalSeperation</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const int <B><A HREF="#DOC.2.32.29">getSplitStereoVerticalSeperation</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.29.30">setScreenHeight</A></B>(const float <!1><A HREF="Viewport.html#DOC.2.111.10">height</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.32.30">setScreenHeight</A></B>(const float <!1><A HREF="Viewport.html#DOC.2.120.10">height</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const float <B><A HREF="#DOC.2.29.31">getScreenHeight</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const float <B><A HREF="#DOC.2.32.31">getScreenHeight</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.29.32">setDoubleBuffer</A></B>(const bool flag)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.32.32">setDoubleBuffer</A></B>(const bool flag)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const bool <B><A HREF="#DOC.2.29.33">getDoubleBuffer</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const bool <B><A HREF="#DOC.2.32.33">getDoubleBuffer</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.29.34">setRGB</A></B>(const bool flag)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.32.34">setRGB</A></B>(const bool flag)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const bool <B><A HREF="#DOC.2.29.35">getRGB</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const bool <B><A HREF="#DOC.2.32.35">getRGB</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.29.36">setDepthBuffer</A></B>(const bool flag)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.32.36">setDepthBuffer</A></B>(const bool flag)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const bool <B><A HREF="#DOC.2.29.37">getDepthBuffer</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const bool <B><A HREF="#DOC.2.32.37">getDepthBuffer</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.29.38">setMinimumNumAlphaBits</A></B>(const unsigned int bits)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.32.38">setMinimumNumAlphaBits</A></B>(const unsigned int bits)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const unsigned int <B><A HREF="#DOC.2.29.39">getMinimumNumAlphaBits</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const unsigned int <B><A HREF="#DOC.2.32.39">getMinimumNumAlphaBits</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const bool <B><A HREF="#DOC.2.29.40">getAlphaBuffer</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const bool <B><A HREF="#DOC.2.32.40">getAlphaBuffer</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.29.41">setMinimumNumStencilBits</A></B>(const unsigned int bits)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.32.41">setMinimumNumStencilBits</A></B>(const unsigned int bits)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const unsigned int <B><A HREF="#DOC.2.29.42">getMinimumNumStencilBits</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const unsigned int <B><A HREF="#DOC.2.32.42">getMinimumNumStencilBits</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const bool <B><A HREF="#DOC.2.29.43">getStencilBuffer</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const bool <B><A HREF="#DOC.2.32.43">getStencilBuffer</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.29.44">setMaxNumberOfGraphicsContexts</A></B>(const int num)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.32.44">setMaxNumberOfGraphicsContexts</A></B>(const int num)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const int <B><A HREF="#DOC.2.29.45">getMaxNumberOfGraphicsContexts</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const int <B><A HREF="#DOC.2.32.45">getMaxNumberOfGraphicsContexts</A></B>() const 
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.29.13">StereoMode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.32.13">StereoMode</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.29.20">SplitStereoHorizontalEyeMapping</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.32.20">SplitStereoHorizontalEyeMapping</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.29.25">SplitStereoVerticalEyeMapping</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.32.25">SplitStereoVerticalEyeMapping</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.29.47">_stereo</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.32.47">_stereo</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DisplaySettings.html#DOC.2.29.13">StereoMode</A> <B><A HREF="#DOC.2.29.48">_stereoMode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DisplaySettings.html#DOC.2.32.13">StereoMode</A> <B><A HREF="#DOC.2.32.48">_stereoMode</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.29.49">_eyeSeperation</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.32.49">_eyeSeperation</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.29.50">_screenDistance</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.32.50">_screenDistance</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.29.51">_screenHeight</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.32.51">_screenHeight</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DisplaySettings.html#DOC.2.29.20">SplitStereoHorizontalEyeMapping</A> <B><A HREF="#DOC.2.29.52">_splitStereoHorizontalEyeMapping</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DisplaySettings.html#DOC.2.32.20">SplitStereoHorizontalEyeMapping</A> <B><A HREF="#DOC.2.32.52">_splitStereoHorizontalEyeMapping</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.29.53">_splitStereoHorizontalSeperation</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.32.53">_splitStereoHorizontalSeperation</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DisplaySettings.html#DOC.2.29.25">SplitStereoVerticalEyeMapping</A> <B><A HREF="#DOC.2.29.54">_splitStereoVerticalEyeMapping</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DisplaySettings.html#DOC.2.32.25">SplitStereoVerticalEyeMapping</A> <B><A HREF="#DOC.2.32.54">_splitStereoVerticalEyeMapping</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.29.55">_splitStereoVerticalSeperation</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.32.55">_splitStereoVerticalSeperation</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.29.56">_doubleBuffer</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.32.56">_doubleBuffer</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.29.57">_RGB</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.32.57">_RGB</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.29.58">_depthBuffer</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.32.58">_depthBuffer</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.29.59">_minimumNumberAlphaBits</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.32.59">_minimumNumberAlphaBits</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.29.60">_minimumNumberStencilBits</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.32.60">_minimumNumberStencilBits</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.29.61">_maxNumOfGraphicsContexts</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.32.61">_maxNumOfGraphicsContexts</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.29.46">copy</A></B>(const <!1><A HREF="DisplaySettings.html">DisplaySettings</A>&amp; vs)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.32.46">copy</A></B>(const <!1><A HREF="DisplaySettings.html">DisplaySettings</A>&amp; vs)
 </DL></P>
 
 </DL>
@@ -186,287 +186,287 @@ have been set up, and the status of stereo viewing</BLOCKQUOTE>
 <DL>
 
 <A NAME="instance"></A>
-<A NAME="DOC.2.29.1"></A>
+<A NAME="DOC.2.32.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   <!1><A HREF="DisplaySettings.html">DisplaySettings</A>* instance()</B></TT>
 <DD>Maintain a DisplaySettings singleton for objects to querry at runtime
 <DL><DT><DD></DL><P>
 <A NAME="DisplaySettings"></A>
-<A NAME="DOC.2.29.2"></A>
+<A NAME="DOC.2.32.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DisplaySettings()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="DisplaySettings"></A>
-<A NAME="DOC.2.29.3"></A>
+<A NAME="DOC.2.32.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DisplaySettings(std::vector&lt;std::string&gt;&amp; commandLine)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="DisplaySettings"></A>
-<A NAME="DOC.2.29.4"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DisplaySettings(const <!1><A HREF="DisplaySettings.html#DOC.2.29.4">DisplaySettings</A>&amp; vs)</B></TT>
+<A NAME="DOC.2.32.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DisplaySettings(const <!1><A HREF="DisplaySettings.html#DOC.2.32.4">DisplaySettings</A>&amp; vs)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~DisplaySettings"></A>
-<A NAME="DOC.2.29.5"></A>
+<A NAME="DOC.2.32.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~DisplaySettings()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator = "></A>
-<A NAME="DOC.2.29.6"></A>
+<A NAME="DOC.2.32.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DisplaySettings.html">DisplaySettings</A>&amp; operator = (const <!1><A HREF="DisplaySettings.html">DisplaySettings</A>&amp; vs)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="merge"></A>
-<A NAME="DOC.2.29.7"></A>
+<A NAME="DOC.2.32.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void merge(const <!1><A HREF="DisplaySettings.html">DisplaySettings</A>&amp; vs)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setDefaults"></A>
-<A NAME="DOC.2.29.8"></A>
+<A NAME="DOC.2.32.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDefaults()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="readEnvironmentalVariables"></A>
-<A NAME="DOC.2.29.9"></A>
+<A NAME="DOC.2.32.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void readEnvironmentalVariables()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="readCommandLine"></A>
-<A NAME="DOC.2.29.10"></A>
+<A NAME="DOC.2.32.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void readCommandLine(std::vector&lt;std::string&gt;&amp; commandLine)</B></TT>
 <DD>read the command line string list, removing any matched control sequences
 <DL><DT><DD></DL><P>
 <A NAME="setStereo"></A>
-<A NAME="DOC.2.29.11"></A>
+<A NAME="DOC.2.32.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setStereo(const bool on)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getStereo"></A>
-<A NAME="DOC.2.29.12"></A>
+<A NAME="DOC.2.32.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const bool getStereo() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="StereoMode"></A>
-<A NAME="DOC.2.29.13"></A>
+<A NAME="DOC.2.32.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  StereoMode</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="QUAD_BUFFER"></A>
-<A NAME="DOC.2.29.13.1"></A>
+<A NAME="DOC.2.32.13.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> QUAD_BUFFER</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ANAGLYPHIC"></A>
-<A NAME="DOC.2.29.13.2"></A>
+<A NAME="DOC.2.32.13.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ANAGLYPHIC</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="HORIZONTAL_SPLIT"></A>
-<A NAME="DOC.2.29.13.3"></A>
+<A NAME="DOC.2.32.13.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> HORIZONTAL_SPLIT</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="VERTICAL_SPLIT"></A>
-<A NAME="DOC.2.29.13.4"></A>
+<A NAME="DOC.2.32.13.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> VERTICAL_SPLIT</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="setStereoMode"></A>
-<A NAME="DOC.2.29.14"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setStereoMode(const <!1><A HREF="DisplaySettings.html#DOC.2.29.13">StereoMode</A> mode)</B></TT>
+<A NAME="DOC.2.32.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setStereoMode(const <!1><A HREF="DisplaySettings.html#DOC.2.32.13">StereoMode</A> mode)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getStereoMode"></A>
-<A NAME="DOC.2.29.15"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="DisplaySettings.html#DOC.2.29.13">StereoMode</A> getStereoMode() const </B></TT>
+<A NAME="DOC.2.32.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="DisplaySettings.html#DOC.2.32.13">StereoMode</A> getStereoMode() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setEyeSeperation"></A>
-<A NAME="DOC.2.29.16"></A>
+<A NAME="DOC.2.32.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setEyeSeperation(const float eyeSeperation)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getEyeSeperation"></A>
-<A NAME="DOC.2.29.17"></A>
+<A NAME="DOC.2.32.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const float getEyeSeperation() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setScreenDistance"></A>
-<A NAME="DOC.2.29.18"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setScreenDistance(const float <!1><A HREF="Plane.html#DOC.2.75.21">distance</A>)</B></TT>
+<A NAME="DOC.2.32.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setScreenDistance(const float <!1><A HREF="Plane.html#DOC.2.80.21">distance</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getScreenDistance"></A>
-<A NAME="DOC.2.29.19"></A>
+<A NAME="DOC.2.32.19"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const float getScreenDistance() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="SplitStereoHorizontalEyeMapping"></A>
-<A NAME="DOC.2.29.20"></A>
+<A NAME="DOC.2.32.20"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  SplitStereoHorizontalEyeMapping</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="LEFT_EYE_LEFT_VIEWPORT"></A>
-<A NAME="DOC.2.29.20.1"></A>
+<A NAME="DOC.2.32.20.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LEFT_EYE_LEFT_VIEWPORT</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="LEFT_EYE_RIGHT_VIEWPORT"></A>
-<A NAME="DOC.2.29.20.2"></A>
+<A NAME="DOC.2.32.20.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LEFT_EYE_RIGHT_VIEWPORT</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="setSplitStereoHorizontalEyeMapping"></A>
-<A NAME="DOC.2.29.21"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSplitStereoHorizontalEyeMapping(<!1><A HREF="DisplaySettings.html#DOC.2.29.20">SplitStereoHorizontalEyeMapping</A> m)</B></TT>
+<A NAME="DOC.2.32.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSplitStereoHorizontalEyeMapping(<!1><A HREF="DisplaySettings.html#DOC.2.32.20">SplitStereoHorizontalEyeMapping</A> m)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getSplitStereoHorizontalEyeMapping"></A>
-<A NAME="DOC.2.29.22"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DisplaySettings.html#DOC.2.29.20">SplitStereoHorizontalEyeMapping</A> getSplitStereoHorizontalEyeMapping() const </B></TT>
+<A NAME="DOC.2.32.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DisplaySettings.html#DOC.2.32.20">SplitStereoHorizontalEyeMapping</A> getSplitStereoHorizontalEyeMapping() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setSplitStereoHorizontalSeperation"></A>
-<A NAME="DOC.2.29.23"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSplitStereoHorizontalSeperation(const int <!1><A HREF="ImpostorSprite.html#DOC.2.47.23">s</A>)</B></TT>
+<A NAME="DOC.2.32.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSplitStereoHorizontalSeperation(const int <!1><A HREF="ImpostorSprite.html#DOC.2.51.23">s</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getSplitStereoHorizontalSeperation"></A>
-<A NAME="DOC.2.29.24"></A>
+<A NAME="DOC.2.32.24"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const int getSplitStereoHorizontalSeperation() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="SplitStereoVerticalEyeMapping"></A>
-<A NAME="DOC.2.29.25"></A>
+<A NAME="DOC.2.32.25"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  SplitStereoVerticalEyeMapping</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="LEFT_EYE_TOP_VIEWPORT"></A>
-<A NAME="DOC.2.29.25.1"></A>
+<A NAME="DOC.2.32.25.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LEFT_EYE_TOP_VIEWPORT</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="LEFT_EYE_BOTTOM_VIEWPORT"></A>
-<A NAME="DOC.2.29.25.2"></A>
+<A NAME="DOC.2.32.25.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LEFT_EYE_BOTTOM_VIEWPORT</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="setSplitStereoVerticalEyeMapping"></A>
-<A NAME="DOC.2.29.26"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSplitStereoVerticalEyeMapping(<!1><A HREF="DisplaySettings.html#DOC.2.29.25">SplitStereoVerticalEyeMapping</A> m)</B></TT>
+<A NAME="DOC.2.32.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSplitStereoVerticalEyeMapping(<!1><A HREF="DisplaySettings.html#DOC.2.32.25">SplitStereoVerticalEyeMapping</A> m)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getSplitStereoVerticalEyeMapping"></A>
-<A NAME="DOC.2.29.27"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DisplaySettings.html#DOC.2.29.25">SplitStereoVerticalEyeMapping</A> getSplitStereoVerticalEyeMapping() const </B></TT>
+<A NAME="DOC.2.32.27"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DisplaySettings.html#DOC.2.32.25">SplitStereoVerticalEyeMapping</A> getSplitStereoVerticalEyeMapping() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setSplitStereoVerticalSeperation"></A>
-<A NAME="DOC.2.29.28"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSplitStereoVerticalSeperation(const int <!1><A HREF="ImpostorSprite.html#DOC.2.47.23">s</A>)</B></TT>
+<A NAME="DOC.2.32.28"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSplitStereoVerticalSeperation(const int <!1><A HREF="ImpostorSprite.html#DOC.2.51.23">s</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getSplitStereoVerticalSeperation"></A>
-<A NAME="DOC.2.29.29"></A>
+<A NAME="DOC.2.32.29"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const int getSplitStereoVerticalSeperation() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setScreenHeight"></A>
-<A NAME="DOC.2.29.30"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setScreenHeight(const float <!1><A HREF="Viewport.html#DOC.2.111.10">height</A>)</B></TT>
+<A NAME="DOC.2.32.30"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setScreenHeight(const float <!1><A HREF="Viewport.html#DOC.2.120.10">height</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getScreenHeight"></A>
-<A NAME="DOC.2.29.31"></A>
+<A NAME="DOC.2.32.31"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const float getScreenHeight() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setDoubleBuffer"></A>
-<A NAME="DOC.2.29.32"></A>
+<A NAME="DOC.2.32.32"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDoubleBuffer(const bool flag)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getDoubleBuffer"></A>
-<A NAME="DOC.2.29.33"></A>
+<A NAME="DOC.2.32.33"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const bool getDoubleBuffer() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setRGB"></A>
-<A NAME="DOC.2.29.34"></A>
+<A NAME="DOC.2.32.34"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setRGB(const bool flag)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getRGB"></A>
-<A NAME="DOC.2.29.35"></A>
+<A NAME="DOC.2.32.35"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const bool getRGB() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setDepthBuffer"></A>
-<A NAME="DOC.2.29.36"></A>
+<A NAME="DOC.2.32.36"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDepthBuffer(const bool flag)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getDepthBuffer"></A>
-<A NAME="DOC.2.29.37"></A>
+<A NAME="DOC.2.32.37"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const bool getDepthBuffer() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setMinimumNumAlphaBits"></A>
-<A NAME="DOC.2.29.38"></A>
+<A NAME="DOC.2.32.38"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setMinimumNumAlphaBits(const unsigned int bits)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getMinimumNumAlphaBits"></A>
-<A NAME="DOC.2.29.39"></A>
+<A NAME="DOC.2.32.39"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const unsigned int getMinimumNumAlphaBits() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getAlphaBuffer"></A>
-<A NAME="DOC.2.29.40"></A>
+<A NAME="DOC.2.32.40"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const bool getAlphaBuffer() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setMinimumNumStencilBits"></A>
-<A NAME="DOC.2.29.41"></A>
+<A NAME="DOC.2.32.41"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setMinimumNumStencilBits(const unsigned int bits)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getMinimumNumStencilBits"></A>
-<A NAME="DOC.2.29.42"></A>
+<A NAME="DOC.2.32.42"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const unsigned int getMinimumNumStencilBits() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getStencilBuffer"></A>
-<A NAME="DOC.2.29.43"></A>
+<A NAME="DOC.2.32.43"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const bool getStencilBuffer() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setMaxNumberOfGraphicsContexts"></A>
-<A NAME="DOC.2.29.44"></A>
+<A NAME="DOC.2.32.44"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setMaxNumberOfGraphicsContexts(const int num)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getMaxNumberOfGraphicsContexts"></A>
-<A NAME="DOC.2.29.45"></A>
+<A NAME="DOC.2.32.45"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const int getMaxNumberOfGraphicsContexts() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="copy"></A>
-<A NAME="DOC.2.29.46"></A>
+<A NAME="DOC.2.32.46"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void copy(const <!1><A HREF="DisplaySettings.html">DisplaySettings</A>&amp; vs)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_stereo"></A>
-<A NAME="DOC.2.29.47"></A>
+<A NAME="DOC.2.32.47"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _stereo</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_stereoMode"></A>
-<A NAME="DOC.2.29.48"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DisplaySettings.html#DOC.2.29.13">StereoMode</A> _stereoMode</B></TT>
+<A NAME="DOC.2.32.48"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DisplaySettings.html#DOC.2.32.13">StereoMode</A> _stereoMode</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_eyeSeperation"></A>
-<A NAME="DOC.2.29.49"></A>
+<A NAME="DOC.2.32.49"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _eyeSeperation</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_screenDistance"></A>
-<A NAME="DOC.2.29.50"></A>
+<A NAME="DOC.2.32.50"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _screenDistance</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_screenHeight"></A>
-<A NAME="DOC.2.29.51"></A>
+<A NAME="DOC.2.32.51"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _screenHeight</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_splitStereoHorizontalEyeMapping"></A>
-<A NAME="DOC.2.29.52"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DisplaySettings.html#DOC.2.29.20">SplitStereoHorizontalEyeMapping</A> _splitStereoHorizontalEyeMapping</B></TT>
+<A NAME="DOC.2.32.52"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DisplaySettings.html#DOC.2.32.20">SplitStereoHorizontalEyeMapping</A> _splitStereoHorizontalEyeMapping</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_splitStereoHorizontalSeperation"></A>
-<A NAME="DOC.2.29.53"></A>
+<A NAME="DOC.2.32.53"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _splitStereoHorizontalSeperation</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_splitStereoVerticalEyeMapping"></A>
-<A NAME="DOC.2.29.54"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DisplaySettings.html#DOC.2.29.25">SplitStereoVerticalEyeMapping</A> _splitStereoVerticalEyeMapping</B></TT>
+<A NAME="DOC.2.32.54"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DisplaySettings.html#DOC.2.32.25">SplitStereoVerticalEyeMapping</A> _splitStereoVerticalEyeMapping</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_splitStereoVerticalSeperation"></A>
-<A NAME="DOC.2.29.55"></A>
+<A NAME="DOC.2.32.55"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _splitStereoVerticalSeperation</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_doubleBuffer"></A>
-<A NAME="DOC.2.29.56"></A>
+<A NAME="DOC.2.32.56"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _doubleBuffer</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_RGB"></A>
-<A NAME="DOC.2.29.57"></A>
+<A NAME="DOC.2.32.57"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _RGB</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_depthBuffer"></A>
-<A NAME="DOC.2.29.58"></A>
+<A NAME="DOC.2.32.58"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _depthBuffer</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_minimumNumberAlphaBits"></A>
-<A NAME="DOC.2.29.59"></A>
+<A NAME="DOC.2.32.59"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _minimumNumberAlphaBits</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_minimumNumberStencilBits"></A>
-<A NAME="DOC.2.29.60"></A>
+<A NAME="DOC.2.32.60"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _minimumNumberStencilBits</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_maxNumOfGraphicsContexts"></A>
-<A NAME="DOC.2.29.61"></A>
+<A NAME="DOC.2.32.61"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _maxNumOfGraphicsContexts</B></TT>
 <DL><DT><DD></DL><P></DL>
 

@@ -113,8 +113,8 @@ bool FltFile::readFile(const std::string& fileName)
         // havn't found file, look in OSGFILEPATH
         char* newFileName = osgDB::findFile(fileName.c_str());
 
-        if (!newFileName) return NULL;
-        if (!fin.open(newFileName)) return NULL;
+        if (!newFileName) return false;
+        if (!fin.open(newFileName)) return false;
     }
 
     osg::notify(osg::INFO) << "Loading " << fileName << " ... " << std::endl;

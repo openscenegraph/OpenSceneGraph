@@ -38,10 +38,10 @@ class SG_EXPORT Transform : public Group
           * Matrix explicity set the Matrix to STATIC.  The default
           * value is DYNAMIC.*/
         inline void setType(Type type) { _type = type; }
+
         /** Get the Transform Type.*/
         inline const Type getType() const { return _type; }
 
-        inline Matrix& getMatrix() { return *_matrix; }
         inline const Matrix& getMatrix() const { return *_matrix; }
 
         inline void setMatrix(const Matrix& mat )

@@ -82,7 +82,7 @@ void Billboard::calcRotation(const Vec3& eye_local, const Vec3& pos_local,Matrix
             float ev_length = ev.length();
             if (ev_length>0.0f)
             {
-                mat.makeIdent();
+                mat.makeIdentity();
                 //float rotation_zrotation_z = atan2f(ev.x(),ev.y());
                 //mat.makeRotate(inRadians(rotation_z),0.0f,0.0f,1.0f);
                 float inv = 1.0f/ev_length;
@@ -134,7 +134,7 @@ void Billboard::calcRotation(const Vec3& eye_local, const Vec3& pos_local,Matrix
 void Billboard::calcTransform(const Vec3& eye_local, const Vec3& pos_local,Matrix& mat) const 
 {
     //    mat.makeTranslate(pos_local[0],pos_local[1],pos_local[2]);
-    //    mat.makeIdent();
+    //    mat.makeIdentity();
     calcRotation(eye_local,pos_local,mat);
 
     //    mat.postTrans(pos_local[0],pos_local[1],pos_local[2]);

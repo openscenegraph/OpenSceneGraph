@@ -11,10 +11,10 @@ using namespace osg;
 
 OrientationConverter::OrientationConverter( void )
 {
-   R.makeIdent();
-   T.makeIdent();
+   R.makeIdentity();
+   T.makeIdentity();
    _trans_set = false;
-   S.makeIdent();
+   S.makeIdentity();
 }
 
 void OrientationConverter::setRotation( const Vec3 &from, const Vec3 &to )

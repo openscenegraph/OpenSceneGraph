@@ -18,10 +18,6 @@ class Quat;
 class SG_EXPORT Matrix : public Object
 {
 
-    private:
-        float _mat[4][4];
-        bool fully_realized;
-
     public:
 
         META_Object(Matrix);
@@ -56,18 +52,16 @@ class SG_EXPORT Matrix : public Object
         float * ptr() { ensureRealized(); return (float *)_mat; }
         const float * ptr() const { ensureRealized(); return (const float *)_mat; }
 
-        inline void ensureRealized() const { if (!fully_realized) const_cast<Matrix*>(this)->makeIdent();}
+        inline void ensureRealized() const { if (!fully_realized) const_cast<Matrix*>(this)->makeIdentity();}
 
-        void makeIdent();
+        void makeIdentity();
+        
         void makeScale( const Vec3& );
         void makeScale( float, float, float );
         
         void makeTranslate( const Vec3& );
         void makeTranslate( float, float, float );
-        //TODO: original preTrans was optimized (M=Tr*M)
-        // but also has the assumption that M (this) is an affine transformation Matrix
-        // can I still do something to optimize the same case now?
-
+        
         void makeRotate( const Vec3& from, const Vec3& to );
         void makeRotate( float angle, const Vec3& axis );
         void makeRotate( float angle, float x, float y, float z );
@@ -77,7 +71,7 @@ class SG_EXPORT Matrix : public Object
         bool invert( const Matrix& );
         bool invertAffine( const Matrix& );
 
-        //basic utility functions to create new matrices or vectors
+        //basic utility functions to create new matrices
 	inline static Matrix identity( void );
         inline static Matrix scale( const Vec3& );
         inline static Matrix scale( float, float, float );
@@ -110,51 +104,57 @@ class SG_EXPORT Matrix : public Object
         void preMult( const Matrix& );
         void postMult( const Matrix& );
 
-        // Helper class to optimize product expressions somewhat
-        class MatrixProduct {
-        public:
-            const Matrix& A;
-            const Matrix& B;
-
-            MatrixProduct( const Matrix& lhs, const Matrix& rhs ) : A(lhs), B(rhs) {}
-        };
-
-        inline MatrixProduct operator * ( const Matrix& other ) const    
-            {    return MatrixProduct(*this, other); }
-
         inline void operator *= ( const Matrix& other ) 
-            {    if( this == &other ) {
-                    Matrix temp(other);
-                    postMult( temp );
-                }
-                else postMult( other ); 
+        {    if( this == &other ) {
+                Matrix temp(other);
+                postMult( temp );
             }
-        inline void operator = ( const MatrixProduct& p ) 
-            {
-                if( this == &(p.A)) postMult(p.B);
-                else if( this == &(p.B)) preMult(p.A);
-                else mult( p.A, p.B );
-            }
+            else postMult( other ); 
+        }
 
-        Matrix( const MatrixProduct& p ) //allows implicit evaluation of the product
-            {    mult( p.A, p.B ); }
-
-
-        Matrix operator *( const Matrix &m ) 
+        inline Matrix operator * ( const Matrix &m ) const
 	{
 	    osg::Matrix r;
             r.mult(*this,m);
 	    return  r;
 	}
 
-	float * operator [] ( int i ) { return &_mat[i][0]; }
+
+// temporarily commented out while waiting for a more generic implementation
+// of MatrixProduct proxy class.
+//         // Helper class to optimize product expressions somewhat
+//         class MatrixProduct {
+//         public:
+//             const Matrix& A;
+//             const Matrix& B;
+// 
+//             MatrixProduct( const Matrix& lhs, const Matrix& rhs ) : A(lhs), B(rhs) {}
+//         };
+// 
+//         inline MatrixProduct operator * ( const Matrix& other ) const    
+//             {    return MatrixProduct(*this, other); }
+// 
+//         inline void operator = ( const MatrixProduct& p ) 
+//             {
+//                 if( this == &(p.A)) postMult(p.B);
+//                 else if( this == &(p.B)) preMult(p.A);
+//                 else mult( p.A, p.B );
+//             }
+// 
+//         Matrix( const MatrixProduct& p ) //allows implicit evaluation of the product
+//             {    mult( p.A, p.B ); }
+
+    private:
+        float _mat[4][4];
+        bool fully_realized;
+
 };
 
 //static utility methods
 inline Matrix Matrix::identity(void)
 {
     Matrix m;
-    m.makeIdent();
+    m.makeIdentity();
     return m;
 }
 

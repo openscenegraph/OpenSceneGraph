@@ -657,7 +657,7 @@ void Camera::calculateMatricesAndClippingVolume() const
         else
         {
             _modelViewMatrix = new Matrix;
-            _modelViewMatrix->makeIdent();
+            _modelViewMatrix->makeIdentity();
         }
         break;
     case(USE_EYE_AND_QUATERNION): // not implemented yet, default to eye,center,up.

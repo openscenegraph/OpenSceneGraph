@@ -60,7 +60,7 @@ class SG_EXPORT CollectOccludersVisitor : public osg::NodeVisitor, public osg::C
         void setCreateDrawablesOnOccludeNodes(bool flag) { _createDrawables=flag; }
         bool getCreateDrawablesOnOccludeNodes() const { return _createDrawables; }
 
-        void setCollectedOcculderList(const ShadowVolumeOccluderSet& svol) { _occluderSet = svol; }
+        void setCollectedOcculderSet(const ShadowVolumeOccluderSet& svol) { _occluderSet = svol; }
         ShadowVolumeOccluderSet& getCollectedOccluderSet() { return _occluderSet; }
         const ShadowVolumeOccluderSet& getCollectedOccluderSet() const { return _occluderSet; }
 

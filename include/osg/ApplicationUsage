@@ -51,26 +51,30 @@ class SG_EXPORT ApplicationUsage
         void addUsageExplanation(Type type,const std::string& option,const std::string& explanation);
         
         void setCommandLineUsage(const std::string& explanation) { _commandLineUsage=explanation; }
-
         const std::string& getCommandLineUsage() const { return _commandLineUsage; }
 
 
         void addCommandLineOption(const std::string& option,const std::string& explanation, const std::string &defaultValue = "");
         
+        void setCommandLineOptions(const UsageMap& usageMap) { _commandLineOptions=usageMap; }
         const UsageMap& getCommandLineOptions() const { return _commandLineOptions; }
 
+        void setCommandLineOptionsDefaults(const UsageMap& usageMap) { _commandLineOptionsDefaults=usageMap; }
         const UsageMap& getCommandLineOptionsDefaults() const { return _commandLineOptionsDefaults; }
 
 
         void addEnvironmentalVariable(const std::string& option,const std::string& explanation, const std::string& defaultValue = "");
         
+        void setEnvironmentalVariables(const UsageMap& usageMap) { _environmentalVariables=usageMap; }
         const UsageMap& getEnvironmentalVariables() const { return _environmentalVariables; }
 
+        void setEnvironmentalVariablesDefaults(const UsageMap& usageMap) { _environmentalVariablesDefaults=usageMap; }
         const UsageMap& getEnvironmentalVariablesDefaults() const { return _environmentalVariablesDefaults; }
 
 
         void addKeyboardMouseBinding(const std::string& option,const std::string& explanation);
 
+        void setKeyboardMouseBindings(const UsageMap& usageMap) { _keyboardMouse=usageMap; }
         const UsageMap& getKeyboardMouseBindings() const { return _keyboardMouse; }
 
 

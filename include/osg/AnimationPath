@@ -164,6 +164,8 @@ class SG_EXPORT AnimationPath : public virtual osg::Object
 
         typedef std::map<double,ControlPoint> TimeControlPointMap;
         
+        void setTimeControlPointMap(TimeControlPointMap& tcpm) { _timeControlPointMap=tcpm; }
+
         TimeControlPointMap& getTimeControlPointMap() { return _timeControlPointMap; }
         
         const TimeControlPointMap& getTimeControlPointMap() const { return _timeControlPointMap; }
@@ -247,6 +249,7 @@ class SG_EXPORT AnimationPathCallback : public NodeCallback
         void reset();
 
         void setPause(bool pause);
+        bool getPause() const { return _pause; }
 
         /** Get the animation time that is used to specify the position along
           * the AnimationPath. Animation time is computed from the formula:

@@ -72,6 +72,9 @@ class SG_EXPORT Billboard : public Geode
         /** Type definition for pivot point position list. */
         typedef std::vector<Vec3> PositionList;
         
+        /** Set the list of pivot point positions. */
+        inline void setPositionList(PositionList& pl) 	   { _positionList=pl; }
+
         /** Get the list of pivot point positions. */
         inline PositionList& getPositionList()             { return _positionList; }
         

@@ -150,12 +150,6 @@ class SG_EXPORT FragmentProgram : public StateAttribute
             return _fragmentProgramIDList[contextID];
         }
 
-        /** Set the fragment program using C++ style string.*/
-        inline void setFragmentProgram( const std::string& program )
-        {
-            _fragmentProgram = program;
-            dirtyFragmentProgramObject();
-        }
         
         /** Set the fragment program using a C style string.*/
         inline void setFragmentProgram( const char* program ) 
@@ -163,6 +157,14 @@ class SG_EXPORT FragmentProgram : public StateAttribute
             _fragmentProgram = program; 
             dirtyFragmentProgramObject();
         }
+	
+        /** Set the fragment program using C++ style string.*/
+        inline void setFragmentProgram( const std::string& program )
+        {
+            _fragmentProgram = program;
+            dirtyFragmentProgramObject();
+        }
+
         /** Get the fragment program.*/
         inline const std::string& getFragmentProgram() const { return _fragmentProgram; }
 
@@ -174,17 +176,32 @@ class SG_EXPORT FragmentProgram : public StateAttribute
 
         typedef std::map<GLuint,Vec4> LocalParamList;
 
+        /** Set list of Program Parameters */
+        inline void setLocalParameters(LocalParamList& lpl) { _programLocalParameters = lpl; }
+
         /** Get list of Program Parameters */
-        inline LocalParamList& getLocalParamList() { return _programLocalParameters; }
+        inline LocalParamList& getLocalParameters() { return _programLocalParameters; }
 
         /** Get const list of Program Parameters */
-        inline const LocalParamList& getLocalParamList() const { return _programLocalParameters; }
+        inline const LocalParamList& getLocalParameters() const { return _programLocalParameters; }
 
         /** Matrix */
         inline void setMatrix(const GLenum mode, const Matrix& matrix)
         {
             _matrixList[mode] = matrix;
         }
+
+        typedef std::map<GLenum,Matrix> MatrixList;
+
+        /** Set list of Matrices */
+        inline void setMatrices(MatrixList& matrices) { _matrixList = matrices; }
+
+        /** Get list of Matrices */
+        inline MatrixList& getMatrices() { return _matrixList; }
+
+        /** Get list of Matrices */
+        inline const MatrixList& getMatrices() const { return _matrixList; }
+
 
         /** Force a recompile on next apply() of associated OpenGL vertex program objects.*/
         void dirtyFragmentProgramObject();        
@@ -269,9 +286,7 @@ class SG_EXPORT FragmentProgram : public StateAttribute
         std::string     _fragmentProgram;
 
         LocalParamList  _programLocalParameters;
-
-        typedef std::map<GLenum,Matrix> MatrixList;
-        MatrixList  _matrixList;
+        MatrixList  	_matrixList;
 };
 
 

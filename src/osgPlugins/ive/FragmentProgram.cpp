@@ -34,7 +34,7 @@ void FragmentProgram::write( DataOutputStream* out )
     }
 
     // Write FragmentProgram properties.
-    FragmentProgram::LocalParamList lpl = getLocalParamList();
+    FragmentProgram::LocalParamList lpl = getLocalParameters();
     out->writeInt(lpl.size());
     for(FragmentProgram::LocalParamList::iterator i=lpl.begin(); i!=lpl.end(); ++i)
     {

@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 //#include <stdlib.h>
@@ -40,10 +40,10 @@ const Timer* Timer::instance()
     Timer::Timer()
     {
         _useStandardClock = false;
-        
+
         if (_useStandardClock)
         {
-            _secsPerTick = (1.0 / (double) CLOCKS_PER_SEC);            
+            _secsPerTick = (1.0 / (double) CLOCKS_PER_SEC);
         }
         else
         {
@@ -74,7 +74,7 @@ const Timer* Timer::instance()
     Timer::Timer()
     {
         _useStandardClock = false;
-        
+
         if (_useStandardClock)
         {
             _secsPerTick = 1e-6; // gettimeofday()'s precision.
@@ -95,8 +95,8 @@ const Timer* Timer::instance()
             _secsPerTick = 1.0/cpuspeed;
         }
     }
-    
-#elif defined(__linux) 
+
+#elif defined(__linux)
 
     #include <fcntl.h>
     #include <unistd.h>
@@ -105,12 +105,12 @@ const Timer* Timer::instance()
 
     Timer::Timer()
     {
-#ifdef __ia64
+#if defined(__ia64) || defined(__x86_64__)
         _useStandardClock = true;
 #else
         _useStandardClock = false;
 #endif
-        
+
         if (_useStandardClock)
         {
             _secsPerTick = 1e-6; // gettimeofday()'s precision.
@@ -129,7 +129,7 @@ const Timer* Timer::instance()
                 char *ptr = buff;
 
                 while( ptr && *ptr != ':' ) ptr++;
-                if( ptr ) 
+                if( ptr )
                 {
                   ptr++;
                   sscanf( ptr, "%lf", &cpu_mhz );

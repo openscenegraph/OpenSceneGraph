@@ -22,7 +22,7 @@ class SG_EXPORT LineStipple : public StateAttribute
           _factor(lw._factor),
           _pattern(lw._pattern) {}
 
-        META_StateAttribute(LineStipple, LINESTIPPLE);
+        META_StateAttribute(osg, LineStipple, LINESTIPPLE);
 
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
         virtual int compare(const StateAttribute& sa) const

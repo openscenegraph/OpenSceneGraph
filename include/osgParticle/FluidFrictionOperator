@@ -30,7 +30,7 @@ namespace osgParticle
         FluidFrictionOperator();
         FluidFrictionOperator(const FluidFrictionOperator &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
         
-        META_Object(FluidFrictionOperator);
+        META_Object(osgParticle, FluidFrictionOperator);
         
         /// Get the density of the fluid.
         inline float getFluidDensity() const;

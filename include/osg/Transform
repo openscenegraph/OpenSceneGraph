@@ -38,7 +38,7 @@ class SG_EXPORT Transform : public Group
 
         Transform(const Matrix& matix);
 
-        META_Node(Transform);
+        META_Node(osg, Transform);
 
         enum ReferenceFrame
         {

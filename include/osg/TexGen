@@ -35,7 +35,7 @@ class SG_EXPORT TexGen : public StateAttribute
             _plane_r(texgen._plane_r),
             _plane_q(texgen._plane_q) {}
 
-        META_StateAttribute(TexGen, TEXGEN);
+        META_StateAttribute(osg, TexGen, TEXGEN);
         
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
         virtual int compare(const StateAttribute& sa) const

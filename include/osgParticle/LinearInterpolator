@@ -25,7 +25,7 @@ namespace osgParticle
         LinearInterpolator(const LinearInterpolator &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY)
         : Interpolator(copy, copyop) {}
         
-        META_Object(LinearInterpolator);
+        META_Object(osgParticle, LinearInterpolator);
         
         virtual float interpolate(float t, float y1, float y2) const
         {

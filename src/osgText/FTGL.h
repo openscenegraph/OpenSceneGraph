@@ -93,12 +93,8 @@
 #endif
 
 // lifted from glext.h, to remove dependancy on glext.h
-#ifndef GL_EXT_texture_object
-    #define GL_TEXTURE_PRIORITY_EXT           0x8066
-    #define GL_TEXTURE_RESIDENT_EXT           0x8067
-    #define GL_TEXTURE_1D_BINDING_EXT         0x8068
+#ifndef GL_TEXTURE_2D_BINDING_EXT
     #define GL_TEXTURE_2D_BINDING_EXT         0x8069
-    #define GL_TEXTURE_3D_BINDING_EXT         0x806A
 #endif
 
 #if defined(_MSC_VER)

@@ -26,7 +26,7 @@ namespace osgParticle
         inline ForceOperator();
         inline ForceOperator(const ForceOperator &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
         
-        META_Object(ForceOperator);
+        META_Object(osgParticle, ForceOperator);
         
         /// Get the force vector.
         inline const osg::Vec3 &getForce() const;

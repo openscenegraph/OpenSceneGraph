@@ -14,11 +14,12 @@ namespace osg {
   * Use when subclassing from Object to make it more convinient to define 
   * the standard pure virtual clone, isSameKindAs and className methods 
   * which are required for all Object subclasses.*/
-#define META_Object(T) \
-        virtual osg::Object* cloneType() const { return osgNew T (); } \
-        virtual osg::Object* clone(const osg::CopyOp& copyop) const { return osgNew T (*this,copyop); } \
-        virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const T *>(obj)!=NULL; } \
-        virtual const char* className() const { return #T; }
+#define META_Object(library,name) \
+        virtual osg::Object* cloneType() const { return osgNew name (); } \
+        virtual osg::Object* clone(const osg::CopyOp& copyop) const { return osgNew name (*this,copyop); } \
+        virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const name *>(obj)!=NULL; } \
+        virtual const char* libraryName() const { return #library; }\
+        virtual const char* className() const { return #name; }
 
 
 /** Base class/standard interface for objects which require IO support, 
@@ -49,6 +50,11 @@ class SG_EXPORT Object : public Referenced
         virtual Object* clone(const CopyOp&) const = 0;
 
         virtual bool isSameKindAs(const Object*) const { return true; }
+
+        /** return the name of the object's library. Must be defined
+            by derived classes. The OpenSceneGraph convention the is
+            that the namspace of a library is the same as the library name.*/
+        virtual const char* libraryName() const = 0;
 
         /** return the name of the object's class type. Must be defined
             by derived classes.*/

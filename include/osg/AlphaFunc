@@ -25,7 +25,7 @@ class SG_EXPORT AlphaFunc : public StateAttribute
             _comparisonFunc(af._comparisonFunc),
             _referenceValue(af._referenceValue) {}
         
-        META_StateAttribute(AlphaFunc,ALPHAFUNC);
+        META_StateAttribute(osg, AlphaFunc,ALPHAFUNC);
         
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
         virtual int compare(const StateAttribute& sa) const

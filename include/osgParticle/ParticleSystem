@@ -37,7 +37,7 @@ namespace osgParticle
         ParticleSystem();
         ParticleSystem(const ParticleSystem &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
 
-        META_Object(ParticleSystem);
+        META_Object(osgParticle, ParticleSystem);
 
         /// Get the default bounding box
         inline const osg::BoundingBox &getDefaultBoundingBox() const;        

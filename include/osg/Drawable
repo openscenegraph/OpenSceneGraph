@@ -61,6 +61,7 @@ class SG_EXPORT Drawable : public Object
         Drawable(const Drawable& drawable,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Drawable*>(obj)!=NULL; }
+        virtual const char* libraryName() const { return "osg"; }
         virtual const char* className() const { return "Drawable"; }
 
 

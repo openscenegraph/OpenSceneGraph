@@ -22,11 +22,12 @@ class Group;
 /** META_Node macro define the standard clone, isSameKindAs, className
   * and accept methods.  Use when subclassing from Node to make it
   * more convinient to define the required pure virtual methods.*/
-#define META_Node(name) \
+#define META_Node(library,name) \
         virtual osg::Object* cloneType() const { return osgNew name (); } \
         virtual osg::Object* clone(const osg::CopyOp& copyop) const { return osgNew name (*this,copyop); } \
         virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const name *>(obj)!=NULL; } \
         virtual const char* className() const { return #name; } \
+        virtual const char* libraryName() const { return #library; } \
         virtual void accept(osg::NodeVisitor& nv) { if (nv.validNodeMask(*this)) { nv.pushOntoNodePath(this); nv.apply(*this); nv.popFromNodePath(); } } \
         
 
@@ -53,6 +54,9 @@ class SG_EXPORT Node : public Object
 
         /** return true if this and obj are of the same kind of object.*/
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Node*>(obj)!=NULL; }
+
+        /** return the name of the node's library.*/
+        virtual const char* libraryName() const { return "osg"; }
 
         /** return the name of the node's class type.*/
         virtual const char* className() const { return "Node"; }

@@ -32,7 +32,7 @@ namespace osgParticle
         ParticleSystemUpdater();
         ParticleSystemUpdater(const ParticleSystemUpdater &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
         
-        META_Node(ParticleSystemUpdater);
+        META_Node(osgParticle,ParticleSystemUpdater);
         
         /// Return the number of particle systems on the list.
         inline int numParticleSystems() const;

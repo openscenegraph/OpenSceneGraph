@@ -156,6 +156,7 @@ class SG_EXPORT GeoSet : public Drawable
         
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const GeoSet*>(obj)!=NULL; }
         
+        virtual const char* libraryName() const { return "osg"; }
         virtual const char* className() const { return "GeoSet"; }
 
 

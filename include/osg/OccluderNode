@@ -24,7 +24,7 @@ class SG_EXPORT OccluderNode : public Group
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         OccluderNode(const OccluderNode&,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
-        META_Node(OccluderNode);
+        META_Node(osg, OccluderNode);
         
 
         /** Attach a ConvexPlanerOccluder to an OccluderNode.*/            

@@ -25,7 +25,7 @@ class SG_EXPORT Group : public Node
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         Group(const Group&,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
-        META_Node(Group);
+        META_Node(osg, Group);
 
         virtual void traverse(NodeVisitor& nv);
 

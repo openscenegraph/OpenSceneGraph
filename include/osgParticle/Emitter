@@ -28,6 +28,7 @@ namespace osgParticle
         Emitter();
         Emitter(const Emitter &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
 
+        virtual const char *libraryName() const { return "osgParticle"; }
         virtual const char *className() const { return "Emitter"; }
         virtual bool isSameKindAs(const osg::Object *obj) { return dynamic_cast<const Emitter*>(obj) != 0; }
         virtual void accept(osg::NodeVisitor& nv) { if (nv.validNodeMask(*this)) { nv.pushOntoNodePath(this); nv.apply(*this); nv.popFromNodePath(); } }

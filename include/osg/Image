@@ -29,6 +29,7 @@ class SG_EXPORT Image : public Object
         virtual Object* cloneType() const { return osgNew Image(); }
         virtual Object* clone(const CopyOp& copyop) const { return osgNew Image(*this,copyop); }
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Image*>(obj)!=0; }
+        virtual const char* libraryName() const { return "osg"; }
         virtual const char* className() const { return "Image"; }
 
 

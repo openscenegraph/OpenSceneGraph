@@ -58,7 +58,7 @@ class SG_EXPORT Impostor : public LOD
             _impostorSpriteList(),
             _impostorThreshold(es._impostorThreshold) {}
             
-        META_Node(Impostor);
+        META_Node(osg, Impostor);
 
         typedef std::vector< ref_ptr<ImpostorSprite> > ImpostorSpriteList;
 

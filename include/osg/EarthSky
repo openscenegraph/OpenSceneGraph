@@ -32,7 +32,7 @@ class SG_EXPORT EarthSky : public Group
             _clearColor(es._clearColor) {}  
 
 
-        META_Node(EarthSky);
+        META_Node(osg, EarthSky);
 
 	/** Sets the flag which control whether a glClear is required at the beginning of each frame. */
         inline void setRequiresClear(const bool requiresClear) { _requiresClear = requiresClear; }

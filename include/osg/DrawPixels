@@ -28,6 +28,7 @@ class SG_EXPORT DrawPixels : public Drawable
         
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const DrawPixels*>(obj)!=NULL; }
         
+        virtual const char* libraryName() const { return "osg"; }
         virtual const char* className() const { return "DrawPixels"; }
 
 

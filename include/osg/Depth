@@ -29,7 +29,7 @@ class SG_EXPORT Depth : public StateAttribute
             _zFar(dp._zFar) {}
         
         
-        META_StateAttribute(Depth, DEPTH);
+        META_StateAttribute(osg, Depth, DEPTH);
         
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
         virtual int compare(const StateAttribute& sa) const

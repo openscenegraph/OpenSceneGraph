@@ -27,7 +27,7 @@ class SG_EXPORT TextureCubeMap : public Texture
         TextureCubeMap(const TextureCubeMap& cm,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             Texture(cm,copyop) {}
 
-        META_StateAttribute(TextureCubeMap,(Type)(TEXTURE_0+_textureUnit));
+        META_StateAttribute(osg, TextureCubeMap,(Type)(TEXTURE_0+_textureUnit));
         
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
         virtual int compare(const StateAttribute& rhs) const;

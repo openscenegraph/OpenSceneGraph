@@ -3,6 +3,16 @@ OSG News (most significant items from ChangeLog)
 ================================================
 
 
+    Occlusion culling adding to the core OSG.
+
+    osgParticle developed by Marco Jez adds support for a range of particle
+    effects.
+
+    osgSim a seperate add-on library adds support for navigational light points.
+    
+    Support for NodeKits.
+
+
 26th April 2002 - osg-0.8.45.tar.gz
 
     >>> Support added for Solaris, texture cube mapping & muliple projections.

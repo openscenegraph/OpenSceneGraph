@@ -24,7 +24,7 @@ namespace osgParticle
         inline AccelOperator();
         inline AccelOperator(const AccelOperator &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
 
-        META_Object(AccelOperator);
+        META_Object(osgParticle, AccelOperator);
 
         /// Get the acceleration vector.
         inline const osg::Vec3 &getAcceleration() const;

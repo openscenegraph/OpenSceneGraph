@@ -1,3 +1,66 @@
+2004-11-26 19:27  robert
+
+	* VisualStudio/examples/: osgcameragroup/osgcameragroup.dsp,
+	  osgconv/osgconv.dsp, osgspheresegment/osgspheresegment.dsp: Added
+	  /Zm200 to avoid heap size problems under VS6.0
+
+2004-11-26 16:01  robert
+
+	* include/: osg/Export, osg/UnitTestFramework, osgDB/Export,
+	  osgFX/Export, osgGL2/Export, osgParticle/Export,
+	  osgProducer/Export, osgSim/Export, osgTerrain/Export,
+	  osgText/Export, osgUtil/Export: Addd high level introductory docs
+	  for all the libs
+
+2004-11-26 16:00  robert
+
+	* doc/Doxyfiles/: auto_Mainpage, custom_Footer.html: Clean up
+	  doxygen files for release
+
+2004-11-25 15:57  robert
+
+	* VisualStudio/examples/: osgautotransform/osgautotransform.dsp,
+	  osggeometry/osggeometry.dsp, osglogo/osglogo.dsp,
+	  osgsequence/osgsequence.dsp: Added /Zm200 to avoid VS 6.0 dump
+	  arse compile errors
+
+2004-11-25 15:09  robert
+
+	* src/osgDB/: Archive.cpp, Registry.cpp: Fixed caching of archives
+
+2004-11-25 13:59  robert
+
+	* VisualStudio/VisualStudio.dsw: Reordered the core libraries to
+	  try and get round compile order problems under VisualStudio 6.0
+
+2004-11-25 09:51  robert
+
+	* Make/makedefs: Added LFS support to gcc linux build
+
+2004-11-24 21:39  robert
+
+	* src/osgTerrain/DataSet.cpp: cleaned up debug info
+
+2004-11-24 21:10  robert
+
+	* ChangeLog, NEWS.txt: updated NEWS and ChangeLog
+
+2004-11-24 19:41  robert
+
+	* src/osgTerrain/DataSet.cpp: Clean up of output
+
+2004-11-24 19:10  robert
+
+	* examples/: osgplanets/osgplanets.cpp, osgshape/osgshape.cpp: from
+	  Mike Weiblen, added wrap mode to planet texture to avoid black
+	  seam, and add option of specifying the texture to use in
+	  osgshape.
+
+2004-11-24 15:41  robert
+
+	* src/osgPlugins/lib3ds/ReaderWriter3DS.cpp: Fixed typo in
+	  acceptsExtension
+
 2004-11-24 06:57  robert
 
 	* src/osgPlugins/pfb/ReaderWriterPFB.cpp: Moved the initPeformer to

@@ -23,7 +23,10 @@ basis for all osg apps, an optional scene graph utility library (osgUtil)
 which can be used for higher level functionality such cullers and renderers
 and a database utility library (osgDB) coupled with a set of plug-ins
 (osgPlugins) which are dynamically loaded by the osgDB library to support
-the reading and writing of file formats or node toolkits.
+the reading and writing of file formats or node toolkits. Support for 
+rendering of true type fonts is supplied by the osgText library, this
+is optional, you only need to compile it if you require font rendering.
+
 <p>There are also support libraries such as osgGLUT  for bringing up a basic
 UI, however this is not the focus of the OSG.&nbsp; For more sophisticated
 user interfaces it is recommended to integrate the OSG graphics with a
@@ -33,7 +36,8 @@ also included to assist integration of wxWindows with the OSG and demonstrated
 in the wxsgv demo,  however both these libraries are not compiled by default 
 since most systems won't have wxWindows installed.  Check the mailing list 
 archives for info on these developments.  
-<p>For the purpose of demonstating the functionality of the osg, nine demo
+
+<p>For the purpose of demonstating the functionality of the osg, ten demo
 apps are provided, sgv (a scene graph viewer), osgconv (a command line
 utility for converted multiple input files into a native .osg target file),&nbsp;
 hangglide (a flight simulation demo over small hang gliding site), osgcube
@@ -42,7 +46,10 @@ reflections can be achieved), osgtexture (a demo of some of the various
 texture modes that the OSG supports), osgimpostor (a demo of impostors in 
 action) and osgviews (a demo of using mulitple viewports on the same or
 multiple scenes), and finally wxsgv a viewer demostrating osg integration 
-with wxWindows applications (not compiled by default.)
+with wxWindows applications (not compiled by default.) Finally there is
+the osgtext demo which illustrates the different types of font rendering 
+support by the osgText library.
+
 <p>This release is a ALPHA version, and is under continuous development
 with the API and features subject to change.  If you plan to use the OSG
 then please join the mailing list and provide us with feedback on how
@@ -100,6 +107,8 @@ file listing&nbsp; left to implement/extend/rewrite.
 </tt>Scene graph utilities reference guide.
 <br><tt><a href="doc/doc++/osgDB/HIER.html">osgDB/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </tt>Scene graph database utilities reference guide.
+<br><tt><a href="doc/doc++/osgText/HIER.html">osgText/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>Scene graph text reference guide.
 <br><tt><a href="doc/doc++/osgGLUT/HIER.html">osgGLUT/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </tt>Simple GLUT based viewer base classes reference guide.
 <br><tt><a href="doc/doc++/osgWX/HIER.html">osgWX/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -114,6 +123,8 @@ file listing&nbsp; left to implement/extend/rewrite.
 Util library header files.
 <br><tt><a href="include/osgDB">include/osgDB/</a>&nbsp;&nbsp;&nbsp; </tt>The
 OSG Database library header files.
+<br><tt><a href="include/osgText">include/osgText/</a>&nbsp; </tt>The
+OSG text library header files.
 <br><tt><a href="include/osgGLUT">include/osgGLUT/</a>&nbsp; </tt>The OSG
 GLUT utiltiy library header files.
 <br><tt><a href="include/osgWX">include/osgWX/</a>&nbsp;&nbsp;&nbsp; </tt>The OSG
@@ -140,6 +151,10 @@ database utility library source files.
 </tt>Contains useful utility classes such as for reading
 <br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </tt>and writing 3D databases and image files.
+<p><tt><a href="src/osgText">src/osgText</a>&nbsp; </tt>The OSG
+text library source files.
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>Contains true type font rendering classes.
 <p><tt><a href="src/osgGLUT">src/osgGLUT</a>&nbsp; </tt>The OSG GLUT library
 source files.
 <br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -203,6 +218,8 @@ the scene.
 </tt>A demo of multiple views of the same or multiple scenes.
 <br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="src/Demos/wxsgv/">wxsgv/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </tt>A demo of wxWindows viewer integrated with the OSG.
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="src/Demos/osgtext/">wxsgv/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>A demo of true type fonts support provided by osgText.
 </blockquote>
 
 <p><br><tt><a href="lib/">lib/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

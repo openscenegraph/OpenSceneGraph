@@ -2,7 +2,7 @@
 
 const char* osgSimGetVersion()
 {
-    return "0.9.5";
+    return "0.9.6";
 }
 
 

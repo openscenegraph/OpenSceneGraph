@@ -1,3 +1,70 @@
+2003-09-16 20:56  robert
+
+	* examples/slideshow3D/SlideEventHandler.h,
+	include/osgProducer/KeyboardMouseCallback,
+	include/osgUtil/Statistics, src/osgPlugins/flt/flt2osg.cpp,
+	src/osgPlugins/lwo/Lwo2.cpp, src/osgPlugins/txp/trpage_write.h:
+	Warning fixes for Win32.
+
+2003-09-16 20:56  robert
+
+	* src/osgUtil/TriStripVisitor.cpp: Added a check for the maximum
+	index values of primitives, and then use this to select whether to
+	use UByte,UShort or UInt versions of osg::DrawElements.
+
+2003-09-16 20:54  robert
+
+	* include/osg/PrimitiveSet, include/osg/UByte4,
+	src/osgPlugins/osg/Geometry.cpp: Fixes for .osg output of UByte4
+	values, and added missing template contructor to
+	DrawElementsUShort.
+
+2003-09-16 20:53  robert
+
+	* src/osgPlugins/obj/ReaderWriterOBJ.cpp: Improved the tesselation
+	of obj surfaces so that rendering performance is significantly
+	improved.
+
+2003-09-16 12:54  robert
+
+	* examples/osgshadowtexture/CreateShadowedScene.cpp: Moved a local
+	new StateSet into cull callback as a ref_ptr to prevent memory
+	leaks.
+
+2003-09-16 12:22  robert
+
+	* src/osgPlugins/txp/: trpage_warchive.cpp, trpage_writebuf.cpp:
+	Warning fixes for VS .NET.
+
+2003-09-16 10:54  robert
+
+	* src/osgPlugins/obj/: ReaderWriterOBJ.cpp, glm.cpp, glm.h: Added
+	support for per vertex colors.
+
+2003-09-16 09:10  robert
+
+	* src/osgPlugins/txp/TrPageArchive.h: Added
+	inlucde<osgSim/LightPointNode> to trPageArchive to get round IRIX
+	build problem.
+
+2003-09-15 23:13  robert
+
+	* src/osgPlugins/txp/: trpage_warchive.cpp, trpage_write.h: Changed
+	a couple of int64's back to int32.
+
+2003-09-15 22:43  robert
+
+	* ChangeLog, examples/slideshow3D/SlideShowConstructor.cpp,
+	include/osgText/Text, src/osgText/Text.cpp: Added support for
+	handling of wordwrap in osgText::Text, so that whole words are cut
+	in two, but rather moved completely to the next line.
+
+2003-09-15 16:03  robert
+
+	* src/osgPlugins/flt/flt2osg.cpp: From Julian Ortiz, fix to
+	OpenFlight loader so that it handlers OpenFlight switches in a more
+	appropriate way.
+
 2003-09-15 14:54  robert
 
 	* VisualStudio/examples/slideshow3D/slideshow3D.dsp,

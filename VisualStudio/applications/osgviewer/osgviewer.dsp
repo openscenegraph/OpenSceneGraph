@@ -1,4 +1,4 @@
-# Microsoft Developer Studio Project File - Name="Example osgviewer" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="Application osgviewer" - Package Owner=<4>
 
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 
@@ -10,7 +10,7 @@
 
 
 
-CFG=Example osgviewer - Win32 Release
+CFG=Application osgviewer - Win32 Release
 
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 
@@ -28,7 +28,7 @@ CFG=Example osgviewer - Win32 Release
 
 !MESSAGE 
 
-!MESSAGE NMAKE /f "osgviewer.mak" CFG="Example osgviewer - Win32 Release"
+!MESSAGE NMAKE /f "osgviewer.mak" CFG="Application osgviewer - Win32 Release"
 
 !MESSAGE 
 
@@ -36,9 +36,9 @@ CFG=Example osgviewer - Win32 Release
 
 !MESSAGE 
 
-!MESSAGE "Example osgviewer - Win32 Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "Application osgviewer - Win32 Release" (based on "Win32 (x86) Console Application")
 
-!MESSAGE "Example osgviewer - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "Application osgviewer - Win32 Debug" (based on "Win32 (x86) Console Application")
 
 !MESSAGE 
 
@@ -58,7 +58,7 @@ RSC=rc.exe
 
 
 
-!IF  "$(CFG)" == "Example osgviewer - Win32 Release"
+!IF  "$(CFG)" == "Application osgviewer - Win32 Release"
 
 
 
@@ -106,7 +106,7 @@ LINK32=link.exe
 
 
 
-!ELSEIF  "$(CFG)" == "Example osgviewer - Win32 Debug"
+!ELSEIF  "$(CFG)" == "Application osgviewer - Win32 Debug"
 
 
 
@@ -164,9 +164,9 @@ LINK32=link.exe
 
 
 
-# Name "Example osgviewer - Win32 Release"
+# Name "Application osgviewer - Win32 Release"
 
-# Name "Example osgviewer - Win32 Debug"
+# Name "Application osgviewer - Win32 Debug"
 
 # Begin Source File
 

@@ -1,10 +1,10 @@
-# Microsoft Developer Studio Project File - Name="Example osgdem" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="Application osgdem" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Console Application" 0x0103
 
-CFG=Example osgdem - Win32 Release
+CFG=Application osgdem - Win32 Release
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
@@ -13,12 +13,12 @@ CFG=Example osgdem - Win32 Release
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "osgdem.mak" CFG="Example osgdem - Win32 Release"
+!MESSAGE NMAKE /f "osgdem.mak" CFG="Application osgdem - Win32 Release"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "Example osgdem - Win32 Release" (based on "Win32 (x86) Console Application")
-!MESSAGE "Example osgdem - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "Application osgdem - Win32 Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "Application osgdem - Win32 Debug" (based on "Win32 (x86) Console Application")
 !MESSAGE 
 
 # Begin Project
@@ -28,7 +28,7 @@ CFG=Example osgdem - Win32 Release
 CPP=cl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "Example osgdem - Win32 Release"
+!IF  "$(CFG)" == "Application osgdem - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -53,7 +53,7 @@ LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
 # ADD LINK32 OpenThreadsWin32.lib gdal_i.lib producer.lib opengl32.lib /nologo /subsystem:console /pdb:none /machine:I386 /out:"../../../bin/osgdem.exe" /libpath:"../../../lib" /libpath:"../../../../OpenThreads/lib/win32" /libpath:"../../../../Producer/lib" /libpath:"../../../../3rdParty/lib"
 
-!ELSEIF  "$(CFG)" == "Example osgdem - Win32 Debug"
+!ELSEIF  "$(CFG)" == "Application osgdem - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -83,8 +83,8 @@ LINK32=link.exe
 
 # Begin Target
 
-# Name "Example osgdem - Win32 Release"
-# Name "Example osgdem - Win32 Debug"
+# Name "Application osgdem - Win32 Release"
+# Name "Application osgdem - Win32 Debug"
 # Begin Source File
 
 SOURCE=..\..\..\examples\osgdem\osgdem.cpp

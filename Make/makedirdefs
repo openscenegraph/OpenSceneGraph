@@ -66,6 +66,7 @@ PLUGIN_DIRS += tiff
 DEMOS_DIRS = \
 	hangglide\
 	osgbillboard\
+	osgcallback\
 	osgclip\
 	osgcluster\
 	osgconv\

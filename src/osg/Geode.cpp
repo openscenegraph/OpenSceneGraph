@@ -20,6 +20,8 @@ Geode::Geode(const Geode& geode,const CopyOp& copyop):
         Drawable* drawable = copyop(itr->get());
         if (drawable) addDrawable(drawable);
     }
+    
+    _occluder = dynamic_cast<ConvexPlanerOccluder*>(copyop(geode.getOccluder()));
 }
 
 Geode::~Geode()
@@ -101,6 +103,8 @@ const bool Geode::computeBound() const
 {
     BoundingBox bb;
 
+//     if (_occluder.valid()) _occluder->computeBound(bb);
+
     DrawableList::const_iterator itr;
     for(itr=_drawables.begin();
         itr!=_drawables.end();
@@ -125,6 +129,8 @@ const bool Geode::computeBound() const
                 _bsphere.expandRadiusBy(bbox.corner(c));
             }
         }
+
+//         if (_occluder.valid()) _occluder->computeBound(_bsphere);
 
         _bsphere_computed=true;
         return true;

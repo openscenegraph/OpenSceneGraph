@@ -103,7 +103,12 @@ void Drawable::compile(State& state)
 
     globj = glGenLists( 1 );
     glNewList( globj, GL_COMPILE );
-    drawImmediateMode(state);
+
+    if (_drawCallback.valid())
+        _drawCallback->drawImmediateMode(state,this);
+    else 
+        drawImmediateMode(state);
+
     glEndList();
 
 }

@@ -36,12 +36,12 @@ class SG_EXPORT PositionAttitudeTransform : public Transform
         
         const Quat& getAttitude() const { return _attitude; }
     
-
-    protected :
-            
         virtual const bool computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor* nv) const;
 
         virtual const bool computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor* nv) const;
+
+    protected :
+            
 
         Vec3 _position;
         Quat _attitude;

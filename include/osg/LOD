@@ -60,10 +60,8 @@ class SG_EXPORT LOD : public Group
         struct EvaluateLODCallback : public osg::Referenced
         {
             /** Compute the child to select.*/
-            virtual const int evaluateLODChild(const osg::LOD* lod, const Vec3& eye_local, const float bias) const;
+            virtual const int evaluateLODChild(const osg::LOD* lod, const Vec3& eye_local, const float bias) const = 0;
         };
-        
-        friend struct osg::LOD::EvaluateLODCallback;
 
         /** Set the EvaluateLODCallback which allows users to attach customize computation of the the selection of LOD children.*/
         void setEvaluateLODCallback(EvaluateLODCallback* cbc) { _evaluateLODCallback=cbc; }
@@ -73,8 +71,6 @@ class SG_EXPORT LOD : public Group
         
         /** Get the const ComputeBillboardCallback.*/
         const EvaluateLODCallback* getEvaluateLODCallback() const { return _evaluateLODCallback.get(); }        
-
-
 
         /** return the child to traverse.
             Selected by the distance between the eye point in local
@@ -88,10 +84,11 @@ class SG_EXPORT LOD : public Group
         }
 
 
+        virtual const int evaluateLODChild(const Vec3& eye_local,const float bias) const;
+
     protected :
         virtual ~LOD() {}
 
-        virtual const int evaluateLODChild(const Vec3& eye_local,const float bias) const;
 
         typedef std::vector<float> RangeList;
         RangeList _rangeList;

@@ -83,10 +83,8 @@ class SG_EXPORT Billboard : public Geode
         struct ComputeBillboardCallback : public osg::Referenced
         {
             /** Get the transformation matrix which moves from local coords to world coords.*/
-            virtual const bool computeMatrix(const Matrix& modelview, const Billboard* billboard, const Vec3& eye_local, const Vec3& pos_local) const;
+            virtual const bool computeMatrix(Matrix& modelview, const Billboard* billboard, const Vec3& eye_local, const Vec3& pos_local) const = 0;
         };
-        
-        friend struct osg::Billboard::ComputeBillboardCallback;
 
         /** Set the ComputeBillboardCallback which allows users to attach custom computation of the local transformation as 
           * seen by cull traversers and alike.*/
@@ -107,13 +105,13 @@ class SG_EXPORT Billboard : public Geode
                 return computeMatrix(modelview,eye_local,pos_local);
         }
 
+        virtual const bool computeMatrix(Matrix& modelview, const Vec3& eye_local, const Vec3& pos_local) const;
+
     protected:
 
         virtual ~Billboard();
 
         virtual const bool computeBound() const;
-
-        virtual const bool computeMatrix(Matrix& modelview, const Vec3& eye_local, const Vec3& pos_local) const;
 
         enum AxisAligned
         {

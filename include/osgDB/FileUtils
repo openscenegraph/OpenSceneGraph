@@ -23,20 +23,26 @@
 
 namespace osgDB {
 
+enum CaseSensitivity
+{
+    CASE_SENSITIVE,
+    CASE_INSENSITIVE,
+};
+
 
 /** return true if a file exisits. */
 extern OSGDB_EXPORT bool fileExists(const std::string& filename);
 
 
 /** find specified file in specified file path.*/
-extern OSGDB_EXPORT std::string findFileInPath(const std::string& filename, const FilePathList& filePath);
+extern OSGDB_EXPORT std::string findFileInPath(const std::string& filename, const FilePathList& filePath,CaseSensitivity caseSensitivity=CASE_SENSITIVE);
 
 /** return the directory/filename of a file if its is contained within specified directory.
   * return "" if directory does not contain file.  If caseInsensitive is set to true then
   * a case insensitive comparison is used to compare fileName to directory contents.
   * This is useful when unix programs attempt read case insentive windows filenames.
   */
-extern OSGDB_EXPORT std::string findFileInDirectory(const std::string& fileName,const std::string& dirName,bool caseInsensitive=false);
+extern OSGDB_EXPORT std::string findFileInDirectory(const std::string& fileName,const std::string& dirName,CaseSensitivity caseSensitivity=CASE_SENSITIVE);
 
 /** simple list of names to represent a directory's contents. */
 typedef std::vector<std::string> DirectoryContents;
@@ -53,7 +59,7 @@ inline void setDataFilePathList(const std::string& paths) { osgDB::Registry::ins
 
 inline FilePathList& getDataFilePathList() { return osgDB::Registry::instance()->getDataFilePathList(); }
 
-extern OSGDB_EXPORT std::string findDataFile(const std::string& filename);
+extern OSGDB_EXPORT std::string findDataFile(const std::string& filename,CaseSensitivity caseSensitivity=CASE_SENSITIVE);
 
 /** Convinience class for pushing a path on construction, and popping the path
   * and destruction.  This helps keep the addition of a path local to a block
@@ -79,8 +85,16 @@ inline void setLibraryFilePathList(const std::string& paths) { osgDB::Registry::
 
 inline FilePathList& getLibraryFilePathList() { return osgDB::Registry::instance()->getLibraryFilePathList(); }
 
-extern OSGDB_EXPORT std::string findLibraryFile(const std::string& filename);
+extern OSGDB_EXPORT std::string findLibraryFile(const std::string& filename,CaseSensitivity caseSensitivity=CASE_SENSITIVE);
 
+// 
+// 
+// /** Deprecated. */
+// inline std::string findFileInDirectory(const std::string& fileName,const std::string& dirName,bool caseInsensitive)
+// {
+//     return findFileInDirectory(fileName,dirName,caseInsensitive?CASE_SENSITIVE:CASE_INSENSITIVE);
+// }
+// 
 
 }
 

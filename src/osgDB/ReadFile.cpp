@@ -15,6 +15,8 @@
 #include <osg/Image>
 #include <osg/Node>
 #include <osg/Group>
+#include <osg/Geode>
+#include <osg/ShapeDrawable>
 
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
@@ -112,8 +114,25 @@ Node* osgDB::readNodeFiles(osg::ArgumentParser& arguments,bool useObjectCache)
     typedef std::vector<osg::Node*> NodeList;
     NodeList nodeList;
 
-    // note currently doesn't delete the loaded file entries from the command line yet...
+    std::string filename;
+    while (arguments.read("--image",filename))
+    {
+        osg::Image* image = readImageFile(filename.c_str(), useObjectCache);
+        if (image) nodeList.push_back(osg::createGeodeForImage(image));
+    }
 
+    while (arguments.read("--dem",filename))
+    {
+        osg::HeightField* hf = readHeightFieldFile(filename.c_str(), useObjectCache);
+        if (hf)
+        {
+            osg::Geode* geode = new osg::Geode;
+            geode->addDrawable(new osg::ShapeDrawable(hf));
+            nodeList.push_back(geode);
+        }
+    }
+
+    // note currently doesn't delete the loaded file entries from the command line yet...
     for(int pos=1;pos<arguments.argc();++pos)
     {
         if (!arguments.isOption(pos))

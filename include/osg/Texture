@@ -29,7 +29,7 @@
     #include <OpenThreads/Mutex>
 #endif
 
-// if not defined by gl.h use the definition found in:
+// If not defined by gl.h use the definition found in:
 // http://oss.sgi.com/projects/ogl-sample/registry/EXT/texture_filter_anisotropic.txt
 #ifndef GL_TEXTURE_MAX_ANISOTROPY_EXT
 #define GL_TEXTURE_MAX_ANISOTROPY_EXT 0x84FE
@@ -162,7 +162,9 @@
 
 namespace osg {
 
-/** Texture base class which encapsulates OpenGl texture functionality which common betweent the various types of OpenGL textures.*/
+/** Texture pure virtual base class that encapsulates OpenGl texture
+  * functionality common to the various types of OSG textures.
+*/
 class SG_EXPORT Texture : public osg::StateAttribute
 {
 
@@ -170,7 +172,7 @@ class SG_EXPORT Texture : public osg::StateAttribute
     
         Texture();
 
-        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         Texture(const Texture& text,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
         virtual osg::Object* cloneType() const = 0;
@@ -196,20 +198,20 @@ class SG_EXPORT Texture : public osg::StateAttribute
             MIRROR = GL_MIRRORED_REPEAT_IBM
         };
 
-        /** Set the texture wrap mode.*/
+        /** Sets the texture wrap mode. */
         void setWrap(WrapParameter which, WrapMode wrap);
-        /** Get the texture wrap mode.*/
+        /** Gets the texture wrap mode. */
         WrapMode getWrap(WrapParameter which) const;
 
 
-        /** Set the border color for this texture. Makes difference only if
-          * wrap mode is CLAMP_TO_BORDER */
+        /** Sets the border color. Only used when wrap mode is
+          * CLAMP_TO_BORDER. */
         void setBorderColor(const Vec4& color) { _borderColor = color; dirtyTextureParameters(); }
-        
-        /** Get the border color for this texture.*/
+
+        /** Gets the border color. */
         const Vec4& getBorderColor() const { return _borderColor; }
         
-        /** Set the border width.*/
+        /** Sets the border width. */
         void setBorderWidth(GLint width) { _borderWidth = width; dirtyTextureParameters(); }
         
         GLint getBorderWidth() const { return _borderWidth; }
@@ -229,41 +231,44 @@ class SG_EXPORT Texture : public osg::StateAttribute
         };
 
 
-        /** Set the texture filter mode.*/
+        /** Sets the texture filter mode. */
         void setFilter(FilterParameter which, FilterMode filter);
 
-        /** Get the texture filter mode.*/
+        /** Gets the texture filter mode. */
         FilterMode getFilter(FilterParameter which) const;
 
-        /** Set the maximum anisotropy value, default value is 1.0 for
-          * no anisotropic filtering.  If hardware does not support anisotropic
-          * filtering then normal filtering is used, equivilant to a max anisotropy value of 1.0.
-          * valid range is 1.0f upwards.  The maximum value depends on the graphics
-          * system being used.*/
+        /** Sets the maximum anisotropy value, default value is 1.0 for no
+          * anisotropic filtering. If hardware does not support anisotropic
+          * filtering, use normal filtering (equivilant to a max anisotropy
+          * value of 1.0. Valid range is 1.0f upwards.  The maximum value
+          * depends on the graphics system. */
         void setMaxAnisotropy(float anis);
         
-        /** Get the maximum anisotropy value.*/
+        /** Gets the maximum anisotropy value. */
         inline float getMaxAnisotropy() const { return _maxAnisotropy; }
 
-        /** Set the hint of whether to use hardware mip map generation where available.*/
+        /** Sets the hardware mipmap generation hint. If enabled, it will
+          * only be used if supported in the graphics system. */
         inline void setUseHardwareMipMapGeneration(bool useHardwareMipMapGeneration) { _useHardwareMipMapGeneration = useHardwareMipMapGeneration; }
 
-        /** Get the hint of whether to use hardware mip map generation where available.*/
+        /** Gets the hardware mipmap generation hint. */
         inline bool getUseHardwareMipMapGeneration() const { return _useHardwareMipMapGeneration; }
 
-        /** Set the automatic unreference of image data after the texture has been set up in apply, on (true) or off (false).
-          * If the image data is only referened by this Texture then the image data will be autoamtically deleted.*/
+        /** Sets whether or not the apply() function will unreference the image
+          * data. If enabled, and the image data is only referened by this
+          * Texture, apply() will delete the image data. */
         inline void setUnRefImageDataAfterApply(bool flag) { _unrefImageDataAfterApply = flag; }
         
-        /** Get the automatic unreference of image data after the texture has been set up in apply.*/
+        /** Gets whether or not apply() unreferences image data. */
         inline bool getUnRefImageDataAfterApply() const { return _unrefImageDataAfterApply; }
 
-        /** Set whether to use client storage of the texture where supported by OpenGL drivers.
-          * Note, if UseClientStorageHint is set, and the OpenGL drivers support it, the osg::Image(s) associated with
-          * this texture cannot be deleted, so the UnRefImageDataAfterApply flag is then ignored.*/
+        /** Sets whether to use client storage for the texture, if supported
+          * by the graphics system. Note: If enabled, and the graphics system
+          * supports it, the osg::Image(s) associated with this texture cannot
+          * be deleted, so the UnRefImageDataAfterApply flag would be ignored. */
         inline void setClientStorageHint(bool flag) { _clientStorageHint = flag; }
-        
-        /** Get whether to use client storage of the texture where supported by OpenGL drivers.*/
+
+        /** Gets whether to use client storage for the texture. */
         inline bool getClientStorageHint() const { return _clientStorageHint; }
 
         enum InternalFormatMode {
@@ -275,26 +280,24 @@ class SG_EXPORT Texture : public osg::StateAttribute
             USE_S3TC_DXT5_COMPRESSION
         };
 
-        /** Set the internal format mode.
-          * Note, If the mode is set USE_IMAGE_DATA_FORMAT, USE_ARB_COMPRESSION,
-          * USE_S3TC_COMPRESSION the internalFormat is automatically selected,
-          * and will overwrite the previous _internalFormat.
-          */
+        /** Sets the internal texture format mode. Note: If the texture format is
+          * USE_IMAGE_DATA_FORMAT, USE_ARB_COMPRESSION, or USE_S3TC_COMPRESSION,
+          * the internal format mode is set automatically and will overwrite the
+          * previous _internalFormat. */
         inline void setInternalFormatMode(InternalFormatMode mode) { _internalFormatMode = mode; }
 
-        /** Get the internal format mode.*/
+        /** Gets the internal texture format mode. */
         inline InternalFormatMode getInternalFormatMode() const { return _internalFormatMode; }
 
-        /** Set the internal format to use when creating OpenGL textures.
-          * Also sets the internalFormatMode to USE_USER_DEFINED_FORMAT.
-          */
+        /** Sets the internal texture format. Implicitly sets the
+          * internalFormatMode to USE_USER_DEFINED_FORMAT. */
         inline void setInternalFormat(GLint internalFormat)
         {
             _internalFormatMode = USE_USER_DEFINED_FORMAT;
             _internalFormat = internalFormat;
         }
 
-        /** Get the internal format to use when creating OpenGL textures.*/
+        /** Gets the internal texture format. */
         inline GLint getInternalFormat() const { if (_internalFormat==0) computeInternalFormat(); return _internalFormat; }
         
         bool isCompressedInternalFormat() const;
@@ -302,32 +305,35 @@ class SG_EXPORT Texture : public osg::StateAttribute
 
         class TextureObject;
 
-        /** Get the handle to the texture object for the current context.*/
+        /** Returns a pointer to the texture object for the current context. */
         inline TextureObject* getTextureObject(unsigned int contextID) const
         {
             return _textureObjectBuffer[contextID].get();
         }
 
-        /** Force a recompile on next apply() of associated OpenGL texture objects.*/
+        /** Forces a recompile on next apply() of associated OpenGL texture
+          * objects. */
         void dirtyTextureObject();
 
-        /** return true if the texture objects for all the required graphics contexts are loaded.*/
+        /** Returns true if the texture objects for all the required graphics
+          * contexts are loaded. */
         bool areAllTextureObjectsLoaded() const;
 
 
-        /** get the dirty flag for the current contextID.*/
+        /** Gets the dirty flag for the current contextID. */
         inline unsigned int& getTextureParameterDirty(unsigned int contextID) const
         {
             return _texParametersDirtyList[contextID];
         }
 
 
-        /** Force a resetting on next apply() of associated OpenGL texture parameters.*/
+        /** Force a reset on next apply() of associated OpenGL texture
+          * parameters. */
         void dirtyTextureParameters();
 
 
-        // set mode of GL_TEXTURE_COMPARE_MODE_ARB to GL_COMPARE_R_TO_TEXTURE_ARB
-        // See http://oss.sgi.com/projects/ogl-sample/registry/ARB/shadow.txt
+        /** Sets GL_TEXTURE_COMPARE_MODE_ARB to GL_COMPARE_R_TO_TEXTURE_ARB
+          * See http://oss.sgi.com/projects/ogl-sample/registry/ARB/shadow.txt. */
         void setShadowComparison(bool flag) { _use_shadow_comparison = flag; }
 
         enum ShadowCompareFunc {
@@ -335,7 +341,7 @@ class SG_EXPORT Texture : public osg::StateAttribute
             GEQUAL = GL_GEQUAL
         };
 
-        // set shadow texture comparison function
+        /** Sets shadow texture comparison function. */
         void setShadowCompareFunc(ShadowCompareFunc func) { _shadow_compare_func = func; }
         ShadowCompareFunc getShadowCompareFunc() { return _shadow_compare_func; }
 
@@ -345,43 +351,43 @@ class SG_EXPORT Texture : public osg::StateAttribute
             ALPHA = GL_ALPHA
         };
 
-        // set shadow texture mode after comparison
+        /** Sets shadow texture mode after comparison. */
         void setShadowTextureMode(ShadowTextureMode mode) { _shadow_texture_mode = mode; }
         ShadowTextureMode getShadowTextureMode() { return _shadow_texture_mode; }
 
-        // set value of TEXTURE_COMPARE_FAIL_VALUE_ARB texture parameter
-        // http://oss.sgi.com/projects/ogl-sample/registry/ARB/shadow_ambient.txt
+        /** Sets the TEXTURE_COMPARE_FAIL_VALUE_ARB texture parameter. See
+          * http://oss.sgi.com/projects/ogl-sample/registry/ARB/shadow_ambient.txt. */
         void setShadowAmbient(float shadow_ambient) { _shadow_ambient = shadow_ambient; }
         float getShadowAmbient() { return _shadow_ambient; }
         
 
-        /** Set the texture image for specified face. */
+        /** Sets the texture image for the specified face. */
         virtual void setImage(unsigned int face, Image* image) = 0;
 
-        /** Get the texture image for specified face. */
+        /** Gets the texture image for the specified face. */
         virtual Image* getImage(unsigned int face) = 0;
 
-        /** Get the const texture image for specified face. */
+        /** Gets the const texture image for specified face. */
         virtual const Image* getImage(unsigned int face) const = 0;
 
-        /** Get the number of images that can be assigned to the Texture. */
+        /** Gets the number of images that can be assigned to this Texture. */
         virtual unsigned int getNumImages() const = 0;
 
 
-        /** Texture is pure virtual base class, apply must be overriden. */
+        /** Texture is a pure virtual base class, apply must be overriden. */
         virtual void apply(State& state) const = 0;
 
         /** Calls apply(state) to compile the texture. */
         virtual void compileGLObjects(State& state) const;
 
-        /** release an OpenGL objects in specified graphics context if State
-            object is passed, otherwise release OpenGL objexts for all graphics context if
-            State object pointer NULL.*/
+        /** If State is non-zero, this function releases OpenGL objects for
+          * the specified graphics context. Otherwise, releases OpenGL objexts
+          * for all graphics contexts. */
         virtual void releaseGLObjects(State* state=0) const;
 
-        /** Extensions class which encapsulates the querring of extensions and
-          * associated function pointers, and provide convinience wrappers to 
-          * check for the extensions or use the associated functions.*/        
+        /** Encapsulates queries of extension availability, obtains extension
+          * function pointers, and provides convinience wrappers for
+          * calling extension functions. */        
         class SG_EXPORT Extensions : public osg::Referenced
         {
             public:
@@ -468,26 +474,26 @@ class SG_EXPORT Texture : public osg::StateAttribute
 
         };
         
-        /** Function to call to get the extension of a specified context.
-          * If the Exentsion object for that context has not yet been created then 
-          * and the 'createIfNotInitalized' flag been set to false then returns NULL.
-          * If 'createIfNotInitalized' is true then the Extensions object is 
-          * automatically created.  However, in this case the extension object 
-          * only be created with the graphics context associated with ContextID..*/
+        /** Gets the extension for the specified context. Creates the
+          * Extensions object for that context if it doesn't exist.
+          * Returns NULL if the Extensions object for the context doesn't
+          * exist and the createIfNotInitalized flag is false. */
         static Extensions* getExtensions(unsigned int contextID,bool createIfNotInitalized);
 
-        /** setExtensions allows users to override the extensions across graphics contexts.
-          * typically used when you have different extensions supported across graphics pipes
-          * but need to ensure that they all use the same low common denominator extensions.*/
+        /** Overrides Extensions objects across graphics contexts. Typically
+          * used to ensure the same lowest common denominator of extensions
+          * on sustems with different graphics pipes. */
         static void setExtensions(unsigned int contextID,Extensions* extensions);
 
 
-        /** Helper method which does the creation of the texture itself, but does not set or use texture binding. 
-          * Note, do not call this method directly unless you are implementing your own Subload callback*/
+        /** Helper method. Creates the texture, but doesn't set or use a
+          * texture binding. Note: Don't call this method directly unless
+          * you're implementing a subload callback. */
         void applyTexImage2D_load(State& state, GLenum target, const Image* image, GLsizei width, GLsizei height,GLsizei numMipmapLevels) const;
         
-        /** Helper method which subloads images to the texture itself, but does not set or use texture binding. 
-          * Note, do not call this method directly unless you are implementing your own Subload callback*/
+        /** Helper method. Subloads images into the texture, but doesn't set
+          * or use a texture binding. Note: Don't call this method directly
+          * unless you're implementing a subload callback. */
         void applyTexImage2D_subload(State& state, GLenum target, const Image* image, GLsizei width, GLsizei height, GLint inInternalFormat, GLsizei numMipmapLevels) const;
 
     protected :
@@ -502,12 +508,12 @@ class SG_EXPORT Texture : public osg::StateAttribute
 
         bool isCompressedInternalFormat(GLint internalFormat) const;
 
-        /** Helper method which does setting of texture paramters. */
+        /** Helper method. Sets texture paramters. */
         void applyTexParameters(GLenum target, State& state) const;
-        
 
 
-        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
+
+        /** Returns -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
         int compareTexture(const Texture& rhs) const;
 
         typedef buffered_value<unsigned int> TexParameterDirtyList;
@@ -636,7 +642,8 @@ class SG_EXPORT Texture : public osg::StateAttribute
         typedef std::list< ref_ptr<TextureObject> > TextureObjectList;
         typedef std::map<unsigned int, TextureObjectList > TextureObjectListMap; 
 
-        /** take the active texture objects from the Texture and place them in the specified TextureObjectListMap.*/
+        /** Takes the active texture objects from the Texture and places them
+          * in the specified TextureObjectListMap. */
         void takeTextureObjects(TextureObjectListMap& toblm);
         
         typedef buffered_object< ref_ptr<TextureObject> >  TextureObjectBuffer;
@@ -695,7 +702,7 @@ class SG_EXPORT Texture : public osg::StateAttribute
 
             double getExpiryDelay() const { return _expiryDelay; }
             
-            // how long to keep unsed texture objects around for before deleting.
+            /** How long to keep unused texture objects before deletion. */
             double                  _expiryDelay;
             
             TextureObjectListMap    _textureObjectListMap;

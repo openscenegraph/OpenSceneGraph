@@ -27,14 +27,15 @@ namespace osg {
 #define GL_REFLECTION_MAP_ARB               0x8512
 #endif
 
-/** TexGen - encapsulates the OpenGL glTexGen (texture coordinate generation) state.*/
+/** TexGen encapsulates the OpenGL glTexGen (texture coordinate generation)
+  * state.*/
 class SG_EXPORT TexGen : public StateAttribute
 {
     public :
     
         TexGen();
 
-        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         TexGen(const TexGen& texgen,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             StateAttribute(texgen,copyop),
             _mode(texgen._mode),
@@ -47,21 +48,21 @@ class SG_EXPORT TexGen : public StateAttribute
         
         virtual bool isTextureAttribute() const { return true; }
 
-        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
+        /** Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
         virtual int compare(const StateAttribute& sa) const
         {
-            // check the types are equal and then create the rhs variable
-            // used by the COMPARE_StateAttribute_Paramter macro's below.
+            // Check for equal types, then create the rhs variable
+            // used by the COMPARE_StateAttribute_Paramter macros below.
             COMPARE_StateAttribute_Types(TexGen,sa)
 
-            // compare each paramter in turn against the rhs.
+            // Compare each parameter in turn against the rhs.
             COMPARE_StateAttribute_Parameter(_mode)
             COMPARE_StateAttribute_Parameter(_plane_s)
             COMPARE_StateAttribute_Parameter(_plane_t)
             COMPARE_StateAttribute_Parameter(_plane_r)
             COMPARE_StateAttribute_Parameter(_plane_q)
 
-            return 0; // passed all the above comparison macro's, must be equal.
+            return 0; // Passed all the above comparison macros, so must be equal.
         }
 
         virtual bool getModeUsage(ModeUsage& usage) const
@@ -71,7 +72,7 @@ class SG_EXPORT TexGen : public StateAttribute
 
             // Not happy with turning all tex gen paramters on
             // as the OSG currently only supports 2D textures and therefore
-            // only S and T will only be required, R&Q would be redundant...
+            // only S and T will be required, R&Q would be redundant...
             // So commenting out the following until OSG supports 3D textures.
             // I plan to revamp the OpenGL state management later so will
             // tidy up then.  Robert Osfield. Jan 2001.
@@ -99,7 +100,7 @@ class SG_EXPORT TexGen : public StateAttribute
         Mode getMode() const { return _mode; }
 
         enum Coord {
-	  S, T, R, Q
+          S, T, R, Q
         };
 
         void setPlane(Coord which, const Plane& plane);
@@ -114,7 +115,8 @@ class SG_EXPORT TexGen : public StateAttribute
 
         Mode _mode;
 
-        /// additional texgen coefficents for GL_OBJECT_PLANE or GL_EYE_PLANE,
+        /** Additional texgen coefficents for GL_OBJECT_PLANE or
+          * GL_EYE_PLANE, */
         Plane _plane_s, _plane_t, _plane_r, _plane_q;
 
 };

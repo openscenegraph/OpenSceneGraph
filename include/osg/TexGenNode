@@ -19,7 +19,7 @@
 
 namespace osg {
 
-/** Node for defining the position of TexGen in the scene.*/
+/** Node for defining the position of TexGen in the scene. */
 class SG_EXPORT TexGenNode : public Group
 {
 
@@ -37,13 +37,13 @@ class SG_EXPORT TexGenNode : public Group
 
         unsigned int getTextureUnit() const { return _textureUnit; }
 
-        /** Set the TexGen.*/
+        /** Set the TexGen. */
         void setTexGen(TexGen* texgen);
         
-        /** Get the TexGen.*/
+        /** Get the TexGen. */
         inline TexGen* getTexGen() { return _texgen.get(); }
 
-        /** Get the const TexGen.*/
+        /** Get the const TexGen. */
         inline const TexGen* getTexGen() const { return _texgen.get(); }
 
 

@@ -18,7 +18,9 @@
 
 namespace osg {
 
-/** Texture state class which encapsulates OpenGl texture functionality.*/
+/** Encapsulates OpenGl 2D texture functionality. Doesn't support cube maps,
+  * so ignore \a face parameters.
+*/
 class SG_EXPORT Texture2D : public Texture
 {
 
@@ -28,12 +30,12 @@ class SG_EXPORT Texture2D : public Texture
 
         Texture2D(Image* image);
 
-        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         Texture2D(const Texture2D& text,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
         
         META_StateAttribute(osg, Texture2D,TEXTURE);
 
-        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
+        /** Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
         virtual int compare(const StateAttribute& rhs) const;
 
         virtual bool getModeUsage(ModeUsage& usage) const
@@ -42,13 +44,13 @@ class SG_EXPORT Texture2D : public Texture
             return true;
         }
 
-        /** Set the texture image. */
+        /** Sets the texture image. */
         void setImage(Image* image);
 
-        /** Get the texture image. */
+        /** Gets the texture image. */
         Image* getImage() { return _image.get(); }
 
-        /** Get the const texture image. */
+        /** Gets the const texture image. */
         inline const Image* getImage() const { return _image.get(); }
 
         inline unsigned int& getModifiedTag(unsigned int contextID) const
@@ -58,21 +60,21 @@ class SG_EXPORT Texture2D : public Texture
         }
 
 
-        /** Set the texture image, ignoring face. as there is only one image*/
+        /** Sets the texture image, ignoring face. */
         virtual void setImage(unsigned int, Image* image) { setImage(image); }
 
-        /** Get the texture image, ignoring face value as there is only one image. */
+        /** Gets the texture image, ignoring face. */
         virtual Image* getImage(unsigned int) { return _image.get(); }
 
-        /** Get the const texture image , ignoring face value as there is only one image. */
+        /** Gets the const texture image, ignoring face. */
         virtual const Image* getImage(unsigned int) const { return _image.get(); }
 
-        /** Get the number of images that can be assigned to the Texture. */
+        /** Gets the number of images that can be assigned to the Texture. */
         virtual unsigned int getNumImages() const { return 1; }
 
 
-        /** Set the texture width and height. If width or height are zero then
-          * the repsective size value is calculated from the source image sizes. */
+        /** Sets the texture width and height. If width or height are zero,
+          * calculate the respective value from the source image size. */
         inline void setTextureSize(int width, int height) const
         {
             _textureWidth = width;
@@ -82,7 +84,7 @@ class SG_EXPORT Texture2D : public Texture
         int getTextureWidth() const { return _textureWidth; }
         int getTextureHeight() const { return _textureHeight; }
 
-        // deprecated.
+        /** Deprecated. */
         inline void getTextureSize(int& width, int& height) const
         {
             width = _textureWidth;
@@ -104,32 +106,33 @@ class SG_EXPORT Texture2D : public Texture
         const SubloadCallback* getSubloadCallback() const { return _subloadCallback.get(); }
 
 
-        /** Set the number of mip map levels the the texture has been created with,
-            should only be called within an osg::Texuture::apply() and custom OpenGL texture load.*/
+        /** Helper function. Sets the number of mipmap levels created for this
+          * texture. Should only be called within an osg::Texuture::apply(), or
+          * during a custom OpenGL texture load. */
         void setNumMipmapLevels(unsigned int num) const { _numMipmapLevels=num; }
 
-        /** Get the number of mip map levels the the texture has been created with.*/
+        /** Gets the number of mipmap levels created. */
         unsigned int getNumMipmapLevels() const { return _numMipmapLevels; }
         
 
-        /** Copy pixels into a 2D texture image.As per glCopyTexImage2D.
+        /** Copies pixels into a 2D texture image, as per glCopyTexImage2D.
           * Creates an OpenGL texture object from the current OpenGL background
-          * framebuffer contents at pos \a x, \a y with width \a width and
-          * height \a height. \a width and \a height must be a power of two.
-          */
+          * framebuffer contents at position \a x, \a y with width \a width and
+          * height \a height. \a width and \a height must be a power of two. */
         void copyTexImage2D(State& state, int x, int y, int width, int height );
 
-        /** Copy a two-dimensional texture subimage. As per glCopyTexSubImage2D.
-          * Updates portion of an existing OpenGL texture object from the current OpenGL background
-          * framebuffer contents at pos \a x, \a y with width \a width and
-          * height \a height. \a width and \a height must be a power of two,
-          * and writing into the texture with offset \a xoffset and \a yoffset.
-          */
+        /** Copies a two-dimensional texture subimage, as per
+          * glCopyTexSubImage2D. Updates a portion of an existing OpenGL
+          * texture object from the current OpenGL background framebuffer
+          * contents at position \a x, \a y with width \a width and height
+          * \a height. Loads framebuffer data into the texture using offsets
+          * \a xoffset and \a yoffset. \a width and \a height must be powers
+          * of two. */
         void copyTexSubImage2D(State& state, int xoffset, int yoffset, int x, int y, int width, int height );
 
 
-        /** On first apply (unless already compiled), create the minmapped 
-          * texture and bind it, subsequent apply will simple bind to texture.*/
+        /** Bind the texture object. If the texture object hasn't already been
+          * compiled, create the texture mipmap levels. */
         virtual void apply(State& state) const;
 
     protected :
@@ -139,16 +142,16 @@ class SG_EXPORT Texture2D : public Texture
         virtual void computeInternalFormat() const;
 
 
-        // not ideal that _image is mutable, but its required since
-        // Image::ensureDimensionsArePowerOfTwo() can only be called
-        // in a valid OpenGL context, a therefore within an Texture::apply
-        // which is const...
+        /** It's not ideal that _image is mutable, but it's required since
+          * Image::ensureDimensionsArePowerOfTwo() can only be called in a
+		  * valid OpenGL context, and therefore within Texture::apply, which
+		  * is const. */
         ref_ptr<Image> _image;
 
-        // subloaded images can have different texture and image sizes.
+        /** Subloaded images can have different texture and image sizes. */
         mutable GLsizei _textureWidth, _textureHeight;
         
-        // number of mip map levels the the texture has been created with,        
+        /** Number of mipmap levels created. */        
         mutable GLsizei _numMipmapLevels;
 
         ref_ptr<SubloadCallback> _subloadCallback;

@@ -11,8 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGUTIL_SIMPLIYFIER
-#define OSGUTIL_SIMPLIYFIER 1
+#ifndef OSGUTIL_SIMPLIFIER
+#define OSGUTIL_SIMPLIFIER 1
 
 #include <osg/NodeVisitor>
 #include <osg/Geode>

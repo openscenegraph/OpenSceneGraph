@@ -11,8 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSG_DYNAMICLIBRARY
-#define OSG_DYNAMICLIBRARY 1
+#ifndef OSGDB_DYNAMICLIBRARY
+#define OSGDB_DYNAMICLIBRARY 1
 
 #include <osg/Referenced>
 #include <osgDB/Export>

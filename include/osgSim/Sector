@@ -137,7 +137,7 @@ class OSGSIM_EXPORT AzimSector : public Sector, public AzimRange
 
         AzimSector(float minAzimuth,float maxAzimuth,float fadeAngle=0.0f);
 
-        META_Object(osgSim,AzimSector)
+        META_Object(osgSim,AzimSector);
 
         virtual float operator() (const osg::Vec3& eyeLocal) const;
 
@@ -162,7 +162,7 @@ class OSGSIM_EXPORT ElevationSector : public Sector, public ElevationRange
             
         ElevationSector(float minElevation,float maxElevation,float fadeAngle=0.0f);
     
-        META_Object(osgSim,ElevationSector)
+        META_Object(osgSim,ElevationSector);
 
         virtual float operator() (const osg::Vec3& eyeLocal) const;
         
@@ -193,7 +193,7 @@ class OSGSIM_EXPORT AzimElevationSector : public Sector, public AzimRange, publi
 
         AzimElevationSector(float minAzimuth,float maxAzimuth,float minElevation,float maxElevation,float fadeAngle=0.0f);
 
-        META_Object(osgSim,AzimElevationSector)
+        META_Object(osgSim,AzimElevationSector);
 
         virtual float operator() (const osg::Vec3& eyeLocal) const;
 
@@ -221,7 +221,7 @@ class OSGSIM_EXPORT ConeSector : public Sector
 
         ConeSector(const osg::Vec3& axis,float angle,float fadeangle=0.0f);
 
-        META_Object(osgSim,ConeSector)
+        META_Object(osgSim,ConeSector);
 
         void setAxis(const osg::Vec3& axis);
         
@@ -275,7 +275,7 @@ class OSGSIM_EXPORT DirectionalSector : public Sector
 
         DirectionalSector(const osg::Vec3& direction,float horizLobeAngle, float vertLobeAngle, float lobeRollAngle, float fadeAngle=0.0f);
 
-        META_Object(osgSim,DirectionalSector)
+        META_Object(osgSim,DirectionalSector);
 
         void setDirection(const osg::Vec3& direction);
         

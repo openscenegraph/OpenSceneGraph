@@ -11,8 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSG_POSITIONATTITIDETRANSFORM
-#define OSG_POSITIONATTITIDETRANSFORM 1
+#ifndef OSG_POSITIONATTITUDETRANSFORM
+#define OSG_POSITIONATTITUDETRANSFORM 1
 
 #include <osg/Group>
 #include <osg/Transform>

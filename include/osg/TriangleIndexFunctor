@@ -11,8 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSG_TRIANGLINDEXEFUNCTOR
-#define OSG_TRIANGLINDEXEFUNCTOR 1
+#ifndef OSG_TRIANGLEINDEXFUNCTOR
+#define OSG_TRIANGLEINDEXFUNCTOR 1
 
 #include <osg/Drawable>
 #include <osg/Notify>

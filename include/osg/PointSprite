@@ -11,8 +11,8 @@
  * OpenSceneGraph Public License for more details.
  */
 
-#ifndef OSG_POINT_SPRITE
-#define OSG_POINT_SPRITE 1
+#ifndef OSG_POINTSPRITE
+#define OSG_POINTSPRITE 1
 
 #include <osg/GL>
 #include <osg/StateAttribute>

@@ -11,8 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSG_PRIMTIVESET
-#define OSG_PRIMTIVESET 1
+#ifndef OSG_PRIMITIVESET
+#define OSG_PRIMITIVESET 1
 
 #include <osg/Drawable>
 

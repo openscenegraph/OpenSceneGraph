@@ -31,7 +31,7 @@ class OSGSIM_EXPORT VisibilityGroup : public osg::Group
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         VisibilityGroup(const VisibilityGroup&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
-        META_Node(osgSim, VisibilityGroup)
+        META_Node(osgSim, VisibilityGroup);
 
         virtual void traverse(osg::NodeVisitor& nv);
         

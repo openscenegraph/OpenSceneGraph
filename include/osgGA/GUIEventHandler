@@ -56,7 +56,7 @@ public:
         GUIEventHandler() {}
         GUIEventHandler(const GUIEventHandler&,const osg::CopyOp&) {}
 
-        META_Object(osgGA,GUIEventHandler)
+        META_Object(osgGA,GUIEventHandler);
 
 
         /** Returns 0 if this GUIEventHandler is not a CompositeGUIEventHandler. */

@@ -53,7 +53,7 @@ class SG_EXPORT Geometry : public Drawable
             BIND_PER_VERTEX
         };
                
-        struct ArrayData
+        struct SG_EXPORT ArrayData
         {
             ArrayData():
                 binding(BIND_OFF),
@@ -95,7 +95,7 @@ class SG_EXPORT Geometry : public Drawable
             mutable unsigned int    offset;
         };
         
-        struct Vec3ArrayData
+        struct SG_EXPORT Vec3ArrayData
         {
             Vec3ArrayData():
                 binding(BIND_OFF),

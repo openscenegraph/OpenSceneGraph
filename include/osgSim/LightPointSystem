@@ -37,7 +37,7 @@ class LightPointSystem : public osg::Object
             osg::Object( lps, copyop ), _intensity( lps._intensity ), _animationState( lps._animationState )
             { }
 
-        META_Object( osgSim, LightPointSystem )
+        META_Object( osgSim, LightPointSystem );
         
         typedef enum {
             ANIMATION_ON,

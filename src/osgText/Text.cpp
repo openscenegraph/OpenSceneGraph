@@ -51,15 +51,26 @@ Text::Text(const Text& text,const osg::CopyOp& copyop):
     _color(text._color),
     _drawMode(text._drawMode)
 {
+    if (_font.valid()) _font->_textList.insert(this);
 }
 
 Text::~Text()
 {
+    if (_font.valid()) _font->_textList.erase(this);
 }
 
 void Text::setFont(Font* font)
 {
+    if (_font==font) return;
+
+    // unregister from the old font.    
+    if (_font.valid()) _font->_textList.erase(this);
+    
     _font = font;
+
+    // register with the new font.    
+    if (_font.valid()) _font->_textList.insert(this);
+    
     computeGlyphRepresentation();
 }
 
@@ -393,8 +404,6 @@ void Text::computePositions()
 void Text::drawImplementation(osg::State& state) const
 {
     
-
-    
     glPushMatrix();
 
     // draw part.
@@ -424,7 +433,7 @@ void Text::drawImplementation(osg::State& state) const
     if (_drawMode & TEXT)
     {
 
-        bool first = true;
+        bool first = false;
 
         for(TextureGlyphQuadMap::const_iterator titr=_textureGlyphQuadMap.begin();
             titr!=_textureGlyphQuadMap.end();

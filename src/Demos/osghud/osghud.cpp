@@ -109,7 +109,7 @@ osg::Node* createHUD()
         geode->addDrawable( text );
 
         text->setFont(timesFont);
-        text->setText("Then place a osg::Projection node above the subgraph\nto create an othrograph projection.");
+        text->setText("Then place a osg::Projection node above the subgraph\nto create an orthographic projection.");
         text->setPosition(position);
         
         position += delta;

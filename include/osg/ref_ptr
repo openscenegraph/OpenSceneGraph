@@ -108,7 +108,9 @@ class ref_ptr
           * return the pointer to the object.
           * Note, do not use this unless you are 100% sure your code handles the deletion of the object correctly, and
           * only use when absolutely required.*/
-        inline T* take() { T* tmp=_ptr; if (_ptr) _ptr->unref_nodelete(); _ptr=0; return tmp;}
+        inline T* take() { return release();}
+
+        inline T* release() { T* tmp=_ptr; if (_ptr) _ptr->unref_nodelete(); _ptr=0; return tmp;}
 
     private:
         T* _ptr;

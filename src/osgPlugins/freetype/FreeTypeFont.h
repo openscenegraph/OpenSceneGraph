@@ -26,6 +26,8 @@ public:
 
     FreeTypeFont(const std::string& filename, FT_Face face);
 
+    virtual ~FreeTypeFont();
+
     virtual std::string getFileName() const { return _filename; }
 
     virtual void setSize(unsigned int width, unsigned int height);

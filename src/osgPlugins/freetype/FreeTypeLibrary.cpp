@@ -26,6 +26,26 @@ FreeTypeLibrary::FreeTypeLibrary()
 
 FreeTypeLibrary::~FreeTypeLibrary()
 {
+
+    for(FontMap::iterator itr=_fontMap.begin();
+        itr!=_fontMap.end();
+        ++itr)
+    {
+        FreeTypeFont* freetypefont = itr->second.get();
+        if (freetypefont->referenceCount()>1)
+        {
+            // external references must exist...
+            itr->second = 0;
+            
+            delete freetypefont;            
+        }
+        else
+        {
+            // no external references exist so its safe to delete via set the ref_ptr to 0.
+            itr->second = 0;
+        }
+    }
+    
     FT_Done_FreeType( _ftlibrary);
 }
 
@@ -37,6 +57,10 @@ FreeTypeLibrary* FreeTypeLibrary::instance()
 
 FreeTypeFont* FreeTypeLibrary::getFont(const std::string& fontfile,unsigned int index)
 {
+
+    FontMap::iterator itr = _fontMap.find(fontfile);
+    if (itr!=_fontMap.end()) return itr->second.get();
+
     FT_Face face;      /* handle to face object */
     FT_Error error = FT_New_Face( _ftlibrary, fontfile.c_str(), index, &face );
     if (error == FT_Err_Unknown_File_Format)
@@ -52,6 +76,8 @@ FreeTypeFont* FreeTypeLibrary::getFont(const std::string& fontfile,unsigned int 
         return 0;
     }
     
-    return new FreeTypeFont(fontfile,face);
+    FreeTypeFont* font = new FreeTypeFont(fontfile,face);
+    _fontMap[fontfile]=font;
+    return font;
 
 }

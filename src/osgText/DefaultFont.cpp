@@ -44,8 +44,36 @@ void DefaultFont::setSize(unsigned int, unsigned int)
 
 Font::Glyph* DefaultFont::getGlyph(unsigned int charcode)
 {
-    GlyphMap::iterator itr = _glyphMap.find(charcode);
-    if (itr!=_glyphMap.end()) return itr->second.get();
+    if (_sizeGlyphMap.empty()) return 0;
+
+    SizeGlyphMap::iterator itr = _sizeGlyphMap.find(SizePair(_width,_height));
+    if (itr==_sizeGlyphMap.end())
+    {
+        // no font found of correct size, will need to find the nearest.
+        itr = _sizeGlyphMap.begin();
+        int mindeviation = abs(_width-itr->first.first)+
+                           abs(_height-itr->first.second);
+        SizeGlyphMap::iterator sitr=itr;
+        ++sitr;
+        for(;
+            sitr!=_sizeGlyphMap.end();
+            ++sitr)
+        {
+            int deviation = abs(_width-sitr->first.first)+
+                            abs(_height-sitr->first.second);
+            if (deviation<mindeviation)
+            {
+                mindeviation = deviation;
+                itr = sitr;
+            }
+        }
+    }
+
+    // new find the glyph for the required charcode.
+    GlyphMap& glyphmap = itr->second;    
+    GlyphMap::iterator gitr = glyphmap.find(charcode);
+    
+    if (gitr!=glyphmap.end()) return gitr->second.get();
     else return 0;
 }
 
@@ -203,13 +231,12 @@ void DefaultFont::constructGlyphs()
         }
         
                         
-        glyph->setFont(this);
         glyph->setHorizontalBearing(osg::Vec2(0.0f,0.0f)); // bottom left.
         glyph->setHorizontalAdvance((float)_width);
         glyph->setVerticalBearing(osg::Vec2((float)_width*0.5f,(float)_height)); // top middle.
         glyph->setVerticalAdvance((float)_height);
         
-        addGlyph(i,glyph.get());
+        addGlyph(_width,_height,i,glyph.get());
     }
 }
 

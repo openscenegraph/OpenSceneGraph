@@ -23,10 +23,12 @@
 #include <osgText/Export>
 
 #include <string>
+#include <set>
 
 namespace osgText {
 
 class Font;
+class Text;
 
 /** read a font from specified file.*/
 extern OSGTEXT_EXPORT Font* readFontFile(const std::string& filename);
@@ -66,20 +68,29 @@ public:
     
     virtual bool hasVertical() const = 0;
 
+    // make Text a friend to allow it add and remove its entry in the Font's _textList.
+    friend Text;
 
 protected:
 
     virtual ~Font();
     
-    void addGlyph(unsigned int charcode, Glyph* glyph);
+    void addGlyph(unsigned int width, unsigned int height, unsigned int charcode, Glyph* glyph);
     
     typedef std::vector< osg::ref_ptr<GlyphTexture> >       GlyphTextureList;
     typedef std::vector< osg::ref_ptr<osg::StateSet> >      StateSetList;
     typedef std::map< unsigned int, osg::ref_ptr<Glyph> >   GlyphMap;
     
-    GlyphMap            _glyphMap;
+    typedef std::pair< unsigned int, unsigned int >         SizePair;
+    typedef std::map< SizePair, GlyphMap >                  SizeGlyphMap;
+    typedef std::set< Text* >                               TextList;
+    
+    SizeGlyphMap        _sizeGlyphMap;
     GlyphTextureList    _glyphTextureList;
     StateSetList        _stateSetList;
+    
+    // list of text object to contact when Font is forcebly removed.
+    TextList            _textList;
     
     // current active size of font
     unsigned int _width;
@@ -134,9 +145,6 @@ public:
         virtual ~Glyph();
 
         unsigned int getGlyphCode() const;
-
-        void setFont(Font* font);
-        Font* getFont() const;
 
         void setHorizontalBearing(const osg::Vec2& bearing);
         const osg::Vec2& getHorizontalBearing() const;

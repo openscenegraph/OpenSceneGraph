@@ -34,8 +34,11 @@ protected:
       * library is via the singleton instance method.*/
     FreeTypeLibrary();
 
+    typedef std::map< std::string, osg::ref_ptr<FreeTypeFont> > FontMap;
+
 
     FT_Library  _ftlibrary;
+    FontMap     _fontMap;
 
 };
 

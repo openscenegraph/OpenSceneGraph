@@ -42,6 +42,8 @@ class SG_EXPORT Geometry : public Drawable
         virtual Geometry* asGeometry() { return this; }
         virtual const Geometry* asGeometry() const { return this; }
 
+        bool empty() const;
+
         enum AttributeBinding
         {
             BIND_OFF=0,
@@ -83,6 +85,8 @@ class SG_EXPORT Geometry : public Drawable
                 offset = rhs.offset;
                 return *this;
             }
+            
+            inline bool empty() const { return !array.valid(); } 
 
             ref_ptr<Array>          array;
             ref_ptr<IndexArray>     indices;
@@ -123,6 +127,8 @@ class SG_EXPORT Geometry : public Drawable
                 offset = rhs.offset;
                 return *this;
             }
+
+            inline bool empty() const { return !array.valid(); } 
 
             ref_ptr<Vec3Array>          array;
             ref_ptr<IndexArray>     indices;

@@ -50,7 +50,12 @@ void AnimationPathManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter&)
     if (_animationPath.valid())
     {
         _timeOffset = _animationPath->getFirstTime()-ea.time();
+
     }
+
+    // reset the timing of the animation.
+    _numOfFramesSinceStartOfTimedPeriod=-1;
+                
 }
 
 void AnimationPathManipulator::init(const GUIEventAdapter& ea,GUIActionAdapter& aa)
@@ -84,6 +89,7 @@ bool AnimationPathManipulator::handle(const osgGA::GUIEventAdapter& ea,osgGA::GU
                 home(ea,us);
                 us.requestRedraw();
                 us.requestContinuousUpdate(false);
+                
                 return true;
             } 
             else if(ea.getKey() == 'p')

@@ -322,6 +322,8 @@ INPUT                  = $(OSGHOME)/include/osg \
                          $(OSGHOME)/include/osgProducer \
                          $(OSGHOME)/include/osgParticle \
                          $(OSGHOME)/include/osgText \
+                         $(OSGHOME)/include/osgSim \
+                         $(OSGHOME)/include/osgGL2 \
                          $(OSGHOME)/include/osgTerrain \
                          $(OSGHOME)/include/osgFX \
                          $(OSGHOME)/include/osgUtil \

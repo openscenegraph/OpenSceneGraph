@@ -124,12 +124,24 @@ int main( int argc, char **argv )
 
 
     // set the globa state
-//     osg::StateSet* globalStateSet = new osg::StateSet;
-//     globalStateSet->setGlobalDefaults();
-//     cg->setGlobalStateSet(globalStateSet);
+    osg::StateSet* globalStateSet = new osg::StateSet;
+    globalStateSet->setGlobalDefaults();
+    cg->setGlobalStateSet(globalStateSet);
+    
+    
+    // add either a headlight or sun light to the scene.
+    osg::LightSource* lightsource = new osg::LightSource;
+    osg::Light* light = new osg::Light;
+    lightsource->setLight(light);
+    lightsource->setReferenceFrame(osg::LightSource::RELATIVE_TO_ABSOLUTE);
+    lightsource->setLocalStateSetModes(osg::StateAttribute::ON);
+
+    lightsource->addChild(scene.get());
+    
     
     // set the scene to render
-    cg->setSceneData(scene.get());
+//    cg->setSceneData(scene.get());
+    cg->setSceneData(lightsource);
 
     // set up the pthread stack size to large enough to run into problems.
     cg->setStackSize( 20*1024*1024);
@@ -153,18 +165,24 @@ int main( int argc, char **argv )
         cg->sync();
 
         // set the frame stamp for the new frame.
-        double time_since_start = timer.delta_s(timer.tick(),start_tick);
+        double time_since_start = timer.delta_s(start_tick,timer.tick());
         frameStamp->setFrameNumber(frameNumber);
         frameStamp->setReferenceTime(time_since_start);
-
+        
+        // update the trackball
         tb.input( kbmcb.mx(), kbmcb.my(), kbmcb.mbutton() );
         
+        // update the scene by traversing it with the the update visitor which will
+        // call all node update callbacks and animations.
         scene->accept(update);
 
+        // update the main camera
         cg->setView(tb.getMatrix().ptr());
-                
+         
+        // fire off the cull and draw traversals of the scene.
         cg->frame();
         
+        // increment the frame number ready for the next frame
         ++frameNumber;
     }
     return 0;

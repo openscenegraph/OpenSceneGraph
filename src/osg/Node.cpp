@@ -13,7 +13,7 @@ Node::Node()
     _bsphere_computed = false;
     _nodeMask = 0xffffffff;
     
-    _numChildrenRequiringAppTraversal = 0;
+    _numChildrenRequiringUpdateTraversal = 0;
 
     _cullingActive = true;
     _numChildrenWithCullingDisabled = 0;
@@ -27,8 +27,8 @@ Node::Node(const Node& node,const CopyOp& copyop):
         _bsphere_computed(node._bsphere_computed),
         _name(node._name),
         _parents(), // leave empty as parentList is managed by Group.
-        _appCallback(node._appCallback),
-        _numChildrenRequiringAppTraversal(0), // assume no children yet.
+        _updateCallback(node._updateCallback),
+        _numChildrenRequiringUpdateTraversal(0), // assume no children yet.
         _cullCallback(node._cullCallback),
         _cullingActive(node._cullingActive),
         _numChildrenWithCullingDisabled(0), // assume no children yet.
@@ -77,24 +77,24 @@ osg::StateSet* Node::getOrCreateStateSet()
 }
 
 
-void Node::setAppCallback(NodeCallback* nc)
+void Node::setUpdateCallback(NodeCallback* nc)
 {
     // if no changes just return.
-    if (_appCallback==nc) return;
+    if (_updateCallback==nc) return;
     
     // app callback has been changed, will need to update
-    // both _appCallback and possibly the numChildrenRequiringAppTraversal
+    // both _updateCallback and possibly the numChildrenRequiringAppTraversal
     // if the number of callbacks changes.
 
 
     // update the parents numChildrenRequiringAppTraversal
-    // note, if _numChildrenRequiringAppTraversal!=0 then the
+    // note, if _numChildrenRequiringUpdateTraversal!=0 then the
     // parents won't be affected by any app callback change,
     // so no need to inform them.
-    if (_numChildrenRequiringAppTraversal==0 && !_parents.empty())
+    if (_numChildrenRequiringUpdateTraversal==0 && !_parents.empty())
     {
         int delta = 0;
-        if (_appCallback.valid()) --delta;
+        if (_updateCallback.valid()) --delta;
         if (nc) ++delta;
         if (delta!=0)
         {
@@ -105,32 +105,32 @@ void Node::setAppCallback(NodeCallback* nc)
                 itr != _parents.end();
                 ++itr)
             {    
-                (*itr)->setNumChildrenRequiringAppTraversal(
-                        (*itr)->getNumChildrenRequiringAppTraversal()+delta );
+                (*itr)->setNumChildrenRequiringUpdateTraversal(
+                        (*itr)->getNumChildrenRequiringUpdateTraversal()+delta );
             }
 
         }
     }
 
     // set the app callback itself.
-    _appCallback = nc;
+    _updateCallback = nc;
 
 }
 
-void Node::setNumChildrenRequiringAppTraversal(unsigned int num)
+void Node::setNumChildrenRequiringUpdateTraversal(unsigned int num)
 {
     // if no changes just return.
-    if (_numChildrenRequiringAppTraversal==num) return;
+    if (_numChildrenRequiringUpdateTraversal==num) return;
 
-    // note, if _appCallback is set then the
+    // note, if _updateCallback is set then the
     // parents won't be affected by any changes to
-    // _numChildrenRequiringAppTraversal so no need to inform them.
-    if (!_appCallback && !_parents.empty())
+    // _numChildrenRequiringUpdateTraversal so no need to inform them.
+    if (!_updateCallback && !_parents.empty())
     {
     
         // need to pass on changes to parents.        
         int delta = 0;
-        if (_numChildrenRequiringAppTraversal>0) --delta;
+        if (_numChildrenRequiringUpdateTraversal>0) --delta;
         if (num>0) ++delta;
         if (delta!=0)
         {
@@ -141,8 +141,8 @@ void Node::setNumChildrenRequiringAppTraversal(unsigned int num)
                 itr != _parents.end();
                 ++itr)
             {    
-                (*itr)->setNumChildrenRequiringAppTraversal(
-                    (*itr)->getNumChildrenRequiringAppTraversal()+delta
+                (*itr)->setNumChildrenRequiringUpdateTraversal(
+                    (*itr)->getNumChildrenRequiringUpdateTraversal()+delta
                     );
             }
 
@@ -150,7 +150,7 @@ void Node::setNumChildrenRequiringAppTraversal(unsigned int num)
     }
     
     // finally update this objects value.
-    _numChildrenRequiringAppTraversal=num;
+    _numChildrenRequiringUpdateTraversal=num;
     
 }
 

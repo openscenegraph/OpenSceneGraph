@@ -124,7 +124,7 @@ osg::Node* createLights(osg::BoundingBox& bb,osg::StateSet* rootStateSet)
         animationPath->insert(8.0,osg::AnimationPath::ControlPoint(bb.corner(0)));
         animationPath->setLoopMode(osg::AnimationPath::SWING);
         
-        mt->setAppCallback(new osg::MatrixTransform::AnimationPathCallback(animationPath));
+        mt->setUpdateCallback(new osg::MatrixTransform::AnimationPathCallback(animationPath));
     }
     
     // create marker for point light.
@@ -225,7 +225,7 @@ osg::Node* createRoom(osg::Node* loadedModel)
         osg::PositionAttitudeTransform* pat = new osg::PositionAttitudeTransform();
         pat->setPivotPoint(loaded_bs.center());
         
-        pat->setAppCallback(new ModelTransformCallback(loaded_bs));
+        pat->setUpdateCallback(new ModelTransformCallback(loaded_bs));
         pat->addChild(loadedModel);
         
         bs = pat->getBound();

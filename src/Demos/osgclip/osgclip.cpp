@@ -98,7 +98,7 @@ osg::Node* decorate_with_clip_node(osg::Node* subgraph)
     osg::MatrixTransform* transform= new osg::MatrixTransform;
 
     osg::NodeCallback* nc = new osgUtil::TransformCallback(subgraph->getBound().center(),osg::Vec3(0.0f,0.0f,1.0f),osg::inDegrees(45.0f));
-    transform->setAppCallback(nc);
+    transform->setUpdateCallback(nc);
 
     osg::ClipNode* clipnode = new osg::ClipNode;
     osg::BoundingSphere bs = subgraph->getBound();

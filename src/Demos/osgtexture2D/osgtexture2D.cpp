@@ -195,7 +195,7 @@ osg::Node* createLayer(const osg::Vec3& offset,osg::Image* image,osg::Node* geom
 
         local_offset += local_delta;
         
-        // top_transform->setAppCallback(new TextureCallback(texture));
+        // top_transform->setUpdateCallback(new TextureCallback(texture));
 
     }
         

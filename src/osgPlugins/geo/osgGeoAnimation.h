@@ -37,11 +37,11 @@ public:
 	};
 	~geoHeader() {}
 	void setUserUpdate(double (*ufn)(const double time,const double val, const std::string name) )
-	{ // pass the address of a user written function in the App process.
+	{ // pass the address of a user written function in the Update phase.
 		uvarupdate=ufn;
 	}
 	void setExternUpdate(double (*ufn)(const double time,const double val, const std::string name) )
-	{ // pass the address of a user written function in the App process.
+	{ // pass the address of a user written function in the Update phase.
 		extvarupdate=ufn;
 	}
 	double (* uvarupdate)(const double t, const double val, const std::string name); // called when variables are updated, you write this!

@@ -3,7 +3,7 @@ include $(TOPDIR)/Make/makedefs
 
 
 CXXFILES = \
-	AppVisitor.cpp\
+	UpdateVisitor.cpp\
 	CullVisitor.cpp\
 	DisplayListVisitor.cpp\
 	DisplayRequirementsVisitor.cpp\

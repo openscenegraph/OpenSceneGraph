@@ -46,7 +46,7 @@ void PositionAttitudeTransform::AnimationPathCallback::operator()(Node* node, No
     PositionAttitudeTransform* pat = dynamic_cast<PositionAttitudeTransform*>(node);
     if (pat &&
         _animationPath.valid() && 
-        nv->getVisitorType()==NodeVisitor::APP_VISITOR && 
+        nv->getVisitorType()==NodeVisitor::UPDATE_VISITOR && 
         nv->getFrameStamp())
     {
         double time = nv->getFrameStamp()->getReferenceTime();

@@ -2,8 +2,8 @@
 //Distributed under the terms of the GNU Library General Public License (LGPL)
 //as published by the Free Software Foundation.
 
-#ifndef OSGUTIL_APPVISITOR
-#define OSGUTIL_APPVISITOR 1
+#ifndef OSGUTIL_UPDATEVISITOR
+#define OSGUTIL_UPDATEVISITOR 1
 
 #include <osg/NodeVisitor>
 #include <osg/Node>
@@ -22,16 +22,16 @@
 namespace osgUtil {
 
 /**
- * Basic AppVisitor implementation for animating a scene.
+ * Basic UpdateVisitor implementation for animating a scene.
  * This visitor traverses the scene graph, call each nodes appCallback if
  * it exists. 
  */
-class OSGUTIL_EXPORT AppVisitor : public osg::NodeVisitor
+class OSGUTIL_EXPORT UpdateVisitor : public osg::NodeVisitor
 {
     public:
 
-        AppVisitor();
-        virtual ~AppVisitor();
+        UpdateVisitor();
+        virtual ~UpdateVisitor();
 
         virtual void reset();
 
@@ -54,29 +54,29 @@ class OSGUTIL_EXPORT AppVisitor : public osg::NodeVisitor
     protected:
 
         /** prevent unwanted copy construction.*/
-        AppVisitor(const AppVisitor&):osg::NodeVisitor() {}
+        UpdateVisitor(const UpdateVisitor&):osg::NodeVisitor() {}
 
         /** prevent unwanted copy operator.*/
-        AppVisitor& operator = (const AppVisitor&) { return *this; }
+        UpdateVisitor& operator = (const UpdateVisitor&) { return *this; }
         
         inline void handle_callbacks_and_traverse(osg::Node& node)
         {
-            osg::NodeCallback* callback = node.getAppCallback();
+            osg::NodeCallback* callback = node.getUpdateCallback();
             if (callback) (*callback)(&node,this);
-            else if (node.getNumChildrenRequiringAppTraversal()>0) traverse(node);
+            else if (node.getNumChildrenRequiringUpdateTraversal()>0) traverse(node);
         }
 
         inline void handle_geode_callbacks(osg::Geode& node)
         {
-            osg::NodeCallback* callback = node.getAppCallback();
+            osg::NodeCallback* callback = node.getUpdateCallback();
             if (callback) (*callback)(&node,this);
-            else if (node.getNumChildrenRequiringAppTraversal()>0) traverse(node);
+            else if (node.getNumChildrenRequiringUpdateTraversal()>0) traverse(node);
             
             // call the app callbacks on the drawables.
             for(unsigned int i=0;i<node.getNumDrawables();++i)
             {
-                osg::Drawable::AppCallback* callback = node.getDrawable(i)->getAppCallback();
-                if (callback) callback->app(this,node.getDrawable(i));
+                osg::Drawable::UpdateCallback* callback = node.getDrawable(i)->getUpdateCallback();
+                if (callback) callback->update(this,node.getDrawable(i));
             }
             
         }

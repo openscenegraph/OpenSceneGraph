@@ -145,7 +145,7 @@ osg:: Node* createGlobe(const osg::BoundingBox& bb,float ratio)
     
     
     osg::MatrixTransform* xform = new osg::MatrixTransform;
-    xform->setAppCallback(new osgUtil::TransformCallback(bb.center(),osg::Vec3(0.0f,0.0f,1.0f),osg::inDegrees(30.0f)));
+    xform->setUpdateCallback(new osgUtil::TransformCallback(bb.center(),osg::Vec3(0.0f,0.0f,1.0f),osg::inDegrees(30.0f)));
     xform->addChild(geode);
         
     return xform;

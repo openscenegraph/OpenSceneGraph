@@ -166,9 +166,9 @@ class MySceneView : public SceneView {
         }
         
         // override the basic SceneView::app traversal.
-        virtual void app()
+        virtual void update()
         {
-            SceneView::app();
+            SceneView::update();
             switch (_viewerMode)
             {
             case(MASTER):

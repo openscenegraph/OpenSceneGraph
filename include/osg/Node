@@ -127,18 +127,29 @@ class SG_EXPORT Node : public Object
         inline unsigned int getNumParents() const { return _parents.size(); }
 
 
-        /** Set app node callback, called during app traversal. */
-        void setAppCallback(NodeCallback* nc);
+        /** Set update node callback, called during update traversal. */
+        void setUpdateCallback(NodeCallback* nc);
 
-        /** Get app node callback, called during app traversal. */
-        inline NodeCallback* getAppCallback() { return _appCallback.get(); }
+        /** Get update node callback, called during update traversal. */
+        inline NodeCallback* getUpdateCallback() { return _updateCallback.get(); }
 
-        /** Get const app node callback, called during app traversal. */
-        inline const NodeCallback* getAppCallback() const { return _appCallback.get(); }
+        /** Get const update node callback, called during update traversal. */
+        inline const NodeCallback* getUpdateCallback() const { return _updateCallback.get(); }
+
+#ifdef USE_DEPRECATED_API
+        /** deprecated. */
+        void setAppCallback(NodeCallback* nc) { setUpdateCallback(nc); }
+
+        /** deprecated. */
+        inline NodeCallback* getAppCallback() { return getUpdateCallback(); }
+
+        /** deprecated. */
+        inline const NodeCallback* getAppCallback() const { return getUpdateCallback(); }
+#endif
 
         /** Get the number of Children of this node which require App traversal,
           * since they have an AppCallback attached to them or their children.*/
-        inline unsigned int getNumChildrenRequiringAppTraversal() const { return _numChildrenRequiringAppTraversal; }
+        inline unsigned int getNumChildrenRequiringUpdateTraversal() const { return _numChildrenRequiringUpdateTraversal; }
 
 
         /** Set cull node callback, called during cull traversal. */
@@ -256,9 +267,9 @@ class SG_EXPORT Node : public Object
         friend class osg::Group;
         friend class osg::Drawable;
 
-        ref_ptr<NodeCallback> _appCallback;
-        unsigned int _numChildrenRequiringAppTraversal;
-        void setNumChildrenRequiringAppTraversal(unsigned int num);
+        ref_ptr<NodeCallback> _updateCallback;
+        unsigned int _numChildrenRequiringUpdateTraversal;
+        void setNumChildrenRequiringUpdateTraversal(unsigned int num);
 
         ref_ptr<NodeCallback> _cullCallback;
 

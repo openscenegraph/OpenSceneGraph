@@ -60,7 +60,7 @@ class OSGGLUT_EXPORT Viewer : public Window, public osgGA::GUIActionAdapter
         virtual bool run();
 
         // called on each frame redraw..return the time in ms for each operation.
-        virtual float app(unsigned int viewport); 
+        virtual float update(unsigned int viewport); 
         virtual float cull(unsigned int viewport);
         virtual float draw(unsigned int viewport);
 
@@ -163,10 +163,10 @@ class OSGGLUT_EXPORT Viewer : public Window, public osgGA::GUIActionAdapter
         struct StatsRecord
         { // gwm Jul 2001, added for display of statistics
             StatsRecord():
-                timeApp(0), timeCull(0), timeDraw(0), timeFrame(0),
+                timeUpdate(0), timeCull(0), timeDraw(0), timeFrame(0),
                 frameend(0) {}
         
-            float timeApp, timeCull, timeDraw, timeFrame;
+            float timeUpdate, timeCull, timeDraw, timeFrame;
             osg::Timer_t frameend;
         };
         StatsRecord times[3]; // store up to 3 frames worth of times

@@ -632,7 +632,7 @@ osg::Node* createBackground()
     // create a tranform to move the background back and forward with.
  
     osg::MatrixTransform* transform = new osg::MatrixTransform();
-    transform->setAppCallback(new MyTransformCallback(1.0f));
+    transform->setUpdateCallback(new MyTransformCallback(1.0f));
     transform->addChild(geode);
 
     return transform;

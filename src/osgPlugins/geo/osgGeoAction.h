@@ -20,12 +20,12 @@ public:
 protected:
 };
 
-class geoBehaviourDrawableCB: public osg::Drawable::AppCallback {
+class geoBehaviourDrawableCB: public osg::Drawable::UpdateCallback {
 public:
     geoBehaviourDrawableCB() { }
     ~geoBehaviourDrawableCB() { }
     void addBehaviour(geoBehaviour *gb) {gblist.push_back(gb);}
-    void app(osg::NodeVisitor *,osg::Drawable *dr);
+    void update(osg::NodeVisitor *,osg::Drawable *dr);
 private:
     std::vector<geoBehaviour *> gblist;
 };

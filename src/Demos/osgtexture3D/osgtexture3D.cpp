@@ -189,7 +189,7 @@ osg::Node* createModel()
     // A bit hacky, and my plan is to reimplement the osg::scaleImage and
     // osg::Image::copySubImage() without using GLU which will get round
     // this current limitation.
-    geode->setAppCallback(new ConstructStateCallback());
+    geode->setUpdateCallback(new ConstructStateCallback());
     
     return geode;
 

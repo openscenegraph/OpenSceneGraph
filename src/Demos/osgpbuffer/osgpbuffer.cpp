@@ -32,11 +32,11 @@
 PBuffer* g_pPixelBuffer;
 
 
-class MyAppCallback : public osg::NodeCallback
+class MyUpdateCallback : public osg::NodeCallback
 {
     public:
     
-        MyAppCallback(osg::Node* subgraph):
+        MyUpdateCallback(osg::Node* subgraph):
             _subgraph(subgraph) {}
 
         virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
@@ -196,7 +196,7 @@ new_viewport->setViewport(0,0,width,height);
 
 // call back which cretes a deformation field to oscilate the model.
 class MyGeometryCallback : 
-    public osg::Drawable::AppCallback, 
+    public osg::Drawable::UpdateCallback, 
     public osg::Drawable::AttributeFunctor
 {
     public:
@@ -539,14 +539,14 @@ texture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::CLAMP);
 
     polyGeom->setStateSet(stateset);
 
-    polyGeom->setAppCallback(new MyGeometryCallback(origin,xAxis,yAxis,zAxis,1.0,1.0/width,0.2f));
+    polyGeom->setUpdateCallback(new MyGeometryCallback(origin,xAxis,yAxis,zAxis,1.0,1.0/width,0.2f));
 
     osg::Geode* geode = new osg::Geode();
     geode->addDrawable(polyGeom);
 
     osg::Group* parent = new osg::Group;
     
-    parent->setAppCallback(new MyAppCallback(subgraph));
+    parent->setUpdateCallback(new MyUpdateCallback(subgraph));
     
     parent->setCullCallback(new MyCullCallback(subgraph,texture));
  
@@ -630,7 +630,7 @@ int main( int argc, char **argv )
     loadedModelTransform->addChild(loadedModel);
 
     osg::NodeCallback* nc = new osgUtil::TransformCallback(loadedModelTransform->getBound().center(),osg::Vec3(0.0f,0.0f,1.0f),osg::inDegrees(45.0f));
-    loadedModelTransform->setAppCallback(nc);
+    loadedModelTransform->setUpdateCallback(nc);
 
     osg::Group* rootNode = new osg::Group();
 //    rootNode->addChild(loadedModelTransform);

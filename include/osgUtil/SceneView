@@ -140,9 +140,9 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         osg::NodeVisitor* getInitVisitor() { return _initVisitor.get(); }
         const osg::NodeVisitor* getInitVisitor() const { return _initVisitor.get(); }
 
-        void setAppVisitor(osg::NodeVisitor* av) { _appVisitor = av; }
-        osg::NodeVisitor* getAppVisitor() { return _appVisitor.get(); }
-        const osg::NodeVisitor* getAppVisitor() const { return _appVisitor.get(); }
+        void setUpdateVisitor(osg::NodeVisitor* av) { _updateVisitor = av; }
+        osg::NodeVisitor* getUpdateVisitor() { return _updateVisitor.get(); }
+        const osg::NodeVisitor* getUpdateVisitor() const { return _updateVisitor.get(); }
 
         void setCullVisitor(osgUtil::CullVisitor* cv) { _cullVisitor = cv; }
         osgUtil::CullVisitor* getCullVisitor() { return _cullVisitor.get(); }
@@ -261,13 +261,16 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
           * The init traversal is called once for each SceneView, and should
           * be used to compile display list, texture objects intialize data
           * not otherwise intializaed during scene graph loading. Note, is
-          * called automatically by app&cull if it hasn't already been called
+          * called automatically by update&cull if it hasn't already been called
           * elsewhere. Also init() should only ever be called within a valid
           * graphics context.*/
         virtual void init();
 
         /** Do app traversal of attached scene graph using App NodeVisitor.*/
-        virtual void app();
+        virtual void update();
+#ifdef USE_DEPREACTED_API
+        virtual void app() { update(); }
+#endif       
 
         /** Do cull traversal of attached scene graph using Cull NodeVisitor.*/
         virtual void cull();
@@ -297,7 +300,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         
         bool                                        _initCalled;
         osg::ref_ptr<osg::NodeVisitor>              _initVisitor;
-        osg::ref_ptr<osg::NodeVisitor>              _appVisitor;
+        osg::ref_ptr<osg::NodeVisitor>              _updateVisitor;
         osg::Node::NodeMask                         _cullMask;
         osg::ref_ptr<osgUtil::CullVisitor>          _cullVisitor;
         osg::ref_ptr<osgUtil::RenderGraph>          _rendergraph;

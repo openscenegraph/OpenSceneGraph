@@ -855,8 +855,8 @@ void PrimitiveShapeVisitor::apply(const Sphere& sphere)
 	float rTop = cosf(lTop)*sphere.getRadius();
 	float zTop = sinf(lTop)*sphere.getRadius();
 	float vTop = vBase+vDelta;
-    	float nzTop= sinf(lTop);
-    	float nRatioTop= cosf(lTop);
+    	//float nzTop= sinf(lTop);
+    	//float nRatioTop= cosf(lTop);
 
 	_functor.begin(GL_QUAD_STRIP);
 

@@ -19,7 +19,7 @@ Sequence::Sequence() :
     _nrepsremain(0),
     _mode(STOP)
 {
-    setNumChildrenRequiringAppTraversal(1);
+    setNumChildrenRequiringUpdateTraversal(1);
 }
 
 Sequence::Sequence(const Sequence& seq, const CopyOp& copyop) :
@@ -35,7 +35,7 @@ Sequence::Sequence(const Sequence& seq, const CopyOp& copyop) :
     _nrepsremain(seq._nrepsremain),
     _mode(seq._mode)
 {
-    setNumChildrenRequiringAppTraversal(getNumChildrenRequiringAppTraversal()+1);            
+    setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);            
 }
 
 void Sequence::setTime(int frame, float t)
@@ -105,7 +105,7 @@ void Sequence::setMode(SequenceMode mode)
 void Sequence::traverse(NodeVisitor& nv)
 {
     // if app traversal update the frame count.
-    if (nv.getVisitorType()==NodeVisitor::APP_VISITOR && _mode == START && _nrepsremain)
+    if (nv.getVisitorType()==NodeVisitor::UPDATE_VISITOR && _mode == START && _nrepsremain)
     {
         const FrameStamp* framestamp = nv.getFrameStamp();
         if (framestamp)

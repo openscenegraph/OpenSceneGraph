@@ -1,5 +1,5 @@
 #include <osgUtil/SceneView>
-#include <osgUtil/AppVisitor>
+#include <osgUtil/UpdateVisitor>
 #include <osgUtil/DisplayListVisitor>
 
 #include <osg/Notify>
@@ -80,7 +80,7 @@ void SceneView::setDefaults()
     _initVisitor = dlv;
 #endif
 
-    _appVisitor = new AppVisitor;    
+    _updateVisitor = new UpdateVisitor;
 
     _cullVisitor = new CullVisitor;
 
@@ -137,7 +137,7 @@ void SceneView::init()
     } 
 }
 
-void SceneView::app()
+void SceneView::update()
 {
     if (!_initCalled) init();
 
@@ -155,19 +155,19 @@ void SceneView::app()
     std::cout<<" Number of active objects ="<<osg::Referenced::createdCount()-osg::Referenced::deletedCount()<<std::endl;
 #endif
 
-    if (_sceneData.valid() && _appVisitor.valid())
+    if (_sceneData.valid() && _updateVisitor.valid())
     { 
-        _appVisitor->reset();
+        _updateVisitor->reset();
 
-        _appVisitor->setFrameStamp(_frameStamp.get());
+        _updateVisitor->setFrameStamp(_frameStamp.get());
 
         // use the frame number for the traversal number.
         if (_frameStamp.valid())
         {
-             _appVisitor->setTraversalNumber(_frameStamp->getFrameNumber());
+             _updateVisitor->setTraversalNumber(_frameStamp->getFrameNumber());
         }
         
-        _sceneData->accept(*_appVisitor.get());
+        _sceneData->accept(*_updateVisitor.get());
         
         // now force a recompute of the bounding volume while we are still in
         // the read/write app phase, this should prevent the need to recompute

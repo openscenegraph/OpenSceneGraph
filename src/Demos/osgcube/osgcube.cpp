@@ -181,7 +181,7 @@ int main( int argc, char **argv )
     myTransform->addChild( createGeometryCube() );
 
     // move node in a circle at 90 degrees a sec.
-    myTransform->setAppCallback(new MyTransformCallback(myTransform,osg::inDegrees(90.0f)));
+    myTransform->setUpdateCallback(new MyTransformCallback(myTransform,osg::inDegrees(90.0f)));
 
     // add model to viewer.
     viewer.addViewport( myTransform );

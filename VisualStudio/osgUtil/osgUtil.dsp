@@ -105,7 +105,7 @@ SOURCE=..\..\src\osgUtil\HighlightMapGenerator.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgUtil\AppVisitor.cpp
+SOURCE=..\..\src\osgUtil\UpdateVisitor.cpp
 # End Source File
 # Begin Source File
 
@@ -205,7 +205,7 @@ SOURCE=..\..\include\osgUtil\ReflectionMapGenerator
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\include\osgUtil\AppVisitor
+SOURCE=..\..\include\osgUtil\UpdateVisitor
 # End Source File
 # Begin Source File
 

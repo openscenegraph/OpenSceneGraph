@@ -12,8 +12,147 @@
 #include <osg/TextureRectangle>
 #include <osg/TexMat>
 #include <osg/CullFace>
+#include <osg/ImageStream>
 
 #include <osgGA/TrackballManipulator>
+
+class MovieEventHandler : public osgGA::GUIEventHandler
+{
+public:
+
+    MovieEventHandler() {}
+    
+    void set(osg::Node* node);
+
+    virtual void accept(osgGA::GUIEventHandlerVisitor& v) { v.visit(*this); }
+
+    virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&);
+    
+    virtual void getUsage(osg::ApplicationUsage& usage) const;
+
+    typedef std::vector< osg::ref_ptr<osg::ImageStream> > ImageStreamList;
+
+protected:
+
+    virtual ~MovieEventHandler() {}
+
+    class FindImageStreamsVisitor : public osg::NodeVisitor
+    {
+    public:
+        FindImageStreamsVisitor(ImageStreamList& imageStreamList):
+            _imageStreamList(imageStreamList) {}
+            
+        virtual void apply(osg::Geode& geode)
+        {
+            apply(geode.getStateSet());
+
+            for(unsigned int i=0;i<geode.getNumDrawables();++i)
+            {
+                apply(geode.getDrawable(i)->getStateSet());
+            }
+        
+            traverse(geode);
+        }
+
+        virtual void apply(osg::Node& node)
+        {
+            apply(node.getStateSet());
+            traverse(node);
+        }
+        
+        inline void apply(osg::StateSet* stateset)
+        {
+            if (!stateset) return;
+            
+            osg::StateAttribute* attr = stateset->getTextureAttribute(0,osg::StateAttribute::TEXTURE);
+            if (attr)
+            {
+                osg::Texture2D* texture2D = dynamic_cast<osg::Texture2D*>(attr);
+                if (texture2D) apply(dynamic_cast<osg::ImageStream*>(texture2D->getImage()));
+
+                osg::TextureRectangle* textureRec = dynamic_cast<osg::TextureRectangle*>(attr);
+                if (textureRec) apply(dynamic_cast<osg::ImageStream*>(textureRec->getImage()));
+            }
+        }
+        
+        inline void apply(osg::ImageStream* imagestream)
+        {
+            if (imagestream) _imageStreamList.push_back(imagestream); 
+        }
+        
+        ImageStreamList& _imageStreamList;
+    };
+
+
+    ImageStreamList _imageStreamList;
+    
+};
+
+
+
+void MovieEventHandler::set(osg::Node* node)
+{
+    _imageStreamList.clear();
+    if (node)
+    {
+        FindImageStreamsVisitor fisv(_imageStreamList);
+        node->accept(fisv);
+    }
+}
+
+
+bool MovieEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&)
+{
+    switch(ea.getEventType())
+    {
+        case(osgGA::GUIEventAdapter::KEYDOWN):
+        {
+            if (ea.getKey()=='s')
+            {
+                for(ImageStreamList::iterator itr=_imageStreamList.begin();
+                    itr!=_imageStreamList.end();
+                    ++itr)
+                {
+                    std::cout<<"Play"<<std::endl;
+                     (*itr)->play();
+                }
+                return true;
+            }
+            else if (ea.getKey()=='p')
+            {
+                for(ImageStreamList::iterator itr=_imageStreamList.begin();
+                    itr!=_imageStreamList.end();
+                    ++itr)
+                {
+                    std::cout<<"Pause"<<std::endl;
+                    (*itr)->pause();
+                }
+                return true;
+            }
+            else if (ea.getKey()=='r')
+            {
+                return true;
+            }
+            else if (ea.getKey()=='l')
+            {
+                return true;
+            }
+            return false;
+        }
+
+        default:
+            return false;
+    }
+}
+
+void MovieEventHandler::getUsage(osg::ApplicationUsage& usage) const
+{
+    usage.addKeyboardMouseBinding("p","Pause movie");
+    usage.addKeyboardMouseBinding("s","Play movie");
+    usage.addKeyboardMouseBinding("r","Start movie");
+    usage.addKeyboardMouseBinding("l","Toggle looping of movie");
+}
+
 
 osg::Geometry* createTexturedQuadGeometry(const osg::Vec3& pos,float width,float height, osg::Image* image)
 {
@@ -64,6 +203,11 @@ int main(int argc, char** argv)
     // set up the value with sensible default event handlers.
     viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
 
+    // register the handler to add keyboard and mosue handling.
+    MovieEventHandler* meh = new MovieEventHandler();
+    viewer.getEventHandlerList().push_front(meh);
+
+
     // get details on keyboard and mouse bindings used by the viewer.
     viewer.getUsage(*arguments.getApplicationUsage());
 
@@ -87,6 +231,8 @@ int main(int argc, char** argv)
 
     }
 
+    // pass the model to the MovieEventHandler so it can pick out ImageStream's to manipulate.
+    meh->set(geode);
 
     // report any errors if they have occured when parsing the program aguments.
     if (arguments.errors())

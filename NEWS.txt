@@ -1,20 +1,45 @@
 OSG News (most significant items from ChangeLog)
 ================================================
 
-4th August 2003 - OpenSceneGraph-0.9.7
+6th August 2003 - OpenSceneGraph-0.9.7
 
-    >>> new osgTerrain library for generating large scale geospatial databases.
+    >>> support for and generation of large scale geospatial whole earth databases, support for movies, with examples shadows and volume rendering.
     
-    osgTerrain
+    The 0.9.7 encompasses many improvements, bug fixes, new examples and significant new functionality, the most notable of which is
+    a new osgTerrain library for generation of large scale geospatial databases.
     
-    Improved TXP plugin
+    The new osgTerrain library and associated osgdem utility program allow users to uses moziacs of geospatial imagery and digital elevation maps
+    to generate a complete paged database which can be used with standard OSG viewers, and users programs. By utilising GDAL to load the imagery
+    and DEM's a wide range of geospatial formats are supported.   
+     
+    The TerraPage plugin has also been rewritten ontop of the OSG's osg::PagedLOD and osgDB::DatabasePager which provides support for 
+    tile fallback mechansim to ensure that no holes or cracks appear in the databases being roamed, and to achieve constant frameframe
+    via load balancing mechansisms with osgDB::DatabasePager.
     
-    DatabasePager
+    The osgDB::DatabasePager has been further improved to provide more configurable load balancing to allow application developers to
+    achieve constrant framerates when using paged databases.
     
-    Double Vec & Matrix classes & CoordinateSystemNode/EllipsoidModel
+    Double Vec & Matrix classes & CoordinateSystemNode/EllipsoidModel class have been introduced to better support browsing of large
+    scale databases, and to provide a mechansim for tracking the local up orientation when roaming whole earth databases.
     
-    osgUtil - tristipper, simplifier, GLObjectVisitor.
+    osgUtil has been enhanced with a improved triangle stipper class (osgUtil::TriStipVisitor), a new simplifier (osgUtil::Simplifer) for
+    reducing triangle density of osg::Geometry leaves (utilised by osgTerrain to provide simplication of terrain tiles), improved and
+    more configurable optimizer (osgUtil::Optimizer), a new utility class for compling and releasing OpenGL objects (osgUtil::GLObjectVisitor)
+    replaces the prevsous and more limited DisplayListVisitor.
     
+    All the osgGA::MatrxManipulator's (used for camera manipulator etc) have been revamped with usage of doubles internally, and with 
+    tracking of the current CoordinateSystem if one is active, to be better support whole earth databases.  All the MatrixManipulator 
+    have been extend to allow the setting of a user defined a home position.  Two new manipulators have been introduced 
+    osgGA::TerrainManipulator, for roaming whole earth/terrain databases, and osgGA::TrackerManipulator which allows the camera to be
+    attached to a node in the scene graph.
+
+    Movie support under Linux and OSX via libMpeg3 and Quicktime respectively, which extend the new osg::ImageStream base class which
+    allows application developers access to playing, pausing and rewinding movies. 
+
+    The convertion utility osgconv has been extended to allow compression of textures and mipmap generation during conversion when
+    writing to the native .ive binary format.  Texture compression and pre computer mipmaps enable faster loading of databases
+    and lower utilization of memory resources.
+
     Examples
         osgdem
         osgphotoalbum
@@ -34,12 +59,16 @@ OSG News (most significant items from ChangeLog)
         osgmovie
         
         osgvolume
-        
-    New manipulators - TerrainManipulator and TrackerManipulator.
+
+    Write support added to JPG plugin.
     
-    Movie support under Linux and OSX via LibMpeg3 and Quicktime respectively. 
+    Write + 3D texture support added to DDS plugin.
     
-    Support for compressing textures and mipmap generation in osgconv.
+    Pseudo loaders .trans, .rot and .scale have been added.
+    
+    Updated LWO, AC3D, BMP, IVE and FLT loaers.
+    
+    osg::TexGenNode has been added to provide a mechanism for positioning OpenGL's texture coordinate generation planes.
     
     Bug fixes.
 

@@ -93,15 +93,15 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\..\Src\osgGLUT\GLUTEventAdapter.cpp
+SOURCE=..\..\src\osgGLUT\GLUTEventAdapter.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\osgGLUT\Version.cpp
+SOURCE=..\..\src\osgGLUT\Version.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\osgGLUT\Viewer.cpp
+SOURCE=..\..\src\osgGLUT\Viewer.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -110,6 +110,10 @@ SOURCE=..\..\Src\osgGLUT\Viewer.cpp
 # Begin Source File
 
 SOURCE=..\..\Include\osgGLUT\Export
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgGLUT\glut
 # End Source File
 # Begin Source File
 

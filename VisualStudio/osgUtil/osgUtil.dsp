@@ -93,6 +93,10 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=..\..\src\osgUtil\AppVisitor.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgUtil\CameraManipulator.cpp
 # End Source File
 # Begin Source File
@@ -133,6 +137,10 @@ SOURCE=..\..\src\osgUtil\NvTriStripObjects.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgUtil\OptimizeStateVisitor.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgUtil\RenderBin.cpp
 # End Source File
 # Begin Source File
@@ -169,7 +177,7 @@ SOURCE=..\..\src\osgUtil\SmoothingVisitor.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\osgUtil\StateSetManipulator.cpp
+SOURCE=..\..\src\osgUtil\StateSetManipulator.cpp
 # End Source File
 # Begin Source File
 
@@ -195,6 +203,10 @@ SOURCE=..\..\src\osgUtil\VisualsRequirementsVisitor.cpp
 # Begin Group "Header Files"
 
 # PROP Default_Filter ";h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=..\..\include\osgUtil\AppVisitor
+# End Source File
 # Begin Source File
 
 SOURCE=..\..\Include\osgUtil\CameraManipulator
@@ -253,6 +265,10 @@ SOURCE=..\..\src\osgUtil\NvTriStripObjects.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\osgUtil\OptimizeStateVisitor
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\include\osgUtil\RenderBin
 # End Source File
 # Begin Source File
@@ -290,10 +306,6 @@ SOURCE=..\..\include\osgUtil\SmoothingVisitor
 # Begin Source File
 
 SOURCE=..\..\Include\osgUtil\StateSetManipulator
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\include\osgUtil\Statistics
 # End Source File
 # Begin Source File
 

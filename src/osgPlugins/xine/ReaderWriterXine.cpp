@@ -98,13 +98,15 @@ class ReaderWriterXine : public osgDB::ReaderWriter
             osg::notify(osg::NOTICE)<<"ReaderWriterXine::readImage "<< file<< std::endl;
 
             //XineImageStream* imageStream = new XineImageStream(file.c_str());
-            osg::Image* imageStream = new osg::ImageStream;
+            osg::ref_ptr<osg::ImageStream> imageStream = new osg::ImageStream;
+
+
 
             // create visual
             rgbout_visual_info_t* visual = new rgbout_visual_info_t;
 	    visual->levels = PXLEVEL_ALL;
             visual->format = PX_RGB32;
-            visual->user_data = imageStream;
+            visual->user_data = imageStream.get();
 	    visual->callback = my_render_frame;
 
 
@@ -131,8 +133,12 @@ class ReaderWriterXine : public osgDB::ReaderWriter
             // xine_event_queue_t* queue = xine_event_new_queue(stream);
 
             int result = xine_open(stream, file.c_str());
-            osg::notify(osg::NOTICE)<<"ReaderWriterXine::readImage - xine_open"<<result<<std::endl;
+            osg::notify(osg::NOTICE)<<"ReaderWriterXine::readImage - xine_open "<<result<<std::endl;
              
+            if (!result) return 0;
+
+            imageStream->setFileName(file);
+
             xine_play(stream, 0, 0);
 
             // imageStream->play();
@@ -143,7 +149,7 @@ class ReaderWriterXine : public osgDB::ReaderWriter
                 usleep(10000);
             }
 
-            return imageStream;
+            return imageStream.release();
         }
 
     protected:

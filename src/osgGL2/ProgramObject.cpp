@@ -12,7 +12,7 @@
 */
 
 /* file:	src/osgGL2/ProgramObject.cpp
- * author:	Mike Weiblen 2004-11-09
+ * author:	Mike Weiblen 2005-03-21
  *
  * See http://www.3dlabs.com/opengl2/ for more information regarding
  * the OpenGL Shading Language.
@@ -306,8 +306,6 @@ void ProgramObject::apply(osg::State& state) const
     const osg::FrameStamp* frameStamp = state.getFrameStamp();
     const int frameNumber = (frameStamp) ? frameStamp->getFrameNumber() : -1;
 
-    updateUniforms( frameNumber );
-
     PerContextProgObj* pcpo = getPCPO( contextID );
 
     if( pcpo->isDirty() )
@@ -319,6 +317,7 @@ void ProgramObject::apply(osg::State& state) const
 	pcpo->build();
     }
 
+    updateUniforms( frameNumber );
 
     // make this glProgramObject part of current GL state
     pcpo->use();

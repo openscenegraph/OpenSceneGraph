@@ -2410,7 +2410,7 @@ osg::Node* DataSet::CompositeDestination::createPagedLODScene()
     float farDistance = 1e8;
     if (tileNodes.size()==1)
     {
-        pagedLOD->addChild(tileNodes.front(),cutOffDistance,farDistance);
+        pagedLOD->addChild(tileNodes.front());
     }
     else if (tileNodes.size()>1)
     {
@@ -2421,8 +2421,12 @@ osg::Node* DataSet::CompositeDestination::createPagedLODScene()
         {
             group->addChild(*itr);
         }
-        pagedLOD->addChild(group,cutOffDistance,farDistance);
+        pagedLOD->addChild(group);
     }
+    
+    cutOffDistance = pagedLOD->getBound().radius()*_dataSet->getRadiusToMaxVisibleDistanceRatio();
+    
+    pagedLOD->setRange(0,cutOffDistance,farDistance);
     
     pagedLOD->setFileName(1,getSubTileName());
     pagedLOD->setRange(1,0,cutOffDistance);
@@ -2499,6 +2503,9 @@ DataSet::DataSet()
 {
     init();
     
+    _radiusToMaxVisibleDistanceRatio = 11.0f;
+    _verticalScale = 1.0f;
+
     _convertFromGeographicToGeocentric = false;
     
     _defaultColor.set(0.5f,0.5f,1.0f,1.0f);
@@ -2557,7 +2564,7 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(CompositeDestinat
 
     DataSet::CompositeDestination* destinationGraph = new DataSet::CompositeDestination(cs,extents);
 
-    destinationGraph->_maxVisibleDistance = extents.radius()*11.0f;
+    destinationGraph->_maxVisibleDistance = extents.radius()*getRadiusToMaxVisibleDistanceRatio();
 
     // first create the topmost tile
 

@@ -317,7 +317,7 @@ SOURCE=..\..\src\osg\ShadeModel.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osg\ShadowOccluderVolume.cpp
+SOURCE=..\..\src\osg\ShadowVolumeOccluder.cpp
 # End Source File
 # Begin Source File
 
@@ -649,7 +649,7 @@ SOURCE=..\..\Include\Osg\ShadeModel
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\ShadowOccluderVolume
+SOURCE=..\..\Include\Osg\ShadowVolumeOccluder
 # End Source File
 # Begin Source File
 

@@ -79,6 +79,11 @@ class SG_EXPORT CullStack
             _modelviewCullingStack.back()->disableOccluder(nodePath);
         }
 
+        inline bool isCulled(const std::vector<Vec3>& vertices)
+        {
+            return _modelviewCullingStack.back()->isCulled(vertices);
+        }
+
         inline bool isCulled(const BoundingBox& bb)
         {
             return bb.isValid() && _modelviewCullingStack.back()->isCulled(bb);

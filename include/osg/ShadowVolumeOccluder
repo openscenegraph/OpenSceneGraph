@@ -49,6 +49,10 @@ class SG_EXPORT ShadowVolumeOccluder
 
         float quality() { return _quality; }
 
+        /** return true if the specified vertex list is contaned entirely
+          * within this shadow occluder volume.*/
+        bool contains(const std::vector<Vec3>& vertices);
+
         /** return true if the specified bounding sphere is contaned entirely
           * within this shadow occluder volume.*/
         bool contains(const BoundingSphere& bound);

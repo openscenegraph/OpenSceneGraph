@@ -120,6 +120,29 @@ class SG_EXPORT Polytope
             return true;
         }
 
+        /** Check whether any part of vertex list is contained with clipping set.*/
+        inline const bool contains(const std::vector<Vec3>& vertices)
+        {
+            if (!_maskStack.back()) return true;
+
+            _resultMask = _maskStack.back();
+            ClippingMask selector_mask = 0x1;
+
+            for(PlaneList::const_iterator itr=_planeList.begin();
+                itr!=_planeList.end();
+                ++itr)
+            {
+                if (_resultMask&selector_mask)
+                {
+                    int res=itr->intersect(vertices);
+                    if (res<0) return false; // outside clipping set.
+                    else if (res>0) _resultMask ^= selector_mask; // subsequent checks against this plane not required.
+                }
+                selector_mask <<= 1; 
+            }
+            return true;
+        }
+
         /** Check whether any part of a bounding sphere is contained within clipping set.
             Using a mask to determine which planes should be used for the check, and
             modifying the mask to turn off planes which wouldn't contribute to clipping
@@ -168,6 +191,29 @@ class SG_EXPORT Polytope
                     int res=itr->intersect(bb);
                     if (res<0) return false; // outside clipping set.
                     else if (res>0) _resultMask ^= selector_mask; // subsequent checks against this plane not required.
+                }
+                selector_mask <<= 1; 
+            }
+            return true;
+        }
+
+        /** Check whether all of vertex list is contained with clipping set.*/
+        inline const bool containsAllOf(const std::vector<Vec3>& vertices)
+        {
+            if (!_maskStack.back()) return false;
+
+            _resultMask = _maskStack.back();
+            ClippingMask selector_mask = 0x1;
+
+            for(PlaneList::const_iterator itr=_planeList.begin();
+                itr!=_planeList.end();
+                ++itr)
+            {
+                if (_resultMask&selector_mask)
+                {
+                    int res=itr->intersect(vertices);
+                    if (res<1) return false;  // intersects, or is below plane.
+                    _resultMask ^= selector_mask; // subsequent checks against this plane not required.
                 }
                 selector_mask <<= 1; 
             }

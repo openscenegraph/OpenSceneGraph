@@ -11,6 +11,8 @@
 #include <osg/BoundingSphere>
 #include <osg/BoundingBox>
 
+#include <vector>
+
 namespace osg {
 
 /** A plane class. It can be used to represent an infinite plane.*/
@@ -87,6 +89,35 @@ class SG_EXPORT Plane
                    _fv[1]*v.y()+
                    _fv[2]*v.z()+
                    _fv[3];
+        }
+
+        /** intersection test between plane and vertex list
+            return 1 if the bs is completely above plane,
+            return 0 if the bs intersects the plane,
+            return -1 if the bs is completely below the plane.*/
+        inline const int intersect(const std::vector<Vec3>& vertices) const
+        {
+            if (vertices.empty()) return -1;
+        
+            int noAbove = 0;
+            int noBelow = 0;
+            int noOn = 0;
+            for(std::vector<Vec3>::const_iterator itr=vertices.begin();
+                itr != vertices.end();
+                ++itr)
+            {
+                float d = distance(*itr);
+                if (d>0.0f) ++noAbove;
+                else if (d<0.0f) ++noBelow;
+                else ++noOn;
+            }
+            
+            if (noAbove>0)
+            {
+                if (noBelow>0) return 0;
+                else return 1;
+            }
+            return -1; // treat points on line as outside...
         }
 
         /** intersection test between plane and bounding sphere.

@@ -100,13 +100,22 @@ void CollectOccludersVisitor::apply(osg::OccluderNode& node)
     // list, if so disable the appropriate ShadowOccluderVolume
     disableOccluder(_nodePath);
     
-    std::cout<<"CollectOccludersVisitor:: We have found an Occlusion node in frustum"<<&node<<std::endl;
-
 
     if (isCulled(node)) return;
 
+    std::cout<<"CollectOccludersVisitor:: We have found an Occlusion node in frustum"<<&node<<std::endl;
+
     // push the culling mode.
     pushCurrentMask();
+
+
+    if (node.getOccluder()&& !isCulled(node.getOccluder()->getOccluder().getVertexList()))
+    {
+    
+        // need to test occluder against view frustum.
+        std::cout << "    adding in Occluder"<<std::endl;
+        _occluderList.push_back(ShadowVolumeOccluder(_nodePath, *node.getOccluder(), getModelViewMatrix()));
+    }
 
     traverse(node);
 

@@ -238,7 +238,7 @@ endif
   PNG_LIBS          = -lpng
   JPEG_LIBS         = -ljpeg
   TIFF_LIB          = -ltiff
-  GIF_LIBS          = -lgif
+  GIF_LIBS          = -lungif
 
   MAKEDIST          = $(TOPDIR)/Make/makerpms
 endif

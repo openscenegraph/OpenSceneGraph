@@ -10,6 +10,7 @@ using namespace osg;
 
 extern "C"
 {
+    #include <zlib.h>
     #include <png.h>
 }
 

@@ -242,7 +242,7 @@ void SceneView::cull()
         cullStage(projection.get(),modelview.get(),_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
     }
 
-    if (_camera.valid())
+    if (_camera.valid() && _calc_nearfar)
     {
         _camera->setNearFar(_near_plane,_far_plane);
     }

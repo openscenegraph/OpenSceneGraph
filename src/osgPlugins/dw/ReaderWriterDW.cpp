@@ -407,7 +407,7 @@ public:
         GLfloat w[4], avertex **dataOut , _dwobj *dwob);
     void linkholes(const std::vector<Vec3> verts, const dwmaterial *themat, 
         const _face *f1, const _face *f2, 
-        const int ipr[2], const int idx[], const int nv) {
+        const int ipr[2], const int /*idx*/[], const int nv) {
         gsidx[nload]=f1->getidx(ipr[1]); // vertex position index
         gsidx[nload+1]=f1->getidx(ipr[0]); // vertex position index
         gsidx[nload+2]=f2->getidx(nv-ipr[0]-1); // vertex position index

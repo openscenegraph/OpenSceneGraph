@@ -943,7 +943,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
         void _equalizeRow(Row& row);
         void _writeRow(Row& row);
         
-        osg::CoordinateSystemNode* decorateWithCoordinateSystemNode(osg::Node* subgraph);
+        osg::Node* decorateWithCoordinateSystemNode(osg::Node* subgraph);
         
         void init();
 

@@ -3375,7 +3375,7 @@ void DataSet::createDestination(unsigned int numLevels)
 
 }
 
-osg::CoordinateSystemNode* DataSet::decorateWithCoordinateSystemNode(osg::Node* subgraph)
+osg::Node* DataSet::decorateWithCoordinateSystemNode(osg::Node* subgraph)
 {
     // don't decorate if no coord system is set.
     if (_destinationCoordinateSystem->getCoordinateSystem().empty()) 

@@ -144,6 +144,35 @@ void SceneView::app()
 
 void SceneView::cull()
 {
+    if (_displaySettings.valid() && _displaySettings->getStereo()) 
+    {
+    
+        _camera->setScreenDistance(_displaySettings->getScreenDistance());
+
+        _cameraLeft = new osg::Camera(*_camera);
+        _cameraRight = new osg::Camera(*_camera);
+
+        float iod = _displaySettings->getEyeSeperation();
+
+        _cameraLeft->adjustEyeOffsetForStereo(osg::Vec3(-iod*0.5,0.0f,0.0f));
+        _cameraRight->adjustEyeOffsetForStereo(osg::Vec3(iod*0.5,0.0f,0.0f));
+
+        if (!_renderStageLeft.valid()) _renderStageLeft = dynamic_cast<RenderStage*>(_renderStage->cloneType());
+        if (!_renderStageRight.valid()) _renderStageRight = dynamic_cast<RenderStage*>(_renderStage->cloneType());
+
+        cullStage(_cameraLeft.get(),_renderStageLeft.get());
+        cullStage(_cameraRight.get(),_renderStageRight.get());
+
+    }
+    else
+    {
+
+        cullStage(_camera.get(),_renderStage.get());
+    }
+}
+
+void SceneView::cullStage(osg::Camera* camera,osgUtil::RenderStage* renderStage)
+{
 
     if (!_sceneData || !_viewport->valid()) return;
 
@@ -171,39 +200,39 @@ void SceneView::cull()
     }
 
     // get the camera's modelview
-    osg::Matrix* modelview = new osg::Matrix(_camera->getModelViewMatrix());
+    osg::Matrix* modelview = new osg::Matrix(camera->getModelViewMatrix());
 
 
     // take a copy of camera, and init it home
-    osg::Camera* camera = new Camera(*_camera);
-    camera->home(); 
-    camera->attachTransform(osg::Camera::NO_ATTACHED_TRANSFORM); 
+    osg::Camera* local_camera = new Camera(*camera);
+    local_camera->home(); 
+    local_camera->attachTransform(osg::Camera::NO_ATTACHED_TRANSFORM); 
 
 
     _cullVisitor->setLODBias(_lodBias);
-    _cullVisitor->setCamera(*camera);
+    _cullVisitor->setCamera(*local_camera);
     _cullVisitor->setViewport(_viewport.get());
     _cullVisitor->setEarthSky(NULL); // reset earth sky on each frame.
 
-	// SandB
-	//now make it compute "clipping directions" needed for detailed culling
-	if(_cullVisitor->getDetailedCulling()) 
-		_cullVisitor->calcClippingDirections();//only once pre frame
+    // SandB
+    //now make it compute "clipping directions" needed for detailed culling
+    if(_cullVisitor->getDetailedCulling()) 
+	    _cullVisitor->calcClippingDirections();//only once pre frame
 
-    _renderStage->reset();
+    renderStage->reset();
 
-    _renderStage->setViewport(_viewport.get());
-    _renderStage->setCamera(camera);
-    _renderStage->setClearColor(_backgroundColor);
+    renderStage->setViewport(_viewport.get());
+    renderStage->setCamera(local_camera);
+    renderStage->setClearColor(_backgroundColor);
 
 
     switch(_lightingMode)
     {
     case(HEADLIGHT):
-        _renderStage->addLight(_light.get(),NULL);
+        renderStage->addLight(_light.get(),NULL);
         break;
     case(SKY_LIGHT):
-        _renderStage->addLight(_light.get(),modelview);
+        renderStage->addLight(_light.get(),modelview);
         break;
     case(NO_SCENEVIEW_LIGHT):
         break;
@@ -228,8 +257,8 @@ void SceneView::cull()
     {
         if (earthSky->getRequiresClear())
         {
-            _renderStage->setClearColor(earthSky->getClearColor());
-            _renderStage->setClearMask(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+            renderStage->setClearColor(earthSky->getClearColor());
+            renderStage->setClearMask(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
             // really should set clear mask here, but what to? Need
             // to consider the stencil and accumulation buffers..
             // will defer to later.  Robert Osfield. October 2001.
@@ -238,7 +267,7 @@ void SceneView::cull()
         {
             // we have an earth sky implementation to do the work for use
             // so we don't need to clear.
-            _renderStage->setClearMask(0);
+            renderStage->setClearMask(0);
         }
     }
 
@@ -267,10 +296,10 @@ void SceneView::cull()
             // if required clamp the near plane to prevent negative or near zero
             // near planes.
             if(!_cullVisitor->getDetailedCulling())
-			{
-				float min_near_plane = _far_plane*0.0005f;
-				if (_near_plane<min_near_plane) _near_plane=min_near_plane;
-			}
+            {
+                float min_near_plane = _far_plane*0.0005f;
+                if (_near_plane<min_near_plane) _near_plane=min_near_plane;
+            }
         }
         else
         {
@@ -278,14 +307,71 @@ void SceneView::cull()
             _far_plane = 1000.0f;
         }
 
+        local_camera->setNearFar(_near_plane,_far_plane);
         camera->setNearFar(_near_plane,_far_plane);
-        _camera->setNearFar(_near_plane,_far_plane);
     }
 
 }
 
 
 void SceneView::draw()
+{
+    if (_displaySettings.valid() && _displaySettings->getStereo()) 
+    {
+    
+        _camera->setScreenDistance(_displaySettings->getScreenDistance());
+
+        switch(_displaySettings->getStereoMode())
+        {
+        case(osg::DisplaySettings::QUAD_BUFFER):
+            {
+
+                glDrawBuffer(GL_BACK_LEFT);
+                drawStage(_renderStageLeft.get());
+
+
+                glDrawBuffer(GL_BACK_RIGHT);
+                drawStage(_renderStageRight.get());
+
+            }
+            break;
+        case(osg::DisplaySettings::ANAGLYPHIC):
+            {
+                osg::ref_ptr<osg::ColorMask> red = new osg::ColorMask;
+                osg::ref_ptr<osg::ColorMask> green = new osg::ColorMask;
+
+                red->setMask(true,false,false,true);
+                green->setMask(false,true,true,true);
+                
+                // draw left eye.
+                _globalState->setAttribute(red.get());
+                _renderStageLeft->setColorMask(red.get());
+                drawStage(_renderStageLeft.get());
+
+                // draw right eye.
+                _globalState->setAttribute(green.get());
+                _renderStageRight->setColorMask(green.get());
+                drawStage(_renderStageRight.get());
+
+            }
+            break;
+        default:
+            {
+                osg::notify(osg::NOTICE)<<"Warning: stereo camera mode not implemented yet."<< std::endl;
+                drawStage(_renderStageLeft.get());
+            }
+            break;
+        }
+    }
+    else
+    {
+        // bog standard draw.
+        drawStage(_renderStage.get());
+    }
+
+}
+
+void SceneView::drawStage(osgUtil::RenderStage* renderStage)
 {
     if (!_sceneData || !_viewport->valid()) return;
 
@@ -312,82 +398,7 @@ void SceneView::draw()
 
     RenderLeaf* previous = NULL;
     
-
-    if (_displaySettings.valid() && _displaySettings->getStereo()) 
-    {
-    
-        _camera->setScreenDistance(_displaySettings->getScreenDistance());
-
-        switch(_displaySettings->getStereoMode())
-        {
-        case(osg::DisplaySettings::QUAD_BUFFER):
-            {
-                osg::ref_ptr<osg::Camera> left_camera = new osg::Camera(*_camera);
-                osg::ref_ptr<osg::Camera> right_camera = new osg::Camera(*_camera);
-                
-                float iod = _displaySettings->getEyeSeperation();
-
-                left_camera->adjustEyeOffsetForStereo(osg::Vec3(-iod*0.5,0.0f,0.0f));
-                right_camera->adjustEyeOffsetForStereo(osg::Vec3(iod*0.5,0.0f,0.0f));
-
-                glDrawBuffer(GL_BACK_LEFT);
-                _renderStage->setCamera(left_camera.get());
-                _renderStage->draw(*_state,previous);
-
-
-                glDrawBuffer(GL_BACK_RIGHT);
-                _renderStage->setCamera(right_camera.get());
-                _renderStage->_stageDrawnThisFrame = false;
-                _renderStage->draw(*_state,previous);
-            }
-            break;
-        case(osg::DisplaySettings::ANAGLYPHIC):
-            {
-                osg::ref_ptr<osg::Camera> left_camera = new osg::Camera(*_camera);
-                osg::ref_ptr<osg::Camera> right_camera = new osg::Camera(*_camera);
-
-                float iod = _displaySettings->getEyeSeperation();
-
-                left_camera->adjustEyeOffsetForStereo(osg::Vec3(-iod*0.5,0.0f,0.0f));
-                right_camera->adjustEyeOffsetForStereo(osg::Vec3(iod*0.5,0.0f,0.0f));
-                
-                osg::ColorMask* red = new osg::ColorMask;
-                osg::ColorMask* green = new osg::ColorMask;
-
-                red->setMask(true,false,false,true);
-                green->setMask(false,true,true,true);
-                
-                // draw right eye.
-                _globalState->setAttribute(red);
-                _renderStage->setColorMask(red);
-                _renderStage->setCamera(left_camera.get());
-                _renderStage->draw(*_state,previous);
-
-                // need to tell the rendering stage that it can be
-                // called again in this frame.
-                _renderStage->_stageDrawnThisFrame = false;
-
-                // draw left eye.
-                _globalState->setAttribute(green);
-                _renderStage->setColorMask(green);
-                _renderStage->setCamera(right_camera.get());
-                _renderStage->draw(*_state,previous);
-
-            }
-            break;
-        default:
-            {
-                osg::notify(osg::NOTICE)<<"Warning: stereo camera mode not implemented yet."<< std::endl;
-                _renderStage->draw(*_state,previous);
-            }
-            break;
-        }
-    }
-    else
-    {
-        // bog standard draw.
-        _renderStage->draw(*_state,previous);
-    }
+    renderStage->draw(*_state,previous);
         
     GLenum errorNo = glGetError();
     if (errorNo!=GL_NO_ERROR)

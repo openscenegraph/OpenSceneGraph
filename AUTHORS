@@ -45,6 +45,9 @@ Ben Discoe <ben@vterrain.org>
         - png plugin.
         - fixes to OBJ plugin.
 
+Maroc Jez <marco.jez@arsenal.it>
+        - osgParticle
+
 Byan Woods <byran@tapestrysolutions.com>
         - Port to MacOS, various code changes to support this.
         - Metrowerks CodeWarrior makefiles.        

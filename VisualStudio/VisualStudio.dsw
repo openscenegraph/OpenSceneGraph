@@ -182,6 +182,42 @@ Package=<4>
 
 
 
+Project: "Core osgParticle"=.\osgParticle\osgParticle.dsp - Package Owner=<4>
+
+
+
+Package=<5>
+
+{{{
+
+}}}
+
+
+
+Package=<4>
+
+{{{
+
+    Begin Project Dependency
+
+    Project_Dep_Name Core osg
+
+    End Project Dependency
+
+    Begin Project Dependency
+
+    Project_Dep_Name Core osgDB
+
+    End Project Dependency
+
+}}}
+
+
+
+###############################################################################
+
+
+
 Project: "Core osgUtil"=.\osgUtil\osgUtil.dsp - Package Owner=<4>
 
 
@@ -1083,6 +1119,66 @@ Package=<4>
     Begin Project Dependency
 
     Project_Dep_Name Core osgGA
+
+    End Project Dependency
+
+    Begin Project Dependency
+
+    Project_Dep_Name Core osgGLUT
+
+    End Project Dependency
+
+    Begin Project Dependency
+
+    Project_Dep_Name Core osgUtil
+
+    End Project Dependency
+
+}}}
+
+
+
+###############################################################################
+
+
+
+Project: "Demo sgv"=.\Demos\sgv\sgv.dsp - Package Owner=<4>
+
+
+
+Package=<5>
+
+{{{
+
+}}}
+
+
+
+Package=<4>
+
+{{{
+
+    Begin Project Dependency
+
+    Project_Dep_Name Core osg
+
+    End Project Dependency
+
+    Begin Project Dependency
+
+    Project_Dep_Name Core osgDB
+
+    End Project Dependency
+
+    Begin Project Dependency
+
+    Project_Dep_Name Core osgGA
+
+    End Project Dependency
+
+    Begin Project Dependency
+
+    Project_Dep_Name Core osgParticle
 
     End Project Dependency
 

@@ -1,0 +1,399 @@
+//C++ header - Open Scene Graph - Copyright (C) 1998-2002 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+//osgParticle - Copyright (C) 2002 Marco Jez
+
+#ifndef OSGPARTICLE_PARTICLE_
+#define OSGPARTICLE_PARTICLE_ 1
+
+#include <osgParticle/Export>
+#include <osgParticle/Interpolator>
+#include <osgParticle/range>
+
+#include <osg/ref_ptr>
+#include <osg/Vec3>
+#include <osg/Vec4>
+#include <osg/Matrix>
+#include <osg/GL>
+
+namespace osgParticle
+{
+
+    /**    Implementation of a <B>particle</B>.
+        Objects of this class are particles, they have some graphical properties
+        and some physical properties. Particles are created by emitters and then placed
+        into Particle Systems, where they live and get updated at each frame.
+        Particles can either live forever (lifeTime < 0), or die after a specified
+        time (lifeTime >= 0). For each property which is defined as a range of values, a
+        "current" value will be evaluated at each frame by interpolating the <I>min</I>
+        and <I>max</I> values so that <I>curr_value = min</I> when <I>t == 0</I>, and 
+        <I>curr_value = max</I> when <I>t == lifeTime</I>.
+        You may customize the interpolator objects to achieve any kind of transition.
+        If you want the particle to live forever, set its lifetime to any value <= 0;
+        in that case, no interpolation is done to compute real-time properties, and only
+        minimum values are used.
+    */
+    class OSGPARTICLE_EXPORT Particle {
+    public:
+
+        enum Shape {
+            POINT,            // uses GL_POINTS as primitive
+            QUAD,            // uses GL_QUADS as primitive
+            QUAD_TRIANGLESTRIP,    // uses GL_TRIANGLE_STRIP as primitive, but each particle needs a glBegin/glEnd pair
+            HEXAGON            // may save some filling time, but uses more triangles
+        };
+
+        Particle();
+
+        /// Get the shape of the particle.
+        inline Shape getShape() const;
+        
+        /// Set the shape of the particle.
+        inline void setShape(Shape s);
+
+        /// Get whether the particle is still alive.
+        inline bool isAlive() const;
+        
+        /// Get the life time of the particle (in seconds).
+        inline double getLifeTime() const;
+        
+        /// Get the age of the particle (in seconds).
+        inline double getAge() const;
+        
+        /// Get the minimum and maximum values for polygon size.
+        inline const rangef &getSizeRange() const;
+        
+        /// Get the minimum and maximum values for alpha.
+        inline const rangef &getAlphaRange() const;
+        
+        /// Get the minimum and maximum values for color.
+        inline const rangev4 &getColorRange() const;
+        
+        /// Get the interpolator for computing the size of polygons.
+        inline const Interpolator *getSizeInterpolator() const;
+        
+        /// Get the interpolator for computing alpha values.
+        inline const Interpolator *getAlphaInterpolator() const;
+        
+        /// Get the interpolator for computing color values.
+        inline const Interpolator *getColorInterpolator() const;
+
+        /** Get the physical radius of the particle.
+            For built-in operators to work correctly, lengths must be expressed in meters.
+        */
+        inline float getRadius() const;
+        
+        /** Get the mass of the particle.
+            For built-in operators to work correctly, remember that the mass is expressed in kg.
+        */
+        inline float getMass() const;
+        
+        /// Get <CODE>1 / getMass()</CODE>.
+        inline float getMassInv() const;
+        
+        /// Get the position vector.
+        inline const osg::Vec3 &getPosition() const;
+        
+        /**    Get the velocity vector.
+            For built-in operators to work correctly, remember that velocity components are expressed
+            in meters per second.
+        */
+        inline const osg::Vec3 &getVelocity() const;        
+        
+        /// Get the previous position (the position before last update).
+        inline const osg::Vec3 &getPreviousPosition() const;
+
+        /** Kill the particle on next update
+            NOTE: after calling this function, the <CODE>isAlive()</CODE> method will still 
+            return true until the particle is updated again.
+        */
+        inline void kill();
+        
+        /// Set the life time of the particle.
+        inline void setLifeTime(double t);
+        
+        /// Set the minimum and maximum values for polygon size.
+        inline void setSizeRange(const rangef &r);
+        
+        /// Set the minimum and maximum values for alpha.
+        inline void setAlphaRange(const rangef &r);
+        
+        /// Set the minimum and maximum values for color.
+        inline void setColorRange(const rangev4 &r);
+        
+        /// Set the interpolator for computing size values.
+        inline void setSizeInterpolator(Interpolator *ri);
+        
+        /// Set the interpolator for computing alpha values.        
+        inline void setAlphaInterpolator(Interpolator *ai);
+        
+        /// Set the interpolator for computing color values.
+        inline void setColorInterpolator(Interpolator *ci);
+
+        /** Set the physical radius of the particle.
+            For built-in operators to work correctly, lengths must be expressed in meters.
+        */
+        inline void setRadius(float r);
+        
+        /** Set the mass of the particle.
+            For built-in operators to work correctly, remember that the mass is expressed in kg.
+        */
+        inline void setMass(float m);
+        
+        /// Set the position vector.        
+        inline void setPosition(const osg::Vec3 &p);
+        
+        /**    Set the velocity vector.
+            For built-in operators to work correctly, remember that velocity components are expressed
+            in meters per second.
+        */
+        inline void setVelocity(const osg::Vec3 &v);
+        
+        /// Add a vector to the velocity vector.
+        inline void addVelocity(const osg::Vec3 &dv);
+        
+        /// Transform position and velocity vectors by a matrix.
+        inline void transformPositionVelocity(const osg::Matrix &xform);
+
+        /**    Update the particle (don't call this method manually).
+            This method is called automatically by <CODE>ParticleSystem::update()</CODE>; it
+            updates the graphical properties of the particle for the current time,
+            checks whether the particle is still alive, and then updates its position
+            by computing <I>P = P + V * dt</I> (where <I>P</I> is the position and <I>V</I> is the velocity).
+        */
+        bool update(double dt);
+
+        /// Perform some pre-rendering tasks. Called automatically by particle systems.
+        inline void beginRender();
+        
+        /// Render the particle. Called automatically by particle systems.
+        void render(const osg::Matrix &modelview, float scale = 1.0f) const;
+        
+        /// Perform some post-rendering tasks. Called automatically by particle systems.
+        inline void endRender();
+
+    private:
+        Shape shape_;
+
+        rangef sr_;
+        rangef ar_;
+        rangev4 cr_;
+
+        osg::ref_ptr<Interpolator> si_;
+        osg::ref_ptr<Interpolator> ai_;
+        osg::ref_ptr<Interpolator> ci_;
+
+        bool alive_;
+        bool mustdie_;
+        double lifetime_;
+
+        float radius_;
+        float mass_;
+        float massinv_;
+        osg::Vec3 prev_pos_;
+        osg::Vec3 position_;
+        osg::Vec3 velocity_;
+
+        double t0_;        
+
+        float current_size_;
+        float current_alpha_;
+        osg::Vec4 current_color_;
+    };
+
+    // INLINE FUNCTIONS
+
+    inline Particle::Shape Particle::getShape() const
+    {
+        return shape_;
+    }
+
+    inline void Particle::setShape(Shape s)
+    {
+        shape_ = s;
+    }
+
+    inline bool Particle::isAlive() const
+    {
+        return alive_;
+    }
+
+    inline double Particle::getLifeTime() const
+    {
+        return lifetime_;
+    }
+    
+    inline double Particle::getAge() const
+    {
+        return t0_;
+    }
+    
+    inline float Particle::getRadius() const
+    {
+        return radius_;
+    }
+    
+    inline void Particle::setRadius(float r)
+    {
+        radius_ = r;
+    }
+
+    inline const rangef &Particle::getSizeRange() const
+    {
+        return sr_;
+    }
+
+    inline const rangef &Particle::getAlphaRange() const
+    {
+        return ar_;
+    }
+
+    inline const rangev4 &Particle::getColorRange() const
+    {
+        return cr_;
+    }
+
+    inline const Interpolator *Particle::getSizeInterpolator() const
+    {
+        return si_.get();
+    }
+
+    inline const Interpolator *Particle::getAlphaInterpolator() const
+    {
+        return ai_.get();
+    }
+
+    inline const Interpolator *Particle::getColorInterpolator() const
+    {
+        return ci_.get();
+    }
+
+    inline const osg::Vec3 &Particle::getPosition() const
+    {
+        return position_;
+    }
+
+    inline const osg::Vec3 &Particle::getVelocity() const
+    {
+        return velocity_;
+    }
+    
+    inline const osg::Vec3 &Particle::getPreviousPosition() const
+    {
+        return prev_pos_;
+    }
+
+    inline void Particle::kill()
+    {
+        mustdie_ = true;
+    }
+
+    inline void Particle::setLifeTime(double t)
+    {
+        lifetime_ = t;
+    }
+
+    inline void Particle::setSizeRange(const rangef &r)
+    {
+        sr_ = r;
+    }
+
+    inline void Particle::setAlphaRange(const rangef &r)
+    {
+        ar_ = r;
+    }
+
+    inline void Particle::setColorRange(const rangev4 &r)
+    {
+        cr_ = r;
+    }
+
+    inline void Particle::setSizeInterpolator(Interpolator *ri)
+    {
+        si_ = ri;
+    }
+
+    inline void Particle::setAlphaInterpolator(Interpolator *ai)
+    {
+        ai_ = ai;
+    }
+
+    inline void Particle::setColorInterpolator(Interpolator *ci)
+    {
+        ci_ = ci;
+    }
+
+    inline void Particle::setPosition(const osg::Vec3 &p)
+    {
+        position_ = p;
+    }
+
+    inline void Particle::setVelocity(const osg::Vec3 &v)
+    {
+        velocity_ = v;
+    }
+
+    inline void Particle::addVelocity(const osg::Vec3 &v)
+    {
+        velocity_ += v;
+    }
+
+    inline void Particle::transformPositionVelocity(const osg::Matrix &xform)
+    {
+        // this should be optimized!
+
+        osg::Vec3 p1 = position_ + velocity_;
+                
+        position_ = xform.preMult(position_);
+        p1 = xform.preMult(p1);
+        
+        velocity_ = p1 - position_;
+    }
+    
+    inline float Particle::getMass() const
+    {
+        return mass_;
+    }
+    
+    inline float Particle::getMassInv() const
+    {
+        return massinv_;
+    }
+    
+    inline void Particle::setMass(float m)
+    {
+        mass_ = m;
+        massinv_ = 1 / m;
+    }
+    
+    inline void Particle::beginRender()
+    {
+        switch (shape_)
+        {
+        case POINT:
+            glBegin(GL_POINTS);
+            break;
+        case QUAD:
+            glBegin(GL_QUADS);
+            break;
+        default: ;
+        }
+    }
+    
+    inline void Particle::endRender()
+    {
+        switch (shape_)
+        {        
+        case POINT:
+        case QUAD:
+            glEnd();
+            break;
+        default: ;
+        }
+    }
+
+
+}
+
+#endif
+

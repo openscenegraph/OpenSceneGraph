@@ -1,0 +1,19 @@
+//C++ header - Open Scene Graph - Copyright (C) 1998-2002 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+//osgParticle - Copyright (C) 2002 Marco Jez
+
+#ifndef OSGPARTICLE_VERSION_
+#define OSGPARTICLE_VERSION_ 1
+
+#include <osgParticle/Export>
+
+extern "C" {
+
+OSGPARTICLE_EXPORT const char* osgParticleGetVersion();
+OSGPARTICLE_EXPORT const char* osgParticleGetLibraryName();
+
+}
+
+#endif
+

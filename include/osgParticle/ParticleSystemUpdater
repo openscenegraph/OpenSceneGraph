@@ -1,0 +1,128 @@
+//C++ header - Open Scene Graph - Copyright (C) 1998-2002 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+//osgParticle - Copyright (C) 2002 Marco Jez
+
+#ifndef OSGPARTICLE_PARTICLESYSTEMUPDATER_
+#define OSGPARTICLE_PARTICLESYSTEMUPDATER_ 1
+
+#include <osgParticle/Export>
+#include <osgParticle/ParticleSystem>
+
+#include <vector>
+
+#include <osg/ref_ptr>
+#include <osg/CopyOp>
+#include <osg/Object>
+#include <osg/Node>
+#include <osg/NodeVisitor>
+
+#include <osgUtil/CullVisitor>
+
+namespace osgParticle
+{
+
+    /**    A useful node class for updating particle systems automatically.
+        When a <CODE>ParticleSystemUpdater</CODE> is traversed by a cull visitor, it calls the
+        <CODE>update()</CODE> method on the specified particle systems. You should place this updater
+        <U>AFTER</U> other nodes like emitters and programs.
+    */
+    class OSGPARTICLE_EXPORT ParticleSystemUpdater: public osg::Node {
+    public:
+        ParticleSystemUpdater();
+        ParticleSystemUpdater(const ParticleSystemUpdater &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
+        
+        META_Node(ParticleSystemUpdater);
+        
+        /// Return the number of particle systems on the list.
+        inline int numParticleSystems() const;
+        
+        /// Add a particle system to the list.
+        inline void addParticleSystem(ParticleSystem *ps);
+        
+        /// Get a const particle system from the list.
+        inline const ParticleSystem *getParticleSystem(int i) const;
+        
+        /// Get a particle system from the list.
+        inline ParticleSystem *getParticleSystem(int i);
+        
+        /// Find a particle system.
+        inline int findParticleSystem(ParticleSystem *ps) const;
+        
+        /// Remove a particle system from the list (by index).
+        inline void removeParticleSystem(int i);
+        
+        /// Remove a particle system from the list (by pointer).
+        inline bool removeParticleSystem(ParticleSystem *ps);
+        
+        virtual void traverse(osg::NodeVisitor &nv);
+        
+    protected:
+        virtual ~ParticleSystemUpdater() {}
+        ParticleSystemUpdater &operator=(const ParticleSystemUpdater &) { return *this; }
+        
+        inline virtual const bool computeBound() const;        
+        
+    private:
+        typedef std::vector<osg::ref_ptr<ParticleSystem> > ParticleSystem_Vector;
+        
+        ParticleSystem_Vector psv_;
+        double t0_;
+    };
+    
+    // INLINE FUNCTIONS
+    
+    inline const bool ParticleSystemUpdater::computeBound() const
+    {
+        _bsphere.init();
+        _bsphere_computed = true;
+        return true;
+    }
+
+    inline int ParticleSystemUpdater::numParticleSystems() const
+    {
+        return static_cast<int>(psv_.size());
+    }
+    
+    inline void ParticleSystemUpdater::addParticleSystem(ParticleSystem *ps)
+    {
+        psv_.push_back(ps);
+    }
+    
+    inline const ParticleSystem *ParticleSystemUpdater::getParticleSystem(int i) const
+    {
+        return psv_[i].get();
+    }
+    
+    inline ParticleSystem *ParticleSystemUpdater::getParticleSystem(int i)
+    {
+        return psv_[i].get();
+    }
+    
+    inline void ParticleSystemUpdater::removeParticleSystem(int i)
+    {
+        psv_.erase(psv_.begin()+i);
+    }
+    
+    inline int ParticleSystemUpdater::findParticleSystem(ParticleSystem *ps) const
+    {
+        ParticleSystem_Vector::const_iterator i;
+        int j = 0;
+        for (i=psv_.begin(); i!=psv_.end(); ++i, ++j) {
+            if (i->get() == ps) return j;
+        }
+        return -1;
+    }
+    
+    inline bool ParticleSystemUpdater::removeParticleSystem(ParticleSystem *ps)
+    {
+        int i = findParticleSystem(ps);
+        if (i == -1) return false;
+        removeParticleSystem(i);
+        return true;
+    }
+    
+
+}
+
+#endif

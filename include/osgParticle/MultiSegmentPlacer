@@ -1,0 +1,119 @@
+//C++ header - Open Scene Graph - Copyright (C) 1998-2002 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+//osgParticle - Copyright (C) 2002 Marco Jez
+
+#ifndef OSGPARTICLE_MULTISEGMENTPLACER_
+#define OSGPARTICLE_MULTISEGMENTPLACER_ 1
+
+#include <osgParticle/Export>
+#include <osgParticle/Placer>
+#include <osgParticle/Particle>
+
+#include <vector>
+#include <utility>
+
+#include <osg/Notify>
+#include <osg/CopyOp>
+#include <osg/Object>
+#include <osg/Vec3>
+
+namespace osgParticle {
+
+    /** A polyline-shaped particle placer.
+        This placer class sets the position of incoming particles by choosing a random point on the
+        specified sequence of connected segments.
+    */
+    class OSGPARTICLE_EXPORT MultiSegmentPlacer: public Placer {
+    public:
+        MultiSegmentPlacer();
+        MultiSegmentPlacer(const MultiSegmentPlacer &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
+
+        META_Object(MultiSegmentPlacer);
+
+        /// Get the number of vertices which define the segments.
+        inline int numVertices() const;
+        
+        /// Get a vertex.
+        inline const osg::Vec3 &getVertex(int i) const;
+        
+        /// Set a vertex.
+        inline void setVertex(int i, const osg::Vec3 &v);
+        
+        /// Set a vertex.
+        inline void setVertex(int i, float x, float y, float z);
+        
+        /// Add a vertex.
+        inline void addVertex(const osg::Vec3 &v);
+        
+        /// Add a vertex.
+        inline void addVertex(float x, float y, float z);
+        
+        /// Remove a vertex.
+        inline void removeVertex(int i);
+        
+        /// Place a partice. Called automatically by <CODE>ModularEmitter</CODE>, do not call this method manually.
+        void place(Particle *P) const;
+
+    protected:
+        virtual ~MultiSegmentPlacer() {}
+        MultiSegmentPlacer &operator=(const MultiSegmentPlacer &) { return *this; }        
+
+    private:
+        typedef std::pair<osg::Vec3, float> Vertex_data;
+        typedef std::vector<Vertex_data> Vertex_vector;
+        
+        Vertex_vector vx_;
+        float total_length_;
+        
+        void recompute_length();
+    };
+
+    // INLINE FUNCTIONS
+    
+
+    inline int MultiSegmentPlacer::numVertices() const
+    {
+        return static_cast<int>(vx_.size());
+    }
+
+    inline const osg::Vec3 &MultiSegmentPlacer::getVertex(int i) const
+    {
+        return vx_[i].first;
+    }
+
+    inline void MultiSegmentPlacer::setVertex(int i, const osg::Vec3 &v)
+    {
+        vx_[i].first = v;
+        recompute_length();
+    }
+
+    inline void MultiSegmentPlacer::setVertex(int i, float x, float y, float z)
+    {
+        vx_[i].first.set(x, y, z);
+        recompute_length();
+    }
+
+    inline void MultiSegmentPlacer::addVertex(const osg::Vec3 &v)
+    {
+        float l = 0;        
+        if (vx_.size() > 0) {
+            l = (v - vx_.back().first).length();
+        }                
+        total_length_ += l;
+        vx_.push_back(std::make_pair(v, total_length_));        
+    }
+
+    inline void MultiSegmentPlacer::addVertex(float x, float y, float z)
+    {
+        addVertex(osg::Vec3(x, y, z));
+    }
+
+    inline void MultiSegmentPlacer::removeVertex(int i)
+    {
+        vx_.erase(vx_.begin()+i);
+        recompute_length();
+    }
+
+}
+#endif

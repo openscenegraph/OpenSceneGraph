@@ -1,0 +1,96 @@
+//C++ header - Open Scene Graph - Copyright (C) 1998-2002 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+//osgParticle - Copyright (C) 2002 Marco Jez
+
+#ifndef OSGPARTICLE_EMITTER_
+#define OSGPARTICLE_EMITTER_ 1
+
+#include <osgParticle/Export>
+#include <osgParticle/ParticleProcessor>
+#include <osgParticle/Particle>
+
+#include <osg/Object>
+#include <osg/Node>
+#include <osg/NodeVisitor>
+#include <osg/CopyOp>
+
+namespace osgParticle
+{
+
+    /**    An abstract base class for particle emitters.
+        Descendant classes must override the <CODE>emit()</CODE> method to generate new particles by
+        calling the <CODE>ParticleSystem::createParticle()</CODE> method on the particle system associated
+        to the emitter.
+    */
+    class OSGPARTICLE_EXPORT Emitter: public ParticleProcessor {
+    public:
+        Emitter();
+        Emitter(const Emitter &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
+
+        virtual const char *className() const { return "Emitter"; }
+        virtual bool isSameKindAs(const osg::Object *obj) { return dynamic_cast<const Emitter*>(obj) != 0; }
+        virtual void accept(osg::NodeVisitor& nv) { if (nv.validNodeMask(*this)) { nv.pushOntoNodePath(this); nv.apply(*this); nv.popFromNodePath(); } }
+        
+        /// Get the particle template.
+        inline const Particle &getParticleTemplate() const;
+        
+        /// Set the particle template (particle is copied).
+        inline void setParticleTemplate(const Particle &p);
+        
+        /// Return whether the particle system's default template should be used.
+        inline bool getUseDefaultTemplate() const;
+        
+        /** Set whether the default particle template should be used.
+            When this flag is true, the particle template is ignored, and the
+            particle system's default template is used instead.
+        */
+        inline void setUseDefaultTemplate(bool v);
+
+    protected:
+        virtual ~Emitter() {}
+        Emitter &operator=(const Emitter &) { return *this; }
+        
+        inline void process(double dt);
+        
+        virtual void emit(double dt) = 0;
+        
+    private:        
+        bool usedeftemp_;
+        Particle ptemp_;
+    };
+
+    // INLINE FUNCTIONS
+
+    inline const Particle &Emitter::getParticleTemplate() const
+    {
+        return ptemp_;
+    }
+
+    inline void Emitter::setParticleTemplate(const Particle &p)
+    {
+        ptemp_ = p;
+        usedeftemp_ = false;
+    }
+
+    inline bool Emitter::getUseDefaultTemplate() const
+    {
+        return usedeftemp_;
+    }
+
+    inline void Emitter::setUseDefaultTemplate(bool v)
+    {
+        usedeftemp_ = v;
+    }
+
+    inline void Emitter::process(double dt)
+    {
+        emit(dt);
+    }
+
+
+}
+
+
+#endif
+

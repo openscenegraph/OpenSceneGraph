@@ -1,0 +1,46 @@
+
+#include <osgParticle/ModularProgram>
+#include <osgParticle/Operator>
+
+#include <iostream>
+
+#include <osgDB/Registry>
+#include <osgDB/Input>
+#include <osgDB/Output>
+
+bool  ModularProgram_readLocalData(osg::Object &obj, osgDB::Input &fr);
+bool  ModularProgram_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
+
+osgDB::RegisterDotOsgWrapperProxy  ModularProgram_Proxy
+(
+    osgNew osgParticle::ModularProgram,
+    "ModularProgram",
+    "Object Node ParticleProcessor Program ModularProgram",
+    ModularProgram_readLocalData,
+    ModularProgram_writeLocalData
+);
+
+bool ModularProgram_readLocalData(osg::Object &obj, osgDB::Input &fr)
+{
+    osgParticle::ModularProgram &myobj = static_cast<osgParticle::ModularProgram &>(obj);
+    bool itAdvanced = false;
+
+    osgParticle::Operator *op = dynamic_cast<osgParticle::Operator *>(fr.readObject());
+    if (op) {
+        myobj.addOperator(op);
+        itAdvanced = true;
+    }
+
+    return itAdvanced;
+}
+
+bool ModularProgram_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
+{
+    const osgParticle::ModularProgram &myobj = static_cast<const osgParticle::ModularProgram &>(obj);
+
+    for (int i=0; i<myobj.numOperators(); ++i) {
+        fw.writeObject(*myobj.getOperator(i));
+    }
+
+    return true;
+}

@@ -165,6 +165,1023 @@ Package=<4>
     Project_Dep_Name Core osg
     End Project Dependency
 }}}
+###############################################################################
+
+Project: "Example osghangglide"=.\examples\osghangglide\osghangglide.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osgbillboard"=.\examples\osgbillboard\osgbillboard.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osgcallback"=.\examples\osgcallback\osgcallback.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osgclip"=.\examples\osgclip\osgclip.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osgcluster"=.\examples\osgcluster\osgcluster.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osgconv"=.\examples\osgconv\osgconv.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osgunittests"=.\examples\osgunittests\osgunittests.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osgcopy"=.\examples\osgcopy\osgcopy.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osganimate"=.\examples\osganimate\osganimate.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osgcube"=.\examples\osgcube\osgcube.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osgvertexprogram"=.\examples\osgvertexprogram\osgvertexprogram.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osgshape"=.\examples\osgshape\osgshape.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osgcubemap"=.\examples\osgcubemap\osgcubemap.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osgteapot"=.\examples\osgteapot\osgteapot.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+}}}
+
+##############################################################################################################################################################
+
+Project: "Example osggeometry"=.\examples\osggeometry\osggeometry.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+}}}
+
+##############################################################################################################################################################
+
+Project: "Example osggeodemo"=.\examples\osggeodemo\osggeodemo.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osghud"=.\examples\osghud\osghud.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgText
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osglogo"=.\examples\osglogo\osglogo.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgText
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osgimpostor"=.\examples\osgimpostor\osgimpostor.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osgmultitexture"=.\examples\osgmultitexture\osgmultitexture.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osgoccluder"=.\examples\osgoccluder\osgoccluder.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osgprerender"=.\examples\osgprerender\osgprerender.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osgpbuffer"=.\examples\osgpbuffer\osgpbuffer.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osgshadowtexture"=.\examples\osgshadowtexture\osgshadowtexture.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osgreflect"=.\examples\osgreflect\osgreflect.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osgscribe"=.\examples\osgscribe\osgscribe.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osgsequence"=.\examples\osgsequence\osgsequence.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osgstereoimage"=.\examples\osgstereoimage\osgstereoimage.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osgtext"=.\examples\osgtext\osgtextdemo.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgText
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osgtexture1D"=.\examples\osgtexture1D\osgtexture1D.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osgtexture2D"=.\examples\osgtexture2D\osgtexture2D.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osgtexture3D"=.\examples\osgtexture3D\osgtexture3D.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osgversion"=.\examples\osgversion\osgversion.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osglight"=.\examples\osglight\osglight.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osgviews"=.\examples\osgviews\osgviews.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example sgv"=.\examples\sgv\sgv.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osgparticle"=.\examples\osgparticle\osgparticledemo.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgParticle
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osglightpoint"=.\examples\osglightpoint\osglightpoint.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgSim
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+}}}
+
 
 ###############################################################################
 

@@ -18,30 +18,30 @@
 
 
 #if defined(_MSC_VER)
-	namespace osg {
-	    typedef __int64 Timer_t;
-	}
+    namespace osg {
+        typedef __int64 Timer_t;
+    }
 #elif defined(__linux) || defined(__FreeBSD__) || defined(__CYGWIN__)|| defined(__MINGW32__)
-	namespace osg {
-	    typedef unsigned long long Timer_t;
-	}
+    namespace osg {
+        typedef unsigned long long Timer_t;
+    }
 #elif defined(__sgi)
-	namespace osg {
-	    typedef unsigned long long Timer_t;
-	}
+    namespace osg {
+        typedef unsigned long long Timer_t;
+    }
 #elif defined(unix)
-	namespace osg {
-	    typedef unsigned long long Timer_t;
-	}
+    namespace osg {
+        typedef unsigned long long Timer_t;
+    }
 #elif defined __APPLE__ || defined macintosh
-	namespace osg {
-		typedef double Timer_t;
-	}
+    namespace osg {
+        typedef double Timer_t;
+    }
 #else
     #include <ctime>
-	namespace osg {
-	    typedef std::clock_t Timer_t;
-	}
+    namespace osg {
+        typedef std::clock_t Timer_t;
+    }
 #endif
 
 namespace osg {
@@ -57,14 +57,14 @@ class SG_EXPORT Timer {
         static const Timer* instance();
 
 
-	#if defined __DARWIN_OSX__  || defined macintosh
-	    // PJA MAC OSX - inline Tick() pollutes namespace so badly 
-	    // we cant compile, due to Carbon.h ...
+    #if defined __DARWIN_OSX__  || defined macintosh
+        // PJA MAC OSX - inline Tick() pollutes namespace so badly 
+        // we cant compile, due to Carbon.h ...
             Timer_t tick() const;
-	#else
-	    inline Timer_t tick() const;
-	#endif
-		
+    #else
+        inline Timer_t tick() const;
+    #endif
+        
         inline double delta_s( Timer_t t1, Timer_t t2 ) const { return (double)(t2 - t1)*_secsPerTick; }
         inline double delta_m( Timer_t t1, Timer_t t2 ) const { return delta_s(t1,t2)*1e3; }
         inline double delta_u( Timer_t t1, Timer_t t2 ) const { return delta_s(t1,t2)*1e6; }
@@ -81,7 +81,7 @@ class SG_EXPORT Timer {
         unsigned long*                  _clockAddress_32;
         unsigned long long*             _clockAddress_64;
         int                             _cycleCntrSize;
-	// for SGI machines with 32 bit clocks.
+    // for SGI machines with 32 bit clocks.
         mutable unsigned long           _lastClockValue;
         mutable unsigned long long      _rollOver;
 #       endif
@@ -129,15 +129,15 @@ class SG_EXPORT Timer {
     #define CLK(x)      __asm__ volatile (".byte 0x0f, 0x31" : "=A" (x))
     namespace osg{
 
-	inline Timer_t Timer::tick() const
-	{
-		if (_useStandardClock)
-			return clock();
-		else
-		{
-			Timer_t x;CLK(x);return x;
-		}
-	}
+    inline Timer_t Timer::tick() const
+    {
+        if (_useStandardClock)
+            return clock();
+        else
+        {
+            Timer_t x;CLK(x);return x;
+        }
+    }
 
     }
 
@@ -146,7 +146,7 @@ class SG_EXPORT Timer {
     #include <sys/time.h>
 
 #ifdef __ia64
-	#define CLK(x)		((x)=0)
+    #define CLK(x)        ((x)=0)
 #else
     #define CLK(x)      __asm__ volatile (".byte 0x0f, 0x31" : "=A" (x))
 #endif
@@ -189,14 +189,18 @@ class SG_EXPORT Timer {
                 if ( _clockAddress_64 )
                     return *_clockAddress_64;
                 else
-		{
-                   unsigned long clockValue = *_clockAddress_32;
-                   if( _lastClockValue > clockValue )
-                   {
-                      _rollOver += 0x100000000L;
-                   }
-                   _lastClockValue = clockValue;
-                   return _rollOver + clockValue;
+                {
+                    unsigned long clockValue = *_clockAddress_32;
+                    if( _lastClockValue > clockValue )
+                    {
+                        # ifdef __GNUC__
+                        _rollOver += 0x100000000LL;
+                        #else
+                        _rollOver += 0x100000000L;
+                        #endif
+                    }
+                    _lastClockValue = clockValue;
+                    return _rollOver + clockValue;
                 }
             }
         }

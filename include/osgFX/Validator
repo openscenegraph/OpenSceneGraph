@@ -15,7 +15,7 @@
 #ifndef OSGFX_VALIDATOR_
 #define OSGFX_VALIDATOR_
 
-#include <osgFX/Export>
+#include <osgFX/Effect>
 
 #include <osg/ref_ptr>
 #include <osg/StateAttribute>
@@ -24,9 +24,6 @@
 
 namespace osgFX
 {
-
-    // forward declaration
-    class Effect;
 
     /**
      This class is used internally by osgFX::Effect to choose between different

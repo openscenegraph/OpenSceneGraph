@@ -205,50 +205,84 @@ endif
 
 #### IRIX Specific definitions
 ifeq ($(OS),IRIX)
-  LINKARGS          = -L${TOPDIR}/lib -LANG:std -OPT:Olimit=0  
-  C++               = CC
-  DEPARG            = -M
-  INC               += -I${TOPDIR}/include -I/usr/freeware/include
-  DEF               += -LANG:std -OPT:Olimit=0 \
-                       -DEBUG:woff=1681 -DEBUG:woff=1682 -DEBUG:woff=3303\
-                       -MDupdate $(MAKEDEPEND)
-  OPTF              = -O2 
-  DBGF              = -g -DOSG_COMPILE_UNIT_TESTS  
-  SHARED            = -shared
-  PFLIBS            = \
-                      -lpf3ds -lpfdem -lpfdted -lpfdwb -lpfdxf -lpfevt \
-                      -lpfflt -lpfgds -lpfgfo -lpfim -lpflsa -lpflsb \
-                      -lpfnff -lpfobj -lpfpegg -lpfpfb -lpfphd -lpfpts \
-                      -lpfrot -lpfscale -lpfsgf -lpfsgo -lpfsphere -lpfsv \
-                      -lpftri -lpfunc -lpfvct -lpfdu -lpfutil -lpf -all -limage
-  FREETYPE_LIB      = -lfreetype
-  ARCH              = 32
-  ifeq ($(ARCH),64)
-    ARCHARGS          = -64 -DARCH64
-    ARCHINST          = 64
-    LINKARGS          += -L/usr/freeware/lib64
-    PF_XTRA_LIBS      = -L/usr/lib64/libpfdb -rpath /usr/lib64/libpfdb \
-                         $(PFLIBS)
-  else 
-    ARCHARGS          = -n32
-    ARCHINST          = 32
-    LINKARGS          += -L/usr/freeware/lib32
-    PF_XTRA_LIBS      = -L/usr/lib32/libpfdb -rpath /usr/lib32/libpfdb \
-                         $(PFLIBS)
-  endif
+	CXX = CC
+	ifeq ($(CXX),CC)
+		LINKARGS          = -L${TOPDIR}/lib -LANG:std -OPT:Olimit=0  
+		C++               = CC
+		DEPARG            = -M
+		INC               += -I${TOPDIR}/include -I/usr/freeware/include
+		DEF               += -LANG:std -OPT:Olimit=0 \
+		                   -DEBUG:woff=1681 -DEBUG:woff=1682 -DEBUG:woff=3303\
+		                   -MDupdate $(MAKEDEPEND)
+		OPTF              = -O2 
+		DBGF              = -g -DOSG_COMPILE_UNIT_TESTS  
+		SHARED            = -shared
+		PFLIBS            = \
+		                  -lpf3ds -lpfdem -lpfdted -lpfdwb -lpfdxf -lpfevt \
+		                  -lpfflt -lpfgds -lpfgfo -lpfim -lpflsa -lpflsb \
+		                  -lpfnff -lpfobj -lpfpegg -lpfpfb -lpfphd -lpfpts \
+		                  -lpfrot -lpfscale -lpfsgf -lpfsgo -lpfsphere -lpfsv \
+		                  -lpftri -lpfunc -lpfvct -lpfdu -lpfutil -lpf -all -limage
+		FREETYPE_LIB      = -lfreetype
+		ARCH              = 32
+		ifeq ($(ARCH),64)
+			ARCHARGS          = -64 -DARCH64
+			ARCHINST          = 64
+			LINKARGS          += -L/usr/freeware/lib64
+			PF_XTRA_LIBS      = -L/usr/lib64/libpfdb -rpath /usr/lib64/libpfdb \
+			                     $(PFLIBS)
+		else 
+			ARCHARGS          = -n32
+			ARCHINST          = 32
+			LINKARGS          += -L/usr/freeware/lib32
+			PF_XTRA_LIBS      = -L/usr/lib32/libpfdb -rpath /usr/lib32/libpfdb \
+			                     $(PFLIBS)
+		endif
+	else		
+	 	LIBS              = -lstdc++
+		LINKARGS          = -L${TOPDIR}/lib  
+		C++               = g++
+		INC               += -I${TOPDIR}/include -I/usr/freeware/include
+		DEF               += -fPIC -W -Wno-unused 
+		OPTF              = -O2 
+		DBGF              = -g -gstabs+ -DOSG_COMPILE_UNIT_TESTS  
+		SHARED            = -shared
+		PFLIBS            = \
+		                  -lpf3ds -lpfdem -lpfdted -lpfdwb -lpfdxf -lpfevt \
+		                  -lpfflt -lpfgds -lpfgfo -lpfim -lpflsa -lpflsb \
+		                  -lpfnff -lpfobj -lpfpegg -lpfpfb -lpfphd -lpfpts \
+		                  -lpfrot -lpfscale -lpfsgf -lpfsgo -lpfsphere -lpfsv \
+		                  -lpftri -lpfunc -lpfvct -lpfdu -lpfutil -lpf -all -limage
+		FREETYPE_LIB      = -lfreetype
+		ARCH              = 32
+		ifeq ($(ARCH),64)
+			ARCHARGS          = -mabi=64 -mips4 -DARCH64
+			ARCHINST          = 64
+			LINKARGS          += -L/usr/freeware/lib64
+			PF_XTRA_LIBS      = -L/usr/lib64/libpfdb -rpath /usr/lib64/libpfdb \
+			                     $(PFLIBS)
+		else 
+			ARCHARGS          = -mabi=n32 -mips4
+			ARCHINST          = 32
+			LINKARGS          += -L/usr/freeware/lib32
+			PF_XTRA_LIBS      = -L/usr/lib32/libpfdb -rpath /usr/lib32/libpfdb \
+			                     $(PFLIBS)
+		endif	
+	endif
 
-  DYNAMICLIBRARYLIB = 
-  OSG_LIBS          = -losgGA -losgDB -losgUtil -losg 
-  GL_LIBS           = -lGLU -lGL 
-  X_INC             = -I/usr/X11R6/include
-  X_LIBS            = -lXext -lXi -lXmu -lX11
-  SOCKET_LIBS       = 
-  OTHER_LIBS        = -lm -lOpenThreads
-  PNG_LIBS          = -lpng
-  JPEG_LIBS         = -ljpeg
-  TIFF_LIB          = -ltiff
-  GIF_LIBS          = -lungif
-  MAKEDIST          = $(TOPDIR)/Make/makeirixdist
+	DYNAMICLIBRARYLIB = 
+	OSG_LIBS          = -losgGA -losgDB -losgUtil -losg 
+	GL_LIBS           = -lGLU -lGL 
+	X_INC             = -I/usr/X11R6/include
+	X_LIBS            = -lXext -lXi -lXmu -lX11
+	SOCKET_LIBS       = 
+	OTHER_LIBS        = -lm -lOpenThreads
+	PNG_LIBS          = -lpng
+	JPEG_LIBS         = -ljpeg
+	TIFF_LIB          = -ltiff
+	GIF_LIBS          = -lungif
+	MAKEDIST          = $(TOPDIR)/Make/makeirixdist
+
 endif
 
 #### Linux specific definitions

@@ -65,7 +65,7 @@ typedef struct ACObject_t
 
 
 Prototype osg::Group *ac_load_ac3d(const char *filename);
-Prototype osg::Material *ac_palette_get_material(int index);
+Prototype osg::Material *ac_palette_get_material(const unsigned int index);
 
 
 

@@ -164,9 +164,9 @@ void Texture::flushTextureObjects(unsigned int contextID,double currentTime, dou
 }
 
 Texture::Texture():
-            _wrap_s(REPEAT),
-            _wrap_t(REPEAT),
-            _wrap_r(REPEAT),
+            _wrap_s(CLAMP),
+            _wrap_t(CLAMP),
+            _wrap_r(CLAMP),
             _min_filter(LINEAR_MIPMAP_LINEAR), // trilinear
             _mag_filter(LINEAR),
             _maxAnisotropy(1.0f),

@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "osg/Quat"
 #include "osg/Vec4"
 #include "osg/Vec3"
@@ -19,10 +20,9 @@ const float x,
 const float y,
 const float z    )
 {
-    float _angle = -angle;  // Convert to right handed coordinate system
     float inversenorm  = 1.0/sqrt( x*x + y*y + z*z );
-    float coshalfangle = cos( 0.5*_angle );
-    float sinhalfangle = sin( 0.5*_angle );
+    float coshalfangle = cos( 0.5*angle );
+    float sinhalfangle = sin( 0.5*angle );
 
     _fv[0] = x * sinhalfangle * inversenorm;
     _fv[1] = y * sinhalfangle * inversenorm;
@@ -52,8 +52,6 @@ void Quat::makeRot( const Vec3& vec1, const Vec3& vec2 )
     // dot product vec1*vec2
     float cosangle = vec1*vec2/(length1*length2);
 
-    //cosangle = - cosangle; // Convert to right-handed coordinate system
-
     if ( fabs(cosangle - 1) < epsilon )
     {
         // cosangle is close to 1, so the vectors are close to being coincident
@@ -62,8 +60,10 @@ void Quat::makeRot( const Vec3& vec1, const Vec3& vec2 )
         makeRot( 0.0, 1.0, 0.0, 0.0 );
     }
     else
+#if 0 /// This is broken and entirely unecessary.  - Don Burns.
     if ( fabs(cosangle + 1) < epsilon )
     {
+
         // cosangle is close to -1, so the vectors are close to being opposite
         // The angle of rotation is going to be Pi, but around which axis?
         // Basically, any one perpendicular to vec1 = (x,y,z) is going to work.
@@ -79,6 +79,7 @@ void Quat::makeRot( const Vec3& vec1, const Vec3& vec2 )
         makeRot( (float)M_PI, axis );
     }
     else
+#endif
     {
         // This is the usual situation - take a cross-product of vec1 and vec2
         // and that is the axis around which to rotate.
@@ -242,23 +243,28 @@ void Quat::get( Matrix& m ) const
     wy = QW * y2;
     wz = QW * z2;
 
+    // Note.  Gamasutra gets the matrix assignments inverted, resulting
+    // in left-handed rotations, which is contrary to OpenGL and OSG's 
+    // methodology.  The matrix assignment has been altered in the next
+    // few lines of code to do the right thing.
+    // Don Burns - Oct 13, 2001
     m(0,0) = 1.0f - (yy + zz);
-    m(0,1) = xy - wz;
-    m(0,2) = xz + wy;
-    m(0,3) = 0.0f;
+    m(1,0) = xy - wz;
+    m(2,0) = xz + wy;
+    m(3,0) = 0.0f;
 
-    m(1,0) = xy + wz;
+    m(0,1) = xy + wz;
     m(1,1) = 1.0f - (xx + zz);
-    m(1,2) = yz - wx;
-    m(1,3) = 0.0f;
+    m(2,1) = yz - wx;
+    m(3,1) = 0.0f;
 
-    m(2,0) = xz - wy;
-    m(2,1) = yz + wx;
+    m(0,2) = xz - wy;
+    m(1,2) = yz + wx;
     m(2,2) = 1.0f - (xx + yy);
-    m(2,3) = 0.0f;
+    m(3,2) = 0.0f;
 
-    m(3,0) = 0;
-    m(3,1) = 0;
-    m(3,2) = 0;
+    m(0,3) = 0;
+    m(1,3) = 0;
+    m(2,3) = 0;
     m(3,3) = 1;
 }

@@ -56,13 +56,7 @@ Image::Image(const Image& image,const CopyOp& copyop):
 {
     if (image._data)
     {
-        int num_components = 
-            _pixelFormat == GL_LUMINANCE ? 1 :
-            _pixelFormat == GL_LUMINANCE_ALPHA ? 2 :
-            _pixelFormat == GL_RGB ? 3 :
-            _pixelFormat == GL_RGBA ? 4 : 4;
-
-        int size = _s*_t*_r*num_components;
+        int size = image.getTotalSizeInBytesIncludingMipmaps();
         setData(new unsigned char [size],USE_NEW_DELETE);
         memcpy(_data,image._data,size);
     }

@@ -8,6 +8,9 @@
 
 #include <osgUtil/CullVisitor>
 
+
+using namespace osg;
+
 osgParticle::ParticleProcessor::ParticleProcessor()
 :    osg::Node(),
     rf_(RELATIVE_TO_PARENTS),
@@ -71,5 +74,5 @@ void osgParticle::ParticleProcessor::traverse(osg::NodeVisitor &nv)
     }
 
     // call the inherited method
-    osg::Node::traverse(nv);
+    Node::traverse(nv);
 }

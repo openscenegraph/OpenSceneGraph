@@ -3,6 +3,8 @@
 #include <osg/CopyOp>
 #include <osg/Node>
 
+using namespace osg;
+
 osgParticle::ParticleSystemUpdater::ParticleSystemUpdater()
 : osg::Node(), t0_(-1)
 {
@@ -33,5 +35,5 @@ void osgParticle::ParticleSystemUpdater::traverse(osg::NodeVisitor &nv)
         }
         t0_ = t;
     }
-    osg::Node::traverse(nv);
+    Node::traverse(nv);
 }

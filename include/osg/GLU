@@ -3,7 +3,7 @@
 //as published by the Free Software Foundation.
 
 #ifndef OSG_GLU
-#define OSG_GL 1
+#define OSG_GLU 1
 
 #ifdef __APPLE_CC__
 	#include <OpenGL/glu.h>
@@ -11,4 +11,4 @@
 	#include <GL/glu.h>
 #endif
 
-#endif  // __osgGL_h
+#endif  // __osgGLU_h

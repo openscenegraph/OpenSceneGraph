@@ -86,6 +86,7 @@ class SG_EXPORT Matrix : public Object
         bool invertAffine( const Matrix& );
 
         //basic utility functions to create new matrices or vectors
+	inline static Matrix identity( void );
         inline static Matrix scale( const Vec3& );
         inline static Matrix scale( float, float, float );
         inline static Matrix trans( const Vec3& );
@@ -180,6 +181,13 @@ class SG_EXPORT Matrix : public Object
 };
 
 //static utility methods
+inline Matrix Matrix::identity(void)
+{
+    Matrix m;
+    m.makeIdent();
+    return m;
+}
+
 inline Matrix Matrix::scale(float sx, float sy, float sz)
 {
     Matrix m;

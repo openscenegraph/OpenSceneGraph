@@ -36,7 +36,9 @@ osgParticle::Particle::Particle()
     prev_pos_(0, 0, 0),
     position_(0, 0, 0),
     velocity_(0, 0, 0),
-    t0_(0)    
+    t0_(0),
+    current_size_(0),
+    current_alpha_(0)
 {
 }
 

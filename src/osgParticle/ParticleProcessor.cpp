@@ -16,7 +16,10 @@ osgParticle::ParticleProcessor::ParticleProcessor()
     rf_(RELATIVE_TO_PARENTS),
     enabled_(true),
     t0_(-1),
-    ps_(0)
+    ps_(0),
+    need_ltw_matrix_(false),
+    need_wtl_matrix_(false),
+    current_nodevisitor_(0)
 {
     setCullingActive(false);
 }
@@ -26,7 +29,10 @@ osgParticle::ParticleProcessor::ParticleProcessor(const ParticleProcessor &copy,
     rf_(copy.rf_),
     enabled_(copy.enabled_),
     t0_(copy.t0_),
-    ps_(static_cast<ParticleSystem *>(copyop(copy.ps_.get())))
+    ps_(static_cast<ParticleSystem *>(copyop(copy.ps_.get()))),
+    need_ltw_matrix_(copy.need_ltw_matrix_),
+    need_wtl_matrix_(copy.need_wtl_matrix_),
+    current_nodevisitor_(0)
 {
 }
 

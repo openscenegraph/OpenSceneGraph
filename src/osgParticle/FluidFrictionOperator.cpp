@@ -4,8 +4,14 @@
 #include <osgParticle/Particle>
 #include <osg/Notify>
 
-osgParticle::FluidFrictionOperator::FluidFrictionOperator()
-: Operator(), ovr_rad_(0)
+osgParticle::FluidFrictionOperator::FluidFrictionOperator():
+     Operator(),
+     A_(0),
+     B_(0),
+     density_(0),
+     viscosity_(0),
+     ovr_rad_(0),
+     current_program_(0)
 {
     setFluidToAir();
 }
@@ -16,7 +22,8 @@ osgParticle::FluidFrictionOperator::FluidFrictionOperator(const FluidFrictionOpe
     B_(copy.B_),
     density_(copy.density_), 
     viscosity_(copy.viscosity_),
-    ovr_rad_(copy.ovr_rad_)
+    ovr_rad_(copy.ovr_rad_),
+    current_program_(0)
 {
 }
 

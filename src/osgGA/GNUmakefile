@@ -14,7 +14,7 @@ CXXFILES = \
         SetSceneViewVisitor.cpp\
 	StateSetManipulator.cpp\
 	TerrainManipulator.cpp\
-	TrackerManipulator.cpp\
+	NodeTrackerManipulator.cpp\
 	TrackballManipulator.cpp\
 	Version.cpp\
 

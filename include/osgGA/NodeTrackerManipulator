@@ -11,21 +11,21 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGGA_TrackerMANIPULATOR
-#define OSGGA_TrackerMANIPULATOR 1
+#ifndef OSGGA_NODETRACKERMANIPULATOR
+#define OSGGA_NODETRACKERMANIPULATOR 1
 
 #include <osgGA/MatrixManipulator>
 #include <osg/Quat>
 
 namespace osgGA{
 
-class OSGGA_EXPORT TrackerManipulator : public MatrixManipulator
+class OSGGA_EXPORT NodeTrackerManipulator : public MatrixManipulator
 {
     public:
 
-        TrackerManipulator();
+        NodeTrackerManipulator(); 
 
-        virtual const char* className() const { return "Tracker"; }
+        virtual const char* className() const { return "NodeTrackerManipulator"; }
 
         void setTrackNode(osg::Node* node) { _trackNode = node; }
         osg::Node* getTrackNode() { return _trackNode.get(); }
@@ -87,7 +87,7 @@ class OSGGA_EXPORT TrackerManipulator : public MatrixManipulator
 
     protected:
 
-        virtual ~TrackerManipulator();
+        virtual ~NodeTrackerManipulator();
 
         /** Reset the internal GUIEvent stack.*/
         void flushMouseEventStack();

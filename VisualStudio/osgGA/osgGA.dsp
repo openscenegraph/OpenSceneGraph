@@ -143,7 +143,7 @@ SOURCE=..\..\src\osgGA\TrackballManipulator.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgGA\TrackerManipulator.cpp
+SOURCE=..\..\src\osgGA\NodeTrackerManipulator.cpp
 # End Source File
 # Begin Source File
 
@@ -211,7 +211,7 @@ SOURCE=..\..\Include\osgGA\TrackballManipulator
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\osgGA\TrackerManipulator
+SOURCE=..\..\Include\osgGA\NodeTrackerManipulator
 # End Source File
 # Begin Source File
 

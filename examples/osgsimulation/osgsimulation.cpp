@@ -18,7 +18,7 @@
 #include <osgParticle/FireEffect>
 #include <osgParticle/ParticleSystemUpdater>
 
-#include <osgGA/TrackerManipulator>
+#include <osgGA/NodeTrackerManipulator>
 
 // for the grid data..
 #include "../osghangglide/terrain_coords.h"
@@ -331,7 +331,7 @@ int main(int argc, char **argv)
     
     if (!fnnv._foundNodes.empty())
     {
-        osgGA::TrackerManipulator* tm = new osgGA::TrackerManipulator;
+        osgGA::NodeTrackerManipulator* tm = new osgGA::NodeTrackerManipulator;
         tm->setTrackNode(fnnv._foundNodes[0].get());
         
         std::cout<<"Found "<<std::endl;

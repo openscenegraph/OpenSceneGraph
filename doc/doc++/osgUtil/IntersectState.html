@@ -22,32 +22,32 @@
 <DL>
 <P><DL>
 <DT><H3>Public Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::Matrix&gt;  <B><A HREF="#DOC.2.14.18.2">_matrix</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::Matrix&gt;  <B><A HREF="#DOC.2.8.18.2">_matrix</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::Matrix&gt;  <B><A HREF="#DOC.2.14.18.3">_inverse</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::Matrix&gt;  <B><A HREF="#DOC.2.8.18.3">_inverse</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.14.18.1">IntersectState</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.8.18.1">IntersectState</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.14.18.6">isCulled</A></B>(const osg::BoundingSphere&amp; bs, LineSegmentmentMask&amp; segMaskOut)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.8.18.6">isCulled</A></B>(const osg::BoundingSphere&amp; bs, LineSegmentmentMask&amp; segMaskOut)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.14.18.7">isCulled</A></B>(const osg::BoundingBox&amp; bb, LineSegmentmentMask&amp; segMaskOut)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.8.18.7">isCulled</A></B>(const osg::BoundingBox&amp; bb, LineSegmentmentMask&amp; segMaskOut)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.14.18.8">addLineSegmentPair</A></B>(osg::LineSegment* first, osg::LineSegment* second)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.8.18.8">addLineSegmentPair</A></B>(osg::LineSegment* first, osg::LineSegment* second)
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; LineSegmentPair &gt; LineSegmentList LineSegmentList <B><A HREF="#DOC.2.14.18.4">_segList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; LineSegmentPair &gt; LineSegmentList LineSegmentList <B><A HREF="#DOC.2.8.18.4">_segList</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;LineSegmentmentMask&gt; LineSegmentmentMaskStack LineSegmentmentMaskStack <B><A HREF="#DOC.2.14.18.5">_segmentMaskStack</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;LineSegmentmentMask&gt; LineSegmentmentMaskStack LineSegmentmentMaskStack <B><A HREF="#DOC.2.8.18.5">_segmentMaskStack</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.14.18.9">~IntersectState</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.8.18.9">~IntersectState</A></B>()
 </DL></P>
 
 </DL>
@@ -58,39 +58,39 @@
 <DL>
 
 <A NAME="IntersectState"></A>
-<A NAME="DOC.2.14.18.1"></A>
+<A NAME="DOC.2.8.18.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> IntersectState()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_matrix"></A>
-<A NAME="DOC.2.14.18.2"></A>
+<A NAME="DOC.2.8.18.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::Matrix&gt;  _matrix</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_inverse"></A>
-<A NAME="DOC.2.14.18.3"></A>
+<A NAME="DOC.2.8.18.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::Matrix&gt;  _inverse</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_segList"></A>
-<A NAME="DOC.2.14.18.4"></A>
+<A NAME="DOC.2.8.18.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; LineSegmentPair &gt; LineSegmentList LineSegmentList _segList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_segmentMaskStack"></A>
-<A NAME="DOC.2.14.18.5"></A>
+<A NAME="DOC.2.8.18.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;LineSegmentmentMask&gt; LineSegmentmentMaskStack LineSegmentmentMaskStack _segmentMaskStack</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="isCulled"></A>
-<A NAME="DOC.2.14.18.6"></A>
+<A NAME="DOC.2.8.18.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool isCulled(const osg::BoundingSphere&amp; bs, LineSegmentmentMask&amp; segMaskOut)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="isCulled"></A>
-<A NAME="DOC.2.14.18.7"></A>
+<A NAME="DOC.2.8.18.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool isCulled(const osg::BoundingBox&amp; bb, LineSegmentmentMask&amp; segMaskOut)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="addLineSegmentPair"></A>
-<A NAME="DOC.2.14.18.8"></A>
+<A NAME="DOC.2.8.18.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addLineSegmentPair(osg::LineSegment* first, osg::LineSegment* second)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~IntersectState"></A>
-<A NAME="DOC.2.14.18.9"></A>
+<A NAME="DOC.2.8.18.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ~IntersectState()</B></TT>
 <DL><DT><DD></DL><P></DL>
 

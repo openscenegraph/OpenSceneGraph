@@ -23,37 +23,37 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.25.1">ColorMatrix</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.30.1">ColorMatrix</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.25.2">ColorMatrix</A></B>(const <!1><A HREF="ColorMatrix.html#DOC.2.25.2">ColorMatrix</A>&amp; cm, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.30.2">ColorMatrix</A></B>(const <!1><A HREF="ColorMatrix.html#DOC.2.30.2">ColorMatrix</A>&amp; cm, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
 <DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.25.3">META_StateAttribute</A></B>(<!1><A HREF="ColorMatrix.html">ColorMatrix</A>, <!1><A HREF="StateAttribute.html#DOC.2.99.6.44">COLORMATRIX</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.30.3">META_StateAttribute</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="ColorMatrix.html">ColorMatrix</A>, <!1><A HREF="StateAttribute.html#DOC.2.119.6.40">COLORMATRIX</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.25.4">compare</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.30.4">compare</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const 
 <DD><I>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.25.5">setMatrix</A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; matrix)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.30.5">setMatrix</A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; matrix)
 <DD><I>Set the color matrix </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrix.html">Matrix</A>&amp; <B><A HREF="#DOC.2.25.6">getMatrix</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrix.html">Matrix</A>&amp; <B><A HREF="#DOC.2.30.6">getMatrix</A></B>()
 <DD><I>Get the color matrix </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Matrix.html">Matrix</A>&amp; <B><A HREF="#DOC.2.25.7">getMatrix</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Matrix.html">Matrix</A>&amp; <B><A HREF="#DOC.2.30.7">getMatrix</A></B>() const 
 <DD><I>Get the const color matrix </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.25.8">apply</A></B>(<!1><A HREF="State.html">State</A>&amp; state) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.30.8">apply</A></B>(<!1><A HREF="State.html">State</A>&amp; state) const 
 <DD><I>apply as OpenGL texture matrix</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.25.10">_matrix</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.30.10">_matrix</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.25.9">~ColorMatrix</A></B>( void )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.30.9">~ColorMatrix</A></B>( void )
 </DL></P>
 
 </DL>
@@ -67,9 +67,13 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isSameKindAs</B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
 <DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>libraryName</B>() const 
+<DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   const <!1><A HREF="StateAttribute.html#DOC.2.99.5">Type</A> <B>getType</B>() const 
+<IMG ALT="o" SRC=icon2.gif>virtual   const <!1><A HREF="StateAttribute.html#DOC.2.119.5">Type</A> <B>getType</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isTextureAttribute</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>bool <B>operator <  </B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; rhs) const 
 <DT>
@@ -77,7 +81,7 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>bool <B>operator != </B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; rhs) const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   void <B>setStateSetModes</B>(<!1><A HREF="StateSet.html">StateSet</A>&amp;, const <!1><A HREF="StateAttribute.html#DOC.2.99.2">GLModeValue</A>) const 
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>getAssociatedModes</B>(std::vector&lt;<!1><A HREF="StateAttribute.html#DOC.2.119.1">GLMode</A>&gt;&amp; ) const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   void <B>compile</B>(<!1><A HREF="State.html">State</A>&amp;) const 
 </DL></P>
@@ -102,9 +106,9 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(const <!1><A HREF="Object.html#DOC.2.78.7">DataVariance</A> dv)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(const <!1><A HREF="Object.html#DOC.2.87.8">DataVariance</A> dv)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Object.html#DOC.2.78.7">DataVariance</A> <B>getDataVariance</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Object.html#DOC.2.87.8">DataVariance</A> <B>getDataVariance</B>() const 
 </DL></P>
 
 <P><DL>
@@ -114,7 +118,7 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.78.7">DataVariance</A> <B>_dataVariance</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.87.8">DataVariance</A> <B>_dataVariance</B>
 </DL></P>
 
 </DL>
@@ -147,49 +151,49 @@
 <DL>
 
 <A NAME="ColorMatrix"></A>
-<A NAME="DOC.2.25.1"></A>
+<A NAME="DOC.2.30.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ColorMatrix()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ColorMatrix"></A>
-<A NAME="DOC.2.25.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ColorMatrix(const <!1><A HREF="ColorMatrix.html#DOC.2.25.2">ColorMatrix</A>&amp; cm, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="DOC.2.30.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ColorMatrix(const <!1><A HREF="ColorMatrix.html#DOC.2.30.2">ColorMatrix</A>&amp; cm, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
 <DD>Copy constructor using CopyOp to manage deep vs shallow copy
 <DL><DT><DD></DL><P>
 <A NAME="META_StateAttribute"></A>
-<A NAME="DOC.2.25.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_StateAttribute(<!1><A HREF="ColorMatrix.html">ColorMatrix</A>, <!1><A HREF="StateAttribute.html#DOC.2.99.6.44">COLORMATRIX</A>)</B></TT>
+<A NAME="DOC.2.30.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_StateAttribute(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="ColorMatrix.html">ColorMatrix</A>, <!1><A HREF="StateAttribute.html#DOC.2.119.6.40">COLORMATRIX</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="compare"></A>
-<A NAME="DOC.2.25.4"></A>
+<A NAME="DOC.2.30.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   int compare(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const </B></TT>
 <DD>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs
 <DL><DT><DD></DL><P>
 <A NAME="setMatrix"></A>
-<A NAME="DOC.2.25.5"></A>
+<A NAME="DOC.2.30.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setMatrix(const <!1><A HREF="Matrix.html">Matrix</A>&amp; matrix)</B></TT>
 <DD>Set the color matrix 
 <DL><DT><DD></DL><P>
 <A NAME="getMatrix"></A>
-<A NAME="DOC.2.25.6"></A>
+<A NAME="DOC.2.30.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Matrix.html">Matrix</A>&amp; getMatrix()</B></TT>
 <DD>Get the color matrix 
 <DL><DT><DD></DL><P>
 <A NAME="getMatrix"></A>
-<A NAME="DOC.2.25.7"></A>
+<A NAME="DOC.2.30.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Matrix.html">Matrix</A>&amp; getMatrix() const </B></TT>
 <DD>Get the const color matrix 
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.25.8"></A>
+<A NAME="DOC.2.30.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="State.html">State</A>&amp; state) const </B></TT>
 <DD>apply as OpenGL texture matrix
 <DL><DT><DD></DL><P>
 <A NAME="~ColorMatrix"></A>
-<A NAME="DOC.2.25.9"></A>
+<A NAME="DOC.2.30.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~ColorMatrix( void )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_matrix"></A>
-<A NAME="DOC.2.25.10"></A>
+<A NAME="DOC.2.30.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Matrix.html">Matrix</A> _matrix</B></TT>
 <DL><DT><DD></DL><P></DL>
 

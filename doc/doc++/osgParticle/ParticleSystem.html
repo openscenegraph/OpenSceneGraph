@@ -27,7 +27,7 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.15.2">ParticleSystem</A></B>(const <!1><A HREF="ParticleSystem.html#DOC.2.15.2">ParticleSystem</A> &amp;copy, const osg::CopyOp &amp;copyop = osg::CopyOp::SHALLOW_COPY)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.15.3">META_Object</A></B>(<!1><A HREF="ParticleSystem.html">ParticleSystem</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.15.3">META_Object</A></B>(<!1><A HREF="osgParticle.html">osgParticle</A>, <!1><A HREF="ParticleSystem.html">ParticleSystem</A>)
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline virtual   <!1><A HREF="Particle.html">Particle</A>* <B><A HREF="#DOC.2.15.4">createParticle</A></B>(const <!1><A HREF="Particle.html">Particle</A>* ptemplate)
 <DD><I>Create a new particle from the specified template (or the default one if <CODE>ptemplate</CODE> is null)</I>
@@ -35,7 +35,7 @@
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline virtual   void <B><A HREF="#DOC.2.15.5">destroyParticle</A></B>(int i)
 <DD><I>Destroy the i-th particle</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.15.6">setDefaultAttributes</A></B>(const std::string &amp;texturefile = "", bool emissive_particles = true, bool lighting = false)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.15.6">setDefaultAttributes</A></B>(const std::string &amp;texturefile = "", bool emissive_particles = true, bool lighting = false, int texture_unit = 0)
 <DD><I>A useful method to set the most common <CODE>StateAttribute</CODE>'s in one call.</I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.15.7">update</A></B>(double dt)
@@ -82,7 +82,7 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.15.42">getStats</A></B>(osg::Statistics &amp;stats)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.15.43">update_bounds</A></B>(const osg::Vec3 &amp;p)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.15.43">update_bounds</A></B>(const osg::Vec3 &amp;p, float r)
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Particle.html">Particle</A>&amp; <B><A HREF="#DOC.2.15.44">getDefaultParticleTemplate</A></B>() const 
 <DD><I>Get a reference to the default particle template</I>
@@ -140,7 +140,7 @@ through them (see the <CODE>Emitter</CODE> and <CODE>Program</CODE> classes).</B
 <DL><DT><DD></DL><P>
 <A NAME="META_Object"></A>
 <A NAME="DOC.2.15.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Object(<!1><A HREF="ParticleSystem.html">ParticleSystem</A>)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Object(<!1><A HREF="osgParticle.html">osgParticle</A>, <!1><A HREF="ParticleSystem.html">ParticleSystem</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="createParticle"></A>
 <A NAME="DOC.2.15.4"></A>
@@ -154,7 +154,7 @@ through them (see the <CODE>Emitter</CODE> and <CODE>Program</CODE> classes).</B
 <DL><DT><DD></DL><P>
 <A NAME="setDefaultAttributes"></A>
 <A NAME="DOC.2.15.6"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDefaultAttributes(const std::string &amp;texturefile = "", bool emissive_particles = true, bool lighting = false)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDefaultAttributes(const std::string &amp;texturefile = "", bool emissive_particles = true, bool lighting = false, int texture_unit = 0)</B></TT>
 <DD>A useful method to set the most common <CODE>StateAttribute</CODE>'s in one call.
 If <CODE>texturefile</CODE> is empty, then texturing is turned off.
 <DL><DT><DD></DL><P>
@@ -264,7 +264,7 @@ system will fall into a transparent bin.
 <DL><DT><DD></DL><P>
 <A NAME="update_bounds"></A>
 <A NAME="DOC.2.15.43"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void update_bounds(const osg::Vec3 &amp;p)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void update_bounds(const osg::Vec3 &amp;p, float r)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getDefaultParticleTemplate"></A>
 <A NAME="DOC.2.15.44"></A>

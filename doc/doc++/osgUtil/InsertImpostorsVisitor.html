@@ -23,45 +23,45 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.12.1">InsertImpostorsVisitor</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.6.1">InsertImpostorsVisitor</A></B>()
 <DD><I>default to traversing all children</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.12.2">setImpostorThresholdRatio</A></B>(const float ratio)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.6.2">setImpostorThresholdRatio</A></B>(const float ratio)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const float <B><A HREF="#DOC.2.12.3">getImpostorThresholdRatio</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const float <B><A HREF="#DOC.2.6.3">getImpostorThresholdRatio</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.12.4">setMaximumNumberOfNestedImpostors</A></B>(const unsigned int num)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.6.4">setMaximumNumberOfNestedImpostors</A></B>(const unsigned int num)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const unsigned int <B><A HREF="#DOC.2.12.5">getMaximumNumberOfNestedImpostors</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const unsigned int <B><A HREF="#DOC.2.6.5">getMaximumNumberOfNestedImpostors</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.12.6">reset</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.6.6">reset</A></B>()
 <DD><I>empty visitor, make it ready for next traversal</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.12.7">apply</A></B>(osg::Node&amp; node)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.6.7">apply</A></B>(osg::Node&amp; node)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.12.8">apply</A></B>(osg::Group&amp; node)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.6.8">apply</A></B>(osg::Group&amp; node)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.12.9">apply</A></B>(osg::LOD&amp; node)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.6.9">apply</A></B>(osg::LOD&amp; node)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.12.10">apply</A></B>(osg::Impostor&amp; node)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.6.10">apply</A></B>(osg::Impostor&amp; node)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.12.11">insertImpostors</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.6.11">insertImpostors</A></B>()
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>LODList <B><A HREF="#DOC.2.12.13">_lodList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>LODList <B><A HREF="#DOC.2.6.13">_lodList</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.12.14">_impostorThresholdRatio</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.6.14">_impostorThresholdRatio</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.12.15">_maximumNumNestedImpostors</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.6.15">_maximumNumNestedImpostors</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.12.16">_numNestedImpostors</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.6.16">_numNestedImpostors</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; osg::LOD* &gt; LODList GroupList <B><A HREF="#DOC.2.12.12">_groupList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; osg::LOD* &gt; LODList GroupList <B><A HREF="#DOC.2.6.12">_groupList</A></B>
 </DL></P>
 
 </DL>
@@ -74,69 +74,69 @@ For example of usage see src/Demos/osgimpostor.</BLOCKQUOTE>
 <DL>
 
 <A NAME="InsertImpostorsVisitor"></A>
-<A NAME="DOC.2.12.1"></A>
+<A NAME="DOC.2.6.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> InsertImpostorsVisitor()</B></TT>
 <DD>default to traversing all children
 <DL><DT><DD></DL><P>
 <A NAME="setImpostorThresholdRatio"></A>
-<A NAME="DOC.2.12.2"></A>
+<A NAME="DOC.2.6.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setImpostorThresholdRatio(const float ratio)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getImpostorThresholdRatio"></A>
-<A NAME="DOC.2.12.3"></A>
+<A NAME="DOC.2.6.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const float getImpostorThresholdRatio() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setMaximumNumberOfNestedImpostors"></A>
-<A NAME="DOC.2.12.4"></A>
+<A NAME="DOC.2.6.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setMaximumNumberOfNestedImpostors(const unsigned int num)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getMaximumNumberOfNestedImpostors"></A>
-<A NAME="DOC.2.12.5"></A>
+<A NAME="DOC.2.6.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const unsigned int getMaximumNumberOfNestedImpostors() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="reset"></A>
-<A NAME="DOC.2.12.6"></A>
+<A NAME="DOC.2.6.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void reset()</B></TT>
 <DD>empty visitor, make it ready for next traversal
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.12.7"></A>
+<A NAME="DOC.2.6.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::Node&amp; node)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.12.8"></A>
+<A NAME="DOC.2.6.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::Group&amp; node)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.12.9"></A>
+<A NAME="DOC.2.6.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::LOD&amp; node)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.12.10"></A>
+<A NAME="DOC.2.6.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::Impostor&amp; node)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="insertImpostors"></A>
-<A NAME="DOC.2.12.11"></A>
+<A NAME="DOC.2.6.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void insertImpostors()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_groupList"></A>
-<A NAME="DOC.2.12.12"></A>
+<A NAME="DOC.2.6.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; osg::LOD* &gt; LODList GroupList _groupList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_lodList"></A>
-<A NAME="DOC.2.12.13"></A>
+<A NAME="DOC.2.6.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>LODList _lodList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_impostorThresholdRatio"></A>
-<A NAME="DOC.2.12.14"></A>
+<A NAME="DOC.2.6.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _impostorThresholdRatio</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_maximumNumNestedImpostors"></A>
-<A NAME="DOC.2.12.15"></A>
+<A NAME="DOC.2.6.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _maximumNumNestedImpostors</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_numNestedImpostors"></A>
-<A NAME="DOC.2.12.16"></A>
+<A NAME="DOC.2.6.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _numNestedImpostors</B></TT>
 <DL><DT><DD></DL><P></DL>
 

@@ -23,53 +23,55 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.107.1">TexGen</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.127.1">TexGen</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.107.2">TexGen</A></B>(const <!1><A HREF="TexGen.html#DOC.2.107.2">TexGen</A>&amp; texgen, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.127.2">TexGen</A></B>(const <!1><A HREF="TexGen.html#DOC.2.127.2">TexGen</A>&amp; texgen, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
 <DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.107.3">META_StateAttribute</A></B>(<!1><A HREF="TexGen.html">TexGen</A>, <!1><A HREF="StateAttribute.html#DOC.2.99.6.29">TEXGEN</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.127.3">META_StateAttribute</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="TexGen.html">TexGen</A>, <!1><A HREF="StateAttribute.html#DOC.2.119.6.25">TEXGEN</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.107.4">compare</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.127.4">isTextureAttribute</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.127.5">compare</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const 
 <DD><I>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.107.5">setStateSetModes</A></B>(<!1><A HREF="StateSet.html">StateSet</A>&amp; ds, const <!1><A HREF="StateAttribute.html#DOC.2.99.2">GLModeValue</A> value) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.127.6">getAssociatedModes</A></B>(std::vector&lt;<!1><A HREF="StateAttribute.html#DOC.2.119.1">GLMode</A>&gt;&amp; modes) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.107.6">apply</A></B>(<!1><A HREF="State.html">State</A>&amp; state) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.127.7">apply</A></B>(<!1><A HREF="State.html">State</A>&amp; state) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.107.8">setMode</A></B>( const <!1><A HREF="TexGen.html#DOC.2.107.7">Mode</A> mode )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.127.9">setMode</A></B>( const <!1><A HREF="TexGen.html#DOC.2.127.8">Mode</A> mode )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="TexGen.html#DOC.2.107.7">Mode</A> <B><A HREF="#DOC.2.107.9">getMode</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="TexGen.html#DOC.2.127.8">Mode</A> <B><A HREF="#DOC.2.127.10">getMode</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.107.11">setPlane</A></B>(const <!1><A HREF="TexGen.html#DOC.2.107.10">Coord</A> which, const <!1><A HREF="Vec4.html">Vec4</A>&amp; plane)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.127.12">setPlane</A></B>(const <!1><A HREF="TexGen.html#DOC.2.127.11">Coord</A> which, const <!1><A HREF="Vec4.html">Vec4</A>&amp; plane)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Vec4.html">Vec4</A>&amp; <B><A HREF="#DOC.2.107.12">getPlane</A></B>(const <!1><A HREF="TexGen.html#DOC.2.107.10">Coord</A> which) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Vec4.html">Vec4</A>&amp; <B><A HREF="#DOC.2.127.13">getPlane</A></B>(const <!1><A HREF="TexGen.html#DOC.2.127.11">Coord</A> which) const 
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.107.7">Mode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.127.8">Mode</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.107.10">Coord</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.127.11">Coord</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="TexGen.html#DOC.2.107.7">Mode</A> <B><A HREF="#DOC.2.107.14">_mode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="TexGen.html#DOC.2.127.8">Mode</A> <B><A HREF="#DOC.2.127.15">_mode</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.107.15">_plane_s</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.127.16">_plane_s</A></B>
 <DD><I>additional texgen coefficents for GL_OBJECT_PLANE or GL_EYE_PLANE,</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A>  <B><A HREF="#DOC.2.107.16">_plane_t</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A>  <B><A HREF="#DOC.2.127.17">_plane_t</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A>   <B><A HREF="#DOC.2.107.17">_plane_r</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A>   <B><A HREF="#DOC.2.127.18">_plane_r</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A>    <B><A HREF="#DOC.2.107.18">_plane_q</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A>    <B><A HREF="#DOC.2.127.19">_plane_q</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.107.13">~TexGen</A></B>( void )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.127.14">~TexGen</A></B>( void )
 </DL></P>
 
 </DL>
@@ -83,9 +85,11 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isSameKindAs</B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
 <DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>libraryName</B>() const 
+<DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   const <!1><A HREF="StateAttribute.html#DOC.2.99.5">Type</A> <B>getType</B>() const 
+<IMG ALT="o" SRC=icon2.gif>virtual   const <!1><A HREF="StateAttribute.html#DOC.2.119.5">Type</A> <B>getType</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>bool <B>operator <  </B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; rhs) const 
 <DT>
@@ -116,9 +120,9 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(const <!1><A HREF="Object.html#DOC.2.78.7">DataVariance</A> dv)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(const <!1><A HREF="Object.html#DOC.2.87.8">DataVariance</A> dv)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Object.html#DOC.2.78.7">DataVariance</A> <B>getDataVariance</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Object.html#DOC.2.87.8">DataVariance</A> <B>getDataVariance</B>() const 
 </DL></P>
 
 <P><DL>
@@ -128,7 +132,7 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.78.7">DataVariance</A> <B>_dataVariance</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.87.8">DataVariance</A> <B>_dataVariance</B>
 </DL></P>
 
 </DL>
@@ -161,118 +165,122 @@
 <DL>
 
 <A NAME="TexGen"></A>
-<A NAME="DOC.2.107.1"></A>
+<A NAME="DOC.2.127.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TexGen()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="TexGen"></A>
-<A NAME="DOC.2.107.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TexGen(const <!1><A HREF="TexGen.html#DOC.2.107.2">TexGen</A>&amp; texgen, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="DOC.2.127.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TexGen(const <!1><A HREF="TexGen.html#DOC.2.127.2">TexGen</A>&amp; texgen, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
 <DD>Copy constructor using CopyOp to manage deep vs shallow copy
 <DL><DT><DD></DL><P>
 <A NAME="META_StateAttribute"></A>
-<A NAME="DOC.2.107.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_StateAttribute(<!1><A HREF="TexGen.html">TexGen</A>, <!1><A HREF="StateAttribute.html#DOC.2.99.6.29">TEXGEN</A>)</B></TT>
+<A NAME="DOC.2.127.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_StateAttribute(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="TexGen.html">TexGen</A>, <!1><A HREF="StateAttribute.html#DOC.2.119.6.25">TEXGEN</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="isTextureAttribute"></A>
+<A NAME="DOC.2.127.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isTextureAttribute() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="compare"></A>
-<A NAME="DOC.2.107.4"></A>
+<A NAME="DOC.2.127.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   int compare(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const </B></TT>
 <DD>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs
 <DL><DT><DD></DL><P>
-<A NAME="setStateSetModes"></A>
-<A NAME="DOC.2.107.5"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setStateSetModes(<!1><A HREF="StateSet.html">StateSet</A>&amp; ds, const <!1><A HREF="StateAttribute.html#DOC.2.99.2">GLModeValue</A> value) const </B></TT>
+<A NAME="getAssociatedModes"></A>
+<A NAME="DOC.2.127.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void getAssociatedModes(std::vector&lt;<!1><A HREF="StateAttribute.html#DOC.2.119.1">GLMode</A>&gt;&amp; modes) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.107.6"></A>
+<A NAME="DOC.2.127.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="State.html">State</A>&amp; state) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Mode"></A>
-<A NAME="DOC.2.107.7"></A>
+<A NAME="DOC.2.127.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  Mode</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="OBJECT_LINEAR"></A>
-<A NAME="DOC.2.107.7.1"></A>
+<A NAME="DOC.2.127.8.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> OBJECT_LINEAR</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="EYE_LINEAR"></A>
-<A NAME="DOC.2.107.7.2"></A>
+<A NAME="DOC.2.127.8.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> EYE_LINEAR</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="SPHERE_MAP"></A>
-<A NAME="DOC.2.107.7.3"></A>
+<A NAME="DOC.2.127.8.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SPHERE_MAP</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="NORMAL_MAP"></A>
-<A NAME="DOC.2.107.7.4"></A>
+<A NAME="DOC.2.127.8.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NORMAL_MAP</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="REFLECTION_MAP"></A>
-<A NAME="DOC.2.107.7.5"></A>
+<A NAME="DOC.2.127.8.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> REFLECTION_MAP</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="setMode"></A>
-<A NAME="DOC.2.107.8"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setMode( const <!1><A HREF="TexGen.html#DOC.2.107.7">Mode</A> mode )</B></TT>
+<A NAME="DOC.2.127.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setMode( const <!1><A HREF="TexGen.html#DOC.2.127.8">Mode</A> mode )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getMode"></A>
-<A NAME="DOC.2.107.9"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="TexGen.html#DOC.2.107.7">Mode</A> getMode() const </B></TT>
+<A NAME="DOC.2.127.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="TexGen.html#DOC.2.127.8">Mode</A> getMode() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Coord"></A>
-<A NAME="DOC.2.107.10"></A>
+<A NAME="DOC.2.127.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  Coord</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="S"></A>
-<A NAME="DOC.2.107.10.1"></A>
+<A NAME="DOC.2.127.11.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> S</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="T"></A>
-<A NAME="DOC.2.107.10.2"></A>
+<A NAME="DOC.2.127.11.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> T</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="R"></A>
-<A NAME="DOC.2.107.10.3"></A>
+<A NAME="DOC.2.127.11.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> R</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Q"></A>
-<A NAME="DOC.2.107.10.4"></A>
+<A NAME="DOC.2.127.11.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Q</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="setPlane"></A>
-<A NAME="DOC.2.107.11"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setPlane(const <!1><A HREF="TexGen.html#DOC.2.107.10">Coord</A> which, const <!1><A HREF="Vec4.html">Vec4</A>&amp; plane)</B></TT>
+<A NAME="DOC.2.127.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setPlane(const <!1><A HREF="TexGen.html#DOC.2.127.11">Coord</A> which, const <!1><A HREF="Vec4.html">Vec4</A>&amp; plane)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getPlane"></A>
-<A NAME="DOC.2.107.12"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec4.html">Vec4</A>&amp; getPlane(const <!1><A HREF="TexGen.html#DOC.2.107.10">Coord</A> which) const </B></TT>
+<A NAME="DOC.2.127.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec4.html">Vec4</A>&amp; getPlane(const <!1><A HREF="TexGen.html#DOC.2.127.11">Coord</A> which) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~TexGen"></A>
-<A NAME="DOC.2.107.13"></A>
+<A NAME="DOC.2.127.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~TexGen( void )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_mode"></A>
-<A NAME="DOC.2.107.14"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="TexGen.html#DOC.2.107.7">Mode</A> _mode</B></TT>
+<A NAME="DOC.2.127.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="TexGen.html#DOC.2.127.8">Mode</A> _mode</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_plane_s"></A>
-<A NAME="DOC.2.107.15"></A>
+<A NAME="DOC.2.127.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec4.html">Vec4</A> _plane_s</B></TT>
 <DD>additional texgen coefficents for GL_OBJECT_PLANE or GL_EYE_PLANE,
 <DL><DT><DD></DL><P>
 <A NAME="_plane_t"></A>
-<A NAME="DOC.2.107.16"></A>
+<A NAME="DOC.2.127.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec4.html">Vec4</A>  _plane_t</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_plane_r"></A>
-<A NAME="DOC.2.107.17"></A>
+<A NAME="DOC.2.127.18"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec4.html">Vec4</A>   _plane_r</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_plane_q"></A>
-<A NAME="DOC.2.107.18"></A>
+<A NAME="DOC.2.127.19"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec4.html">Vec4</A>    _plane_q</B></TT>
 <DL><DT><DD></DL><P></DL>
 

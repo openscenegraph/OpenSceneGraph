@@ -1,4 +1,4 @@
-//C++ header - Open Scene Graph - Copyright (C) 1998-2001 Robert Osfield
+//C++ header - Open Scene Graph - Copyright (C) 1998-2002 Robert Osfield
 //Distributed under the terms of the GNU Library General Public License (LGPL)
 //as published by the Free Software Foundation.
 
@@ -21,13 +21,13 @@ class OSGGA_EXPORT StateSetManipulator : public GUIEventHandler
 	StateSetManipulator();
 	virtual ~StateSetManipulator();
 
-        /** attach a geostate to the manipulator to be used for specifying view.*/
+        /** attach a stateset to the manipulator to be used for specifying view.*/
 	virtual void setStateSet(osg::StateSet*);
 
-        /** get the attached a geostate.*/
+        /** get the attached a stateset.*/
 	virtual osg::StateSet * getStateSet();
 
-        /** get the attached a geostate.*/
+        /** get the attached a stateset.*/
 	virtual const osg::StateSet * getStateSet() const;
 
 	/** Handle events, return true if handled, false otherwise.*/

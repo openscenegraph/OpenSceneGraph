@@ -27,7 +27,7 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.10.2">ModularProgram</A></B>(const <!1><A HREF="ModularProgram.html#DOC.2.10.2">ModularProgram</A> &amp;copy, const osg::CopyOp &amp;copyop = osg::CopyOp::SHALLOW_COPY)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.10.3">META_Node</A></B>(<!1><A HREF="ModularProgram.html">ModularProgram</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.10.3">META_Node</A></B>(<!1><A HREF="osgParticle.html">osgParticle</A>, <!1><A HREF="ModularProgram.html">ModularProgram</A>)
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int <B><A HREF="#DOC.2.10.8">numOperators</A></B>() const 
 <DD><I>Get the number of operators</I>
@@ -59,9 +59,11 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>libraryName</B>() const 
+<DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isSameKindAs</B>(const osg::Object* obj)
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isSameKindAs</B>(const osg::Object* obj) const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   void <B>accept</B>(osg::NodeVisitor&amp; nv)
 <DT>
@@ -132,7 +134,7 @@ All operators will be applied to each particle in the same order they've been ad
 <DL><DT><DD></DL><P>
 <A NAME="META_Node"></A>
 <A NAME="DOC.2.10.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Node(<!1><A HREF="ModularProgram.html">ModularProgram</A>)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Node(<!1><A HREF="osgParticle.html">osgParticle</A>, <!1><A HREF="ModularProgram.html">ModularProgram</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~ModularProgram"></A>
 <A NAME="DOC.2.10.4"></A>

@@ -12,7 +12,7 @@
 
 <H2>Inheritance:</H2>
 <APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=95>
-<param name=classes value="MosgUtil::GUIActionAdapter,M,CWindow,MWindow.html,CViewer,MViewer.html">
+<param name=classes value="MosgGA::GUIActionAdapter,M,CWindow,MWindow.html,CViewer,MViewer.html">
 <param name=before value="M,M,M">
 <param name=after value="Ml_,MD_,M">
 <param name=indent value="0,0,1">
@@ -60,7 +60,7 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.7.2.18">help</A></B>(std::ostream&amp; fout)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.7.2.19">registerCameraManipulator</A></B>(osgUtil::CameraManipulator* cm, unsigned int <!1><A HREF="Viewer.html#DOC.7.2.39.2">viewport</A> = 0)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.7.2.19">registerCameraManipulator</A></B>(osgGA::CameraManipulator* cm, unsigned int <!1><A HREF="Viewer.html#DOC.7.2.39.2">viewport</A> = 0)
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.7.2.20">selectCameraManipulator</A></B>(unsigned int pos, unsigned int <!1><A HREF="Viewer.html#DOC.7.2.39.2">viewport</A> = 0)
 <DT>
@@ -125,7 +125,7 @@
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;osg::ref_ptr&lt;osgUtil::CameraManipulator&gt; &gt;virtual  CameraManipList void <B><A HREF="#DOC.7.2.28">clear</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;osg::ref_ptr&lt;osgGA::CameraManipulator&gt; &gt;virtual  CameraManipList void <B><A HREF="#DOC.7.2.28">clear</A></B>()
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.7.2.29">display</A></B>()
 <DT>
@@ -335,7 +335,7 @@ only available for backwards compatibility.
 <DL><DT><DD></DL><P>
 <A NAME="registerCameraManipulator"></A>
 <A NAME="DOC.7.2.19"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int registerCameraManipulator(osgUtil::CameraManipulator* cm, unsigned int <!1><A HREF="Viewer.html#DOC.7.2.39.2">viewport</A> = 0)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int registerCameraManipulator(osgGA::CameraManipulator* cm, unsigned int <!1><A HREF="Viewer.html#DOC.7.2.39.2">viewport</A> = 0)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="selectCameraManipulator"></A>
 <A NAME="DOC.7.2.20"></A>
@@ -372,7 +372,7 @@ only available for backwards compatibility.
 <DL><DT><DD></DL><P>
 <A NAME="clear"></A>
 <A NAME="DOC.7.2.28"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;osg::ref_ptr&lt;osgUtil::CameraManipulator&gt; &gt;virtual  CameraManipList void clear()</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;osg::ref_ptr&lt;osgGA::CameraManipulator&gt; &gt;virtual  CameraManipList void clear()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="display"></A>
 <A NAME="DOC.7.2.29"></A>
@@ -429,7 +429,7 @@ only available for backwards compatibility.
 <DL><DT><DD></DL><P>
 <A NAME="_cameraManipulator"></A>
 <A NAME="DOC.7.2.39.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osgUtil::CameraManipulator&gt;  _cameraManipulator</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osgGA::CameraManipulator&gt;  _cameraManipulator</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_cameraManipList"></A>
 <A NAME="DOC.7.2.39.4"></A>

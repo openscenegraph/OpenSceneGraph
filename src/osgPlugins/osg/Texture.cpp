@@ -318,26 +318,4 @@ const char* Texture_getSubloadModeStr(Texture::SubloadMode value)
     }
     return NULL;
 }
-#else
-
-#include "osg/Texture2D"
-
-#include "osgDB/Registry"
-#include "osgDB/Input"
-#include "osgDB/Output"
-
-using namespace osg;
-using namespace osgDB;
-
-RegisterDotOsgWrapperProxy g_TextureProxy
-(
-    osgNew osg::Texture2D,
-    "Texture",
-    "Object StateAttribute Texture2D TextureBase",
-    0,
-    0
-);
-
-
 #endif
-

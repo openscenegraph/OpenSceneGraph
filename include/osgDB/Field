@@ -55,7 +55,7 @@ class OSGDB_EXPORT Field
             REAL,
             INTEGER,
             BLANK,
-            UNINTIALISED
+            UNINITIALISED
         };
 
         FieldType getFieldType() const;

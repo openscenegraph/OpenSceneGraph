@@ -12,8 +12,8 @@ INSTFILES = \
 
 EXEC = osgcameragroup
 
-INC += $(PRODUCER_INCLUDE_DIR)
-LDFLAGS  += $(PRODUCER_LIB_DIR)
+INC += $(PRODUCER_INCLUDE_DIR) -I/usr/X11R6/include
+LDFLAGS  += $(PRODUCER_LIB_DIR) -L/usr/X11R6/lib
 
 include $(TOPDIR)/Make/makerules 
 

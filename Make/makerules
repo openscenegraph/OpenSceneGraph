@@ -179,7 +179,7 @@ endif
 depend : $(MAKEDEPEND)
 
 __link : 
-	sh $(TOPDIR)/Make/dolink.sh $(TOPDIR) $(LNSRC) $(LNDEST) "$(LINK)"
+	@sh $(TOPDIR)/Make/dolink.sh $(TOPDIR) $(LNSRC) $(LNDEST) "$(LINK)"
 		
 __instfiles :
 	@echo $(INSTFILES)

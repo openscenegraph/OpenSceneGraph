@@ -289,7 +289,7 @@ endif
 #### MacOS X specific definitions
 ifeq ($(OS),Darwin)
   C++               = c++
-  INC               +=
+  INC               += 
   DEF               += -Wall -D__DARWIN_OSX__
   OPTF              = -O2
   DBGF              = -g -DOSG_COMPILE_UNIT_TESTS

@@ -11,6 +11,7 @@ CXXFILES =\
 
 LIBS += -lProducer $(GL_LIBS) -losgGA -losgUtil -losgDB -losg $(OTHER_LIBS)
 DEF  += -DOSGPRODUCER_LIBRARY
+INC  += -I/usr/X11R6/include
 TARGET_BASENAME = osgProducer
 LIB = $(LIB_PREFIX)$(TARGET_BASENAME).$(LIB_EXT)
 

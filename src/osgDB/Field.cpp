@@ -59,7 +59,7 @@ void Field::_init()
     _fieldCacheSize = 0;
     _fieldCache = NULL;
 
-    _fieldType = UNINTIALISED;
+    _fieldType = UNINITIALISED;
 
     _withinQuotes = false;
 
@@ -97,7 +97,7 @@ void Field::_copy(const Field& ic)
 void Field::setWithinQuotes(bool withinQuotes)
 {
     _withinQuotes=withinQuotes;
-    _fieldType = UNINTIALISED;
+    _fieldType = UNINITIALISED;
 }
 
 
@@ -133,7 +133,7 @@ char* Field::takeStr()
     _fieldCache = NULL;
     _fieldCacheSize = 0;
 
-    _fieldType = UNINTIALISED;
+    _fieldType = UNINITIALISED;
     _withinQuotes = false;
 
     return field;
@@ -175,13 +175,13 @@ void Field::addChar(char c)
     }
     _fieldCache[_fieldCacheSize++] = c;
     _fieldCache[_fieldCacheSize] = 0;
-    _fieldType = UNINTIALISED;
+    _fieldType = UNINITIALISED;
 }
 
 
 Field::FieldType Field::getFieldType() const
 {
-    if (_fieldType==UNINTIALISED && _fieldCache)
+    if (_fieldType==UNINITIALISED && _fieldCache)
     {
         _fieldType = calculateFieldType(_fieldCache,_withinQuotes);
     }

@@ -25,7 +25,7 @@ const char* TextureCubeMap_getSubloadModeStr(TextureCubeMap::SubloadMode value);
 // register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_TextureCubeMapProxy
 (
-    new osg::TextureCubeMap,
+    osgNew osg::TextureCubeMap,
     "TextureCubeMap",
     "Object StateAttribute TextureCubeMap Texture",
     &TextureCubeMap_readLocalData,

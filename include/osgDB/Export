@@ -23,4 +23,6 @@
 	#  define OSGDB_EXPORT
 #endif  
 
+#include <osg/MemoryManager>
+
 #endif

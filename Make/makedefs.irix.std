@@ -9,7 +9,7 @@ DEPFILES = $(OBJS:.o=.d)
 C++ = CC
 YFLAGS   = -d
 CFLAGS   = -O2 -n32 -LANG:std -OPT:Olimit=0 -DEBUG:woff=1682 -DEBUG:woff=3303
-#CFLAGS   = -g -DOSG_USE_MEMORY_TRACKING -n32 -LANG:std -OPT:Olimit=0 -DEBUG:woff=1682 -DEBUG:woff=3303
+#CFLAGS   = -g -DOSG_USE_MEMORY_MANAGER -n32 -LANG:std -OPT:Olimit=0 -DEBUG:woff=1682 -DEBUG:woff=3303
 C++FLAGS = ${CFLAGS}
 CPPFLAGS = ${CFLAGS}
 

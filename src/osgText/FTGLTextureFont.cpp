@@ -50,7 +50,7 @@ FTGLTextureFont::~FTGLTextureFont()
     for(itr=glContextTextureID.begin();itr != glContextTextureID.end(); itr++)
     {
         glDeleteTextures( numTextures, (const GLuint*)*itr);
-        delete *itr;
+        osgDelete [] *itr;
     }
 }
 
@@ -93,7 +93,7 @@ bool FTGLTextureFont::MakeGlyphList(unsigned int renderContext)
 
         glGenTextures( numTextures, (GLuint*)&glTextureID[0]);
 
-        textMem = new unsigned char[totalMem]; // GL_ALPHA texture;
+        textMem = osgNew unsigned char[totalMem]; // GL_ALPHA texture;
         memset( textMem, 0, totalMem);
             
         unsigned int glyphNum = 0;
@@ -120,14 +120,14 @@ bool FTGLTextureFont::MakeGlyphList(unsigned int renderContext)
         
         glGenTextures( numTextures, (GLuint*)&glTextureID[0]);
 
-        textMem = new unsigned char[totalMem]; // GL_ALPHA texture;
+        textMem = osgNew unsigned char[totalMem]; // GL_ALPHA texture;
         memset( textMem, 0, totalMem);
 
         FillGlyphs( 0, glTextureID[0], textureWidth, textureHeight, textMem,renderContext);
         CreateTexture( glTextureID[0], textureWidth, textureHeight, textMem);
     }
 
-    delete [] textMem;
+    osgDelete [] textMem;
     return !err;
 }
 
@@ -154,7 +154,7 @@ unsigned int FTGLTextureFont::FillGlyphs( unsigned int glyphStart, GLuint id, GL
             
             currTextU = (float)currentTextX / (float)width;
             
-            FTTextureGlyph* tempGlyph = new FTTextureGlyph( *ftGlyph, id, data, width, height, currTextU, currTextV);
+            FTTextureGlyph* tempGlyph = osgNew FTTextureGlyph( *ftGlyph, id, data, width, height, currTextU, currTextV);
             glyphList->Add( tempGlyph);
 
             currentTextX += glyphWidth;

@@ -18,7 +18,7 @@ bool Light_writeLocalData(const Object& obj, Output& fw);
 // register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_LightProxy
 (
-    new osg::Light,
+    osgNew osg::Light,
     "Light",
     "Object StateAttribute Light",
     &Light_readLocalData,

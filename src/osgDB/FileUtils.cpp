@@ -289,7 +289,7 @@ char *osgDB::findDSO( const char *name )
 
     // failed with direct paths,
     // now try prepending the filename with "osgPlugins/"
-    char* prependosgPlugins = new char[strlen(name)+12];
+    char* prependosgPlugins = osgNew char[strlen(name)+12];
     strcpy(prependosgPlugins,"osgPlugins/");
     strcat(prependosgPlugins,name);
 

@@ -19,7 +19,7 @@ FTGlyphContainer::~FTGlyphContainer()
     vector<FTGlyph*>::iterator iter;
     for( iter = glyphs.begin(); iter != glyphs.end(); ++iter)
     {
-        delete *iter;
+        osgDelete *iter;
     }
     
     glyphs.clear();

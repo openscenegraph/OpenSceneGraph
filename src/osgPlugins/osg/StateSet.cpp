@@ -24,7 +24,7 @@ const char* StateSet_getRenderBinModeStr(StateSet::RenderBinMode mode);
 // register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_StateSetFuncProxy
 (
-    new osg::StateSet,
+    osgNew osg::StateSet,
     "StateSet",
     "Object StateSet",
     &StateSet_readLocalData,
@@ -35,7 +35,7 @@ RegisterDotOsgWrapperProxy g_StateSetFuncProxy
 // register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_GeoStateFuncProxy
 (
-    new osg::StateSet,
+    osgNew osg::StateSet,
     "GeoState",
     "Object GeoState",
     &GeoState_readLocalData,

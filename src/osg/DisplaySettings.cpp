@@ -20,7 +20,7 @@ class DisplaySettingsPtr
 
 DisplaySettings* DisplaySettings::instance()
 {
-    static DisplaySettingsPtr s_displaySettings = new DisplaySettings;
+    static DisplaySettingsPtr s_displaySettings = osgNew DisplaySettings;
     return s_displaySettings.get();
 }
 

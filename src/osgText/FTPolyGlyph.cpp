@@ -35,8 +35,8 @@ void CALLBACK ftglEnd()
 
 void CALLBACK ftglCombine( GLdouble coords[3], void* vertex_data[4], GLfloat weight[4], void** outData)
 {
-    double* vertex = new double[3]; // FIXME MEM LEAK
-    
+    double* vertex = osgNew double[3]; // FIXME MEM LEAK
+
     vertex[0] = coords[0];
     vertex[1] = coords[1];
     vertex[2] = coords[2];
@@ -57,11 +57,11 @@ FTPolyGlyph::FTPolyGlyph( FT_Glyph glyph)
     if( ft_glyph_format_outline != glyph->format)
     { return;}
 
-    vectoriser = new FTVectoriser( glyph);
+    vectoriser = osgNew FTVectoriser( glyph);
     
     vectoriser->Process();
     numContours = vectoriser->contours();
-    contourLength = new int[ numContours];
+    contourLength = osgNew int[ numContours];
     
     for( int c = 0; c < numContours; ++c)
     {
@@ -69,14 +69,14 @@ FTPolyGlyph::FTPolyGlyph( FT_Glyph glyph)
     }
     
     numPoints = vectoriser->points();
-    data = new double[ numPoints * 3];
+    data = osgNew double[ numPoints * 3];
     // FIXME MakeMesh
     vectoriser->MakeOutline( data);
     
     contourFlag = vectoriser->ContourFlag();
     advance = glyph->advance.x >> 16;
 
-    delete vectoriser;
+    osgDelete vectoriser;
 
     if ( ( numContours < 1) || ( numPoints < 3))
         return;
@@ -135,8 +135,8 @@ void FTPolyGlyph::Tesselate()
 
 FTPolyGlyph::~FTPolyGlyph()
 {
-    delete [] data;
-    delete [] contourLength;
+    osgDelete [] data;
+    osgDelete [] contourLength;
 }
 
 

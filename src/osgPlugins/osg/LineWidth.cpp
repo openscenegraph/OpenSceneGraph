@@ -18,7 +18,7 @@ bool LineWidth_writeLocalData(const Object& obj, Output& fw);
 // register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_LineWidthProxy
 (
-    new osg::LineWidth,
+    osgNew osg::LineWidth,
     "LineWidth",
     "Object StateAttribute LineWidth",
     &LineWidth_readLocalData,

@@ -48,7 +48,7 @@ void createStrips(
     assert(nStripCount > 0);
 
     noPrims = strips.size()+leftoverFaces.size();
-    *lens = new int [noPrims];
+    *lens = osgNew int [noPrims];
 
     int* lensPtr = *lens;
 
@@ -61,7 +61,7 @@ void createStrips(
 
     noIndices += leftoverFaces.size()*3;
 
-    *osg_indices = new osg::ushort[noIndices];
+    *osg_indices = osgNew osg::ushort[noIndices];
     osg::ushort *osg_indicesPtr = *osg_indices;
 
     for (i = 0; i < strips.size(); i++)

@@ -24,7 +24,7 @@ bool FTGLPolygonFont::MakeGlyphList( unsigned int renderContext)
         
         if( ftGlyph)
         {
-            FTPolyGlyph* tempGlyph = new FTPolyGlyph( *ftGlyph);
+            FTPolyGlyph* tempGlyph = osgNew FTPolyGlyph( *ftGlyph);
             glyphList->Add( tempGlyph);
         }
         else

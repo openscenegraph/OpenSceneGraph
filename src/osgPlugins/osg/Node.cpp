@@ -14,7 +14,7 @@ bool Node_writeLocalData(const Object& obj, Output& fw);
 // register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_NodeProxy
 (
-    new osg::Node,
+    osgNew osg::Node,
     "Node",
     "Object Node",
     &Node_readLocalData,
@@ -87,7 +87,7 @@ bool Node_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
-    static ref_ptr<StateSet> s_drawstate = new osg::StateSet;
+    static ref_ptr<StateSet> s_drawstate = osgNew osg::StateSet;
     if (StateSet* readState = static_cast<StateSet*>(fr.readObjectOfType(*s_drawstate)))
     {
         node.setStateSet(readState);

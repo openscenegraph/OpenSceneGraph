@@ -14,7 +14,7 @@ bool ShadeModel_writeLocalData(const Object& obj, Output& fw);
 // register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_ShadeModelFuncProxy
 (
-    new osg::ShadeModel,
+    osgNew osg::ShadeModel,
     "ShadeModel",
     "Object StateAttribute ShadeModel",
     &ShadeModel_readLocalData,

@@ -25,7 +25,7 @@ bool FTGLBitmapFont::MakeGlyphList(unsigned int renderContext)
 
         if( ftGlyph)
         {
-            FTBitmapGlyph* tempGlyph = new FTBitmapGlyph( *ftGlyph);
+            FTBitmapGlyph* tempGlyph = osgNew FTBitmapGlyph( *ftGlyph);
             glyphList->Add( tempGlyph);
         }
         else

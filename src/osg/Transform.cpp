@@ -7,8 +7,8 @@ Transform::Transform()
     _type = DYNAMIC;
     _mode = MODEL;
 
-    _matrix = new Matrix;
-    _inverse = new Matrix;
+    _matrix = osgNew Matrix;
+    _inverse = osgNew Matrix;
     _inverseDirty = false;
 }
 
@@ -17,8 +17,8 @@ Transform::Transform(const Transform& transform,const CopyOp& copyop):
     _type(transform._type),
     _mode(transform._mode),
     _computeTransformCallback(_computeTransformCallback),
-    _matrix(new Matrix(*transform._matrix)),
-    _inverse(new Matrix(*transform._inverse)),
+    _matrix(osgNew Matrix(*transform._matrix)),
+    _inverse(osgNew Matrix(*transform._inverse)),
     _inverseDirty(transform._inverseDirty)
 {    
 }
@@ -28,8 +28,8 @@ Transform::Transform(const Matrix& mat )
     _type = DYNAMIC;
     _mode = MODEL;
 
-    _matrix = new Matrix(mat);
-    _inverse = new Matrix();
+    _matrix = osgNew Matrix(mat);
+    _inverse = osgNew Matrix();
     _inverseDirty = false;
 }
 

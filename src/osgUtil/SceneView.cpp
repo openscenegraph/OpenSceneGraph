@@ -31,7 +31,7 @@ SceneView::SceneView(DisplaySettings* ds)
     
     _prioritizeTextures = false;
     
-    _viewport = new Viewport;
+    _viewport = osgNew Viewport;
     
     _initCalled = false;
 
@@ -49,21 +49,21 @@ SceneView::~SceneView()
 
 void SceneView::setDefaults()
 {
-    _globalState = new osg::StateSet;
+    _globalState = osgNew osg::StateSet;
 
     _lightingMode=HEADLIGHT;
-    _light = new osg::Light;
+    _light = osgNew osg::Light;
     _light->setLightNum(0);
     _light->setAmbient(Vec4(0.00f,0.0f,0.00f,1.0f));
     _light->setDiffuse(Vec4(0.8f,0.8f,0.8f,1.0f));
     _light->setSpecular(Vec4(1.0f,1.0f,1.0f,1.0f));
 
-    _state = new State;
+    _state = osgNew State;
     
-    _camera = new Camera(_displaySettings.get());
+    _camera = osgNew Camera(_displaySettings.get());
 
-    _rendergraph = new RenderGraph;
-    _renderStage = new RenderStage;
+    _rendergraph = osgNew RenderGraph;
+    _renderStage = osgNew RenderStage;
 
 
 //#ifndef __sgi
@@ -71,15 +71,15 @@ void SceneView::setDefaults()
     // lighting state with the display list, and the display list visitor doesn't currently apply
     // state before creating display lists. So will disable the init visitor default, this won't
     // affect functionality since the display lists will be created as and when needed.
-    DisplayListVisitor* dlv = new DisplayListVisitor();
+    DisplayListVisitor* dlv = osgNew DisplayListVisitor();
     dlv->setState(_state.get());
     dlv->setNodeMaskOverride(0xffffffff);
     _initVisitor = dlv;
 //#endif
 
-    _appVisitor = new AppVisitor;    
+    _appVisitor = osgNew AppVisitor;    
 
-    _cullVisitor = new CullVisitor;
+    _cullVisitor = osgNew CullVisitor;
 
     _cullVisitor->setRenderGraph(_rendergraph.get());
     _cullVisitor->setRenderStage(_renderStage.get());
@@ -94,16 +94,16 @@ void SceneView::setDefaults()
     _globalState->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);
 
     // set up an alphafunc by default to speed up blending operations.
-    osg::AlphaFunc* alphafunc = new osg::AlphaFunc;
+    osg::AlphaFunc* alphafunc = osgNew osg::AlphaFunc;
     alphafunc->setFunction(osg::AlphaFunc::GREATER,0.0f);
     _globalState->setAttributeAndModes(alphafunc, osg::StateAttribute::ON);
 
     // set up an alphafunc by default to speed up blending operations.
-    osg::TexEnv* texenv = new osg::TexEnv;
+    osg::TexEnv* texenv = osgNew osg::TexEnv;
     texenv->setMode(osg::TexEnv::MODULATE);
     _globalState->setAttributeAndModes(texenv, osg::StateAttribute::ON);
 
-    osg::LightModel* lightmodel = new osg::LightModel;
+    osg::LightModel* lightmodel = osgNew osg::LightModel;
     lightmodel->setAmbientIntensity(osg::Vec4(0.0f,0.0f,0.0f,1.0f));
     _globalState->setAttributeAndModes(lightmodel, osg::StateAttribute::ON);
 
@@ -163,8 +163,8 @@ void SceneView::cull()
     
         _camera->setScreenDistance(_displaySettings->getScreenDistance());
 
-        _cameraLeft = new osg::Camera(*_camera);
-        _cameraRight = new osg::Camera(*_camera);
+        _cameraLeft = osgNew osg::Camera(*_camera);
+        _cameraRight = osgNew osg::Camera(*_camera);
 
         float iod = _displaySettings->getEyeSeperation();
 
@@ -216,11 +216,11 @@ void SceneView::cullStage(osg::Camera* camera, osgUtil::CullVisitor* cullVisitor
     }
 
     // get the camera's modelview
-    osg::Matrix* modelview = new osg::Matrix(camera->getModelViewMatrix());
+    osg::Matrix* modelview = osgNew osg::Matrix(camera->getModelViewMatrix());
 
 
     // take a copy of camera, and init it home
-    osg::Camera* local_camera = new Camera(*camera);
+    osg::Camera* local_camera = osgNew Camera(*camera);
     local_camera->home(); 
     local_camera->attachTransform(osg::Camera::NO_ATTACHED_TRANSFORM); 
 
@@ -364,8 +364,8 @@ void SceneView::draw()
             break;
         case(osg::DisplaySettings::ANAGLYPHIC):
             {
-                osg::ref_ptr<osg::ColorMask> red = new osg::ColorMask;
-                osg::ref_ptr<osg::ColorMask> green = new osg::ColorMask;
+                osg::ref_ptr<osg::ColorMask> red = osgNew osg::ColorMask;
+                osg::ref_ptr<osg::ColorMask> green = osgNew osg::ColorMask;
 
                 red->setMask(true,false,false,true);
                 green->setMask(false,true,true,true);
@@ -408,7 +408,7 @@ void SceneView::drawStage(osgUtil::RenderStage* renderStage)
         osg::notify(osg::WARN) << "         creating a state automatically."<< std::endl;
 
         // note the constructor for osg::State will set ContextID to 0.
-        _state = new osg::State;
+        _state = osgNew osg::State;
     }
     // we in theory should be able to 
     _state->reset();

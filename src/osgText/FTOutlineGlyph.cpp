@@ -18,11 +18,11 @@ FTOutlineGlyph::FTOutlineGlyph( FT_Glyph glyph)
         return;
     }
 
-    vectoriser = new FTVectoriser( glyph);
+    vectoriser = osgNew FTVectoriser( glyph);
     
     vectoriser->Process();
     numContours = vectoriser->contours();
-    contourLength = new int[ numContours];
+    contourLength = osgNew int[ numContours];
     
     for( int cn = 0; cn < numContours; ++cn)
     {
@@ -30,12 +30,12 @@ FTOutlineGlyph::FTOutlineGlyph( FT_Glyph glyph)
     }
     
     numPoints = vectoriser->points();
-    data = new double[ numPoints * 3];
+    data = osgNew double[ numPoints * 3];
     vectoriser->MakeOutline( data);
     
     advance = glyph->advance.x >> 16;
 
-    delete vectoriser;
+    osgDelete vectoriser;
     
     if ( ( numContours < 1) || ( numPoints < 3))
         return;
@@ -63,8 +63,8 @@ FTOutlineGlyph::FTOutlineGlyph( FT_Glyph glyph)
 
 FTOutlineGlyph::~FTOutlineGlyph()
 {
-    delete [] data;
-    delete [] contourLength;
+    osgDelete [] data;
+    osgDelete [] contourLength;
 }
 
 

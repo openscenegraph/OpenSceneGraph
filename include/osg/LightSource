@@ -5,7 +5,6 @@
 #ifndef OSG_LIGHTSOURCE
 #define OSG_LIGHTSOURCE 1
 
-#include <osg/MemoryAdapter>
 #include <osg/NodeVisitor>
 #include <osg/Light>
 

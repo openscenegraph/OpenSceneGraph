@@ -20,7 +20,7 @@ const char* TexGen_getModeStr(TexGen::Mode mode);
 // register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_TexGenProxy
 (
-    new osg::TexGen,
+    osgNew osg::TexGen,
     "TexGen",
     "Object StateAttribute TexGen",
     &TexGen_readLocalData,

@@ -69,7 +69,7 @@ bool Switch_readLocalData(Object& obj, Input& fr)
         {
             int value;
             fr[1].getInt(value);
-            sw.setNewChildDefaultValue(value);
+            sw.setNewChildDefaultValue(value!=0);
             iteratorAdvanced = true;
             fr += 2;
         }
@@ -88,7 +88,7 @@ bool Switch_readLocalData(Object& obj, Input& fr)
             int value;
             if (fr[0].getInt(value))
             {
-                sw.setValue(pos,value);
+                sw.setValue(pos,value!=0);
                 ++pos;
             }
             ++fr;

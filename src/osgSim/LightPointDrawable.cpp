@@ -49,15 +49,16 @@ LightPointDrawable::LightPointDrawable(const LightPointDrawable& lpd,const osg::
 
 void LightPointDrawable::reset()
 {
-    for(SizedLightPointList::iterator itr=_sizedOpaqueLightPointList.begin();
+    SizedLightPointList::iterator itr;
+    for(itr=_sizedOpaqueLightPointList.begin();
         itr!=_sizedOpaqueLightPointList.end();
         ++itr)
     {
         if (!itr->empty())
             itr->erase(itr->begin(),itr->end());
     }
-
-    for(SizedLightPointList::iterator itr=_sizedAdditiveLightPointList.begin();
+    
+    for(itr=_sizedAdditiveLightPointList.begin();
         itr!=_sizedAdditiveLightPointList.end();
         ++itr)
     {
@@ -65,7 +66,7 @@ void LightPointDrawable::reset()
             itr->erase(itr->begin(),itr->end());
     }
 
-    for(SizedLightPointList::iterator itr=_sizedBlendedLightPointList.begin();
+    for(itr=_sizedBlendedLightPointList.begin();
         itr!=_sizedBlendedLightPointList.end();
         ++itr)
     {

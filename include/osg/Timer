@@ -46,11 +46,11 @@ class SG_EXPORT Timer {
         ~Timer() {}
 
 	#if defined __DARWIN_OSX__  || defined macintosh
-	// PJA MAC OSX - inline Tick() pollutes namespace so badly 
-	// we cant compile, due to Carbon.h ...
-        Timer_t tick() const;
+	    // PJA MAC OSX - inline Tick() pollutes namespace so badly 
+	    // we cant compile, due to Carbon.h ...
+            Timer_t tick() const;
 	#else
-		inline Timer_t tick() const;
+	    inline Timer_t tick() const;
 	#endif
 		
         inline double delta_s( Timer_t t1, Timer_t t2 ) const { return (double)(t2 - t1)*_secsPerClick; }
@@ -60,13 +60,16 @@ class SG_EXPORT Timer {
 
     private :
 
-        double                  _secsPerClick;
-        bool                    _useStandardClock;
+        double                          _secsPerClick;
+        bool                            _useStandardClock;
        
 #       ifdef __sgi
-        unsigned long*          _clockAddress_32;
-        unsigned long long*     _clockAddress_64;
-        int                     _cycleCntrSize;
+        unsigned long*                  _clockAddress_32;
+        unsigned long long*             _clockAddress_64;
+        int                             _cycleCntrSize;
+	// for SGI machines with 32 bit clocks.
+        mutable unsigned long           _lastClockValue;
+        mutable unsigned long long      _rollOver;
 #       endif
         
 };
@@ -154,7 +157,7 @@ class SG_EXPORT Timer {
 
     namespace osg{
 
-        inline  Timer_t Timer::tick()  const
+        inline  Timer_t Timer::tick() const
         {
             if (_useStandardClock)
             {
@@ -167,7 +170,15 @@ class SG_EXPORT Timer {
                 if ( _clockAddress_64 )
                     return *_clockAddress_64;
                 else
-                    return *_clockAddress_32;
+		{
+                   unsigned long clockValue = *_clockAddress_32;
+                   if( _lastClockValue > clockValue )
+                   {
+                      _rollOver += 0x100000000L;
+                   }
+                   _lastClockValue = clockValue;
+                   return _rollOver + clockValue;
+                }
             }
         }
     }

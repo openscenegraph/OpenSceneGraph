@@ -157,6 +157,8 @@ using namespace osg;
 
             _clockAddress_32 = 0;
             _clockAddress_64 = 0;
+            _rollOver = 0;
+            _lastClockValue = 0;
 
             if( (fd = open( "/dev/mmem", O_RDONLY )) < 0 )
             {

@@ -35,6 +35,8 @@ class OSGPRODUCER_EXPORT KeyboardMouseCallback : public Producer::KeyboardMouseC
 
         virtual void mouseMotion( float mx, float my);
                 
+        virtual void passiveMouseMotion( float mx, float my);
+
         virtual void buttonPress( float mx, float my, unsigned int mbutton );
                 
         virtual void buttonRelease( float mx, float my, unsigned int mbutton );

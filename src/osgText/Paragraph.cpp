@@ -117,7 +117,7 @@ void Paragraph::createDrawables()
         ++itr)
     {
     
-        osgText::Text* textDrawable = new osgText::Text(_font.get());
+        osgText::Text* textDrawable = osgNew osgText::Text(_font.get());
         textDrawable->setAlignment(_alignment);
         textDrawable->setPosition(pos);
         textDrawable->setText(*itr);

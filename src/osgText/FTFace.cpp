@@ -15,7 +15,7 @@ FTFace::FTFace()
 
 FTFace::~FTFace()
 {
-    delete charMap;
+    osgDelete charMap;
     charMap = 0;
     Close();
 }
@@ -23,18 +23,18 @@ FTFace::~FTFace()
 
 bool FTFace::Open( const char* filename)
 {
-    ftFace = new FT_Face;
+    ftFace = osgNew FT_Face;
     err = FT_New_Face( *FTLibrary::Instance().GetLibrary(), filename, 0, ftFace);
 
     if( err)
     {
-        delete ftFace;
+        osgDelete ftFace;
         ftFace = 0;
         return false;
     }
     else
     {
-        charMap = new FTCharmap( *ftFace);
+        charMap = osgNew FTCharmap( *ftFace);
         return true;
     }
 }
@@ -45,7 +45,7 @@ void FTFace::Close()
     if( ftFace)
     {
         FT_Done_Face( *ftFace);
-        delete ftFace;
+        osgDelete ftFace;
         ftFace = 0;
     }
 }

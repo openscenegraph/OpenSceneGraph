@@ -25,7 +25,7 @@ bool FTGLPixmapFont::MakeGlyphList(unsigned int renderContext)
     
         if( ftGlyph)
         {
-            FTPixmapGlyph* tempGlyph = new FTPixmapGlyph( *ftGlyph);
+            FTPixmapGlyph* tempGlyph = osgNew FTPixmapGlyph( *ftGlyph);
             glyphList->Add( tempGlyph);
         }
         else

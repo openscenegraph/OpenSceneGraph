@@ -17,7 +17,7 @@ const char* Transparency_getModeStr(int value);
 // register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_TransparencyProxy
 (
-    new osg::Transparency,
+    osgNew osg::Transparency,
     "Transparency",
     "Object StateAttribute Transparency",
     &Transparency_readLocalData,

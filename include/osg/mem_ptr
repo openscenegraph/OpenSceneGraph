@@ -170,7 +170,7 @@ class mem_ptr
 //             return s_newMemoryAdapter.get();
 //         }
 // 
-//         T* allocate(int no) { cout<<"Allocating Memory"<<endl;return new T[no]; }
+//         T* allocate(int no) { cout<<"Allocating Memory"<<endl;return osgNew T[no]; }
 // 
 //         virtual void ref_data(void* userData)
 //         {

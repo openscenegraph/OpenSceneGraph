@@ -9,7 +9,7 @@ using namespace osg;
  */
 EarthSky::EarthSky()
 {
-    StateSet* stateset = new StateSet;
+    StateSet* stateset = osgNew StateSet;
     stateset->setRenderBinDetails(-1,"RenderBin");
     setStateSet(stateset);
     

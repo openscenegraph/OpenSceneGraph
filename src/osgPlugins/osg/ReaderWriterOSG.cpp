@@ -53,7 +53,7 @@ class OSGReaderWriter : public ReaderWriter
                 }
                 else
                 {
-                    Group* group = new Group;
+                    Group* group = osgNew Group;
                     group->setName("import group");
                     for(NodeList::iterator itr=nodeList.begin();
                         itr!=nodeList.end();

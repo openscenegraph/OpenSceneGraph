@@ -108,7 +108,7 @@ void SmoothingVisitor::smooth(osg::GeoSet& gset)
         int ncoords = gset.getNumCoords();
         osg::Vec3 *coords = gset.getCoords();
         osg::GeoSet::IndexPointer cindex = gset.getCoordIndices();
-        osg::Vec3 *norms = new osg::Vec3[ncoords];
+        osg::Vec3 *norms = osgNew osg::Vec3[ncoords];
 
         int j;
         for(j = 0; j < ncoords; j++ )

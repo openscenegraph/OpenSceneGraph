@@ -199,6 +199,32 @@ static		sAllocUnit	**reservoirBuffer      = NULL;
 static		unsigned int	reservoirBufferSize    = 0;
 
 // ---------------------------------------------------------------------------------------------------------------------------------
+// We use a static class to let us know when we're in the midst of static deinitialization
+// ---------------------------------------------------------------------------------------------------------------------------------
+static	void	dumpLeakReport();
+static	void	doCleanupLogOnFirstRun();
+
+#ifdef OSG_USE_MEMORY_MANAGER
+
+class	MemStaticTimeTracker
+{
+public:
+	MemStaticTimeTracker()
+        {
+            doCleanupLogOnFirstRun();
+        }
+	~MemStaticTimeTracker()
+        {
+            staticDeinitTime = true; 
+            dumpLeakReport();
+        }
+};
+static	MemStaticTimeTracker	mstt;
+
+#endif
+
+
+// ---------------------------------------------------------------------------------------------------------------------------------
 // Local functions only
 // ---------------------------------------------------------------------------------------------------------------------------------
 
@@ -459,6 +485,7 @@ static	void	dumpLeakReport()
 	// Open the report file
 
 	FILE	*fp = fopen("memleaks.log", "w+b");
+	//FILE	*fp = stderr;
 
 	// If you hit this assert, then the memory report generator is unable to log information to a file (can't open the file for
 	// some reason.)
@@ -510,21 +537,6 @@ static	void	dumpLeakReport()
 	fclose(fp);
 }
 
-// ---------------------------------------------------------------------------------------------------------------------------------
-// We use a static class to let us know when we're in the midst of static deinitialization
-// ---------------------------------------------------------------------------------------------------------------------------------
-
-#ifdef OSG_USE_MEMORY_TRACKING
-
-class	MemStaticTimeTracker
-{
-public:
-	MemStaticTimeTracker() {doCleanupLogOnFirstRun();}
-	~MemStaticTimeTracker() {staticDeinitTime = true; dumpLeakReport();}
-};
-static	MemStaticTimeTracker	mstt;
-
-#endif
 
 // ---------------------------------------------------------------------------------------------------------------------------------
 // -DOC- Flags & options -- Call these routines to enable/disable the following options
@@ -629,9 +641,9 @@ void	m_setOwner(const char *file, const unsigned int line, const char *func)
 // memory tracking routines.
 // ---------------------------------------------------------------------------------------------------------------------------------
 
-#ifdef OSG_USE_MEMORY_TRACKING
+#ifdef OSG_USE_MEMORY_MANAGER
 
-void	*operator new(size_t reportedSize)
+void	*operator new(size_t reportedSize) throw (std::bad_alloc)
 {
 	#ifdef TEST_MEMORY_MANAGER
 	log("ENTER: new");
@@ -683,7 +695,7 @@ void	*operator new(size_t reportedSize)
 
 // ---------------------------------------------------------------------------------------------------------------------------------
 
-void	*operator new[](size_t reportedSize)
+void	*operator new[](size_t reportedSize) throw (std::bad_alloc)
 {
 	#ifdef TEST_MEMORY_MANAGER
 	log("ENTER: new[]");
@@ -741,7 +753,7 @@ void	*operator new[](size_t reportedSize)
 // our memory tracking routines.
 // ---------------------------------------------------------------------------------------------------------------------------------
 
-void	*operator new(size_t reportedSize, const char *sourceFile, int sourceLine)
+void	*operator new(size_t reportedSize, const char *sourceFile, int sourceLine) throw (std::bad_alloc)
 {
 	#ifdef TEST_MEMORY_MANAGER
 	log("ENTER: new");
@@ -793,7 +805,7 @@ void	*operator new(size_t reportedSize, const char *sourceFile, int sourceLine)
 
 // ---------------------------------------------------------------------------------------------------------------------------------
 
-void	*operator new[](size_t reportedSize, const char *sourceFile, int sourceLine)
+void	*operator new[](size_t reportedSize, const char *sourceFile, int sourceLine) throw (std::bad_alloc)
 {
 	#ifdef TEST_MEMORY_MANAGER
 	log("ENTER: new[]");
@@ -850,7 +862,7 @@ void	*operator new[](size_t reportedSize, const char *sourceFile, int sourceLine
 // but use our memory tracking routines.
 // ---------------------------------------------------------------------------------------------------------------------------------
 
-void	operator delete(void *reportedAddress)
+void	operator delete(void *reportedAddress) throw ()
 {
 	#ifdef TEST_MEMORY_MANAGER
 	log("ENTER: delete");
@@ -869,7 +881,7 @@ void	operator delete(void *reportedAddress)
 
 // ---------------------------------------------------------------------------------------------------------------------------------
 
-void	operator delete[](void *reportedAddress)
+void	operator delete[](void *reportedAddress) throw ()
 {
 	#ifdef TEST_MEMORY_MANAGER
 	log("ENTER: delete[]");
@@ -1599,3 +1611,4 @@ sMStats	m_getMemoryStatistics()
 // ---------------------------------------------------------------------------------------------------------------------------------
 // mmgr.cpp - End of file
 // ---------------------------------------------------------------------------------------------------------------------------------
+

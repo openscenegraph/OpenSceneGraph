@@ -18,7 +18,7 @@ GeoSet::GeoSet()
     // we will use the a default delete functor which
     // assumes that users have allocated arrays with new only
     // and that now sharing of attributes exists between GeoSet's.
-    _adf = new AttributeDeleteFunctor;
+    _adf = osgNew AttributeDeleteFunctor;
 
     _coords         = (Vec3 *)0;
 
@@ -66,7 +66,7 @@ GeoSet::GeoSet(const GeoSet& geoset,const CopyOp& copyop):
     _flat_shaded_skip = geoset._flat_shaded_skip;
     if (geoset._primLengths)
     {
-        _primLengths = new int [_numprims];
+        _primLengths = osgNew int [_numprims];
         memcpy(_primLengths,geoset._primLengths,_numprims*sizeof(int));
     }
     else
@@ -78,7 +78,7 @@ GeoSet::GeoSet(const GeoSet& geoset,const CopyOp& copyop):
     _cindex = geoset._cindex;
     if (geoset._coords)
     {
-        _coords = new Vec3 [_numcoords];
+        _coords = osgNew Vec3 [_numcoords];
         memcpy(_coords,geoset._coords,_numcoords*sizeof(Vec3));
     }
     else
@@ -91,7 +91,7 @@ GeoSet::GeoSet(const GeoSet& geoset,const CopyOp& copyop):
     _nindex = geoset._nindex;
     if (geoset._normals)
     {
-        _normals = new Vec3 [_numnormals];
+        _normals = osgNew Vec3 [_numnormals];
         memcpy(_normals,geoset._normals,_numnormals*sizeof(Vec3));
     }
     else
@@ -104,7 +104,7 @@ GeoSet::GeoSet(const GeoSet& geoset,const CopyOp& copyop):
     _colindex = geoset._colindex;
     if (geoset._colors)
     {
-        _colors = new Vec4 [_numcolors];
+        _colors = osgNew Vec4 [_numcolors];
         memcpy(_colors,geoset._colors,_numcolors*sizeof(Vec4));
     }
     else
@@ -117,7 +117,7 @@ GeoSet::GeoSet(const GeoSet& geoset,const CopyOp& copyop):
     _tindex = geoset._tindex;
     if (geoset._tcoords)
     {
-        _tcoords = new Vec2 [_numtcoords];
+        _tcoords = osgNew Vec2 [_numtcoords];
         memcpy(_tcoords,geoset._tcoords,_numtcoords*sizeof(Vec2));
     }
     else

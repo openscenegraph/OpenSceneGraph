@@ -14,7 +14,7 @@ bool EarthSky_writeLocalData(const Object& obj, Output& fw);
 // register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_EarthSkyProxy
 (
-    new osg::EarthSky,
+    osgNew osg::EarthSky,
     "EarthSky",
     "Object Node EarthSky Group",
     &EarthSky_readLocalData,

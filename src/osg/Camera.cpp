@@ -433,7 +433,7 @@ void Camera::attachTransform(const TransformMode mode, Matrix* matrix)
             if (_eyeToModelTransform.valid())
             {
                 _attachedTransformMode = mode;
-                if (!_modelToEyeTransform.valid()) _modelToEyeTransform = new Matrix;
+                if (!_modelToEyeTransform.valid()) _modelToEyeTransform = osgNew Matrix;
                 if (!_modelToEyeTransform->invert(*_eyeToModelTransform))
                 {
                     notify(WARN)<<"Warning: Camera::attachTransform() failed to invert _modelToEyeTransform"<<std::endl;
@@ -452,7 +452,7 @@ void Camera::attachTransform(const TransformMode mode, Matrix* matrix)
             if (_modelToEyeTransform.valid())
             {
                 _attachedTransformMode = mode;
-                if (!_eyeToModelTransform.valid()) _eyeToModelTransform = new Matrix;
+                if (!_eyeToModelTransform.valid()) _eyeToModelTransform = osgNew Matrix;
                 if (!_eyeToModelTransform->invert(*_modelToEyeTransform))
                 {
                     notify(WARN)<<"Warning: Camera::attachTransform() failed to invert _modelToEyeTransform"<<std::endl;
@@ -651,7 +651,7 @@ void Camera::calculateMatricesAndClippingVolume() const
                 float ty = -(top+bottom)/(top-bottom);
                 float tz = -(_zFar+_zNear)/(_zFar-_zNear);
 
-                _projectionMatrix = new Matrix(
+                _projectionMatrix = osgNew Matrix(
                     A,    0.0f, 0.0f, 0.0f,
                     0.0f, B,    0.0f, 0.0f,
                     0.0f, 0.0f, C,    0.0f,
@@ -673,7 +673,7 @@ void Camera::calculateMatricesAndClippingVolume() const
                 float E = -(_zFar+_zNear) / (_zFar-_zNear);
                 float F = -(2.0*_zFar*_zNear) / (_zFar-_zNear);
 
-                _projectionMatrix = new Matrix(
+                _projectionMatrix = osgNew Matrix(
                     A,    0.0f, 0.0f, 0.0f,
                     0.0f, B,    0.0f, 0.0f,
                     C,    D,    E,    -1.0f,
@@ -695,7 +695,7 @@ void Camera::calculateMatricesAndClippingVolume() const
         }
         else
         {
-            _modelViewMatrix = new Matrix;
+            _modelViewMatrix = osgNew Matrix;
             _modelViewMatrix->makeIdentity();
         }
         break;
@@ -711,7 +711,7 @@ void Camera::calculateMatricesAndClippingVolume() const
             Vec3 u(s^f);
             u.normalize();
             
-            ref_ptr<Matrix> matrix = new Matrix(
+            ref_ptr<Matrix> matrix = osgNew Matrix(
                 s[0],     u[0],     -f[0],     0.0f,
                 s[1],     u[1],     -f[1],     0.0f,
                 s[2],     u[2],     -f[2],     0.0f,
@@ -721,7 +721,7 @@ void Camera::calculateMatricesAndClippingVolume() const
                         
             if (_modelToEyeTransform.valid())
             {
-                _modelViewMatrix = new Matrix;
+                _modelViewMatrix = osgNew Matrix;
                 (*_modelViewMatrix) = (*matrix) * (*_modelToEyeTransform);
             }
             else
@@ -791,10 +791,10 @@ void Camera::calculateMatricesAndClippingVolume() const
 
     _clippingVolume.transformProvidingInverse(*_modelViewMatrix);
 
-    if (!_mp.valid()) _mp = new Matrix;
+    if (!_mp.valid()) _mp = osgNew Matrix;
     _mp->mult(*_modelViewMatrix,*_projectionMatrix);
     
-    if (!_inversemp.valid()) _inversemp = new Matrix;
+    if (!_inversemp.valid()) _inversemp = osgNew Matrix;
     if (!_inversemp->invert(*_mp))
     {
         notify(WARN)<<"Warning: Camera::calculateMatricesAndClippingVolume() failed to invert _mp"<<std::endl;

@@ -44,8 +44,8 @@ bool FTFont::Open( const char* fontname )
 void FTFont::Close()
 {
     GlyphContextContainer::iterator    itr;
-    for(itr=_contextGlyphList.begin();itr<_contextGlyphList.begin();itr++)
-        delete *itr;
+    for(itr=_contextGlyphList.begin();itr!=_contextGlyphList.end();itr++)
+        osgDelete *itr;
     _contextGlyphList.clear();
 }
 
@@ -61,9 +61,9 @@ bool FTFont::FaceSize( const unsigned int size, const unsigned int res , unsigne
     FTGlyphContainer*& glyphList=_contextGlyphList[renderContext];
     
     if( glyphList)
-        delete glyphList;
+        osgDelete glyphList;
     
-    glyphList = new FTGlyphContainer( &face, numGlyphs);
+    glyphList = osgNew FTGlyphContainer( &face, numGlyphs);
     
     if( MakeGlyphList(renderContext))
     {

@@ -157,7 +157,7 @@ void  Font::clear()
     
     if(_font)
     {
-        delete _font;
+        osgDelete _font;
         _font=NULL;
     }
 
@@ -221,7 +221,7 @@ RasterFont()
 FTFont*  BitmapFont::
 createFontObj(void)
 {
-    return (FTFont*)(new FTGLBitmapFont);
+    return (FTFont*)(osgNew FTGLBitmapFont);
 }
     
 // BitmapFont
@@ -245,7 +245,7 @@ RasterFont(font)
 FTFont*  PixmapFont::
 createFontObj(void)
 {
-    return (FTFont*)(new FTGLPixmapFont);
+    return (FTFont*)(osgNew FTGLPixmapFont);
 }
     
 // PixmapFont
@@ -285,7 +285,7 @@ RasterFont(font)
 FTFont*  TextureFont::
 createFontObj(void)
 {
-    return (FTFont*)(new FTGLTextureFont(_textureSize));
+    return (FTFont*)(osgNew FTGLTextureFont(_textureSize));
 }
     
 // TextureFont
@@ -311,7 +311,7 @@ VectorFont(font)
 FTFont*  OutlineFont::
 createFontObj(void)
 {
-    return (FTFont*)(new FTGLOutlineFont);
+    return (FTFont*)(osgNew FTGLOutlineFont);
 }
     
 // _FTGLOutlineFont
@@ -349,7 +349,7 @@ VectorFont(std::string(font))
 FTFont*  PolygonFont::
 createFontObj(void)
 {
-    return (FTFont*)(new FTGLPolygonFont);
+    return (FTFont*)(osgNew FTGLPolygonFont);
 }
     
 

@@ -23,7 +23,7 @@ bool FTGLOutlineFont::MakeGlyphList( unsigned int renderContext)
         
         if( ftGlyph)
         {
-            FTOutlineGlyph* tempGlyph = new FTOutlineGlyph( *ftGlyph);
+            FTOutlineGlyph* tempGlyph = osgNew FTOutlineGlyph( *ftGlyph);
             glyphList->Add( tempGlyph);
         }
         else

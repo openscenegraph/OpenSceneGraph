@@ -18,7 +18,7 @@ const char* Depth_getFuncStr(Depth::Function func);
 // register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_DepthProxy
 (
-    new osg::Depth,
+    osgNew osg::Depth,
     "Depth",
     "Object StateAttribute Depth",
     &Depth_readLocalData,

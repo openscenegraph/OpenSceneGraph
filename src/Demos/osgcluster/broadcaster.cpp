@@ -23,6 +23,8 @@
 // nothing needed
 #elif defined(__sun) 
 #  include <sys/sockio.h>
+#elif defined (__DARWIN_OSX__)   // added
+#  include <sys/sockio.h>         // added
 #else
 #  error Teach me how to build on this system
 #endif

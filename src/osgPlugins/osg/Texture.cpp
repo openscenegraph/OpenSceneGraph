@@ -25,7 +25,7 @@ const char* Texture_getSubloadModeStr(Texture::SubloadMode value);
 // register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_TextureProxy
 (
-    new osg::Texture,
+    osgNew osg::Texture,
     "Texture",
     "Object StateAttribute Texture",
     &Texture_readLocalData,

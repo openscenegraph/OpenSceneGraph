@@ -41,11 +41,11 @@ DynamicLibrary* DynamicLibrary::loadLibrary(const std::string& libraryName)
 
 #if defined(WIN32) && !defined(__CYGWIN__)
     HANDLE handle = LoadLibrary( fullLibraryName );
-    if (handle) return new DynamicLibrary(libraryName,handle);
+    if (handle) return osgNew DynamicLibrary(libraryName,handle);
     notify(WARN) << "DynamicLibrary::failed loading "<<fullLibraryName<<std::endl;
 #elif !defined(macintosh)
     HANDLE handle = dlopen( fullLibraryName, RTLD_LAZY );
-    if (handle) return new DynamicLibrary(libraryName,handle);
+    if (handle) return osgNew DynamicLibrary(libraryName,handle);
     notify(WARN) << "DynamicLibrary::failed loading "<<fullLibraryName<<std::endl;
     notify(WARN) << "DynamicLibrary::error "<<dlerror()<<std::endl;
 #endif

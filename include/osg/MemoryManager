@@ -14,6 +14,9 @@
 #ifndef	_H_MMGR
 #define	_H_MMGR
 
+#include <stdlib.h>
+#include <new>
+
 // ---------------------------------------------------------------------------------------------------------------------------------
 // For systems that don't have the __FUNCTION__ variable, we can just define it here
 // ---------------------------------------------------------------------------------------------------------------------------------
@@ -80,6 +83,7 @@ void		m_setOwner(const char *file, const unsigned int line, const char *func);
 
 bool		&m_breakOnRealloc(void *reportedAddress);
 bool		&m_breakOnDealloc(void *reportedAddress);
+void	        m_breakOnAllocation(unsigned int count);
 
 // ---------------------------------------------------------------------------------------------------------------------------------
 // The meat of the memory tracking software
@@ -119,14 +123,14 @@ sMStats		m_getMemoryStatistics();
 // Variations of global operators new & delete
 // ---------------------------------------------------------------------------------------------------------------------------------
 
-#ifdef OSG_USE_MEMORY_TRACKING
+#ifdef OSG_USE_MEMORY_MANAGER
 
-    void	*operator new(size_t reportedSize);
-    void	*operator new[](size_t reportedSize);
-    void	*operator new(size_t reportedSize, const char *sourceFile, int sourceLine);
-    void	*operator new[](size_t reportedSize, const char *sourceFile, int sourceLine);
-    void	operator delete(void *reportedAddress);
-    void	operator delete[](void *reportedAddress);
+    void	*operator new(size_t reportedSize) throw (std::bad_alloc);
+    void	*operator new[](size_t reportedSize) throw (std::bad_alloc);
+    void	*operator new(size_t reportedSize, const char *sourceFile, int sourceLine) throw (std::bad_alloc);
+    void	*operator new[](size_t reportedSize, const char *sourceFile, int sourceLine) throw (std::bad_alloc);
+    void	operator delete(void *reportedAddress) throw ();
+    void	operator delete[](void *reportedAddress) throw ();
 
     // ---------------------------------------------------------------------------------------------------------------------------------
     // Macros -- "Kids, please don't try this at home. We're trained professionals here." :)

@@ -130,10 +130,10 @@ void StateSet::setGlobalDefaults()
     setRendingBinToInherit();
 
 
-    setAttributeAndModes(new AlphaFunc,StateAttribute::OFF);
-    setAttributeAndModes(new Transparency,StateAttribute::OFF);
+    setAttributeAndModes(osgNew AlphaFunc,StateAttribute::OFF);
+    setAttributeAndModes(osgNew Transparency,StateAttribute::OFF);
 
-    Material *material       = new Material;
+    Material *material       = osgNew Material;
     material->setColorMode(Material::AMBIENT_AND_DIFFUSE);
     setAttributeAndModes(material,StateAttribute::ON);
 /*
@@ -148,17 +148,17 @@ void StateSet::setGlobalDefaults()
     setMode(GL_TEXTURE_GEN_R,StateAttribute::OFF);
     setMode(GL_TEXTURE_GEN_Q,StateAttribute::OFF);
 
-    setAttributeAndModes(new AlphaFunc,StateAttribute::OFF);
-    setAttributeAndModes(new CullFace,StateAttribute::ON);
-    setAttributeAndModes(new FrontFace,StateAttribute::ON);
+    setAttributeAndModes(osgNew AlphaFunc,StateAttribute::OFF);
+    setAttributeAndModes(osgNew CullFace,StateAttribute::ON);
+    setAttributeAndModes(osgNew FrontFace,StateAttribute::ON);
 
-    Material *material       = new Material;
+    Material *material       = osgNew Material;
     material->setColorMode(Material::AMBIENT_AND_DIFFUSE);
     setAttributeAndModes(material,StateAttribute::ON);
     
-    setAttributeAndModes(new PolygonMode,StateAttribute::OFF);
-    setAttributeAndModes(new Transparency,StateAttribute::OFF);
-    setAttributeAndModes(new Depth,StateAttribute::ON);
+    setAttributeAndModes(osgNew PolygonMode,StateAttribute::OFF);
+    setAttributeAndModes(osgNew Transparency,StateAttribute::OFF);
+    setAttributeAndModes(osgNew Depth,StateAttribute::ON);
 */
 }
 

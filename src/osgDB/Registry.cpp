@@ -34,7 +34,7 @@ class RegistryPtr
 
 Registry* Registry::instance()
 {
-    static RegistryPtr s_nodeFactory = new Registry;
+    static RegistryPtr s_nodeFactory = osgNew Registry;
     return s_nodeFactory.get();
 }
 
@@ -253,7 +253,6 @@ bool Registry::loadLibrary(const std::string& fileName)
 
     if (dl)
     {
-        dl->ref();
         _dlList.push_back(dl);
         return true;
     }
@@ -635,7 +634,7 @@ ReaderWriter::ReadResult Registry::readObject(const std::string& fileName)
 
     // now look for a plug-in to load the file.
     std::string libraryName = createLibraryNameForFile(fileName);
-    if (Registry::instance()->loadLibrary(libraryName))
+    if (loadLibrary(libraryName))
     {
         for(ReaderWriterList::iterator itr=_rwList.begin();
             itr!=_rwList.end();
@@ -882,7 +881,7 @@ ReaderWriter::WriteResult Registry::writeNode(const Node& node,const std::string
 
     // now look for a plug-in to save the file.
     std::string libraryName = createLibraryNameForFile(fileName);
-    if (Registry::instance()->loadLibrary(libraryName))
+    if (loadLibrary(libraryName))
     {
         for(ReaderWriterList::iterator itr=_rwList.begin();
             itr!=_rwList.end();

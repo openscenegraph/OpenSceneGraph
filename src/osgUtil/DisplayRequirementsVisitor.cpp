@@ -20,7 +20,7 @@ DisplayRequirementsVisitor::DisplayRequirementsVisitor()
 
 void DisplayRequirementsVisitor::applyStateSet(StateSet& stateset)
 {
-    if (!_ds) _ds = new osg::DisplaySettings;
+    if (!_ds) _ds = osgNew osg::DisplaySettings;
 
    unsigned int min = 0; // assume stencil not needed by this stateset.
    
@@ -63,7 +63,7 @@ void DisplayRequirementsVisitor::apply(Geode& geode)
 
 void DisplayRequirementsVisitor::apply(Impostor& impostor)
 {
-    if (!_ds) _ds = new osg::DisplaySettings;
+    if (!_ds) _ds = osgNew osg::DisplaySettings;
 
     unsigned int min = 1; // number alpha bits we need at least.
     if (min>_ds->getMinimumNumAlphaBits())

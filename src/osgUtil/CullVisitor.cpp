@@ -299,7 +299,7 @@ void TriangleViewFrustumIntersect::intersect_triangle(const osg::Vec3& vert1, co
 
         //construct line segment of two triangle vertices and check if they intersect any clipping plane
         //but within correct clipping plane triangle
-        osg::ref_ptr<osg::LineSegment> s12 = new LineSegment(v1, v2);
+        osg::ref_ptr<osg::LineSegment> s12 = osgNew LineSegment(v1, v2);
 
 
         //left triangle
@@ -395,7 +395,7 @@ CullVisitor::CullVisitor()
     // unless there is bug somewhere...
     _cullingModeStack.push_back(CullViewState::ENABLE_ALL_CULLING);
 
-    _tvs = new CullViewState;
+    _tvs = osgNew CullViewState;
     _tvs->_eyePoint.set(0.0f,0.0f,1.0f);
     _tvs->_centerPoint.set(0.0f,0.0f,0.0f);
     _tvs->_lookVector.set(0.0f,0.0f,-1.0f);
@@ -416,7 +416,7 @@ CullVisitor::CullVisitor()
     _depthSortImpostorSprites = false;
     _impostorPixelErrorThreshold = 4.0f;
     _numFramesToKeepImpostorSprites = 10;
-    _impostorSpriteManager = new ImpostorSpriteManager;
+    _impostorSpriteManager = osgNew ImpostorSpriteManager;
 
     //SandB change
     _detailedCulling = false;
@@ -491,7 +491,7 @@ void CullVisitor::pushCullViewState(Matrix* matrix)
 {
     if (matrix)
     {
-        osg::Matrix* inverse = new osg::Matrix;
+        osg::Matrix* inverse = osgNew osg::Matrix;
         inverse->invert(*matrix);
         pushCullViewState(matrix,inverse);
     }
@@ -502,7 +502,7 @@ void CullVisitor::pushCullViewState(Matrix* matrix)
 void CullVisitor::pushCullViewState(Matrix* matrix,osg::Matrix* inverse)
 {
 
-    osg::ref_ptr<CullViewState> nvs = new CullViewState;
+    osg::ref_ptr<CullViewState> nvs = osgNew CullViewState;
 
     Matrix* inverse_world = NULL;
 
@@ -1359,7 +1359,7 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
     // one for use.
 
     // create the render to texture stage.
-    ref_ptr<RenderToTextureStage> rtts = new RenderToTextureStage;
+    ref_ptr<RenderToTextureStage> rtts = osgNew RenderToTextureStage;
 
     // set up lighting.
     // currently ignore lights in the scene graph itself..
@@ -1376,7 +1376,7 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
     rtts->setRenderStageLighting(previous_stage->getRenderStageLighting());
     
     
-    osg::Camera* camera = new osg::Camera(*_camera);
+    osg::Camera* camera = osgNew osg::Camera(*_camera);
     rtts->setCamera(camera);
 
     // record the render bin, to be restored after creation
@@ -1391,7 +1391,7 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
     Vec3 rotate_from = bs.center()-eye_local;
     Vec3 rotate_to   = getLookVectorLocal();
 
-    osg::Matrix* rotate_matrix = new osg::Matrix(
+    osg::Matrix* rotate_matrix = osgNew osg::Matrix(
         osg::Matrix::translate(-eye_local)*        
         osg::Matrix::rotate(rotate_from,rotate_to)*
         osg::Matrix::translate(eye_local));
@@ -1410,7 +1410,7 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
     _calculated_znear = FLT_MAX;
     _calculated_zfar = -FLT_MAX;
 
-    ref_ptr<StateSet> dummyState = new StateSet;
+    ref_ptr<StateSet> dummyState = osgNew StateSet;
     
     
 //    dummyState->setMode(GL_BLEND,osg::StateAttribute::OVERRIDE_OFF);
@@ -1647,7 +1647,7 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
     int center_x = _viewport->x()+_viewport->width()/2;
     int center_y = _viewport->y()+_viewport->height()/2;
 
-    Viewport* viewport = new Viewport;
+    Viewport* viewport = osgNew Viewport;
     viewport->setViewport(center_x-new_s/2,center_y-new_t/2,new_s,new_t);
     rtts->setViewport(viewport);
 

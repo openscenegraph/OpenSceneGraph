@@ -14,7 +14,7 @@ bool Image_writeLocalData(const Object& obj, Output& fw);
 // register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_ImageFuncProxy
 (
-    new osg::Image,
+    osgNew osg::Image,
     "Image",
     "Object Image",
     &Image_readLocalData,

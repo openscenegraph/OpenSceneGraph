@@ -335,7 +335,7 @@ void Optimizer::FlattenStaticTransformsVisitor::apply(osg::Transform& transform)
     }
     else
     {        
-        osg::ref_ptr<osg::Matrix> matrix = new osg::Matrix;
+        osg::ref_ptr<osg::Matrix> matrix = osgNew osg::Matrix;
         transform.getLocalToWorldMatrix(*matrix,this);
 
         if (!_matrixStack.empty())
@@ -526,7 +526,7 @@ void Optimizer::FlattenStaticTransformsVisitor::removeTransforms()
         
         
             osg::ref_ptr<osg::Transform> transform = titr->first;
-            osg::ref_ptr<osg::Group>     group = new osg::Group;
+            osg::ref_ptr<osg::Group>     group = osgNew osg::Group;
 
             int i;
             for(i=0;i<transform->getNumChildren();++i)
@@ -695,7 +695,7 @@ void Optimizer::CombineLODsVisitor::combineLODs()
                 }
 
                 // create new LOD containing all other LOD's children.
-                osg::LOD* newLOD = new osg::LOD;
+                osg::LOD* newLOD = osgNew osg::LOD;
                 newLOD->setName("newLOD");
                 newLOD->setCenter(bb.center());
 

@@ -27,7 +27,7 @@ bool Drawable_readLocalData(Object& obj, Input& fr)
 
     Drawable& drawable = static_cast<Drawable&>(obj);
 
-    static ref_ptr<StateSet> s_drawstate = new osg::StateSet;
+    static ref_ptr<StateSet> s_drawstate = osgNew osg::StateSet;
     if (StateSet* readState = static_cast<StateSet*>(fr.readObjectOfType(*s_drawstate)))
     {
         drawable.setStateSet(readState);

@@ -4,8 +4,8 @@
 using namespace osgUtil;
 
 SceneViewManipulator::SceneViewManipulator():
-                                            _cm(new TrackballManipulator),
-                                            _gm(new StateSetManipulator)
+                                            _cm(osgNew TrackballManipulator),
+                                            _gm(osgNew StateSetManipulator)
 {
 }
 

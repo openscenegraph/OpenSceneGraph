@@ -33,4 +33,6 @@
 #endif
 #endif
 
+#include <osg/MemoryManager>
+
 #endif

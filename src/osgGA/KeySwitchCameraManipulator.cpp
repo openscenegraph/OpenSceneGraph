@@ -22,7 +22,7 @@ void KeySwitchCameraManipulator::addNumberedCameraManipulator(CameraManipulator 
 
 bool KeySwitchCameraManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& aa)
 {
-    if(ea.getEventType()==GUIEventAdapter::KEYBOARD){
+    if(ea.getEventType()==GUIEventAdapter::KEYDOWN){
 
         KeyManipMap::iterator it=_manips.find(ea.getKey());
         if(it != _manips.end()){

@@ -119,7 +119,7 @@ bool GliderManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
             return true;
         }
 
-        case(GUIEventAdapter::KEYBOARD):
+        case(GUIEventAdapter::KEYDOWN):
             if (ea.getKey()==' ')
             {
                 flushMouseEventStack();

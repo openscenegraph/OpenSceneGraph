@@ -35,11 +35,30 @@ public:
                 RELEASE,
                 DRAG,
                 MOVE,
-                KEYBOARD,
+                KEYDOWN,
+                KEYUP,
                 FRAME,
                 RESIZE,
                 NONE
         };
+
+	enum ModKeyMask {
+	    MOD_LEFT_SHIFT  = 0x0001,
+	    MOD_RIGHT_SHIFT = 0x0002,
+	    MOD_LEFT_CTRL   = 0x0040,
+	    MOD_RIGHT_CTRL  = 0x0080,
+	    MOD_LEFT_ALT    = 0x0100,
+	    MOD_RIGHT_ALT   = 0x0200,
+	    MOD_LEFT_META   = 0x0400,
+	    MOD_RIGHT_META  = 0x0800,
+	    MOD_NUM_LOCK    = 0x1000,
+	    MOD_CAPS_LOCK   = 0x2000,
+            MOD_CTRL        = (MOD_LEFT_CTRL|MOD_RIGHT_CTRL),
+            MOD_SHIFT       = (MOD_LEFT_SHIFT|MOD_RIGHT_SHIFT),
+            MOD_ALT         = (MOD_LEFT_ALT|MOD_RIGHT_ALT),
+            MOD_META        = (MOD_LEFT_META|MOD_RIGHT_META)
+	};
+
 
         /** Get the EventType of the GUI event.*/
         virtual EventType getEventType() const = 0;
@@ -70,6 +89,9 @@ public:
 
         /** current mouse button state */
         virtual unsigned int getButtonMask() const = 0;
+
+        /** current modkey state */
+        virtual unsigned int getModKeyMask() const = 0;
 
         /** time in seconds of event. */
         virtual double time() const = 0;

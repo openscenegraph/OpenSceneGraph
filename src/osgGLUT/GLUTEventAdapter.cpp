@@ -41,6 +41,22 @@ void GLUTEventAdapter::copyStaticVariables()
     _my   = _s_my;
 }
 
+unsigned int
+GLUTEventAdapter::getModKeyMask() const
+{
+    int modifiers = glutGetModifiers();
+    unsigned int modmask = 0;
+    if ( modifiers & GLUT_ACTIVE_SHIFT ) {
+        modmask |= MOD_LEFT_SHIFT | MOD_RIGHT_SHIFT;
+    }
+    if ( modifiers & GLUT_ACTIVE_ALT ) {
+        modmask |= MOD_LEFT_ALT | MOD_RIGHT_ALT;
+    }
+    if ( modifiers & GLUT_ACTIVE_CTRL ) {
+        modmask |= MOD_LEFT_CTRL | MOD_RIGHT_CTRL;
+    }
+    return modmask;
+}
 
 void GLUTEventAdapter::setWindowSize(int Xmin, int Ymin, int Xmax, int Ymax)
 {
@@ -154,9 +170,13 @@ void GLUTEventAdapter::adaptMouse(double time, int button, int state, int x, int
 
 
 /** method for adapting keyboard events.*/
-void GLUTEventAdapter::adaptKeyboard(double time, unsigned char key, int x, int y )
+void GLUTEventAdapter::adaptKeyboard(double time, unsigned char key, int x, int y, bool keydown )
 {
-    _eventType = KEYBOARD;
+    if ( keydown ) {
+        _eventType = KEYDOWN;
+    } else {
+        _eventType = KEYUP;
+    }
     _time = time;
     _key = key;
     _s_mx = x;

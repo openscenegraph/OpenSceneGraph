@@ -72,12 +72,14 @@ bool Window::open()
     glutVisibilityFunc( visibilityCB );
     glutDisplayFunc(    displayCB );
     glutKeyboardFunc(   keyboardCB );
+    glutKeyboardUpFunc(   keyboardUpCB );
 
     glutMouseFunc( mouseCB );
     glutMotionFunc( mouseMotionCB );
     glutPassiveMotionFunc( mousePassiveMotionCB );
 
     glutSpecialFunc( specialCB );
+    glutSpecialUpFunc( specialUpCB );
     glutSpaceballMotionFunc( spaceballMotionCB );
     glutSpaceballRotateFunc( spaceballRotateCB );
     glutSpaceballButtonFunc( spaceballButtonCB );
@@ -138,14 +140,26 @@ void Window::mousePassiveMotionCB(int x, int y)
 
 void Window::keyboardCB(unsigned char key, int x, int y)
 {
-    s_theWindow->keyboard(key,x,y);
+    s_theWindow->keyboard((int)key,x,y,true);
     s_theWindow->check_if_exit();
 }
 
-void Window::specialCB(int, int, int)
+void Window::keyboardUpCB(unsigned char key, int x, int y)
 {
-//     s_theWindow->special(key,x,y);
-//     s_theWindow->check_if_exit();
+    s_theWindow->keyboard((int)key,x,y,false);
+    s_theWindow->check_if_exit();
+}
+
+void Window::specialCB(int key, int x, int y)
+{
+     s_theWindow->special(key,x,y,true);
+     s_theWindow->check_if_exit();
+}
+
+void Window::specialUpCB(int key, int x, int y)
+{
+     s_theWindow->special(key,x,y,false);
+     s_theWindow->check_if_exit();
 }
 
 void Window::spaceballMotionCB(int x, int y, int z)
@@ -207,8 +221,11 @@ void Window::mouse(int , int , int , int )
 }
 
 
-void Window::keyboard(unsigned char key, int , int )
+void Window::keyboard(int key, int , int, bool keydown )
 {
+    if ( !keydown )
+        return;
+
     switch( key )
     {
         case 'f' :
@@ -227,10 +244,10 @@ void Window::keyboard(unsigned char key, int , int )
     }
 }
 
-void Window::special(int k, int x, int y)
+void Window::special(int k, int x, int y, bool keydown)
 {
     // will remap to a straight keyboard event...
-    keyboard((unsigned char)k, x, y);
+    keyboard( k * 1000, x, y, keydown);
 //    osg::notify(osg::INFO)<<"info : Window::special() unhandled."<<std::endl;
 }
 

@@ -65,7 +65,7 @@ bool AnimationPathManipulator::handle(const osgGA::GUIEventAdapter& ea,osgGA::GU
 	    handleFrame( ea.time() );
             retval =  true;
 	    break;
-	case GUIEventAdapter::KEYBOARD:
+	case GUIEventAdapter::KEYDOWN:
             if (ea.getKey()==' ')
             {
                 home(ea,us);

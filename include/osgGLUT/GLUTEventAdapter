@@ -49,6 +49,9 @@ class OSGGLUT_EXPORT GLUTEventAdapter : public osgGA::GUIEventAdapter
         /** current mouse button state */
         virtual unsigned int getButtonMask() const { return _buttonMask; }
 
+        /** current modkey state */
+        virtual unsigned int getModKeyMask() const;
+
         /** time in seconds of event. */
         virtual double time() const { return _time; }
 
@@ -72,7 +75,8 @@ class OSGGLUT_EXPORT GLUTEventAdapter : public osgGA::GUIEventAdapter
         void adaptMouse(double t,int button, int state, int x, int y);
 
         /** method for adapting keyboard events.*/
-        void adaptKeyboard(double t,unsigned char key, int x, int y );
+        void adaptKeyboard( double t, unsigned char key,
+		int x, int y, bool keydown );
 
         /** method for adapting frame events, i.e. idle/display callback.*/
         void adaptFrame(double t);

@@ -31,7 +31,7 @@ public:
     {
         bool handled = false;
 
-        if (ea.getEventType() == osgGA::GUIEventAdapter::KEYBOARD)
+        if (ea.getEventType() == osgGA::GUIEventAdapter::KEYDOWN)
         {
             const char keys[] = "!@#$%^&*()";
             for (unsigned int i = 0; i < (sizeof(keys) / sizeof(keys[0])); i++) {

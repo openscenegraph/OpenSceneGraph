@@ -135,7 +135,7 @@ bool TrackballManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us
             return false;
         }
 
-        case(GUIEventAdapter::KEYBOARD):
+        case(GUIEventAdapter::KEYDOWN):
             if (ea.getKey()==' ')
             {
                 flushMouseEventStack();

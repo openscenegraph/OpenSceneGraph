@@ -91,7 +91,7 @@ bool OccluderEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAct
 {
     switch(ea.getEventType())
     {
-        case(osgGA::GUIEventAdapter::KEYBOARD):
+        case(osgGA::GUIEventAdapter::KEYDOWN):
         {
             if (ea.getKey()=='a')
             {

@@ -6,6 +6,7 @@
 
 using namespace osg;
 using namespace osgDB;
+using namespace std;
 
 // forward declare functions to use later.
 bool LineStipple_readLocalData(Object& obj, Input& fr);
@@ -53,7 +54,7 @@ bool LineStipple_writeLocalData(const Object& obj,Output& fw)
     const LineStipple& linestipple = static_cast<const LineStipple&>(obj);
 
     fw.indent() << "factor " << linestipple.getFactor() << std::endl;
-    fw.indent() << "pattern 0x" << std::hex << linestipple.getPattern() << std::dec << std::endl;
+    fw.indent() << "pattern 0x" << hex << linestipple.getPattern() << dec << std::endl;
 
     return true;
 }

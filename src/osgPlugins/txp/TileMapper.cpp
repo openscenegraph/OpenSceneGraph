@@ -13,7 +13,7 @@ osg::PagedLOD* TileMapper::getPagedLOD(int x, int y, int lod)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
     TileMap::iterator itr = _tileMap.find(TileTriple(x,y,lod));
-    if (itr!=_tileMap.end()) return itr->second.get();
+    if (itr!=_tileMap.end()) return itr->second;
     else return 0;
 }
 
@@ -32,17 +32,17 @@ void TileMapper::removePagedLOD(int x, int y, int lod)
 
 void TileMapper::prunePagedLOD()
 {
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-    for(TileMap::iterator itr = _tileMap.begin();
-        itr!=_tileMap.end();
-        ++itr)
-    {
-        if (itr->second.valid() && itr->second->referenceCount()==1)
-        {
-            TileMap::iterator eitr = itr;
-            --itr;
-            _tileMap.erase(eitr);
-        }
-    }
+//     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+//     for(TileMap::iterator itr = _tileMap.begin();
+//         itr!=_tileMap.end();
+//         ++itr)
+//     {
+//         if (itr->second.valid() && itr->second->referenceCount()==1)
+//         {
+//             TileMap::iterator eitr = itr;
+//             --itr;
+//             _tileMap.erase(eitr);
+//         }
+//     }
     //std::cout<<"_tileMap.size()="<<_tileMap.size()<<std::endl;
 }

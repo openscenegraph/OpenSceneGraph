@@ -41,6 +41,10 @@ DatabasePager::DatabasePager()
 DatabasePager::~DatabasePager()
 {
 
+    // release the frameBlock and _fileRequestListEmptyBlock incase its holding up thread cancelation.
+    _frameBlock->release();
+    _fileRequestListEmptyBlock->release();
+
     //std::cout<<"DatabasePager::~DatabasePager()"<<std::endl;
     if( isRunning() )
     {
@@ -48,11 +52,6 @@ DatabasePager::~DatabasePager()
         // cancel the thread..
         cancel();
         //join();
-
-        
-        // release the frameBlock incase its holding up thread cancelation.
-        _frameBlock->release();
-
 
         // then wait for the the thread to stop running.
         while(isRunning())

@@ -85,7 +85,7 @@ public:
     };
 
     Edge() {}
-    Edge(Vertex_index ib, Vertex_index ie) : ib_(ib), ie_(ie), ibs_(std::min(ib, ie)), ies_(std::max(ib, ie)), duplicate_(false) {}
+    Edge(Vertex_index ib, Vertex_index ie) : ib_(ib), ie_(ie), ibs_(osg::minimum(ib, ie)), ies_(osg::maximum(ib, ie)), duplicate_(false) {}
 
     // first endpoint
     inline Vertex_index ib() const { return ib_; }

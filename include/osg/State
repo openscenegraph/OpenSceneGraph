@@ -55,16 +55,16 @@ class SG_EXPORT State : public Referenced
 
 
         /** apply an OpenGL mode if required. */
-        inline const bool apply_mode(const StateAttribute::GLMode mode,const bool enabled)
+        inline const bool applyMode(const StateAttribute::GLMode mode,const bool enabled)
         {
-            return apply_mode(mode,enabled,_modeMap[mode]);
+            return applyMode(mode,enabled,_modeMap[mode]);
         }
 
 
         /** apply an attribute if required. */
-        inline const bool apply_attribute(const StateAttribute* attribute)
+        inline const bool applyAttribute(const StateAttribute* attribute)
         {
-            return apply_attribute(attribute,_attributeMap[attribute->getType()]);
+            return applyAttribute(attribute,_attributeMap[attribute->getType()]);
         }
 
 
@@ -75,14 +75,14 @@ class SG_EXPORT State : public Referenced
         void apply();
        
         /** mode has been set externally, update state to reflect this setting.*/
-        void have_applied_mode(const StateAttribute::GLMode mode,const StateAttribute::GLModeValue value);
+        void haveAppliedMode(const StateAttribute::GLMode mode,const StateAttribute::GLModeValue value);
         
         /** mode has been set externally, therefore dirty the associated mode in osg::State
           * so it is applied on next call to osg::State::apply(..)*/
-        void have_applied_mode(const StateAttribute::GLMode mode);
+        void haveAppliedMode(const StateAttribute::GLMode mode);
 
         /** attribute has been applied externally, update state to reflect this setting.*/
-        void have_applied_attribute(const StateAttribute* attribute);
+        void haveAppliedAttribute(const StateAttribute* attribute);
 
         /** attribute has been applied externally, 
           * and therefore this attribute type has been dirtied 
@@ -91,7 +91,7 @@ class SG_EXPORT State : public Referenced
           * then use the have_applied(attribute) method as this will the osg::State to
           * track the current state more accuratly and enable lazy state updating such
           * that only changed state will be applied.*/
-        void have_applied_attribute(const StateAttribute::Type type);
+        void haveAppliedAttribute(const StateAttribute::Type type);
 
         
         /** Set the current OpenGL context uniqueID.
@@ -176,7 +176,7 @@ class SG_EXPORT State : public Referenced
         };
 
         /** apply an OpenGL mode if required, passing in mode, enable flag and appropriate mode stack */
-        inline const bool apply_mode(const StateAttribute::GLMode mode,const bool enabled,ModeStack& ms)
+        inline const bool applyMode(const StateAttribute::GLMode mode,const bool enabled,ModeStack& ms)
         {
             if (ms.last_applied_value != enabled)
             {
@@ -192,7 +192,7 @@ class SG_EXPORT State : public Referenced
         }
 
         /** apply an attribute if required, passing in attribute and appropriate attribute stack */
-        inline const bool apply_attribute(const StateAttribute* attribute,AttributeStack& as)
+        inline const bool applyAttribute(const StateAttribute* attribute,AttributeStack& as)
         {
             if (as.last_applied_attribute != attribute)
             {
@@ -206,7 +206,7 @@ class SG_EXPORT State : public Referenced
                 return false;
         }
 
-        inline const bool apply_global_default_attribute(AttributeStack& as)
+        inline const bool applyGlobalDefaultAttribute(AttributeStack& as)
         {
             if (as.last_applied_attribute != as.global_default_attribute.get())
             {

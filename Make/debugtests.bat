@@ -1,9 +1,25 @@
+echo osgversion
+osgversion
+more memleaks.log
+
+echo sgv osgcool.osg
+sgv osgcool.osg
+more memleaks.log
+
 echo sgv cow.osg
 sgv cow.osg
 more memleaks.log
 
 echo sgv -stereo cessna.osg
 sgv -stereo cessna.osg
+more memleaks.log
+
+echo sgv cessnafire.osg
+sgv cessnafire.osg
+more memleaks.log
+
+echo sgv spaceship.osg
+sgv spaceship.osg
 more memleaks.log
 
 echo sgv Town.osg
@@ -14,12 +30,12 @@ echo osghangglide
 osghangglide
 more memleaks.log
 
-echo osggeometry cow.osg
-osggeometry cow.osg
+echo osggeometry 
+osggeometry
 more memleaks.log
 
-echo osgprerender cow.osg
-osgprerender cow.osg
+echo osgprerender dumptruck.osg
+osgprerender dumptruck.osg
 more memleaks.log
 
 echo osgparticle cow.osg
@@ -46,6 +62,10 @@ echo osgimpostor Town.osg
 osgimpostor Town.osg
 more memleaks.log
 
+echo osgmultitexture cessnafire.osg
+osmultitexture cessnafire.osg
+more memleaks.log
+
 echo osgreflect cow.osg
 osgreflect cow.osg
 more memleaks.log
@@ -64,10 +84,6 @@ more memleaks.log
 
 echo osgtexture reflect.rgb lz.rgb
 osgtexture reflect.rgb lz.rgb
-more memleaks.log
-
-echo osgversion
-osgversion
 more memleaks.log
 
 echo osgviews cow.osg

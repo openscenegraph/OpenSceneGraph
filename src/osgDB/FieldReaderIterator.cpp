@@ -137,6 +137,10 @@ void FieldReaderIterator::insert(int pos,Field* field)
         {
             newFieldStack[i] = NULL;
         }
+
+        // free the old memory.
+        osgDelete [] _fieldQueue;
+
         _fieldQueue = newFieldStack;
         _fieldQueueCapacity = newCapacity;
     }
@@ -200,6 +204,9 @@ Field& FieldReaderIterator::field (int pos)
             {
                 newFieldStack[i] = NULL;
             }
+            // free the old memory.
+            osgDelete [] _fieldQueue;
+
             _fieldQueue = newFieldStack;
             _fieldQueueCapacity = newCapacity;
         }

@@ -3226,11 +3226,15 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(CompositeDestinat
         unsigned int texture_numRows;
         double texture_dx;
         double texture_dy;
+        double resolutionSensitivityScale = 0.9;
         if (tile->computeImageResolution(texture_numColumns,texture_numRows,texture_dx,texture_dy))
         {
-            if (texture_dx>tile->_imagery_maxSourceResolutionX) needToDivideX = true;
-            if (texture_dy>tile->_imagery_maxSourceResolutionY) needToDivideY = true;
+            if (texture_dx*resolutionSensitivityScale>tile->_imagery_maxSourceResolutionX) needToDivideX = true;
+            if (texture_dy*resolutionSensitivityScale>tile->_imagery_maxSourceResolutionY) needToDivideY = true;
         }
+        
+        osg::notify(osg::NOTICE)<<"texture_dx="<<texture_dx<<"\t_imagery_maxSourceResolutionX="<<tile->_imagery_maxSourceResolutionX<<std::endl;
+        osg::notify(osg::NOTICE)<<"texture_dy="<<texture_dy<<"\t_imagery_maxSourceResolutionY="<<tile->_imagery_maxSourceResolutionY<<std::endl;
 
         unsigned int dem_numColumns;
         unsigned int dem_numRows;
@@ -3238,8 +3242,8 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(CompositeDestinat
         double dem_dy;
         if (tile->computeTerrainResolution(dem_numColumns,dem_numRows,dem_dx,dem_dy))
         {
-            if (dem_dx>tile->_terrain_maxSourceResolutionX) needToDivideX = true;
-            if (dem_dy>tile->_terrain_maxSourceResolutionY) needToDivideY = true;
+            if (dem_dx*resolutionSensitivityScale>tile->_terrain_maxSourceResolutionX) needToDivideX = true;
+            if (dem_dy*resolutionSensitivityScale>tile->_terrain_maxSourceResolutionY) needToDivideY = true;
         }
         
         float xCenter = (extents.xMin()+extents.xMax())*0.5f;

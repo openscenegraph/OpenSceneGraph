@@ -138,6 +138,57 @@ Plane computeFrontPlane(const PointList& front)
     return Plane(front[2].second,front[1].second,front[0].second);
 }
 
+
+// compute the volume of tetrahedron
+inline float computeVolume(const osg::Vec3& a,const osg::Vec3& b,const osg::Vec3& c,const osg::Vec3& d)
+{
+    return fabs(((b-c)^(a-b))*(d-b));
+}
+
+// compute the volume of prism.
+inline float computeVolume(const osg::Vec3& f1,const osg::Vec3& f2,const osg::Vec3& f3,
+                           const osg::Vec3& b1,const osg::Vec3& b2,const osg::Vec3& b3)
+{
+    return computeVolume(f1,f2,f3,b1)+
+           computeVolume(b1,b2,b3,f2)+
+           computeVolume(b1,b3,f2,f3);
+}
+
+// compute the volume between the front and back polygons of the occluder/hole.
+float computeVolume(const PointList& front, const PointList& back)
+{
+    float volume = 0.0f;
+    Vec3 frontStart = front[0].second;
+    Vec3 backStart = back[0].second;
+    for(unsigned int i=1;i<front.size()-1;++i)
+    {
+        volume += computeVolume(frontStart, front[i].second, front[i+1].second,
+                                backStart, back[i].second, back[i+1].second);
+    }
+    return volume;
+}
+
+float computeVolumeOfView(osg::Matrix& invP)
+{
+    PointList front;
+    front.push_back(Point(0,osg::Vec3(-1,-1,-1)));
+    front.push_back(Point(0,osg::Vec3(-1, 1,-1)));
+    front.push_back(Point(0,osg::Vec3( 1, 1,-1)));
+    front.push_back(Point(0,osg::Vec3( 1,-1,-1)));
+    transform(front,invP);
+
+    PointList back;
+    back.push_back(Point(0,osg::Vec3(-1,-1,1)));
+    back.push_back(Point(0,osg::Vec3(-1, 1,1)));
+    back.push_back(Point(0,osg::Vec3( 1, 1,1)));
+    back.push_back(Point(0,osg::Vec3( 1,-1,1)));
+    transform(back,invP);
+    
+    return computeVolume(front,back);
+}
+
+
+
 Drawable* createOccluderDrawable(const PointList& front, const PointList& back)
 {
     // create a drawable for occluder.
@@ -202,17 +253,21 @@ bool ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const Convex
 
     // take a reference to the NodePath to this occluder.
     _nodePath = nodePath;
-    
 
     // take a reference to the projection matrix.
     _projectionMatrix = &P;
     
+    // initialize the volume
+    _volume = 0.0f;
     
 
     // compute the inverse of the projection matrix.
     Matrix invP;
     invP.invert(P);
     
+    float volumeview = computeVolumeOfView(invP);
+    cout << "volumeview "<<volumeview<<endl;
+
     
     // compute the transformation matrix which takes form local coords into clip space.
     Matrix MVP(MV*P);
@@ -255,6 +310,8 @@ bool ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const Convex
         {
             _occluderVolume.flip();
         }
+        
+        _volume = computeVolume(points,farPoints)/volumeview;
 
         if (createDrawables && !nodePath.empty())
         {
@@ -309,6 +366,9 @@ bool ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const Convex
                     polytope.flip();
                 }
 
+                // remove the hole's volume from the occluder volume.
+                _volume -= computeVolume(points,farPoints)/volumeview;
+                
                 if (createDrawables && !nodePath.empty())
                 {
                     osg::Group* group = dynamic_cast<osg::Group*>(nodePath.back());
@@ -330,6 +390,7 @@ bool ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const Convex
             
         }
 
+        std::cout << "final volume = "<<_volume<<std::endl;
 
         return true;
     }

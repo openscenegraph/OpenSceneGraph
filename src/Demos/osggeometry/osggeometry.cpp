@@ -7,6 +7,7 @@
 #include <osg/PolygonStipple>
 
 #include <osgDB/ReadFile>
+#include <osgDB/WriteFile>
 
 #include <osgGA/TrackballManipulator>
 
@@ -116,7 +117,7 @@ osg::Node* createScene()
         // in this case is POINTS (which has the same value GL_POINTS), the second
         // parameter is the index position into the vertex array of the first point
         // to draw, and the third parameter is the number of points to draw.
-        pointsGeom->addPrimitive(new osg::DrawArrays(osg::PrimitiveSet::POINTS,0,vertices->size()));
+        pointsGeom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::POINTS,0,vertices->size()));
         
         
         // add the points geomtry to the geode.
@@ -161,7 +162,7 @@ osg::Node* createScene()
 
         // This time we simply use primitive, and hardwire the number of coords to use 
         // since we know up front,
-        linesGeom->addPrimitive(new osg::DrawArrays(osg::PrimitiveSet::LINES,0,8));
+        linesGeom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINES,0,8));
         
         
         // add the points geomtry to the geode.
@@ -203,7 +204,7 @@ osg::Node* createScene()
 
         // This time we simply use primitive, and hardwire the number of coords to use 
         // since we know up front,
-        linesGeom->addPrimitive(new osg::DrawArrays(osg::PrimitiveSet::LINE_STRIP,0,5));
+        linesGeom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINE_STRIP,0,5));
         
         
         // add the points geomtry to the geode.
@@ -250,7 +251,7 @@ osg::Node* createScene()
 
         // This time we simply use primitive, and hardwire the number of coords to use 
         // since we know up front,
-        linesGeom->addPrimitive(new osg::DrawArrays(osg::PrimitiveSet::LINE_LOOP,0,numCoords));
+        linesGeom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINE_LOOP,0,numCoords));
         
         
         // add the points geomtry to the geode.
@@ -322,7 +323,7 @@ osg::Node* createScene()
 
         // This time we simply use primitive, and hardwire the number of coords to use 
         // since we know up front,
-        polyGeom->addPrimitive(new osg::DrawArrays(osg::PrimitiveSet::POLYGON,0,numCoords));
+        polyGeom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::POLYGON,0,numCoords));
 
         printTriangles("Polygon",*polyGeom);
         
@@ -369,7 +370,7 @@ osg::Node* createScene()
 
         // This time we simply use primitive, and hardwire the number of coords to use 
         // since we know up front,
-        polyGeom->addPrimitive(new osg::DrawArrays(osg::PrimitiveSet::QUADS,0,numCoords));
+        polyGeom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::QUADS,0,numCoords));
         
         
         printTriangles("Quads",*polyGeom);
@@ -418,7 +419,7 @@ osg::Node* createScene()
 
         // This time we simply use primitive, and hardwire the number of coords to use 
         // since we know up front,
-        polyGeom->addPrimitive(new osg::DrawArrays(osg::PrimitiveSet::QUAD_STRIP,0,numCoords));
+        polyGeom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::QUAD_STRIP,0,numCoords));
         
         
         printTriangles("Quads strip",*polyGeom);
@@ -486,9 +487,9 @@ osg::Node* createScene()
 
         // This time we simply use primitive, and hardwire the number of coords to use 
         // since we know up front,
-        polyGeom->addPrimitive(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES,0,6));
-        polyGeom->addPrimitive(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLE_STRIP,6,6));
-        polyGeom->addPrimitive(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLE_FAN,12,5));
+        polyGeom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES,0,6));
+        polyGeom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLE_STRIP,6,6));
+        polyGeom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLE_FAN,12,5));
         
 	// polygon stipple
 	osg::StateSet* stateSet = new osg::StateSet();
@@ -604,7 +605,7 @@ osg::Node* createBackground()
     // contains unsigned char indicies, UShortDrawElements which contains unsigned short indices,
     // and UIntDrawElements whcih contains ... unsigned int indices.  
     // The first parameter to DrawElements is 
-    polyGeom->addPrimitive(new osg::DrawElementsUShort(osg::PrimitiveSet::QUADS,numIndices,myIndices));
+    polyGeom->addPrimitiveSet(new osg::DrawElementsUShort(osg::PrimitiveSet::QUADS,numIndices,myIndices));
 
     // new we need to add the texture to the Drawable, we do so by creating a 
     // StateSet to contain the Texture2D StateAttribute.
@@ -661,6 +662,8 @@ int main( int argc, char **argv )
     osg::Group* root = new osg::Group;
     root->addChild( createScene() );
     root->addChild( createBackground() );
+
+    osgDB::writeNodeFile(*root,"geoemtry.osg");
 
 
     // add model to viewer.

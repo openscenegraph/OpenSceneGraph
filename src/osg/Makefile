@@ -39,7 +39,6 @@ CXXFILES =\
 	Image.cpp\
 	Impostor.cpp\
 	ImpostorSprite.cpp\
-	IndexedGeometry.cpp\
 	LOD.cpp\
 	Light.cpp\
 	LightModel.cpp\

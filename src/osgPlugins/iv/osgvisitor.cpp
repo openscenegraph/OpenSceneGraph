@@ -291,7 +291,7 @@ void OSGVisitor::applyIndexedFaceSet(IndexedFaceSet *ifs) {
     for (i=1;i<=4;i++) {
 	osg::PrimitiveSet *p=generatePrimitive(polys,i);
 	if (p!=0) {
-            geometry->addPrimitive(p);
+            geometry->addPrimitiveSet(p);
 	}
     }
     TextureCoordList tcoord;
@@ -348,7 +348,7 @@ void OSGVisitor::applyIndexedTriStripSet(IndexedTriStripSet *its) {
 	for (j=0;j<vindex.size();j++) {
             indices[j]=vindex[j];
 	}
-        geometry->addPrimitive(new osg::DrawElementsUShort(osg::PrimitiveSet::TRIANGLE_STRIP,vindex.size(),indices));
+        geometry->addPrimitiveSet(new osg::DrawElementsUShort(osg::PrimitiveSet::TRIANGLE_STRIP,vindex.size(),indices));
     }
 
 

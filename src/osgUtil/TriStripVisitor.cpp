@@ -40,8 +40,8 @@ void TriStripVisitor::stripify(Geometry& geom)
     unsigned int numSurfacePrimitives = 0;
     unsigned int numNonSurfacePrimitives = 0;
 
-    Geometry::PrimitiveList& primitives = geom.getPrimitiveList();
-    Geometry::PrimitiveList::iterator itr;
+    Geometry::PrimitiveSetList& primitives = geom.getPrimitiveSetList();
+    Geometry::PrimitiveSetList::iterator itr;
     for(itr=primitives.begin();
         itr!=primitives.end();
         ++itr)
@@ -67,7 +67,7 @@ void TriStripVisitor::stripify(Geometry& geom)
     
     TriangleFunctor<TriangleAcumulatorFunctor> taf;
 
-    Geometry::PrimitiveList new_primitives;
+    Geometry::PrimitiveSetList new_primitives;
     new_primitives.reserve(primitives.size());
 
     for(itr=primitives.begin();
@@ -199,7 +199,7 @@ void TriStripVisitor::stripify(Geometry& geom)
                 triangles->push_back(leftoverFaces[i]->m_v2);
             }
         }
-        geom.setPrimitiveList(new_primitives);
+        geom.setPrimitiveSetList(new_primitives);
     }
 }
 

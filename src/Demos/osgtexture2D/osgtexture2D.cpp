@@ -122,7 +122,7 @@ osg::Drawable* createSquare(float textureCoordMax=1.0f)
     (*tcoords)[3].set(textureCoordMax,textureCoordMax);
     geom->setTexCoordArray(0,tcoords);
     
-    geom->addPrimitive(osgNew osg::DrawArrays(osg::PrimitiveSet::QUADS,0,4));
+    geom->addPrimitiveSet(osgNew osg::DrawArrays(osg::PrimitiveSet::QUADS,0,4));
 
     return geom;
 }

@@ -15,7 +15,6 @@ namespace osg {
 
 // forward declare so that we don't need to include the header.
 class Geometry;
-class IndexedGeometry;
 
 /** Note, osg::GeoSet is now deprecated, please use osg::Geometry instead.
     osg::GeoSet will be kept through to the beta release for 
@@ -338,9 +337,6 @@ class SG_EXPORT GeoSet : public Drawable
 
         /** convinience function for converting GeoSet's to equivilant Geometry nodes.*/
         Geometry* convertToGeometry();
-
-        /** convinience function for converting GeoSet's to equivilant IndexedGeometry nodes.*/
-        IndexedGeometry* convertToIndexedGeometry();
 
     protected:
 

@@ -250,7 +250,7 @@ osg::Node* createOccluder(const osg::Vec3& v1,const osg::Vec3& v2,const osg::Vec
     geom->setColorArray(colors);
     geom->setColorBinding(osg::Geometry::BIND_OVERALL);
     
-    geom->addPrimitive(osgNew osg::DrawArrays(osg::PrimitiveSet::QUADS,0,4));
+    geom->addPrimitiveSet(osgNew osg::DrawArrays(osg::PrimitiveSet::QUADS,0,4));
     
     osg::Geode* geode = osgNew osg::Geode;
     geode->addDrawable(geom);

@@ -187,7 +187,7 @@ void DynGeoSet::addToGeometry(osg::Geometry* geom)
     
     if (_primtype!=osg::PrimitiveSet::POLYGON)
     {
-        geom->addPrimitive(new osg::DrawArrays(_primtype,indexBase,_coordList.size()));
+        geom->addPrimitiveSet(new osg::DrawArrays(_primtype,indexBase,_coordList.size()));
     }
     else
     {
@@ -195,7 +195,7 @@ void DynGeoSet::addToGeometry(osg::Geometry* geom)
             itr!=_primLenList.end();
             ++itr)
         {
-            geom->addPrimitive(new osg::DrawArrays(_primtype,indexBase,*itr));
+            geom->addPrimitiveSet(new osg::DrawArrays(_primtype,indexBase,*itr));
             indexBase += *itr;
         }
     }    

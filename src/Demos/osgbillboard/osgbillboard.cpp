@@ -54,7 +54,7 @@ osg::Drawable* createSquare(const osg::Vec3& corner,const osg::Vec3& width,const
     (*tcoords)[3].set(0.0f,1.0f);
     geom->setTexCoordArray(0,tcoords);
     
-    geom->addPrimitive(osgNew osg::DrawArrays(osg::PrimitiveSet::QUADS,0,4));
+    geom->addPrimitiveSet(osgNew osg::DrawArrays(osg::PrimitiveSet::QUADS,0,4));
     
     if (image)
     {
@@ -98,7 +98,7 @@ osg::Drawable* createAxis(const osg::Vec3& corner,const osg::Vec3& xdir,const os
     geom->setColorArray(color);
     geom->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
     
-    geom->addPrimitive(osgNew osg::DrawArrays(osg::PrimitiveSet::LINES,0,6));
+    geom->addPrimitiveSet(osgNew osg::DrawArrays(osg::PrimitiveSet::LINES,0,6));
     
     osg::StateSet* stateset = new osg::StateSet;
     osg::LineWidth* linewidth = new osg::LineWidth();

@@ -1796,16 +1796,16 @@ void ConvertFromFLT::visitMeshPrimitive ( osg::Group &parent, MeshPrimitiveRecor
     switch ( mesh->getData()->primitiveType )
     {
     case MeshPrimitiveRecord::TRIANGLE_STRIP:
-        geometry->addPrimitive ( new osg::DrawArrays(osg::PrimitiveSet::TRIANGLE_STRIP,0,mesh->getNumVertices()) );
+        geometry->addPrimitiveSet ( new osg::DrawArrays(osg::PrimitiveSet::TRIANGLE_STRIP,0,mesh->getNumVertices()) );
         break;
     case MeshPrimitiveRecord::TRIANGLE_FAN:
-        geometry->addPrimitive ( new osg::DrawArrays(osg::PrimitiveSet::TRIANGLE_FAN,0,mesh->getNumVertices()) );
+        geometry->addPrimitiveSet ( new osg::DrawArrays(osg::PrimitiveSet::TRIANGLE_FAN,0,mesh->getNumVertices()) );
         break;
     case MeshPrimitiveRecord::QUADRILATERAL_STRIP:
-        geometry->addPrimitive ( new osg::DrawArrays(osg::PrimitiveSet::QUAD_STRIP,0,mesh->getNumVertices()) );
+        geometry->addPrimitiveSet ( new osg::DrawArrays(osg::PrimitiveSet::QUAD_STRIP,0,mesh->getNumVertices()) );
         break;
     case MeshPrimitiveRecord::INDEXED_POLYGON:
-        geometry->addPrimitive ( new osg::DrawArrays(osg::PrimitiveSet::POLYGON,0,mesh->getNumVertices()) );
+        geometry->addPrimitiveSet ( new osg::DrawArrays(osg::PrimitiveSet::POLYGON,0,mesh->getNumVertices()) );
         break;
     default:
         assert ( 0 ); // What type is this?

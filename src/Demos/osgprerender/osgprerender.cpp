@@ -518,7 +518,7 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph)
     polyGeom->setColorArray(colors);
     polyGeom->setColorBinding(osg::Geometry::BIND_OVERALL);
 
-    polyGeom->addPrimitive(new osg::DrawArrays(osg::PrimitiveSet::QUAD_STRIP,0,vertices->size()));
+    polyGeom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::QUAD_STRIP,0,vertices->size()));
 
     // new we need to add the texture to the Drawable, we do so by creating a 
     // StateSet to contain the Texture StateAttribute.

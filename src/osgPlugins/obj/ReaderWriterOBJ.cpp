@@ -207,7 +207,7 @@ osg::Drawable* ReaderWriterOBJ::makeDrawable(GLMmodel* obj,
     osg::Geometry* geom = new osg::Geometry;
 
     // primitives are only triangles
-    geom->addPrimitive(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES,0,ntris*3));
+    geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES,0,ntris*3));
 
     // the following code for mapping the coords, normals and texcoords
     // is complicated greatly by the need to create separate out the

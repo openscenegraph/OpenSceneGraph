@@ -180,12 +180,7 @@ class FTGL_EXPORT FTFont
          */
         FTSize charSize;
 
-        /**
-         * An object that holds a list of glyphs
-         */
-        // mrn@changes
-//        FTGlyphContainer*    glyphList;
-        
+       
         /**
          * The number of glyphs in this font
          */
@@ -207,6 +202,17 @@ class FTGL_EXPORT FTFont
         // mrn@changes
         typedef std::vector<FTGlyphContainer*> GlyphContextContainer;
         GlyphContextContainer    _contextGlyphList;
+        
+        FTGlyphContainer* getValidGlypContainer()
+        {
+            for(GlyphContextContainer::iterator itr=_contextGlyphList.begin();
+                itr!=_contextGlyphList.end();
+                ++itr)
+            {
+                if ((*itr)!=0) return *itr;
+            }
+            return 0;
+        }
 
     private:
 

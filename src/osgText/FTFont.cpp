@@ -109,7 +109,9 @@ int    FTFont::Descender() const
 float FTFont::Advance( const wchar_t* string)
 {
     // all are the same, a bit a hack
-    FTGlyphContainer* glyphList=_contextGlyphList[0];
+    FTGlyphContainer* glyphList=getValidGlypContainer();
+    
+    if (!glyphList) return 1.0f;
 
     const wchar_t* c = string; // wchar_t IS unsigned?
     float width = 0;
@@ -128,7 +130,10 @@ float FTFont::Advance( const wchar_t* string)
 float FTFont::Advance( const char* string)
 {
     // all are the same, a bit a hack
-    FTGlyphContainer* glyphList=_contextGlyphList[0];
+    FTGlyphContainer* glyphList=getValidGlypContainer();
+
+    if (!glyphList) return 1.0f;
+
     const unsigned char* c = (unsigned char*)string; // This is ugly, what is the c++ way?
     float width = 0;
 
@@ -145,7 +150,10 @@ float FTFont::Advance( std::vector<int>::const_iterator first,
                        std::vector<int>::const_iterator last)
 {
     // all are the same, a bit a hack
-    FTGlyphContainer* glyphList=_contextGlyphList[0];
+    FTGlyphContainer* glyphList=getValidGlypContainer();
+
+    if (!glyphList) return 1.0f;
+
     float width = 0;
 
     for (std::vector<int>::const_iterator c = first;

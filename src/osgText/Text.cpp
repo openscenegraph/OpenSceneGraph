@@ -128,7 +128,7 @@ setDefaults()
 
     _initAlignment=false;
 
-    _useDisplayList=false;
+     _useDisplayList=false;
 
     _encodedText = new EncodedText();
 }
@@ -191,6 +191,24 @@ void Text::accept(PrimitiveFunctor& functor) const
     functor.drawArrays( GL_QUADS, 0, 4);
 }
 
+void Text::compile(State& state) const
+{
+    // ahhhh, this is bit doddy, the draw is potentially
+    // modifying the text object, this isn't thread safe.
+    Text* this_non_const = const_cast<Text*>(this);
+    
+    if(!_font->isCreated() || !(this_non_const->_font->getFont()->Created(state.getContextID())))
+    {
+        this_non_const->_font->create(state);
+        this_non_const->dirtyBound();
+    }
+
+    if(!_initAlignment)
+    {
+        this_non_const->initAlignment();
+    }
+}
+
 void Text::drawImplementation(State& state) const
 {
     if(!_init)
@@ -200,14 +218,16 @@ void Text::drawImplementation(State& state) const
     // modifying the text object, this isn't thread safe.
     Text* this_non_const = const_cast<Text*>(this);
     
-    if(!_font->isCreated())
+    if(!_font->isCreated() || !(this_non_const->_font->getFont()->Created(state.getContextID())))
     {
         this_non_const->_font->create(state);
         this_non_const->dirtyBound();
     }
 
     if(!_initAlignment)
+    {
         this_non_const->initAlignment();
+    }
 
     // we must disable all the vertex arrays to prevent any state
     // propagating into text.        

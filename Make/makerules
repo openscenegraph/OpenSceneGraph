@@ -89,7 +89,7 @@ $(EXEC:=.dbg) :
 	  $(MAKE) -f ../GNUmakefile "DOF=$(DBGF)"  TOPDIR=../${TOPDIR} \
 	      THISDIR=../$(THISDIR)\
 	      MAKEDEPEND=Makedepend $(EXEC)
-	@$(MAKE) LNSRC=$(DEBUGDIR)/$(EXEC) LNDEST=$(BININST)/$(OS)$(ARCH)/$(EXEC) __link
+	@$(MAKE) LNSRC=$(DEBUGDIR)/$(EXEC)$(EXE_EXT) LNDEST=$(BININST)/$(OS)$(ARCH)/$(EXEC)$(EXE_EXT) __link
 
 $(LIB:=.dbg) : $(PLUGIN:=.dbg)
 	@[ -d $(DEBUGDIR) ] || mkdir $(DEBUGDIR)
@@ -113,7 +113,7 @@ $(EXEC:=.opt) :
 	  $(MAKE) -f ../GNUmakefile DOF=$(OPTF)  TOPDIR=../${TOPDIR} \
 	      THISDIR=../$(THISDIR)\
 	      MAKEDEPEND=Makedepend $(EXEC)
-	@$(MAKE) LNSRC=$(OPTDIR)/$(EXEC) LNDEST=$(BININST)/$(OS)$(ARCH)/$(EXEC) __link
+	@$(MAKE) LNSRC=$(OPTDIR)/$(EXEC)$(EXE_EXT) LNDEST=$(BININST)/$(OS)$(ARCH)/$(EXEC)$(EXE_EXT) __link
 
 
 $(LIB:=.opt) : 

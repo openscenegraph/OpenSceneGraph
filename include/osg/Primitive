@@ -9,7 +9,6 @@
 
 namespace osg {
 
-
 class Primitive : public Object
 {
     public:
@@ -113,7 +112,8 @@ class SG_EXPORT DrawArrays : public Primitive
         GLsizei _count;
 };
 
-class SG_EXPORT UByteDrawElements : public Primitive, public std::vector<unsigned char>
+typedef std::vector<GLubyte>    UByteVector;
+class SG_EXPORT UByteDrawElements : public Primitive, public UByteVector
 {
     public:
 
@@ -122,20 +122,20 @@ class SG_EXPORT UByteDrawElements : public Primitive, public std::vector<unsigne
     
         UByteDrawElements(const UByteDrawElements& array,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             Primitive(array,copyop),
-            std::vector<unsigned char>(array) {}
+            UByteVector(array) {}
 
         UByteDrawElements(GLenum mode,unsigned int no,unsigned char* ptr) : 
             Primitive(UByteDrawElementsPrimitiveType,mode),
-            std::vector<unsigned char>(ptr,ptr+no) {}
+            UByteVector(ptr,ptr+no) {}
 
         UByteDrawElements(GLenum mode,unsigned int no) : 
             Primitive(UByteDrawElementsPrimitiveType,mode),
-            std::vector<unsigned char>(no) {}
+            UByteVector(no) {}
 
         template <class InputIterator>
         UByteDrawElements(GLenum mode, InputIterator first,InputIterator last) : 
             Primitive(UByteDrawElementsPrimitiveType,mode),
-            std::vector<unsigned char>(first,last) {}
+            UByteVector(first,last) {}
 
         virtual Object* cloneType() const { return osgNew UByteDrawElements(); }
         virtual Object* clone(const CopyOp& copyop) const { return osgNew UByteDrawElements(*this,copyop); }        
@@ -148,7 +148,9 @@ class SG_EXPORT UByteDrawElements : public Primitive, public std::vector<unsigne
         virtual void applyPrimitiveOperation(Drawable::PrimitiveFunctor& functor);
 };
 
-class SG_EXPORT UShortDrawElements : public Primitive, public std::vector<unsigned short>
+
+typedef std::vector<GLushort>   UShortVector;
+class SG_EXPORT UShortDrawElements : public Primitive, public UShortVector
 {
     public:
 
@@ -157,20 +159,20 @@ class SG_EXPORT UShortDrawElements : public Primitive, public std::vector<unsign
     
         UShortDrawElements(const UShortDrawElements& array,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             Primitive(array,copyop),
-            std::vector<unsigned short>(array) {}
+            UShortVector(array) {}
 
         UShortDrawElements(GLenum mode,unsigned int no,unsigned short* ptr) : 
             Primitive(UShortDrawElementsPrimitiveType,mode),
-            std::vector<unsigned short>(ptr,ptr+no) {}
+            UShortVector(ptr,ptr+no) {}
 
         UShortDrawElements(GLenum mode,unsigned int no) : 
             Primitive(UShortDrawElementsPrimitiveType,mode),
-            std::vector<unsigned short>(no) {}
+            UShortVector(no) {}
 
         template <class InputIterator>
         UShortDrawElements(GLenum mode, InputIterator first,InputIterator last) : 
             Primitive(UShortDrawElementsPrimitiveType,mode),
-            std::vector<unsigned short>(first,last) {}
+            UShortVector(first,last) {}
 
         virtual Object* cloneType() const { return osgNew UShortDrawElements(); }
         virtual Object* clone(const CopyOp& copyop) const { return osgNew UShortDrawElements(*this,copyop); }        
@@ -183,7 +185,8 @@ class SG_EXPORT UShortDrawElements : public Primitive, public std::vector<unsign
         virtual void applyPrimitiveOperation(Drawable::PrimitiveFunctor& functor);
 };
 
-class SG_EXPORT UIntDrawElements : public Primitive, public std::vector<unsigned int>
+typedef std::vector<GLuint>     UIntVector;
+class SG_EXPORT UIntDrawElements : public Primitive, public UIntVector
 {
     public:
 
@@ -192,20 +195,20 @@ class SG_EXPORT UIntDrawElements : public Primitive, public std::vector<unsigned
     
         UIntDrawElements(const UIntDrawElements& array,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             Primitive(array,copyop),
-            std::vector<unsigned int>(array) {}
+            UIntVector(array) {}
 
         UIntDrawElements(GLenum mode,unsigned int no,unsigned int* ptr) : 
             Primitive(UIntDrawElementsPrimitiveType,mode),
-            std::vector<unsigned int>(ptr,ptr+no) {}
+            UIntVector(ptr,ptr+no) {}
 
         UIntDrawElements(GLenum mode,unsigned int no) : 
             Primitive(UIntDrawElementsPrimitiveType,mode),
-            std::vector<unsigned int>(no) {}
+            UIntVector(no) {}
 
         template <class InputIterator>
         UIntDrawElements(GLenum mode, InputIterator first,InputIterator last) : 
             Primitive(UIntDrawElementsPrimitiveType,mode),
-            std::vector<unsigned int>(first,last) {}
+            UIntVector(first,last) {}
 
         virtual Object* cloneType() const { return osgNew UIntDrawElements(); }
         virtual Object* clone(const CopyOp& copyop) const { return osgNew UIntDrawElements(*this,copyop); }        

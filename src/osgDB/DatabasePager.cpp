@@ -209,9 +209,11 @@ void DatabasePager::signalEndFrame()
 class FindCompileableGLObjectsVisitor : public osg::NodeVisitor
 {
 public:
-    FindCompileableGLObjectsVisitor(DatabasePager::DataToCompile& dataToCompile):
+    FindCompileableGLObjectsVisitor(DatabasePager::DataToCompile& dataToCompile, bool unrefImageOnApply, bool clientStorageHint):
         osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
-        _dataToCompile(dataToCompile)
+        _dataToCompile(dataToCompile),
+        _unrefImageOnApply(unrefImageOnApply),
+        _clientStorageHint(clientStorageHint)
     {
     }
     
@@ -246,7 +248,16 @@ public:
                 ++itr)
             {
                 osg::StateSet::AttributeList& al = *itr;
-                if (al.count(osg::StateAttribute::TEXTURE)==1) foundTextureState = true;
+                if (al.count(osg::StateAttribute::TEXTURE)==1)
+                {
+                    foundTextureState = true;
+                    osg::Texture* texture = dynamic_cast<osg::Texture*>(al[osg::StateAttribute::TEXTURE].first.get());
+                    if (texture)
+                    {
+                        texture->setUnRefImageDataAfterApply(_unrefImageOnApply);
+                        texture->setClientStorageHint(_clientStorageHint);
+                    }
+                }
             }
 
             // if texture object attributes exist add the state to the list for later compilation.
@@ -269,7 +280,9 @@ public:
         }
     }
     
-    DatabasePager::DataToCompile& _dataToCompile;
+    DatabasePager::DataToCompile&   _dataToCompile;
+    bool                            _unrefImageOnApply;
+    bool                            _clientStorageHint;
 };
 
 
@@ -361,7 +374,7 @@ void DatabasePager::run()
                     ++itr;                
 
                     // find all the compileable rendering objects
-                    FindCompileableGLObjectsVisitor frov(dtc);
+                    FindCompileableGLObjectsVisitor frov(dtc, true, true);
                     databaseRequest->_loadedModel->accept(frov);
 
                     if (!dtc.first.empty() || !dtc.second.empty())

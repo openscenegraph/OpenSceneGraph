@@ -112,11 +112,11 @@ bool PagedLOD_writeLocalData(const Object& obj, Output& fw)
     fw.indent() << "}"<< std::endl;
 
     fw.indent() << "num_children " << numChildrenToWriteOut << std::endl;
-    for(unsigned int i=0;i<lod.getNumChildren();++i)
+    for(unsigned int j=0;j<lod.getNumChildren();++j)
     {
-        if (lod.getFileName(i).empty())
+        if (lod.getFileName(j).empty())
         {
-            fw.writeObject(*lod.getChild(i));
+            fw.writeObject(*lod.getChild(j));
         }
     }
 

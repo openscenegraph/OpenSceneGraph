@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "../../include" /D "NDEBUG" /D "_MBCS" /D "_USRDLL" /D "OSGUTIL_LIBRARY" /D "WIN32" /D "_WINDOWS" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "../../include" /D "NDEBUG" /D "_MBCS" /D "_USRDLL" /D "OSGUTIL_LIBRARY" /D "_WINDOWS" /D "WIN32" /YX /FD /Zm200 /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "NDEBUG"
@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /vmg /vd0 /GR /GX /Zi /Od /I "../../include" /D "OSGUTIL_LIBRARY" /D "_WINDOWS" /D "WIN32" /D "_DEBUG" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /vmg /vd0 /GR /GX /Zi /Od /I "../../include" /D "_DEBUG" /D "OSGUTIL_LIBRARY" /D "_WINDOWS" /D "WIN32" /YX /FD /GZ /Zm200 /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
@@ -97,18 +97,6 @@ SOURCE=..\..\src\osgUtil\CubeMapGenerator.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgUtil\HalfWayMapGenerator.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgUtil\HighlightMapGenerator.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgUtil\UpdateVisitor.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\osgUtil\CullVisitor.cpp
 # End Source File
 # Begin Source File
@@ -122,6 +110,14 @@ SOURCE=..\..\src\osgUtil\DisplayListVisitor.cpp
 # Begin Source File
 
 SOURCE=..\..\src\osgUtil\DisplayRequirementsVisitor.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgUtil\HalfWayMapGenerator.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgUtil\HighlightMapGenerator.cpp
 # End Source File
 # Begin Source File
 
@@ -173,11 +169,15 @@ SOURCE=..\..\src\osgUtil\Tesselator.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgUtil\TransformAttributeFunctor.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgUtil\TransformCallback.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgUtil\TransformAttributeFunctor.cpp
+SOURCE=..\..\src\osgUtil\TriStrip_tri_stripper.cpp
 # End Source File
 # Begin Source File
 
@@ -185,7 +185,7 @@ SOURCE=..\..\src\osgUtil\TriStripVisitor.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgUtil\TriStrip_tri_stripper.cpp
+SOURCE=..\..\src\osgUtil\UpdateVisitor.cpp
 # End Source File
 # Begin Source File
 
@@ -198,22 +198,6 @@ SOURCE=..\..\src\osgUtil\Version.cpp
 # Begin Source File
 
 SOURCE=..\..\include\osgUtil\CubeMapGenerator
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\include\osgUtil\HalfWayMapGenerator
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\include\osgUtil\HighlightMapGenerator
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\include\osgUtil\ReflectionMapGenerator
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\include\osgUtil\UpdateVisitor
 # End Source File
 # Begin Source File
 
@@ -237,6 +221,14 @@ SOURCE=..\..\Include\osgUtil\Export
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\osgUtil\HalfWayMapGenerator
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgUtil\HighlightMapGenerator
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\Include\osgUtil\InsertImpostorsVisitor
 # End Source File
 # Begin Source File
@@ -246,6 +238,10 @@ SOURCE=..\..\Include\osgUtil\IntersectVisitor
 # Begin Source File
 
 SOURCE=..\..\include\osgUtil\Optimizer
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgUtil\ReflectionMapGenerator
 # End Source File
 # Begin Source File
 
@@ -285,15 +281,11 @@ SOURCE=..\..\include\osgUtil\Tesselator
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\include\osgUtil\TransformCallback
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\include\osgUtil\TransformAttributeFunctor
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\include\osgUtil\TriStripVisitor
+SOURCE=..\..\include\osgUtil\TransformCallback
 # End Source File
 # Begin Source File
 
@@ -306,6 +298,14 @@ SOURCE=..\..\Src\osgUtil\TriStrip_heap_array.h
 # Begin Source File
 
 SOURCE=..\..\Src\osgUtil\TriStrip_tri_stripper.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgUtil\TriStripVisitor
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgUtil\UpdateVisitor
 # End Source File
 # Begin Source File
 

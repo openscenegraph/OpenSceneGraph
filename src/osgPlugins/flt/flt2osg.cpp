@@ -561,7 +561,10 @@ osg::Group* ConvertFromFLT::visitGroup(osg::Group& osgParent, GroupRecord* rec)
         else 
             animSeq->setInterval(osg::Sequence::SWING, 0, -1);
         
-        animSeq->setName(rec->getData()->szIdent);
+        // Only set the name from the normal record ID if the visitAncillary()
+        // call didn't find a Long ID record on this group
+        if (animSeq->getName().length() == 0)
+            animSeq->setName(rec->getData()->szIdent);
         
         return animSeq;
     }

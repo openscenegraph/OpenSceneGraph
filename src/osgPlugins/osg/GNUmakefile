@@ -56,6 +56,7 @@ CXXFILES =\
         Texture1D.cpp\
         Texture2D.cpp\
         Texture3D.cpp\
+        TextureRectangle.cpp\
         TextureCubeMap.cpp\
         Transform.cpp\
 

@@ -83,6 +83,7 @@ void initGLNames()
     ADD_NAME("GL_TEXTURE_3D",GL_TEXTURE_3D)
     
     ADD_NAME("GL_TEXTURE_CUBE_MAP",GL_TEXTURE_CUBE_MAP);
+    ADD_NAME("GL_TEXTURE_RECTANGLE",GL_TEXTURE_RECTANGLE_NV);
     
     ADD_NAME("GL_TEXTURE_GEN_Q",GL_TEXTURE_GEN_Q)
     ADD_NAME("GL_TEXTURE_GEN_R",GL_TEXTURE_GEN_R)
@@ -113,6 +114,7 @@ void initGLNames()
     s_TextureGLModeSet.insert(GL_TEXTURE_3D);
     
     s_TextureGLModeSet.insert(GL_TEXTURE_CUBE_MAP);
+    s_TextureGLModeSet.insert(GL_TEXTURE_RECTANGLE_NV);
     
     s_TextureGLModeSet.insert(GL_TEXTURE_GEN_Q);
     s_TextureGLModeSet.insert(GL_TEXTURE_GEN_R);

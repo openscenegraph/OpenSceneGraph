@@ -45,6 +45,7 @@ class TextureGLModeSet
             _textureModeSet.insert(GL_TEXTURE_3D);
 
             _textureModeSet.insert(GL_TEXTURE_CUBE_MAP);
+	    _textureModeSet.insert(GL_TEXTURE_RECTANGLE_NV);
 
             _textureModeSet.insert(GL_TEXTURE_GEN_Q);
             _textureModeSet.insert(GL_TEXTURE_GEN_R);

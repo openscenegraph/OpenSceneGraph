@@ -272,6 +272,34 @@ SOURCE=..\..\..\src\osgPlugins\ive\TextureCubeMap.cpp
 
 SOURCE=..\..\..\src\osgPlugins\ive\Transform.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\AzimElevationSector.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\AzimSector.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\BlinkSequence.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\ConeSector.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\ElevationSector.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\LightPoint.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\LightPointNode.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -459,6 +487,34 @@ SOURCE=..\..\..\src\osgPlugins\ive\TextureCubeMap.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\Transform.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\AzimElevationSector.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\AzimSector.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\BlinkSequence.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\ConeSector.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\ElevationSector.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\LightPoint.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\LightPointNode.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

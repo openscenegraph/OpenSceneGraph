@@ -190,6 +190,16 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         /** Set to the position and orientation of view matrix, using the same convention as gluLookAt. */
         void setViewMatrixAsLookAt(const osg::Vec3& eye,const osg::Vec3& center,const osg::Vec3& up);
 
+        /** Get the view matrix. */
+        osg::Matrixd& getViewMatrix() { return _viewMatrix; }
+
+        /** Get the const view matrix. */
+        const osg::Matrixd& getViewMatrix() const { return _viewMatrix; }
+
+        /** Get to the position and orientation of a modelview matrix, using the same convention as gluLookAt. */
+        void getViewMatrixAsLookAt(osg::Vec3& eye,osg::Vec3& center,osg::Vec3& up,float lookDistance=1.0f);
+
+
         /** Set the draw buffer value used at the start of each frame draw.  Note, overridden in quad buffer stereo mode */
         void setDrawBufferValue( GLenum drawBufferValue )
         {
@@ -201,16 +211,6 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         {
             return _drawBufferValue;
         }
-
-        /** Get the view matrix. */
-        osg::Matrixd& getViewMatrix() { return _viewMatrix; }
-
-        /** Get the const view matrix. */
-        const osg::Matrixd& getViewMatrix() const { return _viewMatrix; }
-
-        /** Get to the position and orientation of a modelview matrix, using the same convention as gluLookAt. */
-        void getViewMatrixAsLookAt(osg::Vec3& eye,osg::Vec3& center,osg::Vec3& up,float lookDistance=1.0f);
-
 
         
         void setInitVisitor(osg::NodeVisitor* av) { _initVisitor = av; }

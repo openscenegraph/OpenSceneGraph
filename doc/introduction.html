@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+  <title>introduction to the OpenSceneGraph</title>
+</head>
+<body bgcolor="white">
+
+<img src="OpenSceneGraphBanner_Distribution.jpg" width=640 height=77 border=0>
+
+<h2>Introduction to the OpenSceneGraph</h2>
+
+<p>Welcome to OpenSceneGraph project!
+</p>
+<p>In this document I'll introduce what a scene graph is, what the OpenSceneGraph project encompasses, and provide tips on how to learn how to use it
+and to contact or contribute to the OpenSceneGraph community.
+</p>
+
+<i>Robert Osfield,
+Project Lead.
+April 2002.</i>
+
+<hr>
+
+<h2>What is a Scene Graph?</h2>
+</p>Its a tree! Quite simply one the best and most reusable datastructures invented.Typically drawn schematically as
+root at the top, leaves at the bottom. It all starts with a topmost root node which
+encompasses your whole virtual world, be it 2D or 3D. The world is then broken down
+into hierachy of nodes represent either a spatial grouping of objects,
+set the position of or animate objects,. or define a logical relationship between objects such as to manage
+the various states of a traffic light.The leaves of the graph represent the phyical objects
+themselves, the drawable geometry and their material properties.
+</p>
+
+<hr>
+
+<h2>Why use a Scene Graph - Performance, Productivity, Portability and Scalability.</h2>
+
+</p><i>Performance</i> - scene graphs provide an excellent framework for maximize graphics
+performance. A good scene graph employs two key techinques - culling of the objects that won't
+be seen on screen, and state sorting of properties such as textures and materials
+so that all similar objects are drawn together. Without culling the CPU, buses and
+GPU will all become swamped by many times the amount of data tham they acual require.to represent
+you work accurately. The hierachical structure of the scene graph makes this culling
+process.very efficient.with whole town being culled with just a few operations! Without state storting, the the buses and GPU will thrash between
+states, stalling the graphics and destroying graphisc throughout.  As GPU's get faster and faster, the cost of
+stalling the graphics is also going up, so scene graph are become ever more important.
+</p>
+
+</p><i>Productivity</i> - scene graphs take much of the hardwork required to develop
+high perftomance graphics applications. The scene graphs manage all the graphics for you,
+reducing what would be thousands of lines of OpenGL down to a few simple calls..Furthermoe,
+one of most powerfukl concepts in Object Orientated programming is that of object
+compotsition, enshrined in <i>Composite Design Pattern</i>, which fits the scene graph
+tree strucutre perfectly which makes it highly flexible and reusable design - in real terms
+this means that it can be easily adapted it to solve your problems. Scene graph also often come
+additional utilitie libraries which range for helping users set up and manage graphics
+windows to import of 3d modes and images.  All this together allows the user to achieve
+a great deal with very little coding.A dozen lines of code can be enough to load your data
+and create an interactive viewer!
+</p>
+
+</p><i>Portability</i> - scene graphs encapsulate much of the lower level tasks of rendering
+graphics and reading and writing data, reducing or even eradicating the platform specific
+coding that you require in your own application. If the underlying scene graph is portable
+then moving from platform to platform can be a simple as recompiling your source code.
+</p>
+
+</p><i>Scalability</i> - along with being able to dynamic manage the complexity of scenes
+automatically to account for differences in graphics performance across a range of machines,
+scene graphs also make it much easier to manage complex hardware configurations, such as clusters
+of graphics machines, or multiprocessor/multipipe systems such as SGI's Onyx. A good scene graph
+will allow the developer to concentrate on developing their own application while rendering
+framework of the scene graph handles the differnt underlying hardware configurations.
+</p>
+
+<hr>
+
+<h2>What the OpenSceneGraph encompasses?</h2>
+
+<hr>
+
+<h2>How to learn to use the OpenSceneGraph</h2>
+<hr>
+
+<h2>Support and discussion - the OpenSceneGraph-news mailing list</h2>
+
+</body>
+</html>

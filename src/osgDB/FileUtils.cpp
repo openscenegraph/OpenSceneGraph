@@ -44,7 +44,7 @@ inline static char* strdup(const char *src)
 #ifdef WIN32
 char *PathDelimitor = ";";
 static const char *s_default_file_path = ".;";
-static const char *s_default_dso_path = "C:/Windows/System/";
+static const char *s_default_dso_path = "C:/Windows/System/;";
 static char *s_filePath = ".;";
 #elif macintosh
 char *PathDelimitor = " ";
@@ -54,12 +54,12 @@ static char *s_filePath = ":";
 #elif __sgi
 char *PathDelimitor = ":";
 static const char *s_default_file_path = ".:";
-static const char *s_default_dso_path = "/usr/lib32/osgPlugins/:";
+static const char *s_default_dso_path = "/usr/lib32/:/usr/local/lib32/";
 static char *s_filePath = ".:";
 #else
 char *PathDelimitor = ":";
 static const char *s_default_file_path = ".:";
-static const char *s_default_dso_path = "/usr/lib/osgPlugins/:";
+static const char *s_default_dso_path = "/usr/lib/:/usr/local/lib/:";
 static char *s_filePath = ".:";
 #endif
 

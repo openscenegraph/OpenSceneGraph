@@ -89,21 +89,18 @@ std::string extractCameraConfigFile(osg::ArgumentParser& arguments)
 OsgCameraGroup::OsgCameraGroup() : Producer::CameraGroup() 
 {
     _init();
-    _applicationUsage = osg::ApplicationUsage::instance();
 }
 
 OsgCameraGroup::OsgCameraGroup(Producer::CameraConfig *cfg):
     Producer::CameraGroup(cfg) 
 {
     _init();
-    _applicationUsage = osg::ApplicationUsage::instance();
 }
 
 OsgCameraGroup::OsgCameraGroup(const std::string& configFile):
     Producer::CameraGroup(findCameraConfigFile(configFile)) 
 {
     _init();
-    _applicationUsage = osg::ApplicationUsage::instance();
 }
 
 OsgCameraGroup::OsgCameraGroup(osg::ArgumentParser& arguments):
@@ -132,7 +129,8 @@ void OsgCameraGroup::_init()
     // set up the maximum number of graphics contexts, before loading the scene graph
     // to ensure that texture objects and display buffers are configured to the correct size.
     osg::DisplaySettings::instance()->setMaxNumberOfGraphicsContexts( getNumberOfCameras() );
-
+    
+    _applicationUsage = osg::ApplicationUsage::instance();
 }
 
 void OsgCameraGroup::setSceneData( osg::Node *scene ) 

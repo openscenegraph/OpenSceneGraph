@@ -42,9 +42,9 @@ class FltFile : public osg::Referenced
         void setMaterialPool(MaterialPool* materialPool){ _materialPool = materialPool; }
         void setInstancePool(InstancePool* instancePool){ _instancePool = instancePool; }
 
-        inline const bool useInternalColorPalette() const    { return _useInternalColorPalette; }
-        inline const bool useInternalTexturePalette() const  { return _useInternalTexturePalette; }
-        inline const bool useInternalMaterialPalette() const { return _useInternalMaterialPalette; }
+        inline bool useInternalColorPalette() const    { return _useInternalColorPalette; }
+        inline bool useInternalTexturePalette() const  { return _useInternalTexturePalette; }
+        inline bool useInternalMaterialPalette() const { return _useInternalMaterialPalette; }
 
         void setUseTextureAlphaForTransparancyBinning(bool flag) { _useTextureAlphaForTransparancyBinning=flag; }
         bool getUseTextureAlphaForTransparancyBinning() const { return _useTextureAlphaForTransparancyBinning; }

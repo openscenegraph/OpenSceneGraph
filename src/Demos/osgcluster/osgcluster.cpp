@@ -111,7 +111,7 @@ class MySceneView : public osgUtil::SceneView {
                 _bc.setBuffer(&cp, sizeof( CameraPacket ));
 	        _bc.sync();
                 
-                cout << "broadcasting death"<<endl;
+                std::cout << "broadcasting death"<<std::endl;
                 
             }
         }
@@ -144,7 +144,7 @@ class MySceneView : public osgUtil::SceneView {
                     
                     if (cp.getMasterKilled()) 
                     {
-                        cout << "recieved master killed"<<endl;
+                        std::cout << "recieved master killed"<<std::endl;
                         _viewerMode = STAND_ALONE;
                     }
                 }
@@ -250,14 +250,14 @@ osg::Node* getNodeFromFiles(int argc,char **argv,
 
     if (nodeList.size()==0)
     {
-        osg::notify(osg::WARN) << "No data loaded."<<endl;
+        osg::notify(osg::WARN) << "No data loaded."<<std::endl;
         exit(0);
     }
     
     
 /*
-    if (master) osg::notify(osg::NOTICE)<<"set to MASTER, broadcasting on socketNumber "<<socketNumber<<endl;
-    else osg::notify(osg::NOTICE)<<"set to SLAVE, reciving on socketNumber "<<socketNumber<<endl;
+    if (master) osg::notify(osg::NOTICE)<<"set to MASTER, broadcasting on socketNumber "<<socketNumber<<std::endl;
+    else osg::notify(osg::NOTICE)<<"set to SLAVE, reciving on socketNumber "<<socketNumber<<std::endl;
     
 */
     
@@ -295,30 +295,30 @@ int main( int argc, char **argv )
 
     if (argc<2)
     {
-        osg::notify(osg::NOTICE)<<"usage:"<<endl;
-        osg::notify(osg::NOTICE)<<"    osgcluster [options] infile1 [infile2 ...]"<<endl;
-        osg::notify(osg::NOTICE)<<endl;
-        osg::notify(osg::NOTICE)<<"options:"<<endl;
-        osg::notify(osg::NOTICE)<<"    -m                 - set this viewer to be master"<<endl;
-        osg::notify(osg::NOTICE)<<"    -s                 - set this viewer to be a slave"<<endl;
-        osg::notify(osg::NOTICE)<<"    -o                 - offset the slave camera from the master position"<<endl;
-        osg::notify(osg::NOTICE)<<"                         by specified number of degress. A positive offset "<<endl;
-        osg::notify(osg::NOTICE)<<"                         turns camera towards right."<<endl;
-        osg::notify(osg::NOTICE)<<"    -f                 - set the horizontal field of view of the camera."<<endl;
-        osg::notify(osg::NOTICE)<<"    -n SocketNumber    - set the socket number, defaults to 8100."<<endl;
-        osg::notify(osg::NOTICE)<<"                         to broadcast on if a master"<<endl;
-        osg::notify(osg::NOTICE)<<"                         to reciever on if a slave"<<endl;
-        osg::notify(osg::NOTICE)<<endl;
-        osg::notify(osg::NOTICE)<<"    -l libraryName     - load plugin of name libraryName"<<endl;
-        osg::notify(osg::NOTICE)<<"                         i.e. -l osgdb_pfb"<<endl;
-        osg::notify(osg::NOTICE)<<"                         Useful for loading reader/writers which can load"<<endl;
-        osg::notify(osg::NOTICE)<<"                         other file formats in addition to its extension."<<endl;
-        osg::notify(osg::NOTICE)<<"    -e extensionName   - load reader/wrter plugin for file extension"<<endl;
-        osg::notify(osg::NOTICE)<<"                         i.e. -e pfb"<<endl;
-        osg::notify(osg::NOTICE)<<"                         Useful short hand for specifying full library name as"<<endl;
-        osg::notify(osg::NOTICE)<<"                         done with -l above, as it automatically expands to the"<<endl;
-        osg::notify(osg::NOTICE)<<"                         full library name appropriate for each platform."<<endl;
-        osg::notify(osg::NOTICE)<<endl;
+        osg::notify(osg::NOTICE)<<"usage:"<<std::endl;
+        osg::notify(osg::NOTICE)<<"    osgcluster [options] infile1 [infile2 ...]"<<std::endl;
+        osg::notify(osg::NOTICE)<<std::endl;
+        osg::notify(osg::NOTICE)<<"options:"<<std::endl;
+        osg::notify(osg::NOTICE)<<"    -m                 - set this viewer to be master"<<std::endl;
+        osg::notify(osg::NOTICE)<<"    -s                 - set this viewer to be a slave"<<std::endl;
+        osg::notify(osg::NOTICE)<<"    -o                 - offset the slave camera from the master position"<<std::endl;
+        osg::notify(osg::NOTICE)<<"                         by specified number of degress. A positive offset "<<std::endl;
+        osg::notify(osg::NOTICE)<<"                         turns camera towards right."<<std::endl;
+        osg::notify(osg::NOTICE)<<"    -f                 - set the horizontal field of view of the camera."<<std::endl;
+        osg::notify(osg::NOTICE)<<"    -n SocketNumber    - set the socket number, defaults to 8100."<<std::endl;
+        osg::notify(osg::NOTICE)<<"                         to broadcast on if a master"<<std::endl;
+        osg::notify(osg::NOTICE)<<"                         to reciever on if a slave"<<std::endl;
+        osg::notify(osg::NOTICE)<<std::endl;
+        osg::notify(osg::NOTICE)<<"    -l libraryName     - load plugin of name libraryName"<<std::endl;
+        osg::notify(osg::NOTICE)<<"                         i.e. -l osgdb_pfb"<<std::endl;
+        osg::notify(osg::NOTICE)<<"                         Useful for loading reader/writers which can load"<<std::endl;
+        osg::notify(osg::NOTICE)<<"                         other file formats in addition to its extension."<<std::endl;
+        osg::notify(osg::NOTICE)<<"    -e extensionName   - load reader/wrter plugin for file extension"<<std::endl;
+        osg::notify(osg::NOTICE)<<"                         i.e. -e pfb"<<std::endl;
+        osg::notify(osg::NOTICE)<<"                         Useful short hand for specifying full library name as"<<std::endl;
+        osg::notify(osg::NOTICE)<<"                         done with -l above, as it automatically expands to the"<<std::endl;
+        osg::notify(osg::NOTICE)<<"                         full library name appropriate for each platform."<<std::endl;
+        osg::notify(osg::NOTICE)<<std::endl;
 
         return 0;
     }
@@ -334,7 +334,7 @@ int main( int argc, char **argv )
     osg::Node* rootnode = getNodeFromFiles( argc, argv, viewerMode, socketNumber,camera_fov,camera_offset);
     
     osg::Timer_t after_load = timer.tick();
-    cout << "Time for load = "<<timer.delta_s(before_load,after_load)<<" seconds"<<endl;
+    std::cout << "Time for load = "<<timer.delta_s(before_load,after_load)<<" seconds"<<std::endl;
 
     osg::ref_ptr<MySceneView> mySceneView = new MySceneView(viewerMode,socketNumber,camera_fov,osg::inDegrees(camera_offset));
     mySceneView->setSceneData(rootnode);

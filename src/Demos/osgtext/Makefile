@@ -15,7 +15,7 @@ TARGET_BIN_FILES = osgtext
 LIBS = -losgGLUT -losgText -losgUtil -losgDB -losg $(GLUTLIB) -lGLU -lGL  -lm -lXmu  -lX11 -lXi
 
 C++FLAGS += -I../../../include -g
-LDFLAGS += -L../../../lib
+LDFLAGS += -L../../../lib -L/usr/freeware/lib32
 
 include ../../../Make/makerules
 

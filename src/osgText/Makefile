@@ -42,8 +42,14 @@ TARGET_INCLUDE_FILES = \
 	osgText/Text\
 	osgText/Version
 
-C++FLAGS += -I../../include -I/usr/include/freetype2 -I/usr/local/include -I/usr/local/include/freetype2 
-LDFLAGS += -L/usr/local/lib
+C++FLAGS += -I../../include \
+		-I/usr/include/freetype2 \
+		-I/usr/local/include \
+		-I/usr/local/include/freetype2  \
+		-I/usr/freeware/include\
+		-I/usr/freeware/include/freetype2
+
+LDFLAGS += -L/usr/local/lib -L/usr/freeware/lib32
 
 include ../../Make/makerules
 

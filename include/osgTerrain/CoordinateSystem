@@ -23,21 +23,81 @@
 namespace osgTerrain
 {
 
+const double WGS_84_RADIUS_EQUATOR = 6378137.0;
+const double WGS_84_RADIUS_POLAR = 6356752.3142;
+
+class EllipsodeTransform
+{
+    public:
+
+        EllipsodeTransform(double radiusEquator = WGS_84_RADIUS_EQUATOR,
+                           double radiusPolar = WGS_84_RADIUS_POLAR):
+            _radiusEquator(radiusEquator),
+            _radiusPolar(radiusPolar) { computeCoefficients(); }
+
+
+        void setRadiusEquator(double radius) { _radiusEquator = radius; computeCoefficients(); }
+        double getRadiusEquator() const { return _radiusEquator; }
+
+        void setRadiusPolar(double radius) { _radiusPolar = radius; computeCoefficients(); }
+        double getRadiusPolar() const { return _radiusPolar; }
+
+        inline void convertLatLongHeightToXYZ(double latitude, double longitude, double height,
+                                              double& X, double& Y, double& Z) const
+        {
+            // for details on maths see http://www.colorado.edu/geography/gcraft/notes/datum/gif/llhxyz.gif
+            double sin_latitude = sin(latitude);
+            double cos_latitude = cos(latitude);
+            double N = _radiusEquator / sqrt( 1.0 - _eccentricitySquared*sin_latitude*sin_latitude);
+            X = (N+height)*cos_latitude*cos(longitude);
+            Y = (N+height)*cos_latitude*sin(longitude);
+            Z = (N*(1-_eccentricitySquared)+height)*sin(latitude);
+        }
+
+        inline void convertXYZToLatLongHeight(double X, double Y, double Z,
+                                              double& latitude, double& longitude, double& height) const
+        {
+            // http://www.colorado.edu/geography/gcraft/notes/datum/gif/xyzllh.gif
+            double p = sqrt(X*X + Y*Y);
+            double theta = atan(Z*_radiusEquator/ (p*_radiusPolar));
+            double eDashSquared = (_radiusEquator*_radiusEquator - _radiusPolar*_radiusPolar)/
+                                  (_radiusPolar*_radiusPolar);
+
+            double sin_theta = sin(theta);
+            double cos_theta = cos(theta);
+
+            latitude = atan( (Z + eDashSquared*_radiusPolar*sin_theta*sin_theta*sin_theta) /
+                             (p - _eccentricitySquared*_radiusEquator*cos_theta*cos_theta*cos_theta) );
+            longitude = atan2(Y,X);
+
+            double sin_latitude = sin(latitude);
+            double N = _radiusEquator / sqrt( 1.0 - _eccentricitySquared*sin_latitude*sin_latitude);
+
+            height = p/cos(latitude) - N;
+        }
+
+    protected:
+    
+        void computeCoefficients()
+        {
+            double flattening = (_radiusEquator-_radiusPolar)/_radiusEquator;
+            _eccentricitySquared = 2*flattening - flattening*flattening;
+        }
+
+        double _radiusEquator;
+        double _radiusPolar;
+        double _eccentricitySquared;
+
+};
+
 /** CoordinateSystem encapsulate the coordinate system that associated with objects in a scene.*/
 class CoordinateSystem : public osg::Object
 {
     public:
 
-        enum Type
-        {
-            GEOCENTRIC,
-            GEOGRAPHIC,
-            PROJECTED
-        };
-        
         CoordinateSystem();
 
-        CoordinateSystem(const std::string& WTK, Type type=GEOCENTRIC);
+        CoordinateSystem(const std::string& WTK);
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         CoordinateSystem(const CoordinateSystem&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
@@ -47,7 +107,6 @@ class CoordinateSystem : public osg::Object
         inline bool operator == (const CoordinateSystem& cs) const
         {
             if (this == &cs) return true;
-            if (_type!=cs._type) return false;
             if (_WKT != cs._WKT) return false;
             return true;
         }
@@ -57,10 +116,6 @@ class CoordinateSystem : public osg::Object
             return !(*this==cs);
         }
                 
-        void setType(Type type) { _type = type; }
-        Type getType() const { return _type; }
-        
-
         /** Set the CoordinateSystem reference string, should be stored in OpenGIS Well Know Text form.*/
         void setWKT(const std::string& WKT) { _WKT = WKT; }
         
@@ -99,7 +154,6 @@ class CoordinateSystem : public osg::Object
 
         virtual ~CoordinateSystem() {}
                 
-        Type        _type;
         std::string _WKT;
 
 };

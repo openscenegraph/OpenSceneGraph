@@ -78,6 +78,24 @@ char *SanitizeSRS( const char *pszUserInput )
 }
 
 
+void ellipsodeTransformTest(double latitude, double longitude, double height)
+{
+    osgTerrain::EllipsodeTransform transform;
+    
+    double X,Y,Z;
+    double newLat, newLong, newHeight;
+    
+    transform.convertLatLongHeightToXYZ(latitude,longitude,height,
+                                        X,Y,Z);
+    
+    transform.convertXYZToLatLongHeight(X,Y,Z,
+                                        newLat,newLong,newHeight);
+                                        
+    std::cout<<"lat = "<<osg::RadiansToDegrees(latitude)<<"\tlong="<<osg::RadiansToDegrees(longitude)<<"\t"<<height<<std::endl;  
+    std::cout<<"X = "<<X<<"\tY="<<Y<<"\tZ="<<Z<<std::endl;  
+    std::cout<<"lat = "<<osg::RadiansToDegrees(newLat)<<"\tlong="<<osg::RadiansToDegrees(newLong)<<"\t"<<newHeight<<std::endl;  
+}
+
 int main( int argc, char **argv )
 {
 

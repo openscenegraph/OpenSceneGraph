@@ -291,21 +291,20 @@ int main( int argc, char **argv )
     }
 
     osg::ref_ptr<osg::Node> root = osgDB::readNodeFiles(fileNames);
-    
-    // convert the old style GeoSet to Geometry
-    ConvertGeoSetsToGeometryVisitor cgtg;
-    root->accept(cgtg);
 
-    // optimize the scene graph, remove rendundent nodes and state etc.
-    osgUtil::Optimizer optimizer;
-    optimizer.optimize(root.get());
-    
-
-    if( do_convert )
-        root = oc.convert( root.get() );
-
-    if (root.valid())
+    if ( root.valid() )
     {
+        // convert the old style GeoSet to Geometry
+        ConvertGeoSetsToGeometryVisitor cgtg;
+        if( root.valid() ) root->accept(cgtg);
+    
+        // optimize the scene graph, remove rendundent nodes and state etc.
+        osgUtil::Optimizer optimizer;
+        optimizer.optimize(root.get());
+        
+        if( do_convert )
+            root = oc.convert( root.get() );
+
         if (osgDB::writeNodeFile(*root,fileNameOut))
         {
             osg::notify(osg::NOTICE)<<"Data written to '"<<fileNameOut<<"'."<< std::endl;

@@ -407,7 +407,7 @@ ifeq ($(OS),Darwin)
   OTHER_LIBS        = -lm -lstdc++ -lobjc -lOpenThreads
   LIB_EXT           = dylib
   QUICKTIME	    = -framework QuickTime $(CARBON_LIB)
-  FREETYPE_INCLUDE  = -I/sw/include/freetype2
+  FREETYPE_INCLUDE  = -I/usr/X11R6/include/freetype2 -I/sw/include/freetype2
   LIBXML2_INCLUDE   = -I/sw/include/libxml2 -I/sw/include
   TIFF_LIB	    = -ltiff
   LIBVERSION	    = -current_version $(VERSION) \

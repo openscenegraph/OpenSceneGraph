@@ -66,7 +66,7 @@ void DisplaySettings::setDefaults()
 void DisplaySettings::readEnvironmentalVariables()
 {
     char *ptr;
-    if( (ptr = getenv("OSG_STEREO_MODE")) )
+    if( (ptr = getenv("OSG_STEREO_MODE")) != 0)
     {
         if (strcmp(ptr,"QUAD_BUFFER")==0)
         {
@@ -89,7 +89,7 @@ void DisplaySettings::readEnvironmentalVariables()
         }
     }
 
-    if( (ptr = getenv("OSG_STEREO")) )
+    if( (ptr = getenv("OSG_STEREO")) != 0)
     {
         if (strcmp(ptr,"OFF")==0)
         {
@@ -102,17 +102,17 @@ void DisplaySettings::readEnvironmentalVariables()
         }
     }
 
-    if( (ptr = getenv("OSG_EYE_SEPERATION")) )
+    if( (ptr = getenv("OSG_EYE_SEPERATION")) != 0)
     {
         _eyeSeperation = atof(ptr);
     }
 
-    if( (ptr = getenv("OSG_SCREEN_DISTANCE")) )
+    if( (ptr = getenv("OSG_SCREEN_DISTANCE")) != 0)
     {
         _screenDistance = atof(ptr);
     }
 
-    if( (ptr = getenv("OSG_SCREEN_HEIGHT")) )
+    if( (ptr = getenv("OSG_SCREEN_HEIGHT")) != 0)
     {
         _screenHeight = atof(ptr);
     }

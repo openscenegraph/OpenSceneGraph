@@ -41,6 +41,8 @@ ImpostorSprite::ImpostorSprite()
     _texture = NULL;
     _s = 0;
     _t = 0;        
+
+    _color.set(1.0f, 1.0f, 1.0f, 1.0f );
 }
 
 ImpostorSprite::~ImpostorSprite()
@@ -77,7 +79,8 @@ void ImpostorSprite::drawImplementation(State&) const
 {
     // when the tex env is set to REPLACE, and the 
     // texture is set up correctly the color has no effect.
-    glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+    glColor4fv( _color.ptr() );
+    
     
     glBegin( GL_QUADS );
     
@@ -268,6 +271,7 @@ ImpostorSprite* ImpostorSpriteManager::createOrReuseImpostorSprite(int s,int t,i
     stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
     stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
 
+    stateset->setRenderingHint( StateSet::TRANSPARENT_BIN );
 
     stateset->setAttributeAndModes( _alphafunc.get(), StateAttribute::ON );
 

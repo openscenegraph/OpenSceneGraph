@@ -79,23 +79,33 @@ void RenderStage::addToDependencyList(RenderStage* rs)
 
 void RenderStage::drawPreRenderStages(osg::State& state,RenderLeaf*& previous)
 {
+    if (_dependencyList.empty()) return;
+    
+    //cout << "Drawing prerendering stages "<<this<< "  "<<_viewport->x()<<","<< _viewport->y()<<","<< _viewport->width()<<","<< _viewport->height()<<std::endl;
     for(DependencyList::iterator itr=_dependencyList.begin();
         itr!=_dependencyList.end();
         ++itr)
     {
         (*itr)->draw(state,previous);
     }
+    //cout << "Done Drawing prerendering stages "<<this<< "  "<<_viewport->x()<<","<< _viewport->y()<<","<< _viewport->width()<<","<< _viewport->height()<<std::endl;
 }
 
 void RenderStage::draw(osg::State& state,RenderLeaf*& previous)
 {
-    drawPreRenderStages(state,previous);
+    if (_stageDrawnThisFrame) return;
+
+    _stageDrawnThisFrame = true;
+
+    // note, SceneView does call to drawPreRenderStages explicitly
+    // so there is no need to call it here.
+    //drawPreRenderStages(state,previous);
+
     RenderBin::draw(state,previous);
 }
 
 void RenderStage::drawImplementation(osg::State& state,RenderLeaf*& previous)
 {
-    if (_stageDrawnThisFrame) return;
     
     if (!_viewport)
     {
@@ -103,7 +113,6 @@ void RenderStage::drawImplementation(osg::State& state,RenderLeaf*& previous)
         return;
     }
     
-    _stageDrawnThisFrame = true;
     
     // set up the back buffer.
     state.applyAttribute(_viewport.get());
@@ -111,6 +120,8 @@ void RenderStage::drawImplementation(osg::State& state,RenderLeaf*& previous)
 #define USE_SISSOR_TEST
 #ifdef USE_SISSOR_TEST
     glScissor( _viewport->x(), _viewport->y(), _viewport->width(), _viewport->height() );
+    //cout << "    clearing "<<this<< "  "<<_viewport->x()<<","<< _viewport->y()<<","<< _viewport->width()<<","<< _viewport->height()<<std::endl;
+    
     glEnable( GL_SCISSOR_TEST );
 #endif
 
@@ -125,7 +136,10 @@ void RenderStage::drawImplementation(osg::State& state,RenderLeaf*& previous)
         glClearColor( _clearColor[0], _clearColor[1], _clearColor[2], _clearColor[3]);
 
     if (_clearMask & GL_DEPTH_BUFFER_BIT)
+    {
         glClearDepth( _clearDepth);
+    }
+    else
 
     if (_clearMask & GL_STENCIL_BUFFER_BIT)
         glClearStencil( _clearStencil);

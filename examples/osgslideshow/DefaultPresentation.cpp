@@ -6,6 +6,9 @@
 #include <osg/Quat>
 #include <osg/Geometry>
 #include <osg/Geode>
+#include <osg/PolygonOffset>
+
+#include <osgText/Text>
 
 osg::MatrixTransform* createPositionedAndScaledModel(osg::Node* model,const osg::Vec3& pos, float radius, osg::Quat rotation)
 {
@@ -24,6 +27,32 @@ osg::MatrixTransform* createPositionedAndScaledModel(osg::Node* model,const osg:
     return transform;
 }
 
+osg::Vec4 layoutColor(1.0f,1.0f,1.0f,1.0f);
+float layoutCharacterSize = 50.0f;
+std::string fontStr("fonts/arial.ttf");
+
+osg::Geode* createText(osg::Vec3& cursor,const std::string& str)
+{
+    osg::Geode* geode = new osg::Geode;
+
+    osgText::Text* text = new osgText::Text;
+    text->setFont(fontStr);
+    text->setColor(layoutColor);
+    text->setCharacterSize(layoutCharacterSize);
+    text->setAxisAlignment(osgText::Text::XZ_PLANE);
+    text->setPosition(cursor);
+    
+    text->setText(str);
+
+    osg::BoundingBox bb = text->getBound();
+    cursor.z() = bb.zMin()-layoutCharacterSize;
+
+    geode->addDrawable(text);
+    
+    return geode;
+}
+
+
 
 osg::Node* createDefaultPresentation()
 {
@@ -39,7 +68,12 @@ osg::Node* createDefaultPresentation()
                 
     osg::Geode* background = new osg::Geode;
 
-    background->getOrCreateStateSet()->setTextureAttributeAndModes(0,
+    osg::StateSet* backgroundStateSet = background->getOrCreateStateSet();
+    backgroundStateSet->setAttributeAndModes(
+                new osg::PolygonOffset(1.0f,1.0f),
+                osg::StateAttribute::ON);
+                                        
+    backgroundStateSet->setTextureAttributeAndModes(0,
                 new osg::Texture2D(osgDB::readImageFile("lz.rgb")),
                 osg::StateAttribute::ON);
 
@@ -56,44 +90,57 @@ osg::Node* createDefaultPresentation()
     {
         osg::Switch* slide = new osg::Switch;
         slide->setName("Slide 0");
-        
+
+        osg::Vec3 cursor(width*0.25f,0.0f,height*.75f);
+                
+        osg::Group* layer_0 = new osg::Group;
         {
-            osg::Group* group = new osg::Group;
-            group->setName("Layer 0");
-            
-            group->addChild(background);
-            
-            
-            slide->addChild(group);
+        
+            layer_0->setName("Layer 0");
+            layer_0->addChild(background);
+            layer_0->addChild(createText(cursor,"The is layer 0"));
+
+            slide->addChild(layer_0);
         }
        
+        osg::Group* layer_1 = new osg::Group;
         {
-            osg::Group* group = new osg::Group;
-            group->setName("Layer 1");
-            
-            group->addChild(background2);
+            layer_1->setName("Layer 1");
+            layer_1->addChild(layer_0);
+            layer_1->addChild(createText(cursor,"The is layer 1"));
 
-            slide->addChild(group);
+            slide->addChild(layer_1);
         }
         
+        osg::Group* layer_2 = new osg::Group;
         {
-            osg::Group* group = new osg::Group;
-            group->setName("Layer 2");
+            layer_2->setName("Layer 2");
+            layer_2->addChild(layer_1);
+            layer_2->addChild(createText(cursor,"The is layer 2\nWe can have multiple lines of text..."));
+
+            slide->addChild(layer_2);
+        }
+
+        {
+            osg::Group* layer_3 = new osg::Group;
+            layer_3->setName("Layer 3");
             
-            group->addChild(background);
+            layer_3->addChild(layer_2);
+
+            layer_3->addChild(createText(cursor,"The is layer 3, with cow.osg"));
             
-            group->addChild(createPositionedAndScaledModel(osgDB::readNodeFile("cow.osg"),
-                                                           osg::Vec3(600.0f,0.0f,600.0f),500.0f,
+            layer_3->addChild(createPositionedAndScaledModel(osgDB::readNodeFile("cow.osg"),
+                                                           osg::Vec3(600.0f,0.0f,300.0f),500.0f,
                                                            osg::Quat()));
 
-            slide->addChild(group);
+            slide->addChild(layer_3);
         }
         
         presentation->addChild(slide);        
         
     }
     
-    {
+   {
         osg::Switch* slide = new osg::Switch;
         slide->setName("Slide 1");
         

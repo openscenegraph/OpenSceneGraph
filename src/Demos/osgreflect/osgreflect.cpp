@@ -1,5 +1,5 @@
 #include <osg/Node>
-#include <osg/GeoSet>
+#include <osg/Geometry>
 #include <osg/Notify>
 #include <osg/Transform>
 #include <osg/Texture>
@@ -65,38 +65,36 @@ osg::Drawable* createMirrorSurface(float xMin,float xMax,float yMin,float yMax,f
     
     // set up the drawstate.
 
-    // set up the geoset.
-    osg::GeoSet* gset = new osg::GeoSet;
+    // set up the Geometry.
+    osg::Geometry* geom = new osg::Geometry;
 
-    osg::Vec3* coords = new osg::Vec3[4];
-    coords[0].set(xMin,yMax,z);
-    coords[1].set(xMin,yMin,z);
-    coords[2].set(xMax,yMin,z);
-    coords[3].set(xMax,yMax,z);
-    gset->setCoords(coords);
+    osg::Vec3Array* coords = new osg::Vec3Array(4);
+    (*coords)[0].set(xMin,yMax,z);
+    (*coords)[1].set(xMin,yMin,z);
+    (*coords)[2].set(xMax,yMin,z);
+    (*coords)[3].set(xMax,yMax,z);
+    geom->setVertexArray(coords);
 
-    osg::Vec3* norms = new osg::Vec3[1];
-    norms[0].set(0.0f,0.0f,1.0f);
-    gset->setNormals(norms);
-    gset->setNormalBinding(osg::GeoSet::BIND_OVERALL);
+    osg::Vec3Array* norms = new osg::Vec3Array(1);
+    (*norms)[0].set(0.0f,0.0f,1.0f);
+    geom->setNormalArray(norms);
+    geom->setNormalBinding(osg::Geometry::BIND_OVERALL);
 
-    osg::Vec2* tcoords = new osg::Vec2[4];
-    tcoords[0].set(0.0f,1.0f);
-    tcoords[1].set(0.0f,0.0f);
-    tcoords[2].set(1.0f,0.0f);
-    tcoords[3].set(1.0f,1.0f);
-    gset->setTextureCoords(tcoords);
-    gset->setTextureBinding(osg::GeoSet::BIND_PERVERTEX);
+    osg::Vec2Array* tcoords = new osg::Vec2Array(4);
+    (*tcoords)[0].set(0.0f,1.0f);
+    (*tcoords)[1].set(0.0f,0.0f);
+    (*tcoords)[2].set(1.0f,0.0f);
+    (*tcoords)[3].set(1.0f,1.0f);
+    geom->setTexCoordArray(0,tcoords);
     
-    osg::Vec4* colours = new osg::Vec4[1];
-    colours->set(1.0f,1.0f,1.0,1.0f);
-    gset->setColors(colours);
-    gset->setColorBinding(osg::GeoSet::BIND_OVERALL);
+    osg::Vec4Array* colours = new osg::Vec4Array(1);
+    (*colours)[0].set(1.0f,1.0f,1.0,1.0f);
+    geom->setColorArray(colours);
+    geom->setColorBinding(osg::Geometry::BIND_OVERALL);
 
-    gset->setNumPrims(1);
-    gset->setPrimType(osg::GeoSet::QUADS);
+    geom->addPrimitive(osgNew osg::DrawArrays(osg::Primitive::QUADS,0,4));
 
-    return gset;
+    return geom;
 }
 
 void write_usage(std::ostream& out,const std::string& name)

@@ -9,10 +9,7 @@
 #include <osg/Notify>
 #include <osg/TexEnv>
 #include <osg/AlphaFunc>
-
 #include <osg/LineSegment>
-
-#include <osg/GeoSet>
 
 #include <osgUtil/CullVisitor>
 #include <osgUtil/RenderToTextureStage>

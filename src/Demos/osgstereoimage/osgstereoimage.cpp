@@ -1,5 +1,4 @@
 #include <osg/Node>
-#include <osg/GeoSet>
 #include <osg/Notify>
 #include <osg/Transform>
 #include <osg/Texture>

@@ -809,8 +809,8 @@ bool Optimizer::RemoveLowestStaticTransformsVisitor::removeTransforms()
         }
     }
     
-
-    for(TransformMap::iterator titr=_transformMap.begin();
+    TransformMap::iterator titr;
+    for(titr=_transformMap.begin();
         titr!=_transformMap.end();
         ++titr)
     {
@@ -858,7 +858,7 @@ bool Optimizer::RemoveLowestStaticTransformsVisitor::removeTransforms()
     bool transformsRemoved = false;
 
     // clean up the transforms.
-    for(TransformMap::iterator titr=_transformMap.begin();
+    for(titr=_transformMap.begin();
         titr!=_transformMap.end();
         ++titr)
     {

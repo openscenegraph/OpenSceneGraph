@@ -1,7 +1,7 @@
 #include <math.h>
 
 #include <osg/Geode>
-#include <osg/GeoSet>
+#include <osg/Geometry>
 #include <osg/Texture>
 #include <osg/TexEnv>
 #include <osg/Depth>
@@ -35,12 +35,13 @@ Node *makeSky( void )
     float radius = 20.0f;
     int nlev = sizeof( lev )/sizeof(float);
 
-    Vec3 *coords = new Vec3[19*nlev];
-    Vec4 *colors = new Vec4[19*nlev];
-    Vec2 *tcoords = new Vec2[19*nlev];
-    osg::ushort *idx = new osg::ushort[38* nlev];
-    int *lengths = new int[nlev];
+    Geometry *geom = new Geometry;
 
+    Vec3Array& coords = *(new Vec3Array(19*nlev));
+    Vec4Array& colors = *(new Vec4Array(19*nlev));
+    Vec2Array& tcoords = *(new Vec2Array(19*nlev));
+    
+    
     int ci, ii;
     ii = ci = 0;
 
@@ -68,25 +69,35 @@ Node *makeSky( void )
             tcoords[ci][0] = (float)i/(float)(nlev-1);
 
             ci++;
-
-            idx[ii++] = ((i+1)*19+j);
-            idx[ii++] = ((i+0)*19+j);
         }
-        lengths[i] = 38;
+
+
     }
 
-    GeoSet *gset = new GeoSet;
+    for( i = 0; i < nlev-1; i++ )
+    {
+        for( j = 0; j <= 18; j++ )
+        {
 
-    gset->setCoords( coords, idx );
-    gset->setTextureCoords( tcoords, idx );
-    gset->setTextureBinding( GeoSet::BIND_PERVERTEX );
+            UShortDrawElements* drawElements = new UShortDrawElements(Primitive::TRIANGLE_STRIP);
+            drawElements->reserve(38);
 
-    gset->setColors( colors, idx );
-    gset->setColorBinding( GeoSet::BIND_PERVERTEX );
+            for( j = 0; j <= 18; j++ )
+            {
+                drawElements->push_back((i+1)*19+j);
+                drawElements->push_back((i+0)*19+j);
+            }
+            
+            geom->addPrimitive(drawElements);
+        }
+    }
+    
+    geom->setVertexArray( &coords );
+    geom->setTexCoordArray( 0, &tcoords );
 
-    gset->setPrimType( GeoSet::TRIANGLE_STRIP );
-    gset->setNumPrims( nlev - 1 );
-    gset->setPrimLengths( lengths );
+    geom->setColorArray( &colors );
+    geom->setColorBinding( Geometry::BIND_PER_VERTEX );
+
 
     Texture *tex = new Texture;
     tex->setImage(osgDB::readImageFile("Images/white.rgb"));
@@ -107,10 +118,10 @@ Node *makeSky( void )
 
     dstate->setRenderBinDetails(-2,"RenderBin");
 
-    gset->setStateSet( dstate );
+    geom->setStateSet( dstate );
 
     Geode *geode = new Geode;
-    geode->addDrawable( gset );
+    geode->addDrawable( geom );
 
     geode->setName( "Sky" );
 

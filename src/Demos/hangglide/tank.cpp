@@ -3,7 +3,7 @@
 #include <osg/GL>
 #include <osg/Group>
 #include <osg/Geode>
-#include <osg/GeoSet>
+#include <osg/Geometry>
 #include <osg/Texture>
 #include <osg/TexEnv>
 #include <osg/StateSet>
@@ -44,7 +44,7 @@ static void conv( const Vec3& a, const Matrix& mat, Vec3& b )
 Node *makeTank( void )
 {
 
-    Geode *geode1 = new Geode;
+    Geode *geode = new Geode;
 
     getDatabaseCenterRadius( dbcenter, &dbradius );
 
@@ -58,12 +58,16 @@ Node *makeTank( void )
         1
         );
 
-    Vec3 *vc = new Vec3[42];
-    Vec2 *tc = new Vec2[42];
-    int *lens = new int[1];
-    int i, c;
+    // 42 required for sodes, 22 for the top.
+    Vec3Array& vc = *(new Vec3Array(42+22));
+    Vec2Array& tc = *(new Vec2Array(42+22));
 
-    c = 0;
+    Geometry *gset = new Geometry;
+    gset->setVertexArray( &vc );
+    gset->setTexCoordArray( 0, &tc );
+
+    // create the sides of the tank.
+    unsigned int i, c = 0;
     for( i = 0; i <= 360; i += 18 )
     {
         float x, y, z;
@@ -97,41 +101,13 @@ Node *makeTank( void )
         tc[c][1] = t;
         c++;
     }
-    *lens = 42;
 
-    for( i = 0; i < c; i++ )
-        conv( vc[i], *mat, vc[i] );
+    gset->addPrimitive( new DrawArrays(Primitive::TRIANGLE_STRIP,0,c) );
 
-    GeoSet *gset = new GeoSet;
-    gset->setCoords( vc );
+    // create the top of the tank.
 
-    gset->setTextureCoords( tc );
-    gset->setTextureBinding( GeoSet::BIND_PERVERTEX );
+    int prev_c = c;
 
-    gset->setPrimType( GeoSet::TRIANGLE_STRIP );
-    gset->setNumPrims( 1 );
-    gset->setPrimLengths( lens );
-
-    Texture *tex = new Texture;
-
-    tex->setWrap( Texture::WRAP_S, Texture::REPEAT );
-    tex->setWrap( Texture::WRAP_T, Texture::REPEAT );
-    tex->setImage(osgDB::readImageFile("Images/tank.rgb"));
-
-    StateSet *dstate = new StateSet;
-    dstate->setAttributeAndModes( tex, StateAttribute::ON );
-    dstate->setAttribute( new TexEnv );
-
-    gset->setStateSet( dstate );
-    geode1->addDrawable( gset );
-
-    lens = new int[1];
-    *lens = 22;
-
-    vc = new Vec3[22];
-    tc = new Vec2[22];
-
-    c = 0;
     vc[c][0] = 0.0f;
     vc[c][1] = 0.0f;
     vc[c][2] = 1.0f;
@@ -167,26 +143,24 @@ Node *makeTank( void )
 
     for( i = 0; i < c; i++ )
         conv( vc[i], *mat, vc[i] );
+     
+     gset->addPrimitive(new DrawArrays(Primitive::TRIANGLE_FAN,prev_c,c-prev_c));
 
-    gset = new GeoSet;
-    gset->setCoords( vc );
-    gset->setTextureCoords( tc );
-    gset->setPrimType(GeoSet::TRIANGLE_FAN);
-    gset->setNumPrims( 1 );
-    gset->setPrimLengths( lens );
+
+
+
+    Texture *tex = new Texture;
+
+    tex->setWrap( Texture::WRAP_S, Texture::REPEAT );
+    tex->setWrap( Texture::WRAP_T, Texture::REPEAT );
+    tex->setImage(osgDB::readImageFile("Images/tank.rgb"));
+
+    StateSet *dstate = new StateSet;
+    dstate->setAttributeAndModes( tex, StateAttribute::ON );
+    dstate->setAttribute( new TexEnv );
 
     gset->setStateSet( dstate );
+    geode->addDrawable( gset );
 
-    Geode *geode2 = new Geode;
-    geode2->addDrawable( gset );
-
-
-    Group *grp = new Group;
-    grp->addChild( geode1 );
-    grp->addChild( geode2 );
-
-    geode1->setName( "Geode 1" );
-    geode2->setName( "Geode 2" );
-
-    return grp;
+    return geode;
 }

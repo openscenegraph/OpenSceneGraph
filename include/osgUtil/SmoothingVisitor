@@ -7,7 +7,7 @@
 
 #include <osg/NodeVisitor>
 #include <osg/Geode>
-#include <osg/GeoSet>
+#include <osg/Geometry>
 
 #include <osgUtil/Export>
 
@@ -27,7 +27,7 @@ class OSGUTIL_EXPORT SmoothingVisitor : public osg::NodeVisitor
         }
 
         /// smooth geoset by creating per vertex normals.
-        static void smooth(osg::GeoSet& geoset);
+        static void smooth(osg::Geometry& geoset);
 
         /// apply smoothing method to all geode geosets.
         virtual void apply(osg::Geode& geode);

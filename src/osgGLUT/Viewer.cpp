@@ -855,7 +855,7 @@ void Viewer::keyboard(unsigned char key, int x, int y)
             _useDisplayLists = !_useDisplayLists;
             if (_useDisplayLists)
             {
-                // traverse the scene graph setting up all osg::GeoSet's so they will use
+                // traverse the scene graph setting up all osg::Drawable's so they will use
                 // OpenGL display lists.
                 osgUtil::DisplayListVisitor dlv(osgUtil::DisplayListVisitor::SWITCH_ON_DISPLAY_LISTS);
                 sceneView->getSceneData()->accept(dlv);
@@ -863,7 +863,7 @@ void Viewer::keyboard(unsigned char key, int x, int y)
             }
             else
             {
-                // traverse the scene graph setting up all osg::GeoSet's so they will use
+                // traverse the scene graph setting up all osg::Drawable's so they will use
                 // OpenGL display lists.
                 osgUtil::DisplayListVisitor dlv(osgUtil::DisplayListVisitor::SWITCH_OFF_DISPLAY_LISTS);
                 sceneView->getSceneData()->accept(dlv);

@@ -3,7 +3,7 @@
 #include <osg/Billboard>
 #include <osg/Group>
 #include <osg/Geode>
-#include <osg/GeoSet>
+#include <osg/Geometry>
 #include <osg/Texture>
 #include <osg/TexEnv>
 #include <osg/Transparency>
@@ -144,7 +144,7 @@ trees[] =
     { -1, 0, 0, 0, 0, 0 },
 };
 
-static GeoSet *makeTree( _tree *tree, StateSet *dstate )
+static Geometry *makeTree( _tree *tree, StateSet *dstate )
 {
     float vv[][3] =
     {
@@ -154,9 +154,9 @@ static GeoSet *makeTree( _tree *tree, StateSet *dstate )
         { -tree->w/2.0, 0.0, 2 * tree->h },
     };
 
-    Vec3 *v = new Vec3[4];
-    Vec2 *t = new Vec2[4];
-    Vec4 *l = new Vec4[1];
+    Vec3Array& v = *(new Vec3Array(4));
+    Vec2Array& t = *(new Vec2Array(4));
+    Vec4Array& l = *(new Vec4Array(1));
 
     int   i;
 
@@ -174,22 +174,20 @@ static GeoSet *makeTree( _tree *tree, StateSet *dstate )
     t[2][0] = 1.0; t[2][1] = 1.0;
     t[3][0] = 0.0; t[3][1] = 1.0;
 
-    GeoSet *gset = new GeoSet;
+    Geometry *geom = new Geometry;
 
-    gset->setCoords( v );
+    geom->setVertexArray( &v );
 
-    gset->setTextureCoords( t );
-    gset->setTextureBinding( GeoSet::BIND_PERVERTEX );
+    geom->setTexCoordArray( 0, &t );
 
-    gset->setColors( l );
-    gset->setColorBinding( GeoSet::BIND_OVERALL );
+    geom->setColorArray( &l );
+    geom->setColorBinding( Geometry::BIND_OVERALL );
 
-    gset->setPrimType( GeoSet::QUADS );
-    gset->setNumPrims( 1 );
+    geom->addPrimitive( new DrawArrays(Primitive::QUADS,0,4) );
 
-    gset->setStateSet( dstate );
+    geom->setStateSet( dstate );
 
-    return gset;
+    return geom;
 }
 
 
@@ -263,8 +261,8 @@ Node *makeTrees( void )
             t->x -= 0.3f;
             float  h = Hat(t->x, t->y, t->z );
             Vec3 pos( t->x, t->y, t->z-h );
-            GeoSet *gset = makeTree( t, dstate );
-            bb->addDrawable( gset, pos );
+            Geometry *geom = makeTree( t, dstate );
+            bb->addDrawable( geom, pos );
             t++;
         }
         group->addChild( bb );

@@ -7,6 +7,11 @@
 
 #include <math.h>
 
+#if defined(_MSC_VER) && (_MSC_VER >= 1300)
+    #include <float.h>
+#endif
+
+
 #if (defined(WIN32) && !(defined(_MSC_VER) && (_MSC_VER >= 1300)) ) || \
     defined (macintosh)|| \
     defined (sun) || \

@@ -64,6 +64,7 @@ class FltFile : public osg::Referenced
 
         int getFlightVersion() const;
         inline HeaderRecord* getHeaderRecord() { return _headerRecord.get(); }
+        void getOrigin( double& latitude, double& longitude ) const;
 
     protected:
 

@@ -81,6 +81,9 @@ osgoccluder glider.osg
 echo osgparticle
 osgparticle
 
+echo osgparticleeffects
+osgparticleeffects
+
 echo osgpick
 osgpick fountain.osg
 

@@ -198,6 +198,7 @@ EXAMPLE_DIRS = \
 	osgoccluder\
 	osgpagedlod\
 	osgparticle\
+	osgparticleeffects\
 	osgpick\
         osgplanets\
 	osgpoints\

@@ -67,7 +67,7 @@ namespace
                     osg::Vec3(lightvec.x(), lightvec.y(), lightvec.z()),
                     eye_light_ref);
                 
-                glLoadMatrixf((LM * osg::Matrix::inverse(M)).ptr());
+                (LM * osg::Matrix::inverse(M)).glLoadMatrix();
 
             } else {
                 glLoadIdentity();

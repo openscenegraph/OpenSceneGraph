@@ -153,9 +153,12 @@ float CullVisitor::getDistanceToEyePoint(const Vec3& pos, bool withLODScale) con
     else return (pos-getEyeLocal()).length();
 }
 
-inline float distance(const osg::Vec3& coord,const osg::Matrix& matrix)
+inline CullVisitor::NearFarReal distance(const osg::Vec3& coord,const osg::Matrix& matrix)
 {
-    return -(coord[0]*matrix(0,2)+coord[1]*matrix(1,2)+coord[2]*matrix(2,2)+matrix(3,2));
+
+    //std::cout << "distance("<<coord<<", "<<matrix<<")"<<std::endl;
+
+    return -((CullVisitor::NearFarReal)coord[0]*(CullVisitor::NearFarReal)matrix(0,2)+(CullVisitor::NearFarReal)coord[1]*(CullVisitor::NearFarReal)matrix(1,2)+(CullVisitor::NearFarReal)coord[2]*(CullVisitor::NearFarReal)matrix(2,2)+matrix(3,2));
 }
 
 float CullVisitor::getDistanceFromEyePoint(const osg::Vec3& pos, bool withLODScale) const
@@ -181,9 +184,9 @@ void CullVisitor::popProjectionMatrix()
         {
             //std::cout << "Orthographic projection "<<projection<<std::endl;
 
-            double span = (_computed_zfar-_computed_znear);
-            double desired_znear = _computed_znear - span*0.02f;
-            double desired_zfar = _computed_zfar + span*0.02f;
+            NearFarReal span = (_computed_zfar-_computed_znear);
+            NearFarReal desired_znear = _computed_znear - span*0.02f;
+            NearFarReal desired_zfar = _computed_zfar + span*0.02f;
             
             // near plane clamping.
             //double min_near_plane = _computed_zfar*_nearFarRatio;
@@ -205,23 +208,32 @@ void CullVisitor::popProjectionMatrix()
 
             //std::cout << "Perspective projection "<<projection<<std::endl;
 
-            double desired_znear = _computed_znear *0.98f;
-            double desired_zfar = _computed_zfar *1.02f;
+            std::cout << "_computed_znear"<<_computed_znear<<std::endl;
+            std::cout << "_computed_zfar"<<_computed_zfar<<std::endl;
+
+
+            NearFarReal desired_znear = _computed_znear *0.98;
+            NearFarReal desired_zfar = _computed_zfar *1.02;
+//            NearFarReal desired_znear = _computed_znear *0.5;
+//            NearFarReal desired_zfar = _computed_zfar *2.0;
 
             // near plane clamping.
             double min_near_plane = _computed_zfar*_nearFarRatio;
             if (desired_znear<min_near_plane) desired_znear=min_near_plane;
 
+            std::cout << "   desired_znear"<<desired_znear<<std::endl;
+            std::cout << "   desired_zfar"<<desired_zfar<<std::endl;
+
             // assign the clamped values back to the computed values.
             _computed_znear = desired_znear;
             _computed_zfar = desired_zfar;
 
-            double trans_near_plane = (-desired_znear*projection(2,2)+projection(3,2))/(-desired_znear*projection(2,3)+projection(3,3));
-            double trans_far_plane = (-desired_zfar*projection(2,2)+projection(3,2))/(-desired_zfar*projection(2,3)+projection(3,3));
+            NearFarReal trans_near_plane = (-desired_znear*projection(2,2)+projection(3,2))/(-desired_znear*projection(2,3)+projection(3,3));
+            NearFarReal trans_far_plane = (-desired_zfar*projection(2,2)+projection(3,2))/(-desired_zfar*projection(2,3)+projection(3,3));
 
-            double ratio = fabs(2.0f/(trans_near_plane-trans_far_plane));
-            double center = -(trans_near_plane+trans_far_plane)/2.0f;
-
+            NearFarReal ratio = fabs(2.0/(trans_near_plane-trans_far_plane));
+            NearFarReal center = -(trans_near_plane+trans_far_plane)/2.0;
+            
             projection.postMult(osg::Matrix(1.0f,0.0f,0.0f,0.0f,
                                             0.0f,1.0f,0.0f,0.0f,
                                             0.0f,0.0f,ratio,0.0f,
@@ -236,26 +248,36 @@ void CullVisitor::popProjectionMatrix()
 
 void CullVisitor::updateCalculatedNearFar(const osg::Matrix& matrix,const osg::BoundingBox& bb)
 {
-    float d_near = distance(bb.corner(_bbCornerNear),matrix);
-    float d_far = distance(bb.corner(_bbCornerFar),matrix);
 
-    if (d_near<=d_far)
-    {
-        if (d_near<_computed_znear) _computed_znear = d_near;
-        if (d_far>_computed_zfar) _computed_zfar = d_far;
-    }
-    else
-    {
-        if ( !EQUAL_F(d_near, d_far) ) 
-        {
-            osg::notify(osg::WARN)<<"Warning: CullVisitor::updateCalculatedNearFar(.) near>far in range calculation,"<< std::endl;
-            osg::notify(osg::WARN)<<"         correcting by swapping values d_near="<<d_near<<" dfar="<<d_far<< std::endl;
-        }
-        // note, need to reverse the d_near/d_far association because they are
-        // the wrong way around...
-        if (d_far<_computed_znear) _computed_znear = d_far;
-        if (d_near>_computed_zfar) _computed_zfar = d_near;
-    }
+    updateCalculatedNearFar(bb.corner(0));
+    updateCalculatedNearFar(bb.corner(1));
+    updateCalculatedNearFar(bb.corner(2));
+    updateCalculatedNearFar(bb.corner(3));
+    updateCalculatedNearFar(bb.corner(4));
+    updateCalculatedNearFar(bb.corner(5));
+    updateCalculatedNearFar(bb.corner(6));
+    updateCalculatedNearFar(bb.corner(7));
+// 
+//     NearFarReal d_near = distance(bb.corner(_bbCornerNear),matrix);
+//     NearFarReal d_far = distance(bb.corner(_bbCornerFar),matrix);
+// 
+//     if (d_near<=d_far)
+//     {
+//         if (d_near<_computed_znear) _computed_znear = d_near;
+//         if (d_far>_computed_zfar) _computed_zfar = d_far;
+//     }
+//     else
+//     {
+//         if ( !EQUAL_F(d_near, d_far) ) 
+//         {
+//             osg::notify(osg::WARN)<<"Warning: CullVisitor::updateCalculatedNearFar(.) near>far in range calculation,"<< std::endl;
+//             osg::notify(osg::WARN)<<"         correcting by swapping values d_near="<<d_near<<" dfar="<<d_far<< std::endl;
+//         }
+//         // note, need to reverse the d_near/d_far association because they are
+//         // the wrong way around...
+//         if (d_far<_computed_znear) _computed_znear = d_far;
+//         if (d_near>_computed_zfar) _computed_zfar = d_near;
+//     }
 
 }
 void CullVisitor::updateCalculatedNearFar(const osg::Vec3& pos)

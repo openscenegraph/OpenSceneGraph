@@ -168,7 +168,7 @@ void DrawShapeVisitor::apply(const Box& box)
 	if (!box.zeroRotation())
 	{
     	    Matrix rotation(box.getRotationMatrix());
-    	    glMultMatrixf(rotation.ptr());
+    	    rotation.glMultMatrix();
 	}
 
 	glBegin(GL_QUADS);
@@ -284,7 +284,7 @@ void DrawShapeVisitor::apply(const Cone& cone)
 	if (!cone.zeroRotation())
 	{
     	    Matrix rotation(cone.getRotationMatrix());
-    	    glMultMatrixf(rotation.ptr());
+    	    rotation.glMultMatrix();
 	}
 
         // evaluate hints
@@ -402,7 +402,7 @@ void DrawShapeVisitor::apply(const Cylinder& cylinder)
 	if (!cylinder.zeroRotation())
 	{
     	    Matrix rotation(cylinder.getRotationMatrix());
-    	    glMultMatrixf(rotation.ptr());
+    	    rotation.glMultMatrix();
 	}
 
         // evaluate hints
@@ -568,7 +568,7 @@ void DrawShapeVisitor::apply(const HeightField& field)
 	if (!field.zeroRotation())
 	{
     	    Matrix rotation(field.getRotationMatrix());
-    	    glMultMatrixf(rotation.ptr());
+    	    rotation.glMultMatrix();
 	}
 	
 	float dx = field.getXInterval();

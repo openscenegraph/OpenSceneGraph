@@ -431,7 +431,8 @@ void SphereSegment::EdgeLine_drawImplementation(osg::State& /* state */) const
 
         // Top edge
         glBegin(GL_LINE_STRIP);
-        for(int i=0; i<=_density; i++)
+        int i;
+        for(i=0; i<=_density; i++)
         {
             float az = _azMin + (i*azIncr);
             glVertex3f(
@@ -443,7 +444,7 @@ void SphereSegment::EdgeLine_drawImplementation(osg::State& /* state */) const
 
         // Bottom edge
         glBegin(GL_LINE_STRIP);
-        for(int i=0; i<=_density; i++)
+        for(i=0; i<=_density; i++)
         {
             float az = _azMin + (i*azIncr);
             glVertex3f(
@@ -455,7 +456,8 @@ void SphereSegment::EdgeLine_drawImplementation(osg::State& /* state */) const
 
         // Left edge
         glBegin(GL_LINE_STRIP);
-        for(int j=0; j<=_density; j++)
+        int j;
+        for(j=0; j<=_density; j++)
         {
             float elev = _elevMin + (j*elevIncr);
             glVertex3f(
@@ -467,7 +469,7 @@ void SphereSegment::EdgeLine_drawImplementation(osg::State& /* state */) const
 
         // Right edge
         glBegin(GL_LINE_STRIP);
-        for(int j=0; j<=_density; j++)
+        for(j=0; j<=_density; j++)
         {
             float elev = _elevMin + (j*elevIncr);
             glVertex3f(
@@ -487,7 +489,8 @@ bool SphereSegment::EdgeLine_computeBound(osg::BoundingBox& bbox) const
     float elevIncr = (_elevMax - _elevMin)/_density;
 
     // Top edge
-    for(int i=0; i<=_density; i++)
+    int i;
+    for(i=0; i<=_density; i++)
     {
         float az = _azMin + (i*azIncr);
         bbox.expandBy(
@@ -497,7 +500,7 @@ bool SphereSegment::EdgeLine_computeBound(osg::BoundingBox& bbox) const
     }
 
     // Bottom edge
-    for(int i=0; i<=_density; i++)
+    for(i=0; i<=_density; i++)
     {
         float az = _azMin + (i*azIncr);
         bbox.expandBy(
@@ -507,7 +510,8 @@ bool SphereSegment::EdgeLine_computeBound(osg::BoundingBox& bbox) const
     }
 
     // Left edge
-    for(int j=0; j<=_density; j++)
+    int j;
+    for(j=0; j<=_density; j++)
     {
         float elev = _elevMin + (j*elevIncr);
         bbox.expandBy(
@@ -517,7 +521,7 @@ bool SphereSegment::EdgeLine_computeBound(osg::BoundingBox& bbox) const
     }
 
     // Right edge
-    for(int j=0; j<=_density; j++)
+    for(j=0; j<=_density; j++)
     {
         float elev = _elevMin + (j*elevIncr);
         bbox.expandBy(

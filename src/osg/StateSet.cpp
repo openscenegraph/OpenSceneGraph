@@ -40,29 +40,54 @@ StateSet::~StateSet()
     // delete the memory manually.
 }
 
-int StateSet::compare(const StateSet& rhs) const
+int StateSet::compare(const StateSet& rhs,bool compareAttributeContents) const
 {
 
-    // now check to see how the attributes compare.
-    AttributeList::const_iterator lhs_attr_itr = _attributeList.begin();
-    AttributeList::const_iterator rhs_attr_itr = rhs._attributeList.begin();
-    while (lhs_attr_itr!=_attributeList.end() && rhs_attr_itr!=rhs._attributeList.end())
+    if (compareAttributeContents)
     {
-        if      (lhs_attr_itr->first<rhs_attr_itr->first) return -1;
-        else if (rhs_attr_itr->first<lhs_attr_itr->first) return 1;
-        if      (lhs_attr_itr->second.first<rhs_attr_itr->second.first) return -1;
-        else if (rhs_attr_itr->second.first<lhs_attr_itr->second.first) return 1;
-        if      (lhs_attr_itr->second.second<rhs_attr_itr->second.second) return -1;
-        else if (rhs_attr_itr->second.second<lhs_attr_itr->second.second) return 1;
-        ++lhs_attr_itr;
-        ++rhs_attr_itr;
+        // now check to see how the attributes compare.
+        AttributeList::const_iterator lhs_attr_itr = _attributeList.begin();
+        AttributeList::const_iterator rhs_attr_itr = rhs._attributeList.begin();
+        while (lhs_attr_itr!=_attributeList.end() && rhs_attr_itr!=rhs._attributeList.end())
+        {
+            if      (lhs_attr_itr->first<rhs_attr_itr->first) return -1;
+            else if (rhs_attr_itr->first<lhs_attr_itr->first) return 1;
+            if      (*(lhs_attr_itr->second.first)<*(rhs_attr_itr->second.first)) return -1;
+            else if (*(rhs_attr_itr->second.first)<*(lhs_attr_itr->second.first)) return 1;
+            if      (lhs_attr_itr->second.second<rhs_attr_itr->second.second) return -1;
+            else if (rhs_attr_itr->second.second<lhs_attr_itr->second.second) return 1;
+            ++lhs_attr_itr;
+            ++rhs_attr_itr;
+        }
+        if (lhs_attr_itr==_attributeList.end())
+        {
+            if (rhs_attr_itr!=rhs._attributeList.end()) return -1;
+        }
+        else if (rhs_attr_itr == rhs._attributeList.end()) return 1;
     }
-    if (lhs_attr_itr==_attributeList.end())
+    else // just compare pointers.
     {
-        if (rhs_attr_itr!=rhs._attributeList.end()) return -1;
+        // now check to see how the attributes compare.
+        AttributeList::const_iterator lhs_attr_itr = _attributeList.begin();
+        AttributeList::const_iterator rhs_attr_itr = rhs._attributeList.begin();
+        while (lhs_attr_itr!=_attributeList.end() && rhs_attr_itr!=rhs._attributeList.end())
+        {
+            if      (lhs_attr_itr->first<rhs_attr_itr->first) return -1;
+            else if (rhs_attr_itr->first<lhs_attr_itr->first) return 1;
+            if      (lhs_attr_itr->second.first<rhs_attr_itr->second.first) return -1;
+            else if (rhs_attr_itr->second.first<lhs_attr_itr->second.first) return 1;
+            if      (lhs_attr_itr->second.second<rhs_attr_itr->second.second) return -1;
+            else if (rhs_attr_itr->second.second<lhs_attr_itr->second.second) return 1;
+            ++lhs_attr_itr;
+            ++rhs_attr_itr;
+        }
+        if (lhs_attr_itr==_attributeList.end())
+        {
+            if (rhs_attr_itr!=rhs._attributeList.end()) return -1;
+        }
+        else if (rhs_attr_itr == rhs._attributeList.end()) return 1;
     }
-    else if (rhs_attr_itr == rhs._attributeList.end()) return 1;
-
+    
     // we've got here so attributes must be equal...    
 
     // check to see how the modes compare.

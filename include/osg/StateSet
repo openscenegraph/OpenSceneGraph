@@ -35,7 +35,7 @@ class SG_EXPORT StateSet : public Object
         virtual const char* className() const { return "StateSet"; }
 
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
-        int compare(const StateSet& rhs) const;
+        int compare(const StateSet& rhs,bool compareAttributeContents=false) const;
         
         bool operator <  (const StateSet& rhs) const { return compare(rhs)<0; }
         bool operator == (const StateSet& rhs) const { return compare(rhs)==0; }

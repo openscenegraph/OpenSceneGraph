@@ -236,8 +236,10 @@ int main( int argc, char **argv )
 
     if (root.valid())
     {
-        osgDB::writeNodeFile(*root,fileNameOut);
-        osg::notify(osg::NOTICE)<<"Data written to '"<<fileNameOut<<"'."<< std::endl;
+        if (osgDB::writeNodeFile(*root,fileNameOut))
+        {
+            osg::notify(osg::NOTICE)<<"Data written to '"<<fileNameOut<<"'."<< std::endl;
+        }
     }
     else
     {

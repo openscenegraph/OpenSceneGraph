@@ -97,6 +97,9 @@ class OSGGLUT_EXPORT GLUTEventAdapter : public osgUtil::GUIEventAdapter
         // which required the mouse buttons state at the time of the event.
         static unsigned int _s_accumulatedButtonMask;
         
+	// used to store current button value
+	static int _s_button;
+
         // used to store window min and max values.
         static int _s_Xmin;
         static int _s_Xmax;

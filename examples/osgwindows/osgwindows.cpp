@@ -32,8 +32,10 @@ static Producer::CameraConfig *BuildConfig(void)
     camera2->setOffset( -1.0, 0.0 );
 
     Producer::InputArea *ia = new Producer::InputArea;
-    ia->addInputRectangle( rs1, Producer::InputRectangle(0.0,0.5,0.0,1.0));
-    ia->addInputRectangle( rs2, Producer::InputRectangle(0.5,1.0,0.0,1.0));
+//    ia->addInputRectangle( rs1, Producer::InputRectangle(0.0,0.5,0.0,1.0));
+//    ia->addInputRectangle( rs2, Producer::InputRectangle(0.5,1.0,0.0,1.0));
+    ia->addInputRectangle( rs1, Producer::InputRectangle(-1.0,0.0,-1.0,1.0));
+    ia->addInputRectangle( rs2, Producer::InputRectangle(0.0,1.0,-1.0,1.0));
 
 
     Producer::CameraConfig *cfg = new Producer::CameraConfig;

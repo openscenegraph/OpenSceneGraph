@@ -71,7 +71,7 @@ public:
 
         virtual osg::Camera * getCamera()               { return _current->getCamera(); }
 
-        virtual void setNode(osg::Node* n)              { _current->setNode(n); }
+        virtual void setNode(osg::Node* n);
 
         virtual const osg::Node* getNode() const        { return _current->getNode(); }
 

@@ -23,7 +23,7 @@ class OSGDB_EXPORT FieldReaderIterator
         FieldReaderIterator(const FieldReaderIterator& ic);
         virtual ~FieldReaderIterator();
 
-        virtual FieldReaderIterator& operator = (const FieldReaderIterator& ic);
+        FieldReaderIterator& operator = (const FieldReaderIterator& ic);
 
         void attach(std::istream* input);
         void detach();

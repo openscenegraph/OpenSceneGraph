@@ -194,6 +194,6 @@ inline void clampArray4BetweenRange(A& value,const T minValue,const T maxValue,c
     clampArrayElementsBetweenRange(value,0u,3u,minValue,maxValue,valueName);
 }
 
-};
+}
 
 #endif

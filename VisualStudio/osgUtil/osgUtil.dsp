@@ -113,6 +113,10 @@ SOURCE=..\..\src\osgUtil\CullVisitor.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgUtil\DelaunayTriangulator.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgUtil\DisplayListVisitor.cpp
 # End Source File
 # Begin Source File
@@ -210,6 +214,10 @@ SOURCE=..\..\include\osgUtil\UpdateVisitor
 # Begin Source File
 
 SOURCE=..\..\Include\osgUtil\CullVisitor
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\osgUtil\DelaunayTriangulator
 # End Source File
 # Begin Source File
 

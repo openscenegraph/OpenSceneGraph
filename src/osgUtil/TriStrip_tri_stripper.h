@@ -188,11 +188,11 @@ public:
 
 
     // constructor/initializer
-    tri_stripper(const indices & TriIndices);
+    inline tri_stripper(const indices & TriIndices);
     
     // Settings functions
-    void SetCacheSize(const size_t CacheSize = 16);            // = 0 will disable the cache optimizer
-    void SetMinStripSize(const size_t MinStripSize = 2);
+    inline void SetCacheSize(const size_t CacheSize = 16);            // = 0 will disable the cache optimizer
+    inline void SetMinStripSize(const size_t MinStripSize = 2);
 
     // Stripper
     void Strip(primitives_vector * out_pPrimitivesVector);    // throw triangles_indices_error();

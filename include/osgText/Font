@@ -60,8 +60,8 @@ public:
     /** Set the pixel width and height hint.*/
     virtual void setSize(unsigned int width, unsigned int height);
     
-    unsigned int getWidth() { return _width; }
-    unsigned int getHeight() { return _height; }
+    unsigned int getWidth();
+    unsigned int getHeight();
 
     /** Get a Glyph for specified charcode, and the font size nearest to the current font size hint.*/
     virtual Glyph* getGlyph(unsigned int charcode);
@@ -72,37 +72,36 @@ public:
     /** Return true if this font provides vertical alignments and spacing or glyphs.*/
     virtual bool hasVertical() const;
 
-
     /** Set the margin around each glyph, 
       * to ensure that texture filtering doesn't bleed adjacent glyph's into each other.
       * Default margin is 2 texels.*/    
-    void setGlyphImageMargin(unsigned int margin) { _margin = margin; }
-    unsigned int getGlyphImageMargin() const { return _margin; }
+    void setGlyphImageMargin(unsigned int margin);
+    unsigned int getGlyphImageMargin() const;
 
     /** Set the size of texture to create to store the glyph images when rendering.
       * Note, this doesn't affect already created Texture Glhph's.*/
     void setTextureSizeHint(unsigned int width,unsigned int height);
     
-    unsigned int getTextureWidthHint() const { return _textureWidthHint; }
-    unsigned int getTextureHeightHint() const { return _textureWidthHint; }    
+    unsigned int getTextureWidthHint() const;
+    unsigned int getTextureHeightHint() const;
 
     /** Set the minification texture filter to use when creating the texture to store the glyph images when rendering.
       * Note, this doesn't affect already created Texture Glhph's.*/
     void setMinFilterHint(osg::Texture::FilterMode mode);
-    osg::Texture::FilterMode getMinFilterHint() const { return _minFilterHint; }
+    osg::Texture::FilterMode getMinFilterHint() const;
     
     /** Set the magnification texture filter to use when creating the texture to store the glyph images when rendering.
       * Note, this doesn't affect already created Texture Glhph's.*/
     void setMagFilterHint(osg::Texture::FilterMode mode);
-    osg::Texture::FilterMode getMagFilterHint() const { return _magFilterHint; }
+    osg::Texture::FilterMode getMagFilterHint() const;
 
     // make Text a friend to allow it add and remove its entry in the Font's _textList.
     friend class FontImplementation;
 
     void setImplementation(FontImplementation* implementation);
 
-    FontImplementation* getImplementation() { return _implementation.get(); }
-    const FontImplementation* getImplementation() const { return _implementation.get(); }
+    FontImplementation* getImplementation();
+    const FontImplementation* getImplementation() const;
 
 
 protected:

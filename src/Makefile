@@ -1,13 +1,7 @@
 TOPDIR = ..
 include $(TOPDIR)/Make/makedefs
+include $(TOPDIR)/Make/makedirdefs
 
-DIRS = \
-	osg\
-	osgUtil\
-	osgDB\
-	osgGLUT\
-	osgPlugins\
-	osgText\
-	Demos
+DIRS = $(SRC_DIRS)
 
 include $(TOPDIR)/Make/makedirrules

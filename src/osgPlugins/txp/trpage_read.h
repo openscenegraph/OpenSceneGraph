@@ -77,7 +77,7 @@ private:
 #if defined(_WIN32)
     typedef std::map<trpgToken,trpgr_Token> tok_map;
 #else
-    typedef std::map<trpgToken,trpgr_Token,less<trpgToken> > tok_map;
+    typedef std::map<trpgToken,trpgr_Token,std::less<trpgToken> > tok_map;
 #endif
     tok_map tokenMap;
     trpgr_Token defCb;     // Call this when no others are called

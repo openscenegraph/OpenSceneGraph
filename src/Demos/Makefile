@@ -1,23 +1,7 @@
 TOPDIR = ../..
 include $(TOPDIR)/Make/makedefs
+include $(TOPDIR)/Make/makedirdefs
 
-DIRS = \
-	hangglide\
-	osgbillboard\
-	osgcluster\
-	osgconv\
-	osgcopy\
-	osgcube\
-	osghud\
-	osgimpostor\
-	osgreflect\
-	osgscribe\
-	osgstereoimage\
-	osgtext\
-	osgtexture\
-	osgviews\
-	osgversion\
-	sgv
-
+DIRS = $(DEMOS_DIRS)
 
 include $(TOPDIR)/Make/makedirrules

@@ -25,23 +25,19 @@ bool ModularEmitter_readLocalData(osg::Object &obj, osgDB::Input &fr)
     osgParticle::ModularEmitter &myobj = static_cast<osgParticle::ModularEmitter &>(obj);
     bool itAdvanced = false;
 
-    // we cannot use readObjectOfType() because the Coutner, Placer and Shooter classes are 
-    // abstract and we can't create instances to use as prototypes.
-    // So, we call readObject() and then dynamic cast to the desired class.
-
-    osgParticle::Counter *counter = dynamic_cast<osgParticle::Counter *>(fr.readObject());
+	osgParticle::Counter *counter = static_cast<osgParticle::Counter *>(fr.readObjectOfType(osgDB::type_wrapper<osgParticle::Counter>()));
     if (counter) {
         myobj.setCounter(counter);
         itAdvanced = true;
     }
     
-    osgParticle::Placer *placer = dynamic_cast<osgParticle::Placer *>(fr.readObject());
+	osgParticle::Placer *placer = static_cast<osgParticle::Placer *>(fr.readObjectOfType(osgDB::type_wrapper<osgParticle::Placer>()));
     if (placer) {
         myobj.setPlacer(placer);
         itAdvanced = true;
     }
 
-    osgParticle::Shooter *shooter = dynamic_cast<osgParticle::Shooter *>(fr.readObject());
+	osgParticle::Shooter *shooter = static_cast<osgParticle::Shooter *>(fr.readObjectOfType(osgDB::type_wrapper<osgParticle::Shooter>()));
     if (shooter) {
         myobj.setShooter(shooter);
         itAdvanced = true;

@@ -47,6 +47,11 @@ osg::Object* Input::readObjectOfType(const osg::Object& compObj)
     return Registry::instance()->readObjectOfType(compObj,*this);
 }
 
+osg::Object* Input::readObjectOfType(const basic_type_wrapper &btw)
+{
+    return Registry::instance()->readObjectOfType(btw,*this);
+}
+
 osg::Object* Input::readObject()
 {
     return Registry::instance()->readObject(*this);

@@ -26,6 +26,8 @@
 
 namespace osgDB {
 
+struct basic_type_wrapper;
+
 /** Class for managing the reading of ASCII .osg files.*/
 class OSGDB_EXPORT Input : public FieldReaderIterator
 {
@@ -35,6 +37,7 @@ class OSGDB_EXPORT Input : public FieldReaderIterator
         virtual ~Input();
 
         virtual osg::Object*         readObjectOfType(const osg::Object& compObj);
+        virtual osg::Object*         readObjectOfType(const basic_type_wrapper &btw);
 
         virtual osg::Object*         readObject();
         virtual osg::Image*          readImage();

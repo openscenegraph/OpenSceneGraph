@@ -24,6 +24,8 @@ TransformCallback::TransformCallback(const osg::Vec3& pivot,const osg::Vec3& axi
     
     _previousTraversalNumber = -1;
     _previousTime = -1.0;
+    
+    _pause = false;
 }
 
 void TransformCallback::operator() (osg::Node* node, osg::NodeVisitor* nv)
@@ -34,14 +36,14 @@ void TransformCallback::operator() (osg::Node* node, osg::NodeVisitor* nv)
         
         const osg::FrameStamp* fs = nv->getFrameStamp();
         if (!fs) return; // not frame stamp, no handle on the time so can't move.
-
         
+        double newTime = fs->getReferenceTime();
+
         // ensure that we do not operate on this node more than
         // once during this traversal.  This is an issue since node
         // can be shared between multiple parents.
-        if (nv->getTraversalNumber()!=_previousTraversalNumber)
+        if (!_pause && nv->getTraversalNumber()!=_previousTraversalNumber)
         {
-            double newTime = fs->getReferenceTime();
             float delta_angle = _angular_velocity*(newTime-_previousTime);
 
             osg::Matrix mat = osg::Matrix::translate(-_pivot)*
@@ -53,8 +55,10 @@ void TransformCallback::operator() (osg::Node* node, osg::NodeVisitor* nv)
             transform->preMult(mat);
             
             _previousTraversalNumber = nv->getTraversalNumber();
-            _previousTime = newTime;
         }
+
+        _previousTime = newTime; 
+
     }
 
     // must call any nested node callbacks and continue subgraph traversal.

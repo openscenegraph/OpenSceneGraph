@@ -82,29 +82,71 @@ bool AnimationPath::getInterpolatedControlPoint(double time,ControlPoint& contro
 }
 
 
+void AnimationPath::read(std::istream& in)
+{
+    while (!in.eof())
+    {
+        double time;
+        osg::Vec3 position;
+        osg::Quat rotation;
+        in >> time >> position.x() >> position.y() >> position.z() >> rotation.x() >> rotation.y() >> rotation.z() >> rotation.w();
+        if(!in.eof())
+            insert(time,osg::AnimationPath::ControlPoint(position,rotation));
+    }
+}
+
+void AnimationPath::write(std::ostream& fout)
+{
+    const TimeControlPointMap& tcpm = getTimeControlPointMap();
+    for(TimeControlPointMap::const_iterator tcpmitr=tcpm.begin();
+        tcpmitr!=tcpm.end();
+        ++tcpmitr)
+    {
+        const ControlPoint& cp = tcpmitr->second;
+        fout<<tcpmitr->first<<" "<<cp._position<<" "<<cp._rotation<<std::endl;
+    }
+}
+
 class AnimationPathCallbackVisitor : public NodeVisitor
 {
     public:
 
-        AnimationPathCallbackVisitor(const AnimationPath::ControlPoint& cp):
-            _cp(cp) {}
+        AnimationPathCallbackVisitor(const AnimationPath::ControlPoint& cp, bool useInverseMatrix):
+            _cp(cp),
+            _useInverseMatrix(useInverseMatrix) {}
 
         virtual void apply(MatrixTransform& mt)
         {
             Matrix matrix;
-            _cp.getMatrix(matrix);
+            if (_useInverseMatrix)
+                _cp.getInverse(matrix);
+            else
+                _cp.getMatrix(matrix);
+                
             mt.setMatrix(matrix);
         }
         
         virtual void apply(PositionAttitudeTransform& pat)
         {
-            pat.setPosition(_cp._position);
-            pat.setAttitude(_cp._rotation);
+            if (_useInverseMatrix)
+            {
+                Matrix matrix;
+                _cp.getInverse(matrix);
+                pat.setPosition(matrix.getTrans());
+                pat.setAttitude(_cp._rotation.inverse());
+                
+            }
+            else
+            {
+                pat.setPosition(_cp._position);
+                pat.setAttitude(_cp._rotation);
+            }
         }
         
         AnimationPath::ControlPoint _cp;
-      
+        bool _useInverseMatrix;      
 };
+
 
 void AnimationPathCallback::operator()(Node* node, NodeVisitor* nv)
 {
@@ -113,19 +155,52 @@ void AnimationPathCallback::operator()(Node* node, NodeVisitor* nv)
         nv->getFrameStamp())
     {
         double time = nv->getFrameStamp()->getReferenceTime();
-        if (_firstTime==0.0) _firstTime = time;
-        
-        _animationTime = ((time-_firstTime)-_timeOffset)*_timeMultiplier;
-        
-        AnimationPath::ControlPoint cp;
-        if (_animationPath->getInterpolatedControlPoint(_animationTime,cp))
+        _latestTime = time;
+
+        if (!_pause)
         {
-            AnimationPathCallbackVisitor apcv(cp);
-            node->accept(apcv);
+            if (_firstTime==0.0) _firstTime = time;
+            update(*node);
         }
-
     }
-
+    
     // must call any nested node callbacks and continue subgraph traversal.
     NodeCallback::traverse(node,nv);
+}
+
+void AnimationPathCallback::update(osg::Node& node)
+{
+    double animationTime = ((_latestTime-_firstTime)-_timeOffset)*_timeMultiplier;
+
+    AnimationPath::ControlPoint cp;
+    if (_animationPath->getInterpolatedControlPoint(animationTime,cp))
+    {
+        AnimationPathCallbackVisitor apcv(cp,_useInverseMatrix);
+        node.accept(apcv);
+    }
+}
+
+
+void AnimationPathCallback::reset()
+{
+    _firstTime = _latestTime;
+    _pauseTime = _latestTime;
+}
+
+void AnimationPathCallback::setPause(bool pause)
+{
+    if (_pause==pause)
+    {
+        return;
+    }
+    
+    _pause = pause;
+    if (_pause)
+    {
+        _pauseTime = _latestTime;
+    }
+    else
+    {
+        _firstTime += (_latestTime-_pauseTime);
+    }
 }

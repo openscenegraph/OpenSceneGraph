@@ -1,6 +1,9 @@
 #include "SlideEventHandler.h"
 #include "SlideShowConstructor.h"
 
+#include <osg/AnimationPath>
+#include <osgUtil/TransformCallback>
+
 class FindNamedSwitchVisitor : public osg::NodeVisitor
 {
 public:
@@ -109,7 +112,7 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
     {
         case(osgGA::GUIEventAdapter::FRAME):
         {
-            if (_autoSteppingActive)
+            if (_autoSteppingActive && !_pause)
             {
                 double time = ea.time();
 
@@ -183,12 +186,17 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                 previousSlide();
                 return true;
             }
-            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Pause)
+            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Pause ||
+                     ea.getKey()=='p')
             {
                 _pause = !_pause;
-                if (_pause) std::cout<<"Pause"<<std::endl;
-                else std::cout<<"End Pause"<<std::endl;
                 
+                resetUpdateCallbackActivity();
+                
+            }
+            else if (ea.getKey()=='r')
+            {
+                resetUpdateCallbacks();
             }
 
             return false;
@@ -296,4 +304,72 @@ bool SlideEventHandler::previousLayer()
 {
     if (_activeLayer>0) return selectLayer(_activeLayer-1);
     else return false;
+}
+
+
+class ResetUpdateCallbacksVisitor : public osg::NodeVisitor
+{
+public:
+    ResetUpdateCallbacksVisitor(bool pause): 
+//        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN),
+        _pause(pause) {}
+        
+
+    void apply(osg::Node& node)    
+    {
+        osg::AnimationPathCallback* apc = dynamic_cast<osg::AnimationPathCallback*>(node.getUpdateCallback());
+        osgUtil::TransformCallback* tc = dynamic_cast<osgUtil::TransformCallback*>(node.getUpdateCallback());
+        if (apc)
+        {
+            apc->reset();
+            apc->update(node);
+        }
+        if (tc)
+        {
+            //tc->reset();
+        }
+        traverse(node);
+    }
+    
+    bool _pause;
+};
+
+void SlideEventHandler::resetUpdateCallbacks()
+{
+    ResetUpdateCallbacksVisitor rucv(_pause);
+    _presentationSwitch->accept(rucv);
+}
+
+class ActivityUpdateCallbacksVisitor : public osg::NodeVisitor
+{
+public:
+    ActivityUpdateCallbacksVisitor(bool pause): 
+//        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN),
+        _pause(pause) {}
+        
+
+    void apply(osg::Node& node)    
+    {
+        osg::AnimationPathCallback* apc = dynamic_cast<osg::AnimationPathCallback*>(node.getUpdateCallback());
+        osgUtil::TransformCallback* tc = dynamic_cast<osgUtil::TransformCallback*>(node.getUpdateCallback());
+        if (apc)
+        {
+            apc->setPause(_pause);
+        }
+        if (tc)
+        {
+            tc->setPause(_pause);
+        }
+        traverse(node);
+    }
+    
+    bool _pause;
+};
+
+void SlideEventHandler::resetUpdateCallbackActivity()
+{
+    ActivityUpdateCallbacksVisitor aucv(_pause);
+    _presentationSwitch->accept(aucv);
 }

@@ -37,15 +37,7 @@ AnimationPathManipulator::AnimationPathManipulator( const std::string& filename 
         return;
     }
 
-    while (!in.eof())
-    {
-        double time;
-        osg::Vec3 position;
-        osg::Quat rotation;
-        in >> time >> position.x() >> position.y() >> position.z() >> rotation.x() >> rotation.y() >> rotation.z() >> rotation.w();
-        if(!in.eof())
-            _animationPath->insert(time,osg::AnimationPath::ControlPoint(position,rotation));
-    }
+    _animationPath->read(in);
 
     in.close();
     

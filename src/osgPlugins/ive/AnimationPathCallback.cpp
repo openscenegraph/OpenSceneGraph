@@ -34,7 +34,7 @@ void AnimationPathCallback::write(DataOutputStream* out){
 	out->writeDouble(_timeOffset);
 	out->writeDouble(_timeMultiplier);
 	out->writeDouble(_firstTime);
-	out->writeDouble(_animationTime);
+	out->writeDouble(_pauseTime);
 	// Write animationpath if any
 	if(getAnimationPath())
         {
@@ -64,7 +64,7 @@ void AnimationPathCallback::read(DataInputStream* in){
 		_timeOffset = in->readDouble();
 		_timeMultiplier = in->readDouble();
 		_firstTime = in->readDouble();
-		_animationTime = in->readDouble();
+		_pauseTime = in->readDouble();
 		// Read animationpath if any
 		if(in->readInt())
                 {

@@ -71,7 +71,11 @@ public:
     
     void addStereoImagePair(const std::string& filenameLeft,const std::string& filenameRight,float height);
     
-    void addModel(const std::string& filename,float scale,float rotation,float position);
+    enum CoordinateFrame { SLIDE, MODEL };
+
+    void addModel(const std::string& filename, CoordinateFrame coordinate_frame, const osg::Vec3& position, float scale, const osg::Vec4& rotate, const osg::Vec4& rotation);
+    void addModelWithPath(const std::string& filename, CoordinateFrame coordinate_frame, const osg::Vec3& position, float scale, const osg::Vec4& rotate, const std::string& animation_path);
+    void addModelWithCameraPath(const std::string& filename, CoordinateFrame coordinate_frame, const osg::Vec3& position, float scale, const osg::Vec4& rotate, const std::string& animation_path);
     
     osg::ClearNode* takePresentation() { return _root.release(); }
     
@@ -88,6 +92,7 @@ protected:
     osg::Vec3   _slideOrigin;
     float       _slideWidth;
     float       _slideHeight;
+    float       _slideDistance;
 
     osg::Vec4   _backgroundColor;
     osg::Vec4   _textColor;

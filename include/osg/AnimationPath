@@ -63,7 +63,8 @@ class SG_EXPORT AnimationPath : public virtual osg::Object
             osg::Vec3 _position;
             osg::Quat _rotation;
             osg::Vec3 _scale;
-            
+
+
             inline void interpolate(float ratio,const ControlPoint& first, const ControlPoint& second)
             {
                 float one_minus_ratio = 1.0f-ratio;
@@ -89,15 +90,15 @@ class SG_EXPORT AnimationPath : public virtual osg::Object
             inline void getInverse(Matrixf& matrix) const
             {
                 matrix.makeScale(1.0f/_scale.x(),1.0f/_scale.y(),1.0f/_scale.y());
-                matrix.postMult(osg::Matrixf::rotate(_rotation.inverse()));
-                matrix.postMult(osg::Matrixf::translate(-_position));
+                matrix.preMult(osg::Matrixf::rotate(_rotation.inverse()));
+                matrix.preMult(osg::Matrixf::translate(-_position));
             }
 
             inline void getInverse(Matrixd& matrix) const
             {
                 matrix.makeScale(1.0f/_scale.x(),1.0f/_scale.y(),1.0f/_scale.y());
-                matrix.postMult(osg::Matrixd::rotate(_rotation.inverse()));
-                matrix.postMult(osg::Matrixd::translate(-_position));
+                matrix.preMult(osg::Matrixd::rotate(_rotation.inverse()));
+                matrix.preMult(osg::Matrixd::translate(-_position));
             }
         };
         
@@ -163,6 +164,12 @@ class SG_EXPORT AnimationPath : public virtual osg::Object
         TimeControlPointMap& getTimeControlPointMap() { return _timeControlPointMap; }
         
         const TimeControlPointMap& getTimeControlPointMap() const { return _timeControlPointMap; }
+        
+        /** read the anumation path from a flat ascii file stream.*/
+        void read(std::istream& in);
+
+        /** write the anumation path to a flat ascii file stream.*/
+        void write(std::ostream& out);
 
     protected:
     
@@ -182,47 +189,63 @@ class SG_EXPORT AnimationPathCallback : public NodeCallback
             _timeOffset(0.0),
             _timeMultiplier(1.0),
             _firstTime(0.0),
-            _animationTime(0.0) {}
+            _latestTime(0.0),
+            _pause(false),
+            _pauseTime(0.0) {}
             
 
         AnimationPathCallback(const AnimationPathCallback& apc,const CopyOp& copyop):
             NodeCallback(apc,copyop),
             _animationPath(apc._animationPath),
+            _useInverseMatrix(apc._useInverseMatrix),
             _timeOffset(apc._timeOffset),
             _timeMultiplier(apc._timeMultiplier),
             _firstTime(apc._firstTime),
-            _animationTime(apc._animationTime) {}
+            _latestTime(apc._latestTime),
+            _pause(apc._pause),
+            _pauseTime(apc._pauseTime) {}
 
         
         META_Object(osg,AnimationPathCallback);
 
         AnimationPathCallback(AnimationPath* ap,double timeOffset=0.0f,double timeMultiplier=1.0f):
             _animationPath(ap),
+            _useInverseMatrix(false),
             _timeOffset(timeOffset),
             _timeMultiplier(timeMultiplier),
             _firstTime(0.0),
-            _animationTime(0.0) {}
-            
-            
+            _latestTime(0.0),
+            _pause(false),
+            _pauseTime(0.0) {}
             
         void setAnimationPath(AnimationPath* path) { _animationPath = path; }
 
         AnimationPath* getAnimationPath() { return _animationPath.get(); }
 
         const AnimationPath* getAnimationPath() const { return _animationPath.get(); }
+        
+        void setUseInverseMatrix(bool useInverseMatrix) { _useInverseMatrix = useInverseMatrix; }
+        bool getUseInverseMatrix() const { return _useInverseMatrix; }
 
+        void reset();
+
+        void setPause(bool pause);
 
         /** implements the callback*/
         virtual void operator()(Node* node, NodeVisitor* nv);
         
+        void update(osg::Node& node);
 
     public:
 
         ref_ptr<AnimationPath>  _animationPath;
+        bool                    _useInverseMatrix;
         double                  _timeOffset;
         double                  _timeMultiplier;
         double                  _firstTime;
-        mutable double          _animationTime;
+        double                  _latestTime;
+        bool                    _pause;
+        double                  _pauseTime;
 
     protected:
     

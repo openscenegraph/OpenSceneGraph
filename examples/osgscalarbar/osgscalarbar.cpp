@@ -27,40 +27,45 @@ using namespace osgSim;
 
 osg::Node* createScalarBar()
 {
-//     ScalarsToColors* stc = new ScalarsToColors(0.0f,1.0f);
-// 	ScalarBar* sb = new ScalarBar(2,3,stc);
-//
-//     // Create a custom color set
-//     std::vector<osg::Vec4> cs;
-//     cs.push_back(osg::Vec4(1.0f,0.0f,0.0f,1.0f));   // R
-//     cs.push_back(osg::Vec4(0.0f,0.0f,1.0f,1.0f));   // B
-//
-// 	// Create a custom scalar printer
-//     struct MyScalarPrinter: public ScalarBar::ScalarPrinter
-// 	{
-//         std::string printScalar(float scalar)
-// 		{
-// 		    std::cout<<"In MyScalarPrinter::printScalar"<<std::endl;
-//             if(scalar==0.0f) return "Hello";
-// 			else if(scalar==1.0f) return "Goodbye";
-// 			else return ScalarBar::ScalarPrinter::printScalar(scalar);
-// 		}
-// 	};
-//
-//     ColorRange* stc = new ColorRange(0.0f,1.0f,cs);
-// 	//ScalarBar* sb = new ScalarBar(2, 2, stc, "ScalarBar", ScalarBar::HORIZONTAL, 0.25f, new MyScalarPrinter);
-// 	ScalarBar* sb = new ScalarBar(2, 2, stc, "ScalarBar", ScalarBar::VERTICAL, 4.0f, new MyScalarPrinter);
-// 	sb->setScalarPrinter(new MyScalarPrinter);
-//
-// 	return sb;
+#if 1
+    //ScalarsToColors* stc = new ScalarsToColors(0.0f,1.0f);
+    //ScalarBar* sb = new ScalarBar(2,3,stc,"STC_ScalarBar");
 
-    ScalarBar *sb = new ScalarBar;
-    ScalarBar::TextProperties tp;
-	tp._fontFile = "fonts/times.ttf";
+    // Create a custom color set
+    std::vector<osg::Vec4> cs;
+    cs.push_back(osg::Vec4(1.0f,0.0f,0.0f,1.0f));   // R
+    cs.push_back(osg::Vec4(0.0f,1.0f,0.0f,1.0f));   // G
+    cs.push_back(osg::Vec4(1.0f,1.0f,0.0f,1.0f));   // G
+    cs.push_back(osg::Vec4(0.0f,0.0f,1.0f,1.0f));   // B
+    cs.push_back(osg::Vec4(0.0f,1.0f,1.0f,1.0f));   // R
 
-	sb->setTextProperties(tp);
+    // Create a custom scalar printer
+    struct MyScalarPrinter: public ScalarBar::ScalarPrinter
+    {
+        std::string printScalar(float scalar)
+        {
+            std::cout<<"In MyScalarPrinter::printScalar"<<std::endl;
+            if(scalar==0.0f) return ScalarBar::ScalarPrinter::printScalar(scalar)+" Bottom";
+            else if(scalar==0.5f) return ScalarBar::ScalarPrinter::printScalar(scalar)+" Middle";
+            else if(scalar==1.0f) return ScalarBar::ScalarPrinter::printScalar(scalar)+" Top";
+            else return ScalarBar::ScalarPrinter::printScalar(scalar);
+        }
+    };
+
+    ColorRange* cr = new ColorRange(0.0f,1.0f,cs);
+    ScalarBar* sb = new ScalarBar(20, 11, cr, "ScalarBar", ScalarBar::VERTICAL, 4.0f, new MyScalarPrinter);
+    sb->setScalarPrinter(new MyScalarPrinter);
 
     return sb;
+#else
+    ScalarBar *sb = new ScalarBar;
+    ScalarBar::TextProperties tp;
+    tp._fontFile = "fonts/times.ttf";
+
+    sb->setTextProperties(tp);
+
+    return sb;
+#endif
 
 }
 

@@ -78,18 +78,18 @@ class SG_EXPORT Drawable : public Object
           * @param i index of the parent to get.
           * @return the parent i.
           */
-        inline Node* getParent(const int i)  { return _parents[i]; }
+        inline Node* getParent(const unsigned int i)  { return _parents[i]; }
         /** Get a single const parent of Drawable.
           * @param i index of the parent to get.
           * @return the parent i.
           */
-        inline const Node* getParent(const int i) const  { return _parents[i]; }
+        inline const Node* getParent(const unsigned int i) const  { return _parents[i]; }
 
         /**
          * Get the number of parents of node.
          * @return the number of parents of this node.
          */
-        inline const int getNumParents() const { return _parents.size(); }
+        inline const unsigned int getNumParents() const { return _parents.size(); }
 
 
 

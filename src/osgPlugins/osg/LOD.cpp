@@ -90,7 +90,7 @@ bool LOD_writeLocalData(const Object& obj, Output& fw)
     fw.indent() << "Ranges {"<< std::endl;
     fw.moveIn();
     
-    for(int i=0; i<lod.getNumRanges();++i)
+    for(unsigned int i=0; i<lod.getNumRanges();++i)
     {
         fw.indent() << lod.getRange(i) << std::endl;
     }

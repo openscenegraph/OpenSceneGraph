@@ -28,7 +28,7 @@ extern osg::Node *makeClouds( void );
 struct MoveEarthySkyWithEyePointCallback : public osg::Transform::ComputeTransformCallback
 {
     /** Get the transformation matrix which moves from local coords to world coords.*/
-    virtual const bool computeLocalToWorldMatrix(osg::Matrix& matrix,const osg::Transform* transform, osg::NodeVisitor* nv) const 
+    virtual const bool computeLocalToWorldMatrix(osg::Matrix& matrix,const osg::Transform*, osg::NodeVisitor* nv) const 
     {
         osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(nv);
         if (cv)
@@ -40,7 +40,7 @@ struct MoveEarthySkyWithEyePointCallback : public osg::Transform::ComputeTransfo
     }
 
     /** Get the transformation matrix which moves from world coords to local coords.*/
-    virtual const bool computeWorldToLocalMatrix(osg::Matrix& matrix,const osg::Transform* transform, osg::NodeVisitor* nv) const
+    virtual const bool computeWorldToLocalMatrix(osg::Matrix& matrix,const osg::Transform*, osg::NodeVisitor* nv) const
     {
         osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(nv);
         if (cv)

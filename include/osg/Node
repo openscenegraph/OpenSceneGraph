@@ -83,13 +83,13 @@ class SG_EXPORT Node : public Object
           * prevent modification of the parent list.*/
         inline ParentList getParents() { return _parents; }
 
-        inline Group* getParent(const int i)  { return _parents[i]; }
+        inline Group* getParent(const unsigned int i)  { return _parents[i]; }
         /**
          * Get a single const parent of node.
          * @param i index of the parent to get.
          * @return the parent i.
          */
-        inline const Group* getParent(const int i) const  { return _parents[i]; }
+        inline const Group* getParent(const unsigned int i) const  { return _parents[i]; }
 
         /**
          * Get the number of parents of node.

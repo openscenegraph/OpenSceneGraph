@@ -27,26 +27,28 @@ AnimationPathManipulator::AnimationPathManipulator( const std::string& filename 
     _timeScale = 1.0f;
     _isPaused = false;
 
-    FILE *fp = fopen( filename.c_str(), "r" );
-    if( fp == NULL )
+
+    std::ifstream in(filename.c_str());
+
+    if (!in)
     {
         osg::notify(osg::WARN) << "AnimationPathManipulator: Cannot open animation path file \"" << filename << "\".\n";
         _valid = false;
         return;
     }
-    while( !feof( fp ))
+
+    while (!in.eof())
     {
         double time;
-            osg::Vec3 position;
-            osg::Quat rotation;
-        fscanf( fp, "%lf %f %f %f %f %f %f %f\n",
-            &time, &position[0], &position[1], &position[2],
-            &rotation[0], &rotation[1], &rotation[2], &rotation[3] );
-
-        if( !feof(fp))
-                _animationPath->insert(time,osg::AnimationPath::ControlPoint(position,rotation));
+        osg::Vec3 position;
+        osg::Quat rotation;
+        in >> time >> position.x() >> position.y() >> position.z() >> rotation.x() >> rotation.y() >> rotation.z() >> rotation.w();
+        if(!in.eof())
+            _animationPath->insert(time,osg::AnimationPath::ControlPoint(position,rotation));
     }
-    fclose(fp);
+
+    in.close();
+    
 }
 
 void AnimationPathManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter&)

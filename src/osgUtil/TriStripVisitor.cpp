@@ -545,6 +545,12 @@ void TriStripVisitor::stripify(Geometry& geom)
     if (geom.getFogCoordBinding()==osg::Geometry::BIND_PER_PRIMITIVE ||
         geom.getFogCoordBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET) return;
 
+    if (geom.suitableForOptimization())
+    {
+        // removing coord indices
+        std::cout<<"Removing attribute indices"<<std::endl;
+        geom.copyToAndOptimize(geom);
+    }
 
 
     unsigned int numSurfacePrimitives = 0;

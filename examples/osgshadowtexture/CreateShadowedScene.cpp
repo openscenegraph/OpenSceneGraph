@@ -200,10 +200,7 @@ void CreateShadowTextureCullCallback::doPreRender(osg::Node& node, osgUtil::Cull
     TexGen* texgen = new TexGen;
     //texgen->setMatrix(MV);
     texgen->setMode(osg::TexGen::EYE_LINEAR);
-    texgen->setPlane(osg::TexGen::S,osg::Plane(MVPT(0,0),MVPT(1,0),MVPT(2,0),MVPT(3,0)));
-    texgen->setPlane(osg::TexGen::T,osg::Plane(MVPT(0,1),MVPT(1,1),MVPT(2,1),MVPT(3,1)));
-    texgen->setPlane(osg::TexGen::R,osg::Plane(MVPT(0,2),MVPT(1,2),MVPT(2,2),MVPT(3,2)));
-    texgen->setPlane(osg::TexGen::Q,osg::Plane(MVPT(0,3),MVPT(1,3),MVPT(2,3),MVPT(3,3)));
+    texgen->setPlanesFromMatrix(MVPT);
 
     cv.getRenderStage()->addPositionedTextureAttribute(0,new osg::RefMatrix(MV),texgen);
 

@@ -6,6 +6,7 @@
 
 #include "ReaderWriterFLT.h"
 #include "FltFile.h"
+#include "Registry.h"
 
 #include <osg/Object>
 #include <osg/Node>
@@ -27,7 +28,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterFLT::readNode(const std::string& fil
         return ReadResult::FILE_NOT_HANDLED;
 
     osg::ref_ptr<FltFile> read = new FltFile;
-    
+
     if (options)
     {
         read->setUseTextureAlphaForTransparancyBinning(options->getOptionString().find("noTextureAlphaForTransparancyBinning")==std::string::npos);
@@ -35,6 +36,9 @@ osgDB::ReaderWriter::ReadResult ReaderWriterFLT::readNode(const std::string& fil
     }
 
     osg::Node* node = read->readNode(fileName);
+
+    flt::Registry::instance()->clearObjectCache();
+
     if (node) return node;
     else return ReadResult::FILE_NOT_HANDLED;
 }

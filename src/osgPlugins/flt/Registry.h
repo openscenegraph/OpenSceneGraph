@@ -52,12 +52,18 @@ class Registry
 
         void addFltFile(const std::string& name, FltFile* file);
         FltFile* getFltFile(const std::string& name);
+        
+        void clearObjectCache();
 
+        void addRecordForFutureDelete(Record* rec) { _recordForFutureDeleteList.push_back(rec); }
+        
     private:
 
         typedef std::map<int, osg::ref_ptr<Record> > RecordProtoMap;
         typedef std::map<std::string, osg::ref_ptr<osg::StateSet> > TextureMap;
         typedef std::map<std::string, osg::ref_ptr<FltFile> > FltFileMap;
+        
+        typedef std::vector<osg::ref_ptr<Record> > RecordsForFutureDeleteList;
 
         /** constructor is private, as its a singleton, preventing
             construction other than via the instance() method and
@@ -67,6 +73,8 @@ class Registry
         RecordProtoMap  _recordProtoMap;
         TextureMap      _textureMap;
         FltFileMap      _fltFileMap;
+        
+        RecordsForFutureDeleteList _recordForFutureDeleteList;
 };
 
 

@@ -69,9 +69,6 @@ public:
   
   virtual size_t        sizeofData() const { return sizeof ( SLocalVertexPool ); }
 
-  void                              makeCurrent();
-  static LocalVertexPoolRecord *    getCurrent();
-
 protected:
 
   class Offset

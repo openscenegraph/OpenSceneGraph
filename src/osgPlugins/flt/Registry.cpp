@@ -1,4 +1,4 @@
-
+;
 #include <osg/Node>
 #include <osg/Group>
 #include <osg/Notify>
@@ -13,7 +13,6 @@
 
 using namespace flt;
 
-// static
 Registry* Registry::instance()
 {
     static Registry s_nodeFactory;
@@ -43,6 +42,7 @@ Record* Registry::getPrototype(const int opcode)
     return NULL;
 
 }
+
 
 ///////////////////////////////////////////////////////////////////
 
@@ -80,3 +80,10 @@ FltFile* Registry::getFltFile(const std::string& name)
     return NULL;
 }
 
+void Registry::clearObjectCache()
+{
+    _textureMap.clear();
+    _fltFileMap.clear();
+    
+    _recordForFutureDeleteList.clear();
+}

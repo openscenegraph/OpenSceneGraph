@@ -189,16 +189,18 @@ class ConvertFromFLT
         typedef std::map<int,Record*> VertexPaletteOffsetMap;
         VertexPaletteOffsetMap _VertexPaletteOffsetMap;
 
-        int                 _diOpenFlightVersion;
-        int                 _diCurrentOffset;
-        unsigned short      _wObjTransparency;
-        int                 _nSubfaceLevel;
-        double              _unitScale;
-        bool                _bHdrRgbMode;
-        osg::Vec4           _faceColor;
-        bool                _useTextureAlphaForTranspancyBinning;
+        int                     _diOpenFlightVersion;
+        int                     _diCurrentOffset;
+        unsigned short          _wObjTransparency;
+        int                     _nSubfaceLevel;
+        double                  _unitScale;
+        bool                    _bHdrRgbMode;
+        osg::Vec4               _faceColor;
+        bool                    _useTextureAlphaForTranspancyBinning;
 
-        osg::Group*         _osgParent;
+        osg::Group*             _osgParent;
+        
+        LocalVertexPoolRecord* _currentLocalVertexPool;
 };
 
     

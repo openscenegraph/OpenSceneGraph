@@ -23,16 +23,24 @@ using namespace flt;
 //
 ////////////////////////////////////////////////////////////////////
 
+int Record::s_numAllocatedRecords=0;
+        
 Record::Record()
 {
     _pData = NULL;
     _pParent = NULL;
     _pFltFile = NULL;
+    
+    ++s_numAllocatedRecords;
+    
+    flt::Registry::instance()->addRecordForFutureDelete(this);
 }
 
 
 Record::~Record()
 {
+    --s_numAllocatedRecords;
+
     if (_pData) ::free(_pData);
 }
 

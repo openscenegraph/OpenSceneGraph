@@ -33,6 +33,9 @@ class Record : public osg::Referenced
 {
     public:
 
+        // used for debugging the number of records created and deleted.
+        static int s_numAllocatedRecords;
+
         Record();
 
         virtual Record* clone() const = 0;

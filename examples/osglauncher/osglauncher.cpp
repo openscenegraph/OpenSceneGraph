@@ -163,7 +163,7 @@ class Xample
     { 
         texture    = image;
         app     = prog;
-        std::cout << "New Xample!" << std::endl;
+        osg::notify(osg::INFO) << "New Xample!" << std::endl;
     };
     ~Xample() { };
     
@@ -184,48 +184,48 @@ static std::list<Xample> Xamplelist;
 
 void printList()
 {
-    std::cout << "start printList()" << std::endl;
+    osg::notify(osg::INFO) << "start printList()" << std::endl;
     for (OP i = Xamplelist.begin() ; i != Xamplelist.end() ; ++i)
     {
         Xample& x = *i;
-        std::cout << "current x.texture = " << x.getTexture() << std::endl;
-        std::cout << "current x.app = " << x.getApp() << std::endl;
+        osg::notify(osg::INFO) << "current x.texture = " << x.getTexture() << std::endl;
+        osg::notify(osg::INFO) << "current x.app = " << x.getApp() << std::endl;
     }
-    std::cout << "end printList()" << std::endl;
+    osg::notify(osg::INFO) << "end printList()" << std::endl;
 } // end printList()
 
 
 int runApp(std::string xapp)
 {
-    std::cout << "start runApp()" << std::endl;
+    osg::notify(osg::INFO) << "start runApp()" << std::endl;
     for (OP i = Xamplelist.begin() ; i != Xamplelist.end() ; ++i)
     {
         Xample& x = *i;
         if(!xapp.compare(x.getApp()))
         {
-            std::cout << "app found!" << std::endl;
+            osg::notify(osg::INFO) << "app found!" << std::endl;
             
             const char* cxapp = xapp.c_str();
             
-            std::cout << "char* = " << cxapp <<std::endl;
+            osg::notify(osg::INFO) << "char* = " << cxapp <<std::endl;
             
             system(cxapp);
             return 1;
         }
     }
-    std::cout << "app not found!" << std::endl;
+    osg::notify(osg::INFO) << "app not found!" << std::endl;
     return 0;
 } // end printList()
 
 
 void readConfFile(char* confFile)                                                                // read confFile            1
 {
-    std::cout << "Start reading confFile" << std::endl;
+    osg::notify(osg::INFO) << "Start reading confFile" << std::endl;
     
     std::string fileName = osgDB::findDataFile(confFile);
     if (fileName.empty())
     {
-        std::cout << "Config file not found"<<confFile << std::endl;
+        osg::notify(osg::INFO) << "Config file not found"<<confFile << std::endl;
         return;
     }
     
@@ -233,7 +233,7 @@ void readConfFile(char* confFile)                                               
     std::ifstream in(fileName.c_str());
     if (!in)
     {
-        std::cout << "File " << fileName << " can not be opened!" << std::endl;
+        osg::notify(osg::INFO) << "File " << fileName << " can not be opened!" << std::endl;
         exit(1);
     }
     std::string imageBuffer;
@@ -246,8 +246,8 @@ void readConfFile(char* confFile)                                               
         if(imageBuffer == "" || appBuffer == "");
         else
         {
-            std::cout << "imageBuffer: " << imageBuffer << std::endl;
-            std::cout << "appBuffer: " << appBuffer << std::endl;
+            osg::notify(osg::INFO) << "imageBuffer: " << imageBuffer << std::endl;
+            osg::notify(osg::INFO) << "appBuffer: " << appBuffer << std::endl;
 //            jeweils checken ob image vorhanden ist.
             
             Xample tmp(imageBuffer, appBuffer);                                                    // create Xample objects    2
@@ -259,7 +259,7 @@ void readConfFile(char* confFile)                                               
     
     in.close();
     
-    std::cout << "End reading confFile" << std::endl;
+    osg::notify(osg::INFO) << "End reading confFile" << std::endl;
     
     printList();
 } // end readConfFile
@@ -329,9 +329,9 @@ osg::PositionAttitudeTransform* getPATransformation(osg::Node* object, osg::Vec3
 void printBoundings(osg::Node* current, std::string name)
 {
     const osg::BoundingSphere& currentBound = current->getBound();
-    std::cout << name << std::endl;
-    std::cout << "center = " << currentBound.center() << std::endl;
-    std::cout << "radius = " << currentBound.radius() << std::endl;
+    osg::notify(osg::INFO) << name << std::endl;
+    osg::notify(osg::INFO) << "center = " << currentBound.center() << std::endl;
+    osg::notify(osg::INFO) << "radius = " << currentBound.radius() << std::endl;
     
 //    return currentBound.radius();
 }

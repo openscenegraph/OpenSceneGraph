@@ -66,6 +66,7 @@ class Logos: public osg::Drawable
 	    sset->setAttribute( transp );
 	    sset->setMode( GL_BLEND, osg::StateAttribute::ON );
 	    sset->setMode( GL_DEPTH_TEST, osg::StateAttribute::OFF );
+	    sset->setTextureMode( 0, GL_TEXTURE_2D, osg::StateAttribute::OFF );
 	    sset->setRenderBinDetails( StateSet::TRANSPARENT_BIN + 1 , "RenderBin" );
 	    setStateSet( sset );
 	    viewport = new osg::Viewport;
@@ -99,6 +100,8 @@ class Logos: public osg::Drawable
     	    glMatrixMode( GL_MODELVIEW );
     	    glPushMatrix();
     	    glLoadIdentity();
+
+	    glColor4f( 1, 1, 1, 1 );
 
 	    std::vector <osg::Image *>::const_iterator p;
 	    float th = 0.0;

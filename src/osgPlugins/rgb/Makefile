@@ -4,7 +4,7 @@ include $(TOPDIR)/Make/makedefs
 CXXFILES =\
 	ReaderWriterRGB.cpp\
 
-LIBS  += $(OSG_LIBS) $(OTHER_LIBS)
+##LIBS  += $(OSG_LIBS) $(OTHER_LIBS)
 
 TARGET_BASENAME = rgb
 include $(TOPDIR)/Make/cygwin_plugin_def

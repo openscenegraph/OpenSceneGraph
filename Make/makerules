@@ -137,7 +137,15 @@ Makedepend : $(CXXFILES) $(CFILES)
 ifeq ($(OS),IRIX)   
 	touch $@
 else
-	$(C++) $(INC) $(DEPARG) $^ > $(MAKEDEPEND)
+	@ [ -d depend ] || mkdir depend
+	@ rm -f $@;
+	 for f in $?; do \
+	    ff=`basename $$f`;\
+	    $(C++) $(INC) $(DEPARG) > depend/$$ff ;\
+	    echo "include depend/$$ff" >> $@;\
+	done
+	
+#	$(C++) $(INC) $(DEPARG) $^ > $(MAKEDEPEND)
 endif
 
 

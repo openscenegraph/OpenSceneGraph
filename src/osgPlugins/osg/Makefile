@@ -56,7 +56,8 @@ CXXFILES =\
         Transform.cpp\
 
 
-LIBS   += $(OSG_LIBS) $(OTHER_LIBS)
+###LIBS   += $(OSG_LIBS) $(OTHER_LIBS)
+LIBS = -losg -lCstd
 
 TARGET_BASENAME = osg
 include $(TOPDIR)/Make/cygwin_plugin_def

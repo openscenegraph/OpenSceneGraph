@@ -18,7 +18,7 @@ TexGen::~TexGen()
 }
 
 
-void TexGen::setPlane(const Coord which, const Vec4& plane)
+void TexGen::setPlane(Coord which, const Vec4& plane)
 {
     switch( which )
     {
@@ -31,7 +31,7 @@ void TexGen::setPlane(const Coord which, const Vec4& plane)
 }
 
 
-const Vec4& TexGen::getPlane(const Coord which) const
+const Vec4& TexGen::getPlane(Coord which) const
 {
     switch( which )
     {

@@ -14,7 +14,7 @@
 #ifndef OSG_REF_PTR
 #define OSG_REF_PTR 1
 
-#define AUTOMATIC_CAST_TO_POINTER
+// #define AUTOMATIC_CAST_TO_POINTER
 
 namespace osg {
 
@@ -56,46 +56,18 @@ class ref_ptr
         }
 
 #ifndef AUTOMATIC_CAST_TO_POINTER
-        inline bool operator == (const ref_ptr& rp) const
-        {
-            return (_ptr==rp._ptr);
-        }
-
-        inline bool operator != (const ref_ptr& rp) const
-        {
-            return (_ptr!=rp._ptr);
-        }
-
-        inline bool operator < (const ref_ptr& rp) const
-        {
-            return (_ptr<rp._ptr);
-        }
-
-        inline bool operator > (const ref_ptr& rp) const
-        {
-            return (_ptr>rp._ptr);
-        }
-
-        inline bool operator == (const T* ptr) const
-        {
-            return (_ptr==ptr);
-        }
-
-        inline bool operator != (const T* ptr) const
-        {
-            return (_ptr!=ptr);
-        }
-        
-        inline bool operator < (const T* ptr) const
-        {
-            return (_ptr<ptr);
-        }
-        
-        inline bool operator > (const T* ptr) const
-        {
-            return (_ptr>ptr);
-        }
+        // comparison operators for ref_ptr.
+        inline bool operator == (const ref_ptr& rp) const { return (_ptr==rp._ptr); }
+        inline bool operator != (const ref_ptr& rp) const { return (_ptr!=rp._ptr); }
+        inline bool operator < (const ref_ptr& rp) const { return (_ptr<rp._ptr); }
+        inline bool operator > (const ref_ptr& rp) const { return (_ptr>rp._ptr); }
 #endif
+
+        // comparion operator for const T*.
+        inline bool operator == (const T* ptr) const { return (_ptr==ptr); }
+        inline bool operator != (const T* ptr) const { return (_ptr!=ptr); }
+        inline bool operator < (const T* ptr) const { return (_ptr<ptr); }
+        inline bool operator > (const T* ptr) const { return (_ptr>ptr); }
 
 
         inline T& operator*()  { return *_ptr; }

@@ -111,7 +111,7 @@ class ConstructStateCallback : public osg::NodeCallback
             osg::TexGen* texgen = dynamic_cast<osg::TexGen*>(attribute);
             if (texgen)
             {
-                texgen->setPlane(osg::TexGen::R, texgen->getPlane(osg::TexGen::R)+osg::Vec4(0.0f,0.0f,0.0f,0.001f));
+                texgen->getPlane(osg::TexGen::R)[3] += 0.001f;
             }
             
         }

@@ -87,6 +87,13 @@ class SG_EXPORT Plane
 
         inline bool valid() const { return _fv.valid(); }
 
+        inline bool operator == (const Plane& plane) const { return _fv==plane._fv;  }
+        inline bool operator != (const Plane& plane) const { return _fv!=plane._fv; }
+        inline bool operator <  (const Plane& plane) const { return _fv<plane._fv; }
+
+	inline float* ptr() { return _fv.ptr(); }
+	inline const float* ptr() const { return _fv.ptr(); }
+
 	inline Vec4& asVec4() { return _fv; }
 
 	inline const Vec4& asVec4() const { return _fv; }

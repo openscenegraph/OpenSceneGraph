@@ -5,7 +5,7 @@
 #ifndef OSG_TEXGEN
 #define OSG_TEXGEN 1
 
-#include <osg/Vec4>
+#include <osg/Plane>
 #include <osg/StateAttribute>
 
 namespace osg {
@@ -92,9 +92,11 @@ class SG_EXPORT TexGen : public StateAttribute
 	  S, T, R, Q
         };
 
-        void setPlane(Coord which, const Vec4& plane);
+        void setPlane(Coord which, const Plane& plane);
 
-        const Vec4& getPlane(Coord which) const;
+        Plane& getPlane(Coord which);
+
+        const Plane& getPlane(Coord which) const;
 
     protected :
 
@@ -103,7 +105,7 @@ class SG_EXPORT TexGen : public StateAttribute
         Mode _mode;
 
         /// additional texgen coefficents for GL_OBJECT_PLANE or GL_EYE_PLANE,
-        Vec4 _plane_s, _plane_t, _plane_r, _plane_q;
+        Plane _plane_s, _plane_t, _plane_r, _plane_q;
 
 };
 

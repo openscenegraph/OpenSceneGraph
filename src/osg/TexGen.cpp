@@ -18,7 +18,7 @@ TexGen::~TexGen()
 }
 
 
-void TexGen::setPlane(Coord which, const Vec4& plane)
+void TexGen::setPlane(Coord which, const Plane& plane)
 {
     switch( which )
     {
@@ -30,8 +30,19 @@ void TexGen::setPlane(Coord which, const Vec4& plane)
     }
 }
 
+const Plane& TexGen::getPlane(Coord which) const
+{
+    switch( which )
+    {
+        case S : return _plane_s;
+        case T : return _plane_t;
+        case R : return _plane_r;
+        case Q : return _plane_q;
+        default : notify(WARN)<<"Error: invalid 'which' passed TexGen::getPlane(which)"<<std::endl; return _plane_r;
+    }
+}
 
-const Vec4& TexGen::getPlane(Coord which) const
+Plane& TexGen::getPlane(Coord which)
 {
     switch( which )
     {

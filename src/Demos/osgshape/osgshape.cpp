@@ -12,6 +12,7 @@
 
 #include <osg/Math>
 
+// for the grid data..
 #include "../osghangglide/terrain_coords.h"
 
 osg::Geode* createShapes()
@@ -19,11 +20,10 @@ osg::Geode* createShapes()
     osg::Geode* geode = osgNew osg::Geode();
 
     // ---------------------------------------
-    // Set up a StateSet to make the cube red
+    // Set up a StateSet to texture the objects
     // ---------------------------------------
     osg::StateSet* stateset = osgNew osg::StateSet();
 
-   
     osg::Image* image = osgDB::readImageFile("Images/lz.rgb");
     if (image)
     {

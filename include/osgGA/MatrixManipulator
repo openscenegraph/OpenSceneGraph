@@ -114,24 +114,30 @@ public:
         /** Return node if attached.*/
         virtual osg::Node* getNode() { return NULL; }
 
-        virtual void setHomePosition(const osg::Vec3d& eye, const osg::Vec3d& center, const osg::Vec3d& up)
+        /** Manually set the home position, and set the automatic compute of home position. */
+        virtual void setHomePosition(const osg::Vec3d& eye, const osg::Vec3d& center, const osg::Vec3d& up, bool autoComputeHomePosition=false)
         {
+            setAutoComputeHomePosition(autoComputeHomePosition);
             _homeEye = eye;
             _homeCenter = center;
             _homeUp = up;
         }
         
+        /** Get the mnaully set home position. */
         virtual void getHomePosition(osg::Vec3d& eye, osg::Vec3d& center, osg::Vec3d& up)
         {
             eye = _homeEye;
             center = _homeCenter;
             up = _homeUp;
         }
-        
+
+        /** Set whether the automatic compute of the home position is enabled.*/        
         virtual void setAutoComputeHomePosition(bool flag) { _autoComputeHomePosition = flag; }
         
+        /** Get whether the automatic compute of the home position is enabled.*/        
         bool getAutoComputeHomePosition() const { return _autoComputeHomePosition; }
 
+        /** Compute the home position.*/        
         virtual void computeHomePosition()
         {
             if(getNode())
@@ -140,7 +146,8 @@ public:
 
                 setHomePosition(boundingSphere._center+osg::Vec3( 0.0,-3.5f * boundingSphere._radius,0.0f),
                                 boundingSphere._center,
-                                osg::Vec3(0.0f,0.0f,1.0f));
+                                osg::Vec3(0.0f,0.0f,1.0f),
+                                _autoComputeHomePosition);
             }
         }
 

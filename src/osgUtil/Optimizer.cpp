@@ -45,6 +45,7 @@ static bool isNodeEmpty(const osg::Node& node)
 {
     if (node.getUserData()) return false;
     if (node.getUpdateCallback()) return false;
+    if (node.getEventCallback()) return false;
     if (node.getCullCallback()) return false;
     if (node.getNumDescriptions()>0) return false;
     if (node.getStateSet()) return false;

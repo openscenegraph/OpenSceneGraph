@@ -164,15 +164,24 @@ int main( int argc, char **argv )
 
     glutInit( &argc, argv );
 
+    // create the commandline args.
+    std::vector<std::string> commandLine;
+    for(int i=1;i<argc;++i) commandLine.push_back(argv[i]);
 
+    // create the viewer and the model to it.
+    osgGLUT::Viewer viewer;
+
+    // configure the viewer from the commandline arguments, and eat any
+    // parameters that have been matched.
+    viewer.readCommandLine(commandLine);
+    
     osg::Transform* myTransform = new osg::Transform();
     myTransform->addChild( createCube() );
     
     // move node in a circle at 90 degrees a sec.
     myTransform->setAppCallback(new MyTransformCallback(myTransform,osg::inDegrees(90.0f)));
 
-    // create the viewer and the model to it.
-    osgGLUT::Viewer viewer;
+    // add model to viewer.
     viewer.addViewport( myTransform );
 
     // register trackball maniupulators.

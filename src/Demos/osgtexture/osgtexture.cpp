@@ -27,47 +27,25 @@ typedef std::vector< osg::ref_ptr<osg::Image> > ImageList;
   * Function to read several images files (typically one) as specified 
   * on the command line, and return them in an ImageList
   */
-ImageList getImagesFromFiles(int argc,char **argv)
+ImageList getImagesFromFiles(std::vector<std::string>& commandLine)
 {
 
     ImageList imageList;
 
-    int i;
-
-    typedef std::vector<osg::Node*> NodeList;
-    NodeList nodeList;
-    for( i = 1; i < argc; i++ )
+    for(std::vector<std::string>::iterator itr=commandLine.begin();
+        itr!=commandLine.end();
+        ++itr)
     {
-
-        if (argv[i][0]=='-')
+        if ((*itr)[0]!='-')
         {
-            switch(argv[i][1])
-            {
-                case('l'):
-                    ++i;
-                    if (i<argc)
-                    {
-                        osgDB::Registry::instance()->loadLibrary(argv[i]);
-                    }
-                    break;
-                case('e'):
-                    ++i;
-                    if (i<argc)
-                    {
-                        std::string libName = osgDB::Registry::instance()->createLibraryNameForExt(argv[i]);
-                        osgDB::Registry::instance()->loadLibrary(libName);
-                    }
-                    break;
-            }
-        } else
-        {
-            osg::Image *image = osgDB::readImageFile( argv[i] );
+            // not an option so assume string is a filename.
+            osg::Image *image = osgDB::readImageFile( *itr );
             if (image)
             {
                 imageList.push_back(image);
             }
-        }
 
+        }
     }
 
     if (imageList.size()==0)
@@ -383,8 +361,24 @@ int main( int argc, char **argv )
         return 0;
     }
 
+    // create the commandline args.
+    std::vector<std::string> commandLine;
+    for(int i=1;i<argc;++i) commandLine.push_back(argv[i]);
+
+
+    // initialize the viewer.
+    osgGLUT::Viewer viewer;
+
+    // configure the viewer from the commandline arguments, and eat any
+    // parameters that have been matched.
+    viewer.readCommandLine(commandLine);
+    
+    // configure the plugin registry from the commandline arguments, and 
+    // eat any parameters that have been matched.
+    osgDB::readCommandLine(commandLine);
+
     // load the images specified on command line
-    ImageList imageList = getImagesFromFiles(argc,argv);
+    ImageList imageList = getImagesFromFiles(commandLine);
     
     
     if (!imageList.empty())
@@ -393,8 +387,7 @@ int main( int argc, char **argv )
         // create a model from the images.
         osg::Node* rootNode = createModelFromImages(imageList);
 
-        // initialize the viewer.
-        osgGLUT::Viewer viewer;
+        // add model to viewer.
         viewer.addViewport( rootNode );
 
         // register trackball, flight and drive.

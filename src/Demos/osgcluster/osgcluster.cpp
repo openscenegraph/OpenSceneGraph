@@ -286,10 +286,6 @@ osg::Node* getNodeFromFiles(int argc,char **argv,
 int main( int argc, char **argv )
 {
 
-#ifdef USE_MEM_CHECK
-    mtrace();
-#endif
-
     // initialize the GLUT
     glutInit( &argc, argv );
 

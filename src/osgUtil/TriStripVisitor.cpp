@@ -11,7 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/Notify>
-#include <osg/TriangleFunctor>
+#include <osg/TriangleIndexFunctor>
 
 #include <osgUtil/TriStripVisitor>
 #include <osgUtil/SmoothingVisitor>
@@ -164,15 +164,13 @@ class RemapArray : public osg::ArrayVisitor
         virtual void apply(osg::Vec4Array& array) { remap(array); }
 };
 
-class TriangleIndexFunctor : public osg::Drawable::PrimitiveFunctor
+struct MyTriangleOperator
 {
-public:
-
 
     IndexList                                _remapIndices;
     triangle_stripper::tri_stripper::indices _in_indices;
 
-    inline void triangle(unsigned int p1, unsigned int p2, unsigned int p3)
+    inline void operator()(unsigned int p1, unsigned int p2, unsigned int p3)
     {
         if (_remapIndices.empty())
         {
@@ -188,320 +186,8 @@ public:
         }
     }
 
-    virtual void setVertexArray(unsigned int,const Vec2*) 
-    {
-        notify(WARN)<<"TriangleIndexFunctor does not support Vec2* vertex arrays"<<std::endl;
-    }
-
-    virtual void setVertexArray(unsigned int ,const Vec3* )
-    {
-        notify(WARN)<<"TriangleIndexFunctor does not support Vec4* vertex arrays"<<std::endl;
-    }
-
-    virtual void setVertexArray(unsigned int,const Vec4* ) 
-    {
-        notify(WARN)<<"TriangleIndexFunctor does not support Vec4* vertex arrays"<<std::endl;
-    }
-
-    virtual void begin(GLenum )
-    {
-        notify(WARN)<<"TriangleIndexFunctor::begin(GLenum mode) not implemented"<<std::endl;
-    }
-
-    virtual void vertex(const Vec2& )
-    {
-        notify(WARN)<<"TriangleIndexFunctor::vertex(const Vec2& vert) not implemented"<<std::endl;
-    }
-    virtual void vertex(const Vec3& )
-    {
-        notify(WARN)<<"TriangleIndexFunctor::vertex(const Vec3& vert) not implemented"<<std::endl;
-    }
-    virtual void vertex(const Vec4& )
-    {
-        notify(WARN)<<"TriangleIndexFunctor::vertex(const Vec4& vert) not implemented"<<std::endl;
-    }
-    virtual void vertex(float ,float )
-    {
-        notify(WARN)<<"TriangleIndexFunctor::vertex(float x,float y) not implemented"<<std::endl;
-    }
-    virtual void vertex(float ,float ,float )
-    {
-        notify(WARN)<<"TriangleIndexFunctor::vertex(float x,float y,float z) not implemented"<<std::endl;
-    }
-    virtual void vertex(float ,float ,float ,float )
-    {
-        notify(WARN)<<"TriangleIndexFunctor::vertex(float x,float y,float z,float w) not implemented"<<std::endl;
-    }
-    virtual void end()
-    {
-        notify(WARN)<<"TriangleIndexFunctor::end() not implemented"<<std::endl;
-    }
-
-    virtual void drawArrays(GLenum mode,GLint first,GLsizei count)
-    {
-        switch(mode)
-        {
-            case(GL_TRIANGLES):
-            {
-                unsigned int pos=first;
-                for(GLsizei i=2;i<count;i+=3,pos+=3)
-                {
-                    triangle(pos,pos+1,pos+2);
-                }
-                break;
-            }
-            case(GL_TRIANGLE_STRIP):
-            {
-                unsigned int pos=first;
-                for(GLsizei i=2;i<count;++i,++pos)
-                {
-		    if ((i%2)) triangle(pos,pos+2,pos+1);
-		    else       triangle(pos,pos+1,pos+2);
-                }
-                break;
-            }
-            case(GL_QUADS):
-            {
-                unsigned int pos=first;
-                for(GLsizei i=3;i<count;i+=4,pos+=4)
-                {
-                    triangle(pos,pos+1,pos+2);
-                    triangle(pos,pos+2,pos+3);
-                }
-                break;
-            }
-            case(GL_QUAD_STRIP):
-            {
-                unsigned int pos=first;
-                for(GLsizei i=3;i<count;i+=2,pos+=2)
-                {
-                    triangle(pos,pos+1,pos+2);
-                    triangle(pos+1,pos+3,pos+2);
-                }
-                break;
-            }
-            case(GL_POLYGON): // treat polygons as GL_TRIANGLE_FAN
-            case(GL_TRIANGLE_FAN):
-            {
-                unsigned int pos=first+1;
-                for(GLsizei i=2;i<count;++i,++pos)
-                {
-                    triangle(first,pos,pos+1);
-                }
-                break;
-            }
-            case(GL_POINTS):
-            case(GL_LINES):
-            case(GL_LINE_STRIP):
-            case(GL_LINE_LOOP):
-            default:
-                // can't be converted into to triangles.
-                break;
-        }
-    }
-    
-    virtual void drawElements(GLenum mode,GLsizei count,const GLubyte* indices)
-    {
-        if (indices==0 || count==0) return;
-    
-        typedef const GLubyte* IndexPointer;
-    
-        switch(mode)
-        {
-            case(GL_TRIANGLES):
-            {
-                IndexPointer ilast = &indices[count];
-                for(IndexPointer  iptr=indices;iptr<ilast;iptr+=3)
-                    triangle(*iptr,*(iptr+1),*(iptr+2));
-                break;
-            }
-            case(GL_TRIANGLE_STRIP):
-            {
-                IndexPointer iptr = indices;
-                for(GLsizei i=2;i<count;++i,++iptr)
-                {
-		    if ((i%2)) triangle(*(iptr),*(iptr+2),*(iptr+1));
-		    else       triangle(*(iptr),*(iptr+1),*(iptr+2));
-                }
-                break;
-            }
-            case(GL_QUADS):
-            {
-                IndexPointer iptr = indices;
-                for(GLsizei i=3;i<count;i+=4,iptr+=4)
-                {
-                    triangle(*(iptr),*(iptr+1),*(iptr+2));
-                    triangle(*(iptr),*(iptr+2),*(iptr+3));
-                }
-                break;
-            }
-            case(GL_QUAD_STRIP):
-            {
-                IndexPointer iptr = indices;
-                for(GLsizei i=3;i<count;i+=2,iptr+=2)
-                {
-                    triangle(*(iptr),*(iptr+1),*(iptr+2));
-                    triangle(*(iptr+1),*(iptr+3),*(iptr+2));
-                }
-                break;
-            }
-            case(GL_POLYGON): // treat polygons as GL_TRIANGLE_FAN
-            case(GL_TRIANGLE_FAN):
-            {
-                IndexPointer iptr = indices;
-                unsigned int first = *iptr;
-                ++iptr;
-                for(GLsizei i=2;i<count;++i,++iptr)
-                {
-                    triangle(first,*(iptr),*(iptr+1));
-                }
-                break;
-            }
-            case(GL_POINTS):
-            case(GL_LINES):
-            case(GL_LINE_STRIP):
-            case(GL_LINE_LOOP):
-            default:
-                // can't be converted into to triangles.
-                break;
-        }
-    }    
-
-    virtual void drawElements(GLenum mode,GLsizei count,const GLushort* indices)
-    {
-        if (indices==0 || count==0) return;
-    
-        typedef const GLushort* IndexPointer;
-    
-        switch(mode)
-        {
-            case(GL_TRIANGLES):
-            {
-                IndexPointer ilast = &indices[count];
-                for(IndexPointer  iptr=indices;iptr<ilast;iptr+=3)
-                    triangle(*iptr,*(iptr+1),*(iptr+2));
-                break;
-            }
-            case(GL_TRIANGLE_STRIP):
-            {
-                IndexPointer iptr = indices;
-                for(GLsizei i=2;i<count;++i,++iptr)
-                {
-		    if ((i%2)) triangle(*(iptr),*(iptr+2),*(iptr+1));
-		    else       triangle(*(iptr),*(iptr+1),*(iptr+2));
-                }
-                break;
-            }
-            case(GL_QUADS):
-            {
-                IndexPointer iptr = indices;
-                for(GLsizei i=3;i<count;i+=4,iptr+=4)
-                {
-                    triangle(*(iptr),*(iptr+1),*(iptr+2));
-                    triangle(*(iptr),*(iptr+2),*(iptr+3));
-                }
-                break;
-            }
-            case(GL_QUAD_STRIP):
-            {
-                IndexPointer iptr = indices;
-                for(GLsizei i=3;i<count;i+=2,iptr+=2)
-                {
-                    triangle(*(iptr),*(iptr+1),*(iptr+2));
-                    triangle(*(iptr+1),*(iptr+3),*(iptr+2));
-                }
-                break;
-            }
-            case(GL_POLYGON): // treat polygons as GL_TRIANGLE_FAN
-            case(GL_TRIANGLE_FAN):
-            {
-                IndexPointer iptr = indices;
-                unsigned int first = *iptr;
-                ++iptr;
-                for(GLsizei i=2;i<count;++i,++iptr)
-                {
-                    triangle(first,*(iptr),*(iptr+1));
-                }
-                break;
-            }
-            case(GL_POINTS):
-            case(GL_LINES):
-            case(GL_LINE_STRIP):
-            case(GL_LINE_LOOP):
-            default:
-                // can't be converted into to triangles.
-                break;
-        }
-    }    
-
-    virtual void drawElements(GLenum mode,GLsizei count,const GLuint* indices)
-    {
-        if (indices==0 || count==0) return;
-    
-        typedef const GLuint* IndexPointer;
-    
-        switch(mode)
-        {
-            case(GL_TRIANGLES):
-            {
-                IndexPointer ilast = &indices[count];
-                for(IndexPointer  iptr=indices;iptr<ilast;iptr+=3)
-                    triangle(*iptr,*(iptr+1),*(iptr+2));
-                break;
-            }
-            case(GL_TRIANGLE_STRIP):
-            {
-                IndexPointer iptr = indices;
-                for(GLsizei i=2;i<count;++i,++iptr)
-                {
-		    if ((i%2)) triangle(*(iptr),*(iptr+2),*(iptr+1));
-		    else       triangle(*(iptr),*(iptr+1),*(iptr+2));
-                }
-                break;
-            }
-            case(GL_QUADS):
-            {
-                IndexPointer iptr = indices;
-                for(GLsizei i=3;i<count;i+=4,iptr+=4)
-                {
-                    triangle(*(iptr),*(iptr+1),*(iptr+2));
-                    triangle(*(iptr),*(iptr+2),*(iptr+3));
-                }
-                break;
-            }
-            case(GL_QUAD_STRIP):
-            {
-                IndexPointer iptr = indices;
-                for(GLsizei i=3;i<count;i+=2,iptr+=2)
-                {
-                    triangle(*(iptr),*(iptr+1),*(iptr+2));
-                    triangle(*(iptr+1),*(iptr+3),*(iptr+2));
-                }
-                break;
-            }
-            case(GL_POLYGON): // treat polygons as GL_TRIANGLE_FAN
-            case(GL_TRIANGLE_FAN):
-            {
-                IndexPointer iptr = indices;
-                unsigned int first = *iptr;
-                ++iptr;
-                for(GLsizei i=2;i<count;++i,++iptr)
-                {
-                    triangle(first,*(iptr),*(iptr+1));
-                }
-                break;
-            }
-            case(GL_POINTS):
-            case(GL_LINES):
-            case(GL_LINE_STRIP):
-            case(GL_LINE_LOOP):
-            default:
-                // can't be converted into to triangles.
-                break;
-        }
-    }    
-
 };
+typedef osg::TriangleIndexFunctor<MyTriangleOperator> MyTriangleIndexFunctor;
 
 void TriStripVisitor::stripify(Geometry& geom)
 {
@@ -653,7 +339,7 @@ void TriStripVisitor::stripify(Geometry& geom)
     }
    
     
-    TriangleIndexFunctor taf;
+    MyTriangleIndexFunctor taf;
     taf._remapIndices.swap(finalMapping);
 
     Geometry::PrimitiveSetList new_primitives;

@@ -11,6 +11,7 @@
 #include <osg/TexGenNode>
 #include <osg/TexEnvCombine>
 #include <osg/Material>
+#include <osg/Endian>
 
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
@@ -23,6 +24,89 @@
 
 
 typedef std::vector< osg::ref_ptr<osg::Image> > ImageList;
+
+
+struct ReadOperator
+{
+    inline void luminance(float l) const { rgba(l,l,l,1.0f); }
+    inline void alpha(float a) const { rgba(1.0f,1.0f,1.0f,a); }
+    inline void luminance_alpha(float l,float a) const { rgba(l,l,l,a); }
+    inline void rgb(float r,float g,float b) const { rgba(r,g,b,1.0f); }
+    inline void rgba(float r,float g,float b,float a) const { std::cout<<"pixel("<<r<<", "<<g<<", "<<b<<", "<<a<<")"<<std::endl; }
+};
+
+
+template <typename T, class O>    
+void _readRow(unsigned int num, GLenum pixelFormat, T* data,float scale, const O& operation)
+{
+    switch(pixelFormat)
+    {
+        case(GL_LUMINANCE):         { for(unsigned int i=0;i<num;++i) { float l = float(*data++)*scale; operation.luminance(l); } }  break;
+        case(GL_ALPHA):             { for(unsigned int i=0;i<num;++i) { float a = float(*data++)*scale; operation.alpha(a); } }  break;
+        case(GL_LUMINANCE_ALPHA):   { for(unsigned int i=0;i<num;++i) { float l = float(*data++)*scale; float a = float(*data++)*scale; operation.luminance_alpha(l,a); } }  break;
+        case(GL_RGB):               { for(unsigned int i=0;i<num;++i) { float r = float(*data++)*scale; float g = float(*data++)*scale; float b = float(*data++)*scale; operation.rgb(r,g,b); } }  break;
+        case(GL_RGBA):              { for(unsigned int i=0;i<num;++i) { float r = float(*data++)*scale; float g = float(*data++)*scale; float b = float(*data++)*scale; float a = float(*data++)*scale; operation.rgba(r,g,b,a); } }  break;
+    }
+}
+
+template <class O>    
+void readRow(unsigned int num, GLenum pixelFormat, GLenum dataType, unsigned char* data, const O& operation)
+{
+    switch(dataType)
+    {
+        case(GL_BYTE):              _readRow(num,pixelFormat, (char*)data,            1.0f/128.0f,        operation); break;
+        case(GL_UNSIGNED_BYTE):     _readRow(num,pixelFormat, (unsigned char*)data,   1.0f/255.0f,        operation); break;
+        case(GL_SHORT):             _readRow(num,pixelFormat, (short*) data,          1.0f/32768.0f,      operation); break;
+        case(GL_UNSIGNED_SHORT):    _readRow(num,pixelFormat, (unsigned short*)data,  1.0f/65535.0f,      operation); break;
+        case(GL_INT):               _readRow(num,pixelFormat, (int*) data,            1.0f/2147483648.0f, operation); break;
+        case(GL_UNSIGNED_INT):      _readRow(num,pixelFormat, (unsigned int*) data,   1.0f/4294967295.0f, operation); break;
+        case(GL_FLOAT):             _readRow(num,pixelFormat, (float*) data,          1.0f,               operation); break;
+    }
+}
+
+
+
+struct ModifyOperator
+{
+    inline void luminance(float& l) const {} 
+    inline void alpha(float& a) const {} 
+    inline void luminance_alpha(float& l,float& a) const {} 
+    inline void rgb(float& r,float& g,float& b) const {}
+    inline void rgba(float& r,float& g,float& b,float& a) const {}
+};
+
+
+template <typename T, class M>    
+void _modifyRow(unsigned int num, GLenum pixelFormat, T* data,float scale, const M& operation)
+{
+    float inv_scale = 1.0f/scale;
+    switch(pixelFormat)
+    {
+        case(GL_LUMINANCE):         { for(unsigned int i=0;i<num;++i) { float l = float(*data)*scale; operation.luminance(l); *data++ = T(l*inv_scale); } }  break;
+        case(GL_ALPHA):             { for(unsigned int i=0;i<num;++i) { float a = float(*data)*scale; operation.alpha(a); *data++ = T(a*inv_scale); } }  break;
+        case(GL_LUMINANCE_ALPHA):   { for(unsigned int i=0;i<num;++i) { float l = float(*data)*scale; float a = float(*(data+1))*scale; operation.luminance_alpha(l,a); *data++ = T(l*inv_scale); *data++ = T(a*inv_scale); } }  break;
+        case(GL_RGB):               { for(unsigned int i=0;i<num;++i) { float r = float(*data)*scale; float g = float(*(data+1))*scale; float b = float(*(data+2))*scale; operation.rgb(r,g,b); *data++ = T(r*inv_scale); *data++ = T(g*inv_scale); *data++ = T(b*inv_scale); } }  break;
+        case(GL_RGBA):              { for(unsigned int i=0;i<num;++i) { float r = float(*data)*scale; float g = float(*(data+1))*scale; float b = float(*(data+2))*scale; float a = float(*(data+3))*scale; operation.rgb(r,g,b); *data++ = T(r*inv_scale); *data++ = T(g*inv_scale); *data++ = T(g*inv_scale); *data++ = T(a*inv_scale); } }  break;
+        case(GL_BGR):               { for(unsigned int i=0;i<num;++i) { float b = float(*data)*scale; float g = float(*(data+1))*scale; float r = float(*(data+2))*scale; operation.rgb(r,g,b); *data++ = T(b*inv_scale); *data++ = T(g*inv_scale); *data++ = T(r*inv_scale); } }  break;
+        case(GL_BGRA):              { for(unsigned int i=0;i<num;++i) { float b = float(*data)*scale; float g = float(*(data+1))*scale; float r = float(*(data+2))*scale; float a = float(*(data+3))*scale; operation.rgb(r,g,b); *data++ = T(g*inv_scale); *data++ = T(b*inv_scale); *data++ = T(r*inv_scale); *data++ = T(a*inv_scale); } }  break;
+    }
+}
+
+template <class M>    
+void modifyRow(unsigned int num, GLenum pixelFormat, GLenum dataType, unsigned char* data, const M& operation)
+{
+    switch(dataType)
+    {
+        case(GL_BYTE):              _modifyRow(num,pixelFormat, (char*)data,            1.0f/128.0f,        operation); break;
+        case(GL_UNSIGNED_BYTE):     _modifyRow(num,pixelFormat, (unsigned char*)data,   1.0f/255.0f,        operation); break;
+        case(GL_SHORT):             _modifyRow(num,pixelFormat, (short*) data,          1.0f/32768.0f,      operation); break;
+        case(GL_UNSIGNED_SHORT):    _modifyRow(num,pixelFormat, (unsigned short*)data,  1.0f/65535.0f,      operation); break;
+        case(GL_INT):               _modifyRow(num,pixelFormat, (int*) data,            1.0f/2147483648.0f, operation); break;
+        case(GL_UNSIGNED_INT):      _modifyRow(num,pixelFormat, (unsigned int*) data,   1.0f/4294967295.0f, operation); break;
+        case(GL_FLOAT):             _modifyRow(num,pixelFormat, (float*) data,          1.0f,               operation); break;
+    }
+}
+
 
 struct PassThroughTransformFunction
 {
@@ -254,6 +338,23 @@ struct ProcessRow
     }
 };
 
+
+void clampToNearestValidPowerOfTwo(int& sizeX, int& sizeY, int& sizeZ, int s_maximumTextureSize, int t_maximumTextureSize, int r_maximumTextureSize)
+{
+    // compute nearest powers of two for each axis.
+    int s_nearestPowerOfTwo = 1;
+    while(s_nearestPowerOfTwo<sizeX && s_nearestPowerOfTwo<s_maximumTextureSize) s_nearestPowerOfTwo*=2;
+
+    int t_nearestPowerOfTwo = 1;
+    while(t_nearestPowerOfTwo<sizeY && t_nearestPowerOfTwo<t_maximumTextureSize) t_nearestPowerOfTwo*=2;
+
+    int r_nearestPowerOfTwo = 1;
+    while(r_nearestPowerOfTwo<sizeZ && r_nearestPowerOfTwo<r_maximumTextureSize) r_nearestPowerOfTwo*=2;
+
+    sizeX = s_nearestPowerOfTwo;
+    sizeY = t_nearestPowerOfTwo;
+    sizeZ = r_nearestPowerOfTwo;
+}
 
 osg::Image* createTexture3D(ImageList& imageList, ProcessRow& processRow, 
             unsigned int numComponentsDesired, 
@@ -737,9 +838,145 @@ osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<osg::Ima
     return group;
 }
 
+struct FindRangeOperator
+{
+    FindRangeOperator():
+        _rmin(FLT_MAX),
+        _rmax(-FLT_MAX),
+        _gmin(FLT_MAX),
+        _gmax(-FLT_MAX),
+        _bmin(FLT_MAX),
+        _bmax(-FLT_MAX),
+        _amin(FLT_MAX),
+        _amax(-FLT_MAX) {}
+        
+    mutable float _rmin, _rmax, _gmin, _gmax, _bmin, _bmax, _amin, _amax;
+
+    inline void luminance(float l) const { rgb(l,l,l); } 
+    inline void alpha(float a) const { _amin = osg::minimum(a,_amin); _amax = osg::maximum(a,_amax); } 
+    inline void luminance_alpha(float l,float a) const { rgb(l,l,l); alpha(a); } 
+    inline void rgb(float r,float g,float b) const { _rmin = osg::minimum(r,_rmin); _rmax = osg::maximum(r,_rmax); _gmin = osg::minimum(g,_gmin); _gmax = osg::maximum(g,_gmax); _bmin = osg::minimum(b,_bmin); _bmax = osg::maximum(b,_bmax);  }
+    inline void rgba(float r,float g,float b,float a) const { rgb(r,g,b); alpha(a); }
+};
+ 
+struct ScaleOperator
+{
+    ScaleOperator(float scale):_scale(scale) {}
+    
+    float _scale;
+
+    inline void luminance(float& l) const { l*= _scale; } 
+    inline void alpha(float& a) const { a*= _scale; } 
+    inline void luminance_alpha(float& l,float& a) const { l*= _scale; a*= _scale;  } 
+    inline void rgb(float& r,float& g,float& b) const { r*= _scale; g*=_scale; b*=_scale; }
+    inline void rgba(float& r,float& g,float& b,float& a) const { r*= _scale; g*=_scale; b*=_scale; a*=_scale; }
+};
+
+osg::Image* readRaw(int sizeX, int sizeY, int sizeZ, int numberBytesPerComponent, int numberOfComponents, const std::string& endian, const std::string& raw_filename)
+{
+    std::ifstream fin(raw_filename.c_str());
+    if (!fin) return 0;
+
+    std::cout<<"sizeX="<<sizeX<<" sizeY="<<sizeY<<" sizeZ="<<sizeZ<<" numberBytesPerComponent="<<numberBytesPerComponent
+             <<"numberOfComponents="<<numberOfComponents<<std::endl;
+    
+    GLenum pixelFormat;
+    switch(numberOfComponents)
+    {
+        case 1 : pixelFormat = GL_LUMINANCE; break;
+        case 2 : pixelFormat = GL_LUMINANCE_ALPHA; break;
+        case 3 : pixelFormat = GL_RGB; break;
+        case 4 : pixelFormat = GL_RGBA; break;
+        default :
+            osg::notify(osg::NOTICE)<<"Error: numberOfComponents="<<numberOfComponents<<" not supported, only 1,2,3 or 4 are supported."<<std::endl;
+            return 0;
+    }
+
+    
+    GLenum dataType;
+    switch(numberBytesPerComponent)
+    {
+        case 1 : dataType = GL_UNSIGNED_BYTE; break;
+        case 2 : dataType = GL_UNSIGNED_SHORT; break;
+        case 4 : dataType = GL_UNSIGNED_INT; break;
+        default : 
+            osg::notify(osg::NOTICE)<<"Error: numberBytesPerComponent="<<numberBytesPerComponent<<" not supported, only 1,2 or 4 are supported."<<std::endl;
+            return 0;
+    }
+    
+    int s_maximumTextureSize=256, t_maximumTextureSize=256, r_maximumTextureSize=256;
+    
+    int sizeS = sizeX;
+    int sizeT = sizeY;
+    int sizeR = sizeZ;
+    clampToNearestValidPowerOfTwo(sizeS, sizeT, sizeR, s_maximumTextureSize, t_maximumTextureSize, r_maximumTextureSize);
+
+    std::cout<<"sizeS="<<sizeS<<" sizeT="<<sizeT<<" sizeR="<<sizeR<<std::endl;
+
+    osg::ref_ptr<osg::Image> image = new osg::Image;
+    image->allocateImage(sizeS, sizeT, sizeR, pixelFormat, dataType);
+    
+    
+    bool endianSwap = (osg::getCpuByteOrder()==osg::BigEndian) ? (endian=="big") : (endian!="big");
+    
+
+    unsigned int r_offset = (sizeZ<sizeR) ? sizeR/2 - sizeZ/2 : 0;
+    
+    int offset = endianSwap ? numberBytesPerComponent : 0;
+    int delta = endianSwap ? -1 : 1;
+    for(int r=0;r<sizeZ;++r)
+    {
+        for(int t=0;t<sizeY;++t)
+        {
+            char* data = (char*) image->data(0,t,r+r_offset);
+            for(int s=0;s<sizeX;++s)
+            {
+                if (!fin) return 0;
+                
+                for(int c=0;c<numberOfComponents;++c)
+                {
+                    char* ptr = data+offset;
+                    for(int b=0;b<numberBytesPerComponent;++b)
+                    {
+                        fin.read((char*)ptr, 1);
+                        ptr += delta;
+                    }
+                    data += numberBytesPerComponent;
+                }
+            }
+            //std::cout<<"data = "<<(unsigned int)data<<" data(0,t+1,r+r_offset) = "<<(unsigned int)image->data(0,t+1,r+r_offset)<<std::endl;
+        }
+    }
+
+    // compute range of values
+    FindRangeOperator rangeOp;    
+    for(int r=0;r<sizeR;++r)
+    {
+        for(int t=0;t<sizeT;++t)
+        {
+            readRow(sizeS, pixelFormat, dataType, image->data(0,t,r), rangeOp);
+        }
+    }
+
+    // scale the values
+    for(int r=0;r<sizeR;++r)
+    {
+        for(int t=0;t<sizeT;++t)
+        {
+            modifyRow(sizeS, pixelFormat, dataType, image->data(0,t,r), ScaleOperator(1.0f/rangeOp._rmax));
+        }
+    }
+
+    fin.close();
+    
+    return image.release();
+    
+    
+}
 
 int main( int argc, char **argv )
 {
+
 
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
@@ -749,23 +986,24 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
     arguments.getApplicationUsage()->addCommandLineOption("-n","Create normal map for per voxel lighting.");
-    arguments.getApplicationUsage()->addCommandLineOption("-s","Number of slices to create.");
-    arguments.getApplicationUsage()->addCommandLineOption("--xSize","Relative width of rendered brick.");
-    arguments.getApplicationUsage()->addCommandLineOption("--ySize","Relative length of rendered brick.");
-    arguments.getApplicationUsage()->addCommandLineOption("--zSize","Relative height of rendered brick.");
-    arguments.getApplicationUsage()->addCommandLineOption("--xMultiplier","Tex coord x mulitplier.");
-    arguments.getApplicationUsage()->addCommandLineOption("--yMultiplier","Tex coord y mulitplier.");
-    arguments.getApplicationUsage()->addCommandLineOption("--zMultiplier","Tex coord z mulitplier.");
-    arguments.getApplicationUsage()->addCommandLineOption("--clip","clip volume as a ratio, 0.0 clip all, 1.0 clip none.");
-    arguments.getApplicationUsage()->addCommandLineOption("--maxTextureSize","Set the texture maximum resolution in the s,t,r (x,y,z) dimensions.");
-    arguments.getApplicationUsage()->addCommandLineOption("--s_maxTextureSize","Set the texture maximum resolution in the s (x) dimension.");
-    arguments.getApplicationUsage()->addCommandLineOption("--t_maxTextureSize","Set the texture maximum resolution in the t (y) dimension.");
-    arguments.getApplicationUsage()->addCommandLineOption("--r_maxTextureSize","Set the texture maximum resolution in the r (z) dimension.");
+    arguments.getApplicationUsage()->addCommandLineOption("-s <numSlices>","Number of slices to create.");
+    arguments.getApplicationUsage()->addCommandLineOption("--xSize <size>","Relative width of rendered brick.");
+    arguments.getApplicationUsage()->addCommandLineOption("--ySize <size>","Relative length of rendered brick.");
+    arguments.getApplicationUsage()->addCommandLineOption("--zSize <size>","Relative height of rendered brick.");
+    arguments.getApplicationUsage()->addCommandLineOption("--xMultiplier <multiplier>","Tex coord x mulitplier.");
+    arguments.getApplicationUsage()->addCommandLineOption("--yMultiplier <multiplier>","Tex coord y mulitplier.");
+    arguments.getApplicationUsage()->addCommandLineOption("--zMultiplier <multiplier>","Tex coord z mulitplier.");
+    arguments.getApplicationUsage()->addCommandLineOption("--clip <ratio>","clip volume as a ratio, 0.0 clip all, 1.0 clip none.");
+    arguments.getApplicationUsage()->addCommandLineOption("--maxTextureSize <size>","Set the texture maximum resolution in the s,t,r (x,y,z) dimensions.");
+    arguments.getApplicationUsage()->addCommandLineOption("--s_maxTextureSize <size>","Set the texture maximum resolution in the s (x) dimension.");
+    arguments.getApplicationUsage()->addCommandLineOption("--t_maxTextureSize <size>","Set the texture maximum resolution in the t (y) dimension.");
+    arguments.getApplicationUsage()->addCommandLineOption("--r_maxTextureSize <size>","Set the texture maximum resolution in the r (z) dimension.");
     arguments.getApplicationUsage()->addCommandLineOption("--compressed","Enable the usage of compressed textures");
     arguments.getApplicationUsage()->addCommandLineOption("--compressed-arb","Enable the usage of OpenGL ARB compressed textures");
     arguments.getApplicationUsage()->addCommandLineOption("--compressed-dxt1","Enable the usage of S3TC DXT1 compressed textures");
     arguments.getApplicationUsage()->addCommandLineOption("--compressed-dxt3","Enable the usage of S3TC DXT3 compressed textures");
     arguments.getApplicationUsage()->addCommandLineOption("--compressed-dxt5","Enable the usage of S3TC DXT5 compressed textures");
+//    arguments.getApplicationUsage()->addCommandLineOption("--raw <sizeX> <sizeY> <sizeZ> <numberBytesPerComponent> <numberOfComponents> <endian> <filename>","read a raw image data");
 
     // construct the viewer.
     osgProducer::Viewer viewer(arguments);
@@ -833,7 +1071,19 @@ int main( int argc, char **argv )
     while(arguments.read("--compressed-dxt5")) { internalFormatMode = osg::Texture::USE_S3TC_DXT5_COMPRESSION; }
     
     osg::ref_ptr<osg::Image> image_3d;
+
+    std::cout<<"about to read raw"<<std::endl;
     
+    int sizeX, sizeY, sizeZ, numberBytesPerComponent, numberOfComponents;
+    std::string endian, raw_filename;
+    while (arguments.read("--raw", sizeX, sizeY, sizeZ, numberBytesPerComponent, numberOfComponents, endian, raw_filename)) 
+    {
+        std::cout<<"sizeX="<<sizeX<<" sizeY="<<sizeY<<" sizeZ="<<sizeZ<<std::endl;
+        image_3d = readRaw(sizeX, sizeY, sizeZ, numberBytesPerComponent, numberOfComponents, endian, raw_filename);
+    }
+
+    std::cout<<"read raw data"<<std::endl;
+
     while (arguments.read("--images")) 
     {
         ImageList imageList;
@@ -952,4 +1202,5 @@ int main( int argc, char **argv )
     }    
     
     return 0;
+
 }

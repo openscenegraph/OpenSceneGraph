@@ -105,11 +105,26 @@ class OSGUTIL_EXPORT Optimizer
                 DrawableSet     _drawableSet;
                 BillboardSet    _billboardSet;
                 TransformSet    _transformSet;
-                                                
-                
-
         };
 
+
+        /** Combine Static Trasform nodes that sit above on another.*/        
+        class OSGUTIL_EXPORT CombineStaticTransformsVisitor : public osg::NodeVisitor
+        {
+            public:
+
+                CombineStaticTransformsVisitor():
+                    osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+
+                virtual void apply(osg::MatrixTransform& transform);
+
+                bool removeTransforms(osg::Node* nodeWeCannotRemove);
+
+            protected:
+
+                typedef std::set<osg::MatrixTransform*> TransformSet;
+                TransformSet  _transformSet;
+        };
 
         /** Remove rendundant nodes, such as groups with one single child.*/
         class OSGUTIL_EXPORT RemoveEmptyNodesVisitor : public osg::NodeVisitor

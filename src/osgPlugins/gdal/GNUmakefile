@@ -4,7 +4,7 @@ include $(TOPDIR)/Make/makedefs
 CXXFILES =\
         ReaderWriterGDAL.cpp\
 
-LIBS  += $(OSG_LIBS) -lgdal.1.1 $(OTHER_LIBS)
+LIBS  += $(OSG_LIBS) -lgdal $(OTHER_LIBS)
 
 TARGET_BASENAME = gdal
 

@@ -765,7 +765,6 @@ void Geometry::drawImplementation(State& state) const
     unsigned int colorIndex = 0;
     unsigned int secondaryColorIndex = 0;
     unsigned int fogCoordIndex = 0;
-    unsigned int vertexAttribIndex = 0;
 
 #if USE_DEFAULT_NORMAL
     // if no values are defined for normal and color provide some defaults...

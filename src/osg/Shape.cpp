@@ -15,7 +15,7 @@
 
 using namespace osg;
 
-void HeightField::allocateGrid(unsigned int numColumns,unsigned int numRows)
+void HeightField::allocate(unsigned int numColumns,unsigned int numRows)
 {
     if (_columns!=numColumns || _rows!=numRows)
     {

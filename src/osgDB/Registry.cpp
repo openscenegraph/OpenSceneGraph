@@ -1383,6 +1383,151 @@ ReaderWriter::WriteResult Registry::writeImage(const Image& image,const std::str
     return results.front();
 }
 
+ReaderWriter::ReadResult Registry::readHeightField(const std::string& fileName)
+{
+    // record the existing reader writer.
+    std::set<ReaderWriter*> rwOriginal;
+
+    // record the errors reported by readerwriters.
+    typedef std::vector<ReaderWriter::ReadResult> Results;
+    Results results;
+
+    // first attempt to load the file from existing ReaderWriter's
+    for(ReaderWriterList::iterator itr=_rwList.begin();
+        itr!=_rwList.end();
+        ++itr)
+    {
+        rwOriginal.insert(itr->get());
+        ReaderWriter::ReadResult rr = (*itr)->readHeightField(fileName,_options.get());
+        if (rr.validHeightField())  return rr;
+        else if (rr.error()) results.push_back(rr);
+    }
+
+    // now look for a plug-in to load the file.
+    std::string libraryName = createLibraryNameForFile(fileName);
+    if (loadLibrary(libraryName))
+    {
+        for(ReaderWriterList::iterator itr=_rwList.begin();
+            itr!=_rwList.end();
+            ++itr)
+        {
+            if (rwOriginal.find(itr->get())==rwOriginal.end())
+            {
+                ReaderWriter::ReadResult rr = (*itr)->readHeightField(fileName,_options.get());
+                if (rr.validHeightField()) return rr;
+                else if (rr.error()) results.push_back(rr);
+            }
+        }
+    }
+
+    if (results.empty())
+    {
+        return ReaderWriter::ReadResult("Warning: Could not find plugin to read HeightField from file \""+fileName+"\".");
+    }
+
+    return results.front();
+}
+
+
+ReaderWriter::ReadResult Registry::readHeightField(const std::string& fileName,bool useObjectCache)
+{
+    std::string file = findDataFile( fileName );
+    if (file.empty()) 
+		file = fileName;
+//		return ReaderWriter::ReadResult("Warning: file \""+fileName+"\" not found.");
+
+    if (useObjectCache)
+    {
+        // search for entry in the object cache.
+        ObjectCache::iterator oitr=_objectCache.find(file);
+        if (oitr!=_objectCache.end())
+        {
+            notify(INFO)<< "returning cached instanced of "<<file<<std::endl;
+            osg::HeightField* HeightField = dynamic_cast<osg::HeightField*>(oitr->second.first.get());
+            if (HeightField) return HeightField;
+            else return ReaderWriter::ReadResult("Error file not of type osg::HeightField");
+        }
+
+        PushAndPopDataPath tmpfile(getFilePath(file));
+
+        ReaderWriter::ReadResult rr = readHeightField(file);
+        if (rr.validHeightField()) 
+        {
+            // update cache with new entry.
+            notify(INFO)<<"Adding to cache HeightField "<<file<<std::endl;
+            addEntryToObjectCache(file,rr.getObject());
+        }
+		else
+			return ReaderWriter::ReadResult("Warning: file \""+fileName+"\" not found.");
+        
+        return rr;
+
+    }
+    else
+    {
+    
+        ObjectCache tmpObjectCache;
+        tmpObjectCache.swap(_objectCache);
+
+        PushAndPopDataPath tmpfile(getFilePath(file));
+
+        ReaderWriter::ReadResult rr = readHeightField(file);
+
+        tmpObjectCache.swap(_objectCache);
+
+        return rr;
+
+    }
+}
+
+
+
+ReaderWriter::WriteResult Registry::writeHeightField(const HeightField& HeightField,const std::string& fileName)
+{
+    // record the existing reader writer.
+    std::set<ReaderWriter*> rwOriginal;
+
+    // record the errors reported by readerwriters.
+    typedef std::vector<ReaderWriter::WriteResult> Results;
+    Results results;
+
+    // first attempt to load the file from existing ReaderWriter's
+    for(ReaderWriterList::iterator itr=_rwList.begin();
+        itr!=_rwList.end();
+        ++itr)
+    {
+        rwOriginal.insert(itr->get());
+        ReaderWriter::WriteResult rr = (*itr)->writeHeightField(HeightField,fileName,_options.get());
+        if (rr.success()) return rr;
+        else if (rr.error()) results.push_back(rr);
+    }
+
+    // now look for a plug-in to save the file.
+    std::string libraryName = createLibraryNameForFile(fileName);
+    if (loadLibrary(libraryName))
+    {
+        for(ReaderWriterList::iterator itr=_rwList.begin();
+            itr!=_rwList.end();
+            ++itr)
+        {
+            if (rwOriginal.find(itr->get())==rwOriginal.end())
+            {
+                ReaderWriter::WriteResult rr = (*itr)->writeHeightField(HeightField,fileName,_options.get());
+                if (rr.success()) return rr;
+                else if (rr.error()) results.push_back(rr);
+            }
+        }
+    }
+
+    if (results.empty())
+    {
+        return ReaderWriter::WriteResult("Warning: Could not find plugin to write HeightField to file \""+fileName+"\".");
+    }
+    
+    return results.front();
+}
+
+
 ReaderWriter::ReadResult Registry::readNode(const std::string& fileName)
 {
 

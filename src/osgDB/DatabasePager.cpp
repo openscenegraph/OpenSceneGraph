@@ -266,11 +266,11 @@ void DatabasePager::run()
         //std::cout<<"In run loop"<<std::endl;
     
     
-        osg::Timer_t t1 = osg::Timer::instance()->tick();
+        //osg::Timer_t t1 = osg::Timer::instance()->tick();
         _fileRequestListEmptyBlock->block();
-        osg::Timer_t t2 = osg::Timer::instance()->tick();
+        //osg::Timer_t t2 = osg::Timer::instance()->tick();
         _frameBlock->block();
-        osg::Timer_t t3 = osg::Timer::instance()->tick();
+        //osg::Timer_t t3 = osg::Timer::instance()->tick();
         
         //std::cout<<"Time in _fileRequestListEmptyBlock block()"<<osg::Timer::instance()->delta_m(t1,t2)<<std::endl;
         //std::cout<<"Time in _frameBlock block()"<<osg::Timer::instance()->delta_m(t2,t3)<<std::endl;

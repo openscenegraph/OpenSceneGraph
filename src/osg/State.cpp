@@ -504,7 +504,7 @@ void State::dirtyAllVertexArrays()
     dirtySecondaryColorPointer();
 }
 
-void State::setInterleavedArrays( GLenum format, GLsizei stride, void* pointer)
+void State::setInterleavedArrays( GLenum format, GLsizei stride, const GLvoid* pointer)
 {
     glInterleavedArrays( format, stride, pointer);
     

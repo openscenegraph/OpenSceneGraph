@@ -108,8 +108,8 @@ void LightPointDrawable::drawImplementation(osg::State& state) const
         if (!lpl.empty())
         {
             glPointSize(pointsize);
-            glInterleavedArrays(GL_C4UB_V3F,0,&lpl.front());
-            //state.setInterleavedArrays(GL_C4UB_V3F,0,&lpl.front());
+            //glInterleavedArrays(GL_C4UB_V3F,0,&lpl.front());
+            state.setInterleavedArrays(GL_C4UB_V3F,0,&lpl.front());
             glDrawArrays(GL_POINTS,0,lpl.size());
         }
     }
@@ -129,8 +129,8 @@ void LightPointDrawable::drawImplementation(osg::State& state) const
         if (!lpl.empty())
         {
             glPointSize(pointsize);
-            glInterleavedArrays(GL_C4UB_V3F,0,&lpl.front());
-            //state.setInterleavedArrays(GL_C4UB_V3F,0,&lpl.front());
+            //glInterleavedArrays(GL_C4UB_V3F,0,&lpl.front());
+            state.setInterleavedArrays(GL_C4UB_V3F,0,&lpl.front());
             glDrawArrays(GL_POINTS,0,lpl.size());
         }
     }
@@ -148,8 +148,8 @@ void LightPointDrawable::drawImplementation(osg::State& state) const
         {
             //state.applyMode(GL_POINT_SMOOTH,pointsize!=1);
             glPointSize(pointsize);
-            glInterleavedArrays(GL_C4UB_V3F,0,&lpl.front());
-            //state.setInterleavedArrays(GL_C4UB_V3F,0,&lpl.front());
+            //glInterleavedArrays(GL_C4UB_V3F,0,&lpl.front());
+            state.setInterleavedArrays(GL_C4UB_V3F,0,&lpl.front());
             glDrawArrays(GL_POINTS,0,lpl.size());
         }
     }

@@ -41,30 +41,29 @@ class SG_EXPORT Referenced
     public:
 
 
-        Referenced() 
-        {
-           
-           _refCount=0;
-        }
-        Referenced(const Referenced&) {
-            _refCount=0;
-        }
+        Referenced(); 
+        
+        Referenced(const Referenced&);
 
         inline Referenced& operator = (const Referenced&) { return *this; }
 
+        /** Set whether to use a mutex to ensure ref() and unref() are thread safe.*/
+        void setThreadSafeRefUnref(bool threadSafe);
 
+        /** Get whether a mutex is used to ensure ref() and unref() are thread safe.*/
+        bool getThreadSafeRefUnref() const { return _refMutex!=0; }
 
-        /** increment the reference count by one, indicating that 
+        /** Increment the reference count by one, indicating that 
             this object has another pointer which is referencing it.*/
         void ref() const;
         
-        /** decrement the reference count by one, indicating that 
+        /** Decrement the reference count by one, indicating that 
             a pointer to this object is referencing it.  If the
             reference count goes to zero, it is assumed that this object
             is no longer referenced and is automatically deleted.*/
         void unref() const;
         
-        /** decrement the reference count by one, indicating that 
+        /** Decrement the reference count by one, indicating that 
             a pointer to this object is referencing it.  However, do
             not delete it, even if ref count goes to 0.  Warning, unref_nodelete() 
             should only be called if the user knows exactly who will
@@ -72,7 +71,7 @@ class SG_EXPORT Referenced
             as the later can lead to memory leaks.*/
         void unref_nodelete() const;
         
-        /** return the number pointers currently referencing this object. */
+        /** Return the number pointers currently referencing this object. */
         inline int referenceCount() const { return _refCount; }
 
 
@@ -97,9 +96,9 @@ class SG_EXPORT Referenced
     protected:
         virtual ~Referenced();
         
-        mutable OpenThreads::Mutex  _refMutex;
+        mutable OpenThreads::Mutex*  _refMutex;
 
-        mutable int                 _refCount;
+        mutable int                  _refCount;
         
 };
 

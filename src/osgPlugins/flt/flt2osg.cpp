@@ -1320,11 +1320,21 @@ void
 ConvertFromFLT::addMultiTexture( DynGeoSet* dgset, MultiTextureRecord* mtr )
 {
     osg::Geometry* geom = dgset->getGeometry();
-    assert( geom );
-    assert( mtr );
-    assert( mtr->isAncillaryRecord() );
+    
+    if (geom==0 || mtr==0 || !mtr->isAncillaryRecord())
+    {
+        osg::notify(osg::WARN)<<"ConvertFromFLT::addMultiTexture(DynGeoSet*, MultiTextureRecord*) has been passed invalid paramters."<<std::endl;
+        return;
+    }
+    
     SMultiTexture* mt = reinterpret_cast<SMultiTexture*>(mtr->getData());
-    assert( mt );
+    if (mt==0)
+    {
+        osg::notify(osg::WARN)<<"ConvertFromFLT::addMultiTexture(DynGeoSet*, MultiTextureRecord*) mtr->getData() not valid SMultiTexture*."<<std::endl;
+        return;
+    }
+
+
     CERR << "ConvertFromFLT::addMultiTexture\n";
     int l = 0;
     for ( int i = 0; i < 8; i++ )
@@ -1339,7 +1349,14 @@ ConvertFromFLT::addMultiTexture( DynGeoSet* dgset, MultiTextureRecord* mtr )
             CERR << "data: " << mt->data[l].data << "\n";
 
             TexturePool* pTexturePool = mtr->getFltFile()->getTexturePool();
+            
             assert( pTexturePool );
+            if (!pTexturePool)
+            {
+                osg::notify(osg::WARN)<<"ConvertFromFLT::addMultiTexture(DynGeoSet*, MultiTextureRecord*) pTexturePool invalid."<<std::endl;
+                return;
+            }
+            
             osg::StateSet *textureStateSet = dynamic_cast<osg::StateSet *> (pTexturePool->getTexture((int)mt->data[l].texture,mtr->getFlightVersion()));
 
             CERR << "pTexturePool->getTexture((int)mt->data[l].texture): " << pTexturePool->getTexture((int)mt->data[l].texture,mtr->getFlightVersion()) << "\n";
@@ -1357,27 +1374,38 @@ ConvertFromFLT::addMultiTexture( DynGeoSet* dgset, MultiTextureRecord* mtr )
             osg::StateSet* texture_stateset = new osg::StateSet;
             CERR << "texture_stateset: " << texture_stateset << "\n";
 
-            assert( texture );
-                texture_stateset->setTextureAttributeAndModes(
-                i, texture,osg::StateAttribute::ON);
+            if (!texture)
+            {
+                osg::notify(osg::WARN)<<"ConvertFromFLT::addMultiTexture(DynGeoSet*, MultiTextureRecord*) texture invalid."<<std::endl;
+                return;
+            }
 
-                osg::TexEnv* osgTexEnv = new osg::TexEnv;
-                CERR << "osgTexEnv: " << osgTexEnv << "\n";
-                osgTexEnv->setMode(osg::TexEnv::MODULATE);
-                texture_stateset->setTextureAttribute( i, osgTexEnv );
 
-            assert( geom );
-                CERR << "geom: " << geom << "\n";
-                CERR  << ", referenceCount: "
-                    << geom->referenceCount() << "\n";
+            texture_stateset->setTextureAttributeAndModes(
+            i, texture,osg::StateAttribute::ON);
+
+            osg::TexEnv* osgTexEnv = new osg::TexEnv;
+
+            CERR << "osgTexEnv: " << osgTexEnv << "\n";
+
+            osgTexEnv->setMode(osg::TexEnv::MODULATE);
+            texture_stateset->setTextureAttribute( i, osgTexEnv );
+
+            CERR << "geom: " << geom << "\n";
+            CERR << ", referenceCount: "
+                 << geom->referenceCount() << "\n";
+
             osg::StateSet* geom_stateset = geom->getStateSet();
-                CERR << "geom_stateset: " << geom_stateset << "\n";
-            if ( geom_stateset ) {
-            geom_stateset->merge( *texture_stateset );
-            CERR << "Merging layer " << i << "\n";
+            
+            CERR << "geom_stateset: " << geom_stateset << "\n";
+                
+            if ( geom_stateset )
+            {
+                geom_stateset->merge( *texture_stateset );
+                CERR << "Merging layer " << i << "\n";
             } else {
-            geom->setStateSet( texture_stateset );
-            CERR << "Setting layer " << i << "\n";
+                geom->setStateSet( texture_stateset );
+                CERR << "Setting layer " << i << "\n";
             }
 
             l++;
@@ -1389,35 +1417,47 @@ void
 ConvertFromFLT::addUVList( DynGeoSet* dgset, UVListRecord* uvr )
 {
     osg::Geometry* geom = dgset->getGeometry();
-    assert( geom );
-    assert( uvr );
-    assert( uvr->isAncillaryRecord() );
-    SUVList* uvl =
-    reinterpret_cast<SUVList*>(uvr->getData());
-    assert( uvl );
+
+    if (!geom || !uvr || !uvr->isAncillaryRecord())
+    {
+        osg::notify(osg::WARN)<<"ConvertFromFLT::addUVList( DynGeoSet*, UVListRecord*) has been passed invalid paramters."<<std::endl;
+        return;
+    }
+
+    SUVList* uvl = reinterpret_cast<SUVList*>(uvr->getData());
+    if (!uvl)
+    {
+        osg::notify(osg::WARN)<<"ConvertFromFLT::addUVList( DynGeoSet*, UVListRecord*) uvr->getData() is invalid."<<std::endl;
+        return;
+    }
+    
     CERR << "ConvertFromFLT::addUVList\n";
     int l = 0;
     int num_coords = dgset->coordListSize();
-    for ( int i = 0; i < 8; i++ ) {
-    if ( (1 << (32-i)) & uvl->layers ) {
-        osg::Vec2Array* tcoords = new osg::Vec2Array;
-        CERR << "Has layer " << i << "\n";
-        // Assume we are working with vertex lists for now
-        for ( int v = l*num_coords; v < (l+1)*num_coords; v++ ) {
-        uvl->coords.vertex[v].endian();
-        CERR << "( u: " << uvl->coords.vertex[v].coords[1] << ", "
-                    << "v: " << uvl->coords.vertex[v].coords[0] << ")\n";
-                /// FIXME: should be (x,y) instead of (y,x) - ENDIAN problem???
-        tcoords->push_back( osg::Vec2( uvl->coords.vertex[v].coords[1],
-                uvl->coords.vertex[v].coords[0] ) );
-        }
-        if ( !tcoords->empty() ) {
-        CERR << "Setting tcoords " << i << ": " << tcoords << "\n";
-        geom->setTexCoordArray( i, tcoords );
-        }
+    for ( int i = 0; i < 8; i++ )
+    {
+        if ( (1 << (32-i)) & uvl->layers )
+        {
+            osg::Vec2Array* tcoords = new osg::Vec2Array;
+            CERR << "Has layer " << i << "\n";
+            // Assume we are working with vertex lists for now
+            for ( int v = l*num_coords; v < (l+1)*num_coords; v++ )
+            {
+                uvl->coords.vertex[v].endian();
+                CERR << "( u: " << uvl->coords.vertex[v].coords[1] << ", "
+                            << "v: " << uvl->coords.vertex[v].coords[0] << ")\n";
+                        /// FIXME: should be (x,y) instead of (y,x) - ENDIAN problem???
+                tcoords->push_back( osg::Vec2( uvl->coords.vertex[v].coords[1],
+                        uvl->coords.vertex[v].coords[0] ) );
+            }
+            if ( !tcoords->empty() )
+            {
+                CERR << "Setting tcoords " << i << ": " << tcoords << "\n";
+                geom->setTexCoordArray( i, tcoords );
+            }
 
-        l++;
-    }
+            l++;
+        }
     }
 }
 
@@ -1481,8 +1521,16 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
         {
             MultiTextureRecord* mtr =
             dynamic_cast<MultiTextureRecord*>(child);
-            assert( mtr );
-            addMultiTexture( dgset, mtr );
+            if (!mtr)
+            {
+                osg::notify( osg::WARN ) << "flt::ConvertFromFLT::visitFace(GeoSetBuilder*, FaceRecord*) found invalid MultiTextureRecord*"<<std::endl;
+                return;
+            }
+            
+            // original code, but causes crash becayse addPrimitive can invalidate teh dgset pointer.
+            // addMultiTexture( dgset, mtr );
+            
+            addMultiTexture( pBuilder->getDynGeoSet(), mtr );
         }
         break;
 

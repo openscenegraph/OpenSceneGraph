@@ -2145,7 +2145,7 @@ void ConvertFromFLT::visitLightPoint(osg::Group& osgParent, LightPointRecord* re
 
     float lobeVert = osg::DegreesToRadians( pSLightPoint->sfLobeVert );
     float lobeHorz = osg::DegreesToRadians( pSLightPoint->sfLobeHoriz );
-    float pointRadius =  pSLightPoint->afActualPixelSize;
+    float pointRadius =  pSLightPoint->afActualPixelSize * _unitScale;
 
     for ( unsigned int nl = 0; nl < coords.size(); nl++)
     {
@@ -2156,33 +2156,33 @@ void ConvertFromFLT::visitLightPoint(osg::Group& osgParent, LightPointRecord* re
 
        if( pSLightPoint->diDirection )
        {
-          // calc elevation angles
-          osg::Vec3 normal( 1.0f, 0.0f, 0.0f);
-          if( nl < norms.size())  normal = norms[nl];
-   
-          float elevAngle = osg::PI_2 - acos( normal.z() );
-          if( normal.z() < 0.0f) elevAngle = -elevAngle;
-	  float minElevation = elevAngle - lobeVert/2.0f;
-	  float maxElevation = elevAngle + lobeVert/2.0f;
+            // calc elevation angles
+            osg::Vec3 normal( 1.0f, 0.0f, 0.0f);
+            if( nl < norms.size())  normal = norms[nl];
 
-	  // calc azimuth angles
-	  osg::Vec2 pNormal( normal.x(), normal.y() );
-	  float lng = pNormal.normalize();
-	  float azimAngle = 0.0f;
-	  if( lng > 0.0000001)
-	  {
-	     azimAngle = acos( pNormal.y() );
-	     if( pNormal.y() > 0.0f ) azimAngle = - azimAngle;
-	  }
+            float elevAngle = osg::PI_2 - acos( normal.z() );
+            if( normal.z() < 0.0f) elevAngle = -elevAngle;
+            float minElevation = elevAngle - lobeVert/2.0f;
+            float maxElevation = elevAngle + lobeVert/2.0f;
 
-	  float minAzimuth = azimAngle - lobeHorz/2.0f;
-	  float maxAzimuth = azimAngle + lobeHorz/2.0f;
+            // calc azimuth angles
+            osg::Vec2 pNormal( normal.x(), normal.y() );
+            float lng = pNormal.normalize();
+            float azimAngle = 0.0f;
+            if( lng > 0.0000001)
+            {
+                azimAngle = acos( pNormal.y() );
+                if( pNormal.y() > 0.0f ) azimAngle = - azimAngle;
+            }
 
-	  float fadeRange = 0.0f;
-	  lp._sector = new osgSim::AzimElevationSector( minAzimuth, maxAzimuth, minElevation, maxElevation, fadeRange);
-       }
+            float minAzimuth = azimAngle - lobeHorz/2.0f;
+            float maxAzimuth = azimAngle + lobeHorz/2.0f;
 
-       lpNode->addLightPoint( lp);
+            float fadeRange = 0.0f;
+            lp._sector = new osgSim::AzimElevationSector( minAzimuth, maxAzimuth, minElevation, maxElevation, fadeRange);
+        }
+
+        lpNode->addLightPoint( lp);
     }
 
     osgParent.addChild( lpNode);

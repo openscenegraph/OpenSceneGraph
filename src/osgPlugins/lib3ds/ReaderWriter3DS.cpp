@@ -84,7 +84,6 @@ class PrintVisitor : public NodeVisitor
         int _step;
 };
 
-typedef std::map<std::string,osg::StateSet*> StateSetMap;
 class ReaderWriter3DS : public osgDB::ReaderWriter
 {
     public:
@@ -94,25 +93,32 @@ class ReaderWriter3DS : public osgDB::ReaderWriter
         virtual const char* className() const { return "3DS Auto Studio Reader"; }
         virtual bool acceptsExtension(const std::string& extension) { return osgDB::equalCaseInsensitive(extension,"3ds"); }
 
-        virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options*);
-
-        typedef std::vector<int> FaceList;
-        typedef std::map<std::string,osg::StateSet*> GeoStateMap;
+        virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options);
 
     protected:
 
-        osg::Texture2D* createTexture(Lib3dsTextureMap *texture,const char* label,bool& transparancy);
-        osg::StateSet* createStateSet(Lib3dsMaterial *materials);
-        osg::Drawable* createDrawable(Lib3dsMesh *meshes,FaceList& faceList, Lib3dsMatrix* matrix);
 
-        std::string _directory;
-        bool _useSmoothingGroups;
-        bool _usePerVertexNormals;
+        class ReaderObject
+        {
+        public:
+            ReaderObject();
+        
+            typedef std::map<std::string,osg::StateSet*> StateSetMap;
+            typedef std::vector<int> FaceList;
+            typedef std::map<std::string,osg::StateSet*> GeoStateMap;
 
-        // MIKEC
-        osg::Node* processMesh(StateSetMap& drawStateMap,osg::Group* parent,Lib3dsMesh* mesh, Lib3dsMatrix* matrix);
-        osg::Node* processNode(StateSetMap drawStateMap,Lib3dsFile *f,Lib3dsNode *node);
+            osg::Texture2D* createTexture(Lib3dsTextureMap *texture,const char* label,bool& transparancy, const osgDB::ReaderWriter::Options* options);
+            osg::StateSet* createStateSet(Lib3dsMaterial *materials, const osgDB::ReaderWriter::Options* options);
+            osg::Drawable* createDrawable(Lib3dsMesh *meshes,FaceList& faceList, Lib3dsMatrix* matrix);
 
+            std::string _directory;
+            bool _useSmoothingGroups;
+            bool _usePerVertexNormals;
+
+            // MIKEC
+            osg::Node* processMesh(StateSetMap& drawStateMap,osg::Group* parent,Lib3dsMesh* mesh, Lib3dsMatrix* matrix);
+            osg::Node* processNode(StateSetMap drawStateMap,Lib3dsFile *f,Lib3dsNode *node);
+        };
 };
 
 // now register with Registry to instantiate the above
@@ -120,6 +126,10 @@ class ReaderWriter3DS : public osgDB::ReaderWriter
 osgDB::RegisterReaderWriterProxy<ReaderWriter3DS> g_readerWriter_3DS_Proxy;
 
 ReaderWriter3DS::ReaderWriter3DS()
+{
+}
+
+ReaderWriter3DS::ReaderObject::ReaderObject()
 {
     _useSmoothingGroups = true;
     _usePerVertexNormals = true;
@@ -201,7 +211,7 @@ void print(Lib3dsNode *node, int level) {
 // Transforms points by matrix if 'matrix' is not NULL
 // Creates a Geode and Geometry (as parent,child) and adds the Geode to 'parent' parameter iff 'parent' is non-NULL
 // Returns ptr to the Geode
-osg::Node* ReaderWriter3DS::processMesh(StateSetMap& drawStateMap,osg::Group* parent,Lib3dsMesh* mesh, Lib3dsMatrix* matrix) {
+osg::Node* ReaderWriter3DS::ReaderObject::processMesh(StateSetMap& drawStateMap,osg::Group* parent,Lib3dsMesh* mesh, Lib3dsMatrix* matrix) {
     typedef std::vector<int> FaceList;
     typedef std::map<std::string,FaceList> MaterialFaceMap;
     MaterialFaceMap materialFaceMap;
@@ -286,7 +296,7 @@ How to cope with pivot points in 3ds (short version)
     Tranform the node by the node matrix, which does the orientation about the pivot point, (and currently) transforms the object back by a translation to the PP.
 
   */
-osg::Node* ReaderWriter3DS::processNode(StateSetMap drawStateMap,Lib3dsFile *f,Lib3dsNode *node) {
+osg::Node* ReaderWriter3DS::ReaderObject::processNode(StateSetMap drawStateMap,Lib3dsFile *f,Lib3dsNode *node) {
     
     osg::Group* group=NULL;// created on demand if we find we have children to group together
     
@@ -406,13 +416,13 @@ osg::Node* ReaderWriter3DS::processNode(StateSetMap drawStateMap,Lib3dsFile *f,L
 }
 
 
-osgDB::ReaderWriter::ReadResult ReaderWriter3DS::readNode(const std::string& file, const osgDB::ReaderWriter::Options*)
+osgDB::ReaderWriter::ReadResult ReaderWriter3DS::readNode(const std::string& file, const osgDB::ReaderWriter::Options* options)
 {
 
     std::string ext = osgDB::getLowerCaseFileExtension(file);
     if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
-    std::string fileName = osgDB::findDataFile( file );
+    std::string fileName = osgDB::findDataFile( file, options );
     if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
     Lib3dsFile *f = lib3ds_file_load(fileName.c_str());
@@ -424,16 +434,18 @@ osgDB::ReaderWriter::ReadResult ReaderWriter3DS::readNode(const std::string& fil
     // but is VERY necessary if you want to use pivot points...
     lib3ds_file_eval(f,0.0f); // second param is time 't' for animated files
 
-    _directory = osgDB::getFilePath(fileName);
+    ReaderObject reader;
+
+    reader._directory = osgDB::getFilePath(fileName);
 
     osg::Group* group = new osg::Group;
     group->setName(fileName);
 
-    StateSetMap drawStateMap;
+    ReaderObject::StateSetMap drawStateMap;
 
     for (Lib3dsMaterial *mat=f->materials; mat; mat=mat->next)
     {
-        drawStateMap[mat->name] = createStateSet(mat);
+        drawStateMap[mat->name] = reader.createStateSet(mat, options);
     }
     
     /*{
@@ -463,11 +475,11 @@ osgDB::ReaderWriter::ReadResult ReaderWriter3DS::readNode(const std::string& fil
 
     if (traverse_nodes) { // old method
         for (Lib3dsMesh *mesh=f->meshes; mesh; mesh=mesh->next) {
-            processMesh(drawStateMap,group,mesh,NULL);
+            reader.processMesh(drawStateMap,group,mesh,NULL);
         }
     } else { // new method
         for(Lib3dsNode *node=f->nodes; node; node=node->next) {
-            group->addChild(processNode(drawStateMap,f,node));
+            group->addChild(reader.processNode(drawStateMap,f,node));
         }
     } 
 
@@ -485,7 +497,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriter3DS::readNode(const std::string& fil
 /**
 use matrix to pretransform geometry, or NULL to do nothing
 */
-osg::Drawable*   ReaderWriter3DS::createDrawable(Lib3dsMesh *m,FaceList& faceList,Lib3dsMatrix *matrix)
+osg::Drawable*   ReaderWriter3DS::ReaderObject::createDrawable(Lib3dsMesh *m,FaceList& faceList,Lib3dsMatrix *matrix)
 {
 
     osg::Geometry* geom = new osg::Geometry;
@@ -636,7 +648,7 @@ osg::Drawable*   ReaderWriter3DS::createDrawable(Lib3dsMesh *m,FaceList& faceLis
 }
 
 
-osg::Texture2D*  ReaderWriter3DS::createTexture(Lib3dsTextureMap *texture,const char* label,bool& transparancy)
+osg::Texture2D*  ReaderWriter3DS::ReaderObject::createTexture(Lib3dsTextureMap *texture,const char* label,bool& transparancy, const osgDB::ReaderWriter::Options* options)
 {
     if (texture && *(texture->name))
     {
@@ -644,7 +656,7 @@ osg::Texture2D*  ReaderWriter3DS::createTexture(Lib3dsTextureMap *texture,const 
         if (fileName.empty()) 
         {
             // file not found in .3ds file's directory, so we'll look in the datafile path list.
-            fileName = osgDB::findDataFile(texture->name,osgDB::CASE_INSENSITIVE);
+            fileName = osgDB::findDataFile(texture->name,options, osgDB::CASE_INSENSITIVE);
         }
         
         if (fileName.empty())
@@ -696,7 +708,7 @@ osg::Texture2D*  ReaderWriter3DS::createTexture(Lib3dsTextureMap *texture,const 
 }
 
 
-osg::StateSet* ReaderWriter3DS::createStateSet(Lib3dsMaterial *mat)
+osg::StateSet* ReaderWriter3DS::ReaderObject::createStateSet(Lib3dsMaterial *mat, const osgDB::ReaderWriter::Options* options)
 {
     if (mat==NULL) return NULL;
 
@@ -722,7 +734,7 @@ osg::StateSet* ReaderWriter3DS::createStateSet(Lib3dsMaterial *mat)
     stateset->setAttribute(material);
 
     bool textureTransparancy=false;
-    osg::Texture2D* texture1_map = createTexture(&(mat->texture1_map),"texture1_map",textureTransparancy);
+    osg::Texture2D* texture1_map = createTexture(&(mat->texture1_map),"texture1_map",textureTransparancy, options);
     if (texture1_map)
     {
         stateset->setTextureAttributeAndModes(0,texture1_map,osg::StateAttribute::ON);

@@ -82,26 +82,7 @@ extern OSGDB_EXPORT std::string findDataFile(const std::string& filename,CaseSen
 /** Search for specified file in file system, checking first the database path set in the Options structure, then the DataFilePathList for possible paths, 
   * returning the full path of the first valid file found, return an empty string if no string is found.
   */
-extern OSGDB_EXPORT std::string findDataFile(const std::string& filename,ReaderWriter::Options* options, CaseSensitivity caseSensitivity=CASE_SENSITIVE);
-
-/** Convinience class for pushing a path on construction, and popping the path
-  * and destruction.  This helps keep the addition of a path local to a block
-  * of code, even in the presence of exceptions.*/
-
-class PushAndPopDataPath
-{
-    public:
-        PushAndPopDataPath(const std::string& path)
-        {
-            getDataFilePathList().push_front(path);
-        }
-
-        ~PushAndPopDataPath()
-        {
-            getDataFilePathList().pop_front();
-        }
-};
-
+extern OSGDB_EXPORT std::string findDataFile(const std::string& filename,const ReaderWriter::Options* options, CaseSensitivity caseSensitivity=CASE_SENSITIVE);
 
 inline void setLibraryFilePathList(const FilePathList& filepaths) { osgDB::Registry::instance()->setLibraryFilePathList(filepaths); }
 

@@ -1541,7 +1541,7 @@ void ConvertFromFLT::setTexture ( FaceRecord *rec, SFace *pSFace, osg::StateSet 
         if (pTexturePool)
         {
             int nIndex = (int)pSFace->iTexturePattern;
-            flt::AttrData *textureAttrData = pTexturePool->getTexture(nIndex,rec->getFlightVersion());
+            flt::AttrData *textureAttrData = pTexturePool->getTexture(nIndex,rec->getFltFile()->getOptions());
 
             osg::StateSet *textureStateSet;
             if (textureAttrData)
@@ -1561,7 +1561,7 @@ void ConvertFromFLT::setTexture ( FaceRecord *rec, SFace *pSFace, osg::StateSet 
                 flt::AttrData *detailTextureAttrData = NULL;                                
                 if (pSFace->iDetailTexturePattern != -1) {                 
                  int nIndex2 = (int)pSFace->iDetailTexturePattern;
-                 detailTextureAttrData = pTexturePool->getTexture(nIndex2,rec->getFlightVersion());
+                 detailTextureAttrData = pTexturePool->getTexture(nIndex2,rec->getFltFile()->getOptions());
                  if (detailTextureAttrData && detailTextureAttrData->stateset) {
                      osg::Texture2D *detTexture = dynamic_cast<osg::Texture2D*>(detailTextureAttrData->stateset->getTextureAttribute( 0, osg::StateAttribute::TEXTURE));
                      textureStateSet->setTextureAttributeAndModes(1,detTexture,osg::StateAttribute::ON);                    
@@ -1679,9 +1679,9 @@ ConvertFromFLT::addMultiTexture( DynGeoSet* dgset, MultiTextureRecord* mtr )
             }
             
             // Get the texture attribute data from the texture pool
-            flt::AttrData *textureAttrData = dynamic_cast<flt::AttrData *> (pTexturePool->getTexture((int)mt->data[l].texture,mtr->getFlightVersion()));
+            flt::AttrData *textureAttrData = dynamic_cast<flt::AttrData *> (pTexturePool->getTexture((int)mt->data[l].texture,mtr->getFltFile()->getOptions()));
 
-            CERR << "pTexturePool->getTexture((int)mt->data[l].texture): " << pTexturePool->getTexture((int)mt->data[l].texture,mtr->getFlightVersion()) << "\n";
+            CERR << "pTexturePool->getTexture((int)mt->data[l].texture): " << pTexturePool->getTexture((int)mt->data[l].texture,mtr->getFltFile()->getOptions()) << "\n";
             if (!textureAttrData)
             {
                 CERR << "unable to set up multi-texture layer." << std::endl;
@@ -2424,27 +2424,6 @@ osg::Group* ConvertFromFLT::visitMatrix(osg::Group& osgParent, const osg::Group&
 
 osg::Group* ConvertFromFLT::visitExternal(osg::Group& osgParent, ExternalRecord* rec)
 {
-    // SExternalReference *pSExternal = (SExternalReference*)rec->getData();
-
-    std::string filePath = osgDB::getFilePath(rec->getFilename());
-    std::string pushAndPopPath;
-    //If absolute path
-    if( (filePath.length()>0 && filePath.find_first_of("/\\")==0) ||
-        (filePath.length()>2 && filePath.substr(1,1)==":" && filePath.find_first_of("/\\")==2) )
-    {
-        pushAndPopPath = filePath;
-    }
-    else
-    {
-        osgDB::FilePathList fpl = osgDB::getDataFilePathList();
-        pushAndPopPath = fpl.empty() ? "." : fpl.front();
-        if(pushAndPopPath.empty()) pushAndPopPath = ".";
-        pushAndPopPath += "/" + filePath;
-    }
-
-    osgDB::PushAndPopDataPath tmpfile(pushAndPopPath);
-    //osgDB::PushAndPopDataPath tmpfile(osgDB::getFilePath(rec->getFilename()));
-
     
     FltFile* pFile = rec->getExternal();
     osg::Group* external = NULL;

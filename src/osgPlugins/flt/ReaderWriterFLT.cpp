@@ -28,7 +28,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterFLT::readNode(const std::string& fil
     std::string ext = osgDB::getLowerCaseFileExtension(file);
     if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
-    std::string fileName = osgDB::findDataFile( file );
+    std::string fileName = osgDB::findDataFile( file, options );
     if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
     osg::ref_ptr<FltFile> read = new FltFile;
@@ -54,7 +54,14 @@ osgDB::ReaderWriter::ReadResult ReaderWriterFLT::readNode(const std::string& fil
                 read->setDesiredUnits( FltFile::ConvertToNauticalMiles );
             osg::notify(osg::DEBUG_INFO) << "FltFile.getDesiredUnits()=" << read->getDesiredUnitsString() << std::endl;
         }
+        
     }
+
+    osg::ref_ptr<ReaderWriter::Options> local_options = options ? 
+                static_cast<ReaderWriter::Options*>(options->clone(osg::CopyOp(osg::CopyOp::SHALLOW_COPY))) : 
+                new ReaderWriter::Options;
+    local_options->setDatabasePath(osgDB::getFilePath(fileName));
+    read->setOptions(local_options.get());
 
     osg::Node* node = read->readNode(fileName);
 

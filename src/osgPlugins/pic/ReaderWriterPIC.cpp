@@ -194,12 +194,12 @@ class ReaderWriterPIC : public osgDB::ReaderWriter
         virtual const char* className() const { return "PIC Image Reader"; }
         virtual bool acceptsExtension(const std::string& extension) { return osgDB::equalCaseInsensitive(extension,"pic"); }
 
-        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options*)
+        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options)
         {
             std::string ext = osgDB::getLowerCaseFileExtension(file);
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
-            std::string fileName = osgDB::findDataFile( file );
+            std::string fileName = osgDB::findDataFile( file, options );
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
             unsigned char *imageData = NULL;

@@ -30,7 +30,7 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
 
             osg::notify(osg::INFO) << "GDAL : " << file << std::endl;
 
-            std::string fileName = osgDB::findDataFile( file );
+            std::string fileName = osgDB::findDataFile( file, options );
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
             initGDAL();

@@ -25,7 +25,8 @@ class FltFile : public osg::Referenced
             TexturePool* pTexturePool = NULL,
             MaterialPool* pMaterialPool = NULL,
             LtPtAppearancePool* pLtPtAppearancePool = NULL,
-            LtPtAnimationPool* pLtPtAnimationPool = NULL);
+            LtPtAnimationPool* pLtPtAnimationPool = NULL,
+            osgDB::ReaderWriter::Options* options =NULL);
 
         virtual osg::Object* readObject(const std::string& fileName);
         virtual osg::Node* readNode(const std::string& fileName);
@@ -72,6 +73,10 @@ class FltFile : public osg::Referenced
         int getFlightVersion() const;
         inline HeaderRecord* getHeaderRecord() { return _headerRecord.get(); }
         void getOrigin( double& latitude, double& longitude ) const;
+        
+        void setOptions(osgDB::ReaderWriter::Options* options) { _options = options; }
+        osgDB::ReaderWriter::Options* getOptions() { return _options.get(); }
+        const osgDB::ReaderWriter::Options* getOptions() const { return _options.get(); }
 
     protected:
 
@@ -94,6 +99,8 @@ class FltFile : public osg::Referenced
 
         std::string                 _directory;
         
+        osg::ref_ptr<osgDB::ReaderWriter::Options> _options;
+
         osg::ref_ptr<ColorPool>     _colorPool;
         osg::ref_ptr<TexturePool>   _texturePool;
         osg::ref_ptr<LightPool>     _lightPool;

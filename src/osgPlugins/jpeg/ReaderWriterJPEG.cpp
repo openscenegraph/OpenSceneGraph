@@ -434,12 +434,12 @@ class ReaderWriterJPEG : public osgDB::ReaderWriter
             return osgDB::equalCaseInsensitive(extension,"jpeg") || osgDB::equalCaseInsensitive(extension,"jpg");
         }
 
-        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options*)
+        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options)
         {
             std::string ext = osgDB::getLowerCaseFileExtension(file);
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
-            std::string fileName = osgDB::findDataFile( file );
+            std::string fileName = osgDB::findDataFile( file, options );
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
             unsigned char *imageData = NULL;

@@ -171,17 +171,13 @@ std::string osgDB::findFileInPath(const std::string& filename, const FilePathLis
     if (filename.empty()) 
         return filename;
 
-    if(fileExists(filename)) 
-    {
-        osg::notify(osg::DEBUG_INFO) << "FindFileInPath(" << filename << "): returning " << filename << std::endl;
-        return filename;
-    }
 
     for(FilePathList::const_iterator itr=filepath.begin();
         itr!=filepath.end();
         ++itr)
     {
-        std::string path = *itr + '/'+ filename;
+        osg::notify(osg::DEBUG_INFO) << "itr='" <<*itr<< "'\n";
+        std::string path = itr->empty() ? filename : *itr + '/'+ filename;
         osg::notify(osg::DEBUG_INFO) << "FindFileInPath() : trying " << path << " ...\n";
         if(fileExists(path)) 
         {
@@ -202,15 +198,22 @@ std::string osgDB::findFileInPath(const std::string& filename, const FilePathLis
     return std::string();
 }
 
+
 std::string osgDB::findDataFile(const std::string& filename,CaseSensitivity caseSensitivity)
 {
     return findDataFile(filename,static_cast<ReaderWriter::Options*>(0),caseSensitivity);
 }
 
-OSGDB_EXPORT std::string osgDB::findDataFile(const std::string& filename,ReaderWriter::Options* options, CaseSensitivity caseSensitivity)
+OSGDB_EXPORT std::string osgDB::findDataFile(const std::string& filename,const ReaderWriter::Options* options, CaseSensitivity caseSensitivity)
 {
     if (filename.empty()) return filename;
     
+    if(fileExists(filename)) 
+    {
+        osg::notify(osg::DEBUG_INFO) << "FindFileInPath(" << filename << "): returning " << filename << std::endl;
+        return filename;
+    }
+
     std::string fileFound;
     
     if (options && !options->getDatabasePathList().empty())
@@ -220,16 +223,36 @@ OSGDB_EXPORT std::string osgDB::findDataFile(const std::string& filename,ReaderW
     }
 
     const FilePathList& filepath = Registry::instance()->getDataFilePathList();
-
-    fileFound = findFileInPath(filename, filepath,caseSensitivity);
-    if (!fileFound.empty()) return fileFound;
+    if (!filepath.empty())
+    {
+        fileFound = findFileInPath(filename, filepath,caseSensitivity);
+        if (!fileFound.empty()) return fileFound;
+    }
+    
 
     // if a directory is included in the filename, get just the (simple) filename itself and try that
     std::string simpleFileName = getSimpleFileName(filename);
     if (simpleFileName!=filename)
     {
-        fileFound = findFileInPath(simpleFileName, filepath,caseSensitivity);
-        if (!fileFound.empty()) return fileFound;
+
+        if(fileExists(simpleFileName)) 
+        {
+            osg::notify(osg::DEBUG_INFO) << "FindFileInPath(" << filename << "): returning " << filename << std::endl;
+            return simpleFileName;
+        }
+
+        if (options && !options->getDatabasePathList().empty())
+        {
+            fileFound = findFileInPath(simpleFileName, options->getDatabasePathList(), caseSensitivity);
+            if (!fileFound.empty()) return fileFound;
+        }
+
+        if (!filepath.empty())
+        {
+            fileFound = findFileInPath(simpleFileName, filepath,caseSensitivity);
+            if (!fileFound.empty()) return fileFound;
+        }
+
     }
 
     // return empty string.
@@ -246,6 +269,12 @@ std::string osgDB::findLibraryFile(const std::string& filename,CaseSensitivity c
     std::string fileFound = findFileInPath(filename, filepath,caseSensitivity);
     if (!fileFound.empty()) 
         return fileFound;
+
+    if(fileExists(filename)) 
+    {
+        osg::notify(osg::DEBUG_INFO) << "FindFileInPath(" << filename << "): returning " << filename << std::endl;
+        return filename;
+    }
 
     // if a directory is included in the filename, get just the (simple) filename itself and try that
     std::string simpleFileName = getSimpleFileName(filename);

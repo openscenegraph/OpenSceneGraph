@@ -231,7 +231,7 @@ public:
                 for (unsigned int im=0;im<texture->getNumImages();++im)
                 {
                     osg::Image* image = texture->getImage(im);
-                    if (image->isImageTranslucent()) hasTranslucentTexture = true;   
+                    if (image && image->isImageTranslucent()) hasTranslucentTexture = true;   
                 }
             }
         }

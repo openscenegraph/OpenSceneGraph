@@ -61,10 +61,14 @@ class DrawShapeVisitor : public ConstShapeVisitor
 
 void DrawShapeVisitor::apply(const Sphere& sphere)
 {
+
     glPushMatrix();
 
 	glTranslatef(sphere.getCenter().x(),sphere.getCenter().y(),sphere.getCenter().z());
 	
+    	bool drawFrontFace = _hints ? _hints->getCreateFrontFace() : true;
+    	bool drawBackFace = _hints ? _hints->getCreateBackFace() : false;
+
     	unsigned int numSegments = 40;
     	unsigned int numRows = 20;
         if (_hints && _hints->getDetailRatio() != 1.0f) {
@@ -83,70 +87,144 @@ void DrawShapeVisitor::apply(const Sphere& sphere)
 	float angleDelta = osg::PI*2.0f/(float)numSegments;
 	float texCoordHorzDelta = 1.0f/(float)numSegments;
 	
-    	float lBase=-osg::PI*0.5f;
-    	float rBase=0.0f;
-    	float zBase=-sphere.getRadius();
-    	float vBase=0.0f;
-    	float nzBase=-1.0f;
-    	float nRatioBase=0.0f;
-	
-    	for(unsigned int rowi=0; rowi<numRows; ++rowi)
-    	{
+	if (drawBackFace)
+	{
+    	    float lBase=-osg::PI*0.5f;
+    	    float rBase=0.0f;
+    	    float zBase=-sphere.getRadius();
+    	    float vBase=0.0f;
+    	    float nzBase=-1.0f;
+    	    float nRatioBase=0.0f;
 
-	    float lTop = lBase+lDelta;
-	    float rTop = cosf(lTop)*sphere.getRadius();
-	    float zTop = sinf(lTop)*sphere.getRadius();
-	    float vTop = vBase+vDelta;
-    	    float nzTop= sinf(lTop);
-    	    float nRatioTop= cosf(lTop);
+    	    for(unsigned int rowi=0; rowi<numRows; ++rowi)
+    	    {
 
-	    glBegin(GL_QUAD_STRIP);
+		float lTop = lBase+lDelta;
+		float rTop = cosf(lTop)*sphere.getRadius();
+		float zTop = sinf(lTop)*sphere.getRadius();
+		float vTop = vBase+vDelta;
+    		float nzTop= sinf(lTop);
+    		float nRatioTop= cosf(lTop);
 
-    		float angle = 0.0f;
-    		float texCoord = 0.0f;
+		glBegin(GL_QUAD_STRIP);
 
-    		for(unsigned int topi=0; topi<numSegments;
-		    ++topi,angle+=angleDelta,texCoord+=texCoordHorzDelta)
-    		{
+    		    float angle = 0.0f;
+    		    float texCoord = 0.0f;
 
-    		    float c = cosf(angle);
-    		    float s = sinf(angle);
+    		    for(unsigned int topi=0; topi<numSegments;
+			++topi,angle+=angleDelta,texCoord+=texCoordHorzDelta)
+    		    {
 
-		    glNormal3f(c*nRatioTop,s*nRatioTop,nzTop);
+    			float c = cosf(angle);
+    			float s = sinf(angle);
 
-		    glTexCoord2f(texCoord,vTop);
-		    glVertex3f(c*rTop,s*rTop,zTop);
+			glNormal3f(-c*nRatioBase,-s*nRatioBase,-nzBase);
 
-		    glNormal3f(c*nRatioBase,s*nRatioBase,nzBase);
+			glTexCoord2f(texCoord,vBase);
+			glVertex3f(c*rBase,s*rBase,zBase);
 
-		    glTexCoord2f(texCoord,vBase);
-		    glVertex3f(c*rBase,s*rBase,zBase);
+			glNormal3f(-c*nRatioTop,-s*nRatioTop,-nzTop);
 
-    		}
+			glTexCoord2f(texCoord,vTop);
+			glVertex3f(c*rTop,s*rTop,zTop);
 
-    		// do last point by hand to ensure no round off errors.
-		glNormal3f(nRatioTop,0.0f,nzTop);
 
-		glTexCoord2f(1.0f,vTop);
-		glVertex3f(rTop,0.0f,zTop);
+    		    }
 
-		glNormal3f(nRatioBase,0.0f,nzBase);
 
-		glTexCoord2f(1.0f,vBase);
-		glVertex3f(rBase,0.0f,zBase);
+    		    // do last point by hand to ensure no round off errors.
+		    glNormal3f(-nRatioBase,0.0f,-nzBase);
 
-	    glEnd();
-	    
-	    
-	    lBase=lTop;
-	    rBase=rTop;
-	    zBase=zTop;
-	    vBase=vTop;
-	    nzBase=nzTop;
-	    nRatioBase=nRatioTop;
+		    glTexCoord2f(1.0f,vBase);
+		    glVertex3f(rBase,0.0f,zBase);
 
+		    glNormal3f(-nRatioTop,0.0f,-nzTop);
+
+		    glTexCoord2f(1.0f,vTop);
+		    glVertex3f(rTop,0.0f,zTop);
+
+		glEnd();
+
+
+		lBase=lTop;
+		rBase=rTop;
+		zBase=zTop;
+		vBase=vTop;
+		nzBase=nzTop;
+		nRatioBase=nRatioTop;
+
+    	    }
     	}
 
+
+	if (drawFrontFace)
+	{
+    	    float lBase=-osg::PI*0.5f;
+    	    float rBase=0.0f;
+    	    float zBase=-sphere.getRadius();
+    	    float vBase=0.0f;
+    	    float nzBase=-1.0f;
+    	    float nRatioBase=0.0f;
+
+    	    for(unsigned int rowi=0; rowi<numRows; ++rowi)
+    	    {
+
+		float lTop = lBase+lDelta;
+		float rTop = cosf(lTop)*sphere.getRadius();
+		float zTop = sinf(lTop)*sphere.getRadius();
+		float vTop = vBase+vDelta;
+    		float nzTop= sinf(lTop);
+    		float nRatioTop= cosf(lTop);
+
+		glBegin(GL_QUAD_STRIP);
+
+    		    float angle = 0.0f;
+    		    float texCoord = 0.0f;
+
+    		    for(unsigned int topi=0; topi<numSegments;
+			++topi,angle+=angleDelta,texCoord+=texCoordHorzDelta)
+    		    {
+
+    			float c = cosf(angle);
+    			float s = sinf(angle);
+
+			glNormal3f(c*nRatioTop,s*nRatioTop,nzTop);
+
+			glTexCoord2f(texCoord,vTop);
+			glVertex3f(c*rTop,s*rTop,zTop);
+
+			glNormal3f(c*nRatioBase,s*nRatioBase,nzBase);
+
+			glTexCoord2f(texCoord,vBase);
+			glVertex3f(c*rBase,s*rBase,zBase);
+
+    		    }
+
+    		    // do last point by hand to ensure no round off errors.
+		    glNormal3f(nRatioTop,0.0f,nzTop);
+
+		    glTexCoord2f(1.0f,vTop);
+		    glVertex3f(rTop,0.0f,zTop);
+
+		    glNormal3f(nRatioBase,0.0f,nzBase);
+
+		    glTexCoord2f(1.0f,vBase);
+		    glVertex3f(rBase,0.0f,zBase);
+
+		glEnd();
+
+
+		lBase=lTop;
+		rBase=rTop;
+		zBase=zTop;
+		vBase=vTop;
+		nzBase=nzTop;
+		nRatioBase=nRatioTop;
+
+    	    }
+    	}
+	
+	
     glPopMatrix();        
 }
 

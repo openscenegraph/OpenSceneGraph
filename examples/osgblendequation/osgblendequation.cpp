@@ -11,7 +11,7 @@
 #include <osgUtil/Optimizer>
 
 
-class TechniqueEventHandler : public osgGA::GUIEventHandler, public osg::NodeCallback
+class TechniqueEventHandler : public osgGA::GUIEventHandler
 {
 public:
 

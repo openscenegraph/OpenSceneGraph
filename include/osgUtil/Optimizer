@@ -82,7 +82,7 @@ class OSGUTIL_EXPORT Optimizer
                 virtual void apply(osg::Billboard& geode);
                 virtual void apply(osg::Transform& transform);
 
-                bool removeTransforms();
+                bool removeTransforms(osg::Node* nodeWeCannotRemove);
 
             
             protected:

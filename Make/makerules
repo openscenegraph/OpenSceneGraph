@@ -116,8 +116,8 @@ $(EXEC:=.opt) :
 	@$(MAKE) LNSRC=$(OPTDIR)/$(EXEC) LNDEST=$(BININST)/$(EXEC) __link
 
 
-$(LIB:=.opt) : $(PLUGIN:=.opt)
-	@[ -d $(OPTDIR) ] || mkdir $(OPTDIR)
+$(LIB:=.opt) : 
+	@[ -d $(OPTDIR) ] || mkdir -p $(OPTDIR)
 	@cd $(OPTDIR);\
 	  $(MAKE) -f ../Makefile DOF=$(OPTF) TOPDIR=../${TOPDIR} \
 	        THISDIR=../$(THISDIR)\
@@ -125,7 +125,7 @@ $(LIB:=.opt) : $(PLUGIN:=.opt)
 	@$(MAKE) LNSRC=$(OPTDIR)/$(LIB) LNDEST=$(LIBINST)/$(LIB) __link
 
 $(PLUGIN:=.opt) : 
-	@[ -d $(OPTDIR) ] || mkdir $(OPTDIR)
+	@[ -d $(OPTDIR) ] || mkdir -p $(OPTDIR)
 	@cd $(OPTDIR); \
 	  $(MAKE) -f ../Makefile DOF=$(OPTF) TOPDIR=../${TOPDIR} \
 	    THISDIR=../$(THISDIR)\

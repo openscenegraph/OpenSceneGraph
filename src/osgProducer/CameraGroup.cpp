@@ -138,7 +138,7 @@ void CameraGroup::advance()
     CameraGroup::advance();        
 }
 
-void CameraGroup::realize( ThreadingModel thread_model= SingleThreaded )
+void CameraGroup::realize( ThreadingModel thread_model)
 {
     if( _initialized ) return;
 

@@ -278,7 +278,6 @@ osg::Image* createTexture3D(ImageList& imageList, ProcessRow& processRow, unsign
         {
             max_s = osg::maximum(image->s(), max_s);
             max_t = osg::maximum(image->t(), max_t);
-            osg::notify(osg::NOTICE)<<"image, number of components"<<osg::Image::computeNumComponents(pixelFormat)<<std::endl;
             max_components = osg::maximum(osg::Image::computeNumComponents(pixelFormat), max_components);
             total_r += image->r();
         }
@@ -332,9 +331,12 @@ osg::Image* createTexture3D(ImageList& imageList, ProcessRow& processRow, unsign
     image_3d->allocateImage(s_nearestPowerOfTwo,t_nearestPowerOfTwo,r_nearestPowerOfTwo,
                             desiredPixelFormat,GL_UNSIGNED_BYTE);
         
-    int curr_dest_r = 0;
 
-    // copy across the values from the source imager into the image_3d.
+    unsigned int r_offset = (total_r<r_nearestPowerOfTwo) ? r_nearestPowerOfTwo/2 - total_r/2 : 0;
+
+    int curr_dest_r = r_offset;
+
+    // copy across the values from the source images into the image_3d.
     for(itr=imageList.begin();
         itr!=imageList.end();
         ++itr)
@@ -352,11 +354,14 @@ osg::Image* createTexture3D(ImageList& imageList, ProcessRow& processRow, unsign
             int num_t = osg::minimum(image->t(), image_3d->t());
             int num_s = osg::minimum(image->s(), image_3d->s());
         
+	    unsigned int s_offset_dest = (image->s()<s_nearestPowerOfTwo) ? s_nearestPowerOfTwo/2 - image->s()/2 : 0;
+	    unsigned int t_offset_dest = (image->t()<t_nearestPowerOfTwo) ? t_nearestPowerOfTwo/2 - image->t()/2 : 0;
+
             for(int r=0;r<num_r;++r, ++curr_dest_r)
             {
                 for(int t=0;t<num_t;++t)
                 {
-                    unsigned char* dest = image_3d->data(0,t,curr_dest_r);
+                    unsigned char* dest = image_3d->data(s_offset_dest,t+t_offset_dest,curr_dest_r);
                     unsigned char* source = image->data(0,t,r);
 
                     processRow(num_s, image->getPixelFormat(), source, image_3d->getPixelFormat(), dest);
@@ -500,41 +505,44 @@ osg::Node* createCube(float size,float alpha, unsigned int numSlices, float slic
     return billboard;
 }
 
-osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, bool createNormalMap, unsigned int numSlices=500,float sliceEnd=1.0f)
+osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<osg::Image>& bumpmap_3d,
+                       float xSize, float ySize, float zSize,
+                       float xMultiplier, float yMultiplier, float zMultiplier,
+                       unsigned int numSlices=500, float sliceEnd=1.0f, float alphaFuncValue=0.02f)
 {
-    unsigned int diffuse_unit = createNormalMap ? 1 : 0;
-    unsigned int bumpmap_unit = 0;
-
+    bool two_pass = bumpmap_3d.valid() && (image_3d->getPixelFormat()==GL_RGB || image_3d->getPixelFormat()==GL_RGBA);
 
     osg::Group* group = new osg::Group;
     
     osg::TexGenNode* texgenNode_0 = new osg::TexGenNode;
     texgenNode_0->setTextureUnit(0);
     texgenNode_0->getTexGen()->setMode(osg::TexGen::EYE_LINEAR);
-    texgenNode_0->getTexGen()->setPlane(osg::TexGen::S, osg::Vec4(1.0f,0.0f,0.0f,0.5f));
-    texgenNode_0->getTexGen()->setPlane(osg::TexGen::T, osg::Vec4(0.0f,1.0f,0.0f,0.5f));
-    texgenNode_0->getTexGen()->setPlane(osg::TexGen::R, osg::Vec4(0.0f,0.0f,2.0f,0.38f));
+    texgenNode_0->getTexGen()->setPlane(osg::TexGen::S, osg::Vec4(xMultiplier,0.0f,0.0f,0.5f));
+    texgenNode_0->getTexGen()->setPlane(osg::TexGen::T, osg::Vec4(0.0f,yMultiplier,0.0f,0.5f));
+    texgenNode_0->getTexGen()->setPlane(osg::TexGen::R, osg::Vec4(0.0f,0.0f,zMultiplier,0.5f));
     
-#if 0
-    osg::TexGenNode* texgenNode_1 = new osg::TexGenNode;
-    texgenNode_1->setTextureUnit(1);
-    texgenNode_1->getTexGen()->setMode(osg::TexGen::EYE_LINEAR);
-    texgenNode_1->getTexGen()->setPlane(osg::TexGen::S, osg::Vec4(1.0f,0.0f,0.0f,0.5f));
-    texgenNode_1->getTexGen()->setPlane(osg::TexGen::T, osg::Vec4(0.0f,1.0f,0.0f,0.5f));
-    texgenNode_1->getTexGen()->setPlane(osg::TexGen::R, osg::Vec4(0.0f,0.0f,2.0f,1.0f));
+    if (two_pass)
+    {
+        osg::TexGenNode* texgenNode_1 = new osg::TexGenNode;
+        texgenNode_1->setTextureUnit(1);
+        texgenNode_1->getTexGen()->setMode(osg::TexGen::EYE_LINEAR);
+        texgenNode_1->getTexGen()->setPlane(osg::TexGen::S, texgenNode_0->getTexGen()->getPlane(osg::TexGen::S));
+        texgenNode_1->getTexGen()->setPlane(osg::TexGen::T, texgenNode_0->getTexGen()->getPlane(osg::TexGen::T));
+        texgenNode_1->getTexGen()->setPlane(osg::TexGen::R, texgenNode_0->getTexGen()->getPlane(osg::TexGen::R));
 
-    texgenNode_1->addChild(texgenNode_0);
+        texgenNode_1->addChild(texgenNode_0);
 
-    group->addChild(texgenNode_1);
+        group->addChild(texgenNode_1);
+    }
+    else
+    {  
+        group->addChild(texgenNode_0);
+    }
 
-#else
-    group->addChild(texgenNode_0);
-#endif
-
-    osg::BoundingBox bb(-0.5f,-0.5f,-0.20f,0.5f,0.5f,0.20f);
+    osg::BoundingBox bb(-xSize*0.5f,-ySize*0.5f,-zSize*0.5f,xSize*0.5f,ySize*0.5f,zSize*0.5f);
 
     osg::ClipNode* clipnode = new osg::ClipNode;
-    clipnode->addChild(createCube(1.0f,0.9f, numSlices,sliceEnd));
+    clipnode->addChild(createCube(1.0f,1.0f, numSlices,sliceEnd));
     clipnode->createClipBox(bb);
 
     {
@@ -573,13 +581,115 @@ osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, bool createNormalMap,
 
     stateset->setMode(GL_LIGHTING,osg::StateAttribute::ON);
     stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
-    stateset->setAttribute(new osg::AlphaFunc(osg::AlphaFunc::GREATER,0.00f));
+    stateset->setAttribute(new osg::AlphaFunc(osg::AlphaFunc::GREATER,alphaFuncValue));
     
     osg::Material* material = new osg::Material;
     material->setDiffuse(osg::Material::FRONT_AND_BACK,osg::Vec4(1.0f,1.0f,1.0f,1.0f));
     stateset->setAttributeAndModes(material);
+    
+    osg::Vec3 lightDirection(1.0f,-1.0f,1.0f);
+    lightDirection.normalize();
 
-    if (!createNormalMap)
+    if (bumpmap_3d.valid())
+    {
+    	if (two_pass)
+	{
+
+            // set up normal texture
+            osg::Texture3D* bump_texture3D = new osg::Texture3D;
+            bump_texture3D->setFilter(osg::Texture3D::MIN_FILTER,osg::Texture3D::LINEAR);
+            bump_texture3D->setFilter(osg::Texture3D::MAG_FILTER,osg::Texture3D::LINEAR);
+            bump_texture3D->setWrap(osg::Texture3D::WRAP_R,osg::Texture3D::CLAMP);
+            bump_texture3D->setWrap(osg::Texture3D::WRAP_S,osg::Texture3D::CLAMP);
+            bump_texture3D->setWrap(osg::Texture3D::WRAP_T,osg::Texture3D::CLAMP);
+            bump_texture3D->setImage(bumpmap_3d.get());
+
+            stateset->setTextureAttributeAndModes(0,bump_texture3D,osg::StateAttribute::ON);
+
+            osg::TexEnvCombine* tec = new osg::TexEnvCombine;
+            tec->setConstantColorAsLightDirection(lightDirection);
+
+            tec->setCombine_RGB(osg::TexEnvCombine::DOT3_RGB);
+            tec->setSource0_RGB(osg::TexEnvCombine::CONSTANT);
+            tec->setOperand0_RGB(osg::TexEnvCombine::SRC_COLOR);
+            tec->setSource1_RGB(osg::TexEnvCombine::TEXTURE);
+            tec->setOperand1_RGB(osg::TexEnvCombine::SRC_COLOR);
+
+            tec->setCombine_Alpha(osg::TexEnvCombine::REPLACE);
+            tec->setSource0_Alpha(osg::TexEnvCombine::PRIMARY_COLOR);
+            tec->setOperand0_Alpha(osg::TexEnvCombine::SRC_ALPHA);
+            tec->setSource1_Alpha(osg::TexEnvCombine::TEXTURE);
+            tec->setOperand1_Alpha(osg::TexEnvCombine::SRC_ALPHA);
+
+            stateset->setTextureAttributeAndModes(0, tec, osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
+
+            stateset->setTextureMode(0,GL_TEXTURE_GEN_S,osg::StateAttribute::ON);
+            stateset->setTextureMode(0,GL_TEXTURE_GEN_T,osg::StateAttribute::ON);
+            stateset->setTextureMode(0,GL_TEXTURE_GEN_R,osg::StateAttribute::ON);
+
+
+            // set up color texture
+            osg::Texture3D* texture3D = new osg::Texture3D;
+            texture3D->setFilter(osg::Texture3D::MIN_FILTER,osg::Texture3D::LINEAR);
+            texture3D->setFilter(osg::Texture3D::MAG_FILTER,osg::Texture3D::LINEAR);
+            texture3D->setWrap(osg::Texture3D::WRAP_R,osg::Texture3D::CLAMP);
+            texture3D->setWrap(osg::Texture3D::WRAP_S,osg::Texture3D::CLAMP);
+            texture3D->setWrap(osg::Texture3D::WRAP_T,osg::Texture3D::CLAMP);
+            if (image_3d->getPixelFormat()==GL_ALPHA || 
+                image_3d->getPixelFormat()==GL_LUMINANCE)
+            {
+                texture3D->setInternalFormatMode(osg::Texture3D::USE_USER_DEFINED_FORMAT);
+                texture3D->setInternalFormat(GL_INTENSITY);
+            }
+            texture3D->setImage(image_3d.get());
+
+            stateset->setTextureAttributeAndModes(1,texture3D,osg::StateAttribute::ON);
+
+            stateset->setTextureMode(1,GL_TEXTURE_GEN_S,osg::StateAttribute::ON);
+            stateset->setTextureMode(1,GL_TEXTURE_GEN_T,osg::StateAttribute::ON);
+            stateset->setTextureMode(1,GL_TEXTURE_GEN_R,osg::StateAttribute::ON);
+
+            stateset->setTextureAttributeAndModes(1,new osg::TexEnv(),osg::StateAttribute::ON);
+
+	}
+        else
+        {
+            osg::ref_ptr<osg::Image> bumpmap_3d = createNormalMapTexture(image_3d.get());
+            osg::Texture3D* bump_texture3D = new osg::Texture3D;
+            bump_texture3D->setFilter(osg::Texture3D::MIN_FILTER,osg::Texture3D::LINEAR);
+            bump_texture3D->setFilter(osg::Texture3D::MAG_FILTER,osg::Texture3D::LINEAR);
+            bump_texture3D->setWrap(osg::Texture3D::WRAP_R,osg::Texture3D::CLAMP);
+            bump_texture3D->setWrap(osg::Texture3D::WRAP_S,osg::Texture3D::CLAMP);
+            bump_texture3D->setWrap(osg::Texture3D::WRAP_T,osg::Texture3D::CLAMP);
+            bump_texture3D->setImage(bumpmap_3d.get());
+
+            stateset->setTextureAttributeAndModes(0,bump_texture3D,osg::StateAttribute::ON);
+
+            osg::TexEnvCombine* tec = new osg::TexEnvCombine;
+            tec->setConstantColorAsLightDirection(lightDirection);
+
+            tec->setCombine_RGB(osg::TexEnvCombine::DOT3_RGB);
+            tec->setSource0_RGB(osg::TexEnvCombine::CONSTANT);
+            tec->setOperand0_RGB(osg::TexEnvCombine::SRC_COLOR);
+            tec->setSource1_RGB(osg::TexEnvCombine::TEXTURE);
+            tec->setOperand1_RGB(osg::TexEnvCombine::SRC_COLOR);
+
+            tec->setCombine_Alpha(osg::TexEnvCombine::MODULATE);
+            tec->setSource0_Alpha(osg::TexEnvCombine::PRIMARY_COLOR);
+            tec->setOperand0_Alpha(osg::TexEnvCombine::SRC_ALPHA);
+            tec->setSource1_Alpha(osg::TexEnvCombine::TEXTURE);
+            tec->setOperand1_Alpha(osg::TexEnvCombine::SRC_ALPHA);
+
+            stateset->setTextureAttributeAndModes(0, tec, osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
+
+            stateset->setTextureMode(0,GL_TEXTURE_GEN_S,osg::StateAttribute::ON);
+            stateset->setTextureMode(0,GL_TEXTURE_GEN_T,osg::StateAttribute::ON);
+            stateset->setTextureMode(0,GL_TEXTURE_GEN_R,osg::StateAttribute::ON);
+
+            image_3d = bumpmap_3d;
+        }
+    }
+    else
     {     
         // set up the 3d texture itself,
         // note, well set the filtering up so that mip mapping is disabled,
@@ -599,49 +709,13 @@ osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, bool createNormalMap,
         }
         texture3D->setImage(image_3d.get());
 
-        stateset->setTextureAttributeAndModes(diffuse_unit,texture3D,osg::StateAttribute::ON);
+        stateset->setTextureAttributeAndModes(0,texture3D,osg::StateAttribute::ON);
 
-        stateset->setTextureMode(diffuse_unit,GL_TEXTURE_GEN_S,osg::StateAttribute::ON);
-        stateset->setTextureMode(diffuse_unit,GL_TEXTURE_GEN_T,osg::StateAttribute::ON);
-        stateset->setTextureMode(diffuse_unit,GL_TEXTURE_GEN_R,osg::StateAttribute::ON);
+        stateset->setTextureMode(0,GL_TEXTURE_GEN_S,osg::StateAttribute::ON);
+        stateset->setTextureMode(0,GL_TEXTURE_GEN_T,osg::StateAttribute::ON);
+        stateset->setTextureMode(0,GL_TEXTURE_GEN_R,osg::StateAttribute::ON);
 
-        stateset->setTextureAttributeAndModes(diffuse_unit,new osg::TexEnv(),osg::StateAttribute::ON);
-    }
-    else
-    {
-        osg::ref_ptr<osg::Image> bumpmap_3d = createNormalMapTexture(image_3d.get());
-        osg::Texture3D* bump_texture3D = new osg::Texture3D;
-        bump_texture3D->setFilter(osg::Texture3D::MIN_FILTER,osg::Texture3D::LINEAR);
-        bump_texture3D->setFilter(osg::Texture3D::MAG_FILTER,osg::Texture3D::LINEAR);
-        bump_texture3D->setWrap(osg::Texture3D::WRAP_R,osg::Texture3D::CLAMP);
-        bump_texture3D->setWrap(osg::Texture3D::WRAP_S,osg::Texture3D::CLAMP);
-        bump_texture3D->setWrap(osg::Texture3D::WRAP_T,osg::Texture3D::CLAMP);
-        bump_texture3D->setImage(bumpmap_3d.get());
-
-        stateset->setTextureAttributeAndModes(bumpmap_unit,bump_texture3D,osg::StateAttribute::ON);
-
-        osg::TexEnvCombine* tec = new osg::TexEnvCombine;
-        tec->setConstantColor(osg::Vec4(0.0f,0.7f,0.7f,1.0f));
-
-        tec->setCombine_RGB(osg::TexEnvCombine::DOT3_RGB);
-        tec->setSource0_RGB(osg::TexEnvCombine::CONSTANT);
-        tec->setOperand0_RGB(osg::TexEnvCombine::SRC_COLOR);
-        tec->setSource1_RGB(osg::TexEnvCombine::TEXTURE);
-        tec->setOperand1_RGB(osg::TexEnvCombine::SRC_COLOR);
-
-        tec->setCombine_Alpha(osg::TexEnvCombine::MODULATE);
-        tec->setSource0_Alpha(osg::TexEnvCombine::PRIMARY_COLOR);
-        tec->setOperand0_Alpha(osg::TexEnvCombine::SRC_ALPHA);
-        tec->setSource1_Alpha(osg::TexEnvCombine::TEXTURE);
-        tec->setOperand1_Alpha(osg::TexEnvCombine::SRC_ALPHA);
-
-        stateset->setTextureAttributeAndModes(bumpmap_unit, tec, osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
-
-        stateset->setTextureMode(bumpmap_unit,GL_TEXTURE_GEN_S,osg::StateAttribute::ON);
-        stateset->setTextureMode(bumpmap_unit,GL_TEXTURE_GEN_T,osg::StateAttribute::ON);
-        stateset->setTextureMode(bumpmap_unit,GL_TEXTURE_GEN_R,osg::StateAttribute::ON);
-
-        image_3d = bumpmap_3d;
+        stateset->setTextureAttributeAndModes(0,new osg::TexEnv(),osg::StateAttribute::ON);
     }
  
     return group;
@@ -658,8 +732,14 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates use of 3D textures.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
-    arguments.getApplicationUsage()->addCommandLineOption("-n","create normal map for per voxel lighting.");
-    arguments.getApplicationUsage()->addCommandLineOption("-s","num of slices to create.");
+    arguments.getApplicationUsage()->addCommandLineOption("-n","Create normal map for per voxel lighting.");
+    arguments.getApplicationUsage()->addCommandLineOption("-s","Number of slices to create.");
+    arguments.getApplicationUsage()->addCommandLineOption("--xSize","Relative width of rendered brick.");
+    arguments.getApplicationUsage()->addCommandLineOption("--ySize","Relative length of rendered brick.");
+    arguments.getApplicationUsage()->addCommandLineOption("--zSize","Relative height of rendered brick.");
+    arguments.getApplicationUsage()->addCommandLineOption("--xMultiplier","Tex coord x mulitplier.");
+    arguments.getApplicationUsage()->addCommandLineOption("--yMultiplier","Tex coord y mulitplier.");
+    arguments.getApplicationUsage()->addCommandLineOption("--zMultiplier","Tex coord z mulitplier.");
     arguments.getApplicationUsage()->addCommandLineOption("--clip","clip volume as a ratio, 0.0 clip all, 1.0 clip none.");
     
 
@@ -690,9 +770,22 @@ int main( int argc, char **argv )
     float sliceEnd=1.0f;
     while (arguments.read("--clip",sliceEnd)) {}
 
+    float alphaFunc=0.02f;
+    while (arguments.read("--alphaFunc",alphaFunc)) {}
+
 
     bool createNormalMap = false;
     while (arguments.read("-n")) createNormalMap=true;
+
+   float xSize=1.0f, ySize=1.0f, zSize=1.0f;
+   while (arguments.read("--xSize",xSize)) {}
+   while (arguments.read("--ySize",ySize)) {}
+   while (arguments.read("--zSize",zSize)) {}
+   
+   float xMultiplier=1.0f, yMultiplier=1.0f, zMultiplier=1.0f;
+   while (arguments.read("--xMultiplier",xMultiplier)) {}
+   while (arguments.read("--yMultiplier",yMultiplier)) {}
+   while (arguments.read("--zMultiplier",zMultiplier)) {}
 
     
     osg::ref_ptr<osg::Image> image_3d;
@@ -739,8 +832,13 @@ int main( int argc, char **argv )
     
     if (!image_3d) return 0;
     
+    osg::ref_ptr<osg::Image> bumpmap_3d = createNormalMap ? createNormalMapTexture(image_3d.get()) : 0;
+
     // create a model from the images.
-    osg::Node* rootNode = createModel(image_3d, createNormalMap, numSlices, sliceEnd);
+    osg::Node* rootNode = createModel(image_3d, bumpmap_3d, 
+                                      xSize, ySize, zSize,
+                                      xMultiplier, yMultiplier, zMultiplier,
+                                      numSlices, sliceEnd, alphaFunc);
 
     if (!outputFile.empty())
     {   

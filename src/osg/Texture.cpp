@@ -42,6 +42,7 @@ Texture::Texture()
 
     _subloadMode   = OFF;
     _subloadOffsX = _subloadOffsY = 0;
+    _subloadWidth = _subloadHeight = 0;
 
     _borderColor.set(0.0, 0.0, 0.0, 0.0);//OpenGL default
 
@@ -95,6 +96,8 @@ int Texture::compare(const StateAttribute& sa) const
     COMPARE_StateAttribute_Parameter(_subloadMode)
     COMPARE_StateAttribute_Parameter(_subloadOffsX)
     COMPARE_StateAttribute_Parameter(_subloadOffsY)
+    COMPARE_StateAttribute_Parameter(_subloadWidth)
+    COMPARE_StateAttribute_Parameter(_subloadHeight)
 
     return 0; // passed all the above comparison macro's, must be equal.
 }
@@ -209,7 +212,7 @@ void Texture::apply(State& state) const
                 if (_texParamtersDirty) applyTexParameters(_target,state);
                 glTexSubImage2D(_target, 0,
                                 _subloadOffsX, _subloadOffsY,
-                                _image->s(), _image->t(),
+                                (_subloadWidth>0)?_subloadWidth:_image->s(), (_subloadHeight>0)?_subloadHeight:_image->t(),
                                 (GLenum) _image->pixelFormat(), (GLenum) _image->dataType(),
                                 _image->data());
                 // update the modified flag to show that the image has been loaded.
@@ -453,14 +456,17 @@ void Texture::applyTexImage(GLenum target, Image* image, State& state) const
         if (s_SGIS_GenMipmap && (_min_filter != LINEAR && _min_filter != NEAREST)) {
             glTexParameteri(target, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
         }
-
+        
+        GLsizei width = (_subloadWidth>0)?_subloadWidth:image->s();
+        GLsizei height = (_subloadHeight>0)?_subloadHeight:image->t();
+        
         // calculate texture dimension
         _textureWidth = 1;
-        for (; _textureWidth < (_subloadOffsX + image->s()); _textureWidth <<= 1)
+        for (; _textureWidth < (_subloadOffsX + width); _textureWidth <<= 1)
             ;
 
         _textureHeight = 1;
-        for (; _textureHeight < (_subloadOffsY + image->t()); _textureHeight <<= 1)
+        for (; _textureHeight < (_subloadOffsY + height); _textureHeight <<= 1)
             ;
 
         // reserve appropriate texture memory
@@ -471,7 +477,7 @@ void Texture::applyTexImage(GLenum target, Image* image, State& state) const
 
         glTexSubImage2D(target, 0,
                         _subloadOffsX, _subloadOffsY,
-                        image->s(), image->t(),
+                        width, height,
                         (GLenum) image->pixelFormat(), (GLenum) image->dataType(),
                         image->data());
     }

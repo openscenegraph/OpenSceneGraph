@@ -128,6 +128,16 @@ bool Texture_readLocalData(Object& obj, Input& fr)
             iteratorAdvanced = true;
         }
     }
+    if (fr[0].matchWord("subloadSize"))
+    {
+        int width, height;
+        if (fr[1].getInt(width) && fr[2].getInt(height))
+        {
+            texture.setSubloadSize(width, height);
+            fr += 3;
+            iteratorAdvanced = true;
+        }
+    }
 
     return iteratorAdvanced;
 }
@@ -164,6 +174,10 @@ bool Texture_writeLocalData(const Object& obj, Output& fw)
         int x, y;
         texture.getSubloadOffset(x, y);
         fw.indent() << "subloadOffset " << x << " " << y << std::endl;
+
+        int width, height;
+        texture.getSubloadSize(width, height);
+        fw.indent() << "subloadSize " << width << " " << height << std::endl;
     }
 
     return true;

@@ -148,36 +148,69 @@ void Registry::addDotOsgWrapper(DotOsgWrapper* wrapper)
    
     if (proto)
     {
+        std::string libraryName = proto->libraryName();
+        std::string compositeName = libraryName + "::" + name;
+
         if (wrapper->getReadWriteMode()==DotOsgWrapper::READ_AND_WRITE) _classNameWrapperMap[proto->className()] = wrapper;
 
-       if (dynamic_cast<const Image*>(proto))          _imageWrapperMap[name] = wrapper;
-       if (dynamic_cast<const Drawable*>(proto))       _drawableWrapperMap[name] = wrapper;
-       if (dynamic_cast<const StateAttribute*>(proto)) _stateAttrWrapperMap[name] = wrapper;
-       if (dynamic_cast<const Node*>(proto))           _nodeWrapperMap[name] = wrapper;
+        if (dynamic_cast<const Image*>(proto))
+        {
+            _imageWrapperMap[name] = wrapper;
+            _imageWrapperMap[compositeName] = wrapper;
+        }
+        if (dynamic_cast<const Drawable*>(proto))
+        {
+              _drawableWrapperMap[name] = wrapper;
+              _drawableWrapperMap[compositeName] = wrapper;
+        }
+        if (dynamic_cast<const StateAttribute*>(proto))
+        {
+            _stateAttrWrapperMap[name] = wrapper;
+            _stateAttrWrapperMap[compositeName] = wrapper;
+        }
+        if (dynamic_cast<const Node*>(proto))
+        {
+            _nodeWrapperMap[name] = wrapper;
+            _nodeWrapperMap[compositeName] = wrapper;
+        }
+
+
     }
 }
 
-#define EraseMacro(WL,W) \
-{ \
-    DotOsgWrapperMap::iterator itr = WL.find(W->getName()); \
-    if (itr!=WL.end() && itr->second.get()==W) WL.erase(itr); \
+// need to change to delete all instances of wrapper, since we
+// now can have a wrapper entered twice with the addition of the
+// library::class composite name.
+void Registry::eraseWrapper(DotOsgWrapperMap& wrappermap,DotOsgWrapper* wrapper)
+{
+    typedef std::vector<DotOsgWrapperMap::iterator> EraseList;
+    EraseList eraseList;
+    for(DotOsgWrapperMap::iterator witr=wrappermap.begin();
+        witr!=wrappermap.end();
+        ++witr)
+    {
+        if (witr->second==wrapper) eraseList.push_back(witr);
+    }
+    for(EraseList::iterator eitr=eraseList.begin();
+        eitr!=eraseList.end();
+        ++eitr)
+    {
+        wrappermap.erase(*eitr);
+    }
 }
+
     
 void Registry::removeDotOsgWrapper(DotOsgWrapper* wrapper)
 {
     if (wrapper==0L) return;
 
-////    notify(INFO) << "osg::Registry::removeReaderWriter();"<< std::endl;
-
-    EraseMacro(_objectWrapperMap,wrapper);
-    EraseMacro(_classNameWrapperMap,wrapper);
-    EraseMacro(_imageWrapperMap,wrapper);
-    EraseMacro(_drawableWrapperMap,wrapper);
-    EraseMacro(_stateAttrWrapperMap,wrapper);
-    EraseMacro(_nodeWrapperMap,wrapper);
+    eraseWrapper(_objectWrapperMap,wrapper);
+    eraseWrapper(_classNameWrapperMap,wrapper);
+    eraseWrapper(_imageWrapperMap,wrapper);
+    eraseWrapper(_drawableWrapperMap,wrapper);
+    eraseWrapper(_stateAttrWrapperMap,wrapper);
+    eraseWrapper(_nodeWrapperMap,wrapper);
 }
-
-#undef EraseMacro
 
 void Registry::addReaderWriter(ReaderWriter* rw)
 {
@@ -248,6 +281,29 @@ std::string Registry::createLibraryNameForExt(const std::string& ext)
 
 }
 
+std::string Registry::createLibraryNameForNodeKit(const std::string& name)
+{
+#if defined(WIN32) // [
+    // !! recheck evolving Cygwin DLL extension naming protocols !! NHV
+    #ifdef __CYGWIN__ // [
+        #   ifdef _DEBUG   // [
+	    return "cyg"+name+"d.dll";
+        #   else           // ][
+	    return "cyg"+name+".dll";
+        #   endif          // ]
+    #else             // ][
+        #   ifdef _DEBUG   // [
+            return name+"d.dll";
+        #   else           // ][
+            return name+".dll";
+        #   endif          // ]
+    #endif            // ]
+#elif macintosh    // ][
+    return name;
+#else              // ][
+    return "lib"+name+".so";
+#endif             // ]
+}
 
 bool Registry::loadLibrary(const std::string& fileName)
 {
@@ -320,7 +376,29 @@ osg::Object* Registry::readObjectOfType(const osg::Object& compObj,Input& fr)
 
     std::string name = str;
     DotOsgWrapperMap::iterator itr = _objectWrapperMap.find(name);
-    if (itr!=_objectWrapperMap.end() && fr[1].isOpenBracket())
+    if (itr==_objectWrapperMap.end())
+    {
+        // not found so check if a library::class composite name.
+        std::string token = fr[0].getStr();
+        std::string::size_type posDoubleColon = token.rfind("::");
+        if (posDoubleColon != std::string::npos)
+        {
+            // we have a composite name so now strip off the library name
+            // are try to load it, and then retry the readObject to see
+            // if we can recongise the objects.
+        
+            std::string libraryName = std::string(token,0,posDoubleColon);
+
+            // first try the standard nodekit library.
+            std::string nodeKitLibraryName = createLibraryNameForNodeKit(libraryName);
+            if (loadLibrary(nodeKitLibraryName)) return readObjectOfType(compObj,fr);
+            
+            // otherwise try the osgdb_ plugin library.
+            std::string pluginLibraryName = createLibraryNameForExt(libraryName);
+            if (loadLibrary(pluginLibraryName)) return readObjectOfType(compObj,fr);
+        }
+    }
+    else if (fr[1].isOpenBracket())
     {
     
         DotOsgWrapper* wrapper = itr->second.get();
@@ -393,7 +471,29 @@ osg::Object* Registry::readObject(DotOsgWrapperMap& dowMap,Input& fr)
 
     std::string name = str;
     DotOsgWrapperMap::iterator itr = dowMap.find(name);
-    if (itr!=dowMap.end() && fr[1].isOpenBracket())
+    if (itr==dowMap.end())
+    {
+        // not found so check if a library::class composite name.
+        std::string token = fr[0].getStr();
+        std::string::size_type posDoubleColon = token.rfind("::");
+        if (posDoubleColon != std::string::npos)
+        {
+            // we have a composite name so now strip off the library name
+            // are try to load it, and then retry the readObject to see
+            // if we can recongise the objects.
+        
+            std::string libraryName = std::string(token,0,posDoubleColon);
+
+            // first try the standard nodekit library.
+            std::string nodeKitLibraryName = createLibraryNameForNodeKit(libraryName);
+            if (loadLibrary(nodeKitLibraryName)) return readObject(dowMap,fr);
+            
+            // otherwise try the osgdb_ plugin library.
+            std::string pluginLibraryName = createLibraryNameForExt(libraryName);
+            if (loadLibrary(pluginLibraryName)) return readObject(dowMap,fr);
+        }
+    }
+    else if (fr[1].isOpenBracket())
     {
     
         DotOsgWrapper* wrapper = itr->second.get();
@@ -593,8 +693,18 @@ bool Registry::writeObject(const osg::Object& obj,Output& fw)
         DotOsgWrapper* wrapper = itr->second.get();
         const DotOsgWrapper::Associates& assoc = wrapper->getAssociates();
 
-        fw.indent() << wrapper->getName() << " {"<< std::endl;
-        fw.moveIn();
+        if (strcmp(obj.libraryName(),"osg")==0)
+        {
+            // member of the core osg, so no need to have composite library::class name.
+            fw.indent() << wrapper->getName() << " {"<< std::endl;
+            fw.moveIn();
+        }
+        else
+        {
+            // member of the node kit so must use composite library::class name.
+            fw.indent() << obj.libraryName()<<"::"<< wrapper->getName() << " {"<< std::endl;
+            fw.moveIn();
+        }
 
 
         // write out the unique ID if required.

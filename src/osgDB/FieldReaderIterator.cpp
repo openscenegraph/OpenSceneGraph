@@ -268,7 +268,11 @@ FieldReaderIterator& FieldReaderIterator::operator += (int no)
 // whole block if the current field[0] is an open bracket
 void FieldReaderIterator::advanceOverCurrentFieldOrBlock()
 {
-    if (field(0).isOpenBracket()) advanceToEndOfCurrentBlock();
+    if (field(0).isOpenBracket())
+    {
+        advanceToEndOfCurrentBlock();
+        ++(*this); // skip the trailing '}'
+    }
     else ++(*this);
 }
 

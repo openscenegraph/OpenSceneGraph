@@ -61,6 +61,9 @@ class OSGDB_EXPORT Registry
         /** create the platform specific library name associated with file extension.*/
         std::string createLibraryNameForExt(const std::string& ext);
 
+        /** create the platform specific library name associated with nodekit library name.*/
+        std::string createLibraryNameForNodeKit(const std::string& name);
+
         /** find the library in the SG_LIBRARY_PATH and load it.*/
         bool loadLibrary(const std::string& fileName);
         /** close the attached library with specified name.*/
@@ -113,6 +116,9 @@ class OSGDB_EXPORT Registry
         bool _createNodeFromImage;
 
         osg::Object*       readObject(DotOsgWrapperMap& dowMap,Input& fr);
+
+        void eraseWrapper(DotOsgWrapperMap& wrappermap,DotOsgWrapper* wrapper);
+
 
         DotOsgWrapperMap   _objectWrapperMap;
         DotOsgWrapperMap   _imageWrapperMap;

@@ -73,6 +73,21 @@ bool Drawable_readLocalData(Object& obj, Input& fr)
         }
     }
     
+    if (fr[0].matchWord("useVertexBufferObjects"))
+    {
+        if (fr[1].matchWord("TRUE"))
+        {
+            drawable.setUseVertexBufferObjects(true);
+            fr+=2;
+            iteratorAdvanced = true;
+        }
+        else if (fr[1].matchWord("FALSE"))
+        {
+            drawable.setUseVertexBufferObjects(false);
+            fr+=2;
+            iteratorAdvanced = true;
+        }
+    }
 
     return iteratorAdvanced;
 }
@@ -103,6 +118,9 @@ bool Drawable_writeLocalData(const Object& obj, Output& fw)
     if (drawable.getUseDisplayList()) fw << "TRUE" << std::endl;
     else fw << "FALSE" << std::endl;
 
+    fw.indent()<<"useVertexBufferObjects ";
+    if (drawable.getUseVertexBufferObjects()) fw << "TRUE" << std::endl;
+    else fw << "FALSE" << std::endl;
     
     return true;
 }

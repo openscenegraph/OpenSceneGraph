@@ -86,24 +86,43 @@ class OSGDB_EXPORT ImageOptions : public osgDB::ReaderWriter::Options
             CUBIC
         };
 
+        /** Used as UserData attached to generated osg::Image's*/
+        struct TexCoordRange : public osg::Referenced
+        {
+            TexCoordRange():
+                _x(0.0),
+                _y(0.0),
+                _w(1.0),
+                _h(1.0) {}
+        
+            void set(double x,double y, double w, double h)
+            {
+                _x = x;
+                _y = y;
+                _w = w;
+                _h = h;
+            }
+        
+            double _x,_y,_w,_h;
+        };
+
+
         // source        
         ImageSamplingMode   _sourceImageSamplingMode;
         ImageWindowMode     _sourceImageWindowMode;
         RatioWindow         _sourceRatioWindow;
         PixelWindow         _sourcePixelWindow;
-        
-        
 
         // destination
         osg::ref_ptr<osg::Image> _destinationImage;
-
+       
         ImageWindowMode     _destinationImageWindowMode;
         RatioWindow         _destinationRatioWindow;
         PixelWindow         _destinationPixelWindow;
-        
+
         GLenum              _destinationDataType;
         GLenum              _destinationPixelFormat;
-        
+
         void init();
         
 };

@@ -418,21 +418,25 @@ class SG_EXPORT HeightField : public Shape
 {
     public:
     
-    	HeightField() {}
-
-        HeightField(const HeightField& mesh,const CopyOp& copyop=CopyOp::SHALLOW_COPY): 
-            Shape(mesh,copyop),
+    	HeightField():
 	    _columns(0),
 	    _rows(0),
 	    _origin(0.0f,0.0f,0.0f),
 	    _dx(1.0f),
 	    _dy(1.0f) {}
+
+        HeightField(const HeightField& mesh,const CopyOp& copyop=CopyOp::SHALLOW_COPY): 
+            Shape(mesh,copyop),
+	    _columns(mesh._columns),
+	    _rows(mesh._rows),
+	    _origin(mesh._origin),
+	    _dx(mesh._dx),
+	    _dy(mesh._dy),
+            _heights(mesh._heights) {}
         
-        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const HeightField*>(obj)!=NULL; }
-        virtual const char* libraryName() const { return "osg"; }
-        virtual const char* className() const { return "HeightField"; }
-        virtual void accept(osg::ShapeVisitor& sv) { sv.apply(*this); }
-        virtual void accept(osg::ConstShapeVisitor& csv) const { csv.apply(*this); }
+    	META_Shape(osg, HeightField)
+
+    	void allocateGrid(unsigned int numColumns,unsigned int numRows);
 
 	inline unsigned int getNumColumns() const { return _columns; }
 	inline unsigned int getNumRows() const { return _rows; }
@@ -446,9 +450,23 @@ class SG_EXPORT HeightField : public Shape
 	inline void setYInterval(float dy) { _dy = dy; }
 	inline float getYInterval() const { return _dy; }
 
-	virtual float getHeight(unsigned int c,unsigned int r) const = 0;
-	
-	virtual Vec3 getNormal(unsigned int c,unsigned int r) const;
+
+	inline void setHeight(unsigned int c,unsigned int r,float value)
+	{
+	   _heights[c+r*_columns] = value;
+	}
+
+	inline float& getHeight(unsigned int c,unsigned int r)
+	{
+	   return _heights[c+r*_columns];
+	}
+
+	inline float getHeight(unsigned int c,unsigned int r) const
+	{
+	   return _heights[c+r*_columns];
+	}
+
+        Vec3 getNormal(unsigned int c,unsigned int r) const;
 	
     	inline void setRotation(const Quat& quat) { _rotation = quat; }
     	inline const Quat& getRotation() const { return _rotation; }
@@ -467,38 +485,10 @@ class SG_EXPORT HeightField : public Shape
 	
 	Quat    _rotation;
 	
-};
-
-class SG_EXPORT Grid : public HeightField
-{
-    public:
-    
-    	Grid();
-
-        Grid(const Grid& mesh,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
-        
-    	META_Shape(osg,Grid);
-
-    	void allocateGrid(unsigned int numColumns,unsigned int numRows);
-
-	void setHeight(unsigned int c,unsigned int r,float value)
-	{
-	   _heights[c+r*_columns] = value;
-	}
-
-	virtual float getHeight(unsigned int c,unsigned int r) const
-	{
-	   return _heights[c+r*_columns];
-	}
-	
-    protected:
-    
-    	~Grid();
-
     	typedef std::vector<float> HeightList;
 	HeightList _heights;
-	
 };
+
 
 class CompositeShape : public Shape
 {

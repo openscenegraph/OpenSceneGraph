@@ -42,18 +42,35 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
             int destHeight = osg::minimum(dataHeight,1024);
 
 
+            osgDB::ImageOptions::TexCoordRange* texCoordRange = 0;
+
             const osgDB::ImageOptions* imageOptions = dynamic_cast<const osgDB::ImageOptions*>(options);
             if (imageOptions)
             {
                 std::cout<<"Got ImageOptions"<<std::endl;
                 
+                int margin = 0;
                 switch(imageOptions->_sourceImageWindowMode)
                 {
                 case(osgDB::ImageOptions::RATIO_WINDOW):
-                    windowX = osg::maximum((int)(floor((double)dataWidth * imageOptions->_sourceRatioWindow.windowX)),0);
-                    windowY = osg::maximum((int)(floor((double)dataHeight * imageOptions->_sourceRatioWindow.windowY)),0);
-                    windowWidth = osg::minimum((int)(ceil((double)dataWidth * (imageOptions->_sourceRatioWindow.windowX + imageOptions->_sourceRatioWindow.windowWidth))),dataWidth)-windowX;
-                    windowHeight = osg::minimum((int)(ceil((double)dataHeight * (imageOptions->_sourceRatioWindow.windowY + imageOptions->_sourceRatioWindow.windowHeight))),dataHeight)-windowY;
+                    {
+                        double desiredX = (double)dataWidth * imageOptions->_sourceRatioWindow.windowX;
+                        double desiredY = (double)dataHeight * imageOptions->_sourceRatioWindow.windowY;
+                        double desiredWidth = (double)dataWidth * imageOptions->_sourceRatioWindow.windowWidth;
+                        double desiredHeight = (double)dataHeight * imageOptions->_sourceRatioWindow.windowHeight;
+                        
+                        windowX = osg::maximum((int)(floor(desiredX))-margin,0);
+                        windowY = osg::maximum((int)(floor(desiredY))-margin,0);
+                        windowWidth = osg::minimum((int)(ceil(desiredX + desiredWidth))+margin,dataWidth)-windowX;
+                        windowHeight = osg::minimum((int)(ceil(desiredY + desiredHeight))+margin,dataHeight)-windowY;
+                        
+                        texCoordRange = new osgDB::ImageOptions::TexCoordRange;
+                        texCoordRange->set((desiredX-(double)windowX)/(double)windowWidth,
+                                           ((double)(windowY+windowHeight) -(desiredY+desiredHeight))/(double)windowHeight,
+                                           (desiredWidth)/(double)windowWidth,
+                                           (desiredHeight)/(double)windowHeight);
+                        std::cout<<"tex coord range "<<texCoordRange->_x<<" "<<texCoordRange->_y<<" "<<texCoordRange->_w<<" "<<texCoordRange->_h<<std::endl;
+                    }
                     break;
                 case(osgDB::ImageOptions::PIXEL_WINDOW):
                     windowX = imageOptions->_sourcePixelWindow.windowX;
@@ -145,6 +162,7 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
                 else if (band->GetColorInterpretation()==GCI_GreenBand) bandGreen = band;
                 else if (band->GetColorInterpretation()==GCI_BlueBand) bandBlue = band;
                 else if (band->GetColorInterpretation()==GCI_AlphaBand) bandAlpha = band;
+                else bandGray = band;
                 
 //                 int gotMin,gotMax;
 //                 double minmax[2];
@@ -281,7 +299,9 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
                     dataType,
                     (unsigned char *)imageData,
                     osg::Image::USE_NEW_DELETE);
-
+                    
+                if (texCoordRange) image->setUserData(texCoordRange);
+                
                 image->flipVertical();
                 
                 return image;

@@ -384,7 +384,7 @@ osg::Geode* ForestTechniqueManager::createTerrain(const osg::Vec3& origin, const
     if (createGrid)
     {
 
-        osg::Grid* grid = new osg::Grid;
+        osg::HeightField* grid = new osg::HeightField;
         grid->allocateGrid(numColumns,numRows);
         grid->setOrigin(origin);
         grid->setXInterval(size.x()/(float)(numColumns-1));

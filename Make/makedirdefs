@@ -128,6 +128,7 @@ EXAMPLE_DIRS = \
 	osgautotransform\
 	osgbillboard\
 	osgbluemarble\
+	osgdem\
 	osgcallback\
 	osgcameragroup\
 	osgclip\

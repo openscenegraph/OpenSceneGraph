@@ -232,6 +232,10 @@ SOURCE=..\..\..\src\osgPlugins\osg\Node.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\osg\NodeCallback.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\osg\Object.cpp
 # End Source File
 # Begin Source File

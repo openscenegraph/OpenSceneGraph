@@ -35,6 +35,7 @@ CXXFILES =\
         Matrix.cpp\
         MatrixTransform.cpp\
         Node.cpp\
+        NodeCallback.cpp\
         Object.cpp\
         OccluderNode.cpp\
         PagedLOD.cpp\

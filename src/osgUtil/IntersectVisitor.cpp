@@ -146,6 +146,7 @@ IntersectVisitor::IntersectVisitor()
 
 IntersectVisitor::~IntersectVisitor()
 {
+    _hitReportingMode = ONLY_NEAREST_HIT;
 }
 
 

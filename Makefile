@@ -108,14 +108,8 @@ dev: $(MAKE_PREP)
 	$(MAKE) clobber;
 	(cd ..; tar cvf - $(VERSION) | gzip > osg-`date "+%Y%m%d"`.tar.gz)
 
-install :
-	for f in $(DIRS)  ; do cd $$f; $(MAKE) install; cd ..;  done
-
-instlinks :
-	for f in $(DIRS)  ; do cd $$f; $(MAKE) instlinks; cd ..;  done
-
-instclean :
-	for f in $(DIRS)  ; do cd $$f; $(MAKE) instclean; cd ..;  done
+install instlinks instclean :
+	export OSGHOME=`pwd`; for f in $(DIRS)  ; do cd $$f; $(MAKE) $@; cd ..;  done
 
 instcheck :
 	diff -q include/osg/       /usr/include/osg/

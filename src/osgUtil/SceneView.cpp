@@ -797,3 +797,86 @@ void SceneView::clearArea(int x,int y,int width,int height,const osg::Vec4& colo
     glClear( GL_COLOR_BUFFER_BIT);
     glDisable( GL_SCISSOR_TEST );
 }
+
+void SceneView::setProjectionMatrix(const osg::Matrix& matrix)
+{
+    if (!_projectionMatrix) _projectionMatrix = new osg::RefMatrix(matrix);
+    else _projectionMatrix->set(matrix);
+}
+
+
+void SceneView::setProjectionMatrixAsOrtho(double left, double right,
+                                           double bottom, double top,
+                                           double zNear, double zFar)
+{
+    setProjectionMatrix(osg::Matrix::ortho(left, right,
+                                           bottom, top,
+                                           zNear, zFar));
+}                                           
+
+void SceneView::setProjectionMatrixAsOrtho2D(double left, double right,
+                                             double bottom, double top)
+{
+    setProjectionMatrix(osg::Matrix::ortho2D(left, right,
+                                             bottom, top));
+}
+
+void SceneView::setProjectionMatrixAsFrustum(double left, double right,
+                                             double bottom, double top,
+                                             double zNear, double zFar)
+{
+    setProjectionMatrix(osg::Matrix::frustum(left, right,
+                                             bottom, top,
+                                             zNear, zFar));
+}
+
+void SceneView::setProjectionMatrixAsPerspective(double fovy,double aspectRatio,
+                                                 double zNear, double zFar)
+{
+    setProjectionMatrix(osg::Matrix::perspective(fovy,aspectRatio,
+                                                 zNear, zFar));
+}                                      
+
+void SceneView::getProjectionMatrixAsOrtho(double& left, double& right,
+                                           double& bottom, double& top,
+                                           double& zNear, double& zFar)
+{
+    if (_projectionMatrix.valid()) 
+    {
+        _projectionMatrix->getOrtho(left, right,
+                                   bottom, top,
+                                   zNear, zFar);
+    }
+}
+
+void SceneView::getProjectionMatrixAsFrustum(double& left, double& right,
+                                             double& bottom, double& top,
+                                             double& zNear, double& zFar)
+{
+    if (_projectionMatrix.valid()) 
+    {
+        _projectionMatrix->getFrustum(left, right,
+                                     bottom, top,
+                                     zNear, zFar);
+    }
+}                                  
+
+
+void SceneView::setViewMatrix(const osg::Matrix& matrix)
+{
+    if (!_viewMatrix) _viewMatrix = new osg::RefMatrix(matrix);
+    else _viewMatrix->set(matrix);
+}
+
+void SceneView::setViewMatrixAsLookAt(const Vec3& eye,const Vec3& center,const Vec3& up)
+{
+    setViewMatrix(osg::Matrix::lookAt(eye,center,up));
+}
+
+void SceneView::getViewMatrixAsLookAt(Vec3& eye,Vec3& center,Vec3& up,float lookDistance)
+{
+    if (_viewMatrix.valid())
+    {
+        _viewMatrix->getLookAt(eye,center,up,lookDistance);
+    }
+}

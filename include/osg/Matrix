@@ -127,7 +127,7 @@ class SG_EXPORT Matrix
                          double zNear, double zFar);
 
         /** Get the frustum setting of a perspective projection matrix.
-          * Note, if matrix is not an orthographic matrix then invalid values will be returned.*/
+          * Note, if matrix is not an perspective matrix then invalid values will be returned.*/
         void getFrustum(double& left, double& right,
                          double& bottom, double& top,
                          double& zNear, double& zFar);

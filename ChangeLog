@@ -1,6 +1,16 @@
 OSG Change log
 ==============
 
+  o Converted hangglide to use the sky and base as an earth/sky implementation
+    which replaces the standard glClear done in RenderStage, therefore 
+    reducing the fill rate requirements for each frame, and increasing
+    performance.  The technique uses multiple rendering bin to force
+    the drawing of the sky first, base second and then rest of the
+    scene graph afterwards.  The first two bins draw use osg::Depth
+    state attribute to control glDepthFunc/Mask/Range so as to write
+    to the far plane.
+  o Fixed erroneous message in osgreflect.
+
 21th September 2001 - osg-20010921.tar.gz
 
   o Fixed compilation problem under Windows due to ctime being included

@@ -216,8 +216,8 @@ bool TrackballManipulator::calcMovement()
 
         osg::Matrix mat;
         mat.makeTrans(-center.x(),-center.y(),-center.z());
-        mat.postRot(angle,axis.x(),axis.y(),axis.z());
-        mat.postTrans(center.x(),center.y(),center.z());
+        mat *= Matrix::rotate(angle,axis.x(),axis.y(),axis.z());
+        mat *= Matrix::trans(center.x(),center.y(),center.z());
 
         _camera->transformLookAt(mat);
 
@@ -258,8 +258,8 @@ bool TrackballManipulator::calcMovement()
 
             osg::Matrix mat;
             mat.makeTrans(-center.x(),-center.y(),-center.z());
-            mat.postScale(scale,scale,scale);
-            mat.postTrans(center.x(),center.y(),center.z());
+            mat *= Matrix::scale(scale,scale,scale);
+            mat *= Matrix::trans(center.x(),center.y(),center.z());
 
             _camera->transformLookAt(mat);
 

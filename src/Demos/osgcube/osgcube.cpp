@@ -47,8 +47,8 @@ class TransformCallback : public osg::NodeCallback{
                         
                         osg::Matrix matrix;
                         matrix.makeRot(delta_angle,1.0f,1.0f,1.0f);
-                        matrix.postTrans(1.0f,0.0f,0.0f);
-                        matrix.postRot(delta_angle,0.0f,0.0f,1.0f);
+                        matrix *= osg::Matrix::trans(1.0f,0.0f,0.0f);
+                        matrix *= osg::Matrix::rotate(delta_angle,0.0f,0.0f,1.0f);
                                                 
                         _nodeToOperateOn->setMatrix(matrix);
 

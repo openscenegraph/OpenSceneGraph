@@ -613,12 +613,12 @@ void Camera::calculateMatricesAndClippingVolume() const
                 s[2],     u[2],     -f[2],     0.0f,
                 0.0f,     0.0f,     0.0f,      1.0f);
 
-            matrix->preTrans(-_eye[0], -_eye[1], -_eye[2]);
+            (*matrix) = Matrix::trans(-_eye[0], -_eye[1], -_eye[2]) * (*matrix);
                         
             if (_modelToEyeTransform.valid())
             {
                 _modelViewMatrix = new Matrix;
-                _modelViewMatrix->mult(*matrix,*_modelToEyeTransform);
+                (*_modelViewMatrix) = (*matrix) * (*_modelToEyeTransform);
             }
             else
             {

@@ -126,15 +126,15 @@ public:
 
 class iosockinet: public iosockstream
 {
-public:
-                      iosockinet (const sockbuf::sockdesc& sd);
-                iosockinet (const sockinetbuf& sb);
-                iosockinet (sockbuf::type ty=sockbuf::sock_stream,
-                  int proto=0);
-                ~iosockinet ();     
+    public:
+        iosockinet (const sockbuf::sockdesc& sd);
+        iosockinet (const sockinetbuf& sb);
+        iosockinet (sockbuf::type ty=sockbuf::sock_stream,
+          int proto=0);
+        ~iosockinet ();     
 
-  sockinetbuf*          rdbuf () { return (sockinetbuf*)ios::rdbuf (); }
-  sockinetbuf*          operator -> () { return rdbuf (); }
+    sockinetbuf*          rdbuf () { return (sockinetbuf*)ios::rdbuf (); }
+    sockinetbuf*          operator -> () { return rdbuf (); }
 };
 
 #endif    // _SOCKINET_H

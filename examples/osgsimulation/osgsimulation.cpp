@@ -8,6 +8,8 @@
 
 #include <osgDB/ReadFile>
 
+#include <osgSim/SphereSegment>
+
 #include <osgParticle/ExplosionEffect>
 #include <osgParticle/SmokeEffect>
 #include <osgParticle/FireEffect>
@@ -52,6 +54,7 @@ void build_world(osg::Group *root)
 {
 
     osg::Geode* terrainGeode = new osg::Geode;
+    // create terrain
     {
         osg::StateSet* stateset = new osg::StateSet();
         osg::Image* image = osgDB::readImageFile("Images/lz.rgb");
@@ -85,33 +88,50 @@ void build_world(osg::Group *root)
         root->addChild(terrainGeode);
     }    
 
+    // create sphere segment
+    {
+        osgSim::SphereSegment* ss = new osgSim::SphereSegment(
+                        computeTerrainIntersection(terrainGeode,550.0f,780.0f), // center
+                        500.0f, // radius
+                        osg::DegreesToRadians(135.0f),
+                        osg::DegreesToRadians(245.0f),
+                        osg::DegreesToRadians(-10.0f),
+                        osg::DegreesToRadians(30.0f),
+                        60);
+        ss->setAllColors(osg::Vec4(1.0f,1.0f,1.0f,0.5f));
+        ss->setSideColor(osg::Vec4(0.0f,1.0f,1.0f,0.1f));
 
-    
-    osg::PositionAttitudeTransform* positionEffects = new osg::PositionAttitudeTransform;
-    positionEffects->setPosition(computeTerrainIntersection(terrainGeode,100.0f,100.0f));
-    root->addChild(positionEffects);
+        root->addChild(ss);        
+    }
 
-    osgParticle::ExplosionEffect* explosion = new osgParticle::ExplosionEffect;
-    osgParticle::SmokeEffect* smoke = new osgParticle::SmokeEffect;
-    osgParticle::FireEffect* fire = new osgParticle::FireEffect;
 
-    osg::Geode* geode = new osg::Geode;
-    geode->addDrawable(new osg::ShapeDrawable(new osg::Sphere(osg::Vec3(0.0f,0.0f,0.0f),10.0f)));
-    positionEffects->addChild(geode);
+    // create particle effects
+    {    
+        osg::PositionAttitudeTransform* positionEffects = new osg::PositionAttitudeTransform;
+        positionEffects->setPosition(computeTerrainIntersection(terrainGeode,100.0f,100.0f));
+        root->addChild(positionEffects);
 
-    positionEffects->addChild(explosion);
-    positionEffects->addChild(smoke);
-    positionEffects->addChild(fire);
+        osgParticle::ExplosionEffect* explosion = new osgParticle::ExplosionEffect;
+        osgParticle::SmokeEffect* smoke = new osgParticle::SmokeEffect;
+        osgParticle::FireEffect* fire = new osgParticle::FireEffect;
 
-    osgParticle::ParticleSystemUpdater *psu = new osgParticle::ParticleSystemUpdater;
+        osg::Geode* geode = new osg::Geode;
+        geode->addDrawable(new osg::ShapeDrawable(new osg::Sphere(osg::Vec3(0.0f,0.0f,0.0f),10.0f)));
+        positionEffects->addChild(geode);
 
-    psu->addParticleSystem(explosion->getParticleSystem());
-    psu->addParticleSystem(smoke->getParticleSystem());
-    psu->addParticleSystem(fire->getParticleSystem());
+        positionEffects->addChild(explosion);
+        positionEffects->addChild(smoke);
+        positionEffects->addChild(fire);
 
-    // add the updater node to the scene graph
-    root->addChild(psu);
+        osgParticle::ParticleSystemUpdater *psu = new osgParticle::ParticleSystemUpdater;
 
+        psu->addParticleSystem(explosion->getParticleSystem());
+        psu->addParticleSystem(smoke->getParticleSystem());
+        psu->addParticleSystem(fire->getParticleSystem());
+
+        // add the updater node to the scene graph
+        root->addChild(psu);
+    }
 }
 
 

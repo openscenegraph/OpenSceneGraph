@@ -2,6 +2,27 @@
 
 using namespace osg;
 
+PagedLOD::PerRangeData::PerRangeData():
+    _priorityOffset(0.0f),
+    _priorityScale(0.0f),
+    _timeStamp(0.0f) {}
+
+PagedLOD::PerRangeData::PerRangeData(const PerRangeData& prd):
+    _filename(prd._filename),
+    _priorityOffset(prd._priorityOffset),
+    _priorityScale(prd._priorityScale),
+    _timeStamp(prd._timeStamp) {}
+
+PagedLOD::PerRangeData& PagedLOD::PerRangeData::operator = (const PerRangeData& prd)
+{
+    if (this==&prd) return *this;
+    _filename = prd._filename;
+    _priorityOffset = prd._priorityOffset;
+    _priorityScale = prd._priorityScale;
+    _timeStamp = prd._timeStamp;
+    return *this;
+}
+
 PagedLOD::PagedLOD()
 {
     _centerMode = USER_DEFINED_CENTER;

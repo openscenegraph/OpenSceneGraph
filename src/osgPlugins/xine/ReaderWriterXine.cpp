@@ -49,7 +49,7 @@ class XineImageStream : public osg::ImageStream
 
             // set up audio driver
             char* audio_driver = getenv("OSG_XINE_AUDIO_DRIVER");
-            _ao = audio_driver ? xine_open_audio_driver(_xine, audio_driver, NULL) : xine_open_audio_driver(_xine, "none", NULL);
+            _ao = audio_driver ? xine_open_audio_driver(_xine, audio_driver, NULL) : xine_open_audio_driver(_xine, "auto", NULL);
 
             if (!_vo)
             {
@@ -70,6 +70,8 @@ class XineImageStream : public osg::ImageStream
             _ready = false;
 
             // play();
+            
+            return true;
 
         }
 
@@ -97,8 +99,8 @@ class XineImageStream : public osg::ImageStream
 
         virtual void pause()
         {
-            if (_status==PAUSED) return;
-        
+            if (_status==PAUSED || _status==INVALID) return;
+
             _status=PAUSED;
             
             if (_stream)
@@ -109,10 +111,13 @@ class XineImageStream : public osg::ImageStream
 
         virtual void rewind()
         {
+            if (_status==INVALID) return;
+
             _status=REWINDING;
             if (_stream)
             {
-                xine_trick_mode(_stream,XINE_TRICK_MODE_FAST_REWIND,0);
+                osg::notify(osg::WARN)<<"Warning::XineImageStream::rewind() - rewind disabled at present."<<std::endl;
+                // xine_trick_mode(_stream,XINE_TRICK_MODE_FAST_REWIND,0);
             }
         }
 
@@ -244,22 +249,33 @@ class ReaderWriterXine : public osgDB::ReaderWriter
         virtual bool acceptsExtension(const std::string& extension) const
         {
             return osgDB::equalCaseInsensitive(extension,"mpg") ||
-                   osgDB::equalCaseInsensitive(extension,"mov");
+                   osgDB::equalCaseInsensitive(extension,"mov") || 
+                   osgDB::equalCaseInsensitive(extension,"avi") ||
+                   osgDB::equalCaseInsensitive(extension,"xine");
         }
 
-        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options*) const
+        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
         {
-            //std::string ext = osgDB::getLowerCaseFileExtension(file);
-            //if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
-
-            //std::string fileName = osgDB::findDataFile( file, options );
-            //if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
+            std::string ext = osgDB::getLowerCaseFileExtension(file);
+            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
+            
+            std::string fileName;
+            if (ext=="xine")
+            {
+                fileName = osgDB::getNameLessExtension(file);
+                osg::notify(osg::NOTICE)<<"Xine stipped filename = "<<fileName;
+            }
+            else
+            {
+                fileName = osgDB::findDataFile( file, options );
+                if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
+            }
 
             osg::notify(osg::NOTICE)<<"ReaderWriterXine::readImage "<< file<< std::endl;
 
             osg::ref_ptr<osgXine::XineImageStream> imageStream = new osgXine::XineImageStream();
 
-            if (!imageStream->open(_xine, file)) return ReadResult::FILE_NOT_HANDLED;
+            if (!imageStream->open(_xine, fileName)) return ReadResult::FILE_NOT_HANDLED;
 
             return imageStream.release();
         }

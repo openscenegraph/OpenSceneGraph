@@ -365,10 +365,6 @@ SOURCE=..\..\..\src\osgPlugins\flt\RecordVisitor.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\Referenced.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\src\osgPlugins\flt\Registry.h
 # End Source File
 # Begin Source File

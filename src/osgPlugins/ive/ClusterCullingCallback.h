@@ -1,7 +1,7 @@
 #ifndef IVE_CLUSTERCULLINGCALLBACK
 #define IVE_CLUSTERCULLINGCALLBACK 1
 
-#include <osg/Drawable>
+#include <osg/ClusterCullingCallback>
 #include "ReadWrite.h"
 
 namespace ive{

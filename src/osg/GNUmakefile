@@ -22,6 +22,7 @@ CXXFILES =\
 	ConvexPlanarOccluder.cpp\
 	CoordinateSystemNode.cpp\
 	CopyOp.cpp\
+	ClusterCullingCallback.cpp\
 	CullFace.cpp\
 	CullingSet.cpp\
 	CullStack.cpp\

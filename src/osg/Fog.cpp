@@ -1,5 +1,5 @@
-#include <osg/Fog>
 #include <osg/GLExtensions>
+#include <osg/Fog>
 
 using namespace osg;
 

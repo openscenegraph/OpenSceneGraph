@@ -1,7 +1,6 @@
-
+#include <osg/GLExtensions>
 #include <osg/GL>
 #include <osg/GLU>
-#include <osg/GLExtensions>
 #include <osg/Notify>
 
 

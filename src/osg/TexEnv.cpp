@@ -1,5 +1,5 @@
-#include <osg/TexEnv>
 #include <osg/GLExtensions>
+#include <osg/TexEnv>
 
 using namespace osg;
 

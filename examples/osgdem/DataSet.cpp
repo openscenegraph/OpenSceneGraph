@@ -940,6 +940,7 @@ void DataSet::DestinationTile::computeMaximumSourceResolution(CompositeSource* s
     }
 }
 
+
 bool DataSet::DestinationTile::computeImageResolution(unsigned int& numColumns, unsigned int& numRows, double& resX, double& resY)
 {
     if (_imagery_maxSourceResolutionX!=0.0f && _imagery_maxSourceResolutionY!=0.0f &&
@@ -950,6 +951,10 @@ bool DataSet::DestinationTile::computeImageResolution(unsigned int& numColumns, 
         unsigned int numRowsAtFullRes = 1+(unsigned int)ceilf((_extents.yMax()-_extents.yMin())/_imagery_maxSourceResolutionY);
         numColumns = osg::minimum(_imagery_maxNumColumns,numColumnsAtFullRes);
         numRows    = osg::minimum(_imagery_maxNumRows,numRowsAtFullRes);
+
+        // round to nearest power of two        
+        numColumns = osg::Image::computeNearestPowerOfTwo(numColumns);
+        numRows = osg::Image::computeNearestPowerOfTwo(numRows);
         
         resX = (_extents.xMax()-_extents.xMin())/(double)(numColumns-1);
         resY = (_extents.yMax()-_extents.yMin())/(double)(numRows-1);

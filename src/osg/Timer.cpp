@@ -108,7 +108,7 @@ const Timer* Timer::instance()
 #if defined(__ia64) || defined(__x86_64__)
         _useStandardClock = true;
 #else
-        _useStandardClock = false;
+        _useStandardClock = true;
 #endif
 
         if (_useStandardClock)

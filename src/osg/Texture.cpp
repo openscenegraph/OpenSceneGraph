@@ -518,12 +518,12 @@ Texture::Extensions::Extensions(const Extensions& rhs):
     Referenced()
 {
     _isTextureFilterAnisotropicSupported = rhs._isTextureFilterAnisotropicSupported;
+    _isTextureCompressionARBSupported = rhs._isTextureCompressionARBSupported;
+    _isTextureCompressionS3TCSupported = rhs._isTextureCompressionS3TCSupported;
     _isTextureMirroredRepeatSupported = rhs._isTextureMirroredRepeatSupported;
     _isTextureEdgeClampSupported = rhs._isTextureEdgeClampSupported;
     _isTextureBorderClampSupported = rhs._isTextureBorderClampSupported;
-
-    _isTextureCompressionARBSupported = rhs._isTextureCompressionARBSupported;
-    _isTextureCompressionS3TCSupported = rhs._isTextureCompressionS3TCSupported;
+    _isGenerateMipMapSupported = rhs._isGenerateMipMapSupported;
 
     _maxTextureSize = rhs._maxTextureSize;
 
@@ -539,6 +539,8 @@ void Texture::Extensions::lowestCommonDenominator(const Extensions& rhs)
     
     if (!rhs._isTextureCompressionARBSupported) _isTextureCompressionARBSupported = false;
     if (!rhs._isTextureCompressionS3TCSupported) _isTextureCompressionS3TCSupported = false;
+    
+    if (!rhs._isGenerateMipMapSupported) _isGenerateMipMapSupported = false;
 
     if (rhs._maxTextureSize<_maxTextureSize) _maxTextureSize = rhs._maxTextureSize;
 
@@ -549,12 +551,14 @@ void Texture::Extensions::setupGLExtenions()
 {
  
     _isTextureFilterAnisotropicSupported = isGLExtensionSupported("GL_EXT_texture_filter_anisotropic");
+    _isTextureCompressionARBSupported = isGLExtensionSupported("GL_ARB_texture_compression");
+    _isTextureCompressionS3TCSupported = isGLExtensionSupported("GL_EXT_texture_compression_s3tc");
     _isTextureMirroredRepeatSupported = isGLExtensionSupported("GL_IBM_texture_mirrored_repeat");
     _isTextureEdgeClampSupported = isGLExtensionSupported("GL_EXT_texture_edge_clamp");
     _isTextureBorderClampSupported = isGLExtensionSupported("GL_ARB_texture_border_clamp");
+    _isGenerateMipMapSupported = (strncmp((const char*)glGetString(GL_VERSION),"1.4",3)>=0) ||
+                                  isGLExtensionSupported("GL_SGIS_generate_mipmap");
 
-    _isTextureCompressionARBSupported = isGLExtensionSupported("GL_ARB_texture_compression");
-    _isTextureCompressionS3TCSupported = isGLExtensionSupported("GL_EXT_texture_compression_s3tc");
 
     glGetIntegerv(GL_MAX_TEXTURE_SIZE,&_maxTextureSize);
 

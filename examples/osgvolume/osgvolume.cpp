@@ -458,7 +458,7 @@ osg::Node* createCube(float size,float alpha, unsigned int numSlices, float slic
     osg::Billboard* billboard = new osg::Billboard;
     billboard->setMode(osg::Billboard::POINT_ROT_WORLD);
     billboard->addDrawable(geom);
-    billboard->setPos(0,osg::Vec3(0.0f,0.0f,0.0f));
+    billboard->setPosition(0,osg::Vec3(0.0f,0.0f,0.0f));
     
     return billboard;
 }

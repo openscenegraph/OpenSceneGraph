@@ -482,7 +482,7 @@ void Geometry::drawImplementation(State& state) const
     // Set up secondary color if required.
     //
     AttributeBinding secondaryColorBinding = _secondaryColorBinding;
-    if (secondaryColorBinding!=BIND_OFF && (!s_glSecondaryColor3ubv || s_glSecondaryColor3fv))
+    if (secondaryColorBinding!=BIND_OFF && (!s_glSecondaryColor3ubv || !s_glSecondaryColor3fv))
     {
         // switch off if not supported or have a valid data.
         secondaryColorBinding = BIND_OFF;

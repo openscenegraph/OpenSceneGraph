@@ -205,7 +205,6 @@ void OsgCameraGroup::setUpSceneViewsWithData()
         (*p)->setBackgroundColor( _background_color );
         (*p)->setLODScale( _LODScale );
         (*p)->setFusionDistance( _fusionDistanceMode, _fusionDistanceValue );
-        (*p)->getState()->reset();
     }
 }
 

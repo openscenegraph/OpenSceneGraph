@@ -3,6 +3,9 @@
 #include <osg/Depth>
 #include <osg/StateSet>
 #include <osg/EarthSky>
+#include <osg/Transform>
+
+#include <osgUtil/CullVisitor>
 
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
@@ -21,6 +24,31 @@ extern osg::Node *makeGlider( void );
 extern osg::Node *makeSky( void );
 extern osg::Node *makeBase( void );
 extern osg::Node *makeClouds( void );
+
+struct MoveEarthySkyWithEyePointCallback : public osg::Transform::ComputeTransformCallback
+{
+    /** Get the transformation matrix which moves from local coords to world coords.*/
+    virtual const bool computeLocalToWorldMatrix(osg::Matrix& matrix,const osg::Transform* transform, osg::NodeVisitor* nv) const 
+    {
+        osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(nv);
+        if (cv)
+        {
+            osg::Vec3 eyePointLocal = cv->getEyeLocal();
+            matrix.preMult(osg::Matrix::translate(eyePointLocal.x(),eyePointLocal.y(),0.0f));
+        }
+    }
+
+    /** Get the transformation matrix which moves from world coords to local coords.*/
+    virtual const bool computeWorldToLocalMatrix(osg::Matrix& matrix,const osg::Transform* transform, osg::NodeVisitor* nv) const
+    {
+        osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(nv);
+        if (cv)
+        {
+            osg::Vec3 eyePointLocal = cv->getEyeLocal();
+            matrix.postMult(osg::Matrix::translate(-eyePointLocal.x(),-eyePointLocal.y(),0.0f));
+        }
+    }
+};
 
 
 int main( int argc, char **argv )
@@ -56,11 +84,31 @@ int main( int argc, char **argv )
         // osg::Depth, and setting their bin numbers to less than 0,
         // to force them to draw before the rest of the scene.
   
-        osg::EarthSky* earthSky = new osg::EarthSky;
+        osg::EarthSky* earthSky = osgNew osg::EarthSky;
         earthSky->setRequiresClear(false); // we've got base and sky to do it.
-        earthSky->addChild(makeSky());  // bin number -2 so drawn first.
-        earthSky->addChild(makeBase()); // bin number -1 so draw second.      
         
+        // use a transform to make the sky and base around with the eye point.
+        osg::Transform* transform = osgNew osg::Transform;
+        
+        // transform's value isn't knowm until in the cull traversal so its bounding
+        // volume is can't be determined, therefore culling will be invalid,
+        // so switch it off, this cause all our paresnts to switch culling
+        // off as well. But don't worry culling will be back on once underneath
+        // this node or any other branch above this transform.
+        transform->setCullingActive(false);
+        
+        // set the compute transform callback to do all the work of
+        // determining the transform according to the current eye point.
+        transform->setComputeTransformCallback(osgNew MoveEarthySkyWithEyePointCallback);
+        
+        // add the sky and base layer.
+        transform->addChild(makeSky());  // bin number -2 so drawn first.
+        transform->addChild(makeBase()); // bin number -1 so draw second.      
+        
+        // add the transform to the earth sky.
+        earthSky->addChild(transform);
+        
+        // add to earth sky to the scene.
         group->addChild(earthSky);
 
         // the rest of the scene drawn after the base and sky above.

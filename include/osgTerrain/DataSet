@@ -477,7 +477,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
                         return advanceToNextChild(*_composite,_index);
                     }
 
-                    inline bool isActive(const CompositeSource& composite,int index)
+                    inline bool isActive(const CompositeSource& /*composite*/,int /*index*/)
                     {
                         return true;
                     }

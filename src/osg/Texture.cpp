@@ -70,7 +70,7 @@ Texture::TextureObject* Texture::TextureObjectManager::reuseTextureObject(unsign
                                                                              GLsizei   depth,
                                                                              GLint     border)
 {
-#ifdef THREAD_SAFE_DELETE_LISTS
+#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 #endif
 
@@ -98,7 +98,7 @@ Texture::TextureObject* Texture::TextureObjectManager::reuseTextureObject(unsign
 
 void Texture::TextureObjectManager::addTextureObjects(Texture::TextureObjectListMap& toblm)
 {
-#ifdef THREAD_SAFE_DELETE_LISTS
+#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 #endif
 
@@ -113,7 +113,9 @@ void Texture::TextureObjectManager::addTextureObjects(Texture::TextureObjectList
 
 void Texture::TextureObjectManager::addTextureObjectsFrom(Texture& texture)
 {
+#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+#endif
 
     texture.takeTextureObjects(_textureObjectListMap);
 }
@@ -129,7 +131,7 @@ void Texture::TextureObjectManager::flushTextureObjects(unsigned int contextID,d
     double elapsedTime = 0.0;
 
     {    
-#ifdef THREAD_SAFE_DELETE_LISTS
+#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 #endif
 
@@ -1076,7 +1078,9 @@ void Texture::releaseGLObjects(State* state) const
         unsigned int contextID = state->getContextID();
         if (_textureObjectBuffer[contextID].valid()) 
         {
+#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(getTextureObjectManager()->_mutex);
+#endif
             
             getTextureObjectManager()->_textureObjectListMap[contextID].push_back(_textureObjectBuffer[contextID]);
             _textureObjectBuffer[contextID] = 0;

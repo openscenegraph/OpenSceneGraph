@@ -26,6 +26,11 @@
 #include <map>
 #include <list>
 
+#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
+    #include <OpenThreads/ScopedLock>
+    #include <OpenThreads/Mutex>
+#endif
+
 using namespace osg;
 
 // static cache of deleted display lists which can only 
@@ -34,14 +39,17 @@ using namespace osg;
 typedef std::list<GLuint> DisplayListList;
 typedef std::map<GLuint,DisplayListList> DeletedDisplayListCache;
 
-static OpenThreads::Mutex s_mutex_deletedDisplayListCache;
+#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
+   static OpenThreads::Mutex s_mutex_deletedDisplayListCache;
+#endif
+
 static DeletedDisplayListCache s_deletedDisplayListCache;
 
 void Drawable::deleteDisplayList(unsigned int contextID,GLuint globj)
 {
     if (globj!=0)
     {
-#ifdef THREAD_SAFE_DELETE_LISTS
+#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedDisplayListCache);
 #endif
         // insert the globj into the cache for the appropriate context.
@@ -63,7 +71,7 @@ void Drawable::flushDeletedDisplayLists(unsigned int contextID,double /*currentT
     unsigned int noDeleted = 0;
 
     {
-#ifdef THREAD_SAFE_DELETE_LISTS
+#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedDisplayListCache);
 #endif
 
@@ -90,14 +98,16 @@ void Drawable::flushDeletedDisplayLists(unsigned int contextID,double /*currentT
 }
 
 
-static OpenThreads::Mutex s_mutex_deletedVertexBufferObjectCache;
+#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
+    static OpenThreads::Mutex s_mutex_deletedVertexBufferObjectCache;
+#endif
 static DeletedDisplayListCache s_deletedVertexBufferObjectCache;
 
 void Drawable::deleteVertexBufferObject(unsigned int contextID,GLuint globj)
 {
     if (globj!=0)
     {
-#ifdef THREAD_SAFE_DELETE_LISTS
+#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedVertexBufferObjectCache);
 #endif
         
@@ -119,7 +129,7 @@ void Drawable::flushDeletedVertexBufferObjects(unsigned int contextID,double /*c
 
 
     {
-#ifdef THREAD_SAFE_DELETE_LISTS
+#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedVertexBufferObjectCache);
 #endif
 

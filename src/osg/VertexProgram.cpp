@@ -18,6 +18,11 @@
 
 #include <list>
 
+#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
+    #include <OpenThreads/ScopedLock>
+    #include <OpenThreads/Mutex>
+#endif
+
 using namespace osg;
 
 // static cache of deleted vertex programs which can only 
@@ -26,14 +31,16 @@ using namespace osg;
 typedef std::list<GLuint> VertexProgramObjectList;
 typedef std::map<unsigned int,VertexProgramObjectList> DeletedVertexProgramObjectCache;
 
-static OpenThreads::Mutex              s_mutex_deletedVertexProgramObjectCache;
+#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
+    static OpenThreads::Mutex              s_mutex_deletedVertexProgramObjectCache;
+#endif
 static DeletedVertexProgramObjectCache s_deletedVertexProgramObjectCache;
 
 void VertexProgram::deleteVertexProgramObject(unsigned int contextID,GLuint handle)
 {
     if (handle!=0)
     {
-#ifdef THREAD_SAFE_DELETE_LISTS
+#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedVertexProgramObjectCache);
 #endif
 
@@ -53,7 +60,7 @@ void VertexProgram::flushDeletedVertexProgramObjects(unsigned int contextID,doub
     double elapsedTime = 0.0;
 
     {
-#ifdef THREAD_SAFE_DELETE_LISTS
+#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedVertexProgramObjectCache);
 #endif
 

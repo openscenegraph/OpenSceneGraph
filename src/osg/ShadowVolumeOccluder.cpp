@@ -9,7 +9,7 @@ using namespace osg;
 
 
 
-typedef std::pair<bool,Vec3>    Point; // bool=true signifies a newly created point, false indicates original point.
+typedef std::pair<unsigned int,Vec3>    Point; // bool=true signifies a newly created point, false indicates original point.
 typedef std::vector<Point>      PointList;
 typedef std::vector<Vec3>       VertexList;
 
@@ -22,13 +22,13 @@ void convert(const VertexList& in,PointList& out)
         itr!=in.end();
         ++itr)
     {
-        out.push_back(Point(false,*itr));
+        out.push_back(Point(0,*itr));
     }
 }
 
 // clip the convex hull 'in' to plane to generate a clipped convex hull 'out'
 // return true if points remain after clipping.
-unsigned int clip(const Plane& plane,const PointList& in, PointList& out)
+unsigned int clip(const Plane& plane,const PointList& in, PointList& out,unsigned int planeMask)
 {
     std::vector<float> distance;
     distance.reserve(in.size());
@@ -49,17 +49,20 @@ unsigned int clip(const Plane& plane,const PointList& in, PointList& out)
         {
             out.push_back(in[i]);
             
+            
             if (distance[i_1]<0.0f)
             {
+                unsigned int mask = (in[i].first & in[i_1].first) | planeMask;
                 float r = distance[i_1]/(distance[i_1]-distance[i]);
-                out.push_back(Point(true,in[i].second*r+in[i_1].second*(1.0f-r)));
+                out.push_back(Point(mask,in[i].second*r+in[i_1].second*(1.0f-r)));
             }
         
         }
         else if (distance[i_1]>0.0f)
         {
+            unsigned int mask = (in[i].first & in[i_1].first) | planeMask;
             float r = distance[i_1]/(distance[i_1]-distance[i]);
-            out.push_back(Point(true,in[i].second*r+in[i_1].second*(1.0f-r)));
+            out.push_back(Point(mask,in[i].second*r+in[i_1].second*(1.0f-r)));
         }
     }
     
@@ -73,12 +76,14 @@ unsigned int clip(const Polytope::PlaneList& planeList,const VertexList& vin,Poi
     PointList in;
     convert(vin,in);
     
+    unsigned int planeMask = 0x1;
     for(Polytope::PlaneList::const_iterator itr=planeList.begin();
         itr!=planeList.end();
         ++itr)
     {
-        if (!clip(*itr,in,out)) return false;
+        if (!clip(*itr,in,out,planeMask)) return false;
         in.swap(out);
+        planeMask <<= 1;
     }
 
     in.swap(out);
@@ -112,9 +117,7 @@ void pushToFarPlane(PointList& points)
         itr!=points.end();
         ++itr)
     {
-//        std::cout << "itr->second "<< itr->second<< " after ";
-        itr->second.z() += 1.0f;
-//        std::cout << itr->second<< std::endl;
+        itr->second.z() = 1.0f;
     }
 }
 
@@ -123,7 +126,7 @@ void computePlanes(const PointList& front, const PointList& back, Polytope::Plan
     for(unsigned int i=0;i<front.size();++i)
     {
         unsigned int i_1 = (i+1)%front.size(); // do the mod to wrap the index round back to the start.
-        if (!front[i].first || !front[i_1].first)
+        if (!(front[i].first & front[i_1].first))
         {
             planeList.push_back(Plane(front[i].second,front[i_1].second,back[i].second));
         }
@@ -211,25 +214,9 @@ bool ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const Convex
     Matrix invP;
     invP.invert(P);
     
-//     std::cout<<"P "<<P<<std::endl;
-//     std::cout<<"invP "<<invP<<std::endl;
-// 
-//     Vec3 v1(0,0,1000);
-//     std::cout<<"v1 "<<v1<<std::endl;
-//     Vec3 v2 = v1*P;
-//     std::cout<<"v2 "<<v2<<std::endl;
-//     Vec3 v3 = v2*invP;
-//     std::cout<<"v3 "<<v3<<std::endl;
-//     
-//     Vec3 v4(0,0,1);
-//     std::cout<<"v4 "<<v4<<std::endl;
-//     Vec3 v5=v4*invP;
-//     std::cout<<"v5 "<<v5<<std::endl;
-    
     
     // compute the transformation matrix which takes form local coords into clip space.
     Matrix MVP(MV*P);
-    //MVP *= P;
     
     // for the occluder polygon and each of the holes do
     //     first transform occluder polygon into clipspace by multiple it by c[i] = v[i]*(MV*P)
@@ -255,12 +242,14 @@ bool ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const Convex
         // move the occlude points into projection space.
         transform(points,MV);
 
-        // create the sides of the occluder
-        computePlanes(points,farPoints,_occluderVolume.getPlaneList());
-
         // create the front face of the occluder
         Plane occludePlane = computeFrontPlane(points);
         _occluderVolume.add(occludePlane);
+
+        // create the sides of the occluder
+        computePlanes(points,farPoints,_occluderVolume.getPlaneList());
+
+        _occluderVolume.setupMask();
         
         // if the front face is pointing away from the eye point flip the whole polytope.
         if (occludePlane[3]>0.0f)
@@ -280,13 +269,6 @@ bool ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const Convex
                 transform(points,invMV);
                 transform(farPoints,invMV);
             
-//                Vec3 v6=v5*invMV;
-//                 std::cout<<"******************"<<std::endl;
-//                 std::cout<<"MV "<<MV<<std::endl;
-//                 std::cout<<"invMV "<<invMV<<std::endl;
-//                 std::cout<<"MV*invMV "<<MV*invMV<<std::endl;
-//                 std::cout<<"v6 "<<v6<<std::endl;
-
                 osg::Geode* geode = osgNew osg::Geode;
                 group->addChild(geode);
                 geode->addDrawable(createOccluderDrawable(points,farPoints));
@@ -298,7 +280,6 @@ bool ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const Convex
     }
     else
     {
-        std::cout << "    occluder clipped out of frustum."<<points.size()<<std::endl;
         return false;
     }
 }

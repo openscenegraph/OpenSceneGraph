@@ -23,6 +23,8 @@
 
 //#include "CreateShadowedScene.h"
 
+static bool s_ProfessionalServices = false;
+
 class MyBillboardTransform : public osg::PositionAttitudeTransform
 {
     public:
@@ -50,7 +52,7 @@ class MyBillboardTransform : public osg::PositionAttitudeTransform
                     osg::Vec3 side = _axis^_normal;
                     side.normalize();
                     
-                    float angle = acos(eyevector*side);
+                    float angle = atan2f(eyevector*_normal,eyevector*side);
                     billboardRotation.makeRotate(osg::PI_2-angle,_axis);
                     
                 }
@@ -177,33 +179,8 @@ osg:: Node* createTextLeft(const osg::BoundingBox& bb)
 {
     osg::Geode* geode = new osg::Geode();
 
-    //std::string font("fonts/times.ttf");
-    std::string font("fonts/arial.ttf");
-
-    //osgText::Text* text = new  osgText::Text(new osgText::PolygonFont(font,80, 3));
-    osgText::Text* text = new  osgText::Text(new osgText::TextureFont(font,100));
- 
-    text->setText("OpenSceneGraph");
-    text->setAlignment(osgText::Text::RIGHT_CENTER);
-    text->setAxisAlignment(osgText::Text::XZ_PLANE);
-    text->setPosition(bb.center()-osg::Vec3((bb.xMax()-bb.xMin()),-(bb.yMax()-bb.yMin())*0.5f,(bb.zMax()-bb.zMin())*0.3f));
-    //text->setColor(osg::Vec4(0.37f,0.48f,0.67f,1.0f)); // Neil's orignal OSG colour
-    text->setColor(osg::Vec4(0.20f,0.45f,0.60f,1.0f)); // OGL logo colour
-
-
-    osgText::Text* subscript = new  osgText::Text(new osgText::TextureFont(font,45));
- 
-    subscript->setText("Professional Services");
-    subscript->setAlignment(osgText::Text::RIGHT_CENTER);
-    subscript->setAxisAlignment(osgText::Text::XZ_PLANE);
-    subscript->setPosition(bb.center()-osg::Vec3((bb.xMax()-bb.xMin())*3.5f,-(bb.yMax()-bb.yMin())*0.3f,(bb.zMax()-bb.zMin())*0.7f));
-    subscript->setColor(osg::Vec4(0.0f,0.0f,0.0f,1.0f)); // black
-
-
-
 
     osg::StateSet* stateset = geode->getOrCreateStateSet();
-
 
     osg::BlendFunc *transp= new osg::BlendFunc();
     transp->setFunction(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -214,9 +191,34 @@ osg:: Node* createTextLeft(const osg::BoundingBox& bb)
     stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
 
 
+    //std::string font("fonts/times.ttf");
+    std::string font("fonts/arial.ttf");
+
+    osgText::Text* text = new  osgText::Text(new osgText::TextureFont(font,100));
+ 
+    text->setText("OpenSceneGraph");
+    text->setAlignment(osgText::Text::RIGHT_CENTER);
+    text->setAxisAlignment(osgText::Text::XZ_PLANE);
+    text->setPosition(bb.center()-osg::Vec3((bb.xMax()-bb.xMin()),-(bb.yMax()-bb.yMin())*0.5f,(bb.zMax()-bb.zMin())*0.3f));
+    //text->setColor(osg::Vec4(0.37f,0.48f,0.67f,1.0f)); // Neil's orignal OSG colour
+    text->setColor(osg::Vec4(0.20f,0.45f,0.60f,1.0f)); // OGL logo colour
+
     geode->addDrawable( text );
-    geode->addDrawable( subscript );
-    
+
+
+    if (s_ProfessionalServices)
+    {
+        osgText::Text* subscript = new  osgText::Text(new osgText::TextureFont(font,45));
+
+        subscript->setText("Professional Services");
+        subscript->setAlignment(osgText::Text::RIGHT_CENTER);
+        subscript->setAxisAlignment(osgText::Text::XZ_PLANE);
+        subscript->setPosition(bb.center()-osg::Vec3((bb.xMax()-bb.xMin())*3.5f,-(bb.yMax()-bb.yMin())*0.3f,(bb.zMax()-bb.zMin())*0.7f));
+        subscript->setColor(osg::Vec4(0.0f,0.0f,0.0f,1.0f)); // black
+
+        geode->addDrawable( subscript );
+    }
+        
     return geode;
 }
 
@@ -452,6 +454,9 @@ int main( int argc, char **argv )
     // parameters that have been matched.
     viewer.readCommandLine(commandLine);
     
+
+    if (std::find(commandLine.begin(),commandLine.end(),std::string("ps"))!=commandLine.end()) s_ProfessionalServices = true;
+
     osg::Node* node = createLogo();
 
     // add model to viewer.

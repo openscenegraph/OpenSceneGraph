@@ -88,7 +88,7 @@ void MyCullCallback::doPreRender(osg::Node&, osgUtil::CullVisitor& cv)
     // set up lighting.
     // currently ignore lights in the scene graph itself..
     // will do later.
-    osgUtil::RenderStage* previous_stage = cv.getCurrentRenderBin()->_stage;
+    osgUtil::RenderStage* previous_stage = cv.getCurrentRenderBin()->getStage();
 
     // set up the background color and clear mask.
     rtts->setClearColor(osg::Vec4(0.1f,0.9f,0.3f,1.0f));
@@ -146,7 +146,7 @@ void MyCullCallback::doPreRender(osg::Node&, osgUtil::CullVisitor& cv)
     // restore the previous renderbin.
     cv.setCurrentRenderBin(previousRenderBin);
 
-    if (rtts->_renderGraphList.size()==0 && rtts->_bins.size()==0)
+    if (rtts->getRenderGraphList().size()==0 && rtts->getRenderBinList().size()==0)
     {
         // getting to this point means that all the subgraph has been
         // culled by small feature culling or is beyond LOD ranges.
@@ -176,7 +176,7 @@ void MyCullCallback::doPreRender(osg::Node&, osgUtil::CullVisitor& cv)
 
     // and the render to texture stage to the current stages
     // dependancy list.
-    cv.getCurrentRenderBin()->_stage->addToDependencyList(rtts.get());
+    cv.getCurrentRenderBin()->getStage()->addToDependencyList(rtts.get());
 
     // if one exist attach texture to the RenderToTextureStage.
     if (_texture.valid()) rtts->setTexture(_texture.get());

@@ -60,22 +60,27 @@ Texture2D* txp::GetLocalTexture(trpgrImageHelper& image_helper, trpgLocalMateria
     trpgTexture::ImageType type;
     tex->GetImageType(type);
     
-    Texture2D::InternalFormatMode internalFormat = Texture2D::USE_IMAGE_DATA_FORMAT;
-    
-    GLenum gltype = (GLenum)-1;
+    GLenum internalFormat = (GLenum)-1;
+    GLenum pixelFormat = (GLenum)-1;
+    GLenum dataType = GL_UNSIGNED_BYTE;
+
     switch(type)
     {
     case trpgTexture::trpg_RGB8:
-        gltype = GL_RGB;
+        internalFormat = GL_RGB;
+        pixelFormat    = GL_RGB;
         break;
     case trpgTexture::trpg_RGBA8:
-        gltype = GL_RGBA;
+        internalFormat = GL_RGBA;
+        pixelFormat    = GL_RGBA;
         break;
     case trpgTexture::trpg_INT8:
-        gltype = GL_LUMINANCE;
+        internalFormat = GL_LUMINANCE;
+        pixelFormat    = GL_LUMINANCE;
         break;
     case trpgTexture::trpg_INTA8:
-        gltype = GL_LUMINANCE_ALPHA;
+        internalFormat = GL_LUMINANCE_ALPHA;
+        pixelFormat    = GL_LUMINANCE_ALPHA;
         break;
     case trpgTexture::trpg_FXT1:
     case trpgTexture::trpg_Filler:
@@ -86,48 +91,45 @@ Texture2D* txp::GetLocalTexture(trpgrImageHelper& image_helper, trpgLocalMateria
     case trpgTexture::trpg_DXT1:
         if(depth == 3)
         {
-            gltype = GL_RGB;
+            internalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
+            pixelFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
         }
         else
         {
-            gltype = GL_RGBA;
+            internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
+            pixelFormat = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
         }
-        internalFormat = Texture2D::USE_S3TC_DXT1_COMPRESSION;
         break;
     case trpgTexture::trpg_DXT3:
         if(depth == 3)
         {
-            gltype = GL_RGB;
+            // not supported.
         }
         else
         {
-            gltype = GL_RGBA;
+            internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
+            pixelFormat = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
         }
-        internalFormat = Texture2D::USE_S3TC_DXT3_COMPRESSION;
         break;
     case trpgTexture::trpg_DXT5:
         if(depth == 3)
         {
-            gltype = GL_RGB;
+            // not supported.
         }
         else
         {
-            gltype = GL_RGBA;
+            internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
+            pixelFormat = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
         }
-        internalFormat = Texture2D::USE_S3TC_DXT5_COMPRESSION;
         break;
     }
     
-    if(gltype!=(GLenum)-1)
+    if(pixelFormat!=(GLenum)-1)
     {
         osg_texture = new Texture2D();
 
-        osg_texture->setInternalFormatMode(internalFormat);
-
         Image* image = new Image;
         char* data = 0L;
-
-
 
         bool bMipmap;
         tex->GetIsMipmap(bMipmap);
@@ -145,8 +147,7 @@ Texture2D* txp::GetLocalTexture(trpgrImageHelper& image_helper, trpgLocalMateria
             else
                 image_helper.GetLocalGL(tex,data,size);
 
-            image->setImage(s.x,s.y,1,depth,
-                    gltype,GL_UNSIGNED_BYTE,
+            image->setImage(s.x,s.y,1,internalFormat, pixelFormat, dataType,
                     (unsigned char*)data,osg::Image::USE_NEW_DELETE);
         }
         else
@@ -162,8 +163,7 @@ Texture2D* txp::GetLocalTexture(trpgrImageHelper& image_helper, trpgLocalMateria
                image_helper.GetLocalGL(tex,data,size);
 
             // Load entire texture including mipmaps
-            image->setImage(s.x,s.y,1,depth,
-                    gltype,GL_UNSIGNED_BYTE,
+            image->setImage(s.x,s.y,1,internalFormat, pixelFormat, dataType,
                     (unsigned char*)data,
                     osg::Image::USE_NEW_DELETE);
 
@@ -180,14 +180,14 @@ Texture2D* txp::GetLocalTexture(trpgrImageHelper& image_helper, trpgLocalMateria
 
         }
 
-        //  AAAARRRGH! TOOK ME 2 DAYS TO FIGURE IT OUT
-        //  EVERY IMAGE HAS TO HAVE UNIQUE NAME FOR OPTIMIZER NOT TO OPTIMIZE IT OFF
-        //
-        static int unique = 0;
-        char unique_name[256];
-        sprintf(unique_name,"TXP_TEX_UNIQUE%d",unique++);
-
-        image->setFileName(unique_name);
+//         //  AAAARRRGH! TOOK ME 2 DAYS TO FIGURE IT OUT
+//         //  EVERY IMAGE HAS TO HAVE UNIQUE NAME FOR OPTIMIZER NOT TO OPTIMIZE IT OFF
+//         //
+//         static int unique = 0;
+//         char unique_name[256];
+//         sprintf(unique_name,"TXP_TEX_UNIQUE%d",unique++);
+// 
+//         image->setFileName(unique_name);
 
         osg_texture->setImage(image);
     }

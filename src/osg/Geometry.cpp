@@ -2285,7 +2285,8 @@ void _computeCorrectBindingsAndArraySizes(const osg::Geometry& geom, A& arrayDat
                 notify(WARN)<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
                             <<"         "<<arrayName<<" binding is BIND_PER_PRIMITIVE_SET but "<<std::endl
                             <<"         "<<arrayName<< " array contains too many entries "<<std::endl
-                            <<"         "<<arrayName<< " array contains too many entries "<<std::endl;
+                            <<"         number of primitive sets="<<geom.getPrimitiveSetList().size()<<std::endl
+                            <<"         numElements="<<numElements<<std::endl;
             }
             break;
         case(osg::Geometry::BIND_PER_PRIMITIVE):

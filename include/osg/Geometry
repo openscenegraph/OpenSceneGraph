@@ -12,16 +12,51 @@
 
 namespace osg {
 
+enum ArrayType
+{
+    AttributeArrayType = 0,
+    ByteArrayType     = 1,
+    ShortArrayType    = 2,
+    IntArrayType      = 3,
+    UByteArrayType    = 4,
+    UShortArrayType   = 5,
+    UIntArrayType     = 6,
+    UByte4ArrayType   = 7,
+    FloatArrayType    = 8,
+    Vec2ArrayType     = 9,
+    Vec3ArrayType     = 10,
+    Vec4ArrayType     = 11
+};
+
+static char* s_classNames[] =
+{
+    "AttributeArray" // 0
+    "ByteArray",     // 1
+    "ShortArray",    // 2
+    "IntArray",      // 3
+    "UByteArray",    // 4
+    "UShortArray",   // 5
+    "UIntArray",     // 6
+    "UByte4Array",   // 7
+    "FloatArray",    // 8
+    "Vec2Array",     // 9
+    "Vec3Array",     // 10
+    "Vec4Array"      // 11
+};
 
 class AttributeArray : public Object
 {
 
     public:
     
-        AttributeArray(GLint dataSize=0,GLenum dataType=0):_dataSize(dataSize),_dataType(dataType) {}
+        AttributeArray(ArrayType arrayType=AttributeArrayType,GLint dataSize=0,GLenum dataType=0):
+            _arrayType(arrayType),
+            _dataSize(dataSize),
+            _dataType(dataType) {}
     
         AttributeArray(const AttributeArray& array,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             Object(array,copyop),
+            _arrayType(array._arrayType),
             _dataSize(array._dataSize),
             _dataType(array._dataType) {}
 
@@ -30,6 +65,7 @@ class AttributeArray : public Object
         virtual const char* className() const { return "AttributeArray"; }
 
 
+        ArrayType               arrayType() const { return _arrayType; }
         GLint                   dataSize() const { return _dataSize; }
         GLenum                  dataType() const { return _dataType; }
         virtual const GLvoid*   dataPointer() const = 0;
@@ -38,71 +74,67 @@ class AttributeArray : public Object
     
         virtual ~AttributeArray() {}
 
-        GLint   _dataSize;
-        GLenum  _dataType;
+        ArrayType   _arrayType;
+        GLint       _dataSize;
+        GLenum      _dataType;
 };
 
-static char* s_classNames[] = {
-    "ByteArray",    // 0
-    "ShortArray",   // 1
-    "IntArray",     // 2
-    "UByteArray",   // 3
-    "UShortArray",  // 4
-    "UIntArray",    // 5
-    "FloatArray",   // 6
-    "Vec2Array",    // 7
-    "Vec3Array",    // 8
-    "Vec4Array"     // 9
-    };
 
-template<typename T,int DataSize,int DataType,unsigned int ClassName>
+
+template<typename T, ArrayType ARRAYTYPE, int DataSize, int DataType>
 class TemplateArray : public AttributeArray, public std::vector<T>
 {
     public:
     
-        TemplateArray() : TemplateArray(DataSize,DataType) {}
+        TemplateArray() : AttributeArray(ARRAYTYPE,DataSize,DataType) {}
 
-        TemplateArray(const TemplateArray& t,const CopyOp& copyop=CopyOp::SHALLOW_COPY) : AttributeArray(t,copyop), std::vector<T>(t) {}
+        TemplateArray(const TemplateArray& ta,const CopyOp& copyop=CopyOp::SHALLOW_COPY) : AttributeArray(ta,copyop), std::vector<T>(ta) {}
         
         virtual Object* cloneType() const { return osgNew TemplateArray(); }
         virtual Object* clone(const CopyOp& copyop) const { return osgNew TemplateArray(*this,copyop); }        
         virtual const char* libraryName() const { return "osg"; }
-        virtual const char* className() const { return s_classNames[ClassName]; }
+        virtual const char* className() const { return s_classNames[ARRAYTYPE]; }
 
-        virtual const GLvoid*   dataPointer() const { if (!empty()) return &(*begin()); else return 0; }
+        virtual const GLvoid*   dataPointer() const { if (!empty()) return &front(); else return 0; }
 };
 
-typedef TemplateArray<char,1,GL_BYTE,0>                       ByteArray;
-typedef TemplateArray<short,1,GL_SHORT,1>                     ShortArray;
-typedef TemplateArray<int,1,GL_INT,2>                         IntArray;
-typedef TemplateArray<unsigned char,1,GL_UNSIGNED_BYTE,3>     UByteArray;
-typedef TemplateArray<unsigned short,1,GL_UNSIGNED_SHORT,4>   UShortArray;
-typedef TemplateArray<unsigned int,1,GL_UNSIGNED_INT,5>       UIntArray;
-typedef TemplateArray<float,1,GL_FLOAT,6>                     FloatArray;
-typedef TemplateArray<Vec2,2,GL_FLOAT,7>                      Vec2Array;
-typedef TemplateArray<Vec3,3,GL_FLOAT,8>                      Vec3Array;
-typedef TemplateArray<Vec4,4,GL_FLOAT,9>                      Vec4Array;
+typedef TemplateArray<char,ByteArrayType,1,GL_BYTE>                       ByteArray;
+typedef TemplateArray<short,ShortArrayType,1,GL_SHORT>                    ShortArray;
+typedef TemplateArray<int,IntArrayType,1,GL_INT>                          IntArray;
+typedef TemplateArray<unsigned char,UByteArrayType,1,GL_UNSIGNED_BYTE>    UByteArray;
+typedef TemplateArray<unsigned short,UShortArrayType,1,GL_UNSIGNED_SHORT> UShortArray;
+typedef TemplateArray<unsigned int,UIntArrayType,1,GL_UNSIGNED_INT>       UIntArray;
+typedef TemplateArray<unsigned int,UByte4ArrayType,4,GL_UNSIGNED_BYTE>    UByte4Array;
+typedef TemplateArray<float,FloatArrayType,1,GL_FLOAT>                    FloatArray;
+typedef TemplateArray<Vec2,Vec2ArrayType,2,GL_FLOAT>                      Vec2Array;
+typedef TemplateArray<Vec3,Vec3ArrayType,3,GL_FLOAT>                      Vec3Array;
+typedef TemplateArray<Vec4,Vec4ArrayType,4,GL_FLOAT>                      Vec4Array;
 
+/* ******************************************************************************************************************* */
 
-/** Experiemntal replacement for GeoSet.
-*/
-class SG_EXPORT Geometry : public Drawable
+enum PrimitiveType
+{
+    PrimitivePrimitiveType              = 0,
+    DrawArrayPrimitiveType              = 1,
+    UByteDrawElementsPrimitiveType      = 2,
+    UShortDrawElementsPrimitiveType     = 3,
+    UIntDrawElementsPrimitiveType       = 4,
+};
+
+static char* s_PrimitiveNames[] =
+{
+    "Primitive",                // 0
+    "DrawArray",                // 1
+    "UByteDrawElements",        // 2
+    "UShortDrawElements",       // 3
+    "UIntDrawElements"          // 4
+};
+
+class Primitive : public Object
 {
     public:
-
-
-        Geometry();
-
-        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
-        Geometry(const Geometry& Geometry,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
-            
-        virtual Object* cloneType() const { return osgNew Geometry(); }
-        virtual Object* clone(const CopyOp& copyop) const { return osgNew Geometry(*this,copyop); }        
-        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Geometry*>(obj)!=NULL; }
-        virtual const char* libraryName() const { return "osg"; }
-        virtual const char* className() const { return "Geometry"; }
-        
-        enum PrimitiveType
+    
+        enum PrimitiveMode
         {
             POINTS = GL_POINTS,
             LINES = GL_LINES,
@@ -115,33 +147,153 @@ class SG_EXPORT Geometry : public Drawable
             QUAD_STRIP = GL_QUAD_STRIP,
             POLYGON = GL_POLYGON
         };
+
+        Primitive(PrimitiveType primType=PrimitivePrimitiveType):_primitiveType(primType) {}
+    
+        Primitive(const Primitive& prim,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            Object(prim,copyop) {}
+
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Primitive*>(obj)!=NULL; }
+        virtual const char* libraryName() const { return "osg"; }
+        virtual const char* className() const { return "Primitive"; }
         
-        enum AttributeType
+        PrimitiveType primitiveType;
+        
+        virtual void draw() const = 0;
+        
+        PrimitiveType _primitiveType;
+};
+
+class DrawArray : public Primitive
+{
+    public:
+
+        DrawArray():
+            Primitive(DrawArrayPrimitiveType)
+            {}
+    
+        DrawArray(GLenum mode, GLint first, GLsizei count):
+            Primitive(DrawArrayPrimitiveType),
+            _mode(mode),
+            _first(first),
+            _count(count) {}
+
+        DrawArray(const DrawArray& da,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            Primitive(da,copyop),
+            _mode(da._mode),
+            _first(da._first),
+            _count(da._count) {}
+
+        virtual Object* cloneType() const { return osgNew DrawArray(); }
+        virtual Object* clone(const CopyOp& copyop) const { return osgNew DrawArray(*this,copyop); }        
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const DrawArray*>(obj)!=NULL; }
+        virtual const char* libraryName() const { return "osg"; }
+        virtual const char* className() const { return "DrawArray"; }
+        
+        virtual void draw() const 
         {
-            PRIMITIVES,
-            COORDS,
-            NORMALS,
-            COLORS,
-            TEX_COORDS,
-            TEX_COORDS_0 = TEX_COORDS,
-            TEX_COORDS_1,
-            TEX_COORDS_2,
-            TEX_COORDS_3,
-            TEX_COORDS_4,
-            TEX_COORDS_5,
-            TEX_COORDS_6,
-            TEX_COORDS_7
+            glDrawArrays(_mode,_first,_count);
+        }
+        
+        GLenum  _mode;
+        GLint   _first;
+        GLsizei _count;
+};
+
+template<typename T, int PRIMTYPE, int DataType>
+class DrawElements : public Primitive, public std::vector<T>
+{
+    public:
+
+        DrawElements():Primitive(PRIMTYPE),_dataType(_dataType) {}
+    
+        DrawElements(const DrawElements& array,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            Primitive(array,copyop) {}
+
+        virtual Object* cloneType() const { return osgNew DrawElements(); }
+        virtual Object* clone(const CopyOp& copyop) const { return osgNew DrawElements(*this,copyop); }        
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const DrawElements*>(obj)!=NULL; }
+        virtual const char* libraryName() const { return "osg"; }
+        virtual const char* className() const { return s_PrimitiveNames[PRIMTYPE]; }
+        
+        virtual void draw() const 
+        {
+            glDrawElements(_mode,size(),_dataType,&front());
+        }
+        
+        GLenum  _mode;
+        GLenum  _dataType;
+};
+
+typedef DrawElements<unsigned char,UByteDrawElementsPrimitiveType,GL_UNSIGNED_BYTE>     UByteDrawElements;
+typedef DrawElements<unsigned short,UShortDrawElementsPrimitiveType,GL_UNSIGNED_SHORT>  UShortDrawElements;
+typedef DrawElements<unsigned int,UIntDrawElementsPrimitiveType,GL_UNSIGNED_INT>        UIntDrawElements;
+
+
+/* ******************************************************************************************************************* */
+
+
+/** Experiemntal replacement for GeoSet.
+*/
+class SG_EXPORT Geometry : public Drawable
+{
+    public:
+
+        Geometry();
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        Geometry(const Geometry& Geometry,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+            
+        virtual Object* cloneType() const { return osgNew Geometry(); }
+        virtual Object* clone(const CopyOp& copyop) const { return osgNew Geometry(*this,copyop); }        
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Geometry*>(obj)!=NULL; }
+        virtual const char* libraryName() const { return "osg"; }
+        virtual const char* className() const { return "Geometry"; }
+
+        enum AttributeBinding
+        {
+            OFF=0,
+            OVERALL,
+            PER_PRIMITIVE,
+            PER_VERTEX,
         };
-        
-        void setAttribute(AttributeType type,AttributeArray* array);
-        
-        void setAttribute(AttributeType type,AttributeArray* array,AttributeArray* indices);
+               
+        void setVertexArray(Vec3Array* array) { _vertexArray = array; }
+        Vec3Array* getVertexArray() { return _vertexArray.get(); }
+        const Vec3Array* getVertexArray() const  { return _vertexArray.get(); }
 
-        AttributeArray* getAttribute(AttributeType type);
-        
-        void setIndices(AttributeType type,AttributeArray* indices);
 
-        AttributeArray* getIndices(AttributeType type);
+        void setNormalBinding(AttributeBinding ab) { _normalBinding = ab; }
+        AttributeBinding getNormalBinding() const { return _normalBinding; }
+
+        void setNormalArray(Vec3Array* array) { _normalArray = array; if (!_normalArray.valid()) _normalBinding=OFF; }
+        Vec3Array* getNormalArray() { return _normalArray.get(); }
+        const Vec3Array* getNormalArray() const { return _normalArray.get(); }
+
+
+        void setColorBinding(AttributeBinding ab) { _colorBinding = ab; }
+        AttributeBinding getColorBinding() const { return _colorBinding; }
+
+        void setColorArray(AttributeArray* array) { _colorArray = array;  if (!_colorArray.valid()) _colorBinding=OFF; }
+        AttributeArray* getColorArray() { return _colorArray.get(); }
+        const AttributeArray* getColorArray() const { return _colorArray.get(); }
+
+
+        typedef std::vector< ref_ptr<AttributeArray> >  TexCoordList;
+
+        void setTexCoordArray(unsigned int unit,AttributeArray*);
+        AttributeArray* getTexCoordArray(unsigned int unit);
+        const AttributeArray* getTexCoordArray(unsigned int unit) const;
+
+
+        typedef std::vector< ref_ptr<Primitive> > PrimitiveList;
+
+        void setPrimitiveList(const PrimitiveList& primitives) { _primitives = primitives; }
+        PrimitiveList& getPrimitiveList() { return _primitives; }
+        const PrimitiveList& getPrimitiveList() const { return _primitives; }
+
+        void addPrimtive(Primitive* primitive) { if (primitive) _primitives.push_back(primitive); }
+
 
 
         /** draw Geometry directly ignoring an OpenGL display list which could be attached.
@@ -170,27 +322,19 @@ class SG_EXPORT Geometry : public Drawable
 
         virtual const bool computeBound() const;
         
-        void setTexCoordArray(unsigned int pos,AttributeArray*);
-        AttributeArray* getTexCoordArray(unsigned int pos);
         
-        void setTexCoordIndicesArray(unsigned int pos,AttributeArray*);
-        AttributeArray* getTexCoordIndicesArray(unsigned int pos);
         
-        typedef std::vector< ref_ptr<AttributeArray> > TexCoordList;
+        PrimitiveList               _primitives;
         
-        ref_ptr<AttributeArray>     _primitives;
-        
-        ref_ptr<AttributeArray>     _coords;
-        ref_ptr<AttributeArray>     _coordIndices;
-        
-        ref_ptr<AttributeArray>     _normals;
-        ref_ptr<AttributeArray>     _normalIndices;
-        
-        ref_ptr<AttributeArray>     _colors;
-        ref_ptr<AttributeArray>     _colorIndices;
+        ref_ptr<Vec3Array>          _vertexArray;
 
+        AttributeBinding            _normalBinding;
+        ref_ptr<Vec3Array>          _normalArray;
+        
+        AttributeBinding            _colorBinding;
+        ref_ptr<AttributeArray>     _colorArray;
+        
         TexCoordList                _texCoordList;
-        TexCoordList                _texCoordIndicesList;
 
 };
 

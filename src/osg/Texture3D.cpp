@@ -97,7 +97,7 @@ void Texture3D::apply(State& state) const
 
     // get the contextID (user defined ID of 0 upwards) for the 
     // current OpenGL context.
-    const uint contextID = state.getContextID();
+    const unsigned int contextID = state.getContextID();
     
     const Extensions* extensions = getExtensions(contextID,true);
                                         
@@ -179,7 +179,7 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
 
     // get the contextID (user defined ID of 0 upwards) for the 
     // current OpenGL context.
-    const uint contextID = state.getContextID();
+    const unsigned int contextID = state.getContextID();
 
     const Extensions* extensions = getExtensions(contextID,true);
 
@@ -265,7 +265,7 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
 
 void Texture3D::copyTexSubImage3D(State& state, int xoffset, int yoffset, int zoffset, int x, int y, int width, int height )
 {
-    const uint contextID = state.getContextID();
+    const unsigned int contextID = state.getContextID();
 
     // get the globj for the current contextID.
     GLuint& handle = getTextureObject(contextID);
@@ -295,13 +295,13 @@ void Texture3D::copyTexSubImage3D(State& state, int xoffset, int yoffset, int zo
 typedef buffered_value< ref_ptr<Texture3D::Extensions> > BufferedExtensions;
 static BufferedExtensions s_extensions;
 
-const Texture3D::Extensions* Texture3D::getExtensions(uint contextID,bool createIfNotInitalized)
+const Texture3D::Extensions* Texture3D::getExtensions(unsigned int contextID,bool createIfNotInitalized)
 {
     if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new Extensions;
     return s_extensions[contextID].get();
 }
 
-void Texture3D::setExtensions(uint contextID,Extensions* extensions)
+void Texture3D::setExtensions(unsigned int contextID,Extensions* extensions)
 {
     s_extensions[contextID] = extensions;
 }

@@ -29,7 +29,7 @@ namespace osgGLUT{
 
 /** A basic viewer base class which provides a window, simple keyboard and mouse interaction.
   * Please note, this viewer class has been developed via a rather haphazard
-  * path and <i>needs</i> a total rewrite.  It currently suffices for osg demo's
+  * path and <i>needs</i> a total rewrite.  It currently suffices for osg demos
   * but shouldn't be viewed as the be all and end of osg viewer classes.
   * Someone please rewrite it :-)
   */
@@ -83,15 +83,15 @@ class OSGGLUT_EXPORT Viewer : public osgUtil::GUIActionAdapter
 
         void help(ostream& fout);
 
-        // hande multiple camera.
+        // handle multiple camera.
         unsigned int registerCameraManipulator(osgUtil::CameraManipulator* cm,
 					       unsigned int viewport = 0);
         void selectCameraManipulator(unsigned int pos, 
 				     unsigned int viewport = 0);
 
         // derived from osgUtil::GUIActionAdapter
-        virtual void requestRedraw() {} // redraw always by iddle callback done.
-        virtual void requestContinuousUpdate(bool /*needed*/) {} // continous update always
+        virtual void requestRedraw() {} // redraw always by idle callback done.
+        virtual void requestContinuousUpdate(bool /*needed*/) {} // continuous update always
         virtual void requestWarpPointer(int x,int y);
 
     protected:

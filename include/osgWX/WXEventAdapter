@@ -19,7 +19,7 @@ public:
     /** Get the EventType of the GUI event.*/
     virtual EventType getEventType() const { return _eventType; }
 
-    /** key pressed, return -1 if inapropriate for this event. */
+    /** key pressed, return -1 if inappropriate for this event. */
     virtual int getKey() const { return _key; }
 
     /** button pressed/released, return -1 if inappropriate for this event.*/

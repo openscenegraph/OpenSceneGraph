@@ -15,12 +15,12 @@ namespace osgDB {
 
 /**
     Registry is a singleton factory which stores
-    the Objects types available at runtime for loading,
-    and any Object reader or writers which are linked in
+    the reader/writers which are linked in
     at runtime for reading non-native file formats.
 
-    The RegisterObjectProxy can be used to automatically register
-    at runtime a Object with the Registry.
+    The RegisterDotOsgWrapperProxy can be used to automatically register
+    DotOsgWrappers, at runtime with the Registry. A DotOsgWrapper encapsulates
+    the functions that can read and write to the .osg for each osg::Object.
 
     The RegisterReaderWriterProxy can be used to automatically
     register at runtime a reader/writer with the Registry.

@@ -31,7 +31,7 @@ typedef std::vector<std::string> DirectoryContents;
 
 /** return the directory/filename of a file if its is contained within specified directory.
   * return "" if directory does not contain file.  If caseInsensitive is set to true then
-  * a case insenstive comparision is used to compare fileName to directory contents.
+  * a case insensitive comparison is used to compare fileName to directory contents.
   * This is useful when unix programs attempt read case insentive windows filenames.
   */
 OSGDB_EXPORT extern std::string findFileInDirectory(const std::string& fileName,const std::string& dirName,bool caseInsensitive=false);

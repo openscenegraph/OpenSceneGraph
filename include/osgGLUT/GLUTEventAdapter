@@ -18,7 +18,7 @@ class OSGGLUT_EXPORT GLUTEventAdapter : public osgUtil::GUIEventAdapter
         /** Get the EventType of the GUI event.*/
         virtual EventType getEventType() const { return _eventType; }
 
-        /** key pressed, return -1 if inapropriate for this event. */
+        /** key pressed, return -1 if inappropriate for this event. */
         virtual int getKey() const { return _key; }
 
         /** button pressed/released, return -1 if inappropriate for this event.*/
@@ -70,7 +70,7 @@ class OSGGLUT_EXPORT GLUTEventAdapter : public osgUtil::GUIEventAdapter
         /** method for adapting keyboard events.*/
         void adaptKeyboard(float t,unsigned char key, int x, int y );
 
-        /** method for adapting frame events, i.e. iddle/display callback.*/
+        /** method for adapting frame events, i.e. idle/display callback.*/
         void adaptFrame(float t);
 
         void copyStaticVariables();

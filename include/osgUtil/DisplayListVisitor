@@ -12,10 +12,10 @@ namespace osgUtil {
 /** Visitor for traversing scene graph and setting each osg::GeoSet's _useDisplayList flag, 
   * with option to immediately compile osg::GeoSet's OpenGL Display lists.
   * The mode of operation
-  * of the vistor is controlled by setting the DisplayListMode either on visitor
+  * of the visitor is controlled by setting the DisplayListMode either on visitor
   * constructor or via the setDisplayListMode() method.  DisplayListMode options are:
   * _displayListMode == SWITCH_ON_AND_COMPILE_DISPLAY_LISTS cals gset->compile() on
-  * all Geode childern. Note, the visitor must only be used within a valid 
+  * all Geode children. Note, the visitor must only be used within a valid 
   * OpenGL context as compile uses OpenGL calls.
   * _displayListMode == SWITCH_ON_DISPLAY_LISTS sets the Geode's children with 
   * gset->setUseDisplayList(true), this method does not directly create display list,
@@ -41,7 +41,7 @@ class OSGUTIL_EXPORT DisplayListVisitor : public osg::NodeVisitor
         };
 
         /** Construct a CompileGeoSetsVisior to traverse all child,
-          * with set specfied display list mode.  Default mode is to
+          * with set specified display list mode.  Default mode is to
           * gset->setUseDisplayList(true).
           */
         DisplayListVisitor(DisplayListMode mode=SWITCH_ON_DISPLAY_LISTS);

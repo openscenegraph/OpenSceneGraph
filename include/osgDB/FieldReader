@@ -35,7 +35,7 @@ class OSGDB_EXPORT FieldReader
         bool readField(Field& fieldPtr);
         void ignoreField();
         
-        /** no of unmatched `{' encounterd so far in file*/
+        /** no of unmatched `{' encountered so far in file*/
         int getNoNestedBrackets() const;
 
     private:

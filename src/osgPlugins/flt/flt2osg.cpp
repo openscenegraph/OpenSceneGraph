@@ -254,6 +254,10 @@ osg::Group* ConvertFromFLT::visitPrimaryNode(osg::Group& osgParent, PrimNodeReco
             case EXTERNAL_REFERENCE_OP:
                 osgPrim = visitExternal(osgParent, (ExternalRecord*)child);
                 break;
+			case ROAD_CONSTRUCTION_OP:
+				// treat road construction record as a group record for now
+				osgPrim = visitRoadConstruction(osgParent, (GroupRecord*)child);
+				break;
             }
         }
     }
@@ -564,6 +568,16 @@ osg::Group* ConvertFromFLT::visitGroup(osg::Group& osgParent, GroupRecord* rec)
     return group;
 }
 
+osg::Group* ConvertFromFLT::visitRoadConstruction(osg::Group& osgParent, GroupRecord* rec)
+{
+    osg::Group* group = new osg::Group;
+
+    group->setName(rec->getData()->szIdent);
+	//cout<<"Converted a road construction node of ID "<<group->getName()<<" to group node."<<endl;
+	visitAncillary(osgParent, *group, rec)->addChild( group );
+    visitPrimaryNode(*group, rec);
+    return group;
+}
 
 osg::Group* ConvertFromFLT::visitLOD(osg::Group& osgParent, LodRecord* rec)
 {

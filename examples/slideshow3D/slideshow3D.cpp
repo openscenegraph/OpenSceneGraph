@@ -28,6 +28,8 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the standard OpenSceneGraph example which loads and visualises 3d models.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
+    arguments.getApplicationUsage()->addCommandLineOption("-a","Turn auto stepping on by default");
+    arguments.getApplicationUsage()->addCommandLineOption("-d <float>","Time delay in seconds between layers/slides");
     
 
     // construct the viewer.

@@ -3107,6 +3107,7 @@ uint32 ConvertFromFLT::setMeshColors ( const uint32 &numVerts, const LocalVertex
 
     // Set the mesh coordinates.
     geometry->setColorArray ( colors );
+    geometry->setColorBinding( osg::Geometry::BIND_PER_VERTEX );
 
     // Return the number of colors added.
     return i;

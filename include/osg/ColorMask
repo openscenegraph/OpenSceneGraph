@@ -28,6 +28,13 @@ class SG_EXPORT ColorMask : public StateAttribute
     
         ColorMask();
 
+        ColorMask(bool red,bool green,bool blue,bool alpha):
+            _red(red),
+            _green(green),
+            _blue(blue),
+            _alpha(alpha) {}
+            
+
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         ColorMask(const ColorMask& cm,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             StateAttribute(cm,copyop),

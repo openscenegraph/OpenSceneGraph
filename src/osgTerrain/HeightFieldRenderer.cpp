@@ -11,39 +11,21 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#include <osgTerrain/GeoMipMapRenderer>
-#include <osgTerrain/Terrain>
+#include <osgTerrain/HeightFieldRenderer>
 
 using namespace osgTerrain;
 
-GeoMipMapRenderer::GeoMipMapRenderer()
+HeightFieldRenderer::HeightFieldRenderer():
+    _heightFieldNode(0)
 {
 }
 
-/** Copy constructor using CopyOp to manage deep vs shallow copy.*/
-GeoMipMapRenderer::GeoMipMapRenderer(const GeoMipMapRenderer& renderer,const osg::CopyOp& copyop):
-    Renderer(renderer,copyop)
+HeightFieldRenderer::HeightFieldRenderer(const HeightFieldRenderer& HeightFieldRenderer,const osg::CopyOp& copyop):
+    osg::Object(HeightFieldRenderer,copyop),
+    _heightFieldNode(0)
 {
 }
 
-GeoMipMapRenderer::~GeoMipMapRenderer()
+HeightFieldRenderer::~HeightFieldRenderer()
 {
-}
-
-void GeoMipMapRenderer::initialize()
-{
-}
-
-void GeoMipMapRenderer::terrainHasBeenModified()
-{
-}
-
-void GeoMipMapRenderer::update(osgUtil::UpdateVisitor* nv)
-{
-    if (getTerrain()) nv->traverse(*getTerrain());
-}
-
-void GeoMipMapRenderer::cull(osgUtil::CullVisitor* nv)
-{
-    if (getTerrain()) getTerrain()->osg::Group::traverse(*nv);
 }

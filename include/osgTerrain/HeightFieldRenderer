@@ -11,8 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGTERRAIN_Renderer
-#define OSGTERRAIN_Renderer 1
+#ifndef OSGTERRAIN_HEIGHTFIELDHeightFieldRenderer
+#define OSGTERRAIN_HEIGHTFIELDHeightFieldRenderer 1
 
 #include <osg/Object>
 
@@ -23,23 +23,23 @@
 
 namespace osgTerrain {
 
-class Terrain;
+class HeightFieldNode;
 
-class OSGTERRAIN_EXPORT Renderer : public osg::Object
+class OSGTERRAIN_EXPORT HeightFieldRenderer : public osg::Object
 {
     public:
 
-        Renderer();
+        HeightFieldRenderer();
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
-        Renderer(const Renderer&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+        HeightFieldRenderer(const HeightFieldRenderer&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
         
-        Terrain* getTerrain() { return _terrain; }
-        const Terrain* getTerrain() const { return _terrain; }
+        HeightFieldNode* getHeightFieldNode() { return _heightFieldNode; }
+        const HeightFieldNode* getHeightFieldNode() const { return _heightFieldNode; }
 
         virtual void initialize() = 0;
 
-        virtual void terrainHasBeenModified() = 0;
+        virtual void heightFieldHasBeenModified() = 0;
 
         virtual void update(osgUtil::UpdateVisitor* nv) = 0;
 
@@ -47,11 +47,11 @@ class OSGTERRAIN_EXPORT Renderer : public osg::Object
 
     protected:
 
-        virtual ~Renderer();
+        virtual ~HeightFieldRenderer();
         
-        friend class osgTerrain::Terrain;
+        friend class osgTerrain::HeightFieldNode;
 
-        Terrain* _terrain;
+        HeightFieldNode* _heightFieldNode;
 
 };
 

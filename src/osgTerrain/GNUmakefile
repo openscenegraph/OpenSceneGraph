@@ -4,9 +4,9 @@ include $(TOPDIR)/Make/makedefs
 
 CXXFILES = \
     DataSet.cpp\
-    Terrain.cpp\
-    Renderer.cpp\
-    GeoMipMapRenderer.cpp\
+    HeightFieldNode.cpp\
+    HeightFieldRenderer.cpp\
+    Version.cpp\
 
 
 DEF     += -DOSGTERRAIN_LIBRARY

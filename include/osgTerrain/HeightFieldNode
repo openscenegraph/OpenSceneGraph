@@ -1,0 +1,101 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGTERRAIN_HEIGHTFIELDNODE
+#define OSGTERRAIN_HEIGHTFIELDNODE 1
+
+#include <osg/Group>
+#include <osg/Image>
+#include <osg/CoordinateSystemNode>
+
+#include <osgTerrain/HeightFieldRenderer>
+
+namespace osgTerrain {
+
+/** Terrain provides a framework for loosly coupling height field data with height rendering algorithms.
+  * This allows renderer's to be pluged in at runtime.*/
+class OSGTERRAIN_EXPORT HeightFieldNode : public osg::Group
+{
+    public:
+
+        HeightFieldNode();
+        
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        HeightFieldNode(const HeightFieldNode&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+
+        META_Node(osgTerrain, HeightFieldNode);
+
+        virtual void traverse(osg::NodeVisitor& nv);
+
+
+        /** Set the HeightField for this HeightFieldNode.
+          * If a Renderer is attached then this will be notified.*/
+        void setHeightField(osg::HeightField* heightField);
+
+        /** Get the HeightField.*/
+        osg::HeightField* getHeightField() { return _heightField.get(); }
+        
+        /** Get the const HeightField.*/
+        const osg::HeightField* getHeightField() const { return _heightField.get(); }
+        
+        /** Tell the Renderer that the height field has been modified, so
+          * that any cached data will need updating*/
+        void heightFieldHasBeenModified();
+        
+        /** Set the Renderer*/
+        void setRenderer(osgTerrain::HeightFieldRenderer* renderer);
+
+        /** Get the Renderer*/
+        HeightFieldRenderer* getRenderer() { return _renderer.get(); }
+        
+        /** Get the const Renderer*/
+        const HeightFieldRenderer* getRenderer() const { return _renderer.get(); }
+
+        
+        void setBaseTextureImage(osg::Image* image) { _baseTextureImage = image; }
+        osg::Image* getBaseTextureImage() { return _baseTextureImage.get(); }
+        const osg::Image* getBaseTextureImage() const { return _baseTextureImage.get(); }
+
+        void setDetailTextureImage(osg::Image* image) { _detailTextureImage = image; }
+        osg::Image* getDetailTextureImage() { return _detailTextureImage.get(); }
+        const osg::Image* getDetailTextureImage() const { return _detailTextureImage.get(); }
+
+        void setCloudShadowTextureImage(osg::Image* image) { _cloudShadowTextureImage = image; }
+        osg::Image* getCloudShadowTextureImage() { return _cloudShadowTextureImage.get(); }
+        const osg::Image* getCloudShadowTextureImage() const { return _cloudShadowTextureImage.get(); }
+
+        void setNormalMapImage(osg::Image* image) { _normalMapImage = image ; }
+        osg::Image* getNormalMapImage() { return _normalMapImage.get(); }
+        const osg::Image* getNormalMapImage() const { return _normalMapImage.get(); }
+        
+        void computeNormalMap();
+        
+
+    protected:
+
+        virtual ~HeightFieldNode();
+
+
+        osg::ref_ptr<osg::HeightField>      _heightField;
+        osg::ref_ptr<HeightFieldRenderer>   _renderer;
+        
+        osg::ref_ptr<osg::Image>            _baseTextureImage;
+        osg::ref_ptr<osg::Image>            _detailTextureImage;
+        osg::ref_ptr<osg::Image>            _cloudShadowTextureImage;
+        osg::ref_ptr<osg::Image>            _normalMapImage;
+
+};
+
+}
+
+#endif

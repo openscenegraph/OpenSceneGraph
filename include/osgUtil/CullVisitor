@@ -67,9 +67,6 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         const osg::EarthSky* getEarthSky() const { return _earthSky.get(); }
 
 
-        void setLODBias(const float bias) { _LODBias = bias; }
-        const float getLODBias() const    { return _LODBias; }
-        
         /** Switch the creation of Impostors on or off.
           * Setting active to false forces the CullVisitor to use the Impostor
           * LOD children for rendering. Setting active to true forces the
@@ -232,8 +229,6 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         osg::ref_ptr<RenderStage>                                   _rootRenderStage;        
         RenderBin*                                                  _currentRenderBin;
 
-
-        float                                                       _LODBias;
 
         ComputeNearFarMode  _computeNearFar;
         float               _computed_znear;

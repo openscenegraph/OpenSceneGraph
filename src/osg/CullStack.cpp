@@ -6,6 +6,7 @@ CullStack::CullStack()
 {
 
     _cullingMode = ENABLE_ALL_CULLING;
+    _LODBias = 1.0f;
     _smallFeatureCullingPixelSize = 3.0f;
 
 }

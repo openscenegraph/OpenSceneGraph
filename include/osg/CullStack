@@ -54,6 +54,9 @@ class SG_EXPORT CullStack
         void pushModelViewMatrix(osg::Matrix* matrix);
         void popModelViewMatrix();
 
+        void setLODBias(const float bias) { _LODBias = bias; }
+        const float getLODBias() const    { return _LODBias; }
+        
         void setSmallFeatureCullingPixelSize(float value) { _smallFeatureCullingPixelSize=value; }
         float& getSmallFeatureCullingPixelSize() { return _smallFeatureCullingPixelSize; }
         float getSmallFeatureCullingPixelSize() const { return _smallFeatureCullingPixelSize; }
@@ -128,6 +131,7 @@ class SG_EXPORT CullStack
         void popCullingSet();
 
         CullingMode                                                 _cullingMode;
+        float                                                       _LODBias;
         float                                                       _smallFeatureCullingPixelSize;
 
         typedef fast_back_stack< ref_ptr<Matrix> >                  MatrixStack;

@@ -58,7 +58,7 @@ class DataSet : public osg::Referenced
                 _numValuesY(0),
                 _numValuesZ(0) {}
         
-            SpatialProperties& operator = (const SpatialProperties& sp)
+            inline SpatialProperties& assignSpatialProperties(const SpatialProperties& sp)
             {
                 if (&sp==this) return *this;
                 
@@ -70,6 +70,13 @@ class DataSet : public osg::Referenced
                 _numValuesZ = sp._numValuesZ;
                 
                 return *this;
+            }
+            
+            void computeExtents()
+            {
+                _extents.init();
+                _extents.expandBy( osg::Vec3(0.0,0.0,0.0)*_geoTransform);
+                _extents.expandBy( osg::Vec3(_numValuesX,_numValuesY,0.0)*_geoTransform);
             }
 
             osg::ref_ptr<osgTerrain::CoordinateSystem>  _cs;
@@ -189,15 +196,20 @@ class DataSet : public osg::Referenced
             bool getTemporaryFile() const { return _temporaryFile; }
 
             void setCoordinateSystemPolicy(ParameterPolicy policy) { _coordinateSystemPolicy = policy; }
+            ParameterPolicy getCoordinateSystemPolicy() const { return _coordinateSystemPolicy; }
+
+            void setCoordinateSystem(const std::string& wellKnownText) { _cs = new osgTerrain::CoordinateSystem(wellKnownText); }
             void setCoordinateSystem(osgTerrain::CoordinateSystem* cs) { _cs = cs; }
             osgTerrain::CoordinateSystem* getCoordinateSystem() { return  _cs.get(); }
 
             
             void setGeoTransformPolicy(ParameterPolicy policy)  { _geoTransformPolicy = policy; }
+            ParameterPolicy getGeoTransformPolicy() const { return _geoTransformPolicy; }
 
             void setGeoTransform(osg::Matrixd& transform) { _geoTransform = transform; }
             osg::Matrixd& getGeoTransform() { return _geoTransform; }
             
+            void assignCoordinateSystemAndGeoTransformAccordingToParameterPolicy();
             
             void setSourceData(SourceData* data) { _sourceData = data; if (_sourceData.valid()) _sourceData->_source = this; }
             SourceData* getSourceData() { return _sourceData.get(); }

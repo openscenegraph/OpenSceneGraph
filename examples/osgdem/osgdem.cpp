@@ -139,64 +139,57 @@ int main( int argc, char **argv )
         argumentRead = false;
     
         std::string def;
+        osgTerrain::DataSet::Source* source = 0;
+
         if (arguments.read(pos, "--cs",def))
         {
             argumentRead = true;
             currentCS = !def.empty() ? SanitizeSRS(def.c_str()) : "";
             std::cout<<"--cs "<<currentCS<<std::endl;
         }
-        
-        if (arguments.read(pos, "--identity"))
+        else if (arguments.read(pos, "--identity"))
         {
             argumentRead = true;
             geoTransformSet = false;
             geoTransform.makeIdentity();            
         }
-        
-        if (arguments.read(pos, "--xx",geoTransform(0,0)))
+        else if (arguments.read(pos, "--xx",geoTransform(0,0)))
         {
             argumentRead = true;
             geoTransformSet = true;
             std::cout<<"--xs "<<geoTransform(0,0)<<std::endl;
         }
-        
-        if (arguments.read(pos, "--xt",geoTransform(3,0)))
+        else if (arguments.read(pos, "--xt",geoTransform(3,0)))
         {
             argumentRead = true;
             geoTransformSet = true;
             std::cout<<"--xo "<<geoTransform(3,0)<<std::endl;
         }
-
-        if (arguments.read(pos, "--yy",geoTransform(1,1)))
+        else if (arguments.read(pos, "--yy",geoTransform(1,1)))
         {
             argumentRead = true;
             geoTransformSet = true;
             std::cout<<"--yy "<<geoTransform(1,1)<<std::endl;
         }
-
-        if (arguments.read(pos, "--yt",geoTransform(3,1)))
+        else if (arguments.read(pos, "--yt",geoTransform(3,1)))
         {
             argumentRead = true;
             geoTransformSet = true;
             std::cout<<"--yt "<<geoTransform(3,1)<<std::endl;
         }
-
-        if (arguments.read(pos, "--zz",geoTransform(2,2)))
+        else if (arguments.read(pos, "--zz",geoTransform(2,2)))
         {
             argumentRead = true;
             geoTransformSet = true;
             std::cout<<"--zz "<<geoTransform(2,2)<<std::endl;
         }
-
-        if (arguments.read(pos, "--zt",geoTransform(3,2)))
+        else if (arguments.read(pos, "--zt",geoTransform(3,2)))
         {
             argumentRead = true;
             geoTransformSet = true;
             std::cout<<"--zt "<<geoTransform(3,2)<<std::endl;
         }
-
-        osgTerrain::DataSet::Source* source = 0;
-        if (arguments.read(pos, "-d",filename))
+        else if (arguments.read(pos, "-d",filename))
         {
             argumentRead = true;
 
@@ -207,8 +200,7 @@ int main( int argc, char **argv )
                 source = new osgTerrain::DataSet::Source(osgTerrain::DataSet::Source::HEIGHT_FIELD,filename);                
             }
         }
-
-        if (arguments.read(pos, "-t",filename))
+        else if (arguments.read(pos, "-t",filename))
         {
             argumentRead = true;
 
@@ -218,8 +210,7 @@ int main( int argc, char **argv )
                 source = new osgTerrain::DataSet::Source(osgTerrain::DataSet::Source::IMAGE,filename);
             }
         }
-
-        if (arguments.read(pos, "-m",filename))
+        else if (arguments.read(pos, "-m",filename))
         {
             argumentRead = true;
 
@@ -228,6 +219,27 @@ int main( int argc, char **argv )
                 std::cout<<"-m "<<filename<<std::endl;
                 source = new osgTerrain::DataSet::Source(osgTerrain::DataSet::Source::MODEL,filename);
             }
+        }
+        else if (arguments.read(pos, "-o",filename)) 
+        {
+            std::cout<<"-o "<<filename<<std::endl;
+
+            argumentRead = true;
+
+            std::string path = osgDB::getFilePath(filename);
+            std::string base = path.empty()?osgDB::getStrippedName(filename):
+                                            path +'/'+ osgDB::getStrippedName(filename);
+            std::string extension = '.'+osgDB::getLowerCaseFileExtension(filename);
+
+            dataset->setDestinationTileBaseName(base);
+            dataset->setDestinationTileExtension(extension);
+            
+            if (!currentCS.empty()) dataset->setDestinationCoordinateSystem(currentCS);
+        }
+        else
+        {
+            // if no argument read advance to next argument.
+            ++pos;
         }
 
         if (source)
@@ -248,26 +260,7 @@ int main( int argc, char **argv )
 
             dataset->addSource(source);
         }
-
-        if (arguments.read(pos, "-o",filename)) 
-        {
-            std::cout<<"-o "<<filename<<std::endl;
-
-            argumentRead = true;
-
-            std::string path = osgDB::getFilePath(filename);
-            std::string base = path.empty()?osgDB::getStrippedName(filename):
-                                            path +'/'+ osgDB::getStrippedName(filename);
-            std::string extension = '.'+osgDB::getLowerCaseFileExtension(filename);
-
-            dataset->setDestinationTileBaseName(base);
-            dataset->setDestinationTileExtension(extension);
-            
-            if (!currentCS.empty()) dataset->setDestinationCoordinateSystem(currentCS);
-        }
         
-        // if no argument read advance to next argument.
-        if (!argumentRead) ++pos;
 
     }
     

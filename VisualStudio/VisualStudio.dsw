@@ -2358,6 +2358,27 @@ Package=<4>
 
 ###############################################################################
 
+Project: "osgPlugin stl"=.\osgPlugins\stl\stl.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "osgPlugin osga"=.\osgPlugins\osga\osga.dsp - Package Owner=<4>
 
 Package=<5>

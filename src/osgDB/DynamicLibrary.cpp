@@ -74,7 +74,7 @@ DynamicLibrary* DynamicLibrary::loadLibrary(const std::string& libraryName)
     if (handle) return new DynamicLibrary(libraryName,handle);
 
     // else no lib found so report errors.
-    notify(WARN) << "DynamicLibrary::failed loading \""<<libraryName<<"\""<<std::endl;
+    notify(INFO) << "DynamicLibrary::failed loading \""<<libraryName<<"\""<<std::endl;
 
     return NULL;
 }
@@ -108,7 +108,7 @@ DynamicLibrary::HANDLE DynamicLibrary::getLibraryHandle( const std::string& libr
         localLibraryName = libraryName;
     handle = dlopen( localLibraryName.c_str(), RTLD_LAZY | RTLD_GLOBAL);
     if( handle == NULL )
-        notify(WARN) << "DynamicLibrary::getLibraryHandle( "<< libraryName << ") - dlopen(): " << dlerror() << std::endl;
+        notify(INFO) << "DynamicLibrary::getLibraryHandle( "<< libraryName << ") - dlopen(): " << dlerror() << std::endl;
 #endif
     return handle;
 }

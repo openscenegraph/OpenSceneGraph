@@ -9,14 +9,6 @@ debug: $(EXEC:=.dbg)\
 	$(LIB:=.dbg)\
 	$(PLUGIN:=.dbg)\
 
-static:\
-	$(STATICLIB:=.opt)\
-	$(STATICPLUGIN:=.opt)\
-
-staticdebug:\
-	$(STATICLIB:=.dbg)\
-	$(STATICPLUGIN:=.dbg)\
-
 cleandepend: cleandependopt cleandependdbg
 
 cleandependopt:
@@ -76,7 +68,6 @@ ifeq ($(OS),Darwin)
 $(LIB): $(OBJS)
 	$(C++) $(LDFLAGS) $(LIBVERSION) -dynamiclib $(OBJS) $(LIBS) -o $@
 
-
 $(PLUGIN): $(OBJS)
 	$(C++) $(LDFLAGS) -bundle $(OBJS) $(LIBS) -o $@
 else
@@ -88,9 +79,6 @@ $(LIB) $(PLUGIN) : $(OBJS)
 else
 $(LIB) $(PLUGIN) : $(OBJS)
 	$(C++) $(LDFLAGS) $(SHARED) $(OBJS) $(LIBS) -o $@
-
-$(STATICLIB) $(STATICPLUGIN): $(OBJS)
-	ar rv $@  $? 
 
 endif # not HP-UX
 endif # not Darwin
@@ -110,14 +98,6 @@ $(LIB:=.dbg) : $(PLUGIN:=.dbg)
 	      THISDIR=../$(THISDIR)\
 	      MAKEDEPEND=Makedepend $(LIB)
 	@$(MAKE) LNSRC=$(DEBUGDIR)/$(LIB) LNDEST=$(LIBINST)/$(LIB) __link
-
-$(STATICLIB:=.dbg) : $(STATICPLUGIN:=.dbg)
-	@[ -d $(DEBUGDIR) ] || mkdir $(DEBUGDIR)
-	@cd $(DEBUGDIR);\
-	  $(MAKE) -f ../GNUmakefile "DOF=$(DBGF)"  TOPDIR=../${TOPDIR} \
-	      THISDIR=../$(THISDIR)\
-	      MAKEDEPEND=Makedepend $(STATICLIB)
-	@$(MAKE) LNSRC=$(DEBUGDIR)/$(STATICLIB) LNDEST=$(LIBINST)/$(STATICLIB) __link
 
 $(PLUGIN:=.dbg) : 
 	@[ -d $(DEBUGDIR) ] || mkdir $(DEBUGDIR)
@@ -144,15 +124,6 @@ $(LIB:=.opt) :
 	        MAKEDEPEND=Makedepend $(LIB)
 	@$(MAKE) LNSRC=$(OPTDIR)/$(LIB) LNDEST=$(LIBINST)/$(LIB) __link
 
-$(STATICLIB:=.opt) : 
-	@[ -d $(OPTDIR) ] || mkdir -p $(OPTDIR)
-	@cd $(OPTDIR);\
-	  $(MAKE) -f ../GNUmakefile DOF=$(OPTF) TOPDIR=../${TOPDIR} \
-	        THISDIR=../$(THISDIR)\
-	        MAKEDEPEND=Makedepend $(STATICLIB)
-	@$(MAKE) LNSRC=$(OPTDIR)/$(STATICLIB) LNDEST=$(LIBINST)/$(STATICLIB) __link
-
-
 $(PLUGIN:=.opt) : 
 	@[ -d $(OPTDIR) ] || mkdir -p $(OPTDIR)
 	@cd $(OPTDIR); \
@@ -160,14 +131,6 @@ $(PLUGIN:=.opt) :
 	    THISDIR=../$(THISDIR)\
 	               MAKEDEPEND=Makedepend $(PLUGIN)
 	@$(MAKE) LNSRC=$(OPTDIR)/$(PLUGIN) LNDEST=$(PLUGININST)/$(PLUGIN) __link
-
-$(STATICPLUGIN:=.opt) : 
-	@[ -d $(OPTDIR) ] || mkdir -p $(OPTDIR)
-	@cd $(OPTDIR); \
-	  $(MAKE) -f ../GNUmakefile DOF=$(OPTF) TOPDIR=../${TOPDIR} \
-	    THISDIR=../$(THISDIR)\
-	               MAKEDEPEND=Makedepend STATICPLUGIN=$(PLUGIN:.$(PLUGIN_EXT)=.a) $(STATICPLUGIN)
-	@$(MAKE) LNSRC=$(OPTDIR)/$(STATICPLUGIN) LNDEST=$(PLUGININST)/$(STATICPLUGIN) __link
 
 
 ## Revamped method for making Makedepend files
@@ -216,6 +179,7 @@ endif
 depend : $(MAKEDEPEND)
 
 __link : 
+	@echo Calling dolink.sh wit LNSRC = $(LNSRC) and LNDEST = $(LNDEST)
 	@sh $(TOPDIR)/Make/dolink.sh $(TOPDIR) $(LNSRC) $(LNDEST) "$(LINK)"
 		
 __instfiles :

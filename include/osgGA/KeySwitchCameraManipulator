@@ -1,0 +1,70 @@
+#ifndef OSGUTIL_KEYSWITCCAMERAMANIPULATORHER
+#define OSGUTIL_KEYSWITCHCAMERAMANIPULATORER 1
+
+#include <osgGA/Export>
+#include <osgGA/CameraManipulator>
+#include <osgGA/GUIEventHandler>
+#include <osgGA/GUIEventHandlerVisitor>
+//#include <osgUtil/CallbackList>
+
+namespace osgGA{
+
+class GUIEventAdapter;
+class GUIActionAdapter;
+
+class OSGGA_EXPORT KeySwitchCameraManipulator : public CameraManipulator
+{
+    public:
+
+        // Local methods
+
+        void addCameraManipulator(int key, std::string name, CameraManipulator *cm);
+
+        //typedef void (* Callback)(KeySwitchCameraManipulator *);
+
+//         class Callback: public osgUtil::CallbackList<KeySwitchCameraManipulator>::Callback {
+//             public:
+//                 virtual ~Callback() {};
+//                 virtual void operator()(KeySwitchCameraManipulator *) = 0;
+//         };
+// 
+//         void addCallback(Callback*);
+// 
+//         void removeCallback(Callback*);
+
+        // Overrides from CameraManipulator...
+
+	virtual void setCamera(osg::Camera* c)          { _current->setCamera(c); }
+
+	virtual const osg::Camera * getCamera() const   { return _current->getCamera(); }
+
+	virtual osg::Camera * getCamera()               { return _current->getCamera(); }
+
+        virtual void setNode(osg::Node* n)              { _current->setNode(n); }
+
+        virtual const osg::Node* getNode() const        { return _current->getNode(); }
+
+        virtual osg::Node* getNode()                    { return _current->getNode(); }
+
+        virtual void home(const GUIEventAdapter& ee,GUIActionAdapter& aa) { _current->home(ee,aa); }
+
+        virtual void init(const GUIEventAdapter& ee,GUIActionAdapter& aa) { _current->init(ee,aa); }
+
+        virtual bool handle(const GUIEventAdapter& ea,GUIActionAdapter& us);
+
+    private:
+
+        typedef std::pair<std::string, osg::ref_ptr<CameraManipulator> > NamedManipulator;
+        typedef std::map<int, NamedManipulator> KeyManipMap;
+        KeyManipMap _manips;
+
+        osg::ref_ptr<CameraManipulator> _current;
+
+        // Callbacks
+        //CallbackList<KeySwitchCameraManipulator>    _cameraManipChangeCallbacks;
+
+};
+
+};
+
+#endif

@@ -30,6 +30,24 @@ Package=<4>
 
 ###############################################################################
 
+Project: "Core osgGA"=".\osgGA\osgGA.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "Core osgGLUT"=".\osgGLUT\osgGLUT.dsp" - Package Owner=<4>
 
 Package=<5>
@@ -43,6 +61,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name Core osgUtil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name Core osgDB
@@ -99,6 +120,9 @@ Package=<4>
     Project_Dep_Name Core osgDB
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name Core osgGLUT
     End Project Dependency
     Begin Project Dependency
@@ -121,6 +145,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name Core osgGLUT
@@ -168,6 +195,9 @@ Package=<4>
     Project_Dep_Name Core osgDB
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name Core osgGLUT
     End Project Dependency
     Begin Project Dependency
@@ -190,6 +220,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name Core osgGLUT
@@ -216,6 +249,9 @@ Package=<4>
     Project_Dep_Name Core osgDB
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name Core osgGLUT
     End Project Dependency
     Begin Project Dependency
@@ -238,6 +274,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name Core osgGLUT
@@ -267,6 +306,9 @@ Package=<4>
     Project_Dep_Name Core osgDB
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name Core osgGLUT
     End Project Dependency
     Begin Project Dependency
@@ -289,6 +331,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name Core osgGLUT
@@ -315,6 +360,9 @@ Package=<4>
     Project_Dep_Name Core osgDB
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name Core osgGLUT
     End Project Dependency
     Begin Project Dependency
@@ -339,6 +387,9 @@ Package=<4>
     Project_Dep_Name Core osgDB
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name Core osgGLUT
     End Project Dependency
     Begin Project Dependency
@@ -361,6 +412,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name Core osgGLUT
@@ -388,6 +442,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name Core osgGLUT
@@ -429,6 +486,9 @@ Package=<4>
     Project_Dep_Name Core osgDB
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name Core osgGLUT
     End Project Dependency
     Begin Project Dependency
@@ -451,6 +511,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name Core osgGLUT

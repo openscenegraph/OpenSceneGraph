@@ -1,0 +1,40 @@
+#ifndef OSGGA_SETSCENEVIEWGEHVISITOR
+#define OSGGA_SETSCENEVIEWGEHVISITOR 1
+
+#include <osgGA/GUIEventHandlerVisitor>
+#include <osgUtil/SceneView>
+
+namespace osgGA{
+
+// Some forward declarations
+class GUIEventHandler;
+class CameraManipulator;
+
+/** SetSceneViewGUIEventHandlerVisitor which visits various types of GUIEventHandler and
+sets them up appropriately, given a new scene view.
+. */
+
+class OSGGA_EXPORT SetSceneViewVisitor: public GUIEventHandlerVisitor
+{
+    public:
+
+        SetSceneViewVisitor(GUIEventAdapter* in,
+                               GUIActionAdapter* out,
+                               osgUtil::SceneView* sv):
+                               GUIEventHandlerVisitor(in,out),
+                               _sceneView(sv) {}
+ 
+        virtual ~SetSceneViewVisitor()         {}
+
+        virtual void visit(CameraManipulator& cm);
+        virtual void visit(StateSetManipulator& cm);
+
+    private:
+
+        osg::ref_ptr<osgUtil::SceneView> _sceneView;
+
+};
+
+};
+
+#endif

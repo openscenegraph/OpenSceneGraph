@@ -1,0 +1,39 @@
+//C++ header - Open Scene Graph - Copyright (C) 1998-2001 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+
+#ifndef OSGGA_VERSION
+#define OSGGA_VERSION 1
+
+#include <osgGA/Export>
+
+
+extern "C" {
+
+/**
+ * getVersion_osgGA() returns the library version number.
+ * Numbering convention : osg_src-0.8-31 will return 0.8.31 from getVersion_osgGA.
+ *
+ * This C function can be also used to check for the existence of the OpenSceneGraph
+ * library using autoconf and its m4 macro AC_CHECK_LIB.
+ *
+ * Here is the code to add to your configure.in:
+ \verbatim
+ #
+ # Check for the OpenSceneGraph (OSG) utility library
+ #
+ AC_CHECK_LIB(osg, osgGAGetVersion, ,
+    [AC_MSG_ERROR(OpenSceneGraph utility library not found. See http://www.openscenegraph.org)],)
+ \endverbatim
+*/
+extern OSGGA_EXPORT const char* osgGAGetVersion();
+
+/**
+ * getLibraryName_osgGA() returns the library name in human friendly form.
+*/
+extern OSGGA_EXPORT const char* osgGAGetLibraryName();
+
+}
+
+#endif
+

@@ -1,0 +1,55 @@
+#ifndef OSGGA_GUIEVENTHANDLERVISITOR
+#define OSGGA_GUIEVENTHANDLERVISITOR 1
+
+#include <osg/ref_ptr>
+#include <osgGA/Export>
+#include <osgGA/GUIEventAdapter>
+
+namespace osgGA{
+
+// Some forward declarations
+class GUIActionAdapter;
+class CompositeGUIEventHandler;
+class CameraManipulator;
+class StateSetManipulator;
+
+/** Base class primarily for visiting GUIEventHandlers.
+
+A Default Visitor, (Might want to make it an Extrinsic Visitor at some point).
+By default, it does nothing to the things it visits. Sub classes of this Visitor
+need only override visit operations for the types of object they're interested in.
+
+*/
+
+
+class OSGGA_EXPORT GUIEventHandlerVisitor
+{
+    public:
+
+        virtual void visit(CompositeGUIEventHandler&);
+        virtual void visit(CameraManipulator&) {};
+        virtual void visit(StateSetManipulator&) {};
+
+        // Accessors
+
+        /** Get the GUI EventAdapter associated with this GUIEventHandlerVisitor */
+        const GUIEventAdapter *getGUIEventAdapter() {  return _gea.get(); }
+
+        /** Get the GUI Action Adapter associated with this GEH Visitor */
+        GUIActionAdapter *getGUIActionAdapter() { return _gaa; }
+
+    protected:
+
+        GUIEventHandlerVisitor(GUIEventAdapter* in, GUIActionAdapter* out):_gea(in),_gaa(out) {}
+        virtual ~GUIEventHandlerVisitor() {}
+
+    private:
+  
+        osg::ref_ptr<GUIEventAdapter> _gea;
+        GUIActionAdapter*             _gaa; // Just a pointer. NOT owned by this object.
+
+};
+
+};
+
+#endif

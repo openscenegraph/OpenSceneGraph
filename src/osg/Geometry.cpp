@@ -2276,7 +2276,7 @@ class ExpandIndexedArray : public osg::ConstArrayVisitor
             T* newArray = 0;
 
             // if source array type and target array type are equal but arrays arn't equal
-            if (_targetArray && _targetArray->getType()==array.getType() && _targetArray!=&array)
+            if (_targetArray && _targetArray->getType()==array.getType() && _targetArray!=(osg::Array*)(&array))
             {
                 // reuse exisiting target array 
                 newArray = static_cast<T*>(_targetArray);

@@ -418,6 +418,7 @@ class ReaderWriterBMP : public osgDB::ReaderWriter
             switch(img.computeNumComponents(img.getPixelFormat()))
             {
                 case(3) :
+                {
                     memcpy(dta,img.data(),size*sizeof(unsigned char));
                     for(unsigned int i=0;i<ny;i++) { // per scanline
                         int ioff=4*wordsPerScan*i;
@@ -428,8 +429,10 @@ class ReaderWriterBMP : public osgDB::ReaderWriter
                         dta[3*j+ioff+2]=tmp;
                         }
                     }
+                }
                 break;
                 case(4) :
+                {
                     for(unsigned int i=0;i<ny;i++) { // per scanline
                         int ioff=4*wordsPerScan*i;
                         for(unsigned int j=0;j<nx;j++) {
@@ -441,6 +444,7 @@ class ReaderWriterBMP : public osgDB::ReaderWriter
                         dta[3*j+ioff+2]=data[4*(j+i*nx)+0];
                         }
                     }
+                }
                 break;
                 default:
                     osg::notify(osg::WARN) << "Cannot write images with other number of components than 3 or 4" << std::endl;

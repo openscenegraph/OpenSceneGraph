@@ -455,13 +455,18 @@ class ReaderWriterJPEG : public osgDB::ReaderWriter
             int t = height_ret;
             int r = 1;
 
-            int internalFormat = numComponents_ret;
+            //int internalFormat = numComponents_ret;
+            int internalFormat = 
+                numComponents_ret == 1 ? GL_LUMINANCE :
+                numComponents_ret == 2 ? GL_LUMINANCE_ALPHA :
+                numComponents_ret == 3 ? GL_RGB :
+                numComponents_ret == 4 ? GL_RGBA : (GLenum)-1;
 
             unsigned int pixelFormat =
                 numComponents_ret == 1 ? GL_LUMINANCE :
-            numComponents_ret == 2 ? GL_LUMINANCE_ALPHA :
-            numComponents_ret == 3 ? GL_RGB :
-            numComponents_ret == 4 ? GL_RGBA : (GLenum)-1;
+                numComponents_ret == 2 ? GL_LUMINANCE_ALPHA :
+                numComponents_ret == 3 ? GL_RGB :
+                numComponents_ret == 4 ? GL_RGBA : (GLenum)-1;
 
             unsigned int dataType = GL_UNSIGNED_BYTE;
 

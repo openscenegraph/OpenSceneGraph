@@ -13,8 +13,8 @@ DriveManipulator::DriveManipulator()
 {
     _modelScale = 0.01f;
     _velocity = 0.0f;
-    _height = 1.0f;
-    _buffer = 1.0f;
+    _height = 1.5f;
+    _buffer = 2.0f;
     //_speedMode = USE_MOUSE_Y_FOR_SPEED;
     _speedMode = USE_MOUSE_BUTTONS_FOR_SPEED;
 }
@@ -32,8 +32,11 @@ void DriveManipulator::setNode(osg::Node* node)
     {
         const osg::BoundingSphere& boundingSphere=_node->getBound();
         _modelScale = boundingSphere._radius;
-        _height = sqrtf(_modelScale)*0.03f;
-        _buffer = sqrtf(_modelScale)*0.05f;
+        //_height = sqrtf(_modelScale)*0.03f;
+        //_buffer = sqrtf(_modelScale)*0.05f;
+        
+        _height = 1.5f;
+        _buffer = 2.0f;
     }
 }
 

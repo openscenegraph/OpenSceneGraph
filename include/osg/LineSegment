@@ -36,7 +36,7 @@ class SG_EXPORT LineSegment : public Referenced
         /** return true if segment intersects BoundingBox.*/
         const bool intersect(const BoundingBox& bb) const;
 
-        /** return true if segment intersects BoundingSphere and return the intersection ratio's.*/
+        /** return true if segment intersects BoundingBox and return the intersection ratio's.*/
         const bool intersect(const BoundingBox& bb,float& r1,float& r2) const;
 
         /** return true if segment intersects BoundingSphere.*/

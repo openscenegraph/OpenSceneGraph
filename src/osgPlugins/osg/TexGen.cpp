@@ -94,6 +94,8 @@ bool TexGen_matchModeStr(const char* str,TexGen::Mode& mode)
     if (strcmp(str,"EYE_LINEAR")==0) mode = TexGen::EYE_LINEAR;
     else if (strcmp(str,"OBJECT_LINEAR")==0) mode = TexGen::OBJECT_LINEAR;
     else if (strcmp(str,"SPHERE_MAP")==0) mode = TexGen::SPHERE_MAP;
+    else if (strcmp(str,"NORMAL_MAP")==0) mode = TexGen::NORMAL_MAP;
+    else if (strcmp(str,"REFLECTION_MAP")==0) mode = TexGen::REFLECTION_MAP;
     else return false;
     return true;
 }
@@ -106,6 +108,8 @@ const char* TexGen_getModeStr(TexGen::Mode mode)
         case(TexGen::EYE_LINEAR): return "EYE_LINEAR";
         case(TexGen::OBJECT_LINEAR): return "OBJECT_LINEAR";
         case(TexGen::SPHERE_MAP): return "SPHERE_MAP";
+        case(TexGen::NORMAL_MAP): return "NORMAL_MAP";
+        case(TexGen::REFLECTION_MAP): return "REFLECTION_MAP";
     }
     return "";
 }

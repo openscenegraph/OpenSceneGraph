@@ -9,6 +9,9 @@
 
 #include <osg/Texture>
 
+#ifndef GL_TEXTURE_CUBE_MAP
+#define GL_TEXTURE_CUBE_MAP 0x8513
+#endif
 
 namespace osg {
 
@@ -38,8 +41,14 @@ class SG_EXPORT TextureCubeMap : public Texture
             NEGATIVE_Z=5
         };
 
-        /** Set the texture image. */
-        void setImage( const Face, Image* image);
+        /** Set the texture image for specified face. */
+        void setImage(const Face, Image* image);
+
+        /** Get the texture image for specified face. */
+        Image* getImage(const Face);
+
+        /** Get the const texture image for specified face. */
+        const Image* getImage(const Face) const;
 
         /** On first apply (unless already compiled), create the minmapped 
           * texture and bind it, subsequent apply will simple bind to texture.*/
@@ -49,7 +58,9 @@ class SG_EXPORT TextureCubeMap : public Texture
 
         virtual ~TextureCubeMap();
         bool imagesValid() const;
-        void setImage(Image* image) {}  // prevent call to Texture::setImage(Image* image)
+        void setImage(Image*) {}  // prevent call to Texture::setImage(Image* image)
+        Image* getImage() { return _image.get(); }  // prevent call to Texture::setImage(Image* image)
+        const Image* getImage() const { return _image.get(); }  // prevent call to Texture::setImage(Image* image)
 
         mutable ref_ptr<Image> _images[6];
 };

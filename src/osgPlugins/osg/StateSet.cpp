@@ -1,8 +1,10 @@
-#include "osg/StateSet"
+#include <osg/StateSet>
+#include <osg/Texture>
+#include <osg/TextureCubeMap>
 
-#include "osgDB/Registry"
-#include "osgDB/Input"
-#include "osgDB/Output"
+#include <osgDB/Registry>
+#include <osgDB/Input>
+#include <osgDB/Output>
 
 using namespace osg;
 using namespace osgDB;
@@ -70,7 +72,12 @@ void initGLNames()
     ADD_NAME("GL_POLYGON_OFFSET_LINE",GL_POLYGON_OFFSET_LINE)
     ADD_NAME("GL_POLYGON_OFFSET_POINT",GL_POLYGON_OFFSET_POINT)
     
+    ADD_NAME("GL_TEXTURE_1D",GL_TEXTURE_1D)
     ADD_NAME("GL_TEXTURE_2D",GL_TEXTURE_2D)
+    ADD_NAME("GL_TEXTURE_3D",GL_TEXTURE_3D)
+    
+    ADD_NAME("GL_TEXTURE_CUBE_MAP",GL_TEXTURE_CUBE_MAP);
+    
     ADD_NAME("GL_TEXTURE_GEN_Q",GL_TEXTURE_GEN_Q)
     ADD_NAME("GL_TEXTURE_GEN_R",GL_TEXTURE_GEN_R)
     ADD_NAME("GL_TEXTURE_GEN_S",GL_TEXTURE_GEN_S)

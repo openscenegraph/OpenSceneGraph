@@ -23,8 +23,6 @@ namespace osg {
 class SG_EXPORT Viewport : public StateAttribute
 {
     public :
-    
-    
         Viewport();
         
         Viewport(int x,int y,int width,int height):

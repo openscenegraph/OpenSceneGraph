@@ -46,11 +46,15 @@ osg::Node* TrackballManipulator::getNode()
 }
 
 
-void TrackballManipulator::home(const GUIEventAdapter& ,GUIActionAdapter& us)
+void TrackballManipulator::home(double currentTime)
 {
     if (getAutoComputeHomePosition()) computeHomePosition();
-
     computePosition(_homeEye, _homeCenter, _homeUp);
+}
+
+void TrackballManipulator::home(const GUIEventAdapter& ea ,GUIActionAdapter& us)
+{
+    home(ea.time());
     us.requestRedraw();
 }
 

@@ -68,6 +68,7 @@ class OSGGA_EXPORT AnimationPathManipulator : public MatrixManipulator
         void init(const GUIEventAdapter& ea,GUIActionAdapter& us);
 
         void home(const GUIEventAdapter& ea,GUIActionAdapter& us);
+        void home(double currentTime);
 
         virtual bool handle(const GUIEventAdapter& ea,GUIActionAdapter& us);
 

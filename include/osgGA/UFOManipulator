@@ -100,7 +100,9 @@ class OSGGA_EXPORT UFOManipulator : public osgGA::MatrixManipulator
 
         /** Sets the viewpoint matrix to the home position */
         virtual void home(const osgGA::GUIEventAdapter&, osgGA::GUIActionAdapter&) ;
-        void home(void);
+        void home(double);
+
+        virtual void init(const GUIEventAdapter& ,GUIActionAdapter&);
 
         /** Handles incoming osgGA events */
 		bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter &aa);

@@ -21,12 +21,12 @@ class SG_EXPORT CullingSet : public Referenced
         CullingSet();
         CullingSet(const CullingSet& cs,const Matrix& matrix, const Vec4& pixelSizeVector):
             _mask(cs._mask),
-            _clippingVolume(cs._clippingVolume),
+            _frustum(cs._frustum),
             _occluderList(cs._occluderList),
             _pixelSizeVector(pixelSizeVector),
             _smallFeatureCullingPixelSize(cs._smallFeatureCullingPixelSize)
         {
-            _clippingVolume.transformProvidingInverse(matrix);
+            _frustum.transformProvidingInverse(matrix);
             for(OccluderList::iterator itr=_occluderList.begin();
                 itr!=_occluderList.end();
                 ++itr)
@@ -37,7 +37,7 @@ class SG_EXPORT CullingSet : public Referenced
         
         ~CullingSet();
     
-        typedef std::vector<ShadowOccluderVolume>   OccluderList;
+        typedef std::vector<ShadowVolumeOccluder>   OccluderList;
 
         typedef unsigned int Mask;
 
@@ -51,12 +51,12 @@ class SG_EXPORT CullingSet : public Referenced
         
         void setCullingMask(Mask mask) { _mask = mask; }
 
-        void setFrustum(Polytope& cv) { _clippingVolume = cv; }
+        void setFrustum(Polytope& cv) { _frustum = cv; }
 
-        Polytope& getFrustum() { return _clippingVolume; }
-        const Polytope& getFrustum() const { return _clippingVolume; }
+        Polytope& getFrustum() { return _frustum; }
+        const Polytope& getFrustum() const { return _frustum; }
         
-        void addOccluder(ShadowOccluderVolume& cv) { _occluderList.push_back(cv); }
+        void addOccluder(ShadowVolumeOccluder& cv) { _occluderList.push_back(cv); }
 
 
         void setPixelSizeVector(const Vec4& v) { _pixelSizeVector = v; }
@@ -99,7 +99,7 @@ class SG_EXPORT CullingSet : public Referenced
             if (_mask&VIEW_FRUSTUM_CULLING)
             {
                 // is it outside the view frustum...
-                if (!_clippingVolume.contains(bb)) return true;
+                if (!_frustum.contains(bb)) return true;
             }
             
             if (_mask&SMALL_FEATURE_CULLING)
@@ -128,7 +128,7 @@ class SG_EXPORT CullingSet : public Referenced
             if (_mask&VIEW_FRUSTUM_CULLING)
             {
                 // is it outside the view frustum...
-                if (!_clippingVolume.contains(bs)) return true;
+                if (!_frustum.contains(bs)) return true;
             }
             
             if (_mask&SMALL_FEATURE_CULLING)
@@ -155,7 +155,7 @@ class SG_EXPORT CullingSet : public Referenced
         
         inline void pushCurrentMask()
         {
-            _clippingVolume.pushCurrentMask();
+            _frustum.pushCurrentMask();
             
             if (!_occluderList.empty())
             {
@@ -170,7 +170,7 @@ class SG_EXPORT CullingSet : public Referenced
         
         inline void popCurrentMask()
         {
-            _clippingVolume.popCurrentMask();
+            _frustum.popCurrentMask();
 
             if (!_occluderList.empty())
             {
@@ -187,7 +187,7 @@ class SG_EXPORT CullingSet : public Referenced
     protected:
     
         Mask            _mask;
-        Polytope        _clippingVolume;
+        Polytope        _frustum;
         OccluderList    _occluderList;        
         Vec4            _pixelSizeVector;
         float           _smallFeatureCullingPixelSize;

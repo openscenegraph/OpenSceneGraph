@@ -149,6 +149,10 @@ SOURCE=..\..\src\osg\CullFace.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\CullStack.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\CullingSet.cpp
 # End Source File
 # Begin Source File
@@ -430,6 +434,10 @@ SOURCE=..\..\Include\Osg\CopyOp
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\CullFace
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\CullStack
 # End Source File
 # Begin Source File
 

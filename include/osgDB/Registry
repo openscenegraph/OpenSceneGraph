@@ -51,9 +51,6 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
         static Registry* instance();
 
-        /** read the command line string list, removing any matched control sequences.*/
-        void readCommandLine(std::vector<std::string>& commandLine);
-
         /** read the command line arguments.*/
         void readCommandLine(osg::ArgumentParser& commandLine);
 
@@ -200,12 +197,6 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         FilePathList       _libraryFilePath;
 
 };
-
-/** read the command line string list into the osgDB::Registry(), removing any matched control sequences.*/
-inline void readCommandLine(std::vector<std::string>& commandLine)
-{
-    Registry::instance()->readCommandLine(commandLine);
-}
 
 /** read the command line arguments.*/
 inline void readCommandLine(osg::ArgumentParser& parser)

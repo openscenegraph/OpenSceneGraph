@@ -19,6 +19,7 @@
 #include <osg/Geode>
 #include <osg/Timer>
 #include <osg/DisplaySettings>
+#include <osg/ArgumentParser>
 
 #include <osgGA/GUIEventAdapter>
 #include <osgGA/CameraManipulator>
@@ -46,7 +47,12 @@ class OSGGLUT_EXPORT Viewer : public Window, public osgGA::GUIActionAdapter
     public:
 
         Viewer();
+        Viewer(osg::ArgumentParser& arguments);
+        
         virtual ~Viewer();
+
+        /** read the command line string list, removing any matched control sequences.*/
+        void readCommandLine(osg::ArgumentParser& arguments);
 
         /** init is deprecated, you should use addViewport instead. init is
           * only available for backwards compatibility.*/
@@ -108,8 +114,6 @@ class OSGGLUT_EXPORT Viewer : public Window, public osgGA::GUIActionAdapter
 
 	/// Toggle fullscreen
 	virtual void toggleFullScreen();
-        /** read the command line string list, removing any matched control sequences.*/
-        void readCommandLine(std::vector<std::string>& commandLine);
 
         void setDisplaySettings(osg::DisplaySettings* ds) { _displaySettings = ds; }
         osg::DisplaySettings* getDisplaySettings() { return _displaySettings.get(); }
@@ -129,6 +133,8 @@ class OSGGLUT_EXPORT Viewer : public Window, public osgGA::GUIActionAdapter
         int mapWindowXYToViewport(int x, int y);
 
     protected:
+    
+        void initialize();
 
         virtual void clear();
 

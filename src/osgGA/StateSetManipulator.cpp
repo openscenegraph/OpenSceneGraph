@@ -36,9 +36,11 @@ bool StateSetManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& aa)
 {
     if(!_drawState.valid()) return false;
 
-    if(ea.getEventType()==GUIEventAdapter::KEYDOWN){
+    if(ea.getEventType()==GUIEventAdapter::KEYDOWN)
+    {
 
-        switch( ea.getKey() ){
+        switch( ea.getKey() )
+        {
 
             case 'b' :
                 _backface = !_backface;
@@ -64,24 +66,24 @@ bool StateSetManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& aa)
                 return true;
                 break;
 
-        case 'w' :
-            {
-                osg::PolygonMode* polyModeObj = dynamic_cast<osg::PolygonMode*>(_drawState->getAttribute(osg::StateAttribute::POLYGONMODE));
-                if (!polyModeObj) 
+            case 'w' :
                 {
-                    polyModeObj = new osg::PolygonMode;
-                    _drawState->setAttribute(polyModeObj);
+                    osg::PolygonMode* polyModeObj = dynamic_cast<osg::PolygonMode*>(_drawState->getAttribute(osg::StateAttribute::POLYGONMODE));
+                    if (!polyModeObj) 
+                    {
+                        polyModeObj = new osg::PolygonMode;
+                        _drawState->setAttribute(polyModeObj);
+                    }
+
+                    // cycle through the available modes.  
+                    switch(polyModeObj->getMode(osg::PolygonMode::FRONT_AND_BACK))
+                    {
+                        case osg::PolygonMode::FILL : polyModeObj->setMode(osg::PolygonMode::FRONT_AND_BACK,osg::PolygonMode::LINE); break;
+                        case osg::PolygonMode::LINE : polyModeObj->setMode(osg::PolygonMode::FRONT_AND_BACK,osg::PolygonMode::POINT); break;
+                        case osg::PolygonMode::POINT : polyModeObj->setMode(osg::PolygonMode::FRONT_AND_BACK,osg::PolygonMode::FILL); break;
+                    }
                 }
-                
-                // cycle through the available modes.  
-                switch(polyModeObj->getMode(osg::PolygonMode::FRONT_AND_BACK))
-                {
-                    case osg::PolygonMode::FILL : polyModeObj->setMode(osg::PolygonMode::FRONT_AND_BACK,osg::PolygonMode::LINE); break;
-                    case osg::PolygonMode::LINE : polyModeObj->setMode(osg::PolygonMode::FRONT_AND_BACK,osg::PolygonMode::POINT); break;
-                    case osg::PolygonMode::POINT : polyModeObj->setMode(osg::PolygonMode::FRONT_AND_BACK,osg::PolygonMode::FILL); break;
-                }
-            }
-            break;
+                break;
         }
     }
     return false;

@@ -3,6 +3,12 @@
 OSG News (most significant items from ChangeLog)
 ================================================
 
+    Improvemnts to the Makefle system.
+
+    Added support for early abort of rendering, useful for interactive
+    applications which occasional have rendering that takes that long
+    enough (i.e. several second) that end users may wish to abort 
+    during the drawing.
 
     Improved thread safety when working multipipe systems.
 
@@ -10,7 +16,7 @@ OSG News (most significant items from ChangeLog)
 
     New MD2 plugin
 
-    New osgText implementions.  
+    New thread safe osgText implemention.  
 
 
 24th January 2003 - OpenSceneGraph-0.9.3.tar.gz

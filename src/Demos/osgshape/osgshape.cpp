@@ -6,7 +6,6 @@
 #include <osgGA/TrackballManipulator>
 
 #include <osgGLUT/Viewer>
-#include <osgGLUT/glut>
 
 #include <osgDB/ReadFile>
 
@@ -85,21 +84,32 @@ osg::Geode* createShapes()
 int main( int argc, char **argv )
 {
 
-    glutInit( &argc, argv );
+    // use an ArgumentParser object to manage the program arguments.
+    osg::ArgumentParser arguments(&argc,argv);
 
-    // create the commandline args.
-    std::vector<std::string> commandLine;
-    for(int i=1;i<argc;++i) commandLine.push_back(argv[i]);
+    // set up the usage document, in case we need to print out how to use this program.
+    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getProgramName()+" [options] filename ...");
+    arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
+   
+    // initialize the viewer.
+    osgGLUT::Viewer viewer(arguments);
 
-    // create the viewer and the model to it.
-    osgGLUT::Viewer viewer;
+    // if user request help write it out to cout.
+    if (arguments.read("-h") || arguments.read("--help"))
+    {
+        arguments.getApplicationUsage()->write(std::cout);
+        return 1;
+    }
 
-    viewer.setWindowTitle(argv[0]);
+    // any option left unread are converted into errors to write out later.
+    arguments.reportRemainingOptionsAsUnrecognized();
 
- 
-    // configure the viewer from the commandline arguments, and eat any
-    // parameters that have been matched.
-    viewer.readCommandLine(commandLine);
+    // report any errors if they have occured when parsing the program aguments.
+    if (arguments.errors())
+    {
+        arguments.writeErrorMessages(std::cout);
+        return 1;
+    }
     
     osg::Node* node = createShapes();
 

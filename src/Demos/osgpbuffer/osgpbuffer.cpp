@@ -601,8 +601,8 @@ int main( int argc, char **argv )
     }
 
     // create the commandline args.
-    std::vector<std::string> commandLine;
-    for(int i=1;i<argc;++i) commandLine.push_back(argv[i]);
+    std::vector<std::string> arguments;
+    for(int i=1;i<argc;++i) arguments.push_back(argv[i]);
     
 
     // initialize the viewer.
@@ -611,14 +611,14 @@ int main( int argc, char **argv )
     
     // configure the viewer from the commandline arguments, and eat any
     // parameters that have been matched.
-    viewer.readCommandLine(commandLine);
+    viewer.readCommandLine(arguments);
     
     // configure the plugin registry from the commandline arguments, and 
     // eat any parameters that have been matched.
-    osgDB::readCommandLine(commandLine);
+    osgDB::readCommandLine(arguments);
     
     // load the nodes from the commandline arguments.
-    osg::Node* loadedModel = osgDB::readNodeFiles(commandLine);
+    osg::Node* loadedModel = osgDB::readNodeFiles(arguments);
     
 
     if (!loadedModel)

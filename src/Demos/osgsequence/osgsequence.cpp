@@ -9,7 +9,6 @@
 #include <osgGA/TrackballManipulator>
 
 #include <osgGLUT/Viewer>
-#include <osgGLUT/glut>
 
 
 //
@@ -69,25 +68,6 @@ private:
     std::vector<osg::Sequence*>* _seq;
 };
 
-void write_usage(std::ostream& out, const std::string& name)
-{
-    out << std::endl;
-    out <<"usage:"<< std::endl;
-    out <<"    "<<name<<" [options] infile1 [infile2 ...]"<< std::endl;
-    out << std::endl;
-    out <<"options:"<< std::endl;
-    out <<"    -l libraryName   - load plugin of name libraryName"<< std::endl;
-    out <<"                       i.e. -l osgdb_pfb"<< std::endl;
-    out <<"                       Useful for loading reader/writers which can load"<< std::endl;
-    out <<"                       other file formats in addition to its extension."<< std::endl;
-    out <<"    -e extensionName - load reader/wrter plugin for file extension"<< std::endl;
-    out <<"                       i.e. -e pfb"<< std::endl;
-    out <<"                       Useful short hand for specifying full library name as"<< std::endl;
-    out <<"                       done with -l above, as it automatically expands to"<< std::endl;
-    out <<"                       the full library name appropriate for each platform."<< std::endl;
-    out<<std::endl;
-}
-
 osg::Sequence* generateSeq(osg::Sequence::LoopMode mode,
                            float speed, int nreps,
                            std::vector<osg::Node*>& model)
@@ -114,39 +94,44 @@ osg::Sequence* generateSeq(osg::Sequence::LoopMode mode,
 
 int main( int argc, char **argv )
 {
-    // initialize the GLUT
-    glutInit( &argc, argv );
+    // use an ArgumentParser object to manage the program arguments.
+    osg::ArgumentParser arguments(&argc,argv);
 
-    if (argc < 2)
+    // set up the usage document, in case we need to print out how to use this program.
+    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getProgramName()+" [options] filename ...");
+    arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
+   
+    // initialize the viewer.
+    osgGLUT::Viewer viewer(arguments);
+
+    // if user request help write it out to cout.
+    if (arguments.read("-h") || arguments.read("--help"))
     {
-        write_usage(osg::notify(osg::NOTICE), argv[0]);
-        return 0;
+        arguments.getApplicationUsage()->write(std::cout);
+        return 1;
     }
 
-    // create commandline args
-    std::vector<std::string> commandLine;
-    for (int ia = 1; ia < argc; ia++)
-        commandLine.push_back(argv[ia]);
+    // any option left unread are converted into errors to write out later.
+    arguments.reportRemainingOptionsAsUnrecognized();
 
-    // initialize the viewer
-    osgGLUT::Viewer viewer;
-    viewer.setWindowTitle(argv[0]);
-
-    // configure the viewer from the commandline arguments, and eat any
-    // parameters that have been matched.
-    viewer.readCommandLine(commandLine);
+    // report any errors if they have occured when parsing the program aguments.
+    if (arguments.errors())
+    {
+        arguments.writeErrorMessages(std::cout);
+        return 1;
+    }
     
     // assumes any remaining parameters are models
     std::vector<osg::Node*> model;
-    unsigned int i;
-    for (i = 0; i < commandLine.size(); i++) {
-        std::cerr << "Loading " << commandLine[i] << std::endl;
-        osg::Node* node = osgDB::readNodeFile(commandLine[i]);
+    int i;
+    for (i = 1; i < arguments.argc(); i++)
+    {
+        std::cerr << "Loading " << arguments[i] << std::endl;
+        osg::Node* node = osgDB::readNodeFile(arguments[i]);
         if (node)
             model.push_back(node);
     }
     if (model.empty()) {
-        write_usage(osg::notify(osg::NOTICE),argv[0]);
         return -1;
     }
 

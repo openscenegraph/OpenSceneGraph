@@ -1,5 +1,3 @@
-#include <osg/GL>
-#include <osgGLUT/glut>
 #include <osgGLUT/Viewer>
 
 #include <osg/MatrixTransform>
@@ -22,45 +20,6 @@
 
 #include <osg/OccluderNode>
 #include <osg/Geometry>
-
-void write_usage(std::ostream& out,const std::string& name)
-{
-    out << std::endl;
-    out <<"usage:"<< std::endl;
-    out <<"    "<<name<<" [options] infile1 [infile2 ...]"<< std::endl;
-    out << std::endl;
-    out <<"options:"<< std::endl;
-    out <<"    -c                  - set osgoccluder's manual mode for creating occluders."<< std::endl;
-    out <<"                          press 'a' to start/add points to an occluder, using "<< std::endl;
-    out <<"                                the nearest vertex to the current mouse poistion."<< std::endl;
-    out <<"                          press 'e' to end occluder, this occluder is then added"<< std::endl;
-    out <<"                                    into the model."<< std::endl;
-    out <<"                          press 'O' save just the occluders to disk. "<< std::endl;
-    out << std::endl;
-    out <<"    -l libraryName      - load plugin of name libraryName"<< std::endl;
-    out <<"                          i.e. -l osgdb_pfb"<< std::endl;
-    out <<"                          Useful for loading reader/writers which can load"<< std::endl;
-    out <<"                          other file formats in addition to its extension."<< std::endl;
-    out <<"    -e extensionName    - load reader/wrter plugin for file extension"<< std::endl;
-    out <<"                          i.e. -e pfb"<< std::endl;
-    out <<"                          Useful short hand for specifying full library name as"<< std::endl;
-    out <<"                          done with -l above, as it automatically expands to"<< std::endl;
-    out <<"                          the full library name appropriate for each platform."<< std::endl;
-    out <<std::endl;
-    out <<"    -stereo             - switch on stereo rendering, using the default of,"<< std::endl;
-    out <<"                          ANAGLYPHIC or the value set in the OSG_STEREO_MODE "<< std::endl;
-    out <<"                          environmental variable. See doc/stereo.html for "<< std::endl;
-    out <<"                          further details on setting up accurate stereo "<< std::endl;
-    out <<"                          for your system. "<< std::endl;
-    out <<"    -stereo ANAGLYPHIC  - switch on anaglyphic(red/cyan) stereo rendering."<< std::endl;
-    out <<"    -stereo QUAD_BUFFER - switch on quad buffered stereo rendering."<< std::endl;
-    out <<std::endl;
-    out <<"    -stencil            - use a visual with stencil buffer enabled, this "<< std::endl;
-    out <<"                          also allows the depth complexity statistics mode"<< std::endl;
-    out <<"                          to be used (press 'p' three times to cycle to it)."<< std::endl;
-    out << std::endl;
-}
-
 
 
 class OccluderEventHandler : public osgGA::GUIEventHandler
@@ -320,42 +279,39 @@ osg::Group* createOccludersAroundModel(osg::Node* model)
 int main( int argc, char **argv )
 {
 
-    // initialize the GLUT
-    glutInit( &argc, argv );
+    // use an ArgumentParser object to manage the program arguments.
+    osg::ArgumentParser arguments(&argc,argv);
 
-    if (argc<2)
-    {
-        write_usage(std::cout,argv[0]);
-        return 0;
-    }
-    
-    // create the commandline args.
-    std::vector<std::string> commandLine;
-    for(int i=1;i<argc;++i) commandLine.push_back(argv[i]);
-    
-    bool manuallyCreateImpostors = false;
-
-    std::vector<std::string>::iterator itr=std::find(commandLine.begin(),commandLine.end(),std::string("-c"));
-    if (itr!=commandLine.end())    
-    {
-        manuallyCreateImpostors = true;
-        commandLine.erase(itr);
-    }
-
+    // set up the usage document, in case we need to print out how to use this program.
+    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getProgramName()+" [options] filename ...");
+    arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
+    arguments.getApplicationUsage()->addCommandLineOption("-c","Mannually create occluders");
+   
     // initialize the viewer.
-    osgGLUT::Viewer viewer;
-    viewer.setWindowTitle(argv[0]);
+    osgGLUT::Viewer viewer(arguments);
 
-    // configure the viewer from the commandline arguments, and eat any
-    // parameters that have been matched.
-    viewer.readCommandLine(commandLine);
-    
-    // configure the plugin registry from the commandline arguments, and 
-    // eat any parameters that have been matched.
-    osgDB::readCommandLine(commandLine);
+    bool manuallyCreateOccluders = false;
+    while (arguments.read("-c")) { manuallyCreateOccluders = true; }
+
+    // if user request help write it out to cout.
+    if (arguments.read("-h") || arguments.read("--help"))
+    {
+        arguments.getApplicationUsage()->write(std::cout);
+        return 1;
+    }
+
+    // any option left unread are converted into errors to write out later.
+    arguments.reportRemainingOptionsAsUnrecognized();
+
+    // report any errors if they have occured when parsing the program aguments.
+    if (arguments.errors())
+    {
+        arguments.writeErrorMessages(std::cout);
+        return 1;
+    }
 
     // load the nodes from the commandline arguments.
-    osg::Node* loadedmodel = osgDB::readNodeFiles(commandLine);
+    osg::Node* loadedmodel = osgDB::readNodeFiles(arguments);
     if (!loadedmodel)
     {
 //        write_usage(osg::notify(osg::NOTICE),argv[0]);
@@ -369,7 +325,7 @@ int main( int argc, char **argv )
     // add the occluders to the loaded model.
     osg::Group* rootnode = NULL;
     
-    if (manuallyCreateImpostors)
+    if (manuallyCreateOccluders)
     {
         rootnode = new osg::Group;
         rootnode->addChild(loadedmodel);
@@ -388,7 +344,7 @@ int main( int argc, char **argv )
     viewer.registerCameraManipulator(new osgGA::FlightManipulator);
     viewer.registerCameraManipulator(new osgGA::DriveManipulator);
 
-    if (manuallyCreateImpostors)
+    if (manuallyCreateOccluders)
     {
         viewer.prependEventHandler(new OccluderEventHandler(viewer.getViewportSceneView(0),rootnode));
     }

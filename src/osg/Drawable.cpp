@@ -73,7 +73,7 @@ void Drawable::flushDeletedDisplayLists(unsigned int contextID,double /*currentT
          }
     }
 
-    if (noDeleted!=0) std::cout<<"Number display lists deleted = "<<noDeleted<<std::endl;
+    if (noDeleted!=0) notify(INFO)<<"Number display lists deleted = "<<noDeleted<<std::endl;
 
     availableTime -= elapsedTime;
 }

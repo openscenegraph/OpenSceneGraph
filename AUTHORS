@@ -67,6 +67,7 @@ Axel Volley <volley@acm.org>
 
 Geoff Michel
         - .dw (design workshop) loader plugin.
+        - .bmp (Windows Bitmap fiile) loader plugin.
         - OpenGL based stats reporting added to osgGLUT::Viewer.
         
 Paul Fredrikson

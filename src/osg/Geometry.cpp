@@ -940,7 +940,8 @@ void Geometry::drawImplementation(State& state) const
     typedef std::map< Geometry::AttributeBinding, DrawVertexAttribList> DrawVertexAttribMap;
     DrawVertexAttribMap drawVertexAttribMap;
     
-    bool handleVertexAttributes = (!_vertexAttribList.empty() && extensions->isVertexProgramSupported());
+    bool vertexVertexAttributesSupported = extensions->isVertexProgramSupported();
+    bool handleVertexAttributes = (!_vertexAttribList.empty() && vertexVertexAttributesSupported);
 
     bool usingVertexBufferObjects = _useVertexBufferObjects && state.isVertexBufferObjectSupported();
     
@@ -1134,6 +1135,11 @@ void Geometry::drawImplementation(State& state) const
                     }
                 }
                 state.disableVertexAttribPointersAboveAndIncluding( index );
+                
+            }
+            else if (vertexVertexAttributesSupported)
+            {
+                state.disableVertexAttribPointersAboveAndIncluding( 0 );
             }
 
 
@@ -1216,6 +1222,11 @@ void Geometry::drawImplementation(State& state) const
                     }
                 }
                 state.disableVertexAttribPointersAboveAndIncluding( index );
+                
+            }
+            else if (vertexVertexAttributesSupported)
+            {
+                state.disableVertexAttribPointersAboveAndIncluding( 0 );
             }
         }
         

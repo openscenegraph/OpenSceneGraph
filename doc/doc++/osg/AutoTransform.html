@@ -7,7 +7,7 @@
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
-<H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osg::AutoTransform</A></H2></H2><BLOCKQUOTE>AutoTransform - is Transform the automatically scales or rotates  to keep its children relative to screen space coordinates.</BLOCKQUOTE>
+<H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osg::AutoTransform</A></H2></H2><BLOCKQUOTE>AutoTransform - is Transform the automatically scales or rotates  to keep its children relative to screen space coordinates</BLOCKQUOTE>
 <HR>
 
 <H2>Inheritance:</H2>
@@ -21,6 +21,11 @@
 <HR>
 
 <DL>
+<P><DL>
+<DT><H3>Public Classes</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.42.22">AutoRotateMode</A></B>
+</DL></P>
+
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.42.1">AutoTransform</A></B>()
@@ -65,57 +70,63 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.42.21">getAutoUpdateEyeMovementTolerance</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.42.22">setAutoRotateToScreen</A></B>(bool autoRotateToScreen)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.42.23">setAutoRotateMode</A></B>(<!1><A HREF="AutoTransform.html#DOC.2.42.22">AutoRotateMode</A> mode)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.42.23">getAutoRotateToScreen</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="AutoTransform.html#DOC.2.42.22">AutoRotateMode</A> <B><A HREF="#DOC.2.42.24">getAutoRotateMode</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.42.24">setAutoScaleToScreen</A></B>(bool autoScaleToScreen)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.42.25">setAutoRotateToScreen</A></B>(bool autoRotateToScreen)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.42.25">getAutoScaleToScreen</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.42.26">setAutoRotateToCamera</A></B>(bool autoRotateToCamera)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.42.26">computeLocalToWorldMatrix</A></B>(<!1><A HREF="osg.html#DOC.2.134">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.42.27">getAutoRotateToCamera</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.42.27">computeWorldToLocalMatrix</A></B>(<!1><A HREF="osg.html#DOC.2.134">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.42.28">setAutoScaleToScreen</A></B>(bool autoScaleToScreen)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.42.29">getAutoScaleToScreen</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.42.30">computeLocalToWorldMatrix</A></B>(<!1><A HREF="osg.html#DOC.2.134">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.42.31">computeWorldToLocalMatrix</A></B>(<!1><A HREF="osg.html#DOC.2.134">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv) const 
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="osg.html#DOC.2.262">Vec3</A> <B><A HREF="#DOC.2.42.29">_position</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="osg.html#DOC.2.262">Vec3</A> <B><A HREF="#DOC.2.42.33">_position</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="osg.html#DOC.2.262">Vec3</A> <B><A HREF="#DOC.2.42.30">_pivotPoint</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="osg.html#DOC.2.262">Vec3</A> <B><A HREF="#DOC.2.42.34">_pivotPoint</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.42.31">_autoUpdateEyeMovementTolerance</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.42.35">_autoUpdateEyeMovementTolerance</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.42.32">_autoRotateToScreen</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="AutoTransform.html#DOC.2.42.22">AutoRotateMode</A> <B><A HREF="#DOC.2.42.36">_autoRotateMode</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.42.33">_autoScaleToScreen</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.42.37">_autoScaleToScreen</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="Quat.html">Quat</A> <B><A HREF="#DOC.2.42.34">_rotation</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="Quat.html">Quat</A> <B><A HREF="#DOC.2.42.38">_rotation</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="osg.html#DOC.2.262">Vec3</A> <B><A HREF="#DOC.2.42.35">_scale</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="osg.html#DOC.2.262">Vec3</A> <B><A HREF="#DOC.2.42.39">_scale</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable bool <B><A HREF="#DOC.2.42.36">_firstTimeToInitEyePoint</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable bool <B><A HREF="#DOC.2.42.40">_firstTimeToInitEyePoint</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="osg.html#DOC.2.262">osg::Vec3</A> <B><A HREF="#DOC.2.42.37">_previousEyePoint</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="osg.html#DOC.2.262">osg::Vec3</A> <B><A HREF="#DOC.2.42.41">_previousEyePoint</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable int <B><A HREF="#DOC.2.42.38">_previousWidth</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable int <B><A HREF="#DOC.2.42.42">_previousWidth</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable int <B><A HREF="#DOC.2.42.39">_previousHeight</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable int <B><A HREF="#DOC.2.42.43">_previousHeight</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="osg.html#DOC.2.134">osg::Matrix</A> <B><A HREF="#DOC.2.42.40">_previousProjection</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="osg.html#DOC.2.134">osg::Matrix</A> <B><A HREF="#DOC.2.42.44">_previousProjection</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="osg.html#DOC.2.262">osg::Vec3</A> <B><A HREF="#DOC.2.42.41">_previousPosition</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="osg.html#DOC.2.262">osg::Vec3</A> <B><A HREF="#DOC.2.42.45">_previousPosition</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable bool <B><A HREF="#DOC.2.42.43">_matrixDirty</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable bool <B><A HREF="#DOC.2.42.47">_matrixDirty</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="osg.html#DOC.2.134">osg::Matrix</A> <B><A HREF="#DOC.2.42.44">_cachedMatrix</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="osg.html#DOC.2.134">osg::Matrix</A> <B><A HREF="#DOC.2.42.48">_cachedMatrix</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.42.28">~AutoTransform</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.42.32">~AutoTransform</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.42.42">computeMatrix</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.42.46">computeMatrix</A></B>() const 
 </DL></P>
 
 </DL>
@@ -393,7 +404,7 @@
 <HR>
 <H2>Documentation</H2>
 <BLOCKQUOTE>AutoTransform - is Transform the automatically scales or rotates 
-to keep its children relative to screen space coordinates. </BLOCKQUOTE>
+to keep its children relative to screen space coordinates</BLOCKQUOTE>
 <DL>
 
 <A NAME="AutoTransform"></A>
@@ -480,96 +491,126 @@ to keep its children relative to screen space coordinates. </BLOCKQUOTE>
 <A NAME="DOC.2.42.21"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float getAutoUpdateEyeMovementTolerance() const </B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="setAutoRotateToScreen"></A>
+<A NAME="AutoRotateMode"></A>
 <A NAME="DOC.2.42.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  AutoRotateMode</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="NO_ROTATION"></A>
+<A NAME="DOC.2.42.22.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NO_ROTATION</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ROTATE_TO_SCREEN"></A>
+<A NAME="DOC.2.42.22.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ROTATE_TO_SCREEN</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ROTATE_TO_CAMERA"></A>
+<A NAME="DOC.2.42.22.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ROTATE_TO_CAMERA</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="setAutoRotateMode"></A>
+<A NAME="DOC.2.42.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setAutoRotateMode(<!1><A HREF="AutoTransform.html#DOC.2.42.22">AutoRotateMode</A> mode)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getAutoRotateMode"></A>
+<A NAME="DOC.2.42.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="AutoTransform.html#DOC.2.42.22">AutoRotateMode</A> getAutoRotateMode() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setAutoRotateToScreen"></A>
+<A NAME="DOC.2.42.25"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setAutoRotateToScreen(bool autoRotateToScreen)</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="getAutoRotateToScreen"></A>
-<A NAME="DOC.2.42.23"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getAutoRotateToScreen() const </B></TT>
+<A NAME="setAutoRotateToCamera"></A>
+<A NAME="DOC.2.42.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setAutoRotateToCamera(bool autoRotateToCamera)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getAutoRotateToCamera"></A>
+<A NAME="DOC.2.42.27"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getAutoRotateToCamera() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setAutoScaleToScreen"></A>
-<A NAME="DOC.2.42.24"></A>
+<A NAME="DOC.2.42.28"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setAutoScaleToScreen(bool autoScaleToScreen)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getAutoScaleToScreen"></A>
-<A NAME="DOC.2.42.25"></A>
+<A NAME="DOC.2.42.29"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getAutoScaleToScreen() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeLocalToWorldMatrix"></A>
-<A NAME="DOC.2.42.26"></A>
+<A NAME="DOC.2.42.30"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool computeLocalToWorldMatrix(<!1><A HREF="osg.html#DOC.2.134">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeWorldToLocalMatrix"></A>
-<A NAME="DOC.2.42.27"></A>
+<A NAME="DOC.2.42.31"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool computeWorldToLocalMatrix(<!1><A HREF="osg.html#DOC.2.134">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~AutoTransform"></A>
-<A NAME="DOC.2.42.28"></A>
+<A NAME="DOC.2.42.32"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~AutoTransform()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_position"></A>
-<A NAME="DOC.2.42.29"></A>
+<A NAME="DOC.2.42.33"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="osg.html#DOC.2.262">Vec3</A> _position</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_pivotPoint"></A>
-<A NAME="DOC.2.42.30"></A>
+<A NAME="DOC.2.42.34"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="osg.html#DOC.2.262">Vec3</A> _pivotPoint</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_autoUpdateEyeMovementTolerance"></A>
-<A NAME="DOC.2.42.31"></A>
+<A NAME="DOC.2.42.35"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _autoUpdateEyeMovementTolerance</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="_autoRotateToScreen"></A>
-<A NAME="DOC.2.42.32"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _autoRotateToScreen</B></TT>
+<A NAME="_autoRotateMode"></A>
+<A NAME="DOC.2.42.36"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="AutoTransform.html#DOC.2.42.22">AutoRotateMode</A> _autoRotateMode</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_autoScaleToScreen"></A>
-<A NAME="DOC.2.42.33"></A>
+<A NAME="DOC.2.42.37"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _autoScaleToScreen</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_rotation"></A>
-<A NAME="DOC.2.42.34"></A>
+<A NAME="DOC.2.42.38"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable <!1><A HREF="Quat.html">Quat</A> _rotation</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_scale"></A>
-<A NAME="DOC.2.42.35"></A>
+<A NAME="DOC.2.42.39"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable <!1><A HREF="osg.html#DOC.2.262">Vec3</A> _scale</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_firstTimeToInitEyePoint"></A>
-<A NAME="DOC.2.42.36"></A>
+<A NAME="DOC.2.42.40"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable bool _firstTimeToInitEyePoint</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_previousEyePoint"></A>
-<A NAME="DOC.2.42.37"></A>
+<A NAME="DOC.2.42.41"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable <!1><A HREF="osg.html#DOC.2.262">osg::Vec3</A> _previousEyePoint</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_previousWidth"></A>
-<A NAME="DOC.2.42.38"></A>
+<A NAME="DOC.2.42.42"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable int _previousWidth</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_previousHeight"></A>
-<A NAME="DOC.2.42.39"></A>
+<A NAME="DOC.2.42.43"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable int _previousHeight</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_previousProjection"></A>
-<A NAME="DOC.2.42.40"></A>
+<A NAME="DOC.2.42.44"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable <!1><A HREF="osg.html#DOC.2.134">osg::Matrix</A> _previousProjection</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_previousPosition"></A>
-<A NAME="DOC.2.42.41"></A>
+<A NAME="DOC.2.42.45"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable <!1><A HREF="osg.html#DOC.2.262">osg::Vec3</A> _previousPosition</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeMatrix"></A>
-<A NAME="DOC.2.42.42"></A>
+<A NAME="DOC.2.42.46"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void computeMatrix() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_matrixDirty"></A>
-<A NAME="DOC.2.42.43"></A>
+<A NAME="DOC.2.42.47"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable bool _matrixDirty</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_cachedMatrix"></A>
-<A NAME="DOC.2.42.44"></A>
+<A NAME="DOC.2.42.48"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable <!1><A HREF="osg.html#DOC.2.134">osg::Matrix</A> _cachedMatrix</B></TT>
 <DL><DT><DD></DL><P></DL>
 

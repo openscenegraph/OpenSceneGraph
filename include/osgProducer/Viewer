@@ -89,6 +89,11 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
              */
             TERRAIN_MANIPULATOR     = 8,
 
+            /** Add an \c osgGA::UFOManipulator to manipulate the camera
+             *  interactively.
+             */
+            UFO_MANIPULATOR         = 0x10,
+
             /** Add an \c osgGA::StateSetManipulator to interactively toggle
              *  some bits of the renderer state (texturing, lightning...)
              */
@@ -124,6 +129,7 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
                                 DRIVE_MANIPULATOR |
                                 FLIGHT_MANIPULATOR |
                                 TERRAIN_MANIPULATOR |
+                                UFO_MANIPULATOR |
                                 STATE_MANIPULATOR |
                                 HEAD_LIGHT_SOURCE |
                                 STATS_MANIPULATOR |

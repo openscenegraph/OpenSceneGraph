@@ -82,7 +82,6 @@ class SG_EXPORT Texture : public StateAttribute
             StateAttribute(text,copyop),
             _handleList(),
             _modifiedTag(),
-            _textureObjectSize(text._textureObjectSize),
             _image(copyop(text._image.get())),
             _target(text._target),
             _textureUnit(text._textureUnit),
@@ -232,11 +231,6 @@ class SG_EXPORT Texture : public StateAttribute
         /** return the OpenGL texture object for specified context.*/
         inline const uint getTextureObject(const uint contextID) const { if (contextID<_handleList.size()) return _handleList[contextID]; else return 0;}
 
-        /** return the memory size of texture object.
-          * Texture object size can be used for estimating the cost of
-          * uploading the texture to graphics hardware, which in turn can
-          * be used for setting texture residence priorities. */
-        inline const uint getTextureObjectSize() const { return _textureObjectSize; }
 
         enum SubloadMode {
             OFF,
@@ -338,9 +332,6 @@ class SG_EXPORT Texture : public StateAttribute
 
         typedef std::vector<uint> ImageModifiedTag;
         mutable ImageModifiedTag _modifiedTag;
-
-        // size of the created OpenGL texture object, may be estimated. 
-        mutable uint _textureObjectSize;
 
 
         // not ideal that _image is mutable, but its required since

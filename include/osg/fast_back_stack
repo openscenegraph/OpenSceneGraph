@@ -5,6 +5,8 @@
 #ifndef OSG_FAST_BACK_STACK
 #define OSG_FAST_BACK_STACK 1
 
+#include <vector>
+
 namespace osg {
 
 /** Simple stack implementation that keeps the back() cached locally for fast access
@@ -22,7 +24,16 @@ class fast_back_stack
     
         inline fast_back_stack():_value(),_stack(),_size(0) {}
 
+        inline fast_back_stack(const fast_back_stack& fbs):_value(fbs._value),_stack(fbs._stack),_size(fbs._size) {}
+
         inline fast_back_stack(const T& value):_value(value),_stack(),_size(1) {}
+
+        fast_back_stack& operator = (const fast_back_stack& fbs)
+        {
+            _value = fbs._value;
+            _stack = fbs._stack;
+            _size = fbs._size;
+        }
 
         inline void clear() { _stack.clear(); _size = 0; }
 
@@ -34,6 +45,15 @@ class fast_back_stack
 
         inline const T& back() const { return _value; }
 
+        inline void push_back()
+        {
+            if (_size>0)
+            {
+                _stack.push_back(_value);
+            }
+            ++_size;
+        }
+        
         inline void push_back(const T& value)
         {
             if (_size>0)

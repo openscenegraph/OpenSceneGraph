@@ -599,9 +599,9 @@ const StateAttribute* State::getLastAppliedAttribute(const StateAttribute::Type 
 }
 
 
-ClippingVolume State::getClippingVolume() const
+Polytope State::getViewFrustum() const
 {
-    ClippingVolume cv;
+    Polytope cv;
     cv.setToUnitFrustum();
     cv.transformProvidingInverse((*_modelView)*(*_projection));
     return cv;

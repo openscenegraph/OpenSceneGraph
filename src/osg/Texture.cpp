@@ -40,8 +40,6 @@ Texture::Texture()
 
     _textureWidth = _textureHeight = 0;
 
-    _textureObjectSize = 0;
-
     _subloadMode   = OFF;
     _subloadOffsX = _subloadOffsY = 0;
     _subloadWidth = _subloadHeight = 0;
@@ -445,9 +443,6 @@ void Texture::applyTexImage(GLenum target, Image* image, State& state) const
                     (GLenum)image->getDataType(),
                     image->data() );
 
-                // just estimate estimate it right now..
-                // note, ignores texture compression..
-                _textureObjectSize = image->s()*image->t()*4;
             }
             else if(glCompressedTexImage2D_ptr)
             {
@@ -458,7 +453,6 @@ void Texture::applyTexImage(GLenum target, Image* image, State& state) const
                       size, 
                       image->data());                
 
-                _textureObjectSize = size;
             }
 
         }
@@ -470,14 +464,10 @@ void Texture::applyTexImage(GLenum target, Image* image, State& state) const
                 image->s(),image->t(),
                 (GLenum)image->getPixelFormat(), (GLenum)image->getDataType(),
                 image->data() );
-                // just estimate size it right now..
-                // crude x2 multiplier to account for minmap storage.
-                // note, ignores texture compression..
-                _textureObjectSize = image->s()*image->t()*4;
+
             }
             else
             {
-                _textureObjectSize = 0;
                 size_t no_mipmaps = image->getNumMipmaps();
                 int width  = image->s();
                 int height = image->t();
@@ -498,7 +488,6 @@ void Texture::applyTexImage(GLenum target, Image* image, State& state) const
                             (GLenum)image->getDataType(),
                             image->getMipmapData(k));
 
-                        _textureObjectSize += width*height*4;
                         width >>= 1;
                         height >>= 1;
                     }
@@ -518,7 +507,6 @@ void Texture::applyTexImage(GLenum target, Image* image, State& state) const
                         glCompressedTexImage2D_ptr(target, k, internalFormat, 
                             width, height, 0, size, image->getMipmapData(k));                
 
-                        _textureObjectSize += size;
                         width >>= 1;
                         height >>= 1;
                     }

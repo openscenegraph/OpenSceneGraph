@@ -6,24 +6,27 @@
 #define OSG_SHADOWOCCLUDERVOLUME 1
 
 #include <osg/ref_ptr>
-#include <osg/ClippingVolume>
+#include <osg/Polytope>
 #include <osg/ConvexPlanerOccluder>
 
 namespace osg {
 
 /** ShadowOccluderVolume is a helper class for implementating shadow occlusion culling. */
-class SG_EXPORT ShadowOccluderVolume : public Referenced
+class SG_EXPORT ShadowOccluderVolume
 {
 
     public:
     
     
+        typedef std::vector<Polytope> HoleList;
+
         ShadowOccluderVolume(const ShadowOccluderVolume& soc,Matrix& MVP);
         
         ShadowOccluderVolume(const ConvexPlanerOccluder& occluder,Matrix& MVP);
-
-        typedef std::vector<ClippingVolume> ClippingHoleList;
         
+        inline void pushCurrentMask();
+        inline void popCurrentMask();
+
         /** Convert shadow occluder into local coords by multiplying the
           * clip space occluder by the ModelViewProjectionMatrix.*/
         void set(const ShadowOccluderVolume& soc,Matrix& MVP);
@@ -34,22 +37,45 @@ class SG_EXPORT ShadowOccluderVolume : public Referenced
         
         /** return true if the specified bounding sphere is contaned entirely
           * within this shadow occluder volume.*/
-        bool contains(const BoundingSphere& bs);
+        bool contains(const BoundingSphere& bound);
         
         /** return true if the specified bounding box is contained entirely
           * within this shadow occluder volume.*/
-        bool contains(const BoundingBox& bs);
-        
-
+        bool contains(const BoundingBox& bound);
 
     protected:
     
-        // the original shadow occluder computed in clip space
-        ref_ptr<ShadowOccluderVolume>   _clipSpaceOccluder;
-
-        ClippingVolume                  _occluderVolume;
-        ClippingHoleList                _clippingHoleList;
+        Polytope    _occluderVolume;
+        HoleList    _holeList;
 };
+
+inline void ShadowOccluderVolume::pushCurrentMask()
+{
+    _occluderVolume.pushCurrentMask();
+    if (!_holeList.empty())
+    {
+        for(HoleList::iterator itr=_holeList.begin();
+            itr!=_holeList.end();
+            ++itr)
+        {
+            itr->pushCurrentMask();
+        }
+    }
+}
+
+inline void ShadowOccluderVolume::popCurrentMask()
+{
+    _occluderVolume.popCurrentMask();
+    if (!_holeList.empty())
+    {
+        for(HoleList::iterator itr=_holeList.begin();
+            itr!=_holeList.end();
+            ++itr)
+        {
+            itr->popCurrentMask();
+        }
+    }
+}
 
 }	// end of namespace
 

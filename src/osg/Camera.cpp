@@ -20,7 +20,7 @@ Camera::Camera(DisplaySettings* ds)
     }
         
     setPerspective(fovy,1.0,1.0,1000.0);
-        
+    
     // look at details.
     _lookAtType =USE_HOME_POSITON;
 

@@ -194,6 +194,9 @@ void SceneView::cull()
         
         if (!projection) projection = osgNew osg::Matrix(_camera->getProjectionMatrix());
         if (!modelview)  modelview  = osgNew osg::Matrix(_camera->getModelViewMatrix());
+
+        //cout <<"fovx="<<_camera->calc_fovx()<<endl;
+        
     }
     
     if (!projection) projection = osgNew osg::Matrix();

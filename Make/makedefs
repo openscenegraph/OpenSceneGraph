@@ -80,7 +80,7 @@ ifeq ($(OS),SunOS)
   INC               += 
   DEF               += -features=extensions 
   OPTF              = -xO4
-  DBGF              = -g
+  DBGF              = -g 
   SHARED            = -G
 ifeq ($(ARCH),64)
     ARCHARGS          = -xarch=v9
@@ -145,7 +145,7 @@ ifeq ($(OS),Linux)
   INC               += 
   DEF               += -W -Wall
   OPTF              = -O2 
-  DBGF              = -g
+  DBGF              = "-g -DUSE_MEMORY_MANAGER"
   SHARED            = -shared
   ARCHARGS          = 
   LINKARGS          = -L/usr/X11R6/lib

@@ -1,5 +1,5 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
- * Copyright (C) 2003 3Dlabs Inc. Ltd.
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2004 Robert Osfield 
+ * Copyright (C) 2003-2004 3Dlabs Inc. Ltd.
  *
  * This application is open source and may be redistributed and/or modified   
  * freely and without restriction, both in commericial and non commericial applications,
@@ -11,7 +11,7 @@
 */
 
 /* file:	examples/osgshaders/GL2Scene.cpp
- * author:	Mike Weiblen 2004-09-15
+ * author:	Mike Weiblen 2004-11-09
  *
  * Compose a scene of several instances of a model, with a different
  * OpenGL Shading Language shader applied to each.
@@ -220,15 +220,12 @@ static osgGL2::ShaderObject*  MarbleVertObj;
 static osgGL2::ShaderObject*  MarbleFragObj;
 
 ///////////////////////////////////////////////////////////////////////////
+// for demo simplicity, this one callback animates all the shaders.
 
-// TODO encapsulate inside an osgFX effect.
 class AnimateCallback: public osg::NodeCallback
 {
     public:
-	AnimateCallback( osgGL2::ProgramObject* /*progObj*/ ) :
-		osg::NodeCallback(),
-		_enabled(true)
-	{}
+	AnimateCallback() : osg::NodeCallback(), _enabled(true) {}
 
 	virtual void operator() ( osg::Node* node, osg::NodeVisitor* nv )
 	{
@@ -267,21 +264,8 @@ GL2Scene::buildScene()
     osg::Texture1D* sineTexture = make1DSineTexture( 32 /*1024*/ );
 
     // the root of our scenegraph.
-    // attach an "empty" ProgramObject to the rootNode, which will act as
-    // the default StateAttribute.  An empty ProgramObject (ie without any
-    // attached ShaderObjects) is a special case, which means to use the
-    // OpenGL 1.x "fixed functionality" rendering pipeline.
     rootNode = new osg::Group;
-    rootNode->setUpdateCallback( new AnimateCallback(0) );
-    {
-	// TODO this definition of a "default ProgramObject state" will not
-	// be necessary when the OSG core has proper support for the unique
-	// requirements of ProgramObject.
-	osg::StateSet* ss = rootNode->getOrCreateStateSet();
-	osgGL2::ProgramObject* progObj = new osgGL2::ProgramObject;
-	_progObjList.push_back( progObj );
-	ss->setAttributeAndModes(progObj, osg::StateAttribute::ON);
-    }
+    rootNode->setUpdateCallback( new AnimateCallback );
 
     // the simple Microshader (its source appears earlier in this file)
     {

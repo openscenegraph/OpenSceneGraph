@@ -1,5 +1,5 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
- * Copyright (C) 2003 3Dlabs Inc. Ltd.
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2004 Robert Osfield 
+ * Copyright (C) 2003-2004 3Dlabs Inc. Ltd.
  *
  * This application is open source and may be redistributed and/or modified   
  * freely and without restriction, both in commericial and non commericial
@@ -11,7 +11,7 @@
 */
 
 /* file:	include/osgGL2/ProgramObject
- * author:	Mike Weiblen 2003-12-28
+ * author:	Mike Weiblen 2004-11-09
  *
  * See http://www.3dlabs.com/opengl2/ for more information regarding
  * the OpenGL Shading Language.
@@ -75,7 +75,7 @@ class OSGGL2_EXPORT ProgramObject : public osg::StateAttribute
 	  * be pending. */
 	virtual void apply(osg::State& state) const;
 
-	virtual void compileGLObjects(osg::State& state) const { apply(state); }
+	virtual void compileGLObjects(osg::State& state) const;
 
         /** release an OpenGL objects in specified graphics context if State
             object is passed, otherwise release OpenGL objexts for all graphics context if

@@ -588,7 +588,7 @@ bool Viewer::computeNearFarPoints(float x,float y,unsigned int cameraNum,osg::Ve
 
 }
 
-bool Viewer::computeIntersections(float x,float y,unsigned int cameraNum,osgUtil::IntersectVisitor::HitList& hits)
+bool Viewer::computeIntersections(float x,float y,unsigned int cameraNum,osg::Node *node,osgUtil::IntersectVisitor::HitList& hits)
 {
     float pixel_x,pixel_y;
     if (computePixelCoords(x,y,cameraNum,pixel_x,pixel_y))
@@ -623,7 +623,7 @@ bool Viewer::computeIntersections(float x,float y,unsigned int cameraNum,osgUtil
         PickVisitor iv;
         
         osgUtil::IntersectVisitor::HitList localHits;        
-        localHits = iv.getHits(getSceneData(), vum, rx,ry);
+        localHits = iv.getHits(node, vum, rx,ry);
         
         if (localHits.empty()) return false;
         
@@ -634,15 +634,26 @@ bool Viewer::computeIntersections(float x,float y,unsigned int cameraNum,osgUtil
     return false;
 }
 
-bool Viewer::computeIntersections(float x,float y,osgUtil::IntersectVisitor::HitList& hits)
+bool Viewer::computeIntersections(float x,float y,unsigned int cameraNum,osgUtil::IntersectVisitor::HitList& hits)
+{
+    return computeIntersections(x,y,cameraNum,getSceneData(),hits);
+}
+
+bool Viewer::computeIntersections(float x,float y,osg::Node *node,osgUtil::IntersectVisitor::HitList& hits)
 {
     bool hitFound = false;
     osgUtil::IntersectVisitor::HitList hlist;
     for(unsigned int i=0;i<getNumberOfCameras();++i)
     {
-        if (computeIntersections(x,y,i,hits)) hitFound = true;
+        if (computeIntersections(x,y,i,node,hits)) hitFound = true;
     }
     return hitFound;
+}
+
+
+bool Viewer::computeIntersections(float x,float y,osgUtil::IntersectVisitor::HitList& hits)
+{
+    return computeIntersections(x,y,getSceneData(),hits);
 }
 
 void Viewer::selectCameraManipulator(unsigned int no)

@@ -127,15 +127,14 @@ INST_LIBS=$3
 INST_PLUGINS=$4
 INST_INCLUDE=$5
 INST_DEMOS=$6
-INST_DEMO_SRC=$7
-INST_DOC=$8
-INST_DATA=$9
+INST_SRC=$7
+INST_DEMO_SRC=$8
+shift;shift; shift;shift; shift;shift; shift;shift;
+INST_DOC=$1
+INST_DATA=$2
 
 
 PKGSUBDIR=dist/PKG
-
-
-
 
 make_package\
 	"OpenSceneGraph" \
@@ -145,6 +144,9 @@ make_package\
 
 make_installable "OpenSceneGraph"
 
+#
+# Capture include directories
+#
 SUBDIRS=`ls $TOPDIR/include | grep -v CVS`
 INSTARG=""
 for d in $SUBDIRS
@@ -153,6 +155,9 @@ do
     [ -d $dd ] && INSTARG="$INSTARG $dd"
 done
 
+#
+# Capthre Demos subdirectories
+#
 SUBDIRS=`ls $TOPDIR/src/Demos | grep -v CVS`
 for d in $SUBDIRS
 do
@@ -160,11 +165,23 @@ do
     [ -d $dd ] && INSTARG="$INSTARG $dd"
 done
 
+#
+# Capture Make subdirectory
+#
+dd="$INST_SRC"/"Make"
+
+echo dd is $dd
+ls $dd
+
+[ -d $dd ] && INSTARG="$INSTARG $dd"
+
+
 make_package\
 	"OpenSceneGraph-dev"\
 	"Open Scene Graph - Development environment"\
 	"An OpenGL based scene graph. This installation includes header files and demo program source files"\
 	$INSTARG
+
 make_installable "OpenSceneGraph-dev"
 
 

@@ -880,6 +880,40 @@ void Viewer::selectCameraManipulator(unsigned int no)
     if (_keyswitchManipulator.valid()) _keyswitchManipulator->selectMatrixManipulator(no);
 }
 
+void Viewer::getCameraManipulatorNameList( std::list<std::string> &nameList )
+{
+    osgGA::KeySwitchMatrixManipulator *ksm = getKeySwitchMatrixManipulator();
+    osgGA::KeySwitchMatrixManipulator::KeyManipMap &kmmap = ksm->getKeyManipMap();
+    osgGA::KeySwitchMatrixManipulator::KeyManipMap::iterator p;
+    for( p = kmmap.begin(); p != kmmap.end(); p++ )
+    {
+        osgGA::KeySwitchMatrixManipulator::NamedManipulator  nm = (*p).second;
+        nameList.push_back( nm.first );
+    }
+}
+
+bool Viewer::selectCameraManipulatorByName( const std::string &name )
+{
+    unsigned int num = 0xFFFF;
+    osgGA::KeySwitchMatrixManipulator *ksm = getKeySwitchMatrixManipulator();
+    osgGA::KeySwitchMatrixManipulator::KeyManipMap &kmmap = ksm->getKeyManipMap();
+    osgGA::KeySwitchMatrixManipulator::KeyManipMap::iterator p;
+    for( p = kmmap.begin(); p != kmmap.end(); p++ )
+    {
+        int key = (*p).first;
+        osgGA::KeySwitchMatrixManipulator::NamedManipulator  nm = (*p).second;
+        if( nm.first == name )
+            num = key - '1';
+    }
+
+    if( num == 0xFFFF )
+        return false;
+
+    selectCameraManipulator(num);
+    return true;
+}
+
+
 void Viewer::requestRedraw()
 {
     //osg::notify(osg::INFO)<<"Viewer::requestRedraw() called"<<std::endl;

@@ -80,7 +80,14 @@ public:
         _archive = ar;
     }
 
+    inline void setHiResPresent(bool p) { _hiResPresent = p; }
+    inline void setNonSeamChildrenIndex(int ix) { _nonSeamChildrenIndex = ix; }
+
 protected:
+
+    bool _hiResPresent;
+
+    int _nonSeamChildrenIndex;
 
     int _neighbourTileX;
     int _neighbourTileY;

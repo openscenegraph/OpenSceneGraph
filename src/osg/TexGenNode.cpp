@@ -30,6 +30,14 @@ TexGenNode::TexGenNode(const TexGenNode& cn, const CopyOp& copyop):
 {
 }
 
+TexGenNode::TexGenNode(TexGen *texgen)
+{
+    _textureUnit = 0;
+    _value = StateAttribute::ON;
+    _stateset = new StateSet;
+    _texgen = texgen;
+}
+
 TexGenNode::~TexGenNode()
 {
 }

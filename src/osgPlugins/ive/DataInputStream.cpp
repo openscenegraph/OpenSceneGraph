@@ -30,6 +30,8 @@
 #include "TexEnvCombine.h"
 #include "TexGen.h"
 #include "TexMat.h"
+#include "FragmentProgram.h"
+#include "VertexProgram.h"
 
 #include "Group.h"
 #include "MatrixTransform.h"
@@ -662,6 +664,14 @@ osg::StateAttribute* DataInputStream::readStateAttribute()
     else if(attributeID == IVETEXMAT){
         attribute = new osg::TexMat();
         ((ive::TexMat*)(attribute))->read(this);
+    }
+    else if(attributeID == IVEFRAGMENTPROGRAM){
+        attribute = new osg::FragmentProgram();
+        ((ive::FragmentProgram*)(attribute))->read(this);
+    }
+    else if(attributeID == IVEVERTEXPROGRAM){
+        attribute = new osg::VertexProgram();
+        ((ive::VertexProgram*)(attribute))->read(this);
     }
     else{
         throw Exception("Unknown StateAttribute in StateSet::read()");

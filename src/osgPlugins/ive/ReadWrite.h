@@ -54,6 +54,8 @@ namespace ive {
 #define IVEPOINT					0x0000012B
 #define IVETEXMAT					0x0000012C
 #define IVELINEWIDTH					0x0000012D
+#define IVEFRAGMENTPROGRAM				0x0000012E
+#define IVEVERTEXPROGRAM				0x0000012F
 
 // Drawables
 #define IVEDRAWABLE						0x00001000

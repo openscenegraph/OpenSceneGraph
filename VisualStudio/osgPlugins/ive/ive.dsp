@@ -170,6 +170,14 @@ SOURCE=..\..\..\src\osgPlugins\ive\Exception.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\ive\FragmentProgram.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\VertexProgram.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\ive\Geode.cpp
 # End Source File
 # Begin Source File
@@ -419,6 +427,14 @@ SOURCE=..\..\..\src\osgPlugins\ive\DOFTransform.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\Exception.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\FragmentProgram.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\VertexProgram.h
 # End Source File
 # Begin Source File
 

@@ -17,6 +17,7 @@
 #include "Object.h"
 #include "BlendFunc.h"
 #include "Material.h"
+#include "Material.h"
 #include "CullFace.h"
 #include "PolygonOffset.h"
 #include "ShadeModel.h"

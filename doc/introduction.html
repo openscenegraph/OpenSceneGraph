@@ -7,21 +7,30 @@
 </head>
 <body bgcolor="#FFFFFF">
 <img SRC="images/OpenSceneGraphBanner_Distribution.jpg" BORDER=0 height=77 width=640>
-
 <table>
-  <tr>
-    <td><a href="index.html">Index</a>  </td>
-    <td><a href="introduction.html">Introduction</a>  </td>
-    <td><a href="contents.html">Contents</a>  </td>
-    <td><a href="install.html">Install</a>  </td>
-    <td><a href="dependencies.html">Dependencies</a>  </td>
-    <td><a href="demos.html">Demos</a>  </td>
-    <td><a href="data.html">Data</a>  </td>
-    <td><a href="sgv.html">Viewer</a>  </td>
-    <td><a href="stereo.html">Stereo</a>  </td>
-    <td><a href="plan.html">Plan</a>  </td>
-    <td><a href="documentation.html">Reference Guides</a>  </td>
-  </tr>
+<tr>
+<td><a href="index.html">Index</a></td>
+
+<td><a href="introduction.html">Introduction</a></td>
+
+<td><a href="contents.html">Contents</a></td>
+
+<td><a href="install.html">Install</a></td>
+
+<td><a href="dependencies.html">Dependencies</a></td>
+
+<td><a href="demos.html">Demos</a></td>
+
+<td><a href="data.html">Data</a></td>
+
+<td><a href="sgv.html">Viewer</a></td>
+
+<td><a href="stereo.html">Stereo</a></td>
+
+<td><a href="plan.html">Plan</a></td>
+
+<td><a href="documentation.html">Reference Guides</a></td>
+</tr>
 </table>
 
 <h2>
@@ -62,9 +71,7 @@ scientific and commercial visualization, training through to modeling programs.
 <h3>
 <u>Why use a Scene Graph - Performance, Productivity, Portability and Scalability</u>.</h3>
 
-<ol>
-<li><p>
-<i>Performance</i> - scene graphs provide an excellent framework for
+<ol><i>Performance</i> - scene graphs provide an excellent framework for
 maximize graphics performance. A good scene graph employs two key techniques
 - culling of the objects that won't be seen on screen, and state sorting
 of properties such as textures and materials so that all similar objects
@@ -76,12 +83,10 @@ with just a few operations! Without state sorting, the the buses and GPU
 will thrash between states, stalling the graphics and destroying graphics
 throughout. As GPU's get faster and faster, the cost of stalling the graphics
 is also going up, so scene graph are become ever more important.
-</p></li>
-<li><p>
-<i>Productivity</i> - scene graphs take much of the hard work required
+<p><i>Productivity</i> - scene graphs take much of the hard work required
 to develop high performance graphics applications. The scene graphs manage
 all the graphics for you, reducing what would be thousands of lines of
-OpenGL down to a few simple calls. Furthermoe, one of most powerful concepts
+OpenGL down to a few simple calls. Furthermore, one of most powerful concepts
 in Object Orientated programming is that of object composition, enshrined
 in <i>Composite Design Pattern</i>, which fits the scene graph tree structure
 perfectly which makes it highly flexible and reusable design - in real
@@ -91,25 +96,19 @@ helping users set up and manage graphics windows to import of 3d modes
 and images. All this together allows the user to achieve a great deal with
 very little coding. A dozen lines of code can be enough to load your data
 and create an interactive viewer!
-</p></li>
-<li><p>
-<i>Portability</i> - scene graphs encapsulate much of the lower level
+<p><i>Portability</i> - scene graphs encapsulate much of the lower level
 tasks of rendering graphics and reading and writing data, reducing or even
 eradicating the platform specific coding that you require in your own application.
 If the underlying scene graph is portable then moving from platform to
 platform can be a simple as recompiling your source code.
-</p></li>
-<li><p>
-<i>Scalability</i> - along with being able to dynamic manage the complexity
+<p><i>Scalability</i> - along with being able to dynamic manage the complexity
 of scenes automatically to account for differences in graphics performance
 across a range of machines, scene graphs also make it much easier to manage
 complex hardware configurations, such as clusters of graphics machines,
 or multiprocessor/multipipe systems such as SGI's Onyx. A good scene graph
 will allow the developer to concentrate on developing their own application
 while the rendering framework of the scene graph handles the different
-underlying hardware configurations.
-</p></li>
-</ol>
+underlying hardware configurations.</ol>
 
 <hr>
 <h3>
@@ -124,9 +123,7 @@ development model to provide a development library that is legacy free
 and well focused on the solving the task. The OpenSceneGraph delivers on
 the four key benefits of scene graph technology outlined above using the
 following features:
-<ol>
-<li><p>
-<i>Performance</i> - supports view frustum culling, small feature culling,
+<ol><i>Performance</i> - supports view frustum culling, small feature culling,
 Level Of Details (LOD') nodes, state sorting, vertex arrays and display
 list as part of the core scene graph, these together make the OpenSceneGraph
 one highest performance scene graph available. User feedback is that performance
@@ -137,9 +134,7 @@ of Detail (CLOD) meshes on top the scene graph, these allow the visualization
 of massive terrain databases interactively, examples of this approach can
 be found at both Vterrain.org and TerrainEngine.com which both integrate
 with the OpenSceneGraph.
-</p></li>
-<li><p>
-<i>Productivity</i> - by combining lessons learned from established
+<p><i>Productivity</i> - by combining lessons learned from established
 scene graph like Performer and Open Inventor, with modern software engineering
 methodologies like Design Patterns and a great deal of feedback early on
 in the development cycle, it has been possible to design a design that
@@ -148,13 +143,10 @@ to the OpenSceneGraph and to integrate with their own applications. With
 a full feature set in the core scene graph, utilities to set up the scene
 graph and viewers and a wide range of loaders it is possible to create
 an application and bring in user data with a very small amount of code.
-</p></li>
-<li><p>
-<i>Portability</i> - The core scene graph has also been designed to
+<p><i>Portability</i> - The core scene graph has also been designed to
 be have minimal platform specific dependency, requiring little more than
 Standard C++ and OpenGL. The has allowed the scene graph to be rapidly
-ported on wide range of platforms -
-originally developed on IRIX, then
+ported on wide range of platforms - originally developed on IRIX, then
 ported to Linux, then to Windows, then FreeBSD, then Mac OSX and most recently
 Solaris! Being completely windowing system independent makes it easy for
 users to add their own window specific libraries and applications on top.
@@ -162,22 +154,18 @@ In the distribution there is already the osgGLUT library, and in the Bazaar
 found at openscenegrph.org/download/ once can find examples of how applications
 written on top Qt, MFC, WxWindows and SDL. Users have also integrated it
 with Motif, and X.
-</p></li>
-<li><p>
-<i>Scalability</i> - the scene graph not only runs from portables all the
-way up to Onyx Infinite Reality Monsters, it supports the multiple graphics
-subsystems found on machines like the a mulitpipe Onyx. This is possible
-since the core scene graph supports multiple graphics context for both
-OpenGL DisplayLists and texture objects, and the cull and draw traversals
-have been designed to cache rendering data locally and use the scene gaph
-almost entirely as a read only operation. This allows multiple cull-draw
-pairs to run on multiple CPU's which are bound to multiple graphics subsystems.
-This has been demonstrated using the OpenSceneGraph in conjunction with
-sgi's OpenGL multipipe SDK. We also have osgMP in development which will
-be cross platform and transparently support multiple multipipe systems
-like the Onyx and graphics clusters
-</p></li>
-</ol>
+<p><i>Scalability</i> - the scene graph not only runs from portables all
+the way up to Onyx Infinite Reality Monsters, it supports the multiple
+graphics subsystems found on machines like the a mulitpipe Onyx. This is
+possible since the core scene graph supports multiple graphics context
+for both OpenGL DisplayLists and texture objects, and the cull and draw
+traversals have been designed to cache rendering data locally and use the
+scene gaph almost entirely as a read only operation. This allows multiple
+cull-draw pairs to run on multiple CPU's which are bound to multiple graphics
+subsystems. This has been demonstrated using the OpenSceneGraph in conjunction
+with sgi's OpenGL multipipe SDK. We also have osgMP in development which
+will be cross platform and transparently support multiple multipipe systems
+like the Onyx and graphics clusters</ol>
 All the source to is published under the GNU Library General Public License
 (LGPL) which allows both open source and closed source projects to use,
 modify and distribute it freely as long its usage complies with the LGPL.
@@ -219,13 +207,15 @@ for using the developers using the OpenSceneGraph.
 <p>The source distribution contains the all the source and include files
 required to build the OpenSceneGraph from scratch, and is ideal if you
 want to learn more about how the scene graph works, how to extend it, and
-to track down and fix any problems that you come across.
+to
+track down and fix any problems that you come across.
 <p>If you are using a source distribution then read the <a href="install.html">installation</a>
 instructions for how to get the OpenSceneGraph compiling and installed
 on your system. You may also need to download libraries that parts of the
-OpenSceneGraph is dependent upon such as glut, check the
-<a href="dependencies.html">dependencies</a>
+OpenSceneGraph is dependent upon such as glut, check the <a href="dependencies.html">dependencies</a>
 list for further details.
+<p>For full instructions of how to run the demos read the <a href="demos.html">demos</a>
+page.
 <br>
 <hr>
 <h3>

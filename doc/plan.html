@@ -2,111 +2,126 @@
 <html>
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <meta name="GENERATOR" content="Mozilla/4.6 [en-gb]C-CCK-MCD NetscapeOnline.co.uk  (Win95; I) [Netscape]">
+   <meta name="GENERATOR" content="Mozilla/4.77 [en] (X11; U; Linux 2.4.3-20mdk i686) [Netscape]">
    <title>Plans for future developments</title>
 </head>
 <body text="#000000" bgcolor="#FFFFFF" link="#0000FF" vlink="#990066" alink="#FF0000">
 <img SRC="images/OpenSceneGraphBanner_Distribution.jpg" height=77 width=640>
-
 <table>
-  <tr>
-    <td><a href="index.html">Index</a>  </td>
-    <td><a href="introduction.html">Introduction</a>  </td>
-    <td><a href="contents.html">Contents</a>  </td>
-    <td><a href="install.html">Install</a>  </td>
-    <td><a href="dependencies.html">Dependencies</a>  </td>
-    <td><a href="demos.html">Demos</a>  </td>
-    <td><a href="data.html">Data</a>  </td>
-    <td><a href="sgv.html">Viewer</a>  </td>
-    <td><a href="stereo.html">Stereo</a>  </td>
-    <td><a href="plan.html">Plan</a>  </td>
-    <td><a href="documentation.html">Reference Guides</a>  </td>
-  </tr>
+<tr>
+<td><a href="index.html">Index</a></td>
+
+<td><a href="introduction.html">Introduction</a></td>
+
+<td><a href="contents.html">Contents</a></td>
+
+<td><a href="install.html">Install</a></td>
+
+<td><a href="dependencies.html">Dependencies</a></td>
+
+<td><a href="demos.html">Demos</a></td>
+
+<td><a href="data.html">Data</a></td>
+
+<td><a href="sgv.html">Viewer</a></td>
+
+<td><a href="stereo.html">Stereo</a></td>
+
+<td><a href="plan.html">Plan</a></td>
+
+<td><a href="documentation.html">Reference Guides</a></td>
+</tr>
 </table>
 
+<h2>
+<u>Plans for future developments</u></h2>
+The plan for the next release after 0.8.45 is to from alpha (all 0.8 series
+version) to beta for the next release, at this point will bump the version
+number up to 0.9.0 and all subsequent 0.9 releases will be beta, up till
+the release of 1.0. The current goal is to move to beta in early summer,
+with 1.0 in late summer, with SIGGRAPH being a possibility.
+<h3>
+Features planed for the next release (0.9.0) include:</h3>
 
-<h2><u>Plans for future developments</u></h2>
-
-<p>
-The plan for the next release after 0.8.45 is to from alpha (all 0.8 series version) to beta for the next release,
-at this point will bump the version number up to 0.9.0 and all subsequent 0.9 releases will be beta, uptill the
-release of 1.0.  The current goal is to move to beta in early summer, with 1.0 in late summer, with SIGGRAPH
-being a possibility.
-</p>
-
-<h3>Features planed for the next release (0.9.0) include:</h3>
 <ul>
-
 <li>
 New osg::Geometry drawable to deprecate osg::GeoSet, the new Geometry class
-will support multiple text coords, use std::vector<> for easy management of
-attributes.and support gl extensions to provide greater polygon performance.
-</li>
+will support multiple text coords, use std::vector&lt;> for easy management
+of attributes and support gl extensions to provide greater polygon performance.</li>
+
 <li>
-Multi-texturing support in osg::Texture. osg::TexMat, osg::TexGen.
-</li>
+Multi-texturing support in osg::Texture. osg::TexMat, osg::TexGen.</li>
+
 <li>
-Multi-pass fallback for when multi-texturing is not supported.
-</li>
+Multi-pass fallback for when multi-texturing is not supported.</li>
+
 <li>
-Clean up the API for managing multi-stage and multi-pass rendering within the scene graph.
-</li>
+Clean up the API for managing multi-stage and multi-pass rendering within
+the scene graph.</li>
+
 <li>
 Replace osgGLUT with a cleaner windowing API for the demos, move osgGLUT
-out of the distribution and into the bazaar.
-</li>
+out of the distribution and into the bazaar.</li>
+
 <li>
-Introduce a new library osgGA, which acts as GUI abstraction layer, move the
-current osgUtil camera manipulators into osgGA.</li>
+Introduce a new library osgGA, which acts as GUI abstraction layer, move
+the current osgUtil camera manipulators into osgGA.</li>
+
 <li>
-Introduce a new library osgEnv/osgShapes, which adds support for creating shapes and
-environmental effects such as stars, planats, cloud layers and ground planes.
-</li>
+Introduce a new library osgEnv/osgShapes, which adds support for creating
+shapes and environmental effects such as stars, planets, cloud layers and
+ground planes.</li>
+
 <li>
-Integrate unit tests for all classes, and develop a test suite.
-</li>
+Integrate unit tests for all classes, and develop a test suite.</li>
 </ul>
 
-<h3>Books, tutorials and demostrations</h3>
+<h3>
+Books, tutorials and demonstrations</h3>
+
 <ul>
 <li>
 Don Burns and Robert Osfield to write the OpenSceneGraph book!</li>
+
 <li>
-Development of tutorials to published as part of the distribution and on the bazaar</li>
+Development of tutorials to published as part of the distribution and on
+the bazaar</li>
+
 <li>
-Development of technoglogy demonstrations for shows, presentations and training.</li>
+Development of technology demonstrations for shows, presentations and training.</li>
 </ul>
 
-<h3>Development of commerical add on libraries:</h3>
+<h3>
+Development of commercial add on libraries:</h3>
+
 <ul>
+<li>
+osgMP - cross platform library for transparently managing mulitpipe and
+cluster graphics systems. Similar in concept to OpenGL multipipe SDK, except
+cross platform and with support of graphics clusters.</li>
 
 <li>
-osgMP - cross platfrom library for transparently managing mulitpipe and
-cluster graphics systems. Similar in concept to OpenGL multipipe SDK, except cross
-platform and with support of graphics clusters.
-</li>
-<li>
-osgLP - cross platform libary for support for light points.</li>
+osgLP - cross platform library for support for light points.</li>
 </ul>
 
-<h3>Professional services</h3>
+<h3>
+Professional services</h3>
+
 <ul>
+<li>
+Set up a support contract and support systems for confidential, email,
+phone and onsite support.</li>
 
 <li>
-Set up a support contract and support systems for confidential,
-email, phone and onsite support.</li>
-<li>
-Set up the Open Scene Graph Professional License (OSGPL) which is
-conventional propriatary license.that allows companies to distribute
-projects that do not comply wiht the terms of the LGPL, such as turn
-key systems.</li>
+Set up the Open Scene Graph Professional License (OSGPL) which is conventional
+proprietary license that allows companies to distribute projects that do
+not comply with the terms of the LGPL, such as turn key systems.</li>
+
 <li>
 Develop training courses.</li>
 </ul>
-
-For further details on osgMP, osgLP, OSGPL licensing, professional support, training and consultancy
-services contact Robert Osfield at <a href="mailto:robert@openscenegraph.com">robert@openscenegraph.com</a> or
-Don Burns at <a href="mailto:don@andesengineering.com">don@andesengineering.com.</a>
-
+For further details on osgMP, osgLP, OSGPL licensing, professional support,
+training and consultancy services contact Robert Osfield at <a href="mailto:robert@openscenegraph.com">robert@openscenegraph.com</a>
+or Don Burns at <a href="mailto:don@andesengineering.com">don@andesengineering.com.</a>
 </body>
 </html>

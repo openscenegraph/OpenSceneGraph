@@ -56,9 +56,6 @@ namespace osg {
         /// Pause stream at current position.
         virtual void pause() { setCmd(THREAD_STOP); }
 
-        /// Stop stream at current position.
-        virtual void stop() { setCmd(THREAD_STOP); }
-
         /// Rewind stream to beginning.
         virtual void rewind() { setCmd(THREAD_REWIND); }
 

@@ -1,7 +1,7 @@
 OSG News (most significant items from ChangeLog)
 ================================================
 
-19th April 2003  - OpenSceneGraph-0.9.4
+28th April 2003  - OpenSceneGraph-0.9.4-2
 
     >>> Multi-threaded, multi-pipe support via integration with OpenProducer,
     >>> 64bit Linux support for Intel Intanium and AMD Opteron,

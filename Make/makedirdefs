@@ -23,6 +23,8 @@ SRC_DIRS = \
 
 PLUGIN_DIRS = \
 	osg\
+	osgParticle\
+	osgText\
 	rgb\
 	lib3ds\
 	flt\

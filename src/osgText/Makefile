@@ -23,9 +23,6 @@ CXXFILES =\
 	Font.cpp \
 	Paragraph.cpp \
 	Text.cpp \
-	IO_Text.cpp \
-	IO_Font.cpp \
-	IO_Paragraph.cpp \
 	Version.cpp
 
 

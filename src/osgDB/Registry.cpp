@@ -810,7 +810,19 @@ bool Registry::writeObject(const osg::Object& obj,Output& fw)
 
     std::string classname = obj.className();
     DotOsgWrapperMap::iterator itr = _classNameWrapperMap.find(classname);
-    if (itr!=_classNameWrapperMap.end())
+
+
+    if (itr==_classNameWrapperMap.end())
+    {
+        // first try the standard nodekit library.
+        std::string nodeKitLibraryName = createLibraryNameForNodeKit(obj.libraryName());
+        if (loadLibrary(nodeKitLibraryName)) return writeObject(obj,fw);
+
+        // otherwise try the osgdb_ plugin library.
+        std::string pluginLibraryName = createLibraryNameForExt(obj.libraryName());
+        if (loadLibrary(pluginLibraryName)) return writeObject(obj,fw);
+    }
+    else
     {
     
     
@@ -862,7 +874,7 @@ bool Registry::writeObject(const osg::Object& obj,Output& fw)
 
         return true;
     }
-
+    
     return false;
 }
 

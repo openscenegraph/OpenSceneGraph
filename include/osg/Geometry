@@ -35,7 +35,7 @@ class SG_EXPORT Geometry : public Drawable
             BIND_OFF=0,
             BIND_OVERALL,
             BIND_PER_PRIMITIVE,
-            BIND_PER_VERTEX,
+            BIND_PER_VERTEX
         };
                
         void setVertexArray(Vec3Array* array) { _vertexArray = array; dirtyDisplayList(); }

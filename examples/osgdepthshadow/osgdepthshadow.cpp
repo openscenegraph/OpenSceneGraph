@@ -372,7 +372,9 @@ int main(int argc, char** argv)
       return 1;
     }
 
-  ref_ptr<Group> scene = new Group;    
+  ref_ptr<MatrixTransform> scene = new MatrixTransform;
+  scene->setMatrix(osg::Matrix::rotate(osg::DegreesToRadians(125.0),1.0,0.0,0.0));
+  
   ref_ptr<Group> shadowed_scene = _create_scene();    
   if (!shadowed_scene.valid()) return 1;
   scene->addChild(shadowed_scene.get());

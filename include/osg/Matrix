@@ -12,6 +12,7 @@
 #include <string.h>
 
 #include <iostream>
+#include <algorithm>
 
 namespace osg {
 
@@ -37,7 +38,7 @@ class SG_EXPORT Matrix : public Object
 
         virtual ~Matrix() {}
 
-        Matrix& operator = (const Matrix& );
+
 
         int compare(const Matrix& m) const { return memcmp(_mat,m._mat,sizeof(_mat)); }
 
@@ -56,7 +57,23 @@ class SG_EXPORT Matrix : public Object
 
 
 
-        void set( float const * const );
+        inline Matrix& operator = (const Matrix& other)
+        {
+            if( &other == this ) return *this;
+            set((float const * const)(other._mat));
+            return *this;
+        }
+        
+        inline void set(const Matrix& other)
+        {
+            set((float const * const)(other._mat));
+        }
+        
+        inline void set(float const * const ptr)
+        {
+            std::copy(ptr,ptr+16,(float*)(_mat));
+        }
+        
         void set( float a00, float a01, float a02, float a03,
                   float a10, float a11, float a12, float a13,
                   float a20, float a21, float a22, float a23,

@@ -1342,12 +1342,16 @@ void    m_deallocator(const char *sourceFile, const unsigned int sourceLine, con
 
         // If you hit this assert, you were trying to deallocate RAM that was not allocated in a way that is compatible with
         // the deallocation method requested. In other words, you have a allocation/deallocation mismatch.
+        // Types of errors in your code look for are   AllocationType     DeallocationType          but should Dealloc with
+        //                                                new              delete [] or free            delete
+        //                                                new []           delete, or free              delete []
+        //                                                malloc           delete, delete []            free
         m_assert((deallocationType == m_alloc_delete       && au->allocationType == m_alloc_new      ) ||
-             (deallocationType == m_alloc_delete_array && au->allocationType == m_alloc_new_array) ||
-             (deallocationType == m_alloc_free         && au->allocationType == m_alloc_malloc   ) ||
-             (deallocationType == m_alloc_free         && au->allocationType == m_alloc_calloc   ) ||
-             (deallocationType == m_alloc_free         && au->allocationType == m_alloc_realloc  ) ||
-             (deallocationType == m_alloc_unknown                                                ) );
+                 (deallocationType == m_alloc_delete_array && au->allocationType == m_alloc_new_array) ||
+                 (deallocationType == m_alloc_free         && au->allocationType == m_alloc_malloc   ) ||
+                 (deallocationType == m_alloc_free         && au->allocationType == m_alloc_calloc   ) ||
+                 (deallocationType == m_alloc_free         && au->allocationType == m_alloc_realloc  ) ||
+                 (deallocationType == m_alloc_unknown                                                ) );
 
         // If you hit this assert, then the "break on dealloc" flag for this allocation unit is set. Interrogate the 'au'
         // variable to determine information about this allocation unit.

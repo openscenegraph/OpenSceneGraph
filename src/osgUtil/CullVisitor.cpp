@@ -452,8 +452,7 @@ void CullVisitor::apply(Billboard& node)
     if (node_state) pushStateSet(node_state);
 
     const Vec3& eye_local = getEyeLocal();
-    const Vec3& up_local = getUpLocal();
-    Matrix* matrix = getCurrentMatrix();
+    const Matrix& modelview = getModelViewMatrix();
 
     for(int i=0;i<node.getNumDrawables();++i)
     {
@@ -465,13 +464,10 @@ void CullVisitor::apply(Billboard& node)
 
         updateCalculatedNearFar(pos);
 
-        Matrix* billboard_matrix = createOrReuseMatrix();
-        node.getMatrix(*billboard_matrix,eye_local,up_local,pos);
+        Matrix* billboard_matrix = createOrReuseMatrix(modelview);
 
-        if (matrix)
-        {
-            billboard_matrix->postMult(*matrix);
-        }
+        node.getMatrix(*billboard_matrix,eye_local,pos);
+
 
         StateSet* stateset = drawable->getStateSet();
         
@@ -480,14 +476,7 @@ void CullVisitor::apply(Billboard& node)
         {
 
             Vec3 center;
-            if (matrix)
-            {
-                center = pos*(*matrix);
-            }
-            else
-            {
-                center = pos;
-            }
+            center = pos*modelview;
 
             float depth;
             switch(_tsm)
@@ -576,8 +565,7 @@ void CullVisitor::apply(Transform& node)
     StateSet* node_state = node.getStateSet();
     if (node_state) pushStateSet(node_state);
 
-    ref_ptr<osg::Matrix> matrix = createOrReuseMatrix();
-    *matrix = *getCurrentMatrix();
+    ref_ptr<osg::Matrix> matrix = createOrReuseMatrix(getModelViewMatrix());
     node.getLocalToWorldMatrix(*matrix,this);
     pushModelViewMatrix(matrix.get());
     
@@ -608,8 +596,7 @@ void CullVisitor::apply(Projection& node)
     StateSet* node_state = node.getStateSet();
     if (node_state) pushStateSet(node_state);
 
-    ref_ptr<osg::Matrix> matrix = createOrReuseMatrix();
-    *matrix = node.getMatrix();
+    ref_ptr<osg::Matrix> matrix = createOrReuseMatrix(node.getMatrix());
     pushProjectionMatrix(matrix.get());
     
     handle_cull_callbacks_and_traverse(node);

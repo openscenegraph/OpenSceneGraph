@@ -50,19 +50,6 @@ Matrix::Matrix( float a00, float a01, float a02, float a03,
     SET_ROW(3, a30, a31, a32, a33 )
 }
 
-Matrix& Matrix::operator = (const Matrix& other )
-{
-    if( &other == this ) return *this;
-    set((const float*)other._mat);
-    return *this;
-}
-
-void Matrix::set( float const * const def )
-{
-    memcpy( _mat, def, sizeof(_mat) );
-}
-
-
 void Matrix::set( float a00, float a01, float a02, float a03,
                   float a10, float a11, float a12, float a13,
                   float a20, float a21, float a22, float a23,

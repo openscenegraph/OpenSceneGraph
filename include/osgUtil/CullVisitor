@@ -408,7 +408,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
 	MatrixList _reuseMatrixList;
 	unsigned int _currentReuseMatrixIndex;
 	
-	inline osg::Matrix* createOrReuseMatrix()
+	inline osg::Matrix* createOrReuseMatrix(const osg::Matrix value)
 	{
             // skip of any already reused matrix.
             while (_currentReuseMatrixIndex<_reuseMatrixList.size() && 
@@ -423,12 +423,12 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
             if (_currentReuseMatrixIndex<_reuseMatrixList.size())
             {
                 osg::Matrix* matrix = _reuseMatrixList[_currentReuseMatrixIndex++].get();
-                matrix->makeIdentity();
+                matrix->set(value);
                 return matrix;
             }
 
             // otherwise need to create new matrix.
-            osg::Matrix* matrix = new osg::Matrix();
+            osg::Matrix* matrix = new osg::Matrix(value);
             _reuseMatrixList.push_back(matrix);
             ++_currentReuseMatrixIndex;
             return matrix;

@@ -105,6 +105,10 @@ CullVisitor::CullVisitor()
     _numFramesToKeepImpostorSprites = 10;
     _impostorSpriteManager = osgNew ImpostorSpriteManager;
 
+    _windowToModelFactorDirty = true;
+    _windowToModelFactor = 1.0f;
+    _smallFeatureCullingPixelSize = 3.0f;
+
 }
 
 
@@ -159,6 +163,8 @@ void CullVisitor::reset()
         (*itr)->reset();
     }
     
+    _windowToModelFactorDirty = true;
+    _windowToModelFactor = 1.0f;
 }
 
 void CullVisitor::pushClippingVolume()
@@ -167,12 +173,16 @@ void CullVisitor::pushClippingVolume()
     if (!_modelviewStack.empty()) _modelviewClippingVolumeStack.back().transformProvidingInverse(*_modelviewStack.back());
 
     _MVPW_Stack.push_back(0L);
+
+    _windowToModelFactorDirty = true;
 }
 
 void CullVisitor::popClippingVolume()
 {
     _modelviewClippingVolumeStack.pop_back();
     _MVPW_Stack.pop_back();
+
+    _windowToModelFactorDirty = true;
 }
 
 void CullVisitor::pushViewport(osg::Viewport* viewport)
@@ -436,6 +446,37 @@ void CullVisitor::apply(Geode& node)
         }
 
     }
+//     osg::Timer timer;
+//     osg::Timer_t ta = timer.tick();
+//     const osg::Matrix& mvpw = getMVPW();
+//     osg::Timer_t tb = timer.tick();
+// 
+//     const osg::BoundingSphere& sp = node.getBound();
+//     osg::Vec3 v = sp._center;
+//     float radius = sp._radius;
+//     osg::Timer_t t1 = timer.tick();
+//     bool result1 = pixelSize(v,sp.radius())<4.0f;
+//     osg::Timer_t t2 = timer.tick();
+//     
+//     const float _ratio2 = 0.002f*0.002f;
+//     osg::Vec3 delta(v-getEyeLocal());
+//     bool result2 = (sp.radius2()<delta.length2()*_ratio2);
+// 
+//     osg::Timer_t t3 = timer.tick();
+// 
+//     float W = v.x()*mvpw(0,3)+
+//               v.y()*mvpw(1,3)+
+//               v.z()*mvpw(2,3)+
+//                     mvpw(3,3);
+// 
+//     bool result3 = fabs(radius*_windowToModelFactor/W);
+// 
+//     osg::Timer_t t4 = timer.tick();
+//     
+//     cout << "time pixelSize = "<<t2-t1<<endl;
+//     cout << "     odl       = "<<t3-t2<<endl;
+//     cout << "     stripped  = "<<t4-t3<<endl;
+//     cout << "     getMVPW   = "<<tb-ta<<endl;
 
     // pop the node's state off the geostate stack.    
     if (node_state) popStateSet();

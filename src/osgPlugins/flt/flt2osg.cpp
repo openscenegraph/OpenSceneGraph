@@ -2437,7 +2437,7 @@ osg::Group* ConvertFromFLT::visitExternal(osg::Group& osgParent, ExternalRecord*
         {
             osg::Group *tempParent = visitAncillary(osgParent, *external, rec);
             tempParent->addChild(external);
-            return 0;
+            return external;
         }
 #endif
         pFile->setDesiredUnits( rec->getFltFile()->getDesiredUnits() );
@@ -2467,7 +2467,7 @@ osg::Group* ConvertFromFLT::visitExternal(osg::Group& osgParent, ExternalRecord*
                 proxynode->setCenterMode(osg::ProxyNode::USE_BOUNDING_SPHERE_CENTER);
                 proxynode->addChild(external, rec->getFilename());
                 tempParent->addChild(proxynode);
-                osgDB::Registry::instance()->addEntryToObjectCache(rec->getFilename(), external);
+                osgDB::Registry::instance()->addEntryToObjectCache(rec->getFilename(), proxynode);
 #else
                 tempParent->addChild(external);
 #endif
@@ -2486,7 +2486,7 @@ osg::Group* ConvertFromFLT::visitExternal(osg::Group& osgParent, ExternalRecord*
                 proxynode->setCenterMode(osg::ProxyNode::USE_BOUNDING_SPHERE_CENTER);
                 proxynode->addChild(model, rec->getFilename());
                 tempParent->addChild(proxynode);
-                osgDB::Registry::instance()->addEntryToObjectCache(rec->getFilename(), model);
+                osgDB::Registry::instance()->addEntryToObjectCache(rec->getFilename(), proxynode);
 #else
                 //tempParent->addChild(model);
 #endif
@@ -2503,7 +2503,6 @@ osg::Group* ConvertFromFLT::visitExternal(osg::Group& osgParent, ExternalRecord*
     }
     return external;
 }
-
 
 void ConvertFromFLT::visitLightPoint(GeoSetBuilder* pBuilder,osg::Group& osgParent, LightPointRecord* rec)
 {

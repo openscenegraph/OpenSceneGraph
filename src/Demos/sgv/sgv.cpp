@@ -23,14 +23,17 @@
 
 class TransformFunctor : public osg::Drawable::AttributeFunctor
 {
-
     public:
     
         osg::Matrix _m;
+        osg::Matrix _im;
 
         TransformFunctor(const osg::Matrix& m):
-            AttributeFunctor(osg::Drawable::COORDS|osg::Drawable::NORMALS),
-            _m(m) {}
+            AttributeFunctor(osg::Drawable::COORDS|osg::Drawable::NORMALS)
+        {
+            _m = m;
+            _im.invert(_m);
+        }
             
         virtual ~TransformFunctor() {}
 
@@ -48,8 +51,8 @@ class TransformFunctor : public osg::Drawable::AttributeFunctor
             {
                 for (osg::Vec3* itr=begin;itr<end;++itr)
                 {
-                    // note post mult rather than pre mult of value.
-                    (*itr) = osg::Matrix::transform3x3(_m,(*itr));
+                    // note post mult by inverse for normals.
+                    (*itr) = osg::Matrix::transform3x3(_im,(*itr));
                     (*itr).normalize();
                 }
                 return true;

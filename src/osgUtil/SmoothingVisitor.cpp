@@ -86,6 +86,15 @@ struct SmoothTriangleFunctor
     }
 };
 
+SmoothingVisitor::SmoothingVisitor()
+{
+    setTraversalMode(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN);
+}
+
+SmoothingVisitor::~SmoothingVisitor()
+{
+}
+
 void SmoothingVisitor::smooth(osg::Geometry& geom)
 {
     Geometry::PrimitiveSetList& primitives = geom.getPrimitiveSetList();

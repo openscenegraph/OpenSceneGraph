@@ -14,9 +14,9 @@
 #ifndef OSG_VEC2F
 #define OSG_VEC2F 1
 
-#include <osg/Math>
-
 #include <ostream>
+
+#include <osg/Math>
 
 namespace osg {
 

@@ -14,9 +14,9 @@
 #ifndef OSG_AUTOTRANSFORM
 #define OSG_AUTOTRANSFORM 1
 
+#include <osg/AnimationPath>
 #include <osg/Group>
 #include <osg/Transform>
-#include <osg/AnimationPath>
 #include <osg/Quat>
 
 namespace osg {

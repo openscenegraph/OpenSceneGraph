@@ -14,14 +14,14 @@
 #ifndef OSG_ANIMATIONPATH
 #define OSG_ANIMATIONPATH 1
 
+#include <map>
+#include <istream>
+#include <float.h>
+
 #include <osg/Matrixf>
 #include <osg/Matrixd>
 #include <osg/Quat>
 #include <osg/NodeCallback>
-
-#include <map>
-#include <istream>
-#include <float.h>
 
 namespace osg {
 

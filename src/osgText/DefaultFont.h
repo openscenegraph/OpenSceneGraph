@@ -14,11 +14,11 @@
 #ifndef NEWTEXT_DEFAULTFONT_H
 #define NEWTEXT_DEFAULTFONT_H 1
 
+#include <map>
+
 #include <osg/ref_ptr>
 
 #include <osgText/Font>
-
-#include <map>
 
 namespace osgText {
 

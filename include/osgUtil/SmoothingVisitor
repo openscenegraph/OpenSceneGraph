@@ -30,11 +30,9 @@ class OSGUTIL_EXPORT SmoothingVisitor : public osg::NodeVisitor
     public:
 
         /// default to traversing all children.
-        SmoothingVisitor()
-        {
-            setTraversalMode(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN);
-        }
-
+        SmoothingVisitor();
+        virtual ~SmoothingVisitor();
+        
         /// smooth geoset by creating per vertex normals.
         static void smooth(osg::Geometry& geoset);
 

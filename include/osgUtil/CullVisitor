@@ -14,6 +14,9 @@
 #ifndef OSGUTIL_CULLVISITOR
 #define OSGUTIL_CULLVISITOR 1
 
+#include <map>
+#include <vector>
+
 #include <osg/NodeVisitor>
 #include <osg/BoundingSphere>
 #include <osg/BoundingBox>
@@ -24,15 +27,11 @@
 #include <osg/Impostor>
 #include <osg/ClearNode>
 #include <osg/Notify>
-#include <osg/Notify>
 
 #include <osg/CullStack>
 
 #include <osgUtil/RenderGraph>
 #include <osgUtil/RenderStage>
-
-#include <map>
-#include <vector>
 
 #include <osg/Vec3>
 

@@ -11,6 +11,8 @@ OSG News (most significant items from ChangeLog)
     
     DatabasePager
     
+    Double Vec & Matrix classes
+    
     osgUtil - tristipper, simplifier, GLObjectVisitor.
     
     Examples - osgdem, osgphotoalbum, osgbluemarble, osgtesselate, osgsimulation

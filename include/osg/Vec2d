@@ -16,8 +16,6 @@
 
 #include <osg/Vec2f>
 
-#include <ostream>
-
 namespace osg {
 
 /** General purpose double pair, uses include representation of

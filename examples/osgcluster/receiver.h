@@ -8,7 +8,7 @@
 // Class definition for the recipient of a broadcasted message
 //
 
-#ifndef WIN32
+#if !defined(WIN32) || defined(__CYGWIN__)
     #include <netinet/in.h>
 #endif
 
@@ -33,14 +33,11 @@ class Receiver
 	bool init( void );
 
     private :
-#if defined (WIN32)
+#if defined (WIN32) && !defined(__CYGWIN__)
         SOCKET _so;
-#else
-    int _so;
-#endif
-#if defined (WIN32)
         SOCKADDR_IN saddr;
 #else
+        int _so;
         struct sockaddr_in saddr;
 #endif
     bool _initialized;

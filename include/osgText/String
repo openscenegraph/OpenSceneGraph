@@ -14,12 +14,12 @@
 #ifndef OSGTEXT_STRING
 #define OSGTEXT_STRING 1
 
-#include <osg/Referenced>
-#include <osgText/Export>
-
 #include <vector>
 #include <set>
 #include <string>
+
+#include <osg/Referenced>
+#include <osgText/Export>
 
 namespace osgText {
 

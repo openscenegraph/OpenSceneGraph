@@ -38,11 +38,17 @@ class SG_EXPORT CullStack
         enum CullingModeValues
         {
             NO_CULLING                  = 0x0,
-            VIEW_FRUSTUM_CULLING        = 0x1,
+            VIEW_FRUSTUM_SIDES_CULLING  = 0x1,
             NEAR_PLANE_CULLING          = 0x2,
             FAR_PLANE_CULLING           = 0x4,
+            VIEW_FRUSTUM_CULLING        = VIEW_FRUSTUM_SIDES_CULLING|
+                                          NEAR_PLANE_CULLING|
+                                          FAR_PLANE_CULLING,
             SMALL_FEATURE_CULLING       = 0x8,
             SHADOW_OCCLUSION_CULLING    = 0x10,
+            DEFAULT_CULLING             = VIEW_FRUSTUM_SIDES_CULLING|
+                                          SMALL_FEATURE_CULLING|
+                                          SHADOW_OCCLUSION_CULLING,
             ENABLE_ALL_CULLING          = VIEW_FRUSTUM_CULLING|
                                           SMALL_FEATURE_CULLING|
                                           SHADOW_OCCLUSION_CULLING

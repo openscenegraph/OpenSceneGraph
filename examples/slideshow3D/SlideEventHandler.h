@@ -53,6 +53,12 @@ public:
     bool nextLayer();
     bool previousLayer();
     
+    void setAutoSteppingActive(bool flag) { _autoSteppingActive = true; }
+    bool getAutoSteppingActive() const { return _autoSteppingActive; }
+    
+    void setTimeDelayBetweenSlides(double dt) { _timePerSlide = dt; }
+    double getTimeDelayBetweenSlides() const { return _timePerSlide; }
+    
 protected:
 
     ~SlideEventHandler() {}

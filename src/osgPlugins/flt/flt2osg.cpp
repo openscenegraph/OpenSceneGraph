@@ -1234,7 +1234,7 @@ ConvertFromFLT::addMultiTexture( DynGeoSet* dgset, MultiTextureRecord* mtr )
     CERR << "ConvertFromFLT::addMultiTexture\n";
     int l = 0;
     for ( int i = 0; i < 8; i++ ) {
-	if ( (1 << 32-i) & mt->layers ) {
+	if ( (1 << (32-i)) & mt->layers ) {
 	    CERR << "Has layer " << i << "\n";
 	    mt->data[l].endian();
 	    CERR << "texture: " << mt->data[l].texture << "\n";
@@ -1301,7 +1301,7 @@ ConvertFromFLT::addUVList( DynGeoSet* dgset, UVListRecord* uvr )
     int l = 0;
     int num_coords = dgset->coordListSize();
     for ( int i = 0; i < 8; i++ ) {
-	if ( (1 << 32-i) & uvl->layers ) {
+	if ( (1 << (32-i)) & uvl->layers ) {
 	    osg::Vec2Array* tcoords = new osg::Vec2Array;
 	    CERR << "Has layer " << i << "\n";
 	    // Assume we are working with vertex lists for now

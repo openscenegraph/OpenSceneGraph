@@ -203,8 +203,8 @@ public:
             if (shademodel!=GEO_POLY_SHADEMODEL_LIT && shademodel!=GEO_POLY_SHADEMODEL_FLAT) {
 				const geoField *gfd=gr->getField(GEO_DB_VRTX_NORMAL);
 				if (gfd->getType()==DB_UINT) {
-					unsigned int idx=gfd ? gfd->getUInt():-1;
-					if (idx>=0) {
+					if (gfd) {
+                                                unsigned int idx=gfd->getUInt();
 						normindices->push_back(idx);
 						norms->push_back((*npool)[idx]);
 					} else {
@@ -220,8 +220,8 @@ public:
             const geoField *gfd=gr->getField(GEO_DB_VRTX_COORD);
 			osg::Vec3 pos;
 			if (gfd->getType()==DB_INT) {
-				unsigned int idx=gfd ? gfd->getInt():-1;
-				if (idx>=0) {
+				if (gfd) {
+                                        int idx=gfd->getInt();
 					pos=(*cpool)[idx];
 					coords->push_back((*cpool)[idx]); //osg::Vec3(cpool[3*idx],cpool[3*idx+1],cpool[3*idx+2]));
 					coordindices->push_back(coords->size());
@@ -880,8 +880,8 @@ class ReaderWriterGEO : public osgDB::ReaderWriter
                     const geoField *gfd=(*itr)->getField(GEO_DB_VRTX_COORD);
 					osg::Vec3 pos;
 					if (gfd->getType()==DB_INT) {
-						unsigned int idx=gfd ? gfd->getInt():-1;
-						if (idx>=0) {
+						if (gfd) {
+                                                        int idx=gfd->getInt();
 							pos=coord_pool[idx];
 						} else {
 							osg::notify(osg::WARN) << "No valid vertex index" << std::endl;

@@ -109,10 +109,6 @@ SOURCE=..\..\src\osgUtil\CullVisitor.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgUtil\NewCullVisitor.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\osgUtil\DepthSortedBin.cpp
 # End Source File
 # Begin Source File
@@ -226,10 +222,6 @@ SOURCE=..\..\Include\osgUtil\CullViewState
 # Begin Source File
 
 SOURCE=..\..\Include\osgUtil\CullVisitor
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\Include\osgUtil\NewCullVisitor
 # End Source File
 # Begin Source File
 

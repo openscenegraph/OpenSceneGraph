@@ -163,7 +163,7 @@ ifeq ($(OS),SunOS)
     JPEG_LIBS         = -ljpeg 
     PNG_LIBS          = -lpng -lz 
     FREETYPE_LIB      = -lfreetype
-    OTHER_LIBS        =  -lOpenThreads
+    OTHER_LIBS        = -lOpenThreads
 
   #### using forte compilers (default)
   else
@@ -182,7 +182,7 @@ ifeq ($(OS),SunOS)
       ARCHARGS        = 
       ARCHINST        = 
   endif
-    OTHER_LIBS        = -lCstd
+    OTHER_LIBS        = -lCstd -lOpenThreads
     LINKARGS          =  
     GIF_LIBS          = /usr/local/lib/libgif.a
     TIFF_LIB	      = /usr/local/lib/libtiff.a
@@ -199,7 +199,7 @@ ifeq ($(OS),SunOS)
     INSTDEVCMD        = cp
     INST_LOCATION     = /opt/OpenSceneGraph
     MAKEDIST          = $(TOPDIR)/Make/makepkg
-    OTHER_LIBS        =  -lOpenThreads
+    OTHER_LIBS        = -lOpenThreads
 endif
 
 #### IRIX Specific definitions
@@ -336,7 +336,7 @@ ifeq ($(OS),FreeBSD)
   GL_LIBS           = -lGLU -lGL 
   X_LIBS            = -lXmu -lX11
   SOCKET_LIBS       = 
-  OTHER_LIBS        = 
+  OTHER_LIBS        = -lOpenThreads
   INST_LOCATION     = /opt/X11R6
   INST_SHARE        = /usr/share/OpenSceneGraph
 endif
@@ -393,7 +393,7 @@ ifeq ($(OS),CYGWIN)
   GL_LIBS           = -lglu32 -lopengl32
   X_LIBS            = -lgdi32 -luser32
   SOCKET_LIBS       = 
-  OTHER_LIBS        = $(GL_LIBS)
+  OTHER_LIBS        = -lOpenThreads
   PNG_LIBS          = -lpng -lz
   JPEG_LIBS         = -ljpeg
   GIF_LIBS          = -lungif
@@ -438,7 +438,7 @@ ifeq ($(OS),MINGW)
   GL_LIBS           = -lglu32 -lopengl32
   X_LIBS            = -lgdi32 -luser32
   SOCKET_LIBS       = 
-  OTHER_LIBS        = $(GL_LIBS)
+  OTHER_LIBS        = -lOpenThreads
   PNG_LIBS          = -lpng -lz
   JPEG_LIBS         = -ljpeg
   GIF_LIBS          = -lungif

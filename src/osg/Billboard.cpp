@@ -133,7 +133,7 @@ bool Billboard::computeMatrix(Matrix& modelview, const Vec3& eye_local, const Ve
     Vec3 ev(eye_local-pos_local);
     switch(_cachedMode)
     {
-        case(AXIAL_ROT_Z_AXIS): // need to implement 
+        case(AXIAL_ROT_Z_AXIS):
         {
 
             ev.z() = 0.0f;
@@ -154,7 +154,7 @@ bool Billboard::computeMatrix(Matrix& modelview, const Vec3& eye_local, const Ve
             }
             break;
         }
-        case(AXIAL_ROT_Y_AXIS): // need to implement 
+        case(AXIAL_ROT_Y_AXIS):
         {
             ev.y() = 0.0f;
             float ev_length = ev.length();
@@ -174,7 +174,7 @@ bool Billboard::computeMatrix(Matrix& modelview, const Vec3& eye_local, const Ve
             }
             break;
         }
-        case(AXIAL_ROT_X_AXIS): // implemented correctly..
+        case(AXIAL_ROT_X_AXIS):
         {
             ev.x() = 0.0f;
             float ev_length = ev.length();

@@ -11,7 +11,7 @@
 
 <p>Welcome to OpenSceneGraph project!
 </p>
-<p>The OpenSceneGraph is an Open Source, Cross Platform (Widows, Linux, Mac OSX, FreeBSD, Irix, Solaris),
+<p>The OpenSceneGraph is an Open Source (LGPL), Cross Platform (Widows, Linux, Mac OSX, FreeBSD, Irix, Solaris),
 Standard C++ and OpenGL based graphics development library, uses range from visual simulation, games,
 virtual reality, sceintific visualization and graphics research. This pages introduces a
 what scene graphs are, why graphics developers use them, and details about the OpenSceneGraph,
@@ -25,7 +25,7 @@ April 2002.</i>
 <hr>
 
 <h2>What is a Scene Graph?</h2>
-</p>Its a tree! Quite simply one the best and most reusable datastructures invented.Typically drawn schematically as
+<p>Its a tree! Quite simply one the best and most reusable data structures invented.Typically drawn schematically as
 root at the top, leaves at the bottom. It all starts with a topmost root node which
 encompasses your whole virtual world, be it 2D or 3D. The world is then broken down
 into hierachy of nodes representing either a spatial grouping of objects,
@@ -34,7 +34,7 @@ the various states of a traffic light.The leaves of the graph represent the phyi
 themselves, the drawable geometry and their material properties.
 </p>
 
-</p>A scene graph isn't a complete game or simulation engine, although may be one of the main
+<p>A scene graph isn't a complete game or simulation engine, although may be one of the main
 components of such an engine, it's primary focus is representing your 3d worlds, and rendering it efficiently.  Physics models, collision detection and audio are left to other development libraries that a user will
 integrate with.. The fact that scene graphs don't typically integrate all these features
 is actually a really good thing, it aids interoprability with clients own applications
@@ -47,7 +47,7 @@ programs.
 
 <h2>Why use a Scene Graph - Performance, Productivity, Portability and Scalability.</h2>
 
-</p><i>Performance</i> - scene graphs provide an excellent framework for maximize graphics
+<p><i>Performance</i> - scene graphs provide an excellent framework for maximize graphics
 performance. A good scene graph employs two key techinques - culling of the objects that won't
 be seen on screen, and state sorting of properties such as textures and materials
 so that all similar objects are drawn together. Without culling the CPU, buses and
@@ -58,7 +58,7 @@ states, stalling the graphics and destroying graphisc throughout.  As GPU's get 
 stalling the graphics is also going up, so scene graph are become ever more important.
 </p>
 
-</p><i>Productivity</i> - scene graphs take much of the hardwork required to develop
+<p><i>Productivity</i> - scene graphs take much of the hardwork required to develop
 high perftomance graphics applications. The scene graphs manage all the graphics for you,
 reducing what would be thousands of lines of OpenGL down to a few simple calls..Furthermoe,
 one of most powerfukl concepts in Object Orientated programming is that of object
@@ -71,13 +71,15 @@ a great deal with very little coding.A dozen lines of code can be enough to load
 and create an interactive viewer!
 </p>
 
-</p><i>Portability</i> - scene graphs encapsulate much of the lower level tasks of rendering
+<p>
+<i>Portability</i> - scene graphs encapsulate much of the lower level tasks of rendering
 graphics and reading and writing data, reducing or even eradicating the platform specific
 coding that you require in your own application. If the underlying scene graph is portable
 then moving from platform to platform can be a simple as recompiling your source code.
 </p>
 
-</p><i>Scalability</i> - along with being able to dynamic manage the complexity of scenes
+</p>
+<i>Scalability</i> - along with being able to dynamic manage the complexity of scenes
 automatically to account for differences in graphics performance across a range of machines,
 scene graphs also make it much easier to manage complex hardware configurations, such as clusters
 of graphics machines, or multiprocessor/multipipe systems such as SGI's Onyx. A good scene graph
@@ -106,13 +108,14 @@ source or support which once you get stuck in you grow to appreciate.
 <p>
 The project itself is written entitely in Standard C++ and OpenGL, makes full use of STL
 and Design Patterns, and leverages the open source development model to provide clean, highly portable,
-and flexible scene graph. The project is current in alpha, which means part of the API are still to be
+and flexible scene graph. The project is current in alpha, which means parts of the API are still to be
 developerd, or subjec to change, but the vast majority of the scene graph is there, and a beta will
 be published within the next few months, wiht a 1.0 release in late summer. Despite the
 alpha development status, the project has alrady earned the reputation as one of the leading
-open source scene graph, and is establishing itself a vialbe alternative to the commericial
+open source scene graphs, and is establishing itself a vialbe alternative to the commericial
 scene graphs. Numerous companies, university researchers and graphics enthusasts have
-already adopted their project, and a from all over the world.</p>
+already adopted their projects, and are from all over the world.
+</p>
 
 <hr>
 

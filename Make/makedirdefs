@@ -180,7 +180,6 @@ EXAMPLE_DIRS = \
 	osgsimple\
 	osgsimplepager\
 	osgsimplifier\
-	osgsimulation\
 	osgspacewarp\
 	osgspheresegment\
 	osgstereoimage\
@@ -202,6 +201,7 @@ ifeq ($(GDAL_INSTALLED),yes)
     EXAMPLE_DIRS += osgphotoalbum
     EXAMPLE_DIRS += osgdem
     EXAMPLE_DIRS += osgbluemarble
+    EXAMPLE_DIRS += osgsimulation
 endif
 
 ifeq ($(DEMETER_INSTALLED),yes)

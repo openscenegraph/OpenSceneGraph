@@ -78,24 +78,105 @@ void RenderBin::sort()
     {
         itr->second->sort();
     }
-    sort_local();
+    
+    if (_sortLocalCallback.valid()) _sortLocalCallback->sort(this);
+    else sort_local();
 }
 
-
-struct StateSortFunctor
+void RenderBin::sort_local()
 {
-    const bool operator() (const RenderGraph* lhs,const RenderGraph* rhs)
+    switch(_sortMode)
+    {
+        case(SORT_BY_STATE):
+            sort_local_by_state();
+            break;
+        case(SORT_FRONT_TO_BACK):
+            sort_local_front_to_back();
+            break;
+        case(SORT_BACK_TO_FONT):
+            sort_local_back_to_front();
+            break;
+        default:
+            break;
+    }
+}
+
+struct SortByStateFunctor
+{
+    const bool operator() (const RenderGraph* lhs,const RenderGraph* rhs) const
     {
         return (*(lhs->_stateset)<*(rhs->_stateset));
     }
 };
 
-
-
-void RenderBin::sort_local()
+void RenderBin::sort_local_by_state()
 {
+    // actually we'll do nothing right now, as fine grained sorting by state
+    // appears to cost more to do than it saves in draw.  The contents of
+    // the RenderGraph leaves is already coasrse grained sorted, this
+    // sorting is as a function of the cull traversal.
+}
+
+struct FrontToBackSortFunctor
+{
+    bool operator() (const RenderLeaf* lhs,const RenderLeaf* rhs) const
+    {
+        return (lhs->_depth<rhs->_depth);
+    }
+};
+
+    
+void RenderBin::sort_local_front_to_back()
+{
+    copyLeavesFromRenderGraphListToRenderLeafList();
+
     // now sort the list into acending depth order.
-//    std::sort(_renderGraphList.begin(),_renderGraphList.end(),StateSortFunctor());
+    std::sort(_renderLeafList.begin(),_renderLeafList.end(),FrontToBackSortFunctor());
+}
+
+struct BackToFrontSortFunctor
+{
+    const bool operator() (const RenderLeaf* lhs,const RenderLeaf* rhs) const
+    {
+        return (rhs->_depth<lhs->_depth);
+    }
+};
+
+void RenderBin::sort_local_back_to_front()
+{
+    copyLeavesFromRenderGraphListToRenderLeafList();
+
+    // now sort the list into acending depth order.
+    std::sort(_renderLeafList.begin(),_renderLeafList.end(),BackToFrontSortFunctor());
+}
+
+void RenderBin::copyLeavesFromRenderGraphListToRenderLeafList()
+{
+    _renderLeafList.clear();
+
+    int totalsize=0;
+    RenderGraphList::iterator itr;
+    for(itr=_renderGraphList.begin();
+        itr!=_renderGraphList.end();
+        ++itr)
+    {
+        totalsize += (*itr)->_leaves.size();
+    }
+
+    _renderLeafList.reserve(totalsize);
+    
+    // first copy all the leaves from the render graphs into the leaf list.
+    for(itr=_renderGraphList.begin();
+        itr!=_renderGraphList.end();
+        ++itr)
+    {
+        for(RenderGraph::LeafList::iterator dw_itr = (*itr)->_leaves.begin();
+            dw_itr != (*itr)->_leaves.end();
+            ++dw_itr)
+        {
+            _renderLeafList.push_back(dw_itr->get());
+        }
+    }
 }
 
 RenderBin* RenderBin::find_or_insert(int binNum,const std::string& binName)

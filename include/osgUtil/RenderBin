@@ -55,7 +55,30 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
 
         void sort();
 
+        enum SortMode
+        {
+            SORT_BY_STATE,
+            SORT_FRONT_TO_BACK,
+            SORT_BACK_TO_FONT
+        };
+
+        void setSortMode(SortMode mode) { _sortMode = mode; }
+        SortMode getSortMode() const { return _sortMode; }
+
         virtual void sort_local();
+        virtual void sort_local_by_state();
+        virtual void sort_local_front_to_back();
+        virtual void sort_local_back_to_front();
+        
+        struct SortCallback : public osg::Referenced    
+        {
+            virtual void sort(RenderBin* bin) {};
+        };
+
+        void setSortLocalCallback(SortCallback* sortCallback) { _sortLocalCallback = sortCallback; }
+        SortCallback* getSortLocalCallback() { return _sortLocalCallback.get(); }
+        const SortCallback* getSortLocalCallback() const { return _sortLocalCallback.get(); }
+
 
         virtual void draw(osg::State& state,RenderLeaf*& previous);
 
@@ -69,14 +92,21 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
 
     public:
 
+
+        void copyLeavesFromRenderGraphListToRenderLeafList();
    
-        int             _binNum;
-        RenderBin*      _parent;
-        RenderStage*    _stage;
-        RenderBinList   _bins;
-        RenderGraphList _renderGraphList;
-        RenderLeafList  _renderLeafList;
+        int                             _binNum;
+        RenderBin*                      _parent;
+        RenderStage*                    _stage;
+        RenderBinList                   _bins;
+        RenderGraphList                 _renderGraphList;
+        RenderLeafList                  _renderLeafList;
            
+
+        SortMode                        _sortMode;
+        osg::ref_ptr<SortCallback>      _sortLocalCallback;
+
+
         typedef std::map< std::string, osg::ref_ptr<RenderBin> > RenderBinPrototypeList;
         static RenderBinPrototypeList s_renderBinPrototypeList;
         

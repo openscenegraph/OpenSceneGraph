@@ -214,7 +214,8 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         /** reimplement CullStack's popProjectionMatrix() adding clamping of the projection matrix to the computed near and far.*/
         virtual void popProjectionMatrix();
         
-        bool clampProjectionMatrix(osg::Matrix& projection, value_type& znear, value_type& zfar) const;
+        bool clampProjectionMatrix(osg::Matrixf& projection, value_type& znear, value_type& zfar) const;
+        bool clampProjectionMatrix(osg::Matrixd& projection, value_type& znear, value_type& zfar) const;
 
         void setState(osg::State* state) { _state = state; }
         osg::State* getState() { return _state.get(); }

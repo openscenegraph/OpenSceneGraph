@@ -36,10 +36,10 @@ void DrawArrayLengths::accept(Drawable::PrimitiveFunctor& functor)
     }
 }
 
-unsigned int DrawArrayLengths::getNumIndices()
+unsigned int DrawArrayLengths::getNumIndices() const
 {
     unsigned int count = 0;
-    for(VectorSizei::iterator itr=begin();
+    for(VectorSizei::const_iterator itr=begin();
         itr!=end();
         ++itr)
     {
@@ -47,7 +47,6 @@ unsigned int DrawArrayLengths::getNumIndices()
     }
     return count;
 }
-
 
 void DrawElementsUByte::draw() const 
 {

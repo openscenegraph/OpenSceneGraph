@@ -125,9 +125,27 @@ class PrimitiveSet : public Object
         
         virtual void accept(Drawable::PrimitiveFunctor&) {}
         
+        virtual unsigned int index(unsigned int pos) const = 0;
+        virtual unsigned int getNumIndices() const = 0;
         virtual void offsetIndices(int offset) = 0;
-        
-        virtual unsigned int getNumIndices() = 0;
+
+        virtual unsigned int getNumPrimitives() const 
+        {
+            switch(_mode)
+            {
+                case(POINTS): return getNumIndices();
+                case(LINES): return getNumIndices()/2;
+                case(TRIANGLES): return getNumIndices()/3;
+                case(QUADS): return getNumIndices()/4;
+                case(LINE_STRIP):
+                case(LINE_LOOP):
+                case(TRIANGLE_STRIP):
+                case(TRIANGLE_FAN):
+                case(QUAD_STRIP):
+                case(POLYGON): return 1;
+            }
+            return 0;
+        }
 
     protected:
 
@@ -183,9 +201,9 @@ class SG_EXPORT DrawArrays : public PrimitiveSet
         
         virtual void accept(Drawable::PrimitiveFunctor& functor);
         
+        virtual unsigned int getNumIndices() const { return _count; }
+        virtual unsigned int index(unsigned int pos) const { return _first+pos; }
         virtual void offsetIndices(int offset) { _first += offset; }
-
-        virtual unsigned int getNumIndices() { return _count; }
 
     protected:
 
@@ -236,9 +254,27 @@ class SG_EXPORT DrawArrayLengths : public PrimitiveSet, public VectorSizei
         
         virtual void accept(Drawable::PrimitiveFunctor& functor);
         
+        virtual unsigned int getNumIndices() const;
+        virtual unsigned int index(unsigned int pos) const { return _first+pos; }
         virtual void offsetIndices(int offset) { _first += offset; }
 
-        virtual unsigned int getNumIndices();
+        virtual unsigned int getNumPrimitives() const 
+        {
+            switch(_mode)
+            {
+                case(POINTS): return getNumIndices();
+                case(LINES): return getNumIndices()/2;
+                case(TRIANGLES): return getNumIndices()/3;
+                case(QUADS): return getNumIndices()/4;
+                case(LINE_STRIP):
+                case(LINE_LOOP):
+                case(TRIANGLE_STRIP):
+                case(TRIANGLE_FAN):
+                case(QUAD_STRIP):
+                case(POLYGON): return size();
+            }
+            return 0;
+        }
 
     protected:
 
@@ -279,9 +315,9 @@ class SG_EXPORT DrawElementsUByte : public PrimitiveSet, public VectorUByte
         
         virtual void accept(Drawable::PrimitiveFunctor& functor);
 
+        virtual unsigned int getNumIndices() const { return size(); }
+        virtual unsigned int index(unsigned int pos) const { return (*this)[pos]; }
         virtual void offsetIndices(int offset);
-
-        virtual unsigned int getNumIndices() { return size(); }
 };
 
 
@@ -319,9 +355,9 @@ class SG_EXPORT DrawElementsUShort : public PrimitiveSet, public VectorUShort
         
         virtual void accept(Drawable::PrimitiveFunctor& functor);
 
+        virtual unsigned int getNumIndices() const { return size(); }
+        virtual unsigned int index(unsigned int pos) const { return (*this)[pos]; }
         virtual void offsetIndices(int offset);
-
-        virtual unsigned int getNumIndices() { return size(); }
 };
 
 class SG_EXPORT DrawElementsUInt : public PrimitiveSet, public VectorUInt
@@ -358,9 +394,9 @@ class SG_EXPORT DrawElementsUInt : public PrimitiveSet, public VectorUInt
         
         virtual void accept(Drawable::PrimitiveFunctor& functor);
 
+        virtual unsigned int getNumIndices() const { return size(); }
+        virtual unsigned int index(unsigned int pos) const { return (*this)[pos]; }
         virtual void offsetIndices(int offset);
-
-        virtual unsigned int getNumIndices() { return size(); }
 };
 
 }

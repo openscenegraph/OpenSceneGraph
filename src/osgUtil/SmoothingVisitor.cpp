@@ -121,6 +121,7 @@ void SmoothingVisitor::smooth(osg::Geometry& geom)
     }
 
     geom.setNormalArray( normals );
+    geom.setNormalIndices( geom.getVertexIndices() );
     geom.setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
 
 

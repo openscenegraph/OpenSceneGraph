@@ -6,7 +6,7 @@ DIRS = osg rgb lib3ds flt obj lwo txp dw bmp pic tga osgtgz tgz zip
 # comment in if you have Performer installed.
 # DIRS += pfb
 
-# comment in if you want Open DX support, currently not in by default
+# comment in if you want Open DX support, currently not on by default
 # since we havn't yet checked compilation on all platforms yet.
 # DIRS += dx
 

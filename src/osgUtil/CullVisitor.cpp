@@ -82,7 +82,6 @@ CullVisitor::CullVisitor()
     //_tsm = LOOK_VECTOR_DISTANCE;
     _tsm = OBJECT_EYE_POINT_DISTANCE;
 
-
     _computeNearFar = COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES;
     _computed_znear = FLT_MAX;
     _computed_zfar = -FLT_MAX;
@@ -92,6 +91,11 @@ CullVisitor::CullVisitor()
     _impostorPixelErrorThreshold = 4.0f;
     _numFramesToKeepImpostorSprites = 10;
     _impostorSpriteManager = osgNew ImpostorSpriteManager;
+
+    _currentRenderGraph = NULL;
+    _currentRenderBin = NULL;
+	
+    _currentReuseRenderLeafIndex=0;
 
 }
 

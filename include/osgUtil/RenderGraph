@@ -51,21 +51,24 @@ class OSGUTIL_EXPORT RenderGraph : public osg::Referenced
             _parent(NULL), 
             _stateset(NULL), 
             _depth(0),
-            _averageDistance(0)
+            _averageDistance(0),
+            _userData(NULL)
         {
         }
 
         RenderGraph(RenderGraph* parent,const osg::StateSet* stateset):
             _parent(parent), 
-            _stateset(stateset)
+            _stateset(stateset),
+            _depth(0),
+            _averageDistance(0),
+            _userData(NULL)
         {
             if (_parent) _depth = _parent->_depth + 1;
-            else _depth = 0;
         }
             
         ~RenderGraph() {}
         
-        RenderGraph* cloneType() const { return new RenderGraph; }
+        RenderGraph* cloneType() const { return osgNew RenderGraph; }
         
         void setUserData(osg::Referenced* obj) { _userData = obj; }
         osg::Referenced* getUserData() { return _userData.get(); }
@@ -125,7 +128,7 @@ class OSGUTIL_EXPORT RenderGraph : public osg::Referenced
             
             // create a state group and insert it into the children list
             // then return the state group.
-            RenderGraph* sg = new RenderGraph(this,stateset);
+            RenderGraph* sg = osgNew RenderGraph(this,stateset);
             _children[stateset] = sg;
             return sg;
         }

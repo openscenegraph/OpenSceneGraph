@@ -144,14 +144,21 @@ class OSGGLUT_EXPORT Viewer : public Window, public osgGA::GUIActionAdapter
         int flat_shade;
         float frRate; // gwm Jul 2001 added convolved ('averaged') frame rate
         int _printStats; // gwm Jul 2001 change from bool
-        struct { // gwm Jul 2001, added for display of statistics
+        
+        struct StatsRecord
+        { // gwm Jul 2001, added for display of statistics
+            StatsRecord():
+                timeApp(0), timeCull(0), timeDraw(0), timeFrame(0),
+                frameend(0) {}
+        
             float timeApp, timeCull, timeDraw, timeFrame;
             osg::Timer_t frameend;
-        } times[3]; // store up to 3 frames worth of times
+        };
+        StatsRecord times[3]; // store up to 3 frames worth of times
+        
         bool _useDisplayLists;
         
         osg::Timer   _timer;
-        osg::Timer_t _tickRatePerSecond;
         osg::Timer_t _initialTick;
         osg::Timer_t _lastFrameTick;
         osg::Timer_t _frameTick;

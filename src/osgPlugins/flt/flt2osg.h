@@ -45,6 +45,7 @@ class FaceRecord;
 class MeshRecord;
 class MeshPrimitiveRecord;
 class MatrixRecord;
+class GeneralMatrixRecord;
 class ExternalRecord;
 class LightPointRecord;
 class VertexListRecord;
@@ -122,6 +123,7 @@ class ConvertFromFLT
 
         // Ancillary records
         osg::Group* visitMatrix(osg::Group& osgParent, const osg::Group& osgPrimary, MatrixRecord* rec);
+		osg::Group* visitGeneralMatrix(osg::Group& osgParent, const osg::Group& osgPrimary, GeneralMatrixRecord* rec);
         void visitLongID(osg::Group& osgParent, LongIDRecord* rec);
         void visitComment(osg::Group& osgParent, CommentRecord* rec);
 
@@ -184,9 +186,9 @@ class ConvertFromFLT
         void setTexture ( FaceRecord *rec, SFace *pSFace, osg::StateSet *osgStateSet, DynGeoSet *dgset, bool &bBlend );
         void setTransparency ( osg::StateSet *osgStateSet, bool &bBlend );
 
-    // multitexturing
-    void addMultiTexture( DynGeoSet* dgset, MultiTextureRecord* mtr );
-    void addUVList( DynGeoSet* dgset, UVListRecord* mtr );
+        // multitexturing
+        void addMultiTexture( DynGeoSet* dgset, MultiTextureRecord* mtr );
+        void addUVList( DynGeoSet* dgset, UVListRecord* mtr );
 
         typedef std::map<int,Record*> VertexPaletteOffsetMap;
         VertexPaletteOffsetMap _VertexPaletteOffsetMap;

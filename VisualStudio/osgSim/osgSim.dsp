@@ -42,8 +42,9 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Release"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
+F90=df.exe
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /Op /I "../../include" /D "NDEBUG" /D "_MBCS" /D "_USRDLL" /D "OSGSIM_LIBRARY" /D "WIN32" /D "_WINDOWS" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /Op /I "../../include" /D "NDEBUG" /D "_MBCS" /D "_USRDLL" /D "OSGSIM_LIBRARY" /D "WIN32" /D "_WINDOWS" /YX /FD /Zm200 /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "NDEBUG"
@@ -68,8 +69,9 @@ LINK32=link.exe
 # PROP Intermediate_Dir "Debug"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
+F90=df.exe
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /vmg /vd0 /GR /GX /Zi /Od /I "../../include" /D "OSGSIM_LIBRARY" /D "_WINDOWS" /D "WIN32" /D "_DEBUG" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /vmg /vd0 /GR /GX /Zi /Od /I "../../include" /D "OSGSIM_LIBRARY" /D "_WINDOWS" /D "WIN32" /D "_DEBUG" /YX /FD /GZ /Zm200 /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
@@ -97,6 +99,10 @@ SOURCE=..\..\src\osgSim\BlinkSequence.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgSim\ColorRange.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgSim\DOFTransform.cpp
 # End Source File
 # Begin Source File
@@ -113,11 +119,7 @@ SOURCE=..\..\src\osgSim\LightPointNode.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgSim\Sector.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgSim\ScalarsToColors.cpp
+SOURCE=..\..\src\osgSim\MultiSwitch.cpp
 # End Source File
 # Begin Source File
 
@@ -125,15 +127,15 @@ SOURCE=..\..\src\osgSim\ScalarBar.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgSim\ColorRange.cpp
+SOURCE=..\..\src\osgSim\ScalarsToColors.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgSim\Sector.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\osgSim\SphereSegment.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgSim\MultiSwitch.cpp
 # End Source File
 # Begin Source File
 
@@ -153,7 +155,15 @@ SOURCE=..\..\include\osgSim\BlinkSequence
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\osgSim\ColorRange
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\include\osgSim\DOFTransform
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgSim\Export
 # End Source File
 # Begin Source File
 
@@ -169,11 +179,7 @@ SOURCE=..\..\include\osgSim\LightPointNode
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\include\osgSim\Sector
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\include\osgSim\ScalarsToColors
+SOURCE=..\..\include\osgSim\MultiSwitch
 # End Source File
 # Begin Source File
 
@@ -181,19 +187,15 @@ SOURCE=..\..\include\osgSim\ScalarBar
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\include\osgSim\ColorRange
+SOURCE=..\..\include\osgSim\ScalarsToColors
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgSim\Sector
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\include\osgSim\SphereSegment
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\include\osgSim\MultiSwitch
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\include\osgSim\Export
 # End Source File
 # Begin Source File
 

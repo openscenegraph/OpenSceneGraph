@@ -42,8 +42,9 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Release"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
+F90=df.exe
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "../../include" /D "NDEBUG" /D "_MBCS" /D "_USRDLL" /D "OSGDB_LIBRARY" /D "WIN32" /D "_WINDOWS" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "../../include" /D "NDEBUG" /D "_MBCS" /D "_USRDLL" /D "OSGDB_LIBRARY" /D "WIN32" /D "_WINDOWS" /YX /FD /Zm200 /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "NDEBUG"
@@ -68,8 +69,9 @@ LINK32=link.exe
 # PROP Intermediate_Dir "Debug"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
+F90=df.exe
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /vmg /vd0 /GR /GX /Zi /Od /I "../../include" /D "OSGDB_LIBRARY" /D "_WINDOWS" /D "WIN32" /D "_DEBUG" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /vmg /vd0 /GR /GX /Zi /Od /I "../../include" /D "OSGDB_LIBRARY" /D "_WINDOWS" /D "WIN32" /D "_DEBUG" /YX /FD /GZ /Zm200 /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
@@ -94,10 +96,6 @@ LINK32=link.exe
 # Begin Source File
 
 SOURCE=..\..\src\osgDB\DatabasePager.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgDB\SharedStateManager.cpp
 # End Source File
 # Begin Source File
 
@@ -129,11 +127,11 @@ SOURCE=..\..\Src\osgDB\FileUtils.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\osgDB\Input.cpp
+SOURCE=..\..\Src\osgDB\ImageOptions.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\osgDB\ImageOptions.cpp
+SOURCE=..\..\Src\osgDB\Input.cpp
 # End Source File
 # Begin Source File
 
@@ -146,6 +144,10 @@ SOURCE=..\..\Src\osgDB\ReadFile.cpp
 # Begin Source File
 
 SOURCE=..\..\Src\osgDB\Registry.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgDB\SharedStateManager.cpp
 # End Source File
 # Begin Source File
 
@@ -162,10 +164,6 @@ SOURCE=..\..\Src\osgDB\WriteFile.cpp
 # Begin Source File
 
 SOURCE=..\..\Include\osgDB\DatabasePager
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\Include\osgDB\SharedStateManager
 # End Source File
 # Begin Source File
 
@@ -201,11 +199,11 @@ SOURCE=..\..\include\osgDB\FileUtils
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\osgDB\Input
+SOURCE=..\..\Include\osgDB\ImageOptions
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\osgDB\ImageOptions
+SOURCE=..\..\Include\osgDB\Input
 # End Source File
 # Begin Source File
 
@@ -226,6 +224,10 @@ SOURCE=..\..\Include\osgDB\ReadFile
 # Begin Source File
 
 SOURCE=..\..\Include\osgDB\Registry
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\osgDB\SharedStateManager
 # End Source File
 # Begin Source File
 

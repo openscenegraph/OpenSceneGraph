@@ -42,6 +42,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Release"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
+F90=df.exe
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /FD /c
 # ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "../../include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "SG_LIBRARY" /YX /FD /Zm200 /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
@@ -68,6 +69,7 @@ LINK32=link.exe
 # PROP Intermediate_Dir "Debug"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
+F90=df.exe
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /FD /GZ /c
 # ADD CPP /nologo /MDd /W3 /Gm /vmg /vd0 /GR /GX /Zi /Od /I "../../include" /D "_WINDOWS" /D "SG_LIBRARY" /D "WIN32" /D "_DEBUG" /YX /FD /GZ /Zm200 /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
@@ -101,11 +103,11 @@ SOURCE=..\..\src\osg\AnimationPath.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osg\ArgumentParser.cpp
+SOURCE=..\..\src\osg\ApplicationUsage.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osg\ApplicationUsage.cpp
+SOURCE=..\..\src\osg\ArgumentParser.cpp
 # End Source File
 # Begin Source File
 
@@ -121,11 +123,23 @@ SOURCE=..\..\src\osg\Billboard.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\BlendColor.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osg\BlendFunc.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\BoundingBox.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\osg\BoundingSphere.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osg\ClearNode.cpp
 # End Source File
 # Begin Source File
 
@@ -137,15 +151,15 @@ SOURCE=..\..\src\osg\ClipPlane.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\CollectOccludersVisitor.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\ColorMask.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\osg\ColorMatrix.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osg\CollectOccludersVisitor.cpp
 # End Source File
 # Begin Source File
 
@@ -165,11 +179,11 @@ SOURCE=..\..\src\osg\CullFace.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osg\CullStack.cpp
+SOURCE=..\..\src\osg\CullingSet.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osg\CullingSet.cpp
+SOURCE=..\..\src\osg\CullStack.cpp
 # End Source File
 # Begin Source File
 
@@ -186,10 +200,6 @@ SOURCE=..\..\src\osg\Drawable.cpp
 # Begin Source File
 
 SOURCE=..\..\src\osg\DrawPixels.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osg\ClearNode.cpp
 # End Source File
 # Begin Source File
 
@@ -269,11 +279,11 @@ SOURCE=..\..\src\osg\Material.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osg\Matrixf.cpp
+SOURCE=..\..\src\osg\Matrixd.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osg\Matrixd.cpp
+SOURCE=..\..\src\osg\Matrixf.cpp
 # End Source File
 # Begin Source File
 
@@ -341,15 +351,11 @@ SOURCE=..\..\src\osg\Projection.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osg\Referenced.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osg\ShapeDrawable.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\osg\Quat.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osg\Referenced.cpp
 # End Source File
 # Begin Source File
 
@@ -361,11 +367,15 @@ SOURCE=..\..\src\osg\ShadeModel.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\ShadowVolumeOccluder.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\Shape.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osg\ShadowVolumeOccluder.cpp
+SOURCE=..\..\src\osg\ShapeDrawable.cpp
 # End Source File
 # Begin Source File
 
@@ -433,14 +443,6 @@ SOURCE=..\..\src\osg\Transform.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osg\BlendColor.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osg\BlendFunc.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\osg\UnitTestFramework.cpp
 # End Source File
 # Begin Source File
@@ -449,11 +451,11 @@ SOURCE=..\..\src\osg\Vec3.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osg\VertexProgram.cpp
+SOURCE=..\..\src\osg\Version.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osg\Version.cpp
+SOURCE=..\..\src\osg\VertexProgram.cpp
 # End Source File
 # Begin Source File
 
@@ -473,7 +475,7 @@ SOURCE=..\..\Include\Osg\AnimationPath
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\Array
+SOURCE=..\..\Include\osg\ApplicationUsage
 # End Source File
 # Begin Source File
 
@@ -481,7 +483,7 @@ SOURCE=..\..\Include\osg\ArgumentParser
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\osg\ApplicationUsage
+SOURCE=..\..\Include\Osg\Array
 # End Source File
 # Begin Source File
 
@@ -490,6 +492,14 @@ SOURCE=..\..\Include\osg\AutoTransform
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\Billboard
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\BlendColor
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\BlendFunc
 # End Source File
 # Begin Source File
 
@@ -505,6 +515,10 @@ SOURCE=..\..\include\osg\BoundsChecking
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\osg\ClearNode
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\Include\Osg\ClipNode
 # End Source File
 # Begin Source File
@@ -513,11 +527,7 @@ SOURCE=..\..\Include\Osg\ClipPlane
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\ConvexPlanarOccluder
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\Include\Osg\ConvexPlanarPolygon
+SOURCE=..\..\Include\Osg\CollectOccludersVisitor
 # End Source File
 # Begin Source File
 
@@ -529,7 +539,11 @@ SOURCE=..\..\Include\Osg\ColorMatrix
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\CollectOccludersVisitor
+SOURCE=..\..\Include\Osg\ConvexPlanarOccluder
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\ConvexPlanarPolygon
 # End Source File
 # Begin Source File
 
@@ -541,11 +555,11 @@ SOURCE=..\..\Include\Osg\CullFace
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\CullStack
+SOURCE=..\..\Include\Osg\CullingSet
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\CullingSet
+SOURCE=..\..\Include\Osg\CullStack
 # End Source File
 # Begin Source File
 
@@ -565,11 +579,11 @@ SOURCE=..\..\Include\Osg\DrawPixels
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\include\osg\ClearNode
+SOURCE=..\..\Include\Osg\Export
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\Export
+SOURCE=..\..\include\osg\fast_back_stack
 # End Source File
 # Begin Source File
 
@@ -577,11 +591,11 @@ SOURCE=..\..\Include\Osg\Fog
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\include\osg\FrameStamp
+SOURCE=..\..\include\osg\FragmentProgram
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\include\osg\FragmentProgram
+SOURCE=..\..\include\osg\FrameStamp
 # End Source File
 # Begin Source File
 
@@ -594,10 +608,6 @@ SOURCE=..\..\Include\Osg\Geode
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\Geometry
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\Include\Osg\IndexedGeometry
 # End Source File
 # Begin Source File
 
@@ -626,6 +636,10 @@ SOURCE=..\..\Include\Osg\Impostor
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\ImpostorSprite
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\IndexedGeometry
 # End Source File
 # Begin Source File
 
@@ -669,11 +683,11 @@ SOURCE=..\..\Include\Osg\Matrix
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\Matrixf
+SOURCE=..\..\Include\Osg\Matrixd
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\Matrixd
+SOURCE=..\..\Include\Osg\Matrixf
 # End Source File
 # Begin Source File
 
@@ -745,23 +759,15 @@ SOURCE=..\..\Include\Osg\PositionAttitudeTransform
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\Projection
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\Include\osg\ShapeDrawable
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\Include\Osg\PrimitiveSet
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\Quat
+SOURCE=..\..\Include\Osg\Projection
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\include\osg\fast_back_stack
+SOURCE=..\..\Include\Osg\Quat
 # End Source File
 # Begin Source File
 
@@ -781,11 +787,15 @@ SOURCE=..\..\Include\Osg\ShadeModel
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\Include\Osg\ShadowVolumeOccluder
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\Include\Osg\Shape
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\ShadowVolumeOccluder
+SOURCE=..\..\Include\osg\ShapeDrawable
 # End Source File
 # Begin Source File
 
@@ -861,14 +871,6 @@ SOURCE=..\..\Include\Osg\TriangleFunctor
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\BlendColor
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\Include\Osg\BlendFunc
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\Include\Osg\UnitTestFramework
 # End Source File
 # Begin Source File
@@ -885,11 +887,11 @@ SOURCE=..\..\Include\Osg\Vec4
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\VertexProgram
+SOURCE=..\..\Include\Osg\Version
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\Version
+SOURCE=..\..\Include\Osg\VertexProgram
 # End Source File
 # Begin Source File
 

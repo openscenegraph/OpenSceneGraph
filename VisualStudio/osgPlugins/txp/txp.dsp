@@ -42,6 +42,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Release"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
+F90=df.exe
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /FD /c
 # ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "../../../include" /I "../../../src/osgPlugins/txp" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "OSGTXP_LIBRARY" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
@@ -69,8 +70,9 @@ LINK32=link.exe
 # PROP Intermediate_Dir "Debug"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
+F90=df.exe
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /vmg /vd0 /GR /GX /Zi /Od /I "../../../include" /I "../../../src/osgPlugins/txp" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D __COMP_DLL=7931 /D "WIN32" /D "_DEBUG" /D "OSGTXP_LIBRARY" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /vmg /vd0 /GR /GX /Zi /Od /I "../../../include" /I "../../../src/osgPlugins/txp" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D __COMP_DLL=7931 /D "WIN32" /D "_DEBUG" /D "OSGTXP_LIBRARY" /YX /FD /GZ /Zm200 /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x41a /d "_DEBUG"
@@ -95,34 +97,6 @@ LINK32=link.exe
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\txp\ReaderWriterTXP.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\txp\TXPArchive.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\txp\TXPIO.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\txp\TXPNode.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\txp\TXPPagedLOD.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\txp\TXPPageManager.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\txp\TXPParser.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\txp\TXPSeamLOD.cpp
 # End Source File
 # Begin Source File
 
@@ -154,15 +128,15 @@ SOURCE=..\..\..\src\osgPlugins\txp\trpage_light.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\txp\trpage_main.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\txp\trpage_managers.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\txp\trpage_material.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\txp\trpage_main.cpp
 # End Source File
 # Begin Source File
 
@@ -216,6 +190,34 @@ SOURCE=..\..\..\src\osgPlugins\txp\trpage_warchive.cpp
 
 SOURCE=..\..\..\src\osgPlugins\txp\trpage_writebuf.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\txp\TXPArchive.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\txp\TXPIO.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\txp\TXPNode.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\txp\TXPPagedLOD.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\txp\TXPPageManager.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\txp\TXPParser.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\txp\TXPSeamLOD.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -223,30 +225,6 @@ SOURCE=..\..\..\src\osgPlugins\txp\trpage_writebuf.cpp
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\txp\ReaderWriterTXP.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\txp\TXPArchive.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\txp\TXPNode.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\txp\TXPPagedLOD.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\txp\TXPPageManager.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\txp\TXPParser.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\txp\TXPSeamLOD.h
 # End Source File
 # Begin Source File
 
@@ -303,6 +281,30 @@ SOURCE=..\..\..\src\osgPlugins\txp\trpage_util.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\txp\trpage_write.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\txp\TXPArchive.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\txp\TXPNode.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\txp\TXPPagedLOD.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\txp\TXPPageManager.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\txp\TXPParser.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\txp\TXPSeamLOD.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

@@ -682,7 +682,7 @@ void for_each_triangle(GeoSet& gset,T& op)
         break;        
     }
 
-};
+}
 
 
 }

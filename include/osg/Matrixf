@@ -126,7 +126,7 @@ class SG_EXPORT Matrixf
           * Note, if matrix is not an orthographic matrix then invalid values will be returned.*/
         bool getOrtho(double& left, double& right,
                       double& bottom, double& top,
-                      double& zNear, double& zFar);
+                      double& zNear, double& zFar) const;
 
         /** Set to a 2D orthographic projection. See glOrtho2D for further details.*/
         inline void makeOrtho2D(double left, double right,
@@ -145,7 +145,7 @@ class SG_EXPORT Matrixf
           * Returns false if matrix is not an orthographic matrix, where parameter values are undefined.*/
         bool getFrustum(double& left, double& right,
                         double& bottom, double& top,
-                        double& zNear, double& zFar);
+                        double& zNear, double& zFar) const;
 
         /** Set to a symmetrical perspective projection, See gluPerspective for further details.
           * Aspect ratio is defined as width/height.*/
@@ -158,14 +158,14 @@ class SG_EXPORT Matrixf
           * Asymetric metrices occur when stereo, power walls, caves and reality center display are used.
           * In these configuration one should use the AsFrustum method instead.*/
         bool getPerspective(double& fovy,double& aspectRatio,
-                            double& zNear, double& zFar);
+                            double& zNear, double& zFar) const;
 
 
         /** Set to the position and orientation modelview matrix, using the same convention as gluLookAt. */
         void makeLookAt(const Vec3& eye,const Vec3& center,const Vec3& up);
         
         /** Get to the position and orientation of a modelview matrix, using the same convention as gluLookAt. */
-        void getLookAt(Vec3& eye,Vec3& center,Vec3& up,value_type lookDistance=1.0f);
+        void getLookAt(Vec3& eye,Vec3& center,Vec3& up,value_type lookDistance=1.0f) const;
 
         /** invert the matrix rhs placing result in this matrix.*/
         bool invert( const Matrixf& rhs);

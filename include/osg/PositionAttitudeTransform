@@ -42,7 +42,7 @@ class SG_EXPORT PositionAttitudeTransform : public Transform
         
         void setPivotPoint(const Vec3& pivot) { _pivotPoint = pivot; dirtyBound(); }
     
-        const Vec3& setPivotPoint() const { return _pivotPoint; }
+        const Vec3& getPivotPoint() const { return _pivotPoint; }
         
 
         virtual const bool computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor* nv) const;

@@ -147,8 +147,6 @@ osg::Node* createLights(osg::BoundingBox& bb,osg::StateSet* rootStateSet)
     mt->addChild(lightS2);
     mt->addChild(markerGeode);
     
-    lightGroup->addChild(lightS2);
-
     lightGroup->addChild(mt);
 
     return lightGroup;

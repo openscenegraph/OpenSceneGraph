@@ -141,8 +141,9 @@ Tree <tree@stain.org>
 Vladimir Vukicevic <vladimir@pobox.com>
         - md2 loader.
         
-Rune Schmidt Jensen <sphere@aub.dk>
+Rune Schmidt Jensen <rune@schmidt-jensen.com>
         - dds loader.
+	- ive plugin.
         
 Romano José Magacho da Silva <rmagacho@predialnet.com.br>
         - pause/resume in osgGA::AnimationPathManipulator

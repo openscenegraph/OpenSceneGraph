@@ -25,7 +25,7 @@ class ImageReaderWriter : public osgDB::ReaderWriter
         
         ImageReaderWriter();
         
-        virtual const char* className() { return "ImageReader"; }
+        virtual const char* className() const { return "ImageReader"; }
 
         void addPhotoArchive(PhotoArchive* archive) { _photoArchiveList.push_back(archive); }
 

@@ -17,7 +17,7 @@ SRC_DIRS = \
 	osgText\
 	osgSim\
 	osgPlugins\
-        ../examples\
+	../examples\
 	src/Demos
 
 
@@ -25,27 +25,28 @@ SRC_DIRS = \
 # Directories traversed in the TOPDIR/src/osgPlugins directory
 
 PLUGIN_DIRS = \
-	osg\
-	osgParticle\
-	osgText\
-	rgb\
-    	ac3d\
-	lib3ds\
+	ac3d\
+	bmp\
 	directx\
+	dw\
 	flt\
 	freetype\
-        iv\
-	obj\
-	lwo\
 	geo\
-	txp\
-	dw\
-	bmp\
-	pic\
-	tga\
+	iv\
+	lib3ds\
 	logos\
+	lwo\
+	md2\
+	obj\
+	osgParticle\
+	osgText\
+	osg\
 	osgtgz\
+	pic\
+	rgb\
+	tga\
 	tgz\
+	txp\
 	zip
 
 # comment in if you have Performer installed.

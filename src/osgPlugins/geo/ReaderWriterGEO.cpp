@@ -714,12 +714,12 @@ class ReaderWriterGEO : public ReaderWriter
                     break;
                 case DB_DSK_HEADER: // attach to previous
                     curparent= &(*itr);
-                    sorted.push_back(itr);
+                    sorted.push_back(&(*itr));
                     break;
                 case DB_DSK_INTERNAL_VARS: // attach to parent
                 case DB_DSK_LOCAL_VARS:
                 case DB_DSK_EXTERNAL_VARS:
-                    (curparent)->addBehaviourRecord((itr));
+                    (curparent)->addBehaviourRecord(&(*itr));
                     break;
                 case DB_DSK_FLOAT_VAR: // attach to parent
                 case DB_DSK_INT_VAR:
@@ -730,13 +730,13 @@ class ReaderWriterGEO : public ReaderWriter
                 case DB_DSK_FLOAT3_VAR:
                 case DB_DSK_FLOAT4_VAR:
                     // else if ((*itr).isVar():
-                    (curparent)->addBehaviourRecord((itr));
+                    (curparent)->addBehaviourRecord(&(*itr));
                         break;
                 case DB_DSK_TEXTURE: // attach to parent
-                    geotxlist.push_back(itr);
+                    geotxlist.push_back(&(*itr));
                     break;
                 case DB_DSK_MATERIAL: // attach to parent
-                    geomatlist.push_back(itr);
+                    geomatlist.push_back(&(*itr));
                     break;
                 case DB_DSK_VIEW: // not needed for Real Time
                     break;
@@ -795,12 +795,12 @@ class ReaderWriterGEO : public ReaderWriter
                 case DB_DSK_ABS_ACTION:
                 case DB_DSK_IF_THEN_ELSE_ACTION:
                 case DB_DSK_DCS_ACTION:
-                    (curparent->getLastChild())->addBehaviourRecord((itr));
+                    (curparent->getLastChild())->addBehaviourRecord(&(*itr));
                     break;
                 default:
                     if (curparent) {
                         (*itr).setparent(curparent);
-                        curparent->addchild(itr);
+                        curparent->addchild(&(*itr));
                     } 
                     break;
                 }

@@ -1,0 +1,60 @@
+//C++ header - Open Scene Graph - Copyright (C) 1998-2001 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+
+#ifndef OSGTEXT_PARAGRAPH
+#define OSGTEXT_PARAGRAPH
+
+#include <osg/Geode>
+#include <osgText/Text>
+
+namespace osgText {
+
+class OSGTEXT_EXPORT Paragraph : public osg::Geode
+{
+    public:
+
+        Paragraph();
+        Paragraph(const osg::Vec3& position,const std::string& text,osgText::Font* font);
+
+        META_Node(Paragraph)
+        
+
+        void setFont(osgText::Font* font);
+        osgText::Font* getFont() { return _font.get(); }
+        const osgText::Font* getFont() const { return _font.get(); }
+        
+        void setMaximumNoCharactersPerLine(unsigned int maxCharsPerLine);
+        const unsigned int getMaximumNoCharactersPerLine() const { return _maxCharsPerLine; }
+        
+        void setText(const std::string& text);
+        std::string& getText() { return _text; }
+        const std::string& getText() const { return _text; }
+                
+        void setPosition(const osg::Vec3& position);
+        const osg::Vec3& getPosition() const { return _position; }
+        
+        void setAlignment(int alignment);
+        int getAlignment() { return _alignment; }
+
+        
+        float getHeight() const;
+        
+    protected:
+    
+        virtual ~Paragraph() {}
+        
+        void createDrawables();
+            
+        osg::Vec3                   _position;
+        std::string                 _text;
+        osg::ref_ptr<osgText::Font> _font;
+        int                         _alignment;
+        unsigned int                _maxCharsPerLine;
+        
+        
+};
+
+};
+
+#endif

@@ -397,6 +397,64 @@ const StateAttribute* State::getLastAppliedAttribute(const AttributeMap& attribu
     }
 }
 
+void State::dirtyAllModes()
+{
+    for(ModeMap::iterator mitr=_modeMap.begin();
+        mitr!=_modeMap.end();
+        ++mitr)
+    {
+        ModeStack& ms = mitr->second;
+        ms.last_applied_value = !ms.last_applied_value;
+        ms.changed = true;    
+
+    }        
+
+    for(TextureModeMapList::iterator tmmItr=_textureModeMapList.begin();
+        tmmItr!=_textureModeMapList.end();
+        ++tmmItr)
+    {
+        for(ModeMap::iterator mitr=tmmItr->begin();
+            mitr!=tmmItr->end();
+            ++mitr)
+        {
+            ModeStack& ms = mitr->second;
+            ms.last_applied_value = !ms.last_applied_value;
+            ms.changed = true;    
+
+        }        
+    }
+}
+
+void State::dirtyAllAttributes()
+{
+    for(AttributeMap::iterator aitr=_attributeMap.begin();
+        aitr!=_attributeMap.end();
+        ++aitr)
+    {
+        AttributeStack& as = aitr->second;
+        as.last_applied_attribute = 0;
+        as.changed = true;
+    }
+    
+
+    for(TextureAttributeMapList::iterator tamItr=_textureAttributeMapList.begin();
+        tamItr!=_textureAttributeMapList.end();
+        ++tamItr)
+    {
+        AttributeMap& attributeMap = *tamItr;
+        for(AttributeMap::iterator aitr=attributeMap.begin();
+            aitr!=attributeMap.end();
+            ++aitr)
+        {
+            AttributeStack& as = aitr->second;
+            as.last_applied_attribute = 0;
+            as.changed = true;
+        }
+    }
+
+}
+
+
 Polytope State::getViewFrustum() const
 {
     Polytope cv;
@@ -404,6 +462,8 @@ Polytope State::getViewFrustum() const
     cv.transformProvidingInverse((*_modelView)*(*_projection));
     return cv;
 }
+
+
 
 void State::disableAllVertexArrays()
 {

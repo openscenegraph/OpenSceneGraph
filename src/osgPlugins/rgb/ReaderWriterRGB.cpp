@@ -81,6 +81,22 @@ static void ConvertLong(GLuint *array, long length)
 }
 
 
+static void RawImageClose(rawImageRec *raw)
+{
+    fclose(raw->file);
+    free(raw->tmp);
+    free(raw->tmpR);
+    free(raw->tmpG);
+    free(raw->tmpB);
+    free(raw->tmpA);
+    
+    free(raw->rowStart);        
+    free(raw->rowSize);        
+
+    free(raw);
+}
+
+
 static rawImageRec *RawImageOpen(const char *fileName)
 {
     union
@@ -110,6 +126,7 @@ static rawImageRec *RawImageOpen(const char *fileName)
     }
     if ((raw->file = fopen(fileName, "rb")) == NULL)
     {
+        free(raw);
         perror(fileName);
         return NULL;
     }
@@ -122,11 +139,14 @@ static rawImageRec *RawImageOpen(const char *fileName)
     }
 
     raw->tmp = raw->tmpR = raw->tmpG = raw->tmpB = raw->tmpA = 0L;
+    raw->rowStart = 0;
+    raw->rowSize = 0;
 
     raw->tmp = (unsigned char *)malloc(raw->sizeX*256);
     if (raw->tmp == NULL )
     {
         notify(FATAL)<< "Out of memory!"<< std::endl;
+        RawImageClose(raw);
         return NULL;
     }
 
@@ -135,7 +155,7 @@ static rawImageRec *RawImageOpen(const char *fileName)
         if( (raw->tmpR = (unsigned char *)malloc(raw->sizeX)) == NULL )
         {
             notify(FATAL)<< "Out of memory!"<< std::endl;
-            free( raw->tmp );
+            RawImageClose(raw);
             return NULL;
         }
     }
@@ -144,8 +164,7 @@ static rawImageRec *RawImageOpen(const char *fileName)
         if( (raw->tmpG = (unsigned char *)malloc(raw->sizeX)) == NULL )
         {
             notify(FATAL)<< "Out of memory!"<< std::endl;
-            free( raw->tmp );
-            free( raw->tmpR );
+            RawImageClose(raw);
             return NULL;
         }
     }
@@ -154,9 +173,7 @@ static rawImageRec *RawImageOpen(const char *fileName)
         if( (raw->tmpB = (unsigned char *)malloc(raw->sizeX)) == NULL )
         {
             notify(FATAL)<< "Out of memory!"<< std::endl;
-            free( raw->tmp );
-            free( raw->tmpR );
-            free( raw->tmpG );
+            RawImageClose(raw);
             return NULL;
         }
     }
@@ -165,10 +182,7 @@ static rawImageRec *RawImageOpen(const char *fileName)
         if( (raw->tmpA = (unsigned char *)malloc(raw->sizeX)) == NULL )
         {
             notify(FATAL)<< "Out of memory!"<< std::endl;
-            free( raw->tmp );
-            free( raw->tmpR );
-            free( raw->tmpG );
-            free( raw->tmpB );
+            RawImageClose(raw);
             return NULL;
         }
     }
@@ -176,11 +190,17 @@ static rawImageRec *RawImageOpen(const char *fileName)
     if ((raw->type & 0xFF00) == 0x0100)
     {
         x = raw->sizeY * raw->sizeZ * sizeof(GLuint);
-        raw->rowStart = (GLuint *)malloc(x);
-        raw->rowSize = (GLint *)malloc(x);
-        if (raw->rowStart == NULL || raw->rowSize == NULL)
+        if ( (raw->rowStart = (GLuint *)malloc(x)) == NULL )
         {
             notify(FATAL)<< "Out of memory!"<< std::endl;
+            RawImageClose(raw);
+            return NULL;
+        }
+
+        if ( (raw->rowSize = (GLint *)malloc(x)) == NULL )
+        {
+            notify(FATAL)<< "Out of memory!"<< std::endl;
+            RawImageClose(raw);
             return NULL;
         }
         raw->rleEnd = 512 + (2 * x);
@@ -194,23 +214,6 @@ static rawImageRec *RawImageOpen(const char *fileName)
         }
     }
     return raw;
-}
-
-
-static void RawImageClose(rawImageRec *raw)
-{
-    fclose(raw->file);
-    free(raw->tmp);
-    if( raw->tmpR )
-        free(raw->tmpR);
-    if( raw->tmpG )
-        free(raw->tmpG);
-    if( raw->tmpB )
-        free(raw->tmpB);
-    if( raw->tmpA )
-        free(raw->tmpA);
-
-    free(raw);
 }
 
 

@@ -31,7 +31,6 @@ PLUGIN_DIRS = \
 	dds\
 	dw\
 	flt\
-	iv\
 	lib3ds\
 	logo\
 	lwo\
@@ -60,6 +59,18 @@ PLUGIN_DIRS = \
 
 # comment in if have freetype2.x installed, provides type type font support to osgText.
 PLUGIN_DIRS += freetype
+
+# comment in of your have Inventor or coin installed
+ifneq ("$(USE_COIN)","")
+    PLUGIN_DIRS += Inventor
+else 
+    ifneq ("$(USE_INVENTOR)","")
+        PLUGIN_DIRS += Inventor
+    else
+	PLUGIN_DIRS += iv
+    endif
+endif
+
 
 
 # Geo plugin breaks Darwin build and doens't handle BigEndian issue.
@@ -158,7 +169,6 @@ EXAMPLE_DIRS = \
 	osgwindows\
         
 #	osgpagedlod\
-#	osgsimulation\
 #	osgdemeter\
 #	osgjigsaw\
 

@@ -64,7 +64,7 @@ Ulrich Hertlein <u.hertlein@bit-side.com>
         - support for texture subloading in osg::Texture
         - osg::Sequence support.
         - improvements to the pfb loader.
-        - .lwo and .obj plugins.
+        - .lwo, .obj and .x (DirectX model) plugins.
 
 Axel Volley <volley@acm.org>
         - support for OBJECT_LINEAR and EYE_LINEAR TexGen modes.

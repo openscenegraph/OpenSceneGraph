@@ -203,7 +203,8 @@ public:
         };
 
 
-        enum ModKeyMask {
+        enum ModKeyMask
+        {
             MODKEY_LEFT_SHIFT  = 0x0001,
             MODKEY_RIGHT_SHIFT = 0x0002,
             MODKEY_LEFT_CTRL   = 0x0040,
@@ -220,7 +221,6 @@ public:
             MODKEY_META        = (MODKEY_LEFT_META|MODKEY_RIGHT_META)
         };
 
-
         /** Get the EventType of the GUI event.*/
         virtual EventType getEventType() const = 0;
 
@@ -229,6 +229,16 @@ public:
 
         /** button pressed/released, return -1 if inappropriate for this event.*/
         virtual int getButton() const = 0;
+
+
+        enum MouseYOrientation
+        {
+            Y_INCREASING_UPWARDS,
+            Y_INCREASING_DOWNWARDS
+        };
+
+        void setMouseYOrientation(MouseYOrientation myo) { _mouseYOrientation = myo; }
+        MouseYOrientation getMouseYOrientation() const { return _mouseYOrientation; }
 
         /** manimum x mouse position. */
         virtual float getXmin() const = 0;
@@ -267,14 +277,20 @@ public:
           * -1 would be the bottom of the window.
           * 0.0 would be the middle of the window. 
           * +1 would be the top of the window.*/
-        inline float getYnormalized() const { return 2.0f*(getY()-getYmin())/(getYmax()-getYmin())-1.0f; }
+        inline float getYnormalized() const
+        {
+            if (_mouseYOrientation==Y_INCREASING_UPWARDS) return 2.0f*(getY()-getYmin())/(getYmax()-getYmin())-1.0f;
+            else return -(2.0f*(getY()-getYmin())/(getYmax()-getYmin())-1.0f);
+        }
 
 protected:
 
-        GUIEventAdapter() {}
+        GUIEventAdapter(MouseYOrientation myo=Y_INCREASING_DOWNWARDS):_mouseYOrientation(myo) {}
 
         /** Force users to create on heap, so that multiple referencing is safe.*/
         virtual ~GUIEventAdapter() {}
+
+        MouseYOrientation _mouseYOrientation;
 
 };
 

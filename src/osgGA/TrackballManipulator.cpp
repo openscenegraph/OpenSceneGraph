@@ -270,23 +270,12 @@ bool TrackballManipulator::calcMovement()
         osg::Vec3 axis;
         float angle;
 
-        float mx0 = (_ga_t0->getXmin()+_ga_t0->getXmax())/2.0f;
-        float rx0 = (_ga_t0->getXmax()-_ga_t0->getXmin())/2.0f;
-
-        float my0 = (_ga_t0->getYmin()+_ga_t0->getYmax())/2.0f;
-        float ry0 = (_ga_t0->getYmax()-_ga_t0->getYmin())/2.0f;
-
-        float mx1 = (_ga_t0->getXmin()+_ga_t1->getXmax())/2.0f;
-        float rx1 = (_ga_t0->getXmax()-_ga_t1->getXmin())/2.0f;
-
-        float my1 = (_ga_t1->getYmin()+_ga_t1->getYmax())/2.0f;
-        float ry1 = (_ga_t1->getYmax()-_ga_t1->getYmin())/2.0f;
-
-        float px0 = (_ga_t0->getX()-mx0)/rx0;
-        float py0 = (my0-_ga_t0->getY())/ry0;
-
-        float px1 = (_ga_t1->getX()-mx1)/rx1;
-        float py1 = (my1-_ga_t1->getY())/ry1;
+        float px0 = _ga_t0->getXnormalized();
+        float py0 = _ga_t0->getYnormalized();
+        
+        float px1 = _ga_t1->getXnormalized();
+        float py1 = _ga_t1->getYnormalized();
+        
 
         trackball(axis,angle,px1,py1,px0,py0);
 

@@ -14,13 +14,8 @@ float EventAdapter::_s_Ymax = 1024;
 float EventAdapter::_s_mx = 0;
 float EventAdapter::_s_my = 0;
 
-static float s_xOffset=1.0f;
-static float s_xScale=0.5f;
-static float s_yOffset=1.0f;
-static float s_yScale=0.5f;
-
-
-EventAdapter::EventAdapter()
+EventAdapter::EventAdapter():
+    osgGA::GUIEventAdapter(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS)
 {
     _eventType = NONE;           // adaptor does not encapsulate any events.
     _key = -1;                   // set to 'invalid' key value.
@@ -99,8 +94,8 @@ void EventAdapter::adaptButtonPress(double time,float x, float y, unsigned int b
 	    break;
     }
 
-    _s_mx = (float)((x+s_xOffset)*s_xScale*(float)(_s_Xmax-_s_Xmin))+_s_Xmin;
-    _s_my = (float)((y+s_yOffset)*s_yScale*(float)(_s_Ymin-_s_Ymax))+_s_Ymax;
+    _s_mx = x;
+    _s_my = y;
 
     copyStaticVariables();
 }
@@ -131,8 +126,8 @@ void EventAdapter::adaptButtonRelease(double time,float x, float y, unsigned int
 	    break;
     }
 
-    _s_mx = (float)((x+s_xOffset)*s_xScale*(float)(_s_Xmax-_s_Xmin))+_s_Xmin;
-    _s_my = (float)((y+s_yOffset)*s_yScale*(float)(_s_Ymin-_s_Ymax))+_s_Ymax;
+    _s_mx = x;
+    _s_my = y;
 
     copyStaticVariables();
 }
@@ -146,8 +141,8 @@ void EventAdapter::adaptMouseMotion(double time, float x, float y)
                  MOVE;
 
     _time = time;
-    _s_mx = (float)((x+s_xOffset)*s_xScale*(float)(_s_Xmax-_s_Xmin))+_s_Xmin;
-    _s_my = (float)((y+s_yOffset)*s_yScale*(float)(_s_Ymin-_s_Ymax))+_s_Ymax;
+    _s_mx = x;
+    _s_my = y;
     copyStaticVariables();
 
 }

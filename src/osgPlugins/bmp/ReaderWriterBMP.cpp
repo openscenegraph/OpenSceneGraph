@@ -8,10 +8,9 @@
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
 
-#include <stdint.h>
 
-typedef int32_t int32;
-typedef uint32_t uint32;
+typedef int int32;
+typedef unsigned int uint32;
 
 /****************************************************************************
  *

@@ -1,17 +1,17 @@
-/* **************************************************************************
-* December 2003
-*
-* This TerraPage loader was re-written in a fashion to use PagedLOD 
-* to manage paging entirely, also includes a version of Terrex's smart mesh 
-* adapted to work with PagedLOD. The basic code by Boris Bralo is still present, 
-* slight modified.
-* nick at terrex dot com
-* 
-* Ported to PagedLOD technology by Trajce Nikolov (Nick) & Robert Osfield
+/*************************************************************************** 
+ * December 2003
+ *
+ * This TerraPage loader was re-written in a fashion to use PagedLOD 
+ * to manage paging entirely, also includes a version of Terrex's smart mesh 
+ * adapted to work with PagedLOD. The essential code by Boris Bralo is still present, 
+ * slight modified.
+ * nick at terrex dot com
+ * 
+ * Ported to PagedLOD technology by Trajce Nikolov (Nick) & Robert Osfield
  *****************************************************************************/
 
-/* **************************************************************************
- * OpenSceneGraph loader for Terrapage format database
+/***************************************************************************
+ * OpenSceneGraph loader for Terrapage format database 
  * by Boris Bralo 2002
  *
  * based on/modifed  sgl (Scene Graph Library) loader by Bryan Walsh
@@ -45,25 +45,28 @@
 
 namespace txp
 {
-    class TXPArchive;
-    class ReaderWriterTXP : public osgDB::ReaderWriter
+class TXPArchive;
+class ReaderWriterTXP : public osgDB::ReaderWriter
+{
+public:
+    virtual const char* className()
     {
-        public:
-            virtual const char* className() { return "TXP Reader/Writer"; }
-
-            virtual bool acceptsExtension(const std::string& extension)
-            {
-                return osgDB::equalCaseInsensitive(extension,"txp");
-            }
-
-            virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*);
-
-    protected:
-        TXPArchive *getArchive(int id, const std::string&);
-        std::map< int,osg::ref_ptr<TXPArchive> >    _archives;
-
-        static int _archiveId;
-    };
+        return "TXP Reader/Writer";
+    }
+    
+    virtual bool acceptsExtension(const std::string& extension)
+    {
+        return osgDB::equalCaseInsensitive(extension,"txp");
+    }
+    
+    virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*);
+    
+protected:
+    TXPArchive *getArchive(int id, const std::string&);
+    std::map< int,osg::ref_ptr<TXPArchive> >    _archives;
+    
+    static int _archiveId;
+};
 
 } // namespace
 

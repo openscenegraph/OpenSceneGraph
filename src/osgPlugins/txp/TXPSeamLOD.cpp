@@ -5,7 +5,6 @@
 
 using namespace txp;
 
-
 TXPSeamLOD::TXPSeamLOD() :
     Group()
 {
@@ -38,7 +37,6 @@ TXPSeamLOD::TXPSeamLOD(const TXPSeamLOD& ttg,const osg::CopyOp& copyop) :
     _neighbourTileX = ttg._neighbourTileX;
     _neighbourTileY = ttg._neighbourTileY;
     _neighbourTileLOD = ttg._neighbourTileLOD;
-
     _tileRef = ttg._tileRef;
     _archive = ttg._archive;
 }
@@ -47,9 +45,7 @@ void TXPSeamLOD::traverse(osg::NodeVisitor& nv)
 {
     if (nv.getVisitorType()==osg::NodeVisitor::CULL_VISITOR && _children.size()==2)
     {
-
         float distance = nv.getDistanceToEyePoint(_center,true);
-        
         if (distance<_mid)
         {
             // cap the lod's that can be used to what is available in the adjacent PagedLOD.
@@ -61,10 +57,10 @@ void TXPSeamLOD::traverse(osg::NodeVisitor& nv)
         {
             getChild(0)->accept(nv);
         }
-
     }
     else
     {
         Group::traverse(nv);
     }
 }
+

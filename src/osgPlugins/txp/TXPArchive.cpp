@@ -95,7 +95,7 @@ bool TXPArchive::openFile(const std::string& archiveName)
     return true;
 }
 
-bool TXPArchive::loadMaterial(int ix)
+bool TXPArchive::loadMaterial(int /*ix*/)
 {
     return false;
 }
@@ -580,7 +580,11 @@ bool TXPArchive::getTileInfo(int x, int y, int lod, TileInfo& info)
     return false;
 }
 
-osg::Group* TXPArchive::getTileContent(int x, int y, int lod)
+osg::Group* TXPArchive::getTileContent(
+    int x, int y, int lod,
+    double realMinRange, 
+    double realMaxRange, 
+    double usedMaxRange)
 {
     if (_parser.get() == 0) 
     {
@@ -594,6 +598,6 @@ osg::Group* TXPArchive::getTileContent(int x, int y, int lod)
         return new osg::Group;
     }
 
-    osg::Group *tileGroup = _parser->parseScene(buf,_gstates,_models);
+    osg::Group *tileGroup = _parser->parseScene(buf,_gstates,_models,realMinRange,realMaxRange,usedMaxRange);
     return tileGroup;
 }

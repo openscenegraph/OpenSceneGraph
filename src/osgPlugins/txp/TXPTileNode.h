@@ -1,17 +1,17 @@
-/* **************************************************************************
-* December 2003
-*
-* This TerraPage loader was re-written in a fashion to use PagedLOD 
-* to manage paging entirely, also includes a version of Terrex's smart mesh 
-* adapted to work with PagedLOD. The essential code by Boris Bralo is still present, 
-* slight modified.
-* nick at terrex dot com
-* 
-* Ported to PagedLOD technology by Trajce Nikolov (Nick) & Robert Osfield
+/*************************************************************************** 
+ * December 2003
+ *
+ * This TerraPage loader was re-written in a fashion to use PagedLOD 
+ * to manage paging entirely, also includes a version of Terrex's smart mesh 
+ * adapted to work with PagedLOD. The essential code by Boris Bralo is still present, 
+ * slight modified.
+ * nick at terrex dot com
+ * 
+ * Ported to PagedLOD technology by Trajce Nikolov (Nick) & Robert Osfield
  *****************************************************************************/
 
-/* **************************************************************************
- * OpenSceneGraph loader for Terrapage format database
+/***************************************************************************
+ * OpenSceneGraph loader for Terrapage format database 
  * by Boris Bralo 2002
  *
  * based on/modifed  sgl (Scene Graph Library) loader by Bryan Walsh
@@ -39,29 +39,30 @@
 
 namespace txp
 {
-    class TXPArchive;
-    class TXPTileNode : public osg::Group
-    {
-    public:
-        TXPTileNode();
-        
-        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
-        TXPTileNode(const TXPTileNode&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+class TXPArchive;
+class TXPTileNode : public osg::Group
+{
+public:
+	TXPTileNode();
 
-        META_Node(txp, TXPTileNode);
+	/** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+	TXPTileNode(const TXPTileNode&,
+		const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
 
-        void setArchive(TXPArchive* archive);
-        bool loadTile(int x, int y, int lod);
+	META_Node(txp, TXPTileNode);
 
-        osg::Node* seamReplacement(osg::Node* child,int x, int y, int level, TXPArchive::TileInfo& info);
+	void setArchive(TXPArchive* archive);
+	bool loadTile(int x, int y, int lod);
 
-    protected:
-        
-        virtual ~TXPTileNode();
+	osg::Node* seamReplacement(osg::Node* child, int x, int y, int level,
+		TXPArchive::TileInfo& info);
 
-        TXPArchive*    _archive;
-    };
+protected:
 
+	virtual ~TXPTileNode();
+
+	TXPArchive* _archive;
+};
 } // namespace
 
 #endif // __TXPTILENODE_H_

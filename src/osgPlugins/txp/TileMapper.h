@@ -11,53 +11,62 @@
 
 namespace txp
 {
-    class TileMapper : public osg::Referenced
+class TileMapper : public osg::Referenced
+{
+public:
+
+    static TileMapper* instance();
+    
+    osg::PagedLOD* getPagedLOD(int x, int y, int lod);
+    
+    void insertPagedLOD(int x, int y, int lod, osg::PagedLOD* pagedLod);
+    
+    void removePagedLOD(int x, int y, int lod);
+    
+    void prunePagedLOD();
+    
+protected:
+
+    // Constructor
+    TileMapper()
+    {}
+    
+    // Destructor
+    virtual ~TileMapper()
+    {}
+    
+    struct TileTriple
     {
-    public:
-
-        static TileMapper* instance();
-
-        osg::PagedLOD* getPagedLOD(int x, int y, int lod);
-
-        void insertPagedLOD(int x, int y, int lod, osg::PagedLOD* pagedLod);
-
-        void removePagedLOD(int x, int y, int lod);
-
-        void prunePagedLOD();
-
-    protected:
-
-        // Constructor
-        TileMapper() {}
-
-        // Destructor
-        virtual ~TileMapper() {}
-
-        struct TileTriple
+        TileTriple(int ax, int ay, int alod):
+                x(ax),y(ay),lod(alod)
+        {}
+        
+        int x,y,lod;
+        
+        bool operator < (const TileTriple& rhs) const
         {
-            TileTriple(int ax, int ay, int alod):
-                x(ax),y(ay),lod(alod) {}
-                
-            int x,y,lod;
-            
-            bool operator < (const TileTriple& rhs) const
-            {
-                if (x<rhs.x) return true;
-                if (x>rhs.x) return false;
-                if (y<rhs.y) return true;
-                if (y>rhs.y) return false;
-                if (lod<rhs.lod) return true;
-                if (lod>rhs.lod) return false;
+            if (x<rhs.x)
+                return true;
+            if (x>rhs.x)
                 return false;
-            }
-        };
-        
-        typedef std::map< TileTriple, osg::ref_ptr<osg::PagedLOD> > TileMap;
-        
-        OpenThreads::Mutex  _mutex;
-        TileMap             _tileMap;
-
+            if (y<rhs.y)
+                return true;
+            if (y>rhs.y)
+                return false;
+            if (lod<rhs.lod)
+                return true;
+            if (lod>rhs.lod)
+                return false;
+            return false;
+        }
     };
+    
+    typedef std::map< TileTriple, osg::ref_ptr<osg::PagedLOD> > TileMap;
+    
+    OpenThreads::Mutex  _mutex;
+    TileMap             _tileMap;
+    
+};
 
 } // namespace
 

@@ -1,17 +1,17 @@
-/* **************************************************************************
-* December 2003
-*
-* This TerraPage loader was re-written in a fashion to use PagedLOD 
-* to manage paging entirely, also includes a version of Terrex's smart mesh 
-* adapted to work with PagedLOD. The basic code by Boris Bralo is still present, 
-* slight modified.
-* nick at terrex dot com
-* 
-* Ported to PagedLOD technology by Trajce Nikolov (Nick) & Robert Osfield
+/*************************************************************************** 
+ * December 2003
+ *
+ * This TerraPage loader was re-written in a fashion to use PagedLOD 
+ * to manage paging entirely, also includes a version of Terrex's smart mesh 
+ * adapted to work with PagedLOD. The essential code by Boris Bralo is still present, 
+ * slight modified.
+ * nick at terrex dot com
+ * 
+ * Ported to PagedLOD technology by Trajce Nikolov (Nick) & Robert Osfield
  *****************************************************************************/
 
-/* **************************************************************************
- * OpenSceneGraph loader for Terrapage format database
+/***************************************************************************
+ * OpenSceneGraph loader for Terrapage format database 
  * by Boris Bralo 2002
  *
  * based on/modifed  sgl (Scene Graph Library) loader by Bryan Walsh
@@ -31,6 +31,7 @@
  * All Rights Reserved.
  *
  *****************************************************************************/
+
 #ifndef TXPSeamLOD_H
 #define TXPSeamLOD_H
 
@@ -43,48 +44,61 @@
 
 namespace txp
 {
-
 class TXPSeamLOD : public osg::Group
 {
 public:
-    TXPSeamLOD();
-    TXPSeamLOD(int x, int y, int lod, const osg::Vec3& center, float dmin, float dmid, float dmax);
 
-    TXPSeamLOD(const TXPSeamLOD&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+	TXPSeamLOD();
 
-    META_Node(txp, TXPSeamLOD);
+	TXPSeamLOD(int x, int y, int lod, const osg::Vec3& center, float dmin,
+		float dmid, float dmax);
 
-    virtual void traverse(osg::NodeVisitor& nv);
+	TXPSeamLOD(const TXPSeamLOD&,
+		const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
 
-    void setTileRef(bool* b)
-    {
-        _tileRef = b;
-    }
+	META_Node(txp, TXPSeamLOD);
 
-    void setTxpNode(TXPTileNode* txpNode) { _txpNode = txpNode; }
-    TXPTileNode* getTxpNode() const { return _txpNode; }
+	virtual void traverse(osg::NodeVisitor& nv);
 
-    void setArchive(TXPArchive* ar) { _archive = ar; }
+	void setTileRef(bool* b)
+	{
+		_tileRef = b;
+	}
+
+	void setTxpNode(TXPTileNode* txpNode)
+	{
+		_txpNode = txpNode;
+	}
+
+	TXPTileNode* getTxpNode() const
+	{
+		return _txpNode;
+	}
+
+	void setArchive(TXPArchive* ar)
+	{
+		_archive = ar;
+	}
 
 protected:
 
-    int _neighbourTileX;
-    int _neighbourTileY;
-    int _neighbourTileLOD;
+	int _neighbourTileX;
+	int _neighbourTileY;
+	int _neighbourTileLOD;
 
-    osg::Vec3 _center;
-    float _min;
-    float _mid;
-    float _max;
+	osg::Vec3 _center;
 
-    bool* _tileRef;
+	float _min;
+	float _mid;
+	float _max;
 
-    TXPTileNode* _txpNode;
-    TXPArchive* _archive;
-    
-    
+	bool* _tileRef;
+
+	TXPTileNode* _txpNode;
+	TXPArchive* _archive;
 };
 
 }
 
 #endif
+

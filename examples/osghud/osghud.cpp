@@ -208,16 +208,6 @@ int main( int argc, char **argv )
     // create the windows and run the threads.
     viewer.realize();
 
-    // set all the sceneview's up so that their left and right add cull masks are set up.
-    for(osgProducer::OsgCameraGroup::SceneHandlerList::iterator itr=viewer.getSceneHandlerList().begin();
-        itr!=viewer.getSceneHandlerList().end();
-        ++itr)
-    {
-        osgUtil::SceneView* sceneview = itr->get();
-        sceneview->setComputeNearFarMode(osgUtil::CullVisitor::DO_NOT_COMPUTE_NEAR_FAR);
-    }
-
-
     while( !viewer.done() )
     {
         // wait for all cull and draw threads to complete.

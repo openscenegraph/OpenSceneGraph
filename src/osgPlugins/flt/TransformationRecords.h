@@ -322,6 +322,7 @@ class GeneralMatrixRecord : public AncillaryRecord
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
 
+		virtual SGeneralMatrix* getData() const { return (SGeneralMatrix*)_pData; }
 //      virtual SGroup* getData() const { return (SGroup*)_pData; }
         
     protected:

@@ -179,6 +179,10 @@ osg::Group* ConvertFromFLT::visitAncillary(osg::Group& osgParent, osg::Group& os
             visitLongID(osgPrimary, (LongIDRecord*)child);
             break;
 
+        case GENERAL_MATRIX_OP:
+            parent = visitGeneralMatrix(*parent, osgPrimary, (GeneralMatrixRecord*)child);
+            break;
+
         case MATRIX_OP:
             // Note: Ancillary record creates osg node
             parent = visitMatrix(*parent, osgPrimary, (MatrixRecord*)child);
@@ -636,13 +640,13 @@ void ConvertFromFLT::visitNormalTextureVertex(osg::Group& , NormalTextureVertexR
 osg::Group* ConvertFromFLT::visitBSP(osg::Group& osgParent, BSPRecord* rec)
 {
     // create group node for the time being
-		osg::Group* group = new osg::Group;
-		group->setName(rec->getData()->szIdent);
+        osg::Group* group = new osg::Group;
+        group->setName(rec->getData()->szIdent);
 
-		visitAncillary(osgParent, *group, rec)->addChild( group );
-		visitPrimaryNode(*group, rec);
+        visitAncillary(osgParent, *group, rec)->addChild( group );
+        visitPrimaryNode(*group, rec);
 
-		return group;
+        return group;
 }
 
 osg::Group* ConvertFromFLT::visitGroup(osg::Group& osgParent, GroupRecord* rec)
@@ -660,6 +664,8 @@ osg::Group* ConvertFromFLT::visitGroup(osg::Group& osgParent, GroupRecord* rec)
         
         visitAncillary(osgParent, *animSeq, rec)->addChild( animSeq );
         visitPrimaryNode(*animSeq, rec);
+
+        animSeq->setDuration(0.0,1000000);
 
         if ( forwardAnim )
             animSeq->setInterval(osg::Sequence::LOOP, 0, -1);
@@ -985,7 +991,6 @@ osg::Group* ConvertFromFLT::visitDOF(osg::Group& osgParent, DofRecord* rec)
 #endif
 
 }
-
 
 
 osg::Group* ConvertFromFLT::visitSwitch(osg::Group& osgParent, SwitchRecord* rec)
@@ -1849,6 +1854,34 @@ int ConvertFromFLT::addVertex(DynGeoSet* dgset, Record* rec)
     return 1;
 }
 
+// general matrix
+osg::Group* ConvertFromFLT::visitGeneralMatrix(osg::Group& osgParent, const osg::Group& /*osgPrimary*/, GeneralMatrixRecord* rec)
+{
+    SGeneralMatrix* pSMatrix = (SGeneralMatrix*)rec->getData();
+    osg::MatrixTransform* transform = new osg::MatrixTransform;
+
+    osg::Matrix m;
+    for(int i=0;i<4;++i)
+    {
+        for(int j=0;j<4;++j)
+        {
+            m(i,j) = pSMatrix->sfMat[i][j];
+        }
+    }
+
+    // scale position.
+    osg::Vec3 pos = m.getTrans();
+    m *= osg::Matrix::translate(-pos);
+    pos *= (float)_unitScale;
+    m *= osg::Matrix::translate(pos);
+
+    transform->setDataVariance(osg::Object::STATIC);
+    transform->setMatrix(m);
+    
+    osgParent.addChild(transform);
+
+    return transform;
+}
 
 // matrix record
 osg::Group* ConvertFromFLT::visitMatrix(osg::Group& osgParent, const osg::Group& /*osgPrimary*/, MatrixRecord* rec)
@@ -1883,26 +1916,26 @@ osg::Group* ConvertFromFLT::visitExternal(osg::Group& osgParent, ExternalRecord*
 {
     // SExternalReference *pSExternal = (SExternalReference*)rec->getData();
 
-	std::string filePath = osgDB::getFilePath(rec->getFilename());
-	std::string pushAndPopPath;
-	//If absolute path
-	if( (filePath.length()>0 && filePath.find_first_of("/\\")==0) ||
-		(filePath.length()>2 && filePath.substr(1,1)==":" && filePath.find_first_of("/\\")==2) )
-	{
-		pushAndPopPath = filePath;
-	}
-	else
-	{
-		osgDB::FilePathList fpl = osgDB::getDataFilePathList();
-		pushAndPopPath = fpl.empty() ? "." : fpl.front();
-		if(pushAndPopPath.empty()) pushAndPopPath = ".";
-		pushAndPopPath += "/" + filePath;
-	}
+    std::string filePath = osgDB::getFilePath(rec->getFilename());
+    std::string pushAndPopPath;
+    //If absolute path
+    if( (filePath.length()>0 && filePath.find_first_of("/\\")==0) ||
+        (filePath.length()>2 && filePath.substr(1,1)==":" && filePath.find_first_of("/\\")==2) )
+    {
+        pushAndPopPath = filePath;
+    }
+    else
+    {
+        osgDB::FilePathList fpl = osgDB::getDataFilePathList();
+        pushAndPopPath = fpl.empty() ? "." : fpl.front();
+        if(pushAndPopPath.empty()) pushAndPopPath = ".";
+        pushAndPopPath += "/" + filePath;
+    }
 
-	osgDB::PushAndPopDataPath tmpfile(pushAndPopPath);
-	//osgDB::PushAndPopDataPath tmpfile(osgDB::getFilePath(rec->getFilename()));
+    osgDB::PushAndPopDataPath tmpfile(pushAndPopPath);
+    //osgDB::PushAndPopDataPath tmpfile(osgDB::getFilePath(rec->getFilename()));
 
-	
+    
     FltFile* pFile = rec->getExternal();
     osg::Group* external = NULL;
     if (pFile)

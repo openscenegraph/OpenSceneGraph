@@ -281,6 +281,8 @@ class ReaderWriterJPEG : public osgDB::ReaderWriter
 
         virtual ReadResult readImage(const std::string& fileName, const osgDB::ReaderWriter::Options*)
         {
+            std::string ext = osgDB::getFileExtension(fileName);
+            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
             unsigned char *imageData = NULL;
             int width_ret;

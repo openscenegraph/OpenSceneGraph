@@ -48,6 +48,12 @@ class DataSet : public osg::Referenced
                 _numValuesY(sp._numValuesY),
                 _numValuesZ(sp._numValuesZ) {}
 
+            SpatialProperties(osgTerrain::CoordinateSystem* cs, const osg::BoundingBox& extents):
+                _cs(cs),
+                _extents(extents),
+                _numValuesX(0),
+                _numValuesY(0),
+                _numValuesZ(0) {}
         
             SpatialProperties& operator = (const SpatialProperties& sp)
             {
@@ -107,7 +113,7 @@ class DataSet : public osg::Referenced
             
             osg::BoundingBox getExtents(const osgTerrain::CoordinateSystem* cs) const;
             
-            SpatialProperties computeSpatialProperties(osgTerrain::CoordinateSystem* cs) const;
+            const SpatialProperties& computeSpatialProperties(osgTerrain::CoordinateSystem* cs) const;
 
             bool intersects(const SpatialProperties& sp) const;
 
@@ -123,6 +129,10 @@ class DataSet : public osg::Referenced
             
             osg::ref_ptr<osg::Node>                     _model;
             GDALDataset*                                _gdalDataSet;
+            
+            typedef std::map<osgTerrain::CoordinateSystem*,SpatialProperties> SpatialPropertiesMap;
+            mutable SpatialPropertiesMap _spatialPropertiesMap;
+            
             
         };
 
@@ -259,7 +269,8 @@ class DataSet : public osg::Referenced
         enum CompositeType
         {
             GROUP,
-            LEVEL_OF_DETAIL
+            LOD,
+            PAGED_LOD
         };
         
         class CompositeSource : public osg::Referenced, public SpatialProperties
@@ -681,13 +692,26 @@ class DataSet : public osg::Referenced
             unsigned int                                _terrain_maxNumRows;
             float                                       _terrain_maxSourceResolutionX;
             float                                       _terrain_maxSourceResolutionY;
+            
+            unsigned int                                _level;
+            unsigned int                                _X;
+            unsigned int                                _Y;
 
         };
 
         class CompositeDestination : public osg::Referenced, public SpatialProperties
         {
-        public:
-            
+        public:   
+        
+            CompositeDestination():
+                _type(GROUP),
+                _maxVisibleDistance(FLT_MAX) {}
+        
+            CompositeDestination(osgTerrain::CoordinateSystem* cs, const osg::BoundingBox& extents):
+                SpatialProperties(cs,extents),
+                _type(GROUP),
+                _maxVisibleDistance(FLT_MAX) {}
+          
             void addRequiredResolutions(CompositeSource* sourceGraph);
             
             void readFrom(CompositeSource* sourceGraph);
@@ -702,6 +726,8 @@ class DataSet : public osg::Referenced
             CompositeType   _type;
             TileList        _tiles;
             ChildList       _children;
+            float           _maxVisibleDistance;
+            
         };
 
     public:
@@ -726,14 +752,16 @@ class DataSet : public osg::Referenced
                                                      unsigned int maxImageSize,
                                                      unsigned int maxTerrainSize,
                                                      unsigned int currentLevel,
+                                                     unsigned int currentX,
+                                                     unsigned int currentY,
                                                      unsigned int maxNumLevels);
         
         
-        void computeDestinationGraphFromSources();
+        void computeDestinationGraphFromSources(unsigned int numLevels);
         void updateSourcesForDestinationGraphNeeds();
         void populateDestinationGraphFromSources();
         
-        void createDestination();
+        void createDestination(unsigned int numLevels);
         
         void writeDestination(const std::string& filename);
         

@@ -26,6 +26,8 @@
 #include "cpl_string.h"
 #include <gdalwarper.h>
 
+#include <sstream>
+
 DataSet::SourceData* DataSet::SourceData::readData(Source* source)
 {
     if (!source) return 0;
@@ -195,12 +197,16 @@ osg::BoundingBox DataSet::SourceData::getExtents(const osgTerrain::CoordinateSys
     return _extents;
 }
 
-DataSet::SpatialProperties DataSet::SourceData::computeSpatialProperties(osgTerrain::CoordinateSystem* cs) const
+const DataSet::SpatialProperties& DataSet::SourceData::computeSpatialProperties(osgTerrain::CoordinateSystem* cs) const
 {
     if (_cs==cs) return *this;
     if (_cs.valid() && cs)
     {
         if (*_cs == *cs) return *this;
+        
+        // check to see it exists in the _spatialPropertiesMap first.
+        SpatialPropertiesMap::const_iterator itr = _spatialPropertiesMap.find(cs);
+        if (itr!=_spatialPropertiesMap.end()) return itr->second;
         
         if (_gdalDataSet)
         {
@@ -208,7 +214,9 @@ DataSet::SpatialProperties DataSet::SourceData::computeSpatialProperties(osgTerr
             //std::cout<<"Projecting bounding volume for "<<_source->getFileName()<<std::endl;
 
             
-            DataSet::SpatialProperties sp;
+            // insert into the _spatialPropertiesMap for future reuse.
+            _spatialPropertiesMap[cs] = *this;
+            DataSet::SpatialProperties& sp = _spatialPropertiesMap[cs];
             
             /* -------------------------------------------------------------------- */
             /*      Create a transformation object from the source to               */
@@ -248,7 +256,7 @@ DataSet::SpatialProperties DataSet::SourceData::computeSpatialProperties(osgTerr
 
             sp._extents.expandBy( osg::Vec3(0.0,0.0,0.0)*sp._geoTransform);
             sp._extents.expandBy( osg::Vec3(nPixels,nLines,0.0)*sp._geoTransform);
-            
+
             return sp;
         }
 
@@ -749,8 +757,8 @@ void DataSet::Source::consolodateRequiredResolutions()
     {
         minResX = osg::minimum(minResX,itr->_resX);
         minResY = osg::minimum(minResY,itr->_resY);
-        maxResX = osg::minimum(maxResX,itr->_resX);
-        maxResY = osg::minimum(maxResY,itr->_resY);
+        maxResX = osg::maximum(maxResX,itr->_resX);
+        maxResY = osg::maximum(maxResY,itr->_resY);
     }
     
     double currResX = minResX;
@@ -921,11 +929,11 @@ void DataSet::DestinationTile::allocate()
         _terrain->_heightField->setXInterval(dem_dx);
         _terrain->_heightField->setYInterval(dem_dy);
 
-        float xMax = _terrain->_heightField->getOrigin().x()+_terrain->_heightField->getXInterval()*(float)(dem_numColumns-1);
-        std::cout<<"ErrorX = "<<xMax-_extents.xMax()<<std::endl;
+        //float xMax = _terrain->_heightField->getOrigin().x()+_terrain->_heightField->getXInterval()*(float)(dem_numColumns-1);
+        //std::cout<<"ErrorX = "<<xMax-_extents.xMax()<<std::endl;
 
-        float yMax = _terrain->_heightField->getOrigin().y()+_terrain->_heightField->getYInterval()*(float)(dem_numRows-1);
-        std::cout<<"ErrorY = "<<yMax-_extents.yMax()<<std::endl;
+        //float yMax = _terrain->_heightField->getOrigin().y()+_terrain->_heightField->getYInterval()*(float)(dem_numRows-1);
+        //std::cout<<"ErrorY = "<<yMax-_extents.yMax()<<std::endl;
 
     }
 
@@ -1321,6 +1329,7 @@ osg::Node* DataSet::DestinationTile::createScene()
         if (_imagery.valid() && _imagery->_image.valid())
         {
             std::string imageName(_name+".rgb");
+            std::cout<<"Writing out imagery to "<<imageName<<std::endl;
             _imagery->_image->setFileName(imageName.c_str());
             osgDB::writeImageFile(*_imagery->_image,_imagery->_image->getFileName().c_str());
 
@@ -1335,17 +1344,20 @@ osg::Node* DataSet::DestinationTile::createScene()
     }
     else 
     {
+        std::cout<<"**** No terrain to build tile from, will need to create some fallback ****"<<std::endl;
         return 0;
     }
 }
 
 void DataSet::DestinationTile::readFrom(CompositeSource* sourceGraph)
 {
+    std::cout<<"DestinationTile::readFrom() "<<std::endl;
     for(CompositeSource::source_iterator itr(sourceGraph);itr.valid();++itr)
     {
         SourceData* data = (*itr)->getSourceData();
         if (data)
         {
+            std::cout<<"SourceData::read() "<<std::endl;
             if (_imagery.valid()) data->read(*_imagery);
             if (_terrain.valid()) data->read(*_terrain);
         }
@@ -1357,10 +1369,10 @@ void DataSet::DestinationTile::addRequiredResolutions(CompositeSource* sourceGra
     for(CompositeSource::source_iterator itr(sourceGraph);itr.valid();++itr)
     {
         Source* source = itr->get();
-        
-        if (_imagery.valid() && source->getType()==Source::IMAGE)
+
+        if (source->intersects(*this))
         {
-            if (source->intersects(*_imagery))
+            if (source->getType()==Source::IMAGE)
             {
                 unsigned int numCols,numRows;
                 double resX, resY;
@@ -1369,10 +1381,8 @@ void DataSet::DestinationTile::addRequiredResolutions(CompositeSource* sourceGra
                     source->addRequiredResolution(resX,resY);
                 }
             }
-        }
-        if (_terrain.valid() && source->getType()==Source::HEIGHT_FIELD)
-        {
-            if (source->intersects(*_terrain))
+
+            if (source->getType()==Source::HEIGHT_FIELD)
             {
                 unsigned int numCols,numRows;
                 double resX, resY;
@@ -1382,6 +1392,7 @@ void DataSet::DestinationTile::addRequiredResolutions(CompositeSource* sourceGra
                 }
             }
         }
+
     }
 }
 
@@ -1407,6 +1418,8 @@ void DataSet::CompositeDestination::addRequiredResolutions(CompositeSource* sour
 
 void DataSet::CompositeDestination::readFrom(CompositeSource* sourceGraph)
 {
+    std::cout<<"CompositeDestination::readFrom() "<<std::endl;
+
     // handle leaves
     for(TileList::iterator titr=_tiles.begin();
         titr!=_tiles.end();
@@ -1449,39 +1462,113 @@ osg::Node* DataSet::CompositeDestination::createScene()
 {
     if (_children.empty() && _tiles.empty()) return 0;
     
-    typedef std::vector<osg::Node*> NodeList;
-    NodeList nodes;
+    if (_children.empty() && _tiles.size()==1) return _tiles.front()->createScene();
     
-    // handle leaves
+    if (_tiles.empty() && _children.size()==1) return _children.front()->createScene();
+    
+
+    if (_type==GROUP)
+    {
+        osg::Group* group = new osg::Group;
+        for(TileList::iterator titr=_tiles.begin();
+            titr!=_tiles.end();
+            ++titr)
+        {
+            osg::Node* node = (*titr)->createScene();
+            if (node) group->addChild(node);
+        }
+
+        // handle chilren
+        for(ChildList::iterator citr=_children.begin();
+            citr!=_children.end();
+            ++citr)
+        {
+            osg::Node* node = (*citr)->createScene();
+            if (node) group->addChild(node);
+        }
+        return group;            
+    }
+
+    // must be either a LOD or a PagedLOD
+
+    typedef std::vector<osg::Node*>  NodeList;
+    typedef std::map<float,NodeList> RangeNodeListMap;
+    RangeNodeListMap rangeNodeListMap;
+
+    // insert local tiles into range map
     for(TileList::iterator titr=_tiles.begin();
         titr!=_tiles.end();
         ++titr)
     {
         osg::Node* node = (*titr)->createScene();
-        if (node) nodes.push_back(node);
+        if (node) rangeNodeListMap[_maxVisibleDistance].push_back(node);
     }
-    
+
     // handle chilren
     for(ChildList::iterator citr=_children.begin();
         citr!=_children.end();
         ++citr)
     {
         osg::Node* node = (*citr)->createScene();
-        if (node) nodes.push_back(node);
+        if (node) rangeNodeListMap[(*citr)->_maxVisibleDistance].push_back(node);
     }
-    
-    if (nodes.empty()) return 0;
-    if (nodes.size()==1) return nodes.front();
-    
-    osg::Group* group = new osg::Group;
-    for(NodeList::iterator nitr=nodes.begin();
-        nitr!=nodes.end();
-        ++nitr)
-    {
-        group->addChild(*nitr);
-    }
-    return group;
 
+    osg::PagedLOD* pagedLOD = (_type==PAGED_LOD) ? new osg::PagedLOD : 0;
+    osg::LOD* lod = (pagedLOD) ? pagedLOD : new osg::LOD;
+    
+    unsigned int childNum = 0;
+    for(RangeNodeListMap::reverse_iterator rnitr=rangeNodeListMap.rbegin();
+        rnitr!=rangeNodeListMap.rend();
+        ++rnitr)
+    {
+        float maxVisibleDistance = rnitr->first;
+        NodeList& nodeList = rnitr->second;
+        
+        if (childNum==0)
+        {
+            // by deafult make the first child have a very visible distance so its always seen
+            maxVisibleDistance = 1e8;
+        }
+        else
+        {
+            // set the previous child's minimum visible distance range
+           lod->setRange(childNum-1,maxVisibleDistance,lod->getMaxRange(childNum-1));
+        }
+        
+        osg::Node* child = 0;
+        if (nodeList.size()==1)
+        {
+            child = nodeList.front();
+        }
+        else if (nodeList.size()>1)
+        {
+            osg::Group* group = new osg::Group;
+            for(NodeList::iterator itr=nodeList.begin();
+                itr!=nodeList.end();
+                ++itr)
+            {
+                group->addChild(*itr);
+            }
+            child = group;
+        }
+    
+        if (child)
+        {
+            
+            if (pagedLOD)
+            {
+                std::cout<<"Need to set name of PagedLOD child"<<std::endl;
+                pagedLOD->addChild(child,0,maxVisibleDistance);
+            }
+            else
+            {
+                lod->addChild(child,0,maxVisibleDistance);
+            }
+            
+            ++childNum;
+        }
+    }
+    return lod;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1534,20 +1621,32 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(osgTerrain::Coord
                                                            unsigned int maxImageSize,
                                                            unsigned int maxTerrainSize,
                                                            unsigned int currentLevel,
+                                                           unsigned int currentX,
+                                                           unsigned int currentY,
                                                            unsigned int maxNumLevels)
 {
 
-    DataSet::CompositeDestination* destinationGraph = new DataSet::CompositeDestination;
+    DataSet::CompositeDestination* destinationGraph = new DataSet::CompositeDestination(cs,extents);
+
+    destinationGraph->_maxVisibleDistance = extents.radius()*5.0f;
 
     // first create the topmost tile
 
+    // create the name
+    std::ostringstream os;
+    os << _tileBasename << "_L"<<currentLevel<<"_X"<<currentX<<"_Y"<<currentY;
+
     DestinationTile* tile = new DestinationTile;
-    tile->_name = _tileBasename;
+    tile->_name = os.str();
     tile->_cs = cs;
     tile->_extents = extents;
+    tile->_level = currentLevel;
+    tile->_X = currentX;
+    tile->_Y = currentY;
     tile->setMaximumImagerySize(maxImageSize,maxImageSize);
     tile->setMaximumTerrainSize(maxTerrainSize,maxTerrainSize);
     tile->computeMaximumSourceResolution(_sourceGraph.get());
+    tile->allocate();
 
     if (currentLevel>=maxNumLevels-1)
     {    
@@ -1556,6 +1655,7 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(osgTerrain::Coord
     }
     else
     {
+        destinationGraph->_type = LOD;
         destinationGraph->_tiles.push_back(tile);
 
         bool needToDivideX = false;
@@ -1583,6 +1683,10 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(osgTerrain::Coord
         
         float xCenter = (extents.xMin()+extents.xMax())*0.5f;
         float yCenter = (extents.yMin()+extents.yMax())*0.5f;
+        
+        unsigned int newLevel = currentLevel+1;
+        unsigned int newX = currentX*2;
+        unsigned int newY = currentY*2;
 
         if (needToDivideX && needToDivideY)
         {
@@ -1597,29 +1701,48 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(osgTerrain::Coord
                                                                          bottom_left,
                                                                          maxImageSize,
                                                                          maxTerrainSize,
-                                                                         currentLevel+1,
+                                                                         newLevel,
+                                                                         newX,
+                                                                         newY,
                                                                          maxNumLevels));
 
             destinationGraph->_children.push_back(createDestinationGraph(cs,
-                                                                         bottom_left,
+                                                                         bottom_right,
                                                                          maxImageSize,
                                                                          maxTerrainSize,
-                                                                         currentLevel+1,
+                                                                         newLevel,
+                                                                         newX+1,
+                                                                         newY,
                                                                          maxNumLevels));
 
             destinationGraph->_children.push_back(createDestinationGraph(cs,
-                                                                         bottom_left,
+                                                                         top_left,
                                                                          maxImageSize,
                                                                          maxTerrainSize,
-                                                                         currentLevel+1,
+                                                                         newLevel,
+                                                                         newX,
+                                                                         newY+1,
                                                                          maxNumLevels));
 
             destinationGraph->_children.push_back(createDestinationGraph(cs,
-                                                                         bottom_left,
+                                                                         top_right,
                                                                          maxImageSize,
                                                                          maxTerrainSize,
-                                                                         currentLevel+1,
+                                                                         newLevel,
+                                                                         newX+1,
+                                                                         newY+1,
                                                                          maxNumLevels));
+                                                                         
+            // Set all there max distance to the same value to ensure the same LOD bining.
+            float cutOffDistance = destinationGraph->_maxVisibleDistance*0.5f;
+            
+            for(CompositeDestination::ChildList::iterator citr=destinationGraph->_children.begin();
+                citr!=destinationGraph->_children.end();
+                ++citr)
+            {
+                (*citr)->_maxVisibleDistance = cutOffDistance;
+            }
+           
 
         }
         else if (needToDivideX)
@@ -1637,9 +1760,22 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(osgTerrain::Coord
     }
     
     return destinationGraph;
+    
+#if 0    
+        // now get each tile to point to each other.
+        top_left_tile->setNeighbours(0,0,bottom_left_tile,bottom_right_tile,top_right_tile,0,0,0);
+        top_right_tile->setNeighbours(top_left_tile,bottom_left_tile,bottom_right_tile,0,0,0,0,0);
+        bottom_left_tile->setNeighbours(0,0,0,0,bottom_right_tile,top_right_tile,top_left_tile,0);
+        bottom_right_tile->setNeighbours(bottom_left_tile,0,0,0,0,0,top_right_tile,top_left_tile);
+        
+        top_left_tile->checkNeighbouringTiles();
+        top_right_tile->checkNeighbouringTiles();
+        bottom_left_tile->checkNeighbouringTiles();
+        bottom_right_tile->checkNeighbouringTiles();
+#endif    
 }
 
-void DataSet::computeDestinationGraphFromSources()
+void DataSet::computeDestinationGraphFromSources(unsigned int numLevels)
 {
 
     // ensure we have a valid coordinate system
@@ -1673,122 +1809,21 @@ void DataSet::computeDestinationGraphFromSources()
 
     // then create the destinate graph accordingly.
 
-#if 1    
     unsigned int imageSize = 256;
-    unsigned int terrainSize = 256;
-    unsigned int numLevels = 5;
+    unsigned int terrainSize = 64;
 
      _destinationGraph = createDestinationGraph(_coordinateSystem.get(),
                                                 extents,
                                                 imageSize,
                                                 terrainSize,
                                                 0,
+                                                0,
+                                                0,
                                                 numLevels);
                                                            
-#else                                                           
-    _destinationGraph = new CompositeDestination;
-    _destinationGraph->_cs = _coordinateSystem;
-    _destinationGraph->_extents = extents;
-    
-    bool singleTile = false;
-    if (singleTile)
-    {
-        int imageSize = 4096;
-        int terrainSize = 1024;
-
-        DestinationTile* tile = new DestinationTile;
-        tile->_name = _tileBasename;
-        tile->_cs = _destinationGraph->_cs;
-        tile->_extents = _destinationGraph->_extents;
-        tile->setMaximumImagerySize(imageSize,imageSize);
-        tile->setMaximumTerrainSize(terrainSize,terrainSize);
-        tile->computeMaximumSourceResolution(_sourceGraph.get());
-        tile->allocate();
-        _destinationGraph->_tiles.push_back(tile);
-    }    
-    else
-    {
-    
-    
-        float xCenter = (extents.xMin()+extents.xMax())*0.5f;
-        float yCenter = (extents.yMin()+extents.yMax())*0.5f;
-    
-    
-        int imageSize = 2048;
-        int terrainSize = 512;
-    
         
-        DestinationTile* top_left_tile = 0;
-        DestinationTile* top_right_tile = 0;
-        DestinationTile* bottom_left_tile = 0;
-        DestinationTile* bottom_right_tile = 0;
-    
-        {
-            DestinationTile* tile = new DestinationTile;
-            tile->_name = _tileBasename+"_0";
-            tile->_cs = _destinationGraph->_cs;
-            tile->_extents.set(extents.xMin(),extents.yMin(),extents.zMin(),xCenter,yCenter,extents.zMax());
-            tile->setMaximumImagerySize(imageSize,imageSize);
-            tile->setMaximumTerrainSize(terrainSize,terrainSize);
-            tile->computeMaximumSourceResolution(_sourceGraph.get());
-            tile->allocate();
-            _destinationGraph->_tiles.push_back(tile);
-            bottom_left_tile = tile;
-        }
-        
-        {
-            DestinationTile* tile = new DestinationTile;
-            tile->_name = _tileBasename+"_1";
-            tile->_cs = _destinationGraph->_cs;
-            tile->_extents.set(xCenter,extents.yMin(),extents.zMin(),extents.xMax(),yCenter,extents.zMax());
-            tile->setMaximumImagerySize(imageSize,imageSize);
-            tile->setMaximumTerrainSize(terrainSize,terrainSize);
-            tile->computeMaximumSourceResolution(_sourceGraph.get());
-            tile->allocate();
-            _destinationGraph->_tiles.push_back(tile);
-            bottom_right_tile = tile;
-        }
-
-        {
-            DestinationTile* tile = new DestinationTile;
-            tile->_name = _tileBasename+"_2";
-            tile->_cs = _destinationGraph->_cs;
-            tile->_extents.set(extents.xMin(),yCenter,extents.zMin(),xCenter,extents.yMax(),extents.zMax());
-            tile->setMaximumImagerySize(imageSize,imageSize);
-            tile->setMaximumTerrainSize(terrainSize,terrainSize);
-            tile->computeMaximumSourceResolution(_sourceGraph.get());
-            tile->allocate();
-            _destinationGraph->_tiles.push_back(tile);
-            top_left_tile = tile;
-        }
-
-        {
-            DestinationTile* tile = new DestinationTile;
-            tile->_name = _tileBasename+"_3";
-            tile->_cs = _destinationGraph->_cs;
-            tile->_extents.set(xCenter,yCenter,extents.zMin(),extents.xMax(),extents.yMax(),extents.zMax());
-            tile->setMaximumImagerySize(imageSize,imageSize);
-            tile->setMaximumTerrainSize(terrainSize,terrainSize);
-            tile->computeMaximumSourceResolution(_sourceGraph.get());
-            tile->allocate();
-            _destinationGraph->_tiles.push_back(tile);
-            top_right_tile = tile;
-        }
-        
-        // now get each tile to point to each other.
-        top_left_tile->setNeighbours(0,0,bottom_left_tile,bottom_right_tile,top_right_tile,0,0,0);
-        top_right_tile->setNeighbours(top_left_tile,bottom_left_tile,bottom_right_tile,0,0,0,0,0);
-        bottom_left_tile->setNeighbours(0,0,0,0,bottom_right_tile,top_right_tile,top_left_tile,0);
-        bottom_right_tile->setNeighbours(bottom_left_tile,0,0,0,0,0,top_right_tile,top_left_tile);
-        
-        top_left_tile->checkNeighbouringTiles();
-        top_right_tile->checkNeighbouringTiles();
-        bottom_left_tile->checkNeighbouringTiles();
-        bottom_right_tile->checkNeighbouringTiles();
 
 
-    }    
-#endif
 
 }
 
@@ -1872,6 +1907,7 @@ void DataSet::updateSourcesForDestinationGraphNeeds()
 
     }
 
+#if 1
     // do standardisation of coordinates systems.
     // do any reprojection if required.
     {
@@ -1890,6 +1926,7 @@ void DataSet::updateSourcesForDestinationGraphNeeds()
             }
         }
     }
+#endif
     
     // do sampling of data to required values.
     {
@@ -1938,12 +1975,12 @@ void DataSet::populateDestinationGraphFromSources()
 }
 
 
-void DataSet::createDestination()
+void DataSet::createDestination(unsigned int numLevels)
 {
 
     std::cout<<"new DataSet::createDestination()"<<std::endl;
     
-    computeDestinationGraphFromSources();
+    computeDestinationGraphFromSources(numLevels);
     
     updateSourcesForDestinationGraphNeeds();
     

@@ -96,7 +96,7 @@ int main( int argc, char **argv )
 
     }
 
-    float numLevels;
+    float numLevels = 6.0f;
     while (arguments.read("-l",numLevels)) {}
 
     float verticalScale;
@@ -122,7 +122,7 @@ int main( int argc, char **argv )
     
     dataset->loadSources();
 
-    dataset->createDestination();
+    dataset->createDestination((unsigned int)numLevels);
     
     dataset->writeDestination(outputFileName);
 

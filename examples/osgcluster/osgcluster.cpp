@@ -41,56 +41,31 @@ class CameraPacket {
 	    _byte_order = 0x12345678;
 	}
         
-        void setPacket(const osg::Camera& camera,const osg::FrameStamp* frameStamp)
+        void setPacket(const osg::Matrix& matrix,const osg::FrameStamp* frameStamp)
         {
-            _eye    = camera.getEyePoint();
-            _center = camera.getCenterPoint();
-            _up     = camera.getUpVector();
+            _matrix = matrix;
             if (frameStamp)
             {
                 _frameStamp    = *frameStamp;
             }
         }
         
-        void getCamera(osg::Camera& camera,float angle_offset=0.0f)
+        void getModelView(osg::Matrix& matrix,float angle_offset=0.0f)
         {
         
-            osg::Vec3 lv = _center-_eye;
-            osg::Matrix matrix;
-            matrix.makeIdentity();
-            matrix.makeRotate(angle_offset,_up.x(),_up.y(),_up.z());
-            lv = lv*matrix;
-        
-            camera.setLookAt(_eye,_eye+lv,_up);
-                        
+            matrix = _matrix * osg::Matrix::rotate(angle_offset,0.0f,1.0f,1.0f);
         }
         
-        void getSceneViewUpdate(osgUtil::SceneView& sv)
-        {
-            // note pass a separate reference counted FrameStamp
-            // rather than this frame stamp as it can get overwritten.
-            sv.setFrameStamp(new osg::FrameStamp(_frameStamp));
-        }
-
-
 	void checkByteOrder( void )
 	{
 	    if( _byte_order == 0x78563412 )  // We're backwards
 	    {
 	        swapBytes( _byte_order );
 		swapBytes( _masterKilled );
-		swapBytes( _eye[0] );
-		swapBytes( _eye[1] );
-		swapBytes( _eye[2] );
-		swapBytes( _center[0] );
-		swapBytes( _center[1] );
-		swapBytes( _center[2] );
-		swapBytes( _up[0] );
-		swapBytes( _up[1] );
-		swapBytes( _up[2] );
-		swapBytes( _attachMatrix );
 		for( int i = 0; i < 16; i++ )
 		    swapBytes( _matrix.ptr()[i] );
+                    
+                // umm.. we should byte swap _frameStamp too...
 	    }
 	}
 
@@ -100,10 +75,6 @@ class CameraPacket {
         
 	unsigned long   _byte_order;
         bool            _masterKilled;
-        osg::Vec3       _eye;
-        osg::Vec3       _center;
-        osg::Vec3       _up;
-        bool            _attachMatrix;
         osg::Matrix     _matrix;
 
         // note don't use a ref_ptr as used elsewhere for FrameStamp
@@ -114,222 +85,12 @@ class CameraPacket {
         
 };
 
-// using namespace osgUtil required to get round VisualStudio's inablility
-// to handle osgUtil::SceneView::app() in the code below, only SceneView::app
-// works..but this breaks the IRIX build, unless you have the osgUtil??!
-// Robert Osfield, July 2002.
-using namespace osgUtil;
-
-class MySceneView : public SceneView {
-
-    public:
-    
-        enum ViewerMode
-        {
-            STAND_ALONE,
-            SLAVE,
-            MASTER
-        };
-    
-        MySceneView(ViewerMode viewerMode,int socketNumber,float camera_fov, float camera_offset):
-            _viewerMode(viewerMode),_socketNumber(socketNumber),
-            _camera_fov(camera_fov), _camera_offset(camera_offset)
-        {
-            setDefaults();
-            getCamera()->setAdjustAspectRatioMode(osg::Camera::ADJUST_VERTICAL);
-            getCamera()->setFOV(camera_fov,camera_fov*(600.0f/800.0f),1.0f,1000.0f);
-            
-            _bc.setPort(socketNumber);
-            _rc.setPort(socketNumber);
-        };
-        
-        ~MySceneView()
-        {
-            if (_viewerMode==MASTER)
-            {
-                // need to broadcast my death.
-                CameraPacket cp;
-                cp.setPacket(*getCamera(),getFrameStamp());
-                cp.setMasterKilled(true);
-                
-                _bc.setBuffer(&cp, sizeof( CameraPacket ));
-	        _bc.sync();
-                
-                std::cout << "broadcasting death"<<std::endl;
-                
-            }
-        }
-        
-        // override the basic SceneView::app traversal.
-        virtual void update()
-        {
-            SceneView::update();
-            switch (_viewerMode)
-            {
-            case(MASTER):
-                {
-                    CameraPacket cp;
-                    cp.setPacket(*getCamera(),getFrameStamp());
-
-                    _bc.setBuffer(&cp, sizeof( CameraPacket ));
-	            _bc.sync();
-
-                }
-                break;
-            case(SLAVE):
-                {
-                    CameraPacket cp;
-
-                    _rc.setBuffer(&cp, sizeof( CameraPacket ));
-	            _rc.sync();
-
-		    cp.checkByteOrder();
-
-
-                    cp.getCamera(*getCamera(),_camera_offset);
-                    cp.getSceneViewUpdate(*this);
-                    
-                    if (cp.getMasterKilled()) 
-                    {
-                        std::cout << "recieved master killed"<<std::endl;
-                        _viewerMode = STAND_ALONE;
-                    }
-                }
-                break;
-            default:
-                // no need to anything here, just a normal interactive viewer.
-                break;
-            }
-        }
-        
-    protected:
-    
-        ViewerMode      _viewerMode;
-        int             _socketNumber;
-        float           _camera_fov;
-        float           _camera_offset;
-	unsigned long   _byte_order;
-        
-
-        Broadcaster     _bc;
-        Receiver        _rc;
-
-
-};
-
-/*
- * Function to read several files (typically one) as specified on the command
- * line, and return them in an osg::Node
- */
-osg::Node* getNodeFromFiles(int argc,char **argv, 
-                            MySceneView::ViewerMode& viewerMode, int& socketNumber,
-                            float& camera_fov, float& camera_offset)
+enum ViewerMode
 {
-    osg::Node *rootnode = new osg::Node;
-
-    int i;
-
-    typedef std::vector<osg::Node*> NodeList;
-    NodeList nodeList;
-    for( i = 1; i < argc; i++ )
-    {
-
-        if (argv[i][0]=='-')
-        {
-            switch(argv[i][1])
-            {
-
-                case('m'):
-                    viewerMode = MySceneView::MASTER;
-                    break;
-                case('s'):
-                    viewerMode = MySceneView::SLAVE;
-                    break;
-                case('n'):
-                    ++i;
-                    if (i<argc)
-                    {
-                        socketNumber = atoi(argv[i]);
-                    }
-                    break;
-                case('f'):
-                    ++i;
-                    if (i<argc)
-                    {
-                        camera_fov = atoi(argv[i]);
-                    }
-                    break;
-                case('o'):
-                    ++i;
-                    if (i<argc)
-                    {
-                        camera_offset = atoi(argv[i]);
-                    }
-                    break;
-                    
-                case('l'):
-                    ++i;
-                    if (i<argc)
-                    {
-                        osgDB::Registry::instance()->loadLibrary(argv[i]);
-                    }
-                    break;
-                case('e'):
-                    ++i;
-                    if (i<argc)
-                    {
-                        std::string libName = osgDB::Registry::instance()->createLibraryNameForExt(argv[i]);
-                        osgDB::Registry::instance()->loadLibrary(libName);
-                    }
-                    break;
-            }
-        } else
-        {
-            osg::Node *node = osgDB::readNodeFile( argv[i] );
-
-            if( node != (osg::Node *)0L )
-            {
-                if (node->getName().empty()) node->setName( argv[i] );
-                nodeList.push_back(node);
-            }
-        }
-
-    }
-
-    if (nodeList.size()==0)
-    {
-        osg::notify(osg::WARN) << "No data loaded."<<std::endl;
-        exit(0);
-    }
-    
-    
-/*
-    if (master) osg::notify(osg::NOTICE)<<"set to MASTER, broadcasting on socketNumber "<<socketNumber<<std::endl;
-    else osg::notify(osg::NOTICE)<<"set to SLAVE, reciving on socketNumber "<<socketNumber<<std::endl;
-    
-*/
-    
-
-    if (nodeList.size()==1)
-    {
-        rootnode = nodeList.front();
-    }
-    else                         // size >1
-    {
-        osg::Group* group = new osg::Group();
-        for(NodeList::iterator itr=nodeList.begin();
-            itr!=nodeList.end();
-            ++itr)
-        {
-            group->addChild(*itr);
-        }
-
-        rootnode = group;
-    }
-
-    return rootnode;
-}
-
+    STAND_ALONE,
+    SLAVE,
+    MASTER
+};
 
 int main( int argc, char **argv )
 {
@@ -340,6 +101,11 @@ int main( int argc, char **argv )
     // set up the usage document, in case we need to print out how to use this program.
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getProgramName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
+    arguments.getApplicationUsage()->addCommandLineOption("-m","Set viewer to MASTER mode, sending view via packets.");
+    arguments.getApplicationUsage()->addCommandLineOption("-s","Set viewer to SLAVE mode, reciving view via packets.");
+    arguments.getApplicationUsage()->addCommandLineOption("-n <int>","Socket number to transmit packets");
+    arguments.getApplicationUsage()->addCommandLineOption("-f <float>","Field of view of camera");
+    arguments.getApplicationUsage()->addCommandLineOption("-o <float>","Offset angle of camera");
     
     // construct the viewer.
     osgProducer::Viewer viewer(arguments);
@@ -349,6 +115,22 @@ int main( int argc, char **argv )
 
     // get details on keyboard and mouse bindings used by the viewer.
     viewer.getUsage(*arguments.getApplicationUsage());
+
+
+    // read up the osgcluster specific arguments.
+    ViewerMode viewerMode = STAND_ALONE;
+    while (arguments.read("-m")) viewerMode = MASTER;
+    while (arguments.read("-s")) viewerMode = SLAVE;
+    
+    float socketNumber=8100.0f;
+    while (arguments.read("-n",socketNumber)) ;
+
+    float camera_fov=45.0f;
+    while (arguments.read("-f",camera_fov)) ;
+
+    float camera_offset=45.0f;
+    while (arguments.read("-o",camera_offset)) ;
+
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
@@ -366,29 +148,20 @@ int main( int argc, char **argv )
         arguments.writeErrorMessages(std::cout);
         return 1;
     }
-
-
-    osg::Timer timer;
-    osg::Timer_t before_load = timer.tick();
     
-    MySceneView::ViewerMode viewerMode = MySceneView::STAND_ALONE;
-    int socketNumber=8100;
-    float camera_fov=45.0f;
-    float camera_offset=45.0f;
-
-    osg::Node* rootnode = getNodeFromFiles( argc, argv, viewerMode, socketNumber,camera_fov,camera_offset);
     
-    osg::Timer_t after_load = timer.tick();
-    std::cout << "Time for load = "<<timer.delta_s(before_load,after_load)<<" seconds"<<std::endl;
+    // load model.
+    osg::ref_ptr<osg::Node> rootnode = osgDB::readNodeFiles(arguments);
 
-    osg::ref_ptr<MySceneView> mySceneView = new MySceneView(viewerMode,socketNumber,camera_fov,osg::inDegrees(camera_offset));
-    mySceneView->setSceneData(rootnode);
     
     // set the scene to render
-    viewer.setSceneData(mySceneView.get());
+    viewer.setSceneData(rootnode.get());
 
     // create the windows and run the threads.
     viewer.realize(Producer::CameraGroup::ThreadPerCamera);
+
+    Broadcaster     bc;
+    Receiver        rc;
 
     while( !viewer.done() )
     {
@@ -399,9 +172,70 @@ int main( int argc, char **argv )
         // call all node update callbacks and animations.
         viewer.update();
          
+         
+        // special handling for working as a cluster.
+        switch (viewerMode)
+        {
+        case(MASTER):
+            {
+                CameraPacket cp;
+                
+                // take camera zero as the guide.
+                osg::Matrix modelview(viewer.getCameraConfig()->getCamera(0)->getViewMatrix());
+                
+                cp.setPacket(modelview,viewer.getFrameStamp());
+
+                bc.setBuffer(&cp, sizeof( CameraPacket ));
+	        bc.sync();
+
+            }
+            break;
+        case(SLAVE):
+            {
+                CameraPacket cp;
+
+                rc.setBuffer(&cp, sizeof( CameraPacket ));
+	        rc.sync();
+
+		cp.checkByteOrder();
+
+                osg::Matrix modelview;
+                cp.getModelView(modelview,camera_offset);
+                
+                viewer.setView(modelview.ptr());
+
+                if (cp.getMasterKilled()) 
+                {
+                    std::cout << "recieved master killed"<<std::endl;
+                    viewerMode = STAND_ALONE;
+                }
+            }
+            break;
+        default:
+            // no need to anything here, just a normal interactive viewer.
+            break;
+        }
+         
+         
         // fire off the cull and draw traversals of the scene.
         viewer.frame();
         
+    }
+
+
+    // if we are master clean up by telling all slaves that we're going down.
+    if (viewerMode==MASTER)
+    {
+        // need to broadcast my death.
+        CameraPacket cp;
+        cp.setPacket(osg::Matrix::identity(),viewer.getFrameStamp());
+        cp.setMasterKilled(true);
+
+        bc.setBuffer(&cp, sizeof( CameraPacket ));
+	bc.sync();
+
+        std::cout << "broadcasting death"<<std::endl;
+
     }
 
     return 0;

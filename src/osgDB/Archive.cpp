@@ -38,14 +38,14 @@ Archive::IndexBlock::~IndexBlock()
 
 void Archive::IndexBlock::allocateData(unsigned int blockSize)
 {
-    _data = (blockSize!=0) ? new unsigned char[blockSize]  : 0;
+    _data = (blockSize!=0) ? new char[blockSize]  : 0;
     if (_data)
     {
         _blockSize = blockSize;
         
         // initialize the array
-        unsigned char* end = _data + _blockSize;
-        for(unsigned char* ptr=_data; ptr < end; ++ptr) *ptr = 0;
+        char* end = _data + _blockSize;
+        for(char* ptr=_data; ptr < end; ++ptr) *ptr = 0;
     }
     else
     {
@@ -86,8 +86,8 @@ bool Archive::IndexBlock::getFileReferences(FileNamePositionMap& indexMap)
     
     bool valuesAdded = false;
     
-    unsigned char* ptr = _data;
-    unsigned char* end_ptr = _data + _offsetOfNextAvailableSpace;
+    char* ptr = _data;
+    char* end_ptr = _data + _offsetOfNextAvailableSpace;
     while (ptr<end_ptr)
     {
         pos_type position = *(reinterpret_cast<pos_type*>(ptr)); 
@@ -136,7 +136,7 @@ bool Archive::IndexBlock::addFileReference(pos_type position, size_type size, co
 {
     if (spaceAvailable(position, size, filename))
     {
-        unsigned char* ptr = _data+_offsetOfNextAvailableSpace;
+        char* ptr = _data+_offsetOfNextAvailableSpace;
         
         *(reinterpret_cast<pos_type*>(ptr)) = position; 
         ptr += sizeof(pos_type);
@@ -360,21 +360,41 @@ class proxy_streambuf : public std::streambuf
    
       proxy_streambuf(std::streambuf* streambuf, unsigned int numChars):
         _streambuf(streambuf),
-        _numChars(numChars) {}
+        _numChars(numChars),
+        value_peeked(false),
+        peek_value(0) {}
    
       /// Destructor deallocates no buffer space.
       virtual ~proxy_streambuf()  {}
 
       std::streambuf* _streambuf;
       unsigned int _numChars;
+      
+      bool value_peeked;
+      int_type peek_value;
 
     protected:
 
       virtual int_type uflow ()
       {
-         //if (_numChars==0) return -1;
-         //--_numChars;
-         return _streambuf->sbumpc();
+         if (_numChars==0) return -1;
+         
+         --_numChars;
+
+         int_type val = value_peeked ? peek_value : _streambuf->sbumpc();
+         value_peeked = false;
+                  
+         return val;
+      }
+
+      virtual int_type 
+      underflow()
+      {
+        if (value_peeked) return peek_value;
+
+        value_peeked = true;
+        peek_value = _streambuf->sbumpc();
+        return peek_value;
       }
 };
 
@@ -404,23 +424,16 @@ ReaderWriter::ReadResult Archive::readObject(const std::string& fileName,const O
     
     _input.seekg(itr->second.first);
 
+    // set up proxy stream buffer to proide the faked ending.
     std::istream& ins = _input;
-
     proxy_streambuf mystreambuf(ins.rdbuf(),itr->second.second);
     ins.rdbuf(&mystreambuf);
-/*
-    while (!_input.eof())
-    {
-        osg::notify(osg::NOTICE).put(_input.get());
-    }
-    osg::notify(osg::NOTICE)<<"Exiting normally "<<std::endl;
-*/
+
     ReaderWriter::ReadResult result = rw->readObject(_input, options);
 
     ins.rdbuf(mystreambuf._streambuf);
     
     return result;
-
 }
 
 ReaderWriter::ReadResult Archive::readImage(const std::string& /*fileName*/,const Options*) { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
@@ -460,7 +473,7 @@ ReaderWriter::WriteResult Archive::writeObject(const osg::Object& obj,const std:
     return result;
 }
 
-ReaderWriter::WriteResult Archive::writeImage(const osg::Image& /*image*/,const std::string& fileName,const Options* options)
+ReaderWriter::WriteResult Archive::writeImage(const osg::Image& /*image*/,const std::string& fileName,const Options* /*options*/)
 {
     if (_status==READ) 
     {
@@ -471,7 +484,7 @@ ReaderWriter::WriteResult Archive::writeImage(const osg::Image& /*image*/,const 
     return WriteResult(WriteResult::FILE_NOT_HANDLED);
 }
 
-ReaderWriter::WriteResult Archive::writeHeightField(const osg::HeightField& /*heightField*/,const std::string& fileName,const Options* options)
+ReaderWriter::WriteResult Archive::writeHeightField(const osg::HeightField& /*heightField*/,const std::string& fileName,const Options* /*options*/)
 {
     if (_status!=WRITE) 
     {
@@ -482,7 +495,7 @@ ReaderWriter::WriteResult Archive::writeHeightField(const osg::HeightField& /*he
     return WriteResult(WriteResult::FILE_NOT_HANDLED);
 }
 
-ReaderWriter::WriteResult Archive::writeNode(const osg::Node& /*node*/,const std::string& fileName,const Options* options)
+ReaderWriter::WriteResult Archive::writeNode(const osg::Node& /*node*/,const std::string& fileName,const Options* /*options*/)
 {
     if (_status!=WRITE) 
     {

@@ -121,7 +121,7 @@ class OSGDB_EXPORT Archive : public ReaderWriter
             unsigned int    _blockSize;
             pos_type        _filePositionNextIndexBlock;
             unsigned int    _offsetOfNextAvailableSpace;
-            unsigned char*  _data;
+            char*           _data;
         };
     
     

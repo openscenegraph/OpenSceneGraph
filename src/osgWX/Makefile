@@ -1,5 +1,5 @@
 #!smake
-include $(TOP)/Make/makedefs
+include $(OSGHOME)/Make/makedefs
 
 C++FILES = \
 	WXEventAdapter.cpp\
@@ -7,10 +7,10 @@ C++FILES = \
 
 TARGET_BASENAME = osgWX
 
-LIBS    = -L$(TOP)/lib -losgDB -losgUtil -losg $(WXLIB) $(GL_LIBS)
+LIBS    = -L$(OSGHOME)/lib -losgDB -losgUtil -losg $(WXLIB) $(GL_LIBS)
 
-LIB	= $(TOP)/lib/lib$(TARGET_BASENAME).$(SO_EXT)
-#LIB	= $(TOP)/lib/lib$(TARGET_BASENAME).a
+LIB	= $(OSGHOME)/lib/lib$(TARGET_BASENAME).$(SO_EXT)
+#LIB	= $(OSGHOME)/lib/lib$(TARGET_BASENAME).a
 
 TARGET_LIB_FILES = lib$(TARGET_BASENAME).$(SO_EXT)
 TARGET_INCLUDE_FILES = \
@@ -18,7 +18,7 @@ TARGET_INCLUDE_FILES = \
 	osgWX/WXEventAdapter\
 	osgWX/Version\
 
-C++FLAGS += -I $(TOP)/include `wx-config --cflags`
+C++FLAGS += -I $(OSGHOME)/include `wx-config --cflags`
 
-include $(TOP)/Make/makerules
+include $(OSGHOME)/Make/makerules
 

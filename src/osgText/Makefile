@@ -1,5 +1,5 @@
 #!smake
-include $(TOP)/Make/makedefs
+include $(OSGHOME)/Make/makedefs
 
 C++FILES = \
 	FTBitmapGlyph.cpp \
@@ -29,10 +29,10 @@ C++FILES = \
 TARGET_BASENAME = osgText
 
 
-LIBS    = -L$(TOP)/lib -lfreetype -losgDB -losg $(GL_LIBS)
+LIBS    = -L$(OSGHOME)/lib -lfreetype -losgDB -losg $(GL_LIBS)
 
-LIB	= $(TOP)/lib/lib$(TARGET_BASENAME).$(SO_EXT)
-#LIB	= $(TOP)/lib/lib$(TARGET_BASENAME).a
+LIB	= $(OSGHOME)/lib/lib$(TARGET_BASENAME).$(SO_EXT)
+#LIB	= $(OSGHOME)/lib/lib$(TARGET_BASENAME).a
 
 TARGET_LIB_FILES = lib$(TARGET_BASENAME).$(SO_EXT)
 TARGET_INCLUDE_FILES = \
@@ -42,7 +42,7 @@ TARGET_INCLUDE_FILES = \
 	osgText/Text\
 	osgText/Version
 
-C++FLAGS += -I$(TOP)/include \
+C++FLAGS += -I$(OSGHOME)/include \
 		-I/usr/include/freetype2 \
 		-I/usr/local/include \
 		-I/usr/local/include/freetype2  \
@@ -52,5 +52,5 @@ C++FLAGS += -I$(TOP)/include \
 
 LDFLAGS += -L/usr/local/lib -L/usr/freeware/lib32
 
-include $(TOP)/Make/makerules
+include $(OSGHOME)/Make/makerules
 

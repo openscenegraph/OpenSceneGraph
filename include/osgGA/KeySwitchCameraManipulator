@@ -36,7 +36,12 @@ public:
 	*/
         void addNumberedCameraManipulator(CameraManipulator *cm);
 
+        CameraManipulator* getCurrentCameraManipulator() { return _current.get(); }
+
+        const CameraManipulator* getCurrentCameraManipulator() const { return _current.get(); }
+
         // Overrides from CameraManipulator...
+
 
         virtual void setCamera(osg::Camera* c)          { _current->setCamera(c); }
 

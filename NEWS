@@ -2,6 +2,15 @@
 OSG News (most significant items from ChangeLog)
 ================================================
 
+    Support for OpenFlight15.7 added.
+    Improved osgbillboard example.
+    Improved osglight example utilizing AnimationPath and PositionAttitudeTransform.
+    osg::TexEnvCombine implemented texture_env_combine and texture_env_crossbar.
+    osg::TexEnv texture_env_add added.
+    osg::Sequence implemented.
+    osg::DOFTransformNode implemented.
+    osg::AnimationPath improved.
+
 July 2002 - OpenSceneGraph-0.9.0.tar.gz
 
     >>> OpenSceneGraph goes beta - Multitexturing, Occlusion Culling, Particles and much more added!

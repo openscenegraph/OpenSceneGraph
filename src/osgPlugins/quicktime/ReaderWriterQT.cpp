@@ -16,12 +16,7 @@
 #  define SEEK_SET 0
 #endif
 
-extern "C" unsigned char*
-LoadBufferFromDarwinPath ( const char *fname, long *origWidth, long *origHeight, long *origDepth,
-								long *buffWidth, long *buffHeight, long *buffDepth);
-								
-extern "C" char *
-QTfailureMessage(void);
+#include "QTTexture.h"
 
 using namespace osg;
 
@@ -149,17 +144,16 @@ class ReaderWriterQT : public osgDB::ReaderWriter
 					}
 				}
 			}
-        
-			// DisposePtr ((Ptr) pixels);
-          
+
             Image* image = new Image();
             image->setFileName(fileName.c_str());
             image->setImage(buffWidth,buffHeight,1,
                 buffDepth >> 3,
                 pixelFormat,
                 GL_UNSIGNED_BYTE,
-                pixels );
-
+                pixels,
+		        osg::Image::USE_NEW_DELETE );
+		        
             notify(INFO) << "image read ok "<<buffWidth<<"  "<<buffHeight<<std::endl;
             return image;
         }

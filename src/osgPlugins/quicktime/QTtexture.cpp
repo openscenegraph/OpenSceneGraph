@@ -60,6 +60,8 @@ PORTIONS OF THIS CODE ARE COPYRIGHT APPLE COMPUTER -
 #include <OpenGL/glu.h> // for OpenGL API
 #include <OpenGL/glext.h> // for OpenGL extension support 
 
+#include "QTTexture.h"
+
 // ==================================
 
 enum // how to scale image to power of two on read if scaling
@@ -189,7 +191,7 @@ static unsigned char * LoadBufferFromImageFile ( FSSpec fsspecImage,
 		long *pBufferWidth, long *pBufferHeight, long *pBufferDepth)
 {
 	unsigned char * pImageBuffer = NULL;
-        int scalefac, xoffs, yoffs;
+        int scalefac;
 	GWorldPtr pGWorld = NULL;
 	OSType pixelFormat;
 	long rowStride; // length, in bytes, of a pixel row in the image
@@ -255,7 +257,14 @@ static unsigned char * LoadBufferFromImageFile ( FSSpec fsspecImage,
         }
 	SetRect (&rectImage, 0, 0, (short) *pBufferWidth, (short) *pBufferHeight); // l, t, r. b  set image rectangle for creation of GWorld
 	rowStride = *pBufferWidth * *pBufferDepth >> 3; // set stride in bytes width of image * pixel depth in bytes
-	pImageBuffer = (unsigned char *) NewPtrClear (rowStride * *pBufferHeight); // build new buffer exact size of image (stride * height)
+
+	const long len = rowStride * *pBufferHeight;
+
+	pImageBuffer = new unsigned char [ len ]; // build new buffer exact size of image (stride * height)
+
+	// pImageBuffer = (unsigned char *) NewPtrClear (rowStride * *pBufferHeight); // build new buffer exact size of image (stride * height)
+
+
 	if (NULL == pImageBuffer)
 	{
 		sprintf ( errMess, "failed to allocate image buffer");
@@ -267,7 +276,8 @@ static unsigned char * LoadBufferFromImageFile ( FSSpec fsspecImage,
 	if (NULL == pGWorld)
 	{
 		sprintf ( errMess, "failed to create GWorld");
-		DisposePtr ((Ptr) pImageBuffer); // dump image buffer
+		// DisposePtr ((Ptr) pImageBuffer); // dump image buffer
+		delete [] pImageBuffer;
 		pImageBuffer = NULL;
 		CloseComponent(giComp);
 		return NULL; // if we failed to create gworld
@@ -295,7 +305,8 @@ static unsigned char * LoadBufferFromImageFile ( FSSpec fsspecImage,
 
 		DisposeGWorld (pGWorld); // dump gworld
 		pGWorld = NULL;
-		DisposePtr ((Ptr) pImageBuffer); // dump image buffer
+		// DisposePtr ((Ptr) pImageBuffer); // dump image buffer
+		delete [] pImageBuffer;
 		pImageBuffer = NULL;
 		CloseComponent(giComp); // dump component
 		return NULL;
@@ -340,14 +351,14 @@ FSSpec *darwinPathToFSSpec (char *fname ) {
 
 
 unsigned char*
-LoadBufferFromDarwinPath ( char *fname, long *origWidth, long *origHeight, long *origDepth,
+LoadBufferFromDarwinPath ( const char *fname, long *origWidth, long *origHeight, long *origDepth,
 								long *buffWidth, long *buffHeight,
 								long *buffDepth)
 {
 	FSSpec *fs;
-	sprintf ( errMess, "");
+	sprintf ( errMess, "" );
 	
-	fs=darwinPathToFSSpec ( fname );
+	fs=darwinPathToFSSpec ( const_cast<char*>( fname ) );
 	
 	if (fs == NULL) {
 		return NULL;

@@ -1,0 +1,15 @@
+#ifndef IVE_IMAGE
+#define IVE_IMAGE 1
+
+#include <osg/Image>
+#include "ReadWrite.h"
+
+namespace ive{
+class IVE_EXPORT Image : public osg::Image, public ReadWrite {
+public:
+	void write(DataOutputStream* out);
+	void read(DataInputStream* in);
+};
+}
+
+#endif

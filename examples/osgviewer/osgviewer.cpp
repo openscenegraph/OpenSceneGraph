@@ -58,6 +58,9 @@ int main( int argc, char **argv )
         return 1;
     }
 
+    osg::Timer timer;
+    osg::Timer_t start_tick = timer.tick();
+
     // read the scene from the list of file specified commandline args.
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
 
@@ -68,10 +71,14 @@ int main( int argc, char **argv )
         return 1;
     }
 
+    osg::Timer_t end_tick = timer.tick();
+
+    cout << "Time to load = "<<timer.delta_s(start_tick,end_tick);
 
     // optimize the scene graph, remove rendundent nodes and state etc.
     osgUtil::Optimizer optimizer;
     optimizer.optimize(loadedModel.get());
+
 
     // set the scene to render
     viewer.setSceneData(loadedModel.get());

@@ -49,6 +49,7 @@ struct _Lib3dsCamera {
 
 extern LIB3DSAPI Lib3dsCamera* lib3ds_camera_new(const char *name);
 extern LIB3DSAPI void lib3ds_camera_free(Lib3dsCamera *mesh);
+extern LIB3DSAPI void lib3ds_camera_dump(Lib3dsCamera *camera);
 extern LIB3DSAPI Lib3dsBool lib3ds_camera_read(Lib3dsCamera *camera, FILE *f);
 extern LIB3DSAPI Lib3dsBool lib3ds_camera_write(Lib3dsCamera *camera, FILE *f);
 

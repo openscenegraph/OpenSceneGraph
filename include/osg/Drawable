@@ -9,6 +9,7 @@
 #include <osg/StateSet>
 #include <osg/State>
 #include <osg/Types>
+#include <osg/Vec2>
 
 #include <vector>
 #include <map>
@@ -75,7 +76,9 @@ class SG_EXPORT Drawable : public Object
         void dirtyDisplayList();
         
         
-        
+        /** Dirty the bounding box, forcing a computeBound() on the next call
+          * to getBound(). Should be called in the internal geometry of the Drawable
+          * is modified.*/        
         inline void dirtyBound() { _bbox_computed = false; }
 
         /** get bounding box of geoset. 
@@ -124,7 +127,9 @@ class SG_EXPORT Drawable : public Object
         virtual bool getStats(Statistics&) { return false; }
         
 
-        enum AttributeBitMask
+        typedef uint AttributeBitMask;
+
+        enum AttributeBitMaskValues
         {
             COORDS              = 0x1,
             NORMALS             = 0x2,
@@ -138,14 +143,20 @@ class SG_EXPORT Drawable : public Object
         
         struct AttributeUpdateFunctor
         {
-            virtual bool apply(AttributeBitMask abm,Vec2* begin,Vec2* end) { return false; }
-            virtual bool apply(AttributeBitMask abm,Vec3* begin,Vec3* end) { return false; }
-            virtual bool apply(AttributeBitMask abm,Vec4* begin,Vec4* end) { return false; }
+            inline bool apply(AttributeBitMask abm,Vec2& vec) { return apply(abm,&vec,(&vec)+1); }
+            inline bool apply(AttributeBitMask abm,Vec3& vec) { return apply(abm,&vec,(&vec)+1); }
+            inline bool apply(AttributeBitMask abm,Vec4& vec) { return apply(abm,&vec,(&vec)+1); }
+
+            virtual bool apply(AttributeBitMask,Vec2*,Vec2*) { return false; }
+            virtual bool apply(AttributeBitMask,Vec3*,Vec3*) { return false; }
+            virtual bool apply(AttributeBitMask,Vec4*,Vec4*) { return false; }
         };
 
-        virtual bool suppportsAttributeUpdate(AttributeBitMask) { return false; }
+        /** return the attributes supported by applyAttrbuteUpdate() as an AttributeBitMask.*/
+        virtual AttributeBitMask suppportsAttributeUpdate() const { return (AttributeBitMask)0; }
 
-        virtual bool applyAttributeUpdate(AttributeBitMask,AttributeUpdateFunctor&) { return false; }
+        /** return the attributes successully applied in applyAttributeUpdate.*/
+        virtual AttributeBitMask applyAttributeUpdate(AttributeBitMask,AttributeUpdateFunctor&) { return (AttributeBitMask)0; }
         
 
     protected:

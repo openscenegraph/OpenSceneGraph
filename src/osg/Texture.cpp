@@ -129,12 +129,12 @@ void Texture::apply(State& state) const
         if (_subloadMode == OFF)
         {
             glBindTexture( GL_TEXTURE_2D, handle );
-            if (_texParamtersDirty) applyTexParameters(GL_TEXTURE_2D,state);
+            if (_texParametersDirty) applyTexParameters(GL_TEXTURE_2D,state);
         }
         else  if (_image.valid() && _image->data())
         {
             glBindTexture( GL_TEXTURE_2D, handle );
-            if (_texParamtersDirty) applyTexParameters(GL_TEXTURE_2D,state);
+            if (_texParametersDirty) applyTexParameters(GL_TEXTURE_2D,state);
 
             uint& modifiedTag = getModifiedTag(contextID);
             if (_subloadMode == AUTO ||

@@ -20,7 +20,7 @@ TextureBase::TextureBase():
             _mag_filter(LINEAR),
             _maxAnisotropy(1.0f),
             _borderColor(0.0, 0.0, 0.0, 0.0),
-            _texParamtersDirty(true),
+            _texParametersDirty(true),
             _internalFormatMode(USE_IMAGE_DATA_FORMAT),
             _internalFormat(0)
 {
@@ -37,7 +37,7 @@ TextureBase::TextureBase(const TextureBase& text,const CopyOp& copyop):
             _mag_filter(text._mag_filter),
             _maxAnisotropy(text._maxAnisotropy),
             _borderColor(text._borderColor),
-            _texParamtersDirty(false),
+            _texParametersDirty(false),
             _internalFormatMode(text._internalFormatMode),
             _internalFormat(text._internalFormat)
 {
@@ -70,9 +70,9 @@ void TextureBase::setWrap(const WrapParameter which, const WrapMode wrap)
 {
     switch( which )
     {
-        case WRAP_S : _wrap_s = wrap; _texParamtersDirty = true; break;
-        case WRAP_T : _wrap_t = wrap; _texParamtersDirty = true; break;
-        case WRAP_R : _wrap_r = wrap; _texParamtersDirty = true; break;
+        case WRAP_S : _wrap_s = wrap; _texParametersDirty = true; break;
+        case WRAP_T : _wrap_t = wrap; _texParametersDirty = true; break;
+        case WRAP_R : _wrap_r = wrap; _texParametersDirty = true; break;
         default : notify(WARN)<<"Error: invalid 'which' passed TextureBase::setWrap("<<(unsigned int)which<<","<<(unsigned int)wrap<<")"<<std::endl; break;
     }
     
@@ -95,8 +95,8 @@ void TextureBase::setFilter(const FilterParameter which, const FilterMode filter
 {
     switch( which )
     {
-        case MIN_FILTER : _min_filter = filter; _texParamtersDirty = true; break;
-        case MAG_FILTER : _mag_filter = filter; _texParamtersDirty = true; break;
+        case MIN_FILTER : _min_filter = filter; _texParametersDirty = true; break;
+        case MAG_FILTER : _mag_filter = filter; _texParametersDirty = true; break;
         default : notify(WARN)<<"Error: invalid 'which' passed TextureBase::setFilter("<<(unsigned int)which<<","<<(unsigned int)filter<<")"<<std::endl; break;
     }
 }
@@ -117,7 +117,7 @@ void TextureBase::setMaxAnisotropy(float anis)
     if (_maxAnisotropy!=anis)
     {
         _maxAnisotropy = anis; 
-        _texParamtersDirty = true;
+        _texParametersDirty = true;
     }
 }
 
@@ -302,7 +302,7 @@ void TextureBase::applyTexParameters(GLenum target, State&) const
     }
 
 
-    _texParamtersDirty=false;
+    _texParametersDirty=false;
 
 }
 

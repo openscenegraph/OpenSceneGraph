@@ -109,7 +109,7 @@ class SG_EXPORT TextureBase : public osg::StateAttribute
 
         /** Sets the border color for this texture. Makes difference only if
           * wrap mode is CLAMP_TO_BORDER */
-        void setBorderColor(const Vec4& color) { _borderColor = color; _texParamtersDirty = true; }
+        void setBorderColor(const Vec4& color) { _borderColor = color; _texParametersDirty = true; }
         
         const Vec4& borderColor(void) const { return _borderColor; }
         
@@ -265,7 +265,7 @@ class SG_EXPORT TextureBase : public osg::StateAttribute
         Vec4 _borderColor;
 
         // true if apply tex parameters required. 
-        mutable bool _texParamtersDirty;
+        mutable bool _texParametersDirty;
 
 
         InternalFormatMode  _internalFormatMode;

@@ -20,6 +20,11 @@ class IVEReaderWriter : public ReaderWriter
             return equalCaseInsensitive(extension,"ive");
         }
 
+        virtual ReadResult readObject(const std::string& file, const Options* options)
+        {
+            return readNode(file, options);
+        }
+        
         virtual ReadResult readNode(const std::string& file, const Options* options)
         {
             std::string ext = osgDB::getLowerCaseFileExtension(file);
@@ -40,6 +45,11 @@ class IVEReaderWriter : public ReaderWriter
 
             std::ifstream istream(fileName.c_str(), std::ios::in | std::ios::binary);
             return readNode(istream,local_opt.get());
+        }
+        
+        virtual ReadResult readObject(std::istream& fin, const Options* options)
+        {
+            return readNode(fin, options);
         }
         
         virtual ReadResult readNode(std::istream& fin, const Options* options)
@@ -64,6 +74,15 @@ class IVEReaderWriter : public ReaderWriter
         #endif
         }
 
+        
+
+        virtual WriteResult writeObject(const Object& object,const std::string& fileName, const osgDB::ReaderWriter::Options* options)
+        {
+            const Node* node = dynamic_cast<const Node*>(&object);
+            if (node) return writeNode( *node, fileName, options );
+            return WriteResult::FILE_NOT_HANDLED;
+        }
+
         virtual WriteResult writeNode(const Node& node,const std::string& fileName, const osgDB::ReaderWriter::Options* options)
         {
             std::string ext = getFileExtension(fileName);
@@ -75,6 +94,13 @@ class IVEReaderWriter : public ReaderWriter
             return result;
         }
         
+        virtual WriteResult writeObject(const Object& object,std::ostream& fout, const osgDB::ReaderWriter::Options* options)
+        {
+            const Node* node = dynamic_cast<const Node*>(&object);
+            if (node) return writeNode( *node, fout, options );
+            return WriteResult::FILE_NOT_HANDLED;
+        }
+
         virtual WriteResult writeNode(const Node& node,std::ostream& fout, const osgDB::ReaderWriter::Options* options)
         {
             try

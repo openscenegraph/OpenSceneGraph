@@ -130,7 +130,8 @@ bool Object::generateNormals(float /*creaseAngle*/)
     vector<Vector> faceNormals;
     faceNormals.resize(_mesh->faces.size());
 
-    for (unsigned int fi = 0; fi < _mesh->faces.size(); fi++) {
+    unsigned int fi;
+    for (fi = 0; fi < _mesh->faces.size(); fi++) {
 
         vector<Vector> poly;
         unsigned int n = _mesh->faces[fi].size();
@@ -204,7 +205,7 @@ bool Object::generateNormals(float /*creaseAngle*/)
 
     // Copy face mesh to normals mesh
     _normals->faceNormals.resize(_mesh->faces.size());
-    for (unsigned int fi = 0; fi < _mesh->faces.size(); fi++)
+    for (fi = 0; fi < _mesh->faces.size(); fi++)
         _normals->faceNormals[fi] = _mesh->faces[fi];
 
     return true;

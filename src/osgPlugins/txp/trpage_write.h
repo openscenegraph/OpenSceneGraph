@@ -59,7 +59,7 @@ public:
     inline void AddStripStat(int val) { stripStat[MIN(14,val)]++; totalStripTri += val; totalTri += val; numStrip++;}
     inline void AddFanStat(int val) { fanStat[MIN(14,val)]++; totalFanTri += val; totalTri += val; numFan++;}
     inline void AddBagStat(int val) { totalBagTri += val; totalTri += val;}
-    inline void AddQuadStat(int val) { totalQuad++; }
+    inline void AddQuadStat(int /*val*/) { totalQuad++; }
 };
 
 /* Geometry Helper

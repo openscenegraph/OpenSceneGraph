@@ -51,7 +51,7 @@ namespace txp
         /// Load and create textures and materials
         void LoadMaterials();
 
-        // Load and create models, usualy OpenFlight models
+        /// Load and create models, usualy OpenFlight models
         bool LoadModels();
         
         /** Load a TXP tile and 

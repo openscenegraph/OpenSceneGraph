@@ -11,6 +11,7 @@
 
 #include <osg/Texture2D>
 #include <osg/Geometry>
+#include <osg/State>
 
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
@@ -21,6 +22,27 @@
 #include <osgUtil/TriStripVisitor>
 
 #include <osgProducer/Viewer>
+
+class GraphicsContext {
+    public:
+        GraphicsContext()
+        {
+            rs = new Producer::RenderSurface;
+            rs->setWindowRectangle(0,0,1,1);
+            rs->useBorder(false);
+            rs->useConfigEventThread(false);
+            rs->realize();
+            std::cout<<"Realized window"<<std::endl;
+        }
+
+        virtual ~GraphicsContext()
+        {
+        }
+        
+    private:
+        Producer::ref_ptr<Producer::RenderSurface> rs;
+};
+
 
 osg::Vec3 computePosition(bool leftHemisphere, double x, double y)
 {
@@ -55,12 +77,28 @@ osg::Node* createTile(const std::string& filename, bool leftHemisphere, double x
 	texture->setImage(image);
         texture->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP);
         texture->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP);
+        texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
+        texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
         texture->setMaxAnisotropy(8);
 	stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
+        
+        texture->setInternalFormatMode(osg::Texture::USE_S3TC_DXT3_COMPRESSION);
+        
+        osg::ref_ptr<osg::State> state = new osg::State;
+        texture->apply(*state);
+        
+        image->readImageFromCurrentTexture();
+        
+        texture->setInternalFormatMode(osg::Texture::USE_IMAGE_DATA_FORMAT);
+        
+        std::cout<<"glGetError()=="<<glGetError()<<std::endl;
+        
     }
     
     geode->setStateSet( stateset );
 
+//    unsigned int numColumns = 10;
+//    unsigned int numRows = 10;
     unsigned int numColumns = 10;
     unsigned int numRows = 10;
     unsigned int r;
@@ -140,7 +178,10 @@ osg::Node* createTile(const std::string& filename, bool leftHemisphere, double x
     osgUtil::TriStripVisitor tsv;
     tsv.stripify(*geometry);
     
-    geometry->setUseVertexBufferObjects(true);
+    //geometry->setUseVertexBufferObjects(true);
+    
+    geometry->setUseDisplayList(false);
+    geometry->setUseVertexBufferObjects(false);
 
 
     {
@@ -325,7 +366,10 @@ int main( int argc, char **argv )
     std::string left_hemisphere("land_shallow_topo_west.tif");
     std::string right_hemisphere("land_shallow_topo_east.tif");
     std::string basename("BlueMarble/bluemarble.ive");
-    
+
+    // create a graphics context to allow us to use OpenGL to compress textures.    
+    GraphicsContext gfx;
+
     createWorld(left_hemisphere,right_hemisphere,basename,4);
 
     return 0;

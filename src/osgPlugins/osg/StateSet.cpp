@@ -97,7 +97,7 @@ void initGLNames()
 //         itr!=s_GLNameToGLModeMap.end();
 //         ++itr)
 //     {
-//         cout << "Name ["<<itr->first<<","<<itr->second<<"]"<<endl;
+//         cout << "Name ["<<itr->first<<","<<itr->second<<"]"<< std::endl;
 //     }
     
     first_time = false;
@@ -356,24 +356,24 @@ bool StateSet_writeLocalData(const Object& obj, Output& fw)
     switch(stateset.getRenderingHint())
     {
     case(StateSet::DEFAULT_BIN):
-        fw<<"DEFAULT_BIN"<<endl;
+        fw<<"DEFAULT_BIN"<< std::endl;
         break;    
     case(StateSet::OPAQUE_BIN):
-        fw<<"OPAQUE_BIN"<<endl;
+        fw<<"OPAQUE_BIN"<< std::endl;
         break;    
     case(StateSet::TRANSPARENT_BIN):
-        fw<<"TRANSPARENT_BIN"<<endl;
+        fw<<"TRANSPARENT_BIN"<< std::endl;
         break;    
     default:
-        fw<<stateset.getRenderingHint()<<endl;
+        fw<<stateset.getRenderingHint()<< std::endl;
         break;    
     }
 
-    fw.indent()<<"renderBinMode "<<StateSet_getRenderBinModeStr(stateset.getRenderBinMode())<<endl;
+    fw.indent()<<"renderBinMode "<<StateSet_getRenderBinModeStr(stateset.getRenderBinMode())<< std::endl;
     if (stateset.getRenderBinMode()!=StateSet::INHERIT_RENDERBIN_DETAILS)
     {
-        fw.indent()<<"binNumber "<<stateset.getBinNumber()<<endl;
-        fw.indent()<<"binName "<<stateset.getBinName()<<endl;
+        fw.indent()<<"binNumber "<<stateset.getBinNumber()<< std::endl;
+        fw.indent()<<"binName "<<stateset.getBinName()<< std::endl;
     }
 
 
@@ -387,12 +387,12 @@ bool StateSet_writeLocalData(const Object& obj, Output& fw)
          GLModeToGLNameMap::iterator nitr = s_GLModeToGLNameMap.find(mitr->first);
          if (nitr!=s_GLModeToGLNameMap.end())
          {
-             fw.indent() << nitr->second << " " << StateSet_getModeStr(mitr->second) << endl;
+             fw.indent() << nitr->second << " " << StateSet_getModeStr(mitr->second) << std::endl;
          }
          else
          {
             // no name defined for GLMode so just pass its value to fw.
-			 fw.indent() << "0x" << std::hex << (osg::uint)mitr->first << std::dec <<" " << StateSet_getModeStr(mitr->second) << endl;
+			 fw.indent() << "0x" << std::hex << (osg::uint)mitr->first << std::dec <<" " << StateSet_getModeStr(mitr->second) << std::endl;
          }
     }
     

@@ -67,8 +67,8 @@ bool Point_writeLocalData(const Object& obj, Output& fw)
 {
     const Point& point = static_cast<const Point&>(obj);
 
-    fw.indent() << "size " << point.getSize() << endl;
-    fw.indent() << "fade_threshold_size  " << point.getFadeThresholdSize() << endl;
-    fw.indent() << "distance_attenuation  " << point.getDistanceAttenuation() << endl;
+    fw.indent() << "size " << point.getSize() << std::endl;
+    fw.indent() << "fade_threshold_size  " << point.getFadeThresholdSize() << std::endl;
+    fw.indent() << "distance_attenuation  " << point.getDistanceAttenuation() << std::endl;
     return true;
 }

@@ -52,7 +52,7 @@ bool Node_readLocalData(Object& obj, Input& fr)
 
     //     if (fr.matchSequence("user_data {"))
     //     {
-    //         notify(DEBUG) << "Matched user_data {"<<endl;
+    //         notify(DEBUG) << "Matched user_data {"<< std::endl;
     //         int entry = fr[0].getNoNestedBrackets();
     //         fr += 2;
     //
@@ -60,7 +60,7 @@ bool Node_readLocalData(Object& obj, Input& fr)
     //         {
     //             Object* object = fr.readObject();
     //             if (object) setUserData(object);
-    //             notify(DEBUG) << "read "<<object<<endl;
+    //             notify(DEBUG) << "read "<<object<< std::endl;
     //             ++fr;
     //         }
     //         iteratorAdvanced = true;
@@ -103,22 +103,22 @@ bool Node_writeLocalData(const Object& obj, Output& fw)
 {
     const Node& node = static_cast<const Node&>(obj);
 
-    if (!node.getName().empty()) fw.indent() << "name "<<'"'<<node.getName()<<'"'<<endl;
+    if (!node.getName().empty()) fw.indent() << "name "<<'"'<<node.getName()<<'"'<< std::endl;
 
     fw.indent() << "cullingActive ";
-    if (node.getCullingActive()) fw << "TRUE"<<endl;
-    else fw << "FALSE"<<endl;
+    if (node.getCullingActive()) fw << "TRUE"<< std::endl;
+    else fw << "FALSE"<< std::endl;
 
     //     if (_userData)
     //     {
     //         Object* object = dynamic_cast<Object*>(_userData);
     //         if (object)
     //         {
-    //             fw.indent() << "user_data {"<<endl;
+    //             fw.indent() << "user_data {"<< std::endl;
     //             fw.moveIn();
     //             object->write(fw);
     //             fw.moveOut();
-    //             fw.indent() << "}"<<endl;
+    //             fw.indent() << "}"<< std::endl;
     //         }
     //     }
 
@@ -126,20 +126,20 @@ bool Node_writeLocalData(const Object& obj, Output& fw)
     {
         if (node.getDescriptions().size()==1)
         {
-            fw.indent() << "description "<<'"'<<node.getDescriptions().front()<<'"'<<endl;
+            fw.indent() << "description "<<'"'<<node.getDescriptions().front()<<'"'<< std::endl;
         }
         else
         {
-            fw.indent() << "description {"<<endl;
+            fw.indent() << "description {"<< std::endl;
             fw.moveIn();
             for(Node::DescriptionList::const_iterator ditr=node.getDescriptions().begin();
                 ditr!=node.getDescriptions().end();
                 ++ditr)
             {
-                fw.indent() << '"'<<*ditr<<'"'<<endl;
+                fw.indent() << '"'<<*ditr<<'"'<< std::endl;
             }
             fw.moveOut();
-            fw.indent() << "}"<<endl;
+            fw.indent() << "}"<< std::endl;
         }
     }
 

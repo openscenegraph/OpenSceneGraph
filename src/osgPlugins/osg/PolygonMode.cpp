@@ -65,24 +65,24 @@ bool PolygonMode_writeLocalData(const Object& obj, Output& fw)
     {
         switch(polygonmode.getMode(PolygonMode::FRONT))
         {
-            case(PolygonMode::POINT): fw.indent() << "mode FRONT_AND_BACK POINT" << endl; break;
-            case(PolygonMode::LINE):  fw.indent() << "mode FRONT_AND_BACK LINE" << endl; break;
-            case(PolygonMode::FILL):  fw.indent() << "mode FRONT_AND_BACK FILL" << endl; break;
+            case(PolygonMode::POINT): fw.indent() << "mode FRONT_AND_BACK POINT" << std::endl; break;
+            case(PolygonMode::LINE):  fw.indent() << "mode FRONT_AND_BACK LINE" << std::endl; break;
+            case(PolygonMode::FILL):  fw.indent() << "mode FRONT_AND_BACK FILL" << std::endl; break;
         }
     }
     else
     {
         switch(polygonmode.getMode(PolygonMode::FRONT))
         {
-            case(PolygonMode::POINT): fw.indent() << "mode FRONT POINT" << endl; break;
-            case(PolygonMode::LINE):  fw.indent() << "mode FRONT LINE" << endl; break;
-            case(PolygonMode::FILL):  fw.indent() << "mode FRONT FILL" << endl; break;
+            case(PolygonMode::POINT): fw.indent() << "mode FRONT POINT" << std::endl; break;
+            case(PolygonMode::LINE):  fw.indent() << "mode FRONT LINE" << std::endl; break;
+            case(PolygonMode::FILL):  fw.indent() << "mode FRONT FILL" << std::endl; break;
         }
         switch(polygonmode.getMode(PolygonMode::BACK))
         {
-            case(PolygonMode::POINT): fw.indent() << "mode BACK POINT" << endl; break;
-            case(PolygonMode::LINE):  fw.indent() << "mode BACK LINE" << endl; break;
-            case(PolygonMode::FILL):  fw.indent() << "mode BACK FILL" << endl; break;
+            case(PolygonMode::POINT): fw.indent() << "mode BACK POINT" << std::endl; break;
+            case(PolygonMode::LINE):  fw.indent() << "mode BACK LINE" << std::endl; break;
+            case(PolygonMode::FILL):  fw.indent() << "mode BACK FILL" << std::endl; break;
        }
     }
 

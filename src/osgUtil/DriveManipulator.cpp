@@ -71,7 +71,7 @@ void DriveManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
             osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segDown.get());
             if (!hitList.empty())
             {
-                //                notify(INFO) << "Hit terrain ok"<<endl;
+                //                notify(INFO) << "Hit terrain ok"<< std::endl;
                 osg::Vec3 ip = hitList.front()._intersectPoint;
                 osg::Vec3 np = hitList.front()._intersectNormal;
 
@@ -110,7 +110,7 @@ void DriveManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
                 osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segUp.get());
                 if (!hitList.empty())
                 {
-                    //                notify(INFO) << "Hit terrain ok"<<endl;
+                    //                notify(INFO) << "Hit terrain ok"<< std::endl;
                     osg::Vec3 ip = hitList.front()._intersectPoint;
                     osg::Vec3 np = hitList.front()._intersectNormal;
 
@@ -186,7 +186,7 @@ void DriveManipulator::init(const GUIEventAdapter& ea,GUIActionAdapter& us)
         osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segDown.get());
         if (!hitList.empty())
         {
-            //                notify(INFO) << "Hit terrain ok"<<endl;
+            //                notify(INFO) << "Hit terrain ok"<< std::endl;
             osg::Vec3 ip = hitList.front()._intersectPoint;
             osg::Vec3 np = hitList.front()._intersectNormal;
 
@@ -225,7 +225,7 @@ void DriveManipulator::init(const GUIEventAdapter& ea,GUIActionAdapter& us)
             osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segUp.get());
             if (!hitList.empty())
             {
-                //                notify(INFO) << "Hit terrain ok"<<endl;
+                //                notify(INFO) << "Hit terrain ok"<< std::endl;
                 osg::Vec3 ip = hitList.front()._intersectPoint;
                 osg::Vec3 np = hitList.front()._intersectNormal;
 
@@ -357,7 +357,7 @@ bool DriveManipulator::calcMovement()
 
     if (dt<0.0f)
     {
-        notify(WARN) << "warning dt = "<<dt<<endl;
+        notify(WARN) << "warning dt = "<<dt<< std::endl;
         dt = 0.0f;
     }
 
@@ -446,7 +446,7 @@ bool DriveManipulator::calcMovement()
             osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segForward.get());
             if (!hitList.empty())
             {
-                //                notify(INFO) << "Hit obstruction"<<endl;
+                //                notify(INFO) << "Hit obstruction"<< std::endl;
                 osg::Vec3 ip = hitList.front()._intersectPoint;
                 distanceToMove = (ip-ep).length()-_buffer;
                 _velocity = 0.0f;
@@ -471,7 +471,7 @@ bool DriveManipulator::calcMovement()
             osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segNormal.get());
             if (!hitList.empty())
             {
-                //                notify(INFO) << "Hit terrain ok"<<endl;
+                //                notify(INFO) << "Hit terrain ok"<< std::endl;
                 osg::Vec3 ip = hitList.front()._intersectPoint;
                 osg::Vec3 np = hitList.front()._intersectNormal;
 
@@ -510,7 +510,7 @@ bool DriveManipulator::calcMovement()
             if (!hitList.empty())
             {
 
-                notify(INFO) << "Hit terrain on decent ok"<<endl;
+                notify(INFO) << "Hit terrain on decent ok"<< std::endl;
                 osg::Vec3 ip = hitList.front()._intersectPoint;
                 osg::Vec3 np = hitList.front()._intersectNormal;
 

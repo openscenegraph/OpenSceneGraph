@@ -150,8 +150,8 @@ void Tesselator::do_it()
     if (_errorCode!=0)
     {
        const GLubyte *estring = gluErrorString((GLenum)_errorCode);
-       osg::notify(osg::WARN)<<"Tessellation Error: "<<estring<<endl;
-       osg::notify(osg::WARN)<<"  Num indices created = "<<_tesselated_indices.size()<<endl;
+       osg::notify(osg::WARN)<<"Tessellation Error: "<<estring<< std::endl;
+       osg::notify(osg::WARN)<<"  Num indices created = "<<_tesselated_indices.size()<< std::endl;
     }
 }
 
@@ -189,8 +189,8 @@ void Tesselator::do_it()
     if (_errorCode!=0)
     {
        const GLubyte *estring = gluErrorString((GLenum)_errorCode);
-       osg::notify(osg::WARN)<<"Tessellation Error: "<<estring<<endl;
-       osg::notify(osg::WARN)<<"  Num indices created = "<<_tesselated_indices.size()<<endl;
+       osg::notify(osg::WARN)<<"Tessellation Error: "<<estring<< std::endl;
+       osg::notify(osg::WARN)<<"  Num indices created = "<<_tesselated_indices.size()<< std::endl;
     }
 }
 

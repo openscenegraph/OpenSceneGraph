@@ -115,13 +115,13 @@ bool TexGen_writeLocalData(const Object& obj, Output& fw)
 {
     const TexGen& texgen = static_cast<const TexGen&>(obj);
 
-    fw.indent() << "mode " << TexGen_getModeStr(texgen.getMode()) << endl;
+    fw.indent() << "mode " << TexGen_getModeStr(texgen.getMode()) << std::endl;
     if (texgen.getMode() == TexGen::OBJECT_LINEAR || texgen.getMode() == TexGen::EYE_LINEAR)
     {
-        fw.indent() << "plane_s " << texgen.getPlane(TexGen::S) << endl;
-        fw.indent() << "plane_t " << texgen.getPlane(TexGen::T) << endl;
-        fw.indent() << "plane_r " << texgen.getPlane(TexGen::R) << endl;
-        fw.indent() << "plane_q " << texgen.getPlane(TexGen::Q) << endl;
+        fw.indent() << "plane_s " << texgen.getPlane(TexGen::S) << std::endl;
+        fw.indent() << "plane_t " << texgen.getPlane(TexGen::T) << std::endl;
+        fw.indent() << "plane_r " << texgen.getPlane(TexGen::R) << std::endl;
+        fw.indent() << "plane_q " << texgen.getPlane(TexGen::Q) << std::endl;
     }
 
     return true;

@@ -56,7 +56,7 @@ bool IntersectState::isCulled(const BoundingSphere& bs,LineSegmentmentMask& segM
         }
         mask = mask << 1;
     }
-    //    notify(INFO) << << "mask = "<<segMaskOut<<endl;
+    //    notify(INFO) << << "mask = "<<segMaskOut<< std::endl;
     return !hit;
 }
 
@@ -216,7 +216,7 @@ void IntersectVisitor::addLineSegment(LineSegment* seg)
     
     if (!seg->valid())
     {
-        notify(WARN)<<"Warning: invalid line segment passed to IntersectVisitor::addLineSegment(..), segment ignored.."<<endl;
+        notify(WARN)<<"Warning: invalid line segment passed to IntersectVisitor::addLineSegment(..), segment ignored.."<< std::endl;
         return;
     }
 
@@ -281,7 +281,7 @@ void IntersectVisitor::pushMatrix(const Matrix& matrix)
 
     _intersectStateStack.push_back(nis);
 
-    //    notify(INFO) << << "IntersectVisitor::pushMatrix()"<<endl;
+    //    notify(INFO) << << "IntersectVisitor::pushMatrix()"<< std::endl;
 }
 
 
@@ -293,7 +293,7 @@ void IntersectVisitor::popMatrix()
         //        pvs->unref();
         _intersectStateStack.pop_back();
     }
-    //    notify(INFO) << << "IntersectVisitor::popMatrix()"<<endl;
+    //    notify(INFO) << << "IntersectVisitor::popMatrix()"<< std::endl;
 }
 
 
@@ -511,7 +511,7 @@ bool IntersectVisitor::intersect(GeoSet& gset)
                 }
             }
         }
-        //        else notify(INFO) << << "no BB hit"<<endl;
+        //        else notify(INFO) << << "no BB hit"<< std::endl;
     }
 
     return hitFlag;

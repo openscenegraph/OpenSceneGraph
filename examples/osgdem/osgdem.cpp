@@ -330,7 +330,7 @@ int main( int argc, char **argv )
         if (arguments.read(pos, "--cs",def))
         {
             currentCS = !def.empty() ? osgTerrain::DataSet::coordinateSystemStringToWTK(def) : "";
-            std::cout<<"--cs "<<currentCS<<std::endl;
+            std::cout<<"--cs \""<<def<<"\" converted to "<<currentCS<<std::endl;
         }
         else if (arguments.read(pos, "--wkt",def))
         {
@@ -365,7 +365,7 @@ int main( int argc, char **argv )
             geoTransformScale = true;
             geoTransform = computeGeoTransForRange(0.0, 180.0, -90.0, 90.0);
             
-            dataset->setConvertFromGeographicToGeocentric(true);
+//            dataset->setConvertFromGeographicToGeocentric(true);
             std::cout<<"--bluemarble-west"<<currentCS<<" matrix="<<geoTransform<<std::endl;
         }
 
@@ -376,7 +376,7 @@ int main( int argc, char **argv )
             geoTransformScale = true;
             geoTransform = computeGeoTransForRange(-180.0, 0.0, -90.0, 90.0);
             
-            dataset->setConvertFromGeographicToGeocentric(true);
+//            dataset->setConvertFromGeographicToGeocentric(true);
             std::cout<<"--bluemarble-west "<<currentCS<<" matrix="<<geoTransform<<std::endl;
         }
 
@@ -387,7 +387,7 @@ int main( int argc, char **argv )
             geoTransformScale = true;
             geoTransform = computeGeoTransForRange(-180.0, 180.0, -90.0, 90.0);
             
-            dataset->setConvertFromGeographicToGeocentric(true);
+//            dataset->setConvertFromGeographicToGeocentric(true);
             std::cout<<"--whole-globe "<<currentCS<<" matrix="<<geoTransform<<std::endl;
         }
 

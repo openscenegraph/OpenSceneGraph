@@ -36,6 +36,7 @@
     */
 
 #include <windows.h>
+#include <stdio.h>
 
 // Microsoft Developer warnings that annoy me
 #pragma warning ( disable : 4251)

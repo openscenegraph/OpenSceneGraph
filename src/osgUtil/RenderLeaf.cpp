@@ -30,20 +30,7 @@ void RenderLeaf::render(State& state,RenderLeaf* previous)
 
         }
         
-        Matrix* prev_matrix = previous->_matrix.get();
-        if (_matrix != prev_matrix)
-        {
-
-            if (_matrix.valid())
-            {
-                glLoadMatrixf(_matrix->ptr());
-            }
-            else
-            {
-                glLoadIdentity();
-            }
-
-        }
+        state.applyModelViewMatrix(_matrix.get());
 
         _drawable->draw(state);
     }
@@ -54,14 +41,7 @@ void RenderLeaf::render(State& state,RenderLeaf* previous)
         // send state changes and matrix changes to OpenGL.
         state.apply(_parent->_stateset.get());
 
-        if (_matrix.valid())
-        {
-            glLoadMatrixf(_matrix->ptr());
-        }
-        else
-        {
-            glLoadIdentity();
-        }
+        state.applyModelViewMatrix(_matrix.get());
 
         _drawable->draw(state);
     }

@@ -67,6 +67,55 @@ class SG_EXPORT State : public Referenced
             return applyAttribute(attribute,_attributeMap[attribute->getType()]);
         }
 
+        inline void applyProjectionMatrix(const osg::Matrix* matrix)
+        {
+            if (_projection!=matrix)
+            {
+                glMatrixMode( GL_PROJECTION );
+                if (matrix) 
+                {
+                    _projection=matrix;
+                    glLoadMatrixf(matrix->ptr());
+                }
+                else
+                {
+                    _projection=_identity;
+                    glLoadIdentity();
+                }
+                glMatrixMode( GL_MODELVIEW );
+            }
+        }
+        
+        const osg::Matrix& getProjectionMatrix() const
+        {
+            return *_projection;
+        }
+
+        inline void applyModelViewMatrix(const osg::Matrix* matrix)
+        {
+            if (_modelView!=matrix)
+            {
+                if (matrix)
+                {
+                    _modelView=matrix;
+                    glLoadMatrixf(matrix->ptr());
+                }
+                else 
+                {
+                    _modelView=_identity;
+                    glLoadIdentity();
+                }
+            }
+        }
+
+        const osg::Matrix& getModelViewMatrix() const
+        {
+            return *_modelView;
+        }
+
+
+        ClippingVolume getClippingVolume() const;
+
 
         /** apply stateset.*/
         void apply(const StateSet* dstate);
@@ -112,15 +161,7 @@ class SG_EXPORT State : public Referenced
         /** Set the frame stamp for the current frame.*/
         inline const FrameStamp* getFrameStamp() const { return _frameStamp.get(); }
         
-        
-        /** Set the camera. Note, nothing is applied, the camera is just used
-          * used in the State object to pass the current camera to Drawables
-          * during rendering. */
-        inline void setCamera(Camera* camera) { _camera = camera; }
-        
-        /** Get the camera */
-        inline const Camera* getCamera() const { return _camera.get(); }
-        
+                
         /** Set the DisplaySettings. Note, nothing is applied, the visual settings are just used
           * used in the State object to pass the current visual settings to Drawables
           * during rendering. */
@@ -138,7 +179,11 @@ class SG_EXPORT State : public Referenced
     
         unsigned int                _contextID;
         ref_ptr<FrameStamp>         _frameStamp;
-        ref_ptr<Camera>             _camera;
+        
+        ref_ptr<const Matrix>             _identity;
+        ref_ptr<const Matrix>             _projection;
+        ref_ptr<const Matrix>             _modelView;
+        
         ref_ptr<DisplaySettings>    _displaySettings;
         
 

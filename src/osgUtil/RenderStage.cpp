@@ -96,14 +96,8 @@ void RenderStage::draw(osg::State& state,RenderLeaf*& previous)
     glDisable( GL_SCISSOR_TEST );
 #endif
 
-    // pass the camera we're about to set up to state, so that
-    // subsequent operatiosn know about it, such as for CLOD etc.
-    state.setCamera(_camera.get());
-
     // set up projection
-    const Matrix& projectionMat = _camera->getProjectionMatrix();
-    glMatrixMode( GL_PROJECTION );
-    glLoadMatrixf(projectionMat.ptr());
+    state.applyProjectionMatrix(&(_camera->getProjectionMatrix()));
 
     glMatrixMode( GL_MODELVIEW );
     glLoadIdentity();

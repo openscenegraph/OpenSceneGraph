@@ -104,6 +104,8 @@ class SG_EXPORT StateAttribute : public Object
             TEXTURE_2,
             TEXTURE_3,
             
+            POLYGONMODE,
+            POLYGONOFFSET,
             MATERIAL,
             ALPHAFUNC,
             ANTIALIAS,
@@ -126,8 +128,6 @@ class SG_EXPORT StateAttribute : public Object
             LINEWIDTH,
             LINESTIPPLE,
             SHADEMODEL,
-            POLYGONMODE,
-            POLYGONOFFSET,
             TEXENV,
             TEXGEN,
             TEXMAT,

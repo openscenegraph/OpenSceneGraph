@@ -856,15 +856,6 @@ void Camera::adjustEyeOffsetForStereo(const osg::Vec3& offset)
 
 void Camera::apply(State& state)
 {
-    const Matrix& projectionMat = getProjectionMatrix();
-    glMatrixMode( GL_PROJECTION );
-    glLoadMatrixf(projectionMat.ptr());
-
-    // set up camera modelview.
-    const Matrix& modelView = getModelViewMatrix();
-    glMatrixMode( GL_MODELVIEW );
-    glLoadMatrixf(modelView.ptr());
-    
-    state.setCamera(this);
-    
+    state.applyProjectionMatrix(&getProjectionMatrix());
+    state.applyModelViewMatrix(&getModelViewMatrix());    
 }

@@ -29,27 +29,12 @@ void RenderStageLighting::draw(osg::State& state,RenderLeaf*& previous)
         previous = NULL;
     }
 
-    Matrix* prev_matrix = NULL;
-
     // apply the light list.
     for(LightList::iterator litr=_lightList.begin();
         litr!=_lightList.end();
         ++litr)
     {
-        Matrix* matrix = (*litr).second.get();
-        if (matrix != prev_matrix)
-        {
-            if (matrix)
-            {
-                glLoadMatrixf(matrix->ptr());
-            }
-            else
-            {
-                glLoadIdentity();
-            }
-
-            prev_matrix = matrix;
-        }
+        state.applyModelViewMatrix((*litr).second.get());
 
         // apply the light source.
         litr->first->apply(state);

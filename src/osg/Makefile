@@ -111,7 +111,6 @@ TARGET_INCLUDE_FILES = \
 	osg/Material\
 	osg/Math\
 	osg/Matrix\
-	osg/MemoryAdapter\
 	osg/MemoryManager\
 	osg/Node\
 	osg/NodeCallback\
@@ -145,7 +144,6 @@ TARGET_INCLUDE_FILES = \
 	osg/Vec4\
 	osg/Version\
 	osg/Viewport\
-	osg/mem_ptr\
 	osg/ref_ptr\
 
 

@@ -158,6 +158,9 @@ void SceneView::app()
 void SceneView::cull()
 {
 
+    _state->reset();
+    
+
     if (_displaySettings.valid() && _displaySettings->getStereo()) 
     {
     
@@ -201,9 +204,23 @@ void SceneView::cullStage(osg::Camera* camera, osgUtil::CullVisitor* cullVisitor
 
     if (!_initCalled) init();
 
+    if (!_state)
+    {
+        osg::notify(osg::WARN) << "Warning: no valid osgUtil::SceneView::_state"<< std::endl;
+        osg::notify(osg::WARN) << "         creating a state automatically."<< std::endl;
+
+        // note the constructor for osg::State will set ContextID to 0.
+        _state = osgNew osg::State;
+    }
+
+    // we in theory should be able to be able to bypass reset, but we'll call it just incase.
+    _state->reset();
+    
+    _state->setFrameStamp(_frameStamp.get());
+    _state->setDisplaySettings(_displaySettings.get());
+
+
     camera->adjustAspectRatio(_viewport->aspectRatio());
-    
-    
 
     cullVisitor->reset();
 
@@ -343,6 +360,7 @@ void SceneView::cullStage(osg::Camera* camera, osgUtil::CullVisitor* cullVisitor
 
 void SceneView::draw()
 {
+
     if (_displaySettings.valid() && _displaySettings->getStereo()) 
     {
     
@@ -442,19 +460,6 @@ void SceneView::drawStage(osgUtil::RenderStage* renderStage)
 {
     if (!_sceneData || !_viewport->valid()) return;
 
-    if (!_state)
-    {
-        osg::notify(osg::WARN) << "Warning: no valid osgUtil::SceneView::_state"<< std::endl;
-        osg::notify(osg::WARN) << "         creating a state automatically."<< std::endl;
-
-        // note the constructor for osg::State will set ContextID to 0.
-        _state = osgNew osg::State;
-    }
-    // we in theory should be able to 
-    _state->reset();
-    
-    _state->setFrameStamp(_frameStamp.get());
-    _state->setDisplaySettings(_displaySettings.get());
 
     // note, to support multi-pipe systems the deletion of OpenGL display list
     // and texture objects is deferred until the OpenGL context is the correct

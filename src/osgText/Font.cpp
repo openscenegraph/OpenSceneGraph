@@ -196,9 +196,9 @@ Font::Glyph* Font::getGlyph(unsigned int charcode)
     else return 0;
 }
 
-osg::Vec2 Font::getKerning(unsigned int leftcharcode,unsigned int rightcharcode)
+osg::Vec2 Font::getKerning(unsigned int leftcharcode,unsigned int rightcharcode, KerningType kerningType)
 {
-    if (_implementation.valid()) return _implementation->getKerning(leftcharcode,rightcharcode);
+    if (_implementation.valid()) return _implementation->getKerning(leftcharcode,rightcharcode,kerningType);
     else return osg::Vec2(0.0f,0.0f);
 }
 

@@ -80,7 +80,7 @@ Font::Glyph* DefaultFont::getGlyph(unsigned int charcode)
 }
 
 
-osg::Vec2 DefaultFont::getKerning(unsigned int,unsigned int)
+osg::Vec2 DefaultFont::getKerning(unsigned int,unsigned int, KerningType)
 {
     // no kerning on default font.
     return osg::Vec2(0.0f,0.0f);

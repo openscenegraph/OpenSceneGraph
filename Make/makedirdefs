@@ -14,6 +14,7 @@ SRC_DIRS = \
 	osgParticle\
 	osgText\
 	osgSim\
+	osgGL2\
 	osgProducer\
 	osgPlugins\
 	../examples
@@ -127,13 +128,16 @@ EXAMPLE_DIRS = \
 	osgoccluder\
 	osgparticle\
 	osgpick\
-	osgprerender\
 	osgpoints\
+	osgprerender\
+	osgprerendercubemap\
 	osgreflect\
 	osgscribe\
 	osgsequence\
+	osgshaders\
 	osgshadowtexture\
 	osgshape\
+	osgslideshow\
 	osgstereoimage\
 	osgteapot\
 	osgtext\
@@ -142,12 +146,10 @@ EXAMPLE_DIRS = \
 	osgtexture3D\
 	osgtexturerectangle\
 	osgunittests\
-	osgwindows\
 	osgversion\
 	osgvertexprogram\
 	osgviewer\
-	osgprerendercubemap\
-	osgslideshow\
+	osgwindows\
         
 #	osgpagedlod\
 #	osgsimulation\

@@ -1,0 +1,49 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGGL2_VERSION
+#define OSGGL2_VERSION 1
+
+#include <osgGL2/Export>
+
+extern "C" {
+
+/*
+ * osgGL2GetVersion() returns the library version number.
+ * Numbering convention : OpenSceneGraph-GL2-0.1 will return 0.1 from osgGL2getVersion.
+ *
+ * This C function can be also used to check for the existence of the OpenSceneGraph
+ * library using autoconf and its m4 macro AC_CHECK_LIB.
+ *
+ * Here is the code to add to your configure.in:
+ \verbatim
+ #
+ # Check for the OpenSceneGraph-GL2 library
+ #
+ AC_CHECK_LIB(osg, osgGL2GetVersion, ,
+    [AC_MSG_ERROR(OpenSceneGraph library not found. See http://www.openscenegraph.org)],)
+ \endverbatim
+ */
+
+extern OSGGL2_EXPORT const char* osgGL2GetVersion();
+
+/*
+ * osgGL2GetLibraryName() returns the library name in human friendly form.
+ */
+
+extern OSGGL2_EXPORT const char* osgGL2GetLibraryName();
+
+}
+
+#endif
+

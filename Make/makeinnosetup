@@ -3,7 +3,6 @@
 
 print_header()
 {
-    ROOT=$1
     cat <<- EOF 
 [Setup]
 AppName=Open Scene Graph
@@ -16,48 +15,90 @@ DefaultDirName={pf}\OpenSceneGraph
 DisableDirPage=yes
 DefaultGroupName=OpenSceneGraph
 DisableProgramGroupPage=yes
-LicenseFile=$ROOT\COPYING.txt
+LicenseFile=COPYING.txt
 EOF
 }
 
 # Usage:
-# do_dir $ROOT $DIR
+# do_dir $DIR
 #
 do_dir()
 {
-    ROOT=$1 
-    DIR=$2
+    DIR=$1
     DOS_DIR=`echo $DIR | sed 's/\\//\\\/g'`
 
     for f in `find $DIR -type f -print | grep -v CVS`
     do
         FILE=`basename $f`
-        printf "Source: \"%s\\\%s\\\%s\"; DestDir: \"{app}\\\%s\\\"; CopyMode: alwaysoverwrite\n"\
-            $ROOT $DOS_DIR $FILE  $DOS_DIR
+        printf "Source: \"%s\\\%s\"; DestDir: \"{app}\\\%s\\\"; CopyMode: alwaysoverwrite\n"\
+            $DOS_DIR $FILE  $DOS_DIR
     done
 }
 
 print_files()
 {
-    ROOT=$1
     echo "[Files]"
 
-    do_dir $ROOT lib 
-    do_dir $ROOT bin 
+    do_dir lib 
+    do_dir bin 
     for dir in `ls -1 include| grep -v CVS`
     do
-        do_dir $ROOT "include/$dir"
+        do_dir "include/$dir"
     done
 }
 
-# Unfortunately, Inno Setup cannot use ../../ type paths, t
-# ROOT has to be hard-coded
-ROOT="C:\OpenSceneGraph"
 
-[ -d dist/Win32 ] || mkdir -p dist/Win32
-rm -f dist/Win32/osg.iss
-print_header $ROOT >> dist/Win32/osg.iss
-print_files $ROOT  >> dist/Win32/osg.iss
+BUILD_ISS=1
+BUILD_DISTRIBUTION=1
+CLEAN_UP=1
+
+while [ $# -gt 0 ]
+do
+    case $1 in
+       -c )
+            BUILD_ISS=0
+            BUILD_DISTRIBUTION=0
+            CLEAN_UP=1
+            ;;
+
+       -s )
+           BUILD_ISS=1
+           BUILD_DISTRIBUTION=0
+           CLEAN_UP=0
+           ;;
+    esac
+
+    shift;
+done
+
+if [ $BUILD_ISS = 1 ]
+then
+    echo Building Inno Setup script ....
+    rm -f osg.iss
+    print_header >> osg.iss
+    print_files  >> osg.iss
+fi
+
+if [ $BUILD_DISTRIBUTION = 1 ]
+then
+    echo Building distribution ...
+    OS=`uname | cut -b1-6`
+    if [ "$OS" = "Cygwin" ]
+    then 
+        C:/Program\ Files/Inno\ Setup\ 3/iscc.exe osg.iss
+        [ -d dist/Win32 ] || mkdir -p dist/Win32
+        mv Output/setup.exe dist/Win32/OpenSceneGraph_setup.exe
+        rm -rf Output
+     else
+        echo "     Distribution may only be built under Cygwin with Inno Setup"
+    fi
+fi
+
+if [ $CLEAN_UP = 1 ]
+then
+    echo Cleaning up...
+    rm -f osg.iss
+fi
 
 
 

@@ -2268,13 +2268,15 @@ class ExpandIndexedArray : public osg::ConstArrayVisitor
             _indices(indices),
             _targetArray(targetArray) {}
         
+        virtual ~ExpandIndexedArray() {}
+
         template <class T,class I>
         T* create(const T& array,const I& indices)
         {
             T* newArray = 0;
 
-            // if source array type and target array type are equal
-            if (_targetArray && _targetArray->getType()==array.getType())
+            // if source array type and target array type are equal but arrays arn't equal
+            if (_targetArray && _targetArray->getType()==array.getType() && _targetArray!=&array)
             {
                 // reuse exisiting target array 
                 newArray = static_cast<T*>(_targetArray);
@@ -2359,8 +2361,10 @@ bool Geometry::suitableForOptimization() const
 
 void Geometry::copyToAndOptimize(Geometry& target)
 {
+    bool copyToSelf = (this==&target);
+
     // copy over primitive sets.
-    target.getPrimitiveSetList() = getPrimitiveSetList();
+    if (!copyToSelf) target.getPrimitiveSetList() = getPrimitiveSetList();
 
     // copy over attribute arrays.
     if (getVertexIndices())
@@ -2373,7 +2377,7 @@ void Geometry::copyToAndOptimize(Geometry& target)
     }
     else if (getVertexArray())
     {
-        target.setVertexArray(getVertexArray());
+        if (!copyToSelf) target.setVertexArray(getVertexArray());
     }
 
     target.setNormalBinding(getNormalBinding());
@@ -2387,7 +2391,7 @@ void Geometry::copyToAndOptimize(Geometry& target)
     }
     else if (getNormalArray())
     {
-        target.setNormalArray(getNormalArray());
+        if (!copyToSelf) target.setNormalArray(getNormalArray());
     }
 
     target.setColorBinding(getColorBinding());
@@ -2401,7 +2405,7 @@ void Geometry::copyToAndOptimize(Geometry& target)
     }
     else if (getColorArray())
     {
-        target.setColorArray(getColorArray());
+        if (!copyToSelf) target.setColorArray(getColorArray());
     }
 
     target.setSecondaryColorBinding(getSecondaryColorBinding());
@@ -2415,7 +2419,7 @@ void Geometry::copyToAndOptimize(Geometry& target)
     }
     else if (getSecondaryColorArray())
     {
-        target.setSecondaryColorArray(getSecondaryColorArray());
+        if (!copyToSelf) target.setSecondaryColorArray(getSecondaryColorArray());
     }
 
     target.setFogCoordBinding(getFogCoordBinding());
@@ -2429,7 +2433,7 @@ void Geometry::copyToAndOptimize(Geometry& target)
     }
     else if (getFogCoordArray())
     {
-        target.setFogCoordArray(getFogCoordArray());
+        if (!copyToSelf) target.setFogCoordArray(getFogCoordArray());
     }
 
     for(unsigned int ti=0;ti<getNumTexCoordArrays();++ti)
@@ -2444,7 +2448,7 @@ void Geometry::copyToAndOptimize(Geometry& target)
         }
         else if (getTexCoordArray(ti)) 
         {
-            target.setTexCoordArray(ti,getTexCoordArray(ti));
+            if (!copyToSelf) target.setTexCoordArray(ti,getTexCoordArray(ti));
         }
     }
     
@@ -2459,7 +2463,7 @@ void Geometry::copyToAndOptimize(Geometry& target)
         }
         else if (arrayData.array.valid())
         {
-            target.setVertexAttribData(vi,arrayData);
+            if (!copyToSelf) target.setVertexAttribData(vi,arrayData);
         }
     }
 }

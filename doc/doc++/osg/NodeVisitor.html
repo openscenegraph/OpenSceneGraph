@@ -84,10 +84,10 @@
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const NodePath&amp; <B><A HREF="#DOC.2.72.22">getNodePath</A></B>() const 
 <DD><I>Get the const NodePath from the top most node applied down to the current Node being visited</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const bool <B><A HREF="#DOC.2.72.23">getLocalToWorldMatrix</A></B>(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="MatrixMode.html">MatrixMode</A> mode)
-<DD><I>Get the Local To World Matrix from the NodePath for specified Transform::Mode</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const bool <B><A HREF="#DOC.2.72.23">getLocalToWorldMatrix</A></B>(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="MatrixMode.html">MatrixMode</A> mode, <!1><A HREF="Node.html">Node</A>* node)
+<DD><I>Get the Local To World Matrix from the NodePath for specified Transform::Mode, and u</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const bool <B><A HREF="#DOC.2.72.24">getWorldToLocalMatrix</A></B>(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="MatrixMode.html">MatrixMode</A> mode)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const bool <B><A HREF="#DOC.2.72.24">getWorldToLocalMatrix</A></B>(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="MatrixMode.html">MatrixMode</A> mode, <!1><A HREF="Node.html">Node</A>* node)
 <DD><I>Get the World To Local Matrix from the NodePath for specified Transform::Mode</I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.72.25">apply</A></B>(<!1><A HREF="Node.html">Node</A>&amp; node)
@@ -343,12 +343,12 @@ to the current Node being visited
 <DL><DT><DD></DL><P>
 <A NAME="getLocalToWorldMatrix"></A>
 <A NAME="DOC.2.72.23"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const bool getLocalToWorldMatrix(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="MatrixMode.html">MatrixMode</A> mode)</B></TT>
-<DD>Get the Local To World Matrix from the NodePath for specified Transform::Mode
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const bool getLocalToWorldMatrix(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="MatrixMode.html">MatrixMode</A> mode, <!1><A HREF="Node.html">Node</A>* node)</B></TT>
+<DD>Get the Local To World Matrix from the NodePath for specified Transform::Mode, and u
 <DL><DT><DD></DL><P>
 <A NAME="getWorldToLocalMatrix"></A>
 <A NAME="DOC.2.72.24"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const bool getWorldToLocalMatrix(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="MatrixMode.html">MatrixMode</A> mode)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const bool getWorldToLocalMatrix(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="MatrixMode.html">MatrixMode</A> mode, <!1><A HREF="Node.html">Node</A>* node)</B></TT>
 <DD>Get the World To Local Matrix from the NodePath for specified Transform::Mode
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>

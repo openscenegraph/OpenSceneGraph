@@ -12,6 +12,7 @@ namespace osg {
 #ifdef USE_DEPRECATED_API
 typedef BlendFunc Transparency;
 #endif
+
 }
 
 #endif

@@ -1,13 +1,13 @@
-#include <osg/EarthSky>
+#include <osg/ClearNode>
 
 #include <algorithm>
 
 using namespace osg;
 
 /**
- * EarthSky constructor.
+ * ClearNode constructor.
  */
-EarthSky::EarthSky()
+ClearNode::ClearNode()
 {
     StateSet* stateset = osgNew StateSet;
     stateset->setRenderBinDetails(-1,"RenderBin");

@@ -185,7 +185,7 @@ SOURCE=..\..\src\osg\DrawPixels.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osg\EarthSky.cpp
+SOURCE=..\..\src\osg\ClearNode.cpp
 # End Source File
 # Begin Source File
 
@@ -498,6 +498,10 @@ SOURCE=..\..\Include\Osg\Drawable
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\DrawPixels
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osg\ClearNode
 # End Source File
 # Begin Source File
 

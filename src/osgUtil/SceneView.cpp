@@ -371,7 +371,7 @@ void SceneView::cullStage(osg::Matrix* projection,osg::Matrix* modelview,osgUtil
     cullVisitor->setLODBias(_LODBias);
     cullVisitor->setSmallFeatureCullingPixelSize(_smallFeatureCullingPixelSize);
 
-    cullVisitor->setEarthSky(NULL); // reset earth sky on each frame.
+    cullVisitor->setClearNode(NULL); // reset earth sky on each frame.
     
     cullVisitor->setRenderGraph(rendergraph);
     cullVisitor->setRenderStage(renderStage);
@@ -424,12 +424,12 @@ void SceneView::cullStage(osg::Matrix* projection,osg::Matrix* modelview,osgUtil
     if (_globalState.valid()) cullVisitor->popStateSet();
     
 
-    const osg::EarthSky* earthSky = cullVisitor->getEarthSky();
-    if (earthSky)
+    const osg::ClearNode* clearNode = cullVisitor->getClearNode();
+    if (clearNode)
     {
-        if (earthSky->getRequiresClear())
+        if (clearNode->getRequiresClear())
         {
-            renderStage->setClearColor(earthSky->getClearColor());
+            renderStage->setClearColor(clearNode->getClearColor());
             renderStage->setClearMask(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
             // really should set clear mask here, but what to? Need
             // to consider the stencil and accumulation buffers..

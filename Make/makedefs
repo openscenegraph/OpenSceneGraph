@@ -430,9 +430,22 @@ ifeq ($(OS),Darwin)
   else
     C++             = $(CXX)
   endif
-  FINC              += -F$(SDKPATH)/System/Library/Frameworks
-  INC               += $(FINC) -I$(SDKPATH)/usr/include -I$(SDKPATH)/usr/X11R6/include
-  LDFLAGS	    += $(FINC) -L$(SDKPATH)/usr/include -L$(SDKPATH)/usr/X11R6/lib -L/sw/lib
+
+  FINC              += -F/System/Library/Frameworks
+
+  ifeq ($(USE_CGL),1)
+	 DEF            += -D__USE_OSX_CGL_IMPLEMENTATION__
+     INC            += $(FINC) 
+     LDFLAGS	    += $(FINC) 
+     X_INC          = 
+     X_LIBS         = 
+  else
+     INC            += $(FINC) -I$(SDKPATH)/usr/X11R6/include
+     LDFLAGS	    += $(FINC) -L$(SDKPATH)/usr/include -L$(SDKPATH)/usr/X11R6/lib -L/sw/lib
+     X_INC          = -I$(SDKPATH)/usr/X11R6/include
+     X_LIBS         = -lX11 
+  endif
+
   DEF               += -Wall
   OPTF              = -O2
   DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
@@ -446,8 +459,6 @@ ifeq ($(OS),Darwin)
   OSG_LIBS          = -losgGA -losgDB -losgUtil -losg 
   CARBON_LIB        = -framework Carbon
   GL_LIBS           = -framework OpenGL $(CARBON_LIB)
-  X_INC             = -I$(SDKPATH)/usr/X11R6/include
-  X_LIBS            = -lX11 
   SOCKET_LIBS       = 
   OTHER_LIBS        = -lm -lstdc++ -lobjc -lOpenThreads
   LIB_EXT           = dylib

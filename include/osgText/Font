@@ -183,6 +183,8 @@ public:
     public:
 
         GlyphTexture();
+        
+        const char* className() const { return "GlyphTexture"; }
 
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
         virtual int compare(const osg::StateAttribute& rhs) const;

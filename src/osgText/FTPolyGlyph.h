@@ -1,6 +1,8 @@
 #ifndef        __FTPolyGlyph__
 #define        __FTPolyGlyph__
 
+#include <osg/ref_ptr>
+
 #include "FTGL.h"
 
 #include <ft2build.h>
@@ -8,8 +10,7 @@
 #include FT_GLYPH_H
 
 #include "FTGlyph.h"
-
-class FTVectoriser;
+#include "FTVectoriser.h"
 
 /**
  * FTPolyGlyph is a specialisation of FTGlyph for creating tessellated
@@ -54,7 +55,7 @@ class FTGL_EXPORT FTPolyGlyph : public FTGlyph
          * An object that helps convert freetype outlines into point
          * data
          */
-        FTVectoriser* vectoriser;
+        osg::ref_ptr<FTVectoriser> vectoriser;
 
         /**
          * The total number of points in the Freetype outline

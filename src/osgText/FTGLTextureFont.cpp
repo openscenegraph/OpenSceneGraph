@@ -28,6 +28,7 @@ FTGLTextureFont::FTGLTextureFont()
     glyphWidth(0),
     padding(1)
 {
+
     glContextTextureID.resize(osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),0);
 }
 

@@ -1,6 +1,8 @@
 #ifndef        __FTOutlineGlyph__
 #define        __FTOutlineGlyph__
 
+#include <osg/ref_ptr>
+
 #include "FTGL.h"
 
 #include <ft2build.h>
@@ -8,9 +10,7 @@
 #include FT_GLYPH_H
 
 #include "FTGlyph.h"
-
-class FTVectoriser;
-
+#include "FTVectoriser.h"
 
 /**
  * FTOutlineGlyph is a specialisation of FTGlyph for creating outlines.
@@ -28,6 +28,7 @@ class FTGL_EXPORT FTOutlineGlyph : public FTGlyph
          * @param glyph    The Freetype glyph to be processed
          */
         FTOutlineGlyph( FT_Glyph glyph);
+        
 
         /**
          * Destructor
@@ -43,11 +44,16 @@ class FTGL_EXPORT FTOutlineGlyph : public FTGlyph
         virtual float Render( const FT_Vector& pen);
         
     private:
+
+        FTOutlineGlyph() {}
+
+        FTOutlineGlyph(const FTOutlineGlyph&):FTGlyph() {}
+
         /**
          * An object that helps convert freetype outlines into point
          * data
          */
-        FTVectoriser* vectoriser;
+        osg::ref_ptr<FTVectoriser> vectoriser;
 
         /**
          * The total number of points in the Freetype outline

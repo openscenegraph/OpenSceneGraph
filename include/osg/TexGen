@@ -84,17 +84,17 @@ class SG_EXPORT TexGen : public StateAttribute
             REFLECTION_MAP = GL_REFLECTION_MAP_ARB
         };
 
-        inline void setMode( const Mode mode ) { _mode = mode; }
+        inline void setMode( Mode mode ) { _mode = mode; }
 
-        const Mode getMode() const { return _mode; }
+        Mode getMode() const { return _mode; }
 
         enum Coord {
 	  S, T, R, Q
         };
 
-        void setPlane(const Coord which, const Vec4& plane);
+        void setPlane(Coord which, const Vec4& plane);
 
-        const Vec4& getPlane(const Coord which) const;
+        const Vec4& getPlane(Coord which) const;
 
     protected :
 

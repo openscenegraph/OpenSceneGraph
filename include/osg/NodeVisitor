@@ -106,20 +106,20 @@ class SG_EXPORT NodeVisitor : public Referenced
           * will be swithced off for all nodes.  Whereas setting both _traversalMask and
           * _nodeMaskOverride to 0xffffffff will allow a visitor to work on all nodes
           * regardless of their own Node::_nodeMask state.*/
-        inline void setTraversalMask(const Node::NodeMask mask) { _traversalMask = mask; }
+        inline void setTraversalMask(Node::NodeMask mask) { _traversalMask = mask; }
 
         /** Get the TraversalMask.*/
-        inline const Node::NodeMask getTraversalMask() const { return _traversalMask; }
+        inline Node::NodeMask getTraversalMask() const { return _traversalMask; }
 
         /** Set the NodeMaskOverride mask.
           * Used in validNodeMask() to determine whether to operate on a node or its 
           * subgraph, by OR'ing NodeVisitor::_nodeMaskOverride with the Node's own Node::_nodeMask.
           * Typically used to force on nodes which may have
           * been switched off by their own Node::_nodeMask.*/
-        inline void setNodeMaskOverride(const Node::NodeMask mask) { _nodeMaskOverride = mask; }
+        inline void setNodeMaskOverride(Node::NodeMask mask) { _nodeMaskOverride = mask; }
 
         /** Get the NodeMaskOverride mask.*/
-        inline const Node::NodeMask getNodeMaskOverride() const { return _nodeMaskOverride; }
+        inline Node::NodeMask getNodeMaskOverride() const { return _nodeMaskOverride; }
         
         /** Method to called by Node and its subclass' Node::accept() method, if the result is true
           * to be used to cull operations of nodes and their subgraphs.
@@ -137,10 +137,10 @@ class SG_EXPORT NodeVisitor : public Referenced
             NodeVisitor has been attached via setTraverseVisitor()
             and the new mode is not TRAVERSE_VISITOR then the attached
             visitor is detached. Default mode is TRAVERSE_NONE.*/
-        void setTraversalMode(const TraversalMode mode);
+        void setTraversalMode(TraversalMode mode);
         
         /** Get the traversal mode.*/
-        inline const TraversalMode getTraversalMode() const { return _traversalMode; }
+        inline TraversalMode getTraversalMode() const { return _traversalMode; }
 
         /** Set a visitor to handle traversal.
             Overrides the traverse mode setting it to TRAVERSAL_VISITOR.*/

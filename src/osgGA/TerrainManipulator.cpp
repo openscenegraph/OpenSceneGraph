@@ -372,27 +372,31 @@ bool TerrainManipulator::calcMovement()
     {
 
         // pan model.
-
         float scale = -0.5f*_distance;
 
         osg::Matrix rotation_matrix;
         rotation_matrix.set(_rotation);
 
-        osg::Vec3 dv(dx*scale,dy*scale,0.0f);
 
-        // _center += dv*rotation_matrix;
+        // compute look vector.
+        osg::Vec3 lookVector = -getUpVector(rotation_matrix);
+        osg::Vec3 sideVector = getSideVector(rotation_matrix);
+        osg::Vec3 upVector = getFrontVector(rotation_matrix);
+
+        osg::Vec3 forwardVector =osg::Vec3(0.0f,0.0f,1.0f)^sideVector;
+        sideVector = forwardVector^osg::Vec3(0.0f,0.0f,1.0f);
+
+        forwardVector.normalize();
+        sideVector.normalize();
+
+        osg::Vec3 dv = forwardVector * (dy*scale) + sideVector * (dx*scale);
+
+        _coordinateFrame = osg::Matrixd::translate(dv)*_coordinateFrame;
 
         // need to recompute the itersection point along the look vector.
         
-        _coordinateFrame = osg::Matrixd::rotate(_rotation.inverse())*
-                           osg::Matrixd::translate(dx*scale,dy*scale,0.0f)*
-                           osg::Matrixd::rotate(_rotation)*
-                           _coordinateFrame;
-
-        // osg::notify(osg::INDFO)<<"\tafter "<<_coordinateFrame.getTrans()<<std::endl;
-
         // now reorientate the coordinate frame to the frame coords.
-        _coordinateFrame = getCoordinateFrame( _coordinateFrame(3,0), _coordinateFrame(3,1), _coordinateFrame(3,2));
+        _coordinateFrame = getCoordinateFrame( _coordinateFrame(3,0), _coordinateFrame(3,1), _coordinateFrame(3,2) );
 
         // need to reintersect with the terrain
         osgUtil::IntersectVisitor iv;
@@ -431,7 +435,6 @@ bool TerrainManipulator::calcMovement()
         }
         
         return true;
-
     }
     else if (buttonMask==GUIEventAdapter::RIGHT_MOUSE_BUTTON)
     {

@@ -70,15 +70,18 @@ struct SmoothTriangleFunctor
         }
     }
 
-    inline void operator() ( const osg::Vec3 &v1, const osg::Vec3 &v2, const osg::Vec3 &v3 )
+    inline void operator() ( const osg::Vec3 &v1, const osg::Vec3 &v2, const osg::Vec3 &v3, bool treatVertexDataAsTemporary )
     {
-        // calc orientation of triangle.
-        osg::Vec3 normal = (v2-v1)^(v3-v1);
-        // normal.normalize();
+        if (!treatVertexDataAsTemporary)
+        {
+            // calc orientation of triangle.
+            osg::Vec3 normal = (v2-v1)^(v3-v1);
+            // normal.normalize();
 
-        updateNormal(normal,&v1);
-        updateNormal(normal,&v2);
-        updateNormal(normal,&v3);
+            updateNormal(normal,&v1);
+            updateNormal(normal,&v2);
+            updateNormal(normal,&v3);
+        }
 
     }
 };

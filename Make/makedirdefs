@@ -134,6 +134,7 @@ EXAMPLE_DIRS = \
 	osghangglide\
 	osghud\
 	osgfxbrowser\
+	osgforest\
 	osgimpostor\
 	osgkeyboard\
 	osglight\

@@ -91,7 +91,7 @@ class SG_EXPORT CullStack
         /** Compute the pixel of an object at position v, with specified radius.*/
         float pixelSize(const Vec3& v,float radius) const
         {
-            return _modelviewCullingStack.back()->pixelSize(v,radius);
+            return getCurrentCullingSet().pixelSize(v,radius);
         }
         
         /** Compute the pixel of an bounding sphere.*/
@@ -102,56 +102,59 @@ class SG_EXPORT CullStack
 
         inline void disableAndPushOccludersCurrentMask(NodePath& nodePath)
         {
-            _modelviewCullingStack.back()->disableAndPushOccludersCurrentMask(nodePath);
+            getCurrentCullingSet().disableAndPushOccludersCurrentMask(nodePath);
         }
 
         inline void popOccludersCurrentMask(NodePath& nodePath)
         {
-            _modelviewCullingStack.back()->popOccludersCurrentMask(nodePath);
+            getCurrentCullingSet().popOccludersCurrentMask(nodePath);
         }
 
         inline bool isCulled(const std::vector<Vec3>& vertices)
         {
-            return _modelviewCullingStack.back()->isCulled(vertices);
+            return getCurrentCullingSet().isCulled(vertices);
         }
 
         inline bool isCulled(const BoundingBox& bb)
         {
-            return bb.valid() && _modelviewCullingStack.back()->isCulled(bb);
+            return bb.valid() && getCurrentCullingSet().isCulled(bb);
         }
         
         inline bool isCulled(const BoundingSphere& bs)
         {
-            return _modelviewCullingStack.back()->isCulled(bs);
+            return getCurrentCullingSet().isCulled(bs);
         }
         
         inline bool isCulled(const osg::Node& node)
         {
-            return node.isCullingActive() && _modelviewCullingStack.back()->isCulled(node.getBound());
+            return node.isCullingActive() && getCurrentCullingSet().isCulled(node.getBound());
         }
 
         inline void pushCurrentMask()
         {
-            _modelviewCullingStack.back()->pushCurrentMask();
+            getCurrentCullingSet().pushCurrentMask();
         }
         
         inline void popCurrentMask()
         {
-            _modelviewCullingStack.back()->popCurrentMask();
+            getCurrentCullingSet().popCurrentMask();
         }
         
         
         typedef fast_back_stack<ref_ptr<CullingSet> > CullingStack;
 
-        CullingStack& getClipSpaceCullingStack() { return _clipspaceCullingStack; }
+        inline CullingStack& getClipSpaceCullingStack() { return _clipspaceCullingStack; }
         
-        CullingStack& getProjectionCullingStack() { return _projectionCullingStack; }
+        inline CullingStack& getProjectionCullingStack() { return _projectionCullingStack; }
         
-        CullingStack& getModelViewCullingStack() { return _modelviewCullingStack; }
+        inline CullingStack& getModelViewCullingStack() { return _modelviewCullingStack; }
         
-        CullingSet& getCurrentCullingSet() { return *_modelviewCullingStack.back(); }
+//        inline CullingSet& getCurrentCullingSet() { return _modelviewCullingStack.back(); }
+//        inline const CullingSet& getCurrentCullingSet() const { return _modelviewCullingStack.back(); }
 
-
+        inline CullingSet& getCurrentCullingSet() { return *_modelviewCullingStack.back(); }
+        inline const CullingSet& getCurrentCullingSet() const { return *_modelviewCullingStack.back(); }
+        
         inline osg::Viewport* getViewport();
         inline osg::RefMatrix& getModelViewMatrix();
         inline osg::RefMatrix& getProjectionMatrix();

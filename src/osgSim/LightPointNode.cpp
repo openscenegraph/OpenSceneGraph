@@ -241,7 +241,7 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
         double time=drawable->getReferenceTime();
         double timeInterval=drawable->getReferenceTimeInterval();
         
-        const osg::Polytope clipvol(cv->getModelViewCullingStack().back()->getFrustum());
+        const osg::Polytope clipvol(cv->getCurrentCullingSet().getFrustum());
         const bool computeClipping = false;//(clipvol.getCurrentMask()!=0);
 
         //LightPointDrawable::ColorPosition cp;

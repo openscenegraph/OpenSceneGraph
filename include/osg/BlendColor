@@ -56,7 +56,7 @@ class SG_EXPORT BlendColor : public StateAttribute
             modes.push_back(GL_BLEND);
         }
 
-        void setConstantColor(osg::Vec4& color) { _constantColor = color; }
+        void setConstantColor(const osg::Vec4& color) { _constantColor = color; }
         inline osg::Vec4 getConstantColor() const { return _constantColor; }
 
         virtual void apply(State& state) const;

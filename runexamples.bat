@@ -4,6 +4,9 @@ osgversion
 echo osglogo
 osglogo
 
+echo osgfxbrowser dumptruck.osg
+osgfxbrowser dumptruck.osg
+
 echo slideshow3D -a introduction.xml
 slideshow3D introduction.xml
 

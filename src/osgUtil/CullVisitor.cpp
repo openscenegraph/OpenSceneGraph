@@ -662,8 +662,8 @@ void CullVisitor::updateCalculatedNearFar(osg::Drawable* pDrawable)
         {
             if ( !EQUAL_F(d_near, d_far) ) 
             {
-                osg::notify(osg::WARN)<<"Warning: CullVisitor::updateCalculatedNearFar(.) near>far in range calculation,"<<endl;
-                osg::notify(osg::WARN)<<"         correcting by swapping values d_near="<<d_near<<" dfar="<<d_far<<endl;
+                osg::notify(osg::WARN)<<"Warning: CullVisitor::updateCalculatedNearFar(.) near>far in range calculation,"<<std::endl;
+                osg::notify(osg::WARN)<<"         correcting by swapping values d_near="<<d_near<<" dfar="<<d_far<<std::endl;
             }
             // note, need to reverse the d_near/d_far association because they are
             // the wrong way around...

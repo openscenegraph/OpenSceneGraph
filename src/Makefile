@@ -6,9 +6,6 @@ DIRS = osg osgDB osgUtil osgGLUT
 # comment out if you don't have the freetype and GLU1.3 library installed.
 DIRS += osgText
 
-# comment out if you don't have the wxWindows installed.
-# DIRS += osgWX
-
 DIRS += Demos
 DIRS += osgPlugins
 

@@ -5,6 +5,9 @@
 #include <osg/Drawable>
 #include <osg/State>
 #include <osg/Notify>
+#include <osg/Node>
+
+#include <algorithm>
 
 using namespace osg;
 
@@ -26,6 +29,7 @@ Drawable::Drawable()
 
 Drawable::Drawable(const Drawable& drawable,const CopyOp& copyop):
     Object(drawable,copyop),
+    _parents(), // leave empty as parentList is managed by Geode
     _dstate(copyop(drawable._dstate.get())),
     _supportsDisplayList(drawable._supportsDisplayList),
     _useDisplayList(drawable._useDisplayList),
@@ -40,6 +44,33 @@ Drawable::~Drawable()
     dirtyDisplayList();
 }
 
+void Drawable::addParent(osg::Node* node)
+{
+    _parents.push_back(node);    
+}
+
+void Drawable::removeParent(osg::Node* node)
+{
+    ParentList::iterator pitr = std::find(_parents.begin(),_parents.end(),node);
+    if (pitr!=_parents.end()) _parents.erase(pitr);
+}
+
+void Drawable::dirtyBound()
+{
+    if (_bbox_computed)
+    {
+        _bbox_computed = false;
+
+        // dirty parent bounding sphere's to ensure that all are valid.
+        for(ParentList::iterator itr=_parents.begin();
+            itr!=_parents.end();
+            ++itr)
+        {
+            (*itr)->dirtyBound();
+        }
+
+    }
+}
 
 void Drawable::compile(State& state)
 {

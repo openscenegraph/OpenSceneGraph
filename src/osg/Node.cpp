@@ -1,7 +1,6 @@
 #include <osg/Node>
 #include <osg/Group>
 #include <osg/NodeVisitor>
-
 #include <osg/Notify>
 
 #include <algorithm>
@@ -41,6 +40,16 @@ Node::~Node()
 {
 }
 
+void Node::addParent(osg::Group* node)
+{
+    _parents.push_back(node);
+}
+
+void Node::removeParent(osg::Group* node)
+{
+    ParentList::iterator pitr = std::find(_parents.begin(),_parents.end(),node);
+    if (pitr!=_parents.end()) _parents.erase(pitr);
+}
 
 void Node::accept(NodeVisitor& nv)
 {

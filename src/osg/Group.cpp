@@ -27,14 +27,12 @@ Group::Group(const Group& group,const CopyOp& copyop):
 
 Group::~Group()
 {
-
+    // remove reference to this from children's parent lists.
     for(ChildList::iterator itr=_children.begin();
         itr!=_children.end();
         ++itr)
     {
-        Node* child = itr->get();
-        ParentList::iterator pitr = std::find(child->_parents.begin(),child->_parents.end(),this);
-        if (pitr!=child->_parents.end()) child->_parents.erase(pitr);
+        (*itr)->removeParent(this);
     }
 
 }
@@ -59,7 +57,7 @@ bool Group::addChild( Node *child )
         _children.push_back(child);
 
         // register as parent of child.
-        child->_parents.push_back(this);
+        child->addParent(this);
 
         dirtyBound();
 
@@ -95,8 +93,7 @@ bool Group::removeChild( Node *child )
     if (itr!=_children.end())
     {
         // remove this group from the child parent list.
-        ParentList::iterator pitr = std::find(child->_parents.begin(),child->_parents.end(),this);
-        if (pitr!=child->_parents.end()) child->_parents.erase(pitr);
+        child->removeParent(this);
 
         // could now require app traversal thanks to the new subgraph,
         // so need to check and update if required.
@@ -136,15 +133,15 @@ bool Group::replaceChild( Node *origNode, Node *newNode )
     ChildList::iterator itr = findNode(origNode);
     if (itr!=_children.end())
     {
-        ParentList::iterator pitr = std::find(origNode->_parents.begin(),origNode->_parents.end(),this);
-        if (pitr!=origNode->_parents.end()) origNode->_parents.erase(pitr);
+        // first remove for origNode's parent list.
+        origNode->removeParent(this);
 
         // note ref_ptr<> automatically handles decrementing origNode's reference count,
         // and inccrementing newNode's reference count.
         *itr = newNode;
 
         // register as parent of child.
-        newNode->_parents.push_back(this);
+        newNode->addParent(this);
 
         dirtyBound();
 

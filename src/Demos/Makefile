@@ -9,9 +9,6 @@ DIRS += osgtext
 # comment out if you don't have support for networking.
 DIRS += osgcluster
 
-# comment out if you don't have the wxWindows installed.
-# DIRS += wxsgv
-
 all :
 	for f in $(DIRS) ; do cd $$f; $(MAKE) || exit 1; cd ..; done
 

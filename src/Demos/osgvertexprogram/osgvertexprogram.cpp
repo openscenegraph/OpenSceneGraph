@@ -136,6 +136,8 @@ osg::TextureCubeMap* readCubeMap()
     osg::TextureCubeMap* cubemap = new osg::TextureCubeMap;
     //#define CUBEMAP_FILENAME(face) "nvlobby_" #face ".png"
     #define CUBEMAP_FILENAME(face) "osg_" #face ".png"
+    //#define CUBEMAP_FILENAME(face) "snow_" #face ".jpg"
+    //#define CUBEMAP_FILENAME(face) "mars_" #face ".rgb"
 
     osg::Image* imagePosX = osgDB::readImageFile(CUBEMAP_FILENAME(posx));
     osg::Image* imageNegX = osgDB::readImageFile(CUBEMAP_FILENAME(negx));

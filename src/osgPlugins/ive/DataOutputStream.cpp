@@ -1,11 +1,11 @@
 /**********************************************************************
  *
- *    FILE:            DataOutputStream.cpp
+ *    FILE:           DataOutputStream.cpp
  *
  *    DESCRIPTION:    Implements methods to write simpel datatypes to an
  *                    output stream.
  *
- *    CREATED BY:        Rune Schmidt Jensen
+ *    CREATED BY:     Rune Schmidt Jensen
  *
  *    HISTORY:        Created 11.03.2003
  *
@@ -36,12 +36,12 @@
 #include "Sequence.h"
 #include "LOD.h"
 #include "PagedLOD.h"
-//#include "ViewPoint.h"
 #include "PositionAttitudeTransform.h"
 #include "Transform.h"
 #include "Switch.h"
 #include "OccluderNode.h"
 #include "Impostor.h"
+#include "LightPointNode.h"
 
 #include "Geometry.h"
 
@@ -491,9 +491,6 @@ void DataOutputStream::writeNode(const osg::Node* node)
         if(dynamic_cast<const osg::MatrixTransform*>(node)){
             ((ive::MatrixTransform*)(node))->write(this);
         }
-//         else if(dynamic_cast<osgfIVE::ViewPoint*>(node)){
-//             ((ive::ViewPoint*)(node))->write(this);
-//         }
         else if(dynamic_cast<const osg::PositionAttitudeTransform*>(node)){
             ((ive::PositionAttitudeTransform*)(node))->write(this);
         }
@@ -529,6 +526,9 @@ void DataOutputStream::writeNode(const osg::Node* node)
         }
         else if(dynamic_cast<const osg::Geode*>(node)){
             ((ive::Geode*)(node))->write(this);
+        }
+        else if(dynamic_cast<const osgSim::LightPointNode*>(node)){
+            ((ive::LightPointNode*)(node))->write(this);
         }
         else
             throw Exception("Unknown node in Group::write()");

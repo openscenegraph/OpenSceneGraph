@@ -34,12 +34,12 @@
 #include "Sequence.h"
 #include "LOD.h"
 #include "PagedLOD.h"
-//#include "ViewPoint.h"
 #include "PositionAttitudeTransform.h"
 #include "Transform.h"
 #include "Switch.h"
 #include "OccluderNode.h"
 #include "Impostor.h"
+#include "LightPointNode.h"
 
 #include "Geometry.h"
 
@@ -604,10 +604,6 @@ osg::Node* DataInputStream::readNode()
         node = new osg::MatrixTransform();
         ((ive::MatrixTransform*)(node))->read(this);
     }
-//             else if(nodeTypeID== IVEVIEWPOINT){
-//                 node = new osgfIVE::ViewPoint();
-//                 ((ive::ViewPoint*)(node))->read(this);
-//             }
     else if(nodeTypeID== IVEPOSITIONATTITUDETRANSFORM){
         node = new osg::PositionAttitudeTransform();
         ((ive::PositionAttitudeTransform*)(node))->read(this);
@@ -656,11 +652,15 @@ osg::Node* DataInputStream::readNode()
         node = new osg::Geode();
         ((ive::Geode*)(node))->read(this);
     }
+    else if(nodeTypeID== IVELIGHTPOINTNODE){
+        node = new osgSim::LightPointNode();
+        ((ive::LightPointNode*)(node))->read(this);
+    }
     else{
         throw Exception("Unknown node identification in DataInputStream::readNode()");
     }
 
-    // and add it to the stateattribute map,
+    // and add it to the node map,
     _nodeMap[id] = node;
         
 

@@ -47,8 +47,15 @@ CXXFILES =\
 	TextureCubeMap.cpp\
 	Transform.cpp\
 	ReaderWriterIVE.cpp\
+	AzimElevationSector.cpp\
+	AzimSector.cpp\
+	BlinkSequence.cpp\
+	ConeSector.cpp\
+	ElevationSector.cpp\
+	LightPoint.cpp\
+	LightPointNode.cpp\
 
-LIBS   += $(OSG_LIBS) $(OTHER_LIBS)
+LIBS   += -losgSim -losgText $(OSG_LIBS) $(OTHER_LIBS)
 
 TARGET_BASENAME = ive
 include $(TOPDIR)/Make/cygwin_plugin_def

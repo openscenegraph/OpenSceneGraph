@@ -17,7 +17,7 @@ using namespace osg;
 
 CullStack::CullStack()
 {
-    _cullingMode = ENABLE_ALL_CULLING;
+    _cullingMode = DEFAULT_CULLING;
     _LODScale = 1.0f;
     _smallFeatureCullingPixelSize = 2.0f;
     _frustumVolume=-1.0f;
@@ -151,11 +151,7 @@ void CullStack::pushProjectionMatrix(RefMatrix* matrix)
     cullingSet->getFrustum().transformProvidingInverse(*matrix);
     
     // set the culling mask ( There should be a more elegant way!)  Nikolaus H.
-    osg::CullingSet::Mask mask = 0;
-    if( _cullingMode&VIEW_FRUSTUM_CULLING) mask |= osg::CullingSet::VIEW_FRUSTUM_CULLING;
-    if( _cullingMode&SMALL_FEATURE_CULLING) mask |= osg::CullingSet::SMALL_FEATURE_CULLING;
-    if( _cullingMode&SHADOW_OCCLUSION_CULLING) mask |= osg::CullingSet::SHADOW_OCCLUSION_CULLING;
-    cullingSet->setCullingMask(mask);
+    cullingSet->setCullingMask(_cullingMode);
 
     // set the small feature culling.
     cullingSet->setSmallFeatureCullingPixelSize(_smallFeatureCullingPixelSize);

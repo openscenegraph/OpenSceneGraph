@@ -38,7 +38,7 @@ SceneView::SceneView(DisplaySettings* ds)
 
     _computeNearFar = CullVisitor::COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES;
 
-    _cullingMode = osg::CullStack::ENABLE_ALL_CULLING;
+    _cullingMode = osg::CullStack::DEFAULT_CULLING;
     _LODScale = 1.0f;
     _smallFeatureCullingPixelSize = 3.0f;
 

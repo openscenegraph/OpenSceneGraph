@@ -1,7 +1,8 @@
 #include <osg/Image>
-#include "osg/Notify"
+#include <osg/Notify>
 #include <osg/Geode>
 #include <osg/GL>
+#include <osg/Endian>
 
 #include <osgDB/Registry>
 #include <osgDB/FileNameUtils>
@@ -81,14 +82,28 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
                 pinfo->Depth  = depth;
             }
 
+            osg::notify(osg::INFO)<<"width="<<width<<" height="<<height<<" depth="<<depth<<std::endl;
+            if ( color == PNG_COLOR_TYPE_RGB) osg::notify(osg::INFO) << "color == PNG_COLOR_TYPE_RGB "<<std::endl;
+            if ( color == PNG_COLOR_TYPE_GRAY) osg::notify(osg::INFO) << "color == PNG_COLOR_TYPE_GRAY "<<std::endl;
+            if ( color == PNG_COLOR_TYPE_GRAY_ALPHA) osg::notify(osg::INFO) << "color ==  PNG_COLOR_TYPE_GRAY_ALPHA"<<std::endl;
+
+            // png default to big endian, so we'll need to swap bytes if on a little endian machine.
+            if (depth>8 && getCpuByteOrder()==osg::LittleEndian)
+                png_set_swap(png);
+
+
             if (color == PNG_COLOR_TYPE_GRAY || color == PNG_COLOR_TYPE_GRAY_ALPHA)
-                png_set_gray_to_rgb(png);
+            {
+                //png_set_gray_to_rgb(png);
+            }
 
             if (color&PNG_COLOR_MASK_ALPHA && trans != PNG_ALPHA)
             {
                 png_set_strip_alpha(png);
                 color &= ~PNG_COLOR_MASK_ALPHA;
             }
+
+
 
             //	if (!(PalettedTextures && mipmap >= 0 && trans == PNG_SOLID))
             if (color == PNG_COLOR_TYPE_PALETTE)
@@ -119,31 +134,20 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
             png_read_image(png, row_p);
             delete [] row_p;
 
-            int iBitCount=0;
-
-            if (trans == PNG_SOLID || trans == PNG_ALPHA || color == PNG_COLOR_TYPE_RGB_ALPHA || color == PNG_COLOR_TYPE_GRAY_ALPHA)
+            GLenum pixelFormat = 0;
+            GLenum dataType = depth==8?GL_UNSIGNED_BYTE:GL_UNSIGNED_SHORT;
+            switch(color)
             {
-                switch (color)
-                {
-                    case PNG_COLOR_TYPE_GRAY:
-                    case PNG_COLOR_TYPE_RGB:
-                    case PNG_COLOR_TYPE_PALETTE:
-                        iBitCount = 24;
-                        if (pinfo != NULL) pinfo->Alpha = 0;
-                        break;
-
-                    case PNG_COLOR_TYPE_GRAY_ALPHA:
-                    case PNG_COLOR_TYPE_RGB_ALPHA:
-                        iBitCount = 32;
-                        if (pinfo != NULL) pinfo->Alpha = 8;
-                        break;
-
-                    default:
-                        // error, will force return of ReadResult::FILE_NOT_HANDLED
-                        // see below.
-                        iBitCount = 0;
-                }
+              case(PNG_SOLID): pixelFormat = GL_LUMINANCE; break;
+              case(PNG_ALPHA): pixelFormat = GL_ALPHA; break;
+              case(PNG_COLOR_TYPE_GRAY): pixelFormat =GL_LUMINANCE ; break;
+              case(PNG_COLOR_TYPE_GRAY_ALPHA): pixelFormat = GL_LUMINANCE_ALPHA; break;
+              case(PNG_COLOR_TYPE_RGB): pixelFormat = GL_RGB; break;
+              case(PNG_COLOR_TYPE_RGB_ALPHA): pixelFormat = GL_RGBA; break;
+              default: break;                
             }
+            
+            int internalFormat = pixelFormat;
 
             png_read_end(png, endinfo);
             png_destroy_read_struct(&png, &info, &endinfo);
@@ -153,26 +157,19 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
             if (fp)
                 fclose(fp);
 
-            if (iBitCount==0) 
+            if (pixelFormat==0) 
                 return ReadResult::FILE_NOT_HANDLED;
 
             osg::Image* pOsgImage = new osg::Image();
 
             pOsgImage->setFileName(fileName.c_str());
-            if (iBitCount == 24)
-                pOsgImage->setImage(width, height, 1,
-                    iBitCount / 8,// int internalFormat,
-                    GL_RGB,      // unsigned int pixelFormat
-                    GL_UNSIGNED_BYTE,// unsigned int dataType
-                    data,
-                    osg::Image::USE_NEW_DELETE);
-            else
-                pOsgImage->setImage(width, height, 1,
-                    iBitCount / 8,// int internalFormat,
-                    GL_RGBA,     // unsigned int pixelFormat
-                    GL_UNSIGNED_BYTE,// unsigned int dataType
-                    data,
-                    osg::Image::USE_NEW_DELETE);
+            pOsgImage->setImage(width, height, 1,
+                internalFormat,
+                pixelFormat, 
+                dataType,
+                data,
+                osg::Image::USE_NEW_DELETE);
+
             return pOsgImage;
         }
 };

@@ -529,7 +529,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "Demos osgTextDemo"=".\Demos\osgTextDemo\osgTextDemo.dsp" - Package Owner=<4>
+Project: "Demos osgtext"=".\Demos\osgtext\osgtext.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{

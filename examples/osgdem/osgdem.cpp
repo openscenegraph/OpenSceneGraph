@@ -115,6 +115,7 @@ void processFile(std::string filename,
 		   osg::Matrixd &geoTransform,
 		   bool geoTransformSet,
 		   bool geoTransformScale,
+                   bool minmaxLevelSet, unsigned int min_level, unsigned int max_level,
 		   osg::ref_ptr<osgTerrain::DataSet> dataset) {
 
     if(filename.empty()) return;
@@ -139,6 +140,10 @@ void processFile(std::string filename,
 					      osgTerrain::DataSet::Source::PREFER_CONFIG_SETTINGS);
 		source->setGeoTransform(geoTransform);
 	    }
+            if (minmaxLevelSet) 
+            {
+                source->setMinMaxLevel(min_level, max_level);
+            }
 	    
 	    dataset->addSource(source);
 	}
@@ -152,7 +157,10 @@ void processFile(std::string filename,
 	for(i = dirContents.begin(); i != dirContents.end(); ++i) {
 	    if((*i != ".") && (*i != "..")) {
 		fullfilename = filename + '/' + *i;
-		processFile(fullfilename, type, currentCS, geoTransform, geoTransformSet, geoTransformScale, dataset);
+		processFile(fullfilename, type, currentCS, 
+                            geoTransform, geoTransformSet, geoTransformScale, 
+                            minmaxLevelSet, min_level, max_level,
+                            dataset);
 	    }
 	}
     }
@@ -327,7 +335,7 @@ int main( int argc, char **argv )
         return 1;
     }
 
-
+    unsigned int maximumPossibleLevel = 30;
 
 
     // read the input data
@@ -338,6 +346,8 @@ int main( int argc, char **argv )
     bool geoTransformSet = false; 
     bool geoTransformScale = false; 
     double xMin, xMax, yMin, yMax;
+    bool minmaxLevelSet = false;
+    unsigned int min_level=0, max_level=maximumPossibleLevel;
          
     int pos = 1;
     while(pos<arguments.argc())
@@ -501,11 +511,23 @@ int main( int argc, char **argv )
             std::cout<<"--zt "<<geoTransform(3,2)<<std::endl;
         }
 
+        else if (arguments.read(pos, "--levels", min_level, max_level))
+        {
+            minmaxLevelSet = true;
+            std::cout<<"--levels, min_level="<<min_level<<"  max_level="<<max_level<<std::endl;
+        }
+
         else if (arguments.read(pos, "-d",filename))
         {
 	    std::cout<<"-d "<<filename<<std::endl;
-	    processFile(filename, osgTerrain::DataSet::Source::HEIGHT_FIELD, currentCS, geoTransform, geoTransformSet, geoTransformScale, dataset);
+	    processFile(filename, osgTerrain::DataSet::Source::HEIGHT_FIELD, currentCS, 
+                        geoTransform, geoTransformSet, geoTransformScale,
+                        minmaxLevelSet, min_level, max_level, 
+                        dataset);
 
+            minmaxLevelSet = false;
+            min_level=0; max_level=maximumPossibleLevel;
+            
             geoTransformSet = false;
             geoTransformScale = false;
             geoTransform.makeIdentity();            
@@ -513,8 +535,14 @@ int main( int argc, char **argv )
         else if (arguments.read(pos, "-t",filename))
         {
 	    std::cout<<"-t "<<filename<<std::endl;
-	    processFile(filename, osgTerrain::DataSet::Source::IMAGE, currentCS, geoTransform, geoTransformSet, geoTransformScale, dataset);
+	    processFile(filename, osgTerrain::DataSet::Source::IMAGE, currentCS, 
+                        geoTransform, geoTransformSet, geoTransformScale, 
+                        minmaxLevelSet, min_level, max_level, 
+                        dataset);
 
+            minmaxLevelSet = false;
+            min_level=0; max_level=maximumPossibleLevel;
+            
             geoTransformSet = false;
             geoTransformScale = false;
             geoTransform.makeIdentity();            
@@ -522,8 +550,11 @@ int main( int argc, char **argv )
         else if (arguments.read(pos, "-m",filename))
         {
 	    std::cout<<"-m "<<filename<<std::endl;
-	    processFile(filename, osgTerrain::DataSet::Source::MODEL, currentCS, geoTransform, geoTransformSet, geoTransformScale, dataset);
+	    processFile(filename, osgTerrain::DataSet::Source::MODEL, currentCS, geoTransform, geoTransformSet, geoTransformScale, minmaxLevelSet, min_level, max_level, dataset);
 
+            minmaxLevelSet = false;
+            min_level=0; max_level=maximumPossibleLevel;
+            
             geoTransformSet = false;
             geoTransformScale = false;
             geoTransform.makeIdentity();            

@@ -34,8 +34,10 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
 {
     public:
 
+
+        static const unsigned int MAXIMUM_NUMBER_OF_LEVELS = 30;
+
         class Source;
-        
 
         struct SpatialProperties
         {
@@ -174,7 +176,9 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
                 _sortValue(0.0),
                 _temporaryFile(false),
                 _coordinateSystemPolicy(PREFER_FILE_SETTINGS),
-                _geoTransformPolicy(PREFER_FILE_SETTINGS)
+                _geoTransformPolicy(PREFER_FILE_SETTINGS),
+                _minLevel(0),
+                _maxLevel(MAXIMUM_NUMBER_OF_LEVELS)
                 {}
         
             Source(Type type, const std::string& filename):
@@ -183,7 +187,9 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
                 _filename(filename),
                 _temporaryFile(false),
                 _coordinateSystemPolicy(PREFER_FILE_SETTINGS),
-                _geoTransformPolicy(PREFER_FILE_SETTINGS)
+                _geoTransformPolicy(PREFER_FILE_SETTINGS),
+                _minLevel(0),
+                _maxLevel(MAXIMUM_NUMBER_OF_LEVELS)
                 {}
 
             void setSortValue(double s) { _sortValue = s; }
@@ -216,6 +222,15 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
             
             void assignCoordinateSystemAndGeoTransformAccordingToParameterPolicy();
             
+
+
+            void setMinLevel(unsigned int minLevel) { _minLevel = minLevel; }
+            void setMaxLevel(unsigned int maxLevel) { _maxLevel = maxLevel; }
+            void setMinMaxLevel(unsigned int minLevel, unsigned int maxLevel) { _minLevel = minLevel; _maxLevel = maxLevel; }
+
+            unsigned int getMinLevel() const { return _minLevel; }
+            unsigned int getMaxLevel() const { return _maxLevel; }
+
             void setSourceData(SourceData* data) { _sourceData = data; if (_sourceData.valid()) _sourceData->_source = this; }
             SourceData* getSourceData() { return _sourceData.get(); }
             
@@ -279,6 +294,9 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
             
             ParameterPolicy                             _coordinateSystemPolicy;
             ParameterPolicy                             _geoTransformPolicy;
+
+            unsigned int                                _minLevel;
+            unsigned int                                _maxLevel;
             
             osg::ref_ptr<SourceData>                    _sourceData;
             

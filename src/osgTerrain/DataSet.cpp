@@ -2416,12 +2416,18 @@ void DataSet::DestinationTile::readFrom(CompositeSource* sourceGraph)
     for(CompositeSource::source_iterator itr(sourceGraph);itr.valid();++itr)
     {
     
-        SourceData* data = (*itr)->getSourceData();
-        if (data)
+        Source* source = itr->get();
+        
+        if (_level>=source->getMinLevel() && _level<=source->getMaxLevel()) 
         {
-            std::cout<<"DataSet::DestinationTile::readFrom -> SourceData::read() "<<std::endl;
-            if (_imagery.valid()) data->read(*_imagery);
-            if (_terrain.valid()) data->read(*_terrain);
+            SourceData* data = (*itr)->getSourceData();
+            if (data)
+            {
+                std::cout<<"DataSet::DestinationTile::readFrom -> SourceData::read() "<<std::endl;
+                std::cout<<"    destination._level="<<_level<<"\t"<<source->getMinLevel()<<"\t"<<source->getMaxLevel()<<std::endl;
+                if (_imagery.valid()) data->read(*_imagery);
+                if (_terrain.valid()) data->read(*_terrain);
+            }
         }
     }
 

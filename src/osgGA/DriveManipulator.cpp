@@ -71,12 +71,16 @@ void DriveManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
     if(_node.get())
     {
 
+
         const osg::BoundingSphere& boundingSphere=_node->getBound();
 
         osg::Vec3 ep = boundingSphere._center;
         osg::Vec3 bp = ep;
-        ep -= getUpVector()* _modelScale*0.0001f;
-        bp -= getUpVector()* _modelScale;
+
+        osg::CoordinateFrame cf=getCoordinateFrame(ep.x(), ep.y(), ep.z());
+
+        ep -= getUpVector(cf)* _modelScale*0.0001f;
+        bp -= getUpVector(cf)* _modelScale;
 
         // check to see if any obstruction in front.
         osgUtil::IntersectVisitor iv;
@@ -99,11 +103,11 @@ void DriveManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
                 osg::Vec3 np = hitList.front().getWorldIntersectNormal();
 
                 osg::Vec3 uv;
-                if (np * getUpVector()>0.0f) uv = np;
+                if (np * getUpVector(cf)>0.0f) uv = np;
                 else uv = -np;
 
                 ep = ip;
-                ep += getUpVector()*_height;
+                ep += getUpVector(cf)*_height;
                 osg::Vec3 lv = uv^osg::Vec3(1.0f,0.0f,0.0f);
 
                 computePosition(ep,lv,uv);
@@ -117,7 +121,7 @@ void DriveManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
         if (!positionSet)
         {
             bp = ep;
-            bp += getUpVector()*_modelScale;
+            bp += getUpVector(cf)*_modelScale;
 
             osg::ref_ptr<osg::LineSegment> segUp = new osg::LineSegment;
             segUp->set(ep,bp);
@@ -135,11 +139,11 @@ void DriveManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
                     osg::Vec3 np = hitList.front().getWorldIntersectNormal();
 
                     osg::Vec3 uv;
-                    if (np*getUpVector()>0.0f) uv = np;
+                    if (np*getUpVector(cf)>0.0f) uv = np;
                     else uv = -np;
 
                     ep = ip;
-                    ep += getUpVector()*_height;
+                    ep += getUpVector(cf)*_height;
                     osg::Vec3 lv = uv^osg::Vec3(1.0f,0.0f,0.0f);
                     computePosition(ep,lv,uv);
 
@@ -179,11 +183,13 @@ void DriveManipulator::init(const GUIEventAdapter& ea,GUIActionAdapter& us)
 
     osg::Vec3 ep = _eye;
 
+    osg::CoordinateFrame cf=getCoordinateFrame(ep.x(), ep.y(), ep.z());
+
     Matrixd rotation_matrix;
     rotation_matrix.set(_rotation);
     osg::Vec3 sv = osg::Vec3(1.0f,0.0f,0.0f) * rotation_matrix;
     osg::Vec3 bp = ep;
-    bp -= getUpVector()*_modelScale;
+    bp -= getUpVector(cf)*_modelScale;
 
     // check to see if any obstruction in front.
     osgUtil::IntersectVisitor iv;
@@ -206,7 +212,7 @@ void DriveManipulator::init(const GUIEventAdapter& ea,GUIActionAdapter& us)
             osg::Vec3 np = hitList.front().getWorldIntersectNormal();
 
             osg::Vec3 uv;
-            if (np*getUpVector()>0.0f) uv = np;
+            if (np*getUpVector(cf)>0.0f) uv = np;
             else uv = -np;
 
             ep = ip+uv*_height;
@@ -222,7 +228,7 @@ void DriveManipulator::init(const GUIEventAdapter& ea,GUIActionAdapter& us)
     if (!positionSet)
     {
         bp = ep;
-        bp += getUpVector()*_modelScale;
+        bp += getUpVector(cf)*_modelScale;
 
         osg::ref_ptr<osg::LineSegment> segUp = new osg::LineSegment;
         segUp->set(ep,bp);
@@ -240,7 +246,7 @@ void DriveManipulator::init(const GUIEventAdapter& ea,GUIActionAdapter& us)
                 osg::Vec3 np = hitList.front().getWorldIntersectNormal();
 
                 osg::Vec3 uv;
-                if (np*getUpVector()>0.0f) uv = np;
+                if (np*getUpVector(cf)>0.0f) uv = np;
                 else uv = -np;
 
                 ep = ip+uv*_height;
@@ -448,6 +454,8 @@ bool DriveManipulator::calcMovement()
         }
     }
 
+    osg::CoordinateFrame cf=getCoordinateFrame(_eye.x(), _eye.y(), _eye.z());
+
     osg::Matrix rotation_matrix;
     rotation_matrix.makeRotate(_rotation);
     
@@ -535,7 +543,7 @@ bool DriveManipulator::calcMovement()
         // no hit on the terrain found therefore resort to a fall under
         // under the influence of gravity.
         osg::Vec3 dp = lfp;
-        dp -= getUpVector()* (2*_modelScale);
+        dp -= getUpVector(cf)* (2*_modelScale);
 
         iv.reset();
 

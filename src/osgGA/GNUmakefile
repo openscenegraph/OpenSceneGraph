@@ -12,6 +12,7 @@ CXXFILES = \
         KeySwitchMatrixManipulator.cpp\
         SetSceneViewVisitor.cpp\
 	StateSetManipulator.cpp\
+	TerrainManipulator.cpp\
 	TrackballManipulator.cpp\
 	Version.cpp\
 

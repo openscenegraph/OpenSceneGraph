@@ -10,7 +10,9 @@ void KeySwitchMatrixManipulator::addMatrixManipulator(int key, std::string name,
     _manips[key]=std::make_pair(name,osg::ref_ptr<MatrixManipulator>(cm));
     if(!_current.valid()){
         _current=cm;
-        _current->setNode(_current->getNode());
+        _current->setNode(getNode());
+        _current->setCoordinateFrameCallback(getCoordinateFrameCallback());
+        _current->setByMatrix(getMatrix());
     }
 }
 
@@ -34,7 +36,13 @@ void KeySwitchMatrixManipulator::selectMatrixManipulator(unsigned int num)
     {
         if (_current.valid())
         {
-            if ( !itr->second.second->getNode() ) {
+            if ( !itr->second.second->getCoordinateFrameCallback() )
+            {
+                itr->second.second->setCoordinateFrameCallback(_current->getCoordinateFrameCallback());
+            }
+        
+            if ( !itr->second.second->getNode() )
+            {
                 itr->second.second->setNode(_current->getNode());
             }
             itr->second.second->setByMatrix(_current->getMatrix());
@@ -49,8 +57,18 @@ void KeySwitchMatrixManipulator::setNode(osg::Node* node)
         itr!=_manips.end();
         ++itr)
     {
-    
         itr->second.second->setNode(node);
+    }
+}
+
+void KeySwitchMatrixManipulator::setCoordinateFrameCallback(CoordinateFrameCallback* cb)
+{
+    _coordinateFrameCallback = cb;
+    for(KeyManipMap::iterator itr=_manips.begin();
+        itr!=_manips.end();
+        ++itr)
+    {
+        itr->second.second->setCoordinateFrameCallback(cb);
     }
 }
 

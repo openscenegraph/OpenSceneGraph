@@ -257,6 +257,7 @@ bool FlightManipulator::calcMovement()
     float dx = _ga_t0->getXnormalized();
     float dy = _ga_t0->getYnormalized();
 
+    osg::CoordinateFrame cf=getCoordinateFrame(_eye.x(), _eye.y(), _eye.z());
 
     osg::Matrixd rotation_matrix;
     rotation_matrix.makeRotate(_rotation);
@@ -283,13 +284,13 @@ bool FlightManipulator::calcMovement()
     if (_yawMode==YAW_AUTOMATICALLY_WHEN_BANKED)
     {
         //float bank = asinf(sv.z());
-        float bank = asinf(sv *getUpVector());
+        float bank = asinf(sv *getUpVector(cf));
         float yaw = inRadians(bank)*dt;
         
         osg::Quat yaw_rotate;
         //yaw_rotate.makeRotate(yaw,0.0f,0.0f,1.0f);
 
-        yaw_rotate.makeRotate(yaw,getUpVector());
+        yaw_rotate.makeRotate(yaw,getUpVector(cf));
 
 
         delta_rotate = delta_rotate*yaw_rotate;

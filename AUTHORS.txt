@@ -85,6 +85,9 @@ Mike Connell <mikec@vsect.chalmers.se>
         - First implementation of shadow occlusion culling.
         - improvements to 3ds plugin.
 
+Michael Gronager <Michael.Gronager@uni-c.dk>
+        - jp2 plugin - for reading and writing JPEG2000 image files
+
 Phil Atkin <philatkin@philatkin.com>
         - MacOS X port.
 

@@ -440,3 +440,48 @@ bool State::setActiveTextureUnit( unsigned int unit )
     }
     return true;
 }
+
+typedef void (APIENTRY * FogCoordPointerProc) (GLenum type, GLsizei stride, const GLvoid *pointer);
+void State::setFogCoordPointer(GLenum type, GLsizei stride, const GLvoid *ptr)
+{
+    static FogCoordPointerProc s_glFogCoordPointer =
+            (FogCoordPointerProc) osg::getGLExtensionFuncPtr("glFogCoordPointer","glFogCoordPointerEXT");
+
+    if (s_glFogCoordPointer)
+    {
+
+        if (!_fogArray._enabled)
+        {
+            _fogArray._enabled = true;
+            glEnableClientState(GL_FOG_COORDINATE_ARRAY);
+        }
+        if (_fogArray._pointer!=ptr)
+        {
+            _fogArray._pointer=ptr;
+            s_glFogCoordPointer( type, stride, ptr );
+        }
+    }
+    
+}
+
+typedef void (APIENTRY * SecondaryColorPointerProc) (GLint size, GLenum type, GLsizei stride, const GLvoid *pointer);
+void State::setSecondaryColorPointer( GLint size, GLenum type,
+                                      GLsizei stride, const GLvoid *ptr )
+{
+    static SecondaryColorPointerProc s_glSecondaryColorPointer =
+            (SecondaryColorPointerProc) osg::getGLExtensionFuncPtr("glFogCoordPointer","glFogCoordPointerEXT");
+
+    if (s_glSecondaryColorPointer)
+    {
+        if (!_secondaryColorArray._enabled)
+        {
+            _secondaryColorArray._enabled = true;
+            glEnableClientState(GL_SECONDARY_COLOR_ARRAY);
+        }
+        if (_secondaryColorArray._pointer!=ptr)
+        {
+            _secondaryColorArray._pointer=ptr;
+            s_glSecondaryColorPointer( size, type, stride, ptr );
+        }
+    }
+}

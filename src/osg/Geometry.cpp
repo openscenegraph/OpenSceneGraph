@@ -7,6 +7,8 @@ Geometry::Geometry()
 {
     _normalBinding = BIND_OFF;
     _colorBinding = BIND_OFF;
+    _secondaryColorBinding = BIND_OFF;
+    _fogCoordBinding = BIND_OFF;
 }
 
 Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
@@ -15,7 +17,11 @@ Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
     _normalBinding(geometry._normalBinding),
     _normalArray(dynamic_cast<Vec3Array*>(copyop(geometry._normalArray.get()))),
     _colorBinding(geometry._colorBinding),
-    _colorArray(copyop(geometry._colorArray.get()))
+    _colorArray(copyop(geometry._colorArray.get())),
+    _secondaryColorBinding(geometry._secondaryColorBinding),
+    _secondaryColorArray(copyop(geometry._secondaryColorArray.get())),
+    _fogCoordBinding(geometry._fogCoordBinding),
+    _fogCoordArray(dynamic_cast<FloatArray*>(copyop(geometry._fogCoordArray.get())))
 {
     for(PrimitiveList::const_iterator pitr=geometry._primitives.begin();
         pitr!=geometry._primitives.end();
@@ -60,14 +66,25 @@ const Array* Geometry::getTexCoordArray(unsigned int unit) const
     else return 0;
 }
 
+typedef void (APIENTRY * FogCoordProc) (const GLfloat* coord);
+typedef void (APIENTRY * SecondaryColor3ubvProc) (const GLubyte* coord);
+typedef void (APIENTRY * SecondaryColor3fvProc) (const GLfloat* coord);
+
 void Geometry::drawImmediateMode(State& state)
 {
     if (!_vertexArray.valid()) return;
     
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
     // set up the vertex arrays.
+    //
     state.setVertexPointer(3,GL_FLOAT,0,_vertexArray->getDataPointer());
     
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
     // set up texture coordinates.
+    //
     unsigned int i;
     for(i=0;i<_texCoordList.size();++i)
     {
@@ -80,32 +97,46 @@ void Geometry::drawImmediateMode(State& state)
     state.disableTexCoordPointersAboveAndIncluding(i);
     
     
-    // set up normals.
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+;    // set up normals if required.
+    //
     Vec3* normalPointer = 0;
     if (_normalArray.valid() && !_normalArray->empty()) normalPointer = &(_normalArray->front());
 
-    switch (_normalBinding)
+    AttributeBinding normalBinding = _normalBinding;
+    if (normalBinding!=BIND_OFF && !normalPointer)
+    {
+        // switch off if not supported or have a valid data.
+        normalBinding = BIND_OFF;
+    }
+
+    switch (normalBinding)
     {
         case(BIND_OFF):
             state.disableNormalPointer();
             break;
         case(BIND_OVERALL):
             state.disableNormalPointer();
-            if (normalPointer) glNormal3fv(reinterpret_cast<const GLfloat*>(normalPointer));
+            glNormal3fv(reinterpret_cast<const GLfloat*>(normalPointer));
             break;
         case(BIND_PER_PRIMITIVE):
             state.disableNormalPointer();
             break;
         case(BIND_PER_VERTEX):
-            if (normalPointer) state.setNormalPointer(GL_FLOAT,0,normalPointer);
-            else state.disableNormalPointer();
+            state.setNormalPointer(GL_FLOAT,0,normalPointer);
             break;
     }
 
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Set up color if required.
+    //
     // set up colors, complicated by the fact that the color array
     // might be bound in 4 different ways, and be represented as 3 different data types -
     // Vec3, Vec4 or UByte4 Arrays.
+    //
     const unsigned char* colorPointer = 0;
     unsigned int colorStride = 0;
     Array::Type colorType = Array::ArrayType;
@@ -136,8 +167,16 @@ void Geometry::drawImmediateMode(State& state)
                 break;
         }
     }
+    
+    
+    AttributeBinding colorBinding = _colorBinding;
+    if (colorBinding!=BIND_OFF && !colorPointer)
+    {
+        // switch off if not supported or have a valid data.
+        colorBinding = BIND_OFF;
+    }
 
-    switch (_colorBinding)
+    switch (colorBinding)
     {
         case(BIND_OFF):
             state.disableColorPointer();
@@ -166,22 +205,138 @@ void Geometry::drawImmediateMode(State& state)
             state.disableColorPointer();
             break;
         case(BIND_PER_VERTEX):
-            if (colorPointer) state.setColorPointer(_colorArray->getDataSize(),_colorArray->getDataType(),0,colorPointer);
-            else state.disableColorPointer();
+            state.setColorPointer(_colorArray->getDataSize(),_colorArray->getDataType(),0,colorPointer);
     }
 
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Set up secondary color if required.
+    //
+    // set up colors, complicated by the fact that the color array
+    // might be bound in 4 different ways, and be represented as 3 different data types -
+    // Vec3, Vec4 or UByte4 Arrays.
+    const unsigned char* secondaryColorPointer = 0;
+    unsigned int secondaryColorStride = 0;
+    Array::Type secondaryColorType = Array::ArrayType;
+    if (_secondaryColorArray.valid())
+    {
+        secondaryColorType = _secondaryColorArray->getType();
+        switch(secondaryColorType)
+        {
+            case(Array::UByte4ArrayType):
+            {
+                secondaryColorPointer = reinterpret_cast<const unsigned char*>(_secondaryColorArray->getDataPointer());
+                secondaryColorStride = 4;
+                break;
+            }
+            case(Array::Vec3ArrayType):
+            {
+                secondaryColorPointer = reinterpret_cast<const unsigned char*>(_secondaryColorArray->getDataPointer());
+                secondaryColorStride = 12;
+                break;
+            }
+            default:
+                break;
+        }
+    }
+    
+    
+    AttributeBinding secondaryColorBinding = _secondaryColorBinding;
+    if (secondaryColorBinding!=BIND_OFF && !secondaryColorPointer)
+    {
+        // switch off if not supported or have a valid data.
+        secondaryColorBinding = BIND_OFF;
+    }
+
+    static SecondaryColor3ubvProc s_glSecondaryColor3ubv =
+            (SecondaryColor3ubvProc) osg::getGLExtensionFuncPtr("glSecondaryColor3ubv","glSecondaryColor3ubvEXT");
+    static SecondaryColor3fvProc s_glSecondaryColor3fv =
+            (SecondaryColor3fvProc) osg::getGLExtensionFuncPtr("glSecondaryColor3fv","glSecondaryColor3fvEXT");
+
+    switch (secondaryColorBinding)
+    {
+        case(BIND_OFF):
+            state.disableSecondaryColorPointer();
+            break;
+        case(BIND_OVERALL):
+            state.disableSecondaryColorPointer();
+            if (secondaryColorPointer)
+            {
+                switch(secondaryColorType)
+                {
+                    case(Array::UByte4ArrayType):
+                        s_glSecondaryColor3ubv(reinterpret_cast<const GLubyte*>(secondaryColorPointer));
+                        break;
+                    case(Array::Vec3ArrayType):
+                        s_glSecondaryColor3fv(reinterpret_cast<const GLfloat*>(secondaryColorPointer));
+                        break;
+                    default:
+                        break;
+                }
+            }
+            break;
+        case(BIND_PER_PRIMITIVE):
+            state.disableSecondaryColorPointer();
+            break;
+        case(BIND_PER_VERTEX):
+            state.setSecondaryColorPointer(_secondaryColorArray->getDataSize(),_secondaryColorArray->getDataType(),0,secondaryColorPointer);
+    }
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Set up fog coord if required.
+    //
+
+    GLfloat* fogCoordPointer = 0;
+    if (_fogCoordArray.valid() && !_fogCoordArray->empty()) fogCoordPointer = &(_fogCoordArray->front());
+
+    static FogCoordProc s_glFogCoordfv =
+            (FogCoordProc) osg::getGLExtensionFuncPtr("glFogCoordfv","glFogCoordfvEXT");
+
+
+    AttributeBinding fogCoordBinding = _fogCoordBinding;
+    if (fogCoordBinding!=BIND_OFF && (!s_glFogCoordfv || !fogCoordPointer))
+    {
+        // swithc off if not supported or have a valid data.
+        fogCoordBinding = BIND_OFF;
+    }
+    
+    switch (fogCoordBinding)
+    {
+        case(BIND_OFF):
+            state.disableFogCoordPointer();
+            break;
+        case(BIND_OVERALL):
+            state.disableFogCoordPointer();
+            s_glFogCoordfv(fogCoordPointer);
+            break;
+        case(BIND_PER_PRIMITIVE):
+            state.disableFogCoordPointer();
+            break;
+        case(BIND_PER_VERTEX):
+            state.setFogCoordPointer(GL_FLOAT,0,fogCoordPointer);
+            break;
+    }
+    
+    
+    
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
     // draw the primitives themselves.
+    //
+    
     for(PrimitiveList::iterator itr=_primitives.begin();
         itr!=_primitives.end();
         ++itr)
     {
-        if (_normalBinding==BIND_PER_PRIMITIVE)
+        if (normalBinding==BIND_PER_PRIMITIVE)
         {
             glNormal3fv((const GLfloat *)normalPointer++);
         }
     
-        if (_colorBinding==BIND_PER_PRIMITIVE)
+        if (colorBinding==BIND_PER_PRIMITIVE)
         {
             switch(colorType)
             {
@@ -200,6 +355,27 @@ void Geometry::drawImmediateMode(State& state)
             colorPointer += colorStride;
         }
 
+        if (secondaryColorBinding==BIND_PER_PRIMITIVE)
+        {
+            switch(secondaryColorType)
+            {
+                case(Array::UByte4ArrayType):
+                    s_glSecondaryColor3ubv(reinterpret_cast<const GLubyte*>(colorPointer));
+                    break;
+                case(Array::Vec3ArrayType):
+                    s_glSecondaryColor3fv(reinterpret_cast<const GLfloat*>(colorPointer));
+                    break;
+                default:
+                    break;
+            }
+            colorPointer += colorStride;
+        }
+
+        if (fogCoordBinding==BIND_PER_PRIMITIVE)
+        {
+            s_glFogCoordfv(fogCoordPointer++);
+        }
+    
         (*itr)->draw();
     }
 

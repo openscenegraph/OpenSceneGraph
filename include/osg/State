@@ -24,6 +24,21 @@ namespace osg {
 #define GL_TEXTURE0 0x84C0
 #endif
 
+#ifndef GL_FOG_COORDINATE_ARRAY
+    #ifdef GL_FOG_COORDINATE_ARRAY_EXT
+        #define GL_FOG_COORDINATE_ARRAY GL_FOG_COORDINATE_ARRAY_EXT
+    #else
+     	#define GL_FOG_COORDINATE_ARRAY 0x8457
+    #endif
+#endif
+
+#ifndef GL_SECONDARY_COLOR_ARRAY
+    #ifdef GL_SECONDARY_COLOR_ARRAY
+        #define GL_SECONDARY_COLOR_ARRAY GL_SECONDARY_COLOR_ARRAY_EXT
+    #else
+     	#define GL_SECONDARY_COLOR_ARRAY 0x845E
+    #endif
+#endif
 
 /** macro for use with osg::StateAttrbiute::apply methods for detected and 
   * reporting OpenGL error messages.*/
@@ -287,6 +302,21 @@ class SG_EXPORT State : public Referenced
             }
         }
 
+        /** wrapper around glEnableClientState(GL_SECONDARY_COLOR_ARRAY);glSecondayColorPointer(..);
+          * note, only updates values that change.*/
+        void setSecondaryColorPointer( GLint size, GLenum type, GLsizei stride, const GLvoid *ptr );
+
+        /** wrapper around glDisableClientState(GL_SECONDARY_COLOR_ARRAY);
+          * note, only updates values that change.*/
+        inline void disableSecondaryColorPointer()
+        {
+            if (_secondaryColorArray._enabled)
+            {
+                _secondaryColorArray._enabled = false;
+                glDisableClientState(GL_SECONDARY_COLOR_ARRAY);
+            }
+        }
+
         /** wrapper around glEnableClientState(GL_INDEX_ARRAY);glIndexPointer(..);
           * note, only updates values that change.*/
         inline void setIndexPointer( GLenum type, GLsizei stride,
@@ -314,6 +344,23 @@ class SG_EXPORT State : public Referenced
                 glDisableClientState(GL_INDEX_ARRAY);
             }
         }
+
+        /** wrapper around glEnableClientState(GL_FOG_COORDINATE_ARRAY);glFogCoordPointer(..);
+          * note, only updates values that change.*/
+        void setFogCoordPointer( GLenum type, GLsizei stride, const GLvoid *ptr );
+
+        /** wrapper around glDisableClientState(GL_FOG_COORDINATE_ARRAY);
+          * note, only updates values that change.*/
+        inline void disableFogCoordPointer()
+        {
+            if (_fogArray._enabled)
+            {
+                _fogArray._enabled = false;
+                glDisableClientState(GL_FOG_COORDINATE_ARRAY);
+            }
+        }
+
+        
 
         /** wrapper around glEnableClientState(GL_TEXTURE_COORD_ARRAY);glTexCoordPointer(..);
           * note, only updates values that change.*/
@@ -383,7 +430,6 @@ class SG_EXPORT State : public Referenced
         bool setActiveTextureUnit( unsigned int unit );
         
 
-        
         /** Set the current OpenGL context uniqueID.
             Note, it is the application developers responsibility to
             set up unique ID for each OpenGL context.  This value is
@@ -535,9 +581,11 @@ class SG_EXPORT State : public Referenced
         typedef std::vector<EnabledArrayPair>                   EnabledTexCoordArrayList;
 
         EnabledArrayPair            _vertexArray;
-        EnabledArrayPair            _colorArray;
-        EnabledArrayPair            _indexArray;
         EnabledArrayPair            _normalArray;
+        EnabledArrayPair            _colorArray;
+        EnabledArrayPair            _secondaryColorArray;
+        EnabledArrayPair            _indexArray;
+        EnabledArrayPair            _fogArray;
         EnabledTexCoordArrayList    _texCoordArrayList;
         
         unsigned int                _currentActiveTextureUnit;

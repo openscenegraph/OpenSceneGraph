@@ -105,8 +105,6 @@ void trpgr_Archive::CloseFile()
 // Run through the rest of the header information
 bool trpgr_Archive::ReadHeader()
 {
-    int ret;
-
     if (!fp || headerRead)
         return false;
 
@@ -125,7 +123,7 @@ bool trpgr_Archive::ReadHeader()
     trpgMemReadBuffer buf(ness);
     buf.SetLength(headLen);
     char *data = buf.GetDataPtr();
-    if ((ret = fread(data,1,headLen,fp)) != headLen)  return false;
+    if (fread(data,1,headLen,fp) != headLen)  return false;
 
     // Set up a parser
     // Catch the tables we need for the archive

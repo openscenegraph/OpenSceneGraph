@@ -103,7 +103,7 @@ class SG_EXPORT ImpostorSprite : public Drawable
 
         /** calculate the pixel error value for passing in the ModelViewProjectionWindow transform,
           * which transform local coords into screen space.*/
-        const float ImpostorSprite::calcPixelError(const Matrix& MVPW) const;
+        const float calcPixelError(const Matrix& MVPW) const;
 
         void setTexture(Texture* tex,int s,int t);
 

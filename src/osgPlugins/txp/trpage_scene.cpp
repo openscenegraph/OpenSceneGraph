@@ -493,7 +493,7 @@ bool trpgSceneGraphParser::EndChildren(void *in_node)
     // We don't need it here, but this is the node we just
     //  finished putting children under.  If you need to close
     //  it out in some way, do that here
-    trpgReadNode *node = (trpgReadNode *)in_node;
+    //trpgReadNode *node = (trpgReadNode *)in_node;
 
     // Get the parent above the current one
     int pos = parents.size()-2;

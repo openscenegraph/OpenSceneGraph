@@ -117,9 +117,9 @@ ifeq ($(OS),IRIX)
 
   C++               = CC
   DEPFLAGS          = -M
-  INC               += 
+  INC               +=  -I/usr/local/include
   DEF               += -LANG:std -OPT:Olimit=0 \
-	 	       -DEBUG:wof=1682 -DEBUG:woff=3303\
+	 	       -DEBUG:woff=1682 -DEBUG:woff=3303\
 		       -MDupdate $(MAKEDEPEND)
   OPTF              = -O2 
   DBGF              = -g
@@ -130,7 +130,7 @@ ifeq ($(ARCH),64)
 else
     ARCHARGS          = -n32
 endif
-  LINKARGS          = -LANG:std -OPT:Olimit=0
+  LINKARGS          = -LANG:std -OPT:Olimit=0 -L/usr/local/lib32 -rpath /usr/local/lib32
   DYNAMICLIBRARYLIB = -ldl
   OSG_LIBS          = -losgGLUT -losgDB -losgUtil -losg 
   FREETYPE_LIB      = -lfreetype

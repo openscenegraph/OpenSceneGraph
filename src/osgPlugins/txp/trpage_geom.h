@@ -515,7 +515,7 @@ public:
     } LightQuality;
 
     // Struct for Performer Lights
-    typedef struct PerformerAttr {
+    struct PerformerAttr {
         PerformerAttr() : flags(0),minPixelSize(0),maxPixelSize(0),actualSize(0),
             transparentPixelSize(0),transparentFallofExp(0),transparentScale(0),
             transparentClamp(0),fogScale(0) {};
@@ -531,7 +531,7 @@ public:
     };
 
     // Struct for Animated Lights
-    typedef struct AnimationAttr {
+    struct AnimationAttr {
         AnimationAttr() : period(0),phaseDelay(0),timeOn(0),vector(trpg3dPoint(0,0,0)),flags(0) {};
         float64                    period;
         float64                    phaseDelay;
@@ -541,7 +541,7 @@ public:
     };
 
     // Struct for Calligraphic Lights
-    typedef struct CalligraphicAttr {
+    struct CalligraphicAttr {
         CalligraphicAttr() : drawOrder(0),minDefocus(0),maxDefocus(0) {} ;
         int32                    drawOrder;
         float64                    minDefocus;

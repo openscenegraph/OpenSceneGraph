@@ -1160,14 +1160,14 @@ lib3ds_quat_track_read(Lib3dsQuatTrack *track, FILE *f)
 {
   int keys;
   int i,j;
-  Lib3dsQuatKey *p,*k;
+  Lib3dsQuatKey *k;
 
   track->flags=lib3ds_word_read(f);
   lib3ds_dword_read(f);
   lib3ds_dword_read(f);
   keys=lib3ds_intd_read(f);
 
-  for (p=0,i=0; i<keys; p=k,++i) {
+  for (i=0; i<keys; ++i) {
     k=lib3ds_quat_key_new();
     if (!lib3ds_tcb_read(&k->tcb, f)) {
       return(LIB3DS_FALSE);

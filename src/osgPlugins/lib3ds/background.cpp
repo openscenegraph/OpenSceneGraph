@@ -39,7 +39,6 @@ solid_bgnd_read(Lib3dsBackground *background, FILE *f)
 {
   Lib3dsChunk c;
   Lib3dsWord chunk;
-  Lib3dsBool have_lin=LIB3DS_FALSE;
           
   if (!lib3ds_chunk_read_start(&c, LIB3DS_SOLID_BGND, f)) {
     return(LIB3DS_FALSE);
@@ -49,7 +48,6 @@ solid_bgnd_read(Lib3dsBackground *background, FILE *f)
     switch (chunk) {
       case LIB3DS_LIN_COLOR_F:
         lib3ds_rgb_read(background->solid.col, f);
-        have_lin=LIB3DS_TRUE;
         break;
       case LIB3DS_COLOR_F:
         lib3ds_rgb_read(background->solid.col, f);

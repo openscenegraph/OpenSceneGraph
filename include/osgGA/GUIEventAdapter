@@ -19,7 +19,6 @@
 
 namespace osgGA{
 
-
 /**
 Pure virtual base class for adapting platform specific events into
 generic keyboard and mouse events. 

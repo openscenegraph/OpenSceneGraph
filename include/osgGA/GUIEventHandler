@@ -17,6 +17,7 @@
 #include <vector>
 
 #include <osg/Referenced>
+#include <osg/Object>
 #include <osg/ApplicationUsage>
 
 #include <osgGA/Export>
@@ -27,6 +28,8 @@
 namespace osgGA{
 
 class CompositeGUIEventHandler;
+
+
 
 /**
 
@@ -46,11 +49,15 @@ This request is made via the GUIActionAdapter class.
 
 */
 
-class OSGGA_EXPORT GUIEventHandler : public osg::Referenced
+class OSGGA_EXPORT GUIEventHandler : public virtual osg::Object
 {
 public:
 
-        virtual const char* className() { return "GUIEventHandler"; }
+        GUIEventHandler() {}
+        GUIEventHandler(const GUIEventHandler&,const osg::CopyOp&) {}
+
+        META_Object(osgGA,GUIEventHandler)
+
 
         /** Returns 0 if this GUIEventHandler is not a CompositeGUIEventHandler. */
         virtual const CompositeGUIEventHandler* getComposite() const { return 0; }
@@ -59,10 +66,10 @@ public:
         virtual CompositeGUIEventHandler* getComposite() { return 0; }
 
         /** Handle events, return true if handled, false otherwise. */
-        virtual bool handle(const GUIEventAdapter& ea,GUIActionAdapter& us)=0;
+        virtual bool handle(const GUIEventAdapter&,GUIActionAdapter&) { return false; }
 
         /** Accept visits from GUIEventHandler visitors */
-        virtual void accept(GUIEventHandlerVisitor&) = 0;
+        virtual void accept(GUIEventHandlerVisitor&) {}
         
         /** Get the keyboard and mouse usage of this manipulator.*/
         virtual void getUsage(osg::ApplicationUsage&) const {}

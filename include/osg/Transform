@@ -56,11 +56,6 @@ extern SG_EXPORT Matrix computeEyeToLocal(const Matrix& modelview, const NodePat
   * for defining what the 4x4 transformation is.  Subclasses, such as
   * MatrixTransform and PositionAttitudeTransform support the use of an
   * osg::Matrix or a osg::Vec3/osg::Quat respectively.
-  * The Transform node can be customized via the ComputeTransfromCallback
-  * which can be attached to the node. This might be used to convert from
-  * internal representations of the transformation into generic osg::Matrix
-  * objects which are used during scene graph traversal, such as
-  * CullTraversal and IntersectionTraversal.
   *
   * Note: If the transformation matrix scales the subgraph then the normals
   * of the underlying geometry will need to be renormalized to be unit

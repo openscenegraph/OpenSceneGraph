@@ -207,7 +207,7 @@ void Texture1D::applyTexImage1D(GLenum target, Image* image, State& state, GLsiz
         {
             numMipmapLevels = 1;
             glTexImage1D( target, 0, _internalFormat,
-                image->s(), 0,
+                image->s(), _borderWidth,
                 (GLenum)image->getPixelFormat(),
                 (GLenum)image->getDataType(),
                 image->data() );
@@ -219,7 +219,7 @@ void Texture1D::applyTexImage1D(GLenum target, Image* image, State& state, GLsiz
             GLint blockSize = ( _internalFormat == GL_COMPRESSED_RGB_S3TC_DXT1_EXT ? 8 : 16 ); 
             GLint size = ((image->s()+3)/4)*((image->t()+3)/4)*blockSize;
             glCompressedTexImage1D_ptr(target, 0, _internalFormat, 
-                  image->s(), 0, 
+                  image->s(), _borderWidth, 
                   size, 
                   image->data());                
 
@@ -251,7 +251,7 @@ void Texture1D::applyTexImage1D(GLenum target, Image* image, State& state, GLsiz
                 {
 
                     glTexImage1D( target, k, _internalFormat,
-                         width,0,
+                         width,_borderWidth,
                         (GLenum)image->getPixelFormat(),
                         (GLenum)image->getDataType(),
                         image->getMipmapData(k));
@@ -268,7 +268,7 @@ void Texture1D::applyTexImage1D(GLenum target, Image* image, State& state, GLsiz
 
                     size = ((width+3)/4)*blockSize;
                     glCompressedTexImage1D_ptr(target, k, _internalFormat, 
-                        width,  0, size, image->getMipmapData(k));                
+                        width,  _borderWidth, size, image->getMipmapData(k));                
 
                     width >>= 1;
                 }

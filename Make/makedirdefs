@@ -182,6 +182,7 @@ EXAMPLE_DIRS = \
 	osgversion\
 	osgvertexprogram\
 	osgviewer\
+	osgmovie\
 	osgwindows\
         
 #	osgpagedlod\

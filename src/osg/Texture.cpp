@@ -173,6 +173,7 @@ Texture::Texture():
             _useHardwareMipMapGeneration(true),
             _unrefImageDataAfterApply(false),
             _borderColor(0.0, 0.0, 0.0, 0.0),
+            _borderWidth(0),
             _internalFormatMode(USE_IMAGE_DATA_FORMAT),
             _internalFormat(0),
             _use_shadow_comparison(false),
@@ -192,6 +193,7 @@ Texture::Texture(const Texture& text,const CopyOp& copyop):
             _useHardwareMipMapGeneration(text._useHardwareMipMapGeneration),
             _unrefImageDataAfterApply(text._unrefImageDataAfterApply),
             _borderColor(text._borderColor),
+            _borderWidth(text._borderWidth),
             _internalFormatMode(text._internalFormatMode),
             _internalFormat(text._internalFormat),
             _use_shadow_comparison(text._use_shadow_comparison),
@@ -508,8 +510,8 @@ void Texture::computeRequiredTextureDimensions(State& state, const osg::Image& i
     const unsigned int contextID = state.getContextID();
     const Extensions* extensions = getExtensions(contextID,true);
 
-    int width = Image::computeNearestPowerOfTwo(image.s());
-    int height = Image::computeNearestPowerOfTwo(image.t());
+    int width = Image::computeNearestPowerOfTwo(image.s()-2*_borderWidth)+2*_borderWidth;
+    int height = Image::computeNearestPowerOfTwo(image.t()-2*_borderWidth)+2*_borderWidth;
 
     // cap the size to what the graphics hardware can handle.
     if (width>extensions->maxTextureSize()) width = extensions->maxTextureSize();
@@ -628,7 +630,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
             numMipmapLevels = 1;
 
             glTexImage2D( target, 0, _internalFormat,
-                inwidth, inheight, 0,
+                inwidth, inheight, _borderWidth,
                 (GLenum)image->getPixelFormat(),
                 (GLenum)image->getDataType(),
                 data );
@@ -672,7 +674,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
                         height = 1;
 
                     glTexImage2D( target, k, _internalFormat,
-                         width, height, 0,
+                         width, height, _borderWidth,
                         (GLenum)image->getPixelFormat(),
                         (GLenum)image->getDataType(),
                         image->getMipmapData(k));
@@ -694,7 +696,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
 
                     size = ((width+3)/4)*((height+3)/4)*blockSize;
                     extensions->glCompressedTexImage2D(target, k, _internalFormat, 
-                                                       width, height, 0, 
+                                                       width, height, _borderWidth, 
                                                        size, image->getMipmapData(k));                
 
                     width >>= 1;

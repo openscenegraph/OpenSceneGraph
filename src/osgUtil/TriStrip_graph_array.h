@@ -253,7 +253,7 @@ inline void graph_array<nodetype, arctype>::setsize(const size_t NbNodes) {
 
 
 template <class nodetype, class arctype>
-inline graph_array<nodetype, arctype>::node & graph_array<nodetype, arctype>::operator [] (const nodeid & i) {
+inline typename graph_array<nodetype, arctype>::node & graph_array<nodetype, arctype>::operator [] (const nodeid & i) {
     // Debug check
     assert(i < size());
 
@@ -262,7 +262,7 @@ inline graph_array<nodetype, arctype>::node & graph_array<nodetype, arctype>::op
 
 
 template <class nodetype, class arctype>
-inline const graph_array<nodetype, arctype>::node & graph_array<nodetype, arctype>::operator [] (const nodeid & i) const {
+inline const typename graph_array<nodetype, arctype>::node & graph_array<nodetype, arctype>::operator [] (const nodeid & i) const {
     // Debug check
     assert(i < size());
 
@@ -271,49 +271,49 @@ inline const graph_array<nodetype, arctype>::node & graph_array<nodetype, arctyp
 
 
 template <class nodetype, class arctype>
-inline graph_array<nodetype, arctype>::node_iterator graph_array<nodetype, arctype>::begin() {
+inline typename graph_array<nodetype, arctype>::node_iterator graph_array<nodetype, arctype>::begin() {
     return m_Nodes.begin();
 }
 
 
 template <class nodetype, class arctype>
-inline graph_array<nodetype, arctype>::node_iterator graph_array<nodetype, arctype>::end() {
+inline typename graph_array<nodetype, arctype>::node_iterator graph_array<nodetype, arctype>::end() {
     return m_Nodes.end();
 }
 
 
 template <class nodetype, class arctype>
-inline graph_array<nodetype, arctype>::const_node_iterator graph_array<nodetype, arctype>::begin() const {
+inline typename graph_array<nodetype, arctype>::const_node_iterator graph_array<nodetype, arctype>::begin() const {
     return m_Nodes.begin();
 }
 
 
 template <class nodetype, class arctype>
-inline graph_array<nodetype, arctype>::const_node_iterator graph_array<nodetype, arctype>::end() const {
+inline typename graph_array<nodetype, arctype>::const_node_iterator graph_array<nodetype, arctype>::end() const {
     return m_Nodes.end();
 }
 
 
 template <class nodetype, class arctype>
-inline graph_array<nodetype, arctype>::node_reverse_iterator graph_array<nodetype, arctype>::rbegin() {
+inline typename graph_array<nodetype, arctype>::node_reverse_iterator graph_array<nodetype, arctype>::rbegin() {
     return m_Nodes.rbegin();
 }
 
 
 template <class nodetype, class arctype>
-inline graph_array<nodetype, arctype>::node_reverse_iterator graph_array<nodetype, arctype>::rend() {
+inline typename graph_array<nodetype, arctype>::node_reverse_iterator graph_array<nodetype, arctype>::rend() {
     return m_Nodes.rend();
 }
 
 
 template <class nodetype, class arctype>
-inline graph_array<nodetype, arctype>::const_node_reverse_iterator graph_array<nodetype, arctype>::rbegin() const {
+inline typename graph_array<nodetype, arctype>::const_node_reverse_iterator graph_array<nodetype, arctype>::rbegin() const {
     return m_Nodes.rbegin();
 }
 
 
 template <class nodetype, class arctype>
-inline graph_array<nodetype, arctype>::const_node_reverse_iterator graph_array<nodetype, arctype>::rend() const {
+inline typename graph_array<nodetype, arctype>::const_node_reverse_iterator graph_array<nodetype, arctype>::rend() const {
     return m_Nodes.rend();
 }
 
@@ -325,19 +325,19 @@ inline size_t graph_array<nodetype, arctype>::number_of_arcs() const {
 
 
 template <class nodetype, class arctype>
-inline graph_array<nodetype, arctype>::out_arc_iterator graph_array<nodetype, arctype>::insert_arc(const nodeid & Initial, const nodeid & Terminal) {
+inline typename graph_array<nodetype, arctype>::out_arc_iterator graph_array<nodetype, arctype>::insert_arc(const nodeid & Initial, const nodeid & Terminal) {
     return (insert(begin() + Initial, begin() + Terminal));
 }
 
 
 template <class nodetype, class arctype>
-inline graph_array<nodetype, arctype>::out_arc_iterator graph_array<nodetype, arctype>::insert_arc(const nodeid & Initial, const nodeid & Terminal, const arctype & Elem) {
+inline typename graph_array<nodetype, arctype>::out_arc_iterator graph_array<nodetype, arctype>::insert_arc(const nodeid & Initial, const nodeid & Terminal, const arctype & Elem) {
     return (insert(begin() + Initial, begin() + Terminal, Elem));
 }
 
 
 template <class nodetype, class arctype>
-inline graph_array<nodetype, arctype>::out_arc_iterator graph_array<nodetype, arctype>::insert_arc(const node_iterator & Initial, const node_iterator & Terminal) {
+inline typename graph_array<nodetype, arctype>::out_arc_iterator graph_array<nodetype, arctype>::insert_arc(const node_iterator & Initial, const node_iterator & Terminal) {
     ++m_NbArcs;
     Initial->m_OutArcs.push_back(arc(Initial, Terminal));
     return (--(Initial->m_OutArcs.end()));
@@ -345,7 +345,7 @@ inline graph_array<nodetype, arctype>::out_arc_iterator graph_array<nodetype, ar
 
 
 template <class nodetype, class arctype>
-inline graph_array<nodetype, arctype>::out_arc_iterator graph_array<nodetype, arctype>::insert_arc(const node_iterator & Initial, const node_iterator & Terminal, const arctype & Elem) {
+inline typename graph_array<nodetype, arctype>::out_arc_iterator graph_array<nodetype, arctype>::insert_arc(const node_iterator & Initial, const node_iterator & Terminal, const arctype & Elem) {
     ++m_NbArcs;
     Initial->m_OutArcs.push_back(arc(Initial, Terminal, Elem));
     return (--(Initial->m_OutArcs.end()));
@@ -353,7 +353,7 @@ inline graph_array<nodetype, arctype>::out_arc_iterator graph_array<nodetype, ar
 
 
 template <class nodetype, class arctype>
-inline graph_array<nodetype, arctype>::out_arc_iterator graph_array<nodetype, arctype>::erase_arc(const out_arc_iterator & Pos) {
+inline typename graph_array<nodetype, arctype>::out_arc_iterator graph_array<nodetype, arctype>::erase_arc(const out_arc_iterator & Pos) {
     --m_NbArcs;
     return (Pos->initial()->m_OutArcs.erase(Pos));
 }

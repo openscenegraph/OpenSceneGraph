@@ -1977,7 +1977,7 @@ osg::StateSet* DataSet::DestinationTile::createStateSet()
         
         if (mipmapImageSupported && _dataSet->getMipMappingMode()==DataSet::MIP_MAPPING_IMAGERY)
         {
-            image->computeMipMaps();
+            osg::notify(osg::NOTICE)<<"Non compressress mipmapped not yet supported yet"<<std::endl;        
         }
     }
 

@@ -15,6 +15,7 @@
 #include <osg/GL>
 #include <osg/Math>
 #include <osgUtil/CullVisitor>
+#include <osgDB/ReadFile>
 #include <osgText/Text>
 
 #include "DefaultFont.h"
@@ -68,8 +69,14 @@ struct TextCullCallback : public osg::Drawable::CullCallback
 
             if (_text->getAutoScaleToScreen())
             {
-                float size = 1.0f/cs->pixelSize(_text->getPosition(),1.0f);
-                _text->setScale(size);
+                float numPixels = cs->pixelSize(_text->getPosition(),_text->getCharacterHeight());
+                if (numPixels>_text->getFontHeight())
+                {
+                    _text->setScale(_text->getFontHeight()/numPixels);
+                }
+            
+                //float size = 1.0f/cs->pixelSize(_text->getPosition(),1.0f);
+                //_text->setScale(size);
             }
 
             if (_text->getAutoRotateToScreen())
@@ -295,6 +302,25 @@ void Text::setColor(const osg::Vec4& color)
     _color = color;
 }
 
+void Text::setDrawMode(unsigned int mode) 
+{ 
+    if (_drawMode&3 != mode&3)
+    {
+        _drawMode=mode;
+        if (_drawMode&TEXT_PIXMAP)
+        {
+            setAutoScaleToScreen(true);
+            setAutoRotateToScreen(true);
+        }
+        computeGlyphRepresentation();
+    }
+    else
+    {
+        _drawMode=mode;
+    }
+}
+
+
 bool Text::computeBound() const
 {
     _bbox.init();
@@ -436,7 +462,7 @@ void Text::computeGlyphRepresentation()
                         local.x() += bearing.x() * wr;
                         local.y() += bearing.y() * hr;
                     }
-                }
+;                }
                 break;
               }
               case VERTICAL:
@@ -458,6 +484,8 @@ void Text::computeGlyphRepresentation()
         
             GlyphQuads& glyphquad = _textureGlyphQuadMap[glyph->getTexture()->getStateSet()];
             
+            glyphquad._glyphs.push_back(glyph);
+
             // set up the coords of the quad
             glyphquad._coords.push_back(local+osg::Vec2(0.0f,height));
             glyphquad._coords.push_back(local+osg::Vec2(0.0f,0.0f));
@@ -575,6 +603,13 @@ void Text::computePositions()
     dirtyBound();    
 }
 
+static unsigned char local_data[] = { 255,255,255,255,255,255,255,255,
+                                      255,255,255,255,255,255,255,255,
+                                      255,255,255,255,255,255,255,255,
+                                     255,255,255,255,255,255,255,255 };
+
+
+static osg::Image* loaded_image = osgDB::readImageFile("lz.rgb");
 
 void Text::drawImplementation(osg::State& state) const
 {
@@ -583,7 +618,7 @@ void Text::drawImplementation(osg::State& state) const
     glNormal3fv(_normal.ptr());
     glColor4fv(_color.ptr());
 
-    if (_drawMode & TEXT)
+    if (_drawMode & TEXT && !(_drawMode & TEXT_PIXMAP))
     {
 
         state.disableAllVertexArrays();
@@ -605,6 +640,36 @@ void Text::drawImplementation(osg::State& state) const
         }
     }
     
+    if (_drawMode & TEXT_PIXMAP)
+    {
+
+        state.applyTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::OFF);
+
+        for(TextureGlyphQuadMap::const_iterator titr=_textureGlyphQuadMap.begin();
+            titr!=_textureGlyphQuadMap.end();
+            ++titr)
+        {
+            const GlyphQuads& glyphquad = titr->second;
+
+            int ci=1;
+
+            for(GlyphQuads::Glyphs::const_iterator gitr=glyphquad._glyphs.begin();
+                gitr!=glyphquad._glyphs.end();
+                ++gitr, ci+=4)
+            {
+            
+                Font::Glyph* glyph = *gitr;
+                
+
+                glRasterPos3fv(glyphquad._transformedCoords[ci].ptr());
+
+                glyph->draw(state);
+
+            }
+
+        }
+    }
+
     if (_drawMode & BOUNDINGBOX)
     {
     

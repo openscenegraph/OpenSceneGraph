@@ -153,13 +153,23 @@ void PrimNodeRecord::removeAllChildren()
 
 bool PrimNodeRecord::readExtensionLevel(Input& fr)
 {
+    int extensionState = 1;
     Record* pRec;
 
     while (pRec=fr.readCreateRecord(_pFltFile))
     {
-        if (pRec->isOfType(POP_EXTENSION_OP))
-            return true;
-        // ignore extensions for now
+        if (pRec->isOfType(PUSH_EXTENSION_OP))
+        {
+            ++extensionState;
+        }
+        else if (pRec->isOfType(POP_EXTENSION_OP))
+        {
+            --extensionState;
+            if ( !extensionState )  // PUSH'es and POP's have cancelled out
+            {
+                return true;
+            }
+        }
     }
     return false;
 }

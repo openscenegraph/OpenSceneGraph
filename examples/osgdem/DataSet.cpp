@@ -739,7 +739,6 @@ void DataSet::Source::consolodateRequiredResolutions()
     ResolutionList consolodated;
     
     ResolutionList::iterator itr = _requiredResolutions.begin();
-    consolodated.push_back(*itr);
     
     double minResX = itr->_resX;
     double minResY = itr->_resY;
@@ -750,6 +749,8 @@ void DataSet::Source::consolodateRequiredResolutions()
         minResY = osg::minimum(minResY,itr->_resY);
     }
     
+    consolodated.push_back(ResolutionPair(minResX,minResY));
+
     _requiredResolutions.swap(consolodated);
 }
 

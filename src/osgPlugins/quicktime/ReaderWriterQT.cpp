@@ -16,7 +16,7 @@
 #  define SEEK_SET 0
 #endif
 
-#include "QTTexture.h"
+#include "QTtexture.h"
 
 using namespace osg;
 

@@ -19,9 +19,11 @@ using namespace osgSim;
 
 LightPointDrawable::LightPointDrawable():
     osg::Drawable(),
+    _endian(osg::getCpuByteOrder()),
     _referenceTime(0.0),
     _referenceTimeInterval(0.0)
 {
+
     setSupportsDisplayList(false);
     
     _depthOff = new osg::Depth;

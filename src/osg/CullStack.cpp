@@ -65,22 +65,31 @@ void CullStack::pushCullingSet()
         // here we do it in short hand with the knowledge of how the window matrix is formed
         // note P23,P33 are multiplied by an implicit 1 which would come from the window matrix.
         // Robert Osfield, June 2002.
+
+        // scaling for horizontal pixels
         float P00 = P(0,0)*W.width()*0.5f;
-        float P20 = P(2,0)*W.width()*0.5f + P(2,3)*W.width()*0.5f;
-        osg::Vec3 scale(M(0,0)*P00 + M(0,2)*P20,
-                        M(1,0)*P00 + M(1,2)*P20,
-                        M(2,0)*P00 + M(2,2)*P20);
-                        
+        float P20_00 = P(2,0)*W.width()*0.5f + P(2,3)*W.width()*0.5f;
+        osg::Vec3 scale_00(M(0,0)*P00 + M(0,2)*P20_00,
+                           M(1,0)*P00 + M(1,2)*P20_00,
+                           M(2,0)*P00 + M(2,2)*P20_00);
+                           
+        // scaling for vertical pixels
+        float P10 = P(1,1)*W.width()*0.5f;
+        float P20_10 = P(2,1)*W.width()*0.5f + P(2,3)*W.width()*0.5f;
+        osg::Vec3 scale_10(M(0,1)*P10 + M(0,2)*P20_10,
+                           M(1,1)*P10 + M(1,2)*P20_10,
+                           M(2,1)*P10 + M(2,2)*P20_10);
+        
         float P23 = P(2,3);
         float P33 = P(3,3);
         osg::Vec4 pixelSizeVector(M(0,2)*P23,
-                                  M(1,2)*P23,
-                                  M(2,2)*P23,
-                                  M(3,2)*P23 + M(3,3)*P33);
+                                     M(1,2)*P23,
+                                     M(2,2)*P23,
+                                     M(3,2)*P23 + M(3,3)*P33);
                                   
-        pixelSizeVector /= scale.length();
-        
-        //cout << "pixelSizeVector = "<<pixelSizeVector<<" pixelSizeVector2="<<pixelSizeVector2<<endl;
+        float scaleRatio  = 1.0f/sqrtf(scale_00.length2()+scale_10.length2());
+
+        pixelSizeVector *= scaleRatio;
         
         _modelviewCullingStack.push_back(osgNew osg::CullingSet(*_projectionCullingStack.back(),*_modelviewStack.back(),pixelSizeVector));
         

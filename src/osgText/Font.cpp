@@ -77,7 +77,7 @@ Font()
     _created=false;
 
     _pointSize=14;
-	_textureSize=0;
+    _textureSize=0;
     _res=72;
 }
 
@@ -99,6 +99,27 @@ Font::
 ~Font()
 {
     clear();
+}
+
+void Font::copyAndInvalidate(Font &dest)
+{
+    // delete destination's font object
+    delete dest._font;
+        
+    // copy local data to destination object
+    dest._init = _init;
+    dest._created = _created;
+    dest._font = _font;
+    dest._fontName = _fontName;
+    dest._pointSize = _pointSize;
+    dest._res = _res;
+    dest._textureSize = _textureSize;
+
+    // invalidate this object
+    _init = false;
+    _created = false;
+    _font = 0;
+    _fontName = std::string();
 }
 
 bool Font::
@@ -269,7 +290,7 @@ TextureFont(const std::string&    font,
             int                    point_size):
 RasterFont(font)
 {
-	_textureSize=0;
+    _textureSize=0;
     if(init(font))
     {
     }
@@ -280,10 +301,10 @@ RasterFont(font)
 TextureFont::
 TextureFont(const std::string&    font, 
             int                    point_size,
-			int textureSize ):
+            int textureSize ):
 RasterFont(font)
 {
-	_textureSize=textureSize;
+    _textureSize=textureSize;
     if(init(font))
     {
     }

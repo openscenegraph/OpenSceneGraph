@@ -85,7 +85,10 @@ class OSGTEXT_EXPORT Font : public osg::Object
 
         int        getPointSize(void) const    { return _pointSize; }
         int        getTextureSize(void) const    { return _textureSize; }
-        const std::string& getFontName();
+        const std::string& getFontName() const { return _fontName; }
+        
+        /// Transfer font settings to another Font object and invalidate this one.
+        void copyAndInvalidate(Font &dest);
 
         FTFont*     getFont(void) { return _font; }
 

@@ -93,8 +93,6 @@ class OSGGLUT_EXPORT Viewer : public Window, public osgGA::GUIActionAdapter
         osg::DisplaySettings* getDisplaySettings() { return _displaySettings.get(); }
         const osg::DisplaySettings* getDisplaySettings() const { return _displaySettings.get(); }
 
-        typedef std::vector<osg::ref_ptr<osgGA::CameraManipulator> > CameraManipList;
-
     protected:
 
         virtual void clear();

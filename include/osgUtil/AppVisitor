@@ -15,6 +15,7 @@
 #include <osg/Transform>
 #include <osg/Projection>
 #include <osg/Impostor>
+#include <osg/OccluderNode>
 
 #include <osgUtil/Export>
 
@@ -34,18 +35,19 @@ class OSGUTIL_EXPORT AppVisitor : public osg::NodeVisitor
 
         virtual void reset();
 
-        virtual void apply(osg::Node& node)       { handle_callbacks_and_traverse(node); }
+        virtual void apply(osg::Node& node)         { handle_callbacks_and_traverse(node); }
         
-        virtual void apply(osg::Geode& node)      { handle_callbacks_and_traverse(node); }
-        virtual void apply(osg::Billboard& node)  { handle_callbacks_and_traverse(node); }
-        virtual void apply(osg::LightSource& node){ handle_callbacks_and_traverse(node); }
+        virtual void apply(osg::Geode& node)        { handle_callbacks_and_traverse(node); }
+        virtual void apply(osg::Billboard& node)    { handle_callbacks_and_traverse(node); }
+        virtual void apply(osg::LightSource& node)  { handle_callbacks_and_traverse(node); }
         
-        virtual void apply(osg::Group& node)      { handle_callbacks_and_traverse(node); }
-        virtual void apply(osg::Transform& node)  { handle_callbacks_and_traverse(node); }
-        virtual void apply(osg::Projection& node) { handle_callbacks_and_traverse(node); }
-        virtual void apply(osg::Switch& node)     { handle_callbacks_and_traverse(node); }
-        virtual void apply(osg::LOD& node)        { handle_callbacks_and_traverse(node); }
-        virtual void apply(osg::Impostor& node)   { handle_callbacks_and_traverse(node); }
+        virtual void apply(osg::Group& node)        { handle_callbacks_and_traverse(node); }
+        virtual void apply(osg::Transform& node)    { handle_callbacks_and_traverse(node); }
+        virtual void apply(osg::Projection& node)   { handle_callbacks_and_traverse(node); }
+        virtual void apply(osg::Switch& node)       { handle_callbacks_and_traverse(node); }
+        virtual void apply(osg::LOD& node)          { handle_callbacks_and_traverse(node); }
+        virtual void apply(osg::Impostor& node)     { handle_callbacks_and_traverse(node); }
+        virtual void apply(osg::OccluderNode& node) { handle_callbacks_and_traverse(node); }
 
 
     protected:

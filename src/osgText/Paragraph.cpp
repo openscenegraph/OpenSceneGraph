@@ -3,6 +3,7 @@
 using namespace osgText;
 
 Paragraph::Paragraph()
+: osg::Geode()
 {
     _alignment = osgText::Text::LEFT_TOP;
     _maxCharsPerLine = 80;
@@ -19,6 +20,7 @@ Paragraph::Paragraph(const Paragraph& paragraph,const osg::CopyOp& copyop):
 }
 
 Paragraph::Paragraph(const osg::Vec3& position,const std::string& text,osgText::Font* font)
+: osg::Geode()
 {
     _maxCharsPerLine = 80;
     _position = position;

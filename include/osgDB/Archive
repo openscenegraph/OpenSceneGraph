@@ -17,6 +17,7 @@
 #include <osgDB/ReaderWriter>
 
 #include <fstream>
+#include <list>
 
 namespace osgDB {
 
@@ -67,14 +68,75 @@ class OSGDB_EXPORT Archive : public ReaderWriter
         
     protected:
     
-        typedef std::istream::pos_type pos_type;
-    
-        typedef std::map<std::string, pos_type> FileNamePositionMap;
         
+        typedef std::istream::pos_type pos_type;
+        typedef std::map<std::string, pos_type> FileNamePositionMap;
+
+        class IndexBlock : public osg::Referenced
+        {
+        public:
+            IndexBlock(unsigned int blockSize=0);
+            
+            inline pos_type getPosition() const { return _filePosition; }
+
+            inline unsigned int getBlockSize() const { return _blockSize; }
+
+
+            void setPositionNextIndexBlock(pos_type position);
+            
+            inline pos_type getPositionNextIndexBlock() const { return _filePositionNextIndexBlock; }
+
+
+            void read(std::istream& in);
+            
+            bool getFileReferences(FileNamePositionMap& indexMap);
+            
+
+            inline bool requiresWrite() const { return _requiresWrite; }
+            
+            void write(std::ostream& out);
+            
+            inline bool spaceAvailable(pos_type position, const std::string& filename) const
+            {
+                unsigned requiredSize = sizeof(position)+sizeof(unsigned int)+filename.size();
+                return (_offsetOfNextAvailableSpace + requiredSize)<_blockSize;
+            }
+            
+            bool addFileReference(pos_type position, const std::string& filename);
+            
+
+
+        protected:
+            
+            void allocateData(unsigned int blockSize);
+        
+            virtual ~IndexBlock();
+            bool            _requiresWrite;
+            pos_type        _filePosition;
+
+            unsigned int    _blockSize;
+            pos_type        _filePositionNextIndexBlock;
+            unsigned int    _offsetOfNextAvailableSpace;
+            unsigned char*  _data;
+        };
+    
+    
+    
+        typedef std::list< osg::ref_ptr<IndexBlock> >   IndexBlockList;
+        
+        void readIndexBlocks();
+        
+        void writeIndexBlocks();
+        
+        bool addFileReference(pos_type position, const std::string& fileName);
+        
+        static float        s_currentSupportedVersion;
+        float               _version;
         Status              _status;
         std::ifstream       _input;
         std::ofstream       _output;
         
+        IndexBlockList      _indexBlockList;
         FileNamePositionMap _indexMap;
 
 

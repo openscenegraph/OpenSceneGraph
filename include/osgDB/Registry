@@ -191,6 +191,8 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         /** Remove all objects in the cache regardless of having external references or expiry times.*/ 
         void clearObjectCache();
 
+        /** get the attached library with specified name.*/
+        DynamicLibrary*              getLibrary(const std::string& fileName);
 
     protected:
 
@@ -211,7 +213,6 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         
         /** get the attached library with specified name.*/
         DynamicLibraryList::iterator getLibraryItr(const std::string& fileName);
-        DynamicLibrary*              getLibrary(const std::string& fileName);
 
         bool _createNodeFromImage;
 

@@ -130,12 +130,9 @@ void TriStripVisitor::stripify(Geometry& geom)
         // so increment to give to the corrent number of verticies.
         ++in_numVertices;            
 
-        int in_cacheSize = 16;
-        int in_minStripLength = 2;
-
         triangle_stripper::tri_stripper stripifier(taf.in_indices);
-        stripifier.SetCacheSize(in_cacheSize);
-        stripifier.SetMinStripSize(in_minStripLength);
+        stripifier.SetCacheSize(_cacheSize);
+        stripifier.SetMinStripSize(_minStripSize);
 
         triangle_stripper::tri_stripper::primitives_vector outPrimitives;
         stripifier.Strip(&outPrimitives);

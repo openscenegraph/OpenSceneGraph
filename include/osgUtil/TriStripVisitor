@@ -30,20 +30,55 @@ class OSGUTIL_EXPORT TriStripVisitor : public osg::NodeVisitor
     public:
 
         /// default to traversing all children.
-        TriStripVisitor()
-        {
-            setTraversalMode(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN);
-        }
+        TriStripVisitor() : 
+                osg::NodeVisitor( osg::NodeVisitor::TRAVERSE_ALL_CHILDREN ), 
+                _cacheSize( 24 ),
+                _minStripSize( 0 )
+        {}
 
         /** convert mesh primitives in Geometry into Tri Strips using
           * NvTriStrip.  Converts all primitive types except points
           * and lines, linestrips which it leaves unchanged.
           */
-        static void stripify(osg::Geometry& drawable);
+        void stripify(osg::Geometry& drawable);
 
         /// apply stripify method to all geode geometry.
         virtual void apply(osg::Geode& geode);
 
+        inline void setCacheSize( unsigned int size )
+        {
+            _cacheSize = size;
+        }
+        
+        inline unsigned int getCacheSize()
+        {
+            return _cacheSize;
+        }
+
+        inline const unsigned int getCacheSize() const
+        {
+            return _cacheSize;
+        }
+        
+        inline void setMinStripSize( unsigned int size )
+        {
+            _minStripSize = size;
+        }
+        
+        inline unsigned int getMinStripSize()
+        {
+            return _minStripSize;
+        }
+
+        inline const unsigned int getMinStripSize() const
+        {
+            return _minStripSize;
+        }
+        
+    private:
+    
+        unsigned int _cacheSize;
+        unsigned int _minStripSize;
 };
 
 }

@@ -30,6 +30,7 @@ CXXFILES =\
 	DrawPixels.cpp\
 	ClearNode.cpp\
 	Fog.cpp\
+	FragmentProgram.cpp\
 	FrameStamp.cpp\
 	FrontFace.cpp\
 	GLExtensions.cpp\

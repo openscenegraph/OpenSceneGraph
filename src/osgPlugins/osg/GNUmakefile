@@ -16,6 +16,7 @@ CXXFILES =\
         Drawable.cpp\
         ClearNode.cpp\
         Fog.cpp\
+        FragmentProgram.cpp\
         FrontFace.cpp\
         Geode.cpp\
         Geometry.cpp\

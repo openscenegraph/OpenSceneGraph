@@ -5,6 +5,8 @@
 #ifndef OSG_COPYOP
 #define OSG_COPYOP 1
 
+#include <osg/Export>
+
 namespace osg {
 
 class Referenced;
@@ -18,7 +20,7 @@ class Drawable;
 
 /** Copy Op(erator) used to control the whether shallow or deep copy is used
   * during copy construction and clone operation.*/
-class CopyOp
+class SG_EXPORT CopyOp
 {
 
     public:

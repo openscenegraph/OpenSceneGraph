@@ -1,0 +1,126 @@
+osgcopy.o: osgcopy.cpp /home/robert/OpenSceneGraph/include/osg/Transform \
+  /home/robert/OpenSceneGraph/include/osg/Group \
+  /home/robert/OpenSceneGraph/include/osg/Node \
+  /home/robert/OpenSceneGraph/include/osg/Object \
+  /home/robert/OpenSceneGraph/include/osg/Referenced \
+  /home/robert/OpenSceneGraph/include/osg/Export /usr/include/g++-3/set \
+  /usr/include/g++-3/stl_tree.h /usr/include/g++-3/stl_algobase.h \
+  /usr/include/g++-3/stl_config.h /usr/include/_G_config.h \
+  /usr/include/bits/types.h /usr/include/features.h \
+  /usr/include/sys/cdefs.h /usr/include/gnu/stubs.h \
+  /usr/lib/gcc-lib/i586-mandrake-linux/2.96/include/stddef.h \
+  /usr/include/bits/pthreadtypes.h /usr/include/bits/sched.h \
+  /usr/include/wchar.h /usr/include/bits/wchar.h /usr/include/gconv.h \
+  /usr/include/g++-3/stl_relops.h /usr/include/g++-3/stl_pair.h \
+  /usr/include/g++-3/type_traits.h /usr/include/string.h \
+  /usr/lib/gcc-lib/i586-mandrake-linux/2.96/include/limits.h \
+  /usr/lib/gcc-lib/i586-mandrake-linux/2.96/include/syslimits.h \
+  /usr/include/limits.h /usr/include/bits/posix1_lim.h \
+  /usr/include/bits/local_lim.h /usr/include/linux/limits.h \
+  /usr/include/bits/posix2_lim.h /usr/include/stdlib.h \
+  /usr/include/sys/types.h /usr/include/time.h /usr/include/endian.h \
+  /usr/include/bits/endian.h /usr/include/sys/select.h \
+  /usr/include/bits/select.h /usr/include/bits/sigset.h \
+  /usr/include/bits/time.h /usr/include/sys/sysmacros.h \
+  /usr/include/alloca.h \
+  /usr/lib/gcc-lib/i586-mandrake-linux/2.96/include/new.h \
+  /usr/lib/gcc-lib/i586-mandrake-linux/2.96/include/new \
+  /usr/lib/gcc-lib/i586-mandrake-linux/2.96/include/exception \
+  /usr/include/g++-3/iostream.h /usr/include/g++-3/streambuf.h \
+  /usr/include/libio.h \
+  /usr/lib/gcc-lib/i586-mandrake-linux/2.96/include/stdarg.h \
+  /usr/include/g++-3/stl_iterator.h /usr/include/g++-3/stl_alloc.h \
+  /usr/include/assert.h /usr/include/pthread.h /usr/include/sched.h \
+  /usr/include/signal.h /usr/include/bits/initspin.h \
+  /usr/include/bits/sigthread.h /usr/include/g++-3/stl_construct.h \
+  /usr/include/g++-3/stl_function.h /usr/include/g++-3/stl_set.h \
+  /usr/include/g++-3/stl_multiset.h \
+  /home/robert/OpenSceneGraph/include/osg/CopyOp \
+  /home/robert/OpenSceneGraph/include/osg/StateSet \
+  /home/robert/OpenSceneGraph/include/osg/StateAttribute \
+  /home/robert/OpenSceneGraph/include/osg/GL /usr/X11R6/include/GL/gl.h \
+  /usr/X11R6/include/GL/glext.h \
+  /usr/lib/gcc-lib/i586-mandrake-linux/2.96/include/typeinfo \
+  /home/robert/OpenSceneGraph/include/osg/ref_ptr /usr/include/g++-3/map \
+  /usr/include/g++-3/stl_map.h /usr/include/g++-3/stl_multimap.h \
+  /usr/include/g++-3/vector /usr/include/g++-3/stl_uninitialized.h \
+  /usr/include/g++-3/stl_vector.h /usr/include/g++-3/stl_bvector.h \
+  /usr/include/g++-3/string /usr/include/g++-3/std/bastring.h \
+  /usr/include/g++-3/cstddef /usr/include/g++-3/std/straits.h \
+  /usr/include/g++-3/cctype /usr/include/ctype.h \
+  /usr/include/g++-3/cstring /usr/include/g++-3/alloc.h \
+  /usr/include/g++-3/iterator /usr/include/g++-3/cassert \
+  /usr/include/g++-3/std/bastring.cc \
+  /home/robert/OpenSceneGraph/include/osg/BoundingSphere \
+  /home/robert/OpenSceneGraph/include/osg/Vec3 \
+  /home/robert/OpenSceneGraph/include/osg/Math /usr/include/math.h \
+  /usr/include/bits/huge_val.h /usr/include/bits/mathdef.h \
+  /usr/include/bits/mathcalls.h /usr/include/bits/mathinline.h \
+  /usr/include/g++-3/iostream \
+  /home/robert/OpenSceneGraph/include/osg/NodeCallback \
+  /home/robert/OpenSceneGraph/include/osg/NodeVisitor \
+  /home/robert/OpenSceneGraph/include/osg/FrameStamp \
+  /usr/include/g++-3/ctime /home/robert/OpenSceneGraph/include/osg/Matrix \
+  /home/robert/OpenSceneGraph/include/osg/Vec4 \
+  /home/robert/OpenSceneGraph/include/osg/Billboard \
+  /home/robert/OpenSceneGraph/include/osg/Geode \
+  /home/robert/OpenSceneGraph/include/osg/Drawable \
+  /home/robert/OpenSceneGraph/include/osg/BoundingBox \
+  /usr/lib/gcc-lib/i586-mandrake-linux/2.96/include/float.h \
+  /home/robert/OpenSceneGraph/include/osg/State \
+  /home/robert/OpenSceneGraph/include/osg/Camera \
+  /home/robert/OpenSceneGraph/include/osg/Quat \
+  /home/robert/OpenSceneGraph/include/osg/ClippingVolume \
+  /home/robert/OpenSceneGraph/include/osg/Plane \
+  /home/robert/OpenSceneGraph/include/osg/Viewport \
+  /home/robert/OpenSceneGraph/include/osg/Types \
+  /home/robert/OpenSceneGraph/include/osg/DisplaySettings \
+  /home/robert/OpenSceneGraph/include/osg/Vec2 \
+  /home/robert/OpenSceneGraph/include/osg/Notify \
+  /usr/include/g++-3/fstream /usr/include/g++-3/fstream.h \
+  /home/robert/OpenSceneGraph/include/osg/Texture \
+  /home/robert/OpenSceneGraph/include/osg/Image \
+  /home/robert/OpenSceneGraph/include/osgDB/Registry \
+  /home/robert/OpenSceneGraph/include/osgDB/DynamicLibrary \
+  /home/robert/OpenSceneGraph/include/osgDB/Export \
+  /home/robert/OpenSceneGraph/include/osgDB/ReaderWriter \
+  /home/robert/OpenSceneGraph/include/osgDB/DotOsgWrapper \
+  /home/robert/OpenSceneGraph/include/osgDB/Input \
+  /home/robert/OpenSceneGraph/include/osgDB/FieldReaderIterator \
+  /home/robert/OpenSceneGraph/include/osgDB/Field \
+  /home/robert/OpenSceneGraph/include/osgDB/FieldReader \
+  /home/robert/OpenSceneGraph/include/osgDB/Output \
+  /home/robert/OpenSceneGraph/include/osgDB/ReadFile \
+  /home/robert/OpenSceneGraph/include/osgDB/WriteFile \
+  /home/robert/OpenSceneGraph/include/osgUtil/TrackballManipulator \
+  /home/robert/OpenSceneGraph/include/osgUtil/CameraManipulator \
+  /home/robert/OpenSceneGraph/include/osgUtil/Export \
+  /home/robert/OpenSceneGraph/include/osgUtil/GUIEventHandler \
+  /home/robert/OpenSceneGraph/include/osgUtil/GUIEventAdapter \
+  /home/robert/OpenSceneGraph/include/osgUtil/GUIActionAdapter \
+  /home/robert/OpenSceneGraph/include/osgUtil/FlightManipulator \
+  /home/robert/OpenSceneGraph/include/osgUtil/DriveManipulator \
+  /home/robert/OpenSceneGraph/include/osgGLUT/glut \
+  /usr/X11R6/include/GL/glut.h /usr/X11R6/include/GL/glu.h \
+  /home/robert/OpenSceneGraph/include/osgGLUT/Viewer \
+  /home/robert/OpenSceneGraph/include/osg/Light \
+  /home/robert/OpenSceneGraph/include/osg/Timer /usr/include/sys/time.h \
+  /home/robert/OpenSceneGraph/include/osgUtil/SceneView \
+  /home/robert/OpenSceneGraph/include/osgUtil/CullVisitor \
+  /home/robert/OpenSceneGraph/include/osg/Impostor \
+  /home/robert/OpenSceneGraph/include/osg/LOD \
+  /home/robert/OpenSceneGraph/include/osg/ImpostorSprite \
+  /home/robert/OpenSceneGraph/include/osg/AlphaFunc \
+  /home/robert/OpenSceneGraph/include/osg/TexEnv \
+  /home/robert/OpenSceneGraph/include/osg/EarthSky \
+  /home/robert/OpenSceneGraph/include/osgUtil/RenderGraph \
+  /home/robert/OpenSceneGraph/include/osgUtil/RenderLeaf \
+  /home/robert/OpenSceneGraph/include/osgUtil/RenderStage \
+  /home/robert/OpenSceneGraph/include/osg/ColorMask \
+  /home/robert/OpenSceneGraph/include/osgUtil/RenderBin \
+  /home/robert/OpenSceneGraph/include/osg/Statistics \
+  /home/robert/OpenSceneGraph/include/osgUtil/RenderStageLighting \
+  /home/robert/OpenSceneGraph/include/osgUtil/CullViewState \
+  /home/robert/OpenSceneGraph/include/osgGLUT/Window \
+  /home/robert/OpenSceneGraph/include/osgGLUT/Export \
+  /home/robert/OpenSceneGraph/include/osgUtil/Optimizer

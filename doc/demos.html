@@ -25,6 +25,34 @@
 
 <h2>
 <a NAME="Running the demos"></a><u>Running the demos</u></h2>
+<p>
+Once the OpenSceneGraph is <a href="install.html">installed</a> you will need place the location where it was installed on the you systems paths
+environmental variables, and then download the <a href="data.html">demo data</a> and set the <b>OSG_FILE_PATH</b> so that the file loading can locate the datasets.
+It is probably worth setting you autoexec.bat, .bashrc or.tcsh etc to pick up on these settings so that next time you log in
+everything is in easy reach.
+</p>
+<li>Windows:</li>
+<ul>
+<b>set PATH = C:/all/the/exisitng/paths;C:/OpenSceneGraph/bin</b>
+<br><b>set OSG_FILE_PATH = C:/OpenSceneGraph-Data;C:/OpenSceneGraph-Data/Images;C:/OpenSceneGraph-Data/Fonts</b>
+</ul>
+
+</p>
+<li>Unix</li>
+<ul>
+<b>export PATH = ${PATH}:/home/myaccount/OpenSceneGraph/bin</b>
+<br><b>export LD_LIBRARY_PATH = ${LD_LIBRARY_PATH}:/home/myaccount/OpenSceneGraph/lib</b>
+<br><b>export OSG_FILE_PATH = /home/myaccount/OpenSceneGraph-Data:C:/OpenSceneGraph-Data/Images:C:/OpenSceneGraph-Data/Fonts</b>
+<br>or
+<br><b>setenv PATH ${PATH}:/home/myaccount/OpenSceneGraph/bin</b>
+<br><b>setenv LD_LIBRARY_PATH = ${LD_LIBRARY_PATH}:/home/myaccount/OpenSceneGraph/lib</b>
+<br><b>setenv OSG_FILE_PATH /home/myaccount/OpenSceneGraph-Data:C:/OpenSceneGraph-Data/Images:C:/OpenSceneGraph-Data/Fonts</b>
+</ul>
+
+<p>
+All the demos run on the commandline, most requiring parameters, such as what file to load, if you are in any doubt
+just run the application and it will either run, or provide help on what options it accepts.
+</p>
 
 <table>
   <tr>
@@ -49,68 +77,85 @@
     <td>The hang glide demo creates a simple flying site (Don Burns local hang glide site infact!),
         demonstrating how to create simple terrain, trees and skydomes, and how to implement a simple
         flight camera manipulator to allow the user to fly around.
-    .</td>
+    </td>
   </tr>
   <tr>
     <td><img src="images/osgbillboard.jpg" width=128 height=100 border=0>  </td>
     <td><b>osgbillboard lz.rgb</b></td>
-    <td>
-    .</td>
+    <td>Demonstrates how to create the various types of billboard supported by the OpenSceneGraph. Billboards
+        are typically used for trees or particles effects.
+    </td>
   </tr>
   <tr>
     <td><img src="images/osgcube.jpg" width=128 height=100 border=0>  </td>
     <td><b>osgcube</b></td>
-    <td>
-    .</td>
+    <td>Simplest of all demos, create a cube geometry and spin it!
+    </td>
   </tr>
   <tr>
     <td><img src="images/osghud.jpg" width=128 height=100 border=0>  </td>
     <td><b>osghud glider.osg</b></td>
-    <td>
+    <td>Very similar to the basic sgv demo, but adds an othographic projection over the top of the main 3D view
+        to create a head up display effect. Also demonstrates how to use osgText.
     .</td>
   </tr>
 
   <tr>
     <td><img src="images/osgimpostor.jpg" width=128 height=100 border=0>  </td>
     <td><b>osgimpostor Town.osg</b></td>
-    <td>
-    .</td>
+    <td>OpenSceneGraph is unique amoung scene graph in the fact that it supports dynamically updated impostors natively,
+        and this demo uses osgUtil::InsertImpostorVisitor to traverse the loaded scene graph inserting osg::Importor nodes in place of groups
+        and LOD, so you can add Impostor into any of your own datasets! The scene graph then
+        takes over full repsonsibility for managing required multistage rendering all dynamically at runtime, whilest
+        keeping it neatly encapsulated making it incrediable easy to use.  The Impostor support demonstrates how
+        powerful the multi-stage multi-pass rendering framework that the OpenSceneGraph has, almost all other scene
+        graphs have to hardwire such effects into them and require significant application coding to do so.
+    </td>
   </tr>
   <tr>
     <td><img src="images/osgreflect.jpg" width=128 height=100 border=0>  </td>
     <td><b>osgreflect cow.osg</b></td>
-    <td>
+    <td>An example of how to set up planar reflections using the standard multi-pass stencil buffer algorithm. This
+        is all handled within the scene graph, so there is no need to hardwire multi-pass effects into your own
+        application.
     .</td>
   </tr>
   <tr>
     <td><img src="images/osgscribe.jpg" width=128 height=100 border=0>  </td>
     <td><b>osgscribe.cow.osg</b></td>
-    <td>
-    .</td>
+    <td>An example of how to decorate your scene graph geometry for useful effects such as scribing.  This demo
+        uses two instances of your model, the first one uses the state values set in your scene graph, the
+        second instance override the polygmode to render it as wireframe, and with a polyon offset to ensure it
+        is seen from all angles.  These two instance are grouped together and then are treated like any other
+        scene graph.
+    </td>
   </tr>
   <tr>
     <td><img src="images/osgstereoimage.jpg" width=128 height=100 border=0>  </td>
     <td><b>osgstereoimage left.rgb right.rgb</b></td>
-    <td>
+    <td>An example of use node maks to select different parts of the scene graph for different traversals, in this
+        case two seperate images are drawn for the left and right eyes to generate a stereo 3D image from two flat
+        images!
     .</td>
   </tr>
   <tr>
     <td><img src="images/osgtext.jpg" width=128 height=100 border=0>  </td>
     <td><b>osgtext</b></td>
-    <td>
-    .</td>
+    <td>An example showing how to creating the various different typs of text that the osgText library supports.
+    </td>
   </tr>
   <tr>
     <td><img src="images/osgtexture.jpg" width=128 height=100 border=0>  </td>
     <td><b>osgtexture lz.rgb reflect.rgb</b></td>
-    <td>
-    .</td>
+    <td>An example showing how to creating the textured quads, each with different texture parameters, including
+    anistrophic filtering and texture compression!
+    </td>
   </tr>
   <tr>
     <td><img src="images/osgviews.jpg" width=128 height=100 border=0>  </td>
     <td><b>osgviews.cow.osg</b></td>
-    <td>
-    .</td>
+    <td>An example of multiple viewports all running at once.
+    </td>
   </tr>
 </table>
 

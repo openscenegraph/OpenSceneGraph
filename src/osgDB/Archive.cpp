@@ -40,6 +40,7 @@ Archive::IndexBlock::IndexBlock(unsigned int blockSize):
     _requiresWrite(false),
     _filePosition(0),
     _blockSize(0),
+    _filePositionNextIndexBlock(0),
     _offsetOfNextAvailableSpace(0),
     _data(0)
 {
@@ -198,7 +199,7 @@ void Archive::IndexBlock::write(std::ostream& out)
 
     out.write(reinterpret_cast<char*>(_data),_blockSize);
     
-    osg::notify(osg::INFO)<<"Archive::IndexBlock::write()"<<std::endl;
+    osg::notify(osg::INFO)<<"Archive::IndexBlock::write() end"<<std::endl;
 }
 
 
@@ -465,6 +466,8 @@ bool Archive::addFileReference(pos_type position, size_type size, const std::str
     // if not one available create a new block.    
     if (!indexBlock)
     {
+        osg::notify(osg::NOTICE)<<"Creating new block"<<std::endl;
+    
         if (previousBlock.valid()) previousBlock->setPositionNextIndexBlock(_output.tellp());
     
         indexBlock = new IndexBlock(blockSize);

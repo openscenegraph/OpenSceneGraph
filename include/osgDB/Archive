@@ -120,7 +120,7 @@ class OSGDB_EXPORT Archive : public ReaderWriter
             
             inline bool spaceAvailable(pos_type, size_type, const std::string& filename) const
             {
-                unsigned requiredSize = sizeof(pos_type)+sizeof(unsigned int)+filename.size();
+                unsigned requiredSize = sizeof(pos_type)+sizeof(size_type)+sizeof(unsigned int)+filename.size();
                 return (_offsetOfNextAvailableSpace + requiredSize)<_blockSize;
             }
             

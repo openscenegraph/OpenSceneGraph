@@ -82,6 +82,10 @@ int main( int argc, char **argv )
                     files.insert(files.end(),directory.begin(),directory.end());
                 }
             }
+            else
+            {
+                files.push_back(arguments[pos]);
+            }
         }
     }
     

@@ -28,7 +28,7 @@ void DOFTransform::traverse(osg::NodeVisitor& nv)
     {
         animate();
     }
-    osg::Transform::traverse(nv);
+    Transform::traverse(nv);
 }
 
 bool DOFTransform::computeLocalToWorldMatrix(osg::Matrix& matrix,osg::NodeVisitor*) const

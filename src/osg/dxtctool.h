@@ -43,26 +43,31 @@
 #include <osg/GL>
 #include <osg/Texture>
 
-#if !defined(_MSC_VER)
+#if defined(_MSC_VER)
 
-    typedef char        __int8;
-    typedef short       __int16;
-    typedef int         __int32;
-    typedef long long   __int64;
-
-    #define HEX_0x000000000000FFFF 0x000000000000FFFFll
-    #define HEX_0x000000000FFF0000 0x000000000FFF0000ll
-    #define HEX_0x000000FFF0000000 0x000000FFF0000000ll
-    #define HEX_0x000FFF0000000000 0x000FFF0000000000ll
-    #define HEX_0xFFF0000000000000 0xFFF0000000000000ll
-
-#else
+    typedef __int8  dxtc_int8;
+    typedef __int16 dxtc_int16;
+    typedef __int32 dxtc_int32;
+    typedef __int64 dxtc_int64;
 
     #define HEX_0x000000000000FFFF 0x000000000000FFFF
     #define HEX_0x000000000FFF0000 0x000000000FFF0000
     #define HEX_0x000000FFF0000000 0x000000FFF0000000
     #define HEX_0x000FFF0000000000 0x000FFF0000000000
     #define HEX_0xFFF0000000000000 0xFFF0000000000000
+
+#else
+
+    typedef char        dxtc_int8;
+    typedef short       dxtc_int16;
+    typedef int         dxtc_int32;
+    typedef long long   dxtc_int64;
+
+    #define HEX_0x000000000000FFFF 0x000000000000FFFFll
+    #define HEX_0x000000000FFF0000 0x000000000FFF0000ll
+    #define HEX_0x000000FFF0000000 0x000000FFF0000000ll
+    #define HEX_0x000FFF0000000000 0x000FFF0000000000ll
+    #define HEX_0xFFF0000000000000 0xFFF0000000000000ll
 
 #endif
 
@@ -169,7 +174,7 @@ inline bool dxtc_pixels::SupportedFormat() const {
 
 inline void dxtc_pixels::BVF_Color_H2(void * const pBlock) const {
     // Swap the two first row of pixels
-    __int8 * const pP = ((__int8 * const) pBlock) + 4;
+    dxtc_int8 * const pP = ((dxtc_int8 * const) pBlock) + 4;
 
     std::swap(pP[0], pP[1]);
 }
@@ -177,7 +182,7 @@ inline void dxtc_pixels::BVF_Color_H2(void * const pBlock) const {
 
 inline void dxtc_pixels::BVF_Color_H4(void * const pBlock) const {
     // Swap the the first row of pixels with the last one, then the 2 middle row of pixels
-    __int8 * const pP = ((__int8 * const) pBlock) + 4;
+    dxtc_int8 * const pP = ((dxtc_int8 * const) pBlock) + 4;
 
     std::swap(pP[0], pP[3]);
     std::swap(pP[1], pP[2]);
@@ -186,14 +191,14 @@ inline void dxtc_pixels::BVF_Color_H4(void * const pBlock) const {
 
 inline void dxtc_pixels::BVF_Color(void * const pBlock1, void * const pBlock2) const {
     // Swap the "2 colors" header (32bits each header)
-    __int32 * const pHdr1 = (__int32 * const) pBlock1;
-    __int32 * const pHdr2 = (__int32 * const) pBlock2;
+    dxtc_int32 * const pHdr1 = (dxtc_int32 * const) pBlock1;
+    dxtc_int32 * const pHdr2 = (dxtc_int32 * const) pBlock2;
 
     std::swap(* pHdr1, * pHdr2);
 
     // Now swap the pixel values
-    __int8 * const pP1 = ((__int8 * const) pBlock1) + 4;
-    __int8 * const pP2 = ((__int8 * const) pBlock2) + 4;
+    dxtc_int8 * const pP1 = ((dxtc_int8 * const) pBlock1) + 4;
+    dxtc_int8 * const pP2 = ((dxtc_int8 * const) pBlock2) + 4;
 
     std::swap(pP1[0], pP2[3]);
     std::swap(pP1[1], pP2[2]);
@@ -204,7 +209,7 @@ inline void dxtc_pixels::BVF_Color(void * const pBlock1, void * const pBlock2) c
 
 inline void dxtc_pixels::BVF_Alpha_DXT3_H2(void * const pBlock) const {
     // Swap the two first row of pixels
-    __int16 * const pP = (__int16 * const) pBlock;
+    dxtc_int16 * const pP = (dxtc_int16 * const) pBlock;
 
     std::swap(pP[0], pP[1]);
 }
@@ -212,7 +217,7 @@ inline void dxtc_pixels::BVF_Alpha_DXT3_H2(void * const pBlock) const {
 
 inline void dxtc_pixels::BVF_Alpha_DXT3_H4(void * const pBlock) const {
     // Swap the the first row of pixels with the last one, then the 2 middle row of pixels
-    __int16 * const pP = (__int16 * const) pBlock;
+    dxtc_int16 * const pP = (dxtc_int16 * const) pBlock;
 
     std::swap(pP[0], pP[3]);
     std::swap(pP[1], pP[2]);
@@ -221,8 +226,8 @@ inline void dxtc_pixels::BVF_Alpha_DXT3_H4(void * const pBlock) const {
 
 inline void dxtc_pixels::BVF_Alpha_DXT3(void * const pBlock1, void * const pBlock2) const {
     // Swap all the pixel values
-    __int16 * const pP1 = (__int16 * const) pBlock1;
-    __int16 * const pP2 = (__int16 * const) pBlock2;
+    dxtc_int16 * const pP1 = (dxtc_int16 * const) pBlock1;
+    dxtc_int16 * const pP2 = (dxtc_int16 * const) pBlock2;
 
     std::swap(pP1[0], pP2[3]);
     std::swap(pP1[1], pP2[2]);
@@ -233,9 +238,9 @@ inline void dxtc_pixels::BVF_Alpha_DXT3(void * const pBlock1, void * const pBloc
 
 inline void dxtc_pixels::BVF_Alpha_DXT5_H2(void * const pBlock) const {
     // Swap the two first row of pixels (kinda tricky with DXT5 unaligned encoding)
-    __int32 * const pP = (__int32 * const) (((__int8 * const) pBlock) + 2);
+    dxtc_int32 * const pP = (dxtc_int32 * const) (((dxtc_int8 * const) pBlock) + 2);
 
-    __int32 TmpDWord = (pP[0] & 0xFF000000);
+    dxtc_int32 TmpDWord = (pP[0] & 0xFF000000);
     TmpDWord |=    (pP[0] & 0x00000FFF) << 12;
     TmpDWord |= (pP[0] & 0x00FFF000) >> 12;
     pP[0] = TmpDWord;
@@ -248,9 +253,9 @@ inline void dxtc_pixels::BVF_Alpha_DXT5_H2(void * const pBlock) const {
 
 inline void dxtc_pixels::BVF_Alpha_DXT5_H4(void * const pBlock) const {
     // Swap the the first row of pixels with the last one, then the 2 middle row of pixels (tricky again)
-    __int64 * const pB = (__int64 * const) pBlock;
+    dxtc_int64 * const pB = (dxtc_int64 * const) pBlock;
 
-    __int64 TmpQWord = (pB[0] & HEX_0x000000000000FFFF);
+    dxtc_int64 TmpQWord = (pB[0] & HEX_0x000000000000FFFF);
     TmpQWord |= (pB[0] & HEX_0x000000000FFF0000) << 36;
     TmpQWord |= (pB[0] & HEX_0x000000FFF0000000) << 12;
     TmpQWord |= (pB[0] & HEX_0x000FFF0000000000) >> 12;
@@ -261,16 +266,16 @@ inline void dxtc_pixels::BVF_Alpha_DXT5_H4(void * const pBlock) const {
 
 inline void dxtc_pixels::BVF_Alpha_DXT5(void * const pBlock1, void * const pBlock2) const {
     // Swap all the pixel values (same trick for DXT5)
-    __int64 * const pB1 = (__int64 * const) pBlock1;
-    __int64 * const pB2 = (__int64 * const) pBlock2;
+    dxtc_int64 * const pB1 = (dxtc_int64 * const) pBlock1;
+    dxtc_int64 * const pB2 = (dxtc_int64 * const) pBlock2;
 
-    __int64 TmpQWord1 = (pB1[0] & HEX_0x000000000000FFFF);
+    dxtc_int64 TmpQWord1 = (pB1[0] & HEX_0x000000000000FFFF);
     TmpQWord1 |= (pB1[0] & HEX_0x000000000FFF0000) << 36;
     TmpQWord1 |= (pB1[0] & HEX_0x000000FFF0000000) << 12;
     TmpQWord1 |= (pB1[0] & HEX_0x000FFF0000000000) >> 12;
     TmpQWord1 |= (pB1[0] & HEX_0xFFF0000000000000) >> 36;
 
-    __int64 TmpQWord2 = (pB2[0] & HEX_0x000000000000FFFF);
+    dxtc_int64 TmpQWord2 = (pB2[0] & HEX_0x000000000000FFFF);
     TmpQWord2 |= (pB2[0] & HEX_0x000000000FFF0000) << 36;
     TmpQWord2 |= (pB2[0] & HEX_0x000000FFF0000000) << 12;
     TmpQWord2 |= (pB2[0] & HEX_0x000FFF0000000000) >> 12;
@@ -282,7 +287,7 @@ inline void dxtc_pixels::BVF_Alpha_DXT5(void * const pBlock1, void * const pBloc
 
 
 inline void * dxtc_pixels::GetBlock(size_t i, size_t j, size_t BlockSize) const {
-    const __int8 * pPixels = (const __int8 *) m_pPixels;
+    const dxtc_int8 * pPixels = (const dxtc_int8 *) m_pPixels;
 
     return (void *) (pPixels + i * ((m_Width + 3) / 4) * BlockSize + j * BlockSize);
 }

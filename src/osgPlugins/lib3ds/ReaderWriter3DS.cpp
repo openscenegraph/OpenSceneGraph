@@ -391,7 +391,9 @@ osg::GeoSet*   ReaderWriter3DS::createGeoSet(Lib3dsMesh *m,FaceList& faceList)
         // normalize the normal list to unit length normals.
         for (i=0; i<noVertex; ++i)
         {
-            osg_normals[i].normalize();
+//            osg_normals[i].normalize();
+            float len = osg_normals[i].length();
+            if (len) osg_normals[i]/=len;
         }
 
         geoset->setNormals(osg_normals,osg_indices);

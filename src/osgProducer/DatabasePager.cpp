@@ -1,6 +1,7 @@
 #include <osgProducer/DatabasePager>
 #include <osgDB/ReadFile>
 #include <osg/Geode>
+#include <osg/Timer>
 
 #ifdef WIN32
 #include <windows.h>
@@ -27,10 +28,10 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
     // search to see if filename already exist in the file loaded list.
     bool foundEntry = false;
 
-    _dataLoadedListMutex.lock();
+    _dataToCompileListMutex.lock();
     
-        for(DatabaseRequestList::iterator litr = _dataLoadedList.begin();
-            litr != _dataLoadedList.end() && !foundEntry;
+        for(DatabaseRequestList::iterator litr = _dataToCompileList.begin();
+            litr != _dataToCompileList.end() && !foundEntry;
             ++litr)
         {
             if ((*litr)->_fileName==fileName)
@@ -40,7 +41,7 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
             }
         }        
 
-    _dataLoadedListMutex.unlock();
+    _dataToCompileListMutex.unlock();
 
     if (!foundEntry)
     {
@@ -80,10 +81,10 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
     }
 }
 
-class DatabasePager::FindRenderingObjectsVisitor : public osg::NodeVisitor
+class DatabasePager::FindCompileableRenderingObjectsVisitor : public osg::NodeVisitor
 {
 public:
-    FindRenderingObjectsVisitor(DatabasePager::DataToCompile& dataToCompile):
+    FindCompileableRenderingObjectsVisitor(DatabasePager::DataToCompile& dataToCompile):
         osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
         _dataToCompile(dataToCompile)
     {
@@ -112,7 +113,23 @@ public:
     {
         if (stateset)
         {
-            _dataToCompile.first.push_back(stateset);
+            // search for the existance of any texture object attributes
+            bool foundTextureState = false;
+            osg::StateSet::TextureAttributeList& tal = stateset->getTextureAttributeList();
+            for(osg::StateSet::TextureAttributeList::iterator itr=tal.begin();
+                itr!=tal.end() && !foundTextureState;
+                ++itr)
+            {
+                osg::StateSet::AttributeList& al = *itr;
+                if (al.count(osg::StateAttribute::TEXTURE)==1) foundTextureState = true;
+            }
+
+            // if texture object attributes exist add the state to the list for later compilation.
+            if (foundTextureState)
+            {
+                //std::cout<<"Found compilable texture state"<<std::endl;
+                _dataToCompile.first.push_back(stateset);
+            }
         }
     }
     
@@ -122,6 +139,7 @@ public:
 
         if (drawable->getUseDisplayList() || drawable->getUseVertexBufferObjects())
         {
+            //std::cout<<"Found compilable drawable"<<std::endl;
             _dataToCompile.second.push_back(drawable);
         }
     }
@@ -166,18 +184,61 @@ void DatabasePager::run()
             // it is created this thread is the only one to write to the _loadedModel pointer.
             databaseRequest->_loadedModel = osgDB::readNodeFile(databaseRequest->_fileName);
 
+            bool loadedObjectsNeedToBeCompiled = false;
+
+            if (databaseRequest->_loadedModel.valid() && !_activeGraphicsContexts.empty())
+            {
+                ActiveGraphicsContexts::iterator itr = _activeGraphicsContexts.begin();
+            
+                DataToCompile& dtc = databaseRequest->_dataToCompileMap[*itr];
+                ++itr;                
+                
+                // find all the compileable rendering objects
+                FindCompileableRenderingObjectsVisitor frov(dtc);
+                databaseRequest->_loadedModel->accept(frov);
+                
+                if (!dtc.first.empty() || !dtc.second.empty())
+                {
+                    loadedObjectsNeedToBeCompiled = true;                
+                
+                    // copy the objects to compile list to the other graphics context list.
+                    for(;
+                        itr != _activeGraphicsContexts.end();
+                        ++itr)
+                    {
+                        databaseRequest->_dataToCompileMap[*itr] = dtc;
+                    }
+                }
+            }            
+
+
+            // move the databaseRequest from the front of the fileRequest to the end of
+            // dataLoad list.
             _fileRequestListMutex.lock();
+
+                if (databaseRequest->_loadedModel.valid())
+                {
+                    if (loadedObjectsNeedToBeCompiled)
+                    {
+                        _dataToCompileListMutex.lock();
+                            _dataToCompileList.push_back(databaseRequest);
+                        _dataToCompileListMutex.unlock();
+                    }
+                    else
+                    {
+                        _dataToMergeListMutex.lock();
+                            _dataToMergeList.push_back(databaseRequest);
+                        _dataToMergeListMutex.unlock();
+                    }
+                }        
+
                 _fileRequestList.erase(_fileRequestList.begin());
+
             _fileRequestListMutex.unlock();
 
-            if (databaseRequest->_loadedModel.valid())
-            {
-                _dataLoadedListMutex.lock();
 
-                    _dataLoadedList.push_back(databaseRequest);
+            
 
-                _dataLoadedListMutex.unlock();
-            }        
         }
         
         // hack hack hack... sleep for 1ms so we give other threads a chance..
@@ -196,10 +257,10 @@ void DatabasePager::addLoadedDataToSceneGraph()
 {
     DatabaseRequestList localFileLoadedList;
 
-    // get the dat for the _dataLoadedList, leaving it empty via a std::vector<>.swap.
-    _dataLoadedListMutex.lock();
-        localFileLoadedList.swap(_dataLoadedList);
-    _dataLoadedListMutex.unlock();
+    // get the dat for the _dataToCompileList, leaving it empty via a std::vector<>.swap.
+    _dataToMergeListMutex.lock();
+        localFileLoadedList.swap(_dataToMergeList);
+    _dataToMergeListMutex.unlock();
     
     // add the loaded data into the scene graph.
     for(DatabaseRequestList::iterator itr=localFileLoadedList.begin();
@@ -284,8 +345,119 @@ void DatabasePager::registerPagedLODs(osg::Node* subgraph)
     if (subgraph) subgraph->accept(fplv);
 }
 
+void DatabasePager::setCompileRenderingObjectsForContexID(unsigned int contextID, bool on)
+{
+    if (on)
+    {
+        _activeGraphicsContexts.insert(contextID);
+    }
+    else
+    {
+        _activeGraphicsContexts.erase(contextID);
+    }
+}
+
+bool DatabasePager::getCompileRenderingObjectsForContexID(unsigned int contextID)
+{
+    return _activeGraphicsContexts.count(contextID)!=0;
+}
+
+
 void DatabasePager::compileRenderingObjects(osg::State& state)
 {
-//    std::cout<<"Compiling rendering objects"<<std::endl;
+
+    osg::Timer timer;
+    osg::Timer_t start_tick = timer.tick();
+    double elapsedTime = 0.0;
+
+    osg::ref_ptr<DatabaseRequest> databaseRequest;
+    
+    // get the first compileable entry.
+    _dataToCompileListMutex.lock();
+        if (!_dataToCompileList.empty()) databaseRequest = _dataToCompileList.front();
+    _dataToCompileListMutex.unlock();
+
+    // while there are valid databaseRequest's in the to compile list and there is
+    // sufficient time left compile each databaseRequest's stateset and drawables.
+    while (databaseRequest.valid() && elapsedTime<_maximumTimeForCompiling)
+    {
+        DataToCompileMap& dcm = databaseRequest->_dataToCompileMap;
+        DataToCompile& dtc = dcm[state.getContextID()];
+        if (!dtc.first.empty() && elapsedTime<_maximumTimeForCompiling)
+        {
+            // we have StateSet's to compile
+            StateSetList& sslist = dtc.first;
+            //std::cout<<"Compiling statesets"<<std::endl;
+            StateSetList::iterator itr=sslist.begin();
+            for(;
+                itr!=sslist.end() && elapsedTime<_maximumTimeForCompiling;
+                ++itr)
+            {
+                //std::cout<<"    Compiling stateset"<<(*itr).get()<<std::endl;
+                (*itr)->compile(state);
+                elapsedTime = timer.delta_s(start_tick,timer.tick());
+            }
+            // remove the compiled stateset from the list.
+            sslist.erase(sslist.begin(),itr);
+        }
+        if (!dtc.second.empty() && elapsedTime<_maximumTimeForCompiling)
+        {
+            // we have Drawable's to compile
+            //std::cout<<"Compiling drawables"<<std::endl;
+            DrawableList& dwlist = dtc.second;
+            DrawableList::iterator itr=dwlist.begin();
+            for(;
+                itr!=dwlist.end() && elapsedTime<_maximumTimeForCompiling;
+                ++itr)
+            {
+                //std::cout<<"    Compiling drawable"<<(*itr).get()<<std::endl;
+                (*itr)->compile(state);
+                elapsedTime = timer.delta_s(start_tick,timer.tick());
+            }
+            // remove the compiled drawables from the list.
+            dwlist.erase(dwlist.begin(),itr);
+        }
+        
+        //std::cout<<"Checking if compiled"<<std::endl;
+
+        // now check the to compile entries for all active graphics contexts
+        // to make sure that all have been compiled.
+        bool allCompiled = true;
+        for(DataToCompileMap::iterator itr=dcm.begin();
+            itr!=dcm.end() && allCompiled;
+            ++itr)
+        {
+            if (!(itr->second.first.empty())) allCompiled=false;
+            if (!(itr->second.second.empty())) allCompiled=false;
+        }
+        
+        
+        if (allCompiled)
+        {
+            //std::cout<<"All compiled"<<std::endl;
+
+            // we've compile all of the current databaseRequest so we can now pop it off the
+            // to compile list and place it on the merge list.
+            _dataToCompileListMutex.lock();
+            
+                _dataToMergeListMutex.lock();
+                    _dataToMergeList.push_back(databaseRequest);
+                _dataToMergeListMutex.unlock();
+
+                _dataToCompileList.erase(_dataToCompileList.begin());
+                
+                if (!_dataToCompileList.empty()) databaseRequest = _dataToCompileList.front();
+                else databaseRequest = 0;
+
+            _dataToCompileListMutex.unlock();
+        }
+        else 
+        {
+            //std::cout<<"Not all compiled"<<std::endl;
+            databaseRequest = 0;
+        }
+        
+        elapsedTime = timer.delta_s(start_tick,timer.tick());
+    }
 }
 

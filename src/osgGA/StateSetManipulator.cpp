@@ -1,6 +1,10 @@
 #include <osgGA/StateSetManipulator>
 
 #include <osg/PolygonMode>
+#include <osg/ref_ptr>
+#include <osg/Texture>
+#include <osg/Texture2D>
+#include <osg/TextureRectangle>
 
 using namespace osg;
 using namespace osgGA;
@@ -19,7 +23,13 @@ void StateSetManipulator::setStateSet(StateSet *drawState)
     if(!_drawState.valid()) return;
     _backface = (_drawState->getMode(GL_CULL_FACE)&osg::StateAttribute::ON);
     _lighting =(_drawState->getMode(GL_LIGHTING)&osg::StateAttribute::ON);
-    _texture =(_drawState->getTextureMode(0,GL_TEXTURE_2D)&osg::StateAttribute::ON);
+    
+    unsigned int mode = osg::StateAttribute::INHERIT|osg::StateAttribute::ON;
+    _texture = (_drawState->getTextureMode(0,GL_TEXTURE_1D)&mode) ||
+               (_drawState->getTextureMode(0,GL_TEXTURE_2D)&mode) ||
+               (_drawState->getTextureMode(0,GL_TEXTURE_3D)&mode) ||
+               (_drawState->getTextureMode(0,GL_TEXTURE_RECTANGLE)&mode) ||
+               (_drawState->getTextureMode(0,GL_TEXTURE_CUBE_MAP)&mode);
 }
 
 StateSet *StateSetManipulator::getStateSet()
@@ -59,12 +69,28 @@ bool StateSetManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& aa)
                 break;
 
             case 't' :
+            {
                 _texture = !_texture;
-                if (_texture) _drawState->setTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::INHERIT);
-                else _drawState->setTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF);
+
+//                osg::ref_ptr< osg::Texture > tex = dynamic_cast<osg::Texture*>
+//                    ( _drawState->getAttribute( osg::StateAttribute::TEXTURE ) );
+//                cout << tex->numTextureUnits() << endl;
+
+                unsigned int nunit = 8; // should actually use the _real_ num units here, but how? 
+                unsigned int mode = osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF;
+                if ( _texture ) mode = osg::StateAttribute::INHERIT|osg::StateAttribute::ON;
+                for( unsigned int ii=0; ii<nunit; ii++ )
+                {
+                        _drawState->setTextureMode( ii, GL_TEXTURE_1D, mode );
+                        _drawState->setTextureMode( ii, GL_TEXTURE_2D, mode );
+                        _drawState->setTextureMode( ii, GL_TEXTURE_3D, mode );
+                        _drawState->setTextureMode( ii, GL_TEXTURE_RECTANGLE, mode );
+                        _drawState->setTextureMode( ii, GL_TEXTURE_CUBE_MAP, mode);
+                }
                 aa.requestRedraw();
                 return true;
-                break;
+            }
+            break;
 
             case 'w' :
                 {

@@ -28,7 +28,7 @@ void Frame::rebuild()
 	caption_text->setText(caption_);
 	caption_text->setColor(osg::Vec4(1, 1, 1, 1));
 	caption_text->setAlignment(osgText::Text::CENTER_CENTER);
-	caption_text->setFont("arial.ttf");
+	caption_text->setFont("fonts/arial.ttf");
 	caption_text->setCharacterSize(16);
 	caption_text->setFontResolution(16, 16);
 	caption_text->setPosition(osg::Vec3((rect_.x0 + rect_.x1) / 2, rect_.y1 - 15, 0.2f));

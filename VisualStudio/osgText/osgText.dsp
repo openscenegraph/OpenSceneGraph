@@ -286,3 +286,4 @@ SOURCE=..\..\include\osgText\Version
 # End Group
 # End Target
 # End Project
+

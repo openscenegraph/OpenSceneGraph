@@ -1256,7 +1256,7 @@ ReaderWriter::ReadResult Registry::readObjectImplementation(const std::string& c
         {
             notify(INFO)<<"returning cached instanced of "<<file<<std::endl;
             osg::Object* object = oitr->second.first.get();
-            if (object) return object;
+            if (object) return ReaderWriter::ReadResult(object, ReaderWriter::ReadResult::FILE_LOADED_FROM_CACHE);
             else return ReaderWriter::ReadResult("Error file does not contain an osg::Object");
         }
 
@@ -1402,7 +1402,7 @@ ReaderWriter::ReadResult Registry::readImageImplementation(const std::string& fi
         {
             notify(INFO)<< "returning cached instanced of "<<file<<std::endl;
             osg::Image* image = dynamic_cast<osg::Image*>(oitr->second.first.get());
-            if (image) return image;
+            if (image) return ReaderWriter::ReadResult(image, ReaderWriter::ReadResult::FILE_LOADED_FROM_CACHE);
             else return ReaderWriter::ReadResult("Error file not of type osg::Image");
         }
 
@@ -1551,8 +1551,8 @@ ReaderWriter::ReadResult Registry::readHeightFieldImplementation(const std::stri
         if (oitr!=_objectCache.end())
         {
             notify(INFO)<< "returning cached instanced of "<<file<<std::endl;
-            osg::HeightField* HeightField = dynamic_cast<osg::HeightField*>(oitr->second.first.get());
-            if (HeightField) return HeightField;
+            osg::HeightField* heightField = dynamic_cast<osg::HeightField*>(oitr->second.first.get());
+            if (heightField) return ReaderWriter::ReadResult(heightField, ReaderWriter::ReadResult::FILE_LOADED_FROM_CACHE);
             else return ReaderWriter::ReadResult("Error file not of type osg::HeightField");
         }
 
@@ -1714,7 +1714,7 @@ ReaderWriter::ReadResult Registry::readNodeImplementation(const std::string& fil
         {
             notify(INFO)<< "returning cached instanced of "<<file<<std::endl;
             osg::Node* node = dynamic_cast<osg::Node*>(oitr->second.first.get());
-            if (node) return node;
+            if (node) return ReaderWriter::ReadResult(node, ReaderWriter::ReadResult::FILE_LOADED_FROM_CACHE);
             else return ReaderWriter::ReadResult("Error file not of type osg::Node");
         }
 

@@ -167,7 +167,7 @@ void StateSet::merge(const StateSet& rhs)
     // merge the modes of rhs into this, 
     // this overrides rhs if OVERRIDE defined in this.
     for(ModeList::const_iterator rhs_mitr = rhs._modeList.begin();
-        rhs_mitr != rhs._modeList.begin();
+        rhs_mitr != rhs._modeList.end();
         ++rhs_mitr)
     {
         ModeList::iterator lhs_mitr = _modeList.find(rhs_mitr->first);
@@ -190,7 +190,7 @@ void StateSet::merge(const StateSet& rhs)
     // merge the attributes of rhs into this, 
     // this overrides rhs if OVERRIDE defined in this.
     for(AttributeList::const_iterator rhs_aitr = rhs._attributeList.begin();
-        rhs_aitr != rhs._attributeList.begin();
+        rhs_aitr != rhs._attributeList.end();
         ++rhs_aitr)
     {
         AttributeList::iterator lhs_aitr = _attributeList.find(rhs_aitr->first);
@@ -209,6 +209,11 @@ void StateSet::merge(const StateSet& rhs)
             _attributeList.insert(*rhs_aitr);
         }
     }
+
+    // need to merge rendering hints
+    // but will need to think how best to do this first
+    // RO, Nov. 2001.
+
 }
 
 

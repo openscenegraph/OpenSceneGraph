@@ -272,7 +272,7 @@ class SG_EXPORT Camera: public osg::Referenced
         const Matrix getModelViewMatrix() const;
 
 
-        /** Get the camera view frsutm.*/
+        /** Get the camera view frustum.*/
         inline Polytope getViewFrustum() const
         {
             Polytope cv;

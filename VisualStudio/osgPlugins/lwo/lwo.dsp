@@ -53,7 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 /nologo /dll /pdb:none /machine:I386 /nodefaultlib:"LIBC" /out:"../../../bin/osgdb_lwo.dll" /libpath:"../../../lib"
+# ADD LINK32 glu32.lib /nologo /dll /pdb:none /machine:I386 /nodefaultlib:"LIBC" /out:"../../../bin/osgdb_lwo.dll" /libpath:"../../../lib"
 # SUBTRACT LINK32 /nodefaultlib
 
 !ELSEIF  "$(CFG)" == "osgPlugin lwo - Win32 Debug"
@@ -80,7 +80,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 /nologo /dll /debug /machine:I386 /nodefaultlib:"LIBC" /out:"../../../bin/osgdb_lwod.dll" /pdbtype:sept /libpath:"../../../lib"
+# ADD LINK32 glu32.lib /nologo /dll /debug /machine:I386 /nodefaultlib:"LIBC" /out:"../../../bin/osgdb_lwod.dll" /pdbtype:sept /libpath:"../../../lib"
 # SUBTRACT LINK32 /pdb:none
 
 !ENDIF 
@@ -94,36 +94,136 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\lwo\lw.cpp
+SOURCE=..\..\..\src\osgPlugins\lwo\Block.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\lwo\Clip.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\lwo\Converter.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\lwo\Object.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\lwo\Polygon.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\lwo\Surface.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\lwo\Tessellator.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\lwo\Unit.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\lwo\VertexMap.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\lwo\ReaderWriterLWO.cpp
 # End Source File
+
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\lwo\Lwo2.cpp
+SOURCE=..\..\..\src\osgPlugins\lwo\old_lw.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\lwo\Lwo2Layer.cpp
+SOURCE=..\..\..\src\osgPlugins\lwo\old_Lwo2.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\lwo\old_Lwo2Layer.cpp
+# End Source File
+
 # End Group
 # Begin Group "Header Files"
 
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\lwo\lw.h
+SOURCE=..\..\..\Src\osgPlugins\lwo\Block.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\lwo\Lwo2Layer.h
+SOURCE=..\..\..\Src\osgPlugins\lwo\Clip.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\lwo\Lwo2.h
+SOURCE=..\..\..\Src\osgPlugins\lwo\Converter.h
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\Src\osgPlugins\lwo\iffparser.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\Src\osgPlugins\lwo\Layer.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\Src\osgPlugins\lwo\lwo2chunks.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\Src\osgPlugins\lwo\lwo2parser.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\Src\osgPlugins\lwo\lwo2read.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\Src\osgPlugins\lwo\lwo2types.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\Src\osgPlugins\lwo\Object.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\Src\osgPlugins\lwo\Polygon.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\Src\osgPlugins\lwo\Surface.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\Src\osgPlugins\lwo\Tessellator.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\Src\osgPlugins\lwo\Unit.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\Src\osgPlugins\lwo\VertexMap.h
+# End Source File
+
+# Begin Source File
+
+SOURCE=..\..\..\Src\osgPlugins\lwo\old_lw.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\Src\osgPlugins\lwo\old_Lwo2Layer.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\Src\osgPlugins\lwo\old_Lwo2.h
+# End Source File
+
 # End Group
 # End Target
 # Begin Group "Header Files No. 1"

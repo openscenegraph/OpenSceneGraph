@@ -37,8 +37,8 @@
 #include <iostream>
 #include <fstream>
 
-#include "Lwo2.h"
-#include "Lwo2Layer.h"
+#include "old_Lwo2.h"
+#include "old_Lwo2Layer.h"
 
 Lwo2::Lwo2():
   _current_layer(0),

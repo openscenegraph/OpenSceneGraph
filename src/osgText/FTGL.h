@@ -109,7 +109,4 @@
     #  define FTGL_EXPORT
 #endif  
 
-#include <osg/MemoryManager>
-
-
 #endif    //    __FTGL__

@@ -2,6 +2,7 @@
 
 #include <osg/Image>
 #include <osg/Group>
+#include <osg/Notify>
 
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
@@ -34,10 +35,20 @@ class OSGReaderWriter : public ReaderWriter
             std::string fileName = osgDB::findDataFile( file );
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
+            // code for setting up the database path so that any paged
+            // databases can be automatically located. 
+            osg::ref_ptr<Options> local_opt = const_cast<Options*>(opt);
+            if (!local_opt) local_opt = new Options;
+
+            if (local_opt.valid() && local_opt->getDatabasePath().empty())
+            {
+                local_opt->setDatabasePath(osgDB::getFilePath(fileName));
+            } 
+
             std::ifstream fin(fileName.c_str());
             if (fin)
             {
-                return readNode(fin, opt);
+                return readNode(fin, local_opt.get());
             }
             return 0L;
                         
@@ -49,7 +60,7 @@ class OSGReaderWriter : public ReaderWriter
             Input fr;
             fr.attach(&fin);
             fr.setOptions(options);
-
+            
             typedef std::vector<osg::Node*> NodeList;
             NodeList nodeList;
 

@@ -568,7 +568,7 @@ void displaytext(int x, int y, char *s)
 
 // GWM July 2001 - add Statistics structure, and related RenderBin
 #include <osgUtil/RenderBin>
-#include <osgUtil/Statistics>
+#include <osg/Statistics>
 
 void Viewer::showStats()
 {

@@ -66,7 +66,6 @@ TARGET_INCLUDE_FILES = \
 	osgUtil/SceneViewManipulator\
 	osgUtil/SmoothingVisitor\
 	osgUtil/StateSetManipulator\
-	osgUtil/Statistics\
 	osgUtil/Tesselator\
 	osgUtil/TrackballManipulator\
 	osgUtil/TriStripVisitor\

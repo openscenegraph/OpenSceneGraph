@@ -140,7 +140,7 @@ void RenderStage::draw(osg::State& state,RenderLeaf*& previous)
 
 }
 // Statistics features
-void RenderStage::getPrims(Statistics *primStats)
+void RenderStage::getPrims(osg::Statistics *primStats)
 {
     if (_renderStageLighting.valid()) primStats->nlights+=_renderStageLighting->_lightList.size();
     RenderBin::getPrims(primStats);

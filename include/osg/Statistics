@@ -2,19 +2,18 @@
 //Distributed under the terms of the GNU Library General Public License (LGPL)
 //as published by the Free Software Foundation.
 
-#ifndef OSGUTIL_STATISTICS
-#define OSGUTIL_STATISTICS 1
+#ifndef OSG_STATISTICS
+#define OSG_STATISTICS 1
 
 #include <osg/GeoSet>
 
-namespace osgUtil {
+namespace osg {
 
 /**
  * Statistics base class. Used to extract primitive information from 
  * the renderBin(s).
  */
-
-class OSGUTIL_EXPORT Statistics : public osg::Object
+class SG_EXPORT Statistics : public Object
 {
     public:
     
@@ -23,7 +22,9 @@ class OSGUTIL_EXPORT Statistics : public osg::Object
             nprims=0, nlights=0; nbins=0;
             reset();
         };
+        
         ~Statistics() {}; // no dynamic allocations, so no need to free
+        
         void reset() {
             for (int i=0; i<20; i++) primverts[i]=numprimtypes[i]=primlens[i]=primtypes[i]=0;
         }

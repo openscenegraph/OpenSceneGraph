@@ -6,7 +6,7 @@
 #define OSGUTIL_RENDERBIN 1
 
 #include <osgUtil/RenderGraph>
-#include <osgUtil/Statistics>
+#include <osg/Statistics>
 
 #include <map>
 #include <vector>
@@ -58,7 +58,7 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
         virtual void draw_local(osg::State& state,RenderLeaf*& previous);
 
         /** extract stats for current draw list. */
-        void getPrims(Statistics *primStats);
+        void getPrims(osg::Statistics *primStats);
 
     public:
 

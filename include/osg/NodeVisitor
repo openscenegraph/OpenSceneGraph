@@ -69,6 +69,7 @@ class SG_EXPORT NodeVisitor : public virtual Referenced
         {
             NODE_VISITOR = 0,
             UPDATE_VISITOR,
+            EVENT_VISITOR,
             COLLECT_OCCLUDER_VISITOR,
             CULL_VISITOR
         };

@@ -140,6 +140,20 @@ class SG_EXPORT Node : public Object
         inline unsigned int getNumChildrenRequiringUpdateTraversal() const { return _numChildrenRequiringUpdateTraversal; }
 
 
+        /** Set update node callback, called during update traversal. */
+        void setEventCallback(NodeCallback* nc);
+
+        /** Get update node callback, called during update traversal. */
+        inline NodeCallback* getEventCallback() { return _eventCallback.get(); }
+
+        /** Get const update node callback, called during update traversal. */
+        inline const NodeCallback* getEventCallback() const { return _eventCallback.get(); }
+
+        /** Get the number of Children of this node which require App traversal,
+          * since they have an AppCallback attached to them or their children.*/
+        inline unsigned int getNumChildrenRequiringEventTraversal() const { return _numChildrenRequiringEventTraversal; }
+
+
         /** Set cull node callback, called during cull traversal. */
         void setCullCallback(NodeCallback* nc) { _cullCallback = nc; }
 
@@ -258,6 +272,10 @@ class SG_EXPORT Node : public Object
         ref_ptr<NodeCallback> _updateCallback;
         unsigned int _numChildrenRequiringUpdateTraversal;
         void setNumChildrenRequiringUpdateTraversal(unsigned int num);
+
+        ref_ptr<NodeCallback> _eventCallback;
+        unsigned int _numChildrenRequiringEventTraversal;
+        void setNumChildrenRequiringEventTraversal(unsigned int num);
 
         ref_ptr<NodeCallback> _cullCallback;
 

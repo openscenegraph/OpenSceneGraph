@@ -28,6 +28,8 @@ Node::Node()
     
     _numChildrenRequiringUpdateTraversal = 0;
 
+    _numChildrenRequiringEventTraversal = 0;
+
     _cullingActive = true;
     _numChildrenWithCullingDisabled = 0;
 
@@ -42,6 +44,7 @@ Node::Node(const Node& node,const CopyOp& copyop):
         _parents(), // leave empty as parentList is managed by Group.
         _updateCallback(node._updateCallback),
         _numChildrenRequiringUpdateTraversal(0), // assume no children yet.
+        _numChildrenRequiringEventTraversal(0), // assume no children yet.
         _cullCallback(node._cullCallback),
         _cullingActive(node._cullingActive),
         _numChildrenWithCullingDisabled(0), // assume no children yet.
@@ -164,6 +167,84 @@ void Node::setNumChildrenRequiringUpdateTraversal(unsigned int num)
     
     // finally update this objects value.
     _numChildrenRequiringUpdateTraversal=num;
+    
+}
+
+
+void Node::setEventCallback(NodeCallback* nc)
+{
+    // if no changes just return.
+    if (_eventCallback==nc) return;
+    
+    // app callback has been changed, will need to Event
+    // both _EventCallback and possibly the numChildrenRequiringAppTraversal
+    // if the number of callbacks changes.
+
+
+    // Event the parents numChildrenRequiringAppTraversal
+    // note, if _numChildrenRequiringEventTraversal!=0 then the
+    // parents won't be affected by any app callback change,
+    // so no need to inform them.
+    if (_numChildrenRequiringEventTraversal==0 && !_parents.empty())
+    {
+        int delta = 0;
+        if (_eventCallback.valid()) --delta;
+        if (nc) ++delta;
+        if (delta!=0)
+        {
+            // the number of callbacks has changed, need to pass this
+            // on to parents so they know whether app traversal is
+            // reqired on this subgraph.
+            for(ParentList::iterator itr =_parents.begin();
+                itr != _parents.end();
+                ++itr)
+            {    
+                (*itr)->setNumChildrenRequiringEventTraversal(
+                        (*itr)->getNumChildrenRequiringEventTraversal()+delta );
+            }
+
+        }
+    }
+
+    // set the app callback itself.
+    _eventCallback = nc;
+
+}
+
+void Node::setNumChildrenRequiringEventTraversal(unsigned int num)
+{
+    // if no changes just return.
+    if (_numChildrenRequiringEventTraversal==num) return;
+
+    // note, if _EventCallback is set then the
+    // parents won't be affected by any changes to
+    // _numChildrenRequiringEventTraversal so no need to inform them.
+    if (!_eventCallback && !_parents.empty())
+    {
+    
+        // need to pass on changes to parents.        
+        int delta = 0;
+        if (_numChildrenRequiringEventTraversal>0) --delta;
+        if (num>0) ++delta;
+        if (delta!=0)
+        {
+            // the number of callbacks has changed, need to pass this
+            // on to parents so they know whether app traversal is
+            // reqired on this subgraph.
+            for(ParentList::iterator itr =_parents.begin();
+                itr != _parents.end();
+                ++itr)
+            {    
+                (*itr)->setNumChildrenRequiringEventTraversal(
+                    (*itr)->getNumChildrenRequiringEventTraversal()+delta
+                    );
+            }
+
+        }
+    }
+    
+    // finally Event this objects value.
+    _numChildrenRequiringEventTraversal=num;
     
 }
 

@@ -272,7 +272,7 @@ class NetReader : public osgDB::ReaderWriter
                 return ReadResult::FILE_NOT_FOUND;
             }
 
-            *sio << "GET /" << fileName << " HTTP/1.1\n" << "Host:\n\n";
+            *sio << "GET /" << fileName << " HTTP/1.1\n" << "Host: " << hostname << "\n\n";
             sio->flush();
                                                                                                            
             char linebuff[256];

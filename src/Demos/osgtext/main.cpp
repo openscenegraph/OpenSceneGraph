@@ -57,7 +57,6 @@ void set2dScene(osg::Group* rootNode)
 {
     osgText::Text*    text;
     osg::Geode*        geode;
-    osg::Material*    textMaterial;
     osg::StateSet*  textState;
     double            xOffset=150;
     double            yOffset=gFontSize+10;
@@ -213,7 +212,6 @@ void setScene(osg::Group* rootNode)
 {
     osgText::Text*    text;
     osg::Geode*        geode;
-    osg::Material*    textMaterial;
     osg::StateSet*  textState;
     double            xOffset=0;
     double            yOffset=0;
@@ -232,16 +230,17 @@ void setScene(osg::Group* rootNode)
                        osgText::Text::BOUNDINGBOX |
                        osgText::Text::ALIGNMENT );
     text->setAlignment(gAlignment);
+    text->setColor(TEXT_COL_3D);
     geode = osgNew osg::Geode();
     geode->setName("BitmapFont");
     geode->addDrawable( text );
 
-    textMaterial = osgNew osg::Material();
-    textMaterial->setColorMode( osg::Material::AMBIENT_AND_DIFFUSE);
-    textMaterial->setDiffuse( osg::Material::FRONT_AND_BACK,TEXT_COL_3D);
-    textState = osgNew osg::StateSet();
-    textState->setAttribute(textMaterial );
-    geode->setStateSet( textState );
+//     textMaterial = osgNew osg::Material();
+//     textMaterial->setColorMode( osg::Material::AMBIENT_AND_DIFFUSE);
+//     textMaterial->setDiffuse( osg::Material::FRONT_AND_BACK,TEXT_COL_3D);
+//     textState = osgNew osg::StateSet();
+//     textState->setAttribute(textMaterial );
+//     geode->setStateSet( textState );
 
     rootNode->addChild(geode);
 
@@ -259,19 +258,20 @@ void setScene(osg::Group* rootNode)
                        osgText::Text::BOUNDINGBOX |
                        osgText::Text::ALIGNMENT );
     text->setAlignment(gAlignment);
+    text->setColor(TEXT_COL_3D);
     geode = osgNew osg::Geode();
     geode->setName("PixmapFont");
     geode->addDrawable( text );
 
-    textMaterial = osgNew osg::Material();
-    textMaterial->setColorMode( osg::Material::AMBIENT_AND_DIFFUSE);
-    textMaterial->setDiffuse( osg::Material::FRONT_AND_BACK,TEXT_COL_3D);
+//     textMaterial = osgNew osg::Material();
+//     textMaterial->setColorMode( osg::Material::AMBIENT_AND_DIFFUSE);
+//     textMaterial->setDiffuse( osg::Material::FRONT_AND_BACK,TEXT_COL_3D);
     // to get antiaA pixmapFonts we have to draw them with blending
     osg::BlendFunc    *transp= osgNew  osg::BlendFunc();
     transp->setFunction(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
     textState = osgNew osg::StateSet();
-    textState->setAttribute(textMaterial );
+//     textState->setAttribute(textMaterial );
     textState->setAttribute(transp);
     textState->setMode(GL_BLEND,osg::StateAttribute::ON);
     textState->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
@@ -293,19 +293,20 @@ void setScene(osg::Group* rootNode)
                        osgText::Text::BOUNDINGBOX |
                        osgText::Text::ALIGNMENT );
     text->setAlignment(gAlignment);
+    text->setColor(TEXT_COL_3D);
     geode = osgNew osg::Geode();
     geode->setName("TextureFont");
     geode->addDrawable( text );
 
-    textMaterial = osgNew osg::Material();
-    textMaterial->setColorMode( osg::Material::AMBIENT_AND_DIFFUSE);
-    textMaterial->setDiffuse( osg::Material::FRONT_AND_BACK,TEXT_COL_3D);
+//     textMaterial = osgNew osg::Material();
+//     textMaterial->setColorMode( osg::Material::AMBIENT_AND_DIFFUSE);
+//     textMaterial->setDiffuse( osg::Material::FRONT_AND_BACK,TEXT_COL_3D);
     // to get antiaA pixmapFonts we have to draw them with blending
     transp= osgNew  osg::BlendFunc();
     transp->setFunction(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     textState = osgNew osg::StateSet();
-    textState->setAttribute(textMaterial );
+//     textState->setAttribute(textMaterial );
     textState->setAttribute(transp);
 
     //    textState->setMode(GL_BLEND,osg::StateAttribute::ON);
@@ -330,16 +331,17 @@ void setScene(osg::Group* rootNode)
                        osgText::Text::BOUNDINGBOX |
                        osgText::Text::ALIGNMENT );
     text->setAlignment(gAlignment);
+    text->setColor(TEXT_COL_3D);
     geode = osgNew osg::Geode();
     geode->setName("PolygonFont");
     geode->addDrawable( text );
 
-    textMaterial = osgNew osg::Material();
-    textMaterial->setColorMode( osg::Material::AMBIENT_AND_DIFFUSE);
-    textMaterial->setDiffuse( osg::Material::FRONT_AND_BACK,TEXT_COL_3D);
-    textState = osgNew osg::StateSet();
-    textState->setAttribute(textMaterial );
-    geode->setStateSet( textState );
+//     textMaterial = osgNew osg::Material();
+//     textMaterial->setColorMode( osg::Material::AMBIENT_AND_DIFFUSE);
+//     textMaterial->setDiffuse( osg::Material::FRONT_AND_BACK,TEXT_COL_3D);
+//     textState = osgNew osg::StateSet();
+//     textState->setAttribute(textMaterial );
+//     geode->setStateSet( textState );
 
     rootNode->addChild(geode);
 
@@ -359,16 +361,17 @@ void setScene(osg::Group* rootNode)
                        osgText::Text::BOUNDINGBOX |
                        osgText::Text::ALIGNMENT );
     text->setAlignment(gAlignment);
+    text->setColor(TEXT_COL_3D);
     geode = osgNew osg::Geode();
     geode->setName("OutlineFont");
     geode->addDrawable( text );
 
-    textMaterial = osgNew osg::Material();
-    textMaterial->setColorMode( osg::Material::AMBIENT_AND_DIFFUSE);
-    textMaterial->setDiffuse( osg::Material::FRONT_AND_BACK,TEXT_COL_3D);
-    textState = osgNew osg::StateSet();
-    textState->setAttribute(textMaterial );
-    geode->setStateSet( textState );
+//     textMaterial = osgNew osg::Material();
+//     textMaterial->setColorMode( osg::Material::AMBIENT_AND_DIFFUSE);
+//     textMaterial->setDiffuse( osg::Material::FRONT_AND_BACK,TEXT_COL_3D);
+//     textState = osgNew osg::StateSet();
+//     textState->setAttribute(textMaterial );
+//     geode->setStateSet( textState );
 
     rootNode->addChild(geode);
 

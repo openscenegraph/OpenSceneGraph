@@ -156,6 +156,8 @@ void Tesselator::retesselatePolygons(osg::Geometry& geom)
                     }
                     break;
                 }
+                default:
+                    break;
             }
             
             endContour();

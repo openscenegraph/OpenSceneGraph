@@ -287,10 +287,7 @@ bool ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const Convex
 
         return true;
     }
-    else
-    {
-        return false;
-    }
+    return false;
 }
 
 bool ShadowVolumeOccluder::contains(const std::vector<Vec3>& vertices)

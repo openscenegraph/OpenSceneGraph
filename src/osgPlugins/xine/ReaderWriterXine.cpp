@@ -111,7 +111,7 @@ class ReaderWriterXine : public osgDB::ReaderWriter
 
             // set up drivers
             xine_video_port_t* vo = xine_open_video_driver(_xine, "rgb", XINE_VISUAL_TYPE_RGBOUT, (void*)visual);
-            xine_audio_port_t* ao = xine_open_audio_driver(_xine, "oss", NULL);
+            xine_audio_port_t* ao = xine_open_audio_driver(_xine, "auto", NULL);
 
             if (!vo)
             {
@@ -121,7 +121,7 @@ class ReaderWriterXine : public osgDB::ReaderWriter
             
 
             // set up stream
-            xine_stream_t* stream = xine_stream_new(_xine, 0, vo);
+            xine_stream_t* stream = xine_stream_new(_xine, ao, vo);
 
             // set up queue
             // xine_event_queue_t* queue = xine_event_new_queue(stream);

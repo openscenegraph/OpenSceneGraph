@@ -39,6 +39,7 @@
 
 #include "libmpeg3/libmpeg3.h"
 
+#include <iostream>
 
 
 using namespace osg;
@@ -49,7 +50,9 @@ using namespace osg;
 // Constructor: setup and start thread
 MpegImageStream::MpegImageStream(const char* fileName) : ImageStream()
 {
-    _useMMX = false;
+    std::cout<<"Opening pegImageStream::MpegImageStream"<<std::endl;
+
+    _useMMX = true;
     _fps = 0.0f;
     _frames = 0;
     _len = 0;

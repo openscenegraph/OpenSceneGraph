@@ -391,6 +391,10 @@ int main( int argc, char **argv )
         if (arguments.isString(pos)) fileList.push_back(arguments[pos]);
     }
 
+    if (fileList.size()<2)
+    {
+        return 1;
+    }
 
     // set up the use of stereo by default.
     osg::DisplaySettings* ds = viewer.getDisplaySettings();

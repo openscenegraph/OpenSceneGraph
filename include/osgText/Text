@@ -72,8 +72,17 @@ public:
       * which is converted to an internal TextString.*/
     void setText(const wchar_t* text);
     
+    /** Get the text string. 
+      * Note, if you modify the string you must call Text::update() for
+      * the internal glyph reprentation to be updated.*/
+    String& getText() { return _text; }
+
     /** Get the const text string.*/
     const String& getText() const { return _text; }
+    
+    /** update internal glyph respresnetation used for rendering, 
+      * and bounding volume.*/
+    void update() { computeGlyphRepresentation(); }
 
 
     /** Set the rendered character size in object coordinates.*/

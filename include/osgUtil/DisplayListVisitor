@@ -14,68 +14,52 @@
 namespace osgUtil {
 
 /** Visitor for traversing scene graph and setting each osg::GeoSet's _useDisplayList flag, 
-  * with option to immediately compile osg::GeoSet's OpenGL Display lists.
-  * The mode of operation
-  * of the visitor is controlled by setting the DisplayListMode either on visitor
-  * constructor or via the setDisplayListMode() method.  DisplayListMode options are:
-  * _displayListMode == SWITCH_ON_AND_COMPILE_DISPLAY_LISTS cals gset->compile() on
-  * all Geode children. Note, the visitor must only be used within a valid 
-  * OpenGL context as compile uses OpenGL calls.
-  * _displayListMode == SWITCH_ON_DISPLAY_LISTS sets the Geode's children with 
-  * gset->setUseDisplayList(true), this method does not directly create display list,
-  * or uses OpenGL calls so if safe to use before a valid OpenGL context has been set up.
-  * On the next redraw of the scene, the gset's draw methods will be called
-  * which then will respond to their _useDisplayList being set by creating display lists
-  * automatically.
-  * _displayListMode == SWITCH_OFF_DISPLAY_LISTS sets the Geode's children with 
-  * gset->setUseDisplayList(false), this method does not directly create display list,
-  *  or uses OpenGL calls so if safe to use before a valid OpenGL context has been set up.
+  * with option to immediately compile osg::Drawable OpenGL Display lists and
+  * osg::StateAttribute's.
   */
 class OSGUTIL_EXPORT DisplayListVisitor : public osg::NodeVisitor
 {
     public:
 
-        /** Operation modes of the DisplayListVisitor.*/
-        enum DisplayListMode
+        /** Operation modes of the.*/
+        enum ModeValues
         {
-            SWITCH_ON_AND_COMPILE_DISPLAY_LISTS,
-            COMPILE_ON_DISPLAY_LISTS,
-            SWITCH_ON_DISPLAY_LISTS,
-            SWITCH_OFF_DISPLAY_LISTS
+            SWITCH_ON_DISPLAY_LISTS = 0x1,
+            SWITCH_OFF_DISPLAY_LISTS = 0x2,
+            COMPILE_DISPLAY_LISTS = 0x4,
+            COMPILE_STATE_ATTRIBUTES = 0x8
         };
+        
+        typedef unsigned int Mode;
 
         /** Construct a CompileGeoSetsVisior to traverse all child,
           * with set specified display list mode.  Default mode is to
           * gset->setUseDisplayList(true).
           */
-        DisplayListVisitor(DisplayListMode mode=SWITCH_ON_DISPLAY_LISTS);
+        DisplayListVisitor(Mode mode=COMPILE_DISPLAY_LISTS|COMPILE_STATE_ATTRIBUTES);
         
         /** Set the operational mode of how the visitor should set up osg::GeoSet's.*/
-        void setDisplayListMode(DisplayListMode mode) { _displayListMode = mode; }
+        void setMode(Mode mode) { _mode = mode; }
 
         /** Get the operational mode.*/
-        DisplayListMode getDisplayListMode() const { return _displayListMode; }
+        Mode getMode() const { return _mode; }
         
+
         /** Set the State to use during traversal. */
         void setState(osg::State* state)
         {
-            _externalState = state;
-            if (_externalState.valid()) _activeState = _externalState;
-            else _activeState = _localState;
+            _state = state;
         }
         
         osg::State* getState()
         {
-            return _activeState.get();
+            return _state.get();
         }
         
 
         /** Simply traverse using standard NodeVisitor traverse method.*/
-        virtual void apply(osg::Node& node)
-        {
-            traverse(node);
-        }
-
+        virtual void apply(osg::Node& node);
+        
         /** For each Geode visited set the display list usage according to the 
           * _displayListMode.
           */
@@ -83,14 +67,9 @@ class OSGUTIL_EXPORT DisplayListVisitor : public osg::NodeVisitor
 
     protected:
 
-        DisplayListMode _displayListMode;
+        Mode _mode;
         
-        /** local state is created in constructor and used as the default state during traversal.*/
-        osg::ref_ptr<osg::State> _localState;
-        /** external state is used to override the default state.*/
-        osg::ref_ptr<osg::State> _externalState;
-        /** active state is equal to _externalState when it is valid, otherwise defaults to _localState.*/
-        osg::ref_ptr<osg::State> _activeState;
+        osg::ref_ptr<osg::State> _state;
 
 };
 

@@ -1,6 +1,10 @@
 #include <osgProducer/DatabasePager>
 #include <osgDB/ReadFile>
 
+#ifndef WIN32
+#include <unistd.h>
+#endif
+
 using namespace osgProducer;
 
 DatabasePager::DatabasePager()

@@ -318,7 +318,7 @@ void TerrainManipulator::computePosition(const osg::Vec3d& eye,const osg::Vec3d&
         bool hitFound = false;
 
         float distance = lv.length();
-        float maxDistance = distance+(eye-_node->getBound().center()).length();
+        float maxDistance = distance+2*(eye-_node->getBound().center()).length();
         osg::Vec3 farPosition = eye+lv*(maxDistance/distance);
         osg::Vec3 endPoint = center;
         for(int i=0;

@@ -333,6 +333,10 @@ SOURCE=..\..\src\osg\Projection.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\Referenced.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\ShapeDrawable.cpp
 # End Source File
 # Begin Source File

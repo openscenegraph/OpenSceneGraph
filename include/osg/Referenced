@@ -9,6 +9,11 @@
 
 namespace osg {
 
+
+// forward declar, declared after Refenced below.
+class DeleteHandler;
+
+
 /** Base class from providing referencing counted objects.*/
 class SG_EXPORT Referenced
 {
@@ -31,6 +36,13 @@ class SG_EXPORT Referenced
 
         inline Referenced& operator = (Referenced&) { return *this; }
 
+        friend DeleteHandler;
+
+        static void setDeleteHandler(DeleteHandler* handler);
+
+        static DeleteHandler* getDeleteHandler();
+
+
         /** increment the reference count by one, indicating that 
             this object has another pointer which is referencing it.*/
         inline void ref() const { ++_refCount; }
@@ -39,7 +51,7 @@ class SG_EXPORT Referenced
             a pointer to this object is referencing it.  If the
             reference count goes to zero, it is assumed that this object
             is no longer referenced and is automatically deleted.*/
-        inline void unref() const { --_refCount; if (_refCount<=0) delete this; }
+        inline void unref() const;
         
         /** decrement the reference count by one, indicating that 
             a pointer to this object is referencing it.  However, do
@@ -60,15 +72,51 @@ class SG_EXPORT Referenced
         inline static int deletedCount() { return _deletedCount; }
 #endif
 
+
+        
     protected:
         virtual ~Referenced();
         mutable int _refCount;
+        
+        
 #ifdef OSG_COMPILE_UNIT_TESTS
         static int  _createdCount;  // incremented in the constructor
         static int  _deletedCount;  // incremented in the destructor
 #endif
 
 };
+
+
+/** Class for override the default delete behavior so that users can implment their own object
+  * deletion schemes.  This might be done to help implement protection of multiple threads from deleting
+  * objects unintentionally.*/
+class DeleteHandler
+{
+    public:
+
+        virtual ~DeleteHandler() {}
+
+        /** flush any cache of objects that need to be deleted by doing an actual delete.*/
+        virtual void flush() {}
+        
+        inline void doDelete(const Referenced* object) { delete object; }
+         
+        /** Request the deletion of an object. 
+          * Depending on users implementation of DeleteHandler, the delete of the object may occur 
+          * straight away or be delayed until doDelete is called.
+          * The default implementation does a delete straight away.*/
+        virtual void requestDelete(const Referenced* object) { doDelete(object); }
+};
+
+inline void Referenced::unref() const
+{
+    --_refCount;
+    if (_refCount<=0)
+    {
+        if (getDeleteHandler()) getDeleteHandler()->requestDelete(this);
+        else delete this;
+    }
+}
 
 }
 

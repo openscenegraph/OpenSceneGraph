@@ -106,7 +106,7 @@ void CullStack::pushCullingSet()
                                   M(2,2)*P23,
                                   M(3,2)*P23 + M(3,3)*P33);
                                   
-        float scaleRatio  = 0.701f/sqrtf(scale_00.length2()+scale_10.length2());
+        float scaleRatio  = 0.7071067811f/sqrtf(scale_00.length2()+scale_10.length2());
 
         pixelSizeVector *= scaleRatio;
 

@@ -12,6 +12,8 @@
 
 #include <osg/Math>
 
+#include "../osghangglide/terrain_coords.h"
+
 osg::Geode* createShapes()
 {
     osg::Geode* geode = osgNew osg::Geode();
@@ -39,6 +41,27 @@ osg::Geode* createShapes()
     geode->addDrawable(new osg::ProceduralGeometry(osgNew osg::Box(osg::Vec3(2.0f,0.0f,0.0f),2*radius)));
     geode->addDrawable(new osg::ProceduralGeometry(osgNew osg::Cone(osg::Vec3(4.0f,0.0f,0.0f),radius,height)));
     geode->addDrawable(new osg::ProceduralGeometry(osgNew osg::Cylinder(osg::Vec3(6.0f,0.0f,0.0f),radius,height)));
+
+//     osg::Grid* grid = new osg::Grid;
+//     grid->allocGrid(100,100,0.0f);
+//     grid->setXInterval(0.2f);
+//     grid->setYInterval(0.2f);
+//     grid->populateGrid(-0.2f,0.2f);
+//     geode->addDrawable(new osg::ProceduralGeometry(grid));
+    
+    osg::Grid* grid = new osg::Grid;
+    grid->allocGrid(38,39);
+    grid->setXInterval(0.28f);
+    grid->setYInterval(0.28f);
+    
+    for(unsigned int r=0;r<39;++r)
+    {
+	for(unsigned int c=0;c<38;++c)
+	{
+	    grid->setHeight(c,r,vertex[r+c*39][2]);
+	}
+    }
+    geode->addDrawable(new osg::ProceduralGeometry(grid));
     
     return geode;
 }

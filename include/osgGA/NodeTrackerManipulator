@@ -42,7 +42,7 @@ class OSGGA_EXPORT NodeTrackerManipulator : public MatrixManipulator
         enum TrackerMode 
         {
             NODE_CENTER,
-            NODE_CENTER_AND_AZMIM_ROTATION,
+            NODE_CENTER_AND_AZIM,
             NODE_CENTER_AND_ROTATION,
         };
         
@@ -52,7 +52,7 @@ class OSGGA_EXPORT NodeTrackerManipulator : public MatrixManipulator
 
         enum RotationMode 
         {
-            ELEVATION_AZIM_ROLL,
+            TRACKBALL,
             ELEVATION_AZIM,
         };
         
@@ -163,11 +163,9 @@ class OSGGA_EXPORT NodeTrackerManipulator : public MatrixManipulator
 
         bool                    _thrown;
         
-        osg::Vec3d              _center;
         osg::Quat               _nodeRotation;
         osg::Quat               _rotation;
         float                   _distance;
-        osg::Vec3d              _previousUp;
 
 };
 

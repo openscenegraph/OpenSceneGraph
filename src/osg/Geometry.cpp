@@ -857,15 +857,123 @@ void Geometry::accept(PrimitiveFunctor& functor)
 {
     if (!_vertexArray.valid() || _vertexArray->empty()) return;
     
-    functor.setVertexArray(_vertexArray->size(),&(_vertexArray->front()));
     
-    for(PrimitiveSetList::iterator itr=_primitives.begin();
-        itr!=_primitives.end();
-        ++itr)
+    if (!_vertexIndices.valid())
     {
-        (*itr)->accept(functor);
+        functor.setVertexArray(_vertexArray->size(),&(_vertexArray->front()));
+
+        for(PrimitiveSetList::iterator itr=_primitives.begin();
+            itr!=_primitives.end();
+            ++itr)
+        {
+            (*itr)->accept(functor);
+        }
     }
-    
+    else
+    {
+        for(PrimitiveSetList::iterator itr=_primitives.begin();
+            itr!=_primitives.end();
+            ++itr)
+        {
+            PrimitiveSet* primitiveset = itr->get();
+            GLenum mode=primitiveset->getMode();
+            switch(primitiveset->getType())
+            {
+                case(PrimitiveSet::DrawArraysPrimitiveType):
+                {
+                    const DrawArrays* drawArray = static_cast<const DrawArrays*>(primitiveset);
+                    functor.begin(mode);
+
+                    unsigned int indexEnd = drawArray->getFirst()+drawArray->getCount();
+                    for(unsigned int vindex=drawArray->getFirst();
+                        vindex<indexEnd;
+                        ++vindex)
+                    {
+                        functor.vertex((*_vertexArray)[_vertexIndices->index(vindex)]);
+                    }
+                    
+                    functor.end();
+                    break;
+                }
+                case(PrimitiveSet::DrawArrayLengthsPrimitiveType):
+                {
+
+                    const DrawArrayLengths* drawArrayLengths = static_cast<const DrawArrayLengths*>(primitiveset);
+                    unsigned int vindex=drawArrayLengths->getFirst();
+                    for(DrawArrayLengths::const_iterator primItr=drawArrayLengths->begin();
+                        primItr!=drawArrayLengths->end();
+                        ++primItr)
+                    {
+
+                        functor.begin(mode);
+
+                        for(GLsizei primCount=0;primCount<*primItr;++primCount)
+                        {
+                            functor.vertex((*_vertexArray)[_vertexIndices->index(vindex)]);
+                            ++vindex;
+                        }
+                        
+                        functor.end();
+
+                    }
+                    break;
+                }
+                case(PrimitiveSet::DrawElementsUBytePrimitiveType):
+                {
+                    const DrawElementsUByte* drawElements = static_cast<const DrawElementsUByte*>(primitiveset);
+                    functor.begin(mode);
+
+                    unsigned int primCount=0;
+                    for(DrawElementsUByte::const_iterator primItr=drawElements->begin();
+                        primItr!=drawElements->end();
+                        ++primCount,++primItr)
+                    {
+                        unsigned int vindex=*primItr;
+                        functor.vertex((*_vertexArray)[_vertexIndices->index(vindex)]);
+                    }
+
+                    functor.end();
+                    break;
+                }
+                case(PrimitiveSet::DrawElementsUShortPrimitiveType):
+                {
+                    const DrawElementsUShort* drawElements = static_cast<const DrawElementsUShort*>(primitiveset);
+                    functor.begin(mode);
+
+                    for(DrawElementsUShort::const_iterator primItr=drawElements->begin();
+                        primItr!=drawElements->end();
+                        ++primItr)
+                    {
+                        unsigned int vindex=*primItr;
+                        functor.vertex((*_vertexArray)[_vertexIndices->index(vindex)]);
+                    }
+
+                    functor.end();
+                    break;
+                }
+                case(PrimitiveSet::DrawElementsUIntPrimitiveType):
+                {
+                    const DrawElementsUInt* drawElements = static_cast<const DrawElementsUInt*>(primitiveset);
+                    functor.begin(mode);
+
+                    for(DrawElementsUInt::const_iterator primItr=drawElements->begin();
+                        primItr!=drawElements->end();
+                        ++primItr)
+                    {
+                        unsigned int vindex=*primItr;
+                        functor.vertex((*_vertexArray)[_vertexIndices->index(vindex)]);
+                    }
+
+                    functor.end();
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+        }
+    }    
 }
 
 bool Geometry::verifyBindings() const

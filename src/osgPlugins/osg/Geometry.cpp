@@ -99,6 +99,18 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
     
     }
 
+    if (fr.matchSequence("VertexIndices %w %i {"))
+    {
+        ++fr;
+        IndexArray* indices = dynamic_cast<IndexArray*>(Array_readLocalData(fr));
+        if (indices)
+        {
+            geom.setVertexIndices(indices);
+            iteratorAdvanced = true;
+        }
+    }
+
+
     Geometry::AttributeBinding normalBinding=Geometry::BIND_OFF;
     if (fr[0].matchWord("NormalBinding") && Geometry_matchBindingTypeStr(fr[1].getStr(),normalBinding))
     {
@@ -138,6 +150,16 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
         ++fr;
     }
+    if (fr.matchSequence("NormalIndices %w %i {"))
+    {
+        ++fr;
+        IndexArray* indices = dynamic_cast<IndexArray*>(Array_readLocalData(fr));
+        if (indices)
+        {
+            geom.setNormalIndices(indices);
+            iteratorAdvanced = true;
+        }
+    }
 
     Geometry::AttributeBinding colorBinding=Geometry::BIND_OFF;
     if (fr[0].matchWord("ColorBinding") && Geometry_matchBindingTypeStr(fr[1].getStr(),colorBinding))
@@ -158,6 +180,18 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
         }
     }
 
+    if (fr.matchSequence("ColorIndices %w %i {"))
+    {
+        ++fr;
+        IndexArray* indices = dynamic_cast<IndexArray*>(Array_readLocalData(fr));
+        if (indices)
+        {
+            geom.setColorIndices(indices);
+            iteratorAdvanced = true;
+        }
+    }
+
+
     Geometry::AttributeBinding secondaryColorBinding=Geometry::BIND_OFF;
     if (fr[0].matchWord("SecondaryColorBinding") && Geometry_matchBindingTypeStr(fr[1].getStr(),secondaryColorBinding))
     {
@@ -177,6 +211,16 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
         }
     }
 
+    if (fr.matchSequence("SecondaryColorIndices %w %i {"))
+    {
+        ++fr;
+        IndexArray* indices = dynamic_cast<IndexArray*>(Array_readLocalData(fr));
+        if (indices)
+        {
+            geom.setSecondaryColorIndices(indices);
+            iteratorAdvanced = true;
+        }
+    }
 
 
     Geometry::AttributeBinding fogCoordBinding=Geometry::BIND_OFF;
@@ -219,6 +263,18 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
         ++fr;
     }
 
+    if (fr.matchSequence("FogCoordIndices %w %i {"))
+    {
+        ++fr;
+        IndexArray* indices = dynamic_cast<IndexArray*>(Array_readLocalData(fr));
+        if (indices)
+        {
+            geom.setFogCoordIndices(indices);
+            iteratorAdvanced = true;
+        }
+    }
+
+
     if (fr.matchSequence("TexCoordArray %i %w %i {"))
     {
         int unit=0;
@@ -232,6 +288,20 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
             iteratorAdvanced = true;
         }
         
+    }
+
+    if (fr.matchSequence("TexCoordIndices %i %w %i {"))
+    {
+        int unit=0;
+        fr[1].getInt(unit);
+    
+        fr+=2;
+        IndexArray* indices = dynamic_cast<IndexArray*>(Array_readLocalData(fr));
+        if (indices)
+        {
+            geom.setTexCoordIndices(unit,indices);
+            iteratorAdvanced = true;
+        }
     }
 
     return iteratorAdvanced;
@@ -479,6 +549,40 @@ void Array_writeLocalData(Output& fw, Iterator first, Iterator last,int noItemsP
     
 }
 
+template<class Iterator>
+void Array_writeLocalDataAsInts(Output& fw, Iterator first, Iterator last,int noItemsPerLine=8)
+{
+    fw.indent() << "{"<<std::endl;
+    fw.moveIn();
+
+    int column=0;
+    
+    for(Iterator itr=first;
+        itr!=last;
+        ++itr)
+    {
+        if (column==0) fw.indent();
+        
+        fw << (int)*itr;
+        
+        ++column;
+        if (column==noItemsPerLine)
+        {
+            fw << std::endl;
+            column = 0;
+        }
+        else
+        {
+            fw << " ";
+        }
+    }
+    if (column!=0) fw << std::endl;
+    
+    fw.moveOut();
+    fw.indent()<<"}"<<std::endl;
+    
+}
+
 bool Array_writeLocalData(const Array& array,Output& fw)
 {
     switch(array.getType())
@@ -487,7 +591,7 @@ bool Array_writeLocalData(const Array& array,Output& fw)
             {
                 const ByteArray& carray = static_cast<const ByteArray&>(array);
                 fw<<array.className()<<" "<<carray.size()<<std::endl;
-                Array_writeLocalData(fw,carray.begin(),carray.end());
+                Array_writeLocalDataAsInts(fw,carray.begin(),carray.end());
                 return true;
             }
             break;
@@ -511,7 +615,7 @@ bool Array_writeLocalData(const Array& array,Output& fw)
             {
                 const UByteArray& carray = static_cast<const UByteArray&>(array);
                 fw<<array.className()<<" "<<carray.size()<<std::endl;
-                Array_writeLocalData(fw,carray.begin(),carray.end());
+                Array_writeLocalDataAsInts(fw,carray.begin(),carray.end());
                 return true;
             }
             break;

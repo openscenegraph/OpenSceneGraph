@@ -22,85 +22,32 @@ namespace osgGA{
 //    px py pz = World position in catesian coordinates
 //    ax ay az aw = Orientation (attitude) defined as a quaternion
 
-class AnimationPathManipulator : public osgGA::CameraManipulator
+class OSGGA_EXPORT AnimationPathManipulator : public CameraManipulator
 {
     public:
-	    AnimationPathManipulator( std::string filename ) 
-	    {
-    	        _animationPath = new osg::AnimationPath;
-    		_animationPath->setLoopMode(osg::AnimationPath::LOOP);
+    
+	AnimationPathManipulator( osg::AnimationPath* animationPath=0 );
 
-		FILE *fp = fopen( filename.c_str(), "r" );
-		if( fp == NULL )
-		{
-		    osg::notify(osg::WARN) << "AnimationPathManipulator: Cannot open animation path file \"" << filename << "\".\n";
-		    _valid = false;
-		    return;
-		}
-		while( !feof( fp ))
-		{
-		    double time;
-        	    osg::Vec3 position;
-        	    osg::Quat rotation;
-		    fscanf( fp, "%lf %f %f %f %f %f %f %f\n",
-			&time, &position[0], &position[1], &position[2],
-			&rotation[0], &rotation[1], &rotation[2], &rotation[3] );
+	AnimationPathManipulator( const std::string& filename );
+        
+        
+        void setAnimationPath( osg::AnimationPath* animationPath ) { _animationPath=animationPath; }
+        
+        osg::AnimationPath* getAnimationPath() { return _animationPath.get(); }
+        
+        const osg::AnimationPath* getAnimationPath() const { return _animationPath.get(); }
 
-		    if( !feof(fp))
-        	        _animationPath->insert(time,osg::AnimationPath::ControlPoint(position,rotation));
-		}
-		fclose(fp);
-		_valid = true;
-	    }
+	bool valid() const { return _animationPath.valid(); }
 
-	    bool valid() { return _valid; }
-
-            virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& us)
-	    {
-		if( !_valid ) return false;
-
-		us = us;
-
-		bool retval = false;
-		switch( ea.getEventType() )
-		{
-		    case GUIEventAdapter::FRAME:
-			handleFrame( ea.time() );
-			 
-			break;
-		    case GUIEventAdapter::KEYBOARD:
-			switch( ea.getKey())
-			{
-			    default:
-				retval =  false;
-			}
-			break;
-		}
-		return retval;
-	    }
+        virtual bool handle(const GUIEventAdapter& ea,GUIActionAdapter& us);
+            
     private:
 
 	bool _valid;
 
-	void handleFrame( double time )
-	{
-	    osg::AnimationPath::ControlPoint cp;
-	    _animationPath->getInterpolatedControlPoint( time, cp );
+	void handleFrame( double time );
 
-	    osg::Matrix mat;
-	    cp.getMatrix( mat );
-
-	    osg::Vec3 eye(mat(3,0), mat(3,1), mat(3,2));
-	    mat(3,0) = 0.0;
-	    mat(3,1) = 0.0;
-	    mat(3,2) = 0.0;
-	    osg::Vec3 look = eye + (osg::Vec3(0,1,0) * mat);
-	    osg::Vec3 up = osg::Vec3(0,0,1) * mat;
-	    if( _camera.valid() )
-		_camera->setView( eye, look, up );
-	}
-
-	osg::AnimationPath *_animationPath;
+	osg::ref_ptr<osg::AnimationPath> _animationPath;
 
 };
 

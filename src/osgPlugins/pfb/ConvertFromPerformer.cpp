@@ -17,6 +17,7 @@
 #include <osg/Notify>
 #include <osg/Geometry>
 #include <osg/Sequence>
+#include <osg/ShadeModel>
 
 #include <osgDB/FileNameUtils>
 #include <osgDB/Registry>
@@ -57,23 +58,10 @@ ConvertFromPerformer::ConvertFromPerformer()
 {
     _osgRoot = NULL;
 
-    _gsetPrimMap[PFGS_POINTS] = osg::GeoSet::POINTS;
-    _gsetPrimMap[PFGS_LINES] = osg::GeoSet::LINES;
-    _gsetPrimMap[PFGS_LINESTRIPS] = osg::GeoSet::LINE_STRIP;
-    _gsetPrimMap[PFGS_TRIS] = osg::GeoSet::TRIANGLES;
-    _gsetPrimMap[PFGS_QUADS] = osg::GeoSet::QUADS;
-    _gsetPrimMap[PFGS_TRISTRIPS] = osg::GeoSet::TRIANGLE_STRIP;
-    _gsetPrimMap[PFGS_FLAT_LINESTRIPS] = osg::GeoSet::FLAT_LINE_STRIP;
-    _gsetPrimMap[PFGS_FLAT_TRISTRIPS] = osg::GeoSet::FLAT_TRIANGLE_STRIP;
-    _gsetPrimMap[PFGS_TRIFANS] = osg::GeoSet::TRIANGLE_FAN;
-    _gsetPrimMap[PFGS_FLAT_TRIFANS] = osg::GeoSet::FLAT_TRIANGLE_FAN;
-    _gsetPrimMap[PFGS_POLYS] = osg::GeoSet::POLYGON;
-    _gsetPrimMap[PFGS_NUM_PRIMS] = osg::GeoSet::NO_TYPE;
-
-    _gsetBindMap[PFGS_OFF] = osg::GeoSet::BIND_OFF;
-    _gsetBindMap[PFGS_OVERALL] = osg::GeoSet::BIND_OVERALL;
-    _gsetBindMap[PFGS_PER_PRIM] = osg::GeoSet::BIND_PERPRIM;
-    _gsetBindMap[PFGS_PER_VERTEX] = osg::GeoSet::BIND_PERVERTEX;
+    _gsetBindMap[PFGS_OFF] = osg::Geometry::BIND_OFF;
+    _gsetBindMap[PFGS_OVERALL] = osg::Geometry::BIND_OVERALL;
+    _gsetBindMap[PFGS_PER_PRIM] = osg::Geometry::BIND_PER_PRIMITIVE;
+    _gsetBindMap[PFGS_PER_VERTEX] = osg::Geometry::BIND_PER_VERTEX;
 
     _saveImagesAsRGB = false;
     _saveAbsoluteImagePath = false;
@@ -519,9 +507,8 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
 
     // we'll make it easy to convert by using the Performer style osg::GeoSet,
     // and then convert back to a osg::Geometry afterwards.
-    //osg::ref_ptr<osg::GeoSet> osgGeoSet = new osg::GeoSet;
-    osg::GeoSet* osgGeoSet = new osg::GeoSet;
-    osgGeoSet->ref();
+    //osg::ref_ptr<osg::GeoSet> geom = new osg::GeoSet;
+    osg::Geometry* geom = new osg::Geometry;
 
     int i;
 
@@ -533,20 +520,54 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
     int nv = getNumVerts( geoset );
 
     int prim = geoset->getPrimType();
-    int flat_shaded_offset=0;
-    if (prim == PFGS_FLAT_LINESTRIPS)       flat_shaded_offset=np;
-    else if (prim == PFGS_FLAT_TRISTRIPS)   flat_shaded_offset=2*np;
-    else if (prim == PFGS_FLAT_TRIFANS)     flat_shaded_offset=2*np;
+    int flat_shaded_skip_per_primitive=0;
+    if (prim == PFGS_FLAT_LINESTRIPS)       flat_shaded_skip_per_primitive=1;
+    else if (prim == PFGS_FLAT_TRISTRIPS)   flat_shaded_skip_per_primitive=2;
+    else if (prim == PFGS_FLAT_TRIFANS)     flat_shaded_skip_per_primitive=2;
 
-    osgGeoSet->setPrimType(_gsetPrimMap[geoset->getPrimType()]);
-    osgGeoSet->setNumPrims(np);
+    int flat_shaded_skip_all_primitives=flat_shaded_skip_per_primitive*np;
 
-    if (plen)
+    // create the primitive sets.
+    switch( geoset->getPrimType() )
     {
-        int *osg_plen = new int [np];
-        for(i=0;i<np;++i) osg_plen[i] = plen[i];
-        osgGeoSet->setPrimLengths(osg_plen);
+        case PFGS_POINTS :
+            geom->addPrimitiveSet(new osg::DrawArrays(GL_POINTS,0,np));
+            break;
+
+        case PFGS_LINES :
+            geom->addPrimitiveSet(new osg::DrawArrays(GL_LINES,0,2*np));
+            break;
+
+        case PFGS_TRIS :
+            geom->addPrimitiveSet(new osg::DrawArrays(GL_TRIANGLES,0,3*np));
+            break;
+
+        case PFGS_QUADS :
+            geom->addPrimitiveSet(new osg::DrawArrays(GL_QUADS,0,4*np));
+            break;
+
+        case PFGS_TRISTRIPS :
+            geom->addPrimitiveSet(new osg::DrawArrayLengths(GL_TRIANGLE_STRIP,0,np,plen));
+            break;
+            
+        case PFGS_FLAT_TRISTRIPS :
+            geom->addPrimitiveSet(new osg::DrawArrayLengths(GL_TRIANGLE_STRIP,0,np,plen));
+            break;
+            
+        case PFGS_POLYS :
+            geom->addPrimitiveSet(new osg::DrawArrayLengths(GL_POLYGON,0,np,plen));
+            break;
+            
+        case PFGS_LINESTRIPS :
+            geom->addPrimitiveSet(new osg::DrawArrayLengths(GL_LINE_STRIP,0,np,plen));
+            break;
+
+        case PFGS_FLAT_LINESTRIPS :
+            geom->addPrimitiveSet(new osg::DrawArrayLengths(GL_LINE_STRIP,0,np,plen));
+            break;
+
     }
+
 
     pfVec3 *coords;
     ushort *ilist;
@@ -567,26 +588,72 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
         else
             cc = nv;
 
-        osg::Vec3* osg_coords = new osg::Vec3 [cc];
+        osg::Vec3Array* osg_coords = new osg::Vec3Array(cc);
         for( i = 0; i < cc; i++ )
         {
-            osg_coords[i][0] = coords[i][0];
-            osg_coords[i][1] = coords[i][1];
-            osg_coords[i][2] = coords[i][2];
+            (*osg_coords)[i][0] = coords[i][0];
+            (*osg_coords)[i][1] = coords[i][1];
+            (*osg_coords)[i][2] = coords[i][2];
         }
+        
+        geom->setVertexArray(osg_coords);
 
         if(ilist)
         {
-            GLushort* osg_cindex = new GLushort [nv];
-            for( i = 0; i < nv; i++ )
+            geom->setVertexIndices(new osg::UShortArray(nv,ilist));
+        }
+
+    }
+
+
+    pfVec2 *tcoords;
+    geoset->getAttrLists( PFGS_TEXCOORD2,  (void **)&tcoords, &ilist );
+
+    // copy texture coords
+    if(tcoords)
+    {
+        int bind = geoset->getAttrBind( PFGS_TEXCOORD2 );
+        
+        
+        if (bind==PFGS_PER_VERTEX && bind != PFGS_OFF)
+        {
+            int nn = bind == PFGS_OFF ? 0 :
+                     bind == PFGS_OVERALL ? 1 :
+                     bind == PFGS_PER_PRIM ? geoset->getNumPrims() :
+                     bind == PFGS_PER_VERTEX ? nv : 0;
+
+            // set the normal binding type.
+            //geom->setTextureBinding(_gsetBindMap[bind]);
+
+            // calc the maximum num of vertex from the index list.
+            int cc;
+            if (ilist)
             {
-                osg_cindex[i] = ilist[i];
+                cc = 0;
+                for( i = 0; i < nv; i++ )
+                    if( ilist[i] > cc ) cc = ilist[i];
+                cc++;
             }
-            osgGeoSet->setCoords(osg_coords, osg_cindex );
+            else
+                cc = nn;
+
+            osg::Vec2Array* osg_tcoords = new osg::Vec2Array(cc);
+            for( i = 0; i < cc; i++ )
+            {
+                (*osg_tcoords)[i][0] = tcoords[i][0];
+                (*osg_tcoords)[i][1] = tcoords[i][1];
+            }
+
+            geom->setTexCoordArray(0,osg_tcoords);
+
+            if(ilist)
+            {
+                geom->setTexCoordIndices(0,new osg::UShortArray(nn,ilist));
+            }
         }
         else
         {
-            osgGeoSet->setCoords(osg_coords);
+            std::cout<<"OSG can't handle non PER_VERTEX tex coord binding at present"<<std::endl;
         }
 
     }
@@ -598,98 +665,117 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
     if(norms)
     {
         int bind = geoset->getAttrBind( PFGS_NORMAL3 );
-        int nn = bind == PFGS_OFF ? 0 :
-        bind == PFGS_OVERALL ? 1 :
-        bind == PFGS_PER_PRIM ? geoset->getNumPrims() :
-        bind == PFGS_PER_VERTEX ? nv-flat_shaded_offset : 0;
-
-        // set the normal binding type.
-        osgGeoSet->setNormalBinding(_gsetBindMap[bind]);
-
-        // calc the maximum num of vertex from the index list.
-        int cc;
-        if (ilist)
+        if (bind==PFGS_PER_VERTEX && flat_shaded_skip_all_primitives!=0)
         {
-            cc = 0;
-            for( i = 0; i < nn; i++ )
-                if( ilist[i] > cc ) cc = ilist[i];
-            cc++;
-        }
-        else
-            cc = nn;
+            // handle flat shaded skip of normals.
+            int nn = nv-flat_shaded_skip_all_primitives;
 
-        osg::Vec3* osg_norms = new osg::Vec3 [cc];
-        for( i = 0; i < cc; i++ )
-        {
-            osg_norms[i][0] = norms[i][0];
-            osg_norms[i][1] = norms[i][1];
-            osg_norms[i][2] = norms[i][2];
-        }
+            // set the normal binding type.
+            geom->setNormalBinding(_gsetBindMap[bind]);
 
-        if(ilist)
-        {
-            GLushort* osg_cindex = new GLushort [nn];
-            for( i = 0; i < nn; i++ )
+            if (ilist)
             {
-                osg_cindex[i] = ilist[i];
+                // calc the maximum num of vertex from the index list.
+                int cc = 0;
+                for( i = 0; i < nn; i++ )
+                    if( ilist[i] > cc ) cc = ilist[i];
+                cc++;
+
+                // straight forward mapping of normals across.                
+                osg::Vec3Array* osg_norms = new osg::Vec3Array(cc);
+                for( i = 0; i < cc; i++ )
+                {
+                    (*osg_norms)[i][0] = norms[i][0];
+                    (*osg_norms)[i][1] = norms[i][1];
+                    (*osg_norms)[i][2] = norms[i][2];
+                }
+                geom->setNormalArray(osg_norms);            
+
+                osg::UShortArray* osg_indices = new osg::UShortArray;
+                osg_indices->reserve(nv);
+                
+                int ni=0;
+                for( i = 0; i < np; ++i)
+                {
+                    for(int si=0;si<flat_shaded_skip_per_primitive;++si)
+                    {
+                        osg_indices->push_back(ilist[ni]);
+                    }
+                    for( int pi=0; pi < plen[i]-flat_shaded_skip_per_primitive; ++pi)
+                    {
+                        osg_indices->push_back(ilist[ni++]);
+                    }
+                }
+                
+                if (ni!=nn) 
+                {
+                    std::cout << "1 ni!=nn"<<std::endl;
+                }
+                
+                geom->setNormalIndices(osg_indices);
+                
+                
             }
-            osgGeoSet->setNormals(osg_norms, osg_cindex );
-        }
-        else
-        {
-            osgGeoSet->setNormals(osg_norms);
-        }
-
-    }
-
-    pfVec2 *tcoords;
-    geoset->getAttrLists( PFGS_TEXCOORD2,  (void **)&tcoords, &ilist );
-
-    // copy texture coords
-    if(tcoords)
-    {
-        int bind = geoset->getAttrBind( PFGS_TEXCOORD2 );
-        int nn = bind == PFGS_OFF ? 0 :
-        bind == PFGS_OVERALL ? 1 :
-        bind == PFGS_PER_PRIM ? geoset->getNumPrims() :
-        bind == PFGS_PER_VERTEX ? nv : 0;
-
-        // set the normal binding type.
-        osgGeoSet->setTextureBinding(_gsetBindMap[bind]);
-
-        // calc the maximum num of vertex from the index list.
-        int cc;
-        if (ilist)
-        {
-            cc = 0;
-            for( i = 0; i < nv; i++ )
-                if( ilist[i] > cc ) cc = ilist[i];
-            cc++;
-        }
-        else
-            cc = nn;
-
-        osg::Vec2* osg_tcoords = new osg::Vec2 [cc];
-        for( i = 0; i < cc; i++ )
-        {
-            osg_tcoords[i][0] = tcoords[i][0];
-            osg_tcoords[i][1] = tcoords[i][1];
-        }
-
-        if(ilist)
-        {
-            GLushort* osg_cindex = new GLushort [nn];
-            for( i = 0; i < nn; i++ )
+            else
             {
-                osg_cindex[i] = ilist[i];
+                osg::Vec3Array* osg_norms = new osg::Vec3Array;
+                osg_norms->reserve(nv);
+                
+                int ni=0;
+                for( i = 0; i < np; ++i)
+                {
+                    for(int si=0;si<flat_shaded_skip_per_primitive;++si)
+                    {
+                        osg_norms->push_back(osg::Vec3(norms[ni][0],norms[ni][1],norms[ni][2]));
+                    }
+                    for( int pi=0; pi < plen[i]-flat_shaded_skip_per_primitive; ++pi)
+                    {
+                        osg_norms->push_back(osg::Vec3(norms[ni][0],norms[ni][1],norms[ni][2]));
+                        ni++;
+                    }
+                }
+
+                geom->setNormalArray(osg_norms);            
             }
-            osgGeoSet->setTextureCoords(osg_tcoords, osg_cindex );
+
         }
         else
         {
-            osgGeoSet->setTextureCoords(osg_tcoords);
-        }
+            int nn = bind == PFGS_OFF ? 0 :
+                     bind == PFGS_OVERALL ? 1 :
+                     bind == PFGS_PER_PRIM ? geoset->getNumPrims() :
+                     bind == PFGS_PER_VERTEX ? nv : 0;
 
+            // set the normal binding type.
+            geom->setNormalBinding(_gsetBindMap[bind]);
+
+            // calc the maximum num of vertex from the index list.
+            int cc;
+            if (ilist)
+            {
+                cc = 0;
+                for( i = 0; i < nn; i++ )
+                    if( ilist[i] > cc ) cc = ilist[i];
+                cc++;
+            }
+            else
+                cc = nn;
+
+            osg::Vec3Array* osg_norms = new osg::Vec3Array(cc);
+            for( i = 0; i < cc; i++ )
+            {
+                (*osg_norms)[i][0] = norms[i][0];
+                (*osg_norms)[i][1] = norms[i][1];
+                (*osg_norms)[i][2] = norms[i][2];
+            }
+            geom->setNormalArray(osg_norms);            
+
+            if(ilist)
+            {
+                geom->setNormalIndices(new osg::UShortArray(nn,ilist));
+            }
+
+        }
     }
 
     pfVec4 *colors;
@@ -699,63 +785,145 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
     if(colors)
     {
         int bind = geoset->getAttrBind( PFGS_COLOR4 );
-        int nn = bind == PFGS_OFF ? 0 :
-        bind == PFGS_OVERALL ? 1 :
-        bind == PFGS_PER_PRIM ? geoset->getNumPrims() :
-        bind == PFGS_PER_VERTEX ? nv-flat_shaded_offset : 0;
-
-        // set the normal binding type.
-        osgGeoSet->setColorBinding(_gsetBindMap[bind]);
-
-        // calc the maximum num of vertex from the index list.
-        int cc;
-        if (ilist)
+        if (bind==PFGS_PER_VERTEX && flat_shaded_skip_all_primitives!=0)
         {
-            cc = 0;
-            for( i = 0; i < nn; i++ )
-                if( ilist[i] > cc ) cc = ilist[i];
-            cc++;
-        }
-        else
-            cc = nn;
+            // handle flat shaded skip of colours.
+            // handle flat shaded skip of normals.
+            int nn = nv-flat_shaded_skip_all_primitives;
 
-        osg::Vec4* osg_colors = new osg::Vec4 [cc];
-        for( i = 0; i < cc; i++ )
-        {
-            osg_colors[i][0] = colors[i][0];
-            osg_colors[i][1] = colors[i][1];
-            osg_colors[i][2] = colors[i][2];
-            osg_colors[i][3] = colors[i][3];
-        }
+            // set the normal binding type.
+            geom->setColorBinding(_gsetBindMap[bind]);
 
-        if(ilist)
-        {
-            GLushort* osg_cindex = new GLushort [nn];
-            for( i = 0; i < nn; i++ )
+            if (ilist)
             {
-                osg_cindex[i] = ilist[i];
+                // calc the maximum num of vertex from the index list.
+                int cc = 0;
+                for( i = 0; i < nn; i++ )
+                    if( ilist[i] > cc ) cc = ilist[i];
+                cc++;
+
+                // straight forward mapping of normals across.                
+                osg::Vec4Array* osg_colors = new osg::Vec4Array(cc);
+                for( i = 0; i < cc; i++ )
+                {
+                    (*osg_colors)[i][0] = colors[i][0];
+                    (*osg_colors)[i][1] = colors[i][1];
+                    (*osg_colors)[i][2] = colors[i][2];
+                    (*osg_colors)[i][3] = colors[i][3];
+                }
+                geom->setColorArray(osg_colors);            
+
+                osg::UShortArray* osg_indices = new osg::UShortArray;
+                osg_indices->reserve(nv);
+                
+                int ni=0;
+                for( i = 0; i < np; ++i)
+                {
+                    for(int si=0;si<flat_shaded_skip_per_primitive;++si)
+                    {
+                        osg_indices->push_back(ilist[ni]);
+                    }
+                    for( int pi=0; pi < plen[i]-flat_shaded_skip_per_primitive; ++pi)
+                    {
+                        osg_indices->push_back(ilist[ni++]);
+                    }
+                }
+                
+                if (ni!=nn) 
+                {
+                    std::cout << "1 ni!=nn"<<std::endl;
+                }
+                
+                geom->setColorIndices(osg_indices);
+                
+                
             }
-            osgGeoSet->setColors(osg_colors, osg_cindex );
+            else
+            {
+                osg::Vec4Array* osg_colors = new osg::Vec4Array;
+                osg_colors->reserve(nv);
+                
+                int ni=0;
+                for( i = 0; i < np; ++i)
+                {
+                    for(int si=0;si<flat_shaded_skip_per_primitive;++si)
+                    {
+                        osg_colors->push_back(osg::Vec4(colors[ni][0],colors[ni][1],colors[ni][2],colors[ni][3]));
+                    }
+                    for( int pi=0; pi < plen[i]-flat_shaded_skip_per_primitive; ++pi)
+                    {
+                        osg_colors->push_back(osg::Vec4(colors[ni][0],colors[ni][1],colors[ni][2],colors[ni][3]));
+                        ni++;
+                    }
+                }
+
+                geom->setColorArray(osg_colors);            
+            }
         }
         else
         {
-            osgGeoSet->setColors(osg_colors);
+            int nn = bind == PFGS_OFF ? 0 :
+                     bind == PFGS_OVERALL ? 1 :
+                     bind == PFGS_PER_PRIM ? geoset->getNumPrims() :
+                     bind == PFGS_PER_VERTEX ? nv : 0;
+
+            // set the normal binding type.
+            geom->setColorBinding(_gsetBindMap[bind]);
+
+            // calc the maximum num of vertex from the index list.
+            int cc;
+            if (ilist)
+            {
+                cc = 0;
+                for( i = 0; i < nn; i++ )
+                    if( ilist[i] > cc ) cc = ilist[i];
+                cc++;
+            }
+            else
+                cc = nn;
+
+            osg::Vec4Array* osg_colors = new osg::Vec4Array(cc);
+            for( i = 0; i < cc; i++ )
+            {
+                (*osg_colors)[i][0] = colors[i][0];
+                (*osg_colors)[i][1] = colors[i][1];
+                (*osg_colors)[i][2] = colors[i][2];
+                (*osg_colors)[i][3] = colors[i][3];
+            }
+
+            geom->setColorArray(osg_colors);
+
+            if(ilist)
+            {
+                geom->setTexCoordIndices(0,new osg::UShortArray(nn,ilist));
+            }
+
         }
-
     }
-
-    visitGeoState(osgGeoSet,geoset->getGState());
-
-    // convert to osg::Geometry, as osg::GeoSet is now deprecated.
-    osgDrawable = osgGeoSet->convertToGeometry();
-    if (osgDrawable)
+    else
     {
-        osgGeode->addDrawable(osgDrawable);
-        registerPfObjectForOsgObject(geoset,osgDrawable);
     }
-    osgGeoSet->unref();
+    
+    
+        
+    visitGeoState(geom,geoset->getGState());
+    
+    if (flat_shaded_skip_per_primitive)
+    {
+        osg::StateSet* stateset = geom->getOrCreateStateSet();
+        osg::ShadeModel* shademodel = dynamic_cast<osg::ShadeModel*>(stateset->getAttribute(osg::StateAttribute::SHADEMODEL));
+        if (!shademodel)
+        {
+            shademodel = new osg::ShadeModel;
+            stateset->setAttribute(shademodel);
+        }
+        shademodel->setMode( osg::ShadeModel::FLAT );
+    }
 
-    return osgDrawable;
+    osgGeode->addDrawable(geom);
+    registerPfObjectForOsgObject(geoset,geom);
+
+    return geom;
 }
 
 

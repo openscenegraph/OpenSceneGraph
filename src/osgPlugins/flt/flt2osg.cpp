@@ -1710,16 +1710,20 @@ ConvertFromFLT::addMultiTexture( DynGeoSet* dgset, MultiTextureRecord* mtr )
                 return;
             }
 
-
-            texture_stateset->setTextureAttributeAndModes(
-            i, texture,osg::StateAttribute::ON);
-
-            osg::TexEnv* osgTexEnv = new osg::TexEnv;
-
-            CERR << "osgTexEnv: " << osgTexEnv << "\n";
-
-            osgTexEnv->setMode(osg::TexEnv::MODULATE);
-            texture_stateset->setTextureAttribute( i, osgTexEnv );
+            texture_stateset->setTextureAttributeAndModes(i, texture,osg::StateAttribute::ON);
+   
+            osg::StateAttribute* texenv_0 = textureStateSet->getTextureAttribute( 0, osg::StateAttribute::TEXENV );
+            if (texenv_0)
+            {
+                texture_stateset->setTextureAttribute( i, texenv_0);
+            }
+            else
+            {
+                osg::TexEnv* osgTexEnv = new osg::TexEnv;
+                osgTexEnv->setMode(osg::TexEnv::MODULATE);
+                texture_stateset->setTextureAttribute( i, osgTexEnv );
+            }
+            
 
             CERR << "geom: " << geom << "\n";
             CERR << ", referenceCount: "

@@ -8,6 +8,7 @@
 #include <osg/Depth>
 #include <osg/Billboard>
 #include <osg/Material>
+#include <osg/GLExtensions>
 
 #include <osgGA/TrackballManipulator>
 #include <osgGA/FlightManipulator>

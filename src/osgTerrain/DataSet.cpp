@@ -3244,9 +3244,6 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(CompositeDestinat
             if (texture_dy*resolutionSensitivityScale>tile->_imagery_maxSourceResolutionY) needToDivideY = true;
         }
         
-        osg::notify(osg::NOTICE)<<"texture_dx="<<texture_dx<<"\t_imagery_maxSourceResolutionX="<<tile->_imagery_maxSourceResolutionX<<std::endl;
-        osg::notify(osg::NOTICE)<<"texture_dy="<<texture_dy<<"\t_imagery_maxSourceResolutionY="<<tile->_imagery_maxSourceResolutionY<<std::endl;
-
         unsigned int dem_numColumns;
         unsigned int dem_numRows;
         double dem_dx;
@@ -3899,7 +3896,7 @@ void DataSet::_buildDestination(bool writeToDisk)
     if (!_archive && !_archiveName.empty())
     {
         _archive = new osgDB::Archive;
-        _archive->open(_archiveName, osgDB::Archive::WRITE);
+        _archive->open(_archiveName, osgDB::Archive::CREATE);
     }
 
     if (_destinationGraph.valid())

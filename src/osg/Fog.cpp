@@ -3,6 +3,10 @@
 
 using namespace osg;
 
+#ifndef GL_FOG_COORDINATE_SOURCE
+    #define GL_FOG_COORDINATE_SOURCE    0x8450
+#endif
+
 Fog::Fog()
 {
     _mode = EXP;
@@ -29,6 +33,6 @@ void Fog::apply(State&) const
     static bool fogCoordExtensionSuppoted = osg::isGLExtensionSupported("GL_EXT_fog_coord");
     if (fogCoordExtensionSuppoted)
     {
-        glFogi(GL_FOG_COORDINATE_SOURCE_EXT,_fogCoordinateSource);
+        glFogi(GL_FOG_COORDINATE_SOURCE,_fogCoordinateSource);
     }
 }

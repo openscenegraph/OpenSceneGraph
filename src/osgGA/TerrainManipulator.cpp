@@ -436,7 +436,7 @@ bool TerrainManipulator::calcMovement()
     {
 
         // pan model.
-        double scale = -0.5f*_distance;
+        double scale = -0.3f*_distance;
 
         osg::Matrix rotation_matrix;
         rotation_matrix.set(_rotation);

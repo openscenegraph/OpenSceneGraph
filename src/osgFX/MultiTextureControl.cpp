@@ -46,12 +46,31 @@ void MultiTextureControl::updateStateSet()
     
     stateset->clear();
     
-    if (_textureWeightList.size()==1) 
+    unsigned int numTextureUnitsOn = 0;
+    unsigned int unit;
+    for(unit=0;unit<_textureWeightList.size();++unit)
     {
-        osg::TexEnv* texenv = new osg::TexEnv(osg::TexEnv::MODULATE);
-        stateset->setTextureAttribute(0, texenv);
+        if (_textureWeightList[unit]>0.0f) ++numTextureUnitsOn;
     }
-    if (_textureWeightList.size()==2)
+    
+    if (numTextureUnitsOn<=1)
+    {
+        for(unit=0;unit<_textureWeightList.size();++unit)
+        {
+            if (_textureWeightList[unit]>0.0f) 
+            {
+                osg::TexEnv* texenv = new osg::TexEnv(osg::TexEnv::MODULATE);
+                stateset->setTextureAttribute(unit, texenv);
+                stateset->setTextureMode(unit, GL_TEXTURE_2D, osg::StateAttribute::ON);
+            }
+            else
+            {
+                stateset->setTextureMode(unit, GL_TEXTURE_2D, osg::StateAttribute::OFF | osg::StateAttribute::OVERRIDE);
+            }
+        }
+
+    }
+    else if (_textureWeightList.size()==2)
     {
         {
             osg::TexEnvCombine* texenv = new osg::TexEnvCombine;
@@ -80,7 +99,7 @@ void MultiTextureControl::updateStateSet()
             stateset->setTextureAttribute(1, texenv);
         }
     } 
-    if (_textureWeightList.size()==3)
+    else if (_textureWeightList.size()==3)
     {
         float b = (_textureWeightList[0]+_textureWeightList[1])/(_textureWeightList[0]+_textureWeightList[1]+_textureWeightList[2]);
         float a = _textureWeightList[0]/(_textureWeightList[0]+_textureWeightList[1]);

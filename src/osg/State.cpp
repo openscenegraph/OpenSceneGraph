@@ -570,7 +570,7 @@ void State::haveAppliedAttribute(const StateAttribute::Type type)
     }
 }
 
-const bool State::getCurrentMode(const StateAttribute::GLMode mode) const
+const bool State::getLastAppliedMode(const StateAttribute::GLMode mode) const
 {
     ModeMap::const_iterator itr = _modeMap.find(mode);
     if (itr!=_modeMap.end())
@@ -584,7 +584,7 @@ const bool State::getCurrentMode(const StateAttribute::GLMode mode) const
     }
 }
 
-const StateAttribute* State::getCurrentAttribute(const StateAttribute::Type type) const
+const StateAttribute* State::getLastAppliedAttribute(const StateAttribute::Type type) const
 {
     AttributeMap::const_iterator itr = _attributeMap.find(type);
     if (itr!=_attributeMap.end())

@@ -9,29 +9,37 @@ debug : $(EXEC:=.dbg)\
 	$(LIB:=.dbg)\
 	$(PLUGIN:=.dbg)\
 
-cleanlite : cleanliteopt cleanlitedbg
+cleandepend : cleandependopt cleandependdbg
 
-cleanliteopt : 
+cleandependopt :
+	@[ -d $(OPTDIR) ] && cd $(OPTDIR); rm -f Makedepend
+
+cleandependdbg :
+	@[ -d $(DEBUGDIR) ] && cd $(DEBUGDIR); rm -f Makedepend
+
+cleantarget : cleantargetopt cleantargetdbg
+
+cleantargetopt : 
 	@[ -d $(OPTDIR) ] && cd $(OPTDIR); rm -f $(EXEC) $(LIB) $(PLUGIN)
 
-cleanlitedbg : 
+cleantargetdbg : 
 	@[ -d $(DEBUGDIR) ] && cd $(DEBUGDIR); rm -f $(EXEC) $(LIB) $(PLUGIN)
 
 clean : cleanopt cleandbg
 
 cleanopt : 
-	@[ -d $(OPTDIR) ] && cd $(OPTDIR); rm -f $(OBJS) $(MAKEDEPEND)
+	@[ -d $(OPTDIR) ] && cd $(OPTDIR); rm -f $(OBJS) Makedepend
 
 cleandbg : 
-	@[ -d $(DEBUGDIR) ] && cd $(DEBUGDIR); rm -f $(OBJS) $(MAKEDEPEND)
+	@[ -d $(DEBUGDIR) ] && cd $(DEBUGDIR); rm -f $(OBJS) Makedepend
+
+clobber : clobberdbg clobberopt
 
 clobberopt : 
 	rm -rf $(OPTDIR)
 
 clobberdbg : 
 	rm -rf $(DEBUGDIR)
-
-clobber : clobberdbg clobberopt
 
 
 beautify : 

@@ -15,120 +15,39 @@
 
 #include <osgGA/TrackballManipulator>
 
-#include <math.h>
-
-#include "MpegImageStream.h"
-
-
-/*
- * Create morphed textured geometry
- */
-osg::Geode* morphGeom(osg::Vec3Array* coords,
-                      osg::Vec3Array* normals,
-                      osg::Vec2Array* texCoords,
-                      osg::Image* image,
-                      osg::TexMat* texMat)
+osg::Geometry* createTexturedQuadGeometry(const osg::Vec3& pos,float width,float height, osg::Image* image)
 {
-    /*
-     * GeoSet
-     */
-    osg::Geometry* gset = new osg::Geometry();
-
-    gset->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::POLYGON,0,4));
-
-    gset->setVertexArray(coords);
-
-    gset->setNormalArray(normals);
-    gset->setNormalBinding(osg::Geometry::BIND_OVERALL);
-
-    gset->setTexCoordArray(0,texCoords);
-
-    /*
-     * StateSet
-     */
-    osg::StateSet* state = new osg::StateSet;
-
-    osg::Material* mtl = new osg::Material();
-    osg::Vec4 white( 1.0f, 1.0f, 1.0f, 1.0f );
-    mtl->setEmission( osg::Material::FRONT_AND_BACK, white );
-    mtl->setAmbient( osg::Material::FRONT_AND_BACK, white );
-    mtl->setDiffuse( osg::Material::FRONT_AND_BACK, white );
-    mtl->setSpecular( osg::Material::FRONT_AND_BACK, white );
-    state->setAttribute(mtl);
-
-    //osg::Texture2D* tex = new osg::Texture2D;
-    osg::TextureRectangle* tex = new osg::TextureRectangle;
-    if (!image) {
-        image = osgDB::readImageFile("lz.rgb");
+    bool useTextureRectangle = true;
+    if (useTextureRectangle)
+    {
+        osg::Geometry* pictureQuad = osg::createTexturedQuadGeometry(pos,
+                                           osg::Vec3(width,0.0f,0.0f),
+                                           osg::Vec3(0.0f,0.0f,height),
+                                           image->s(),image->t());
+                                       
+        pictureQuad->getOrCreateStateSet()->setTextureAttributeAndModes(0,
+                    new osg::TextureRectangle(image),
+                    osg::StateAttribute::ON);
+                    
+        return pictureQuad;
     }
-    tex->setImage(image);
-    tex->setFilter(osg::Texture::MIN_FILTER, osg::Texture::NEAREST);
-    tex->setWrap(osg::Texture::WRAP_S, osg::Texture::CLAMP);
-    tex->setWrap(osg::Texture::WRAP_T, osg::Texture::CLAMP);
-    state->setTextureAttributeAndModes(0, tex, osg::StateAttribute::ON);
+    else
+    {
+        osg::Geometry* pictureQuad = osg::createTexturedQuadGeometry(pos,
+                                           osg::Vec3(width,0.0f,0.0f),
+                                           osg::Vec3(0.0f,0.0f,height),
+                                           1.0f,1.0f);
+                                       
+        pictureQuad->getOrCreateStateSet()->setTextureAttributeAndModes(0,
+                    new osg::Texture2D(image),
+                    osg::StateAttribute::ON);
 
-    if (texMat)
-        state->setTextureAttributeAndModes(0, texMat, osg::StateAttribute::ON);
-
-    // don't cull faces
-    osg::CullFace* cull = new osg::CullFace;
-    state->setAttributeAndModes(cull, osg::StateAttribute::OFF);
-
-    /*
-     * Geode
-     */
-    osg::Geode* geode = new osg::Geode;
-    geode->setStateSet( state );
-    geode->addDrawable( gset );
-
-    return geode;
+        return pictureQuad;
+    }
 }
 
-
-/*
- * Main
- */
 int main(int argc, char** argv)
 {
-    // coordinates
-    osg::Vec3Array* coords = new osg::Vec3Array(4);
-    (*coords)[0].set( -1.0f, 0.0f, -1.0f );
-    (*coords)[1].set(  1.0f, 0.0f, -1.0f );
-    (*coords)[2].set(  1.0f, 0.0f,  1.0f );
-    (*coords)[3].set( -1.0f, 0.0f,  1.0f );
-
-
-    // normals
-    osg::Vec3Array* normals = new osg::Vec3Array(1);
-    (*normals)[0].set( 0.0f, 1.0f, 0.0f );
-
-    // texture coordinates
-    osg::Vec2Array* texCoords = new osg::Vec2Array(4);
-    (*texCoords)[0].set(0.0f, 0.0f);
-    (*texCoords)[1].set(1.0f, 0.0f);
-    (*texCoords)[2].set(1.0f, 1.0f);
-    (*texCoords)[3].set(0.0f, 1.0f);
-
-
-    // open MpegImageStream
-    osg::MpegImageStream* mpeg = NULL;
-    if (argc > 1) {
-        mpeg = new osg::MpegImageStream(argv[1]);
-        mpeg->start();
-    }
-
-    osg::TexMat* texMat = new osg::TexMat;
-    texMat->setMatrix(osg::Matrix::scale(mpeg->s(),mpeg->t(),1.0f));
-
-
-    // Create morphed geometry
-    osg::Geode* geode = morphGeom(coords,
-                                  normals, texCoords, mpeg, texMat);
-    //coordMorph.addGeode(geode);
-
-
-
-
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
     
@@ -154,6 +73,20 @@ int main(int argc, char** argv)
         arguments.getApplicationUsage()->write(std::cout);
         return 1;
     }
+
+    osg::Geode* geode = new osg::Geode;
+    osg::Vec3 pos(0.0f,0.0f,0.0f);
+    
+    for(int i=1;i<arguments.argc();++i)
+    {
+        if (arguments.isString(i))
+        {
+            osg::Image* image = osgDB::readImageFile(arguments[i]);
+            geode->addDrawable(createTexturedQuadGeometry(pos,image->s(),image->t(),image));
+        }
+
+    }
+
 
     // report any errors if they have occured when parsing the program aguments.
     if (arguments.errors())
@@ -189,9 +122,6 @@ int main(int argc, char** argv)
         // wait for all cull and draw threads to complete.
         viewer.sync();
         
-        // update the geoemtry
-        //coordMorph.update(viewer.getFrameStamp()->getReferenceTime());
-
         // update the scene by traversing it with the the update visitor which will
         // call all node update callbacks and animations.
         viewer.update();

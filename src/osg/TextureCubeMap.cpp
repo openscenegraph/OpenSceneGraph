@@ -91,6 +91,7 @@ TextureCubeMap::TextureCubeMap():
             _textureHeight(0),
             _numMimpmapLevels(0)
 {
+    setUseHardwareMipMapGeneration(false);
 }
 
 TextureCubeMap::TextureCubeMap(const TextureCubeMap& text,const CopyOp& copyop):
@@ -165,7 +166,6 @@ int TextureCubeMap::compare(const StateAttribute& sa) const
 
 void TextureCubeMap::setImage( Face face, Image* image)
 {
-    dirtyTextureObject();
     _images[face] = image;
     _modifiedTag[face].setAllElementsTo(0);
 }
@@ -255,19 +255,12 @@ void TextureCubeMap::apply(State& state) const
 
         applyTexParameters(GL_TEXTURE_CUBE_MAP,state);
 
-
-        for (int n=0; n<6; n++)
-        {
-            //applyTexImage2D( faceTarget[n], _images[n].get(), state, _textureWidth, _textureHeight, _numMimpmapLevels);
-            applyTexImage2D_load( faceTarget[n], _images[n].get(), state, _textureWidth, _textureHeight, _numMimpmapLevels);
-        }
-
         for (int n=0; n<6; n++)
         {
             const osg::Image* image = _images[n].get();
             if (image)
             {
-                applyTexImage2D_load( faceTarget[n], _images[n].get(), state, _textureWidth, _textureHeight, _numMimpmapLevels);
+                applyTexImage2D_load( faceTarget[n], image, state, _textureWidth, _textureHeight, _numMimpmapLevels);
                 getModifiedTag((Face)n,contextID) = image->getModifiedTag();
             }
 
@@ -291,9 +284,6 @@ void TextureCubeMap::apply(State& state) const
                 }
             }
         }
-
-
-
 
         // in theory the following line is redundent, but in practice
         // have found that the first frame drawn doesn't apply the textures

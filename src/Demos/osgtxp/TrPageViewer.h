@@ -41,7 +41,7 @@ namespace txp
 		Variant of the regular viewer which knows to call
 		the Page Manager at the beginning of each app() phase.
 	 */
-	class OSGTXP_EXPORT PagingViewer : public osgGLUT::Viewer {
+	class PagingViewer : public osgGLUT::Viewer {
 	public:
 		PagingViewer();
 		bool Init(OSGPageManager *,txp::OSGPageManager::ThreadMode = txp::OSGPageManager::ThreadNone);

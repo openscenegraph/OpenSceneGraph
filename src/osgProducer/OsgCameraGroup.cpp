@@ -85,6 +85,8 @@ std::string extractCameraConfigFile(osg::ArgumentParser& arguments)
     return "";
 }
 
+static osg::ApplicationUsageProxy OsgCameraGroup_e1(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"PRODUCER_CAMERA_CONFIG_FILE <filename>","specify the default producer camera config to use when opening osgProducer based applications.");
+
 
 OsgCameraGroup::OsgCameraGroup() : Producer::CameraGroup() 
 {

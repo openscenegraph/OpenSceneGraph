@@ -165,8 +165,8 @@ class SG_EXPORT CullSettings
           * can target either Matrix data type, configured at compile time.*/
         struct ClampProjectionMatrixCallback : public osg::Referenced
         {
-            virtual bool clampProjectionMatrixImplementation(osg::Matrixf& projection, double znear, double zfar) const = 0;
-            virtual bool clampProjectionMatrixImplementation(osg::Matrixd& projection, double znear, double zfar) const = 0;
+            virtual bool clampProjectionMatrixImplementation(osg::Matrixf& projection, double& znear, double& zfar) const = 0;
+            virtual bool clampProjectionMatrixImplementation(osg::Matrixd& projection, double& znear, double& zfar) const = 0;
         };
         
         /** set the ClampProjectionMatrixCallback.*/

@@ -4,8 +4,8 @@
 # Feel free to add your name and change list.
 
 Robert Osfield <robert@openscenegraph.com>
-        - osg, osgUtil and osgDB.
-        - pfb, 3ds, gif, jpeg, tiff, tga, pic, tgz & zip plugins.
+        - osg, osgUtil, osgText, osgSim and osgDB.
+        - osg, osgText, pfb, 3ds, gif, jpeg, tiff, tga, pic, tgz & zip plugins.
         - sgv, various revisions, now most of code is in osgGLUT.
         - 2nd iteration of impostor implemtentation.
         - 2nd iteration of shadow occlusion culling.
@@ -14,14 +14,21 @@ Robert Osfield <robert@openscenegraph.com>
         - project adim & lead.
 
 Don Burns <don@andesengineering.com>
+        - Open Producer
+        - unix makefiles.
         - osg (particularily OpenGL)
         - first version of sgv.
-        - fly database & osgtgz plugins.
-        - unix makefiles.
+        - osghangglide database & osgtgz plugins.
         
+Brede Johansen <bredej@email.com>
+        - flt loader.
+        - osg::Point.
+        - osg::TextureCubeMap
+        - osg::VertexProgram
+        - assistance on visual studio workspace files.
+
 Karsten Weiss <knweiss@gmx.de>
         - 1st iteration of impostor implemtentation.
-        - autoconfiscation of the project (currently a seperate branch.)
         - rpm spec file.
         - documentation.
         - bug fixes.
@@ -35,12 +42,6 @@ Neil Salter <neil@nackle.org>
         - first incarnation of osgUtil, Camera and Manipulators.
         - web site.
 
-Brede Johansen <bredej@email.com>
-        - flt loader.
-        - osg::Point.
-        - osg::TextureCubeMap
-        - assistance on visual studio workspace files.
-
 Ben Discoe <ben@vterrain.org>
         - osgWX and wxsgv demos for integration of OSG with wxWindows.
         - png plugin.
@@ -49,10 +50,6 @@ Ben Discoe <ben@vterrain.org>
 Maroc Jez <marco.jez@arsenal.it>
         - osgParticle
         - IO support for osgText.
-
-Byan Woods <byran@tapestrysolutions.com>
-        - Port to MacOS, various code changes to support this.
-        - Metrowerks CodeWarrior makefiles.        
 
 Randall Hopper <aa8vb@yahoo.com>
         - port to FreeBSD.
@@ -72,21 +69,13 @@ Axel Volley <volley@acm.org>
 
 Geoff Michel
         - .dw (design workshop) loader plugin.
-        - .bmp (Windows Bitmap fiile) loader plugin.
+        - .bmp (Windows Bitmap file) loader plugin.
+        - .geo (Carbon Graphics GEO) loader plugin.
         - OpenGL based stats reporting added to osgGLUT::Viewer.
         
-Max Rheiner <mrn@paus.ch>
-        - osgText wrapping of FTGL text library.
-        - osgtext demo application.
-
-Henry Maddocks <henryj@paradise.net.nz>
-        - FTGL from which osgText is based.
-
 Mike Connell <mikec@vsect.chalmers.se>
         - First implementation of shadow occlusion culling.
-
-Paul Fredrikson
-        - new Matrix implementation.
+        - improvements to 3ds plugin.
 
 Phil Atkin <philatkin@philatkin.com>
         - MacOS X port.
@@ -130,11 +119,14 @@ Alberto Barbati <abarbati@iaanus.com>
         - lazy evaluation of the inverse in the MatrixTransform.
 
 Gideon May <gideon@computer.org>
-        - fixed spacing in osgText.
+        - Fixed spacing in osgText.
         
 Tree <tree@stain.org>
-        - support for encoded text types in osgText.
+        - Support for encoded text types in osgText.
 
+Vladimir Vukicevic <vladimir@pobox.com>
+        - md2 loader.
+        
 Indirect Contributors
 ---------------------
     

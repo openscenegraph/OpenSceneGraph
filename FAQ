@@ -1,0 +1,345 @@
+o API's feature set
+
+   - scene graph based?
+   
+        The scene graph is arranged with geometry nodes (osg::Geode's) as leaf
+        nodes and internal nodes such as osg::DCS's/Groups/LOD etc for position the 
+        geometry objects within the scene and organising scene behaviour.
+        
+   - culling techniques?
+   
+        Currently view frustum culling, small feature culling, and OpenGL's
+        native backface culling. The OSG has been designed so it can be 
+        easily extended, so if you have a favoured culling technique it 
+        won't be difficult to utilise it in the OSG.
+        
+   - terrain / indoor support
+
+        The osg::GeoSet encapsulates all the main OpenGL drawing primitive
+        so its possible to represent pretty well anything you can with straight
+        OpenGL including terrain and room objects and characters.  More 
+        details below.
+        
+        However, if you wish to take advantage of specific optimization such 
+        as adaptive meshing such as ROAM, or procedural culling such as when
+        entering a room or when racing round a track then the OSG's could be
+        easily extend to achieve this.
+        
+        These features are not currently on the todo list for version 1.0 as
+        we intend to keep the OSG focused on the core scene graph. However,
+        you're more than welcome to take on the challenge yourself.
+   
+   - etc, etc (the viz sim capabilities of it)
+   
+        Key features of OpenGL are encapsulated such as Points, Lines, Triangle
+        and Quad Meshed primitives in osg::GeoSet, and Textures, Projected & 
+        Environmental Textures, Transparency etc. in osg::GeoState. 
+        
+        The osgUtil::RenderVisitor currently implements the cull/draw traversal
+        placing objects to be rendered in either a transparency bin or a 
+        opaque bin. The transparent bin is depth sorting w.r.t to the eye point
+        to ensure transparent objects appear correctly. The opaque bin
+        is sorted w.r.t to their osg::GeoState to minimize OpenGL state changes
+        to avoid cache misses in the rendering pipeline.
+        
+        osg::Billboards can be used for rendering trees, or even particle
+        effects such a smoke, snow, explosions etc.
+
+
+o What is the design philosophy behind the OSG.
+
+    (An extract from an email from Don Burns beginnings of the OSG.)
+
+    Thought I'd jot a couple of thoughts down regarding OSG.  A full 
+    simulation package should really be made up of four parts:
+
+        - Scene Graph
+        - Traversers (App, Cull, Draw)
+        - An MP harness
+        - Channel configuration
+
+    The Scene Graph is just that.  It manages a tree structure of different
+    node types that allow management over the behaviour of graphical
+    objects.  The Traversers allow us to use the scene graph to render
+    scenes in the most efficient manner, as well as providing maximum
+    functionality for a real-time simulation.  The stages are (taken from
+    the Performer approach) :
+
+        App - This is the application part of the simulation that interfaces
+    with the outside world, that is control devices, pilot input, animation
+    engines, effects, event engines, etc, etc (there's much more).  This is
+    also the stage that determines what the viewpoint is and consequently
+    the viewing frustum.  App does a full traversal of the scene graph,
+    calling callbacks that may be attached to nodes.
+
+    Cull - This stage takes the information that has been updated by App
+    (mainly the viewing frustum) and effects a cull of all objects, based on
+    trivial accept or reject based on whether the bounds are contained in
+    the viewing frustum or not.  Every node should have a bound associated
+    with it reflecting the bounds of all children under it.  This way, Cull
+    can quickly prune a large section of the scene graph, during traversal.
+    It also implies that scene graphs should be organized spatially, such
+    that groups of objects that are close to each other should also be close
+    to each other on the scene graph.  During traversal, Cull gathers all
+    leaf nodes that wind up being trivially accepted and creates a display
+    list of geosets with their geostates.  These are then sorted by
+    geostate, binning things like states that contain transparencies, and
+    need to be sorted back to front and drawn last.  Cull can also perform
+    accepts/rejects of geosets based on their bounding boxes.  Note that
+    geosets have bounding boxes and geodes have bounding spheres.  This for
+    efficiency.
+
+    Cull also needs to gather nodes that would cause any glcommands, such as
+    SCSs and DCSs which create transforms.
+
+    Draw-  This does not traverse the scene graph, but rather, traverses the
+    resultant display list produced by Cull.  Draw is to be as brain-dead as
+    possible since it has the bulk of compute time reserved for actually
+    drawing.  (Unless, of course you have the luxury of an SGI machine that
+    does all transforms down in the graphics hardware... perhaps NV10 will
+    help a bit on this end).
+
+    The MP harness is a set of management routines for doing
+    multiprocessing.  Ideally, you want to be able to run App, Cull and Draw
+    as separate processes on their own dedicated processors.  Further, you
+    want to run one complete Draw process for every graphics subsystem that
+    you will be rendering to.  In our case, we can assume that most of our
+    users will be on single processor PC's, in which case we stand to
+    benefit from Cull's capability to prune the scene graph, but not much
+    else.  However, this day and age four processor PC's are not that
+    uncommon, and Linux does have pretty good support for this.
+
+    The MP issues include, process (or thread) management and
+    synchronization.  Performer has several MP models.  We also need to
+    consider that this software will probably run on seperate PCs
+    altogether, so that the SGI concept of a single machine with multiple
+    rendering pipes needs to be extended to include multiple PC's, which
+    need to be synchronized across Ethernet or something.
+
+    Note that each Draw process needs its own Cull process, but that there
+    can be only one App for multiple Cull/Draw pairs.  This model might
+    extend quite nicely to a multiple PC environment, in which each PC runs
+    a Cull/Draw pair, and one central machine runs App, broadcasting the
+    viewing frustums for each viewing channel and synchronizing all.
+
+    Lastly, channel configuration.  Currently we now do this by opening a
+    window, choosing a visual, size, etc.  It is often desirable to have
+    multiple channels (or viewports) for one simulator.  There is a whole
+    package of routines that can be written to set this up and initialize
+    it.
+
+    That all being said, as I write this my feeling is that we should limit
+    the scope of OSG to that of only the first item above.  That is, Open
+    Scene Graph will be a Scene Graph and nothing more.  Limiting the scope
+    will allow us to concentrate on quality and robust functionality.  This
+    is one of the best software steps that was taken during the design of
+    OpenGL, in my opinion.  I recall Iris GL and all of its end-all, be-all
+    approach, becoming very convoluted and confusing as it tried to be a
+    windowing system, an input device interface, an imaging package and so
+    forth.  Once the spec defined it as being a rendering API and nothing
+    more, the picture got much clearer.
+
+    Once OSG is in place and it becomes useful, we can then write the
+    traversers, etc, but not limit our version of traversers.  My thinking
+    is that we can publish examples and documents on How to Write an
+    OSG Traverser, or  some such and sit back and watch the world develop
+    the best.  This will also leave us flexible to use the OSG as a protocol
+    for doing 3D on the web, or whatever.  We can write the viewers,
+    traversers, MP harnesses, and channel config software as separate
+    packages.
+
+    Further, I think this will help in the acceptability of OSG as a good
+    standard scene graph.  One of Performer's biggest weaknesses is that it
+    is a huge API and the learning curve is so steep that many but the most
+    hearty are put off by it.  We can make the Scene Graph that anyone can
+    use.
+
+
+o Would the OSG be a good candidate for terrain visualisation.
+
+    Terrain is one of the great candidates for scene graphs.  Two management
+    schemes will help you out : Level Of Detail management and Visibility
+    Culling.
+
+    LOD management consists of defining your visual database (including your
+    terrain) with differing levels of detail.  The further away you are the
+    less detail your terrain needs to have and you can cut down on the amount
+    of polygons required to render it.
+
+    You can also do this with objects in your scene.  For example from 10
+    meters, you'd like a barn to have all the details present, but from 1000
+    meters, you could probably get away with the lack of the silo, windows and
+    detail around the doors.  From 10000 meters it could just as easily be a
+    square red box and at 15000 meters it might as well not be there since
+    its representation may be less than a pixel on the screen.
+
+    Visibility Culling is also important to high performance rendering,
+    especially if your visual database is large.  All nodes on the scene graph
+    have a bounding sphere.   Each parent node has a bounding sphere that
+    encompasses all of its children.  The Cull process traverses the scene
+    graph and tests each node for whether any part of it is in the current
+    viewing frustum.  If not it throws it away.
+
+    With this in mind, you can arrange your database  to make best use of
+    culling.  For example, if you have a lot of trees on your terrain.  Rather
+    than having one Group node that contains all trees (in which case Cull
+    would have to  test every tree for visibility), you arrange your trees in
+    a hierarchical fashion, such that trees are group by geographical
+    location.  Then neighboring groups of trees can be parented together,
+    groups of groups can be parented together and so forth.  This way Cull can
+    visit a high level node,  determine that none of the trees under it are
+    visible and proceed to test the rest of the scene graph.
+
+    This also works for terrain.  Rather than defining one large piece of
+    terrain, you should break it up into smaller sections.  This way, what is
+    not in the viewing frustum can be discarded and the rendering pipeline
+    left unbothered by transforming and clipping polygons that would never
+    appear anyway.
+
+    One of the goals of OSG is to be, again, "Just a scene graph".  Which
+    means that the Cull traversal would not be included as part of the
+    software.  It would be up to the user to provide that, OR, we can add it
+    as a separate piece outside of the scene graph.  We want users to not be
+    limited to what WE think might be the best cull traversal, but rather
+    leave it as an exercise to optimize, be creative and/or create specific
+    cull/draw traversals that best suit your needs.
+
+    One such traversal I can think of is a game in which you are on a track.
+    At any point on this track you can know exactly what is in view and what
+    is not.  You could do something much more creative with this if you are
+    not limited to the implementation "hard coded" in the scene graph
+    software.
+
+o What are the intended target platforms?
+
+    Any platform which supports OpenGL and Standard C++!
+    
+    The real limit being the platforms available to the core developers,
+    if you have a platform which you need supported and have some time
+    to contribute please contact us.
+
+
+o What platforms are currently supported?
+
+    The OSG is currently developed under Windows95, Linux and Irix. Platform
+    specific makedefs are provided for Linux and Irix, and VisualC++ 6.0
+    Workspace files for MS Windows platforms.
+    
+    The OSG should also compile under Windows98/NT and 2000 but has not yet
+    been tested.
+
+
+o What further platforms will be supported in the near future?
+
+    We will be developing autoconf makefiles to assist the porting to
+    other Unix's as well as improving things on Linux and Irix.  
+
+
+o I'm wondering when the OSG will be ready for release.
+
+    An alpha version has been available since May 2000.  The current
+    version is very much a work in progress will the API still in flux.
+    
+    Once the design converges to a stable API we will issue it as a beta,
+    depending on the various factors one would hope to have the API nailed
+    down during summer 2000.
+    
+    A full release with stable API and implementation will be available...
+    Can't set any dates but we can be sure it'll be after then beta release :-)
+    
+
+o What are the dependencies of the OSG?
+
+    Kept to a minimum by design.  The osg scene graph library simply requires OpenGL/Mesa
+    and compiler support for Standard C++.  This means that there is not platform specific
+    depedancies, and should allow the OSG to be ported easily to new platforms.
+    
+    The scene graph viewer sgv depends upon the osg library and GLUT, so should be portable
+    to any platform which GLUT can be ported to. The viewer can also be compiled with FLTK
+    using its GLUT compatibility code.
+
+
+o Do you think Open Scene Graph could be a nice replacement for Inventor?
+
+    Depends what your want from your scene graph.  If you primary interest
+    is a visual simulation application then the performance emphasis of the
+    OSG will be appropriate, if you want to develop a modeling 
+    application and wish to take advantage out of the box UI tools then 
+    Inventor may be better. 
+
+
+o What differentiation between the OSG and other OS projects such as OpenRM/
+  SGL/OpenSG/DDG Toolkit?
+  
+    I have briefly looked both the SGL, DDG and the OpenSG. Both the SGL 
+    are the OpenSG show some uncanny similarities with the OSG, especially 
+    since they all were developed independently. The influence of sgi's Performer,
+    Inventor and Cosmo3D more than likely providing the starting place for designing
+    each of these scene graphs.  DDG doesn't show quite the same heritage,
+    and possibly loses a little cleanness of design with it.  OpenRM is
+    an attempt at a Object Orientated scene graph but it C... This is 
+    about a close as I got with it, as IMHO C++ really is the best currently
+    language for a modern scene graph
+
+    The OSG is also strongly influenced by Performer, this a due to the
+    application which the OSG was first developed for : a Hang Gliding
+    Flight simulator which can use either Performer or the OSG for its
+    scene graph.  The OSG does not try to implement the whole of Performer
+    though, just concentrating of the scene graph to keep the scope in
+    manageable proportions.  The need for the OSG comes about because
+    Performer is only available on Irix with Linux only happening very
+    recently, and Performer is closed source of course.  
+
+    The OSG also takes advantage of the features of Standard C++ and Design 
+    Patterns to help make the library cleaner and improve its extensibility. 
+
+    Many of the current scene graphs, including Inventor and its clones, don't
+    use STL so end up having define their own container and many common 
+    algorithms. We're glad to say that Standard C++ compilers are now
+    common enough that we don't have to descend the lowest common denominator
+    like many older scene graphs.
+
+    The OpenSG design document looks like it describes a very powerful
+    scene graph design, taking on almost all what Performer tackles today.
+    However, this will mean that it will be big, and like the Inventor clones
+    will take *alot* of work to fully implement.  If you need all the features
+    then the OpenSG may well be worth the wait.  If you need less features then
+    the more humble goals of the OSG may well be right for you. 
+    
+
+o Is there a class diagram for the OSG, or white paper on the projects goals?
+
+    The documentation in the distribution has been generated automatically
+    using the excellent Open Source tool doc++, which creates class diagrams.
+    
+    We haven't written an official white paper on projects goals or a design
+    overview yet.  Knowledge of Performer will help in understanding some of the basics
+    of design, as will a familiarity with Design Patterns.  
+    
+
+o Do you need C++ coding support? 
+
+    Yes, indeed! Check out the TODO list which comes with the distribution,
+    and email us with what you fancy contributing to.
+
+        
+o Any recommendations for useful programming books to read to help understand
+  and contribute to the OSG? 
+
+    Good practices are suprisingly hard to come by. C and C++ give you so
+    much rope to hang yourself, but there's few books which really give a
+    developers the rule book of good coding practices.  I found Effective
+    C++ a refreshing contribution to this end.  The Design Patterns book can
+    be pretty useful as well.  
+
+
+o Is there a mailing list?
+
+    Yes indeed, hosted by source forge, so to subscribe head to :
+    http://sourceforge.net/projects/openscenegraph and follow the
+    'Lists' link and follow the intructions.
+
+o How do I submit my contributions?
+
+    We will eventually be setting up CVS access, possibly with SourceForge.
+    Up till then send your changes, to <robert@openscenegraph.org>

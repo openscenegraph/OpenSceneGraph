@@ -1,0 +1,199 @@
+<HTML>
+<HEAD>
+   <TITLE>class  SG_EXPORT osg::Point</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.3">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osg::Point</A>: public <!1><A HREF="Object.html#DOC.2.36.1">Object</A></H2>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=95>
+<param name=classes value="CReferenced,MReferenced.html,CObject,MObject.html,CPoint,MPoint.html">
+<param name=before value="M,M,M">
+<param name=after value="Md_SP,Md_,M">
+<param name=indent value="0,1,2">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<A HREF="#DOC.2.38.1"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A> <B>Point</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.38.2"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>static   <!1><A HREF="Point.html#DOC.2.38.1">Point</A>* <B>instance</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.38.3"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   <!1><A HREF="Object.html#DOC.2.36.1">Object</A>* <B>clone</B>() const 
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.38.4"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   bool <B>isSameKindAs</B>(<!1><A HREF="Object.html#DOC.2.36.1">Object</A>* obj)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.38.5"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   const char* <B>className</B>() const 
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.38.6"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setSize</B>(float size)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.38.7"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setFadeThresholdSize</B>(float fadeThresholdSize)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.38.8"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setDistanceAttenuation</B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; distanceAttenuation)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.38.9"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>static   void <B>enableSmooth</B>( void )
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.38.10"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>static   void <B>disableSmooth</B>( void )
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.38.11"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>apply</B>( void )
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.38.12"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>static   void <B>init_GL_EXT</B>()
+<DD><I></I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<A HREF="#DOC.2.38.16"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>float <B>_size</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.38.17"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>float <B>_fadeThresholdSize</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.38.18"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Vec3.html">Vec3</A> <B>_distanceAttenuation</B>
+<DD><I></I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<A HREF="#DOC.2.38.13"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   <B>~Point</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.38.14"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   bool <B>readLocalData</B>(<!1><A HREF="Input.html">Input</A>&amp; fr)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.38.15"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   bool <B>writeLocalData</B>(<!1><A HREF="Output.html">Output</A>&amp; fw)
+<DD><I></I>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Object.html">Object</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html#DOC.2.36.1">Object</A>* <B>readClone</B>(<!1><A HREF="Input.html">Input</A>&amp; fr)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>write</B>(<!1><A HREF="Output.html">Output</A>&amp; fw)
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Referenced.html">Referenced</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Referenced.html#DOC.2.43.4">Referenced</A>&amp; <B>operator = </B>(<!1><A HREF="Referenced.html#DOC.2.43.4">Referenced</A>&amp;)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>ref</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>unref</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>int <B>referenceCount</B>()
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>int <B>_refCount</B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU">
+<HR>
+<H2>Documentation</H2>
+<DL>
+
+<A NAME="Point">
+<A NAME="DOC.2.38.1">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Point()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="instance">
+<A NAME="DOC.2.38.2">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   <!1><A HREF="Point.html#DOC.2.38.1">Point</A>* instance()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="clone">
+<A NAME="DOC.2.38.3">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html#DOC.2.36.1">Object</A>* clone() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="isSameKindAs">
+<A NAME="DOC.2.38.4">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(<!1><A HREF="Object.html#DOC.2.36.1">Object</A>* obj)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="className">
+<A NAME="DOC.2.38.5">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setSize">
+<A NAME="DOC.2.38.6">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSize(float size)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setFadeThresholdSize">
+<A NAME="DOC.2.38.7">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setFadeThresholdSize(float fadeThresholdSize)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setDistanceAttenuation">
+<A NAME="DOC.2.38.8">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDistanceAttenuation(const <!1><A HREF="Vec3.html">Vec3</A>&amp; distanceAttenuation)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="enableSmooth">
+<A NAME="DOC.2.38.9">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   void enableSmooth( void )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="disableSmooth">
+<A NAME="DOC.2.38.10">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   void disableSmooth( void )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="apply">
+<A NAME="DOC.2.38.11">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void apply( void )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="init_GL_EXT">
+<A NAME="DOC.2.38.12">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   void init_GL_EXT()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~Point">
+<A NAME="DOC.2.38.13">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Point()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readLocalData">
+<A NAME="DOC.2.38.14">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool readLocalData(<!1><A HREF="Input.html">Input</A>&amp; fr)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="writeLocalData">
+<A NAME="DOC.2.38.15">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool writeLocalData(<!1><A HREF="Output.html">Output</A>&amp; fw)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_size">
+<A NAME="DOC.2.38.16">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _size</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_fadeThresholdSize">
+<A NAME="DOC.2.38.17">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _fadeThresholdSize</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_distanceAttenuation">
+<A NAME="DOC.2.38.18">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec3.html">Vec3</A> _distanceAttenuation</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I><P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

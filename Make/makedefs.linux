@@ -1,0 +1,56 @@
+MAKEDIR    = $(OSGHOME)/Make
+INSTRULES  = $(MAKEDIR)/instrules
+MAKEDEPEND = Makedepend
+OBJS = $(C++FILES:.cpp=.o) $(CFILES:.c=.o) $(YACCFILES:.y=.o) $(LEXFILES:.l=.o)
+
+DEPFILES = $(OBJS:.o=.d)
+
+
+C++ = g++
+YFLAGS = -d
+LCINCS   += -I/usr/X11R6/include
+LC++INCS += ${LCINCS}
+CFLAGS   = -O2 -W -Wall $(LCINCS)
+C++FLAGS = ${CFLAGS}
+CPPFLAGS = ${CFLAGS}
+
+LDFLAGS = -O2 -W -Wall
+
+PFLIBS = -lpfdu -lpfutil -lpf  -ldl
+
+
+#
+# TARGET_DIRS are directories that would not exist on the system except
+# for the presence of OpenSceneGraph.  'make instclean' removes these
+# directories
+#
+TARGET_DIRS    = \
+		/usr/include/osg \
+		/usr/include/osgUtil \
+		/usr/share/OpenSceneGraph\
+		/usr/share/OpenSceneGraph/data\
+		/usr/share/OpenSceneGraph/data/Images\
+		/usr/share/OpenSceneGraph/data/Test\
+		/usr/lib/osgPlugins\
+
+
+TARGET_BIN     = /usr/bin
+TARGET_LIB     = /usr/lib
+TARGET_INCLUDE = /usr/include
+TARGET_DATA    = /usr/share/OpenSceneGraph/data
+
+#
+# This definitions are necessary for IRIX. The following statement
+# does not work for smake using a sh:
+#
+#    for variable in $(LIST); do ...; done
+#
+# .. if $(LIST) is a NULL variable.  So we have to define 0 length
+# strings and check for them inside the for loop
+#
+
+TARGET_LIB_FILES = ""
+TARGET_BIN_FILES = ""
+TARGET_INCLUDE_FILES = ""
+TARGET_DATA_FILES = ""
+TARGET_LOADER_FILES = ""

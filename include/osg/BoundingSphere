@@ -1,0 +1,85 @@
+#ifndef OSG_BOUNDINGSPHERE
+#define OSG_BOUNDINGSPHERE 1
+
+#include <osg/Export>
+#include <osg/Vec3>
+
+namespace osg {
+
+/** General purpose bounding sphere class for enclosing nodes/objects/vertices.
+    Used to bound internal osg::Node's in the scene,
+    to assist in view frustrum culling etc.  Similar in function to BoundingBox
+    but is quicker for evaluating culling, but generally encloses a greater volume
+    than a BoundingBox so will not cull so aggressively.
+*/
+class SG_EXPORT BoundingSphere
+{
+    public:
+        
+        Vec3 _center;
+        float _radius;
+
+        /** construct to invalid values to represent an unset bounding sphere.*/ 
+        BoundingSphere() : _center(0.0f,0.0f,0.0f),_radius(-1.0f) {}
+    
+        /** initialize to invalid values to represent an unset bounding sphere.*/ 
+        void init()
+        {
+            _center.set(0.0f,0.0f,0.0f);
+            _radius = -1.0f;
+        }
+
+        /** return true if the bounding sphere contains valid values,
+            false if the bounding sphere is effectively unset.*/
+        bool isValid() const { return _radius>=0.0f; }
+
+
+        /** return the const center of the bounding sphere.*/
+        const Vec3& center() const { return _center; }
+        /** return the center of the bounding sphere.*/
+        Vec3& center() { return _center; }
+
+        /** return the const radius of the bounding sphere.*/
+        float radius() const { return _radius; }
+        /** return the radius of the bounding sphere.*/
+        float& radius() { return _radius; }
+        
+        /** return the radius squared. 
+            Note, for performance reasons, assumes the calling method has ensured 
+            that the sphere is valid before calling radius2(), i.e. has _radius>=0.0,
+            as it does not check th validity of sphere and will eroneously return a positive value.*/
+        float radius2() const { return _radius*_radius; }
+        
+        /** If the vertex is outwith the sphere expand to ecompass vertex.
+            Calculates the combination of movement of center and radius which
+            minimizes the radius increase. If this sphere is empty then
+            move the centrer to v and set radius to 0.*/
+        void expandBy(const Vec3& v);
+
+        /** If the vertex is outwith the sphere expand radius to ecompass vertex.
+            Unlike update, does not move the center, just increasing the radius.
+            If this sphere is empty then move the centrer to v and set radius to 0 */
+        void expandRadiusBy(const Vec3& v);
+
+        /** If incomming sphere is outwith the sphere expand to ecompass incomming sphere.
+            calculates the combination of movement of center and radius which
+            minimizes the radius increase. If this sphere is empty then
+            move the centrer to v and set radius to 0.*/
+        void expandBy(const BoundingSphere& sh);
+
+        /** If incomming sphere is outwith the sphere expand radius to ecompass incomming sphere.
+            Unlike update, does not move the center, just increasing the radius.
+            If this sphere is empty then move the centrer to v and set radius to 0. */
+        void expandRadiusBy(const BoundingSphere& sh);
+
+        /** return true is vertex v is within the sphere.*/
+        bool contains(const Vec3& v)
+        {
+            return isValid() && ((v-_center).length2()<=radius2());
+        }
+
+};
+
+};
+
+#endif

@@ -1,0 +1,45 @@
+#ifndef OSG_TEXENV
+#define OSG_TEXENV 1
+
+#include <osg/Export>
+#include <osg/GL>
+#include <osg/Object>
+
+namespace osg {
+
+
+class SG_EXPORT TexEnv : public Object
+{
+    public :
+
+        enum TexEnvMode {
+            DECAL     = GL_DECAL,
+            MODULATE  = GL_MODULATE,
+            BLEND     = GL_BLEND
+        };
+
+        TexEnv( void );
+        static TexEnv* instance();
+        virtual Object* clone() const { return new TexEnv(); }
+        virtual bool isSameKindAs(Object* obj) { return dynamic_cast<TexEnv*>(obj)!=NULL; }
+        virtual const char* className() const { return "TexEnv"; }
+
+
+        void setMode( TexEnvMode mode );
+        void apply( void );
+
+    protected :
+
+        virtual ~TexEnv( void );
+        virtual bool readLocalData(Input& fr);
+        virtual bool writeLocalData(Output& fw);
+
+        bool matchModeStr(const char* str,TexEnvMode& mode);
+        const char* getModeStr(TexEnvMode mode);
+
+        TexEnvMode _mode;
+};
+
+};
+
+#endif

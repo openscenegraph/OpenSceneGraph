@@ -1,0 +1,28 @@
+#ifndef OSG_SEQUENCE
+#define OSG_SEQUENCE 1
+
+#include <osg/Switch>
+
+namespace osg {
+
+/** Sequence - Switch node which allows iterators between children.
+    
+    Note: has not been implemented yet!
+*/
+class SG_EXPORT Sequence : public Group
+{
+    public :
+        Sequence() {}
+
+        virtual Object* clone() const { return new Sequence(); }
+        virtual bool isSameKindAs(Object* obj) { return dynamic_cast<Sequence*>(obj)!=NULL; }
+        virtual const char* className() const { return "Sequence"; }
+        virtual void accept(NodeVisitor& nv) { nv.apply(*this); }
+
+    protected :
+        virtual ~Sequence() {}
+};
+
+};
+
+#endif

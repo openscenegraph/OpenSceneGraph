@@ -1,0 +1,165 @@
+#ifndef OSGUTIL_SCENEVIEW
+#define OSGUTIL_SCENEVIEW 1
+
+#include <osg/Node>
+#include <osg/GeoState>
+#include <osg/Light>
+#include <osg/Camera>
+
+#include <osgUtil/RenderVisitor>
+
+#include <osgUtil/Export>
+
+namespace osgUtil {
+
+/**
+ * SceneView is literaly a view of a scene, encapsulating the
+ * camera, global state, lights and the scene itself.  Provides
+ * methods for setting up the view and rendering it.
+*/
+class OSGUTIL_EXPORT SceneView : public osg::Referenced
+{
+    public:
+
+        /** Constrcut a default scene view.*/
+        SceneView();
+
+        /** Set the data which to view. The data will typically be
+         *  an osg::Scene but can be any osg::Node type.
+         */
+        void setSceneData(osg::Node* node) { _sceneData = node; _need_compile = true;}
+        /** Get the scene data which to view. The data will typically be
+         *  an osg::Scene but can be any osg::Node type.
+         */
+        osg::Node* getSceneData() { return _sceneData.get(); }
+
+        /** Set the viewport of the scene view. */
+        void setViewport(int x,int y,int width,int height)
+        {
+            _view[0] = x;
+            _view[1] = y;
+            _view[2] = width;
+            _view[3] = height;
+        }
+        
+        /** Get the viewport of the scene view. */
+        void getViewport(int& x,int& y,int& width,int& height)
+        {
+            x = _view[0];
+            y = _view[1];
+            width = _view[2];
+            height = _view[3];
+        }
+
+        /** Set scene view to use default global state, light, camera
+         *  and render visitor.
+        */
+        void setDefaults();
+
+        /** Set the background color used in glClearColor().
+            Defaults to an off blue color.*/
+        void setBackgroundColor(const osg::Vec4& color) { _backgroundColor=color; }
+        /** Get the background color.*/
+        const osg::Vec4& getBackgroundColor() const { return _backgroundColor; }
+
+        void setGlobalState(osg::GeoState* state) { _globalState = state; }
+        osg::GeoState* getGlobalState() const { return _globalState.get(); }
+
+        enum LightingMode {
+            HEADLIGHT, // default
+            SKY_LIGHT,
+            NO_SCENEVIEW_LIGHT
+        };
+
+        void setLightingMode(LightingMode mode) { _lightingMode=mode; }
+        LightingMode getLightingMode() const { return _lightingMode; }
+
+        void setLight(osg::Light* light) { _light = light; }
+        osg::Light* getLight() const { return _light.get(); }
+        
+        void setCamera(osg::Camera* camera) { _camera = camera; }
+        osg::Camera* getCamera() const { return _camera.get(); }
+        
+        void setRenderVisitor(osgUtil::RenderVisitor* rv) { _renderVisitor = rv; }
+        osgUtil::RenderVisitor* getRenderVisitor() const { return _renderVisitor.get(); }
+
+        void setLODBias(float bias) { _lodBias = bias; }
+        float getLODBias() const { return _lodBias; }
+
+        /** Set to true if you want SceneView to automatically calculate values
+           for the near/far clipping planes, each frame, set false to use camera's
+           internal near and far planes.  Default value is true.
+        */
+	void setCalcNearFar(bool calc) { _calc_nearfar = calc; }
+        /** return true if SceneView automatically caclculates near and 
+            far clipping planes for each frame.
+        */
+        bool getCalcNearFar() { return _calc_nearfar; }
+
+        /** Calculate, via glUnProject, the object coordinates of a window point.
+            Note, current implementation requires that SceneView::draw() has been previously called
+            for projectWindowIntoObject to produce valid values.  Consistent with OpenGL
+            windows coordinates are calculated relative to the bottom left of the window.
+            Returns true on successful projection.
+        */
+        bool projectWindowIntoObject(const osg::Vec3& window,osg::Vec3& object) const;
+
+        /** Calculate, via glUnProject, the object coordinates of a window x,y
+            when projected onto the near and far planes.
+            Note, current implementation requires that SceneView::draw() has been previously called
+            for projectWindowIntoObject to produce valid values.  Consistent with OpenGL
+            windows coordinates are calculated relative to the bottom left of the window.
+            Returns true on successful projection.
+        */
+        bool projectWindowXYIntoObject(int x,int y,osg::Vec3& near_point,osg::Vec3& far_point) const;
+
+        /** Calculate, via glProject, the object coordinates of a window.
+            Note, current implementation requires that SceneView::draw() has been previously called
+            for projectWindowIntoObject to produce valid values.  Consistent with OpenGL
+            windows coordinates are calculated relative to the bottom left of the window,
+            whereas as window API's normally have the top left as the origin,
+            so you may need to pass in (mouseX,window_height-mouseY,...).
+            Returns true on successful projection.
+        */
+        bool projectObjectIntoWindow(const osg::Vec3& object,osg::Vec3& window) const;
+
+
+        virtual void cull();
+        virtual void draw();
+        
+    protected:
+
+        virtual ~SceneView();
+
+        osg::ref_ptr<osg::Node>                     _sceneData;
+        osg::ref_ptr<osg::GeoState>                 _globalState;
+        osg::ref_ptr<osg::Light>                    _light;
+        osg::ref_ptr<osg::Camera>                   _camera;
+        osg::ref_ptr<osgUtil::RenderVisitor>        _renderVisitor;
+        
+        bool _need_compile;
+        bool _calc_nearfar;
+
+        osg::Vec4 _backgroundColor;
+
+        double _near_plane;
+        double _far_plane;
+        
+        float _lodBias;
+
+        // viewport x,y,width,height respectiveyly.
+        GLint _view[4];
+
+        // model and project matices, used by glUnproject to get
+        // to generate rays form the eyepoint through the mouse x,y.
+        GLdouble _model[16];
+        GLdouble _proj[16];
+
+        LightingMode _lightingMode;
+
+};
+
+};
+
+#endif
+

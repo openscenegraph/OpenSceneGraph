@@ -1,0 +1,178 @@
+The following is a very basic intro of how to get the OSG going under Linux,
+IRIX and Windows.  Each intro mentions OpenSceneGraph-Data, it is recommended
+that you also download it alongside this source distribution.
+
+The scene graph depends upon Standard C++, STL and OpenGL so you need a C++ 
+compiler up to the task and OpenGL or Mesa installed. The viewer depends upon
+GLUT which you'll need to download and install from the GLUT website.  The
+OSG has it own native ascii file format, and .rgb image reader inbuilt which
+allows you read the example data with any dependancies othe then C++, STL and
+OpenGL.
+
+The OSG also has several plug-ins which support non-native 3d database and 
+image formats, several have no dependancies on external libraries (flt,fly,
+tga & pic), while others (pfb,jpeg,gif,tiff) require other libraries to be 
+installed to compile them.  If you don't already have them installed then 
+don't worry, you'll still be able to use the OSG.  The core osg library and
+viewer is designed has been designed to load the plug-ins at run-time only 
+and if they are required to load a specific data set. If you don't need them 
+for your datasets then it won't matter that you havn't been able to compile 
+all the plug-ins. A full list of dependancies and where to download the 
+required libraries are near the bottom of this file.
+
+If you're comming across the OSG for the first time and want to get started 
+quickly, go right ahead and follow the compilation instructions.  You can always
+later download the libraries which the plug-ins require if you eventually need
+them.
+
+If you havn't already checked it out, for a list of distribution contents,
+contacts and links to documentation check out index.html.
+
+
+Compiling under Linux :
+-----------------------
+
+    Add the following to your .cshrc :
+
+        setenv OSGHOME <location of OSG root>
+        setenv OSGDATA <location of OSG data root>
+        setenv OSGFILEPATH ./:${OSGDATA}:${OSGDATA}/Images:
+        setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:${OSGHOME}/lib
+        setenv PATH ${PATH}:${OSGHOME}/bin
+
+    Or the following if you're using a sh compatible shell :
+
+        export OSGHOME=<location of OSG root>
+        export OSGDATA=<location of OSG data root>
+        export OSGFILEPATH=./:${OSGDATA}:${OSGDATA}/Images:
+        export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${OSGHOME}/lib
+        export PATH=${PATH}:${OSGHOME}/bin
+
+    To compile, from the OSG root directory, type :
+
+        make
+        
+    Note, make should automatically detect linux and copy the 
+    Make/makerules.linux and Make/makedefs.linux over the 
+    default Make/makerules and Make/makedefs.  If autodetection
+    does not work type 'make linux'.
+
+
+Compiling under IRIX :
+----------------------
+
+    Add the following to your .cshrc :
+
+        setenv OSGHOME <location of OSG root>
+        setenv OSGDATA <location of OSG data root>
+        setenv OSGFILEPATH ./:${OSGDATA}:${OSGDATA}/Images:
+        setenv LD_LIBRARYN32_PATH ${LD_LIBRARYN32_PATH}:${OSGHOME}/lib
+        setenv PATH ${PATH}:$OSGHOME/bin
+
+    Or the following if you're using a sh compatible shell :
+
+        export OSGHOME=<location of OSG root>
+        export OSGDATA=<location of OSG data root>
+        export OSGFILEPATH=./:${OSGDATA}:${OSGDATA}/Images:
+        export LD_LIBRARYN32_PATH=${LD_LIBRARYN32_PATH}:${OSGHOME}/lib
+        export PATH=${PATH}:$OSGHOME/bin
+
+    Since the OSG uses Standard C++ features such as STL it is important
+    to have an up to date version of the MIPSPro compilers. The library
+    has been tested under MIPSPro7.3 & MIPSPro7.2.1, and *may* compile
+    under previous versions but has yet to be tested.  It is recommened
+    to use MIPSPro7.3.1.1m.
+
+    To compile, from the OSG root directory, type :
+
+    make
+
+    Note, make should automatically detect IRIX and copy the 
+    Make/makerules.irix and Make/makedefs.irix over the 
+    default Make/makerules and Make/makedefs.  If autodetection
+    does not work type 'make linux'.
+
+
+Compiling under Windows :
+-------------------------
+
+    The Microsoft Visual C++ 6.0 workspace file is VisualStudio.dsw located
+    in the VisualStudio\ below the OSG this root directory.  The OSG will 
+    compile with the basic VisualC++6.0, but its recommended that you use 
+    Service Pack 4 to fix MS compiler bugs which affect the OSG.
+    
+    To execute the viewer the file path for the .dll's and .exe, both compiled
+    into the OSG's bin directory, need to be setup, such as by adding the PATH
+    to your autoexec.bat, its also useful to add the OSGFILEPATH to your
+    autoexec.bat to help the location of datafiles. For example :
+    
+    SET OSGFILEPATH=D:\OpenSceneGraph-Data;D:\OpenSceneGraph-Data\Images
+    SET PATH=C:\WINDOWS;C:\WINDOWS\COMMAND;C:\Oglsdk\lib;D:\OpenSceneGraph-0.8\bin;
+    
+    
+Running the viewer
+------------------
+    To run the viewer demo type (you made need to type rehash first under Unix) :
+
+        sgv dumptruck.osg
+        sgv cow.osg
+        sgv e-s-bike.osg
+        sgv flight_park.fly
+        sgv lz.rgb
+
+    Other run other demos type
+    
+        cube
+
+    (Note: the file is picked up by checking the directories pointed to
+    by $OSGFILEPATH)
+
+
+Plug-in dependancies
+--------------------
+
+    src/osgPlugins/pfb
+
+        There is Peformer plugin in this distribution for converting from
+        Performer to OSG and from OSG to Performer.  This plugin requires 
+        Performer to be installed and therefore is not compiled by default.
+        If you have Performer (available under Linux and IRIX) then edit 
+        src/osgPlugins/Make to compile under the plugin.  Performer can be 
+        downloaded from http://sgi.com
+        
+        For further information about the Performer plugin please read the
+        src/osgPlugin/pfb/READEME.txt.
+
+    src/osgPlugins/png
+
+        The png plugin depends upon the libpng and zlib (for compression)
+        libraries, if you don't already have it installed, you'll need to
+        download, compile and install it.
+        Project home pages are:
+            http://www.libpng.org/pub/png/libpng.html
+            http://www.info-zip.org/pub/infozip/zlib/
+
+    src/osgPlugins/gif
+
+        The gif plugin depends upon the libungif library, if you don't already
+        have it installed, you'll need to download, compile and install it.
+        Project home page is:
+            http://prtr-13.ucsc.edu/~badger/software/libungif/
+        Ftp download at :
+            ftp://prtr-13.ucsc.edu/pub/libungif/
+
+
+    src/osgPlugins/jpeg
+
+        The jpeg plugin depends upon the libjpeg library, if you don't already
+        have it installed, you'll need to download, compile and install it.
+        Project home page is:
+            http://www.ijg.org
+
+    src/osgPlugins/tiff
+
+        The tiff plugin depends upon the libtiff library, if you don't already
+        have it installed, you'll need to download, compile and install it.
+        Project home page is:
+            http://www.libtiff.org
+

@@ -1,0 +1,141 @@
+OSG TODO List
+=============
+
+Main categories
+===============
+
+o Core OSG Library
+    - the core OSG library itself (include/OSG and src/)
+o Reader/writer plug-ins
+    - the reader/writers plug-ins for third party file formats.
+o Viewers & Application plug-ins
+    - osg viewers and plug-ins to third party applications such as Netscape.
+o Under development 
+    - listing of TODO items which are currently under developement.
+o Work completed
+    - listing of TODO items which have been done and hence removed
+      from the above TODO catagories.
+--
+
+o Core OSG Library
+  ================
+    - General
+        . Header & code documentation/reference guide.
+        . Programming guide.
+        . Naming conventions.
+        . mutli-threading/shared memory support.
+
+    - Maths
+        . full maths support in osg::Matrix class.
+        . double matrix class.
+        . osg::Plane class.
+
+    - Nodes
+        . create a base class to provide interface to objects which can render,
+          derive osg::GeoSet from this.
+        . add osg::Sequence for basic animation.
+        . add osg::Morph for interpolating between geometries.
+        . add support for Multi-texturing into osg::GeoSet/osg::GeoState.
+        . add support for multi-pass rendering.
+        . utilise stl vectors for osg::GeoSets?
+        . improve osg::GeoState.
+        . add osg::State for mainting image of the OpenGL state.
+        . add osg::Terrain node.
+        . add osg::EarthSky class for rendering earth and sky backgrounds.
+        . add proxy node for lazy loading of nodes, when needed.
+        . implement visual proximity to assist loading of proxied data
+          when the view frustum nears an unloaded proxy node, and deleting
+          of unused proxied data.
+        . implement support for modified status/lazy evaluation of node data 
+          and observer style pattern.
+        . manipulator decoration nodes?
+        . spacial subdivision decoration nodes?
+        
+    - Visitors
+        . improve state sorting of opaque bins in osg::RenderVistor.
+        . add statistics visitor for logging the stats of the scene graph.
+        . add OpenGL picking visitor.
+        
+    - IO/Plug-in support
+        . improve the ascii parsing class osg::Field, osg::FieldReader etc.
+        . change the osg::Registry to timestamp registrations of objects/RW's.
+        . add support for file path logging into osg::Input.
+        . add binary data reading and writing into osg::Input/osg::Output to
+          support part binary .osg files.
+        . return error messages of on failed loading/saving. 
+        
+        
+o Reader/writer plug-ins
+  =======================
+    - .iv/.wrl  Inventor/VRML ascii.
+    - .obj      Alias wavefront's format.
+    - .dxf      Autocads ascii format.
+    - .3ds      3D Studio format.
+    - .dem      digital elevation map.
+    - .d3d?     MS's Direct 3D file formats if they have one..
+    - .bmp      Windows Bitmap files.
+    - .gz       Automatic unzipping of GNU zipped files.
+    - .zip      Automatic unzipping of windows zipped files.
+    - .Z        Automatic unzipping of Unix Compress files.
+    - .tar      Automatic unpacking of directories and loading of contents.
+
+
+o Viewers & Application plug-ins
+  ===============================
+    - OSG scene graph viewer - sgv.
+        . add command line reading for specifying data search paths and data,
+          -D for data search path, -d for data.
+        . add command line reading for specifying library search paths and
+          libraries/plug-ins, -D for library search path, -l for libraries.
+    - Internet Explorer plug-in.
+    - .osg to Inventor file plug-in.
+    - Tutorials example programs.
+    
+    
+o Under development 
+  =================
+    Sign up here if would like to take on a task :-)
+    - add osg::Billboard for trees etc.
+    - .pfb loader for Performer binary files.
+    - full maths support in osg::Matrix class.
+    - Netscape plug-in.
+    - add osg::Channel/sgCamera class.
+    - .flt Open Flight format.
+    - autoconf/configure support to aid portabilty to other unix's.
+    - CVS support for when source is made fully public.
+
+
+o Work completed
+  ==============
+    - osg namespace implemented.
+    - reduce the STL platform specific #ifdef's.
+    - remove using namespace from all header files, so not to pollute user space.
+    - remove the sg prefix from sgNode etc, now that the osg namespaces exits.
+    - FAQ for distribution and web site.
+    - full maths support in osg::Vec2, osg::Vec3 and osg::Vec4.
+    - change the osg::Registry to use plug-in RW's on loading a plug-in
+      instead of the plug-in functions found in sg.cxx.  
+    - add support for removal of plug-ins from osg::Registry,
+    - add .osg support into DCS node.
+    - clean up inheritance relationship between osg::Node, osg::Object etc.
+    - add osg::Switch for handling optional rendering of children.
+    - add osg::LOD (level of detail) group node for load management. 
+    - add view frustrum culling into osg::RenderVisitor.
+    - add support for mutliply referenced nodes into osg::Input.
+    - add a quaternion class.
+    - improve osg::BoundingBox and osg::BoundingSphere.
+    - add hit and intersect classes for collision detection.
+    - add intersect visitor.
+    - add camera manipualotors for trackball, drive and flight mouse control.
+    - add compile OpenGL display lists visitor (currently in sgv).
+    - library version and description functions.
+    - add support for OpenGL Vertex Array into osg::GeoSet.
+    - .gif      GIF Images!
+    - .jpg      JPEG Images.
+    - .tiff     TIFF Images.
+    - .png      PNG Images.
+    - .tga      TGA Images.
+    - .pic      PIC Images.
+    - add timing/timestamp class.
+    - document how to get the OSG compiled and running under all
+      platforms, Win32 being priority as it's the least obvious.

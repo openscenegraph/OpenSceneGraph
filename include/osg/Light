@@ -1,0 +1,143 @@
+#ifndef OSG_LIGHT
+#define OSG_LIGHT 1
+
+#include <osg/GL>
+#include <osg/OSG>
+#include <osg/Vec4>
+
+namespace osg {
+
+/** Light state class which encapsulates OpenGL glLight() functionality.*/
+class SG_EXPORT Light : public Object
+{
+    public :
+
+        Light();
+        
+        /** return a static instance of an osg::Light, to be used as prototype
+            for loading lights.*/
+        static Light* instance();
+
+        /** return a shallow copy of a node, with Object* return type.*/
+        virtual Object* clone() const { return new Light(); }
+
+        virtual bool isSameKindAs(Object* obj) { return dynamic_cast<Light*>(obj)!=NULL; }
+
+        /** return the name of the node's class type.*/
+        virtual const char* className() const { return "Light"; }
+
+
+
+	/**
+	 * Turn the light on.
+	 * Calling this method doesn't directly affect OpenGL's lighting mode.
+	 */
+        void on( void ) { _on = true; }
+
+	/**
+	 * Turn the light off.
+	 * Calling this method doesn't directly affect OpenGL's lighting mode.
+	 */
+	void off( void ) { _on = false; }
+
+	/** Enable OpenGL's Lighting mode. */
+        static void enable( void );
+
+	/** Disable OpenGL's Lighting mode. */
+        static void disable( void );
+
+	/** Apply the light's state to the OpenGL state machine. */
+        void apply( void );
+
+	/** Set the ambient component of the light. */
+        void setAmbient( const Vec4& ambient ) { _ambient = ambient; }
+
+	/** Get the ambient component of the light. */
+        const Vec4& getAmbient() const { return _ambient; }
+
+	/** Set the diffuse component of the light. */
+        void setDiffuse( const Vec4& diffuse ) { _diffuse = diffuse; }
+
+	/** Get the diffuse component of the light. */
+        const Vec4& getDiffuse() const { return _diffuse; }
+
+	/** Set the specular component of the light. */
+        void setSpecular( const Vec4& specular ) { _specular = specular; }
+
+	/** Get the specular component of the light. */
+        const Vec4& getSpecular() const { return _specular; }
+
+	/** Set the position of the light. */	
+        void setPosition( const Vec4& position ) { _position = position; }
+
+	/** Get the position of the light. */	
+        const Vec4& getPosition() const { return _position; }
+
+	/** Set the direction of the light. */	
+        void setDirection( const Vec3& direction ) { _direction = direction; }
+
+	/** Get the direction of the light. */	
+        const Vec3& getDirection() const { return _direction; }
+
+	/** Set the constant attenuation of the light. */
+        void setConstantAttenuation( float constant_attenuation )     { _constant_attenuation = constant_attenuation; }
+
+	/** Get the constant attenuation of the light. */
+        float setConstantAttenuation() const { return _constant_attenuation; }
+
+	/** Set the linear attenuation of the light. */
+        void setLinearAttenuation ( float linear_attenuation )        { _linear_attenuation = linear_attenuation; }
+
+	/** Get the linear attenuation of the light. */
+        float getLinearAttenuation () const { return _linear_attenuation; }
+
+	/** Set the quadratic attenuation of the light. */
+        void setQuadraticAttenuation ( float quadratic_attenuation )  { _quadratic_attenuation = quadratic_attenuation; }
+
+	/** Get the quadratic attenuation of the light. */
+        float getQuadraticAttenuation()  const { return _quadratic_attenuation; }
+
+	/** Set the spot exponent of the light. */
+        void setSpotExponent( float spot_exponent )                   { _spot_exponent = spot_exponent; }
+
+	/** Get the spot exponent of the light. */
+        float getSpotExponent() const { return _spot_exponent; }
+
+	/** Set the spot cutoff of the light. */
+        void setSpotCutoff( float spot_cutoff )                       { _spot_cutoff = spot_cutoff; }
+
+	/** Get the spot cutoff of the light. */
+        float getSpotCutoff()                                         { return _spot_cutoff; }
+
+	/**
+	 * Capture the lighting settings of the current OpenGL state
+	 * and store them in this object.
+	 */
+        void captureLightState();
+
+    protected :
+    
+        virtual ~Light( void );
+
+	/** Initialize the light's settings with some decent defaults. */
+        void init( void );
+
+        int _lightnum;                           // OpenGL light number
+        bool _on;                                // on/off state
+        Vec4 _ambient;                           // r, g, b, w
+        Vec4 _diffuse;                           // r, g, b, w
+        Vec4 _specular;                          // r, g, b, w
+        Vec4 _position;                          // x, y, z, w
+        Vec3 _direction;                         // x, y, z
+        float _constant_attenuation;             // constant
+        float _linear_attenuation;               // linear
+        float _quadratic_attenuation;            // quadratic
+        float _spot_exponent;                    // exponent
+        float _spot_cutoff;                      // spread
+
+        static int _currentLightNum;             // current max. OpenGL light number
+};
+
+};
+
+#endif

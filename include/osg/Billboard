@@ -1,0 +1,84 @@
+#ifndef OSG_BILLBOARD
+#define OSG_BILLBOARD 1
+
+#include <osg/Geode>
+
+namespace osg {
+
+/** Billboard - a Geode which orientates its child osg::GeoSet's to face
+    the eye point.
+    Typical uses are for trees, or particle explosions.
+*/
+class SG_EXPORT Billboard : public Geode
+{
+    public:
+
+        enum Mode {
+            AXIAL_ROT,
+            POINT_ROT_EYE,
+            POINT_ROT_WORLD
+        };
+
+        Billboard();
+        
+        virtual Object* clone() const           { return new Billboard(); }
+        virtual bool isSameKindAs(Object* obj) { return dynamic_cast<Billboard*>(obj)!=NULL; }
+        virtual const char* className() const   { return "Billboard"; }
+        virtual void accept(NodeVisitor& nv)    { nv.apply(*this); }
+
+
+        void setAxis(const Vec3& axis)          { _axis = axis; }
+        void getAxis(Vec3& axis) const          { axis = _axis; }
+
+        void setMode(Mode mode)                 { _mode = mode; }
+        int getMode() const                     { return _mode; }
+
+        void setPos(int i,const Vec3& pos)      { _positionList[i] = pos; }
+        void getPos(int i,Vec3& pos) const      { pos = _positionList[i]; }
+        
+        /** Add GeoSet to Billboard with default position(0,0,0);
+         *  If gset not NULL and is not contained in Billboard then increment its 
+         *  reference count, and dirty the bounding box to cause it to recompute on 
+         *  next getBound() and return true for success.  Otherwise return false.
+         */
+        virtual bool addGeoSet( GeoSet *gset );
+
+        /** Add GeoSet to Geode at position pos.
+         *  If gset not NULL and is not contained in Billboard then increment its 
+         *  reference count, and dirty the bounding box to cause it to recompute on 
+         *  next getBound() and return true for success.  Otherwise return false.
+         */
+        virtual bool addGeoSet(GeoSet *gset,const Vec3& pos);
+
+        /** Remove GeoSet and associated position from Billboard.
+         *  If gset is contained in Billboard then remove it from the geoset
+         *  list and decrement its reference count, and dirty the 
+         *  bounding box to cause it to recompute on next getBound() and
+         *  return true for success.  If gset is not found then return false
+         *  and do not the reference count of gset is left unchanged.
+         */
+        virtual bool removeGeoSet( GeoSet *gset );
+
+        void calcRotation(const Vec3& eye_local, const Vec3& pos_local,Matrix& mat);
+        void calcTransform(const Vec3& eye_local, const Vec3& pos_local,Matrix& mat);
+
+    protected:
+
+        virtual ~Billboard();
+
+        virtual bool readLocalData(Input& fr);
+        virtual bool writeLocalData(Output& fw);
+        
+        virtual bool computeBound( void );
+
+        typedef std::vector<Vec3> PositionList;
+
+        Mode            _mode;
+        Vec3            _axis;
+        PositionList    _positionList;
+
+};
+
+};
+
+#endif

@@ -1,0 +1,117 @@
+<HTML>
+<HEAD>
+   <TITLE>class  osg::Referenced</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.3">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  <A HREF="#DOC.DOCU">osg::Referenced</A></H2>
+<BLOCKQUOTE>Base class from providing referencing counted objects</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=245>
+<param name=classes value="CReferenced,MReferenced.html,CSeg,MSeg.html,CReaderWriter,MReaderWriter.html,CObject,MObject.html,CNodeVisitor,MNodeVisitor.html,CMemoryAdapter,MMemoryAdapter.html,CDynamicLibrary,MDynamicLibrary.html,CCamera,MCamera.html">
+<param name=before value="M,M|_,MR_,MR_,MR_,MR_,MR_,Mr_">
+<param name=after value="M,M,M,M,M,M,M,M">
+<param name=indent value="0,0,0,0,0,0,0,0">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<A HREF="#DOC.2.43.4"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A> <B>Referenced</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.43.5"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A> <B>Referenced</B>(<!1><A HREF="Referenced.html#DOC.2.43.4">Referenced</A>&amp;)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.43.6"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Referenced.html#DOC.2.43.4">Referenced</A>&amp; <B>operator = </B>(<!1><A HREF="Referenced.html#DOC.2.43.4">Referenced</A>&amp;)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.43.1"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>ref</B>()
+<DD><I>increment the reference count by one, indicating that  this object has another pointer which is referencing it</I>
+<DT>
+<A HREF="#DOC.2.43.2"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>unref</B>()
+<DD><I>decrement the reference count by one, indicating that  a pointer to this object is referencing it.</I>
+<DT>
+<A HREF="#DOC.2.43.3"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>int <B>referenceCount</B>()
+<DD><I>return the number pointers currently referencing this object.</I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<A HREF="#DOC.2.43.8"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>int <B>_refCount</B>
+<DD><I></I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<A HREF="#DOC.2.43.7"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   <B>~Referenced</B>()
+<DD><I></I>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU">
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>Base class from providing referencing counted objects</BLOCKQUOTE>
+<DL>
+
+<A NAME="Referenced">
+<A NAME="DOC.2.43.4">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Referenced()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Referenced">
+<A NAME="DOC.2.43.5">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Referenced(<!1><A HREF="Referenced.html#DOC.2.43.4">Referenced</A>&amp;)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator = ">
+<A NAME="DOC.2.43.6">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Referenced.html#DOC.2.43.4">Referenced</A>&amp; operator = (<!1><A HREF="Referenced.html#DOC.2.43.4">Referenced</A>&amp;)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ref">
+<A NAME="DOC.2.43.1">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void ref()</B></TT>
+<DD>increment the reference count by one, indicating that 
+this object has another pointer which is referencing it
+<DL><DT><DD></DL><P>
+<A NAME="unref">
+<A NAME="DOC.2.43.2">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void unref()</B></TT>
+<DD>decrement the reference count by one, indicating that 
+a pointer to this object is referencing it.  If the
+refence count goes to zero, it is assumed that this object
+is nolonger referenced and is automatically deleted.
+<DL><DT><DD></DL><P>
+<A NAME="referenceCount">
+<A NAME="DOC.2.43.3">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int referenceCount()</B></TT>
+<DD>return the number pointers currently referencing this object. 
+<DL><DT><DD></DL><P>
+<A NAME="~Referenced">
+<A NAME="DOC.2.43.7">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Referenced()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_refCount">
+<A NAME="DOC.2.43.8">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _refCount</B></TT>
+<DL><DT><DD></DL><P></DL>
+<HR>
+<DL><DT><B>Direct child classes:
+</B><DD><A HREF="Seg.html">Seg</A><BR>
+<A HREF="ReaderWriter.html">ReaderWriter</A><BR>
+<A HREF="Object.html">Object</A><BR>
+<A HREF="NodeVisitor.html">NodeVisitor</A><BR>
+<A HREF="MemoryAdapter.html">MemoryAdapter</A><BR>
+<A HREF="DynamicLibrary.html">DynamicLibrary</A><BR>
+<A HREF="Camera.html">Camera</A><BR>
+</DL>
+
+<DL><DT><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I><P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

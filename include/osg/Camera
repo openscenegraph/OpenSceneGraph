@@ -1,0 +1,140 @@
+#ifndef OSG_CAMERA
+#define OSG_CAMERA 1
+
+#include <osg/Export>
+#include <osg/Scene>
+
+namespace osg {
+
+/** Camera class for encapsulating the view position and orientation.
+ *  This is the first implementation of osg::Camera class and
+ *  currently is a perspective camera, but in future will be
+ *  a base class from which PerpsectivCamera,FrustumCamera and OrthoCamera
+ *  will be derived.
+ */
+class SG_EXPORT Camera: public osg::Referenced
+{
+
+    public:
+
+        Camera();
+        virtual ~Camera();
+
+
+        /**
+         * Set field of view and window aspect ratio.
+         * The parameters have the same meaning as their counterparts
+         * in gluPerspective(fovy,aspectRatio
+         */
+        void setFieldOfView(double fovy,double aspectRatio);
+        
+        void setFieldOfViewY(double fovy) { _fovy = fovy; }
+        double getFieldOfViewY() const { return _fovy; }
+
+        void setAspectRatio(double aspectRatio) { _aspectRatio = aspectRatio; }
+        double getAspectRatio() const { return _aspectRatio; }
+
+        /**
+         * hardwired home view for now, looking straight down the
+         * Z axis at the origin, with 'up' being the y axis.
+         */
+        void home();
+
+        /**
+         * Set the View, the up vector should be orthogonal to the
+         * look vector.
+         */
+        void setView(Vec3 eyePoint,
+	             Vec3 lookPoint,
+	             Vec3 upVector);
+
+        /** get the eyepoint. */
+        const Vec3& getEyePoint() const	{return _eyePoint;}
+
+        /** get the lookpoint. */
+        const Vec3& getLookPoint() const {return _lookPoint;}
+
+        /** which way is up? */
+        const Vec3& getUpVector() const	{return _upVector;}
+
+        /** calculate side vector.*/
+        Vec3 getSideVector() const
+        {
+            Vec3 sv = (_lookPoint-_eyePoint)^_upVector;
+            sv.normalize();
+            return sv;
+        }
+
+        /** calculate look vector.*/
+        Vec3 getLookVector() const
+        {
+            Vec3 lv = (_lookPoint-_eyePoint);
+            lv.normalize();
+            return lv;
+        }
+
+        /** calculate focal distance.*/
+        float getFocalDistance() const
+        {
+            return (_lookPoint-_eyePoint).length();
+        }
+
+        /** set the near plane. */
+        void setNearPlane(double nearPlane)	{_nearPlane=nearPlane;}
+
+        /**get the near plane. */
+        double getNearPlane() const		{return _nearPlane;}
+
+        /** set the far plane. */
+        void setFarPlane(double farPlane)	{_farPlane=farPlane;}
+
+        /** get the far plane. */
+        double getFarPlane() const		{return _farPlane;}
+
+
+
+        /** Set up the OpenGL GL_PROJECTION matrix. 
+            Enters the GL_PROJECTION mode, sets up matrix, then
+            resets model GL_MODELVIEW, which is by OpenGL convention the default.*/
+        void draw_PROJECTION() const;
+
+        /** Set up the OpenGL GL_MODELVIEW matrix. 
+         *  Enters the GL_MODELVIEW mode, sets matrix to identity
+         *  and then sets matrix up according to camera, eye point, center
+         *  point and upvector.
+         */
+        void draw_MODELVIEW() const;
+
+
+
+        /** post multiply a camera by matrix.*/
+        void mult(const Camera& camera,const Matrix& m);
+
+        /** pre multiply a camera by matrix.*/
+        void mult(const Matrix& m,const Camera& camera);
+
+        void ensureOrthogonalUpVector();
+
+
+    private:
+
+        // Disallow copy construction & assignment (for now)
+        Camera(const Camera&);
+        Camera& operator=(const Camera&);
+
+        Vec3	_eyePoint;
+        Vec3	_lookPoint;
+        Vec3	_upVector;
+
+        double  _fovy;
+        double  _aspectRatio;
+
+        double	_nearPlane;	// No Dougal, these are small... but those...
+        double	_farPlane;	// are far away
+
+
+};
+
+}
+
+# endif

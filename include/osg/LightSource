@@ -1,0 +1,42 @@
+#ifndef OSG_LIGHTSOURCE
+#define OSG_LIGHTSOURCE 1
+
+#include <osg/Node>
+#include <osg/NodeVisitor>
+#include <osg/Light>
+
+namespace osg {
+
+/** Leaf Node for defining a light in the scene.*/
+class SG_EXPORT LightSource : public Node
+{
+    public:
+
+        LightSource();
+
+        virtual Object* clone() const { return new LightSource(); }
+        virtual bool isSameKindAs(Object* obj) { return dynamic_cast<LightSource*>(obj)!=NULL; }
+        virtual const char* className() const { return "LightSource"; }
+        virtual void accept(NodeVisitor& nv) { nv.apply(*this); }
+
+        /** Set the attached light.*/
+        void setLight(Light* light) { _light = light; }
+
+        /** Get the attached light.*/
+        Light* getLight() { return _light.get(); }
+
+    protected:
+
+        virtual ~LightSource();
+
+        virtual bool readLocalData(Input& fr);
+        virtual bool writeLocalData(Output& fw);
+
+        virtual bool computeBound( void );
+
+        ref_ptr<Light> _light;
+};
+
+};
+
+#endif

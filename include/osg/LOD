@@ -1,0 +1,67 @@
+#ifndef OSG_LOD
+#define OSG_LOD 1
+
+#include <osg/Switch>
+
+#include <vector>
+
+namespace osg {
+
+/** LOD - Level Of Detail group node which allows switching between children
+    depending on distance from eye point.
+    Typical uses are for load balancing - objects further away from
+    the eye point are rendered at a lower level of detail, and at times
+    of high stress on the graphics pipeline lower levels of detail can
+    also be chosen.
+*/
+class SG_EXPORT LOD : public Group
+{
+    public :
+        LOD() {}
+
+        virtual Object* clone() const { return new LOD(); }
+        virtual bool isSameKindAs(Object* obj) { return dynamic_cast<LOD*>(obj)!=NULL; }
+        virtual const char* className() const { return "LOD"; }
+        virtual void accept(NodeVisitor& nv) { nv.apply(*this); }
+        virtual void traverse(NodeVisitor& nv);
+        
+        /** Sets the value of range list element index to range which
+            is a floating point distance specified in world coordinates.
+            Range list automatically expands to accomodate values beyond
+            the current getNumRanges().*/
+        void setRange(unsigned int index, float range);
+        /** pfLOD::getRange returns the range element index.*/
+        float getRange(unsigned int index) { return _rangeList[index]; }
+        /** returns the number of ranges currently set.*/
+        int getNumRanges() { return _rangeList.size(); }
+
+        /** Sets the object-space point which defines the center of the osg::LOD.  
+            center is affected by any transforms in the hierarchy above the osg::LOD.*/
+        void setCenter(const Vec3 &center) { _center = center; }
+        /** return the LOD center point. */
+        const Vec3& getCenter() { return _center; }
+
+
+        /** return the child to traverse.
+            Selected by the distance between the eye point in local
+            coordinates and the LOD center, mutliplied by the bias.*/ 
+        int evaluate(const Vec3& eye_local,float bias=1.0f);
+
+
+    protected :
+        virtual ~LOD() {}
+
+        virtual bool readLocalData(Input& fr);
+        virtual bool writeLocalData(Output& fw);
+
+        typedef std::vector<float> RangeList;
+        RangeList _rangeList;
+        RangeList _rangeList2;
+
+        Vec3 _center;
+
+};
+
+};
+
+#endif

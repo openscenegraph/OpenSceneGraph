@@ -1,0 +1,441 @@
+<HTML>
+<HEAD>
+   <TITLE>class  SG_EXPORT osg::Light</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.3">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osg::Light</A>: public <!1><A HREF="Object.html#DOC.2.36.1">Object</A></H2>
+<BLOCKQUOTE>Light state class which encapsulates OpenGL glLight() functionality</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=95>
+<param name=classes value="CReferenced,MReferenced.html,CObject,MObject.html,CLight,MLight.html">
+<param name=before value="M,M,M">
+<param name=after value="Md_SP,Md_,M">
+<param name=indent value="0,1,2">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<A HREF="#DOC.2.24.31"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A> <B>Light</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.24.1"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>static   <!1><A HREF="Light.html#DOC.2.24.31">Light</A>* <B>instance</B>()
+<DD><I>return a static instance of an osg::Light, to be used as prototype for loading lights</I>
+<DT>
+<A HREF="#DOC.2.24.2"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   <!1><A HREF="Object.html#DOC.2.36.1">Object</A>* <B>clone</B>() const 
+<DD><I>return a shallow copy of a node, with Object* return type</I>
+<DT>
+<A HREF="#DOC.2.24.32"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   bool <B>isSameKindAs</B>(<!1><A HREF="Object.html#DOC.2.36.1">Object</A>* obj)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.24.3"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   const char* <B>className</B>() const 
+<DD><I>return the name of the node's class type</I>
+<DT>
+<A HREF="#DOC.2.24.4"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>on</B>( void )
+<DD><I> Turn the light on.</I>
+<DT>
+<A HREF="#DOC.2.24.5"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>off</B>( void )
+<DD><I> Turn the light off.</I>
+<DT>
+<A HREF="#DOC.2.24.6"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>static   void <B>enable</B>( void )
+<DD><I>Enable OpenGL's Lighting mode.</I>
+<DT>
+<A HREF="#DOC.2.24.7"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>static   void <B>disable</B>( void )
+<DD><I>Disable OpenGL's Lighting mode.</I>
+<DT>
+<A HREF="#DOC.2.24.8"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>apply</B>( void )
+<DD><I>Apply the light's state to the OpenGL state machine.</I>
+<DT>
+<A HREF="#DOC.2.24.9"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setAmbient</B>( const <!1><A HREF="Vec4.html">Vec4</A>&amp; ambient )
+<DD><I>Set the ambient component of the light.</I>
+<DT>
+<A HREF="#DOC.2.24.10"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>const <!1><A HREF="Vec4.html">Vec4</A>&amp; <B>getAmbient</B>() const 
+<DD><I>Get the ambient component of the light.</I>
+<DT>
+<A HREF="#DOC.2.24.11"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setDiffuse</B>( const <!1><A HREF="Vec4.html">Vec4</A>&amp; diffuse )
+<DD><I>Set the diffuse component of the light.</I>
+<DT>
+<A HREF="#DOC.2.24.12"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>const <!1><A HREF="Vec4.html">Vec4</A>&amp; <B>getDiffuse</B>() const 
+<DD><I>Get the diffuse component of the light.</I>
+<DT>
+<A HREF="#DOC.2.24.13"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setSpecular</B>( const <!1><A HREF="Vec4.html">Vec4</A>&amp; specular )
+<DD><I>Set the specular component of the light.</I>
+<DT>
+<A HREF="#DOC.2.24.14"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>const <!1><A HREF="Vec4.html">Vec4</A>&amp; <B>getSpecular</B>() const 
+<DD><I>Get the specular component of the light.</I>
+<DT>
+<A HREF="#DOC.2.24.15"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setPosition</B>( const <!1><A HREF="Vec4.html">Vec4</A>&amp; position )
+<DD><I>Set the position of the light.</I>
+<DT>
+<A HREF="#DOC.2.24.16"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>const <!1><A HREF="Vec4.html">Vec4</A>&amp; <B>getPosition</B>() const 
+<DD><I>Get the position of the light.</I>
+<DT>
+<A HREF="#DOC.2.24.17"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setDirection</B>( const <!1><A HREF="Vec3.html">Vec3</A>&amp; direction )
+<DD><I>Set the direction of the light.</I>
+<DT>
+<A HREF="#DOC.2.24.18"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>const <!1><A HREF="Vec3.html">Vec3</A>&amp; <B>getDirection</B>() const 
+<DD><I>Get the direction of the light.</I>
+<DT>
+<A HREF="#DOC.2.24.19"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setConstantAttenuation</B>( float constant_attenuation )
+<DD><I>Set the constant attenuation of the light.</I>
+<DT>
+<A HREF="#DOC.2.24.20"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>float <B>setConstantAttenuation</B>() const 
+<DD><I>Get the constant attenuation of the light.</I>
+<DT>
+<A HREF="#DOC.2.24.21"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setLinearAttenuation</B>( float linear_attenuation )
+<DD><I>Set the linear attenuation of the light.</I>
+<DT>
+<A HREF="#DOC.2.24.22"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>float <B>getLinearAttenuation</B>() const 
+<DD><I>Get the linear attenuation of the light.</I>
+<DT>
+<A HREF="#DOC.2.24.23"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setQuadraticAttenuation</B>( float quadratic_attenuation )
+<DD><I>Set the quadratic attenuation of the light.</I>
+<DT>
+<A HREF="#DOC.2.24.24"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>float <B>getQuadraticAttenuation</B>() const 
+<DD><I>Get the quadratic attenuation of the light.</I>
+<DT>
+<A HREF="#DOC.2.24.25"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setSpotExponent</B>( float spot_exponent )
+<DD><I>Set the spot exponent of the light.</I>
+<DT>
+<A HREF="#DOC.2.24.26"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>float <B>getSpotExponent</B>() const 
+<DD><I>Get the spot exponent of the light.</I>
+<DT>
+<A HREF="#DOC.2.24.27"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setSpotCutoff</B>( float spot_cutoff )
+<DD><I>Set the spot cutoff of the light.</I>
+<DT>
+<A HREF="#DOC.2.24.28"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>float <B>getSpotCutoff</B>()
+<DD><I>Get the spot cutoff of the light.</I>
+<DT>
+<A HREF="#DOC.2.24.29"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>captureLightState</B>()
+<DD><I> Capture the lighting settings of the current OpenGL state and store them in this object</I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<A HREF="#DOC.2.24.34"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>int <B>_lightnum</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.24.35"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>_on</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.24.36"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Vec4.html">Vec4</A> <B>_ambient</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.24.37"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Vec4.html">Vec4</A> <B>_diffuse</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.24.38"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Vec4.html">Vec4</A> <B>_specular</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.24.39"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Vec4.html">Vec4</A> <B>_position</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.24.40"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Vec3.html">Vec3</A> <B>_direction</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.24.41"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>float <B>_constant_attenuation</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.24.42"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>float <B>_linear_attenuation</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.24.43"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>float <B>_quadratic_attenuation</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.24.44"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>float <B>_spot_exponent</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.24.45"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>float <B>_spot_cutoff</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.24.46"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>static   int <B>_currentLightNum</B>
+<DD><I></I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<A HREF="#DOC.2.24.33"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   <B>~Light</B>( void )
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.24.30"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>init</B>( void )
+<DD><I>Initialize the light's settings with some decent defaults.</I>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Object.html">Object</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html#DOC.2.36.1">Object</A>* <B>readClone</B>(<!1><A HREF="Input.html">Input</A>&amp; fr)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>write</B>(<!1><A HREF="Output.html">Output</A>&amp; fw)
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>readLocalData</B>(<!1><A HREF="Input.html">Input</A>&amp;)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>writeLocalData</B>(<!1><A HREF="Output.html">Output</A>&amp;)
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Referenced.html">Referenced</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Referenced.html#DOC.2.43.4">Referenced</A>&amp; <B>operator = </B>(<!1><A HREF="Referenced.html#DOC.2.43.4">Referenced</A>&amp;)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>ref</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>unref</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>int <B>referenceCount</B>()
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>int <B>_refCount</B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU">
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>Light state class which encapsulates OpenGL glLight() functionality</BLOCKQUOTE>
+<DL>
+
+<A NAME="Light">
+<A NAME="DOC.2.24.31">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Light()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="instance">
+<A NAME="DOC.2.24.1">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   <!1><A HREF="Light.html#DOC.2.24.31">Light</A>* instance()</B></TT>
+<DD>return a static instance of an osg::Light, to be used as prototype
+for loading lights
+<DL><DT><DD></DL><P>
+<A NAME="clone">
+<A NAME="DOC.2.24.2">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html#DOC.2.36.1">Object</A>* clone() const </B></TT>
+<DD>return a shallow copy of a node, with Object* return type
+<DL><DT><DD></DL><P>
+<A NAME="isSameKindAs">
+<A NAME="DOC.2.24.32">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(<!1><A HREF="Object.html#DOC.2.36.1">Object</A>* obj)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="className">
+<A NAME="DOC.2.24.3">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
+<DD>return the name of the node's class type
+<DL><DT><DD></DL><P>
+<A NAME="on">
+<A NAME="DOC.2.24.4">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void on( void )</B></TT>
+<DD>
+Turn the light on.
+Calling this method doesn't directly affect OpenGL's lighting mode.
+<DL><DT><DD></DL><P>
+<A NAME="off">
+<A NAME="DOC.2.24.5">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void off( void )</B></TT>
+<DD>
+Turn the light off.
+Calling this method doesn't directly affect OpenGL's lighting mode.
+<DL><DT><DD></DL><P>
+<A NAME="enable">
+<A NAME="DOC.2.24.6">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   void enable( void )</B></TT>
+<DD>Enable OpenGL's Lighting mode. 
+<DL><DT><DD></DL><P>
+<A NAME="disable">
+<A NAME="DOC.2.24.7">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   void disable( void )</B></TT>
+<DD>Disable OpenGL's Lighting mode. 
+<DL><DT><DD></DL><P>
+<A NAME="apply">
+<A NAME="DOC.2.24.8">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void apply( void )</B></TT>
+<DD>Apply the light's state to the OpenGL state machine. 
+<DL><DT><DD></DL><P>
+<A NAME="setAmbient">
+<A NAME="DOC.2.24.9">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setAmbient( const <!1><A HREF="Vec4.html">Vec4</A>&amp; ambient )</B></TT>
+<DD>Set the ambient component of the light. 
+<DL><DT><DD></DL><P>
+<A NAME="getAmbient">
+<A NAME="DOC.2.24.10">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec4.html">Vec4</A>&amp; getAmbient() const </B></TT>
+<DD>Get the ambient component of the light. 
+<DL><DT><DD></DL><P>
+<A NAME="setDiffuse">
+<A NAME="DOC.2.24.11">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDiffuse( const <!1><A HREF="Vec4.html">Vec4</A>&amp; diffuse )</B></TT>
+<DD>Set the diffuse component of the light. 
+<DL><DT><DD></DL><P>
+<A NAME="getDiffuse">
+<A NAME="DOC.2.24.12">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec4.html">Vec4</A>&amp; getDiffuse() const </B></TT>
+<DD>Get the diffuse component of the light. 
+<DL><DT><DD></DL><P>
+<A NAME="setSpecular">
+<A NAME="DOC.2.24.13">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSpecular( const <!1><A HREF="Vec4.html">Vec4</A>&amp; specular )</B></TT>
+<DD>Set the specular component of the light. 
+<DL><DT><DD></DL><P>
+<A NAME="getSpecular">
+<A NAME="DOC.2.24.14">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec4.html">Vec4</A>&amp; getSpecular() const </B></TT>
+<DD>Get the specular component of the light. 
+<DL><DT><DD></DL><P>
+<A NAME="setPosition">
+<A NAME="DOC.2.24.15">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setPosition( const <!1><A HREF="Vec4.html">Vec4</A>&amp; position )</B></TT>
+<DD>Set the position of the light. 
+<DL><DT><DD></DL><P>
+<A NAME="getPosition">
+<A NAME="DOC.2.24.16">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec4.html">Vec4</A>&amp; getPosition() const </B></TT>
+<DD>Get the position of the light. 
+<DL><DT><DD></DL><P>
+<A NAME="setDirection">
+<A NAME="DOC.2.24.17">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDirection( const <!1><A HREF="Vec3.html">Vec3</A>&amp; direction )</B></TT>
+<DD>Set the direction of the light. 
+<DL><DT><DD></DL><P>
+<A NAME="getDirection">
+<A NAME="DOC.2.24.18">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec3.html">Vec3</A>&amp; getDirection() const </B></TT>
+<DD>Get the direction of the light. 
+<DL><DT><DD></DL><P>
+<A NAME="setConstantAttenuation">
+<A NAME="DOC.2.24.19">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setConstantAttenuation( float constant_attenuation )</B></TT>
+<DD>Set the constant attenuation of the light. 
+<DL><DT><DD></DL><P>
+<A NAME="setConstantAttenuation">
+<A NAME="DOC.2.24.20">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float setConstantAttenuation() const </B></TT>
+<DD>Get the constant attenuation of the light. 
+<DL><DT><DD></DL><P>
+<A NAME="setLinearAttenuation">
+<A NAME="DOC.2.24.21">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setLinearAttenuation( float linear_attenuation )</B></TT>
+<DD>Set the linear attenuation of the light. 
+<DL><DT><DD></DL><P>
+<A NAME="getLinearAttenuation">
+<A NAME="DOC.2.24.22">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float getLinearAttenuation() const </B></TT>
+<DD>Get the linear attenuation of the light. 
+<DL><DT><DD></DL><P>
+<A NAME="setQuadraticAttenuation">
+<A NAME="DOC.2.24.23">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setQuadraticAttenuation( float quadratic_attenuation )</B></TT>
+<DD>Set the quadratic attenuation of the light. 
+<DL><DT><DD></DL><P>
+<A NAME="getQuadraticAttenuation">
+<A NAME="DOC.2.24.24">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float getQuadraticAttenuation() const </B></TT>
+<DD>Get the quadratic attenuation of the light. 
+<DL><DT><DD></DL><P>
+<A NAME="setSpotExponent">
+<A NAME="DOC.2.24.25">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSpotExponent( float spot_exponent )</B></TT>
+<DD>Set the spot exponent of the light. 
+<DL><DT><DD></DL><P>
+<A NAME="getSpotExponent">
+<A NAME="DOC.2.24.26">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float getSpotExponent() const </B></TT>
+<DD>Get the spot exponent of the light. 
+<DL><DT><DD></DL><P>
+<A NAME="setSpotCutoff">
+<A NAME="DOC.2.24.27">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSpotCutoff( float spot_cutoff )</B></TT>
+<DD>Set the spot cutoff of the light. 
+<DL><DT><DD></DL><P>
+<A NAME="getSpotCutoff">
+<A NAME="DOC.2.24.28">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float getSpotCutoff()</B></TT>
+<DD>Get the spot cutoff of the light. 
+<DL><DT><DD></DL><P>
+<A NAME="captureLightState">
+<A NAME="DOC.2.24.29">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void captureLightState()</B></TT>
+<DD>
+Capture the lighting settings of the current OpenGL state
+and store them in this object
+<DL><DT><DD></DL><P>
+<A NAME="~Light">
+<A NAME="DOC.2.24.33">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Light( void )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="init">
+<A NAME="DOC.2.24.30">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void init( void )</B></TT>
+<DD>Initialize the light's settings with some decent defaults. 
+<DL><DT><DD></DL><P>
+<A NAME="_lightnum">
+<A NAME="DOC.2.24.34">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _lightnum</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_on">
+<A NAME="DOC.2.24.35">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _on</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_ambient">
+<A NAME="DOC.2.24.36">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec4.html">Vec4</A> _ambient</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_diffuse">
+<A NAME="DOC.2.24.37">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec4.html">Vec4</A> _diffuse</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_specular">
+<A NAME="DOC.2.24.38">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec4.html">Vec4</A> _specular</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_position">
+<A NAME="DOC.2.24.39">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec4.html">Vec4</A> _position</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_direction">
+<A NAME="DOC.2.24.40">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec3.html">Vec3</A> _direction</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_constant_attenuation">
+<A NAME="DOC.2.24.41">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _constant_attenuation</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_linear_attenuation">
+<A NAME="DOC.2.24.42">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _linear_attenuation</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_quadratic_attenuation">
+<A NAME="DOC.2.24.43">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _quadratic_attenuation</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_spot_exponent">
+<A NAME="DOC.2.24.44">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _spot_exponent</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_spot_cutoff">
+<A NAME="DOC.2.24.45">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _spot_cutoff</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_currentLightNum">
+<A NAME="DOC.2.24.46">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   int _currentLightNum</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I><P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

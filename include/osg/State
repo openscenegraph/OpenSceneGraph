@@ -1,0 +1,22 @@
+#ifndef OSG_STATE
+#define OSG_STATE 1
+
+#include <osg/Export>
+
+namespace osg {
+
+class SG_EXPORT State
+{
+    public :
+        State( void );
+        ~State( void );
+
+    private :
+        GeoState *initial;
+        GeoState *req;
+        GeoState *current;
+};
+
+};
+
+#endif

@@ -1,0 +1,260 @@
+<HTML>
+<HEAD>
+   <TITLE>class  SG_EXPORT osg::Camera</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.3">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osg::Camera</A>: public <!1><A HREF="Referenced.html">osg::Referenced</A></H2>
+<BLOCKQUOTE>Camera class for encapsulating the view position and orientation.</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=65>
+<param name=classes value="CReferenced,MReferenced.html,CCamera,MCamera.html">
+<param name=before value="M,M">
+<param name=after value="Md_,M">
+<param name=indent value="0,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<A HREF="#DOC.2.5.18"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A> <B>Camera</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.5.19"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   <B>~Camera</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.5.1"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setFieldOfView</B>(double fovy, double aspectRatio)
+<DD><I> Set field of view and window aspect ratio.</I>
+<DT>
+<A HREF="#DOC.2.5.20"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setFieldOfViewY</B>(double fovy)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.5.21"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>double <B>getFieldOfViewY</B>() const 
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.5.22"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setAspectRatio</B>(double aspectRatio)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.5.23"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>double <B>getAspectRatio</B>() const 
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.5.2"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>home</B>()
+<DD><I> hardwired home view for now, looking straight down the Z axis at the origin, with 'up' being the y axis</I>
+<DT>
+<A HREF="#DOC.2.5.3"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setView</B>(<!1><A HREF="Vec3.html">Vec3</A> eyePoint, <!1><A HREF="Vec3.html">Vec3</A> lookPoint, <!1><A HREF="Vec3.html">Vec3</A> upVector)
+<DD><I> Set the View, the up vector should be orthogonal to the look vector</I>
+<DT>
+<A HREF="#DOC.2.5.4"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>const <!1><A HREF="Vec3.html">Vec3</A>&amp; <B>getEyePoint</B>() const 
+<DD><I>get the eyepoint.</I>
+<DT>
+<A HREF="#DOC.2.5.5"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>const <!1><A HREF="Vec3.html">Vec3</A>&amp; <B>getLookPoint</B>() const 
+<DD><I>get the lookpoint.</I>
+<DT>
+<A HREF="#DOC.2.5.6"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>const <!1><A HREF="Vec3.html">Vec3</A>&amp; <B>getUpVector</B>() const 
+<DD><I>which way is up?</I>
+<DT>
+<A HREF="#DOC.2.5.7"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Vec3.html">Vec3</A> <B>getSideVector</B>() const 
+<DD><I>calculate side vector</I>
+<DT>
+<A HREF="#DOC.2.5.8"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Vec3.html">Vec3</A> <B>getLookVector</B>() const 
+<DD><I>calculate look vector</I>
+<DT>
+<A HREF="#DOC.2.5.9"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>float <B>getFocalDistance</B>() const 
+<DD><I>calculate focal distance</I>
+<DT>
+<A HREF="#DOC.2.5.10"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setNearPlane</B>(double nearPlane)
+<DD><I>set the near plane.</I>
+<DT>
+<A HREF="#DOC.2.5.11"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>double <B>getNearPlane</B>() const 
+<DD><I>get the near plane.</I>
+<DT>
+<A HREF="#DOC.2.5.12"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setFarPlane</B>(double farPlane)
+<DD><I>set the far plane.</I>
+<DT>
+<A HREF="#DOC.2.5.13"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>double <B>getFarPlane</B>() const 
+<DD><I>get the far plane.</I>
+<DT>
+<A HREF="#DOC.2.5.14"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>draw_PROJECTION</B>() const 
+<DD><I>Set up the OpenGL GL_PROJECTION matrix.</I>
+<DT>
+<A HREF="#DOC.2.5.15"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>draw_MODELVIEW</B>() const 
+<DD><I>Set up the OpenGL GL_MODELVIEW matrix.</I>
+<DT>
+<A HREF="#DOC.2.5.16"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>mult</B>(const <!1><A HREF="Camera.html#DOC.2.5.18">Camera</A>&amp; camera, const <!1><A HREF="Matrix.html">Matrix</A>&amp; m)
+<DD><I>post multiply a camera by matrix</I>
+<DT>
+<A HREF="#DOC.2.5.17"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>mult</B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; m, const <!1><A HREF="Camera.html#DOC.2.5.18">Camera</A>&amp; camera)
+<DD><I>pre multiply a camera by matrix</I>
+<DT>
+<A HREF="#DOC.2.5.24"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>ensureOrthogonalUpVector</B>()
+<DD><I></I>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Referenced.html">Referenced</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Referenced.html#DOC.2.43.4">Referenced</A>&amp; <B>operator = </B>(<!1><A HREF="Referenced.html#DOC.2.43.4">Referenced</A>&amp;)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>ref</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>unref</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>int <B>referenceCount</B>()
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>int <B>_refCount</B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU">
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>Camera class for encapsulating the view position and orientation.
+This is the first implementation of osg::Camera class and
+currently is a perspective camera, but in future will be
+a base class from which PerpsectivCamera,FrustumCamera and OrthoCamera
+will be derived.</BLOCKQUOTE>
+<DL>
+
+<A NAME="Camera">
+<A NAME="DOC.2.5.18">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Camera()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~Camera">
+<A NAME="DOC.2.5.19">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Camera()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setFieldOfView">
+<A NAME="DOC.2.5.1">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setFieldOfView(double fovy, double aspectRatio)</B></TT>
+<DD>
+Set field of view and window aspect ratio.
+The parameters have the same meaning as their counterparts
+in gluPerspective(fovy,aspectRatio
+<DL><DT><DD></DL><P>
+<A NAME="setFieldOfViewY">
+<A NAME="DOC.2.5.20">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setFieldOfViewY(double fovy)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getFieldOfViewY">
+<A NAME="DOC.2.5.21">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double getFieldOfViewY() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setAspectRatio">
+<A NAME="DOC.2.5.22">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setAspectRatio(double aspectRatio)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getAspectRatio">
+<A NAME="DOC.2.5.23">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double getAspectRatio() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="home">
+<A NAME="DOC.2.5.2">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void home()</B></TT>
+<DD>
+hardwired home view for now, looking straight down the
+Z axis at the origin, with 'up' being the y axis
+<DL><DT><DD></DL><P>
+<A NAME="setView">
+<A NAME="DOC.2.5.3">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setView(<!1><A HREF="Vec3.html">Vec3</A> eyePoint, <!1><A HREF="Vec3.html">Vec3</A> lookPoint, <!1><A HREF="Vec3.html">Vec3</A> upVector)</B></TT>
+<DD>
+Set the View, the up vector should be orthogonal to the
+look vector
+<DL><DT><DD></DL><P>
+<A NAME="getEyePoint">
+<A NAME="DOC.2.5.4">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec3.html">Vec3</A>&amp; getEyePoint() const </B></TT>
+<DD>get the eyepoint. 
+<DL><DT><DD></DL><P>
+<A NAME="getLookPoint">
+<A NAME="DOC.2.5.5">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec3.html">Vec3</A>&amp; getLookPoint() const </B></TT>
+<DD>get the lookpoint. 
+<DL><DT><DD></DL><P>
+<A NAME="getUpVector">
+<A NAME="DOC.2.5.6">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec3.html">Vec3</A>&amp; getUpVector() const </B></TT>
+<DD>which way is up? 
+<DL><DT><DD></DL><P>
+<A NAME="getSideVector">
+<A NAME="DOC.2.5.7">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec3.html">Vec3</A> getSideVector() const </B></TT>
+<DD>calculate side vector
+<DL><DT><DD></DL><P>
+<A NAME="getLookVector">
+<A NAME="DOC.2.5.8">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec3.html">Vec3</A> getLookVector() const </B></TT>
+<DD>calculate look vector
+<DL><DT><DD></DL><P>
+<A NAME="getFocalDistance">
+<A NAME="DOC.2.5.9">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float getFocalDistance() const </B></TT>
+<DD>calculate focal distance
+<DL><DT><DD></DL><P>
+<A NAME="setNearPlane">
+<A NAME="DOC.2.5.10">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setNearPlane(double nearPlane)</B></TT>
+<DD>set the near plane. 
+<DL><DT><DD></DL><P>
+<A NAME="getNearPlane">
+<A NAME="DOC.2.5.11">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double getNearPlane() const </B></TT>
+<DD>get the near plane. 
+<DL><DT><DD></DL><P>
+<A NAME="setFarPlane">
+<A NAME="DOC.2.5.12">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setFarPlane(double farPlane)</B></TT>
+<DD>set the far plane. 
+<DL><DT><DD></DL><P>
+<A NAME="getFarPlane">
+<A NAME="DOC.2.5.13">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double getFarPlane() const </B></TT>
+<DD>get the far plane. 
+<DL><DT><DD></DL><P>
+<A NAME="draw_PROJECTION">
+<A NAME="DOC.2.5.14">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void draw_PROJECTION() const </B></TT>
+<DD>Set up the OpenGL GL_PROJECTION matrix. 
+Enters the GL_PROJECTION mode, sets up matrix, then
+resets model GL_MODELVIEW, which is by OpenGL convention the default.
+<DL><DT><DD></DL><P>
+<A NAME="draw_MODELVIEW">
+<A NAME="DOC.2.5.15">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void draw_MODELVIEW() const </B></TT>
+<DD>Set up the OpenGL GL_MODELVIEW matrix. 
+Enters the GL_MODELVIEW mode, sets matrix to identity
+and then sets matrix up according to camera, eye point, center
+point and upvector.
+<DL><DT><DD></DL><P>
+<A NAME="mult">
+<A NAME="DOC.2.5.16">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void mult(const <!1><A HREF="Camera.html#DOC.2.5.18">Camera</A>&amp; camera, const <!1><A HREF="Matrix.html">Matrix</A>&amp; m)</B></TT>
+<DD>post multiply a camera by matrix
+<DL><DT><DD></DL><P>
+<A NAME="mult">
+<A NAME="DOC.2.5.17">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void mult(const <!1><A HREF="Matrix.html">Matrix</A>&amp; m, const <!1><A HREF="Camera.html#DOC.2.5.18">Camera</A>&amp; camera)</B></TT>
+<DD>pre multiply a camera by matrix
+<DL><DT><DD></DL><P>
+<A NAME="ensureOrthogonalUpVector">
+<A NAME="DOC.2.5.24">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void ensureOrthogonalUpVector()</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I><P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

@@ -1,0 +1,21 @@
+#ifndef OSG_LIGHTING
+#define OSG_LIGHTING 1
+
+#include <osg/Export>
+
+namespace osg {
+
+/** Class to globally control OpenGL's lighting.*/
+
+class SG_EXPORT Lighting
+{
+    public :
+    	/** Enable lighting.*/
+        static void enable();
+	/** Disable lighting.*/
+        static void disable();
+};
+
+};
+
+#endif

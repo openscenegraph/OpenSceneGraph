@@ -1,0 +1,272 @@
+<HTML>
+<HEAD>
+   <TITLE>class  SG_EXPORT osg::Image</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.3">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osg::Image</A>: public <!1><A HREF="Object.html#DOC.2.36.1">Object</A></H2>
+<BLOCKQUOTE>Image class for encapsulating the storage texture image data</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=95>
+<param name=classes value="CReferenced,MReferenced.html,CObject,MObject.html,CImage,MImage.html">
+<param name=before value="M,M,M">
+<param name=after value="Md_SP,Md_,M">
+<param name=indent value="0,1,2">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<A HREF="#DOC.2.19.7"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A> <B>Image</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.19.8"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   <!1><A HREF="Object.html#DOC.2.36.1">Object</A>* <B>clone</B>() const 
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.19.9"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   bool <B>isSameKindAs</B>(<!1><A HREF="Object.html#DOC.2.36.1">Object</A>* obj)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.19.10"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   const char* <B>className</B>() const 
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.19.11"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>const char* <B>getFileName</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.19.12"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setFileName</B>(const char* fileName)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.19.13"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setImage</B>(int <!1><A HREF="Image.html#DOC.2.19.1">s</A>, int <!1><A HREF="Image.html#DOC.2.19.2">t</A>, int <!1><A HREF="Image.html#DOC.2.19.3">r</A>, int <!1><A HREF="Image.html#DOC.2.19.14">internalFormat</A>, unsigned int <!1><A HREF="Image.html#DOC.2.19.15">pixelFormat</A>, unsigned int <!1><A HREF="Image.html#DOC.2.19.16">dataType</A>, unsigned char *<!1><A HREF="Image.html#DOC.2.19.4">data</A>)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.19.1"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>int <B>s</B>()
+<DD><I>Width of image</I>
+<DT>
+<A HREF="#DOC.2.19.2"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>int <B>t</B>()
+<DD><I>Height of image</I>
+<DT>
+<A HREF="#DOC.2.19.3"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>int <B>r</B>()
+<DD><I>Depth of image</I>
+<DT>
+<A HREF="#DOC.2.19.14"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>int <B>internalFormat</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.19.15"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>unsigned int <B>pixelFormat</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.19.16"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>unsigned int <B>dataType</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.19.4"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>unsigned char* <B>data</B>()
+<DD><I>raw image data</I>
+<DT>
+<A HREF="#DOC.2.19.5"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>scaleImage</B>(int <!1><A HREF="Image.html#DOC.2.19.1">s</A>, int <!1><A HREF="Image.html#DOC.2.19.2">t</A>, int <!1><A HREF="Image.html#DOC.2.19.3">r</A>)
+<DD><I>Scale image to specified size.</I>
+<DT>
+<A HREF="#DOC.2.19.6"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>ensureDimensionsArePowerOfTwo</B>()
+<DD><I>Ensure image dimensions are a power of two.</I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<A HREF="#DOC.2.19.20"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>char* <B>_fileName</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.19.21"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>int <B>_s</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.19.22"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>int  <B>_t</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.19.23"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>int   <B>_r</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.19.24"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>int <B>_internalFormat</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.19.25"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>unsigned int <B>_pixelFormat</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.19.26"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>unsigned int <B>_dataType</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.19.27"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>unsigned char* <B>_data</B>
+<DD><I></I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<A HREF="#DOC.2.19.17"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   <B>~Image</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.19.18"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   bool <B>readLocalData</B>(<!1><A HREF="Input.html">Input</A>&amp; fr)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.19.19"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   bool <B>writeLocalData</B>(<!1><A HREF="Output.html">Output</A>&amp; fw)
+<DD><I></I>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Object.html">Object</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html#DOC.2.36.1">Object</A>* <B>readClone</B>(<!1><A HREF="Input.html">Input</A>&amp; fr)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>write</B>(<!1><A HREF="Output.html">Output</A>&amp; fw)
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Referenced.html">Referenced</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Referenced.html#DOC.2.43.4">Referenced</A>&amp; <B>operator = </B>(<!1><A HREF="Referenced.html#DOC.2.43.4">Referenced</A>&amp;)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>ref</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>unref</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>int <B>referenceCount</B>()
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>int <B>_refCount</B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU">
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>Image class for encapsulating the storage texture image data</BLOCKQUOTE>
+<DL>
+
+<A NAME="Image">
+<A NAME="DOC.2.19.7">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Image()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="clone">
+<A NAME="DOC.2.19.8">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html#DOC.2.36.1">Object</A>* clone() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="isSameKindAs">
+<A NAME="DOC.2.19.9">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(<!1><A HREF="Object.html#DOC.2.36.1">Object</A>* obj)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="className">
+<A NAME="DOC.2.19.10">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getFileName">
+<A NAME="DOC.2.19.11">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const char* getFileName()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setFileName">
+<A NAME="DOC.2.19.12">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setFileName(const char* fileName)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setImage">
+<A NAME="DOC.2.19.13">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setImage(int <!1><A HREF="Image.html#DOC.2.19.1">s</A>, int <!1><A HREF="Image.html#DOC.2.19.2">t</A>, int <!1><A HREF="Image.html#DOC.2.19.3">r</A>, int <!1><A HREF="Image.html#DOC.2.19.14">internalFormat</A>, unsigned int <!1><A HREF="Image.html#DOC.2.19.15">pixelFormat</A>, unsigned int <!1><A HREF="Image.html#DOC.2.19.16">dataType</A>, unsigned char *<!1><A HREF="Image.html#DOC.2.19.4">data</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="s">
+<A NAME="DOC.2.19.1">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int s()</B></TT>
+<DD>Width of image
+<DL><DT><DD></DL><P>
+<A NAME="t">
+<A NAME="DOC.2.19.2">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int t()</B></TT>
+<DD>Height of image
+<DL><DT><DD></DL><P>
+<A NAME="r">
+<A NAME="DOC.2.19.3">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int r()</B></TT>
+<DD>Depth of image
+<DL><DT><DD></DL><P>
+<A NAME="internalFormat">
+<A NAME="DOC.2.19.14">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int internalFormat()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="pixelFormat">
+<A NAME="DOC.2.19.15">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int pixelFormat()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="dataType">
+<A NAME="DOC.2.19.16">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int dataType()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="data">
+<A NAME="DOC.2.19.4">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned char* data()</B></TT>
+<DD>raw image data
+<DL><DT><DD></DL><P>
+<A NAME="scaleImage">
+<A NAME="DOC.2.19.5">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void scaleImage(int <!1><A HREF="Image.html#DOC.2.19.1">s</A>, int <!1><A HREF="Image.html#DOC.2.19.2">t</A>, int <!1><A HREF="Image.html#DOC.2.19.3">r</A>)</B></TT>
+<DD>Scale image to specified size. 
+<DL><DT><DD></DL><P>
+<A NAME="ensureDimensionsArePowerOfTwo">
+<A NAME="DOC.2.19.6">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void ensureDimensionsArePowerOfTwo()</B></TT>
+<DD>Ensure image dimensions are a power of two.
+Mip Mapped texture require the image dimensions to be
+power of two.
+<DL><DT><DD></DL><P>
+<A NAME="~Image">
+<A NAME="DOC.2.19.17">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Image()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readLocalData">
+<A NAME="DOC.2.19.18">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool readLocalData(<!1><A HREF="Input.html">Input</A>&amp; fr)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="writeLocalData">
+<A NAME="DOC.2.19.19">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool writeLocalData(<!1><A HREF="Output.html">Output</A>&amp; fw)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_fileName">
+<A NAME="DOC.2.19.20">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>char* _fileName</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_s">
+<A NAME="DOC.2.19.21">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _s</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_t">
+<A NAME="DOC.2.19.22">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int  _t</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_r">
+<A NAME="DOC.2.19.23">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int   _r</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_internalFormat">
+<A NAME="DOC.2.19.24">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _internalFormat</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_pixelFormat">
+<A NAME="DOC.2.19.25">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _pixelFormat</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_dataType">
+<A NAME="DOC.2.19.26">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _dataType</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_data">
+<A NAME="DOC.2.19.27">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned char* _data</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I><P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

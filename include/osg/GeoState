@@ -1,0 +1,150 @@
+#ifndef OSG_GEOSTATE
+#define OSG_GEOSTATE 1
+
+#include <osg/OSG>
+#include <osg/Texture>
+#include <osg/TexGen>
+#include <osg/Light>
+#include <osg/Material>
+#include <osg/TexEnv>
+#include <osg/Transparency>
+#include <osg/Lighting>
+#include <osg/Fog>
+#include <osg/TexMat>
+#include <osg/CullFace>
+#include <osg/Point>
+#include <osg/PolygonOffset>
+#include <osg/AlphaFunc>
+
+namespace osg {
+
+class Input;
+class Output;
+
+/**
+Encapsulates OpenGL state modes and attributes. 
+Used to specificy textures etc of osg::GeoSet's which hold references
+to a single osg::GeoState.  GeoState can be shared between GeoSet's
+and is recommend if possible as it minimize expensive state changes
+in the graphics pipeline.
+*/
+class SG_EXPORT GeoState : public Object
+{
+    public :
+
+        enum AttributeType
+        {
+            ANTIALIAS,
+            FACE_CULL,
+            FOG,
+            LIGHTING,
+            MATERIAL,
+            POINT,
+            POLYGON_OFFSET,
+            TEXENV,
+            TEXGEN,
+            TEXMAT,
+            TEXTURE,
+            TRANSPARENCY,
+            WIREFRAME,
+            ALPHAFUNC
+        };
+
+        enum AttributeMode
+        {
+            INHERIT,
+            OFF,
+            ON,
+            OVERRIDE_OFF,
+            OVERRIDE_ON,
+        };
+        
+        GeoState();
+        static GeoState* instance();
+        virtual Object* clone() const { return new GeoState(); }
+        virtual bool isSameKindAs(Object* obj) { return dynamic_cast<GeoState*>(obj)!=NULL; }
+        const char* className() const { return "GeoState"; }
+
+        /** set all the modes to on or off so that it defines a 
+            complete state, typically used for a default global state.*/
+        void setGlobalDefaults();
+
+        /** set all the modes to inherit, typically used to signifiy
+            nodes which inherit all of their modes for the global state.*/
+        void setAllToInherit();
+
+        void setMode(AttributeType type, AttributeMode mode);
+        AttributeMode getMode(AttributeType type) const;
+
+        void setAttribute(AttributeType type, Object *attribute);
+        Object* getAttribute(AttributeType type) const;
+
+        bool isTransparent() { return _transparencing==ON; }
+
+        void apply();
+        void apply(GeoState* global,GeoState* prev);
+
+        bool check();
+
+        static AttributeMode combineMode(const AttributeMode g,const AttributeMode p,const AttributeMode c)
+        {            
+            AttributeMode gp = mergeMode(g,p);
+            AttributeMode gc = mergeMode(g,c);
+            if (gc==gp) return INHERIT;
+            else return gc;
+        }
+
+        static AttributeMode mergeMode(const AttributeMode lhs,const AttributeMode rhs)
+        {       
+            AttributeMode mode; 
+            if (rhs==INHERIT || lhs==OVERRIDE_OFF || lhs==OVERRIDE_ON) mode = lhs;
+            else mode = rhs;
+            if (mode==OVERRIDE_OFF) return OFF;
+            else if (mode==OVERRIDE_OFF) return ON;
+            return mode;
+        }
+
+    protected :
+
+
+        virtual ~GeoState();
+
+        GeoState(const GeoState&):Object() {}
+        GeoState& operator = (const GeoState&) { return *this; }
+
+        virtual bool readLocalData(Input& fr);
+        virtual bool writeLocalData(Output& fw);
+
+        bool matchModeStr(const char* str, AttributeMode& mode);
+        const char* getModeStr(AttributeMode flag);
+
+        // Modes
+        AttributeMode _transparencing;
+        AttributeMode _face_culling;
+        AttributeMode _lighting;
+        AttributeMode _texturing;
+        AttributeMode _fogging;
+        AttributeMode _texgening;
+        AttributeMode _antialiasing;
+        AttributeMode _colortable;
+        AttributeMode _pointSmoothing;
+        AttributeMode _polygonOffsetting;
+        AttributeMode _alphaTesting;
+
+        // Attributes
+        ref_ptr<Texture>        _texture;
+        ref_ptr<TexGen>         _texgen;
+        ref_ptr<Material>       _material;
+        ref_ptr<TexEnv>         _texenv;
+        ref_ptr<Transparency>   _transparency;
+        ref_ptr<TexMat>         _texmat;
+        ref_ptr<Fog>            _fog;
+        ref_ptr<Point>          _point;
+        ref_ptr<PolygonOffset>  _polygonOffset;
+        ref_ptr<CullFace>       _cullFace;
+        ref_ptr<AlphaFunc>      _alphaFunc;
+};
+
+};
+
+#endif

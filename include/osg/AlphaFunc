@@ -1,0 +1,65 @@
+#ifndef OSG_ALPHAFUNC
+#define OSG_ALPHAFUNC 1
+
+#include <osg/Export>
+#include <osg/Object>
+#include <osg/GL>
+
+namespace osg {
+
+/** Encapsulte OpenGL glAlphaFunc.
+*/     
+class SG_EXPORT AlphaFunc : public Object
+{
+    public :
+    
+        enum ComparisonFunction {
+            NEVER = GL_NEVER,
+            LESS = GL_LESS,
+            EQUAL = GL_EQUAL,
+            LEQUAL = GL_LEQUAL,
+            GREATER = GL_GREATER,
+            NOTEQUAL = GL_NOTEQUAL,
+            GEQUAL = GL_GEQUAL,
+            ALWAYS = GL_ALWAYS
+        };
+    
+        AlphaFunc();
+        static AlphaFunc* instance();
+        virtual bool isSameKindAs(Object* obj) { return dynamic_cast<AlphaFunc*>(obj)!=NULL; }
+        virtual Object* clone() const { return new AlphaFunc(); }
+        virtual const char* className() const { return "AlphaFunc"; }
+    
+        void setFunction(ComparisonFunction func,float ref)
+        {
+            _comparisonFunc = func;
+            _referenceValue = ref;
+        }
+        
+        ComparisonFunction getFunction() const { return _comparisonFunc; }
+        
+        float getRefrenceValue() const { return _referenceValue; }
+        
+        static void enable();
+        static void disable();
+        
+        void apply();
+        
+    protected:
+    
+        virtual ~AlphaFunc();
+
+        virtual bool readLocalData(Input& fr);
+        virtual bool writeLocalData(Output& fw);
+        
+        bool matchFuncStr(const char* str,ComparisonFunction& func);
+        const char* getFuncStr(ComparisonFunction func);
+
+        ComparisonFunction _comparisonFunc;
+        float _referenceValue;
+
+};
+
+};
+
+#endif

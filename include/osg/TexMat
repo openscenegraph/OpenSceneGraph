@@ -1,0 +1,29 @@
+#ifndef OSG_TEXMAT
+#define OSG_TEXMAT 1
+
+#include <osg/Export>
+#include <osg/Matrix>
+
+namespace osg {
+
+class SG_EXPORT TexMat : public Matrix
+{
+    public :
+        TexMat( void );
+        static TexMat* instance();
+        virtual Object* clone() const { return new TexMat(); }
+        virtual bool isSameKindAs(Object* obj) { return dynamic_cast<TexMat*>(obj)!=NULL; }
+        virtual const char* className() const { return "TexMat"; }
+
+        void apply( void );
+
+    protected:
+
+        virtual ~TexMat( void );
+
+};
+
+};
+
+
+#endif

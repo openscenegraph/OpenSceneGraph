@@ -1,0 +1,135 @@
+<HTML>
+<HEAD>
+   <TITLE>template<class T> class  osg::ref_ptr</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.3">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>template&lt;class T&gt; class  <A HREF="#DOC.DOCU">osg::ref_ptr</A></H2>
+<BLOCKQUOTE>Smart pointer for handling referenced counted objects</BLOCKQUOTE>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<A HREF="#DOC.2.42.1"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A> <B>ref_ptr</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.42.2"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A> <B>ref_ptr</B>(T* t)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.42.3"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A> <B>ref_ptr</B>(const <!1><A HREF="ref_ptr.html#DOC.2.42.1">ref_ptr</A>&amp; rp)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.42.4"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A> <B>~ref_ptr</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.42.5"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="ref_ptr.html#DOC.2.42.1">ref_ptr</A>&amp; <B>operator = </B>(const <!1><A HREF="ref_ptr.html#DOC.2.42.1">ref_ptr</A>&amp; rp)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.42.6"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="ref_ptr.html#DOC.2.42.1">ref_ptr</A>&amp; <B>operator = </B>(T* ptr)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.42.7"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>operator == </B>(const <!1><A HREF="ref_ptr.html#DOC.2.42.1">ref_ptr</A>&amp; rp) const 
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.42.8"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>operator == </B>(const T* ptr) const 
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.42.9"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>operator != </B>(const <!1><A HREF="ref_ptr.html#DOC.2.42.1">ref_ptr</A>&amp; rp) const 
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.42.10"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>operator != </B>(const T* ptr) const 
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.42.11"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>T&amp; <B>operator*</B>() const 
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.42.12"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>T* <B>operator-></B>() const 
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.42.13"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>operator!</B>() const 
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.42.14"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>valid</B>() const 
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.42.15"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>T* <B>get</B>() const 
+<DD><I></I>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU">
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>Smart pointer for handling referenced counted objects</BLOCKQUOTE>
+<DL>
+
+<A NAME="ref_ptr">
+<A NAME="DOC.2.42.1">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ref_ptr()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ref_ptr">
+<A NAME="DOC.2.42.2">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ref_ptr(T* t)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ref_ptr">
+<A NAME="DOC.2.42.3">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ref_ptr(const <!1><A HREF="ref_ptr.html#DOC.2.42.1">ref_ptr</A>&amp; rp)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~ref_ptr">
+<A NAME="DOC.2.42.4">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ~ref_ptr()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator = ">
+<A NAME="DOC.2.42.5">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html#DOC.2.42.1">ref_ptr</A>&amp; operator = (const <!1><A HREF="ref_ptr.html#DOC.2.42.1">ref_ptr</A>&amp; rp)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator = ">
+<A NAME="DOC.2.42.6">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html#DOC.2.42.1">ref_ptr</A>&amp; operator = (T* ptr)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator == ">
+<A NAME="DOC.2.42.7">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool operator == (const <!1><A HREF="ref_ptr.html#DOC.2.42.1">ref_ptr</A>&amp; rp) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator == ">
+<A NAME="DOC.2.42.8">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool operator == (const T* ptr) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator != ">
+<A NAME="DOC.2.42.9">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool operator != (const <!1><A HREF="ref_ptr.html#DOC.2.42.1">ref_ptr</A>&amp; rp) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator != ">
+<A NAME="DOC.2.42.10">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool operator != (const T* ptr) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator*">
+<A NAME="DOC.2.42.11">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>T&amp; operator*() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator->">
+<A NAME="DOC.2.42.12">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>T* operator->() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator!">
+<A NAME="DOC.2.42.13">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool operator!() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="valid">
+<A NAME="DOC.2.42.14">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool valid() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="get">
+<A NAME="DOC.2.42.15">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>T* get() const </B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I><P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

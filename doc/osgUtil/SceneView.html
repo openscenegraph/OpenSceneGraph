@@ -1,0 +1,409 @@
+<HTML>
+<HEAD>
+   <TITLE>class  OSGUTIL_EXPORT osgUtil::SceneView</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.3">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGUTIL_EXPORT <A HREF="#DOC.DOCU">osgUtil::SceneView</A>: public osg::Referenced</H2>
+<BLOCKQUOTE> SceneView is literaly a view of a scene, encapsulating the camera, global state, lights and the scene itself.</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=65>
+<param name=classes value="Mosg::Referenced,M,CSceneView,MSceneView.html">
+<param name=before value="M,M">
+<param name=after value="Md_,M">
+<param name=indent value="0,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Classes</H3><DD><DT>
+<A HREF="#DOC.2.12.9"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>enum  <B>LightingMode</B>
+<DD><I></I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<A HREF="#DOC.2.12.1"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A> <B>SceneView</B>()
+<DD><I>Constrcut a default scene view</I>
+<DT>
+<A HREF="#DOC.2.12.2"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setSceneData</B>(osg::Node* node)
+<DD><I>Set the data which to view.</I>
+<DT>
+<A HREF="#DOC.2.12.3"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>osg::Node* <B>getSceneData</B>()
+<DD><I>Get the scene data which to view.</I>
+<DT>
+<A HREF="#DOC.2.12.4"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setViewport</B>(int x, int y, int width, int height)
+<DD><I>Set the viewport of the scene view.</I>
+<DT>
+<A HREF="#DOC.2.12.5"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>getViewport</B>(int&amp; x, int&amp; y, int&amp; width, int&amp; height)
+<DD><I>Get the viewport of the scene view.</I>
+<DT>
+<A HREF="#DOC.2.12.6"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setDefaults</B>()
+<DD><I>Set scene view to use default global state, light, camera and render visitor</I>
+<DT>
+<A HREF="#DOC.2.12.7"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setBackgroundColor</B>(const osg::Vec4&amp; color)
+<DD><I>Set the background color used in glClearColor().</I>
+<DT>
+<A HREF="#DOC.2.12.8"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>const osg::Vec4&amp; <B>getBackgroundColor</B>() const 
+<DD><I>Get the background color</I>
+<DT>
+<A HREF="#DOC.2.12.15"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setGlobalState</B>(osg::GeoState* state)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.12.16"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>osg::GeoState* <B>getGlobalState</B>() const 
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.12.17"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setLightingMode</B>(<!1><A HREF="SceneView.html#DOC.2.12.9">LightingMode</A> mode)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.12.18"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="SceneView.html#DOC.2.12.9">LightingMode</A> <B>getLightingMode</B>() const 
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.12.19"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setLight</B>(osg::Light* light)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.12.20"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>osg::Light* <B>getLight</B>() const 
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.12.21"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setCamera</B>(osg::Camera* camera)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.12.22"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>osg::Camera* <B>getCamera</B>() const 
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.12.23"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setRenderVisitor</B>(<!1><A HREF="RenderVisitor.html">osgUtil::RenderVisitor</A>* rv)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.12.24"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="RenderVisitor.html">osgUtil::RenderVisitor</A>* <B>getRenderVisitor</B>() const 
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.12.25"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setLODBias</B>(float bias)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.12.26"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>float <B>getLODBias</B>() const 
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.12.10"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setCalcNearFar</B>(bool calc)
+<DD><I>Set to true if you want SceneView to automatically calculate values for the near/far clipping planes, each frame, set false to use camera's internal near and far planes.</I>
+<DT>
+<A HREF="#DOC.2.12.11"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>getCalcNearFar</B>()
+<DD><I>return true if SceneView automatically caclculates near and  far clipping planes for each frame</I>
+<DT>
+<A HREF="#DOC.2.12.12"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>projectWindowIntoObject</B>(const osg::Vec3&amp; window, osg::Vec3&amp; object) const 
+<DD><I>Calculate, via glUnProject, the object coordinates of a window point.</I>
+<DT>
+<A HREF="#DOC.2.12.13"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>projectWindowXYIntoObject</B>(int x, int y, osg::Vec3&amp; near_point, osg::Vec3&amp; far_point) const 
+<DD><I>Calculate, via glUnProject, the object coordinates of a window x,y when projected onto the near and far planes.</I>
+<DT>
+<A HREF="#DOC.2.12.14"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>projectObjectIntoWindow</B>(const osg::Vec3&amp; object, osg::Vec3&amp; window) const 
+<DD><I>Calculate, via glProject, the object coordinates of a window.</I>
+<DT>
+<A HREF="#DOC.2.12.27"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   void <B>cull</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.12.28"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   void <B>draw</B>()
+<DD><I></I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<A HREF="#DOC.2.12.30"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>osg::ref_ptr&lt;osg::Node&gt;  <B>_sceneData</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.12.31"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>osg::ref_ptr&lt;osg::GeoState&gt;  <B>_globalState</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.12.32"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>osg::ref_ptr&lt;osg::Light&gt;  <B>_light</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.12.33"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>osg::ref_ptr&lt;osg::Camera&gt;  <B>_camera</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.12.34"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>osg::ref_ptr&lt;<!1><A HREF="RenderVisitor.html">osgUtil::RenderVisitor</A>&gt;  <B>_renderVisitor</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.12.35"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>_need_compile</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.12.36"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>_calc_nearfar</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.12.37"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>osg::Vec4 <B>_backgroundColor</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.12.38"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>double <B>_near_plane</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.12.39"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>double <B>_far_plane</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.12.40"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>float <B>_lodBias</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.12.41"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>GLint <B>_view</B>[4]
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.12.42"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>GLdouble <B>_model</B>[16]
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.12.43"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>GLdouble <B>_proj</B>[16]
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.12.44"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="SceneView.html#DOC.2.12.9">LightingMode</A> <B>_lightingMode</B>
+<DD><I></I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<A HREF="#DOC.2.12.29"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   <B>~SceneView</B>()
+<DD><I></I>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU">
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>
+SceneView is literaly a view of a scene, encapsulating the
+camera, global state, lights and the scene itself.  Provides
+methods for setting up the view and rendering it.</BLOCKQUOTE>
+<DL>
+
+<A NAME="SceneView">
+<A NAME="DOC.2.12.1">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SceneView()</B></TT>
+<DD>Constrcut a default scene view
+<DL><DT><DD></DL><P>
+<A NAME="setSceneData">
+<A NAME="DOC.2.12.2">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSceneData(osg::Node* node)</B></TT>
+<DD>Set the data which to view. The data will typically be
+an osg::Scene but can be any osg::Node type.
+<DL><DT><DD></DL><P>
+<A NAME="getSceneData">
+<A NAME="DOC.2.12.3">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Node* getSceneData()</B></TT>
+<DD>Get the scene data which to view. The data will typically be
+an osg::Scene but can be any osg::Node type.
+<DL><DT><DD></DL><P>
+<A NAME="setViewport">
+<A NAME="DOC.2.12.4">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setViewport(int x, int y, int width, int height)</B></TT>
+<DD>Set the viewport of the scene view. 
+<DL><DT><DD></DL><P>
+<A NAME="getViewport">
+<A NAME="DOC.2.12.5">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void getViewport(int&amp; x, int&amp; y, int&amp; width, int&amp; height)</B></TT>
+<DD>Get the viewport of the scene view. 
+<DL><DT><DD></DL><P>
+<A NAME="setDefaults">
+<A NAME="DOC.2.12.6">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDefaults()</B></TT>
+<DD>Set scene view to use default global state, light, camera
+and render visitor
+<DL><DT><DD></DL><P>
+<A NAME="setBackgroundColor">
+<A NAME="DOC.2.12.7">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setBackgroundColor(const osg::Vec4&amp; color)</B></TT>
+<DD>Set the background color used in glClearColor().
+Defaults to an off blue color.
+<DL><DT><DD></DL><P>
+<A NAME="getBackgroundColor">
+<A NAME="DOC.2.12.8">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::Vec4&amp; getBackgroundColor() const </B></TT>
+<DD>Get the background color
+<DL><DT><DD></DL><P>
+<A NAME="setGlobalState">
+<A NAME="DOC.2.12.15">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setGlobalState(osg::GeoState* state)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getGlobalState">
+<A NAME="DOC.2.12.16">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::GeoState* getGlobalState() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="LightingMode">
+<A NAME="DOC.2.12.9">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  LightingMode</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="HEADLIGHT">
+<A NAME="DOC.2.12.9.1">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> HEADLIGHT</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="SKY_LIGHT">
+<A NAME="DOC.2.12.9.2">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SKY_LIGHT</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="NO_SCENEVIEW_LIGHT">
+<A NAME="DOC.2.12.9.3">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NO_SCENEVIEW_LIGHT</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="setLightingMode">
+<A NAME="DOC.2.12.17">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setLightingMode(<!1><A HREF="SceneView.html#DOC.2.12.9">LightingMode</A> mode)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getLightingMode">
+<A NAME="DOC.2.12.18">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="SceneView.html#DOC.2.12.9">LightingMode</A> getLightingMode() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setLight">
+<A NAME="DOC.2.12.19">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setLight(osg::Light* light)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getLight">
+<A NAME="DOC.2.12.20">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Light* getLight() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setCamera">
+<A NAME="DOC.2.12.21">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setCamera(osg::Camera* camera)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getCamera">
+<A NAME="DOC.2.12.22">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Camera* getCamera() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setRenderVisitor">
+<A NAME="DOC.2.12.23">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setRenderVisitor(<!1><A HREF="RenderVisitor.html">osgUtil::RenderVisitor</A>* rv)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getRenderVisitor">
+<A NAME="DOC.2.12.24">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderVisitor.html">osgUtil::RenderVisitor</A>* getRenderVisitor() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setLODBias">
+<A NAME="DOC.2.12.25">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setLODBias(float bias)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getLODBias">
+<A NAME="DOC.2.12.26">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float getLODBias() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setCalcNearFar">
+<A NAME="DOC.2.12.10">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setCalcNearFar(bool calc)</B></TT>
+<DD>Set to true if you want SceneView to automatically calculate values
+for the near/far clipping planes, each frame, set false to use camera's
+internal near and far planes.  Default value is true.
+<DL><DT><DD></DL><P>
+<A NAME="getCalcNearFar">
+<A NAME="DOC.2.12.11">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getCalcNearFar()</B></TT>
+<DD>return true if SceneView automatically caclculates near and 
+far clipping planes for each frame
+<DL><DT><DD></DL><P>
+<A NAME="projectWindowIntoObject">
+<A NAME="DOC.2.12.12">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool projectWindowIntoObject(const osg::Vec3&amp; window, osg::Vec3&amp; object) const </B></TT>
+<DD>Calculate, via glUnProject, the object coordinates of a window point.
+Note, current implementation requires that SceneView::draw() has been previously called
+for projectWindowIntoObject to produce valid values.  Consistent with OpenGL
+windows coordinates are calculated relative to the bottom left of the window.
+Returns true on successful projection.
+<DL><DT><DD></DL><P>
+<A NAME="projectWindowXYIntoObject">
+<A NAME="DOC.2.12.13">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool projectWindowXYIntoObject(int x, int y, osg::Vec3&amp; near_point, osg::Vec3&amp; far_point) const </B></TT>
+<DD>Calculate, via glUnProject, the object coordinates of a window x,y
+when projected onto the near and far planes.
+Note, current implementation requires that SceneView::draw() has been previously called
+for projectWindowIntoObject to produce valid values.  Consistent with OpenGL
+windows coordinates are calculated relative to the bottom left of the window.
+Returns true on successful projection.
+<DL><DT><DD></DL><P>
+<A NAME="projectObjectIntoWindow">
+<A NAME="DOC.2.12.14">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool projectObjectIntoWindow(const osg::Vec3&amp; object, osg::Vec3&amp; window) const </B></TT>
+<DD>Calculate, via glProject, the object coordinates of a window.
+Note, current implementation requires that SceneView::draw() has been previously called
+for projectWindowIntoObject to produce valid values.  Consistent with OpenGL
+windows coordinates are calculated relative to the bottom left of the window,
+whereas as window API's normally have the top left as the origin,
+so you may need to pass in (mouseX,window_height-mouseY,...).
+Returns true on successful projection.
+<DL><DT><DD></DL><P>
+<A NAME="cull">
+<A NAME="DOC.2.12.27">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void cull()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="draw">
+<A NAME="DOC.2.12.28">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void draw()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~SceneView">
+<A NAME="DOC.2.12.29">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~SceneView()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_sceneData">
+<A NAME="DOC.2.12.30">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::Node&gt;  _sceneData</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_globalState">
+<A NAME="DOC.2.12.31">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::GeoState&gt;  _globalState</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_light">
+<A NAME="DOC.2.12.32">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::Light&gt;  _light</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_camera">
+<A NAME="DOC.2.12.33">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::Camera&gt;  _camera</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_renderVisitor">
+<A NAME="DOC.2.12.34">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;<!1><A HREF="RenderVisitor.html">osgUtil::RenderVisitor</A>&gt;  _renderVisitor</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_need_compile">
+<A NAME="DOC.2.12.35">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _need_compile</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_calc_nearfar">
+<A NAME="DOC.2.12.36">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _calc_nearfar</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_backgroundColor">
+<A NAME="DOC.2.12.37">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Vec4 _backgroundColor</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_near_plane">
+<A NAME="DOC.2.12.38">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _near_plane</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_far_plane">
+<A NAME="DOC.2.12.39">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _far_plane</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_lodBias">
+<A NAME="DOC.2.12.40">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _lodBias</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_view">
+<A NAME="DOC.2.12.41">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GLint _view[4]</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_model">
+<A NAME="DOC.2.12.42">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GLdouble _model[16]</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_proj">
+<A NAME="DOC.2.12.43">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GLdouble _proj[16]</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_lightingMode">
+<A NAME="DOC.2.12.44">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="SceneView.html#DOC.2.12.9">LightingMode</A> _lightingMode</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I><P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

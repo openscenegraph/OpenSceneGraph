@@ -1,0 +1,175 @@
+<HTML>
+<HEAD>
+   <TITLE>class  SG_EXPORT osg::Object</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.3">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osg::Object</A>: public <!1><A HREF="Referenced.html#DOC.2.43.4">Referenced</A></H2>
+<BLOCKQUOTE>Base class/standard interface for objects which require IO support,  cloning and reference counting.</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=545>
+<param name=classes value="CReferenced,MReferenced.html,CObject,MObject.html,CTransparency,MTransparency.html,CTexture,MTexture.html,CTexGen,MTexGen.html,CTexEnv,MTexEnv.html,CPolygonOffset,MPolygonOffset.html,CPoint,MPoint.html,CNode,MNode.html,CMatrix,MMatrix.html,CMaterial,MMaterial.html,CLight,MLight.html,CImage,MImage.html,CGeoState,MGeoState.html,CGeoSet,MGeoSet.html,CFog,MFog.html,CCullFace,MCullFace.html,CAlphaFunc,MAlphaFunc.html">
+<param name=before value="M,M,M|_,MR_,MR_,MR_,MR_,MR_,MR_,MR_,MR_,MR_,MR_,MR_,MR_,MR_,MR_,Mr_">
+<param name=after value="Md_,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M">
+<param name=indent value="0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<A HREF="#DOC.2.36.1"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A> <B>Object</B>()
+<DD><I>Construct an object.</I>
+<DT>
+<A HREF="#DOC.2.36.2"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   <!1><A HREF="Object.html#DOC.2.36.1">Object</A>* <B>clone</B>() const 
+<DD><I>return a shallow copy of a node, with Object* return type.</I>
+<DT>
+<A HREF="#DOC.2.36.10"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   bool <B>isSameKindAs</B>(<!1><A HREF="Object.html#DOC.2.36.1">Object</A>*)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.36.3"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   const char* <B>className</B>() const 
+<DD><I>return the name of the object's class type.</I>
+<DT>
+<A HREF="#DOC.2.36.4"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   <!1><A HREF="Object.html#DOC.2.36.1">Object</A>* <B>readClone</B>(<!1><A HREF="Input.html">Input</A>&amp; fr)
+<DD><I>Template Method/Prototype Pattern : create a clone and read Object data from Input.</I>
+<DT>
+<A HREF="#DOC.2.36.5"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   bool <B>write</B>(<!1><A HREF="Output.html">Output</A>&amp; fw)
+<DD><I>Template Method Pattern : write out Object data to Output.</I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<A HREF="#DOC.2.36.6"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   <B>~Object</B>()
+<DD><I>Object destructor.</I>
+<DT>
+<A HREF="#DOC.2.36.7"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   bool <B>readLocalData</B>(<!1><A HREF="Input.html">Input</A>&amp;)
+<DD><I>Template Method Pattern : read local data from osg file.</I>
+<DT>
+<A HREF="#DOC.2.36.8"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   bool <B>writeLocalData</B>(<!1><A HREF="Output.html">Output</A>&amp;)
+<DD><I>Template Method Pattern : write local data to osg file.</I>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Referenced.html">Referenced</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Referenced.html#DOC.2.43.4">Referenced</A>&amp; <B>operator = </B>(<!1><A HREF="Referenced.html#DOC.2.43.4">Referenced</A>&amp;)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>ref</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>unref</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>int <B>referenceCount</B>()
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>int <B>_refCount</B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU">
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>Base class/standard interface for objects which require IO support, 
+cloning and reference counting.
+Based on GOF Composite, Prototype and Template Method patterns.</BLOCKQUOTE>
+<DL>
+
+<A NAME="Object">
+<A NAME="DOC.2.36.1">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Object()</B></TT>
+<DD>Construct an object. Note Object is a pure virtual base class
+and therefore cannot be constructed on its own, only derived
+classes which overide the clone and className methods are
+concrete classes and can be constructed.
+<DL><DT><DD></DL><P>
+<A NAME="clone">
+<A NAME="DOC.2.36.2">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html#DOC.2.36.1">Object</A>* clone() const </B></TT>
+<DD>return a shallow copy of a node, with Object* return type.
+Must be defined by derived classes.
+<DL><DT><DD></DL><P>
+<A NAME="isSameKindAs">
+<A NAME="DOC.2.36.10">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(<!1><A HREF="Object.html#DOC.2.36.1">Object</A>*)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="className">
+<A NAME="DOC.2.36.3">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
+<DD>return the name of the object's class type. Must be defined
+by derived classes.
+<DL><DT><DD></DL><P>
+<A NAME="readClone">
+<A NAME="DOC.2.36.4">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html#DOC.2.36.1">Object</A>* readClone(<!1><A HREF="Input.html">Input</A>&amp; fr)</B></TT>
+<DD>Template Method/Prototype Pattern : create a clone and read
+Object data from Input.  Reads Input and if it matches this 
+objects className() then create a clone and match '{' brackets
+and repeating calling Object::readLocalData() until the
+matching ']' is read.
+<DL><DT><DD></DL><P>
+<A NAME="write">
+<A NAME="DOC.2.36.5">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool write(<!1><A HREF="Output.html">Output</A>&amp; fw)</B></TT>
+<DD>Template Method Pattern : write out Object data to Output. 
+Sequence of output is className() followed by Open '{'
+and then call Object::writeLocalData() and complete with '}'.
+<DL><DT><DD></DL><P>
+<A NAME="~Object">
+<A NAME="DOC.2.36.6">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Object()</B></TT>
+<DD>Object destructor. Note, is protected so that Objects cannot
+be deleted other than by being derefernced and the reference
+count being zero (see osg::Referenced), preventing the deletion
+of nodes which are still in use. This also means that
+Node's cannot be created on stack i.e Node node will not compile,
+forcing all nodes to be created on the heap i.e Node* node
+= new Node().
+<DL><DT><DD></DL><P>
+<A NAME="readLocalData">
+<A NAME="DOC.2.36.7">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool readLocalData(<!1><A HREF="Input.html">Input</A>&amp;)</B></TT>
+<DD>Template Method Pattern : read local data from osg file.
+Note should be implemented in derivied classes, which
+call their parent class's readLocalData. Returns
+true if the input iterator has been advanced, otherwise false.
+<DL><DT><DD></DL><P>
+<A NAME="writeLocalData">
+<A NAME="DOC.2.36.8">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool writeLocalData(<!1><A HREF="Output.html">Output</A>&amp;)</B></TT>
+<DD>Template Method Pattern : write local data to osg file.
+Note should be implemented in derivied classes, which
+call their parent class's writeLocalData. Returns
+true if data has been written out, otherwise false.
+<DL><DT><DD></DL><P></DL>
+<HR>
+<DL><DT><B>Direct child classes:
+</B><DD><A HREF="Transparency.html">Transparency</A><BR>
+<A HREF="Texture.html">Texture</A><BR>
+<A HREF="TexGen.html">TexGen</A><BR>
+<A HREF="TexEnv.html">TexEnv</A><BR>
+<A HREF="PolygonOffset.html">PolygonOffset</A><BR>
+<A HREF="Point.html">Point</A><BR>
+<A HREF="Node.html">Node</A><BR>
+<A HREF="Matrix.html">Matrix</A><BR>
+<A HREF="Material.html">Material</A><BR>
+<A HREF="Light.html">Light</A><BR>
+<A HREF="Image.html">Image</A><BR>
+<A HREF="GeoState.html">GeoState</A><BR>
+<A HREF="GeoSet.html">GeoSet</A><BR>
+<A HREF="Fog.html">Fog</A><BR>
+<A HREF="CullFace.html">CullFace</A><BR>
+<A HREF="AlphaFunc.html">AlphaFunc</A><BR>
+</DL>
+
+<DL><DT><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I><P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

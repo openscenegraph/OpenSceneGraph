@@ -1,0 +1,372 @@
+<HTML>
+<HEAD>
+   <TITLE>class  SG_EXPORT osg::Texture</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.3">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osg::Texture</A>: public <!1><A HREF="Object.html#DOC.2.36.1">Object</A></H2>
+<BLOCKQUOTE>Texture state class which encapsulates OpenGl texture functionality</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=95>
+<param name=classes value="CReferenced,MReferenced.html,CObject,MObject.html,CTexture,MTexture.html">
+<param name=before value="M,M,M">
+<param name=after value="Md_SP,Md_,M">
+<param name=indent value="0,1,2">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Classes</H3><DD><DT>
+<A HREF="#DOC.2.56.3"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>enum  <B>WrapParameter</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.56.4"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>enum  <B>WrapMode</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.56.7"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>enum  <B>FilterParameter</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.56.8"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>enum  <B>FilterMode</B>
+<DD><I></I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<A HREF="#DOC.2.56.14"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A> <B>Texture</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.56.15"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>static   <!1><A HREF="Texture.html#DOC.2.56.14">Texture</A>* <B>instance</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.56.16"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   <!1><A HREF="Object.html#DOC.2.36.1">Object</A>* <B>clone</B>() const 
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.56.17"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   bool <B>isSameKindAs</B>(<!1><A HREF="Object.html#DOC.2.36.1">Object</A>* obj)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.56.18"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   const char* <B>className</B>() const 
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.56.1"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setImage</B>(<!1><A HREF="Image.html">Image</A>* image)
+<DD><I>Set the texture image.</I>
+<DT>
+<A HREF="#DOC.2.56.2"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Image.html">Image</A>* <B>getImage</B>() const 
+<DD><I>Get the texture image.</I>
+<DT>
+<A HREF="#DOC.2.56.5"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setWrap</B>(<!1><A HREF="Texture.html#DOC.2.56.3">WrapParameter</A> which, <!1><A HREF="Texture.html#DOC.2.56.4">WrapMode</A> wrap)
+<DD><I>Set the texture wrap mode</I>
+<DT>
+<A HREF="#DOC.2.56.6"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Texture.html#DOC.2.56.4">WrapMode</A> <B>getWrap</B>(<!1><A HREF="Texture.html#DOC.2.56.3">WrapParameter</A> which) const 
+<DD><I>Get the texture wrap mode</I>
+<DT>
+<A HREF="#DOC.2.56.9"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setFilter</B>(<!1><A HREF="Texture.html#DOC.2.56.7">FilterParameter</A> which, <!1><A HREF="Texture.html#DOC.2.56.8">FilterMode</A> filter)
+<DD><I>Set the texture filter mode</I>
+<DT>
+<A HREF="#DOC.2.56.10"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Texture.html#DOC.2.56.8">FilterMode</A> <B>getFilter</B>(<!1><A HREF="Texture.html#DOC.2.56.7">FilterParameter</A> which) const 
+<DD><I>Get the texture filter mode</I>
+<DT>
+<A HREF="#DOC.2.56.11"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>static   void <B>enable</B>( void )
+<DD><I>Enable OpenGL texturing</I>
+<DT>
+<A HREF="#DOC.2.56.12"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>static   void <B>disable</B>( void )
+<DD><I>Disable OpenGL texturing</I>
+<DT>
+<A HREF="#DOC.2.56.13"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>apply</B>( void )
+<DD><I>On first apply, create the minmapped texture and bind it, subsequent apply will simple bind to texture</I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<A HREF="#DOC.2.56.22"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="osg.html#DOC.2.89">uint</A> <B>_handle</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.56.23"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Image.html">Image</A>&gt;  <B>_image</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.56.28"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Texture.html#DOC.2.56.4">WrapMode</A> <B>_wrap_s</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.56.29"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Texture.html#DOC.2.56.4">WrapMode</A> <B>_wrap_t</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.56.30"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Texture.html#DOC.2.56.4">WrapMode</A> <B>_wrap_r</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.56.31"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Texture.html#DOC.2.56.8">FilterMode</A> <B>_min_filter</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.56.32"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Texture.html#DOC.2.56.8">FilterMode</A> <B>_mag_filter</B>
+<DD><I></I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<A HREF="#DOC.2.56.19"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   <B>~Texture</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.56.20"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   bool <B>readLocalData</B>(<!1><A HREF="Input.html">Input</A>&amp; fr)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.56.21"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   bool <B>writeLocalData</B>(<!1><A HREF="Output.html">Output</A>&amp; fw)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.56.24"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>matchWrapStr</B>(const char* str, <!1><A HREF="Texture.html#DOC.2.56.4">WrapMode</A>&amp; wrap)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.56.25"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>const char* <B>getWrapStr</B>(<!1><A HREF="Texture.html#DOC.2.56.4">WrapMode</A> wrap)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.56.26"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>matchFilterStr</B>(const char* str, <!1><A HREF="Texture.html#DOC.2.56.8">FilterMode</A>&amp; filter)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.56.27"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>const char* <B>getFilterStr</B>(<!1><A HREF="Texture.html#DOC.2.56.8">FilterMode</A> filter)
+<DD><I></I>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Object.html">Object</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html#DOC.2.36.1">Object</A>* <B>readClone</B>(<!1><A HREF="Input.html">Input</A>&amp; fr)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>write</B>(<!1><A HREF="Output.html">Output</A>&amp; fw)
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Referenced.html">Referenced</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Referenced.html#DOC.2.43.4">Referenced</A>&amp; <B>operator = </B>(<!1><A HREF="Referenced.html#DOC.2.43.4">Referenced</A>&amp;)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>ref</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>unref</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>int <B>referenceCount</B>()
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>int <B>_refCount</B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU">
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>Texture state class which encapsulates OpenGl texture functionality</BLOCKQUOTE>
+<DL>
+
+<A NAME="Texture">
+<A NAME="DOC.2.56.14">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Texture()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="instance">
+<A NAME="DOC.2.56.15">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   <!1><A HREF="Texture.html#DOC.2.56.14">Texture</A>* instance()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="clone">
+<A NAME="DOC.2.56.16">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html#DOC.2.36.1">Object</A>* clone() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="isSameKindAs">
+<A NAME="DOC.2.56.17">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(<!1><A HREF="Object.html#DOC.2.36.1">Object</A>* obj)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="className">
+<A NAME="DOC.2.56.18">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setImage">
+<A NAME="DOC.2.56.1">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setImage(<!1><A HREF="Image.html">Image</A>* image)</B></TT>
+<DD>Set the texture image. 
+<DL><DT><DD></DL><P>
+<A NAME="getImage">
+<A NAME="DOC.2.56.2">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Image.html">Image</A>* getImage() const </B></TT>
+<DD>Get the texture image. 
+<DL><DT><DD></DL><P>
+<A NAME="WrapParameter">
+<A NAME="DOC.2.56.3">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  WrapParameter</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="WRAP_S">
+<A NAME="DOC.2.56.3.1">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> WRAP_S</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="WRAP_T">
+<A NAME="DOC.2.56.3.2">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> WRAP_T</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="WRAP_R">
+<A NAME="DOC.2.56.3.3">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> WRAP_R</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="WrapMode">
+<A NAME="DOC.2.56.4">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  WrapMode</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="CLAMP">
+<A NAME="DOC.2.56.4.1">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> CLAMP</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="REPEAT">
+<A NAME="DOC.2.56.4.2">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> REPEAT</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="setWrap">
+<A NAME="DOC.2.56.5">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setWrap(<!1><A HREF="Texture.html#DOC.2.56.3">WrapParameter</A> which, <!1><A HREF="Texture.html#DOC.2.56.4">WrapMode</A> wrap)</B></TT>
+<DD>Set the texture wrap mode
+<DL><DT><DD></DL><P>
+<A NAME="getWrap">
+<A NAME="DOC.2.56.6">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Texture.html#DOC.2.56.4">WrapMode</A> getWrap(<!1><A HREF="Texture.html#DOC.2.56.3">WrapParameter</A> which) const </B></TT>
+<DD>Get the texture wrap mode
+<DL><DT><DD></DL><P>
+<A NAME="FilterParameter">
+<A NAME="DOC.2.56.7">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  FilterParameter</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="MIN_FILTER">
+<A NAME="DOC.2.56.7.1">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> MIN_FILTER</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="MAG_FILTER">
+<A NAME="DOC.2.56.7.2">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> MAG_FILTER</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="FilterMode">
+<A NAME="DOC.2.56.8">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  FilterMode</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="LINEAR">
+<A NAME="DOC.2.56.8.1">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LINEAR</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="LINEAR_MIPMAP_LINEAR">
+<A NAME="DOC.2.56.8.2">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LINEAR_MIPMAP_LINEAR</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="LINEAR_MIPMAP_NEAREST">
+<A NAME="DOC.2.56.8.3">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LINEAR_MIPMAP_NEAREST</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="NEAREST">
+<A NAME="DOC.2.56.8.4">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NEAREST</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="NEAREST_MIPMAP_LINEAR">
+<A NAME="DOC.2.56.8.5">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NEAREST_MIPMAP_LINEAR</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="NEAREST_MIPMAP_NEAREST">
+<A NAME="DOC.2.56.8.6">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NEAREST_MIPMAP_NEAREST</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="setFilter">
+<A NAME="DOC.2.56.9">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setFilter(<!1><A HREF="Texture.html#DOC.2.56.7">FilterParameter</A> which, <!1><A HREF="Texture.html#DOC.2.56.8">FilterMode</A> filter)</B></TT>
+<DD>Set the texture filter mode
+<DL><DT><DD></DL><P>
+<A NAME="getFilter">
+<A NAME="DOC.2.56.10">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Texture.html#DOC.2.56.8">FilterMode</A> getFilter(<!1><A HREF="Texture.html#DOC.2.56.7">FilterParameter</A> which) const </B></TT>
+<DD>Get the texture filter mode
+<DL><DT><DD></DL><P>
+<A NAME="enable">
+<A NAME="DOC.2.56.11">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   void enable( void )</B></TT>
+<DD>Enable OpenGL texturing
+<DL><DT><DD></DL><P>
+<A NAME="disable">
+<A NAME="DOC.2.56.12">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   void disable( void )</B></TT>
+<DD>Disable OpenGL texturing
+<DL><DT><DD></DL><P>
+<A NAME="apply">
+<A NAME="DOC.2.56.13">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void apply( void )</B></TT>
+<DD>On first apply, create the minmapped texture and bind it,
+subsequent apply will simple bind to texture
+<DL><DT><DD></DL><P>
+<A NAME="~Texture">
+<A NAME="DOC.2.56.19">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Texture()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readLocalData">
+<A NAME="DOC.2.56.20">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool readLocalData(<!1><A HREF="Input.html">Input</A>&amp; fr)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="writeLocalData">
+<A NAME="DOC.2.56.21">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool writeLocalData(<!1><A HREF="Output.html">Output</A>&amp; fw)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_handle">
+<A NAME="DOC.2.56.22">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="osg.html#DOC.2.89">uint</A> _handle</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_image">
+<A NAME="DOC.2.56.23">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Image.html">Image</A>&gt;  _image</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="matchWrapStr">
+<A NAME="DOC.2.56.24">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool matchWrapStr(const char* str, <!1><A HREF="Texture.html#DOC.2.56.4">WrapMode</A>&amp; wrap)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getWrapStr">
+<A NAME="DOC.2.56.25">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const char* getWrapStr(<!1><A HREF="Texture.html#DOC.2.56.4">WrapMode</A> wrap)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="matchFilterStr">
+<A NAME="DOC.2.56.26">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool matchFilterStr(const char* str, <!1><A HREF="Texture.html#DOC.2.56.8">FilterMode</A>&amp; filter)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getFilterStr">
+<A NAME="DOC.2.56.27">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const char* getFilterStr(<!1><A HREF="Texture.html#DOC.2.56.8">FilterMode</A> filter)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_wrap_s">
+<A NAME="DOC.2.56.28">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Texture.html#DOC.2.56.4">WrapMode</A> _wrap_s</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_wrap_t">
+<A NAME="DOC.2.56.29">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Texture.html#DOC.2.56.4">WrapMode</A> _wrap_t</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_wrap_r">
+<A NAME="DOC.2.56.30">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Texture.html#DOC.2.56.4">WrapMode</A> _wrap_r</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_min_filter">
+<A NAME="DOC.2.56.31">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Texture.html#DOC.2.56.8">FilterMode</A> _min_filter</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_mag_filter">
+<A NAME="DOC.2.56.32">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Texture.html#DOC.2.56.8">FilterMode</A> _mag_filter</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I><P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

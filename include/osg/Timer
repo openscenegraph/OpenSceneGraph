@@ -1,0 +1,77 @@
+#ifndef OSG_TIMER
+#define OSG_TIMER 1
+
+#include <osg/Export>
+
+namespace osg {
+
+#ifdef WIN32
+	typedef __int64 Timer_t;
+#else
+	typedef unsigned long long Timer_t;
+#endif
+
+class SG_EXPORT Timer {
+
+    public:
+
+        Timer( void );
+        ~Timer( void );
+
+
+#ifdef WIN32
+        #pragma optimize("",off)
+        inline Timer_t tick( void )
+        {
+	    volatile Timer_t ts;
+			volatile unsigned int HighPart;
+            volatile unsigned int LowPart;
+            _asm
+            {
+                xor eax, eax        //  Used when QueryPerformanceCounter()
+                xor edx, edx        //  not supported or minimal overhead
+                _emit 0x0f          //  desired
+                _emit 0x31          //
+				mov HighPart,edx
+				mov LowPart,eax
+            }
+			//ts = LowPart | HighPart >> 32;
+			*((unsigned int*)&ts) = LowPart;
+            *((unsigned int*)&ts+1) = HighPart;
+            return ts;
+        }
+        #pragma optimize("",on)
+#endif
+#ifdef __linux
+        #define CLK(x)	  __asm__ volatile (".byte 0x0f, 0x31" : "=A" (x))
+	inline Timer_t tick( void ) {Timer_t x;CLK(x);return x;}
+#endif
+#ifdef __sgi
+        inline  Timer_t tick( void ) { return *clk; }
+#endif
+        double delta_s( Timer_t t1, Timer_t t2 );
+        double delta_m( Timer_t t1, Timer_t t2 );
+
+        Timer_t delta_u( Timer_t t1, Timer_t t2 );
+        Timer_t delta_n( Timer_t t1, Timer_t t2 );
+
+
+    private :
+
+        double microseconds_per_click;
+        double nanoseconds_per_click;
+        unsigned long *clk;
+        int cycleCntrSize;
+        static unsigned long dummy;
+
+	static int inited;
+	static double cpu_mhz;
+	void init( void );
+        
+    
+
+};
+
+
+};
+#endif

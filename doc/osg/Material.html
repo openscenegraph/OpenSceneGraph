@@ -1,0 +1,424 @@
+<HTML>
+<HEAD>
+   <TITLE>class  SG_EXPORT osg::Material</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.3">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osg::Material</A>: public <!1><A HREF="Object.html#DOC.2.36.1">Object</A></H2>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=95>
+<param name=classes value="CReferenced,MReferenced.html,CObject,MObject.html,CMaterial,MMaterial.html">
+<param name=before value="M,M,M">
+<param name=after value="Md_SP,Md_,M">
+<param name=indent value="0,1,2">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Classes</H3><DD><DT>
+<A HREF="#DOC.2.27.1"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>enum  <B>MaterialFace</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.27.2"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>enum  <B>ColorMode</B>
+<DD><I></I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<A HREF="#DOC.2.27.3"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A> <B>Material</B>( void )
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.27.4"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>static   <!1><A HREF="Material.html#DOC.2.27.3">Material</A>* <B>instance</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.27.5"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   <!1><A HREF="Object.html#DOC.2.36.1">Object</A>* <B>clone</B>() const 
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.27.6"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   bool <B>isSameKindAs</B>(<!1><A HREF="Object.html#DOC.2.36.1">Object</A>* obj)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.27.7"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>const char* <B>className</B>() const 
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.27.8"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>apply</B>( void )
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.27.9"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setColorMode</B>(<!1><A HREF="Material.html#DOC.2.27.2">ColorMode</A> mode)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.27.10"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setAmbient</B>( <!1><A HREF="Material.html#DOC.2.27.1">MaterialFace</A> face, const <!1><A HREF="Vec4.html">Vec4</A>&amp; ambient )
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.27.11"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>const <!1><A HREF="Vec4.html">Vec4</A>&amp; <B>getAmbient</B>(<!1><A HREF="Material.html#DOC.2.27.1">MaterialFace</A> face) const 
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.27.12"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>getAmbientFrontAndBack</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.27.13"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setDiffuse</B>( <!1><A HREF="Material.html#DOC.2.27.1">MaterialFace</A> face, const <!1><A HREF="Vec4.html">Vec4</A>&amp; diffuse )
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.27.14"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>const <!1><A HREF="Vec4.html">Vec4</A>&amp; <B>getDiffuse</B>(<!1><A HREF="Material.html#DOC.2.27.1">MaterialFace</A> face) const 
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.27.15"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>getDiffuseFrontAndBack</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.27.16"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setSpecular</B>( <!1><A HREF="Material.html#DOC.2.27.1">MaterialFace</A> face, const <!1><A HREF="Vec4.html">Vec4</A>&amp; specular )
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.27.17"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>const <!1><A HREF="Vec4.html">Vec4</A>&amp; <B>getSpecular</B>(<!1><A HREF="Material.html#DOC.2.27.1">MaterialFace</A> face) const 
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.27.18"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>getSpecularFrontAndBack</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.27.19"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setEmission</B>( <!1><A HREF="Material.html#DOC.2.27.1">MaterialFace</A> face, const <!1><A HREF="Vec4.html">Vec4</A>&amp; emission )
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.27.20"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>const <!1><A HREF="Vec4.html">Vec4</A>&amp; <B>getEmission</B>(<!1><A HREF="Material.html#DOC.2.27.1">MaterialFace</A> face) const 
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.27.21"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>getEmissionFrontAndBack</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.27.22"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>void <B>setShininess</B>( <!1><A HREF="Material.html#DOC.2.27.1">MaterialFace</A> face, float shininess )
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.27.23"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>float <B>getShininess</B>(<!1><A HREF="Material.html#DOC.2.27.1">MaterialFace</A> face) const 
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.27.24"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>getShininessFrontAndBack</B>()
+<DD><I></I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<A HREF="#DOC.2.27.29"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Material.html#DOC.2.27.2">ColorMode</A> <B>_colorMode</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.27.30"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>_ambientFrontAndBack</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.27.31"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Vec4.html">Vec4</A> <B>_ambientFront</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.27.32"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Vec4.html">Vec4</A> <B>_ambientBack</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.27.33"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>_diffuseFrontAndBack</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.27.34"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Vec4.html">Vec4</A> <B>_diffuseFront</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.27.35"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Vec4.html">Vec4</A> <B>_diffuseBack</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.27.36"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>_specularFrontAndBack</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.27.37"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Vec4.html">Vec4</A> <B>_specularFront</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.27.38"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Vec4.html">Vec4</A> <B>_specularBack</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.27.39"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>_emissionFrontAndBack</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.27.40"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Vec4.html">Vec4</A> <B>_emissionFront</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.27.41"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A><!1><A HREF="Vec4.html">Vec4</A> <B>_emissionBack</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.27.42"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>_shininessFrontAndBack</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.27.43"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>float <B>_shininessFront</B>
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.27.44"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>float <B>_shininessBack</B>
+<DD><I></I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<A HREF="#DOC.2.27.25"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   <B>~Material</B>( void )
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.27.26"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   bool <B>readLocalData</B>(<!1><A HREF="Input.html">Input</A>&amp; fr)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.27.27"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   bool <B>writeLocalData</B>(<!1><A HREF="Output.html">Output</A>&amp; fw)
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.27.28"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>bool <B>matchFaceAndColor</B>(<!1><A HREF="Input.html">Input</A>&amp; fr, const char* name, <!1><A HREF="Material.html#DOC.2.27.1">MaterialFace</A>&amp; mf, <!1><A HREF="Vec4.html">Vec4</A>&amp; color)
+<DD><I></I>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Object.html">Object</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html#DOC.2.36.1">Object</A>* <B>readClone</B>(<!1><A HREF="Input.html">Input</A>&amp; fr)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>write</B>(<!1><A HREF="Output.html">Output</A>&amp; fw)
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Referenced.html">Referenced</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Referenced.html#DOC.2.43.4">Referenced</A>&amp; <B>operator = </B>(<!1><A HREF="Referenced.html#DOC.2.43.4">Referenced</A>&amp;)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>ref</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>unref</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>int <B>referenceCount</B>()
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>int <B>_refCount</B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU">
+<HR>
+<H2>Documentation</H2>
+<DL>
+
+<A NAME="MaterialFace">
+<A NAME="DOC.2.27.1">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  MaterialFace</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="FACE_FRONT">
+<A NAME="DOC.2.27.1.1">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> FACE_FRONT</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="FACE_BACK">
+<A NAME="DOC.2.27.1.2">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> FACE_BACK</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="FACE_FRONT_AND_BACK">
+<A NAME="DOC.2.27.1.3">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> FACE_FRONT_AND_BACK</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="ColorMode">
+<A NAME="DOC.2.27.2">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  ColorMode</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="AMBIENT">
+<A NAME="DOC.2.27.2.1">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> AMBIENT</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="DIFFUSE">
+<A NAME="DOC.2.27.2.2">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DIFFUSE</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="SPECULAR">
+<A NAME="DOC.2.27.2.3">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SPECULAR</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="EMISSION">
+<A NAME="DOC.2.27.2.4">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> EMISSION</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="AMBIENT_AND_DIFFUSE">
+<A NAME="DOC.2.27.2.5">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> AMBIENT_AND_DIFFUSE</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="OFF">
+<A NAME="DOC.2.27.2.6">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> OFF</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="Material">
+<A NAME="DOC.2.27.3">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Material( void )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="instance">
+<A NAME="DOC.2.27.4">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   <!1><A HREF="Material.html#DOC.2.27.3">Material</A>* instance()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="clone">
+<A NAME="DOC.2.27.5">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html#DOC.2.36.1">Object</A>* clone() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="isSameKindAs">
+<A NAME="DOC.2.27.6">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(<!1><A HREF="Object.html#DOC.2.36.1">Object</A>* obj)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="className">
+<A NAME="DOC.2.27.7">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const char* className() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="apply">
+<A NAME="DOC.2.27.8">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void apply( void )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setColorMode">
+<A NAME="DOC.2.27.9">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setColorMode(<!1><A HREF="Material.html#DOC.2.27.2">ColorMode</A> mode)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setAmbient">
+<A NAME="DOC.2.27.10">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setAmbient( <!1><A HREF="Material.html#DOC.2.27.1">MaterialFace</A> face, const <!1><A HREF="Vec4.html">Vec4</A>&amp; ambient )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getAmbient">
+<A NAME="DOC.2.27.11">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec4.html">Vec4</A>&amp; getAmbient(<!1><A HREF="Material.html#DOC.2.27.1">MaterialFace</A> face) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getAmbientFrontAndBack">
+<A NAME="DOC.2.27.12">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getAmbientFrontAndBack()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setDiffuse">
+<A NAME="DOC.2.27.13">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDiffuse( <!1><A HREF="Material.html#DOC.2.27.1">MaterialFace</A> face, const <!1><A HREF="Vec4.html">Vec4</A>&amp; diffuse )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getDiffuse">
+<A NAME="DOC.2.27.14">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec4.html">Vec4</A>&amp; getDiffuse(<!1><A HREF="Material.html#DOC.2.27.1">MaterialFace</A> face) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getDiffuseFrontAndBack">
+<A NAME="DOC.2.27.15">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getDiffuseFrontAndBack()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setSpecular">
+<A NAME="DOC.2.27.16">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSpecular( <!1><A HREF="Material.html#DOC.2.27.1">MaterialFace</A> face, const <!1><A HREF="Vec4.html">Vec4</A>&amp; specular )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getSpecular">
+<A NAME="DOC.2.27.17">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec4.html">Vec4</A>&amp; getSpecular(<!1><A HREF="Material.html#DOC.2.27.1">MaterialFace</A> face) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getSpecularFrontAndBack">
+<A NAME="DOC.2.27.18">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getSpecularFrontAndBack()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setEmission">
+<A NAME="DOC.2.27.19">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setEmission( <!1><A HREF="Material.html#DOC.2.27.1">MaterialFace</A> face, const <!1><A HREF="Vec4.html">Vec4</A>&amp; emission )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getEmission">
+<A NAME="DOC.2.27.20">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec4.html">Vec4</A>&amp; getEmission(<!1><A HREF="Material.html#DOC.2.27.1">MaterialFace</A> face) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getEmissionFrontAndBack">
+<A NAME="DOC.2.27.21">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getEmissionFrontAndBack()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setShininess">
+<A NAME="DOC.2.27.22">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setShininess( <!1><A HREF="Material.html#DOC.2.27.1">MaterialFace</A> face, float shininess )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getShininess">
+<A NAME="DOC.2.27.23">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float getShininess(<!1><A HREF="Material.html#DOC.2.27.1">MaterialFace</A> face) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getShininessFrontAndBack">
+<A NAME="DOC.2.27.24">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getShininessFrontAndBack()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~Material">
+<A NAME="DOC.2.27.25">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Material( void )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readLocalData">
+<A NAME="DOC.2.27.26">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool readLocalData(<!1><A HREF="Input.html">Input</A>&amp; fr)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="writeLocalData">
+<A NAME="DOC.2.27.27">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool writeLocalData(<!1><A HREF="Output.html">Output</A>&amp; fw)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="matchFaceAndColor">
+<A NAME="DOC.2.27.28">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool matchFaceAndColor(<!1><A HREF="Input.html">Input</A>&amp; fr, const char* name, <!1><A HREF="Material.html#DOC.2.27.1">MaterialFace</A>&amp; mf, <!1><A HREF="Vec4.html">Vec4</A>&amp; color)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_colorMode">
+<A NAME="DOC.2.27.29">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Material.html#DOC.2.27.2">ColorMode</A> _colorMode</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_ambientFrontAndBack">
+<A NAME="DOC.2.27.30">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _ambientFrontAndBack</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_ambientFront">
+<A NAME="DOC.2.27.31">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec4.html">Vec4</A> _ambientFront</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_ambientBack">
+<A NAME="DOC.2.27.32">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec4.html">Vec4</A> _ambientBack</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_diffuseFrontAndBack">
+<A NAME="DOC.2.27.33">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _diffuseFrontAndBack</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_diffuseFront">
+<A NAME="DOC.2.27.34">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec4.html">Vec4</A> _diffuseFront</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_diffuseBack">
+<A NAME="DOC.2.27.35">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec4.html">Vec4</A> _diffuseBack</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_specularFrontAndBack">
+<A NAME="DOC.2.27.36">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _specularFrontAndBack</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_specularFront">
+<A NAME="DOC.2.27.37">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec4.html">Vec4</A> _specularFront</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_specularBack">
+<A NAME="DOC.2.27.38">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec4.html">Vec4</A> _specularBack</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_emissionFrontAndBack">
+<A NAME="DOC.2.27.39">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _emissionFrontAndBack</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_emissionFront">
+<A NAME="DOC.2.27.40">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec4.html">Vec4</A> _emissionFront</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_emissionBack">
+<A NAME="DOC.2.27.41">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec4.html">Vec4</A> _emissionBack</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_shininessFrontAndBack">
+<A NAME="DOC.2.27.42">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _shininessFrontAndBack</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_shininessFront">
+<A NAME="DOC.2.27.43">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _shininessFront</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_shininessBack">
+<A NAME="DOC.2.27.44">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _shininessBack</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I><P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

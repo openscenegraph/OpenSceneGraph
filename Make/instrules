@@ -1,0 +1,204 @@
+
+
+__install : $(TARGET) $(LIB)
+	@ [ -n "$(OSGHOME)" ] || echo Please define OSGHOME
+	@ [ -n "$(OSGHOME)" ] && echo > /dev/null;
+	@ [ `whoami` = "root" ] || echo YOU MUST BE ROOT to do this.
+	@ echo "`whoami`" | grep -q root 
+	@ for dir in $(TARGET_DIRS);\
+	  do\
+	      [ -d $$dir ] || (echo Creating directory $$dir ... ;  mkdir -m 755 $$dir)\
+	  done
+	@ if [ -n "$(TARGET_LIB_FILES)" ] ;\
+	  then\
+	      for f in $(TARGET_LIB_FILES);\
+	      do\
+	          (echo copying $(OSGHOME)/lib/$$f to  $(TARGET_LIB)/$$f; \
+	          cp -f $(OSGHOME)/lib/$$f $(TARGET_LIB)/$$f;)\
+	      done\
+	  else\
+	      echo No libraries installed...;\
+	  fi
+	@ if [ -n "$(TARGET_BIN_FILES)" ] ;\
+	  then\
+	      for f in $(TARGET_BIN_FILES);\
+	      do\
+	          (echo copying $(OSGHOME)/bin/$$f to  $(TARGET_BIN)/$$f; \
+	          cp -f $(OSGHOME)/bin/$$f $(TARGET_BIN)/$$f) ;\
+	      done \
+	  else\
+	      echo No executable binaries installed...;\
+	  fi
+	@ if [ -n "$(TARGET_INCLUDE_FILES)" ] ;\
+	  then\
+	      for f in $(TARGET_INCLUDE_FILES);\
+	      do\
+	          if [ "`dirname $(TARGET_INCLUDE)/$$f`" != "$(TARGET_INCLUDE)" ];\
+		  then\
+	              (echo copying $(OSGHOME)/include/$$f to  $(TARGET_INCLUDE)/$$f; \
+	              cp -f $(OSGHOME)/include/$$f $(TARGET_INCLUDE)/$$f;) \
+		   else\
+		          echo %%%%%%%%%  PLEASE DO NOT PUT INCLUDE FILES DIRECTLY INTO $(TARGET_INCLUDE);\
+			  echo Did not copy $(OSGHOME)/include/$$f to $(TARGET_INCLUDE)/$$f;\
+		   fi\
+	      done\
+	  else\
+		echo No header files installed ...;\
+	fi
+	@ if [ -n "$(TARGET_LOADER_FILES)" ] ;\
+	  then\
+	      for f in $(TARGET_LOADER_FILES);\
+	      do\
+	          if [ "`dirname $(TARGET_LIB)/$$f`" != "$(TARGET_LIB)" ];\
+		  then\
+	              (echo copying $(OSGHOME)/lib/$$f to  $(TARGET_LIB)/$$f; \
+	              cp -f $(OSGHOME)/lib/$$f $(TARGET_LIB)/$$f;) \
+		   else\
+		          echo %%%%%%%%%  PLEASE DO NOT PUT LOADER FILES DIRECTLY INTO $(TARGET_LIB);\
+			  echo Did not copy $(OSGHOME)/include/$$f to $(TARGET_INCLUDE)/$$f;\
+		   fi\
+	      done\
+	  else\
+		echo No loaders installed ...;\
+	fi
+	@if [ -n "$(TARGET_DATA_FILES)" ] ;\
+	  then\
+	      if [ -n "$(OSGDATA)" ] ;\
+	      then\
+	          for f in $(TARGET_DATA_FILES);\
+	          do\
+	              (echo copying $(OSGDATA)/$$f to  $(TARGET_DATA)/$$f; \
+	              cp -f $(OSGDATA)/$$f $(TARGET_DATA)/$$f; )\
+	          done\
+	      else\
+		  echo;\
+	          echo "-------------- > Please define OSGDATA";\
+		  echo; \
+		  [ -n "$(OSGDATA)" ] && echo > /dev/null;\
+	      fi\
+	  fi
+
+
+__instlinks : $(TARGET) $(LIB) 
+	@ [ -n "$(OSGHOME)" ] || echo Please define OSGHOME
+	@ [ -n "$(OSGHOME)" ] && echo > /dev/null;
+	@ [ `whoami` = "root" ] || echo YOU MUST BE ROOT to do this.
+	@ echo "`whoami`" | grep -q root 
+	@ for dir in $(TARGET_DIRS);\
+	  do\
+	      [ -d $$dir ] || (echo Creating directory $$dir ... ;  mkdir -m 755 $$dir)\
+	  done
+	@ if [ -n "$(TARGET_LIB_FILES)" ] ;\
+	  then\
+	      for f in $(TARGET_LIB_FILES);\
+	      do\
+	          (echo Linking $(OSGHOME)/lib/$$f to  $(TARGET_LIB)/$$f; \
+	          ln -sf $(OSGHOME)/lib/$$f $(TARGET_LIB)/$$f;)\
+	      done\
+	  else\
+	      echo No libraries linked...;\
+	  fi
+	@ if [ -n "$(TARGET_BIN_FILES)" ] ;\
+	  then\
+	      for f in $(TARGET_BIN_FILES);\
+	      do\
+	          (echo Linking $(OSGHOME)/bin/$$f to  $(TARGET_BIN)/$$f; \
+	          ln -sf $(OSGHOME)/bin/$$f $(TARGET_BIN)/$$f) ;\
+	      done \
+	  else\
+	      echo No executable binaries linked...;\
+	  fi
+	@ if [ -n "$(TARGET_INCLUDE_FILES)" ] ;\
+	  then\
+	      for f in $(TARGET_INCLUDE_FILES);\
+	      do\
+	          if [ "`dirname $(TARGET_INCLUDE)/$$f`" != "$(TARGET_INCLUDE)" ];\
+		  then\
+	              (echo Linking $(OSGHOME)/include/$$f to  $(TARGET_INCLUDE)/$$f; \
+	              ln -sf $(OSGHOME)/include/$$f $(TARGET_INCLUDE)/$$f;) \
+		   else\
+		          echo %%%%%%%%%  PLEASE DO NOT PUT INCLUDE FILES DIRECTLY INTO /usr/include;\
+			  echo Did not copy $(OSGHOME)/include/$$f to $(TARGET_INCLUDE)/$$f;\
+		   fi\
+	      done\
+	  else\
+		echo No header files linked ...;\
+	fi
+	@ if [ -n "$(TARGET_LOADER_FILES)" ] ;\
+	  then\
+	      for f in $(TARGET_LOADER_FILES);\
+	      do\
+	          if [ "`dirname $(TARGET_LIB)/$$f`" != "$(TARGET_LIB)" ];\
+		  then\
+	              (echo Linking $(OSGHOME)/lib/$$f to  $(TARGET_LIB)/$$f; \
+	              ln -sf $(OSGHOME)/lib/$$f $(TARGET_LIB)/$$f;) \
+		   else\
+		          echo %%%%%%%%%  PLEASE DO NOT PUT LOADER FILES DIRECTLY INTO $(TARGET_LIB);\
+			  echo Did not copy $(OSGHOME)/include/$$f to $(TARGET_INCLUDE)/$$f;\
+		   fi\
+	      done\
+	  else\
+		echo No loaders installed ...;\
+	fi
+	@if [ -n "$(TARGET_DATA_FILES)" ] ;\
+	  then\
+	      if [ -n "$(OSGDATA)" ] ;\
+	      then\
+	          for f in $(TARGET_DATA_FILES);\
+	          do\
+	              (echo Linking $(OSGDATA)/$$f to  $(TARGET_DATA)/$$f; \
+	              ln -sf $(OSGDATA)/$$f $(TARGET_DATA)/$$f; )\
+	          done\
+	      else\
+		  echo ;\
+	          echo "-------------- > Please define OSGDATA ";\
+		  echo ;\
+		  [ -n "$(OSGDATA)" ] && echo > /dev/null;\
+	      fi\
+	  fi
+
+
+__instclean :
+	@ [ `whoami` = "root" ] || echo YOU MUST BE ROOT to do this.
+	@ echo "`whoami`" | grep -q root 
+	@ for dir in $(TARGET_DIRS);\
+	  do\
+	      [ -d $$dir ] && echo Removing $$dir; \
+	      [ -d $$dir ] && rm -rf $$dir || echo > /dev/null; \
+	  done
+	@ if [ -n "$(TARGET_LIB_FILES)" ] ;\
+	  then\
+	      for f in $(TARGET_LIB_FILES);\
+	      do\
+	      	  ([ -L $(TARGET_LIB)/$$f ] || [ -e $(TARGET_LIB)/$$f ]) &&  \
+		  (echo removing $(TARGET_LIB)/$$f; \
+	          rm -f $(TARGET_LIB)/$$f;) || echo >/dev/null;\
+	      done\
+	  fi
+	@ if [ -n "$(TARGET_BIN_FILES)" ] ;\
+	  then\
+	      for f in $(TARGET_BIN_FILES);\
+	      do\
+	      	  ([ -L $(TARGET_BIN)/$$f ] || [ -e $(TARGET_BIN)/$$f ]) &&  \
+	          (echo removing $(TARGET_BIN)/$$f; \
+	          rm -f $(TARGET_BIN)/$$f;) || echo > /dev/null;\
+	      done\
+	  fi
+	@ if [ -n "$(TARGET_INCLUDE_FILES)" ] ;\
+	  then\
+	      for f in $(TARGET_INCLUDE_FILES);\
+	      do\
+	      	  ([ -L $(TARGET_BIN)/$$f ] || [ -e $(TARGET_BIN)/$$f ]) &&  \
+	          (echo removing $(TARGET_INCLUDE)/$$f; \
+	          rm -f $(TARGET_INCLUDE)/$$f;) || echo > /dev/null;\
+	      done\
+	  fi
+	@ if [ -n "$(TARGET_DATA_FILES)" ] ;\
+	  then\
+	      for f in $(TARGET_DATA_FILES);\
+	      do\
+	      	  ([ -L $(TARGET_DATA)/$$f ] || [ -e $(TARGET_DATA)/$$f ]) &&  \
+	          (echo removing $(TARGET_DATA)/$$f; \
+	      	  rm -f $(TARGET_DATA)/$$f;) || echo > /dev/null;\
+	      done\
+	  fi

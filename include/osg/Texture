@@ -1,0 +1,104 @@
+#ifndef OSG_TEXTURE
+#define OSG_TEXTURE 1
+
+#include <osg/Export>
+#include <osg/GL>
+#include <osg/OSG>
+#include <osg/Image>
+
+namespace osg {
+
+
+class Input;
+class Output;
+
+/** Texture state class which encapsulates OpenGl texture functionality.*/
+class SG_EXPORT Texture : public Object
+{
+
+    public :
+        
+        Texture();
+        static Texture* instance();
+        virtual Object* clone() const { return new Texture(); }
+        virtual bool isSameKindAs(Object* obj) { return dynamic_cast<Texture*>(obj)!=NULL; }
+        virtual const char* className() const { return "Texture"; }
+
+        /** Set the texture image. */
+        void setImage(Image* image);
+        /** Get the texture image. */
+        Image* getImage() const { return _image.get(); }
+
+        enum WrapParameter {
+            WRAP_S,
+            WRAP_T,
+            WRAP_R
+        };
+
+        enum WrapMode {
+            CLAMP                     = GL_CLAMP,
+            REPEAT                    = GL_REPEAT
+        };
+
+        /** Set the texture wrap mode.*/
+        void setWrap(WrapParameter which, WrapMode wrap);
+        /** Get the texture wrap mode.*/
+        WrapMode getWrap(WrapParameter which) const;
+
+
+        enum FilterParameter {
+            MIN_FILTER,
+            MAG_FILTER
+        };
+
+        enum FilterMode {
+            LINEAR                    = GL_LINEAR,
+            LINEAR_MIPMAP_LINEAR      = GL_LINEAR_MIPMAP_LINEAR,
+            LINEAR_MIPMAP_NEAREST     = GL_LINEAR_MIPMAP_NEAREST,
+            NEAREST                   = GL_NEAREST,
+            NEAREST_MIPMAP_LINEAR     = GL_NEAREST_MIPMAP_LINEAR,
+            NEAREST_MIPMAP_NEAREST    = GL_NEAREST_MIPMAP_NEAREST
+        };
+
+        /** Set the texture filter mode.*/
+        void setFilter(FilterParameter which, FilterMode filter);
+        /** Get the texture filter mode.*/
+        FilterMode getFilter(FilterParameter which) const;
+
+
+        /** Enable OpenGL texturing.*/
+        static void enable( void );
+        /** Disable OpenGL texturing.*/
+        static void disable( void );
+
+        /** On first apply, create the minmapped texture and bind it,
+            subsequent apply will simple bind to texture.*/
+        void apply( void );
+
+    protected :
+
+        virtual ~Texture();
+
+        virtual bool readLocalData(Input& fr);
+        virtual bool writeLocalData(Output& fw);
+
+        uint _handle;
+
+        ref_ptr<Image> _image;
+
+        bool matchWrapStr(const char* str,WrapMode& wrap);
+        const char* getWrapStr(WrapMode wrap);
+
+        bool matchFilterStr(const char* str,FilterMode& filter);
+        const char* getFilterStr(FilterMode filter);
+
+        WrapMode _wrap_s;
+        WrapMode _wrap_t;
+        WrapMode _wrap_r;
+        FilterMode _min_filter;
+        FilterMode _mag_filter;
+};
+
+};
+
+#endif

@@ -1,0 +1,122 @@
+<HTML>
+<HEAD>
+   <TITLE>class  SG_EXPORT osg::ReaderWriter</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.3">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osg::ReaderWriter</A>: public <!1><A HREF="Referenced.html#DOC.2.43.4">Referenced</A></H2>
+<BLOCKQUOTE>pure virtual base class for reading and writing of non native formats.</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=65>
+<param name=classes value="CReferenced,MReferenced.html,CReaderWriter,MReaderWriter.html">
+<param name=before value="M,M">
+<param name=after value="Md_,M">
+<param name=indent value="0,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<A HREF="#DOC.2.44.1"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   <B>~ReaderWriter</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.44.2"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   const char* <B>className</B>()
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.44.3"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   bool <B>acceptsExtension</B>(const std::string&amp; )
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.44.4"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   <!1><A HREF="Object.html">Object</A>* <B>readObject</B>(const std::string&amp; )
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.44.5"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   <!1><A HREF="Image.html">Image</A>* <B>readImage</B>(const std::string&amp; )
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.44.6"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   <!1><A HREF="Node.html">Node</A>* <B>readNode</B>(const std::string&amp; )
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.44.7"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   bool <B>writeObject</B>(<!1><A HREF="Object.html">Object</A>&amp; , const std::string&amp; )
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.44.8"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   bool <B>writeImage</B>(<!1><A HREF="Image.html">Image</A>&amp; , const std::string&amp; )
+<DD><I></I>
+<DT>
+<A HREF="#DOC.2.44.9"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>virtual   bool <B>writeNode</B>(<!1><A HREF="Node.html">Node</A>&amp; , const std::string&amp; )
+<DD><I></I>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Referenced.html">Referenced</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Referenced.html#DOC.2.43.4">Referenced</A>&amp; <B>operator = </B>(<!1><A HREF="Referenced.html#DOC.2.43.4">Referenced</A>&amp;)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>ref</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>unref</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>int <B>referenceCount</B>()
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>int <B>_refCount</B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU">
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>pure virtual base class for reading and writing of non native formats. </BLOCKQUOTE>
+<DL>
+
+<A NAME="~ReaderWriter">
+<A NAME="DOC.2.44.1">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~ReaderWriter()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="className">
+<A NAME="DOC.2.44.2">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="acceptsExtension">
+<A NAME="DOC.2.44.3">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool acceptsExtension(const std::string&amp; )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readObject">
+<A NAME="DOC.2.44.4">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html">Object</A>* readObject(const std::string&amp; )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readImage">
+<A NAME="DOC.2.44.5">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Image.html">Image</A>* readImage(const std::string&amp; )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readNode">
+<A NAME="DOC.2.44.6">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Node.html">Node</A>* readNode(const std::string&amp; )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="writeObject">
+<A NAME="DOC.2.44.7">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool writeObject(<!1><A HREF="Object.html">Object</A>&amp; , const std::string&amp; )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="writeImage">
+<A NAME="DOC.2.44.8">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool writeImage(<!1><A HREF="Image.html">Image</A>&amp; , const std::string&amp; )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="writeNode">
+<A NAME="DOC.2.44.9">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool writeNode(<!1><A HREF="Node.html">Node</A>&amp; , const std::string&amp; )</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I><P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

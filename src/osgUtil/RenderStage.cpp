@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <osg/Notify>
 
 #include <osgUtil/RenderStage>

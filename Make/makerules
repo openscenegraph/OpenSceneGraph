@@ -64,7 +64,6 @@ $(PLUGIN) : $(OBJS)
 else
 
 $(LIB) $(PLUGIN) : $(OBJS)
-	TARGET_BASENAME=`echo $@ | sed 's/.$(PLUGIN_EXT)//' | sed 's/lib//'`;\
 	$(C++) $(LDFLAGS) $(SHARED) $(OBJS) $(LIBS) -o $@
 
 endif
@@ -73,41 +72,41 @@ $(EXEC:=.dbg) :
 	@[ -d $(DEBUGDIR) ] || mkdir $(DEBUGDIR)
 	@cd $(DEBUGDIR); \
 	  $(MAKE) -f ../Makefile DOF=$(DBGF)  TOPDIR=../${TOPDIR} \
-	    THISDIR=../$(THISDIR)\
-	                MAKEDEPEND=Makedepend $(EXEC)
+	      THISDIR=../$(THISDIR)\
+	      MAKEDEPEND=Makedepend $(EXEC)
 	@$(MAKE) LNSRC=$(DEBUGDIR)/$(EXEC) LNDEST=$(BININST)/$(EXEC) __link
 
 $(LIB:=.dbg) :
 	@[ -d $(DEBUGDIR) ] || mkdir $(DEBUGDIR)
-	@cd $(DEBUGDIR); \
+	@cd $(DEBUGDIR);\
 	  $(MAKE) -f ../Makefile DOF=$(DBGF)  TOPDIR=../${TOPDIR} \
-	   THISDIR=../$(THISDIR)\
-	               MAKEDEPEND=Makedepend $(LIB)
+	      THISDIR=../$(THISDIR)\
+	      MAKEDEPEND=Makedepend $(LIB)
 	@$(MAKE) LNSRC=$(DEBUGDIR)/$(LIB) LNDEST=$(LIBINST)/$(LIB) __link
 
 $(PLUGIN:=.dbg) : 
 	@[ -d $(DEBUGDIR) ] || mkdir $(DEBUGDIR)
 	@cd $(DEBUGDIR); \
 	  $(MAKE) -f ../Makefile DOF=$(DBGF)  TOPDIR=../${TOPDIR} \
-	  THISDIR=../$(THISDIR)\
-	  		MAKEDEPEND=Makedepend $(PLUGIN)
+	      THISDIR=../$(THISDIR)\
+	      MAKEDEPEND=Makedepend $(PLUGIN)
 	@$(MAKE) LNSRC=$(DEBUGDIR)/$(PLUGIN) LNDEST=$(PLUGININST)/$(PLUGIN) __link
 
 $(EXEC:=.opt) : 
 	@[ -d $(OPTDIR) ] || mkdir $(OPTDIR)
 	@cd $(OPTDIR); \
 	  $(MAKE) -f ../Makefile DOF=$(OPTF)  TOPDIR=../${TOPDIR} \
-	  THISDIR=../$(THISDIR)\
-	                MAKEDEPEND=Makedepend $(EXEC)
+	      THISDIR=../$(THISDIR)\
+	      MAKEDEPEND=Makedepend $(EXEC)
 	@$(MAKE) LNSRC=$(OPTDIR)/$(EXEC) LNDEST=$(BININST)/$(EXEC) __link
 
 
 $(LIB:=.opt) : 
 	@[ -d $(OPTDIR) ] || mkdir $(OPTDIR)
-	@cd $(OPTDIR); \
+	@cd $(OPTDIR);\
 	  $(MAKE) -f ../Makefile DOF=$(OPTF) TOPDIR=../${TOPDIR} \
-	    THISDIR=../$(THISDIR)\
-	               MAKEDEPEND=Makedepend $(LIB)
+	        THISDIR=../$(THISDIR)\
+	        MAKEDEPEND=Makedepend $(LIB)
 	@$(MAKE) LNSRC=$(OPTDIR)/$(LIB) LNDEST=$(LIBINST)/$(LIB) __link
 
 $(PLUGIN:=.opt) : 

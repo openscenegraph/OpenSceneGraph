@@ -30,6 +30,7 @@ INC += -I$(THISDIR)
 
 LIBS  += $(OSG_LIBS) $(OTHER_LIBS)
 
-PLUGIN = osgdb_txp.$(PLUGIN_EXT)
+TARGET_BASENAME = txp
+PLUGIN = $(PLUGIN_PREFIX)$(TARGET_BASENAME).$(PLUGIN_EXT)
 
 include $(TOPDIR)/Make/makerules 

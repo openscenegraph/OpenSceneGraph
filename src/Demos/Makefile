@@ -14,6 +14,7 @@ DIRS = \
 	osgstereoimage\
 	osgtexture\
 	osgviews\
+	osgversion\
 	sgv
 
 LEFT_TO_DO =\

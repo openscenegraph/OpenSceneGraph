@@ -2,11 +2,11 @@ install  : instbin instdev
 
 instbin :
 	@$(MAKE) INSTSRC=$(TOPDIR)/bin INSTDEST=$(INST_DEMOS) \
-		INSTALL?="$(INSTBIN)" __install
+		INSTALL?="$(INSTBINCMD)" __install
 	@$(MAKE) INSTSRC=$(TOPDIR)/lib INSTDEST=$(INST_LIBS) \
-		INSTALL?="$(INSTBIN)" __install
+		INSTALL?="$(INSTBINCMD)" __install
 	@$(MAKE) INSTSRC=$(TOPDIR)/lib/osgPlugins INSTDEST=$(INST_PLUGINS)\
-		INSTALL?="$(INSTBIN)" __install
+		INSTALL?="$(INSTBINCMD)" __install
 
 
 instdev :
@@ -15,7 +15,7 @@ instdev :
 	  if [ -d $(TOPDIR)/include/$$d ]; \
 	  then \
 	    $(MAKE) INSTSRC=$(TOPDIR)/include/$$d INSTDEST=$(INST_INCLUDE)/$$d\
-		   INSTALL?="$(INSTDEV)" __install;\
+		   INSTALL?="$(INSTDEVCMD)" __install;\
 	  fi\
 	done
 	@for d in `ls -1  $(TOPDIR)/src/Demos | grep -v CVS`; \
@@ -23,7 +23,7 @@ instdev :
 	  if [ -d $(TOPDIR)/src/Demos/$$d ]; \
 	  then \
 	    $(MAKE) INSTSRC=$(TOPDIR)/src/Demos/$$d INSTDEST=$(INST_DEMO_SRC)/$$d\
-		   INSTALL?="$(INSTDEV)" __install;\
+		   INSTALL?="$(INSTDEVCMD)" __install;\
 	  fi\
 	done
 
@@ -39,11 +39,11 @@ instclean : instcleanbin instcleandev
 
 instcleanbin :
 	@$(MAKE) INSTSRC=$(TOPDIR)/bin INSTDEST=$(INST_DEMOS) \
-		INSTALL?="$(INSTBIN)" __instclean
+		INSTALL?="$(INSTBINCMD)" __instclean
 	@$(MAKE) INSTSRC=$(TOPDIR)/lib INSTDEST=$(INST_LIBS) \
-		INSTALL?="$(INSTBIN)" __instclean
+		INSTALL?="$(INSTBINCMD)" __instclean
 	@$(MAKE) INSTSRC=$(TOPDIR)/lib/osgPlugins INSTDEST=$(INST_PLUGINS)\
-		INSTALL?="$(INSTBIN)" __instclean
+		INSTALL?="$(INSTBINCMD)" __instclean
 
 instcleandev :
 	@for d in `ls -1  $(TOPDIR)/include/ | grep -v CVS`; \
@@ -51,7 +51,7 @@ instcleandev :
 	  if [ -d $(TOPDIR)/include/$$d ]; \
 	  then \
 	    $(MAKE) INSTSRC=$(TOPDIR)/include/$$d INSTDEST=$(INST_INCLUDE)/$$d\
-		   INSTALL?="$(INSTDEV)" __instclean;\
+		   INSTALL?="$(INSTDEVCMD)" __instclean;\
 	  fi\
 	done
 	@for d in `ls -1  $(TOPDIR)/src/Demos | grep -v CVS`; \
@@ -59,7 +59,7 @@ instcleandev :
 	  if [ -d $(TOPDIR)/src/Demos/$$d ]; \
 	  then \
 	    $(MAKE) INSTSRC=$(TOPDIR)/src/Demos/$$d INSTDEST=$(INST_DEMO_SRC)/$$d\
-		   INSTALL?="$(INSTDEV)" __instclean;\
+		   INSTALL?="$(INSTDEVCMD)" __instclean;\
 	  fi\
 	done
 

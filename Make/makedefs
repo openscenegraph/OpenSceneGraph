@@ -28,18 +28,26 @@ BININST    = bin
 LIBINST    = lib
 PLUGININST = lib/osgPlugins
 
-INST_DEMOS    = /usr/share/OpenSceneGraph/bin
-INST_LIBS     = /usr/lib$(ARCH)
-INST_PLUGINS  = /usr/lib$(ARCH)/osgPlugins
-INST_INCLUDE  = /usr/include
-INST_DEMO_SRC = /usr/share/OpenSceneGraph/src/demos
-INST_DATA     = /usr/share/OpenSceneGraph/data
+INST_SYS_PREFIX    = /usr/local
+INST_LIBS          = $(INST_SYS_PREFIX)/lib$(ARCH)
+INST_PLUGINS       = $(INST_SYS_PREFIX)/lib$(ARCH)/osgPlugins
+INST_INCLUDE       = $(INST_SYS_PREFIX)/include
+INST_SHARE_PREFIX  = /usr/share
+INST_DEMOS         = $(INST_SHARE_PREFIX)/OpenSceneGraph/bin
+INST_DEMO_SRC      = $(INST_SHARE_PREFIX)/OpenSceneGraph/src/demos
+INST_DOC           = $(INST_SHARE_REFIX)/OpenSceneGraph/doc
+INST_DATA          = $(INST_SHARE_PREFIX)/OpenSceneGraph/data
 
 LINK          = ln -sf
-INSTBIN       = install -m 755
-INSTDEV       = install -m 644
+INSTBINCMD       = install -m 755
+INSTDEVCMD       = install -m 644
 INSTLINKBIN   = $(LINK)
 INSTLINKDEV   = $(LINK)
+
+LIB_PREFIX     = lib
+LIB_EXT        = so
+PLUGIN_PREFIX  = osgdb_
+PLUGIN_EXT     = so
 
 
 ALL_TARGETS = \
@@ -48,6 +56,9 @@ ALL_TARGETS = \
 	  clean\
 	  cleandbg\
 	  cleanopt\
+	  cleanlite\
+	  cleanliteopt\
+	  cleanlitedbg\
 	  clobber\
 	  beautify\
 	  docs\
@@ -60,7 +71,7 @@ ifeq ($(OS),SunOS)
   DEPARG            = -xM1
   INC               += 
   DEF               += -features=extensions 
-  OPTF              = -xO2
+  OPTF              = -xO4
   DBGF              = -g
   SHARED            = -G
 ifeq ($(ARCH),64)
@@ -77,12 +88,17 @@ endif
   X_LIBS            = -lXext -lXmu -lXi -lX11 
   SOCKET_LIBS       = -lsocket -lnsl
   OTHER_LIBS        = -lCstd
-  SO_EXT            = so
-  PLUGIN_EXT        = so
   TIFF_LIB	    = -ltiff
 
-INSTBIN       = cp
-INSTDEV       = cp
+  INSTBINCMD        = cp
+  INSTDEVCMD        = cp
+
+  INST_DEMOS    = /opt/OpenSceneGraph/bin
+  INST_LIBS     = /opt/OpenSceneGrpah/lib$(ARCH) /usr/lib
+  INST_PLUGINS  = /opt/OpenSceneGraph/lib/osgPlugins
+  INST_INCLUDE  = /opt/OpenSceneGraph/include 
+  INST_DEMO_SRC = /opt/OpenSceneGraph/src/demos
+  INST_DATA     = /opt/OpenSceneGraph/data
 
 endif
 
@@ -113,8 +129,6 @@ endif
   X_LIBS            = -lXext -lXi -lXmu -lX11
   SOCKET_LIBS       = 
   OTHER_LIBS        = -lm
-  SO_EXT            = so
-  PLUGIN_EXT        = so
 
 #  INSTLINKBIN       = install -t -m 755
 #  INSTLINKDEV       = install -t -m 644
@@ -140,8 +154,6 @@ ifeq ($(OS),Linux)
   X_LIBS            = -lXmu -lX11
   SOCKET_LIBS       = 
   OTHER_LIBS        = 
-  SO_EXT            = so
-  PLUGIN_EXT        = so
 endif
 
 #### FreeBSD specific definitions
@@ -163,8 +175,13 @@ ifeq ($(OS),FreeBSD)
   X_LIBS            = -lXmu -lX11
   SOCKET_LIBS       = 
   OTHER_LIBS        = 
-  SO_EXT            = so
-  PLUGIN_EXT        = so
+
+  INST_DEMOS    = /usr/X11R6/bin
+  INST_LIBS     = /usr/X11R6/lib
+  INST_PLUGINS  = /usr/X11R6/lib/osgPlugins
+  INST_INCLUDE  = /usr/X11R6/include
+  INST_DEMO_SRC = /usr/share/OpenSceneGraph/src/demos
+  INST_DATA     = /usr/share/OpenSceneGraph/data
 endif
 
 #### Mac OSX specific definitions
@@ -187,8 +204,8 @@ ifeq ($(OS),Darwin)
   X_LIBS            = 
   SOCKET_LIBS       = 
   OTHER_LIBS        = -lm -ldl -lstdc++ -lobjc
-  SO_EXT            = dylib
-  PLUGIN_EXT        = so
+  LIBEXT            = dylib
+  PLUGINEXT         = so
   QUICKTIME_LIB	    = -framework QuickTime
   TIFF_LIB	    = -ltiff
 
@@ -204,8 +221,8 @@ ifeq ($(OS),CYGWIN_NT-5.0)
   DBGF              = -g
   SHARED            = -shared\
 		      -Wl,--export-all-symbols  \
-		      -Wl,--output-def,lib$$TARGET_BASENAME.def \
-		      -Wl,--out-implib,$(TOPDIR)/lib/lib$$TARGET_BASENAME.a \
+		      -Wl,--output-def,$(LIB_PREFIX)$(TARGET_BASENAME).def \
+		      -Wl,--out-implib,$(TOPDIR)/lib/$(LIB_PREFIX)$(TARGET_BASENAME).a \
 
   ARCHARGS          = 
   LINKARGS          = -W -Wall
@@ -233,9 +250,14 @@ ifeq ($(OS),CYGWIN_NT-5.0)
 		      -losgdb_zip
   SOCKET_LIBS       = 
   OTHER_LIBS        = $(GL_LIBS)
-  SO_EXT            = dll
-  PLUGIN_EXT        = dll
-  LINK              = cp -f
+
+  LIB_PREFIX     = cyg
+  LIB_EXT        = dll
+  PLUGIN_PREFIX  = osgdb_
+  PLUGIN_EXT     = dll
+
+  LINK          = cp -f
+
 endif
 
 

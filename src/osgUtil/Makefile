@@ -37,6 +37,7 @@ DEF     += -DOSGUTIL_LIBRARY
 
 LIBS  += -losg $(GL_LIBS) $(OTHER_LIBS)
 
-LIB = libosgUtil.$(SO_EXT)
+TARGET_BASENAME = osgUtil
+LIB = $(LIB_PREFIX)$(TARGET_BASENAME).$(LIB_EXT)
 
 include $(TOPDIR)/Make/makerules 

@@ -67,6 +67,7 @@ DEF     += -DSG_LIBRARY
 
 LIBS    += $(GL_LIBS) $(OTHER_LIBS)
 
-LIB     = libosg.$(SO_EXT)
+TARGET_BASENAME = osg
+LIB = $(LIB_PREFIX)$(TARGET_BASENAME).$(LIB_EXT)
 
 include $(TOPDIR)/Make/makerules 

@@ -9,6 +9,7 @@ LIBS  += $(TIFF_LIB) $(OSG_LIBS) $(OTHER_LIBS)
 INC     += -I/usr/local/include
 LDFLAGS += -L/usr/local/lib
 
-PLUGIN = osgdb_tiff.$(PLUGIN_EXT)
+TARGET_BASENAME = tiff
+PLUGIN = $(PLUGIN_PREFIX)$(TARGET_BASENAME).$(PLUGIN_EXT)
 
 include $(TOPDIR)/Make/makerules 

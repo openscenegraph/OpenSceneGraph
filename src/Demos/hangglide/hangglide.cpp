@@ -149,22 +149,6 @@ int main( int argc, char **argv )
     osgGLUT::Viewer viewer;
     viewer.addViewport( rootnode );
 
-
-    osg::StateSet* stateset = rootnode->getStateSet();
-    if (stateset==NULL)
-    {
-        stateset = new osg::StateSet;
-        rootnode->setStateSet(stateset);
-    }
-    
-    // set up depth to be inherited by the rest of the scene unless
-    // overrideen.
-    osg::Depth* rootDepth = new osg::Depth;
-    rootDepth->setFunction(osg::Depth::LESS);
-    rootDepth->setRange(0.0,1.0);
-
-    stateset->setAttributeAndModes(rootDepth, osg::StateAttribute::ON );
-
     unsigned int pos = viewer.registerCameraManipulator(new GliderManipulator());
 
     // Open window so camera manipulator's warp pointer request will succeed

@@ -10,6 +10,7 @@
 #include <osg/FrontFace>
 #include <osg/PolygonMode>
 #include <osg/Transparency>
+#include <osg/Depth>
 
 using namespace osg;
 
@@ -56,6 +57,8 @@ void StateSet::setGlobalDefaults()
     
     setAttributeAndModes(new PolygonMode,StateAttribute::OFF);
     setAttributeAndModes(new Transparency,StateAttribute::OFF);
+    
+    setAttributeAndModes(new Depth,StateAttribute::ON);
 }
 
 

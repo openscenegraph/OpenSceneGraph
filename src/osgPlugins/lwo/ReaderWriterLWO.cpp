@@ -89,8 +89,8 @@ struct GeometryCollection
         _numPrimitivesWithTexCoords(0),
         _numPoints(0),
         _texturesActive(false),
-        _vertices(0),
-        _texcoords(0),
+        _vertices(osg::Vec3Array::iterator()),
+        _texcoords(osg::Vec2Array::iterator()),
         _coordCount(0),
         _geom(0) {}
 

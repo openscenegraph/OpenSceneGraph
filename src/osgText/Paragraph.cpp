@@ -8,11 +8,11 @@ Paragraph::Paragraph()
     _maxCharsPerLine = 80;
 }
 
-Paragraph::Paragraph(const Paragraph& paragraph,const osg::Cloner& cloner):
-    Geode(paragraph,cloner),
+Paragraph::Paragraph(const Paragraph& paragraph,const osg::CopyOp& copyop):
+    Geode(paragraph,copyop),
     _position(paragraph._position),
     _text(paragraph._text),
-    _font(dynamic_cast<Font*>(cloner(paragraph._font.get()))),
+    _font(dynamic_cast<Font*>(copyop(paragraph._font.get()))),
     _alignment(paragraph._alignment),
     _maxCharsPerLine(paragraph._maxCharsPerLine)
 {

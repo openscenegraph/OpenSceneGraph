@@ -19,9 +19,9 @@ class SG_EXPORT CullFace : public StateAttribute
     
         CullFace();
 
-        /** Copy constructor using Cloner to manage deep vs shallow copy.*/
-        CullFace(const CullFace& cf,const Cloner& cloner=ShallowCopy()):
-            StateAttribute(cf,cloner),
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        CullFace(const CullFace& cf,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            StateAttribute(cf,copyop),
             _mode(cf._mode) {}
 
         META_StateAttribute(CullFace, CULLFACE);

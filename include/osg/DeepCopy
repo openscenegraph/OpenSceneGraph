@@ -12,10 +12,10 @@
 namespace osg {
 
 
-/** Cloner Functor used to control the whether shallow or deep copy is used
-  * during copy construction and clone operation. The base Cloner acts as
+/** CopyOp Functor used to control the whether shallow or deep copy is used
+  * during copy construction and clone operation. The base CopyOp acts as
   * a shallow copy simply passing back the same pointer as passed in.*/
-struct DeepCopy : public Cloner
+struct DeepCopy : public CopyOp
 {
 
     enum CopyOptions

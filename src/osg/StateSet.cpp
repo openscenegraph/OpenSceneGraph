@@ -21,7 +21,7 @@ StateSet::StateSet()
     setRendingBinToInherit();
 }
 
-StateSet::StateSet(const StateSet& rhs,const Cloner& cloner):Object(rhs,cloner)
+StateSet::StateSet(const StateSet& rhs,const CopyOp& copyop):Object(rhs,copyop)
 {
     _modeList = rhs._modeList;
 
@@ -31,7 +31,7 @@ StateSet::StateSet(const StateSet& rhs,const Cloner& cloner):Object(rhs,cloner)
     {
         StateAttribute::Type type = itr->first;
         const RefAttributePair& rap = itr->second;
-        StateAttribute* attr = cloner(rap.first.get());
+        StateAttribute* attr = copyop(rap.first.get());
         if (attr) _attributeList[type]=RefAttributePair(attr,rap.second);
     }
     

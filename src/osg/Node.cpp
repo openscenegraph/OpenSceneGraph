@@ -20,8 +20,8 @@ Node::Node()
 
 }
 
-Node::Node(const Node& node,const Cloner& cloner):
-        Object(node,cloner),
+Node::Node(const Node& node,const CopyOp& copyop):
+        Object(node,copyop),
         _bsphere(_bsphere),
         _bsphere_computed(node._bsphere_computed),
         _name(node._name),
@@ -30,10 +30,10 @@ Node::Node(const Node& node,const Cloner& cloner):
         _numChildrenRequiringAppTraversal(0), // assume no children yet.
         _cullingActive(node._cullingActive),
         _numChildrenWithCullingDisabled(0), // assume no children yet.
-        _userData(cloner(node._userData.get())),
+        _userData(copyop(node._userData.get())),
         _nodeMask(node._nodeMask), 
         _descriptions(node._descriptions),
-        _dstate(cloner(node._dstate.get()))
+        _dstate(copyop(node._dstate.get()))
 {
 }
 

@@ -13,14 +13,14 @@ Group::Group()
 {
 }
 
-Group::Group(const Group& group,const Cloner& cloner):
-    Node(group,cloner)
+Group::Group(const Group& group,const CopyOp& copyop):
+    Node(group,copyop)
 {
     for(ChildList::const_iterator itr=group._children.begin();
         itr!=group._children.end();
         ++itr)
     {
-        Node* child = cloner(itr->get());
+        Node* child = copyop(itr->get());
         if (child) addChild(child);
     }
 }

@@ -10,16 +10,13 @@
 
 namespace osg {
 
-typedef CopyOp Cloner;
-typedef CopyOp ShallowCopy;
-
 /** META_Object macro define the standard clone, isSameKindAs and className methods.
   * Use when subclassing from Object to make it more convinient to define 
   * the standard pure virtual clone, isSameKindAs and className methods 
   * which are required for all Object subclasses.*/
 #define META_Object(T) \
         virtual osg::Object* cloneType() const { return new T (); } \
-        virtual osg::Object* clone(const osg::Cloner& cloner) const { return new T (*this,cloner); } \
+        virtual osg::Object* clone(const osg::CopyOp& copyop) const { return new T (*this,copyop); } \
         virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const T *>(obj)!=NULL; } \
         virtual const char* className() const { return #T; }
 
@@ -39,9 +36,9 @@ class SG_EXPORT Object : public Referenced
             concrete classes and can be constructed.*/
         Object() {}
 
-        /** Copy constructor, optional Cloner object can be used to control
+        /** Copy constructor, optional CopyOp object can be used to control
           * shallow vs deep copying of dynamic data.*/
-        Object(const Object&,const Cloner& cloner=CopyOp::SHALLOW_COPY);
+        Object(const Object&,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
         /** Clone the type of an object, with Object* return type.
             Must be defined by derived classes.*/
@@ -49,7 +46,7 @@ class SG_EXPORT Object : public Referenced
 
         /** Clone the an object, with Object* return type.
             Must be defined by derived classes.*/
-        virtual Object* clone(const Cloner&) const = 0;
+        virtual Object* clone(const CopyOp&) const = 0;
 
         virtual bool isSameKindAs(const Object*) const { return true; }
 

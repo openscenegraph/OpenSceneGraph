@@ -17,9 +17,9 @@ class SG_EXPORT TexMat : public StateAttribute
 
         TexMat();
 
-        /** Copy constructor using Cloner to manage deep vs shallow copy.*/
-        TexMat(const TexMat& texmat,const Cloner& cloner=ShallowCopy()):
-            StateAttribute(texmat,cloner),
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        TexMat(const TexMat& texmat,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            StateAttribute(texmat,copyop),
             _matrix(texmat._matrix) {}
 
         META_StateAttribute(TexMat, TEXMAT);

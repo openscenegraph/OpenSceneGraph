@@ -26,8 +26,8 @@ class SG_EXPORT EarthSky : public Group
         
         EarthSky();
 
-        EarthSky(const EarthSky& es, const Cloner& cloner=ShallowCopy()):
-            Group(es,cloner),
+        EarthSky(const EarthSky& es, const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            Group(es,copyop),
             _requiresClear(es._requiresClear),
             _clearColor(es._clearColor) {}  
 

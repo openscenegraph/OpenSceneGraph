@@ -50,8 +50,8 @@ GeoSet::GeoSet()
 }
 
 
-GeoSet::GeoSet(const GeoSet& geoset,const Cloner& cloner):
-    Drawable(geoset,cloner)
+GeoSet::GeoSet(const GeoSet& geoset,const CopyOp& copyop):
+    Drawable(geoset,copyop)
 {
     // ensure that the num of vertices etc have been set up before we copy.
     geoset.computeNumVerts();

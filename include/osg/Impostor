@@ -53,8 +53,8 @@ class SG_EXPORT Impostor : public LOD
     public :
         Impostor();
 
-        Impostor(const Impostor& es, const Cloner& cloner=ShallowCopy()):
-            LOD(es,cloner),
+        Impostor(const Impostor& es, const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            LOD(es,copyop),
             _impostorSpriteList(),
             _impostorThreshold(es._impostorThreshold) {}
             

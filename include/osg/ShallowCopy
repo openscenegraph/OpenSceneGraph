@@ -16,12 +16,12 @@ class StateAttribute;
 class Node;
 class Drawable;
 
-/** Cloner Functor used to control the whether shallow or deep copy is used
-  * during copy construction and clone operation. The base Cloner acts as
+/** CopyOp Functor used to control the whether shallow or deep copy is used
+  * during copy construction and clone operation. The base CopyOp acts as
   * a shallow copy simply passing back the same pointer as passed in.*/
-struct Cloner
+struct CopyOp
 {
-    virtual ~Cloner() {}
+    virtual ~CopyOp() {}
     
     virtual Referenced*     operator() (const Referenced* ref) const { return const_cast<Referenced*>(ref); }
     virtual Object*         operator() (const Object* obj) const { return const_cast<Object*>(obj); }
@@ -34,7 +34,7 @@ struct Cloner
 };
 
 /** Convenience typedef so that users can use the more logical ShallowCopy in their own code.*/
-typedef Cloner ShallowCopy;
+typedef CopyOp ShallowCopy;
 
 };
 

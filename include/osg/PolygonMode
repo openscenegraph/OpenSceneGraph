@@ -18,9 +18,9 @@ class SG_EXPORT PolygonMode : public StateAttribute
     
         PolygonMode();
 
-        /** Copy constructor using Cloner to manage deep vs shallow copy.*/
-        PolygonMode(const PolygonMode& pm,const Cloner& cloner=ShallowCopy()):
-            StateAttribute(pm,cloner),
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        PolygonMode(const PolygonMode& pm,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            StateAttribute(pm,copyop),
             _frontAndBack(pm._frontAndBack),
             _modeFront(pm._modeFront),
             _modeBack(pm._modeBack) {}

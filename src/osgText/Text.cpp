@@ -35,9 +35,9 @@ Text::Text()
     setDefaults();
 }
 
-Text::Text(const Text& text,const osg::Cloner& cloner):
-        Drawable(text,cloner),
-        _font(dynamic_cast<Font*>(cloner(text._font.get()))),
+Text::Text(const Text& text,const osg::CopyOp& copyop):
+        Drawable(text,copyop),
+        _font(dynamic_cast<Font*>(copyop(text._font.get()))),
         _init(text._init),
         _initAlignment(text._initAlignment),
         _text(text._text),

@@ -17,9 +17,9 @@ class SG_EXPORT ColorMatrix : public StateAttribute
     
         ColorMatrix();
 
-        /** Copy constructor using Cloner to manage deep vs shallow copy.*/
-        ColorMatrix(const ColorMatrix& cm,const Cloner& cloner=ShallowCopy()):
-            StateAttribute(cm,cloner),
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        ColorMatrix(const ColorMatrix& cm,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            StateAttribute(cm,copyop),
             _matrix(cm._matrix) {}
 
         META_StateAttribute(ColorMatrix, COLORMATRIX);

@@ -36,7 +36,7 @@ class SG_EXPORT ImpostorSprite : public Drawable
 
         /** Clone on ImpostorSprite just returns a clone of type, 
           * since it is not appropriate to share data of an ImpostorSprite.*/
-        virtual Object* clone(const Cloner&) const { return new ImpostorSprite(); }
+        virtual Object* clone(const CopyOp&) const { return new ImpostorSprite(); }
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const ImpostorSprite*>(obj)!=NULL; }
         virtual const char* className() const { return "ImpostorSprite"; }
 

@@ -55,10 +55,10 @@ class SG_EXPORT Drawable : public Object
 
         Drawable();
 
-        /** Copy constructor using Cloner to manage deep vs shallow copy.*/
-        Drawable(const Drawable& drawable,const Cloner& cloner=ShallowCopy()):
-            Object(drawable,cloner),
-            _dstate(cloner(drawable._dstate.get())),
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        Drawable(const Drawable& drawable,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            Object(drawable,copyop),
+            _dstate(copyop(drawable._dstate.get())),
             _supportsDisplayList(drawable._supportsDisplayList),
             _useDisplayList(drawable._useDisplayList),
             _globjList(drawable._globjList),

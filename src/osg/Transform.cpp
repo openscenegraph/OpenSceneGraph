@@ -16,8 +16,8 @@ Transform::Transform()
     _worldToLocalDirty = false;
 }
 
-Transform::Transform(const Transform& transform,const Cloner& cloner):
-    Group(transform,cloner),
+Transform::Transform(const Transform& transform,const CopyOp& copyop):
+    Group(transform,copyop),
     _type(transform._type),
     _mode(transform._mode),
     _localToWorldDirty(transform._localToWorldDirty),

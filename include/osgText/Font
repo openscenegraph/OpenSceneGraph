@@ -133,40 +133,40 @@ public:
         Glyph();
         virtual ~Glyph();
 
-        unsigned int getGlyphCode() const { return _glyphCode; }
+        unsigned int getGlyphCode() const;
 
-        void setFont(Font* font) { _font = font; }
-        Font* getFont() const { return _font; }
+        void setFont(Font* font);
+        Font* getFont() const;
 
-        void setHorizontalBearing(const osg::Vec2& bearing) {  _horizontalBearing=bearing; }
-        const osg::Vec2& getHorizontalBearing() const { return _horizontalBearing; }
+        void setHorizontalBearing(const osg::Vec2& bearing);
+        const osg::Vec2& getHorizontalBearing() const;
 
-        void setHorizontalAdvance(float advance) { _horizontalAdvance=advance; }
-        float getHorizontalAdvance() const { return _horizontalAdvance; }
+        void setHorizontalAdvance(float advance);
+        float getHorizontalAdvance() const;
 
-        void setVerticalBearing(const osg::Vec2& bearing) {  _verticalBearing=bearing; }
-        const osg::Vec2& getVerticalBearing() const { return _verticalBearing; }
+        void setVerticalBearing(const osg::Vec2& bearing);
+        const osg::Vec2& getVerticalBearing() const;
 
-        void setVerticalAdvance(float advance) {  _verticalAdvance=advance; }
-        float getVerticalAdvance() const { return _verticalAdvance; }
+        void setVerticalAdvance(float advance);
+        float getVerticalAdvance() const;
 
 
-        void setTexture(GlyphTexture* texture) { _texture = texture; }
-        GlyphTexture* getTexture() { return _texture; }
-        const GlyphTexture* getTexture() const { return _texture; }
+        void setTexture(GlyphTexture* texture);
+        GlyphTexture* getTexture();
+        const GlyphTexture* getTexture() const;
 
-        osg::StateSet* getStateSet() { return _texture?_texture->getStateSet():0; }
-        const osg::StateSet* getStateSet() const { return _texture?_texture->getStateSet():0; }
+        osg::StateSet* getStateSet();
+        const osg::StateSet* getStateSet() const;
 
-        void setTexturePosition(int posX,int posY) { _texturePosX = posX; _texturePosY = posY; }
-        int getTexturePositionX() const { return _texturePosX; }
-        int getTexturePositionY() const { return _texturePosY; }
+        void setTexturePosition(int posX,int posY);
+        int getTexturePositionX() const;
+        int getTexturePositionY() const;
 
-        void setMinTexCoord(const osg::Vec2& coord) { _minTexCoord=coord; }
-        const osg::Vec2& getMinTexCoord() const { return _minTexCoord; }
+        void setMinTexCoord(const osg::Vec2& coord);
+        const osg::Vec2& getMinTexCoord() const;
 
-        void setMaxTexCoord(const osg::Vec2& coord) { _maxTexCoord=coord; }
-        const osg::Vec2& getMaxTexCoord() const { return _maxTexCoord; }
+        void setMaxTexCoord(const osg::Vec2& coord);
+        const osg::Vec2& getMaxTexCoord() const;
         
         void subload() const;
 

@@ -55,46 +55,27 @@ void write_usage(std::ostream& out,const std::string& name)
     out << std::endl;
 }
 
-
-///////////////////////////////////////////////////////////////////////////////
-// globals
-#define        TEXT_POLYGON    "Polygon Font - jygq"
-#define        TEXT_OUTLINE    "Outline Font - jygq"
-#define        TEXT_TEXTURE    "Texture Font - jygq"
-#define        TEXT_BITMAP        "Bitmap Font - jygq"
-#define        TEXT_PIXMAP        "Pixmap Font - jygq"
-
-#define        TEXT_COL_2D        osg::Vec4(.9,.9,.9,1)
-#define        TEXT_COL_3D        osg::Vec4(.99,.3,.2,1)
-
-
-std::string    timesFont("fonts/times.ttf");
-std::string    arialFont("fonts/arial.ttf");
-
-int    gFontSize=18;
-int    gFontSize1=24;
-osgText::Text::AlignmentType gAlignment=osgText::Text::LEFT_BOTTOM;
-
-void set2dScene(osg::Group* rootNode)
+osg::Node* createHUD()
 {
     osg::Geode* geode = new osg::Geode();
-    rootNode->addChild(geode);
     
-    osg::Vec3 position(150.0f,10.0f,0.0f);
-    osg::Vec3 delta(90.0f,120.0f,0.0f);
+    std::string timesFont("fonts/times.ttf");
+
+    // turn lighting off for the text and disable depth test to ensure its always ontop.
+    osg::StateSet* stateset = geode->getOrCreateStateSet();
+    stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
+    stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
+
+    osg::Vec3 position(150.0f,800.0f,0.0f);
+    osg::Vec3 delta(0.0f,-120.0f,0.0f);
 
     {
         osgText::Text* text = new  osgText::Text;
         geode->addDrawable( text );
 
         text->setFont(timesFont);
-        text->setFontSize(gFontSize,gFontSize);
-        text->setText("String 1");
+        text->setText("Head Up Displays are simple :-)");
         text->setPosition(position);
-        text->setDrawMode( osgText::Text::TEXT |
-                           osgText::Text::BOUNDINGBOX |
-                           osgText::Text::ALIGNMENT );
-        text->setAlignment(gAlignment);
         
         position += delta;
     }    
@@ -105,13 +86,8 @@ void set2dScene(osg::Group* rootNode)
         geode->addDrawable( text );
 
         text->setFont(timesFont);
-        text->setFontSize(gFontSize,gFontSize);
-        text->setText("String 1");
+        text->setText("All you need to do is create your text in a subgraph.");
         text->setPosition(position);
-        text->setDrawMode( osgText::Text::TEXT |
-                           osgText::Text::BOUNDINGBOX |
-                           osgText::Text::ALIGNMENT );
-        text->setAlignment(gAlignment);
         
         position += delta;
     }    
@@ -122,16 +98,46 @@ void set2dScene(osg::Group* rootNode)
         geode->addDrawable( text );
 
         text->setFont(timesFont);
-        text->setFontSize(gFontSize,gFontSize);
-        text->setText("String 1");
+        text->setText("Disable depth test in this subgraph to ensure its always ontop.");
         text->setPosition(position);
-        text->setDrawMode( osgText::Text::TEXT |
-                           osgText::Text::BOUNDINGBOX |
-                           osgText::Text::ALIGNMENT );
-        text->setAlignment(gAlignment);
         
         position += delta;
     }    
+
+    {
+        osgText::Text* text = new  osgText::Text;
+        geode->addDrawable( text );
+
+        text->setFont(timesFont);
+        text->setText("Then place a osg::Projection node above the subgraph\nto create an othrograph projection.");
+        text->setPosition(position);
+        
+        position += delta;
+    }    
+
+    {
+        osgText::Text* text = new  osgText::Text;
+        geode->addDrawable( text );
+
+        text->setFont(timesFont);
+        text->setText("And add an osg::ModelViewMatrix set to ABSOLUTE to ensure\nit remains independent from any external model view matrices.");
+        text->setPosition(position);
+        
+        position += delta;
+    }    
+
+    // create the hud.
+    osg::MatrixTransform* modelview_abs = new osg::MatrixTransform;
+    modelview_abs->setReferenceFrame(osg::Transform::RELATIVE_TO_ABSOLUTE);
+    modelview_abs->setMatrix(osg::Matrix::identity());
+    modelview_abs->addChild(geode);
+
+    osg::Projection* projection = new osg::Projection;
+    projection->setMatrix(osg::Matrix::ortho2D(0,1280,0,1024));
+    projection->addChild(modelview_abs);
+
+    return projection;
+
 }
 
 struct MyCallback : public osg::NodeCallback
@@ -200,24 +206,9 @@ int main( int argc, char **argv )
         group->addChild(rootnode);
         rootnode = group;
     }
-    
-    // create the hud.
-    osg::Projection* projection = new osg::Projection;
-    projection->setMatrix(osg::Matrix::ortho2D(0,1024,0,768));
-    
-    osg::MatrixTransform* modelview_abs = new osg::MatrixTransform;
-    modelview_abs->setReferenceFrame(osg::Transform::RELATIVE_TO_ABSOLUTE);
-    modelview_abs->setMatrix(osg::Matrix::identity());
-    
-    
-    set2dScene(modelview_abs);
 
-    projection->addChild(modelview_abs);
-//     projection->setAppCallback(new MyCallback("App callback"));
-//     projection->setCullCallback(new MyCallback("Cull callback"));
-
-    group->addChild(projection);
-    
+    // add the HUD subgraph.    
+    group->addChild(createHUD());
      
     // add a viewport to the viewer and attach the scene graph.
     viewer.addViewport( rootnode );

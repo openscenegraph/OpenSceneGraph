@@ -291,8 +291,43 @@ void Font::GlyphTexture::apply(osg::State& state) const
     }
 }
 
+// all the methods in Font::Glyph have been made non inline because VisualStudio6.0 is STUPID, STUPID, STUPID PILE OF JUNK.
 Font::Glyph::Glyph() {}
 Font::Glyph::~Glyph() {}
+
+unsigned int Font::Glyph::getGlyphCode() const { return _glyphCode; }
+
+void Font::Glyph::setFont(Font* font) { _font = font; }
+Font* Font::Glyph::getFont() const { return _font; }
+
+void Font::Glyph::setHorizontalBearing(const osg::Vec2& bearing) {  _horizontalBearing=bearing; }
+const osg::Vec2& Font::Glyph::getHorizontalBearing() const { return _horizontalBearing; }
+
+void Font::Glyph::setHorizontalAdvance(float advance) { _horizontalAdvance=advance; }
+float Font::Glyph::getHorizontalAdvance() const { return _horizontalAdvance; }
+
+void Font::Glyph::setVerticalBearing(const osg::Vec2& bearing) {  _verticalBearing=bearing; }
+const osg::Vec2& Font::Glyph::getVerticalBearing() const { return _verticalBearing; }
+
+void Font::Glyph::setVerticalAdvance(float advance) {  _verticalAdvance=advance; }
+float Font::Glyph::getVerticalAdvance() const { return _verticalAdvance; }
+
+void Font::Glyph::setTexture(GlyphTexture* texture) { _texture = texture; }
+Font::GlyphTexture* Font::Glyph::getTexture() { return _texture; }
+const Font::GlyphTexture* Font::Glyph::getTexture() const { return _texture; }
+
+osg::StateSet* Font::Glyph::getStateSet() { return _texture?_texture->getStateSet():0; }
+const osg::StateSet* Font::Glyph::getStateSet() const { return _texture?_texture->getStateSet():0; }
+
+void Font::Glyph::setTexturePosition(int posX,int posY) { _texturePosX = posX; _texturePosY = posY; }
+int Font::Glyph::getTexturePositionX() const { return _texturePosX; }
+int Font::Glyph::getTexturePositionY() const { return _texturePosY; }
+
+void Font::Glyph::setMinTexCoord(const osg::Vec2& coord) { _minTexCoord=coord; }
+const osg::Vec2& Font::Glyph::getMinTexCoord() const { return _minTexCoord; }
+
+void Font::Glyph::setMaxTexCoord(const osg::Vec2& coord) { _maxTexCoord=coord; }
+const osg::Vec2& Font::Glyph::getMaxTexCoord() const { return _maxTexCoord; }
 
 void Font::Glyph::subload() const
 {
@@ -301,8 +336,6 @@ void Font::Glyph::subload() const
     {
         osg::notify(osg::WARN)<<"before: detected OpenGL error '"<<gluErrorString(errorNo)<<std::endl;
     }
-
-
 
     glPixelStorei(GL_UNPACK_ALIGNMENT,getPacking());
 

@@ -21,8 +21,6 @@
 
 #include <osgDB/ReadFile>
 
-//#include "CreateShadowedScene.h"
-
 static bool s_ProfessionalServices = false;
 
 class MyBillboardTransform : public osg::PositionAttitudeTransform
@@ -37,61 +35,30 @@ class MyBillboardTransform : public osg::PositionAttitudeTransform
         
         bool computeLocalToWorldMatrix(osg::Matrix& matrix,osg::NodeVisitor* nv) const
         {
-        
-        
-            if (_referenceFrame==RELATIVE_TO_PARENTS)
+            osg::Quat billboardRotation;
+            osgUtil::CullVisitor* cullvisitor = dynamic_cast<osgUtil::CullVisitor*>(nv);
+            if (cullvisitor)
             {
-            
-                osg::Quat billboardRotation;
-                osgUtil::CullVisitor* cullvisitor = dynamic_cast<osgUtil::CullVisitor*>(nv);
-                if (cullvisitor)
-                {
-                    osg::Vec3 eyevector = cullvisitor->getEyeLocal()-_position;
-                    eyevector.normalize();
-                    
-                    osg::Vec3 side = _axis^_normal;
-                    side.normalize();
-                    
-                    float angle = atan2f(eyevector*_normal,eyevector*side);
-                    billboardRotation.makeRotate(osg::PI_2-angle,_axis);
-                    
-                }
-            
-            
-                matrix.preMult(osg::Matrix::translate(-_pivotPoint)*
-                               osg::Matrix::rotate(_attitude)*
-                               osg::Matrix::rotate(billboardRotation)*
-                               osg::Matrix::translate(_position));
+                osg::Vec3 eyevector = cullvisitor->getEyeLocal()-_position;
+                eyevector.normalize();
+
+                osg::Vec3 side = _axis^_normal;
+                side.normalize();
+
+                float angle = atan2f(eyevector*_normal,eyevector*side);
+                billboardRotation.makeRotate(osg::PI_2-angle,_axis);
+
             }
-            else // absolute
-            {
-                matrix = osg::Matrix::translate(-_pivotPoint)*
-                         osg::Matrix::rotate(_attitude)*
-                         osg::Matrix::translate(_position);
-            }
+
+
+            matrix.preMult(osg::Matrix::translate(-_pivotPoint)*
+                           osg::Matrix::rotate(_attitude)*
+                           osg::Matrix::rotate(billboardRotation)*
+                           osg::Matrix::translate(_position));
             return true;
         }
 
 
-        bool computeWorldToLocalMatrix(osg::Matrix& matrix,osg::NodeVisitor*) const
-        {
-        
-            if (_referenceFrame==RELATIVE_TO_PARENTS)
-            {
-                osg::Quat billboardRotation;
-                matrix.postMult(osg::Matrix::translate(-_position)*
-                                osg::Matrix::rotate(billboardRotation.inverse())*
-                                osg::Matrix::rotate(_attitude.inverse())*
-                                osg::Matrix::translate(_pivotPoint));
-            }
-            else // absolute
-            {
-                matrix = osg::Matrix::translate(-_position)*
-                         osg::Matrix::rotate(_attitude.inverse())*
-                         osg::Matrix::translate(_pivotPoint);
-            }
-            return true;
-        }
         
         void setAxis(const osg::Vec3& axis) { _axis = axis; }
 
@@ -182,14 +149,7 @@ osg:: Node* createTextLeft(const osg::BoundingBox& bb)
 
 
     osg::StateSet* stateset = geode->getOrCreateStateSet();
-
-//    osg::BlendFunc *transp= new osg::BlendFunc();
-//    transp->setFunction(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
     stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
-//    stateset->setAttributeAndModes(transp,osg::StateAttribute::ON);
-//    stateset->setTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::ON);
-//    stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
 
 
     //std::string font("fonts/times.ttf");
@@ -198,9 +158,10 @@ osg:: Node* createTextLeft(const osg::BoundingBox& bb)
     osgText::Text* text = new  osgText::Text;
  
     text->setFont(font);
-    text->setFontSize(64,64);
+    text->setFontSize(120,120);
     text->setAlignment(osgText::Text::RIGHT_CENTER);
     text->setAxisAlignment(osgText::Text::XZ_PLANE);
+    text->setCharacterSize((bb.zMax()-bb.zMin())*0.8f);
     text->setPosition(bb.center()-osg::Vec3((bb.xMax()-bb.xMin()),-(bb.yMax()-bb.yMin())*0.5f,(bb.zMax()-bb.zMin())*0.3f));
     //text->setColor(osg::Vec4(0.37f,0.48f,0.67f,1.0f)); // Neil's orignal OSG colour
     text->setColor(osg::Vec4(0.20f,0.45f,0.60f,1.0f)); // OGL logo colour
@@ -218,7 +179,7 @@ osg:: Node* createTextLeft(const osg::BoundingBox& bb)
         subscript->setText("Professional Services");
         subscript->setAlignment(osgText::Text::RIGHT_CENTER);
         subscript->setAxisAlignment(osgText::Text::XZ_PLANE);
-        subscript->setPosition(bb.center()-osg::Vec3((bb.xMax()-bb.xMin())*3.5f,-(bb.yMax()-bb.yMin())*0.3f,(bb.zMax()-bb.zMin())*0.7f));
+        subscript->setPosition(bb.center()-osg::Vec3((bb.xMax()-bb.xMin())*3.5f,-(bb.yMax()-bb.yMin())*0.5f,(bb.zMax()-bb.zMin())*0.6f));
         subscript->setColor(osg::Vec4(0.0f,0.0f,0.0f,1.0f)); // black
 
         geode->addDrawable( subscript );

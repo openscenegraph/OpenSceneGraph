@@ -225,7 +225,8 @@ void Text::computeGlyphRepresentation()
     
     _textureGlyphQuadMap.clear();
     
-    osg::Vec2 cursor(0.0f,0.0f);
+    osg::Vec2 startOfLine(0.0f,0.0f);
+    osg::Vec2 cursor(startOfLine);
     osg::Vec2 local(0.0f,0.0f);
     
     unsigned int previous_charcode = 0;
@@ -242,6 +243,16 @@ void Text::computeGlyphRepresentation()
         ++itr)
     {
         unsigned int charcode = *itr;
+        
+        if (charcode=='\n')
+        {
+            if (horizontal) startOfLine.y() -= _fontHeight;
+            else startOfLine.x() += _fontWidth;
+            cursor = startOfLine;
+            previous_charcode = 0;
+            continue;
+        }
+        
         
         Font::Glyph* glyph = activefont->getGlyph(charcode);
         if (glyph)

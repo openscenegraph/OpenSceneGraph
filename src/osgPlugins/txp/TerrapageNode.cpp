@@ -82,25 +82,25 @@ bool TerrapageNode::loadDatabase()
         if (_databaseOptions.find("LoadAll")!=std::string::npos)
         {
             loadAll = true;
-            std::cout<<"LoadAll selected"<<std::endl;
+            osg::notify(osg::INFO)<<"TerraPage archive : LoadAll selected"<<std::endl;
         }
         
         if (_databaseOptions.find("ThreadNone")!=std::string::npos)
         {
             threadMode = OSGPageManager::ThreadNone;
-            std::cout<<"ThreadNone selected"<<std::endl;
+            osg::notify(osg::INFO)<<"TerraPage archive : ThreadNone selected"<<std::endl;
         }
 
         if (_databaseOptions.find("ThreadFree")!=std::string::npos)
         {
             threadMode = OSGPageManager::ThreadFree;
-            std::cout<<"ThreadFree selected"<<std::endl;
+            osg::notify(osg::INFO)<<"TerraPage archive : ThreadFree selected"<<std::endl;
         }
 
         if (_databaseOptions.find("ThreadSync")!=std::string::npos)
         {
             threadMode = OSGPageManager::ThreadSync;
-            std::cout<<"ThreadSync selected"<<std::endl;
+            osg::notify(osg::INFO)<<"TerraPage archive : ThreadSync selected"<<std::endl;
         }
     }
 

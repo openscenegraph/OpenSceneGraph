@@ -51,7 +51,7 @@ class OSGUTIL_EXPORT RenderLeaf : public osg::Referenced
         virtual void render(osg::State& state,RenderLeaf* previous);
         
         /// allow RenderGraph to change the RenderLeaf's _parent.
-        friend RenderGraph;
+        friend class osgUtil::RenderGraph;
 
     public:
     

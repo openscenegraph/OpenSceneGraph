@@ -38,6 +38,11 @@ class EdgeCollapse
 {
 public:
 
+    struct Triangle;
+    struct Edge;
+    struct Point;
+
+
     EdgeCollapse():
         _targetNumTriangles(0) {}
     ~EdgeCollapse() {}
@@ -49,13 +54,47 @@ public:
 
     unsigned int getNumOfTriangles() { return 0; }
 
-    bool collapseMinimumErrorEdge() { return false; }
+    Point* computeNewPoint(Edge* edge,float r=0.5) const
+    {
+        Point* point = new Point;
+        float r1 = 1.0f-r;
+        float r2 = r;
+        Point* p1 = edge->_p1.get();
+        Point* p2 = edge->_p2.get();
+        point->_vertex = p1->_vertex * r1 + p2->_vertex * r2;
+        unsigned int s = osg::minimum(p1->_attributes.size(),p2->_attributes.size());
+        for(unsigned int i=0;i<s;++i)
+        {
+            point->_attributes.push_back(p1->_attributes[i]*r1 + p2->_attributes[i]*r2); 
+        }
+        return point;
+    }
+
+
+    bool collapseMinimumErrorEdge()
+    {
+//        std::cout<<"collapseMinimumErrorEdge"<<std::endl;
+        if (!_edgeSet.empty())
+        {
+            for(EdgeSet::iterator itr=_edgeSet.begin();
+                itr!=_edgeSet.end();
+                ++itr)
+            {
+//                std::cout<<"    Trying edge collapse"<<std::endl;
+                Edge* edge = const_cast<Edge*>(itr->get());
+                //if (collapseEdge(edge,edge->_p1.get())) return true;
+                if (!edge->isAdjacentToBoundary())
+                {
+                    osg::ref_ptr<Point> pNew = computeNewPoint(edge);
+
+                    if (collapseEdge(edge,pNew.get())) return true;
+                }
+            }
+        }
+        return false;
+    }
 
     void copyBackToGeometry();
-
-    struct Triangle;
-    struct Edge;
-    struct Point;
 
     typedef std::vector<float>                              FloatList;
     typedef std::set<osg::ref_ptr<Edge>,dereference_less>   EdgeSet;
@@ -81,7 +120,22 @@ public:
             
             return _attributes < rhs._attributes;
         }
-
+        
+        bool isBoundaryPoint() const
+        {
+            for(TriangleSet::iterator itr=_triangles.begin();
+                itr!=_triangles.end();
+                ++itr)
+            {
+                const Triangle* triangle = itr->get();
+                if ((triangle->_e1->_p1==this || triangle->_e1->_p2==this) && triangle->_e1->isBoundaryEdge()) return true;
+                if ((triangle->_e2->_p1==this || triangle->_e2->_p2==this) && triangle->_e2->isBoundaryEdge()) return true;
+                if ((triangle->_e3->_p1==this || triangle->_e3->_p2==this) && triangle->_e3->isBoundaryEdge()) return true;
+            
+                //if ((*itr)->isBoundaryTriangle()) return true;
+            }
+            return false;
+        }
 
     };
 
@@ -92,8 +146,7 @@ public:
         osg::ref_ptr<Point> _p1;
         osg::ref_ptr<Point> _p2;
         
-        osg::ref_ptr<Triangle> _t1;
-        osg::ref_ptr<Triangle> _t2;
+        TriangleSet _triangles;
 
         bool  _needToRecomputeErrorMetric;        
         float _errorMetric;
@@ -113,7 +166,7 @@ public:
                 if (getErrorMetric()<rhs.getErrorMetric()) return true;
                 else if (rhs.getErrorMetric()>getErrorMetric()) return false;
             }
-                        
+            
             if (_p1 < rhs._p1) return true;
             if (rhs._p1 < _p1) return false;
 
@@ -122,18 +175,18 @@ public:
         
         void addTriangle(Triangle* triangle)
         {
-            if (!_t1)
-            {
-                _t1 = triangle;
-            }
-            else if (!_t2)
-            {
-                _t2 = triangle;
-            }
-            else
-            {
-                osg::notify(osg::NOTICE)<<"Warning too many traingles sharing edge"<<std::endl;
-            }
+            _triangles.insert(triangle);
+            if (_triangles.size()>2) osg::notify(osg::NOTICE)<<"Warning too many traingles ("<<_triangles.size()<<") sharing edge "<<std::endl;
+        }
+        
+        bool isBoundaryEdge() const
+        {
+            return _triangles.size()<=1;
+        }
+        
+        bool isAdjacentToBoundary() const
+        {
+            return isBoundaryEdge() || _p1->isBoundaryPoint() || _p2->isBoundaryPoint(); 
         }
         
     };
@@ -160,6 +213,11 @@ public:
         osg::ref_ptr<Edge> _e1;
         osg::ref_ptr<Edge> _e2;
         osg::ref_ptr<Edge> _e3;
+        
+        bool isBoundaryTriangle() const
+        {
+            return (_e1->isBoundaryEdge() || _e2->isBoundaryEdge() ||  _e3->isBoundaryEdge());
+        }
     };
 
 
@@ -196,6 +254,37 @@ public:
         return triangle;
     }
     
+    Triangle* addTriangle(Point* p1, Point* p2, Point* p3)
+    {
+        // detect if triangle is degenerate.
+        if (p1==p2 || p2==p3 || p1==p3) return 0;
+        
+        Triangle* triangle = new Triangle;
+
+        Point* points[3];
+        points[0] = addPoint(triangle, p1);
+        points[1] = addPoint(triangle, p2);
+        points[2] = addPoint(triangle, p3);
+        
+        // find the lowest value point in the list.
+        unsigned int lowest = 0;        
+        if (points[1]<points[lowest]) lowest = 1;
+        if (points[2]<points[lowest]) lowest = 2;
+        
+
+        triangle->_p1 = points[lowest];
+        triangle->_p2 = points[(lowest+1)%3];
+        triangle->_p3 = points[(lowest+2)%3];
+
+        triangle->_e1 = addEdge(triangle, triangle->_p1.get(), triangle->_p2.get());
+        triangle->_e2 = addEdge(triangle, triangle->_p2.get(), triangle->_p3.get());
+        triangle->_e3 = addEdge(triangle, triangle->_p3.get(), triangle->_p1.get());
+        
+        _triangleSet.insert(triangle);
+        
+        return triangle;
+    }
+
     void removeTriangle(Triangle* triangle)
     {
         if (triangle->_p1.valid()) removePoint(triangle,triangle->_p1.get());
@@ -232,41 +321,60 @@ public:
         
     }
     
-    bool testTriangle(Triangle* triangle)
+    unsigned int testTriangle(Triangle* triangle)
     {
-        bool result = true;
+        unsigned int result = 0;
         if (!(triangle->_p1))
         {
             std::cout<<"testTriangle("<<triangle<<") _p1==NULL"<<std::endl;
-            result = false;
+            ++result;
         }
         else if (triangle->_p1->_triangles.count(triangle)==0) 
         {
             std::cout<<"testTriangle("<<triangle<<") _p1->_triangles does not contain triangle"<<std::endl;
-            result = false;
+            ++result;
         }
 
         if (!(triangle->_p2))
         {
             std::cout<<"testTriangle("<<triangle<<") _p2==NULL"<<std::endl;
-            result = false;
+            ++result;
         }
         else if (triangle->_p2->_triangles.count(triangle)==0) 
         {
             std::cout<<"testTriangle("<<triangle<<") _p2->_triangles does not contain triangle"<<std::endl;
-            result = false;
+            ++result;
         }
 
         if (!(triangle->_p3))
         {
             std::cout<<"testTriangle("<<triangle<<") _p3==NULL"<<std::endl;
-            result = false;
+            ++result;
         }
         else if (triangle->_p3->_triangles.count(triangle)==0) 
         {
             std::cout<<"testTriangle("<<triangle<<") _p3->_triangles does not contain triangle"<<std::endl;
-            result = false;
+            ++result;
         }
+        
+        if (testEdge(triangle->_e1.get()))
+        {
+            ++result;
+            std::cout<<"testTriangle("<<triangle<<") _e1 test failed"<<std::endl;
+        }
+        
+        if (testEdge(triangle->_e2.get()))
+        {
+            ++result;
+            std::cout<<"testTriangle("<<triangle<<") _e2 test failed"<<std::endl;
+        }
+
+        if (testEdge(triangle->_e3.get()))
+        {
+            std::cout<<"testTriangle("<<triangle<<") _e3 test failed"<<std::endl;
+            ++result;
+        }
+
         return result;
     }
 
@@ -277,10 +385,7 @@ public:
             itr!=_triangleSet.end();
             ++itr)
         {
-            if (!testTriangle(const_cast<Triangle*>(itr->get())))
-            {
-                ++numErrors;
-            }
+            numErrors += testTriangle(const_cast<Triangle*>(itr->get()));
         }
         return numErrors;
     }
@@ -322,16 +427,14 @@ public:
         EdgeSet::iterator itr = _edgeSet.find(edge);
         if (itr!=_edgeSet.end())
         {
-            if (edge->_t1==triangle) edge->_t1 = 0;
-            if (edge->_t2==triangle) edge->_t2 = 0;
-            
-            if (!edge->_t1.valid() && !edge->_t2.valid())
+            edge->_triangles.erase(triangle);
+            if (edge->_triangles.empty())
             {
-                edge->_p1 = 0;
-                edge->_p2 = 0;
-            
                 // edge no longer in use, so need to delete.
                 _edgeSet.erase(itr);
+
+                edge->_p1 = 0;
+                edge->_p2 = 0;
             }
         }
     }
@@ -380,75 +483,111 @@ public:
         
     }
 
-    void collapseEdge(Edge* edge, Point* pNew)
+
+    bool collapseEdge(Edge* edge, Point* pNew)
     {
-        if (!edge->_t1.valid() || !edge->_t2.valid()) return;
+        if (edge->_triangles.size()<2) return false;
 
         osg::ref_ptr<Edge> keep_edge_locally_referenced_to_prevent_premature_deletion = edge;
         osg::ref_ptr<Point> keep_point_locally_referenced_to_prevent_premature_deletion = pNew;
-    
-        if (edge->_p1 != pNew)
+        osg::ref_ptr<Point> edge_p1 = edge->_p1;
+        osg::ref_ptr<Point> edge_p2 = edge->_p2;
+        
+        TriangleList triangles_p1;
+        TriangleList triangles_p2;
+        
+        if (edge_p1 != pNew)
         {
-            TriangleSet triangles_p1 = edge->_p1->_triangles;
-            triangles_p1.erase(edge->_t1.get());
-            triangles_p1.erase(edge->_t2.get());
-            for(TriangleSet::iterator titr_p1 = triangles_p1.begin();
-                titr_p1 != triangles_p1.end();
-                ++titr_p1)
+            for(TriangleSet::iterator itr=edge_p1->_triangles.begin();
+                itr!=edge_p1->_triangles.end();
+                ++itr)
             {
-                replaceTrianglePoint(const_cast<Triangle*>(titr_p1->get()),edge->_p1.get(),pNew);
+                if (edge->_triangles.count(*itr)==0) triangles_p1.push_back(const_cast<Triangle*>(itr->get()));
             }
+            
+            //triangles_p1 = edge_p1->_triangles;
         }
                 
-        if (edge->_p2 != pNew)
+        if (edge_p2 != pNew)
         {
-            TriangleSet triangles_p2 = edge->_p2->_triangles;
-            triangles_p2.erase(edge->_t1.get());
-            triangles_p2.erase(edge->_t2.get());
-            for(TriangleSet::iterator titr_p2 = triangles_p2.begin();
-                titr_p2 != triangles_p2.end();
-                ++titr_p2)
+            for(TriangleSet::iterator itr=edge_p2->_triangles.begin();
+                itr!=edge_p2->_triangles.end();
+                ++itr)
             {
-                replaceTrianglePoint(const_cast<Triangle*>(titr_p2->get()),edge->_p2.get(),pNew);
+                if (edge->_triangles.count(*itr)==0) triangles_p2.push_back(const_cast<Triangle*>(itr->get()));
             }
+            //triangles_p2 = edge_p2->_triangles;
         }
-#if 1
-        osg::ref_ptr<Triangle> t1 = edge->_t1;
-        osg::ref_ptr<Triangle> t2 = edge->_t1;
 
-        // remove triangles directly connected to edge
-        if (edge->_t1.valid()) removeTriangle(edge->_t1.get());
-        if (edge->_t2.valid()) removeTriangle(edge->_t2.get());
-#endif
+        for(TriangleList::iterator titr_p1 = triangles_p1.begin();
+            titr_p1 != triangles_p1.end();
+            ++titr_p1)
+        {
+            removeTriangle(const_cast<Triangle*>(titr_p1->get()));
+        }
+
+        for(TriangleList::iterator titr_p2 = triangles_p2.begin();
+            titr_p2 != triangles_p2.end();
+            ++titr_p2)
+        {
+            removeTriangle(const_cast<Triangle*>(titr_p2->get()));
+        }
+
+        for(TriangleList::iterator titr_p1 = triangles_p1.begin();
+            titr_p1 != triangles_p1.end();
+            ++titr_p1)
+        {
+            Triangle* triangle = const_cast<Triangle*>(titr_p1->get());
+            Point* p1 = (triangle->_p1==edge_p1 || triangle->_p1==edge_p2)? pNew : triangle->_p1.get();
+            Point* p2 = (triangle->_p2==edge_p1 || triangle->_p2==edge_p2)? pNew : triangle->_p2.get();
+            Point* p3 = (triangle->_p3==edge_p1 || triangle->_p3==edge_p2)? pNew : triangle->_p3.get();
+            addTriangle(p1,p2,p3);
+        }
+
+        for(TriangleList::iterator titr_p2 = triangles_p2.begin();
+            titr_p2 != triangles_p2.end();
+            ++titr_p2)
+        {
+            Triangle* triangle = const_cast<Triangle*>(titr_p2->get());
+            Point* p1 = (triangle->_p1==edge_p1 || triangle->_p1==edge_p2)? pNew : triangle->_p1.get();
+            Point* p2 = (triangle->_p2==edge_p1 || triangle->_p2==edge_p2)? pNew : triangle->_p2.get();
+            Point* p3 = (triangle->_p3==edge_p1 || triangle->_p3==edge_p2)? pNew : triangle->_p3.get();
+            addTriangle(p1,p2,p3);
+        }
+
+        for(TriangleSet::iterator teitr=edge->_triangles.begin();
+            teitr!=edge->_triangles.end();
+            ++teitr)
+        {
+            removeTriangle(const_cast<Triangle*>(teitr->get()));
+        }
+ 
+         return true;
     }
-
 
     unsigned int testEdge(Edge* edge)
     {
         unsigned int numErrors = 0;
-        if (edge->_t1.valid())
+        for(TriangleSet::iterator teitr=edge->_triangles.begin();
+            teitr!=edge->_triangles.end();
+            ++teitr)
         {
-            if (!(edge->_t1->_e1 == edge || edge->_t1->_e2 == edge || edge->_t1->_e3 == edge))
+            Triangle* triangle = const_cast<Triangle*>(teitr->get());
+            if (!(triangle->_e1 == edge || triangle->_e2 == edge || triangle->_e3 == edge))
             {
-                std::cout<<"testEdge("<<edge<<")._t1 != point back to this edge"<<std::endl;
-                std::cout<<"                     _t1->_e1=="<<edge->_t1->_e1.get()<<std::endl;
-                std::cout<<"                     _t1->_e2=="<<edge->_t1->_e2.get()<<std::endl;
-                std::cout<<"                     _t1->_e3=="<<edge->_t1->_e3.get()<<std::endl;
-                ++numErrors;
-            }
-        }
-        if (edge->_t2.valid())
-        {
-            if (!(edge->_t2->_e1 == edge || edge->_t2->_e2 == edge || edge->_t2->_e3 == edge))
-            {
-                std::cout<<"testEdge("<<edge<<")._t2 != point back to this edge"<<std::endl;
-                std::cout<<"                     _t2->_e1=="<<edge->_t2->_e1.get()<<std::endl;
-                std::cout<<"                     _t2->_e2=="<<edge->_t2->_e2.get()<<std::endl;
-                std::cout<<"                     _t2->_e3=="<<edge->_t2->_e3.get()<<std::endl;
+                std::cout<<"testEdge("<<edge<<"). triangle != point back to this edge"<<std::endl;
+                std::cout<<"                     triangle->_e1=="<<triangle->_e1.get()<<std::endl;
+                std::cout<<"                     triangle->_e2=="<<triangle->_e2.get()<<std::endl;
+                std::cout<<"                     triangle->_e3=="<<triangle->_e3.get()<<std::endl;
                 ++numErrors;
             }
         }
         
+        if (edge->_triangles.empty())
+        {
+            std::cout<<"testEdge("<<edge<<")._triangles is empty"<<std::endl;
+            ++numErrors;
+        }
         return numErrors;
     }
 
@@ -462,6 +601,18 @@ public:
             numErrors += testEdge(const_cast<Edge*>(itr->get()));
         }
         return numErrors;
+    }
+
+    unsigned int computeNumBoundaryEdges()
+    {
+        unsigned int numBoundaryEdges = 0;
+        for(EdgeSet::iterator itr = _edgeSet.begin();
+            itr!=_edgeSet.end();
+            ++itr)
+        {
+            if ((*itr)->isBoundaryEdge()) ++numBoundaryEdges;
+        }
+        return numBoundaryEdges;
     }
 
 
@@ -779,8 +930,11 @@ class CopyPointsToArrayVisitor : public osg::ArrayVisitor
         
             for(unsigned int i=0;i<_pointList.size();++i) 
             {
-                float val = (_pointList[i]->_attributes[_index]);
-                array[i] = R (val);
+                if (_index<_pointList[i]->_attributes.size()) 
+                {
+                    float val = (_pointList[i]->_attributes[_index]);
+                    array[i] = R (val);
+                }
             }
                 
             ++_index;
@@ -817,7 +971,7 @@ class CopyPointsToArrayVisitor : public osg::ArrayVisitor
             for(unsigned int i=0;i<_pointList.size();++i) 
             {
                 EdgeCollapse::FloatList& attributes = _pointList[i]->_attributes;
-                array[i].set(attributes[_index],attributes[_index+1]);
+                if (_index+1<attributes.size()) array[i].set(attributes[_index],attributes[_index+1]);
             }
             _index += 2;
         }
@@ -829,7 +983,7 @@ class CopyPointsToArrayVisitor : public osg::ArrayVisitor
             for(unsigned int i=0;i<_pointList.size();++i) 
             {
                 EdgeCollapse::FloatList& attributes = _pointList[i]->_attributes;
-                array[i].set(attributes[_index],attributes[_index+1],attributes[_index+2]);
+                if (_index+2<attributes.size()) array[i].set(attributes[_index],attributes[_index+1],attributes[_index+2]);
             }
             _index += 3;
         }
@@ -841,7 +995,7 @@ class CopyPointsToArrayVisitor : public osg::ArrayVisitor
             for(unsigned int i=0;i<_pointList.size();++i) 
             {
                 EdgeCollapse::FloatList& attributes = _pointList[i]->_attributes;
-                array[i].set(attributes[_index],attributes[_index+1],attributes[_index+2],attributes[_index+3]);
+                if (_index+3<attributes.size()) array[i].set(attributes[_index],attributes[_index+1],attributes[_index+2],attributes[_index+3]);
             }
             _index += 4;
         }
@@ -896,82 +1050,41 @@ class CopyPointsToVertexArrayVisitor : public osg::ArrayVisitor
 
 void EdgeCollapse::copyBackToGeometry()
 {
+
+    std::cout<<"******* BEFORE EDGE COLLAPSE ********"<<_triangleSet.size()<<std::endl;
+
     std::cout<<"Number of triangle errors before edge collapse= "<<testAllTriangles()<<std::endl;
     std::cout<<"Number of edge errors before edge collapse= "<<testAllEdges()<<std::endl;
     std::cout<<"Number of point errors before edge collapse= "<<testAllPoints()<<std::endl;
+    std::cout<<"Number of triangles= "<<_triangleSet.size()<<std::endl;
+    std::cout<<"Number of points= "<<_pointSet.size()<<std::endl;
+    std::cout<<"Number of edges= "<<_edgeSet.size()<<std::endl;
+    std::cout<<"Number of boundary edges= "<<computeNumBoundaryEdges()<<std::endl;
 
-#if 1
-
+    float sampleRatio = 0.8;
+    unsigned int targetNumEdges = (unsigned int)((float)_edgeSet.size()*sampleRatio);
+    while (_edgeSet.size()>targetNumEdges)
     {
-        float sampleRatio = 0.8;
-        unsigned int numAccepted = 0;
-        unsigned int numDeleted = 0;
-        typedef std::vector< osg::ref_ptr<Edge> > EdgeList;
-        EdgeList toDelete;
-        for(EdgeSet::iterator eitr=_edgeSet.begin();
-            eitr!=_edgeSet.end();
-            ++eitr)
+        unsigned int numBefore = computeNumBoundaryEdges();
+        bool result = collapseMinimumErrorEdge();
+        unsigned int numAfter = computeNumBoundaryEdges();
+        if (numBefore!=numAfter) 
         {
-            float r = (numAccepted>0) ? (float)numAccepted / (float)(numAccepted+numDeleted) : 0.0f; 
-            if (r>sampleRatio)
-            {
-                Edge* edge = const_cast<Edge*>(eitr->get());
-                toDelete.push_back(edge);
-                ++numDeleted;
-            }
-            else
-            {
-                ++numAccepted;
-            }
+            std::cout<<"After collapse edge, boundary edges changes from "<<numBefore<<" to "<<numAfter<<std::endl;
         }
+        if (!result) break;
+    } 
 
-        for(EdgeList::iterator ditr=toDelete.begin();
-            ditr!=toDelete.end();
-            ++ditr)
-        {
-            Edge* edge = const_cast<Edge*>(ditr->get());
-            collapseEdge(edge, edge->_p1.get());
-        }
-    }
 
-    std::cout<<"Number of errors after edge collapse= "<<testAllTriangles()<<std::endl;
+    std::cout<<"******* AFTER EDGE COLLAPSE *********"<<_triangleSet.size()<<std::endl;
+
+    std::cout<<"Number of triangle errors after edge collapse= "<<testAllTriangles()<<std::endl;
     std::cout<<"Number of edge errors before edge collapse= "<<testAllEdges()<<std::endl;
     std::cout<<"Number of point errors after edge collapse= "<<testAllPoints()<<std::endl;
-
-#else
-    // do decimation of triangles to test 
-    {
-        TriangleList toDelete;
-        float sampleRatio = 0.1;
-        unsigned int numAccepted = 0;
-        unsigned int numDeleted = 0;
-        for(TriangleSet::iterator titr=_triangleSet.begin();
-            titr!=_triangleSet.end();
-            ++titr)
-        {
-            float r = (numAccepted>0) ? (float)numAccepted / (float)(numAccepted+numDeleted) : 0.0f; 
-            if (r>sampleRatio)
-            {
-                Triangle* triangle = const_cast<Triangle*>((*titr).get());
-                toDelete.push_back(triangle);
-                ++numDeleted;
-            }
-            else
-            {
-                ++numAccepted;
-            }
-        }
-
-        for(TriangleList::iterator ditr=toDelete.begin();
-            ditr!=toDelete.end();
-            ++ditr)
-        {
-            Triangle* triangle = const_cast<Triangle*>((*ditr).get());
-            removeTriangle(triangle);
-            //_triangleSet.erase(triangle);
-        }
-    }
-#endif
+    std::cout<<"Number of triangles= "<<_triangleSet.size()<<std::endl;
+    std::cout<<"Number of points= "<<_pointSet.size()<<std::endl;
+    std::cout<<"Number of edges= "<<_edgeSet.size()<<std::endl;
+    std::cout<<"Number of boundary edges= "<<computeNumBoundaryEdges()<<std::endl;
 
     // rebuild the _pointList from the _pointSet
     _originalPointList.clear();
@@ -1047,7 +1160,7 @@ void Simplifier::simplify(osg::Geometry& geometry, float sampleRatio)
 
     ec.setTargetNumOfTriangles((unsigned int)(sampleRatio*(float)ec.getNumOfTriangles()));
 
-    while (ec.collapseMinimumErrorEdge()) {}
+    //while (ec.collapseMinimumErrorEdge()) {}
 
     ec.copyBackToGeometry();
 
@@ -1062,7 +1175,7 @@ void Simplifier::simplify(osg::Geometry& geometry, unsigned int targetNumberOfTr
 
     ec.setTargetNumOfTriangles(targetNumberOfTriangles);
 
-    while (ec.collapseMinimumErrorEdge()) {}
+    //while (ec.collapseMinimumErrorEdge()) {}
 
     ec.copyBackToGeometry();
 }

@@ -630,7 +630,7 @@ lib3ds_matrix_dump(Lib3dsMatrix matrix)
   int i,j;
 
   for (i=0; i<4; ++i) {
-    for (j=0; j<4; ++j) {
+    for (j=0; j<3; ++j) {
       printf("%f ", matrix[j][i]);
     }
     printf("%f\n", matrix[j][i]);

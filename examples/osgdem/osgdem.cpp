@@ -179,7 +179,6 @@ int main( int argc, char **argv )
     osg::Matrixd geoTransform;
     bool geoTransformSet = false; 
     
-    bool argumentRead = true;
     int pos = 1;
     while(pos<arguments.argc())
     {
@@ -188,15 +187,18 @@ int main( int argc, char **argv )
 
         if (arguments.read(pos, "--cs",def))
         {
-            argumentRead = true;
             currentCS = !def.empty() ? SanitizeSRS(def.c_str()) : "";
             std::cout<<"--cs "<<currentCS<<std::endl;
         }
-        else if (arguments.read(pos, "--wtk",def))
+        else if (arguments.read(pos, "--wkt",def))
         {
-            argumentRead = true;
             currentCS = def;
-            std::cout<<"--wtk "<<currentCS<<std::endl;
+            std::cout<<"--wkt "<<currentCS<<std::endl;
+        }
+        else if (arguments.read(pos, "--geocentric"))
+        {
+            dataset->setConvertFromGeographicToGeocentric(true);
+            std::cout<<"--geocentric "<<currentCS<<std::endl;
         }
         else if (arguments.read(pos, "--identity"))
         {

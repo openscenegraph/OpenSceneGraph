@@ -20,6 +20,7 @@
 #include <osgParticle/RadialShooter>
 #include <osgParticle/AccelOperator>
 #include <osgParticle/FluidFrictionOperator>
+#include <osgParticle/ParticleSystemUpdater>
 
 #include <osg/Geode>
 
@@ -125,10 +126,13 @@ void FireEffect::buildEffect()
     // add the program to update the particles
     addChild(_program.get());
 
-    osg::Geode *geode = new osg::Geode;
-    geode->addDrawable(_particleSystem.get());
-    //geode->setCullingActive(false);
+    // add the particle system updater.
+    osgParticle::ParticleSystemUpdater *psu = new osgParticle::ParticleSystemUpdater;
+    psu->addParticleSystem(_particleSystem.get());
+    addChild(psu);
 
     // add the geode to the scene graph
+    osg::Geode *geode = new osg::Geode;
+    geode->addDrawable(_particleSystem.get());
     addChild(geode);
 }

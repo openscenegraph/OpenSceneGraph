@@ -65,8 +65,6 @@ QuicktimeImageStream::QuicktimeImageStream(std::string fileName) : ImageStream()
 // Deconstructor: stop and terminate thread
 QuicktimeImageStream::~QuicktimeImageStream()
 {
-    stop();
-
     setCmd(THREAD_QUIT);
 
     if( isRunning() )

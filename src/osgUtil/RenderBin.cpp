@@ -252,21 +252,21 @@ void RenderBin::draw(osg::State& state,RenderLeaf*& previous)
 void RenderBin::drawImplementation(osg::State& state,RenderLeaf*& previous)
 {
     // draw first set of draw bins.
-    RenderBinList::iterator itr;
-    for(itr = _bins.begin();
-        itr!=_bins.end() && itr->first<0;
-        ++itr)
+    RenderBinList::iterator rbitr;
+    for(rbitr = _bins.begin();
+        rbitr!=_bins.end() && rbitr->first<0;
+        ++rbitr)
     {
-        itr->second->draw(state,previous);
+        rbitr->second->draw(state,previous);
     }
     
 
     // draw fine grained ordering.
-    for(RenderLeafList::iterator itr= _renderLeafList.begin();
-        itr!= _renderLeafList.end();
-        ++itr)
+    for(RenderLeafList::iterator rlitr= _renderLeafList.begin();
+        rlitr!= _renderLeafList.end();
+        ++rlitr)
     {
-        RenderLeaf* rl = *itr;
+        RenderLeaf* rl = *rlitr;
         rl->render(state,previous);
         previous = rl;
     }
@@ -292,10 +292,10 @@ void RenderBin::drawImplementation(osg::State& state,RenderLeaf*& previous)
 
     // draw post bins.
     for(;
-        itr!=_bins.end();
-        ++itr)
+        rbitr!=_bins.end();
+        ++rbitr)
     {
-        itr->second->draw(state,previous);
+        rbitr->second->draw(state,previous);
     }
 
 

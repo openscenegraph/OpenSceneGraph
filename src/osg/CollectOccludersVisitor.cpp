@@ -201,7 +201,7 @@ void CollectOccludersVisitor::removeOccludedOccluders()
                 holeItr!=holeList.rend();
                 )
             {
-                if (occluder->contains(holeItr->getReferenceVertexList()))
+                if (occluder->contains((*holeItr).getReferenceVertexList()))
                 {
                     holeList.erase((++holeItr).base());
                 }

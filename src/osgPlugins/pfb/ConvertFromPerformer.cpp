@@ -276,7 +276,7 @@ osg::Node* ConvertFromPerformer::visitSequence(osg::Group* osgParent,
     // add children
     for(int i=0;i<sequence->getNumChildren();++i)
     {
-        //cerr << "child " << i << " time " << sequence->getTime(i) << endl;
+        //osg::notify(osg::WARN) << "child " << i << " time " << sequence->getTime(i) << std::endl;
         osgSequence->setTime(i, sequence->getTime(i));
         visitNode(osgSequence,sequence->getChild(i));
     }
@@ -285,7 +285,7 @@ osg::Node* ConvertFromPerformer::visitSequence(osg::Group* osgParent,
     int mode, begin, end;
     sequence->getInterval(&mode, &begin, &end);
 
-    //cerr << "loop " << mode << endl;
+    //osg::notify(osg::WARN) << "loop " << mode << std::endl;
     osg::Sequence::LoopMode loopMode = osg::Sequence::LOOP;
     if (mode == PFSEQ_SWING)
         loopMode = osg::Sequence::SWING;
@@ -1166,7 +1166,7 @@ osg::StateSet* ConvertFromPerformer::visitGeoState(osg::Drawable* osgDrawable,pf
 	      osgTexEnv->setColor(osg::Vec4(r,g,b,a));
 	      break;
           default:
-              std::cerr << "TexEnv Mode "<<mode<<" not currently supported by the OSG."<<std::endl;
+              osg::notify(osg::WARN) << "TexEnv Mode "<<mode<<" not currently supported by the OSG."<<std::endl;
               break;
       }
       osgStateSet->setTextureAttribute(0,osgTexEnv);
@@ -1195,8 +1195,8 @@ osg::StateSet* ConvertFromPerformer::visitGeoState(osg::Drawable* osgDrawable,pf
                 osgStateSet->setTextureMode(0,GL_TEXTURE_GEN_T,osg::StateAttribute::ON);
                 break;
             case(PFTG_EYE_LINEAR_IDENT) :
-                std::cerr << "TexGen Mode PFTG_EYE_LINEAR_IDENT not currently supported by the OSG,"<<std::endl;
-                std::cerr << "       assuming osg::TexGen::EYE_LINEAR."<<std::endl;
+                osg::notify(osg::WARN) << "TexGen Mode PFTG_EYE_LINEAR_IDENT not currently supported by the OSG,"<<std::endl;
+                osg::notify(osg::WARN) << "       assuming osg::TexGen::EYE_LINEAR."<<std::endl;
             case(PFTG_EYE_LINEAR) :
                 osgTexGen->setMode(osg::TexGen::EYE_LINEAR);
                 osgStateSet->setTextureAttribute(0,osgTexGen);
@@ -1213,15 +1213,15 @@ osg::StateSet* ConvertFromPerformer::visitGeoState(osg::Drawable* osgDrawable,pf
                 osgStateSet->setAssociatedTextureModes(0,osgTexGen,osg::StateAttribute::OFF);
                 break;
             case(PFTG_OBJECT_DISTANCE_TO_LINE) :
-                std::cerr << "TexGen Mode PFTG_OBJECT_DISTANCE_TO_LINE not currently supported by the OSG."<<std::endl;
+                osg::notify(osg::WARN) << "TexGen Mode PFTG_OBJECT_DISTANCE_TO_LINE not currently supported by the OSG."<<std::endl;
                 osgStateSet->setAssociatedTextureModes(0,osgTexGen,osg::StateAttribute::OFF);
                 break;
             case(PFTG_EYE_DISTANCE_TO_LINE) :
-                std::cerr << "TexGen Mode PFTG_EYE_DISTANCE_TO_LINE not currently supported by the OSG."<<std::endl;
+                osg::notify(osg::WARN) << "TexGen Mode PFTG_EYE_DISTANCE_TO_LINE not currently supported by the OSG."<<std::endl;
                 osgStateSet->setAssociatedTextureModes(0,osgTexGen,osg::StateAttribute::OFF);
                 break;
             default:
-                std::cerr << "TexGen Mode "<<mode<<" not currently supported by the OSG."<<std::endl;
+                osg::notify(osg::WARN) << "TexGen Mode "<<mode<<" not currently supported by the OSG."<<std::endl;
                 osgStateSet->setAssociatedTextureModes(0,osgTexGen,osg::StateAttribute::OFF);
                 break;
         }

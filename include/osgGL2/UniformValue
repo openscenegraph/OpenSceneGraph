@@ -11,7 +11,7 @@
 */
 
 /* file:	include/osgGL2/UniformValue
- * author:	Mike Weiblen 2003-09-18
+ * author:	Mike Weiblen 2003-12-28
  *
  * See http://www.3dlabs.com/opengl2/ for more information regarding
  * the OpenGL Shading Language.
@@ -34,13 +34,13 @@
 namespace osgGL2 {
 
 ///////////////////////////////////////////////////////////////////////////
-
-/** An abstract class to encapsulate a new value for a glUniform.
+/** osgGL2::UniformValue is for internal use by osgGL2::ProgramObject.
+  * UniformValue is an abstract class to encapsulate a new value for a glUniform.
   * osgGL2::ProgramObject.setUniform() constructs and sends a UniformValue
-  * to all its PCPOs (per-context glProgramObjects) to set the value of a
-  * glUniform; that value is propogated to the glProgramObjects during the
-  * next osgGL2::ProgramObject.apply().
-  * This class is for internal use by osgGL2::ProgramObject.
+  * to all its PerContextProgramObjects (PCPOs) to set the value of a
+  * glUniform.
+  * The value contained in each UniformValue value is propagated to the
+  * glProgramObjects during the next osgGL2::ProgramObject.apply().
   */
 
 class UniformValue : public osg::Referenced
@@ -51,6 +51,9 @@ class UniformValue : public osg::Referenced
     protected:
 	UniformValue( const char* uniformName ) : _name( uniformName ) {};
 	virtual ~UniformValue() {};
+	UniformValue();
+	UniformValue(const UniformValue&);
+	UniformValue& operator=(const UniformValue&);
 
 	int getLocation( Extensions *ext, const GLhandleARB progObj ) const;
 
@@ -61,28 +64,30 @@ typedef std::vector< osg::ref_ptr<UniformValue> > UniformValueList;
 
 
 ///////////////////////////////////////////////////////////////////////////
+/** UniformValueTemplate creates the concrete classes for each of the
+  * uniform value types */
 
-#define META_UniformValue( typeName ) \
-class UniformValue_##typeName : public UniformValue \
-{ \
-    public: \
-	UniformValue_##typeName( const char* uniformName, typeName value ); \
-	virtual void apply( Extensions *ext, const GLhandleARB progObj ) const; \
-    protected: \
-	typeName _value; \
-}
+template<typename T>
+class UniformValueTemplate: public UniformValue
+{
+    public:
+	UniformValueTemplate( const char* uniformName, T value ) :
+		UniformValue( uniformName ), _value( value ) {}
+	virtual void apply( Extensions *ext, const GLhandleARB progObj ) const;
 
-META_UniformValue( int );
-META_UniformValue( float );
+    protected:
+	UniformValueTemplate();
+	const T _value;
+};
 
-using namespace osg;
-META_UniformValue( Vec2 );
-META_UniformValue( Vec3 );
-META_UniformValue( Vec4 );
+typedef UniformValueTemplate<int>	UniformValue_int;
+typedef UniformValueTemplate<float>	UniformValue_float;
+typedef UniformValueTemplate<osg::Vec2>	UniformValue_Vec2;
+typedef UniformValueTemplate<osg::Vec3>	UniformValue_Vec3;
+typedef UniformValueTemplate<osg::Vec4>	UniformValue_Vec4;
 
 }
 
 #endif
 
 /*EOF*/
-

@@ -11,7 +11,7 @@
 */
 
 /* file:	include/osgGL2/ProgramObject
- * author:	Mike Weiblen 2003-10-03
+ * author:	Mike Weiblen 2003-12-28
  *
  * See http://www.3dlabs.com/opengl2/ for more information regarding
  * the OpenGL Shading Language.
@@ -28,7 +28,6 @@
 #include <osg/Vec2>
 #include <osg/Vec3>
 #include <osg/Vec4>
-#include <osg/Notify>
 
 #include <osgGL2/Export>
 #include <osgGL2/Extensions>
@@ -47,8 +46,17 @@ class ShaderObject;
 typedef osg::ref_ptr<ShaderObject> ShaderObjectPtr;
 
 ///////////////////////////////////////////////////////////////////////////
+/** osgGL2::ProgramObject is an application-level abstraction of the OpenGL Shading Language glProgramObject.
+  * It is an osg::StateAttribute that, when applied, will install an OGLSL
+  * shader program for subsequent rendering.
+  * osgGL2::ShaderObjects containing the actual shader source code are
+  * attached to the ProgramObject, which will then manage the compilation,
+  * linking, and installation of the GL shader program.
+  * ProgramObject will automatically manage per-context instancing of the
+  * internal objects, if that is necessary for a particular display
+  * configuration.
+  */
 
-/** Encapsulates the OpenGL Shading Language ProgramObject */
 class OSGGL2_EXPORT ProgramObject : public osg::StateAttribute
 {
     public:
@@ -75,24 +83,30 @@ class OSGGL2_EXPORT ProgramObject : public osg::StateAttribute
 
         virtual void getAssociatedModes(std::vector<GLMode>& ) const {}
 
+	/** If enabled, install our shader program in the GL pipeline,
+	  * performing any shader program rebuild operations that might
+	  * be pending. */
 	virtual void apply(osg::State& state) const;
 
 	virtual void compile(osg::State& state) const { apply(state); }
 
         // data access methods.
 
-	/** Force a relink on next apply() of associated glProgramObject. */
+	/** Mark us as "dirty" and in need of relinking. */
 	void dirtyProgramObject();
 
-	/** Force a recompile of all ShaderObjects on next apply(). */
+	/** Mark our attached ShaderObjects as "dirty" and in need of
+	  * recompilation. */
 	void dirtyShaderObjects();
 
-	/** Set whether rendering of ProgramObject is enabled or disabled */
+	/** An override to control whether the shader program will
+	  * actually be installed when OSG attempts to apply() */
 	void enable( bool enabled ) { _enabled = enabled; }
 
 	/** Attach a ShaderObject to this ProgramObject */
 	void addShader( ShaderObject* shadObj );
 
+	/** Assign a value to a ProgramObject's uniform variable */
 	void setUniform( const char* uniformName, int value );
 	void setUniform( const char* uniformName, float value );
 	void setUniform( const char* uniformName, osg::Vec2 value );
@@ -105,10 +119,9 @@ class OSGGL2_EXPORT ProgramObject : public osg::StateAttribute
 	    setUniform( uniformName, static_cast<int>(value) );
 	}
         
-        /** use deleteObject instead of glDeleteObject to allow
-          * GL2 Objects to cached until they can be deleted
-          * by the OpenGL context in which they were created, specified
-          * by contextID.*/
+        /** Mark internal GL objects for deletion.
+	  * Deletion requests are queued until they can be executed
+	  * in the proper GL context. */
         static void deleteObject(unsigned int contextID, GLhandleARB handle);
 
         /** flush all the cached glProgramObjects which need to be deleted
@@ -117,6 +130,7 @@ class OSGGL2_EXPORT ProgramObject : public osg::StateAttribute
 
 
     protected:
+	/** PCPO is an OSG-internal encapsulation of glProgramObjects per-GL context.  */
 	class PerContextProgObj : public osg::Referenced
 	{
 	    public:
@@ -130,27 +144,37 @@ class OSGGL2_EXPORT ProgramObject : public osg::StateAttribute
 		void build();
 		void use() const;
 
+		/** Add a list of UniformValues to our per-context queue */
 		void updateUniforms( const UniformValueList& univalList );
-		void applyUniformValues();
 
-		void printInfoLog(osg::NotifySeverity severity) const;
+		/** Apply our queue of pending UniformValue updates to the glProgramObjects */
+		void applyUniformValues();
 
 	    protected:	/*methods*/
 		PerContextProgObj();
 		~PerContextProgObj();
 
 	    protected:	/*data*/
+		/** Pointer to our parent ProgramObject */
 		const ProgramObject* _progObj;
+		/** Pointer to this context's extension functions */
 		osg::ref_ptr<Extensions> _extensions;
+		/** Handle to the actual glProgramObject */
 		GLhandleARB _glProgObjHandle;
+		/** Do we need to be linked? */
 		bool _dirty;
+		/** Queue of UniformValues awaiting assignment */
 		UniformValueList _univalList;
 		const unsigned int _contextID;
 	};
 
     protected:	/*methods*/
         virtual ~ProgramObject();
+	/** Get the PCPO for a particular GL context */
         PerContextProgObj* getPCPO(unsigned int contextID) const;
+
+	/** Per frame, copy the list of pending UniformValue updates to
+	  * each of the PCPOs. */
 	void updateUniforms( int frameNumber ) const;
 
     protected:	/*data*/
@@ -159,11 +183,21 @@ class OSGGL2_EXPORT ProgramObject : public osg::StateAttribute
         mutable osg::buffered_value< osg::ref_ptr<PerContextProgObj> > _pcpoList;
 	mutable int _frameNumberOfLastPCPOUpdate;
 	mutable UniformValueList _univalList;
+
+    private:
+        const ProgramObject& operator=(const ProgramObject&);
 };
 
 ///////////////////////////////////////////////////////////////////////////
+/** osgGL2::ShaderObject is an application-level abstraction of the OpenGL Shading Language glShaderObject.
+  * It is a container to load the shader source code text and manage its
+  * compilation.
+  * A ShaderObject may be attached to more than one osgGL2::ProgramObject.
+  * ShaderObject will automatically manage per-context instancing of the
+  * internal objects, if that is necessary for a particular display
+  * configuration.
+  */
 
-/** Encapsulates the OpenGL Shading Language ShaderObject */
 class OSGGL2_EXPORT ShaderObject : public osg::Object
 {
     public:
@@ -184,20 +218,33 @@ class OSGGL2_EXPORT ShaderObject : public osg::Object
 
         // data access methods.
 
+	/** Load the ShaderObject's source code text from a string. */
 	void setShaderSource( const char* sourceText );
+
+	/** Retreive the source code text */
 	inline const std::string& getShaderSource() const {return _shaderSource; }
+
+	/** Load the ShaderObject's source code text from a file. */
 	bool loadShaderSourceFromFile( const char* fileName );
+
+	/** Get the ShaderObject type as an enum. */
 	inline Type getType() const { return _type; }
+
+	/** Get the ShaderObject type as a descriptive string. */
 	const char* getTypename() const;
 
-        /** Force a recompile on next apply() of associated glShaderObject. */
+        /** Mark us as "dirty" and in need of recompilation */
         void dirtyShaderObject();        
 
+	/** Perform a recompilation of all our PCSOs */
 	void build(unsigned int contextID) const;
+
+	/** For a given GL context, attach a glShaderObject to a glProgramObject */
 	void attach(unsigned int contextID, GLhandleARB progObj) const;
 
 
     protected:
+	/** PCSO is an OSG-internal encapsulation of glShaderObjects per-GL context.  */
 	class PerContextShaderObj : public osg::Referenced
 	{
 	    public:
@@ -210,18 +257,21 @@ class OSGGL2_EXPORT ShaderObject : public osg::Object
 		void markAsDirty() {_dirty = true; }
 		void build();
 
+		/** Attach our glShaderObject to a glProgramObject */
 		void attach(GLhandleARB progObj) const;
-
-		void printInfoLog(osg::NotifySeverity severity) const;
 
 	    protected:	/*methods*/
 		PerContextShaderObj();
 		~PerContextShaderObj();
 
 	    protected:	/*data*/
+		/** Pointer to our parent ShaderObject */
 		const ShaderObject* _shadObj;
+		/** Pointer to this context's extension functions. */
 		osg::ref_ptr<Extensions> _extensions;
+		/** Handle to the actual glShaderObject. */
 		GLhandleARB _glShaderObjHandle;
+		/** Do we need to be recompiled? */
 		bool _dirty;
 		const unsigned int _contextID;
 	};
@@ -238,9 +288,13 @@ class OSGGL2_EXPORT ShaderObject : public osg::Object
 	std::string _shaderSource;
 	std::vector< ProgramObjectPtr > _programObjectList;
         mutable osg::buffered_value< osg::ref_ptr<PerContextShaderObj> > _pcsoList;
+
+    private:
+        const ShaderObject& operator=(const ShaderObject&);
 };
 
 }
 
 #endif
 
+/*EOF*/

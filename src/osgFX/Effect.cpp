@@ -122,9 +122,14 @@ void Effect::traverse(osg::NodeVisitor &nv)
         tech = techs_[global_sel_tech_].get();
     }
 
-    // if we could find an active technique, then continue with traversal
+    // if we could find an active technique, then continue with traversal,
+	// else go for default traversal (no effect)
 	if (tech) {
 		tech->traverse(nv, this);
+	} else {
+		if (nv.getTraversalMode() == osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {
+			inherited_traverse(nv);
+		}
 	}
 
 	// wow, we're finished! :)

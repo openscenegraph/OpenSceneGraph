@@ -81,9 +81,16 @@ void Image::deallocateData()
 
 int Image::compare(const Image& rhs) const
 {
-    if (getFileName()<rhs.getFileName()) return -1;
-    else if (getFileName()>rhs.getFileName()) return 1;
-    
+    // if at least one filename is empty, then need to test buffer
+    // pointers because images could have been created on the fly
+    // and therefore we can't rely on file names to get an accurate
+    // comparison
+    if (getFileName().empty() || rhs.getFileName().empty())
+    {
+        if (_data<rhs._data) return -1;
+        if (_data>rhs._data) return 1;
+    }
+
     // need to test against image contents here...
     COMPARE_StateAttribute_Parameter(_s)
     COMPARE_StateAttribute_Parameter(_t)
@@ -91,14 +98,15 @@ int Image::compare(const Image& rhs) const
     COMPARE_StateAttribute_Parameter(_pixelFormat)
     COMPARE_StateAttribute_Parameter(_dataType)
     COMPARE_StateAttribute_Parameter(_packing)
+    COMPARE_StateAttribute_Parameter(_mipmapData)
     COMPARE_StateAttribute_Parameter(_modifiedCount)
 
-    if (_data<rhs._data) return -1;
-    if (_data>rhs._data) return 1;
-    
-    if (_mipmapData<rhs._mipmapData) return -1;
-    if (_mipmapData>rhs._mipmapData) return 1;
-    
+    // same buffer + same parameters = same image
+    if (_data == rhs._data) return 0;
+
+    // slowest comparison at the bottom!
+    COMPARE_StateAttribute_Parameter(getFileName())    
+
     return 0;
 }
 

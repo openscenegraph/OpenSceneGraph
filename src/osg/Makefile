@@ -16,6 +16,7 @@ CXXFILES =\
 	Depth.cpp\
 	DisplaySettings.cpp\
 	Drawable.cpp\
+	DrawPixels.cpp\
 	EarthSky.cpp\
 	Fog.cpp\
 	FrameStamp.cpp\

@@ -145,6 +145,10 @@ SOURCE=..\..\src\osg\Drawable.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\DrawPixels.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\EarthSky.cpp
 # End Source File
 # Begin Source File
@@ -402,6 +406,10 @@ SOURCE=..\..\Include\Osg\Depth
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\Drawable
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\DrawPixels
 # End Source File
 # Begin Source File
 

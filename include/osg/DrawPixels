@@ -1,0 +1,74 @@
+//C++ header - Open Scene Graph - Copyright (C) 1998-2001 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+
+#ifndef OSG_DRAWPIXELS
+#define OSG_DRAWPIXELS 1
+
+#include <osg/Drawable>
+#include <osg/Vec3>
+#include <osg/Image>
+
+namespace osg {
+
+/** DrawPixels is an osg::Drawable subclass which encapsulates the drawing of
+  * images using glDrawPixels.*/
+class SG_EXPORT DrawPixels : public Drawable
+{
+    public:
+
+        DrawPixels();
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        DrawPixels(const DrawPixels& drawimage,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+            
+        virtual Object* cloneType() const { return osgNew DrawPixels(); }
+
+        virtual Object* clone(const CopyOp& copyop) const { return osgNew DrawPixels(*this,copyop); }
+        
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const DrawPixels*>(obj)!=NULL; }
+        
+        virtual const char* className() const { return "DrawPixels"; }
+
+
+        void setPosition(const osg::Vec3& position);
+        
+        osg::Vec3& getPosition() { return _position; }
+        const osg::Vec3& getPosition() const { return _position; }
+
+        void setImage(osg::Image* image) { _image = image; }
+        
+        osg::Image* getImage() { return _image.get(); }
+        const osg::Image* getImage() const { return _image.get(); }
+        
+        void setUseCompleteImage() { _useSubImage = false; }
+
+        void setSubImageDimensions(unsigned int offsetX,unsigned int offsetY,unsigned int width,unsigned int height);
+
+        void getSubImageDimensions(unsigned int& offsetX,unsigned int& offsetY,unsigned int& width,unsigned int& height) const;
+
+        const bool getUseSubImage() const { return _useSubImage; }
+
+
+        virtual void drawImmediateMode(State& state);
+
+
+    protected:
+
+        DrawPixels& operator = (const DrawPixels&) { return *this;}
+
+        virtual ~DrawPixels();
+
+        virtual const bool computeBound() const;
+        
+        Vec3            _position;
+        ref_ptr<Image>  _image;
+        
+        bool            _useSubImage;
+        unsigned int    _offsetX, _offsetY, _width, _height;
+        
+};
+
+}
+
+#endif

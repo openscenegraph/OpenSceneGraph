@@ -33,6 +33,11 @@ class SG_EXPORT Image : public Object
         inline const std::string& getFileName() const { return _fileName; }
         void setFileName(const std::string& fileName);
         
+        
+        void createImage(const int s,const int t,const int r,
+                         const unsigned int pixelFormat,const unsigned int dataType);
+        
+        
         /** set the image data and format.
           * note, when the packing value is negative (the default is -1) this method assumes
           * a _packing width of 1 if the width is not a multiple of 4,
@@ -40,11 +45,17 @@ class SG_EXPORT Image : public Object
           * value of packing is supplied than _packing is simply set to that value.
           */
         void setImage(const int s,const int t,const int r,
-            const int internalFormat,
-            const unsigned int pixelFormat,
-            const unsigned int dataType,
-            unsigned char *data,
-            const int packing=-1);
+                      const int internalFormat,const unsigned int pixelFormat,const unsigned int dataType,
+                      unsigned char *data,
+                      const int packing=-1);
+            
+        /** readPixels from screen at specified position and size, using glReadPixels.
+          * Create memory for storage if required, reuse existing pixel coords if possible.
+          * if pixelFormat or dataType*/
+        void readPixels(int x,int y,int width,int height,
+                        unsigned int pixelFormat,unsigned int dataType,
+                        const int packing=-1);
+            
 
         /** Width of image.*/
         inline const int s() const { return _s; }
@@ -54,9 +65,14 @@ class SG_EXPORT Image : public Object
         inline const int r() const { return _r; }
         
         inline const int internalFormat() const { return _internalFormat; }
+        
         inline const unsigned int pixelFormat() const { return _pixelFormat; }
+        
         inline const unsigned int dataType() const { return _dataType; }
+        
         inline const unsigned int packing() const { return _packing; }
+        
+        inline const unsigned int pixelSizeInBits() const { return _pixelSizeInBits; }
         
         /** raw image data.*/
         inline unsigned char *data() { return _data; }
@@ -88,12 +104,15 @@ class SG_EXPORT Image : public Object
 
         Image& operator = (const Image&) { return *this; }
 
+        void computePixelSize();
+
         std::string _fileName;
         int _s, _t, _r;
         int _internalFormat;
         unsigned int _pixelFormat;
         unsigned int _dataType;
         unsigned int _packing;
+        unsigned int _pixelSizeInBits;
         unsigned char *_data;
 
         unsigned int _modifiedTag;

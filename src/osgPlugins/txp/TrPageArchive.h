@@ -88,6 +88,11 @@ namespace txp
 		// Calculate the center
 		void GetCenter(osg::Vec3 &center);
 
+		osg::Texture2D* getGlobalTexture(int id) 
+		{
+			return m_textures[id].get();
+		}
+
     protected:
         /// This class does most of the actual parsing. 
         std::auto_ptr<TrPageParser> parse;

@@ -17,15 +17,15 @@
 #include <stdio.h>
 
 /* trpage_swap.h
-    Byte swapping utility functions.
-    */
+	Byte swapping utility functions.
+	*/
 
-#include "trpage_swap.h"
+#include <trpage_swap.h>
 
 /*
-** func:    swap_two( in, out )
+** func:	swap_two( in, out )
 **
-** desc:    byte-swaps a two-byte array.
+** desc:	byte-swaps a two-byte array.
 */
 void trpg_swap_two ( const char *in, char *out )
 {
@@ -38,9 +38,9 @@ void trpg_swap_two ( const char *in, char *out )
 }
 
 /*
-** func:    swap_four( in, out )
+** func:	swap_four( in, out )
 **
-** desc:    byte-swaps a four-byte array.
+** desc:	byte-swaps a four-byte array.
 */
 void trpg_swap_four ( const char *in, char *out )
 {
@@ -55,9 +55,9 @@ void trpg_swap_four ( const char *in, char *out )
 }
 
 /*
-** func:    swap_eight( in, out )
+** func:	swap_eight( in, out )
 **
-** desc:    byte-swaps an eight-byte array.
+** desc:	byte-swaps an eight-byte array.
 */
 void trpg_swap_eight ( const char *in, char *out )
 {
@@ -76,9 +76,9 @@ void trpg_swap_eight ( const char *in, char *out )
 }
 
 /*
-** func:    swap_sixteen( in, out )
+** func:	swap_sixteen( in, out )
 **
-** desc:    byte-swaps an sixteen-byte array.
+** desc:	byte-swaps an sixteen-byte array.
 */
 void trpg_swap_sixteen ( const char *in, char *out )
 {
@@ -105,105 +105,105 @@ void trpg_swap_sixteen ( const char *in, char *out )
 }
 
 /*
-** func:    tx_byteswap_short( number )
+** func:	tx_byteswap_short( number )
 **
-** desc:    byte-swaps a short int.
+** desc:	byte-swaps a short int.
 */
 short trpg_byteswap_short( short number )
 {
-    short result;
+	short result;
 
-    trpg_swap_two( (const char*) &number, (char*) &result );
-    return result;
+	trpg_swap_two( (const char*) &number, (char*) &result );
+	return result;
 }
 
 /*
-** func:    tx_byteswap_int( number )
+** func:	tx_byteswap_int( number )
 **
-** desc:    byte-swaps an int.
+** desc:	byte-swaps an int.
 */
-int    trpg_byteswap_int( int number )
+int	trpg_byteswap_int( int number )
 {
-    int result;
+	int result;
 
-    trpg_swap_four( (const char*) &number, (char*) &result );
-    return result;
+	trpg_swap_four( (const char*) &number, (char*) &result );
+	return result;
 }
 
 /*
-** func:    tx_byteswap_long( number )
+** func:	tx_byteswap_long( number )
 **
-** desc:    byte-swaps a long int.
+** desc:	byte-swaps a long int.
 */
 long trpg_byteswap_long( long number )
 {
-    long result;
+	long result;
 
-    trpg_swap_four( (const char*) &number, (char*) &result );
-    return result;
+	trpg_swap_four( (const char*) &number, (char*) &result );
+	return result;
 }
 
 /*
-** func:    tx_byteswap_float( number )
+** func:	tx_byteswap_float( number )
 **
-** desc:    byte-swaps a float.
+** desc:	byte-swaps a float.
 */
 void trpg_byteswap_float_to_4bytes( float number, char result[4] )
 {
-    trpg_swap_four( (const char*) &number, result );
+	trpg_swap_four( (const char*) &number, result );
 }
 
 /*
-** func:    tx_byteswap_double_to_8bytes( number )
+** func:	tx_byteswap_double_to_8bytes( number )
 **
-** desc:    byte-swaps a double.
+** desc:	byte-swaps a double.
 */
 void trpg_byteswap_double_to_8bytes( double number, char result[8] )
 {
-    trpg_swap_eight( (const char*) &number, result );
+	trpg_swap_eight( (const char*) &number, result );
 }
 
 
 /*
-** func:    tx_byteswap_float( number )
+** func:	tx_byteswap_float( number )
 **
-** desc:    byte-swaps a float.
+** desc:	byte-swaps a float.
 */
 float trpg_byteswap_4bytes_to_float( const char result[4] )
 {
-    float number;
-    trpg_swap_four( result, (char*) &number );
-    return number;
+	float number;
+	trpg_swap_four( result, (char*) &number );
+	return number;
 }
 
 /*
-** func:    tx_byteswap_double_to_8bytes( number )
+** func:	tx_byteswap_double_to_8bytes( number )
 **
-** desc:    byte-swaps a double.
+** desc:	byte-swaps a double.
 */
 double trpg_byteswap_8bytes_to_double( const char result[8] )
 {
-    double number;
-    trpg_swap_eight( result, (char*) &number );
-    return number;
+	double number;
+	trpg_swap_eight( result, (char*) &number );
+	return number;
 }
 
 trpgllong trpg_byteswap_llong ( trpgllong number )
 {
-    trpgllong result;
+	trpgllong result;
 
-    trpg_swap_sixteen ( (char *) &number, (char *) &result);
+	trpg_swap_sixteen ( (char *) &number, (char *) &result);
 
-    return result;
+	return result;
 }
 
 trpgEndian trpg_cpu_byte_order(void)
 {
-    static char big_endian_100[2] = { 0, 100 };
+	static char big_endian_100[2] = { 0, 100 };
 
-    if ( (*((short*) big_endian_100)) == 100 )
-        return BigEndian;
-    else 
-        return LittleEndian;
+	if ( (*((short*) big_endian_100)) == 100 )
+		return BigEndian;
+	else 
+		return LittleEndian;
 }
 

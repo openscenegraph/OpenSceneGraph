@@ -14,29 +14,29 @@
    */
 
 /* trpage_basic.cpp
-    Methods for checkable base class.
-    */
+	Methods for checkable base class.
+	*/
 
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "trpage_io.h"
+#include <trpage_io.h>
 
 /* Checkable
-    This is just a class that checks validity.
-    Starts out invalid.
-    */
+	This is just a class that checks validity.
+	Starts out invalid.
+	*/
 
 trpgCheckable::trpgCheckable()
 {
-    valid = false;
+	valid = false;
 }
 trpgCheckable::~trpgCheckable()
 {
-    valid = false;
+	valid = false;
 }
 bool trpgCheckable::isValid() const
 {
-    return valid;
+	return valid;
 }
 

@@ -1,5 +1,4 @@
 #include "TerrapageNode.h"
-
 #include <osg/Notify>
 
 using namespace osg;
@@ -28,7 +27,6 @@ TerrapageNode::~TerrapageNode()
 {
     // will the page manger delete the archive?
     delete _pageManager;
-	_pageManager = 0L;
 }
 
 void TerrapageNode::traverse(osg::NodeVisitor& nv)
@@ -121,7 +119,6 @@ bool TerrapageNode::loadDatabase()
         addChild(node);
         
     } else {
-
         _pageManager = new OSGPageManager(txpArchive);
 
         if (threadMode!=OSGPageManager::ThreadNone)

@@ -1,3 +1,4 @@
+#include "ReaderWriterTXP.h"
 #include <osg/Group>
 #include <osg/Object>
 #include <osg/Node>
@@ -8,7 +9,6 @@
 
 #include <iostream>
 
-#include "ReaderWriterTXP.h"
 #include "TrPageArchive.h"
 
 #include "TerrapageNode.h"

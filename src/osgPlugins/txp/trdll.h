@@ -14,9 +14,9 @@
    */
 
 /* trdll.h
-    Windows Only
+	Windows Only
 
-    This header file defines the declaration macros for DLLs.
+	This header file defines the declaration macros for DLLs.
   */
 
 // Export/import declaration for classes and functions
@@ -87,15 +87,11 @@
 // The following is a DLL Main function for DLLs that wouldn't otherwise
 // have one.  It's needed to initialize the run time library.
 // This should appear once within every DLL
-
-// commented out by Boris Bralo for osg
-
-/*
 #ifndef TXDUMMY_DLL_MAIN
 #define TXDUMMY_DLL_MAIN \
 extern "C" { \
 BOOL WINAPI _CRT_INIT (HINSTANCE hDLL, DWORD dwReason, LPVOID lpReserved); \
-BOOL APIENTRY DllMain (HINSTANCE hDLL, DWORD dwReason, LPVOID lpReserved) \
+BOOL APIENTRY DllMain (HANDLE hDLL, DWORD dwReason, LPVOID lpReserved) \
 { \
   switch (dwReason) \
   { \
@@ -114,8 +110,8 @@ BOOL APIENTRY DllMain (HINSTANCE hDLL, DWORD dwReason, LPVOID lpReserved) \
   return TRUE; \
 } \
 }
+
 #endif
-*/
 #endif
 
 #ifndef txdll_h_

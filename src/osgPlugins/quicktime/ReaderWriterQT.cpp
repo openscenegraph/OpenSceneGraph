@@ -35,7 +35,10 @@ class ReaderWriterQT : public osgDB::ReaderWriter
                 osgDB::equalCaseInsensitive(extension,"jpeg") ||
                 osgDB::equalCaseInsensitive(extension,"tiff") ||               
                 osgDB::equalCaseInsensitive(extension,"pict") ||
-				osgDB::equalCaseInsensitive(extension,"gif") ||
+                osgDB::equalCaseInsensitive(extension,"gif") ||
+                osgDB::equalCaseInsensitive(extension,"png") ||
+                osgDB::equalCaseInsensitive(extension,"pict") ||
+                osgDB::equalCaseInsensitive(extension,"pct") ||
                 osgDB::equalCaseInsensitive(extension,"tga");
         }
 

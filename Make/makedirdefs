@@ -16,7 +16,7 @@ SRC_DIRS = \
 	osgSim\
 	osgGL2\
 	osgFX\
-#	osgTerrain\
+	osgTerrain\
 	osgProducer\
 	osgPlugins\
 	../examples
@@ -129,7 +129,7 @@ EXAMPLE_DIRS = \
 	osgautotransform\
 	osgbillboard\
 	osgbluemarble\
-#	osgdem\
+	osgdem\
 	osgcallback\
 	osgcameragroup\
 	osgclip\

@@ -85,6 +85,7 @@ osg::Node * createScalarBar_HUD()
 
     osg::MatrixTransform * modelview = new osg::MatrixTransform;
     modelview->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
+    modelview->setCullingActive(false);
     osg::Matrixd matrix(osg::Matrixd::scale(1000,1000,1000) * osg::Matrixd::translate(120,10,0)); // I've played with these values a lot and it seems to work, but I have no idea why
     modelview->setMatrix(matrix);
     modelview->addChild(geode);
@@ -145,6 +146,7 @@ int main( int argc, char **argv )
 
     while( !viewer.done() )
     {
+       
         // wait for all cull and draw threads to complete.
         viewer.sync();
 

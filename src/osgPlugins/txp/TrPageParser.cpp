@@ -402,61 +402,45 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
         break;
     case trpgGeometry::TriStrips:
         {
-            // Need primitive lengths too
-            int* primitives = new int[numPrims];
-            geom.GetPrimLengths(primitives);
-            
-            // Define Geomtry
-            geometry = new Geometry;
-            int first=0;
-            for(int i=0;i<numPrims;++i)
-            {
-                geometry->addPrimitiveSet(new DrawArrays(PrimitiveSet::TRIANGLE_STRIP,first,primitives[i]));
-                first += primitives[i];
-                
-            }
+            geometry = new osg::Geometry;
+            osg::DrawArrayLengths* dal = new osg::DrawArrayLengths(osg::PrimitiveSet::TRIANGLE_STRIP,0,numPrims);
+            geom.GetPrimLengths(&(dal->front()));
+            geometry->addPrimitiveSet(dal);
         }
         break;
     case trpgGeometry::TriFans:
         {
-            // Need primitive lengths too
-            int* primitives = new int[numPrims];
-            geom.GetPrimLengths(primitives);
-
-
-            // create the trifan primitives.            
-            geometry = new Geometry;
-            int first=0;
-            int i;
-            for(i=0;i<numPrims;++i)
-            {
-                geometry->addPrimitiveSet(new DrawArrays(PrimitiveSet::TRIANGLE_FAN,first,primitives[i]));
-                first += primitives[i];
-            }
+            geometry = new osg::Geometry;
+            osg::DrawArrayLengths* dal = new osg::DrawArrayLengths(osg::PrimitiveSet::TRIANGLE_FAN,0,numPrims);
+            geom.GetPrimLengths(&(dal->front()));
+            geometry->addPrimitiveSet(dal);
 
             // Need to flip the fans coords.
             int ind = 0;
+            int i;
             for (i=0;i<numPrims;++i)
             {
+                int length = (*dal)[i];
                 int start=ind+1;
-                int end=primitives[i]+ind-1;
+                int end=ind+length-1;
                 // Swap from start+1 to end
-                int numSwap = (end-start+1)/2;
                 // Swap vertices, texture coords & normals
-                for (int j=0; j < numSwap; j++ )
+                for (; start < end; ++start, --end )
                 {
                     std::swap((*vertices)[start], (*vertices)[end]);
                     for(int texno = 0; texno < num_tex; texno ++ )
                     {
                         if( tex_coords[texno] )
+                        {
                             std::swap((*tex_coords[texno])[start], (*tex_coords[texno])[end]);
+                        }
                     }
                     if(normals)
+                    {
                         std::swap((*normals)[start], (*normals)[end]);
-                    start++;
-                    end--;
+                    }
                 }
-                ind += primitives[i];
+                ind += length;
             }
         }
         break;

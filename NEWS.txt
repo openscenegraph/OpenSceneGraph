@@ -1,7 +1,7 @@
 OSG News (most significant items from ChangeLog)
 ================================================
 
-16th September 2003 - OpenSceneGraph-0.9.6
+2nd October 2003 - OpenSceneGraph-0.9.6-2
 
     >>> osgFX Special Effects nodekit (for bumping mapping & cartoon effects etc), support for double Matrix traversals, 
     >>> improved build support, thread safety and robustness.
@@ -30,6 +30,9 @@ OSG News (most significant items from ChangeLog)
     on performance since camera operations are only done a small number of
     times per frame.
     
+    osg::Quat now supports doubles by default, but also allows users to select
+    float version osg::Quat simply by changing the osg::Quat::value_type typedef.
+    
     Work has been on OpenThreads and OpenProducer, in particular to improve 
     thread safety and robustness on the Win32 platform.  Reported crashes 
     on exit from osgProducer::Viewer based apps, and freezes during runtime 
@@ -57,6 +60,9 @@ OSG News (most significant items from ChangeLog)
     mean that the .ive format has has changed and is no longer compatible
     with previous version of .ive. It is recommend that one recreates .ive
     for the original source via osgconv or similar to ensure consistency.
+
+    A JPEG2000 image plugin has added, written by Michael Gronager.  The new jp2
+    plugin uses the japser open source project to read and write JPEG2000 files.
     
     A scalar bar, and sphere segment helper classes have been added to osgSim,
     the new osgscalarbar and osgspheresegment examples demonstrate how to use
@@ -72,9 +78,15 @@ OSG News (most significant items from ChangeLog)
         set OSG_GL_EXTENSION_DISABLE =
              "ATI:GL_SGIS_generate_mipmap;Sun:GL_EXT_texture_filter_anisotropic:"
 
-    
-    
 
+    New examples include:
+    
+        osgforest - an example which demonstrates simple techniques for creating forests    
+        osgfxbrowser - an example which demonstrates the various osgFX Effects available    
+        osgscalabar - an example of how to set up the osgSim::ScalarBar.
+        osgspheresegment - an example of how to set up the osgSim::SphereSegement
+        osgpagelod - a very simply test program for setting up osg::PagedLOD/osgDB::DatabasePager
+    
 23rd July 2003 - OpenSceneGraph-0.9.5
 
     >>> Support added for OpenGL2.0 shaders, native multi-threaded Database paging,

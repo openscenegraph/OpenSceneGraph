@@ -785,8 +785,13 @@ bool ViewerEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActio
                     
                     if (_firstTimeTogglingFullScreen && rs->isFullScreen())
                     {
-                        rs->setWindowRectangle(240,220,800,600);
+                    #ifndef WIN32                    
                         rs->useBorder(true);
+                        rs->setWindowRectangle(240,220,800,600);
+                    #else                        
+                        rs->fullScreen(false);
+                        rs->setWindowRectangle(240,220,800,600);
+                    #endif
                     }
                     else
                     {

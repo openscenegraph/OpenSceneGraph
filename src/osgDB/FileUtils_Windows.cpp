@@ -93,6 +93,8 @@ char *osgDB::findFileInPath( const char *_file, const char * filePath )
     tptr    = strdup( filePath );
     tmppath = strtok(  tptr, PathDelimitor );
 
+    if (!tmppath) return NULL;
+
     do
     {
         sprintf( pathbuff, "%s/%s", tmppath, _file );

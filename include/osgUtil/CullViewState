@@ -47,7 +47,7 @@ class OSGUTIL_EXPORT CullViewState : public osg::Referenced
             FRUSTUM_FAR_CULLING         = 0x20,
             VIEW_FRUSTUM_CULLING        = 0x3F,
             SMALL_FEATURE_CULLING       = 0x40,
-            ENALBE_ALL_CULLING          = 0x7F
+            ENABLE_ALL_CULLING          = 0x7F
         };
         
         typedef unsigned int CullingMode;

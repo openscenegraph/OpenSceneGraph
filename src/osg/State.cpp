@@ -112,6 +112,14 @@ void State::reset()
     setActiveTextureUnit(0);
 }
 
+void State::setInitialViewMatrix(const osg::RefMatrix* matrix)
+{
+    if (matrix) _initialViewMatrix = matrix;
+    else _initialViewMatrix = _identity;
+
+    _initialInverseViewMatrix.invert(*_initialViewMatrix);
+}
+
 void State::pushStateSet(const StateSet* dstate)
 {
     _drawStateStack.push_back(dstate);

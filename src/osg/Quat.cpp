@@ -107,12 +107,105 @@ void Quat::makeRotate( const Vec3f& from, const Vec3f& to )
     makeRotate( Vec3d(from), Vec3d(to) );
 }
 
+/** Make a rotation Quat which will rotate vec1 to vec2
+
+This routine uses only fast geometric transforms, without costly acos/sin computations. 
+It's exact, fast, and with less degenerate cases than the acos/sin method.
+
+For an explanation of the math used, you may see for example: 
+http://logiciels.cnes.fr/MARMOTTES/marmottes-mathematique.pdf
+
+@note This is the rotation with shortest angle, which is the one equivalent to the 
+acos/sin transform method. Other rotations exists, for example to additionally keep 
+a local horizontal attitude.
+
+@author Nicolas Brodu
+*/
+void Quat::makeRotate( const Vec3d& from, const Vec3d& to )
+{
+
+    // This routine takes any vector as argument but normalized 
+    // vectors are necessary, if only for computing the dot product.
+    // Too bad the API is that generic, it leads to performance loss.
+    // Even in the case the 2 vectors are not normalized but same length,
+    // the sqrt could be shared, but we have no way to know beforehand
+    // at this point, while the caller may know.
+    // So, we have to test... in the hope of saving at least a sqrt
+    Vec3d sourceVector = from;
+    Vec3d targetVector = to;
+    
+    value_type fromLen2 = from.length2();
+    value_type fromLen;
+    // normalize only when necessary, epsilon test
+    if ((fromLen2 < 1.0-1e-7) || (fromLen2 > 1.0+1e-7)) {
+        fromLen = sqrt(fromLen2);
+        sourceVector /= fromLen;
+    } else fromLen = 1.0;
+    
+    value_type toLen2 = to.length2();
+    // normalize only when necessary, epsilon test
+    if ((toLen2 < 1.0-1e-7) || (toLen2 > 1.0+1e-7)) {
+        value_type toLen;
+        // re-use fromLen for case of mapping 2 vectors of the same length
+        if ((toLen2 > fromLen2-1e-7) && (toLen2 < fromLen2+1e-7)) {
+            toLen = fromLen;
+        } 
+        else toLen = sqrt(toLen2);
+        targetVector /= toLen;
+    }
+
+    
+    // Now let's get into the real stuff
+    // Use "dot product plus one" as test as it can be re-used later on
+    double dotProdPlus1 = 1.0 + sourceVector * targetVector;
+    
+    // Check for degenerate case of full u-turn. Use epsilon for detection
+    if (dotProdPlus1 < 1e-7) {
+    
+        // Get an orthogonal vector of the given vector
+        // in a plane with maximum vector coordinates.
+        // Then use it as quaternion axis with pi angle
+        // Trick is to realize one value at least is >0.6 for a normalized vector.
+        if (fabs(sourceVector.x()) < 0.6) {
+            const double norm = sqrt(1.0 - sourceVector.x() * sourceVector.x());
+            _v[0] = 0.0; 
+            _v[1] = sourceVector.z() / norm;
+            _v[2] = -sourceVector.y() / norm;
+            _v[3] = 0.0;
+        } else if (fabs(sourceVector.y()) < 0.6) {
+            const double norm = sqrt(1.0 - sourceVector.y() * sourceVector.y());
+            _v[0] = -sourceVector.z() / norm;
+            _v[1] = 0.0;
+            _v[2] = sourceVector.x() / norm;
+            _v[3] = 0.0;
+        } else {
+            const double norm = sqrt(1.0 - sourceVector.z() * sourceVector.z());
+            _v[0] = sourceVector.y() / norm;
+            _v[1] = -sourceVector.x() / norm;
+            _v[2] = 0.0;
+            _v[3] = 0.0;
+        }
+    }
+    
+    else {
+        // Find the shortest angle quaternion that transforms normalized vectors
+        // into one other. Formula is still valid when vectors are colinear
+        const double s = sqrt(0.5 * dotProdPlus1);
+        const Vec3d tmp = sourceVector ^ targetVector / (2.0*s);
+        _v[0] = tmp.x();
+        _v[1] = tmp.y();
+        _v[2] = tmp.z();
+        _v[3] = s;
+    }
+}
+
+
 // Make a rotation Quat which will rotate vec1 to vec2
 // Generally take adot product to get the angle between these
 // and then use a cross product to get the rotation axis
 // Watch out for the two special cases of when the vectors
 // are co-incident or opposite in direction.
-void Quat::makeRotate( const Vec3d& from, const Vec3d& to )
+void Quat::makeRotate_original( const Vec3d& from, const Vec3d& to )
 {
     const value_type epsilon = 0.0000001;
 
@@ -164,7 +257,6 @@ void Quat::makeRotate( const Vec3d& from, const Vec3d& to )
         makeRotate( angle, axis );
     }
 }
-
 
 void Quat::getRotate( value_type& angle, Vec3f& vec ) const
 {

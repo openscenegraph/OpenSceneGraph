@@ -131,7 +131,7 @@ class SG_EXPORT StateAttribute : public Object
             TEXGEN,
             TEXMAT,
             LIGHTMODEL,
-            TRANSPARENCY,
+            BLENDFUNC,
             STENCIL,
             COLORMASK,
             DEPTH,

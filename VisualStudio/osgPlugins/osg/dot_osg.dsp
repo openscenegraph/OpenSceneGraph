@@ -270,7 +270,7 @@ SOURCE=..\..\..\src\osgPlugins\osg\Transform.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\osg\Transparency.cpp
+SOURCE=..\..\..\src\osgPlugins\osg\BlendFunc.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"

@@ -269,6 +269,10 @@ SOURCE=..\..\src\osg\Matrix.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\MatrixTransform.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\MemoryManager.cpp
 # End Source File
 # Begin Source File
@@ -377,7 +381,7 @@ SOURCE=..\..\src\osg\Transform.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osg\Transparency.cpp
+SOURCE=..\..\src\osg\BlendFunc.cpp
 # End Source File
 # Begin Source File
 
@@ -585,6 +589,10 @@ SOURCE=..\..\Include\Osg\Matrix
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\Include\Osg\MatrixTransform
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\include\osg\mem_ptr
 # End Source File
 # Begin Source File
@@ -729,7 +737,7 @@ SOURCE=..\..\Include\Osg\Transform
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\Transparency
+SOURCE=..\..\Include\Osg\BlendFunc
 # End Source File
 # Begin Source File
 

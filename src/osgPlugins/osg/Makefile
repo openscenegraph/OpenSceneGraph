@@ -4,6 +4,7 @@ include $(TOPDIR)/Make/makedefs
 CXXFILES =\
         AlphaFunc.cpp\
         Billboard.cpp\
+        BlendFunc.cpp\
         ClipPlane.cpp\
         ColorMask.cpp\
         ConvexPlanerOccluder.cpp\
@@ -44,7 +45,7 @@ CXXFILES =\
         TexMat.cpp\
         Texture.cpp\
         Transform.cpp\
-        Transparency.cpp\
+
 
 LIBS   += $(OSG_LIBS) $(OTHER_LIBS)
 

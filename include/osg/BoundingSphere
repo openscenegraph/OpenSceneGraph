@@ -38,9 +38,10 @@ class SG_EXPORT BoundingSphere
             _radius = -1.0f;
         }
 
+#ifdef USE_DEPRECATED_API
         /** deprecated, use valid() instead.*/
         inline const bool isValid() const { return _radius>=0.0f; }
-
+#endif
         /** return true if the bounding sphere contains valid values,
             false if the bounding sphere is effectively unset.*/
         inline const bool valid() const { return _radius>=0.0f; }

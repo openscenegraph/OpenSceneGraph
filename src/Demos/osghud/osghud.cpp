@@ -183,7 +183,7 @@ void set2dScene(osg::Group* rootNode)
     textState->setAttribute(textMaterial );
     textState->setAttribute(transp);
 
-    textState->setMode(GL_TEXTURE_2D,osg::StateAttribute::ON);
+    textState->setTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::ON);
     textState->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
     geode->setStateSet( textState );
 

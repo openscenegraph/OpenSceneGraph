@@ -50,8 +50,10 @@ class SG_EXPORT BoundingBox
             _max.set(-FLT_MAX,-FLT_MAX,-FLT_MAX);
         }
         
+#ifdef USE_DEPRECATED_API
         /** deprecated, use valid() instead.*/
         inline const bool isValid() const { return _max.x()>=_min.x(); }
+#endif
                 
         inline const bool valid() const
         {

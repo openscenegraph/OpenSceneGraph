@@ -6,30 +6,36 @@ Transform::Transform()
 {
     _referenceFrame = RELATIVE_TO_PARENTS;
 
-    _matrix = osgNew Matrix;
-    _inverse = osgNew Matrix;
-    _inverseDirty = false;
+#ifdef USE_DEPRECATED_API
+    _deprecated_matrix = osgNew Matrix;
+    _deprecated_inverse = osgNew Matrix;
+    _deprecated_inverseDirty = false;
+#endif
 }
 
 Transform::Transform(const Transform& transform,const CopyOp& copyop):
     Group(transform,copyop),
     _computeTransformCallback(transform._computeTransformCallback),
-    _referenceFrame(transform._referenceFrame),
-    _matrix(osgNew Matrix(*transform._matrix)),
-    _inverse(osgNew Matrix(*transform._inverse)),
-    _inverseDirty(transform._inverseDirty)
+    _referenceFrame(transform._referenceFrame)
+#ifdef USE_DEPRECATED_API
+    ,
+    _deprecated_matrix(osgNew Matrix(*transform._deprecated_matrix)),
+    _deprecated_inverse(osgNew Matrix(*transform._deprecated_inverse)),
+    _deprecated_inverseDirty(transform._deprecated_inverseDirty)
+#endif
 {    
 }
 
+#ifdef USE_DEPRECATED_API
 Transform::Transform(const Matrix& mat )
 {
     _referenceFrame = RELATIVE_TO_PARENTS;
 
-    _matrix = osgNew Matrix(mat);
-    _inverse = osgNew Matrix();
-    _inverseDirty = false;
+    _deprecated_matrix = osgNew Matrix(mat);
+    _deprecated_inverse = osgNew Matrix();
+    _deprecated_inverseDirty = false;
 }
-
+#endif
 
 Transform::~Transform()
 {

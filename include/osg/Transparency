@@ -5,80 +5,13 @@
 #ifndef OSG_TRANSPARENCY
 #define OSG_TRANSPARENCY 1
 
-#include <osg/StateAttribute>
+#include <osg/BlendFunc>
 
 namespace osg {
 
-/** Transparency - encapsulates the OpenGL blend/transparency state.*/
-class SG_EXPORT Transparency : public StateAttribute
-{
-    public :
-
-        Transparency();
-        
-        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
-        Transparency(const Transparency& trans,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
-            StateAttribute(trans,copyop),
-            _source_factor(trans._source_factor),
-            _destination_factor(trans._destination_factor) {}
-
-        META_StateAttribute(osg, Transparency,TRANSPARENCY);
-        
-        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
-        virtual int compare(const StateAttribute& sa) const
-        {
-            // check the types are equal and then create the rhs variable
-            // used by the COMPARE_StateAttribute_Paramter macro's below.
-            COMPARE_StateAttribute_Types(Transparency,sa)
-
-            // compare each paramter in turn against the rhs.
-            COMPARE_StateAttribute_Parameter(_source_factor)
-            COMPARE_StateAttribute_Parameter(_destination_factor)
-
-            return 0; // passed all the above comparison macro's, must be equal.
-        }
-
-        virtual void getAssociatedModes(std::vector<GLMode>& modes) const 
-        {
-            modes.push_back(GL_BLEND);
-        }
-
-        enum TransparencyMode {
-            DST_ALPHA            = GL_DST_ALPHA,
-            DST_COLOR            = GL_DST_COLOR,
-            ONE                  = GL_ONE,
-            ONE_MINUS_DST_ALPHA  = GL_ONE_MINUS_DST_ALPHA,
-            ONE_MINUS_DST_COLOR  = GL_ONE_MINUS_DST_COLOR,
-            ONE_MINUS_SRC_ALPHA  = GL_ONE_MINUS_SRC_ALPHA,
-            ONE_MINUS_SRC_COLOR  = GL_ONE_MINUS_SRC_COLOR,
-            SRC_ALPHA            = GL_SRC_ALPHA,
-            SRC_ALPHA_SATURATE   = GL_SRC_ALPHA_SATURATE,
-            SRC_COLOR            = GL_SRC_COLOR,
-            ZERO                 = GL_ZERO
-        };
-
-        inline void setFunction( const int source, const int destination )
-        {
-            _source_factor = source;
-            _destination_factor = destination;
-        }
-
-        void setSource(const int source) { _source_factor = source; }
-        inline const int getSource() const { return _source_factor; }
-        
-        void setDestination(const int destination) { _destination_factor = destination; }
-        inline const int getDestination() const { return _destination_factor; }
-
-        virtual void apply(State& state) const;
-
-    protected :
-
-        virtual ~Transparency();
-
-        int _source_factor;
-        int _destination_factor;
-};
-
+#ifdef USE_DEPRECATED_API
+typedef BlendFunc Transparency;
+#endif
 }
 
 #endif

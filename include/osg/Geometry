@@ -127,6 +127,29 @@ class SG_EXPORT Geometry : public Drawable
         const TexCoordArrayList& getTexCoordArrayList() const { return _texCoordList; }
 
 
+
+        typedef std::pair< ref_ptr<Array>, ref_ptr<IndexArray> > VertexAttribArrayPair;
+        typedef std::pair< GLboolean, VertexAttribArrayPair > VertexAttribNormArrayPair;
+        typedef std::vector< VertexAttribNormArrayPair > VertexAttribArrayList;
+        typedef std::vector< AttributeBinding > VertexAttribBindingList;
+
+        void setVertexAttribArray(unsigned int index,bool normalize,Array* array,AttributeBinding ab=BIND_OFF);
+        Array *getVertexAttribArray(unsigned int index);
+        const Array *getVertexAttribArray(unsigned int index) const;
+
+        bool getVertexAttribNormalize(unsigned int index, GLboolean &ret) const;
+        bool getVertexAttribBinding(unsigned int index, AttributeBinding& ab) const;
+
+        void setVertexAttribIndices(unsigned int index,IndexArray* array);
+        IndexArray* getVertexAttribIndices(unsigned int index);
+        const IndexArray* getVertexAttribIndices(unsigned int index) const;
+
+        unsigned int getNumVertexAttribArrays() const { return _vertexAttribList.size(); }
+        VertexAttribArrayList& getVertexAttribArrayList() { return _vertexAttribList; }
+        const VertexAttribArrayList& getVertexAttribArrayList() const { return _vertexAttribList; }
+
+
+
         typedef std::vector< ref_ptr<PrimitiveSet> > PrimitiveSetList;
 
         void setPrimitiveSetList(const PrimitiveSetList& primitives) { _primitives = primitives; dirtyDisplayList(); dirtyBound(); }
@@ -190,38 +213,139 @@ class SG_EXPORT Geometry : public Drawable
         /** accept a PrimitiveFunctor and call its methods to tell it about the interal primitives that this Drawable has.*/
         virtual void accept(PrimitiveFunctor& pf) const;
 
+        /** Extensions class which encapsulates the querring of extensions and
+        * associated function pointers, and provide convinience wrappers to 
+        * check for the extensions or use the associated functions.*/        
+        class SG_EXPORT Extensions : public osg::Referenced
+        {
+        public:
+            Extensions();
+
+            Extensions(const Extensions& rhs);
+
+            void lowestCommonDenominator(const Extensions& rhs);
+
+            void setupGLExtenions();
+
+            void setVertexProgramSupported(bool flag) { _isVertexProgramSupported=flag; }
+            bool isVertexProgramSupported() const { return _isVertexProgramSupported; }
+
+            void setSecondaryColorSupported(bool flag) { _isSecondaryColorSupported=flag; }
+            bool isSecondaryColorSupported() const { return _isSecondaryColorSupported; }
+
+            void setFogCoordSupported(bool flag) { _isFogCoordSupported=flag; }
+            bool isFogCoordSupported() const { return _isFogCoordSupported; }
+
+            void setMultiTexSupported(bool flag) { _isMultiTexSupported=flag; }
+            bool isMultiTexSupported() const { return _isMultiTexSupported; }
+
+            void glSecondaryColor3ubv(const GLubyte* coord) const;
+            void glSecondaryColor3fv(const GLfloat* coord) const;
+
+            void glFogCoordfv(const GLfloat* coord) const;
+
+            void glMultiTexCoord1f(GLenum target,GLfloat coord) const;
+            void glMultiTexCoord2fv(GLenum target,const GLfloat* coord) const;
+            void glMultiTexCoord3fv(GLenum target,const GLfloat* coord) const;
+            void glMultiTexCoord4fv(GLenum target,const GLfloat* coord) const;
+
+            void glVertexAttrib1s(unsigned int index, GLshort s) const;
+            void glVertexAttrib1f(unsigned int index, GLfloat f) const;
+            void glVertexAttrib2fv(unsigned int index, const GLfloat * v) const;
+            void glVertexAttrib3fv(unsigned int index, const GLfloat * v) const;
+            void glVertexAttrib4fv(unsigned int index, const GLfloat * v) const;
+            void glVertexAttrib4ubv(unsigned int index, const GLubyte * v) const;
+            void glVertexAttrib4Nubv(unsigned int index, const GLubyte * v) const;
+
+        protected:
+
+            typedef void (APIENTRY * FogCoordProc) (const GLfloat* coord);
+
+            typedef void (APIENTRY * VertexAttrib1sProc) (unsigned int index, GLshort s);
+            typedef void (APIENTRY * VertexAttrib1fProc) (unsigned int index, GLfloat f);
+            typedef void (APIENTRY * VertexAttribfvProc) (unsigned int index, const GLfloat * v);
+            typedef void (APIENTRY * VertexAttribubvProc) (unsigned int index, const GLubyte * v);
+
+            typedef void (APIENTRY * SecondaryColor3ubvProc) (const GLubyte* coord);
+            typedef void (APIENTRY * SecondaryColor3fvProc) (const GLfloat* coord);
+
+            typedef void (APIENTRY * MultiTexCoord1fProc) (GLenum target,GLfloat coord);
+            typedef void (APIENTRY * MultiTexCoordfvProc) (GLenum target,const GLfloat* coord);
+
+            ~Extensions() {}
+
+            bool _isVertexProgramSupported;
+            bool _isSecondaryColorSupported;
+            bool _isFogCoordSupported;
+            bool _isMultiTexSupported;
+ 
+            FogCoordProc _glFogCoordfv;
+
+            SecondaryColor3ubvProc _glSecondaryColor3ubv;
+            SecondaryColor3fvProc _glSecondaryColor3fv;
+
+            VertexAttrib1sProc _glVertexAttrib1s;
+            VertexAttrib1fProc _glVertexAttrib1f;
+            VertexAttribfvProc _glVertexAttrib2fv;
+            VertexAttribfvProc _glVertexAttrib3fv;
+            VertexAttribfvProc _glVertexAttrib4fv;
+            VertexAttribubvProc _glVertexAttrib4ubv;
+            VertexAttribubvProc _glVertexAttrib4Nubv;
+
+            MultiTexCoord1fProc _glMultiTexCoord1f;
+            MultiTexCoordfvProc _glMultiTexCoord2fv;
+            MultiTexCoordfvProc _glMultiTexCoord3fv;
+            MultiTexCoordfvProc _glMultiTexCoord4fv;
+        };
+
+        /** Function to call to get the extension of a specified context.
+        * If the Exentsion object for that context has not yet been created then 
+        * and the 'createIfNotInitalized' flag been set to false then returns NULL.
+        * If 'createIfNotInitalized' is true then the Extensions object is 
+        * automatically created.  However, in this case the extension object 
+        * only be created with the graphics context associated with ContextID..*/
+        static Extensions* getExtensions(unsigned int contextID,bool createIfNotInitalized);
+
+        /** setExtensions allows users to override the extensions across graphics contexts.
+        * typically used when you have different extensions supported across graphics pipes
+        * but need to ensure that they all use the same low common denominator extensions.*/
+        static void setExtensions(unsigned int contextID,Extensions* extensions);
+
+
     protected:
 
         Geometry& operator = (const Geometry&) { return *this;}
 
         virtual ~Geometry();
        
-        PrimitiveSetList            _primitives;
+        PrimitiveSetList                _primitives;
         
-        ref_ptr<Vec3Array>          _vertexArray;
-        ref_ptr<IndexArray>         _vertexIndices;
+        ref_ptr<Vec3Array>                _vertexArray;
+        ref_ptr<IndexArray>                _vertexIndices;
 
-        mutable AttributeBinding    _normalBinding;
-        ref_ptr<Vec3Array>          _normalArray;
-        ref_ptr<IndexArray>         _normalIndices;
+        mutable AttributeBinding        _normalBinding;
+        ref_ptr<Vec3Array>                _normalArray;
+        ref_ptr<IndexArray>                _normalIndices;
         
-        mutable AttributeBinding    _colorBinding;
-        ref_ptr<Array>              _colorArray;
-        ref_ptr<IndexArray>         _colorIndices;
+        mutable AttributeBinding        _colorBinding;
+        ref_ptr<Array>                    _colorArray;
+        ref_ptr<IndexArray>                _colorIndices;
         
-        mutable AttributeBinding    _secondaryColorBinding;
-        ref_ptr<Array>              _secondaryColorArray;
-        ref_ptr<IndexArray>         _secondaryColorIndices;
+        mutable AttributeBinding        _secondaryColorBinding;
+        ref_ptr<Array>                    _secondaryColorArray;
+        ref_ptr<IndexArray>                _secondaryColorIndices;
 
-        mutable AttributeBinding    _fogCoordBinding;
-        ref_ptr<Array>              _fogCoordArray;
-        ref_ptr<IndexArray>         _fogCoordIndices;
+        mutable AttributeBinding        _fogCoordBinding;
+        ref_ptr<Array>                    _fogCoordArray;
+        ref_ptr<IndexArray>                _fogCoordIndices;
         
-        TexCoordArrayList           _texCoordList;
+        TexCoordArrayList                _texCoordList;
         
-        mutable bool               _fastPathComputed;
-        mutable bool               _fastPath;
+        VertexAttribArrayList            _vertexAttribList;
+        mutable VertexAttribBindingList    _vertexAttribBindingList; 
 
+        mutable bool                     _fastPathComputed;
+        mutable bool                    _fastPath;
 };
 
 

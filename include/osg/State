@@ -17,6 +17,7 @@
 #include <osg/Export>
 #include <osg/StateSet>
 #include <osg/Matrix>
+#include <osg/GLExtensions>
 
 #include <osg/FrameStamp>
 #include <osg/DisplaySettings>
@@ -35,7 +36,7 @@ namespace osg {
     #ifdef GL_FOG_COORDINATE_ARRAY_EXT
         #define GL_FOG_COORDINATE_ARRAY GL_FOG_COORDINATE_ARRAY_EXT
     #else
-     	#define GL_FOG_COORDINATE_ARRAY 0x8457
+         #define GL_FOG_COORDINATE_ARRAY 0x8457
     #endif
 #endif
 
@@ -43,7 +44,7 @@ namespace osg {
     #ifdef GL_SECONDARY_COLOR_ARRAY_EXT
         #define GL_SECONDARY_COLOR_ARRAY GL_SECONDARY_COLOR_ARRAY_EXT
     #else
-     	#define GL_SECONDARY_COLOR_ARRAY 0x845E
+         #define GL_SECONDARY_COLOR_ARRAY 0x845E
     #endif
 #endif
 
@@ -449,8 +450,8 @@ class SG_EXPORT State : public Referenced
         /** wrapper around glEnableClientState(GL_TEXTURE_COORD_ARRAY);glTexCoordPointer(..);
           * note, only updates values that change.*/
         inline void setTexCoordPointer( unsigned int unit,
-                                 GLint size, GLenum type,
-                                 GLsizei stride, const GLvoid *ptr )
+                                        GLint size, GLenum type,
+                                        GLsizei stride, const GLvoid *ptr )
         {
             if (setClientActiveTextureUnit(unit))
             {
@@ -470,7 +471,7 @@ class SG_EXPORT State : public Referenced
                 eap._dirty = false;
             }
         }
-        
+
         /** wrapper around glDisableClientState(GL_TEXTURE_COORD_ARRAY);
           * note, only updates values that change.*/
         inline void disableTexCoordPointer( unsigned int unit )
@@ -536,6 +537,96 @@ class SG_EXPORT State : public Referenced
           * note, only updates values that change.*/
         bool setActiveTextureUnit( unsigned int unit );
         
+
+        typedef void (APIENTRY * VertexAttribPointerProc) (unsigned int, GLint, GLenum, GLboolean normalized, GLsizei stride, const GLvoid *pointer);
+        typedef void (APIENTRY * EnableVertexAttribProc) (unsigned int);
+        typedef void (APIENTRY * DisableVertexAttribProc) (unsigned int);
+        
+        /** wrapper around glEnableVertexAttribArrayARB(index);glVertexAttribPointerARB(..);
+          * note, only updates values that change.*/
+        inline void setVertexAttribPointer( unsigned int index,
+                                            GLint size, GLenum type, GLboolean normalized, 
+                                            GLsizei stride, const GLvoid *ptr )
+        {
+            static VertexAttribPointerProc s_glVertexAttribPointer =  
+                (VertexAttribPointerProc) osg::getGLExtensionFuncPtr("glVertexAttribPointer","glVertexAttribPointerARB");
+
+            static EnableVertexAttribProc s_glEnableVertexAttribArray =  
+                (EnableVertexAttribProc) osg::getGLExtensionFuncPtr("glEnableVertexAttribArray","glEnableVertexAttribArrayARB");
+
+            if( s_glVertexAttribPointer )
+            {
+                if ( index >= _vertexAttribArrayList.size()) _vertexAttribArrayList.resize(index+1);
+                EnabledArrayPair& eap = _vertexAttribArrayList[index];
+
+                if (!eap._enabled || eap._dirty)
+                {
+                    eap._enabled = true;
+                    s_glEnableVertexAttribArray( index );
+                }
+                if (eap._pointer != ptr || eap._normalized!=normalized || eap._dirty)
+                {
+                    s_glVertexAttribPointer( index, size, type, normalized, stride, ptr );
+                    eap._pointer = ptr;
+                    eap._normalized = normalized;
+                }
+                eap._dirty = false;
+            }
+        }      
+        
+        /** wrapper around DisableVertexAttribArrayARB(index);
+          * note, only updates values that change.*/
+        inline void disableVertexAttribPointer( unsigned int index )
+        {
+            static DisableVertexAttribProc s_glDisableVertexAttribArray =  
+                (DisableVertexAttribProc) osg::getGLExtensionFuncPtr("glDisableVertexAttribArray","glDisableVertexAttribArrayARB");
+
+            if (s_glDisableVertexAttribArray)
+            {
+                if ( index >= _vertexAttribArrayList.size()) _vertexAttribArrayList.resize(index+1);
+                EnabledArrayPair& eap = _vertexAttribArrayList[index];
+
+                if (eap._enabled || eap._dirty)
+                {
+                    eap._enabled = false;
+                    eap._dirty = false;
+                    s_glDisableVertexAttribArray( index );
+                }
+            }
+        }        
+
+        inline void disableVertexAttribPointersAboveAndIncluding( unsigned int index )
+        {
+            static DisableVertexAttribProc s_glDisableVertexAttribArray =  
+                (DisableVertexAttribProc) osg::getGLExtensionFuncPtr("glDisableVertexAttribArray","glDisableVertexAttribArrayARB");
+
+            if (s_glDisableVertexAttribArray)
+            {
+                while (index<_vertexAttribArrayList.size())
+                {
+                    EnabledArrayPair& eap = _vertexAttribArrayList[index];
+                    if (eap._enabled || eap._dirty)
+                    {
+                        eap._enabled = false;
+                        eap._dirty = false;
+                        s_glDisableVertexAttribArray( index );
+                    }
+                    ++index;
+                }
+            }
+        }
+
+        inline void dirtyVertexAttribPointersAboveAndIncluding( unsigned int index )
+        {
+            while (index<_vertexAttribArrayList.size())
+            {
+                EnabledArrayPair& eap = _vertexAttribArrayList[index];
+                eap._pointer = 0;
+                eap._dirty = true;
+                ++index;
+            }
+        }
+
 
         /** Set the current OpenGL context uniqueID.
             Note, it is the application developers responsibility to
@@ -712,27 +803,30 @@ class SG_EXPORT State : public Referenced
         
         struct EnabledArrayPair
         {
-            EnabledArrayPair():_dirty(true),_enabled(false),_pointer(0) {}
-            EnabledArrayPair(const EnabledArrayPair& eap):_dirty(eap._dirty), _enabled(eap._enabled),_pointer(eap._pointer) {}
-            EnabledArrayPair& operator = (const EnabledArrayPair& eap) { _dirty=eap._dirty; _enabled=eap._enabled; _pointer=eap._pointer; return *this; }
+            EnabledArrayPair():_dirty(true),_enabled(false),_normalized(0),_pointer(0) {}
+            EnabledArrayPair(const EnabledArrayPair& eap):_dirty(eap._dirty), _enabled(eap._enabled),_normalized(eap._normalized),_pointer(eap._pointer) {}
+            EnabledArrayPair& operator = (const EnabledArrayPair& eap) { _dirty=eap._dirty; _enabled=eap._enabled; _normalized=eap._normalized;_pointer=eap._pointer; return *this; }
             
             bool            _dirty;
             bool            _enabled;
+            GLboolean       _normalized;
             const GLvoid*   _pointer;
         };
         
         typedef std::vector<EnabledArrayPair>                   EnabledTexCoordArrayList;
+        typedef std::vector<EnabledArrayPair>                   EnabledVertexAttribArrayList;
 
-        EnabledArrayPair            _vertexArray;
-        EnabledArrayPair            _normalArray;
-        EnabledArrayPair            _colorArray;
-        EnabledArrayPair            _secondaryColorArray;
-        EnabledArrayPair            _indexArray;
-        EnabledArrayPair            _fogArray;
-        EnabledTexCoordArrayList    _texCoordArrayList;
-        
-        unsigned int                _currentActiveTextureUnit;
-        unsigned int                _currentClientActiveTextureUnit;
+        EnabledArrayPair                _vertexArray;
+        EnabledArrayPair                _normalArray;
+        EnabledArrayPair                _colorArray;
+        EnabledArrayPair                _secondaryColorArray;
+        EnabledArrayPair                _indexArray;
+        EnabledArrayPair                _fogArray;
+        EnabledTexCoordArrayList        _texCoordArrayList;
+        EnabledVertexAttribArrayList    _vertexAttribArrayList;
+
+        unsigned int                    _currentActiveTextureUnit;
+        unsigned int                    _currentClientActiveTextureUnit;
         
         inline ModeMap& getOrCreateTextureModeMap(unsigned int unit)
         {        

@@ -126,11 +126,11 @@ class TemplateArray : public Array, public std::vector<T>
         virtual Object* cloneType() const { return new TemplateArray(); }
         virtual Object* clone(const CopyOp& copyop) const { return new TemplateArray(*this,copyop); }        
 
-        virtual void accept(ArrayVisitor& av) { av.apply(*this); }
-        virtual void accept(ConstArrayVisitor& av) const { av.apply(*this); }
+        inline virtual void accept(ArrayVisitor& av);
+        inline virtual void accept(ConstArrayVisitor& av) const;
 
-        virtual void accept(unsigned int index,ValueVisitor& vv) { vv.apply( (*this)[index] ); }
-        virtual void accept(unsigned int index,ConstValueVisitor& vv) const {  vv.apply( (*this)[index] );}
+        inline virtual void accept(unsigned int index,ValueVisitor& vv);
+        inline virtual void accept(unsigned int index,ConstValueVisitor& vv) const;
 
         virtual int compare(unsigned int lhs,unsigned int rhs) const
         {
@@ -204,11 +204,11 @@ class TemplateIndexArray : public IndexArray, public std::vector<T>
         virtual Object* cloneType() const { return new TemplateIndexArray(); }
         virtual Object* clone(const CopyOp& copyop) const { return new TemplateIndexArray(*this,copyop); }        
 
-        virtual void accept(ArrayVisitor& av) { av.apply(*this); }
-        virtual void accept(ConstArrayVisitor& av) const { av.apply(*this); }
+        inline virtual void accept(ArrayVisitor& av);
+        inline virtual void accept(ConstArrayVisitor& av) const;
 
-        virtual void accept(unsigned int index,ValueVisitor& vv) { vv.apply( (*this)[index] ); }
-        virtual void accept(unsigned int index,ConstValueVisitor& vv) const {  vv.apply( (*this)[index] );}
+        inline virtual void accept(unsigned int index,ValueVisitor& vv);
+        inline virtual void accept(unsigned int index,ConstValueVisitor& vv) const;
 
         virtual int compare(unsigned int lhs,unsigned int rhs) const
         {
@@ -318,6 +318,29 @@ class ConstValueVisitor
         virtual void apply(const Vec4&) {}
 };
 
+template<typename T, Array::Type ARRAYTYPE, int DataSize, int DataType>
+inline void TemplateArray<T,ARRAYTYPE,DataSize,DataType>::accept(ArrayVisitor& av) { av.apply(*this); }
+
+template<typename T, Array::Type ARRAYTYPE, int DataSize, int DataType>
+inline void TemplateArray<T,ARRAYTYPE,DataSize,DataType>::accept(ConstArrayVisitor& av) const { av.apply(*this); }
+
+template<typename T, Array::Type ARRAYTYPE, int DataSize, int DataType>
+inline void TemplateArray<T,ARRAYTYPE,DataSize,DataType>::accept(unsigned int index,ValueVisitor& vv) { vv.apply( (*this)[index] ); }
+
+template<typename T, Array::Type ARRAYTYPE, int DataSize, int DataType>
+inline void TemplateArray<T,ARRAYTYPE,DataSize,DataType>::accept(unsigned int index,ConstValueVisitor& vv) const {  vv.apply( (*this)[index] );}
+
+template<typename T, Array::Type ARRAYTYPE, int DataSize, int DataType>
+inline void TemplateIndexArray<T,ARRAYTYPE,DataSize,DataType>::accept(ArrayVisitor& av) { av.apply(*this); }
+
+template<typename T, Array::Type ARRAYTYPE, int DataSize, int DataType>
+inline void TemplateIndexArray<T,ARRAYTYPE,DataSize,DataType>::accept(ConstArrayVisitor& av) const { av.apply(*this); }
+
+template<typename T, Array::Type ARRAYTYPE, int DataSize, int DataType>
+inline void TemplateIndexArray<T,ARRAYTYPE,DataSize,DataType>::accept(unsigned int index,ValueVisitor& vv) { vv.apply( (*this)[index] ); }
+
+template<typename T, Array::Type ARRAYTYPE, int DataSize, int DataType>
+inline void TemplateIndexArray<T,ARRAYTYPE,DataSize,DataType>::accept(unsigned int index,ConstValueVisitor& vv) const {  vv.apply( (*this)[index] );}
 
 }
 

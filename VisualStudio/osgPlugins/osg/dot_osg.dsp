@@ -306,6 +306,10 @@ SOURCE=..\..\..\src\osgPlugins\osg\Texture3D.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\osg\TextureRectangle.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\osg\TextureCubeMap.cpp
 # End Source File
 # Begin Source File

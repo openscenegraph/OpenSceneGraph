@@ -227,6 +227,9 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name Core osgDB
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgFX
+    End Project Dependency
 }}}
 
 ###############################################################################
@@ -2356,6 +2359,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name Core osgText
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgFX
     End Project Dependency
 }}}
 

@@ -61,6 +61,8 @@
 #include "MultiSwitch.h"
 #include "VisibilityGroup.h"
 
+#include "MultiTextureControl.h"
+
 #include "Geometry.h"
 #include "ShapeDrawable.h"
 #include "Shape.h"
@@ -951,6 +953,10 @@ osg::Node* DataInputStream::readNode()
     else if(nodeTypeID== IVELIGHTPOINTNODE){
         node = new osgSim::LightPointNode();
         ((ive::LightPointNode*)(node))->read(this);
+    }
+    else if(nodeTypeID== IVEMULTITEXTURECONTROL){
+        node = new osgFX::MultiTextureControl();
+        ((ive::MultiTextureControl*)(node))->read(this);
     }
     else{
         throw Exception("Unknown node identification in DataInputStream::readNode()");

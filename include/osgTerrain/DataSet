@@ -1026,6 +1026,11 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
         bool getDecorateGeneratedSceneGraphWithCoordinateSystemNode() const { return _decorateWithCoordinateSystemNode; }
 
 
+        void setDecorateGeneratedSceneGraphWithMultiTextureControl(bool flag) { _decorateWithMultiTextureControl = flag; }
+        bool getDecorateGeneratedSceneGraphWithMultiTextureControl() const { return _decorateWithMultiTextureControl; }
+
+        unsigned int getNumOfTextureLevels() const { return _numTextureLevels; }
+
         void setCommentString(const std::string& comment) { _comment = comment; }        
         const std::string& getCommentString() const { return _comment; }        
 
@@ -1064,6 +1069,8 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
         // helper functions for handling optional archive
         void _writeNodeFile(const osg::Node& node,const std::string& filename);
         void _writeImageFile(const osg::Image& image,const std::string& filename);
+        
+        
 
     protected:
 
@@ -1079,6 +1086,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
         void init();
 
         osg::Node* decorateWithCoordinateSystemNode(osg::Node* subgraph);
+        osg::Node* decorateWithMultiTextureControl(osg::Node* subgraph);
 
 
         osg::ref_ptr<CompositeSource>               _sourceGraph;
@@ -1114,10 +1122,13 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
         TextureType                                 _textureType;
         float                                       _maxAnisotropy;
         MipMappingMode                              _mipMappingMode;
+        
+        unsigned int                                _numTextureLevels;
 
         bool                                        _useLocalTileTransform;
 
         bool                                        _decorateWithCoordinateSystemNode;
+        bool                                        _decorateWithMultiTextureControl;
         
         std::string                                 _comment;
 

@@ -31,6 +31,8 @@
 #include <osgDB/WriteFile>
 #include <osgDB/FileNameUtils>
 
+#include <osgFX/MultiTextureControl>
+
 #include <osgTerrain/DataSet>
 
 // GDAL includes
@@ -2134,12 +2136,12 @@ osg::StateSet* DataSet::DestinationTile::createStateSet()
 
     osg::StateSet* stateset = new osg::StateSet;
 
+    osg::Texture* baseTexture = 0;
     for(layerNum=0;
         layerNum<_imagery.size();
         ++layerNum)
     {
         ImageData& imageData = _imagery[layerNum];
-        
         if (!imageData._imagery.valid() || !imageData._imagery->_image.valid()) continue;
         
         osg::Image* image = imageData._imagery->_image.get();
@@ -2156,6 +2158,9 @@ osg::StateSet* DataSet::DestinationTile::createStateSet()
         image->setFileName(imageName.c_str());
 
         osg::Texture2D* texture = new osg::Texture2D;
+        
+        if (baseTexture==0) baseTexture=texture;
+        
         texture->setImage(image);
         texture->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP_TO_EDGE);
         texture->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP_TO_EDGE);
@@ -2231,6 +2236,27 @@ osg::StateSet* DataSet::DestinationTile::createStateSet()
         }
     }
     
+    // now fill in any blank texture units.
+    bool fillInAllTextureUnits = true;
+    if (fillInAllTextureUnits && baseTexture)
+    {
+        for(layerNum=0;
+            layerNum<_dataSet->getNumOfTextureLevels();
+            ++layerNum)
+        {
+            bool applyBaseTexture = false;
+            if (layerNum>=_imagery.size()) applyBaseTexture=true;
+            else 
+            {
+                ImageData& imageData = _imagery[layerNum];
+                if (!imageData._imagery.valid() || 
+                    !imageData._imagery->_image.valid()) applyBaseTexture=true;
+            }
+            if (applyBaseTexture)        
+                stateset->setTextureAttributeAndModes(layerNum,baseTexture,osg::StateAttribute::ON);
+        }
+    }
+        
     return stateset;
 }
 
@@ -2549,17 +2575,29 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
     geometry->setColorArray(&color);
     geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
 
-    for(unsigned int layerNum=0;
-        layerNum<_imagery.size();
-        ++layerNum)
+    bool fillInAllTextureUnits = true;
+    if (fillInAllTextureUnits)
     {
-        ImageData& imageData = _imagery[layerNum];
-        if (imageData._imagery.valid() && imageData._imagery->_image.valid()) 
+        for(unsigned int layerNum=0;
+            layerNum<_dataSet->getNumOfTextureLevels();
+            ++layerNum)
         {
             geometry->setTexCoordArray(layerNum,&t);
         }
     }
-
+    else
+    {
+        for(unsigned int layerNum=0;
+            layerNum<_imagery.size();
+            ++layerNum)
+        {
+            ImageData& imageData = _imagery[layerNum];
+            if (imageData._imagery.valid() && imageData._imagery->_image.valid()) 
+            {
+                geometry->setTexCoordArray(layerNum,&t);
+            }
+        }
+    }
     
     osg::DrawElementsUShort& drawElements = *(new osg::DrawElementsUShort(GL_TRIANGLES,2*3*(numColumns-1)*(numRows-1)));
     geometry->addPrimitiveSet(&drawElements);
@@ -3328,6 +3366,9 @@ DataSet::DataSet()
     _useLocalTileTransform = true;
     
     _decorateWithCoordinateSystemNode = true;
+    _decorateWithMultiTextureControl = true;
+    
+    _numTextureLevels = 1;
     
     _writeNodeBeforeSimplification = false;
 
@@ -3708,6 +3749,19 @@ void DataSet::computeDestinationGraphFromSources(unsigned int numLevels)
         }
     }
 
+    // compute the number of texture layers required.
+    unsigned int maxTextureUnit = 0;
+    for(CompositeSource::source_iterator sitr(_sourceGraph.get());sitr.valid();++sitr)
+    {
+        Source* source = sitr->get();
+        if (source) 
+        {
+            if (maxTextureUnit<source->getLayer()) maxTextureUnit = source->getLayer();
+        }
+    }
+    _numTextureLevels = maxTextureUnit+1;
+
+
     my_notify(osg::INFO)<<"extents = xMin()"<<extents.xMin()<<" "<<extents.xMax()<<std::endl;
     my_notify(osg::INFO)<<"          yMin()"<<extents.yMin()<<" "<<extents.yMax()<<std::endl;
 
@@ -4045,6 +4099,10 @@ void DataSet::_writeRow(Row& row)
                 node = decorateWithCoordinateSystemNode(node.get());
             }
             
+            if (_decorateWithMultiTextureControl)
+            {
+                node = decorateWithMultiTextureControl(node.get());
+            }
 
             if (!_comment.empty())
             {
@@ -4108,6 +4166,26 @@ osg::Node* DataSet::decorateWithCoordinateSystemNode(osg::Node* subgraph)
     return csn;
 }
 
+osg::Node* DataSet::decorateWithMultiTextureControl(osg::Node* subgraph)
+{
+    // if only one layer exists don't need to decorate with MultiTextureControl
+    if (_numTextureLevels<=1) return subgraph;
+    
+    
+    // multiple layers active so use osgFX::MultiTextureControl to manage them
+    osgFX::MultiTextureControl* mtc = new osgFX::MultiTextureControl;
+    float r = 1.0f/(float)_numTextureLevels;
+    for(unsigned int i=0;i<_numTextureLevels;++i)
+    {
+        mtc->setTextureWeight(i,r);
+    }
+
+    // add the a subgraph.
+    mtc->addChild(subgraph);
+
+    return mtc;
+}
+
 
 void DataSet::_buildDestination(bool writeToDisk)
 {
@@ -4143,6 +4221,11 @@ void DataSet::_buildDestination(bool writeToDisk)
             if (_decorateWithCoordinateSystemNode)
             {
                 _rootNode = decorateWithCoordinateSystemNode(_rootNode.get());
+            }
+
+            if (_decorateWithMultiTextureControl)
+            {
+                _rootNode = decorateWithMultiTextureControl(_rootNode.get());
             }
 
             if (!_comment.empty())

@@ -111,6 +111,10 @@ SOURCE=..\..\src\osgFX\Effect.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgFX\MultiTextureControl.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgFX\Registry.cpp
 # End Source File
 # Begin Source File
@@ -152,6 +156,10 @@ SOURCE=..\..\include\osgFX\Effect
 # Begin Source File
 
 SOURCE=..\..\include\osgFX\Export
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgFX\MultiTextureControl
 # End Source File
 # Begin Source File
 

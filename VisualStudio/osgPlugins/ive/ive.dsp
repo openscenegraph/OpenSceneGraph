@@ -276,6 +276,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\MultiSwitch.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\ive\MultiTextureControl.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\ive\Node.cpp
 # End Source File
 # Begin Source File
@@ -577,6 +581,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\MatrixTransform.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\MultiSwitch.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\MultiTextureControl.h
 # End Source File
 # Begin Source File
 

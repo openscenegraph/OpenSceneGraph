@@ -413,15 +413,17 @@ ifeq ($(OS),Darwin)
   LIBVERSION	    = -current_version $(VERSION) \
                         -compatibility_version \
                         $(VERSION_MAJOR).$(VERSION_MINOR).0
+
   ifeq ($(DARWIN_QUICKTIME),yes)
-    QUICKTIME	    = -framework QuickTime $(CARBON_LIB)
     DEF             += -DDARWIN_QUICKTIME
-  else
-    PNG_LIBS        = -lpng -lz
-    JPEG_LIBS       = -ljpeg
-    GIF_LIBS        = -lungif
-    TIFF_LIBS       = -ltiff -lz -ljpeg
   endif
+
+  QUICKTIME	    = -framework QuickTime $(CARBON_LIB)
+  PNG_LIBS        = -lpng -lz
+  JPEG_LIBS       = -ljpeg
+  GIF_LIBS        = -lungif
+  TIFF_LIBS       = -ltiff -lz -ljpeg
+
 endif
 
 #### Cygwin/Mingw specific definitions

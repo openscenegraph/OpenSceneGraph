@@ -91,6 +91,9 @@ class SG_EXPORT CoordinateSystemNode : public Group
         
         META_Node(osg,CoordinateSystemNode);
         
+        
+        /** Set the coodinate system node up by copy the format, coordindate system string, and ellipsoid model of another coordindate system node.*/
+        void set(const CoordinateSystemNode& csn);
                 
         /** Set the coordinate system format string. Typical values would be WKT, PROJ4, USGS etc.*/
         void setFormat(const std::string& format) { _format = format; }

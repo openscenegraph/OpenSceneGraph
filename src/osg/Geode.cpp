@@ -84,9 +84,21 @@ bool Geode::replaceDrawable( Drawable *origDrawable, Drawable *newDrawable )
 {
     if (newDrawable==NULL || origDrawable==newDrawable) return false;
 
-    DrawableList::iterator itr = findDrawable(origDrawable);
-    if (itr!=_drawables.end())
+    unsigned int pos = findDrawableNum(origDrawable);
+    if (pos<_drawables.size())
     {
+        return setDrawable(pos,newDrawable);
+    }
+    return false;
+}
+
+bool Geode::setDrawable( unsigned  int i, Drawable* newDrawable )
+{
+    if (i<_drawables.size() && newDrawable)
+    {
+    
+        Drawable* origDrawable = _drawables[i].get();
+
         int delta = 0;
         if (origDrawable->getAppCallback()) --delta;
         if (newDrawable->getAppCallback()) ++delta;
@@ -100,7 +112,7 @@ bool Geode::replaceDrawable( Drawable *origDrawable, Drawable *newDrawable )
         
         // note ref_ptr<> automatically handles decrementing origGset's reference count,
         // and inccrementing newGset's reference count.
-        *itr = newDrawable;
+        _drawables[i] = newDrawable;
 
         // register as parent of child.
         newDrawable->addParent(this);

@@ -34,15 +34,18 @@ class SG_EXPORT Geode : public Node
         virtual bool addDrawable( Drawable *drawable );
 
         /** Remove Drawable from Geode.
-         *  If gset is contained in Geode then remove it from the geoset
-         *  list and decrement its reference count, and dirty the 
-         *  bounding sphere to force it to recompute on next getBound() and
-         *  return true for success.  If gset is not found then return false
-         *  and do not change the reference count of gset.
-         */
+          * Equivalent to setDrawabke(findDrawableNum(orignChild),node), 
+          * see docs for setNode for futher details on implementation.*/
+
         virtual bool removeDrawable( Drawable *drawable );
 
         /** Replace specified Drawable with another Drawable.
+          * Equivalent to setDrawable(findDrawableNum(orignChild),node), 
+          * see docs for setDrawable for futher details on implementation.*/
+        virtual bool replaceDrawable( Drawable *origDraw, Drawable *newDraw );
+
+        /** set drawable at position i.
+         * return true if set correctly, false on failure (if node==NULL || i is out of range).
          *  Decrement the reference count origGSet and increments the
          *  reference count of newGset, and dirty the bounding sphere
          *  to force it to recompute on next getBound() and returns true.
@@ -50,19 +53,18 @@ class SG_EXPORT Geode : public Node
          *  add newGset.  If newGset is NULL then return false and do
          *  not remove origGset.
          */
-        virtual bool replaceDrawable( Drawable *origDraw, Drawable *newDraw );
+        virtual bool setDrawable( unsigned int i, Drawable* drawable );
 
-
-        /** return the number of geoset's.*/
+        /** return the number of drawable's.*/
         inline unsigned int getNumDrawables() const { return _drawables.size(); }
 
-        /** return geoset at position i.*/
+        /** return drawable at position i.*/
         inline Drawable* getDrawable( unsigned int i ) { return _drawables[i].get(); }
 
-        /** return geoset at position i.*/
+        /** return drawable at position i.*/
         inline const Drawable* getDrawable( unsigned int i ) const { return _drawables[i].get(); }
 
-        /** return true if geoset is contained within Geode.*/
+        /** return true if drawable is contained within Geode.*/
         inline bool containsDrawable(const Drawable* gset) const
         {
             
@@ -76,7 +78,7 @@ class SG_EXPORT Geode : public Node
         }
 
         /** return the iterator position for specified Drawable.
-         *  return _geoset.end() if gset not is contained in Geode.
+         *  return _drawables.end() if gset not is contained in Geode.
          */
         inline DrawableList::iterator findDrawable(const Drawable* gset)
         {
@@ -91,7 +93,7 @@ class SG_EXPORT Geode : public Node
         }
 
         /** return the const_iterator position for specified Drawable.
-         *  return _geoset.end() if gset not is contained in Geode.
+         *  return _drawables.end() if gset not is contained in Geode.
          */
         inline DrawableList::const_iterator findDrawable(const Drawable* gset) const
         {
@@ -105,7 +107,19 @@ class SG_EXPORT Geode : public Node
             return _drawables.end();
         }
 
-        /** compile OpenGL Display List for each geoset.*/
+        /** Find the index number of drawable, return a value between
+          * 0 and _drawables.size()-1 if found, if not found then
+          * return _drawables.size().*/
+        inline unsigned int findDrawableNum( const Drawable* node ) const
+        {
+            for (unsigned int drawableNum=0;drawableNum<_drawables.size();++drawableNum)
+            {
+                if (_drawables[drawableNum]==node) return drawableNum;
+            }
+            return _drawables.size(); // node not found.
+        }
+
+        /** compile OpenGL Display List for each drawable.*/
         void compileDrawables(State& state);
         
     protected:

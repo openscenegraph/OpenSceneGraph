@@ -99,7 +99,6 @@ void SceneView::setDefaults()
     // state before creating display lists. So will disable the init visitor default, this won't
     // affect functionality since the display lists will be created as and when needed.
     DisplayListVisitor* dlv = new DisplayListVisitor(dlvMode);
-    dlv->setState(_state.get());
     dlv->setNodeMaskOverride(0xffffffff);
     _initVisitor = dlv;
 
@@ -149,6 +148,7 @@ void SceneView::init()
     {
         _initVisitor->reset();
         _initVisitor->setFrameStamp(_frameStamp.get());
+        _initVisitor->setState(_state.get());
         
         if (_frameStamp.valid())
         {

@@ -10,6 +10,9 @@ osgviewer osgcool.osg
 echo osgviewer cow.osg
 osgviewer cow.osg
 
+echo osgkeyboard
+osgkeyboard
+
 echo osgviewer --stereo cessna.osg
 osgviewer --stereo cessna.osg
 

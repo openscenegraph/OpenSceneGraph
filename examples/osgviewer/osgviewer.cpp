@@ -85,23 +85,9 @@ int main( int argc, char **argv )
     osgUtil::Optimizer optimizer;
     optimizer.optimize(loadedModel.get());
 
-#if 0
-    osg::CoordinateSystemNode* csn = new osg::CoordinateSystemNode;
-    csn->addChild(loadedModel.get());
-    csn->setEllipsoidModel(new osg::EllipsoidModel());    
-
-    osg::NodePath nodepath;
-    nodepath.push_back(csn);
-    
-    viewer.setCoordindateSystemNodePath(nodepath);
-
-    // set the scene to render
-    viewer.setSceneData(csn);
-#else
-
+    // pass the loaded scene graph to the viewer.
     viewer.setSceneData(loadedModel.get());
 
-#endif
     // create the windows and run the threads.
     viewer.realize();
 

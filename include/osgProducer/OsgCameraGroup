@@ -78,7 +78,11 @@ class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
 
         const osg::Node* getTopMostSceneData() const;
 
-        
+
+        /** update internal structures w.r.t updated scene data.*/        
+        virtual void updatedSceneData();
+
+
         void setDisplaySettings( osg::DisplaySettings *ds ) { _ds = ds; }
 
         osg::DisplaySettings *getDisplaySettings() { return _ds.get(); }
@@ -165,7 +169,8 @@ class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
 
     protected :
 
-        void setUpSceneViewsWithData();
+
+        virtual void setUpSceneViewsWithData();
 
 
         osg::ApplicationUsage*                  _applicationUsage;

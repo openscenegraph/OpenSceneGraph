@@ -166,7 +166,7 @@ void OsgCameraGroup::setSceneData( osg::Node *scene )
         _scene_decorator->addChild(scene);
     }
         
-    setUpSceneViewsWithData();
+    updatedSceneData();
 }
         
 void OsgCameraGroup::setSceneDecorator( osg::Group* decorator)
@@ -179,10 +179,15 @@ void OsgCameraGroup::setSceneDecorator( osg::Group* decorator)
     {
         decorator->addChild(_scene_data.get());
     }
-    setUpSceneViewsWithData();
+    updatedSceneData();
 }
 
         
+void OsgCameraGroup::updatedSceneData()
+{
+    setUpSceneViewsWithData();
+}
+
 void OsgCameraGroup::setUpSceneViewsWithData()
 {
     for(SceneHandlerList::iterator  p = _shvec.begin(); p != _shvec.end(); p++ )

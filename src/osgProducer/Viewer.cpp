@@ -135,6 +135,40 @@ private:
     osgUtil::IntersectVisitor::HitList       _PIVsegHitList;
 };
 
+
+class CollectedCoordinateSystemNodesVisitor : public osg::NodeVisitor
+{
+public:
+
+    CollectedCoordinateSystemNodesVisitor():
+        NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+        
+        
+    virtual void apply(osg::Node& node)
+    {
+        traverse(node);
+    }
+
+    virtual void apply(osg::CoordinateSystemNode& node)
+    {
+        if (_pathToCoordinateSystemNode.empty())
+        {
+            osg::notify(osg::NOTICE)<<"Found CoordianteSystemNode node"<<std::endl;
+            osg::notify(osg::NOTICE)<<"     CoordinateSystem = "<<node.getCoordinateSystem()<<std::endl;
+            _pathToCoordinateSystemNode = getNodePath();
+        }
+        else
+        {
+            osg::notify(osg::NOTICE)<<"Found additional CoordianteSystemNode node, but ignoring"<<std::endl;
+            osg::notify(osg::NOTICE)<<"     CoordinateSystem = "<<node.getCoordinateSystem()<<std::endl;
+        }
+        traverse(node);
+    }
+    
+    NodePath _pathToCoordinateSystemNode;
+};
+
+
 //////////////////////////////////////////////////////////////////////////////
 //
 // osgProducer::Viewer implemention
@@ -211,6 +245,32 @@ Viewer::~Viewer()
 {
     // kill the DatabasePager and associated thread if one exists.
     osgDB::Registry::instance()->setDatabasePager(0);
+}
+
+void Viewer::setCoordindateSystemNodePath(const osg::NodePath& nodePath)
+{
+    std::copy(nodePath.begin(),
+              nodePath.end(),
+              std::back_inserter(_coordinateSystemNodePath));
+}
+
+void Viewer::updatedSceneData()
+{
+    OsgCameraGroup::updatedSceneData();
+    
+    // now search for CoordinateSystemNode's for which we want to track.
+    osg::Node* subgraph = getTopMostSceneData();
+    
+    if (subgraph)
+    {
+        CollectedCoordinateSystemNodesVisitor ccsnv;
+        subgraph->accept(ccsnv);
+
+        if (!ccsnv._pathToCoordinateSystemNode.empty())
+        {
+           setCoordindateSystemNodePath(ccsnv._pathToCoordinateSystemNode);
+        }
+    }    
 }
 
 void Viewer::setKeyboardMouse(Producer::KeyboardMouse* kbm)
@@ -492,14 +552,24 @@ void Viewer::update()
     {
         osg::Matrixd coordinateFrame;
         
-        osg::CoordinateSystemNode* csn = dynamic_cast<osg::CoordinateSystemNode*>(_coordinateSystemNodePath.back());
+        // have to crete a copy of the RefNodePath to create an osg::NodePath
+        // to allow it to be used along with the computeLocalToWorld call.
+        osg::NodePath tmpPath;
+        for(RefNodePath::iterator itr=_coordinateSystemNodePath.begin();
+            itr!=_coordinateSystemNodePath.end();
+            ++itr)
+        {
+            tmpPath.push_back(itr->get());
+        }
+
+        osg::CoordinateSystemNode* csn = dynamic_cast<osg::CoordinateSystemNode*>(_coordinateSystemNodePath.back().get());
         if (csn)
         {
-            coordinateFrame = csn->computeLocalCoordinateFrame(_position[0],_position[1],_position[2])* osg::computeLocalToWorld(_coordinateSystemNodePath);
+            coordinateFrame = csn->computeLocalCoordinateFrame(_position[0],_position[1],_position[2])* osg::computeLocalToWorld(tmpPath);
         }
         else
         {
-            coordinateFrame =  osg::computeLocalToWorld(_coordinateSystemNodePath);
+            coordinateFrame =  osg::computeLocalToWorld(tmpPath);
         }
         
         getKeySwitchMatrixManipulator()->setCoordinateFrame(coordinateFrame);

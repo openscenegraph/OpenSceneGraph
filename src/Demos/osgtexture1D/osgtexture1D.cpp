@@ -221,7 +221,7 @@ int main( int argc, char **argv )
 
 
         loadedModel->setStateSet(stateset);
-        loadedModel->setAppCallback(new AnimateStateCallback());
+        loadedModel->setUpdateCallback(new AnimateStateCallback());
 
         // add model to viewer.
         viewer.addViewport( loadedModel );

@@ -8,7 +8,7 @@ namespace txp
 TerrapageNode::TerrapageNode():
     _pageManager(0)
 {
-    setNumChildrenRequiringAppTraversal(1);
+    setNumChildrenRequiringUpdateTraversal(1);
 }
         
 TerrapageNode::TerrapageNode(const TerrapageNode& pager,const osg::CopyOp&):
@@ -19,7 +19,7 @@ TerrapageNode::TerrapageNode(const TerrapageNode& pager,const osg::CopyOp&):
     _pageManager(0),
     _lastRecordEyePoint(pager._lastRecordEyePoint)
 {
-    setNumChildrenRequiringAppTraversal(getNumChildrenRequiringAppTraversal()+1);            
+    setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);            
 }
 
 TerrapageNode::~TerrapageNode()
@@ -32,7 +32,7 @@ void TerrapageNode::traverse(osg::NodeVisitor& nv)
 {
     if (_pageManager)
     {
-        if (nv.getVisitorType()==osg::NodeVisitor::APP_VISITOR)
+        if (nv.getVisitorType()==osg::NodeVisitor::UPDATE_VISITOR)
         {
             updateSceneGraph();
         }

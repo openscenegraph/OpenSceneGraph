@@ -7,12 +7,12 @@ DOFTransform::DOFTransform():
     _animationOn(true), 
     _increasingFlags(0xffff)
 {
-    setNumChildrenRequiringAppTraversal(1);
+    setNumChildrenRequiringUpdateTraversal(1);
 }
 
 void DOFTransform::traverse(NodeVisitor& nv)
 {
-    if (nv.getVisitorType()==NodeVisitor::APP_VISITOR)
+    if (nv.getVisitorType()==NodeVisitor::UPDATE_VISITOR)
     {
         animate();
     }

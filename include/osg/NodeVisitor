@@ -58,7 +58,7 @@ class SG_EXPORT NodeVisitor : public Referenced
         enum VisitorType
         {
             NODE_VISITOR = 0,
-            APP_VISITOR,
+            UPDATE_VISITOR,
             COLLECT_OCCLUDER_VISITOR,
             CULL_VISITOR
         };

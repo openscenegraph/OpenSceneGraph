@@ -65,11 +65,11 @@ bool Group::addChild( Node *child )
 
         // could now require app traversal thanks to the new subgraph,
         // so need to check and update if required.
-        if (child->getNumChildrenRequiringAppTraversal()>0 ||
-            child->getAppCallback())
+        if (child->getNumChildrenRequiringUpdateTraversal()>0 ||
+            child->getUpdateCallback())
         {
-            setNumChildrenRequiringAppTraversal(
-                getNumChildrenRequiringAppTraversal()+1
+            setNumChildrenRequiringUpdateTraversal(
+                getNumChildrenRequiringUpdateTraversal()+1
                 );
         }
 
@@ -123,7 +123,7 @@ bool Group::removeChild(unsigned int pos,unsigned int numChildrenToRemove)
             // remove this Geode from the child parent list.
             child->removeParent(this);
 
-            if (child->getNumChildrenRequiringAppTraversal()>0 || child->getAppCallback()) ++appCallbackRemoved;
+            if (child->getNumChildrenRequiringUpdateTraversal()>0 || child->getUpdateCallback()) ++appCallbackRemoved;
 
             if (child->getNumChildrenWithCullingDisabled()>0 || !child->getCullingActive()) ++numChildrenWithCullingDisabledRemoved;
 
@@ -135,7 +135,7 @@ bool Group::removeChild(unsigned int pos,unsigned int numChildrenToRemove)
 
         if (appCallbackRemoved)
         {
-            setNumChildrenRequiringAppTraversal(getNumChildrenRequiringAppTraversal()-appCallbackRemoved);
+            setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()-appCallbackRemoved);
         }
         
         if (numChildrenWithCullingDisabledRemoved)
@@ -192,21 +192,21 @@ bool Group::setChild( unsigned  int i, Node* newNode )
         // could now require app traversal thanks to the new subgraph,
         // so need to check and update if required.
         int delta_numChildrenRequiringAppTraversal = 0;
-        if (origNode->getNumChildrenRequiringAppTraversal()>0 ||
-            origNode->getAppCallback())
+        if (origNode->getNumChildrenRequiringUpdateTraversal()>0 ||
+            origNode->getUpdateCallback())
         {
             --delta_numChildrenRequiringAppTraversal;
         }
-        if (newNode->getNumChildrenRequiringAppTraversal()>0 ||
-            newNode->getAppCallback())
+        if (newNode->getNumChildrenRequiringUpdateTraversal()>0 ||
+            newNode->getUpdateCallback())
         {
             ++delta_numChildrenRequiringAppTraversal;
         }
 
         if (delta_numChildrenRequiringAppTraversal!=0)
         {
-            setNumChildrenRequiringAppTraversal(
-                getNumChildrenRequiringAppTraversal()+delta_numChildrenRequiringAppTraversal
+            setNumChildrenRequiringUpdateTraversal(
+                getNumChildrenRequiringUpdateTraversal()+delta_numChildrenRequiringAppTraversal
                 );
         }
 

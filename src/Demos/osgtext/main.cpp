@@ -381,13 +381,13 @@ class TextViewer: public osgGLUT::Viewer
 {
 public:
 
-    virtual float app(unsigned int viewport)
+    virtual float update(unsigned int viewport)
     {
         float ret;
-        ret=Viewer::app(viewport);
+        ret=Viewer::update(viewport);
         if(_hudSceneView.valid() && viewport>=_viewportList.size()-1)
         {
-            _hudSceneView->app();
+            _hudSceneView->update();
         }
         return ret;
     }

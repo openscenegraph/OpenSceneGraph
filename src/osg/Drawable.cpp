@@ -214,15 +214,15 @@ void Drawable::flushDeletedDisplayLists(uint contextID)
     }
 }
 
-void Drawable::setAppCallback(AppCallback* ac)
+void Drawable::setUpdateCallback(UpdateCallback* ac)
 {
-    if (_appCallback==ac) return;
+    if (_updateCallback==ac) return;
     
     int delta = 0;
-    if (_appCallback.valid()) --delta;
+    if (_updateCallback.valid()) --delta;
     if (ac) ++delta;
 
-    _appCallback = ac;
+    _updateCallback = ac;
     
     if (delta!=0)
     {
@@ -230,7 +230,7 @@ void Drawable::setAppCallback(AppCallback* ac)
             itr!=_parents.end();
             ++itr)
         {
-            (*itr)->setNumChildrenRequiringAppTraversal((*itr)->getNumChildrenRequiringAppTraversal()+delta);
+            (*itr)->setNumChildrenRequiringUpdateTraversal((*itr)->getNumChildrenRequiringUpdateTraversal()+delta);
         }
     }
 }

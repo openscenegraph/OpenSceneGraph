@@ -126,7 +126,7 @@ public:
             //    so that it visits 'invisible' nodes to update visibility. Or could use
             // a visitor with setTraversalMode(TraversalMode==TRAVERSE_ALL_CHILDREN)?
         traverse(node,nv);
-        //    std::cout<<"app callback - post traverse"<< (float)_frameStamp->getReferenceTime() <<std::endl;
+        //    std::cout<<"update callback - post traverse"<< (float)_frameStamp->getReferenceTime() <<std::endl;
     }
 private:
 };
@@ -752,7 +752,7 @@ class ReaderWriterGEO : public ReaderWriter
                 if (!bhv.empty()) { // then check for a string content/colour.. action
                     bool ok=false;
                     geoBehaviourDrawableCB *gcb=new geoBehaviourDrawableCB;
-                    text->setAppCallback(gcb);
+                    text->setUpdateCallback(gcb);
                     for (std::vector< georecord *>::const_iterator rcitr=bhv.begin();
                     rcitr!=bhv.end();
                     ++rcitr)
@@ -778,7 +778,7 @@ class ReaderWriterGEO : public ReaderWriter
             if (hasColorAction(bhv) || vinf->hasVertexActions()) {
                 osg::Geometry *nugeom=gi.getGeom();
                 geoBehaviourDrawableCB *gcb=new geoBehaviourDrawableCB;
-                nugeom->setAppCallback(gcb);
+                nugeom->setUpdateCallback(gcb);
                 nugeom->setUseDisplayList(false); // as we are updating arrays, cannot change colours
                 for (std::vector< georecord *>::const_iterator rcitr=bhv.begin();
                 rcitr!=bhv.end();
@@ -956,7 +956,7 @@ class ReaderWriterGEO : public ReaderWriter
                 // also test for other properties of a unique material:
                 // - use material/vertex colours;
                 geoInfo gu(txidx,shademodel, bothsides);
-                if (gu==&(*itrint) && !(*itrint).getGeom()->getAppCallback()) igeom=igidx;
+                if (gu==&(*itrint) && !(*itrint).getGeom()->getUpdateCallback()) igeom=igidx;
                 igidx++;
             }
             std::vector< georecord *>bhv=grec->getBehaviour(); // behaviours attached to facets, eg colour!
@@ -1277,13 +1277,13 @@ class ReaderWriterGEO : public ReaderWriter
                 {
                     if ((*rcitr)->getType()==DB_DSK_INTERNAL_VARS) {
                         theHeader->addInternalVars(**rcitr);
-                //        theHeader->setAppCallback(theHeader->getInternalVars());                        
+                //        theHeader->setUpdateCallback(theHeader->getInternalVars());                        
                     }
                     if ((*rcitr)->getType()==DB_DSK_FLOAT_VAR) {
                         if (theHeader) theHeader->addUserVar((**rcitr));
                     }
                 }
-                theHeader->setAppCallback(new geoHeaderCB);
+                theHeader->setUpdateCallback(new geoHeaderCB);
             }
             for (itr=geomatlist.begin(); itr< geomatlist.end(); itr++) {
                  osg::Material *mt=new osg::Material;
@@ -1379,7 +1379,7 @@ class ReaderWriterGEO : public ReaderWriter
             if (!bhv.empty()) { // then add a DCS/matrix_transform
                 mtr=new MatrixTransform;
                 geoBehaviourCB *gcb=new geoBehaviourCB;
-                mtr->setAppCallback(gcb);
+                mtr->setUpdateCallback(gcb);
 
                 for (std::vector< georecord *>::const_iterator rcitr=bhv.begin();
                 rcitr!=bhv.end();
@@ -1908,7 +1908,7 @@ void internalVars::update(const osg::FrameStamp *_frameStamp) {
             break;
         }
     }
-    //    std::cout<<"app callback - post traverse"<< (float)_frameStamp->getReferenceTime() <<std::endl;
+    //    std::cout<<"update callback - post traverse"<< (float)_frameStamp->getReferenceTime() <<std::endl;
 }
 
 // now register with Registry to instantiate the above

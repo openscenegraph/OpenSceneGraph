@@ -16,7 +16,7 @@ MatrixTransform::MatrixTransform(const MatrixTransform& transform,const CopyOp& 
     _inverseDirty(transform._inverseDirty),
     _animationPath(dynamic_cast<AnimationPath*>(copyop(transform._animationPath.get())))
 {    
-    if (_animationPath.valid()) setNumChildrenRequiringAppTraversal(getNumChildrenRequiringAppTraversal()+1);            
+    if (_animationPath.valid()) setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);            
 }
 
 MatrixTransform::MatrixTransform(const Matrix& mat )
@@ -38,7 +38,7 @@ void MatrixTransform::traverse(NodeVisitor& nv)
 {
     // if app traversal update the frame count.
     if (_animationPath.valid() && 
-        nv.getVisitorType()==NodeVisitor::APP_VISITOR && 
+        nv.getVisitorType()==NodeVisitor::UPDATE_VISITOR && 
         nv.getFrameStamp())
     {
         double time = nv.getFrameStamp()->getReferenceTime();
@@ -54,7 +54,7 @@ void MatrixTransform::AnimationPathCallback::operator()(Node* node, NodeVisitor*
     MatrixTransform* mt = dynamic_cast<MatrixTransform*>(node);
     if (mt &&
         _animationPath.valid() && 
-        nv->getVisitorType()==NodeVisitor::APP_VISITOR && 
+        nv->getVisitorType()==NodeVisitor::UPDATE_VISITOR && 
         nv->getFrameStamp())
     {
         double time = nv->getFrameStamp()->getReferenceTime();

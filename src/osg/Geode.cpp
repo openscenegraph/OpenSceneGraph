@@ -45,9 +45,9 @@ bool Geode::addDrawable( Drawable *drawable )
         // register as parent of drawable.
         drawable->addParent(this);
         
-        if (drawable->getAppCallback())
+        if (drawable->getUpdateCallback())
         {
-            setNumChildrenRequiringAppTraversal(getNumChildrenRequiringAppTraversal()+1);
+            setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);
         }
         
         dirtyBound();        
@@ -75,20 +75,20 @@ bool Geode::removeDrawable(unsigned int pos,unsigned int numDrawablesToRemove)
             endOfRemoveRange=_drawables.size();
         }
 
-        unsigned int appCallbackRemoved = 0;
+        unsigned int updateCallbackRemoved = 0;
         for(unsigned i=pos;i<endOfRemoveRange;++i)
         {
             // remove this Geode from the child parent list.
             _drawables[i]->removeParent(this);
             // update the number of app calbacks removed
-            if (_drawables[i]->getAppCallback()) ++appCallbackRemoved;
+            if (_drawables[i]->getUpdateCallback()) ++updateCallbackRemoved;
         }
 
         _drawables.erase(_drawables.begin()+pos,_drawables.begin()+endOfRemoveRange);
 
-        if (appCallbackRemoved)
+        if (updateCallbackRemoved)
         {
-            setNumChildrenRequiringAppTraversal(getNumChildrenRequiringAppTraversal()-appCallbackRemoved);
+            setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()-updateCallbackRemoved);
         }
         
         dirtyBound();
@@ -118,11 +118,11 @@ bool Geode::setDrawable( unsigned  int i, Drawable* newDrawable )
         Drawable* origDrawable = _drawables[i].get();
 
         int delta = 0;
-        if (origDrawable->getAppCallback()) --delta;
-        if (newDrawable->getAppCallback()) ++delta;
+        if (origDrawable->getUpdateCallback()) --delta;
+        if (newDrawable->getUpdateCallback()) ++delta;
         if (delta!=0)
         {
-            setNumChildrenRequiringAppTraversal(getNumChildrenRequiringAppTraversal()+delta);
+            setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+delta);
         }
 
         // remove from origDrawable's parent list.

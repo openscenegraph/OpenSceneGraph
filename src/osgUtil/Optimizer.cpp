@@ -878,7 +878,7 @@ void Optimizer::RemoveRedundantNodesVisitor::apply(osg::Group& group)
             if (group.getNumParents()>0 && group.getNumChildren()<=1)
             {
                 if (!group.getUserData() &&
-                    !group.getAppCallback() &&
+                    !group.getUpdateCallback() &&
                     !group.getStateSet() &&
                     group.getNodeMask()==0xffffffff)
                 {

@@ -24,11 +24,11 @@
 #include <osgGLUT/glut>
 #include <osgGLUT/Viewer>
 
-class MyAppCallback : public osg::NodeCallback
+class MyUpdateCallback : public osg::NodeCallback
 {
     public:
     
-        MyAppCallback(osg::Node* subgraph):
+        MyUpdateCallback(osg::Node* subgraph):
             _subgraph(subgraph) {}
 
         virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
@@ -199,10 +199,9 @@ void MyCullCallback::doPreRender(osg::Node&, osgUtil::CullVisitor& cv)
 
 }
 
-
 // call back which cretes a deformation field to oscilate the model.
 class MyGeometryCallback : 
-    public osg::Drawable::AppCallback, 
+    public osg::Drawable::UpdateCallback, 
     public osg::Drawable::AttributeFunctor
 {
     public:
@@ -221,7 +220,7 @@ class MyGeometryCallback :
             _yAxis(y),
             _zAxis(z) {}
     
-        virtual void app(osg::NodeVisitor* nv,osg::Drawable* drawable)
+        virtual void update(osg::NodeVisitor* nv,osg::Drawable* drawable)
         {
             const osg::FrameStamp* fs = nv->getFrameStamp();
             double referenceTime = fs->getReferenceTime();
@@ -538,14 +537,14 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph)
 
     polyGeom->setStateSet(stateset);
 
-    polyGeom->setAppCallback(new MyGeometryCallback(origin,xAxis,yAxis,zAxis,1.0,1.0/width,0.2f));
+    polyGeom->setUpdateCallback(new MyGeometryCallback(origin,xAxis,yAxis,zAxis,1.0,1.0/width,0.2f));
 
     osg::Geode* geode = new osg::Geode();
     geode->addDrawable(polyGeom);
 
     osg::Group* parent = new osg::Group;
     
-    parent->setAppCallback(new MyAppCallback(subgraph));
+    parent->setUpdateCallback(new MyUpdateCallback(subgraph));
     
     parent->setCullCallback(new MyCullCallback(subgraph,image));
  
@@ -629,7 +628,7 @@ int main( int argc, char **argv )
     loadedModelTransform->addChild(loadedModel);
 
     osg::NodeCallback* nc = new osgUtil::TransformCallback(loadedModelTransform->getBound().center(),osg::Vec3(0.0f,0.0f,1.0f),osg::inDegrees(45.0f));
-    loadedModelTransform->setAppCallback(nc);
+    loadedModelTransform->setUpdateCallback(nc);
 
     osg::Group* rootNode = new osg::Group();
 //    rootNode->addChild(loadedModelTransform);

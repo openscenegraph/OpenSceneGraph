@@ -49,13 +49,13 @@ void write_usage(std::ostream& out,const std::string& name)
     out << std::endl;
 }
 
-class AppCallback : public osg::NodeCallback
+class UpdateCallback : public osg::NodeCallback
 {
         virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
         { 
-            std::cout<<"app callback - pre traverse"<<node<<std::endl;
+            std::cout<<"update callback - pre traverse"<<node<<std::endl;
             traverse(node,nv);
-            std::cout<<"app callback - post traverse"<<node<<std::endl;
+            std::cout<<"update callback - post traverse"<<node<<std::endl;
         }
 };
 
@@ -100,11 +100,11 @@ struct TransformCallback : public osg::Transform::ComputeTransformCallback
     }
 };
 
-struct DrawableAppCallback : public osg::Drawable::AppCallback
+struct DrawableUpdateCallback : public osg::Drawable::UpdateCallback
 {
-    virtual void app(osg::NodeVisitor*, osg::Drawable* drawable)
+    virtual void update(osg::NodeVisitor*, osg::Drawable* drawable)
     {
-        std::cout<<"Drawable app callback "<<drawable<<std::endl;
+        std::cout<<"Drawable update callback "<<drawable<<std::endl;
     }
 };
 
@@ -129,14 +129,14 @@ class InsertCallbacksVisitor : public osg::NodeVisitor
         
         virtual void apply(osg::Node& node)
         {
-             node.setAppCallback(new AppCallback());
+             node.setUpdateCallback(new UpdateCallback());
              node.setCullCallback(new CullCallback());
              traverse(node);
         }
 
         virtual void apply(osg::Geode& geode)
         {
-            geode.setAppCallback(new AppCallback());
+            geode.setUpdateCallback(new UpdateCallback());
             
             //note, it makes no sense to attach a cull callback to the node
             //at there are no nodes to traverse below the geode, only
@@ -146,7 +146,7 @@ class InsertCallbacksVisitor : public osg::NodeVisitor
 
             for(unsigned int i=0;i<geode.getNumDrawables();++i)
             {
-                geode.getDrawable(i)->setAppCallback(new DrawableAppCallback());
+                geode.getDrawable(i)->setUpdateCallback(new DrawableUpdateCallback());
                 geode.getDrawable(i)->setCullCallback(new DrawableCullCallback());
                 geode.getDrawable(i)->setDrawCallback(new DrawableDrawCallback());
             }

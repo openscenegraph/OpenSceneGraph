@@ -172,21 +172,36 @@ class SG_EXPORT Drawable : public Object
         void compile(State& state);
 
 
-        struct AppCallback : public virtual osg::Referenced
+        struct UpdateCallback : public virtual osg::Referenced
+        {
+                /** do customized app code.*/
+                virtual void update(osg::NodeVisitor *visitor, osg::Drawable* drawable) = 0;
+        };
+        
+        /** Set the UpdateCallback which allows users to attach customize the undating of an object during the app traversal.*/
+        void setUpdateCallback(UpdateCallback* ac);
+        
+        /** Get the non const UpdateCallback.*/
+        UpdateCallback* getUpdateCallback() { return _updateCallback.get(); }
+
+#ifdef USE_DEPRECATED_API
+        struct AppCallback : public UpdateCallback
         {
                 /** do customized app code.*/
                 virtual void app(osg::NodeVisitor *visitor, osg::Drawable* drawable) = 0;
+
+                virtual void update(osg::NodeVisitor *visitor, osg::Drawable* drawable) { app(visitor,drawable); }
         };
 
-        /** Set the AppCallback which allows users to attach customize the undating of an object during the app traversal.*/
-        void setAppCallback(AppCallback* ac);
+        /** deprecated.*/
+        void setAppCallback(AppCallback* ac) { setUpdateCallback(ac); }
         
-        /** Get the non const AppCallback.*/
-        AppCallback* getAppCallback() { return _appCallback.get(); }
+        /** deprecated.*/
+        AppCallback* getAppCallback() { return getUpdateCallback(); }
         
-        /** Get the const AppCallback.*/
-        const AppCallback* getAppCallback() const { return _appCallback.get(); }
-
+        /** deprecated.*/
+        const AppCallback* getAppCallback() const { return getUpdateCallback(); }
+#endif
 
         struct CullCallback : public virtual osg::Referenced
         {
@@ -381,7 +396,7 @@ class SG_EXPORT Drawable : public Object
         typedef osg::buffered_value<uint> GLObjectList;
         mutable GLObjectList _globjList;
 
-        ref_ptr<AppCallback>    _appCallback;
+        ref_ptr<UpdateCallback> _updateCallback;
         ref_ptr<DrawCallback>   _drawCallback;
         ref_ptr<CullCallback>   _cullCallback;
         

@@ -368,7 +368,7 @@ int main( int argc, char **argv )
     viewer.addViewport( rootNode );
 
     osg::NodeCallback* nc = new osgUtil::TransformCallback(loadedModelTransform->getBound().center(),osg::Vec3(0.0f,0.0f,1.0f),osg::inDegrees(45.0f));
-    loadedModelTransform->setAppCallback(nc);
+    loadedModelTransform->setUpdateCallback(nc);
 
     // register trackball, flight and drive.
     viewer.registerCameraManipulator(new osgGA::TrackballManipulator);

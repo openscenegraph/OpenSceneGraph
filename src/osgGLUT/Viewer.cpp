@@ -372,7 +372,7 @@ void Viewer::requestWarpPointer(int x,int y)
 }
 
 
-float Viewer::app(unsigned int viewport)
+float Viewer::update(unsigned int viewport)
 {
     osg::Timer_t beforeApp = _timer.tick();
 
@@ -403,7 +403,7 @@ float Viewer::app(unsigned int viewport)
     // do app traversal.
     
     getViewportSceneView(viewport)->setFrameStamp(_frameStamp.get());
-    getViewportSceneView(viewport)->app();
+    getViewportSceneView(viewport)->update();
 
     osg::Timer_t beforeCull = _timer.tick();
 
@@ -511,7 +511,7 @@ void Viewer::showStats(const unsigned int /*viewport*/)
     if (_printStats>=Statistics::STAT_GRAPHS  && _printStats!=Statistics::STAT_PRIMSPERVIEW  && _printStats!=Statistics::STAT_PRIMSPERBIN) { // more stats - graphs this time
     
         int sampleIndex = 2;
-        float timeApp=times[sampleIndex].timeApp;
+        float timeUpdate=times[sampleIndex].timeUpdate;
         float timeCull=times[sampleIndex].timeCull;
         float timeDraw=times[sampleIndex].timeDraw;
         float timeFrame=times[sampleIndex].timeFrame;
@@ -524,7 +524,7 @@ void Viewer::showStats(const unsigned int /*viewport*/)
 
         char clin[72]; // buffer to print
         glColor4fv((GLfloat * )&app_color);
-        sprintf(clin,"App %.2f ms.", timeApp);
+        sprintf(clin,"App %.2f ms.", timeUpdate);
         displaytext((int)(.15f*tmax),(int)(0.98f*vh),clin);
  
         glColor4fv((GLfloat * )&cull_color);
@@ -539,7 +539,7 @@ void Viewer::showStats(const unsigned int /*viewport*/)
         sprintf(clin,"Frame %.2f ms.", timeFrame);
         displaytext((int)(.75*tmax),(int)(0.98f*vh),clin);
 
- /*       osg::notify(osg::NOTICE) << "Time of App  "<<timeApp<<"ms   "<< std::endl;
+ /*       osg::notify(osg::NOTICE) << "Time of App  "<<timeUpdate<<"ms   "<< std::endl;
         osg::notify(osg::NOTICE) << "Time of Cull "<<timeCull<<"ms   "<< std::endl;
         osg::notify(osg::NOTICE) << "Time of Draw "<<timeDraw<<"ms   "<< std::endl;
         osg::notify(osg::NOTICE) << "Frame time   "<<frameTime<< std::endl;
@@ -568,15 +568,15 @@ void Viewer::showStats(const unsigned int /*viewport*/)
         for (i=0; i<3; i++) {
             glColor4fv((GLfloat * )&app_color);
             glVertex2f(tstart,0.95f*vh);
-            glVertex2f(tstart+times[i].timeApp,0.95f*vh);
+            glVertex2f(tstart+times[i].timeUpdate,0.95f*vh);
             glColor4fv((GLfloat * )&cull_color);
-            glVertex2f(tstart+times[i].timeApp,0.93f*vh);
-            glVertex2f(tstart+times[i].timeApp+times[i].timeCull, 0.93f*vh);
+            glVertex2f(tstart+times[i].timeUpdate,0.93f*vh);
+            glVertex2f(tstart+times[i].timeUpdate+times[i].timeCull, 0.93f*vh);
             glColor4fv((GLfloat * )&draw_color);
-            glVertex2f(tstart+times[i].timeApp+times[i].timeCull, 0.91f*vh);
-            glVertex2f(tstart+times[i].timeApp+times[i].timeCull+times[i].timeDraw, 0.91f*vh);
+            glVertex2f(tstart+times[i].timeUpdate+times[i].timeCull, 0.91f*vh);
+            glVertex2f(tstart+times[i].timeUpdate+times[i].timeCull+times[i].timeDraw, 0.91f*vh);
             glColor4fv((GLfloat * )&swap_color);
-            glVertex2f(tstart+times[i].timeApp+times[i].timeCull+times[i].timeDraw, 0.90f*vh);
+            glVertex2f(tstart+times[i].timeUpdate+times[i].timeCull+times[i].timeDraw, 0.90f*vh);
             glVertex2f(tstart+times[i].timeFrame, 0.90f*vh);
             tstart+=times[i].timeFrame;
         }
@@ -689,7 +689,7 @@ void Viewer::display()
     _frameStamp->setReferenceTime(clockSeconds());
 
     // application traverasal.
-    times[2].timeApp=0.0f;
+    times[2].timeUpdate=0.0f;
 
     // cull traverasal.
     times[2].timeCull=0.0f;
@@ -699,8 +699,8 @@ void Viewer::display()
     
     for(unsigned int i = 0; i < getNumViewports(); i++ )
     {
-        // application traverasal.
-        times[2].timeApp+=app(i);
+        // update traverasal.
+        times[2].timeUpdate+=update(i);
 
 
         // cull traverasal.

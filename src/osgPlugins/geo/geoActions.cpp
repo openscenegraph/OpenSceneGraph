@@ -616,7 +616,7 @@ void geoBehaviourCB::operator() (osg::Node *node, osg::NodeVisitor* nv)
     traverse(node,nv);
 }
 
-void geoBehaviourDrawableCB::app(osg::NodeVisitor *,osg::Drawable *dr) {
+void geoBehaviourDrawableCB::update(osg::NodeVisitor *,osg::Drawable *dr) {
     Matrix mtr;
     int prevvtr=-1; // previously moved vertex
     Vec3 pos;

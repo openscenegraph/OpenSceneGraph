@@ -78,14 +78,18 @@ class SG_EXPORT StateAttribute : public Object
             OFF          = 0x0,
             /** means that associated GLMode is enabled and Override is disabled.*/
             ON           = 0x1,
-            /** Overriding of GLMode's or StateAttributes is enabled.*/
+            /** Overriding of GLMode's or StateAttributes is enabled, so that state below it is overriden.*/
             OVERRIDE     = 0x2,
+            /** Protecting of GLMode's os StateAttributes is enabled, so that state from above connot override this and below state.*/
+            PROTECTED    = 0x4,            
+#ifdef USE_DEPRECATED_API            
             /** Equivilant to OFF | OVERRIDE.*/
             OVERRIDE_OFF = 0x2,
             /** Equivilant to ON | OVERRIDE.*/
             OVERRIDE_ON  = 0x3,
+#endif            
             /** means that GLMode or StateAttribute should in inherited from above.*/
-            INHERIT      = 0x4
+            INHERIT      = 0x8
         };
         
         /** Type identifier to differentiate between different state types. */

@@ -72,7 +72,7 @@ class SG_EXPORT Timer {
         
         inline double getSecondsPerClick() const { return _secsPerClick; }
 
-    private :
+    protected :
 
         double                          _secsPerClick;
         bool                            _useStandardClock;

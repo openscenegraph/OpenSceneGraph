@@ -128,7 +128,7 @@ class ImageReaderWriter : public osgDB::ReaderWriter
             }
             else
             {
-                return 0;
+                return ReaderWriter::ReadResult::FILE_NOT_HANDLED;
             }
             
                         

@@ -34,6 +34,9 @@
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_BOUNDSCHECKING"></A>
 <B>OSG_BOUNDSCHECKING</B><DT>
 
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_BUFFERED_VALUE"></A>
+<B>OSG_BUFFERED_VALUE</B><DT>
+
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_CAMERA"></A>
 <B>OSG_CAMERA</B><DT>
 
@@ -196,8 +199,8 @@
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="__OSG_MATH"></A>
 <B>__OSG_MATH</B><DT>
 
-<IMG ALT="o" BORDER=0 SRC=icon1.gif>defined(macintosh)(sun)(__DARWIN_OSX__)(float)(float)(float)(float)(float)(float)(float)(float)(float)(macintosh)(sun)(__DARWIN_OSX__)<A NAME="(__hpux__)"></A>
-<B>(__hpux__)</B>(float)<DT>
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>defined(sun)(__DARWIN_OSX__)(float)(float)(float)(float)(float)(float)(float)(float)(sun)(float)(sun)(__hpux__)<A NAME="(DARWIN_OSX_PRE_10_2)"></A>
+<B>(DARWIN_OSX_PRE_10_2)</B>(float)<DT>
 
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_MATRIXTRANSFORM"></A>
 <B>OSG_MATRIXTRANSFORM</B><DT>
@@ -233,7 +236,7 @@
 <B>m_alloc_free</B><DT>
 
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>SG_EXPORT extern void<A NAME="m_setOwner"></A>
-<B>m_setOwner</B>(const char* file, const unsigned int line)<DT>
+<B>m_setOwner</B>(const char* file, unsigned int line)<DT>
 
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>SG_EXPORT extern bool&amp;<A NAME="m_breakOnRealloc"></A>
 <B>m_breakOnRealloc</B>(void* reportedAddress)<DT>
@@ -245,13 +248,13 @@
 <B>m_breakOnAllocation</B>(unsigned int count)<DT>
 
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>SG_EXPORT extern void*<A NAME="m_allocator"></A>
-<B>m_allocator</B>(const char* sourceFile, const unsigned int sourceLine, const unsigned int allocationType, const size_t reportedSize)<DT>
+<B>m_allocator</B>(const char* sourceFile, unsigned int sourceLine, unsigned int allocationType, const size_t reportedSize)<DT>
 
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>SG_EXPORT extern void*<A NAME="m_reallocator"></A>
-<B>m_reallocator</B>(const char* sourceFile, const unsigned int sourceLine, const unsigned int reallocationType, const size_t reportedSize, void* reportedAddress)<DT>
+<B>m_reallocator</B>(const char* sourceFile, unsigned int sourceLine, unsigned int reallocationType, const size_t reportedSize, void* reportedAddress)<DT>
 
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>SG_EXPORT extern void<A NAME="m_deallocator"></A>
-<B>m_deallocator</B>(const char* sourceFile, const unsigned int sourceLine, const unsigned int deallocationType, const void* reportedAddress)<DT>
+<B>m_deallocator</B>(const char* sourceFile, unsigned int sourceLine, unsigned int deallocationType, const void* reportedAddress)<DT>
 
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>SG_EXPORT extern bool<A NAME="m_validateAddress"></A>
 <B>m_validateAddress</B>(const void* reportedAddress)<DT>
@@ -272,7 +275,7 @@
 <B>m_dumpAllocUnit</B>(const sAllocUnit* allocUnit, const char* prefix = "")<DT>
 
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>SG_EXPORT extern void<A NAME="m_dumpMemoryReport"></A>
-<B>m_dumpMemoryReport</B>(const char* filename = "memreport.log", const bool overwrite = true)<DT>
+<B>m_dumpMemoryReport</B>(const char* filename = "memreport.log", bool overwrite = true)<DT>
 
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>SG_EXPORT extern sMStats<A NAME="m_getMemoryStatistics"></A>
 <B>m_getMemoryStatistics</B>()<DT>
@@ -304,14 +307,17 @@
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_POLYGONOFFSET"></A>
 <B>OSG_POLYGONOFFSET</B><DT>
 
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_POLYGONSTIPPLE"></A>
+<B>OSG_POLYGONSTIPPLE</B><DT>
+
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_POLYTOPE"></A>
 <B>OSG_POLYTOPE</B><DT>
 
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_POSITIONATTITIDETRANSFORM"></A>
 <B>OSG_POSITIONATTITIDETRANSFORM</B><DT>
 
-<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_PRIMTIVE"></A>
-<B>OSG_PRIMTIVE</B><DT>
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_PRIMTIVESET"></A>
+<B>OSG_PRIMTIVESET</B><DT>
 
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_PROJECTION"></A>
 <B>OSG_PROJECTION</B><DT>
@@ -333,6 +339,12 @@
 
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_SHADOWVOLUMEOCCLUDER"></A>
 <B>OSG_SHADOWVOLUMEOCCLUDER</B><DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_SHAPE"></A>
+<B>OSG_SHAPE</B><DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_SHAPEDRAWABLE"></A>
+<B>OSG_SHAPEDRAWABLE</B><DT>
 
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_STATE"></A>
 <B>OSG_STATE</B><DT>

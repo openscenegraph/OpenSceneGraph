@@ -23,68 +23,71 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.71.1">LOD</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.87.1">LOD</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.71.2">LOD</A></B>(const <!1><A HREF="LOD.html#DOC.2.71.2">LOD</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.87.2">LOD</A></B>(const <!1><A HREF="LOD.html#DOC.2.87.2">LOD</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
 <DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.71.3">META_Node</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="LOD.html">LOD</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.87.3">META_Node</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="LOD.html">LOD</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.71.4">traverse</A></B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.87.4">traverse</A></B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.71.5">setRange</A></B>(const unsigned int index, const float range)
-<DD><I>Sets the value of range list element index to range which is a floating point distance specified in world coordinates.</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.87.5">addChild</A></B>(Node* child)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const float <B><A HREF="#DOC.2.71.6">getRange</A></B>(const unsigned int index) const 
-<DD><I>returns the range for specified index</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.87.6">addChild</A></B>(Node* child, float min, float max)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const unsigned int <B><A HREF="#DOC.2.71.7">getNumRanges</A></B>() const 
-<DD><I>returns the number of ranges currently set</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.87.7">removeChild</A></B>(Node* child)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.71.8">setCenter</A></B>(const <!1><A HREF="Vec3.html">Vec3</A> &amp;<!1><A HREF="BoundingSphere.html#DOC.2.9.8">center</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.87.11">setCenterMode</A></B>(<!1><A HREF="LOD.html#DOC.2.87.10">CenterMode</A> mode)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="LOD.html#DOC.2.87.10">CenterMode</A> <B><A HREF="#DOC.2.87.12">getCenterMode</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.87.13">setCenter</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; <!1><A HREF="BoundingSphere.html#DOC.2.25.8">center</A>)
 <DD><I>Sets the object-space point which defines the center of the osg::LOD.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec3.html">Vec3</A>&amp; <B><A HREF="#DOC.2.71.9">getCenter</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec3.html">Vec3</A>&amp; <B><A HREF="#DOC.2.87.14">getCenter</A></B>() const 
 <DD><I>return the LOD center point.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.71.11">setEvaluateLODCallback</A></B>(<!1><A HREF="LOD.html#DOC.2.71.10">EvaluateLODCallback</A>* cbc)
-<DD><I>Set the EvaluateLODCallback which allows users to attach customize computation of the the selection of LOD children</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.87.15">setRange</A></B>(unsigned int childNo, float min, float max)
+<DD><I>Sets the min and max visible ranges of range of specifiec child.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="LOD.html#DOC.2.71.10">EvaluateLODCallback</A>* <B><A HREF="#DOC.2.71.12">getEvaluateLODCallback</A></B>()
-<DD><I>Get the non const ComputeBillboardCallback</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.87.16">getMinRange</A></B>(unsigned int childNo) const 
+<DD><I>returns the min visible range for specified child</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="LOD.html#DOC.2.71.10">EvaluateLODCallback</A>* <B><A HREF="#DOC.2.71.13">getEvaluateLODCallback</A></B>() const 
-<DD><I>Get the const ComputeBillboardCallback</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.87.17">getMaxRange</A></B>(unsigned int childNo) const 
+<DD><I>returns the max visible range for specified child</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const int <B><A HREF="#DOC.2.71.14">evaluate</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye_local, const float bias=1.0f) const 
-<DD><I>return the child to traverse.</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned int <B><A HREF="#DOC.2.87.18">getNumRanges</A></B>() const 
+<DD><I>returns the number of ranges currently set.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const int <B><A HREF="#DOC.2.71.15">evaluateLODChild</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye_local, const float bias) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="LOD.html#DOC.2.87.9">RangeList</A>&amp; <B><A HREF="#DOC.2.87.19">getRangeList</A></B>()
+<DD><I>return the list of MinMax ranges for each child</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="LOD.html#DOC.2.87.9">RangeList</A>&amp; <B><A HREF="#DOC.2.87.20">getRangeList</A></B>() const 
+<DD><I>return the list of MinMax ranges for each child</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.2.71.10">EvaluateLODCallback</A></B>: public <!1><A HREF="Referenced.html">osg::Referenced</A>
-<DD><I>Callback attached to an LOD which allows the users to customize the selection of LOD children</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::pair&lt;float,float&gt; <B><A HREF="#DOC.2.87.8">MinMaxPair</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="LOD.html#DOC.2.87.8">MinMaxPair</A>&gt; <B><A HREF="#DOC.2.87.9">RangeList</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.87.10">CenterMode</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>RangeList <B><A HREF="#DOC.2.71.18">_rangeList2</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="LOD.html#DOC.2.87.10">CenterMode</A> <B><A HREF="#DOC.2.87.22">_centerMode</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="LOD.html#DOC.2.71.10">EvaluateLODCallback</A>&gt;  <B><A HREF="#DOC.2.71.19">_evaluateLODCallback</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.87.23">_userDefinedCenter</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.71.20">_center</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="LOD.html#DOC.2.87.9">RangeList</A> <B><A HREF="#DOC.2.87.24">_rangeList</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.71.16">~LOD</A></B>()
-</DL></P>
-
-<P><DL>
-<DT><H3>Protected Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;float&gt; RangeList RangeList <B><A HREF="#DOC.2.71.17">_rangeList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.87.21">~LOD</A></B>()
 </DL></P>
 
 </DL>
@@ -92,33 +95,40 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>addChild</B>( Node* child )
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Group.html">Group</A>* <B>asGroup</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>removeChild</B>( Node* child )
+<IMG ALT="o" SRC=icon2.gif>virtual   const <!1><A HREF="Group.html">Group</A>* <B>asGroup</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   bool <B>replaceChild</B>( Node* origChild, Node* newChild )
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const unsigned int <B>getNumChildren</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   unsigned int <B>getNumChildren</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   Node* <B>getChild</B>( const unsigned int i )
+<IMG ALT="o" SRC=icon2.gif>inline   Node* <B>getChild</B>( unsigned int i )
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const Node* <B>getChild</B>( const unsigned int i ) const 
+<IMG ALT="o" SRC=icon2.gif>inline   const Node* <B>getChild</B>( unsigned int i ) const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   bool <B>containsNode</B>( const Node* node ) const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   ChildList::iterator <B>findNode</B>( const Node* node )
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   ChildList::const_iterator <B>findNode</B>( const Node* node ) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   unsigned int <B>findChildNo</B>( const Node* node ) const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt;<!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;Node&gt; &gt; <B>ChildList</B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>ChildList <B>_children</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Group.html#DOC.2.74.1">ChildList</A> <B>_children</B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   const bool <B>computeBound</B>() const 
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>computeBound</B>() const 
 </DL></P>
 
 </DL>
@@ -142,108 +152,122 @@ during rendering.</BLOCKQUOTE>
 <DL>
 
 <A NAME="LOD"></A>
-<A NAME="DOC.2.71.1"></A>
+<A NAME="DOC.2.87.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LOD()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="LOD"></A>
-<A NAME="DOC.2.71.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LOD(const <!1><A HREF="LOD.html#DOC.2.71.2">LOD</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="DOC.2.87.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LOD(const <!1><A HREF="LOD.html#DOC.2.87.2">LOD</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
 <DD>Copy constructor using CopyOp to manage deep vs shallow copy
 <DL><DT><DD></DL><P>
 <A NAME="META_Node"></A>
-<A NAME="DOC.2.71.3"></A>
+<A NAME="DOC.2.87.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Node(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="LOD.html">LOD</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="traverse"></A>
-<A NAME="DOC.2.71.4"></A>
+<A NAME="DOC.2.87.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void traverse(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="setRange"></A>
-<A NAME="DOC.2.71.5"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setRange(const unsigned int index, const float range)</B></TT>
-<DD>Sets the value of range list element index to range which
-is a floating point distance specified in world coordinates.
-Range list automatically expands to accommodate values beyond
-the current getNumRanges().
+<A NAME="addChild"></A>
+<A NAME="DOC.2.87.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool addChild(Node* child)</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="getRange"></A>
-<A NAME="DOC.2.71.6"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const float getRange(const unsigned int index) const </B></TT>
-<DD>returns the range for specified index
+<A NAME="addChild"></A>
+<A NAME="DOC.2.87.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool addChild(Node* child, float min, float max)</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="getNumRanges"></A>
-<A NAME="DOC.2.71.7"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const unsigned int getNumRanges() const </B></TT>
-<DD>returns the number of ranges currently set
+<A NAME="removeChild"></A>
+<A NAME="DOC.2.87.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool removeChild(Node* child)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="MinMaxPair"></A>
+<A NAME="DOC.2.87.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::pair&lt;float,float&gt; MinMaxPair</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="RangeList"></A>
+<A NAME="DOC.2.87.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="LOD.html#DOC.2.87.8">MinMaxPair</A>&gt; RangeList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="CenterMode"></A>
+<A NAME="DOC.2.87.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  CenterMode</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="USE_BOUNDING_SPHERE_CENTER"></A>
+<A NAME="DOC.2.87.10.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> USE_BOUNDING_SPHERE_CENTER</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="USER_DEFINED_CENTER"></A>
+<A NAME="DOC.2.87.10.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> USER_DEFINED_CENTER</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="setCenterMode"></A>
+<A NAME="DOC.2.87.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setCenterMode(<!1><A HREF="LOD.html#DOC.2.87.10">CenterMode</A> mode)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getCenterMode"></A>
+<A NAME="DOC.2.87.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="LOD.html#DOC.2.87.10">CenterMode</A> getCenterMode() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setCenter"></A>
-<A NAME="DOC.2.71.8"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setCenter(const <!1><A HREF="Vec3.html">Vec3</A> &amp;<!1><A HREF="BoundingSphere.html#DOC.2.9.8">center</A>)</B></TT>
+<A NAME="DOC.2.87.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setCenter(const <!1><A HREF="Vec3.html">Vec3</A>&amp; <!1><A HREF="BoundingSphere.html#DOC.2.25.8">center</A>)</B></TT>
 <DD>Sets the object-space point which defines the center of the osg::LOD.  
 center is affected by any transforms in the hierarchy above the osg::LOD.
 <DL><DT><DD></DL><P>
 <A NAME="getCenter"></A>
-<A NAME="DOC.2.71.9"></A>
+<A NAME="DOC.2.87.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Vec3.html">Vec3</A>&amp; getCenter() const </B></TT>
 <DD>return the LOD center point. 
 <DL><DT><DD></DL><P>
-<A NAME="EvaluateLODCallback"></A>
-<A NAME="DOC.2.71.10"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>struct  EvaluateLODCallback: public <!1><A HREF="Referenced.html">osg::Referenced</A></B></TT>
-<DD>Callback attached to an LOD which allows the users to customize the selection of LOD children
-<DL><DT><DD></DL><P><DL>
-
-<A NAME="evaluateLODChild"></A>
-<A NAME="DOC.2.71.10.1"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const int evaluateLODChild(const <!1><A HREF="LOD.html">osg::LOD</A>* lod, const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye_local, const float bias) const  = 0</B></TT>
-<DD>Compute the child to select
-<DL><DT><DD></DL><P></DL>
-
-<A NAME="setEvaluateLODCallback"></A>
-<A NAME="DOC.2.71.11"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setEvaluateLODCallback(<!1><A HREF="LOD.html#DOC.2.71.10">EvaluateLODCallback</A>* cbc)</B></TT>
-<DD>Set the EvaluateLODCallback which allows users to attach customize computation of the the selection of LOD children
+<A NAME="setRange"></A>
+<A NAME="DOC.2.87.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setRange(unsigned int childNo, float min, float max)</B></TT>
+<DD>Sets the min and max visible ranges of range of specifiec child.
+Values are floating point distance specified in local objects coordinates.
 <DL><DT><DD></DL><P>
-<A NAME="getEvaluateLODCallback"></A>
-<A NAME="DOC.2.71.12"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="LOD.html#DOC.2.71.10">EvaluateLODCallback</A>* getEvaluateLODCallback()</B></TT>
-<DD>Get the non const ComputeBillboardCallback
+<A NAME="getMinRange"></A>
+<A NAME="DOC.2.87.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   float getMinRange(unsigned int childNo) const </B></TT>
+<DD>returns the min visible range for specified child
 <DL><DT><DD></DL><P>
-<A NAME="getEvaluateLODCallback"></A>
-<A NAME="DOC.2.71.13"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="LOD.html#DOC.2.71.10">EvaluateLODCallback</A>* getEvaluateLODCallback() const </B></TT>
-<DD>Get the const ComputeBillboardCallback
+<A NAME="getMaxRange"></A>
+<A NAME="DOC.2.87.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   float getMaxRange(unsigned int childNo) const </B></TT>
+<DD>returns the max visible range for specified child
 <DL><DT><DD></DL><P>
-<A NAME="evaluate"></A>
-<A NAME="DOC.2.71.14"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const int evaluate(const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye_local, const float bias=1.0f) const </B></TT>
-<DD>return the child to traverse.
-Selected by the distance between the eye point in local
-coordinates and the LOD center, multiplied by the bias.
+<A NAME="getNumRanges"></A>
+<A NAME="DOC.2.87.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   unsigned int getNumRanges() const </B></TT>
+<DD>returns the number of ranges currently set. 
+An LOD which has been fully set up will have getNumChildren()==getNumRanges(). 
 <DL><DT><DD></DL><P>
-<A NAME="evaluateLODChild"></A>
-<A NAME="DOC.2.71.15"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const int evaluateLODChild(const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye_local, const float bias) const </B></TT>
+<A NAME="getRangeList"></A>
+<A NAME="DOC.2.87.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="LOD.html#DOC.2.87.9">RangeList</A>&amp; getRangeList()</B></TT>
+<DD>return the list of MinMax ranges for each child
+<DL><DT><DD></DL><P>
+<A NAME="getRangeList"></A>
+<A NAME="DOC.2.87.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="LOD.html#DOC.2.87.9">RangeList</A>&amp; getRangeList() const </B></TT>
+<DD>return the list of MinMax ranges for each child
 <DL><DT><DD></DL><P>
 <A NAME="~LOD"></A>
-<A NAME="DOC.2.71.16"></A>
+<A NAME="DOC.2.87.21"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~LOD()</B></TT>
 <DL><DT><DD></DL><P>
+<A NAME="_centerMode"></A>
+<A NAME="DOC.2.87.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="LOD.html#DOC.2.87.10">CenterMode</A> _centerMode</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_userDefinedCenter"></A>
+<A NAME="DOC.2.87.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec3.html">Vec3</A> _userDefinedCenter</B></TT>
+<DL><DT><DD></DL><P>
 <A NAME="_rangeList"></A>
-<A NAME="DOC.2.71.17"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;float&gt; RangeList RangeList _rangeList</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="_rangeList2"></A>
-<A NAME="DOC.2.71.18"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>RangeList _rangeList2</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="_evaluateLODCallback"></A>
-<A NAME="DOC.2.71.19"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="LOD.html#DOC.2.71.10">EvaluateLODCallback</A>&gt;  _evaluateLODCallback</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="_center"></A>
-<A NAME="DOC.2.71.20"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec3.html">Vec3</A> _center</B></TT>
+<A NAME="DOC.2.87.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="LOD.html#DOC.2.87.9">RangeList</A> _rangeList</B></TT>
 <DL><DT><DD></DL><P></DL>
 <HR>
 <DL><DT><B>Direct child classes:

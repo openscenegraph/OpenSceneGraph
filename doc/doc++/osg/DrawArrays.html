@@ -11,7 +11,7 @@
 
 <H2>Inheritance:</H2>
 <APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=125>
-<param name=classes value="CReferenced,MReferenced.html,CObject,MObject.html,CPrimitive,MPrimitive.html,CDrawArrays,MDrawArrays.html">
+<param name=classes value="CReferenced,MReferenced.html,CObject,MObject.html,CPrimitiveSet,MPrimitiveSet.html,CDrawArrays,MDrawArrays.html">
 <param name=before value="M,M,M,M">
 <param name=after value="Md_SPSP,Md_SP,Md_,M">
 <param name=indent value="0,1,2,3">
@@ -22,56 +22,62 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.104.1">DrawArrays</A></B>(GLenum mode=0)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.125.1">DrawArrays</A></B>(GLenum mode=0)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.104.2">DrawArrays</A></B>(GLenum mode, GLint <!1><A HREF="ImpostorSpriteManager.html#DOC.2.64.3">first</A>, GLsizei count)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.125.2">DrawArrays</A></B>(GLenum mode, GLint <!1><A HREF="ImpostorSpriteManager.html#DOC.2.80.3">first</A>, GLsizei count)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.104.3">DrawArrays</A></B>(const <!1><A HREF="DrawArrays.html#DOC.2.104.3">DrawArrays</A>&amp; da, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.125.3">DrawArrays</A></B>(const <!1><A HREF="DrawArrays.html#DOC.2.125.3">DrawArrays</A>&amp; da, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.104.4">cloneType</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.125.4">cloneType</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.104.5">clone</A></B>(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.125.5">clone</A></B>(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.104.6">isSameKindAs</A></B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.125.6">isSameKindAs</A></B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.104.7">libraryName</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.125.7">libraryName</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.104.8">className</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.125.8">className</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.104.9">set</A></B>(GLenum mode, GLint <!1><A HREF="ImpostorSpriteManager.html#DOC.2.64.3">first</A>, GLsizei count)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.125.9">set</A></B>(GLenum mode, GLint <!1><A HREF="ImpostorSpriteManager.html#DOC.2.80.3">first</A>, GLsizei count)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.104.10">setFirst</A></B>(GLint <!1><A HREF="ImpostorSpriteManager.html#DOC.2.64.3">first</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.125.10">setFirst</A></B>(GLint <!1><A HREF="ImpostorSpriteManager.html#DOC.2.80.3">first</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLint <B><A HREF="#DOC.2.104.11">getFirst</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLint <B><A HREF="#DOC.2.125.11">getFirst</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.104.12">setCount</A></B>(GLsizei count)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.125.12">setCount</A></B>(GLsizei count)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLsizei <B><A HREF="#DOC.2.104.13">getCount</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLsizei <B><A HREF="#DOC.2.125.13">getCount</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.104.14">draw</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.125.14">draw</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.104.15">accept</A></B>(Drawable::PrimitiveFunctor&amp; functor)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.125.15">accept</A></B>(Drawable::PrimitiveFunctor&amp; functor) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.104.16">offsetIndices</A></B>(int offset)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   unsigned int <B><A HREF="#DOC.2.125.16">getNumIndices</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   unsigned int <B><A HREF="#DOC.2.125.17">index</A></B>(unsigned int pos) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.125.18">offsetIndices</A></B>(int offset)
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLint <B><A HREF="#DOC.2.104.17">_first</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLint <B><A HREF="#DOC.2.125.19">_first</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLsizei <B><A HREF="#DOC.2.104.18">_count</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLsizei <B><A HREF="#DOC.2.125.20">_count</A></B>
 </DL></P>
 
 </DL>
-<HR><H3>Inherited from <A HREF="Primitive.html">Primitive</A>:</H3>
+<HR><H3>Inherited from <A HREF="PrimitiveSet.html">PrimitiveSet</A>:</H3>
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Primitive.html#DOC.2.103.1">Type</A> <B>getType</B>() const 
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="PrimitiveSet.html#DOC.2.124.1">Type</A> <B>getType</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>void <B>setMode</B>(GLenum mode)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>GLenum <B>getMode</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   unsigned int <B>getNumPrimitives</B>() const 
 </DL></P>
 
 <P><DL>
@@ -83,7 +89,7 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Primitive.html#DOC.2.103.1">Type</A> <B>_primitiveType</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="PrimitiveSet.html#DOC.2.124.1">Type</A> <B>_primitiveType</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif>GLenum <B>_mode</B>
 </DL></P>
@@ -93,9 +99,9 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(const <!1><A HREF="Object.html#DOC.2.90.8">DataVariance</A> dv)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(const <!1><A HREF="Object.html#DOC.2.106.8">DataVariance</A> dv)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Object.html#DOC.2.90.8">DataVariance</A> <B>getDataVariance</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Object.html#DOC.2.106.8">DataVariance</A> <B>getDataVariance</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
 <DT>
@@ -111,7 +117,7 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.90.8">DataVariance</A> <B>_dataVariance</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.106.8">DataVariance</A> <B>_dataVariance</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
 </DL></P>
@@ -129,12 +135,20 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>unref_nodelete</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const int <B>referenceCount</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   int <B>referenceCount</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline static   int <B>createdCount</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline static   int <B>deletedCount</B>()
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
 <IMG ALT="o" SRC=icon2.gif>mutable int <B>_refCount</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   int <B>_createdCount</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   int <B>_deletedCount</B>
 </DL></P>
 
 </DL>
@@ -145,75 +159,83 @@
 <DL>
 
 <A NAME="DrawArrays"></A>
-<A NAME="DOC.2.104.1"></A>
+<A NAME="DOC.2.125.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DrawArrays(GLenum mode=0)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="DrawArrays"></A>
-<A NAME="DOC.2.104.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DrawArrays(GLenum mode, GLint <!1><A HREF="ImpostorSpriteManager.html#DOC.2.64.3">first</A>, GLsizei count)</B></TT>
+<A NAME="DOC.2.125.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DrawArrays(GLenum mode, GLint <!1><A HREF="ImpostorSpriteManager.html#DOC.2.80.3">first</A>, GLsizei count)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="DrawArrays"></A>
-<A NAME="DOC.2.104.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DrawArrays(const <!1><A HREF="DrawArrays.html#DOC.2.104.3">DrawArrays</A>&amp; da, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="DOC.2.125.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DrawArrays(const <!1><A HREF="DrawArrays.html#DOC.2.125.3">DrawArrays</A>&amp; da, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="cloneType"></A>
-<A NAME="DOC.2.104.4"></A>
+<A NAME="DOC.2.125.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html">Object</A>* cloneType() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="clone"></A>
-<A NAME="DOC.2.104.5"></A>
+<A NAME="DOC.2.125.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html">Object</A>* clone(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="isSameKindAs"></A>
-<A NAME="DOC.2.104.6"></A>
+<A NAME="DOC.2.125.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(const <!1><A HREF="Object.html">Object</A>* obj) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="libraryName"></A>
-<A NAME="DOC.2.104.7"></A>
+<A NAME="DOC.2.125.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* libraryName() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="className"></A>
-<A NAME="DOC.2.104.8"></A>
+<A NAME="DOC.2.125.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="set"></A>
-<A NAME="DOC.2.104.9"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void set(GLenum mode, GLint <!1><A HREF="ImpostorSpriteManager.html#DOC.2.64.3">first</A>, GLsizei count)</B></TT>
+<A NAME="DOC.2.125.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void set(GLenum mode, GLint <!1><A HREF="ImpostorSpriteManager.html#DOC.2.80.3">first</A>, GLsizei count)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setFirst"></A>
-<A NAME="DOC.2.104.10"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setFirst(GLint <!1><A HREF="ImpostorSpriteManager.html#DOC.2.64.3">first</A>)</B></TT>
+<A NAME="DOC.2.125.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setFirst(GLint <!1><A HREF="ImpostorSpriteManager.html#DOC.2.80.3">first</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getFirst"></A>
-<A NAME="DOC.2.104.11"></A>
+<A NAME="DOC.2.125.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GLint getFirst() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setCount"></A>
-<A NAME="DOC.2.104.12"></A>
+<A NAME="DOC.2.125.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setCount(GLsizei count)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getCount"></A>
-<A NAME="DOC.2.104.13"></A>
+<A NAME="DOC.2.125.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GLsizei getCount() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="draw"></A>
-<A NAME="DOC.2.104.14"></A>
+<A NAME="DOC.2.125.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void draw() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="accept"></A>
-<A NAME="DOC.2.104.15"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void accept(Drawable::PrimitiveFunctor&amp; functor)</B></TT>
+<A NAME="DOC.2.125.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void accept(Drawable::PrimitiveFunctor&amp; functor) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getNumIndices"></A>
+<A NAME="DOC.2.125.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   unsigned int getNumIndices() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="index"></A>
+<A NAME="DOC.2.125.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   unsigned int index(unsigned int pos) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="offsetIndices"></A>
-<A NAME="DOC.2.104.16"></A>
+<A NAME="DOC.2.125.18"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void offsetIndices(int offset)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_first"></A>
-<A NAME="DOC.2.104.17"></A>
+<A NAME="DOC.2.125.19"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GLint _first</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_count"></A>
-<A NAME="DOC.2.104.18"></A>
+<A NAME="DOC.2.125.20"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GLsizei _count</B></TT>
 <DL><DT><DD></DL><P></DL>
 

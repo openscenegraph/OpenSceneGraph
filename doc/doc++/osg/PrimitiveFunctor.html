@@ -22,25 +22,25 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.42.41.1">~PrimitiveFunctor</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.59.51.1">~PrimitiveFunctor</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.42.41.2">setVertexArray</A></B>(unsigned int count, <!1><A HREF="Vec3.html">Vec3</A>* vertices) = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.59.51.2">setVertexArray</A></B>(unsigned int count, const <!1><A HREF="Vec3.html">Vec3</A>* vertices) = 0
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.42.41.3">drawArrays</A></B>(GLenum mode, GLint <!1><A HREF="ImpostorSpriteManager.html#DOC.2.64.3">first</A>, GLsizei count) = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.59.51.3">drawArrays</A></B>(GLenum mode, GLint <!1><A HREF="ImpostorSpriteManager.html#DOC.2.80.3">first</A>, GLsizei count) = 0
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.42.41.4">drawElements</A></B>(GLenum mode, GLsizei count, GLubyte* indices) = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.59.51.4">drawElements</A></B>(GLenum mode, GLsizei count, const GLubyte* indices) = 0
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.42.41.5">drawElements</A></B>(GLenum mode, GLsizei count, GLushort* indices) = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.59.51.5">drawElements</A></B>(GLenum mode, GLsizei count, const GLushort* indices) = 0
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.42.41.6">drawElements</A></B>(GLenum mode, GLsizei count, GLuint* indices) = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.59.51.6">drawElements</A></B>(GLenum mode, GLsizei count, const GLuint* indices) = 0
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.42.41.7">begin</A></B>(GLenum mode) = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.59.51.7">begin</A></B>(GLenum mode) = 0
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.42.41.8">vertex</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; vert) = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.59.51.8">vertex</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; vert) = 0
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.42.41.9">vertex</A></B>(float <!1><A HREF="Viewport.html#DOC.2.153.7">x</A>, float <!1><A HREF="Viewport.html#DOC.2.153.8">y</A>, float <!1><A HREF="Vec4.html#DOC.2.150.15">z</A>) = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.59.51.9">vertex</A></B>(float <!1><A HREF="Viewport.html#DOC.2.200.7">x</A>, float <!1><A HREF="Viewport.html#DOC.2.200.8">y</A>, float <!1><A HREF="Vec4.html#DOC.2.197.15">z</A>) = 0
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.42.41.10">end</A></B>() = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.59.51.10">end</A></B>() = 0
 </DL></P>
 
 </DL>
@@ -51,43 +51,43 @@
 <DL>
 
 <A NAME="~PrimitiveFunctor"></A>
-<A NAME="DOC.2.42.41.1"></A>
+<A NAME="DOC.2.59.51.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~PrimitiveFunctor()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setVertexArray"></A>
-<A NAME="DOC.2.42.41.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setVertexArray(unsigned int count, <!1><A HREF="Vec3.html">Vec3</A>* vertices) = 0</B></TT>
+<A NAME="DOC.2.59.51.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setVertexArray(unsigned int count, const <!1><A HREF="Vec3.html">Vec3</A>* vertices) = 0</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="drawArrays"></A>
-<A NAME="DOC.2.42.41.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void drawArrays(GLenum mode, GLint <!1><A HREF="ImpostorSpriteManager.html#DOC.2.64.3">first</A>, GLsizei count) = 0</B></TT>
+<A NAME="DOC.2.59.51.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void drawArrays(GLenum mode, GLint <!1><A HREF="ImpostorSpriteManager.html#DOC.2.80.3">first</A>, GLsizei count) = 0</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="drawElements"></A>
-<A NAME="DOC.2.42.41.4"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void drawElements(GLenum mode, GLsizei count, GLubyte* indices) = 0</B></TT>
+<A NAME="DOC.2.59.51.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void drawElements(GLenum mode, GLsizei count, const GLubyte* indices) = 0</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="drawElements"></A>
-<A NAME="DOC.2.42.41.5"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void drawElements(GLenum mode, GLsizei count, GLushort* indices) = 0</B></TT>
+<A NAME="DOC.2.59.51.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void drawElements(GLenum mode, GLsizei count, const GLushort* indices) = 0</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="drawElements"></A>
-<A NAME="DOC.2.42.41.6"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void drawElements(GLenum mode, GLsizei count, GLuint* indices) = 0</B></TT>
+<A NAME="DOC.2.59.51.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void drawElements(GLenum mode, GLsizei count, const GLuint* indices) = 0</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="begin"></A>
-<A NAME="DOC.2.42.41.7"></A>
+<A NAME="DOC.2.59.51.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void begin(GLenum mode) = 0</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="vertex"></A>
-<A NAME="DOC.2.42.41.8"></A>
+<A NAME="DOC.2.59.51.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void vertex(const <!1><A HREF="Vec3.html">Vec3</A>&amp; vert) = 0</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="vertex"></A>
-<A NAME="DOC.2.42.41.9"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void vertex(float <!1><A HREF="Viewport.html#DOC.2.153.7">x</A>, float <!1><A HREF="Viewport.html#DOC.2.153.8">y</A>, float <!1><A HREF="Vec4.html#DOC.2.150.15">z</A>) = 0</B></TT>
+<A NAME="DOC.2.59.51.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void vertex(float <!1><A HREF="Viewport.html#DOC.2.200.7">x</A>, float <!1><A HREF="Viewport.html#DOC.2.200.8">y</A>, float <!1><A HREF="Vec4.html#DOC.2.197.15">z</A>) = 0</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="end"></A>
-<A NAME="DOC.2.42.41.10"></A>
+<A NAME="DOC.2.59.51.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void end() = 0</B></TT>
 <DL><DT><DD></DL><P></DL>
 <HR>

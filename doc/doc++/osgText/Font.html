@@ -36,11 +36,11 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.6.2.7">open</A></B>(const std::string&amp; font)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.6.2.8">create</A></B>(osg::State&amp; state, int pointSize, const unsigned int res = 72 )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.6.2.8">create</A></B>(osg::State&amp; state, int pointSize, unsigned int res = 72 )
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.6.2.9">create</A></B>(osg::State&amp; state)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.6.2.10">output</A></B>(osg::State&amp; state, const char* text)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.6.2.10">output</A></B>(osg::State&amp; state, const char* text) const 
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.6.2.11">isOk</A></B>(void) const 
 <DT>
@@ -131,7 +131,7 @@
 <DL><DT><DD></DL><P>
 <A NAME="create"></A>
 <A NAME="DOC.6.2.8"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool create(osg::State&amp; state, int pointSize, const unsigned int res = 72 )</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool create(osg::State&amp; state, int pointSize, unsigned int res = 72 )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="create"></A>
 <A NAME="DOC.6.2.9"></A>
@@ -139,7 +139,7 @@
 <DL><DT><DD></DL><P>
 <A NAME="output"></A>
 <A NAME="DOC.6.2.10"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void output(osg::State&amp; state, const char* text)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void output(osg::State&amp; state, const char* text) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="isOk"></A>
 <A NAME="DOC.6.2.11"></A>

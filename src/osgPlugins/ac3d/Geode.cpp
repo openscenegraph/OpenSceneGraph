@@ -280,18 +280,16 @@ void Geode::OutputTriangleFanDARR(const int iCurrentMaterial, const unsigned int
 	unsigned int vindex = drawArrayLengths->getFirst();
 	for(osg::DrawArrayLengths::const_iterator primItr = drawArrayLengths->begin(); primItr <drawArrayLengths->end(); ++primItr)
 	{
-		unsigned int localPrimLength;
-		localPrimLength = *primItr;
+		int localPrimLength = *primItr;
 		
-		for(GLsizei primCount = 1; primCount < *primItr-1; ++primCount)
+		for(GLsizei primCount = 0; primCount < localPrimLength - 2; primCount++)
 		{
 			OutputSurfHead(iCurrentMaterial,surfaceFlags,3, fout);
-			OutputVertex(drawArrayLengths->getFirst(), pVertexIndices, pTexCoords, pTexIndices, fout);
 			OutputVertex(vindex, pVertexIndices, pTexCoords, pTexIndices, fout);
-			OutputVertex(vindex+1, pVertexIndices, pTexCoords, pTexIndices, fout);
-			++vindex;
+			OutputVertex(vindex+1+primCount, pVertexIndices, pTexCoords, pTexIndices, fout);
+			OutputVertex(vindex+2+primCount, pVertexIndices, pTexCoords, pTexIndices, fout);
 		}
-		
+		vindex += localPrimLength;
 	}
 }
 
@@ -833,9 +831,9 @@ void Geode::ProcessGeometry(ostream& fout, const unsigned int ioffset)
 							}
 							else
 							{
-								fRep_s = 0.0;
+								fRep_s = 1.0;
 								fOffset_s = 0.0;
-								fRep_t = 0.0;
+								fRep_t = 1.0;
 								fOffset_t = 0.0;
 							}
 							{ // replace back slash with / for ac3d convention GWM Sep 2003
@@ -846,8 +844,11 @@ void Geode::ProcessGeometry(ostream& fout, const unsigned int ioffset)
 								}
 								fout << "texture \"" << fname << "\"" << std::endl;
 							}
-							fout << "texrep " << fRep_s << " " << fRep_t << std::endl;
-							fout << "texoff " << fOffset_s << " " << fOffset_s << std::endl;
+//							fout << "texrep " << fRep_s << " " << fRep_t << std::endl;
+//							fout << "texoff " << fOffset_s << " " << fOffset_s << std::endl;
+							// Temp frig
+							fout << "texrep 1 1" << std::endl;
+							fout << "texoff 0 0" << std::endl;
 						}
 					}
 					}
@@ -869,46 +870,32 @@ void Geode::ProcessGeometry(ostream& fout, const unsigned int ioffset)
 					
 					
 					// Generate a surface for each primitive
-					unsigned int iNumPrimitives = 0;
 					unsigned int iNumSurfaces = 0; // complex tri-strip etc prims use more triangles
 					osg::Geometry::PrimitiveSetList::const_iterator pItr;
 					for(pItr = pGeometry->getPrimitiveSetList().begin(); pItr != pGeometry->getPrimitiveSetList().end(); ++pItr) {
 						const osg::PrimitiveSet* primitiveset = pItr->get();
+						//const osg::PrimitiveSet::Type type = primitiveset->getType();
+						unsigned int iNumPrimitives = primitiveset->getNumPrimitives();
+						unsigned int iNumIndices = primitiveset->getNumIndices();
 						GLenum mode=primitiveset->getMode();
-						//const osg::DrawArrays* drawArray = static_cast<const osg::DrawArrays*>(primitiveset);
-						iNumPrimitives += (*pItr)->getNumPrimitives();
-						unsigned int primLength = primitiveset->getNumIndices();
-						switch(mode)
-						{
+						switch(mode) {
 						case(osg::PrimitiveSet::POINTS):
 							iNumSurfaces+=1; // all points go in one big list
 							break;
 						case(osg::PrimitiveSet::LINES): // each line is a pair of vertices
-							iNumSurfaces+=primLength/2;
-							break;
 						case(osg::PrimitiveSet::TRIANGLES): // each tri = 3 verts
-							iNumSurfaces+=primLength/3;
-							break;
 						case(osg::PrimitiveSet::QUADS):
-							iNumSurfaces+=primLength/4;
-							break;
 						case(osg::PrimitiveSet::LINE_LOOP):
-							iNumSurfaces+=iNumPrimitives;
-							break;
 						case(osg::PrimitiveSet::LINE_STRIP):
+						case(osg::PrimitiveSet::POLYGON):
 							iNumSurfaces+=iNumPrimitives;
 							break;
 						case(osg::PrimitiveSet::TRIANGLE_STRIP):
-							iNumSurfaces+=primLength-2;
-							break;
 						case(osg::PrimitiveSet::TRIANGLE_FAN):
-							iNumSurfaces+=primLength-2;
+							iNumSurfaces+=iNumIndices-2*iNumPrimitives;
 							break;
 						case(osg::PrimitiveSet::QUAD_STRIP):
-							iNumSurfaces+=(primLength-2)/2;
-							break;
-						case(osg::PrimitiveSet::POLYGON):
-							iNumSurfaces+=1;
+							iNumSurfaces+=(iNumIndices-2*iNumPrimitives)/2;
 							break;
 						default:
 							break; // unknown shape

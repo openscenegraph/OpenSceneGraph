@@ -434,29 +434,53 @@ class proxy_streambuf : public std::streambuf
       }
 };
 
-ReaderWriter::ReadResult Archive::readObject(const std::string& fileName,const Options* options)
+struct ArchiveReadObjectFunctor : public Archive::ReadFunctor
+{
+    ArchiveReadObjectFunctor(const std::string& filename, const ReaderWriter::Options* options):ReadFunctor(filename,options) {}
+    virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw, std::istream& input) const { return rw.readObject(input, _options); }    
+};
+
+struct ArchiveReadImageFunctor : public Archive::ReadFunctor
+{
+    ArchiveReadImageFunctor(const std::string& filename, const ReaderWriter::Options* options):ReadFunctor(filename,options) {}
+    virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw, std::istream& input)const  { return rw.readImage(input, _options); }    
+};
+
+struct ArchiveReadHeightFieldFunctor : public Archive::ReadFunctor
+{
+    ArchiveReadHeightFieldFunctor(const std::string& filename, const ReaderWriter::Options* options):ReadFunctor(filename,options) {}
+    virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw, std::istream& input) const { return rw.readHeightField(input, _options); }    
+};
+
+struct ArchiveReadNodeFunctor : public Archive::ReadFunctor
+{
+    ArchiveReadNodeFunctor(const std::string& filename, const ReaderWriter::Options* options):ReadFunctor(filename,options) {}
+    virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw, std::istream& input) const { return rw.readNode(input, _options); }    
+};
+
+ReaderWriter::ReadResult Archive::read(const ReadFunctor& readFunctor)
 {
     if (_status!=READ) 
     {
-        osg::notify(osg::INFO)<<"Archive::readObject(obj, "<<fileName<<") failed, archive opened as read only."<<std::endl;
+        osg::notify(osg::INFO)<<"Archive::readObject(obj, "<<readFunctor._filename<<") failed, archive opened as read only."<<std::endl;
         return ReadResult(ReadResult::FILE_NOT_HANDLED);
     }
     
-    FileNamePositionMap::const_iterator itr = _indexMap.find(fileName);
+    FileNamePositionMap::const_iterator itr = _indexMap.find(readFunctor._filename);
     if (itr==_indexMap.end())
     {
-        osg::notify(osg::INFO)<<"Archive::readObject(obj, "<<fileName<<") failed, file not found in archive"<<std::endl;
+        osg::notify(osg::INFO)<<"Archive::readObject(obj, "<<readFunctor._filename<<") failed, file not found in archive"<<std::endl;
         return ReadResult(ReadResult::FILE_NOT_FOUND);
     }
     
-    ReaderWriter* rw = osgDB::Registry::instance()->getReaderWriterForExtension(getLowerCaseFileExtension(fileName));
+    ReaderWriter* rw = osgDB::Registry::instance()->getReaderWriterForExtension(getLowerCaseFileExtension(readFunctor._filename));
     if (!rw)
     {
-        osg::notify(osg::INFO)<<"Archive::readObject(obj, "<<fileName<<") failed to find appropriate plugin to write file."<<std::endl;
+        osg::notify(osg::INFO)<<"Archive::readObject(obj, "<<readFunctor._filename<<") failed to find appropriate plugin to write file."<<std::endl;
         return ReadResult(ReadResult::FILE_NOT_HANDLED);
     }
     
-    osg::notify(osg::INFO)<<"Archive::readObject(obj, "<<fileName<<")"<<std::endl;
+    osg::notify(osg::INFO)<<"Archive::readObject(obj, "<<readFunctor._filename<<")"<<std::endl;
     
     _input.seekg(itr->second.first);
 
@@ -465,82 +489,127 @@ ReaderWriter::ReadResult Archive::readObject(const std::string& fileName,const O
     proxy_streambuf mystreambuf(ins.rdbuf(),itr->second.second);
     ins.rdbuf(&mystreambuf);
 
-    ReaderWriter::ReadResult result = rw->readObject(_input, options);
+    ReaderWriter::ReadResult result = readFunctor.doRead(*rw, _input);
 
     ins.rdbuf(mystreambuf._streambuf);
     
     return result;
 }
 
-ReaderWriter::ReadResult Archive::readImage(const std::string& /*fileName*/,const Options*) { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
-ReaderWriter::ReadResult Archive::readHeightField(const std::string& /*fileName*/,const Options*) { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
-ReaderWriter::ReadResult Archive::readNode(const std::string& /*fileName*/,const Options*) { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
+ReaderWriter::ReadResult Archive::readObject(const std::string& fileName,const Options* options)
+{
+    return read(ArchiveReadObjectFunctor(fileName, options));
+}
+
+ReaderWriter::ReadResult Archive::readImage(const std::string& fileName,const Options* options)
+{
+    return read(ArchiveReadImageFunctor(fileName, options));
+}
+
+ReaderWriter::ReadResult Archive::readHeightField(const std::string& fileName,const Options* options)
+{
+    return read(ArchiveReadHeightFieldFunctor(fileName, options));
+}
+
+ReaderWriter::ReadResult Archive::readNode(const std::string& fileName,const Options* options)
+{
+    return read(ArchiveReadNodeFunctor(fileName, options));
+}
 
 
 
 
+struct WriteObjectFunctor : public Archive::WriteFunctor
+{
+    WriteObjectFunctor(const osg::Object& object, const std::string& filename, const ReaderWriter::Options* options):
+        WriteFunctor(filename,options),
+        _object(object) {}
+    const osg::Object& _object;
+    
+    virtual ReaderWriter::WriteResult doWrite(ReaderWriter& rw, std::ostream& output) const { return rw.writeObject(_object, output, _options); } 
+};
 
-ReaderWriter::WriteResult Archive::writeObject(const osg::Object& obj,const std::string& fileName,const Options* options)
+struct WriteImageFunctor : public Archive::WriteFunctor
+{
+    WriteImageFunctor(const osg::Image& object, const std::string& filename, const ReaderWriter::Options* options):
+        WriteFunctor(filename,options),
+        _object(object) {}
+    const osg::Image& _object;
+
+    virtual ReaderWriter::WriteResult doWrite(ReaderWriter& rw, std::ostream& output)const  { return rw.writeImage(_object, output, _options); }    
+};
+
+struct WriteHeightFieldFunctor : public Archive::WriteFunctor
+{
+    WriteHeightFieldFunctor(const osg::HeightField& object, const std::string& filename, const ReaderWriter::Options* options):
+        WriteFunctor(filename,options),
+        _object(object) {}
+    const osg::HeightField& _object;
+
+    virtual ReaderWriter::WriteResult doWrite(ReaderWriter& rw, std::ostream& output) const { return rw.writeHeightField(_object, output, _options); }    
+};
+
+struct WriteNodeFunctor : public Archive::WriteFunctor
+{
+    WriteNodeFunctor(const osg::Node& object, const std::string& filename, const ReaderWriter::Options* options):
+        WriteFunctor(filename,options),
+        _object(object) {}
+    const osg::Node& _object;
+
+    virtual ReaderWriter::WriteResult doWrite(ReaderWriter& rw, std::ostream& output) const { return rw.writeNode(_object, output, _options); }    
+};
+
+ReaderWriter::WriteResult Archive::write(const WriteFunctor& writeFunctor)
 {
     if (_status!=WRITE) 
     {
-        osg::notify(osg::NOTICE)<<"Archive::writeObject(obj, "<<fileName<<") failed, archive opened as read only."<<std::endl;
+        osg::notify(osg::NOTICE)<<"Archive::writeObject(obj, "<<writeFunctor._filename<<") failed, archive opened as read only."<<std::endl;
         return WriteResult(WriteResult::FILE_NOT_HANDLED);
     }
 
-    ReaderWriter* rw = osgDB::Registry::instance()->getReaderWriterForExtension(getLowerCaseFileExtension(fileName));
+    ReaderWriter* rw = osgDB::Registry::instance()->getReaderWriterForExtension(getLowerCaseFileExtension(writeFunctor._filename));
     if (!rw)
     {
-        osg::notify(osg::NOTICE)<<"Archive::writeObject(obj, "<<fileName<<") failed to find appropriate plugin to write file."<<std::endl;
+        osg::notify(osg::NOTICE)<<"Archive::writeObject(obj, "<<writeFunctor._filename<<") failed to find appropriate plugin to write file."<<std::endl;
         return WriteResult(WriteResult::FILE_NOT_HANDLED);
     }
     
-    osg::notify(osg::NOTICE)<<"Archive::writeObject(obj, "<<fileName<<")"<<std::endl;
+    osg::notify(osg::NOTICE)<<"Archive::writeObject(obj, "<<writeFunctor._filename<<")"<<std::endl;
     
     // place write position at end of file.
     _output.seekp(0,std::ios::end);
     
     pos_type position = _output.tellp();
     
-    WriteResult result = rw->writeObject(obj, _output, options);
+    WriteResult result = writeFunctor.doWrite(*rw,_output);
     
     pos_type final_position = _output.tellp();
     size_type size = size_type(final_position-position);
 
-    if (result.success()) addFileReference(position, size, fileName);
+    if (result.success()) addFileReference(position, size, writeFunctor._filename);
     
     return result;
 }
 
-ReaderWriter::WriteResult Archive::writeImage(const osg::Image& /*image*/,const std::string& fileName,const Options* /*options*/)
+
+ReaderWriter::WriteResult Archive::writeObject(const osg::Object& obj,const std::string& fileName,const Options* options)
 {
-    if (_status==READ) 
-    {
-        osg::notify(osg::NOTICE)<<"Archive::writeImage(obj, "<<fileName<<") failed, archive opened as read only."<<std::endl;
-        return WriteResult(WriteResult::FILE_NOT_HANDLED);
-    }
-    osg::notify(osg::NOTICE)<<"Archive::writeImage(obj, "<<fileName<<")"<<std::endl;
-    return WriteResult(WriteResult::FILE_NOT_HANDLED);
+    osg::notify(osg::NOTICE)<<"Archive::writeObject(obj, "<<fileName<<")"<<std::endl;
+    return write(WriteObjectFunctor(obj, fileName, options));
 }
 
-ReaderWriter::WriteResult Archive::writeHeightField(const osg::HeightField& /*heightField*/,const std::string& fileName,const Options* /*options*/)
+ReaderWriter::WriteResult Archive::writeImage(const osg::Image& image,const std::string& fileName,const Options* options)
 {
-    if (_status!=WRITE) 
-    {
-        osg::notify(osg::NOTICE)<<"Archive::writeHeightField(obj, "<<fileName<<") failed, archive opened as read only."<<std::endl;
-        return WriteResult(WriteResult::FILE_NOT_HANDLED);
-    }
-    osg::notify(osg::NOTICE)<<"Archive::writeHeightField(obj, "<<fileName<<")"<<std::endl;
-    return WriteResult(WriteResult::FILE_NOT_HANDLED);
+    return write(WriteImageFunctor(image, fileName, options));
 }
 
-ReaderWriter::WriteResult Archive::writeNode(const osg::Node& /*node*/,const std::string& fileName,const Options* /*options*/)
+ReaderWriter::WriteResult Archive::writeHeightField(const osg::HeightField& heightField,const std::string& fileName,const Options* options)
 {
-    if (_status!=WRITE) 
-    {
-        osg::notify(osg::NOTICE)<<"Archive::writeNode(obj, "<<fileName<<") failed, archive opened as read only."<<std::endl;
-        return WriteResult(WriteResult::FILE_NOT_HANDLED);
-    }
+    return write(WriteHeightFieldFunctor(heightField, fileName, options));
+}
+
+ReaderWriter::WriteResult Archive::writeNode(const osg::Node& node,const std::string& fileName,const Options* options)
+{
     osg::notify(osg::NOTICE)<<"Archive::writeNode(obj, "<<fileName<<")"<<std::endl;
-    return WriteResult(WriteResult::FILE_NOT_HANDLED);
+    return write(WriteNodeFunctor(node, fileName, options));
 }

@@ -32,6 +32,8 @@
 #include <osg/Shape>
 #include <osg/CoordinateSystemNode>
 
+#include <osgDB/Archive>
+
 #include <set>
 
 #include <osgTerrain/Export>
@@ -927,6 +929,18 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
         
         void setDestinationGeoTransform(const osg::Matrixd& geoTransform) { _geoTransform = geoTransform; }
 
+        /** Set the Archive name if one is to be used.*/
+        void setArchiveName(const std::string& filename) { _archiveName = filename; }
+
+        /** Get the Archive name.*/
+        const std::string& getArchiveName() const { return _archiveName; }
+
+        /** Set the Archive.*/
+        void setArchive(osgDB::Archive* archive) { _archive = archive; }
+
+        /** Get the Archive if one is to being used.*/
+        osgDB::Archive* getArchive() { return _archive.get(); }
+
         /** Set the DestinationTileBaseName and DestinationTileExtension from the passed in filename.*/
         void setDestinationName(const std::string& filename);
 
@@ -1020,10 +1034,14 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
         
         osg::Node* getDestinationRootNode() { return _rootNode.get(); }
 
+        // helper functions for handling optional archive
+        void _writeNodeFile(const osg::Node& node,const std::string& filename);
+        void _writeImageFile(const osg::Image& image,const std::string& filename);
 
     protected:
 
         virtual ~DataSet() {}
+
 
 
         void _readRow(Row& row);
@@ -1059,6 +1077,8 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
  
         osg::Matrixd                                _geoTransform;
         osg::BoundingBox                            _extents;
+        std::string                                 _archiveName;
+        osg::ref_ptr<osgDB::Archive>                _archive;
         std::string                                 _tileBasename;
         std::string                                 _tileExtension;
         osg::Vec4                                   _defaultColor;

@@ -62,6 +62,34 @@ class OSGDB_EXPORT Archive : public ReaderWriter
         virtual WriteResult writeHeightField(const osg::HeightField& heightField,const std::string& fileName,const Options* options=NULL);
         virtual WriteResult writeNode(const osg::Node& node,const std::string& fileName,const Options* options=NULL);
         
+        /** Functor used in internal implementations.*/
+        struct ReadFunctor
+        {
+            ReadFunctor(const std::string& filename, const ReaderWriter::Options* options):
+                _filename(filename),
+                _options(options) {}
+
+            virtual ~ReadFunctor() {}
+            virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw, std::istream& input) const = 0;
+
+            std::string _filename;
+            const ReaderWriter::Options* _options;
+        };
+
+        /** Functor used in internal implementations.*/
+        struct WriteFunctor
+        {
+            WriteFunctor(const std::string& filename, const ReaderWriter::Options* options):
+                _filename(filename),
+                _options(options) {}
+
+            virtual ~WriteFunctor() {}
+            virtual ReaderWriter::WriteResult doWrite(ReaderWriter& rw, std::ostream& output) const = 0;
+
+            std::string _filename;
+            const ReaderWriter::Options* _options;
+        };
+        
     protected:
     
         
@@ -114,7 +142,8 @@ class OSGDB_EXPORT Archive : public ReaderWriter
             char*           _data;
         };
     
-    
+        ReaderWriter::ReadResult read(const ReadFunctor& readFunctor);
+        ReaderWriter::WriteResult write(const WriteFunctor& writeFunctor);
     
         typedef std::list< osg::ref_ptr<IndexBlock> >   IndexBlockList;
         

@@ -50,6 +50,15 @@ public:
             virtual ~CoordinateFrameCallback() {}
         };
         
+
+        /** set the minimum distance (as ratio) the eye point can be zoomed in towards the
+            center before the center is pushed forward.*/        
+        virtual void setMinimumDistance(float minimumDistance) { _minimumDistance=minimumDistance; }
+
+        /** get the minimum distance (as ratio) the eye point can be zoomed in */
+        float getMinimumDistance() const { return _minimumDistance; }
+
+
         /** set the coordinate frame which callback tells the manipulator which way is up, east and north.*/
         virtual void setCoordinateFrameCallback(CoordinateFrameCallback* cb) { _coordinateFrameCallback = cb; }
 
@@ -124,6 +133,8 @@ protected:
 
         MatrixManipulator();
         virtual ~MatrixManipulator();
+
+        double                  _minimumDistance;
 
         osg::ref_ptr<CoordinateFrameCallback> _coordinateFrameCallback;
 };

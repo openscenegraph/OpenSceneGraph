@@ -343,6 +343,7 @@ bool OsgCameraGroup::realize()
 
         osgUtil::SceneView* sv = sh->getSceneView();
         sv->setDefaults();
+        //sv->setLight(0);
         
         if (_renderSurfaceStateMap.count(rs)==0)
         {

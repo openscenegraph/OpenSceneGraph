@@ -9,7 +9,6 @@ using namespace osgGA;
 TerrainManipulator::TerrainManipulator()
 {
     _rotationMode =ELEVATION_AZIM; 
-    _minimumDistance = 1.0;
     _distance = 1.0;
 
     _thrown = false;

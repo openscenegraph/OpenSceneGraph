@@ -960,7 +960,7 @@ void CullVisitor::apply(Projection& node)
     ref_ptr<osg::RefMatrix> matrix = createOrReuseMatrix(node.getMatrix());
     pushProjectionMatrix(matrix.get());
     
-    osg::notify(osg::INFO)<<"Push projection "<<*matrix<<std::endl;
+    //osg::notify(osg::INFO)<<"Push projection "<<*matrix<<std::endl;
     
     // note do culling check after the frustum has been updated to ensure
     // that the node is not culled prematurely.
@@ -971,7 +971,7 @@ void CullVisitor::apply(Projection& node)
 
     popProjectionMatrix();
 
-    osg::notify(osg::INFO)<<"Pop projection "<<*matrix<<std::endl;
+    //osg::notify(osg::INFO)<<"Pop projection "<<*matrix<<std::endl;
 
     _computed_znear = previous_znear;
     _computed_zfar = previous_zfar;

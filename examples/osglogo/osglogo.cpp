@@ -187,33 +187,47 @@ osg:: Node* createTextLeft(const osg::BoundingBox& bb)
     return geode;
 }
 
-osg:: Node* createGlobe(const osg::BoundingBox& bb,float ratio)
+osg:: Node* createGlobe(const osg::BoundingBox& bb,float ratio, const std::string& filename)
 {
-    osg::Geode* geode = new osg::Geode();
-
-    osg::StateSet* stateset = geode->getOrCreateStateSet();
-
-    osg::Image* image = osgDB::readImageFile("Images/land_shallow_topo_2048.jpg");
-    if (image)
-    {
-	osg::Texture2D* texture = new osg::Texture2D;
-	texture->setImage(image);
-	texture->setMaxAnisotropy(8);
-	stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
-    }
-    
-    osg::Material* material = new osg::Material;
-    stateset->setAttribute(material);    
-    
-    
-    // the globe
-    geode->addDrawable(new osg::ShapeDrawable(new osg::Sphere(bb.center(),bb.radius()*ratio)));
-    
-    
     osg::MatrixTransform* xform = new osg::MatrixTransform;
-    xform->setUpdateCallback(new osgUtil::TransformCallback(bb.center(),osg::Vec3(0.0f,0.0f,1.0f),osg::inDegrees(30.0f)));
-    xform->addChild(geode);
-        
+    xform->setUpdateCallback(new osgUtil::TransformCallback(bb.center(),osg::Vec3(0.0f,0.0f,1.0f),osg::inDegrees(10.0f)));
+
+    osg::Node* bluemarble = osgDB::readNodeFile(filename.c_str());
+    if (bluemarble)
+    {
+        const osg::BoundingSphere& bs = bluemarble->getBound();
+        float s = 1.2*bb.radius()/bs.radius();
+        osg::MatrixTransform* positioner = new osg::MatrixTransform;
+        positioner->setMatrix(osg::Matrix::translate(-bs.center())*osg::Matrix::scale(s,s,s)*osg::Matrix::translate(bb.center()));
+        positioner->addChild(bluemarble);
+    
+        xform->addChild(positioner);
+    }
+    else
+    {
+
+        osg::Geode* geode = new osg::Geode();
+
+        osg::StateSet* stateset = geode->getOrCreateStateSet();
+
+        osg::Image* image = osgDB::readImageFile("Images/land_shallow_topo_2048.jpg");
+        if (image)
+        {
+	    osg::Texture2D* texture = new osg::Texture2D;
+	    texture->setImage(image);
+	    texture->setMaxAnisotropy(8);
+	    stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
+        }
+
+        osg::Material* material = new osg::Material;
+        stateset->setAttribute(material);    
+
+        // the globe
+        geode->addDrawable(new osg::ShapeDrawable(new osg::Sphere(bb.center(),bb.radius()*ratio)));
+
+        xform->addChild(geode);
+    }
+            
     return xform;
 }
 
@@ -331,7 +345,7 @@ osg:: Node* createBackdrop(const osg::Vec3& corner,const osg::Vec3& top,const os
     return geode;    
 }
 
-osg::Node* createLogo()
+osg::Node* createLogo(const std::string& filename)
 {
     osg::BoundingBox bb(osg::Vec3(0.0f,0.0f,0.0f),osg::Vec3(100.0f,100.0f,100.0f));
     float chordRatio = 0.5f; 
@@ -366,7 +380,7 @@ osg::Node* createLogo()
     // add the transform to the group.
     logo_group->addChild(xform);
 
-    logo_group->addChild(createGlobe(bb,sphereRatio));
+    logo_group->addChild(createGlobe(bb,sphereRatio,filename));
 
     // add the text to the group.
     //group->addChild(createTextBelow(bb));
@@ -408,7 +422,8 @@ int main( int argc, char **argv )
 
     // set up the usage document, in case we need to print out how to use this program.
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates both text, animation and billboard via custom transform to create the OpenSceneGraph logo..");
-    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
+   
+arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+"[options] [filename] ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
     arguments.getApplicationUsage()->addCommandLineOption("ps","Render the Professional Services logo");
    
@@ -440,7 +455,10 @@ int main( int argc, char **argv )
         return 1;
     }
     
-    osg::Node* node = createLogo();
+    osg::Node* node = 0;
+    
+    if (arguments.argc()>1) createLogo(arguments[1]);
+    else node = createLogo("bluemarble.ive");
 
     // add model to viewer.
     viewer.setSceneData( node );

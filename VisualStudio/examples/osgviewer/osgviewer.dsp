@@ -1,4 +1,4 @@
-# Microsoft Developer Studio Project File - Name="Demo osgprerender" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="Example osgviewer" - Package Owner=<4>
 
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 
@@ -10,7 +10,7 @@
 
 
 
-CFG=Demo osgprerender - Win32 Release
+CFG=Example osgviewer - Win32 Release
 
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 
@@ -18,7 +18,7 @@ CFG=Demo osgprerender - Win32 Release
 
 !MESSAGE 
 
-!MESSAGE NMAKE /f "osgprerender.mak".
+!MESSAGE NMAKE /f "osgviewer.mak".
 
 !MESSAGE 
 
@@ -28,7 +28,7 @@ CFG=Demo osgprerender - Win32 Release
 
 !MESSAGE 
 
-!MESSAGE NMAKE /f "osgprerender.mak" CFG="Demo osgprerender - Win32 Release"
+!MESSAGE NMAKE /f "osgviewer.mak" CFG="Example osgviewer - Win32 Release"
 
 !MESSAGE 
 
@@ -36,9 +36,9 @@ CFG=Demo osgprerender - Win32 Release
 
 !MESSAGE 
 
-!MESSAGE "Demo osgprerender - Win32 Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "Example osgviewer - Win32 Release" (based on "Win32 (x86) Console Application")
 
-!MESSAGE "Demo osgprerender - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "Example osgviewer - Win32 Debug" (based on "Win32 (x86) Console Application")
 
 !MESSAGE 
 
@@ -58,7 +58,7 @@ RSC=rc.exe
 
 
 
-!IF  "$(CFG)" == "Demo osgprerender - Win32 Release"
+!IF  "$(CFG)" == "Example osgviewer - Win32 Release"
 
 
 
@@ -102,11 +102,11 @@ LINK32=link.exe
 
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
 
-# ADD LINK32 /nologo /subsystem:console /pdb:none /machine:I386 /out:"../../../bin/osgprerender.exe" /libpath:"../../../lib"
+# ADD LINK32 opengl32.lib /nologo /subsystem:console /pdb:none /machine:I386 /out:"../../../bin/osgviewer.exe" /libpath:"../../../lib"
 
 
 
-!ELSEIF  "$(CFG)" == "Demo osgprerender - Win32 Debug"
+!ELSEIF  "$(CFG)" == "Example osgviewer - Win32 Debug"
 
 
 
@@ -150,7 +150,7 @@ LINK32=link.exe
 
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
 
-# ADD LINK32 glut32.lib glu32.lib opengl32.lib /nologo /subsystem:console /debug /machine:I386 /nodefaultlib:"libcmt" /out:"../../../bin/osgprerenderd.exe" /pdbtype:sept /libpath:"../../../lib"
+# ADD LINK32 opengl32.lib /nologo /subsystem:console /debug /machine:I386 /nodefaultlib:"libcmt" /out:"../../../bin/osgviewerd.exe" /pdbtype:sept /libpath:"../../../lib"
 
 # SUBTRACT LINK32 /incremental:no
 
@@ -164,15 +164,15 @@ LINK32=link.exe
 
 
 
-# Name "Demo osgprerender - Win32 Release"
+# Name "Example osgviewer - Win32 Release"
 
-# Name "Demo osgprerender - Win32 Debug"
+# Name "Example osgviewer - Win32 Debug"
 
 # Begin Source File
 
 
 
-SOURCE=..\..\..\src\Demos\osgprerender\osgprerender.cpp
+SOURCE=..\..\..\examples\osgviewer\osgviewer.cpp
 
 # End Source File
 

@@ -2,75 +2,166 @@
 <html>
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <meta name="GENERATOR" content="Mozilla/4.75C-SGI [en] (X11; I; IRIX64 6.5 IP27) [Netscape]">
+   <meta name="GENERATOR" content="Mozilla/4.6 [en-gb]C-CCK-MCD NetscapeOnline.co.uk  (Win95; I) [Netscape]">
    <title>OSG Documentation</title>
 </head>
 <body text="#000000" bgcolor="#FFFFFF" link="#0000EE" vlink="#551A8B" alink="#FF0000">
-
 <img SRC="OpenSceneGraphBanner_Distribution.jpg" height=77 width=640>
-
 <h1>
 <b><i><u>Stereo</u></i></b></h1>
-The OSG has support for stereo out of the box.  Currently both anaglyphic stereo (i.e. red/green glasses)
-and quad buffered stereo (i.e. active stereo using shutter glasses, or passive stereo using polarised
-projectors & glasses).  It is planned to extend this support horizontal and
-virtual window split based stereo implementations. 
+The OSG has support for stereo out of the box. Currently both anaglyphic
+stereo (i.e. red/green or red/cyan glasses) and quad buffered stereo (i.e.
+active stereo using shutter glasses, or passive stereo using polarised
+projectors &amp; glasses). It is planned to extend this support horizontal
+and virtical spli window based stereo implementations.
+<p>Almost all OSG applications have the potential for stereo support simply
+by setting the relevent environmental variables, or via command line arguments.
+Little or no code changes will be required, the support is handled transparently
+inside osgUtil::SceneView's handling of rendering.
+<p>If the user is planning to use head tracked stereo, or a cave then it
+is currently recommend to set it up via a VR toolkit such as <a href="http://www.vrjuggler.org">VRjuggler</a>,
+in this case refer to the VR toolkits handling of stereo, and do not invoke
+the OSG's native support, i.e. keep all the OSG's stereo specific environment
+varibles (below) set to OFF, or set the values to off within own your own
+applications.
+<h3>
+The environmental variables of interest:</h3>
 
-Almost all OSG applications have the potential for support simply by setting
-the relevent environmental variables, or via command line arguments.  Little or
-no code changes will be required, the support is handled transparently inside
-osgUtil::SceneView's handling of rendering.
+<table CELLSPACING=5 >
+<tr>
+<td><b>OSG_STEREO</b></td>
 
-If the user is planning to use head tracked stereo, or a cave then it is
-currently recommend to set it via a VR toolkit such as VRJuggler, in this
-case refer to the VR toolkits handling of stereo, and do not invoke the
-OSG's native support, i.e. keep all the stereo specific environment set to
-OFF, or set the values to off within there own applications.
+<td><b>ON</b></td>
 
-The environmental variables of interest:
+<td>turn stereo on.</td>
+</tr>
 
-    OSG_STEREO          ON              turn stereo on.
-    OSG_STEREO          OFF             turn stereo off (default)
+<tr>
+<td><b>OSG_STEREO</b></td>
 
-    OSG_STEREO_MODE     ANAGLYPHIC      use anaglyphic stereo when in stereo (default).
-    OSG_STEREO_MODE     QUAD_BUFFER     use quad buffered stereo when in stereo.
+<td><b>OFF</b></td>
 
-    OSG_SCREEN_DISTANCE 0.50            set the distance the viewer is from screen in metres (default shown)
-    OSG_SCREEN_HEIGHT   0.26            set the height if image on the screen in metres (default shown)
+<td>turn stereo off (default)</td>
+</tr>
 
-Command line arguments can be used to override these settings:
+<tr>
+<td><b>OSG_STEREO_MODE</b></td>
 
-    -stereo               Switch on stereo.
-    -stereo ON            Switch on stereo.
-    -stereo OFF           Switch off stereo.
-    -stereo ANAGLYPHIC    Switch on ANAGLYPHIC stereo.
-    -stereo QUAD_BUFFER   Switch on QUAD_BUFFER stereo.
+<td><b>ANAGLYPHIC</b></td>
 
-Examples:
+<td>use anaglyphic stereo when in stereo (default).</td>
+</tr>
 
-    To invoke stereo from the comandline:
+<tr>
+<td><b>OSG_STEREO_MODE</b></td>
 
-      sgv -stereo cow.osg
+<td><b>QUAD_BUFFER</b></td>
 
-    To invoke quad buffered stereo from the commandline:
+<td>use quad buffered stereo when in stereo.</td>
+</tr>
 
-      sgv -stereo QUAD_BUFFER cow.osg
+<tr>
+<td><b>OSG_SCREEN_DISTANCE</b></td>
 
-    To force all apps to start up in quad buffered stereo (if system supports it)
+<td><b>0.50</b></td>
 
-      export OSG_STEREO=ON
-      export OSG_STEREO_MODE=QUAD_BUFFER
+<td>set the distance the viewer is from screen in metres (default shown)</td>
+</tr>
 
-      sgv cow.osg
+<tr>
+<td><b>OSG_SCREEN_HEIGHT</b></td>
 
-    To set quad buffered stereo to the default, but use the commandline to
-    switch stereo on:
+<td><b>0.26</b></td>
 
-      export OSG_STEREO=OFF
-      export OSG_STEREO_MODE=QUAD_BUFFER
+<td>set the height if image on the screen in metres (default shown)</td>
+</tr>
 
-      sgv -stereo cow.osg
-  
+<tr>
+<td><b>OSG_EYE_SEPERATION</b></td>
 
+<td><b>0.05</b></td>
+
+<td>set the eye seperation - interoccular distance (default shown.)</td>
+</tr>
+</table>
+
+<h3>
+Command line arguments can be used to override these settings:</h3>
+&nbsp;
+<table CELLSPACING=5 >
+<tr>
+<td><b>-stereo</b></td>
+
+<td></td>
+
+<td>Switch on stereo.</td>
+</tr>
+
+<tr>
+<td><b>-stereo</b></td>
+
+<td><b>ON</b></td>
+
+<td>Switch on stereo.</td>
+</tr>
+
+<tr>
+<td><b>-stereo</b></td>
+
+<td><b>OFF</b></td>
+
+<td>Switch off stereo.</td>
+</tr>
+
+<tr>
+<td><b>-stereo</b></td>
+
+<td><b>ANAGLYPHIC</b></td>
+
+<td>Switch on ANAGLYPHIC stereo.</td>
+</tr>
+
+<tr>
+<td><b>-stereo</b></td>
+
+<td><b>QUAD_BUFFER</b></td>
+
+<td>Switch on QUAD_BUFFER stereo.</td>
+</tr>
+</table>
+
+<h3>
+Examples:</h3>
+To invoke stereo from the comandline:
+<br><b>&nbsp;&nbsp;&nbsp; sgv -stereo cow.osg</b>
+<p>To invoke quad buffered stereo from the commandline:
+<br><b>&nbsp;&nbsp;&nbsp; sgv -stereo QUAD_BUFFER cow.osg</b>
+<p>To force all apps to start up in quad buffered stereo (if system supports
+it)
+<br><b>&nbsp;&nbsp;&nbsp; export OSG_STEREO=ON</b>
+<br><b>&nbsp;&nbsp;&nbsp; export OSG_STEREO_MODE=QUAD_BUFFER</b>
+<br><b>&nbsp;&nbsp;&nbsp; sgv cow.osg</b>
+<p>To set quad buffered stereo to the default, but use the commandline
+to switch stereo on:
+<br><b>&nbsp;&nbsp;&nbsp; export OSG_STEREO=OFF</b>
+<br><b>&nbsp;&nbsp;&nbsp; export OSG_STEREO_MODE=QUAD_BUFFER</b>
+<br><b>&nbsp;&nbsp;&nbsp; sgv -stereo cow.osg</b>
+<br>&nbsp;
+<h3>
+Size matters:</h3>
+For appropriate depth perception the stereo code creates seperate left
+and eye views, both the frustum and modelview are shifted to account for
+the seperate eye views.&nbsp; To achieve the right amount of adjustment
+the OSG requires the users eye seperation, the distance from the eyes to
+the screen and the height of the screen.&nbsp; The OSG will use the defaults
+of 0.05m,0.5m and 0.26m respectively which are assumed to be reasonable
+defaults for most users workstation configurations, note the OSG_SCREEN_HEIGHT
+is the image height rather than total size of your monitor/display surface.&nbsp;
+For the best stereo effects please measure these values and set them up
+via the environmental variables.&nbsp; Once set the views you get should
+give improved depth perception.
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
 </body>
 </html>

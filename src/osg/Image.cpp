@@ -22,6 +22,8 @@ Image::Image()
     _packing         = 4;
 
     _data = (unsigned char *)0L;
+
+    _modifiedTag = 0;
 }
 
 
@@ -68,6 +70,8 @@ void Image::setImage(const int s,const int t,const int r,
 
     // test scaling...
     //    scaleImageTo(16,16,_r);
+    
+    ++_modifiedTag;
 
 }
 
@@ -106,6 +110,8 @@ void Image::scaleImage(const int s,const int t,const int /*r*/)
 
         notify(WARN) << "Error Image::scaleImage() do not succeed : errorString = "<<gluErrorString((GLenum)status)<<endl;
     }
+    
+    ++_modifiedTag;
 }
 
 

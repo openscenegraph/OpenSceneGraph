@@ -34,6 +34,7 @@
 #include "separator.h"
 #include "matrixtransform.h"
 #include "indexedfaceset.h"
+#include "indexedtristripset.h"
 #include "texturecoordinate.h"
 #include "texture2.h"
 #include "transform.h"
@@ -41,6 +42,7 @@
 #include "atrfloat.h"
 #include "atrstring.h"
 #include "atrvec.h"
+#include "atrvec3list.h"
 #include "string.h"
 extern int yyline;
 extern int yylex();
@@ -66,11 +68,11 @@ static MyNode *root_node;
 %token <s_value> QUOTED_STRING
 %token <f_value> FLOAT
 %token <i_value> INT
-%token SEPARATOR DEF UN_MATERIAL DIFFUSE_COLOR COORDINATE3 INDEXED_FACE_SET 
+%token SEPARATOR DEF UN_MATERIAL DIFFUSE_COLOR COORDINATE3 INDEXED_FACE_SET INDEXED_TRIANGLE_STRIP_SET 
 %token A_POINT COORD_INDEX TEXTURE_COORD_INDEX NORMAL_INDEX TEXTURE_COORDINATE TEXTURE2
 %token MATRIX_TRANSFORM MATRIX
 %token LISTA_VACIA FINPOLY
-%token DOBLE_CARA
+%token TWO_SIDED
 %token VECTOR
 %token VRML_HEADER
 %token TRANSFORM
@@ -99,9 +101,13 @@ node:
     | INDEXED_FACE_SET '{' COORD_INDEX '[' polylist ']' '}' {$$=new IndexedFaceSet($5); delete $5; }
     | INDEXED_FACE_SET '{' COORD_INDEX '[' polylist ']' TEXTURE_COORD_INDEX '[' polylist ']' '}' {$$=new IndexedFaceSet($5,$9); delete $5; delete $9; }
     | INDEXED_FACE_SET '{' COORD_INDEX '[' polylist ']' NORMAL_INDEX '[' polylist ']' '}' {$$=new IndexedFaceSet($5); delete $5;  delete $9; }
-    | INDEXED_FACE_SET '{' DOBLE_CARA COORD_INDEX '[' polylist ']' '}' {$$=new IndexedFaceSet($6); delete $6; $$->setTwoSided(); }
-    | INDEXED_FACE_SET '{' DOBLE_CARA COORD_INDEX '[' polylist ']' TEXTURE_COORD_INDEX '[' polylist ']' '}' {$$=new IndexedFaceSet($6,$10); delete $6; delete $10; $$->setTwoSided(); $$->setTwoSided(); }
-    | INDEXED_FACE_SET '{' DOBLE_CARA COORD_INDEX '[' polylist ']' NORMAL_INDEX '[' polylist ']' '}' {$$=new IndexedFaceSet($6); delete $6;  delete $10; $$->setTwoSided(); }
+    | INDEXED_FACE_SET '{' TWO_SIDED COORD_INDEX '[' polylist ']' '}' {$$=new IndexedFaceSet($6); delete $6; $$->setTwoSided(); }
+    | INDEXED_FACE_SET '{' TWO_SIDED COORD_INDEX '[' polylist ']' TEXTURE_COORD_INDEX '[' polylist ']' '}' {$$=new IndexedFaceSet($6,$10); delete $6; delete $10; $$->setTwoSided(); $$->setTwoSided(); }
+    | INDEXED_FACE_SET '{' TWO_SIDED COORD_INDEX '[' polylist ']' NORMAL_INDEX '[' polylist ']' '}' {$$=new IndexedFaceSet($6); delete $6;  delete $10; $$->setTwoSided(); }
+
+    | INDEXED_TRIANGLE_STRIP_SET '{' COORD_INDEX '[' polylist ']' '}' {$$=new IndexedTriStripSet($5); delete $5; }
+    | INDEXED_TRIANGLE_STRIP_SET '{' COORD_INDEX '[' polylist ']' TEXTURE_COORD_INDEX '[' polylist ']' '}' {$$=new IndexedTriStripSet($5,$9); delete $5; delete $9; }
+    | INDEXED_TRIANGLE_STRIP_SET '{' COORD_INDEX '[' polylist ']' NORMAL_INDEX '[' polylist ']' '}' {$$=new IndexedTriStripSet($5); delete $5;  delete $9; }
     | MATRIX_TRANSFORM '{' MATRIX matrix '}' { $$=new MatrixTransform($4); }
     | TEXTURE_COORDINATE '{' A_POINT '[' coords ']' '}' { $$=new TextureCoordinate($5); delete $5; }
     | TRANSFORM '{' node_contents '}'	{ $$=new Transform($3); delete $3; }
@@ -143,6 +149,7 @@ attr:     STRING FLOAT { $$=new AtrFloat($1,$2); }
 	| STRING FLOAT FLOAT FLOAT { $$=new AtrVec($1,$2,$3,$4); }
 	| STRING FLOAT FLOAT FLOAT FLOAT { $$=new AtrVec($1,$2,$3,$4,$5); }
         | STRING QUOTED_STRING { $$=new AtrString($1,$2); }
+	| STRING '[' points ']' { $$=new AtrVec3List($1,$3); }
 ;
 
 coords: coords FLOAT FLOAT { $1->push_back(TextureCoordVal($2,$3));$$=$1; }

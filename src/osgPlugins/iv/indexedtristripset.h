@@ -17,37 +17,36 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifdef WIN32
-#  pragma warning (disable:4786)
-#  pragma warning (disable:4541)
-#endif
-#include <stdio.h>
-#include <iostream>
+#ifndef __INDEXED_TRI_STRIP_SET_H__
+#define __INDEXED_TRI_STRIP_SET_H__
+
 #include "mynode.h"
-#include "osgvisitor.h"
 
-#include <osgGLUT/Viewer>
-#include <osgGLUT/glut>
+class IndexedTriStripSet: public MyNode {
+    PolygonList polys;
+    PolygonList textureIndices; // Indexed texture set.
+    bool _hasTextureIndices;
+public:
+    IndexedTriStripSet() {}
 
-extern int yyparse();
-extern int yydebug;
-extern MyNode *getRoot();
-extern FILE *yyin;
-
-int isatty(int) { return 0; }
-
-osg::Node *readVRMLNode(const char *file) {
-    yydebug=0;
-    yyin=fopen(file,"r");
-    std::cout << "Parsing..." << std::endl;
-    if (yyparse()!=0) return 0;
-    osg::ref_ptr<MyNode> n=getRoot();
-    try {
-	std::cout << "Generating OSG tree..." << std::endl;
-	osg::ref_ptr<OSGVisitor> visitante=new OSGVisitor(n.get());
-	return visitante->getRoot();
-    } catch (...) {
-	std::cerr << "VRML: error reading" << std::endl;
-	return 0;
+    IndexedTriStripSet(PolygonList *p) {
+	polys=*p;
+        _hasTextureIndices=false;
     }
-}
+
+    IndexedTriStripSet(PolygonList *p, PolygonList *t) {
+	polys=*p;
+        textureIndices=*t;
+        _hasTextureIndices=true;
+    }
+
+    bool hasTextureIndices() { return _hasTextureIndices; }
+    PolygonList getPolygons() { return polys; }
+    PolygonList getTextureIndices() { return textureIndices; }
+    virtual char *type() { return "IndexedTriStripSet"; }
+    virtual void accept(MyNodeVisitor *v) { v->applyIndexedTriStripSet(this); }
+
+};
+
+
+#endif

@@ -159,10 +159,10 @@ bool TextureCubeMap::imagesValid() const
 
 void TextureCubeMap::apply(State& state) const
 {
-    static bool s_ARB_CubeMapSupported = isGLExtensionSupported("GL_ARB_texture_cube_map");
-    static bool s_EXT_CubeMapSupported = isGLExtensionSupported("GL_EXT_texture_cube_map");
+    static bool s_CubeMapSupported = isGLExtensionSupported("GL_ARB_texture_cube_map") ||
+                                     isGLExtensionSupported("GL_EXT_texture_cube_map");
 
-    if (!s_ARB_CubeMapSupported /*&& !s_EXT_CubeMapSupported*/)
+    if (!s_CubeMapSupported)
         return;
 
     // get the contextID (user defined ID of 0 upwards) for the 
@@ -180,6 +180,7 @@ void TextureCubeMap::apply(State& state) const
         if (_subloadMode == OFF)
         {
             glBindTexture( _target, handle );
+            if (_texParamtersDirty) applyTexParameters(_target,state);
         }
         else  if (imagesValid())
         {
@@ -187,6 +188,7 @@ void TextureCubeMap::apply(State& state) const
 
             modifiedTag = 0;
             glBindTexture( _target, handle );
+            if (_texParamtersDirty) applyTexParameters(_target,state);
             for (int n=0; n<6; n++)
             {
                 if ((_subloadMode == AUTO) ||
@@ -208,12 +210,11 @@ void TextureCubeMap::apply(State& state) const
         glGenTextures( 1L, (GLuint *)&handle );
         glBindTexture( _target, handle );
 
-        applyImmediateMode(state);
+        applyTexParameters(_target,state);
 
         for (int n=0; n<6; n++)
         {
-            applyFaceImmediateMode(
-               faceTarget[n], _images[n].get(), state);
+            applyTexImage( faceTarget[n], _images[n].get(), state);
         }
 
         // in theory the following line is redundent, but in practice
@@ -224,234 +225,3 @@ void TextureCubeMap::apply(State& state) const
 
     }
 }
-
-
-void TextureCubeMap::applyImmediateMode(State& state) const
-{
-    WrapMode ws = _wrap_s, wt = _wrap_t;
-
-    // GL_IBM_texture_mirrored_repeat, fall-back REPEAT
-    static bool s_mirroredSupported = isGLExtensionSupported("GL_IBM_texture_mirrored_repeat");
-    if (!s_mirroredSupported)
-    {
-        if (ws == MIRROR)
-            ws = REPEAT;
-        if (wt == MIRROR)
-            wt = REPEAT;
-    }
-
-    // GL_EXT_texture_edge_clamp, fall-back CLAMP
-    static bool s_edgeClampSupported = isGLExtensionSupported("GL_EXT_texture_edge_clamp");
-    if (!s_edgeClampSupported)
-    {
-        if (ws == CLAMP_TO_EDGE)
-            ws = CLAMP;
-        if (wt == CLAMP_TO_EDGE)
-            wt = CLAMP;
-    }
-
-    static bool s_borderClampSupported = isGLExtensionSupported("GL_ARB_texture_border_clamp");
-    if(!s_borderClampSupported)
-    {
-        if(ws == CLAMP_TO_BORDER)
-            ws = CLAMP;
-        if(wt == CLAMP_TO_BORDER)
-            wt = CLAMP;
-    }
-
-    glTexParameteri( _target, GL_TEXTURE_WRAP_S, ws );
-    glTexParameteri( _target, GL_TEXTURE_WRAP_T, wt );
-
-    glTexParameteri( _target, GL_TEXTURE_MIN_FILTER, _min_filter);
-
-    if (_mag_filter == ANISOTROPIC)
-    {
-        // check for support for anisotropic filter,
-        // note since this is static varible it is intialised
-        // only on the first time entering this code block,
-        // is then never reevaluated on subsequent calls.
-        static bool s_anisotropicSupported =
-            isGLExtensionSupported("GL_EXT_texture_filter_anisotropic");
-
-        if (s_anisotropicSupported)
-        {
-            // note, GL_TEXTURE_MAX_ANISOTROPY_EXT will either be defined
-            // by gl.h (or via glext.h) or by include/osg/Texture.
-            glTexParameterf(_target, GL_TEXTURE_MAX_ANISOTROPY_EXT, 2.f);
-        }
-        else
-        {
-            glTexParameteri(_target, GL_TEXTURE_MAG_FILTER, LINEAR);
-        }
-    }
-    else
-    {
-        glTexParameteri(_target, GL_TEXTURE_MAG_FILTER, _mag_filter);
-    }
-}
-
-
-
-void TextureCubeMap::applyFaceImmediateMode(GLenum facetarget, Image* image, State& state) const
-{
-    // get the contextID (user defined ID of 0 upwards) for the 
-    // current OpenGL context.
-    const uint contextID = state.getContextID();
-
-    // update the modified tag to show that it is upto date.
-    getModifiedTag(contextID) = image->getModifiedTag();
-
-
-    if (_subloadMode == OFF)
-        image->ensureDimensionsArePowerOfTwo();
-
-    glPixelStorei(GL_UNPACK_ALIGNMENT,image->packing());
-
-    static bool s_ARB_Compression = isGLExtensionSupported("GL_ARB_texture_compression");
-    static bool s_S3TC_Compression = isGLExtensionSupported("GL_EXT_texture_compression_s3tc");
-
-    // select the internalFormat required for the texture.
-    int internalFormat = image->internalFormat();
-    switch(_internalFormatMode)
-    {
-        case(USE_IMAGE_DATA_FORMAT):
-            internalFormat = image->internalFormat();
-            break;
-
-        case(USE_ARB_COMPRESSION):
-            if (s_ARB_Compression)
-            {
-                switch(image->pixelFormat())
-                {
-                    case(1): internalFormat = GL_COMPRESSED_ALPHA_ARB; break;
-                    case(2): internalFormat = GL_COMPRESSED_LUMINANCE_ALPHA_ARB; break;
-                    case(3): internalFormat = GL_COMPRESSED_RGB_ARB; break;
-                    case(4): internalFormat = GL_COMPRESSED_RGBA_ARB; break;
-                    case(GL_RGB): internalFormat = GL_COMPRESSED_RGB_ARB; break;
-                    case(GL_RGBA): internalFormat = GL_COMPRESSED_RGBA_ARB; break;
-                    case(GL_ALPHA): internalFormat = GL_COMPRESSED_ALPHA_ARB; break;
-                    case(GL_LUMINANCE): internalFormat = GL_COMPRESSED_LUMINANCE_ARB; break;
-                    case(GL_LUMINANCE_ALPHA): internalFormat = GL_COMPRESSED_LUMINANCE_ALPHA_ARB; break;
-                    case(GL_INTENSITY): internalFormat = GL_COMPRESSED_INTENSITY_ARB; break;
-                }
-            }
-            else internalFormat = image->internalFormat();
-            break;
-
-        case(USE_S3TC_DXT1_COMPRESSION):
-            if (s_S3TC_Compression)
-            {
-                switch(image->pixelFormat())
-                {
-                    case(3):        internalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT; break;
-                    case(4):        internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT; break;
-                    case(GL_RGB):   internalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT; break;
-                    case(GL_RGBA):  internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT; break;
-                    default:        internalFormat = image->internalFormat(); break;
-                }
-            }
-            else internalFormat = image->internalFormat();
-            break;
-
-        case(USE_S3TC_DXT3_COMPRESSION):
-            if (s_S3TC_Compression)
-            {
-                switch(image->pixelFormat())
-                {
-                    case(3):
-                    case(GL_RGB):   internalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT; break;
-                    case(4):
-                    case(GL_RGBA):  internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT; break;
-                    default:        internalFormat = image->internalFormat(); break;
-                }
-            }
-            else internalFormat = image->internalFormat();
-            break;
-
-        case(USE_S3TC_DXT5_COMPRESSION):
-            if (s_S3TC_Compression)
-            {
-                switch(image->pixelFormat())
-                {
-                    case(3):
-                    case(GL_RGB):   internalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT; break;
-                    case(4):
-                    case(GL_RGBA):  internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT; break;
-                    default:        internalFormat = image->internalFormat(); break;
-                }
-            }
-            else internalFormat = image->internalFormat();
-            break;
-
-        case(USE_USER_DEFINED_FORMAT):
-            internalFormat = _internalFormatValue;
-            break;
-
-    }
-
-    if (_subloadMode == OFF)
-    {
-        if( _min_filter == LINEAR || _min_filter == NEAREST )
-        {
-            glTexImage2D( facetarget, 0, internalFormat,
-                image->s(), image->t(), 0,
-                (GLenum)image->pixelFormat(),
-                (GLenum)image->dataType(),
-                image->data() );
-
-            // just estimate estimate it right now..
-            // note, ignores texture compression..
-            _textureObjectSize = image->s()*image->t()*4;
-
-        }
-        else
-        {
-
-            gluBuild2DMipmaps( facetarget, internalFormat,
-                image->s(), image->t(),
-                (GLenum)image->pixelFormat(), (GLenum)image->dataType(),
-                image->data() );
-
-            // just estimate size it right now..
-            // crude x2 multiplier to account for minmap storage.
-            // note, ignores texture compression..
-            _textureObjectSize = image->s()*image->t()*4;
-
-        }
-
-        _textureWidth = image->s();
-        _textureHeight = image->t();
-    }
-    else
-    {
-        /* target=? ABJ
-        static bool s_SGIS_GenMipmap = isGLExtensionSupported("GL_SGIS_generate_mipmap");
-
-        if (s_SGIS_GenMipmap && (_min_filter != LINEAR && _min_filter != NEAREST)) {
-            glTexParameteri(_target, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
-        }
-        */
-        // calculate texture dimension
-        _textureWidth = 1;
-        for (; _textureWidth < (_subloadOffsX + image->s()); _textureWidth <<= 1)
-            ;
-
-        _textureHeight = 1;
-        for (; _textureHeight < (_subloadOffsY + image->t()); _textureHeight <<= 1)
-            ;
-
-        // reserve appropriate texture memory
-        glTexImage2D(facetarget, 0, internalFormat,
-                     _textureWidth, _textureHeight, 0,
-                     (GLenum) image->pixelFormat(), (GLenum) image->dataType(),
-                     NULL);
-
-        glTexSubImage2D(facetarget, 0,
-                        _subloadOffsX, _subloadOffsY,
-                        image->s(), image->t(),
-                        (GLenum) image->pixelFormat(), (GLenum) image->dataType(),
-                        image->data());
-    }
-    
-}
-

@@ -48,7 +48,7 @@ class TextureCallback : public osg::NodeCallback
                 double currTime = nv->getFrameStamp()->getReferenceTime();
                 if (currTime-_prevTime>1.0) 
                 {
-                    std::cout<<"Updating texturing filter to "<<hex<<_filterRange[_currPos]<<dec<<std::endl;
+                    std::cout<<"Updating texturing filter to "<<std::hex<<_filterRange[_currPos]<<std::dec<<std::endl;
                     _texture->setFilter(osg::Texture::MAG_FILTER,_filterRange[_currPos]);
                     _currPos++;
                     if (_currPos>=_filterRange.size()) _currPos=0;                    

@@ -105,7 +105,7 @@ class SG_EXPORT Texture : public StateAttribute
 
         virtual void setStateSetModes(StateSet& ds,const GLModeValue value) const
         {
-            ds.setMode(GL_TEXTURE_2D,value);
+            ds.setMode(_target,value);
         }
 
         /** Set the texture image. */
@@ -122,7 +122,7 @@ class SG_EXPORT Texture : public StateAttribute
           * framebuffer contents at pos \a x, \a y with width \a width and
           * height \a height. \a width and \a height must be a power of two.
           */
-	void copyTexImage2D(State& state, int x, int y, int width, int height );
+        void copyTexImage2D(State& state, int x, int y, int width, int height );
 
         /** Copy a two-dimensional texture subimage. As per glCopyTexSubImage2D.
           * Updates portion of an existing OpenGL texture object from the current OpenGL background
@@ -130,7 +130,7 @@ class SG_EXPORT Texture : public StateAttribute
           * height \a height. \a width and \a height must be a power of two,
           * and writing into the texture with offset \a xoffset and \a yoffset.
           */
-	void copyTexSubImage2D(State& state, int xoffset, int yoffset, int x, int y, int width, int height );
+        void copyTexSubImage2D(State& state, int xoffset, int yoffset, int x, int y, int width, int height );
 
         /** Set the texture unit.
           * Valid values are 0,1,2,3.
@@ -182,12 +182,13 @@ class SG_EXPORT Texture : public StateAttribute
             NEAREST                   = GL_NEAREST,
             NEAREST_MIPMAP_LINEAR     = GL_NEAREST_MIPMAP_LINEAR,
             NEAREST_MIPMAP_NEAREST    = GL_NEAREST_MIPMAP_NEAREST,
-	    ANISOTROPIC               = GL_TEXTURE_MAX_ANISOTROPY_EXT
+            ANISOTROPIC               = GL_TEXTURE_MAX_ANISOTROPY_EXT
         };
 
 
         /** Set the texture filter mode.*/
         void setFilter(const FilterParameter which, const FilterMode filter);
+
         /** Get the texture filter mode.*/
         const FilterMode getFilter(const FilterParameter which) const;
 
@@ -288,9 +289,6 @@ class SG_EXPORT Texture : public StateAttribute
         virtual void compile(State& state) const;
 
 
-        /** Method which does the creation of the texture itself, and
-          * does not set or use texture binding. */
-        virtual void applyImmediateMode(State& state) const;
 
 
 
@@ -310,7 +308,12 @@ class SG_EXPORT Texture : public StateAttribute
         virtual ~Texture();
 
 
-        void applyTexParameters(State& state) const;
+        /** Method which does setting of texture paramters. */
+        void applyTexParameters(GLenum target, State& state) const;
+
+        /** Method which does the creation of the texture itself, and
+          * does not set or use texture binding. */
+        virtual void applyTexImage(GLenum target, Image* image, State& state) const;
 
         typedef std::vector<GLuint> TextureNameList;
         mutable TextureNameList _handleList;

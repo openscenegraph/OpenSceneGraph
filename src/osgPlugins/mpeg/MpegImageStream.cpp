@@ -173,7 +173,7 @@ void MpegImageStream::load(const char* fileName)
 
     setImage(s, t, 1,
              GL_RGB,
-             GL_BGRA, GL_UNSIGNED_BYTE, data,
+             GL_RGBA, GL_UNSIGNED_BYTE, data,
              osg::Image::USE_NEW_DELETE);
 
 

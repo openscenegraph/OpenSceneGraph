@@ -20,11 +20,11 @@
 
 namespace osg {
 
-/** General purpose float pair, uses include representation of
-    texture coordinates.
-    No support yet added for float * Vec2f - is it necessary?
-    Need to define a non-member non-friend operator*  etc.
-    BTW:	     Vec2f * float is okay
+/** General purpose float pair. Uses include representation of
+  * texture coordinates.
+  * No support yet added for float * Vec2f - is it necessary?
+  * Need to define a non-member non-friend operator* etc.
+  * BTW: Vec2f * float is okay
 */
 
 class Vec2f
@@ -42,7 +42,7 @@ class Vec2f
 
         inline bool operator != (const Vec2f& v) const { return _v[0]!=v._v[0] || _v[1]!=v._v[1]; }
 
-	inline bool operator <  (const Vec2f& v) const
+        inline bool operator <  (const Vec2f& v) const
         {
             if (_v[0]<v._v[0]) return true;
             else if (_v[0]>v._v[0]) return false;
@@ -66,109 +66,110 @@ class Vec2f
         inline bool valid() const { return !isNaN(); }
         inline bool isNaN() const { return osg::isNaN(_v[0]) || osg::isNaN(_v[1]); }
 
-        /// dot product
+        /** Dot product. */
         inline value_type operator * (const Vec2f& rhs) const
         {
             return _v[0]*rhs._v[0]+_v[1]*rhs._v[1];
         }
 
-        /// multiply by scalar
+        /** Multiply by scalar. */
         inline const Vec2f operator * (value_type rhs) const
         {
             return Vec2f(_v[0]*rhs, _v[1]*rhs);
         }
 
-        /// unary multiply by scalar
+        /** Unary multiply by scalar. */
         inline Vec2f& operator *= (value_type rhs)
         {
             _v[0]*=rhs;
-	    _v[1]*=rhs;
-	    return *this;
+            _v[1]*=rhs;
+            return *this;
         }
 
-        /// divide by scalar
+        /** Divide by scalar. */
         inline const Vec2f operator / (value_type rhs) const
         {
             return Vec2f(_v[0]/rhs, _v[1]/rhs);
         }
 
-        /// unary divide by scalar
+        /** Unary divide by scalar. */
         inline Vec2f& operator /= (value_type rhs)
         {
             _v[0]/=rhs;
-	    _v[1]/=rhs;
-	    return *this;
+            _v[1]/=rhs;
+            return *this;
         }
 
-        /// binary vector add
+        /** Binary vector add. */
         inline const Vec2f operator + (const Vec2f& rhs) const
         {
             return Vec2f(_v[0]+rhs._v[0], _v[1]+rhs._v[1]);
         }
 
-        /** unary vector add.  Slightly more efficient because no temporary
-            intermediate object.*/
+        /** Unary vector add. Slightly more efficient because no temporary
+          * intermediate object.
+        */
         inline Vec2f& operator += (const Vec2f& rhs)
         {
             _v[0] += rhs._v[0];
             _v[1] += rhs._v[1];
-	    return *this;
+            return *this;
         }
 
-        /// binary vector subtract
+        /** Binary vector subtract. */
         inline const Vec2f operator - (const Vec2f& rhs) const
         {
             return Vec2f(_v[0]-rhs._v[0], _v[1]-rhs._v[1]);
         }
 
-        /// unary vector subtract
+        /** Unary vector subtract. */
         inline Vec2f& operator -= (const Vec2f& rhs)
         {
             _v[0]-=rhs._v[0];
             _v[1]-=rhs._v[1];
-	    return *this;
-	}
+            return *this;
+        }
 
-        /// negation operator.  Returns the negative of the Vec2f
+        /** Negation operator. Returns the negative of the Vec2f. */
         inline const Vec2f operator - () const
         {
-	    return Vec2f (-_v[0], -_v[1]);
-	}
+            return Vec2f (-_v[0], -_v[1]);
+        }
 
-        /// Length of the vector = sqrt( vec . vec )
-	inline value_type length() const
-	{
-	    return sqrtf( _v[0]*_v[0] + _v[1]*_v[1] );
-	}
+        /** Length of the vector = sqrt( vec . vec ) */
+        inline value_type length() const
+        {
+            return sqrtf( _v[0]*_v[0] + _v[1]*_v[1] );
+        }
 
-        /// Length squared of the vector = vec . vec
+        /** Length squared of the vector = vec . vec */
         inline value_type length2( void ) const
         {
             return _v[0]*_v[0] + _v[1]*_v[1];
         }
 
-        /** normalize the vector so that it has length unity
-            returns the previous length of the vector*/
-	inline value_type normalize()
-	{
-	    value_type norm = Vec2f::length();
+        /** Normalize the vector so that it has length unity.
+          * Returns the previous length of the vector.
+        */
+        inline value_type normalize()
+        {
+            value_type norm = Vec2f::length();
             if (norm>0.0)
             {
                 value_type inv = 1.0f/norm;
-	        _v[0] *= inv;
-	        _v[1] *= inv;
+                _v[0] *= inv;
+                _v[1] *= inv;
             }
-	    return( norm );
-	}
+            return( norm );
+        }
 
-	friend inline std::ostream& operator << (std::ostream& output, const Vec2f& vec)
+        friend inline std::ostream& operator << (std::ostream& output, const Vec2f& vec)
         {
-	    output << vec._v[0] << " "
-                   << vec._v[1];
-	    return output; 	// to enable cascading
-	}
+            output << vec._v[0] << " " << vec._v[1];
+            return output;     // to enable cascading
+        }
 
-};	// end of class Vec2f
+};    // end of class Vec2f
 
-}	// end of namespace osg
+}    // end of namespace osg
 #endif

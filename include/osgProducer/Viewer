@@ -113,8 +113,8 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
         /** Dispatch the cull and draw for each of the Camera's for this frame.*/
         virtual void frame();
 
-        virtual void requestRedraw() {}
-        virtual void requestContinuousUpdate(bool) {}
+        virtual void requestRedraw();
+        virtual void requestContinuousUpdate(bool);
         virtual void requestWarpPointer(float x,float y);
 
 

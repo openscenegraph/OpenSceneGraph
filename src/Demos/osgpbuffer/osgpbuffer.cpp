@@ -76,7 +76,7 @@ class MyCullCallback : public osg::NodeCallback
         
         osg::ref_ptr<osg::Node>      _subgraph;
         osg::ref_ptr<osg::Texture2D> _texture;
-        osg::ref_ptr<osg::StateSet>  _localState
+        osg::ref_ptr<osg::StateSet>  _localState;
 
 };
 

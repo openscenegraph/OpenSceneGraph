@@ -13,10 +13,12 @@ bool readMatrix(osg::Matrix& matrix, osgDB::Input& fr)
 
         int row=0;
         int col=0;
+        double v;
         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
         {
-            if (fr[0].getFloat(matrix(row,col)))
+            if (fr[0].getDouble(v))
             {
+                matrix(row,col)=v;
                 ++col;
                 if (col>=4)
                 {

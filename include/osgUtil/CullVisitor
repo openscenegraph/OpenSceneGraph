@@ -49,6 +49,9 @@ namespace osgUtil {
 class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStack
 {
     public:
+    
+        typedef osg::Matrix::value_type value_type;
+    
 
         CullVisitor();
         virtual ~CullVisitor();
@@ -215,9 +218,6 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         osg::State* getState() { return _state.get(); }
         const osg::State* getState() const { return _state.get(); }
 
-        typedef double NearFarReal;
-
-
     protected:
 
 //         /** prevent unwanted copy construction.*/
@@ -253,9 +253,9 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
 
         ComputeNearFarMode  _computeNearFar;
 
-        NearFarReal               _nearFarRatio;
-        NearFarReal               _computed_znear;
-        NearFarReal               _computed_zfar;
+        value_type               _nearFarRatio;
+        value_type               _computed_znear;
+        value_type               _computed_zfar;
         
         osg::ref_ptr<const osg::ClearNode> _clearNode;
 	

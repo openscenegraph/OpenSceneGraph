@@ -260,10 +260,14 @@ void DataOutputStream::writeVec4Array(osg::Vec4Array* a){
     }
 }
 
-void DataOutputStream::writeMatrix(osg::Matrix mat){
-    float* p = mat.ptr();
-    for(int i=0;i<16;i++){
-        writeFloat(p[i]);
+void DataOutputStream::writeMatrix(const osg::Matrix& mat)
+{
+    for(int r=0;r<4;r++)
+    {
+        for(int c=0;c<4;c++)
+        {
+            writeFloat(mat(r,c));
+        }
     }
 }
 

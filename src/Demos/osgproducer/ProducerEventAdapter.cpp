@@ -4,6 +4,7 @@
 unsigned int ProducerEventAdapter::_s_accumulatedButtonMask = 0;
 
 int ProducerEventAdapter::_s_button = 0;
+int ProducerEventAdapter::_s_modKeyMask = 0;
 int ProducerEventAdapter::_s_Xmin = 0;
 int ProducerEventAdapter::_s_Xmax = 1280;
 int ProducerEventAdapter::_s_Ymin = 0;
@@ -19,6 +20,7 @@ ProducerEventAdapter::ProducerEventAdapter()
     _mx = -1;                    // set to 'invalid' position value.
     _my = -1;                    // set to 'invalid' position value.
     _buttonMask = 0;             // default to no mouse buttons being pressed.
+    _modKeyMask = 0;             // default to no mouse buttons being pressed.
     _time = 0.0f;                // default to no time has been set.
 
     copyStaticVariables();
@@ -29,6 +31,7 @@ ProducerEventAdapter::ProducerEventAdapter()
 void ProducerEventAdapter::copyStaticVariables()
 {
     _buttonMask = _s_accumulatedButtonMask;
+    _modKeyMask = _s_modKeyMask;
     _button = _s_button;
     _Xmin = _s_Xmin;
     _Xmax = _s_Xmax;
@@ -138,7 +141,7 @@ void ProducerEventAdapter::adaptMouseMotion(double time, float x, float y)
 
 
 /** method for adapting keyboard events.*/
-void ProducerEventAdapter::adaptKeyPess( double time, Producer::KeySymbol key)
+void ProducerEventAdapter::adaptKeyPress( double time, Producer::KeySymbol key)
 {
     _eventType = KEYDOWN;
     _time = time;

@@ -133,6 +133,8 @@ void OsgCameraGroup::_init()
 
     _fusionDistanceMode = osgUtil::SceneView::PROPORTIONAL_TO_SCREEN_DISTANCE;
     _fusionDistanceValue = 1.0f;
+    
+    _realizeSceneViewOptions = osgUtil::SceneView::STANDARD_SETTINGS;
 
     _initialized = false;
 
@@ -342,8 +344,7 @@ bool OsgCameraGroup::realize()
         osgProducer::OsgSceneHandler *sh = new osgProducer::OsgSceneHandler(_ds.get());
 
         osgUtil::SceneView* sv = sh->getSceneView();
-        sv->setDefaults();
-        //sv->setLight(0);
+        sv->setDefaults(_realizeSceneViewOptions);
         
         if (_renderSurfaceStateMap.count(rs)==0)
         {

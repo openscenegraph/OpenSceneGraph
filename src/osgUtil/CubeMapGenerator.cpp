@@ -16,7 +16,9 @@ CubeMapGenerator::CubeMapGenerator(int texture_size)
 {
 	for (int i=0; i<6; ++i) {				
 		osg::ref_ptr<osg::Image> image = osgNew osg::Image;
-		std::auto_ptr<unsigned char> data(static_cast<unsigned char *>(std::malloc(texture_size*texture_size*4)));
+		//std::auto_ptr<unsigned char> data(static_cast<unsigned char *>(std::malloc(texture_size*texture_size*4)));
+		std::auto_ptr<unsigned char> data(new unsigned char[(texture_size*texture_size*4)]);
+
 		image->setImage(texture_size, texture_size, 1, 4, GL_RGBA, GL_UNSIGNED_BYTE, data.get());
 		data.release();
 		images_.push_back(image);

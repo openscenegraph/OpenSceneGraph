@@ -43,3 +43,6 @@ instlinks :
 
 instclean :
 	for f in $(DIRS)  ; do cd $$f; $(MAKE) instclean; cd ..;  done
+
+test :
+	(cd Demos; make test; )

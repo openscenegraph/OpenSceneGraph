@@ -585,6 +585,7 @@ int main( int argc, char **argv )
 
     // initialize the viewer.
     TextViewer    viewer;
+    viewer.setWindowTitle(argv[0]);
 /*
     viewer.addViewport( rootNode );
     viewer.getViewportSceneView(0)->setBackgroundColor(osg::Vec4(.2,.2,.2,1));

@@ -168,3 +168,8 @@ stats :
 	cat src/Demos/*/*.cpp | wc -l
 	cat src/osgPlugins/*/*.cpp src/osgPlugins/*/*.h | wc -l
 	cat include/*/* src/*/*.cpp src/Demos/*/*.cpp src/osgPlugins/*/*.cpp src/osgPlugins/*/*.h | wc -l
+
+
+test :
+	@echo running tests:
+	for f in $(DIRS) ; do cd $$f; $(MAKE) test; cd ..;  done

@@ -18,5 +18,10 @@ MACOSXLIBS = -losgGLUT -losgUtil -losgDB -losg -lm -ldl -lstdc++ -lobjc
 C++FLAGS += -I$(OSGHOME)/include
 LDFLAGS += -L$(OSGHOME)/lib
 
+
 include $(OSGHOME)/Make/makerules
+
+test :
+	sgv cow.osg
+	sgv Town.osg
 

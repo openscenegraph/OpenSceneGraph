@@ -20,3 +20,5 @@ LDFLAGS += -L$(OSGHOME)/lib
 
 include $(OSGHOME)/Make/makerules
 
+test :
+	osgscribe cow.osg

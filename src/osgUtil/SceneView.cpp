@@ -223,10 +223,6 @@ void SceneView::cull()
     _cullVisitor->popCullViewState();
 
 
-    // do any state sorting required.
-    _renderStage->sort();
-
-
     const osg::EarthSky* earthSky = _cullVisitor->getEarthSky();
     if (earthSky)
     {

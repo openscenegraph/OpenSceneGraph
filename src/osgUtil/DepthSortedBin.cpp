@@ -75,6 +75,8 @@ void DepthSortedBin::sort_local()
 
 void DepthSortedBin::draw_local(osg::State& state,RenderLeaf*& previous)
 {
+    sort_local();
+
     if (_drawOrder==BACK_TO_FRONT)
     {
         // render the bin from back to front.

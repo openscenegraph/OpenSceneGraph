@@ -337,6 +337,7 @@ int main( int argc, char **argv )
 
     // initialize the viewer.
     osgGLUT::Viewer viewer;
+    viewer.setWindowTitle(argv[0]);
     viewer.addViewport( mySceneView.get() );
     
     // register trackball, flight and drive.

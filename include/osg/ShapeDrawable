@@ -124,7 +124,7 @@ class SG_EXPORT ShapeDrawable : public Drawable
           * This is the internal draw method which does the drawing itself,
           * and is the method to override when deriving from ShapeDrawable for user-drawn objects.
           */
-        virtual void drawImmediateMode(State& state);
+        virtual void drawImplementation(State& state) const;
 
         /** return false, osg::ProceduralGeoemtry does not support accept(AttributeFunctor&).*/
         virtual bool supports(AttributeFunctor&) const { return false; }

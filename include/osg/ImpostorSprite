@@ -114,7 +114,7 @@ class SG_EXPORT ImpostorSprite : public Drawable
         int t() const { return _t; }
 
         /** draw ImpostorSprite directly. */
-        virtual void drawImmediateMode(State& state);
+        virtual void drawImplementation(State& state) const;
 
         /** return true, osg::ImpostorSprite does support accept(AttributeFunctor&).*/
         virtual bool supports(AttributeFunctor&) const { return true; }

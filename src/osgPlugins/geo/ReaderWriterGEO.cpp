@@ -262,7 +262,7 @@ class ReaderWriterGEO : public ReaderWriter
 							ia.push_back(txidx); // look up table for which texture corresponds to which geom
 						}
 						int nv=getprim((*itr)->getchildren(),vinf);
-						geom[igeom]->addPrimitive(new osg::DrawArrays(osg::Primitive::POLYGON,nstart,nv));
+						geom[igeom]->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::POLYGON,nstart,nv));
 						nstart+=nv;
 					}
 				}

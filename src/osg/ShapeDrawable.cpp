@@ -1251,7 +1251,7 @@ ShapeDrawable::~ShapeDrawable()
 {
 }
 
-void ShapeDrawable::drawImmediateMode(State& state)
+void ShapeDrawable::drawImplementation(State& state) const
 {
     if (_shape.valid())
     {

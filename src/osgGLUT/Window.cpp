@@ -142,7 +142,7 @@ void Window::keyboardCB(unsigned char key, int x, int y)
     s_theWindow->check_if_exit();
 }
 
-void Window::specialCB(int key, int x, int y)
+void Window::specialCB(int, int, int)
 {
 //     s_theWindow->special(key,x,y);
 //     s_theWindow->check_if_exit();

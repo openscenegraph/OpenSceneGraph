@@ -101,9 +101,9 @@ class OSGTEXT_EXPORT Text : public osg::Drawable
         void setText(const std::string& text) { _text=text; _initAlignment=false; }
         const std::string& getText() const { return _text; }
 
-        virtual void drawImmediateMode(osg::State& state);
-        virtual void drawBoundingBox(void);
-        virtual void drawAlignment(void);
+        virtual void drawImplementation(osg::State& state) const;
+        virtual void drawBoundingBox(void) const;
+        virtual void drawAlignment(void) const;
 
         const osg::Vec3& getAlignmentPos() const { return _alignmentPos; };
 

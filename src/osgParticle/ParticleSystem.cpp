@@ -87,7 +87,7 @@ void osgParticle::ParticleSystem::update(double dt)
     dirtyBound();
 }
 
-void osgParticle::ParticleSystem::drawImmediateMode(osg::State &state)
+void osgParticle::ParticleSystem::drawImplementation(osg::State &state) const
 {
     // update the frame count, so other objects can detect when
     // this particle system is culled
@@ -160,14 +160,14 @@ void osgParticle::ParticleSystem::setDefaultAttributes(const std::string &textur
 }
 
 
-void osgParticle::ParticleSystem::single_pass_render(osg::State & /*state*/, const osg::Matrix &modelview)
+void osgParticle::ParticleSystem::single_pass_render(osg::State & /*state*/, const osg::Matrix &modelview) const
 {
     draw_count_ = 0;
     if (particles_.size() <= 0) return;
 
-    Particle_vector::iterator i;
-    Particle_vector::iterator i0 = particles_.begin();
-    Particle_vector::iterator end = particles_.end();
+    Particle_vector::const_iterator i;
+    Particle_vector::const_iterator i0 = particles_.begin();
+    Particle_vector::const_iterator end = particles_.end();
     
     i0->beginRender();
 

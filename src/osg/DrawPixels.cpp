@@ -77,7 +77,7 @@ bool DrawPixels::computeBound() const
     return true;
 }
 
-void DrawPixels::drawImmediateMode(State&)
+void DrawPixels::drawImplementation(State&) const
 {
     glRasterPos3f(_position.x(),_position.y(),_position.z());
 

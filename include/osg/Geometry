@@ -161,7 +161,7 @@ class SG_EXPORT Geometry : public Drawable
           * This is the internal draw method which does the drawing itself,
           * and is the method to override when deriving from Geometry for user-drawn objects.
           */
-        virtual void drawImmediateMode(State& state);
+        virtual void drawImplementation(State& state) const;
 
         /** return true, osg::Geometry does support accept(AttributeFunctor&).*/
         virtual bool supports(AttributeFunctor&) const { return true; }

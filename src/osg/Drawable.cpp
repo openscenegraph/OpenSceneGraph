@@ -112,9 +112,9 @@ void Drawable::compile(State& state)
     glNewList( globj, GL_COMPILE );
 
     if (_drawCallback.valid())
-        _drawCallback->drawImmediateMode(state,this);
+        _drawCallback->drawImplementation(state,this);
     else 
-        drawImmediateMode(state);
+        drawImplementation(state);
 
     glEndList();
 

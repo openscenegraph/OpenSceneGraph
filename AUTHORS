@@ -52,6 +52,7 @@ Byan Woods <byran@tapestrysolutions.com>
 Randall Hopper <aa8vb@yahoo.com>
         - port to FreeBSD.
         - warning fixes to IRIX compilation.
+        - Open DX writer.
 
 Ulrich Hertlein <u.hertlein@bit-side.com>
         - support for IBM Mirror Repeat extension in osg::Texture

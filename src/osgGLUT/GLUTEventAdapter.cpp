@@ -6,6 +6,7 @@ using namespace osgGLUT;
 // default to no mouse buttons being pressed.
 unsigned int GLUTEventAdapter::_s_accumulatedButtonMask = 0;
 
+int GLUTEventAdapter::_s_button = 0;
 int GLUTEventAdapter::_s_Xmin = 0;
 int GLUTEventAdapter::_s_Xmax = 1280;
 int GLUTEventAdapter::_s_Ymin = 0;
@@ -31,6 +32,7 @@ GLUTEventAdapter::GLUTEventAdapter()
 void GLUTEventAdapter::copyStaticVariables()
 {
     _buttonMask = _s_accumulatedButtonMask;
+    _button = _s_button;
     _Xmin = _s_Xmin;
     _Xmax = _s_Xmax;
     _Ymin = _s_Ymin;
@@ -95,13 +97,25 @@ void GLUTEventAdapter::adaptMouse(float time, int button, int state, int x, int 
     {
 
         _eventType = PUSH;
-        _button = button;
+	_button = button;
 
         switch(button)
         {
-            case(GLUT_LEFT_BUTTON): _s_accumulatedButtonMask = _s_accumulatedButtonMask | LEFT_MOUSE_BUTTON; break;
-            case(GLUT_MIDDLE_BUTTON): _s_accumulatedButtonMask = _s_accumulatedButtonMask | MIDDLE_MOUSE_BUTTON; break;
-            case(GLUT_RIGHT_BUTTON): _s_accumulatedButtonMask = _s_accumulatedButtonMask | RIGHT_MOUSE_BUTTON; break;
+            case(GLUT_LEFT_BUTTON): 
+		_s_accumulatedButtonMask = 
+		    _s_accumulatedButtonMask | LEFT_MOUSE_BUTTON; 
+		_s_button = LEFT_MOUSE_BUTTON;
+		break;
+            case(GLUT_MIDDLE_BUTTON): 
+		_s_accumulatedButtonMask = 
+		    _s_accumulatedButtonMask | MIDDLE_MOUSE_BUTTON; 
+		_s_button = MIDDLE_MOUSE_BUTTON;
+		break;
+            case(GLUT_RIGHT_BUTTON): 
+		_s_accumulatedButtonMask = 
+		    _s_accumulatedButtonMask | RIGHT_MOUSE_BUTTON; 
+		_s_button = RIGHT_MOUSE_BUTTON;
+		break;
         }
 
     }
@@ -113,9 +127,21 @@ void GLUTEventAdapter::adaptMouse(float time, int button, int state, int x, int 
 
         switch(button)
         {
-            case(GLUT_LEFT_BUTTON): _s_accumulatedButtonMask = _s_accumulatedButtonMask & ~LEFT_MOUSE_BUTTON; break;
-            case(GLUT_MIDDLE_BUTTON): _s_accumulatedButtonMask = _s_accumulatedButtonMask & ~MIDDLE_MOUSE_BUTTON; break;
-            case(GLUT_RIGHT_BUTTON): _s_accumulatedButtonMask = _s_accumulatedButtonMask & ~RIGHT_MOUSE_BUTTON; break;
+            case(GLUT_LEFT_BUTTON): 
+		_s_accumulatedButtonMask = 
+		    _s_accumulatedButtonMask & ~LEFT_MOUSE_BUTTON;
+		_s_button = LEFT_MOUSE_BUTTON;
+		break;
+            case(GLUT_MIDDLE_BUTTON): 
+		_s_accumulatedButtonMask = 
+		    _s_accumulatedButtonMask & ~MIDDLE_MOUSE_BUTTON; 
+		_s_button = MIDDLE_MOUSE_BUTTON;
+		break;
+            case(GLUT_RIGHT_BUTTON): 
+		_s_accumulatedButtonMask = 
+		    _s_accumulatedButtonMask & ~RIGHT_MOUSE_BUTTON; 
+		_s_button = RIGHT_MOUSE_BUTTON;
+		break;
         }
 
     }

@@ -85,6 +85,9 @@ class OSGReaderWriter : public ReaderWriter
 
         virtual WriteResult writeNode(const Node& node,const std::string& fileName, const osgDB::ReaderWriter::Options*)
         {
+            std::string ext = getFileExtension(fileName);
+            if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
+
             Output fout;
             fout.open(fileName.c_str());
             if (fout)

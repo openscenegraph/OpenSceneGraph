@@ -1,7 +1,7 @@
 OSG News (most significant items from ChangeLog)
 ================================================
 
-10th February 2002 - osg-0.8.44.tar.gz
+18th February 2002 - osg-0.8.44.tar.gz
 
     >>> Support added for Mac OSX, Cygwin and MinGW, and new TerraPage loader.
     
@@ -27,6 +27,8 @@ OSG News (most significant items from ChangeLog)
     
     The Open Flight .flt loader has undergone a number of improvements
     including support for instancing and billboards.
+    
+    New TerraPage (.txp) loader and OpenDX writer (.dx) plugins have been added.
     
     Support for the clone operation on osg::Object's has been expanded
     to allow cloneType() - a simple clone an blank object of the same type,

@@ -545,5 +545,15 @@ setText(const std::string& text)
     _initAlignment=false;
     _encodedText->setText((const unsigned char*)_text.data(),_text.size());
 }
+
+void Text::
+setText(const wchar_t* text)
+{ 
+    _encodedText->setOverrideEncoding(EncodedText::ENCODING_UTF8);
+    _text=_encodedText->convertWideString(text); 
+    _initAlignment=false;
+    _encodedText->setText((const unsigned char*)_text.data(),_text.size());
+}
+
 // Text
 ///////////////////////////////////////////////////////////////////////////////

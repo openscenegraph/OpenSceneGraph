@@ -20,9 +20,9 @@ using namespace osgUtil;
 GLObjectsVisitor::GLObjectsVisitor(Mode mode)
 {
     setTraversalMode(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN);
-    
+
     _mode = mode;
-    
+
     _state = NULL;
 }
 
@@ -78,6 +78,16 @@ void GLObjectsVisitor::apply(osg::Drawable& drawable)
     if (_mode&RELEASE_DISPLAY_LISTS)
     {
         drawable.releaseGLObjects(_state.get());
+    }
+
+    if (_mode&SWITCH_ON_VERTEX_BUFFER_OBJECTS)
+    {
+        drawable.setUseVertexBufferObjects(true);
+    }
+
+    if (_mode&SWITCH_OFF_VERTEX_BUFFER_OBJECTS)
+    {
+        drawable.setUseVertexBufferObjects(false);
     }
 }
 

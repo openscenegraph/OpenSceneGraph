@@ -63,7 +63,7 @@ public:
     void setFontResolution(unsigned int width, unsigned int height);
 
     unsigned int getFontWidth() const { return _fontWidth; }
-    unsigned int getFontHeight() const { return _fontWidth; }
+    unsigned int getFontHeight() const { return _fontHeight; }
     
     
     /** Set the text using a osgText::String.*/

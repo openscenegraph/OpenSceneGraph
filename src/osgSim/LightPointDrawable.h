@@ -18,6 +18,7 @@
 #include <osg/BlendFunc>
 #include <osg/ColorMask>
 #include <osg/Point>
+#include <osg/Endian>
 
 #include <vector>
 
@@ -52,16 +53,7 @@ class OSGSIM_EXPORT LightPointDrawable : public osg::Drawable
 
         inline unsigned long asRGBA(const osg::Vec4& color) const
         {
-#if defined(__sgi) || defined (__hpux__)
-            // big endian.
-            return color.asABGR();
-#elif defined (sun)
-            // should probably test at runtime for endianess, assume big endian right now.
-            return color.asABGR();
-#else
-            // x86 little endian
-            return color.asRGBA();
-#endif
+            return _endian==osg::BigEndian?color.asABGR():color.asRGBA();
         }
 
         inline void addOpaqueLightPoint(unsigned int pointSize,const osg::Vec3& position,const osg::Vec4& color)
@@ -106,9 +98,11 @@ class OSGSIM_EXPORT LightPointDrawable : public osg::Drawable
         virtual bool computeBound() const;
 
         ~LightPointDrawable() {}
+        
+        osg::Endian                     _endian;
                
-        double _referenceTime;
-        double _referenceTimeInterval;
+        double                          _referenceTime;
+        double                          _referenceTimeInterval;
         
         typedef std::vector<ColorPosition>  LightPointList;
         typedef std::vector<LightPointList> SizedLightPointList;

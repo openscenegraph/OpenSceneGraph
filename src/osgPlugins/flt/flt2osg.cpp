@@ -657,8 +657,6 @@ osg::Group* ConvertFromFLT::visitDOF(osg::Group& osgParent, DofRecord* rec)
     transform->setMatrix(mat);
 
     return transform;        
-
-    return transform;
 }
 
 

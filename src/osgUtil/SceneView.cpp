@@ -37,6 +37,7 @@ SceneView::SceneView(DisplaySettings* ds)
     _clearColor.set(0.2f, 0.2f, 0.4f, 1.0f);
 
     _computeNearFar = CullVisitor::COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES;
+    //_computeNearFar = CullVisitor::COMPUTE_NEAR_FAR_USING_PRIMITIVES;
 
     _cullingMode = osg::CullStack::DEFAULT_CULLING;
     _LODScale = 1.0f;

@@ -198,8 +198,12 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         
         inline value_type getCalculatedFarPlane() const { return _computed_zfar; }
 
-	void updateCalculatedNearFar(const osg::Matrix& matrix,const osg::Drawable& drawable) { updateCalculatedNearFar(matrix,drawable.getBound()); }
-	void updateCalculatedNearFar(const osg::Matrix& matrix,const osg::BoundingBox& bb);
+        value_type computeNearestPointInFrustum(const osg::Matrix& matrix, const osg::Polytope::PlaneList& planes,const osg::Drawable& drawable);
+
+	bool updateCalculatedNearFar(const osg::Matrix& matrix,const osg::BoundingBox& bb);
+
+	bool updateCalculatedNearFar(const osg::Matrix& matrix,const osg::Drawable& drawable, bool isBillboard=false);
+        
     	void updateCalculatedNearFar(const osg::Vec3& pos);
 		
         /** Add a drawable to current render graph.*/
@@ -341,6 +345,46 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         osg::ref_ptr<osg::ImpostorSpriteManager>    _impostorSpriteManager;
 
         osg::ref_ptr<osg::State>                    _state;
+
+
+        struct MatrixPlanesDrawables
+        {
+            MatrixPlanesDrawables(const osg::Matrix& matrix, const osg::Drawable* drawable, const osg::Polytope& frustum):
+                _matrix(matrix),
+                _drawable(drawable)
+            {
+                // create a new list of planes from the active walls of the frustum.
+                osg::Polytope::ClippingMask result_mask = frustum.getResultMask();
+                osg::Polytope::ClippingMask selector_mask = 0x1;
+                for(osg::Polytope::PlaneList::const_iterator itr=frustum.getPlaneList().begin();
+                    itr!=frustum.getPlaneList().end();
+                    ++itr)
+                {
+                    if (result_mask&selector_mask) _planes.push_back(*itr);
+                    selector_mask <<= 1; 
+                }
+            }
+            
+            MatrixPlanesDrawables(const MatrixPlanesDrawables& mpd):
+                _matrix(mpd._matrix),
+                _drawable(mpd._drawable),
+                _planes(mpd._planes) {}
+                
+            MatrixPlanesDrawables& operator = (const MatrixPlanesDrawables& mpd)
+            {
+                _matrix = mpd._matrix;
+                _drawable = mpd._drawable;
+                _planes = mpd._planes;
+                return *this;
+            }
+            
+            osg::Matrix                 _matrix;
+            const osg::Drawable*        _drawable;
+            osg::Polytope::PlaneList    _planes;
+        };
+        
+        typedef std::multimap<value_type, MatrixPlanesDrawables>   DistanceMatrixDrawableMap;
+        DistanceMatrixDrawableMap                                  _nearPlaneCandidateMap;
 	
 };
 

@@ -13,7 +13,6 @@
 
 #include <osgText/Text>
 
-
 SlideShowConstructor::SlideShowConstructor()
 {
     _slideDistance = osg::DisplaySettings::instance()->getScreenDistance();
@@ -374,6 +373,14 @@ void SlideShowConstructor::addStereoImagePair(const std::string& filenameLeft,co
     _currentLayer->addChild(stereopair);
 }
 
+osg::StateSet* createTransformStateSet()
+{
+    osg::StateSet* stateset = new osg::StateSet;
+    stateset->setMode(GL_NORMALIZE,osg::StateAttribute::ON);
+    return stateset;
+}
+
+
 void SlideShowConstructor::addModel(const std::string& filename, CoordinateFrame coordinate_frame, const osg::Vec3& position, float scale, const osg::Vec4& rotate, const osg::Vec4& rotation)
 {
     if (!_currentLayer) addLayer();
@@ -381,6 +388,8 @@ void SlideShowConstructor::addModel(const std::string& filename, CoordinateFrame
     osg::Node* model = osgDB::readNodeFile(filename);
 
     if (!model) return;
+    
+    osg::Object::DataVariance defaultMatrixDataVariance = osg::Object::DYNAMIC; // STATIC
 
     if (coordinate_frame==SLIDE)
     {
@@ -392,12 +401,14 @@ void SlideShowConstructor::addModel(const std::string& filename, CoordinateFrame
         float model_scale = scale*_slideHeight*(1.0f-position.z())*0.7f/bs.radius();
 
         osg::MatrixTransform* transform = new osg::MatrixTransform;
-        transform->setDataVariance(osg::Object::STATIC);
+        transform->setDataVariance(defaultMatrixDataVariance);
         transform->setMatrix(osg::Matrix::translate(-bs.center())*
                              osg::Matrix::scale(model_scale,model_scale,model_scale)*
                              osg::Matrix::rotate(osg::DegreesToRadians(rotate[0]),rotate[1],rotate[2],rotate[3])*
                              osg::Matrix::translate(pos));
 
+
+        transform->setStateSet(createTransformStateSet());
         transform->addChild(model);
 
         if (rotation[0]!=0.0)
@@ -423,7 +434,7 @@ void SlideShowConstructor::addModel(const std::string& filename, CoordinateFrame
                            
 
         osg::MatrixTransform* transform = new osg::MatrixTransform;
-        transform->setDataVariance(osg::Object::STATIC);
+        transform->setDataVariance(defaultMatrixDataVariance);
         transform->setMatrix(osg::Matrix::inverse(matrix));
 
         transform->addChild(model);
@@ -453,6 +464,8 @@ void SlideShowConstructor::addModelWithPath(const std::string& filename, Coordin
 
     if (!model) return;
 
+    osg::Object::DataVariance defaultMatrixDataVariance = osg::Object::DYNAMIC; // STATIC
+
     osg::AnimationPath* animation = 0;
     if (!animation_path.empty()) 
     {
@@ -479,7 +492,7 @@ void SlideShowConstructor::addModelWithPath(const std::string& filename, Coordin
         float model_scale = scale*_slideHeight*0.7f/bs.radius();
 
         osg::MatrixTransform* transform = new osg::MatrixTransform;
-        transform->setDataVariance(osg::Object::STATIC);
+        transform->setDataVariance(defaultMatrixDataVariance);
         transform->setMatrix(osg::Matrix::translate(-bs.center())*
                              osg::Matrix::scale(model_scale,model_scale,model_scale)*
                              osg::Matrix::rotate(osg::DegreesToRadians(rotate[0]),rotate[1],rotate[2],rotate[3])*
@@ -493,7 +506,7 @@ void SlideShowConstructor::addModelWithPath(const std::string& filename, Coordin
     else
     {
         osg::MatrixTransform* transform = new osg::MatrixTransform;
-        transform->setDataVariance(osg::Object::STATIC);
+        transform->setDataVariance(defaultMatrixDataVariance);
         transform->setMatrix(osg::Matrix::translate(-position)*
                              osg::Matrix::scale(scale,scale,scale)*
                              osg::Matrix::rotate(osg::DegreesToRadians(rotate[0]),rotate[1],rotate[2],rotate[3]));
@@ -539,6 +552,8 @@ void SlideShowConstructor::addModelWithCameraPath(const std::string& filename, C
 
     if (!model) return;
 
+    osg::Object::DataVariance defaultMatrixDataVariance = osg::Object::DYNAMIC; // STATIC
+
     osg::AnimationPath* animation = 0;
     if (!animation_path.empty()) 
     {
@@ -565,7 +580,7 @@ void SlideShowConstructor::addModelWithCameraPath(const std::string& filename, C
         float model_scale = scale*_slideHeight*0.7f/bs.radius();
 
         osg::MatrixTransform* transform = new osg::MatrixTransform;
-        transform->setDataVariance(osg::Object::STATIC);
+        transform->setDataVariance(defaultMatrixDataVariance);
         transform->setMatrix(osg::Matrix::translate(-bs.center())*
                              osg::Matrix::scale(model_scale,model_scale,model_scale)*
                              osg::Matrix::rotate(osg::DegreesToRadians(rotate[0]),rotate[1],rotate[2],rotate[3])*

@@ -6,6 +6,7 @@
 #define OSG_NODECALLBACK 1
 
 #include <osg/Referenced>
+#include <osg/ref_ptr>
 
 namespace osg {
 

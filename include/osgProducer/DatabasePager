@@ -17,11 +17,14 @@
 #include <osg/NodeVisitor>
 #include <osg/Group>
 #include <osg/PagedLOD>
+#include <osg/Drawable>
 
 #include <Producer/Thread>
 #include <Producer/Mutex>
 
 #include <osgProducer/Export>
+
+#include <map>
 
 namespace osgProducer {
 
@@ -80,16 +83,21 @@ class OSGPRODUCER_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseReques
           * note, should only be called from the draw thread.*/
         void compileRenderingObjects(osg::State& state);
 
-    public:
-
-        typedef std::vector< osg::ref_ptr<osg::PagedLOD> > PagedLODList;
 
     protected :
 
         virtual ~DatabasePager() {}
         
+        // make friends with helper classes defined in DatabasePager.cpp.
+        class FindRenderingObjectsVisitor;
+        class FindPagedLODsVisitor;
+
+        typedef std::vector< osg::ref_ptr<osg::PagedLOD> > PagedLODList;
+
         typedef std::vector< osg::ref_ptr<osg::StateSet> > StateSetList;
         typedef std::vector< osg::ref_ptr<osg::Drawable> > DrawableList;
+        typedef std::pair<StateSetList,DrawableList>       DataToCompile;
+        typedef std::map< unsigned int, DataToCompile >    DataToCompileMap; 
 
         struct DatabaseRequest : public osg::Referenced
         {
@@ -101,6 +109,8 @@ class OSGPRODUCER_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseReques
             unsigned int                _numOfRequests;
             osg::ref_ptr<osg::Group>    _groupForAddingLoadedSubgraph;
             osg::ref_ptr<osg::Node>     _loadedModel;
+            DataToCompileMap            _dataToCompileMap;
+            
         };
         
         typedef std::vector< osg::ref_ptr<DatabaseRequest> > DatabaseRequestList;

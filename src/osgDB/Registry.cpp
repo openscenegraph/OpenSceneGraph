@@ -1813,7 +1813,8 @@ void Registry::removeExpiredObjectsInCache(double expiryTime)
         oitr!=_objectCache.end();
         ++oitr)
     {
-        if (oitr->second.second<=expiryTime)
+        if (oitr->second.second<=expiryTime &&
+            oitr->second.first->referenceCount()<=1)
         {
             // record the filename of the entry to use as key for deleting
             // afterwards/

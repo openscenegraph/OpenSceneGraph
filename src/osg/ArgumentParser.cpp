@@ -294,195 +294,231 @@ bool ArgumentParser::read(int pos, const std::string& str)
         remove(pos,1);
         return true;
     }
-    else
-    {
-        reportError("argument to `"+str+"` is missing");
-        return false;
-    }
+    return false;
 }
 
 bool ArgumentParser::read(int pos, const std::string& str, Parameter value1)
 {
-    if (match(pos,str) &&
-        value1.valid(_argv[pos+1]))
+    if (match(pos,str))
     {
-        value1.assign(_argv[pos+1]);
-        remove(pos,2);
-        return true;
-    }
-    else
-    {
+        if ((pos+1)<*_argc)
+        {
+            if (value1.valid(_argv[pos+1]))
+            {
+                value1.assign(_argv[pos+1]);
+                remove(pos,2);
+                return true;
+            }
+            reportError("argument to `"+str+"` is not valid");
+            return false;
+        }
         reportError("argument to `"+str+"` is missing");
         return false;
     }
+    return false;
 }
 
 bool ArgumentParser::read(int pos, const std::string& str, Parameter value1, Parameter value2)
 {
-    if (match(pos,str) &&
-        value1.valid(_argv[pos+1]) &&
-        value2.valid(_argv[pos+2]))
+    if (match(pos,str))
     {
-        value1.assign(_argv[pos+1]);
-        value2.assign(_argv[pos+2]);
-        remove(pos,3);
-        return true;
-    }
-    else
-    {
+        if ((pos+2)<*_argc)
+        {
+            if (value1.valid(_argv[pos+1]) &&
+                value2.valid(_argv[pos+2]))
+            {
+                value1.assign(_argv[pos+1]);
+                value2.assign(_argv[pos+2]);
+                remove(pos,3);
+                return true;
+            }
+            reportError("argument to `"+str+"` is not valid");
+            return false;
+        }
         reportError("argument to `"+str+"` is missing");
         return false;
     }
+    return false;
 }
 
 bool ArgumentParser::read(int pos, const std::string& str, Parameter value1, Parameter value2, Parameter value3)
 {
-    if (match(pos,str) &&
-        value1.valid(_argv[pos+1]) &&
-        value2.valid(_argv[pos+2]) &&
-        value3.valid(_argv[pos+3]))
+    if (match(pos,str))
     {
-        value1.assign(_argv[pos+1]);
-        value2.assign(_argv[pos+2]);
-        value3.assign(_argv[pos+3]);
-        remove(pos,4);
-        return true;
-    }
-    else
-    {
+        if ((pos+3)<*_argc)
+        {
+            if (value1.valid(_argv[pos+1]) &&
+                value2.valid(_argv[pos+2]) &&
+                value3.valid(_argv[pos+3]))
+            {
+                value1.assign(_argv[pos+1]);
+                value2.assign(_argv[pos+2]);
+                value3.assign(_argv[pos+3]);
+                remove(pos,4);
+                return true;
+            }
+            reportError("argument to `"+str+"` is not valid");
+            return false;
+        }
         reportError("argument to `"+str+"` is missing");
         return false;
     }
+    return false;
 }
 
 bool ArgumentParser::read(int pos, const std::string& str, Parameter value1, Parameter value2, Parameter value3, Parameter value4)
 {
-    if (match(pos,str) &&
-        value1.valid(_argv[pos+1]) &&
-        value2.valid(_argv[pos+2]) &&
-        value3.valid(_argv[pos+3]) &&
-        value4.valid(_argv[pos+4]))
+    if (match(pos,str))
     {
-        value1.assign(_argv[pos+1]);
-        value2.assign(_argv[pos+2]);
-        value3.assign(_argv[pos+3]);
-        value4.assign(_argv[pos+4]);
-        remove(pos,5);
-        return true;
-    }
-    else
-    {
+        if ((pos+4)<*_argc)
+        {
+            if (value1.valid(_argv[pos+1]) &&
+                value2.valid(_argv[pos+2]) &&
+                value3.valid(_argv[pos+3]) &&
+                value4.valid(_argv[pos+4]))
+            {
+                value1.assign(_argv[pos+1]);
+                value2.assign(_argv[pos+2]);
+                value3.assign(_argv[pos+3]);
+                value4.assign(_argv[pos+4]);
+                remove(pos,5);
+                return true;
+            }
+            reportError("argument to `"+str+"` is not valid");
+            return false;
+        }
         reportError("argument to `"+str+"` is missing");
         return false;
     }
+    return false;
 }
 
 bool ArgumentParser::read(int pos, const std::string& str, Parameter value1, Parameter value2, Parameter value3, Parameter value4, Parameter value5)
 {
-    if (match(pos,str) &&
-        value1.valid(_argv[pos+1]) &&
-        value2.valid(_argv[pos+2]) &&
-        value3.valid(_argv[pos+3]) &&
-        value4.valid(_argv[pos+4]) &&
-        value5.valid(_argv[pos+5]))
+    if (match(pos,str))
     {
-        value1.assign(_argv[pos+1]);
-        value2.assign(_argv[pos+2]);
-        value3.assign(_argv[pos+3]);
-        value4.assign(_argv[pos+4]);
-        value5.assign(_argv[pos+5]);
-        remove(pos,6);
-        return true;
-    }
-    else
-    {
+        if ((pos+5)<*_argc)
+        {
+            if (value1.valid(_argv[pos+1]) &&
+                value2.valid(_argv[pos+2]) &&
+                value3.valid(_argv[pos+3]) &&
+                value4.valid(_argv[pos+4]) &&
+                value5.valid(_argv[pos+5]))
+            {
+                value1.assign(_argv[pos+1]);
+                value2.assign(_argv[pos+2]);
+                value3.assign(_argv[pos+3]);
+                value4.assign(_argv[pos+4]);
+                value5.assign(_argv[pos+5]);
+                remove(pos,6);
+                return true;
+            }
+            reportError("argument to `"+str+"` is not valid");
+            return false;
+        }
         reportError("argument to `"+str+"` is missing");
         return false;
     }
+    return false;
 }
 
 bool ArgumentParser::read(int pos, const std::string& str, Parameter value1, Parameter value2, Parameter value3, Parameter value4, Parameter value5, Parameter value6)
 {
-    if (match(pos,str) &&
-        value1.valid(_argv[pos+1]) &&
-        value2.valid(_argv[pos+2]) &&
-        value3.valid(_argv[pos+3]) &&
-        value4.valid(_argv[pos+4]) &&
-        value5.valid(_argv[pos+5]) &&
-        value6.valid(_argv[pos+6]))
+    if (match(pos,str))
     {
-        value1.assign(_argv[pos+1]);
-        value2.assign(_argv[pos+2]);
-        value3.assign(_argv[pos+3]);
-        value4.assign(_argv[pos+4]);
-        value5.assign(_argv[pos+5]);
-        value6.assign(_argv[pos+6]);
-        remove(pos,7);
-        return true;
-    }
-    else
-    {
+        if ((pos+6)<*_argc)
+        {
+            if (value1.valid(_argv[pos+1]) &&
+                value2.valid(_argv[pos+2]) &&
+                value3.valid(_argv[pos+3]) &&
+                value4.valid(_argv[pos+4]) &&
+                value5.valid(_argv[pos+5]) &&
+                value6.valid(_argv[pos+6]))
+            {
+                value1.assign(_argv[pos+1]);
+                value2.assign(_argv[pos+2]);
+                value3.assign(_argv[pos+3]);
+                value4.assign(_argv[pos+4]);
+                value5.assign(_argv[pos+5]);
+                value6.assign(_argv[pos+6]);
+                remove(pos,7);
+                return true;
+            }
+            reportError("argument to `"+str+"` is not valid");
+            return false;
+        }
         reportError("argument to `"+str+"` is missing");
         return false;
     }
+    return false;
 }
 
 bool ArgumentParser::read(int pos, const std::string& str, Parameter value1, Parameter value2, Parameter value3, Parameter value4, Parameter value5,  Parameter value6,  Parameter value7)
 {
-    if (match(pos,str) &&
-        value1.valid(_argv[pos+1]) &&
-        value2.valid(_argv[pos+2]) &&
-        value3.valid(_argv[pos+3]) &&
-        value4.valid(_argv[pos+4]) &&
-        value5.valid(_argv[pos+5]) &&
-        value6.valid(_argv[pos+6]) &&
-        value7.valid(_argv[pos+7]))
+    if (match(pos,str))
     {
-        value1.assign(_argv[pos+1]);
-        value2.assign(_argv[pos+2]);
-        value3.assign(_argv[pos+3]);
-        value4.assign(_argv[pos+4]);
-        value5.assign(_argv[pos+5]);
-        value6.assign(_argv[pos+6]);
-        value7.assign(_argv[pos+7]);
-        remove(pos,8);
-        return true;
-    }
-    else
-    {
+        if ((pos+7)<*_argc)
+        {
+            if (value1.valid(_argv[pos+1]) &&
+                value2.valid(_argv[pos+2]) &&
+                value3.valid(_argv[pos+3]) &&
+                value4.valid(_argv[pos+4]) &&
+                value5.valid(_argv[pos+5]) &&
+                value6.valid(_argv[pos+6]) &&
+                value7.valid(_argv[pos+7]))
+            {
+                value1.assign(_argv[pos+1]);
+                value2.assign(_argv[pos+2]);
+                value3.assign(_argv[pos+3]);
+                value4.assign(_argv[pos+4]);
+                value5.assign(_argv[pos+5]);
+                value6.assign(_argv[pos+6]);
+                value7.assign(_argv[pos+7]);
+                remove(pos,8);
+                return true;
+            }
+            reportError("argument to `"+str+"` is not valid");
+            return false;
+        }
         reportError("argument to `"+str+"` is missing");
         return false;
     }
+    return false;
 }
 
 bool ArgumentParser::read(int pos, const std::string& str, Parameter value1, Parameter value2, Parameter value3, Parameter value4, Parameter value5,  Parameter value6,  Parameter value7,  Parameter value8)
 {
-    if (match(pos,str) &&
-        value1.valid(_argv[pos+1]) &&
-        value2.valid(_argv[pos+2]) &&
-        value3.valid(_argv[pos+3]) &&
-        value4.valid(_argv[pos+4]) &&
-        value5.valid(_argv[pos+5]) &&
-        value6.valid(_argv[pos+6]) &&
-        value7.valid(_argv[pos+7]) &&
-        value8.valid(_argv[pos+8]))
+    if (match(pos,str))
     {
-        value1.assign(_argv[pos+1]);
-        value2.assign(_argv[pos+2]);
-        value3.assign(_argv[pos+3]);
-        value4.assign(_argv[pos+4]);
-        value5.assign(_argv[pos+5]);
-        value6.assign(_argv[pos+6]);
-        value7.assign(_argv[pos+7]);
-        value8.assign(_argv[pos+8]);
-        remove(pos,9);
-        return true;
-    }
-    else
-    {
+        if ((pos+8)<*_argc)
+        {
+            if (value1.valid(_argv[pos+1]) &&
+                value2.valid(_argv[pos+2]) &&
+                value3.valid(_argv[pos+3]) &&
+                value4.valid(_argv[pos+4]) &&
+                value5.valid(_argv[pos+5]) &&
+                value6.valid(_argv[pos+6]) &&
+                value7.valid(_argv[pos+7]) &&
+                value8.valid(_argv[pos+8]))
+            {
+                value1.assign(_argv[pos+1]);
+                value2.assign(_argv[pos+2]);
+                value3.assign(_argv[pos+3]);
+                value4.assign(_argv[pos+4]);
+                value5.assign(_argv[pos+5]);
+                value6.assign(_argv[pos+6]);
+                value7.assign(_argv[pos+7]);
+                value8.assign(_argv[pos+8]);
+                remove(pos,9);
+                return true;
+            }
+            reportError("argument to `"+str+"` is not valid");
+            return false;
+        }
         reportError("argument to `"+str+"` is missing");
         return false;
     }
+    return false;
 }
 
 bool ArgumentParser::errors(ErrorSeverity severity) const

@@ -458,7 +458,7 @@ bool Matrix_implementation::invert_4x4_new( const Matrix_implementation& mat )
         pz = _mat[2][0]*a + _mat[2][1]*b + _mat[2][2]*c;
 
 #undef a
-#undef a
+#undef b
 #undef c
 #define tx r10
 #define ty r11
@@ -492,7 +492,7 @@ bool Matrix_implementation::invert_4x4_new( const Matrix_implementation& mat )
 #undef px
 #undef py
 #undef pz
-#undef s
+#undef one_over_s
 #undef d
     }
     else // Rightmost column is [0; 0; 0; 1] so it can be ignored

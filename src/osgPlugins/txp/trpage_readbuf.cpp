@@ -501,8 +501,7 @@ bool trpgrAppFile::Read(char *data,int32 offset,uint32 dataSize)
     if (!valid)  return false;
 
     // Seek to the right place
-    int result;
-    if ((result = fseek(fp,offset,SEEK_SET))) {
+    if (fseek(fp,offset,SEEK_SET)) {
         valid = false;
         return false;
     }

@@ -643,9 +643,10 @@ bool trpgGeometry::Write(trpgWriteBuffer &buf)
                 buf.Add(td.doubleData[j]);
             buf.End();
 
-            float u;
-            for (j=0;j<num*2;j++)
-                u = (float)td.doubleData[j];
+            // UNUSED CODE:
+            //float u;
+            //for (j=0;j<num*2;j++)
+            //    u = (float)td.doubleData[j];
         }
     }
 

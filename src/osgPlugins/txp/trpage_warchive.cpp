@@ -759,7 +759,6 @@ public:
 };
 void trpgwGeomHelper::Optimize()
 {
-    bool isStrip = false;
     int dtype = (dataType == UseDouble ? trpgGeometry::DoubleData : trpgGeometry::FloatData);
 
     // Potentially writing to all of these

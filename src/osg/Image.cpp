@@ -118,8 +118,9 @@ void Image::ensureDimensionsArePowerOfTwo()
     float tp2 = logf((float)_t)/logf(2.0f);
     float rounded_tp2 = floorf(tp2+0.5f);
     int new_t = (int)(powf(2.0f,rounded_tp2));
-
-    if (new_s!=_s && new_t!=_t)
+    
+    
+    if (new_s!=_s || new_t!=_t)
     {
         if (!_fileName.empty()) notify(NOTICE) << "Scaling image '"<<_fileName<<"' from ("<<_s<<","<<_t<<") to ("<<new_s<<","<<new_t<<")"<<endl;
         else notify(NOTICE) << "Scaling image from ("<<_s<<","<<_t<<") to ("<<new_s<<","<<new_t<<")"<<endl;

@@ -37,7 +37,7 @@ bool PSU_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
 {
     const osgParticle::ParticleSystemUpdater &myobj = static_cast<const osgParticle::ParticleSystemUpdater &>(obj);    
 
-    for (int i=0; i<myobj.getNumParticleSystems(); ++i) {
+    for (unsigned int i=0; i<myobj.getNumParticleSystems(); ++i) {
         fw.writeObject(*myobj.getParticleSystem(i));
     }
 

@@ -2,7 +2,6 @@ MAKEDIR    = $(OSGHOME)/Make
 INSTRULES  = $(MAKEDIR)/instrules
 MAKEDEPEND = Makedepend
 OBJS = $(C++FILES:.cpp=.o) $(CFILES:.c=.o) $(YACCFILES:.y=.o) $(LEXFILES:.l=.o)
-SO_EXT = so
 
 DEPFILES = $(OBJS:.o=.d)
 
@@ -10,17 +9,16 @@ C++ = cc
 YFLAGS = -d
 LCINCS += -I/usr/local/include 
 LC++INCS += ${LCINCS}
-CFLAGS   = -O2 -W -Wall $(LCINCS) 
+CFLAGS   = -O2 -W -Wall $(LCINCS) -D__DARWIN_OSX__
 C++FLAGS = ${CFLAGS}
 CPPFLAGS = ${CFLAGS}
-LIBTOOL = libtool
-LD = ld
-PLUGINLIBS = $(TOP)/lib/osgPlugins/osgdb_rgb.SO_EXT $(TOP)/lib/osgPlugins/osgdb_3ds.SO_EXT $(TOP)/lib/osgPlugins/osgdb_osg.SO_EXT
-MACOSXLIBS = $(TOP)/lib/libosg.SO_EXT $(TOP)/lib/libosgUtil.SO_EXT $(TOP)/lib/libosgGLUT.SO_EXT $(TOP)/lib/libosgDB.SO_EXT
-PLUGINS = $(PLUGINLIBS) 
+# this distinction is necessary for Darwin / OS X as shared libs and loadable (dylib) modules
+# are not the same thing
+SO_EXT = dylib
+DL_EXT = so
 
-LDFLAGS = -all_load -framework GLUT -framework Carbon -L/usr/local/lib -L/usr/lib -L$(TOP)/lib/osgPlugins -ldl -lstdc++ -lm 
-  
+FRAMEWORKS = -framework GLUT -framework Carbon -framework OpenGL
+LDFLAGS =-all_load  -L/usr/local/lib -L/usr/lib  
 
 DYNAMICLIBRARYLIB = 
 PFLIBS = 

@@ -15,6 +15,7 @@ C++FLAGS = ${CFLAGS}
 CPPFLAGS = ${CFLAGS}
 
 SO_EXT = so
+DL_EXT = so
 
 FREEBSD_LOCALLIBS = -L/usr/local/lib -rpath /usr/local/lib
 

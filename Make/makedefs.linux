@@ -16,6 +16,7 @@ C++FLAGS  = ${CFLAGS}
 CPPFLAGS  = ${CFLAGS}
 
 SO_EXT = so
+DL_EXT = so
 
 LDFLAGS = -O2 -W -Wall -L/usr/X11R6/lib
 #LDFLAGS = -g -W -Wall -L/usr/X11R6/lib

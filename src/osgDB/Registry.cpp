@@ -308,8 +308,11 @@ osg::Object* Registry::readObjectOfType(const osg::Object& compObj,Input& fr)
         if (fr[1].isString())
         {
             Object* obj = fr.getObjectForUniqueID(fr[1].getStr());
-            if (compObj.isSameKindAs(obj)) fr+=2;
-            return obj;
+            if (compObj.isSameKindAs(obj))
+            {
+                fr+=2;
+                return obj;
+            }
         }
         else return NULL;
 

@@ -663,7 +663,7 @@ int main( int argc, char **argv )
     root->addChild( createScene() );
     root->addChild( createBackground() );
 
-    osgDB::writeNodeFile(*root,"geoemtry.osg");
+    //osgDB::writeNodeFile(*root,"geoemtry.osg");
 
 
     // add model to viewer.

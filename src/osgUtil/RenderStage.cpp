@@ -77,6 +77,12 @@ void RenderStage::drawPreRenderStages(osg::State& state,RenderLeaf*& previous)
 
 void RenderStage::draw(osg::State& state,RenderLeaf*& previous)
 {
+    drawPreRenderStages(state,previous);
+    RenderBin::draw(state,previous);
+}
+
+void RenderStage::drawImplementation(osg::State& state,RenderLeaf*& previous)
+{
     if (_stageDrawnThisFrame) return;
     
     if (!_viewport)
@@ -129,7 +135,7 @@ void RenderStage::draw(osg::State& state,RenderLeaf*& previous)
     if (_renderStageLighting.valid()) _renderStageLighting->draw(state,previous);
 
     // draw the children and local.
-    RenderBin::draw(state,previous);
+    RenderBin::drawImplementation(state,previous);
 
     // now reset the state so its back in its default state.
     if (previous)

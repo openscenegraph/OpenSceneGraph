@@ -62,10 +62,13 @@ echo osgcube
 osgcube
 more memleaks.log
 
+echo osgcubemap glider.osg
+osgcubemap glider.osg
+more memleaks.log
+
 echo osgclip
 osgclip cow.osg
 more memleaks.log
-
 
 echo osghud dumptruck.osg
 osghud dumptruck.osg

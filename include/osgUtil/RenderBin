@@ -65,27 +65,40 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
 
         void sort();
 
+        virtual void sortImplementation();
+	
         void setSortMode(SortMode mode);
         SortMode getSortMode() const { return _sortMode; }
 
-        virtual void sort_local();
-        virtual void sort_local_by_state();
-        virtual void sort_local_front_to_back();
-        virtual void sort_local_back_to_front();
+        virtual void sortByState();
+        virtual void sortFrontToBack();
+        virtual void sortBackToFront();
         
         struct SortCallback : public osg::Referenced    
         {
-            virtual void sort(RenderBin*) = 0;
+            virtual void sortImplementation(RenderBin*) = 0;
         };
 
-        void setSortLocalCallback(SortCallback* sortCallback) { _sortLocalCallback = sortCallback; }
-        SortCallback* getSortLocalCallback() { return _sortLocalCallback.get(); }
-        const SortCallback* getSortLocalCallback() const { return _sortLocalCallback.get(); }
+        void setSortCallback(SortCallback* sortCallback) { _sortCallback = sortCallback; }
+        SortCallback* getSortCallback() { return _sortCallback.get(); }
+        const SortCallback* getSortCallback() const { return _sortCallback.get(); }
+
 
 
         virtual void draw(osg::State& state,RenderLeaf*& previous);
 
-        virtual void draw_local(osg::State& state,RenderLeaf*& previous);
+        virtual void drawImplementation(osg::State& state,RenderLeaf*& previous);
+
+        struct DrawCallback : public osg::Referenced    
+        {
+            virtual void drawImplementation(RenderBin* bin,osg::State& state,RenderLeaf*& previous) = 0;
+        };
+
+        void setDrawCallback(DrawCallback* drawCallback) { _drawCallback = drawCallback; }
+        DrawCallback* getDrawCallback() { return _drawCallback.get(); }
+        const DrawCallback* getDrawCallback() const { return _drawCallback.get(); }
+
+
 
         /** extract stats for current draw list. */
         bool getStats(osg::Statistics* primStats);
@@ -107,8 +120,9 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
            
 
         SortMode                        _sortMode;
-        osg::ref_ptr<SortCallback>      _sortLocalCallback;
+        osg::ref_ptr<SortCallback>      _sortCallback;
 
+        osg::ref_ptr<DrawCallback>      _drawCallback;
 
         typedef std::map< std::string, osg::ref_ptr<RenderBin> > RenderBinPrototypeList;
         static RenderBinPrototypeList s_renderBinPrototypeList;
@@ -143,3 +157,4 @@ class RegisterRenderBinProxy
 
 #endif
 
+    

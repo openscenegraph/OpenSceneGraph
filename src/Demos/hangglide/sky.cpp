@@ -76,20 +76,16 @@ Node *makeSky( void )
 
     for( i = 0; i < nlev-1; i++ )
     {
+        UShortDrawElements* drawElements = new UShortDrawElements(Primitive::TRIANGLE_STRIP);
+        drawElements->reserve(38);
+
         for( j = 0; j <= 18; j++ )
         {
-
-            UShortDrawElements* drawElements = new UShortDrawElements(Primitive::TRIANGLE_STRIP);
-            drawElements->reserve(38);
-
-            for( j = 0; j <= 18; j++ )
-            {
-                drawElements->push_back((i+1)*19+j);
-                drawElements->push_back((i+0)*19+j);
-            }
-            
-            geom->addPrimitive(drawElements);
+            drawElements->push_back((i+1)*19+j);
+            drawElements->push_back((i+0)*19+j);
         }
+
+        geom->addPrimitive(drawElements);
     }
     
     geom->setVertexArray( &coords );

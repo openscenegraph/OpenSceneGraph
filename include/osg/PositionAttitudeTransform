@@ -30,47 +30,25 @@ class SG_EXPORT PositionAttitudeTransform : public Transform
         META_Node(osg, PositionAttitudeTransform);
 
 
-        void setPosition(const Vec3& pos) { _position = pos; dirtyBound(); }
+        inline void setPosition(const Vec3& pos) { _position = pos; dirtyBound(); }
         
-        const Vec3& getPosition() const { return _position; }
+        inline const Vec3& getPosition() const { return _position; }
 
 
-        void setAttitude(const Quat& quat) { _attitude = quat; dirtyBound(); }
+        inline void setAttitude(const Quat& quat) { _attitude = quat; dirtyBound(); }
         
-        const Quat& getAttitude() const { return _attitude; }
+        inline const Quat& getAttitude() const { return _attitude; }
         
         
-        void setPivotPoint(const Vec3& pivot) { _pivotPoint = pivot; dirtyBound(); }
+        inline void setPivotPoint(const Vec3& pivot) { _pivotPoint = pivot; dirtyBound(); }
     
-        const Vec3& getPivotPoint() const { return _pivotPoint; }
+        inline const Vec3& getPivotPoint() const { return _pivotPoint; }
         
 
         virtual bool computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor* nv) const;
 
         virtual bool computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor* nv) const;
 
-
-        /** Callback which can be attached to a PositionAttitudeTransform
-          * as an app callback to allow it to follow the path defined by a
-          * AnimationPath.*/
-        class SG_EXPORT AnimationPathCallback : public virtual NodeCallback
-        {
-            public:
-            
-                AnimationPathCallback(AnimationPath* ap,double timeOffset=0.0f,double timeMultiplier=1.0f):
-                    _animationPath(ap),
-                    _timeOffset(timeOffset),
-                    _timeMultiplier(timeMultiplier),
-                    _firstTime(0.0) {}
-            
-                /** implements the callback*/
-                virtual void operator()(Node* node, NodeVisitor* nv);
-                
-                ref_ptr<AnimationPath>  _animationPath;
-                double                  _timeOffset;
-                double                  _timeMultiplier;
-                double                  _firstTime;
-        };
 
 
     protected :

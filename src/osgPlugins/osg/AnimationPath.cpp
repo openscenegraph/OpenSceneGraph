@@ -61,85 +61,45 @@ bool AnimationPath_readLocalData(osg::Object &obj, osgDB::Input &fr)
 
     if (fr.matchSequence("ControlPoints {"))
     {
-        int entry = fr[1].getNoNestedBrackets();
+        int entry = fr[0].getNoNestedBrackets();
 
         fr += 2;
         
-        float fTime = -1;
 
-        osg::AnimationPath::ControlPoint CtrlPoint;
-        bool bPosParsed = false;
-        bool bRotParsed = false;
-        bool bScaleParsed = false;
-
+        float time;
+        Vec3 position,scale;
+        Quat rotation;
+        
         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
         {
-            bool handled=false;
-
-            if (fr[0].matchWord("Time") &&
-                fr[1].isFloat())
+            if (fr[0].getFloat(time) &&
+                fr[1].getFloat(position[0]) && 
+                fr[2].getFloat(position[1]) && 
+                fr[3].getFloat(position[2]) &&
+                fr[4].getFloat(rotation[0]) && 
+                fr[5].getFloat(rotation[1]) && 
+                fr[6].getFloat(rotation[2]) &&
+                fr[7].getFloat(rotation[3]) &&
+                fr[8].getFloat(scale[0]) && 
+                fr[9].getFloat(scale[1]) && 
+                fr[10].getFloat(scale[2]))
             {
-                if (bPosParsed || bRotParsed || bScaleParsed)
-                {
-                    ap->insert(fTime, CtrlPoint);
-                    
-                    bPosParsed = false;
-                    bRotParsed = false;
-                    bScaleParsed = false;
-                }
 
-                fr[1].getFloat(fTime);
-                fr+=2; 
-                handled = true; 
-            }
 
-            Vec3 vec3; 
-            if (fr[0].matchWord("Position") &&
-                fr[1].getFloat(vec3[0]) && 
-                fr[2].getFloat(vec3[1]) && 
-                fr[3].getFloat(vec3[2])) 
-            { 
-                CtrlPoint._position = vec3; 
-                fr+=4; 
-                bPosParsed = true;
-                handled = true; 
+                osg::AnimationPath::ControlPoint ctrlPoint;
+                ctrlPoint._position = position;
+                ctrlPoint._rotation = rotation;
+                ctrlPoint._scale = scale;
+
+                ap->insert(time, ctrlPoint);
+
+                fr+=11; 
             } 
-
-
-            Vec4 vec4; 
-            if (fr[0].matchWord("Rotation") &&
-                fr[1].getFloat(vec4[0]) && 
-                fr[2].getFloat(vec4[1]) && 
-                fr[3].getFloat(vec4[2]) && 
-                fr[4].getFloat(vec4[3])) 
-            { 
-                CtrlPoint._rotation.makeRotate(vec4[0], vec4[1], vec4[2], vec4[3]);
-                fr+=5; 
-                bRotParsed = true;
-                handled = true; 
-            } 
-
-
-            if (fr[0].matchWord("Scale") &&
-                fr[1].getFloat(vec3[0]) && 
-                fr[2].getFloat(vec3[1]) && 
-                fr[3].getFloat(vec3[2])) 
-            { 
-                CtrlPoint._scale = vec3; 
-                fr+=4; 
-                bScaleParsed = true;
-                handled = true; 
-            } 
-
-            if (!handled) fr.advanceOverCurrentFieldOrBlock();
+            else fr.advanceOverCurrentFieldOrBlock();
 
         }
 
-            // If all values have been parsed in
-        if (bPosParsed && bRotParsed && bScaleParsed)
-        {
-            ap->insert(fTime, CtrlPoint);
-        }
+        itAdvanced = true;
 
     }
     
@@ -171,48 +131,64 @@ bool AnimationPath_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     fw.indent() << "ControlPoints {"<< std::endl;
     fw.moveIn();
 
-    bool bPosSet = false;
-    bool bRotSet = false;
-    bool bScaleSet = false;
-    AnimationPath::TimeControlPointMap::const_iterator itr;
-    for (itr=tcpm.begin();
+    for (AnimationPath::TimeControlPointMap::const_iterator itr=tcpm.begin();
          itr!=tcpm.end(); 
          ++itr)
     {
-        if (itr->second._position != Vec3(0,0,0))
-            bPosSet = true;
-        if (itr->second._rotation.asVec4() != Vec4(0,0,0,1))
-            bRotSet = true;
-        if (itr->second._scale    != Vec3(1,1,1))
-            bScaleSet = true;
-    }
-
-    for (itr=tcpm.begin();
-         itr!=tcpm.end(); 
-         ++itr)
-    {
-        Vec4 Rot;
-
-        fw.indent() << "Time " << itr->first;
-
-        if (bPosSet)
-            fw << "  Position " << itr->second._position;
-
-        if (bRotSet)
-        {
-            itr->second._rotation.getRotate (Rot[0], Rot[1], Rot[2], Rot[3]);
-            fw << "  Rotation " << Rot;
-        }
-
-        if (bScaleSet)
-            fw << "  Scale " << itr->second._scale;
-
-        fw << std::endl;
+        fw.indent() << itr->first << " " << itr->second._position << " " << itr->second._rotation << " " << itr->second._scale << std::endl;
 
     }
 
     fw.moveOut();
     fw.indent() << "}"<< std::endl;
+
+    return true;
+}
+
+
+
+
+// forward declare functions to use later.
+bool  AnimationPathCallback_readLocalData(osg::Object &obj, osgDB::Input &fr);
+bool  AnimationPathCallback_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
+
+
+// register the read and write functions with the osgDB::Registry.
+osgDB::RegisterDotOsgWrapperProxy  AnimationPathCallback_Proxy
+(
+    new osg::AnimationPathCallback,
+    "AnimationPathCallback",
+    "Object AnimationPathCallback",
+    AnimationPathCallback_readLocalData,
+    AnimationPathCallback_writeLocalData,
+    DotOsgWrapper::READ_AND_WRITE
+);
+
+bool AnimationPathCallback_readLocalData(osg::Object &obj, osgDB::Input &fr)
+{
+    osg::AnimationPathCallback *apc = dynamic_cast<osg::AnimationPathCallback*>(&obj);
+    if (!apc) return false;
+
+    static osg::ref_ptr<osg::AnimationPath> s_path = new osg::AnimationPath;
+    ref_ptr<osg::Object> object = fr.readObjectOfType(*s_path);
+    osg::AnimationPath* animpath = dynamic_cast<osg::AnimationPath*>(object.get());
+    if (animpath) apc->setAnimationPath(animpath);
+    
+    bool itrAdvanced = object.valid();
+    
+    return itrAdvanced;
+}
+
+
+bool AnimationPathCallback_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
+{
+    const osg::AnimationPathCallback* apc = dynamic_cast<const osg::AnimationPathCallback*>(&obj);
+    if (!apc) return false;
+
+    if (apc->getAnimationPath())
+    {
+        fw.writeObject(*(apc->getAnimationPath()));
+    }
 
     return true;
 }

@@ -13,10 +13,8 @@ MatrixTransform::MatrixTransform(const MatrixTransform& transform,const CopyOp& 
     Transform(transform,copyop),
     _matrix(new Matrix(*transform._matrix)),
     _inverse(new Matrix(*transform._inverse)),
-    _inverseDirty(transform._inverseDirty),
-    _animationPath(dynamic_cast<AnimationPath*>(copyop(transform._animationPath.get())))
+    _inverseDirty(transform._inverseDirty)
 {    
-    if (_animationPath.valid()) setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);            
 }
 
 MatrixTransform::MatrixTransform(const Matrix& mat )
@@ -33,38 +31,30 @@ MatrixTransform::~MatrixTransform()
 {
 }
 
-
-void MatrixTransform::traverse(NodeVisitor& nv)
+bool MatrixTransform::computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const
 {
-    // if app traversal update the frame count.
-    if (_animationPath.valid() && 
-        nv.getVisitorType()==NodeVisitor::UPDATE_VISITOR && 
-        nv.getFrameStamp())
+    if (_referenceFrame==RELATIVE_TO_PARENTS)
     {
-        double time = nv.getFrameStamp()->getReferenceTime();
-        _animationPath->getMatrix(time,*_matrix);
+        matrix.preMult(*_matrix);
     }
-    
-    // must call any nested node callbacks and continue subgraph traversal.
-    Transform::traverse(nv);
+    else // absolute
+    {
+        matrix = *_matrix;
+    }
+    return true;
 }
 
-void MatrixTransform::AnimationPathCallback::operator()(Node* node, NodeVisitor* nv)
+bool MatrixTransform::computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor*) const
 {
-    MatrixTransform* mt = dynamic_cast<MatrixTransform*>(node);
-    if (mt &&
-        _animationPath.valid() && 
-        nv->getVisitorType()==NodeVisitor::UPDATE_VISITOR && 
-        nv->getFrameStamp())
+    const Matrix& inverse = getInverseMatrix();
+
+    if (_referenceFrame==RELATIVE_TO_PARENTS)
     {
-        double time = nv->getFrameStamp()->getReferenceTime();
-        if (_firstTime==0.0) _firstTime = time;
-        Matrix matrix;
-        if (_animationPath->getMatrix(((time-_firstTime)-_timeOffset)*_timeMultiplier,matrix))
-        {
-            mt->setMatrix(matrix);
-        }
+        matrix.postMult(inverse);
     }
-    // must call any nested node callbacks and continue subgraph traversal.
-    traverse(node,nv);
+    else // absolute
+    {
+        matrix = inverse;
+    }
+    return true;
 }

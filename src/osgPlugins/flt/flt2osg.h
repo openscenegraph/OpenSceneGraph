@@ -153,6 +153,10 @@ class ConvertFromFLT
         int  visitVertexList(GeoSetBuilder* pParent, VertexListRecord* rec);
         int  visitLocalVertexPool(GeoSetBuilder* pBuilder, LocalVertexPoolRecord* rec);
 
+
+        void setUseTextureAlphaForTransparancyBinning(bool flag) { _useTextureAlphaForTranspancyBinning=flag; }
+        bool getUseTextureAlphaForTransparancyBinning() const { return _useTextureAlphaForTranspancyBinning; }
+
     private:
 
         int addMeshPrimitives ( osg::Group &osgParent, GeoSetBuilder *pBuilder, MeshRecord *rec );
@@ -188,6 +192,7 @@ class ConvertFromFLT
         double              _unitScale;
         bool                _bHdrRgbMode;
         osg::Vec4           _faceColor;
+        bool                _useTextureAlphaForTranspancyBinning;
 
         osg::Group*         _osgParent;
 };

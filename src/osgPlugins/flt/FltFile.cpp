@@ -24,6 +24,8 @@ FltFile::FltFile(
     TexturePool* pTexturePool,
     MaterialPool* pMaterialPool)
 {
+    _useTextureAlphaForTransparancyBinning = true;
+
     if (pColorPool)
     {
         // use external color palette, ignore internal
@@ -91,6 +93,7 @@ osg::Node* FltFile::readNode(const std::string& fileName)
 osg::Group* FltFile::convert()
 {
     ConvertFromFLT visit;
+    visit.setUseTextureAlphaForTransparancyBinning(getUseTextureAlphaForTransparancyBinning());
     return visit.convert(getHeaderRecord());
 }
 

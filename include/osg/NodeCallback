@@ -5,7 +5,7 @@
 #ifndef OSG_NODECALLBACK
 #define OSG_NODECALLBACK 1
 
-#include <osg/Referenced>
+#include <osg/Object>
 #include <osg/ref_ptr>
 
 namespace osg {
@@ -13,13 +13,18 @@ namespace osg {
 class Node;
 class NodeVisitor;
 
-class SG_EXPORT NodeCallback : public virtual Referenced {
+class SG_EXPORT NodeCallback : public virtual Object {
 
     public :
     
 
         NodeCallback(){}
-        virtual ~NodeCallback() {}
+
+        NodeCallback(const NodeCallback&,const CopyOp&):
+            _nestedCallback(_nestedCallback) {}
+
+        
+        META_Object(osg,NodeCallback)
         
         
         /** Callback method call by the NodeVisitor when visiting a node.*/
@@ -71,6 +76,10 @@ class SG_EXPORT NodeCallback : public virtual Referenced {
    public:
 
         ref_ptr<NodeCallback> _nestedCallback;
+        
+    protected:
+    
+        virtual ~NodeCallback() {}
 };
 
 } // namespace

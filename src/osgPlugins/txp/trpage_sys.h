@@ -37,11 +37,12 @@
 
 #include <windows.h>
 
-#ifdef __MSC_VER
+#ifdef _MSC_VER
 // Microsoft Developer warnings that annoy me
 #pragma warning ( disable : 4251)
 #pragma warning ( disable : 4275)
 #pragma warning ( disable : 4786)
+#pragma warning ( disable : 4251)
 #endif
 
 // Somewhat system independent file deletion macro

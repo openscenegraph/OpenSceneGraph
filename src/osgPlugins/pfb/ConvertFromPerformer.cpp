@@ -1125,19 +1125,19 @@ osg::Material* ConvertFromPerformer::visitMaterial(osg::StateSet* osgStateSet,pf
 }
 
 
-static osg:::Texture2D::FilterMode getTexfilter(int filter, int pftype)
+static osg::Texture2D::FilterMode getTexfilter(int filter, int pftype)
 {
     if (filter == PFTEX_MINFILTER)
     {
 
         if (pftype & PFTEX_LINEAR)
-            return osg:::Texture2D::NEAREST_MIPMAP_LINEAR;
+            return osg::Texture2D::NEAREST_MIPMAP_LINEAR;
         else if (pftype & PFTEX_BILINEAR)
-            return osg:::Texture2D::LINEAR_MIPMAP_NEAREST;
+            return osg::Texture2D::LINEAR_MIPMAP_NEAREST;
         else if (pftype & PFTEX_TRILINEAR)
-            return osg:::Texture2D::LINEAR_MIPMAP_LINEAR;
+            return osg::Texture2D::LINEAR_MIPMAP_LINEAR;
 
-        return osg:::Texture2D::NEAREST_MIPMAP_LINEAR;
+        return osg::Texture2D::NEAREST_MIPMAP_LINEAR;
 
     }
     else
@@ -1147,7 +1147,7 @@ static osg:::Texture2D::FilterMode getTexfilter(int filter, int pftype)
         // not quite sure what is supposed to be interpret the Peformer
         // filter modes here so will simple go with OpenGL default.
     
-        return osg:::Texture2D::LINEAR;
+        return osg::Texture2D::LINEAR;
     }
 }
 
@@ -1173,26 +1173,26 @@ osg::Texture2D* ConvertFromPerformer::visitTexture(osg::StateSet* osgStateSet,pf
     int repeat_t = tex->getRepeat(PFTEX_WRAP_T);
 
     if (repeat_r==PFTEX_CLAMP)
-        osgTexture->setWrap(osg:::Texture2D::WRAP_R,osg:::Texture2D::CLAMP);
+        osgTexture->setWrap(osg::Texture2D::WRAP_R,osg::Texture2D::CLAMP);
     else
-        osgTexture->setWrap(osg:::Texture2D::WRAP_R,osg:::Texture2D::REPEAT);
+        osgTexture->setWrap(osg::Texture2D::WRAP_R,osg::Texture2D::REPEAT);
 
     if (repeat_s==PFTEX_CLAMP)
-        osgTexture->setWrap(osg:::Texture2D::WRAP_S,osg:::Texture2D::CLAMP);
+        osgTexture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::CLAMP);
     else
-        osgTexture->setWrap(osg:::Texture2D::WRAP_S,osg:::Texture2D::REPEAT);
+        osgTexture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::REPEAT);
 
     if (repeat_t==PFTEX_CLAMP)
-        osgTexture->setWrap(osg:::Texture2D::WRAP_T,osg:::Texture2D::CLAMP);
+        osgTexture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::CLAMP);
     else
-        osgTexture->setWrap(osg:::Texture2D::WRAP_T,osg:::Texture2D::REPEAT);
+        osgTexture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::REPEAT);
 
     // filter
 #if 1
-    osgTexture->setFilter(osg:::Texture2D::MIN_FILTER,
+    osgTexture->setFilter(osg::Texture2D::MIN_FILTER,
                           getTexfilter(PFTEX_MINFILTER,
                                        tex->getFilter(PFTEX_MINFILTER)));
-    osgTexture->setFilter(osg:::Texture2D::MAG_FILTER,
+    osgTexture->setFilter(osg::Texture2D::MAG_FILTER,
                           getTexfilter(PFTEX_MAGFILTER,
                                        tex->getFilter(PFTEX_MAGFILTER)));
 #endif

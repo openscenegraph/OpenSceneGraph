@@ -190,7 +190,7 @@ void Image::setPixelFormat(const GLenum format)
     }
 }
 
-void Image::createImage(int s,int t,int r,
+void Image::allocateImage(int s,int t,int r,
                         GLenum format,GLenum type,
                         int packing)
 {
@@ -264,7 +264,7 @@ void Image::setImage(int s,int t,int r,
 void Image::readPixels(int x,int y,int width,int height,
                        GLenum format,GLenum type)
 {
-    createImage(width,height,1,format,type);
+    allocateImage(width,height,1,format,type);
 
     glPixelStorei(GL_PACK_ALIGNMENT,_packing);
 
@@ -274,6 +274,8 @@ void Image::readPixels(int x,int y,int width,int height,
 
 void Image::scaleImage(const int s,const int t,const int r)
 {
+    if (_s==s && _t==t && _r==r) return;
+
     if (_data==NULL)
     {
         notify(WARN) << "Error Image::scaleImage() do not succeed : cannot scale NULL image."<<std::endl;
@@ -285,6 +287,7 @@ void Image::scaleImage(const int s,const int t,const int r)
         notify(WARN) << "Error Image::scaleImage() do not succeed : scaling of volumes not implemented."<<std::endl;
         return;
     }
+
     
 
     unsigned int newTotalSize = computeRowWidthInBytes(s,_pixelFormat,_dataType,_packing)*t;
@@ -330,6 +333,63 @@ void Image::scaleImage(const int s,const int t,const int r)
     
     ++_modifiedTag;
 }
+
+void Image::copySubImage(int s_offset,int t_offset,int r_offset,osg::Image* source)
+{
+    if (!source) return;
+    if (s_offset<0 || t_offset<0 || r_offset<0) 
+    {
+        notify(WARN)<<"Warning: negative offsets passed to Image::copySubImage(..) not supported, operation ignored."<<std::endl;
+        return;
+    }
+    
+    if (!_data)
+    {
+        cout<<"allocating image"<<endl;
+        allocateImage(s_offset+source->r(),t_offset+source->t(),r_offset+source->t(),
+                    source->getPixelFormat(),source->getDataType(),
+                    source->getPacking());
+    }
+    
+    if (s_offset>=_s || t_offset>=_t  || r_offset>=_r)
+    {
+        notify(WARN)<<"Warning: offsets passed to Image::copySubImage(..) outside destination image, operation ignored."<<std::endl;
+        return;
+    }
+    
+    
+    if (_pixelFormat != source->getPixelFormat())
+    {
+        notify(WARN)<<"Warning: image with an incompatible pixel formats passed to Image::copySubImage(..), operation ignored."<<std::endl;
+        return;
+    }
+
+    void* data_destination = data(s_offset,t_offset,r_offset);
+    
+    glPixelStorei(GL_PACK_ALIGNMENT,source->getPacking());
+    glPixelStorei(GL_PACK_ROW_LENGTH,_s);
+
+    glPixelStorei(GL_UNPACK_ALIGNMENT,_packing);
+    
+    GLint status = gluScaleImage(_pixelFormat,
+        source->s(),
+        source->t(),
+        source->getDataType(),
+        source->data(),
+        source->s(),
+        source->t(),
+        _dataType,
+        data_destination);
+
+    glPixelStorei(GL_PACK_ROW_LENGTH,0);
+
+    if (status!=0)
+    {
+        notify(WARN) << "Error Image::scaleImage() do not succeed : errorString = "<<gluErrorString((GLenum)status)<<std::endl;
+    }
+
+}
+
 
 void Image::flipHorizontal(int image)
 {

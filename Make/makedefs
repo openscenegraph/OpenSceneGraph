@@ -306,7 +306,7 @@ ifeq ($(OS),Darwin)
                         osgcluster osgconv osgcopy osgcube osggeometry \
                         osghangglide osgimpostor osgmultitexture osgoccluder \
                         osgparticle osgprerender osgreflect osgscribe osgstereoimage \
-                        osgtexture osgversion osgviews sgv
+                         osgtexture1D osgtexture2D osgtexture3D osgversion osgviews sgv
 endif
 
 #### Cygwin/Mingw specific definitions
@@ -440,8 +440,8 @@ ifeq ($(OS),MINGW)
   PLUGIN_DIRS       = osg rgb lib3ds flt obj lwo bmp pic tga osgtgz tgz zip
 # txp
   DEMOS_DIRS        = hangglide osgbillboard osgconv osgcopy osgcube osgimpostor\
-                       osgreflect osgscribe osgstereoimage osgtexture osgviews \
-                       osgversion sgv osghud osgtext 
+                       osgreflect osgscribe osgstereoimage osgtexture1D osgtexture2D osgtexture3D\
+                       osgviews osgversion sgv osghud osgtext 
 # osgcluster
 endif
 

@@ -117,8 +117,11 @@ bool Text_readLocalData(osg::Object &obj, osgDB::Input &fr)
     {
         std::string str = fr[1].getStr();
         if      (str=="XY_PLANE") text.setAxisAlignment(osgText::Text::XY_PLANE);
+        else if (str=="REVERSED_XY_PLANE") text.setAxisAlignment(osgText::Text::REVERSED_XY_PLANE);
         else if (str=="XZ_PLANE") text.setAxisAlignment(osgText::Text::XZ_PLANE);
+        else if (str=="REVERSED_XZ_PLANE") text.setAxisAlignment(osgText::Text::REVERSED_XZ_PLANE);
         else if (str=="YZ_PLANE") text.setAxisAlignment(osgText::Text::YZ_PLANE);
+        else if (str=="REVERSED_YZ_PLANE") text.setAxisAlignment(osgText::Text::REVERSED_YZ_PLANE);
         else if (str=="SCREEN") text.setAxisAlignment(osgText::Text::SCREEN);
         fr += 2;
         itAdvanced = true;

@@ -178,8 +178,10 @@ class SG_EXPORT Matrix : public Object
 
         void setTrans( float tx, float ty, float tz );
 	void setTrans( const Vec3& v );
-        Vec3 getTrans() const { return Vec3(_mat[3][0],_mat[3][1],_mat[3][2]); } 
-
+        inline Vec3 getTrans() const { return Vec3(_mat[3][0],_mat[3][1],_mat[3][2]); } 
+        
+        inline Vec3 getScale() const { return Vec3(_mat[0][0],_mat[1][1],_mat[2][2]); }
+        
     	/** apply apply an 3x3 transform of v*M[0..2,0..2]  */
     	inline static Vec3 transform3x3(const Vec3& v,const Matrix& m);
     	/** apply apply an 3x3 transform of M[0..2,0..2]*v  */

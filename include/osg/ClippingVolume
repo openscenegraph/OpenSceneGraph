@@ -11,7 +11,8 @@
 
 namespace osg {
 
-/** A ClippingVolume class for representing convex clipping volumes made up.*/
+/** A ClippingVolume class for representing convex clipping volumes made up.
+  * When adding planes, their normals should point inwards (into the volume) */
 class SG_EXPORT ClippingVolume
 {
 
@@ -166,7 +167,31 @@ class SG_EXPORT ClippingVolume
             return true;
         }
 
+        /** Check whether the entire bounding sphere is contained within clipping set.*/
+        inline const bool containsAllOf(const osg::BoundingSphere& bs) const
+        {
+            for(PlaneList::const_iterator itr=_planeList.begin();
+                itr!=_planeList.end();
+                ++itr)
+            {
+                if (itr->intersect(bs)<1) return false; // intersects, or is below plane.
+            }
+            return true;
+        }
+        
+        /** Check whether the entire bounding box is contained within clipping set.*/
+        inline const bool containsAllOf(const osg::BoundingBox& bb) const
+        {
+            for(PlaneList::const_iterator itr=_planeList.begin();
+                itr!=_planeList.end();
+                ++itr)
+            {
+                if (itr->intersect(bb)<1) return false; // intersects, or is below plane.
+            }
+            return true;
+        }
 
+        
         /** Transform the clipping set by matrix.  Note, this operations carries out
           * the calculation of the inverse of the matrix since to transforms
           * planes must be multiplied my the inverse transposed. This

@@ -305,7 +305,7 @@ class ReaderWriterJPEG : public osgDB::ReaderWriter
         virtual const char* className() { return "JPEG Image Reader"; }
         virtual bool acceptsExtension(const std::string& extension)
         {
-            return osgDB::equalCaseInsensitive(extension,"jpeg");
+            return osgDB::equalCaseInsensitive(extension,"jpeg") || osgDB::equalCaseInsensitive(extension,"jpg");
         }
 
         virtual ReadResult readImage(const std::string& fileName, const osgDB::ReaderWriter::Options*)

@@ -4,6 +4,7 @@
 #include <osg/GL>
 
 #include <osgDB/Registry>
+#include <osgDB/FileNameUtils>
 
 #include <stdio.h>
 #include <assert.h>
@@ -467,7 +468,7 @@ class ReaderWriterTGA : public osgDB::ReaderWriter
 {
     public:
         virtual const char* className() { return "TGA Image Reader"; }
-        virtual bool acceptsExtension(const std::string& extension) { return extension=="tga"; }
+        virtual bool acceptsExtension(const std::string& extension) { return osgDB::equalCaseInsensitive(extension,"tga"); }
 
         virtual ReadResult readImage(const std::string& fileName, const osgDB::ReaderWriter::Options*)
         {

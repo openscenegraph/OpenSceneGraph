@@ -32,7 +32,7 @@ class OSGUTIL_EXPORT TriStripVisitor : public osg::NodeVisitor
     public:
 
         /// default to traversing all children.
-        TriStripVisitor(Optimizer* optimizer=0) : 
+        TriStripVisitor(Optimizer* =0) : 
                 osg::NodeVisitor( osg::NodeVisitor::TRAVERSE_ALL_CHILDREN ), 
                 _cacheSize( 16 ),
                 _minStripSize( 2 ),

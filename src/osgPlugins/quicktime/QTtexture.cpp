@@ -294,7 +294,6 @@ static unsigned char * LoadBufferFromImageFile ( FSSpec fsspecImage,
     GetGWorld (&origPort, &origDevice); // save onscreen graphics port
 
     // decompress (draw) to gworld and thus fill buffer
-#ifdef NO_SCALING        
     SetIdentityMatrix (&matrix); // set transform matrix to identity (basically pass through)
     
     TranslateMatrix ( &matrix, -X2Fix(0.5f * *pOrigImageWidth), -X2Fix(0.5f * *pOrigImageHeight));
@@ -302,16 +301,7 @@ static unsigned char * LoadBufferFromImageFile ( FSSpec fsspecImage,
     TranslateMatrix ( &matrix, X2Fix(0.5f * *pOrigImageWidth), X2Fix(0.5f * *pOrigImageHeight));
     
     err = GraphicsImportSetMatrix(giComp, &matrix); // set our matrix as the importer matrix
-#else    
-    SetIdentityMatrix (&matrix); // set transform matrix to identity (basically pass thorugh)
 
-    
-    TranslateMatrix ( &matrix, -X2Fix(0.5f * *pOrigImageWidth), -X2Fix(0.5f * *pOrigImageHeight));
-    ScaleMatrix (&matrix, X2Fix(1.0), X2Fix(-1.0), X2Fix (0.0), X2Fix (0.0));    
-    TranslateMatrix ( &matrix, X2Fix(0.5f * *pOrigImageWidth), X2Fix(0.5f * *pOrigImageHeight));
-    
-    err = GraphicsImportSetMatrix(giComp, &matrix); // set our matrix as the importer matrix
-#endif        
     if (err == noErr)
         err = GraphicsImportSetGWorld (giComp, pGWorld, NULL); // set the destination of the importer component
     if (err == noErr)

@@ -225,6 +225,7 @@ osg::Node* ConvertFromPerformer::visitSwitch(osg::Group* osgParent,pfSwitch* swi
     }
 
     osgSwitch = new osg::Switch;
+    osgSwitch->setAllChildrenOff();
     if (osgParent) osgParent->addChild(osgSwitch);
 
     registerPfObjectForOsgObject(switchNode,osgSwitch);
@@ -235,15 +236,15 @@ osg::Node* ConvertFromPerformer::visitSwitch(osg::Group* osgParent,pfSwitch* swi
     float val = switchNode->getVal();
     if (val==PFSWITCH_ON)
     {
-        osgSwitch->setValue(osg::Switch::ALL_CHILDREN_ON);
+        osgSwitch->setAllChildrenOn();
     }
     else if (val==PFSWITCH_OFF)
     {
-        osgSwitch->setValue(osg::Switch::ALL_CHILDREN_OFF);
+        osgSwitch->setAllChildrenOff();
     }
     else
     {
-        osgSwitch->setValue((int)val);
+        osgSwitch->setSingleChildOn((unsigned int)val);
     }
 
     for(int i=0;i<switchNode->getNumChildren();++i)

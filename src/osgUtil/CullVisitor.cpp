@@ -802,9 +802,9 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
     // into account the new camera orientation.
     pushModelViewMatrix(rotate_matrix);
 
-    ref_ptr<StateSet> dummyState = new StateSet;
+    if (!_localPreRenderState) _localPreRenderState = new StateSet;
 
-    pushStateSet(dummyState.get());
+    pushStateSet(_localPreRenderState.get());
 
     {
 
@@ -888,7 +888,7 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
     new_viewport->setViewport(center_x-new_s/2,center_y-new_t/2,new_s,new_t);
     rtts->setViewport(new_viewport);
     
-    dummyState->setAttribute(new_viewport);
+    _localPreRenderState->setAttribute(new_viewport);
 
     // create the impostor sprite.
     ImpostorSprite* impostorSprite = 

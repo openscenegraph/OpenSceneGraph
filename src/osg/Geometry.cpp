@@ -510,7 +510,7 @@ void Geometry::drawImplementation(State& state) const
     if (_normalBinding==BIND_OFF) glNormal3f(0.0f,0.0f,1.0f);
 #endif
 
-#if ISE_DEFAULT_COLOUR
+#if USE_DEFAULT_COLOUR
     if (_colorBinding==BIND_OFF) glColor4f(1.0f,1.0f,1.0f,1.0f);
 #endif
 

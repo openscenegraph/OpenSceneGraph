@@ -180,7 +180,8 @@ protected:
 				root_->removeChild(0, root_->getNumChildren());
 				osg::ref_ptr<osgFX::Effect> effect = effects_[selected_fx_].get();
 				effect->setEnabled(fxen_);
-				effect->setChild(scene_.get());
+				effect->removeChild(0, effect->getNumChildren());
+				effect->addChild(scene_.get());
 				effect->setUpDemo();
 				root_->addChild(effect.get());
 			}

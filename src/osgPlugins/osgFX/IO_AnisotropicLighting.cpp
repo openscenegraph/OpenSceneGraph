@@ -11,7 +11,7 @@ osgDB::RegisterDotOsgWrapperProxy AnisotropicLighting_Proxy
 (
 	new osgFX::AnisotropicLighting,
 	"osgFX::AnisotropicLighting",
-	"Object Node osgFX::Effect osgFX::AnisotropicLighting",
+	"Object Node Group osgFX::Effect osgFX::AnisotropicLighting",
     AnisotropicLighting_readLocalData,
     AnisotropicLighting_writeLocalData
 );

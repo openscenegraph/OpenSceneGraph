@@ -11,7 +11,7 @@ osgDB::RegisterDotOsgWrapperProxy Cartoon_Proxy
 (
 	new osgFX::Cartoon,
     "osgFX::Cartoon",
-	"Object Node osgFX::Effect osgFX::Cartoon",
+	"Object Node Group osgFX::Effect osgFX::Cartoon",
     Cartoon_readLocalData,
     Cartoon_writeLocalData
 );

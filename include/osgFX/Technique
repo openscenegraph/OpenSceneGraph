@@ -37,6 +37,8 @@
 namespace osgFX
 {
 
+	class Effect;
+
     /**
      This is the base class for effect techniques. A technique represents one
      of the possible ways to implement a special effect. This base class is
@@ -79,12 +81,6 @@ namespace osgFX
         /** get the number of rendering passes defined in this technique */
         inline int getNumPasses() const;
 
-        /** get the Group object associated to the i-th pass */
-        inline osg::Group *getPassGroup(int i);
-
-        /** get the const Group object associated to the i-th pass */
-        inline const osg::Group *getPassGroup(int i) const;
-
         /** get the StateSet object associated to the i-th pass */
         inline osg::StateSet *getPassStateSet(int i);
 
@@ -92,11 +88,13 @@ namespace osgFX
         inline const osg::StateSet *getPassStateSet(int i) const;
 
         /** 
-         traverses the child nodes with multipass if necessary.
+         traverse children with multipass if necessary. By default this method
+         simply calls the protected method traverse_implementation(); you can
+         override it to change the default behavior.
          Don't call this method directly as it is called by osgFX::Effect
          */
-        virtual void accept(osg::NodeVisitor &nv, osg::Node *child);
-
+        inline virtual void traverse(osg::NodeVisitor &nv, Effect *fx);
+        
     protected:
         Technique(const Technique &): osg::Referenced() {}    // copying is nonsense ;)
         virtual ~Technique() {}
@@ -105,82 +103,54 @@ namespace osgFX
         /** force rebuilding of pass nodes on next traversal */
         inline void dirtyPasses();
 
-        /** optional: return a node that overrides the child node on a specified pass */
-        inline virtual osg::Node *getOverrideChild(int)  { return 0; }
-
         /** create a new pass node, add it to the technique and associate a StateSet */
         void addPass(osg::StateSet *ss = 0);
-
-        /**
-         add a new pass to the technique specifying an user-defined pass node.
-         You should call this version of addPass() only when you need to gain direct
-         control over the pass node (i.e. for setting up a cull callback); otherwise
-         please use addPass(StateSet*) and let the class create the pass node for you.
-        */
-        void addPass(osg::Group *pass);
-
-        /**
-         get the control node which holds the user's subgraph.
-         You may want to do something on it like applying a cull callback.
-         */
-        inline osg::Group *getControlNode();
-
-        /** get the const control node which holds the user's subgraph */
-        inline const osg::Group *getControlNode() const;
+        
+        /** optional: return a node that overrides the child node on a specified pass */
+        inline virtual osg::Node *getOverrideChild(int)  { return 0; }
 
         /**
          define the rendering passes that make up this technique. You must
          implement this method in derived classes to add the required passes.
          */
         virtual void define_passes() = 0;
+        
+		/**
+		 traverse children with multipass if necessary. Don't call this method
+		 directly unless you are in a customized version of traverse().
+		 */
+        void traverse_implementation(osg::NodeVisitor &nv, Effect *fx);
 
     private:
-        bool passes_defined_;
-
-        osg::ref_ptr<osg::Group> control_node_;
-        osg::ref_ptr<osg::Node> prev_child_;
+        typedef std::vector<osg::ref_ptr<osg::StateSet> > Pass_list;
+        Pass_list passes_;
     };
 
     // INLINE METHODS
 
     inline int Technique::getNumPasses() const
     {
-        return static_cast<int>(control_node_->getNumChildren());
-    }
-
-    inline osg::Group *Technique::getPassGroup(int i)
-    {
-        return static_cast<osg::Group *>(control_node_->getChild(i));
-    }
-
-    inline const osg::Group *Technique::getPassGroup(int i) const
-    {
-        return static_cast<const osg::Group *>(control_node_->getChild(i));
+        return static_cast<int>(passes_.size());
     }
 
     inline osg::StateSet *Technique::getPassStateSet(int i)
     {
-        return control_node_->getChild(i)->getStateSet();
+        return passes_[i].get();
     }
 
     inline const osg::StateSet *Technique::getPassStateSet(int i) const
     {
-        return control_node_->getChild(i)->getStateSet();
+        return passes_[i].get();
     }
-    
-    inline osg::Group *Technique::getControlNode()
-    {
-        return control_node_.get();
-    }
-
-    inline const osg::Group *Technique::getControlNode() const
-    {
-        return control_node_.get();
-    }
-    
+      
     inline void Technique::dirtyPasses()
     {
-        passes_defined_ = false;
+        passes_.clear();
+    }
+    
+    inline void Technique::traverse(osg::NodeVisitor &nv, Effect *fx)
+    {
+		traverse_implementation(nv, fx);
     }
 
 }

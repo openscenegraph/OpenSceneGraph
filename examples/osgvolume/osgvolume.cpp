@@ -10,6 +10,7 @@
 #include <osg/AlphaFunc>
 #include <osg/TexGenNode>
 #include <osg/TexEnvCombine>
+#include <osg/Material>
 
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
@@ -533,9 +534,13 @@ osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, bool createNormalMap)
 
     osg::StateSet* stateset = texgenNode_0->getOrCreateStateSet();
 
-    stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
+    stateset->setMode(GL_LIGHTING,osg::StateAttribute::ON);
     stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
-    stateset->setAttribute(new osg::AlphaFunc(osg::AlphaFunc::GREATER,0.02f),osg::StateAttribute::OVERRIDE);
+    stateset->setAttribute(new osg::AlphaFunc(osg::AlphaFunc::GREATER,0.02f));
+    
+    osg::Material* material = new osg::Material;
+    material->setDiffuse(osg::Material::FRONT_AND_BACK,osg::Vec4(1.0f,1.0f,1.0f,1.0f));
+    stateset->setAttributeAndModes(material);
 
     if (!createNormalMap)
     {     

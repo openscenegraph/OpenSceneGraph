@@ -692,8 +692,8 @@ class SG_EXPORT Drawable : public Object
         mutable GLObjectList    _vboList;
 
         ref_ptr<UpdateCallback> _updateCallback;
-        ref_ptr<DrawCallback>   _drawCallback;
         ref_ptr<CullCallback>   _cullCallback;
+        ref_ptr<DrawCallback>   _drawCallback;
         
 
 };

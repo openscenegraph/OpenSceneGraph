@@ -154,8 +154,9 @@ Drawable::Drawable(const Drawable& drawable,const CopyOp& copyop):
     _useDisplayList(drawable._useDisplayList),
     _supportsVertexBufferObjects(drawable._supportsVertexBufferObjects),
     _useVertexBufferObjects(drawable._useVertexBufferObjects),
-    _drawCallback(drawable._drawCallback),
-    _cullCallback(drawable._cullCallback)
+    _updateCallback(drawable._updateCallback),
+    _cullCallback(drawable._cullCallback),
+    _drawCallback(drawable._drawCallback)
 {
 }
 

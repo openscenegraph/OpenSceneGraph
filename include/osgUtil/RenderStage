@@ -117,6 +117,11 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
             getRenderStageLighting()->addPositionedAttribute(matrix,attr);
         }
         
+        virtual void addPositionedTextureAttribute(unsigned int textureUnit, osg::RefMatrix* matrix,const osg::StateAttribute* attr)
+        {
+            getRenderStageLighting()->addPositionedTextureAttribute(textureUnit, matrix,attr);
+        }
+
         virtual void drawPreRenderStages(osg::State& state,RenderLeaf*& previous);
 
         virtual void draw(osg::State& state,RenderLeaf*& previous);

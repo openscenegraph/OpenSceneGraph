@@ -883,7 +883,7 @@ void CullVisitor::apply(TexGenNode& node)
 
     RefMatrix& matrix = getModelViewMatrix();
 
-    addPositionedAttribute(&matrix,node.getTexGen());
+    addPositionedTextureAttribute(node.getTextureUnit(), &matrix,node.getTexGen());
 
     handle_cull_callbacks_and_traverse(node);
 

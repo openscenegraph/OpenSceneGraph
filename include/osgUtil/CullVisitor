@@ -170,6 +170,9 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         /** Add an attribute which is positioned related to the modelview matrix.*/
         inline void addPositionedAttribute(osg::RefMatrix* matrix,const osg::StateAttribute* attr);
 
+        /** Add an attribute which is positioned related to the modelview matrix.*/
+        inline void addPositionedTextureAttribute(unsigned int textureUnit, osg::RefMatrix* matrix,const osg::StateAttribute* attr);
+
         /** reimplement CullStack's popProjectionMatrix() adding clamping of the projection matrix to the computed near and far.*/
         virtual void popProjectionMatrix();
         
@@ -349,6 +352,12 @@ inline void CullVisitor::addDrawableAndDepth(osg::Drawable* drawable,osg::RefMat
 inline void CullVisitor::addPositionedAttribute(osg::RefMatrix* matrix,const osg::StateAttribute* attr)
 {
     _currentRenderBin->_stage->addPositionedAttribute(matrix,attr);
+}
+
+/** Add an attribute which is positioned related to the modelview matrix.*/
+inline void CullVisitor::addPositionedTextureAttribute(unsigned int textureUnit, osg::RefMatrix* matrix,const osg::StateAttribute* attr)
+{
+    _currentRenderBin->_stage->addPositionedTextureAttribute(textureUnit,matrix,attr);
 }
 
 inline RenderLeaf* CullVisitor::createOrReuseRenderLeaf(osg::Drawable* drawable,osg::RefMatrix* projection,osg::RefMatrix* matrix, float depth)

@@ -16,14 +16,15 @@ using namespace osg;
 
 TexGenNode::TexGenNode()
 {
+    _textureUnit = 0;
     _value = StateAttribute::ON;
     _stateset = new StateSet;
     _texgen = new TexGen;
-    setLocalStateSetModes(_value);
 }
 
 TexGenNode::TexGenNode(const TexGenNode& cn, const CopyOp& copyop):
     Group(cn,copyop),
+    _textureUnit(cn._textureUnit),
     _value(cn._value),
     _texgen(static_cast<TexGen*>(copyop(cn._texgen.get())))
 {
@@ -36,19 +37,4 @@ TexGenNode::~TexGenNode()
 void TexGenNode::setTexGen(TexGen* texgen)
 {
     _texgen = texgen;
-    setLocalStateSetModes(_value);
-}
-
-// Set the GLModes on StateSet associated with the TexGen.
-void TexGenNode::setStateSetModes(StateSet& stateset,const StateAttribute::GLModeValue value) const
-{
-    if (_texgen.valid())
-        stateset.setAssociatedModes(_texgen.get(),value);
-}
-
-void TexGenNode::setLocalStateSetModes(const StateAttribute::GLModeValue value)
-{
-    if (!_stateset) _stateset = new StateSet;
-    _stateset->setAllToInherit();
-    setStateSetModes(*_stateset,value);
 }

@@ -59,7 +59,7 @@ class SG_EXPORT ShadowVolumeOccluder
         inline NodePath& getNodePath() { return _nodePath; }
         inline const NodePath& getNodePath() const { return _nodePath; }
 
-        float volume() { return _volume; }
+        float getVolume() const { return _volume; }
         
         
 

@@ -8,6 +8,7 @@ CullStack::CullStack()
     _cullingMode = ENABLE_ALL_CULLING;
     _LODBias = 1.0f;
     _smallFeatureCullingPixelSize = 3.0f;
+    _frustumVolume=-1.0f;
 
 }
 
@@ -71,16 +72,16 @@ void CullStack::pushCullingSet()
                         
         float P23 = P(2,3);
         float P33 = P(3,3);
-        osg::Vec4 pixelSizeVector2(M(0,2)*P23,
+        osg::Vec4 pixelSizeVector(M(0,2)*P23,
                                   M(1,2)*P23,
                                   M(2,2)*P23,
                                   M(3,2)*P23 + M(3,3)*P33);
                                   
-        pixelSizeVector2 /= scale.length();
+        pixelSizeVector /= scale.length();
         
         //cout << "pixelSizeVector = "<<pixelSizeVector<<" pixelSizeVector2="<<pixelSizeVector2<<endl;
         
-        _modelviewCullingStack.push_back(osgNew osg::CullingSet(*_projectionCullingStack.back(),*_modelviewStack.back(),pixelSizeVector2));
+        _modelviewCullingStack.push_back(osgNew osg::CullingSet(*_projectionCullingStack.back(),*_modelviewStack.back(),pixelSizeVector));
     }
     
 }
@@ -109,8 +110,9 @@ void CullStack::pushProjectionMatrix(Matrix* matrix)
     _projectionStack.push_back(matrix);
     
     osg::CullingSet* cullingSet = osgNew osg::CullingSet();
+    
     // set up view frustum.
-    cullingSet->getFrustum().setToUnitFrustumWithoutNearFar();
+    cullingSet->getFrustum().setToUnitFrustum(_cullingMode&NEAR_PLANE_CULLING,_cullingMode&FAR_PLANE_CULLING);
     cullingSet->getFrustum().transformProvidingInverse(*matrix);
     
     // set the small feature culling.
@@ -132,6 +134,8 @@ void CullStack::pushProjectionMatrix(Matrix* matrix)
     
     _projectionCullingStack.push_back(cullingSet);
 
+    // need to recompute frustum volume.
+    _frustumVolume = -1.0f;
 
     pushCullingSet();
 }
@@ -142,6 +146,9 @@ void CullStack::popProjectionMatrix()
     _projectionStack.pop_back();
 
     _projectionCullingStack.pop_back();
+
+    // need to recompute frustum volume.
+    _frustumVolume = -1.0f;
 
     popCullingSet();
 }
@@ -200,4 +207,24 @@ void CullStack::popModelViewMatrix()
                    (lookVector.z()>=0?4:0);
 
     _bbCornerNear = (~_bbCornerFar)&7;
+}
+
+void CullStack::computeFrustumVolume()
+{
+    osg::Matrix invP;
+    invP.invert(getProjectionMatrix());
+
+    osg::Vec3 f1(-1,-1,-1); f1 = f1*invP;
+    osg::Vec3 f2(-1, 1,-1); f2 = f2*invP;
+    osg::Vec3 f3( 1, 1,-1); f3 = f3*invP;
+    osg::Vec3 f4( 1,-1,-1); f4 = f4*invP;
+
+    osg::Vec3 b1(-1,-1,1); b1 = b1*invP;
+    osg::Vec3 b2(-1, 1,1); b2 = b2*invP;
+    osg::Vec3 b3( 1, 1,1); b3 = b3*invP;
+    osg::Vec3 b4( 1,-1,1); b4 = b4*invP;
+
+    _frustumVolume = computeVolume(f1,f2,f3,b1,b2,b3)+
+                     computeVolume(f2,f3,f4,b1,b3,b4);
+        
 }

@@ -108,6 +108,24 @@ inline T RadiansToDegrees(T angle) { return angle*(T)180.0/(T)PI; }
     inline bool isNaN(double v) { return isnan(v); }
 #endif
 
+
+/** compute the volume of tetrahedron */
+template<typename T>
+inline float computeVolume(const T& a,const T& b,const T& c,const T& d)
+{
+    return fabs(((b-c)^(a-b))*(d-b));
+}
+
+/** compute the volume of prism */
+template<typename T>
+inline float computeVolume(const T& f1,const T& f2,const T& f3,
+                           const T& b1,const T& b2,const T& b3)
+{
+    return computeVolume(f1,f2,f3,b1)+
+           computeVolume(b1,b2,b3,f2)+
+           computeVolume(b1,b3,f2,f3);
+}
+
 }
 
 #endif  // __OSG_MATH

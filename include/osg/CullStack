@@ -28,11 +28,15 @@ class SG_EXPORT CullStack
 
         enum CullingModeValues
         {
-            NO_CULLING                  = 0x00,
+            NO_CULLING                  = 0x0,
             VIEW_FRUSTUM_CULLING        = 0x1,
-            SMALL_FEATURE_CULLING       = 0x2,
-            SHADOW_OCCLUSION_CULLING    = 0x4,
-            ENABLE_ALL_CULLING          = 0xffffffff
+            NEAR_PLANE_CULLING          = 0x2,
+            FAR_PLANE_CULLING           = 0x4,
+            SMALL_FEATURE_CULLING       = 0x8,
+            SHADOW_OCCLUSION_CULLING    = 0x10,
+            ENABLE_ALL_CULLING          = VIEW_FRUSTUM_CULLING|
+                                          SMALL_FEATURE_CULLING|
+                                          SHADOW_OCCLUSION_CULLING
         };
         
         typedef unsigned int CullingMode;
@@ -57,6 +61,9 @@ class SG_EXPORT CullStack
 
         void pushModelViewMatrix(osg::Matrix* matrix);
         void popModelViewMatrix();
+
+        inline float getFrustumVolume() { if (_frustumVolume<0.0f) computeFrustumVolume(); return _frustumVolume; }
+
 
         void setLODBias(const float bias) { _LODBias = bias; }
         const float getLODBias() const    { return _LODBias; }
@@ -173,6 +180,9 @@ class SG_EXPORT CullStack
         CullingStack                                                _clipspaceCullingStack;
         CullingStack                                                _projectionCullingStack;
         CullingStack                                                _modelviewCullingStack;
+
+        void computeFrustumVolume();
+        float                                                       _frustumVolume;
 
         unsigned int                                                _bbCornerNear;
         unsigned int                                                _bbCornerFar;

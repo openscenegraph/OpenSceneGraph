@@ -11,7 +11,13 @@ CollectOccludersVisitor::CollectOccludersVisitor()
 {
     // overide the default node visitor mode.
     setTraversalMode(NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
+
+    /*setCullingMode(VIEW_FRUSTUM_CULLING|
+                   NEAR_PLANE_CULLING|
+                   FAR_PLANE_CULLING|
+                   SMALL_FEATURE_CULLING);*/
     
+    _minimumShadowOccluderVolume = 0.01;
     _createDrawables = false;
     
 }
@@ -122,11 +128,17 @@ void CollectOccludersVisitor::apply(osg::OccluderNode& node)
         ShadowVolumeOccluder svo;
         if (svo.computeOccluder(_nodePath, *node.getOccluder(), *this,_createDrawables))
         {
-            // need to test occluder against view frustum.
-//            std::cout << "    adding in Occluder"<<std::endl;
-            _occluderList.push_back(svo);
-            
-            
+        
+            if (svo.getVolume()>_minimumShadowOccluderVolume)
+            {
+                // need to test occluder against view frustum.
+                std::cout << "    adding in Occluder"<<std::endl;
+                _occluderList.push_back(svo);
+            }
+            else
+            {
+                std::cout << "    rejecting Occluder as its volume is too small "<<svo.getVolume()<<std::endl;
+            }
         }
     }
 

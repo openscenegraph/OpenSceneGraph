@@ -31,6 +31,9 @@ class SG_EXPORT CollectOccludersVisitor : public osg::NodeVisitor, public osg::C
         virtual void apply(osg::OccluderNode& node);
 
 
+        void setMinimumShadowOccluderVolume(float vol) { _minimumShadowOccluderVolume = vol; }
+        float getMinimumShadowOccluderVolume() const { return _minimumShadowOccluderVolume; }
+
         void setCreateDrawablesOnOccludeNodes(bool flag) { _createDrawables=flag; }
         bool getCreateDrawablesOnOccludeNodes() const { return _createDrawables; }
 
@@ -47,15 +50,6 @@ class SG_EXPORT CollectOccludersVisitor : public osg::NodeVisitor, public osg::C
         /** prevent unwanted copy operator.*/
         CollectOccludersVisitor& operator = (const CollectOccludersVisitor&) { return *this; }
         
-        bool                        _createDrawables;
-        ShadowVolumeOccluderList    _collectedOccluderList;
-
-        inline void handle_callbacks_and_traverse(osg::Node& node)
-        {
-            osg::NodeCallback* callback = node.getAppCallback();
-            if (callback) (*callback)(&node,this);
-            else if (node.getNumChildrenRequiringAppTraversal()>0) traverse(node);
-        }
         inline void handle_cull_callbacks_and_traverse(osg::Node& node)
         {
             /*osg::NodeCallback* callback = node.getCullCallback();
@@ -69,6 +63,11 @@ class SG_EXPORT CollectOccludersVisitor : public osg::NodeVisitor, public osg::C
             if (callback) (*callback)(&node,this);
             else*/ if (node.getNumChildrenWithOccluderNodes()>0) acceptNode->accept(*this);
         }
+
+        float                       _minimumShadowOccluderVolume;
+        bool                        _createDrawables;
+        ShadowVolumeOccluderList    _collectedOccluderList;
+
 };
 
 }

@@ -139,20 +139,20 @@ Plane computeFrontPlane(const PointList& front)
 }
 
 
-// compute the volume of tetrahedron
-inline float computeVolume(const osg::Vec3& a,const osg::Vec3& b,const osg::Vec3& c,const osg::Vec3& d)
-{
-    return fabs(((b-c)^(a-b))*(d-b));
-}
-
-// compute the volume of prism.
-inline float computeVolume(const osg::Vec3& f1,const osg::Vec3& f2,const osg::Vec3& f3,
-                           const osg::Vec3& b1,const osg::Vec3& b2,const osg::Vec3& b3)
-{
-    return computeVolume(f1,f2,f3,b1)+
-           computeVolume(b1,b2,b3,f2)+
-           computeVolume(b1,b3,f2,f3);
-}
+// // compute the volume of tetrahedron
+// inline float computeVolume(const osg::Vec3& a,const osg::Vec3& b,const osg::Vec3& c,const osg::Vec3& d)
+// {
+//     return fabs(((b-c)^(a-b))*(d-b));
+// }
+// 
+// // compute the volume of prism.
+// inline float computeVolume(const osg::Vec3& f1,const osg::Vec3& f2,const osg::Vec3& f3,
+//                            const osg::Vec3& b1,const osg::Vec3& b2,const osg::Vec3& b3)
+// {
+//     return computeVolume(f1,f2,f3,b1)+
+//            computeVolume(b1,b2,b3,f2)+
+//            computeVolume(b1,b3,f2,f3);
+// }
 
 // compute the volume between the front and back polygons of the occluder/hole.
 float computeVolume(const PointList& front, const PointList& back)
@@ -265,8 +265,7 @@ bool ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const Convex
     Matrix invP;
     invP.invert(P);
     
-    float volumeview = computeVolumeOfView(invP);
-    cout << "volumeview "<<volumeview<<endl;
+    float volumeview = cullStack.getFrustumVolume();
 
     
     // compute the transformation matrix which takes form local coords into clip space.
@@ -390,7 +389,7 @@ bool ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const Convex
             
         }
 
-        std::cout << "final volume = "<<_volume<<std::endl;
+        //std::cout << "final volume = "<<_volume<<std::endl;
 
         return true;
     }

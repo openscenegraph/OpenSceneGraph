@@ -192,7 +192,7 @@ void Texture::apply(State& state) const
     GLuint& handle = getHandle(contextID);
 
     // For multi-texturing will need something like...
-    // glActiveTextureARB((GLenum)(GL_TEXTURE0_ARB+_textureUnit));
+    //glActiveTextureARB((GLenum)(GL_TEXTURE0_ARB+_textureUnit));
 
     if (handle != 0)
     {

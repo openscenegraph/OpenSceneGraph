@@ -250,7 +250,12 @@ static char *getPathOfApplicationResource(const std::string& resourceName)
 void osgDB::initFilePath( void )
 {
     char *ptr;
-    if( (ptr = getenv( "OSGFILEPATH" ))  )
+    if( (ptr = getenv( "OSG_FILE_PATH" ))  )
+    {
+        notify(DEBUG_INFO) << "osgDB::Init("<<ptr<<")"<<std::endl;
+        setFilePath( ptr );
+    }
+    else if( (ptr = getenv( "OSGFILEPATH" ))  )
     {
         notify(DEBUG_INFO) << "osgDB::Init("<<ptr<<")"<<std::endl;
         setFilePath( ptr );

@@ -432,7 +432,7 @@ void Texture::applyTexImage(GLenum target, Image* image, State& state) const
     // when use 16 bit textures rather than 24/32bit textures.
     // internalFormat = GL_RGBA4;
     static MyCompressedTexImage2DArbProc glCompressedTexImage2D_ptr = 
-        (PFNGLCOMPRESSEDTEXIMAGE2DARBPROC)getGLExtensionFuncPtr("glCompressedTexImage2DARB");
+        (MyCompressedTexImage2DArbProc)getGLExtensionFuncPtr("glCompressedTexImage2DARB");
 
     if (_subloadMode == OFF) {
         if( _min_filter == LINEAR || _min_filter == NEAREST )

@@ -32,7 +32,7 @@ typedef std::vector<GLuint> DisplayListVector;
 typedef std::map<GLuint,DisplayListVector> DeletedDisplayListCache;
 static DeletedDisplayListCache s_deletedDisplayListCache;
 
-void Drawable::deleteDisplayList(uint contextID,uint globj)
+void Drawable::deleteDisplayList(unsigned int contextID,GLuint globj)
 {
     if (globj!=0)
     {
@@ -43,7 +43,7 @@ void Drawable::deleteDisplayList(uint contextID,uint globj)
 
 /** flush all the cached display list which need to be deleted
   * in the OpenGL context related to contextID.*/
-void Drawable::flushDeletedDisplayLists(uint contextID)
+void Drawable::flushDeletedDisplayLists(unsigned int contextID)
 {
     DeletedDisplayListCache::iterator citr = s_deletedDisplayListCache.find(contextID);
     if (citr!=s_deletedDisplayListCache.end())
@@ -136,7 +136,7 @@ void Drawable::compile(State& state) const
 
     // get the contextID (user defined ID of 0 upwards) for the 
     // current OpenGL context.
-    uint contextID = state.getContextID();
+    unsigned int contextID = state.getContextID();
 
     // get the globj for the current contextID.
     uint& globj = _globjList[contextID];
@@ -221,7 +221,7 @@ void Drawable::setUseDisplayList(bool flag)
 
 void Drawable::dirtyDisplayList()
 {
-    for(uint i=0;i<_globjList.size();++i)
+    for(unsigned int i=0;i<_globjList.size();++i)
     {
         if (_globjList[i] != 0)
         {

@@ -77,7 +77,7 @@ class SG_EXPORT Stencil : public StateAttribute
             ALWAYS = GL_ALWAYS
         };
 
-        inline void setFunction(Function func,int ref,uint mask)
+        inline void setFunction(Function func,int ref,unsigned int mask)
         {
             _func = func;
             _funcRef = ref;
@@ -88,7 +88,7 @@ class SG_EXPORT Stencil : public StateAttribute
         
         inline int getFunctionRef() const { return _funcRef; }
 
-        inline uint getFunctionMask() const { return _funcMask; }
+        inline unsigned int getFunctionMask() const { return _funcMask; }
         
         
         enum Operation 
@@ -125,9 +125,9 @@ class SG_EXPORT Stencil : public StateAttribute
         inline Operation getStencilPassAndDepthPassOperation() const { return _zpass; }
         
 
-        inline void setWriteMask(uint mask) { _writeMask = mask; }
+        inline void setWriteMask(unsigned int mask) { _writeMask = mask; }
         
-        inline uint getWriteMask() const { return _writeMask; }
+        inline unsigned int getWriteMask() const { return _writeMask; }
 
 
         virtual void apply(State& state) const;
@@ -138,13 +138,13 @@ class SG_EXPORT Stencil : public StateAttribute
 
         Function            _func;
         int                 _funcRef;
-        uint                _funcMask;
+        unsigned int        _funcMask;
         
         Operation           _sfail;
         Operation           _zfail;
         Operation           _zpass;
         
-        uint                _writeMask;
+        unsigned int        _writeMask;
 
 };
 

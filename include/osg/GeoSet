@@ -90,7 +90,7 @@ class SG_EXPORT GeoSet : public Drawable
         struct SG_EXPORT IndexPointer
         {
         
-            mutable uint _size;
+            mutable unsigned int _size;
             bool _is_ushort;
             union _TPtr
             {
@@ -124,7 +124,7 @@ class SG_EXPORT GeoSet : public Drawable
                 _ptr._ushort = (GLushort*)0;
             }
 
-            inline void set(uint size,GLushort* data)
+            inline void set(unsigned int size,GLushort* data)
             {
                 _size = size;
                 _is_ushort = true;
@@ -132,24 +132,24 @@ class SG_EXPORT GeoSet : public Drawable
             }
             
 
-            void set(uint size,GLuint* data)
+            void set(unsigned int size,GLuint* data)
             {
                 _size = size;
                 _is_ushort = false;
                 _ptr._uint = data;
             }
 
-            inline uint maxIndex() const
+            inline unsigned int maxIndex() const
             {
-                uint max = 0;            
+                unsigned int max = 0;            
                 if (_is_ushort)
                 {
-                    for(uint ai = 0; ai < _size; ai++ )
+                    for(unsigned int ai = 0; ai < _size; ai++ )
                         if( _ptr._ushort[ai] > max ) max = _ptr._ushort[ai];
                 }
                 else
                 {
-                    for(uint ai = 0; ai < _size; ai++ )
+                    for(unsigned int ai = 0; ai < _size; ai++ )
                         if( _ptr._uint[ai] > max ) max = _ptr._uint[ai];
                 }
                 return max;
@@ -210,9 +210,9 @@ class SG_EXPORT GeoSet : public Drawable
             To reduce memory footprint and bandwidth for small datasets it is
             recommended the ushort indices are used instead of unit indices.*/
         void setCoords( Vec3 *cp, GLushort *ci );
-        /** set the coords (i.e the geometry) and uint indices of the geoset.
+        /** set the coords (i.e the geometry) and unsigned int indices of the geoset.
             Unless your data set exceeds 65536 indices prefer ushort indices
-            over uint indices, only use this unit indices version if necessary.*/
+            over unsigned int indices, only use this unit indices version if necessary.*/
         void setCoords( Vec3 *cp, GLuint *ci );
         /** set the coords (i.e the geometry) and indices of the geoset.*/
         void setCoords( Vec3 *cp, IndexPointer& ip );

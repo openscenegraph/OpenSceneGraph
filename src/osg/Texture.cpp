@@ -31,7 +31,7 @@ typedef std::map<unsigned int,TextureObjectVector> DeletedTextureObjectCache;
 static DeletedTextureObjectCache s_deletedTextureObjectCache;
 
 
-void Texture::deleteTextureObject(uint contextID,GLuint handle)
+void Texture::deleteTextureObject(unsigned int contextID,GLuint handle)
 {
     if (handle!=0)
     {
@@ -41,7 +41,7 @@ void Texture::deleteTextureObject(uint contextID,GLuint handle)
 }
 
 
-void Texture::flushDeletedTextureObjects(uint contextID)
+void Texture::flushDeletedTextureObjects(unsigned int contextID)
 {
     DeletedTextureObjectCache::iterator citr = s_deletedTextureObjectCache.find(contextID);
     if (citr!=s_deletedTextureObjectCache.end())
@@ -167,7 +167,7 @@ void Texture::setMaxAnisotropy(float anis)
 /** Force a recompile on next apply() of associated OpenGL texture objects.*/
 void Texture::dirtyTextureObject()
 {
-    for(uint i=0;i<_handleList.size();++i)
+    for(unsigned int i=0;i<_handleList.size();++i)
     {
         if (_handleList[i] != 0)
         {
@@ -179,7 +179,7 @@ void Texture::dirtyTextureObject()
 
 void Texture::dirtyTextureParameters()
 {
-    for(uint i=0;i<_texParametersDirtyList.size();++i)
+    for(unsigned int i=0;i<_texParametersDirtyList.size();++i)
     {
         _texParametersDirtyList[i] = 1;
     }
@@ -187,7 +187,7 @@ void Texture::dirtyTextureParameters()
 
 void Texture::computeInternalFormatWithImage(osg::Image& image) const
 {
-    const uint contextID = 0; // state.getContextID();  // set to 0 right now, assume same paramters for each graphics context...
+    const unsigned int contextID = 0; // state.getContextID();  // set to 0 right now, assume same paramters for each graphics context...
     const Extensions* extensions = getExtensions(contextID,true);
 
 //    static bool s_ARB_Compression = isGLExtensionSupported("GL_ARB_texture_compression");
@@ -303,7 +303,7 @@ void Texture::applyTexParameters(GLenum target, State& state) const
 {
     // get the contextID (user defined ID of 0 upwards) for the 
     // current OpenGL context.
-    const uint contextID = state.getContextID();
+    const unsigned int contextID = state.getContextID();
     const Extensions* extensions = getExtensions(contextID,true);
 
     WrapMode ws = _wrap_s, wt = _wrap_t, wr = _wrap_r;
@@ -371,7 +371,7 @@ void Texture::applyTexImage2D(GLenum target, Image* image, State& state, GLsizei
 
     // get the contextID (user defined ID of 0 upwards) for the 
     // current OpenGL context.
-    const uint contextID = state.getContextID();
+    const unsigned int contextID = state.getContextID();
     const Extensions* extensions = getExtensions(contextID,true);
 
     // update the modified tag to show that it is upto date.
@@ -498,13 +498,13 @@ void Texture::compile(State& state) const
 typedef buffered_value< ref_ptr<Texture::Extensions> > BufferedExtensions;
 static BufferedExtensions s_extensions;
 
-const Texture::Extensions* Texture::getExtensions(uint contextID,bool createIfNotInitalized)
+const Texture::Extensions* Texture::getExtensions(unsigned int contextID,bool createIfNotInitalized)
 {
     if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new Extensions;
     return s_extensions[contextID].get();
 }
 
-void Texture::setExtensions(uint contextID,Extensions* extensions)
+void Texture::setExtensions(unsigned int contextID,Extensions* extensions)
 {
     s_extensions[contextID] = extensions;
 }

@@ -261,11 +261,11 @@ class SG_EXPORT Drawable : public Object
           * OpenGL display list to cached until they can be deleted
           * by the OpenGL context in which they were created, specified
           * by contextID.*/
-        static void deleteDisplayList(uint contextID,uint globj);
+        static void deleteDisplayList(unsigned int contextID,GLuint globj);
         
         /** flush all the cached display list which need to be deleted
           * in the OpenGL context related to contextID.*/
-        static void flushDeletedDisplayLists(uint contextID);
+        static void flushDeletedDisplayLists(unsigned int contextID);
 
 
         enum AttributeType
@@ -401,7 +401,7 @@ class SG_EXPORT Drawable : public Object
         bool                    _supportsDisplayList;
         bool                    _useDisplayList;
 
-        typedef osg::buffered_value<uint> GLObjectList;
+        typedef osg::buffered_value<GLuint> GLObjectList;
         mutable GLObjectList _globjList;
 
         ref_ptr<UpdateCallback> _updateCallback;
@@ -418,10 +418,10 @@ inline void Drawable::draw(State& state) const
 
         // get the contextID (user defined ID of 0 upwards) for the 
         // current OpenGL context.
-        uint contextID = state.getContextID();
+        unsigned int contextID = state.getContextID();
 
         // get the globj for the current contextID.
-        uint& globj = _globjList[contextID];
+        GLuint& globj = _globjList[contextID];
 
         // call the globj if already set otherwise compile and execute.
         if( globj != 0 )

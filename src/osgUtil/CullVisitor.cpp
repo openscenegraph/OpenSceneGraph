@@ -91,6 +91,7 @@ CullVisitor::CullVisitor():
     _currentRenderGraph(NULL),
     _currentRenderBin(NULL),
     _computeNearFar(COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES),
+    _nearFarRatio(0.0005f),
     _computed_znear(FLT_MAX),
     _computed_zfar(-FLT_MAX),
     _impostorActive(true),
@@ -179,7 +180,7 @@ void CullVisitor::popProjectionMatrix()
         double desired_znear = _computed_znear*0.98f;
         double desired_zfar = _computed_zfar*1.02f;
 
-        double min_near_plane = _computed_zfar*0.0005f;
+        double min_near_plane = _computed_zfar*_nearFarRatio;
         if (desired_znear<min_near_plane) desired_znear=min_near_plane;
         
         // assign the clamped values back to the computed values.

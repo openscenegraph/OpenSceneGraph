@@ -9,6 +9,7 @@
 #include <osg/LightSource>
 #include <osg/StateAttribute>
 #include <osg/Geometry>
+#include <osg/Point>
 
 #include <osg/MatrixTransform>
 #include <osg/PositionAttitudeTransform>
@@ -95,7 +96,7 @@ osg::Node* createLights(osg::BoundingBox& bb,osg::StateSet* rootStateSet)
     // create a local light.
     osg::Light* myLight2 = new osg::Light;
     myLight2->setLightNum(1);
-    myLight2->setPosition(osg::Vec4(bb.corner(1),1.0f));
+    myLight2->setPosition(osg::Vec4(0.0,0.0,0.0,1.0f));
     myLight2->setAmbient(osg::Vec4(0.0f,1.0f,1.0f,1.0f));
     myLight2->setDiffuse(osg::Vec4(0.0f,1.0f,1.0f,1.0f));
     myLight2->setConstantAttenuation(1.0f);
@@ -108,10 +109,43 @@ osg::Node* createLights(osg::BoundingBox& bb,osg::StateSet* rootStateSet)
 
     lightS2->setStateSetModes(*rootStateSet,osg::StateAttribute::ON);
     
+    osg::PositionAttitudeTransform* pat = new osg::PositionAttitudeTransform();
+    {
+        // set up the animation path 
+        osg::AnimationPath* animationPath = new osg::AnimationPath;
+        animationPath->insert(0.0,osg::AnimationPath::Key(bb.corner(0)));
+        animationPath->insert(1.0,osg::AnimationPath::Key(bb.corner(1)));
+        animationPath->insert(2.0,osg::AnimationPath::Key(bb.corner(2)));
+        animationPath->insert(3.0,osg::AnimationPath::Key(bb.corner(3)));
+        animationPath->insert(4.0,osg::AnimationPath::Key(bb.corner(4)));
+        animationPath->insert(5.0,osg::AnimationPath::Key(bb.corner(5)));
+        animationPath->insert(6.0,osg::AnimationPath::Key(bb.corner(6)));
+        animationPath->insert(7.0,osg::AnimationPath::Key(bb.corner(7)));
+        animationPath->insert(8.0,osg::AnimationPath::Key(bb.corner(0)));
+        
+        // attach it to the transform as an app callback.
+        pat->setAppCallback(new osg::PositionAttitudeTransform::AnimationPathCallback(animationPath));
+    }
     
-    osg::Transform* pat = new osg::Transform();
+    // create marker for point light.
+    osg::Geometry* marker = new osg::Geometry;
+    osg::Vec3Array* vertices = new osg::Vec3Array;
+    vertices->push_back(osg::Vec3(0.0,0.0,0.0));
+    marker->setVertexArray(vertices);
+    marker->addPrimitive(new osg::DrawArrays(GL_POINTS,0,1));
+    
+    osg::StateSet* stateset = new osg::StateSet;
+    osg::Point* point = new osg::Point;
+    point->setSize(4.0f);
+    stateset->setAttribute(point);
+    
+    marker->setStateSet(stateset);
+    
+    osg::Geode* markerGeode = new osg::Geode;
+    markerGeode->addDrawable(marker);
     
     pat->addChild(lightS2);
+    pat->addChild(markerGeode);
     
     lightGroup->addChild(lightS2);
 
@@ -302,6 +336,14 @@ int main( int argc, char **argv )
      
     // add a viewport to the viewer and attach the scene graph.
     viewer.addViewport( rootnode );
+    
+    osgUtil::SceneView* sv = viewer.getViewportSceneView(0);
+    if (sv)
+    {
+        // switch off small feature culling to prevent the light points from being culled.
+        sv->setCullingMode( sv->getCullingMode() & ~osg::CullStack::SMALL_FEATURE_CULLING);
+        sv->setCullingMode( 0);
+    }
 
     // open the viewer window.
     viewer.open();

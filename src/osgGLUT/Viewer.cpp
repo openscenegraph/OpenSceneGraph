@@ -1074,7 +1074,7 @@ void Viewer::keyboard(unsigned char key, int x, int y)
 
         case 'c' :
             _smallFeatureCullingActive = !_smallFeatureCullingActive;
-            sceneView->getCullVisitor()->setCullingMode((osgUtil::CullVisitor::CullingMode)
+            sceneView->setCullingMode((osgUtil::CullVisitor::CullingMode)
                 ((_smallFeatureCullingActive ? osgUtil::CullVisitor::SMALL_FEATURE_CULLING : osgUtil::CullVisitor::NO_CULLING) |
                 (_viewFrustumCullingActive ? osgUtil::CullVisitor::VIEW_FRUSTUM_CULLING : osgUtil::CullVisitor::NO_CULLING)));
             if (_smallFeatureCullingActive)
@@ -1097,7 +1097,7 @@ void Viewer::keyboard(unsigned char key, int x, int y)
             {
                 osg::notify(osg::NOTICE) << "View frustum culling switched off  "<< std::endl;
             }
-            sceneView->getCullVisitor()->setCullingMode((osgUtil::CullVisitor::CullingMode)
+            sceneView->setCullingMode((osgUtil::CullVisitor::CullingMode)
                 ((_smallFeatureCullingActive ? osgUtil::CullVisitor::SMALL_FEATURE_CULLING : osgUtil::CullVisitor::NO_CULLING) |
                 (_viewFrustumCullingActive ? osgUtil::CullVisitor::VIEW_FRUSTUM_CULLING : osgUtil::CullVisitor::NO_CULLING)));
             break;

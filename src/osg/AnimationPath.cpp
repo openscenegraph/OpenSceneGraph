@@ -82,35 +82,38 @@ bool AnimationPath::getInverse(double time,Matrix& matrix) const
     return true;
 }
 
-const bool AnimationPath::computeLocalToWorldMatrix(Matrix& matrix,const Transform*, NodeVisitor* nv) const
-{
-    if (nv)
-    {
-        const osg::FrameStamp* fs = nv->getFrameStamp();
-        if (fs)
-        {
-            osg::Matrix localMatrix;
-            getMatrix(fs->getReferenceTime(),localMatrix);
-            matrix.preMult(localMatrix);
-            return true;
-        }
-    }
-    return false;
-}
 
-/** Get the transformation matrix which moves from world coords to local coords.*/
-const bool AnimationPath::computeWorldToLocalMatrix(Matrix& matrix,const Transform* , NodeVisitor* nv) const
+bool AnimationPath::getKeyFrame(double time,Key& key) const
 {
-    if (nv)
+    if (_timeKeyMap.empty()) return false;
+
+    TimeKeyMap::const_iterator second = _timeKeyMap.lower_bound(time);
+    if (second==_timeKeyMap.begin())
     {
-        const osg::FrameStamp* fs = nv->getFrameStamp();
-        if (fs)
-        {
-            osg::Matrix localInverse;
-            getInverse(fs->getReferenceTime(),localInverse);
-            matrix.postMult(localInverse);
-            return true;
-        }
+        key = second->second;
     }
-    return false;
+    else if (second!=_timeKeyMap.end())
+    {
+        TimeKeyMap::const_iterator first = second;
+        --first;        
+        
+        // we have both a lower bound and the next item.
+
+        // deta_time = second.time - first.time
+        double delta_time = second->first - first->first;
+
+        if (delta_time==0.0)
+            key = first->second;
+        else
+        {
+            key.interpolate((time - first->first)/delta_time,
+                            first->second,
+                            second->second);
+        }        
+    }
+    else // (second==_timeKeyMap.end())
+    {
+        key = _timeKeyMap.rbegin().base()->second;
+    }
+    return true;
 }

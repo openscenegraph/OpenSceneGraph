@@ -355,21 +355,21 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph)
     texture->setImage(image);
     stateset->setTextureAttributeAndModes(0, texture,osg::StateAttribute::ON);
 
-    {    
-        // set up the second tex coord array for the an additional texture
-        // to add texture to the flag.
-        polyGeom->setTexCoordArray(1,texcoords);
-
-        osg::Image* overlay_image = osgDB::readImageFile("lz.rgb");
-        osg::Texture* overlay_texture = new osg::Texture;
-        overlay_texture->setImage(overlay_image);
-        stateset->setTextureAttributeAndModes(1, overlay_texture,osg::StateAttribute::ON);
-        
-        osg::TexEnv* overlay_texenv = new osg::TexEnv;
-        overlay_texenv->setMode(osg::TexEnv::BLEND);
-        overlay_texenv->setColor(osg::Vec4(0.3f,0.3f,0.3f,1.0f));
-        stateset->setTextureAttribute(1, overlay_texenv);
-    }    
+//     {    
+//         // set up the second tex coord array for the an additional texture
+//         // to add texture to the flag.
+//         polyGeom->setTexCoordArray(1,texcoords);
+// 
+//         osg::Image* overlay_image = osgDB::readImageFile("tank.rgb");
+//         osg::Texture* overlay_texture = new osg::Texture;
+//         overlay_texture->setImage(overlay_image);
+//         stateset->setTextureAttributeAndModes(1, overlay_texture,osg::StateAttribute::ON);
+//         
+//         osg::TexEnv* overlay_texenv = new osg::TexEnv;
+//         overlay_texenv->setMode(osg::TexEnv::BLEND);
+//         overlay_texenv->setColor(osg::Vec4(0.3f,0.3f,0.3f,1.0f));
+//         stateset->setTextureAttribute(1, overlay_texenv);
+//     }    
 
     polyGeom->setStateSet(stateset);
 

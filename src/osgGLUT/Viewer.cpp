@@ -739,9 +739,9 @@ void Viewer::mouse(int button, int state, int x, int y)
     // Switch viewport focus if button is pressed, and it is the only one
     unsigned mask = ea->getButtonMask();
     if (state == GLUT_DOWN && 
-        (mask == osgUtil::GUIEventAdapter::LEFT_BUTTON   || 
-         mask == osgUtil::GUIEventAdapter::MIDDLE_BUTTON || 
-         mask == osgUtil::GUIEventAdapter::RIGHT_BUTTON))
+        (mask == osgUtil::GUIEventAdapter::LEFT_MOUSE_BUTTON   || 
+         mask == osgUtil::GUIEventAdapter::MIDDLE_MOUSE_BUTTON || 
+         mask == osgUtil::GUIEventAdapter::RIGHT_MOUSE_BUTTON))
     {
         int focus = mapWindowXYToSceneView(x,y);
         if (focus >= 0 && focus != int(_focusedViewport))

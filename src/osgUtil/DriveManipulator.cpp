@@ -390,21 +390,21 @@ bool DriveManipulator::calcMovement()
         case(USE_MOUSE_BUTTONS_FOR_SPEED):
         {
             unsigned int buttonMask = _ga_t1->getButtonMask();
-            if (buttonMask==GUIEventAdapter::LEFT_BUTTON)
+            if (buttonMask==GUIEventAdapter::LEFT_MOUSE_BUTTON)
             {
                 // pan model.
 
                 _velocity += dt*_modelScale*0.02f;
 
             }
-            else if (buttonMask==GUIEventAdapter::MIDDLE_BUTTON ||
-                buttonMask==(GUIEventAdapter::LEFT_BUTTON|GUIEventAdapter::RIGHT_BUTTON))
+            else if (buttonMask==GUIEventAdapter::MIDDLE_MOUSE_BUTTON ||
+                buttonMask==(GUIEventAdapter::LEFT_MOUSE_BUTTON|GUIEventAdapter::RIGHT_MOUSE_BUTTON))
             {
 
                 _velocity = 0.0f;
 
             }
-            else if (buttonMask==GUIEventAdapter::RIGHT_BUTTON)
+            else if (buttonMask==GUIEventAdapter::RIGHT_MOUSE_BUTTON)
             {
 
                 _velocity -= dt*_modelScale*0.02f;

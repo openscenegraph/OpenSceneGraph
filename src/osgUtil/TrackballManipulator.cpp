@@ -202,7 +202,7 @@ bool TrackballManipulator::calcMovement()
 
     float focalLength = (_camera->getCenterPoint()-_camera->getEyePoint()).length();
     unsigned int buttonMask = _ga_t1->getButtonMask();
-    if (buttonMask==GUIEventAdapter::LEFT_BUTTON)
+    if (buttonMask==GUIEventAdapter::LEFT_MOUSE_BUTTON)
     {
 
         // rotate camera.
@@ -241,8 +241,8 @@ bool TrackballManipulator::calcMovement()
         return true;
 
     }
-    else if (buttonMask==GUIEventAdapter::MIDDLE_BUTTON ||
-        buttonMask==(GUIEventAdapter::LEFT_BUTTON|GUIEventAdapter::RIGHT_BUTTON))
+    else if (buttonMask==GUIEventAdapter::MIDDLE_MOUSE_BUTTON ||
+        buttonMask==(GUIEventAdapter::LEFT_MOUSE_BUTTON|GUIEventAdapter::RIGHT_MOUSE_BUTTON))
     {
 
         // pan model.
@@ -262,7 +262,7 @@ bool TrackballManipulator::calcMovement()
         return true;
 
     }
-    else if (buttonMask==GUIEventAdapter::RIGHT_BUTTON)
+    else if (buttonMask==GUIEventAdapter::RIGHT_MOUSE_BUTTON)
     {
 
         // zoom model.

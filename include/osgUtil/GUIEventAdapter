@@ -26,9 +26,9 @@ class GUIEventAdapter : public osg::Referenced
 
 
         enum MouseButtonMask { 
-            LEFT_BUTTON=1,
-            MIDDLE_BUTTON=2,
-            RIGHT_BUTTON=4
+            LEFT_MOUSE_BUTTON=1,
+            MIDDLE_MOUSE_BUTTON=2,
+            RIGHT_MOUSE_BUTTON=4
         };
 
         enum EventType {

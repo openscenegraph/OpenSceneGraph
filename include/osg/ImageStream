@@ -55,6 +55,17 @@ class SG_EXPORT ImageStream : public Image
 
         StreamStatus getStatus() { return _status; }
         
+
+        enum LoopingMode
+        {
+            NO_LOOPING,
+            LOOPING
+        };
+        
+        void setLoopingMode(LoopingMode mode) { _loopingMode = mode; }
+        LoopingMode getLoopingMode() const { return _loopingMode; }
+
+
         virtual void setReferenceTime(double) {}
         virtual double getReferenceTime() const { return 0.0; }
                 
@@ -68,6 +79,7 @@ class SG_EXPORT ImageStream : public Image
         virtual ~ImageStream() {}
 
         StreamStatus    _status;
+        LoopingMode     _loopingMode;
 };
 
 } // namespace

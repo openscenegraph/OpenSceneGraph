@@ -289,8 +289,14 @@ void MpegImageStream::run()
             
             if (frameNumber>=_frames)
             {
-                rewind(); 
-                //stop();
+                if (getLoopingMode()==LOOPING)
+                {
+                    rewind(); 
+                }
+                else
+                {
+                    pause();
+                }
             }
             else
             {

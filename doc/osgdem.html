@@ -1,0 +1,373 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+  <meta name="GENERATOR"
+ content="Mozilla/4.77 [en] (X11; U; Linux 2.4.3-20mdk i686) [Netscape]">
+  <title>examples</title>
+</head>
+<body text="#000000" bgcolor="#ffffff" link="#0000ff" vlink="#990066"
+ alink="#ff0000">
+<img src="images/OpenSceneGraphBanner_Distribution.jpg">
+<table>
+  <tbody>
+    <tr>
+      <td><a href="index.html">Index</a></td>
+      <td><a href="introduction.html">Introduction</a></td>
+      <td><a href="contents.html">Contents</a></td>
+      <td><a href="install.html">Install</a></td>
+      <td><a href="dependencies.html">Dependencies</a></td>
+      <td><a href="examples.html">examples</a></td>
+      <td><a href="data.html">Data</a></td>
+      <td><a href="osgviewer.html">Viewer</a></td>
+      <td><a href="stereo.html">Stereo</a></td>
+      <td><a href="osgdem.html">osgdem</a></td>
+      <td><a href="plan.html">Plan</a></td>
+      <td><a href="documentation.html">Reference Guides</a></td>
+    </tr>
+  </tbody>
+</table>
+<h2>
+<a name="Using_osgdem"></a><u>Using osgdem to generate geospatial
+terrain databases</u></h2>
+<ol>
+  <li><a href="#Quick_step_by_step_guide:">Quick step by step guide</a></li>
+  <li><a href="#osgdem_options">osgdem options</a></li>
+</ol>
+<hr style="width: 100%; height: 2px;">
+<h3><a name="Quick_step_by_step_guide:"></a>Quick step by step guide:</h3>
+Follows are a the steps required to get osgTerrain/osgdem compiling and
+an example of how to use it to process imagery and dem's to gernerate a
+paged databases.<br>
+<br>
+1) Download, compile &amp; install GDAL. <br>
+&nbsp;<br>
+2) Get the latest OSG in CVS.<br>
+<br>
+3) For unix Make users, make a copy of Make/dependencies and change the
+GDAL_INSTALL entry to:<br>
+<br>
+<div style="margin-left: 40px;"><span style="font-weight: bold;">set
+GDAL_INSTALL = true </span><br>
+<span style="font-weight: bold;"></span></div>
+<span style="font-weight: bold;"><br>
+&nbsp;&nbsp;&nbsp; </span>Then tell the build to use you custom
+dependencies by setting the environmental variable OSG_DEPENDENCIES to
+the absolute path to your file i.e.:<br>
+<br>
+<div style="margin-left: 40px;"><span style="font-weight: bold;">export
+OSG_DEPENDENCIES=/home/billgates/my_osg_dependencies</span><br>
+</div>
+&nbsp;<br>
+4) Rebuild the OSG &amp; install (if you havn't already used <br>
+&nbsp;<br>
+5) Oh make sure you have a couple Gb of spare disk space,&nbsp; because
+you going need it :-) <br>
+&nbsp;<br>
+6) Download some data, for this example I'm using the PegoutSound data
+at: <br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a
+ href="http://www.cc.gatech.edu/projects/large_models/ps.html">http://www.cc.gatech.edu/projects/large_models/ps.html
+</a><br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Download Elevation Map:
+16385 &times; 16385 PNG: 188MB <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Download Texture Map:
+16384 &times; 16384 PNG: 268MB &nbsp;<br>
+<br>
+7) To avoid aliasing artifcates when accessing data I use <a
+ href="http://www.remotesensing.org/gdal/gdal_utilities.html">GDAL
+utilitiy
+programs</a> to generate overviews (basically mip maps stored in the
+.tif)
+via: <br>
+&nbsp;<br>
+<br>
+<div style="margin-left: 40px;"><span style="font-weight: bold;">gdal_translate
+ps_height_16k.png
+ps_height_16k.tif </span><br>
+<span style="font-weight: bold;">gdaladdo -r average ps_height_16k.tif
+2 4 8 16 32 </span><br style="font-weight: bold;">
+<span style="font-weight: bold;">&nbsp;&nbsp; </span><br
+ style="font-weight: bold;">
+<span style="font-weight: bold;">gdal_translate ps_texture_16k.png
+ps_texture_16k.tif </span><br style="font-weight: bold;">
+g<span style="font-weight: bold;">daladdo -r average ps_texture_16k.tif
+2 4 8 16 32 </span><br style="font-weight: bold;">
+</div>
+<span style="font-weight: bold;">&nbsp;</span><br>
+<br>
+8) Now its time to run the osgdem example to generate your PagedLOD
+database, the more levels you generate the longer it will take
+(exponentially so), osgdem is just a front end to osgTerrain::DataSet
+where all the hard work happens. Here's what to run : <br>
+<br>
+<div style="margin-left: 40px;"><span style="font-weight: bold;">osgdem
+--xx 10 --yy 10 -t ../ps_texture.tif \</span><br
+ style="font-weight: bold;">
+<span style="font-weight: bold;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
+&nbsp; &nbsp;
+--xx 10 --yy 10 -d ../ps_height.tif \</span><br
+ style="font-weight: bold;">
+<span style="font-weight: bold;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;
+-l 8 \</span><br style="font-weight: bold;">
+<span style="font-weight: bold;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; -v 0.1 \</span><br style="font-weight: bold;">
+<span style="font-weight: bold;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+-o pegout.ive</span><br>
+</div>
+<br>
+Then go away for lunch, afternoon and tea, as generating this much data
+takes a while... If you don't wish to wait for the full database then
+reduce the number of levels it generates by setting the -l option to a
+lower value such as 3.<br>
+<br>
+The command line options used above are: <br>
+<div style="margin-left: 40px;">&nbsp;<br>
+The first part the --xx and --yy is specifying the size of the pixels
+in meters, since these png/tif don't have any geospatial data of their
+own, if you have geospetialised files then you won't need this.<br>
+<br>
+The second part -t &lt;filename&gt; is the option for specificing the
+texture maps to use, you can use as many as you wish,
+osgTerrain::DataSet will moziac them into a single database. &nbsp;<br>
+<br>
+The third part -d is the option for specificying the digital elevation
+maps to use, as with the textures you can use as many as you like. <br>
+&nbsp;<br>
+The -l option specificies the maximum number of levels to generate, if
+you use a large number then the database generation will stop once the
+max resolution of you source data is matched by the outputed database.
+The database generation will decend further where there is high res
+source
+data, decend less where there is lower res data. <br>
+<br>
+The -v option specifies the scaling factor which the height is
+multiplied by.<br>
+<br>
+And finally the -o &lt;filename&gt; is the output format to generat the
+databases in. This will be the name of the topmost file in the one you
+should load. It can be a .ive or a .osg. The .ive is faster and has
+embedded files.&nbsp;<br>
+</div>
+<br>
+9) Time to play, simply load the database in your app (make sure it
+support the osgDB::DatabasePager see osgsimplepager
+example for detaiils). The standard osgviewer works just fine so
+here goes: <br>
+&nbsp;<br>
+&nbsp;&nbsp; <span style="font-weight: bold;">osgviewer output.ive </span><br>
+&nbsp;<br>
+<br>
+10) You don't actually have to wait for osgdem to complete before you
+can browse the database, since osgdem generates
+the topmost tiles first. Its not totally robust since osgviewer can end
+up
+loading tiles that are still being written by osgdem, but it doesn't
+crash
+here under Linux, so you might be lucky too. <br>
+<br>
+11) If you imagery and dem's have geospatial coords associated with
+them then the -xx, --yy and -v options will not be required making the
+it much simplier to specify - you just need to specifiy options such as
+<span style="font-weight: bold;">-t imge.tif</span> and -d terran.dt0
+without any need to set to coordinate system.<br>
+<br>
+12) osgdem can automatically handle moziacing of sets of files, these
+can be specified via a sequence of <span style="font-weight: bold;">-t
+&lt;filename&gt;</span> and <span style="font-weight: bold;">-d
+&lt;filename&gt;</span> pairs on the commandline, or via <span
+ style="font-weight: bold;">-t &lt;directoryname&gt;</span> and <span
+ style="font-weight: bold;">-d &lt;directoryname&gt;.</span><br>
+&nbsp;<br>
+<hr style="width: 100%; height: 2px;">
+<h3><a name="osgdem_options"></a>osgdem options</h3>
+There are of osgdem options to use, to list the full ranges of options
+do:<br>
+<br>
+<div style="margin-left: 40px;"><span style="font-weight: bold;">osgdem
+--help</span><br>
+</div>
+<br>
+And you should see:<br>
+<br>
+<div style="margin-left: 40px;"><br>
+<span style="font-family: monospace; font-weight: bold;">osgdem --help</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">Usage: osgdem [options] filename
+...</span><br style="font-family: monospace;">
+<span style="font-family: monospace;">Options:</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;
+--HEIGHT_FIELD&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Create a height field database</span><br style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;
+--LOD&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Create a LOD'd database</span><br style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;
+--POLYGONAL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Create a height field database</span><br style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;
+--PagedLOD&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Create a PagedLOD'd database</span><br style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;
+--RGB-16&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Use 16bit RGB destination imagery</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;
+--RGB-24&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Use 24bit RGB destination imagery</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;
+--comment&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Added a comment/description string to</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+the top most node in the dataset</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;
+--compressed&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Use OpenGL compression on destination</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+imagery</span><br style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp; --cs &lt;coordinates
+system string&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set the
+coordinates system of source</span><br style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+imagery, DEM or destination database.</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+The string may be any of the usual</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+GDAL/OGR forms, complete WKT, PROJ.4,</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+EPS</span><br style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;
+--max-anisotropy&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Max anisotropy level to use when</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+texturing, defaults to 1.0.</span><br style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;
+--max-visible-distance-of-top-level&nbsp;&nbsp;&nbsp;&nbsp; Set the
+maximum visible distance that</span><br style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+the top most tile can be viewed at</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;
+--mip-mapping-hardware&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Use mip mapped textures, and generate</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+the mipmaps in hardware when</span><br style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+available.</span><br style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;
+--mip-mapping-imagery&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Use mip mapped textures, and generate</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+the mipmaps in imagery.</span><br style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;
+--no-mip-mapping&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Disable mip mapping of textures</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;
+--radius-to-max-visible-distance-ratio&nbsp; Set the maximum visible
+distance ratio</span><br style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+for all tiles apart from the top most</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+tile. The maximum visuble distance is</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+computed from the ratio * tile radius.</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp; --skirt-ratio
+&lt;float&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Set the ratio of skirt height to tile</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+size</span><br style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;
+--tile-image-size&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Set the tile maximum image size</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;
+--tile-terrain-size&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Set the tile maximum terrain size</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp; --wkt &lt;WKT
+string&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Set the coordinates system of source</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+imagery, DEM or destination database</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+in WellKownText form.</span><br style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp; --wkt-file &lt;WKT
+file&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Set the coordinates system of source</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+imagery, DEM or destination database</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+by as file containing WellKownText</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+definition.</span><br style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp; -d
+&lt;filename&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Specify the digital elevation map</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+input file to process</span><br style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp; -e &lt;x&gt; &lt;y&gt;
+&lt;w&gt;
+&lt;h&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Extents of the model to generate</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp; -h or
+--help&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Display this information</span><br style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp; -l
+&lt;numOfLevels&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Specify the number of PagedLOD levels</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+to generate</span><br style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp; -m
+&lt;filename&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Specify the 3D database model input</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+file to process</span><br style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp; -o
+&lt;outputfile&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Specify the output master file to</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+generate</span><br style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp; -t
+&lt;filename&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Specify the texture map input file to</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+process</span><br style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;
+-v&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Set the vertical multiplier</span><br style="font-family: monospace;">
+<br style="font-family: monospace;">
+<br>
+</div>
+</body>
+</html>

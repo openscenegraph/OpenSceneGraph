@@ -45,9 +45,6 @@ public:
     virtual void applyTexture2(Texture2 *tex);
     virtual void applyTransform(Transform *trans);
     osg::Node* getRoot();
-
-    virtual osg::Object* cloneType() const  { return new OSGVisitor(0); }
-
 };
 
 #endif

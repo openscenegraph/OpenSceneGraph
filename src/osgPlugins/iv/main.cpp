@@ -34,7 +34,7 @@ extern int yydebug;
 extern MyNode *getRoot();
 extern FILE *yyin;
 
-int isatty(int t) { return 0; }
+int isatty(int) { return 0; }
 
 osg::Node *readVRMLNode(const char *file) {
     yydebug=0;

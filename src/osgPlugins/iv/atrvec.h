@@ -47,9 +47,6 @@ public:
     float getValCut(int pos) { return values[pos]>0?values[pos]:0.0f; }
     int getSize() { return values.size(); }
     virtual char *type() { return "AtrVec"; }
-
-    /** clone the an object of the same type as the node.*/
-    virtual osg::Object* cloneType() const { return new AtrVec(name); }
 };
 
 

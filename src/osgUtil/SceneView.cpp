@@ -932,30 +932,41 @@ void SceneView::setProjectionMatrixAsPerspective(double fovy,double aspectRatio,
                                                  zNear, zFar));
 }                                      
 
-void SceneView::getProjectionMatrixAsOrtho(double& left, double& right,
+bool SceneView::getProjectionMatrixAsOrtho(double& left, double& right,
                                            double& bottom, double& top,
                                            double& zNear, double& zFar)
 {
     if (_projectionMatrix.valid()) 
     {
-        _projectionMatrix->getOrtho(left, right,
-                                   bottom, top,
-                                   zNear, zFar);
+        return _projectionMatrix->getOrtho(left, right,
+                                           bottom, top,
+                                           zNear, zFar);
     }
+    return false;
 }
 
-void SceneView::getProjectionMatrixAsFrustum(double& left, double& right,
+bool SceneView::getProjectionMatrixAsFrustum(double& left, double& right,
                                              double& bottom, double& top,
                                              double& zNear, double& zFar)
 {
     if (_projectionMatrix.valid()) 
     {
-        _projectionMatrix->getFrustum(left, right,
-                                     bottom, top,
-                                     zNear, zFar);
+        return _projectionMatrix->getFrustum(left, right,
+                                             bottom, top,
+                                             zNear, zFar);
     }
+    return false;
 }                                  
 
+bool SceneView::getProjectionMatrixAsPerspective(double& fovy,double& aspectRatio,
+                                                 double& zNear, double& zFar)
+{
+    if (_projectionMatrix.valid()) 
+    {
+        return _projectionMatrix->getPerspective(fovy, aspectRatio, zNear, zFar);
+    }
+    return false;
+}                                                 
 
 void SceneView::setViewMatrix(const osg::Matrix& matrix)
 {

@@ -158,16 +158,25 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         const osg::Matrix& getProjectionMatrix() const { return *_projectionMatrix; }
 
         /** Get the othorgraphic settings of the orthographic projection matrix. 
-          * Note, if matrix is not an orthographic matrix then invalid values will be returned.*/
-        void getProjectionMatrixAsOrtho(double& left, double& right,
+          * Returns false if matrix is not an orthographic matrix, where parameter values are undefined.*/
+        bool getProjectionMatrixAsOrtho(double& left, double& right,
                                         double& bottom, double& top,
                                         double& zNear, double& zFar);
 
         /** Get the frustum setting of a perspective projection matrix.
-          * Note, if matrix is not an perspective matrix then invalid values will be returned.*/
-        void getProjectionMatrixAsFrustum(double& left, double& right,
+          * Returns false if matrix is not a perspective matrix, where parameter values are undefined.*/
+        bool getProjectionMatrixAsFrustum(double& left, double& right,
                                           double& bottom, double& top,
                                           double& zNear, double& zFar);
+
+        /** Get the frustum setting of a symetric perspective projection matrix.
+          * Returns false if matrix is not a perspective matrix, where parameter values are undefined. 
+          * Note, if matrix is not a symetric perspective matrix then the shear will be lost.
+          * Asymetric metrices occur when stereo, power walls, caves and reality center display are used.
+          * In these configuration one should use the AsFrustum method instead.*/
+        bool getProjectionMatrixAsPerspective(double& fovy,double& aspectRatio,
+                                              double& zNear, double& zFar);
+
 
         /** Set the view matrix. Can be thought of as setting the position of the world relative to the camera in camera coordinates. */
         void setViewMatrix(const osg::Matrix& matrix);

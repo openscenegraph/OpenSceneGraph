@@ -56,10 +56,10 @@ void Matrix_implementation::set( value_type a00, value_type a01, value_type a02,
     SET_ROW(3, a30, a31, a32, a33 )
 }
 
-#define QX  q._fv[0]
-#define QY  q._fv[1]
-#define QZ  q._fv[2]
-#define QW  q._fv[3]
+#define QX  q._v[0]
+#define QY  q._v[1]
+#define QZ  q._v[2]
+#define QW  q._v[3]
 
 void Matrix_implementation::set(const Quat& q)
 {
@@ -420,10 +420,12 @@ void Matrix_implementation::makeOrtho(double left, double right,
     SET_ROW(3,                tx,                ty,                 tz, 1.0f )
 }
 
-void Matrix_implementation::getOrtho(double& left, double& right,
+bool Matrix_implementation::getOrtho(double& left, double& right,
                       double& bottom, double& top,
                       double& zNear, double& zFar)
 {
+    if (_mat[0][3]!=0.0f || _mat[1][3]==!0.0f || _mat[2][3]!=0.0f || _mat[3][3]!=1.0f) return false;
+
     zNear = (_mat[3][2]+1.0f) / _mat[2][2];
     zFar = (_mat[3][2]-1.0f) / _mat[2][2];
     
@@ -432,6 +434,8 @@ void Matrix_implementation::getOrtho(double& left, double& right,
 
     bottom = -(1.0f+_mat[3][1]) / _mat[1][1];
     top = (1.0f-_mat[3][1]) / _mat[1][1];
+    
+    return true;
 }            
 
 
@@ -450,10 +454,13 @@ void Matrix_implementation::makeFrustum(double left, double right,
     SET_ROW(3,                    0.0f,                   0.0f,     D,  0.0f )
 }
 
-void Matrix_implementation::getFrustum(double& left, double& right,
-                        double& bottom, double& top,
-                        double& zNear, double& zFar)
+bool Matrix_implementation::getFrustum(double& left, double& right,
+                                       double& bottom, double& top,
+                                       double& zNear, double& zFar)
 {
+    if (_mat[0][3]!=0.0f || _mat[1][3]==!0.0f || _mat[2][3]!=-1.0f || _mat[3][3]!=0.0f) return false;
+
+
     zNear = _mat[3][2] / (_mat[2][2]-1.0f);
     zFar = _mat[3][2] / (1.0f+_mat[2][2]);
     
@@ -462,11 +469,13 @@ void Matrix_implementation::getFrustum(double& left, double& right,
 
     top = zNear * (1.0f+_mat[2][1]) / _mat[1][1];
     bottom = zNear * (_mat[2][1]-1.0f) / _mat[1][1];
+    
+    return true;
 }                 
 
 
 void Matrix_implementation::makePerspective(double fovy,double aspectRatio,
-                             double zNear, double zFar)
+                                            double zNear, double zFar)
 {
     // calculate the appropriate left, right etc.
     double tan_fovy = tan(DegreesToRadians(fovy*0.5));
@@ -477,6 +486,21 @@ void Matrix_implementation::makePerspective(double fovy,double aspectRatio,
     makeFrustum(left,right,bottom,top,zNear,zFar);
 }
 
+bool Matrix_implementation::getPerspective(double& fovy,double& aspectRatio,
+                                           double& zNear, double& zFar)
+{
+    double right  =  0.0;
+    double left   =  0.0;
+    double top    =  0.0;
+    double bottom =  0.0;
+    if (getFrustum(left,right,bottom,top,zNear,zFar))
+    {
+        fovy = RadiansToDegrees(atan(top/zNear)-atan(bottom/zNear));
+        aspectRatio = (right-left)/(top-bottom);
+        return true;
+    }
+    return false;
+}
 
 void Matrix_implementation::makeLookAt(const Vec3& eye,const Vec3& center,const Vec3& up)
 {

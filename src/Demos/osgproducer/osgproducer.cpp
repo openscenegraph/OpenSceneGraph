@@ -60,62 +60,79 @@ static Producer::CameraConfig *BuildConfig(void)
 int main( int argc, char **argv )
 {
 
-    std::string filename;
-    if (argc>1) filename = argv[1];
-    else filename = "cow.osg";
+    // threading model.
+    Producer::CameraGroup::ThreadingModel threadingModel = Producer::CameraGroup::SingleThreaded;
+    threadingModel = Producer::CameraGroup::ThreadPerCamera;
 
-    osg::ref_ptr<osg::Node> scene = osgDB::readNodeFile(filename.c_str());
-    if (!scene) return 1;
-    
-    osgUtil::Optimizer optimizer;
-    optimizer.optimize(scene.get());
+    // configuration file.
+    std::string configFile; // configFile = "twoWindows.cfg"
 
-#define USE_BUILD_CONFIG
+    // set up the database files to read.
+    std::vector<std::string> filenameList;
+    if (argc>1) filenameList.push_back(argv[1]);
+    else filenameList.push_back("cow.osg");
 
+
+
+    // create the camera group.
+    Producer::OsgCameraGroup *cg = 0;
+
+//#define USE_BUILD_CONFIG
 #ifdef USE_BUILD_CONFIG
 
     Producer::CameraConfig *cfg = BuildConfig();
-    Producer::OsgCameraGroup *cg = new Producer::OsgCameraGroup(cfg);
-    
-#elif USE_PARSE_CONFIG
-
-    Producer::CameraConfig *cfg = new Producer::CameraConfig;
-    cfg->parseFile("twoWindows.cfg");
-
-    Producer::OsgCameraGroup *cg = new Producer::OsgCameraGroup(cfg);
+    cg = new Producer::OsgCameraGroup(cfg);
     
 #else
 
-    Producer::OsgCameraGroup *cg = new Producer::OsgCameraGroup();
-    // ackk we need a CameraConfig to get the InputArea from, as CameraGroup
-    // doesn't have its own InputArea...  perhaps there should be a 
-    // getOrCreateInputArea on the CameraGroup & CameraConfig classes to help
-    // out setting up the input area appropriatly.
-    
+    cg = configFile.empty() ?
+         (new Producer::OsgCameraGroup()):
+         (new Producer::OsgCameraGroup(configFile));
+
 #endif
 
+    // set up the maximum number of graphics contexts, before loading the scene graph
+    // to ensure that texture objects and display buffers are configured to the correct size.
+    osg::DisplaySettings::instance()->setMaxNumberOfGraphicsContexts( cg->getNumberOfCameras() );
 
-    // set up a scene handler for each camera.
-    for( int i = 0; i < cg->getNumberOfCameras(); i++ )
-        cg->getCamera(i)->setSceneHandler( new Producer::OsgSceneHandler );
+
+    // read the scene.
+    osg::ref_ptr<osg::Node> scene = osgDB::readNodeFiles(filenameList);
+    if (!scene) return 1;
+
+    osgUtil::Optimizer optimizer;
+    optimizer.optimize(scene.get());
 
 
-    Producer::InputArea *ia = cfg->getInputArea();
-    Producer::KeyboardMouse kbm(ia);
+    // set up the keyboard and mouse handling.
+    Producer::InputArea *ia = cg->getCameraConfig()->getInputArea();
+    Producer::KeyboardMouse *kbm = ia ?
+                                   (new Producer::KeyboardMouse(ia)) : 
+                                   (new Producer::KeyboardMouse(cg->getCamera(0)->getRenderSurface()));
 
     bool done = false;
     MyKeyboardMouseCallback kbmcb(done);
-    kbm.setCallback( &kbmcb );
-    kbm.startThread();
+    kbm->setCallback( &kbmcb );
+    kbm->startThread();
 
     Producer::Trackball tb;
     tb.setOrientation( Producer::Trackball::Y_UP );
 
 
+
+    // set the globa state
+    osg::StateSet* globalStateSet = new osg::StateSet;
+    globalStateSet->setGlobalDefaults();
+    cg->setGlobalStateSet(globalStateSet);
+    
+    // set the scene to render
     cg->setSceneData(scene.get());
 
-//    cg.realize(Producer::CameraGroup::ThreadPerCamera);
-    cg->realize(Producer::CameraGroup::SingleThreaded);
+    // set up the pthread stack size to large enough to run into problems.
+    cg->setStackSize( 20*1024*1024);
+
+    // create the windows and run the threads.
+    cg->realize(threadingModel);
 
     while( !done )
     {

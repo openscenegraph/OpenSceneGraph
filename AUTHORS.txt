@@ -137,7 +137,7 @@ Rune Schmidt Jensen <sphere@aub.dk>
 Romano José Magacho da Silva <rmagacho@predialnet.com.br>
         - pause/resume in osgGA::AnimationPathManipulator
         - support for managing deleted vertex programs in osg::VertexProgram.
-
+        - osg::FragmentProgram.
 
 Eric Sokolowsky <esok@cosimo.gsfc.nasa.gov>
         - pbm/pgm/ppm reader.

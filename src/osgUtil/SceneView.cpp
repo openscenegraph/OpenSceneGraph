@@ -18,6 +18,7 @@
 #include <osg/Notify>
 #include <osg/Texture>
 #include <osg/VertexProgram>
+#include <osg/FragmentProgram>
 #include <osg/AlphaFunc>
 #include <osg/TexEnv>
 #include <osg/ColorMatrix>
@@ -546,6 +547,7 @@ void SceneView::draw()
     osg::Drawable::flushDeletedDisplayLists(_state->getContextID(),currentTime,availableTime);
     osg::Drawable::flushDeletedVertexBufferObjects(_state->getContextID(),currentTime,availableTime);
     osg::VertexProgram::flushDeletedVertexProgramObjects(_state->getContextID(),currentTime,availableTime);
+    osg::FragmentProgram::flushDeletedFragmentProgramObjects(_state->getContextID(),currentTime,availableTime);
     osg::Texture::flushTextureObjects(_state->getContextID(),currentTime,availableTime);
 
     //osg::Timer_t tend = timer.tick();

@@ -150,6 +150,10 @@ SOURCE=..\..\..\src\osgPlugins\osg\Fog.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\osg\FragmentProgram.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\osg\FrontFace.cpp
 # End Source File
 # Begin Source File

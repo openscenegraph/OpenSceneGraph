@@ -181,9 +181,9 @@ void CullVisitor::popProjectionMatrix()
         {
             //std::cout << "Orthographic projection "<<projection<<std::endl;
 
-            double span = (_computed_zfar-_computed_zfar);
-            double desired_znear = _computed_znear + span*0.02f;
-            double desired_zfar = _computed_zfar - span*0.02f;
+            double span = (_computed_zfar-_computed_znear);
+            double desired_znear = _computed_znear - span*0.02f;
+            double desired_zfar = _computed_zfar + span*0.02f;
             
             // near plane clamping.
             //double min_near_plane = _computed_zfar*_nearFarRatio;

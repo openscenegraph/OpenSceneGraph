@@ -811,7 +811,36 @@ void GeoSet::setInterleavedArray( InterleaveArrayType format, float *pointer )
 }
 
 
-void GeoSet::setInterleavedArray( InterleaveArrayType format, float *ia, unsigned short *iai )
+void GeoSet::setInterleavedArray( InterleaveArrayType format, float *ia, GLushort *iai )
+{
+    _iaformat = format;
+
+    _ogliaformat =
+        (_iaformat == IA_OFF )            ? 0 :
+    (_iaformat == IA_V2F )            ?  GL_V2F:
+    (_iaformat == IA_V3F )            ?  GL_V3F:
+    (_iaformat == IA_C4UB_V2F)        ?  GL_C4UB_V2F:
+    (_iaformat == IA_C4UB_V3F)        ?  GL_C4UB_V3F:
+    (_iaformat == IA_C3F_V3F)         ?  GL_C3F_V3F:
+    (_iaformat == IA_N3F_V3F)         ?  GL_N3F_V3F:
+    (_iaformat == IA_C4F_N3F_V3F)     ?  GL_C4F_N3F_V3F:
+    (_iaformat == IA_T2F_V3F)         ?  GL_T2F_V3F:
+    (_iaformat == IA_T4F_V4F)         ?  GL_T4F_V4F:
+    (_iaformat == IA_T2F_C4UB_V3F)    ?  GL_T2F_C4UB_V3F:
+    (_iaformat == IA_T2F_C3F_V3F)     ?  GL_T2F_C3F_V3F:
+    (_iaformat == IA_T2F_N3F_V3F)     ?  GL_T2F_N3F_V3F:
+    (_iaformat == IA_T2F_C4F_N3F_V3F) ?  GL_T2F_C4F_N3F_V3F:
+    (_iaformat == IA_T4F_C4F_N3F_V4F) ?  GL_T4F_C4F_N3F_V4F: 0;
+
+    _iarray = ia;
+    // note the size of _iaindex defaults 0, but will be recalculated
+    // automatically by computeNumVerts().
+    _iaindex.set(0,iai);
+
+    set_fast_path();
+}
+
+void GeoSet::setInterleavedArray( InterleaveArrayType format, float *ia, GLuint *iai )
 {
     _iaformat = format;
 

@@ -1,67 +1,26 @@
+SHELL = /bin/sh
+OS := $(shell uname)
 
 # TOPDIR needs to be redefined for every Makefile
 TOPDIR     ?= ../
 THISDIR    = .
 MAKEDEPEND = Makedepend
-SHELL = /bin/sh
-OSTYPE := $(shell uname)
 
-OS := $(shell uname)
+INC        = -I$(TOPDIR)/include
+DEF        = 
 
-INC = -I$(TOPDIR)/include
-DEF = 
+CXXFLAGS   = $(ARCHARGS) $(DOF) $(DEF) $(INC)
+LDFLAGS    = $(ARCHARGS) $(DOF) $(LINKARGS) -L$(TOPDIR)/lib 
+OBJS       = $(C++FILES:.cpp=.o) \
+	     $(CXXFILES:.cpp=.o) \
+	     $(CFILES:.c=.o) \
 
-#### SUN OS Specific definitions
-ifeq ($(OS),SunOS)
-    C++        = CC
-    DEPFLAGS   = -xM1
-    INC        += 
-    DEF        += -features=extensions 
-    OPTF       = -xO2
-    DBGF       = -g
-    SHARED     = -G
-    ARCHARGS   = 
-    LINKERARGS        =  
-    DYNAMICLIBRARYLIB = -ldl
-    OSG_LIBS          = -losgGLUT -losgDB -losgUtil -losg 
-    GLUT_LIB          = -lglut
-    GL_LIBS           = -lGLU -lGL 
-    X_LIBS            = -lXext -lXmu -lXi -lX11 
-    SOCKET_LIBS       = -lsocket -lnsl
-    OTHER_LIBS        = -lCstd
-endif
-
-#### IRIX Specific definitions
-ifeq ($(OS),IRIX)
-    C++ = CC
-    CXXFLAGS   = $(DOF)  $(INC) -LANG:std -OPT:Olimit=0 -DEBUG:wof=1682 -DEBUG:woff=3303
-    LDFLAGS    = $(DOF) -L$(TOPDIR)/lib -LANG:std
-    DEPFLAGS = -MDupdate $(MAKEFILE)
-endif
-
-#### Linux specific definitions
-ifeq ($(OS),Linux)
-    C++        = g++
-    CXXFLAGS   = $(DOF) -W -Wall $(INC)
-    LDFLAGS    = $(DOF) -W -Wall -L/usr/X11R6/lib -L$(TOPDIR)/lib
-    DEPFLAGS = -M
-endif
-
-
-OBJS       = $(C++FILES:.cpp=.o) $(CXXFILES:.cpp=.o) $(CFILES:.c=.o) $(YACCFILES:.y=.o) $(LEXFILES:.l=.o)
 DOF        = $(OPTF)
-CXXFLAGS   = $(DOF) $(DEF) $(INC)
-
-INC       += 
-
 DEBUGDIR   = $(OS).Debug
 OPTDIR     = $(OS).Opt
 BININST    = bin
 LIBINST    = lib
 PLUGININST = lib/osgPlugins
-
-LIBS       = 
-LDFLAGS    = $(DOF) -L$(TOPDIR)/lib 
 
 ALL_TARGETS = \
 	  opt\
@@ -73,6 +32,61 @@ ALL_TARGETS = \
 	  beautify\
 	  docs\
 	  depend\
+
+#### SUN OS Specific definitions
+ifeq ($(OS),SunOS)
+
+  C++               = CC
+  DEPARG            = -xM1
+  INC               += 
+  DEF               += -features=extensions 
+  OPTF              = -xO2
+  DBGF              = -g
+  SHARED            = -G
+  ARCHARGS          = 
+  LINKARGS          =  
+  DYNAMICLIBRARYLIB = -ldl
+  OSG_LIBS          = -losgGLUT -losgDB -losgUtil -losg 
+  GLUT_LIB          = -lglut
+  GL_LIBS           = -lGLU -lGL 
+  X_LIBS            = -lXext -lXmu -lXi -lX11 
+  SOCKET_LIBS       = -lsocket -lnsl
+  OTHER_LIBS        = -lCstd
+  SO_EXT            = so
+  PLUGIN_EXT        = so
+
+endif
+
+#### IRIX Specific definitions
+ifeq ($(OS),IRIX)
+
+  C++               = CC
+  DEPFLAGS          = -M
+  INC               += 
+  DEF               += -LANG:std -OPT:Olimit=0 \
+	 	       -DEBUG:wof=1682 -DEBUG:woff=3303\
+		       -MDupdate $(MAKEDEPEND)
+  OPTF              = -O2 
+  DBGF              = -g
+  SHARED            = -shared
+  ARCHARGS          = 
+  LINKARGS          = -LANG:std -OPT:Olimit=0
+  DYNAMICLIBRARYLIB = -ldl
+  OSG_LIBS          = -losgGLUT -losgDB -losgUtil -losg 
+  GLUT_LIB          = -lglut
+  GL_LIBS           = -lGLU -lGL 
+  X_LIBS            = -lXext -lXi -lXmu -lX11
+  SOCKET_LIBS       = 
+  OTHER_LIBS        = 
+  SO_EXT            = so
+  PLUGIN_EXT        = so
+
+endif
+
+#### Linux specific definitions
+ifeq ($(OS),Linux)
+endif
+
 
 
 VPATH=..

@@ -70,12 +70,12 @@ $(PLUGIN:=.dbg) :
 	@$(MAKE) LNSRC=$(DEBUGDIR)/$(PLUGIN) LNDEST=$(PLUGININST)/$(PLUGIN) __link
 
 $(EXEC:=.opt) :
-	@[ -d $(OPTDIR) ] || mkdir $(OPTDIR)
-	@cd $(OPTDIR); \
+	[ -d $(OPTDIR) ] || mkdir $(OPTDIR)
+	cd $(OPTDIR); \
 	  $(MAKE) -f ../Makefile DOF=$(OPTF)  TOPDIR=../${TOPDIR} \
 	  THISDIR=../$(THISDIR)\
 	                MAKEDEPEND=../$(MAKEDEPEND) $(EXEC)
-	@$(MAKE) LNSRC=$(OPTDIR)/$(EXEC) LNDEST=$(BININST)/$(EXEC) __link
+	$(MAKE) LNSRC=$(OPTDIR)/$(EXEC) LNDEST=$(BININST)/$(EXEC) __link
 
 
 $(LIB:=.opt) :
@@ -101,20 +101,25 @@ $(PLUGIN:=.opt) :
 # Handle Make dependencies in the next target
 # This improves performance drastically, by building Makedepend only for 
 # files that have changed.
+#
+# Note that with IRIX compilers the -MDupdate $(MAKEFILE) does the same
+# so there is no need to run the dependency code
+#
 
 .SUFFIXES: .cpp .o
 .cpp.o:
+ifneq ($(OS),IRIX)   
+	$(C++) $(INC) $(DEPFLAGS) $< > .temp.dep
+	if [ -f $(MAKEDEPEND) ] ; \
+	then \
+	  grep -v $< $(MAKEDEPEND) > .temp.dep1;\
+	else \
+	    touch .temp.dep1; \
+	fi
+	cat .temp.dep1 .temp.dep > $(MAKEDEPEND)
+	rm -f .temp.dep1 .temp.dep
+endif
 	$(C++) $(CXXFLAGS) -c $<
-
-#	@$(C++) $(INC) $(DEPFLAGS) $? > .temp.dep
-#	@if [ -f $(MAKEDEPEND) ] ; \
-# 	then \
-#	  grep -v $? $(MAKEDEPEND) > .temp.dep1;\
-#	else \
-#	    touch .temp.dep1; \
-#	fi
-#	@cat .temp.dep1 .temp.dep > $(MAKEDEPEND)
-#	@rm -f .temp.dep1 .temp.dep
 
 
 depend :
@@ -165,7 +170,7 @@ __link :
 	@[ -n "$(LNDEST)" ] && echo > /dev/null
 	@if diff -s $(TOPDIR)/$(LNDEST) $(LNSRC) >/dev/null 2>&1;\
 	  then\
-	    echo "    =====> $(LNSRC) and $(TOPDIR)/$(LNDEST) are already in sync";\
+	    echo "    =====> $(LNSRC) and $(TOPDIR)/$(LNDEST) are in sync";\
 	  else\
 	     echo "    =====> resetting $(TOPDIR)/$(LNDEST) to point to $(LNSRC)";\
 	     SRCDIR=`pwd`/`dirname $(LNSRC)`;\

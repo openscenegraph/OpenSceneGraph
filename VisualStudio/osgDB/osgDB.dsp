@@ -28,7 +28,7 @@ CFG=osgDB - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE NMAKE /f "osgDB.mak" CFG="osgDB - Win32 Debug"
+!MESSAGE NMAKE /f "osgDB.mak" CFG="Core osgDB - Win32 Debug"
 
 !MESSAGE 
 
@@ -36,9 +36,9 @@ CFG=osgDB - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE "osgDB - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "Core osgDB - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
 
-!MESSAGE "osgDB - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "Core osgDB - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
 
 !MESSAGE 
 
@@ -60,7 +60,7 @@ RSC=rc.exe
 
 
 
-!IF  "$(CFG)" == "osgDB - Win32 Release"
+!IF  "$(CFG)" == "Core osgDB - Win32 Release"
 
 
 
@@ -112,7 +112,7 @@ LINK32=link.exe
 
 
 
-!ELSEIF  "$(CFG)" == "osgDB - Win32 Debug"
+!ELSEIF  "$(CFG)" == "Core osgDB - Win32 Debug"
 
 
 
@@ -174,9 +174,9 @@ LINK32=link.exe
 
 
 
-# Name "osgDB - Win32 Release"
+# Name "Core osgDB - Win32 Release"
 
-# Name "osgDB - Win32 Debug"
+# Name "Core osgDB - Win32 Debug"
 
 # Begin Group "Source Files"
 

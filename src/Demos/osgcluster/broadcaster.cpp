@@ -20,16 +20,19 @@
     #include <unistd.h>
     #include <linux/sockios.h>
 #elif defined(__FreeBSD__)
+    #include <unistd.h>
     #include <sys/sockio.h>
 #elif defined(__sgi)
+    #include <unistd.h>
     #include <net/soioctl.h>
 #elif defined(__CYGWIN__) 
     // nothing needed
 #elif defined(__sun) 
+    #include <unistd.h>
     #include <sys/sockio.h>
 #elif defined (__DARWIN_OSX__)
-    #include <sys/sockio.h>
     #include <unistd.h>
+    #include <sys/sockio.h>
 #elif defined (WIN32)
     #include <winsock.h>
     #include <stdio.h>

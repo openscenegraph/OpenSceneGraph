@@ -153,7 +153,7 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
         if (colors)
         {
             geom.setColorArray(colors);
-            iteratorAdvanced++;
+            iteratorAdvanced = true;
         }
     }
 
@@ -167,7 +167,7 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
         if (texcoords)
         {
             geom.setTexCoordArray(unit,texcoords);
-            iteratorAdvanced++;
+            iteratorAdvanced = true;
         }
         
     }

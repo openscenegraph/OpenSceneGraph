@@ -279,7 +279,10 @@ void Viewer::update()
     }
     
     // update the main producer camera
-    if (_old_style_osg_camera.valid()) OsgCameraGroup::setView(_old_style_osg_camera->getModelViewMatrix());
+    if (_old_style_osg_camera.valid()) 
+    {
+        CameraGroup::setViewByMatrix(Producer::Matrix(_old_style_osg_camera->getModelViewMatrix().ptr()));
+    }
 }
 
 void Viewer::frame()

@@ -13,7 +13,7 @@
 using namespace osgSim;
 
 LightPointDrawable::LightPointDrawable():
-    Drawable(),
+    osg::Drawable(),
     _referenceTime(0.0),
     _referenceTimeInterval(0.0),
     _sizedLightPointList()
@@ -36,7 +36,7 @@ LightPointDrawable::LightPointDrawable():
 }
 
 LightPointDrawable::LightPointDrawable(const LightPointDrawable& lpd,const osg::CopyOp& copyop):
-    Drawable(lpd,copyop),
+    osg::Drawable(lpd,copyop),
     _referenceTime(lpd._referenceTime),
     _referenceTimeInterval(lpd._referenceTimeInterval),
     _sizedLightPointList(lpd._sizedLightPointList)

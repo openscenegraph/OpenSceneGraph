@@ -22,6 +22,7 @@
 
 namespace osg {
 
+
 class Vec2f;
 class Vec3f;
 class Vec4f;
@@ -114,6 +115,9 @@ class Geometry;
 class SG_EXPORT Drawable : public Object
 {
     public:
+
+        static unsigned int s_numberNewDrawablesInLastFrame;
+        static unsigned int s_numberDeletedDrawablesInLastFrame;
 
         Drawable();
 
@@ -230,7 +234,7 @@ class SG_EXPORT Drawable : public Object
         inline bool getUseDisplayList() const { return _useDisplayList; }
 
         /** When set to true, ignore the setUseDisplayList() settings, and hints to the drawImplementation 
-            method to use OpenGL vertex buffer objects for rendering..*/
+            method to use OpenGL vertex buffer objects for rendering.*/
         void setUseVertexBufferObjects(bool flag);
 
         /** Return whether OpenGL vertex buffer objects should be used when supported by OpenGL driver.*/
@@ -239,6 +243,11 @@ class SG_EXPORT Drawable : public Object
 
         /** Force a recompile on next draw() of any OpenGL display list associated with this geoset.*/
         void dirtyDisplayList();
+
+
+        /** Return the estimated size of GLObjects (display lists/vertex buffer objects) that are associated with this drawable.
+          * This size is used a hint for reuse of deleteed display lists/vertex buffer objects. */
+        virtual unsigned int getGLObjectSizeHint() const { return 0; }
 
 
 
@@ -343,12 +352,13 @@ class SG_EXPORT Drawable : public Object
         virtual void drawImplementation(State& state) const = 0;
 
 
+        static GLuint generateDisplayList(unsigned int contextID, unsigned int sizeHint = 0);
 
         /** use deleteDisplayList instead of glDeleteList to allow
           * OpenGL display list to be cached until they can be deleted
           * by the OpenGL context in which they were created, specified
           * by contextID.*/
-        static void deleteDisplayList(unsigned int contextID,GLuint globj);
+        static void deleteDisplayList(unsigned int contextID,GLuint globj, unsigned int sizeHint = 0);
         
         /** flush all the cached display list which need to be deleted
           * in the OpenGL context related to contextID.*/
@@ -754,7 +764,7 @@ inline void Drawable::draw(State& state) const
         else if (_useDisplayList)
         {
 #ifdef USE_SEPARATE_COMPILE_AND_EXECUTE
-            globj = glGenLists( 1 );
+            globj = generateDisplayList(contextID, getGLObjectSizeHint()); // glGenLists( 1 );
             glNewList( globj, GL_COMPILE );
             if (_drawCallback.valid())
                 _drawCallback->drawImplementation(state,this);
@@ -764,7 +774,7 @@ inline void Drawable::draw(State& state) const
             
             glCallList( globj);
 #else
-            globj = glGenLists( 1 );
+            globj = generateDisplayList(contextID, getGLObjectSizeHint()); // glGenLists( 1 );
             glNewList( globj, GL_COMPILE_AND_EXECUTE );
             if (_drawCallback.valid())
                 _drawCallback->drawImplementation(state,this);

@@ -71,7 +71,7 @@ class SG_EXPORT Group : public Node
         /** Replace specified Node with another Node.
           * Equivalent to setChild(getChildIndex(orignChild),node)
           * See docs for setChild for futher details on implementation.
-		*/
+          */
         virtual bool replaceChild( Node *origChild, Node* newChild );
 
         /** Return the number of chilren nodes. */

@@ -333,7 +333,7 @@ class SG_EXPORT DrawElementsUByte : public PrimitiveSet, public VectorUByte
         typedef osg::buffered_value<GLuint> GLObjectList;
         mutable GLObjectList    _vboList;
 
-        virtual ~DrawElementsUByte() {}
+        virtual ~DrawElementsUByte();
 };
 
 
@@ -381,7 +381,7 @@ class SG_EXPORT DrawElementsUShort : public PrimitiveSet, public VectorUShort
         typedef osg::buffered_value<GLuint> GLObjectList;
         mutable GLObjectList    _vboList;
 
-        virtual ~DrawElementsUShort() {}
+        virtual ~DrawElementsUShort();
 };
 
 class SG_EXPORT DrawElementsUInt : public PrimitiveSet, public VectorUInt
@@ -425,10 +425,10 @@ class SG_EXPORT DrawElementsUInt : public PrimitiveSet, public VectorUInt
 
     protected:
 
+        virtual ~DrawElementsUInt();
+
         typedef osg::buffered_value<GLuint> GLObjectList;
         mutable GLObjectList    _vboList;
-
-        virtual ~DrawElementsUInt() {}
 };
 
 }

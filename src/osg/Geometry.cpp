@@ -743,6 +743,12 @@ bool Geometry::computeFastPathsUsed()
     return _fastPath;
 }
 
+unsigned int Geometry::getGLObjectSizeHint() const
+{
+    // do a very simply mapping of display list size proportional to vertex datasize.
+    return _vertexData.array.valid() ? _vertexData.array->getNumElements() : 0;
+}
+
 void Geometry::drawImplementation(State& state) const
 {
     if (_internalOptimizedGeometry.valid())

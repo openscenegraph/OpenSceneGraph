@@ -506,7 +506,7 @@ public:
             sh.drawImplementation(camera);
 
             osgDB::DatabasePager* dp = osgDB::Registry::instance()->getDatabasePager();
-#if 0
+#if 1
             double availableTime = 0.0025; //  2.5 ms
 
             // flush deleted GL objects.
@@ -531,7 +531,7 @@ public:
 
        virtual void operator()(const Producer::Camera&)
        {
-            
+#if 0            
             osgDB::DatabasePager* dp = osgDB::Registry::instance()->getDatabasePager();
 
             double availableTime = 0.0025; //  2.5 ms
@@ -541,7 +541,7 @@ public:
 
             // compile any GL objects that are required.
             if (dp) dp->compileGLObjects(*(_sceneView->getState()),availableTime);
-
+#endif
        }
        
        osg::ref_ptr<osgUtil::SceneView>     _sceneView;

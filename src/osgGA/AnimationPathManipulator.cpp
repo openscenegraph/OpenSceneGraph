@@ -1,5 +1,6 @@
 #include <osgGA/AnimationPathManipulator>
-#include <stdio.h>
+
+#include <fstream>
 
 using namespace osgGA;
 

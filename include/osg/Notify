@@ -17,8 +17,6 @@
 #include <osg/Export>
 
 #include <ostream>
-#include <fstream>
-#include <memory>
 
 namespace osg {
 
@@ -37,15 +35,6 @@ enum NotifySeverity {
     DEBUG_INFO=5,
     DEBUG_FP=6
 };
-
-/** global notify level. */
-//extern SG_EXPORT NotifySeverity g_NotifyLevel;
-
-/** global notify nul stream. added for Mac OSX */
-//extern SG_EXPORT std::auto_ptr<std::ofstream> g_NotifyNulStream;
-
-/** global notify nul stream. added for Mac OSX */
-//extern SG_EXPORT bool g_NotifyInit;
 
 /** set the notify level, overriding the default or value set by
   * the environmental variable OSGNOTIFYLEVEL.
@@ -73,26 +62,7 @@ extern SG_EXPORT bool initNotifyLevel();
   * stream (like cout) i.e osg::notify(osg::DEBUG) << "Hello Bugs!"<<endl;
   */
   
-//
-// PJA MAC OSX 30-09-01 
-// previous implementation was causing Mac OSX to misbehave. This version
-// places less stress on compiler and runs on Mac
-
 extern SG_EXPORT std::ostream& notify(const NotifySeverity severity);
-// {
-//     static bool initilized = false;
-//     if (!initilized) initilized = initNotifyLevel();
-// 
-//     if (severity<=g_NotifyLevel)
-//     {
-//         if (severity<=osg::WARN) return std::cerr;
-//         else return std::cout;
-//     }
-//     cout << "doing a notify to null stream "<<osg::g_NotifyLevel<<" "<<osg::g_NotifyNulStream.get()<<" "<<osg::g_NotifyInit<<endl;
-//     //if (osg::g_NotifyNulStream.get()==0L) abort();
-//     return std::cout;    
-//     //return *osg::g_NotifyNulStream;
-// }
 
 inline std::ostream& notify(void) { return notify(osg::INFO); }
 

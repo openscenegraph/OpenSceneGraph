@@ -2,13 +2,33 @@
 OSG News (most significant items from ChangeLog)
 ================================================
 
-    Support for OpenFlight15.7 added.
+    Addition of osg::Texture1D, Texture2D & Texture3D classes, Texture2D becomes
+    the deprecates the original osg::Texture.  All Texture class, including
+    TextureCubeMap are derived from new base class for textures - osg::TextureBase.
+    
+    New PROTECTED mode for protecting local state mode and attributes from be
+    overriden from state above it in the scene graph.
+    
+    Support for fog coord and secondary colors extensions added to osg::Geometry.
+
+    Support for HP_UX.
+
+    Support for OpenFlight15.7 added, DOFTransforms and general enhancements and
+    bug fixes.
+
     Improved osgbillboard example.
+
     Improved osglight example utilizing AnimationPath and PositionAttitudeTransform.
-    osg::TexEnvCombine implemented texture_env_combine and texture_env_crossbar.
+
+    osg::TexEnvCombine implemented texture_env_combine and texture_env_crossbar
+    and texture_env_dot3 extensions.
+
     osg::TexEnv texture_env_add added.
+
     osg::Sequence implemented.
+
     osg::DOFTransformNode implemented.
+
     osg::AnimationPath improved.
 
 July 2002 - OpenSceneGraph-0.9.0.tar.gz

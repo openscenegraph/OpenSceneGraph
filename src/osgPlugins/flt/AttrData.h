@@ -39,8 +39,29 @@ namespace flt {
     int32   txDetail_n;             // N argument for TX_DETAIL
     int32   txDetail_s;             // Scramble argument for TX_DETAIL
     bool    modulateDetail;            // True if Magnification filter type is MODULATE_DETAIL
-    AttrData() {};
-    AttrData(const AttrData& attr,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):osg::Object(attr,copyop) {};
+    
+    AttrData() : 
+        stateset(0),
+        useDetail(0),
+        txDetail_j(0),
+        txDetail_k(0),
+        txDetail_m(0),
+        txDetail_n(0),
+        txDetail_s(0),
+        modulateDetail(false) {}
+
+
+    AttrData(const AttrData& attr,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
+        osg::Object(attr,copyop),        
+        stateset(attr.stateset),
+        useDetail(attr.useDetail),
+        txDetail_j(attr.txDetail_j),
+        txDetail_k(attr.txDetail_k),
+        txDetail_m(attr.txDetail_m),
+        txDetail_n(attr.txDetail_n),
+        txDetail_s(attr.txDetail_s),
+        modulateDetail(attr.modulateDetail) {}
+
     virtual osg::Object* cloneType() const { return new AttrData(); }
     virtual osg::Object* clone(const osg::CopyOp& copyop) const { return new AttrData(*this,copyop); }    
     virtual const char* libraryName() const { return "osg"; }

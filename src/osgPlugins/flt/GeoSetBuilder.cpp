@@ -174,7 +174,7 @@ void DynGeoSet::addToGeometry(osg::Geometry* geom)
             //
             // Julian Ortiz, June 18th 2003.
 
-            if (_attrdata != NULL ) {                
+            if ( (_attrdata != NULL) && (_attrdata->useDetail > 0) ) {
                 osg::Vec2Array *texcoords2 = new osg::Vec2Array(_tcoordList.begin(),_tcoordList.end());
                 for(unsigned int index=0;index<texcoords2->size();index++) {
                     (*texcoords2)[index][0]=(*texcoords)[index][0]*_attrdata->txDetail_m;

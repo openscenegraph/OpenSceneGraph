@@ -23,12 +23,13 @@
 #define GL_FUNC_ADD                             0x8006
 #define GL_FUNC_SUBTRACT                        0x800A
 #define GL_FUNC_REVERSE_SUBTRACT                0x800B
-#define GL_ALPHA_MIN_SGIX                       0x8320
-#define GL_ALPHA_MAX_SGIX                       0x8321
 #define GL_LOGIC_OP                             0x0BF1
 #endif
 
-
+#ifndef GL_ALPHA_MIN_SGIX
+#define GL_ALPHA_MIN_SGIX                       0x8320
+#define GL_ALPHA_MAX_SGIX                       0x8321
+#endif
 
 namespace osg {
 

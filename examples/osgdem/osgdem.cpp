@@ -183,6 +183,10 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("--LOD","Create a LOD'd database");     
     arguments.getApplicationUsage()->addCommandLineOption("--PagedLOD","Create a PagedLOD'd database");     
     arguments.getApplicationUsage()->addCommandLineOption("-v","Set the vertical multiplier");     
+    arguments.getApplicationUsage()->addCommandLineOption("--compressed","Use OpenGL compression on destination imagery");     
+    arguments.getApplicationUsage()->addCommandLineOption("--RGB_16","Use 16bit RGB destination imagery");     
+    arguments.getApplicationUsage()->addCommandLineOption("--RGB_24","Use 24bit RGB destination imagery");     
+    arguments.getApplicationUsage()->addCommandLineOption("","");     
 
     if (arguments.argc()<=1)
     {
@@ -219,6 +223,10 @@ int main( int argc, char **argv )
     {
         dataset->setDatabaseType(osgTerrain::DataSet::PagedLOD_DATABASE);
     }
+
+    while (arguments.read("--compressed")) { dataset->setTextureType(osgTerrain::DataSet::COMPRESSED_TEXTURE); }
+    while (arguments.read("--RGB_16")) { dataset->setTextureType(osgTerrain::DataSet::RGB_16_BIT); }
+    while (arguments.read("--RGB_24")) { dataset->setTextureType(osgTerrain::DataSet::RGB_24_BIT); }
 
     dataset->setDestinationTileBaseName("output");
     dataset->setDestinationTileExtension(".ive");
@@ -422,16 +430,28 @@ int main( int argc, char **argv )
         {
 	    std::cout<<"-d "<<filename<<std::endl;
 	    processFile(filename, osgTerrain::DataSet::Source::HEIGHT_FIELD, currentCS, geoTransform, geoTransformSet, geoTransformScale, dataset);
+
+            geoTransformSet = false;
+            geoTransformScale = false;
+            geoTransform.makeIdentity();            
         }
         else if (arguments.read(pos, "-t",filename))
         {
 	    std::cout<<"-t "<<filename<<std::endl;
 	    processFile(filename, osgTerrain::DataSet::Source::IMAGE, currentCS, geoTransform, geoTransformSet, geoTransformScale, dataset);
+
+            geoTransformSet = false;
+            geoTransformScale = false;
+            geoTransform.makeIdentity();            
         }
         else if (arguments.read(pos, "-m",filename))
         {
 	    std::cout<<"-m "<<filename<<std::endl;
 	    processFile(filename, osgTerrain::DataSet::Source::MODEL, currentCS, geoTransform, geoTransformSet, geoTransformScale, dataset);
+
+            geoTransformSet = false;
+            geoTransformScale = false;
+            geoTransform.makeIdentity();            
         }
         else if (arguments.read(pos, "-o",filename)) 
         {

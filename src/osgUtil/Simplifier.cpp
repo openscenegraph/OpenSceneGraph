@@ -176,14 +176,14 @@ public:
 
             if (edge->getErrorMetric()==FLT_MAX)
             {
-                osg::notify(osg::WARN)<<"collapseMinimumErrorEdge() return false due to edge->getErrorMetric()==FLT_MAX"<<std::endl;
+                osg::notify(osg::INFO)<<"collapseMinimumErrorEdge() return false due to edge->getErrorMetric()==FLT_MAX"<<std::endl;
                 return false;
             }
 
             osg::ref_ptr<Point> pNew = edge->_proposedPoint.valid()? edge->_proposedPoint : computeInterpolatedPoint(edge,0.5f);
             return (collapseEdge(edge,pNew.get()));
         }
-        osg::notify(osg::WARN)<<"collapseMinimumErrorEdge() return false due to _edgeSet.empty()"<<std::endl;
+        osg::notify(osg::INFO)<<"collapseMinimumErrorEdge() return false due to _edgeSet.empty()"<<std::endl;
         return false;
     }
 
@@ -1257,9 +1257,10 @@ class CopyPointsToArrayVisitor : public osg::ArrayVisitor
         CopyPointsToArrayVisitor(EdgeCollapse::PointList& pointList):
             _pointList(pointList),
             _index(0) {}
-        
+
+
         template<typename T,typename R>
-        void copy(T& array)
+        void copy(T& array, R dummy)
         {
             array.resize(_pointList.size());
         
@@ -1275,14 +1276,19 @@ class CopyPointsToArrayVisitor : public osg::ArrayVisitor
             ++_index;
         }
         
+        // use local typedefs if usinged char,short and int to get round gcc 3.3.1 problem with defining unsigned short()
+        typedef unsigned char dummy_uchar;
+        typedef unsigned short dummy_ushort;
+        typedef unsigned int dummy_uint;
+        
         virtual void apply(osg::Array&) {}
-        virtual void apply(osg::ByteArray& array) { copy<osg::ByteArray,char>(array); }
-        virtual void apply(osg::ShortArray& array) { copy<osg::ShortArray,short>(array); }
-        virtual void apply(osg::IntArray& array) { copy<osg::IntArray,int>(array); }
-        virtual void apply(osg::UByteArray& array) { copy<osg::UByteArray,unsigned char>(array); }
-        virtual void apply(osg::UShortArray& array) { copy<osg::UShortArray,unsigned short>(array); }
-        virtual void apply(osg::UIntArray& array) { copy<osg::UIntArray,unsigned int>(array); }
-        virtual void apply(osg::FloatArray& array) { copy<osg::FloatArray,float>(array); }
+        virtual void apply(osg::ByteArray& array) { copy(array, char());}
+        virtual void apply(osg::ShortArray& array) { copy(array, short()); }
+        virtual void apply(osg::IntArray& array) { copy(array, int()); }
+        virtual void apply(osg::UByteArray& array) { copy(array, dummy_uchar()); }
+        virtual void apply(osg::UShortArray& array) { copy(array,dummy_ushort()); }
+        virtual void apply(osg::UIntArray& array) { copy(array, dummy_uint()); }
+        virtual void apply(osg::FloatArray& array) { copy(array, float()); }
 
         virtual void apply(osg::UByte4Array& array)
         {

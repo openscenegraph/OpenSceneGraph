@@ -426,7 +426,7 @@ void Image::readImageFromCurrentTexture(unsigned int contextID)
 }
 
 
-void Image::scaleImage(int s,int t,int r)
+void Image::scaleImage(int s,int t,int r, GLenum newDataType)
 {
     if (_s==s && _t==t && _r==r) return;
 
@@ -444,7 +444,7 @@ void Image::scaleImage(int s,int t,int r)
 
     
 
-    unsigned int newTotalSize = computeRowWidthInBytes(s,_pixelFormat,_dataType,_packing)*t;
+    unsigned int newTotalSize = computeRowWidthInBytes(s,_pixelFormat,newDataType,_packing)*t;
 
     // need to sort out what size to really use...
     unsigned char* newData = new unsigned char [newTotalSize];
@@ -465,7 +465,7 @@ void Image::scaleImage(int s,int t,int r)
         _data,
         s,
         t,
-        _dataType,
+        newDataType,
         newData);
 
     if (status==0)
@@ -474,6 +474,7 @@ void Image::scaleImage(int s,int t,int r)
         // free old image.
         _s = s;
         _t = t;
+        _dataType = newDataType;
         setData(newData,USE_NEW_DELETE);
     }
     else

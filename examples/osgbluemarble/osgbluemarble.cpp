@@ -102,7 +102,7 @@ osg::Node* createTile(const std::string& filename, bool leftHemisphere, double x
         } else if (use565)
         {
 
-            image->scaleImage(image->r(),image->s(),image->t(),GL_UNSIGNED_SHORT_5_6_5);
+            image->scaleImage(image->s(),image->t(),image->r(),GL_UNSIGNED_SHORT_5_6_5);
 
         }
         

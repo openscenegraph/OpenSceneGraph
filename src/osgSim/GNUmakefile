@@ -3,16 +3,17 @@ include $(TOPDIR)/Make/makedefs
 
 
 CXXFILES = \
+    BlinkSequence.cpp\
     ColorRange.cpp\
     DOFTransform.cpp\
-    ScalarBar.cpp\
-    ScalarsToColors.cpp\
-    BlinkSequence.cpp\
     LightPoint.cpp\
     LightPointDrawable.cpp\
     LightPointNode.cpp\
+    ScalarBar.cpp\
+    ScalarsToColors.cpp\
     Sector.cpp\
     SphereSegment.cpp\
+    MultiSwitch.cpp\
     Version.cpp\
 
 DEF     += -DOSGSIM_LIBRARY

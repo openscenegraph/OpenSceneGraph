@@ -3893,6 +3893,9 @@ osg::Node* DataSet::decorateWithCoordinateSystemNode(osg::Node* subgraph)
 
 void DataSet::_buildDestination(bool writeToDisk)
 {
+    osg::ref_ptr<osgDB::ReaderWriter::Options> previous_options = osgDB::Registry::instance()->getOptions();
+    osgDB::Registry::instance()->setOptions(new osgDB::ReaderWriter::Options("precision 16"));
+
     if (!_archive && !_archiveName.empty())
     {
         _archive = new osgDB::Archive;
@@ -3975,5 +3978,8 @@ void DataSet::_buildDestination(bool writeToDisk)
     }
 
     if (_archive.valid()) _archive->close();
+
+    osgDB::Registry::instance()->setOptions(previous_options.get());
+
 }
 

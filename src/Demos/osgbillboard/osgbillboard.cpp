@@ -120,8 +120,7 @@ osg::Node* createModel()
     osg::Billboard* center = new osg::Billboard();
     center->setMode(osg::Billboard::POINT_ROT_EYE);
     center->addDrawable(
-       
-createSquare(osg::Vec3(-0.5f,0.0f,-0.5f),osg::Vec3(1.0f,0.0f,0.0f),osg::Vec3(0.0f,0.0f,1.0f),osgDB::readImageFile("Images/reflect.rgb")),
+        createSquare(osg::Vec3(-0.5f,0.0f,-0.5f),osg::Vec3(1.0f,0.0f,0.0f),osg::Vec3(0.0f,0.0f,1.0f),osgDB::readImageFile("Images/reflect.rgb")),
         osg::Vec3(0.0f,0.0f,0.0f));
         
     osg::Billboard* x_arrow = new osg::Billboard();
@@ -129,16 +128,15 @@ createSquare(osg::Vec3(-0.5f,0.0f,-0.5f),osg::Vec3(1.0f,0.0f,0.0f),osg::Vec3(0.0
     x_arrow->setAxis(osg::Vec3(1.0f,0.0f,0.0f));
     x_arrow->setNormal(osg::Vec3(0.0f,-1.0f,0.0f));
     x_arrow->addDrawable(
-       
-createSquare(osg::Vec3(-0.5f,0.0f,-0.5f),osg::Vec3(1.0f,0.0f,0.0f),osg::Vec3(0.0f,0.0f,1.0f),osgDB::readImageFile("Images/osg_posx.png")),
-        osg::Vec3(5.0f,0.0f,0.0f));
+       createSquare(osg::Vec3(-0.5f,0.0f,-0.5f),osg::Vec3(1.0f,0.0f,0.0f),osg::Vec3(0.0f,0.0f,1.0f),osgDB::readImageFile("Cubemap_axis/posx.png")),
+       osg::Vec3(5.0f,0.0f,0.0f));
 
     osg::Billboard* y_arrow = new osg::Billboard();
     y_arrow->setMode(osg::Billboard::AXIAL_ROT);
     y_arrow->setAxis(osg::Vec3(0.0f,1.0f,0.0f));
     y_arrow->setNormal(osg::Vec3(1.0f,0.0f,0.0f));
     y_arrow->addDrawable(
-        createSquare(osg::Vec3(0.0f,-0.5f,-0.5f),osg::Vec3(0.0f,1.0f,0.0f),osg::Vec3(0.0f,0.0f,1.0f),osgDB::readImageFile("Images/osg_posy.png")),
+        createSquare(osg::Vec3(0.0f,-0.5f,-0.5f),osg::Vec3(0.0f,1.0f,0.0f),osg::Vec3(0.0f,0.0f,1.0f),osgDB::readImageFile("Cubemap_axis/posy.png")),
         osg::Vec3(0.0f,5.0f,0.0f));
 
     osg::Billboard* z_arrow = new osg::Billboard();
@@ -146,7 +144,7 @@ createSquare(osg::Vec3(-0.5f,0.0f,-0.5f),osg::Vec3(1.0f,0.0f,0.0f),osg::Vec3(0.0
     z_arrow->setAxis(osg::Vec3(0.0f,0.0f,1.0f));
     z_arrow->setNormal(osg::Vec3(0.0f,-1.0f,0.0f));
     z_arrow->addDrawable(
-        createSquare(osg::Vec3(-0.5f,0.0f,-0.5f),osg::Vec3(1.0f,0.0f,0.0f),osg::Vec3(0.0f,0.0f,1.0f),osgDB::readImageFile("Images/osg_posz.png")),
+        createSquare(osg::Vec3(-0.5f,0.0f,-0.5f),osg::Vec3(1.0f,0.0f,0.0f),osg::Vec3(0.0f,0.0f,1.0f),osgDB::readImageFile("Cubemap_axis/posz.png")),
         osg::Vec3(0.0f,0.0f,5.0f));
 
 

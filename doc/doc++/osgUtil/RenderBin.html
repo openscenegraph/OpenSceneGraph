@@ -1,0 +1,189 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  OSGUTIL_EXPORT osgUtil::RenderBin</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.8">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGUTIL_EXPORT <A HREF="#DOC.DOCU">osgUtil::RenderBin</A></H2></H2><BLOCKQUOTE> RenderBin base class</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=125>
+<param name=classes value="Mosg::Object,M,CRenderBin,MRenderBin.html,CRenderStage,MRenderStage.html,CDepthSortedBin,MDepthSortedBin.html">
+<param name=before value="M,M,M|_,Mr_">
+<param name=after value="Md_,M,M,M">
+<param name=indent value="0,1,1,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.15.16">_binNum</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderBin.html">RenderBin</A>* <B><A HREF="#DOC.2.15.17">_parent</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderStage.html">RenderStage</A>* <B><A HREF="#DOC.2.15.18">_stage</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>RenderBinList <B><A HREF="#DOC.2.15.19">_bins</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>RenderGraphList <B><A HREF="#DOC.2.15.20">_renderGraphList</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt; int, osg::ref_ptr&lt;<!1><A HREF="RenderBin.html">RenderBin</A>&gt; &gt;static  RenderBinList <!1><A HREF="RenderBin.html">RenderBin</A>* <B><A HREF="#DOC.2.15.1">createRenderBin</A></B>(const std::string&amp; binName)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void <B><A HREF="#DOC.2.15.2">addRenderBinPrototype</A></B>(<!1><A HREF="RenderBin.html">RenderBin</A>* proto)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void <B><A HREF="#DOC.2.15.3">removeRenderBinPrototype</A></B>(<!1><A HREF="RenderBin.html">RenderBin</A>* proto)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.15.4">RenderBin</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Object* <B><A HREF="#DOC.2.15.5">clone</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.15.6">isSameKindAs</A></B>(const osg::Object* obj) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.15.7">className</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.15.8">reset</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderBin.html">RenderBin</A>* <B><A HREF="#DOC.2.15.9">find_or_insert</A></B>(int binNum, const std::string&amp; binName)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.15.10">addRenderGraph</A></B>(<!1><A HREF="RenderGraph.html">RenderGraph</A>* rg)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.15.11">sort</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.15.12">sort_local</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.15.13">draw</A></B>(osg::State&amp; state, <!1><A HREF="RenderLeaf.html">RenderLeaf</A>*&amp; previous)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.15.14">draw_local</A></B>(osg::State&amp; state, <!1><A HREF="RenderLeaf.html">RenderLeaf</A>*&amp; previous)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.15.15">getPrims</A></B>(<!1><A HREF="Statistics.html">Statistics</A>* primStats)
+<DD><I>extract stats for current draw list.</I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt; std::string, osg::ref_ptr&lt;<!1><A HREF="RenderBin.html">RenderBin</A>&gt; &gt;static  RenderBinPrototypeList RenderBinPrototypeList <B><A HREF="#DOC.2.15.21">s_renderBinPrototypeList</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.15.22">~RenderBin</A></B>()
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>
+RenderBin base class</BLOCKQUOTE>
+<DL>
+
+<A NAME="createRenderBin"></A>
+<A NAME="DOC.2.15.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt; int, osg::ref_ptr&lt;<!1><A HREF="RenderBin.html">RenderBin</A>&gt; &gt;static  RenderBinList <!1><A HREF="RenderBin.html">RenderBin</A>* createRenderBin(const std::string&amp; binName)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="addRenderBinPrototype"></A>
+<A NAME="DOC.2.15.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   void addRenderBinPrototype(<!1><A HREF="RenderBin.html">RenderBin</A>* proto)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="removeRenderBinPrototype"></A>
+<A NAME="DOC.2.15.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   void removeRenderBinPrototype(<!1><A HREF="RenderBin.html">RenderBin</A>* proto)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="RenderBin"></A>
+<A NAME="DOC.2.15.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> RenderBin()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="clone"></A>
+<A NAME="DOC.2.15.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Object* clone() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="isSameKindAs"></A>
+<A NAME="DOC.2.15.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(const osg::Object* obj) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="className"></A>
+<A NAME="DOC.2.15.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="reset"></A>
+<A NAME="DOC.2.15.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void reset()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="find_or_insert"></A>
+<A NAME="DOC.2.15.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderBin.html">RenderBin</A>* find_or_insert(int binNum, const std::string&amp; binName)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="addRenderGraph"></A>
+<A NAME="DOC.2.15.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addRenderGraph(<!1><A HREF="RenderGraph.html">RenderGraph</A>* rg)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="sort"></A>
+<A NAME="DOC.2.15.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void sort()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="sort_local"></A>
+<A NAME="DOC.2.15.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void sort_local()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="draw"></A>
+<A NAME="DOC.2.15.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void draw(osg::State&amp; state, <!1><A HREF="RenderLeaf.html">RenderLeaf</A>*&amp; previous)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="draw_local"></A>
+<A NAME="DOC.2.15.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void draw_local(osg::State&amp; state, <!1><A HREF="RenderLeaf.html">RenderLeaf</A>*&amp; previous)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getPrims"></A>
+<A NAME="DOC.2.15.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void getPrims(<!1><A HREF="Statistics.html">Statistics</A>* primStats)</B></TT>
+<DD>extract stats for current draw list. 
+<DL><DT><DD></DL><P>
+<A NAME="_binNum"></A>
+<A NAME="DOC.2.15.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _binNum</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_parent"></A>
+<A NAME="DOC.2.15.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderBin.html">RenderBin</A>* _parent</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_stage"></A>
+<A NAME="DOC.2.15.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderStage.html">RenderStage</A>* _stage</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_bins"></A>
+<A NAME="DOC.2.15.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>RenderBinList _bins</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_renderGraphList"></A>
+<A NAME="DOC.2.15.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>RenderGraphList _renderGraphList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="s_renderBinPrototypeList"></A>
+<A NAME="DOC.2.15.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt; std::string, osg::ref_ptr&lt;<!1><A HREF="RenderBin.html">RenderBin</A>&gt; &gt;static  RenderBinPrototypeList RenderBinPrototypeList s_renderBinPrototypeList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~RenderBin"></A>
+<A NAME="DOC.2.15.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~RenderBin()</B></TT>
+<DL><DT><DD></DL><P></DL>
+<HR>
+<DL><DT><B>Direct child classes:
+</B><DD><A HREF="RenderStage.html">RenderStage</A><BR>
+<A HREF="DepthSortedBin.html">DepthSortedBin</A><BR>
+</DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

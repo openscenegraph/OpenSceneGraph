@@ -1,0 +1,389 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  SG_EXPORT osg::Billboard</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.8">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osg::Billboard</A></H2></H2><BLOCKQUOTE>Billboard - a Geode which orientates its child osg::Drawable's to face the eye point.</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=155>
+<param name=classes value="CReferenced,MReferenced.html,CObject,MObject.html,CNode,MNode.html,CGeode,MGeode.html,CBillboard,MBillboard.html">
+<param name=before value="M,M,M,M,M">
+<param name=after value="Md_SPSPSP,Md_SPSP,Md_SP,Md_,M">
+<param name=indent value="0,1,2,3,4">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.2.2">Billboard</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.2.3">clone</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.2.4">isSameKindAs</A></B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.2.5">className</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.6">accept</A></B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.2.7">setAxis</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis)
+<DD><I>Set the axis about which all the billboard's drawable rotate.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec3.html">Vec3</A>&amp; <B><A HREF="#DOC.2.2.8">getAxis</A></B>() const 
+<DD><I>Get the axis about which all the billboard's drawable rotate.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.2.9">setMode</A></B>(const <!1><A HREF="Billboard.html#DOC.2.2.1">Mode</A> mode)
+<DD><I>Set the billboard rotation mode.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Billboard.html#DOC.2.2.1">Mode</A> <B><A HREF="#DOC.2.2.10">getMode</A></B>() const 
+<DD><I>Get the billboard rotation mode.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.2.11">setPos</A></B>(int i, const <!1><A HREF="Vec3.html">Vec3</A>&amp; pos)
+<DD><I>Set the position of specified drawable.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec3.html">Vec3</A>&amp; <B><A HREF="#DOC.2.2.12">getPos</A></B>(int i) const 
+<DD><I>Get the position of specified drawable.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Billboard.html#DOC.2.2.13">PositionList</A>&amp; <B><A HREF="#DOC.2.2.14">getPositionList</A></B>()
+<DD><I>Get the PostionList from the billboard</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Billboard.html#DOC.2.2.13">PositionList</A>&amp; <B><A HREF="#DOC.2.2.15">getPositionList</A></B>() const 
+<DD><I>Get a const PostionList from the billboard</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.2.16">addDrawable</A></B>( <!1><A HREF="Drawable.html">Drawable</A>* gset )
+<DD><I>Add Drawable to Billboard with default position(0,0,0); If gset not NULL and is not contained in Billboard then increment its  reference count, and dirty the bounding box to cause it to recompute on  next getBound() and return true for success.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.2.17">addDrawable</A></B>(<!1><A HREF="Drawable.html">Drawable</A>* gset, const <!1><A HREF="Vec3.html">Vec3</A>&amp; pos)
+<DD><I>Add Drawable to Geode at position pos.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.2.18">removeDrawable</A></B>( <!1><A HREF="Drawable.html">Drawable</A>* gset )
+<DD><I>Remove Drawable and associated position from Billboard.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.19">calcRotation</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye_local, const <!1><A HREF="Vec3.html">Vec3</A>&amp; pos_local, <!1><A HREF="Matrix.html">Matrix</A>&amp; mat) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.20">calcTransform</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye_local, const <!1><A HREF="Vec3.html">Vec3</A>&amp; pos_local, <!1><A HREF="Matrix.html">Matrix</A>&amp; mat) const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.2.1">Mode</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="Vec3.html">Vec3</A>&gt; <B><A HREF="#DOC.2.2.13">PositionList</A></B>
+<DD><I>PositionList represents a list of pivot points for each drawable</I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Billboard.html#DOC.2.2.1">Mode</A> <B><A HREF="#DOC.2.2.23">_mode</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.2.24">_axis</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Billboard.html#DOC.2.2.13">PositionList</A> <B><A HREF="#DOC.2.2.25">_positionList</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.2.21">~Billboard</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.2.22">computeBound</A></B>() const 
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Geode.html">Geode</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const bool <B>replaceDrawable</B>( <!1><A HREF="Drawable.html">Drawable</A>* origDraw, <!1><A HREF="Drawable.html">Drawable</A>* newDraw )
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const int <B>getNumDrawables</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Drawable.html">Drawable</A>* <B>getDrawable</B>( const int i )
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Drawable.html">Drawable</A>* <B>getDrawable</B>( const int i ) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const bool <B>containsDrawable</B>(const <!1><A HREF="Drawable.html">Drawable</A>* gset) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   DrawableList::iterator <B>findDrawable</B>(const <!1><A HREF="Drawable.html">Drawable</A>* gset)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   DrawableList::const_iterator <B>findDrawable</B>(const <!1><A HREF="Drawable.html">Drawable</A>* gset) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>compileDrawables</B>(<!1><A HREF="State.html">State</A>&amp; state)
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>DrawableList <B>_drawables</B>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Node.html">Node</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>ascend</B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>traverse</B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; )
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setName</B>( const std::string&amp; name )
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setName</B>( const char* name )
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const std::string&amp; <B>getName</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.52.11">ParentList</A>&amp; <B>getParents</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Group.html">Group</A>* <B>getParent</B>(const int i)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Group.html">Group</A>* <B>getParent</B>(const int i) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const int <B>getNumParents</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(void* <!1><A HREF="Image.html#DOC.2.35.15">data</A>, <!1><A HREF="MemoryAdapter.html">MemoryAdapter</A>* ma=0L)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void* <B>getUserData</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const void* <B>getUserData</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="MemoryAdapter.html">MemoryAdapter</A>* <B>getMemoryAdapter</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="MemoryAdapter.html">MemoryAdapter</A>* <B>getMemoryAdapter</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setNodeMask</B>(const NodeMask nm)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const NodeMask <B>getNodeMask</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.52.23">DescriptionList</A>&amp; <B>getDescriptions</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.52.23">DescriptionList</A>&amp; <B>getDescriptions</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const std::string&amp; <B>getDescription</B>(const int i) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   std::string&amp; <B>getDescription</B>(const int i)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const int <B>getNumDescriptions</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>addDescription</B>(const std::string&amp; desc)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setStateSet</B>(<!1><A HREF="StateSet.html">osg::StateSet</A>* dstate)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="StateSet.html">osg::StateSet</A>* <B>getStateSet</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="StateSet.html">osg::StateSet</A>* <B>getStateSet</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="BoundingSphere.html">BoundingSphere</A>&amp; <B>getBound</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>dirtyBound</B>()
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt;<!1><A HREF="Group.html">Group</A>*&gt; <B>ParentList</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt;std::string&gt; <B>DescriptionList</B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>mutable <!1><A HREF="BoundingSphere.html">BoundingSphere</A> <B>_bsphere</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>mutable bool <B>_bsphere_computed</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>std::string <B>_name</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.52.11">ParentList</A> <B>_parents</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void* <B>_userData</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="MemoryAdapter.html">MemoryAdapter</A>&gt;  <B>_memoryAdapter</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>NodeMask <B>_nodeMask</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.52.23">DescriptionList</A> <B>_descriptions</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="StateSet.html">StateSet</A>&gt;  <B>_dstate</B>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Object.html">Object</A>:</H3>
+<DL>
+</DL>
+<HR><H3>Inherited from <A HREF="Referenced.html">Referenced</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>&amp; <B>operator = </B>(<!1><A HREF="Referenced.html">Referenced</A>&amp;)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>ref</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const int <B>referenceCount</B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>mutable int <B>_refCount</B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>Billboard - a Geode which orientates its child osg::Drawable's to face
+the eye point.
+Typical uses are for trees, or particle explosions.</BLOCKQUOTE>
+<DL>
+
+<A NAME="Mode"></A>
+<A NAME="DOC.2.2.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  Mode</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="AXIAL_ROT"></A>
+<A NAME="DOC.2.2.1.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> AXIAL_ROT</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="POINT_ROT_EYE"></A>
+<A NAME="DOC.2.2.1.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> POINT_ROT_EYE</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="POINT_ROT_WORLD"></A>
+<A NAME="DOC.2.2.1.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> POINT_ROT_WORLD</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="Billboard"></A>
+<A NAME="DOC.2.2.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Billboard()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="clone"></A>
+<A NAME="DOC.2.2.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html">Object</A>* clone() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="isSameKindAs"></A>
+<A NAME="DOC.2.2.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(const <!1><A HREF="Object.html">Object</A>* obj) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="className"></A>
+<A NAME="DOC.2.2.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="accept"></A>
+<A NAME="DOC.2.2.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void accept(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setAxis"></A>
+<A NAME="DOC.2.2.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setAxis(const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis)</B></TT>
+<DD>Set the axis about which all the billboard's drawable rotate. 
+<DL><DT><DD></DL><P>
+<A NAME="getAxis"></A>
+<A NAME="DOC.2.2.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Vec3.html">Vec3</A>&amp; getAxis() const </B></TT>
+<DD>Get the axis about which all the billboard's drawable rotate. 
+<DL><DT><DD></DL><P>
+<A NAME="setMode"></A>
+<A NAME="DOC.2.2.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setMode(const <!1><A HREF="Billboard.html#DOC.2.2.1">Mode</A> mode)</B></TT>
+<DD>Set the billboard rotation mode. 
+<DL><DT><DD></DL><P>
+<A NAME="getMode"></A>
+<A NAME="DOC.2.2.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Billboard.html#DOC.2.2.1">Mode</A> getMode() const </B></TT>
+<DD>Get the billboard rotation mode. 
+<DL><DT><DD></DL><P>
+<A NAME="setPos"></A>
+<A NAME="DOC.2.2.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setPos(int i, const <!1><A HREF="Vec3.html">Vec3</A>&amp; pos)</B></TT>
+<DD>Set the position of specified drawable. 
+<DL><DT><DD></DL><P>
+<A NAME="getPos"></A>
+<A NAME="DOC.2.2.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Vec3.html">Vec3</A>&amp; getPos(int i) const </B></TT>
+<DD>Get the position of specified drawable. 
+<DL><DT><DD></DL><P>
+<A NAME="PositionList"></A>
+<A NAME="DOC.2.2.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="Vec3.html">Vec3</A>&gt; PositionList</B></TT>
+<DD>PositionList represents a list of pivot points for each drawable
+<DL><DT><DD></DL><P>
+<A NAME="getPositionList"></A>
+<A NAME="DOC.2.2.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Billboard.html#DOC.2.2.13">PositionList</A>&amp; getPositionList()</B></TT>
+<DD>Get the PostionList from the billboard
+<DL><DT><DD></DL><P>
+<A NAME="getPositionList"></A>
+<A NAME="DOC.2.2.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Billboard.html#DOC.2.2.13">PositionList</A>&amp; getPositionList() const </B></TT>
+<DD>Get a const PostionList from the billboard
+<DL><DT><DD></DL><P>
+<A NAME="addDrawable"></A>
+<A NAME="DOC.2.2.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const bool addDrawable( <!1><A HREF="Drawable.html">Drawable</A>* gset )</B></TT>
+<DD>Add Drawable to Billboard with default position(0,0,0);
+If gset not NULL and is not contained in Billboard then increment its 
+reference count, and dirty the bounding box to cause it to recompute on 
+next getBound() and return true for success.  Otherwise return false.
+<DL><DT><DD></DL><P>
+<A NAME="addDrawable"></A>
+<A NAME="DOC.2.2.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const bool addDrawable(<!1><A HREF="Drawable.html">Drawable</A>* gset, const <!1><A HREF="Vec3.html">Vec3</A>&amp; pos)</B></TT>
+<DD>Add Drawable to Geode at position pos.
+If gset not NULL and is not contained in Billboard then increment its 
+reference count, and dirty the bounding box to cause it to recompute on 
+next getBound() and return true for success.  Otherwise return false.
+<DL><DT><DD></DL><P>
+<A NAME="removeDrawable"></A>
+<A NAME="DOC.2.2.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const bool removeDrawable( <!1><A HREF="Drawable.html">Drawable</A>* gset )</B></TT>
+<DD>Remove Drawable and associated position from Billboard.
+If gset is contained in Billboard then remove it from the geoset
+list and decrement its reference count, and dirty the 
+bounding box to cause it to recompute on next getBound() and
+return true for success.  If gset is not found then return false
+and do not the reference count of gset is left unchanged.
+<DL><DT><DD></DL><P>
+<A NAME="calcRotation"></A>
+<A NAME="DOC.2.2.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void calcRotation(const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye_local, const <!1><A HREF="Vec3.html">Vec3</A>&amp; pos_local, <!1><A HREF="Matrix.html">Matrix</A>&amp; mat) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="calcTransform"></A>
+<A NAME="DOC.2.2.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void calcTransform(const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye_local, const <!1><A HREF="Vec3.html">Vec3</A>&amp; pos_local, <!1><A HREF="Matrix.html">Matrix</A>&amp; mat) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~Billboard"></A>
+<A NAME="DOC.2.2.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Billboard()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="computeBound"></A>
+<A NAME="DOC.2.2.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const bool computeBound() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_mode"></A>
+<A NAME="DOC.2.2.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Billboard.html#DOC.2.2.1">Mode</A> _mode</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_axis"></A>
+<A NAME="DOC.2.2.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec3.html">Vec3</A> _axis</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_positionList"></A>
+<A NAME="DOC.2.2.25"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Billboard.html#DOC.2.2.13">PositionList</A> _positionList</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

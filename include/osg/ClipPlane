@@ -1,0 +1,72 @@
+#ifndef OSG_CLIPPLANE
+#define OSG_CLIPPLANE 1
+
+#include <osg/Plane>
+#include <osg/StateAttribute>
+#include <osg/StateSet>
+
+namespace osg {
+
+/** ClipPlane state class which encapsulates OpenGL glClipPlane() functionality.*/
+class SG_EXPORT ClipPlane : public StateAttribute
+{
+    public :
+
+        ClipPlane();
+        
+        /** return a shallow copy of a node, with Object* return type.*/
+        virtual Object* clone() const { return new ClipPlane(); }
+
+        /** return true if this and obj are of the same kind of object.*/
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const ClipPlane*>(obj)!=NULL; }
+
+        /** return the name of the node's class type.*/
+        virtual const char* className() const { return "ClipPlane"; }
+
+        virtual const Type getType() const { return (Type)(CLIPPLANE+_clipPlaneNum); }
+        
+        virtual void setStateSetModes(StateSet& ds,const GLModeValue value) const
+        {
+            ds.setMode((GLMode)(GL_CLIP_PLANE0+_clipPlaneNum),value);
+        }
+
+
+	/** Set the clip plane, using a Vec4 to define plane. */
+        void setClipPlane(const Vec4& plane);
+
+	/** Set the clip plane, using a Plane to define plane. */
+        void setClipPlane(const Plane& plane);
+
+	/** Set the clip plane, using a double[4] to define plane. */
+        void setClipPlane(const double* plane);
+
+	/** Get the clip plane, values entered into a Vec4 passed to the getClipPlane. */
+        void getClipPlane(Vec4& plane) const;
+
+	/** Get the clip plane, values entered into a Plane passed to the getClipPlane. */
+        void getClipPlane(Plane& plane) const;
+
+	/** Get the clip plane, values entered into a double[4] passed to the getClipPlane. */
+        void getClipPlane(double* plane) const;
+
+	/** Set the clip plane number. */
+        void setClipPlaneNum(const unsigned int num);
+
+	/** Get the clip plane number. */
+        const unsigned int getClipPlaneNum() const;
+
+	/** Apply the clip plane's state to the OpenGL state machine. */
+        virtual void apply(State& state) const;
+
+    protected :
+    
+        virtual ~ClipPlane();
+        
+        double*             _clipPlane;
+        unsigned int        _clipPlaneNum;
+
+};
+
+};
+
+#endif

@@ -1,0 +1,100 @@
+#ifndef OSG_IMPOSTOR
+#define OSG_IMPOSTOR 1
+
+#include <osg/LOD>
+#include <osg/ImpostorSprite>
+
+namespace osg {
+
+/** Impostor - is a form of Level Of Detail group node which allows both switching 
+  * between children depending on distance from eye point and image caching.
+  * 
+  * The principle behind Imposters is that they cache an image of real geometry and then the image is drawn 
+  * in subsequent frames instead of the real geometry.  Its a bit like a
+  * Billboard *but* is updated at runtime and w.r.t view point.  By drawing
+  * just the texture mapped quad you can cut down scene complexity and
+  * improve performance.
+  * 
+  * For more details have a look at:
+  * 
+  *    http://grail.cs.washington.edu/projects/hic/
+  * 
+  * The OSG doesn't implement exactly the same technique as above, but its
+  * should be a good starting place.  The OSG's impostors are much less
+  * intrusive since you don't need to restructure your whole scene to use
+  * them.
+  *
+  * All you need to do to use Impostors is to set up the visible
+  * range values for each LOD child of the Impostor, as per osg::LOD,
+  * and set an Impostor threshold to tell the renderer at what distance
+  * the Impsotor's image caching should cut in.  The osg::CullVisitor
+  * automatically handles all the setting of pre-rendering stages to
+  * calculate the required ImpostorSprites (which encapsulates the image
+  * cache and quad), and updates them as the view point changes. If you 
+  * use osg::SceneView/CullVisitor all the complexity of supporting 
+  * Impostor will be nicely hidden away.
+  *
+  * TODO:
+  * Various improvements are planned for the Impostor-
+  * 1) Estimation of how many frames an ImpostorSprite will be reused, if
+  * it won't be used more often than a minimum threshold then do not create
+  * ImpostorSprite - use the real geometry.
+  * 2) Sharing of texture memory between ImpostorSprites.
+  * 3) Simple 3D geometry for ImpostorSprite's rather than Billboarding.
+  * 4) Shrinking of the ImpostorSprite size to more closely fit the underlying
+  * geometry.
+  */
+class SG_EXPORT Impostor : public LOD
+{
+    public :
+        Impostor();
+
+        virtual Object* clone() const { return new Impostor(); }
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Impostor*>(obj)!=NULL; }
+        virtual const char* className() const { return "Impostor"; }
+        virtual void accept(NodeVisitor& nv) { nv.apply(*this); }
+
+        typedef std::vector< ref_ptr<ImpostorSprite> > ImpostorSpriteList;
+
+        /** Set the Impostor threshold distance.
+          * For eye points further than this threshold the Imposter is used if appropriate,
+          * otherwise the LOD children as chosen as per a standard LOD node.*/
+        inline void setImpostorThreshold(float distance) { _impostorThreshold = distance; }
+        
+        /** Set the Impostor threshold distance relative to the node's bounding
+          * sphere's radius.*/
+        inline void setImpostorThresholdToBound(float ratio=1.0f) { _impostorThreshold = getBound().radius()*ratio; }
+
+        /* Get the Impostor threshold disntance.*/
+        inline const float getImpostorThreshold() const { return _impostorThreshold; }
+
+        /* Get the Impostor threshold disntance squared.*/
+        inline const float getImpostorThreshold2() const { return _impostorThreshold*_impostorThreshold; }
+
+        /** Find the ImposterSprite which fits the current eye point best.*/
+        ImpostorSprite* findBestImpostorSprite(const osg::Vec3& currLocalEyePoint);
+        
+        /** Add an ImpostorSprite to the Impostor.*/
+        void addImpostorSprite(ImpostorSprite* is);
+
+        /** Get the list of ImpostorSprites attached to this Impostor.*/
+        inline ImpostorSpriteList& getImpostorSpriteList() { return _impostorSpriteList; }
+
+        /** Get a const list of ImpostorSprites attached to this const Impostor.*/
+        inline const ImpostorSpriteList& getImpostorSpriteList() const { return _impostorSpriteList; }
+
+    protected :
+
+        virtual ~Impostor() {}
+
+        virtual const bool computeBound() const;
+        
+        ImpostorSpriteList  _impostorSpriteList;
+
+        float _impostorThreshold;
+
+};
+
+};
+
+#endif

@@ -1,0 +1,35 @@
+#ifndef OSGUTIL_SMOOTHINGVISITOR
+#define OSGUTIL_SMOOTHINGVISITOR 1
+
+#include <osg/NodeVisitor>
+#include <osg/Geode>
+#include <osg/GeoSet>
+
+#include <osgUtil/Export>
+
+namespace osgUtil {
+
+/** A smoothing visitor for calculating smoothed normals for
+  * osg::GeoSet's which contains surface primitives.
+  */
+class OSGUTIL_EXPORT SmoothingVisitor : public osg::NodeVisitor
+{
+    public:
+
+        /// default to traversing all children.
+        SmoothingVisitor()
+        {
+            setTraversalMode(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN);
+        }
+
+        /// smooth geoset by creating per vertex normals.
+        static void smooth(osg::GeoSet& geoset);
+
+        /// apply smoothing method to all geode geosets.
+        virtual void apply(osg::Geode& geode);
+
+};
+
+};
+
+#endif

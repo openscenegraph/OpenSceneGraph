@@ -1,0 +1,85 @@
+#ifndef OSGUTIL_CULLVIEWSTATE
+#define OSGUTIL_CULLVIEWSTATE 1
+
+#include <osg/BoundingSphere>
+#include <osg/BoundingBox>
+#include <osg/Matrix>
+#include <osg/ClippingVolume>
+
+#include <osgUtil/Export>
+
+namespace osgUtil {
+
+/** Container class for encapsulating the viewing state in local
+    coordinates, during the cull traversal.
+*/
+class OSGUTIL_EXPORT CullViewState : public osg::Referenced
+{
+    public:
+
+        CullViewState();
+
+        osg::ref_ptr<osg::Matrix> _matrix;
+        osg::ref_ptr<osg::Matrix> _inverse;
+        osg::Vec3    _eyePoint;
+        osg::Vec3    _centerPoint;
+        osg::Vec3    _lookVector;
+        osg::Vec3    _upVector;
+	unsigned int _bbCornerFar;
+	unsigned int _bbCornerNear;
+        float        _ratio2;
+
+        osg::ClippingVolume _clippingVolume;
+
+
+        enum 
+        {
+            NO_CULLING                  = 0x00,
+            FRUSTUM_LEFT_CULLING        = 0x01,
+            FRUSTUM_RIGHT_CULLING       = 0x02,
+            FRUSTUM_BOTTOM_CULLING      = 0x04,
+            FRUSTUM_TOP_CULLING         = 0x08,
+            FRUSTUM_NEAR_CULLING        = 0x10,
+            FRUSTUM_FAR_CULLING         = 0x20,
+            VIEW_FRUSTUM_CULLING        = 0x3F,
+            SMALL_FEATURE_CULLING       = 0x40,
+            ENALBE_ALL_CULLING          = 0x7F
+        };
+        
+        typedef unsigned int CullingMode;
+
+        inline bool isCulled(const osg::BoundingSphere& sp,CullingMode& mode) const
+        {
+            if (!sp.isValid()) return true;
+
+            if (!_clippingVolume.contains(sp,mode)) return true;
+
+            if (mode&SMALL_FEATURE_CULLING)
+            {
+                osg::Vec3 delta(sp._center-_eyePoint);
+                if (sp.radius2()<delta.length2()*_ratio2)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        inline bool isCulled(const osg::BoundingBox& bb,CullingMode mode) const
+        {
+            if (!bb.isValid()) return true;
+
+            return !_clippingVolume.contains(bb,mode);
+        }
+
+    protected:
+
+        ~CullViewState();
+
+};
+
+
+};
+
+#endif
+

@@ -1,0 +1,383 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  OSGUTIL_EXPORT osgUtil::RenderStage</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.8">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGUTIL_EXPORT <A HREF="#DOC.DOCU">osgUtil::RenderStage</A></H2></H2><BLOCKQUOTE> RenderState base class.</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=125>
+<param name=classes value="Mosg::Object,M,CRenderBin,MRenderBin.html,CRenderStage,MRenderStage.html,CRenderToTextureStage,MRenderToTextureStage.html">
+<param name=before value="M,M,M,M^_">
+<param name=after value="Md_SP,Md_,M,M">
+<param name=indent value="0,1,2,2">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>DependencyList <B><A HREF="#DOC.2.19.33">_dependencyList</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::Camera&gt;  <B><A HREF="#DOC.2.19.34">_camera</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLint <B><A HREF="#DOC.2.19.35">_view</A></B>[4]
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLbitfield <B><A HREF="#DOC.2.19.36">_clearMask</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec4 <B><A HREF="#DOC.2.19.37">_clearColor</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec4 <B><A HREF="#DOC.2.19.38">_clearAccum</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.19.39">_clearDepth</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.19.40">_clearStencil</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable osg::ref_ptr&lt;<!1><A HREF="RenderStageLighting.html">RenderStageLighting</A>&gt;  <B><A HREF="#DOC.2.19.41">_renderStageLighting</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.19.1">RenderStage</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Object* <B><A HREF="#DOC.2.19.2">clone</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.19.3">isSameKindAs</A></B>(const osg::Object* obj) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.19.4">className</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.19.5">reset</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.19.6">setViewport</A></B>(int x, int y, int width, int height)
+<DD><I>Set the viewport of the scene view.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.19.7">getViewport</A></B>(int&amp; x, int&amp; y, int&amp; width, int&amp; height) const 
+<DD><I>Get the viewport of the scene view.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.19.8">setClearMask</A></B>(const GLbitfield mask)
+<DD><I>Set the clear mask used in glClear().</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const GLbitfield <B><A HREF="#DOC.2.19.9">getClearMask</A></B>() const 
+<DD><I>Get the clear mask</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.19.10">setClearColor</A></B>(const osg::Vec4&amp; color)
+<DD><I>Set the clear color used in glClearColor().</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::Vec4&amp; <B><A HREF="#DOC.2.19.11">getClearColor</A></B>() const 
+<DD><I>Get the clear color</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.19.12">setClearAccum</A></B>(const osg::Vec4&amp; color)
+<DD><I>Set the clear accum used in glClearAccum().</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::Vec4&amp; <B><A HREF="#DOC.2.19.13">getClearAccum</A></B>() const 
+<DD><I>Get the clear accum</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.19.14">setClearDepth</A></B>(const double depth)
+<DD><I>Set the clear depth used in glClearDepth().</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const double <B><A HREF="#DOC.2.19.15">getClearDepth</A></B>() const 
+<DD><I>Get the clear depth</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.19.16">setClearStencil</A></B>(const int stencil)
+<DD><I>Set the clear stencil value used in glClearStencil().</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const int <B><A HREF="#DOC.2.19.17">getClearStencil</A></B>() const 
+<DD><I>Get the clear color</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.19.18">setCamera</A></B>(osg::Camera* camera)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Camera* <B><A HREF="#DOC.2.19.19">getCamera</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::Camera* <B><A HREF="#DOC.2.19.20">getCamera</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.19.21">setRenderStageLighting</A></B>(<!1><A HREF="RenderStageLighting.html">RenderStageLighting</A>* rsl)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderStageLighting.html">RenderStageLighting</A>* <B><A HREF="#DOC.2.19.22">getRenderStageLighting</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.19.23">setLightingMode</A></B>(RenderStageLighting::Mode mode)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>RenderStageLighting::Mode <B><A HREF="#DOC.2.19.24">getLightingMode</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.19.25">setLight</A></B>(osg::Light* light)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Light* <B><A HREF="#DOC.2.19.26">getLight</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::Light* <B><A HREF="#DOC.2.19.27">getLight</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.19.28">addLight</A></B>(osg::Light* light, osg::Matrix* matrix)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.19.29">draw</A></B>(osg::State&amp; state, <!1><A HREF="RenderLeaf.html">RenderLeaf</A>*&amp; previous)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.19.30">addToDependencyList</A></B>(<!1><A HREF="RenderStage.html">RenderStage</A>* rs)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.19.31">getPrims</A></B>(<!1><A HREF="Statistics.html">Statistics</A>* primStats)
+<DD><I>extract stats for current draw list.</I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="RenderStage.html">RenderStage</A>&gt; &gt; DependencyList bool <B><A HREF="#DOC.2.19.32">_stageDrawnThisFrame</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.19.42">~RenderStage</A></B>()
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="RenderBin.html">RenderBin</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>int <B>_binNum</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="RenderBin.html">RenderBin</A>* <B>_parent</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="RenderStage.html">RenderStage</A>* <B>_stage</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>RenderBinList <B>_bins</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>RenderGraphList <B>_renderGraphList</B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::map&lt; int, osg::ref_ptr&lt;<!1><A HREF="RenderBin.html">RenderBin</A>&gt; &gt;static  RenderBinList <!1><A HREF="RenderBin.html">RenderBin</A>* <B>createRenderBin</B>(const std::string&amp; binName)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   void <B>addRenderBinPrototype</B>(<!1><A HREF="RenderBin.html">RenderBin</A>* proto)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   void <B>removeRenderBinPrototype</B>(<!1><A HREF="RenderBin.html">RenderBin</A>* proto)
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="RenderBin.html">RenderBin</A>* <B>find_or_insert</B>(int binNum, const std::string&amp; binName)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>addRenderGraph</B>(<!1><A HREF="RenderGraph.html">RenderGraph</A>* rg)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>sort</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>sort_local</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>draw_local</B>(osg::State&amp; state, <!1><A HREF="RenderLeaf.html">RenderLeaf</A>*&amp; previous)
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::map&lt; std::string, osg::ref_ptr&lt;<!1><A HREF="RenderBin.html">RenderBin</A>&gt; &gt;static  RenderBinPrototypeList RenderBinPrototypeList <B>s_renderBinPrototypeList</B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>
+RenderState base class. Used for encapsulate a complete stage in
+rendering - setting up of viewport, the projection and model
+matrices and rendering the RenderBin's enclosed with this RenderStage.
+RenderStage also has a dependancy list of other RenderStages, each
+of which must be called before the rendering of this stage.  These
+'pre' rendering stages are used for advanced rendering techniques
+like multistage pixel shading or impostors.</BLOCKQUOTE>
+<DL>
+
+<A NAME="RenderStage"></A>
+<A NAME="DOC.2.19.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> RenderStage()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="clone"></A>
+<A NAME="DOC.2.19.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Object* clone() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="isSameKindAs"></A>
+<A NAME="DOC.2.19.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(const osg::Object* obj) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="className"></A>
+<A NAME="DOC.2.19.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="reset"></A>
+<A NAME="DOC.2.19.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void reset()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setViewport"></A>
+<A NAME="DOC.2.19.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setViewport(int x, int y, int width, int height)</B></TT>
+<DD>Set the viewport of the scene view. 
+<DL><DT><DD></DL><P>
+<A NAME="getViewport"></A>
+<A NAME="DOC.2.19.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void getViewport(int&amp; x, int&amp; y, int&amp; width, int&amp; height) const </B></TT>
+<DD>Get the viewport of the scene view. 
+<DL><DT><DD></DL><P>
+<A NAME="setClearMask"></A>
+<A NAME="DOC.2.19.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setClearMask(const GLbitfield mask)</B></TT>
+<DD>Set the clear mask used in glClear().
+Defaults to GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT. 
+<DL><DT><DD></DL><P>
+<A NAME="getClearMask"></A>
+<A NAME="DOC.2.19.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const GLbitfield getClearMask() const </B></TT>
+<DD>Get the clear mask
+<DL><DT><DD></DL><P>
+<A NAME="setClearColor"></A>
+<A NAME="DOC.2.19.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setClearColor(const osg::Vec4&amp; color)</B></TT>
+<DD>Set the clear color used in glClearColor(). 
+glClearColor is only called if mask & GL_COLOR_BUFFER_BIT is true
+<DL><DT><DD></DL><P>
+<A NAME="getClearColor"></A>
+<A NAME="DOC.2.19.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::Vec4&amp; getClearColor() const </B></TT>
+<DD>Get the clear color
+<DL><DT><DD></DL><P>
+<A NAME="setClearAccum"></A>
+<A NAME="DOC.2.19.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setClearAccum(const osg::Vec4&amp; color)</B></TT>
+<DD>Set the clear accum used in glClearAccum(). 
+glClearAcumm is only called if mask & GL_ACCUM_BUFFER_BIT is true
+<DL><DT><DD></DL><P>
+<A NAME="getClearAccum"></A>
+<A NAME="DOC.2.19.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::Vec4&amp; getClearAccum() const </B></TT>
+<DD>Get the clear accum
+<DL><DT><DD></DL><P>
+<A NAME="setClearDepth"></A>
+<A NAME="DOC.2.19.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setClearDepth(const double depth)</B></TT>
+<DD>Set the clear depth used in glClearDepth(). Defaults to 1.0
+glClearDepth is only called if mask & GL_DEPTH_BUFFER_BIT is true
+<DL><DT><DD></DL><P>
+<A NAME="getClearDepth"></A>
+<A NAME="DOC.2.19.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const double getClearDepth() const </B></TT>
+<DD>Get the clear depth
+<DL><DT><DD></DL><P>
+<A NAME="setClearStencil"></A>
+<A NAME="DOC.2.19.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setClearStencil(const int stencil)</B></TT>
+<DD>Set the clear stencil value used in glClearStencil(). Defaults to 1.0 
+glClearStencil is only called if mask & GL_STENCIL_BUFFER_BIT is true
+<DL><DT><DD></DL><P>
+<A NAME="getClearStencil"></A>
+<A NAME="DOC.2.19.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const int getClearStencil() const </B></TT>
+<DD>Get the clear color
+<DL><DT><DD></DL><P>
+<A NAME="setCamera"></A>
+<A NAME="DOC.2.19.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setCamera(osg::Camera* camera)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getCamera"></A>
+<A NAME="DOC.2.19.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Camera* getCamera()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getCamera"></A>
+<A NAME="DOC.2.19.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::Camera* getCamera() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setRenderStageLighting"></A>
+<A NAME="DOC.2.19.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setRenderStageLighting(<!1><A HREF="RenderStageLighting.html">RenderStageLighting</A>* rsl)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getRenderStageLighting"></A>
+<A NAME="DOC.2.19.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderStageLighting.html">RenderStageLighting</A>* getRenderStageLighting() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setLightingMode"></A>
+<A NAME="DOC.2.19.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setLightingMode(RenderStageLighting::Mode mode)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getLightingMode"></A>
+<A NAME="DOC.2.19.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>RenderStageLighting::Mode getLightingMode() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setLight"></A>
+<A NAME="DOC.2.19.25"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setLight(osg::Light* light)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getLight"></A>
+<A NAME="DOC.2.19.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Light* getLight()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getLight"></A>
+<A NAME="DOC.2.19.27"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::Light* getLight() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="addLight"></A>
+<A NAME="DOC.2.19.28"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void addLight(osg::Light* light, osg::Matrix* matrix)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="draw"></A>
+<A NAME="DOC.2.19.29"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void draw(osg::State&amp; state, <!1><A HREF="RenderLeaf.html">RenderLeaf</A>*&amp; previous)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="addToDependencyList"></A>
+<A NAME="DOC.2.19.30"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addToDependencyList(<!1><A HREF="RenderStage.html">RenderStage</A>* rs)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getPrims"></A>
+<A NAME="DOC.2.19.31"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void getPrims(<!1><A HREF="Statistics.html">Statistics</A>* primStats)</B></TT>
+<DD>extract stats for current draw list. 
+<DL><DT><DD></DL><P>
+<A NAME="_stageDrawnThisFrame"></A>
+<A NAME="DOC.2.19.32"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="RenderStage.html">RenderStage</A>&gt; &gt; DependencyList bool _stageDrawnThisFrame</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_dependencyList"></A>
+<A NAME="DOC.2.19.33"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>DependencyList _dependencyList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_camera"></A>
+<A NAME="DOC.2.19.34"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::Camera&gt;  _camera</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_view"></A>
+<A NAME="DOC.2.19.35"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GLint _view[4]</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_clearMask"></A>
+<A NAME="DOC.2.19.36"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GLbitfield _clearMask</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_clearColor"></A>
+<A NAME="DOC.2.19.37"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Vec4 _clearColor</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_clearAccum"></A>
+<A NAME="DOC.2.19.38"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Vec4 _clearAccum</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_clearDepth"></A>
+<A NAME="DOC.2.19.39"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _clearDepth</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_clearStencil"></A>
+<A NAME="DOC.2.19.40"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _clearStencil</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_renderStageLighting"></A>
+<A NAME="DOC.2.19.41"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable osg::ref_ptr&lt;<!1><A HREF="RenderStageLighting.html">RenderStageLighting</A>&gt;  _renderStageLighting</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~RenderStage"></A>
+<A NAME="DOC.2.19.42"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~RenderStage()</B></TT>
+<DL><DT><DD></DL><P></DL>
+<HR>
+<DL><DT><B>Direct child classes:
+</B><DD><A HREF="RenderToTextureStage.html">RenderToTextureStage</A><BR>
+</DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

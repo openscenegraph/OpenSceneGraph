@@ -1,0 +1,141 @@
+#ifndef OSGUTIL_STATISTICS
+#define OSGUTIL_STATISTICS 1
+
+#include <osg/GeoSet>
+
+namespace osgUtil {
+
+/**
+ * Statistics base class. Used to extract primitive information from 
+ * the renderBin(s).
+ */
+
+class OSGUTIL_EXPORT Statistics : public osg::Object
+{
+    public:
+    
+        Statistics() {
+            numOpaque=0, nummat=0;
+            nprims=0, nlights=0; nbins=0;
+            reset();
+        };
+        ~Statistics() {}; // no dynamic allocations, so no need to free
+        void reset() {
+            for (int i=0; i<20; i++) primverts[i]=numprimtypes[i]=primlens[i]=primtypes[i]=0;
+        }
+        virtual osg::Object* clone() const { return new Statistics(); }
+        virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const Statistics*>(obj)!=0L; }
+        virtual const char* className() const { return "Statistics"; }
+
+        void addstat(osg::GeoSet *gs) { // analyse the drawable GeoSet
+            const int np=gs->getNumPrims(); // number of primitives in this geoset
+            nprims += np;
+            const int type=gs->getPrimType();
+            switch (type) {
+            case    osg::GeoSet::POINTS:
+            case    osg::GeoSet::LINES:
+            case    osg::GeoSet::LINE_STRIP:
+            case    osg::GeoSet::FLAT_LINE_STRIP:
+            case    osg::GeoSet::LINE_LOOP:
+            case    osg::GeoSet::TRIANGLE_STRIP:
+            case    osg::GeoSet::FLAT_TRIANGLE_STRIP:
+            case    osg::GeoSet::TRIANGLE_FAN:
+            case    osg::GeoSet::FLAT_TRIANGLE_FAN:
+            case    osg::GeoSet::QUAD_STRIP:
+            case    osg::GeoSet::POLYGON:
+                primtypes[type]++;
+                primtypes[0]++;
+                break;
+            case    osg::GeoSet::TRIANGLES: // should not have any lengths for tris & quads
+                primtypes[type]++;
+                primtypes[0]++;
+                primlens[0]+=np;
+                primlens[type]+=np;
+                numprimtypes[type]+=np;
+                primverts[type]+=3*np;
+                primverts[0]+=3*np;
+                break;
+            case    osg::GeoSet::QUADS:
+                primtypes[type]++;
+                primtypes[0]++;
+                primlens[0]+=np*2;
+                primlens[type]+=np*2; // quad is equiv to 2 triangles
+                numprimtypes[type]+=np;
+                primverts[type]+=4*np;
+                primverts[0]+=4*np;
+                break;
+            case    osg::GeoSet::NO_TYPE:
+            default:
+                break;
+            }
+            // now count the lengths, ie efficiency of triangulation
+            const int *lens=gs->getPrimLengths(); // primitive lengths
+            for (int i=0; i<np && lens; i++) {
+                switch (type) {
+                case    osg::GeoSet::POINTS:
+                case    osg::GeoSet::LINES:
+                case    osg::GeoSet::LINE_STRIP:
+                case    osg::GeoSet::FLAT_LINE_STRIP:
+                case    osg::GeoSet::LINE_LOOP:
+                case    osg::GeoSet::TRIANGLES: // should not have any lengths for tris & quads
+                case    osg::GeoSet::QUADS:
+                case    osg::GeoSet::QUAD_STRIP:
+                case    osg::GeoSet::POLYGON:
+                    primlens[0]+=lens[i];
+                    primlens[type]+=lens[i];
+                    break;
+                case    osg::GeoSet::TRIANGLE_STRIP:
+                case    osg::GeoSet::FLAT_TRIANGLE_STRIP:
+                case    osg::GeoSet::TRIANGLE_FAN:
+                case    osg::GeoSet::FLAT_TRIANGLE_FAN:
+                    primlens[0]+=lens[i]-2;
+                    primlens[type]+=lens[i]-2; // tri strips & fans create lens[i]-2 triangles
+                    break;
+                case    osg::GeoSet::NO_TYPE:
+                default:
+                    break;
+                }
+                switch (type) {
+                case    osg::GeoSet::POINTS:
+                case    osg::GeoSet::LINES:
+                case    osg::GeoSet::LINE_STRIP:
+                case    osg::GeoSet::FLAT_LINE_STRIP:
+                case    osg::GeoSet::LINE_LOOP:
+                case    osg::GeoSet::TRIANGLES:
+                case    osg::GeoSet::QUADS:
+                case    osg::GeoSet::TRIANGLE_STRIP:
+                case    osg::GeoSet::FLAT_TRIANGLE_STRIP:
+                case    osg::GeoSet::TRIANGLE_FAN:
+                case    osg::GeoSet::FLAT_TRIANGLE_FAN:
+                case    osg::GeoSet::QUAD_STRIP:
+                case    osg::GeoSet::POLYGON:
+                    numprimtypes[0]++;
+                    numprimtypes[type]++;
+                    primverts[type]+=lens[i];
+                    primverts[0]+=lens[i];
+                    break;
+                case    osg::GeoSet::NO_TYPE:
+                default:
+                    break;
+                }
+            }
+        }
+
+        
+    public:
+        
+        int numOpaque, nummat, nbins;
+        int nprims, nlights;
+        int numprimtypes[20]; // histogram of number of each type of prim
+        int primtypes[20]; // histogram of number of each type of prim
+        int primlens[20]; // histogram of lengths of each type of prim
+        int primverts[20]; // histogram of number of vertices to be transformed
+        
+    protected:
+    
+
+};
+
+};
+
+#endif

@@ -1,0 +1,112 @@
+#ifndef OSGUTIL_Tesselator
+#define OSGUTIL_Tesselator
+
+#include <osg/Types>
+#include <osg/Vec3>
+
+#include <osgUtil/Export>
+
+#include <vector>
+
+namespace osgUtil {
+
+/** A simple class for tesselating a single polygon boundary.
+  * Currently uses old style glu tesselation functions for portablity.
+  * It be nice to use the modern glu tesselation functions or to find
+  * a small set of code for doing this job better.*/
+class OSGUTIL_EXPORT Tesselator
+{
+    public:
+   
+        Tesselator();
+        ~Tesselator();
+
+        enum InputBoundaryDirection
+        {
+            CLOCK_WISE,
+            COUNTER_CLOCK_WISE
+        };
+        
+        void tesselate(osg::Vec3* coords,int numIndices, int* indices,InputBoundaryDirection ibd=COUNTER_CLOCK_WISE);
+        void tesselate(osg::Vec3* coords,int numIndices, osg::ushort* indices,InputBoundaryDirection ibd=COUNTER_CLOCK_WISE);
+        void tesselate(osg::Vec3* coords,int numIndices, osg::uint* indices,InputBoundaryDirection ibd=COUNTER_CLOCK_WISE);
+
+        typedef std::vector<osg::uint>       IndexVec;
+
+        const IndexVec& getResult() const { return _tesselated_indices; }
+        
+
+        void beginPrimitive(int primitiveType);
+        void endPrimitive();
+
+        int  _errorCode;
+
+    
+        struct VertexIndexSet
+        {
+            VertexIndexSet(Tesselator* tess,const osg::Vec3& vec,osg::uint index)
+            {
+                set(tess,vec,index);
+            }
+     
+            VertexIndexSet(const VertexIndexSet& vip)
+            {
+                _Tesselator = vip._Tesselator;
+                _vertex[0] = vip._vertex[0];
+                _vertex[1] = vip._vertex[1];
+                _vertex[2] = vip._vertex[2];
+                _index = vip._index;
+                
+            }
+
+            VertexIndexSet& operator = (const VertexIndexSet& vip)
+            {
+                if (&vip==this) return *this;
+                _Tesselator = vip._Tesselator;
+                _vertex[0] = vip._vertex[0];
+                _vertex[1] = vip._vertex[1];
+                _vertex[2] = vip._vertex[2];
+                _index = vip._index;
+                return *this;                
+            }
+
+            void set(Tesselator* tess,const osg::Vec3& vec,osg::uint index)
+            {
+                _Tesselator = tess;
+                _vertex[0] = vec[0];
+                _vertex[1] = vec[1];
+                _vertex[2] = vec[2];
+                _index = index;
+            }
+            
+            void accumulate()
+            {
+                _Tesselator->_acummulated_indices.push_back(_index);
+            }
+            // note,_vertex must be first so that callbacks can use a pointer
+            // to it to dereference the VertexIndexSet for it.
+            double      _vertex[3];
+            Tesselator* _Tesselator;
+            osg::uint   _index;
+        };
+
+	protected:
+    
+        friend VertexIndexSet;
+
+        typedef std::vector<VertexIndexSet>  CoordVec;
+
+        void init();
+        void do_it();
+                
+
+        CoordVec _coordVec;
+        IndexVec _tesselated_indices;
+        int      _currentPrimtiveType;
+        IndexVec _acummulated_indices;
+        
+};
+
+};
+
+#endif

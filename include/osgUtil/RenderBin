@@ -1,0 +1,101 @@
+#ifndef OSGUTIL_RENDERBIN
+#define OSGUTIL_RENDERBIN 1
+
+#include <osgUtil/RenderGraph>
+#include <osgUtil/Statistics>
+
+#include <map>
+#include <vector>
+#include <string>
+
+namespace osgUtil {
+
+class RenderStage;
+
+/**
+ * RenderBin base class.
+ */
+class OSGUTIL_EXPORT RenderBin : public osg::Object
+{
+    public:
+    
+        typedef std::vector<RenderLeaf*>                    RenderLeafList; 
+        typedef std::vector<RenderGraph*>                   RenderGraphList;
+        typedef std::map< int, osg::ref_ptr<RenderBin> >    RenderBinList; 
+
+        // static methods.
+        static RenderBin* createRenderBin(const std::string& binName);
+        static void addRenderBinPrototype(RenderBin* proto);
+        static void removeRenderBinPrototype(RenderBin* proto);
+
+
+        RenderBin();
+
+        virtual osg::Object* clone() const { return new RenderBin(); }
+        virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const RenderBin*>(obj)!=0L; }
+        virtual const char* className() const { return "RenderBin"; }
+
+        virtual void reset();
+        
+        RenderBin* find_or_insert(int binNum,const std::string& binName);
+
+        void addRenderGraph(RenderGraph* rg)
+        {
+            _renderGraphList.push_back(rg);
+        }
+
+
+        void sort();
+
+        virtual void sort_local() {}
+
+        virtual void draw(osg::State& state,RenderLeaf*& previous);
+
+        virtual void draw_local(osg::State& state,RenderLeaf*& previous);
+
+        /** extract stats for current draw list. */
+        void getPrims(Statistics *primStats);
+
+    public:
+
+   
+        int             _binNum;
+        RenderBin*      _parent;
+        RenderStage*    _stage;
+        RenderBinList   _bins;
+        RenderGraphList _renderGraphList;
+           
+        typedef std::map< std::string, osg::ref_ptr<RenderBin> > RenderBinPrototypeList;
+        static RenderBinPrototypeList s_renderBinPrototypeList;
+        
+    protected:
+    
+        virtual ~RenderBin();
+
+};
+
+/** Proxy class for automatic registration of renderbins with the RenderBin prototypelist.*/
+template<class T>
+class RegisterRenderBinProxy
+{
+    public:
+        RegisterRenderBinProxy()
+        {
+            _rb = new T;
+            RenderBin::addRenderBinPrototype(_rb.get());
+        }
+
+        ~RegisterRenderBinProxy()
+        {
+            RenderBin::removeRenderBinPrototype(_rb.get());
+        }
+        
+    protected:
+        osg::ref_ptr<T> _rb;
+};
+
+
+};
+
+#endif
+

@@ -1,0 +1,174 @@
+#ifndef OSG_DRAWABLE
+#define OSG_DRAWABLE 1
+
+#include <osg/BoundingBox>
+#include <osg/StateSet>
+#include <osg/State>
+#include <osg/Types>
+
+#include <vector>
+#include <map>
+#include <set>
+
+namespace osg {
+
+/** Pure virtual base class for drawable Geomtery.  Contains no drawing primitives
+    directly, these are provided by subclasses such as GeoSet. State attributes 
+    for a Drawable are maintained in StateSet which the Drawable maintains
+    a referenced counted pointer to.  Both Drawable's and StateSet's can 
+    be shared for optimal memory usage and graphics performance.
+*/
+class SG_EXPORT Drawable : public Object
+{
+    public:
+
+        Drawable();
+
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Drawable*>(obj)!=NULL; }
+        virtual const char* className() const { return "Drawable"; }
+
+        /** Set the StateSet attached to the Drawable.
+            Previously attached StateSet are automatically unreferenced on 
+            assignment of a new drawstate.*/
+        inline void setStateSet(StateSet *state) { _dstate = state; }
+        
+        /** Get the attached StateSet.*/
+        inline StateSet* getStateSet() { return _dstate.get();}
+
+        /** Get the attached const StateSet.*/
+        inline const StateSet* getStateSet() const { return _dstate.get();}
+
+
+        /** Set the drawable to it can or cannot be used inconjunction with OpenGL
+          * display lists.  With set to true, calls to Drawable::setUseDisplayList,
+          * whereas when set to false, no display lists can be created and calls
+          * to setUseDisplayList are ignored, and a warning is produced.  The later
+          * is typically used to guard against the switching on of display lists
+          * on objects with dynamic internal data such as continuous Level of Detail
+          * algorithms.*/
+        void setSupportsDisplayList(const bool flag);
+      
+        /** Get whether display lists are supportd for this drawable instance.*/  
+        inline const bool getSupportsDisplayList() const { return _supportsDisplayList; }
+
+
+        /** When set to true, force the draw method to use OpenGL Display List for rendering.
+            If false rendering directly.  If the display list has not been already
+            compile the next call to draw will automatically create the display list.*/
+        void setUseDisplayList(const bool flag);
+
+        /** Return whether OpenGL display lists are being used for rendering.*/
+        inline const bool getUseDisplayList() const { return _useDisplayList; }
+
+        /** Force a recompile on next draw() of any OpenGL display list associated with this geoset.*/
+        void dirtyDisplayList();
+        
+        inline void dirtyBound() { _bbox_computed = false; }
+
+        /** get bounding box of geoset. 
+          * Note, now made virtual to make it possible to implement user-drawn
+          * objects albeit so what crudely, to be improved later.
+          */
+        inline const BoundingBox& getBound() const
+        {
+            if( !_bbox_computed)
+                computeBound();
+            return _bbox;
+        }
+
+        /** draw OpenGL primitives. 
+          * If the drawable has _useDisplayList set to true then use an OpenGL display
+          * list, automatically compiling one if required.
+          * Otherwise call drawImmediateMode().
+          * Note, draw method should not be overriden in subclasses as it 
+          * manages the optional display list.
+          */
+        inline void draw(State& state)
+        {
+            if (_useDisplayList)
+            {
+
+                // get the contextID (user defined ID of 0 upwards) for the 
+                // current OpenGL context.
+                uint contextID = state.getContextID();
+        
+                // fill in array if required.
+                while (_globjList.size()<=contextID) _globjList.push_back(0);
+    
+                // get the globj for the current contextID.
+                uint& globj = _globjList[contextID];
+        
+                // call the globj if already set otherwise comple and execute.
+                if( globj != 0 )
+                {
+                    glCallList( globj );
+                }
+                else if (_useDisplayList)
+                {
+                    globj = glGenLists( 1 );
+                    glNewList( globj, GL_COMPILE_AND_EXECUTE );
+                    drawImmediateMode(state);
+                    glEndList();
+                }
+
+            }
+            else
+            {
+                // draw object as nature intended..
+                drawImmediateMode(state);
+            }
+        }
+
+        /** Immediately compile this drawable into an OpenGL Display List.
+            Note, operation is ignored if _useDisplayList to false.*/
+        void compile(State& state);
+
+        /** draw directly ignoring an OpenGL display list which could be attached.
+          * This is the internal draw method which does the drawing itself,
+          * and is the method to override when deriving from Drawable.
+          */
+        virtual void drawImmediateMode(State& state) = 0;
+
+        /** use deleteDisplayList instead of glDeleteList to allow
+          * OpenGL display list to cached until they can be deleted
+          * by the OpenGL context in which they were created, specified
+          * by contextID.*/
+        static void deleteDisplayList(uint contextID,uint globj);
+        
+        /** flush all the cached display list which need to be deleted
+          * in the OpenGL context related to contextID.*/
+        static void flushDeletedDisplayLists(uint contextID);
+
+    protected:
+
+        Drawable(const Drawable&):Object() {}
+        Drawable& operator = (const Drawable&) { return *this;}
+
+        virtual ~Drawable();
+
+        /** compute the bounding box of the drawable. Method must be 
+            implementated by subclasses.*/
+        virtual const bool computeBound() const = 0;
+
+        ref_ptr<StateSet>      _dstate;
+
+        bool                    _supportsDisplayList;
+        bool                    _useDisplayList;
+
+        typedef std::vector<uint> GLObjectList;
+        mutable GLObjectList _globjList;
+
+        mutable BoundingBox     _bbox;
+        mutable bool            _bbox_computed;
+        
+        // static cache of deleted display lists which can only 
+        // by completely deleted once the appropriate OpenGL context
+        // is set.
+        typedef std::map<uint,std::set<uint> > DeletedDisplayListCache;
+        static DeletedDisplayListCache s_deletedDisplayListCache;
+
+};
+
+};
+
+#endif

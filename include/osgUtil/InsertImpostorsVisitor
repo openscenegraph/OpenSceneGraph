@@ -1,0 +1,57 @@
+#ifndef OSGUTIL_INSERTIMPOSTORSVISITOR
+#define OSGUTIL_INSERTIMPOSTORSVISITOR
+
+#include <osg/NodeVisitor>
+#include <osg/Impostor>
+
+#include <osgUtil/Export>
+
+namespace osgUtil {
+
+/** Insert impostor nodes into scene graph.
+  * For example of usage see src/Demos/osgimpostor.
+  */
+class OSGUTIL_EXPORT InsertImpostorsVisitor : public osg::NodeVisitor
+{
+    public:
+
+        /// default to traversing all children.
+        InsertImpostorsVisitor();
+        
+        void setImpostorThresholdRatio(const float ratio) { _impostorThresholdRatio = ratio; }
+        const float getImpostorThresholdRatio() const { return _impostorThresholdRatio; }
+
+        void setMaximumNumberOfNestedImpostors(const unsigned int num) { _maximumNumNestedImpostors = num; }
+        const unsigned int getMaximumNumberOfNestedImpostors() const { return _maximumNumNestedImpostors; }
+
+        /** empty visitor, make it ready for next traversal.*/        
+        void reset();
+
+        virtual void apply(osg::Node& node);
+
+        virtual void apply(osg::Group& node);
+
+        virtual void apply(osg::LOD& node);
+
+        virtual void apply(osg::Impostor& node);
+        
+        /* insert the required impostors into the scene graph.*/
+        void insertImpostors();
+        
+    protected:
+    
+        typedef std::vector< osg::Group* >  GroupList;
+        typedef std::vector< osg::LOD* >    LODList;
+        
+        GroupList       _groupList;
+        LODList         _lodList;        
+
+        float           _impostorThresholdRatio;
+        unsigned int    _maximumNumNestedImpostors;
+        unsigned int    _numNestedImpostors;
+
+};
+
+};
+
+#endif

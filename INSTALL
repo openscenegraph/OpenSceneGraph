@@ -1,0 +1,238 @@
+The following is a very basic intro of how to get the OSG going under Linux,
+FreeBSD, IRIX, Windows and Mac.  Each intro mentions OpenSceneGraph-Data, it is
+recommended that you also download it alongside this source distribution.
+
+The scene graph depends upon Standard C++, STL and OpenGL so you need a C++ 
+compiler up to the task and OpenGL or Mesa installed. The viewer depends upon
+GLUT which you'll need to download and install from the GLUT website.  The
+OSG has it own native ascii file format, and .rgb image reader inbuilt which
+allows you read the example data with any dependencies other than C++, STL and
+OpenGL.
+
+The OSG also has a set of plug-ins which support non-native 3d database and 
+image formats, several have no dependencies on external libraries (flt,3ds,obj,
+lwo,dw, tga & pic), while others (pfb,jpeg,gif,tiff) require other libraries 
+to be installed to compile them.  If you don't already have them installed then
+don't worry, you'll still be able to use the OSG.  The core osg library and
+viewer has been designed to load the plug-ins at run-time only  and if they 
+are required to load a specific data set. If you don't need them for your 
+datasets then it won't matter that you haven't been able to compile 
+all the plug-ins. A full list of dependencies and where to download the 
+required libraries are listed in the index.html.
+
+If you're coming across the OSG for the first time and want to get started 
+quickly, go right ahead and follow the compilation instructions.  You can 
+always later download the libraries which the plug-ins require if you 
+eventually need them.
+
+If you haven't already checked it out, for a list of distribution contents,
+contacts and links to documentation check out index.html.
+
+
+Environmental settings under Unix:
+---------------------------------
+
+    These enviromental settings are useful to help develop with an
+    entirely local copy of the osg.  However, once you've done a
+    make install you can make do without all of these, although
+    OSGFILEPATH is still useful as the osgDB library uses it for
+    picking locating datafiles.
+
+    Add the following to your .cshrc :
+
+        setenv OSGHOME <location of OSG root>
+        setenv OSGDATA <location of OSG data root>
+        setenv OSGFILEPATH ./:${OSGDATA}:${OSGDATA}/Images:
+        setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:${OSGHOME}/lib
+        setenv PATH ${PATH}:${OSGHOME}/bin
+
+    Or the following if you're using a sh compatible shell :
+
+        export OSGHOME=<location of OSG root>
+        export OSGDATA=<location of OSG data root>
+        export OSGFILEPATH=./:${OSGDATA}:${OSGDATA}/Images:
+        export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${OSGHOME}/lib
+        export PATH=${PATH}:${OSGHOME}/bin
+
+Compiling under Linux :
+-----------------------
+
+    To compile, from the OSG root directory, type:
+
+        make
+        
+    Note, make should automatically detect linux and copy the 
+    Make/makerules.linux and Make/makedefs.linux over the 
+    default Make/makerules and Make/makedefs.  If autodetection
+    does not work type 'make linux'.
+
+    And if you wish to install the OSG to /usr/include/ &
+    /usr/lib then su root, and type:
+    
+        make install
+        
+          or
+          
+        make instlinks
+         
+    To get full details of make options, type:
+    
+        make help
+
+
+Compiling under FreeBSD :
+-------------------------
+
+   To compile, from the OSG root directory, type :
+
+        make freebsd
+
+    And if you wish to install the OSG to /usr/include/ &
+    /usr/lib then su root, and type:
+    
+        make install
+        
+          or
+          
+        make instlinks
+         
+    To get full details of make options, type:
+    
+        make help
+
+
+Compiling under IRIX :
+----------------------
+
+    When setting up environmental variables, specified above,
+    LD_LIBRARY_PATH should of course be replaced by LD_LIBRARYN32_PATH.
+    
+    Since the OSG uses Standard C++ features such as STL it is important
+    to have an up to date version of the MIPSPro compilers. The library
+    has been tested under MIPSPro7.3 & MIPSPro7.2.1, and *may* compile
+    under previous versions but has yet to be tested.  It is recommended
+    to use MIPSPro7.3.1.1m.
+
+    To compile, from the OSG root directory, type :
+
+        make
+
+    Note, make should automatically detect IRIX and copy the 
+    Make/makerules.irix.std and Make/makedefs.irix.std over the 
+    default Make/makerules and Make/makedefs.  If autodetection
+    does not work type 'make irix' for MIPSPro7.3 or 'make irix.old'
+    for MIPSPro7.2.1 and before.
+
+    And if you wish to install the OSG to /usr/include/ &
+    /usr/lib then su root, and type:
+    
+        make install
+        
+          or
+          
+        make instlinks
+         
+    To get full details of make options, type:
+    
+        make help
+
+
+Compiling under Windows :
+-------------------------
+
+    The Microsoft Visual C++ 6.0 workspace file is VisualStudio.dsw located
+    in the VisualStudio\ below the OSG this root directory.  The OSG will 
+    compile with the basic VisualC++6.0, but its recommended that you use 
+    Service Pack 4 to fix MS compiler bugs which affect the OSG.
+    
+    The OSG is composed of a number of libraries and executables, to get 
+    running you'll need at least to compile osg,osgUtil,osgDB,osgGLUT,
+    dot_osg and sgv.  The rest of the libraries and executables are
+    optional and can be compiled if you need them.  It may well be simplest
+    to do a batch build of all the libraries and executables in the
+    distribution, some of the plug-ins which support non native file
+    formats may not compile due to dependencies on other libraries (such
+    as libpng), you can ignore these compilation errors unless you need
+    to load the related file types.  
+    
+    To execute the viewer the file path for the .dll's and .exe, both compiled
+    into the OSG's bin directory, need to be setup, such as by adding the PATH
+    to your autoexec.bat, its also useful to add the OSGFILEPATH to your
+    autoexec.bat to help the location of datafiles. For example :
+    
+    SET OSGFILEPATH=D:\OpenSceneGraph-Data;D:\OpenSceneGraph-Data\Images
+    SET PATH=C:\WINDOWS;C:\WINDOWS\COMMAND;C:\Oglsdk\lib;D:\osg-0.8.40\bin;
+
+    To help compilation of the image reader plugins, various image libraries
+    have been zipped up for your convienice, your find these on the OSG
+    release download directory.
+
+Compiling under Mac :
+---------------------
+
+    The Microwerks Codewarrior workspace files can be found under the
+    Microwerks directory.  Further details to be fleshed out since
+    Mac port is in its early stages and is not uptodate with the
+    current release.  To get it compiling you will have to use these
+    Codewarrior files as a starting place.  If you get it running and
+    have time to maintian the port please email robert@openscenegraph.org.
+
+
+Running the demos
+-----------------
+
+    To run the viewer demo type (you made need to type rehash first under Unix) :
+
+        sgv dumptruck.osg
+        sgv cow.osg
+        sgv e-s-bike.osg
+
+        sgv lz.rgb
+
+        sgv Spinnercar.flt
+        sgv Alley.3ds
+        sgv town_ogl_pfi.pfb
+
+    Other run other demos type
+    
+        osgcube
+
+          or
+
+        hangglide
+        hangglide master.flt
+
+          or
+
+        osgreflect cow.osg
+    
+          or
+
+        osgconv Alley.3ds Alley.osg
+
+          or
+
+        osgtexture lz.rgb tree.rgb          
+
+          or
+          
+        osgimpostor cow.osg
+
+          or
+          
+        osgviews glider.osg
+          
+
+    (Note: the file is picked up by checking the directories pointed to
+    by $OSGFILEPATH)
+
+
+Plug-in dependencies
+--------------------
+
+    You may have compile errors if you don't have all the required libraries,
+    especially for the plugins.  As long as the core libraries osg, osgUtl,
+    osgGLUT and sgv have compiled you won't have any problems running the osg 
+    itself but may not be able to use some non-native data formats. To get 
+    the problematic plugins working you may need to download support libraries 
+    such as libtiff, libjpeg etc.  For further details see index.html.

@@ -1,0 +1,21 @@
+#ifndef OSG_GLEXTENSIONS
+#define OSG_GLEXTENSIONS 1
+
+#include <osg/Export>
+
+namespace osg {
+
+/** return true if OpenGL "extension" is supported.
+  * note: Must only called within a valid OpenGL context,
+  * undefined behaviour may occur otherwise.
+  */
+SG_EXPORT extern const bool isGLExtensionSupported(const char *extension);
+
+/** return the address of the specified OpenGL function.
+  * return NULL if function not supported by OpenGL library.
+  */
+SG_EXPORT extern void* getGLExtensionFuncPtr(const char *funcName);
+
+};
+
+#endif

@@ -1,0 +1,77 @@
+#ifndef OSGUTIL_RENDERLEAF
+#define OSGUTIL_RENDERLEAF 1
+
+#include <osg/ref_ptr>
+#include <osg/Matrix>
+#include <osg/Drawable>
+#include <osg/State>
+
+#include <osgUtil/Export>
+
+namespace osgUtil {
+
+// forward declare RenderGraph
+class RenderGraph;
+
+/** container class for all data required for rendering of drawables.
+  */
+class OSGUTIL_EXPORT RenderLeaf : public osg::Referenced
+{
+    public:
+    
+
+        inline RenderLeaf(osg::Drawable* drawable,osg::Matrix* matrix, float depth=0.0f):
+            _parent(NULL),
+            _drawable(drawable),
+            _matrix(matrix),
+            _depth(depth) {}
+
+        
+	inline void set(osg::Drawable* drawable,osg::Matrix* matrix, float depth=0.0f)
+	{
+	    _parent = NULL;
+	    _drawable = drawable;
+	    _matrix = matrix;
+	    _depth = depth;
+	}
+	
+	inline void reset()
+	{
+	    _parent = NULL;
+	    _drawable = NULL;
+	    _matrix = NULL;
+	    _depth = 0.0f;
+	}
+
+	
+        virtual void render(osg::State& state,RenderLeaf* previous);
+        
+        /// allow RenderGraph to change the RenderLeaf's _parent.
+        friend RenderGraph;
+
+    public:
+    
+        RenderGraph*                _parent;
+        osg::Drawable*              _drawable;
+        osg::ref_ptr<osg::Matrix>   _matrix;
+        float                       _depth;
+
+    private:
+
+        /// disallow creation of blank RenderLeaf as this isn't useful.
+        RenderLeaf():
+            _parent(NULL),
+            _drawable(NULL),
+            _matrix(NULL),
+            _depth(0.0f) {}
+
+        /// disallow copy construction.
+        RenderLeaf(const RenderLeaf&):osg::Referenced() {}
+        /// disallow copy operator.
+        RenderLeaf& operator = (const RenderLeaf&) { return *this; }
+
+};
+
+};
+
+#endif

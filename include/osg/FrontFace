@@ -1,0 +1,42 @@
+#ifndef OSG_FRONTFACE
+#define OSG_FRONTFACE 1
+
+#include <osg/StateAttribute>
+#include <osg/GL>
+
+namespace osg {
+
+/** Class to specifies the orientation of front-facing polygons.
+*/     
+class SG_EXPORT FrontFace : public StateAttribute
+{
+    public :
+    
+        FrontFace();
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const FrontFace*>(obj)!=0L; }
+        virtual Object* clone() const { return new FrontFace(); }
+        virtual const char* className() const { return "FrontFace"; }
+    
+        virtual const Type getType() const { return FRONTFACE; }
+        
+        enum Mode {
+            CLOCKWISE = GL_CW,
+            COUNTER_CLOCKWISE = GL_CCW
+        };
+    
+        inline void setMode(const Mode mode) { _mode = mode; }
+        inline const Mode getMode() const    { return _mode; }
+    
+        virtual void apply(State& state) const;
+        
+    protected:
+    
+        virtual ~FrontFace();
+        
+        Mode _mode;
+
+};
+
+};
+
+#endif

@@ -1,0 +1,171 @@
+#ifndef OSG_STATESET
+#define OSG_STATESET 1
+
+#include <osg/Object>
+#include <osg/StateAttribute>
+#include <osg/ref_ptr>
+
+#include <map>
+#include <vector>
+#include <string>
+
+namespace osg {
+
+/**
+Encapsulates OpenGL state modes and attributes. 
+Used to specificy textures etc of osg::Drawable's which hold references
+to a single osg::StateSet.  StateSet can be shared between Drawable's
+and is recommend if possible as it minimize expensive state changes
+in the graphics pipeline.
+*/
+class SG_EXPORT StateSet : public Object
+{
+    public :
+    
+            
+        StateSet();
+        virtual Object* clone() const { return new StateSet(); }
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const StateSet*>(obj)!=NULL; }
+        virtual const char* className() const { return "StateSet"; }
+
+        /** set all the modes to on or off so that it defines a 
+            complete state, typically used for a default global state.*/
+        void setGlobalDefaults();
+
+        /** set all the modes to inherit, typically used to signifiy
+            nodes which inherit all of their modes for the global state.*/
+        void setAllToInherit();
+
+        /** a container to map GLModes to their respective GLModeValues.*/
+        typedef std::map<StateAttribute::GLMode,StateAttribute::GLModeValue>  ModeList;
+
+        /** set this StateSet to contain specified GLMode and value.*/
+        void setMode(const StateAttribute::GLMode mode, const StateAttribute::GLModeValue value);
+        /** set this StateSet to inherit specified GLMode type from parents.
+          * has the effect of deleting any GlMode of specified type from StateSet.*/
+        void setModeToInherit(const StateAttribute::GLMode mode);
+
+        /** get specified GLModeValue for specified GLMode.
+          * returns INHERIT if no GLModeValue is contained within StateSet.*/
+        const StateAttribute::GLModeValue getMode(const StateAttribute::GLMode mode) const;
+
+        /** return the list of all GLModes contained in this StateSet.*/
+        inline ModeList& getModeList() { return _modeList; }
+
+        /** return the const list of all GLModes contained in this const StateSet.*/
+        inline const ModeList& getModeList() const { return _modeList; }
+
+
+        /** simple pairing between an attribute and its override flag.*/
+        typedef std::pair<ref_ptr<StateAttribute>,StateAttribute::OverrideValue> RefAttributePair;
+        /** a container to map StateAttribyte::Types to their respective RefAttributePair.*/
+        typedef std::map<StateAttribute::Type,RefAttributePair>                  AttributeList;
+
+        /** set this StateSet to contain specified attribute and override flag.*/
+        void setAttribute(StateAttribute *attribute, const StateAttribute::OverrideValue value=StateAttribute::OFF);
+        /** set this StateSet to contain specified attribute and set the associated GLMode's to specifed value.*/
+        void setAttributeAndModes(StateAttribute *attribute, const StateAttribute::GLModeValue value=StateAttribute::ON);
+        /** set this StateSet to inherit specified attribute type from parents.
+          * has the effect of deleting any state attributes of specified type from StateSet.*/
+        void setAttributeToInherit(const StateAttribute::Type type);
+
+        /** get specified StateAttribute for specified type.
+          * returns NULL if no type is contained within StateSet.*/
+        const StateAttribute* getAttribute(const StateAttribute::Type type) const;
+
+        /** get specified RefAttributePair for specified type.
+          * returns NULL if no type is contained within StateSet.*/
+        const RefAttributePair* getAttributePair(const StateAttribute::Type type) const;
+        
+        /** return the list of all StateAttributes contained in this StateSet.*/
+        inline AttributeList& getAttributeList() { return _attributeList; }
+
+        /** return the const list of all StateAttributes contained in this const StateSet.*/
+        inline const AttributeList& getAttributeList() const { return _attributeList; }
+
+        /** tempory type def to support tempory method getModeVector.*/
+        typedef std::vector<std::pair<StateAttribute::GLMode,StateAttribute::GLModeValue> > ModeVector; 
+        /** get method which copies this StateSet's osg::GLModeValues's into
+          * a std::vector.  method is overlaps on the propper get method - 
+          * getModeList and only exists to get round a crash under Windows.
+          * Will be removed once problem is fixed.*/
+        const ModeVector getModeVector() const;
+
+        /** tempory type def to support tempory method getAttributeVector.*/
+        typedef std::vector<const StateAttribute*> AttributeVector; 
+        /** get method which copies this StateSet's osg::StateAttribute's into
+          * a std::vector.  method is overlaps on the propper get method - 
+          * getAttributeList and only exists to get round a crash under Windows.
+          * Will be removed once problem is fixed.*/
+        const AttributeVector getAttributeVector() const;
+
+        enum RenderingHint
+        {
+            DEFAULT_BIN = 0,
+            OPAQUE_BIN = 1,
+            TRANSPARENT_BIN = 2
+        };
+        
+        /** set the RenderingHint of the StateSet.
+          * RenderingHint is used by osgUtil::Renderer to determine which
+          * draw bin to drop associated osg::Drawables in. For opaque
+          * objects OPAQUE_BIN would typical used, which TRANSPARENT_BIN
+          * should be used for objects which need to be depth sorted.*/
+        void setRenderingHint(const int hint);
+
+        /** get the RenderingHint of the StateSet.*/
+        inline const int getRenderingHint() const      { return _renderingHint; }
+
+        enum RenderBinMode
+        {
+            INHERIT_RENDERBIN_DETAILS,
+            USE_RENDERBIN_DETAILS,
+            OVERRIDE_RENDERBIN_DETAILS,
+            ENCLOSE_RENDERBIN_DETAILS
+        };
+
+        /** set the render bin details.*/
+        void setRenderBinDetails(const int binNum,const std::string& binName,const RenderBinMode mode=USE_RENDERBIN_DETAILS);
+                
+        /** set the render bin details to inherit.*/
+        void setRendingBinToInherit();
+        
+        /** get the render bin mode.*/
+        inline const RenderBinMode getRenderBinMode() const { return _binMode; }
+
+        /** get whether the render bin details are set and should be used.*/
+        inline const bool useRenderBinDetails() const { return _binMode!=INHERIT_RENDERBIN_DETAILS; }
+
+        /** get the render bin number.*/
+        inline const int getBinNumber() const { return _binNum; }
+
+        /** get the render bin name.*/
+        inline const std::string& getBinName() const { return _binName; }
+
+        
+        /** call compile on all StateAttributes contained within this StateSet.*/
+        void compile(State& state) const;
+
+    protected :
+
+
+        virtual ~StateSet();
+
+        StateSet(const StateSet&):Object() {}
+        StateSet& operator = (const StateSet&) { return *this; }
+
+
+        ModeList        _modeList;
+        AttributeList   _attributeList;
+        
+        int             _renderingHint;
+
+        RenderBinMode   _binMode;
+        int             _binNum;
+        std::string     _binName;
+
+};
+
+};
+
+#endif

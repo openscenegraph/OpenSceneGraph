@@ -1,0 +1,223 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  SG_EXPORT osg::ClipPlane</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.8">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osg::ClipPlane</A></H2></H2><BLOCKQUOTE>ClipPlane state class which encapsulates OpenGL glClipPlane() functionality</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=125>
+<param name=classes value="CReferenced,MReferenced.html,CObject,MObject.html,CStateAttribute,MStateAttribute.html,CClipPlane,MClipPlane.html">
+<param name=before value="M,M,M,M">
+<param name=after value="Md_SPSP,Md_SP,Md_,M">
+<param name=indent value="0,1,2,3">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.22.1">ClipPlane</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.22.2">clone</A></B>() const 
+<DD><I>return a shallow copy of a node, with Object* return type</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.22.3">isSameKindAs</A></B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
+<DD><I>return true if this and obj are of the same kind of object</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.22.4">className</A></B>() const 
+<DD><I>return the name of the node's class type</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const <!1><A HREF="StateAttribute.html#DOC.2.73.5">Type</A> <B><A HREF="#DOC.2.22.5">getType</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.22.6">setStateSetModes</A></B>(<!1><A HREF="StateSet.html">StateSet</A>&amp; ds, const <!1><A HREF="StateAttribute.html#DOC.2.73.2">GLModeValue</A> value) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.22.7">setClipPlane</A></B>(const <!1><A HREF="Vec4.html">Vec4</A>&amp; plane)
+<DD><I>Set the clip plane, using a Vec4 to define plane.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.22.8">setClipPlane</A></B>(const <!1><A HREF="Plane.html">Plane</A>&amp; plane)
+<DD><I>Set the clip plane, using a Plane to define plane.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.22.9">setClipPlane</A></B>(const double* plane)
+<DD><I>Set the clip plane, using a double[4] to define plane.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.22.10">getClipPlane</A></B>(<!1><A HREF="Vec4.html">Vec4</A>&amp; plane) const 
+<DD><I>Get the clip plane, values entered into a Vec4 passed to the getClipPlane.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.22.11">getClipPlane</A></B>(<!1><A HREF="Plane.html">Plane</A>&amp; plane) const 
+<DD><I>Get the clip plane, values entered into a Plane passed to the getClipPlane.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.22.12">getClipPlane</A></B>(double* plane) const 
+<DD><I>Get the clip plane, values entered into a double[4] passed to the getClipPlane.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.22.13">setClipPlaneNum</A></B>(const unsigned int num)
+<DD><I>Set the clip plane number.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const unsigned int <B><A HREF="#DOC.2.22.14">getClipPlaneNum</A></B>() const 
+<DD><I>Get the clip plane number.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.22.15">apply</A></B>(<!1><A HREF="State.html">State</A>&amp; state) const 
+<DD><I>Apply the clip plane's state to the OpenGL state machine.</I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double* <B><A HREF="#DOC.2.22.17">_clipPlane</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.22.18">_clipPlaneNum</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.22.16">~ClipPlane</A></B>()
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="StateAttribute.html">StateAttribute</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>compile</B>(<!1><A HREF="State.html">State</A>&amp;) const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  GLenum <B>GLMode</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  unsigned int <B>GLModeValue</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  unsigned int <B>OverrideValue</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>Values</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>Type</B>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Object.html">Object</A>:</H3>
+<DL>
+</DL>
+<HR><H3>Inherited from <A HREF="Referenced.html">Referenced</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>&amp; <B>operator = </B>(<!1><A HREF="Referenced.html">Referenced</A>&amp;)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>ref</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const int <B>referenceCount</B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>mutable int <B>_refCount</B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>ClipPlane state class which encapsulates OpenGL glClipPlane() functionality</BLOCKQUOTE>
+<DL>
+
+<A NAME="ClipPlane"></A>
+<A NAME="DOC.2.22.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ClipPlane()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="clone"></A>
+<A NAME="DOC.2.22.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html">Object</A>* clone() const </B></TT>
+<DD>return a shallow copy of a node, with Object* return type
+<DL><DT><DD></DL><P>
+<A NAME="isSameKindAs"></A>
+<A NAME="DOC.2.22.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(const <!1><A HREF="Object.html">Object</A>* obj) const </B></TT>
+<DD>return true if this and obj are of the same kind of object
+<DL><DT><DD></DL><P>
+<A NAME="className"></A>
+<A NAME="DOC.2.22.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
+<DD>return the name of the node's class type
+<DL><DT><DD></DL><P>
+<A NAME="getType"></A>
+<A NAME="DOC.2.22.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const <!1><A HREF="StateAttribute.html#DOC.2.73.5">Type</A> getType() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setStateSetModes"></A>
+<A NAME="DOC.2.22.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setStateSetModes(<!1><A HREF="StateSet.html">StateSet</A>&amp; ds, const <!1><A HREF="StateAttribute.html#DOC.2.73.2">GLModeValue</A> value) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setClipPlane"></A>
+<A NAME="DOC.2.22.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setClipPlane(const <!1><A HREF="Vec4.html">Vec4</A>&amp; plane)</B></TT>
+<DD>Set the clip plane, using a Vec4 to define plane. 
+<DL><DT><DD></DL><P>
+<A NAME="setClipPlane"></A>
+<A NAME="DOC.2.22.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setClipPlane(const <!1><A HREF="Plane.html">Plane</A>&amp; plane)</B></TT>
+<DD>Set the clip plane, using a Plane to define plane. 
+<DL><DT><DD></DL><P>
+<A NAME="setClipPlane"></A>
+<A NAME="DOC.2.22.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setClipPlane(const double* plane)</B></TT>
+<DD>Set the clip plane, using a double[4] to define plane. 
+<DL><DT><DD></DL><P>
+<A NAME="getClipPlane"></A>
+<A NAME="DOC.2.22.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void getClipPlane(<!1><A HREF="Vec4.html">Vec4</A>&amp; plane) const </B></TT>
+<DD>Get the clip plane, values entered into a Vec4 passed to the getClipPlane. 
+<DL><DT><DD></DL><P>
+<A NAME="getClipPlane"></A>
+<A NAME="DOC.2.22.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void getClipPlane(<!1><A HREF="Plane.html">Plane</A>&amp; plane) const </B></TT>
+<DD>Get the clip plane, values entered into a Plane passed to the getClipPlane. 
+<DL><DT><DD></DL><P>
+<A NAME="getClipPlane"></A>
+<A NAME="DOC.2.22.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void getClipPlane(double* plane) const </B></TT>
+<DD>Get the clip plane, values entered into a double[4] passed to the getClipPlane. 
+<DL><DT><DD></DL><P>
+<A NAME="setClipPlaneNum"></A>
+<A NAME="DOC.2.22.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setClipPlaneNum(const unsigned int num)</B></TT>
+<DD>Set the clip plane number. 
+<DL><DT><DD></DL><P>
+<A NAME="getClipPlaneNum"></A>
+<A NAME="DOC.2.22.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const unsigned int getClipPlaneNum() const </B></TT>
+<DD>Get the clip plane number. 
+<DL><DT><DD></DL><P>
+<A NAME="apply"></A>
+<A NAME="DOC.2.22.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="State.html">State</A>&amp; state) const </B></TT>
+<DD>Apply the clip plane's state to the OpenGL state machine. 
+<DL><DT><DD></DL><P>
+<A NAME="~ClipPlane"></A>
+<A NAME="DOC.2.22.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~ClipPlane()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_clipPlane"></A>
+<A NAME="DOC.2.22.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double* _clipPlane</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_clipPlaneNum"></A>
+<A NAME="DOC.2.22.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _clipPlaneNum</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

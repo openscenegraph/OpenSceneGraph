@@ -1,0 +1,46 @@
+#ifndef OSGUTIL_DEPTHSORTEDBIN
+#define OSGUTIL_DEPTHSORTEDBIN 1
+
+#include <osgUtil/RenderBin>
+
+namespace osgUtil {
+
+class OSGUTIL_EXPORT DepthSortedBin : public RenderBin
+{
+
+    public:
+
+        DepthSortedBin();
+
+        virtual osg::Object* clone() const { return new DepthSortedBin(); }
+        virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const DepthSortedBin*>(obj)!=0L; }
+        virtual const char* className() const { return "DepthSortedBin"; }
+
+        virtual void reset();
+
+        virtual void sort_local();
+
+        virtual void draw_local(osg::State& state,RenderLeaf*& previous);
+        
+        enum DrawOrder
+        {
+            FRONT_TO_BACK,
+            BACK_TO_FRONT
+        };
+        
+        void setDrawOrder(const DrawOrder drawOrder) { _drawOrder = drawOrder; }
+        
+        const DrawOrder getDrawOrder() const { return _drawOrder; }
+
+    protected:
+    
+        virtual ~DepthSortedBin();
+        
+        DrawOrder           _drawOrder;
+        RenderLeafList      _renderLeafList;
+};
+
+};
+
+#endif
+

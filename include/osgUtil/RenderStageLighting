@@ -1,0 +1,67 @@
+#ifndef OSGUTIL_RENDERSTAGELIGHTING
+#define OSGUTIL_RENDERSTAGELIGHTING 1
+
+#include <osg/Object>
+#include <osg/Light>
+#include <osg/State>
+
+#include <osgUtil/RenderLeaf>
+#include <osgUtil/RenderGraph>
+
+namespace osgUtil {
+
+/**
+ * RenderBin base class.
+ */
+class OSGUTIL_EXPORT RenderStageLighting : public osg::Object
+{
+    public:
+    
+
+        RenderStageLighting();
+        virtual osg::Object* clone() const { return new RenderStageLighting(); }
+        virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const RenderStageLighting*>(obj)!=0L; }
+        virtual const char* className() const { return "RenderStageLighting"; }
+
+        virtual void reset();
+        
+        enum Mode {
+            HEADLIGHT, // default
+            SKY_LIGHT,
+            NO_SCENEVIEW_LIGHT
+        };
+
+        void setLightingMode(Mode mode) { _lightingMode=mode; }
+        Mode getLightingMode() const { return _lightingMode; }
+
+        void setLight(osg::Light* light) { _light = light; }
+        osg::Light* getLight() { return _light.get(); }
+        const osg::Light* getLight() const { return _light.get(); }
+
+        typedef std::pair< osg::Light*, osg::ref_ptr<osg::Matrix> >     LightMatrixPair;
+        typedef std::vector< LightMatrixPair >                          LightList;
+
+        virtual void addLight(osg::Light* light,osg::Matrix* matrix)
+        {
+            _lightList.push_back(LightMatrixPair(light,matrix));
+        }
+
+        virtual void draw(osg::State& state,RenderLeaf*& previous);
+        
+    public:
+        
+        Mode                     _lightingMode;
+        osg::ref_ptr<osg::Light> _light;
+        LightList                _lightList;
+
+        
+    protected:
+    
+        virtual ~RenderStageLighting();
+
+};
+
+};
+
+#endif
+

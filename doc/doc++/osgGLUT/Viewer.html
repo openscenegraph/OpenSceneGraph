@@ -1,0 +1,596 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  OSGGLUT_EXPORT osgGLUT::Viewer</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.8">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGGLUT_EXPORT <A HREF="#DOC.DOCU">osgGLUT::Viewer</A></H2></H2><BLOCKQUOTE>A basic viewer base class which provides a window, simple keyboard and mouse interaction.</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=65>
+<param name=classes value="MosgUtil::GUIActionAdapter,M,CViewer,MViewer.html">
+<param name=before value="M,M">
+<param name=after value="Md_,M">
+<param name=indent value="0,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.6.2.1">Viewer</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.6.2.2">~Viewer</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.6.2.3">setWindowOrigin</A></B>(int x, int y)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.6.2.4">setWindowSize</A></B>(int width, int height)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.6.2.5">setWindowTitle</A></B>(const std::string&amp; title)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.6.2.6">init</A></B>(osg::Node* rootnode)
+<DD><I>init is deprecated, you should use addViewport instead.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.6.2.7">addViewport</A></B>(osgUtil::SceneView* sv, float x = 0.0, float y = 0.0, float width = 1.0, float height = 1.0)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.6.2.8">addViewport</A></B>(osg::Node*, float x = 0.0, float y = 0.0, float width = 1.0, float height = 1.0)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const int <B><A HREF="#DOC.6.2.9">getNumViewports</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osgUtil::SceneView* <B><A HREF="#DOC.6.2.10">getViewportSceneView</A></B>(unsigned int pos)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.6.2.11">open</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.6.2.12">run</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.6.2.13">app</A></B>(unsigned int <!1><A HREF="Viewer.html#DOC.6.2.45.2">viewport</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.6.2.14">cull</A></B>(unsigned int <!1><A HREF="Viewer.html#DOC.6.2.45.2">viewport</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.6.2.15">draw</A></B>(unsigned int <!1><A HREF="Viewer.html#DOC.6.2.45.2">viewport</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>long <B><A HREF="#DOC.6.2.16">initClock</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.6.2.17">clockSeconds</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Timer_t <B><A HREF="#DOC.6.2.18">updateFrameTick</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.6.2.19">frameSeconds</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.6.2.20">frameRate</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.6.2.21">help</A></B>(ostream&amp; fout)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.6.2.22">registerCameraManipulator</A></B>(osgUtil::CameraManipulator* cm, unsigned int <!1><A HREF="Viewer.html#DOC.6.2.45.2">viewport</A> = 0)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.6.2.23">selectCameraManipulator</A></B>(unsigned int pos, unsigned int <!1><A HREF="Viewer.html#DOC.6.2.45.2">viewport</A> = 0)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.6.2.24">requestRedraw</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.6.2.25">requestContinuousUpdate</A></B>(bool )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.6.2.26">requestWarpPointer</A></B>(int x, int y)
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   <!1><A HREF="Viewer.html">Viewer</A>* <B><A HREF="#DOC.6.2.44">s_theViewer</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.6.2.47">_focusedViewport</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.6.2.48">_saveFileName</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.6.2.49">_title</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.6.2.50">wx</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int  <B><A HREF="#DOC.6.2.51">wy</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int   <B><A HREF="#DOC.6.2.52">ww</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int    <B><A HREF="#DOC.6.2.53">wh</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.6.2.54">_is_open</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.6.2.55">frame_rate</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>RTfs* <B><A HREF="#DOC.6.2.56">fs</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.6.2.57">_viewFrustumCullingActive</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.6.2.58">_smallFeatureCullingActive</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.6.2.59">mx</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int  <B><A HREF="#DOC.6.2.60">my</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int   <B><A HREF="#DOC.6.2.61">mbutton</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.6.2.62">polymode</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.6.2.63">texture</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.6.2.64">backface</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.6.2.65">lighting</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.6.2.66">flat_shade</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.6.2.67">_two_sided_lighting</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.6.2.68">fullscreen</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.6.2.69">_saved_wx</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int  <B><A HREF="#DOC.6.2.70">_saved_wy</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int   <B><A HREF="#DOC.6.2.71">_saved_ww</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int    <B><A HREF="#DOC.6.2.72">_saved_wh</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.6.2.73">frRate</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.6.2.74">_printStats</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.6.2.76">_useDisplayLists</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Timer <B><A HREF="#DOC.6.2.77">_timer</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Timer_t <B><A HREF="#DOC.6.2.78">_tickRatePerSecond</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Timer_t <B><A HREF="#DOC.6.2.79">_initialTick</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Timer_t <B><A HREF="#DOC.6.2.80">_lastFrameTick</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Timer_t <B><A HREF="#DOC.6.2.81">_frameTick</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void <B><A HREF="#DOC.6.2.27">displayCB</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void <B><A HREF="#DOC.6.2.28">reshapeCB</A></B>(int w, int h)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void <B><A HREF="#DOC.6.2.29">visibilityCB</A></B>(int state)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void <B><A HREF="#DOC.6.2.30">mouseMotionCB</A></B>(int x, int y)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void <B><A HREF="#DOC.6.2.31">mousePassiveMotionCB</A></B>(int x, int y)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void <B><A HREF="#DOC.6.2.32">mouseCB</A></B>(int button, int state, int x, int y)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void <B><A HREF="#DOC.6.2.33">keyboardCB</A></B>(unsigned char key, int x, int y )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.6.2.34">display</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.6.2.35">reshape</A></B>(GLint w, GLint h)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.6.2.36">visibility</A></B>(int state)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.6.2.37">mouseMotion</A></B>(int x, int y)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.6.2.38">mousePassiveMotion</A></B>(int x, int y)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.6.2.39">mouse</A></B>(int button, int state, int x, int y)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.6.2.40">keyboard</A></B>(unsigned char key, int x, int y)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.6.2.41">setFocusedViewport</A></B>(unsigned int pos)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.6.2.42">mapWindowXYToSceneView</A></B>(int x, int y)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.6.2.43">showStats</A></B>(void)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Timer_t <B><A HREF="#DOC.6.2.82">clockTick</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Timer_t <B><A HREF="#DOC.6.2.83">frameTick</A></B>()
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Members</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;osg::ref_ptr&lt;osgUtil::CameraManipulator&gt; &gt; CameraManipListstruct  <B><A HREF="#DOC.6.2.45">ViewportDef</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="Viewer.html#DOC.6.2.45">ViewportDef</A>&gt; ViewportList ViewportList <B><A HREF="#DOC.6.2.46">_viewportList</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct <B><A HREF="#DOC.6.2.75"></A></B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>A basic viewer base class which provides a window, simple keyboard and mouse interaction.
+Please note, this viewer class has been developed via a rather haphazard
+path and <i>needs</i> a total rewrite.  It currently suffices for osg demo's
+but shouldn't be viewed as the be all and end of osg viewer classes.
+Someone please rewrite it :-)</BLOCKQUOTE>
+<DL>
+
+<A NAME="Viewer"></A>
+<A NAME="DOC.6.2.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Viewer()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~Viewer"></A>
+<A NAME="DOC.6.2.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Viewer()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setWindowOrigin"></A>
+<A NAME="DOC.6.2.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setWindowOrigin(int x, int y)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setWindowSize"></A>
+<A NAME="DOC.6.2.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setWindowSize(int width, int height)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setWindowTitle"></A>
+<A NAME="DOC.6.2.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setWindowTitle(const std::string&amp; title)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="init"></A>
+<A NAME="DOC.6.2.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void init(osg::Node* rootnode)</B></TT>
+<DD>init is deprecated, you should use addViewport instead. init is
+only available for backwards compatibility.
+<DL><DT><DD></DL><P>
+<A NAME="addViewport"></A>
+<A NAME="DOC.6.2.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void addViewport(osgUtil::SceneView* sv, float x = 0.0, float y = 0.0, float width = 1.0, float height = 1.0)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="addViewport"></A>
+<A NAME="DOC.6.2.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void addViewport(osg::Node*, float x = 0.0, float y = 0.0, float width = 1.0, float height = 1.0)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getNumViewports"></A>
+<A NAME="DOC.6.2.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const int getNumViewports() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getViewportSceneView"></A>
+<A NAME="DOC.6.2.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osgUtil::SceneView* getViewportSceneView(unsigned int pos)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="open"></A>
+<A NAME="DOC.6.2.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool open()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="run"></A>
+<A NAME="DOC.6.2.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool run()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="app"></A>
+<A NAME="DOC.6.2.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   float app(unsigned int <!1><A HREF="Viewer.html#DOC.6.2.45.2">viewport</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="cull"></A>
+<A NAME="DOC.6.2.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   float cull(unsigned int <!1><A HREF="Viewer.html#DOC.6.2.45.2">viewport</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="draw"></A>
+<A NAME="DOC.6.2.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   float draw(unsigned int <!1><A HREF="Viewer.html#DOC.6.2.45.2">viewport</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="initClock"></A>
+<A NAME="DOC.6.2.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>long initClock()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="clockSeconds"></A>
+<A NAME="DOC.6.2.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float clockSeconds()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="updateFrameTick"></A>
+<A NAME="DOC.6.2.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Timer_t updateFrameTick()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="frameSeconds"></A>
+<A NAME="DOC.6.2.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float frameSeconds()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="frameRate"></A>
+<A NAME="DOC.6.2.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float frameRate()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="help"></A>
+<A NAME="DOC.6.2.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void help(ostream&amp; fout)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="registerCameraManipulator"></A>
+<A NAME="DOC.6.2.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int registerCameraManipulator(osgUtil::CameraManipulator* cm, unsigned int <!1><A HREF="Viewer.html#DOC.6.2.45.2">viewport</A> = 0)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="selectCameraManipulator"></A>
+<A NAME="DOC.6.2.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void selectCameraManipulator(unsigned int pos, unsigned int <!1><A HREF="Viewer.html#DOC.6.2.45.2">viewport</A> = 0)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="requestRedraw"></A>
+<A NAME="DOC.6.2.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void requestRedraw()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="requestContinuousUpdate"></A>
+<A NAME="DOC.6.2.25"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void requestContinuousUpdate(bool )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="requestWarpPointer"></A>
+<A NAME="DOC.6.2.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void requestWarpPointer(int x, int y)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="displayCB"></A>
+<A NAME="DOC.6.2.27"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   void displayCB()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="reshapeCB"></A>
+<A NAME="DOC.6.2.28"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   void reshapeCB(int w, int h)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="visibilityCB"></A>
+<A NAME="DOC.6.2.29"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   void visibilityCB(int state)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="mouseMotionCB"></A>
+<A NAME="DOC.6.2.30"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   void mouseMotionCB(int x, int y)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="mousePassiveMotionCB"></A>
+<A NAME="DOC.6.2.31"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   void mousePassiveMotionCB(int x, int y)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="mouseCB"></A>
+<A NAME="DOC.6.2.32"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   void mouseCB(int button, int state, int x, int y)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="keyboardCB"></A>
+<A NAME="DOC.6.2.33"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   void keyboardCB(unsigned char key, int x, int y )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="display"></A>
+<A NAME="DOC.6.2.34"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void display()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="reshape"></A>
+<A NAME="DOC.6.2.35"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void reshape(GLint w, GLint h)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="visibility"></A>
+<A NAME="DOC.6.2.36"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void visibility(int state)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="mouseMotion"></A>
+<A NAME="DOC.6.2.37"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void mouseMotion(int x, int y)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="mousePassiveMotion"></A>
+<A NAME="DOC.6.2.38"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void mousePassiveMotion(int x, int y)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="mouse"></A>
+<A NAME="DOC.6.2.39"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void mouse(int button, int state, int x, int y)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="keyboard"></A>
+<A NAME="DOC.6.2.40"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void keyboard(unsigned char key, int x, int y)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setFocusedViewport"></A>
+<A NAME="DOC.6.2.41"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setFocusedViewport(unsigned int pos)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="mapWindowXYToSceneView"></A>
+<A NAME="DOC.6.2.42"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int mapWindowXYToSceneView(int x, int y)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="showStats"></A>
+<A NAME="DOC.6.2.43"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void showStats(void)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="s_theViewer"></A>
+<A NAME="DOC.6.2.44"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   <!1><A HREF="Viewer.html">Viewer</A>* s_theViewer</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ViewportDef"></A>
+<A NAME="DOC.6.2.45"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;osg::ref_ptr&lt;osgUtil::CameraManipulator&gt; &gt; CameraManipListstruct  ViewportDef</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="sceneView"></A>
+<A NAME="DOC.6.2.45.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osgUtil::SceneView&gt;  sceneView</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="viewport"></A>
+<A NAME="DOC.6.2.45.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float viewport[4]</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_cameraManipulator"></A>
+<A NAME="DOC.6.2.45.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osgUtil::CameraManipulator&gt;  _cameraManipulator</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_cameraManipList"></A>
+<A NAME="DOC.6.2.45.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>CameraManipList _cameraManipList</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="_viewportList"></A>
+<A NAME="DOC.6.2.46"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="Viewer.html#DOC.6.2.45">ViewportDef</A>&gt; ViewportList ViewportList _viewportList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_focusedViewport"></A>
+<A NAME="DOC.6.2.47"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _focusedViewport</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_saveFileName"></A>
+<A NAME="DOC.6.2.48"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>std::string _saveFileName</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_title"></A>
+<A NAME="DOC.6.2.49"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>std::string _title</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="wx"></A>
+<A NAME="DOC.6.2.50"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int wx</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="wy"></A>
+<A NAME="DOC.6.2.51"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int  wy</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ww"></A>
+<A NAME="DOC.6.2.52"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int   ww</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="wh"></A>
+<A NAME="DOC.6.2.53"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int    wh</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_is_open"></A>
+<A NAME="DOC.6.2.54"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _is_open</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="frame_rate"></A>
+<A NAME="DOC.6.2.55"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int frame_rate</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="fs"></A>
+<A NAME="DOC.6.2.56"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>RTfs* fs</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_viewFrustumCullingActive"></A>
+<A NAME="DOC.6.2.57"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _viewFrustumCullingActive</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_smallFeatureCullingActive"></A>
+<A NAME="DOC.6.2.58"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _smallFeatureCullingActive</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="mx"></A>
+<A NAME="DOC.6.2.59"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int mx</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="my"></A>
+<A NAME="DOC.6.2.60"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int  my</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="mbutton"></A>
+<A NAME="DOC.6.2.61"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int   mbutton</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="polymode"></A>
+<A NAME="DOC.6.2.62"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int polymode</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="texture"></A>
+<A NAME="DOC.6.2.63"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int texture</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="backface"></A>
+<A NAME="DOC.6.2.64"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int backface</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="lighting"></A>
+<A NAME="DOC.6.2.65"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int lighting</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="flat_shade"></A>
+<A NAME="DOC.6.2.66"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int flat_shade</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_two_sided_lighting"></A>
+<A NAME="DOC.6.2.67"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _two_sided_lighting</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="fullscreen"></A>
+<A NAME="DOC.6.2.68"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool fullscreen</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_saved_wx"></A>
+<A NAME="DOC.6.2.69"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _saved_wx</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_saved_wy"></A>
+<A NAME="DOC.6.2.70"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int  _saved_wy</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_saved_ww"></A>
+<A NAME="DOC.6.2.71"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int   _saved_ww</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_saved_wh"></A>
+<A NAME="DOC.6.2.72"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int    _saved_wh</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="frRate"></A>
+<A NAME="DOC.6.2.73"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float frRate</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_printStats"></A>
+<A NAME="DOC.6.2.74"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _printStats</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME=""></A>
+<A NAME="DOC.6.2.75"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>struct </B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="timeApp"></A>
+<A NAME="DOC.6.2.75.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float timeApp</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="timeCull"></A>
+<A NAME="DOC.6.2.75.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float  timeCull</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="timeDraw"></A>
+<A NAME="DOC.6.2.75.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float   timeDraw</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="timeFrame"></A>
+<A NAME="DOC.6.2.75.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float    timeFrame</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="frameend"></A>
+<A NAME="DOC.6.2.75.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Timer_t frameend</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="_useDisplayLists"></A>
+<A NAME="DOC.6.2.76"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _useDisplayLists</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_timer"></A>
+<A NAME="DOC.6.2.77"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Timer _timer</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_tickRatePerSecond"></A>
+<A NAME="DOC.6.2.78"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Timer_t _tickRatePerSecond</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_initialTick"></A>
+<A NAME="DOC.6.2.79"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Timer_t _initialTick</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_lastFrameTick"></A>
+<A NAME="DOC.6.2.80"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Timer_t _lastFrameTick</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_frameTick"></A>
+<A NAME="DOC.6.2.81"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Timer_t _frameTick</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="clockTick"></A>
+<A NAME="DOC.6.2.82"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Timer_t clockTick()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="frameTick"></A>
+<A NAME="DOC.6.2.83"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Timer_t frameTick()</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

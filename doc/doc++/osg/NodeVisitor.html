@@ -1,0 +1,239 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  SG_EXPORT osg::NodeVisitor</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.8">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osg::NodeVisitor</A></H2></H2><BLOCKQUOTE>Visitor for type safe operations on osg::Node's.</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=65>
+<param name=classes value="CReferenced,MReferenced.html,CNodeVisitor,MNodeVisitor.html">
+<param name=before value="M,M">
+<param name=after value="Md_,M">
+<param name=indent value="0,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.53.2">NodeVisitor</A></B>(<!1><A HREF="NodeVisitor.html#DOC.2.53.1">TraversalMode</A> tm=<!1><A HREF="NodeVisitor.html#DOC.2.53.1.1">TRAVERSE_NONE</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.53.3">~NodeVisitor</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.53.4">reset</A></B>()
+<DD><I>Method to call to reset visitor.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.53.5">setTraversalMode</A></B>(const <!1><A HREF="NodeVisitor.html#DOC.2.53.1">TraversalMode</A> mode)
+<DD><I>Set the traversal mode for Node::traverse() to use when  deciding which children of a node to traverse.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="NodeVisitor.html#DOC.2.53.1">TraversalMode</A> <B><A HREF="#DOC.2.53.6">getTraversalMode</A></B>() const 
+<DD><I>Get the traversal mode</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.53.7">setTraversalVisitor</A></B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv)
+<DD><I>Set a visitor to handle traversal.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="NodeVisitor.html">NodeVisitor</A>* <B><A HREF="#DOC.2.53.8">getTraversalVisitor</A></B>()
+<DD><I>Get the traversal visitor, returns NULL if none is attached</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.53.9">traverse</A></B>(<!1><A HREF="Node.html">Node</A>&amp; node)
+<DD><I>Inline method for passing handling traversal of a nodes.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.53.10">apply</A></B>(<!1><A HREF="Node.html">Node</A>&amp; node)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.53.11">apply</A></B>(<!1><A HREF="Geode.html">Geode</A>&amp; node)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.53.12">apply</A></B>(<!1><A HREF="Billboard.html">Billboard</A>&amp; node)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.53.13">apply</A></B>(<!1><A HREF="LightSource.html">LightSource</A>&amp; node)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.53.14">apply</A></B>(<!1><A HREF="Group.html">Group</A>&amp; node)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.53.15">apply</A></B>(<!1><A HREF="Transform.html">Transform</A>&amp; node)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.53.16">apply</A></B>(<!1><A HREF="Switch.html">Switch</A>&amp; node)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.53.17">apply</A></B>(Sequence&amp; node)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.53.18">apply</A></B>(<!1><A HREF="LOD.html">LOD</A>&amp; node)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.53.19">apply</A></B>(<!1><A HREF="Impostor.html">Impostor</A>&amp; node)
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.53.1">TraversalMode</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&gt;  <B><A HREF="#DOC.2.53.20">_traversalVisitor</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="NodeVisitor.html#DOC.2.53.1">TraversalMode</A> <B><A HREF="#DOC.2.53.21">_traversalMode</A></B>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Referenced.html">Referenced</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>&amp; <B>operator = </B>(<!1><A HREF="Referenced.html">Referenced</A>&amp;)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>ref</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const int <B>referenceCount</B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>mutable int <B>_refCount</B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>Visitor for type safe operations on osg::Node's.
+Based on GOF's Visitor pattern.</BLOCKQUOTE>
+<DL>
+
+<A NAME="TraversalMode"></A>
+<A NAME="DOC.2.53.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  TraversalMode</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="TRAVERSE_NONE"></A>
+<A NAME="DOC.2.53.1.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TRAVERSE_NONE</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="TRAVERSE_PARENTS"></A>
+<A NAME="DOC.2.53.1.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TRAVERSE_PARENTS</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="TRAVERSE_ALL_CHILDREN"></A>
+<A NAME="DOC.2.53.1.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TRAVERSE_ALL_CHILDREN</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="TRAVERSE_ACTIVE_CHILDREN"></A>
+<A NAME="DOC.2.53.1.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TRAVERSE_ACTIVE_CHILDREN</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="TRAVERSE_VISITOR"></A>
+<A NAME="DOC.2.53.1.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TRAVERSE_VISITOR</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="NodeVisitor"></A>
+<A NAME="DOC.2.53.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NodeVisitor(<!1><A HREF="NodeVisitor.html#DOC.2.53.1">TraversalMode</A> tm=<!1><A HREF="NodeVisitor.html#DOC.2.53.1.1">TRAVERSE_NONE</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~NodeVisitor"></A>
+<A NAME="DOC.2.53.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~NodeVisitor()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="reset"></A>
+<A NAME="DOC.2.53.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void reset()</B></TT>
+<DD>Method to call to reset visitor. Useful for your visitor accumulates
+state during a traversal, and you plan to resuse the visitor. 
+To flush that state for the next traversal than call reset() prior
+to each traversal.
+<DL><DT><DD></DL><P>
+<A NAME="setTraversalMode"></A>
+<A NAME="DOC.2.53.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setTraversalMode(const <!1><A HREF="NodeVisitor.html#DOC.2.53.1">TraversalMode</A> mode)</B></TT>
+<DD>Set the traversal mode for Node::traverse() to use when 
+deciding which children of a node to traverse. If a
+NodeVisitor has been attached via setTraverseVisitor()
+and the new mode is not TRAVERSE_VISITOR then the attached
+visitor is detached. Default mode is TRAVERSE_NONE.
+<DL><DT><DD></DL><P>
+<A NAME="getTraversalMode"></A>
+<A NAME="DOC.2.53.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="NodeVisitor.html#DOC.2.53.1">TraversalMode</A> getTraversalMode() const </B></TT>
+<DD>Get the traversal mode
+<DL><DT><DD></DL><P>
+<A NAME="setTraversalVisitor"></A>
+<A NAME="DOC.2.53.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setTraversalVisitor(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv)</B></TT>
+<DD>Set a visitor to handle traversal.
+Overides the traverse mode setting it to TRAVERSAL_VISITOR.
+<DL><DT><DD></DL><P>
+<A NAME="getTraversalVisitor"></A>
+<A NAME="DOC.2.53.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="NodeVisitor.html">NodeVisitor</A>* getTraversalVisitor()</B></TT>
+<DD>Get the traversal visitor, returns NULL if none is attached
+<DL><DT><DD></DL><P>
+<A NAME="traverse"></A>
+<A NAME="DOC.2.53.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void traverse(<!1><A HREF="Node.html">Node</A>&amp; node)</B></TT>
+<DD>Inline method for passing handling traversal of a nodes.
+If you intend to use the visitor for actively traversing 
+the scene graph then make sure the accept() methods call
+this method unless they handle traversal directly.
+<DL><DT><DD></DL><P>
+<A NAME="apply"></A>
+<A NAME="DOC.2.53.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="Node.html">Node</A>&amp; node)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="apply"></A>
+<A NAME="DOC.2.53.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="Geode.html">Geode</A>&amp; node)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="apply"></A>
+<A NAME="DOC.2.53.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="Billboard.html">Billboard</A>&amp; node)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="apply"></A>
+<A NAME="DOC.2.53.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="LightSource.html">LightSource</A>&amp; node)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="apply"></A>
+<A NAME="DOC.2.53.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="Group.html">Group</A>&amp; node)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="apply"></A>
+<A NAME="DOC.2.53.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="Transform.html">Transform</A>&amp; node)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="apply"></A>
+<A NAME="DOC.2.53.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="Switch.html">Switch</A>&amp; node)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="apply"></A>
+<A NAME="DOC.2.53.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(Sequence&amp; node)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="apply"></A>
+<A NAME="DOC.2.53.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="LOD.html">LOD</A>&amp; node)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="apply"></A>
+<A NAME="DOC.2.53.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="Impostor.html">Impostor</A>&amp; node)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_traversalVisitor"></A>
+<A NAME="DOC.2.53.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&gt;  _traversalVisitor</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_traversalMode"></A>
+<A NAME="DOC.2.53.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="NodeVisitor.html#DOC.2.53.1">TraversalMode</A> _traversalMode</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

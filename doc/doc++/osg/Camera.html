@@ -1,0 +1,706 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  SG_EXPORT osg::Camera</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.8">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osg::Camera</A></H2></H2><BLOCKQUOTE>Camera class for encapsulating the view position and orientation and projection (lens) used.</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=65>
+<param name=classes value="CReferenced,MReferenced.html,CCamera,MCamera.html">
+<param name=before value="M,M">
+<param name=after value="Md_,M">
+<param name=indent value="0,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.20.1">Camera</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.20.2">~Camera</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Camera.html#DOC.2.20.3">ProjectionType</A> <B><A HREF="#DOC.2.20.4">getProjectionType</A></B>() const 
+<DD><I>Get the projection type set by setOtho,setOtho2D,setFrustum, and set perspective methods</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.20.5">setOrtho</A></B>(const double <!1><A HREF="Camera.html#DOC.2.20.12">left</A>, const double <!1><A HREF="Camera.html#DOC.2.20.13">right</A>, const double <!1><A HREF="Camera.html#DOC.2.20.15">bottom</A>, const double <!1><A HREF="Camera.html#DOC.2.20.14">top</A>, const double <!1><A HREF="Camera.html#DOC.2.20.16">zNear</A>, const double <!1><A HREF="Camera.html#DOC.2.20.17">zFar</A>)
+<DD><I>Set a orthographics projection.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.20.6">setOrtho2D</A></B>(const double <!1><A HREF="Camera.html#DOC.2.20.12">left</A>, const double <!1><A HREF="Camera.html#DOC.2.20.13">right</A>, const double <!1><A HREF="Camera.html#DOC.2.20.15">bottom</A>, const double <!1><A HREF="Camera.html#DOC.2.20.14">top</A>)
+<DD><I>Set a 2D orthographics projection.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.20.7">setFrustum</A></B>(const double <!1><A HREF="Camera.html#DOC.2.20.12">left</A>, const double <!1><A HREF="Camera.html#DOC.2.20.13">right</A>, const double <!1><A HREF="Camera.html#DOC.2.20.15">bottom</A>, const double <!1><A HREF="Camera.html#DOC.2.20.14">top</A>, const double <!1><A HREF="Camera.html#DOC.2.20.16">zNear</A>, const double <!1><A HREF="Camera.html#DOC.2.20.17">zFar</A>)
+<DD><I>Set a perspective projection.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.20.8">setPerspective</A></B>(const double fovy, const double aspectRatio, const double <!1><A HREF="Camera.html#DOC.2.20.16">zNear</A>, const double <!1><A HREF="Camera.html#DOC.2.20.17">zFar</A>)
+<DD><I>Set a sysmetical perspective projection, See gluPerspective for further details.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.20.9">setNearFar</A></B>(const double <!1><A HREF="Camera.html#DOC.2.20.16">zNear</A>, const double <!1><A HREF="Camera.html#DOC.2.20.17">zFar</A>)
+<DD><I>Set the near and far clipping planes</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.20.11">adjustAspectRatio</A></B>(const double newAspectRatio, const <!1><A HREF="Camera.html#DOC.2.20.10">AdjustAxis</A> aa = <!1><A HREF="Camera.html#DOC.2.20.10.2">ADJUST_HORIZONTAL</A>)
+<DD><I>Adjust the clipping planes to account for a new window aspcect ratio.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const double <B><A HREF="#DOC.2.20.12">left</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const double <B><A HREF="#DOC.2.20.13">right</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const double <B><A HREF="#DOC.2.20.14">top</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const double <B><A HREF="#DOC.2.20.15">bottom</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const double <B><A HREF="#DOC.2.20.16">zNear</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const double <B><A HREF="#DOC.2.20.17">zFar</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const double <B><A HREF="#DOC.2.20.18">calc_fovy</A></B>() const 
+<DD><I>Calculate and return the equivilant fovx for the current project setting.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const double <B><A HREF="#DOC.2.20.19">calc_fovx</A></B>() const 
+<DD><I>Calculate and return the equivilant fovy for the current project setting.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const double <B><A HREF="#DOC.2.20.20">calc_aspectRatio</A></B>() const 
+<DD><I>Calculate and return the projection aspect ratio.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Matrix.html">Matrix</A>&amp; <B><A HREF="#DOC.2.20.21">getProjectionMatrix</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Camera.html#DOC.2.20.22">LookAtType</A> <B><A HREF="#DOC.2.20.23">getLookAtType</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.20.24">home</A></B>()
+<DD><I> hardwired home view for now, looking straight down the Z axis at the origin, with 'up' being the y axis</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.20.25">setView</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; eyePoint, const <!1><A HREF="Vec3.html">Vec3</A>&amp; lookPoint, const <!1><A HREF="Vec3.html">Vec3</A>&amp; upVector)
+<DD><I> Set the View, the up vector should be orthogonal to the look vector.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.20.26">setLookAt</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye, const <!1><A HREF="Vec3.html">Vec3</A>&amp; <!1><A HREF="BoundingSphere.html#DOC.2.4.6">center</A>, const <!1><A HREF="Vec3.html">Vec3</A>&amp; up)
+<DD><I>set the position and orientaion of the camera, using the same convention as gluLookAt</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.20.27">setLookAt</A></B>(const double eyeX, const double eyeY, const double eyeZ, const double centerX, const double centerY, const double centerZ, const double upX, const double upY, const double upZ)
+<DD><I>set the position and orientaion of the camera, using the same convention as gluLookAt</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.20.28">transformLookAt</A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; matrix)
+<DD><I>post multiple the existing eye point and orientation by matrix.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.20.29">ensureOrthogonalUpVector</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec3.html">Vec3</A>&amp; <B><A HREF="#DOC.2.20.30">getEyePoint</A></B>() const 
+<DD><I>get the eye point.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec3.html">Vec3</A>&amp; <B><A HREF="#DOC.2.20.31">getCenterPoint</A></B>() const 
+<DD><I>get the center point.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec3.html">Vec3</A>&amp; <B><A HREF="#DOC.2.20.32">getUpVector</A></B>() const 
+<DD><I>get the up vector </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.20.33">getLookVector</A></B>() const 
+<DD><I>calculate look vector</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.20.34">getSideVector</A></B>() const 
+<DD><I>calculate side vector</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const float <B><A HREF="#DOC.2.20.35">getFocalLength</A></B>() const 
+<DD><I>get focal distance</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.20.37">attachTransform</A></B>(const <!1><A HREF="Camera.html#DOC.2.20.36">TransformMode</A> mode, <!1><A HREF="Matrix.html">Matrix</A>* modelTransform=0)
+<DD><I>Attach a transform matrix which is applied after the camera look at.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.20.38">dirtyTransform</A></B>()
+<DD><I>must be called after you modify an attachedTransform.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Matrix.html">Matrix</A>* <B><A HREF="#DOC.2.20.39">getTransform</A></B>(const <!1><A HREF="Camera.html#DOC.2.20.36">TransformMode</A> mode)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Matrix.html">Matrix</A>* <B><A HREF="#DOC.2.20.40">getTransform</A></B>(const <!1><A HREF="Camera.html#DOC.2.20.36">TransformMode</A> mode) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.20.41">getEyePoint_Model</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.20.42">getCenterPoint_Model</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.20.43">getLookVector_Model</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.20.44">getUpVector_Model</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.20.45">getSideVector_Model</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Matrix.html">Matrix</A>&amp; <B><A HREF="#DOC.2.20.46">getModelViewMatrix</A></B>() const 
+<DD><I>Get the ModelView matrix.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.20.47">setUseNearClippingPlane</A></B>(const bool use)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const bool <B><A HREF="#DOC.2.20.48">getUseNearClippingPlane</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.20.49">setUseFarClippingPlane</A></B>(const bool use)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const bool <B><A HREF="#DOC.2.20.50">getUseFarClippingPlane</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="ClippingVolume.html">ClippingVolume</A>&amp; <B><A HREF="#DOC.2.20.51">getClippingVolume</A></B>() const 
+<DD><I>get the view frustum clipping in model coordinates </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const bool <B><A HREF="#DOC.2.20.52">project</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; obj, const int* viewport, <!1><A HREF="Vec3.html">Vec3</A>&amp; win) const 
+<DD><I>Map object coordinates into windows coordinates.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const bool <B><A HREF="#DOC.2.20.53">unproject</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; win, const int* viewport, <!1><A HREF="Vec3.html">Vec3</A>&amp; obj) const 
+<DD><I>Map window coordinates into object coordinates.</I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.20.3">ProjectionType</A></B>
+<DD><I>Range of projection types.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.20.10">AdjustAxis</A></B>
+<DD><I>Use in combination with adjustAspectRatio, to control the change in frustum clipping planes to account for changes in windows aspect ratio,</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.20.22">LookAtType</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.20.36">TransformMode</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Camera.html#DOC.2.20.3">ProjectionType</A> <B><A HREF="#DOC.2.20.56">_projectionType</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.20.57">_left</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.20.58">_right</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.20.59">_bottom</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.20.60">_top</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.20.61">_zNear</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.20.62">_zFar</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Camera.html#DOC.2.20.22">LookAtType</A> <B><A HREF="#DOC.2.20.63">_lookAtType</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.20.64">_eye</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.20.65">_center</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.20.66">_up</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.20.67">_focalLength</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Camera.html#DOC.2.20.36">TransformMode</A> <B><A HREF="#DOC.2.20.68">_attachedTransformMode</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Matrix.html">Matrix</A>&gt;  <B><A HREF="#DOC.2.20.69">_eyeToModelTransform</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Matrix.html">Matrix</A>&gt;  <B><A HREF="#DOC.2.20.70">_modelToEyeTransform</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.20.71">_useNearClippingPlane</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.20.72">_useFarClippingPlane</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable bool <B><A HREF="#DOC.2.20.73">_dirty</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Matrix.html">Matrix</A>&gt;  <B><A HREF="#DOC.2.20.74">_projectionMatrix</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Matrix.html">Matrix</A>&gt;  <B><A HREF="#DOC.2.20.75">_modelViewMatrix</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="ClippingVolume.html">ClippingVolume</A> <B><A HREF="#DOC.2.20.76">_clippingVolume</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Matrix.html">Matrix</A>&gt;  <B><A HREF="#DOC.2.20.77">_MP</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Matrix.html">Matrix</A>&gt;  <B><A HREF="#DOC.2.20.78">_inverseMP</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.20.54">Camera</A></B>(const <!1><A HREF="Camera.html#DOC.2.20.54">Camera</A>&amp;)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Camera.html">Camera</A>&amp; <B><A HREF="#DOC.2.20.55">operator=</A></B>(const <!1><A HREF="Camera.html">Camera</A>&amp;)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.20.79">calculateMatricesAndClippingVolume</A></B>() const 
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Referenced.html">Referenced</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>&amp; <B>operator = </B>(<!1><A HREF="Referenced.html">Referenced</A>&amp;)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>ref</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const int <B>referenceCount</B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>mutable int <B>_refCount</B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>Camera class for encapsulating the view position and orientation and
+projection (lens) used.  Creates a projection and modelview matrices
+which can be used to set OpenGL's PROJECTION and MODELVIEW matrices
+represectively.</BLOCKQUOTE>
+<DL>
+
+<A NAME="Camera"></A>
+<A NAME="DOC.2.20.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Camera()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~Camera"></A>
+<A NAME="DOC.2.20.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Camera()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ProjectionType"></A>
+<A NAME="DOC.2.20.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  ProjectionType</B></TT>
+<DD>Range of projection types.
+OTHO2D is a special case of OTHO where the near and far planes
+are equal to -1 and 1 respectively.
+PRESPECTIVE is a special case of FRUSTUM where the left & right
+and bottom and top and symetrical.
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="ORTHO"></A>
+<A NAME="DOC.2.20.3.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ORTHO</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ORTHO2D"></A>
+<A NAME="DOC.2.20.3.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ORTHO2D</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="FRUSTUM"></A>
+<A NAME="DOC.2.20.3.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> FRUSTUM</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="PERSPECTIVE"></A>
+<A NAME="DOC.2.20.3.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> PERSPECTIVE</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="getProjectionType"></A>
+<A NAME="DOC.2.20.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Camera.html#DOC.2.20.3">ProjectionType</A> getProjectionType() const </B></TT>
+<DD>Get the projection type set by setOtho,setOtho2D,setFrustum,
+and set perspective methods
+<DL><DT><DD></DL><P>
+<A NAME="setOrtho"></A>
+<A NAME="DOC.2.20.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setOrtho(const double <!1><A HREF="Camera.html#DOC.2.20.12">left</A>, const double <!1><A HREF="Camera.html#DOC.2.20.13">right</A>, const double <!1><A HREF="Camera.html#DOC.2.20.15">bottom</A>, const double <!1><A HREF="Camera.html#DOC.2.20.14">top</A>, const double <!1><A HREF="Camera.html#DOC.2.20.16">zNear</A>, const double <!1><A HREF="Camera.html#DOC.2.20.17">zFar</A>)</B></TT>
+<DD>Set a orthographics projection. See glOrtho for further details.
+<DL><DT><DD></DL><P>
+<A NAME="setOrtho2D"></A>
+<A NAME="DOC.2.20.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setOrtho2D(const double <!1><A HREF="Camera.html#DOC.2.20.12">left</A>, const double <!1><A HREF="Camera.html#DOC.2.20.13">right</A>, const double <!1><A HREF="Camera.html#DOC.2.20.15">bottom</A>, const double <!1><A HREF="Camera.html#DOC.2.20.14">top</A>)</B></TT>
+<DD>Set a 2D orthographics projection. See gluOrtho2D for further details.
+<DL><DT><DD></DL><P>
+<A NAME="setFrustum"></A>
+<A NAME="DOC.2.20.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setFrustum(const double <!1><A HREF="Camera.html#DOC.2.20.12">left</A>, const double <!1><A HREF="Camera.html#DOC.2.20.13">right</A>, const double <!1><A HREF="Camera.html#DOC.2.20.15">bottom</A>, const double <!1><A HREF="Camera.html#DOC.2.20.14">top</A>, const double <!1><A HREF="Camera.html#DOC.2.20.16">zNear</A>, const double <!1><A HREF="Camera.html#DOC.2.20.17">zFar</A>)</B></TT>
+<DD>Set a perspective projection. See glFrustum for further details.
+<DL><DT><DD></DL><P>
+<A NAME="setPerspective"></A>
+<A NAME="DOC.2.20.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setPerspective(const double fovy, const double aspectRatio, const double <!1><A HREF="Camera.html#DOC.2.20.16">zNear</A>, const double <!1><A HREF="Camera.html#DOC.2.20.17">zFar</A>)</B></TT>
+<DD>Set a sysmetical perspective projection, See gluPerspective for further details.
+Aspect ratio is defined as width/height.
+<DL><DT><DD></DL><P>
+<A NAME="setNearFar"></A>
+<A NAME="DOC.2.20.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setNearFar(const double <!1><A HREF="Camera.html#DOC.2.20.16">zNear</A>, const double <!1><A HREF="Camera.html#DOC.2.20.17">zFar</A>)</B></TT>
+<DD>Set the near and far clipping planes
+<DL><DT><DD></DL><P>
+<A NAME="AdjustAxis"></A>
+<A NAME="DOC.2.20.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  AdjustAxis</B></TT>
+<DD>Use in combination with adjustAspectRatio, to control
+the change in frustum clipping planes to account for
+changes in windows aspect ratio,
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="ADJUST_VERTICAL"></A>
+<A NAME="DOC.2.20.10.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ADJUST_VERTICAL</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ADJUST_HORIZONTAL"></A>
+<A NAME="DOC.2.20.10.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ADJUST_HORIZONTAL</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="adjustAspectRatio"></A>
+<A NAME="DOC.2.20.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void adjustAspectRatio(const double newAspectRatio, const <!1><A HREF="Camera.html#DOC.2.20.10">AdjustAxis</A> aa = <!1><A HREF="Camera.html#DOC.2.20.10.2">ADJUST_HORIZONTAL</A>)</B></TT>
+<DD>Adjust the clipping planes to account for a new window aspcect ratio.
+Typicall used after resizeing a window. Aspect ratio is defined as
+width/height.
+<DL><DT><DD></DL><P>
+<A NAME="left"></A>
+<A NAME="DOC.2.20.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const double left() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="right"></A>
+<A NAME="DOC.2.20.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const double right() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="top"></A>
+<A NAME="DOC.2.20.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const double top() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="bottom"></A>
+<A NAME="DOC.2.20.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const double bottom() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="zNear"></A>
+<A NAME="DOC.2.20.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const double zNear() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="zFar"></A>
+<A NAME="DOC.2.20.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const double zFar() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="calc_fovy"></A>
+<A NAME="DOC.2.20.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const double calc_fovy() const </B></TT>
+<DD>Calculate and return the equivilant fovx for the current project setting.
+This value is only valid for when a symetric persepctive projection exists.
+i.e. getProjectionType()==PERSPECTIVE.
+<DL><DT><DD></DL><P>
+<A NAME="calc_fovx"></A>
+<A NAME="DOC.2.20.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const double calc_fovx() const </B></TT>
+<DD>Calculate and return the equivilant fovy for the current project setting.
+This value is only valid for when a symetric persepctive projection exists.
+i.e. getProjectionType()==PERSPECTIVE.
+<DL><DT><DD></DL><P>
+<A NAME="calc_aspectRatio"></A>
+<A NAME="DOC.2.20.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const double calc_aspectRatio() const </B></TT>
+<DD>Calculate and return the projection aspect ratio.
+Aspect ratio is defined as width/height.
+<DL><DT><DD></DL><P>
+<A NAME="getProjectionMatrix"></A>
+<A NAME="DOC.2.20.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Matrix.html">Matrix</A>&amp; getProjectionMatrix() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="LookAtType"></A>
+<A NAME="DOC.2.20.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  LookAtType</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="USE_HOME_POSITON"></A>
+<A NAME="DOC.2.20.22.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> USE_HOME_POSITON</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="USE_EYE_AND_QUATERNION"></A>
+<A NAME="DOC.2.20.22.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> USE_EYE_AND_QUATERNION</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="USE_EYE_CENTER_AND_UP"></A>
+<A NAME="DOC.2.20.22.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> USE_EYE_CENTER_AND_UP</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="getLookAtType"></A>
+<A NAME="DOC.2.20.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Camera.html#DOC.2.20.22">LookAtType</A> getLookAtType() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="home"></A>
+<A NAME="DOC.2.20.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void home()</B></TT>
+<DD>
+hardwired home view for now, looking straight down the
+Z axis at the origin, with 'up' being the y axis
+<DL><DT><DD></DL><P>
+<A NAME="setView"></A>
+<A NAME="DOC.2.20.25"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setView(const <!1><A HREF="Vec3.html">Vec3</A>&amp; eyePoint, const <!1><A HREF="Vec3.html">Vec3</A>&amp; lookPoint, const <!1><A HREF="Vec3.html">Vec3</A>&amp; upVector)</B></TT>
+<DD>
+Set the View, the up vector should be orthogonal to the look vector.
+setView is now mapped to setLookAt(eye,center,up), and is only
+kept for backwards compatibility.
+<DL><DT><DD></DL><P>
+<A NAME="setLookAt"></A>
+<A NAME="DOC.2.20.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setLookAt(const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye, const <!1><A HREF="Vec3.html">Vec3</A>&amp; <!1><A HREF="BoundingSphere.html#DOC.2.4.6">center</A>, const <!1><A HREF="Vec3.html">Vec3</A>&amp; up)</B></TT>
+<DD>set the position and orientaion of the camera, using the same convention as
+gluLookAt
+<DL><DT><DD></DL><P>
+<A NAME="setLookAt"></A>
+<A NAME="DOC.2.20.27"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setLookAt(const double eyeX, const double eyeY, const double eyeZ, const double centerX, const double centerY, const double centerZ, const double upX, const double upY, const double upZ)</B></TT>
+<DD>set the position and orientaion of the camera, using the same convention as
+gluLookAt
+<DL><DT><DD></DL><P>
+<A NAME="transformLookAt"></A>
+<A NAME="DOC.2.20.28"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void transformLookAt(const <!1><A HREF="Matrix.html">Matrix</A>&amp; matrix)</B></TT>
+<DD>post multiple the existing eye point and orientation by matrix.
+note, does not affect any ModelTransforms that are applied.
+<DL><DT><DD></DL><P>
+<A NAME="ensureOrthogonalUpVector"></A>
+<A NAME="DOC.2.20.29"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void ensureOrthogonalUpVector()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getEyePoint"></A>
+<A NAME="DOC.2.20.30"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Vec3.html">Vec3</A>&amp; getEyePoint() const </B></TT>
+<DD>get the eye point. 
+<DL><DT><DD></DL><P>
+<A NAME="getCenterPoint"></A>
+<A NAME="DOC.2.20.31"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Vec3.html">Vec3</A>&amp; getCenterPoint() const </B></TT>
+<DD>get the center point. 
+<DL><DT><DD></DL><P>
+<A NAME="getUpVector"></A>
+<A NAME="DOC.2.20.32"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Vec3.html">Vec3</A>&amp; getUpVector() const </B></TT>
+<DD>get the up vector 
+<DL><DT><DD></DL><P>
+<A NAME="getLookVector"></A>
+<A NAME="DOC.2.20.33"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec3.html">Vec3</A> getLookVector() const </B></TT>
+<DD>calculate look vector
+<DL><DT><DD></DL><P>
+<A NAME="getSideVector"></A>
+<A NAME="DOC.2.20.34"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec3.html">Vec3</A> getSideVector() const </B></TT>
+<DD>calculate side vector
+<DL><DT><DD></DL><P>
+<A NAME="getFocalLength"></A>
+<A NAME="DOC.2.20.35"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const float getFocalLength() const </B></TT>
+<DD>get focal distance
+<DL><DT><DD></DL><P>
+<A NAME="TransformMode"></A>
+<A NAME="DOC.2.20.36"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  TransformMode</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="EYE_TO_MODEL"></A>
+<A NAME="DOC.2.20.36.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> EYE_TO_MODEL</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="MODEL_TO_EYE"></A>
+<A NAME="DOC.2.20.36.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> MODEL_TO_EYE</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="NO_ATTACHED_TRANSFORM"></A>
+<A NAME="DOC.2.20.36.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NO_ATTACHED_TRANSFORM</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="attachTransform"></A>
+<A NAME="DOC.2.20.37"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void attachTransform(const <!1><A HREF="Camera.html#DOC.2.20.36">TransformMode</A> mode, <!1><A HREF="Matrix.html">Matrix</A>* modelTransform=0)</B></TT>
+<DD>Attach a transform matrix which is applied after the camera look at.
+The attached matrix can work in two ways, either as transform of the eye
+into the model coordinates - EYE_TO_MODEL, or as a transform of the
+model to the eye - MODEL_TO_EYE.  The former is equivilant to attaching
+a camera internal to the scene graph.  The later is equivilant to adding 
+a osg::Transform at root of the scene to move the scene to the eye point.
+Typical used in conjunction with the LookAt position set to home,
+in which case it is simply treated as a model view matrix.
+If the same behaviour as IRIS Performer's setViewMat is desired 
+then set the LookAt to be (0,0,0),(0,1,0),(0,0,1) since Performer's
+default direction is along the y axis, unlike OpenGL and the default OSG.
+If modelTransfor is NULL then do not use any model transform - just use the
+basic LookAt values.
+note: Camera internals maintains the both EYE_TO_MODEL and MODEL_TO_EYE
+internally and ensures that they are the inverse of one another.  However,
+if you modify the attached transform then you must call dirtyTransform, to
+allow the OSG to update matrices accordingly.
+<DL><DT><DD></DL><P>
+<A NAME="dirtyTransform"></A>
+<A NAME="DOC.2.20.38"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void dirtyTransform()</B></TT>
+<DD>must be called after you modify an attachedTransform. 
+<DL><DT><DD></DL><P>
+<A NAME="getTransform"></A>
+<A NAME="DOC.2.20.39"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Matrix.html">Matrix</A>* getTransform(const <!1><A HREF="Camera.html#DOC.2.20.36">TransformMode</A> mode)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getTransform"></A>
+<A NAME="DOC.2.20.40"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Matrix.html">Matrix</A>* getTransform(const <!1><A HREF="Camera.html#DOC.2.20.36">TransformMode</A> mode) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getEyePoint_Model"></A>
+<A NAME="DOC.2.20.41"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec3.html">Vec3</A> getEyePoint_Model() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getCenterPoint_Model"></A>
+<A NAME="DOC.2.20.42"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec3.html">Vec3</A> getCenterPoint_Model() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getLookVector_Model"></A>
+<A NAME="DOC.2.20.43"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec3.html">Vec3</A> getLookVector_Model() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getUpVector_Model"></A>
+<A NAME="DOC.2.20.44"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec3.html">Vec3</A> getUpVector_Model() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getSideVector_Model"></A>
+<A NAME="DOC.2.20.45"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec3.html">Vec3</A> getSideVector_Model() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getModelViewMatrix"></A>
+<A NAME="DOC.2.20.46"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Matrix.html">Matrix</A>&amp; getModelViewMatrix() const </B></TT>
+<DD>Get the ModelView matrix. 
+If a ModelTransform is supplied then the ModelView matrix is
+created by multipling the current LookAt by ModelTransform.
+Otherwise it is simply created by using the current LookAt,
+equivialent to using gluLookAt.
+<DL><DT><DD></DL><P>
+<A NAME="setUseNearClippingPlane"></A>
+<A NAME="DOC.2.20.47"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setUseNearClippingPlane(const bool use)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getUseNearClippingPlane"></A>
+<A NAME="DOC.2.20.48"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const bool getUseNearClippingPlane() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setUseFarClippingPlane"></A>
+<A NAME="DOC.2.20.49"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setUseFarClippingPlane(const bool use)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getUseFarClippingPlane"></A>
+<A NAME="DOC.2.20.50"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const bool getUseFarClippingPlane() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getClippingVolume"></A>
+<A NAME="DOC.2.20.51"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="ClippingVolume.html">ClippingVolume</A>&amp; getClippingVolume() const </B></TT>
+<DD>get the view frustum clipping in model coordinates 
+<DL><DT><DD></DL><P>
+<A NAME="project"></A>
+<A NAME="DOC.2.20.52"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const bool project(const <!1><A HREF="Vec3.html">Vec3</A>&amp; obj, const int* viewport, <!1><A HREF="Vec3.html">Vec3</A>&amp; win) const </B></TT>
+<DD>Map object coordinates into windows coordinates.
+Equivilant to gluProject(...). 
+<DL><DT><DD></DL><P>
+<A NAME="unproject"></A>
+<A NAME="DOC.2.20.53"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const bool unproject(const <!1><A HREF="Vec3.html">Vec3</A>&amp; win, const int* viewport, <!1><A HREF="Vec3.html">Vec3</A>&amp; obj) const </B></TT>
+<DD>Map window coordinates into object coordinates. 
+Equivilant to gluUnProject(...). 
+<DL><DT><DD></DL><P>
+<A NAME="Camera"></A>
+<A NAME="DOC.2.20.54"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Camera(const <!1><A HREF="Camera.html#DOC.2.20.54">Camera</A>&amp;)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator="></A>
+<A NAME="DOC.2.20.55"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Camera.html">Camera</A>&amp; operator=(const <!1><A HREF="Camera.html">Camera</A>&amp;)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_projectionType"></A>
+<A NAME="DOC.2.20.56"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Camera.html#DOC.2.20.3">ProjectionType</A> _projectionType</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_left"></A>
+<A NAME="DOC.2.20.57"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _left</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_right"></A>
+<A NAME="DOC.2.20.58"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _right</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_bottom"></A>
+<A NAME="DOC.2.20.59"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _bottom</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_top"></A>
+<A NAME="DOC.2.20.60"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _top</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_zNear"></A>
+<A NAME="DOC.2.20.61"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _zNear</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_zFar"></A>
+<A NAME="DOC.2.20.62"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _zFar</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_lookAtType"></A>
+<A NAME="DOC.2.20.63"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Camera.html#DOC.2.20.22">LookAtType</A> _lookAtType</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_eye"></A>
+<A NAME="DOC.2.20.64"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec3.html">Vec3</A> _eye</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_center"></A>
+<A NAME="DOC.2.20.65"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec3.html">Vec3</A> _center</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_up"></A>
+<A NAME="DOC.2.20.66"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec3.html">Vec3</A> _up</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_focalLength"></A>
+<A NAME="DOC.2.20.67"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _focalLength</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_attachedTransformMode"></A>
+<A NAME="DOC.2.20.68"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Camera.html#DOC.2.20.36">TransformMode</A> _attachedTransformMode</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_eyeToModelTransform"></A>
+<A NAME="DOC.2.20.69"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Matrix.html">Matrix</A>&gt;  _eyeToModelTransform</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_modelToEyeTransform"></A>
+<A NAME="DOC.2.20.70"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Matrix.html">Matrix</A>&gt;  _modelToEyeTransform</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_useNearClippingPlane"></A>
+<A NAME="DOC.2.20.71"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _useNearClippingPlane</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_useFarClippingPlane"></A>
+<A NAME="DOC.2.20.72"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _useFarClippingPlane</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_dirty"></A>
+<A NAME="DOC.2.20.73"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable bool _dirty</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_projectionMatrix"></A>
+<A NAME="DOC.2.20.74"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable <!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Matrix.html">Matrix</A>&gt;  _projectionMatrix</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_modelViewMatrix"></A>
+<A NAME="DOC.2.20.75"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable <!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Matrix.html">Matrix</A>&gt;  _modelViewMatrix</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_clippingVolume"></A>
+<A NAME="DOC.2.20.76"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable <!1><A HREF="ClippingVolume.html">ClippingVolume</A> _clippingVolume</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_MP"></A>
+<A NAME="DOC.2.20.77"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable <!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Matrix.html">Matrix</A>&gt;  _MP</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_inverseMP"></A>
+<A NAME="DOC.2.20.78"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable <!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Matrix.html">Matrix</A>&gt;  _inverseMP</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="calculateMatricesAndClippingVolume"></A>
+<A NAME="DOC.2.20.79"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void calculateMatricesAndClippingVolume() const </B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

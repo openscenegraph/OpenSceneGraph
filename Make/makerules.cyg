@@ -1,12 +1,16 @@
 
-all : $(MAKEDEPEND) $(TARGET) $(LIB) 
+all : $(MAKEDEPEND) $(TARGET) $(LOADABLE) $(LIB) 
 
 $(TARGET) : $(OBJS) 
 	$(C++) $(LDFLAGS) $(OBJS) $(LIBS) -o $@
 
+$(LOADABLE) : $(OBJS)
+	$(C++) $(LDFLAGS) -shared  -Wl,--export-all-symbols $(OBJS) $(LIBS)  \
+	-Wl,--output-def,lib$(TARGET_BASENAME).def -Wl,--out-implib,$(OSGHOME)/lib/lib$(TARGET_BASENAME).a  -o $@
+
 $(LIB) : $(OBJS)
 	$(C++) $(LDFLAGS) -shared  -Wl,--export-all-symbols $(OBJS) $(LIBS)  \
-	-Wl,--output-def,lib$(TARGET_BASENAME).def -Wl,--out-implib,$(TOP)/lib/lib$(TARGET_BASENAME).a  -o $@
+	-Wl,--output-def,lib$(TARGET_BASENAME).def -Wl,--out-implib,$(OSGHOME)/lib/lib$(TARGET_BASENAME).a  -o $@
 
 clean :
 	rm -f $(OBJS) core $(TARGET) $(MAKEDEPEND)

@@ -1,8 +1,11 @@
 
-all : $(TARGET) $(LIB) 
+all : $(TARGET) $(LOADABLE) $(LIB) 
 
 $(TARGET) : $(OBJS) 
 	$(C++) $(LDFLAGS) $(OBJS) $(LIBS) -o $@
+
+$(LOADABLE) : $(OBJS)
+	$(C++) $(LDFLAGS) -shared $(OBJS) $(LIBS) -o $@
 
 $(LIB) : $(OBJS)
 	$(C++) $(LDFLAGS) -shared $(OBJS) $(LIBS) -o $@

@@ -14,6 +14,7 @@ C++FLAGS = ${CFLAGS}
 CPPFLAGS = ${CFLAGS}
 
 SO_EXT = so
+DL_EXT = so
 
 LDFLAGS = -O2 -n32 -LANG:std -OPT:Olimit=0
 

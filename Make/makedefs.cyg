@@ -19,6 +19,7 @@ C++FLAGS  = ${CFLAGS}
 CPPFLAGS  = ${CFLAGS}
 
 SO_EXT = dll
+DL_EXT = dll
 
 LDFLAGS = -O2 -W -Wall
 #LDFLAGS = -g -W -Wall

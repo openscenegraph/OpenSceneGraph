@@ -186,6 +186,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\LOD.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\ive\PagedLOD.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\ive\Material.cpp
 # End Source File
 # Begin Source File
@@ -367,6 +371,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\LightSource.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\LOD.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\PagedLOD.h
 # End Source File
 # Begin Source File
 

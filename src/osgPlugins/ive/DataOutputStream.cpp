@@ -35,6 +35,7 @@
 #include "Billboard.h"
 #include "Sequence.h"
 #include "LOD.h"
+#include "PagedLOD.h"
 //#include "ViewPoint.h"
 #include "PositionAttitudeTransform.h"
 #include "Transform.h"
@@ -420,6 +421,9 @@ void DataOutputStream::writeNode(osg::Node* node)
         }
         else if(dynamic_cast<osg::Impostor*>(node)){
             ((ive::Impostor*)(node))->write(this);
+        }
+        else if(dynamic_cast<osg::PagedLOD*>(node)){
+            ((ive::PagedLOD*)(node))->write(this);
         }
         else if(dynamic_cast<osg::LOD*>(node)){
             ((ive::LOD*)(node))->write(this);

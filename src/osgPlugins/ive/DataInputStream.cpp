@@ -33,6 +33,7 @@
 #include "Billboard.h"
 #include "Sequence.h"
 #include "LOD.h"
+#include "PagedLOD.h"
 //#include "ViewPoint.h"
 #include "PositionAttitudeTransform.h"
 #include "Transform.h"
@@ -555,6 +556,10 @@ osg::Node* DataInputStream::readNode()
     else if(nodeTypeID== IVELOD){
         node = new osg::LOD();
         ((ive::LOD*)(node))->read(this);
+    }
+    else if(nodeTypeID== IVEPAGEDLOD){
+        node = new osg::PagedLOD();
+        ((ive::PagedLOD*)(node))->read(this);
     }
     else if(nodeTypeID== IVESWITCH){
         node = new osg::Switch();

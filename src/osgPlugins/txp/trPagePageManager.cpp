@@ -33,7 +33,7 @@ OSGPageManager::OSGPageManager(TrPageArchive *in_arch,trpgPageManager *in_pageMa
         throw 1;
 
  
-	if (pageManage)
+    if (pageManage)
         pageManageOurs = false;
     else {
         pageManage = new trpgPageManager();
@@ -112,18 +112,22 @@ bool OSGPageManager::UpdateNoThread(osg::Group *rootNode,double locX,double locY
 // --- Either thread ---
 struct osgGuard
 {
-	ThreadMutex& _mtx;
-	osgGuard(ThreadMutex &mtx):_mtx(mtx){
-	    _mtx.lock();
-	}
-	~osgGuard(){
-	    _mtx.unlock();
-	}
+    ThreadMutex& _mtx;
+    osgGuard(ThreadMutex &mtx):_mtx(mtx){
+        _mtx.lock();
+    }
+    ~osgGuard(){
+        _mtx.unlock();
+    }
 };
 
 void PagingThread::run()
 {
-	pager->ThreadLoop(this);
+    // need to set the texture object manager to be able to reuse textures
+    // by keeping deleted texture objects around for 10 seconds after being deleted.
+    osg::Texture::getTextureObjectManager()->setExpiryDelay(10.0f);
+
+    pager->ThreadLoop(this);
 }
 
 /* Start Thread
@@ -136,9 +140,9 @@ bool OSGPageManager::StartThread(ThreadMode mode,ThreadID &newThread)
 
     //locationChangeEvent is self-initialized.
     threadMode = mode;
-	pagingThread.pager = this;
-	pagingThread.startThread();
-	newThread = pagingThread.getThreadId();
+    pagingThread.pager = this;
+    pagingThread.startThread();
+    newThread = pagingThread.getThreadId();
     return threadMode != ThreadNone;
 }
 
@@ -149,39 +153,39 @@ bool OSGPageManager::StartThread(ThreadMode mode,ThreadID &newThread)
 bool OSGPageManager::EndThread()
 {
 //    locationChangeEvent.release();
-	pagingThread.cancel();
+    pagingThread.cancel();
     return true;
 }
 
 void OSGPageManager::LoadOneTile(trpgManagedTile* tile)
 {
-	osg::Group* tileGroup;
-	osg::Group* parentNode ;	
-	int x,y,lod;
-	tile->GetTileLoc(x,y,lod);
+    osg::Group* tileGroup;
+    osg::Group* parentNode ;    
+    int x,y,lod;
+    tile->GetTileLoc(x,y,lod);
 
-	tileGroup = archive->LoadTile(NULL,pageManage,tile,&parentNode);
-	if (tileGroup) 
-	{
+    tileGroup = archive->LoadTile(NULL,pageManage,tile,&parentNode);
+    if (tileGroup) 
+    {
 #ifdef USE_THREADLOOP_DELETE
-		// Make an extra reference to it because we want it back for deletion
-	// RO, commenting out as we don't want to do delete here, we want it to happen in the merge thread.
-		tileGroup->ref();
+        // Make an extra reference to it because we want it back for deletion
+    // RO, commenting out as we don't want to do delete here, we want it to happen in the merge thread.
+        tileGroup->ref();
 #endif
-		// we only put tiles with NULL parent to merge list 
-		// others are referenced when added as a child 
-		osgGuard g(changeListMutex);
-		if(parentNode)
-			parentNode->addChild(tileGroup) ;
-		else
-			toMerge.push_back( tileGroup) ;
-		//toMergeParent.push_back(parentNode );
-	} 
-	else 
-	{
-		osg::notify(WARN) << "Failed to load tile (" << x << y << lod << ")" << std::endl ;
-	}
-				
+        // we only put tiles with NULL parent to merge list 
+        // others are referenced when added as a child 
+        osgGuard g(changeListMutex);
+        if(parentNode)
+            parentNode->addChild(tileGroup) ;
+        else
+            toMerge.push_back( tileGroup) ;
+        //toMergeParent.push_back(parentNode );
+    } 
+    else 
+    {
+        osg::notify(WARN) << "Failed to load tile (" << x << y << lod << ")" << std::endl ;
+    }
+                
 }
 
 /* Thread Loop
@@ -200,25 +204,25 @@ bool OSGPageManager::ThreadLoop(PagingThread* t)
 
     bool pagingActive = false;
     while (!t->testCancel()) {
-		/*  Here's how we do it:
-			Wait for position change
-			Update manager w/ position
-			Form delete list
-			Load tile (if needed)
-			Add tile to merge list
-		*/
+        /*  Here's how we do it:
+            Wait for position change
+            Update manager w/ position
+            Form delete list
+            Load tile (if needed)
+            Add tile to merge list
+        */
         // Position has already changed or we'll wait for it to do so
-		//        locationChangeEvent.wait();
+        //        locationChangeEvent.wait();
         double myLocX,myLocY;
         {
             osgGuard g(locationMutex);
             myLocX = locX;
             myLocY = locY;
-	        positionValid = false;
+            positionValid = false;
         }
-		
+        
         // Pass the new location on to page manager
-		int x,y,lod;
+        int x,y,lod;
 
         trpg2dPoint loc;
         loc.x = myLocX;
@@ -228,57 +232,57 @@ bool OSGPageManager::ThreadLoop(PagingThread* t)
             // Form the delete list first
             trpgManagedTile *tile=NULL;
 
-			unhook.clear();
+            unhook.clear();
 
             while ((tile = pageManage->GetNextUnload())) {
-				tile->GetTileLoc(x,y,lod);
-				unhook.push_back((Group *)(tile->GetLocalData()));
-				pageManage->AckUnload();
+                tile->GetTileLoc(x,y,lod);
+                unhook.push_back((Group *)(tile->GetLocalData()));
+                pageManage->AckUnload();
             }
 
-			nextDelete.clear();
+            nextDelete.clear();
             {
                 osgGuard g(changeListMutex);
                 // Add to the unhook list
-				for(unsigned int kk = 0; kk < unhook.size();kk++)
-				{
-	                toUnhook.push_back(unhook[kk]);
-				}
+                for(unsigned int kk = 0; kk < unhook.size();kk++)
+                {
+                    toUnhook.push_back(unhook[kk]);
+                }
                 // Also get the list of deletions while we're here
 #ifdef USE_THREADLOOP_DELETE
-				// use the stl Luke :-) swap is constant time operation that do a = b; b.clear() 
-				// if a is empty which is our case
+                // use the stl Luke :-) swap is constant time operation that do a = b; b.clear() 
+                // if a is empty which is our case
                 nextDelete.swap(toDelete);
-				//                toDelete.clear();
+                //                toDelete.clear();
 #endif
             }
-			
+            
 #ifdef USE_THREADLOOP_DELETE
-			// Unreference whatever we're supposed to delete
-			for (unsigned int gi=0;gi<nextDelete.size();gi++)
-			{
-				if(	nextDelete[gi] )
-					nextDelete[gi]->unref();
-			}
+            // Unreference whatever we're supposed to delete
+            for (unsigned int gi=0;gi<nextDelete.size();gi++)
+            {
+                if(    nextDelete[gi] )
+                    nextDelete[gi]->unref();
+            }
 #endif
-		
+        
 
             // Now do a single load
-			while((tile = pageManage->GetNextLoad()))
-			{
-				tile->GetTileLoc(x,y,lod);
+            while((tile = pageManage->GetNextLoad()))
+            {
+                tile->GetTileLoc(x,y,lod);
 
-				osg::notify(WARN) << "Tile to load :" << x << ' ' << y << ' ' << lod << std::endl;
-				osg::notify(WARN) << "Position     :" << loc.x << ' ' << loc.y << std::endl;
-				LoadOneTile(tile);			    
-				// Now add this tile to the merge list
-				pageManage->AckLoad();
-			}
+                osg::notify(WARN) << "Tile to load :" << x << ' ' << y << ' ' << lod << std::endl;
+                osg::notify(WARN) << "Position     :" << loc.x << ' ' << loc.y << std::endl;
+                LoadOneTile(tile);                
+                // Now add this tile to the merge list
+                pageManage->AckLoad();
+            }
 
 
-		}
-		else
-			sleep(10);
+        }
+        else
+            sleep(10);
     }
 
     return true;
@@ -292,7 +296,7 @@ void OSGPageManager::UpdatePositionThread(double inLocX,double inLocY)
 {
     // Update the position
     if(!positionValid)
-	{
+    {
         // Get the location mutex
         osgGuard g(locationMutex);
         positionValid = true;
@@ -317,14 +321,14 @@ bool OSGPageManager::MergeUpdateThread(osg::Group *rootNode)
     // Make local copies of the merge and unhook lists
     {
         osgGuard g(changeListMutex);
-		// use the stl Luke :-) swap is constant time operation that do a = b; b.clear() 
-		// if a is empty which is our case
+        // use the stl Luke :-) swap is constant time operation that do a = b; b.clear() 
+        // if a is empty which is our case
         mergeList.swap(toMerge);
-	    unhookList.swap(toUnhook);
+        unhookList.swap(toUnhook);
 //        toMerge.clear();
 //        toMergeParent.clear();
 //        toUnhook.clear();
-	}
+    }
 
     // Do the unhooking first
     for (unsigned int ui=0;ui<unhookList.size();ui++) {
@@ -332,14 +336,14 @@ bool OSGPageManager::MergeUpdateThread(osg::Group *rootNode)
 
         // better safe than sorry
 
-		if(!unhookMe ) continue;
+        if(!unhookMe ) continue;
         // Look for its parent(s)
         // Only expecting one, but it doesn't matter
         const osg::Node::ParentList &parents = unhookMe->getParents();
         for (unsigned int pi=0;pi<parents.size();pi++) {
             osg::Group *parent = parents[pi];
-			if(parent != rootNode)
-				parent->removeChild(unhookMe);
+            if(parent != rootNode)
+                parent->removeChild(unhookMe);
         }
     }
     
@@ -347,8 +351,8 @@ bool OSGPageManager::MergeUpdateThread(osg::Group *rootNode)
     // Put the unhooked things on the list to delete
     {
         osgGuard g(changeListMutex);
-		for (unsigned int i = 0; i < unhookList.size();i++)
-			toDelete.push_back(unhookList[i]);
+        for (unsigned int i = 0; i < unhookList.size();i++)
+            toDelete.push_back(unhookList[i]);
     }
 #endif
 
@@ -356,7 +360,7 @@ bool OSGPageManager::MergeUpdateThread(osg::Group *rootNode)
     {
         for (unsigned int mi=0;mi<mergeList.size();mi++) {
             osg::Group *mergeMe = mergeList[mi];
-//  NO need for that - we only put tiles with NULL parent to merge list 		
+//  NO need for that - we only put tiles with NULL parent to merge list         
 //            osg::Group *parent = mergeParentList[mi];
 //            if (parent)
 //                parent->addChild(mergeMe);

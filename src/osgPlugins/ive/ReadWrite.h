@@ -27,6 +27,7 @@ namespace ive {
 #define IVEIMPOSTOR                     0x00000018
 #define IVECONVEXPLANAROCCLUDER         0x00000019
 #define IVECONVEXPLANARPOLYGON          0x00000020
+#define IVEPAGEDLOD                     0x00000021
 
 // Node callbacks
 #define IVENODECALLBACK                 0x00000050

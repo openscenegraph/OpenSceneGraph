@@ -30,6 +30,7 @@ CXXFILES =\
 	Node.cpp\
 	Object.cpp\
 	OccluderNode.cpp\
+	PagedLOD.cpp\
 	PositionAttitudeTransform.cpp\
 	PolygonOffset.cpp\
 	Point.cpp\

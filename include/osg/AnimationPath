@@ -47,24 +47,24 @@ class SG_EXPORT AnimationPath : public virtual osg::Object
             ControlPoint():
                 _scale(1.0f,1.0f,1.0f) {}
 
-            ControlPoint(const osg::Vec3& position):
+            ControlPoint(const osg::Vec3d& position):
                 _position(position),
                 _rotation(),
                 _scale(1.0f,1.0f,1.0f) {}
 
-            ControlPoint(const osg::Vec3& position, const osg::Quat& rotation):
+            ControlPoint(const osg::Vec3d& position, const osg::Quat& rotation):
                 _position(position),
                 _rotation(rotation),
                 _scale(1.0f,1.0f,1.0f) {}
 
-            ControlPoint(const osg::Vec3& position, const osg::Quat& rotation, const osg::Vec3& scale):
+            ControlPoint(const osg::Vec3d& position, const osg::Quat& rotation, const osg::Vec3d& scale):
                 _position(position),
                 _rotation(rotation),
                 _scale(scale) {}
         
-            osg::Vec3 _position;
+            osg::Vec3d _position;
             osg::Quat _rotation;
-            osg::Vec3 _scale;
+            osg::Vec3d _scale;
 
 
             inline void interpolate(float ratio,const ControlPoint& first, const ControlPoint& second)
@@ -230,8 +230,8 @@ class SG_EXPORT AnimationPathCallback : public NodeCallback
         AnimationPath* getAnimationPath() { return _animationPath.get(); }
         const AnimationPath* getAnimationPath() const { return _animationPath.get(); }
 
-        inline void setPivotPoint(const Vec3& pivot) { _pivotPoint = pivot; }
-        inline const Vec3& getPivotPoint() const { return _pivotPoint; }
+        inline void setPivotPoint(const Vec3d& pivot) { _pivotPoint = pivot; }
+        inline const Vec3d& getPivotPoint() const { return _pivotPoint; }
 
         void setUseInverseMatrix(bool useInverseMatrix) { _useInverseMatrix = useInverseMatrix; }
         bool getUseInverseMatrix() const { return _useInverseMatrix; }
@@ -259,7 +259,7 @@ class SG_EXPORT AnimationPathCallback : public NodeCallback
     public:
 
         ref_ptr<AnimationPath>  _animationPath;
-        osg::Vec3               _pivotPoint;
+        osg::Vec3d              _pivotPoint;
         bool                    _useInverseMatrix;
         double                  _timeOffset;
         double                  _timeMultiplier;

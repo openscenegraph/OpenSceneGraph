@@ -179,9 +179,9 @@ public:
         _viewer(viewer) {}
         
     
-    virtual osg::CoordinateFrame getCoordinateFrame(double X, double Y, double Z) const
+    virtual osg::CoordinateFrame getCoordinateFrame(const osg::Vec3d& position) const
     {
-        osg::notify(osg::INFO)<<"getCoordinateFrame("<<X<<","<<Y<<","<<Z<<")"<<std::endl;
+        osg::notify(osg::INFO)<<"getCoordinateFrame("<<position<<")"<<std::endl;
 
         const Viewer::RefNodePath& refNodePath = _viewer->getCoordindateSystemNodePath();
         
@@ -202,7 +202,7 @@ public:
             osg::CoordinateSystemNode* csn = dynamic_cast<osg::CoordinateSystemNode*>(tmpPath.back());
             if (csn)
             {
-                coordinateFrame = csn->computeLocalCoordinateFrame(X,Y,Z)* osg::computeLocalToWorld(tmpPath);
+                coordinateFrame = csn->computeLocalCoordinateFrame(position)* osg::computeLocalToWorld(tmpPath);
             }
             else
             {
@@ -212,7 +212,7 @@ public:
         }
         else
         {
-            return osg::Matrixd::translate(X,Y,Z);
+            return osg::Matrixd::translate(position);
         }
     }
     

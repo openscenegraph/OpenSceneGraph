@@ -12,8 +12,6 @@
 */
 #include <stdio.h>
 #include <osg/Quat>
-#include <osg/Vec4>
-#include <osg/Vec3>
 #include <osg/Matrixf>
 #include <osg/Matrixd>
 
@@ -62,15 +60,28 @@ void Quat::makeRotate( value_type angle, value_type x, value_type y, value_type 
 }
 
 
-void Quat::makeRotate( value_type angle, const Vec3& vec )
+void Quat::makeRotate( value_type angle, const Vec3f& vec )
+{
+    makeRotate( angle, vec[0], vec[1], vec[2] );
+}
+void Quat::makeRotate( value_type angle, const Vec3d& vec )
 {
     makeRotate( angle, vec[0], vec[1], vec[2] );
 }
 
 
-void Quat::makeRotate ( value_type angle1, const Vec3& axis1, 
-                        value_type angle2, const Vec3& axis2,
-                        value_type angle3, const Vec3& axis3)
+void Quat::makeRotate ( value_type angle1, const Vec3f& axis1, 
+                        value_type angle2, const Vec3f& axis2,
+                        value_type angle3, const Vec3f& axis3)
+{
+    makeRotate(angle1,Vec3d(axis1),
+               angle2,Vec3d(axis2),
+               angle3,Vec3d(axis3));
+}                        
+
+void Quat::makeRotate ( value_type angle1, const Vec3d& axis1, 
+                        value_type angle2, const Vec3d& axis2,
+                        value_type angle3, const Vec3d& axis3)
 {
     Quat q1; q1.makeRotate(angle1,axis1);
     Quat q2; q2.makeRotate(angle2,axis2);
@@ -79,12 +90,18 @@ void Quat::makeRotate ( value_type angle1, const Vec3& axis1,
     *this = q1*q2*q3;
 }                        
 
+
+void Quat::makeRotate( const Vec3f& from, const Vec3f& to )
+{
+    makeRotate( Vec3d(from), Vec3d(to) );
+}
+
 // Make a rotation Quat which will rotate vec1 to vec2
 // Generally take adot product to get the angle between these
 // and then use a cross product to get the rotation axis
 // Watch out for the two special cases of when the vectors
 // are co-incident or opposite in direction.
-void Quat::makeRotate( const Vec3& from, const Vec3& to )
+void Quat::makeRotate( const Vec3d& from, const Vec3d& to )
 {
     const value_type epsilon = 0.00001;
 
@@ -106,15 +123,17 @@ void Quat::makeRotate( const Vec3& from, const Vec3& to )
     {
         // vectors are close to being opposite, so will need to find a
         // vector orthongonal to from to rotate about.
-        osg::Vec3 tmp;
+        Vec3d tmp;
         if (fabs(from.x())<fabs(from.y()))
             if (fabs(from.x())<fabs(from.z())) tmp.set(1.0,0.0,0.0); // use x axis.
             else tmp.set(0.0,0.0,1.0);
         else if (fabs(from.y())<fabs(from.z())) tmp.set(0.0,1.0,0.0);
         else tmp.set(0.0,0.0,1.0);
         
+        Vec3d fromd(from.x(),from.y(),from.z());
+        
         // find orthogonal axis.
-        Vec3 axis(from^tmp);
+        Vec3d axis(fromd^tmp);
         axis.normalize();
         
         _v[0] = axis[0]; // sin of half angle of PI is 1.0.
@@ -127,14 +146,22 @@ void Quat::makeRotate( const Vec3& from, const Vec3& to )
     {
         // This is the usual situation - take a cross-product of vec1 and vec2
         // and that is the axis around which to rotate.
-        Vec3 axis(from^to);
+        Vec3d axis(from^to);
         value_type angle = acos( cosangle );
         makeRotate( angle, axis );
     }
 }
 
 
-void Quat::getRotate( value_type& angle, Vec3& vec ) const
+void Quat::getRotate( value_type& angle, Vec3f& vec ) const
+{
+    value_type x,y,z;
+    getRotate(angle,x,y,z);
+    vec[0]=x;
+    vec[1]=y;
+    vec[2]=z;
+}
+void Quat::getRotate( value_type& angle, Vec3d& vec ) const
 {
     value_type x,y,z;
     getRotate(angle,x,y,z);

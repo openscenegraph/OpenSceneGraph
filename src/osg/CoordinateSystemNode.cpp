@@ -32,41 +32,31 @@ CoordinateSystemNode::CoordinateSystemNode(const CoordinateSystemNode& csn,const
     _ellipsoidModel = csn._ellipsoidModel;
 }
 
-CoordinateFrame CoordinateSystemNode::computeLocalCoordinateFrame(const Vec3& position) const
-{
-    return computeLocalCoordinateFrame(position.x(), position.y(), position.z());
-}
-
-CoordinateFrame CoordinateSystemNode::computeLocalCoordinateFrame(double X, double Y, double Z) const
+CoordinateFrame CoordinateSystemNode::computeLocalCoordinateFrame(const Vec3d& position) const
 {
     if (_ellipsoidModel.valid())
     {
         Matrixd localToWorld;
     
-        _ellipsoidModel->computeLocalToWorldTransformFromXYZ(X,Y,Z, localToWorld);
+        _ellipsoidModel->computeLocalToWorldTransformFromXYZ(position.x(),position.y(),position.z(), localToWorld);
 
         return localToWorld;
     }
     else
     {
-        return Matrixd::translate(X,Y,Z);
+        return Matrixd::translate(position);
     }
 }
 
-osg::Vec3 CoordinateSystemNode::computeLocalUpVector(const Vec3& position) const
-{
-    return computeLocalUpVector(position.x(), position.y(), position.z());
-}
-
-osg::Vec3 CoordinateSystemNode::computeLocalUpVector(double X, double Y, double Z) const
+osg::Vec3d CoordinateSystemNode::computeLocalUpVector(const Vec3d& position) const
 {
     if (_ellipsoidModel.valid())
     {
-        return _ellipsoidModel->computeLocalUpVector(X,Y,Z);
+        return _ellipsoidModel->computeLocalUpVector(position.x(),position.y(),position.z());
     }
     else
     {
-        return osg::Vec3(0.0f,0.0f,1.0f);
+        return osg::Vec3d(0.0f,0.0f,1.0f);
     }
 }
 

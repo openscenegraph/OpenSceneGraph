@@ -211,8 +211,8 @@ void TerrainManipulator::setByMatrix(const osg::Matrixd& matrix)
 
     const osg::BoundingSphere& bs = _node->getBound();
     float distance = (eye-bs.center()).length() + _node->getBound().radius();
-    osg::Vec3 start_segment = eye;
-    osg::Vec3 end_segment = eye + lookVector*distance;
+    osg::Vec3d start_segment = eye;
+    osg::Vec3d end_segment = eye + lookVector*distance;
 
     //CoordinateFrame coordinateFrame = getCoordinateFrame(_center.x(), _center.y(), _center.z());
     //osg::notify(INFO)<<"start="<<start_segment<<"\tend="<<end_segment<<"\tupVector="<<getUpVector(coordinateFrame)<<std::endl;
@@ -230,17 +230,15 @@ void TerrainManipulator::setByMatrix(const osg::Matrixd& matrix)
         if (!hitList.empty())
         {
             notify(INFO) << "Hit terrain ok"<< std::endl;
-            osg::Vec3 ip = hitList.front().getWorldIntersectPoint();
+            osg::Vec3d ip = hitList.front().getWorldIntersectPoint();
 
-            _center[0] = ip.x();
-            _center[1] = ip.y();
-            _center[2] = ip.z();
+            _center = ip;
 
             _distance = (eye-ip).length();
             
             osg::Matrix rotation_matrix = osg::Matrixd::translate(0.0,0.0,-_distance)*
                                           matrix*
-                                          osg::Matrixd::translate(-_center[0],-_center[1],-_center[2]);
+                                          osg::Matrixd::translate(-_center);
 
             rotation_matrix.get(_rotation);
 
@@ -250,7 +248,7 @@ void TerrainManipulator::setByMatrix(const osg::Matrixd& matrix)
 
     if (!hitFound)
     {
-        CoordinateFrame eyePointCoordFrame = getCoordinateFrame( eye.x(), eye.y(), eye.z());
+        CoordinateFrame eyePointCoordFrame = getCoordinateFrame( eye );
         
         // clear the intersect visitor ready for a new test
         iv.reset(); 
@@ -269,11 +267,9 @@ void TerrainManipulator::setByMatrix(const osg::Matrixd& matrix)
             if (!hitList.empty())
             {
                 notify(INFO) << "Hit terrain ok"<< std::endl;
-                osg::Vec3 ip = hitList.front().getWorldIntersectPoint();
+                osg::Vec3d ip = hitList.front().getWorldIntersectPoint();
 
-                _center[0] = ip.x();
-                _center[1] = ip.y();
-                _center[2] = ip.z();
+                _center = ip;
 
                 _distance = (eye-ip).length();
 
@@ -290,15 +286,15 @@ void TerrainManipulator::setByMatrix(const osg::Matrixd& matrix)
 
 osg::Matrixd TerrainManipulator::getMatrix() const
 {
-    return osg::Matrixd::translate(0.0,0.0,_distance)*osg::Matrixd::rotate(_rotation)*osg::Matrix::translate(_center[0],_center[1],_center[2]);
+    return osg::Matrixd::translate(0.0,0.0,_distance)*osg::Matrixd::rotate(_rotation)*osg::Matrix::translate(_center);
 }
 
 osg::Matrixd TerrainManipulator::getInverseMatrix() const
 {
-    return osg::Matrix::translate(-_center[0],-_center[1],-_center[2])*osg::Matrixd::rotate(_rotation.inverse())*osg::Matrixd::translate(0.0,0.0,-_distance);
+    return osg::Matrix::translate(-_center)*osg::Matrixd::rotate(_rotation.inverse())*osg::Matrixd::translate(0.0,0.0,-_distance);
 }
 
-void TerrainManipulator::computePosition(const osg::Vec3& eye,const osg::Vec3& center,const osg::Vec3& up)
+void TerrainManipulator::computePosition(const osg::Vec3d& eye,const osg::Vec3d& center,const osg::Vec3d& up)
 {
     // compute rotation matrix
     osg::Vec3 lv(center-eye);
@@ -320,12 +316,9 @@ void TerrainManipulator::computePosition(const osg::Vec3& eye,const osg::Vec3& c
         if (!hitList.empty())
         {
             osg::notify(osg::INFO) << "Hit terrain ok"<< std::endl;
-            osg::Vec3 ip = hitList.front().getWorldIntersectPoint();
-            osg::Vec3 np = hitList.front().getWorldIntersectNormal();
+            osg::Vec3d ip = hitList.front().getWorldIntersectPoint();
 
-            _center[0] = ip.x();
-            _center[1] = ip.y();
-            _center[2] = ip.z();
+            _center = ip;
             _distance = (ip-eye).length();
             
             hitFound = true;
@@ -335,9 +328,7 @@ void TerrainManipulator::computePosition(const osg::Vec3& eye,const osg::Vec3& c
     if (!hitFound)
     {
         // ??
-        _center[0] = center.x();
-        _center[1] = center.y();
-        _center[2] = center.z();
+        _center = center;
     }
 
 
@@ -358,8 +349,8 @@ bool TerrainManipulator::calcMovement()
     // return if less then two events have been added.
     if (_ga_t0.get()==NULL || _ga_t1.get()==NULL) return false;
 
-    float dx = _ga_t0->getXnormalized()-_ga_t1->getXnormalized();
-    float dy = _ga_t0->getYnormalized()-_ga_t1->getYnormalized();
+    double dx = _ga_t0->getXnormalized()-_ga_t1->getXnormalized();
+    double dy = _ga_t0->getYnormalized()-_ga_t1->getYnormalized();
 
 
     // return if there is no movement.
@@ -373,13 +364,13 @@ bool TerrainManipulator::calcMovement()
         {
             // rotate camera.
             osg::Vec3 axis;
-            float angle;
+            double angle;
 
-            float px0 = _ga_t0->getXnormalized();
-            float py0 = _ga_t0->getYnormalized();
+            double px0 = _ga_t0->getXnormalized();
+            double py0 = _ga_t0->getYnormalized();
 
-            float px1 = _ga_t1->getXnormalized();
-            float py1 = _ga_t1->getYnormalized();
+            double px1 = _ga_t1->getXnormalized();
+            double py1 = _ga_t1->getYnormalized();
 
 
             trackball(axis,angle,px1,py1,px0,py0);
@@ -394,15 +385,15 @@ bool TerrainManipulator::calcMovement()
             osg::Matrix rotation_matrix;
             rotation_matrix.set(_rotation);
 
-            osg::Vec3 lookVector = -getUpVector(rotation_matrix);
-            osg::Vec3 sideVector = getSideVector(rotation_matrix);
-            osg::Vec3 upVector = getFrontVector(rotation_matrix);
+            osg::Vec3d lookVector = -getUpVector(rotation_matrix);
+            osg::Vec3d sideVector = getSideVector(rotation_matrix);
+            osg::Vec3d upVector = getFrontVector(rotation_matrix);
             
-            CoordinateFrame coordinateFrame = getCoordinateFrame(_center[0], _center[1], _center[2]);
-            osg::Vec3 localUp = getUpVector(coordinateFrame);
+            CoordinateFrame coordinateFrame = getCoordinateFrame(_center);
+            osg::Vec3d localUp = getUpVector(coordinateFrame);
             
 
-            osg::Vec3 forwardVector = localUp^sideVector;
+            osg::Vec3d forwardVector = localUp^sideVector;
             sideVector = forwardVector^localUp;
 
             forwardVector.normalize();
@@ -425,44 +416,41 @@ bool TerrainManipulator::calcMovement()
     {
 
         // pan model.
-        float scale = -0.5f*_distance;
+        double scale = -0.5f*_distance;
 
         osg::Matrix rotation_matrix;
         rotation_matrix.set(_rotation);
 
 
         // compute look vector.
-        osg::Vec3 lookVector = -getUpVector(rotation_matrix);
-        osg::Vec3 sideVector = getSideVector(rotation_matrix);
-        osg::Vec3 upVector = getFrontVector(rotation_matrix);
+        osg::Vec3d lookVector = -getUpVector(rotation_matrix);
+        osg::Vec3d sideVector = getSideVector(rotation_matrix);
+        osg::Vec3d upVector = getFrontVector(rotation_matrix);
 
-        CoordinateFrame coordinateFrame = getCoordinateFrame(_center[0], _center[1], _center[2]);
-        osg::Vec3 localUp = getUpVector(coordinateFrame);
+        CoordinateFrame coordinateFrame = getCoordinateFrame(_center);
+        osg::Vec3d localUp = getUpVector(coordinateFrame);
 
-        osg::Vec3 forwardVector =localUp^sideVector;
+        osg::Vec3d forwardVector =localUp^sideVector;
         sideVector = forwardVector^localUp;
 
         forwardVector.normalize();
         sideVector.normalize();
 
-        osg::Vec3 dv = forwardVector * (dy*scale) + sideVector * (dx*scale);
+        osg::Vec3d dv = forwardVector * (dy*scale) + sideVector * (dx*scale);
 
-        _center[0] += dv.x();
-        _center[1] += dv.y();
-        _center[2] += dv.z();
+        _center += dv;
 
         // need to recompute the itersection point along the look vector.
         
         // now reorientate the coordinate frame to the frame coords.
-        coordinateFrame =  getCoordinateFrame(_center[0], _center[1], _center[2]);
+        coordinateFrame =  getCoordinateFrame(_center);
 
         // need to reintersect with the terrain
         osgUtil::IntersectVisitor iv;
 
-        float distance = _node->getBound().radius();
-        osg::Vec3 start_segment = osg::Vec3(_center[0],_center[1],_center[2]) + getUpVector(coordinateFrame) * distance;
-        osg::Vec3 end_segment = start_segment - getUpVector(coordinateFrame) * (2.0f*distance);
-        //end_segment.set(0.0f,0.0f,0.0f);
+        double distance = _node->getBound().radius();
+        osg::Vec3d start_segment = osg::Vec3d(_center[0],_center[1],_center[2]) + getUpVector(coordinateFrame) * distance;
+        osg::Vec3d end_segment = start_segment - getUpVector(coordinateFrame) * (2.0f*distance);
 
         osg::notify(INFO)<<"start="<<start_segment<<"\tend="<<end_segment<<"\tupVector="<<getUpVector(coordinateFrame)<<std::endl;
 
@@ -479,10 +467,8 @@ bool TerrainManipulator::calcMovement()
             if (!hitList.empty())
             {
                 notify(INFO) << "Hit terrain ok"<< std::endl;
-                osg::Vec3 ip = hitList.front().getWorldIntersectPoint();
-                _center[0] = ip.x();
-                _center[1] = ip.y();
-                _center[2] = ip.z();
+                osg::Vec3d ip = hitList.front().getWorldIntersectPoint();
+                _center = ip;
 
                 hitFound = true;
             }
@@ -494,14 +480,16 @@ bool TerrainManipulator::calcMovement()
             osg::notify(INFO)<<"TerrainManipulator unable to intersect with terrain."<<std::endl;
         }
         
-        coordinateFrame = getCoordinateFrame(_center[0], _center[1], _center[2]);
-        osg::Vec3 new_localUp = getUpVector(coordinateFrame);
+        coordinateFrame = getCoordinateFrame(_center);
+        osg::Vec3d new_localUp = getUpVector(coordinateFrame);
         
         osg::Quat pan_rotation;
         pan_rotation.makeRotate(localUp,new_localUp);
         _rotation = _rotation * pan_rotation;
+        
+        osg::notify(osg::NOTICE)<<"Rotating from "<<localUp<<" to "<<new_localUp<<"  angle = "<<acos(localUp*new_localUp/(localUp.length()*new_localUp.length()))<<std::endl;
 
-        // clampOrientation();
+        //clampOrientation();
 
         return true;
     }
@@ -510,8 +498,8 @@ bool TerrainManipulator::calcMovement()
 
         // zoom model.
 
-        float fd = _distance;
-        float scale = 1.0f+dy;
+        double fd = _distance;
+        double scale = 1.0f+dy;
         if (fd*scale>_modelScale*_minimumZoomScale)
         {
 
@@ -533,13 +521,13 @@ void TerrainManipulator::clampOrientation()
         osg::Matrix rotation_matrix;
         rotation_matrix.set(_rotation);
 
-        osg::Vec3 lookVector = -getUpVector(rotation_matrix);
-        osg::Vec3 upVector = getFrontVector(rotation_matrix);
+        osg::Vec3d lookVector = -getUpVector(rotation_matrix);
+        osg::Vec3d upVector = getFrontVector(rotation_matrix);
 
-        CoordinateFrame coordinateFrame = getCoordinateFrame(_center[0],_center[1],_center[2]);
-        osg::Vec3 localUp = getUpVector(coordinateFrame);
+        CoordinateFrame coordinateFrame = getCoordinateFrame(_center);
+        osg::Vec3d localUp = getUpVector(coordinateFrame);
 
-        osg::Vec3 sideVector = lookVector ^ localUp;
+        osg::Vec3d sideVector = lookVector ^ localUp;
 
         if (sideVector.length()<0.1)
         {
@@ -550,7 +538,7 @@ void TerrainManipulator::clampOrientation()
         
         }
 
-        Vec3 newUpVector = sideVector^lookVector;
+        Vec3d newUpVector = sideVector^lookVector;
         newUpVector.normalize();
 
         osg::Quat rotate_roll;
@@ -582,7 +570,7 @@ const float TRACKBALLSIZE = 0.8f;
  * It is assumed that the arguments to this routine are in the range
  * (-1.0 ... 1.0)
  */
-void TerrainManipulator::trackball(osg::Vec3& axis,float& angle, float p1x, float p1y, float p2x, float p2y)
+void TerrainManipulator::trackball(osg::Vec3& axis,double & angle, double  p1x, double  p1y, double  p2x, double  p2y)
 {
     /*
      * First, figure out z-coordinates for projection of P1 and P2 to
@@ -592,12 +580,12 @@ void TerrainManipulator::trackball(osg::Vec3& axis,float& angle, float p1x, floa
     osg::Matrix rotation_matrix(_rotation);
 
 
-    osg::Vec3 uv = osg::Vec3(0.0f,1.0f,0.0f)*rotation_matrix;
-    osg::Vec3 sv = osg::Vec3(1.0f,0.0f,0.0f)*rotation_matrix;
-    osg::Vec3 lv = osg::Vec3(0.0f,0.0f,-1.0f)*rotation_matrix;
+    osg::Vec3d uv = osg::Vec3d(0.0,1.0,0.0)*rotation_matrix;
+    osg::Vec3d sv = osg::Vec3d(1.0,0.0,0.0)*rotation_matrix;
+    osg::Vec3d lv = osg::Vec3d(0.0,0.0,-1.0)*rotation_matrix;
 
-    osg::Vec3 p1 = sv*p1x+uv*p1y-lv*tb_project_to_sphere(TRACKBALLSIZE,p1x,p1y);
-    osg::Vec3 p2 = sv*p2x+uv*p2y-lv*tb_project_to_sphere(TRACKBALLSIZE,p2x,p2y);
+    osg::Vec3d p1 = sv*p1x+uv*p1y-lv*tb_project_to_sphere(TRACKBALLSIZE,p1x,p1y);
+    osg::Vec3d p2 = sv*p2x+uv*p2y-lv*tb_project_to_sphere(TRACKBALLSIZE,p2x,p2y);
 
     /*
      *  Now, we want the cross product of P1 and P2
@@ -615,7 +603,7 @@ axis = p2^p1;
     /*
      *  Figure out how much to rotate around that axis.
      */
-    float t = (p2-p1).length() / (2.0*TRACKBALLSIZE);
+    double t = (p2-p1).length() / (2.0*TRACKBALLSIZE);
 
     /*
      * Avoid problems with out-of-control values...
@@ -631,7 +619,7 @@ axis = p2^p1;
  * Project an x,y pair onto a sphere of radius r OR a hyperbolic sheet
  * if we are away from the center of the sphere.
  */
-float TerrainManipulator::tb_project_to_sphere(float r, float x, float y)
+double TerrainManipulator::tb_project_to_sphere(double  r, double  x, double  y)
 {
     float d, t, z;
 

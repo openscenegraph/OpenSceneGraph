@@ -71,7 +71,7 @@ class OSGGA_EXPORT DriveManipulator : public MatrixManipulator
         /** Add the current mouse GUIEvent to internal stack.*/
         void addMouseEvent(const GUIEventAdapter& ea);
 
-        void computePosition(const osg::Vec3& eye,const osg::Vec3& lv,const osg::Vec3& up);
+        void computePosition(const osg::Vec3d& eye,const osg::Vec3d& lv,const osg::Vec3d& up);
 
         /** For the give mouse movement calculate the movement of the camera.
         Return true is camera has moved and a redraw is required.*/
@@ -83,10 +83,10 @@ class OSGGA_EXPORT DriveManipulator : public MatrixManipulator
 
         osg::ref_ptr<osg::Node>       _node;
 
-        float _modelScale;
-        float _velocity;
-        float _height;
-        float _buffer;
+        double _modelScale;
+        double _velocity;
+        double _height;
+        double _buffer;
 
         enum SpeedControlMode {
                 USE_MOUSE_Y_FOR_SPEED,
@@ -95,9 +95,9 @@ class OSGGA_EXPORT DriveManipulator : public MatrixManipulator
 
         SpeedControlMode _speedMode;
 
-        osg::Vec3   _eye;
-        osg::Quat   _rotation;
-        float       _distance;
+        osg::Vec3d   _eye;
+        osg::Quat    _rotation;
+        double       _distance;
 };
 
 }

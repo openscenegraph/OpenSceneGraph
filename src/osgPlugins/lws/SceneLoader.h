@@ -11,6 +11,8 @@
 #include <osg/Group>
 #include <osg/Vec3>
 #include <osg/AnimationPath>
+#include <osg/Vec3>
+#include <osg/Vec4>
 
 #include <string>
 #include <vector>

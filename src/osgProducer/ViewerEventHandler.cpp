@@ -718,7 +718,7 @@ ViewerEventHandler::ViewerEventHandler(OsgCameraGroup* cg):
 
     if (cfg->getNumberOfCameras()==1)
     {
-        SnapImageDrawCallback* snapImageDrawCallback = new SnapImageDrawCallback("saved_image.jpg");
+        SnapImageDrawCallback* snapImageDrawCallback = new SnapImageDrawCallback("saved_image.dds");
         cam->addPostDrawCallback(snapImageDrawCallback);
         _snapImageDrawCallbackList.push_back(snapImageDrawCallback);
     }

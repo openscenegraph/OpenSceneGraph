@@ -214,7 +214,7 @@ void CullStack::pushModelViewMatrix(RefMatrix* matrix)
     pushCullingSet();
     
 #if 1
-    osg::Vec3 slow_eyepoint(osg::Matrix::inverse(*matrix).getTrans());
+    osg::Vec3f slow_eyepoint = osg::Matrix::inverse(*matrix).getTrans();
     _eyePointStack.push_back(slow_eyepoint);
 #else    
     

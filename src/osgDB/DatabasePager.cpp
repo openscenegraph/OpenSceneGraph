@@ -303,67 +303,57 @@ void DatabasePager::addLoadedDataToSceneGraph(double timeStamp)
     
 }
 
-class ReleaseTexturesAndDrawablesVisitor : public osg::NodeVisitor
+void DatabasePager::ReleaseTexturesAndDrawablesVisitor::apply(osg::Node& node)
 {
-public:
-    ReleaseTexturesAndDrawablesVisitor():
-        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN)
-    {
-    }
-    
-    virtual void apply(osg::Node& node)
-    {
-        apply(node.getStateSet());
+    apply(node.getStateSet());
 
-        traverse(node);
-    }
+    traverse(node);
+}
     
-    virtual void apply(osg::Geode& geode)
-    {
-        apply(geode.getStateSet());
-    
-        for(unsigned int i=0;i<geode.getNumDrawables();++i)
-        {
-            apply(geode.getDrawable(i));
-        }
+void DatabasePager::ReleaseTexturesAndDrawablesVisitor::apply(osg::Geode& geode)
+{
+    apply(geode.getStateSet());
 
-        traverse(geode);
-    }
-    
-    inline void apply(osg::StateSet* stateset)
+    for(unsigned int i=0;i<geode.getNumDrawables();++i)
     {
-        if (stateset)
+        apply(geode.getDrawable(i));
+    }
+
+    traverse(geode);
+}
+
+void DatabasePager::ReleaseTexturesAndDrawablesVisitor::apply(osg::StateSet* stateset)
+{
+    if (stateset)
+    {
+        // search for the existance of any texture object attributes
+        bool foundTextureState = false;
+        osg::StateSet::TextureAttributeList& tal = stateset->getTextureAttributeList();
+        for(osg::StateSet::TextureAttributeList::iterator itr=tal.begin();
+            itr!=tal.end() && !foundTextureState;
+            ++itr)
         {
-            // search for the existance of any texture object attributes
-            bool foundTextureState = false;
-            osg::StateSet::TextureAttributeList& tal = stateset->getTextureAttributeList();
-            for(osg::StateSet::TextureAttributeList::iterator itr=tal.begin();
-                itr!=tal.end() && !foundTextureState;
-                ++itr)
+            osg::StateSet::AttributeList& al = *itr;
+            osg::StateSet::AttributeList::iterator alitr = al.find(osg::StateAttribute::TEXTURE);
+            if (alitr!=al.end())
             {
-                osg::StateSet::AttributeList& al = *itr;
-                osg::StateSet::AttributeList::iterator alitr = al.find(osg::StateAttribute::TEXTURE);
-                if (alitr!=al.end())
-                {
-                    // found texture, so place it in the texture list.
-                    osg::Texture* texture = static_cast<osg::Texture*>(alitr->second.first.get());
-                    texture->dirtyTextureObject();
-                }
+                // found texture, so place it in the texture list.
+                osg::Texture* texture = static_cast<osg::Texture*>(alitr->second.first.get());
+                texture->dirtyTextureObject();
             }
         }
     }
-    
-    inline void apply(osg::Drawable* drawable)
-    {
-        apply(drawable->getStateSet());
+}
 
-        if (drawable->getUseDisplayList() || drawable->getUseVertexBufferObjects())
-        {
-            drawable->dirtyDisplayList();
-        }
+void DatabasePager::ReleaseTexturesAndDrawablesVisitor::apply(osg::Drawable* drawable)
+{
+    apply(drawable->getStateSet());
+
+    if (drawable->getUseDisplayList() || drawable->getUseVertexBufferObjects())
+    {
+        drawable->dirtyDisplayList();
     }
-        
-};
+}
 
 void DatabasePager::removeExpiredSubgraphs(double currentFrameTime)
 {

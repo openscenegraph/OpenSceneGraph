@@ -20,7 +20,7 @@
 
 #include <osg/ref_ptr>
 #include <osg/Object>
-#include <osg/Node>
+#include <osg/Transform>
 #include <osg/NodeVisitor>
 #include <osg/CopyOp>
 #include <osg/Vec3>
@@ -161,7 +161,8 @@ namespace osgParticle
     {
         if (need_ltw_matrix_) {
             ltw_matrix_ = osg::Matrix::identity();
-            current_nodevisitor_->getLocalToWorldMatrix(ltw_matrix_, this);
+            //current_nodevisitor_->getLocalToWorldMatrix(ltw_matrix_, this);
+            ltw_matrix_ = osg::computeLocalToWorld(current_nodevisitor_->getNodePath());
             need_ltw_matrix_ = false;
         }
         return ltw_matrix_;
@@ -171,7 +172,8 @@ namespace osgParticle
     {
         if (need_wtl_matrix_) {
             wtl_matrix_ = osg::Matrix::identity();
-            current_nodevisitor_->getWorldToLocalMatrix(wtl_matrix_, this);
+            //current_nodevisitor_->getWorldToLocalMatrix(wtl_matrix_, this);
+            wtl_matrix_ = osg::computeWorldToLocal(current_nodevisitor_->getNodePath());
             need_wtl_matrix_ = false;
         }
         return wtl_matrix_;

@@ -27,7 +27,6 @@ class PickIntersectVisitor : public osgUtil::IntersectVisitor
 public:
     PickIntersectVisitor()
     { 
-        setNodeMaskOverride(0xffffffff); // need to make the visitor override the nodemask to visit invisible actions
     }
     virtual ~PickIntersectVisitor() {}
     
@@ -59,10 +58,16 @@ public:
     PickVisitor()
     { 
         xp=yp=0;    
-        setNodeMaskOverride(0xffffffff); // need to make the visitor override the nodemask to visit invisible actions
         setTraversalMode(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN);
     }
     ~PickVisitor() {}
+
+	// Aug 2003 added to pass the nodemaskOverride to the PickIntersectVisitor
+     //   may be used make the visitor override the nodemask to visit invisible actions
+    inline void setNodeMaskOverride(osg::Node::NodeMask mask) {
+		_piv.setNodeMaskOverride(mask);
+		_nodeMaskOverride = mask; }
+
 
     virtual void apply(osg::Projection& pr)
     { // stack the intersect rays, transform to new projection, traverse

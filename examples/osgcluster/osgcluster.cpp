@@ -181,6 +181,7 @@ int main( int argc, char **argv )
     }
 
 
+    CameraPacket *cp = new CameraPacket;
     // objects for managing the broadcasting and recieving of camera packets.
     Broadcaster     bc;
     Receiver        rc;
@@ -205,14 +206,13 @@ int main( int argc, char **argv )
         {
         case(MASTER):
             {
-                CameraPacket cp;
                 
                 // take camera zero as the guide.
                 osg::Matrix modelview(viewer.getCameraConfig()->getCamera(0)->getViewMatrix());
                 
-                cp.setPacket(modelview,viewer.getFrameStamp());
+                cp->setPacket(modelview,viewer.getFrameStamp());
 
-                bc.setBuffer(&cp, sizeof( CameraPacket ));
+                bc.setBuffer(cp, sizeof( CameraPacket ));
                 
                 bc.sync();
 
@@ -220,20 +220,19 @@ int main( int argc, char **argv )
             break;
         case(SLAVE):
             {
-                CameraPacket cp;
 
-                rc.setBuffer(&cp, sizeof( CameraPacket ));
+                rc.setBuffer(cp, sizeof( CameraPacket ));
 
                 rc.sync();
     
-                cp.checkByteOrder();
+                cp->checkByteOrder();
 
                 osg::Matrix modelview;
-                cp.getModelView(modelview,camera_offset);
+                cp->getModelView(modelview,camera_offset);
                 
                 viewer.setView(modelview);
 
-                if (cp.getMasterKilled()) 
+                if (cp->getMasterKilled()) 
                 {
                     std::cout << "received master killed"<<std::endl;
                     // break out of while (!done) loop since we've now want to shut down.
@@ -259,11 +258,10 @@ int main( int argc, char **argv )
     if (viewerMode==MASTER)
     {
         // need to broadcast my death.
-        CameraPacket cp;
-        cp.setPacket(osg::Matrix::identity(),viewer.getFrameStamp());
-        cp.setMasterKilled(true);
+        cp->setPacket(osg::Matrix::identity(),viewer.getFrameStamp());
+        cp->setMasterKilled(true);
 
-        bc.setBuffer(&cp, sizeof( CameraPacket ));
+        bc.setBuffer(cp, sizeof( CameraPacket ));
         bc.sync();
 
         std::cout << "broadcasting death"<<std::endl;

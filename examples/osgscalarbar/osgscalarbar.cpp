@@ -45,10 +45,10 @@ osg::Node* createScalarBar()
         std::string printScalar(float scalar)
         {
             std::cout<<"In MyScalarPrinter::printScalar"<<std::endl;
-            if(scalar==0.0f) return ScalarBar::ScalarPrinter::printScalar(scalar)+" Bottom";
-            else if(scalar==0.5f) return ScalarBar::ScalarPrinter::printScalar(scalar)+" Middle";
-            else if(scalar==1.0f) return ScalarBar::ScalarPrinter::printScalar(scalar)+" Top";
-            else return ScalarBar::ScalarPrinter::printScalar(scalar);
+            if(scalar==0.0f) return ScalarPrinter::printScalar(scalar)+" Bottom";
+            else if(scalar==0.5f) return ScalarPrinter::printScalar(scalar)+" Middle";
+            else if(scalar==1.0f) return ScalarPrinter::printScalar(scalar)+" Top";
+            else return ScalarPrinter::printScalar(scalar);
         }
     };
 

@@ -52,6 +52,7 @@ void NodeTrackerManipulator::setTrackerMode(TrackerMode mode)
 void NodeTrackerManipulator::setRotationMode(RotationMode mode)
 {
     _rotationMode = mode;
+    if (getAutoComputeHomePosition()) computeHomePosition();    
 }
 
 void NodeTrackerManipulator::setNode(osg::Node* node)
@@ -101,6 +102,22 @@ void NodeTrackerManipulator::home(const GUIEventAdapter& ,GUIActionAdapter& us)
     computePosition(_homeEye, _homeCenter, _homeUp);
     us.requestRedraw();
 }
+
+void NodeTrackerManipulator::computeHomePosition()
+{
+    osg::Node* node = _trackNodePath.empty() ? getNode() : _trackNodePath.back().get();
+    
+    if(node)
+    {
+        const osg::BoundingSphere& boundingSphere=node->getBound();
+
+        setHomePosition(boundingSphere._center+osg::Vec3( 0.0,-3.5f * boundingSphere._radius,0.0f),
+                        boundingSphere._center,
+                        osg::Vec3(0.0f,0.0f,1.0f),
+                        _autoComputeHomePosition);
+    }
+}
+
 
 
 void NodeTrackerManipulator::init(const GUIEventAdapter& ,GUIActionAdapter& )
@@ -323,6 +340,12 @@ void NodeTrackerManipulator::computePosition(const osg::Vec3d& eye,const osg::Ve
     // compute rotation matrix
     osg::Vec3 lv(center-eye);
     _distance = lv.length();
+    
+    osg::Matrixd lookat;
+    lookat.makeLookAt(eye,center,up);
+    lookat.get(_rotation);
+    
+    _rotation = _rotation.inverse();
 }
 
 bool NodeTrackerManipulator::calcMovement()

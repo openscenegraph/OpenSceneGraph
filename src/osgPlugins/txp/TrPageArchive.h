@@ -47,7 +47,7 @@ namespace txp
         osg::Vec3 attitude;
     };
     /// main class for loading terrapage archives  
-    class TrPageArchive : public trpgr_Archive
+	class TrPageArchive : public trpgr_Archive, public osg::Referenced
     {
     public:
         TrPageArchive();

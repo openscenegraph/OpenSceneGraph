@@ -16,14 +16,13 @@
 using namespace txp;
 using namespace osg;
 
-
 osgDB::ReaderWriter::ReadResult ReaderWriterTXP::readNode(const std::string& fileName, const osgDB::ReaderWriter::Options* options)
 {
     if( !acceptsExtension(osgDB::getFileExtension(fileName) ))
         return ReadResult::FILE_NOT_HANDLED;
 
-    ref_ptr<TerrapageNode> pager = new TerrapageNode;
-    
+	osg::ref_ptr<txp::TerrapageNode> pager = new TerrapageNode;
+
     pager->setDatabaseName(fileName);
     
     if (options)

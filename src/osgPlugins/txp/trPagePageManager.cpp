@@ -251,15 +251,16 @@ bool OSGPageManager::ThreadLoop(PagingThread* t)
             //nextDelete.clear();
             
             {
-                osgGuard g(changeListMutex);
                 // Add to the unhook list
                 for(unsigned int kk = 0; kk < unhook.size();kk++)
                 {
+					osgGuard g(changeListMutex);
                     toUnhook.push_back(unhook[kk]);
                 }
                 // Also get the list of deletions while we're here
                 // use the stl Luke :-) swap is constant time operation that do a = b; b.clear() 
                 // if a is empty which is our case
+				osgGuard g(changeListMutex);
                 nextDelete.swap(toDelete);
             }
             
@@ -274,7 +275,7 @@ bool OSGPageManager::ThreadLoop(PagingThread* t)
 
                 //osg::notify(WARN) << "Tile to load :" << x << ' ' << y << ' ' << lod << std::endl;
                 //osg::notify(WARN) << "Position     :" << loc.x << ' ' << loc.y << std::endl;
-                LoadOneTile(tile);                
+                if (lod==0) LoadOneTile(tile);                
                 // Now add this tile to the merge list
                 pageManage->AckLoad();
 
@@ -326,11 +327,14 @@ bool OSGPageManager::MergeUpdateThread(osg::Group *rootNode)
 
     // Make local copies of the merge and unhook lists
     {
-        osgGuard g(changeListMutex);
         // use the stl Luke :-) swap is constant time operation that do a = b; b.clear() 
         // if a is empty which is our case
-        mergeList.swap(toMerge);
-        unhookList.swap(toUnhook);
+		//if (changeListMutex.trylock()==0)
+		{
+			osgGuard g(changeListMutex);
+			mergeList.swap(toMerge);
+			unhookList.swap(toUnhook);
+		}
     }
 
     // visitor to go through unhooked subgraphs to release texture objects
@@ -353,7 +357,7 @@ bool OSGPageManager::MergeUpdateThread(osg::Group *rootNode)
         const osg::Node::ParentList &parents = unhookMe->getParents();
         for (unsigned int pi=0;pi<parents.size();pi++) {
             osg::Group *parent = parents[pi];
-            if(parent != rootNode)
+            //if(parent != rootNode)
             {
                 //std::cout<<"removing "<<unhookMe<<" from "<<parent<<std::endl;
                 parent->removeChild(unhookMe);
@@ -363,9 +367,12 @@ bool OSGPageManager::MergeUpdateThread(osg::Group *rootNode)
     
     // Append the unhooked things on to the list to delete
     {
-        osgGuard g(changeListMutex);
+		osgGuard g(changeListMutex);
         for (unsigned int i = 0; i < unhookList.size();i++)
+		{
+			
             toDelete.push_back(unhookList[i]);
+		}
     }
 
     // Do the merging last

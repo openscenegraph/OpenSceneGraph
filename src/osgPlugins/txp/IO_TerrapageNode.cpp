@@ -3,6 +3,7 @@
 #include <osgDB/Registry>
 #include <osgDB/Input>
 #include <osgDB/Output>
+#include <osg/ref_ptr>
 
 #include <iostream>
 

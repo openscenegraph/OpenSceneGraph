@@ -50,7 +50,7 @@ public:
   virtual int           classOpcode() const { return MESH_PRIMITIVE_OP; }
   virtual Record *      clone() const { return new MeshPrimitiveRecord(); }
 
-  SMeshPrimitive *      getData() const { return (SMeshPrimitive *) _pData; }
+  virtual SMeshPrimitive* getData() const { return (SMeshPrimitive *) _pData; }
   uint32                getNumVertices() const { return this->getData()->numVerts; }
   bool                  getVertexIndex ( const uint32 &whichVertex, uint32 &index ) const;
 

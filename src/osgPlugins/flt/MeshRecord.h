@@ -42,7 +42,7 @@ public:
   virtual int           classOpcode() const { return MESH_OP; }
   virtual Record *      clone() const { return new MeshRecord(); }
   
-  SMesh *               getData() const { return (SMesh *) _pData; }
+  virtual SMesh*        getData() const { return (SMesh *) _pData; }
 
   virtual size_t        sizeofData() const { return sizeof ( SMesh ); }
 

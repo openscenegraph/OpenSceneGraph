@@ -306,6 +306,10 @@ SOURCE=..\..\..\src\osgPlugins\osg\TexGen.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\osg\TexGenNode.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\osg\TexMat.cpp
 # End Source File
 # Begin Source File

@@ -7,7 +7,7 @@
 
 using namespace osg;
 
-#ifndef 
+#ifndef GL_TEXTURE_WRAP_R
 #define GL_TEXTURE_WRAP_R                 0x8072
 #endif
 

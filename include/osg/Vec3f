@@ -177,7 +177,7 @@ class Vec3f
             value_type norm = Vec3f::length();
             if (norm>0.0)
             {
-                value_type inv = 1.0/norm;
+                value_type inv = 1.0f/norm;
                 _v[0] *= inv;
                 _v[1] *= inv;
                 _v[2] *= inv;

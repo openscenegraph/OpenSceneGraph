@@ -214,7 +214,7 @@ class Vec4d
             value_type norm = Vec4d::length();
             if (norm>0.0f)
             {
-                value_type inv = 1.0f/norm;
+                value_type inv = 1.0/norm;
                 _v[0] *= inv;
                 _v[1] *= inv;
                 _v[2] *= inv;

@@ -154,7 +154,7 @@ class Vec2f
 	    float norm = Vec2f::length();
             if (norm>0.0)
             {
-                float inv = 1.0/norm;
+                float inv = 1.0f/norm;
 	        _v[0] *= inv;
 	        _v[1] *= inv;
             }

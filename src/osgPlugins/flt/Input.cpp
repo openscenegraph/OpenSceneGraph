@@ -162,7 +162,6 @@ Record* Input::readCreateRecord(FltFile* pFltFile)
 
     // find matching record prototype class
     Record* pProto = Registry::instance()->getPrototype(pData->opcode());
-
     if (pProto == NULL)
         pProto = Registry::instance()->getPrototype(0);
 

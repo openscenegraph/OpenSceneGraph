@@ -1,5 +1,3 @@
-// flt2osg.h
-
 #ifndef __FLT_2_OSG_H
 #define __FLT_2_OSG_H
 
@@ -108,34 +106,37 @@ class ConvertFromFLT
         ConvertFromFLT();
         virtual ~ConvertFromFLT();
 
-        osg::Node* convert(HeaderRecord* rec);
+        osg::Group* convert(HeaderRecord* rec);
 
-        osg::Node* visitNode(osg::Group* osgParent,Record* rec);
-        osg::Node* visitAncillary(osg::Group* osgParent, PrimNodeRecord* rec);
-        osg::Node* visitPrimaryNode(osg::Group* osgParent, PrimNodeRecord* rec);
+        osg::Group* visitAncillary(osg::Group& osgParent, osg::Group& osgPrimary, PrimNodeRecord* rec);
+        osg::Group* visitPrimaryNode(osg::Group& osgParent, PrimNodeRecord* rec);
 
-        osg::Node* visitLongID(osg::Group* osgParent, LongIDRecord* rec);
+        // Ancillary records
+        osg::Group* visitMatrix(osg::Group& osgParent, const osg::Group& osgPrimary, MatrixRecord* rec);
+        void visitLongID(osg::Group& osgParent, LongIDRecord* rec);
 
-        osg::Node* visitHeader(osg::Group* osgParent, HeaderRecord* rec);
-        osg::Node* visitColorPalette(osg::Group* osgParent, ColorPaletteRecord* rec);
-        osg::Node* visitMaterialPalette(osg::Group* osgParent, MaterialPaletteRecord* rec);
-        osg::Node* visitOldMaterialPalette(osg::Group* osgParent, OldMaterialPaletteRecord* rec);
-        osg::Node* visitTexturePalette(osg::Group* osgParent, TexturePaletteRecord* rec);
-        osg::Node* visitVertexPalette(osg::Group* osgParent, VertexPaletteRecord* rec);
-        osg::Node* visitVertex(osg::Group* osgParent, VertexRecord* rec);
-        osg::Node* visitNormalVertex(osg::Group* osgParent, NormalVertexRecord* rec);
-        osg::Node* visitTextureVertex(osg::Group* osgParent, TextureVertexRecord* rec);
-        osg::Node* visitNormalTextureVertex(osg::Group* osgParent, NormalTextureVertexRecord* rec);
-        osg::Node* visitGroup(osg::Group* osgParent, GroupRecord* rec);
-        osg::Node* visitLOD(osg::Group* osgParent, LodRecord* rec);
-        osg::Node* visitOldLOD(osg::Group* osgParent, OldLodRecord* rec);
-        osg::Node* visitDOF(osg::Group* osgParent, DofRecord* rec);
-        osg::Node* visitSwitch(osg::Group* osgParent, SwitchRecord* rec);
-        osg::Node* visitObject(osg::Group* osgParent, ObjectRecord* rec);
-        osg::Node* visitMatrix(osg::Group* osgParent, MatrixRecord* rec);
-        osg::Node* visitExternal(osg::Group* osgParent, ExternalRecord* rec);
-        osg::Node* visitInstanceDefinition(osg::Group* osgParent,InstanceDefinitionRecord* rec);
-        osg::Node* visitInstanceReference(osg::Group* osgParent,InstanceReferenceRecord* rec);
+        // Palette records
+        void visitColorPalette(osg::Group& osgParent, ColorPaletteRecord* rec);
+        void visitMaterialPalette(osg::Group& osgParent, MaterialPaletteRecord* rec);
+        void visitOldMaterialPalette(osg::Group& osgParent, OldMaterialPaletteRecord* rec);
+        void visitTexturePalette(osg::Group& osgParent, TexturePaletteRecord* rec);
+        void visitVertexPalette(osg::Group& osgParent, VertexPaletteRecord* rec);
+        void visitVertex(osg::Group& osgParent, VertexRecord* rec);
+        void visitNormalVertex(osg::Group& osgParent, NormalVertexRecord* rec);
+        void visitTextureVertex(osg::Group& osgParent, TextureVertexRecord* rec);
+        void visitNormalTextureVertex(osg::Group& osgParent, NormalTextureVertexRecord* rec);
+
+        // Primary records
+        osg::Group* visitHeader(HeaderRecord* rec);
+        osg::Group* visitGroup(osg::Group& osgParent, GroupRecord* rec);
+        osg::Group* visitLOD(osg::Group& osgParent, LodRecord* rec);
+        osg::Group* visitOldLOD(osg::Group& osgParent, OldLodRecord* rec);
+        osg::Group* visitDOF(osg::Group& osgParent, DofRecord* rec);
+        osg::Group* visitSwitch(osg::Group& osgParent, SwitchRecord* rec);
+        osg::Group* visitObject(osg::Group& osgParent, ObjectRecord* rec);
+        osg::Group* visitExternal(osg::Group& osgParent, ExternalRecord* rec);
+        osg::Group* visitInstanceDefinition(osg::Group& osgParent,InstanceDefinitionRecord* rec);
+        osg::Group* visitInstanceReference(osg::Group& osgParent,InstanceReferenceRecord* rec);
 
         void visitFace(GeoSetBuilder* pParent, FaceRecord* rec);
         void visitLightPoint(GeoSetBuilder* pBuilder, LightPointRecord* rec);
@@ -159,6 +160,8 @@ class ConvertFromFLT
         double              _unitScale;
         bool                _bHdrRgbMode;
         osg::Vec4           _faceColor;
+
+        osg::Group*         _osgParent;
 };
 
     

@@ -55,8 +55,11 @@ Ignore 76-82
 #define ROTATE_SCALE_TO_POINT_OP        81
 #define PUT_TRANSFORM_OP                82
 */
+#define EYEPOINT_TRACKPLANE_OP          83
 #define ROAD_ZONE_OP                    88
 #define MORPH_VERTEX_LIST_OP            89
+#define LINKAGE_PALETTE_OP              90
+#define SOUND_PALETTE_OP                93
 #define GENERAL_MATRIX_OP               94
 #define SWITCH_OP                       96
 #define EXTENSION_OP                    100

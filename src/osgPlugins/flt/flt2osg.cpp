@@ -1,5 +1,3 @@
-// flt2osg.cpp
-
 #include <stdio.h>
 #include <string.h>
 #include <osg/GL>
@@ -80,10 +78,10 @@ ConvertFromFLT::~ConvertFromFLT()
 }
 
 
-osg::Node* ConvertFromFLT::convert(HeaderRecord* rec)
+osg::Group* ConvertFromFLT::convert(HeaderRecord* rec)
 {
     if (rec==NULL) return NULL;
-    return visitNode(NULL, rec);
+    return visitHeader(rec);
 }
 
 
@@ -108,92 +106,103 @@ void ConvertFromFLT::regisiterVertex(int nOffset, Record* pRec)
 
 ////////////////////////////////////////////////////////////////////
 
-osg::Node* ConvertFromFLT::visitNode(osg::Group* osgParent, Record* rec)
-{
-    if (rec==NULL) return NULL;
 
-    if      (rec->isOfType(HEADER_OP))              return visitHeader(osgParent, (HeaderRecord*)rec);
-    else if (rec->isOfType(COLOR_PALETTE_OP))       return visitColorPalette(osgParent, (ColorPaletteRecord*)rec);
-    else if (rec->isOfType(MATERIAL_PALETTE_OP))    return visitMaterialPalette(osgParent, (MaterialPaletteRecord*)rec);
-    else if (rec->isOfType(OLD_MATERIAL_PALETTE_OP))return visitOldMaterialPalette(osgParent, (OldMaterialPaletteRecord*)rec);
-    else if (rec->isOfType(TEXTURE_PALETTE_OP))     return visitTexturePalette(osgParent, (TexturePaletteRecord*)rec);
-    else if (rec->isOfType(VERTEX_PALETTE_OP))      return visitVertexPalette(osgParent, (VertexPaletteRecord*)rec);
-    else if (rec->isOfType(VERTEX_C_OP))            return visitVertex(osgParent, (VertexRecord*)rec);
-    else if (rec->isOfType(VERTEX_CN_OP))           return visitNormalVertex(osgParent, (NormalVertexRecord*)rec);
-    else if (rec->isOfType(VERTEX_CNT_OP))          return visitNormalTextureVertex(osgParent, (NormalTextureVertexRecord*)rec);
-    else if (rec->isOfType(VERTEX_CT_OP))           return visitTextureVertex(osgParent, (TextureVertexRecord*)rec);
-    else if (rec->isOfType(GROUP_OP))               return visitGroup(osgParent, (GroupRecord*)rec);
-    else if (rec->isOfType(LOD_OP))                 return visitLOD(osgParent, (LodRecord*)rec);
-    else if (rec->isOfType(OLD_LOD_OP))             return visitOldLOD(osgParent, (OldLodRecord*)rec);
-    else if (rec->isOfType(DOF_OP))                 return visitDOF(osgParent, (DofRecord*)rec);
-    else if (rec->isOfType(SWITCH_OP))              return visitSwitch(osgParent, (SwitchRecord*)rec);
-    else if (rec->isOfType(OBJECT_OP))              return visitObject(osgParent, (ObjectRecord*)rec);
-    else if (rec->isOfType(INSTANCE_REFERENCE_OP))  return visitInstanceReference(osgParent, (InstanceReferenceRecord*)rec);
-    else if (rec->isOfType(INSTANCE_DEFINITION_OP)) return visitInstanceDefinition(osgParent, (InstanceDefinitionRecord*)rec);
-    else if (rec->isOfType(EXTERNAL_REFERENCE_OP))  return visitExternal(osgParent, (ExternalRecord*)rec);
-    else if (rec->isOfType(MATRIX_OP))              return visitMatrix(osgParent, (MatrixRecord*)rec);
-    else if (rec->isOfType(LONG_ID_OP))             return visitLongID(osgParent, (LongIDRecord*)rec);
-
-    return NULL;
-}
-
-osg::Node* ConvertFromFLT::visitInstanceDefinition(osg::Group* osgParent,InstanceDefinitionRecord* rec)
+osg::Group* ConvertFromFLT::visitInstanceDefinition(osg::Group& osgParent,InstanceDefinitionRecord* rec)
 {
     osg::Group* group = new osg::Group;
     InstancePool* pInstancePool = rec->getFltFile()->getInstancePool();
 
-    if (group)
-    {
-        osg::Node* node = visitAncillary(osgParent, rec);
-        if (node) osgParent = (osg::Group*)node;
+    visitAncillary(osgParent, *group, rec);
 
-        pInstancePool->addInstance((int)rec->getData()->iInstDefNumber,group);
-        visitPrimaryNode(group, (PrimNodeRecord*)rec);
-    }
+    pInstancePool->addInstance((int)rec->getData()->iInstDefNumber,group);
+    visitPrimaryNode(*group, (PrimNodeRecord*)rec);
 
-    return (osg::Node*)group;
+    return group;
 }
 
-osg::Node* ConvertFromFLT::visitInstanceReference(osg::Group* osgParent,InstanceReferenceRecord* rec)
+osg::Group* ConvertFromFLT::visitInstanceReference(osg::Group& osgParent,InstanceReferenceRecord* rec)
 {
     osg::Group* group;
     InstancePool* pInstancePool = rec->getFltFile()->getInstancePool();
 
     group = pInstancePool->getInstance((int)rec->getData()->iInstDefNumber);
     if (group)
-    {
-        osgParent->addChild( group );
-    }
+        osgParent.addChild( group );
     else
-    {
         osg::notify(osg::INFO) << "Warning: cannot find the instance definition in flt file."<<std::endl;
-    }
-    return (osg::Node*)group;
+    return group;
 }
 
-osg::Node* ConvertFromFLT::visitAncillary(osg::Group* osgParent, PrimNodeRecord* rec)
-{
-    osg::Node* node = NULL;
 
-    // Visit
+osg::Group* ConvertFromFLT::visitAncillary(osg::Group& osgParent, osg::Group& osgPrimary, PrimNodeRecord* rec)
+{
+    osg::Group* parent = &osgParent;
+    // Visit ancillary records
     for(int i=0; i < rec->getNumChildren(); i++)
     {
         Record* child = rec->getChild(i);
+        if (!child->isAncillaryRecord())
+            break;
 
-        if (child && child->isAncillaryRecord())
+        switch (child->getOpcode())
         {
-            node = visitNode(osgParent, child);
-            if (node) osgParent = (osg::Group*)node;
+        case LONG_ID_OP:
+            visitLongID(osgPrimary, (LongIDRecord*)child);
+            break;
+
+        case MATRIX_OP:
+            // Note: Ancillary record creates osg node
+            parent = visitMatrix(*parent, osgPrimary, (MatrixRecord*)child);
+            break;
+
+        case COMMENT_OP:
+//              visitComment(osgPrimary, (CommentRecord*)child);
+            break;
+
+        case COLOR_PALETTE_OP:
+            visitColorPalette(osgPrimary, (ColorPaletteRecord*)child);
+            break;
+
+        case MATERIAL_PALETTE_OP:
+            visitMaterialPalette(osgPrimary, (MaterialPaletteRecord*)child);
+            break;
+
+        case OLD_MATERIAL_PALETTE_OP:
+            visitOldMaterialPalette(osgPrimary, (OldMaterialPaletteRecord*)child);
+            break;
+
+        case TEXTURE_PALETTE_OP:
+            visitTexturePalette(osgPrimary, (TexturePaletteRecord*)child);
+            break;
+
+        case VERTEX_PALETTE_OP:
+            visitVertexPalette(osgPrimary, (VertexPaletteRecord*)child);
+            break;
+
+        case VERTEX_C_OP:
+            visitVertex(osgPrimary, (VertexRecord*)child);
+            break;
+
+        case VERTEX_CN_OP:
+            visitNormalVertex(osgPrimary, (NormalVertexRecord*)child);
+            break;
+
+        case VERTEX_CNT_OP:
+            visitNormalTextureVertex(osgPrimary, (NormalTextureVertexRecord*)child);
+            break;
+
+        case VERTEX_CT_OP:
+            visitTextureVertex(osgPrimary, (TextureVertexRecord*)child);
+            break;
         }
     }
-
-    return osgParent;
+    return parent;
 }
 
 
-osg::Node* ConvertFromFLT::visitPrimaryNode(osg::Group* osgParent, PrimNodeRecord* rec)
+osg::Group* ConvertFromFLT::visitPrimaryNode(osg::Group& osgParent, PrimNodeRecord* rec)
 {
-    osg::Node* node = NULL;
+    osg::Group* osgPrim = NULL;
     GeoSetBuilder   geoSetBuilder;
     GeoSetBuilder   billboardBuilder;
 
@@ -204,7 +213,9 @@ osg::Node* ConvertFromFLT::visitPrimaryNode(osg::Group* osgParent, PrimNodeRecor
 
         if (child && child->isPrimaryNode())
         {
-            if (child->isOfType(FACE_OP))
+            switch (child->getOpcode())
+            {
+            case FACE_OP:
             {
                 FaceRecord* fr = (FaceRecord*)child;
                 if( fr->getData()->swTemplateTrans == 2)  //Axis type rotate
@@ -212,10 +223,38 @@ osg::Node* ConvertFromFLT::visitPrimaryNode(osg::Group* osgParent, PrimNodeRecor
                 else
                     visitFace(&geoSetBuilder, fr);
             }
-            else if (child->isOfType(LIGHT_POINT_OP))
+            break;
+            case LIGHT_POINT_OP:
                 visitLightPoint(&geoSetBuilder, (LightPointRecord*)child);
-            else
-                node = visitNode(osgParent, child);
+                break;
+            case GROUP_OP:
+                osgPrim = visitGroup(osgParent, (GroupRecord*)child);
+                break;
+            case LOD_OP:
+                osgPrim = visitLOD(osgParent, (LodRecord*)child);
+                break;
+            case OLD_LOD_OP:
+                osgPrim = visitOldLOD(osgParent, (OldLodRecord*)child);
+                break;
+            case DOF_OP:
+                osgPrim = visitDOF(osgParent, (DofRecord*)child);
+                break;
+            case SWITCH_OP:
+                osgPrim = visitSwitch(osgParent, (SwitchRecord*)child);
+                break;
+            case OBJECT_OP:
+                osgPrim = visitObject(osgParent, (ObjectRecord*)child);
+                break;
+            case INSTANCE_REFERENCE_OP:
+                osgPrim = visitInstanceReference(osgParent, (InstanceReferenceRecord*)child);
+                break;
+            case INSTANCE_DEFINITION_OP:
+                osgPrim = visitInstanceDefinition(osgParent, (InstanceDefinitionRecord*)child);
+                break;
+            case EXTERNAL_REFERENCE_OP:
+                osgPrim = visitExternal(osgParent, (ExternalRecord*)child);
+                break;
+            }
         }
     }
 
@@ -224,8 +263,8 @@ osg::Node* ConvertFromFLT::visitPrimaryNode(osg::Group* osgParent, PrimNodeRecor
         osg::Geode* geode = new osg::Geode;
         geoSetBuilder.createOsgGeoSets(geode );
     
-        if (osgParent && (geode->getNumDrawables() > 0))
-            osgParent->addChild( geode );
+        if (geode->getNumDrawables() > 0)
+            osgParent.addChild( geode );
     }
 
     if( !billboardBuilder.empty() )
@@ -233,15 +272,15 @@ osg::Node* ConvertFromFLT::visitPrimaryNode(osg::Group* osgParent, PrimNodeRecor
         osg::Billboard* billboard = new osg::Billboard;
         billboardBuilder.createOsgGeoSets(billboard );
         
-        if (osgParent && (billboard->getNumDrawables() > 0))
-            osgParent->addChild( billboard );
+        if (billboard->getNumDrawables() > 0)
+            osgParent.addChild( billboard );
     }
 
-    return node;
+    return osgPrim;
 }
 
 
-osg::Node* ConvertFromFLT::visitLongID(osg::Group* osgParent, LongIDRecord* rec)
+void ConvertFromFLT::visitLongID(osg::Group& osgParent, LongIDRecord* rec)
 {
     SLongID *pSLongID = (SLongID*)rec->getData();
 
@@ -250,13 +289,11 @@ osg::Node* ConvertFromFLT::visitLongID(osg::Group* osgParent, LongIDRecord* rec)
     // std::cout << "ConvertFromFLT::visitLongID '"<<std::string(pSLongID->szIdent,pSLongID->RecHeader.length()-4)<<"'"<<std::endl;
     // std::cout << "ConvertFromFLT::visitLongID cstyle string '"<<pSLongID->szIdent<<"'"<<std::endl;
 
-    osgParent->setName(std::string(pSLongID->szIdent,pSLongID->RecHeader.length()-4));
-
-    return NULL;
+    osgParent.setName(std::string(pSLongID->szIdent,rec->getBodyLength()));
 }
 
 
-osg::Node* ConvertFromFLT::visitHeader(osg::Group* osgParent, HeaderRecord* rec)
+osg::Group* ConvertFromFLT::visitHeader(HeaderRecord* rec)
 {
     SHeader *pSHeader = (SHeader*)rec->getData();
 
@@ -299,23 +336,18 @@ osg::Node* ConvertFromFLT::visitHeader(osg::Group* osgParent, HeaderRecord* rec)
 
     // Create root group node
     osg::Group* group = new osg::Group;
-    if (group)
-    {
-        visitAncillary(osgParent, rec);
+    group->setName(pSHeader->szIdent);
+    visitAncillary(*group, *group, rec);
+    visitPrimaryNode(*group, rec);
 
-        visitPrimaryNode(group, (PrimNodeRecord*)rec);
-        group->setName(pSHeader->szIdent);
-        if (osgParent) osgParent->addChild(group);
-    }
-
-    return (osg::Node*)group;
+    return group;
 }
 
 
                                  /*osgParent*/
-osg::Node* ConvertFromFLT::visitColorPalette(osg::Group* , ColorPaletteRecord* rec)
+void ConvertFromFLT::visitColorPalette(osg::Group& , ColorPaletteRecord* rec)
 {
-    if (!rec->getFltFile()->useInternalColorPalette()) return NULL;
+    if (!rec->getFltFile()->useInternalColorPalette()) return;
 
     ColorPool* pColorPool = rec->getFltFile()->getColorPool();
     int flightVersion = rec->getFlightVersion();
@@ -350,14 +382,12 @@ osg::Node* ConvertFromFLT::visitColorPalette(osg::Group* , ColorPaletteRecord* r
             pColorPool->addColor(i+4096, color);
         }
     }
-
-    return NULL;
 }
 
                                  /*osgParent*/
-osg::Node* ConvertFromFLT::visitMaterialPalette(osg::Group*, MaterialPaletteRecord* rec)
+void ConvertFromFLT::visitMaterialPalette(osg::Group&, MaterialPaletteRecord* rec)
 {
-    if (!rec->getFltFile()->useInternalMaterialPalette()) return NULL;
+    if (!rec->getFltFile()->useInternalMaterialPalette()) return;
 
     SMaterial* pSMaterial = (SMaterial*)rec->getData();
     MaterialPool* pMaterialPool = rec->getFltFile()->getMaterialPool();
@@ -374,13 +404,12 @@ osg::Node* ConvertFromFLT::visitMaterialPalette(osg::Group*, MaterialPaletteReco
 
         pMaterialPool->addMaterial((int)pSMaterial->diIndex, pPoolMat);
     }
-    return NULL;
 }
 
                                  /*osgParent*/
-osg::Node* ConvertFromFLT::visitOldMaterialPalette(osg::Group* , OldMaterialPaletteRecord* rec)
+void ConvertFromFLT::visitOldMaterialPalette(osg::Group& , OldMaterialPaletteRecord* rec)
 {
-    if (!rec->getFltFile()->useInternalMaterialPalette()) return NULL;
+    if (!rec->getFltFile()->useInternalMaterialPalette()) return;
 
     SOldMaterial* pSMaterial = (SOldMaterial*)rec->getData();
     MaterialPool* pMaterialPool = rec->getFltFile()->getMaterialPool();
@@ -401,16 +430,15 @@ osg::Node* ConvertFromFLT::visitOldMaterialPalette(osg::Group* , OldMaterialPale
             pMaterialPool->addMaterial(i, pPoolMat);
         }
     }
-    return NULL;
 }
 
                                  /*osgParent*/
-osg::Node* ConvertFromFLT::visitTexturePalette(osg::Group* , TexturePaletteRecord* rec)
+void ConvertFromFLT::visitTexturePalette(osg::Group& , TexturePaletteRecord* rec)
 {
     int nIndex;
     char* pFilename;
 
-    if (!rec->getFltFile()->useInternalTexturePalette()) return NULL;
+    if (!rec->getFltFile()->useInternalTexturePalette()) return;
 
     if (rec->getFlightVersion() > 13)
     {
@@ -426,7 +454,7 @@ osg::Node* ConvertFromFLT::visitTexturePalette(osg::Group* , TexturePaletteRecor
     }
 
     TexturePool* pTexturePool = rec->getFltFile()->getTexturePool();
-    if (pTexturePool == NULL) return NULL;
+    if (pTexturePool == NULL) return;
 
     // Get StateSet containing texture from registry pool.
     osg::StateSet *osgStateSet = Registry::instance()->getTexture(pFilename);
@@ -435,10 +463,10 @@ osg::Node* ConvertFromFLT::visitTexturePalette(osg::Group* , TexturePaletteRecor
     {
         // Add texture to local pool to be able to get by index.
         pTexturePool->addTexture(nIndex, osgStateSet);
-        return NULL;
+        return;     // Texture already loaded
     }
 
-    // Read texture and texture
+    // Read texture and attribute file
     osg::ref_ptr<osg::Image> image = osgDB::readImageFile(pFilename);
     if (image.valid())
     {
@@ -484,191 +512,153 @@ osg::Node* ConvertFromFLT::visitTexturePalette(osg::Group* , TexturePaletteRecor
         // Also add to local pool to be able to get texture by index.
         pTexturePool->addTexture(nIndex, osgStateSet);
     }
-
-    return NULL;
 }
 
                                  /*osgParent*/
-osg::Node* ConvertFromFLT::visitVertexPalette(osg::Group* , VertexPaletteRecord* rec)
+void ConvertFromFLT::visitVertexPalette(osg::Group& , VertexPaletteRecord* rec)
 {
     _diCurrentOffset = rec->getSize();
-    return NULL;
 }
 
                                  /*osgParent*/
-osg::Node* ConvertFromFLT::visitVertex(osg::Group* , VertexRecord* rec)
+void ConvertFromFLT::visitVertex(osg::Group& , VertexRecord* rec)
 {
     regisiterVertex(_diCurrentOffset, rec);
     _diCurrentOffset += rec->getSize();
-    return NULL;
 }
 
                                  /*osgParent*/
-osg::Node* ConvertFromFLT::visitNormalVertex(osg::Group* , NormalVertexRecord* rec)
+void ConvertFromFLT::visitNormalVertex(osg::Group& , NormalVertexRecord* rec)
 {
     regisiterVertex(_diCurrentOffset, rec);
     _diCurrentOffset += rec->getSize();
-    return NULL;
 }
 
                                  /*osgParent*/
-osg::Node* ConvertFromFLT::visitTextureVertex(osg::Group* , TextureVertexRecord* rec)
+void ConvertFromFLT::visitTextureVertex(osg::Group& , TextureVertexRecord* rec)
 {
     regisiterVertex(_diCurrentOffset, rec);
     _diCurrentOffset += rec->getSize();
-    return NULL;
 }
 
                                  /*osgParent*/
-osg::Node* ConvertFromFLT::visitNormalTextureVertex(osg::Group* , NormalTextureVertexRecord* rec)
+void ConvertFromFLT::visitNormalTextureVertex(osg::Group& , NormalTextureVertexRecord* rec)
 {
     regisiterVertex(_diCurrentOffset, rec);
     _diCurrentOffset += rec->getSize();
-    return NULL;
 }
 
 
-osg::Node* ConvertFromFLT::visitGroup(osg::Group* osgParent, GroupRecord* rec)
+osg::Group* ConvertFromFLT::visitGroup(osg::Group& osgParent, GroupRecord* rec)
 {
     osg::Group* group = new osg::Group;
-    if (group)
-    {
-        osg::Node* node = visitAncillary(osgParent, rec);
-        if (node) osgParent = (osg::Group*)node;
 
-        group->setName(rec->getData()->szIdent);
-        osgParent->addChild( group );
-        visitPrimaryNode(group, (PrimNodeRecord*)rec);
-    }
-
-    return (osg::Node*)group;
+    group->setName(rec->getData()->szIdent);
+    visitAncillary(osgParent, *group, rec)->addChild( group );
+    visitPrimaryNode(*group, rec);
+    return group;
 }
 
 
-osg::Node* ConvertFromFLT::visitLOD(osg::Group* osgParent, LodRecord* rec)
+osg::Group* ConvertFromFLT::visitLOD(osg::Group& osgParent, LodRecord* rec)
 {
     SLevelOfDetail* pSLOD = rec->getData();
     osg::LOD* lod = new osg::LOD;
+
+    float64x3* pCenter = &pSLOD->Center;
+    lod->setCenter(osg::Vec3(pCenter->x(), pCenter->y(), pCenter->z())*_unitScale);
+    lod->setRange(0, pSLOD->dfSwitchOutDist*_unitScale);
+    lod->setRange(1, pSLOD->dfSwitchInDist*_unitScale);
+    lod->setName(pSLOD->szIdent);
+    visitAncillary(osgParent, *lod, rec)->addChild( lod );
+
     osg::Group* group = new osg::Group;
-    if (lod && group)
-    {
-        osg::Node* node = visitAncillary(osgParent, rec);
-        if (node) osgParent = (osg::Group*)node;
+    lod->addChild(group);
+    visitPrimaryNode(*group, rec);
 
-        visitPrimaryNode(group, (PrimNodeRecord*)rec);
-        float64x3* pCenter = &pSLOD->Center;
-        lod->addChild(group);
-        lod->setCenter(osg::Vec3(pCenter->x(), pCenter->y(), pCenter->z())*_unitScale);
-        lod->setRange(0, pSLOD->dfSwitchOutDist*_unitScale);
-        lod->setRange(1, pSLOD->dfSwitchInDist*_unitScale);
-        lod->setName(pSLOD->szIdent);
-        osgParent->addChild( lod );
-    }
-
-    return (osg::Node*)lod;
+    return lod;
 }
 
 
-osg::Node* ConvertFromFLT::visitOldLOD(osg::Group* osgParent, OldLodRecord* rec)
+osg::Group* ConvertFromFLT::visitOldLOD(osg::Group& osgParent, OldLodRecord* rec)
 {
     SOldLOD* pSLOD = (SOldLOD*)rec->getData();
     osg::LOD* lod = new osg::LOD;
+
+    lod->setCenter(osg::Vec3(
+        (float)pSLOD->Center[0],
+        (float)pSLOD->Center[1],
+        (float)pSLOD->Center[2])*_unitScale);
+    lod->setRange(0, ((float)pSLOD->dwSwitchOutDist)*_unitScale);
+    lod->setRange(1, ((float)pSLOD->dwSwitchInDist)*_unitScale);
+    lod->setName(pSLOD->szIdent);
+    visitAncillary(osgParent, *lod, rec)->addChild( lod );
+
     osg::Group* group = new osg::Group;
-    if (lod && group)
-    {
-        osg::Node* node = visitAncillary(osgParent, rec);
-        if (node) osgParent = (osg::Group*)node;
+    lod->addChild(group);
+    visitPrimaryNode(*group, rec);
 
-        visitPrimaryNode(group, (PrimNodeRecord*)rec);
-        lod->addChild(group);
-        lod->setCenter(osg::Vec3(
-            (float)pSLOD->Center[0],
-            (float)pSLOD->Center[1],
-            (float)pSLOD->Center[2])*_unitScale);
-        lod->setRange(0, ((float)pSLOD->dwSwitchOutDist)*_unitScale);
-        lod->setRange(1, ((float)pSLOD->dwSwitchInDist)*_unitScale);
-        lod->setName(pSLOD->szIdent);
-        osgParent->addChild( lod );
-    }
-
-    return (osg::Node*)lod;
+    return lod;
 }
 
 
 // TODO: DOF node implemented as Group.
 // Converted DOF to use transform - jtracy@ist.ucf.edu
-osg::Node* ConvertFromFLT::visitDOF(osg::Group* osgParent, DofRecord* rec)
+osg::Group* ConvertFromFLT::visitDOF(osg::Group& osgParent, DofRecord* rec)
 {
     osg::Transform* transform = new osg::Transform;
 
-    if (transform)
-    {
-        osg::Node* node = visitAncillary(osgParent, rec);
-        if (node) osgParent = (osg::Group*)node;
-
-        visitPrimaryNode(transform, (PrimNodeRecord*)rec);
-        transform->setName(rec->getData()->szIdent);
-        transform->setDataVariance(osg::Object::DYNAMIC);
+    transform->setName(rec->getData()->szIdent);
+    transform->setDataVariance(osg::Object::DYNAMIC);
+    visitAncillary(osgParent, *transform, rec)->addChild( transform );
+    visitPrimaryNode(*transform, (PrimNodeRecord*)rec);
         
-        // note for Judd (and others) shouldn't there be code in here to set up the transform matrix?
-        // as a transform with an identity matrix is effectively only a
-        // a Group... I will leave for other more familiar with the
-        // DofRecord to create the matrix as I don't have any Open Flight
-        // documentation.  RO August 2001.
+    // note for Judd (and others) shouldn't there be code in here to set up the transform matrix?
+    // as a transform with an identity matrix is effectively only a
+    // a Group... I will leave for other more familiar with the
+    // DofRecord to create the matrix as I don't have any Open Flight
+    // documentation.  RO August 2001.
         
-        osgParent->addChild( transform );
-    }
 
-    return (osg::Node*)transform;
+    return transform;
 }
 
 
-osg::Node* ConvertFromFLT::visitSwitch(osg::Group* osgParent, SwitchRecord* rec)
+osg::Group* ConvertFromFLT::visitSwitch(osg::Group& osgParent, SwitchRecord* rec)
 {
     osg::Switch* switc = new osg::Switch;
 
-    if (switc)
-    {
-        osg::Node* node = visitAncillary(osgParent, rec);
-        if (node) osgParent = (osg::Group*)node;
+    switc->setName(rec->getData()->szIdent);
+    switc->setValue(rec->getData()->dwCurrentMask);
+    visitAncillary(osgParent, *switc, rec)->addChild( switc );
+    visitPrimaryNode(*switc, (PrimNodeRecord*)rec);
 
-        visitPrimaryNode(switc, (PrimNodeRecord*)rec);
-        switc->setName(rec->getData()->szIdent);
-        switc->setValue(rec->getData()->dwCurrentMask);
-        osgParent->addChild( switc );
+    /*
+            TODO:
+            mask_bit = 1 << (child_num % 32)
+            mask_word = mask_words [mask_num * num_words + child_num / 32]
+            child_selected = mask_word & mask_bit
+    */
 
-        /*
-                TODO:
-                mask_bit = 1 << (child_num % 32)
-                mask_word = mask_words [mask_num * num_words + child_num / 32]
-                child_selected = mask_word & mask_bit
-        */
-    }
-
-    return (osg::Node*)switc;
+    return switc;
 }
 
 
-osg::Node* ConvertFromFLT::visitObject(osg::Group* osgParent, ObjectRecord* rec)
+osg::Group* ConvertFromFLT::visitObject(osg::Group& osgParent, ObjectRecord* rec)
 {
     SObject *pSObject = (SObject*)rec->getData();
-    osg::Group* group = new osg::Group;
+    osg::Group* object = new osg::Group;
 
-    if (group)
-    {
-        osg::Node* node = visitAncillary(osgParent, rec);
-        if (node) osgParent = (osg::Group*)node;
+    object->setName(pSObject->szIdent);
+    visitAncillary(osgParent, *object, rec)->addChild( object );
 
-        unsigned short  wPrevTransparency = _wObjTransparency;
-        _wObjTransparency = pSObject->wTransparency;
-        visitPrimaryNode(group, (PrimNodeRecord*)rec);
-        _wObjTransparency = wPrevTransparency;
+    unsigned short  wPrevTransparency = _wObjTransparency;
+    _wObjTransparency = pSObject->wTransparency;
+    visitPrimaryNode(*object, (PrimNodeRecord*)rec);
+    _wObjTransparency = wPrevTransparency;
 
-        group->setName(pSObject->szIdent);
-        osgParent->addChild( group );
-    }
 
-    return (osg::Node*)group;
+    return object;
 }
 
 
@@ -1031,7 +1021,7 @@ int ConvertFromFLT::addVertices(GeoSetBuilder* pBuilder, PrimNodeRecord* primRec
 
 int ConvertFromFLT::visitVertexList(GeoSetBuilder* pBuilder, VertexListRecord* rec)
 {
-    DynGeoSet* dgset = pBuilder->getDynGeoSet();
+    //DynGeoSet* dgset = pBuilder->getDynGeoSet();
     int vertices = rec->numberOfVertices();
 
     // Add vertices to GeoSetBuilder
@@ -1161,61 +1151,50 @@ int ConvertFromFLT::addVertex(DynGeoSet* dgset, Record* rec)
 }
 
 
-osg::Node* ConvertFromFLT::visitMatrix(osg::Group* osgParent, MatrixRecord* rec)
+// matrix record
+osg::Group* ConvertFromFLT::visitMatrix(osg::Group& osgParent, const osg::Group& /*osgPrimary*/, MatrixRecord* rec)
 {
     SMatrix* pSMatrix = (SMatrix*)rec->getData();
-
     osg::Transform* transform = new osg::Transform;
-    if (transform)
+
+    osg::Matrix m;
+    for(int i=0;i<4;++i)
     {
-        osg::Matrix m;
-        for(int i=0;i<4;++i)
+        for(int j=0;j<4;++j)
         {
-            for(int j=0;j<4;++j)
-            {
-                m(i,j) = pSMatrix->sfMat[i][j];
-            }
+            m(i,j) = pSMatrix->sfMat[i][j];
         }
-
-        // scale position.
-        // BJ Don't know if this should be done if version > 12
-        osg::Vec3 pos = m.getTrans();
-        m *= osg::Matrix::translate(-pos);
-        pos *= (float)_unitScale;
-        m *= osg::Matrix::translate(pos);
-
-        transform->setDataVariance(osg::Object::STATIC);
-        transform->setMatrix(m);
-        
-        osgParent->addChild(transform);
-        return (osg::Node*)transform;
     }
 
-    return NULL;
+    // scale position.
+    osg::Vec3 pos = m.getTrans();
+    m *= osg::Matrix::translate(-pos);
+    pos *= (float)_unitScale;
+    m *= osg::Matrix::translate(pos);
+
+    transform->setDataVariance(osg::Object::STATIC);
+    transform->setMatrix(m);
+    
+    osgParent.addChild(transform);
+
+    return transform;
 }
 
 
-osg::Node* ConvertFromFLT::visitExternal(osg::Group* osgParent, ExternalRecord* rec)
+osg::Group* ConvertFromFLT::visitExternal(osg::Group& osgParent, ExternalRecord* rec)
 {
     // SExternalReference *pSExternal = (SExternalReference*)rec->getData();
-    if (osgParent)
-    {
-        osg::Node* node = visitAncillary(osgParent, rec);
-        if (node) osgParent = (osg::Group*)node;
 
-        FltFile* pFile = rec->getExternal();
-        if (pFile)
-        {
-            node = pFile->convert();
-            if (node)
-            {
-                osgParent->addChild(node);
-                return node;
-            }
-        }
+    FltFile* pFile = rec->getExternal();
+    osg::Group* external = NULL;
+    if (pFile)
+    {
+        external = pFile->convert();
+        if (external)
+            visitAncillary(osgParent, *external, rec)->addChild(external);
     }
 
-    return NULL;
+    return external;
 }
 
 

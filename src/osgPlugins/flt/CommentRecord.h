@@ -18,11 +18,11 @@ namespace flt {
 //
 ////////////////////////////////////////////////////////////////////
 
-typedef struct CommentTag
+struct SComment
 {
     SRecHeader    RecHeader;
     // TODO
-} SComment;
+};
 
 
 

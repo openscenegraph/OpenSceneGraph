@@ -123,8 +123,8 @@ void HeaderRecord::endian()
 // virtual
 void HeaderRecord::decode()
 {
-    SHeader    *pHeader = (SHeader*)getData();
-
+    // nothing done here, so commenting out, RO, March 2002.
+    // SHeader    *pHeader = (SHeader*)getData();
 }
 
 

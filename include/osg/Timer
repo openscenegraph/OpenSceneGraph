@@ -10,9 +10,9 @@
 
 namespace osg {
 
-#ifdef WIN32
+#if defined(WIN32 ) && !defined(__CYGWIN__)
     typedef __int64 Timer_t;
-#elif defined(__linux) || defined(__FreeBSD__)
+#elif defined(__linux) || defined(__FreeBSD__) || defined(__CYGWIN__)
     typedef unsigned long long Timer_t;
 #elif defined(__sgi)
     typedef unsigned long long Timer_t;
@@ -61,7 +61,7 @@ class SG_EXPORT Timer {
 
 };
 
-#ifdef WIN32
+#if defined(_WIN32) && !(defined(__CYGWIN__) || defined(__MINGW32__))
     #include <time.h>
     #pragma optimize("",off)
 
@@ -92,7 +92,7 @@ namespace osg{
 };
     #pragma optimize("",on)
     
-#elif defined(__linux) || defined(__FreeBSD__)
+#elif defined(__linux) || defined(__FreeBSD__) || defined(__CYGWIN__) || defined(__MINGW32__)
 
     #include <sys/time.h>
 

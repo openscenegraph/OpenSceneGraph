@@ -5,7 +5,7 @@
 #ifndef OSGTEXT_EXPORT_
 #define OSGTEXT_EXPORT_ 1
 
-#ifdef WIN32
+#if defined(WIN32) && !(defined(__CYGWIN__) || defined(__MINGW32__))
     #pragma warning( disable : 4244 )
     #pragma warning( disable : 4251 )
     #pragma warning( disable : 4275 )
@@ -13,7 +13,7 @@
 
 #endif
 
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) || defined(__CYGWIN__) || defined(__MINGW32__)
     #  ifdef OSGTEXT_LIBRARY
     #    define OSGTEXT_EXPORT   __declspec(dllexport)
     #  else

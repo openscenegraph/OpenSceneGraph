@@ -12,7 +12,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////////
 
-typedef int WORD;
+typedef int nvWORD;
 typedef unsigned int UINT;
 
 struct MyVertex
@@ -165,7 +165,7 @@ typedef std::list  <NvFaceInfo*>     NvFaceInfoList;
 typedef std::list  <NvFaceInfoVec*>  NvStripList;
 typedef std::vector<NvEdgeInfo*>     NvEdgeInfoVec;
 
-typedef std::vector<WORD> WordVec;
+typedef std::vector<nvWORD> WordVec;
 typedef std::vector<MyVertex> MyVertexVec;
 typedef std::vector<MyFace> MyFaceVec;
 

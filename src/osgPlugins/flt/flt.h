@@ -6,6 +6,10 @@
 
 #include <iostream>
 
+#ifdef __CYGWIN__
+#include <sys/types.h>
+#endif
+
 namespace flt {
 
 #define ENDIAN2(SRC, DST) endian2((void*)&(SRC), sizeof(SRC), (void*)&(DST), sizeof(DST))

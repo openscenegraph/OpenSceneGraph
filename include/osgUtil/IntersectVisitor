@@ -76,17 +76,6 @@ class OSGUTIL_EXPORT IntersectVisitor : public osg::NodeVisitor
         /** Add a line segment to use for intersection testing during scene traversal.*/
         void addLineSegment(osg::LineSegment* seg);
 
-        /** Modes to control how IntersectVisitor reports hits. */
-        enum HitReportingMode {
-            ONLY_NEAREST_HIT,
-            ALL_HITS
-        };
-
-        /** Set the mode of how hits should reported back from a traversal.*/
-        void setHitReportingMode(HitReportingMode hrm) { _hitReportingMode = hrm; }
-        /** Get the mode of how hits should reported back from a traversal.*/
-        HitReportingMode getHitReportingMode() { return _hitReportingMode; }
-
         //typedef std::multiset<Hit> HitList;
         typedef std::vector<Hit> HitList;
         typedef std::map<osg::LineSegment*,HitList > LineSegmentHitListMap;
@@ -151,8 +140,6 @@ class OSGUTIL_EXPORT IntersectVisitor : public osg::NodeVisitor
         IntersectStateStack         _intersectStateStack;
 
         osg::NodePath               _nodePath;
-
-        HitReportingMode            _hitReportingMode;
         LineSegmentHitListMap       _segHitList;
 };
 

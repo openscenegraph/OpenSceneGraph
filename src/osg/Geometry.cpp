@@ -11,14 +11,26 @@ Geometry::Geometry()
 
 Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
     Drawable(geometry,copyop),
-    _primitives(geometry._primitives),
-    _vertexArray(geometry._vertexArray),
+    _vertexArray(dynamic_cast<Vec3Array*>(copyop(geometry._vertexArray.get()))),
     _normalBinding(geometry._normalBinding),
-    _normalArray(geometry._normalArray),
+    _normalArray(dynamic_cast<Vec3Array*>(copyop(geometry._normalArray.get()))),
     _colorBinding(geometry._colorBinding),
-    _colorArray(geometry._colorArray),
-    _texCoordList(geometry._texCoordList)
+    _colorArray(copyop(geometry._colorArray.get()))
 {
+    for(PrimitiveList::const_iterator pitr=geometry._primitives.begin();
+        pitr!=geometry._primitives.end();
+        ++pitr)
+    {
+        Primitive* primitive = copyop(pitr->get());
+        if (primitive) _primitives.push_back(primitive);
+    }
+
+    for(TexCoordArrayList::const_iterator titr=geometry._texCoordList.begin();
+        titr!=geometry._texCoordList.end();
+        ++titr)
+    {
+        _texCoordList.push_back(copyop(titr->get()));
+    }
 }
 
 Geometry::~Geometry()

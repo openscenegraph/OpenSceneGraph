@@ -17,6 +17,8 @@ class StateSet;
 class StateAttribute;
 class Node;
 class Drawable;
+class Array;
+class Primitive;
 
 /** Copy Op(erator) used to control the whether shallow or deep copy is used
   * during copy construction and clone operation.*/
@@ -35,6 +37,8 @@ class SG_EXPORT CopyOp
             DEEP_COPY_STATEATTRIBUTES = 16,
             DEEP_COPY_TEXTURES = 32,
             DEEP_COPY_IMAGES = 64,
+            DEEP_COPY_ARRAYS = 128,
+            DEEP_COPY_PRIMITIVES = 256,
             DEEP_COPY_ALL = 0xffffffff
         };
 
@@ -51,6 +55,8 @@ class SG_EXPORT CopyOp
         virtual StateAttribute* operator() (const StateAttribute* attr) const;
         virtual Texture*        operator() (const Texture* text) const;
         virtual Image*          operator() (const Image* image) const;
+        virtual Array*          operator() (const Array* image) const;
+        virtual Primitive*      operator() (const Primitive* image) const;
 
     protected:
     

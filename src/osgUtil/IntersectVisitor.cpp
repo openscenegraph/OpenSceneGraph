@@ -140,13 +140,13 @@ IntersectVisitor::IntersectVisitor()
 {
     // overide the default node visitor mode.
     setTraversalMode(NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
+
     reset();
 }
 
 
 IntersectVisitor::~IntersectVisitor()
 {
-    _hitReportingMode = ONLY_NEAREST_HIT;
 }
 
 
@@ -476,6 +476,7 @@ bool IntersectVisitor::intersect(Drawable& drawable)
                     hit._intersectNormal = thitr->second.second;
 
                     _segHitList[sitr->first.get()].push_back(hit);
+
                     std::sort(_segHitList[sitr->first.get()].begin(),_segHitList[sitr->first.get()].end());
 
                     hitFlag = true;

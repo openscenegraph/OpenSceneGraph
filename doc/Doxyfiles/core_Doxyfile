@@ -323,7 +323,6 @@ INPUT                  = $(OSGHOME)/include/osg \
                          $(OSGHOME)/include/osgParticle \
                          $(OSGHOME)/include/osgText \
                          $(OSGHOME)/include/osgUtil \
-                         $(OSGHOME)/include/osgUtx \
                          $(OSGHOME)/doc/Doxyfiles/auto_Mainpage
 
 # If the value of the INPUT tag contains directories, you can use the 

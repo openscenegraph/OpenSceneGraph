@@ -89,6 +89,8 @@ class OSGA_Archive : public osgDB::Archive
         typedef std::pair<pos_type, size_type> PositionSizePair;
         typedef std::map<std::string, PositionSizePair> FileNamePositionMap;
 
+        friend class IndexBlock;
+
         class IndexBlock : public osg::Referenced
         {
         public:

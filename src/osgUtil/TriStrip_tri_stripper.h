@@ -61,7 +61,7 @@
 #include <deque>
 #include <list>
 #include <map>
-#include <string>eap_array.h TriStrip_tri_stripper.cpp  TriStrip_tri_stripper.h
+#include <string>
 
 #include <vector>
 

@@ -223,14 +223,20 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     Geometry *geometry      = 0L;
     
     // Get texture coordinates
-    Vec2Array* tex_coords = 0L; 
     trpgTexData td;
-    if (geom.GetTexCoordSet(0,&td))
+    int num_tex;
+    geom.GetNumTexCoordSets(num_tex);
+    Vec2Array** tex_coords = new Vec2Array*[num_tex];
+    for (int texno = 0; texno < num_tex; texno++)
     {
-        tex_coords = new Vec2Array(numVert); 
-        for (int i=0 ;i < numVert; i++)
+        tex_coords[texno] = 0L;
+        if (geom.GetTexCoordSet(texno,&td))
         {
-            (*tex_coords)[i].set(td.floatData[2*i+0],td.floatData[2*i+1]);
+            tex_coords[texno] = new Vec2Array(numVert); 
+            for (int i=0 ;i < numVert; i++)
+            {
+                (*(tex_coords[texno]))[i].set(td.floatData[2*i+0],td.floatData[2*i+1]);
+            }
         }
     }
     
@@ -297,8 +303,11 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
                 for (int j=0; j < numSwap; j++ )
                 {
                     std::swap((*vertices)[start], (*vertices)[end]);
-                    if( tex_coords )
-                        std::swap((*tex_coords)[start], (*tex_coords)[end]);
+                    for(int texno = 0; texno < num_tex; texno ++ )
+                    {
+                        if( tex_coords[texno] )
+                            std::swap((*tex_coords[texno])[start], (*tex_coords[texno])[end]);
+                    }
                     if(normals)
                         std::swap((*normals)[start], (*normals)[end]);
                     start++;
@@ -334,7 +343,8 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
 
         if (tex_coords)
         {
-            geometry->setTexCoordArray( 0, tex_coords);
+            for (int texno = 0; texno < num_tex; texno++)
+                geometry->setTexCoordArray( texno, tex_coords[texno]);
         }
 
         geometry->setStateSet(sset.get());

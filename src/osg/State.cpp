@@ -10,7 +10,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
  * OpenSceneGraph Public License for more details.
 */
-#include <osg/GLExtensions>
 #include <osg/State>
 #include <osg/Notify>
 #include <osg/GLU>
@@ -202,7 +201,7 @@ void State::captureCurrentState(StateSet& stateset) const
 // template<class T>
 // T mymax(const T& a,const T& b)
 // {
-// 	return (((a) > (b)) ? (a) : (b));
+//     return (((a) > (b)) ? (a) : (b));
 // }
 
 void State::apply(const StateSet* dstate)
@@ -491,6 +490,7 @@ void State::disableAllVertexArrays()
 {
     disableVertexPointer();
     disableTexCoordPointersAboveAndIncluding(0);
+    disableVertexAttribPointersAboveAndIncluding(0);
     disableColorPointer();
     disableFogCoordPointer();
     disableIndexPointer();
@@ -502,6 +502,7 @@ void State::dirtyAllVertexArrays()
 {
     dirtyVertexPointer();
     dirtyTexCoordPointersAboveAndIncluding(0);
+    dirtyVertexAttribPointersAboveAndIncluding(0);
     dirtyColorPointer();
     dirtyFogCoordPointer();
     dirtyIndexPointer();

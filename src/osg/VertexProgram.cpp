@@ -119,7 +119,7 @@ void VertexProgram::apply(State& state) const
     }
     else if (!_vertexProgram.empty())
     {
-        ::glGetError(); // Reset Error flags.
+        glGetError(); // Reset Error flags.
         extensions->glGenPrograms( 1, &vertexProgramId );
         extensions->glBindProgram( GL_VERTEX_PROGRAM_ARB, vertexProgramId );
         extensions->glProgramString( GL_VERTEX_PROGRAM_ARB, GL_PROGRAM_FORMAT_ASCII_ARB,
@@ -127,10 +127,10 @@ void VertexProgram::apply(State& state) const
 
         // Check for errors
         GLint errorposition;
-        ::glGetIntegerv(GL_PROGRAM_ERROR_POSITION_ARB, &errorposition);
+        glGetIntegerv(GL_PROGRAM_ERROR_POSITION_ARB, &errorposition);
         if (errorposition != -1)
         {
-            notify(osg::FATAL) << "VertexProgram: " << ::glGetString(GL_PROGRAM_ERROR_STRING_ARB) << std::endl;
+            notify(osg::FATAL) << "VertexProgram: " << glGetString(GL_PROGRAM_ERROR_STRING_ARB) << std::endl;
 
             std::string::size_type start = _vertexProgram.rfind('\n', errorposition);
             std::string::size_type stop  = _vertexProgram.find('\n', errorposition);
@@ -161,10 +161,10 @@ void VertexProgram::apply(State& state) const
             itr!=_matrixList.end();
             ++itr)
         {
-            ::glMatrixMode((*itr).first);
-            ::glLoadMatrixf((*itr).second.ptr());
+            glMatrixMode((*itr).first);
+            glLoadMatrixf((*itr).second.ptr());
         }
-        ::glMatrixMode(GL_MODELVIEW); // restore matrix mode
+        glMatrixMode(GL_MODELVIEW); // restore matrix mode
     }
 }
 

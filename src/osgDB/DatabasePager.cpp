@@ -20,8 +20,8 @@ DatabasePager::DatabasePager()
     //osg::notify(osg::INFO)<<"Constructing DatabasePager()"<<std::endl;
     
     _frameNumber = 0;
-    _frameBlock = new Producer::Block;
-    _fileRequestListEmptyBlock = new Producer::Block;
+    _frameBlock = new Block;
+    _fileRequestListEmptyBlock = new Block;
 
     _deleteRemovedSubgraphsInDatabaseThread = true;
     

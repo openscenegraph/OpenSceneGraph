@@ -218,6 +218,12 @@ void Camera::setNearFar(const double zNear, const double zFar)
   * Typicall used after resizeing a window.*/
 void Camera::adjustAspectRatio(const double newAspectRatio, const AdjustAspectRatioMode aa)
 {
+	if (newAspectRatio<0.01f || newAspectRatio>100.0f)
+	{
+		notify(NOTICE)<<"Warning: aspect ratio out of range (0.01..100) in Camera::adjustAspectRatio("<<newAspectRatio<<","<<aa<<")"<<std::endl;
+		return;
+	}
+
     double previousAspectRatio = (_right-_left)/(_top-_bottom);
     double deltaRatio = newAspectRatio/previousAspectRatio;
     if (aa == ADJUST_HORIZONTAL)

@@ -136,7 +136,6 @@ int *numComponents_ret)
     int height;
     unsigned char *currPtr;
     int format;
-    unsigned char *buffer;
     /* This struct contains the JPEG decompression parameters and pointers to
      * working space (which is allocated as needed by the JPEG library).
      */
@@ -167,8 +166,6 @@ int *numComponents_ret)
 
     /* Step 1: allocate and initialize JPEG decompression object */
 
-    buffer = NULL;
-
     /* We set up the normal JPEG error routines, then override error_exit. */
     cinfo.err = jpeg_std_error(&jerr.pub);
     jerr.pub.error_exit = my_error_exit;
@@ -181,9 +178,13 @@ int *numComponents_ret)
         jpegerror = ERR_JPEGLIB;
         jpeg_destroy_decompress(&cinfo);
         fclose(infile);
-        if (buffer) delete [] buffer;
+        //if (buffer) delete [] buffer;
         return NULL;
     }
+
+    // used to be before setjump above, but have moved to after to avoid compile warnings.
+    unsigned char *buffer = NULL;
+
     /* Now we can initialize the JPEG decompression object. */
     jpeg_create_decompress(&cinfo);
 

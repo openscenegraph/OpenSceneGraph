@@ -6,7 +6,11 @@ DIRS = src
 
 VERSION = osg-0.8.43
 
-export OSGHOME := $(shell pwd)
+ifeq (IRIX|IRIX64,true)
+        export OSGHOME = `pwd`
+else
+	export OSGHOME := $(shell pwd)
+endif
 
 all : $(MAKE_PREP)
 	for f in $(DIRS) ; do cd $$f; $(MAKE) || exit 1; cd ..; done

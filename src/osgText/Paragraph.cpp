@@ -9,7 +9,7 @@ Paragraph::Paragraph()
 }
 
 Paragraph::Paragraph(const Paragraph& paragraph,const osg::CopyOp& copyop):
-    Geode(paragraph,copyop),
+    osg::Geode(paragraph,copyop),
     _position(paragraph._position),
     _text(paragraph._text),
     _font(dynamic_cast<Font*>(copyop(paragraph._font.get()))),

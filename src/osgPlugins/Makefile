@@ -1,7 +1,7 @@
 #!smake
 SHELL=/bin/sh
 
-DIRS = osg rgb lib3ds flt obj lwo dw bmp pic tga osgtgz tgz zip  
+DIRS = osg rgb lib3ds flt obj lwo txp dw bmp pic tga osgtgz tgz zip  
 
 # comment in if you have Performer installed.
 # DIRS += pfb

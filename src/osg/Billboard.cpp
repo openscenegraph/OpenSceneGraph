@@ -98,7 +98,7 @@ const bool Billboard::removeDrawable( Drawable *gset )
     return false;
 }
 
-void Billboard::computeMatrix(Matrix& matrix, const Vec3& eye_local, const Vec3& /*up_local*/, const Vec3& pos_local) const
+const bool Billboard::computeMatrix(Matrix& matrix, const Vec3& eye_local, const Vec3& /*up_local*/, const Vec3& pos_local) const
 {
 
     Vec3 ev(pos_local-eye_local);
@@ -160,6 +160,8 @@ void Billboard::computeMatrix(Matrix& matrix, const Vec3& eye_local, const Vec3&
     }
 
     matrix.setTrans(pos_local);
+
+    return true;
 
 }
 

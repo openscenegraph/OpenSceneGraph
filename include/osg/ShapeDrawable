@@ -51,7 +51,7 @@ class TessellationHints : public Object
 	    _createBody(tess._createBody),
 	    _createBottom(tess._createBottom) {}
 
-	META_Object(osg,TessellationHints)
+	META_Object(osg,TessellationHints);
 	
 	
 	enum TessellationMode

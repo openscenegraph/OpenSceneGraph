@@ -416,7 +416,9 @@ void Text::computePositions()
     case RIGHT_TOP:     _offset.set(_textBB.xMax(),_textBB.yMax(),_textBB.zMin()); break;
     case RIGHT_CENTER:  _offset.set(_textBB.xMax(),(_textBB.yMax()+_textBB.yMin())*0.5f,_textBB.zMin()); break;
     case RIGHT_BOTTOM:  _offset.set(_textBB.xMax(),_textBB.yMin(),_textBB.zMin()); break;
-    case BASE_LINE:     _offset.set(0.0f,0.0f,0.0f); break;
+    case LEFT_BASE_LINE:  _offset.set(0.0f,0.0f,0.0f); break;
+    case CENTER_BASE_LINE:  _offset.set((_textBB.xMax()+_textBB.xMin())*0.5f,0.0f,0.0f); break;
+    case RIGHT_BASE_LINE:  _offset.set((_textBB.xMax()+_textBB.xMin()),0.0f,0.0f); break;
     }
 
     // adjust offset for axis alignment

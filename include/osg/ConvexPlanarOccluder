@@ -34,7 +34,7 @@ class SG_EXPORT ConvexPlanarOccluder : public Object
             _occluder(cpo._occluder),
             _holeList(cpo._holeList) {}
         
-        META_Object(osg,ConvexPlanarOccluder)
+        META_Object(osg,ConvexPlanarOccluder);
 
         void setOccluder(const ConvexPlanarPolygon& cpp) { _occluder = cpp; }
         

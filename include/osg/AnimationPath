@@ -37,7 +37,7 @@ class SG_EXPORT AnimationPath : public virtual osg::Object
             _timeControlPointMap(ap._timeControlPointMap),
             _loopMode(ap._loopMode) {}
 
-        META_Object(osg,AnimationPath)
+        META_Object(osg,AnimationPath);
 
         struct ControlPoint
         {
@@ -162,7 +162,7 @@ class SG_EXPORT AnimationPathCallback : public NodeCallback
             _animationTime(apc._animationTime) {}
 
         
-        META_Object(osg,AnimationPathCallback)
+        META_Object(osg,AnimationPathCallback);
 
         AnimationPathCallback(AnimationPath* ap,double timeOffset=0.0f,double timeMultiplier=1.0f):
             _animationPath(ap),

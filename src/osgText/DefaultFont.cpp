@@ -51,16 +51,16 @@ Font::Glyph* DefaultFont::getGlyph(unsigned int charcode)
     {
         // no font found of correct size, will need to find the nearest.
         itr = _sizeGlyphMap.begin();
-        int mindeviation = abs(_width-itr->first.first)+
-                           abs(_height-itr->first.second);
+        int mindeviation = abs((int)_width-(int)itr->first.first)+
+                           abs((int)_height-(int)itr->first.second);
         SizeGlyphMap::iterator sitr=itr;
         ++sitr;
         for(;
             sitr!=_sizeGlyphMap.end();
             ++sitr)
         {
-            int deviation = abs(_width-sitr->first.first)+
-                            abs(_height-sitr->first.second);
+            int deviation = abs((int)_width-(int)sitr->first.first)+
+                            abs((int)_height-(int)sitr->first.second);
             if (deviation<mindeviation)
             {
                 mindeviation = deviation;

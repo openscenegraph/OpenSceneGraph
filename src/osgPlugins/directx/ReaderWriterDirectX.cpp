@@ -86,9 +86,9 @@ osgDB::ReaderWriter::ReadResult ReaderWriterDirectX::readNode(const std::string&
         float creaseAngle = 80.0f;
         if (options) {
             const std::string option = options->getOptionString();
-            if (option.find("flipTexture") != string::npos)
+            if (option.find("flipTexture") != std::string::npos)
                 flipTexture = false;
-            if (option.find("creaseAngle") != string::npos) {
+            if (option.find("creaseAngle") != std::string::npos) {
                 // TODO
             }
         }
@@ -145,7 +145,7 @@ osg::Geode* ReaderWriterDirectX::convertFromDX(DX::Object& obj,
      *
      * - Polys are CW oriented
      */
-    vector<osg::Geometry*> geomList;
+	std::vector<osg::Geometry*> geomList;
 
     unsigned int i;
     for (i = 0; i < meshMaterial->material.size(); i++) {

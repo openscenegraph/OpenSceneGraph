@@ -88,7 +88,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::readNode(const std::string& fil
             pagedLOD->setRange(1,0,info.minRange);
             pagedLOD->setCenter(info.center);
             pagedLOD->setRadius(info.radius);
-            //pagedLOD->setPriorityOffset(0,numLods-lod);
+            pagedLOD->setPriorityOffset(0,numLods-lod);
             pagedLOD->setPriorityScale(0,1.0f);
             pagedLOD->setNumChildrenThatCannotBeExpired(1);
             pagedLOD->setTileId(x,y,lod);
@@ -146,7 +146,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::readNode(const std::string& fil
                 pagedLOD->setRange(1,0,info.minRange);
                 pagedLOD->setCenter(info.center);
                 pagedLOD->setRadius(info.radius);
-                //pagedLOD->setPriorityOffset(0,numLods-lod);
+                pagedLOD->setPriorityOffset(0,numLods-lod);
                 pagedLOD->setPriorityScale(0,1.0f);
                 pagedLOD->setNumChildrenThatCannotBeExpired(1);
                 pagedLOD->setTileId(tileX,tileY,tileLOD);

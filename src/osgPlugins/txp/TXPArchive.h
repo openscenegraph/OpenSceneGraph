@@ -84,6 +84,7 @@ public:
 	// Load the text styles from the archive
 	bool loadTextStyles();
 	inline std::vector< osg::ref_ptr<osgText::Font> >& getStyles() { return _fonts; }
+	inline std::vector< osg::Vec4 >& getTextColors() { return _fcolors; }
     
     // Add light attrib
     void addLightAttribute(osgSim::LightPointNode* lpn, osg::StateSet* fallback , const osg::Vec3& attitude);
@@ -187,6 +188,9 @@ protected:
 
 	// Text styles / Fonts
 	std::vector< osg::ref_ptr<osgText::Font> >	_fonts;
+
+	// Text colors
+	std::vector< osg::Vec4 >					_fcolors;
 
     //
     OpenThreads::Mutex  _mutex;

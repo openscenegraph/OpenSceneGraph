@@ -11,7 +11,7 @@ TARGET_LOADER_FILES = osgPlugins/osgdb_gif.so
 LIBS = -lungif
 
 C++FLAGS += -I. -I../../../include 
-LDFLAGS += -L../../../lib
+LDFLAGS += -L../../../lib $(FREEBSD_LOCALLIBS)
 
 include ../../../Make/makerules
 

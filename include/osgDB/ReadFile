@@ -1,0 +1,39 @@
+#ifndef OSGDB_READFILE
+#define OSGDB_READFILE 1
+
+#include <osg/Node>
+#include <osg/Image>
+
+#include <osgDB/Export>
+
+#include <string>
+
+namespace osgDB {
+
+/** Read an osg::Object from file. 
+  * Return valid osg::Object on sucess,
+  * return NULL on failure.
+  * The osgDB::Registry is used to load the appropriate ReaderWriter plugin
+  * for the filename extension, and this plugin then handles the request
+  * to read the specified file.*/
+OSGDB_EXPORT extern osg::Object* readObjectFile(const std::string& filename);
+
+/** Read an osg::Image from file. 
+  * Return valid osg::Image on sucess,
+  * return NULL on failure.
+  * The osgDB::Registry is used to load the appropriate ReaderWriter plugin
+  * for the filename extension, and this plugin then handles the request
+  * to read the specified file.*/
+OSGDB_EXPORT extern osg::Image*  readImageFile(const std::string& filename);
+
+/** Read an osg::Node from file. 
+  * Return valid osg::Node on sucess,
+  * return NULL on failure.
+  * The osgDB::Registry is used to load the appropriate ReaderWriter plugin
+  * for the filename extension, and this plugin then handles the request
+  * to read the specified file.*/
+OSGDB_EXPORT extern osg::Node*   readNodeFile(const std::string& filename);
+
+};
+
+#endif

@@ -14,7 +14,7 @@ namespace flt {
 
 struct STextureMapping
 {
-	SRecHeader	RecHeader;
+    SRecHeader    RecHeader;
     float32     reserved;           // Reserved
     int32       diIndex;            // Texture mapping index
     char        szName[20];         // Texture mapping name

@@ -38,6 +38,9 @@ class ExternalRecord;
 class CommentRecord;
 class LongIDRecord;
 class VectorRecord;
+class OldVertexRecord;
+class OldVertexColorRecord;
+class OldVertexColorNormalRecord;
 
 // Transformation records (ancillary)
 class MatrixRecord;
@@ -129,15 +132,20 @@ class RecordVisitor
         virtual void apply(CommentRecord& rec)              { apply((Record&)rec); }
         virtual void apply(LongIDRecord& rec)               { apply((Record&)rec); }
         virtual void apply(VectorRecord& rec)               { apply((Record&)rec); }
+        virtual void apply(OldVertexRecord& rec)            { apply((Record&)rec); }
+        virtual void apply(OldVertexColorRecord& rec)       { apply((Record&)rec); }
+        virtual void apply(OldVertexColorNormalRecord& rec) { apply((Record&)rec); }
 
         // Transformation records (ancillary)
         virtual void apply(MatrixRecord& rec)               { apply((Record&)rec); }
+/*
         virtual void apply(RotatAboutEdgeRecord& rec)       { apply((Record&)rec); }
         virtual void apply(TranslateRecord& rec)            { apply((Record&)rec); }
         virtual void apply(ScaleRecord& rec)                { apply((Record&)rec); }
         virtual void apply(RotatAboutPointRecord& rec)      { apply((Record&)rec); }
         virtual void apply(RotatScaleToPointRecord& rec)    { apply((Record&)rec); }
         virtual void apply(PutTransformRecord& rec)         { apply((Record&)rec); }
+*/
         virtual void apply(GeneralMatrixRecord& rec)        { apply((Record&)rec); }
 
     protected:

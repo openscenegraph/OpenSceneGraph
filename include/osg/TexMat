@@ -1,25 +1,39 @@
 #ifndef OSG_TEXMAT
 #define OSG_TEXMAT 1
 
-#include <osg/Export>
+#include <osg/StateAttribute>
 #include <osg/Matrix>
 
 namespace osg {
 
-class SG_EXPORT TexMat : public Matrix
+/** Texture Matrix state class for encapsulating OpenGL texture matrix functionality.*/
+class SG_EXPORT TexMat : public StateAttribute
 {
     public :
         TexMat( void );
-        static TexMat* instance();
         virtual Object* clone() const { return new TexMat(); }
-        virtual bool isSameKindAs(Object* obj) { return dynamic_cast<TexMat*>(obj)!=NULL; }
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const TexMat*>(obj)!=NULL; }
         virtual const char* className() const { return "TexMat"; }
 
-        void apply( void );
+        virtual const Type getType() const { return TEXMAT; }
+        
+        /** Set the texture matrix */
+        inline void setMatrix(const Matrix& matrix) { _matrix = matrix; }
+
+        /** Get the texture matrix */
+        inline Matrix& getMatrix() { return _matrix; }
+
+        /** Get the const texture matrix */
+        inline const Matrix& getMatrix() const { return _matrix; }
+
+        /** apply as OpenGL texture matrix.*/
+        virtual void apply(State& state) const;
 
     protected:
 
         virtual ~TexMat( void );
+
+        Matrix _matrix;
 
 };
 

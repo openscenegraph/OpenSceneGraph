@@ -53,7 +53,7 @@ extern void endian2( void* pSrc, int nSrc, void* pDst, int nDst );
 
 struct float32x2
 {
-	float32 _v[2];
+    float32 _v[2];
 
     inline float32 x() { return _v[0]; }
     inline float32 y() { return _v[1]; }
@@ -63,18 +63,18 @@ struct float32x2
         ENDIAN( _v[1] );
     }
 
-	friend inline ostream& operator << (ostream& output, const float32x2& f)
-	{
-	    output << f._v[0] << " "
+    friend inline ostream& operator << (ostream& output, const float32x2& f)
+    {
+        output << f._v[0] << " "
                << f._v[1];
-	    return output; 	// to enable cascading
-	}
+        return output;     // to enable cascading
+    }
 };
 
 
 struct float32x3
 {
-	float32 _v[3];
+    float32 _v[3];
     inline float32 x() { return _v[0]; }
     inline float32 y() { return _v[1]; }
     inline float32 z() { return _v[2]; }
@@ -85,19 +85,19 @@ struct float32x3
         ENDIAN( _v[2] );
     }
 
-	friend inline ostream& operator << (ostream& output, const float32x3& f)
-	{
-	    output << f._v[0] << " "
+    friend inline ostream& operator << (ostream& output, const float32x3& f)
+    {
+        output << f._v[0] << " "
                << f._v[1] << " "
                << f._v[2];
-	    return output; 	// to enable cascading
-	}
+        return output;     // to enable cascading
+    }
 };
 
 
 struct float64x2
 {
-	float64 _v[2];
+    float64 _v[2];
     inline float64 x() { return _v[0]; }
     inline float64 y() { return _v[1]; }
     inline float64 operator [] (int i) { return _v[i]; }
@@ -106,12 +106,12 @@ struct float64x2
         ENDIAN( _v[1] );
     }
 
-	friend inline ostream& operator << (ostream& output, const float64x2& f)
-	{
-	    output << f._v[0] << " "
+    friend inline ostream& operator << (ostream& output, const float64x2& f)
+    {
+        output << f._v[0] << " "
                << f._v[1];
-	    return output; 	// to enable cascading
-	}
+        return output;     // to enable cascading
+    }
 };
 
 
@@ -131,10 +131,10 @@ struct float64x3
 
     friend inline ostream& operator << (ostream& output, const float64x3& f)
     {
-	output << f._v[0] << " "
+    output << f._v[0] << " "
            << f._v[1] << " "
            << f._v[2];
-	return output; 	// to enable cascading
+    return output;     // to enable cascading
     }
 };
 
@@ -154,10 +154,23 @@ struct color32
 };
 
 
+struct color48      // version 11, 12 & 13
+{
+    uint16 _red;
+    uint16 _green;
+    uint16 _blue;
+
+    inline float red()      { return (float)_red/255; }
+    inline float green()    { return (float)_green/255; }
+    inline float blue()     { return (float)_blue/255; }
+    inline osg::Vec4 get()
+    { return osg::Vec4( red(), green(), blue(), 1); }
+};
+
 struct SRecHeader
 {
-    uint16	_wOpcode;			// identifies record type
-    uint16	_wLength;			// total length of record
+    uint16    _wOpcode;            // identifies record type
+    uint16    _wLength;            // total length of record
 
     inline int opcode() { return (int)_wOpcode; }
     inline int length() { return (int)_wLength; }

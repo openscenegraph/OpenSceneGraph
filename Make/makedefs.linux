@@ -11,12 +11,16 @@ YFLAGS = -d
 LCINCS   += -I/usr/X11R6/include
 LC++INCS += ${LCINCS}
 CFLAGS   = -O2 -W -Wall $(LCINCS)
+#CFLAGS   = -g -W -Wall $(LCINCS)
 C++FLAGS = ${CFLAGS}
 CPPFLAGS = ${CFLAGS}
 
-LDFLAGS = -O2 -W -Wall
+LDFLAGS = -O2 -W -Wall -L/usr/X11R6/lib
+#LDFLAGS = -g -W -Wall -L/usr/X11R6/lib
 
+DYNAMICLIBRARYLIB = -ldl
 PFLIBS = -lpfdu -lpfutil -lpf  -ldl
+GLUTLIB = -lglut
 
 
 #
@@ -26,6 +30,8 @@ PFLIBS = -lpfdu -lpfutil -lpf  -ldl
 #
 TARGET_DIRS    = \
 		/usr/include/osg \
+		/usr/include/osgDB \
+		/usr/include/osgGLUT \
 		/usr/include/osgUtil \
 		/usr/share/OpenSceneGraph\
 		/usr/share/OpenSceneGraph/data\

@@ -1,0 +1,33 @@
+#ifndef OSG_VERSION
+#define OSG_VERSION 1
+
+#include <osgDB/Export>
+
+extern "C" {
+
+/**
+ * osgDBGetVersion() returns the library version number.
+ * Numbering conventon : osg_src-0.8.31 will return 0.8.31 from getVersion_osg.
+ *
+ * This C function can be also used to check for the existance of the OpenSceneGraph
+ * library using autoconf and its m4 macro AC_CHECK_LIB.
+ *
+ * Here is the code to add to your configure.in:
+ \verbatim
+ #
+ # Check for the OpenSceneGraph (OSG) library
+ #
+ AC_CHECK_LIB(osg, osgDBGetVersion, ,
+    [AC_MSG_ERROR(OpenSceneGraph DB library not found. See http://www.openscenegraph.org)],)
+ \endverbatim
+*/
+extern OSGDB_EXPORT const char* osgDBGetVersion();
+
+/**
+ * getLibraryName() returns the library name in human friendly form.
+*/
+extern OSGDB_EXPORT const char* osgDBGetLibraryName();
+
+};
+
+#endif

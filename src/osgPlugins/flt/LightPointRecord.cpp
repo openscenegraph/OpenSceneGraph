@@ -1,6 +1,5 @@
 // LightPointRecord.cpp
 
-
 #include "flt.h"
 #include "Registry.h"
 #include "LightPointRecord.h"
@@ -15,7 +14,6 @@ using namespace flt;
 
 RegisterRecordProxy<LightPointRecord> g_LightPointProxy;
 
-
 LightPointRecord::LightPointRecord()
 {
 }
@@ -29,7 +27,7 @@ LightPointRecord::~LightPointRecord()
 
 void LightPointRecord::endian()
 {
-	SLightPoint *pSLightPoint = (SLightPoint*)getData();
+    SLightPoint *pSLightPoint = (SLightPoint*)getData();
 
     ENDIAN( pSLightPoint->iMaterial );
     ENDIAN( pSLightPoint->iFeature );
@@ -66,8 +64,3 @@ void LightPointRecord::endian()
     ENDIAN( pSLightPoint->sfFlags );
     pSLightPoint->animRot.endian();
 }
-
-
-
-
-

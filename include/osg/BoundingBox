@@ -29,7 +29,7 @@ class SG_EXPORT BoundingBox
                         _max(-FLT_MAX,-FLT_MAX,-FLT_MAX) {}
     
         /** initialize to invalid values to represent an unset bounding box.*/ 
-        void init()
+        inline void init()
         {
             _min.set(FLT_MAX,FLT_MAX,FLT_MAX);
             _max.set(-FLT_MAX,-FLT_MAX,-FLT_MAX);
@@ -37,44 +37,44 @@ class SG_EXPORT BoundingBox
         
         /** return true if the bounding box contains valid values,
             false if the bounding box is effectively unset/empty.*/
-        bool isValid() const
+        inline const bool isValid() const
         {
             return _max.x()>=_min.x();
         }
                 
-        float& xMin() { return _min.x(); }
-        float xMin() const { return _min.x(); }
+        inline float& xMin() { return _min.x(); }
+        inline const float xMin() const { return _min.x(); }
  
-        float& yMin() { return _min.y(); }
-        float yMin() const { return _min.y(); }
+        inline float& yMin() { return _min.y(); }
+        inline const float yMin() const { return _min.y(); }
  
-        float& zMin() { return _min.z(); }
-        float zMin() const { return _min.z(); }
+        inline float& zMin() { return _min.z(); }
+        inline const float zMin() const { return _min.z(); }
 
-        float& xMax() { return _max.x(); }
-        float xMax() const { return _max.x(); }
+        inline float& xMax() { return _max.x(); }
+        inline const float xMax() const { return _max.x(); }
  
-        float& yMax() { return _max.y(); }
-        float yMax() const { return _max.y(); }
+        inline float& yMax() { return _max.y(); }
+        inline const float yMax() const { return _max.y(); }
  
-        float& zMax() { return _max.z(); }
-        float zMax() const { return _max.z(); }
+        inline float& zMax() { return _max.z(); }
+        inline const float zMax() const { return _max.z(); }
 
         /** Calculate and return the center of the bounding box.*/
-        Vec3 center() const
+        inline const Vec3 center() const
         {
             return (_min+_max)*0.5f;
         }
 
         /** Calculate and return the radius of the bounding box.*/
-        float radius() const
+        inline const float radius() const
         {
             return sqrtf(radius2());
         }
 
         /** Calculate and return the radius squared of the bounding box.
             Note, radius2() is faster to calculate than radius().*/            
-        float radius2() const
+        inline const float radius2() const
         {
             return 0.25f*((_max-_min).length2());
         }
@@ -84,7 +84,7 @@ class SG_EXPORT BoundingBox
             the first bit toggles between x min and x max, second
             bit toggles between y min and y max, third bit toggles
             between z min and z max.*/
-        Vec3 corner(unsigned int pos) const
+        inline const Vec3 corner(unsigned int pos) const
         {
             return Vec3(pos&1?_max.x():_min.x(),pos&2?_max.y():_min.y(),pos&4?_max.z():_min.z());
         }
@@ -102,7 +102,7 @@ class SG_EXPORT BoundingBox
         void expandBy(const BoundingSphere& sh);
 
         /** return true is vertex v is within the box.*/
-        bool contains(const Vec3& v)
+        inline const bool contains(const Vec3& v) const
         {
             return isValid() && 
                    (v.x()>=_min.x() && v.x()<=_max.x()) &&

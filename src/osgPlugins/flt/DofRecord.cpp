@@ -6,7 +6,6 @@
 
 using namespace flt;
 
-
 ////////////////////////////////////////////////////////////////////
 //
 //                              DofRecord
@@ -14,7 +13,6 @@ using namespace flt;
 ////////////////////////////////////////////////////////////////////
 
 RegisterRecordProxy<DofRecord> g_DofProxy;
-
 
 DofRecord::DofRecord()
 {
@@ -29,24 +27,20 @@ DofRecord::~DofRecord()
 
 void DofRecord::endian()
 {
-	SDegreeOfFreedom *pSDof = (SDegreeOfFreedom*)getData();
+    SDegreeOfFreedom *pSDof = (SDegreeOfFreedom*)getData();
 
     ENDIAN( pSDof->diReserved );
     pSDof->OriginLocalDOF.endian();
     pSDof->PointOnXaxis.endian();
     pSDof->PointInXYplane.endian();
-	pSDof->dfZ.endian();
-	pSDof->dfY.endian();
-	pSDof->dfX.endian();
-	pSDof->dfPitch.endian();
-	pSDof->dfRoll.endian();
-	pSDof->dfYaw.endian();
-	pSDof->dfZscale.endian();
-	pSDof->dfYscale.endian();
-	pSDof->dfXscale.endian();
-	ENDIAN( pSDof->dwFlags );
+    pSDof->dfZ.endian();
+    pSDof->dfY.endian();
+    pSDof->dfX.endian();
+    pSDof->dfPitch.endian();
+    pSDof->dfRoll.endian();
+    pSDof->dfYaw.endian();
+    pSDof->dfZscale.endian();
+    pSDof->dfYscale.endian();
+    pSDof->dfXscale.endian();
+    ENDIAN( pSDof->dwFlags );
 }
-
-
-
-

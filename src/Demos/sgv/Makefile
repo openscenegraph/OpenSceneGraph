@@ -8,12 +8,14 @@ TARGET = ../../../bin/sgv
 
 TARGET_BIN_FILES = sgv
 
-# LIBS = -losg -lglut -lGLU -lGL  -lm -lXmu  -lX11 -lXi
-# C++FLAGS += -I../../include
-# LDFLAGS += -L../../lib -L/usr/X11R6/lib
+#note, use this library list when using the Performer osgPlugin.
+#LIBS = ${PFLIBS} -losgGLUT -losgUtil -losgDB -losg $(GLUTLIB) -lGLU -lGL  -lm -lXmu  -lX11 -lXi
 
-LIBS = -losgGLUT -losgUtil -losg -lglut -lGLU -lGL  -lm -lXmu  -lX11 -lXi
+#note, standard library list. 
+LIBS = -losgGLUT -losgUtil -losgDB -losg $(GLUTLIB) -lGLU -lGL  -lm -lXmu  -lX11 -lXi
+
 C++FLAGS += -I../../../include
-LDFLAGS += -L../../../lib -L/usr/X11R6/lib
+LDFLAGS += -L../../../lib
 
 include ../../../Make/makerules
+

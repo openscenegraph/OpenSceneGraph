@@ -1,0 +1,181 @@
+#ifndef OSGDB_REGISTRY
+#define OSGDB_REGISTRY 1
+
+#include <vector>
+#include <map>
+#include <string>
+
+#include <osg/ref_ptr>
+
+#include <osgDB/DynamicLibrary>
+#include <osgDB/ReaderWriter>
+#include <osgDB/DotOsgWrapper>
+
+namespace osgDB {
+
+/**
+    Registry is a singleton factory which stores
+    the Objects types available at runtime for loading,
+    and any Object reader or writers which are linked in
+    at runtime for reading non-native file formats.
+
+    The RegisterObjectProxy can be used to automatically register
+    at runtime a Object with the Registry.
+
+    The RegisterReaderWriterProxy can be used to automatically
+    register at runtime a reader/writer with the Registry.
+*/
+class OSGDB_EXPORT Registry
+{
+    public:
+
+        ~Registry();
+
+        static Registry* instance();
+
+
+        /** register an .fileextension alias to mapExt toExt, the later
+	  * should the the extension name of the readerwriter plugin library.
+	  * For example to map .tif files to the tiff loader, use
+	  * addExtAlias("tif","tiff") which will enable .tif to be read
+	  * by the libdb_tiff readerwriter plugin.*/
+	void addFileExtensionAlias(const std::string mapExt, const std::string toExt);
+
+        void addDotOsgWrapper(DotOsgWrapper* wrapper);
+        void removeDotOsgWrapper(DotOsgWrapper* wrapper);
+
+        void addReaderWriter(ReaderWriter* rw);
+        void removeReaderWriter(ReaderWriter* rw);
+
+        /** create the platform specific library name associated with file.*/
+        std::string createLibraryNameForFile(const std::string& fileName);
+
+        /** create the platform specific library name associated with file extension.*/
+        std::string createLibraryNameForExt(const std::string& ext);
+
+        /** find the library in the SG_LIBRARY_PATH and load it.*/
+        bool loadLibrary(const std::string& fileName);
+        /** close the attached library with specified name.*/
+        bool closeLibrary(const std::string& fileName);
+
+        osg::Object*         readObjectOfType(const osg::Object& compObj,Input& fr);
+
+        osg::Object*         readObject(Input& fr);
+        osg::Image*          readImage(Input& fr);
+        osg::Drawable*       readDrawable(Input& fr);
+        osg::StateAttribute* readStateAttribute(Input& fr);
+        osg::Node*           readNode(Input& fr);
+        
+        bool                 writeObject(const osg::Object& obj,Output& fw);
+
+        
+        osg::Object* readObject(const std::string& fileName);
+        bool         writeObject(const osg::Object& obj, const std::string& fileName);
+
+        osg::Image*  readImage(const std::string& fileName);
+        bool         writeImage(const osg::Image& obj, const std::string& fileName);
+
+        osg::Node*   readNode(const std::string& fileName);
+        bool         writeNode(const osg::Node& node, const std::string& fileName);
+        
+        void setCreateNodeFromImage(bool flag) { _createNodeFromImage = flag; }
+        bool getCreateNodeFromImage() const { return _createNodeFromImage; }
+
+    private:
+
+        typedef std::map<std::string,osg::ref_ptr<DotOsgWrapper> >  DotOsgWrapperMap;
+        typedef std::vector<osg::ref_ptr<ReaderWriter> >            ReaderWriterList;
+        typedef std::vector<osg::ref_ptr<DynamicLibrary> >          DynamicLibraryList;
+        typedef std::map<std::string,std::string>                   ExtensionAliasMap;
+
+        /** constructor is private, as its a singleton, preventing
+            construction other than via the instance() method and
+            therefore ensuring only one copy is ever constructed*/
+        Registry();
+        
+        /** get the attached library with specified name.*/
+        DynamicLibraryList::iterator getLibraryItr(const std::string& fileName);
+        DynamicLibrary*              getLibrary(const std::string& fileName);
+
+        bool _createNodeFromImage;
+
+        osg::Object*       readObject(DotOsgWrapperMap& dowMap,Input& fr);
+
+        DotOsgWrapperMap   _objectWrapperMap;
+        DotOsgWrapperMap   _imageWrapperMap;
+        DotOsgWrapperMap   _drawableWrapperMap;
+        DotOsgWrapperMap   _stateAttrWrapperMap;
+        DotOsgWrapperMap   _nodeWrapperMap;
+        
+        DotOsgWrapperMap   _classNameWrapperMap;
+
+        ReaderWriterList    _rwList;
+        DynamicLibraryList  _dlList;
+
+        bool _openingLibrary;
+	
+	// map to alias to extensions to plugins.
+	ExtensionAliasMap  _extAliasMap;
+
+};
+
+/**  Proxy class for automatic registration of DotOsgWrappers with the Registry.*/
+class RegisterDotOsgWrapperProxy
+{
+    public:
+    
+        RegisterDotOsgWrapperProxy(osg::Object* proto,
+                                   const std::string& name,
+                                   const std::string& associates,
+                                   DotOsgWrapper::ReadFunc readFunc,
+                                   DotOsgWrapper::WriteFunc writeFunc,
+                                   DotOsgWrapper::ReadWriteMode readWriteMode=DotOsgWrapper::READ_AND_WRITE)
+        {
+            if (Registry::instance())
+            {
+                _wrapper = new DotOsgWrapper(proto,name,associates,readFunc,writeFunc,readWriteMode);
+                Registry::instance()->addDotOsgWrapper(_wrapper.get());
+            }
+        }
+        
+        ~RegisterDotOsgWrapperProxy()
+        {
+            if (Registry::instance())
+            {
+                Registry::instance()->removeDotOsgWrapper(_wrapper.get());
+            }
+        }
+        
+    protected:
+        osg::ref_ptr<DotOsgWrapper> _wrapper;
+};
+
+/** Proxy class for automatic registration of reader/writers with the Registry.*/
+template<class T>
+class RegisterReaderWriterProxy
+{
+    public:
+        RegisterReaderWriterProxy()
+        {
+            if (Registry::instance())
+            {
+                _rw = new T;
+                Registry::instance()->addReaderWriter(_rw.get());
+            }
+        }
+
+        ~RegisterReaderWriterProxy()
+        {
+            if (Registry::instance())
+            {
+                Registry::instance()->removeReaderWriter(_rw.get());
+            }
+        }
+        
+    protected:
+        osg::ref_ptr<T> _rw;
+};
+
+};
+
+#endif

@@ -2,8 +2,9 @@
 #define OSGUTIL_INTERSECTVISITOR 1
 
 #include <osg/NodeVisitor>
-#include <osg/Seg>
+#include <osg/LineSegment>
 #include <osg/Geode>
+#include <osg/GeoSet>
 #include <osg/Matrix>
 
 #include <osgUtil/Export>
@@ -23,15 +24,15 @@ class OSGUTIL_EXPORT IntersectState : public osg::Referenced
         osg::Matrix* _matrix;
         osg::Matrix* _inverse;
 
-        typedef std::vector< std::pair<osg::Seg*,osg::Seg*> > SegList;
-        SegList _segList;
+        typedef std::vector< std::pair<osg::LineSegment*,osg::LineSegment*> > LineSegmentList;
+        LineSegmentList _segList;
 
-        typedef unsigned int SegmentMask;
-        typedef std::vector<SegmentMask> SegmentMaskStack;
-        SegmentMaskStack _segmentMaskStack;
+        typedef unsigned int LineSegmentmentMask;
+        typedef std::vector<LineSegmentmentMask> LineSegmentmentMaskStack;
+        LineSegmentmentMaskStack _segmentMaskStack;
 
-        bool isCulled(const osg::BoundingSphere& bs,SegmentMask& segMaskOut);
-        bool isCulled(const osg::BoundingBox& bb,SegmentMask& segMaskOut);
+        bool isCulled(const osg::BoundingSphere& bs,LineSegmentmentMask& segMaskOut);
+        bool isCulled(const osg::BoundingBox& bb,LineSegmentmentMask& segMaskOut);
 
     protected:
 
@@ -52,14 +53,14 @@ class OSGUTIL_EXPORT Hit : public osg::Referenced
 
         bool operator < (const Hit& hit) const
         {
-            if (_originalSeg<hit._originalSeg) return true;
-            if (_originalSeg>hit._originalSeg) return false;
+            if (_originalLineSegment<hit._originalLineSegment) return true;
+            if (_originalLineSegment>hit._originalLineSegment) return false;
             return _ratio<hit._ratio;
         }
 
         float                _ratio;
-        osg::Seg*            _originalSeg;
-        osg::Seg*            _localSeg;
+        osg::LineSegment*    _originalLineSegment;
+        osg::LineSegment*    _localLineSegment;
         osg::NodePath        _nodePath;
         osg::Geode*          _geode;
         osg::GeoSet*         _geoset;
@@ -85,7 +86,7 @@ class OSGUTIL_EXPORT IntersectVisitor : public osg::NodeVisitor
         void reset();
         
         /** Add a line segment to use for intersection testing during scene traversal.*/
-        void addSeg(osg::Seg* seg);
+        void addLineSegment(osg::LineSegment* seg);
 
         /** Modes to control how IntersectVisitor reports hits. */
         enum HitReportingMode {
@@ -100,9 +101,9 @@ class OSGUTIL_EXPORT IntersectVisitor : public osg::NodeVisitor
 
         //typedef std::multiset<Hit> HitList;
         typedef std::vector<Hit> HitList;
-        typedef std::map<osg::Seg*,HitList > SegHitListMap;
-        HitList& getHitList(osg::Seg* seg) { return _segHitList[seg]; }
-        int getNumHits(osg::Seg* seg) { return _segHitList[seg].size(); }
+        typedef std::map<osg::LineSegment*,HitList > LineSegmentHitListMap;
+        HitList& getHitList(osg::LineSegment* seg) { return _segHitList[seg]; }
+        int getNumHits(osg::LineSegment* seg) { return _segHitList[seg].size(); }
 
         bool hits();
 
@@ -111,10 +112,9 @@ class OSGUTIL_EXPORT IntersectVisitor : public osg::NodeVisitor
         virtual void apply(osg::Billboard& node);
 
         virtual void apply(osg::Group& node);
-        virtual void apply(osg::DCS& node);
+        virtual void apply(osg::Transform& node);
         virtual void apply(osg::Switch& node);
         virtual void apply(osg::LOD& node);
-        virtual void apply(osg::Scene& node);
 
     protected:
 
@@ -127,13 +127,13 @@ class OSGUTIL_EXPORT IntersectVisitor : public osg::NodeVisitor
         bool enterNode(osg::Node& node);
         void leaveNode();
 
-        typedef std::vector<IntersectState*> IntersectStateStack;
+        typedef std::vector<osg::ref_ptr<IntersectState> > IntersectStateStack;
         IntersectStateStack                  _intersectStateStack;
 
-        osg::NodePath                    _nodePath;
+        osg::NodePath               _nodePath;
 
         HitReportingMode            _hitReportingMode;
-        SegHitListMap               _segHitList;
+        LineSegmentHitListMap       _segHitList;
 };
 
 };

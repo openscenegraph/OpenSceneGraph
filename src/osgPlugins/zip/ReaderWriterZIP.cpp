@@ -1,104 +1,110 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <fcntl.h>
-#include <unistd.h>
 #include <stdio.h>
-#include <dirent.h>
 #include <string.h>
-#include <osg/OSG>
-#include <osg/Geode> 
+
+#include <osg/Geode>
 #include <osg/Group>
-#include <osg/Registry>
 #include <osg/Notify>
-#include "osg/FileNameUtils"
 
-using namespace osg;
+#include <osgDB/ReadFile>
+#include <osgDB/FileUtils>
+#include <osgDB/FileNameUtils>
+#include <osgDB/Registry>
 
-#ifdef __sgi
-static int dirent_select( dirent *dent )
+#ifdef _WIN32
+#include <direct.h>
 #else
-static int dirent_select( const dirent *dent )
+#include <unistd.h>
 #endif
+
+class ReaderWriterZIP : public osgDB::ReaderWriter
 {
-    // if blank name don't pass selection.
-    if (dent->d_name[0]==0) return 0;
+    public:
+        virtual const char* className() { return "ZIP Database Reader/Writer"; }
 
-    // if current directory '.' don't pass selection.
-    if (strcmp(dent->d_name,".")==0) return 0;
+        virtual bool acceptsExtension(const std::string& extension)
+        {
+            return osgDB::equalCaseInsensitive(extension,"zip");
+        }
 
-    // if parent directory '..' don't pass selection.
-    if (strcmp(dent->d_name,"..")==0) return 0;
-
-    // should test for file being a directory?
-
-    // if length < 4 chars then can't be .tgz extension three pass test.
-    if (strlen(dent->d_name)<4) return 1;
-
-    // return 1 (for pass) if 
-    return strncmp( ".zip", &dent->d_name[strlen(dent->d_name)-4], 4 );
-}
-
-class ReaderWriterZIP : public ReaderWriter {
-  public:
-	virtual const char* className() { return "ZIP Database Reader/Writer"; }
-	virtual bool acceptsExtension(const std::string& extension) { return extension=="zip"; }
-
-	virtual Node* readNode(const std::string& fileName)
+        virtual osg::Node* readNode(const std::string& fileName)
         {
 
-            std::string ext = osg::getLowerCaseFileExtension(fileName);
+            std::string ext = osgDB::getLowerCaseFileExtension(fileName);
             if (!acceptsExtension(ext)) return NULL;
 
             osg::notify(osg::INFO)<<"ReaderWriterZIP::readNode( "<<fileName.c_str()<<" )\n";
 
-	    char dirname[128];
-	    char command[1024];
-	    struct dirent **dent;
-	    int ndent;
+            char dirname[128];
+            char command[1024];
 
-	    sprintf( dirname, "/tmp/.zip%06d", getpid());
-	    mkdir( dirname, 0700 );
+        #ifdef _WIN32
+            strcpy(dirname, "C:/Windows/Temp/.osgdb_zip");
+            mkdir(dirname);
+            sprintf( command,
+                "unzip %s -d %s",
+                fileName.c_str(), dirname);
 
-	    sprintf( command,
-		"cp %s %s; cd %s;"
-	    	"unzip %s",
-		fileName.c_str(), dirname, dirname,
-		fileName.c_str());
+            system( command );
 
-	    system( command );
+        #else
+            sprintf( dirname, "/tmp/.zip%06d", getpid());
+            mkdir( dirname, 0700 );
 
-	    osg::Group *grp = new osg::Group;
-	    osg::SetFilePath( dirname );
+            sprintf( command,
+                "unzip %s -d %s",
+                fileName.c_str(), dirname);
 
-	    ndent = scandir( dirname, &dent, dirent_select, alphasort );
+            system( command );
+        #endif
 
-	    for( int i = 0; i < ndent; i++ )
-	    {
-                cout << "Hello "<<dent[i]->d_name<<endl;
-		osg::Node *node = osg::loadNodeFile( dent[i]->d_name );
-		grp->addChild( node );
-	    }
+            osg::Group *grp = new osg::Group;
+            osgDB::setFilePath( dirname );
 
+            bool prevCreateNodeFromImage = osgDB::Registry::instance()->getCreateNodeFromImage();
+            osgDB::Registry::instance()->setCreateNodeFromImage(false);
 
-	    sprintf( command, "rm -rf %s", dirname );
-	    system( command );
+            osgDB::DirectoryContents contents = osgDB::getDirectoryContents(dirname);
+            for(osgDB::DirectoryContents::iterator itr = contents.begin();
+                itr != contents.end();
+                ++itr)
+            {
+                std::string file_ext = osgDB::getFileExtension(*itr);
+                if (!acceptsExtension(file_ext) && 
+                    *itr!=std::string(".") && 
+                    *itr!=std::string(".."))
+                {
+                    osg::Node *node = osgDB::readNodeFile( *itr );
+                    grp->addChild( node );
+                }
+            }
 
-	    if( grp->getNumChildren() == 0 )
-	    {
-	        grp->unref();
-		return NULL;
-	    }
+            osgDB::Registry::instance()->setCreateNodeFromImage(prevCreateNodeFromImage);
 
-	    else
-	    	return grp;
+        #ifdef _WIN32
+            // note, is this the right command for windows?
+            // is there any way of overiding the Y/N option? RO.
+            sprintf( command, "erase %s", dirname );
+            system( command );
+        #else
+
+            sprintf( command, "rm -rf %s", dirname );
+            system( command );
+        #endif
+
+            if( grp->getNumChildren() == 0 )
+            {
+                grp->unref();
+                return NULL;
+            }
+
+            return grp;
         }
-        
-	virtual bool writeNode(Node& obj,const std::string& fileName) {
-                return false;
-	}
 
 };
 
 // now register with sgRegistry to instantiate the above
 // reader/writer.
-RegisterReaderWriterProxy<ReaderWriterZIP> g_readerWriter_ZIP_Proxy;
+osgDB::RegisterReaderWriterProxy<ReaderWriterZIP> g_readerWriter_ZIP_Proxy;

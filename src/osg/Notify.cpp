@@ -1,87 +1,60 @@
 #include "osg/Notify"
 #include <string>
 
-using namespace osg;
+osg::NotifySeverity osg::g_NotifyLevel = osg::NOTICE;
 
-int osg::NotifyInit::count_ = 0;
-NotifySeverity osg::g_NotifyLevel = osg::NOTICE;
-ofstream *osg::g_absorbStreamPtr = NULL;
-
-void osg::setNotifyLevel(NotifySeverity severity)
+void osg::setNotifyLevel(osg::NotifySeverity severity)
 {
-    g_NotifyLevel = severity; 
+    osg::initNotifyLevel();
+    g_NotifyLevel = severity;
 }
 
-int osg::getNotifyLevel()
+
+osg::NotifySeverity osg::getNotifyLevel()
 {
+    osg::initNotifyLevel();
     return g_NotifyLevel;
 }
 
-#ifndef WIN32
-ostream& osg::notify(NotifySeverity severity)
+
+bool osg::initNotifyLevel()
 {
-    if (severity<=g_NotifyLevel || g_absorbStreamPtr==NULL)
+    static bool s_local_intialized = false;
+    
+    if (s_local_intialized) return true;
+    
+    s_local_intialized = true;
+
+    // g_NotifyLevel
+    // =============
+
+    g_NotifyLevel = osg::NOTICE; // Default value
+
+    char *OSGNOTIFYLEVEL=getenv("OSGNOTIFYLEVEL");
+    if(OSGNOTIFYLEVEL)
     {
-        if (severity<=osg::WARN) return cerr;
-        else return cout;
-    }
-    return *g_absorbStreamPtr;
-}
-#endif
 
-NotifyInit::NotifyInit()
-{
-    if (count_++ == 0) {
+        std::string stringOSGNOTIFYLEVEL(OSGNOTIFYLEVEL);
 
-	// g_NotifyLevel
-	// =============
-
-	g_NotifyLevel = osg::NOTICE;	// Default value
-
-	char *OSGNOTIFYLEVEL=getenv("OSGNOTIFYLEVEL");
-	if(OSGNOTIFYLEVEL){
-
-	    std::string stringOSGNOTIFYLEVEL(OSGNOTIFYLEVEL);
-
-	    // Convert to upper case
-	    for(std::string::iterator i=stringOSGNOTIFYLEVEL.begin();
-		i!=stringOSGNOTIFYLEVEL.end();
-		++i) *i=toupper(*i);
-
-	    if(stringOSGNOTIFYLEVEL.find("ALWAYS")!=std::string::npos)	        g_NotifyLevel=osg::ALWAYS;
-	    else if(stringOSGNOTIFYLEVEL.find("FATAL")!=std::string::npos)	g_NotifyLevel=osg::FATAL;
-	    else if(stringOSGNOTIFYLEVEL.find("WARN")!=std::string::npos)	g_NotifyLevel=osg::WARN;
-	    else if(stringOSGNOTIFYLEVEL.find("NOTICE")!=std::string::npos)	g_NotifyLevel=osg::NOTICE;
-	    else if(stringOSGNOTIFYLEVEL.find("INFO")!=std::string::npos)	g_NotifyLevel=osg::INFO;
-	    else if(stringOSGNOTIFYLEVEL.find("DEBUG")!=std::string::npos)	g_NotifyLevel=osg::DEBUG;
-	    else if(stringOSGNOTIFYLEVEL.find("FP_DEBUG")!=std::string::npos)	g_NotifyLevel=osg::FP_DEBUG;
-
-	}
-
-	// g_absorbStreamPtr
-	// =================
-
-	char *OSGNOTIFYABSORBFILE=getenv("OSGNOTIFYABSORBFILE");
-        if (OSGNOTIFYABSORBFILE)
+        // Convert to upper case
+        for(std::string::iterator i=stringOSGNOTIFYLEVEL.begin();
+            i!=stringOSGNOTIFYLEVEL.end();
+            ++i)
         {
-	    g_absorbStreamPtr=new ofstream(OSGNOTIFYABSORBFILE);
+            *i=toupper(*i);
         }
-        else
-        {
-#ifdef WIN32
-	    // What's the Windows equivalent of /dev/null?
-	    g_absorbStreamPtr=new ofstream("C:/Windows/Tmp/osg.log");
-#else
-	    g_absorbStreamPtr=new ofstream("/dev/null");
-#endif
-        }
-    }
-}
 
-NotifyInit::~NotifyInit()
-{
-    if(--count_ == 0) {
-	delete g_absorbStreamPtr;
-	g_absorbStreamPtr=NULL;
+        if(stringOSGNOTIFYLEVEL.find("ALWAYS")!=std::string::npos)          g_NotifyLevel=osg::ALWAYS;
+        else if(stringOSGNOTIFYLEVEL.find("FATAL")!=std::string::npos)      g_NotifyLevel=osg::FATAL;
+        else if(stringOSGNOTIFYLEVEL.find("WARN")!=std::string::npos)       g_NotifyLevel=osg::WARN;
+        else if(stringOSGNOTIFYLEVEL.find("NOTICE")!=std::string::npos)     g_NotifyLevel=osg::NOTICE;
+        else if(stringOSGNOTIFYLEVEL.find("INFO")!=std::string::npos)       g_NotifyLevel=osg::INFO;
+        else if(stringOSGNOTIFYLEVEL.find("DEBUG_INFO")!=std::string::npos) g_NotifyLevel=osg::DEBUG_INFO;
+        else if(stringOSGNOTIFYLEVEL.find("DEBUG_FP")!=std::string::npos)   g_NotifyLevel=osg::DEBUG_FP;
+        else if(stringOSGNOTIFYLEVEL.find("DEBUG")!=std::string::npos)      g_NotifyLevel=osg::DEBUG_INFO;
+ 
     }
+
+    return true;
+
 }

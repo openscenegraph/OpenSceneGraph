@@ -1,0 +1,13 @@
+/**
+ *  \mainpage
+ *  These pages document the API for the standard Open Scene Graph
+ *  distribution. This includes the core scene graph (osg), the accompanying
+ *  utility toolkit (osgUtil), and the rudimentary GLUT work (osgGLUT).
+ *  In the interests of clarity, the plug-ins which may also be found in
+ *  the distribution have not been documented here.
+ *
+ *  Tarballs of this documentation may be downloaded from 
+ *  <a href="http://www.openscenegraph.org/download/dox/">here</a>.
+ *
+ *  Enjoy!
+*/

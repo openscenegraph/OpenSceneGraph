@@ -5,36 +5,37 @@ using namespace osg;
 
 NodeVisitor::NodeVisitor(TraversalMode tm)
 {
-    _traverseVisitor = NULL;
-    _traverseMode = tm;
+    _traversalVisitor = NULL;
+    _traversalMode = tm;
 }
+
 
 NodeVisitor::~NodeVisitor()
 {
-    // if (_traverseVisitor) detach from _traverseVisitor;
+    // if (_traversalVisitor) detach from _traversalVisitor;
 }
 
-void NodeVisitor::setTraverseMode(TraversalMode mode)
+
+void NodeVisitor::setTraversalMode(const TraversalMode mode)
 {
-    if (_traverseMode==mode) return;
+    if (_traversalMode==mode) return;
     if (mode==TRAVERSE_VISITOR)
     {
-        if (_traverseVisitor==NULL) _traverseMode = TRAVERSE_NONE;
-        else _traverseMode = TRAVERSE_VISITOR;
+        if (_traversalVisitor==NULL) _traversalMode = TRAVERSE_NONE;
+        else _traversalMode = TRAVERSE_VISITOR;
     }
     else
     {
-        if (_traverseVisitor) _traverseVisitor=NULL;
-        _traverseMode = mode;
+        if (_traversalVisitor.valid()) _traversalVisitor=NULL;
+        _traversalMode = mode;
     }
 }
 
-void NodeVisitor::setTraverseVisitor(NodeVisitor* nv)
+
+void NodeVisitor::setTraversalVisitor(NodeVisitor* nv)
 {
-    if (_traverseVisitor==nv) return;
-    // if (_traverseVisitor) detach from _traverseVisitor;
-    _traverseVisitor = nv;
-    if (_traverseVisitor) _traverseMode = TRAVERSE_VISITOR;
-    else _traverseMode = TRAVERSE_NONE;
-    // attach to _traverseVisitor;
+    if (_traversalVisitor==nv) return;
+    _traversalVisitor = nv;
+    if (_traversalVisitor.valid()) _traversalMode = TRAVERSE_VISITOR;
+    else _traversalMode = TRAVERSE_NONE;
 }

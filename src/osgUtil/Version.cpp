@@ -1,10 +1,10 @@
 #include "osgUtil/Version"
 
-
 const char* osgUtilGetVersion()
 {
-    return "0.8.34";
+    return "0.8.42";
 }
+
 
 const char* osgUtilGetLibraryName()
 {

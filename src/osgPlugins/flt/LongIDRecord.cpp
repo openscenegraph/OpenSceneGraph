@@ -6,16 +6,13 @@
 
 using namespace flt;
 
-
 ////////////////////////////////////////////////////////////////////
 //
 //                       MaterialPaletteRecord
 //
 ////////////////////////////////////////////////////////////////////
 
-
 RegisterRecordProxy<LongIDRecord> g_LongIDProxy;
-
 
 LongIDRecord::LongIDRecord()
 {
@@ -33,5 +30,3 @@ void LongIDRecord::endian()
 {
 
 }
-
-

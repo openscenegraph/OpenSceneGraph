@@ -1,26 +1,21 @@
 #ifndef OSG_GEOSET
 #define OSG_GEOSET 1
 
-#include <osg/OSG>
 #include <osg/Vec2>
-#include <osg/BoundingBox>
-#include <osg/Object>
-#include <osg/GeoState>
+#include <osg/Vec3>
+#include <osg/Vec4>
+#include <osg/Drawable>
 
 namespace osg {
-
-
-class Input;
-class Output;
 
 /** Encapsulates OpenGL drawing primitives, geometry and
     optional binding of normal, color and texture coordinates.  Used
     for representing the visible objects in the scene.  State attributes
-    for a GeoSet are maintained in GeoState which the GeoSet maintains
-    a referenced counted pointer to.  Both GeoSet's and GeoState's can 
+    for a GeoSet are maintained in StateSet which the GeoSet maintains
+    a referenced counted pointer to.  Both GeoSet's and StateSet's can 
     be shared for optimal memory usage and graphics performance.
 */
-class SG_EXPORT GeoSet : public Object
+class SG_EXPORT GeoSet : public Drawable
 {
     public:
 
@@ -67,201 +62,275 @@ class SG_EXPORT GeoSet : public Object
 	    IA_T4F_C4F_N3F_V4F
 	};
 
+
+        struct IndexPointer
+        {
+        
+            uint _size;
+            bool _is_ushort;
+            union
+            {
+                ushort* _ushort;
+                uint*   _uint;
+            } _ptr;
+            
+            IndexPointer() { _size=0;_is_ushort=true;_ptr._ushort = (ushort*)0; }
+            
+            inline const bool operator == (const IndexPointer& ip) const
+            {
+                return _size == ip._size &&
+                       _is_ushort == ip._is_ushort &&
+                       _ptr._ushort == ip._ptr._ushort;
+            }
+            
+            inline const bool valid() const
+            {
+                return _ptr._ushort != (ushort*)0;
+            }
+
+            inline const bool null() const
+            {
+                return _ptr._ushort == (ushort*)0;
+            }
+
+            inline void setToNull()
+            {
+                _size = 0;
+                _is_ushort = true;
+                _ptr._ushort = (ushort*)0;
+            }
+
+            inline void set(uint size,ushort* data)
+            {
+                _size = size;
+                _is_ushort = true;
+                _ptr._ushort = data;
+            }
+            
+
+            void set(const uint size,uint* data)
+            {
+                _size = size;
+                _is_ushort = false;
+                _ptr._uint = data;
+            }
+
+            inline const uint maxIndex() const
+            {
+                uint max = 0;            
+                if (_is_ushort)
+                {
+                    for(uint ai = 0; ai < _size; ai++ )
+                        if( _ptr._ushort[ai] > max ) max = _ptr._ushort[ai];
+                }
+                else
+                {
+                    for(uint ai = 0; ai < _size; ai++ )
+                        if( _ptr._uint[ai] > max ) max = _ptr._uint[ai];
+                }
+                return max;
+            }
+            
+            inline const uint operator [] (const uint pos) const
+            {
+                if (_is_ushort) return _ptr._ushort[pos];
+                else return _ptr._uint[pos];
+            }
+
+        };
+
         GeoSet();
-        static GeoSet* instance();
         virtual Object* clone() const { return new GeoSet(); }
-        virtual bool isSameKindAs(Object* obj) { return dynamic_cast<GeoSet*>(obj)!=NULL; }
-        virtual const char* className() const { return "Geoset"; }
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const GeoSet*>(obj)!=NULL; }
+        virtual const char* className() const { return "GeoSet"; }
 
 
         // data access methods.
-        void setNumPrims( int n )                   { _numprims = n; }
-        int  getNumPrims( void )                    { return _numprims; }
+        inline void setNumPrims( const int n )                   { _numprims = n; }
+        inline const int getNumPrims() const                    { return _numprims; }
 
-        void setPrimType( PrimitiveType type );
-        PrimitiveType  getPrimType( void )          { return _primtype; }
+        void setPrimType( const PrimitiveType type );
+        inline const PrimitiveType getPrimType() const           { return _primtype; }
 
-        void setPrimLengths( int *lens )            { _primLengths = lens; }
-        int  *getPrimLengths( void )                { return _primLengths; }
+        inline void setPrimLengths( int *lens )            { _primLengths = lens; }
+        inline int  *getPrimLengths()                      { return _primLengths; }
+        inline const int *getPrimLengths() const           { return _primLengths; }
 
         void computeNumVerts();
 
         /** get the number of coords required by the defined primitives. */
-        int getNumCoords()                          { return _numcoords; }
+        inline const int getNumCoords() const                    { return _numcoords; }
         /** get a pointer to Vec3 coord array. */
-        Vec3* getCoords()                           { return _coords; }
+        inline Vec3* getCoords()                           { return _coords; }
+        /** get a const pointer to Vec3 coord array. */
+        inline const Vec3* getCoords() const               { return _coords; }
         /** get the number of indices required by the defined primitives. */
-        int getNumIndices()                         { return _numindices; }
+        inline const int getNumCoordIndices() const                     { return _cindex._size; }
         /** get the coord index array. */
-        ushort* getCIndex()                         { return _cindex; }
+        inline IndexPointer& getCoordIndices()                    { return _cindex; }
+        /** get the const coord index array. */
+        inline const IndexPointer& getCoordIndices() const        { return _cindex; }
         /** set the coords (i.e the geometry) of the geoset.*/
         void setCoords( Vec3 *cp );
-        /** set the coords (i.e the geometry) and indices of the geoset.*/
+        /** set the coords (i.e the geometry) and ushort indices of the geoset.
+            To reduce memory footprint and bandwidth for small datasets it is
+            recommended the ushort undices are used instead of unit indices.*/
         void setCoords( Vec3 *cp, ushort *ci );
+        /** set the coords (i.e the geometry) and uint indices of the geoset.
+            Unless your data set exceeds 65536 indices prefer ushort indices
+            over uint indices, only use this unit indices version if neccessary.*/
+        void setCoords( Vec3 *cp, uint *ci );
+        /** set the coords (i.e the geometry) and indices of the geoset.*/
+        void setCoords( Vec3 *cp, IndexPointer& ip );
 
         /** get the number of normals required by the defined primitives and normals binding.*/
-        int getNumNormals()                         { return _numnormals; }
+        inline const int getNumNormals() const                    { return _numnormals; }
         /** get a pointer to Vec3 normal array. */
-        Vec3* getNormals()                           { return _normals; }
+        inline Vec3* getNormals()                           { return _normals; }
+        /** get a const pointer to Vec3 normal array. */
+        inline const Vec3* getNormals() const               { return _normals; }
         /** get the number of normal indices required by the defined primitives and normals binding.*/
-        int getNumNIndices()                        { return _numnindices; }
+        inline int getNumNormalIndices() const              { return _nindex._size; }
         /** get the normal index array. */
-        ushort* getNIndex()                         { return _nindex; }
+        inline IndexPointer& getNormalIndices()             { return _nindex; }
+        /** get the const normal index array. */
+        inline const IndexPointer& getNormalIndices() const { return _nindex; }
         /** set the normals of the geoset.*/
         void setNormals( Vec3 *np );
         /** set the normals and normal indices of the geoset.*/
         void setNormals( Vec3 *np, ushort *ni );
+        /** set the normals and normal indices of the geoset.*/
+        void setNormals( Vec3 *np, uint *ni );
+        /** set the normals and normal indices of the geoset.*/
+        void setNormals( Vec3 *np, IndexPointer& ip );
         /** set the normals binding to the vertices/primitives/overall.*/
-        void setNormalBinding( BindingType binding );
-        BindingType getNormalBinding()              { return _normal_binding; }
+        void setNormalBinding( const BindingType binding );
+        inline const BindingType getNormalBinding() const        { return _normal_binding; }
 
         /** get the number of colors required by the defined primitives and color binding.*/
-        int getNumColors()                          { return _numcolors; }
+        inline const int getNumColors() const                    { return _numcolors; }
         /** get a pointer to Vec4 color array. */
-        Vec4* getColors()                           { return _colors; }
+        inline Vec4* getColors()                           { return _colors; }
+        /** get a pointer to Vec4 color array. */
+        inline const Vec4* getColors() const               { return _colors; }
         /** get the number of colors indices required by the defined primitives and color binding.*/
-        int getNumCIndices()                        { return _numcindices; }
+        inline int getNumColorIndices() const              { return _colindex._size; }
         /** get the color index array. */
-        ushort* getColIndex()                       { return _colindex; }
+        inline IndexPointer& getColorIndices()             { return _colindex; }
+        /** get the const color index array. */
+        inline const IndexPointer& getColorIndices() const { return _colindex; }
         /** set the colors of the geoset.*/
-        void setColors( Vec4 *lp );
+        void setColors( Vec4 *cp );
         /** set the colors and color indices of the geoset.*/
-        void setColors( Vec4 *lp, ushort *li );
+        void setColors( Vec4 *cp, ushort *li );
+        /** set the colors and color indices of the geoset.*/
+        void setColors( Vec4 *cp, uint *li );
+        /** set the colors and color indices of the geoset.*/
+        void setColors( Vec4 *cp, IndexPointer& ip );
         /** set the color binding to the vertices/primitives/overall.*/
         void setColorBinding( BindingType binding );
-        BindingType getColorBinding()               { return _color_binding; }
+        inline BindingType getColorBinding() const         { return _color_binding; }
 
         /** get the number of texture coords required by the defined primitives and textures binding.*/
-        int getNumTCoords()                          { return _numtcoords; }
+        inline const int getNumTextureCoords() const               { return _numtcoords; }
         /** get a pointer to Vec4 color array. */
-        Vec2* getTCoords()                           { return _tcoords; }
+        inline Vec2* getTextureCoords()                      { return _tcoords; }
+        /** get a pointer to Vec4 color array. */
+        inline const Vec2* getTextureCoords() const          { return _tcoords; }
         /** get the number of texture coord indices required by the defined primitives and texture binding.*/
-        int getNumTIndices()                         { return _numtindices; }
+        inline const int getNumTextureIndices() const              { return _tindex._size; }
         /** get the texture index array. */
-        ushort* getTIndex()                          { return _tindex; }
+        inline IndexPointer& getTextureIndices()             { return _tindex; }
+        /** get the texture index array. */
+        inline const IndexPointer& getTextureIndices() const { return _tindex; }
         /** set the texture coords of the geoset.*/
         void setTextureCoords( Vec2 *tc );
         /** set the texture coords and texture coord indices of the geoset.*/
         void setTextureCoords( Vec2 *tc, ushort *ti );
+        /** set the texture coords and texture coord indices of the geoset.*/
+        void setTextureCoords( Vec2 *tc, uint *ti );
+        /** set the texture coords and texture indices of the geoset.*/
+        void setTextureCoords( Vec2 *tc, IndexPointer& ip );
         /** set the texture coord binding to the vertices/primitives/overall.*/
-        void setTextureBinding( BindingType binding );
-        BindingType getTextureBinding()               { return _texture_binding; }
+        void setTextureBinding( const BindingType binding );
+        inline const BindingType getTextureBinding() const         { return _texture_binding; }
 
-	void setInterleavedArray( InterleaveArrayType format, float *ia ); 
-	void setInterleavedArray( InterleaveArrayType format, float *ia, ushort *iai ); 
-
-        void  setGeoState(GeoState *state) { _state = state; }
-        GeoState* getGeoState() const { return _state.get();}
-
-
-        /** When set to true, force the draw method to use OpenGL Display List for rendering.
-            If false rendering directly.  If the display list has not been already
-            compile the next call to draw will automatically create the display list.*/
-        void setUseDisplayList(bool flag);
-
-        /** Return whether OpenGL display lists are being used for rendering.*/
-        bool getUseDisplayList() { return _useDisplayList; }
-
-        /** Force a recompile on next draw() of any OpenGL display list associated with this geoset.*/
-        void dirtyDisplayList();
-
-        /** get bounding box of geoset. 
-          * Note, now made virtual to make it possible to implement user-drawn
-          * objects albiet so what crudely, to be improved later.
-          */
-        virtual const BoundingBox& getBound() ;
-
-        /** draw geoset. 
-          * If the geoset has _useDisplayList set to true then use an OpenGL display
-          * list, automatically compiling one if required.
-          * Otherwise call drawImmediateMode().
-          * Note, draw method should not be overiden in subclasses as it 
-          * manages the optional display list.
-          */
-        void draw( void );
-
+        /** get the number of texture coords required by the defined primitives and textures binding.*/
+        inline const int getNumInterleavedCoords() const               { return _numcoords; }
+        /** get a pointer to interleaved float array. */
+        inline void* getInterleavedArray()                      { return _iarray; }
+        /** get a const pointer to interleaved float array. */
+        inline const void* getInterleavedArray() const          { return _iarray; }
+        /** get the number of texture coord indices required by the defined primitives and texture binding.*/
+        inline const int getNumIterleavedIndices() const              { return _iaindex._size; }
+        /** get the texture index array. */
+        inline IndexPointer& getInterleavedIndices()             { return _iaindex; }
+        /** get the interleaved index array. */
+        inline const IndexPointer& getInterleavedIndices() const { return _iaindex; }
+        /** get the interleaved array storage format. */
+        inline const InterleaveArrayType getInterleavedFromat() const  { return _iaformat; }
+        
+        /** set the interleaved arrays of the geoset.*/
+	void setInterleavedArray( const InterleaveArrayType format, float *ia ); 
+	void setInterleavedArray( const InterleaveArrayType format, float *ia, ushort *iai ); 
+	void setInterleavedArray( const InterleaveArrayType format, float *ia, uint *iai ); 
+	void setInterleavedArray( const InterleaveArrayType format, float *ia, IndexPointer& iai ); 
 
         /** draw geoset directly ignoring an OpenGL display list which could be attached.
           * This is the internal draw method which does the drawing itself,
           * and is the method to override when deriving from GeoSet for user-drawn objects.
           */
-        virtual void drawImmediateMode();
+        virtual void drawImmediateMode(State& state);
 
-        /** Immediately compile this geoset into an OpenGL Display List, set _useDisplayList to true.*/
-        void compile( void );
-
-        bool check();
+        const bool check() const;
 
     protected:
 
-        GeoSet(const GeoSet&):Object() {}
+        GeoSet(const GeoSet&):Drawable() {}
         GeoSet& operator = (const GeoSet&) { return *this;}
 
         virtual ~GeoSet();
 
-        bool matchBindingTypeStr(const char* str,BindingType& mode);
-        const char* getBindingTypeStr(BindingType mode);
-
-        virtual bool readLocalData(Input& fr);
-        virtual bool writeLocalData(Output& fw);
-
-    private :
-    
+        virtual const bool computeBound() const;
+            
         int             _numprims;
         PrimitiveType   _primtype;
 	int             _needprimlen;
 	unsigned int    _oglprimtype;
         int             *_primLengths;
-	int             _numverts;
 	unsigned char   _primlength;
 	unsigned char   _flat_shaded_skip;
 
-        int         _numcoords;
-        int         _numindices;
-        Vec3        *_coords;
-        ushort      *_cindex;
+        int             _numcoords;
+        Vec3            *_coords;
+        IndexPointer    _cindex;
 
-        int         _numnormals;
-        int         _numnindices;
-        Vec3        *_normals;
-        ushort      *_nindex;
-        BindingType _normal_binding;
+        BindingType     _normal_binding;
+        int             _numnormals;
+        Vec3            *_normals;
+        IndexPointer    _nindex;
 
-        int         _numcolors;
-        int         _numcindices;
-        Vec4        *_colors;
-        ushort      *_colindex;
-        BindingType _color_binding;
+        BindingType     _color_binding;
+        int             _numcolors;
+        Vec4            *_colors;
+        IndexPointer    _colindex;
 
-        int         _numtcoords;
-        int         _numtindices;
-        Vec2        *_tcoords;
-        ushort      *_tindex;
-        BindingType _texture_binding;
+        BindingType     _texture_binding;
+        int             _numtcoords;
+        Vec2            *_tcoords;
+        IndexPointer    _tindex;
 
-	void        *_iarray;
-	ushort	    *_iaindex;
+	void            *_iarray;
+        IndexPointer    _iaindex;
 	InterleaveArrayType _iaformat;
 	unsigned int    _ogliaformat;
 
 
-        /** return the bbbbffff composition required for an interleaved array row.*/
-        const char* getInterleavedRowComposition(InterleaveArrayType at) const;
-        /** return the number of bytes required for an interleaved array row.*/
-        int getInterleavedRowLength(InterleaveArrayType at) const;
 
 
         int         _fast_path;
 
-        ref_ptr<GeoState> _state;
-
-        bool            _useDisplayList;
-        uint            _globj;
-
-        BoundingBox     _bbox;
-        int             _bbox_computed;
-
-        void computeBound( void );
+        
 	void set_fast_path( void );
 	void draw_fast_path( void );
 	void draw_alternate_path( void );
@@ -279,21 +348,47 @@ void for_each_triangle(GeoSet& gset,T& op)
     case(GeoSet::TRIANGLE_STRIP):
     case(GeoSet::FLAT_TRIANGLE_STRIP):
         {
-            if (gset.getCIndex())
+            if (gset.getCoordIndices().valid())
             {
-                ushort* iptr = gset.getCIndex();
-                Vec3* vptr = gset.getCoords();
-                const int numPrim = gset.getNumPrims();
-                for(int i=0; i<numPrim; ++i )
+                if (gset.getCoordIndices()._is_ushort)
                 {
-                    const int primLength = gset.getPrimLengths()[i];
-                    ushort* iend = iptr+primLength;
-                    for(int j = 2; j < primLength; j++ )
+                    ushort* iptr = gset.getCoordIndices()._ptr._ushort;
+                    Vec3* vptr = gset.getCoords();
+                    const int numPrim = gset.getNumPrims();
+                    for(int i=0; i<numPrim; ++i )
                     {
-                        op(vptr[*(iptr)],vptr[*(iptr+1)],vptr[*(iptr+2)]);
-                        ++iptr;
+                        const int primLength = gset.getPrimLengths()[i];
+                        ushort* iend = iptr+primLength;
+                        for(int j = 2; j < primLength; j++ )
+                        {
+		    	    if( !(j%2) )
+                        	    op(vptr[*(iptr)],vptr[*(iptr+1)],vptr[*(iptr+2)]);
+			    else
+                        	    op(vptr[*(iptr)],vptr[*(iptr+2)],vptr[*(iptr+1)]);
+                            ++iptr;
+                        }
+                        iptr=iend;
                     }
-                    iptr=iend;
+                }
+                else
+                {
+                    uint* iptr = gset.getCoordIndices()._ptr._uint;
+                    Vec3* vptr = gset.getCoords();
+                    const int numPrim = gset.getNumPrims();
+                    for(int i=0; i<numPrim; ++i )
+                    {
+                        const int primLength = gset.getPrimLengths()[i];
+                        uint* iend = iptr+primLength;
+                        for(int j = 2; j < primLength; j++ )
+                        {
+		    	    if( !(j%2) )
+                        	    op(vptr[*(iptr)],vptr[*(iptr+1)],vptr[*(iptr+2)]);
+			    else
+                        	    op(vptr[*(iptr)],vptr[*(iptr+2)],vptr[*(iptr+1)]);
+                            ++iptr;
+                        }
+                        iptr=iend;
+                    }
                 }
             }
             else
@@ -306,7 +401,10 @@ void for_each_triangle(GeoSet& gset,T& op)
                     Vec3* vend = vptr+primLength;
                     for(int j = 2; j < primLength; j++ )
                     {
-                        op(*(vptr),*(vptr+1),*(vptr+2));
+		    	if( !(j%2) )
+                            op(*(vptr),*(vptr+1),*(vptr+2));
+			else
+                            op(*(vptr),*(vptr+2),*(vptr+1));
                         ++vptr;
                     }
                     vptr=vend;
@@ -317,15 +415,29 @@ void for_each_triangle(GeoSet& gset,T& op)
     case(GeoSet::TRIANGLES):
         {
 
-            if (gset.getCIndex())
+            if (gset.getCoordIndices().valid())
             {
-                ushort* iptr = gset.getCIndex();
-                Vec3* vptr = gset.getCoords();
-                const int numPrim = gset.getNumPrims();
-                for(int i=0; i<numPrim; ++i )
+                if (gset.getCoordIndices()._is_ushort)
                 {
-                    op(vptr[*(iptr)],vptr[*(iptr+1)],vptr[*(iptr+2)]);
-                    iptr+=3;
+                    ushort* iptr = gset.getCoordIndices()._ptr._ushort;
+                    Vec3* vptr = gset.getCoords();
+                    const int numPrim = gset.getNumPrims();
+                    for(int i=0; i<numPrim; ++i )
+                    {
+                        op(vptr[*(iptr)],vptr[*(iptr+1)],vptr[*(iptr+2)]);
+                        iptr+=3;
+                    }
+                }
+                else
+                {
+                    uint* iptr = gset.getCoordIndices()._ptr._uint;
+                    Vec3* vptr = gset.getCoords();
+                    const int numPrim = gset.getNumPrims();
+                    for(int i=0; i<numPrim; ++i )
+                    {
+                        op(vptr[*(iptr)],vptr[*(iptr+1)],vptr[*(iptr+2)]);
+                        iptr+=3;
+                    }
                 }
             }
             else
@@ -343,22 +455,43 @@ void for_each_triangle(GeoSet& gset,T& op)
         break;
     case(GeoSet::QUAD_STRIP):
         {
-            if (gset.getCIndex())
+            if (gset.getCoordIndices().valid())
             {
-                ushort* iptr = gset.getCIndex();
-                Vec3* vptr = gset.getCoords();
-                const int numPrim = gset.getNumPrims();
-                for(int i=0; i<numPrim; ++i )
+                if (gset.getCoordIndices()._is_ushort)
                 {
-                    const int primLength = gset.getPrimLengths()[i];
-                    ushort* iend = iptr+primLength;
-                    for(int j = 3; j < primLength; j+=2 )
+                    ushort* iptr = gset.getCoordIndices()._ptr._ushort;
+                    Vec3* vptr = gset.getCoords();
+                    const int numPrim = gset.getNumPrims();
+                    for(int i=0; i<numPrim; ++i )
                     {
-                        op(vptr[*(iptr)],vptr[*(iptr+1)],vptr[*(iptr+2)]);
-                        op(vptr[*(iptr)],vptr[*(iptr+3)],vptr[*(iptr+2)]);
-                        iptr+=2;
+                        const int primLength = gset.getPrimLengths()[i];
+                        ushort* iend = iptr+primLength;
+                        for(int j = 3; j < primLength; j+=2 )
+                        {
+                            op(vptr[*(iptr)],vptr[*(iptr+1)],vptr[*(iptr+2)]);
+                            op(vptr[*(iptr)],vptr[*(iptr+3)],vptr[*(iptr+2)]);
+                            iptr+=2;
+                        }
+                        iptr=iend;
                     }
-                    iptr=iend;
+                }
+                else
+                {
+                    uint* iptr = gset.getCoordIndices()._ptr._uint;
+                    Vec3* vptr = gset.getCoords();
+                    const int numPrim = gset.getNumPrims();
+                    for(int i=0; i<numPrim; ++i )
+                    {
+                        const int primLength = gset.getPrimLengths()[i];
+                        uint* iend = iptr+primLength;
+                        for(int j = 3; j < primLength; j+=2 )
+                        {
+                            op(vptr[*(iptr)],vptr[*(iptr+1)],vptr[*(iptr+2)]);
+                            op(vptr[*(iptr)],vptr[*(iptr+3)],vptr[*(iptr+2)]);
+                            iptr+=2;
+                        }
+                        iptr=iend;
+                    }
                 }
             }
             else
@@ -382,16 +515,31 @@ void for_each_triangle(GeoSet& gset,T& op)
         break;
     case(GeoSet::QUADS):
         {
-            if (gset.getCIndex())
+            if (gset.getCoordIndices().valid())
             {
-                ushort* iptr = gset.getCIndex();
-                Vec3* vptr = gset.getCoords();
-                const int numPrim = gset.getNumPrims();
-                for(int i=0; i<numPrim; ++i )
+                if (gset.getCoordIndices()._is_ushort)
                 {
-                    op(vptr[*(iptr)],vptr[*(iptr+1)],vptr[*(iptr+2)]);
-                    op(vptr[*(iptr)],vptr[*(iptr+3)],vptr[*(iptr+2)]);
-                    iptr+=4;
+                    ushort* iptr = gset.getCoordIndices()._ptr._ushort;
+                    Vec3* vptr = gset.getCoords();
+                    const int numPrim = gset.getNumPrims();
+                    for(int i=0; i<numPrim; ++i )
+                    {
+                        op(vptr[*(iptr)],vptr[*(iptr+1)],vptr[*(iptr+2)]);
+                        op(vptr[*(iptr)],vptr[*(iptr+3)],vptr[*(iptr+2)]);
+                        iptr+=4;
+                    }
+                }
+                else
+                {
+                    uint* iptr = gset.getCoordIndices()._ptr._uint;
+                    Vec3* vptr = gset.getCoords();
+                    const int numPrim = gset.getNumPrims();
+                    for(int i=0; i<numPrim; ++i )
+                    {
+                        op(vptr[*(iptr)],vptr[*(iptr+1)],vptr[*(iptr+2)]);
+                        op(vptr[*(iptr)],vptr[*(iptr+3)],vptr[*(iptr+2)]);
+                        iptr+=4;
+                    }
                 }
             }
             else
@@ -411,25 +559,50 @@ void for_each_triangle(GeoSet& gset,T& op)
     case(GeoSet::TRIANGLE_FAN):
     case(GeoSet::POLYGON):
         {
-            if (gset.getCIndex())
+            if (gset.getCoordIndices().valid())
             {
-                ushort* iptr = gset.getCIndex();
-                Vec3* vptr = gset.getCoords();
-                const int numPrim = gset.getNumPrims();
-                for(int i=0; i<numPrim; ++i )
+                if (gset.getCoordIndices()._is_ushort)
                 {
-                    const int primLength = gset.getPrimLengths()[i];
-                    if (primLength>0)
+                    ushort* iptr = gset.getCoordIndices()._ptr._ushort;
+                    Vec3* vptr = gset.getCoords();
+                    const int numPrim = gset.getNumPrims();
+                    for(int i=0; i<numPrim; ++i )
                     {
-                        const Vec3& start = vptr[*(iptr)];
-                        ushort* iend = iptr+primLength;
-                        ++iptr;
-                        for(int j = 2; j < primLength; ++j )
+                        const int primLength = gset.getPrimLengths()[i];
+                        if (primLength>0)
                         {
-                            op(start,vptr[*(iptr)],vptr[*(iptr+1)]);
+                            const Vec3& start = vptr[*(iptr)];
+                            ushort* iend = iptr+primLength;
                             ++iptr;
+                            for(int j = 2; j < primLength; ++j )
+                            {
+                                op(start,vptr[*(iptr)],vptr[*(iptr+1)]);
+                                ++iptr;
+                            }
+                            iptr=iend;
                         }
-                        iptr=iend;
+                    }
+                }
+                else
+                {
+                    uint* iptr = gset.getCoordIndices()._ptr._uint;
+                    Vec3* vptr = gset.getCoords();
+                    const int numPrim = gset.getNumPrims();
+                    for(int i=0; i<numPrim; ++i )
+                    {
+                        const int primLength = gset.getPrimLengths()[i];
+                        if (primLength>0)
+                        {
+                            const Vec3& start = vptr[*(iptr)];
+                            uint* iend = iptr+primLength;
+                            ++iptr;
+                            for(int j = 2; j < primLength; ++j )
+                            {
+                                op(start,vptr[*(iptr)],vptr[*(iptr+1)]);
+                                ++iptr;
+                            }
+                            iptr=iend;
+                        }
                     }
                 }
             }

@@ -1,8 +1,14 @@
 // Pool.cpp
 
+#ifdef WIN32
+    #pragma warning( disable : 4786 )
+#endif
+
 #include <osg/Vec4>
 #include <osg/Texture>
 
+#include "MaterialPaletteRecord.h"
+#include "OldMaterialPaletteRecord.h"
 #include "Pool.h"
 
 using namespace flt;
@@ -25,8 +31,8 @@ osg::Vec4 ColorPool::getColor(int nColorIndex)
 
     if (nColorIndex >= 0)
     {
-        int index = nColorIndex / 128;
-        float intensity = (nColorIndex % 128) / 128.0f;
+        int index = nColorIndex / 128;                          // = nColorIndex >> 7
+        float intensity = (nColorIndex % 128) / 128.0f;         // = nColorIndex & 0x7f
 
         ColorName* cn = getColorName(index);
         if (cn)
@@ -41,7 +47,7 @@ osg::Vec4 ColorPool::getColor(int nColorIndex)
 }
 
 
-void ColorPool::regisiterColor(int nIndex, const osg::Vec4& color)
+void ColorPool::addColor(int nIndex, const osg::Vec4& color)
 {
     if (nIndex >= 0)
     {
@@ -73,12 +79,11 @@ void ColorPool::eraseAll()
         if (colorname)
             delete colorname;
     }
-    _colorNameMap.erase(_colorNameMap.begin(), _colorNameMap.end());
+    _colorNameMap.clear();
 }
 
 
 ////////////////////////////////////////////////////////////////////
-
 
 TexturePool::TexturePool()
 {
@@ -102,7 +107,7 @@ osg::Texture* TexturePool::getTexture(int nIndex)
 }
 
 
-void TexturePool::regisiterTexture(int nIndex, osg::Texture* osgTexture)
+void TexturePool::addTexture(int nIndex, osg::Texture* osgTexture)
 {
     _textureMap[nIndex] = osgTexture;
 }
@@ -110,7 +115,7 @@ void TexturePool::regisiterTexture(int nIndex, osg::Texture* osgTexture)
 
 void TexturePool::eraseAll()
 {
-    _textureMap.erase(_textureMap.begin(), _textureMap.end());
+    _textureMap.clear();
 }
 
 
@@ -128,8 +133,9 @@ MaterialPool::~MaterialPool()
 }
 
 
-SMaterial* MaterialPool::getMaterial(int nIndex)
+PoolMaterial* MaterialPool::getMaterial(int nIndex)
 {
+    if (nIndex < 0) return NULL;
     MaterialMap::iterator fitr = _MaterialMap.find(nIndex);
     if (fitr != _MaterialMap.end())
         return (*fitr).second;
@@ -138,7 +144,7 @@ SMaterial* MaterialPool::getMaterial(int nIndex)
 }
 
 
-void MaterialPool::regisiterMaterial(int nIndex, SMaterial* material)
+void MaterialPool::addMaterial(int nIndex, PoolMaterial* material)
 {
     _MaterialMap[nIndex] = material;
 }
@@ -146,5 +152,13 @@ void MaterialPool::regisiterMaterial(int nIndex, SMaterial* material)
 
 void MaterialPool::eraseAll()
 {
-    _MaterialMap.erase(_MaterialMap.begin(), _MaterialMap.end());
+    for(MaterialMap::iterator itr=_MaterialMap.begin();
+        itr!=_MaterialMap.end();
+        ++itr)
+    {
+        PoolMaterial* material = (*itr).second;
+        if (material)
+            delete material;
+    }
+    _MaterialMap.clear();
 }

@@ -1,89 +1,92 @@
-
 #include "osg/TexGen"
-#include "osg/Input"
-#include "osg/Output"
+#include "osg/Notify"
 
 using namespace osg;
 
-TexGen::TexGen( void )
+TexGen::TexGen()
 {
     _mode = OBJECT_LINEAR;
+    _plane_s.set(1.0f, 0.0f, 0.0f, 0.0f);
+    _plane_t.set(0.0f, 1.0f, 0.0f, 0.0f);
+    _plane_r.set(0.0f, 0.0f, 1.0f, 0.0f);
+    _plane_q.set(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
 
-TexGen::~TexGen( void )
+TexGen::~TexGen()
 {
 }
 
 
-TexGen* TexGen::instance()
+void TexGen::setPlane(const Coord which, const Vec4& plane)
 {
-    static ref_ptr<TexGen> s_texgen(new TexGen);
-    return s_texgen.get();
-}
-
-
-bool TexGen::readLocalData(Input& fr)
-{
-    bool iteratorAdvanced = false;
-    TexGenMode mode;
-    if (fr[0].matchWord("mode") && matchModeStr(fr[1].getStr(),mode))
+    switch( which )
     {
-        _mode = mode;
-        fr+=2;
-        iteratorAdvanced = true;
+        case S : _plane_s = plane; break;
+        case T : _plane_t = plane; break;
+        case R : _plane_r = plane; break;
+        case Q : _plane_q = plane; break;
+        default : notify(WARN)<<"Error: invalid 'which' passed TexGen::setPlane("<<(unsigned int)which<<","<<plane<<")"<<endl; break;
+    }
+}
+
+
+const Vec4& TexGen::getPlane(const Coord which) const
+{
+    switch( which )
+    {
+        case S : return _plane_s;
+        case T : return _plane_t;
+        case R : return _plane_r;
+        case Q : return _plane_q;
+        default : notify(WARN)<<"Error: invalid 'which' passed TexGen::getPlane(which)"<<endl; return _plane_r;
+    }
+}
+
+void TexGen::apply(State&) const
+{
+
+    if (_mode == OBJECT_LINEAR)
+    {
+        glTexGenfv(GL_S, GL_OBJECT_PLANE, _plane_s.ptr());
+        glTexGenfv(GL_T, GL_OBJECT_PLANE, _plane_t.ptr());
+        glTexGenfv(GL_R, GL_OBJECT_PLANE, _plane_r.ptr());
+        glTexGenfv(GL_Q, GL_OBJECT_PLANE, _plane_q.ptr());
+
+        glTexGeni( GL_S, GL_TEXTURE_GEN_MODE, _mode );
+        glTexGeni( GL_T, GL_TEXTURE_GEN_MODE, _mode );
+        glTexGeni( GL_R, GL_TEXTURE_GEN_MODE, _mode );
+        glTexGeni( GL_Q, GL_TEXTURE_GEN_MODE, _mode );
+
+        // note, R & Q will be disabled so R&Q settings won't
+        // have an effect, see above comment in enable(). RO.
+
+    }
+    else if (_mode == EYE_LINEAR)
+    {
+        glTexGenfv(GL_S, GL_EYE_PLANE, _plane_s.ptr());
+        glTexGenfv(GL_T, GL_EYE_PLANE, _plane_t.ptr());
+        glTexGenfv(GL_R, GL_EYE_PLANE, _plane_r.ptr());
+        glTexGenfv(GL_Q, GL_EYE_PLANE, _plane_q.ptr());
+
+        glTexGeni( GL_S, GL_TEXTURE_GEN_MODE, _mode );
+        glTexGeni( GL_T, GL_TEXTURE_GEN_MODE, _mode );
+        glTexGeni( GL_R, GL_TEXTURE_GEN_MODE, _mode );
+        glTexGeni( GL_Q, GL_TEXTURE_GEN_MODE, _mode );
+
+        // note, R & Q will be disabled so R&Q settings won't
+        // have an effect, see above comment in enable(). RO.
+
+    }
+    else                         // SPHERE_MAP
+    {
+        // We ignore the planes if we are not in OBJECT_ or EYE_LINEAR mode.
+
+        // Also don't set the mode of GL_R & GL_Q as these will generate
+        // GL_INVALID_ENUM (See OpenGL Refrence Guide, glTexGEn.)
+
+        glTexGeni( GL_S, GL_TEXTURE_GEN_MODE, _mode );
+        glTexGeni( GL_T, GL_TEXTURE_GEN_MODE, _mode );
     }
 
-    return iteratorAdvanced;
-}
-
-
-bool TexGen::matchModeStr(const char* str,TexGenMode& mode)
-{
-    if (strcmp(str,"EYE_LINEAR")==0) mode = EYE_LINEAR;
-    else if (strcmp(str,"OBJECT_LINEAR")==0) mode = OBJECT_LINEAR;
-    else if (strcmp(str,"SPHERE_MAP")==0) mode = SPHERE_MAP;
-    else return false;
-    return true;
-}
-
-
-const char* TexGen::getModeStr(TexGenMode mode)
-{
-    switch(mode)
-    {
-        case(EYE_LINEAR): return "EYE_LINEAR";
-        case(OBJECT_LINEAR): return "OBJECT_LINEAR";
-        case(SPHERE_MAP): return "SPHERE_MAP";
-    }
-    return "";
-}
-
-
-bool TexGen::writeLocalData(Output& fw)
-{
-    fw.indent() << "mode " << getModeStr(_mode) << endl;
-
-    return true;
-}
-
-
-void TexGen::enable( void )
-{
-    glEnable( GL_TEXTURE_GEN_S );
-    glEnable( GL_TEXTURE_GEN_T );
-}
-
-
-void TexGen::disable( void )
-{
-    glDisable( GL_TEXTURE_GEN_S );
-    glDisable( GL_TEXTURE_GEN_T );
-}
-
-
-void TexGen::apply( void )
-{
-    glTexGeni( GL_S, GL_TEXTURE_GEN_MODE, _mode );
-    glTexGeni( GL_T, GL_TEXTURE_GEN_MODE, _mode );
 }

@@ -1,3 +1,7 @@
+#if defined(_MSC_VER)
+	#pragma warning( disable : 4786 )
+#endif
+
 #include "osgUtil/DriveManipulator"
 #include "osgUtil/IntersectVisitor"
 #include "osg/Notify"
@@ -9,37 +13,42 @@ DriveManipulator::DriveManipulator()
 {
     _modelScale = 0.01f;
     _velocity = 0.0f;
-    _speedMode = USE_MOUSE_Y_FOR_SPEED;
+    //_speedMode = USE_MOUSE_Y_FOR_SPEED;
+    _speedMode = USE_MOUSE_BUTTONS_FOR_SPEED;
 }
+
 
 DriveManipulator::~DriveManipulator()
 {
 }
+
 
 void DriveManipulator::setNode(osg::Node* node)
 {
     _node = node;
     if (_node.get())
     {
-	const osg::BoundingSphere& boundingSphere=_node->getBound();
+        const osg::BoundingSphere& boundingSphere=_node->getBound();
         _modelScale = boundingSphere._radius;
         _height = sqrtf(_modelScale)*0.03f;
         _buffer = sqrtf(_modelScale)*0.05f;
     }
 }
 
-osg::Node* DriveManipulator::getNode() const
+
+const osg::Node* DriveManipulator::getNode() const
 {
     return _node.get();
 }
 
-void DriveManipulator::home(GUIEventAdapter& ea,GUIActionAdapter& us)
+
+void DriveManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
 {
 
     if(_node.get() && _camera.get())
     {
 
-	const osg::BoundingSphere& boundingSphere=_node->getBound();
+        const osg::BoundingSphere& boundingSphere=_node->getBound();
 
         osg::Vec3 ep = boundingSphere._center;
         osg::Vec3 bp = ep;
@@ -51,9 +60,9 @@ void DriveManipulator::home(GUIEventAdapter& ea,GUIActionAdapter& us)
 
         bool cameraSet = false;
 
-        osg::ref_ptr<osg::Seg> segDown = new osg::Seg;
+        osg::ref_ptr<osg::LineSegment> segDown = new osg::LineSegment;
         segDown->set(ep,bp);
-        iv.addSeg(segDown.get());
+        iv.addLineSegment(segDown.get());
 
         _node->accept(iv);
 
@@ -62,10 +71,10 @@ void DriveManipulator::home(GUIEventAdapter& ea,GUIActionAdapter& us)
             osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segDown.get());
             if (!hitList.empty())
             {
-    //                notify(INFO) << "Hit terrain ok"<<endl;
+                //                notify(INFO) << "Hit terrain ok"<<endl;
                 osg::Vec3 ip = hitList.front()._intersectPoint;
                 osg::Vec3 np = hitList.front()._intersectNormal;
-                
+
                 osg::Vec3 uv;
                 if (np.z()>0.0f) uv = np;
                 else uv = -np;
@@ -75,11 +84,10 @@ void DriveManipulator::home(GUIEventAdapter& ea,GUIActionAdapter& us)
                 ep = ip;
                 ep.z() += _height;
                 osg::Vec3 lv = uv^osg::Vec3(1.0f,0.0f,0.0f);
-                osg::Vec3 lp = ep+lv*lookDistance;
+                osg::Vec3 cp = ep+lv*lookDistance;
 
-                _camera->setView(ep,lp,uv);
-                _camera->ensureOrthogonalUpVector();
-                
+                _camera->setLookAt(ep,cp,uv);
+
                 cameraSet = true;
 
             }
@@ -91,9 +99,9 @@ void DriveManipulator::home(GUIEventAdapter& ea,GUIActionAdapter& us)
             bp = ep;
             bp.z() += _modelScale;
 
-            osg::ref_ptr<osg::Seg> segUp = new osg::Seg;
+            osg::ref_ptr<osg::LineSegment> segUp = new osg::LineSegment;
             segUp->set(ep,bp);
-            iv.addSeg(segUp.get());
+            iv.addLineSegment(segUp.get());
 
             _node->accept(iv);
 
@@ -102,55 +110,58 @@ void DriveManipulator::home(GUIEventAdapter& ea,GUIActionAdapter& us)
                 osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segUp.get());
                 if (!hitList.empty())
                 {
-        //                notify(INFO) << "Hit terrain ok"<<endl;
+                    //                notify(INFO) << "Hit terrain ok"<<endl;
                     osg::Vec3 ip = hitList.front()._intersectPoint;
                     osg::Vec3 np = hitList.front()._intersectNormal;
 
-                osg::Vec3 uv;
-                if (np.z()>0.0f) uv = np;
-                else uv = -np;
+                    osg::Vec3 uv;
+                    if (np.z()>0.0f) uv = np;
+                    else uv = -np;
 
-                float lookDistance = _modelScale*0.1f;
+                    float lookDistance = _modelScale*0.1f;
 
-                ep = ip;
-                ep.z() += _height;
-                osg::Vec3 lv = uv^osg::Vec3(1.0f,0.0f,0.0f);
-                osg::Vec3 lp = ep+lv*lookDistance;
+                    ep = ip;
+                    ep.z() += _height;
+                    osg::Vec3 lv = uv^osg::Vec3(1.0f,0.0f,0.0f);
+                    osg::Vec3 cp = ep+lv*lookDistance;
 
-                _camera->setView(ep,lp,uv);
-                _camera->ensureOrthogonalUpVector();
-                
-                cameraSet = true;
+                    _camera->setLookAt(ep,cp,uv);
+
+                    cameraSet = true;
 
                 }
 
             }
         }
-        
+
         if (!cameraSet)
         {
-            _camera->setView(boundingSphere._center+osg::Vec3( 0.0,-2.0f * boundingSphere._radius,0.0f),	// eye
-                             boundingSphere._center,                                // look
-                             osg::Vec3(0.0f,0.0f,1.0f));                           // up
+                                 // eye
+            _camera->setLookAt(boundingSphere._center+osg::Vec3( 0.0,-2.0f * boundingSphere._radius,0.0f),
+                                 // look
+                boundingSphere._center,
+                                 // up
+                osg::Vec3(0.0f,0.0f,1.0f));
         }
-                             
+
     }
 
     _velocity = 0.0f;
 
-    us.needRedraw();
+    us.requestRedraw();
 
-    us.needWarpPointer((ea.getXmin()+ea.getXmax())/2,(ea.getYmin()+ea.getYmax())/2);
+    us.requestWarpPointer((ea.getXmin()+ea.getXmax())/2,(ea.getYmin()+ea.getYmax())/2);
 
     flushMouseEventStack();
 
 }
 
-void DriveManipulator::init(GUIEventAdapter& ea,GUIActionAdapter& us)
+
+void DriveManipulator::init(const GUIEventAdapter& ea,GUIActionAdapter& us)
 {
     flushMouseEventStack();
 
-    us.needContinuousUpdate(false);
+    us.requestContinuousUpdate(false);
 
     _velocity = 0.0f;
 
@@ -164,9 +175,9 @@ void DriveManipulator::init(GUIEventAdapter& ea,GUIActionAdapter& us)
 
     bool cameraSet = false;
 
-    osg::ref_ptr<osg::Seg> segDown = new osg::Seg;
+    osg::ref_ptr<osg::LineSegment> segDown = new osg::LineSegment;
     segDown->set(ep,bp);
-    iv.addSeg(segDown.get());
+    iv.addLineSegment(segDown.get());
 
     _node->accept(iv);
 
@@ -175,7 +186,7 @@ void DriveManipulator::init(GUIEventAdapter& ea,GUIActionAdapter& us)
         osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segDown.get());
         if (!hitList.empty())
         {
-//                notify(INFO) << "Hit terrain ok"<<endl;
+            //                notify(INFO) << "Hit terrain ok"<<endl;
             osg::Vec3 ip = hitList.front()._intersectPoint;
             osg::Vec3 np = hitList.front()._intersectNormal;
 
@@ -189,7 +200,7 @@ void DriveManipulator::init(GUIEventAdapter& ea,GUIActionAdapter& us)
             osg::Vec3 lv = uv^sv;
             osg::Vec3 lp = ep+lv*lookDistance;
 
-            _camera->setView(ep,lp,uv);
+            _camera->setLookAt(ep,lp,uv);
             _camera->ensureOrthogonalUpVector();
 
             cameraSet = true;
@@ -203,9 +214,9 @@ void DriveManipulator::init(GUIEventAdapter& ea,GUIActionAdapter& us)
         bp = ep;
         bp.z() += _modelScale;
 
-        osg::ref_ptr<osg::Seg> segUp = new osg::Seg;
+        osg::ref_ptr<osg::LineSegment> segUp = new osg::LineSegment;
         segUp->set(ep,bp);
-        iv.addSeg(segUp.get());
+        iv.addLineSegment(segUp.get());
 
         _node->accept(iv);
 
@@ -214,112 +225,114 @@ void DriveManipulator::init(GUIEventAdapter& ea,GUIActionAdapter& us)
             osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segUp.get());
             if (!hitList.empty())
             {
-    //                notify(INFO) << "Hit terrain ok"<<endl;
+                //                notify(INFO) << "Hit terrain ok"<<endl;
                 osg::Vec3 ip = hitList.front()._intersectPoint;
                 osg::Vec3 np = hitList.front()._intersectNormal;
 
-            osg::Vec3 uv;
-            if (np.z()>0.0f) uv = np;
-            else uv = -np;
+                osg::Vec3 uv;
+                if (np.z()>0.0f) uv = np;
+                else uv = -np;
 
-            float lookDistance = _modelScale*0.1f;
+                float lookDistance = _modelScale*0.1f;
 
-            ep = ip+uv*_height;
-            osg::Vec3 lv = uv^sv;
-            osg::Vec3 lp = ep+lv*lookDistance;
+                ep = ip+uv*_height;
+                osg::Vec3 lv = uv^sv;
+                osg::Vec3 lp = ep+lv*lookDistance;
 
-            _camera->setView(ep,lp,uv);
-            _camera->ensureOrthogonalUpVector();
+                _camera->setLookAt(ep,lp,uv);
+                _camera->ensureOrthogonalUpVector();
 
-            cameraSet = true;
+                cameraSet = true;
 
             }
 
         }
     }
 
-    us.needWarpPointer((ea.getXmin()+ea.getXmax())/2,(ea.getYmin()+ea.getYmax())/2);
+    us.requestWarpPointer((ea.getXmin()+ea.getXmax())/2,(ea.getYmin()+ea.getYmax())/2);
 
 }
 
-bool DriveManipulator::update(GUIEventAdapter& ea,GUIActionAdapter& us)
+
+bool DriveManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
 {
     if(!_camera.get()) return false;
-    
+
     switch(ea.getEventType())
     {
-    case(GUIEventAdapter::PUSH):
+        case(GUIEventAdapter::PUSH):
         {
-            
+
             addMouseEvent(ea);
-            us.needContinuousUpdate(true);
-            if (calcMovement()) us.needRedraw();
+            us.requestContinuousUpdate(true);
+            if (calcMovement()) us.requestRedraw();
 
         }
         return true;
-    case(GUIEventAdapter::RELEASE):
+        case(GUIEventAdapter::RELEASE):
         {
-            
+
             addMouseEvent(ea);
-            us.needContinuousUpdate(true);
-            if (calcMovement()) us.needRedraw();
+            us.requestContinuousUpdate(true);
+            if (calcMovement()) us.requestRedraw();
 
         }
         return true;
-    case(GUIEventAdapter::DRAG):
+        case(GUIEventAdapter::DRAG):
         {
-            
+
             addMouseEvent(ea);
-            us.needContinuousUpdate(true);
-            if (calcMovement()) us.needRedraw();
+            us.requestContinuousUpdate(true);
+            if (calcMovement()) us.requestRedraw();
 
         }
         return true;
-    case(GUIEventAdapter::MOVE):
+        case(GUIEventAdapter::MOVE):
         {
-            
+
             addMouseEvent(ea);
-            us.needContinuousUpdate(true);
-            if (calcMovement()) us.needRedraw();
+            us.requestContinuousUpdate(true);
+            if (calcMovement()) us.requestRedraw();
 
         }
         return true;
 
-    case(GUIEventAdapter::KEYBOARD):
-        if (ea.getKey()==' ') 
-        {
-            flushMouseEventStack();
-            home(ea,us);
-            us.needRedraw();
-            us.needContinuousUpdate(false);
+        case(GUIEventAdapter::KEYBOARD):
+            if (ea.getKey()==' ')
+            {
+                flushMouseEventStack();
+                home(ea,us);
+                us.requestRedraw();
+                us.requestContinuousUpdate(false);
+                return true;
+            }
+            else if (ea.getKey()=='q')
+            {
+                _speedMode = USE_MOUSE_Y_FOR_SPEED;
+                return true;
+            }
+            else if (ea.getKey()=='a')
+            {
+                _speedMode = USE_MOUSE_BUTTONS_FOR_SPEED;
+                return true;
+            }
+
+            return false;
+        case(GUIEventAdapter::FRAME):
+            addMouseEvent(ea);
+            if (calcMovement()) us.requestRedraw();
             return true;
-        }
-        else if (ea.getKey()=='q') 
-        {
-            _speedMode = USE_MOUSE_Y_FOR_SPEED;
-            return true;
-        }
-        else if (ea.getKey()=='a') 
-        {
-            _speedMode = USE_MOUSE_BUTTONS_FOR_SPEED;
-            return true;
-        }
-
-        return false;
-    case(GUIEventAdapter::FRAME):
-        addMouseEvent(ea);
-        if (calcMovement()) us.needRedraw();
-        return true;
-    case(GUIEventAdapter::RESIZE):
+        case(GUIEventAdapter::RESIZE):
         {
             init(ea,us);
-            us.needRedraw();
+            us.requestRedraw();
         }
         return true;
-    default:
-        return false;
+        default:
+            return false;
     }
 }
+
 
 void DriveManipulator::flushMouseEventStack()
 {
@@ -327,7 +340,8 @@ void DriveManipulator::flushMouseEventStack()
     _ga_t0 = NULL;
 }
 
-void DriveManipulator::addMouseEvent(GUIEventAdapter& ea)
+
+void DriveManipulator::addMouseEvent(const GUIEventAdapter& ea)
 {
     _ga_t1 = _ga_t0;
     _ga_t0 = &ea;
@@ -341,24 +355,23 @@ bool DriveManipulator::calcMovement()
 
     float dt = _ga_t0->time()-_ga_t1->time();
 
-
     if (dt<0.0f)
     {
-	notify(WARN) << "warning dt = "<<dt<<endl;
-	dt = 0.0f;
+        notify(WARN) << "warning dt = "<<dt<<endl;
+        dt = 0.0f;
     }
 
     switch(_speedMode)
     {
         case(USE_MOUSE_Y_FOR_SPEED):
-        {    
+        {
             float my = (_ga_t0->getYmin()+_ga_t0->getYmax())/2.0f;
             float dy = _ga_t0->getY()-my;
             _velocity = -_modelScale*0.0002f*dy;
             break;
         }
         case(USE_MOUSE_BUTTONS_FOR_SPEED):
-        {    
+        {
             unsigned int buttonMask = _ga_t1->getButtonMask();
             if (buttonMask==GUIEventAdapter::LEFT_BUTTON)
             {
@@ -367,8 +380,8 @@ bool DriveManipulator::calcMovement()
                 _velocity += dt*_modelScale*0.02f;
 
             }
-            else if (buttonMask==GUIEventAdapter::MIDDLE_BUTTON || 
-                     buttonMask==(GUIEventAdapter::LEFT_BUTTON|GUIEventAdapter::RIGHT_BUTTON))
+            else if (buttonMask==GUIEventAdapter::MIDDLE_BUTTON ||
+                buttonMask==(GUIEventAdapter::LEFT_BUTTON|GUIEventAdapter::RIGHT_BUTTON))
             {
 
                 _velocity = 0.0f;
@@ -380,15 +393,14 @@ bool DriveManipulator::calcMovement()
                 _velocity -= dt*_modelScale*0.02f;
 
             }
-            break; 
+            break;
         }
     }
-
 
     // rotate the camera.
     osg::Vec3 center = _camera->getEyePoint();
     osg::Vec3 uv = _camera->getUpVector();
-    
+
     float mx = (_ga_t0->getXmin()+_ga_t0->getXmax())/2.0f;
 
     float dx = _ga_t0->getX()-mx;
@@ -402,13 +414,12 @@ bool DriveManipulator::calcMovement()
 
     center = _camera->getEyePoint();
     uv = _camera->getUpVector();
-    
-    _camera->mult(*_camera,mat);
 
+    _camera->transformLookAt(mat);
 
     // get the new forward (look) vector.
     osg::Vec3 sv = _camera->getSideVector();
-    osg::Vec3 lv = _camera->getLookPoint()-_camera->getEyePoint();
+    osg::Vec3 lv = _camera->getCenterPoint()-_camera->getEyePoint();
     float lookDistance = lv.length();
     lv.normalize();
 
@@ -424,9 +435,9 @@ bool DriveManipulator::calcMovement()
 
         // check to see if any obstruction in front.
         IntersectVisitor iv;
-        osg::ref_ptr<osg::Seg> segForward = new osg::Seg;
+        osg::ref_ptr<osg::LineSegment> segForward = new osg::LineSegment;
         segForward->set(ep,ep+lv*(signedBuffer+distanceToMove));
-        iv.addSeg(segForward.get());
+        iv.addLineSegment(segForward.get());
 
         _node->accept(iv);
 
@@ -435,7 +446,7 @@ bool DriveManipulator::calcMovement()
             osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segForward.get());
             if (!hitList.empty())
             {
-//                notify(INFO) << "Hit obstruction"<<endl;
+                //                notify(INFO) << "Hit obstruction"<<endl;
                 osg::Vec3 ip = hitList.front()._intersectPoint;
                 distanceToMove = (ip-ep).length()-_buffer;
                 _velocity = 0.0f;
@@ -443,16 +454,15 @@ bool DriveManipulator::calcMovement()
 
         }
 
-
         // check to see if forward point is correct height above terrain.
         osg::Vec3 fp = ep+lv*distanceToMove;
         osg::Vec3 lfp = fp-uv*_height*5;
 
         iv.reset();
-        
-        osg::ref_ptr<osg::Seg> segNormal = new osg::Seg;
+
+        osg::ref_ptr<osg::LineSegment> segNormal = new osg::LineSegment;
         segNormal->set(fp,lfp);
-        iv.addSeg(segNormal.get());
+        iv.addLineSegment(segNormal.get());
 
         _node->accept(iv);
 
@@ -461,7 +471,7 @@ bool DriveManipulator::calcMovement()
             osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segNormal.get());
             if (!hitList.empty())
             {
-//                notify(INFO) << "Hit terrain ok"<<endl;
+                //                notify(INFO) << "Hit terrain ok"<<endl;
                 osg::Vec3 ip = hitList.front()._intersectPoint;
                 osg::Vec3 np = hitList.front()._intersectNormal;
 
@@ -471,12 +481,12 @@ bool DriveManipulator::calcMovement()
                 ep = ip+uv*_height;
                 lv = uv^sv;
                 osg::Vec3 lp = ep+lv*lookDistance;
-                
-                _camera->setView(ep,lp,uv);
+
+                _camera->setLookAt(ep,lp,uv);
                 _camera->ensureOrthogonalUpVector();
 
                 return true;
-                
+
             }
 
         }
@@ -485,12 +495,12 @@ bool DriveManipulator::calcMovement()
         // under the influence of gravity.
         osg::Vec3 dp = lfp;
         dp.z() -= 2*_modelScale;
-    
+
         iv.reset();
-        
-        osg::ref_ptr<osg::Seg> segFall = new osg::Seg;
+
+        osg::ref_ptr<osg::LineSegment> segFall = new osg::LineSegment;
         segFall->set(lfp,dp);
-        iv.addSeg(segFall.get());
+        iv.addLineSegment(segFall.get());
 
         _node->accept(iv);
 
@@ -510,10 +520,10 @@ bool DriveManipulator::calcMovement()
                 ep = ip+uv*_height;
                 lv = uv^sv;
                 osg::Vec3 lp = ep+lv*lookDistance;
-                
-                _camera->setView(ep,lp,uv);
+
+                _camera->setLookAt(ep,lp,uv);
                 _camera->ensureOrthogonalUpVector();
-                
+
                 return true;
             }
         }
@@ -522,14 +532,12 @@ bool DriveManipulator::calcMovement()
 
         lv *= (_velocity*dt);
         ep += lv;
-        osg::Vec3 lp = _camera->getLookPoint()+lv;
+        osg::Vec3 lp = _camera->getCenterPoint()+lv;
 
-        _camera->setView(ep,lp,uv);
-        _camera->ensureOrthogonalUpVector();        
+        _camera->setLookAt(ep,lp,uv);
+        _camera->ensureOrthogonalUpVector();
 
     }
-
-
 
     return true;
 }

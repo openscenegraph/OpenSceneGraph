@@ -7,8 +7,13 @@
 namespace osgUtil{
 
 
-/** Pure virtual base class for adapting platform specfic events into
-    generic keyboard and mouse events. */
+/** Pure virtual base class for adapting platform specific events into
+  * generic keyboard and mouse events. 
+  *
+  * Used as GUI toolkit independent input into the osgUtil::CameraManipualor's.
+  * For an example of how GUIEventAdapter is specialised for a particular GUI
+  * Toolkit see osgGLUT::GLUTEventAdapter.
+  */
 class GUIEventAdapter : public osg::Referenced
 {
     public:
@@ -36,7 +41,7 @@ class GUIEventAdapter : public osg::Referenced
         /** Get the EventType of the GUI event.*/
         virtual EventType getEventType() const = 0;
 
-        /** key pressed, return -1 if inapropriate for this event. */
+        /** key pressed, return -1 if inappropriate for this event. */
         virtual int getKey() const = 0;
 
         /** button pressed/released, return -1 if inappropriate for this event.*/
@@ -69,7 +74,7 @@ class GUIEventAdapter : public osg::Referenced
 
     protected:
     
-        /** Force users to create on heap, so that mulitple referencing is safe.*/
+        /** Force users to create on heap, so that multiple referencing is safe.*/
         virtual ~GUIEventAdapter() {}
 
 };

@@ -1,27 +1,26 @@
 // Ideas and code borrowed from GLUT pointburst demo
-// written by Mark J. Kilgard 
+// written by Mark J. Kilgard
 
 #ifdef WIN32
 #include <windows.h>
 #endif
 
 #include "osg/GL"
+#include "osg/GLExtensions"
 #include "osg/Point"
-#include "osg/ExtensionSupported"
-#include "osg/Input"
-#include "osg/Output"
-
+#include "osg/Notify"
 
 using namespace osg;
 
+// if extensions not defined by gl.h (or via glext.h) define them
+// ourselves and allow the extensions to detectd at runtine using
+// osg::isGLExtensionSupported().
 #if defined(GL_SGIS_point_parameters) && !defined(GL_EXT_point_parameters)
 /* Use the EXT point parameters interface for the SGIS implementation. */
 #  define GL_POINT_SIZE_MIN_EXT GL_POINT_SIZE_MIN_SGIS
 #  define GL_POINT_SIZE_MAX_EXT GL_POINT_SIZE_MAX_SGIS
 #  define GL_POINT_FADE_THRESHOLD_SIZE_EXT GL_POINT_FADE_THRESHOLD_SIZE_SGIS
 #  define GL_DISTANCE_ATTENUATION_EXT GL_DISTANCE_ATTENUATION_SGIS
-#  define glPointParameterfEXT glPointParameterfSGIS
-#  define glPointParameterfvEXT glPointParameterfvSGIS
 #  define GL_EXT_point_parameters 1
 #endif
 
@@ -30,91 +29,73 @@ using namespace osg;
 #  define GL_POINT_SIZE_MAX_EXT               0x8127
 #  define GL_POINT_FADE_THRESHOLD_SIZE_EXT    0x8128
 #  define GL_DISTANCE_ATTENUATION_EXT         0x8129
-#  ifdef _WIN32
-     // Curse Microsoft for the insanity of wglGetProcAddress.
-     typedef void (APIENTRY * PFNGLPOINTPARAMETERFEXTPROC) (GLenum pname, GLfloat param);
-     typedef void (APIENTRY * PFNGLPOINTPARAMETERFVEXTPROC) (GLenum pname, const GLfloat *params);
-#    define GL_EXT_point_parameters 1
-#  endif
+#  define GL_EXT_point_parameters 1
 #endif
 
-#ifdef _WIN32
-  PFNGLPOINTPARAMETERFEXTPROC glPointParameterfEXT;
-  PFNGLPOINTPARAMETERFVEXTPROC glPointParameterfvEXT;
+#ifndef PFNGLPOINTPARAMETERFEXTPROC
+typedef void (APIENTRY * PFNGLPOINTPARAMETERFEXTPROC) (GLenum pname, GLfloat param);
+#endif
+#ifndef PFNGLPOINTPARAMETERFVEXTPROC
+typedef void (APIENTRY * PFNGLPOINTPARAMETERFVEXTPROC) (GLenum pname, const GLfloat *params);
 #endif
 
-static int  s_hasPointParameters;
+PFNGLPOINTPARAMETERFEXTPROC s_PointParameterfEXT = NULL;
+PFNGLPOINTPARAMETERFVEXTPROC s_PointParameterfvEXT = NULL;
 
-
-Point::Point( void )
+Point::Point()
 {
-    _size = 1.0f;                                       // TODO find proper default
-    _fadeThresholdSize = 1.0f;                           // TODO find proper default
-    _distanceAttenuation = Vec3(0.0f, 1.0f/5.f, 0.0f);  // TODO find proper default
+    _size = 1.0f;                // TODO find proper default
+    _fadeThresholdSize = 1.0f;   // TODO find proper default
+                                 // TODO find proper default
+    _distanceAttenuation = Vec3(0.0f, 1.0f/5.f, 0.0f);
 }
 
 
-Point::~Point( void )
+Point::~Point()
 {
 }
-
-
-Point* Point::instance()
-{
-    static ref_ptr<Point> s_point(new Point);
-    return s_point.get();
-}
-
 
 void Point::init_GL_EXT()
 {
-    s_hasPointParameters = 
-                ExtensionSupported("GL_SGIS_point_parameters") ||
-                ExtensionSupported("GL_EXT_point_parameters");
-#ifdef _WIN32
-    if (s_hasPointParameters)
+    if (isGLExtensionSupported("GL_EXT_point_parameters"))
     {
-        glPointParameterfEXT = (PFNGLPOINTPARAMETERFEXTPROC)
-        wglGetProcAddress("glPointParameterfEXT");
-        glPointParameterfvEXT = (PFNGLPOINTPARAMETERFVEXTPROC)
-        wglGetProcAddress("glPointParameterfvEXT");
+        s_PointParameterfEXT = (PFNGLPOINTPARAMETERFEXTPROC)
+            getGLExtensionFuncPtr("glPointParameterfEXT");
+        s_PointParameterfvEXT = (PFNGLPOINTPARAMETERFVEXTPROC)
+            getGLExtensionFuncPtr("glPointParameterfvEXT");
     }
-#endif
+    else if (isGLExtensionSupported("GL_SGIS_point_parameters"))
+    {
+        s_PointParameterfEXT = (PFNGLPOINTPARAMETERFEXTPROC)
+            getGLExtensionFuncPtr("glPointParameterfSGIS");
+        s_PointParameterfvEXT = (PFNGLPOINTPARAMETERFVEXTPROC)
+            getGLExtensionFuncPtr("glPointParameterfvSGIS");
+    }
+
 }
 
-
-void Point::enableSmooth( void )
-{
-    glEnable( GL_POINT_SMOOTH );
-}
-
-
-void Point::disableSmooth( void )
-{
-    glDisable( GL_POINT_SMOOTH );
-}
-
-
-void Point::setSize( float size )
+void Point::setSize( const float size )
 {
     _size = size;
 }
 
-void Point::setFadeThresholdSize(float fadeThresholdSize)
+
+void Point::setFadeThresholdSize(const float fadeThresholdSize)
 {
     _fadeThresholdSize = fadeThresholdSize;
 }
+
 
 void Point::setDistanceAttenuation(const Vec3& distanceAttenuation)
 {
     _distanceAttenuation = distanceAttenuation;
 }
 
-void Point::apply( void )
+
+void Point::apply(State&) const
 {
     glPointSize(_size);
 
-#if GL_EXT_point_parameters
     static bool s_gl_ext_init=false;
 
     if (!s_gl_ext_init)
@@ -123,56 +104,8 @@ void Point::apply( void )
         init_GL_EXT();
     }
 
-    if (s_hasPointParameters)
-    {
-        glPointParameterfvEXT(GL_DISTANCE_ATTENUATION_EXT, (const GLfloat*)&_distanceAttenuation);
-        glPointParameterfEXT(GL_POINT_FADE_THRESHOLD_SIZE_EXT, _fadeThresholdSize);
-    }
-#endif
+    if (s_PointParameterfvEXT) s_PointParameterfvEXT(GL_DISTANCE_ATTENUATION_EXT, (const GLfloat*)&_distanceAttenuation);
+    if (s_PointParameterfEXT) s_PointParameterfEXT(GL_POINT_FADE_THRESHOLD_SIZE_EXT, _fadeThresholdSize);
+
 }
-
-
-bool Point::readLocalData(Input& fr)
-{
-    bool iteratorAdvanced = false;
-
-    float data;
-    if (fr[0].matchWord("size") && fr[1].getFloat(data))
-    {
-
-        _size = data;
-        fr+=2;
-        iteratorAdvanced = true;
-    }
-
-    if (fr[0].matchWord("fade_threshold_size") && fr[1].getFloat(data))
-    {
-
-        _fadeThresholdSize = data;
-        fr+=2;
-        iteratorAdvanced = true;
-    }
-
-    Vec3 distAtten;
-    if (fr[0].matchWord("distance_attenuation") &&
-        fr[1].getFloat(distAtten[0]) && fr[2].getFloat(distAtten[1]) && fr[3].getFloat(distAtten[2]))
-    {
-
-        _distanceAttenuation = distAtten;
-        fr+=4;
-        iteratorAdvanced = true;
-    }
-
-    return iteratorAdvanced;
-}
-
-
-bool Point::writeLocalData(Output& fw)
-{
-    fw.indent() << "size " << _size << endl;
-    fw.indent() << "fade_threshold_size  " << _fadeThresholdSize << endl;
-    fw.indent() << "distance_attenuation  " << _distanceAttenuation << endl;
-    return true;
-}
-
 

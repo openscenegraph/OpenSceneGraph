@@ -1,0 +1,72 @@
+#ifndef OSGDB_DOTOSGWRAPPER
+#define OSGDB_DOTOSGWRAPPER 1
+
+#include <osg/ref_ptr>
+#include <osg/Object>
+
+#include <osgDB/Input>
+#include <osgDB/Output>
+
+#include <string>
+#include <vector>
+//#include <stdlib.h>
+
+namespace osgDB {
+
+
+/** Wrapper class for specifing read and write functions for extending
+  * the .osg file format. */ 
+class OSGDB_EXPORT DotOsgWrapper : public osg::Referenced
+{
+    public:
+
+        typedef std::vector<std::string> Associates;
+        typedef bool (*ReadFunc)(osg::Object&,osgDB::Input&);
+        typedef bool (*WriteFunc)(const osg::Object&,osgDB::Output&);
+        
+        enum ReadWriteMode
+        {
+            READ_AND_WRITE,
+            READ_ONLY
+        };
+
+        DotOsgWrapper(osg::Object* proto,
+                      const std::string& name,
+                      const std::string& associates,
+                      ReadFunc readFunc,
+                      WriteFunc writeFunc,
+                      ReadWriteMode readWriteMode=READ_AND_WRITE);
+                      
+
+        inline const osg::Object* getPrototype() const { return _prototype.get(); }
+        inline const std::string& getName() const      { return _name; }
+        inline const Associates& getAssociates() const { return _associates; }
+        inline ReadFunc getReadFunc() const            { return _readFunc; }
+        inline WriteFunc getWriteFunc() const          { return _writeFunc; }
+        inline ReadWriteMode getReadWriteMode() const  { return _readWriteMode; }
+
+    protected:
+
+        /// protected to prevent inappropriate creation of wrappers.
+        DotOsgWrapper() {}
+
+        /// protected to prevent inappropriate creation of wrappers.
+        DotOsgWrapper(DotOsgWrapper&):osg::Referenced() {}
+
+        /// protected to prevent wrapper being created on stack.
+        virtual ~DotOsgWrapper() {}
+
+        osg::ref_ptr<osg::Object>   _prototype;
+        
+        std::string                 _name;
+        Associates                  _associates;
+        
+        ReadFunc                    _readFunc;
+        WriteFunc                   _writeFunc;
+
+        ReadWriteMode               _readWriteMode;
+};
+
+};
+
+#endif 

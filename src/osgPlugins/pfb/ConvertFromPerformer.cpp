@@ -1,19 +1,22 @@
 #include "ConvertFromPerformer.h"
 
-#include <osg/Scene>
 #include <osg/Group>
-#include <osg/DCS>
+#include <osg/Transform>
 #include <osg/LOD>
 #include <osg/Switch>
-#include <osg/Sequence>
 #include <osg/Geode>
 #include <osg/Billboard>
 #include <osg/Texture>
 #include <osg/Image>
 #include <osg/CullFace>
-#include <osg/FileNameUtils>
-#include <osg/Registry>
+#include <osg/TexGen>
+#include <osg/TexMat>
+#include <osg/Material>
 #include <osg/Notify>
+
+#include <osgDB/FileNameUtils>
+#include <osgDB/Registry>
+#include <osgDB/WriteFile>
 
 #include <Performer/pf/pfNode.h>
 #include <Performer/pf/pfGeode.h>
@@ -39,18 +42,20 @@ using namespace std;
 extern "C"
 {
 
-extern int
-pfdStoreFile_osg (pfNode* root, char *fileName)
-{
-    ConvertFromPerformer converter;
-    osg::Node* node =  converter.convert(root);
-    
-    if (node==NULL) return 0;
-    if (osg::saveNodeFile(*node,fileName)) return 1;
-    else return 0;
-}
+    extern int
+        pfdStoreFile_osg (pfNode* root, char *fileName)
+    {
+        ConvertFromPerformer converter;
+        osg::Node* node =  converter.convert(root);
+
+        if (node==NULL) return 0;
+        if (osgDB::writeNodeFile(*node,fileName)) return 1;
+        else return 0;
+    }
 
 };
+
+
 ConvertFromPerformer::ConvertFromPerformer()
 {
     _osgRoot = NULL;
@@ -73,29 +78,11 @@ ConvertFromPerformer::ConvertFromPerformer()
     _gsetBindMap[PFGS_PER_PRIM] = osg::GeoSet::BIND_PERPRIM;
     _gsetBindMap[PFGS_PER_VERTEX] = osg::GeoSet::BIND_PERVERTEX;
 
-              
-    _gstateTypeMap[PFSTATE_TRANSPARENCY] = osg::GeoState::TRANSPARENCY;
-    _gstateTypeMap[PFSTATE_ANTIALIAS] = osg::GeoState::ANTIALIAS;
-    _gstateTypeMap[PFSTATE_ENLIGHTING] = osg::GeoState::LIGHTING;
-    _gstateTypeMap[PFSTATE_ENTEXTURE] = osg::GeoState::TEXTURE;
-    _gstateTypeMap[PFSTATE_ENFOG] = osg::GeoState::FOG;
-    _gstateTypeMap[PFSTATE_CULLFACE] = osg::GeoState::FACE_CULL;
-    _gstateTypeMap[PFSTATE_ENWIREFRAME] = osg::GeoState::WIREFRAME;
-    _gstateTypeMap[PFSTATE_ENTEXGEN] = osg::GeoState::TEXGEN;
-    _gstateTypeMap[PFSTATE_ENTEXMAT] = osg::GeoState::TEXMAT;
-
-//  not currently supported under the OSG.
-//     _gstateTypeMap[PFSTATE_DECAL] = ;
-//     _gstateTypeMap[PFSTATE_ENTEXLOD] = ;
-//     _gstateTypeMap[PFSTATE_ALPHAFUNC] = ;
-//     _gstateTypeMap[PFSTATE_ENCOLORTABLE] = ;
-//     _gstateTypeMap[PFSTATE_ENHIGHLIGHTING] = ;
-//     _gstateTypeMap[PFSTATE_ENLPOINTSTATE] = ;
-
     _saveImagesAsRGB = false;
     _saveAbsoluteImagePath = false;
 
 }
+
 
 ConvertFromPerformer::~ConvertFromPerformer()
 {
@@ -114,16 +101,18 @@ osg::Object* ConvertFromPerformer::getOsgObject(pfObject* pfObj)
     PfObjectToOsgObjectMap::iterator fitr = _pfToOsgMap.find(pfObj);
     if (fitr != _pfToOsgMap.end())
     {
-//         osg::notify(DEBUG) << "Found shared object"<<endl;
+        //         osg::notify(DEBUG) << "Found shared object"<<endl;
         return (*fitr).second;
     }
     else return NULL;
 }
 
+
 void ConvertFromPerformer::regisiterPfObjectForOsgObject(pfObject* pfObj,osg::Object* osgObj)
 {
     _pfToOsgMap[pfObj] = osgObj;
 }
+
 
 osg::Node* ConvertFromPerformer::visitNode(osg::Group* osgParent,pfNode* node)
 {
@@ -142,16 +131,17 @@ osg::Node* ConvertFromPerformer::visitNode(osg::Group* osgParent,pfNode* node)
     return NULL;
 }
 
+
 osg::Node* ConvertFromPerformer::visitScene(osg::Group* osgParent,pfScene* scene)
 {
-    osg::Scene* osgScene = dynamic_cast<osg::Scene*>(getOsgObject(scene));
+    osg::Group* osgScene = dynamic_cast<osg::Group*>(getOsgObject(scene));
     if (osgScene)
     {
         if (osgParent) osgParent->addChild(osgScene);
         return osgScene;
     }
 
-    osgScene = new osg::Scene;
+    osgScene = new osg::Group;
     if (osgParent) osgParent->addChild(osgScene);
 
     regisiterPfObjectForOsgObject(scene,osgScene);
@@ -165,6 +155,7 @@ osg::Node* ConvertFromPerformer::visitScene(osg::Group* osgParent,pfScene* scene
     }
     return (osg::Node*)osgScene;
 }
+
 
 osg::Node* ConvertFromPerformer::visitGroup(osg::Group* osgParent,pfGroup* group)
 {
@@ -189,6 +180,7 @@ osg::Node* ConvertFromPerformer::visitGroup(osg::Group* osgParent,pfGroup* group
     }
     return (osg::Node*)osgGroup;
 }
+
 
 osg::Node* ConvertFromPerformer::visitLOD(osg::Group* osgParent,pfLOD* lod)
 {
@@ -226,6 +218,7 @@ osg::Node* ConvertFromPerformer::visitLOD(osg::Group* osgParent,pfLOD* lod)
 
 }
 
+
 osg::Node* ConvertFromPerformer::visitSwitch(osg::Group* osgParent,pfSwitch* switchNode)
 {
     osg::Switch* osgSwitch = dynamic_cast<osg::Switch*>(getOsgObject(switchNode));
@@ -246,15 +239,15 @@ osg::Node* ConvertFromPerformer::visitSwitch(osg::Group* osgParent,pfSwitch* swi
     float val = switchNode->getVal();
     if (val==PFSWITCH_ON)
     {
-        osgSwitch->setVal(osg::Switch::ALL_CHILDREN_ON);
+        osgSwitch->setValue(osg::Switch::ALL_CHILDREN_ON);
     }
     else if (val==PFSWITCH_OFF)
     {
-        osgSwitch->setVal(osg::Switch::ALL_CHILDREN_OFF);
+        osgSwitch->setValue(osg::Switch::ALL_CHILDREN_OFF);
     }
     else
     {
-        osgSwitch->setVal((int)val);
+        osgSwitch->setValue((int)val);
     }
 
     for(int i=0;i<switchNode->getNumChildren();++i)
@@ -264,19 +257,32 @@ osg::Node* ConvertFromPerformer::visitSwitch(osg::Group* osgParent,pfSwitch* swi
     return (osg::Node*)osgSwitch;
 }
 
+
 osg::Node* ConvertFromPerformer::visitSequence(osg::Group* osgParent,pfSequence* sequence)
 {
-    osg::Sequence* osgSequence = dynamic_cast<osg::Sequence*>(getOsgObject(sequence));
+
+    osg::notify(osg::WARN)<<"Warning : cannot convert pfSequence as no osg::Sequence exists, using osg::Switch instead."<<endl;
+
+    osg::Switch* osgSequence = dynamic_cast<osg::Switch*>(getOsgObject(sequence));
     if (osgSequence)
     {
         if (osgParent) osgParent->addChild(osgSequence);
         return osgSequence;
     }
 
-    osgSequence = new osg::Sequence;
+    osgSequence = new osg::Switch;
     if (osgParent) osgParent->addChild(osgSequence);
 
     regisiterPfObjectForOsgObject(sequence,osgSequence);
+
+    if (sequence->getNumChildren()>0)
+    {
+        // set switch to first child as a 'hack' to prevent all
+        // children being traversed during rendering.  Note,
+        // once osg::Sequence has been implemented this can all
+        // be removed.
+        osgSequence->setValue(0);
+    }
 
     for(int i=0;i<sequence->getNumChildren();++i)
     {
@@ -285,74 +291,77 @@ osg::Node* ConvertFromPerformer::visitSequence(osg::Group* osgParent,pfSequence*
     return (osg::Node*)osgSequence;
 }
 
+
 osg::Node* ConvertFromPerformer::visitDCS(osg::Group* osgParent,pfDCS* dcs)
 {
 
-    osg::DCS* osgDCS = dynamic_cast<osg::DCS*>(getOsgObject(dcs));
-    if (osgDCS)
+    osg::Transform* osgTransform = dynamic_cast<osg::Transform*>(getOsgObject(dcs));
+    if (osgTransform)
     {
-        if (osgParent) osgParent->addChild(osgDCS);
-        return osgDCS;
+        if (osgParent) osgParent->addChild(osgTransform);
+        return osgTransform;
     }
 
-    osgDCS = new osg::DCS;
-    if (osgParent) osgParent->addChild(osgDCS);
+    osgTransform = new osg::Transform;
+    if (osgParent) osgParent->addChild(osgTransform);
 
-    regisiterPfObjectForOsgObject(dcs,osgDCS);
+    regisiterPfObjectForOsgObject(dcs,osgTransform);
 
     const char* name = dcs->getName();
-    if (name) osgDCS->setName(name);
+    if (name) osgTransform->setName(name);
 
     pfMatrix matrix;
     dcs->getMat(matrix);
 
     osg::Matrix osgMatrix(matrix[0][0],matrix[0][1],matrix[0][2],matrix[0][3],
-                          matrix[1][0],matrix[1][1],matrix[1][2],matrix[1][3],
-                          matrix[2][0],matrix[2][1],matrix[2][2],matrix[2][3],
-                          matrix[3][0],matrix[3][1],matrix[3][2],matrix[3][3]);
+        matrix[1][0],matrix[1][1],matrix[1][2],matrix[1][3],
+        matrix[2][0],matrix[2][1],matrix[2][2],matrix[2][3],
+        matrix[3][0],matrix[3][1],matrix[3][2],matrix[3][3]);
 
-    osgDCS->setMatrix(osgMatrix);
+    osgTransform->setMatrix(osgMatrix);
 
     for(int i=0;i<dcs->getNumChildren();++i)
     {
-        visitNode(osgDCS,dcs->getChild(i));
+        visitNode(osgTransform,dcs->getChild(i));
     }
-    return (osg::Node*)osgDCS;
+    return (osg::Node*)osgTransform;
 }
+
 
 osg::Node* ConvertFromPerformer::visitSCS(osg::Group* osgParent,pfSCS* scs)
 {
     // note the OSG does not currently have a SCS, so use DCS instead.
-    osg::DCS* osgDCS = dynamic_cast<osg::DCS*>(getOsgObject(scs));
-    if (osgDCS)
+    osg::Transform* osgTransform = dynamic_cast<osg::Transform*>(getOsgObject(scs));
+    if (osgTransform)
     {
-        if (osgParent) osgParent->addChild(osgDCS);
-        return osgDCS;
+        if (osgParent) osgParent->addChild(osgTransform);
+        return osgTransform;
     }
 
-    osgDCS = new osg::DCS;
-    if (osgParent) osgParent->addChild(osgDCS);
+    osgTransform = new osg::Transform;
+    if (osgParent) osgParent->addChild(osgTransform);
 
-    regisiterPfObjectForOsgObject(scs,osgDCS);
+    regisiterPfObjectForOsgObject(scs,osgTransform);
 
     const char* name = scs->getName();
-    if (name) osgDCS->setName(name);
+    if (name) osgTransform->setName(name);
 
     pfMatrix matrix;
     scs->getMat(matrix);
     osg::Matrix osgMatrix(matrix[0][0],matrix[0][1],matrix[0][2],matrix[0][3],
-                          matrix[1][0],matrix[1][1],matrix[1][2],matrix[1][3],
-                          matrix[2][0],matrix[2][1],matrix[2][2],matrix[2][3],
-                          matrix[3][0],matrix[3][1],matrix[3][2],matrix[3][3]);
+        matrix[1][0],matrix[1][1],matrix[1][2],matrix[1][3],
+        matrix[2][0],matrix[2][1],matrix[2][2],matrix[2][3],
+        matrix[3][0],matrix[3][1],matrix[3][2],matrix[3][3]);
 
-    osgDCS->setMatrix(osgMatrix);
+    osgTransform->setMatrix(osgMatrix);
 
     for(int i=0;i<scs->getNumChildren();++i)
     {
-        visitNode(osgDCS,scs->getChild(i));
+        visitNode(osgTransform,scs->getChild(i));
     }
-    return (osg::Node*)osgDCS;
+    return (osg::Node*)osgTransform;
 }
+
 
 osg::Node* ConvertFromPerformer::visitGeode(osg::Group* osgParent,pfGeode* geode)
 {
@@ -379,9 +388,10 @@ osg::Node* ConvertFromPerformer::visitGeode(osg::Group* osgParent,pfGeode* geode
     return (osg::Node*)osgGeode;
 }
 
+
 osg::Node* ConvertFromPerformer::visitBillboard(osg::Group* osgParent,pfBillboard* billboard)
 {
-//    return NULL;
+    //    return NULL;
 
     osg::Billboard* osgBillboard = dynamic_cast<osg::Billboard*>(getOsgObject(billboard));
     if (osgBillboard)
@@ -404,7 +414,8 @@ osg::Node* ConvertFromPerformer::visitBillboard(osg::Group* osgParent,pfBillboar
 
     for(int i=0;i<billboard->getNumGSets();++i)
     {
-        /* osg::GeoSet* osggset = */visitGeoSet(osgBillboard,billboard->getGSet(i));
+                                 /* osg::GeoSet* osggset = */
+        visitGeoSet(osgBillboard,billboard->getGSet(i));
         pfVec3 pos;
         billboard->getPos(i,pos);
         osgBillboard->setPos(i,osg::Vec3(pos[0],pos[1],pos[2]));
@@ -412,6 +423,7 @@ osg::Node* ConvertFromPerformer::visitBillboard(osg::Group* osgParent,pfBillboar
 
     return (osg::Node*)osgBillboard;
 }
+
 
 int ConvertFromPerformer::getNumVerts(pfGeoSet *gset)
 {
@@ -454,9 +466,9 @@ int ConvertFromPerformer::getNumVerts(pfGeoSet *gset)
 
     }
 
-
     return nv;
 }
+
 
 osg::GeoSet* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* geoset)
 {
@@ -465,12 +477,12 @@ osg::GeoSet* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* ge
     osg::GeoSet* osgGeoSet = dynamic_cast<osg::GeoSet*>(getOsgObject(geoset));
     if (osgGeoSet)
     {
-        if (osgGeode) osgGeode->addGeoSet(osgGeoSet);
+        if (osgGeode) osgGeode->addDrawable(osgGeoSet);
         return osgGeoSet;
     }
 
     osgGeoSet = new osg::GeoSet;
-    if (osgGeode) osgGeode->addGeoSet(osgGeoSet);
+    if (osgGeode) osgGeode->addDrawable(osgGeoSet);
 
     regisiterPfObjectForOsgObject(geoset,osgGeoSet);
 
@@ -520,7 +532,6 @@ osg::GeoSet* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* ge
         else
             cc = nv;
 
-
         osg::Vec3* osg_coords = new osg::Vec3 [cc];
         for( i = 0; i < cc; i++ )
         {
@@ -553,10 +564,10 @@ osg::GeoSet* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* ge
     {
         int bind = geoset->getAttrBind( PFGS_NORMAL3 );
         int nn = bind == PFGS_OFF ? 0 :
-                 bind == PFGS_OVERALL ? 1 :
-                 bind == PFGS_PER_PRIM ? geoset->getNumPrims() :
-                 bind == PFGS_PER_VERTEX ? nv-flat_shaded_offset : 0;
-                 
+        bind == PFGS_OVERALL ? 1 :
+        bind == PFGS_PER_PRIM ? geoset->getNumPrims() :
+        bind == PFGS_PER_VERTEX ? nv-flat_shaded_offset : 0;
+
         // set the normal binding type.
         osgGeoSet->setNormalBinding(_gsetBindMap[bind]);
 
@@ -571,7 +582,6 @@ osg::GeoSet* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* ge
         }
         else
             cc = nn;
-
 
         osg::Vec3* osg_norms = new osg::Vec3 [cc];
         for( i = 0; i < cc; i++ )
@@ -605,9 +615,9 @@ osg::GeoSet* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* ge
     {
         int bind = geoset->getAttrBind( PFGS_TEXCOORD2 );
         int nn = bind == PFGS_OFF ? 0 :
-                 bind == PFGS_OVERALL ? 1 :
-                 bind == PFGS_PER_PRIM ? geoset->getNumPrims() :
-                 bind == PFGS_PER_VERTEX ? nv : 0;
+        bind == PFGS_OVERALL ? 1 :
+        bind == PFGS_PER_PRIM ? geoset->getNumPrims() :
+        bind == PFGS_PER_VERTEX ? nv : 0;
 
         // set the normal binding type.
         osgGeoSet->setTextureBinding(_gsetBindMap[bind]);
@@ -623,7 +633,6 @@ osg::GeoSet* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* ge
         }
         else
             cc = nn;
-
 
         osg::Vec2* osg_tcoords = new osg::Vec2 [cc];
         for( i = 0; i < cc; i++ )
@@ -656,9 +665,9 @@ osg::GeoSet* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* ge
     {
         int bind = geoset->getAttrBind( PFGS_COLOR4 );
         int nn = bind == PFGS_OFF ? 0 :
-                 bind == PFGS_OVERALL ? 1 :
-                 bind == PFGS_PER_PRIM ? geoset->getNumPrims() :
-                 bind == PFGS_PER_VERTEX ? nv-flat_shaded_offset : 0;
+        bind == PFGS_OVERALL ? 1 :
+        bind == PFGS_PER_PRIM ? geoset->getNumPrims() :
+        bind == PFGS_PER_VERTEX ? nv-flat_shaded_offset : 0;
 
         // set the normal binding type.
         osgGeoSet->setColorBinding(_gsetBindMap[bind]);
@@ -674,7 +683,6 @@ osg::GeoSet* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* ge
         }
         else
             cc = nn;
-
 
         osg::Vec4* osg_colors = new osg::Vec4 [cc];
         for( i = 0; i < cc; i++ )
@@ -704,313 +712,326 @@ osg::GeoSet* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* ge
     return osgGeoSet;
 }
 
-osg::GeoState* ConvertFromPerformer::visitGeoState(osg::GeoSet* osgGeoSet,pfGeoState* geostate)
+
+osg::StateSet* ConvertFromPerformer::visitGeoState(osg::GeoSet* osgGeoSet,pfGeoState* geostate)
 {
     if (geostate==NULL) return NULL;
 
-    osg::GeoState* osgGeoState = dynamic_cast<osg::GeoState*>(getOsgObject(geostate));
-    if (osgGeoState)
+    osg::StateSet* osgStateSet = dynamic_cast<osg::StateSet*>(getOsgObject(geostate));
+    if (osgStateSet)
     {
-        if (osgGeoSet) osgGeoSet->setGeoState(osgGeoState);
-        return osgGeoState;
+        if (osgGeoSet) osgGeoSet->setStateSet(osgStateSet);
+        return osgStateSet;
     }
 
-    osgGeoState = new osg::GeoState;
-    if (osgGeoSet) osgGeoSet->setGeoState(osgGeoState);
+    osgStateSet = new osg::StateSet;
+    if (osgGeoSet) osgGeoSet->setStateSet(osgStateSet);
 
-    regisiterPfObjectForOsgObject(geostate,osgGeoState);
-
+    regisiterPfObjectForOsgObject(geostate,osgStateSet);
 
     // Don could you fill in some of these blanks???
     unsigned int inherit = geostate->getInherit();
-//     osg::notify(DEBUG) << endl << "Inherit = "<<inherit<<endl;
-//     if (inherit & PFSTATE_TRANSPARENCY) osg::notify(DEBUG) << "Inherit PFSTATE_TRANSPARENCY"<<endl;
-//     else osg::notify(DEBUG) << "Define PFSTATE_TRANSPARENCY"<<endl;
-//     if (inherit & PFSTATE_ENTEXTURE) osg::notify(DEBUG) << "Inherit PFSTATE_ENTEXTURE"<<endl;
-//     else osg::notify(DEBUG) << "Define PFSTATE_ENTEXTURE"<<endl;
-//     if (inherit & PFSTATE_CULLFACE) osg::notify(DEBUG) << "Inherit PFSTATE_CULLFACE"<<endl;
-//     else osg::notify(DEBUG) << "Define PFSTATE_CULLFACE"<<endl;
-//     if (inherit & PFSTATE_ENLIGHTING) osg::notify(DEBUG) << "Inherit PFSTATE_ENLIGHTING"<<endl;
-//     else osg::notify(DEBUG) << "Define PFSTATE_ENLIGHTING"<<endl;
-//     if (inherit & PFSTATE_ENFOG) osg::notify(DEBUG) << "Inherit PFSTATE_ENFOG"<<endl;
-//     else osg::notify(DEBUG) << "Define PFSTATE_ENFOG"<<endl;
-//     if (inherit & PFSTATE_ENWIREFRAME) osg::notify(DEBUG) << "Inherit PFSTATE_ENWIREFRAME"<<endl;
-//     else osg::notify(DEBUG) << "Define PFSTATE_ENWIREFRAME"<<endl;
-//     if (inherit & PFSTATE_ENTEXMAT) osg::notify(DEBUG) << "Inherit PFSTATE_ENTEXMAT"<<endl;
-//     else osg::notify(DEBUG) << "Define PFSTATE_ENTEXMAT"<<endl;
-//     if (inherit & PFSTATE_ENTEXGEN) osg::notify(DEBUG) << "Inherit PFSTATE_ENTEXGEN"<<endl;
-//     else osg::notify(DEBUG) << "Define PFSTATE_ENTEXGEN"<<endl;
-// 
-//     if (inherit & PFSTATE_ANTIALIAS) osg::notify(DEBUG) << "Inherit PFSTATE_ANTIALIAS"<<endl;
-//     else osg::notify(DEBUG) << "Define PFSTATE_ANTIALIAS"<<endl;
-//     if (inherit & PFSTATE_DECAL) osg::notify(DEBUG) << "Inherit PFSTATE_DECAL"<<endl;
-//     else osg::notify(DEBUG) << "Define PFSTATE_DECAL"<<endl;
-//     if (inherit & PFSTATE_ALPHAFUNC) osg::notify(DEBUG) << "Inherit PFSTATE_ALPHAFUNC"<<endl;
-//     else osg::notify(DEBUG) << "Define PFSTATE_ALPHAFUNC"<<endl;
-//     if (inherit & PFSTATE_ENCOLORTABLE) osg::notify(DEBUG) << "Inherit PFSTATE_ENCOLORTABLE"<<endl;
-//     else osg::notify(DEBUG) << "Define PFSTATE_ENCOLORTABLE"<<endl;
-//     if (inherit & PFSTATE_ENHIGHLIGHTING) osg::notify(DEBUG) << "Inherit PFSTATE_ENHIGHLIGHTING"<<endl;
-//     else osg::notify(DEBUG) << "Define PFSTATE_ENHIGHLIGHTING"<<endl;
-//     if (inherit & PFSTATE_ENLPOINTSTATE) osg::notify(DEBUG) << "Inherit PFSTATE_ENLPOINTSTATE"<<endl;
-//     else osg::notify(DEBUG) << "Define PFSTATE_ENLPOINTSTATE"<<endl;
-//     if (inherit & PFSTATE_ENTEXLOD) osg::notify(DEBUG) << "Inherit PFSTATE_ENTEXLOD"<<endl;
-//     else osg::notify(DEBUG) << "Define PFSTATE_ENTEXLOD"<<endl;
+    //     osg::notify(DEBUG) << endl << "Inherit = "<<inherit<<endl;
+    //     if (inherit & PFSTATE_TRANSPARENCY) osg::notify(DEBUG) << "Inherit PFSTATE_TRANSPARENCY"<<endl;
+    //     else osg::notify(DEBUG) << "Define PFSTATE_TRANSPARENCY"<<endl;
+    //     if (inherit & PFSTATE_ENTEXTURE) osg::notify(DEBUG) << "Inherit PFSTATE_ENTEXTURE"<<endl;
+    //     else osg::notify(DEBUG) << "Define PFSTATE_ENTEXTURE"<<endl;
+    //     if (inherit & PFSTATE_CULLFACE) osg::notify(DEBUG) << "Inherit PFSTATE_CULLFACE"<<endl;
+    //     else osg::notify(DEBUG) << "Define PFSTATE_CULLFACE"<<endl;
+    //     if (inherit & PFSTATE_ENLIGHTING) osg::notify(DEBUG) << "Inherit PFSTATE_ENLIGHTING"<<endl;
+    //     else osg::notify(DEBUG) << "Define PFSTATE_ENLIGHTING"<<endl;
+    //     if (inherit & PFSTATE_ENFOG) osg::notify(DEBUG) << "Inherit PFSTATE_ENFOG"<<endl;
+    //     else osg::notify(DEBUG) << "Define PFSTATE_ENFOG"<<endl;
+    //     if (inherit & PFSTATE_ENWIREFRAME) osg::notify(DEBUG) << "Inherit PFSTATE_ENWIREFRAME"<<endl;
+    //     else osg::notify(DEBUG) << "Define PFSTATE_ENWIREFRAME"<<endl;
+    //     if (inherit & PFSTATE_ENTEXMAT) osg::notify(DEBUG) << "Inherit PFSTATE_ENTEXMAT"<<endl;
+    //     else osg::notify(DEBUG) << "Define PFSTATE_ENTEXMAT"<<endl;
+    //     if (inherit & PFSTATE_ENTEXGEN) osg::notify(DEBUG) << "Inherit PFSTATE_ENTEXGEN"<<endl;
+    //     else osg::notify(DEBUG) << "Define PFSTATE_ENTEXGEN"<<endl;
+    //
+    //     if (inherit & PFSTATE_ANTIALIAS) osg::notify(DEBUG) << "Inherit PFSTATE_ANTIALIAS"<<endl;
+    //     else osg::notify(DEBUG) << "Define PFSTATE_ANTIALIAS"<<endl;
+    //     if (inherit & PFSTATE_DECAL) osg::notify(DEBUG) << "Inherit PFSTATE_DECAL"<<endl;
+    //     else osg::notify(DEBUG) << "Define PFSTATE_DECAL"<<endl;
+    //     if (inherit & PFSTATE_ALPHAFUNC) osg::notify(DEBUG) << "Inherit PFSTATE_ALPHAFUNC"<<endl;
+    //     else osg::notify(DEBUG) << "Define PFSTATE_ALPHAFUNC"<<endl;
+    //     if (inherit & PFSTATE_ENCOLORTABLE) osg::notify(DEBUG) << "Inherit PFSTATE_ENCOLORTABLE"<<endl;
+    //     else osg::notify(DEBUG) << "Define PFSTATE_ENCOLORTABLE"<<endl;
+    //     if (inherit & PFSTATE_ENHIGHLIGHTING) osg::notify(DEBUG) << "Inherit PFSTATE_ENHIGHLIGHTING"<<endl;
+    //     else osg::notify(DEBUG) << "Define PFSTATE_ENHIGHLIGHTING"<<endl;
+    //     if (inherit & PFSTATE_ENLPOINTSTATE) osg::notify(DEBUG) << "Inherit PFSTATE_ENLPOINTSTATE"<<endl;
+    //     else osg::notify(DEBUG) << "Define PFSTATE_ENLPOINTSTATE"<<endl;
+    //     if (inherit & PFSTATE_ENTEXLOD) osg::notify(DEBUG) << "Inherit PFSTATE_ENTEXLOD"<<endl;
+    //     else osg::notify(DEBUG) << "Define PFSTATE_ENTEXLOD"<<endl;
 
-
-    if (inherit & PFSTATE_TRANSPARENCY) osgGeoState->setMode(osg::GeoState::TRANSPARENCY,osg::GeoState::INHERIT);
-    else 
+    if (inherit & PFSTATE_TRANSPARENCY) osgStateSet->setMode(GL_BLEND,osg::StateAttribute::INHERIT);
+    else
     {
         int mode = geostate->getMode(PFSTATE_TRANSPARENCY);
         switch(mode)
         {
-        case(PFTR_FAST):
-        case(PFTR_HIGH_QUALITY):
-        case(PFTR_BLEND_ALPHA):
-        case(PFTR_MS_ALPHA):
-        case(PFTR_MS_ALPHA_MASK):
-        case(PFTR_NO_OCCLUDE):
-        case(PFTR_ON):  osgGeoState->setMode(osg::GeoState::TRANSPARENCY,osg::GeoState::ON);break;
-        case(PFTR_OFF): osgGeoState->setMode(osg::GeoState::TRANSPARENCY,osg::GeoState::OFF);break;
-        default:        osgGeoState->setMode(osg::GeoState::TRANSPARENCY,osg::GeoState::INHERIT);break;
+            case(PFTR_FAST):
+            case(PFTR_HIGH_QUALITY):
+            case(PFTR_BLEND_ALPHA):
+            case(PFTR_MS_ALPHA):
+            case(PFTR_MS_ALPHA_MASK):
+            case(PFTR_NO_OCCLUDE):
+            case(PFTR_ON):
+                osgStateSet->setMode(GL_BLEND,osg::StateAttribute::ON);
+                osgStateSet->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+                break;
+            case(PFTR_OFF): osgStateSet->setMode(GL_BLEND,osg::StateAttribute::OFF);break;
+            default:        osgStateSet->setMode(GL_BLEND,osg::StateAttribute::INHERIT);break;
         }
     }
 
-    if (inherit & PFSTATE_ENTEXTURE) osgGeoState->setMode(osg::GeoState::TEXTURE,osg::GeoState::INHERIT);
+    if (inherit & PFSTATE_ENTEXTURE) osgStateSet->setMode(GL_TEXTURE_2D,osg::StateAttribute::INHERIT);
     else
     {
         int mode = geostate->getMode(PFSTATE_ENTEXTURE);
         switch(mode)
         {
-        case(PF_ON):    osgGeoState->setMode(osg::GeoState::TEXTURE,osg::GeoState::ON);break;
-        case(PF_OFF): 
-        default:        osgGeoState->setMode(osg::GeoState::TEXTURE,osg::GeoState::OFF);break;
+            case(PF_ON):    osgStateSet->setMode(GL_TEXTURE_2D,osg::StateAttribute::ON);break;
+            case(PF_OFF):
+            default:        osgStateSet->setMode(GL_TEXTURE_2D,osg::StateAttribute::OFF);break;
         }
     }
 
-    if (inherit & PFSTATE_CULLFACE) osgGeoState->setMode(osg::GeoState::FACE_CULL,osg::GeoState::INHERIT);
-    else 
+    if (inherit & PFSTATE_CULLFACE) osgStateSet->setMode(GL_CULL_FACE,osg::StateAttribute::INHERIT);
+    else
     {
         int mode = geostate->getMode(PFSTATE_CULLFACE);
         switch(mode)
         {
-        case(PFCF_BACK):
+            case(PFCF_BACK):
             {
-                osgGeoState->setMode(osg::GeoState::FACE_CULL,osg::GeoState::ON);
+                osgStateSet->setMode(GL_CULL_FACE,osg::StateAttribute::ON);
                 osg::CullFace *cf = new osg::CullFace;
                 cf->setMode(osg::CullFace::BACK);
-                osgGeoState->setAttribute(osg::GeoState::FACE_CULL,cf);
+                osgStateSet->setAttribute(cf);
             }
             break;
-            
-        case(PFCF_FRONT):
+
+            case(PFCF_FRONT):
             {
-                osgGeoState->setMode(osg::GeoState::FACE_CULL,osg::GeoState::ON);
+                osgStateSet->setMode(GL_CULL_FACE,osg::StateAttribute::ON);
                 osg::CullFace *cf = new osg::CullFace;
                 cf->setMode(osg::CullFace::FRONT);
-                osgGeoState->setAttribute(osg::GeoState::FACE_CULL,cf);
+                osgStateSet->setAttribute(cf);
             }
             break;
-        case(PFCF_BOTH):
+            case(PFCF_BOTH):
             {
-                osgGeoState->setMode(osg::GeoState::FACE_CULL,osg::GeoState::ON);
+                osgStateSet->setMode(GL_CULL_FACE,osg::StateAttribute::ON);
                 osg::CullFace *cf = new osg::CullFace;
                 cf->setMode(osg::CullFace::FRONT_AND_BACK);
-                osgGeoState->setAttribute(osg::GeoState::FACE_CULL,cf);
+                osgStateSet->setAttribute(cf);
             }
             break;
-        case(PFCF_OFF): 
-        default:        osgGeoState->setMode(osg::GeoState::FACE_CULL,osg::GeoState::OFF);break;
+            case(PFCF_OFF):
+            default:        osgStateSet->setMode(GL_CULL_FACE,osg::StateAttribute::OFF);break;
         }
     }
 
-    if (inherit & PFSTATE_ENLIGHTING) osgGeoState->setMode(osg::GeoState::LIGHTING,osg::GeoState::INHERIT);
-    else 
+    if (inherit & PFSTATE_ENLIGHTING) osgStateSet->setMode(GL_LIGHTING,osg::StateAttribute::INHERIT);
+    else
     {
         int mode = geostate->getMode(PFSTATE_ENLIGHTING);
         switch(mode)
         {
-        case(PF_ON):    osgGeoState->setMode(osg::GeoState::LIGHTING,osg::GeoState::ON);break;
-        case(PF_OFF): 
-        default:        osgGeoState->setMode(osg::GeoState::LIGHTING,osg::GeoState::OFF);break;
+            case(PF_ON):    osgStateSet->setMode(GL_LIGHTING,osg::StateAttribute::ON);break;
+            case(PF_OFF):
+            default:        osgStateSet->setMode(GL_LIGHTING,osg::StateAttribute::OFF);break;
         }
     }
 
-    if (inherit & PFSTATE_ENFOG) osgGeoState->setMode(osg::GeoState::FOG,osg::GeoState::INHERIT);
-    else 
+    if (inherit & PFSTATE_ENFOG) osgStateSet->setMode(GL_FOG,osg::StateAttribute::INHERIT);
+    else
     {
         int mode = geostate->getMode(PFSTATE_ENFOG);
         switch(mode)
         {
-        case(PF_ON):    osgGeoState->setMode(osg::GeoState::FOG,osg::GeoState::ON);break;
-        case(PF_OFF): 
-        default:        osgGeoState->setMode(osg::GeoState::FOG,osg::GeoState::OFF);break;
+            case(PF_ON):    osgStateSet->setMode(GL_FOG,osg::StateAttribute::ON);break;
+            case(PF_OFF):
+            default:        osgStateSet->setMode(GL_FOG,osg::StateAttribute::OFF);break;
         }
     }
 
-// not currently supported by OSG
-//     if (inherit & PFSTATE_ENWIREFRAME)  osgGeoState->setMode(osg::GeoState::WIREFRAME,osg::GeoState::INHERIT);
-//     else 
-//     {
-//         int mode = geostate->getMode(PFSTATE_ENWIREFRAME);
-//         switch(mode)
-//         {
-//         case(PF_ON):    osgGeoState->setMode(osg::GeoState::WIREFRAME,osg::GeoState::ON);break;
-//         case(PF_OFF): 
-//         default:        osgGeoState->setMode(osg::GeoState::WIREFRAME,osg::GeoState::OFF);break;
-//         }
-//     }
+    // not currently supported by OSG
+    //     if (inherit & PFSTATE_ENWIREFRAME)  osgStateSet->setMode(osg::StateSet::WIREFRAME,osg::StateAttribute::INHERIT);
+    //     else
+    //     {
+    //         int mode = geostate->getMode(PFSTATE_ENWIREFRAME);
+    //         switch(mode)
+    //         {
+    //         case(PF_ON):    osgStateSet->setMode(osg::StateSet::WIREFRAME,osg::StateAttribute::ON);break;
+    //         case(PF_OFF):
+    //         default:        osgStateSet->setMode(osg::StateSet::WIREFRAME,osg::StateAttribute::OFF);break;
+    //         }
+    //     }
+
+    // redundent in OSG's implementation of texmat mode
+    //     if (inherit & PFSTATE_ENTEXMAT)  osgStateSet->setMode(osg::StateSet::TEXMAT,osg::StateAttribute::INHERIT);
+    //     else
+    //     {
+    //         int mode = geostate->getMode(PFSTATE_ENTEXMAT);
+    //         switch(mode)
+    //         {
+    //         case(PF_ON):    osgStateSet->setMode(osg::StateSet::TEXMAT,osg::StateAttribute::ON);break;
+    //         case(PF_OFF):
+    //         default:        osgStateSet->setMode(osg::StateSet::TEXMAT,osg::StateAttribute::OFF);break;
+    //         }
+    //     }
 
 
-// redundent in OSG's implementation of texmat mode
-//     if (inherit & PFSTATE_ENTEXMAT)  osgGeoState->setMode(osg::GeoState::TEXMAT,osg::GeoState::INHERIT);
-//     else 
-//     {
-//         int mode = geostate->getMode(PFSTATE_ENTEXMAT);
-//         switch(mode)
-//         {
-//         case(PF_ON):    osgGeoState->setMode(osg::GeoState::TEXMAT,osg::GeoState::ON);break;
-//         case(PF_OFF): 
-//         default:        osgGeoState->setMode(osg::GeoState::TEXMAT,osg::GeoState::OFF);break;
-//         }
-//     }
-
-    if (inherit & PFSTATE_ENTEXGEN)  osgGeoState->setMode(osg::GeoState::TEXGEN,osg::GeoState::INHERIT);
-    else 
-    {
-        int mode = geostate->getMode(PFSTATE_ENTEXGEN);
-        switch(mode)
-        {
-        case(PF_ON):    osgGeoState->setMode(osg::GeoState::TEXGEN,osg::GeoState::ON);break;
-        case(PF_OFF): 
-        default:        osgGeoState->setMode(osg::GeoState::TEXGEN,osg::GeoState::OFF);break;
-        }
-    }
-
+    // commenting out the following block since the TexGen should be set
+    // appropriately by the osg::TexGen block below.
+    //     if (inherit & PFSTATE_ENTEXGEN)  osgStateSet->setMode(osg::StateSet::TEXGEN,osg::StateAttribute::INHERIT);
+    //     else
+    //     {
+    //         int mode = geostate->getMode(PFSTATE_ENTEXGEN);
+    //         switch(mode)
+    //         {
+    //             case(PF_ON):    osgStateSet->setMode(osg::StateSet::TEXGEN,osg::StateAttribute::ON);break;
+    //             case(PF_OFF):
+    //             default:        osgStateSet->setMode(osg::StateSet::TEXGEN,osg::StateAttribute::OFF);break;
+    //         }
+    //     }
+    // 
+    
+    
     pfMaterial* front_mat = (pfMaterial*)geostate->getAttr(PFSTATE_FRONTMTL);
     pfMaterial* back_mat = (pfMaterial*)geostate->getAttr(PFSTATE_BACKMTL);
-    visitMaterial(osgGeoState,front_mat,back_mat);
-    
+    visitMaterial(osgStateSet,front_mat,back_mat);
+
     pfTexture* tex = (pfTexture*)geostate->getAttr(PFSTATE_TEXTURE);
-    visitTexture(osgGeoState,tex);
+    visitTexture(osgStateSet,tex);
 
     pfTexGen* texgen = (pfTexGen*)geostate->getAttr(PFSTATE_TEXGEN);
+
     if (texgen)
     {
         osg::TexGen* osgTexGen = new osg::TexGen();
         int mode = texgen->getMode(PF_S);
+
+        // should this follow setPlane block be within the following switch?
+        float x, y, z, d;
+        texgen->getPlane(PF_S, &x, &y, &z, &d);
+        osgTexGen->setPlane(osg::TexGen::S, osg::Vec4(x,y,z,d));
+        texgen->getPlane(PF_T, &x, &y, &z, &d);
+        osgTexGen->setPlane(osg::TexGen::T, osg::Vec4(x,y,z,d));
+
         switch(mode)
         {
-        case(PFTG_OBJECT_LINEAR) : 
-            osgTexGen->setMode(osg::TexGen::OBJECT_LINEAR);
-            osgGeoState->setAttribute(osg::GeoState::TEXGEN,osgTexGen);
-            break;
-        case(PFTG_EYE_LINEAR_IDENT) : 
-            cerr << "TexGen Mode PFTG_EYE_LINEAR_IDENT not currently supported by the OSG,"<<endl;
-            cerr << "       assuming osg::TexGen::EYE_LINEAR."<<endl;
-        case(PFTG_EYE_LINEAR) : 
-           osgTexGen->setMode(osg::TexGen::EYE_LINEAR);
-            osgGeoState->setAttribute(osg::GeoState::TEXGEN,osgTexGen);
-            break;
-        case(PFTG_SPHERE_MAP) : 
-            osgTexGen->setMode(osg::TexGen::SPHERE_MAP); 
-            osgGeoState->setAttribute(osg::GeoState::TEXGEN,osgTexGen);
-            break;
-        case(PFTG_OFF) : 
-            osgGeoState->setMode(osg::GeoState::TEXGEN,osg::GeoState::OFF);
-            break;
-        case(PFTG_OBJECT_DISTANCE_TO_LINE) : 
-            cerr << "TexGen Mode PFTG_OBJECT_DISTANCE_TO_LINE not currently supported by the OSG."<<endl;
-            osgGeoState->setMode(osg::GeoState::TEXGEN,osg::GeoState::OFF);
-            break;
-        case(PFTG_EYE_DISTANCE_TO_LINE) : 
-            cerr << "TexGen Mode PFTG_EYE_DISTANCE_TO_LINE not currently supported by the OSG."<<endl;
-            osgGeoState->setMode(osg::GeoState::TEXGEN,osg::GeoState::OFF);
-            break;
-        default: 
-            cerr << "TexGen Mode "<<mode<<" not currently supported by the OSG."<<endl;
-            osgGeoState->setMode(osg::GeoState::TEXGEN,osg::GeoState::OFF);
-            break;
+            case(PFTG_OBJECT_LINEAR) :
+                osgTexGen->setMode(osg::TexGen::OBJECT_LINEAR);
+                osgStateSet->setAttribute(osgTexGen);
+                break;
+            case(PFTG_EYE_LINEAR_IDENT) :
+                cerr << "TexGen Mode PFTG_EYE_LINEAR_IDENT not currently supported by the OSG,"<<endl;
+                cerr << "       assuming osg::TexGen::EYE_LINEAR."<<endl;
+            case(PFTG_EYE_LINEAR) :
+                osgTexGen->setMode(osg::TexGen::EYE_LINEAR);
+                osgStateSet->setAttribute(osgTexGen);
+                break;
+            case(PFTG_SPHERE_MAP) :
+                osgTexGen->setMode(osg::TexGen::SPHERE_MAP);
+                osgStateSet->setAttribute(osgTexGen);
+                break;
+            case(PFTG_OFF) :
+                osgTexGen->setStateSetModes(*osgStateSet,osg::StateAttribute::OFF);
+                break;
+            case(PFTG_OBJECT_DISTANCE_TO_LINE) :
+                cerr << "TexGen Mode PFTG_OBJECT_DISTANCE_TO_LINE not currently supported by the OSG."<<endl;
+                osgTexGen->setStateSetModes(*osgStateSet,osg::StateAttribute::OFF);
+                break;
+            case(PFTG_EYE_DISTANCE_TO_LINE) :
+                cerr << "TexGen Mode PFTG_EYE_DISTANCE_TO_LINE not currently supported by the OSG."<<endl;
+                osgTexGen->setStateSetModes(*osgStateSet,osg::StateAttribute::OFF);
+                break;
+            default:
+                cerr << "TexGen Mode "<<mode<<" not currently supported by the OSG."<<endl;
+                osgTexGen->setStateSetModes(*osgStateSet,osg::StateAttribute::OFF);
+                break;
         }
-        
     }
 
     pfMatrix* texmat = (pfMatrix*)geostate->getAttr(PFSTATE_TEXMAT);
     if (texmat)
     {
         osg::Matrix osgMatrix((*texmat)[0][0],(*texmat)[0][1],(*texmat)[0][2],(*texmat)[0][3],
-                              (*texmat)[1][0],(*texmat)[1][1],(*texmat)[1][2],(*texmat)[1][3],
-                              (*texmat)[2][0],(*texmat)[2][1],(*texmat)[2][2],(*texmat)[2][3],
-                              (*texmat)[3][0],(*texmat)[3][1],(*texmat)[3][2],(*texmat)[3][3]);
+            (*texmat)[1][0],(*texmat)[1][1],(*texmat)[1][2],(*texmat)[1][3],
+            (*texmat)[2][0],(*texmat)[2][1],(*texmat)[2][2],(*texmat)[2][3],
+            (*texmat)[3][0],(*texmat)[3][1],(*texmat)[3][2],(*texmat)[3][3]);
 
         osg::TexMat* osgTexMat = new osg::TexMat();
-        osgTexMat->copy(osgMatrix);
-        osgGeoState->setAttribute(osg::GeoState::TEXMAT,osgTexMat);
+        osgTexMat->setMatrix(osgMatrix);
+        osgStateSet->setAttribute(osgTexMat);
     }
 
-
-    return osgGeoState;
+    return osgStateSet;
 }
 
-osg::Material* ConvertFromPerformer::visitMaterial(osg::GeoState* osgGeoState,pfMaterial* front_mat,pfMaterial* back_mat)
+
+osg::Material* ConvertFromPerformer::visitMaterial(osg::StateSet* osgStateSet,pfMaterial* front_mat,pfMaterial* back_mat)
 {
     if (front_mat==NULL && back_mat==NULL) return NULL;
 
-
     osg::Material* osgMaterial = new osg::Material;
-    if (osgGeoState) osgGeoState->setAttribute(osg::GeoState::MATERIAL,osgMaterial);
+    if (osgStateSet) osgStateSet->setAttribute(osgMaterial);
 
     pfMaterial* material = NULL;
     if (front_mat==back_mat) material = front_mat;
     else if (back_mat==NULL) material = front_mat;
     else if (front_mat==NULL) material = back_mat;
 
-    if (material) // single materials for front and back.
+    if (material)                // single materials for front and back.
     {
-    
-        int colorMode = material->getColorMode(material->getSide());
-        
-        switch(colorMode){
-        case(PFMTL_CMODE_AMBIENT_AND_DIFFUSE): osgMaterial->setColorMode(osg::Material::AMBIENT_AND_DIFFUSE); break;
-        case(PFMTL_CMODE_AMBIENT): osgMaterial->setColorMode(osg::Material::AMBIENT); break;
-        case(PFMTL_CMODE_DIFFUSE): osgMaterial->setColorMode(osg::Material::DIFFUSE); break;
-        case(PFMTL_CMODE_EMISSION): osgMaterial->setColorMode(osg::Material::EMISSION); break;
-        case(PFMTL_CMODE_SPECULAR): osgMaterial->setColorMode(osg::Material::SPECULAR); break;
-        case(PFMTL_CMODE_OFF): osgMaterial->setColorMode(osg::Material::OFF); break;
-        }
-              
 
-        float s = material->getShininess();
-        osgMaterial->setShininess(osg::Material::FACE_FRONT_AND_BACK,s);
+        int colorMode = material->getColorMode(material->getSide());
+
+        switch(colorMode)
+        {
+            case(PFMTL_CMODE_AMBIENT_AND_DIFFUSE): osgMaterial->setColorMode(osg::Material::AMBIENT_AND_DIFFUSE); break;
+            case(PFMTL_CMODE_AMBIENT): osgMaterial->setColorMode(osg::Material::AMBIENT); break;
+            case(PFMTL_CMODE_DIFFUSE): osgMaterial->setColorMode(osg::Material::DIFFUSE); break;
+            case(PFMTL_CMODE_EMISSION): osgMaterial->setColorMode(osg::Material::EMISSION); break;
+            case(PFMTL_CMODE_SPECULAR): osgMaterial->setColorMode(osg::Material::SPECULAR); break;
+            case(PFMTL_CMODE_OFF): osgMaterial->setColorMode(osg::Material::OFF); break;
+        }
+
+        float s = material->getShininess()/128.0f;
+        osgMaterial->setShininess(osg::Material::FRONT_AND_BACK,s);
 
         float a = material->getAlpha();
         float r,g,b;
 
         material->getColor(PFMTL_AMBIENT,&r,&g,&b);
-        osgMaterial->setAmbient(osg::Material::FACE_FRONT_AND_BACK,osg::Vec4(r,g,b,a));
+        osgMaterial->setAmbient(osg::Material::FRONT_AND_BACK,osg::Vec4(r,g,b,a));
 
         material->getColor(PFMTL_DIFFUSE,&r,&g,&b);
-        osgMaterial->setDiffuse(osg::Material::FACE_FRONT_AND_BACK,osg::Vec4(r,g,b,a));
+        osgMaterial->setDiffuse(osg::Material::FRONT_AND_BACK,osg::Vec4(r,g,b,a));
 
         material->getColor(PFMTL_EMISSION,&r,&g,&b);
-        osgMaterial->setEmission(osg::Material::FACE_FRONT_AND_BACK,osg::Vec4(r,g,b,a));
+        osgMaterial->setEmission(osg::Material::FRONT_AND_BACK,osg::Vec4(r,g,b,a));
 
         material->getColor(PFMTL_SPECULAR,&r,&g,&b);
-        osgMaterial->setSpecular(osg::Material::FACE_FRONT_AND_BACK,osg::Vec4(r,g,b,a));
+        osgMaterial->setSpecular(osg::Material::FRONT_AND_BACK,osg::Vec4(r,g,b,a));
     }
-    else // seperate materials for front and back.
+    else                         // seperate materials for front and back.
     {
 
         int colorMode = front_mat->getColorMode(front_mat->getSide());
-        
-        switch(colorMode){
-        case(PFMTL_CMODE_AMBIENT_AND_DIFFUSE): osgMaterial->setColorMode(osg::Material::AMBIENT_AND_DIFFUSE); break;
-        case(PFMTL_CMODE_AMBIENT): osgMaterial->setColorMode(osg::Material::AMBIENT); break;
-        case(PFMTL_CMODE_DIFFUSE): osgMaterial->setColorMode(osg::Material::DIFFUSE); break;
-        case(PFMTL_CMODE_EMISSION): osgMaterial->setColorMode(osg::Material::EMISSION); break;
-        case(PFMTL_CMODE_SPECULAR): osgMaterial->setColorMode(osg::Material::SPECULAR); break;
-        case(PFMTL_CMODE_OFF): osgMaterial->setColorMode(osg::Material::OFF); break;
+
+        switch(colorMode)
+        {
+            case(PFMTL_CMODE_AMBIENT_AND_DIFFUSE): osgMaterial->setColorMode(osg::Material::AMBIENT_AND_DIFFUSE); break;
+            case(PFMTL_CMODE_AMBIENT): osgMaterial->setColorMode(osg::Material::AMBIENT); break;
+            case(PFMTL_CMODE_DIFFUSE): osgMaterial->setColorMode(osg::Material::DIFFUSE); break;
+            case(PFMTL_CMODE_EMISSION): osgMaterial->setColorMode(osg::Material::EMISSION); break;
+            case(PFMTL_CMODE_SPECULAR): osgMaterial->setColorMode(osg::Material::SPECULAR); break;
+            case(PFMTL_CMODE_OFF): osgMaterial->setColorMode(osg::Material::OFF); break;
         }
-              
 
         float s;
         float a;
@@ -1018,60 +1039,86 @@ osg::Material* ConvertFromPerformer::visitMaterial(osg::GeoState* osgGeoState,pf
 
         // front material
         s = front_mat->getShininess();
-        osgMaterial->setShininess(osg::Material::FACE_FRONT,s);
+        osgMaterial->setShininess(osg::Material::FRONT,s);
 
         a = front_mat->getAlpha();
 
         front_mat->getColor(PFMTL_AMBIENT,&r,&g,&b);
-        osgMaterial->setAmbient(osg::Material::FACE_FRONT,osg::Vec4(r,g,b,a));
+        osgMaterial->setAmbient(osg::Material::FRONT,osg::Vec4(r,g,b,a));
 
         front_mat->getColor(PFMTL_DIFFUSE,&r,&g,&b);
-        osgMaterial->setDiffuse(osg::Material::FACE_FRONT,osg::Vec4(r,g,b,a));
+        osgMaterial->setDiffuse(osg::Material::FRONT,osg::Vec4(r,g,b,a));
 
         front_mat->getColor(PFMTL_EMISSION,&r,&g,&b);
-        osgMaterial->setEmission(osg::Material::FACE_FRONT,osg::Vec4(r,g,b,a));
+        osgMaterial->setEmission(osg::Material::FRONT,osg::Vec4(r,g,b,a));
 
         front_mat->getColor(PFMTL_SPECULAR,&r,&g,&b);
-        osgMaterial->setSpecular(osg::Material::FACE_FRONT,osg::Vec4(r,g,b,a));
-
+        osgMaterial->setSpecular(osg::Material::FRONT,osg::Vec4(r,g,b,a));
 
         // back material
         s = back_mat->getShininess();
-        osgMaterial->setShininess(osg::Material::FACE_BACK,s);
+        osgMaterial->setShininess(osg::Material::BACK,s);
 
         a = back_mat->getAlpha();
 
         back_mat->getColor(PFMTL_AMBIENT,&r,&g,&b);
-        osgMaterial->setAmbient(osg::Material::FACE_BACK,osg::Vec4(r,g,b,a));
+        osgMaterial->setAmbient(osg::Material::BACK,osg::Vec4(r,g,b,a));
 
         back_mat->getColor(PFMTL_DIFFUSE,&r,&g,&b);
-        osgMaterial->setDiffuse(osg::Material::FACE_BACK,osg::Vec4(r,g,b,a));
+        osgMaterial->setDiffuse(osg::Material::BACK,osg::Vec4(r,g,b,a));
 
         back_mat->getColor(PFMTL_EMISSION,&r,&g,&b);
-        osgMaterial->setEmission(osg::Material::FACE_BACK,osg::Vec4(r,g,b,a));
+        osgMaterial->setEmission(osg::Material::BACK,osg::Vec4(r,g,b,a));
 
         back_mat->getColor(PFMTL_SPECULAR,&r,&g,&b);
-        osgMaterial->setSpecular(osg::Material::FACE_BACK,osg::Vec4(r,g,b,a));
+        osgMaterial->setSpecular(osg::Material::BACK,osg::Vec4(r,g,b,a));
 
     }
-    
+
     return osgMaterial;
 }
 
-osg::Texture* ConvertFromPerformer::visitTexture(osg::GeoState* osgGeoState,pfTexture* tex)
+
+static osg::Texture::FilterMode getTexfilter(int filter, int pftype)
+{
+    if (filter == PFTEX_MINFILTER)
+    {
+
+        if (pftype & PFTEX_LINEAR)
+            return osg::Texture::NEAREST_MIPMAP_LINEAR;
+        else if (pftype & PFTEX_BILINEAR)
+            return osg::Texture::LINEAR_MIPMAP_NEAREST;
+        else if (pftype & PFTEX_TRILINEAR)
+            return osg::Texture::LINEAR_MIPMAP_LINEAR;
+
+        return osg::Texture::NEAREST_MIPMAP_LINEAR;
+
+    }
+    else
+    {
+        // MAGFILTER
+
+        // not quite sure what is supposed to be interpret the Peformer
+        // filter modes here so will simple go with OpenGL default.
+    
+        return osg::Texture::LINEAR;
+    }
+}
+
+
+osg::Texture* ConvertFromPerformer::visitTexture(osg::StateSet* osgStateSet,pfTexture* tex)
 {
     if (tex==NULL) return NULL;
 
     osg::Texture* osgTexture = new osg::Texture;
     _pfToOsgMap[tex] = osgTexture;
 
-    if (osgGeoState) osgGeoState->setAttribute(osg::GeoState::TEXTURE,osgTexture);
-
+    if (osgStateSet) osgStateSet->setAttribute(osgTexture);
 
     int repeat_r = tex->getRepeat(PFTEX_WRAP_R);
     int repeat_s = tex->getRepeat(PFTEX_WRAP_S);
     int repeat_t = tex->getRepeat(PFTEX_WRAP_T);
-    
+
     if (repeat_r==PFTEX_CLAMP) osgTexture->setWrap(osg::Texture::WRAP_R,osg::Texture::CLAMP);
     else osgTexture->setWrap(osg::Texture::WRAP_R,osg::Texture::REPEAT);
 
@@ -1081,18 +1128,28 @@ osg::Texture* ConvertFromPerformer::visitTexture(osg::GeoState* osgGeoState,pfTe
     if (repeat_t==PFTEX_CLAMP) osgTexture->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP);
     else osgTexture->setWrap(osg::Texture::WRAP_T,osg::Texture::REPEAT);
 
+    // filter
+    #if 1
+    osgTexture->setFilter(osg::Texture::MIN_FILTER,
+        getTexfilter(PFTEX_MINFILTER,
+        tex->getFilter(PFTEX_MINFILTER)));
+    osgTexture->setFilter(osg::Texture::MAG_FILTER,
+        getTexfilter(PFTEX_MAGFILTER,
+        tex->getFilter(PFTEX_MAGFILTER)));
+    #endif
+
+    // image
     std::string texName = tex->getName();
 
     if (_saveImagesAsRGB)
     {
-        std::string strippedName = osg::getStrippedName(texName);
+        std::string strippedName = osgDB::getStrippedName(texName);
         texName = _saveImageDirectory+strippedName+".rgb";
         tex->saveFile(texName.c_str());
     }
 
-    if (!_saveAbsoluteImagePath) texName = osg::getSimpleFileName(texName);
+    if (!_saveAbsoluteImagePath) texName = osgDB::getSimpleFileName(texName);
 
-    
     int s=0;
     int t=0;
     int r=0;
@@ -1105,20 +1162,20 @@ osg::Texture* ConvertFromPerformer::visitTexture(osg::GeoState* osgGeoState,pfTe
 
     unsigned int pixelFormat =
         comp == 1 ? GL_LUMINANCE :
-        comp == 2 ? GL_LUMINANCE_ALPHA :
-        comp == 3 ? GL_RGB :
-        comp == 4 ? GL_RGBA : (GLenum)-1;
+    comp == 2 ? GL_LUMINANCE_ALPHA :
+    comp == 3 ? GL_RGB :
+    comp == 4 ? GL_RGBA : (GLenum)-1;
 
     unsigned int dataType = GL_UNSIGNED_BYTE;
 
     osg::Image* image = new osg::Image;
     image->setFileName(texName.c_str());
     image->setImage(s,t,r,
-                   internalFormat,
-                   pixelFormat,
-                   dataType,
-                   (unsigned char*)imageData);
-    
+        internalFormat,
+        pixelFormat,
+        dataType,
+        (unsigned char*)imageData);
+
     osgTexture->setImage(image);
 
     return osgTexture;

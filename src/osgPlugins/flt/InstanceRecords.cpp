@@ -1,6 +1,5 @@
 // InstanceRecords.cpp
 
-
 #include "flt.h"
 #include "Registry.h"
 #include "InstanceRecords.h"
@@ -14,7 +13,6 @@ using namespace flt;
 ////////////////////////////////////////////////////////////////////
 
 RegisterRecordProxy<InstanceDefinitionRecord> g_InstanceDefinitionProxy;
-
 
 InstanceDefinitionRecord::InstanceDefinitionRecord()
 {
@@ -32,8 +30,6 @@ void InstanceDefinitionRecord::endian()
 }
 
 
-
-
 ////////////////////////////////////////////////////////////////////
 //
 //                          InstanceReferenceRecord
@@ -41,7 +37,6 @@ void InstanceDefinitionRecord::endian()
 ////////////////////////////////////////////////////////////////////
 
 RegisterRecordProxy<InstanceReferenceRecord> g_InstanceReferenceProxy;
-
 
 InstanceReferenceRecord::InstanceReferenceRecord()
 {
@@ -57,6 +52,3 @@ InstanceReferenceRecord::~InstanceReferenceRecord()
 void InstanceReferenceRecord::endian()
 {
 }
-
-
-

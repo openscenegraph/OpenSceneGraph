@@ -1,26 +1,39 @@
 #ifndef OSG_MATERIAL
 #define OSG_MATERIAL 1
 
-#include <osg/GL>
-#include <osg/OSG>
 #include <osg/Vec4>
-#include <osg/Object>
+#include <osg/StateAttribute>
+#include <osg/StateSet>
 
 namespace osg {
-
-
-class Input;
-class Output;
-
-class SG_EXPORT Material : public Object
+/** Material - encapsulates OpenGL glMaterial state.*/
+class SG_EXPORT Material : public StateAttribute
 {
 
     public :
 
-        enum MaterialFace {
-            FACE_FRONT           = GL_FRONT,
-            FACE_BACK            = GL_BACK,
-            FACE_FRONT_AND_BACK  = GL_FRONT_AND_BACK
+
+        Material();
+        virtual Object* clone() const { return new Material(); }
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Material*>(obj)!=NULL; }
+        const char* className() const { return "Material"; }
+
+        virtual const Type getType() const { return MATERIAL; }
+        
+        virtual void setStateSetModes(StateSet& ds,const GLModeValue value) const
+        {
+            // Have to think about the role of _colorMode
+            // in setting the colormaterial... also need to take the
+            // color material enable/disable out of the the apply()...
+            ds.setMode(GL_COLOR_MATERIAL,value);
+        }
+
+        virtual void apply(State& state) const;
+
+        enum Face {
+            FRONT           = GL_FRONT,
+            BACK            = GL_BACK,
+            FRONT_AND_BACK  = GL_FRONT_AND_BACK
         };
 
         enum ColorMode {
@@ -32,44 +45,51 @@ class SG_EXPORT Material : public Object
             OFF            
         };
 
-        Material( void );
-        static Material* instance();
-        virtual Object* clone() const { return new Material(); }
-        virtual bool isSameKindAs(Object* obj) { return dynamic_cast<Material*>(obj)!=NULL; }
-        const char* className() const { return "Material"; }
+        inline void setColorMode(const ColorMode mode) { _colorMode = mode; }
+        inline const ColorMode getColorMode() const { return _colorMode; }
 
-        void apply( void );
+        void setAmbient( const Face face, const Vec4& ambient );
+        const Vec4& getAmbient(const Face face) const;
+        inline const bool getAmbientFrontAndBack() const { return _ambientFrontAndBack; }
 
-        void setColorMode(ColorMode mode) { _colorMode = mode; }
+        void setDiffuse( const Face face, const Vec4& diffuse );
+        const Vec4& getDiffuse(const Face face) const;
+        inline const bool getDiffuseFrontAndBack() const { return _diffuseFrontAndBack; }
 
-        void setAmbient( MaterialFace face, const Vec4& ambient );
-        const Vec4& getAmbient(MaterialFace face) const;
-        bool getAmbientFrontAndBack() { return _ambientFrontAndBack; }
+        /** Set specular value of specified face(s) of the material, 
+          * valid specular[0..3] range is 0.0 to 1.0.*/
+        void setSpecular( const Face face, const Vec4& specular );
+        /** Get the specular value for specified face.*/
+        const Vec4& getSpecular(const Face face) const;
+        /** Get the whether specular values are equal for front and back faces.*/
+        inline const bool getSpecularFrontAndBack() const { return _specularFrontAndBack; }
 
-        void setDiffuse( MaterialFace face, const Vec4& diffuse );
-        const Vec4& getDiffuse(MaterialFace face) const;
-        bool getDiffuseFrontAndBack() { return _diffuseFrontAndBack; }
+        /** Set emmision value of specified face(s) of the material, 
+          * valid emmison[0..3] range is 0.0 to 1.0.*/
+        void setEmission( const Face face, const Vec4& emission );
+        /** Get the emmsion value for specified face.*/
+        const Vec4& getEmission(const Face face) const;
+        /** Get the whether emmision values are equal for front and back faces.*/
+        inline const bool getEmissionFrontAndBack() const { return _emissionFrontAndBack; }
 
-        void setSpecular( MaterialFace face, const Vec4& specular );
-        const Vec4& getSpecular(MaterialFace face) const;
-        bool getSpecularFrontAndBack() { return _specularFrontAndBack; }
+        /** Set shininess of specified face(s) of the material, valid shininess range is 0.0 to 1.0.*/
+        void setShininess( const Face face, float shininess );
+        /** Get the shininess value for specified face.*/
+        const float getShininess(const Face face) const;
+        /** Get the whether shininess values are equal for front and back faces.*/
+        inline const bool getShininessFrontAndBack() const { return _shininessFrontAndBack; }
+        
+        /** Set the alpha value of ambient,diffuse,specular and emmission colors, 
+          * of specified face, to 1-transparancy. Valid transparancy range is 0.0 to 1.0.*/
+        void setTransparency(const Face face,float trans);
 
-        void setEmission( MaterialFace face, const Vec4& emission );
-        const Vec4& getEmission(MaterialFace face) const;
-        bool getEmissionFrontAndBack() { return _emissionFrontAndBack; }
-
-        void setShininess( MaterialFace face, float shininess );
-        float getShininess(MaterialFace face) const;
-        bool getShininessFrontAndBack() { return _shininessFrontAndBack; }
+        /** Set the alpha value of ambient,diffuse,specular and emmission colors.
+          * Valid transparancy range is 0.0 to 1.0.*/
+        void setAlpha(const Face face,float alpha);
 
     protected :
 
-        virtual ~Material( void );
-
-        virtual bool readLocalData(Input& fr);
-        virtual bool writeLocalData(Output& fw);
-
-        bool matchFaceAndColor(Input& fr,const char* name,MaterialFace& mf,Vec4& color);
+        virtual ~Material();
 
         ColorMode _colorMode;
 

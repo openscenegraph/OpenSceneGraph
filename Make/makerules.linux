@@ -18,6 +18,11 @@ to_unix :
 	for f in *.cpp ; do to_unix $$f $$f; done
 	for f in *.h ; do to_unix $$f $$f; done
 
+beautify : 
+	for f in *.cpp ; do mv $$f $$f.bak; bcpp $$f.bak $$f; rm $$f.bak; done
+	for f in *.h ; do mv $$f $$f.bak; bcpp $$f.bak $$f; rm $$f.bak; done
+
+
 # force it
 depend : 
 	$(C++) $(C++FLAGS) -M $(C++FILES) $(CFILES) > $(MAKEDEPEND)
@@ -28,11 +33,14 @@ $(MAKEDEPEND) : $(C++FILES) $(CFILES)
 %.o : %.cpp
 	$(C++) $(C++FLAGS) -c $*.cpp -o $*.o
 
+%.o : %.c
+	$(C++) $(C++FLAGS) -c $*.c -o $*.o
+
 docs:
 	[ "$(TARGET_BASENAME)" != "" ] && \
-	mkdir -p ../../doc/$(TARGET_BASENAME) && \
-	doc++ -d ../../doc/$(TARGET_BASENAME) -H -A ../../include/$(TARGET_BASENAME)/* && \
-	echo $(TARGET_BASENAME) HTML documentation created in ../../doc/$(TARGET_BASENAME)
+	mkdir -p ../../doc/doc++/$(TARGET_BASENAME) && \
+	doc++ -d ../../doc/doc++/$(TARGET_BASENAME) -H -A ../../include/$(TARGET_BASENAME)/* && \
+	echo $(TARGET_BASENAME) HTML documentation created in ../../doc/doc++/$(TARGET_BASENAME)
 
 install : home
 	@ make __install

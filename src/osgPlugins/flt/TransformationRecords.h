@@ -21,8 +21,8 @@ namespace flt {
 
 typedef struct MatrixTag
 {
-	SRecHeader	RecHeader;
-	float32	    sfMat[4][4];    // 4x4 Single Precision Matrix
+    SRecHeader    RecHeader;
+    float32        sfMat[4][4];    // 4x4 Single Precision Matrix
 } SMatrix;                      // row major order
 
 
@@ -46,7 +46,7 @@ class MatrixRecord : public AncillaryRecord
         virtual void endian();
 };
 
-
+#if 0
 ////////////////////////////////////////////////////////////////////
 //
 //                           RotatAboutEdgeRecord
@@ -55,7 +55,7 @@ class MatrixRecord : public AncillaryRecord
 
 typedef struct RotatAboutEdgeTag
 {
-	SRecHeader	    RecHeader;
+    SRecHeader        RecHeader;
     int32           diReserved;
     float64x3   Point1;         // first point on edge
     float64x3   Point2;         // second point on edge
@@ -91,13 +91,13 @@ class RotatAboutEdgeRecord : public AncillaryRecord
 ////////////////////////////////////////////////////////////////////
 
 
-typedef struct TranslateTag
+struct STranslate
 {
-	SRecHeader	    RecHeader;
-    int32           diReserved;
+    SRecHeader  RecHeader;
+    int32       diReserved;
     float64x3   From;           // reference FROM point
     float64x3   Delta;          // Delta to translate node by
-} STranslate;
+};
 
 
 class TranslateRecord : public AncillaryRecord
@@ -120,6 +120,41 @@ class TranslateRecord : public AncillaryRecord
         virtual void endian();
 };
 
+////////////////////////////////////////////////////////////////////
+//
+//                           OldTranslateRecord
+//
+////////////////////////////////////////////////////////////////////
+
+
+struct SOldTranslate
+{
+    SRecHeader  RecHeader;
+    int32       diReserved;
+    float64x3   From;           // reference FROM point
+    float64x3   Delta;          // Delta to translate node by
+};
+
+
+class OldTranslateRecord : public AncillaryRecord
+{
+    public:
+        OldTranslateRecord();
+
+        virtual Record* clone() const { return new OldTranslateRecord(); }
+        virtual const char* className() const { return "OldTranslateRecord"; }
+        virtual int classOpcode() const { return OLD_TRANSLATE_OP; }
+        virtual int sizeofData() const { return sizeof(SOldTranslate); }
+        virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
+//      virtual void traverse(RecordVisitor& rv);
+
+        virtual SOldTranslate* getData() const { return (SOldTranslate*)_pData; }
+
+    protected:
+        virtual ~OldTranslateRecord();
+
+        virtual void endian();
+};
 
 ////////////////////////////////////////////////////////////////////
 //
@@ -127,13 +162,13 @@ class TranslateRecord : public AncillaryRecord
 //
 ////////////////////////////////////////////////////////////////////
 
-typedef struct ScaleTag
+struct SScale
 {
-	SRecHeader	    RecHeader;
+    SRecHeader        RecHeader;
     int32           Reserved;
     float64x3       center;
     float32x3       scale;
-} SScale;
+};
 
 class ScaleRecord : public AncillaryRecord
 {
@@ -164,7 +199,7 @@ class ScaleRecord : public AncillaryRecord
 
 typedef struct RotatAboutPointTag
 {
-	SRecHeader	    RecHeader;
+    SRecHeader        RecHeader;
     // TODO
 } SRotatAboutPoint;
 
@@ -197,7 +232,7 @@ class RotatAboutPointRecord : public AncillaryRecord
 
 typedef struct RotatScaleToPointTag
 {
-	SRecHeader	    RecHeader;
+    SRecHeader        RecHeader;
     // TODO
 } SRotatScaleToPoint;
 
@@ -228,16 +263,16 @@ class RotatScaleToPointRecord : public AncillaryRecord
 //
 ////////////////////////////////////////////////////////////////////
 
-typedef struct PutTransformTag	//follows normally a matrix record to
-{								//make up the transformation
-	SRecHeader	RecHeader;
-	int32		tmp1;			//mismatch with spec!
-	float64x3	FromOrigin;
-	float64x3	FromAlign;
-	float64x3	FromTrack;
-	float64x3	ToOrigin;		//mismatch !!
-	float64x3	ToAlign;
-	float64x3	ToTrack;
+typedef struct PutTransformTag    //follows normally a matrix record to
+{                                //make up the transformation
+    SRecHeader    RecHeader;
+    int32        tmp1;            //mismatch with spec!
+    float64x3    FromOrigin;
+    float64x3    FromAlign;
+    float64x3    FromTrack;
+    float64x3    ToOrigin;        //mismatch !!
+    float64x3    ToAlign;
+    float64x3    ToTrack;
 } SPutTransform;
 
 
@@ -260,7 +295,7 @@ class PutTransformRecord : public AncillaryRecord
 
         virtual void endian();
 };
-
+#endif
 
 ////////////////////////////////////////////////////////////////////
 //
@@ -268,11 +303,11 @@ class PutTransformRecord : public AncillaryRecord
 //
 ////////////////////////////////////////////////////////////////////
 
-typedef struct GeneralMatrixTag
+struct SGeneralMatrix
 {
-	SRecHeader	RecHeader;
-	float32	sfMat[4][4];	// 4x4 Single Precision Matrix
-} SGeneralMatrix;			// row major order
+    SRecHeader  RecHeader;
+    float32     sfMat[4][4];    // 4x4 Single Precision Matrix
+};            // row major order
 
 
 class GeneralMatrixRecord : public AncillaryRecord

@@ -3,18 +3,19 @@
 #ifndef __FLT_POOL_H
 #define __FLT_POOL_H
 
+#include "flt.h"
+
+#include <osg/Vec4>
+#include <osg/Texture>
+
 #include <string>
 #include <algorithm>
 #include <map>
 //#include <vector>
 
-#include <osg/Vec4>
-#include <osg/Texture>
-
 
 namespace flt {
 
-struct SMaterial;
 
 class ColorPool
 {
@@ -24,7 +25,7 @@ public:
     virtual ~ColorPool();
 
     osg::Vec4 getColor(int nColorIndex);
-    void regisiterColor(int nIndex, const osg::Vec4& color);
+    void addColor(int nIndex, const osg::Vec4& color);
 
 private:
 
@@ -57,7 +58,7 @@ public:
     virtual ~TexturePool();
 
     osg::Texture* getTexture(int nIndex);
-    void regisiterTexture(int nIndex, osg::Texture* osgTexture);
+    void addTexture(int nIndex, osg::Texture* osgTexture);
 
 private:
 
@@ -68,6 +69,19 @@ private:
 };
 
 
+struct PoolMaterial
+{
+    float32x3    Ambient;         // Ambient  component of material
+    float32x3    Diffuse;        // Diffuse  component of material
+    float32x3    Specular;         // Specular component of material
+    float32x3    Emissive;        // Emissive component of material
+    float32        sfShininess;    // Shininess. [0.0-128.0]
+    float32        sfAlpha;        // Alpha. [0.0-1.0], where 1.0 is opaque
+};
+
+struct SMaterial;
+struct SOldMaterial;
+
 class MaterialPool
 {
 public:
@@ -75,14 +89,14 @@ public:
     MaterialPool();
     virtual ~MaterialPool();
 
-    SMaterial* getMaterial(int nIndex);
-    void regisiterMaterial(int nIndex, SMaterial* material);
+    PoolMaterial* getMaterial(int nIndex);
+    void addMaterial(int nIndex, PoolMaterial* material);
 
 private:
 
     void eraseAll();
 
-    typedef std::map<int,SMaterial*> MaterialMap;
+    typedef std::map<int, PoolMaterial*> MaterialMap;
     MaterialMap _MaterialMap;
 };
 

@@ -1,6 +1,5 @@
 // SwitchRecord.cpp
 
-
 #include "flt.h"
 #include "Registry.h"
 #include "SwitchRecord.h"
@@ -14,7 +13,6 @@ using namespace flt;
 ////////////////////////////////////////////////////////////////////
 
 RegisterRecordProxy<SwitchRecord> g_SwitchProxy;
-
 
 SwitchRecord::SwitchRecord()
 {
@@ -35,8 +33,3 @@ void SwitchRecord::endian()
     ENDIAN( pSSwitch->diWordsInMask );
     ENDIAN( pSSwitch->diMasks );
 }
-
-
-
-
-

@@ -4,14 +4,14 @@ o API's feature set
    
         The scene graph is arranged with geometry nodes (osg::Geode's) as leaf
         nodes and internal nodes such as osg::DCS's/Groups/LOD etc for position the 
-        geometry objects within the scene and organising scene behaviour.
+        geometry objects within the scene and organizing scene behavior.
         
    - culling techniques?
    
         Currently view frustum culling, small feature culling, and OpenGL's
         native backface culling. The OSG has been designed so it can be 
-        easily extended, so if you have a favoured culling technique it 
-        won't be difficult to utilise it in the OSG.
+        easily extended, so if you have a favored culling technique it 
+        won't be difficult to utilize it in the OSG.
         
    - terrain / indoor support
 
@@ -23,7 +23,9 @@ o API's feature set
         However, if you wish to take advantage of specific optimization such 
         as adaptive meshing such as ROAM, or procedural culling such as when
         entering a room or when racing round a track then the OSG's could be
-        easily extend to achieve this.
+        easily extend to achieve this.  This is demonstrated in VTP Enviro
+        which is is based on the OSG, extended osg::GeoSet to provide CLOD
+        for terrain.
         
         These features are not currently on the todo list for version 1.0 as
         we intend to keep the OSG focused on the core scene graph. However,
@@ -59,13 +61,13 @@ o What is the design philosophy behind the OSG.
         - Channel configuration
 
     The Scene Graph is just that.  It manages a tree structure of different
-    node types that allow management over the behaviour of graphical
+    node types that allow management over the behavior of graphical
     objects.  The Traversers allow us to use the scene graph to render
     scenes in the most efficient manner, as well as providing maximum
     functionality for a real-time simulation.  The stages are (taken from
     the Performer approach) :
 
-        App - This is the application part of the simulation that interfaces
+    App - This is the application part of the simulation that interfaces
     with the outside world, that is control devices, pilot input, animation
     engines, effects, event engines, etc, etc (there's much more).  This is
     also the stage that determines what the viewpoint is and consequently
@@ -111,7 +113,7 @@ o What is the design philosophy behind the OSG.
 
     The MP issues include, process (or thread) management and
     synchronization.  Performer has several MP models.  We also need to
-    consider that this software will probably run on seperate PCs
+    consider that this software will probably run on separate PCs
     altogether, so that the SGI concept of a single machine with multiple
     rendering pipes needs to be extended to include multiple PC's, which
     need to be synchronized across Ethernet or something.
@@ -120,7 +122,7 @@ o What is the design philosophy behind the OSG.
     can be only one App for multiple Cull/Draw pairs.  This model might
     extend quite nicely to a multiple PC environment, in which each PC runs
     a Cull/Draw pair, and one central machine runs App, broadcasting the
-    viewing frustums for each viewing channel and synchronizing all.
+    viewing frustum for each viewing channel and synchronizing all.
 
     Lastly, channel configuration.  Currently we now do this by opening a
     window, choosing a visual, size, etc.  It is often desirable to have
@@ -155,7 +157,7 @@ o What is the design philosophy behind the OSG.
     use.
 
 
-o Would the OSG be a good candidate for terrain visualisation.
+o Would the OSG be a good candidate for terrain visualization.
 
     Terrain is one of the great candidates for scene graphs.  Two management
     schemes will help you out : Level Of Detail management and Visibility
@@ -221,12 +223,11 @@ o What are the intended target platforms?
 
 o What platforms are currently supported?
 
-    The OSG is currently developed under Windows95, Linux and Irix. Platform
+    The OSG is currently developed under Windows95, Linux,Irix and MacOS. Platform
     specific makedefs are provided for Linux and Irix, and VisualC++ 6.0
     Workspace files for MS Windows platforms.
     
-    The OSG should also compile under Windows98/NT and 2000 but has not yet
-    been tested.
+    The OSG also compiles under Windows98/NT and 2000.
 
 
 o What further platforms will be supported in the near future?
@@ -242,7 +243,7 @@ o I'm wondering when the OSG will be ready for release.
     
     Once the design converges to a stable API we will issue it as a beta,
     depending on the various factors one would hope to have the API nailed
-    down during summer 2000.
+    down during early-mid 2001.
     
     A full release with stable API and implementation will be available...
     Can't set any dates but we can be sure it'll be after then beta release :-)
@@ -278,7 +279,7 @@ o What differentiation between the OSG and other OS projects such as OpenRM/
     each of these scene graphs.  DDG doesn't show quite the same heritage,
     and possibly loses a little cleanness of design with it.  OpenRM is
     an attempt at a Object Orientated scene graph but it C... This is 
-    about a close as I got with it, as IMHO C++ really is the best currently
+    about a close as I got with it, as IMHO C++ really is currently the best
     language for a modern scene graph
 
     The OSG is also strongly influenced by Performer, this a due to the
@@ -311,6 +312,9 @@ o Is there a class diagram for the OSG, or white paper on the projects goals?
 
     The documentation in the distribution has been generated automatically
     using the excellent Open Source tool doc++, which creates class diagrams.
+    UML diagrams have been generated and can be found in the documentation
+    directory, along with mind maps on design patterns used in the osg,
+    and the mission/goals of the osg.
     
     We haven't written an official white paper on projects goals or a design
     overview yet.  Knowledge of Performer will help in understanding some of the basics
@@ -326,7 +330,7 @@ o Do you need C++ coding support?
 o Any recommendations for useful programming books to read to help understand
   and contribute to the OSG? 
 
-    Good practices are suprisingly hard to come by. C and C++ give you so
+    Good practices are surprisingly hard to come by. C and C++ give you so
     much rope to hang yourself, but there's few books which really give a
     developers the rule book of good coding practices.  I found Effective
     C++ a refreshing contribution to this end.  The Design Patterns book can
@@ -337,7 +341,7 @@ o Is there a mailing list?
 
     Yes indeed, hosted by source forge, so to subscribe head to :
     http://sourceforge.net/projects/openscenegraph and follow the
-    'Lists' link and follow the intructions.
+    'Lists' link and follow the instructions.
 
 o How do I submit my contributions?
 

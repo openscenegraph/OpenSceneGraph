@@ -11,17 +11,17 @@ Light::Light( void )
     _on = 1;
 
     init();
-    
-//     notify(DEBUG) << "_ambient "<<_ambient<<endl;
-//     notify(DEBUG) << "_diffuse "<<_diffuse<<endl;
-//     notify(DEBUG) << "_specular "<<_specular<<endl;
-//     notify(DEBUG) << "_position "<<_position<<endl;
-//     notify(DEBUG) << "_direction "<<_direction<<endl;
-//     notify(DEBUG) << "_spot_exponent "<<_spot_exponent<<endl;
-//     notify(DEBUG) << "_spot_cutoff "<<_spot_cutoff<<endl;
-//     notify(DEBUG) << "_constant_attenuation "<<_constant_attenuation<<endl;
-//     notify(DEBUG) << "_linear_attenuation "<<_linear_attenuation<<endl;
-//     notify(DEBUG) << "_quadratic_attenuation "<<_quadratic_attenuation<<endl;
+
+    //     notify(DEBUG) << "_ambient "<<_ambient<<endl;
+    //     notify(DEBUG) << "_diffuse "<<_diffuse<<endl;
+    //     notify(DEBUG) << "_specular "<<_specular<<endl;
+    //     notify(DEBUG) << "_position "<<_position<<endl;
+    //     notify(DEBUG) << "_direction "<<_direction<<endl;
+    //     notify(DEBUG) << "_spot_exponent "<<_spot_exponent<<endl;
+    //     notify(DEBUG) << "_spot_cutoff "<<_spot_cutoff<<endl;
+    //     notify(DEBUG) << "_constant_attenuation "<<_constant_attenuation<<endl;
+    //     notify(DEBUG) << "_linear_attenuation "<<_linear_attenuation<<endl;
+    //     notify(DEBUG) << "_quadratic_attenuation "<<_quadratic_attenuation<<endl;
 }
 
 
@@ -29,11 +29,6 @@ Light::~Light( void )
 {
 }
 
-Light* Light::instance()
-{
-    static ref_ptr<Light> s_Light(new Light);
-    return s_Light.get();
-}
 
 void Light::init( void )
 {
@@ -49,6 +44,7 @@ void Light::init( void )
     _quadratic_attenuation = 0.0f;
 }
 
+
 void Light::captureLightState()
 {
     glGetLightfv( (GLenum)((int)GL_LIGHT0 + _lightnum), GL_AMBIENT, _ambient.ptr() );
@@ -63,23 +59,11 @@ void Light::captureLightState()
     glGetLightfv( (GLenum)((int)GL_LIGHT0 + _lightnum), GL_QUADRATIC_ATTENUATION,   &_quadratic_attenuation );
 }
 
-
-void Light::enable( void )
-{
-    glEnable( GL_LIGHTING );
-}
-
-
-void Light::disable( void )
-{
-    glDisable( GL_LIGHTING );
-}
-
-
-void Light::apply( void )
+void Light::apply(State&) const
 {
     if( _on )
     {
+        // note state should probably be handling the glEnable...
         glEnable ( (GLenum)((int)GL_LIGHT0 + _lightnum) );
         glLightfv( (GLenum)((int)GL_LIGHT0 + _lightnum), GL_AMBIENT,               _ambient.ptr() );
         glLightfv( (GLenum)((int)GL_LIGHT0 + _lightnum), GL_DIFFUSE,               _diffuse.ptr() );

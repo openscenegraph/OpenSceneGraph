@@ -13,23 +13,23 @@ namespace flt {
 
 struct SGroup
 {
-	SRecHeader	RecHeader;
-	char	szIdent[8];			// 7 char ASCII ID; 0 terminates
-	int16	iGroupRelPriority;	// Group relative priority
-	int16	iSpare;				// Spare for fullword alignment
-	uint32	dwFlags;			// Flags (bits, from left to right)
-								// 0 = Reserved
-								// 1 = Forward animation
-								// 2 = Cycling animation
-								// 3 = Bounding box follows
-								// 4 = Freeze bounding box
-								// 5 = Default parent
-								// 6-31 Spare
-	int16	iSpecialId_1;		// Special effects ID 1 - defined by real time
-	int16	iSpecialId_2;		// Special effects ID 2 - defined by real time
-	int16	iSignificance;		// Significance Flags
-	uint8	swLayer;			// Layer Number
-	uint8	swReserved[5];		// Reserved
+    SRecHeader    RecHeader;
+    char    szIdent[8];            // 7 char ASCII ID; 0 terminates
+    int16    iGroupRelPriority;    // Group relative priority
+    int16    iSpare;                // Spare for fullword alignment
+    uint32    dwFlags;            // Flags (bits, from left to right)
+                                // 0 = Reserved
+                                // 1 = Forward animation
+                                // 2 = Cycling animation
+                                // 3 = Bounding box follows
+                                // 4 = Freeze bounding box
+                                // 5 = Default parent
+                                // 6-31 Spare
+    int16    iSpecialId_1;        // Special effects ID 1 - defined by real time
+    int16    iSpecialId_2;        // Special effects ID 2 - defined by real time
+    int16    iSignificance;        // Significance Flags
+    uint8    swLayer;            // Layer Number
+    uint8    swReserved[5];        // Reserved
 };
 
 

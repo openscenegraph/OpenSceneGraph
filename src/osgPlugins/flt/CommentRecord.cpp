@@ -4,7 +4,6 @@
 #include "Registry.h"
 #include "CommentRecord.h"
 
-
 using namespace flt;
 
 ////////////////////////////////////////////////////////////////////
@@ -14,7 +13,6 @@ using namespace flt;
 ////////////////////////////////////////////////////////////////////
 
 RegisterRecordProxy<CommentRecord> g_CommentRecordProxy;
-
 
 CommentRecord::CommentRecord()
 {
@@ -31,7 +29,3 @@ CommentRecord::~CommentRecord()
 void CommentRecord::endian()
 {
 }
-
-
-
-

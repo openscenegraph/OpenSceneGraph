@@ -1,5 +1,11 @@
-#include "osgUtil/SceneView"
-#include "osg/Notify"
+#include <osgUtil/SceneView>
+
+#include <osg/Notify>
+#include <osg/Texture>
+#include <osg/AlphaFunc>
+#include <osg/TexEnv>
+
+#include <GL/glu.h>
 
 using namespace osg;
 using namespace osgUtil;
@@ -12,130 +18,214 @@ SceneView::SceneView()
 
     _near_plane = 1.0f;
     _far_plane = 1.0f;
-    
+
     _lodBias = 1.0f;
 
     _lightingMode=HEADLIGHT;
+    
+    _prioritizeTextures = false;
+    
+    _view[0] = 0;
+    _view[1] = 0;
+    _view[2] = 1024;
+    _view[3] = 768;
+    
+    _frameNumber = 0;
+    
 }
+
 
 SceneView::~SceneView()
 {
 }
 
+
 void SceneView::setDefaults()
 {
-    _globalState = new osg::GeoState;
+    _globalState = new osg::StateSet;
 
     _lightingMode=HEADLIGHT;
     _light = new osg::Light;
+    _light->setAmbient(Vec4(0.05f,0.05f,0.05f,1.0f));
+    _light->setDiffuse(Vec4(0.8f,0.8f,0.8f,1.0f));
+    _light->setSpecular(Vec4(0.1f,0.1f,0.1f,1.0f));
+
+   
 
     _camera = new osg::Camera;
-
-    _renderVisitor = new osgUtil::RenderVisitor;
     
+    _state = new osg::State;
+    
+    _rendergraph = new osgUtil::RenderGraph;
+    _renderStage = new osgUtil::RenderStage;
+    _cullVisitor = new osgUtil::CullVisitor;
+
+    _cullVisitor->setRenderGraph(_rendergraph.get());
+    _cullVisitor->setRenderStage(_renderStage.get());
+
     _globalState->setGlobalDefaults();
-    _globalState->setMode(osg::GeoState::LIGHTING, osg::GeoState::ON);
+    
+    // enable lighting by default.
+    _globalState->setMode(GL_LIGHTING, osg::StateAttribute::ON);
+    
+    // enable depth testing by default.
+    _globalState->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);
+
+    // set up an alphafunc by default to speed up blending operations.
+    osg::AlphaFunc* alphafunc = new osg::AlphaFunc();
+    alphafunc->setFunction(osg::AlphaFunc::GREATER,0.0f);
+    _globalState->setAttributeAndModes(alphafunc, osg::StateAttribute::ON);
+
+    // set up an alphafunc by default to speed up blending operations.
+    osg::TexEnv* texenv = new osg::TexEnv();
+    texenv->setMode(osg::TexEnv::MODULATE);
+    _globalState->setAttributeAndModes(texenv, osg::StateAttribute::ON);
 
     _backgroundColor.set(0.2f, 0.2f, 0.4f, 1.0f);
 
 }
 
 
+void SceneView::app()
+{
+    ++_frameNumber;
+    
+    if (_sceneData.valid() && _appVisitor.valid())
+    { 
+        _appVisitor->reset();
+        _sceneData->accept(*_appVisitor.get());
+    }
+}
+
 void SceneView::cull()
 {
-    if (!_renderVisitor) return;
     if (!_sceneData) return;
-    
-    _camera->setAspectRatio((GLfloat)_view[2]/(GLfloat) _view[3]);
 
-    _renderVisitor->reset();
+    _camera->adjustAspectRatio((GLfloat)_view[2]/(GLfloat) _view[3]);
     
-    _renderVisitor->setGlobalState(_globalState.get());
-    _renderVisitor->setLODBias(_lodBias);
-//    _renderVisitor->setPerspective(60.0f, (GLfloat)_view[2]/(GLfloat) _view[3], _near_plane, _far_plane );
-    _renderVisitor->setPerspective(*_camera);
-    _renderVisitor->setLookAt(*_camera);
+    
+    _rendergraph->clean();
 
-    _sceneData->accept(*_renderVisitor);
+    _cullVisitor->reset();
+
+    // comment out reset of rendergraph since clean is more efficient.
+    //  _rendergraph->reset();
+
+    // use clean of the rendergraph rather than reset, as it is able to
+    // reuse the structure on the rendergraph in the next frame. This
+    // achieves a certain amount of frame cohereancy of memory allocation.
+
+    _cullVisitor->setFrameNumber(_frameNumber);
+    _cullVisitor->setLODBias(_lodBias);
+    _cullVisitor->setCamera(*_camera);
+    _cullVisitor->setViewport(_view[0],_view[1],_view[2],_view[3]);
+
+    _renderStage->reset();
+
+    _renderStage->setViewport(_view[0],_view[1],_view[2],_view[3]);
+    _renderStage->setCamera(_camera.get());
+    _renderStage->setClearColor(_backgroundColor);
+    _renderStage->setLight(_light.get());
+
+
+    switch(_lightingMode)
+    {
+    case(HEADLIGHT):
+        _renderStage->setLightingMode(RenderStageLighting::HEADLIGHT);
+        break;
+    case(SKY_LIGHT):
+        _renderStage->setLightingMode(RenderStageLighting::SKY_LIGHT);
+        break;
+    case(NO_SCENEVIEW_LIGHT):
+        _renderStage->setLightingMode(RenderStageLighting::NO_SCENEVIEW_LIGHT);
+        break;
+    }            
+
+    if (_globalState.valid()) _cullVisitor->pushStateSet(_globalState.get());
+
+
+    // traverse the scene graph to generate the rendergraph.
+    _sceneData->accept(*_cullVisitor);
+
+    if (_globalState.valid()) _cullVisitor->popStateSet();
+
+
+    // do any state sorting required.
+    _renderStage->sort();
+
+
+    // prune out any empty RenderGraph children.
+    // note, this would be not required if the _renderGraph had been
+    // reset at the start of each frame (see top of this method) but
+    // a clean has been used instead to try to minimize the amount of
+    // allocation and deleteing of the RenderGraph nodes.
+    _rendergraph->prune();
 
     if (_calc_nearfar)
     {
-	if (_renderVisitor->calcNearFar(_near_plane,_far_plane))
-	{
-	    // shift the far plane slight further away from the eye point.
-	    // and shift the near plane slightly near the eye point, this
-	    // will give a little space betwenn the near and far planes
-	    // and the model, crucial when the naer and far planes are
-	    // coincedent.
-	    _far_plane  *= 1.05;
-	    _near_plane *= 0.95;
+        _near_plane = _cullVisitor->getCalculatedNearPlane();
+        _far_plane = _cullVisitor->getCalculatedFarPlane();
 
-	    // if required clamp the near plane to prevent negative or near zero
-	    // near planes.
-	    float min_near_plane = _far_plane*0.0005f;
-	    if (_near_plane<min_near_plane) _near_plane=min_near_plane;
-	}
-	else
-	{
-	    _near_plane = 1.0f;
-	    _far_plane = 1000.0f;
-	}
+        if (_near_plane<=_far_plane)
+        {
+            // shift the far plane slight further away from the eye point.
+            // and shift the near plane slightly near the eye point, this
+            // will give a little space betwenn the near and far planes
+            // and the model, crucial when the naer and far planes are
+            // coincedent.
+            _far_plane  *= 1.05;
+            _near_plane *= 0.95;
 
-	_camera->setNearPlane(_near_plane);
-	_camera->setFarPlane(_far_plane);
+            // if required clamp the near plane to prevent negative or near zero
+            // near planes.
+            float min_near_plane = _far_plane*0.0005f;
+            if (_near_plane<min_near_plane) _near_plane=min_near_plane;
+        }
+        else
+        {
+            _near_plane = 1.0f;
+            _far_plane = 1000.0f;
+        }
+
+        _camera->setNearFar(_near_plane,_far_plane);
     }
+
 }
-    
+
+
 void SceneView::draw()
 {
-    if (!_renderVisitor) return;
     if (!_sceneData) return;
 
-    glViewport( _view[0], _view[1], _view[2], _view[3] );
-
-    glEnable( GL_DEPTH_TEST );
-
-    glClearColor( _backgroundColor[0], _backgroundColor[1], _backgroundColor[2], _backgroundColor[3]);
-
-    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-
-//     glMatrixMode( GL_PROJECTION );
-//     glLoadIdentity();
-//     gluPerspective( 60.0f, (GLfloat)_view[2]/(GLfloat) _view[3], _near_plane, _far_plane );
-
-    _camera->draw_PROJECTION();
-
-    glMatrixMode( GL_MODELVIEW );
-    glLoadIdentity();
-
-    if (_lightingMode==HEADLIGHT)
+    if (!_state)
     {
-        _light->apply();
-    }
+        osg::notify(osg::WARN) << "Warning: no valid osgUtil::SceneView::_state"<<endl;
+        osg::notify(osg::WARN) << "         creating a state automatically."<<endl;
 
-    _camera->draw_MODELVIEW();
+        // note the constructor for osg::State will set ContextID to 0.
+        _state = new osg::State;
+    }
+    // we in theory should be able to 
+    _state->reset();
+
+    // note, to support multi-pipe systems the deletion of OpenGL display list
+    // and texture objects is deferred until the OpenGL context is the correct
+    // context for when the object were originally created.  Here we know what
+    // context we are in so can flush the appropriate caches.
+    osg::Drawable::flushDeletedDisplayLists(_state->getContextID());
+    osg::Texture::flushDeletedTextureObjects(_state->getContextID());
+
+    RenderLeaf* previous = NULL;
+    _renderStage->draw(*_state,previous);
     
-//     gluLookAt( _camera->getEyePoint().x(),  _camera->getEyePoint().y(),  _camera->getEyePoint().z(),
-// 	       _camera->getLookPoint().x(), _camera->getLookPoint().y(), _camera->getLookPoint().z(), 
-// 	       _camera->getUpVector().x(),  _camera->getUpVector().y(),  _camera->getUpVector().z());
-
-    if (_lightingMode==SKY_LIGHT)
+    GLenum errorNo = glGetError();
+    if (errorNo!=GL_NO_ERROR)
     {
-        _light->apply();
+        osg::notify(WARN)<<"Warning: detected OpenGL error '"<<gluErrorString(errorNo)<<"'"<<endl;
     }
-
-
-//    glLightModeli(GL_LIGHT_MODEL_TWO_SIDE,_two_sided_lighting);
-
-
-    glGetDoublev(GL_MODELVIEW_MATRIX,_model);
-    glGetDoublev(GL_PROJECTION_MATRIX,_proj);
-
-
-    _renderVisitor->render();
-
-
+    
 }
+
 
 /** Calculate, via glUnProject, the object coordinates of a window point.
     Note, current implementation requires that SceneView::draw() has been previously called
@@ -143,20 +233,9 @@ void SceneView::draw()
     windows coordinates are calculated relative to the bottom left of the window.*/
 bool SceneView::projectWindowIntoObject(const osg::Vec3& window,osg::Vec3& object) const
 {
-    GLdouble sX,sY,sZ;
-    GLint result_start = gluUnProject((GLdouble)window[0],(GLdouble)window[1],(GLdouble)window[2],
-                                     _model,_proj,_view,
-                                     &sX,&sY,&sZ);
-    if (result_start)
-    {
-        object.set(sX,sY,sZ);
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return _camera->unproject(window,_view,object);
 }
+
 
 /** Calculate, via glUnProject, the object coordinates of a window x,y
     when projected onto the near and far planes.
@@ -165,26 +244,11 @@ bool SceneView::projectWindowIntoObject(const osg::Vec3& window,osg::Vec3& objec
     windows coordinates are calculated relative to the bottom left of the window.*/
 bool SceneView::projectWindowXYIntoObject(int x,int y,osg::Vec3& near_point,osg::Vec3& far_point) const
 {
-    GLdouble nX,nY,nZ;
-    GLint result_near = gluUnProject((GLdouble)x,(GLdouble)y,(GLdouble)0.0,
-                                     _model,_proj,_view,
-                                     &nX,&nY,&nZ);
-
-
-    if (result_near==0) return false;
-
-    GLdouble fX,fY,fZ;
-    GLint result_far = gluUnProject((GLdouble)x,(GLdouble)y,(GLdouble)1.0,
-                                     _model,_proj,_view,
-                                     &fX,&fY,&fZ);
-
-    if (result_far==0) return false;
-
-    near_point.set(nX,nY,nZ);    
-    far_point.set(fX,fY,fZ);
-
-    return true;
+    bool result_near = _camera->unproject(Vec3(x,y,0.0f),_view,near_point);
+    bool result_far =  _camera->unproject(Vec3(x,y,1.0f),_view,far_point);
+    return result_near & result_far;
 }
+
 
 /** Calculate, via glProject, the object coordinates of a window.
     Note, current implementation requires that SceneView::draw() has been previously called
@@ -192,17 +256,5 @@ bool SceneView::projectWindowXYIntoObject(int x,int y,osg::Vec3& near_point,osg:
     windows coordinates are calculated relative to the bottom left of the window.*/
 bool SceneView::projectObjectIntoWindow(const osg::Vec3& object,osg::Vec3& window) const
 {
-    GLdouble sX,sY,sZ;
-    GLint result_start = gluProject((GLdouble)object[0],(GLdouble)object[1],(GLdouble)object[2],
-                                     _model,_proj,_view,
-                                     &sX,&sY,&sZ);
-    if (result_start)
-    {
-        window.set(sX,sY,sZ);
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return _camera->project(object,_view,window);
 }

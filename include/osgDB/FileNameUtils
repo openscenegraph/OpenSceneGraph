@@ -1,0 +1,21 @@
+#ifndef OSGDB_FILENAMEUTILS
+#define OSGDB_FILENAMEUTILS 1
+
+#include <osgDB/Export>
+
+#include <string>
+
+namespace osgDB {
+
+OSGDB_EXPORT extern std::string getFilePath(const std::string& filename);
+OSGDB_EXPORT extern std::string getFileExtension(const std::string& filename);
+OSGDB_EXPORT extern std::string getLowerCaseFileExtension(const std::string& filename);
+OSGDB_EXPORT extern std::string getSimpleFileName(const std::string& fileName);
+OSGDB_EXPORT extern std::string getStrippedName(const std::string& fileName);
+
+OSGDB_EXPORT extern bool equalCaseInsensitive(const std::string& lhs,const std::string& rhs);
+OSGDB_EXPORT extern bool equalCaseInsensitive(const std::string& lhs,const char* rhs);
+
+};
+
+#endif

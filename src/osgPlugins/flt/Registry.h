@@ -1,21 +1,25 @@
 #ifndef __FLT_REGISTRY_H
 #define __FLT_REGISTRY_H
 
+#ifdef WIN32
+#pragma warning( disable : 4786 )
+#endif
+
+#include <osg/Referenced>
+#include <osg/ref_ptr>
+#include <osg/Texture>
+
+#include "FltFile.h"
+ 
+#include <map>
 #include <vector>
 #include <string>
-
-#include "osg/Referenced"
-
-namespace osg {
-class Node;
-};
 
 namespace flt {
 
 // forward declare referenced classes to help avoid mutiple includes
 class Record;
 class Input;
-
 
 /**
     Registry is a singleton factory which stores
@@ -42,15 +46,20 @@ class Registry
 
         void addPrototype(Record* rec);
         void removePrototype(Record* rec);
-
         Record* getRecordProto(const int opcode);
-//      bool apply(Record& rec);
-//      Record* readRecord(Input& fr);
-//        osg::Node* readNode(Input& fr);
+
+        void addTexture(osg::Texture* texture);
+        void removeTexture(osg::Texture* texture);
+        osg::Texture* getTexture(const std::string name);
+
+        void addFltFile(const std::string& name, FltFile* file);
+        FltFile* getFltFile(const std::string& name);
 
     private:
 
         typedef std::vector<osg::ref_ptr<Record> >          RecordProtoList;
+        typedef std::vector<osg::Texture*> TextureList;
+        typedef std::map<std::string,osg::ref_ptr<FltFile> > FltFileMap;
 
         /** constructor is private, as its a singleton, preventing
             construction other than via the instance() method and
@@ -58,8 +67,11 @@ class Registry
         Registry();
 
         RecordProtoList::iterator getRecordProtoItr(const int opcode);
+        TextureList::iterator getTextureItr(const std::string name);
 
-        RecordProtoList          _recordProtoList;
+        RecordProtoList  _recordProtoList;
+        TextureList      _textureList;
+        FltFileMap       _fltFileMap;
 };
 
 

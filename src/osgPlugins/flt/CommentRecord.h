@@ -20,7 +20,7 @@ namespace flt {
 
 typedef struct CommentTag
 {
-	SRecHeader	RecHeader;
+    SRecHeader    RecHeader;
     // TODO
 } SComment;
 

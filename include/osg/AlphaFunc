@@ -1,18 +1,30 @@
 #ifndef OSG_ALPHAFUNC
 #define OSG_ALPHAFUNC 1
 
-#include <osg/Export>
-#include <osg/Object>
-#include <osg/GL>
+#include <osg/StateAttribute>
+#include <osg/StateSet>
 
 namespace osg {
 
 /** Encapsulte OpenGL glAlphaFunc.
 */     
-class SG_EXPORT AlphaFunc : public Object
+class SG_EXPORT AlphaFunc : public StateAttribute
 {
     public :
     
+    
+        AlphaFunc();
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const AlphaFunc*>(obj)!=0L; }
+        virtual Object* clone() const { return new AlphaFunc(); }
+        virtual const char* className() const { return "AlphaFunc"; }
+    
+        virtual const Type getType() const { return ALPHAFUNC; }
+        
+        virtual void setStateSetModes(StateSet& ds,const GLModeValue value) const
+        {
+            ds.setMode(GL_ALPHA_TEST,value);
+        }
+
         enum ComparisonFunction {
             NEVER = GL_NEVER,
             LESS = GL_LESS,
@@ -23,37 +35,22 @@ class SG_EXPORT AlphaFunc : public Object
             GEQUAL = GL_GEQUAL,
             ALWAYS = GL_ALWAYS
         };
-    
-        AlphaFunc();
-        static AlphaFunc* instance();
-        virtual bool isSameKindAs(Object* obj) { return dynamic_cast<AlphaFunc*>(obj)!=NULL; }
-        virtual Object* clone() const { return new AlphaFunc(); }
-        virtual const char* className() const { return "AlphaFunc"; }
-    
-        void setFunction(ComparisonFunction func,float ref)
+
+        inline void setFunction(const ComparisonFunction func,const float ref)
         {
             _comparisonFunc = func;
             _referenceValue = ref;
         }
         
-        ComparisonFunction getFunction() const { return _comparisonFunc; }
+        inline const ComparisonFunction getFunction() const { return _comparisonFunc; }
         
-        float getRefrenceValue() const { return _referenceValue; }
+        inline const float getReferenceValue() const { return _referenceValue; }
         
-        static void enable();
-        static void disable();
-        
-        void apply();
-        
+        virtual void apply(State& state) const;
+
     protected:
     
         virtual ~AlphaFunc();
-
-        virtual bool readLocalData(Input& fr);
-        virtual bool writeLocalData(Output& fw);
-        
-        bool matchFuncStr(const char* str,ComparisonFunction& func);
-        const char* getFuncStr(ComparisonFunction func);
 
         ComparisonFunction _comparisonFunc;
         float _referenceValue;

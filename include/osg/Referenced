@@ -2,100 +2,35 @@
 #define OSG_REFERENCED 1
 
 #include <osg/Export>
+#include <set>
 
 namespace osg {
 
-/** Convience functor for unreferencing objects.*/
-template<class T>
-struct UnrefOp
-{
-    void operator () (T* node) { node->unref(); }
-};
-
-/** Smart pointer for handling referenced counted objects.*/
-template<class T>
-class ref_ptr
-{
-
-    public:
-        ref_ptr() :_ptr(0L) {}
-        ref_ptr(T* t):_ptr(t)              { if (_ptr) _ptr->ref(); }
-        ref_ptr(const ref_ptr& rp):_ptr(rp._ptr)  { if (_ptr) _ptr->ref(); }
-        ~ref_ptr()                           { if (_ptr) _ptr->unref(); }
-
-        ref_ptr& operator = (const ref_ptr& rp)
-        {
-            if (_ptr==rp._ptr) return *this;
-            if (_ptr) _ptr->unref();
-            _ptr = rp._ptr;
-            if (_ptr) _ptr->ref();
-            return *this;
-        }
-
-        ref_ptr& operator = (T* ptr)
-        {
-            if (_ptr==ptr) return *this;
-            if (_ptr) _ptr->unref();
-            _ptr = ptr;
-            if (_ptr) _ptr->ref();
-            return *this;
-        }
-
-        bool operator == (const ref_ptr& rp) const
-        {
-            return (_ptr==rp._ptr);
-        }
-
-        bool operator == (const T* ptr) const
-        {
-            return (_ptr==ptr);
-        }
-
-        bool operator != (const ref_ptr& rp) const
-        {
-            return (_ptr!=rp._ptr);
-        }
-
-        bool operator != (const T* ptr) const
-        {
-            return (_ptr!=ptr);
-        }
-
-        T& operator*() const    { return *_ptr; }
-        T* operator->() const   { return _ptr; }
-	bool operator!() const	{ return _ptr==0L; }
-	bool valid() const	{ return _ptr!=0L; }
-
-        T* get() const { return _ptr; }
-
-    private:
-        T* _ptr;
-};
-
 /** Base class from providing referencing counted objects.*/
-class Referenced
+class SG_EXPORT Referenced
 {
 
     public:
         Referenced() { _refCount=0; }
-        Referenced(Referenced&) { _refCount=0; }
+        Referenced(const Referenced&) { _refCount=0; }
 
-        Referenced& operator = (Referenced&) { return *this; }
+        inline Referenced& operator = (Referenced&) { return *this; }
 
         /** increment the reference count by one, indicating that 
             this object has another pointer which is referencing it.*/
-        void ref() { ++_refCount; }
+        inline void ref() const { ++_refCount; }
         /** decrement the reference count by one, indicating that 
             a pointer to this object is referencing it.  If the
             refence count goes to zero, it is assumed that this object
             is nolonger referenced and is automatically deleted.*/
-        void unref() { --_refCount; if (_refCount<=0) delete this; }
+        inline void unref() const { --_refCount; if (_refCount<=0) delete this; }
         /** return the number pointers currently referencing this object. */
-        int referenceCount() { return _refCount; }
+        inline const int referenceCount() const { return _refCount; }
 
     protected:
-        virtual ~Referenced() {};
-        int _refCount;
+        virtual ~Referenced() {}
+        mutable int _refCount;
+
 };
 
 };

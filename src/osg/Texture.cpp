@@ -1,161 +1,72 @@
-#include "osg/Texture"
-#include "osg/Input"
-#include "osg/Output"
-#include "osg/Registry"
-#include "osg/Image"
-#include "osg/Referenced"
-#include "osg/Notify"
+#if defined(_MSC_VER)
+	#pragma warning( disable : 4786 )
+#endif
+
+#include <osg/ref_ptr>
+#include <osg/Image>
+#include <osg/Texture>
+#include <osg/State>
+#include <osg/Notify>
+#include <osg/GLExtensions>
+
+#include <GL/glu.h>
 
 using namespace osg;
 
+
+Texture::DeletedTextureObjectCache Texture::s_deletedTextureObjectCache;
+
 Texture::Texture()
 {
-    _handle        = 0;
+    _textureUnit = 0;
 
     _wrap_s    = CLAMP;
     _wrap_t    = CLAMP;
     _wrap_r    = CLAMP;
-    _min_filter    = NEAREST_MIPMAP_LINEAR;
-    _mag_filter    = LINEAR;
+    //_min_filter    = LINEAR_MIPMAP_LINEAR; // trilinear
+    //_min_filter    = LINEAR_MIPMAP_NEAREST; // bilinear
+    _min_filter     = NEAREST_MIPMAP_LINEAR; // OpenGL default
+    _mag_filter     = LINEAR;
+
+    _internalFormatMode = USE_IMAGE_DATA_FORMAT;
+    _internalFormatValue = 0;
+
+    _textureWidth = _textureHeight = 0;
+
+    _textureObjectSize = 0;
+
+    _subloadMode   = OFF;
+    _subloadOffsX = _subloadOffsY = 0;
 }
 
 
 Texture::~Texture()
 {
-    if (_handle!=0) glDeleteTextures( 1, &_handle );
-}
-
-
-Texture* Texture::instance()
-{
-    static ref_ptr<Texture> s_texture(new Texture);
-    return s_texture.get();
-}
-
-
-bool Texture::readLocalData(Input& fr)
-{
-    bool iteratorAdvanced = false;
-    if (fr[0].matchWord("file") && fr[1].isString())
-    {
-        _image = fr.readImage(fr[1].getStr());
-        fr += 2;
-        iteratorAdvanced = true;
-    }
-    WrapMode wrap;
-    if (fr[0].matchWord("wrap_s") && matchWrapStr(fr[1].getStr(),wrap))
-    {
-        _wrap_s = wrap;
-        fr+=2;
-        iteratorAdvanced = true;
-    }
-
-    if (fr[0].matchWord("wrap_t") && matchWrapStr(fr[1].getStr(),wrap))
-    {
-        _wrap_t = wrap;
-        fr+=2;
-        iteratorAdvanced = true;
-    }
-
-    if (fr[0].matchWord("wrap_r") && matchWrapStr(fr[1].getStr(),wrap))
-    {
-        _wrap_r = wrap;
-        fr+=2;
-        iteratorAdvanced = true;
-    }
-
-    FilterMode filter;
-    if (fr[0].matchWord("min_filter") && matchFilterStr(fr[1].getStr(),filter))
-    {
-        _min_filter = filter;
-        fr+=2;
-        iteratorAdvanced = true;
-    }
-
-    if (fr[0].matchWord("mag_filter") && matchFilterStr(fr[1].getStr(),filter))
-    {
-        _mag_filter = filter;
-        fr+=2;
-        iteratorAdvanced = true;
-    }
-
-    return iteratorAdvanced;
-}
-
-
-bool Texture::writeLocalData(Output& fw)
-{
-    if (_image.valid())
-    {
-        fw.indent() << "file \""<<_image->getFileName()<<"\""<<endl;
-    }
-
-    fw.indent() << "wrap_s " << getWrapStr(_wrap_s) << endl;
-    fw.indent() << "wrap_t " << getWrapStr(_wrap_t) << endl;
-    fw.indent() << "wrap_r " << getWrapStr(_wrap_r) << endl;
-
-    fw.indent() << "min_filter " << getFilterStr(_min_filter) << endl;
-    fw.indent() << "mag_filter " << getFilterStr(_mag_filter) << endl;
-
-    return true;
-}
-
-
-bool Texture::matchWrapStr(const char* str,WrapMode& wrap)
-{
-    if (strcmp(str,"CLAMP")==0) wrap = CLAMP;
-    else if (strcmp(str,"REPEAT")==0) wrap = REPEAT;
-    else return false;
-    return true;
-}
-
-
-const char* Texture::getWrapStr(WrapMode wrap)
-{
-    switch(wrap)
-    {
-        case(CLAMP): return "CLAMP";
-        case(REPEAT): return "REPEAT";
-    }
-    return "";
-}
-
-
-bool Texture::matchFilterStr(const char* str,FilterMode& filter)
-{
-    if (strcmp(str,"NEAREST")==0) filter = NEAREST;
-    else if (strcmp(str,"LINEAR")==0) filter = LINEAR;
-    else if (strcmp(str,"NEAREST_MIPMAP_NEAREST")==0) filter = NEAREST_MIPMAP_NEAREST;
-    else if (strcmp(str,"LINEAR_MIPMAP_NEAREST")==0) filter = LINEAR_MIPMAP_NEAREST;
-    else if (strcmp(str,"NEAREST_MIPMAP_LINEAR")==0) filter = NEAREST_MIPMAP_LINEAR;
-    else if (strcmp(str,"LINEAR_MIPMAP_LINEAR")==0) filter = LINEAR_MIPMAP_LINEAR;
-    else return false;
-    return true;
-}
-
-
-const char* Texture::getFilterStr(FilterMode filter)
-{
-    switch(filter)
-    {
-        case(NEAREST): return "NEAREST";
-        case(LINEAR): return "LINEAR";
-        case(NEAREST_MIPMAP_NEAREST): return "NEAREST_MIPMAP_NEAREST";
-        case(LINEAR_MIPMAP_NEAREST): return "LINEAR_MIPMAP_NEAREST";
-        case(NEAREST_MIPMAP_LINEAR): return "NEAREST_MIPMAP_LINEAR";
-        case(LINEAR_MIPMAP_LINEAR): return "LINEAR_MIPMAP_LINEAR";
-    }
-    return "";
+    // delete old texture objects.
+    dirtyTextureObject();
 }
 
 void Texture::setImage(Image* image)
 {
-    if (_handle!=0) glDeleteTextures( 1, &_handle );
-    _handle = 0;
-    _image = image; 
+    // delete old texture objects.
+    for(TextureNameList::iterator itr=_handleList.begin();
+                               itr!=_handleList.end();
+                               ++itr)
+    {
+        if (*itr != 0)
+        {
+            // contact global texture object handler to delete texture objects
+            // in appropriate context.
+            // glDeleteTextures( 1L, (const GLuint *)itr );
+            *itr = 0;
+        }
+    }
+
+    _image = image;
 }
 
-void Texture::setWrap(WrapParameter which, WrapMode wrap)
+
+void Texture::setWrap(const WrapParameter which, const WrapMode wrap)
 {
     switch( which )
     {
@@ -166,7 +77,8 @@ void Texture::setWrap(WrapParameter which, WrapMode wrap)
     }
 }
 
-Texture::WrapMode Texture::getWrap(WrapParameter which) const
+
+const Texture::WrapMode Texture::getWrap(const WrapParameter which) const
 {
     switch( which )
     {
@@ -178,7 +90,7 @@ Texture::WrapMode Texture::getWrap(WrapParameter which) const
 }
 
 
-void Texture::setFilter(FilterParameter which, FilterMode filter)
+void Texture::setFilter(const FilterParameter which, const FilterMode filter)
 {
     switch( which )
     {
@@ -189,7 +101,7 @@ void Texture::setFilter(FilterParameter which, FilterMode filter)
 }
 
 
-Texture::FilterMode Texture::getFilter(FilterParameter which) const
+const Texture::FilterMode Texture::getFilter(const FilterParameter which) const
 {
     switch( which )
     {
@@ -199,59 +111,424 @@ Texture::FilterMode Texture::getFilter(FilterParameter which) const
     }
 }
 
-void Texture::enable( void )
+/** Force a recompile on next apply() of associated OpenGL texture objects.*/
+void Texture::dirtyTextureObject()
 {
-    glEnable( GL_TEXTURE_2D );
-}
-
-
-void Texture::disable( void )
-{
-    glDisable( GL_TEXTURE_2D );
-}
-
-
-void Texture::apply( void )
-{
-    if(_handle!=0)
+    for(uint i=0;i<_handleList.size();++i)
     {
-        glBindTexture( GL_TEXTURE_2D, _handle );
+        if (_handleList[i] != 0)
+        {
+            Texture::deleteTextureObject(i,_handleList[i]);
+            _handleList[i] = 0;
+        }
     }
-    else if (_image.valid())
+}
+
+void Texture::apply(State& state) const
+{
+
+    // get the contextID (user defined ID of 0 upwards) for the 
+    // current OpenGL context.
+    const uint contextID = state.getContextID();
+
+    // get the globj for the current contextID.
+    uint& handle = getHandle(contextID);
+
+    // For multi-texturing will need something like...
+    // glActiveTextureARB((GLenum)(GL_TEXTURE0_ARB+_textureUnit));
+
+    if (handle != 0)
+    {
+        if (_subloadMode == OFF)
+        {
+            glBindTexture( GL_TEXTURE_2D, handle );
+        }
+        else  if (_image.valid() && _image->data())
+        {
+            // pad out the modified tag list, if required.
+            while (_modifiedTag.size() <= contextID)
+                _modifiedTag.push_back(0);
+
+            if (_subloadMode == AUTO ||
+                (_subloadMode == IF_DIRTY && _modifiedTag[contextID] != _image->getModifiedTag()))
+            {
+                glBindTexture( GL_TEXTURE_2D, handle );
+                glTexSubImage2D(GL_TEXTURE_2D, 0,
+                                _subloadOffsX, _subloadOffsY,
+                                _image->s(), _image->t(),
+                                (GLenum) _image->pixelFormat(), (GLenum) _image->dataType(),
+                                _image->data());
+                // update the modified flag to show that the image has been loaded.
+                _modifiedTag[contextID] = _image->getModifiedTag();
+            }
+        }
+    }
+    else
     {
 
+        glGenTextures( 1L, (GLuint *)&handle );
+        glBindTexture( GL_TEXTURE_2D, handle );
+
+        applyImmediateMode(state);
+
+        // in theory the following line is redundent, but in practice
+        // have found that the first frame drawn doesn't apply the textures
+        // unless a second bind is called?!!
+        // perhaps it is the first glBind which is not required...
+        glBindTexture( GL_TEXTURE_2D, handle );
+
+    }
+}
+
+void Texture::compile(State& state) const
+{
+    apply(state);
+}
+
+
+void Texture::applyImmediateMode(State& state) const
+{
+    // if we don't have a valid image we can't create a texture!
+    if (!_image.valid() || !_image->data())
+        return;
+
+    // get the contextID (user defined ID of 0 upwards) for the 
+    // current OpenGL context.
+    const uint contextID = state.getContextID();
+
+    // pad out the modified tag list, if required.
+    while (_modifiedTag.size() <= contextID)
+        _modifiedTag.push_back(0);
+
+    // update the modified tag to show that it is upto date.
+    _modifiedTag[contextID] = _image->getModifiedTag();
+
+
+    if (_subloadMode == OFF)
         _image->ensureDimensionsArePowerOfTwo();
-        
-        glPixelStorei(GL_UNPACK_ALIGNMENT,_image->packing());
 
+    glPixelStorei(GL_UNPACK_ALIGNMENT,_image->packing());
 
-        glGenTextures( 1, &_handle );
-        glBindTexture( GL_TEXTURE_2D, _handle );
+    if (_wrap_s == MIRROR || _wrap_t == MIRROR)
+    {
+        static bool s_mirroredSupported = isGLExtensionSupported("GL_IBM_texture_mirrored_repeat");
 
+        // check for support of mirror-repeated textures
+        // if not supported fall back to repeated textures
+        WrapMode ws = _wrap_s, wt = _wrap_t;
+        if (!s_mirroredSupported)
+        {
+            if (ws == MIRROR)
+                ws = REPEAT;
+            if (wt == MIRROR)
+                wt = REPEAT;
+        }
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, ws );
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wt );
+    }
+    else
+    {
         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, _wrap_s );
         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, _wrap_t );
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _min_filter);
+    }
+
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _min_filter);
+
+    if (_mag_filter == ANISOTROPIC)
+    {
+        // check for support for anisotropic filter,
+        // note since this is static varible it is intialised
+        // only on the first time entering this code block,
+        // is then never reevaluated on subsequent calls.
+        static bool s_anisotropicSupported =
+            isGLExtensionSupported("GL_EXT_texture_filter_anisotropic");
+
+        if (s_anisotropicSupported)
+        {
+            // note, GL_TEXTURE_MAX_ANISOTROPY_EXT will either be defined
+            // by gl.h (or via glext.h) or by include/osg/Texture.
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 2.f);
+        }
+        else
+        {
+            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, LINEAR);
+        }
+    }
+    else
+    {
         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, _mag_filter);
+    }
+
+
+    static bool s_ARB_Compression = isGLExtensionSupported("GL_ARB_texture_compression");
+    static bool s_S3TC_Compression = isGLExtensionSupported("GL_EXT_texture_compression_s3tc");
+
+    // select the internalFormat required for the texture.
+    int internalFormat = _image->internalFormat();
+    switch(_internalFormatMode)
+    {
+        case(USE_IMAGE_DATA_FORMAT):
+            internalFormat = _image->internalFormat();
+            break;
+
+        case(USE_ARB_COMPRESSION):
+            if (s_ARB_Compression)
+            {
+                switch(_image->pixelFormat())
+                {
+                    case(1): internalFormat = GL_COMPRESSED_ALPHA_ARB; break;
+                    case(2): internalFormat = GL_COMPRESSED_LUMINANCE_ALPHA_ARB; break;
+                    case(3): internalFormat = GL_COMPRESSED_RGB_ARB; break;
+                    case(4): internalFormat = GL_COMPRESSED_RGBA_ARB; break;
+                    case(GL_RGB): internalFormat = GL_COMPRESSED_RGB_ARB; break;
+                    case(GL_RGBA): internalFormat = GL_COMPRESSED_RGBA_ARB; break;
+                    case(GL_ALPHA): internalFormat = GL_COMPRESSED_ALPHA_ARB; break;
+                    case(GL_LUMINANCE): internalFormat = GL_COMPRESSED_LUMINANCE_ARB; break;
+                    case(GL_LUMINANCE_ALPHA): internalFormat = GL_COMPRESSED_LUMINANCE_ALPHA_ARB; break;
+                    case(GL_INTENSITY): internalFormat = GL_COMPRESSED_INTENSITY_ARB; break;
+                }
+            }
+            else internalFormat = _image->internalFormat();
+            break;
+
+        case(USE_S3TC_DXT1_COMPRESSION):
+            if (s_S3TC_Compression)
+            {
+                switch(_image->pixelFormat())
+                {
+                    case(3):        internalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT; break;
+                    case(4):        internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT; break;
+                    case(GL_RGB):   internalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT; break;
+                    case(GL_RGBA):  internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT; break;
+                    default:        internalFormat = _image->internalFormat(); break;
+                }
+            }
+            else internalFormat = _image->internalFormat();
+            break;
+
+        case(USE_S3TC_DXT3_COMPRESSION):
+            if (s_S3TC_Compression)
+            {
+                switch(_image->pixelFormat())
+                {
+                    case(3):
+                    case(GL_RGB):   internalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT; break;
+                    case(4):
+                    case(GL_RGBA):  internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT; break;
+                    default:        internalFormat = _image->internalFormat(); break;
+                }
+            }
+            else internalFormat = _image->internalFormat();
+            break;
+
+        case(USE_S3TC_DXT5_COMPRESSION):
+            if (s_S3TC_Compression)
+            {
+                switch(_image->pixelFormat())
+                {
+                    case(3):
+                    case(GL_RGB):   internalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT; break;
+                    case(4):
+                    case(GL_RGBA):  internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT; break;
+                    default:        internalFormat = _image->internalFormat(); break;
+                }
+            }
+            else internalFormat = _image->internalFormat();
+            break;
+
+        case(USE_USER_DEFINED_FORMAT):
+            internalFormat = _internalFormatValue;
+            break;
+
+    }
+
+    if (_subloadMode == OFF) {
         if( _min_filter == LINEAR || _min_filter == NEAREST )
         {
+            glTexImage2D( GL_TEXTURE_2D, 0, internalFormat,
+                _image->s(), _image->t(), 0,
+                (GLenum)_image->pixelFormat(),
+                (GLenum)_image->dataType(),
+                _image->data() );
 
+            // just estimate estimate it right now..
+            // note, ignores texture compression..
+            _textureObjectSize = _image->s()*_image->t()*4;
 
-            glTexImage2D( GL_TEXTURE_2D, 0, _image->internalFormat(),
-                    _image->s(), _image->t(), 0,
-                    (GLenum)_image->pixelFormat(),
-                    (GLenum)_image->dataType(),
-                    _image->data() );
         }
         else
         {
 
-            gluBuild2DMipmaps( GL_TEXTURE_2D, _image->internalFormat(),
+            gluBuild2DMipmaps( GL_TEXTURE_2D, internalFormat,
                 _image->s(),_image->t(),
                 (GLenum)_image->pixelFormat(), (GLenum)_image->dataType(),
                 _image->data() );
+
+            // just estimate size it right now..
+            // crude x2 multiplier to account for minmap storage.
+            // note, ignores texture compression..
+            _textureObjectSize = _image->s()*_image->t()*4;
+
         }
 
-        glBindTexture( GL_TEXTURE_2D, _handle );
+        _textureWidth = _image->s();
+        _textureHeight = _image->t();
+    }
+    else
+    {
+        static bool s_SGIS_GenMipmap = isGLExtensionSupported("GL_SGIS_generate_mipmap");
 
+        if (s_SGIS_GenMipmap && (_min_filter != LINEAR && _min_filter != NEAREST)) {
+            glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
+        }
+
+        // calculate texture dimension
+        _textureWidth = 1;
+        for (; _textureWidth < (_subloadOffsX + _image->s()); _textureWidth <<= 1)
+            ;
+
+        _textureHeight = 1;
+        for (; _textureHeight < (_subloadOffsY + _image->t()); _textureHeight <<= 1)
+            ;
+
+        // reserve appropriate texture memory
+        glTexImage2D(GL_TEXTURE_2D, 0, internalFormat,
+                     _textureWidth, _textureHeight, 0,
+                     (GLenum) _image->pixelFormat(), (GLenum) _image->dataType(),
+                     NULL);
+
+        glTexSubImage2D(GL_TEXTURE_2D, 0,
+                        _subloadOffsX, _subloadOffsY,
+                        _image->s(), _image->t(),
+                        (GLenum) _image->pixelFormat(), (GLenum) _image->dataType(),
+                        _image->data());
+    }
+    
+}
+
+/** use deleteTextureObject instead of glDeleteTextures to allow
+  * OpenGL texture objects to cached until they can be deleted
+  * by the OpenGL context in which they were created, specified
+  * by contextID.*/
+void Texture::deleteTextureObject(uint contextID,uint handle)
+{
+    if (handle!=0)
+    {
+        // insert the handle into the cache for the appropriate context.
+        s_deletedTextureObjectCache[contextID].insert(handle);
+    }
+}
+
+
+/** flush all the cached display list which need to be deleted
+  * in the OpenGL context related to contextID.*/
+void Texture::flushDeletedTextureObjects(uint contextID)
+{
+    DeletedTextureObjectCache::iterator citr = s_deletedTextureObjectCache.find(contextID);
+    if (citr!=s_deletedTextureObjectCache.end())
+    {
+        std::set<uint>& textureObjectSet = citr->second;
+        for(std::set<uint>::iterator titr=textureObjectSet.begin();
+                                     titr!=textureObjectSet.end();
+                                     ++titr)
+        {
+            glDeleteTextures( 1L, (const GLuint *)&(*titr ));
+        }
+        s_deletedTextureObjectCache.erase(citr);
+    }
+}
+
+void Texture::copyTexImage2D(State& state, int x, int y, int width, int height )
+{
+    const uint contextID = state.getContextID();
+
+    // get the globj for the current contextID.
+    uint& handle = getHandle(contextID);
+    
+    if (handle)
+    {
+        if (width==(int)_textureWidth && height==(int)_textureHeight)
+        {
+            // we have a valid texture object which is the right size
+            // so lets play clever and use copyTexSubImage2D instead.
+            // this allows use to reuse the texture object and avoid
+            // expensive memory allocations.
+            copyTexSubImage2D(state,0 ,0, x, y, width, height);
+            return;
+        }
+        // the relevent texture object is not of the right size so
+        // needs to been deleted    
+        // remove previously bound textures. 
+        dirtyTextureObject();
+        // note, dirtyTextureObject() dirties all the texture objects for
+        // this texture, is this right?  Perhaps we should dirty just the
+        // one for this context.  Note sure yet will leave till later.
+        // RO July 2001.
+    }
+    
+    // For multi-texturing will need something like...
+    // glActiveTextureARB((GLenum)(GL_TEXTURE0_ARB+_textureUnit));
+    
+    // remove any previously assigned images as these are nolonger valid.
+    _image = NULL;
+
+    // switch off mip-mapping.
+    _min_filter = LINEAR;
+    _mag_filter = LINEAR;
+
+    // Get a new 2d texture handle.
+    glGenTextures( 1, &handle );
+
+    glBindTexture( GL_TEXTURE_2D, handle );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, _wrap_s );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, _wrap_t );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _min_filter );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, _mag_filter );
+//    glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+    glCopyTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, x, y, width, height, 0 );
+
+
+    /* Redundant, delete later */
+//    glBindTexture( GL_TEXTURE_2D, handle );
+
+    _textureWidth = width;
+    _textureHeight = height;
+    
+//    cout<<"copyTexImage2D x="<<x<<"  y="<<y<<"  w="<<width<<"  h="<<height<<endl;
+
+    // inform state that this texture is the current one bound.
+    state.have_applied(this);
+}
+
+void Texture::copyTexSubImage2D(State& state, int xoffset, int yoffset, int x, int y, int width, int height )
+{
+    const uint contextID = state.getContextID();
+
+    // get the globj for the current contextID.
+    uint& handle = getHandle(contextID);
+    
+    if (handle)
+    {
+        // we have a valid image
+        glBindTexture( GL_TEXTURE_2D, handle );
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, _wrap_s );
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, _wrap_t );
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _min_filter );
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, _mag_filter );
+//        glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+        glCopyTexSubImage2D( GL_TEXTURE_2D, 0, xoffset,yoffset, x, y, width, height);
+
+        /* Redundant, delete later */
+        glBindTexture( GL_TEXTURE_2D, handle );
+
+        // inform state that this texture is the current one bound.
+        state.have_applied(this);
+
+    }
+    else
+    {
+        // no texture object already exsits for this context so need to
+        // create it upfront - simply call copyTexImage2D.
+        copyTexImage2D(state,x,y,width,height);
     }
 }

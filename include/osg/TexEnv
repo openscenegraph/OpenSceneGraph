@@ -1,43 +1,41 @@
 #ifndef OSG_TEXENV
 #define OSG_TEXENV 1
 
-#include <osg/Export>
 #include <osg/GL>
-#include <osg/Object>
+#include <osg/StateAttribute>
 
 namespace osg {
 
-
-class SG_EXPORT TexEnv : public Object
+/** TexEnv - encapsulates the OpenGL glTexEnv (texture environment) state.*/
+class SG_EXPORT TexEnv : public StateAttribute
 {
     public :
 
-        enum TexEnvMode {
-            DECAL     = GL_DECAL,
-            MODULATE  = GL_MODULATE,
-            BLEND     = GL_BLEND
-        };
-
         TexEnv( void );
-        static TexEnv* instance();
         virtual Object* clone() const { return new TexEnv(); }
-        virtual bool isSameKindAs(Object* obj) { return dynamic_cast<TexEnv*>(obj)!=NULL; }
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const TexEnv*>(obj)!=0L; }
         virtual const char* className() const { return "TexEnv"; }
 
+        virtual const Type getType() const { return TEXENV; }
 
-        void setMode( TexEnvMode mode );
-        void apply( void );
+        enum Mode {
+            DECAL     = GL_DECAL,
+            MODULATE  = GL_MODULATE,
+            BLEND     = GL_BLEND,
+            REPLACE   = GL_REPLACE
+        };
+
+        void setMode( const Mode mode );
+        
+        const Mode getMode() const { return _mode; }
+        
+        virtual void apply(State& state) const;
 
     protected :
 
         virtual ~TexEnv( void );
-        virtual bool readLocalData(Input& fr);
-        virtual bool writeLocalData(Output& fw);
 
-        bool matchModeStr(const char* str,TexEnvMode& mode);
-        const char* getModeStr(TexEnvMode mode);
-
-        TexEnvMode _mode;
+        Mode _mode;
 };
 
 };

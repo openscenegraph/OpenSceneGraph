@@ -1,11 +1,8 @@
 #ifndef OSG_QUAT
 #define OSG_QUAT 1
 
-#include <osg/Export>
-#include <math.h>
-
-#include <osg/Vec4>
 #include <osg/Vec3>
+#include <osg/Vec4>
 #include <osg/Matrix>
 
 namespace osg {
@@ -28,29 +25,38 @@ class SG_EXPORT Quat
 	---------------------------------------------------------- */
 	Vec4 _fv;	// a four-vector
 
-     /* ---------------------------------- 
-	   CONSTRUCTORS
-	Default constructor
-	One to accept four floats
-	One to accept a Vec4
-	These are implemented in Quat.cpp
-	---------------------------------- */
-	Quat( void );
-	Quat( float x, float y, float z, float w );
-	Quat( const Vec4& vec );
+	Quat() {}
+	Quat( float x, float y, float z, float w ):  _fv(x,y,z,w) {}
+	Quat( const Vec4& v ): _fv(v) {}
 
      /* ----------------------------------
 	   Methods to access data members
 	---------------------------------- */
-	inline Vec4 asVec4( void ) const
+	inline Vec4& asVec4()
 	{
 	    return _fv;
 	}
 
-	inline Vec3 asVec3( void ) const
+	inline const Vec4& asVec4() const
+	{
+	    return _fv;
+	}
+
+	inline const Vec3 asVec3() const
 	{
 	    return Vec3(_fv[0], _fv[1], _fv[2]);
 	}
+
+        inline void set(const float x, const float y, const float z, const float w)
+        {
+            _fv.set(x,y,z,w);
+        }
+        
+        inline void set(const osg::Vec4& v)
+        {
+            _fv = v;
+        }
+
 
      /* ------------------------------------------------------------- 
 	 		  BASIC ARITHMETIC METHODS		    
@@ -60,7 +66,7 @@ class SG_EXPORT Quat
 	Also define methods for conjugate and the multiplicative inverse.		    
 	------------------------------------------------------------- */
 	/// Multiply by scalar 
-        inline Quat operator * (const float& rhs) const
+        inline const Quat operator * (const float& rhs) const
         {
             return Quat(_fv*rhs);
         }
@@ -73,7 +79,7 @@ class SG_EXPORT Quat
         }
 
 	/// Binary multiply 
-	inline Quat operator*(const Quat& rhs) const
+	inline const Quat operator*(const Quat& rhs) const
 	{
 	    return Quat( _fv[3]*rhs._fv[0] + _fv[0]*rhs._fv[3] + _fv[1]*rhs._fv[2] - _fv[2]*rhs._fv[1],
 			 _fv[3]*rhs._fv[1] - _fv[0]*rhs._fv[2] + _fv[1]*rhs._fv[3] + _fv[2]*rhs._fv[0],
@@ -97,7 +103,7 @@ class SG_EXPORT Quat
 	}
 
 	/// Divide by scalar 
-        inline Quat operator / (const float& rhs) const
+        inline const Quat operator / (const float& rhs) const
         {
             return Quat(_fv/rhs);
         }
@@ -110,7 +116,7 @@ class SG_EXPORT Quat
         }
 
 	/// Binary divide 
-	inline Quat operator/(const Quat& denom) const
+	inline const Quat operator/(const Quat& denom) const
 	{
 	    return ( (*this) * denom.inverse() );
 	}
@@ -123,7 +129,7 @@ class SG_EXPORT Quat
 	}
 
 	/// Binary addition 
-        inline Quat operator + (const Quat& rhs) const
+        inline const Quat operator + (const Quat& rhs) const
         {
             return Quat( _fv + rhs._fv );
         }
@@ -136,7 +142,7 @@ class SG_EXPORT Quat
         }
 
 	/// Binary subtraction 
-        inline Quat operator - (const Quat& rhs) const
+        inline const Quat operator - (const Quat& rhs) const
         {
             return Quat( _fv - rhs._fv );
         }
@@ -150,31 +156,31 @@ class SG_EXPORT Quat
 
 	/** Negation operator - returns the negative of the quaternion.
 	    Basically just calls operator - () on the Vec4 */
-        inline Quat operator - () const
+        inline const Quat operator - () const
         {
             return Quat ( -_fv );
         }
 
         /// Length of the quaternion = sqrt( vec . vec )
-        float length( void ) const
+        const float length() const
         {
             return _fv.length();
         }
 
         /// Length of the quaternion = vec . vec
-        float length2( void ) const
+        const float length2() const
         {
             return _fv.length2();
         }
 
 	/// Conjugate 
-	inline Quat conj ( void ) const
+	inline const Quat conj () const
 	{ 
 	    return Quat( -_fv[0], -_fv[1], -_fv[2], _fv[3] );
 	}
 
 	/// Multiplicative inverse method: q^(-1) = q^*/(q.q^*)
-	inline Quat inverse ( void ) const
+	inline const Quat inverse () const
 	{
 	    return conj() / length2();
 	}
@@ -215,17 +221,18 @@ class SG_EXPORT Quat
         /** Get the equivalent matrix for this quaternion.*/
         void get( osg::Matrix& m ) const;
 
-        friend inline ostream& operator << (ostream& output, const Quat& vec)
-        {
-            output << vec._fv[0] << " "
-	           << vec._fv[1] << " "
-	           << vec._fv[2] << " "
-	           << vec._fv[3];
-            return output; 	// to enable cascading
-        }
-
+        friend inline ostream& operator << (ostream& output, const Quat& vec);
 
 };	// end of class prototype
+
+inline ostream& operator << (ostream& output, const Quat& vec)
+{
+    output << vec._fv[0] << " "
+	   << vec._fv[1] << " "
+	   << vec._fv[2] << " "
+	   << vec._fv[3];
+    return output; 	// to enable cascading
+}
 
 };	// end of namespace
 #endif 

@@ -1,0 +1,46 @@
+#ifndef OSGDB_FILEUTILS
+#define OSGDB_FILEUTILS 1
+
+#include <osgDB/Export>
+
+#include <vector>
+#include <string>
+
+
+namespace osgDB {
+
+/** initialize the data file path,
+  * uses OSGFILEPATH environmental
+  * variable to defined.*/
+OSGDB_EXPORT extern void initFilePath( void );
+
+/** set the data file path.*/
+OSGDB_EXPORT extern void setFilePath( const char *_path );
+
+/** set the data file path.*/
+OSGDB_EXPORT extern const char* getFilePath();
+
+/** find specified file on the set data file path.*/
+OSGDB_EXPORT extern char *findFile( const char *file );
+
+/** find specified dso/dll.*/
+OSGDB_EXPORT extern char *findDSO( const char *name );
+
+/** simple list of names to represent a directory's contents. */
+typedef std::vector<std::string> DirectoryContents;
+
+/** return the directory/filename of a file if its is contained within specified directory.
+  * return "" if directory does not contain file.  If caseInsensitive is set to true then
+  * a case insenstive comparision is used to compare fileName to directory contents.
+  * This is useful when unix programs attempt read case insentive windows filenames.
+  */
+OSGDB_EXPORT extern std::string findFileInDirectory(const std::string& fileName,const std::string& dirName,bool caseInsensitive=false);
+
+/** return the contents of a directory.
+  * returns an empty array on any error.*/
+OSGDB_EXPORT extern DirectoryContents getDirectoryContents(const std::string& dirName);
+
+
+};
+
+#endif

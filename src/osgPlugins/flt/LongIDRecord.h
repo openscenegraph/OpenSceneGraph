@@ -14,7 +14,7 @@ namespace flt {
 
 struct SLongID
 {
-	SRecHeader	RecHeader;
+    SRecHeader    RecHeader;
     char        szIdent[1];     // (Length - 4) ASCII ID of node
 };
 

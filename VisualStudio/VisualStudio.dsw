@@ -3,7 +3,7 @@ Microsoft Developer Studio Workspace File, Format Version 6.00
 
 ###############################################################################
 
-Project: "sgv"=".\Demos\sgv\sgv.dsp" - Package Owner=<4>
+Project: "osg"=".\osg\osg.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -11,156 +11,6 @@ Package=<5>
 
 Package=<4>
 {{{
-    Begin Project Dependency
-    Project_Dep_Name osg
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name osgUtil
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name osgGLUT
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "cube"=".\Demos\cube\cube.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name osg
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name osgUtil
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name osgGLUT
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "flt"=".\osgPlugins\flt\flt.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name osg
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "fly"=".\osgPlugins\fly\fly.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name osg
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "gif"=".\osgPlugins\gif\gif.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name osg
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "jpeg"=".\osgPlugins\jpeg\jpeg.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name osg
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "pic"=".\osgPlugins\pic\pic.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name osg
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "png"=".\osgPlugins\png\png.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name osg
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "tga"=".\osgPlugins\tga\tga.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name osg
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "tiff"=".\osgPlugins\tiff\tiff.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name osg
-    End Project Dependency
 }}}
 
 ###############################################################################
@@ -178,6 +28,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name osgUtil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgDB
     End Project Dependency
 }}}
 
@@ -198,7 +51,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "osg"=".\osg\osg.dsp" - Package Owner=<4>
+Project: "osgDB"=".\osgDB\osgDB.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -206,6 +59,492 @@ Package=<5>
 
 Package=<4>
 {{{
+    Begin Project Dependency
+    Project_Dep_Name osg
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "osgconv"=".\Demos\osgconv\osgconv.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgUtil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgDB
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "sgv"=".\Demos\sgv\sgv.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgUtil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgGLUT
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "osgcube"=".\Demos\osgcube\osgcube.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgUtil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgGLUT
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "osgimpostor"=".\Demos\osgimpostor\osgimpostor.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgUtil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgGLUT
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "osgviews"=".\Demos\osgviews\osgviews.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgUtil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgGLUT
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "osgreflect"=".\Demos\osgreflect\osgreflect.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgUtil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgGLUT
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "osgtexture"=".\Demos\osgtexture\osgtexture.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgUtil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgGLUT
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "hangglide"=".\Demos\hangglide\hangglide.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgUtil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgGLUT
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "3ds"=".\osgPlugins\lib3ds\lib3ds.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgDB
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "flt"=".\osgPlugins\flt\flt.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgDB
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "lwo"=".\osgPlugins\lwo\lwo.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgUtil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "dw"=".\osgPlugins\dw\dw.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgUtil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "obj"=".\osgPlugins\obj\obj.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgDB
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "gif"=".\osgPlugins\gif\gif.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgDB
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "jpeg"=".\osgPlugins\jpeg\jpeg.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgDB
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "osgtgz"=".\osgPlugins\osgtgz\osgtgz.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgDB
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "pic"=".\osgPlugins\pic\pic.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgDB
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "png"=".\osgPlugins\png\png.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgDB
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "tga"=".\osgPlugins\tga\tga.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgDB
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "dot_osg"=".\osgPlugins\osg\dot_osg.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgDB
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "rgb"=".\osgPlugins\rgb\rgb.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgDB
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "tgz"=".\osgPlugins\tgz\tgz.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgDB
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "tiff"=".\osgPlugins\tiff\tiff.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgDB
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "zip"=".\osgPlugins\zip\zip.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgDB
+    End Project Dependency
 }}}
 
 ###############################################################################

@@ -1,60 +1,59 @@
 #ifndef OSG_FOG
 #define OSG_FOG 1
 
-#include <osg/GL>
-#include <osg/Vec4>
 #include <osg/Types>
-#include <osg/Object>
+#include <osg/Vec4>
+#include <osg/StateAttribute>
+#include <osg/StateSet>
 
 namespace osg {
 
 
 /** Fog - encapsulates OpenGL fog state. */ 
-class SG_EXPORT Fog : public Object
+class SG_EXPORT Fog : public StateAttribute
 {
     public :
 
-        enum FogMode {
+        Fog();
+        virtual Object* clone() const { return new Fog(); }
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Fog*>(obj)!=NULL; }
+        virtual const char* className() const { return "Fog"; }
+
+        virtual const Type getType() const { return FOG; }
+        
+        virtual void setStateSetModes(StateSet& ds,const GLModeValue value) const
+        {
+            ds.setMode(GL_FOG,value);
+        }
+
+        enum Mode {
             LINEAR = GL_LINEAR,
             EXP    = GL_EXP,
             EXP2   = GL_EXP2
         };
 
-        Fog( void );
-        static Fog* instance();
-        virtual Object* clone() const { return new Fog(); }
-        virtual bool isSameKindAs(Object* obj) { return dynamic_cast<Fog*>(obj)!=NULL; }
-        virtual const char* className() const { return "Fog"; }
+        inline void  setMode( const Mode mode )         { _mode = mode; }
+        inline Mode getMode() const                     { return _mode; }
 
-        static void enable( void );
-        static void disable( void );
-        void apply( void );
+        inline void  setDensity( const float density )  { _density = density; }
+        inline const float getDensity() const           { return _density; }
 
-        void  setMode( uint mode ) { _mode = mode; }
-        uint getMode( void ) { return _mode; }
+        inline void  setStart( const float start )      { _start = start; }
+        inline const float getStart() const             { return _start; }
 
-        void  setDensity( float density ) { _density = density; }
-        float getDensity( void ) { return _density; }
+        inline void  setEnd( const float end )          { _end = end; }
+        inline const float getEnd() const               { return _end; }
 
-        void  setStart( float start ) { _start = start; }
-        float getStart( void ) { return _start; }
+        inline void  setColor( const Vec4 &color )      { _color = color; }
+        inline const Vec4& getColor() const             { return _color; }
 
-        void  setEnd( float end ) { _end = end; }
-        float getEnd( void )      { return _end; }
-
-        void  setColor( Vec4 &color )
-        {
-            _color[0] = color[0];
-            _color[1] = color[1];
-            _color[2] = color[2];
-            _color[3] = color[3];
-        }
+        virtual void apply(State& state) const;
 
     protected :
 
-        virtual ~Fog( void );
+        virtual ~Fog();
 
-        uint   _mode;
+        Mode   _mode;
         float  _density;
         float  _start;
         float  _end;

@@ -1,0 +1,13 @@
+A simple hang gliding flight simulator demo. The current GliderManipulator 
+does not yet have any dynamics built into it, something TODO...
+
+A small database is built into the program - Ed Levin park, Don's local flying 
+to be precise! You'll need the textures found in the OpenSceneGraph-Data 
+distribution. To run type :
+
+    hangglide
+
+To run type with other databases, treat it just like sgv such as :
+
+    hangglide town.osg
+

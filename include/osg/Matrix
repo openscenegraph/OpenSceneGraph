@@ -2,16 +2,28 @@
 #define OSG_MATRIX 1
 
 #include <osg/Object>
-#include <osg/Types>
+#include <osg/Vec3>
+#include <osg/Vec4>
+
+#ifdef OSG_USE_IO_DOT_H
+#include <iostream.h>
+#else
+#include <iostream>
+using namespace std;
+#endif
 
 namespace osg {
 
-class Input;
-class Output;
-
 /** 4x4 Matrix for storage & manipulation of transformations in scene graph. 
     Provides basic maths operations, IO and via osg::Object reference counting.
+    You can directly load the matrix with OpenGL's LoadMatrixf() function via
+    the public member _mat as the matrix is stored in the OpenGL format.
+    Caution: The disadvantage of this feature is, that the matrix access is
+    'transposed' if you compare it with the standard C/C++ 2d-array-access
+    convention . I.e. _mat[i][j] accesses the ith column of the jth row in the
+    4x4 matrix.
 */
+
 class SG_EXPORT Matrix : public Object
 {
     public:
@@ -26,14 +38,19 @@ class SG_EXPORT Matrix : public Object
 
         virtual ~Matrix();
 
-        static Matrix* instance();
         virtual Object* clone() const { return new Matrix(); }
-        virtual bool isSameKindAs(Object* obj) { return dynamic_cast<Matrix*>(obj)!=NULL; }
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Matrix*>(obj)!=NULL; }
         virtual const char* className() const { return "Matrix"; }
 
         void makeIdent();
 
         void set(const float* m);
+
+        void set( float a00, float a01, float a02, float a03,
+                  float a10, float a11, float a12, float a13,
+                  float a20, float a21, float a22, float a23,
+                  float a30, float a31, float a32, float a33);
+
         void copy(const Matrix& matrix);
 
         void makeScale(float sx, float sy, float sz);
@@ -52,6 +69,13 @@ class SG_EXPORT Matrix : public Object
         void postTrans( float tx, float ty, float tz );
         
 
+        /**
+         * Calc the rotation matrix which aligns vector \a old_vec with
+         * vector \a new_vec.  Both \a old_vec and \a new_vec must have
+         * length 1.0.
+         */
+        void makeRot( const Vec3& old_vec, const Vec3& new_vec );
+
         void makeRot( float deg, float x, float y, float z );
         void preRot( float deg, float x, float y, float z, const Matrix& m  );
         void postRot( const Matrix& m, float deg, float x, float y, float z );
@@ -69,8 +93,24 @@ class SG_EXPORT Matrix : public Object
 
         Matrix operator * (const Matrix& m) const;
 
+    	/** apply apply an 3x3 transform of v*M[0..2,0..2]  */
+    	inline static Vec3 transform3x3(const Vec3& v,const Matrix& m);
+    	/** apply apply an 3x3 transform of M[0..2,0..2]*v  */
+    	inline static Vec3 transform3x3(const Matrix& m,const Vec3& v);
+
+    	/** post multipy v. ie. (m*v) */
         inline Vec3 operator * (const Vec3& v) const;
-        inline friend Vec3 operator * (const Vec3& v,const Matrix& m);
+
+    	/** pre multipy v. ie. (v*m) */
+        friend inline Vec3 operator * (const Vec3& v,const Matrix& m);
+
+    	/** post multipy v. ie. (m*v) */
+        inline Vec4 operator * (const Vec4& v) const;
+
+    	/** pre multipy v. ie. (v*m) */
+        friend inline Vec4 operator * (const Vec4& v,const Matrix& m);
+
+        friend inline ostream& operator << (ostream& output, const Matrix& matrix);
 
         bool invert(const Matrix& m);
 
@@ -78,12 +118,8 @@ class SG_EXPORT Matrix : public Object
         float _mat[4][4];
 
     protected:
-
-        virtual bool readLocalData(Input& fr);
-        virtual bool writeLocalData(Output& fw);
 };
 
-// post multiple v. ie. (m*v)
 inline Vec3 Matrix::operator * (const Vec3& v) const
 {
     float d = 1.0f/(_mat[3][0]*v.x()+_mat[3][1]*v.y()+_mat[3][2]*v.z()+_mat[3][3]) ;
@@ -93,13 +129,54 @@ inline Vec3 Matrix::operator * (const Vec3& v) const
 }
 
 
-// pre multiple v. ie. (v*m)
 inline Vec3 operator * (const Vec3& v,const Matrix& m)
 {
     float d = 1.0f/(m._mat[0][3]*v.x()+m._mat[1][3]*v.y()+m._mat[2][3]*v.z()+m._mat[3][3]) ;
     return Vec3( (m._mat[0][0]*v.x() + m._mat[1][0]*v.y() + m._mat[2][0]*v.z() + m._mat[3][0])*d,
         (m._mat[0][1]*v.x() + m._mat[1][1]*v.y() + m._mat[2][1]*v.z() + m._mat[3][1])*d,
         (m._mat[0][2]*v.x() + m._mat[1][2]*v.y() + m._mat[2][2]*v.z() + m._mat[3][2])*d);
+}
+
+inline Vec4 Matrix::operator * (const Vec4& v) const
+{
+    return Vec4( (_mat[0][0]*v.x() + _mat[0][1]*v.y() + _mat[0][2]*v.z() + _mat[0][3]*v.w()),
+        (_mat[1][0]*v.x() + _mat[1][1]*v.y() + _mat[1][2]*v.z() + _mat[1][3]*v.w()),
+        (_mat[2][0]*v.x() + _mat[2][1]*v.y() + _mat[2][2]*v.z() + _mat[2][3]*v.w()),
+        (_mat[3][0]*v.x() + _mat[3][1]*v.y() + _mat[3][2]*v.z() + _mat[3][3]*v.w())) ;
+}
+
+
+inline Vec4 operator * (const Vec4& v,const Matrix& m)
+{
+    return Vec4( (m._mat[0][0]*v.x() + m._mat[1][0]*v.y() + m._mat[2][0]*v.z() + m._mat[3][0]*v.w()),
+        (m._mat[0][1]*v.x() + m._mat[1][1]*v.y() + m._mat[2][1]*v.z() + m._mat[3][1]*v.w()),
+        (m._mat[0][2]*v.x() + m._mat[1][2]*v.y() + m._mat[2][2]*v.z() + m._mat[3][2]*v.w()),
+        (m._mat[0][3]*v.x() + m._mat[1][3]*v.y() + m._mat[2][3]*v.z() + m._mat[3][3]*v.w()));
+}
+
+inline Vec3 Matrix::transform3x3(const Vec3& v,const Matrix& m)
+{
+    return Vec3( (m._mat[0][0]*v.x() + m._mat[1][0]*v.y() + m._mat[2][0]*v.z()),
+                 (m._mat[0][1]*v.x() + m._mat[1][1]*v.y() + m._mat[2][1]*v.z()),
+                 (m._mat[0][2]*v.x() + m._mat[1][2]*v.y() + m._mat[2][2]*v.z()));
+}
+
+inline Vec3 Matrix::transform3x3(const Matrix& m,const Vec3& v)
+{
+    return Vec3( (m._mat[0][0]*v.x() + m._mat[0][1]*v.y() + m._mat[0][2]*v.z()),
+                 (m._mat[1][0]*v.x() + m._mat[1][1]*v.y() + m._mat[1][2]*v.z()),
+                 (m._mat[2][0]*v.x() + m._mat[2][1]*v.y() + m._mat[2][2]*v.z()) ) ;
+}
+
+inline ostream& operator << (ostream& output, const Matrix& matrix)
+{
+    output << "{"<<endl
+           << "    " << matrix._mat[0][0] << " " << matrix._mat[0][1] << " " << matrix._mat[0][2] << " " << matrix._mat[0][3] << endl
+           << "    " << matrix._mat[1][0] << " " << matrix._mat[1][1] << " " << matrix._mat[1][2] << " " << matrix._mat[1][3] << endl
+           << "    " << matrix._mat[2][0] << " " << matrix._mat[2][1] << " " << matrix._mat[2][2] << " " << matrix._mat[2][3] << endl
+           << "    " << matrix._mat[3][0] << " " << matrix._mat[3][1] << " " << matrix._mat[3][2] << " " << matrix._mat[3][3] << endl
+           << "}" << endl;
+    return output; 	// to enable cascading
 }
 
 };

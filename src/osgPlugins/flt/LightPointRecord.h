@@ -13,7 +13,7 @@ namespace flt {
 
 struct SLightPoint
 {
-	SRecHeader	RecHeader;
+    SRecHeader    RecHeader;
     char        szIdent[8];         // 7 char ASCII ID; 0 terminates
     int16       iMaterial;          // Surface material code (for DFAD)
     int16       iFeature;           // Feature ID (for DFAD)

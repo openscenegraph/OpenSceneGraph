@@ -1,7 +1,7 @@
 #ifndef OSG_LIGHTSOURCE
 #define OSG_LIGHTSOURCE 1
 
-#include <osg/Node>
+#include <osg/MemoryAdapter>
 #include <osg/NodeVisitor>
 #include <osg/Light>
 
@@ -15,24 +15,24 @@ class SG_EXPORT LightSource : public Node
         LightSource();
 
         virtual Object* clone() const { return new LightSource(); }
-        virtual bool isSameKindAs(Object* obj) { return dynamic_cast<LightSource*>(obj)!=NULL; }
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const LightSource*>(obj)!=NULL; }
         virtual const char* className() const { return "LightSource"; }
         virtual void accept(NodeVisitor& nv) { nv.apply(*this); }
 
         /** Set the attached light.*/
-        void setLight(Light* light) { _light = light; }
+        inline void setLight(Light* light) { _light = light; }
 
         /** Get the attached light.*/
-        Light* getLight() { return _light.get(); }
+        inline Light* getLight() { return _light.get(); }
+
+        /** Get the const attached light.*/
+        inline const Light* getLight() const { return _light.get(); }
 
     protected:
 
         virtual ~LightSource();
 
-        virtual bool readLocalData(Input& fr);
-        virtual bool writeLocalData(Output& fw);
-
-        virtual bool computeBound( void );
+        virtual const bool computeBound() const;
 
         ref_ptr<Light> _light;
 };

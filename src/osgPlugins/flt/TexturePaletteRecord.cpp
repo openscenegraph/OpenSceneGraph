@@ -6,16 +6,13 @@
 
 using namespace flt;
 
-
 ////////////////////////////////////////////////////////////////////
 //
 //                       TexturePaletteRecord
 //
 ////////////////////////////////////////////////////////////////////
 
-
 RegisterRecordProxy<TexturePaletteRecord> g_TexturePaletteProxy;
-
 
 TexturePaletteRecord::TexturePaletteRecord()
 {
@@ -31,14 +28,9 @@ TexturePaletteRecord::~TexturePaletteRecord()
 // virtual
 void TexturePaletteRecord::endian()
 {
-	STexturePalette *pSTexture = (STexturePalette*)getData();
+    STexturePalette *pSTexture = (STexturePalette*)getData();
 
     ENDIAN( pSTexture->diIndex );
     ENDIAN( pSTexture->diX );
     ENDIAN( pSTexture->diY );
 }
-
-
-
-
-

@@ -5,7 +5,7 @@
 
 namespace osg {
 
-/** Switch - Group node which allows switching between children.
+/** Switch is a Group node which allows switching between children.
     Typical uses would be for objects which might need to be rendered
     differently at different times, for instance a switch could be used 
     to represent the different states of a traffic light.
@@ -14,30 +14,44 @@ class SG_EXPORT Switch : public Group
 {
     public :
         
+	/**
+	 * Special mode values for the Switch. Use these if you want to
+	 * turn on/off all child nodes.
+	 */
         enum SwitchType {
-            ALL_CHILDREN_ON=-1,
-            ALL_CHILDREN_OFF=-2
+                /** Turn on all children. */
+		ALL_CHILDREN_ON=-1,
+                /** Turn off all children. */
+		ALL_CHILDREN_OFF=-2
         };
 
         Switch();
 
         virtual Object* clone() const { return new Switch(); }
-        virtual bool isSameKindAs(Object* obj) { return dynamic_cast<Switch*>(obj)!=NULL; }
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Switch*>(obj)!=NULL; }
         virtual const char* className() const { return "Switch"; }
         virtual void accept(NodeVisitor& nv) { nv.apply(*this); }
         virtual void traverse(NodeVisitor& nv);
         
-        void setVal(int val) { _value = val; }
-        int getVal() const { return _value; }
+	/**
+	 * Selects the active child Node or enables a special
+	 * SwitchType mode. 
+         * @param value the number of the active child
+	 * (first child == number 0) or SwitchType. Invalid values
+	 * will be ignored.
+	 */
+        inline void setValue(const int value) { _value = value; }
+	/**
+	 * Returns the number of the active child Node or the SwitchType.
+	 */
+        inline const int getValue() const { return _value; }
 
     protected :
     
         virtual ~Switch() {}
         
-        virtual bool readLocalData(Input& fr);
-        virtual bool writeLocalData(Output& fw);
-
-        int _value;
+        /** The current Switch value. */
+        int _value;  
 };
 
 };

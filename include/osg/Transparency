@@ -1,16 +1,27 @@
 #ifndef OSG_TRANSPARENCY
 #define OSG_TRANSPARENCY 1
 
-#include <osg/Export>
-#include <osg/Object>
-#include <osg/GL>
+#include <osg/StateAttribute>
+#include <osg/StateSet>
 
 namespace osg {
 
-
-class SG_EXPORT Transparency : public Object
+/** Transparancy - encapsulates the OpenGL transparancy state.*/
+class SG_EXPORT Transparency : public StateAttribute
 {
     public :
+
+        Transparency();
+        virtual Object* clone() const { return new Transparency(); }
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Transparency*>(obj)!=0L; }
+        virtual const char* className() const { return "Transparency"; }
+
+        virtual const Type getType() const { return TRANSPARENCY; }
+        
+        virtual void setStateSetModes(StateSet& ds,const GLModeValue value) const
+        {
+            ds.setMode(GL_BLEND,value);
+        }
 
         enum TransparencyMode {
             DST_ALPHA            = GL_DST_ALPHA,
@@ -26,16 +37,19 @@ class SG_EXPORT Transparency : public Object
             ZERO                 = GL_ZERO
         };
 
-        Transparency();
-        static Transparency * instance();
-        virtual Object* clone() const { return new Transparency(); }
-        virtual bool isSameKindAs(Object* obj) { return dynamic_cast<Transparency*>(obj)!=NULL; }
-        virtual const char* className() const { return "Transparency"; }
+        inline void setFunction( const int source, const int destination )
+        {
+            _source_factor = source;
+            _destination_factor = destination;
+        }
 
-        void setFunction( int source, int destination );
-        static void enable( void );
-        static void disable( void );
-        void apply( void );
+        void setSource(const int source) { _source_factor = source; }
+        inline const int getSource() const { return _source_factor; }
+        
+        void setDestination(const int destination) { _destination_factor = destination; }
+        inline const int getDestination() const { return _destination_factor; }
+
+        virtual void apply(State& state) const;
 
     protected :
 

@@ -8,10 +8,8 @@ C++FILES = \
 
 LIB = ../../../lib/osgPlugins/osgdb_pfb.so
 
-#LIB = ../../../lib/libpfosg.so
-
-#LIBS = -u __ucmpdi2 -lgcc -losg  ${PFLIBS} 
-LIBS = -losg  ${PFLIBS} 
+#LIBS = -u __ucmpdi2 -lgcc -losg  -losgDB ${PFLIBS} 
+LIBS = -losg -losgDB ${PFLIBS} 
 
 TARGET_LOADER_FILES = osgPlugins/osgdb_pfb.so
 

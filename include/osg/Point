@@ -1,42 +1,45 @@
 #ifndef OSG_POINT
 #define OSG_POINT 1
 
-#include <osg/Export>
-#include <osg/Object>
 #include <osg/Vec3>
+#include <osg/StateAttribute>
+#include <osg/StateSet>
 
 namespace osg {
 
-class Input;
-class Output;
-
-class SG_EXPORT Point : public Object
+/** Point - encapsulates the OpenGL point smmothing and size state.*/
+class SG_EXPORT Point : public StateAttribute
 {
     public :
 
         Point();
-        static Point* instance();
         virtual Object* clone() const { return new Point(); }
-        virtual bool isSameKindAs(Object* obj) { return dynamic_cast<Point*>(obj)!=NULL; }
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Point*>(obj)!=NULL; }
         virtual const char* className() const { return "Point"; }
 
-        void setSize(float size);
-        void setFadeThresholdSize(float fadeThresholdSize);
+        virtual const Type getType() const { return POINT; }
+        
+        virtual void setStateSetModes(StateSet& ds,const GLModeValue value) const
+        {
+            ds.setMode(GL_POINT_SMOOTH,value);
+        }
+
+        void setSize(const float size);
+        inline const float getSize() const { return _size; }
+
+        void setFadeThresholdSize(const float fadeThresholdSize);
+        inline const float getFadeThresholdSize() const { return _fadeThresholdSize; }
+
         void setDistanceAttenuation(const Vec3& distanceAttenuation);
+        inline const Vec3& getDistanceAttenuation() const { return _distanceAttenuation; }
 
-        static void enableSmooth( void );
-        static void disableSmooth( void );
-
-        void apply( void );
+        virtual void apply(State& state) const;
 
         static void init_GL_EXT();
 
     protected :
 
         virtual ~Point();
-
-        virtual bool readLocalData(Input& fr);
-        virtual bool writeLocalData(Output& fw);
 
         float       _size;
         float       _fadeThresholdSize;

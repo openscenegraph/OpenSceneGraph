@@ -8,8 +8,8 @@ DEPFILES = $(OBJS:.o=.d)
 
 C++ = CC
 YFLAGS   = -d
-#CFLAGS   = -O2 -n32 -MDupdate $(MAKEDEPEND)
-CFLAGS   = -O2 -n32 -LANG:std -OPT:Olimit=0
+#CFLAGS   = -O2 -n32 -MDupdate $(MAKEDEPEND)  -LANG:std -OPT:Olimit=0 -DEBUG:woff=1682 -DEBUG:woff=3303
+CFLAGS   = -O2 -n32 -LANG:std -OPT:Olimit=0 -DEBUG:woff=1682 -DEBUG:woff=3303
 C++FLAGS = ${CFLAGS}
 CPPFLAGS = ${CFLAGS}
 
@@ -19,7 +19,9 @@ LDFLAGS = -O2 -n32 -LANG:std -OPT:Olimit=0
 .cpp.o:
 	$(C++) $(C++FLAGS) -c $<
 
+DYNAMICLIBRARYLIB = 
 PFLIBS = -lpfdu -lpfutil -lpf -limage
+GLUTLIB = -lglut
 
 #
 # TARGET_DIRS are directories that would not exist on the system except
@@ -28,6 +30,8 @@ PFLIBS = -lpfdu -lpfutil -lpf -limage
 #
 TARGET_DIRS    = \
 		/usr/include/osg \
+		/usr/include/osgDB \
+		/usr/include/osgGLUT \
 		/usr/include/osgUtil \
 		/usr/share/OpenSceneGraph\
 		/usr/share/OpenSceneGraph/data\

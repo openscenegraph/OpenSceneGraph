@@ -1,22 +1,194 @@
 OSG News (most significant items from ChangeLog)
 ================================================
 
+9th August 2001 - osg-0.8.42.tar.gz
 
-6th December 2000 - osg_src-0.8-34.tar.gz
+    >>> New osgWX library for integration of OSG with wxWindows apps.
 
-    o New osgGLUT library assist writing of osg demos.
-    o New cube demo.
-    o Improved handling of image sizes which arn't a power of 2.
-    o Performer plugin can now work as of plugin to Performer or the
-      OSG (with a few caveates:)
+    This release sees a relatively minor number of enhancements over
+    0.8.41, the most significant being the new osgWX library and wxsgv
+    demo written by Ben Discoe.
     
+    Also from Brede Johansen in this release is the improvements in support for older
+    .flt (Open Flight) files such versions 12 & 13.  Previously only version
+    15.6 files had been tested and developed to. 
+    
+    Last but by no means least, several bug fixes related to view frustum
+    culling have been made.
+
+
+25th July 2001 - osg-0.8.41.tar.gz
+
+    >>> Support added for multi-pass and multi-stage rendering including Impostors. 
+
+    The key feature developed is a highly flexible framework for multi-pass and
+    multi-stage rendering techniques.  Unlike most scene graphs and games
+    engines the OSG has as dynamic framework which automatically configures 
+    itself at runtime.
+
+    Building ontop of the new framework's multi-stage rendering capabilities,
+    support for Impostors (hirachical image caching) has been integrated into
+    the core scene graph  library making extremely easy to take advantage of
+    this advanced rendering techinque - normally only seen in research papers.
+    Check out osgimpostor demo to see how easy it is to add osg::Impostor 
+    nodes to your own models. Impostors are particularily effective are 
+    reducing scene complexity whilest minimizing the visual impact, making it
+    ideal for scenes with large numbers of complex objects such as a city
+    scene, or a dense forest.
+    
+    Taking advantage of the new framework's multi-pass rendering capabilities
+    is osgreflect demo which illustrates how to achieve planar relfections
+    using the stencil buffer and multi-pass rendering.
+    
+    The cool thing about both the osgreflect and osgimpostor demos is that
+    there is no hardwiring to achieve the results, the scene graph stores
+    all the information neccessary to specify the number and type of rendering
+    passes, and the framework handles the rest behind the scenes.  This also
+    makes it very easy to add these advanced rendering techinques to your
+    own applications as everything is cleanly encapsulated with 
+    osgUtil::SceneView.
+
+    New loaders have been added to support .lwo (Light Wave), .obj 
+    (Alias Wavefront) and .dw (Design Workshop) 3D file formats making it 
+    even easier to compose your own worlds from models sourced from the
+    web or your own.
+    
+    osg::Camera has been totally revamped and now supports asymetric
+    and othographics projections in addition to the symetrical perspective
+    projections.
+
+    And finally, support for texture subloading has been added to osg::Texture
+    and osg::Image.  This allows textures to be updated dynamically, and
+    has already been used for mpeg video playback!   
+
+
+19th May 2001 - osg-0.8.40.tar.gz
+
+    >>> Project lead, Robert Osfield, makes full-time commitment to OSG.
+
+    This is the first full release since project lead, Robert Osfield, made
+    a move to pursue the OSG's development full-time.  This commitment has
+    been made to bring the API rapidly towards maturity, and to provide 
+    high quality support and consultancy services.  Please contact
+    robert@openscenegraph.com if you have any queries.
+
+    This release marks a significant step forward in the maturity of the 
+    API, with several major changes to the library in the areas of state
+    handling, database support, and portability.
+
+    To improve the extensibility of the OSG's handling of OpenGL state,
+    new classes have been introduced to replace the previous hardwired
+    state handling classes.  The new classes also allow improved state
+    sorting and lazy state updating which boosts both cull traversal
+    and particularly draw traversal performance. 
+
+    To improve the modularity, interopability and conceptual clarity the
+    support classes for database loading have been moved from the core
+    osg library into their own osgDB library.  Support for the .osg
+    ASCII native database format and the .rgb reader has moved into its own
+    osgPlugins library to further the cleanliness of the core library.
+
+    Support has be added for multiple OpenGL context's and hence multi-pipe 
+    systems such as sgi's Onyx2, allowing each context to have its own 
+    display list and texture objects.
+
+    The culler and rendering support in osgUtil has also been improved, and
+    significantly speeded up for complex models.
+
+    Also just in, thanks to Randall Hopper for adding support for FreeBSD :-)
+
+    
+23rd March 2001 - osg-0.8.39.tar.gz
+
+    >>> Port of OSG to MacOS underway
+
+    The first steps towards support of MacOS have been taken by Bryan Woods,
+    adding Metrowerks project files and adding support for MacOS into the
+    core scene graph.  Work still in progress so assistance welcome to 
+    complete the task.
+
+    Other major developments have been the addition of two new base classes
+    osg::StateAttribute and osg::Drawable which are designed to allow greater
+    extensibility of OpenGL state management and primitives.
+
+
+17th Feburary 2001 - osg-0.8.38.tar.gz
+
+    >>> New 3DS loader added
+
+    The OpenSceneGraph now supports the 3DS file format. This makes
+    available a huge range of potential models. Check out
+    http://www.3dcafe.com or http://www.3drocketfuel.com for some juice.
+
+10th Feburary 2001 - osg_src-0.8-37.tar.gz
+
+    >>> Texture compression now supported
+
+    The OpenSceneGraph now provides support for ARB and S3TC texture
+    compression. This allows more textures to be loaded onto graphics
+    card memory, resulting in happier users and a better world in which
+    to live.
+
+    This release also sees the addition of a simple hang gliding flight sim
+    demo.
+
+25th January 2001 - osg_src-0.8-35.tar.gz
+
+    >>> Anisotropic texturing now supported <i>and</i> loading of gzip compressed files
+
+    Anisotropic texturing provides for the next step in quality texturing 
+    filtering above tri-linear and is especially effective when viewing
+    texture surfaces at shallow angles.
+
+    Also added in this release is on-the-fly support for loading gzipped
+    (.osgtgz, .tgz) and zipped (.zip) database files.  This features allows
+    users to store whole databases (models and textures) in a single
+    tar ball and unpack them automatically on running the osg.  This
+    is ideal for browsing the web.
 
 22nd December 2000 - osg_src-0.8-33.tar.gz
 
-    o Integrated Don's work on adding glVertexArrays etc to osg::GeoSet.
-    o Incorportated the following image loaders from the simage library.
-      src/osgPlugins/gif
-                    /jpeg
-                    /pic
-                    /tga
-                    /tiff
+    >>> Support added for OpenGL vertex arrays, and several key image loaders.
+    
+    Support for OpenGL vertex arrays has been added to improve performance,
+    particularly accelerating PC based graphics.
+
+    Also added is support gif, jpeg, pic, tga, tiff image formats via
+    dynamic plugins.
+
+8th Decemeber 2000 - osg_src-0.8-32.tar.gz
+
+    >>> New high resolution, low latency timer class - osg::Timer.
+
+    Real-time graphics relies upon accurate timers for updating physics
+    simulations and managing constant framerates.  The OSG now provides
+    osg::Timer which, when supported, takes advantage of hardware timers.
+
+
+18th November 2000 - osg_src-0.8-29.tar.gz
+
+    >>> Support for detail drawing with osg::PolygonOffset.
+
+    Rendering of polygons which overlay underlying geometry, such
+    as white lines on a runway, can now be achieved utilizing the
+    new osg::PolygonOffset which encapsulates glPolygonOffset to 
+    avoid z fighting which otherwise hampers such detailing.
+
+10th November 2000 - osg_src-0.8-28.tar.gz
+
+    >>> New Open Flight .flt loader!
+
+    Thanks to Brede Johansen submission of .flt loader, the OSG can now
+    read Open Flight .flt databases.
+
+3rd November 2000 - osg_src-0.8-26.tar.gz
+
+    >>> Driving and Flight modes have been added to viewers.
+
+    osgUtil::DriveManipulator and osgUtil::FlightManipulator have been
+    added to allow the scene graph viewer (sgv) and other viewers to 
+    support a drive and flying modes.  These modes can be accessed
+    in sgv by pressing '2' and '3' respectively ('1' returns to 
+    trackball manipulator).  Left mouse button accelerates forward,
+    middle stops motion and right deccelerates.
+

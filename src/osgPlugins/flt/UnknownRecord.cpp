@@ -6,7 +6,6 @@
 
 using namespace flt;
 
-
 ////////////////////////////////////////////////////////////////////
 //
 //                         UnknownRecord
@@ -15,13 +14,12 @@ using namespace flt;
 
 RegisterRecordProxy<UnknownRecord> g_UnknownProxy;
 
-
 UnknownRecord::UnknownRecord()
 {
 }
+
 
 // virtual
 UnknownRecord::~UnknownRecord()
 {
 }
-

@@ -7,9 +7,10 @@
 #include <map>
 #include <string>
 
-#include <osg/Referenced>
+#include <osg/Node>
 
 #include "Pool.h"
+#include "HeaderRecord.h"
 
 namespace flt {
 
@@ -32,9 +33,15 @@ public:
     Record* getHeaderRecord() { return _pHeaderRecord; }
     Record* readModel(const std::string& fileName);
 
-    ColorPool*      getColorPool() { return _pColorPool; }
-    TexturePool*    getTexturePool() { return _pTexturePool; }
-    MaterialPool*   getMaterialPool() { return _pMaterialPool; }
+    ColorPool*      getColorPool()      { return _pColorPool; }
+    TexturePool*    getTexturePool()    { return _pTexturePool; }
+    MaterialPool*   getMaterialPool()   { return _pMaterialPool; }
+
+    void useLocalColorPool()            { _pColorPool = &_colorPool; }
+    void useLocalTexturePool()          { _pTexturePool = &_texturePool; }
+    void useLocalMaterialPool()         { _pMaterialPool = &_materialPool; }
+
+    int getFlightVersion();
 
 protected:
 
@@ -53,6 +60,7 @@ private:
     TexturePool*    _pTexturePool;
     MaterialPool*   _pMaterialPool;
 };
+
 
 
 }; // end namespace flt

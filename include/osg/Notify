@@ -6,58 +6,83 @@
 #ifdef OSG_USE_IO_DOT_H
 #include <iostream.h>
 #include <fstream.h>
-//#include <stdlib.h>
 #else
 #include <iostream>
 #include <fstream>
-//#include <stdlib.h>
 using namespace std;
 #endif
 
 
 namespace osg {
 
+/** Range of notify levels from DEBUG_FP through to FATAL, ALWAYS
+  * is reserved for forcing the absorption of all messages.  The
+  * keywords are also used verbatim when specified by the environmental
+  * variable OSGNOTIFYLEVEL.  See documentation on osg::notify() for
+  * further details.
+  */
 enum NotifySeverity {
     ALWAYS=0,
     FATAL=1,
     WARN=2,
     NOTICE=3,
     INFO=4,
-    DEBUG=5,
-    FP_DEBUG=6
+    DEBUG_INFO=5,
+    DEBUG_FP=6
 };
 
-extern NotifySeverity g_NotifyLevel;
-extern ofstream *g_absorbStreamPtr;
+/** global notify level. */
+SG_EXPORT extern NotifySeverity g_NotifyLevel;
 
+/** set the notify level, overriding the default or value set by
+  * the environmental variable OSGNOTIFYLEVEL.
+  */
 SG_EXPORT extern void setNotifyLevel(NotifySeverity severity);
-SG_EXPORT extern int getNotifyLevel();
 
-#ifdef WIN32
-inline ostream& notify(NotifySeverity severity=INFO)
+/** get the notify level. */
+SG_EXPORT extern NotifySeverity getNotifyLevel();
+
+/** initialize notify level. */
+SG_EXPORT extern bool initNotifyLevel();
+
+/** notify messaging function for providing fatal through to verbose
+  * debugging messages.  Level of messages sent to the console can
+  * be controlled by setting the NotifyLevel either within your 
+  * application or via the an environmental variable. For instance
+  * setenv OSGNOTIFYLEVEL DEBUG (for tsh), export OSGNOTIFYLEVEL=DEBUG
+  * (for bourne shell) or set OSGNOTIFYLEVEL=DEBUG (for Windows) all
+  * set tell the osg to redirect all debugging and more important messages
+  * to the console (useful for debugging :-)  setting ALWAYS will force
+  * all messages to be absorbed, which might be appropriate for final
+  * applications.  Default NotifyLevel is NOTICE.  Check the enum 
+  * NotifySeverity for full range of possibilities.  To use the notify
+  * with your code simply use the notify function as a normal file
+  * stream (like cout) i.e osg::notify(osg::DEBUG) << "Hello Bugs!"<<endl;
+  */
+inline ostream& notify(const NotifySeverity severity=INFO)
 {
-    if (severity<=osg::WARN) return cerr;
-    else return cout;
-}
+    static bool s_initialized = initNotifyLevel();
 
-#else
-SG_EXPORT extern ostream& notify(NotifySeverity severity=INFO);
+#ifdef __GNUC__
+    /* a little hack to prevent gcc's warning message (will be optimized away) */
+    if ( 0 && s_initialized )
+        ;
 #endif
 
-// A nifty_counter to ensure that the notify things are initialised before
-// they're used. Initialises g_NotifyLevel and g_absorbStreamPointer
-class SG_EXPORT NotifyInit
-{
-    public:
 
-	NotifyInit();
-        ~NotifyInit();
+#ifdef WIN32
+    static ofstream s_abosorbStr("nul");
+#else
+    static ofstream s_abosorbStr("/dev/null");
+#endif
 
-    private:
-	static int count_;
-};
-
-static NotifyInit niftyNotifyInit;
+    if (severity<=g_NotifyLevel)
+    {
+        if (severity<=osg::WARN) return cerr;
+        else return cout;
+    }
+    return s_abosorbStr;
+}
 
 };
 

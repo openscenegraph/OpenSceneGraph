@@ -1,0 +1,120 @@
+#ifndef OSGDB_OUTPUT
+#define OSGDB_OUTPUT 1
+
+#include <osg/Object>
+
+#include <osgDB/Export>
+
+#include <string>
+#include <map>
+
+#ifdef OSG_USE_IO_DOT_H
+#include <fstream.h>
+#else
+#include <fstream>
+using namespace std;
+#endif
+
+namespace osgDB {
+
+/** ofstream wrapper class for adding support for indenting.
+    Used in output of .osg ASCII files to improve their readability.*/
+class OSGDB_EXPORT Output : public ofstream
+{
+    public:
+
+        Output();
+        Output(const char* name);
+        
+        virtual ~Output();
+
+        void open(const char *name);
+        void open(const char *name,int mode);
+
+        Output& indent();
+
+        inline const int getIndentStep() const { return _indentStep; }
+        inline void setIndentStep(int step) { _indentStep = step; }
+
+        inline const int getIndent() const { return _indent; }
+        inline void setIndent(int indent)  { _indent = indent; }
+
+        inline const int getNumIndicesPerLine() const { return _numIndicesPerLine; }
+        inline void setNumIndicesPerLine(int num) { _numIndicesPerLine = num; }
+
+        void moveIn();
+        void moveOut();
+        
+        virtual bool writeObject(const osg::Object& obj);
+
+        bool getUniqueIDForObject(const osg::Object* obj,std::string& uniqueID);
+        bool createUniqueIDForObject(const osg::Object* obj,std::string& uniqueID);
+        bool registerUniqueIDForObject(const osg::Object* obj,std::string& uniqueID);
+
+        enum PathNameHint
+        {
+            AS_IS,
+            FULL_PATH,
+            RELATIVE_PATH,
+            FILENAME_ONLY
+        };
+        
+        inline void setPathNameHint(const PathNameHint pnh) { _pathNameHint = pnh; }
+        inline const PathNameHint getPathNameHint() const { return _pathNameHint; }
+
+        virtual const std::string getFileNameForOutput(const std::string& filename) const;
+
+    protected:
+
+        // prevent copy construction and assignment.
+        Output(const Output&) : ofstream() {}
+        Output& operator = (const Output&) { return *this; }
+
+        virtual void init();
+
+        int _indent;
+        int _indentStep;
+        
+        int _numIndicesPerLine;
+
+        typedef std::map<const osg::Object*,std::string> UniqueIDToLabelMapping;
+        UniqueIDToLabelMapping _objectToUniqueIDMap;
+        
+        std::string _filename;
+        
+        PathNameHint _pathNameHint;
+
+};
+
+template<class T>
+bool writeArrayBlock(Output& fw,T* start,T* finish)
+{
+    fw.indent() << "{" << endl;
+    fw.moveIn();
+    int numIndicesThisLine = 0;
+    for(T* itr=start;itr!=finish;++itr)
+    {
+        if (numIndicesThisLine>=fw.getNumIndicesPerLine()) 
+        {
+            fw << endl;
+            numIndicesThisLine = 0;
+        }
+
+        if (numIndicesThisLine==0) fw.indent();
+        else fw << " ";
+
+        fw << *itr;
+
+        ++numIndicesThisLine;
+
+    }
+    fw << endl;
+    fw.moveOut();
+    fw.indent() << "}" << endl;
+    return true;
+}
+
+
+};
+
+#endif                                            // __SG_OUTPUT_H

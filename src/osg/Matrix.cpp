@@ -1,11 +1,14 @@
 #include <math.h>
-#include "osg/Matrix"
-#include "osg/Input"
-#include "osg/Output"
-#include "osg/Notify"
+#include <string.h>
+
+#include <osg/Types>
+#include <osg/Matrix>
+#include <osg/Notify>
+#include <osg/ref_ptr>
 
 #define square(x)   ((x)*(x))
 #define DEG2RAD(x)  ((x)*M_PI/180.0)
+#define RAD2DEG(x)  ((x)*180.0/M_PI)
 
 using namespace osg;
 
@@ -51,7 +54,7 @@ typedef struct quaternion_
 
 static void quaternion_matrix( quaternion *q, double mat[4][4] )
 {
-/* copied from Shoemake/ACM SIGGRAPH 89 */
+    /* copied from Shoemake/ACM SIGGRAPH 89 */
     double xs, ys, zs, wx, wy, wz, xx, xy, xz, yy, yz, zz ;
 
     xs = q->x + q->x;
@@ -136,50 +139,6 @@ Matrix::~Matrix()
 }
 
 
-Matrix* Matrix::instance()
-{
-    static ref_ptr<Matrix> s_matrix(new Matrix());
-    return s_matrix.get();
-}
-
-
-bool Matrix::readLocalData(Input& fr)
-{
-    bool iteratorAdvanced = false;
-    bool matched = true;
-    for(int k=0;k<16 && matched;++k)
-    {
-        matched = fr[k].isFloat();
-    }
-    if (matched)
-    {
-        int k=0;
-        for(int i=0;i<4;++i)
-        {
-            for(int j=0;j<4;++j)
-            {
-                fr[k].getFloat(_mat[i][j]);
-                k++;
-            }
-        }
-        fr += 16;
-        iteratorAdvanced = true;
-    }
-
-    return iteratorAdvanced;
-}
-
-
-bool Matrix::writeLocalData(Output& fw)
-{
-    fw.indent() << _mat[0][0] << " " << _mat[0][1] << " " << _mat[0][2] << " " << _mat[0][3] << endl;
-    fw.indent() << _mat[1][0] << " " << _mat[1][1] << " " << _mat[1][2] << " " << _mat[1][3] << endl;
-    fw.indent() << _mat[2][0] << " " << _mat[2][1] << " " << _mat[2][2] << " " << _mat[2][3] << endl;
-    fw.indent() << _mat[3][0] << " " << _mat[3][1] << " " << _mat[3][2] << " " << _mat[3][3] << endl;
-    return true;
-}
-
-
 void Matrix::makeIdent()
 {
     _mat[0][0] = 1.0f;
@@ -203,10 +162,62 @@ void Matrix::makeIdent()
     _mat[3][3] = 1.0f;
 }
 
+void Matrix::set(const float* m)
+{
+     _mat[0][0] = m[0];
+     _mat[0][1] = m[1];
+     _mat[0][2] = m[2];
+     _mat[0][3] = m[3];
+
+     _mat[1][0] = m[4];
+     _mat[1][1] = m[5];
+     _mat[1][2] = m[6];
+     _mat[1][3] = m[7];
+
+     _mat[2][0] = m[8];
+     _mat[2][1] = m[9];
+     _mat[2][2] = m[10];
+     _mat[2][3] = m[11];
+
+     _mat[3][0] = m[12];
+     _mat[3][1] = m[13];
+     _mat[3][2] = m[14];
+     _mat[3][3] = m[15];
+}
+
+
+void Matrix::set(
+                 float a00, float a01, float a02, float a03,
+                 float a10, float a11, float a12, float a13,
+                 float a20, float a21, float a22, float a23,
+                 float a30, float a31, float a32, float a33)
+{
+    _mat[0][0] = a00;
+    _mat[0][1] = a01;
+    _mat[0][2] = a02;
+    _mat[0][3] = a03;
+
+    _mat[1][0] = a10;
+    _mat[1][1] = a11;
+    _mat[1][2] = a12;
+    _mat[1][3] = a13;
+
+    _mat[2][0] = a20;
+    _mat[2][1] = a21;
+    _mat[2][2] = a22;
+    _mat[2][3] = a23;
+
+    _mat[3][0] = a30;
+    _mat[3][1] = a31;
+    _mat[3][2] = a32;
+    _mat[3][3] = a33;
+}
+
 void Matrix::copy(const Matrix& matrix)
 {
     memcpy(_mat,matrix._mat,sizeof(_mat));
 }
+
 
 void Matrix::makeScale(float sx, float sy, float sz)
 {
@@ -224,12 +235,14 @@ void Matrix::preScale( float sx, float sy, float sz, const Matrix& m )
     mult(transMat,m);
 }
 
+
 void Matrix::postScale( const Matrix& m, float sx, float sy, float sz )
 {
     Matrix transMat;
     transMat.makeScale(sx, sy, sz);
     mult(m,transMat);
 }
+
 
 void Matrix::preScale( float sx, float sy, float sz )
 {
@@ -238,14 +251,13 @@ void Matrix::preScale( float sx, float sy, float sz )
     preMult(transMat);
 }
 
+
 void Matrix::postScale( float sx, float sy, float sz )
 {
     Matrix transMat;
     transMat.makeScale(sx, sy, sz);
     postMult(transMat);
 }
-
-
 
 
 void Matrix::makeTrans( float tx, float ty, float tz )
@@ -256,6 +268,7 @@ void Matrix::makeTrans( float tx, float ty, float tz )
     _mat[3][2] = tz;
 }
 
+
 void Matrix::preTrans( float tx, float ty, float tz, const Matrix& m )
 {
     Matrix transMat;
@@ -263,12 +276,14 @@ void Matrix::preTrans( float tx, float ty, float tz, const Matrix& m )
     mult(transMat,m);
 }
 
+
 void Matrix::postTrans( const Matrix& m, float tx, float ty, float tz )
 {
     Matrix transMat;
     transMat.makeTrans(tx, ty, tz);
     mult(m,transMat);
 }
+
 
 void Matrix::preTrans( float tx, float ty, float tz )
 {
@@ -278,11 +293,27 @@ void Matrix::preTrans( float tx, float ty, float tz )
     _mat[3][3] = (tx * _mat[0][3]) + (ty * _mat[1][3]) + (tz * _mat[2][3]) + _mat[3][3];
 }
 
+
 void Matrix::postTrans( float tx, float ty, float tz )
 {
     Matrix transMat;
     transMat.makeTrans(tx, ty, tz);
     postMult(transMat);
+}
+
+void Matrix::makeRot( const Vec3& old_vec, const Vec3& new_vec )
+{
+    /* dot product == cos(angle old_vec<>new_vec). */
+    double d = new_vec * old_vec;
+    if ( d < 0.9999 )
+    {
+        double angle = acos( d );
+        Vec3 rot_axis = new_vec ^ old_vec;
+        makeRot( RAD2DEG(angle),
+                 rot_axis.x(), rot_axis.y(), rot_axis.z() );
+    }
+    else
+        makeIdent();
 }
 
 void Matrix::makeRot( float deg, float x, float y, float z )
@@ -313,6 +344,7 @@ void Matrix::makeRot( float deg, float x, float y, float z )
     }
 }
 
+
 void Matrix::preRot( float deg, float x, float y, float z, const Matrix& m  )
 {
     Matrix rotMat;
@@ -320,12 +352,14 @@ void Matrix::preRot( float deg, float x, float y, float z, const Matrix& m  )
     mult(rotMat,m);
 }
 
+
 void Matrix::postRot( const Matrix& m, float deg, float x, float y, float z )
 {
     Matrix rotMat;
     rotMat.makeRot( deg, x, y, z );
     mult(m,rotMat);
 }
+
 
 void Matrix::preRot( float deg, float x, float y, float z )
 {
@@ -351,6 +385,7 @@ void Matrix::preRot( float deg, float x, float y, float z )
     memcpy( _mat, res_mat, sizeof( _mat ) );
 }
 
+
 void Matrix::postRot( float deg, float x, float y, float z )
 {
     quaternion q;
@@ -375,18 +410,22 @@ void Matrix::postRot( float deg, float x, float y, float z )
     memcpy( _mat, res_mat, sizeof( _mat ) );
 }
 
+
 void Matrix::setTrans( float tx, float ty, float tz )
 {
     _mat[3][0] = tx;
-    _mat[3][1] = ty;	
+    _mat[3][1] = ty;
     _mat[3][2] = tz;
 }
+
+
 void Matrix::setTrans( const Vec3& v )
 {
     _mat[3][0] = v[0];
     _mat[3][1] = v[1];
     _mat[3][2] = v[2];
 }
+
 
 void Matrix::preMult(const Matrix& m)
 {
@@ -395,6 +434,7 @@ void Matrix::preMult(const Matrix& m)
     *this = tm;
 }
 
+
 void Matrix::postMult(const Matrix& m)
 {
     Matrix tm;
@@ -402,25 +442,41 @@ void Matrix::postMult(const Matrix& m)
     *this = tm;
 }
 
+
 void Matrix::mult(const Matrix& lhs,const Matrix& rhs)
 {
-    matrix_mult( lhs._mat, rhs._mat, _mat );
+    if (&lhs==this || &rhs==this)
+    {
+        osg::Matrix tm;
+        matrix_mult( lhs._mat, rhs._mat, tm._mat );
+        *this = tm;
+    }
+    else
+    {
+        matrix_mult( lhs._mat, rhs._mat, _mat );
+    }
 }
+
 
 Matrix Matrix::operator * (const Matrix& m) const
 {
-    Matrix nm;
-    matrix_mult( _mat,m._mat, nm._mat );
-    return nm;
+    Matrix tm;
+    matrix_mult( _mat,m._mat, tm._mat );
+    return tm;
 }
 
 
-bool Matrix::invert(const Matrix& _m)
+bool Matrix::invert(const Matrix& invm)
 {
+    if (&invm==this) {
+        Matrix tm(invm);
+        return invert(tm);
+    }
+
     // code lifted from VR Juggler.
     // not cleanly added, but seems to work.  RO.
 
-    const float*  a = reinterpret_cast<const float*>(_m._mat);
+    const float*  a = reinterpret_cast<const float*>(invm._mat);
     float*  b = reinterpret_cast<float*>(_mat);
 
     int     n = 4;
@@ -428,14 +484,14 @@ bool Matrix::invert(const Matrix& _m)
     int     r[ 4], c[ 4], row[ 4], col[ 4];
     float  m[ 4][ 4*2], pivot, max_m, tmp_m, fac;
 
-/* Initialization */
+    /* Initialization */
     for ( i = 0; i < n; i ++ )
     {
         r[ i] = c[ i] = 0;
         row[ i] = col[ i] = 0;
     }
 
-/* Set working matrix */
+    /* Set working matrix */
     for ( i = 0; i < n; i++ )
     {
         for ( j = 0; j < n; j++ )
@@ -445,10 +501,10 @@ bool Matrix::invert(const Matrix& _m)
         }
     }
 
-/* Begin of loop */
+    /* Begin of loop */
     for ( k = 0; k < n; k++ )
     {
-/* Choosing the pivot */
+        /* Choosing the pivot */
         for ( i = 0, max_m = 0; i < n; i++ )
         {
             if ( row[ i]  ) continue;
@@ -470,11 +526,11 @@ bool Matrix::invert(const Matrix& _m)
         if ( fabs( pivot) <= 1e-20)
         {
             notify(WARN) << "*** pivot = %f in mat_inv. ***\n";
-//exit( 0);
+            //exit( 0);
             return false;
         }
 
-/* Normalization */
+        /* Normalization */
         for ( j = 0; j < 2*n; j++ )
         {
             if ( j == c[ k] )
@@ -483,7 +539,7 @@ bool Matrix::invert(const Matrix& _m)
                 m[ r[ k]][ j] /=pivot;
         }
 
-/* Reduction */
+        /* Reduction */
         for ( i = 0; i < n; i++ )
         {
             if ( i == r[ k] )
@@ -499,7 +555,7 @@ bool Matrix::invert(const Matrix& _m)
         }
     }
 
-/* Assign invers to a matrix */
+    /* Assign invers to a matrix */
     for ( i = 0; i < n; i++ )
         for ( j = 0; j < n; j++ )
             row[ i] = ( c[ j] == i ) ? r[j] : row[ i];
@@ -508,5 +564,5 @@ bool Matrix::invert(const Matrix& _m)
         for ( j = 0; j < n; j++ )
             b[ i * n +  j] = m[ row[ i]][j + n];
 
-    return true;                                  // It worked
+    return true;                 // It worked
 }

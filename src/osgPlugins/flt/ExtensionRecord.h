@@ -24,7 +24,7 @@ namespace flt {
 
 typedef struct ExtensionTag
 {
-	SRecHeader	RecHeader;
+    SRecHeader    RecHeader;
 
     char    szIdent[8];     // 7 char ASCII ID; 0 terminates
     char    site[8];        // Site ID - Unique site name

@@ -1,9 +1,11 @@
 #ifndef OSG_NODE
 #define OSG_NODE 1
 
-#include <osg/Types>
 #include <osg/Object>
+#include <osg/StateSet>
 #include <osg/BoundingSphere>
+#include <osg/MemoryAdapter>
+#include <osg/ref_ptr>
 
 #include <string>
 #include <vector>
@@ -12,39 +14,6 @@ namespace osg {
 
 class NodeVisitor;
 class Group;
-
-/** Class for adapting the memory management of external data.
- *  Typically used to specify the memory management of user data
- *  which can be attached to osg::Node.
- */
-class SG_EXPORT MemoryAdapter : public Referenced
-{
-    public:
-        MemoryAdapter() {}
-        
-        /** Increment the reference count of the userData.*/ 
-        virtual void incrementReference(void* /*userData*/) = 0;
-
-        /** Decrement the reference count of the userData.
-            Is usually implemented such that if reference count 
-            is decremented to zero the userData should be
-            deleted.  However, this is entirely up to the
-            discression of the user who is extending this base class.*/ 
-        virtual void decrementReference(void* /*userData*/) = 0;
-   
-        /** not current used, but will be used in future.*/ 
-        virtual void* clone(void* /*userData*/) { return 0L; }
-        
-        /** not current used, but will be used in future.*/ 
-        virtual bool write(Output& /*fw*/,void* /*userData*/) { return false; }
-
-        /** not current used, but will be used in future.*/ 
-        virtual bool read(Input& /*fr*/,void* /*userData*/) { return false; }
-
-    protected:
-    
-        virtual ~MemoryAdapter() {}
-};
 
 /** Base class for all internal nodes in the scene graph.
     Provides interface for most common node operations (Composite Pattern).
@@ -60,11 +29,9 @@ class SG_EXPORT Node : public Object
 
         /** return a shallow copy of a node, with Object* return type.*/
         virtual Object* clone() const { return new Node(); }
-        /** return a shallow copy of a node, with Node* return type.*/
-        Node* cloneNode() const { return (Node*)clone(); }
 
         /** return true if this and obj are of the same kind of object.*/
-        virtual bool isSameKindAs(Object* obj) { return dynamic_cast<Node*>(obj)!=NULL; }
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Node*>(obj)!=NULL; }
 
         /** return the name of the node's class type.*/
         virtual const char* className() const { return "Node"; }
@@ -78,54 +45,66 @@ class SG_EXPORT Node : public Object
 
 
         /** Set the name of node using C++ style string.*/
-        void setName( const std::string& name ) { _name = name; }
+        inline void setName( const std::string& name ) { _name = name; }
         /** Set the name of node using a C style string.*/
-        void setName( const char* name ) { _name = name; }
+        inline void setName( const char* name ) { _name = name; }
         /** Get the name of node.*/
-        const std::string& getName( void ) { return _name; }
+        inline const std::string& getName() const { return _name; }
         
 
         /** A vector of osg::Group pointers which is used to store the parent(s) of node.*/
         typedef std::vector<Group*> ParentList;
 
         /** Get the parent list of node. */
-        const ParentList& getParents() const { return _parents; }
+        inline const ParentList& getParents() const { return _parents; }
+
+        /** Get the a copy of parent list of node. A copy is returned to 
+          * prevent modifiaction of the parent list.*/
+//        inline ParentList getParents() { return _parents; }
+
+        inline Group* getParent(const int i)  { return _parents[i]; }
         /**
-         * Get a single parent of node.
+         * Get a single const parent of node.
          * @param i index of the parent to get.
          * @return the parent i.
          */
-        Group* getParent(int i) const  { return _parents[i]; }
+        inline const Group* getParent(const int i) const  { return _parents[i]; }
+
         /**
          * Get the number of parents of node.
          * @return the number of parents of this node.
          */
-        int getNumParents() const { return _parents.size(); }
+        inline const int getNumParents() const { return _parents.size(); }
 
 
         /**
          * Set user data. See MemoryAdapter documention for details
          * of how to specify memory managament of _userData.
          */
-        void setUserData(void* data,MemoryAdapter* ma=0L)
+        inline void setUserData(void* data,MemoryAdapter* ma=0L)
         {
-            if (_userData && _memoryAdapter.valid()) _memoryAdapter->decrementReference(_userData);
+            if (_userData && _memoryAdapter.valid()) _memoryAdapter->unref_data(_userData);
             _userData = data;
             _memoryAdapter = ma;
-            if (_userData && _memoryAdapter.valid()) _memoryAdapter->incrementReference(_userData);
+            if (_userData && _memoryAdapter.valid()) _memoryAdapter->ref_data(_userData);
         }
         /** Get user data.*/
-        void* getUserData() const { return _userData; }
+        inline void* getUserData() { return _userData; }
         
+        /** Get const user data.*/
+        inline const void* getUserData() const { return _userData; }
+
         /** Get the memory adapter associated with _userData.*/
-        MemoryAdapter* getMemoryAdapter() const { return _memoryAdapter.get(); }
+        inline MemoryAdapter* getMemoryAdapter() { return _memoryAdapter.get(); }
         
+        /** Get the const memory adapter associated with _userData.*/
+        inline const MemoryAdapter* getMemoryAdapter() const { return _memoryAdapter.get(); }
 
         typedef unsigned int NodeMask;
         /** Set the node mask. Note, node mask is will be replaced by TraversalMask.*/
-        void setNodeMask(NodeMask nm) { _nodeMask = nm; }
+        inline void setNodeMask(const NodeMask nm) { _nodeMask = nm; }
         /** Get the node Mask. Note, node mask is will be replaced by TraversalMask.*/
-        NodeMask getNodeMask()        { return _nodeMask; }
+        inline const NodeMask getNodeMask() const { return _nodeMask; }
 
 
 
@@ -133,21 +112,36 @@ class SG_EXPORT Node : public Object
         typedef std::vector<std::string> DescriptionList;
 
         /** Get the description list of the const node.*/        
-        const DescriptionList& getDescriptions() const { return _descriptions; }
+        inline const DescriptionList& getDescriptions() const { return _descriptions; }
         /** Get the description list of the const node.*/        
-        DescriptionList& getDescriptions() { return _descriptions; }
+        inline DescriptionList& getDescriptions() { return _descriptions; }
         /** Get a single const description of the const node.*/
-        const std::string& getDescription(int i) const { return _descriptions[i]; }
+        inline const std::string& getDescription(const int i) const { return _descriptions[i]; }
         /** Get a single description of the node.*/
-        std::string& getDescription(int i) { return _descriptions[i]; }
+        inline std::string& getDescription(const int i) { return _descriptions[i]; }
         /** Get the number of descriptions of the node.*/
-        int getNumDescriptions() const { return _descriptions.size(); }
+        inline const int getNumDescriptions() const { return _descriptions.size(); }
         /** Add a description string to the node.*/
         void addDescription(const std::string& desc) { _descriptions.push_back(desc); }
 
+
+        /** set the node's StateSet.*/
+        inline void setStateSet(osg::StateSet* dstate) { _dstate = dstate; }
+
+        /** return the node's StateSet.*/
+        inline osg::StateSet* getStateSet() { return _dstate.get(); }
+
+        /** return the node's const StateSet.*/
+        inline const osg::StateSet* getStateSet() const { return _dstate.get(); }
+
         /** get the bounding sphere of node.
            Using lazy evaluation computes the bounding sphere if it is 'dirty'.*/
-        const BoundingSphere& getBound();
+        inline const BoundingSphere& getBound() const
+        {
+            if(!_bsphere_computed) computeBound();
+            return _bsphere;
+        }
+
 
         /** Mark this node's bounding sphere dirty.
             Forcing it to be computed on the next call to getBound().*/
@@ -165,29 +159,14 @@ class SG_EXPORT Node : public Object
             = new Node().*/
         virtual ~Node();
 
-        /**
-         * Template Method Pattern : read local data from .osg file.
-         * Note should be implemented in derived classes, which
-         * call their parent class's readLocalData.
-         * @return true if the input iterator has been advanced, otherwise false.
-         */
-        virtual bool readLocalData(Input& fr);
-
-        /**
-         * Template Method Pattern : read local data from .osg file.
-         * Note should be implemented in derivied classes, which
-         * call their parent class's writeLocalData.
-         * @return true if data has been written out, otherwise false.
-         */
-        virtual bool writeLocalData(Output& fw);
 
         /** Compute the bounding sphere around Node's geometry or children.
             This method is automatically called by getBound() when the bounding
             sphere has been marked dirty via dirtyBound().*/
-        virtual bool computeBound( void ) ;
+        virtual const bool computeBound() const;
 
-        BoundingSphere _bsphere;
-        bool _bsphere_computed;
+        mutable BoundingSphere _bsphere;
+        mutable bool _bsphere_computed;
 
         std::string _name;
 
@@ -200,6 +179,8 @@ class SG_EXPORT Node : public Object
         NodeMask _nodeMask;
         
         DescriptionList _descriptions;
+
+        ref_ptr<StateSet> _dstate;
 
 };
 

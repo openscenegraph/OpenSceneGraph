@@ -31,15 +31,13 @@ o Core OSG Library
         . osg::Plane class.
 
     - Nodes
-        . create a base class to provide interface to objects which can render,
-          derive osg::GeoSet from this.
         . add osg::Sequence for basic animation.
         . add osg::Morph for interpolating between geometries.
+        . add osg::Engine.
         . add support for Multi-texturing into osg::GeoSet/osg::GeoState.
-        . add support for multi-pass rendering.
+        . add support for pixel/vertex shaders into osg::GeoSet/osg::GeoState.
         . utilise stl vectors for osg::GeoSets?
-        . improve osg::GeoState.
-        . add osg::State for mainting image of the OpenGL state.
+        . add handling of memory of osg::GeoSet's attributes.
         . add osg::Terrain node.
         . add osg::EarthSky class for rendering earth and sky backgrounds.
         . add proxy node for lazy loading of nodes, when needed.
@@ -68,14 +66,10 @@ o Core OSG Library
 o Reader/writer plug-ins
   =======================
     - .iv/.wrl  Inventor/VRML ascii.
-    - .obj      Alias wavefront's format.
     - .dxf      Autocads ascii format.
-    - .3ds      3D Studio format.
     - .dem      digital elevation map.
     - .d3d?     MS's Direct 3D file formats if they have one..
     - .bmp      Windows Bitmap files.
-    - .gz       Automatic unzipping of GNU zipped files.
-    - .zip      Automatic unzipping of windows zipped files.
     - .Z        Automatic unzipping of Unix Compress files.
     - .tar      Automatic unpacking of directories and loading of contents.
 
@@ -95,15 +89,20 @@ o Viewers & Application plug-ins
 o Under development 
   =================
     Sign up here if would like to take on a task :-)
+
     - add osg::Billboard for trees etc.
-    - .pfb loader for Performer binary files.
     - full maths support in osg::Matrix class.
     - Netscape plug-in.
     - add osg::Channel/sgCamera class.
-    - .flt Open Flight format.
+    - .pfb loader for Performer binary files (functioning already.)
+    - .flt Open Flight format (functioning already.)
+    - .3ds 3D Studio format (functioning already.)
     - autoconf/configure support to aid portabilty to other unix's.
     - CVS support for when source is made fully public.
-
+    - Mac port.
+    - tri stripping visitor.
+    - .obj      Alias wavefront's format.(functioning already.)
+    - .lwo      Light Waves's format.(functioning already.)
 
 o Work completed
   ==============
@@ -139,3 +138,10 @@ o Work completed
     - add timing/timestamp class.
     - document how to get the OSG compiled and running under all
       platforms, Win32 being priority as it's the least obvious.
+    - .gz (as osgtgz and .tgz) Automatic unzipping of GNU zipped files.
+    - .zip      Automatic unzipping of windows zipped files.
+    - add osg::State for mainting image of the OpenGL state.
+    - improve osg::GeoState -> improved version call osg::StateSet.
+    - create a base class to provide interface to objects which can render,
+      derive osg::GeoSet from this.
+    - add support for multi-pass rendering.

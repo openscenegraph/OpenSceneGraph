@@ -11,10 +11,12 @@ RecordVisitor::RecordVisitor(TraversalMode tm)
     _traverseMode = tm;
 }
 
+
 RecordVisitor::~RecordVisitor()
 {
     // if (_traverseVisitor) detach from _traverseVisitor;
 }
+
 
 void RecordVisitor::setTraverseMode(TraversalMode mode)
 {
@@ -30,6 +32,7 @@ void RecordVisitor::setTraverseMode(TraversalMode mode)
         _traverseMode = mode;
     }
 }
+
 
 void RecordVisitor::setTraverseVisitor(RecordVisitor* rv)
 {

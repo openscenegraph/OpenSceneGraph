@@ -522,7 +522,7 @@ const StateAttribute::GLModeValue StateSet::getTextureMode(unsigned int unit,con
         return StateAttribute::INHERIT;
 }
 
-void StateSet::setTextureAttribute(unsigned int unit,StateAttribute *attribute, const StateAttribute::OverrideValue value=StateAttribute::OFF)
+void StateSet::setTextureAttribute(unsigned int unit,StateAttribute *attribute, const StateAttribute::OverrideValue value)
 {
     if (attribute)
     {
@@ -533,7 +533,7 @@ void StateSet::setTextureAttribute(unsigned int unit,StateAttribute *attribute, 
 }
 
 
-void StateSet::setTextureAttributeAndModes(unsigned int unit,StateAttribute *attribute, const StateAttribute::GLModeValue value=StateAttribute::ON)
+void StateSet::setTextureAttributeAndModes(unsigned int unit,StateAttribute *attribute, const StateAttribute::GLModeValue value)
 {
     if (attribute)
     {

@@ -2116,3 +2116,8 @@ int yywrap(void)
 {
 return (1);
 }
+
+void flush_scanner(void) {
+    yy_flush_buffer(YY_CURRENT_BUFFER);
+
+}

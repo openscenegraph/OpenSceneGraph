@@ -28,17 +28,28 @@ class SG_EXPORT MatrixTransform : public Transform
         META_Node(osg, MatrixTransform);
 
         /** Set the transform's matrix.*/
-        void setMatrix(const Matrix& mat) { (*_matrix) = mat; _inverseDirty=true; computeInverse(); dirtyBound(); }
+        void setMatrix(const Matrix& mat) { (*_matrix) = mat; _inverseDirty=true; dirtyBound(); }
         
-        /** Get the transform's matrix. */
+        /** Get the matrix. */
         inline const Matrix& getMatrix() const { return *_matrix; }
 
-        /** preMult transform.*/
-        void preMult(const Matrix& mat) { _matrix->preMult(mat); _inverseDirty=true; computeInverse(); dirtyBound(); }
+        /** pre multiply the transforms matrix.*/
+        void preMult(const Matrix& mat) { _matrix->preMult(mat); _inverseDirty=true; dirtyBound(); }
         
-        /** postMult transform.*/
-        void postMult(const Matrix& mat)  { _matrix->postMult(mat); _inverseDirty=true; computeInverse(); dirtyBound(); }
+        /** post multiply the transforms matrix.*/
+        void postMult(const Matrix& mat)  { _matrix->postMult(mat); _inverseDirty=true; dirtyBound(); }
     
+        /** Get the inverse matrix. */
+        inline const Matrix& getInverseMatrix() const
+        {
+            if (_inverseDirty)
+            {
+                _inverse->invert(*_matrix);
+                _inverseDirty = false;
+            }
+            return *_inverse;
+        }
+
         virtual const bool computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const
         {
             if (_referenceFrame==RELATIVE_TO_PARENTS)
@@ -54,13 +65,15 @@ class SG_EXPORT MatrixTransform : public Transform
 
         virtual const bool computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor*) const
         {
+            const Matrix& inverse = getInverseMatrix();
+
             if (_referenceFrame==RELATIVE_TO_PARENTS)
             {
-                matrix.postMult(*_inverse);
+                matrix.postMult(inverse);
             }
             else // absolute
             {
-                matrix = *_inverse;
+                matrix = inverse;
             }
             return true;
         }
@@ -69,18 +82,9 @@ class SG_EXPORT MatrixTransform : public Transform
     
         virtual ~MatrixTransform();
         
-        inline void computeInverse() const
-        {
-            if (_inverseDirty)
-            {
-                _inverse->invert(*_matrix);
-                _inverseDirty = false;
-            }
-        }
-
         ref_ptr<Matrix>                     _matrix;
         mutable ref_ptr<Matrix>             _inverse;
-        mutable bool                        _inverseDirty;        
+        mutable bool                        _inverseDirty;
 
 };
 

@@ -225,10 +225,10 @@ void OSGVisitor::makeGeode(osg::Geode *geode, osg::Geometry *geometry, bool twoS
     state->setAttributeAndModes(frontface,osg::StateAttribute::ON);
     osg::CullFace *cull=new osg::CullFace();
     cull->setMode(osg::CullFace::BACK);
-    if (twoSided) {
+    if (!twoSided) {
 	state->setAttributeAndModes(cull,osg::StateAttribute::ON);
     } else {
-	std::cout <<  "Deactivating culling for this object" << std::endl;
+	//std::cout <<  "Deactivating culling for this object" << std::endl;
 	state->setAttributeAndModes(cull,osg::StateAttribute::OFF);
 	osg::Transparency    *transp=new osg::Transparency();
 	transp->setFunction(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);

@@ -17,7 +17,7 @@ using namespace osgUtil;
 
 void Optimizer::optimize(osg::Node* node, unsigned int options)
 {
-   
+
     if (options & COMBINE_ADJACENT_LODS)
     {
         CombineLODsVisitor clv;
@@ -289,14 +289,16 @@ void Optimizer::StateVisitor::optimize()
 
 void Optimizer::FlattenStaticTransformsVisitor::apply(osg::Geode& geode)
 {
-    if (!_matrixStack.empty())
+
+    osg::Matrix matrix;
+    if (!_matrixStack.empty()) matrix = _matrixStack.back();
+
+    for(int i=0;i<geode.getNumDrawables();++i)
     {
-        for(int i=0;i<geode.getNumDrawables();++i)
-        {
-            // register each drawable with the objectMap.
-            _objectMap[geode.getDrawable(i)].add(_transformStack,_matrixStack.back());
-        }
+        // register each drawable with the objectMap.
+        _objectMap[geode.getDrawable(i)].add(_transformStack,matrix);
     }
+
 }
 
 void Optimizer::FlattenStaticTransformsVisitor::apply(osg::Billboard& billboard)

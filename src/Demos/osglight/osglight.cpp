@@ -34,6 +34,7 @@ osg::Node* createLights(osg::BoundingBox& bb,osg::StateSet* rootStateSet)
     myLight1->setAmbient(osg::Vec4(1.0f,0.0f,0.0f,1.0f));
     myLight1->setDiffuse(osg::Vec4(1.0f,0.0f,0.0f,1.0f));
     myLight1->setSpotCutoff(20.0f);
+    myLight1->setSpotExponent(50.0f);
     myLight1->setDirection(osg::Vec3(1.0f,1.0f,-1.0f));
 
     osg::LightSource* lightS1 = new osg::LightSource;	

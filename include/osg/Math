@@ -12,9 +12,10 @@
 #endif
 
 
-#if (defined(WIN32) && !(defined(_MSC_VER) && (_MSC_VER >= 1300)) ) || \
+#if (defined(WIN32) && !(defined(_MSC_VER) && (_MSC_VER >= 1300)) && !defined(__MINGW32__) ) || \
     defined (sun) || \
     defined (__DARWIN_OSX__)
+    
 
     #include <float.h>
 
@@ -57,7 +58,7 @@
 
 #endif
 
-#if (defined(WIN32) && !(defined(_MSC_VER) && (_MSC_VER >= 1300)) ) || \
+#if (defined(WIN32) && !(defined(_MSC_VER) && (_MSC_VER >= 1300)) && !defined(__MINGW32__) ) || \
     defined (sun)
 
     #ifndef isnanf
@@ -66,7 +67,7 @@
 
 #endif
 
-#if (defined(WIN32) && !(defined(_MSC_VER) && (_MSC_VER >= 1300)) ) || \
+#if (defined(WIN32) && !(defined(_MSC_VER) && (_MSC_VER >= 1300)) && !defined(__MINGW32__) ) || \
     defined (sun) || \
     defined (__hpux__)
 

@@ -35,7 +35,7 @@ SG_EXPORT extern bool isGLExtensionSupported(const char *extension);
 inline void* getGLExtensionFuncPtr(const char *funcName)
 {
 #if defined(WIN32)
-    return wglGetProcAddress(funcName);
+    return (void*)wglGetProcAddress(funcName);
 #elif defined(__DARWIN_OSX__)
     std::string temp( "_" );
     temp += funcName;	// Mac OS X prepends an underscore on function names
@@ -79,7 +79,7 @@ SG_EXPORT extern bool isGLUExtensionSupported(const char *extension);
 inline void* getGLUExtensionFuncPtr(const char *funcName)
 {
 #if defined(WIN32)
-    return wglGetProcAddress(funcName);
+    return (void*)wglGetProcAddress(funcName);
 #elif defined(__DARWIN_OSX__)
     std::string temp( "_" );
     temp += funcName;	// Mac OS X prepends an underscore on function names

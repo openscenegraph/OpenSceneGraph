@@ -20,6 +20,7 @@
 *
 *****************************************************************************/
 #include "trpage_sys.h"
+#include <osg/AlphaFunc>
 #include <osg/Group>
 #include <osg/Material>
 #include <osg/Texture>
@@ -35,7 +36,9 @@
 #include <osg/Transparency>
 #include <osg/Notify>
 
+
 #include "TrPageParser.h"
+#include "TrPageArchive.h"
 /*
 #include <stdlib.h>
 #include <stdio.h>
@@ -47,6 +50,119 @@ using namespace txp;
 using namespace osg;
 using std::vector;
 using std::string;
+
+Texture* txp::GetLocalTexture(trpgrImageHelper& image_helper, trpgLocalMaterial* locmat, const trpgTexture* tex)
+{
+    Texture* osg_texture= 0L;
+
+    trpg2iPoint s;
+    tex->GetImageSize(s);
+    int32 depth;
+    tex->GetImageDepth(depth);
+    trpgTexture::ImageType type;
+    tex->GetImageType(type);
+    
+    Texture::InternalFormatMode internalFormatMode = Texture::USE_IMAGE_DATA_FORMAT;
+    
+    GLenum gltype = (GLenum)-1;
+    switch(type)
+    {
+    case trpgTexture::trpg_RGB8:
+        gltype = GL_RGB;
+        break;
+    case trpgTexture::trpg_RGBA8:
+        gltype = GL_RGBA;
+        break;
+    case trpgTexture::trpg_INT8:
+        gltype = GL_LUMINANCE;
+        break;
+    case trpgTexture::trpg_INTA8:
+        gltype = GL_LUMINANCE_ALPHA;
+        break;
+    case trpgTexture::trpg_FXT1:
+    case trpgTexture::trpg_Filler:
+    case trpgTexture::trpg_RGBX: // MCM
+    case trpgTexture::trpg_Unknown:
+    case trpgTexture::trpg_DDS:
+        break;
+    case trpgTexture::trpg_DXT1:
+        if(depth == 3)
+            gltype = GL_RGB;
+        else
+            gltype = GL_RGBA;
+        internalFormatMode = Texture::USE_S3TC_DXT1_COMPRESSION;
+        break;
+    case trpgTexture::trpg_DXT3:
+        if(depth == 3)
+            gltype = GL_RGB;
+        else
+            gltype = GL_RGBA;
+        internalFormatMode = Texture::USE_S3TC_DXT3_COMPRESSION;
+        break;
+    case trpgTexture::trpg_DXT5:
+        if(depth == 3)
+            gltype = GL_RGB;
+        else
+            gltype = GL_RGBA;
+        internalFormatMode = Texture::USE_S3TC_DXT5_COMPRESSION;
+        break;
+    }
+    
+    if(gltype!=(GLenum)-1)
+    {
+        osg_texture = new Texture();
+        osg_texture->setInternalFormatMode(internalFormatMode);
+
+        
+        Image* image = new Image;
+        char* data = 0L;
+
+        int32 num_mipmaps = tex->CalcNumMipmaps();
+        // osg::Image do their own mipmaps
+        if(num_mipmaps <= 1)
+        {
+            int32 size = s.x*s.y*depth; 
+            // int32 size = const_cast<trpgTexture*>(tex)->MipLevelSize(1) ;
+            data = (char*)::malloc(size);
+
+            if(locmat)            
+               image_helper.GetImageForLocalMat(locmat,data,size);
+            else
+                image_helper.GetLocalGL(tex,data,size);
+
+        }
+        else
+        {
+            int32 size = tex->CalcTotalSize();
+            trpgTexture* tmp_tex = const_cast<trpgTexture*>(tex);
+
+            for( int j = 1 ; j <= num_mipmaps;j++ )
+                size -= tmp_tex->MipLevelSize(j);//s.x*s.y*depth; 
+            
+            data = (char*)::malloc(size);
+
+            if(locmat)            
+               image_helper.GetImageForLocalMat(locmat,data,size);
+            else
+               image_helper.GetLocalGL(tex,data,size);
+        }
+        //  AAAARRRGH! TOOK ME 2 DAYS TO FIGURE IT OUT
+        //  EVERY IMAGE HAS TO HAVE UNIQUE NAME FOR OPTIMIZER NOT TO OPTIMIZE IT OFF
+        //
+        static int unique = 0;
+        char unique_name[256];
+        sprintf(unique_name,"TXP_TEX_UNIQUE%d",unique++);
+
+        image->setFileName(unique_name);
+
+        image->setImage(s.x,s.y,1,depth,
+                gltype,GL_UNSIGNED_BYTE,
+                (unsigned char*)data);
+
+        osg_texture->setImage(image);
+    }
+    return osg_texture;
+}
 
 geomRead::geomRead(TrPageParser *in_parse)
 {
@@ -173,13 +289,19 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
             gset->setNormals(normals);
         // Note: Should check number of materials first
         // Note: Should be combining multiple geosets
-        StateSet*   sset = (*parse->GetMaterials())[matId].get();
+        ref_ptr<StateSet>  sset = 0L;
+        if( local )
+            sset = (*parse->GetLocalMaterials())[matId];
+        else
+           sset = (*parse->GetMaterials())[matId];
+
         if (tex_coords)
         {
             gset->setTextureCoords(tex_coords);
             gset->setTextureBinding(GeoSet::BIND_PERVERTEX);
         }
-        gset->setStateSet(sset);
+
+        gset->setStateSet(sset.get());
         geode->addDrawable(gset);
         top->addChild(geode);
     }
@@ -270,7 +392,7 @@ void* billboardRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
         Billboard* bl = new Billboard();
         int m;
         bill.GetMode(m);
-        if( m == trpgBillboard::Eye) 
+        if( m = trpgBillboard::Eye) 
             bl->setMode(Billboard::POINT_ROT_EYE);
         else if(m == trpgBillboard::World )
             bl->setMode(Billboard::POINT_ROT_WORLD);
@@ -398,6 +520,7 @@ void* tileHeaderRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     trpgTileHeader *tileHead = parse->GetTileHeaderRef();
     if (!tileHead->Read(buf))
         return NULL;
+    parse->LoadLocalMaterials();
     return (void *) 1;
 }
 
@@ -406,8 +529,9 @@ void* tileHeaderRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
 
 //----------------------------------------------------------------------------
 // Constructor for scene graph parser
-TrPageParser::TrPageParser()
+TrPageParser::TrPageParser(TrPageArchive* parent)
 {
+    parent_ = parent;
     currTop = NULL;
     top = NULL;
     
@@ -442,6 +566,7 @@ Group *TrPageParser::ParseScene(trpgReadBuffer &buf,vector<ref_ptr<StateSet> > &
 {
     top = currTop = new Group();
     materials = &in_mat;
+    local_materials.clear();
     models = &in_model;
     parentID = -1;
     
@@ -458,6 +583,152 @@ Group *TrPageParser::ParseScene(trpgReadBuffer &buf,vector<ref_ptr<StateSet> > &
     return ret;
 }
 
+void TrPageParser::LoadLocalMaterials()
+{
+    // new to 2.0 LOCAL materials
+    trpgrImageHelper image_helper(parent_->GetEndian(),parent_->getDir(),*parent_->GetMaterialTable(),*parent_->GetTexTable());
+    trpgTileHeader* tile_head = GetTileHeaderRef();
+
+    int n_materials;
+    tile_head->GetNumLocalMaterial(n_materials);
+
+    int n_mat;
+    tile_head->GetNumMaterial(n_mat);
+
+    local_materials.clear();
+    local_materials.resize(n_materials);
+    {
+        for (int i = 0; i < n_materials; i++)
+        {
+            StateSet* osg_state_set = new StateSet;
+            
+            trpgLocalMaterial locmat;
+            tile_head->GetLocalMaterial(i,locmat);
+            
+            const trpgMaterial* mat;
+            const trpgTexture *tex;
+
+            int32 size;
+            image_helper.GetImageInfoForLocalMat(&locmat,&mat,&tex,size);
+
+            int texId;
+            trpgTextureEnv texEnv;
+            mat->GetTexture(0,texId,texEnv);
+
+            // Set up texture environment
+            TexEnv       *osg_texenv       = new TexEnv();
+            int32 te_mode;
+            texEnv.GetEnvMode(te_mode);
+            switch( te_mode )
+            {
+            case trpgTextureEnv::Alpha :
+                osg_texenv->setMode(TexEnv::REPLACE);
+                break;
+            case trpgTextureEnv::Decal:
+                osg_texenv->setMode(TexEnv::DECAL);
+                break;
+            case trpgTextureEnv::Blend :
+                osg_texenv->setMode(TexEnv::BLEND);
+                break;
+            case trpgTextureEnv::Modulate :
+                osg_texenv->setMode(TexEnv::MODULATE);
+                break;
+            }
+            
+            osg_state_set->setAttribute(osg_texenv);
+            
+            Texture* osg_texture = GetLocalTexture(image_helper,&locmat, tex);
+
+            if(osg_texture)
+            {
+                if(osg_texture->getImage())
+                {
+                    GLenum gltype = osg_texture->getImage()->getPixelFormat();
+                    if( gltype == GL_RGBA || gltype == GL_LUMINANCE_ALPHA )
+                    {
+                        osg_state_set->setMode(GL_BLEND,StateAttribute::ON);
+                        osg_state_set->setRenderingHint(StateSet::TRANSPARENT_BIN);
+                    }
+                }
+                osg_state_set->setAttributeAndModes(osg_texture, StateAttribute::ON);
+
+                int wrap_s, wrap_t;   
+                texEnv.GetWrap(wrap_s, wrap_t);
+                osg_texture->setWrap(Texture::WRAP_S, wrap_s == trpgTextureEnv::Repeat ? Texture::REPEAT: Texture::CLAMP );
+                osg_texture->setWrap(Texture::WRAP_T, wrap_t == trpgTextureEnv::Repeat ? Texture::REPEAT: Texture::CLAMP );
+            }
+            
+            Material     *osg_material     = new Material;
+            
+            float64 alpha;
+            mat->GetAlpha(alpha);
+            
+            trpgColor color;
+            mat->GetAmbient(color);
+            osg_material->setAmbient( Material::FRONT_AND_BACK , 
+                Vec4(color.red, color.green, color.blue, alpha));
+            mat->GetDiffuse(color);
+            osg_material->setDiffuse(Material::FRONT_AND_BACK , 
+                Vec4(color.red, color.green, color.blue, alpha));
+            
+            mat->GetSpecular(color);
+            osg_material->setSpecular(Material::FRONT_AND_BACK , 
+                Vec4(color.red, color.green, color.blue, alpha));
+            mat->GetEmission(color);
+            osg_material->setEmission(Material::FRONT_AND_BACK , 
+                Vec4(color.red, color.green, color.blue, alpha));
+            
+            float64 shinines;
+            mat->GetShininess(shinines);
+            osg_material->setShininess(Material::FRONT_AND_BACK , (float)shinines/128.0);
+            
+            osg_material->setAlpha(Material::FRONT_AND_BACK ,(float)alpha);
+            osg_state_set->setAttributeAndModes(osg_material, StateAttribute::ON);
+            
+            if( alpha < 1.0f )
+            {
+                osg_state_set->setMode(GL_BLEND,StateAttribute::ON);
+                osg_state_set->setRenderingHint(StateSet::TRANSPARENT_BIN);
+            }
+            
+            
+        /* This controls what alpha values in a texture mean.  It can take the values:
+            None,Always,Equal,GreaterThanOrEqual,GreaterThan,
+            LessThanOrEqual,LessThan,Never,NotEqual
+        */
+            int alphaFunc;
+            mat->GetAlphaFunc(alphaFunc);
+            if( alphaFunc != trpgMaterial::None)
+            {
+                float64 ref;
+                mat->GetAlphaRef(ref);
+                AlphaFunc *osg_alpha_func = new AlphaFunc;
+                osg_alpha_func->setFunction((AlphaFunc::ComparisonFunction)alphaFunc,(float)ref);
+                osg_state_set->setAttributeAndModes(osg_alpha_func, StateAttribute::ON);
+            }
+
+            int cullMode;
+            mat->GetCullMode(cullMode);
+            
+            // Culling mode in txp means opposite from osg i.e. Front-> show front face
+            if( cullMode != trpgMaterial::FrontAndBack)
+            {
+                CullFace* cull_face = new CullFace;
+                switch (cullMode)
+                {
+                case trpgMaterial::Front:
+                    cull_face->setMode(CullFace::BACK);
+                    break;
+                case trpgMaterial::Back:
+                    cull_face->setMode(CullFace::FRONT);
+                    break;
+                }
+                osg_state_set->setAttributeAndModes(cull_face, StateAttribute::ON);
+            }
+            local_materials[i] = osg_state_set;
+        }
+     }
+}
 //----------------------------------------------------------------------------
 // Start Children
 // This is called when the parser hits a push.

@@ -35,15 +35,17 @@
 
 namespace txp
 {
+    class TrPageArchive;
+    
     class TrPageParser : public trpgSceneParser
     {
     public:
-        TrPageParser();
+        TrPageParser(TrPageArchive* parent);
         ~TrPageParser();
         
-        osg::Group *ParseScene(trpgReadBuffer &,
-            std::vector<osg::ref_ptr<osg::StateSet> >  &,
-            std::vector<osg::ref_ptr<osg::Node> > &);
+        osg::Group *ParseScene(trpgReadBuffer & buf,
+            std::vector<osg::ref_ptr<osg::StateSet> >  & materials_,
+            std::vector<osg::ref_ptr<osg::Node> > & node );
         
         // Return the parent of a recently parsed tile
         int GetParentID() { return parentID; }
@@ -56,6 +58,8 @@ namespace txp
         
         // Return the current material list (passed in to ParseScene())
         std::vector<osg::ref_ptr<osg::StateSet> >* GetMaterials() { return materials; }
+        // new to TerraPage 2.0 - local materials
+        std::vector<osg::ref_ptr<osg::StateSet> >* GetLocalMaterials() { return &local_materials; }
         std::vector<osg::ref_ptr<osg::Node> >*     GetModels()    { return models; }
         
         // Add the Group to the group list
@@ -66,12 +70,16 @@ namespace txp
         
         // Set the maximum number of groups (once per archive)
         void SetMaxGroupID(int);
+
+        /// TXP 2.0  - local materials
+        void LoadLocalMaterials();
         
     protected:
         bool StartChildren(void *);
         bool EndChildren(void *);
         
     protected:
+        TrPageArchive* parent_;
         osg::Group *currTop;            // Current parent group
         osg::Group *top;                // Top group
         trpgTileHeader tileHead;        // Dump tile header here
@@ -79,10 +87,12 @@ namespace txp
         // the tile's parent ID.  -1 otherwise
         int parentID;                   
         std::vector<osg::ref_ptr<osg::StateSet> >* materials;
+        std::vector<osg::ref_ptr<osg::StateSet> >  local_materials;
         std::vector<osg::Group *>    groupList;
         std::vector<osg::ref_ptr<osg::Node> >*    models;
     };
 
+    osg::Texture* GetLocalTexture(trpgrImageHelper& image_helper, trpgLocalMaterial* locmat, const trpgTexture* tex);
 
     //! callback functions for various scene graph elements
     class geomRead : public trpgr_Callback {

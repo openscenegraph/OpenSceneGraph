@@ -51,7 +51,7 @@ namespace txp
         
         /// Load and create textures and materials
         void LoadMaterials();
-        
+
         // Load and create models, usualy OpenFlight models
         bool LoadModels();
         
@@ -74,7 +74,7 @@ namespace txp
         @return The parent of the complete scene graph.
         */
         osg::Group *LoadAllTiles();
-        
+
     protected:
         /// This class does most of the actual parsing. 
         std::auto_ptr<TrPageParser> parse;

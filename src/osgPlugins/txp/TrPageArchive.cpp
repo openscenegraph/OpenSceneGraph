@@ -1,6 +1,7 @@
 #include "TrPageArchive.h"
 #include "TrPageParser.h"
 
+#include <osg/AlphaFunc>
 #include <osg/Group>
 #include <osg/Image>
 #include <osg/Texture>
@@ -12,9 +13,11 @@
 #include <osg/StateSet>
 #include <osg/Notify>
 #include <osgDB/FileUtils>
+
 #include <iostream>
 
 #include <osgDB/ReadFile>
+#include <osgDB/WriteFile>
 #include <osgDB/FileNameUtils>
 
 #include "trpage_geom.h"
@@ -31,7 +34,7 @@ using namespace osg;
 
 TrPageArchive::TrPageArchive()
 : trpgr_Archive()
-, parse(new TrPageParser()) 
+, parse(new TrPageParser(this)) 
 {
 }
 
@@ -79,7 +82,10 @@ bool TrPageArchive::OpenFile(const char* file)
 // TODO : multitexturing 
 void TrPageArchive::LoadMaterials()
 {
+    trpgrImageHelper image_helper(this->GetEndian(),getDir(),materialTable,texTable);
+
     int n_textures;
+
     texTable.GetNumTextures(n_textures);
     
     m_textures.resize(n_textures);
@@ -91,29 +97,63 @@ void TrPageArchive::LoadMaterials()
         {
             const trpgTexture *tex;
             tex = texTable.GetTextureRef(i);
-            char texName[1024];  texName[0] = 0;
-            tex->GetName(texName,1023);
-            // Create a texture by name.
-            Texture *osg_texture = new Texture();
-            
-            // Load Texture and Create Texture State
-            std::string filename = osgDB::getSimpleFileName(texName);
-            std::string path(getDir());
-            std::string theFile = path + '/'+ filename ;
-            ref_ptr<Image> image = osgDB::readImageFile(theFile);
-            if (image.valid())
+            trpgTexture::ImageMode mode;
+            tex->GetImageMode(mode);
+            if(mode == trpgTexture::External)
             {
-                osg_texture->setImage(image.get());
+                char texName[1024];  texName[0] = 0;
+                tex->GetName(texName,1023);
+                // Create a texture by name.
+                ref_ptr<Texture> osg_texture = new Texture();
+                
+                // Load Texture and Create Texture State
+                std::string filename = osgDB::getSimpleFileName(texName);
+                std::string path(getDir());
+#ifdef _WIN32
+                const char _PATHD = '\\';
+#elif defined(macintosh)
+                const char _PATHD = ':';
+#else
+                const char _PATHD = '/';
+#endif
+                if( path == "." ) 
+                    path = "";
+                else
+                    path += _PATHD ;
+                
+                std::string theFile = path + filename ;
+                ref_ptr<Image> image = osgDB::readImageFile(theFile);
+                if (image.valid())
+                {
+                    osg_texture->setImage(image.get());
+                }
+                m_textures[i] = osg_texture;
             }
-            m_textures[i] = osg_texture;
+            else if( mode == trpgTexture::Local )
+            {
+                ref_ptr<Texture> osg_texture = GetLocalTexture(image_helper,0, tex);
+                osg_texture->ref();
+                m_textures[i] = osg_texture;
+               // delete [] data;
+            }
+            else if( mode == trpgTexture::Template )
+            {
+                ref_ptr<Texture> osg_texture = GetLocalTexture(image_helper,0, tex);
+                if (osg_texture.valid()) osg_texture->ref();
+                m_textures[i] = osg_texture;
+               // delete [] data;
+            }
+            else
+            {
+                m_textures[i] = 0;
+            }
         }
     }
-    
-    // create materials
+
     int n_materials;
     materialTable.GetNumMaterial(n_materials);
-    
     {
+        m_gstates.resize(n_materials);
         for (int i = 0; i < n_materials; i++)
         {
             StateSet* osg_state_set = new StateSet;
@@ -188,35 +228,38 @@ void TrPageArchive::LoadMaterials()
                     osg_state_set->setRenderingHint(StateSet::TRANSPARENT_BIN);
                 }
                 
-                /*
                 int alphaFunc;
                 mat->GetAlphaFunc(alphaFunc);
-                */
-                
-                // transparency
-                Transparency *osg_transparency = new Transparency;
-                osg_transparency->setFunction(Transparency::SRC_ALPHA, Transparency::ONE_MINUS_SRC_ALPHA);
-                osg_state_set->setAttributeAndModes(osg_transparency, StateAttribute::ON);
+                if( alphaFunc != trpgMaterial::None)
+                {
+                    float64 ref;
+                    mat->GetAlphaRef(ref);
+                    AlphaFunc *osg_alpha_func = new AlphaFunc;
+                    osg_alpha_func->setFunction((AlphaFunc::ComparisonFunction)alphaFunc,(float)ref);
+                    osg_state_set->setAttributeAndModes(osg_alpha_func, StateAttribute::ON);
+                }
                 
                 int wrap_s, wrap_t;   
                 texEnv.GetWrap(wrap_s, wrap_t);
                 
                 Texture* osg_texture = m_textures[texId].get();
-                osg_texture->setWrap(Texture::WRAP_S, wrap_s == trpgTextureEnv::Repeat ? Texture::REPEAT: Texture::CLAMP );
-                osg_texture->setWrap(Texture::WRAP_T, wrap_t == trpgTextureEnv::Repeat ? Texture::REPEAT: Texture::CLAMP );
-                osg_state_set->setAttributeAndModes(osg_texture, StateAttribute::ON);
+                if(osg_texture)
+                {
+                    osg_texture->setWrap(Texture::WRAP_S, wrap_s == trpgTextureEnv::Repeat ? Texture::REPEAT: Texture::CLAMP );
+                    osg_texture->setWrap(Texture::WRAP_T, wrap_t == trpgTextureEnv::Repeat ? Texture::REPEAT: Texture::CLAMP );
+                    osg_state_set->setAttributeAndModes(osg_texture, StateAttribute::ON);
                 
-                if(osg_texture->getImage())
-                { 
-                    switch (osg_texture->getImage()->getPixelFormat())
-                    {
-                    case GL_LUMINANCE_ALPHA:
-                    case GL_RGBA:
-                        osg_state_set->setMode(GL_BLEND,StateAttribute::ON);
-                        osg_state_set->setRenderingHint(StateSet::TRANSPARENT_BIN);
+                    if(osg_texture->getImage())
+                    { 
+                        switch (osg_texture->getImage()->getPixelFormat())
+                        {
+                        case GL_LUMINANCE_ALPHA:
+                        case GL_RGBA:
+                            osg_state_set->setMode(GL_BLEND,StateAttribute::ON);
+                            osg_state_set->setRenderingHint(StateSet::TRANSPARENT_BIN);
+                        }
                     }
-                }
-                
+                }        
                 int cullMode;
                 mat->GetCullMode(cullMode);
                 
@@ -236,7 +279,7 @@ void TrPageArchive::LoadMaterials()
                     osg_state_set->setAttributeAndModes(cull_face, StateAttribute::ON);
                 }
           }
-          m_gstates.push_back(osg_state_set);
+          m_gstates[i] = osg_state_set;
         }
     }
 }
@@ -291,7 +334,6 @@ Group* TrPageArchive::LoadTile(int x,int y,int lod,int &parentID)
    if (!ReadTile(x,y,lod,buf))
       return NULL;
 
-   // Call the parser
    Group *tile = parse->ParseScene(buf, m_gstates , m_models);
    if (tile)
    {

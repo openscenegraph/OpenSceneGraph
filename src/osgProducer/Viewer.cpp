@@ -205,8 +205,8 @@ void Viewer::realize( ThreadingModel thread_model)
     for(SceneHandlerList::iterator p=_shvec.begin(); p!=_shvec.end(); p++ )
     {
         (*p)->getState()->setAbortRenderingPtr(&_done);
+        (*p)->setCamera(_old_style_osg_camera.get());
     }
-   OsgCameraGroup::sync();
     
 }
 

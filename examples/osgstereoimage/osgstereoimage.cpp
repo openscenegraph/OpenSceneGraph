@@ -100,6 +100,11 @@ int main( int argc, char **argv )
     // set the scene to render
     viewer.setSceneData(rootNode.get());
 
+    // set up the use of stereo by default.
+    osg::DisplaySettings* ds = viewer.getDisplaySettings();
+    if (!ds) ds = osg::DisplaySettings::instance();
+    if (ds) ds->setStereo(true);
+
     // create the windows and run the threads.
     viewer.realize(Producer::CameraGroup::ThreadPerCamera);
 

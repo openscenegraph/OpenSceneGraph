@@ -269,6 +269,7 @@ void OsgCameraGroup::realize( ThreadingModel thread_model)
         // set up the visual chooser.
         if (_ds.valid() || numMultiSamples!=0)
         {
+        
             Producer::VisualChooser* rs_vc = rs->getVisualChooser();
             if (!rs_vc)
             {

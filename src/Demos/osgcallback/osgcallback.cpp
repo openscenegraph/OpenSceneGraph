@@ -141,7 +141,7 @@ class InsertCallbacksVisitor : public osg::NodeVisitor
 
    public:
    
-        InsertCallbacksVisitor():NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN)
+        InsertCallbacksVisitor():osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN)
         {
         }
         

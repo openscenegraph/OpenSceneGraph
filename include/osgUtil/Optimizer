@@ -132,7 +132,7 @@ class OSGUTIL_EXPORT Optimizer
         inline bool isOperationPermissibleForObject(const osg::StateSet* object, unsigned int option) const
         {
             if (_isOperationPermissibleForObjectCallback.valid())
-                _isOperationPermissibleForObjectCallback->isOperationPermissibleForObjectImplementation(this,object,option);
+                return _isOperationPermissibleForObjectCallback->isOperationPermissibleForObjectImplementation(this,object,option);
             else 
             return isOperationPermissibleForObjectImplementation(object,option); 
         }
@@ -140,7 +140,7 @@ class OSGUTIL_EXPORT Optimizer
         inline bool isOperationPermissibleForObject(const osg::StateAttribute* object, unsigned int option) const
         {
             if (_isOperationPermissibleForObjectCallback.valid())
-                _isOperationPermissibleForObjectCallback->isOperationPermissibleForObjectImplementation(this,object,option);
+                return _isOperationPermissibleForObjectCallback->isOperationPermissibleForObjectImplementation(this,object,option);
             else 
             return isOperationPermissibleForObjectImplementation(object,option); 
         }
@@ -148,7 +148,7 @@ class OSGUTIL_EXPORT Optimizer
         inline bool isOperationPermissibleForObject(const osg::Drawable* object, unsigned int option) const
         {
             if (_isOperationPermissibleForObjectCallback.valid())
-                _isOperationPermissibleForObjectCallback->isOperationPermissibleForObjectImplementation(this,object,option);
+                return _isOperationPermissibleForObjectCallback->isOperationPermissibleForObjectImplementation(this,object,option);
             else 
             return isOperationPermissibleForObjectImplementation(object,option); 
         }
@@ -156,7 +156,7 @@ class OSGUTIL_EXPORT Optimizer
         inline bool isOperationPermissibleForObject(const osg::Node* object, unsigned int option) const
         {
             if (_isOperationPermissibleForObjectCallback.valid())
-                _isOperationPermissibleForObjectCallback->isOperationPermissibleForObjectImplementation(this,object,option);
+                return _isOperationPermissibleForObjectCallback->isOperationPermissibleForObjectImplementation(this,object,option);
             else 
             return isOperationPermissibleForObjectImplementation(object,option); 
         }

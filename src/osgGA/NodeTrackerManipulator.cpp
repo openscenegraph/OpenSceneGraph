@@ -45,12 +45,14 @@ NodeTrackerManipulator::~NodeTrackerManipulator()
 {
 }
 
+void NodeTrackerManipulator::setTrackerMode(TrackerMode mode)
+{
+    _trackerMode = mode;
+}
 
 void NodeTrackerManipulator::setRotationMode(RotationMode mode)
 {
     _rotationMode = mode;
-
-    // need to correct rotation.
 }
 
 void NodeTrackerManipulator::setNode(osg::Node* node)

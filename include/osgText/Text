@@ -111,6 +111,9 @@ class OSGTEXT_EXPORT Text : public osg::Drawable
         void setText(const std::string& text) { _text=text; _initAlignment=false; }
         const std::string& getText() const { return _text; }
 
+        virtual bool supports(PrimitiveFunctor& pf) const;
+        virtual void accept(PrimitiveFunctor& pf) const;
+
         virtual void drawImplementation(osg::State& state) const;
         virtual void drawBoundingBox(void) const;
         virtual void drawAlignment(void) const;

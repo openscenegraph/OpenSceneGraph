@@ -19,6 +19,7 @@
 #include <OpenThreads/ScopedLock>
 #include <OpenThreads/Mutex>
 
+#ifndef OSG_JAVA_BUILD       
 
 namespace osg
 {
@@ -110,3 +111,5 @@ void Referenced::unref_nodelete() const
         
 
 }; // end of namespace osg
+
+#endif //OSG_JAVA_BUILD        

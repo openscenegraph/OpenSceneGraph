@@ -14,17 +14,25 @@
 #ifndef OSG_REFERENCED
 #define OSG_REFERENCED 1
 
+// When building OSG with Java need to derive from Noodle::CBridgable class,
+// therefore so OSG_JAVA_BUILD must be defined. Also the thread-safe ref/unref test
+// as built in for the NoodleCore wrapping. NoodleCore has a Garbage collector mechanism 
+// which is very similar to osg::DeletionManager. So these aspects of osg::Referenced
+// have been removed
+//#define OSG_JAVA_BUILD
 
 #include <osg/Export>
-
+#ifdef OSG_JAVA_BUILD
+#include <NoodleCore/Bridgable.h>
+#else
 #include <OpenThreads/Mutex>
+#endif
 
 namespace osg {
 
-
-// forward declar, declared after Refenced below.
+#ifndef OSG_JAVA_BUILD
+// forward declar, declared after Referenced below.
 class DeleteHandler;
-
 
 /** Base class from providing referencing counted objects.*/
 class SG_EXPORT Referenced
@@ -120,7 +128,21 @@ class DeleteHandler
           * The default implementation does a delete straight away.*/
         virtual void requestDelete(const Referenced* object) { doDelete(object); }
 };
-
+#else 
+/** Java wrappers use the CBridgable base-class for referencing
+  * and garbage collection.
+  */
+class SG_EXPORT Referenced : public Noodle::CBridgable 
+{
+	public:
+		/** Method not used in NoodleCore referencing 
+		  */
+		inline void unref_nodelete() const { --_refCount; }
+		inline int referenceCount() const { return _refCount; }
+	protected:
+		virtual ~Referenced() {}
+};
+#endif //OSG_JAVA_BUILD
 
 }
 

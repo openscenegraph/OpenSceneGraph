@@ -151,9 +151,17 @@ void Quat::slerp( const float t, const Quat& from, const Quat& to )
 {
     const double epsilon = 0.00001;
     double omega, cosomega, sinomega, scale_from, scale_to ;
-
-                                 // this is a dot product
-    cosomega = from.asVec4() * to.asVec4() ;
+    
+    osg::Quat quatTo(to);
+    // this is a dot product
+    
+    cosomega = from.asVec4() * to.asVec4();
+    
+    if ( cosomega <0.0 )
+    { 
+        cosomega = -cosomega; 
+        quatTo.set(-to._fv);
+    }
 
     if( (1.0 - cosomega) > epsilon )
     {
@@ -175,7 +183,8 @@ void Quat::slerp( const float t, const Quat& from, const Quat& to )
     }
 
                                  // use Vec4 arithmetic
-    _fv = (from._fv*scale_from) + (to._fv*scale_to);
+    _fv = (from._fv*scale_from) + (quatTo._fv*scale_to);
+    
     // so that we get a Vec4
 }
 

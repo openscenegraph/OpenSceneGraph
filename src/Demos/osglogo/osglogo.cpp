@@ -252,6 +252,11 @@ osg:: Node* createBackdrop(const osg::Vec3& corner,const osg::Vec3& top,const os
     geom->setNormalArray(normals);
     geom->setNormalBinding(osg::Geometry::BIND_OVERALL);
 
+    osg::Vec4Array* colors = new osg::Vec4Array;
+    colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
+    geom->setColorArray(colors);
+    geom->setColorBinding(osg::Geometry::BIND_OVERALL);
+
     geom->addPrimitiveSet(new osg::DrawArrays(GL_QUADS,0,vertices->getNumElements()));
 
     osg::Geode* geode = new osg::Geode();

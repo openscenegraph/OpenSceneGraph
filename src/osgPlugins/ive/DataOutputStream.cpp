@@ -22,6 +22,7 @@
 #include "BlendFunc.h"
 #include "Material.h"
 #include "CullFace.h"
+#include "ClipPlane.h"
 #include "PolygonOffset.h"
 #include "ShadeModel.h"
 #include "Point.h"
@@ -43,6 +44,8 @@
 #include "MatrixTransform.h"
 #include "Geode.h"
 #include "LightSource.h"
+#include "TexGenNode.h"
+#include "ClipNode.h"
 #include "Billboard.h"
 #include "Sequence.h"
 #include "LOD.h"
@@ -177,6 +180,16 @@ void DataOutputStream::writeVec4(const osg::Vec4& v){
     writeFloat(v.w());
     
     if (_verboseOutput) std::cout<<"read/writeVec4() ["<<v<<"]"<<std::endl;
+}
+
+void DataOutputStream::writePlane(const osg::Plane& v)
+{
+    writeFloat(v[0]);
+    writeFloat(v[1]);
+    writeFloat(v[2]);
+    writeFloat(v[3]);
+    
+    if (_verboseOutput) std::cout<<"read/writePlane() ["<<v<<"]"<<std::endl;
 }
 
 void DataOutputStream::writeUByte4(const osg::UByte4& v){
@@ -432,6 +445,10 @@ void DataOutputStream::writeStateAttribute(const osg::StateAttribute* attribute)
         else if(dynamic_cast<const osg::CullFace*>(attribute)){
             ((ive::CullFace*)(attribute))->write(this);
         }
+        // this is a Cliplane
+        else if(dynamic_cast<const osg::ClipPlane*>(attribute)){
+            ((ive::ClipPlane*)(attribute))->write(this);
+        }
         // This is a PolygonOffset
         else if(dynamic_cast<const osg::PolygonOffset*>(attribute)){
             ((ive::PolygonOffset*)(attribute))->write(this);
@@ -610,6 +627,12 @@ void DataOutputStream::writeNode(const osg::Node* node)
         }
         else if(dynamic_cast<const osg::LightSource*>(node)){
             ((ive::LightSource*)(node))->write(this);
+        }
+        else if(dynamic_cast<const osg::TexGenNode*>(node)){
+            ((ive::TexGenNode*)(node))->write(this);
+        }
+        else if(dynamic_cast<const osg::ClipNode*>(node)){
+            ((ive::ClipNode*)(node))->write(this);
         }
         else if(dynamic_cast<const osg::Sequence*>(node)){
             ((ive::Sequence*)(node))->write(this);

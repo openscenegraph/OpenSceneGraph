@@ -33,7 +33,13 @@ void TexGen::write(DataOutputStream* out){
 	// Write mode
 	out->writeInt(getMode());
 
-	// Notice no support for planes yet
+        if ( out->getVersion() >= VERSION_0005 )
+        {
+            out->writePlane(getPlane(osg::TexGen::S));
+            out->writePlane(getPlane(osg::TexGen::T));
+            out->writePlane(getPlane(osg::TexGen::R));
+            out->writePlane(getPlane(osg::TexGen::Q));
+        }
 }
 
 void TexGen::read(DataInputStream* in){
@@ -51,6 +57,14 @@ void TexGen::read(DataInputStream* in){
 			throw Exception("TexGen::read(): Could not cast this osg::TexGen to an osg::Object.");
 		// Read TexGen's properties
 		setMode((osg::TexGen::Mode)in->readInt());
+                
+                if ( in->getVersion() >= VERSION_0005 )
+                {
+                    setPlane(osg::TexGen::S, in->readPlane());
+                    setPlane(osg::TexGen::T, in->readPlane());
+                    setPlane(osg::TexGen::R, in->readPlane());
+                    setPlane(osg::TexGen::Q, in->readPlane());
+                }
 
 	}
 	else{

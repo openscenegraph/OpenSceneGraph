@@ -21,6 +21,7 @@
 #include "BlendFunc.h"
 #include "Material.h"
 #include "CullFace.h"
+#include "ClipPlane.h"
 #include "PolygonOffset.h"
 #include "ShadeModel.h"
 #include "Point.h"
@@ -41,6 +42,8 @@
 #include "MatrixTransform.h"
 #include "Geode.h"
 #include "LightSource.h"
+#include "TexGenNode.h"
+#include "ClipNode.h"
 #include "Billboard.h"
 #include "Sequence.h"
 #include "LOD.h"
@@ -307,6 +310,18 @@ osg::Vec4 DataInputStream::readVec4(){
     v.w()=readFloat();
 
     if (_verboseOutput) std::cout<<"read/writeVec4() ["<<v<<"]"<<std::endl;
+    
+    return v;
+}
+
+osg::Plane DataInputStream::readPlane(){
+    osg::Plane v;
+    v[0]=readFloat();
+    v[1]=readFloat();
+    v[2]=readFloat();
+    v[3]=readFloat();
+
+    if (_verboseOutput) std::cout<<"read/writePlane() ["<<v<<"]"<<std::endl;
     
     return v;
 }
@@ -634,6 +649,10 @@ osg::StateAttribute* DataInputStream::readStateAttribute()
         attribute = new osg::CullFace();
         ((ive::CullFace*)(attribute))->read(this);
     }
+    else if(attributeID == IVECLIPPLANE){
+        attribute = new osg::ClipPlane();
+        ((ive::ClipPlane*)(attribute))->read(this);
+    }
     else if(attributeID == IVEPOLYGONOFFSET){
         attribute = new osg::PolygonOffset();
         ((ive::PolygonOffset*)(attribute))->read(this);
@@ -834,6 +853,14 @@ osg::Node* DataInputStream::readNode()
     else if(nodeTypeID== IVELIGHTSOURCE){
         node = new osg::LightSource();
         ((ive::LightSource*)(node))->read(this);
+    }
+    else if(nodeTypeID== IVETEXGENNODE){
+        node = new osg::TexGenNode();
+        ((ive::TexGenNode*)(node))->read(this);
+    }
+    else if(nodeTypeID== IVECLIPNODE){
+        node = new osg::ClipNode();
+        ((ive::ClipNode*)(node))->read(this);
     }
     else if(nodeTypeID== IVESEQUENCE){
         node = new osg::Sequence();

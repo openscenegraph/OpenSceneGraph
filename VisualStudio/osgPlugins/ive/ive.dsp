@@ -128,6 +128,14 @@ SOURCE=..\..\..\src\osgPlugins\ive\BlinkSequence.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\ive\ClipPlane.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\ClipNode.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\ive\ClusterCullingCallback.cpp
 # End Source File
 # Begin Source File
@@ -340,6 +348,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\TexGen.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\ive\TexGenNode.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\ive\TexMat.cpp
 # End Source File
 # Begin Source File
@@ -409,6 +421,14 @@ SOURCE=..\..\..\src\osgPlugins\ive\BlendFunc.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\BlinkSequence.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\ClipPlane.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\ClipNode.h
 # End Source File
 # Begin Source File
 
@@ -625,6 +645,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\TexEnvCombine.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\TexGen.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\TexGenNode.h
 # End Source File
 # Begin Source File
 

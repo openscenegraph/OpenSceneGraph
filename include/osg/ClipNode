@@ -51,7 +51,7 @@ class SG_EXPORT ClipNode : public Group
         bool removeClipPlane(unsigned int pos);
 
         /** Returns the number of ClipPlanes. */
-        inline unsigned  int getNumClipPlanes() const { return _planes.size(); }
+        inline unsigned int getNumClipPlanes() const { return _planes.size(); }
 
 
         /** Get ClipPlane at the given index position. */

@@ -3,74 +3,77 @@ include $(TOPDIR)/Make/makedefs
 
 CXXFILES =\
 	AlphaFunc.cpp\
-	AnimationPath.cpp\
 	AnimationPathCallback.cpp\
+	AnimationPath.cpp\
+	AzimElevationSector.cpp\
+	AzimSector.cpp\
 	Billboard.cpp\
 	BlendFunc.cpp\
+	BlinkSequence.cpp\
+	ClipNode.cpp\
+	ClipPlane.cpp\
+        ClusterCullingCallback.cpp\
+	ConeSector.cpp\
         ConvexPlanarOccluder.cpp\
         ConvexPlanarPolygon.cpp\
         CoordinateSystemNode.cpp\
-        ClusterCullingCallback.cpp\
 	CullFace.cpp\
 	DataInputStream.cpp\
 	DataOutputStream.cpp\
+	DirectionalSector.cpp\
 	DOFTransform.cpp\
+	Drawable.cpp\
 	DrawArrayLengths.cpp\
 	DrawArrays.cpp\
 	DrawElementsUByte.cpp\
-	DrawElementsUShort.cpp\
 	DrawElementsUInt.cpp\
-	Drawable.cpp\
+	DrawElementsUShort.cpp\
+	ElevationSector.cpp\
 	EllipsoidModel.cpp\
 	Exception.cpp\
+	FragmentProgram.cpp\
 	Geode.cpp\
 	Geometry.cpp\
 	Group.cpp\
 	Image.cpp\
 	Impostor.cpp\
-	LOD.cpp\
 	Light.cpp\
-	LightSource.cpp\
 	LightModel.cpp\
+	LightPoint.cpp\
+	LightPointNode.cpp\
+	LightSource.cpp\
+	LineWidth.cpp\
+	LOD.cpp\
 	Material.cpp\
 	MatrixTransform.cpp\
 	MultiSwitch.cpp\
 	Node.cpp\
-	LineWidth.cpp\
 	Object.cpp\
 	OccluderNode.cpp\
 	PagedLOD.cpp\
-	PositionAttitudeTransform.cpp\
-	PolygonOffset.cpp\
 	Point.cpp\
+	PolygonOffset.cpp\
+	PositionAttitudeTransform.cpp\
 	PrimitiveSet.cpp\
+	ReaderWriterIVE.cpp\
 	Sequence.cpp\
 	ShadeModel.cpp\
 	Shape.cpp\
 	ShapeDrawable.cpp\
-	Switch.cpp\
 	StateSet.cpp\
-	TexEnv.cpp\
+	Switch.cpp\
 	TexEnvCombine.cpp\
+	TexEnv.cpp\
 	TexGen.cpp\
+	TexGenNode.cpp\
 	TexMat.cpp\
-	Texture.cpp\
 	Texture1D.cpp\
 	Texture2D.cpp\
 	Texture3D.cpp\
+	Texture.cpp\
 	TextureCubeMap.cpp\
-	FragmentProgram.cpp\
-	VertexProgram.cpp\
 	Transform.cpp\
-	ReaderWriterIVE.cpp\
-	AzimElevationSector.cpp\
-	AzimSector.cpp\
-	BlinkSequence.cpp\
-	ConeSector.cpp\
-	DirectionalSector.cpp\
-	ElevationSector.cpp\
-	LightPoint.cpp\
-	LightPointNode.cpp\
+	VertexProgram.cpp\
 	VisibilityGroup.cpp\
 
 LIBS   += -losgSim -losgText $(OSG_LIBS) $(OTHER_LIBS)

@@ -11,7 +11,8 @@
 #define VERSION_0002 0x00000002
 #define VERSION_0003 0x00000003
 #define VERSION_0004 0x00000004
-#define VERSION      VERSION_0004
+#define VERSION_0005 0x00000005
+#define VERSION      VERSION_0005
 
 
 /* The BYTE_SEX tag is used to check the endian

@@ -10,6 +10,7 @@
 #if defined(WIN32)
 #include <windows.h>
 #elif defined(__DARWIN_OSX__)
+#include <string>
 #include <mach-o/dyld.h>
 #else
 #include <dlfcn.h>

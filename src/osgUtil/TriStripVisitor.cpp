@@ -531,8 +531,6 @@ void TriStripVisitor::stripify(Geometry& geom)
         geom.copyToAndOptimize(geom);
     }
 
-
-
     // check for the existance of surface primitives
     unsigned int numSurfacePrimitives = 0;
     unsigned int numNonSurfacePrimitives = 0;
@@ -780,13 +778,13 @@ void TriStripVisitor::stripify(Geometry& geom)
             {
                 unsigned int maxValue = *(std::max_element(indices.begin(),indices.end()));
 
-                if (maxValue<256)
+                if (maxValue>=65536)
                 {
-                    osg::DrawElementsUByte* elements = new osg::DrawElementsUByte(GL_QUADS);
+                    osg::DrawElementsUInt* elements = new osg::DrawElementsUInt(GL_QUADS);
                     std::copy(indices.begin(),indices.end(),std::back_inserter(*elements));
                     new_primitives.push_back(elements);
                 }
-                else if (maxValue<65536)
+                else if (maxValue>=256)
                 {
                     osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(GL_QUADS);
                     std::copy(indices.begin(),indices.end(),std::back_inserter(*elements));
@@ -794,7 +792,7 @@ void TriStripVisitor::stripify(Geometry& geom)
                 }
                 else 
                 {
-                    osg::DrawElementsUInt* elements = new osg::DrawElementsUInt(GL_QUADS);
+                    osg::DrawElementsUByte* elements = new osg::DrawElementsUByte(GL_QUADS);
                     std::copy(indices.begin(),indices.end(),std::back_inserter(*elements));
                     new_primitives.push_back(elements);
                 }
@@ -826,14 +824,14 @@ void TriStripVisitor::stripify(Geometry& geom)
                 else
                 {
                     unsigned int maxValue = *(std::max_element(pitr->m_Indices.begin(),pitr->m_Indices.end()));
-                    if (maxValue<256)
+                    if (maxValue>=65536)
                     {
-                        osg::DrawElementsUByte* elements = new osg::DrawElementsUByte(pitr->m_Type);
+                        osg::DrawElementsUInt* elements = new osg::DrawElementsUInt(pitr->m_Type);
                         elements->reserve(pitr->m_Indices.size());
                         std::copy(pitr->m_Indices.begin(),pitr->m_Indices.end(),std::back_inserter(*elements));
                         new_primitives.push_back(elements);
                     }
-                    else if (maxValue<65536)
+                    else if (maxValue>=256)
                     {
                         osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(pitr->m_Type);
                         elements->reserve(pitr->m_Indices.size());
@@ -842,7 +840,7 @@ void TriStripVisitor::stripify(Geometry& geom)
                     }
                     else
                     {
-                        osg::DrawElementsUInt* elements = new osg::DrawElementsUInt(pitr->m_Type);
+                        osg::DrawElementsUByte* elements = new osg::DrawElementsUByte(pitr->m_Type);
                         elements->reserve(pitr->m_Indices.size());
                         std::copy(pitr->m_Indices.begin(),pitr->m_Indices.end(),std::back_inserter(*elements));
                         new_primitives.push_back(elements);

@@ -92,6 +92,7 @@ class OSGGLUT_EXPORT Viewer : public Window, public osgUtil::GUIActionAdapter
         osg::DisplaySettings* getDisplaySettings() { return _displaySettings.get(); }
         const osg::DisplaySettings* getDisplaySettings() const { return _displaySettings.get(); }
 
+        typedef std::vector<osg::ref_ptr<osgUtil::CameraManipulator> > CameraManipList;
 
     protected:
 
@@ -109,7 +110,6 @@ class OSGGLUT_EXPORT Viewer : public Window, public osgUtil::GUIActionAdapter
 
         static Viewer*    s_theViewer;
 
-        typedef std::vector<osg::ref_ptr<osgUtil::CameraManipulator> > CameraManipList;
 
         struct ViewportDef 
         {

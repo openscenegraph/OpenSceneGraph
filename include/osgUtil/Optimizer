@@ -63,11 +63,11 @@ class OSGUTIL_EXPORT Optimizer
 
                 void removeTransforms();
 
-            protected:
             
-                
                 typedef std::vector<osg::Transform*> TransformStack;
                 typedef std::vector<osg::Matrix>     MatrixStack;
+
+            protected:
 
                 struct TransformStruct
                 {

@@ -1,6 +1,7 @@
 #include <osgProducer/ViewerEventHandler>
 #include <osgGA/AnimationPathManipulator>
 #include <osgDB/WriteFile>
+#include <osgDB/FileNameUtils>
 #include <osgText/Text>
 #include <osg/BlendFunc>
 
@@ -14,11 +15,13 @@ class ViewerEventHandler::SnapImageDrawCallback : public Producer::Camera::Callb
 {
 public:
 
-    SnapImageDrawCallback(const std::string& filename):
-        _filename(filename),
+    SnapImageDrawCallback():
         _snapImageOnNextFrame(false)
     {
     }
+
+    void setFileName(const std::string& filename) { _filename = filename; }
+    const std::string& getFileName() const { return _filename; }
 
     void setSnapImageOnNextFrame(bool flag) { _snapImageOnNextFrame = flag; }
     bool getSnapImageOnNextFrame() const { return _snapImageOnNextFrame; }
@@ -716,27 +719,55 @@ ViewerEventHandler::ViewerEventHandler(OsgCameraGroup* cg):
     _statsAndHelpDrawCallback = new StatsAndHelpDrawCallback(this,0);
     cam->addPostDrawCallback(_statsAndHelpDrawCallback);
 
-    std::string basename("saved_image");
-    std::string ext(".jpg");
-    if (cfg->getNumberOfCameras()==1)
+    for(unsigned int i=0;i<cfg->getNumberOfCameras();++i)
     {
-        SnapImageDrawCallback* snapImageDrawCallback = new SnapImageDrawCallback(basename+ext);
-        cam->addPostDrawCallback(snapImageDrawCallback);
+        SnapImageDrawCallback* snapImageDrawCallback = new SnapImageDrawCallback();
+        cfg->getCamera(i)->addPostDrawCallback(snapImageDrawCallback);
         _snapImageDrawCallbackList.push_back(snapImageDrawCallback);
     }
-    else
+    
+    
+    Viewer* viewer = dynamic_cast<Viewer*>(cg);
+    if (viewer) setWriteImageFileName(viewer->getWriteImageFileName());
+    else setWriteImageFileName("saved_image.jpg");
+    
+}
+
+void ViewerEventHandler::setWriteImageOnNextFrame(bool writeImageOnNextFrame)
+{
+    for(SnapImageDrawCallbackList::iterator itr=_snapImageDrawCallbackList.begin();
+        itr!=_snapImageDrawCallbackList.end();
+        ++itr)
     {
-        for(unsigned int i=0;i<cfg->getNumberOfCameras();++i)
+        (*itr)->setSnapImageOnNextFrame(writeImageOnNextFrame);
+    }
+}
+
+void ViewerEventHandler::setWriteImageFileName(const std::string& filename)
+{
+    std::string basename = osgDB::getNameLessExtension(filename);
+    std::string ext = osgDB::getFileExtension(filename);
+    
+    unsigned int cameraNum = 0;
+    for(SnapImageDrawCallbackList::iterator itr=_snapImageDrawCallbackList.begin();
+        itr!=_snapImageDrawCallbackList.end();
+        ++itr, ++cameraNum)
+    {
+        if (cameraNum==0)
         {
-            std::string filename(basename+"_");
-            filename += ('0'+i);
-            filename += ext;
-            SnapImageDrawCallback* snapImageDrawCallback = new SnapImageDrawCallback(filename);
-            cfg->getCamera(i)->addPostDrawCallback(snapImageDrawCallback);
-            _snapImageDrawCallbackList.push_back(snapImageDrawCallback);
+            (*itr)->setFileName(filename);
+        }
+        else
+        {
+            std::string name(basename+"_");
+            name += ('0'+cameraNum);
+            name += '.';
+            name += ext;
+            (*itr)->setFileName(name);
         }
     }
 }
+
 
 bool ViewerEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa)
 {
@@ -832,13 +863,7 @@ bool ViewerEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActio
             case osgGA::GUIEventAdapter::KEY_Print :
             case 'O' :
             {
-                for(SnapImageDrawCallbackList::iterator itr=_snapImageDrawCallbackList.begin();
-                    itr!=_snapImageDrawCallbackList.end();
-                    ++itr)
-                {
-                    (*itr)->setSnapImageOnNextFrame(true);
-                }
-                
+                setWriteImageOnNextFrame(true);                
                 return true;
             }
             case '+' :

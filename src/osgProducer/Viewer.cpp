@@ -225,7 +225,13 @@ protected:
 // osgProducer::Viewer implemention
 //
 Viewer::Viewer():
+    _setDoneAtElapsedTimeEnabled(false),
+    _setDoneAtElapsedTime(0.0),
+    _setDoneAtFrameNumberEnabled(false),
+    _setDoneAtFrameNumber(0),
     _done(false),
+    _writeImageWhenDone(false),
+    _writeImageFileName("saved_image.jpg"),
     _recordingAnimationPath(false),
     _recordingStartTime(0.0)
 {
@@ -237,7 +243,13 @@ Viewer::Viewer():
 
 Viewer::Viewer(Producer::CameraConfig *cfg):
     OsgCameraGroup(cfg),
+    _setDoneAtElapsedTimeEnabled(false),
+    _setDoneAtElapsedTime(0.0),
+    _setDoneAtFrameNumberEnabled(false),
+    _setDoneAtFrameNumber(0),
     _done(false),
+    _writeImageWhenDone(false),
+    _writeImageFileName("saved_image.jpg"),
     _recordingAnimationPath(false),
     _recordingStartTime(0.0)
 {
@@ -250,7 +262,13 @@ Viewer::Viewer(Producer::CameraConfig *cfg):
 
 Viewer::Viewer(const std::string& configFile):
     OsgCameraGroup(configFile),
+    _setDoneAtElapsedTimeEnabled(false),
+    _setDoneAtElapsedTime(0.0),
+    _setDoneAtFrameNumberEnabled(false),
+    _setDoneAtFrameNumber(0),
     _done(false),
+    _writeImageWhenDone(false),
+    _writeImageFileName("saved_image.jpg"),
     _recordingAnimationPath(false),
     _recordingStartTime(0.0)
 {
@@ -262,7 +280,13 @@ Viewer::Viewer(const std::string& configFile):
 
 Viewer::Viewer(osg::ArgumentParser& arguments):
     OsgCameraGroup(arguments),
+    _setDoneAtElapsedTimeEnabled(false),
+    _setDoneAtElapsedTime(0.0),
+    _setDoneAtFrameNumberEnabled(false),
+    _setDoneAtFrameNumber(0),
     _done(false),
+    _writeImageWhenDone(false),
+    _writeImageFileName("saved_image.jpg"),
     _recordingAnimationPath(false),
     _recordingStartTime(0.0)
 {
@@ -275,6 +299,8 @@ Viewer::Viewer(osg::ArgumentParser& arguments):
     if (arguments.getApplicationUsage())
     {
         arguments.getApplicationUsage()->addCommandLineOption("-p <filename>","Specify camera path file to animate the camera through the loaded scene");
+        arguments.getApplicationUsage()->addCommandLineOption("--run-till-frame-number <integer>","Specify the number of frame to run");
+        arguments.getApplicationUsage()->addCommandLineOption("--run-till-elapsed-time","Specify the about of time to run");
     }
 
     osg::DisplaySettings::instance()->readCommandLine(arguments);
@@ -290,11 +316,51 @@ Viewer::Viewer(osg::ArgumentParser& arguments):
             selectCameraManipulator(num);
         }
     }
+
+    unsigned int frameNumber;
+    while (arguments.read("--run-till-frame-number",frameNumber))
+    {
+        setDoneAtFrameNumber(frameNumber);
+    }
+
+    double elapsedTime;
+    while (arguments.read("--run-till-elapsed-time",elapsedTime))
+    {
+        setDoneAtElapsedTime(elapsedTime);
+    }
+
+    std::string filename;
+    while (arguments.read("--write-image-when-done",filename))
+    {
+        setWriteImageWhenDone(true);
+        setWriteImageFileName(filename);
+    }
 }
 
 Viewer::~Viewer()
 {
 }
+
+void Viewer::setWriteImageFileName(const std::string& filename)
+{
+    _writeImageFileName = filename;
+    for(EventHandlerList::iterator itr = getEventHandlerList().begin();
+        itr != getEventHandlerList().end();
+        ++itr)
+    {
+        ViewerEventHandler* viewerEventHandler = dynamic_cast<ViewerEventHandler*>(itr->get());
+        if (viewerEventHandler)
+        {
+            viewerEventHandler->setWriteImageFileName(filename);
+        }
+    }
+}
+
+const std::string& Viewer::getWriteImageFileName() const
+{
+    return _writeImageFileName;
+}
+
 
 void Viewer::setCoordindateSystemNodePath(const osg::NodePath& nodePath)
 {
@@ -454,7 +520,10 @@ unsigned int Viewer::addCameraManipulator(osgGA::MatrixManipulator* cm)
 
 bool Viewer::done() const
 {
-    return _done || !validForRendering();
+    return _done || 
+           !validForRendering() || 
+           (_setDoneAtElapsedTimeEnabled && _setDoneAtElapsedTime<=getFrameStamp()->getReferenceTime()) ||
+           (_setDoneAtFrameNumberEnabled && _setDoneAtFrameNumber<=_frameNumber);
 }
 
 void Viewer::setViewByMatrix( const Producer::Matrix & pm)
@@ -640,6 +709,22 @@ void Viewer::frame()
         if (getAnimationPath()->empty()) _recordingStartTime = _frameStamp->getReferenceTime();
         
         getAnimationPath()->insert(_frameStamp->getReferenceTime()-_recordingStartTime,osg::AnimationPath::ControlPoint(osg::Vec3(_position[0],_position[1],_position[2]),_orientation));
+    }
+    
+    if (done() && getWriteImageWhenDone())
+    {
+        for(EventHandlerList::iterator itr = getEventHandlerList().begin();
+            itr != getEventHandlerList().end();
+            ++itr)
+        {
+            ViewerEventHandler* viewerEventHandler = dynamic_cast<ViewerEventHandler*>(itr->get());
+            if (viewerEventHandler)
+            {
+                osg::notify(osg::NOTICE)<<"Need to write image"<<std::endl;    
+                viewerEventHandler->setWriteImageOnNextFrame(true);
+            }
+        }
+        
     }
 
     OsgCameraGroup::frame();

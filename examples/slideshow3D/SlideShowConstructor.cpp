@@ -67,10 +67,10 @@ void SlideShowConstructor::createPresentation()
     _textHeight = _slideHeight*0.04f;
     _textWidth = _slideWidth*0.8f;
     
-    _textOrigin = _slideOrigin + osg::Vec3(_slideWidth*0.1f,0.0f,_titleOrigin.z()-2*_textHeight);
-    _imageOrigin = _slideOrigin + osg::Vec3(_slideWidth*0.7f,0.0f,_titleOrigin.z()*0.5f);
-    _modelLeft = _slideOrigin + osg::Vec3(_slideWidth*0.0f,0.0f,_titleOrigin.z()*0.5f);
-    _modelRight = _slideOrigin + osg::Vec3(_slideWidth*1.0f,0.0f,_titleOrigin.z()*0.5f);
+    _textOrigin = _slideOrigin + osg::Vec3(_slideWidth*0.1f,0.0f,_titleOrigin.z()-_slideOrigin.z()-2*_textHeight);
+    _imageOrigin = _slideOrigin + osg::Vec3(_slideWidth*0.7f,0.0f,_titleOrigin.z()*0.5f-_slideOrigin.z());
+    _modelLeft = _slideOrigin + osg::Vec3(_slideWidth*0.0f,0.0f,_titleOrigin.z()*0.5f-_slideOrigin.z());
+    _modelRight = _slideOrigin + osg::Vec3(_slideWidth*1.0f,0.0f,_titleOrigin.z()*0.5f-_slideOrigin.z());
     
     _root = new osg::ClearNode;
     _root->setClearColor(_backgroundColor);

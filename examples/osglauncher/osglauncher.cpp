@@ -30,6 +30,7 @@
 #include <osgProducer/Viewer>
 
 #include <osgDB/ReadFile>
+#include <osgDB/FileUtils>
 
 int runApp(std::string xapp);
 
@@ -220,11 +221,19 @@ int runApp(std::string xapp)
 void readConfFile(char* confFile)                                                                // read confFile            1
 {
     std::cout << "Start reading confFile" << std::endl;
+    
+    std::string fileName = osgDB::findDataFile(confFile);
+    if (fileName.empty())
+    {
+        std::cout << "Config file not found"<<confFile << std::endl;
+        return;
+    }
+    
 
-    std::ifstream in(confFile);
+    std::ifstream in(fileName.c_str());
     if (!in)
     {
-        std::cout << "File " << confFile << " can not be opened!" << std::endl;
+        std::cout << "File " << fileName << " can not be opened!" << std::endl;
         exit(1);
     }
     std::string imageBuffer;
@@ -379,12 +388,13 @@ int main( int argc, char **argv )
 {
     if (argc<=1)
     {
-        std::cout << "Error: First argument missing!" << std::endl << "First argument -> confFile" << std::endl;
-        return 0;
+        readConfFile("osg.conf");                                                                          // read ConfigFile        1
+    }
+    else
+    {
+        readConfFile(argv[1]);                                                                          // read ConfigFile        1
     }
     
-    readConfFile(argv[1]);                                                                            // read ConfigFile        1
-       
     // construct the viewer.
     osgProducer::Viewer viewer;
 

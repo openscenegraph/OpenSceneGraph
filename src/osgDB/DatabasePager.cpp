@@ -451,9 +451,7 @@ void DatabasePager::run()
         }
 
     } while (!testCancel());
-    
-    cancel();
-    join();   
+
 }
 
 void DatabasePager::addLoadedDataToSceneGraph(double timeStamp)

@@ -160,8 +160,8 @@ void GeoSet::AttributeDeleteFunctor::operator() (GeoSet* gset)
     // coord indicies may be shared so we have to go through the long winded
     // step of creating unique pointer sets which we then delete.  This
     // ensures that arrays aren't osgDelete twice. Robert. 
-    std::set<osg::ushort*> ushortList;
-    std::set<osg::uint*>   uintList;
+    std::set<GLushort*> ushortList;
+    std::set<GLuint*>   uintList;
     
     INDEX_ARRAY_DELETE(gset->getCoordIndices())
     INDEX_ARRAY_DELETE(gset->getNormalIndices());
@@ -169,14 +169,14 @@ void GeoSet::AttributeDeleteFunctor::operator() (GeoSet* gset)
     INDEX_ARRAY_DELETE(gset->getTextureIndices())
     INDEX_ARRAY_DELETE(gset->getInterleavedIndices());
     
-    for(std::set<osg::ushort*>::iterator sitr=ushortList.begin();
+    for(std::set<GLushort*>::iterator sitr=ushortList.begin();
         sitr!=ushortList.end();
         ++sitr)
     {
         osgDelete [] *sitr;
     }
     
-    for(std::set<osg::uint*>::iterator iitr=uintList.begin();
+    for(std::set<GLuint*>::iterator iitr=uintList.begin();
         iitr!=uintList.end();
         ++iitr)
     {
@@ -594,7 +594,7 @@ void GeoSet::setCoords( Vec3 *cp )
 }
 
 
-void GeoSet::setCoords( Vec3 *cp, ushort *ci )
+void GeoSet::setCoords( Vec3 *cp, GLushort *ci )
 {
     _coords = cp;
     // note the size of cindex defaults 0, but will be recalculated
@@ -605,7 +605,7 @@ void GeoSet::setCoords( Vec3 *cp, ushort *ci )
 }
 
 
-void GeoSet::setCoords( Vec3 *cp, uint *ci )
+void GeoSet::setCoords( Vec3 *cp, GLuint *ci )
 {
     _coords = cp;
     // note the size of cindex defaults 0, but will be recalculated
@@ -634,7 +634,7 @@ void GeoSet::setNormals( Vec3 *np )
 }
 
 
-void GeoSet::setNormals( Vec3 *np, ushort *ni )
+void GeoSet::setNormals( Vec3 *np, GLushort *ni )
 {
     _normals = np;
     // note the size of nindex defaults 0, but will be recalculated
@@ -646,7 +646,7 @@ void GeoSet::setNormals( Vec3 *np, ushort *ni )
         set_fast_path();
 }
 
-void GeoSet::setNormals( Vec3 *np, uint *ni )
+void GeoSet::setNormals( Vec3 *np, GLuint *ni )
 {
     _normals = np;
     // note the size of nindex defaults 0, but will be recalculated
@@ -681,7 +681,7 @@ void GeoSet::setColors( Vec4 *lp )
 }
 
 
-void GeoSet::setColors( Vec4 *lp, ushort *coli )
+void GeoSet::setColors( Vec4 *lp, GLushort *coli )
 {
     _colors = lp;
     // note the size of colindex defaults 0, but will be recalculated
@@ -693,7 +693,7 @@ void GeoSet::setColors( Vec4 *lp, ushort *coli )
         set_fast_path();
 }
 
-void GeoSet::setColors( Vec4 *lp, uint *coli )
+void GeoSet::setColors( Vec4 *lp, GLuint *coli )
 {
     _colors = lp;
     // note the size of colindex defaults 0, but will be recalculated
@@ -728,7 +728,7 @@ void GeoSet::setTextureCoords( Vec2 *tc )
 }
 
 
-void GeoSet::setTextureCoords( Vec2 *tc, ushort *ti )
+void GeoSet::setTextureCoords( Vec2 *tc, GLushort *ti )
 {
     _tcoords = tc;
     // note the size of tindex defaults 0, but will be recalculated
@@ -741,7 +741,7 @@ void GeoSet::setTextureCoords( Vec2 *tc, ushort *ti )
 
 }
 
-void GeoSet::setTextureCoords( Vec2 *tc, uint *ti )
+void GeoSet::setTextureCoords( Vec2 *tc, GLuint *ti )
 {
     _tcoords = tc;
     // note the size of tindex defaults 0, but will be recalculated

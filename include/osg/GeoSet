@@ -84,11 +84,11 @@ class SG_EXPORT GeoSet : public Drawable
             bool _is_ushort;
             union
             {
-                ushort* _ushort;
-                uint*   _uint;
+                GLushort* _ushort;
+                GLuint*   _uint;
             } _ptr;
             
-            IndexPointer() { _size=0;_is_ushort=true;_ptr._ushort = (ushort*)0; }
+            IndexPointer() { _size=0;_is_ushort=true;_ptr._ushort = (GLushort*)0; }
             
             inline const bool operator == (const IndexPointer& ip) const
             {
@@ -99,22 +99,22 @@ class SG_EXPORT GeoSet : public Drawable
             
             inline const bool valid() const
             {
-                return _ptr._ushort != (ushort*)0;
+                return _ptr._ushort != (GLushort*)0;
             }
 
             inline const bool null() const
             {
-                return _ptr._ushort == (ushort*)0;
+                return _ptr._ushort == (GLushort*)0;
             }
 
             inline void setToNull()
             {
                 _size = 0;
                 _is_ushort = true;
-                _ptr._ushort = (ushort*)0;
+                _ptr._ushort = (GLushort*)0;
             }
 
-            inline void set(uint size,ushort* data)
+            inline void set(uint size,GLushort* data)
             {
                 _size = size;
                 _is_ushort = true;
@@ -122,7 +122,7 @@ class SG_EXPORT GeoSet : public Drawable
             }
             
 
-            void set(const uint size,uint* data)
+            void set(const uint size,GLuint* data)
             {
                 _size = size;
                 _is_ushort = false;
@@ -145,7 +145,7 @@ class SG_EXPORT GeoSet : public Drawable
                 return max;
             }
             
-            inline const uint operator [] (const uint pos) const
+            inline const GLint operator [] (const GLuint pos) const
             {
                 if (_is_ushort) return _ptr._ushort[pos];
                 else return _ptr._uint[pos];
@@ -199,11 +199,11 @@ class SG_EXPORT GeoSet : public Drawable
         /** set the coords (i.e the geometry) and ushort indices of the geoset.
             To reduce memory footprint and bandwidth for small datasets it is
             recommended the ushort indices are used instead of unit indices.*/
-        void setCoords( Vec3 *cp, ushort *ci );
+        void setCoords( Vec3 *cp, GLushort *ci );
         /** set the coords (i.e the geometry) and uint indices of the geoset.
             Unless your data set exceeds 65536 indices prefer ushort indices
             over uint indices, only use this unit indices version if necessary.*/
-        void setCoords( Vec3 *cp, uint *ci );
+        void setCoords( Vec3 *cp, GLuint *ci );
         /** set the coords (i.e the geometry) and indices of the geoset.*/
         void setCoords( Vec3 *cp, IndexPointer& ip );
 
@@ -222,9 +222,9 @@ class SG_EXPORT GeoSet : public Drawable
         /** set the normals of the geoset.*/
         void setNormals( Vec3 *np );
         /** set the normals and normal indices of the geoset.*/
-        void setNormals( Vec3 *np, ushort *ni );
+        void setNormals( Vec3 *np, GLushort *ni );
         /** set the normals and normal indices of the geoset.*/
-        void setNormals( Vec3 *np, uint *ni );
+        void setNormals( Vec3 *np, GLuint *ni );
         /** set the normals and normal indices of the geoset.*/
         void setNormals( Vec3 *np, IndexPointer& ip );
         /** set the normals binding to the vertices/primitives/overall.*/
@@ -246,9 +246,9 @@ class SG_EXPORT GeoSet : public Drawable
         /** set the colors of the geoset.*/
         void setColors( Vec4 *cp );
         /** set the colors and color indices of the geoset.*/
-        void setColors( Vec4 *cp, ushort *li );
+        void setColors( Vec4 *cp, GLushort *li );
         /** set the colors and color indices of the geoset.*/
-        void setColors( Vec4 *cp, uint *li );
+        void setColors( Vec4 *cp, GLuint *li );
         /** set the colors and color indices of the geoset.*/
         void setColors( Vec4 *cp, IndexPointer& ip );
         /** set the color binding to the vertices/primitives/overall.*/
@@ -270,9 +270,9 @@ class SG_EXPORT GeoSet : public Drawable
         /** set the texture coords of the geoset.*/
         void setTextureCoords( Vec2 *tc );
         /** set the texture coords and texture coord indices of the geoset.*/
-        void setTextureCoords( Vec2 *tc, ushort *ti );
+        void setTextureCoords( Vec2 *tc, GLushort *ti );
         /** set the texture coords and texture coord indices of the geoset.*/
-        void setTextureCoords( Vec2 *tc, uint *ti );
+        void setTextureCoords( Vec2 *tc, GLuint *ti );
         /** set the texture coords and texture indices of the geoset.*/
         void setTextureCoords( Vec2 *tc, IndexPointer& ip );
         /** set the texture coord binding to the vertices/primitives/overall.*/
@@ -296,8 +296,8 @@ class SG_EXPORT GeoSet : public Drawable
         
         /** set the interleaved arrays of the geoset.*/
 	void setInterleavedArray( const InterleaveArrayType format, float *ia ); 
-	void setInterleavedArray( const InterleaveArrayType format, float *ia, ushort *iai ); 
-	void setInterleavedArray( const InterleaveArrayType format, float *ia, uint *iai ); 
+	void setInterleavedArray( const InterleaveArrayType format, float *ia, GLushort *iai ); 
+	void setInterleavedArray( const InterleaveArrayType format, float *ia, GLuint *iai ); 
 	void setInterleavedArray( const InterleaveArrayType format, float *ia, IndexPointer& iai ); 
 
         /** draw geoset directly ignoring an OpenGL display list which could be attached.
@@ -414,13 +414,13 @@ void for_each_triangle(GeoSet& gset,T& op)
             {
                 if (gset.getCoordIndices()._is_ushort)
                 {
-                    ushort* iptr = gset.getCoordIndices()._ptr._ushort;
+                    GLushort* iptr = gset.getCoordIndices()._ptr._ushort;
                     Vec3* vptr = gset.getCoords();
                     const int numPrim = gset.getNumPrims();
                     for(int i=0; i<numPrim; ++i )
                     {
                         const int primLength = gset.getPrimLengths()[i];
-                        ushort* iend = iptr+primLength;
+                        GLushort* iend = iptr+primLength;
                         for(int j = 2; j < primLength; j++ )
                         {
 		    	    if( !(j%2) )
@@ -434,13 +434,13 @@ void for_each_triangle(GeoSet& gset,T& op)
                 }
                 else
                 {
-                    uint* iptr = gset.getCoordIndices()._ptr._uint;
+                    GLuint* iptr = gset.getCoordIndices()._ptr._uint;
                     Vec3* vptr = gset.getCoords();
                     const int numPrim = gset.getNumPrims();
                     for(int i=0; i<numPrim; ++i )
                     {
                         const int primLength = gset.getPrimLengths()[i];
-                        uint* iend = iptr+primLength;
+                        GLuint* iend = iptr+primLength;
                         for(int j = 2; j < primLength; j++ )
                         {
 		    	    if( !(j%2) )
@@ -481,7 +481,7 @@ void for_each_triangle(GeoSet& gset,T& op)
             {
                 if (gset.getCoordIndices()._is_ushort)
                 {
-                    ushort* iptr = gset.getCoordIndices()._ptr._ushort;
+                    GLushort* iptr = gset.getCoordIndices()._ptr._ushort;
                     Vec3* vptr = gset.getCoords();
                     const int numPrim = gset.getNumPrims();
                     for(int i=0; i<numPrim; ++i )
@@ -492,7 +492,7 @@ void for_each_triangle(GeoSet& gset,T& op)
                 }
                 else
                 {
-                    uint* iptr = gset.getCoordIndices()._ptr._uint;
+                    GLuint* iptr = gset.getCoordIndices()._ptr._uint;
                     Vec3* vptr = gset.getCoords();
                     const int numPrim = gset.getNumPrims();
                     for(int i=0; i<numPrim; ++i )
@@ -521,13 +521,13 @@ void for_each_triangle(GeoSet& gset,T& op)
             {
                 if (gset.getCoordIndices()._is_ushort)
                 {
-                    ushort* iptr = gset.getCoordIndices()._ptr._ushort;
+                    GLushort* iptr = gset.getCoordIndices()._ptr._ushort;
                     Vec3* vptr = gset.getCoords();
                     const int numPrim = gset.getNumPrims();
                     for(int i=0; i<numPrim; ++i )
                     {
                         const int primLength = gset.getPrimLengths()[i];
-                        ushort* iend = iptr+primLength;
+                        GLushort* iend = iptr+primLength;
                         for(int j = 3; j < primLength; j+=2 )
                         {
                             op(vptr[*(iptr)],vptr[*(iptr+1)],vptr[*(iptr+2)]);
@@ -539,13 +539,13 @@ void for_each_triangle(GeoSet& gset,T& op)
                 }
                 else
                 {
-                    uint* iptr = gset.getCoordIndices()._ptr._uint;
+                    GLuint* iptr = gset.getCoordIndices()._ptr._uint;
                     Vec3* vptr = gset.getCoords();
                     const int numPrim = gset.getNumPrims();
                     for(int i=0; i<numPrim; ++i )
                     {
                         const int primLength = gset.getPrimLengths()[i];
-                        uint* iend = iptr+primLength;
+                        GLuint* iend = iptr+primLength;
                         for(int j = 3; j < primLength; j+=2 )
                         {
                             op(vptr[*(iptr)],vptr[*(iptr+1)],vptr[*(iptr+2)]);
@@ -581,7 +581,7 @@ void for_each_triangle(GeoSet& gset,T& op)
             {
                 if (gset.getCoordIndices()._is_ushort)
                 {
-                    ushort* iptr = gset.getCoordIndices()._ptr._ushort;
+                    GLushort* iptr = gset.getCoordIndices()._ptr._ushort;
                     Vec3* vptr = gset.getCoords();
                     const int numPrim = gset.getNumPrims();
                     for(int i=0; i<numPrim; ++i )
@@ -593,7 +593,7 @@ void for_each_triangle(GeoSet& gset,T& op)
                 }
                 else
                 {
-                    uint* iptr = gset.getCoordIndices()._ptr._uint;
+                    GLuint* iptr = gset.getCoordIndices()._ptr._uint;
                     Vec3* vptr = gset.getCoords();
                     const int numPrim = gset.getNumPrims();
                     for(int i=0; i<numPrim; ++i )
@@ -626,7 +626,7 @@ void for_each_triangle(GeoSet& gset,T& op)
             {
                 if (gset.getCoordIndices()._is_ushort)
                 {
-                    ushort* iptr = gset.getCoordIndices()._ptr._ushort;
+                    GLushort* iptr = gset.getCoordIndices()._ptr._ushort;
                     Vec3* vptr = gset.getCoords();
                     const int numPrim = gset.getNumPrims();
                     for(int i=0; i<numPrim; ++i )
@@ -648,7 +648,7 @@ void for_each_triangle(GeoSet& gset,T& op)
                 }
                 else
                 {
-                    uint* iptr = gset.getCoordIndices()._ptr._uint;
+                    GLuint* iptr = gset.getCoordIndices()._ptr._uint;
                     Vec3* vptr = gset.getCoords();
                     const int numPrim = gset.getNumPrims();
                     for(int i=0; i<numPrim; ++i )
@@ -657,7 +657,7 @@ void for_each_triangle(GeoSet& gset,T& op)
                         if (primLength>0)
                         {
                             const Vec3& start = vptr[*(iptr)];
-                            uint* iend = iptr+primLength;
+                            GLuint* iend = iptr+primLength;
                             ++iptr;
                             for(int j = 2; j < primLength; ++j )
                             {

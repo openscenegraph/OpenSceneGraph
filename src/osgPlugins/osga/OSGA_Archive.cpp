@@ -353,6 +353,12 @@ bool OSGA_Archive::open(const std::string& filename, ArchiveStatus status, unsig
     }
 }
 
+bool OSGA_Archive::open(std::istream& fin)
+{
+    osg::notify(osg::NOTICE)<<"OSGA_Archive::open"<<std::endl;
+    return false;
+}
+
 void OSGA_Archive::close()
 {
     _input.close();

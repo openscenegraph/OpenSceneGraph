@@ -20,6 +20,9 @@ class OSGA_Archive : public osgDB::Archive
         /** open the archive.*/
         virtual bool open(const std::string& filename, ArchiveStatus status, unsigned int indexBlockSizeHint=4096);
 
+        /** open the archive for reading.*/
+        virtual bool open(std::istream& fin);
+
         /** close the archive.*/
         virtual void close();
 

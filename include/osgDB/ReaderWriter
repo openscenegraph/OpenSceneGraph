@@ -161,7 +161,11 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
             CREATE
         };
 
+        /** open an archive for reading, writing or or to create an empty archive for writing to.*/ 
         virtual ReadResult openArchive(const std::string& /*fileName*/,ArchiveStatus, unsigned int =4096, const Options* =NULL) { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
+
+        /** open an archive for reading.*/ 
+        virtual ReadResult openArchive(std::istream& /*fin*/,const Options* =NULL) { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
 
         virtual ReadResult readObject(const std::string& /*fileName*/,const Options* =NULL) { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
         virtual ReadResult readImage(const std::string& /*fileName*/,const Options* =NULL) { return ReadResult(ReadResult::FILE_NOT_HANDLED); }

@@ -39,6 +39,18 @@ public:
         return archive.get();
     }
 
+    /** open an archive for reading.*/ 
+    virtual ReadResult openArchive(std::istream& fin,const Options*)
+    {
+        osg::ref_ptr<OSGA_Archive> archive = new OSGA_Archive;
+        if (!archive->open(fin))
+        {
+            return ReadResult(ReadResult::FILE_NOT_HANDLED);
+        }
+
+        return archive.get();
+    }
+
     virtual ReadResult readImage(const std::string& file,const Options* options)
     {
         ReadResult result = openArchive(file,osgDB::Archive::READ);

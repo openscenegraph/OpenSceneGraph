@@ -36,8 +36,11 @@ class OSGDB_EXPORT Archive : public ReaderWriter
 
         virtual bool acceptsExtension(const std::string& /*extension*/) { return true; }
         
-        /** open the archive.*/
+        /** open the archive for reading, writing or to create an empty archive for writing to.*/
         virtual bool open(const std::string& filename, ArchiveStatus status, unsigned int indexBlockSizeHint=4096) = 0;
+
+        /** open the archive for reading.*/
+        virtual bool open(std::istream& fin) = 0;
 
         /** close the archive.*/
         virtual void close() = 0;

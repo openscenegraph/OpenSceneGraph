@@ -981,7 +981,7 @@ void ViewerEventHandler::getUsage(osg::ApplicationUsage& usage) const
     usage.addKeyboardMouseBinding("f","Toggle fullscreen");
     usage.addKeyboardMouseBinding("h","Display help");
     usage.addKeyboardMouseBinding("o","Write scene graph to \"saved_model.osg\"");
-    usage.addKeyboardMouseBinding("O PrtSrn","Write camera images to \"saved_image*.rgb\"");
+    usage.addKeyboardMouseBinding("O PrtSrn","Write camera images to \"saved_image*.jpg\"");
     usage.addKeyboardMouseBinding("s","Toggle instrumention");
     usage.addKeyboardMouseBinding("v","Toggle block and vsync");
     usage.addKeyboardMouseBinding("z","Start recording camera path.");

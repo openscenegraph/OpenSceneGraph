@@ -284,8 +284,6 @@ class SG_EXPORT Quat
         
     protected:
     
-        void _set(const Matrix& m );
-
 };	// end of class prototype
 
 inline std::ostream& operator << (std::ostream& output, const Quat& vec)

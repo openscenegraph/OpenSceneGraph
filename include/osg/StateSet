@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -29,18 +29,20 @@
 
 namespace osg {
 
-/**
-Encapsulates OpenGL state modes and attributes. 
-Used to specific textures etc of osg::Drawable's which hold references
-to a single osg::StateSet.  StateSet can be shared between Drawable's
-and is recommend if possible as it minimizes expensive state changes
-in the graphics pipeline.
+/** Stores a set of modes and attributes which respresent a set of OpenGL state.
+  *  Notice that a \c StateSet contains just a subset of the whole OpenGL state.
+  * <p>In OSG, each \c Drawable and each \c Node has a reference to a
+  * \c StateSet. These <tt>StateSet</tt>s can be shared between
+  * different <tt>Drawable</tt>s and <tt>Node</tt>s (that is, several
+  * <tt>Drawable</tt>s and <tt>Node</tt>s can reference the same \c StateSet).
+  * Indeed, this practice is recommended whenever possible,
+  * as this minimizes expensive state changes in the graphics pipeline.
 */
 class SG_EXPORT StateSet : public Object
 {
     public :
-    
-            
+
+
         StateSet();
         StateSet(const StateSet&,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
@@ -52,12 +54,12 @@ class SG_EXPORT StateSet : public Object
 
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
         int compare(const StateSet& rhs,bool compareAttributeContents=false) const;
-        
+
         bool operator <  (const StateSet& rhs) const { return compare(rhs)<0; }
         bool operator == (const StateSet& rhs) const { return compare(rhs)==0; }
         bool operator != (const StateSet& rhs) const { return compare(rhs)!=0; }
 
-        /** Set all the modes to on or off so that it defines a 
+        /** Set all the modes to on or off so that it defines a
             complete state, typically used for a default global state.*/
         void setGlobalDefaults();
 
@@ -70,42 +72,65 @@ class SG_EXPORT StateSet : public Object
         /** Clear the StateSet of all modes and attributes.*/
         void clear();
 
-        /** merge this stateset with stateset rhs, this overrides
-          * the rhs if OVERRIDE is specified, otherwise rhs takes precedence.*/
+        /** Merge this \c StateSet with the \c StateSet passed as parameter.
+          * Every mode and attribute in this \c StateSet that is marked with
+          * \c StateAttribute::OVERRIDE is replaced with the
+          * equivalent mode or attribute from \c rhs.
+        */
         void merge(const StateSet& rhs);
 
         /** a container to map GLModes to their respective GLModeValues.*/
         typedef std::map<StateAttribute::GLMode,StateAttribute::GLModeValue>  ModeList;
 
-        /** Set this StateSet to contain specified GLMode and value.*/
+        /** Set this \c StateSet to contain the specified \c GLMode with a given
+          * value.
+          * @note Don't use this method to set modes related to textures. For this
+          *       purpose, use \c setTextureMode(), that accepts an extra parameter
+          *       specifying which texture unit shall be affected by the call.
+        */
         void setMode(StateAttribute::GLMode mode, StateAttribute::GLModeValue value);
-        
+
 #ifdef USE_DEPRECATED_API
         /** Set this StateSet to inherit specified GLMode type from parents.
           * Has the effect of deleting any GLMode of specified type from StateSet.*/
         void setModeToInherit(StateAttribute::GLMode mode) { removeMode(mode); }
 #endif
-        /** Remove mode from StateSet.*/
+        /** Remove \c mode from this \c StateSet.
+          * @note Don't use this method to remove modes related to textures. For
+          *       this purpose, use \c removeTextureMode(), that accepts an extra
+          *       parameter specifying which texture unit shall be affected by
+          *       the call.
+        */
         void removeMode(StateAttribute::GLMode mode);
 
-        /** Get specified GLModeValue for specified GLMode.
-          * returns INHERIT if no GLModeValue is contained within StateSet.*/
+        /** Get the value for a given \c GLMode.
+          * @param mode The \c GLMode whose value is desired.
+          * @return If \c mode is contained within this \c StateSet, returns the
+          *         value associated with it. Otherwise, returns
+          *         \c StateAttribute::INHERIT.
+          * @note Don't use this method to get the value of modes related to
+          *       textures. For this purpose, use \c removeTextureMode(), that
+          *       accepts an extra parameter specifying which texture unit shall
+          *       be affected by the call.
+        */
         StateAttribute::GLModeValue getMode(StateAttribute::GLMode mode) const;
 
-        /** set the list of all GLModes contained in this StateSet.*/
+        /** Set the list of all <tt>GLMode</tt>s contained in this \c StateSet.*/
         inline void setModeList(ModeList& ml) { _modeList=ml; }
 
-        /** return the list of all GLModes contained in this StateSet.*/
+        /** Return the list of all <tt>GLMode</tt>s contained in this \c StateSet.*/
         inline ModeList& getModeList() { return _modeList; }
 
-        /** return the const list of all GLModes contained in this const StateSet.*/
+        /** Return the \c const list of all <tt>GLMode</tt>s contained in this
+          * <tt>const StateSet</tt>.
+        */
         inline const ModeList& getModeList() const { return _modeList; }
 
 
 
         /** Simple pairing between an attribute and its override flag.*/
         typedef std::pair<ref_ptr<StateAttribute>,StateAttribute::OverrideValue>    RefAttributePair;
-        
+
         /** a container to map <StateAttribyte::Types,Member> to their respective RefAttributePair.*/
         typedef std::map<StateAttribute::TypeMemberPair,RefAttributePair>           AttributeList;
 
@@ -137,7 +162,7 @@ class SG_EXPORT StateSet : public Object
         /** Get specified RefAttributePair for specified type.
           * Returns NULL if no type is contained within StateSet.*/
         const RefAttributePair* getAttributePair(StateAttribute::Type type, unsigned int member = 0) const;
-        
+
         /** set the list of all StateAttributes contained in this StateSet.*/
         inline void setAttributeList(AttributeList& al) { _attributeList=al; }
 
@@ -151,7 +176,13 @@ class SG_EXPORT StateSet : public Object
 
         typedef std::vector<ModeList>       TextureModeList;
 
-        /** Set this StateSet to contain specified GLMode and value.*/
+        /** Set this \c StateSet to contain specified \c GLMode with a given
+         *  value.
+         *  @param unit The texture unit to be affected (used with
+         *         multi-texturing).
+         *  @param mode The OpenGL mode to be added to the \c StateSet.
+         *  @param value The value to be assigned to \c mode.
+        */
         void setTextureMode(unsigned int unit,StateAttribute::GLMode mode, StateAttribute::GLModeValue value);
 
 #ifdef USE_DEPRECATED_API
@@ -206,7 +237,7 @@ class SG_EXPORT StateSet : public Object
         /** Get specified Texture related RefAttributePair for specified type.
           * Returns NULL if no type is contained within StateSet.*/
         const RefAttributePair* getTextureAttributePair(unsigned int unit,StateAttribute::Type type) const;
-        
+
         /** Set the list of all Texture related StateAttributes contained in this StateSet.*/
         inline void setTextureAttributeList(TextureAttributeList& tal) { _textureAttributeList=tal; }
 
@@ -218,7 +249,7 @@ class SG_EXPORT StateSet : public Object
 
 
         void setAssociatedModes(const StateAttribute* attribute, StateAttribute::GLModeValue value);
-        
+
         void setAssociatedTextureModes(unsigned int unit,const StateAttribute* attribute, StateAttribute::GLModeValue value);
 
         enum RenderingHint
@@ -227,15 +258,21 @@ class SG_EXPORT StateSet : public Object
             OPAQUE_BIN = 1,
             TRANSPARENT_BIN = 2
         };
-        
-        /** Set the RenderingHint of the StateSet.
-          * RenderingHint is used by osgUtil::Renderer to determine which
-          * draw bin to drop associated osg::Drawables in. For opaque
-          * objects OPAQUE_BIN would typical used, which TRANSPARENT_BIN
-          * should be used for objects which need to be depth sorted.*/
+
+        /** Set the \c RenderingHint of this \c StateSet. \c RenderingHint is
+          * used by the renderer to determine which draw bin to drop associated
+          * <tt>osg::Drawable</tt>s in. Typically, users will set this to either
+          * \c StateSet::OPAQUE_BIN or \c StateSet::TRANSPARENT_BIN.
+          * <tt>Drawable</tt>s in the opaque bin are sorted by their
+          * \c StateSet, so that the number of expensive changes in the OpenGL
+          * state is minimized. <tt>Drawable</tt>s in the transparent bin are
+          * sorted by depth, so that objects farther from the viewer are
+          * rendered first (and hence alpha blending works nicely for
+          * translucent objects).
+        */
         void setRenderingHint(int hint);
 
-        /** Get the RenderingHint of the StateSet.*/
+        /** Get the \c RenderingHint of this \c StateSet.*/
         inline int getRenderingHint() const      { return _renderingHint; }
 
         enum RenderBinMode
@@ -248,10 +285,10 @@ class SG_EXPORT StateSet : public Object
 
         /** Set the render bin details.*/
         void setRenderBinDetails(int binNum,const std::string& binName,RenderBinMode mode=USE_RENDERBIN_DETAILS);
-                
+
         /** Set the render bin details to inherit.*/
         void setRenderBinToInherit();
-        
+
         /** Get whether the render bin details are set and should be used.*/
         inline bool useRenderBinDetails() const { return _binMode!=INHERIT_RENDERBIN_DETAILS; }
 
@@ -273,7 +310,7 @@ class SG_EXPORT StateSet : public Object
         /** Get the render bin name.*/
         inline const std::string& getBinName() const { return _binName; }
 
-        
+
         /** call compile on all StateAttributes contained within this StateSet.*/
         void compileGLObjects(State& state) const;
 
@@ -286,25 +323,25 @@ class SG_EXPORT StateSet : public Object
         virtual ~StateSet();
 
         StateSet& operator = (const StateSet&) { return *this; }
-        
+
         ModeList                            _modeList;
         AttributeList                       _attributeList;
 
         TextureModeList                     _textureModeList;
         TextureAttributeList                _textureAttributeList;
-        
+
         inline ModeList& getOrCreateTextureModeList(unsigned int unit)
         {
             if (unit>=_textureModeList.size()) _textureModeList.resize(unit+1);
             return _textureModeList[unit];
         }
-        
+
         inline AttributeList& getOrCreateTextureAttributeList(unsigned int unit)
         {
             if (unit>=_textureAttributeList.size()) _textureAttributeList.resize(unit+1);
             return _textureAttributeList[unit];
         }
-        
+
         int compareModes(const ModeList& lhs,const ModeList& rhs);
         int compareAttributePtrs(const AttributeList& lhs,const AttributeList& rhs);
         int compareAttributeContents(const AttributeList& lhs,const AttributeList& rhs);

@@ -1,0 +1,76 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSG_IMAGESTREAM
+#define OSG_IMAGESTREAM 1
+
+#include <osg/Image>
+
+namespace osg {
+
+/**
+ * Image Stream class.
+ */
+class SG_EXPORT ImageStream : public Image
+{
+    public:
+        ImageStream();
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        ImageStream(const ImageStream& image,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+
+        virtual Object* cloneType() const { return new ImageStream(); }
+        virtual Object* clone(const CopyOp& copyop) const { return new ImageStream(*this,copyop); }
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const ImageStream*>(obj)!=0; }
+        virtual const char* libraryName() const { return "osg"; }
+        virtual const char* className() const { return "ImageStream"; }
+
+        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
+        virtual int compare(const Image& rhs) const;
+
+	enum StreamStatus
+        {
+            STOPPED,
+            PLAYING,
+            PAUSED,
+            REWINDING
+        };
+        
+        virtual void stop() { _status=STOPPED; }
+
+        virtual void play() { _status=PLAYING; }
+
+        virtual void pause() { _status=PAUSED; }
+
+        virtual void rewind() { _status=REWINDING; }
+
+        StreamStatus getStatus() { return _status; }
+        
+        virtual void setReferenceTime(double) {}
+        virtual double getReferenceTime() const { return 0.0; }
+                
+        virtual void setTimeMultiplier(double) {}
+        virtual double getTimeMultiplier() { return 0.0; }
+        
+        virtual void update() {}
+
+    protected:
+
+        virtual ~ImageStream() {}
+
+        StreamStatus    _status;
+};
+
+} // namespace
+
+#endif

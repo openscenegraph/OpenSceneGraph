@@ -112,12 +112,14 @@ int main(int argc, char** argv)
 
     // open MpegImageStream
     osg::MpegImageStream* mpeg = NULL;
-    osg::TexMat* texMat = NULL;
     if (argc > 1) {
         mpeg = new osg::MpegImageStream(argv[1]);
         mpeg->start();
-        texMat = (osg::TexMat*) mpeg->getTexMat();
     }
+
+    osg::TexMat* texMat = new osg::TexMat;
+    texMat->setMatrix(osg::Matrix::scale(mpeg->s(),-mpeg->t(),1.0f)*osg::Matrix::translate(0.0f,mpeg->t(),0.0f));
+
 
     // Create morphed geometry
     osg::Geode* geode = morphGeom(coords,

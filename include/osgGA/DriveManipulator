@@ -18,7 +18,7 @@ right simultaneously) stops dead.
 
 class OSGGA_EXPORT DriveManipulator : public CameraManipulator
 {
-public:
+    public:
 
         DriveManipulator();
 
@@ -36,7 +36,7 @@ public:
 
         virtual bool handle(const GUIEventAdapter& ea,GUIActionAdapter& us);
 
-private:
+    protected:
 
         /** Reset the internal GUIEvent stack.*/
         void flushMouseEventStack();

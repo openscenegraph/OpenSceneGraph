@@ -19,11 +19,11 @@
 
 <td><a href="dependencies.html">Dependencies</a></td>
 
-<td><a href="demos.html">Demos</a></td>
+<td><a href="examples.html">examples</a></td>
 
 <td><a href="data.html">Data</a></td>
 
-<td><a href="sgv.html">Viewer</a></td>
+<td><a href="osgviewer.html">Viewer</a></td>
 
 <td><a href="stereo.html">Stereo</a></td>
 
@@ -37,14 +37,14 @@
 <u>Compiling and installing the OpenSceneGraph</u></h2>
 The scene graph depends upon Standard C++, STL and OpenGL so you need a
 C++ compiler up to the task and OpenGL or Mesa installed. The viewer depends
-upon GLUT which you'll need to download and install from the GLUT website.
+upon Producer which you'll need to download and install from the Producer website.
 The OSG has it own native ascii file format, and .rgb image reader inbuilt
 which allows you read the example data with any dependencies other than
 C++, STL and OpenGL.
 <p>The osgText library adds the dependency of the freetype library for
 support of true type fonts, however it is not essential to the core library,
 so you can comment it out from compilation by modifying the src/Makefile,
-and src/Demos/Makefile. I you wish to use fonts then you can download freetype
+and examples/Makefile. I you wish to use fonts then you can download freetype
 from www.freetype.org. The osgText library also requires an up to date
 GLU implementation which supports GLU1.2 tessellation routines. If you
 your current GLU is out of date you'll need to download the latest, for
@@ -125,17 +125,17 @@ Visual Studio6.0 + Dinkumware's STL bug fix patches (see details below).</li>
 Visual Studio6.0 + STLport  (see details below)</li>
 </ol>
 <p>The OSG is composed of a number of scene graph libraries (with Core in
-front of the project names), executables (with Demos in front of the project
+front of the project names), executables (with examples in front of the project
 names), and plugins which read and write 3D data formats and 2D image formats
 (with osgPlugins in front of the project names).
-To get the OSG running you'll need at least to compile Core osg,osgUtil,osgDB,osgGLUT,
-osgPlugin dot_osg and Demo sgv. The rest of the libraries and executables
+To get the OSG running you'll need at least to compile Core osg,osgUtil,osgDB,osgProducer,
+osgPlugin dot_osg and Demo osgviewer. The rest of the libraries and executables
 are optional and can be compiled if you need them, however for simplicity
 I would recommend doing a batch build of all the libraries and executables
 in the distribution, some of the plug-ins which support non native file
 formats may not compile due to dependencies on other libraries (such as
 libpng), you can ignore these compilation errors unless you need to load
-the related file types. To help the compilation the plugins, osgGLUT and
+the related file types. To help the compilation the plugins, osgProducer and
 osgText one can download .zip archive will all the dependencies in it.
 Further details on this .zip file can be found in <i><a href="dependencies.html">dependencies.html</a></i>
 
@@ -309,7 +309,7 @@ For anyone who's ever used a Unix box for development, well, the mac
 and running under Mac OS X. The main requirement is that you need to have
 installed the Developer tools from the CD that comes
 for free with OS X. This gives you compilers, headers, frameworks - stuff
-like GLUT and Carbon for developers. Get those here:
+like Producer and Carbon for developers. Get those here:
 
 <ul>
 <li> The Apple <a href="http://developer.apple.com/tools/macosxtools.html">

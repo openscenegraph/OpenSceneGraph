@@ -130,7 +130,11 @@ Vladimir Vukicevic <vladimir@pobox.com>
         
 Rune Schmidt Jensen <sphere@aub.dk>
         - dds loader.
-
+        
+Romano José Magacho da Silva <rmagacho@predialnet.com.br>
+        - pause/resume in osgGA::AnimationPathManipulator
+        - support for managing deleted vertex programs in osg::VertexProgram.
+        
 Indirect Contributors
 ---------------------
     

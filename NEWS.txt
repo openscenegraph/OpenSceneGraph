@@ -47,10 +47,19 @@ OSG News (most significant items from ChangeLog)
     New osg::TextureRectangle texture class which encapsulates the
     NV_texture_rectangle and EXT_texture_rectange extensions.
 
-    Added automatic subloading of textures when images are updated.
+    Added automatic subloading of textures when image data is updated.
     
     Added the option of automatic unref'ing of texture image data once the data has
     been download to OpenGL to active graphics contexts.
+    
+    New osg::ArgumentParser and osg::ApplicationUsage classes for 
+    convineiently and robustly parsing command line arguments and
+    report command line usage, environmental variables and
+    keyboard and mouse bindings used by applications.  Running any
+    of the examples with -h or --help will report full details example
+    usage.  Keyboard and Mouse bindings usage is now also available as
+    a HUD on all examples, simply press 'h' while the app is runing to
+    bring up help.
 
     New database cache in the osgDB library.
     

@@ -15,9 +15,9 @@
     <td><a href="contents.html">Contents</a>  </td>
     <td><a href="install.html">Install</a>  </td>
     <td><a href="dependencies.html">Dependencies</a>  </td>
-    <td><a href="demos.html">Demos</a>  </td>
+    <td><a href="examples.html">examples</a>  </td>
     <td><a href="data.html">Data</a>  </td>
-    <td><a href="sgv.html">Viewer</a>  </td>
+    <td><a href="osgviewer.html">Viewer</a>  </td>
     <td><a href="stereo.html">Stereo</a>  </td>
     <td><a href="plan.html">Plan</a>  </td>
     <td><a href="documentation.html">Reference Guides</a>  </td>
@@ -39,7 +39,7 @@ file listing coarse grained changes between releases.
 file with notes on how to install the osg.
 <br><tt><a href="../ChangeLog">ChangeLog</a>&nbsp; </tt>text file listing
 fine grained changes between releases.
-<br><tt><a href="../Makefile">Makefile</a>&nbsp;&nbsp; </tt>Unix makefile.
+<br><tt><a href="../GNUMakefile">GNUMakefile</a>&nbsp;&nbsp; </tt>Unix GNU makefile.
 <br><tt>index.html </tt>This file!</blockquote>
 
 <p><br><a href="../doc/">doc/</a>&nbsp;&nbsp; Documentation directory
@@ -53,8 +53,8 @@ fine grained changes between releases.
 </tt>Scene graph database utilities reference guide.
 <br><tt><a href="../doc/doc++/osgText/HIER.html">osgText/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </tt>Scene graph text reference guide.
-<br><tt><a href="../doc/doc++/osgGLUT/HIER.html">osgGLUT/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</tt>Simple GLUT based viewer base classes reference guide.</blockquote>
+<br><tt><a href="../doc/doc++/osgProducer/HIER.html">osgProducer/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</tt>Simple Producer based viewer base classes reference guide.</blockquote>
 
 
 <p><a href="../include/">include/</a>&nbsp;&nbsp;&nbsp;&nbsp; External includes
@@ -67,8 +67,8 @@ Util library header files.
 OSG Database library header files.
 <br><tt><a href="../include/osgText">include/osgText/</a>&nbsp; </tt>The
 OSG text library header files.
-<br><tt><a href="../include/osgGLUT">include/osgGLUT/</a>&nbsp; </tt>The OSG
-GLUT utiltiy library header files.</blockquote>
+<br><tt><a href="../include/osgProducer">include/osgProducer/</a>&nbsp; </tt>The OSG
+Producer utiltiy library header files.</blockquote>
 
 
 <p><a href="../src/">src/</a>&nbsp;&nbsp;&nbsp; source files (including internal
@@ -95,10 +95,10 @@ database utility library source files.
 text library source files.
 <br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </tt>Contains true type font rendering classes.
-<p><tt><a href="../src/osgGLUT">src/osgGLUT</a>&nbsp; </tt>The OSG GLUT library
+<p><tt><a href="../src/osgProducer">src/osgProducer</a>&nbsp; </tt>The OSG Producer library
 source files.
 <br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</tt>Contains basic GLUT viewer base classes used by
+</tt>Contains basic Producer viewer base classes used by
 <br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </tt>demo programs to bring up window and provide keyboard
 <br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -133,35 +133,34 @@ source files.
 </tt>.tga TGA image file format reader plugin.</tt>
 <br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="../src/osgPlugins/tiff">tiff/</a>&nbsp;&nbsp;&nbsp;
 </tt>.tif TIFF image file format reader plugin.</tt>
-<p><tt><a href="../src/Demos/">src/Demos/</a> <a href="../src/Demos/sgv">sgv/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<p><tt><a href="../examples/">examples/</a> <a href="../examples/osgviewer">osgviewer/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </tt>A basic scene graph viewer for the OSG which is loads .osg files and
 above formats.
-<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="../src/Demos/osgconv">osgconv/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="../examples/osgconv">osgconv/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </tt>A program which reads input files into a single scene graph and outputs
 the results.
-<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="../src/Demos/hangglide/">hangglide/</a>&nbsp;&nbsp;&nbsp;&nbsp;
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="../examples/osghangglide/">osghangglide/</a>&nbsp;&nbsp;&nbsp;&nbsp;
 </tt>A program which of creates a flying site and allows users to fly over
 the scene.
-<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="../src/Demos/osgtexture">osgtexture/</a>&nbsp;&nbsp;&nbsp;
-</tt>A simple program which demonstrates how to use various textures modes.
-<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="../src/Demos/osgcube/">osgcube/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</tt>A basic animation of an oscillating cube.
-<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="../src/Demos/osgreflect/">osgreflect/</a>&nbsp;&nbsp;&nbsp;
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="../examples/osgtexture1D">osgtexture1D/</a>&nbsp;&nbsp;&nbsp;
+</tt>A simple program which demonstrates how to use 1D textures.
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="../examples/osgtexture2D">osgtexture2D/</a>&nbsp;&nbsp;&nbsp;
+</tt>A simple program which demonstrates how to use 2D textures .
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="../examples/osgtexture3D">osgtexture3D/</a>&nbsp;&nbsp;&nbsp;
+</tt>A simple program which demonstrates how to use 3D textures.
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="../examples/osgreflect/">osgreflect/</a>&nbsp;&nbsp;&nbsp;
 </tt>A demonstration of multi-pass stencil buffer based planar reflections.
-<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="../src/Demos/osgimpostor/">osgimpostor/</a>&nbsp;&nbsp;
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="../examples/osgimpostor/">osgimpostor/</a>&nbsp;&nbsp;
 </tt>A basic demo to show how to use the osg::Impostor node.
-<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="../src/Demos/osgviews/">osgviews/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="../examples/oosgwindows/">osgwindows/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </tt>A demo of multiple views of the same or multiple scenes.
-<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="../src/Demos/osgtext/">osgtext/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="../examples/osgtext/">osgtext/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </tt>A demo of true type fonts support provided by osgText.
 </blockquote>
 
 <p><br><tt><a href="../lib/">lib/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </tt>The local repository for the OSG library and plugins (files to be
 installed in /usr/lib/ or<tt> </tt>/usr/local/lib)
-<p><tt><a href="../lib/osgPlugins/">lib/osgPlugins/</a>&nbsp; </tt>The local
-repository for the OSG plugins (files to be installed in /usr/lib/osgPlugins
-or<tt> </tt>/usr/local/lib/osgPlugins)
 <p><tt><a href="../bin/">bin/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </tt>The local repository for the OSG binary files (files to be installed
 in /usr/bin or /usr/local/bin)

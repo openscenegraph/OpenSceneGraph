@@ -77,9 +77,10 @@ PLUGIN_DIRS += tiff
 
 EXAMPLE_DIRS = \
 	osgcameragroup\
+	osgviewer\
 	osgconv\
 	osgtext\
-	osgviewer\
+	osgstereoimage\
 
 
 ################################################################

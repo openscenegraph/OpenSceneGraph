@@ -31,8 +31,6 @@ class OSGPRODUCER_EXPORT CameraGroup : public Producer::CameraGroup
 {
     public :
 
-        typedef std::vector <osgProducer::SceneHandler *> SceneHandlerList;
-
         CameraGroup();
 
         CameraGroup(Producer::CameraConfig *cfg);
@@ -43,6 +41,13 @@ class OSGPRODUCER_EXPORT CameraGroup : public Producer::CameraGroup
 
         virtual ~CameraGroup() {}
 
+
+        typedef std::vector <osgProducer::SceneHandler *> SceneHandlerList;
+
+
+        SceneHandlerList& getSceneHandlerList() { return _shvec;}
+
+        const SceneHandlerList& getSceneHandlerList() const { return _shvec;}
 
 
         void setSceneData( osg::Node *scene );

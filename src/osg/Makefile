@@ -8,35 +8,36 @@ CXXFILES =\
 	BoundingBox.cpp\
 	BoundingSphere.cpp\
 	Camera.cpp\
-	ClipPlane.cpp \
-	ColorMask.cpp \
-	ColorMatrix.cpp \
-	CopyOp.cpp \
+	ClipPlane.cpp\
+	ColorMask.cpp\
+	ColorMatrix.cpp\
+	CopyOp.cpp\
 	CullFace.cpp\
-	Depth.cpp \
+	Depth.cpp\
 	DisplaySettings.cpp\
 	Drawable.cpp\
 	EarthSky.cpp\
 	Fog.cpp\
 	FrameStamp.cpp\
 	FrontFace.cpp\
-	Geode.cpp\
+	GLExtensions.cpp\
 	GeoSet.cpp\
 	GeoSet_ogl.cpp\
-	GLExtensions.cpp\
+	Geode.cpp\
 	Group.cpp\
 	Image.cpp\
 	Impostor.cpp\
 	ImpostorSprite.cpp\
+	LOD.cpp\
 	Light.cpp\
 	LightModel.cpp\
 	LightSource.cpp\
 	LineSegment.cpp\
 	LineStipple.cpp\
 	LineWidth.cpp\
-	LOD.cpp\
 	Material.cpp\
 	Matrix.cpp\
+	MemoryManager.cpp\
 	Node.cpp\
 	NodeCallback.cpp\
 	NodeVisitor.cpp\
@@ -46,23 +47,24 @@ CXXFILES =\
 	PolygonMode.cpp\
 	PolygonOffset.cpp\
 	PositionAttitudeTransform.cpp\
+	Projection.cpp\
 	Quat.cpp\
 	ShadeModel.cpp\
 	State.cpp\
 	StateSet.cpp\
-	Stencil.cpp \
+	Stencil.cpp\
 	Switch.cpp\
 	TexEnv.cpp\
 	TexGen.cpp\
 	TexMat.cpp\
 	Texture.cpp\
+	TextureCubeMap.cpp\
 	Timer.cpp\
 	Transform.cpp\
 	Transparency.cpp\
 	Version.cpp\
 	Viewport.cpp\
-
-
+	
 DEF     += -DSG_LIBRARY
 
 LIBS    += $(GL_LIBS) $(OTHER_LIBS)

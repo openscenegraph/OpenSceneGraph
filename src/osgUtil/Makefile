@@ -5,16 +5,16 @@ include $(TOPDIR)/Make/makedefs
 CXXFILES = \
 	AppVisitor.cpp\
 	CameraManipulator.cpp\
-	CullVisitor.cpp\
-	NewCullVisitor.cpp\
 	CullViewState.cpp\
+	CullVisitor.cpp\
+	DepthSortedBin.cpp\
 	DisplayListVisitor.cpp\
 	DisplayRequirementsVisitor.cpp\
-	DepthSortedBin.cpp\
 	DriveManipulator.cpp\
 	FlightManipulator.cpp\
-	IntersectVisitor.cpp\
 	InsertImpostorsVisitor.cpp\
+	IntersectVisitor.cpp\
+	NewCullVisitor.cpp\
 	NvTriStripObjects.cpp\
 	Optimizer.cpp\
 	RenderBin.cpp\

@@ -100,7 +100,7 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
     }
 }
 
-class DatabasePager::FindCompileableRenderingObjectsVisitor : public osg::NodeVisitor
+class FindCompileableRenderingObjectsVisitor : public osg::NodeVisitor
 {
 public:
     FindCompileableRenderingObjectsVisitor(DatabasePager::DataToCompile& dataToCompile):
@@ -421,7 +421,7 @@ void DatabasePager::removeExpiredSubgraphs(double currentFrameTime)
 }
 
 
-class DatabasePager::FindPagedLODsVisitor : public osg::NodeVisitor
+class FindPagedLODsVisitor : public osg::NodeVisitor
 {
 public:
     FindPagedLODsVisitor(DatabasePager::PagedLODList& pagedLODList):

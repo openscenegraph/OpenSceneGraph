@@ -91,13 +91,7 @@ class OSGPRODUCER_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseReques
         void compileRenderingObjects(osg::State& state);
 
 
-    protected :
-
-        virtual ~DatabasePager() {}
-        
-        // make friends with helper classes defined in DatabasePager.cpp.
-        class FindCompileableRenderingObjectsVisitor;
-        class FindPagedLODsVisitor;
+    public:
 
         typedef std::vector< osg::ref_ptr<osg::PagedLOD> > PagedLODList;
 
@@ -107,6 +101,11 @@ class OSGPRODUCER_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseReques
         typedef std::map< unsigned int, DataToCompile >    DataToCompileMap; 
 
         typedef std::set<unsigned int>                     ActiveGraphicsContexts;
+
+
+    protected :
+
+        virtual ~DatabasePager() {}
         
         struct DatabaseRequest : public osg::Referenced
         {

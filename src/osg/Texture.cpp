@@ -275,6 +275,15 @@ void Texture::applyImmediateMode(State& state) const
             wt = CLAMP;
     }
 
+    static bool s_borderClampSupported = isGLExtensionSupported("GL_ARB_texture_border_clamp");
+    if(!s_borderClampSupported)
+    {
+        if(ws == CLAMP_TO_BORDER_ARB)
+            ws = CLAMP;
+        if(wt == CLAMP_TO_BORDER_ARB)
+            wt = CLAMP;
+    }
+
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, ws );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wt );
 

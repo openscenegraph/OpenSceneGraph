@@ -53,6 +53,10 @@
 #define GL_CLAMP_TO_EDGE                  0x812F
 #endif
 
+#ifndef GL_CLAMP_TO_BORDER_ARB
+#define GL_CLAMP_TO_BORDER_ARB 0x812D
+#endif
+
 #ifndef GL_GENERATE_MIPMAP_SGIS
 #define GL_GENERATE_MIPMAP_SGIS           0x8191
 #define GL_GENERATE_MIPMAP_HINT_SGIS      0x8192
@@ -145,7 +149,8 @@ class SG_EXPORT Texture : public StateAttribute
             CLAMP  = GL_CLAMP,
             CLAMP_TO_EDGE = GL_CLAMP_TO_EDGE,
             REPEAT = GL_REPEAT,
-            MIRROR = GL_MIRRORED_REPEAT_IBM
+            MIRROR = GL_MIRRORED_REPEAT_IBM,
+            CLAMP_TO_BORDER_ARB = GL_CLAMP_TO_BORDER_ARB
         };
 
         /** Set the texture wrap mode.*/

@@ -264,6 +264,23 @@ bool ArgumentParser::read(const std::string& str,float& value1,float& value2,flo
     return true;
 }
 
+bool ArgumentParser::read(const std::string& str,float& value1,float& value2,float& value3,float& value4)
+{
+    int pos=find(str);
+    if (pos<=0) return false;
+    if (!isNumber(pos+1) || !isNumber(pos+2)  || !isNumber(pos+3))
+    {
+        reportError("argument to `"+str+"` is missing");
+        return false;
+    }
+    value1 = atof(_argv[pos+1]);
+    value2 = atof(_argv[pos+2]);
+    value3 = atof(_argv[pos+3]);
+    value4 = atof(_argv[pos+4]);
+    remove(pos,5);
+    return true;
+}
+
 bool ArgumentParser::errors(ErrorSeverity severity) const
 {
     for(ErrorMessageMap::const_iterator itr=_errorMessageMap.begin();

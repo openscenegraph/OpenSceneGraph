@@ -105,6 +105,11 @@ class SG_EXPORT ArgumentParser
           * remove the four entries from the list and return true, otherwise return false.*/
         bool read(const std::string& str,float& value1,float& value2,float& value3);
 
+        /** search for an occurance of a string in the argument list followed by three numeric values,
+          * on sucess set the values with the second & third & fourth parameters and then
+          * remove the four entries from the list and return true, otherwise return false.*/
+        bool read(const std::string& str,float& value1,float& value2,float& value3,float& value4);
+
 
         enum ErrorSeverity
         {

@@ -99,6 +99,7 @@ int main( int argc, char **argv )
     osg::ArgumentParser arguments(&argc,argv);
     
     // set up the usage document, in case we need to print out how to use this program.
+    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates how to approach implementation of clustering. Note, cluster support will soon be encompassed in Producer itself.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
     arguments.getApplicationUsage()->addCommandLineOption("-m","Set viewer to MASTER mode, sending view via packets.");

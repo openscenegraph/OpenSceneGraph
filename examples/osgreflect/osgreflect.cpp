@@ -325,6 +325,7 @@ int main( int argc, char **argv )
     osg::ArgumentParser arguments(&argc,argv);
     
     // set up the usage document, in case we need to print out how to use this program.
+    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates the use multi-pass rendering, stencil buffer to create a planer reflection effect.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
     

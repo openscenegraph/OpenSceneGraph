@@ -80,6 +80,7 @@ EXAMPLE_DIRS = \
 	osgcameragroup\
 	osgviewer\
 	osgconv\
+	osghud\
 	osgtext\
 	osgstereoimage\
 

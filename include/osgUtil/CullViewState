@@ -23,6 +23,7 @@ class OSGUTIL_EXPORT CullViewState : public osg::Referenced
 
         CullViewState();
 
+        osg::ref_ptr<osg::Matrix> _projection;
         osg::ref_ptr<osg::Matrix> _matrix;
         osg::ref_ptr<osg::Matrix> _inverse;
         osg::Vec3    _eyePoint;

@@ -243,20 +243,12 @@ class SG_EXPORT Camera: public osg::Referenced
         const Matrix& getModelViewMatrix() const;
         
         
-        /** Switch on/off the use of the near clipping plane which creating the
-          * getClippingVolume(), uses the camera _znear value for the position of the 
-          * near clipping plane. By default this value is off.*/
-        void setUseNearClippingPlane(const bool use);
-        /** get whether the ClippingVolume uses a near clipping plane.*/
-        const bool getUseNearClippingPlane() const { return _useNearClippingPlane; }
-        
-
-        /** Switch on/off the use of the far clipping plane which creating the
+        /** Switch on/off the use of the near and far clipping plane which creating the
           * getClippingVolume(), uses the camera _zfar value for the position 
           * of the far clipping plane. By default this value is off.*/
-        void setUseFarClippingPlane(const bool use);
-        /** Get whether the ClippingVolume uses a far clipping plane.*/
-        const bool getUseFarClippingPlane() const { return _useFarClippingPlane; }
+        void setUseNearAndFarClippingPlanes(const bool use);
+        /** Get whether the ClippingVolume uses a near and far clipping planes.*/
+        const bool getUseNearAndFarClippingPlanes() const { return _useNearAndFarClippingPlanes; }
         
         /** get the view frustum clipping in model coordinates */
         const ClippingVolume& getClippingVolume() const;
@@ -348,9 +340,8 @@ class SG_EXPORT Camera: public osg::Referenced
         ref_ptr<Matrix> _eyeToModelTransform;
         ref_ptr<Matrix> _modelToEyeTransform;
         
-        // flags to determine if near and far clipping planes are required.
-        bool            _useNearClippingPlane;
-        bool            _useFarClippingPlane;
+        // flag to determine if near and far clipping planes are required.
+        bool            _useNearAndFarClippingPlanes;
 
         // cached matrix and clipping volume derived from above settings.
         mutable bool            _dirty;

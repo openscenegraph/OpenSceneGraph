@@ -5,6 +5,7 @@ C++FILES = \
 	AppVisitor.cpp\
 	CameraManipulator.cpp\
 	CullVisitor.cpp\
+	NewCullVisitor.cpp\
 	CullViewState.cpp\
 	DisplayListVisitor.cpp\
 	DisplayRequirementsVisitor.cpp\
@@ -46,6 +47,7 @@ TARGET_INCLUDE_FILES = \
 	osgUtil/AppVisitor\
 	osgUtil/CameraManipulator\
 	osgUtil/CullVisitor\
+	osgUtil/NewCullVisitor\
 	osgUtil/CullViewState\
 	osgUtil/DepthSortedBin\
 	osgUtil/DisplayListVisitor\

@@ -12,9 +12,13 @@
 #include <osg/FrameStamp>
 #include <osg/DisplaySettings>
 
-#include <osgUtil/CullVisitor>
+
+//#include <osgUtil/CullVisitor>
+#include <osgUtil/NewCullVisitor>
 
 namespace osgUtil {
+
+typedef NewCullVisitor CullVisitor;
 
 /**
  * SceneView is literally a view of a scene, encapsulating the

@@ -11,6 +11,7 @@
 
 #include <typeinfo>
 #include <algorithm>
+#include <numeric>
 
 using namespace osgUtil;
 
@@ -1213,6 +1214,28 @@ struct LessGeometry
     }
 };
 
+struct LessGeometryPrimitiveType
+{
+    bool operator() (const osg::Geometry* lhs,const osg::Geometry* rhs) const
+    {
+        if (lhs->getNumPrimitives()>0)
+        {
+            if (rhs->getNumPrimitives()>0)
+            {
+                if (lhs->getPrimitive(0)->getType()<rhs->getPrimitive(0)->getType()) return true;
+                else if (rhs->getPrimitive(0)->getType()<lhs->getPrimitive(0)->getType()) return false;
+                
+                if (lhs->getPrimitive(0)->getMode()<rhs->getPrimitive(0)->getMode()) return true;
+                else if (rhs->getPrimitive(0)->getMode()<lhs->getPrimitive(0)->getMode()) return false;
+                
+            }
+            return false;
+        }
+        else if (rhs->getNumPrimitives()>0) return true;
+        return false;
+    }
+};
+
 bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
 {
     if (geode.getNumDrawables()<2) return false;
@@ -1222,7 +1245,8 @@ bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
 
     GeometryDuplicateMap geometryDuplicateMap;
     
-    for(unsigned int i=0;i<geode.getNumDrawables();++i)
+    unsigned int i;
+    for(i=0;i<geode.getNumDrawables();++i)
     {
         osg::Geometry* geom = dynamic_cast<osg::Geometry*>(geode.getDrawable(i));
         if (geom)
@@ -1239,6 +1263,7 @@ bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
     {
         if (itr->second.size()>1)
         {
+            std::sort(itr->second.begin(),itr->second.end(),LessGeometryPrimitiveType());
             osg::Geometry* lhs = itr->second[0];
             for(DuplicateList::iterator dupItr=itr->second.begin()+1;
                 dupItr!=itr->second.end();
@@ -1251,6 +1276,78 @@ bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
 
                     static int co = 0;
                     osg::notify(osg::INFO)<<"merged and removed Geometry "<<++co<<std::endl;
+                }
+            }
+        }
+    }
+
+    // now merge any compatible primtives.
+    for(i=0;i<geode.getNumDrawables();++i)
+    {
+        osg::Geometry* geom = dynamic_cast<osg::Geometry*>(geode.getDrawable(i));
+        if (geom)
+        {
+            if (geom->getNumPrimitives()>0)
+            {
+                osg::Geometry::PrimitiveList& primitives = geom->getPrimitiveList();
+                unsigned int primNo=0;
+                while(primNo+1<primitives.size())
+                {
+                    osg::Primitive* lhs = primitives[primNo].get();
+                    osg::Primitive* rhs = primitives[primNo+1].get();
+ 
+                    bool combine = false;
+
+                    if (lhs->getType()==rhs->getType() &&
+                        lhs->getMode()==rhs->getMode())
+                    {
+
+                        switch(lhs->getMode())
+                        {
+                        case(osg::Primitive::POINTS):
+                        case(osg::Primitive::LINES):
+                        case(osg::Primitive::TRIANGLES):
+                        case(osg::Primitive::QUADS):
+                            combine = true;       
+                            break;
+                        }
+                        
+                    }
+
+                    if (combine)
+                    {
+                        switch(lhs->getType())
+                        {
+                        case(osg::Primitive::DrawArraysPrimitiveType):
+                            combine = mergePrimitive(*(static_cast<osg::DrawArrays*>(lhs)),*(static_cast<osg::DrawArrays*>(rhs)));
+                            break;
+                        case(osg::Primitive::DrawArrayLengthsPrimitiveType):
+                            combine = mergePrimitive(*(static_cast<osg::DrawArrayLengths*>(lhs)),*(static_cast<osg::DrawArrayLengths*>(rhs)));
+                            break;
+                        case(osg::Primitive::DrawElementsUBytePrimitiveType):
+                            combine = mergePrimitive(*(static_cast<osg::DrawElementsUByte*>(lhs)),*(static_cast<osg::DrawElementsUByte*>(rhs)));
+                            break;
+                        case(osg::Primitive::DrawElementsUShortPrimitiveType):
+                            combine = mergePrimitive(*(static_cast<osg::DrawElementsUShort*>(lhs)),*(static_cast<osg::DrawElementsUShort*>(rhs)));
+                            break;
+                        case(osg::Primitive::DrawElementsUIntPrimitiveType):
+                            combine = mergePrimitive(*(static_cast<osg::DrawElementsUInt*>(lhs)),*(static_cast<osg::DrawElementsUInt*>(rhs)));
+                            break;
+                        default:
+                            break;
+                        }
+                    }
+                    if (combine)
+                    {
+                        cout << "found compatible"<<endl;
+                        primitives.erase(primitives.begin()+primNo+1);
+                    }
+
+                    if (!combine)
+                    {
+                        primNo++;
+                        cout << "no compatible"<<endl;
+                    }
                 }
             }
         }
@@ -1321,6 +1418,45 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
     
     lhs.getPrimitiveList().insert(lhs.getPrimitiveList().end(),rhs.getPrimitiveList().begin(),rhs.getPrimitiveList().end());
     
-    
+    return true;
+}
+
+bool Optimizer::MergeGeometryVisitor::mergePrimitive(osg::DrawArrays& lhs,osg::DrawArrays& rhs)
+{
+    if (lhs.getFirst()+lhs.getCount()==rhs.getFirst())
+    {
+        lhs.setCount(lhs.getCount()+rhs.getCount());
+        return true;
+    }
+    return false;
+}
+
+bool Optimizer::MergeGeometryVisitor::mergePrimitive(osg::DrawArrayLengths& lhs,osg::DrawArrayLengths& rhs)
+{
+    int lhs_count = std::accumulate(lhs.begin(),lhs.end(),0);
+
+    if (lhs.getFirst()+lhs_count==rhs.getFirst())
+    {
+        lhs.insert(lhs.end(),rhs.begin(),rhs.end());
+        return true;
+    }
+    return false;
+}
+
+bool Optimizer::MergeGeometryVisitor::mergePrimitive(osg::DrawElementsUByte& lhs,osg::DrawElementsUByte& rhs)
+{
+    lhs.insert(lhs.end(),rhs.begin(),rhs.end());
+    return true;
+}
+
+bool Optimizer::MergeGeometryVisitor::mergePrimitive(osg::DrawElementsUShort& lhs,osg::DrawElementsUShort& rhs)
+{
+    lhs.insert(lhs.end(),rhs.begin(),rhs.end());
+    return true;
+}
+
+bool Optimizer::MergeGeometryVisitor::mergePrimitive(osg::DrawElementsUInt& lhs,osg::DrawElementsUInt& rhs)
+{
+    lhs.insert(lhs.end(),rhs.begin(),rhs.end());
     return true;
 }

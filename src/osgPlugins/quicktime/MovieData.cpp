@@ -16,22 +16,23 @@ using namespace osgQuicktime;
 
 namespace osg {
     
-    MovieData::MovieData() : _movie(NULL), _gw(NULL), _fError(false) {
-    
-    }
-    
-    
-    MovieData::~MovieData() {
-    
-        if (_gw) DisposeGWorld(_gw);
-        if (_movie) DisposeMovie(_movie);
-    }
+MovieData::MovieData() : _movie(NULL), _gw(NULL), _fError(false)
+{
+
+}
+
+
+MovieData::~MovieData()
+{
+    if (_gw) DisposeGWorld(_gw);
+    if (_movie) DisposeMovie(_movie);
+}
     
    
     
     
-    void MovieData::load(osg::Image* image, std::string filename, float startTime)  {
-
+void MovieData::load(osg::Image* image, std::string filename, float startTime)
+{
     Rect bounds;
     
     osg::notify(osg::INFO) << "MovieData :: opening movie '" << filename << "'" << std::endl;
@@ -71,8 +72,6 @@ namespace osg {
         UpdateMovie(_movie);
         SetMovieRate(_movie,0);
     }
-
-
 }
 
 
@@ -81,12 +80,12 @@ namespace osg {
 // create image for storing
 // ---------------------------------------------------------------------------
 
-void MovieData::_initImage(osg::Image* image)  {
+void MovieData::_initImage(osg::Image* image)
+{
 
-	void* buffer;
-	char* pointer;
+    void* buffer;
+    char* pointer;
 
-			
     _textureWidth = ((_movieWidth + 7) >> 3) << 3;
     _textureHeight = _movieHeight;
     

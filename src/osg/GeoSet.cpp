@@ -54,23 +54,45 @@ GeoSet::GeoSet()
 
 }
 
-#define INDEX_ARRAY_DELETE(A) if (A._is_ushort) delete [] A._ptr._ushort; else delete [] A._ptr._uint;
+#define INDEX_ARRAY_DELETE(A) if (A._is_ushort) ushortList.insert(A._ptr._ushort); else uintList.insert(A._ptr._uint);
 
 void GeoSet::AttributeDeleteFunctor::operator() (GeoSet* gset)
 {
     // note, delete checks for NULL so want delete NULL pointers.
     delete [] gset->getPrimLengths();
     delete [] gset->getCoords();
-    INDEX_ARRAY_DELETE(gset->getCoordIndices())
     delete [] gset->getNormals();
-    INDEX_ARRAY_DELETE(gset->getNormalIndices());
     delete [] gset->getColors();
-    INDEX_ARRAY_DELETE(gset->getColorIndices());
     delete [] gset->getTextureCoords();
-    INDEX_ARRAY_DELETE(gset->getTextureIndices())
     // can't delete a void* right now... interleaved arrays needs to be reimplemented with a proper pointer..
     //    delete [] gset->getInterleavedArray();
+
+
+    // coord indicies may be shared so we have to go through the long winded
+    // step of creating unique pointer sets which we then delete.  This
+    // ensures that arrays aren't delete twice. Robert. 
+    std::set<osg::ushort*> ushortList;
+    std::set<osg::uint*>   uintList;
+    
+    INDEX_ARRAY_DELETE(gset->getCoordIndices())
+    INDEX_ARRAY_DELETE(gset->getNormalIndices());
+    INDEX_ARRAY_DELETE(gset->getColorIndices());
+    INDEX_ARRAY_DELETE(gset->getTextureIndices())
     INDEX_ARRAY_DELETE(gset->getInterleavedIndices());
+    
+    for(std::set<osg::ushort*>::iterator sitr=ushortList.begin();
+        sitr!=ushortList.end();
+        ++sitr)
+    {
+        delete [] *sitr;
+    }
+    
+    for(std::set<osg::uint*>::iterator iitr=uintList.begin();
+        iitr!=uintList.end();
+        ++iitr)
+    {
+        delete [] *iitr;
+    }
 }
 
 #undef INDEX_ARRAY_DELETE

@@ -20,6 +20,7 @@
 
 #include <osgDB/Registry>
 #include <osgDB/FileNameUtils>
+#include <osgDB/FileUtils>
 
 #include <stdio.h>
 
@@ -324,8 +325,14 @@ class ReaderWriterDDS : public osgDB::ReaderWriter
             return osgDB::equalCaseInsensitive(extension,"dds"); 
         }
 
-        virtual ReadResult readImage(const std::string& fileName, const osgDB::ReaderWriter::Options*)
+        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options*)
         {
+            std::string ext = osgDB::getLowerCaseFileExtension(file);
+            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
+
+            std::string fileName = osgDB::findDataFile( file );
+            if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
+
             osg::Image* osgImage = ReadDDSFile(fileName.c_str());
             if (osgImage==NULL) return ReadResult::FILE_NOT_HANDLED;
             return osgImage;

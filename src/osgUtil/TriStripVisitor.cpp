@@ -502,33 +502,6 @@ public:
 
 };
 
-// triangle functor.
-struct TriangleAcumulatorFunctor
-{
-
-    triangle_stripper::tri_stripper::indices in_indices;
-    const Vec3* _vbase;
-
-    TriangleAcumulatorFunctor() : _vbase(0) {}
-    
-    void setCoords( const Vec3* vbase ) { _vbase = vbase; std::cout<<"set coords"<<std::endl;}
-
-    inline void operator() ( const Vec3 &v1, const Vec3 &v2, const Vec3 &v3, bool treatVertexDataAsTemporary )
-    {
-    
-        if (!treatVertexDataAsTemporary)
-        {
-            int p1 = (int)(&v1-_vbase);
-            int p2 = (int)(&v2-_vbase);
-            int p3 = (int)(&v3-_vbase);
-            if (p1==p2 || p1==p3 || p2==p3) return;
-            in_indices.push_back(p1);
-            in_indices.push_back(p2);
-            in_indices.push_back(p3);
-        }
-    }
-};
-
 void TriStripVisitor::stripify(Geometry& geom)
 {
 
@@ -545,6 +518,11 @@ void TriStripVisitor::stripify(Geometry& geom)
     if (geom.getFogCoordBinding()==osg::Geometry::BIND_PER_PRIMITIVE ||
         geom.getFogCoordBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET) return;
 
+    // no point tri stripping if we don't have enough vertices.
+    if (geom.getVertexArray()->getNumElements()<3) return;
+
+
+    // check to see if vertex attributes indices exists, if so expand them to remove them
     if (geom.suitableForOptimization())
     {
         // removing coord indices
@@ -553,9 +531,10 @@ void TriStripVisitor::stripify(Geometry& geom)
     }
 
 
+
+    // check for the existance of surface primitives
     unsigned int numSurfacePrimitives = 0;
     unsigned int numNonSurfacePrimitives = 0;
-
     Geometry::PrimitiveSetList& primitives = geom.getPrimitiveSetList();
     Geometry::PrimitiveSetList::iterator itr;
     for(itr=primitives.begin();
@@ -579,6 +558,7 @@ void TriStripVisitor::stripify(Geometry& geom)
         }
     }
     
+    // nothitng to tri strip leave.
     if (!numSurfacePrimitives) return;
     
     // compute duplicate vertices
@@ -673,17 +653,8 @@ void TriStripVisitor::stripify(Geometry& geom)
         }
     }
    
-    for(i=0;i<finalMapping.size();++i)
-    {
-        //std::cout<<" finalMapping["<<i<<"] = "<<finalMapping[i]<<std::endl;
-    }
-   
-    RemapArray ra(copyMapping);
-    arrayComparitor.accept(ra);
-   
     
     TriangleIndexFunctor taf;
-    //taf._remapIndices.swap(remapDuplicatesToOrignals);
     taf._remapIndices.swap(finalMapping);
 
     Geometry::PrimitiveSetList new_primitives;
@@ -710,18 +681,31 @@ void TriStripVisitor::stripify(Geometry& geom)
         }
     }
     
-    if (!taf._in_indices.empty())
+    float minimum_ratio_of_indices_to_unique_vertices = 2.0;
+    float ratio_of_indices_to_unique_vertices = ((float)taf._in_indices.size()/(float)numUnique);
+
+    std::cout<<"Number of indices"<<taf._in_indices.size()<<" numUnique"<< numUnique << std::endl;
+    std::cout<<"    ratio indices/numUnique"<< ratio_of_indices_to_unique_vertices << std::endl;
+    
+    // only tri strip if there is point in doing so.
+    if (!taf._in_indices.empty() && ratio_of_indices_to_unique_vertices>=minimum_ratio_of_indices_to_unique_vertices)
     {
-        int in_numVertices = -1;
+        std::cout<<"    doing tri strip"<< std::endl;
+
+        unsigned int in_numVertices = 0;
         for(triangle_stripper::tri_stripper::indices::iterator itr=taf._in_indices.begin();
             itr!=taf._in_indices.end();
             ++itr)
         {
-            if ((int)*itr>in_numVertices) in_numVertices=*itr;
+            if (*itr>in_numVertices) in_numVertices=*itr;
         }
         // the largest indice is in_numVertices, but indices start at 0
         // so increment to give to the corrent number of verticies.
-        ++in_numVertices;            
+        ++in_numVertices;
+        
+        // remap any shared vertex attributes
+        RemapArray ra(copyMapping);
+        arrayComparitor.accept(ra);
 
         triangle_stripper::tri_stripper stripifier(taf._in_indices);
         stripifier.SetCacheSize(_cacheSize);
@@ -760,20 +744,28 @@ void TriStripVisitor::stripify(Geometry& geom)
         }
         geom.setPrimitiveSetList(new_primitives);
         
-#if 0 
-// debugging code for indentifying the tri-strips.       
-        osg::Vec4Array* colors = new osg::Vec4Array(new_primitives.size());
-        for(i=0;i<colors->size();++i)
-        {
-            (*colors)[i].set(((float)rand()/(float)RAND_MAX),
-                             ((float)rand()/(float)RAND_MAX),
-                             ((float)rand()/(float)RAND_MAX),
-                             1.0f);
-        }
-        geom.setColorArray(colors);
-        geom.setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE_SET);
-#endif        
+        #if 0 
+        // debugging code for indentifying the tri-strips.       
+                osg::Vec4Array* colors = new osg::Vec4Array(new_primitives.size());
+                for(i=0;i<colors->size();++i)
+                {
+                    (*colors)[i].set(((float)rand()/(float)RAND_MAX),
+                                     ((float)rand()/(float)RAND_MAX),
+                                     ((float)rand()/(float)RAND_MAX),
+                                     1.0f);
+                }
+                geom.setColorArray(colors);
+                geom.setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE_SET);
+        #endif        
+
+        geom.setPrimitiveSetList(new_primitives);
+
     }
+    else
+    {
+        std::cout<<"    not doing tri strip *****************"<< std::endl;
+    }
+
 }
 
 void TriStripVisitor::stripify()

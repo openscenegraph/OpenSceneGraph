@@ -6,6 +6,7 @@
 #include <osg/GL>
 
 #include <osgDB/Registry>
+#include <osgDB/FileUtils>
 #include <osgDB/FileNameUtils>
 
 #include <stdio.h>
@@ -411,8 +412,14 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
 	    return false;
 	}
 
-        virtual ReadResult readImage(const std::string& fileName, const osgDB::ReaderWriter::Options*)
+        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options*)
         {
+            std::string ext = osgDB::getLowerCaseFileExtension(file);
+            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
+
+            std::string fileName = osgDB::findDataFile( file );
+            if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
+
             unsigned char *imageData = NULL;
             int width_ret;
             int height_ret;

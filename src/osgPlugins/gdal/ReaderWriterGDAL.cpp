@@ -5,6 +5,7 @@
 
 #include <osgDB/Registry>
 #include <osgDB/FileNameUtils>
+#include <osgDB/FileUtils>
 #include <osgDB/ImageOptions>
 
 #include <gdal_priv.h>
@@ -18,10 +19,13 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
             return osgDB::equalCaseInsensitive(extension,"gdal") || osgDB::equalCaseInsensitive(extension,"gdal");
         }
 
-        virtual ReadResult readImage(const std::string& fileName, const osgDB::ReaderWriter::Options* options)
+        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options)
         {
-            //std::string ext = osgDB::getFileExtension(fileName);
+            //std::string ext = osgDB::getFileExtension(file);
             //if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
+
+            std::string fileName = osgDB::findDataFile( file );
+            if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
             initGDAL();
 
@@ -46,10 +50,10 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
 
             osgDB::ImageOptions::TexCoordRange* texCoordRange = 0;
 
-            const osgDB::ImageOptions* imageOptions = dynamic_cast<const osgDB::ImageOptions*>(options);
+            osgDB::ImageOptions* imageOptions = dynamic_cast<osgDB::ImageOptions*>(const_cast<osgDB::ReaderWriter::Options*>(options));
             if (imageOptions)
             {
-                std::cout<<"Got ImageOptions"<<std::endl;
+                osg::notify(osg::INFO)<<"Got ImageOptions"<<std::endl;
                 
                 int margin = 0;
                 switch(imageOptions->_sourceImageWindowMode)
@@ -71,7 +75,7 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
                                            ((double)(windowY+windowHeight) -(desiredY+desiredHeight))/(double)windowHeight,
                                            (desiredWidth)/(double)windowWidth,
                                            (desiredHeight)/(double)windowHeight);
-                        std::cout<<"tex coord range "<<texCoordRange->_x<<" "<<texCoordRange->_y<<" "<<texCoordRange->_w<<" "<<texCoordRange->_h<<std::endl;
+                        osg::notify(osg::INFO)<<"tex coord range "<<texCoordRange->_x<<" "<<texCoordRange->_y<<" "<<texCoordRange->_w<<" "<<texCoordRange->_h<<std::endl;
                     }
                     break;
                 case(osgDB::ImageOptions::PIXEL_WINDOW):
@@ -85,6 +89,13 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
                     break;
                 }
                 
+                // reapply the window coords to the pixel window so that calling code 
+                // knows the original pixel size
+                imageOptions->_sourcePixelWindow.windowX = windowX;
+                imageOptions->_sourcePixelWindow.windowY = windowY;
+                imageOptions->_sourcePixelWindow.windowWidth = windowWidth;
+                imageOptions->_sourcePixelWindow.windowHeight = windowHeight;
+
                 switch(imageOptions->_destinationImageWindowMode)
                 {
                 case(osgDB::ImageOptions::RATIO_WINDOW):
@@ -111,31 +122,31 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
 //            windowWidth = destWidth;
 //            windowHeight = destHeight;
 
-            std::cout << "    windowX = "<<windowX<<std::endl;
-            std::cout << "    windowY = "<<windowY<<std::endl;
-            std::cout << "    windowWidth = "<<windowWidth<<std::endl;
-            std::cout << "    windowHeight = "<<windowHeight<<std::endl;
+            osg::notify(osg::INFO) << "    windowX = "<<windowX<<std::endl;
+            osg::notify(osg::INFO) << "    windowY = "<<windowY<<std::endl;
+            osg::notify(osg::INFO) << "    windowWidth = "<<windowWidth<<std::endl;
+            osg::notify(osg::INFO) << "    windowHeight = "<<windowHeight<<std::endl;
 
-            std::cout << std::endl;
+            osg::notify(osg::INFO) << std::endl;
 
-            std::cout << "    destX = "<<destX<<std::endl;
-            std::cout << "    destY = "<<destY<<std::endl;
-            std::cout << "    destWidth = "<<destWidth<<std::endl;
-            std::cout << "    destHeight = "<<destHeight<<std::endl;
+            osg::notify(osg::INFO) << "    destX = "<<destX<<std::endl;
+            osg::notify(osg::INFO) << "    destY = "<<destY<<std::endl;
+            osg::notify(osg::INFO) << "    destWidth = "<<destWidth<<std::endl;
+            osg::notify(osg::INFO) << "    destHeight = "<<destHeight<<std::endl;
 
-            std::cout << std::endl;
+            osg::notify(osg::INFO) << std::endl;
             
-            std::cout << "    GetRaterCount() "<< dataset->GetRasterCount()<<std::endl;
-            std::cout << "    GetProjectionRef() "<< dataset->GetProjectionRef()<<std::endl;
+            osg::notify(osg::INFO) << "    GetRaterCount() "<< dataset->GetRasterCount()<<std::endl;
+            osg::notify(osg::INFO) << "    GetProjectionRef() "<< dataset->GetProjectionRef()<<std::endl;
             
             
             double geoTransform[6];
             if (dataset->GetGeoTransform(geoTransform)==CE_None)
             {
-                std::cout << "    GetGeoTransform "<< std::endl;
-                std::cout << "        Origin = "<<geoTransform[0]<<" "<<geoTransform[3]<<std::endl;
-                std::cout << "        Pixel X = "<<geoTransform[1]<<" "<<geoTransform[4]<<std::endl;
-                std::cout << "        Pixel Y = "<<geoTransform[2]<<" "<<geoTransform[5]<<std::endl;
+                osg::notify(osg::INFO) << "    GetGeoTransform "<< std::endl;
+                osg::notify(osg::INFO) << "        Origin = "<<geoTransform[0]<<" "<<geoTransform[3]<<std::endl;
+                osg::notify(osg::INFO) << "        Pixel X = "<<geoTransform[1]<<" "<<geoTransform[4]<<std::endl;
+                osg::notify(osg::INFO) << "        Pixel Y = "<<geoTransform[2]<<" "<<geoTransform[5]<<std::endl;
             }
 
             int numBands = dataset->GetRasterCount();
@@ -159,12 +170,12 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
             
                 GDALRasterBand* band = dataset->GetRasterBand(b);
                 
-                std::cout << "    Band "<<b<<std::endl;
+                osg::notify(osg::INFO) << "    Band "<<b<<std::endl;
 
-                std::cout << "        GetOverviewCount() = "<< band->GetOverviewCount()<<std::endl;
-                std::cout << "        GetColorTable() = "<< band->GetColorTable()<<std::endl;
-                std::cout << "        DataTypeName() = "<< GDALGetDataTypeName(band->GetRasterDataType())<<std::endl;
-                std::cout << "        ColorIntepretationName() = "<< GDALGetColorInterpretationName(band->GetColorInterpretation())<<std::endl;
+                osg::notify(osg::INFO) << "        GetOverviewCount() = "<< band->GetOverviewCount()<<std::endl;
+                osg::notify(osg::INFO) << "        GetColorTable() = "<< band->GetColorTable()<<std::endl;
+                osg::notify(osg::INFO) << "        DataTypeName() = "<< GDALGetDataTypeName(band->GetRasterDataType())<<std::endl;
+                osg::notify(osg::INFO) << "        ColorIntepretationName() = "<< GDALGetColorInterpretationName(band->GetColorInterpretation())<<std::endl;
                 
                 if (band->GetColorInterpretation()==GCI_GrayIndex) bandGray = band;
                 else if (band->GetColorInterpretation()==GCI_RedBand) bandRed = band;
@@ -180,12 +191,12 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
 //                 minmax[1] = band->GetMaximum(&gotMax);
 //                 if (!(gotMin && gotMax))
 //                 {
-//                     std::cout<<" computing min max"<<std::endl;
+//                     osg::notify(osg::INFO)<<" computing min max"<<std::endl;
 //                     GDALComputeRasterMinMax(band,TRUE,minmax);
 //                 }
 //                 
-//                 std::cout << "        min "<<minmax[0]<<std::endl;
-//                 std::cout << "        max "<<minmax[1]<<std::endl;
+//                 osg::notify(osg::INFO) << "        min "<<minmax[0]<<std::endl;
+//                 osg::notify(osg::INFO) << "        max "<<minmax[1]<<std::endl;
 
                 if (dataType==0)
                 {
@@ -232,7 +243,7 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
                     pixelFormat = GL_RGBA;
                     internalFormat = GL_RGBA;
 
-                    std::cout << "reading RGBA"<<std::endl;
+                    osg::notify(osg::INFO) << "reading RGBA"<<std::endl;
 
                     bandRed->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(imageData+0),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
                     bandGreen->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(imageData+1),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
@@ -251,7 +262,7 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
                     pixelFormat = GL_RGB;
                     internalFormat = GL_RGB;
 
-                    std::cout << "reading RGB"<<std::endl;
+                    osg::notify(osg::INFO) << "reading RGB"<<std::endl;
 
                     bandRed->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(imageData+0),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
                     bandGreen->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(imageData+1),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
@@ -270,7 +281,7 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
                     pixelFormat = GL_LUMINANCE_ALPHA;
                     internalFormat = GL_LUMINANCE_ALPHA;
 
-                    std::cout << "reading grey + alpha"<<std::endl;
+                    osg::notify(osg::INFO) << "reading grey + alpha"<<std::endl;
 
                     bandGray->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(imageData+0),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
                     bandAlpha->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(imageData+1),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
@@ -285,7 +296,7 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
                     pixelFormat = GL_LUMINANCE;
                     internalFormat = GL_LUMINANCE;
 
-                    std::cout << "reading grey"<<std::endl;
+                    osg::notify(osg::INFO) << "reading grey"<<std::endl;
 
                     bandGray->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(imageData+0),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
                 }
@@ -299,7 +310,7 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
                 pixelFormat = GL_ALPHA;
                 internalFormat = GL_ALPHA;
 
-                std::cout << "reading alpha"<<std::endl;
+                osg::notify(osg::INFO) << "reading alpha"<<std::endl;
 
                 bandAlpha->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(imageData+0),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
 
@@ -307,7 +318,7 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
             }
             else
             {
-                std::cout << "not found any usable bands in file."<<std::endl;
+                osg::notify(osg::INFO) << "not found any usable bands in file."<<std::endl;
             }
             
 
@@ -364,7 +375,7 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
             const osgDB::ImageOptions* imageOptions = dynamic_cast<const osgDB::ImageOptions*>(options);
             if (imageOptions)
             {
-                std::cout<<"Got ImageOptions"<<std::endl;
+                osg::notify(osg::INFO)<<"Got ImageOptions"<<std::endl;
                 
                 int margin = 0;
                 switch(imageOptions->_sourceImageWindowMode)
@@ -386,7 +397,7 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
                                            ((double)(windowY+windowHeight) -(desiredY+desiredHeight))/(double)windowHeight,
                                            (desiredWidth)/(double)windowWidth,
                                            (desiredHeight)/(double)windowHeight);
-                        std::cout<<"tex coord range "<<texCoordRange->_x<<" "<<texCoordRange->_y<<" "<<texCoordRange->_w<<" "<<texCoordRange->_h<<std::endl;
+                        osg::notify(osg::INFO)<<"tex coord range "<<texCoordRange->_x<<" "<<texCoordRange->_y<<" "<<texCoordRange->_w<<" "<<texCoordRange->_h<<std::endl;
                     }
                     break;
                 case(osgDB::ImageOptions::PIXEL_WINDOW):
@@ -426,30 +437,30 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
 //            windowWidth = destWidth;
 //            windowHeight = destHeight;
 
-            std::cout << "    windowX = "<<windowX<<std::endl;
-            std::cout << "    windowY = "<<windowY<<std::endl;
-            std::cout << "    windowWidth = "<<windowWidth<<std::endl;
-            std::cout << "    windowHeight = "<<windowHeight<<std::endl;
+            osg::notify(osg::INFO) << "    windowX = "<<windowX<<std::endl;
+            osg::notify(osg::INFO) << "    windowY = "<<windowY<<std::endl;
+            osg::notify(osg::INFO) << "    windowWidth = "<<windowWidth<<std::endl;
+            osg::notify(osg::INFO) << "    windowHeight = "<<windowHeight<<std::endl;
 
-            std::cout << std::endl;
+            osg::notify(osg::INFO) << std::endl;
 
-            std::cout << "    destX = "<<destX<<std::endl;
-            std::cout << "    destY = "<<destY<<std::endl;
-            std::cout << "    destWidth = "<<destWidth<<std::endl;
-            std::cout << "    destHeight = "<<destHeight<<std::endl;
+            osg::notify(osg::INFO) << "    destX = "<<destX<<std::endl;
+            osg::notify(osg::INFO) << "    destY = "<<destY<<std::endl;
+            osg::notify(osg::INFO) << "    destWidth = "<<destWidth<<std::endl;
+            osg::notify(osg::INFO) << "    destHeight = "<<destHeight<<std::endl;
 
-            std::cout << std::endl;
+            osg::notify(osg::INFO) << std::endl;
             
-            std::cout << "    GetRaterCount() "<< dataset->GetRasterCount()<<std::endl;
-            std::cout << "    GetProjectionRef() "<< dataset->GetProjectionRef()<<std::endl;
+            osg::notify(osg::INFO) << "    GetRaterCount() "<< dataset->GetRasterCount()<<std::endl;
+            osg::notify(osg::INFO) << "    GetProjectionRef() "<< dataset->GetProjectionRef()<<std::endl;
             
             
             double geoTransform[6];
-            std::cout << "   GetGeoTransform == "<< dataset->GetGeoTransform(geoTransform)<<" == CE_None"<<std::endl;
-            std::cout << "    GetGeoTransform "<< std::endl;
-            std::cout << "        Origin = "<<geoTransform[0]<<" "<<geoTransform[3]<<std::endl;
-            std::cout << "        Pixel X = "<<geoTransform[1]<<" "<<geoTransform[4]<<std::endl;
-            std::cout << "        Pixel Y = "<<geoTransform[2]<<" "<<geoTransform[5]<<std::endl;
+            osg::notify(osg::INFO) << "   GetGeoTransform == "<< dataset->GetGeoTransform(geoTransform)<<" == CE_None"<<std::endl;
+            osg::notify(osg::INFO) << "    GetGeoTransform "<< std::endl;
+            osg::notify(osg::INFO) << "        Origin = "<<geoTransform[0]<<" "<<geoTransform[3]<<std::endl;
+            osg::notify(osg::INFO) << "        Pixel X = "<<geoTransform[1]<<" "<<geoTransform[4]<<std::endl;
+            osg::notify(osg::INFO) << "        Pixel Y = "<<geoTransform[2]<<" "<<geoTransform[5]<<std::endl;
             
 
             double TopLeft[2],BottomLeft[2],BottomRight[2],TopRight[2];
@@ -463,12 +474,12 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
             TopRight[1] = TopLeft[1]+geoTransform[4]*(dataWidth-1);
             
             
-            std::cout << "TopLeft     "<<TopLeft[0]<<"\t"<<TopLeft[1]<<std::endl;
-            std::cout << "BottomLeft  "<<BottomLeft[0]<<"\t"<<BottomLeft[1]<<std::endl;
-            std::cout << "BottomRight "<<BottomRight[0]<<"\t"<<BottomRight[1]<<std::endl;
-            std::cout << "TopRight    "<<TopRight[0]<<"\t"<<TopRight[1]<<std::endl;
+            osg::notify(osg::INFO) << "TopLeft     "<<TopLeft[0]<<"\t"<<TopLeft[1]<<std::endl;
+            osg::notify(osg::INFO) << "BottomLeft  "<<BottomLeft[0]<<"\t"<<BottomLeft[1]<<std::endl;
+            osg::notify(osg::INFO) << "BottomRight "<<BottomRight[0]<<"\t"<<BottomRight[1]<<std::endl;
+            osg::notify(osg::INFO) << "TopRight    "<<TopRight[0]<<"\t"<<TopRight[1]<<std::endl;
 
-            std::cout<<"    GDALGetGCPCount "<<dataset->GetGCPCount()<<std::endl;
+            osg::notify(osg::INFO)<<"    GDALGetGCPCount "<<dataset->GetGCPCount()<<std::endl;
 
             int numBands = dataset->GetRasterCount();
             
@@ -484,21 +495,21 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
             
                 GDALRasterBand* band = dataset->GetRasterBand(b);
                 
-                std::cout << "    Band "<<b<<std::endl;
+                osg::notify(osg::INFO) << "    Band "<<b<<std::endl;
 
-                std::cout << "        GetOverviewCount() = "<< band->GetOverviewCount()<<std::endl;
-                std::cout << "        GetColorTable() = "<< band->GetColorTable()<<std::endl;
-                std::cout << "        DataTypeName() = "<< GDALGetDataTypeName(band->GetRasterDataType())<<std::endl;
-                std::cout << "        ColorIntepretationName() = "<< GDALGetColorInterpretationName(band->GetColorInterpretation())<<std::endl;
+                osg::notify(osg::INFO) << "        GetOverviewCount() = "<< band->GetOverviewCount()<<std::endl;
+                osg::notify(osg::INFO) << "        GetColorTable() = "<< band->GetColorTable()<<std::endl;
+                osg::notify(osg::INFO) << "        DataTypeName() = "<< GDALGetDataTypeName(band->GetRasterDataType())<<std::endl;
+                osg::notify(osg::INFO) << "        ColorIntepretationName() = "<< GDALGetColorInterpretationName(band->GetColorInterpretation())<<std::endl;
                 
                 
-                std::cout << std::endl;
-                std::cout << "        GetNoDataValue() = "<< band->GetNoDataValue()<<std::endl;
-                std::cout << "        GetMinimum() = "<< band->GetMinimum()<<std::endl;
-                std::cout << "        GetMaximum() = "<< band->GetMaximum()<<std::endl;
-                std::cout << "        GetOffset() = "<< band->GetOffset()<<std::endl;
-                std::cout << "        GetScale() = "<< band->GetScale()<<std::endl;
-                std::cout << "        GetUnitType() = '"<< band->GetUnitType()<<"'"<<std::endl;
+                osg::notify(osg::INFO) << std::endl;
+                osg::notify(osg::INFO) << "        GetNoDataValue() = "<< band->GetNoDataValue()<<std::endl;
+                osg::notify(osg::INFO) << "        GetMinimum() = "<< band->GetMinimum()<<std::endl;
+                osg::notify(osg::INFO) << "        GetMaximum() = "<< band->GetMaximum()<<std::endl;
+                osg::notify(osg::INFO) << "        GetOffset() = "<< band->GetOffset()<<std::endl;
+                osg::notify(osg::INFO) << "        GetScale() = "<< band->GetScale()<<std::endl;
+                osg::notify(osg::INFO) << "        GetUnitType() = '"<< band->GetUnitType()<<"'"<<std::endl;
                 
                 
                 if (band->GetColorInterpretation()==GCI_GrayIndex) bandGray = band;
@@ -515,12 +526,12 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
 //                 minmax[1] = band->GetMaximum(&gotMax);
 //                 if (!(gotMin && gotMax))
 //                 {
-//                     std::cout<<" computing min max"<<std::endl;
+//                     osg::notify(osg::INFO)<<" computing min max"<<std::endl;
 //                     GDALComputeRasterMinMax(band,TRUE,minmax);
 //                 }
 //                 
-//                 std::cout << "        min "<<minmax[0]<<std::endl;
-//                 std::cout << "        max "<<minmax[1]<<std::endl;
+//                 osg::notify(osg::INFO) << "        min "<<minmax[0]<<std::endl;
+//                 osg::notify(osg::INFO) << "        max "<<minmax[1]<<std::endl;
             }
             
                 
@@ -553,7 +564,7 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
 //                 }
                 		
 		// now need to flip since the OSG's origin is in lower left corner.
-                std::cout<<"flipping"<<std::endl;
+                osg::notify(osg::INFO)<<"flipping"<<std::endl;
                 unsigned int copy_r = hf->getNumRows()-1;
 		for(unsigned int r=0;r<copy_r;++r,--copy_r)
 		{

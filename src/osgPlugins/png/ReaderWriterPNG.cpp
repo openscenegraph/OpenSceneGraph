@@ -5,6 +5,7 @@
 #include <osg/Endian>
 
 #include <osgDB/Registry>
+#include <osgDB/FileUtils>
 #include <osgDB/FileNameUtils>
 
 using namespace osg;
@@ -35,11 +36,13 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
         virtual const char* className() { return "PNG Image Reader/Writer"; }
         virtual bool acceptsExtension(const std::string& extension) { return osgDB::equalCaseInsensitive(extension,"png"); }
 
-        virtual ReadResult readImage(const std::string& fileName, const osgDB::ReaderWriter::Options*)
+        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options*)
         {
+            std::string ext = osgDB::getLowerCaseFileExtension(file);
+            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
-            if( !acceptsExtension(osgDB::getFileExtension(fileName) ))
-                return ReadResult::FILE_NOT_HANDLED;
+            std::string fileName = osgDB::findDataFile( file );
+            if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
             int trans = PNG_ALPHA;
             FILE *fp = NULL;

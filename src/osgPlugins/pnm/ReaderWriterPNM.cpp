@@ -6,6 +6,7 @@
 
 #include <osgDB/Registry>
 #include <osgDB/FileNameUtils>
+#include <osgDB/FileUtils>
 
 #include <stdio.h>
 
@@ -24,10 +25,13 @@ class ReaderWriterPNM : public osgDB::ReaderWriter
 				osgDB::equalCaseInsensitive(extension, "pbm"); 
 		}
 
-        virtual ReadResult readImage(const std::string& fileName, const osgDB::ReaderWriter::Options*)
+        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options*)
         {
-            if( !acceptsExtension(osgDB::getFileExtension(fileName) ))
-                return ReadResult::FILE_NOT_HANDLED;
+            std::string ext = osgDB::getLowerCaseFileExtension(file);
+            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
+
+            std::string fileName = osgDB::findDataFile( file );
+            if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
             FILE *fp = NULL;
 			char line[300];

@@ -36,6 +36,7 @@
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
 #include <osgDB/FileNameUtils>
+#include <osgDB/FileUtils>
 
 #include <assert.h>
 #include <map>
@@ -69,12 +70,14 @@ osgDB::RegisterReaderWriterProxy<ReaderWriterDirectX> g_readerWriter_DirectX_Pro
 
 
 // Read node
-osgDB::ReaderWriter::ReadResult ReaderWriterDirectX::readNode(const std::string& fileName,
+osgDB::ReaderWriter::ReadResult ReaderWriterDirectX::readNode(const std::string& file,
                                                               const osgDB::ReaderWriter::Options* options)
 {
-    std::string ext = osgDB::getLowerCaseFileExtension(fileName);
-    if (!acceptsExtension(ext))
-        return ReadResult::FILE_NOT_HANDLED;
+    std::string ext = osgDB::getLowerCaseFileExtension(file);
+    if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
+
+    std::string fileName = osgDB::findDataFile( file );
+    if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
     osg::notify(osg::INFO) << "ReaderWriterDirectX::readNode(" << fileName.c_str() << ")\n";
 

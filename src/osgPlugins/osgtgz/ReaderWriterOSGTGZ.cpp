@@ -30,10 +30,13 @@ class sgReaderWriterOSGTGZ : public osgDB::ReaderWriter
             return osgDB::equalCaseInsensitive(extension,"osgtgz");
         }
 
-        virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*)
+        virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options*)
         {
-            std::string ext = osgDB::getFileExtension(fileName);
+            std::string ext = osgDB::getFileExtension(file);
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
+
+            std::string fileName = osgDB::findDataFile( file );
+            if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
             osg::notify(osg::INFO)<<"sgReaderWriterOSGTGZ::readNode( "<<fileName.c_str()<<" )\n";
 

@@ -1,12 +1,13 @@
-#include "osg/Image"
-#include "osg/Notify"
+#include <osg/Image>
+#include <osg/Notify>
 
 #include <osg/Geode>
 
-#include "osg/GL"
+#include <osg/GL>
 
-#include "osgDB/FileNameUtils"
-#include "osgDB/Registry"
+#include <osgDB/FileNameUtils>
+#include <osgDB/FileUtils>
+#include <osgDB/Registry>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -354,10 +355,13 @@ class ReaderWriterRGB : public osgDB::ReaderWriter
                 osgDB::equalCaseInsensitive(extension,"bw");
         }
 
-        virtual ReadResult readImage(const std::string& fileName, const osgDB::ReaderWriter::Options*)
+        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options*)
         {
-            std::string ext = osgDB::getFileExtension(fileName);
+            std::string ext = osgDB::getLowerCaseFileExtension(file);
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
+
+            std::string fileName = osgDB::findDataFile( file );
+            if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
             
             rawImageRec *raw;
 

@@ -325,7 +325,7 @@ void Registry::addDotOsgWrapper(DotOsgWrapper* wrapper)
     const osg::Object* proto = wrapper->getPrototype();
 
     _objectWrapperMap[name] = wrapper;
-	if (wrapper->getReadWriteMode()==DotOsgWrapper::READ_AND_WRITE) _classNameWrapperMap[name] = wrapper;
+    if (wrapper->getReadWriteMode()==DotOsgWrapper::READ_AND_WRITE) _classNameWrapperMap[name] = wrapper;
     
     if (proto)
     {
@@ -468,7 +468,7 @@ std::string Registry::createLibraryNameForNodeKit(const std::string& name)
 #if defined(WIN32)
     // !! recheck evolving Cygwin DLL extension naming protocols !! NHV
     #ifdef __CYGWIN__ // [
-	return "cyg"+name+".dll";
+    return "cyg"+name+".dll";
     #elif defined(__MINGW32__)
         return "lib"+name+".dll";
     #else
@@ -570,17 +570,17 @@ ReaderWriter* Registry::getReaderWriterForExtension(const std::string& ext)
 
 struct concrete_wrapper: basic_type_wrapper 
 {
-	concrete_wrapper(const osg::Object *myobj) : myobj_(myobj) {}
-	bool matches(const osg::Object *proto) const
-	{
-		return myobj_->isSameKindAs(proto);
-	}
-	const osg::Object *myobj_;
+    concrete_wrapper(const osg::Object *myobj) : myobj_(myobj) {}
+    bool matches(const osg::Object *proto) const
+    {
+        return myobj_->isSameKindAs(proto);
+    }
+    const osg::Object *myobj_;
 };
 
 osg::Object* Registry::readObjectOfType(const osg::Object& compObj,Input& fr)
 {
-	return readObjectOfType(concrete_wrapper(&compObj), fr);
+    return readObjectOfType(concrete_wrapper(&compObj), fr);
 }
 
 osg::Object* Registry::readObjectOfType(const basic_type_wrapper &btw,Input& fr)
@@ -980,16 +980,16 @@ bool Registry::writeObject(const osg::Object& obj,Output& fw)
     }
 
     std::string classname = obj.className();
-	std::string libraryName = obj.libraryName();
-	std::string compositeName = libraryName + "::" + classname;
+    std::string libraryName = obj.libraryName();
+    std::string compositeName = libraryName + "::" + classname;
 
-	// try composite name first
-	DotOsgWrapperMap::iterator itr = _classNameWrapperMap.find(compositeName);
+    // try composite name first
+    DotOsgWrapperMap::iterator itr = _classNameWrapperMap.find(compositeName);
 
-	// composite name not found, try simple class name
-	if (itr == _classNameWrapperMap.end()) {
-		itr = _classNameWrapperMap.find(classname);
-	}
+    // composite name not found, try simple class name
+    if (itr == _classNameWrapperMap.end()) {
+        itr = _classNameWrapperMap.find(classname);
+    }
 
     if (itr==_classNameWrapperMap.end())
     {
@@ -1148,11 +1148,8 @@ ReaderWriter::ReadResult Registry::readObject(const std::string& fileName)
     return results.front();
 }
 
-ReaderWriter::ReadResult Registry::readObject(const std::string& fileName,bool useObjectCache)
+ReaderWriter::ReadResult Registry::readObject(const std::string& file,bool useObjectCache)
 {
-    std::string file = findDataFile( fileName );
-    if (file.empty()) return ReaderWriter::ReadResult("Warning: file \""+fileName+"\" not found.");
-
     if (useObjectCache)
     {
         // search for entry in the object cache.
@@ -1286,12 +1283,8 @@ ReaderWriter::ReadResult Registry::readImage(const std::string& fileName)
 }
 
 
-ReaderWriter::ReadResult Registry::readImage(const std::string& fileName,bool useObjectCache)
+ReaderWriter::ReadResult Registry::readImage(const std::string& file,bool useObjectCache)
 {
-    std::string file = findDataFile( fileName );
-    if (file.empty()) 
-		file = fileName;
-//		return ReaderWriter::ReadResult("Warning: file \""+fileName+"\" not found.");
 
     if (useObjectCache)
     {
@@ -1314,8 +1307,8 @@ ReaderWriter::ReadResult Registry::readImage(const std::string& fileName,bool us
             notify(INFO)<<"Adding to cache image "<<file<<std::endl;
             addEntryToObjectCache(file,rr.getObject());
         }
-		else
-			return ReaderWriter::ReadResult("Warning: file \""+fileName+"\" not found.");
+        else
+            return ReaderWriter::ReadResult("Warning: file \""+file+"\" not found.");
         
         return rr;
 
@@ -1430,13 +1423,8 @@ ReaderWriter::ReadResult Registry::readHeightField(const std::string& fileName)
 }
 
 
-ReaderWriter::ReadResult Registry::readHeightField(const std::string& fileName,bool useObjectCache)
+ReaderWriter::ReadResult Registry::readHeightField(const std::string& file,bool useObjectCache)
 {
-    std::string file = findDataFile( fileName );
-    if (file.empty()) 
-		file = fileName;
-//		return ReaderWriter::ReadResult("Warning: file \""+fileName+"\" not found.");
-
     if (useObjectCache)
     {
         // search for entry in the object cache.
@@ -1458,8 +1446,8 @@ ReaderWriter::ReadResult Registry::readHeightField(const std::string& fileName,b
             notify(INFO)<<"Adding to cache HeightField "<<file<<std::endl;
             addEntryToObjectCache(file,rr.getObject());
         }
-		else
-			return ReaderWriter::ReadResult("Warning: file \""+fileName+"\" not found.");
+        else
+            return ReaderWriter::ReadResult("Warning: file \""+file+"\" not found.");
         
         return rr;
 
@@ -1587,12 +1575,8 @@ ReaderWriter::ReadResult Registry::readNode(const std::string& fileName)
     return results.front();
 }
 
-ReaderWriter::ReadResult Registry::readNode(const std::string& fileName,bool useObjectCache)
+ReaderWriter::ReadResult Registry::readNode(const std::string& file,bool useObjectCache)
 {
-
-    std::string file = findDataFile( fileName );
-    if (file.empty()) return ReaderWriter::ReadResult("Warning: file \""+fileName+"\" not found.");
-
     if (useObjectCache)
     {
         // search for entry in the object cache.

@@ -94,8 +94,11 @@ class ReaderWriterPFB : public osgDB::ReaderWriter
 		false;
 	}
 
-        virtual ReadResult readImage(const std::string& fileName, const osgDB::ReaderWriter::Options*)
+        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options*)
         {
+            std::string fileName = osgDB::findDataFile( file );
+            if (fileName.empty()) fileName = file; // let Peformer see if it can file the filep
+
             osg::notify(osg::INFO)<<"ReaderWriterPFB::readImage( "<<fileName.c_str()<<" )\n";
             initPerformer();
 
@@ -146,10 +149,13 @@ class ReaderWriterPFB : public osgDB::ReaderWriter
             return ReadResult::FILE_NOT_HANDLED;
         }
 
-        virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options* options)
+        virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options)
         {
-            std::string ext = osgDB::getLowerCaseFileExtension(fileName);
+            std::string ext = osgDB::getLowerCaseFileExtension(file);
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
+
+            std::string fileName = osgDB::findDataFile( file );
+            if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
             osg::notify(osg::INFO)<<"ReaderWriterPFB::readNode( "<<fileName.c_str()<<" )\n";
             initPerformer();

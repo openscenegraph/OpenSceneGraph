@@ -1,5 +1,6 @@
 #include <osgDB/ReaderWriter>
 #include <osgDB/FileNameUtils>
+#include <osgDB/FileUtils>
 #include <osgDB/Registry>
 
 #include "SlideShowConstructor.h"
@@ -442,12 +443,14 @@ void ReaderWriterSS3D::parseSlide (SlideShowConstructor& constructor, xmlDocPtr 
     return;
 }
 
-osgDB::ReaderWriter::ReadResult ReaderWriterSS3D::readNode(const std::string& fileName,
+osgDB::ReaderWriter::ReadResult ReaderWriterSS3D::readNode(const std::string& file,
                                                            const osgDB::ReaderWriter::Options*)
 {
-    std::string ext = osgDB::getLowerCaseFileExtension(fileName);
-    if (!acceptsExtension(ext))
-        return ReadResult::FILE_NOT_HANDLED;
+    std::string ext = osgDB::getLowerCaseFileExtension(file);
+    if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
+
+    std::string fileName = osgDB::findDataFile( file );
+    if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
 
 

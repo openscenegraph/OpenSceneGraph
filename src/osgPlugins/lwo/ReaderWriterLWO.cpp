@@ -29,6 +29,7 @@
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
 #include <osgDB/FileNameUtils>
+#include <osgDB/FileUtils>
 
 #include <osgUtil/SmoothingVisitor>
 #include <osgUtil/Tesselator>
@@ -46,8 +47,14 @@ public:
         return osgDB::equalCaseInsensitive(extension,"lwo") || osgDB::equalCaseInsensitive(extension,"lw") || osgDB::equalCaseInsensitive(extension,"geo");
     }
 
-    virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options* options)
+    virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options)
     {
+        std::string ext = osgDB::getLowerCaseFileExtension(file);
+        if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
+
+        std::string fileName = osgDB::findDataFile( file );
+        if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
+
         ReadResult result = readNode_LWO1(fileName,options);
         if (result.success()) return result;
         

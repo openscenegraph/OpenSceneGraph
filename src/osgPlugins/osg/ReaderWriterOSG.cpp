@@ -1,10 +1,11 @@
-#include "osg/Image"
-#include "osg/Group"
+#include <osg/Image>
+#include <osg/Group>
 
-#include "osgDB/FileNameUtils"
-#include "osgDB/Registry"
-#include "osgDB/Input"
-#include "osgDB/Output"
+#include <osgDB/FileNameUtils>
+#include <osgDB/FileUtils>
+#include <osgDB/Registry>
+#include <osgDB/Input>
+#include <osgDB/Output>
 
 using namespace osg;
 using namespace osgDB;
@@ -21,10 +22,13 @@ class OSGReaderWriter : public ReaderWriter
 
         virtual ReadResult readObject(const std::string& fileName, const Options* opt) { return readNode(fileName,opt); }
 
-        virtual ReadResult readNode(const std::string& fileName, const Options* opt)
+        virtual ReadResult readNode(const std::string& file, const Options* opt)
         {
-            std::string ext = getFileExtension(fileName);
+            std::string ext = osgDB::getLowerCaseFileExtension(file);
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
+
+            std::string fileName = osgDB::findDataFile( file );
+            if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
             std::ifstream fin(fileName.c_str());
             if (fin)

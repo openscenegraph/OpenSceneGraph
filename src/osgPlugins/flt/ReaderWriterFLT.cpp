@@ -13,6 +13,7 @@
 #include <osg/Notify>
 
 #include <osgDB/Registry>
+#include <osgDB/FileUtils>
 
 using namespace flt;
 
@@ -22,10 +23,13 @@ osgDB::ReaderWriter::ReadResult ReaderWriterFLT::readObject(const std::string& f
 }
 
 
-osgDB::ReaderWriter::ReadResult ReaderWriterFLT::readNode(const std::string& fileName, const osgDB::ReaderWriter::Options* options)
+osgDB::ReaderWriter::ReadResult ReaderWriterFLT::readNode(const std::string& file, const osgDB::ReaderWriter::Options* options)
 {
-    if( !acceptsExtension(osgDB::getFileExtension(fileName) ))
-        return ReadResult::FILE_NOT_HANDLED;
+    std::string ext = osgDB::getLowerCaseFileExtension(file);
+    if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
+
+    std::string fileName = osgDB::findDataFile( file );
+    if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
     osg::ref_ptr<FltFile> read = new FltFile;
 

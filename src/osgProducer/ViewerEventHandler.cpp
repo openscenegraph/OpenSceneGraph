@@ -65,8 +65,8 @@ public:
         _statsInitialized(false),
         _infoInitialized(false)
     {
-	_fs.resize(10);
-	_index = 0;
+        _fs.resize(10);
+        _index = 0;
         
         _veh->getOsgCameraGroup()->setStatsHandler(this);
         
@@ -92,7 +92,7 @@ public:
 
     void operator() (const Producer::CameraGroup &cg )
     {
-	_index = (_index + 1) % _fs.size();
+        _index = (_index + 1) % _fs.size();
         _fs[_index] = cg.getFrameStats();     
     }
 
@@ -396,66 +396,66 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::displayStats()
         double x1=0.0, x2=0.0, y1=0.0, y2=0.0;
         for(unsigned int frame = 0; frame < _fs.size(); frame++ )
         {
-	    Producer::CameraGroup::FrameStats fs = _fs[(lindex + frame) % _fs.size()];
-	    y1 = 0.0;
-   	    y2 = y1 + 10;
-	    x1 = fs._startOfUpdate - zero;
-	    x2 = fs._endOfUpdate   - zero;
+            Producer::CameraGroup::FrameStats fs = _fs[(lindex + frame) % _fs.size()];
+            y1 = 0.0;
+               y2 = y1 + 10;
+            x1 = fs._startOfUpdate - zero;
+            x2 = fs._endOfUpdate   - zero;
 
-	    glBegin( GL_QUADS );
+            glBegin( GL_QUADS );
 
-	    // Draw Update length
- 	    glColor4f( 0.0, 1.0, 0.0, 0.5 );
-	    glVertex2d( x1, y1);
-	    glVertex2d( x2, y1);
-	    glVertex2d( x2, y2);
-	    glVertex2d( x1, y2);
+            // Draw Update length
+             glColor4f( 0.0, 1.0, 0.0, 0.5 );
+            glVertex2d( x1, y1);
+            glVertex2d( x2, y1);
+            glVertex2d( x2, y2);
+            glVertex2d( x1, y2);
 
-	    for( i = 0; i < fs.getNumFrameTimeStampSets(); i++ )
+            for( i = 0; i < fs.getNumFrameTimeStampSets(); i++ )
             {
-	        Producer::Camera::FrameTimeStampSet fts = fs.getFrameTimeStampSet(i);
-	        y1 += 13.0;
-	        y2 = y1 + 10.0;
-	        x1 = fts[Producer::Camera::BeginCull] - zero;
-	        x2 = fts[Producer::Camera::EndCull]   - zero;
+                Producer::Camera::FrameTimeStampSet fts = fs.getFrameTimeStampSet(i);
+                y1 += 13.0;
+                y2 = y1 + 10.0;
+                x1 = fts[Producer::Camera::BeginCull] - zero;
+                x2 = fts[Producer::Camera::EndCull]   - zero;
 
- 	        glColor4f( 0.0, 1.0, 1.0, 0.5 );
-	        glVertex2d( x1, y1);
-	        glVertex2d( x2, y1);
-	        glVertex2d( x2, y2);
-	        glVertex2d( x1, y2);
+                 glColor4f( 0.0, 1.0, 1.0, 0.5 );
+                glVertex2d( x1, y1);
+                glVertex2d( x2, y1);
+                glVertex2d( x2, y2);
+                glVertex2d( x1, y2);
 
-	        x1 = fts[Producer::Camera::BeginDraw] - zero;
-	        x2 = fts[Producer::Camera::EndDraw]   - zero;
+                x1 = fts[Producer::Camera::BeginDraw] - zero;
+                x2 = fts[Producer::Camera::EndDraw]   - zero;
 
- 	        glColor4f( 1.0, 1.0, 0.0, 0.5 );
-	        glVertex2d( x1, y1);
-	        glVertex2d( x2, y1);
-	        glVertex2d( x2, y2);
-	        glVertex2d( x1, y2);
+                 glColor4f( 1.0, 1.0, 0.0, 0.5 );
+                glVertex2d( x1, y1);
+                glVertex2d( x2, y1);
+                glVertex2d( x2, y2);
+                glVertex2d( x1, y2);
 
             }
-	    glEnd();
+            glEnd();
 
-	    glBegin( GL_LINES );
-	    glColor4f( 1, 1, 1, 0.5 );
-	    glVertex2d( fs._startOfFrame - zero , 0.0 );
+            glBegin( GL_LINES );
+            glColor4f( 1, 1, 1, 0.5 );
+            glVertex2d( fs._startOfFrame - zero , 0.0 );
             y1 = fs.getNumFrameTimeStampSets() * 13.0 + 10.0;
             glVertex2d( fs._startOfFrame - zero, y1 );
 
             y1 = 12.5; 
-	    for( i = 0; i < fs.getNumFrameTimeStampSets(); i++ )
+            for( i = 0; i < fs.getNumFrameTimeStampSets(); i++ )
             {
-	        y2 = y1 + 11; 
-	        Producer::Camera::FrameTimeStampSet fts = fs.getFrameTimeStampSet(i);
-	        Producer::Camera::TimeStamp vsync = fts[Producer::Camera::Vsync];
-	        double x1 = vsync - zero;
-                glColor4f( 1.0, 1.0, 0.0, 0.5 );
-	        glVertex2d( x1, y1 );
-                glVertex2d( x1, y2 );
- 	        y1 += 13.0;
-  	    }
-	    glEnd();	
+                y2 = y1 + 11; 
+                Producer::Camera::FrameTimeStampSet fts = fs.getFrameTimeStampSet(i);
+                Producer::Camera::TimeStamp vsync = fts[Producer::Camera::Vsync];
+                double x1 = vsync - zero;
+                    glColor4f( 1.0, 1.0, 0.0, 0.5 );
+                glVertex2d( x1, y1 );
+                    glVertex2d( x1, y2 );
+                 y1 += 13.0;
+            }
+            glEnd();    
         }
 
         glBegin( GL_LINES );
@@ -463,14 +463,14 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::displayStats()
         glColor4f( 1, 1, 1, 0.5 );
         for( i = 0; i < 128; i++ )
         {
-	    glVertex2d((GLdouble)i*.001, y1);
+            glVertex2d((GLdouble)i*.001, y1);
 
-           if( !(i%10) )
-	       glVertex2d((GLdouble)i*.001, y1 - 5.0);
-	    else if( !(i%5) )
-	        glVertex2d((GLdouble)i*.001, y1 - 3.0);
-	    else
-	        glVertex2d((GLdouble)i*.001, y1 - 1.0);
+            if( !(i%10) )
+                glVertex2d((GLdouble)i*.001, y1 - 5.0);
+            else if( !(i%5) )
+                glVertex2d((GLdouble)i*.001, y1 - 3.0);
+            else
+                glVertex2d((GLdouble)i*.001, y1 - 1.0);
         }
 
         glEnd();
@@ -518,15 +518,15 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::displayStats()
 
             for(unsigned int frame = 0; frame < _fs.size(); frame++ )
             {
-	        Producer::CameraGroup::FrameStats fs = _fs[frame];
+                Producer::CameraGroup::FrameStats fs = _fs[frame];
                 updateTime += (fs._endOfUpdate-fs._startOfUpdate);
 
-	        for(unsigned int i = 0; i < fs.getNumFrameTimeStampSets(); i++ )
+                for(unsigned int i = 0; i < fs.getNumFrameTimeStampSets(); i++ )
                 {
-	            Producer::Camera::FrameTimeStampSet fts = fs.getFrameTimeStampSet(i);
+                    Producer::Camera::FrameTimeStampSet fts = fs.getFrameTimeStampSet(i);
 
-	            _cullTimes[i] += fts[Producer::Camera::EndCull]-fts[Producer::Camera::BeginCull];
-	            _drawTimes[i] += fts[Producer::Camera::EndDraw]-fts[Producer::Camera::BeginDraw];
+                    _cullTimes[i] += fts[Producer::Camera::EndCull]-fts[Producer::Camera::BeginCull];
+                    _drawTimes[i] += fts[Producer::Camera::EndDraw]-fts[Producer::Camera::BeginDraw];
                 }
             }
 
@@ -805,40 +805,47 @@ bool ViewerEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActio
             case 'f' :
             {
                 Producer::CameraConfig* cfg = _cg->getCameraConfig();
+
+                bool shouldBeFullScreen = false;
                 for( unsigned int i = 0; i < cfg->getNumberOfCameras(); ++i )
                 {
                     Producer::Camera *cam = cfg->getCamera(i);
                     Producer::RenderSurface* rs = cam->getRenderSurface();
-                    
-                    if (_firstTimeTogglingFullScreen && rs->isFullScreen())
+                  
+                    if(i==0) shouldBeFullScreen =! rs->isFullScreen();    // Remember the initial state of the first render surface
+
+                    if ( shouldBeFullScreen!=rs->isFullScreen() )        // If the current render surface hasn't been modified already
                     {
-                        unsigned int screenWidth;
-                        unsigned int screenHeight;
-                        unsigned int windowWidth;
-                        unsigned int windowHeight;
-                        rs->getScreenSize( screenWidth, screenHeight );
-                        if( screenHeight > screenWidth )
+                        if (_firstTimeTogglingFullScreen && rs->isFullScreen())
                         {
-                            windowWidth  = (unsigned int)((float)screenWidth * 0.625);
-                            windowHeight = (unsigned int)((float)windowWidth * 0.75);
+                            unsigned int screenWidth;
+                            unsigned int screenHeight;
+                            unsigned int windowWidth;
+                            unsigned int windowHeight;
+                            rs->getScreenSize( screenWidth, screenHeight );
+                            if( screenHeight > screenWidth )
+                            {
+                                windowWidth  = (unsigned int)((float)screenWidth * 0.625);
+                                windowHeight = (unsigned int)((float)windowWidth * 0.75);
+                            }
+                            else
+                            {
+                                windowHeight = (unsigned int)((float)screenHeight * 0.625);
+                                windowWidth  = (unsigned int)((float)windowHeight * 1.334);
+                            }
+                            int x = (screenWidth - windowWidth) >> 1;
+                            int y = (screenHeight - windowHeight) >> 1;
+                        #ifndef WIN32                    
+                            rs->useBorder(true);
+                        #else                        
+                            rs->fullScreen(false);
+                        #endif
+                            rs->setWindowRectangle( x, y, windowWidth, windowHeight );
                         }
                         else
                         {
-                            windowHeight = (unsigned int)((float)screenHeight * 0.625);
-                            windowWidth  = (unsigned int)((float)windowHeight * 1.334);
+                            rs->fullScreen(!rs->isFullScreen());
                         }
-                        int x = (screenWidth - windowWidth) >> 1;
-                        int y = (screenHeight - windowHeight) >> 1;
-                    #ifndef WIN32                    
-                        rs->useBorder(true);
-                    #else                        
-                        rs->fullScreen(false);
-                    #endif
-                        rs->setWindowRectangle( x, y, windowWidth, windowHeight );
-                    }
-                    else
-                    {
-                        rs->fullScreen(!rs->isFullScreen());
                     }
                 }
                 _firstTimeTogglingFullScreen = false;

@@ -52,6 +52,8 @@ PLUGIN_DIRS = \
         3dc\
         ive\
 
+# comment in if you have japser (JPEG2000 library) installed.
+# PLUGIN_DIRS += jp2
 
 # comment in if you have Performer installed.
 # PLUGIN_DIRS += pfb
@@ -84,6 +86,13 @@ endif
 endif
 endif
 
+# comment in if you want Open DX support, currently not on by default
+# since we havn't yet checked compilation on all platforms yet.
+# note, moved to non Darwin build since it currently breaks the Drawin build.
+  
+# commented out while the DX plugin is converted across to use Geometry rather than GeoSet.
+#  PLUGIN_DIRS += dx
+
 
 #### MacOS X specific definitions
 ifeq ($(OS),Darwin)
@@ -91,14 +100,6 @@ ifeq ($(OS),Darwin)
   PLUGIN_DIRS += quicktime
   
 else  
-
-  # comment in if you want Open DX support, currently not on by default
-  # since we havn't yet checked compilation on all platforms yet.
-  # note, moved to non Darwin build since it currently breaks the Drawin build.
-  
-# commented out while the DX plugin is converted across to use Geometry rather than GeoSet.
-#  PLUGIN_DIRS += dx
-
 
   # comment in if you have libtiff installed.
   PLUGIN_DIRS += tiff

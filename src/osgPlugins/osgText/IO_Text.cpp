@@ -120,7 +120,7 @@ bool Text_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     fw.writeObject(*myobj.getFont());
 
     // text
-    fw.indent() << "text \"" << myobj.getText() << "\"" << std::endl;
+    fw.indent() << "text " << fw.wrapString(myobj.getText()) << std::endl;
 
     return true;
 }

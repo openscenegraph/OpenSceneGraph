@@ -166,7 +166,9 @@ void SceneView::cull()
     if (_camera.valid())
     {
         _camera->adjustAspectRatio(_viewport->aspectRatio());
-        _camera->setScreenDistance(_displaySettings->getScreenDistance());
+        
+        if (_displaySettings.valid())
+            _camera->setScreenDistance(_displaySettings->getScreenDistance());
         
         if (!projection) projection = osgNew osg::Matrix(_camera->getProjectionMatrix());
         if (!modelview)  modelview  = osgNew osg::Matrix(_camera->getModelViewMatrix());

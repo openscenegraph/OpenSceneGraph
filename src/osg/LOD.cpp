@@ -11,6 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/LOD>
+#include <osg/CullStack>
 
 #include <algorithm>
 
@@ -39,13 +40,35 @@ void LOD::traverse(NodeVisitor& nv)
             break;
         case(NodeVisitor::TRAVERSE_ACTIVE_CHILDREN):
         {
-            float distance = nv.getDistanceToEyePoint(getCenter(),true);
+            float required_range = 0;
+            if (_rangeMode==DISTANCE_FROM_EYE_POINT)
+            {
+                required_range = nv.getDistanceToEyePoint(getCenter(),true);
+            }
+            else
+            {
+                osg::CullStack* cullStack = dynamic_cast<osg::CullStack*>(&nv);
+                if (cullStack)
+                {
+                    required_range = cullStack->pixelSize(getBound());
+                }
+                else
+                {
+                    // fallback to selecting the highest res tile by
+                    // finding out the max range
+                    for(unsigned int i=0;i<_rangeList.size();++i)
+                    {
+                        required_range = osg::minimum(required_range,_rangeList[i].first);
+                    }
+                }
+            }
+            
             unsigned int numChildren = _children.size();
             if (_rangeList.size()<numChildren) numChildren=_rangeList.size();
-            
+
             for(unsigned int i=0;i<numChildren;++i)
             {    
-                if (_rangeList[i].first<=distance && distance<_rangeList[i].second)
+                if (_rangeList[i].first<=required_range && required_range<_rangeList[i].second)
                 {
                     _children[i]->accept(nv);
                 }

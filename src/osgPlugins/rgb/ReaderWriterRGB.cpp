@@ -18,19 +18,6 @@
 
 using namespace osg;
 
-typedef unsigned char * BytePtr;
-template <class T>
-inline void swapBytes(  T &s )
-{
-    if( sizeof( T ) == 1 ) return;
-
-    T d = s;
-    BytePtr sptr = (BytePtr)&s;
-    BytePtr dptr = &(((BytePtr)&d)[sizeof(T)-1]);
-
-    for( unsigned int i = 0; i < sizeof(T); i++ )
-        *(sptr++) = *(dptr--);
-}
 
 typedef struct _rawImageRec
 {
@@ -47,6 +34,49 @@ typedef struct _rawImageRec
     unsigned long rleEnd;
     GLuint *rowStart;
     GLint *rowSize;
+
+    typedef unsigned char * BytePtr;
+
+    bool needsBytesSwapped()
+    {
+        union {
+            int testWord;
+            char testByte[sizeof(int)];
+        }endianTest; 
+        endianTest.testWord = 1;
+        if( endianTest.testByte[0] == 1 )
+            return true;
+        else
+            return false;
+    }
+
+    template <class T>
+    inline void swapBytes(  T &s )
+    {
+        if( sizeof( T ) == 1 ) 
+            return;
+
+        T d = s;
+        BytePtr sptr = (BytePtr)&s;
+        BytePtr dptr = &(((BytePtr)&d)[sizeof(T)-1]);
+
+        for( unsigned int i = 0; i < sizeof(T); i++ )
+            *(sptr++) = *(dptr--);
+    }
+
+    void swapBytes()
+    {
+        swapBytes( imagic );
+        swapBytes( type );
+        swapBytes( dim );
+        swapBytes( sizeX );
+        swapBytes( sizeY );
+        swapBytes( sizeZ );
+        swapBytes( wasteBytes );
+        swapBytes( min );
+        swapBytes( max );
+        swapBytes( colorMap );
+    }
 } rawImageRec;
 
 static void ConvertShort(unsigned short *array, long length)
@@ -62,7 +92,6 @@ static void ConvertShort(unsigned short *array, long length)
         *array++ = (unsigned short) ((b1 << 8) | (b2));
     }
 }
-
 
 static void ConvertLong(GLuint *array, long length)
 {
@@ -379,89 +408,94 @@ class ReaderWriterRGB : public osgDB::ReaderWriter
             if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
             
             FILE *fp = fopen(fileName.c_str(), "wb");
-            if (!fp) return WriteResult::ERROR_IN_WRITING_FILE;
+            if (!fp) 
+                return WriteResult::ERROR_IN_WRITING_FILE;
 
-	    rawImageRec raw;
-	    raw.imagic = 0732;
+            rawImageRec raw;
+            raw.imagic = 0732;
 
- 	    GLenum dataType = img.getDataType();
+            GLenum dataType = img.getDataType();
 
-	    raw.type   = 
-		     dataType == GL_UNSIGNED_BYTE ? 1 :
-		     dataType == GL_BYTE ? 1 :
-                     dataType == GL_BITMAP ? 1 :
-		     dataType == GL_UNSIGNED_SHORT ? 2 :
-		     dataType == GL_SHORT ? 2 :
-		     dataType == GL_UNSIGNED_INT ? 4 :
-                     dataType == GL_INT ? 4 :
-		     dataType == GL_FLOAT ? 4 :
-		     dataType == GL_UNSIGNED_BYTE_3_3_2 ? 1 :
-                     dataType == GL_UNSIGNED_BYTE_2_3_3_REV ? 1 :
-		     dataType == GL_UNSIGNED_SHORT_5_6_5 ? 2 :
-                     dataType == GL_UNSIGNED_SHORT_5_6_5_REV ? 2 :
-		     dataType == GL_UNSIGNED_SHORT_4_4_4_4 ? 2 :
-                     dataType == GL_UNSIGNED_SHORT_4_4_4_4_REV ? 2 :
-		     dataType == GL_UNSIGNED_SHORT_5_5_5_1 ? 2 :
-                     dataType == GL_UNSIGNED_SHORT_1_5_5_5_REV ? 2 :
-		     dataType == GL_UNSIGNED_INT_8_8_8_8 ? 4 :
-                     dataType == GL_UNSIGNED_INT_8_8_8_8_REV ? 4 :
-		     dataType == GL_UNSIGNED_INT_10_10_10_2 ? 4 :
-                     dataType == GL_UNSIGNED_INT_2_10_10_10_REV ? 4 : 4;
+            raw.type  = dataType == GL_UNSIGNED_BYTE ? 1 :
+             dataType == GL_BYTE ? 1 :
+             dataType == GL_BITMAP ? 1 :
+             dataType == GL_UNSIGNED_SHORT ? 2 :
+             dataType == GL_SHORT ? 2 :
+             dataType == GL_UNSIGNED_INT ? 4 :
+             dataType == GL_INT ? 4 :
+             dataType == GL_FLOAT ? 4 :
+             dataType == GL_UNSIGNED_BYTE_3_3_2 ? 1 :
+             dataType == GL_UNSIGNED_BYTE_2_3_3_REV ? 1 :
+             dataType == GL_UNSIGNED_SHORT_5_6_5 ? 2 :
+             dataType == GL_UNSIGNED_SHORT_5_6_5_REV ? 2 :
+             dataType == GL_UNSIGNED_SHORT_4_4_4_4 ? 2 :
+             dataType == GL_UNSIGNED_SHORT_4_4_4_4_REV ? 2 :
+             dataType == GL_UNSIGNED_SHORT_5_5_5_1 ? 2 :
+             dataType == GL_UNSIGNED_SHORT_1_5_5_5_REV ? 2 :
+             dataType == GL_UNSIGNED_INT_8_8_8_8 ? 4 :
+             dataType == GL_UNSIGNED_INT_8_8_8_8_REV ? 4 :
+             dataType == GL_UNSIGNED_INT_10_10_10_2 ? 4 :
+             dataType == GL_UNSIGNED_INT_2_10_10_10_REV ? 4 : 4;
 
-	    GLenum pixelFormat = img.getPixelFormat();
-	    raw.dim    = 
-                       pixelFormat == GL_COLOR_INDEX? 1 :
-		       pixelFormat == GL_RED? 1 :
-		       pixelFormat == GL_GREEN? 1 :
-		       pixelFormat == GL_BLUE? 1 :
-                       pixelFormat == GL_ALPHA? 1 :
-		       pixelFormat == GL_RGB? 3 :
-		       pixelFormat == GL_BGR ? 3 :
-		       pixelFormat == GL_RGBA? 4 :
-		       pixelFormat == GL_BGRA? 4 :
-                       pixelFormat == GL_LUMINANCE? 1 :
-		       pixelFormat == GL_LUMINANCE_ALPHA ? 2 : 1;
-	    raw.sizeX = img.s();
-    	    raw.sizeY = img.t();
-    	    raw.sizeZ = raw.dim;
-    	    raw.min = 0;
-    	    raw.max = 0xFF;
-    	    raw.wasteBytes = 0;
-    	    strcpy( raw.name, fileName.c_str() );
-    	    raw.colorMap = 0;
+            GLenum pixelFormat = img.getPixelFormat();
+            raw.dim    = 
+               pixelFormat == GL_COLOR_INDEX? 1 :
+               pixelFormat == GL_RED? 1 :
+               pixelFormat == GL_GREEN? 1 :
+               pixelFormat == GL_BLUE? 1 :
+               pixelFormat == GL_ALPHA? 1 :
+               pixelFormat == GL_RGB? 3 :
+               pixelFormat == GL_BGR ? 3 :
+               pixelFormat == GL_RGBA? 4 :
+               pixelFormat == GL_BGRA? 4 :
+               pixelFormat == GL_LUMINANCE? 1 :
+               pixelFormat == GL_LUMINANCE_ALPHA ? 2 : 1;
+            raw.sizeX = img.s();
+            raw.sizeY = img.t();
+            raw.sizeZ = raw.dim;
+            raw.min = 0;
+            raw.max = 0xFF;
+            raw.wasteBytes = 0;
+            strcpy( raw.name, fileName.c_str() );
+            raw.colorMap = 0;
 
-	    int isize = img.getImageSizeInBytes();
-	    unsigned char *buffer = new unsigned char[isize];
-	    unsigned char *dptr = buffer;
-	    int i, j;
-	    for( i = 0; i < raw.sizeZ; i++ )
-	    {
-		const unsigned char *ptr = img.data();
-		ptr += i;
-		for( j = 0; j < isize/raw.sizeZ; j++ )
-		{
-		    *(dptr++) = *ptr;
-		    ptr += raw.sizeZ;
-		}
-	    }
+            int isize = img.getImageSizeInBytes();
+            unsigned char *buffer = new unsigned char[isize];
+            unsigned char *dptr = buffer;
+            int i, j;
+            for( i = 0; i < raw.sizeZ; i++ )
+            {
+                const unsigned char *ptr = img.data();
+                ptr += i;
+                for( j = 0; j < isize/raw.sizeZ; j++ )
+                {
+                    *(dptr++) = *ptr;
+                    ptr += raw.sizeZ;
+                }
+            }
 
-    	    swapBytes( raw.imagic );
-    	    swapBytes( raw.type );
-    	    swapBytes( raw.dim );
-    	    swapBytes( raw.sizeX );
-    	    swapBytes( raw.sizeY );
-    	    swapBytes( raw.sizeZ );
-    	    swapBytes( raw.min );
-    	    swapBytes( raw.max );
-    	    swapBytes( raw.colorMap );
+            if( raw.needsBytesSwapped() )
+                raw.swapBytes();
+
+            /*
+            swapBytes( raw.imagic );
+            swapBytes( raw.type );
+            swapBytes( raw.dim );
+            swapBytes( raw.sizeX );
+            swapBytes( raw.sizeY );
+            swapBytes( raw.sizeZ );
+            swapBytes( raw.min );
+            swapBytes( raw.max );
+            swapBytes( raw.colorMap );
+            */
 
 
-	    char pad[512 - sizeof(rawImageRec)];
-	    memset( pad, 0, sizeof(pad));
+            char pad[512 - sizeof(rawImageRec)];
+            memset( pad, 0, sizeof(pad));
 
-	    fwrite( &raw, sizeof( rawImageRec), 1, fp );
-	    fwrite( pad, sizeof(pad), 1, fp );
-	    fwrite( buffer, isize, 1, fp );
+            fwrite( &raw, sizeof( rawImageRec), 1, fp );
+            fwrite( pad, sizeof(pad), 1, fp );
+            fwrite( buffer, isize, 1, fp );
 
             fclose(fp);
             return WriteResult::FILE_SAVED;

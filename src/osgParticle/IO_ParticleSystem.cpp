@@ -30,7 +30,38 @@ bool ParticleSystem_readLocalData(osg::Object &obj, osgDB::Input &fr)
     osgParticle::ParticleSystem &myobj = static_cast<osgParticle::ParticleSystem &>(obj);
     bool itAdvanced = false;
 
-    if (fr[0].matchWord("DoublePassRendering")) {
+    if (fr[0].matchWord("particleAlignment")) {
+        if (fr[1].matchWord("BILLBOARD")) {
+            myobj.setParticleAlignment(osgParticle::ParticleSystem::BILLBOARD);
+            fr += 2;
+            itAdvanced = true;
+        }
+        if (fr[1].matchWord("FIXED")) {
+            myobj.setParticleAlignment(osgParticle::ParticleSystem::FIXED);
+            fr += 2;
+            itAdvanced = true;
+        }
+    }
+
+    if (fr[0].matchWord("alignVectorX")) {
+        osg::Vec3 v;
+        if (fr[1].getFloat(v.x()) && fr[2].getFloat(v.y()) && fr[3].getFloat(v.z())) {
+            myobj.setAlignVectorX(v);
+            fr += 4;
+            itAdvanced = true;
+        }
+    }
+
+    if (fr[0].matchWord("alignVectorY")) {
+        osg::Vec3 v;
+        if (fr[1].getFloat(v.x()) && fr[2].getFloat(v.y()) && fr[3].getFloat(v.z())) {
+            myobj.setAlignVectorY(v);
+            fr += 4;
+            itAdvanced = true;
+        }
+    }
+
+    if (fr[0].matchWord("doublePassRendering")) {
         if (fr[1].matchWord("TRUE")) {
             myobj.setDoublePassRendering(true);
             fr += 2;
@@ -96,7 +127,23 @@ bool ParticleSystem_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
 {
     const osgParticle::ParticleSystem &myobj = static_cast<const osgParticle::ParticleSystem &>(obj);
 
-    fw.indent() << "DoublePassRendering ";
+    fw.indent() << "particleAlignment ";
+    switch (myobj.getParticleAlignment()) {
+        default:
+        case osgParticle::ParticleSystem::BILLBOARD:
+            fw << "BILLBOARD" << std::endl;
+            break;
+        case osgParticle::ParticleSystem::FIXED:
+            fw << "FIXED" << std::endl;
+            break;
+    }
+
+    osg::Vec3 v = myobj.getAlignVectorX();
+    fw.indent() << "alignVectorX " << v.x() << " " << v.y() << " " << v.z() << std::endl;
+    v = myobj.getAlignVectorY();
+    fw.indent() << "alignVectorY " << v.x() << " " << v.y() << " " << v.z() << std::endl;
+
+    fw.indent() << "doublePassRendering ";
     if (myobj.getDoublePassRendering())
         fw << "TRUE" << std::endl;
     else

@@ -260,8 +260,6 @@ sMStats    m_getMemoryStatistics()
                         m_breakOnAllocation(value);
                     }
                 }
-                
-                
 
                 if( (ptr = getenv("OSG_MM_CHECK_ON_ALLOCATIONS")) != 0)
                 {
@@ -499,18 +497,24 @@ sMStats    m_getMemoryStatistics()
         // Fill the remainder
 
         unsigned int    shiftCount = 0;
-        char        *cptr = (char *) lptr;
+        unsigned char        *cptr = (unsigned char *) lptr;
         for (i = 0; i < (length & 0x3); i++, cptr++, shiftCount += 8)
         {
-            if (*cptr == static_cast<char>((pattern >> shiftCount) & 0xff)) ++numMatching;
+            if (*cptr == static_cast<unsigned char>((pattern >> shiftCount) & 0xff)) ++numMatching;
             else ++numNotMatching;
         }
 
         if (numMatching>0 && !allocUnit->printedOutUnintializedInfo)
         {
             // possible unitialized data?
-            printf("Warning: possible uninitilized memory numMatching=%d   numNotMatching=%d\n",numMatching,numNotMatching);
+            printf("Warning: possible uninitilized memory numMatching=%d   numNotMatching=%d  length=%d\n",numMatching,numNotMatching,length);
             printf("         allocationNumber=%d  sourceFile '%s'  sourceLine=%d\n",allocUnit->allocationNumber,allocUnit->sourceFile,allocUnit->sourceLine);
+            
+//             cptr = ((unsigned char *)allocUnit->reportedAddress);
+//             for (i = 0; i < length; i++, cptr++)
+//             {
+//                 std::cout<<"    "<<i<<"   " << std::hex << (unsigned int) *cptr << std::dec <<std::endl;
+//             }
             
             allocUnit->printedOutUnintializedInfo=true;
             

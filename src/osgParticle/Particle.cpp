@@ -20,7 +20,7 @@ namespace
 }
 
 osgParticle::Particle::Particle()
-:    shape_(QUAD),
+:   shape_(QUAD),
     sr_(0.2f, 0.2f),
     ar_(1, 0),
     cr_(osg::Vec4(1, 1, 1, 1), osg::Vec4(1, 1, 1, 1)),
@@ -78,16 +78,15 @@ bool osgParticle::Particle::update(double dt)
     return true;
 }
 
-void osgParticle::Particle::render(const osg::Matrix &modelview, float scale) const
+void osgParticle::Particle::render(const osg::Vec3 &xpos, const osg::Vec3 &px, const osg::Vec3 &py, float scale) const
 {
-    osg::Vec3 xpos = modelview.preMult(position_);
-
-    glColor4f(    current_color_.x(), 
+    glColor4f(  current_color_.x(), 
                 current_color_.y(), 
                 current_color_.z(), 
                 current_color_.w() * current_alpha_);
 
-    float cs = current_size_ * scale;
+    osg::Vec3 p1(px * current_size_ * scale);
+    osg::Vec3 p2(py * current_size_ * scale);
 
     switch (shape_)
     {
@@ -97,26 +96,26 @@ void osgParticle::Particle::render(const osg::Matrix &modelview, float scale) co
 
     case QUAD:
         glTexCoord2f(0, 0);
-        glVertex3f(xpos.x() - cs, xpos.y() - cs, xpos.z());
+        glVertex3fv((xpos-p1-p2).ptr());
         glTexCoord2f(1, 0);
-        glVertex3f(xpos.x() + cs, xpos.y() - cs, xpos.z());
+        glVertex3fv((xpos+p1-p2).ptr());
         glTexCoord2f(1, 1);
-        glVertex3f(xpos.x() + cs, xpos.y() + cs, xpos.z());
+        glVertex3fv((xpos+p1+p2).ptr());
         glTexCoord2f(0, 1);
-        glVertex3f(xpos.x() - cs, xpos.y() + cs, xpos.z());
+        glVertex3fv((xpos-p1+p2).ptr());
         break;
 
     case QUAD_TRIANGLESTRIP:
         // we must glBegin() and glEnd() here, because each particle is a single strip
         glBegin(GL_TRIANGLE_STRIP);
         glTexCoord2f(1, 1);
-        glVertex3f(xpos.x() + cs, xpos.y() + cs, xpos.z());
+        glVertex3fv((xpos+p1+p2).ptr());        
         glTexCoord2f(0, 1);
-        glVertex3f(xpos.x() - cs, xpos.y() + cs, xpos.z());
+        glVertex3fv((xpos-p1+p2).ptr());        
         glTexCoord2f(1, 0);
-        glVertex3f(xpos.x() + cs, xpos.y() - cs, xpos.z());
+        glVertex3fv((xpos+p1-p2).ptr());
         glTexCoord2f(0, 0);
-        glVertex3f(xpos.x() - cs, xpos.y() - cs, xpos.z());
+        glVertex3fv((xpos-p1-p2).ptr());
         glEnd();
         break;
 
@@ -124,21 +123,28 @@ void osgParticle::Particle::render(const osg::Matrix &modelview, float scale) co
         // we must glBegin() and glEnd() here, because each particle is a single fan
         glBegin(GL_TRIANGLE_FAN);
         glTexCoord2f(0.5f, 0.5f);
-        glVertex3f(xpos.x(), xpos.y(), xpos.z());
+        glVertex3fv(xpos.ptr());
         glTexCoord2f(hex_texcoord_x1, hex_texcoord_y1);
-        glVertex3f(xpos.x() + cs * cosPI3, xpos.y() + cs * sinPI3, xpos.z());
+        glVertex3fv((xpos+p1*cosPI3+p2*sinPI3).ptr());
+        //glVertex3f(xpos.x() + cs * cosPI3, xpos.y() + cs * sinPI3, xpos.z());
         glTexCoord2f(hex_texcoord_x2, hex_texcoord_y1);
-        glVertex3f(xpos.x() - cs * cosPI3, xpos.y() + cs * sinPI3, xpos.z());
+        glVertex3fv((xpos-p1*cosPI3+p2*sinPI3).ptr());
+        //glVertex3f(xpos.x() - cs * cosPI3, xpos.y() + cs * sinPI3, xpos.z());
         glTexCoord2f(0, 0.5f);
-        glVertex3f(xpos.x() - cs, xpos.y(), xpos.z());
+        glVertex3fv((xpos-p1).ptr());
+        //glVertex3f(xpos.x() - cs, xpos.y(), xpos.z());
         glTexCoord2f(hex_texcoord_x2, hex_texcoord_y2);
-        glVertex3f(xpos.x() - cs * cosPI3, xpos.y() - cs * sinPI3, xpos.z());
+        glVertex3fv((xpos-p1*cosPI3-p2*sinPI3).ptr());
+        //glVertex3f(xpos.x() - cs * cosPI3, xpos.y() - cs * sinPI3, xpos.z());
         glTexCoord2f(hex_texcoord_x1, hex_texcoord_y2);
-        glVertex3f(xpos.x() + cs * cosPI3, xpos.y() - cs * sinPI3, xpos.z());
+        glVertex3fv((xpos+p1*cosPI3-p2*sinPI3).ptr());
+        //glVertex3f(xpos.x() + cs * cosPI3, xpos.y() - cs * sinPI3, xpos.z());
         glTexCoord2f(1, 0.5f);
-        glVertex3f(xpos.x() + cs, xpos.y(), xpos.z());
+        glVertex3fv((xpos+p1).ptr());
+        //glVertex3f(xpos.x() + cs, xpos.y(), xpos.z());
         glTexCoord2f(hex_texcoord_x1, hex_texcoord_y1);
-        glVertex3f(xpos.x() + cs * cosPI3, xpos.y() + cs * sinPI3, xpos.z());
+        glVertex3fv((xpos+p1*cosPI3+p2*sinPI3).ptr());
+        //glVertex3f(xpos.x() + cs * cosPI3, xpos.y() + cs * sinPI3, xpos.z());
         glEnd();
         break;
 

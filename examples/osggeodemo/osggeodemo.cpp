@@ -46,11 +46,11 @@ public:
     {
         v.visit(*this);
     }
-    inline int getMouseX(void) {return mouse_x;}; 
-    inline int getMouseY(void) {return mouse_y;};
+    inline float getMouseX(void) {return mouse_x;}; 
+    inline float getMouseY(void) {return mouse_y;};
     
 private:
-    int    mouse_x, mouse_y;
+    float    mouse_x, mouse_y;
 };
 
 static geodemoEventHandler *ghand=NULL;

@@ -96,3 +96,52 @@ Node* osgDB::readNodeFiles(std::vector<std::string>& commandLine)
     }
     
 }
+
+Node* osgDB::readNodeFiles(osg::ArgumentParser& arguments)
+{
+    osgDB::readCommandLine(arguments);
+
+    typedef std::vector<osg::Node*> NodeList;
+    NodeList nodeList;
+
+    // note currently doesn't delete the loaded file entries from the command line yet...
+
+    for(int pos=1;pos<arguments.argc();++pos)
+    {
+        if (!arguments.isOption(pos))
+        {
+            // not an option so assume string is a filename.
+            osg::Node *node = osgDB::readNodeFile( arguments[pos] );
+
+            if(node)
+            {
+                if (node->getName().empty()) node->setName( arguments[pos] );
+                nodeList.push_back(node);
+            }
+
+        }
+    }
+    
+    if (nodeList.empty())
+    {
+        return NULL;
+    }
+
+    if (nodeList.size()==1)
+    {
+        return nodeList.front();
+    }
+    else  // size >1
+    {
+        osg::Group* group = new osg::Group;
+        for(NodeList::iterator itr=nodeList.begin();
+            itr!=nodeList.end();
+            ++itr)
+        {
+            group->addChild(*itr);
+        }
+
+        return group;
+    }
+    
+}

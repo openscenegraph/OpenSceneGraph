@@ -15,6 +15,7 @@
 #define OSG_DisplaySettings 1
 
 #include <osg/Referenced>
+#include <osg/ArgumentParser>
 
 #include <string>
 #include <vector>
@@ -59,6 +60,9 @@ class SG_EXPORT DisplaySettings : public osg::Referenced
 
         /** read the command line string list, removing any matched control sequences.*/
         void readCommandLine(std::vector<std::string>& commandLine);
+
+        /** read the commandline arguments.*/
+        void readCommandLine(ArgumentParser& parser);
         
         
 

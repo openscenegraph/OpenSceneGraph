@@ -17,6 +17,7 @@
 
 #include <Producer/CameraGroup>
 
+#include <osg/ArgumentParser>
 #include <osg/Group>
 #include <osg/StateSet>
 #include <osg/FrameStamp>
@@ -37,6 +38,8 @@ class OSGPRODUCER_EXPORT CameraGroup : public Producer::CameraGroup
         CameraGroup(Producer::CameraConfig *cfg);
 
         CameraGroup(const std::string& configFile);
+
+        CameraGroup(osg::ArgumentParser& arguments);
 
         virtual ~CameraGroup() {}
 

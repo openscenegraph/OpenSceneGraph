@@ -101,6 +101,14 @@ SOURCE=..\..\src\osg\AnimationPath.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\ArgumentParser.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osg\ApplicationUsage.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\Array.cpp
 # End Source File
 # Begin Source File
@@ -454,6 +462,14 @@ SOURCE=..\..\Include\Osg\AnimationPath
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\Array
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\osg\ArgumentParser
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\osg\ApplicationUsage
 # End Source File
 # Begin Source File
 

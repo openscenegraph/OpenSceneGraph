@@ -15,6 +15,7 @@
 #define OSGDB_REGISTRY 1
 
 #include <osg/ref_ptr>
+#include <osg/ArgumentParser>
 
 #include <osgDB/DynamicLibrary>
 #include <osgDB/ReaderWriter>
@@ -52,6 +53,9 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
         /** read the command line string list, removing any matched control sequences.*/
         void readCommandLine(std::vector<std::string>& commandLine);
+
+        /** read the command line arguments.*/
+        void readCommandLine(osg::ArgumentParser& commandLine);
 
         /** register an .fileextension alias to mapExt toExt, the later
 	  * should the the extension name of the readerwriter plugin library.
@@ -201,6 +205,12 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 inline void readCommandLine(std::vector<std::string>& commandLine)
 {
     Registry::instance()->readCommandLine(commandLine);
+}
+
+/** read the command line arguments.*/
+inline void readCommandLine(osg::ArgumentParser& parser)
+{
+    Registry::instance()->readCommandLine(parser);
 }
 
 /**  Proxy class for automatic registration of DotOsgWrappers with the Registry.*/

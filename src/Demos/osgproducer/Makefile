@@ -1,4 +1,4 @@
-TOPDIR = ../../..
+TOPDIR = ../../../
 include $(TOPDIR)/Make/makedefs 
 
 CXXFILES =\

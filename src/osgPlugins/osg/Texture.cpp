@@ -92,6 +92,15 @@ bool Texture_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
+    if (fr.matchSequence("maxAnisotropy %f"))
+    {
+        float anis=1.0f;
+        fr[1].getFloat(anis);
+        texture.setMaxAnisotropy(anis);
+        fr +=2 ;
+        iteratorAdvanced = true;
+    }
+
     Texture::InternalFormatMode mode;
     if (fr[0].matchWord("internalFormatMode") && Texture_matchInternalFormatModeStr(fr[1].getStr(),mode))
     {
@@ -198,6 +207,7 @@ bool Texture_writeLocalData(const Object& obj, Output& fw)
 
     fw.indent() << "min_filter " << Texture_getFilterStr(texture.getFilter(Texture::MIN_FILTER)) << std::endl;
     fw.indent() << "mag_filter " << Texture_getFilterStr(texture.getFilter(Texture::MAG_FILTER)) << std::endl;
+    fw.indent() << "maxAnisotropy " << texture.getMaxAnisotropy() << std::endl;
 
     fw.indent() << "internalFormatMode " << Texture_getInternalFormatModeStr(texture.getInternalFormatMode()) << std::endl;
 
@@ -264,7 +274,7 @@ bool Texture_matchFilterStr(const char* str,Texture::FilterMode& filter)
     else if (strcmp(str,"LINEAR_MIPMAP_NEAREST")==0) filter = Texture::LINEAR_MIPMAP_NEAREST;
     else if (strcmp(str,"NEAREST_MIPMAP_LINEAR")==0) filter = Texture::NEAREST_MIPMAP_LINEAR;
     else if (strcmp(str,"LINEAR_MIPMAP_LINEAR")==0) filter = Texture::LINEAR_MIPMAP_LINEAR;
-    else if (strcmp(str,"ANISOTROPIC")==0) filter = Texture::ANISOTROPIC;
+    else if (strcmp(str,"ANISOTROPIC")==0) filter = Texture::LINEAR;
     else return false;
     return true;
 }
@@ -280,7 +290,6 @@ const char* Texture_getFilterStr(Texture::FilterMode filter)
         case(Texture::LINEAR_MIPMAP_NEAREST): return "LINEAR_MIPMAP_NEAREST";
         case(Texture::NEAREST_MIPMAP_LINEAR): return "NEAREST_MIPMAP_LINEAR";
         case(Texture::LINEAR_MIPMAP_LINEAR): return "LINEAR_MIPMAP_LINEAR";
-        case(Texture::ANISOTROPIC): return "ANISOTROPIC";
     }
     return "";
 }

@@ -19,26 +19,27 @@ using namespace osg;
 Texture::DeletedTextureObjectCache Texture::s_deletedTextureObjectCache;
 
 Texture::Texture():
-    _unrefImageAfterApply(false),
-    _target(GL_TEXTURE_2D),
-    _wrap_s(CLAMP),
-    _wrap_t(CLAMP),
-    _wrap_r(CLAMP),
-    _min_filter(LINEAR_MIPMAP_LINEAR), // trilinear
-    _mag_filter(LINEAR),
-    _texParamtersDirty(true),
-    _internalFormatMode(USE_IMAGE_DATA_FORMAT),
-    _internalFormatValue(0),
-    _borderColor(0.0, 0.0, 0.0, 0.0),
-    _textureWidth(0),
-    _textureHeight(0),
-    _subloadMode(OFF),
-    _subloadTextureOffsetX(0),
-    _subloadTextureOffsetY(0),
-    _subloadImageOffsetX(0),
-    _subloadImageOffsetY(0),
-    _subloadImageWidth(0),
-    _subloadImageHeight(0)
+            _unrefImageAfterApply(false),
+            _target(GL_TEXTURE_2D),
+            _wrap_s(CLAMP),
+            _wrap_t(CLAMP),
+            _wrap_r(CLAMP),
+            _min_filter(LINEAR_MIPMAP_LINEAR), // trilinear
+            _mag_filter(LINEAR),
+            _maxAnisotropy(1.0f),
+            _texParamtersDirty(true),
+            _internalFormatMode(USE_IMAGE_DATA_FORMAT),
+            _internalFormatValue(0),
+            _borderColor(0.0, 0.0, 0.0, 0.0),
+            _textureWidth(0),
+            _textureHeight(0),
+            _subloadMode(OFF),
+            _subloadTextureOffsetX(0),
+            _subloadTextureOffsetY(0),
+            _subloadImageOffsetX(0),
+            _subloadImageOffsetY(0),
+            _subloadImageWidth(0),
+            _subloadImageHeight(0)
 {
     _handleList.resize(DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),0);
     _modifiedTag.resize(DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),0);
@@ -57,6 +58,7 @@ Texture::Texture(const Texture& text,const CopyOp& copyop):
             _wrap_r(text._wrap_r),
             _min_filter(text._min_filter),
             _mag_filter(text._mag_filter),
+            _maxAnisotropy(text._maxAnisotropy),
             _texParamtersDirty(false),
             _internalFormatMode(text._internalFormatMode),
             _internalFormatValue(text._internalFormatValue),
@@ -191,6 +193,15 @@ const Texture::FilterMode Texture::getFilter(const FilterParameter which) const
     }
 }
 
+void Texture::setMaxAnisotropy(float anis)
+{
+    if (_maxAnisotropy!=anis)
+    {
+        _maxAnisotropy = anis; 
+        _texParamtersDirty = true;
+    }
+}
+
 /** Force a recompile on next apply() of associated OpenGL texture objects.*/
 void Texture::dirtyTextureObject()
 {
@@ -206,11 +217,6 @@ void Texture::dirtyTextureObject()
 
 void Texture::apply(State& state) const
 {
-
-//     Texture* texture = const_cast<Texture*>(this);
-//     texture->_min_filter = LINEAR_MIPMAP_LINEAR;
-//     texture->_mag_filter = ANISOTROPIC;
-
 
     // get the contextID (user defined ID of 0 upwards) for the 
     // current OpenGL context.
@@ -314,13 +320,9 @@ void Texture::applyTexParameters(GLenum target, State&) const
     glTexParameteri( target, GL_TEXTURE_WRAP_T, wt );
 
     glTexParameteri( target, GL_TEXTURE_MIN_FILTER, _min_filter);
+    glTexParameteri( target, GL_TEXTURE_MAG_FILTER, _mag_filter);
 
-    if (s_borderClampSupported)
-    {
-        glTexParameterfv(target, GL_TEXTURE_BORDER_COLOR, _borderColor.ptr());
-    }
-
-    if (_mag_filter == ANISOTROPIC)
+    if (_maxAnisotropy>1.0f)
     {
         // check for support for anisotropic filter,
         // note since this is static varible it is intialised
@@ -333,17 +335,15 @@ void Texture::applyTexParameters(GLenum target, State&) const
         {
             // note, GL_TEXTURE_MAX_ANISOTROPY_EXT will either be defined
             // by gl.h (or via glext.h) or by include/osg/Texture.
-            glTexParameterf(target, GL_TEXTURE_MAX_ANISOTROPY_EXT, 2.f);
-        }
-        else
-        {
-            glTexParameteri(target, GL_TEXTURE_MAG_FILTER, LINEAR);
+            glTexParameterf(target, GL_TEXTURE_MAX_ANISOTROPY_EXT, _maxAnisotropy);
         }
     }
-    else
+
+    if (s_borderClampSupported)
     {
-        glTexParameteri( _target, GL_TEXTURE_MAG_FILTER, _mag_filter);
+        glTexParameterfv(target, GL_TEXTURE_BORDER_COLOR, _borderColor.ptr());
     }
+
 
     _texParamtersDirty=false;
 

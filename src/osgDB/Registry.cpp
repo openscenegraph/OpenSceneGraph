@@ -261,6 +261,13 @@ void Registry::initLibraryFilePathList()
 
     convertStringPathIntoFilePathList("C:/Windows/System/",_libraryFilePath);
 
+#elif defined(__DARWIN_OSX__)
+
+    if ((ptr = getenv( "DYLD_LIBRARY_PATH" )) )
+    {
+        convertStringPathIntoFilePathList(ptr, _libraryFilePath);
+    }
+
 #else   
 
     if( (ptr = getenv( "LD_LIBRARY_PATH" )) )

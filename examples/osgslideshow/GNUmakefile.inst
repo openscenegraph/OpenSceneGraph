@@ -1,0 +1,16 @@
+TOPDIR = ../..
+include $(TOPDIR)/Make/makedefs
+
+CXXFILES =\
+        SlideEventHandler.cpp\
+        DefaultPresentation.cpp\
+	osgviewer.cpp\
+
+LIBS     += -losgProducer -lProducer -losgDB -losgText -losgUtil -losg $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
+
+EXEC = osgslideshow
+
+INC += $(PRODUCER_INCLUDE_DIR) -I/usr/X11R6/include
+LDFLAGS  += $(PRODUCER_LIB_DIR)
+
+include $(TOPDIR)/Make/makerules

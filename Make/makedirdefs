@@ -135,7 +135,6 @@ EXAMPLE_DIRS = \
 	osgshadowtexture\
 	osgshape\
 	osgstereoimage\
-	osgstereoimage\
 	osgteapot\
 	osgtext\
 	osgtexture1D\
@@ -148,7 +147,8 @@ EXAMPLE_DIRS = \
 	osgvertexprogram\
 	osgviewer\
 	osgprerendercubemap\
-
+	osgslideshow\
+        
 #	osgsimulation\
 #	osgdemeter\
 #	osgjigsaw\

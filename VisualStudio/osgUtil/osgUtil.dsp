@@ -177,6 +177,10 @@ SOURCE=..\..\src\osgUtil\TransformCallback.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgUtil\TransformAttributeFunctor.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgUtil\TriStripVisitor.cpp
 # End Source File
 # Begin Source File
@@ -282,6 +286,10 @@ SOURCE=..\..\include\osgUtil\Tesselator
 # Begin Source File
 
 SOURCE=..\..\include\osgUtil\TransformCallback
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgUtil\TransformAttributeFunctor
 # End Source File
 # Begin Source File
 

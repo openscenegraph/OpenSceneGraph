@@ -9,7 +9,7 @@ CXXFILES = \
     LightPointNode.cpp\
     Sector.cpp\
     Version.cpp\
-
+    
 #    SphereSegment.cpp\
 
 DEF     += -DOSGSIM_LIBRARY

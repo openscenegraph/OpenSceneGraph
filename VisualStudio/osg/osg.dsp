@@ -421,10 +421,6 @@ SOURCE=..\..\src\osg\Transform.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osg\TransformAttributeFunctor.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\osg\BlendFunc.cpp
 # End Source File
 # Begin Source File
@@ -840,11 +836,6 @@ SOURCE=..\..\Include\Osg\Timer
 SOURCE=..\..\Include\Osg\Transform
 # End Source File
 # Begin Source File
-
-SOURCE=..\..\Include\Osg\TransformAttributeFunctor
-# End Source File
-# Begin Source File
-
 
 SOURCE=..\..\Include\Osg\TriangleFunctor
 # End Source File

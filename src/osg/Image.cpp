@@ -160,7 +160,7 @@ unsigned int Image::computeNumComponents(GLenum format)
         case(GL_LUMINANCE_ALPHA): return 2;
         default:
         {
-            std::cout<<"error format = "<<std::hex<<format<<std::endl;
+            notify(WARN)<<"error format = "<<std::hex<<format<<std::endl;
             return 0;
         }
     }        
@@ -208,7 +208,7 @@ unsigned int Image::computePixelSizeInBits(GLenum format,GLenum type)
         case(GL_UNSIGNED_INT_2_10_10_10_REV): return 32;
         default: 
         {
-            std::cout<<"error type = "<<type<<std::endl;
+            notify(WARN)<<"error type = "<<type<<std::endl;
             return 0;
         }
     }    
@@ -220,7 +220,7 @@ unsigned int Image::computeRowWidthInBytes(int width,GLenum format,GLenum type,i
     unsigned int pixelSize = computePixelSizeInBits(format,type);
     int widthInBits = width*pixelSize;
     int packingInBits = packing*8;
-    std::cout << "width="<<width<<" pixelSize="<<pixelSize<<"  width in bit="<<widthInBits<<" packingInBits="<<packingInBits<<" widthInBits%packingInBits="<<widthInBits%packingInBits<<std::endl;
+    //notify(INFO) << "width="<<width<<" pixelSize="<<pixelSize<<"  width in bit="<<widthInBits<<" packingInBits="<<packingInBits<<" widthInBits%packingInBits="<<widthInBits%packingInBits<<std::endl;
     return (widthInBits/packingInBits + ((widthInBits%packingInBits)?1:0))*packing;
 }
 
@@ -267,7 +267,7 @@ unsigned int Image::getTotalSizeInBytesIncludingMipmaps() const
    unsigned int sizeOfLastMipMap = computeRowWidthInBytes(s,_pixelFormat,_dataType,_packing)*
                                    r*t;
 
-   // std::cout<<"sizeOfLastMipMap="<<sizeOfLastMipMap<<"\ts="<<s<<"\tt="<<t<<"\tr"<<r<<std::endl;                  
+   // notify(INFO)<<"sizeOfLastMipMap="<<sizeOfLastMipMap<<"\ts="<<s<<"\tt="<<t<<"\tr"<<r<<std::endl;                  
     
    return maxValue+sizeOfLastMipMap;
 }
@@ -491,7 +491,7 @@ void Image::copySubImage(int s_offset,int t_offset,int r_offset,osg::Image* sour
     
     if (!_data)
     {
-        cout<<"allocating image"<<endl;
+        notify(INFO)<<"allocating image"<<endl;
         allocateImage(s_offset+source->r(),t_offset+source->t(),r_offset+source->t(),
                     source->getPixelFormat(),source->getDataType(),
                     source->getPacking());

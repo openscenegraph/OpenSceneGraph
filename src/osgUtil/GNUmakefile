@@ -21,6 +21,7 @@ CXXFILES = \
 	SmoothingVisitor.cpp\
 	Tesselator.cpp\
 	TransformCallback.cpp\
+	TransformAttributeFunctor.cpp\
 	TriStripVisitor.cpp\
         TriStrip_tri_stripper.cpp\
 	CubeMapGenerator.cpp\

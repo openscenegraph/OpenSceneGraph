@@ -29,6 +29,7 @@ class TessellationHints : public Object
 
 	TessellationHints():
 	    _TessellationMode(USE_SHAPE_DEFAULTS),
+            _detailRatio(1.0f),
 	    _targetNumFaces(100),
 	    _createFrontFace(true),
 	    _createBackFace(false),
@@ -42,6 +43,7 @@ class TessellationHints : public Object
 	TessellationHints(const TessellationHints& tess, const CopyOp& copyop=CopyOp::SHALLOW_COPY): 
     	    Object(tess,copyop),
 	    _TessellationMode(tess._TessellationMode),
+            _detailRatio(tess._detailRatio),
 	    _targetNumFaces(tess._targetNumFaces),
 	    _createFrontFace(tess._createFrontFace),
 	    _createBackFace(tess._createBackFace),
@@ -62,6 +64,9 @@ class TessellationHints : public Object
 
     	inline void setTessellationMode(TessellationMode mode) { _TessellationMode=mode; }
     	inline TessellationMode getTessellationMode() const { return _TessellationMode; }
+
+        inline void setDetailRatio(float ratio) { _detailRatio = ratio; }
+        inline float getDetailRatio() const { return _detailRatio; }
 
 	inline void setTargetNumFaces(unsigned int target) { _targetNumFaces=target; }
 	inline unsigned int getTargetNumFaces() const { return _targetNumFaces; }
@@ -93,6 +98,8 @@ class TessellationHints : public Object
 
     	
     	TessellationMode _TessellationMode;
+
+        float           _detailRatio;
     	unsigned int 	_targetNumFaces;
 
 	bool 	    	_createFrontFace;
@@ -112,7 +119,7 @@ class SG_EXPORT ShapeDrawable : public Drawable
 
         ShapeDrawable();
 
-        ShapeDrawable(Shape* shape);
+        ShapeDrawable(Shape* shape,TessellationHints* hints=0);
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         ShapeDrawable(const ShapeDrawable& pg,const CopyOp& copyop=CopyOp::SHALLOW_COPY);

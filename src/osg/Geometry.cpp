@@ -2184,3 +2184,38 @@ void Geometry::Extensions::glVertexAttrib4Nubv(unsigned int index, const GLubyte
         notify(WARN)<<"Error: glVertexAttrib4Nubv not supported by OpenGL driver"<<std::endl;
     }
 }
+
+
+Geometry* osg::createTexturedQuadGeometry(const osg::Vec3& corner,const osg::Vec3& widthVec,const osg::Vec3& heightVec)
+{
+    Geometry* geom = new Geometry;
+
+    Vec3Array* coords = new Vec3Array(4);
+    (*coords)[0] = corner+heightVec;
+    (*coords)[1] = corner;
+    (*coords)[2] = corner+widthVec;
+    (*coords)[3] = corner+widthVec+heightVec;
+    geom->setVertexArray(coords);
+
+    Vec2Array* tcoords = new Vec2Array(4);
+    (*tcoords)[0].set(0.0f,1.0f);
+    (*tcoords)[1].set(0.0f,0.0f);
+    (*tcoords)[2].set(1.0f,0.0f);
+    (*tcoords)[3].set(1.0f,1.0f);
+    geom->setTexCoordArray(0,tcoords);
+
+    osg::Vec4Array* colours = new osg::Vec4Array(1);
+    (*colours)[0].set(1.0f,1.0f,1.0,1.0f);
+    geom->setColorArray(colours);
+    geom->setColorBinding(Geometry::BIND_OVERALL);
+
+    osg::Vec3Array* normals = new osg::Vec3Array(1);
+    (*normals)[0] = widthVec^heightVec;
+    (*normals)[0].normalize();
+    geom->setNormalArray(normals);
+    geom->setNormalBinding(Geometry::BIND_OVERALL);
+
+    geom->addPrimitiveSet(new DrawArrays(PrimitiveSet::QUADS,0,4));
+    
+    return geom;
+}

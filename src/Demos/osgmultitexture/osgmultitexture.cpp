@@ -97,7 +97,8 @@ int main( int argc, char **argv )
         texgen->setMode(osg::TexGen::SPHERE_MAP);
 
         osg::TexEnv* texenv = new osg::TexEnv;
-        texenv->setMode(osg::TexEnv::MODULATE);
+        texenv->setMode(osg::TexEnv::BLEND);
+        texenv->setColor(osg::Vec4(0.3f,0.3f,0.3f,0.3f));
 
         osg::StateSet* stateset = new osg::StateSet;
         stateset->setTextureAttributeAndModes(1,texture,osg::StateAttribute::ON);

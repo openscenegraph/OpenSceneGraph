@@ -64,7 +64,7 @@ bool Switch_readLocalData(Object& obj, Input& fr)
             int value;
             if (fr[0].getInt(value))
             {
-                sw.setValue(pos,value);
+                sw.setValue(value);
                 ++pos;
             }
             ++fr;
@@ -96,7 +96,7 @@ bool Switch_writeLocalData(const Object& obj, Output& fw)
                 itr!=values.end();
                 ++itr)
             {
-                fw.indent()<<*itr<<endl;
+                fw.indent()<<*itr<<std::endl;
             }
             fw.moveOut();
             fw.indent()<<"}"<< std::endl;

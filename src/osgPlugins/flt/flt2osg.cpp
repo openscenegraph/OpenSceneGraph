@@ -911,7 +911,7 @@ osg::Group* ConvertFromFLT::visitSwitch(osg::Group& osgParent, SwitchRecord* rec
 
         if (nChild<osgSwitch->getNumChildren())
         {
-            osgSwitch->setValue(nChild,(pSSwitch->aMask[nMaskWord] & (uint32(1) << nMaskBit)));
+            osgSwitch->setValue(nChild,(pSSwitch->aMask[nMaskWord] & (uint32(1) << nMaskBit))!=0);
         }
     }
 

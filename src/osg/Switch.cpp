@@ -62,8 +62,7 @@ bool Switch::removeChild( Node *child )
     
     _values.erase(_values.begin()+pos);
     
-    return Group::removeChild(child);
-    
+    return Group::removeChild(child);    
 }
 
 void Switch::setValue(unsigned int pos,bool value)

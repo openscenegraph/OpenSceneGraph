@@ -2,10 +2,9 @@
 #include <math.h>
 #include <osg/Group>
 #include <osg/BoundingBox>
+#include <osg/Transform>
 
 #include <algorithm>
-
-#define square(x)   ((x)*(x))
 
 using namespace osg;
 
@@ -202,6 +201,10 @@ const bool Group::computeBound() const
     _bsphere.init();
     if (_children.empty()) return false;
 
+    // note, special handling of the case when a child is an Transform,
+    // such that only Transforms which are relative to their parents coordinates frame (i.e this group)
+    // are handled, Transform relative to and absolute reference frame are ignored.
+
     BoundingBox bb;
     bb.init();
     ChildList::const_iterator itr;
@@ -209,7 +212,11 @@ const bool Group::computeBound() const
         itr!=_children.end();
         ++itr)
     {
-        bb.expandBy((*itr)->getBound());
+        const osg::Transform* transform = dynamic_cast<const osg::Transform*>(itr->get());
+        if (!transform || transform->getReferenceFrame()==osg::Transform::RELATIVE_TO_PARENTS)
+        {
+            bb.expandBy((*itr)->getBound());
+        }
     }
 
     if (!bb.isValid()) return false;
@@ -220,7 +227,11 @@ const bool Group::computeBound() const
         itr!=_children.end();
         ++itr)
     {
-        _bsphere.expandRadiusBy((*itr)->getBound());
+        const osg::Transform* transform = dynamic_cast<const osg::Transform*>(itr->get());
+        if (!transform || transform->getReferenceFrame()==osg::Transform::RELATIVE_TO_PARENTS)
+        {
+            _bsphere.expandRadiusBy((*itr)->getBound());
+        }
     }
 
     return true;

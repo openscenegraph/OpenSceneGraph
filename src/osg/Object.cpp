@@ -14,5 +14,6 @@ Referenced::~Referenced()
 }
 
 
-Object::Object(const Object&,const CopyOp&): 
-    Referenced() {}
+Object::Object(const Object& obj,const CopyOp&): 
+    Referenced(),
+    _dataVariance(obj._dataVariance) {}

@@ -741,16 +741,15 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
 
 
 
-void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* image, GLsizei inwidth, GLsizei inheight,GLsizei numMipmapLevels) const
+void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* image, GLsizei inwidth, GLsizei inheight, GLint inInternalFormat, GLint numMipmapLevels) const
 {
     // if we don't have a valid image we can't create a texture!
     if (!image || !image->data())
         return;
 
     // image size has changed so we have to re-load the image from scratch.
-    if (image->s()!=inwidth || image->t()!=inheight) 
+    if (image->s()!=inwidth || image->t()!=inheight || image->getInternalTextureFormat()!=inInternalFormat ) 
     {
-
         applyTexImage2D_load(state, target, image, inwidth, inheight,numMipmapLevels); 
         return;
     }

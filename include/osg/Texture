@@ -366,7 +366,7 @@ class SG_EXPORT Texture : public osg::StateAttribute
         
         /** Helper method which subloads images to the texture itself, but does not set or use texture binding. 
           * Note, do not call this method directly unless you are implementing your own Subload callback*/
-        void applyTexImage2D_subload(State& state, GLenum target, const Image* image, GLsizei width, GLsizei height,GLsizei numMipmapLevels) const;
+        void applyTexImage2D_subload(State& state, GLenum target, const Image* image, GLsizei width, GLsizei height, GLint inInternalFormat, GLsizei numMipmapLevels) const;
 
     protected :
 

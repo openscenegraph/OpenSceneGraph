@@ -418,6 +418,6 @@ void unmark_arcs(graph_array<nodetype, arctype> & G)
 
 
 
-}; // namespace common_structures
+} // namespace common_structures
 
 #endif

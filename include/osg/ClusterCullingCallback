@@ -15,13 +15,14 @@
 #define OSG_CLUSTERCULLINGCALLBACK 1
 
 #include <osg/Drawable>
+#include <osg/NodeCallback>
 
 namespace osg {
 
 /** Implements cluster culling to cull back facing drawables. Derived from
   * Drawable::CullCallback.
 */
-class SG_EXPORT ClusterCullingCallback : public Drawable::CullCallback
+class SG_EXPORT ClusterCullingCallback : public Drawable::CullCallback, public NodeCallback
 {
     public:
 
@@ -35,6 +36,9 @@ class SG_EXPORT ClusterCullingCallback : public Drawable::CullCallback
         /** Computes the control point, normal, and deviation from the
 		  * given drawable contents. */
         void computeFrom(const osg::Drawable* drawable);
+        
+        /** Transform the ClusterCullingCallback's positional members to a new coordinate frame.*/
+        void transform(const osg::Matrixd& matrix);
 
         void set(const osg::Vec3& controlPoint, const osg::Vec3& normal, float deviation, float radius);
 
@@ -51,6 +55,9 @@ class SG_EXPORT ClusterCullingCallback : public Drawable::CullCallback
         float getDeviation() const { return _deviation; }
 
         virtual bool cull(osg::NodeVisitor*, osg::Drawable*, osg::State*) const;
+
+        /** Callback method called by the NodeVisitor when visiting a node.*/
+        virtual void operator()(Node* node, NodeVisitor* nv);
 
     protected:
 

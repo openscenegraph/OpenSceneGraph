@@ -18,6 +18,7 @@
 #include "Object.h"
 #include "StateSet.h"
 #include "AnimationPathCallback.h"
+#include "ClusterCullingCallback.h"
 
 using namespace ive;
 
@@ -62,9 +63,19 @@ void Node::write(DataOutputStream* out){
         {
         ((ive::AnimationPathCallback*)(nc))->write(out);
     }
+    
+    if (out->getVersion() >= VERSION_0006)
+    {
+        osg::ClusterCullingCallback* ccc = dynamic_cast<osg::ClusterCullingCallback*>(getCullCallback());
+        out->writeBool(ccc!=0);
+        if(ccc)
+        {
+            ((ive::ClusterCullingCallback*)(ccc))->write(out);
+        }
+    }
 
-	// Write NodeMask
-	out->writeUInt(getNodeMask());
+    // Write NodeMask
+    out->writeUInt(getNodeMask());
 }
 
 
@@ -95,6 +106,7 @@ void Node::read(DataInputStream* in){
         {
             setStateSet(in->readStateSet());
         }
+
         // Read UpdateCallback if any
         if(in->readBool())
         {
@@ -102,8 +114,19 @@ void Node::read(DataInputStream* in){
             ((ive::AnimationPathCallback*)(nc))->read(in);
             setUpdateCallback(nc);
         }
-		// Read NodeMask
-		setNodeMask(in->readUInt());
+
+        if (in->getVersion() >= VERSION_0006)
+        {
+            if(in->readBool())
+            {
+                osg::ClusterCullingCallback* ccc = new osg::ClusterCullingCallback();
+                ((ive::ClusterCullingCallback*)(ccc))->read(in);
+                setCullCallback(ccc);
+            }
+        }
+        
+        // Read NodeMask
+        setNodeMask(in->readUInt());
     }
     else{
         throw Exception("Node::read(): Expected Node identification");

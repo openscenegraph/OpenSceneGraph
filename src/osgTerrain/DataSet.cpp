@@ -2303,9 +2303,10 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
 
                     float local_dot_product = -sin(theta + phi);
                     float local_m = globe_radius*( 1.0/ cos(theta+phi) - 1.0);
+                    float local_radius = static_cast<float>(globe_radius * tan(beta)); // beta*globe_radius;
                     min_dot_product = osg::minimum(min_dot_product, local_dot_product);
                     max_cluster_culling_height = osg::maximum(max_cluster_culling_height,local_m);      
-                    max_cluster_culling_radius = osg::maximum(max_cluster_culling_radius,static_cast<float>(beta*globe_radius));
+                    max_cluster_culling_radius = osg::maximum(max_cluster_culling_radius,local_radius);
                 }
                 else
                 {
@@ -2838,6 +2839,66 @@ std::string DataSet::CompositeDestination::getSubTileName()
     return _name+"_subtile"+_dataSet->getDestinationTileExtension();
 }
 
+
+class CollectClusterCullingCallbacks : public osg::NodeVisitor
+{
+public:
+
+
+    struct Triple
+    {
+        Triple():
+            _drawable(0),
+            _callback(0) {}
+    
+        Triple(osg::NodePath nodePath, osg::Drawable* drawable, osg::ClusterCullingCallback* callback):
+            _nodePath(nodePath),
+            _drawable(drawable),
+            _callback(callback) {}
+
+        Triple(const Triple& t):
+            _nodePath(t._nodePath),
+            _drawable(t._drawable),
+            _callback(t._callback) {}
+
+        Triple& operator = (const Triple& t)
+        {
+            _nodePath = t._nodePath;
+            _drawable = t._drawable;
+            _callback = t._callback;
+            return *this;
+        }
+
+        osg::NodePath                   _nodePath;
+        osg::Drawable*                  _drawable;
+        osg::ClusterCullingCallback*    _callback;
+    };
+
+    typedef std::vector<Triple> ClusterCullingCallbackList;
+
+    CollectClusterCullingCallbacks():
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+
+    virtual void apply(osg::Geode& geode)
+    {
+        for(unsigned int i=0; i<geode.getNumDrawables();++i)
+        {
+            osg::ClusterCullingCallback* callback = dynamic_cast<osg::ClusterCullingCallback*>(geode.getDrawable(i)->getCullCallback());
+            if (callback) 
+            {
+                _callbackList.push_back(Triple(getNodePath(),geode.getDrawable(i),callback));
+            }
+            else
+            {
+                osg::notify(osg::NOTICE)<<"   Note found"<<geode.getDrawable(i)->getCullCallback()<<std::endl;
+            }
+        }
+    }
+    
+    ClusterCullingCallbackList _callbackList;
+    
+};
+
 osg::Node* DataSet::CompositeDestination::createPagedLODScene()
 {
     if (_children.empty() && _tiles.empty()) return 0;
@@ -2909,6 +2970,33 @@ osg::Node* DataSet::CompositeDestination::createPagedLODScene()
         pagedLOD->addChild(group);
     }
     
+
+    // find cluster culling callbacks on drawables and move them to the PagedLOD level.
+    {
+        CollectClusterCullingCallbacks collect;
+        pagedLOD->accept(collect);
+
+        if (!collect._callbackList.empty())
+        {
+            if (collect._callbackList.size()==1)
+            {
+                CollectClusterCullingCallbacks::Triple& triple = collect._callbackList.front();
+            
+                osg::Matrixd matrix = osg::computeLocalToWorld(triple._nodePath);
+                
+                triple._callback->transform(matrix);
+                
+                osg::notify(osg::NOTICE)<<"cluster culling matrix "<<matrix<<std::endl;
+
+                // moving cluster culling callback pagedLOD node.
+                pagedLOD->setCullCallback(triple._callback);
+                
+                // remove it from the drawable.
+                triple._drawable->setCullCallback(0);
+            }
+        }
+    }
+        
     // cutOffDistance = pagedLOD->getBound().radius()*_dataSet->getRadiusToMaxVisibleDistanceRatio();
     
     pagedLOD->setRange(0,cutOffDistance,farDistance);

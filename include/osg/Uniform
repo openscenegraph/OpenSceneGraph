@@ -11,7 +11,7 @@
 */
 
 /* file:	include/osg/Uniform
- * author:	Mike Weiblen 2005-03-23
+ * author:	Mike Weiblen 2005-03-29
 */
 
 // NOTICE: This code is CLOSED during construction and/or renovation!
@@ -33,8 +33,9 @@
 
 #include <string>
 
-#ifndef GL_VERSION_2_0
+#ifndef GL_VERSION_2_0	//[
 #define GL_VERSION_2_0 1
+typedef char GLchar;
 #define GL_BLEND_EQUATION_RGB             GL_BLEND_EQUATION
 #define GL_VERTEX_ATTRIB_ARRAY_ENABLED    0x8622
 #define GL_VERTEX_ATTRIB_ARRAY_SIZE       0x8623
@@ -119,116 +120,60 @@
 #define GL_STENCIL_BACK_REF               0x8CA3
 #define GL_STENCIL_BACK_VALUE_MASK        0x8CA4
 #define GL_STENCIL_BACK_WRITEMASK         0x8CA5
-
-typedef char GLchar;
-
-#endif
+#endif	//]
 
 namespace osg {
 
 ///////////////////////////////////////////////////////////////////////////
 /** Uniform encapsulates glUniform values */
 
+class GL2Extensions;
+
 class SG_EXPORT Uniform : public Object
 {
     public:
-	class Value
-	{
-	    public:
-		enum Type {
-		    FLOAT = GL_FLOAT,
-		    FLOAT_VEC2 = GL_FLOAT_VEC2,
-		    FLOAT_VEC3 = GL_FLOAT_VEC3,
-		    FLOAT_VEC4 = GL_FLOAT_VEC4,
-		    INT = GL_INT,
-		    INT_VEC2 = GL_INT_VEC2,
-		    INT_VEC3 = GL_INT_VEC3,
-		    INT_VEC4 = GL_INT_VEC4,
-		    BOOL = GL_BOOL,
-		    BOOL_VEC2 = GL_BOOL_VEC2,
- 		    BOOL_VEC3 = GL_BOOL_VEC3,
-		    BOOL_VEC4 = GL_BOOL_VEC4,
-		    FLOAT_MAT2 = GL_FLOAT_MAT2,
-		    FLOAT_MAT3 = GL_FLOAT_MAT3,
-		    FLOAT_MAT4 = GL_FLOAT_MAT4,
-		    SAMPLER_1D = GL_SAMPLER_1D,
-		    SAMPLER_2D = GL_SAMPLER_2D,
-		    SAMPLER_3D = GL_SAMPLER_3D,
-		    SAMPLER_CUBE = GL_SAMPLER_CUBE,
-		    SAMPLER_1D_SHADOW = GL_SAMPLER_1D_SHADOW,
-		    SAMPLER_2D_SHADOW = GL_SAMPLER_2D_SHADOW,
-		    UNDEFINED = -1,
-		};
-
-		Value( const char* name, Type type );
-		Value( const Value& rhs );
-                
-
-		/** Get the name of glUniform. */
-		const std::string& getName() const { return _name; }
-
-		/** Get the type of glUniform as enum. */
-		const Type getType() const { return _type; }
-
-		/** Return the name of a type as string. */
-		static const char* getTypename(Type t);
-
-		/** Does this Value contain real data? */
-		bool isValid() const { return _isValid; }
-
-		/** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
-		int compare(const Value& rhs) const;
-
-		bool isCompatibleType( Type t ) const;
-
-		/** assignment */
-		void set( float f );
-		void set( const osg::Vec2& v2 );
-		void set( const osg::Vec3& v3 );
-		void set( const osg::Vec4& v4 );
-		//TODO void set( const osg::Matrix2& m2 );
-		//TODO void set( const osg::Matrix3& m3 );
-		void set( const osg::Matrix& m4 );
-		void set( int i );
-		void set( int i0, int i1 );
-		void set( int i0, int i1, int i2 );
-		void set( int i0, int i1, int i2, int i3 );
-		void set( bool b );
-		void set( bool b0, bool b1 );
-		void set( bool b0, bool b1, bool b2 );
-		void set( bool b0, bool b1, bool b2, bool b3 );
-
-
-	    protected:
-		/** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
-		int compareData(const Value& rhs) const;
-		void copyData(const Value& rhs);
-
-	    protected:
-		const std::string _name;
-		const Type _type;
-		bool _isValid;	// is _data valid?
-		union {
-		    GLfloat f1;		// float
-		    GLfloat f2[2];	// vec2
-		    GLfloat f3[3];	// vec3
-		    GLfloat f4[4];	// vec4, mat2
-		    GLfloat f9[9];	// mat3
-		    GLfloat f16[16];	// mat4
-		    GLint i1;		// int, bool, sampler*
-		    GLint i2[2];	// ivec2, bvec2
-		    GLint i3[3];	// ivec3, bvec3
-		    GLint i4[4];	// ivec4, bvec4
-		} _data;
-
-	    private:
-		Value();	// disallowed
+	enum Type {
+	    FLOAT = GL_FLOAT,
+	    FLOAT_VEC2 = GL_FLOAT_VEC2,
+	    FLOAT_VEC3 = GL_FLOAT_VEC3,
+	    FLOAT_VEC4 = GL_FLOAT_VEC4,
+	    INT = GL_INT,
+	    INT_VEC2 = GL_INT_VEC2,
+	    INT_VEC3 = GL_INT_VEC3,
+	    INT_VEC4 = GL_INT_VEC4,
+	    BOOL = GL_BOOL,
+	    BOOL_VEC2 = GL_BOOL_VEC2,
+	    BOOL_VEC3 = GL_BOOL_VEC3,
+	    BOOL_VEC4 = GL_BOOL_VEC4,
+	    FLOAT_MAT2 = GL_FLOAT_MAT2,
+	    FLOAT_MAT3 = GL_FLOAT_MAT3,
+	    FLOAT_MAT4 = GL_FLOAT_MAT4,
+	    SAMPLER_1D = GL_SAMPLER_1D,
+	    SAMPLER_2D = GL_SAMPLER_2D,
+	    SAMPLER_3D = GL_SAMPLER_3D,
+	    SAMPLER_CUBE = GL_SAMPLER_CUBE,
+	    SAMPLER_1D_SHADOW = GL_SAMPLER_1D_SHADOW,
+	    SAMPLER_2D_SHADOW = GL_SAMPLER_2D_SHADOW,
+	    UNDEFINED = -1,
 	};
 
-
     public:
-        Uniform();
-	Uniform( const char* name, Value::Type type );
+	Uniform( const char* name, Type type );
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy. */
+        Uniform(const Uniform& rhs, const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+
+        META_Object(osg, Uniform);
+
+
+	/** Get the name of glUniform. */
+	const std::string& getName() const { return _name; }
+
+	/** Get the type of glUniform as enum. */
+	const Type getType() const { return _type; }
+
+	/** Return the name of a type as string. */
+	static const char* getTypename( Type t );
 
 	/** convenient construction w/ assignment */
 	explicit Uniform( const char* name, float f );
@@ -247,26 +192,15 @@ class SG_EXPORT Uniform : public Object
 	Uniform( const char* name, bool b0, bool b1, bool b2 );
 	Uniform( const char* name, bool b0, bool b1, bool b2, bool b3 );
 
-        /** Copy constructor using CopyOp to manage deep vs shallow copy. */
-        Uniform(const Uniform& gu,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+	/** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
+	virtual int compare(const Uniform& rhs) const;
+	virtual int compareData(const Uniform& rhs) const;
 
-        META_Object(osg, Uniform);
+        virtual bool operator < (const Uniform& rhs) const { return (compare(rhs) == -1); }
 
-        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
-        virtual int compare(const Uniform& rhs) const
-        {
-	    return _value.compare( rhs._value );
-        }
+	void copyData( const Uniform& rhs );
 
-        bool operator < (const Uniform& rhs) const
-        {
-            if (_value.getName()<rhs._value.getName()) return true;
-            return false;
-        }
-
-        const std::string& getName() const { return _value.getName(); }
-
-	/** assignment */
+	/** value assignment */
 	bool set( float f );
 	bool set( int i );
 	bool set( bool b );
@@ -283,15 +217,49 @@ class SG_EXPORT Uniform : public Object
 	bool set( bool b0, bool b1, bool b2 );
 	bool set( bool b0, bool b1, bool b2, bool b3 );
 
+	/** value query */
+	bool get( float& f ) const;
+	bool get( int& i ) const;
+	bool get( bool& b ) const;
+	bool get( osg::Vec2& v2 ) const;
+	bool get( osg::Vec3& v3 ) const;
+	bool get( osg::Vec4& v4 ) const;
+	//TODO bool get( osg::Matrix2& m2 ) const;
+	//TODO bool get( osg::Matrix3& m3 ) const;
+	bool get( osg::Matrix& m4 ) const;
+	bool get( int& i0, int& i1 ) const;
+	bool get( int& i0, int& i1, int& i2 ) const;
+	bool get( int& i0, int& i1, int& i2, int& i3 ) const;
+	bool get( bool& b0, bool& b1 ) const;
+	bool get( bool& b0, bool& b1, bool& b2 ) const;
+	bool get( bool& b0, bool& b1, bool& b2, bool& b3 ) const;
+
+
     protected:
         virtual ~Uniform() {}
 
-	bool isCompatibleType( Value::Type t ) const;
+	bool isCompatibleType( Type t ) const;
+	static Type repType( Type t );
+
 
     protected:
-	Value _value;
+	const std::string _name;
+	const Type _type;
+	union {
+	    GLfloat f1;		// float
+	    GLfloat f2[2];	// vec2
+	    GLfloat f3[3];	// vec3
+	    GLfloat f4[4];	// vec4, mat2
+	    GLfloat f9[9];	// mat3
+	    GLfloat f16[16];	// mat4
+	    GLint i1;		// int, bool, sampler*
+	    GLint i2[2];	// ivec2, bvec2
+	    GLint i3[3];	// ivec3, bvec3
+	    GLint i4[4];	// ivec4, bvec4
+	} _data;
 
     private:
+        Uniform();	// disallowed
 	Uniform& operator=(const Uniform&);	// disallowed
 };
 

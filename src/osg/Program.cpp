@@ -13,15 +13,8 @@
 */
 
 /* file:	src/osg/Program.cpp
- * author:	Mike Weiblen 2005-03-23
+ * author:	Mike Weiblen 2005-03-30
 */
-
-// NOTICE: This code is CLOSED during construction and/or renovation!
-// It is in active development, so DO NOT yet use in application code.
-// This notice will be removed when the code is open for business.
-// For development plan and status see:
-// http://www.openscenegraph.org/index.php?page=Community.DevelopmentWork
-
 
 #include <fstream>
 #include <list>
@@ -35,11 +28,13 @@
 #include <osg/Shader>
 #include <osg/Uniform>
 #include <osg/GLExtensions>
+#include <osg/GLU>
 
 #include <OpenThreads/ScopedLock>
 #include <OpenThreads/Mutex>
 
 using namespace osg;
+
 
 ///////////////////////////////////////////////////////////////////////////
 // Extension function pointers for OpenGL v2.0
@@ -286,16 +281,12 @@ void GL2Extensions::setupGL2Extensions()
     if( isGlslSupported() )
     {
 	// If glGetString raises an error, assume initial release "1.00"
-	glGetError();	// reset error flag
+	while(glGetError() != GL_NO_ERROR) {}	// reset error flag
 	const char* langVerStr = (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
-	const GLenum errorNum = glGetError();
-	if( (errorNum != GL_NO_ERROR) || (langVerStr == 0) )
-	{
-	    langVerStr = "1.00 (default)";
-	}
-        osg::notify(osg::INFO) << "GL_SHADING_LANGUAGE_VERSION: \"" << langVerStr << "\"" << std::endl;
-
-	_glslLanguageVersion = atof( langVerStr );
+	if( (glGetError() == GL_NO_ERROR) && langVerStr )
+	    _glslLanguageVersion = atof( langVerStr );
+	else
+	    _glslLanguageVersion = 1.0f;
     }
 
     osg::notify(osg::INFO)
@@ -1787,14 +1778,14 @@ void GL2Extensions::glVertexAttribPointer(GLuint index, GLint size, GLenum type,
 
 
 ///////////////////////////////////////////////////////////////////////////
-// convenience methods
+// C++-friendly convenience methods
 
 GLuint GL2Extensions::getCurrentProgram() const
 {
     if( _glVersion >= 2.0f )
     {
 	// GLSL as GL v2.0 core functionality
-	GLint result;
+	GLint result = 0;
 	glGetIntegerv( GL_CURRENT_PROGRAM, &result );
 	return static_cast<GLuint>(result);
     }
@@ -1817,8 +1808,8 @@ GLuint GL2Extensions::getCurrentProgram() const
 
 bool GL2Extensions::getProgramInfoLog( GLuint program, std::string& result ) const
 {
-    GLint bufLen = 0;	// length of buffer to allocate
-    GLint strLen = 0;	// strlen GL actually wrote to buffer
+    GLsizei bufLen = 0;	// length of buffer to allocate
+    GLsizei strLen = 0;	// strlen GL actually wrote to buffer
 
     glGetProgramiv( program, GL_INFO_LOG_LENGTH, &bufLen );
     if( bufLen > 1 )
@@ -1834,8 +1825,8 @@ bool GL2Extensions::getProgramInfoLog( GLuint program, std::string& result ) con
 
 bool GL2Extensions::getShaderInfoLog( GLuint shader, std::string& result ) const
 {
-    GLint bufLen = 0;	// length of buffer to allocate
-    GLint strLen = 0;	// strlen GL actually wrote to buffer
+    GLsizei bufLen = 0;	// length of buffer to allocate
+    GLsizei strLen = 0;	// strlen GL actually wrote to buffer
 
     glGetShaderiv( shader, GL_INFO_LOG_LENGTH, &bufLen );
     if( bufLen > 1 )
@@ -1847,6 +1838,27 @@ bool GL2Extensions::getShaderInfoLog( GLuint shader, std::string& result ) const
     }
     return (strLen > 0);
 }
+
+
+bool GL2Extensions::getAttribLocation( const char* attribName, GLuint& location ) const
+{
+    // is there an active GLSL program?
+    GLuint program = getCurrentProgram();
+    if( glIsProgram(program) == GL_FALSE ) return false;
+
+    // has that program been successfully linked?
+    GLint linked = GL_FALSE;
+    glGetProgramiv( program, GL_LINK_STATUS, &linked );
+    if( linked == GL_FALSE ) return false;
+
+    // is there such a named attribute?
+    GLint loc = glGetAttribLocation( program, attribName );
+    if( loc < 0 ) return false;
+
+    location = loc;
+    return true;
+}
+
 
 ///////////////////////////////////////////////////////////////////////////
 // static cache of glPrograms flagged for deletion, which will actually
@@ -1909,7 +1921,6 @@ void Program::flushDeletedGlPrograms(unsigned int contextID,double /*currentTime
 
 Program::Program()
 {
-    _avoidRedundantUniformSetting = true;
 }
 
 
@@ -1951,9 +1962,6 @@ int Program::compare(const osg::StateAttribute& sa) const
         int result = (*litr)->compare(*(*ritr));
         if (result!=0) return result;
     }
-
-    // TODO should Program comparison depend on the values of
-    // its uniforms?  I'd assert not.
 
     return 0; // passed all the above comparison macro's, must be equal.
 }
@@ -2024,7 +2032,7 @@ bool Program::removeShader( Shader* shader )
 
 void Program::bindAttribLocation( GLuint index, const char* name )
 {
-    // TODO add to binding list
+    _attribBindingList[name] = index;
     dirtyProgram();
 }
 
@@ -2091,11 +2099,64 @@ void Program::getGlProgramInfoLog(unsigned int contextID, std::string& log) cons
 // osg::Program::ActiveUniform
 ///////////////////////////////////////////////////////////////////////////
 
-Program::ActiveUniform::ActiveUniform( const GLchar* name, GLenum type ) :
-    _value( name, static_cast< Uniform::Value::Type >(type) )
+Program::ActiveUniform::ActiveUniform( const char* name, GLenum type, GLint loc ) :
+	Uniform(name, static_cast<Type>(type)), _location(loc)
 {
 }
 
+void Program::ActiveUniform::applyData( const GL2Extensions* ext, GLuint prog )
+{
+    switch( repType(getType()) )
+    {
+	case FLOAT:
+	    ext->glUniform1f( _location, _data.f1 );
+	    break;
+
+	case FLOAT_VEC2:
+	    ext->glUniform2fv( _location, 1, _data.f2 );
+	    break;
+
+	case FLOAT_VEC3:
+	    ext->glUniform3fv( _location, 1, _data.f3 );
+	    break;
+
+	case FLOAT_VEC4:
+	    ext->glUniform4fv( _location, 1, _data.f4 );
+	    break;
+
+	case FLOAT_MAT2:
+	    ext->glUniformMatrix2fv( _location, 1, GL_FALSE, _data.f4 );
+	    break;
+
+	case FLOAT_MAT3:
+	    ext->glUniformMatrix3fv( _location, 1, GL_FALSE, _data.f9 );
+	    break;
+
+	case FLOAT_MAT4:
+	    ext->glUniformMatrix4fv( _location, 1, GL_FALSE, _data.f16 );
+	    break;
+
+	case INT:
+	    ext->glUniform1i( _location, _data.i1 );
+	    break;
+
+	case INT_VEC2:
+	    ext->glUniform2iv( _location, 1, _data.i2 );
+	    break;
+
+	case INT_VEC3:
+	    ext->glUniform3iv( _location, 1, _data.i3 );
+	    break;
+
+	case INT_VEC4:
+	    ext->glUniform4iv( _location, 1, _data.i4 );
+	    break;
+
+	default:
+	    osg::notify(osg::FATAL) << "how got here?" << std::endl;
+	    break;
+    }
+}
 
 ///////////////////////////////////////////////////////////////////////////
 // osg::Program::PerContextProgram
@@ -2130,15 +2191,20 @@ void Program::PerContextProgram::linkProgram()
     if( ! _needsLink ) return;
     _needsLink = false;
 
-    // TODO for( each itr in binding list )
-    // {
-    //     _extensions->glBindAttribLocation( _glProgramHandle, index, name );
-    // }
+    _activeUniformList.clear();
 
-    GLint linked;
+    // set any explicit vertex attribute bindings
+    const AttribBindingList& bindlist = _program->getAttribBindingList();
+    for( AttribBindingList::const_iterator itr = bindlist.begin();
+        itr != bindlist.end(); ++itr )
+    {
+	_extensions->glBindAttribLocation( _glProgramHandle, itr->second, itr->first.c_str() );
+    }
+
+    // link the glProgram
+    GLint linked = GL_FALSE;
     _extensions->glLinkProgram( _glProgramHandle );
     _extensions->glGetProgramiv( _glProgramHandle, GL_LINK_STATUS, &linked );
-
     _isLinked = (linked == GL_TRUE);
     if( ! _isLinked )
     {
@@ -2146,6 +2212,32 @@ void Program::PerContextProgram::linkProgram()
 	std::string infoLog;
 	getInfoLog( infoLog );
 	osg::notify(osg::WARN) << "glLinkProgram FAILED:\n" << infoLog << std::endl;
+	return;
+    }
+
+    // build ActiveUniformList
+    GLint numUniforms = 0;
+    GLsizei maxLen = 0;
+    _extensions->glGetProgramiv( _glProgramHandle, GL_ACTIVE_UNIFORMS, &numUniforms );
+    _extensions->glGetProgramiv( _glProgramHandle, GL_ACTIVE_UNIFORM_MAX_LENGTH, &maxLen );
+    if( (numUniforms > 0) && (maxLen > 1) )
+    {
+	GLint size = 0;
+	GLenum type = 0;
+	GLchar* name = new GLchar[maxLen];
+
+	for( GLint i = 0; i < numUniforms; ++i )
+	{
+	    _extensions->glGetActiveUniform( _glProgramHandle,
+		    i, maxLen, 0, &size, &type, name );
+	    GLint loc = getUniformLocation( name );
+
+	    if( loc != -1 )
+	    {
+		_activeUniformList.push_back( new ActiveUniform( name, type, loc ) );
+	    }
+	}
+	delete [] name;
     }
 }
 
@@ -2159,23 +2251,36 @@ void Program::PerContextProgram::useProgram() const
     _extensions->glUseProgram( _glProgramHandle  );
 }
 
-
-void Program::PerContextProgram::applyUniforms( osg::State& /*state*/ ) const
+GLint Program::PerContextProgram::getUniformLocation( const char* name ) const
 {
-    bool uniformDoesNeedSetting = true;
+    return _extensions->glGetUniformLocation( _glProgramHandle, name );
+}
 
-    if( _program->getAvoidRedundantUniformSetting() )
-    {
-	// TODO - calling glUniform*() can be expensive.
-	// so this will query osg::Program state to determine if
-	// the uniform already has the requested value, and if so,
-	// will set uniformNeedsSetting=false to prevent redundant
-	// re-setting of the uniform.
-    }
+GLint Program::PerContextProgram::getAttribLocation( const char* name ) const
+{
+    return _extensions->glGetAttribLocation( _glProgramHandle, name );
+}
 
-    if( uniformDoesNeedSetting )
+
+void Program::PerContextProgram::applyUniforms( osg::State& state ) const
+{
+    for( ActiveUniformList::const_iterator itr = _activeUniformList.begin();
+        itr != _activeUniformList.end(); ++itr )
     {
-	// TODO set the uniform value on the currently active glProgram.
+	ActiveUniform* au = const_cast<ActiveUniform*>( itr->get() );
+
+	// use name of active uniform to find a value uniform
+	const osg::Uniform* vu = state.findUniform( au->getName() );
+	if( ! vu ) continue;
+
+	// skip if types are not identical
+	if( au->getType() != vu->getType() ) continue;
+
+	// skip if values are already identical
+	if( au->compareData( *vu ) == 0 ) continue;
+
+	au->copyData( *vu );
+	au->applyData( _extensions.get(), _glProgramHandle );
     }
 }
 

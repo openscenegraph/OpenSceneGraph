@@ -263,7 +263,8 @@ void Drawable::setUseDisplayList(bool flag)
 
 void Drawable::dirtyDisplayList()
 {
-    for(unsigned int i=0;i<_globjList.size();++i)
+    unsigned int i;
+    for(i=0;i<_globjList.size();++i)
     {
         if (_globjList[i] != 0)
         {
@@ -272,7 +273,7 @@ void Drawable::dirtyDisplayList()
         }
     }
 
-    for(unsigned int i=0;i<_vboList.size();++i)
+    for(i=0;i<_vboList.size();++i)
     {
         if (_vboList[i] != 0)
         {

@@ -41,5 +41,12 @@ void osgParticle::FluidFrictionOperator::operate(Particle *P, double dt)
         Fr = current_program_->rotateLocalToWorld(Fr);
     }
 
-    P->addVelocity(Fr * (P->getMassInv() * dt));
+	// correct unwanted velocity increments
+	osg::Vec3 dv = Fr * (P->getMassInv() * 0.01);
+	float dvl = dv.length();
+	if (dvl > vm) {
+		dv *= vm / dvl;
+	}
+
+    P->addVelocity(dv);
 }

@@ -1,295 +1,277 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
 <html>
 <head>
-  <title>introduction to the OpenSceneGraph</title>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.77 [en] (X11; U; Linux 2.4.3-20mdk i686) [Netscape]">
+   <title>introduction to the OpenSceneGraph</title>
 </head>
-<body bgcolor="white">
-
-<img src="images/OpenSceneGraphBanner_Distribution.jpg" width=640 height=77 border=0>
-
+<body bgcolor="#FFFFFF">
+<img SRC="OpenSceneGraphBanner_Distribution.jpg" BORDER=0 height=77 width=640>
 <table>
-  <tr>
-    <td><a href="index.html">Index</a>  </td>
-    <td><a href="introduction.html">Introduction</a>  </td>
-    <td><a href="contents.html">Contents</a>  </td>
-    <td><a href="install.html">Install</a>  </td>
-    <td><a href="dependencies.html">Dependencies</a>  </td>
-    <td><a href="demos.html">Demos</a>  </td>
-    <td><a href="data.html">Data</a>  </td>
-    <td><a href="sgv.html">Viewer</a>  </td>
-    <td><a href="stereo.html">Stereo</a>  </td>
-    <td><a href="documentation.html">Reference Guides</a>  </td>
-  </tr>
+<tr>
+<td><a href="index.html">Index</a></td>
+
+<td><a href="introduction.html">Introduction</a></td>
+
+<td><a href="contents.html">Contents</a></td>
+
+<td><a href="install.html">Install</a></td>
+
+<td><a href="dependencies.html">Dependencies</a></td>
+
+<td><a href="demos.html">Demos</a></td>
+
+<td><a href="data.html">Data</a></td>
+
+<td><a href="sgv.html">Viewer</a></td>
+
+<td><a href="stereo.html">Stereo</a></td>
+
+<td><a href="documentation.html">Reference Guides</a></td>
+</tr>
 </table>
 
-<h2><u>Introduction to the OpenSceneGraph</u></h2>
-
-<p>Welcome to OpenSceneGraph project!
-</p>
-<p>The OpenSceneGraph is an Open Source (LGPL), Cross Platform (Widows, Linux, Mac OSX, FreeBSD, Irix, Solaris),
-Standard C++ and OpenGL based graphics development library, uses range from visual simulation, games,
-virtual reality, sceintific visualization and graphics research. This pages introduces
-what scene graphs are, why graphics developers use them, and details about the OpenSceneGraph,
-project, how to learn how to use it and contribute to the OpenSceneGraph community.
-</p>
-
-<p>
-<i>Robert Osfield,
-Project Lead.
-April 2002.</i>
-</p>
-
+<h2>
+<u>Introduction to the OpenSceneGraph</u></h2>
+Welcome to OpenSceneGraph project!
+<p>The OpenSceneGraph is an Open Source (LGPL), Cross Platform (Widows,
+Linux, Mac OSX, FreeBSD, Irix, Solaris), Standard C++ and OpenGL based
+graphics development library, uses range from visual simulation, games,
+virtual reality, scientific visualization and graphics research. This pages
+introduces what scene graphs are, why graphics developers use them, and
+details about the OpenSceneGraph, project, how to learn how to use it and
+contribute to the OpenSceneGraph community.
+<p><i>Robert Osfield, Project Lead. April 2002.</i>
+<br>
 <hr>
-
-<h3><u>What is a Scene Graph?</u></h3>
-<p>Its a tree! Quite simply one the best and most reusable data structures invented.Typically drawn schematically as
-root at the top, leaves at the bottom. It all starts with a topmost root node which
-encompasses your whole virtual world, be it 2D or 3D. The world is then broken down
-into hierachy of nodes representing either a spatial grouping of objects,
-setting the position of objects, animating objects,. or define a logical relationship between objects such as to manage
-the various states of a traffic light.The leaves of the graph represent the phyical objects
-themselves, the drawable geometry and their material properties.
-</p>
-
-<p>A scene graph isn't a complete game or simulation engine, although may be one of the main
-components of such an engine, it's primary focus is representing your 3d worlds, and rendering it efficiently.  Physics models, collision detection and audio are left to other development libraries that a user will
-integrate with.. The fact that scene graphs don't typically integrate all these features
-is actually a really good thing, it aids interoprability with clients own applications
-and tools they wish to use and allows them to serve many varied markets from games, visual
-simulation, virtual reality, scientific and commerical visulasation, training thruogh to modelling
-programs.
-</p>
-
+<h3>
+<u>What is a Scene Graph?</u></h3>
+Its a tree! Quite simply one the best and most reusable data structures
+invented. Typically drawn schematically as root at the top, leaves at the
+bottom. It all starts with a topmost root node which encompasses your whole
+virtual world, be it 2D or 3D. The world is then broken down into hierarchy
+of nodes representing either a spatial grouping of objects, setting the
+position of objects, animating objects,. or define a logical relationship
+between objects such as to manage the various states of a traffic light.
+The leaves of the graph represent the physical objects themselves, the
+drawable geometry and their material properties.
+<p>A scene graph isn't a complete game or simulation engine, although may
+be one of the main components of such an engine, it's primary focus is
+representing your 3d worlds, and rendering it efficiently. Physics models,
+collision detection and audio are left to other development libraries that
+a user will integrate with.. The fact that scene graphs don't typically
+integrate all these features is actually a really good thing, it aids interoprability
+with clients own applications and tools they wish to use and allows them
+to serve many varied markets from games, visual simulation, virtual reality,
+scientific and commercial visualization, training through to modeling programs.
+<br>
 <hr>
-
-<h3><u>Why use a Scene Graph - Performance, Productivity, Portability and Scalability</u>.</h3>
+<h3>
+<u>Why use a Scene Graph - Performance, Productivity, Portability and Scalability</u>.</h3>
 
 <ol>
-<li>
-<p><i>Performance</i> - scene graphs provide an excellent framework for maximize graphics
-performance. A good scene graph employs two key techinques - culling of the objects that won't
-be seen on screen, and state sorting of properties such as textures and materials
-so that all similar objects are drawn together. Without culling the CPU, buses and
-GPU will all become swamped by many times the amount of data tham they acual require.to represent
-you work accurately. The hierachical structure of the scene graph makes this culling
-process.very efficient.with whole town being culled with just a few operations! Without state storting, the the buses and GPU will thrash between
-states, stalling the graphics and destroying graphisc throughout.  As GPU's get faster and faster, the cost of
-stalling the graphics is also going up, so scene graph are become ever more important.
-</p>
-</li>
-<li>
-<p><i>Productivity</i> - scene graphs take much of the hardwork required to develop
-high perftomance graphics applications. The scene graphs manage all the graphics for you,
-reducing what would be thousands of lines of OpenGL down to a few simple calls..Furthermoe,
-one of most powerfukl concepts in Object Orientated programming is that of object
-compotsition, enshrined in <i>Composite Design Pattern</i>, which fits the scene graph
-tree strucutre perfectly which makes it highly flexible and reusable design - in real terms
-this means that it can be easily adapted it to solve your problems. Scene graph also often come
-additional utilitie libraries which range for helping users set up and manage graphics
-windows to import of 3d modes and images.  All this together allows the user to achieve
-a great deal with very little coding. A dozen lines of code can be enough to load your data
+<li><p>
+<i>Performance</i> - scene graphs provide an excellent framework for
+maximize graphics performance. A good scene graph employs two key techniques
+- culling of the objects that won't be seen on screen, and state sorting
+of properties such as textures and materials so that all similar objects
+are drawn together. Without culling the CPU, buses and GPU will all become
+swamped by many times the amount of data than they actually require to
+represent you work accurately. The hierarchical structure of the scene
+graph makes this culling process very efficient with whole town being culled
+with just a few operations! Without state sorting, the the buses and GPU
+will thrash between states, stalling the graphics and destroying graphics
+throughout. As GPU's get faster and faster, the cost of stalling the graphics
+is also going up, so scene graph are become ever more important.
+</p></li>
+<li><p>
+<i>Productivity</i> - scene graphs take much of the hard work required
+to develop high performance graphics applications. The scene graphs manage
+all the graphics for you, reducing what would be thousands of lines of
+OpenGL down to a few simple calls. Furthermoe, one of most powerful concepts
+in Object Orientated programming is that of object composition, enshrined
+in <i>Composite Design Pattern</i>, which fits the scene graph tree structure
+perfectly which makes it highly flexible and reusable design - in real
+terms this means that it can be easily adapted it to solve your problems.
+Scene graph also often come additional utility libraries which range for
+helping users set up and manage graphics windows to import of 3d modes
+and images. All this together allows the user to achieve a great deal with
+very little coding. A dozen lines of code can be enough to load your data
 and create an interactive viewer!
-</p>
-</li>
-
-<li>
-<p>
-<i>Portability</i> - scene graphs encapsulate much of the lower level tasks of rendering
-graphics and reading and writing data, reducing or even eradicating the platform specific
-coding that you require in your own application. If the underlying scene graph is portable
-then moving from platform to platform can be a simple as recompiling your source code.
-</p>
-</li>
-
-<li>
-</p>
-<i>Scalability</i> - along with being able to dynamic manage the complexity of scenes
-automatically to account for differences in graphics performance across a range of machines,
-scene graphs also make it much easier to manage complex hardware configurations, such as clusters
-of graphics machines, or multiprocessor/multipipe systems such as SGI's Onyx. A good scene graph
-will allow the developer to concentrate on developing their own application while the rendering
-framework of the scene graph handles the differnt underlying hardware configurations.
-</p>
-</li>
+</p></li>
+<li><p>
+<i>Portability</i> - scene graphs encapsulate much of the lower level
+tasks of rendering graphics and reading and writing data, reducing or even
+eradicating the platform specific coding that you require in your own application.
+If the underlying scene graph is portable then moving from platform to
+platform can be a simple as recompiling your source code.
+</p></li>
+<li><p>
+<i>Scalability</i> - along with being able to dynamic manage the complexity
+of scenes automatically to account for differences in graphics performance
+across a range of machines, scene graphs also make it much easier to manage
+complex hardware configurations, such as clusters of graphics machines,
+or multiprocessor/multipipe systems such as SGI's Onyx. A good scene graph
+will allow the developer to concentrate on developing their own application
+while the rendering framework of the scene graph handles the different
+underlying hardware configurations.
+</p></li>
 </ol>
 
 <hr>
-
-<h3><u>So what about the OpenSceneGraph project?</u></h3>
-
-<p>
-The OpenSceneGraph is an Open Source Scene Graph, and our goal is make the benifits
-of scene gaph technology available to all. Our scene gaph is still in development,
-but has already gained a great deal of respect amoungst the development community
-for its high performance, cleaness of design and portability. Written entitely in
-Standard C++ and OpenGL, it makes full use of STL and Design Patterns, and leverages
-the open source development model to provide a development library that is legacy
-free and well focused on the solving the task.  The OpenSceneGraph delivers on
-the four key benifits of scene graph techonolgy outlined above using the following
-features:
-</p>
-
+<h3>
+<u>So what about the OpenSceneGraph project?</u></h3>
+The OpenSceneGraph is an Open Source Scene Graph, and our goal is make
+the benefits of scene graph technology available to all. Our scene graph
+is still in development, but has already gained a great deal of respect
+amongst the development community for its high performance, cleanness of
+design and portability. Written entirely in Standard C++ and OpenGL, it
+makes full use of STL and Design Patterns, and leverages the open source
+development model to provide a development library that is legacy free
+and well focused on the solving the task. The OpenSceneGraph delivers on
+the four key benefits of scene graph technology outlined above using the
+following features:
 <ol>
-<li>
-<p><i>Performance</i> - supports view frustum culling, small feature culling,
-Leval Of Details (LOD') nodes, state sorting, vertex arrays and display list
-as part of the core scene graph, these together make the OpenSceneGraph one
-highest performance scene graph available.  User feedback is that performance
-surpasses much more established scene graphs such as Performer, VTee,
-Vega Scene Graph and Jave3D! The OpenSceneGraph also supports easy customization
-of the drawing process, which has allowed implemention of Continous Level of
-Detail (CLOD) meshes ontop the scene graph, these allow the visualisation of
-massive terrain databases interactively, examples of this approach can be
-found at both Vterrain.org and TerrainEngine.com which both integrate with the
-OpenSceneGraph.
-</p>
-</li>
-</li>
-<li>
-<p><i>Productivity</i> - by combining lessons learned from established scene graph like
-Performer and Open Inventor, with modern software engineering
+<li><p>
+<i>Performance</i> - supports view frustum culling, small feature culling,
+Level Of Details (LOD') nodes, state sorting, vertex arrays and display
+list as part of the core scene graph, these together make the OpenSceneGraph
+one highest performance scene graph available. User feedback is that performance
+surpasses much more established scene graphs such as Performer, VTee, Vega
+Scene Graph and Jave3D! The OpenSceneGraph also supports easy customization
+of the drawing process, which has allowed implementation of Continuos Level
+of Detail (CLOD) meshes on top the scene graph, these allow the visualization
+of massive terrain databases interactively, examples of this approach can
+be found at both Vterrain.org and TerrainEngine.com which both integrate
+with the OpenSceneGraph.
+</p></li>
+<li><p>
+<i>Productivity</i> - by combining lessons learned from established
+scene graph like Performer and Open Inventor, with modern software engineering
 methodologies like Design Patterns and a great deal of feedback early on
-in the development cycle, it has been possible to design a design that clean
-and highly interporable.  This has made it easy for user to adopt to the
-OpenSceneGraph and to integrate with their own applications. With a full
-feature set in the core scene graph, utilities to set up the scene graph and
-viewers and a wide range of loaders it is possible to create an application
-and bring in user data with a very small amount of code.
-</p>
-</li>
-
-<li>
-<p>
-<i>Portability</i> - The core scene graph has also been designed to be have minimal
-platform speciific dependancy, requiring little more than Standard C++ and OpenGL.
-The has allowed the scene graph to be rapidly ported on wide range of platforms -
-originally developed on IRIX, then ported to Linux, then to Windows, then FreeBSD, then Mac OSX
-and most recently Solaris! Being completely windowing system independant makes it easy
-for users to add their own window specific libraries and applications on top.
-In the distribution there is aleady the osgGLUT library, and in the Bazaar found
-at openscenegrph.org/download/ once can find examples of how applications written
-ontop Qt, MFC, WxWindows and SDL.  Users have also integrated it with Motif, and X.
-</p>
-</p>
-</li>
-
-<li>
-</p>
-<i>Scalability</i> - the scene graph not only runs from portables all the way up
-to Onyx Infinite Reality Monsters, it supports the multiple graphics subsystems
-found on machines like the a mulitpipe Onyx. This is possible since the core scene
-graph supports multiple graphics context for both OpenGL DisplayLists and texture objects,
-and the cull and draw traversals have been designed to cache rendering data locally and
-use the scene gaph almost entirely as a read only operation.  This allows multiple
-cull-draw pairs to run on multiple CPU's which are bound to multiple graphics subsystems.
-This has been demonstrated using the OpenSceneGraph in conjunction with sgi's OpenGL
-multipipe SDK. We also have osgMP in development which will be cross platform and
-transparently support multiple multipipe systems like th Onyx and gaphics clusters.
-</p>
-</li>
+in the development cycle, it has been possible to design a design that
+clean and highly interpretable. This has made it easy for user to adopt
+to the OpenSceneGraph and to integrate with their own applications. With
+a full feature set in the core scene graph, utilities to set up the scene
+graph and viewers and a wide range of loaders it is possible to create
+an application and bring in user data with a very small amount of code.
+</p></li>
+<li><p>
+<i>Portability</i> - The core scene graph has also been designed to
+be have minimal platform specific dependency, requiring little more than
+Standard C++ and OpenGL. The has allowed the scene graph to be rapidly
+ported on wide range of platforms -
+originally developed on IRIX, then
+ported to Linux, then to Windows, then FreeBSD, then Mac OSX and most recently
+Solaris! Being completely windowing system independent makes it easy for
+users to add their own window specific libraries and applications on top.
+In the distribution there is already the osgGLUT library, and in the Bazaar
+found at openscenegrph.org/download/ once can find examples of how applications
+written on top Qt, MFC, WxWindows and SDL. Users have also integrated it
+with Motif, and X.
+</p></li>
+<li><p>
+<i>Scalability</i> - the scene graph not only runs from portables all the
+way up to Onyx Infinite Reality Monsters, it supports the multiple graphics
+subsystems found on machines like the a mulitpipe Onyx. This is possible
+since the core scene graph supports multiple graphics context for both
+OpenGL DisplayLists and texture objects, and the cull and draw traversals
+have been designed to cache rendering data locally and use the scene gaph
+almost entirely as a read only operation. This allows multiple cull-draw
+pairs to run on multiple CPU's which are bound to multiple graphics subsystems.
+This has been demonstrated using the OpenSceneGraph in conjunction with
+sgi's OpenGL multipipe SDK. We also have osgMP in development which will
+be cross platform and transparently support multiple multipipe systems
+like the Onyx and graphics clusters
+</p></li>
 </ol>
-
-
-<p>
-All the source to is published under the GNU Library General Public License (LGPL)
-which allows both open source and closed source projects to use, modify and
-distribute it freely as long its usage complies with the LGPL. The project has been
-developed over the last four years, initliated by Don Burns, and then taken over
-by Robert Osfield who continues to lead project today, there are many other
-contributors to the library, for a full list check out the AUTHORS file. Both Robert
-and Don now work on the OpenSceneGraph in a professional capaciity providing consultancy
-and bespoke developments ontop the library, and are also colloborating on the book.Work on
-the core scene graph and support of public mailing list remains unpaid as are the
-contributions of the rest of the communinity, but this hasn't impacted the quality of the
-source or support which once you get stuck in you grow to appreciate.
-</p>
-
-<p>
-The project is current in alpha, which means parts of the API are still to be
-developerd, or subjec to change, but the vast majority of the scene graph is there, and a beta will
-be published within the next few months, wiht a 1.0 release in late summer. Despite the
-alpha development status, the project has alrady earned the reputation the leading
-open source scene graph, and is establishing itself a vialbe alternative to the commericial
-scene graphs. Numerous companies, university researchers and graphics enthusasts have
-already adopted their projects, and are from all over the world.
-</p>
-
+All the source to is published under the GNU Library General Public License
+(LGPL) which allows both open source and closed source projects to use,
+modify and distribute it freely as long its usage complies with the LGPL.
+The project has been developed over the last four years, initiated by Don
+Burns, and then taken over by Robert Osfield who continues to lead project
+today, there are many other contributors to the library, for a full list
+check out the AUTHORS file. Both Robert and Don now work on the OpenSceneGraph
+in a professional capacity providing consultancy and bespoke developments
+on top the library, and are also collaborating on the book. Work on the
+core scene graph and support of public mailing list remains unpaid as are
+the contributions of the rest of the community, but this hasn't impacted
+the quality of the source or support which once you get stuck in you grow
+to appreciate.
+<p>The project is current in alpha, which means parts of the API are still
+to be developed, or subject to change, but the vast majority of the scene
+graph is there, and a beta will be published within the next few months,
+with a 1.0 release in late summer. Despite the alpha development status,
+the project has already earned the reputation the leading open source scene
+graph, and is establishing itself a viable alternative to the commercial
+scene graphs. Numerous companies, university researchers and graphics enthusiasts
+have already adopted their projects, and are from all over the world.
+<br>
 <hr>
-
-<h3><u>Getting started</u></h3>
-
-<p>
-The first thing is to select the distribution which suits you, there are binary, development and
-source code distributions, these can be loaded from the
-<a href="http://www.openscenegraph.org/download">http://www.openscenegraph.org/download</a> page.
-The latest developments area available as via a nightly tarball or via cvs.
-</p>
-
-<p>
-The binary distribution contains just the libraries (.dll's /.so's) and demo executables.
-This is suitable for using the OpenSceneGraph with an application that has already been compiled
-but depends at runtime on the OpenSceneGraph.
-</p>
-
-<p>
-The development distribution contains the libraries (.dll's /.so's), demo executabls, include files, and source to
-the demos. This is suitable for using the developers using the OpenSceneGraph.
-</p>
-
-<p>
-The source distribution contains the all the source and include files required to build the OpenSceneGraph from
-sratch, and is ideal if you want to learn more about how the scene gaph works, how to extend it, and to track
-down and fix any problems that you come across.
-</p>
-
-<p>
-If you are using a source disitribution then read the <a href="install.html">installation</a> instructions
-for how to get the OpenSceneGraph compiling and installed on your system.  You may also need to download
-libraries that parts of the OpenSceneGraph is dependant upon such as glut, check the
-<a href="dependencies.html">dependencies</a> list for futher details.
-</p>
-
-
+<h3>
+<u>Getting started</u></h3>
+The first thing is to select the distribution which suits you, there are
+binary, development and source code distributions, these can be loaded
+from the
+<a href="http://www.openscenegraph.org/download">http://www.openscenegraph.org/download</a>
+page. The latest developments area available as via a nightly tarball or
+via cvs.
+<p>The binary distribution contains just the libraries (.dll's /.so's)
+and demo executables. This is suitable for using the OpenSceneGraph with
+an application that has already been compiled but depends at runtime on
+the OpenSceneGraph.
+<p>The development distribution contains the libraries (.dll's /.so's),
+demo executables, include files, and source to the demos. This is suitable
+for using the developers using the OpenSceneGraph.
+<p>The source distribution contains the all the source and include files
+required to build the OpenSceneGraph from scratch, and is ideal if you
+want to learn more about how the scene graph works, how to extend it, and
+to track down and fix any problems that you come across.
+<p>If you are using a source distribution then read the <a href="install.html">installation</a>
+instructions for how to get the OpenSceneGraph compiling and installed
+on your system. You may also need to download libraries that parts of the
+OpenSceneGraph is dependent upon such as glut, check the
+<a href="dependencies.html">dependencies</a>
+list for further details.
+<br>
 <hr>
-
-<h3><u>How to learn to use the OpenSceneGraph</u></h3>
-
-<p>
-The OpenSceneGraph distribution comes with a reference guide for each of the componet libraries - osg, osgDB,
-osgUtil, osgText and osgGLUT, a set of demos - the source of which can be found in src/Demos/.For questions
-or help which can't be easily be answered by the reference guide and demo source, one should join the openscene
-gaph mailing list (details below).There is also the beginings of <a href="http://www.c2.com/cgi/wiki?OpenSceneGraphFaq">Wiki based FAQ</a>
-which may help answer a few of the common querries.
-
-
-<p>A programming guide will be avaialbe in form of a OpenSceneGraph book which is being
-written by Don Burns and Robert Osfield, parts of it will be available.online.
-</p>
-
-<p>
-Although not directly releated to the OpenSceneGraph, once can learn about scene graph technolgy from
-such sources as the <a href="http://www.sgi.com/software/inventor/manuals.html">Open Inventor Mentor</a>, and <a href="http://www.cineca.it/manuali/Performer/ProgGuide24/html"> Performer Programming Guides</a>.
-The later is the closest in design concepts to the OpenSceneGraph, although Performer manuals is in C alas.
-</p>
-
-<p>
-The OpenSceneGraph uses OpenGL and does with a deliberately thin layer, making it easy to control the underlying
-OpenGL and to extend it with OpenGL extensions.  The close tie with OpenGL is also reflected in the nameing
-of many of the OpenGL state related classes, the the parameters that they encapsulate and means that knowledge
-of OpenGL itself will go a long way to understanding how to get the best out of the OpenSceneGraph.  To this
-end it is worth obtaining a copy of the OpenGL programming guide - <a href="http://fly.cc.fer.hr/~unreal/theredbook/">`Red Book`</a>
-and OpenGL reference guide 'Blue Book'.  The main <a href="http://www.opengl.org">OpenGL website</a> is also a good source of links and further information.
-</p>
+<h3>
+<u>How to learn to use the OpenSceneGraph</u></h3>
+The OpenSceneGraph distribution comes with a reference guide for each of
+the component libraries - osg, osgDB, osgUtil, osgText and osgGLUT, a set
+of demos - the source of which can be found in src/Demos/. For questions
+or help which can't be easily be answered by the reference guide and demo
+source, one should join the mailing list (details below). There is also
+the beginnings of <a href="http://www.c2.com/cgi/wiki?OpenSceneGraphFaq">Wiki
+based FAQ</a> which may help answer a few of the common queries.
+<p>A programming guide will be available in form of a OpenSceneGraph book
+which is being written by Don Burns and Robert Osfield, parts of it will
+be available online.
+<p>Although not directly related to the OpenSceneGraph, once can learn
+about scene graph technology from such sources as the <a href="http://www.sgi.com/software/inventor/manuals.html">Open
+Inventor Mentor</a>, and <a href="http://www.cineca.it/manuali/Performer/ProgGuide24/html">Performer
+Programming Guides</a>. The later is the closest in design concepts to
+the OpenSceneGraph, although Performer manuals is in C alas. Also of use
+as a background to some of the techniques used is a SIGGRAPH <a href="http://www.opengl.org/developers/code/sig99/advanced99/course_slides/vissim/index.htm">Vis-Sim
+course</a>.
+<p>The OpenSceneGraph uses OpenGL and does with a deliberately thin layer,
+making it easy to control the underlying OpenGL and to extend it with OpenGL
+extensions. The close tie with OpenGL is also reflected in the naming of
+many of the OpenGL state related classes, the the parameters that they
+encapsulate and means that knowledge of OpenGL itself will go a long way
+to understanding how to get the best out of the OpenSceneGraph. To this
+end it is worth obtaining a copy of the OpenGL programming guide - <a href="http://fly.cc.fer.hr/~unreal/theredbook/">`Red
+Book`</a> and OpenGL reference guide 'Blue Book'. The main <a href="http://www.opengl.org">OpenGL
+website</a> is also a good source of links and further information.
+<br>
 <hr>
-
-<h3><u>Support and discussion - the <i>openscenegraph-news</i> mailing list</u></h3>
-<p>
-For scene graph related questions, bug reports, bug fixes, and general design and development discussion one should
-join the <a href="http://lists.sourceforge.net/mailman/listinfo/openscenegraph-news">openscenegraph-news</a> mailing list,
-and check the the mailing list <a href="http://www.geocrawler.com/redir-sf.php3?list=openscenegraph-news">archives</a>.
-</p>
-<p>
-Professional support is also available in the form of confidential online, phone and onsite support and
-consultancy, for details contact Robert Osfield at <a href="mailto:robert@openscenegraph.com">robert@openscenegraph.com</a>.</p>
+<h3>
+<u>Support and discussion - the <i>openscenegraph-news</i> mailing list</u></h3>
+For scene graph related questions, bug reports, bug fixes, and general
+design and development discussion one should join the <a href="http://lists.sourceforge.net/mailman/listinfo/openscenegraph-news">openscenegraph-news</a>
+mailing list, and check the the mailing list <a href="http://www.geocrawler.com/redir-sf.php3?list=openscenegraph-news">archives</a>.
+<p>Professional support is also available in the form of confidential online,
+phone and onsite support and consultancy, for details contact Robert Osfield
+at <a href="mailto:robert@openscenegraph.com">robert@openscenegraph.com</a>.
 </body>
 </html>

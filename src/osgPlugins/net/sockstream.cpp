@@ -64,7 +64,7 @@
 #include <sstream>
 #include <string>
 #if defined(__APPLE__)
-#typedef int socklen_t;
+typedef int socklen_t;
 #endif
 
 #ifndef WIN32

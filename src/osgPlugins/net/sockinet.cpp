@@ -34,7 +34,7 @@
 //  The constructors of isockinet, osockinet and iosockinet are changed.
 
 #include "sockinet.h"
-#if defined(__APPLE)
+#if defined(__APPLE__)
 typedef int socklen_t;
 #endif
 

@@ -612,8 +612,8 @@ osg::Image* DataInputStream::readImage(std::string filename)
 {
     // If image is already read and in list 
     // then just return pointer to this.
-    ImageMap::iterator mitr=_imageMap.find(filename);
-    if (mitr!=_imageMap.end()) mitr->second.get();
+    ImageMap::iterator mitr=_imageMap.find(filename);	
+    if (mitr!=_imageMap.end()) return mitr->second.get();
         
     // Image is not in list. 
     // Read it from disk, 

@@ -944,7 +944,7 @@ class AttrbuteFunctorArrayVisitor : public ArrayVisitor
         virtual void apply(Vec4Array& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
     
     
-        inline void apply(Drawable::AttributeType type,Array* array)
+        inline void applyArray(Drawable::AttributeType type,Array* array)
         {
             if (array)
             {
@@ -961,13 +961,13 @@ void Geometry::accept(AttributeFunctor& af)
 {
     AttrbuteFunctorArrayVisitor afav(af);
     
-    afav.apply(VERTICES,_vertexArray.get());
-    afav.apply(NORMALS,_normalArray.get());
-    afav.apply(COLORS,_colorArray.get());
+    afav.applyArray(VERTICES,_vertexArray.get());
+    afav.applyArray(NORMALS,_normalArray.get());
+    afav.applyArray(COLORS,_colorArray.get());
     
     for(unsigned unit=0;unit<_texCoordList.size();++unit)
     {
-        afav.apply((AttributeType)(TEXTURE_COORDS_0+unit),_texCoordList[unit].first.get());
+        afav.applyArray((AttributeType)(TEXTURE_COORDS_0+unit),_texCoordList[unit].first.get());
     }
 }
 
@@ -993,7 +993,7 @@ class ConstAttrbuteFunctorArrayVisitor : public ConstArrayVisitor
         virtual void apply(const Vec4Array& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
     
     
-        inline void apply(Drawable::AttributeType type,const Array* array)
+        inline void applyArray(Drawable::AttributeType type,const Array* array)
         {
             if (array)
             {
@@ -1010,13 +1010,13 @@ void Geometry::accept(ConstAttributeFunctor& af) const
 {
     ConstAttrbuteFunctorArrayVisitor afav(af);
     
-    afav.apply(VERTICES,_vertexArray.get());
-    afav.apply(NORMALS,_normalArray.get());
-    afav.apply(COLORS,_colorArray.get());
+    afav.applyArray(VERTICES,_vertexArray.get());
+    afav.applyArray(NORMALS,_normalArray.get());
+    afav.applyArray(COLORS,_colorArray.get());
     
     for(unsigned unit=0;unit<_texCoordList.size();++unit)
     {
-        afav.apply((AttributeType)(TEXTURE_COORDS_0+unit),_texCoordList[unit].first.get());
+        afav.applyArray((AttributeType)(TEXTURE_COORDS_0+unit),_texCoordList[unit].first.get());
     }
 }
 

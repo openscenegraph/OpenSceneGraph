@@ -14,6 +14,7 @@
 
 #include "DataInputStream.h"
 #include "StateSet.h"
+#include "AlphaFunc.h"
 #include "BlendFunc.h"
 #include "Material.h"
 #include "CullFace.h"
@@ -530,7 +531,11 @@ osg::StateAttribute* DataInputStream::readStateAttribute()
 
     osg::StateAttribute* attribute;
     int attributeID = peekInt();
-    if(attributeID == IVEBLENDFUNC){
+    if(attributeID == IVEALPHAFUNC){
+        attribute = new osg::AlphaFunc();
+        ((ive::AlphaFunc*)(attribute))->read(this);
+    }
+    else if(attributeID == IVEBLENDFUNC){
         attribute = new osg::BlendFunc();
         ((ive::BlendFunc*)(attribute))->read(this);
     }

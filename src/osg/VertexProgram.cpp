@@ -177,6 +177,11 @@ void VertexProgram::apply(State& state) const
     }
 }
 
+void VertexProgram::releaseGLObjects(State* state) const
+{
+    const_cast<VertexProgram*>(this)->dirtyVertexProgramObject();
+}
+
 
 typedef buffered_value< ref_ptr<VertexProgram::Extensions> > BufferedExtensions;
 static BufferedExtensions s_extensions;

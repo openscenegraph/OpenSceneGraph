@@ -28,6 +28,12 @@ DatabasePager::DatabasePager()
     _threadPriorityDuringFrame = PRIORITY_MIN;
     _threadPriorityOutwithFrame = PRIORITY_MIN;
 
+    _changeAutoUnRef = false;
+    _valueAutoUnRef = false;
+    _changeAnisotropy = false;
+    _valueAnisotropy = 1.0f;
+
+
 #if 1
     _deleteRemovedSubgraphsInDatabaseThread = true;
 #else
@@ -209,11 +215,13 @@ void DatabasePager::signalEndFrame()
 class FindCompileableGLObjectsVisitor : public osg::NodeVisitor
 {
 public:
-    FindCompileableGLObjectsVisitor(DatabasePager::DataToCompile& dataToCompile, bool unrefImageOnApply, bool clientStorageHint):
-        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
-        _dataToCompile(dataToCompile),
-        _unrefImageOnApply(unrefImageOnApply),
-        _clientStorageHint(clientStorageHint)
+    FindCompileableGLObjectsVisitor(DatabasePager::DataToCompile& dataToCompile, 
+                               bool changeAutoUnRef, bool valueAutoUnRef,
+                               bool changeAnisotropy, float valueAnisotropy):
+                        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
+                        _dataToCompile(dataToCompile),
+                        _changeAutoUnRef(changeAutoUnRef), _valueAutoUnRef(valueAutoUnRef),
+                        _changeAnisotropy(changeAnisotropy), _valueAnisotropy(valueAnisotropy)
     {
     }
     
@@ -247,8 +255,8 @@ public:
                 osg::Texture* texture = dynamic_cast<osg::Texture*>(stateset->getTextureAttribute(i,osg::StateAttribute::TEXTURE));
                 if (texture)
                 {
-                    texture->setUnRefImageDataAfterApply(_unrefImageOnApply);
-                    //texture->setClientStorageHint(_clientStorageHint);
+                    if (_changeAutoUnRef) texture->setUnRefImageDataAfterApply(_valueAutoUnRef);
+                    if (_changeAnisotropy) texture->setMaxAnisotropy(_valueAnisotropy);
                     foundTextureState = true;
                 }
             }
@@ -274,8 +282,10 @@ public:
     }
     
     DatabasePager::DataToCompile&   _dataToCompile;
-    bool                            _unrefImageOnApply;
-    bool                            _clientStorageHint;
+    bool                            _changeAutoUnRef;
+    bool                            _valueAutoUnRef;
+    bool                            _changeAnisotropy;
+    float                           _valueAnisotropy;
 };
 
 
@@ -367,7 +377,10 @@ void DatabasePager::run()
                     ++itr;                
 
                     // find all the compileable rendering objects
-                    FindCompileableGLObjectsVisitor frov(dtc, true, true);
+                    FindCompileableGLObjectsVisitor frov(dtc, 
+                                                         _changeAutoUnRef, _valueAutoUnRef,
+                                                         _changeAnisotropy, _valueAnisotropy);
+
                     databaseRequest->_loadedModel->accept(frov);
 
                     if (!dtc.first.empty() || !dtc.second.empty())
@@ -499,7 +512,7 @@ public:
             if ((*titr)->referenceCount()==1)
             {
                 osg::Texture* texture = const_cast<osg::Texture*>(titr->get());
-                texture->dirtyTextureObject();
+                texture->releaseGLObjects();
                 objectsToDelete.push_back(texture);
             }
         }
@@ -511,7 +524,7 @@ public:
             if ((*ditr)->referenceCount()==1)
             {
                 osg::Drawable* drawable = const_cast<osg::Drawable*>(ditr->get());
-                drawable->dirtyDisplayList();
+                drawable->releaseGLObjects();
                 objectsToDelete.push_back(drawable);
             }
         }
@@ -725,7 +738,7 @@ void DatabasePager::compileGLObjects(osg::State& state, double& availableTime)
                 ++itr)
             {
                 //osg::notify(osg::INFO)<<"    Compiling stateset "<<(*itr).get()<<std::endl;
-                (*itr)->compile(state);
+                (*itr)->compileGLObjects(state);
                 elapsedTime = timer.delta_s(start_tick,timer.tick());
             }
             // remove the compiled stateset from the list.
@@ -742,7 +755,7 @@ void DatabasePager::compileGLObjects(osg::State& state, double& availableTime)
                 ++itr)
             {
                 //osg::notify(osg::INFO)<<"    Compiling drawable "<<(*itr).get()<<std::endl;
-                (*itr)->compile(state);
+                (*itr)->compileGLObjects(state);
                 elapsedTime = timer.delta_s(start_tick,timer.tick());
             }
             // remove the compiled drawables from the list.

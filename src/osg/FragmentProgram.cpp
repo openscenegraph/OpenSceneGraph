@@ -177,6 +177,11 @@ void FragmentProgram::apply(State& state) const
     }
 }
 
+void FragmentProgram::releaseGLObjects(State* state) const
+{
+    const_cast<FragmentProgram*>(this)->dirtyFragmentProgramObject();
+}
+
 
 typedef buffered_value< ref_ptr<FragmentProgram::Extensions> > BufferedExtensions;
 static BufferedExtensions s_extensions;

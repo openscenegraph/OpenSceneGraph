@@ -221,7 +221,10 @@ class SG_EXPORT StateSet : public Object
 
         
         /** call compile on all StateAttributes contained within this StateSet.*/
-        void compile(State& state) const;
+        void compileGLObjects(State& state) const;
+
+        /** call release on all StateAttributes contained within this StateSet.*/
+        virtual void releaseGLObjects(State* state=0) const;
 
     protected :
 

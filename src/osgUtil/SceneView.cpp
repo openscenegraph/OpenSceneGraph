@@ -12,7 +12,7 @@
 */
 #include <osgUtil/SceneView>
 #include <osgUtil/UpdateVisitor>
-#include <osgUtil/DisplayListVisitor>
+#include <osgUtil/GLObjectsVisitor>
 
 #include <osg/Timer>
 #include <osg/Notify>
@@ -82,17 +82,17 @@ void SceneView::setDefaults()
     _renderStage = new RenderStage;
 
 
-    DisplayListVisitor::Mode  dlvMode = DisplayListVisitor::COMPILE_DISPLAY_LISTS|DisplayListVisitor::COMPILE_STATE_ATTRIBUTES;
+    GLObjectsVisitor::Mode  dlvMode = GLObjectsVisitor::COMPILE_DISPLAY_LISTS|GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES;
 
 #ifdef __sgi
-    dlvMode = DisplayListVisitor::COMPILE_STATE_ATTRIBUTES;
+    dlvMode = GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES;
 #endif
 
     // sgi's IR graphics has a problem with lighting and display lists, as it seems to store 
     // lighting state with the display list, and the display list visitor doesn't currently apply
     // state before creating display lists. So will disable the init visitor default, this won't
     // affect functionality since the display lists will be created as and when needed.
-    DisplayListVisitor* dlv = new DisplayListVisitor(dlvMode);
+    GLObjectsVisitor* dlv = new GLObjectsVisitor(dlvMode);
     dlv->setNodeMaskOverride(0xffffffff);
     _initVisitor = dlv;
 
@@ -139,7 +139,7 @@ void SceneView::init()
         _initVisitor->reset();
         _initVisitor->setFrameStamp(_frameStamp.get());
         
-        DisplayListVisitor* dlv = dynamic_cast<DisplayListVisitor*>(_initVisitor.get());
+        GLObjectsVisitor* dlv = dynamic_cast<GLObjectsVisitor*>(_initVisitor.get());
         if (dlv) dlv->setState(_state.get());
         
         if (_frameStamp.valid())

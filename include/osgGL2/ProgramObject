@@ -86,7 +86,12 @@ class OSGGL2_EXPORT ProgramObject : public osg::StateAttribute
 	  * be pending. */
 	virtual void apply(osg::State& state) const;
 
-	virtual void compile(osg::State& state) const { apply(state); }
+	virtual void compileGLObjects(osg::State& state) const { apply(state); }
+
+        /** release an OpenGL objects in specified graphics context if State
+            object is passed, otherwise release OpenGL objexts for all graphics context if
+            State object pointer NULL.*/
+        virtual void releaseGLObjects(osg::State* state=0) const;
 
         // data access methods.
 

@@ -254,8 +254,11 @@ class SG_EXPORT Drawable : public Object
         /** Immediately compile this drawable into an OpenGL Display List.
             Note I, operation is ignored if _useDisplayList to false.
             Note II, compile is not intended to be overridden in subclasses.*/
-        virtual void compile(State& state) const;
+        virtual void compileGLObjects(State& state) const;
 
+        /** release any OpenGL display lists associated with graphics context specified
+            in osg::State object is supplied, or release all display lists for all graphics contexts if state pointer is NULL*/
+        virtual void releaseGLObjects(State* state=0) const;
 
         struct UpdateCallback : public virtual osg::Object
         {

@@ -6,7 +6,7 @@ CXXFILES = \
 	CubeMapGenerator.cpp\
 	CullVisitor.cpp\
 	DelaunayTriangulator.cpp\
-	DisplayListVisitor.cpp\
+	GLObjectsVisitor.cpp\
 	DisplayRequirementsVisitor.cpp\
 	HalfWayMapGenerator.cpp\
 	HighlightMapGenerator.cpp\

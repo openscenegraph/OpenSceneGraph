@@ -319,7 +319,12 @@ class SG_EXPORT Texture : public osg::StateAttribute
         virtual void apply(State& state) const = 0;
 
         /** Calls apply(state) to compile the texture. */
-        virtual void compile(State& state) const;
+        virtual void compileGLObjects(State& state) const;
+
+        /** release an OpenGL objects in specified graphics context if State
+            object is passed, otherwise release OpenGL objexts for all graphics context if
+            State object pointer NULL.*/
+        virtual void releaseGLObjects(State* state=0) const;
 
         /** Extensions class which encapsulates the querring of extensions and
           * associated function pointers, and provide convinience wrappers to 

@@ -596,7 +596,7 @@ void TmpGeoSet::setVertex(osg::GeoSet* gset, int index, Record* vertex)
             {
                 osg::Vec4* colors = gset->getColors();
                 ColorPool* pColorPool = _pFltFile->getColorPool();
-                if (pColorPool && (pVert->color_index >= 0))
+                if (pColorPool)
                     colors[index] = pColorPool->getColor(pVert->color_index);
                 else
                     colors[index] = _appearance.getFaceColor();
@@ -631,7 +631,7 @@ void TmpGeoSet::setVertex(osg::GeoSet* gset, int index, Record* vertex)
             {
                 osg::Vec4* colors = gset->getColors();
                 ColorPool* pColorPool = _pFltFile->getColorPool();
-                if (pColorPool && (pVert->color_index >= 0))
+                if (pColorPool)
                     colors[index] = pColorPool->getColor(pVert->color_index);
                 else
                     colors[index] = _appearance.getFaceColor();

@@ -10,12 +10,7 @@ C++FILES = \
 
 LIB = ../../../lib/osgPlugins/osgdb_pfb.so
 
-LIBS = \
-	/usr/lib/Performer/Static/libpfdb/libpfpfb.a\
-        /usr/lib/Performer/Static/libpfdu.a\
-        /usr/lib/Performer/Static/libpfutil.a\
-	/usr/lib/Performer/Static/libpf.a\
-	-losg -losgDB
+LIBS = -losg -losgDB $(PFLIBS)
 
 TARGET_LOADER_FILES = osgPlugins/osgdb_pfb.so
 

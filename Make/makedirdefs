@@ -138,6 +138,9 @@ EXAMPLE_DIRS = \
 	osgreflect\
 	osgscribe\
 	osgsequence\
+	osgscalarbar\
+	osgspheresegment\
+	osgsimulation\
 	osgshaders\
 	osgshadowtexture\
 	osgshape\

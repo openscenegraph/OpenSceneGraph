@@ -16,6 +16,7 @@
 #include <osg/State>
 #include <osg/Notify>
 #include <osg/GLU>
+#include <osg/Timer>
 
 using namespace osg;
 
@@ -95,41 +96,53 @@ void Texture::TextureObjectManager::addTextureObjectsFrom(Texture& texture)
     texture.takeTextureObjects(_textureObjectListMap);
 }
 
-void Texture::TextureObjectManager::flushTextureObjects(unsigned int contextID,double currentTime, double& availbleTime)
+void Texture::TextureObjectManager::flushTextureObjects(unsigned int contextID,double currentTime, double& availableTime)
 {
+    // if no time available don't try to flush objects.
+    if (availableTime<=0.0) return;
 
-    TextureObjectList& tol = _textureObjectListMap[contextID];
+    const osg::Timer& timer = *osg::Timer::instance();
+    osg::Timer_t start_tick = timer.tick();
+    double elapsedTime = 0.0;
     
-    // reset the time of any uninitialized objects.
-    TextureObjectList::iterator itr;
-    for(itr=tol.begin();
-        itr!=tol.end();
-        ++itr)
+    TextureObjectListMap::iterator tmitr = _textureObjectListMap.find(contextID);
+    if (tmitr!=_textureObjectListMap.end())
     {
-        if ((*itr)->_timeStamp==0.0) (*itr)->_timeStamp=currentTime;
+        TextureObjectList& tol = tmitr->second;
+
+        // reset the time of any uninitialized objects.
+        TextureObjectList::iterator itr;
+        for(itr=tol.begin();
+            itr!=tol.end();
+            ++itr)
+        {
+            if ((*itr)->_timeStamp==0.0) (*itr)->_timeStamp=currentTime;
+        }
+
+        double expiryTime = currentTime-_expiryDelay;
+
+        unsigned int numTexturesDeleted = 0;
+        for(itr=tol.begin();
+            itr!=tol.end() && elapsedTime<availableTime;
+            )
+        {
+            if ((*itr)->_timeStamp<expiryTime)
+            {
+                glDeleteTextures( 1L, &((*itr)->_id));
+                itr = tol.erase(itr);
+                ++numTexturesDeleted;
+            }
+            else
+            {
+                ++itr;
+            }
+            elapsedTime = timer.delta_s(start_tick,timer.tick());
+        }
+
+        if (numTexturesDeleted) notify(osg::INFO)<<"Number of Texture's deleted = "<<numTexturesDeleted<<std::endl;
     }
     
-    _expiryDelay = 10.0;
-    
-    double expiryTime = currentTime-_expiryDelay;
-
-    //unsigned int numTexturesDeleted = 0;
-    for(itr=tol.begin();
-        itr!=tol.end();
-        )
-    {
-        if ((*itr)->_timeStamp<expiryTime)
-        {
-            glDeleteTextures( 1L, &((*itr)->_id));
-            itr = tol.erase(itr);
-            //++numTexturesDeleted;
-        }
-        else
-        {
-            ++itr;
-        }
-    }
-    //if (numTexturesDeleted) std::cout<<"    deleted "<<numTexturesDeleted<<" textures"<<std::endl;
+    availableTime -= elapsedTime;
 }
 
 static ref_ptr<Texture::TextureObjectManager> s_textureObjectManager;

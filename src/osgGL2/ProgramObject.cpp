@@ -23,9 +23,12 @@
 #include <osg/Notify>
 #include <osg/State>
 #include <osg/ref_ptr>
+#include <osg/Timer>
 
 #include <osgGL2/ProgramObject>
 #include <osgGL2/Extensions>
+
+#include <list>
 
 using namespace osgGL2;
 
@@ -33,11 +36,11 @@ using namespace osgGL2;
 // static cache of deleted GL2 objects which may only 
 // by actually deleted in the correct GL context.
 
-typedef std::vector<GLhandleARB> GL2ObjectVector;
-typedef std::map<unsigned int, GL2ObjectVector> DeletedGL2ObjectCache;
+typedef std::list<GLhandleARB> GL2ObjectList;
+typedef std::map<unsigned int, GL2ObjectList> DeletedGL2ObjectCache;
 static DeletedGL2ObjectCache s_deletedGL2ObjectCache;
 
-void osgGL2::DeleteObject(unsigned int contextID, GLhandleARB handle)
+void ProgramObject::deleteObject(unsigned int contextID, GLhandleARB handle)
 {
     if (handle!=0)
     {
@@ -46,28 +49,36 @@ void osgGL2::DeleteObject(unsigned int contextID, GLhandleARB handle)
     }
 }
 
-void osgGL2::FlushDeletedGL2Objects(unsigned int contextID)
+void ProgramObject::flushDeletedGL2Objects(unsigned int contextID,double /*currentTime*/, double& availableTime)
 {
-    const Extensions* extensions = Extensions::Get(contextID,true);
+    // if no time available don't try to flush objects.
+    if (availableTime<=0.0) return;
 
-    if (!extensions->isShaderObjectsSupported())
-        return;
+    const osg::Timer& timer = *osg::Timer::instance();
+    osg::Timer_t start_tick = timer.tick();
+    double elapsedTime = 0.0;
 
     DeletedGL2ObjectCache::iterator citr = s_deletedGL2ObjectCache.find(contextID);
     if( citr != s_deletedGL2ObjectCache.end() )
     {
-        GL2ObjectVector vpObjectSet;
+        const Extensions* extensions = Extensions::Get(contextID,true);
 
-        // this swap will transfer the content of and empty citr->second
-        // in one quick pointer change.
-        vpObjectSet.swap(citr->second);
-        for( GL2ObjectVector::iterator titr=vpObjectSet.begin();
-            titr!=vpObjectSet.end();
-            ++titr )
+        if (!extensions->isShaderObjectsSupported())
+            return;
+
+        GL2ObjectList& vpObjectList = citr->second;
+
+        for(GL2ObjectList::iterator titr=vpObjectList.begin();
+            titr!=vpObjectList.end() && elapsedTime<availableTime;
+            )
         {
             extensions->glDeleteObject( *titr );
+            titr = vpObjectList.erase( titr );
+            elapsedTime = timer.delta_s(start_tick,timer.tick());
         }
     }
+    
+    availableTime -= elapsedTime;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -94,7 +105,7 @@ ProgramObject::~ProgramObject()
 
 	PerContextProgObj* pcpo = _pcpoList[cxt].get();
 
-	DeleteObject( cxt, pcpo->getHandle() );
+	deleteObject( cxt, pcpo->getHandle() );
 	// TODO add shader objects to delete list.
 	_pcpoList[cxt] = 0;
     }

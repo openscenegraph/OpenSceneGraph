@@ -29,8 +29,8 @@ void MyRenderToTextureStage::draw(osg::State& state, osgUtil::RenderLeaf*& previ
     {
         // Create pbuffer texture
         const unsigned int contextID = state.getContextID();
-        GLuint& handle = _texture->getTextureObject(contextID);
-        if (handle == 0)
+        osg::Texture::TextureObject* textureObeject = _texture->getTextureObject(contextID);
+        if (textureObeject == 0)
         {
             // Create dynamic texture, subload callback required.
             _texture->apply(state);
@@ -57,7 +57,7 @@ void MyRenderToTextureStage::draw(osg::State& state, osgUtil::RenderLeaf*& previ
         if (true /*_isRenderTextureSupported*/)
         {
             // transfer contents of p-buffer to texture
-            _pbuffer->bindTexImage(handle);
+            _pbuffer->bindTexImage(textureObject->_id);
         }
         else
         {

@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Release"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIBSCENEGRAPH_EXPORTS" /YX /FD /c
+# ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /FD /c
 # ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "../../include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "SG_LIBRARY" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
@@ -53,8 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 opengl32.lib glu32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /pdb:"../../bin/osg.pdb" /machine:I386 /out:"../../bin/osg.dll"
-# SUBTRACT LINK32 /pdb:none
+# ADD LINK32 opengl32.lib glu32.lib /nologo /dll /pdb:none /machine:I386 /out:"../../bin/osg.dll"
 
 !ELSEIF  "$(CFG)" == "osg - Win32 Debug"
 
@@ -69,8 +68,8 @@ LINK32=link.exe
 # PROP Intermediate_Dir "Debug"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LIBSCENEGRAPH_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /vmg /vd0 /GR /GX /ZI /Od /I "../../include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "SG_LIBRARY" /YX /FD /GZ /c
+# ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /vmg /vd0 /GR /GX /Zi /Od /I "../../include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "SG_LIBRARY" /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
@@ -80,7 +79,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 opengl32.lib glu32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /pdb:"../../bin/osgd.pdb" /debug /machine:I386 /out:"../../bin/osgd.dll" /pdbtype:sept
+# ADD LINK32 opengl32.lib glu32.lib /nologo /dll /pdb:"../../bin/osgd.pdb" /debug /machine:I386 /out:"../../bin/osgd.dll" /pdbtype:sept
 # SUBTRACT LINK32 /pdb:none /incremental:no
 
 !ENDIF 
@@ -134,19 +133,11 @@ SOURCE=..\..\src\osg\Drawable.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osg\EarthSky.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\osg\Fog.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\Src\Osg\FrontFace.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\Src\Osg\FrameStamp.cpp
 # End Source File
 # Begin Source File
 
@@ -159,10 +150,6 @@ SOURCE=..\..\src\osg\GeoSet.cpp
 # Begin Source File
 
 SOURCE=..\..\src\osg\GeoSet_ogl.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osg\StateSet.cpp
 # End Source File
 # Begin Source File
 
@@ -246,6 +233,10 @@ SOURCE=..\..\src\osg\State.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\StateSet.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\Stencil.cpp
 # End Source File
 # Begin Source File
@@ -284,10 +275,6 @@ SOURCE=..\..\src\osg\Transparency.cpp
 
 SOURCE=..\..\src\osg\Version.cpp
 # End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osg\Viewport.cpp
-# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -314,11 +301,11 @@ SOURCE=..\..\Include\Osg\Camera
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\ClipPlane
+SOURCE=..\..\Include\Osg\ClippingVolume
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\ClippingVolume
+SOURCE=..\..\Include\Osg\ClipPlane
 # End Source File
 # Begin Source File
 
@@ -338,10 +325,6 @@ SOURCE=..\..\Include\Osg\Drawable
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\EarthSky
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\Include\Osg\Export
 # End Source File
 # Begin Source File
@@ -354,23 +337,11 @@ SOURCE=..\..\Include\Osg\FrontFace
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\FrameStamp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\Include\Osg\Geode
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\GeoSet
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\Include\Osg\StateSet
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\Include\Osg\Stencil
 # End Source File
 # Begin Source File
 
@@ -438,10 +409,6 @@ SOURCE=..\..\Include\Osg\Node
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\NodeCallback
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\Include\Osg\NodeVisitor
 # End Source File
 # Begin Source File
@@ -487,6 +454,14 @@ SOURCE=..\..\Include\Osg\State
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\StateAttribute
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\StateSet
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\Stencil
 # End Source File
 # Begin Source File
 
@@ -539,10 +514,6 @@ SOURCE=..\..\Include\Osg\Vec4
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\Version
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\Include\Osg\Viewport
 # End Source File
 # End Group
 # Begin Group "Resource Files"

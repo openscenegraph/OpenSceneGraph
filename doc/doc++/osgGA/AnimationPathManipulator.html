@@ -28,16 +28,16 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.1.3">className</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.1.4">setByMatrix</A></B>(const osg::Matrix&amp; matrix)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.1.4">setByMatrix</A></B>(const osg::Matrixd&amp; matrix)
 <DD><I>set the position of the matrix manipulator using a 4x4 Matrix</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.1.5">setByInverseMatrix</A></B>(const osg::Matrix&amp; matrix)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.1.5">setByInverseMatrix</A></B>(const osg::Matrixd&amp; matrix)
 <DD><I>set the position of the matrix manipulator using a 4x4 Matrix</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Matrix <B><A HREF="#DOC.2.1.6">getMatrix</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Matrixd <B><A HREF="#DOC.2.1.6">getMatrix</A></B>() const 
 <DD><I>get the position of the manipulator as 4x4 Matrix</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Matrix <B><A HREF="#DOC.2.1.7">getInverseMatrix</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Matrixd <B><A HREF="#DOC.2.1.7">getInverseMatrix</A></B>() const 
 <DD><I>get the position of the manipulator as a inverse matrix of the manipulator, typically used as a model view matrix</I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.1.8">setAnimationPath</A></B>( osg::AnimationPath* animationPath )
@@ -78,7 +78,7 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.1.25">_numOfFramesSinceStartOfTimedPeriod</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Matrix <B><A HREF="#DOC.2.1.26">_matrix</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Matrixd <B><A HREF="#DOC.2.1.26">_matrix</A></B>
 </DL></P>
 
 <P><DL>
@@ -135,22 +135,22 @@
 <DL><DT><DD></DL><P>
 <A NAME="setByMatrix"></A>
 <A NAME="DOC.2.1.4"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setByMatrix(const osg::Matrix&amp; matrix)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setByMatrix(const osg::Matrixd&amp; matrix)</B></TT>
 <DD>set the position of the matrix manipulator using a 4x4 Matrix
 <DL><DT><DD></DL><P>
 <A NAME="setByInverseMatrix"></A>
 <A NAME="DOC.2.1.5"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setByInverseMatrix(const osg::Matrix&amp; matrix)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setByInverseMatrix(const osg::Matrixd&amp; matrix)</B></TT>
 <DD>set the position of the matrix manipulator using a 4x4 Matrix
 <DL><DT><DD></DL><P>
 <A NAME="getMatrix"></A>
 <A NAME="DOC.2.1.6"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Matrix getMatrix() const </B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Matrixd getMatrix() const </B></TT>
 <DD>get the position of the manipulator as 4x4 Matrix
 <DL><DT><DD></DL><P>
 <A NAME="getInverseMatrix"></A>
 <A NAME="DOC.2.1.7"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Matrix getInverseMatrix() const </B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Matrixd getInverseMatrix() const </B></TT>
 <DD>get the position of the manipulator as a inverse matrix of the manipulator, typically used as a model view matrix
 <DL><DT><DD></DL><P>
 <A NAME="setAnimationPath"></A>
@@ -228,7 +228,7 @@
 <DL><DT><DD></DL><P>
 <A NAME="_matrix"></A>
 <A NAME="DOC.2.1.26"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Matrix _matrix</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Matrixd _matrix</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <HR><DL><DT><B>This class has no child classes.</B></DL>

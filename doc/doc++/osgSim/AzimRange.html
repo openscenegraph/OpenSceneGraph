@@ -22,22 +22,24 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.5.1">AzimRange</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.8.1">AzimRange</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.5.2">setAzimuthRange</A></B>(float minAzimuth, float maxAzimuth, float fadeAngle=0.0f)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.8.2">setAzimuthRange</A></B>(float minAzimuth, float maxAzimuth, float fadeAngle=0.0f)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.5.3">azimSector</A></B>(const osg::Vec3&amp; eyeLocal) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.8.3">getAzimuthRange</A></B>(float&amp; minAzimuth, float&amp; maxAzimuth, float&amp; fadeAngle) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.8.4">azimSector</A></B>(const osg::Vec3&amp; eyeLocal) const 
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.5.4">_cosAzim</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.8.5">_cosAzim</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.5.5">_sinAzim</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.8.6">_sinAzim</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.5.6">_cosAngle</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.8.7">_cosAngle</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.5.7">_cosFadeAngle</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.8.8">_cosFadeAngle</A></B>
 </DL></P>
 
 </DL>
@@ -48,31 +50,35 @@
 <DL>
 
 <A NAME="AzimRange"></A>
-<A NAME="DOC.2.5.1"></A>
+<A NAME="DOC.2.8.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> AzimRange()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setAzimuthRange"></A>
-<A NAME="DOC.2.5.2"></A>
+<A NAME="DOC.2.8.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setAzimuthRange(float minAzimuth, float maxAzimuth, float fadeAngle=0.0f)</B></TT>
 <DL><DT><DD></DL><P>
+<A NAME="getAzimuthRange"></A>
+<A NAME="DOC.2.8.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void getAzimuthRange(float&amp; minAzimuth, float&amp; maxAzimuth, float&amp; fadeAngle) const </B></TT>
+<DL><DT><DD></DL><P>
 <A NAME="azimSector"></A>
-<A NAME="DOC.2.5.3"></A>
+<A NAME="DOC.2.8.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   float azimSector(const osg::Vec3&amp; eyeLocal) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_cosAzim"></A>
-<A NAME="DOC.2.5.4"></A>
+<A NAME="DOC.2.8.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _cosAzim</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_sinAzim"></A>
-<A NAME="DOC.2.5.5"></A>
+<A NAME="DOC.2.8.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _sinAzim</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_cosAngle"></A>
-<A NAME="DOC.2.5.6"></A>
+<A NAME="DOC.2.8.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _cosAngle</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_cosFadeAngle"></A>
-<A NAME="DOC.2.5.7"></A>
+<A NAME="DOC.2.8.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _cosFadeAngle</B></TT>
 <DL><DT><DD></DL><P></DL>
 <HR>

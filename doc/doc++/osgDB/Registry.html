@@ -139,31 +139,34 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.42.47">clearObjectCache</A></B>()
 <DD><I>Remove all objects in the cache regardless of having external references or expiry times</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DynamicLibrary.html">DynamicLibrary</A>* <B><A HREF="#DOC.2.42.48">getLibrary</A></B>(const std::string&amp; fileName)
+<DD><I>get the attached library with specified name</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.42.58">_createNodeFromImage</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Registry.html#DOC.2.42.49">DotOsgWrapperMap</A> <B><A HREF="#DOC.2.42.64">_objectWrapperMap</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Registry.html#DOC.2.42.50">DotOsgWrapperMap</A> <B><A HREF="#DOC.2.42.64">_objectWrapperMap</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Registry.html#DOC.2.42.49">DotOsgWrapperMap</A> <B><A HREF="#DOC.2.42.65">_imageWrapperMap</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Registry.html#DOC.2.42.50">DotOsgWrapperMap</A> <B><A HREF="#DOC.2.42.65">_imageWrapperMap</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Registry.html#DOC.2.42.49">DotOsgWrapperMap</A> <B><A HREF="#DOC.2.42.66">_drawableWrapperMap</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Registry.html#DOC.2.42.50">DotOsgWrapperMap</A> <B><A HREF="#DOC.2.42.66">_drawableWrapperMap</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Registry.html#DOC.2.42.49">DotOsgWrapperMap</A> <B><A HREF="#DOC.2.42.67">_stateAttrWrapperMap</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Registry.html#DOC.2.42.50">DotOsgWrapperMap</A> <B><A HREF="#DOC.2.42.67">_stateAttrWrapperMap</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Registry.html#DOC.2.42.49">DotOsgWrapperMap</A> <B><A HREF="#DOC.2.42.68">_nodeWrapperMap</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Registry.html#DOC.2.42.50">DotOsgWrapperMap</A> <B><A HREF="#DOC.2.42.68">_nodeWrapperMap</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Registry.html#DOC.2.42.49">DotOsgWrapperMap</A> <B><A HREF="#DOC.2.42.69">_classNameWrapperMap</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Registry.html#DOC.2.42.50">DotOsgWrapperMap</A> <B><A HREF="#DOC.2.42.69">_classNameWrapperMap</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Registry.html#DOC.2.42.50">ReaderWriterList</A> <B><A HREF="#DOC.2.42.70">_rwList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Registry.html#DOC.2.42.51">ReaderWriterList</A> <B><A HREF="#DOC.2.42.70">_rwList</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Registry.html#DOC.2.42.51">DynamicLibraryList</A> <B><A HREF="#DOC.2.42.71">_dlList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Registry.html#DOC.2.42.52">DynamicLibraryList</A> <B><A HREF="#DOC.2.42.71">_dlList</A></B>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.42.72">_openingLibrary</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Registry.html#DOC.2.42.52">ExtensionAliasMap</A> <B><A HREF="#DOC.2.42.73">_extAliasMap</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Registry.html#DOC.2.42.53">ExtensionAliasMap</A> <B><A HREF="#DOC.2.42.73">_extAliasMap</A></B>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;ReaderWriter::Options&gt;  <B><A HREF="#DOC.2.42.74">_options</A></B>
 <DT>
@@ -171,24 +174,22 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="FilePathList.html">FilePathList</A> <B><A HREF="#DOC.2.42.76">_libraryFilePath</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Registry.html#DOC.2.42.54">ObjectCache</A> <B><A HREF="#DOC.2.42.77">_objectCache</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Registry.html#DOC.2.42.55">ObjectCache</A> <B><A HREF="#DOC.2.42.77">_objectCache</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.42.48">~Registry</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.42.49">~Registry</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.42.55">Registry</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.42.56">Registry</A></B>()
 <DD><I>constructor is private, as its a singleton, preventing construction other than via the instance() method and therefore ensuring only one copy is ever constructed</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>DynamicLibraryList::iterator <B><A HREF="#DOC.2.42.56">getLibraryItr</A></B>(const std::string&amp; fileName)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>DynamicLibraryList::iterator <B><A HREF="#DOC.2.42.57">getLibraryItr</A></B>(const std::string&amp; fileName)
 <DD><I>get the attached library with specified name</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DynamicLibrary.html">DynamicLibrary</A>* <B><A HREF="#DOC.2.42.57">getLibrary</A></B>(const std::string&amp; fileName)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Object* <B><A HREF="#DOC.2.42.59">readObject</A></B>(<!1><A HREF="Registry.html#DOC.2.42.50">DotOsgWrapperMap</A>&amp; dowMap, <!1><A HREF="Input.html">Input</A>&amp; fr)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Object* <B><A HREF="#DOC.2.42.59">readObject</A></B>(<!1><A HREF="Registry.html#DOC.2.42.49">DotOsgWrapperMap</A>&amp; dowMap, <!1><A HREF="Input.html">Input</A>&amp; fr)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.42.60">eraseWrapper</A></B>(<!1><A HREF="Registry.html#DOC.2.42.49">DotOsgWrapperMap</A>&amp; wrappermap, <!1><A HREF="DotOsgWrapper.html">DotOsgWrapper</A>* wrapper)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.42.60">eraseWrapper</A></B>(<!1><A HREF="Registry.html#DOC.2.42.50">DotOsgWrapperMap</A>&amp; wrappermap, <!1><A HREF="DotOsgWrapper.html">DotOsgWrapper</A>* wrapper)
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>ReaderWriter::ReadResult <B><A HREF="#DOC.2.42.61">readObject</A></B>(const std::string&amp; fileName)
 <DT>
@@ -199,17 +200,17 @@
 
 <P><DL>
 <DT><H3>Protected Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt; std::string, osg::ref_ptr&lt;<!1><A HREF="DotOsgWrapper.html">DotOsgWrapper</A>&gt; &gt; <B><A HREF="#DOC.2.42.49">DotOsgWrapperMap</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt; std::string, osg::ref_ptr&lt;<!1><A HREF="DotOsgWrapper.html">DotOsgWrapper</A>&gt; &gt; <B><A HREF="#DOC.2.42.50">DotOsgWrapperMap</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="ReaderWriter.html">ReaderWriter</A>&gt; &gt; <B><A HREF="#DOC.2.42.50">ReaderWriterList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="ReaderWriter.html">ReaderWriter</A>&gt; &gt; <B><A HREF="#DOC.2.42.51">ReaderWriterList</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="DynamicLibrary.html">DynamicLibrary</A>&gt; &gt; <B><A HREF="#DOC.2.42.51">DynamicLibraryList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="DynamicLibrary.html">DynamicLibrary</A>&gt; &gt; <B><A HREF="#DOC.2.42.52">DynamicLibraryList</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt; std::string, std::string&gt; <B><A HREF="#DOC.2.42.52">ExtensionAliasMap</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt; std::string, std::string&gt; <B><A HREF="#DOC.2.42.53">ExtensionAliasMap</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::pair&lt;osg::ref_ptr&lt;osg::Object&gt;, double &gt; <B><A HREF="#DOC.2.42.53">ObjectTimeStampPair</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::pair&lt;osg::ref_ptr&lt;osg::Object&gt;, double &gt; <B><A HREF="#DOC.2.42.54">ObjectTimeStampPair</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt;std::string, <!1><A HREF="Registry.html#DOC.2.42.53">ObjectTimeStampPair</A> &gt; <B><A HREF="#DOC.2.42.54">ObjectCache</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt;std::string, <!1><A HREF="Registry.html#DOC.2.42.54">ObjectTimeStampPair</A> &gt; <B><A HREF="#DOC.2.42.55">ObjectCache</A></B>
 </DL></P>
 
 </DL>
@@ -459,49 +460,50 @@ Time value is time in sceonds.
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void clearObjectCache()</B></TT>
 <DD>Remove all objects in the cache regardless of having external references or expiry times
 <DL><DT><DD></DL><P>
-<A NAME="~Registry"></A>
+<A NAME="getLibrary"></A>
 <A NAME="DOC.2.42.48"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DynamicLibrary.html">DynamicLibrary</A>* getLibrary(const std::string&amp; fileName)</B></TT>
+<DD>get the attached library with specified name
+<DL><DT><DD></DL><P>
+<A NAME="~Registry"></A>
+<A NAME="DOC.2.42.49"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Registry()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="DotOsgWrapperMap"></A>
-<A NAME="DOC.2.42.49"></A>
+<A NAME="DOC.2.42.50"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt; std::string, osg::ref_ptr&lt;<!1><A HREF="DotOsgWrapper.html">DotOsgWrapper</A>&gt; &gt; DotOsgWrapperMap</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ReaderWriterList"></A>
-<A NAME="DOC.2.42.50"></A>
+<A NAME="DOC.2.42.51"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="ReaderWriter.html">ReaderWriter</A>&gt; &gt; ReaderWriterList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="DynamicLibraryList"></A>
-<A NAME="DOC.2.42.51"></A>
+<A NAME="DOC.2.42.52"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="DynamicLibrary.html">DynamicLibrary</A>&gt; &gt; DynamicLibraryList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ExtensionAliasMap"></A>
-<A NAME="DOC.2.42.52"></A>
+<A NAME="DOC.2.42.53"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt; std::string, std::string&gt; ExtensionAliasMap</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ObjectTimeStampPair"></A>
-<A NAME="DOC.2.42.53"></A>
+<A NAME="DOC.2.42.54"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::pair&lt;osg::ref_ptr&lt;osg::Object&gt;, double &gt; ObjectTimeStampPair</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ObjectCache"></A>
-<A NAME="DOC.2.42.54"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt;std::string, <!1><A HREF="Registry.html#DOC.2.42.53">ObjectTimeStampPair</A> &gt; ObjectCache</B></TT>
+<A NAME="DOC.2.42.55"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt;std::string, <!1><A HREF="Registry.html#DOC.2.42.54">ObjectTimeStampPair</A> &gt; ObjectCache</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Registry"></A>
-<A NAME="DOC.2.42.55"></A>
+<A NAME="DOC.2.42.56"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Registry()</B></TT>
 <DD>constructor is private, as its a singleton, preventing
 construction other than via the instance() method and
 therefore ensuring only one copy is ever constructed
 <DL><DT><DD></DL><P>
 <A NAME="getLibraryItr"></A>
-<A NAME="DOC.2.42.56"></A>
+<A NAME="DOC.2.42.57"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>DynamicLibraryList::iterator getLibraryItr(const std::string&amp; fileName)</B></TT>
 <DD>get the attached library with specified name
-<DL><DT><DD></DL><P>
-<A NAME="getLibrary"></A>
-<A NAME="DOC.2.42.57"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DynamicLibrary.html">DynamicLibrary</A>* getLibrary(const std::string&amp; fileName)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_createNodeFromImage"></A>
 <A NAME="DOC.2.42.58"></A>
@@ -509,11 +511,11 @@ therefore ensuring only one copy is ever constructed
 <DL><DT><DD></DL><P>
 <A NAME="readObject"></A>
 <A NAME="DOC.2.42.59"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Object* readObject(<!1><A HREF="Registry.html#DOC.2.42.49">DotOsgWrapperMap</A>&amp; dowMap, <!1><A HREF="Input.html">Input</A>&amp; fr)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Object* readObject(<!1><A HREF="Registry.html#DOC.2.42.50">DotOsgWrapperMap</A>&amp; dowMap, <!1><A HREF="Input.html">Input</A>&amp; fr)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="eraseWrapper"></A>
 <A NAME="DOC.2.42.60"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void eraseWrapper(<!1><A HREF="Registry.html#DOC.2.42.49">DotOsgWrapperMap</A>&amp; wrappermap, <!1><A HREF="DotOsgWrapper.html">DotOsgWrapper</A>* wrapper)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void eraseWrapper(<!1><A HREF="Registry.html#DOC.2.42.50">DotOsgWrapperMap</A>&amp; wrappermap, <!1><A HREF="DotOsgWrapper.html">DotOsgWrapper</A>* wrapper)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="readObject"></A>
 <A NAME="DOC.2.42.61"></A>
@@ -529,35 +531,35 @@ therefore ensuring only one copy is ever constructed
 <DL><DT><DD></DL><P>
 <A NAME="_objectWrapperMap"></A>
 <A NAME="DOC.2.42.64"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Registry.html#DOC.2.42.49">DotOsgWrapperMap</A> _objectWrapperMap</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Registry.html#DOC.2.42.50">DotOsgWrapperMap</A> _objectWrapperMap</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_imageWrapperMap"></A>
 <A NAME="DOC.2.42.65"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Registry.html#DOC.2.42.49">DotOsgWrapperMap</A> _imageWrapperMap</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Registry.html#DOC.2.42.50">DotOsgWrapperMap</A> _imageWrapperMap</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_drawableWrapperMap"></A>
 <A NAME="DOC.2.42.66"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Registry.html#DOC.2.42.49">DotOsgWrapperMap</A> _drawableWrapperMap</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Registry.html#DOC.2.42.50">DotOsgWrapperMap</A> _drawableWrapperMap</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_stateAttrWrapperMap"></A>
 <A NAME="DOC.2.42.67"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Registry.html#DOC.2.42.49">DotOsgWrapperMap</A> _stateAttrWrapperMap</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Registry.html#DOC.2.42.50">DotOsgWrapperMap</A> _stateAttrWrapperMap</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_nodeWrapperMap"></A>
 <A NAME="DOC.2.42.68"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Registry.html#DOC.2.42.49">DotOsgWrapperMap</A> _nodeWrapperMap</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Registry.html#DOC.2.42.50">DotOsgWrapperMap</A> _nodeWrapperMap</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_classNameWrapperMap"></A>
 <A NAME="DOC.2.42.69"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Registry.html#DOC.2.42.49">DotOsgWrapperMap</A> _classNameWrapperMap</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Registry.html#DOC.2.42.50">DotOsgWrapperMap</A> _classNameWrapperMap</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_rwList"></A>
 <A NAME="DOC.2.42.70"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Registry.html#DOC.2.42.50">ReaderWriterList</A> _rwList</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Registry.html#DOC.2.42.51">ReaderWriterList</A> _rwList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_dlList"></A>
 <A NAME="DOC.2.42.71"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Registry.html#DOC.2.42.51">DynamicLibraryList</A> _dlList</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Registry.html#DOC.2.42.52">DynamicLibraryList</A> _dlList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_openingLibrary"></A>
 <A NAME="DOC.2.42.72"></A>
@@ -565,7 +567,7 @@ therefore ensuring only one copy is ever constructed
 <DL><DT><DD></DL><P>
 <A NAME="_extAliasMap"></A>
 <A NAME="DOC.2.42.73"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Registry.html#DOC.2.42.52">ExtensionAliasMap</A> _extAliasMap</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Registry.html#DOC.2.42.53">ExtensionAliasMap</A> _extAliasMap</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_options"></A>
 <A NAME="DOC.2.42.74"></A>
@@ -581,7 +583,7 @@ therefore ensuring only one copy is ever constructed
 <DL><DT><DD></DL><P>
 <A NAME="_objectCache"></A>
 <A NAME="DOC.2.42.77"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Registry.html#DOC.2.42.54">ObjectCache</A> _objectCache</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Registry.html#DOC.2.42.55">ObjectCache</A> _objectCache</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <HR><DL><DT><B>This class has no child classes.</B></DL>

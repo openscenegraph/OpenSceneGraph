@@ -1,0 +1,191 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  OSGFX_EXPORT osgFX::Cartoon</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGFX_EXPORT <A HREF="#DOC.DOCU">osgFX::Cartoon</A></H2></H2><BLOCKQUOTE> This effect implements a technique called 'Cel-Shading' to produce a  cartoon-style (non photorealistic) rendering.</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=95>
+<param name=classes value="Mosg::Node,M,CEffect,MEffect.html,CCartoon,MCartoon.html">
+<param name=before value="M,M,M">
+<param name=after value="Md_SP,Md_,M">
+<param name=indent value="0,1,2">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.3.1">Cartoon</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.3.2">Cartoon</A></B>(const <!1><A HREF="Cartoon.html#DOC.2.3.2">Cartoon</A> &amp;copy, const osg::CopyOp &amp;copyop = osg::CopyOp::SHALLOW_COPY)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.3.3">META_Effect</A></B>( <!1><A HREF="osgFX.html">osgFX</A>, <!1><A HREF="Cartoon.html">Cartoon</A>, "<!1><A HREF="Cartoon.html">Cartoon</A>", "This effect implements a technique called 'Cel-Shading' to produce a " "cartoon-style (non photorealistic) rendering. Two passes are required: " "the first one draws solid surfaces, the second one draws the outlines. " "A vertex program is used to setup texture coordinates for a sharp lighting " "texture on unit 0 which is generated on-the-fly.\n" "This effect requires the ARB_vertex_program extension.", "Marco Jez")
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::Vec4&amp; <B><A HREF="#DOC.2.3.10">getOutlineColor</A></B>() const 
+<DD><I>get the outline color </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.3.11">setOutlineColor</A></B>(const osg::Vec4 &amp;color)
+<DD><I>set the outline color </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.3.12">getOutlineLineWidth</A></B>() const 
+<DD><I>get the outline line width </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.3.13">setOutlineLineWidth</A></B>(float w)
+<DD><I>set the outline line width </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int <B><A HREF="#DOC.2.3.14">getLightNumber</A></B>() const 
+<DD><I>get the OpenGL light number </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.3.15">setLightNumber</A></B>(int n)
+<DD><I>set the OpenGL light number that will be used in lighting computations </I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.3.4">~Cartoon</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Cartoon.html">Cartoon</A>&amp; <B><A HREF="#DOC.2.3.5">operator=</A></B>(const <!1><A HREF="Cartoon.html">Cartoon</A> &amp;)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.3.6">define_techniques</A></B>()
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Effect.html">Effect</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual inline   bool <B>isSameKindAs</B>(const osg::Object* obj) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual inline   const char* <B>libraryName</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual inline   const char* <B>className</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>effectName</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>effectDescription</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>effectAuthor</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline virtual   void <B>setUpDemo</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>traverse</B>(osg::NodeVisitor &amp;nv)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   bool <B>getEnabled</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setEnabled</B>(bool v)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const osg::Node* <B>getChild</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   osg::Node* <B>getChild</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setChild</B>(osg::Node* child)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   int <B>getNumTechniques</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Technique.html">Technique</A>* <B>getTechnique</B>(int i)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Technique.html">Technique</A>* <B>getTechnique</B>(int i) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   int <B>getSelectedTechnique</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>selectTechnique</B>(int i)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>addTechnique</B>(<!1><A HREF="Technique.html">Technique</A>* tech)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>dirtyTechniques</B>()
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>TechniqueSelection</B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>computeBound</B>() const 
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>
+This effect implements a technique called 'Cel-Shading' to produce a 
+cartoon-style (non photorealistic) rendering. Two passes are required: 
+the first one draws solid surfaces, the second one draws the outlines. 
+A vertex program is used to setup texture coordinates for a sharp lighting 
+texture on unit 0 which is generated on-the-fly.
+This effect requires the ARB_vertex_program extension.</BLOCKQUOTE>
+<DL>
+
+<A NAME="Cartoon"></A>
+<A NAME="DOC.2.3.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Cartoon()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Cartoon"></A>
+<A NAME="DOC.2.3.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Cartoon(const <!1><A HREF="Cartoon.html#DOC.2.3.2">Cartoon</A> &amp;copy, const osg::CopyOp &amp;copyop = osg::CopyOp::SHALLOW_COPY)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="META_Effect"></A>
+<A NAME="DOC.2.3.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Effect( <!1><A HREF="osgFX.html">osgFX</A>, <!1><A HREF="Cartoon.html">Cartoon</A>, "<!1><A HREF="Cartoon.html">Cartoon</A>", "This effect implements a technique called 'Cel-Shading' to produce a " "cartoon-style (non photorealistic) rendering. Two passes are required: " "the first one draws solid surfaces, the second one draws the outlines. " "A vertex program is used to setup texture coordinates for a sharp lighting " "texture on unit 0 which is generated on-the-fly.\n" "This effect requires the ARB_vertex_program extension.", "Marco Jez")</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~Cartoon"></A>
+<A NAME="DOC.2.3.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Cartoon()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator="></A>
+<A NAME="DOC.2.3.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Cartoon.html">Cartoon</A>&amp; operator=(const <!1><A HREF="Cartoon.html">Cartoon</A> &amp;)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="define_techniques"></A>
+<A NAME="DOC.2.3.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool define_techniques()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getOutlineColor"></A>
+<A NAME="DOC.2.3.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const osg::Vec4&amp; getOutlineColor() const </B></TT>
+<DD>get the outline color 
+<DL><DT><DD></DL><P>
+<A NAME="setOutlineColor"></A>
+<A NAME="DOC.2.3.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setOutlineColor(const osg::Vec4 &amp;color)</B></TT>
+<DD>set the outline color 
+<DL><DT><DD></DL><P>
+<A NAME="getOutlineLineWidth"></A>
+<A NAME="DOC.2.3.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   float getOutlineLineWidth() const </B></TT>
+<DD>get the outline line width 
+<DL><DT><DD></DL><P>
+<A NAME="setOutlineLineWidth"></A>
+<A NAME="DOC.2.3.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setOutlineLineWidth(float w)</B></TT>
+<DD>set the outline line width 
+<DL><DT><DD></DL><P>
+<A NAME="getLightNumber"></A>
+<A NAME="DOC.2.3.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   int getLightNumber() const </B></TT>
+<DD>get the OpenGL light number 
+<DL><DT><DD></DL><P>
+<A NAME="setLightNumber"></A>
+<A NAME="DOC.2.3.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setLightNumber(int n)</B></TT>
+<DD>set the OpenGL light number that will be used in lighting computations 
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

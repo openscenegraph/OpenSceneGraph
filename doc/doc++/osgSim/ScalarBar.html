@@ -1,0 +1,311 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  OSGSIM_EXPORT osgSim::ScalarBar</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGSIM_EXPORT <A HREF="#DOC.DOCU">osgSim::ScalarBar</A></H2></H2><BLOCKQUOTE> A ScalarBar is an osg::Geode to render a colored bar representing a range of scalars.</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=65>
+<param name=classes value="Mosg::Geode,M,CScalarBar,MScalarBar.html">
+<param name=before value="M,M">
+<param name=after value="Md_,M">
+<param name=indent value="0,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.5.4">ScalarBar</A></B>()
+<DD><I>Default constructor.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.5.5">ScalarBar</A></B>(int numColors, int numLabels, <!1><A HREF="ScalarsToColors.html">ScalarsToColors</A>* stc, const std::string&amp; title, <!1><A HREF="ScalarBar.html#DOC.2.5.1">Orientation</A> orientation = <!1><A HREF="ScalarBar.html#DOC.2.5.1.1">HORIZONTAL</A>, float aspectRatio=0.25, <!1><A HREF="ScalarBar.html#DOC.2.5.2">ScalarPrinter</A>* sp=new <!1><A HREF="ScalarBar.html#DOC.2.5.2">ScalarPrinter</A>)
+<DD><I> Construct a ScalarBar with the supplied parameters.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.5.6">ScalarBar</A></B>(const <!1><A HREF="ScalarBar.html#DOC.2.5.6">ScalarBar</A>&amp; rhs, const osg::CopyOp&amp; co)
+<DD><I>Copy constructor </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.5.7">setNumColors</A></B>(int numColors)
+<DD><I>Set the number of distinct colours on the ScalarBar.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.5.8">getNumColors</A></B>() const 
+<DD><I>Get the number of distinct colours on the ScalarBar.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.5.9">setNumLabels</A></B>(int numLabels)
+<DD><I>Set the number of labels to display along the ScalarBar.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.5.10">getNumLabels</A></B>() const 
+<DD><I>Get the number of labels displayed along the ScalarBar.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.5.11">setScalarsToColors</A></B>(<!1><A HREF="ScalarsToColors.html">ScalarsToColors</A>* stc)
+<DD><I>Set the ScalarsToColors mapping object for the ScalarBar.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="ScalarsToColors.html">ScalarsToColors</A>* <B><A HREF="#DOC.2.5.12">getScalarsToColors</A></B>() const 
+<DD><I>Get the ScalarsToColors mapping object from the ScalarBar.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.5.13">setTitle</A></B>(const std::string&amp; title)
+<DD><I>Set the title for the ScalarBar, set ""  for no title.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.2.5.14">getTitle</A></B>() const 
+<DD><I>Get the title for the ScalarBar.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.5.15">setOrientation</A></B>(ScalarBar::Orientation orientation)
+<DD><I>Set the orientation of the ScalarBar.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ScalarBar.html#DOC.2.5.1">Orientation</A> <B><A HREF="#DOC.2.5.16">getOrientation</A></B>() const 
+<DD><I>Get the orientation of the ScalarBar.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.5.17">setAspectRatio</A></B>(float aspectRatio)
+<DD><I>Set the aspect ration (y/x) for the displayed bar.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.5.18">getAspectRatio</A></B>() const 
+<DD><I>Get the aspect ration (y/x) for the displayed bar.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.5.19">setScalarPrinter</A></B>(<!1><A HREF="ScalarBar.html#DOC.2.5.2">ScalarPrinter</A>* sp)
+<DD><I>Set a ScalarPrinter object for the ScalarBar.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="ScalarBar.html#DOC.2.5.2">ScalarPrinter</A>* <B><A HREF="#DOC.2.5.20">getScalarPrinter</A></B>() const 
+<DD><I>Get the ScalarPrinter object  </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.5.21">setTextProperties</A></B>(const <!1><A HREF="ScalarBar.html#DOC.2.5.3">TextProperties</A>&amp; tp)
+<DD><I>Set the TextProperties for the labels & title.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="ScalarBar.html#DOC.2.5.3">TextProperties</A>&amp; <B><A HREF="#DOC.2.5.22">getTextProperties</A></B>() const 
+<DD><I>Get the TextProperties for the labels & title.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.5.23">META_Node</A></B>(<!1><A HREF="osgSim.html">osgSim</A>, <!1><A HREF="ScalarBar.html">ScalarBar</A>)
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.5.1">Orientation</A></B>
+<DD><I>ScalarBar orientation specification.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.2.5.2">ScalarPrinter</A></B>: public osg::Referenced
+<DD><I> Users may provide their own ScalarPrinter by deriving from this base class and overriding the printScalar() method.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.2.5.3">TextProperties</A></B>
+<DD><I> TextProperties allows users to specify a number of properties for the text used to display the labels & title on the ScalarBar.</I>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>
+A ScalarBar is an osg::Geode to render a colored bar representing a range
+of scalars. The scalar/color ranges are specified by an instance of
+ScalarsToColors. There are a number of configurable properties on the
+ScalarBar, such as the orientation, the number of labels to be displayed
+across the range, the number of distinct colors to use when rendering the
+bar, text details etc.
+
+<P>In summary, the main configurables on the ScalarBar are:
+
+<P>-# The range of scalars represented by the bar, and the colors
+corresponding to this range - these are specified by the
+ScalarsToColors object.
+-# The number of colors used when rendering the bar geometry -
+this may be thought of as the bar 'density'.
+-# The number of text labels to be used when displaying the bar.
+
+<P>The other configurables should be self-explanatory.</BLOCKQUOTE>
+<DL>
+
+<A NAME="Orientation"></A>
+<A NAME="DOC.2.5.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  Orientation</B></TT>
+<DD>ScalarBar orientation specification. 
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="HORIZONTAL"></A>
+<A NAME="DOC.2.5.1.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> HORIZONTAL</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="VERTICAL"></A>
+<A NAME="DOC.2.5.1.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> VERTICAL</B></TT>
+<DD>< a horizontally ascending scalar bar (x-axis)
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="ScalarPrinter"></A>
+<A NAME="DOC.2.5.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>struct  ScalarPrinter: public osg::Referenced</B></TT>
+<DD>
+Users may provide their own ScalarPrinter by deriving from this base class and
+overriding the printScalar() method. Users may map the scalar float passed in
+to any string they wish.
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="printScalar"></A>
+<A NAME="DOC.2.5.2.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   std::string printScalar(float scalar)</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="TextProperties"></A>
+<A NAME="DOC.2.5.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>struct  TextProperties</B></TT>
+<DD>
+TextProperties allows users to specify a number of properties for the
+text used to display the labels & title on the ScalarBar. Specifiying a character
+size of 0 will cause the ScalarBar to estimate an appropriate size. Note that
+the attributes are public, and may be set directly.
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="_fontFile"></A>
+<A NAME="DOC.2.5.3.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>std::string _fontFile</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_fontResolution"></A>
+<A NAME="DOC.2.5.3.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>std::pair&lt;int,int&gt;  _fontResolution</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_characterSize"></A>
+<A NAME="DOC.2.5.3.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _characterSize</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_color"></A>
+<A NAME="DOC.2.5.3.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Vec4 _color</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="TextProperties"></A>
+<A NAME="DOC.2.5.3.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TextProperties()</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="ScalarBar"></A>
+<A NAME="DOC.2.5.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ScalarBar()</B></TT>
+<DD>Default constructor. 
+<DL><DT><DD></DL><P>
+<A NAME="ScalarBar"></A>
+<A NAME="DOC.2.5.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ScalarBar(int numColors, int numLabels, <!1><A HREF="ScalarsToColors.html">ScalarsToColors</A>* stc, const std::string&amp; title, <!1><A HREF="ScalarBar.html#DOC.2.5.1">Orientation</A> orientation = <!1><A HREF="ScalarBar.html#DOC.2.5.1.1">HORIZONTAL</A>, float aspectRatio=0.25, <!1><A HREF="ScalarBar.html#DOC.2.5.2">ScalarPrinter</A>* sp=new <!1><A HREF="ScalarBar.html#DOC.2.5.2">ScalarPrinter</A>)</B></TT>
+<DD>
+Construct a ScalarBar with the supplied parameters.
+
+<DL><DT><DT><B>Parameters:</B><DD><B>numColors</B> -     Specify the number of colors in the scalar bar. Color
+interpolation occurs where necessary.
+<BR><B>stc</B> -           The <!1><A HREF="ScalarsToColors.html">ScalarsToColors</A> defining the range of scalars
+and the colors they map to.
+<BR><B>title</B> -         The title to be used when displaying the ScalarBar.
+Specify "" for no title.
+<BR><B>orientation</B> -   The orientation of the ScalarBar. @see Orientation.
+<BR><B>apectRatio</B> -    The aspect ration (y/x) for the displayed bar. Bear in mind you
+may want to change this if you change the orientation.
+<BR><B>sp</B> -            A <!1><A HREF="ScalarBar.html#DOC.2.5.2">ScalarPrinter</A> object for the ScalarBar. For every displayed
+<!1><A HREF="ScalarBar.html#DOC.2.5.5">ScalarBar</A> label, the scalar value will be passed to the
+<!1><A HREF="ScalarBar.html#DOC.2.5.2">ScalarPrinter</A> object to turn it into a string. Users may
+override the default <!1><A HREF="ScalarBar.html#DOC.2.5.2">ScalarPrinter</A> object to map scalars to
+whatever strings they wish. @see <!1><A HREF="ScalarBar.html#DOC.2.5.2">ScalarPrinter</A><BR><DD></DL><P>
+<A NAME="ScalarBar"></A>
+<A NAME="DOC.2.5.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ScalarBar(const <!1><A HREF="ScalarBar.html#DOC.2.5.6">ScalarBar</A>&amp; rhs, const osg::CopyOp&amp; co)</B></TT>
+<DD>Copy constructor 
+<DL><DT><DD></DL><P>
+<A NAME="setNumColors"></A>
+<A NAME="DOC.2.5.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setNumColors(int numColors)</B></TT>
+<DD>Set the number of distinct colours on the ScalarBar. 
+<DL><DT><DD></DL><P>
+<A NAME="getNumColors"></A>
+<A NAME="DOC.2.5.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int getNumColors() const </B></TT>
+<DD>Get the number of distinct colours on the ScalarBar. 
+<DL><DT><DD></DL><P>
+<A NAME="setNumLabels"></A>
+<A NAME="DOC.2.5.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setNumLabels(int numLabels)</B></TT>
+<DD>Set the number of labels to display along the ScalarBar. There
+will be one label at each end point, and evenly distributed labels
+in between. 
+<DL><DT><DD></DL><P>
+<A NAME="getNumLabels"></A>
+<A NAME="DOC.2.5.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int getNumLabels() const </B></TT>
+<DD>Get the number of labels displayed along the ScalarBar. 
+<DL><DT><DD></DL><P>
+<A NAME="setScalarsToColors"></A>
+<A NAME="DOC.2.5.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setScalarsToColors(<!1><A HREF="ScalarsToColors.html">ScalarsToColors</A>* stc)</B></TT>
+<DD>Set the ScalarsToColors mapping object for the ScalarBar. 
+<DL><DT><DD></DL><P>
+<A NAME="getScalarsToColors"></A>
+<A NAME="DOC.2.5.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="ScalarsToColors.html">ScalarsToColors</A>* getScalarsToColors() const </B></TT>
+<DD>Get the ScalarsToColors mapping object from the ScalarBar. 
+<DL><DT><DD></DL><P>
+<A NAME="setTitle"></A>
+<A NAME="DOC.2.5.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setTitle(const std::string&amp; title)</B></TT>
+<DD>Set the title for the ScalarBar, set ""  for no title. 
+<DL><DT><DD></DL><P>
+<A NAME="getTitle"></A>
+<A NAME="DOC.2.5.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>std::string getTitle() const </B></TT>
+<DD>Get the title for the ScalarBar. 
+<DL><DT><DD></DL><P>
+<A NAME="setOrientation"></A>
+<A NAME="DOC.2.5.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setOrientation(ScalarBar::Orientation orientation)</B></TT>
+<DD>Set the orientation of the ScalarBar. @see Orientation 
+<DL><DT><DD></DL><P>
+<A NAME="getOrientation"></A>
+<A NAME="DOC.2.5.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ScalarBar.html#DOC.2.5.1">Orientation</A> getOrientation() const </B></TT>
+<DD>Get the orientation of the ScalarBar.  @see Orientation 
+<DL><DT><DD></DL><P>
+<A NAME="setAspectRatio"></A>
+<A NAME="DOC.2.5.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setAspectRatio(float aspectRatio)</B></TT>
+<DD>Set the aspect ration (y/x) for the displayed bar. Bear in mind you
+may want to change this if you change the orientation. 
+<DL><DT><DD></DL><P>
+<A NAME="getAspectRatio"></A>
+<A NAME="DOC.2.5.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float getAspectRatio() const </B></TT>
+<DD>Get the aspect ration (y/x) for the displayed bar. 
+<DL><DT><DD></DL><P>
+<A NAME="setScalarPrinter"></A>
+<A NAME="DOC.2.5.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setScalarPrinter(<!1><A HREF="ScalarBar.html#DOC.2.5.2">ScalarPrinter</A>* sp)</B></TT>
+<DD>Set a ScalarPrinter object for the ScalarBar. For every displayed
+ScalarBar label, the scalar value will be passed to the ScalarPrinter
+object to turn it into a string. Users may override the default ScalarPrinter
+object to map scalars to whatever strings they wish. @see ScalarPrinter 
+<DL><DT><DD></DL><P>
+<A NAME="getScalarPrinter"></A>
+<A NAME="DOC.2.5.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="ScalarBar.html#DOC.2.5.2">ScalarPrinter</A>* getScalarPrinter() const </B></TT>
+<DD>Get the ScalarPrinter object  
+<DL><DT><DD></DL><P>
+<A NAME="setTextProperties"></A>
+<A NAME="DOC.2.5.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setTextProperties(const <!1><A HREF="ScalarBar.html#DOC.2.5.3">TextProperties</A>&amp; tp)</B></TT>
+<DD>Set the TextProperties for the labels & title. @see TextProperties 
+<DL><DT><DD></DL><P>
+<A NAME="getTextProperties"></A>
+<A NAME="DOC.2.5.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="ScalarBar.html#DOC.2.5.3">TextProperties</A>&amp; getTextProperties() const </B></TT>
+<DD>Get the TextProperties for the labels & title. @see TextProperties 
+<DL><DT><DD></DL><P>
+<A NAME="META_Node"></A>
+<A NAME="DOC.2.5.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Node(<!1><A HREF="osgSim.html">osgSim</A>, <!1><A HREF="ScalarBar.html">ScalarBar</A>)</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

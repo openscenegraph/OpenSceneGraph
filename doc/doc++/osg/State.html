@@ -23,366 +23,370 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.178.1">State</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.187.1">State</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.178.2">pushStateSet</A></B>(const <!1><A HREF="StateSet.html">StateSet</A>* dstate)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.187.2">pushStateSet</A></B>(const <!1><A HREF="StateSet.html">StateSet</A>* dstate)
 <DD><I>push stateset onto state stack</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.178.3">popStateSet</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.187.3">popStateSet</A></B>()
 <DD><I>pop drawstate off state stack</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.178.4">captureCurrentState</A></B>(<!1><A HREF="StateSet.html">StateSet</A>&amp; stateset) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.187.4">captureCurrentState</A></B>(<!1><A HREF="StateSet.html">StateSet</A>&amp; stateset) const 
 <DD><I>copy the modes and attributes which captures the current state</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.178.5">reset</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.187.5">reset</A></B>()
 <DD><I>reset the state object to an empty stack</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Viewport.html">Viewport</A>* <B><A HREF="#DOC.2.178.6">getCurrentViewport</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Viewport.html">Viewport</A>* <B><A HREF="#DOC.2.187.6">getCurrentViewport</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.178.7">setInitialViewMatrix</A></B>(const <!1><A HREF="RefMatrix.html">osg::RefMatrix</A>* matrix)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.187.7">setInitialViewMatrix</A></B>(const <!1><A HREF="osg.html#DOC.2.103">osg::RefMatrix</A>* matrix)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Matrix.html">osg::Matrix</A>&amp; <B><A HREF="#DOC.2.178.8">getInitialViewMatrix</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="osg.html#DOC.2.102">osg::Matrix</A>&amp; <B><A HREF="#DOC.2.187.8">getInitialViewMatrix</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.178.9">applyProjectionMatrix</A></B>(const <!1><A HREF="RefMatrix.html">osg::RefMatrix</A>* matrix)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="osg.html#DOC.2.102">osg::Matrix</A>&amp; <B><A HREF="#DOC.2.187.9">getInitialInverseViewMatrix</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Matrix.html">osg::Matrix</A>&amp; <B><A HREF="#DOC.2.178.10">getProjectionMatrix</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.187.10">applyProjectionMatrix</A></B>(const <!1><A HREF="osg.html#DOC.2.103">osg::RefMatrix</A>* matrix)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.178.11">applyModelViewMatrix</A></B>(const <!1><A HREF="RefMatrix.html">osg::RefMatrix</A>* matrix)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="osg.html#DOC.2.102">osg::Matrix</A>&amp; <B><A HREF="#DOC.2.187.11">getProjectionMatrix</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Matrix.html">osg::Matrix</A>&amp; <B><A HREF="#DOC.2.178.12">getModelViewMatrix</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.187.12">applyModelViewMatrix</A></B>(const <!1><A HREF="osg.html#DOC.2.103">osg::RefMatrix</A>* matrix)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Polytope.html">Polytope</A> <B><A HREF="#DOC.2.178.13">getViewFrustum</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="osg.html#DOC.2.102">osg::Matrix</A>&amp; <B><A HREF="#DOC.2.187.13">getModelViewMatrix</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.178.14">apply</A></B>(const <!1><A HREF="StateSet.html">StateSet</A>* dstate)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Polytope.html">Polytope</A> <B><A HREF="#DOC.2.187.14">getViewFrustum</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.187.15">apply</A></B>(const <!1><A HREF="StateSet.html">StateSet</A>* dstate)
 <DD><I>Apply stateset</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.178.15">apply</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.187.16">apply</A></B>()
 <DD><I>Apply the state</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.178.16">applyMode</A></B>(StateAttribute::GLMode mode, bool enabled)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.187.17">applyMode</A></B>(StateAttribute::GLMode mode, bool enabled)
 <DD><I>Apply an OpenGL mode if required.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.178.17">applyTextureMode</A></B>(unsigned int unit, StateAttribute::GLMode mode, bool enabled)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.187.18">applyTextureMode</A></B>(unsigned int unit, StateAttribute::GLMode mode, bool enabled)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.178.18">applyAttribute</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>* attribute)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.187.19">applyAttribute</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>* attribute)
 <DD><I>Apply an attribute if required.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.178.19">applyTextureAttribute</A></B>(unsigned int unit, const <!1><A HREF="StateAttribute.html">StateAttribute</A>* attribute)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.187.20">applyTextureAttribute</A></B>(unsigned int unit, const <!1><A HREF="StateAttribute.html">StateAttribute</A>* attribute)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.178.20">haveAppliedMode</A></B>(StateAttribute::GLMode mode, StateAttribute::GLModeValue value)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.187.21">haveAppliedMode</A></B>(StateAttribute::GLMode mode, StateAttribute::GLModeValue value)
 <DD><I>Mode has been set externally, update state to reflect this setting</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.178.21">haveAppliedMode</A></B>(StateAttribute::GLMode mode)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.187.22">haveAppliedMode</A></B>(StateAttribute::GLMode mode)
 <DD><I>Mode has been set externally, therefore dirty the associated mode in osg::State so it is applied on next call to osg::State::apply()</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.178.22">haveAppliedAttribute</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>* attribute)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.187.23">haveAppliedAttribute</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>* attribute)
 <DD><I>Attribute has been applied externally, update state to reflect this setting</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.178.23">haveAppliedAttribute</A></B>(StateAttribute::Type type)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.187.24">haveAppliedAttribute</A></B>(StateAttribute::Type type)
 <DD><I>Attribute has been applied externally,  and therefore this attribute type has been dirtied  and will need to be re-appplied on next osg::Stateapply().</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.178.24">getLastAppliedMode</A></B>(StateAttribute::GLMode mode) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.187.25">getLastAppliedMode</A></B>(StateAttribute::GLMode mode) const 
 <DD><I>Get whether the current specified mode is enabled (true) or disabled (false)</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="StateAttribute.html">StateAttribute</A>* <B><A HREF="#DOC.2.178.25">getLastAppliedAttribute</A></B>(StateAttribute::Type type) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="StateAttribute.html">StateAttribute</A>* <B><A HREF="#DOC.2.187.26">getLastAppliedAttribute</A></B>(StateAttribute::Type type) const 
 <DD><I>Get the current specified attribute, return NULL is one has not yet been applied</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.178.26">haveAppliedTextureMode</A></B>(unsigned int unit, StateAttribute::GLMode mode, StateAttribute::GLModeValue value)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.187.27">haveAppliedTextureMode</A></B>(unsigned int unit, StateAttribute::GLMode mode, StateAttribute::GLModeValue value)
 <DD><I>texture Mode has been set externally, update state to reflect this setting</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.178.27">haveAppliedTextureMode</A></B>(unsigned int unit, StateAttribute::GLMode mode)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.187.28">haveAppliedTextureMode</A></B>(unsigned int unit, StateAttribute::GLMode mode)
 <DD><I>texture Mode has been set externally, therefore dirty the associated mode in osg::State so it is applied on next call to osg::State::apply()</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.178.28">haveAppliedTextureAttribute</A></B>(unsigned int unit, const <!1><A HREF="StateAttribute.html">StateAttribute</A>* attribute)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.187.29">haveAppliedTextureAttribute</A></B>(unsigned int unit, const <!1><A HREF="StateAttribute.html">StateAttribute</A>* attribute)
 <DD><I>texture Attribute has been applied externally, update state to reflect this setting</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.178.29">haveAppliedTextureAttribute</A></B>(unsigned int unit, StateAttribute::Type type)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.187.30">haveAppliedTextureAttribute</A></B>(unsigned int unit, StateAttribute::Type type)
 <DD><I>texture Attribute has been applied externally,  and therefore this attribute type has been dirtied  and will need to be re-appplied on next osg::Stateapply().</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.178.30">getLastAppliedTextureMode</A></B>(unsigned int unit, StateAttribute::GLMode mode) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.187.31">getLastAppliedTextureMode</A></B>(unsigned int unit, StateAttribute::GLMode mode) const 
 <DD><I>Get whether the current specified texture mode is enabled (true) or disabled (false)</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="StateAttribute.html">StateAttribute</A>* <B><A HREF="#DOC.2.178.31">getLastAppliedTextureAttribute</A></B>(unsigned int unit, StateAttribute::Type type) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="StateAttribute.html">StateAttribute</A>* <B><A HREF="#DOC.2.187.32">getLastAppliedTextureAttribute</A></B>(unsigned int unit, StateAttribute::Type type) const 
 <DD><I>Get the current specified texture attribute, return NULL is one has not yet been applied</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.178.32">dirtyAllModes</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.187.33">dirtyAllModes</A></B>()
 <DD><I>Dirty the modes previously applied in osg::State</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.178.33">dirtyAllAttributes</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.187.34">dirtyAllAttributes</A></B>()
 <DD><I>Dirty the modes attributes previously applied in osg::State</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.178.34">disableAllVertexArrays</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.187.35">disableAllVertexArrays</A></B>()
 <DD><I>disable the vertex, normal, color, tex coords, secenday color, fog coord and index arrays</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.178.35">dirtyAllVertexArrays</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.187.36">dirtyAllVertexArrays</A></B>()
 <DD><I>dirty the vertex, normal, color, tex coords, secenday color, fog coord and index arrays</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.178.36">setInterleavedArrays</A></B>( GLenum format, GLsizei stride, const GLvoid* pointer)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.187.37">setInterleavedArrays</A></B>( GLenum format, GLsizei stride, const GLvoid* pointer)
 <DD><I>Wrapper around glInterleavedArrays().</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.178.37">setVertexPointer</A></B>( GLint <!1><A HREF="fast_back_stack.html#DOC.2.224.7">size</A>, GLenum type, GLsizei stride, const GLvoid* <!1><A HREF="Vec4.html#DOC.2.217.8">ptr</A> )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.187.38">setVertexPointer</A></B>( GLint <!1><A HREF="fast_back_stack.html#DOC.2.233.7">size</A>, GLenum type, GLsizei stride, const GLvoid* <!1><A HREF="Vec4.html#DOC.2.226.8">ptr</A> )
 <DD><I>wrapper around glEnableClientState(GL_VERTEX_ARRAY);glVertexPointer(); note, only updates values that change</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.178.38">disableVertexPointer</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.187.39">disableVertexPointer</A></B>()
 <DD><I>wrapper glDisableClientState(GL_VERTEX_ARRAY).</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.178.39">dirtyVertexPointer</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.187.40">dirtyVertexPointer</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.178.40">setNormalPointer</A></B>( GLenum type, GLsizei stride, const GLvoid* <!1><A HREF="Vec4.html#DOC.2.217.8">ptr</A> )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.187.41">setNormalPointer</A></B>( GLenum type, GLsizei stride, const GLvoid* <!1><A HREF="Vec4.html#DOC.2.226.8">ptr</A> )
 <DD><I>wrapper around glEnableClientState(GL_NORMAL_ARRAY);glNormalPointer(); note, only updates values that change</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.178.41">disableNormalPointer</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.187.42">disableNormalPointer</A></B>()
 <DD><I>wrapper around glDisableClientState(GL_NORMAL_ARRAY); note, only updates values that change</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.178.42">dirtyNormalPointer</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.187.43">dirtyNormalPointer</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.178.43">setColorPointer</A></B>( GLint <!1><A HREF="fast_back_stack.html#DOC.2.224.7">size</A>, GLenum type, GLsizei stride, const GLvoid* <!1><A HREF="Vec4.html#DOC.2.217.8">ptr</A> )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.187.44">setColorPointer</A></B>( GLint <!1><A HREF="fast_back_stack.html#DOC.2.233.7">size</A>, GLenum type, GLsizei stride, const GLvoid* <!1><A HREF="Vec4.html#DOC.2.226.8">ptr</A> )
 <DD><I>wrapper around glEnableClientState(GL_COLOR_ARRAY);glColorPointer(); note, only updates values that change</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.178.44">disableColorPointer</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.187.45">disableColorPointer</A></B>()
 <DD><I>wrapper around glDisableClientState(GL_COLOR_ARRAY); note, only updates values that change</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.178.45">dirtyColorPointer</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.187.46">dirtyColorPointer</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.178.46">isSecondaryColorSupported</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.187.47">isSecondaryColorSupported</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.178.47">setSecondaryColorPointer</A></B>( GLint <!1><A HREF="fast_back_stack.html#DOC.2.224.7">size</A>, GLenum type, GLsizei stride, const GLvoid* <!1><A HREF="Vec4.html#DOC.2.217.8">ptr</A> )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.187.48">setSecondaryColorPointer</A></B>( GLint <!1><A HREF="fast_back_stack.html#DOC.2.233.7">size</A>, GLenum type, GLsizei stride, const GLvoid* <!1><A HREF="Vec4.html#DOC.2.226.8">ptr</A> )
 <DD><I>wrapper around glEnableClientState(GL_SECONDARY_COLOR_ARRAY);glSecondayColorPointer(); note, only updates values that change</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.178.48">disableSecondaryColorPointer</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.187.49">disableSecondaryColorPointer</A></B>()
 <DD><I>wrapper around glDisableClientState(GL_SECONDARY_COLOR_ARRAY); note, only updates values that change</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.178.49">dirtySecondaryColorPointer</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.187.50">dirtySecondaryColorPointer</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.178.50">setIndexPointer</A></B>( GLenum type, GLsizei stride, const GLvoid* <!1><A HREF="Vec4.html#DOC.2.217.8">ptr</A> )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.187.51">setIndexPointer</A></B>( GLenum type, GLsizei stride, const GLvoid* <!1><A HREF="Vec4.html#DOC.2.226.8">ptr</A> )
 <DD><I>wrapper around glEnableClientState(GL_INDEX_ARRAY);glIndexPointer(); note, only updates values that change</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.178.51">disableIndexPointer</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.187.52">disableIndexPointer</A></B>()
 <DD><I>wrapper around glDisableClientState(GL_INDEX_ARRAY); note, only updates values that change</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.178.52">dirtyIndexPointer</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.187.53">dirtyIndexPointer</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.178.53">isFogCoordSupported</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.187.54">isFogCoordSupported</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.178.54">setFogCoordPointer</A></B>( GLenum type, GLsizei stride, const GLvoid* <!1><A HREF="Vec4.html#DOC.2.217.8">ptr</A> )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.187.55">setFogCoordPointer</A></B>( GLenum type, GLsizei stride, const GLvoid* <!1><A HREF="Vec4.html#DOC.2.226.8">ptr</A> )
 <DD><I>wrapper around glEnableClientState(GL_FOG_COORDINATE_ARRAY);glFogCoordPointer(); note, only updates values that change</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.178.55">disableFogCoordPointer</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.187.56">disableFogCoordPointer</A></B>()
 <DD><I>wrapper around glDisableClientState(GL_FOG_COORDINATE_ARRAY); note, only updates values that change</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.178.56">dirtyFogCoordPointer</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.187.57">dirtyFogCoordPointer</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.178.57">setTexCoordPointer</A></B>( unsigned int unit, GLint <!1><A HREF="fast_back_stack.html#DOC.2.224.7">size</A>, GLenum type, GLsizei stride, const GLvoid* <!1><A HREF="Vec4.html#DOC.2.217.8">ptr</A> )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.187.58">setTexCoordPointer</A></B>( unsigned int unit, GLint <!1><A HREF="fast_back_stack.html#DOC.2.233.7">size</A>, GLenum type, GLsizei stride, const GLvoid* <!1><A HREF="Vec4.html#DOC.2.226.8">ptr</A> )
 <DD><I>wrapper around glEnableClientState(GL_TEXTURE_COORD_ARRAY);glTexCoordPointer(); note, only updates values that change</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.178.58">disableTexCoordPointer</A></B>( unsigned int unit )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.187.59">disableTexCoordPointer</A></B>( unsigned int unit )
 <DD><I>wrapper around glDisableClientState(GL_TEXTURE_COORD_ARRAY); note, only updates values that change</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.178.59">dirtyTexCoordPointer</A></B>( unsigned int unit )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.187.60">dirtyTexCoordPointer</A></B>( unsigned int unit )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.178.60">disableTexCoordPointersAboveAndIncluding</A></B>( unsigned int unit )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.187.61">disableTexCoordPointersAboveAndIncluding</A></B>( unsigned int unit )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.178.61">dirtyTexCoordPointersAboveAndIncluding</A></B>( unsigned int unit )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.187.62">dirtyTexCoordPointersAboveAndIncluding</A></B>( unsigned int unit )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.178.62">setClientActiveTextureUnit</A></B>( unsigned int unit )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.187.63">setClientActiveTextureUnit</A></B>( unsigned int unit )
 <DD><I>set the current tex coord array texture unit, return true if selected, false if selection failed such as when multitexturing is not supported.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.178.63">setActiveTextureUnit</A></B>( unsigned int unit )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.187.64">setActiveTextureUnit</A></B>( unsigned int unit )
 <DD><I>set the current texture unit, return true if selected, false if selection failed such as when multitexturing is not supported.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.178.64">setVertexAttribPointer</A></B>( unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A>, GLint <!1><A HREF="fast_back_stack.html#DOC.2.224.7">size</A>, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid* <!1><A HREF="Vec4.html#DOC.2.217.8">ptr</A> )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.187.65">setVertexAttribPointer</A></B>( unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A>, GLint <!1><A HREF="fast_back_stack.html#DOC.2.233.7">size</A>, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid* <!1><A HREF="Vec4.html#DOC.2.226.8">ptr</A> )
 <DD><I>wrapper around glEnableVertexAttribArrayARB(index);glVertexAttribPointerARB(); note, only updates values that change</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.178.65">disableVertexAttribPointer</A></B>( unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A> )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.187.66">disableVertexAttribPointer</A></B>( unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A> )
 <DD><I>wrapper around DisableVertexAttribArrayARB(index); note, only updates values that change</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.178.66">disableVertexAttribPointersAboveAndIncluding</A></B>( unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A> )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.187.67">disableVertexAttribPointersAboveAndIncluding</A></B>( unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A> )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.178.67">dirtyVertexAttribPointersAboveAndIncluding</A></B>( unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A> )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.187.68">dirtyVertexAttribPointersAboveAndIncluding</A></B>( unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A> )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.178.68">isVertexBufferObjectSupported</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.187.69">isVertexBufferObjectSupported</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.178.69">setContextID</A></B>(unsigned int contextID)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.187.70">setContextID</A></B>(unsigned int contextID)
 <DD><I>Set the current OpenGL context uniqueID.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned int <B><A HREF="#DOC.2.178.70">getContextID</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned int <B><A HREF="#DOC.2.187.71">getContextID</A></B>() const 
 <DD><I>Get the current OpenGL context unique ID</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.178.71">setFrameStamp</A></B>(<!1><A HREF="FrameStamp.html">FrameStamp</A>* fs)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.187.72">setFrameStamp</A></B>(<!1><A HREF="FrameStamp.html">FrameStamp</A>* fs)
 <DD><I>Set the frame stamp for the current frame</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="FrameStamp.html">FrameStamp</A>* <B><A HREF="#DOC.2.178.72">getFrameStamp</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="FrameStamp.html">FrameStamp</A>* <B><A HREF="#DOC.2.187.73">getFrameStamp</A></B>() const 
 <DD><I>Set the frame stamp for the current frame</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.178.73">setDisplaySettings</A></B>(<!1><A HREF="DisplaySettings.html">DisplaySettings</A>* vs)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.187.74">setDisplaySettings</A></B>(<!1><A HREF="DisplaySettings.html">DisplaySettings</A>* vs)
 <DD><I>Set the DisplaySettings.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="DisplaySettings.html">DisplaySettings</A>* <B><A HREF="#DOC.2.178.74">getDisplaySettings</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="DisplaySettings.html">DisplaySettings</A>* <B><A HREF="#DOC.2.187.75">getDisplaySettings</A></B>() const 
 <DD><I>Get the DisplaySettings </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.178.78">setAbortRenderingPtr</A></B>(bool* abortPtr)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.187.79">setAbortRenderingPtr</A></B>(bool* abortPtr)
 <DD><I>Set flag for early termination of the draw traversal</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.178.79">getAbortRendering</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.187.80">getAbortRendering</A></B>() const 
 <DD><I>Get flag for early termination of the draw traversal,  if true steps should be taken to complete rendering early</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.178.80">setReportGLErrors</A></B>(bool flag)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.187.81">setReportGLErrors</A></B>(bool flag)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.178.81">getReportGLErrors</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.187.82">getReportGLErrors</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.178.82">checkGLErrors</A></B>(const char* str) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.187.83">checkGLErrors</A></B>(const char* str) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.178.83">checkGLErrors</A></B>(StateAttribute::GLMode mode) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.187.84">checkGLErrors</A></B>(StateAttribute::GLMode mode) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.178.84">checkGLErrors</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>* attribute) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.187.85">checkGLErrors</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>* attribute) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.178.141">pushModeList</A></B>(<!1><A HREF="State.html#DOC.2.178.100">ModeMap</A>&amp; modeMap, const StateSet::ModeList&amp; modeList)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.187.143">pushModeList</A></B>(<!1><A HREF="State.html#DOC.2.187.102">ModeMap</A>&amp; modeMap, const StateSet::ModeList&amp; modeList)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.178.142">pushAttributeList</A></B>(<!1><A HREF="State.html#DOC.2.178.102">AttributeMap</A>&amp; attributeMap, const StateSet::AttributeList&amp; attributeList)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.187.144">pushAttributeList</A></B>(<!1><A HREF="State.html#DOC.2.187.104">AttributeMap</A>&amp; attributeMap, const StateSet::AttributeList&amp; attributeList)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.178.143">popModeList</A></B>(<!1><A HREF="State.html#DOC.2.178.100">ModeMap</A>&amp; modeMap, const StateSet::ModeList&amp; modeList)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.187.145">popModeList</A></B>(<!1><A HREF="State.html#DOC.2.187.102">ModeMap</A>&amp; modeMap, const StateSet::ModeList&amp; modeList)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.178.144">popAttributeList</A></B>(<!1><A HREF="State.html#DOC.2.178.102">AttributeMap</A>&amp; attributeMap, const StateSet::AttributeList&amp; attributeList)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.187.146">popAttributeList</A></B>(<!1><A HREF="State.html#DOC.2.187.104">AttributeMap</A>&amp; attributeMap, const StateSet::AttributeList&amp; attributeList)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.178.145">applyModeList</A></B>(<!1><A HREF="State.html#DOC.2.178.100">ModeMap</A>&amp; modeMap, const StateSet::ModeList&amp; modeList)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.187.147">applyModeList</A></B>(<!1><A HREF="State.html#DOC.2.187.102">ModeMap</A>&amp; modeMap, const StateSet::ModeList&amp; modeList)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.178.146">applyAttributeList</A></B>(<!1><A HREF="State.html#DOC.2.178.102">AttributeMap</A>&amp; attributeMap, const StateSet::AttributeList&amp; attributeList)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.187.148">applyAttributeList</A></B>(<!1><A HREF="State.html#DOC.2.187.104">AttributeMap</A>&amp; attributeMap, const StateSet::AttributeList&amp; attributeList)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.178.147">applyModeMap</A></B>(<!1><A HREF="State.html#DOC.2.178.100">ModeMap</A>&amp; modeMap)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.187.149">applyModeMap</A></B>(<!1><A HREF="State.html#DOC.2.187.102">ModeMap</A>&amp; modeMap)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.178.148">applyAttributeMap</A></B>(<!1><A HREF="State.html#DOC.2.178.102">AttributeMap</A>&amp; attributeMap)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.187.150">applyAttributeMap</A></B>(<!1><A HREF="State.html#DOC.2.187.104">AttributeMap</A>&amp; attributeMap)
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::pair&lt;const <!1><A HREF="StateAttribute.html">StateAttribute</A>*,StateAttribute::OverrideValue&gt; <B><A HREF="#DOC.2.178.75">AttributePair</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::pair&lt;const <!1><A HREF="StateAttribute.html">StateAttribute</A>*,StateAttribute::OverrideValue&gt; <B><A HREF="#DOC.2.187.76">AttributePair</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="State.html#DOC.2.178.75">AttributePair</A>&gt; <B><A HREF="#DOC.2.178.76">AttributeVec</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="State.html#DOC.2.187.76">AttributePair</A>&gt; <B><A HREF="#DOC.2.187.77">AttributeVec</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;StateAttribute::GLModeValue&gt; <B><A HREF="#DOC.2.178.77">ValueVec</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;StateAttribute::GLModeValue&gt; <B><A HREF="#DOC.2.187.78">ValueVec</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.178.86">_contextID</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.187.87">_contextID</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="FrameStamp.html">FrameStamp</A>&gt;  <B><A HREF="#DOC.2.178.87">_frameStamp</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="FrameStamp.html">FrameStamp</A>&gt;  <B><A HREF="#DOC.2.187.88">_frameStamp</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;const <!1><A HREF="RefMatrix.html">RefMatrix</A>&gt;  <B><A HREF="#DOC.2.178.88">_identity</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;const <!1><A HREF="osg.html#DOC.2.103">RefMatrix</A>&gt;  <B><A HREF="#DOC.2.187.89">_identity</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;const <!1><A HREF="RefMatrix.html">RefMatrix</A>&gt;  <B><A HREF="#DOC.2.178.89">_initialViewMatrix</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;const <!1><A HREF="osg.html#DOC.2.103">RefMatrix</A>&gt;  <B><A HREF="#DOC.2.187.90">_initialViewMatrix</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;const <!1><A HREF="RefMatrix.html">RefMatrix</A>&gt;  <B><A HREF="#DOC.2.178.90">_projection</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;const <!1><A HREF="osg.html#DOC.2.103">RefMatrix</A>&gt;  <B><A HREF="#DOC.2.187.91">_projection</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;const <!1><A HREF="RefMatrix.html">RefMatrix</A>&gt;  <B><A HREF="#DOC.2.178.91">_modelView</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;const <!1><A HREF="osg.html#DOC.2.103">RefMatrix</A>&gt;  <B><A HREF="#DOC.2.187.92">_modelView</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="DisplaySettings.html">DisplaySettings</A>&gt;  <B><A HREF="#DOC.2.178.92">_displaySettings</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="osg.html#DOC.2.102">Matrix</A> <B><A HREF="#DOC.2.187.93">_initialInverseViewMatrix</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool* <B><A HREF="#DOC.2.178.93">_abortRenderingPtr</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="DisplaySettings.html">DisplaySettings</A>&gt;  <B><A HREF="#DOC.2.187.94">_displaySettings</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.178.94">_reportGLErrors</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool* <B><A HREF="#DOC.2.187.95">_abortRenderingPtr</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="State.html#DOC.2.178.100">ModeMap</A> <B><A HREF="#DOC.2.178.106">_modeMap</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.187.96">_reportGLErrors</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="State.html#DOC.2.178.102">AttributeMap</A> <B><A HREF="#DOC.2.178.107">_attributeMap</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="State.html#DOC.2.187.102">ModeMap</A> <B><A HREF="#DOC.2.187.108">_modeMap</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="State.html#DOC.2.178.101">TextureModeMapList</A> <B><A HREF="#DOC.2.178.108">_textureModeMapList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="State.html#DOC.2.187.104">AttributeMap</A> <B><A HREF="#DOC.2.187.109">_attributeMap</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="State.html#DOC.2.178.103">TextureAttributeMapList</A> <B><A HREF="#DOC.2.178.109">_textureAttributeMapList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="State.html#DOC.2.187.103">TextureModeMapList</A> <B><A HREF="#DOC.2.187.110">_textureModeMapList</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="State.html#DOC.2.178.104">StateSetStack</A> <B><A HREF="#DOC.2.178.110">_drawStateStack</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="State.html#DOC.2.187.105">TextureAttributeMapList</A> <B><A HREF="#DOC.2.187.111">_textureAttributeMapList</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="State.html#DOC.2.178.111">EnabledArrayPair</A> <B><A HREF="#DOC.2.178.114">_vertexArray</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="State.html#DOC.2.187.106">StateSetStack</A> <B><A HREF="#DOC.2.187.112">_drawStateStack</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="State.html#DOC.2.178.111">EnabledArrayPair</A> <B><A HREF="#DOC.2.178.115">_normalArray</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="State.html#DOC.2.187.113">EnabledArrayPair</A> <B><A HREF="#DOC.2.187.116">_vertexArray</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="State.html#DOC.2.178.111">EnabledArrayPair</A> <B><A HREF="#DOC.2.178.116">_colorArray</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="State.html#DOC.2.187.113">EnabledArrayPair</A> <B><A HREF="#DOC.2.187.117">_normalArray</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="State.html#DOC.2.178.111">EnabledArrayPair</A> <B><A HREF="#DOC.2.178.117">_secondaryColorArray</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="State.html#DOC.2.187.113">EnabledArrayPair</A> <B><A HREF="#DOC.2.187.118">_colorArray</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="State.html#DOC.2.178.111">EnabledArrayPair</A> <B><A HREF="#DOC.2.178.118">_indexArray</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="State.html#DOC.2.187.113">EnabledArrayPair</A> <B><A HREF="#DOC.2.187.119">_secondaryColorArray</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="State.html#DOC.2.178.111">EnabledArrayPair</A> <B><A HREF="#DOC.2.178.119">_fogArray</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="State.html#DOC.2.187.113">EnabledArrayPair</A> <B><A HREF="#DOC.2.187.120">_indexArray</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="State.html#DOC.2.178.112">EnabledTexCoordArrayList</A> <B><A HREF="#DOC.2.178.120">_texCoordArrayList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="State.html#DOC.2.187.113">EnabledArrayPair</A> <B><A HREF="#DOC.2.187.121">_fogArray</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="State.html#DOC.2.178.113">EnabledVertexAttribArrayList</A> <B><A HREF="#DOC.2.178.121">_vertexAttribArrayList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="State.html#DOC.2.187.114">EnabledTexCoordArrayList</A> <B><A HREF="#DOC.2.187.122">_texCoordArrayList</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.178.122">_currentActiveTextureUnit</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="State.html#DOC.2.187.115">EnabledVertexAttribArrayList</A> <B><A HREF="#DOC.2.187.123">_vertexAttribArrayList</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.178.123">_currentClientActiveTextureUnit</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.187.124">_currentActiveTextureUnit</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable bool <B><A HREF="#DOC.2.178.132">_isSecondaryColorSupportResolved</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.187.125">_currentClientActiveTextureUnit</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable bool <B><A HREF="#DOC.2.178.133">_isSecondaryColorSupported</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable bool <B><A HREF="#DOC.2.187.134">_isSecondaryColorSupportResolved</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable bool <B><A HREF="#DOC.2.178.135">_isFogCoordSupportResolved</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable bool <B><A HREF="#DOC.2.187.135">_isSecondaryColorSupported</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable bool <B><A HREF="#DOC.2.178.136">_isFogCoordSupported</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable bool <B><A HREF="#DOC.2.187.137">_isFogCoordSupportResolved</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable bool <B><A HREF="#DOC.2.178.138">_isVertexBufferObjectSupportResolved</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable bool <B><A HREF="#DOC.2.187.138">_isFogCoordSupported</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable bool <B><A HREF="#DOC.2.178.139">_isVertexBufferObjectSupported</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable bool <B><A HREF="#DOC.2.187.140">_isVertexBufferObjectSupportResolved</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable bool <B><A HREF="#DOC.2.187.141">_isVertexBufferObjectSupported</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.178.85">~State</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.187.86">~State</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.178.97">applyMode</A></B>(StateAttribute::GLMode mode, bool enabled, <!1><A HREF="State.html#DOC.2.178.95">ModeStack</A>&amp; ms)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.187.99">applyMode</A></B>(StateAttribute::GLMode mode, bool enabled, <!1><A HREF="State.html#DOC.2.187.97">ModeStack</A>&amp; ms)
 <DD><I>apply an OpenGL mode if required, passing in mode, enable flag and appropriate mode stack </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.178.98">applyAttribute</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>* attribute, <!1><A HREF="State.html#DOC.2.178.96">AttributeStack</A>&amp; as)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.187.100">applyAttribute</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>* attribute, <!1><A HREF="State.html#DOC.2.187.98">AttributeStack</A>&amp; as)
 <DD><I>apply an attribute if required, passing in attribute and appropriate attribute stack </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.178.99">applyGlobalDefaultAttribute</A></B>(<!1><A HREF="State.html#DOC.2.178.96">AttributeStack</A>&amp; as)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.187.101">applyGlobalDefaultAttribute</A></B>(<!1><A HREF="State.html#DOC.2.187.98">AttributeStack</A>&amp; as)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="State.html#DOC.2.178.100">ModeMap</A>&amp; <B><A HREF="#DOC.2.178.124">getOrCreateTextureModeMap</A></B>(unsigned int unit)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="State.html#DOC.2.187.102">ModeMap</A>&amp; <B><A HREF="#DOC.2.187.126">getOrCreateTextureModeMap</A></B>(unsigned int unit)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="State.html#DOC.2.178.102">AttributeMap</A>&amp; <B><A HREF="#DOC.2.178.125">getOrCreateTextureAttributeMap</A></B>(unsigned int unit)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="State.html#DOC.2.187.104">AttributeMap</A>&amp; <B><A HREF="#DOC.2.187.127">getOrCreateTextureAttributeMap</A></B>(unsigned int unit)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.178.126">haveAppliedMode</A></B>(<!1><A HREF="State.html#DOC.2.178.100">ModeMap</A>&amp; modeMap, StateAttribute::GLMode mode, StateAttribute::GLModeValue value)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.187.128">haveAppliedMode</A></B>(<!1><A HREF="State.html#DOC.2.187.102">ModeMap</A>&amp; modeMap, StateAttribute::GLMode mode, StateAttribute::GLModeValue value)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.178.127">haveAppliedMode</A></B>(<!1><A HREF="State.html#DOC.2.178.100">ModeMap</A>&amp; modeMap, StateAttribute::GLMode mode)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.187.129">haveAppliedMode</A></B>(<!1><A HREF="State.html#DOC.2.187.102">ModeMap</A>&amp; modeMap, StateAttribute::GLMode mode)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.178.128">haveAppliedAttribute</A></B>(<!1><A HREF="State.html#DOC.2.178.102">AttributeMap</A>&amp; attributeMap, const <!1><A HREF="StateAttribute.html">StateAttribute</A>* attribute)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.187.130">haveAppliedAttribute</A></B>(<!1><A HREF="State.html#DOC.2.187.104">AttributeMap</A>&amp; attributeMap, const <!1><A HREF="StateAttribute.html">StateAttribute</A>* attribute)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.178.129">haveAppliedAttribute</A></B>(<!1><A HREF="State.html#DOC.2.178.102">AttributeMap</A>&amp; attributeMap, StateAttribute::Type type)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.187.131">haveAppliedAttribute</A></B>(<!1><A HREF="State.html#DOC.2.187.104">AttributeMap</A>&amp; attributeMap, StateAttribute::Type type)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.178.130">getLastAppliedMode</A></B>(const <!1><A HREF="State.html#DOC.2.178.100">ModeMap</A>&amp; modeMap, StateAttribute::GLMode mode) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.187.132">getLastAppliedMode</A></B>(const <!1><A HREF="State.html#DOC.2.187.102">ModeMap</A>&amp; modeMap, StateAttribute::GLMode mode) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="StateAttribute.html">StateAttribute</A>* <B><A HREF="#DOC.2.178.131">getLastAppliedAttribute</A></B>(const <!1><A HREF="State.html#DOC.2.178.102">AttributeMap</A>&amp; attributeMap, StateAttribute::Type type) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="StateAttribute.html">StateAttribute</A>* <B><A HREF="#DOC.2.187.133">getLastAppliedAttribute</A></B>(const <!1><A HREF="State.html#DOC.2.187.104">AttributeMap</A>&amp; attributeMap, StateAttribute::Type type) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.178.134">computeSecondaryColorSupported</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.187.136">computeSecondaryColorSupported</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.178.137">computeFogCoordSupported</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.187.139">computeFogCoordSupported</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.178.140">computeVertexBufferObjectSupported</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.187.142">computeVertexBufferObjectSupported</A></B>() const 
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.2.178.95">ModeStack</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.2.187.97">ModeStack</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.2.178.96">AttributeStack</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.2.187.98">AttributeStack</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt;StateAttribute::GLMode,<!1><A HREF="State.html#DOC.2.178.95">ModeStack</A>&gt; <B><A HREF="#DOC.2.178.100">ModeMap</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt;StateAttribute::GLMode,<!1><A HREF="State.html#DOC.2.187.97">ModeStack</A>&gt; <B><A HREF="#DOC.2.187.102">ModeMap</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="State.html#DOC.2.178.100">ModeMap</A>&gt; <B><A HREF="#DOC.2.178.101">TextureModeMapList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="State.html#DOC.2.187.102">ModeMap</A>&gt; <B><A HREF="#DOC.2.187.103">TextureModeMapList</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt;StateAttribute::Type,<!1><A HREF="State.html#DOC.2.178.96">AttributeStack</A>&gt; <B><A HREF="#DOC.2.178.102">AttributeMap</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt;StateAttribute::Type,<!1><A HREF="State.html#DOC.2.187.98">AttributeStack</A>&gt; <B><A HREF="#DOC.2.187.104">AttributeMap</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="State.html#DOC.2.178.102">AttributeMap</A>&gt; <B><A HREF="#DOC.2.178.103">TextureAttributeMapList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="State.html#DOC.2.187.104">AttributeMap</A>&gt; <B><A HREF="#DOC.2.187.105">TextureAttributeMapList</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;const <!1><A HREF="StateSet.html">StateSet</A>*&gt; <B><A HREF="#DOC.2.178.104">StateSetStack</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;const <!1><A HREF="StateSet.html">StateSet</A>*&gt; <B><A HREF="#DOC.2.187.106">StateSetStack</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;const <!1><A HREF="Matrix.html">Matrix</A>&gt; &gt; <B><A HREF="#DOC.2.178.105">MatrixStack</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;const <!1><A HREF="osg.html#DOC.2.102">Matrix</A>&gt; &gt; <B><A HREF="#DOC.2.187.107">MatrixStack</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.2.178.111">EnabledArrayPair</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.2.187.113">EnabledArrayPair</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="State.html#DOC.2.178.111">EnabledArrayPair</A>&gt; <B><A HREF="#DOC.2.178.112">EnabledTexCoordArrayList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="State.html#DOC.2.187.113">EnabledArrayPair</A>&gt; <B><A HREF="#DOC.2.187.114">EnabledTexCoordArrayList</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="State.html#DOC.2.178.111">EnabledArrayPair</A>&gt; <B><A HREF="#DOC.2.178.113">EnabledVertexAttribArrayList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="State.html#DOC.2.187.113">EnabledArrayPair</A>&gt; <B><A HREF="#DOC.2.187.115">EnabledVertexAttribArrayList</A></B>
 </DL></P>
 
 </DL>
@@ -420,107 +424,111 @@ Lazy state updating is used to minimize state changes.</BLOCKQUOTE>
 <DL>
 
 <A NAME="State"></A>
-<A NAME="DOC.2.178.1"></A>
+<A NAME="DOC.2.187.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> State()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="pushStateSet"></A>
-<A NAME="DOC.2.178.2"></A>
+<A NAME="DOC.2.187.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void pushStateSet(const <!1><A HREF="StateSet.html">StateSet</A>* dstate)</B></TT>
 <DD>push stateset onto state stack
 <DL><DT><DD></DL><P>
 <A NAME="popStateSet"></A>
-<A NAME="DOC.2.178.3"></A>
+<A NAME="DOC.2.187.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void popStateSet()</B></TT>
 <DD>pop drawstate off state stack
 <DL><DT><DD></DL><P>
 <A NAME="captureCurrentState"></A>
-<A NAME="DOC.2.178.4"></A>
+<A NAME="DOC.2.187.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void captureCurrentState(<!1><A HREF="StateSet.html">StateSet</A>&amp; stateset) const </B></TT>
 <DD>copy the modes and attributes which captures the current state
 <DL><DT><DD></DL><P>
 <A NAME="reset"></A>
-<A NAME="DOC.2.178.5"></A>
+<A NAME="DOC.2.187.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void reset()</B></TT>
 <DD>reset the state object to an empty stack
 <DL><DT><DD></DL><P>
 <A NAME="getCurrentViewport"></A>
-<A NAME="DOC.2.178.6"></A>
+<A NAME="DOC.2.187.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Viewport.html">Viewport</A>* getCurrentViewport() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setInitialViewMatrix"></A>
-<A NAME="DOC.2.178.7"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setInitialViewMatrix(const <!1><A HREF="RefMatrix.html">osg::RefMatrix</A>* matrix)</B></TT>
+<A NAME="DOC.2.187.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setInitialViewMatrix(const <!1><A HREF="osg.html#DOC.2.103">osg::RefMatrix</A>* matrix)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getInitialViewMatrix"></A>
-<A NAME="DOC.2.178.8"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Matrix.html">osg::Matrix</A>&amp; getInitialViewMatrix() const </B></TT>
+<A NAME="DOC.2.187.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="osg.html#DOC.2.102">osg::Matrix</A>&amp; getInitialViewMatrix() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getInitialInverseViewMatrix"></A>
+<A NAME="DOC.2.187.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="osg.html#DOC.2.102">osg::Matrix</A>&amp; getInitialInverseViewMatrix() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="applyProjectionMatrix"></A>
-<A NAME="DOC.2.178.9"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void applyProjectionMatrix(const <!1><A HREF="RefMatrix.html">osg::RefMatrix</A>* matrix)</B></TT>
+<A NAME="DOC.2.187.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void applyProjectionMatrix(const <!1><A HREF="osg.html#DOC.2.103">osg::RefMatrix</A>* matrix)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getProjectionMatrix"></A>
-<A NAME="DOC.2.178.10"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Matrix.html">osg::Matrix</A>&amp; getProjectionMatrix() const </B></TT>
+<A NAME="DOC.2.187.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="osg.html#DOC.2.102">osg::Matrix</A>&amp; getProjectionMatrix() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="applyModelViewMatrix"></A>
-<A NAME="DOC.2.178.11"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void applyModelViewMatrix(const <!1><A HREF="RefMatrix.html">osg::RefMatrix</A>* matrix)</B></TT>
+<A NAME="DOC.2.187.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void applyModelViewMatrix(const <!1><A HREF="osg.html#DOC.2.103">osg::RefMatrix</A>* matrix)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getModelViewMatrix"></A>
-<A NAME="DOC.2.178.12"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Matrix.html">osg::Matrix</A>&amp; getModelViewMatrix() const </B></TT>
+<A NAME="DOC.2.187.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="osg.html#DOC.2.102">osg::Matrix</A>&amp; getModelViewMatrix() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getViewFrustum"></A>
-<A NAME="DOC.2.178.13"></A>
+<A NAME="DOC.2.187.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Polytope.html">Polytope</A> getViewFrustum() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.178.14"></A>
+<A NAME="DOC.2.187.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void apply(const <!1><A HREF="StateSet.html">StateSet</A>* dstate)</B></TT>
 <DD>Apply stateset
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.178.15"></A>
+<A NAME="DOC.2.187.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void apply()</B></TT>
 <DD>Apply the state
 <DL><DT><DD></DL><P>
 <A NAME="applyMode"></A>
-<A NAME="DOC.2.178.16"></A>
+<A NAME="DOC.2.187.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool applyMode(StateAttribute::GLMode mode, bool enabled)</B></TT>
 <DD>Apply an OpenGL mode if required. 
 <DL><DT><DD></DL><P>
 <A NAME="applyTextureMode"></A>
-<A NAME="DOC.2.178.17"></A>
+<A NAME="DOC.2.187.18"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool applyTextureMode(unsigned int unit, StateAttribute::GLMode mode, bool enabled)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="applyAttribute"></A>
-<A NAME="DOC.2.178.18"></A>
+<A NAME="DOC.2.187.19"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool applyAttribute(const <!1><A HREF="StateAttribute.html">StateAttribute</A>* attribute)</B></TT>
 <DD>Apply an attribute if required. 
 <DL><DT><DD></DL><P>
 <A NAME="applyTextureAttribute"></A>
-<A NAME="DOC.2.178.19"></A>
+<A NAME="DOC.2.187.20"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool applyTextureAttribute(unsigned int unit, const <!1><A HREF="StateAttribute.html">StateAttribute</A>* attribute)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="haveAppliedMode"></A>
-<A NAME="DOC.2.178.20"></A>
+<A NAME="DOC.2.187.21"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void haveAppliedMode(StateAttribute::GLMode mode, StateAttribute::GLModeValue value)</B></TT>
 <DD>Mode has been set externally, update state to reflect this setting
 <DL><DT><DD></DL><P>
 <A NAME="haveAppliedMode"></A>
-<A NAME="DOC.2.178.21"></A>
+<A NAME="DOC.2.187.22"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void haveAppliedMode(StateAttribute::GLMode mode)</B></TT>
 <DD>Mode has been set externally, therefore dirty the associated mode in osg::State
 so it is applied on next call to osg::State::apply()
 <DL><DT><DD></DL><P>
 <A NAME="haveAppliedAttribute"></A>
-<A NAME="DOC.2.178.22"></A>
+<A NAME="DOC.2.187.23"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void haveAppliedAttribute(const <!1><A HREF="StateAttribute.html">StateAttribute</A>* attribute)</B></TT>
 <DD>Attribute has been applied externally, update state to reflect this setting
 <DL><DT><DD></DL><P>
 <A NAME="haveAppliedAttribute"></A>
-<A NAME="DOC.2.178.23"></A>
+<A NAME="DOC.2.187.24"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void haveAppliedAttribute(StateAttribute::Type type)</B></TT>
 <DD>Attribute has been applied externally, 
 and therefore this attribute type has been dirtied 
@@ -531,33 +539,33 @@ track the current state more accuratly and enable lazy state updating such
 that only changed state will be applied.
 <DL><DT><DD></DL><P>
 <A NAME="getLastAppliedMode"></A>
-<A NAME="DOC.2.178.24"></A>
+<A NAME="DOC.2.187.25"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getLastAppliedMode(StateAttribute::GLMode mode) const </B></TT>
 <DD>Get whether the current specified mode is enabled (true) or disabled (false)
 <DL><DT><DD></DL><P>
 <A NAME="getLastAppliedAttribute"></A>
-<A NAME="DOC.2.178.25"></A>
+<A NAME="DOC.2.187.26"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="StateAttribute.html">StateAttribute</A>* getLastAppliedAttribute(StateAttribute::Type type) const </B></TT>
 <DD>Get the current specified attribute, return NULL is one has not yet been applied
 <DL><DT><DD></DL><P>
 <A NAME="haveAppliedTextureMode"></A>
-<A NAME="DOC.2.178.26"></A>
+<A NAME="DOC.2.187.27"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void haveAppliedTextureMode(unsigned int unit, StateAttribute::GLMode mode, StateAttribute::GLModeValue value)</B></TT>
 <DD>texture Mode has been set externally, update state to reflect this setting
 <DL><DT><DD></DL><P>
 <A NAME="haveAppliedTextureMode"></A>
-<A NAME="DOC.2.178.27"></A>
+<A NAME="DOC.2.187.28"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void haveAppliedTextureMode(unsigned int unit, StateAttribute::GLMode mode)</B></TT>
 <DD>texture Mode has been set externally, therefore dirty the associated mode in osg::State
 so it is applied on next call to osg::State::apply()
 <DL><DT><DD></DL><P>
 <A NAME="haveAppliedTextureAttribute"></A>
-<A NAME="DOC.2.178.28"></A>
+<A NAME="DOC.2.187.29"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void haveAppliedTextureAttribute(unsigned int unit, const <!1><A HREF="StateAttribute.html">StateAttribute</A>* attribute)</B></TT>
 <DD>texture Attribute has been applied externally, update state to reflect this setting
 <DL><DT><DD></DL><P>
 <A NAME="haveAppliedTextureAttribute"></A>
-<A NAME="DOC.2.178.29"></A>
+<A NAME="DOC.2.187.30"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void haveAppliedTextureAttribute(unsigned int unit, StateAttribute::Type type)</B></TT>
 <DD>texture Attribute has been applied externally, 
 and therefore this attribute type has been dirtied 
@@ -568,208 +576,208 @@ track the current state more accuratly and enable lazy state updating such
 that only changed state will be applied.
 <DL><DT><DD></DL><P>
 <A NAME="getLastAppliedTextureMode"></A>
-<A NAME="DOC.2.178.30"></A>
+<A NAME="DOC.2.187.31"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getLastAppliedTextureMode(unsigned int unit, StateAttribute::GLMode mode) const </B></TT>
 <DD>Get whether the current specified texture mode is enabled (true) or disabled (false)
 <DL><DT><DD></DL><P>
 <A NAME="getLastAppliedTextureAttribute"></A>
-<A NAME="DOC.2.178.31"></A>
+<A NAME="DOC.2.187.32"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="StateAttribute.html">StateAttribute</A>* getLastAppliedTextureAttribute(unsigned int unit, StateAttribute::Type type) const </B></TT>
 <DD>Get the current specified texture attribute, return NULL is one has not yet been applied
 <DL><DT><DD></DL><P>
 <A NAME="dirtyAllModes"></A>
-<A NAME="DOC.2.178.32"></A>
+<A NAME="DOC.2.187.33"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void dirtyAllModes()</B></TT>
 <DD>Dirty the modes previously applied in osg::State
 <DL><DT><DD></DL><P>
 <A NAME="dirtyAllAttributes"></A>
-<A NAME="DOC.2.178.33"></A>
+<A NAME="DOC.2.187.34"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void dirtyAllAttributes()</B></TT>
 <DD>Dirty the modes attributes previously applied in osg::State
 <DL><DT><DD></DL><P>
 <A NAME="disableAllVertexArrays"></A>
-<A NAME="DOC.2.178.34"></A>
+<A NAME="DOC.2.187.35"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void disableAllVertexArrays()</B></TT>
 <DD>disable the vertex, normal, color, tex coords, secenday color, fog coord and index arrays
 <DL><DT><DD></DL><P>
 <A NAME="dirtyAllVertexArrays"></A>
-<A NAME="DOC.2.178.35"></A>
+<A NAME="DOC.2.187.36"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void dirtyAllVertexArrays()</B></TT>
 <DD>dirty the vertex, normal, color, tex coords, secenday color, fog coord and index arrays
 <DL><DT><DD></DL><P>
 <A NAME="setInterleavedArrays"></A>
-<A NAME="DOC.2.178.36"></A>
+<A NAME="DOC.2.187.37"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setInterleavedArrays( GLenum format, GLsizei stride, const GLvoid* pointer)</B></TT>
 <DD>Wrapper around glInterleavedArrays().
 also resets the internal array points and modes within osg::State to keep the other
 vertex array operations consistent. 
 <DL><DT><DD></DL><P>
 <A NAME="setVertexPointer"></A>
-<A NAME="DOC.2.178.37"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setVertexPointer( GLint <!1><A HREF="fast_back_stack.html#DOC.2.224.7">size</A>, GLenum type, GLsizei stride, const GLvoid* <!1><A HREF="Vec4.html#DOC.2.217.8">ptr</A> )</B></TT>
+<A NAME="DOC.2.187.38"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setVertexPointer( GLint <!1><A HREF="fast_back_stack.html#DOC.2.233.7">size</A>, GLenum type, GLsizei stride, const GLvoid* <!1><A HREF="Vec4.html#DOC.2.226.8">ptr</A> )</B></TT>
 <DD>wrapper around glEnableClientState(GL_VERTEX_ARRAY);glVertexPointer();
 note, only updates values that change
 <DL><DT><DD></DL><P>
 <A NAME="disableVertexPointer"></A>
-<A NAME="DOC.2.178.38"></A>
+<A NAME="DOC.2.187.39"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void disableVertexPointer()</B></TT>
 <DD>wrapper glDisableClientState(GL_VERTEX_ARRAY).
 note, only updates values that change.
 <DL><DT><DD></DL><P>
 <A NAME="dirtyVertexPointer"></A>
-<A NAME="DOC.2.178.39"></A>
+<A NAME="DOC.2.187.40"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void dirtyVertexPointer()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setNormalPointer"></A>
-<A NAME="DOC.2.178.40"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setNormalPointer( GLenum type, GLsizei stride, const GLvoid* <!1><A HREF="Vec4.html#DOC.2.217.8">ptr</A> )</B></TT>
+<A NAME="DOC.2.187.41"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setNormalPointer( GLenum type, GLsizei stride, const GLvoid* <!1><A HREF="Vec4.html#DOC.2.226.8">ptr</A> )</B></TT>
 <DD>wrapper around glEnableClientState(GL_NORMAL_ARRAY);glNormalPointer();
 note, only updates values that change
 <DL><DT><DD></DL><P>
 <A NAME="disableNormalPointer"></A>
-<A NAME="DOC.2.178.41"></A>
+<A NAME="DOC.2.187.42"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void disableNormalPointer()</B></TT>
 <DD>wrapper around glDisableClientState(GL_NORMAL_ARRAY);
 note, only updates values that change
 <DL><DT><DD></DL><P>
 <A NAME="dirtyNormalPointer"></A>
-<A NAME="DOC.2.178.42"></A>
+<A NAME="DOC.2.187.43"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void dirtyNormalPointer()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setColorPointer"></A>
-<A NAME="DOC.2.178.43"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setColorPointer( GLint <!1><A HREF="fast_back_stack.html#DOC.2.224.7">size</A>, GLenum type, GLsizei stride, const GLvoid* <!1><A HREF="Vec4.html#DOC.2.217.8">ptr</A> )</B></TT>
+<A NAME="DOC.2.187.44"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setColorPointer( GLint <!1><A HREF="fast_back_stack.html#DOC.2.233.7">size</A>, GLenum type, GLsizei stride, const GLvoid* <!1><A HREF="Vec4.html#DOC.2.226.8">ptr</A> )</B></TT>
 <DD>wrapper around glEnableClientState(GL_COLOR_ARRAY);glColorPointer();
 note, only updates values that change
 <DL><DT><DD></DL><P>
 <A NAME="disableColorPointer"></A>
-<A NAME="DOC.2.178.44"></A>
+<A NAME="DOC.2.187.45"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void disableColorPointer()</B></TT>
 <DD>wrapper around glDisableClientState(GL_COLOR_ARRAY);
 note, only updates values that change
 <DL><DT><DD></DL><P>
 <A NAME="dirtyColorPointer"></A>
-<A NAME="DOC.2.178.45"></A>
+<A NAME="DOC.2.187.46"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void dirtyColorPointer()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="isSecondaryColorSupported"></A>
-<A NAME="DOC.2.178.46"></A>
+<A NAME="DOC.2.187.47"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool isSecondaryColorSupported() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setSecondaryColorPointer"></A>
-<A NAME="DOC.2.178.47"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSecondaryColorPointer( GLint <!1><A HREF="fast_back_stack.html#DOC.2.224.7">size</A>, GLenum type, GLsizei stride, const GLvoid* <!1><A HREF="Vec4.html#DOC.2.217.8">ptr</A> )</B></TT>
+<A NAME="DOC.2.187.48"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSecondaryColorPointer( GLint <!1><A HREF="fast_back_stack.html#DOC.2.233.7">size</A>, GLenum type, GLsizei stride, const GLvoid* <!1><A HREF="Vec4.html#DOC.2.226.8">ptr</A> )</B></TT>
 <DD>wrapper around glEnableClientState(GL_SECONDARY_COLOR_ARRAY);glSecondayColorPointer();
 note, only updates values that change
 <DL><DT><DD></DL><P>
 <A NAME="disableSecondaryColorPointer"></A>
-<A NAME="DOC.2.178.48"></A>
+<A NAME="DOC.2.187.49"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void disableSecondaryColorPointer()</B></TT>
 <DD>wrapper around glDisableClientState(GL_SECONDARY_COLOR_ARRAY);
 note, only updates values that change
 <DL><DT><DD></DL><P>
 <A NAME="dirtySecondaryColorPointer"></A>
-<A NAME="DOC.2.178.49"></A>
+<A NAME="DOC.2.187.50"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void dirtySecondaryColorPointer()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setIndexPointer"></A>
-<A NAME="DOC.2.178.50"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setIndexPointer( GLenum type, GLsizei stride, const GLvoid* <!1><A HREF="Vec4.html#DOC.2.217.8">ptr</A> )</B></TT>
+<A NAME="DOC.2.187.51"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setIndexPointer( GLenum type, GLsizei stride, const GLvoid* <!1><A HREF="Vec4.html#DOC.2.226.8">ptr</A> )</B></TT>
 <DD>wrapper around glEnableClientState(GL_INDEX_ARRAY);glIndexPointer();
 note, only updates values that change
 <DL><DT><DD></DL><P>
 <A NAME="disableIndexPointer"></A>
-<A NAME="DOC.2.178.51"></A>
+<A NAME="DOC.2.187.52"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void disableIndexPointer()</B></TT>
 <DD>wrapper around glDisableClientState(GL_INDEX_ARRAY);
 note, only updates values that change
 <DL><DT><DD></DL><P>
 <A NAME="dirtyIndexPointer"></A>
-<A NAME="DOC.2.178.52"></A>
+<A NAME="DOC.2.187.53"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void dirtyIndexPointer()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="isFogCoordSupported"></A>
-<A NAME="DOC.2.178.53"></A>
+<A NAME="DOC.2.187.54"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool isFogCoordSupported() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setFogCoordPointer"></A>
-<A NAME="DOC.2.178.54"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setFogCoordPointer( GLenum type, GLsizei stride, const GLvoid* <!1><A HREF="Vec4.html#DOC.2.217.8">ptr</A> )</B></TT>
+<A NAME="DOC.2.187.55"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setFogCoordPointer( GLenum type, GLsizei stride, const GLvoid* <!1><A HREF="Vec4.html#DOC.2.226.8">ptr</A> )</B></TT>
 <DD>wrapper around glEnableClientState(GL_FOG_COORDINATE_ARRAY);glFogCoordPointer();
 note, only updates values that change
 <DL><DT><DD></DL><P>
 <A NAME="disableFogCoordPointer"></A>
-<A NAME="DOC.2.178.55"></A>
+<A NAME="DOC.2.187.56"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void disableFogCoordPointer()</B></TT>
 <DD>wrapper around glDisableClientState(GL_FOG_COORDINATE_ARRAY);
 note, only updates values that change
 <DL><DT><DD></DL><P>
 <A NAME="dirtyFogCoordPointer"></A>
-<A NAME="DOC.2.178.56"></A>
+<A NAME="DOC.2.187.57"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void dirtyFogCoordPointer()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setTexCoordPointer"></A>
-<A NAME="DOC.2.178.57"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setTexCoordPointer( unsigned int unit, GLint <!1><A HREF="fast_back_stack.html#DOC.2.224.7">size</A>, GLenum type, GLsizei stride, const GLvoid* <!1><A HREF="Vec4.html#DOC.2.217.8">ptr</A> )</B></TT>
+<A NAME="DOC.2.187.58"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setTexCoordPointer( unsigned int unit, GLint <!1><A HREF="fast_back_stack.html#DOC.2.233.7">size</A>, GLenum type, GLsizei stride, const GLvoid* <!1><A HREF="Vec4.html#DOC.2.226.8">ptr</A> )</B></TT>
 <DD>wrapper around glEnableClientState(GL_TEXTURE_COORD_ARRAY);glTexCoordPointer();
 note, only updates values that change
 <DL><DT><DD></DL><P>
 <A NAME="disableTexCoordPointer"></A>
-<A NAME="DOC.2.178.58"></A>
+<A NAME="DOC.2.187.59"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void disableTexCoordPointer( unsigned int unit )</B></TT>
 <DD>wrapper around glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 note, only updates values that change
 <DL><DT><DD></DL><P>
 <A NAME="dirtyTexCoordPointer"></A>
-<A NAME="DOC.2.178.59"></A>
+<A NAME="DOC.2.187.60"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void dirtyTexCoordPointer( unsigned int unit )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="disableTexCoordPointersAboveAndIncluding"></A>
-<A NAME="DOC.2.178.60"></A>
+<A NAME="DOC.2.187.61"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void disableTexCoordPointersAboveAndIncluding( unsigned int unit )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="dirtyTexCoordPointersAboveAndIncluding"></A>
-<A NAME="DOC.2.178.61"></A>
+<A NAME="DOC.2.187.62"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void dirtyTexCoordPointersAboveAndIncluding( unsigned int unit )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setClientActiveTextureUnit"></A>
-<A NAME="DOC.2.178.62"></A>
+<A NAME="DOC.2.187.63"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool setClientActiveTextureUnit( unsigned int unit )</B></TT>
 <DD>set the current tex coord array texture unit, return true if selected, false if selection failed such as when multitexturing is not supported.
 note, only updates values that change.
 <DL><DT><DD></DL><P>
 <A NAME="setActiveTextureUnit"></A>
-<A NAME="DOC.2.178.63"></A>
+<A NAME="DOC.2.187.64"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool setActiveTextureUnit( unsigned int unit )</B></TT>
 <DD>set the current texture unit, return true if selected, false if selection failed such as when multitexturing is not supported.
 note, only updates values that change.
 <DL><DT><DD></DL><P>
 <A NAME="setVertexAttribPointer"></A>
-<A NAME="DOC.2.178.64"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setVertexAttribPointer( unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A>, GLint <!1><A HREF="fast_back_stack.html#DOC.2.224.7">size</A>, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid* <!1><A HREF="Vec4.html#DOC.2.217.8">ptr</A> )</B></TT>
+<A NAME="DOC.2.187.65"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setVertexAttribPointer( unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A>, GLint <!1><A HREF="fast_back_stack.html#DOC.2.233.7">size</A>, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid* <!1><A HREF="Vec4.html#DOC.2.226.8">ptr</A> )</B></TT>
 <DD>wrapper around glEnableVertexAttribArrayARB(index);glVertexAttribPointerARB();
 note, only updates values that change
 <DL><DT><DD></DL><P>
 <A NAME="disableVertexAttribPointer"></A>
-<A NAME="DOC.2.178.65"></A>
+<A NAME="DOC.2.187.66"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void disableVertexAttribPointer( unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A> )</B></TT>
 <DD>wrapper around DisableVertexAttribArrayARB(index);
 note, only updates values that change
 <DL><DT><DD></DL><P>
 <A NAME="disableVertexAttribPointersAboveAndIncluding"></A>
-<A NAME="DOC.2.178.66"></A>
+<A NAME="DOC.2.187.67"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void disableVertexAttribPointersAboveAndIncluding( unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A> )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="dirtyVertexAttribPointersAboveAndIncluding"></A>
-<A NAME="DOC.2.178.67"></A>
+<A NAME="DOC.2.187.68"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void dirtyVertexAttribPointersAboveAndIncluding( unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A> )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="isVertexBufferObjectSupported"></A>
-<A NAME="DOC.2.178.68"></A>
+<A NAME="DOC.2.187.69"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool isVertexBufferObjectSupported() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setContextID"></A>
-<A NAME="DOC.2.178.69"></A>
+<A NAME="DOC.2.187.70"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setContextID(unsigned int contextID)</B></TT>
 <DD>Set the current OpenGL context uniqueID.
 Note, it is the application developers responsibility to
@@ -783,407 +791,411 @@ number of graphics contexts you have setup.
 By default contextID is 0.
 <DL><DT><DD></DL><P>
 <A NAME="getContextID"></A>
-<A NAME="DOC.2.178.70"></A>
+<A NAME="DOC.2.187.71"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   unsigned int getContextID() const </B></TT>
 <DD>Get the current OpenGL context unique ID
 <DL><DT><DD></DL><P>
 <A NAME="setFrameStamp"></A>
-<A NAME="DOC.2.178.71"></A>
+<A NAME="DOC.2.187.72"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setFrameStamp(<!1><A HREF="FrameStamp.html">FrameStamp</A>* fs)</B></TT>
 <DD>Set the frame stamp for the current frame
 <DL><DT><DD></DL><P>
 <A NAME="getFrameStamp"></A>
-<A NAME="DOC.2.178.72"></A>
+<A NAME="DOC.2.187.73"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="FrameStamp.html">FrameStamp</A>* getFrameStamp() const </B></TT>
 <DD>Set the frame stamp for the current frame
 <DL><DT><DD></DL><P>
 <A NAME="setDisplaySettings"></A>
-<A NAME="DOC.2.178.73"></A>
+<A NAME="DOC.2.187.74"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setDisplaySettings(<!1><A HREF="DisplaySettings.html">DisplaySettings</A>* vs)</B></TT>
 <DD>Set the DisplaySettings. Note, nothing is applied, the visual settings are just used
 used in the State object to pass the current visual settings to Drawables
 during rendering. 
 <DL><DT><DD></DL><P>
 <A NAME="getDisplaySettings"></A>
-<A NAME="DOC.2.178.74"></A>
+<A NAME="DOC.2.187.75"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="DisplaySettings.html">DisplaySettings</A>* getDisplaySettings() const </B></TT>
 <DD>Get the DisplaySettings 
 <DL><DT><DD></DL><P>
 <A NAME="AttributePair"></A>
-<A NAME="DOC.2.178.75"></A>
+<A NAME="DOC.2.187.76"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::pair&lt;const <!1><A HREF="StateAttribute.html">StateAttribute</A>*,StateAttribute::OverrideValue&gt; AttributePair</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="AttributeVec"></A>
-<A NAME="DOC.2.178.76"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="State.html#DOC.2.178.75">AttributePair</A>&gt; AttributeVec</B></TT>
+<A NAME="DOC.2.187.77"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="State.html#DOC.2.187.76">AttributePair</A>&gt; AttributeVec</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ValueVec"></A>
-<A NAME="DOC.2.178.77"></A>
+<A NAME="DOC.2.187.78"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;StateAttribute::GLModeValue&gt; ValueVec</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setAbortRenderingPtr"></A>
-<A NAME="DOC.2.178.78"></A>
+<A NAME="DOC.2.187.79"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setAbortRenderingPtr(bool* abortPtr)</B></TT>
 <DD>Set flag for early termination of the draw traversal
 <DL><DT><DD></DL><P>
 <A NAME="getAbortRendering"></A>
-<A NAME="DOC.2.178.79"></A>
+<A NAME="DOC.2.187.80"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getAbortRendering() const </B></TT>
 <DD>Get flag for early termination of the draw traversal, 
 if true steps should be taken to complete rendering early
 <DL><DT><DD></DL><P>
 <A NAME="setReportGLErrors"></A>
-<A NAME="DOC.2.178.80"></A>
+<A NAME="DOC.2.187.81"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setReportGLErrors(bool flag)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getReportGLErrors"></A>
-<A NAME="DOC.2.178.81"></A>
+<A NAME="DOC.2.187.82"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getReportGLErrors() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="checkGLErrors"></A>
-<A NAME="DOC.2.178.82"></A>
+<A NAME="DOC.2.187.83"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool checkGLErrors(const char* str) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="checkGLErrors"></A>
-<A NAME="DOC.2.178.83"></A>
+<A NAME="DOC.2.187.84"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool checkGLErrors(StateAttribute::GLMode mode) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="checkGLErrors"></A>
-<A NAME="DOC.2.178.84"></A>
+<A NAME="DOC.2.187.85"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool checkGLErrors(const <!1><A HREF="StateAttribute.html">StateAttribute</A>* attribute) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~State"></A>
-<A NAME="DOC.2.178.85"></A>
+<A NAME="DOC.2.187.86"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~State()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_contextID"></A>
-<A NAME="DOC.2.178.86"></A>
+<A NAME="DOC.2.187.87"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _contextID</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_frameStamp"></A>
-<A NAME="DOC.2.178.87"></A>
+<A NAME="DOC.2.187.88"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="FrameStamp.html">FrameStamp</A>&gt;  _frameStamp</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_identity"></A>
-<A NAME="DOC.2.178.88"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;const <!1><A HREF="RefMatrix.html">RefMatrix</A>&gt;  _identity</B></TT>
+<A NAME="DOC.2.187.89"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;const <!1><A HREF="osg.html#DOC.2.103">RefMatrix</A>&gt;  _identity</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_initialViewMatrix"></A>
-<A NAME="DOC.2.178.89"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;const <!1><A HREF="RefMatrix.html">RefMatrix</A>&gt;  _initialViewMatrix</B></TT>
+<A NAME="DOC.2.187.90"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;const <!1><A HREF="osg.html#DOC.2.103">RefMatrix</A>&gt;  _initialViewMatrix</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_projection"></A>
-<A NAME="DOC.2.178.90"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;const <!1><A HREF="RefMatrix.html">RefMatrix</A>&gt;  _projection</B></TT>
+<A NAME="DOC.2.187.91"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;const <!1><A HREF="osg.html#DOC.2.103">RefMatrix</A>&gt;  _projection</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_modelView"></A>
-<A NAME="DOC.2.178.91"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;const <!1><A HREF="RefMatrix.html">RefMatrix</A>&gt;  _modelView</B></TT>
+<A NAME="DOC.2.187.92"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;const <!1><A HREF="osg.html#DOC.2.103">RefMatrix</A>&gt;  _modelView</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_initialInverseViewMatrix"></A>
+<A NAME="DOC.2.187.93"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="osg.html#DOC.2.102">Matrix</A> _initialInverseViewMatrix</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_displaySettings"></A>
-<A NAME="DOC.2.178.92"></A>
+<A NAME="DOC.2.187.94"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="DisplaySettings.html">DisplaySettings</A>&gt;  _displaySettings</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_abortRenderingPtr"></A>
-<A NAME="DOC.2.178.93"></A>
+<A NAME="DOC.2.187.95"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool* _abortRenderingPtr</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_reportGLErrors"></A>
-<A NAME="DOC.2.178.94"></A>
+<A NAME="DOC.2.187.96"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _reportGLErrors</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ModeStack"></A>
-<A NAME="DOC.2.178.95"></A>
+<A NAME="DOC.2.187.97"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>struct  ModeStack</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="ModeStack"></A>
-<A NAME="DOC.2.178.95.1"></A>
+<A NAME="DOC.2.187.97.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ModeStack()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="changed"></A>
-<A NAME="DOC.2.178.95.2"></A>
+<A NAME="DOC.2.187.97.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool changed</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="last_applied_value"></A>
-<A NAME="DOC.2.178.95.3"></A>
+<A NAME="DOC.2.187.97.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool last_applied_value</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="global_default_value"></A>
-<A NAME="DOC.2.178.95.4"></A>
+<A NAME="DOC.2.187.97.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool global_default_value</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="valueVec"></A>
-<A NAME="DOC.2.178.95.5"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="State.html#DOC.2.178.77">ValueVec</A> valueVec</B></TT>
+<A NAME="DOC.2.187.97.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="State.html#DOC.2.187.78">ValueVec</A> valueVec</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="AttributeStack"></A>
-<A NAME="DOC.2.178.96"></A>
+<A NAME="DOC.2.187.98"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>struct  AttributeStack</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="AttributeStack"></A>
-<A NAME="DOC.2.178.96.1"></A>
+<A NAME="DOC.2.187.98.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> AttributeStack()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="changed"></A>
-<A NAME="DOC.2.178.96.2"></A>
+<A NAME="DOC.2.187.98.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool changed</B></TT>
 <DD>apply an attribute if required, passing in attribute and appropriate attribute stack 
 <DL><DT><DD></DL><P>
 <A NAME="last_applied_attribute"></A>
-<A NAME="DOC.2.178.96.3"></A>
+<A NAME="DOC.2.187.98.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="StateAttribute.html">StateAttribute</A>* last_applied_attribute</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="global_default_attribute"></A>
-<A NAME="DOC.2.178.96.4"></A>
+<A NAME="DOC.2.187.98.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="StateAttribute.html">StateAttribute</A>&gt;  global_default_attribute</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="attributeVec"></A>
-<A NAME="DOC.2.178.96.5"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="State.html#DOC.2.178.76">AttributeVec</A> attributeVec</B></TT>
+<A NAME="DOC.2.187.98.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="State.html#DOC.2.187.77">AttributeVec</A> attributeVec</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="applyMode"></A>
-<A NAME="DOC.2.178.97"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool applyMode(StateAttribute::GLMode mode, bool enabled, <!1><A HREF="State.html#DOC.2.178.95">ModeStack</A>&amp; ms)</B></TT>
+<A NAME="DOC.2.187.99"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool applyMode(StateAttribute::GLMode mode, bool enabled, <!1><A HREF="State.html#DOC.2.187.97">ModeStack</A>&amp; ms)</B></TT>
 <DD>apply an OpenGL mode if required, passing in mode, enable flag and appropriate mode stack 
 <DL><DT><DD></DL><P>
 <A NAME="applyAttribute"></A>
-<A NAME="DOC.2.178.98"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool applyAttribute(const <!1><A HREF="StateAttribute.html">StateAttribute</A>* attribute, <!1><A HREF="State.html#DOC.2.178.96">AttributeStack</A>&amp; as)</B></TT>
+<A NAME="DOC.2.187.100"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool applyAttribute(const <!1><A HREF="StateAttribute.html">StateAttribute</A>* attribute, <!1><A HREF="State.html#DOC.2.187.98">AttributeStack</A>&amp; as)</B></TT>
 <DD>apply an attribute if required, passing in attribute and appropriate attribute stack 
 <DL><DT><DD></DL><P>
 <A NAME="applyGlobalDefaultAttribute"></A>
-<A NAME="DOC.2.178.99"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool applyGlobalDefaultAttribute(<!1><A HREF="State.html#DOC.2.178.96">AttributeStack</A>&amp; as)</B></TT>
+<A NAME="DOC.2.187.101"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool applyGlobalDefaultAttribute(<!1><A HREF="State.html#DOC.2.187.98">AttributeStack</A>&amp; as)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ModeMap"></A>
-<A NAME="DOC.2.178.100"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt;StateAttribute::GLMode,<!1><A HREF="State.html#DOC.2.178.95">ModeStack</A>&gt; ModeMap</B></TT>
+<A NAME="DOC.2.187.102"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt;StateAttribute::GLMode,<!1><A HREF="State.html#DOC.2.187.97">ModeStack</A>&gt; ModeMap</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="TextureModeMapList"></A>
-<A NAME="DOC.2.178.101"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="State.html#DOC.2.178.100">ModeMap</A>&gt; TextureModeMapList</B></TT>
+<A NAME="DOC.2.187.103"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="State.html#DOC.2.187.102">ModeMap</A>&gt; TextureModeMapList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="AttributeMap"></A>
-<A NAME="DOC.2.178.102"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt;StateAttribute::Type,<!1><A HREF="State.html#DOC.2.178.96">AttributeStack</A>&gt; AttributeMap</B></TT>
+<A NAME="DOC.2.187.104"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt;StateAttribute::Type,<!1><A HREF="State.html#DOC.2.187.98">AttributeStack</A>&gt; AttributeMap</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="TextureAttributeMapList"></A>
-<A NAME="DOC.2.178.103"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="State.html#DOC.2.178.102">AttributeMap</A>&gt; TextureAttributeMapList</B></TT>
+<A NAME="DOC.2.187.105"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="State.html#DOC.2.187.104">AttributeMap</A>&gt; TextureAttributeMapList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="StateSetStack"></A>
-<A NAME="DOC.2.178.104"></A>
+<A NAME="DOC.2.187.106"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;const <!1><A HREF="StateSet.html">StateSet</A>*&gt; StateSetStack</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="MatrixStack"></A>
-<A NAME="DOC.2.178.105"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;const <!1><A HREF="Matrix.html">Matrix</A>&gt; &gt; MatrixStack</B></TT>
+<A NAME="DOC.2.187.107"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;const <!1><A HREF="osg.html#DOC.2.102">Matrix</A>&gt; &gt; MatrixStack</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_modeMap"></A>
-<A NAME="DOC.2.178.106"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="State.html#DOC.2.178.100">ModeMap</A> _modeMap</B></TT>
+<A NAME="DOC.2.187.108"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="State.html#DOC.2.187.102">ModeMap</A> _modeMap</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_attributeMap"></A>
-<A NAME="DOC.2.178.107"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="State.html#DOC.2.178.102">AttributeMap</A> _attributeMap</B></TT>
+<A NAME="DOC.2.187.109"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="State.html#DOC.2.187.104">AttributeMap</A> _attributeMap</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_textureModeMapList"></A>
-<A NAME="DOC.2.178.108"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="State.html#DOC.2.178.101">TextureModeMapList</A> _textureModeMapList</B></TT>
+<A NAME="DOC.2.187.110"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="State.html#DOC.2.187.103">TextureModeMapList</A> _textureModeMapList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_textureAttributeMapList"></A>
-<A NAME="DOC.2.178.109"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="State.html#DOC.2.178.103">TextureAttributeMapList</A> _textureAttributeMapList</B></TT>
+<A NAME="DOC.2.187.111"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="State.html#DOC.2.187.105">TextureAttributeMapList</A> _textureAttributeMapList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_drawStateStack"></A>
-<A NAME="DOC.2.178.110"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="State.html#DOC.2.178.104">StateSetStack</A> _drawStateStack</B></TT>
+<A NAME="DOC.2.187.112"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="State.html#DOC.2.187.106">StateSetStack</A> _drawStateStack</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="EnabledArrayPair"></A>
-<A NAME="DOC.2.178.111"></A>
+<A NAME="DOC.2.187.113"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>struct  EnabledArrayPair</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="EnabledArrayPair"></A>
-<A NAME="DOC.2.178.111.1"></A>
+<A NAME="DOC.2.187.113.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> EnabledArrayPair()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="EnabledArrayPair"></A>
-<A NAME="DOC.2.178.111.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> EnabledArrayPair(const <!1><A HREF="State.html#DOC.2.178.111.2">EnabledArrayPair</A>&amp; eap)</B></TT>
+<A NAME="DOC.2.187.113.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> EnabledArrayPair(const <!1><A HREF="State.html#DOC.2.187.113.2">EnabledArrayPair</A>&amp; eap)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator = "></A>
-<A NAME="DOC.2.178.111.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="State.html#DOC.2.178.111">EnabledArrayPair</A>&amp; operator = (const <!1><A HREF="State.html#DOC.2.178.111">EnabledArrayPair</A>&amp; eap)</B></TT>
+<A NAME="DOC.2.187.113.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="State.html#DOC.2.187.113">EnabledArrayPair</A>&amp; operator = (const <!1><A HREF="State.html#DOC.2.187.113">EnabledArrayPair</A>&amp; eap)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_dirty"></A>
-<A NAME="DOC.2.178.111.4"></A>
+<A NAME="DOC.2.187.113.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _dirty</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_enabled"></A>
-<A NAME="DOC.2.178.111.5"></A>
+<A NAME="DOC.2.187.113.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _enabled</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_normalized"></A>
-<A NAME="DOC.2.178.111.6"></A>
+<A NAME="DOC.2.187.113.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GLboolean _normalized</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_pointer"></A>
-<A NAME="DOC.2.178.111.7"></A>
+<A NAME="DOC.2.187.113.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const GLvoid* _pointer</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="EnabledTexCoordArrayList"></A>
-<A NAME="DOC.2.178.112"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="State.html#DOC.2.178.111">EnabledArrayPair</A>&gt; EnabledTexCoordArrayList</B></TT>
+<A NAME="DOC.2.187.114"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="State.html#DOC.2.187.113">EnabledArrayPair</A>&gt; EnabledTexCoordArrayList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="EnabledVertexAttribArrayList"></A>
-<A NAME="DOC.2.178.113"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="State.html#DOC.2.178.111">EnabledArrayPair</A>&gt; EnabledVertexAttribArrayList</B></TT>
+<A NAME="DOC.2.187.115"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="State.html#DOC.2.187.113">EnabledArrayPair</A>&gt; EnabledVertexAttribArrayList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_vertexArray"></A>
-<A NAME="DOC.2.178.114"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="State.html#DOC.2.178.111">EnabledArrayPair</A> _vertexArray</B></TT>
+<A NAME="DOC.2.187.116"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="State.html#DOC.2.187.113">EnabledArrayPair</A> _vertexArray</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_normalArray"></A>
-<A NAME="DOC.2.178.115"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="State.html#DOC.2.178.111">EnabledArrayPair</A> _normalArray</B></TT>
+<A NAME="DOC.2.187.117"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="State.html#DOC.2.187.113">EnabledArrayPair</A> _normalArray</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_colorArray"></A>
-<A NAME="DOC.2.178.116"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="State.html#DOC.2.178.111">EnabledArrayPair</A> _colorArray</B></TT>
+<A NAME="DOC.2.187.118"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="State.html#DOC.2.187.113">EnabledArrayPair</A> _colorArray</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_secondaryColorArray"></A>
-<A NAME="DOC.2.178.117"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="State.html#DOC.2.178.111">EnabledArrayPair</A> _secondaryColorArray</B></TT>
+<A NAME="DOC.2.187.119"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="State.html#DOC.2.187.113">EnabledArrayPair</A> _secondaryColorArray</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_indexArray"></A>
-<A NAME="DOC.2.178.118"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="State.html#DOC.2.178.111">EnabledArrayPair</A> _indexArray</B></TT>
+<A NAME="DOC.2.187.120"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="State.html#DOC.2.187.113">EnabledArrayPair</A> _indexArray</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_fogArray"></A>
-<A NAME="DOC.2.178.119"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="State.html#DOC.2.178.111">EnabledArrayPair</A> _fogArray</B></TT>
+<A NAME="DOC.2.187.121"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="State.html#DOC.2.187.113">EnabledArrayPair</A> _fogArray</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_texCoordArrayList"></A>
-<A NAME="DOC.2.178.120"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="State.html#DOC.2.178.112">EnabledTexCoordArrayList</A> _texCoordArrayList</B></TT>
+<A NAME="DOC.2.187.122"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="State.html#DOC.2.187.114">EnabledTexCoordArrayList</A> _texCoordArrayList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_vertexAttribArrayList"></A>
-<A NAME="DOC.2.178.121"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="State.html#DOC.2.178.113">EnabledVertexAttribArrayList</A> _vertexAttribArrayList</B></TT>
+<A NAME="DOC.2.187.123"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="State.html#DOC.2.187.115">EnabledVertexAttribArrayList</A> _vertexAttribArrayList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_currentActiveTextureUnit"></A>
-<A NAME="DOC.2.178.122"></A>
+<A NAME="DOC.2.187.124"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _currentActiveTextureUnit</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_currentClientActiveTextureUnit"></A>
-<A NAME="DOC.2.178.123"></A>
+<A NAME="DOC.2.187.125"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _currentClientActiveTextureUnit</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getOrCreateTextureModeMap"></A>
-<A NAME="DOC.2.178.124"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="State.html#DOC.2.178.100">ModeMap</A>&amp; getOrCreateTextureModeMap(unsigned int unit)</B></TT>
+<A NAME="DOC.2.187.126"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="State.html#DOC.2.187.102">ModeMap</A>&amp; getOrCreateTextureModeMap(unsigned int unit)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getOrCreateTextureAttributeMap"></A>
-<A NAME="DOC.2.178.125"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="State.html#DOC.2.178.102">AttributeMap</A>&amp; getOrCreateTextureAttributeMap(unsigned int unit)</B></TT>
+<A NAME="DOC.2.187.127"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="State.html#DOC.2.187.104">AttributeMap</A>&amp; getOrCreateTextureAttributeMap(unsigned int unit)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="haveAppliedMode"></A>
-<A NAME="DOC.2.178.126"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void haveAppliedMode(<!1><A HREF="State.html#DOC.2.178.100">ModeMap</A>&amp; modeMap, StateAttribute::GLMode mode, StateAttribute::GLModeValue value)</B></TT>
+<A NAME="DOC.2.187.128"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void haveAppliedMode(<!1><A HREF="State.html#DOC.2.187.102">ModeMap</A>&amp; modeMap, StateAttribute::GLMode mode, StateAttribute::GLModeValue value)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="haveAppliedMode"></A>
-<A NAME="DOC.2.178.127"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void haveAppliedMode(<!1><A HREF="State.html#DOC.2.178.100">ModeMap</A>&amp; modeMap, StateAttribute::GLMode mode)</B></TT>
+<A NAME="DOC.2.187.129"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void haveAppliedMode(<!1><A HREF="State.html#DOC.2.187.102">ModeMap</A>&amp; modeMap, StateAttribute::GLMode mode)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="haveAppliedAttribute"></A>
-<A NAME="DOC.2.178.128"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void haveAppliedAttribute(<!1><A HREF="State.html#DOC.2.178.102">AttributeMap</A>&amp; attributeMap, const <!1><A HREF="StateAttribute.html">StateAttribute</A>* attribute)</B></TT>
+<A NAME="DOC.2.187.130"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void haveAppliedAttribute(<!1><A HREF="State.html#DOC.2.187.104">AttributeMap</A>&amp; attributeMap, const <!1><A HREF="StateAttribute.html">StateAttribute</A>* attribute)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="haveAppliedAttribute"></A>
-<A NAME="DOC.2.178.129"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void haveAppliedAttribute(<!1><A HREF="State.html#DOC.2.178.102">AttributeMap</A>&amp; attributeMap, StateAttribute::Type type)</B></TT>
+<A NAME="DOC.2.187.131"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void haveAppliedAttribute(<!1><A HREF="State.html#DOC.2.187.104">AttributeMap</A>&amp; attributeMap, StateAttribute::Type type)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getLastAppliedMode"></A>
-<A NAME="DOC.2.178.130"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getLastAppliedMode(const <!1><A HREF="State.html#DOC.2.178.100">ModeMap</A>&amp; modeMap, StateAttribute::GLMode mode) const </B></TT>
+<A NAME="DOC.2.187.132"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getLastAppliedMode(const <!1><A HREF="State.html#DOC.2.187.102">ModeMap</A>&amp; modeMap, StateAttribute::GLMode mode) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getLastAppliedAttribute"></A>
-<A NAME="DOC.2.178.131"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="StateAttribute.html">StateAttribute</A>* getLastAppliedAttribute(const <!1><A HREF="State.html#DOC.2.178.102">AttributeMap</A>&amp; attributeMap, StateAttribute::Type type) const </B></TT>
+<A NAME="DOC.2.187.133"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="StateAttribute.html">StateAttribute</A>* getLastAppliedAttribute(const <!1><A HREF="State.html#DOC.2.187.104">AttributeMap</A>&amp; attributeMap, StateAttribute::Type type) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_isSecondaryColorSupportResolved"></A>
-<A NAME="DOC.2.178.132"></A>
+<A NAME="DOC.2.187.134"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable bool _isSecondaryColorSupportResolved</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_isSecondaryColorSupported"></A>
-<A NAME="DOC.2.178.133"></A>
+<A NAME="DOC.2.187.135"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable bool _isSecondaryColorSupported</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeSecondaryColorSupported"></A>
-<A NAME="DOC.2.178.134"></A>
+<A NAME="DOC.2.187.136"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool computeSecondaryColorSupported() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_isFogCoordSupportResolved"></A>
-<A NAME="DOC.2.178.135"></A>
+<A NAME="DOC.2.187.137"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable bool _isFogCoordSupportResolved</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_isFogCoordSupported"></A>
-<A NAME="DOC.2.178.136"></A>
+<A NAME="DOC.2.187.138"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable bool _isFogCoordSupported</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeFogCoordSupported"></A>
-<A NAME="DOC.2.178.137"></A>
+<A NAME="DOC.2.187.139"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool computeFogCoordSupported() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_isVertexBufferObjectSupportResolved"></A>
-<A NAME="DOC.2.178.138"></A>
+<A NAME="DOC.2.187.140"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable bool _isVertexBufferObjectSupportResolved</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_isVertexBufferObjectSupported"></A>
-<A NAME="DOC.2.178.139"></A>
+<A NAME="DOC.2.187.141"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable bool _isVertexBufferObjectSupported</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeVertexBufferObjectSupported"></A>
-<A NAME="DOC.2.178.140"></A>
+<A NAME="DOC.2.187.142"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool computeVertexBufferObjectSupported() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="pushModeList"></A>
-<A NAME="DOC.2.178.141"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void pushModeList(<!1><A HREF="State.html#DOC.2.178.100">ModeMap</A>&amp; modeMap, const StateSet::ModeList&amp; modeList)</B></TT>
+<A NAME="DOC.2.187.143"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void pushModeList(<!1><A HREF="State.html#DOC.2.187.102">ModeMap</A>&amp; modeMap, const StateSet::ModeList&amp; modeList)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="pushAttributeList"></A>
-<A NAME="DOC.2.178.142"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void pushAttributeList(<!1><A HREF="State.html#DOC.2.178.102">AttributeMap</A>&amp; attributeMap, const StateSet::AttributeList&amp; attributeList)</B></TT>
+<A NAME="DOC.2.187.144"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void pushAttributeList(<!1><A HREF="State.html#DOC.2.187.104">AttributeMap</A>&amp; attributeMap, const StateSet::AttributeList&amp; attributeList)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="popModeList"></A>
-<A NAME="DOC.2.178.143"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void popModeList(<!1><A HREF="State.html#DOC.2.178.100">ModeMap</A>&amp; modeMap, const StateSet::ModeList&amp; modeList)</B></TT>
+<A NAME="DOC.2.187.145"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void popModeList(<!1><A HREF="State.html#DOC.2.187.102">ModeMap</A>&amp; modeMap, const StateSet::ModeList&amp; modeList)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="popAttributeList"></A>
-<A NAME="DOC.2.178.144"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void popAttributeList(<!1><A HREF="State.html#DOC.2.178.102">AttributeMap</A>&amp; attributeMap, const StateSet::AttributeList&amp; attributeList)</B></TT>
+<A NAME="DOC.2.187.146"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void popAttributeList(<!1><A HREF="State.html#DOC.2.187.104">AttributeMap</A>&amp; attributeMap, const StateSet::AttributeList&amp; attributeList)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="applyModeList"></A>
-<A NAME="DOC.2.178.145"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void applyModeList(<!1><A HREF="State.html#DOC.2.178.100">ModeMap</A>&amp; modeMap, const StateSet::ModeList&amp; modeList)</B></TT>
+<A NAME="DOC.2.187.147"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void applyModeList(<!1><A HREF="State.html#DOC.2.187.102">ModeMap</A>&amp; modeMap, const StateSet::ModeList&amp; modeList)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="applyAttributeList"></A>
-<A NAME="DOC.2.178.146"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void applyAttributeList(<!1><A HREF="State.html#DOC.2.178.102">AttributeMap</A>&amp; attributeMap, const StateSet::AttributeList&amp; attributeList)</B></TT>
+<A NAME="DOC.2.187.148"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void applyAttributeList(<!1><A HREF="State.html#DOC.2.187.104">AttributeMap</A>&amp; attributeMap, const StateSet::AttributeList&amp; attributeList)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="applyModeMap"></A>
-<A NAME="DOC.2.178.147"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void applyModeMap(<!1><A HREF="State.html#DOC.2.178.100">ModeMap</A>&amp; modeMap)</B></TT>
+<A NAME="DOC.2.187.149"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void applyModeMap(<!1><A HREF="State.html#DOC.2.187.102">ModeMap</A>&amp; modeMap)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="applyAttributeMap"></A>
-<A NAME="DOC.2.178.148"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void applyAttributeMap(<!1><A HREF="State.html#DOC.2.178.102">AttributeMap</A>&amp; attributeMap)</B></TT>
+<A NAME="DOC.2.187.150"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void applyAttributeMap(<!1><A HREF="State.html#DOC.2.187.104">AttributeMap</A>&amp; attributeMap)</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <HR><DL><DT><B>This class has no child classes.</B></DL>

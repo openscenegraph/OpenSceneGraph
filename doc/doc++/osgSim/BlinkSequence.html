@@ -28,56 +28,62 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.1.4">META_Object</A></B>(<!1><A HREF="osgSim.html">osgSim</A>, <!1><A HREF="BlinkSequence.html">BlinkSequence</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   double <B><A HREF="#DOC.2.1.5">getPulsePeriod</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int <B><A HREF="#DOC.2.1.5">getNumPulses</A></B>() const 
+<DD><I>return the number of pulses.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   double <B><A HREF="#DOC.2.1.6">getPulsePeriod</A></B>() const 
 <DD><I>get the total pulse period of the blink sequence, which is equal to the sum of all the pulse periods</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.1.6">setSequenceGroup</A></B>(<!1><A HREF="SequenceGroup.html">SequenceGroup</A>* sg)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.1.7">setSequenceGroup</A></B>(<!1><A HREF="SequenceGroup.html">SequenceGroup</A>* sg)
 <DD><I>set the sequence group which can be used to synchronize related blink sequences</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="SequenceGroup.html">SequenceGroup</A>* <B><A HREF="#DOC.2.1.7">getSequenceGroup</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="SequenceGroup.html">SequenceGroup</A>* <B><A HREF="#DOC.2.1.8">getSequenceGroup</A></B>()
 <DD><I>get the non const sequence group</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="SequenceGroup.html">SequenceGroup</A>* <B><A HREF="#DOC.2.1.8">getSequenceGroup</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="SequenceGroup.html">SequenceGroup</A>* <B><A HREF="#DOC.2.1.9">getSequenceGroup</A></B>() const 
 <DD><I>get the const sequence group</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.1.9">setPhaseShift</A></B>(double ps)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.1.10">setPhaseShift</A></B>(double ps)
 <DD><I>set the phase shift of the blink sequence, this would be used to shift a sequence within a sequence group</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   double <B><A HREF="#DOC.2.1.10">getPhaseShift</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   double <B><A HREF="#DOC.2.1.11">getPhaseShift</A></B>() const 
 <DD><I>get the pahse shift</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   double <B><A HREF="#DOC.2.1.17">localTime</A></B>(double time) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   double <B><A HREF="#DOC.2.1.18">localTime</A></B>(double time) const 
 <DD><I>compute the local time clamped to this BlinkSequences period, and accounting for the phase shift and sequence group</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.1.18">addPulse</A></B>(double length, const osg::Vec4&amp; <!1><A HREF="BlinkSequence.html#DOC.2.1.19">color</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.1.19">addPulse</A></B>(double length, const osg::Vec4&amp; <!1><A HREF="BlinkSequence.html#DOC.2.1.21">color</A>)
 <DD><I>add a pulse of specified color and duration to the BlinkSequence</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   osg::Vec4 <B><A HREF="#DOC.2.1.19">color</A></B>(double time, double length) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.1.20">getPulse</A></B>(unsigned int i, double&amp; length, osg::Vec4&amp; <!1><A HREF="BlinkSequence.html#DOC.2.1.21">color</A>) const 
+<DD><I>return the pulse data at position i.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   osg::Vec4 <B><A HREF="#DOC.2.1.21">color</A></B>(double time, double length) const 
 <DD><I>compute the color for the time interval sepecifed.</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
-class  OSGSIM_EXPORT <B><A HREF="SequenceGroup.html">SequenceGroup</A></B>: public osg::Referenced
+class  OSGSIM_EXPORT <B><A HREF="SequenceGroup.html">SequenceGroup</A></B>: public osg::Object
 <DD><I>sequence group which can be used to synchronize related blink sequences</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.1.13">_pulsePeriod</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.1.14">_pulsePeriod</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.1.14">_phaseShift</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.1.15">_phaseShift</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="BlinkSequence.html#DOC.2.1.12">PulseData</A> <B><A HREF="#DOC.2.1.15">_pulseData</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="BlinkSequence.html#DOC.2.1.13">PulseData</A> <B><A HREF="#DOC.2.1.16">_pulseData</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="SequenceGroup.html">SequenceGroup</A>&gt;  <B><A HREF="#DOC.2.1.16">_sequenceGroup</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="SequenceGroup.html">SequenceGroup</A>&gt;  <B><A HREF="#DOC.2.1.17">_sequenceGroup</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::pair&lt;double,osg::Vec4&gt; <B><A HREF="#DOC.2.1.11">IntervalColor</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::pair&lt;double,osg::Vec4&gt; <B><A HREF="#DOC.2.1.12">IntervalColor</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="BlinkSequence.html#DOC.2.1.11">IntervalColor</A>&gt; <B><A HREF="#DOC.2.1.12">PulseData</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="BlinkSequence.html#DOC.2.1.12">IntervalColor</A>&gt; <B><A HREF="#DOC.2.1.13">PulseData</A></B>
 </DL></P>
 
 </DL>
@@ -99,72 +105,82 @@ class  OSGSIM_EXPORT <B><A HREF="SequenceGroup.html">SequenceGroup</A></B>: publ
 <A NAME="DOC.2.1.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Object(<!1><A HREF="osgSim.html">osgSim</A>, <!1><A HREF="BlinkSequence.html">BlinkSequence</A>)</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="getPulsePeriod"></A>
+<A NAME="getNumPulses"></A>
 <A NAME="DOC.2.1.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   int getNumPulses() const </B></TT>
+<DD>return the number of pulses. 
+<DL><DT><DD></DL><P>
+<A NAME="getPulsePeriod"></A>
+<A NAME="DOC.2.1.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   double getPulsePeriod() const </B></TT>
 <DD>get the total pulse period of the blink sequence, which is equal to the sum of all the pulse periods
 <DL><DT><DD></DL><P>
 <A NAME="setSequenceGroup"></A>
-<A NAME="DOC.2.1.6"></A>
+<A NAME="DOC.2.1.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setSequenceGroup(<!1><A HREF="SequenceGroup.html">SequenceGroup</A>* sg)</B></TT>
 <DD>set the sequence group which can be used to synchronize related blink sequences
 <DL><DT><DD></DL><P>
 <A NAME="getSequenceGroup"></A>
-<A NAME="DOC.2.1.7"></A>
+<A NAME="DOC.2.1.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="SequenceGroup.html">SequenceGroup</A>* getSequenceGroup()</B></TT>
 <DD>get the non const sequence group
 <DL><DT><DD></DL><P>
 <A NAME="getSequenceGroup"></A>
-<A NAME="DOC.2.1.8"></A>
+<A NAME="DOC.2.1.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="SequenceGroup.html">SequenceGroup</A>* getSequenceGroup() const </B></TT>
 <DD>get the const sequence group
 <DL><DT><DD></DL><P>
 <A NAME="setPhaseShift"></A>
-<A NAME="DOC.2.1.9"></A>
+<A NAME="DOC.2.1.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setPhaseShift(double ps)</B></TT>
 <DD>set the phase shift of the blink sequence, this would be used to shift a sequence within a sequence group
 <DL><DT><DD></DL><P>
 <A NAME="getPhaseShift"></A>
-<A NAME="DOC.2.1.10"></A>
+<A NAME="DOC.2.1.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   double getPhaseShift() const </B></TT>
 <DD>get the pahse shift
 <DL><DT><DD></DL><P>
 <A NAME="IntervalColor"></A>
-<A NAME="DOC.2.1.11"></A>
+<A NAME="DOC.2.1.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::pair&lt;double,osg::Vec4&gt; IntervalColor</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="PulseData"></A>
-<A NAME="DOC.2.1.12"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="BlinkSequence.html#DOC.2.1.11">IntervalColor</A>&gt; PulseData</B></TT>
+<A NAME="DOC.2.1.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="BlinkSequence.html#DOC.2.1.12">IntervalColor</A>&gt; PulseData</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_pulsePeriod"></A>
-<A NAME="DOC.2.1.13"></A>
+<A NAME="DOC.2.1.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _pulsePeriod</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_phaseShift"></A>
-<A NAME="DOC.2.1.14"></A>
+<A NAME="DOC.2.1.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _phaseShift</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_pulseData"></A>
-<A NAME="DOC.2.1.15"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="BlinkSequence.html#DOC.2.1.12">PulseData</A> _pulseData</B></TT>
+<A NAME="DOC.2.1.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="BlinkSequence.html#DOC.2.1.13">PulseData</A> _pulseData</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_sequenceGroup"></A>
-<A NAME="DOC.2.1.16"></A>
+<A NAME="DOC.2.1.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;<!1><A HREF="SequenceGroup.html">SequenceGroup</A>&gt;  _sequenceGroup</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="localTime"></A>
-<A NAME="DOC.2.1.17"></A>
+<A NAME="DOC.2.1.18"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   double localTime(double time) const </B></TT>
 <DD>compute the local time clamped to this BlinkSequences period, and accounting for the phase shift and sequence group
 <DL><DT><DD></DL><P>
 <A NAME="addPulse"></A>
-<A NAME="DOC.2.1.18"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void addPulse(double length, const osg::Vec4&amp; <!1><A HREF="BlinkSequence.html#DOC.2.1.19">color</A>)</B></TT>
+<A NAME="DOC.2.1.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void addPulse(double length, const osg::Vec4&amp; <!1><A HREF="BlinkSequence.html#DOC.2.1.21">color</A>)</B></TT>
 <DD>add a pulse of specified color and duration to the BlinkSequence
 <DL><DT><DD></DL><P>
+<A NAME="getPulse"></A>
+<A NAME="DOC.2.1.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void getPulse(unsigned int i, double&amp; length, osg::Vec4&amp; <!1><A HREF="BlinkSequence.html#DOC.2.1.21">color</A>) const </B></TT>
+<DD>return the pulse data at position i. 
+<DL><DT><DD></DL><P>
 <A NAME="color"></A>
-<A NAME="DOC.2.1.19"></A>
+<A NAME="DOC.2.1.21"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   osg::Vec4 color(double time, double length) const </B></TT>
 <DD>compute the color for the time interval sepecifed. Averages the colors if the length is greater than the current pulse.
 <DL><DT><DD></DL><P></DL>

@@ -23,70 +23,70 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.126.1">PagedLOD</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.135.1">PagedLOD</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.126.2">PagedLOD</A></B>(const <!1><A HREF="PagedLOD.html#DOC.2.126.2">PagedLOD</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.135.2">PagedLOD</A></B>(const <!1><A HREF="PagedLOD.html#DOC.2.135.2">PagedLOD</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
 <DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.126.3">META_Node</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="PagedLOD.html">PagedLOD</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.135.3">META_Node</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="PagedLOD.html">PagedLOD</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.126.4">traverse</A></B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.135.4">traverse</A></B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.126.5">addChild</A></B>(<!1><A HREF="Node.html">Node</A>* child)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.135.5">addChild</A></B>(<!1><A HREF="Node.html">Node</A>* child)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.126.6">addChild</A></B>(<!1><A HREF="Node.html">Node</A>* child, float min, float max)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.135.6">addChild</A></B>(<!1><A HREF="Node.html">Node</A>* child, float min, float max)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.126.7">addChild</A></B>(<!1><A HREF="Node.html">Node</A>* child, float min, float max, const std::string&amp; filename)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.135.7">addChild</A></B>(<!1><A HREF="Node.html">Node</A>* child, float min, float max, const std::string&amp; filename)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.126.8">removeChild</A></B>(<!1><A HREF="Node.html">Node</A>* child)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.135.8">removeChild</A></B>(<!1><A HREF="Node.html">Node</A>* child)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.126.10">setFileName</A></B>(unsigned int childNo, const std::string&amp; filename)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.135.10">setFileName</A></B>(unsigned int childNo, const std::string&amp; filename)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const std::string&amp; <B><A HREF="#DOC.2.126.11">getFileName</A></B>(unsigned int childNo) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const std::string&amp; <B><A HREF="#DOC.2.135.11">getFileName</A></B>(unsigned int childNo) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned int <B><A HREF="#DOC.2.126.12">getNumFileNames</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned int <B><A HREF="#DOC.2.135.12">getNumFileNames</A></B>() const 
 <DD><I>returns the number of filenames currently set.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="PagedLOD.html#DOC.2.126.9">FileNameList</A>&amp; <B><A HREF="#DOC.2.126.13">getFileNameList</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="PagedLOD.html#DOC.2.135.9">FileNameList</A>&amp; <B><A HREF="#DOC.2.135.13">getFileNameList</A></B>()
 <DD><I>return the list of filename</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="PagedLOD.html#DOC.2.126.9">FileNameList</A>&amp; <B><A HREF="#DOC.2.126.14">getFileNameList</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="PagedLOD.html#DOC.2.135.9">FileNameList</A>&amp; <B><A HREF="#DOC.2.135.14">getFileNameList</A></B>() const 
 <DD><I>return the list of filename</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.126.16">setTimeStamp</A></B>(unsigned int childNo, double timeStamp)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.135.16">setTimeStamp</A></B>(unsigned int childNo, double timeStamp)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.126.17">getTimeStamp</A></B>(unsigned int childNo) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.135.17">getTimeStamp</A></B>(unsigned int childNo) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned int <B><A HREF="#DOC.2.126.18">getNumTimeStamps</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned int <B><A HREF="#DOC.2.135.18">getNumTimeStamps</A></B>() const 
 <DD><I>returns the number of filenames currently set.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="PagedLOD.html#DOC.2.126.15">TimeStampList</A>&amp; <B><A HREF="#DOC.2.126.19">getTimeStampList</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="PagedLOD.html#DOC.2.135.15">TimeStampList</A>&amp; <B><A HREF="#DOC.2.135.19">getTimeStampList</A></B>()
 <DD><I>return the list of time stamps</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="PagedLOD.html#DOC.2.126.15">TimeStampList</A>&amp; <B><A HREF="#DOC.2.126.20">getTimeStampList</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="PagedLOD.html#DOC.2.135.15">TimeStampList</A>&amp; <B><A HREF="#DOC.2.135.20">getTimeStampList</A></B>() const 
 <DD><I>return the list of time stamps</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.126.21">removeExpiredChildren</A></B>(double expiryTime, <!1><A HREF="osg.html#DOC.2.84">NodeList</A>&amp; removedChildren)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.135.21">removeExpiredChildren</A></B>(double expiryTime, <!1><A HREF="osg.html#DOC.2.86">NodeList</A>&amp; removedChildren)
 <DD><I>Remove the children from the PagedLOD which haven't be visited since specified expiry time.</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;std::string&gt; <B><A HREF="#DOC.2.126.9">FileNameList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;std::string&gt; <B><A HREF="#DOC.2.135.9">FileNameList</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;double&gt; <B><A HREF="#DOC.2.126.15">TimeStampList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;double&gt; <B><A HREF="#DOC.2.135.15">TimeStampList</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="PagedLOD.html#DOC.2.126.9">FileNameList</A> <B><A HREF="#DOC.2.126.23">_fileNameList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="PagedLOD.html#DOC.2.135.9">FileNameList</A> <B><A HREF="#DOC.2.135.23">_fileNameList</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="PagedLOD.html#DOC.2.126.15">TimeStampList</A> <B><A HREF="#DOC.2.126.24">_timeStampList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="PagedLOD.html#DOC.2.135.15">TimeStampList</A> <B><A HREF="#DOC.2.135.24">_timeStampList</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.126.22">~PagedLOD</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.135.22">~PagedLOD</A></B>()
 </DL></P>
 
 </DL>
@@ -94,9 +94,9 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>setCenterMode</B>(<!1><A HREF="LOD.html#DOC.2.92.10">CenterMode</A> mode)
+<IMG ALT="o" SRC=icon2.gif>void <B>setCenterMode</B>(<!1><A HREF="LOD.html#DOC.2.94.10">CenterMode</A> mode)
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="LOD.html#DOC.2.92.10">CenterMode</A> <B>getCenterMode</B>() const 
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="LOD.html#DOC.2.94.10">CenterMode</A> <B>getCenterMode</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>setCenter</B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; <!1><A HREF="BoundingSphere.html#DOC.2.30.8">center</A>)
 <DT>
@@ -110,27 +110,27 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   unsigned int <B>getNumRanges</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="LOD.html#DOC.2.92.9">RangeList</A>&amp; <B>getRangeList</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="LOD.html#DOC.2.94.9">RangeList</A>&amp; <B>getRangeList</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="LOD.html#DOC.2.92.9">RangeList</A>&amp; <B>getRangeList</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="LOD.html#DOC.2.94.9">RangeList</A>&amp; <B>getRangeList</B>() const 
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
 <IMG ALT="o" SRC=icon2.gif>typedef  std::pair&lt;float,float&gt; <B>MinMaxPair</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt;<!1><A HREF="LOD.html#DOC.2.92.8">MinMaxPair</A>&gt; <B>RangeList</B>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt;<!1><A HREF="LOD.html#DOC.2.94.8">MinMaxPair</A>&gt; <B>RangeList</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif>enum  <B>CenterMode</B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="LOD.html#DOC.2.92.10">CenterMode</A> <B>_centerMode</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="LOD.html#DOC.2.94.10">CenterMode</A> <B>_centerMode</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="Vec3.html">Vec3</A> <B>_userDefinedCenter</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="LOD.html#DOC.2.92.9">RangeList</A> <B>_rangeList</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="LOD.html#DOC.2.94.9">RangeList</A> <B>_rangeList</B>
 </DL></P>
 
 </DL>
@@ -161,7 +161,7 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="osg.html#DOC.2.84">NodeList</A> <B>_children</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="osg.html#DOC.2.86">NodeList</A> <B>_children</B>
 </DL></P>
 
 <P><DL>
@@ -192,15 +192,15 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   void <B>ascend</B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setName</B>( const std::string&amp; <!1><A HREF="Test.html#DOC.180.1.3">name</A> )
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setName</B>( const std::string&amp; <!1><A HREF="Test.html#DOC.185.1.3">name</A> )
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setName</B>( const char* <!1><A HREF="Test.html#DOC.180.1.3">name</A> )
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setName</B>( const char* <!1><A HREF="Test.html#DOC.185.1.3">name</A> )
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   const std::string&amp; <B>getName</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.107.18">ParentList</A>&amp; <B>getParents</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.116.18">ParentList</A>&amp; <B>getParents</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.107.18">ParentList</A> <B>getParents</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.116.18">ParentList</A> <B>getParents</B>()
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Group.html">Group</A>* <B>getParent</B>(unsigned int i)
 <DT>
@@ -234,13 +234,13 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>bool <B>containsOccluderNodes</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setNodeMask</B>(<!1><A HREF="Node.html#DOC.2.107.37">NodeMask</A> nm)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setNodeMask</B>(<!1><A HREF="Node.html#DOC.2.116.37">NodeMask</A> nm)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.107.37">NodeMask</A> <B>getNodeMask</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.116.37">NodeMask</A> <B>getNodeMask</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.107.40">DescriptionList</A>&amp; <B>getDescriptions</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.116.40">DescriptionList</A>&amp; <B>getDescriptions</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.107.40">DescriptionList</A>&amp; <B>getDescriptions</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.116.40">DescriptionList</A>&amp; <B>getDescriptions</B>()
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   const std::string&amp; <B>getDescription</B>(unsigned int i) const 
 <DT>
@@ -280,7 +280,7 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>std::string <B>_name</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.107.18">ParentList</A> <B>_parents</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.116.18">ParentList</A> <B>_parents</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="NodeCallback.html">NodeCallback</A>&gt;  <B>_updateCallback</B>
 <DT>
@@ -294,9 +294,9 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>unsigned int <B>_numChildrenWithOccluderNodes</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.107.37">NodeMask</A> <B>_nodeMask</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.116.37">NodeMask</A> <B>_nodeMask</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.107.40">DescriptionList</A> <B>_descriptions</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.116.40">DescriptionList</A> <B>_descriptions</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="StateSet.html">StateSet</A>&gt;  <B>_stateset</B>
 </DL></P>
@@ -319,9 +319,9 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.124.8">DataVariance</A> dv)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.133.8">DataVariance</A> dv)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.124.8">DataVariance</A> <B>getDataVariance</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.133.8">DataVariance</A> <B>getDataVariance</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
 <DT>
@@ -337,7 +337,7 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.124.8">DataVariance</A> <B>_dataVariance</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.133.8">DataVariance</A> <B>_dataVariance</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
 </DL></P>
@@ -376,110 +376,110 @@
 <DL>
 
 <A NAME="PagedLOD"></A>
-<A NAME="DOC.2.126.1"></A>
+<A NAME="DOC.2.135.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> PagedLOD()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="PagedLOD"></A>
-<A NAME="DOC.2.126.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> PagedLOD(const <!1><A HREF="PagedLOD.html#DOC.2.126.2">PagedLOD</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="DOC.2.135.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> PagedLOD(const <!1><A HREF="PagedLOD.html#DOC.2.135.2">PagedLOD</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
 <DD>Copy constructor using CopyOp to manage deep vs shallow copy
 <DL><DT><DD></DL><P>
 <A NAME="META_Node"></A>
-<A NAME="DOC.2.126.3"></A>
+<A NAME="DOC.2.135.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Node(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="PagedLOD.html">PagedLOD</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="traverse"></A>
-<A NAME="DOC.2.126.4"></A>
+<A NAME="DOC.2.135.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void traverse(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="addChild"></A>
-<A NAME="DOC.2.126.5"></A>
+<A NAME="DOC.2.135.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool addChild(<!1><A HREF="Node.html">Node</A>* child)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="addChild"></A>
-<A NAME="DOC.2.126.6"></A>
+<A NAME="DOC.2.135.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool addChild(<!1><A HREF="Node.html">Node</A>* child, float min, float max)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="addChild"></A>
-<A NAME="DOC.2.126.7"></A>
+<A NAME="DOC.2.135.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool addChild(<!1><A HREF="Node.html">Node</A>* child, float min, float max, const std::string&amp; filename)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="removeChild"></A>
-<A NAME="DOC.2.126.8"></A>
+<A NAME="DOC.2.135.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool removeChild(<!1><A HREF="Node.html">Node</A>* child)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="FileNameList"></A>
-<A NAME="DOC.2.126.9"></A>
+<A NAME="DOC.2.135.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;std::string&gt; FileNameList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setFileName"></A>
-<A NAME="DOC.2.126.10"></A>
+<A NAME="DOC.2.135.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setFileName(unsigned int childNo, const std::string&amp; filename)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getFileName"></A>
-<A NAME="DOC.2.126.11"></A>
+<A NAME="DOC.2.135.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const std::string&amp; getFileName(unsigned int childNo) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getNumFileNames"></A>
-<A NAME="DOC.2.126.12"></A>
+<A NAME="DOC.2.135.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   unsigned int getNumFileNames() const </B></TT>
 <DD>returns the number of filenames currently set. 
 <DL><DT><DD></DL><P>
 <A NAME="getFileNameList"></A>
-<A NAME="DOC.2.126.13"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="PagedLOD.html#DOC.2.126.9">FileNameList</A>&amp; getFileNameList()</B></TT>
+<A NAME="DOC.2.135.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="PagedLOD.html#DOC.2.135.9">FileNameList</A>&amp; getFileNameList()</B></TT>
 <DD>return the list of filename
 <DL><DT><DD></DL><P>
 <A NAME="getFileNameList"></A>
-<A NAME="DOC.2.126.14"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="PagedLOD.html#DOC.2.126.9">FileNameList</A>&amp; getFileNameList() const </B></TT>
+<A NAME="DOC.2.135.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="PagedLOD.html#DOC.2.135.9">FileNameList</A>&amp; getFileNameList() const </B></TT>
 <DD>return the list of filename
 <DL><DT><DD></DL><P>
 <A NAME="TimeStampList"></A>
-<A NAME="DOC.2.126.15"></A>
+<A NAME="DOC.2.135.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;double&gt; TimeStampList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setTimeStamp"></A>
-<A NAME="DOC.2.126.16"></A>
+<A NAME="DOC.2.135.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setTimeStamp(unsigned int childNo, double timeStamp)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getTimeStamp"></A>
-<A NAME="DOC.2.126.17"></A>
+<A NAME="DOC.2.135.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double getTimeStamp(unsigned int childNo) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getNumTimeStamps"></A>
-<A NAME="DOC.2.126.18"></A>
+<A NAME="DOC.2.135.18"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   unsigned int getNumTimeStamps() const </B></TT>
 <DD>returns the number of filenames currently set. 
 <DL><DT><DD></DL><P>
 <A NAME="getTimeStampList"></A>
-<A NAME="DOC.2.126.19"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="PagedLOD.html#DOC.2.126.15">TimeStampList</A>&amp; getTimeStampList()</B></TT>
+<A NAME="DOC.2.135.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="PagedLOD.html#DOC.2.135.15">TimeStampList</A>&amp; getTimeStampList()</B></TT>
 <DD>return the list of time stamps
 <DL><DT><DD></DL><P>
 <A NAME="getTimeStampList"></A>
-<A NAME="DOC.2.126.20"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="PagedLOD.html#DOC.2.126.15">TimeStampList</A>&amp; getTimeStampList() const </B></TT>
+<A NAME="DOC.2.135.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="PagedLOD.html#DOC.2.135.15">TimeStampList</A>&amp; getTimeStampList() const </B></TT>
 <DD>return the list of time stamps
 <DL><DT><DD></DL><P>
 <A NAME="removeExpiredChildren"></A>
-<A NAME="DOC.2.126.21"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void removeExpiredChildren(double expiryTime, <!1><A HREF="osg.html#DOC.2.84">NodeList</A>&amp; removedChildren)</B></TT>
+<A NAME="DOC.2.135.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void removeExpiredChildren(double expiryTime, <!1><A HREF="osg.html#DOC.2.86">NodeList</A>&amp; removedChildren)</B></TT>
 <DD>Remove the children from the PagedLOD which haven't be visited since specified expiry time.
 The removed children are added the removeChildren list passed into the method,
 this allows the children to be deleted later at the callers discression.
 <DL><DT><DD></DL><P>
 <A NAME="~PagedLOD"></A>
-<A NAME="DOC.2.126.22"></A>
+<A NAME="DOC.2.135.22"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~PagedLOD()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_fileNameList"></A>
-<A NAME="DOC.2.126.23"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="PagedLOD.html#DOC.2.126.9">FileNameList</A> _fileNameList</B></TT>
+<A NAME="DOC.2.135.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="PagedLOD.html#DOC.2.135.9">FileNameList</A> _fileNameList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_timeStampList"></A>
-<A NAME="DOC.2.126.24"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="PagedLOD.html#DOC.2.126.15">TimeStampList</A> _timeStampList</B></TT>
+<A NAME="DOC.2.135.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="PagedLOD.html#DOC.2.135.15">TimeStampList</A> _timeStampList</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <HR><DL><DT><B>This class has no child classes.</B></DL>

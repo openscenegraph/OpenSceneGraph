@@ -11,11 +11,11 @@
 <HR>
 
 <H2>Inheritance:</H2>
-<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=155>
-<param name=classes value="Mosg::Object,M,COperator,MOperator.html,CForceOperator,MForceOperator.html,CFluidFrictionOperator,MFluidFrictionOperator.html,CAccelOperator,MAccelOperator.html">
-<param name=before value="M,M,M|_,MR_,Mr_">
-<param name=after value="Md_,M,M,M,M">
-<param name=indent value="0,1,1,1,1">
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=185>
+<param name=classes value="Mosg::Object,M,COperator,MOperator.html,CForceOperator,MForceOperator.html,CFluidFrictionOperator,MFluidFrictionOperator.html,CAngularAccelOperator,MAngularAccelOperator.html,CAccelOperator,MAccelOperator.html">
+<param name=before value="M,M,M|_,MR_,MR_,Mr_">
+<param name=after value="Md_,M,M,M,M,M">
+<param name=indent value="0,1,1,1,1,1">
 <param name=arrowdir value="down">
 </APPLET>
 <HR>
@@ -23,37 +23,37 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.12.1">libraryName</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.13.1">libraryName</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.12.2">className</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.13.2">className</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.12.3">isSameKindAs</A></B>(const osg::Object* obj) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.13.3">isSameKindAs</A></B>(const osg::Object* obj) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.12.4">operate</A></B>(<!1><A HREF="Particle.html">Particle</A>* P, double dt) = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.13.4">operate</A></B>(<!1><A HREF="Particle.html">Particle</A>* P, double dt) = 0
 <DD><I>Do something on a particle.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.12.5">beginOperate</A></B>(<!1><A HREF="Program.html">Program</A>* )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.13.5">beginOperate</A></B>(<!1><A HREF="Program.html">Program</A>* )
 <DD><I>Do something before processing particles via the <CODE>operate()</CODE> method.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.12.6">endOperate</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.13.6">endOperate</A></B>()
 <DD><I>Do something after all particles have been processed</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <B><A HREF="#DOC.2.12.10">Operator</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <B><A HREF="#DOC.2.13.10">Operator</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <B><A HREF="#DOC.2.12.11">Operator</A></B>(const <!1><A HREF="Operator.html#DOC.2.12.11">Operator</A> &amp;copy, const osg::CopyOp &amp;copyop)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <B><A HREF="#DOC.2.13.11">Operator</A></B>(const <!1><A HREF="Operator.html#DOC.2.13.11">Operator</A> &amp;copy, const osg::CopyOp &amp;copyop)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.12.12">isEnabled</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.13.12">isEnabled</A></B>() const 
 <DD><I>Get whether this operator is enabled</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.12.13">setEnabled</A></B>(bool v)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.13.13">setEnabled</A></B>(bool v)
 <DD><I>Enable or disable this operator</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.12.7">~Operator</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.13.7">~Operator</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Operator.html">Operator</A>&amp; <B><A HREF="#DOC.2.12.8">operator=</A></B>(const <!1><A HREF="Operator.html">Operator</A> &amp;)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Operator.html">Operator</A>&amp; <B><A HREF="#DOC.2.13.8">operator=</A></B>(const <!1><A HREF="Operator.html">Operator</A> &amp;)
 </DL></P>
 
 </DL>
@@ -68,19 +68,19 @@ used, and initialize the right transformations if needed.</BLOCKQUOTE>
 <DL>
 
 <A NAME="libraryName"></A>
-<A NAME="DOC.2.12.1"></A>
+<A NAME="DOC.2.13.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* libraryName() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="className"></A>
-<A NAME="DOC.2.12.2"></A>
+<A NAME="DOC.2.13.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="isSameKindAs"></A>
-<A NAME="DOC.2.12.3"></A>
+<A NAME="DOC.2.13.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(const osg::Object* obj) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operate"></A>
-<A NAME="DOC.2.12.4"></A>
+<A NAME="DOC.2.13.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void operate(<!1><A HREF="Particle.html">Particle</A>* P, double dt) = 0</B></TT>
 <DD>Do something on a particle. 
 This method is called by <CODE>ModularProgram</CODE> objects to perform some operations
@@ -89,7 +89,7 @@ consist of modifying the particle's velocity vector. The <CODE>dt</CODE> paramet
 the time elapsed from last operation.            
 <DL><DT><DD></DL><P>
 <A NAME="beginOperate"></A>
-<A NAME="DOC.2.12.5"></A>
+<A NAME="DOC.2.13.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void beginOperate(<!1><A HREF="Program.html">Program</A>* )</B></TT>
 <DD>Do something before processing particles via the <CODE>operate()</CODE> method.
 Overriding this method could be necessary to query the calling <CODE>Program</CODE> object
@@ -97,33 +97,33 @@ for the current reference frame. If the reference frame is RELATIVE_TO_PARENTS, 
 class should prepare itself to do all operations in local coordinates.
 <DL><DT><DD></DL><P>
 <A NAME="endOperate"></A>
-<A NAME="DOC.2.12.6"></A>
+<A NAME="DOC.2.13.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void endOperate()</B></TT>
 <DD>Do something after all particles have been processed
 <DL><DT><DD></DL><P>
 <A NAME="~Operator"></A>
-<A NAME="DOC.2.12.7"></A>
+<A NAME="DOC.2.13.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Operator()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator="></A>
-<A NAME="DOC.2.12.8"></A>
+<A NAME="DOC.2.13.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Operator.html">Operator</A>&amp; operator=(const <!1><A HREF="Operator.html">Operator</A> &amp;)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Operator"></A>
-<A NAME="DOC.2.12.10"></A>
+<A NAME="DOC.2.13.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   Operator()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Operator"></A>
-<A NAME="DOC.2.12.11"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   Operator(const <!1><A HREF="Operator.html#DOC.2.12.11">Operator</A> &amp;copy, const osg::CopyOp &amp;copyop)</B></TT>
+<A NAME="DOC.2.13.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   Operator(const <!1><A HREF="Operator.html#DOC.2.13.11">Operator</A> &amp;copy, const osg::CopyOp &amp;copyop)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="isEnabled"></A>
-<A NAME="DOC.2.12.12"></A>
+<A NAME="DOC.2.13.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool isEnabled() const </B></TT>
 <DD>Get whether this operator is enabled
 <DL><DT><DD></DL><P>
 <A NAME="setEnabled"></A>
-<A NAME="DOC.2.12.13"></A>
+<A NAME="DOC.2.13.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setEnabled(bool v)</B></TT>
 <DD>Enable or disable this operator
 <DL><DT><DD></DL><P></DL>
@@ -131,6 +131,7 @@ class should prepare itself to do all operations in local coordinates.
 <DL><DT><B>Direct child classes:
 </B><DD><A HREF="ForceOperator.html">ForceOperator</A><BR>
 <A HREF="FluidFrictionOperator.html">FluidFrictionOperator</A><BR>
+<A HREF="AngularAccelOperator.html">AngularAccelOperator</A><BR>
 <A HREF="AccelOperator.html">AccelOperator</A><BR>
 </DL>
 

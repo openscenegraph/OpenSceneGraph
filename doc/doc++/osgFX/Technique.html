@@ -1,0 +1,234 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  OSGFX_EXPORT osgFX::Technique</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGFX_EXPORT <A HREF="#DOC.DOCU">osgFX::Technique</A></H2></H2><BLOCKQUOTE> This is the base class for effect techniques.</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=65>
+<param name=classes value="Mosg::Referenced,M,CTechnique,MTechnique.html">
+<param name=before value="M,M">
+<param name=after value="Md_,M">
+<param name=indent value="0,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.8.1">Technique</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.8.2">techniqueName</A></B>()
+<DD><I>get the name of this technique </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.8.3">techniqueDescription</A></B>()
+<DD><I>get a brief description of this technique </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.8.4">getRequiredExtensions</A></B>(std::vector&lt;std::string&gt; &amp;xtensions*/) const 
+<DD><I> collect the GL extension strings which are required for this technique to work properly.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.8.5">validate</A></B>(osg::State &amp;) const 
+<DD><I> tests whether this technique is valid for the current rendering context.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.8.6">accept</A></B>(osg::NodeVisitor &amp;nv, osg::Node* child)
+<DD><I> traverses the child nodes with multipass if necessary.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int <B><A HREF="#DOC.2.8.17">getNumPasses</A></B>() const 
+<DD><I>get the number of rendering passes defined in this technique </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   osg::Group* <B><A HREF="#DOC.2.8.18">getPassGroup</A></B>(int i)
+<DD><I>get the Group object associated to the i-th pass </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::Group* <B><A HREF="#DOC.2.8.19">getPassGroup</A></B>(int i) const 
+<DD><I>get the const Group object associated to the i-th pass </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   osg::StateSet* <B><A HREF="#DOC.2.8.20">getPassStateSet</A></B>(int i)
+<DD><I>get the StateSet object associated to the i-th pass </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::StateSet* <B><A HREF="#DOC.2.8.21">getPassStateSet</A></B>(int i) const 
+<DD><I>get the const StateSet object associated to the i-th pass </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   osg::Group* <B><A HREF="#DOC.2.8.22">getControlNode</A></B>()
+<DD><I> get the control node which holds the user's subgraph.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::Group* <B><A HREF="#DOC.2.8.23">getControlNode</A></B>() const 
+<DD><I>get the const control node which holds the user's subgraph </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.8.24">dirtyPasses</A></B>()
+<DD><I>force rebuilding of pass nodes on next traversal </I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.8.7">Technique</A></B>(const <!1><A HREF="Technique.html#DOC.2.8.7">Technique</A> &amp;)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.8.8">~Technique</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Technique.html">Technique</A>&amp; <B><A HREF="#DOC.2.8.9">operator=</A></B>(const <!1><A HREF="Technique.html">Technique</A> &amp;)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline virtual   osg::Node* <B><A HREF="#DOC.2.8.10">getOverrideChild</A></B>(int)
+<DD><I>optional: return a node that overrides the child node on a specified pass </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.8.11">addPass</A></B>(osg::StateSet* ss = 0)
+<DD><I>create a new pass node, add it to the technique and associate a StateSet </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.8.12">addPass</A></B>(osg::Group* pass)
+<DD><I> add a new pass to the technique specifying an user-defined pass node.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.8.13">define_passes</A></B>() = 0
+<DD><I> define the rendering passes that make up this technique.</I>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>
+This is the base class for effect techniques. A technique represents one
+of the possible ways to implement a special effect. This base class is
+abstract, you will have to subclass your own techniques for your custom
+effects.
+Derived classes will have to implement the define_passes() method to
+configure the rendering pass(es) that make up the technique. Usually
+you will create one StateSet object for each rendering pass and then
+you'll call addPass(stateset).
+The validate() method should return true if the technique is valid within
+the current rendering context, false otherwise. The default implementation
+of validate() calls getRequiredExtensions() and tests whether all required
+extensions are supported or not, returning false if at least one extension
+is not supported.</BLOCKQUOTE>
+<DL>
+
+<A NAME="Technique"></A>
+<A NAME="DOC.2.8.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Technique()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="techniqueName"></A>
+<A NAME="DOC.2.8.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* techniqueName()</B></TT>
+<DD>get the name of this technique 
+<DL><DT><DD></DL><P>
+<A NAME="techniqueDescription"></A>
+<A NAME="DOC.2.8.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* techniqueDescription()</B></TT>
+<DD>get a brief description of this technique 
+<DL><DT><DD></DL><P>
+<A NAME="getRequiredExtensions"></A>
+<A NAME="DOC.2.8.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void getRequiredExtensions(std::vector&lt;std::string&gt; &amp;xtensions*/) const </B></TT>
+<DD>
+collect the GL extension strings which are required for this technique
+to work properly. This method is called from the default implementation
+of validate().
+<DL><DT><DD></DL><P>
+<A NAME="validate"></A>
+<A NAME="DOC.2.8.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool validate(osg::State &amp;) const </B></TT>
+<DD>
+tests whether this technique is valid for the current rendering context.
+The default behavior is to call getRequiredExtensions() and check for
+extension availability.
+<DL><DT><DD></DL><P>
+<A NAME="accept"></A>
+<A NAME="DOC.2.8.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void accept(osg::NodeVisitor &amp;nv, osg::Node* child)</B></TT>
+<DD>
+traverses the child nodes with multipass if necessary.
+Don't call this method directly as it is called by osgFX::Effect
+<DL><DT><DD></DL><P>
+<A NAME="Technique"></A>
+<A NAME="DOC.2.8.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Technique(const <!1><A HREF="Technique.html#DOC.2.8.7">Technique</A> &amp;)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~Technique"></A>
+<A NAME="DOC.2.8.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Technique()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator="></A>
+<A NAME="DOC.2.8.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Technique.html">Technique</A>&amp; operator=(const <!1><A HREF="Technique.html">Technique</A> &amp;)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getOverrideChild"></A>
+<A NAME="DOC.2.8.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline virtual   osg::Node* getOverrideChild(int)</B></TT>
+<DD>optional: return a node that overrides the child node on a specified pass 
+<DL><DT><DD></DL><P>
+<A NAME="addPass"></A>
+<A NAME="DOC.2.8.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addPass(osg::StateSet* ss = 0)</B></TT>
+<DD>create a new pass node, add it to the technique and associate a StateSet 
+<DL><DT><DD></DL><P>
+<A NAME="addPass"></A>
+<A NAME="DOC.2.8.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addPass(osg::Group* pass)</B></TT>
+<DD>
+add a new pass to the technique specifying an user-defined pass node.
+You should call this version of addPass() only when you need to gain direct
+control over the pass node (i.e. for setting up a cull callback); otherwise
+please use addPass(StateSet*) and let the class create the pass node for you.
+<DL><DT><DD></DL><P>
+<A NAME="define_passes"></A>
+<A NAME="DOC.2.8.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void define_passes() = 0</B></TT>
+<DD>
+define the rendering passes that make up this technique. You must
+implement this method in derived classes to add the required passes.
+<DL><DT><DD></DL><P>
+<A NAME="getNumPasses"></A>
+<A NAME="DOC.2.8.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   int getNumPasses() const </B></TT>
+<DD>get the number of rendering passes defined in this technique 
+<DL><DT><DD></DL><P>
+<A NAME="getPassGroup"></A>
+<A NAME="DOC.2.8.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   osg::Group* getPassGroup(int i)</B></TT>
+<DD>get the Group object associated to the i-th pass 
+<DL><DT><DD></DL><P>
+<A NAME="getPassGroup"></A>
+<A NAME="DOC.2.8.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const osg::Group* getPassGroup(int i) const </B></TT>
+<DD>get the const Group object associated to the i-th pass 
+<DL><DT><DD></DL><P>
+<A NAME="getPassStateSet"></A>
+<A NAME="DOC.2.8.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   osg::StateSet* getPassStateSet(int i)</B></TT>
+<DD>get the StateSet object associated to the i-th pass 
+<DL><DT><DD></DL><P>
+<A NAME="getPassStateSet"></A>
+<A NAME="DOC.2.8.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const osg::StateSet* getPassStateSet(int i) const </B></TT>
+<DD>get the const StateSet object associated to the i-th pass 
+<DL><DT><DD></DL><P>
+<A NAME="getControlNode"></A>
+<A NAME="DOC.2.8.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   osg::Group* getControlNode()</B></TT>
+<DD>
+get the control node which holds the user's subgraph.
+You may want to do something on it like applying a cull callback.
+<DL><DT><DD></DL><P>
+<A NAME="getControlNode"></A>
+<A NAME="DOC.2.8.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const osg::Group* getControlNode() const </B></TT>
+<DD>get the const control node which holds the user's subgraph 
+<DL><DT><DD></DL><P>
+<A NAME="dirtyPasses"></A>
+<A NAME="DOC.2.8.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void dirtyPasses()</B></TT>
+<DD>force rebuilding of pass nodes on next traversal 
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

@@ -27,11 +27,11 @@ class  SG_EXPORT <B><A HREF="ArgumentParser.html">ArgumentParser</A></B>
 <DT>
 class  SG_EXPORT <B><A HREF="Array.html">Array</A></B>: public <!1><A HREF="Object.html">Object</A>
 <DT>
-template&lt;typename <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>, Array::Type ARRAYTYPE, int DataSize, int DataType&gt; class  <B><A HREF="TemplateArray.html">TemplateArray</A></B>: public <!1><A HREF="Array.html">Array</A>, public std::vector&lt;<!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>&gt;
+template&lt;typename <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A>, Array::Type ARRAYTYPE, int DataSize, int DataType&gt; class  <B><A HREF="TemplateArray.html">TemplateArray</A></B>: public <!1><A HREF="Array.html">Array</A>, public std::vector&lt;<!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A>&gt;
 <DT>
 class  SG_EXPORT <B><A HREF="IndexArray.html">IndexArray</A></B>: public <!1><A HREF="Array.html">Array</A>
 <DT>
-template&lt;typename <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>, Array::Type ARRAYTYPE, int DataSize, int DataType&gt; class  <B><A HREF="TemplateIndexArray.html">TemplateIndexArray</A></B>: public <!1><A HREF="IndexArray.html">IndexArray</A>, public std::vector&lt;<!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>&gt;
+template&lt;typename <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A>, Array::Type ARRAYTYPE, int DataSize, int DataType&gt; class  <B><A HREF="TemplateIndexArray.html">TemplateIndexArray</A></B>: public <!1><A HREF="IndexArray.html">IndexArray</A>, public std::vector&lt;<!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A>&gt;
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  <!1><A HREF="TemplateIndexArray.html">TemplateIndexArray</A>&lt;GLbyte,Array::ByteArrayType,1,GL_BYTE&gt; <B><A HREF="#DOC.2.11">ByteArray</A></B>
 <DT>
@@ -78,49 +78,49 @@ class  SG_EXPORT <B><A HREF="BoundingBox.html">BoundingBox</A></B>
 class  SG_EXPORT <B><A HREF="BoundingSphere.html">BoundingSphere</A></B>
 <DD><I>General purpose bounding sphere class for enclosing nodes/objects/vertices.</I>
 <DT>
-template&lt;class <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>&gt;inline   void <B><A HREF="clampGEQUAL.html">clampGEQUAL</A></B>(<!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>&amp; value, const <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A> minValue, const char* valueName)
+template&lt;class <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A>&gt;inline   void <B><A HREF="clampGEQUAL.html">clampGEQUAL</A></B>(<!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A>&amp; value, const <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A> minValue, const char* valueName)
 <DD><I>if value is greater than or equal to minValue do nothing - legal value, otherwise clamp value to specified maximum value and return warning  with valueName specifying which variable was clamped</I>
 <DT>
-template&lt;class <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>&gt;inline   void <B><A HREF="clampLEQUAL.html">clampLEQUAL</A></B>(<!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>&amp; value, const <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A> maxValue, const char* valueName)
+template&lt;class <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A>&gt;inline   void <B><A HREF="clampLEQUAL.html">clampLEQUAL</A></B>(<!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A>&amp; value, const <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A> maxValue, const char* valueName)
 <DD><I>if value is less than or equal to maxValue do nothing - legal value, otherwise clamp value to specified maximum value and return warning  with valueName specifying which variable was clamped</I>
 <DT>
-template&lt;class <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>&gt;inline   void <B><A HREF="clampBetweenRange.html">clampBetweenRange</A></B>(<!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>&amp; value, const <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A> minValue, const <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A> maxValue, const char* valueName)
+template&lt;class <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A>&gt;inline   void <B><A HREF="clampBetweenRange.html">clampBetweenRange</A></B>(<!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A>&amp; value, const <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A> minValue, const <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A> maxValue, const char* valueName)
 <DD><I>if value is between or equal to minValue and maxValue do nothing - legal value, otherwise clamp value to specified to range and return warning  with valueName specifying which variable was clamped.</I>
 <DT>
-template&lt;class A, class <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>&gt;inline   void <B><A HREF="clampArrayElementGEQUAL.html">clampArrayElementGEQUAL</A></B>(A&amp; value, unsigned int i, const <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A> minValue, const char* valueName)
+template&lt;class A, class <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A>&gt;inline   void <B><A HREF="clampArrayElementGEQUAL.html">clampArrayElementGEQUAL</A></B>(A&amp; value, unsigned int i, const <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A> minValue, const char* valueName)
 <DD><I>if array element value[i] is greater than or equal to minValue do nothing - legal value, otherwise clamp value to specified maximum value and return warning  with valueName specifying which variable was clamped</I>
 <DT>
-template&lt;class A, class <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>&gt;inline   void <B><A HREF="clampArrayElementLEQUAL.html">clampArrayElementLEQUAL</A></B>(A&amp; value, unsigned int i, const <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A> maxValue, const char* valueName)
+template&lt;class A, class <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A>&gt;inline   void <B><A HREF="clampArrayElementLEQUAL.html">clampArrayElementLEQUAL</A></B>(A&amp; value, unsigned int i, const <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A> maxValue, const char* valueName)
 <DD><I>if array element value[i] is less than or equal to maxValue do nothing - legal value, otherwise clamp value to specified maximum value and return warning  with valueName specifying which variable was clamped</I>
 <DT>
-template&lt;class A, class <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>&gt;inline   void <B><A HREF="clampArrayElementBetweenRange.html">clampArrayElementBetweenRange</A></B>(A&amp; value, unsigned int i, const <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A> minValue, const <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A> maxValue, const char* valueName)
+template&lt;class A, class <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A>&gt;inline   void <B><A HREF="clampArrayElementBetweenRange.html">clampArrayElementBetweenRange</A></B>(A&amp; value, unsigned int i, const <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A> minValue, const <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A> maxValue, const char* valueName)
 <DD><I>if array element value[i] is between or equal to minValue and maxValue do nothing - legal value, otherwise clamp value to specified to range and return warning  with valueName specifying which variable was clamped.</I>
 <DT>
-template&lt;class A, class <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>&gt;inline   void <B><A HREF="clampArrayElementsGEQUAL.html">clampArrayElementsGEQUAL</A></B>(A&amp; value, unsigned int <!1><A HREF="ImpostorSpriteManager.html#DOC.2.91.3">first</A>, unsigned int <!1><A HREF="ImpostorSpriteManager.html#DOC.2.91.4">last</A>, const <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A> minValue, const char* valueName)
+template&lt;class A, class <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A>&gt;inline   void <B><A HREF="clampArrayElementsGEQUAL.html">clampArrayElementsGEQUAL</A></B>(A&amp; value, unsigned int <!1><A HREF="ImpostorSpriteManager.html#DOC.2.93.3">first</A>, unsigned int <!1><A HREF="ImpostorSpriteManager.html#DOC.2.93.4">last</A>, const <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A> minValue, const char* valueName)
 <DD><I>if array elements are greater than or equal to minValue do nothing - legal value, otherwise clamp value to specified maximum value and return warning  with valueName specifying which variable was clamped</I>
 <DT>
-template&lt;class A, class <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>&gt;inline   void <B><A HREF="clampArrayElementsLEQUAL.html">clampArrayElementsLEQUAL</A></B>(A&amp; value, unsigned int <!1><A HREF="ImpostorSpriteManager.html#DOC.2.91.3">first</A>, unsigned int <!1><A HREF="ImpostorSpriteManager.html#DOC.2.91.4">last</A>, const <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A> maxValue, const char* valueName)
+template&lt;class A, class <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A>&gt;inline   void <B><A HREF="clampArrayElementsLEQUAL.html">clampArrayElementsLEQUAL</A></B>(A&amp; value, unsigned int <!1><A HREF="ImpostorSpriteManager.html#DOC.2.93.3">first</A>, unsigned int <!1><A HREF="ImpostorSpriteManager.html#DOC.2.93.4">last</A>, const <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A> maxValue, const char* valueName)
 <DD><I>if array elements are less than or equal to maxValue do nothing - legal value, otherwise clamp value to specified maximum value and return warning  with valueName specifying which variable was clamped</I>
 <DT>
-template&lt;class A, class <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>&gt;inline   void <B><A HREF="clampArrayElementsBetweenRange.html">clampArrayElementsBetweenRange</A></B>(A&amp; value, unsigned int <!1><A HREF="ImpostorSpriteManager.html#DOC.2.91.3">first</A>, unsigned int <!1><A HREF="ImpostorSpriteManager.html#DOC.2.91.4">last</A>, const <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A> minValue, const <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A> maxValue, const char* valueName)
+template&lt;class A, class <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A>&gt;inline   void <B><A HREF="clampArrayElementsBetweenRange.html">clampArrayElementsBetweenRange</A></B>(A&amp; value, unsigned int <!1><A HREF="ImpostorSpriteManager.html#DOC.2.93.3">first</A>, unsigned int <!1><A HREF="ImpostorSpriteManager.html#DOC.2.93.4">last</A>, const <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A> minValue, const <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A> maxValue, const char* valueName)
 <DD><I>if array elements are between or equal to minValue and maxValue do nothing - legal value, otherwise clamp value to specified to range and return warning  with valueName specifying which variable was clamped.</I>
 <DT>
-template&lt;class A, class <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>&gt;inline   void <B><A HREF="clampArray3GEQUAL.html">clampArray3GEQUAL</A></B>(A&amp; value, const <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A> minValue, const char* valueName)
+template&lt;class A, class <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A>&gt;inline   void <B><A HREF="clampArray3GEQUAL.html">clampArray3GEQUAL</A></B>(A&amp; value, const <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A> minValue, const char* valueName)
 <DD><I>if array4 elements are greater than or equal to minValue do nothing - legal value, otherwise clamp value to specified maximum value and return warning  with valueName specifying which variable was clamped</I>
 <DT>
-template&lt;class A, class <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>&gt;inline   void <B><A HREF="clampArray3LEQUAL.html">clampArray3LEQUAL</A></B>(A&amp; value, const <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A> maxValue, const char* valueName)
+template&lt;class A, class <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A>&gt;inline   void <B><A HREF="clampArray3LEQUAL.html">clampArray3LEQUAL</A></B>(A&amp; value, const <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A> maxValue, const char* valueName)
 <DD><I>if array4 elements are is less than or equal to maxValue do nothing - legal value, otherwise clamp value to specified maximum value and return warning  with valueName specifying which variable was clamped</I>
 <DT>
-template&lt;class A, class <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>&gt;inline   void <B><A HREF="clampArray3BetweenRange.html">clampArray3BetweenRange</A></B>(A&amp; value, const <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A> minValue, const <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A> maxValue, const char* valueName)
+template&lt;class A, class <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A>&gt;inline   void <B><A HREF="clampArray3BetweenRange.html">clampArray3BetweenRange</A></B>(A&amp; value, const <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A> minValue, const <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A> maxValue, const char* valueName)
 <DD><I>if array4 elements are between or equal to minValue and maxValue do nothing - legal value, otherwise clamp value to specified to range and return warning  with valueName specifying which variable was clamped.</I>
 <DT>
-template&lt;class A, class <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>&gt;inline   void <B><A HREF="clampArray4GEQUAL.html">clampArray4GEQUAL</A></B>(A&amp; value, const <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A> minValue, const char* valueName)
+template&lt;class A, class <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A>&gt;inline   void <B><A HREF="clampArray4GEQUAL.html">clampArray4GEQUAL</A></B>(A&amp; value, const <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A> minValue, const char* valueName)
 <DD><I>if array4 elements are greater than or equal to minValue do nothing - legal value, otherwise clamp value to specified maximum value and return warning  with valueName specifying which variable was clamped</I>
 <DT>
-template&lt;class A, class <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>&gt;inline   void <B><A HREF="clampArray4LEQUAL.html">clampArray4LEQUAL</A></B>(A&amp; value, unsigned int <!1><A HREF="ImpostorSpriteManager.html#DOC.2.91.3">first</A>, unsigned int <!1><A HREF="ImpostorSpriteManager.html#DOC.2.91.4">last</A>, const <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A> maxValue, const char* valueName)
+template&lt;class A, class <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A>&gt;inline   void <B><A HREF="clampArray4LEQUAL.html">clampArray4LEQUAL</A></B>(A&amp; value, unsigned int <!1><A HREF="ImpostorSpriteManager.html#DOC.2.93.3">first</A>, unsigned int <!1><A HREF="ImpostorSpriteManager.html#DOC.2.93.4">last</A>, const <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A> maxValue, const char* valueName)
 <DD><I>if array4 elements are is less than or equal to maxValue do nothing - legal value, otherwise clamp value to specified maximum value and return warning  with valueName specifying which variable was clamped</I>
 <DT>
-template&lt;class A, class <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>&gt;inline   void <B><A HREF="clampArray4BetweenRange.html">clampArray4BetweenRange</A></B>(A&amp; value, const <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A> minValue, const <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A> maxValue, const char* valueName)
+template&lt;class A, class <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A>&gt;inline   void <B><A HREF="clampArray4BetweenRange.html">clampArray4BetweenRange</A></B>(A&amp; value, const <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A> minValue, const <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A> maxValue, const char* valueName)
 <DD><I>if array4 elements are between or equal to minValue and maxValue do nothing - legal value, otherwise clamp value to specified to range and return warning  with valueName specifying which variable was clamped.</I>
 <DT>
 class  SG_EXPORT <B><A HREF="ClearNode.html">ClearNode</A></B>: public <!1><A HREF="Group.html">Group</A>
@@ -191,7 +191,7 @@ enum  <B><A HREF="Endian.html">Endian</A></B>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Endian.html">Endian</A> <B><A HREF="#DOC.2.71">getCpuByteOrder</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>template&lt;class <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>&gt;inline   void <B><A HREF="#DOC.2.72">swapBytes</A></B>( <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>&amp; in )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>template&lt;class <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A>&gt;inline   void <B><A HREF="#DOC.2.72">swapBytes</A></B>( <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A>&amp; in )
 <DT>
 class  SG_EXPORT <B><A HREF="Fog.html">Fog</A></B>: public <!1><A HREF="StateAttribute.html">StateAttribute</A>
 <DD><I>Fog - encapsulates OpenGL fog state.</I>
@@ -211,6 +211,12 @@ extern SG_EXPORT bool <B><A HREF="isGLExtensionSupported.html">isGLExtensionSupp
 inline   void* <B><A HREF="getGLExtensionFuncPtr.html">getGLExtensionFuncPtr</A></B>(const char* funcName)
 <DD><I>return the address of the specified OpenGL function.</I>
 <DT>
+extern SG_EXPORT void <B><A HREF="setGLExtensionDisableString.html">setGLExtensionDisableString</A></B>(const std::string&amp; disableString)
+<DD><I>Set a list of extensions to disable for different OpenGL renders, this allows OSG applications to work around OpenGL drivers bugs which are due to problemenatic extension support.</I>
+<DT>
+extern SG_EXPORT std::string&amp; <B><A HREF="getGLExtensionDisableString.html">getGLExtensionDisableString</A></B>()
+<DD><I>Get the list of extensions that are disabled for various OpenGL renders</I>
+<DT>
 inline   void* <B><A HREF="getGLExtensionFuncPtr.2.html">getGLExtensionFuncPtr</A></B>(const char* funcName, const char* fallbackFuncName)
 <DD><I>return the address of the specified OpenGL function, if not found then check a second function name, if this fails then return NULL as function is not supported by OpenGL library.</I>
 <DT>
@@ -225,7 +231,7 @@ class  SG_EXPORT <B><A HREF="Geometry.html">Geometry</A></B>: public <!1><A HREF
 extern SG_EXPORT <!1><A HREF="Geometry.html">Geometry</A>* <B><A HREF="createTexturedQuadGeometry.html">createTexturedQuadGeometry</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; <!1><A HREF="BoundingBox.html#DOC.2.29.25">corner</A>, const <!1><A HREF="Vec3.html">Vec3</A>&amp; widthVec, const <!1><A HREF="Vec3.html">Vec3</A>&amp; heightVec)
 <DD><I>Convenience function to be used for creating quad geometry with texture coords.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; <!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Node.html">Node</A>&gt; &gt; <B><A HREF="#DOC.2.84">NodeList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; <!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Node.html">Node</A>&gt; &gt; <B><A HREF="#DOC.2.86">NodeList</A></B>
 <DT>
 class  SG_EXPORT <B><A HREF="Group.html">Group</A></B>: public <!1><A HREF="Node.html">Node</A>
 <DD><I>General group node which maintains a list of children.</I>
@@ -236,7 +242,7 @@ class  SG_EXPORT <B><A HREF="Image.html">Image</A></B>: public <!1><A HREF="Obje
 extern SG_EXPORT <!1><A HREF="Geode.html">Geode</A>* <B><A HREF="createGeodeForImage.html">createGeodeForImage</A></B>(<!1><A HREF="Image.html">Image</A>* image)
 <DD><I>Convenience function to be used by images loaders to generate a valid geode to return for readNode().</I>
 <DT>
-extern SG_EXPORT <!1><A HREF="Geode.html">Geode</A>* <B><A HREF="createGeodeForImage.2.html">createGeodeForImage</A></B>(<!1><A HREF="Image.html">Image</A>* image, float <!1><A HREF="ImpostorSprite.html#DOC.2.90.24">s</A>, float <!1><A HREF="ImpostorSprite.html#DOC.2.90.25">t</A>)
+extern SG_EXPORT <!1><A HREF="Geode.html">Geode</A>* <B><A HREF="createGeodeForImage.2.html">createGeodeForImage</A></B>(<!1><A HREF="Image.html">Image</A>* image, float <!1><A HREF="ImpostorSprite.html#DOC.2.92.24">s</A>, float <!1><A HREF="ImpostorSprite.html#DOC.2.92.25">t</A>)
 <DD><I>Convenience function to be used by images loaders to generate a valid geode to return for readNode().</I>
 <DT>
 class  SG_EXPORT <B><A HREF="Impostor.html">Impostor</A></B>: public <!1><A HREF="LOD.html">LOD</A>
@@ -270,20 +276,34 @@ class  SG_EXPORT <B><A HREF="LineWidth.html">LineWidth</A></B>: public <!1><A HR
 class  SG_EXPORT <B><A HREF="Material.html">Material</A></B>: public <!1><A HREF="StateAttribute.html">StateAttribute</A>
 <DD><I>Material - encapsulates OpenGL glMaterial state</I>
 <DT>
-class  SG_EXPORT <B><A HREF="Matrix.html">Matrix</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.102">Matrix</A></B>
 <DT>
-class  <B><A HREF="RefMatrix.html">RefMatrix</A></B>: public <!1><A HREF="Object.html">Object</A>, public <!1><A HREF="Matrix.html">Matrix</A>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.102">operator* </A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v, const <!1><A HREF="Matrix.html">Matrix</A>&amp; m )
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.103">operator* </A></B>(const <!1><A HREF="Vec4.html">Vec4</A>&amp; v, const <!1><A HREF="Matrix.html">Matrix</A>&amp; m )
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   std::ostream&amp; <B><A HREF="#DOC.2.104">operator<< </A></B>(std::ostream&amp; os, const <!1><A HREF="Matrix.html">Matrix</A>&amp; m )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  <!1><A HREF="RefMatrixd.html">RefMatrixd</A> <B><A HREF="#DOC.2.103">RefMatrix</A></B>
 <DT>
 class  SG_EXPORT <B><A HREF="MatrixTransform.html">MatrixTransform</A></B>: public <!1><A HREF="Transform.html">Transform</A>
 <DD><I>MatrixTransform - is a subclass of Transform which has an osg::Matrix which represent a 4x4 transformation of its children from local cordinates into the Transform's parent coordinates</I>
 <DT>
-#define <B><A HREF="META_Node.html">META_Node</A></B>(library,<!1><A HREF="Test.html#DOC.180.1.3">name</A>)
+class  SG_EXPORT <B><A HREF="Matrixd.html">Matrixd</A></B>
+<DT>
+class  <B><A HREF="RefMatrixd.html">RefMatrixd</A></B>: public <!1><A HREF="Object.html">Object</A>, public <!1><A HREF="Matrixd.html">Matrixd</A>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.107">operator* </A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v, const <!1><A HREF="Matrixd.html">Matrixd</A>&amp; m )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.108">operator* </A></B>(const <!1><A HREF="Vec4.html">Vec4</A>&amp; v, const <!1><A HREF="Matrixd.html">Matrixd</A>&amp; m )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   std::ostream&amp; <B><A HREF="#DOC.2.109">operator<< </A></B>(std::ostream&amp; os, const <!1><A HREF="Matrixd.html">Matrixd</A>&amp; m )
+<DT>
+class  SG_EXPORT <B><A HREF="Matrixf.html">Matrixf</A></B>
+<DT>
+class  <B><A HREF="RefMatrixf.html">RefMatrixf</A></B>: public <!1><A HREF="Object.html">Object</A>, public <!1><A HREF="Matrixf.html">Matrixf</A>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.112">operator* </A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v, const <!1><A HREF="Matrixf.html">Matrixf</A>&amp; m )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.113">operator* </A></B>(const <!1><A HREF="Vec4.html">Vec4</A>&amp; v, const <!1><A HREF="Matrixf.html">Matrixf</A>&amp; m )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   std::ostream&amp; <B><A HREF="#DOC.2.114">operator<< </A></B>(std::ostream&amp; os, const <!1><A HREF="Matrixf.html">Matrixf</A>&amp; m )
+<DT>
+#define <B><A HREF="META_Node.html">META_Node</A></B>(library,<!1><A HREF="Test.html#DOC.185.1.3">name</A>)
 <DD><I>META_Node macro define the standard clone, isSameKindAs, className and accept methods.</I>
 <DT>
 class  SG_EXPORT <B><A HREF="Node.html">Node</A></B>: public <!1><A HREF="Object.html">Object</A>
@@ -325,9 +345,9 @@ extern SG_EXPORT bool <B><A HREF="initNotifyLevel.html">initNotifyLevel</A></B>(
 extern SG_EXPORT std::ostream&amp; <B><A HREF="notify.html">notify</A></B>(const <!1><A HREF="NotifySeverity.html">NotifySeverity</A> severity)
 <DD><I>notify messaging function for providing fatal through to verbose debugging messages.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   std::ostream&amp; <B><A HREF="#DOC.2.122">notify</A></B>(void)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   std::ostream&amp; <B><A HREF="#DOC.2.131">notify</A></B>(void)
 <DT>
-#define <B><A HREF="META_Object.html">META_Object</A></B>(library,<!1><A HREF="Test.html#DOC.180.1.3">name</A>)
+#define <B><A HREF="META_Object.html">META_Object</A></B>(library,<!1><A HREF="Test.html#DOC.185.1.3">name</A>)
 <DD><I>META_Object macro define the standard clone, isSameKindAs and className methods.</I>
 <DT>
 class  SG_EXPORT <B><A HREF="Object.html">Object</A></B>: public <!1><A HREF="Referenced.html">Referenced</A>
@@ -342,7 +362,7 @@ class  SG_EXPORT <B><A HREF="PagedLOD.html">PagedLOD</A></B>: public <!1><A HREF
 class  SG_EXPORT <B><A HREF="Plane.html">Plane</A></B>
 <DD><I>A plane class.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   std::ostream&amp; <B><A HREF="#DOC.2.128">operator << </A></B>(std::ostream&amp; output, const <!1><A HREF="Plane.html">Plane</A>&amp; pl)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   std::ostream&amp; <B><A HREF="#DOC.2.137">operator << </A></B>(std::ostream&amp; output, const <!1><A HREF="Plane.html">Plane</A>&amp; pl)
 <DT>
 class  SG_EXPORT <B><A HREF="Point.html">Point</A></B>: public <!1><A HREF="StateAttribute.html">StateAttribute</A>
 <DD><I>Point - encapsulates the OpenGL point smoothing and size state</I>
@@ -395,7 +415,7 @@ class  SG_EXPORT <B><A HREF="Projection.html">Projection</A></B>: public <!1><A 
 class  SG_EXPORT <B><A HREF="Quat.html">Quat</A></B>
 <DD><I>A quaternion class.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   std::ostream&amp; <B><A HREF="#DOC.2.151">operator << </A></B>(std::ostream&amp; output, const <!1><A HREF="Quat.html">Quat</A>&amp; vec)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   std::ostream&amp; <B><A HREF="#DOC.2.160">operator << </A></B>(std::ostream&amp; output, const <!1><A HREF="Quat.html">Quat</A>&amp; vec)
 <DT>
 class  SG_EXPORT <B><A HREF="Referenced.html">Referenced</A></B>
 <DD><I>Base class from providing referencing counted objects</I>
@@ -415,7 +435,7 @@ class  SG_EXPORT <B><A HREF="ShadowVolumeOccluder.html">ShadowVolumeOccluder</A>
 typedef  std::vector&lt;<!1><A HREF="ShadowVolumeOccluder.html">ShadowVolumeOccluder</A>&gt; <B><A HREF="ShadowVolumeOccluderList.html">ShadowVolumeOccluderList</A></B>
 <DD><I>A list of ShadowVolumeOccluder, used by CollectOccluderVisitor and CullVistor's</I>
 <DT>
-#define <B><A HREF="META_Shape.html">META_Shape</A></B>(library,<!1><A HREF="Test.html#DOC.180.1.3">name</A>)
+#define <B><A HREF="META_Shape.html">META_Shape</A></B>(library,<!1><A HREF="Test.html#DOC.185.1.3">name</A>)
 <DD><I>META_StateAttribute macro define the standard clone, isSameKindAs, className and getType methods.</I>
 <DT>
 class  SG_EXPORT <B><A HREF="Shape.html">Shape</A></B>: public <!1><A HREF="Object.html">Object</A>
@@ -449,11 +469,11 @@ class  <B><A HREF="TessellationHints.html">TessellationHints</A></B>: public <!1
 <DT>
 class  SG_EXPORT <B><A HREF="ShapeDrawable.html">ShapeDrawable</A></B>: public <!1><A HREF="Drawable.html">Drawable</A>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>#define <B><A HREF="#DOC.2.174">GL_TEXTURE0</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>#define <B><A HREF="#DOC.2.183">GL_TEXTURE0</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>#define <B><A HREF="#DOC.2.175">GL_FOG_COORDINATE_ARRAY</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>#define <B><A HREF="#DOC.2.184">GL_FOG_COORDINATE_ARRAY</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>#define <B><A HREF="#DOC.2.176">GL_SECONDARY_COLOR_ARRAY</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>#define <B><A HREF="#DOC.2.185">GL_SECONDARY_COLOR_ARRAY</A></B>
 <DT>
 #define <B><A HREF="OSG_GL_DEBUG.html">OSG_GL_DEBUG</A></B>(message)
 <DD><I>macro for use with osg::StateAttrbiute::apply methods for detected and  reporting OpenGL error messages</I>
@@ -461,7 +481,7 @@ class  SG_EXPORT <B><A HREF="ShapeDrawable.html">ShapeDrawable</A></B>: public <
 class  SG_EXPORT <B><A HREF="State.html">State</A></B>: public <!1><A HREF="Referenced.html">Referenced</A>
 <DD><I>State class for managing a state stack.</I>
 <DT>
-#define <B><A HREF="META_StateAttribute.html">META_StateAttribute</A></B>(library,<!1><A HREF="Test.html#DOC.180.1.3">name</A>,type)
+#define <B><A HREF="META_StateAttribute.html">META_StateAttribute</A></B>(library,<!1><A HREF="Test.html#DOC.185.1.3">name</A>,type)
 <DD><I>META_StateAttribute macro define the standard clone, isSameKindAs, className and getType methods.</I>
 <DT>
 #define <B><A HREF="COMPARE_StateAttribute_Types.html">COMPARE_StateAttribute_Types</A></B>(TYPE,rhs_attribute)
@@ -470,7 +490,7 @@ class  SG_EXPORT <B><A HREF="State.html">State</A></B>: public <!1><A HREF="Refe
 #define <B><A HREF="COMPARE_StateAttribute_Parameter.html">COMPARE_StateAttribute_Parameter</A></B>(parameter)
 <DD><I>COMPARE_StateAttribute_Parameter macro is a helper for implementing the StatateAtribute::compare() method.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>#define <B><A HREF="#DOC.2.182">GL_COLOR_SUM</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>#define <B><A HREF="#DOC.2.191">GL_COLOR_SUM</A></B>
 <DT>
 class  SG_EXPORT <B><A HREF="StateAttribute.html">StateAttribute</A></B>: public <!1><A HREF="Object.html">Object</A>
 <DD><I>Base class for state attribuets</I>
@@ -490,9 +510,9 @@ class  SG_EXPORT <B><A HREF="TexEnv.html">TexEnv</A></B>: public <!1><A HREF="St
 class  SG_EXPORT <B><A HREF="TexEnvCombine.html">TexEnvCombine</A></B>: public <!1><A HREF="StateAttribute.html">StateAttribute</A>
 <DD><I>TexEnvCombine - encapsulates the OpenGL glTexEnvCombine (texture environment) state</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>#define <B><A HREF="#DOC.2.189">GL_NORMAL_MAP_ARB</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>#define <B><A HREF="#DOC.2.198">GL_NORMAL_MAP_ARB</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>#define <B><A HREF="#DOC.2.190">GL_REFLECTION_MAP_ARB</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>#define <B><A HREF="#DOC.2.199">GL_REFLECTION_MAP_ARB</A></B>
 <DT>
 class  SG_EXPORT <B><A HREF="TexGen.html">TexGen</A></B>: public <!1><A HREF="StateAttribute.html">StateAttribute</A>
 <DD><I>TexGen - encapsulates the OpenGL glTexGen (texture coordinate generation) state</I>
@@ -518,33 +538,33 @@ class  SG_EXPORT <B><A HREF="TextureCubeMap.html">TextureCubeMap</A></B>: public
 class  SG_EXPORT <B><A HREF="TextureRectangle.html">TextureRectangle</A></B>: public <!1><A HREF="Texture.html">Texture</A>
 <DD><I>Texture state class which encapsulates OpenGL texture functionality</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  __int64 <B><A HREF="#DOC.2.199">Timer_t</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  __int64 <B><A HREF="#DOC.2.208">Timer_t</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  unsigned long long <B><A HREF="#DOC.2.200">Timer_t</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  unsigned long long <B><A HREF="#DOC.2.209">Timer_t</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  double <B><A HREF="#DOC.2.201">Timer_t</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  double <B><A HREF="#DOC.2.210">Timer_t</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::clock_t <B><A HREF="#DOC.2.202">Timer_t</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::clock_t <B><A HREF="#DOC.2.211">Timer_t</A></B>
 <DT>
 class  SG_EXPORT <B><A HREF="Timer.html">Timer</A></B>
 <DD><I>A high resolution, low latency time stamper</I>
 <DT>
-extern SG_EXPORT <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="computeLocalToWorld.html">computeLocalToWorld</A></B>(<!1><A HREF="NodePath.html">NodePath</A>&amp; nodePath)
+extern SG_EXPORT <!1><A HREF="osg.html#DOC.2.102">Matrix</A> <B><A HREF="computeLocalToWorld.html">computeLocalToWorld</A></B>(<!1><A HREF="NodePath.html">NodePath</A>&amp; nodePath)
 <DD><I>compute the matrix which transforms objects in local coords to world coords, by accumulating the Transform local to world matrices along the specified node path</I>
 <DT>
-extern SG_EXPORT <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="computeWorldToLocal.html">computeWorldToLocal</A></B>(<!1><A HREF="NodePath.html">NodePath</A>&amp; nodePath)
+extern SG_EXPORT <!1><A HREF="osg.html#DOC.2.102">Matrix</A> <B><A HREF="computeWorldToLocal.html">computeWorldToLocal</A></B>(<!1><A HREF="NodePath.html">NodePath</A>&amp; nodePath)
 <DD><I>compute the matrix which transforms objects in world coords to local coords, by accumulating the Transform world to local matrices along the specified node path</I>
 <DT>
-extern SG_EXPORT <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="computeLocalToEye.html">computeLocalToEye</A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; modelview, <!1><A HREF="NodePath.html">NodePath</A>&amp; nodePath)
+extern SG_EXPORT <!1><A HREF="osg.html#DOC.2.102">Matrix</A> <B><A HREF="computeLocalToEye.html">computeLocalToEye</A></B>(const <!1><A HREF="osg.html#DOC.2.102">Matrix</A>&amp; modelview, <!1><A HREF="NodePath.html">NodePath</A>&amp; nodePath)
 <DD><I>compute the matrix which transforms objects in local coords to world coords, by accumulating the Transform local to world matrices along the specified node path  the supplied initialial camera modelview </I>
 <DT>
-extern SG_EXPORT <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="computeEyeToLocal.html">computeEyeToLocal</A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; modelview, <!1><A HREF="NodePath.html">NodePath</A>&amp; nodePath)
+extern SG_EXPORT <!1><A HREF="osg.html#DOC.2.102">Matrix</A> <B><A HREF="computeEyeToLocal.html">computeEyeToLocal</A></B>(const <!1><A HREF="osg.html#DOC.2.102">Matrix</A>&amp; modelview, <!1><A HREF="NodePath.html">NodePath</A>&amp; nodePath)
 <DD><I>compute the matrix which transforms objects in world coords to local coords, by accumulating the Transform world to local matrices along the specified node path  the inverse of the supplied initialial camera modelview</I>
 <DT>
 class  SG_EXPORT <B><A HREF="Transform.html">Transform</A></B>: public <!1><A HREF="Group.html">Group</A>
 <DD><I>A Transform is a group node for which all children are transformed by a 4x4 matrix.</I>
 <DT>
-template&lt;class <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>&gt; class  <B><A HREF="TriangleFunctor.html">TriangleFunctor</A></B>: public Drawable::PrimitiveFunctor, public <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>
+template&lt;class <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A>&gt; class  <B><A HREF="TriangleFunctor.html">TriangleFunctor</A></B>: public Drawable::PrimitiveFunctor, public <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A>
 <DT>
 class  <B><A HREF="UByte4.html">UByte4</A></B>
 <DD><I>General purpose float quad, uses include representation of colour coordinates.</I>
@@ -555,13 +575,13 @@ class  <B><A HREF="Vec2.html">Vec2</A></B>
 class  <B><A HREF="Vec3.html">Vec3</A></B>
 <DD><I>General purpose float triple for use as vertices, vectors and normals.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   std::ostream&amp; <B><A HREF="#DOC.2.213">operator << </A></B>(std::ostream&amp; output, const <!1><A HREF="Vec3.html">Vec3</A>&amp; vec)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   std::ostream&amp; <B><A HREF="#DOC.2.222">operator << </A></B>(std::ostream&amp; output, const <!1><A HREF="Vec3.html">Vec3</A>&amp; vec)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.214">X_AXIS</A></B>(1.0f, 0.0f, 0.0f)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.223">X_AXIS</A></B>(1.0f, 0.0f, 0.0f)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.215">Y_AXIS</A></B>(0.0f, 1.0f, 0.0f)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.224">Y_AXIS</A></B>(0.0f, 1.0f, 0.0f)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.216">Z_AXIS</A></B>(0.0f, 0.0f, 1.0f)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.225">Z_AXIS</A></B>(0.0f, 0.0f, 1.0f)
 <DT>
 class  <B><A HREF="Vec4.html">Vec4</A></B>
 <DD><I>General purpose float quad, uses include representation of colour coordinates.</I>
@@ -578,15 +598,15 @@ class  SG_EXPORT <B><A HREF="VertexProgram.html">VertexProgram</A></B>: public <
 class  SG_EXPORT <B><A HREF="Viewport.html">Viewport</A></B>: public <!1><A HREF="StateAttribute.html">StateAttribute</A>
 <DD><I>Encapsulte OpenGL glViewport</I>
 <DT>
-template&lt;class <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>&gt; class  <B><A HREF="buffered_value.html">buffered_value</A></B>
+template&lt;class <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A>&gt; class  <B><A HREF="buffered_value.html">buffered_value</A></B>
 <DD><I>Simple buffered value array which is used for values that need to multibuffered on one per graphics context basis</I>
 <DT>
-template&lt;class <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>&gt; class  <B><A HREF="buffered_object.html">buffered_object</A></B>
+template&lt;class <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A>&gt; class  <B><A HREF="buffered_object.html">buffered_object</A></B>
 <DT>
-template&lt;class <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>&gt; class  <B><A HREF="fast_back_stack.html">fast_back_stack</A></B>
+template&lt;class <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A>&gt; class  <B><A HREF="fast_back_stack.html">fast_back_stack</A></B>
 <DD><I>Simple stack implementation that keeps the back() cached locally for fast access rather than at the back of the vector which is the traditional stack implementation.</I>
 <DT>
-template&lt;class <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>&gt; class  <B><A HREF="ref_ptr.html">ref_ptr</A></B>
+template&lt;class <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A>&gt; class  <B><A HREF="ref_ptr.html">ref_ptr</A></B>
 <DD><I>Smart pointer for handling referenced counted objects</I>
 </DL></P>
 
@@ -674,90 +694,110 @@ template&lt;class <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>&gt; class  <B><
 <DL><DT><DD></DL><P>
 <A NAME="swapBytes"></A>
 <A NAME="DOC.2.72"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>template&lt;class <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>&gt;inline   void swapBytes( <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>&amp; in )</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>template&lt;class <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A>&gt;inline   void swapBytes( <!1><A HREF="TexGen.html#DOC.2.200.11.2">T</A>&amp; in )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="NodeList"></A>
-<A NAME="DOC.2.84"></A>
+<A NAME="DOC.2.86"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; <!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Node.html">Node</A>&gt; &gt; NodeList</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="operator* "></A>
+<A NAME="Matrix"></A>
 <A NAME="DOC.2.102"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Vec3.html">Vec3</A> operator* (const <!1><A HREF="Vec3.html">Vec3</A>&amp; v, const <!1><A HREF="Matrix.html">Matrix</A>&amp; m )</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  <!1><A HREF="Matrixd.html">Matrixd</A> Matrix</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="RefMatrix"></A>
+<A NAME="DOC.2.103"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  <!1><A HREF="RefMatrixd.html">RefMatrixd</A> RefMatrix</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator* "></A>
-<A NAME="DOC.2.103"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Vec4.html">Vec4</A> operator* (const <!1><A HREF="Vec4.html">Vec4</A>&amp; v, const <!1><A HREF="Matrix.html">Matrix</A>&amp; m )</B></TT>
+<A NAME="DOC.2.107"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Vec3.html">Vec3</A> operator* (const <!1><A HREF="Vec3.html">Vec3</A>&amp; v, const <!1><A HREF="Matrixd.html">Matrixd</A>&amp; m )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator* "></A>
+<A NAME="DOC.2.108"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Vec4.html">Vec4</A> operator* (const <!1><A HREF="Vec4.html">Vec4</A>&amp; v, const <!1><A HREF="Matrixd.html">Matrixd</A>&amp; m )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator<< "></A>
-<A NAME="DOC.2.104"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   std::ostream&amp; operator<< (std::ostream&amp; os, const <!1><A HREF="Matrix.html">Matrix</A>&amp; m )</B></TT>
+<A NAME="DOC.2.109"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   std::ostream&amp; operator<< (std::ostream&amp; os, const <!1><A HREF="Matrixd.html">Matrixd</A>&amp; m )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator* "></A>
+<A NAME="DOC.2.112"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Vec3.html">Vec3</A> operator* (const <!1><A HREF="Vec3.html">Vec3</A>&amp; v, const <!1><A HREF="Matrixf.html">Matrixf</A>&amp; m )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator* "></A>
+<A NAME="DOC.2.113"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Vec4.html">Vec4</A> operator* (const <!1><A HREF="Vec4.html">Vec4</A>&amp; v, const <!1><A HREF="Matrixf.html">Matrixf</A>&amp; m )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator<< "></A>
+<A NAME="DOC.2.114"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   std::ostream&amp; operator<< (std::ostream&amp; os, const <!1><A HREF="Matrixf.html">Matrixf</A>&amp; m )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="notify"></A>
-<A NAME="DOC.2.122"></A>
+<A NAME="DOC.2.131"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   std::ostream&amp; notify(void)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator << "></A>
-<A NAME="DOC.2.128"></A>
+<A NAME="DOC.2.137"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   std::ostream&amp; operator << (std::ostream&amp; output, const <!1><A HREF="Plane.html">Plane</A>&amp; pl)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator << "></A>
-<A NAME="DOC.2.151"></A>
+<A NAME="DOC.2.160"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   std::ostream&amp; operator << (std::ostream&amp; output, const <!1><A HREF="Quat.html">Quat</A>&amp; vec)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="GL_TEXTURE0"></A>
-<A NAME="DOC.2.174"></A>
+<A NAME="DOC.2.183"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>#define GL_TEXTURE0</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="GL_FOG_COORDINATE_ARRAY"></A>
-<A NAME="DOC.2.175"></A>
+<A NAME="DOC.2.184"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>#define GL_FOG_COORDINATE_ARRAY</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="GL_SECONDARY_COLOR_ARRAY"></A>
-<A NAME="DOC.2.176"></A>
+<A NAME="DOC.2.185"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>#define GL_SECONDARY_COLOR_ARRAY</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="GL_COLOR_SUM"></A>
-<A NAME="DOC.2.182"></A>
+<A NAME="DOC.2.191"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>#define GL_COLOR_SUM</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="GL_NORMAL_MAP_ARB"></A>
-<A NAME="DOC.2.189"></A>
+<A NAME="DOC.2.198"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>#define GL_NORMAL_MAP_ARB</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="GL_REFLECTION_MAP_ARB"></A>
-<A NAME="DOC.2.190"></A>
+<A NAME="DOC.2.199"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>#define GL_REFLECTION_MAP_ARB</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Timer_t"></A>
-<A NAME="DOC.2.199"></A>
+<A NAME="DOC.2.208"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  __int64 Timer_t</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Timer_t"></A>
-<A NAME="DOC.2.200"></A>
+<A NAME="DOC.2.209"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  unsigned long long Timer_t</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Timer_t"></A>
-<A NAME="DOC.2.201"></A>
+<A NAME="DOC.2.210"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  double Timer_t</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Timer_t"></A>
-<A NAME="DOC.2.202"></A>
+<A NAME="DOC.2.211"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::clock_t Timer_t</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator << "></A>
-<A NAME="DOC.2.213"></A>
+<A NAME="DOC.2.222"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   std::ostream&amp; operator << (std::ostream&amp; output, const <!1><A HREF="Vec3.html">Vec3</A>&amp; vec)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="X_AXIS"></A>
-<A NAME="DOC.2.214"></A>
+<A NAME="DOC.2.223"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec3.html">Vec3</A> X_AXIS(1.0f, 0.0f, 0.0f)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Y_AXIS"></A>
-<A NAME="DOC.2.215"></A>
+<A NAME="DOC.2.224"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec3.html">Vec3</A> Y_AXIS(0.0f, 1.0f, 0.0f)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Z_AXIS"></A>
-<A NAME="DOC.2.216"></A>
+<A NAME="DOC.2.225"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec3.html">Vec3</A> Z_AXIS(0.0f, 0.0f, 1.0f)</B></TT>
 <DL><DT><DD></DL><P></DL>
 <DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>

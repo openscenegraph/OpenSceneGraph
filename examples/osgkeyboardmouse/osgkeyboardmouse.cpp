@@ -214,7 +214,7 @@ int main( int argc, char **argv )
     
     // create the window to draw to.
     osg::ref_ptr<Producer::RenderSurface> renderSurface = new Producer::RenderSurface;
-    renderSurface->setWindowName("osgsimple");
+    renderSurface->setWindowName("osgkeyboardmouse");
     renderSurface->setWindowRectangle(100,100,800,600);
     renderSurface->useBorder(true);
     renderSurface->realize();

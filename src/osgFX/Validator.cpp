@@ -23,6 +23,11 @@ Validator::Validator(const Validator &copy, const osg::CopyOp &copyop)
 {
 }
 
+void Validator::compile(osg::State &state) const
+{
+	apply(state);
+}
+
 void Validator::apply(osg::State &state) const
 {
     if (!effect_) return;

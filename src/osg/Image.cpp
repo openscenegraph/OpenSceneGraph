@@ -475,6 +475,58 @@ void Image::computeMipMaps()
 }
 
 
+bool Image::isImageTranslucent() const
+{
+    
+
+    if (getPixelFormat()==GL_LUMINANCE_ALPHA)
+    {
+        return true;
+
+        
+        // unfinished code so commenting out right now...
+//         switch(type)
+//         {
+//             case(GL_BYTE):
+//             {
+//                 int rowSizeInBytes = getRowSizeInBytes();
+//                 int imageSizeInBytes = getImageSizeInBytes();
+//                 
+//                 for (int r=0;r<_r,++r)
+//                 {
+//                     for (int t=0;t<int _t,++t)
+//                     {
+//                         char* ptr = _data+r*getRowSizeInBytes()+image*getImageSizeInBytes();
+//                         for (int s=0;s<_s,++s)
+//                         {
+// 
+//                         }
+//                     }
+//                 }
+//                 break
+//             }    
+//             case(GL_UNSIGNED_BYTE): return 8*computeNumComponents(format);
+// 
+//             case(GL_SHORT):
+//             case(GL_UNSIGNED_SHORT): return 16*computeNumComponents(format);
+// 
+//             case(GL_INT):
+//             case(GL_UNSIGNED_INT):
+//             case(GL_FLOAT): return 32*computeNumComponents(format);
+// 
+//             default: return 0;
+//         }    
+
+    }
+    else if (getPixelFormat()==GL_RGBA)
+    {
+        return true;
+    }
+
+    return false;
+
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 

@@ -19,6 +19,7 @@ HEADERFILES = \
 	terrain_texcoords.h\
 
 LIBS     += $(OSG_LIBS) $(GLUT_LIB) $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
+#LIBS     += -losgProducer -l Producer $(OSG_LIBS) $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
 
 INSTFILES = \
 	$(CXXFILES)\
@@ -26,5 +27,9 @@ INSTFILES = \
 	Makefile.inst=Makefile
 
 EXEC = osghangglide
+
+CXXFLAGS += -DUSE_GLUT
+#CXXFLAGS += $(PRODUCER_INCLUDE_DIR)
+#LDFLAGS  += $(PRODUCER_LIB_DIR)
 
 include $(TOPDIR)/Make/makerules 

@@ -27,7 +27,7 @@ Tesselator::Tesselator()
 
 Tesselator::~Tesselator()
 {
-    if (_tobj) gluDeleteTess(_tobj);
+    reset();
 }
 
 void Tesselator::beginTesselation()
@@ -97,9 +97,12 @@ void Tesselator::reset()
         gluDeleteTess(_tobj);
         _tobj = 0;
     }
-    _primList.clear();
+    for (Vec3dList::iterator i = _coordData.begin(); i != _coordData.end(); ++i) {
+      delete (*i);
+    }
     _coordData.clear();
     _newVertexList.clear();
+    _primList.clear();
     _errorCode = 0;
 }
 

@@ -93,6 +93,10 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\flt\BSPRecord.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\flt\BoundingVolumeRecords.cpp
 # End Source File
 # Begin Source File
@@ -270,6 +274,10 @@ SOURCE=..\..\..\src\osgPlugins\flt\VertexPoolRecords.cpp
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\flt\AttrData.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\flt\BSPRecord.h
 # End Source File
 # Begin Source File
 

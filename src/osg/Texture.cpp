@@ -382,7 +382,8 @@ void Texture::applyTexImage2D(GLenum target, Image* image, State& state, GLsizei
     computeInternalFormat();
 
     // select the internalFormat required for the texture.
-    bool compressed = isCompressedInternalFormat(_internalFormat);
+    bool compressed_internal = isCompressedInternalFormat(_internalFormat);
+    bool compressed_image = isCompressedInternalFormat((GLenum)image->getPixelFormat());
     
     image->ensureValidSizeForTexturing(extensions->maxTextureSize());
 
@@ -390,7 +391,7 @@ void Texture::applyTexImage2D(GLenum target, Image* image, State& state, GLsizei
 
     if( _min_filter == LINEAR || _min_filter == NEAREST )
     {
-        if ( !compressed )
+        if ( !compressed_internal)
         {
             numMimpmapLevels = 1;
             glTexImage2D( target, 0, _internalFormat,
@@ -402,14 +403,26 @@ void Texture::applyTexImage2D(GLenum target, Image* image, State& state, GLsizei
         }
         else if (extensions->isCompressedTexImage2DSupported())
         {
-            numMimpmapLevels = 1;
-            GLint blockSize = ( _internalFormat == GL_COMPRESSED_RGB_S3TC_DXT1_EXT ? 8 : 16 ); 
-            GLint size = ((image->s()+3)/4)*((image->t()+3)/4)*blockSize;
-            extensions->glCompressedTexImage2D(target, 0, _internalFormat, 
-                                               image->s(), image->t(),0, 
-                                               size, 
-                                               image->data());                
-
+        
+            if (compressed_image)
+            {
+                numMimpmapLevels = 1;
+                GLint blockSize = ( _internalFormat == GL_COMPRESSED_RGB_S3TC_DXT1_EXT ? 8 : 16 ); 
+                GLint size = ((image->s()+3)/4)*((image->t()+3)/4)*blockSize;
+                extensions->glCompressedTexImage2D(target, 0, _internalFormat, 
+                                                   image->s(), image->t(),0, 
+                                                   size, 
+                                                   image->data());                
+            }
+            else
+            {
+                numMimpmapLevels = 1;
+                glTexImage2D( target, 0, _internalFormat,
+                    image->s(), image->t(), 0,
+                    (GLenum)image->getPixelFormat(),
+                    (GLenum)image->getDataType(),
+                    image->data() );
+            }
         }
 
     }
@@ -433,7 +446,7 @@ void Texture::applyTexImage2D(GLenum target, Image* image, State& state, GLsizei
             int width  = image->s();
             int height = image->t();
 
-            if( !compressed )
+            if( !compressed_internal )
             {
                 for( GLsizei k = 0 ; k < numMimpmapLevels  && (width || height) ;k++)
                 {
@@ -455,21 +468,45 @@ void Texture::applyTexImage2D(GLenum target, Image* image, State& state, GLsizei
             }
             else if (extensions->isCompressedTexImage2DSupported())
             {
-                GLint blockSize = ( _internalFormat == GL_COMPRESSED_RGB_S3TC_DXT1_EXT ? 8 : 16 ); 
-                GLint size = 0; 
-                for( GLsizei k = 0 ; k < numMimpmapLevels  && (width || height) ;k++)
+                if ( compressed_image )
                 {
-                    if (width == 0)
-                        width = 1;
-                    if (height == 0)
-                        height = 1;
 
-                    size = ((width+3)/4)*((height+3)/4)*blockSize;
-                    extensions->glCompressedTexImage2D(target, k, _internalFormat, 
-                                                       width, height, 0, size, image->getMipmapData(k));                
+                    GLint blockSize = ( _internalFormat == GL_COMPRESSED_RGB_S3TC_DXT1_EXT ? 8 : 16 ); 
+                    GLint size = 0; 
+                    for( GLsizei k = 0 ; k < numMimpmapLevels  && (width || height) ;k++)
+                    {
+                        if (width == 0)
+                            width = 1;
+                        if (height == 0)
+                            height = 1;
 
-                    width >>= 1;
-                    height >>= 1;
+                        size = ((width+3)/4)*((height+3)/4)*blockSize;
+                        extensions->glCompressedTexImage2D(target, k, _internalFormat, 
+                                                           width, height, 0, size, image->getMipmapData(k));                
+
+                        width >>= 1;
+                        height >>= 1;
+                    }
+                }
+                else
+                {
+                    for( GLsizei k = 0 ; k < numMimpmapLevels  && (width || height) ;k++)
+                    {
+
+                        if (width == 0)
+                            width = 1;
+                        if (height == 0)
+                            height = 1;
+
+                        glTexImage2D( target, k, _internalFormat,
+                             width, height, 0,
+                            (GLenum)image->getPixelFormat(),
+                            (GLenum)image->getDataType(),
+                            image->getMipmapData(k));
+
+                        width >>= 1;
+                        height >>= 1;
+                    }
                 }
             }
         }

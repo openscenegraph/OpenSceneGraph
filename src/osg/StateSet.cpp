@@ -792,7 +792,7 @@ void StateSet::setRenderingHint(int hint)
         case(TRANSPARENT_BIN):
         {
             _binMode = USE_RENDERBIN_DETAILS;
-            _binNum = 1;
+            _binNum = 10;
             _binName = "DepthSortedBin";
             break;
         }

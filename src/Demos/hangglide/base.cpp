@@ -4,6 +4,7 @@
 #include <osg/GeoSet>
 #include <osg/Texture>
 #include <osg/TexEnv>
+#include <osg/Depth>
 #include <osg/StateSet>
 
 #include <osgDB/ReadFile>
@@ -15,7 +16,7 @@ Node *makeBase( void )
     int i, c;
     float theta;
     float ir, ori;
-    ir = 6.0;
+    ir = 0.0;
     ori = 20.0;
 
     Vec3 *coords = new Vec3[38];
@@ -84,6 +85,15 @@ Node *makeBase( void )
         gstate->setMode( PFSTATE_ENFOG, PF_ON );
         gstate->setAttr( PFSTATE_FOG, fog );
     */
+
+    // clear the depth to the far plane.
+    osg::Depth* depth = new osg::Depth;
+    depth->setFunction(osg::Depth::ALWAYS);
+    depth->setRange(1.0,1.0);   
+    dstate->setAttributeAndModes(depth,StateAttribute::ON );
+
+    dstate->setRenderBinDetails(-1,"RenderBin");
+
 
     gset->setStateSet( dstate );
 

@@ -301,7 +301,8 @@ int main( int argc, char **argv )
     osg::ColorMask* rootColorMask = new osg::ColorMask;
     rootColorMask->setMask(true,true,true,true);        
     
-    // set up depth so all writing to depth goes to maximum depth.
+    // set up depth to be inherited by the rest of the scene unless
+    // overrideen. this is overridden in bin 3.
     osg::Depth* rootDepth = new osg::Depth;
     rootDepth->setFunction(osg::Depth::LESS);
     rootDepth->setRange(0.0,1.0);

@@ -75,12 +75,60 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
         void setUpViewer(unsigned int options=STANDARD_SETTINGS);
         
 
+        /** Set the viewer so it sets done to true once the refrence time equals or exceeds specified elapsed time.
+          * Automatically does a setDoneAtElapsedTimeEnabled(true). */
+        void setDoneAtElapsedTime(double elapsedTime) { _setDoneAtElapsedTimeEnabled = true; _setDoneAtElapsedTime = elapsedTime; }
+
+        /** Get the elapsed time that will cause done to be set to be true.*/
+        double getDoneAtElapsedTime() const { return _setDoneAtElapsedTime; }
+
+        /** Set whether to use a elapsed time to limit the run of the viewer.*/
+        void setDoneAtElapsedTimeEnabled(bool enabled) { _setDoneAtElapsedTimeEnabled = enabled; }
+
+        /** Get whether to use a elapsed time to limit the run of the viewer.*/
+        bool getDoneAtElapsedTimeEnabled() const { return _setDoneAtElapsedTimeEnabled; }
+
+
+
+        /** Set the viewer so it sets done to true once the frame number equals or exceeds specified frame number.
+          * Automatically does a setDoneAtFrameNumberEnabled(true). */
+        void setDoneAtFrameNumber(unsigned int frameNumber) { _setDoneAtFrameNumberEnabled = true; _setDoneAtFrameNumber = frameNumber; }
+
+        /** Get the frame number that will cause done to be set to be true.*/
+        unsigned int getDoneAtFrameNumber() const { return _setDoneAtFrameNumber; }
+
+        /** Set whether to use a frame number to limit the run of the viewer.*/
+        void setDoneAtFrameNumberEnabled(bool enabled) { _setDoneAtFrameNumberEnabled = enabled; }
+
+        /** Get whether to use a frame number to limit the run of the viewer.*/
+        bool getDoneAtFrameNumberEnabled() const { return _setDoneAtFrameNumberEnabled; }
+        
+
+
+        /** Set the done flag signalling that the viewer exit.*/
         void setDone(bool done) { _done = done; } 
         
+        /** Get the done flag which signals that the viewer exit.*/
         bool getDone() const { return _done; } 
 
         /** return true if the application is done and should exit.*/
         virtual bool done() const;
+
+
+        /** Set the viewer to take an image snapshot on the last frame() when done is enabled.*/
+        void setWriteImageWhenDone(bool enabled) { _writeImageWhenDone = enabled; }
+
+        /** Set the viewer to take an image snapshot on the last frame() when done is enabled.*/
+        bool getWriteImageWhenDone() const { return _writeImageWhenDone; }
+
+
+        /** Set the filename to write to when the viewer takes an image snapshot on the last frame() when done is enabled.*/
+        void setWriteImageFileName(const std::string& filename);
+
+        /** Set the filename to write to when the viewer takes an image snapshot on the last frame() when done is enabled.*/
+        const std::string& getWriteImageFileName() const;
+
+
 
         /** Override the Producer::CameraGroup::setViewByMatrix to catch all changes to view.*/
         virtual void setViewByMatrix( const Producer::Matrix & pm);
@@ -180,8 +228,16 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
     protected :
 
 
+        bool            _setDoneAtElapsedTimeEnabled;
+        double          _setDoneAtElapsedTime;
+
+        bool            _setDoneAtFrameNumberEnabled;
+        unsigned int    _setDoneAtFrameNumber;
+
         bool            _done;
 
+        bool            _writeImageWhenDone;
+        std::string     _writeImageFileName;
 
         osg::ref_ptr<Producer::KeyboardMouse> _kbm;
 

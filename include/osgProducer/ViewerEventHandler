@@ -55,23 +55,29 @@ class OSGPRODUCER_EXPORT ViewerEventHandler : public osgGA::GUIEventHandler
         void setFrameStatsMode(FrameStatsMode mode) { _frameStatsMode = mode; }
         FrameStatsMode getFrameStatsMode() { return _frameStatsMode; }
 
+        void setWriteImageOnNextFrame(bool writeImageOnNextFrame);
+
+        void setWriteImageFileName(const std::string& filename);
+        const std::string& getWriteImageFileName() const { return _writeImageFileName; }
+
     protected:
         
         osgProducer::OsgCameraGroup* _cg;
         
-        std::string _writeNodeFileName;
+        std::string         _writeNodeFileName;
         
-        bool            _displayHelp;
-        FrameStatsMode  _frameStatsMode;
+        bool                _displayHelp;
+        FrameStatsMode      _frameStatsMode;
         
-        bool            _firstTimeTogglingFullScreen;
+        bool                _firstTimeTogglingFullScreen;
         
         class StatsAndHelpDrawCallback;
         StatsAndHelpDrawCallback* _statsAndHelpDrawCallback;
 
         class SnapImageDrawCallback;
         typedef std::vector<SnapImageDrawCallback*> SnapImageDrawCallbackList;
-        SnapImageDrawCallbackList _snapImageDrawCallbackList;
+        SnapImageDrawCallbackList   _snapImageDrawCallbackList;
+        std::string                 _writeImageFileName;
 
 };
 

@@ -46,8 +46,8 @@ QuicktimeImageStream::QuicktimeImageStream(std::string fileName) : ImageStream()
 {
 
     {    
-    	OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*s_qtMutex);
-    	osgQuicktime::initQuicktime(); 
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*s_qtMutex);
+        osgQuicktime::initQuicktime(); 
     }
         
     _len = 0;
@@ -153,8 +153,8 @@ void QuicktimeImageStream::run()
         // Handle commands
         ThreadCommand cmd = getCmd();
 
-	float currentTime=0.0f;
-	
+        float currentTime=0.0f;
+    
         {
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*s_qtMutex);
 
@@ -167,7 +167,7 @@ void QuicktimeImageStream::run()
 
                     case THREAD_STOP:
                         SetMovieRate(_data->getMovie(),0);
-                        osg::notify(NOTICE) << "QT-ImageStream: stop at "<< std::endl;
+                        osg::notify(INFO) << "QT-ImageStream: stop at "<< std::endl;
                         playing = false;
                         break;
 
@@ -182,7 +182,7 @@ void QuicktimeImageStream::run()
 
                     case THREAD_QUIT: // TODO
                         SetMovieRate(_data->getMovie(),0);
-                        osg::notify(NOTICE) << "QT-ImageStream: quit" << std::endl;
+                        osg::notify(INFO) << "QT-ImageStream: quit" << std::endl;
                         //playing = false;
                         done = true;
                         break;
@@ -194,20 +194,37 @@ void QuicktimeImageStream::run()
 
             MoviesTask(_data->getMovie(),0);
 
-	    currentTime = _data->getMovieTime();
+            currentTime = _data->getMovieTime();
         }
         
 
-        if (_lastUpdate!= currentTime) {
+        if (_lastUpdate!= currentTime) 
+        {
+
             dirty();
             _lastUpdate = currentTime;
+
+            if (currentTime>=_data->getMovieDuration())
+            {
+                if (getLoopingMode()==LOOPING)
+                {
+                    rewind();
+                    play();
+                }
+                else
+                {
+                    pause();
+                }
+            }
+
         }
         
-        if (playing) {
+        if (playing)
+        {
             // TODO
         }
         else if (!done)
-	{
+        {
             ::usleep(IDLE_TIMEOUT);
         }
     }

@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 // reading a design workshop file utility
-// (c) GW Michel, 2001.
+// (c) GW Michel, 2001-2002.
 // Design Workshop format files can be downloaded from www.artifice.com
 // Design Workshop editor can be downloaded from www.artifice.com = Mac & Win95/98/NT versions are available.
 // DW Lite is completely free, produces textured 3D models
@@ -52,8 +52,10 @@ public:
         if (!dstate) dstate = new StateSet;
         if (isTextured()) { // shares common textures
             if (!ctx || !tx) { // new texture needed
-                if (fname.length()>0) {                
+                if (fname.length()>0) { 
+                //    char *nm=osgDB::findFileInPath(fname.c_str(),"C:/osgraph");
                     ctx=osgDB::readImageFile(fname.c_str());
+                    //ctx=osgDB::readImageFile(nm);
                     if (ctx) {
                         ctx->setFileName(fname);
                         tx=new Texture;
@@ -210,35 +212,34 @@ public:
         n.normalize(); // unit norm
     }
     const Vec3 getnorm(void) const { return nrm; } // use the predefined normal
-    void getside12(Vec3 &s1, Vec3 &s2, const Vec3 verts[]) const {
-        int ic=1; // counter for later vertices to ensure not coincident
+    void getside12(Vec3 &s1, Vec3 &s2, const std::vector<Vec3> verts) const {
+        int ic=0; // counter for later vertices to ensure not coincident
         int i1=idx[0]; // first vertex of face
         int i2=idx[1]; // second, must be non-coincident
-        while (i2==i1) {
+        while (i2==i1 && ic<nv-1) {
             ic++;
             i2=idx[ic]; 
         }
-        int i3=idx[ic]; // second, must be non-coincident
-        while (i3==i2 || i3==i1) {
+        int i3=idx[ic]; // third, must be non-coincident
+        while (ic<nv-1 && (i3==i2 || i3==i1)) {
             ic++;
             i3=idx[ic]; 
+        }
+        if(ic>=nv) {
+            printf("Invalid vertices %d of %d. I1-3 %d %d %d.\n", ic, nv, i1, i2, i3);
+        }
+        if(i1>=verts.size() || i2>=verts.size() || i3>=verts.size()) {
+            printf("Invalid indices %d, %d, %d max allowed %d.\n", i1,i2,i3,verts.size());//, errm
         }
         s1=(verts[i2]-verts[i1]); // side 1 of face
         s2=(verts[i3]-verts[i2]); // side 2 of face
     }
-    void getnorm(const Vec3 verts[]) {
+    void getnorm(const std::vector<Vec3> verts) {
         Vec3 side, s2; // used in cross product to find normal
         getside12(side,s2, verts);
         norm(nrm, s2, side);
     }
-    void getsides(float *wid, float *ht, const Vec3 verts[]) const
-    {
-        Vec3 side, s2; // used in cross product to find normal
-        getside12(side,s2, verts);
-        *wid=side.length();
-        *ht=s2.length();
-    }
-    void settrans(Matrix &mx, const Vec3 nrm, const Vec3 verts[], const dwmaterial *mat) const { 
+    void settrans(Matrix &mx, const Vec3 nrm, const std::vector<Vec3> verts, const dwmaterial *mat) const { 
         // define the matrix perpendcular to normal for mapping textures
         float wid=mat->getRepWid(); 
         float ht=mat->getRepHt();
@@ -246,11 +247,14 @@ public:
         if (mat->isFullFace()) { // set wid, ht from polygon
             Vec3 s2; // want transformed u coordinate parallel to 'r1'
             getside12(r1,s2, verts); // r1 = edge of first side
-            getsides(&ht, &wid, verts); // get the lengths of sides for transformation of xyz to uv
+//         printf("fullface s2 %f %f %f\n", s2.x(),s2.y(),s2.z());//, errm
             r3=nrm;
-            r1.normalize();
+            float len=r1.length();
+            r1=r1/len;
             r2=r3^r1;
-        } else {
+            r1=r1/len;
+            r2=r2/s2.length();
+       } else {
             // mat.nrm= (0,0,1)  AND mat (0,1,0) => (0,a,b)
             // the transformation is unitary - preserves lengths; and
             // converts points on a plane into (s,t, constant) coords for use with texturing
@@ -273,17 +277,17 @@ public:
             mx(2,j)=r3[j];
         }        
         //        mx.postTrans(mx,0.5f,0.5f,0.0f);
-        mx(0,0)*=1.0f/wid;
-        mx(1,0)*=1.0f/wid;
-        mx(0,1)*=1.0f/ht;
-        mx(1,1)*=1.0f/ht;
         if (mat->isFullFace()) { // set offset such that mx*verts[idx[0]] -> uv=(0,0)
             Vec3 pos;
             pos=mx*verts[idx[0]];
-            mx(0,3)=pos.x();
-            mx(1,3)=pos.y();
-            mx(2,3)=pos.z();
+            mx(0,3)=-pos.x();
+            mx(1,3)=-pos.y();
+            mx(2,3)=-pos.z();
         } else { // scale inversely to the texture preferred repeat size
+            mx(0,0)*=1.0f/wid;
+            mx(1,0)*=1.0f/wid;
+            mx(0,1)*=1.0f/ht;
+            mx(1,1)*=1.0f/ht;
             mx(0,3)=0.5f/wid;
             mx(1,3)=0.5f/ht;
         }
@@ -308,7 +312,7 @@ public:
         for (int i=0; i<nop; i++) ntot+=opening[i].getnv();
         return ntot;
     }
-    void setnorm(const Vec3 *verts) { // set the face normal
+    void setnorm(const std::vector<Vec3> verts) { // set the face normal
         getnorm(verts);
         for (int i=0; i<nop; i++) {
             opening[i].setnorm(verts);
@@ -318,19 +322,19 @@ public:
             }
         }
     }
-    void setposes(avertex &poses, const int j, const Vec3 verts[]) const {
+    void setposes(avertex &poses, const int j, const std::vector<Vec3> verts) const {
         poses.pos[0]=verts[idx[j]].x();
         poses.pos[1]=verts[idx[j]].y();
         poses.pos[2]=verts[idx[j]].z();
         poses.nrmv=nrm;
         poses.idx=idx[j];
     }
-    void tesselate(const Vec3 verts[], const dwmaterial *themat, 
+    void tesselate(const std::vector<Vec3> verts, const dwmaterial *themat, 
           GLUtesselator *ts, _dwobj *dwob, const Matrix *tmat) const;
-    void link(const int idop, const _face *f2, const int idop2,const Vec3 verts[], const dwmaterial *themat) const; // to join up opposed faces of a hole
+    void link(const int idop, const _face *f2, const int idop2,const std::vector<Vec3> verts, const dwmaterial *themat) const; // to join up opposed faces of a hole
     inline const int getidx(int i) const { return idx[i];}
 private:
-    void linkholes(const Vec3 verts[], const dwmaterial *themat, const _face *f2) const;
+    void linkholes(const std::vector<Vec3> verts, const dwmaterial *themat, const _face *f2) const;
     void reverse() { // reverse order of the vertices
         for (int j=0; j<nv/2; j++) {
             int it=idx[j];
@@ -401,7 +405,7 @@ public:
     }
     void combine( GLdouble coords[3], avertex *d[4], 
         GLfloat w[4], avertex **dataOut , _dwobj *dwob);
-    void linkholes(const Vec3 verts[], const dwmaterial *themat, 
+    void linkholes(const std::vector<Vec3> verts, const dwmaterial *themat, 
         const _face *f1, const _face *f2, 
         const int ipr[2], const int idx[], const int nv) {
         gsidx[nload]=f1->getidx(ipr[1]); // vertex position index
@@ -440,13 +444,13 @@ public:
         nff=0;
         nload=0;
     }
-    void tesselate(const _face &fc, const Vec3 verts[], const dwmaterial *themat,GLUtesselator* ts, _dwobj *dwob) 
+    void tesselate(const _face &fc, const std::vector<Vec3> verts, const dwmaterial *themat,GLUtesselator* ts, _dwobj *dwob) 
     {    // generates a set of primitives all of one type (eg tris, qstrip trifan...)
         nbegin=0; // number of triangle strips etc generated
         fc.tesselate(verts, themat, ts, dwob, tmat);
         nff+=nbegin; // the number of primitives generated
     }
-    void buildDrawable(Group *grp, Vec3 verts[], dwmaterial *themat, const int nverts) {
+    void buildDrawable(Group *grp, const std::vector<Vec3> verts, dwmaterial *themat, const int nverts) {
         if (nload>0 && nff>0) { // there are some strips of this type
             Geode *geode = new Geode;
             GeoSet *gset = new GeoSet;
@@ -482,7 +486,7 @@ public:
             // this may get destroyed if multiple combines are made by the tesselator
             // extending the array of vertices and freeing some memory GWM Feb 2002,
             for (i=0; i<nverts; i++) {
-                vts[i].set(verts[i].x(),verts[i].y(),verts[i].z());
+                vts[i]=verts[i];
             }
             
             geode->addDrawable(gset);
@@ -589,7 +593,7 @@ void CALLBACK error (GLenum errno)
     printf("tesselator error %d %s\n", errno,errm);//, errm
 }
     //==========
-void _face::linkholes(const Vec3 verts[], const dwmaterial *themat, const _face *f2) const
+void _face::linkholes(const std::vector<Vec3> verts, const dwmaterial *themat, const _face *f2) const
 {
     int ipr[2];
     ipr[0]=nv-1;
@@ -599,7 +603,7 @@ void _face::linkholes(const Vec3 verts[], const dwmaterial *themat, const _face 
         ipr[0]=ipr[1];
     }
 }
-void _face::link(const int idop, const _face *f2, const int idop2,const Vec3 verts[], const dwmaterial *themat) const
+void _face::link(const int idop, const _face *f2, const int idop2,const std::vector<Vec3> verts, const dwmaterial *themat) const
 { // to join up opposed faces of a hole; starts using hole[idop] in THIS, ands at f2.Hole[idop2]
     opening[idop].linkholes(verts, themat, &f2->opening[idop2]);
 }
@@ -615,8 +619,9 @@ private:
 //===================
 class _dwobj {  // class for design workshop read of a single object
 public:
-    _dwobj() {oldv=verts=NULL; nverts=nfaces=0; openings=NULL;faces=NULL; tmat=NULL; edges=NULL;
+    _dwobj() { nverts=nfaces=0; openings=NULL;faces=NULL; tmat=NULL; edges=NULL;
         nopens=nfaceverts=0; fc1=fc2=NULL; colour[0]=colour[1]=colour[2]=colour[3]=1;
+    //    oldv=verts=NULL;
     } 
     ~_dwobj() {/*delete verts; delete faces;delete openings;*/
         delete fc1;delete fc2;
@@ -704,7 +709,7 @@ public:
     void setcolour(const float rgb[3]) {
         colour[0]=rgb[0]; colour[1]=rgb[1]; colour[2]=rgb[2];
     }
-    void reset() {    faces=NULL; verts=NULL;
+    void reset() {    faces=NULL; //verts=NULL;
         nverts=nfaces=nfaceverts=nopens=nedges=0;
     }
     void setmat(dwmaterial *mt) {
@@ -714,27 +719,24 @@ public:
     { // read up to nexpected vertices
         int ntot=nverts+nexpected;
         char buff[256];
-        Vec3 *oldv=verts; // extend the vertex list
-        verts= new Vec3[ntot];
-        for (int i=0; i<nverts; i++) verts[i]=oldv[i];
-        delete [] oldv;
+        verts.reserve(ntot);
         while (nverts<ntot) {
             if (dwfgets(buff, sizeof( buff ), fp )) {
                 float x,y,z;
-                if (verts) {
-                    sscanf(buff,"%f %f %f", &x, &y, &z);
-                    verts[nverts].set(x,-y,z); // note DW uses a LH coord system (why??)
-                }
+                sscanf(buff,"%f %f %f", &x, &y, &z);
+                Vec3 pos(x,-y,z);
+                verts.push_back(pos);
             }
             nverts++;
         }
+//    osg::notify(osg::NOTICE) << nverts<<" inp "<<verts[nverts-1].x()<<
+//        " "<<verts[nverts-1].y()<<" "<<verts[nverts-1].z()<<" "<<verts.size()<< std::endl;
+
         return nverts;
     }
     int addvtx(float x, float y, float z) { // add a single vertex to the object
-        oldv=verts; // extend the vertex list
-        verts= new Vec3[nverts+1];
-        for (int i=0; i<nverts; i++) verts[i]=oldv[i];
-        verts[nverts].set(x,y,z); //
+        Vec3 pos(x,y,z);
+        verts.push_back(pos); //
         nverts++;
         return nverts-1;
     }
@@ -753,8 +755,7 @@ public:
     inline void setmx(Matrix *m) { mx=m;}
 private:
     Vec4 colour;
-    Vec3 *verts;
-    Vec3 *oldv; // may be deleted after a tesselation
+    std::vector<Vec3> verts;
     dwmaterial *themat;
     osg::ushort nverts,nfaces,nedges;
     osg::ushort nfaceverts;
@@ -767,7 +768,7 @@ private:
     Matrix *mx; // current uvw transform for currently tessealting face
 };
 
-void _face::tesselate(const Vec3 verts[], const dwmaterial *themat, 
+void _face::tesselate(const std::vector<Vec3> verts, const dwmaterial *themat, 
                GLUtesselator *ts, _dwobj *dwob, const Matrix *tmat) const {
     int nvall=getallverts();
     int nused=0;
@@ -864,11 +865,12 @@ void _dwobj::buildDrawable(Group *grp)
                 faces[fc1[i]].link(openings[i*2], &faces[fc2[i]],openings[i*2+1],verts, themat);
             }
             prd.buildDrawable(grp, verts, themat, nverts);
-            if (oldv) delete [] oldv;
-            oldv=NULL;                
+         //   if (oldv) delete [] oldv;
+         //   oldv=NULL;                
         }
         gluDeleteTess(ts);
     } // primitive types
+    verts.clear();
 }
 ////////// tesselation complete
 
@@ -892,7 +894,7 @@ class ReaderWriterDW : public osgDB::ReaderWriter
         }
 
         virtual ReadResult readNode(const std::string& fileName,const osgDB::ReaderWriter::Options*)
-        {   
+        {
         _dwobj obj;
         enum reading {NONE, MATERIAL, OBJECT};
         //osg::ushort nrecs=0; // number of records read after a divider (numVerts, numFaces, numOpenings...)
@@ -908,6 +910,9 @@ class ReaderWriterDW : public osgDB::ReaderWriter
             char buff[256];
 
             notify(INFO)<<   "ReaderWriterDW::readNode( "<<fileName.c_str()<<" )\n";
+#ifdef _MSC_VER
+            notify(osg::NOTICE)<<   "MS Visual C++ version "<<_MSC_VER<<"\n";
+#endif
 
             FILE *fp;
 

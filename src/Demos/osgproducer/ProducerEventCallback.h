@@ -20,7 +20,7 @@ class ProducerEventCallback : public Producer::KeyboardMouseCallback
             _done(done)    
             {}
 
-        virtual ~ProducerEventCallback();
+        virtual ~ProducerEventCallback() {}
 
         virtual void keyPress( Producer::KeySymbol key );
                 

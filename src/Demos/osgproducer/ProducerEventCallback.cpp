@@ -87,3 +87,12 @@ void ProducerEventCallback::buttonRelease( float mx, float my, unsigned int mbut
     _eventQueue.push_back(event);
     _eventQueueMutex.unlock();
 }
+
+void ProducerEventCallback::getEventQueue(EventQueue& queue)
+{
+    queue.clear();
+    _eventQueueMutex.lock();
+    _eventQueue.swap(queue);
+    _eventQueueMutex.unlock();
+    
+}

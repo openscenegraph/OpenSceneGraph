@@ -75,6 +75,8 @@ void GliderManipulator::init(const GUIEventAdapter& ea,GUIActionAdapter& us)
         us.requestWarpPointer((ea.getXmin()+ea.getXmax())/2.0f,(ea.getYmin()+ea.getYmax())/2.0f);
     }
 
+    _camera->setFusionDistanceRatio(1/1000.0f);
+
 }
 
 
@@ -130,16 +132,6 @@ bool GliderManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
                 us.requestContinuousUpdate(false);
                 return true;
             }
-            else if (ea.getKey()=='+')
-            {
-                _camera->setFusionDistanceRatio(_camera->getFusionDistanceRatio()*1.25f);
-                return true;
-            }
-            else if (ea.getKey()=='-')
-            {
-                _camera->setFusionDistanceRatio(_camera->getFusionDistanceRatio()/1.25f);
-                return true;
-            }
             return false;
 
         case(GUIEventAdapter::FRAME):
@@ -175,7 +167,8 @@ void GliderManipulator::addMouseEvent(const GUIEventAdapter& ea)
 bool GliderManipulator::calcMovement()
 {
     _camera->setFusionDistanceMode(osg::Camera::PROPORTIONAL_TO_SCREEN_DISTANCE);
-
+    _camera->setFusionDistanceRatio(1/300.0f);
+    
     // return if less then two events have been added.
     if (_ga_t0.get()==NULL || _ga_t1.get()==NULL) return false;
 

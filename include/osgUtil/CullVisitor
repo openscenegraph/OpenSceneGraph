@@ -185,9 +185,14 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
             _currentRenderGraph = rg;
         }
 
-        inline RenderGraph* getRenderGraph()
+        inline RenderGraph* getRootRenderGraph()
         {
             return _rootRenderGraph.get();
+        }
+
+        inline RenderGraph* getCurrentRenderGraph()
+        {
+            return _currentRenderGraph;
         }
 
         inline void setRenderStage(RenderStage* rg)

@@ -269,7 +269,7 @@ unsigned int Viewer::addCameraManipulator(osgGA::MatrixManipulator* cm)
         _eventHandlerList.push_back(_keyswitchManipulator.get());
     }
     
-    unsigned int num = _keyswitchManipulator->getNumMatrixManipualtors();
+    unsigned int num = _keyswitchManipulator->getNumMatrixManipulators();
     _keyswitchManipulator->addNumberedMatrixManipulator(cm);
     
     return num;

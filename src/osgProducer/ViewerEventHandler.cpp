@@ -858,7 +858,7 @@ bool ViewerEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActio
                         osgGA::KeySwitchMatrixManipulator* kscm = viewer->getKeySwitchMatrixManipulator();
                         if (kscm)
                         {
-                            for(apmNo=0;apmNo<kscm->getNumMatrixManipualtors() && apm==0;++apmNo)
+                            for(apmNo=0;apmNo<kscm->getNumMatrixManipulators() && apm==0;++apmNo)
                             {
                                 apm = dynamic_cast<osgGA::AnimationPathManipulator*>(kscm->getMatrixManipulator(apmNo));
                             }

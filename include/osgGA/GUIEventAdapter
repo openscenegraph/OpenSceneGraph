@@ -94,7 +94,7 @@ public:
             KEY_Insert          = 0xFF63,        /* Insert, insert here */
             KEY_Undo            = 0xFF65,        /* Undo, oops */
             KEY_Redo            = 0xFF66,        /* redo, again */
-            KEY_Menu            = 0xFF67,
+            KEY_Menu            = 0xFF67,        /* On Windows, this is VK_APPS, the context-menu key */
             KEY_Find            = 0xFF68,        /* Find, search */
             KEY_Cancel          = 0xFF69,        /* Cancel, stop, abort, exit */
             KEY_Help            = 0xFF6A,        /* Help */

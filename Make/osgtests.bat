@@ -25,6 +25,9 @@ sgv cube_mapped_torus.osg
 echo sgv Town.osg
 sgv Town.osg
 
+echo sgv afterescher.geo
+sgv afterescher.geo
+
 echo osgshape
 osgshape
 

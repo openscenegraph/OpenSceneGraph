@@ -38,6 +38,10 @@ echo sgv Town.osg
 sgv Town.osg
 more memleaks.log
 
+echo sgv afterescher.geo
+sgv afterescher.geo
+more memleaks.log
+
 echo osgshape
 osgshape
 more memleaks.log

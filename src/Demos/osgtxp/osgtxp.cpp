@@ -90,50 +90,57 @@ int main( int argc, char **argv )
     {
         if ((*itr)[0]!='-')
         {
-	    fileName = (*itr);
-        } else {
-	    // Look for switches we want
-	    if (!strcasecmp((*itr).c_str(),"-loadall")) {
-			loadAll = true;
-			continue;
-	    }
-	    if (!strcasecmp((*itr).c_str(),"-thread")) {
-				threadIt = true;
-				continue;
-	    }
-	}
+            fileName = (*itr);
+
+        }
+        else
+        {
+            // Look for switches we want
+            if (*itr=="-loadall")
+            {
+                loadAll = true;
+                continue;
+            }
+            if (*itr=="-thread")
+            {
+                threadIt = true;
+                continue;
+            }
+        }
     }
     if (fileName.empty()) {
-	fprintf(stderr,"No TerraPage file specified on command line.\n");
-	return 1;
+    fprintf(stderr,"No TerraPage file specified on command line.\n");
+    return 1;
     }
     // Open the TXP database
     TrPageArchive *txpArchive = new TrPageArchive();
-    if (!txpArchive->OpenFile(fileName.c_str())) {
-	fprintf(stderr,"Couldn't load TerraPage archive %s.\n",fileName.c_str());
-	return 1;
+    if (!txpArchive->OpenFile(fileName.c_str()))
+    {
+        fprintf(stderr,"Couldn't load TerraPage archive %s.\n",fileName.c_str());
+        return 1;
     }
+    
     // Note: Should be checking the return values
     txpArchive->LoadMaterials();
-//	txpArchive->LoadModels();
+//    txpArchive->LoadModels();
 
-	// Might need a page manager if we're paging
-	OSGPageManager *pageManager = new OSGPageManager(txpArchive);
-	osg::Group *rootNode=NULL;
-	if (loadAll) {
-		// Load the whole scenegraph
-		rootNode = txpArchive->LoadAllTiles();
-		if (!rootNode) {
-			fprintf(stderr,"Couldn't load whole TerraPage archive %s.\n",fileName.c_str());
-			return 1;
-		}
-		// add a viewport to the viewer and attach the scene graph.
-		viewer->addViewport( rootNode );
-	} else {
-		viewer->Init(pageManager,(threadIt ? txp::OSGPageManager::ThreadFree : txp::OSGPageManager::ThreadNone));
-		rootNode = new osg::Group();
-		viewer->addViewport(rootNode);
-	}
+    // Might need a page manager if we're paging
+    OSGPageManager *pageManager = new OSGPageManager(txpArchive);
+    osg::Group *rootNode=NULL;
+    if (loadAll) {
+        // Load the whole scenegraph
+        rootNode = txpArchive->LoadAllTiles();
+        if (!rootNode) {
+            fprintf(stderr,"Couldn't load whole TerraPage archive %s.\n",fileName.c_str());
+            return 1;
+        }
+        // add a viewport to the viewer and attach the scene graph.
+        viewer->addViewport( rootNode );
+    } else {
+        viewer->Init(pageManager,(threadIt ? txp::OSGPageManager::ThreadFree : txp::OSGPageManager::ThreadNone));
+        rootNode = new osg::Group();
+        viewer->addViewport(rootNode);
+    }
     
     // run optimization over the scene graph
 //   osgUtil::Optimizer optimzer;
@@ -145,15 +152,15 @@ int main( int argc, char **argv )
     viewer->registerCameraManipulator(new osgGA::FlightManipulator);
     viewer->registerCameraManipulator(new osgGA::DriveManipulator);
 
-	// Recenter the camera to the middle of the database
-	osg::Vec3 center;
-	txpArchive->GetCenter(center);  center[2] += 200;
-	osgUtil::SceneView *sceneView = viewer->getViewportSceneView(0);
-	osg::Camera *camera = sceneView->getCamera();
-	osg::Vec3 eyePt = center;
-	eyePt[0] -= 1000;
-	osg::Vec3 upVec( 0, 0, 1 );
-	camera->setLookAt(eyePt,center,upVec);
+    // Recenter the camera to the middle of the database
+    osg::Vec3 center;
+    txpArchive->GetCenter(center);  center[2] += 200;
+    osgUtil::SceneView *sceneView = viewer->getViewportSceneView(0);
+    osg::Camera *camera = sceneView->getCamera();
+    osg::Vec3 eyePt = center;
+    eyePt[0] -= 1000;
+    osg::Vec3 upVec( 0, 0, 1 );
+    camera->setLookAt(eyePt,center,upVec);
 
     // open the viewer window.
     viewer->open();
@@ -162,11 +169,11 @@ int main( int argc, char **argv )
     viewer->run();
 
 
-	// Close things down  
+    // Close things down  
         // (note from Robert Osfield, umm.... we should be using ref_ptr<> for handling memory here, this isn't robust..)
-	delete pageManager;
-	delete txpArchive;
-	delete viewer;
+    delete pageManager;
+    delete txpArchive;
+    delete viewer;
 
     return 0;
 }

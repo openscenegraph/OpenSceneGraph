@@ -201,6 +201,8 @@ endif
   TIFF_LIB          = -ltiff
   GIF_LIBS          = -lungif
 
+  MAKEDIST          = $(TOPDIR)/Make/makeirixdist
+
 endif
 
 #### Linux specific definitions

@@ -169,7 +169,6 @@ const unsigned int Image::computeRowWidthInBytes(int width,GLenum format,GLenum 
     return (widthInBits/packingInBits + ((widthInBits%packingInBits)?1:0))*packing;
 }
 
-
 void Image::setInternalTextureFormat(GLint internalFormat)
 {
     // won't do any sanity checking right now, leave it to 

@@ -346,7 +346,7 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph)
     // set up the texture.
     osg::Image* image = new osg::Image;
     image->setInternalTextureFormat(GL_RGBA);
-    //osg::Image* image = osgDB::readImageFile("lz.rgb");
+
     osg::Texture* texture = new osg::Texture;
     texture->setSubloadMode(osg::Texture::IF_DIRTY);
     texture->setImage(image);

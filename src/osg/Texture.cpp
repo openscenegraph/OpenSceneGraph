@@ -230,7 +230,7 @@ void Texture::apply(State& state) const
             if (_subloadMode == AUTO ||
                 (_subloadMode == IF_DIRTY && modifiedTag != _image->getModifiedTag()))
             {
-                glPixelStorei(GL_UNPACK_ROW_LENGTH,_image->getRowSizeInBytes());
+                glPixelStorei(GL_UNPACK_ROW_LENGTH,_image->s());
 
                 glTexSubImage2D(_target, 0,
                                 _subloadTextureOffsetX, _subloadTextureOffsetY,
@@ -576,7 +576,7 @@ void Texture::applyTexImage(GLenum target, Image* image, State& state) const
                      NULL);
 
 
-        glPixelStorei(GL_UNPACK_ROW_LENGTH,image->getRowSizeInBytes());
+        glPixelStorei(GL_UNPACK_ROW_LENGTH,image->s());
 
         glTexSubImage2D(target, 0,
                         _subloadTextureOffsetX, _subloadTextureOffsetY,

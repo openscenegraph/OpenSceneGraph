@@ -131,7 +131,7 @@ void trpgMemWriteBuffer::Add(int32 val)
 void trpgMemWriteBuffer::Add(int64 val)
 {
     if (ness != cpuNess)
-        val = trpg_byteswap_long(val);
+        val = trpg_byteswap_llong(val);
     append(sizeof(int64),(const char *)&val);
 }
 

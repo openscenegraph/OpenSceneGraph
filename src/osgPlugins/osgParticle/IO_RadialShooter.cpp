@@ -49,6 +49,17 @@ bool RadialShooter_readLocalData(osg::Object &obj, osgDB::Input &fr)
         }
     }
 
+    if (fr[0].matchWord("initialRotationalSpeedRange")) {
+		osg::Vec3 r1;
+		osg::Vec3 r2;
+		if (fr[1].getFloat(r1.x()) && fr[2].getFloat(r1.y()) && fr[3].getFloat(r1.z()) && \
+			fr[4].getFloat(r2.x()) && fr[5].getFloat(r2.y()) && fr[6].getFloat(r2.z())) {
+			myobj.setInitialRotationalSpeedRange(r1,r2);
+			fr += 7;
+			itAdvanced = true;
+		}
+    }
+
     return itAdvanced;
 }
 
@@ -63,6 +74,13 @@ bool RadialShooter_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     fw.indent() << "phiRange " << r.minimum << " " << r.maximum << std::endl;
     r = myobj.getInitialSpeedRange();
     fw.indent() << "initialSpeedRange " << r.minimum << " " << r.maximum << std::endl;
+    
+	osgParticle::rangev3 rv = myobj.getInitialRotationalSpeedRange();
+	osg::Vec3 v1 = rv.minimum;
+	osg::Vec3 v2 = rv.maximum;
+    fw.indent() << "initialRotationalSpeedRange ";
+    fw << v1.x() << " " << v1.y() << " " << v1.z() << " ";
+	fw << v2.x() << " " << v2.y() << " " << v2.z() << std::endl;
 
     return true;
 }

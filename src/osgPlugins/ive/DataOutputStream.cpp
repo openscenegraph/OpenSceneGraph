@@ -58,8 +58,10 @@ DataOutputStream::DataOutputStream(std::ostream * ostream){
 
 DataOutputStream::~DataOutputStream(){}
 
-void DataOutputStream::writeBool(bool b){
-    _ostream->write((char*)&b, BOOLSIZE);
+void DataOutputStream::writeBool(bool b)
+{
+    char c = b;
+    _ostream->write(&c, CHARSIZE);
 }
 
 void DataOutputStream::writeChar(char c){

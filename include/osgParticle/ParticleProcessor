@@ -72,6 +72,36 @@ namespace osgParticle
         /// Set the destination particle system.
         inline void setParticleSystem(ParticleSystem *ps);
         
+        /// Set the endless flag of this processor.
+        inline void setEndless(bool type);
+        
+        /// Check whether this processor is endless.
+        inline bool isEndless() const;
+        
+        /// Set the lifetime of this processor.
+        inline void setLifeTime(double t);
+        
+        /// Get the lifetime of this processor.
+        inline double getLifeTime() const;
+        
+        /// Set the start time of this processor.
+        inline void setStartTime(double t);
+        
+        /// Get the start time of this processor.
+        inline double getStartTime() const;
+
+        /// Set the current time of this processor.
+        inline void setCurrentTime(double t);
+        
+        /// Get the current time of this processor.
+        inline double getCurrentTime() const;
+        
+        /// Set the reset time of this processor. A value of 0 disables reset.
+        inline void setResetTime(double t);
+        
+        /// Get the reset time of this processor.
+        inline double getResetTime() const;
+        
         void traverse(osg::NodeVisitor &nv);
 
         /// Get the current local-to-world transformation matrix (valid only during cull traversal).
@@ -110,6 +140,13 @@ namespace osgParticle
         osg::Matrix ltw_matrix_;
         osg::Matrix wtl_matrix_;
         osg::NodeVisitor *current_nodevisitor_;
+        
+        bool endless_;
+        
+        double lifeTime_;
+        double startTime_;
+        double currentTime_;
+        double resetTime_;
     };
     
     // INLINE FUNCTIONS
@@ -132,7 +169,10 @@ namespace osgParticle
     inline void ParticleProcessor::setEnabled(bool v)
     {
         enabled_ = v;
-        if (enabled_) t0_ = -1;
+        if (enabled_) {
+			t0_ = -1;
+			currentTime_ = 0;
+		}
     }
     
     inline ParticleSystem *ParticleProcessor::getParticleSystem()
@@ -149,6 +189,56 @@ namespace osgParticle
     {
         ps_ = ps;
     }
+   
+    inline void ParticleProcessor::setEndless(bool type)
+    {
+		endless_ = type;
+    }
+        
+    inline bool ParticleProcessor::isEndless() const
+    {
+		return endless_;
+    }
+
+    inline void ParticleProcessor::setLifeTime(double t)
+    {
+		lifeTime_ = t;
+		endless_ = false;
+	}
+        
+    inline double ParticleProcessor::getLifeTime() const
+    {
+		return lifeTime_;
+	}
+	   
+    inline void ParticleProcessor::setStartTime(double t)
+    {
+		startTime_ = t;
+	}
+        
+    inline double ParticleProcessor::getStartTime() const
+    {
+		return startTime_;
+	}
+    inline void ParticleProcessor::setCurrentTime(double t)
+    {
+		currentTime_ = t;
+	}
+        
+    inline double ParticleProcessor::getCurrentTime() const
+    {
+		return currentTime_;
+	}
+	
+	inline void ParticleProcessor::setResetTime(double t)
+	{
+		resetTime_ = t;
+	}
+	
+	inline double ParticleProcessor::getResetTime() const
+	{
+		return resetTime_;
+	}
 
     inline bool ParticleProcessor::computeBound() const
     {

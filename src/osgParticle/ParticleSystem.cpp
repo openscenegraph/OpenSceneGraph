@@ -30,7 +30,7 @@ osgParticle::ParticleSystem::ParticleSystem()
     bounds_computed_(false),
     def_ptemp_(Particle()),
     last_frame_(0),
-    freeze_on_cull_(true),
+    freeze_on_cull_(false),
     detail_(1),
     draw_count_(0)
 {

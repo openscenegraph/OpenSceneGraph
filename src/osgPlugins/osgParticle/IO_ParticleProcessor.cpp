@@ -63,6 +63,54 @@ bool ParticleProcessor_readLocalData(osg::Object &obj, osgDB::Input &fr)
         }
     }
 
+    if (fr[0].matchWord("endless")) {
+        if (fr[1].matchWord("TRUE")) {
+            myobj.setEndless(true);
+            fr += 2;
+            itAdvanced = true;
+        } else if (fr[1].matchWord("FALSE")) {
+            myobj.setEndless(false);
+            fr += 2;
+            itAdvanced = true;
+        }
+    }
+
+	if (fr[0].matchWord("lifeTime")) {
+		float lt;
+		if (fr[1].getFloat(lt)) {
+			myobj.setLifeTime(lt);
+			fr += 2;
+			itAdvanced = true;
+		}
+	}
+
+	if (fr[0].matchWord("startTime")) {
+		float st;
+		if (fr[1].getFloat(st)) {
+			myobj.setStartTime(st);
+			fr += 2;
+			itAdvanced = true;
+		}
+	}
+
+	if (fr[0].matchWord("currentTime")) {
+		float ct;
+		if (fr[1].getFloat(ct)) {
+			myobj.setCurrentTime(ct);
+			fr += 2;
+			itAdvanced = true;
+		}
+	}
+
+	if (fr[0].matchWord("resetTime")) {
+		float ct;
+		if (fr[1].getFloat(ct)) {
+			myobj.setResetTime(ct);
+			fr += 2;
+			itAdvanced = true;
+		}
+	}
+
     return itAdvanced;
 }
 
@@ -88,6 +136,17 @@ bool ParticleProcessor_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     default:
         fw << "RELATIVE_TO_PARENTS" << std::endl;
     }
+
+	fw.indent() << "endless ";
+	if (myobj.isEndless())
+        fw << "TRUE" << std::endl;
+    else
+        fw << "FALSE" << std::endl;
+
+	fw.indent() << "lifeTime " << myobj.getLifeTime() << std::endl;
+	fw.indent() << "startTime " << myobj.getStartTime() << std::endl;
+	fw.indent() << "currentTime " << myobj.getCurrentTime() << std::endl;
+	fw.indent() << "resetTime " << myobj.getResetTime() << std::endl;
 
     return true;
 }

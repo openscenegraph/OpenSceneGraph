@@ -209,7 +209,7 @@ bool FltFile::readFile(const std::string& fileName)
                     MaterialPool*   pMaterialPool = NULL;
                     LtPtAppearancePool* pLtPtAppearancePool = NULL;
                     LtPtAnimationPool* pLtPtAnimationPool = NULL;
-                    std::string filename(pSExternal->szPath);
+                    std::string filename( rec.getFilename() );
 
                     osg::notify(osg::INFO) << "External=" << filename << std::endl;
 

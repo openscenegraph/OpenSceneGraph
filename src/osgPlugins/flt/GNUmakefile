@@ -48,6 +48,7 @@ CXXFILES =\
     MultiTextureRecord.cpp\
     UVListRecord.cpp\
     BSPRecord.cpp\
+    FindExternalModelVisitor.cpp\
 #    PointLight.cpp\
 
 

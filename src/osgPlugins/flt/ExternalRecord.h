@@ -45,8 +45,11 @@ class ExternalRecord : public PrimNodeRecord
         SExternalReference* getData() const { return (SExternalReference*)_pData; }
 
         void setExternal(FltFile* pExternal);
+
         FltFile* getExternal() { return _fltfile.get(); }
-        const std::string getFilename( void ) const { return std::string(getData()->szPath); }
+
+        const std::string getFilename( void );
+        std::string getModelName() ;
 
         enum Flag
         {

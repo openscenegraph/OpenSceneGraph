@@ -131,6 +131,10 @@ SOURCE=..\..\..\src\osgPlugins\flt\FaceRecord.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\flt\FindExternalModelVisitor.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\flt\flt.cpp
 # End Source File
 # Begin Source File
@@ -320,6 +324,10 @@ SOURCE=..\..\..\src\osgPlugins\flt\ExternalRecord.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\flt\FaceRecord.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\flt\FindExternalModelVisitor.h
 # End Source File
 # Begin Source File
 

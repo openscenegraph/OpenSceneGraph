@@ -14,6 +14,8 @@
 #ifndef    _H_MMGR
 #define    _H_MMGR
 
+#include <osg/Export>
+
 #include <stdlib.h>
 #include <new>
 
@@ -63,39 +65,39 @@ typedef    struct
 // External constants
 // ---------------------------------------------------------------------------------------------------------------------------------
 
-extern    const    unsigned int    m_alloc_unknown;
-extern    const    unsigned int    m_alloc_new;
-extern    const    unsigned int    m_alloc_new_array;
-extern    const    unsigned int    m_alloc_malloc;
-extern    const    unsigned int    m_alloc_calloc;
-extern    const    unsigned int    m_alloc_realloc;
-extern    const    unsigned int    m_alloc_delete;
-extern    const    unsigned int    m_alloc_delete_array;
-extern    const    unsigned int    m_alloc_free;
+SG_EXPORT extern const    unsigned int    m_alloc_unknown;
+SG_EXPORT extern const    unsigned int    m_alloc_new;
+SG_EXPORT extern const    unsigned int    m_alloc_new_array;
+SG_EXPORT extern const    unsigned int    m_alloc_malloc;
+SG_EXPORT extern const    unsigned int    m_alloc_calloc;
+SG_EXPORT extern const    unsigned int    m_alloc_realloc;
+SG_EXPORT extern const    unsigned int    m_alloc_delete;
+SG_EXPORT extern const    unsigned int    m_alloc_delete_array;
+SG_EXPORT extern const    unsigned int    m_alloc_free;
 
 // ---------------------------------------------------------------------------------------------------------------------------------
 // Used by the macros
 // ---------------------------------------------------------------------------------------------------------------------------------
 
-void        m_setOwner(const char *file, const unsigned int line, const char *func);
+SG_EXPORT extern void        m_setOwner(const char *file, const unsigned int line, const char *func);
 
 // ---------------------------------------------------------------------------------------------------------------------------------
 // Allocation breakpoints
 // ---------------------------------------------------------------------------------------------------------------------------------
 
-bool        &m_breakOnRealloc(void *reportedAddress);
-bool        &m_breakOnDealloc(void *reportedAddress);
-void            m_breakOnAllocation(unsigned int count);
+SG_EXPORT extern bool        &m_breakOnRealloc(void *reportedAddress);
+SG_EXPORT extern bool        &m_breakOnDealloc(void *reportedAddress);
+SG_EXPORT extern void            m_breakOnAllocation(unsigned int count);
 
 // ---------------------------------------------------------------------------------------------------------------------------------
 // The meat of the memory tracking software
 // ---------------------------------------------------------------------------------------------------------------------------------
 
-void        *m_allocator(const char *sourceFile, const unsigned int sourceLine, const char *sourceFunc,
+SG_EXPORT extern void        *m_allocator(const char *sourceFile, const unsigned int sourceLine, const char *sourceFunc,
                  const unsigned int allocationType, const size_t reportedSize);
-void        *m_reallocator(const char *sourceFile, const unsigned int sourceLine, const char *sourceFunc,
+SG_EXPORT extern void        *m_reallocator(const char *sourceFile, const unsigned int sourceLine, const char *sourceFunc,
                    const unsigned int reallocationType, const size_t reportedSize, void *reportedAddress);
-void        m_deallocator(const char *sourceFile, const unsigned int sourceLine, const char *sourceFunc,
+SG_EXPORT extern void        m_deallocator(const char *sourceFile, const unsigned int sourceLine, const char *sourceFunc,
                   const unsigned int deallocationType, const void *reportedAddress);
 
 // ---------------------------------------------------------------------------------------------------------------------------------
@@ -110,16 +112,16 @@ bool        m_validateAllAllocUnits();
 // Unused RAM calculations
 // ---------------------------------------------------------------------------------------------------------------------------------
 
-unsigned int    m_calcUnused(const sAllocUnit *allocUnit);
-unsigned int    m_calcAllUnused();
+SG_EXPORT extern unsigned int    m_calcUnused(const sAllocUnit *allocUnit);
+SG_EXPORT extern unsigned int    m_calcAllUnused();
 
 // ---------------------------------------------------------------------------------------------------------------------------------
 // Logging and reporting
 // ---------------------------------------------------------------------------------------------------------------------------------
 
-void        m_dumpAllocUnit(const sAllocUnit *allocUnit, const char *prefix = "");
-void        m_dumpMemoryReport(const char *filename = "memreport.log", const bool overwrite = true);
-sMStats        m_getMemoryStatistics();
+SG_EXPORT extern void        m_dumpAllocUnit(const sAllocUnit *allocUnit, const char *prefix = "");
+SG_EXPORT extern void        m_dumpMemoryReport(const char *filename = "memreport.log", const bool overwrite = true);
+SG_EXPORT extern sMStats        m_getMemoryStatistics();
 
 // ---------------------------------------------------------------------------------------------------------------------------------
 // Variations of global operators new & delete
@@ -127,12 +129,12 @@ sMStats        m_getMemoryStatistics();
 
 #ifdef OSG_USE_MEMORY_MANAGER
 
-    void    *operator new(size_t reportedSize) throw (std::bad_alloc);
-    void    *operator new[](size_t reportedSize) throw (std::bad_alloc);
-    void    *operator new(size_t reportedSize, const char *sourceFile, int sourceLine) throw (std::bad_alloc);
-    void    *operator new[](size_t reportedSize, const char *sourceFile, int sourceLine) throw (std::bad_alloc);
-    void    operator delete(void *reportedAddress) throw ();
-    void    operator delete[](void *reportedAddress) throw ();
+    //void    *operator new(size_t reportedSize) throw (std::bad_alloc);
+    //void    *operator new[](size_t reportedSize) throw (std::bad_alloc);
+    //void    *operator new(size_t reportedSize, const char *sourceFile, int sourceLine) throw (std::bad_alloc);
+    //void    *operator new[](size_t reportedSize, const char *sourceFile, int sourceLine) throw (std::bad_alloc);
+    //void    operator delete(void *reportedAddress) throw ();
+    //void    operator delete[](void *reportedAddress) throw ();
 
     // ---------------------------------------------------------------------------------------------------------------------------------
     // Macros -- "Kids, please don't try this at home. We're trained professionals here." :)

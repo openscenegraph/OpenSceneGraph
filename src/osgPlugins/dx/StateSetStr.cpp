@@ -1,7 +1,8 @@
+#include <osg/StateAttribute>
+
 #include <map>
 #include <string>
 #include <string.h>
-#include <osg/StateAttribute>
 
 namespace dx {
 

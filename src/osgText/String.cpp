@@ -33,7 +33,7 @@ struct look_ahead_iterator
 
     look_ahead_iterator& operator += (int offset)
     {
-        if (_index<_string.length()) _index = osg::minimum(_index+offset,_string.length());
+        if (_index<_string.length()) _index = osg::minimum((unsigned int)(_index+offset),(unsigned int)_string.length());
         return *this;
     }
     

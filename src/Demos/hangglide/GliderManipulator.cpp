@@ -1,7 +1,7 @@
-#include <osg/Notify>
-#include <osg/Types>
-
 #include "GliderManipulator.h"
+
+#include <osg/Types>
+#include <osg/Notify>
 
 using namespace osg;
 using namespace osgUtil;
@@ -88,27 +88,27 @@ bool GliderManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
             addMouseEvent(ea);
             us.requestContinuousUpdate(true);
             if (calcMovement()) us.requestRedraw();
-
+            return true;
         }
-        return true;
+
         case(GUIEventAdapter::RELEASE):
         {
 
             addMouseEvent(ea);
             us.requestContinuousUpdate(true);
             if (calcMovement()) us.requestRedraw();
-
+            return true;
         }
-        return true;
+
         case(GUIEventAdapter::DRAG):
         {
 
             addMouseEvent(ea);
             us.requestContinuousUpdate(true);
             if (calcMovement()) us.requestRedraw();
-
+            return true;
         }
-        return true;
+
         case(GUIEventAdapter::MOVE):
         {
 
@@ -116,8 +116,8 @@ bool GliderManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
             us.requestContinuousUpdate(true);
             if (calcMovement()) us.requestRedraw();
 
+            return true;
         }
-        return true;
 
         case(GUIEventAdapter::KEYBOARD):
             if (ea.getKey()==' ')
@@ -128,17 +128,28 @@ bool GliderManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
                 us.requestContinuousUpdate(false);
                 return true;
             }
+            else if (ea.getKey()=='+')
+            {
+                _camera->setFusionDistanceRatio(_camera->getFusionDistanceRatio()*1.25f);
+                return true;
+            }
+            else if (ea.getKey()=='-')
+            {
+                _camera->setFusionDistanceRatio(_camera->getFusionDistanceRatio()/1.25f);
+                return true;
+            }
             return false;
+
         case(GUIEventAdapter::FRAME):
             addMouseEvent(ea);
             if (calcMovement()) us.requestRedraw();
             return true;
+
         case(GUIEventAdapter::RESIZE):
-        {
             init(ea,us);
             us.requestRedraw();
-        }
-        return true;
+            return true;
+
         default:
             return false;
     }
@@ -161,8 +172,11 @@ void GliderManipulator::addMouseEvent(const GUIEventAdapter& ea)
 
 bool GliderManipulator::calcMovement()
 {
+    _camera->setFusionDistanceMode(osg::Camera::PROPORTIONAL_TO_SCREEN_DISTANCE);
+
     // return if less then two events have been added.
     if (_ga_t0.get()==NULL || _ga_t1.get()==NULL) return false;
+
 
     float dt = _ga_t0->time()-_ga_t1->time();
 
@@ -220,7 +234,7 @@ bool GliderManipulator::calcMovement()
 
     lv *= (_velocity*dt);
 
-    mat *= Matrix::translate(center + lv);
+    mat *= Matrix::translate(center+lv);
 
     _camera->transformLookAt(mat);
 

@@ -738,6 +738,8 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
             bool                                        _equalized[NUMBER_OF_POSITIONS];
             
             
+            unsigned int                                _maxSourceLevel;
+
             unsigned int                                _imagery_maxNumColumns;
             unsigned int                                _imagery_maxNumRows;
             float                                       _imagery_maxSourceResolutionX;

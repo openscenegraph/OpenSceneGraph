@@ -114,7 +114,7 @@ class Primitive : public Object
 
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Primitive*>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osg"; }
-        virtual const char* className() const { return "Primitve"; }
+        virtual const char* className() const { return "Primitive"; }
         
         Type getType() const { return _primitiveType; }
         

@@ -54,6 +54,7 @@ protected:
 
 DistortionNode::DistortionNode()
 {
+    setCullingActive(false);
     createHUDSubgraph();
 }
 

@@ -41,7 +41,9 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
     
     if (options & SHARE_DUPLICATE_STATE)
     {
-    #if !defined(WIN32) || defined(_STLPORT_VERSION)
+    #if (defined(_MSC_VER) && _MSC_VER<13 && !defined(_STLPORT_VERSION))
+        osg::notify(osg::INFO)<<"Warning: VisualStudio 6.0 build, unable to run state optimizer"<<std::endl; 
+    #else
         StateVisitor osv;
         node->accept(osv);
         osv.optimize();

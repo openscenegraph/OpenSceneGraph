@@ -30,7 +30,7 @@ bool PositionAttitudeTransform_readLocalData(Object& obj, Input& fr)
 
     if (fr.matchSequence("position %f %f %f"))
     {
-        osg::Vec3 pos;
+        osg::Vec3d pos;
         fr[1].getFloat(pos[0]);
         fr[2].getFloat(pos[1]);
         fr[3].getFloat(pos[2]);
@@ -57,7 +57,7 @@ bool PositionAttitudeTransform_readLocalData(Object& obj, Input& fr)
 
     if (fr.matchSequence("scale %f %f %f"))
     {
-        osg::Vec3 scale;
+        osg::Vec3d scale;
         fr[1].getFloat(scale[0]);
         fr[2].getFloat(scale[1]);
         fr[3].getFloat(scale[2]);
@@ -70,7 +70,7 @@ bool PositionAttitudeTransform_readLocalData(Object& obj, Input& fr)
 
     if (fr.matchSequence("pivotPoint %f %f %f"))
     {
-        osg::Vec3 pivot;
+        osg::Vec3d pivot;
         fr[1].getFloat(pivot[0]);
         fr[2].getFloat(pivot[1]);
         fr[3].getFloat(pivot[2]);

@@ -183,19 +183,19 @@ SOURCE=..\..\include\osgParticle\Export
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgParticle\ExplosionEffect
+SOURCE=..\..\include\osgParticle\ExplosionEffect
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgParticle\FireEffect
+SOURCE=..\..\include\osgParticle\FireEffect
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgParticle\SmokeEffect
+SOURCE=..\..\include\osgParticle\SmokeEffect
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgParticle\ParticleEffect
+SOURCE=..\..\include\osgParticle\ParticleEffect
 # End Source File
 # Begin Source File
 

@@ -51,9 +51,44 @@ class SG_EXPORT CullSettings
             return *this;
         }
 
-        void setCullSettings(const CullSettings& settings);
-        
+
         void setDefaults();
+
+        
+        enum VariablesMask
+        {
+            COMPUTE_NEAR_FAR_MODE                   = 0x0001,
+            CULLING_MODE                            = 0x0002,
+            LOD_SCALE                               = 0x0004,
+            SMALL_FEATURE_CULLING_PIXEL_SIZE        = 0x0008,
+            CLAMP_PROJECTION_MATRIX_CALLBACK        = 0x0010,
+            NEAR_FAR_RATIO                          = 0x0020,
+            IMPOSTOR_ACTIVE                         = 0x0040,
+            DEPTH_SORT_IMPOSTOR_SPRITES             = 0x0080,
+            IMPOSTOR_PIXEL_ERROR_THRESHOLD          = 0x0100,
+            NUM_FRAMES_TO_KEEP_IMPOSTORS_SPRITES    = 0x0200,
+            CULL_MASK                               = 0x0400,
+            CULL_MASK_LEFT                          = 0x0800,
+            CULL_MASK_RIGHT                         = 0x1000,
+            
+            NO_VARIABLES                            = 0x0000,
+            ALL_VARIABLES                           = 0xFFFF
+        };
+
+        /** Set the inheritance mask used in inheritCullSettings to control which variables get overritten by the passed in CullSettings object.*/
+        void setInheritanceMask(unsigned int mask) { _inheritanceMask = mask; }
+
+        /** Get the inheritance mask used in inheritCullSettings to control which variables get overritten by the passed in CullSettings object.*/
+        unsigned int getInheritanceMask() const { return _inheritanceMask; }
+        
+        /** Set the local cull settings values from specified CullSettings object.*/
+        void setCullSettings(const CullSettings& settings) { inheritCullSettings(settings, ALL_VARIABLES); }
+
+        /** Inherit the local cull settings variable from specified CullSettings object, according to the inheritance mask.*/
+        void inheritCullSettings(const CullSettings& settings) { inheritCullSettings(settings, _inheritanceMask); }
+
+        /** Inherit the local cull settings variable from specified CullSettings object, according to the inheritance mask.*/
+        void inheritCullSettings(const CullSettings& settings, unsigned int inheritanceMask);
 
         /** read the environmental variables.*/
         void readEnvironmentalVariables();
@@ -181,6 +216,7 @@ class SG_EXPORT CullSettings
 
     protected:
 
+        unsigned int                                _inheritanceMask;
 
         ComputeNearFarMode                          _computeNearFar;
         CullingMode                                 _cullingMode;

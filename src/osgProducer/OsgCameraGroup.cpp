@@ -618,7 +618,7 @@ void OsgCameraGroup::frame()
         itr != _shvec.end();
         ++itr)
     {
-        (*itr)->getSceneView()->setCullSettings(_cullSettings);
+        (*itr)->getSceneView()->inheritCullSettings(_cullSettings);
     }
  
  

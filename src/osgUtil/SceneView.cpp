@@ -483,7 +483,7 @@ void SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
         
         if (!_collectOccludersVisistor) _collectOccludersVisistor = new osg::CollectOccludersVisitor;
         
-        _collectOccludersVisistor->setCullSettings(*this);
+        _collectOccludersVisistor->inheritCullSettings(*this);
         
         _collectOccludersVisistor->reset();
         
@@ -528,7 +528,7 @@ void SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
          cullVisitor->setTraversalNumber(_frameStamp->getFrameNumber());
     }
 
-    cullVisitor->setCullSettings(*this);
+    cullVisitor->inheritCullSettings(*this);
 
     cullVisitor->setClearNode(NULL); // reset earth sky on each frame.
     

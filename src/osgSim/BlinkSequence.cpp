@@ -21,6 +21,7 @@ BlinkSequence::BlinkSequence():
 }
 
 BlinkSequence::BlinkSequence(const BlinkSequence& bs):
+    Referenced(),
     _pulsePeriod(bs._pulsePeriod),
     _phaseShift(bs._phaseShift),
     _pulseData(bs._pulseData),

@@ -15,7 +15,7 @@ using namespace osgDB;
 
 DatabasePager::DatabasePager()
 {
-    //std::cout<<"Constructing DatabasePager()"<<std::endl;
+    //osg::notify(osg::INFO)<<"Constructing DatabasePager()"<<std::endl;
     
     _deleteRemovedSubgraphsInDatabaseThread = true;
     
@@ -178,7 +178,7 @@ public:
 
         if (drawable->getUseDisplayList() || drawable->getUseVertexBufferObjects())
         {
-            //std::cout<<"Found compilable drawable"<<std::endl;
+            //osg::notify(osg::INFO)<<"Found compilable drawable"<<std::endl;
             _dataToCompile.second.push_back(drawable);
         }
     }
@@ -189,7 +189,7 @@ public:
 
 void DatabasePager::run()
 {
-    std::cout<<"DatabasePager::run()"<<std::endl;
+    osg::notify(osg::NOTICE)<<"DatabasePager::run()"<<std::endl;
 
     // need to set the texture object manager to be able to reuse textures
     // by keeping deleted texture objects around for 10 seconds after being deleted.
@@ -206,7 +206,7 @@ void DatabasePager::run()
             _childrenToDeleteListMutex.lock();
                 if (!_childrenToDeleteList.empty())
                 {
-                    std::cout<<"In DatabasePager thread deleting "<<_childrenToDeleteList.size()<<" subgraphs"<<std::endl;
+                    osg::notify(osg::INFO)<<"In DatabasePager thread deleting "<<_childrenToDeleteList.size()<<" subgraphs"<<std::endl;
                     _childrenToDeleteList.clear();
                 }
             _childrenToDeleteListMutex.unlock();
@@ -323,7 +323,7 @@ void DatabasePager::addLoadedDataToSceneGraph(double timeStamp)
             plod->setTimeStamp(plod->getNumChildren(),timeStamp);
         } 
         group->addChild(databaseRequest->_loadedModel.get());
-        std::cout<<"merged subgraph"<<databaseRequest->_fileName<<" after "<<databaseRequest->_numOfRequests<<" requests."<<std::endl;
+        osg::notify(osg::INFO)<<"merged subgraph"<<databaseRequest->_fileName<<" after "<<databaseRequest->_numOfRequests<<" requests."<<std::endl;
 
     }
     
@@ -387,7 +387,7 @@ void DatabasePager::removeExpiredSubgraphs(double currentFrameTime)
 
     osg::NodeList childrenRemoved;
 
-    //std::cout<<"DatabasePager::removeExpiredSubgraphs("<<expiryTime<<") "<<std::endl;
+    //osg::notify(osg::INFO)<<"DatabasePager::removeExpiredSubgraphs("<<expiryTime<<") "<<std::endl;
     for(PagedLODList::iterator itr=_pagedLODList.begin();
         itr!=_pagedLODList.end();
         ++itr)
@@ -405,12 +405,12 @@ void DatabasePager::removeExpiredSubgraphs(double currentFrameTime)
         osg::PagedLOD* plod = _pagedLODList[i].get();
         if (plod->referenceCount()==1)
         {
-            //std::cout<<"    PagedLOD "<<plod<<" orphaned"<<std::endl;
+            //osg::notify(osg::INFO)<<"    PagedLOD "<<plod<<" orphaned"<<std::endl;
             _pagedLODList.erase(_pagedLODList.begin()+i);
         }
         else
         {
-            //std::cout<<"    PagedLOD "<<plod<<" refcount "<<plod->referenceCount()<<std::endl;
+            //osg::notify(osg::INFO)<<"    PagedLOD "<<plod<<" refcount "<<plod->referenceCount()<<std::endl;
         }
     }
      
@@ -505,13 +505,13 @@ void DatabasePager::compileRenderingObjects(osg::State& state, double& available
         {
             // we have StateSet's to compile
             StateSetList& sslist = dtc.first;
-            //std::cout<<"Compiling statesets"<<std::endl;
+            //osg::notify(osg::INFO)<<"Compiling statesets"<<std::endl;
             StateSetList::iterator itr=sslist.begin();
             for(;
                 itr!=sslist.end() && elapsedTime<availableTime;
                 ++itr)
             {
-                //std::cout<<"    Compiling stateset "<<(*itr).get()<<std::endl;
+                //osg::notify(osg::INFO)<<"    Compiling stateset "<<(*itr).get()<<std::endl;
                 (*itr)->compile(state);
                 elapsedTime = timer.delta_s(start_tick,timer.tick());
             }
@@ -521,14 +521,14 @@ void DatabasePager::compileRenderingObjects(osg::State& state, double& available
         if (!dtc.second.empty() && elapsedTime<availableTime)
         {
             // we have Drawable's to compile
-            //std::cout<<"Compiling drawables"<<std::endl;
+            //osg::notify(osg::INFO)<<"Compiling drawables"<<std::endl;
             DrawableList& dwlist = dtc.second;
             DrawableList::iterator itr=dwlist.begin();
             for(;
                 itr!=dwlist.end() && elapsedTime<availableTime;
                 ++itr)
             {
-                //std::cout<<"    Compiling drawable "<<(*itr).get()<<std::endl;
+                //osg::notify(osg::INFO)<<"    Compiling drawable "<<(*itr).get()<<std::endl;
                 (*itr)->compile(state);
                 elapsedTime = timer.delta_s(start_tick,timer.tick());
             }
@@ -536,7 +536,7 @@ void DatabasePager::compileRenderingObjects(osg::State& state, double& available
             dwlist.erase(dwlist.begin(),itr);
         }
         
-        //std::cout<<"Checking if compiled"<<std::endl;
+        //osg::notify(osg::INFO)<<"Checking if compiled"<<std::endl;
 
         // now check the to compile entries for all active graphics contexts
         // to make sure that all have been compiled.
@@ -552,7 +552,7 @@ void DatabasePager::compileRenderingObjects(osg::State& state, double& available
         
         if (allCompiled)
         {
-            std::cout<<"All compiled"<<std::endl;
+            osg::notify(osg::INFO)<<"All compiled"<<std::endl;
 
             // we've compile all of the current databaseRequest so we can now pop it off the
             // to compile list and place it on the merge list.
@@ -571,7 +571,7 @@ void DatabasePager::compileRenderingObjects(osg::State& state, double& available
         }
         else 
         {
-            //std::cout<<"Not all compiled"<<std::endl;
+            //osg::notify(osg::INFO)<<"Not all compiled"<<std::endl;
             databaseRequest = 0;
         }
         

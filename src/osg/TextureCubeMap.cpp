@@ -301,7 +301,7 @@ void TextureCubeMap::apply(State& state) const
 typedef buffered_value< ref_ptr<TextureCubeMap::Extensions> > BufferedExtensions;
 static BufferedExtensions s_extensions;
 
-const TextureCubeMap::Extensions* TextureCubeMap::getExtensions(unsigned int contextID,bool createIfNotInitalized)
+TextureCubeMap::Extensions* TextureCubeMap::getExtensions(unsigned int contextID,bool createIfNotInitalized)
 {
     if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new Extensions;
     return s_extensions[contextID].get();

@@ -251,20 +251,39 @@ class SG_EXPORT Texture : public osg::StateAttribute
                 
                 void setupGLExtenions();
 
+                void setTextureFilterAnisotropicSupported(bool flag) { _isTextureFilterAnisotropicSupported=flag; }
                 bool isTextureFilterAnisotropicSupported() const { return _isTextureFilterAnisotropicSupported; }
+                
+                void setTextureCompressionARBSupported(bool flag) { _isTextureCompressionARBSupported=flag; }
                 bool isTextureCompressionARBSupported() const { return _isTextureCompressionARBSupported; }
+
+                void setTextureCompressionS3TCSupported(bool flag) { _isTextureCompressionS3TCSupported=flag; }
                 bool isTextureCompressionS3TCSupported() const { return _isTextureCompressionS3TCSupported; }
+
+                void setTextureMirroredRepeatSupported(bool flag) { _isTextureMirroredRepeatSupported=flag; }
                 bool isTextureMirroredRepeatSupported() const { return _isTextureMirroredRepeatSupported; }
+
+                void setTextureEdgeClampSupported(bool flag) { _isTextureEdgeClampSupported=flag; }
                 bool isTextureEdgeClampSupported() const { return _isTextureEdgeClampSupported; }
+
+                void setTextureBorderClampSupported(bool flag) { _isTextureBorderClampSupported=flag; }
                 bool isTextureBorderClampSupported() const { return _isTextureBorderClampSupported; }
+
+                void setGenerateMipMapSupported(bool flag) { _isGenerateMipMapSupported=flag; }
                 bool isGenerateMipMapSupported() const { return _isGenerateMipMapSupported; }
 
+                void setMaxTextureSize(GLint maxsize) { _maxTextureSize=maxsize; }
                 GLint maxTextureSize() const { return _maxTextureSize; }
 
                 bool isCompressedTexImage2DSupported() const { return _glCompressedTexImage2D!=0; }
 
+                void setCompressedTexImage2DProc(void* ptr) { _glCompressedTexImage2D = ptr; }
                 void glCompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid *data) const;
+
+                void setCompressedTexSubImage2DProc(void* ptr) { _glCompressedTexSubImage2D = ptr; }
                 void glCompressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei type, const GLvoid *data) const;
+
+                void setGetCompressedTexImageProc(void* ptr) { _glGetCompressedTexImage = ptr; }
                 void glGetCompressedTexImage(GLenum target, GLint level, GLvoid *data) const;
 
             protected:
@@ -293,7 +312,7 @@ class SG_EXPORT Texture : public osg::StateAttribute
           * If 'createIfNotInitalized' is true then the Extensions object is 
           * automatically created.  However, in this case the extension object 
           * only be created with the graphics context associated with ContextID..*/
-        static const Extensions* getExtensions(unsigned int contextID,bool createIfNotInitalized);
+        static Extensions* getExtensions(unsigned int contextID,bool createIfNotInitalized);
 
         /** setExtensions allows users to override the extensions across graphics contexts.
           * typically used when you have different extensions supported across graphics pipes

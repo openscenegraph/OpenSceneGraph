@@ -313,7 +313,7 @@ void Texture3D::copyTexSubImage3D(State& state, int xoffset, int yoffset, int zo
 typedef buffered_value< ref_ptr<Texture3D::Extensions> > BufferedExtensions;
 static BufferedExtensions s_extensions;
 
-const Texture3D::Extensions* Texture3D::getExtensions(unsigned int contextID,bool createIfNotInitalized)
+Texture3D::Extensions* Texture3D::getExtensions(unsigned int contextID,bool createIfNotInitalized)
 {
     if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new Extensions;
     return s_extensions[contextID].get();

@@ -58,6 +58,10 @@ echo osgparticle
 osgparticle
 more memleaks.log
 
+echo osglightpoint
+osglightpoint
+more memleaks.log
+
 echo osgbillboard
 osgbillboard
 more memleaks.log

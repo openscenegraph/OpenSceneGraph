@@ -6,7 +6,6 @@ CXXFILES =\
         KeyboardMouseCallback.cpp\
         OsgCameraGroup.cpp\
         OsgSceneHandler.cpp\
-        StatsEventHandler.cpp\
         ViewerEventHandler.cpp\
         Viewer.cpp\
 

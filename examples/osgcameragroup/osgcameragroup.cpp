@@ -12,6 +12,7 @@
 #include <Producer/CameraConfig>
 #include <Producer/InputArea>
 #include <Producer/KeyboardMouse>
+#include <Producer/Trackball>
 
 #include <osg/Timer>
 
@@ -20,187 +21,155 @@
 
 #include <osgDB/ReadFile>
 
-#include <osgGA/TrackballManipulator>
-#include <osgGA/FlightManipulator>
-#include <osgGA/DriveManipulator>
-#include <osgGA/KeySwitchCameraManipulator>
-#include <osgGA/StateSetManipulator>
 
 #include <osgProducer/OsgCameraGroup>
 #include <osgProducer/OsgSceneHandler>
-#include <osgProducer/KeyboardMouseCallback>
-#include <osgProducer/ActionAdapter>
 
-#include <list>
 
+class MyKeyboardMouseCallback : public Producer::KeyboardMouseCallback
+{
+    public:
+
+	MyKeyboardMouseCallback() :
+		Producer::KeyboardMouseCallback(),
+		_mx(0.0f),_my(0.0f),_mbutton(0),
+		_done(false)	
+		{}
+
+	virtual void specialKeyPress( Producer::KeyCharacter key )
+	{
+		if (key==Producer::KeyChar_Escape)
+                    shutdown();
+	}
+
+        virtual void shutdown()
+        {
+            _done = true; 
+        }
+
+	virtual void keyPress( Producer::KeyCharacter )
+	{
+	}
+
+	virtual void mouseMotion( float mx, float my ) 
+	{
+		_mx = mx;
+		_my = my;
+	}
+	virtual void buttonPress( float mx, float my, unsigned int mbutton ) 
+	{
+		_mx = mx;
+		_my = my;
+		_mbutton |= (1<<(mbutton-1));
+	}
+	virtual void buttonRelease( float mx, float my, unsigned int mbutton ) 
+	{
+		_mx = mx;
+		_my = my;
+		_mbutton &= ~(1<<(mbutton-1));
+	}
+
+	bool done() { return _done; }
+	float mx()  { return _mx; }
+	float my()  { return _my; }
+	unsigned int mbutton()  { return _mbutton; }
+
+    private:
+
+	float _mx, _my;
+	unsigned int _mbutton;
+	bool _done;
+};
 
 int main( int argc, char **argv )
 {
 
-    // threading model.
-    Producer::CameraGroup::ThreadingModel threadingModel = Producer::CameraGroup::SingleThreaded;
-    threadingModel = Producer::CameraGroup::ThreadPerCamera;
-
-    // configuration file.
-    std::string configFile;
-    //configFile = "twoWindows.cfg";
-
-    // set up the database files to read.
-    std::vector<std::string> filenameList;
-    if (argc>1) filenameList.push_back(argv[1]);
-    else filenameList.push_back("cow.osg");
-
-
+    // use an ArgumentParser object to manage the program arguments.
+    osg::ArgumentParser arguments(&argc,argv);
+    
+    // set up the usage document, in case we need to print out how to use this program.
+    arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
+    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the standard example of using osgProducer::CameraGroup.");
+    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
+    arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
 
     // create the camera group.
-    osgProducer::OsgCameraGroup *cg = configFile.empty() ?
-         (new osgProducer::OsgCameraGroup()):
-         (new osgProducer::OsgCameraGroup(configFile));
+    osgProducer::OsgCameraGroup cg(arguments);
 
-    // set up the maximum number of graphics contexts, before loading the scene graph
-    // to ensure that texture objects and display buffers are configured to the correct size.
-    osg::DisplaySettings::instance()->setMaxNumberOfGraphicsContexts( cg->getNumberOfCameras() );
+    // if user request help write it out to cout.
+    if (arguments.read("-h") || arguments.read("--help"))
+    {
+        arguments.getApplicationUsage()->write(std::cout);
+        return 1;
+    }
 
+    // any option left unread are converted into errors to write out later.
+    arguments.reportRemainingOptionsAsUnrecognized();
+
+    // report any errors if they have occured when parsing the program aguments.
+    if (arguments.errors())
+    {
+        arguments.writeErrorMessages(std::cout);
+        return 1;
+    }
+    
+    if (arguments.argc()<=1)
+    {
+        arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
+        return 1;
+    }
 
     // read the scene.
-    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(filenameList);
-    if (!loadedModel) return 1;
+    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
+    if (!loadedModel) 
+    {
+        std::cout << arguments.getApplicationName() <<": No data loaded" << std::endl;
+        return 1;
+    }
 
     osgUtil::Optimizer optimizer;
     optimizer.optimize(loadedModel.get());
 
-
     // set up the keyboard and mouse handling.
-    Producer::InputArea *ia = cg->getCameraConfig()->getInputArea();
+    Producer::InputArea *ia = cg.getCameraConfig()->getInputArea();
     Producer::KeyboardMouse *kbm = ia ?
                                    (new Producer::KeyboardMouse(ia)) : 
-                                   (new Producer::KeyboardMouse(cg->getCamera(0)->getRenderSurface()));
+                                   (new Producer::KeyboardMouse(cg.getCamera(0)->getRenderSurface()));
 
-    // set up the time and frame counter.
-    unsigned int frameNumber = 0;
-    osg::Timer timer;
-    osg::Timer_t start_tick = timer.tick();
 
-    // set the keyboard mouse callback to catch the events from the windows.
-    bool done = false;
-    osgProducer::KeyboardMouseCallback kbmcb(kbm,done);
-    kbmcb.setStartTick(start_tick);
+    MyKeyboardMouseCallback kbmcb;
     
     // register the callback with the keyboard mouse manger.
     kbm->setCallback( &kbmcb );
-    //kbm->allowContinuousMouseMotionUpdate(true);
     kbm->startThread();
-
-
-
-    // set the globa state
-    osg::ref_ptr<osg::StateSet> globalStateSet = new osg::StateSet;
-    globalStateSet->setGlobalDefaults();
-    cg->setGlobalStateSet(globalStateSet.get());
-    
-    
-    // add either a headlight or sun light to the scene.
-    osg::LightSource* lightsource = new osg::LightSource;
-    osg::Light* light = new osg::Light;
-    lightsource->setLight(light);
-    lightsource->setReferenceFrame(osg::LightSource::RELATIVE_TO_ABSOLUTE); // headlight.
-    lightsource->setLocalStateSetModes(osg::StateAttribute::ON);
-
-    lightsource->addChild(loadedModel.get());
-    
     
     // set the scene to render
-//    cg->setSceneData(scene.get());
-    cg->setSceneData(lightsource);
+    cg.setSceneData(loadedModel.get());
 
-    // set up the pthread stack size to large enough to run into problems.
-    cg->setStackSize( 20*1024*1024);
+    Producer::Trackball tb;
+    tb.setOrientation( Producer::Trackball::Y_UP );
 
     // create the windows and run the threads.
-    cg->realize(threadingModel);
-
-    osg::ref_ptr<osg::FrameStamp> frameStamp = cg->getFrameStamp();
+    cg.realize();
 
     osgUtil::UpdateVisitor update;
-    update.setFrameStamp(frameStamp.get());
 
-
-
-    // create a camera to use with the manipulators.
-    osg::ref_ptr<osg::Camera> old_style_osg_camera = new osg::Camera;
-
-    osg::ref_ptr<osgGA::KeySwitchCameraManipulator> keyswitchManipulator = new osgGA::KeySwitchCameraManipulator;
-    keyswitchManipulator->addNumberedCameraManipulator(new osgGA::TrackballManipulator);
-    keyswitchManipulator->addNumberedCameraManipulator(new osgGA::FlightManipulator);
-    keyswitchManipulator->addNumberedCameraManipulator(new osgGA::DriveManipulator);
-    
-    keyswitchManipulator->setCamera(old_style_osg_camera.get());
-    keyswitchManipulator->setNode(loadedModel.get());
-
-
-    osg::ref_ptr<osgGA::StateSetManipulator> statesetManipulator = new osgGA::StateSetManipulator;
-    statesetManipulator->setStateSet(globalStateSet.get());
-
-    // create an event handler list, we'll dispatch our event to these..
-    typedef std::list< osg::ref_ptr<osgGA::GUIEventHandler> > EventHandlerList;
-    EventHandlerList eventHandlerList;
-    eventHandlerList.push_back(keyswitchManipulator.get());
-    eventHandlerList.push_back(statesetManipulator.get());
-
-    // create a dummy action adapter right now.
-    osgProducer::ActionAdapter actionAdapter;
-
-    osg::ref_ptr<osgProducer::EventAdapter> init_event = new osgProducer::EventAdapter;
-    init_event->adaptFrame(0.0);
-    keyswitchManipulator->getCurrentCameraManipulator()->home(*init_event,actionAdapter);
-
-    while( !done )
+    while( !kbmcb.done() )
     {
         // syncronize to screen refresh.
-        cg->sync();
-
-        // set the frame stamp for the new frame.
-        double time_since_start = timer.delta_s(start_tick,timer.tick());
-        frameStamp->setFrameNumber(frameNumber);
-        frameStamp->setReferenceTime(time_since_start);
-        
-        
-        // get the event since the last frame.
-        osgProducer::KeyboardMouseCallback::EventQueue queue;
-        kbmcb.getEventQueue(queue);
-        
-        // create an event to signal the new frame.
-        osg::ref_ptr<osgProducer::EventAdapter> frame_event = new osgProducer::EventAdapter;
-        frame_event->adaptFrame(frameStamp->getReferenceTime());
-        queue.push_back(frame_event);
-
-        // dispatch the events in order of arrival.
-        for(osgProducer::KeyboardMouseCallback::EventQueue::iterator event_itr=queue.begin();
-            event_itr!=queue.end();
-            ++event_itr)
-        {
-            bool handled = false;
-            for(EventHandlerList::iterator handler_itr=eventHandlerList.begin();
-                handler_itr!=eventHandlerList.end() && !handled;
-                ++handler_itr)
-            {   
-                handled = (*handler_itr)->handle(*(*event_itr),actionAdapter);
-            }
-        }
+        cg.sync();
 
         // update the scene by traversing it with the the update visitor which will
         // call all node update callbacks and animations.
-        cg->getSceneData()->accept(update);
+        cg.getSceneData()->accept(update);
 
+	tb.input( kbmcb.mx(), kbmcb.my(), kbmcb.mbutton() );
 
         // update the main producer camera
-        cg->setView(old_style_osg_camera->getModelViewMatrix());
+        cg.setViewByMatrix(tb.getMatrix());
          
         // fire off the cull and draw traversals of the scene.
-        cg->frame();
-        
-        // increment the frame number ready for the next frame
-        ++frameNumber;
+        cg.frame();
     }
     return 0;
 }

@@ -138,7 +138,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
         osg::notify(osg::INFO)<<"Optimizer::optimize() doing OPTIMIZE_TEXTURE_SETTINGS"<<std::endl;
 
         TextureVisitor tv(true,true, // unref image 
-                          true,true, // client storage
+                          false,false, // client storage
                           false,1.0, // anisotropic filtering
                           this );
         node->accept(tv);

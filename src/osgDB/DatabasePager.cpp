@@ -248,7 +248,7 @@ public:
                 if (texture)
                 {
                     texture->setUnRefImageDataAfterApply(_unrefImageOnApply);
-                    texture->setClientStorageHint(_clientStorageHint);
+                    //texture->setClientStorageHint(_clientStorageHint);
                     foundTextureState = true;
                 }
             }

@@ -125,6 +125,7 @@ class OSGUTIL_EXPORT Optimizer
                     osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
                     _optimizer(optimizer) {}
 
+                virtual void apply(osg::Node& geode);
                 virtual void apply(osg::Geode& geode);
                 virtual void apply(osg::Billboard& geode);
                 virtual void apply(osg::Transform& transform);
@@ -142,10 +143,12 @@ class OSGUTIL_EXPORT Optimizer
                 typedef std::vector<osg::Transform*>                TransformStack;
                 typedef std::set<osg::Drawable*>                    DrawableSet;
                 typedef std::set<osg::Billboard*>                   BillboardSet;
+                typedef std::set<osg::Node* >                       NodeSet;
                 typedef std::set<osg::Transform*>                   TransformSet;
                 
                 Optimizer*      _optimizer;
                 TransformStack  _transformStack;
+                NodeSet         _excludedNodeSet;
                 DrawableSet     _drawableSet;
                 BillboardSet    _billboardSet;
                 TransformSet    _transformSet;

@@ -699,8 +699,8 @@ class DataSet : public osg::Referenced
             float                                       _terrain_maxSourceResolutionY;
             
             unsigned int                                _level;
-            unsigned int                                _X;
-            unsigned int                                _Y;
+            unsigned int                                _tileX;
+            unsigned int                                _tileY;
 
         };
 
@@ -744,7 +744,7 @@ class DataSet : public osg::Referenced
         
         void insertTileToQuadMap(DestinationTile* tile)
         {
-            _quadMap[tile->_level][tile->_X][tile->_Y] = tile;
+            _quadMap[tile->_level][tile->_tileX][tile->_tileY] = tile;
         }
         
         DestinationTile* getTile(unsigned int level,unsigned int X, unsigned int Y)

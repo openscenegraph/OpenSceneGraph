@@ -166,11 +166,19 @@ class SG_EXPORT FragmentProgram : public StateAttribute
         /** Get the fragment program.*/
         inline const std::string& getFragmentProgram() const { return _fragmentProgram; }
 
-        /** Program Parameters */
+        /** Set Program Parameters */
         inline void setProgramLocalParameter(const GLuint index, const Vec4& p)
         {
             _programLocalParameters[index] = p;
         }
+
+        typedef std::map<GLuint,Vec4> LocalParamList;
+
+        /** Get list of Program Parameters */
+        inline LocalParamList& getLocalParamList() { return _programLocalParameters; }
+
+		  /** Get const list of Program Parameters */
+        inline const LocalParamList& getLocalParamList() const { return _programLocalParameters; }
 
         /** Matrix */
         inline void setMatrix(const GLenum mode, const Matrix& matrix)
@@ -255,7 +263,6 @@ class SG_EXPORT FragmentProgram : public StateAttribute
 
         std::string     _fragmentProgram;
 
-        typedef std::map<GLuint,Vec4> LocalParamList;
         LocalParamList  _programLocalParameters;
 
         typedef std::map<GLenum,Matrix> MatrixList;

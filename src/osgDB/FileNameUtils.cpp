@@ -2,7 +2,7 @@
 
 #if defined(__sgi)
     #include <ctype.h>
-#elif !defined(WIN32) || defined(__MWERKS__)
+#elif defined(__GNUC__) || !defined(WIN32) || defined(__MWERKS__)
     #include <cctype>
     using std::tolower;
     using std::strlen;    

@@ -30,14 +30,18 @@
 // NOTICE ON WIN32:
 // typedef DWORD unsigned long;
 // sizeof(DWORD) = 4
+
+typedef unsigned int UI32;
+typedef int I32;
+
 struct  DDCOLORKEY
 {
     DDCOLORKEY():
         dwColorSpaceLowValue(0),
         dwColorSpaceHighValue(0) {}
         
-    unsigned long    dwColorSpaceLowValue;
-    unsigned long    dwColorSpaceHighValue;
+    UI32    dwColorSpaceLowValue;
+    UI32    dwColorSpaceHighValue;
 };
 
 struct DDPIXELFORMAT
@@ -54,37 +58,37 @@ struct DDPIXELFORMAT
         dwRGBAlphaBitMask(0) {}
         
 
-    unsigned long    dwSize;
-    unsigned long    dwFlags;
-    unsigned long    dwFourCC;
+    UI32    dwSize;
+    UI32    dwFlags;
+    UI32    dwFourCC;
     union
     {
-        unsigned long    dwRGBBitCount;
-        unsigned long    dwYUVBitCount;
-        unsigned long    dwZBufferBitDepth;
-        unsigned long    dwAlphaBitDepth;
+        UI32    dwRGBBitCount;
+        UI32    dwYUVBitCount;
+        UI32    dwZBufferBitDepth;
+        UI32    dwAlphaBitDepth;
     };
     union
     {
-        unsigned long    dwRBitMask;
-        unsigned long    dwYBitMask;
+        UI32    dwRBitMask;
+        UI32    dwYBitMask;
     };
     union
     {
-        unsigned long    dwGBitMask;
-        unsigned long    dwUBitMask;
+        UI32    dwGBitMask;
+        UI32    dwUBitMask;
     };
     union
     {
-        unsigned long    dwBBitMask;
-        unsigned long    dwVBitMask;
+        UI32    dwBBitMask;
+        UI32    dwVBitMask;
     };
     union
     {
-        unsigned long    dwRGBAlphaBitMask;
-        unsigned long    dwYUVAlphaBitMask;
-        unsigned long    dwRGBZBitMask;
-        unsigned long    dwYUVZBitMask;
+        UI32    dwRGBAlphaBitMask;
+        UI32    dwYUVAlphaBitMask;
+        UI32    dwRGBZBitMask;
+        UI32    dwYUVZBitMask;
     };
 };
 
@@ -96,13 +100,13 @@ struct  DDSCAPS2
         dwCaps3(0),
         dwCaps4(0) {}
 
-    unsigned long       dwCaps;
-    unsigned long       dwCaps2;
-    unsigned long       dwCaps3;
+    UI32       dwCaps;
+    UI32       dwCaps2;
+    UI32       dwCaps3;
     union
     {
-        unsigned long       dwCaps4;
-        unsigned long       dwVolumeDepth;
+        UI32       dwCaps4;
+        UI32       dwVolumeDepth;
     };
 };
 
@@ -122,35 +126,35 @@ struct DDSURFACEDESC2
         dwTextureStage(0) {}      
         
 
-    unsigned long         dwSize;
-    unsigned long         dwFlags;
-    unsigned long         dwHeight;
-    unsigned long         dwWidth; 
+    UI32         dwSize;
+    UI32         dwFlags;
+    UI32         dwHeight;
+    UI32         dwWidth; 
     union                          
     {
-        long              lPitch;
-        unsigned long     dwLinearSize;
+        I32              lPitch;
+        UI32     dwLinearSize;
     };
     union
     {
-        unsigned long      dwBackBufferCount;
-        unsigned long      dwDepth;      
+        UI32      dwBackBufferCount;
+        UI32      dwDepth;      
     };
     union
     {
-        unsigned long     dwMipMapCount;
-        unsigned long     dwRefreshRate;
+        UI32     dwMipMapCount;
+        UI32     dwRefreshRate;
     };
-    unsigned long         dwAlphaBitDepth;
-    unsigned long         dwReserved;     
-    unsigned long*        lpSurface;      
+    UI32         dwAlphaBitDepth;
+    UI32         dwReserved;     
+    UI32        lpSurface;     	//Fred Marmond: removed from pointer type to UI32 for 64bits compatibility. it is unused data 
     DDCOLORKEY    ddckCKDestOverlay;      
     DDCOLORKEY    ddckCKDestBlt;           
     DDCOLORKEY    ddckCKSrcOverlay;        
     DDCOLORKEY    ddckCKSrcBlt;            
     DDPIXELFORMAT ddpfPixelFormat;         
     DDSCAPS2      ddsCaps;                 
-    unsigned long dwTextureStage;          
+    UI32 dwTextureStage;          
 }; 
 
 //
@@ -186,8 +190,8 @@ struct DDSURFACEDESC2
 
 #ifndef MAKEFOURCC
 #define MAKEFOURCC(ch0, ch1, ch2, ch3)                              \
-    ((unsigned long)(char)(ch0) | ((unsigned long)(char)(ch1) << 8) |   \
-    ((unsigned long)(char)(ch2) << 16) | ((unsigned long)(char)(ch3) << 24 ))
+    ((UI32)(char)(ch0) | ((UI32)(char)(ch1) << 8) |   \
+    ((UI32)(char)(ch2) << 16) | ((UI32)(char)(ch3) << 24 ))
 #endif //defined(MAKEFOURCC)
 
 /*

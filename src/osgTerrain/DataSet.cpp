@@ -1932,7 +1932,8 @@ osg::StateSet* DataSet::DestinationTile::createStateSet()
 {
     if (!_imagery.valid() || !_imagery->_image.valid()) return 0;
 
-    std::string imageName(_name+".rgb");
+    std::string imageExension(".dds"); // ".rgb"
+    std::string imageName(_name+imageExension);
     _imagery->_image->setFileName(imageName.c_str());
 
     osg::StateSet* stateset = new osg::StateSet;
@@ -1968,7 +1969,7 @@ osg::StateSet* DataSet::DestinationTile::createStateSet()
     stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
 
     bool inlineImageFile = _dataSet->getDestinationTileExtension()==".ive";
-    bool compressedImageSupported = inlineImageFile;
+    bool compressedImageSupported = inlineImageFile || imageExension==".dds";
     bool mipmapImageSupported = inlineImageFile;
 
     if (compressedImageSupported && 
@@ -2011,12 +2012,6 @@ osg::StateSet* DataSet::DestinationTile::createStateSet()
         {
             osg::notify(osg::NOTICE)<<"Non compressed mipmapped not yet supported yet"<<std::endl;        
         }
-    }
-
-    if (!inlineImageFile)
-    {
-        osg::notify(osg::INFO)<<"Writing out imagery to "<<imageName<<std::endl;
-        osgDB::writeImageFile(*_imagery->_image,_imagery->_image->getFileName().c_str());
     }
 
     return stateset;
@@ -2100,7 +2095,7 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
     osg::notify(osg::INFO)<<"--------- DataSet::DestinationTile::createDrawableGeometry() ------------- "<<std::endl;
 
     const osg::EllipsoidModel* et = _dataSet->getEllipsoidModel();
-    bool mapLatLongsToXYZ = _dataSet->getConvertFromGeographicToGeocentric() && et;
+    bool mapLatLongsToXYZ = _dataSet->mapLatLongsToXYZ();
     bool useLocalToTileTransform = _dataSet->getUseLocalTileTransform();
 
     osg::ref_ptr<osg::HeightField> grid = 0;
@@ -2761,6 +2756,8 @@ osg::Node* DataSet::CompositeDestination::createScene()
 
     osg::LOD* lod = new osg::LOD;
     
+    float farDistance = _dataSet->getMaximumVisibleDistanceOfTopLevel();
+
     unsigned int childNum = 0;
     for(RangeNodeListMap::reverse_iterator rnitr=rangeNodeListMap.rbegin();
         rnitr!=rangeNodeListMap.rend();
@@ -2772,7 +2769,7 @@ osg::Node* DataSet::CompositeDestination::createScene()
         if (childNum==0)
         {
             // by deafult make the first child have a very visible distance so its always seen
-            maxVisibleDistance = 1e10;
+            maxVisibleDistance = farDistance;
         }
         else
         {
@@ -2903,7 +2900,7 @@ osg::Node* DataSet::CompositeDestination::createPagedLODScene()
         pagedLOD->addChild(group);
     }
     
-    cutOffDistance = pagedLOD->getBound().radius()*_dataSet->getRadiusToMaxVisibleDistanceRatio();
+    // cutOffDistance = pagedLOD->getBound().radius()*_dataSet->getRadiusToMaxVisibleDistanceRatio();
     
     pagedLOD->setRange(0,cutOffDistance,farDistance);
     
@@ -3067,7 +3064,18 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(CompositeDestinat
 
     DataSet::CompositeDestination* destinationGraph = new DataSet::CompositeDestination(cs,extents);
 
-    destinationGraph->_maxVisibleDistance = extents.radius()*getRadiusToMaxVisibleDistanceRatio();
+    if (mapLatLongsToXYZ())
+    {
+        // we need to project the extents into world coords to get the appropriate size to use for control max visible distance
+        float max_range = osg::maximum(extents.xMax()-extents.xMin(),extents.yMax()-extents.yMin());
+        float projected_radius =  osg::DegreesToRadians(max_range) * getEllipsoidModel()->getRadiusEquator();
+        float center_offset = (max_range/360.0f) * getEllipsoidModel()->getRadiusEquator();
+        destinationGraph->_maxVisibleDistance = projected_radius * getRadiusToMaxVisibleDistanceRatio() + center_offset;
+    }
+    else
+    {
+        destinationGraph->_maxVisibleDistance = extents.radius()*getRadiusToMaxVisibleDistanceRatio();
+    }
 
     // first create the topmost tile
 
@@ -3597,6 +3605,51 @@ void DataSet::_equalizeRow(Row& row)
     }
 }
 
+
+class WriteImageFilesVisitor : public osg::NodeVisitor
+{
+public:
+
+    WriteImageFilesVisitor():
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+
+    
+    virtual void apply(osg::Node& node)
+    {
+        if (node.getStateSet()) apply(*(node.getStateSet()));
+
+        traverse(node);
+    }
+
+    virtual void apply(osg::Geode& geode)
+    {
+        if (geode.getStateSet()) apply(*(geode.getStateSet()));
+
+        for(unsigned int i=0;i<geode.getNumDrawables();++i)
+        {
+            if (geode.getDrawable(i)->getStateSet()) apply(*(geode.getDrawable(i)->getStateSet()));
+        }
+        
+        traverse(geode);
+    }
+
+    void apply(osg::StateSet& stateset)
+    {
+        for(unsigned int i=0;i<stateset.getTextureAttributeList().size();++i)
+        {
+            osg::Image* image = 0;
+            osg::Texture2D* texture2D = dynamic_cast<osg::Texture2D*>(stateset.getTextureAttribute(i,osg::StateAttribute::TEXTURE));
+            if (texture2D) image = texture2D->getImage();
+            
+            if (image)
+            {
+                osg::notify(osg::INFO)<<"Writing out imagery to "<<image->getFileName()<<std::endl;
+                osgDB::writeImageFile(*image,image->getFileName().c_str());
+            }
+        }
+    }
+};
+
 void DataSet::_writeRow(Row& row)
 {
     osg::notify(osg::NOTICE)<<"_writeRow "<<row.size()<<std::endl;
@@ -3648,6 +3701,12 @@ void DataSet::_writeRow(Row& row)
             {
                 osg::notify(osg::NOTICE)<<"   writeNodeFile = "<<cd->_level<<" X="<<cd->_tileX<<" Y="<<cd->_tileY<<" filename="<<filename<<std::endl;
                 osgDB::writeNodeFile(*node,filename);
+                
+                if (_tileExtension==".osg")
+                {
+                    WriteImageFilesVisitor wifv;
+                    node->accept(wifv);
+                }
             }
             else
             {
@@ -3715,7 +3774,15 @@ void DataSet::_buildDestination(bool writeToDisk)
                 _rootNode->addDescription(_comment);
             }
 
-            if (writeToDisk) osgDB::writeNodeFile(*_rootNode,filename);
+            if (writeToDisk)
+            {
+                osgDB::writeNodeFile(*_rootNode,filename);
+                if (_tileExtension==".osg")
+                {
+                    WriteImageFilesVisitor wifv;
+                    _rootNode->accept(wifv);
+                }
+            }
         }
         else  // _databaseType==PagedLOD_DATABASE
         {
@@ -3748,7 +3815,10 @@ void DataSet::_buildDestination(bool writeToDisk)
                 }
                 
                 _equalizeRow(prev_itr->second);
-                if (writeToDisk) _writeRow(prev_itr->second);
+                if (writeToDisk)
+                {
+                    _writeRow(prev_itr->second);
+                }
             }
         }
         osg::notify(osg::NOTICE)<<"completed DataSet::writeDestination("<<filename<<")"<<std::endl;

@@ -7,6 +7,12 @@ ifeq ($(findstring IRIX,$(OS)),IRIX)
 OS := IRIX
 endif
 
+## Make CYGWIN_XXXX CYGWIN so it's "Windows cross platform" :)
+ifeq ($(findstring CYGWIN,$(OS)),CYGWIN)
+OS := CYGWIN
+endif
+
+
 # TOPDIR needs to be redefined for every Makefile
 TOPDIR     ?= ../
 THISDIR    = .
@@ -49,6 +55,7 @@ LIB_EXT        = so
 PLUGIN_PREFIX  = osgdb_
 PLUGIN_EXT     = so
 
+MAKEDIST       = echo "   === Distribution build is not implemented yet for $(OS)"; printf "\n"
 
 ALL_TARGETS = \
 	  opt\
@@ -149,6 +156,8 @@ ifeq ($(OS),Linux)
   X_LIBS            = -lXmu -lX11
   SOCKET_LIBS       = 
   OTHER_LIBS        = 
+
+  MAKEDIST          = $(TOPDIR)/Make/makerpms
 endif
 
 #### FreeBSD specific definitions
@@ -204,7 +213,7 @@ ifeq ($(OS),Darwin)
 endif
 
 #### Cygwin/Mingw specific definitions
-ifeq ($(OS),CYGWIN_NT-5.0)
+ifeq ($(OS),CYGWIN)
   C++               = c++
   DEPARG            = -M
   INC               += 
@@ -213,8 +222,8 @@ ifeq ($(OS),CYGWIN_NT-5.0)
   DBGF              = -g
   SHARED            = -shared\
 		      -Wl,--export-all-symbols  \
-		      -Wl,--output-def,$(LIB_PREFIX)$(TARGET_BASENAME).def \
-		      -Wl,--out-implib,$(TOPDIR)/lib/$(LIB_PREFIX)$(TARGET_BASENAME).a \
+		      -Wl,--output-def,lib$(TARGET_BASENAME).def \
+		      -Wl,--out-implib,$(TOPDIR)/lib/lib$(TARGET_BASENAME).dll.a \
 
   ARCHARGS          = 
   LINKARGS          = -W -Wall
@@ -242,10 +251,16 @@ ifeq ($(OS),CYGWIN_NT-5.0)
 		      -losgdb_zip
   SOCKET_LIBS       = 
   OTHER_LIBS        = $(GL_LIBS)
+  PNG_LIBS          = -lpng -lz
+  JPEG_LIBS         = -ljpeg
+  GIF_LIBS          = -lungif
+  TIFF_LIB          = -ltiff -lz -ljpeg
+  FREETYPE_LIB      = -lfreetype2
+
 
   LIB_PREFIX     = cyg
   LIB_EXT        = dll
-  PLUGIN_PREFIX  = osgdb_
+  PLUGIN_PREFIX  = cygosgdb_
   PLUGIN_EXT     = dll
 
   LINK          = cp -f

@@ -129,7 +129,7 @@
     #include <ieeefp.h>
 #else
     #include <math.h>
-    #if defined(WIN32) || defined (macintosh)
+    #if (defined(WIN32) || defined (macintosh)) && !defined(__CYGWIN__)
         #include <float.h>
     #else
 		#include <unistd.h>

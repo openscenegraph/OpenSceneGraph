@@ -143,7 +143,7 @@ class SG_EXPORT State : public Referenced
             /** apply an attribute if required, passing in attribute and appropriate attribute stack */
             bool                    changed;
             const StateAttribute*   last_applied_attribute;
-            StateAttribute*         global_default_attribute;
+            ref_ptr<StateAttribute> global_default_attribute;
             AttributeVec            attributeVec;
         };
 
@@ -168,7 +168,7 @@ class SG_EXPORT State : public Referenced
         {
             if (as.last_applied_attribute != attribute)
             {
-                if (!as.global_default_attribute) as.global_default_attribute = dynamic_cast<StateAttribute*>(attribute->clone());
+                if (!as.global_default_attribute.valid()) as.global_default_attribute = dynamic_cast<StateAttribute*>(attribute->clone());
 
                 as.last_applied_attribute = attribute;
                 attribute->apply(*this);
@@ -180,10 +180,10 @@ class SG_EXPORT State : public Referenced
 
         inline const bool apply_global_default_attribute(AttributeStack& as)
         {
-            if (as.last_applied_attribute != as.global_default_attribute)
+            if (as.last_applied_attribute != as.global_default_attribute.get())
             {
-                as.last_applied_attribute = as.global_default_attribute;
-                if (as.global_default_attribute) as.global_default_attribute->apply(*this);
+                as.last_applied_attribute = as.global_default_attribute.get();
+                if (as.global_default_attribute.valid()) as.global_default_attribute->apply(*this);
                 return true;
             }
             else

@@ -126,10 +126,6 @@ SOURCE=..\..\..\src\osgPlugins\txp\TXPSeamLOD.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\txp\TXPTileNode.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\src\osgPlugins\txp\TileMapper.cpp
 # End Source File
 # Begin Source File
@@ -251,10 +247,6 @@ SOURCE=..\..\..\src\osgPlugins\txp\TXPParser.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\txp\TXPSeamLOD.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\txp\TXPTileNode.h
 # End Source File
 # Begin Source File
 

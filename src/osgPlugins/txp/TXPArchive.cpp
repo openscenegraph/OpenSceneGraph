@@ -224,7 +224,7 @@ bool TXPArchive::loadMaterials()
                 osg_material->setShininess(osg::Material::FRONT_AND_BACK , (float)shinines);
                 
                 osg_material->setAlpha(osg::Material::FRONT_AND_BACK ,(float)alpha);
-                osg_state_set->setAttributeAndModes(osg_material, osg::StateAttribute::ON);
+                //osg_state_set->setAttributeAndModes(osg_material, osg::StateAttribute::ON);
                 
                 if( alpha < 1.0f )
                 {

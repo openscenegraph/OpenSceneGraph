@@ -7,7 +7,6 @@ CXXFILES =\
         TXPIO.cpp\
         TXPNode.cpp\
         TXPPageManager.cpp\
-        TXPTileNode.cpp\
         TXPParser.cpp\
         TXPSeamLOD.cpp\
         TXPPagedLOD.cpp\

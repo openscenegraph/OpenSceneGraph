@@ -43,9 +43,10 @@
 #include <osg/Referenced>
 #include <map>
 
+#include "TXPArchive.h"
+
 namespace txp
 {
-class TXPArchive;
 class ReaderWriterTXP : public osgDB::ReaderWriter
 {
 public:
@@ -64,6 +65,8 @@ public:
 protected:
     TXPArchive *getArchive(int id, const std::string&);
     std::map< int,osg::ref_ptr<TXPArchive> >    _archives;
+
+	osg::Node* getTileContent(TXPArchive::TileInfo &info, int x, int y, int lod, TXPArchive* archive);
     
     static int _archiveId;
 };

@@ -254,6 +254,8 @@ ImpostorSprite* ImpostorSpriteManager::createOrReuseImpostorSprite(int s,int t,i
     stateset->setAttributeAndModes( _alphafunc.get(), StateAttribute::ON );
 
     Texture* texture = osgNew Texture;
+    texture->setFilter(Texture::MIN_FILTER,Texture::LINEAR);
+    texture->setFilter(Texture::MAG_FILTER,Texture::LINEAR);
 
     stateset->setTextureAttributeAndModes(0,texture,StateAttribute::ON);
     stateset->setTextureAttribute(0,_texenv.get());

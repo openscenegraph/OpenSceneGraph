@@ -70,6 +70,38 @@ inline void* getGLExtensionFuncPtr(const char *funcName,const char *fallbackFunc
     return getGLExtensionFuncPtr(fallbackFuncName);
 }
 
+/** return true if OpenGL "extension" is supported.
+  * note: Must only called within a valid OpenGL context,
+  * undefined behavior may occur otherwise.
+  */
+SG_EXPORT extern const bool isGLUExtensionSupported(const char *extension);
+
+inline void* getGLUExtensionFuncPtr(const char *funcName)
+{
+#if defined(WIN32)
+    return wglGetProcAddress(funcName);
+#elif defined(__DARWIN_OSX__)
+    std::string temp( "_" );
+    temp += funcName;	// Mac OS X prepends an underscore on function names
+    if ( NSIsSymbolNameDefined( temp.c_str() ) )
+    {
+        NSSymbol symbol = NSLookupAndBindSymbol( temp.c_str() );
+        return NSAddressOfSymbol( symbol );
+    } else
+	return NULL;
+#else // all other unixes
+   // Note: although we use shl_load() etc. for Plugins on HP-UX, it's
+   // not neccessary here since we only used them because library
+   // intialization was not taking place with dlopen() which renders
+   // Plugins useless on HP-UX.
+   static void *lib = dlopen("libGLU.so", RTLD_LAZY);
+   if (lib)
+      return dlsym(lib, funcName);
+   else
+      return NULL;
+#endif
+}
+
 }
 
 #endif

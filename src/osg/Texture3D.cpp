@@ -4,7 +4,13 @@
 #include <osg/GLU>
 #include <osg/Notify>
 
-#define TEMPORARY_COMMENT_OUT_WHILE_ESTABLISHING_X_PLATFORM_SUPPORT_FOR_3D_TEXTURES
+#include <string.h>
+
+typedef void (APIENTRY * GLTexImage3DProc)      ( GLenum target, GLint level, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const GLvoid *pixels);
+typedef void (APIENTRY * GLTexSubImage3DProc)   ( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *pixels);
+typedef void (APIENTRY * GLCopyTexSubImageProc) ( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height );
+typedef void (APIENTRY * GLUBuild3DMipMapsProc) ( GLenum target, GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *data);
+
 
 using namespace osg;
 
@@ -92,6 +98,14 @@ void Texture3D::setImage(Image* image)
 void Texture3D::apply(State& state) const
 {
 
+    static bool s_texturing_supported = strncmp((const char*)glGetString(GL_VERSION),"1.2",3)>=0 ||
+                                        isGLExtensionSupported("GL_EXT_texture3D");
+                                        
+    if (s_texturing_supported)
+    {
+        notify(WARN)<<"Warning: Texture3D::apply(..) failed, 3D texturing is not support by your OpenGL drivers."<<std::endl;
+    }
+
     // get the contextID (user defined ID of 0 upwards) for the 
     // current OpenGL context.
     const uint contextID = state.getContextID();
@@ -158,11 +172,16 @@ void Texture3D::computeInternalFormat() const
 
 void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsizei& inwidth, GLsizei& inheight, GLsizei& indepth, GLsizei& numMimpmapLevels) const
 {
-#ifndef TEMPORARY_COMMENT_OUT_WHILE_ESTABLISHING_X_PLATFORM_SUPPORT_FOR_3D_TEXTURES
-
     // if we don't have a valid image we can't create a texture!
     if (!image || !image->data())
         return;
+
+    static GLTexImage3DProc s_glTexImage3D = (GLTexImage3DProc) getGLExtensionFuncPtr("glTexImage3D","glTexImage3DEXT");
+    if (!s_glTexImage3D)
+    {
+        notify(WARN) << "Warning:: Texture3D::applyTexImage3D(..) failed, 3D texturing not supported by your OpenGL drivers."<<std::endl;
+        return;
+    }
 
     // get the contextID (user defined ID of 0 upwards) for the 
     // current OpenGL context.
@@ -186,11 +205,13 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
     image->ensureValidSizeForTexturing();
 
     glPixelStorei(GL_UNPACK_ALIGNMENT,image->getPacking());
+    
+
 
     if( _min_filter == LINEAR || _min_filter == NEAREST )
     {
         numMimpmapLevels = 1;
-        glTexImage3D( target, 0, _internalFormat,
+        s_glTexImage3D( target, 0, _internalFormat,
             image->s(), image->t(), image->r(), 0,
             (GLenum)image->getPixelFormat(),
             (GLenum)image->getDataType(),
@@ -201,9 +222,16 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
         if(!image->isMipmap())
         {
 
+            static GLUBuild3DMipMapsProc s_gluBuild3DMipmaps = (GLUBuild3DMipMapsProc) getGLUExtensionFuncPtr("gluBuild3DMipmaps");
+            if (!s_gluBuild3DMipmaps)
+            {
+                notify(WARN) << "Warning:: Texture3D::applyTexImage3D(..) failed, gluBuild3DMipmaps not supported by your OpenGL drivers."<<std::endl;
+                return;
+            }
+
             numMimpmapLevels = 1;
 
-             gluBuild3DMipmaps( target, _internalFormat,
+             s_gluBuild3DMipmaps( target, _internalFormat,
                  image->s(),image->t(),image->r(),
                  (GLenum)image->getPixelFormat(), (GLenum)image->getDataType(),
                  image->data() );
@@ -227,7 +255,7 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
                 if (depth == 0)
                     depth = 1;
 
-                glTexImage3D( target, k, _internalFormat,
+                s_glTexImage3D( target, k, _internalFormat,
                      width, height, depth, 0,
                     (GLenum)image->getPixelFormat(),
                     (GLenum)image->getDataType(),
@@ -244,14 +272,19 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
     inwidth  = image->s();
     inheight = image->t();
     indepth  = image->r();
-
-#endif // TEMPORARY_COMMENT_OUT_WHILE_ESTABLISHING_X_PLATFORM_SUPPORT_FOR_3D_TEXTURES
     
 }
 
 void Texture3D::copyTexSubImage3D(State& state, int xoffset, int yoffset, int zoffset, int x, int y, int width, int height )
 {
-#ifndef TEMPORARY_COMMENT_OUT_WHILE_ESTABLISHING_X_PLATFORM_SUPPORT_FOR_3D_TEXTURES
+    static GLCopyTexSubImageProc s_glCopyTexSubImage3D = (GLCopyTexSubImageProc) getGLExtensionFuncPtr("glCopyTexSubImage3D","glCopyTexSubImage3DEXT");
+    if (!s_glCopyTexSubImage3D)
+    {
+        notify(WARN) << "Warning:: Texture3D::copyTexSubImage3D(..) failed, 3D texture copy sub image not supported by your OpenGL drivers."<<std::endl;
+        return;
+    }
+
+
     const uint contextID = state.getContextID();
 
     // get the globj for the current contextID.
@@ -263,7 +296,7 @@ void Texture3D::copyTexSubImage3D(State& state, int xoffset, int yoffset, int zo
         // we have a valid image
         glBindTexture( GL_TEXTURE_3D, handle );
         applyTexParameters(GL_TEXTURE_3D,state);
-        glCopyTexSubImage3D( GL_TEXTURE_3D, 0, xoffset,yoffset,zoffset, x, y, width, height);
+        s_glCopyTexSubImage3D( GL_TEXTURE_3D, 0, xoffset,yoffset,zoffset, x, y, width, height);
 
         /* Redundant, delete later */
         glBindTexture( GL_TEXTURE_3D, handle );
@@ -276,5 +309,4 @@ void Texture3D::copyTexSubImage3D(State& state, int xoffset, int yoffset, int zo
     {
         notify(WARN)<<"Warning: Texture3D::copyTexSubImage3D(..) failed, cannot not copy to a non existant texture."<<std::endl;
     }
-#endif // TEMPORARY_COMMENT_OUT_WHILE_ESTABLISHING_X_PLATFORM_SUPPORT_FOR_3D_TEXTURES
 }

@@ -1,6 +1,5 @@
 #include <osg/ApplicationUsage>
-
-#include <algorithm>
+#include <osg/Math>
 
 using namespace osg;
 
@@ -54,7 +53,7 @@ void ApplicationUsage::write(std::ostream& output, const ApplicationUsage::Usage
         citr!=um.end();
         ++citr)
     {
-        maxNumCharsInOptions = std::max(maxNumCharsInOptions,(unsigned int)citr->first.length());
+        maxNumCharsInOptions = maximum(maxNumCharsInOptions,(unsigned int)citr->first.length());
     }
     
     unsigned int fullWidth = widthOfOutput;

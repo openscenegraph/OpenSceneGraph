@@ -108,6 +108,16 @@ const double PI   = 3.14159265358979323846;
 const double PI_2 = 1.57079632679489661923;
 const double PI_4 = 0.78539816339744830962;
 
+/** return the minimum of two values, equivilant to std::min.
+  * std::min not used because of STL implementation under IRIX contains no std::min.*/
+template<typename T>
+inline T minimum(T lhs,T rhs) { return lhs<rhs?lhs:rhs; }
+
+/** return the maximum of two values, equivilant to std::max.
+  * std::max not used because of STL implementation under IRIX contains no std::max.*/
+template<typename T>
+inline T maximum(T lhs,T rhs) { return lhs>rhs?lhs:rhs; }
+
 template<typename T>
 inline T clampTo(T v,T minimum,T maximum) { return v<minimum?minimum:v>maximum?maximum:v; }
 

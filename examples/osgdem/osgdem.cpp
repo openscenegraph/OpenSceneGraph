@@ -92,15 +92,15 @@ osg::Matrixd computeGeoTransForRange(double xMin, double xMax, double yMin, doub
 
 void ellipsodeTransformTest(double latitude, double longitude, double height)
 {
-    osgTerrain::EllipsodeTransform transform;
+    osg::ref_ptr<osg::EllipsoidModel> transform = new osg::EllipsoidModel;
     
     double X,Y,Z;
     double newLat, newLong, newHeight;
     
-    transform.convertLatLongHeightToXYZ(latitude,longitude,height,
+    transform->convertLatLongHeightToXYZ(latitude,longitude,height,
                                         X,Y,Z);
     
-    transform.convertXYZToLatLongHeight(X,Y,Z,
+    transform->convertXYZToLatLongHeight(X,Y,Z,
                                         newLat,newLong,newHeight);
                                         
     std::cout<<"lat = "<<osg::RadiansToDegrees(latitude)<<"\tlong="<<osg::RadiansToDegrees(longitude)<<"\t"<<height<<std::endl;  

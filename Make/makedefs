@@ -274,7 +274,7 @@ ifeq ($(OS),Darwin)
   INC               +=  -I/usr/include
   DEF               += -Wall -D__DARWIN_OSX__
   OPTF              = -O2
-  DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
+  DBGF              = -g
   DEPARG            = -M $(DEF)
   SHARED            = -shared
   ARCHARGS          = 

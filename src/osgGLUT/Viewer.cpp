@@ -1191,7 +1191,7 @@ void Viewer::keyboard(int key, int x, int y, bool keydown )
             {
                 osg::ref_ptr<osg::Viewport> viewport = new osg::Viewport;
                 viewport->setViewport(_wx,_wy,_ww,_wh);
-                std::string filename("screenshot.bmp");
+                std::string filename("screenshot.rgb");
 
                 glReadBuffer(GL_FRONT);
                 osg::ref_ptr<Image> image = new osg::Image;

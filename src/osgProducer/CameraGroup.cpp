@@ -183,8 +183,27 @@ void CameraGroup::realize( ThreadingModel thread_model)
     _initialized = true;
 }
 
+osg::Node* CameraGroup::getTopMostSceneData()
+{
+    if (_scene_decorator.valid())
+        return _scene_decorator.get();
+    else
+        return _scene_data.get(); 
+}
+
+const osg::Node* CameraGroup::getTopMostSceneData() const
+{
+    if (_scene_decorator.valid())
+        return _scene_decorator.get();
+    else
+        return _scene_data.get(); 
+}
+
 void CameraGroup::frame()
 {
+    osg::Node* node = getTopMostSceneData();
+    if (node) node->getBound();
+
     Producer::CameraGroup::frame();
     _frameStamp->setFrameNumber( _frameStamp->getFrameNumber() + 1 );
 }

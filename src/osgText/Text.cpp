@@ -24,6 +24,7 @@
 #include "FTGLPolygonFont.h"
 #include "FTGLTextureFont.h"
 
+//#define BUILD_NO_TEXT
 
 using namespace osg;
 using namespace osgText;
@@ -135,6 +136,7 @@ setDefaults()
 
 bool Text::computeBound() const
 {
+#ifndef BUILD_NO_TEXT
     if(!_init)
     {
         _bbox_computed=false;
@@ -171,6 +173,11 @@ bool Text::computeBound() const
         _bbox_computed=true;
 
     }
+#else
+    _bbox.init();
+    _bbox_computed=true;
+#endif
+
     return true;
 }
 
@@ -181,6 +188,7 @@ bool Text::supports(PrimitiveFunctor&) const
 
 void Text::accept(PrimitiveFunctor& functor) const
 {
+#ifndef BUILD_NO_TEXT
     Vec3 boundingVertices[4];
     boundingVertices[0].set(_bbox._min._v[0],_bbox._max._v[1],_bbox._min._v[2]);
     boundingVertices[1] = _bbox._min;
@@ -189,10 +197,12 @@ void Text::accept(PrimitiveFunctor& functor) const
 
     functor.setVertexArray(4,boundingVertices);
     functor.drawArrays( GL_QUADS, 0, 4);
+#endif
 }
 
 void Text::compile(State& state) const
 {
+#ifndef BUILD_NO_TEXT
     // ahhhh, this is bit doddy, the draw is potentially
     // modifying the text object, this isn't thread safe.
     Text* this_non_const = const_cast<Text*>(this);
@@ -207,10 +217,13 @@ void Text::compile(State& state) const
     {
         this_non_const->initAlignment();
     }
+#endif
 }
 
 void Text::drawImplementation(State& state) const
 {
+#ifndef BUILD_NO_TEXT
+
     if(!_init)
         return;
     
@@ -280,6 +293,8 @@ void Text::drawImplementation(State& state) const
             };
         glPopMatrix();
     }
+
+#endif
 }
 
 void Text::drawBoundingBox(void) const
@@ -350,6 +365,7 @@ calcBounds(Vec3* min,Vec3* max) const
 bool Text::
 initAlignment(void)
 {
+#ifndef BUILD_NO_TEXT
     if(!_init)
         return false;
 
@@ -378,13 +394,14 @@ initAlignment(void)
 
         _bbox_computed=true;
     }
-
+#endif
     return true;
 }
 
 void Text::
 initAlignment(Vec3* min,Vec3* max)
 {
+#ifndef BUILD_NO_TEXT
     if(!_init)
         return;
 
@@ -487,6 +504,7 @@ initAlignment(Vec3* min,Vec3* max)
             break;
 
     };
+#endif
 }
 
 

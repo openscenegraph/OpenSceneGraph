@@ -57,6 +57,10 @@ class OSGPRODUCER_EXPORT CameraGroup : public Producer::CameraGroup
         const osg::Group* getSceneDecorator() const { return _scene_decorator.get(); }
 
 
+        osg::Node* getTopMostSceneData();
+
+        const osg::Node* getTopMostSceneData() const;
+
         
         void setDisplaySettings( osg::DisplaySettings *ds ) { _ds = ds; }
 

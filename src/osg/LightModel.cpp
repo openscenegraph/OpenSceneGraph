@@ -18,10 +18,33 @@ LightModel::~LightModel()
 {
 }
 
+// need to define if gl.h version < 1.2.
+#ifndef GL_LIGHT_MODEL_COLOR_CONTROL
+#define GL_LIGHT_MODEL_COLOR_CONTROL 0x81F8
+#endif
+
+#ifndef GL_SINGLE_COLOR
+#define GL_SINGLE_COLOR 0x81F9
+#endif
+
+#ifndef GL_SEPERATE_SPECULAR_COLOR
+#define GL_SEPERATE_SPECULAR_COLOR 0x81FA
+#endif
+
+
 void LightModel::apply(State&) const
 {
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT,_ambient.ptr());
-    glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL,_colorControl);
+    
+    if (_colorControl==SEPERATE_SPECULAR_COLOR)
+    {
+	    glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL,GL_SEPERATE_SPECULAR_COLOR);
+    }
+    else
+    {
+	    glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL,GL_SINGLE_COLOR);
+    }
+    
     glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER,_localViewer);
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE,_twoSided);
 }

@@ -732,7 +732,7 @@ public:
         osg::Image* osgImage = ReadDDSFile(fin);
         if (osgImage==NULL) return ReadResult::FILE_NOT_HANDLED;
         
-        if (options && options->getOptionString().find("flip")!=std::string::npos)
+        if (options && options->getOptionString().find("dds_flip")!=std::string::npos)
         {
             osgImage->flipVertical();
         }

@@ -445,16 +445,34 @@ Array* Array_readLocalData(Input& fr)
 
 
 template<class Iterator>
-void Array_writeLocalData(Output& fw, Iterator first, Iterator last)
+void Array_writeLocalData(Output& fw, Iterator first, Iterator last,int noItemsPerLine=8)
 {
     fw.indent() << "{"<<std::endl;
     fw.moveIn();
+
+    int column=0;
+    
     for(Iterator itr=first;
         itr!=last;
         ++itr)
     {
-        fw.indent() << *itr << std::endl;
+        if (column==0) fw.indent();
+        
+        fw << *itr;
+        
+        ++column;
+        if (column==noItemsPerLine)
+        {
+            fw << std::endl;
+            column = 0;
+        }
+        else
+        {
+            fw << " ";
+        }
     }
+    if (column!=0) fw << std::endl;
+    
     fw.moveOut();
     fw.indent()<<"}"<<std::endl;
     
@@ -516,7 +534,7 @@ bool Array_writeLocalData(const Array& array,Output& fw)
             {
                 const UByte4Array& carray = static_cast<const UByte4Array&>(array);
                 fw<<array.className()<<" "<<carray.size()<<" ";
-                Array_writeLocalData(fw,carray.begin(),carray.end());
+                Array_writeLocalData(fw,carray.begin(),carray.end(),1);
                 return true;
             }
             break;
@@ -532,7 +550,7 @@ bool Array_writeLocalData(const Array& array,Output& fw)
             {
                 const Vec2Array& carray = static_cast<const Vec2Array&>(array);
                 fw<<array.className()<<" "<<carray.size()<<std::endl;
-                Array_writeLocalData(fw,carray.begin(),carray.end());
+                Array_writeLocalData(fw,carray.begin(),carray.end(),1);
                 return true;
             }
             break;
@@ -540,7 +558,7 @@ bool Array_writeLocalData(const Array& array,Output& fw)
             {
                 const Vec3Array& carray = static_cast<const Vec3Array&>(array);
                 fw<<array.className()<<" "<<carray.size()<<std::endl;
-                Array_writeLocalData(fw,carray.begin(),carray.end());
+                Array_writeLocalData(fw,carray.begin(),carray.end(),1);
                 return true;
             }
             break;
@@ -548,7 +566,7 @@ bool Array_writeLocalData(const Array& array,Output& fw)
             {
                 const Vec4Array& carray = static_cast<const Vec4Array&>(array);
                 fw<<array.className()<<" "<<carray.size()<<std::endl;
-                Array_writeLocalData(fw,carray.begin(),carray.end());
+                Array_writeLocalData(fw,carray.begin(),carray.end(),1);
                 return true;
             }
             break;
@@ -788,7 +806,7 @@ bool Geometry_writeLocalData(const Object& obj, Output& fw)
         const Vec3Array& vertices = *geom.getVertexArray();
         fw.indent()<<"VertexArray "<<vertices.size()<<std::endl;
         
-        Array_writeLocalData(fw,vertices.begin(),vertices.end());
+        Array_writeLocalData(fw,vertices.begin(),vertices.end(),1);
         
     }
 
@@ -800,7 +818,7 @@ bool Geometry_writeLocalData(const Object& obj, Output& fw)
         const Vec3Array& normals = *geom.getNormalArray();
         fw.indent()<<"NormalArray "<<normals.size()<<std::endl;
         
-        Array_writeLocalData(fw,normals.begin(),normals.end());
+        Array_writeLocalData(fw,normals.begin(),normals.end(),1);
         
     }
 

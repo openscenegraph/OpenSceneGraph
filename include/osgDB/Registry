@@ -206,12 +206,13 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         /** get the attached library with specified name.*/
         DynamicLibrary*              getLibrary(const std::string& fileName);
 
-    protected:
+         typedef std::vector< osg::ref_ptr<ReaderWriter> >               ReaderWriterList;
+
+   protected:
 
         virtual ~Registry();
 
         typedef std::map< std::string, osg::ref_ptr<DotOsgWrapper> >    DotOsgWrapperMap;
-        typedef std::vector< osg::ref_ptr<ReaderWriter> >               ReaderWriterList;
         typedef std::vector< osg::ref_ptr<DynamicLibrary> >             DynamicLibraryList;
         typedef std::map< std::string, std::string>                     ExtensionAliasMap;
         

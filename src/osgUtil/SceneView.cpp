@@ -7,6 +7,7 @@
 #include <osg/AlphaFunc>
 #include <osg/TexEnv>
 #include <osg/ColorMatrix>
+#include <osg/LightModel>
 
 #include <osg/GLU>
 
@@ -33,6 +34,10 @@ SceneView::SceneView(DisplaySettings* ds)
     _viewport = new Viewport;
     
     _initCalled = false;
+
+    _cullMask = 0xffffffff;
+    _cullMaskLeft = 0xffffffff;
+    _cullMaskLeft = 0xffffffff;
 
 }
 
@@ -97,8 +102,15 @@ void SceneView::setDefaults()
     texenv->setMode(osg::TexEnv::MODULATE);
     _globalState->setAttributeAndModes(texenv, osg::StateAttribute::ON);
 
+    osg::LightModel* lightmodel = new osg::LightModel;
+    lightmodel->setAmbientIntensity(osg::Vec4(0.0f,0.0f,0.0f,1.0f));
+    _globalState->setAttributeAndModes(lightmodel, osg::StateAttribute::ON);
+
     _backgroundColor.set(0.2f, 0.2f, 0.4f, 1.0f);
 
+    _cullMask = 0xffffffff;
+    _cullMaskLeft = 0xffffffff;
+    _cullMaskLeft = 0xffffffff;
 }
 
 void SceneView::init()
@@ -166,13 +178,16 @@ void SceneView::cull()
         if (!_rendergraphRight.valid()) _rendergraphRight = dynamic_cast<RenderGraph*>(_rendergraph->cloneType());
         if (!_renderStageRight.valid()) _renderStageRight = dynamic_cast<RenderStage*>(_renderStage->cloneType());
 
+        _cullVisitorLeft->setTraversalMask(_cullMaskLeft);
         cullStage(_cameraLeft.get(),_cullVisitorLeft.get(),_rendergraphLeft.get(),_renderStageLeft.get());
+
+        _cullVisitorRight->setTraversalMask(_cullMaskRight);
         cullStage(_cameraRight.get(),_cullVisitorRight.get(),_rendergraphRight.get(),_renderStageRight.get());
 
     }
     else
     {
-
+        _cullVisitor->setTraversalMask(_cullMask);
         cullStage(_camera.get(),_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
     }
 

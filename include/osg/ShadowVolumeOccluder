@@ -60,8 +60,22 @@ class SG_EXPORT ShadowVolumeOccluder
         inline NodePath& getNodePath() { return _nodePath; }
         inline const NodePath& getNodePath() const { return _nodePath; }
 
+
+        /** get the volume of the occluder minus its holes, in eye coords, the volume is normalized by dividing by 
+          * the volume of the view frustum in eye coords.*/
         float getVolume() const { return _volume; }
         
+        /** return the occluder polytope.*/
+        Polytope& getOccluder() { return _occluderVolume; }
+        
+        /** return the const occluder polytope.*/
+        const Polytope& getOccluder() const { return _occluderVolume; }
+        
+        /** return the list of holes.*/
+        HoleList& getHoleList() { return _holeList; }
+        
+        /** return the const list of holes.*/
+        const HoleList& getHoleList() const { return _holeList; }
         
 
         /** return true if the specified vertex list is contaned entirely
@@ -88,7 +102,7 @@ class SG_EXPORT ShadowVolumeOccluder
         }
         
 
-//    protected:
+    protected:
 
         float                   _volume;
         NodePath                _nodePath;

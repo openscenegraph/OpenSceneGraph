@@ -175,7 +175,9 @@ void CollectOccludersVisitor::removeOccludedOccluders()
         // search for any occluders that occlude the current occluder,
         // we only need to test any occluder near the front of the set since
         // you can't be occluder by something smaller than you.
-        const ShadowVolumeOccluder& occludee = *occludeeItr;
+        ShadowVolumeOccluder& occludee = const_cast<ShadowVolumeOccluder&>(*occludeeItr);
+        ShadowVolumeOccluder::HoleList& holeList = occludee.getHoleList();
+
         for(ShadowVolumeOccluderSet::iterator occluderItr=_occluderSet.begin();
             occluderItr!=occludeeItr;
             ++occluderItr)
@@ -184,7 +186,7 @@ void CollectOccludersVisitor::removeOccludedOccluders()
             // and the std::set is a const, just for the invariance of the operator <!! Ahhhhh. oh well the below
             // should be robust since contains won't change the getVolume which is used by the operator <.  Honest,  :-)
             ShadowVolumeOccluder* occluder = const_cast<ShadowVolumeOccluder*>(&(*occluderItr));
-            if (occluder->contains(occludee._occluderVolume.getReferenceVertexList()))
+            if (occluder->contains(occludee.getOccluder().getReferenceVertexList()))
             {
                 // erase occluder from set.
                 // take a copy of the iterator then rewind it one element so to prevent invalidating the occludeeItr.
@@ -192,6 +194,20 @@ void CollectOccludersVisitor::removeOccludedOccluders()
                 _occluderSet.erase(eraseItr);
                 break;
             }
+            
+            // now check all the holes in the occludee against the occluder, 
+            // do so in reverse order so that the iterators remain valid.
+            for(ShadowVolumeOccluder::HoleList::reverse_iterator holeItr=holeList.rbegin();
+                holeItr!=holeList.rend();
+                ++holeItr)
+            {
+                if (occluder->contains(holeItr->getReferenceVertexList()))
+                {
+                    holeList.erase(holeItr.base());
+                }
+                
+            }
+            
         }
     }
 }

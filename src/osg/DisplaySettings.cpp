@@ -45,6 +45,7 @@ DisplaySettings::~DisplaySettings()
 
 void DisplaySettings::copy(const DisplaySettings& vs)
 {
+    _displayType = vs._displayType;
     _stereoMode = vs._stereoMode;
     _eyeSeparation = vs._eyeSeparation;
     _screenDistance = vs._screenDistance;
@@ -83,6 +84,8 @@ void DisplaySettings::merge(const DisplaySettings& vs)
 
 void DisplaySettings::setDefaults()
 {
+    _displayType = MONITOR;
+
     _stereo = false;
     _stereoMode = ANAGLYPHIC;
     _eyeSeparation = 0.05f;
@@ -106,21 +109,46 @@ void DisplaySettings::setDefaults()
     _maxNumOfGraphicsContexts = 3;
 }
 
-static ApplicationUsageProxy DisplaySetting_e0(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_STEREO_MODE <mode>","QUAD_BUFFER | ANAGLYPHIC | HORIZONTAL_SPLIT | VERTICAL_SPLIT | LEFT_EYE | RIGHT_EYE");
-static ApplicationUsageProxy DisplaySetting_e1(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_STEREO <mode>","OFF | ON");
-static ApplicationUsageProxy DisplaySetting_e2(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_EYE_SEPARATION <float>","physical distance between eyes");
-static ApplicationUsageProxy DisplaySetting_e3(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_SCREEN_DISTANCE <float>","physical distance between eyes and screen");
-static ApplicationUsageProxy DisplaySetting_e4(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_SCREEN_HEIGHT <float>","physical screen height");
-static ApplicationUsageProxy DisplaySetting_e5(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_SPLIT_STEREO_HORIZONTAL_EYE_MAPPING <mode>","LEFT_EYE_LEFT_VIEWPORT | LEFT_EYE_RIGHT_VIEWPORT");
-static ApplicationUsageProxy DisplaySetting_e8(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_SPLIT_STEREO_HORIZONTAL_SEPARATION <float>","number of pixels between viewports");
-static ApplicationUsageProxy DisplaySetting_e9(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_SPLIT_STEREO_VERTICAL_EYE_MAPPING <mode>","LEFT_EYE_TOP_VIEWPORT | LEFT_EYE_BOTTOM_VIEWPORT");
-static ApplicationUsageProxy DisplaySetting_e10(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_SPLIT_STEREO_AUTO_ADJUST_ASPECT_RATIO <mode>","OFF | ON  Default to ON to compenstate for the compression of the aspect ratio when viewing in split screen stereo.  Note, if you are setting fovx and fovy explicityly OFF should be used.");
-static ApplicationUsageProxy DisplaySetting_e11(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_SPLIT_STEREO_VERTICAL_SEPARATION <float>","number of pixels between viewports");
-static ApplicationUsageProxy DisplaySetting_e12(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_MAX_NUMBER_OF_GRAPHICS_CONTEXTS <int>","maximum number of graphics contexts to be used with applications.");
+static ApplicationUsageProxy DisplaySetting_e0(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_DISPLAY_TYPE <type>","MONITOR | POWERWALL | REALITY_CENTER | HEAD_MOUNTED_DISPLAY");
+static ApplicationUsageProxy DisplaySetting_e1(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_STEREO_MODE <mode>","QUAD_BUFFER | ANAGLYPHIC | HORIZONTAL_SPLIT | VERTICAL_SPLIT | LEFT_EYE | RIGHT_EYE");
+static ApplicationUsageProxy DisplaySetting_e2(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_STEREO <mode>","OFF | ON");
+static ApplicationUsageProxy DisplaySetting_e3(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_EYE_SEPARATION <float>","physical distance between eyes");
+static ApplicationUsageProxy DisplaySetting_e4(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_SCREEN_DISTANCE <float>","physical distance between eyes and screen");
+static ApplicationUsageProxy DisplaySetting_e5(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_SCREEN_HEIGHT <float>","physical screen height");
+static ApplicationUsageProxy DisplaySetting_e6(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_SPLIT_STEREO_HORIZONTAL_EYE_MAPPING <mode>","LEFT_EYE_LEFT_VIEWPORT | LEFT_EYE_RIGHT_VIEWPORT");
+static ApplicationUsageProxy DisplaySetting_e7(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_SPLIT_STEREO_HORIZONTAL_SEPARATION <float>","number of pixels between viewports");
+static ApplicationUsageProxy DisplaySetting_e8(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_SPLIT_STEREO_VERTICAL_EYE_MAPPING <mode>","LEFT_EYE_TOP_VIEWPORT | LEFT_EYE_BOTTOM_VIEWPORT");
+static ApplicationUsageProxy DisplaySetting_e9(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_SPLIT_STEREO_AUTO_ADJUST_ASPECT_RATIO <mode>","OFF | ON  Default to ON to compenstate for the compression of the aspect ratio when viewing in split screen stereo.  Note, if you are setting fovx and fovy explicityly OFF should be used.");
+static ApplicationUsageProxy DisplaySetting_e10(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_SPLIT_STEREO_VERTICAL_SEPARATION <float>","number of pixels between viewports");
+static ApplicationUsageProxy DisplaySetting_e11(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_MAX_NUMBER_OF_GRAPHICS_CONTEXTS <int>","maximum number of graphics contexts to be used with applications.");
 
 void DisplaySettings::readEnvironmentalVariables()
 {
     char *ptr;
+    
+    if ((ptr = getenv("OSG_DISPLAY_TYPE")) != 0)
+    {
+        if (strcmp(ptr,"MONITOR")==0)
+        {
+            _displayType = MONITOR;
+        }
+        else
+        if (strcmp(ptr,"POWERWALL")==0)
+        {
+            _displayType = POWERWALL;
+        }
+        else
+        if (strcmp(ptr,"REALITY_CENTER")==0)
+        {
+            _displayType = REALITY_CENTER;
+        }
+        else
+        if (strcmp(ptr,"HEAD_MOUNTED_DISPLAY")==0)
+        {
+            _displayType = HEAD_MOUNTED_DISPLAY;
+        }
+    }
+    
     if( (ptr = getenv("OSG_STEREO_MODE")) != 0)
     {
         if (strcmp(ptr,"QUAD_BUFFER")==0)
@@ -244,12 +272,21 @@ void DisplaySettings::readCommandLine(ArgumentParser& arguments)
     // report the usage options.
     if (arguments.getApplicationUsage())
     {
+        arguments.getApplicationUsage()->addCommandLineOption("--display <type>","MONITOR | POWERWALL | REALITY_CENTER | HEAD_MOUNTED_DISPLAY");
         arguments.getApplicationUsage()->addCommandLineOption("--stereo","Use default stereo mode which is ANAGLYPHIC if not overriden by environmental variable");
         arguments.getApplicationUsage()->addCommandLineOption("--stereo <mode>","ANAGLYPHIC | QUAD_BUFFER | HORIZONTAL_SPLIT | VERTICAL_SPLIT | LEFT_EYE | RIGHT_EYE | ON | OFF ");
         arguments.getApplicationUsage()->addCommandLineOption("--rgba","Request a RGBA color buffer visual");
         arguments.getApplicationUsage()->addCommandLineOption("--stencil","Request a stencil buffer visual");
     }
 
+    std::string str;
+    while(arguments.read("--display",str))
+    {
+        if (str=="MONITOR") _displayType = MONITOR;
+        else if (str=="POWERWALL") _displayType = POWERWALL;
+        else if (str=="REALITY_CENTER") _displayType = REALITY_CENTER;
+        else if (str=="HEAD_MOUNTED_DISPLAY") _displayType = HEAD_MOUNTED_DISPLAY;
+    }
 
     int pos;
     while ((pos=arguments.find("--stereo"))!=0)

@@ -67,15 +67,8 @@ SceneView::~SceneView()
 
 void SceneView::setDefaults()
 {
-    if (!_projectionMatrix) 
-    {
-        _projectionMatrix = new RefMatrix();
-        _projectionMatrix->makePerspective(50.0f,1.4f,1.0f,10000.0f);
-    }
-    if (!_viewMatrix)
-    {
-        _viewMatrix = new RefMatrix();
-    }
+    _projectionMatrix.makePerspective(50.0f,1.4f,1.0f,10000.0f);
+    _viewMatrix.makeIdentity();
 
     _globalStateSet = new osg::StateSet;
 
@@ -193,6 +186,158 @@ void SceneView::update()
     
 }
 
+osg::Matrixd SceneView::computeLeftEyeProjectionImplementation(const osg::Matrixd& projection) const
+{
+    double fusionDistance = _displaySettings->getScreenDistance();
+    switch(_fusionDistanceMode)
+    {
+        case(USE_FUSION_DISTANCE_VALUE):
+            fusionDistance = _fusionDistanceValue;
+            break;
+        case(PROPORTIONAL_TO_SCREEN_DISTANCE):
+            fusionDistance *= _fusionDistanceValue;
+            break;
+    }
+
+    double iod = _displaySettings->getEyeSeparation();
+    double sd = _displaySettings->getScreenDistance();
+    double scale_x = 1.0;
+    double scale_y = 1.0;
+
+    if (_displaySettings->getSplitStereoAutoAjustAspectRatio())
+    {
+        switch(_displaySettings->getStereoMode())
+        {
+            case(osg::DisplaySettings::HORIZONTAL_SPLIT):
+                scale_x = 2.0;
+                break;
+            case(osg::DisplaySettings::VERTICAL_SPLIT):
+                scale_y = 2.0;
+                break;
+            default:
+                break;
+        }
+    }
+
+    if (_displaySettings->getDisplayType()==osg::DisplaySettings::HEAD_MOUNTED_DISPLAY)
+    {
+        // head mounted display has the same projection matrix for left and right eyes.
+        return osg::Matrixd::scale(scale_x,scale_y,1.0) *
+               projection;
+    }
+    else
+    {
+        // all other display types assume working like a projected power wall
+        // need to shjear projection matrix to account for asymetric frustum due to eye offset.
+        return osg::Matrixd(1.0,0.0,0.0,0.0,
+                           0.0,1.0,0.0,0.0,
+                           iod/(2.0*sd),0.0,1.0,0.0,
+                           0.0,0.0,0.0,1.0) *
+               osg::Matrixd::scale(scale_x,scale_y,1.0) *
+               projection;
+    }
+}
+
+osg::Matrixd SceneView::computeLeftEyeViewImplementation(const osg::Matrixd& view) const
+{
+    double fusionDistance = _displaySettings->getScreenDistance();
+    switch(_fusionDistanceMode)
+    {
+        case(USE_FUSION_DISTANCE_VALUE):
+            fusionDistance = _fusionDistanceValue;
+            break;
+        case(PROPORTIONAL_TO_SCREEN_DISTANCE):
+            fusionDistance *= _fusionDistanceValue;
+            break;
+    }
+
+    double iod = _displaySettings->getEyeSeparation();
+    double sd = _displaySettings->getScreenDistance();
+    double es = 0.5f*iod*(fusionDistance/sd);
+
+    return view *
+           osg::Matrixd(1.0,0.0,0.0,0.0,
+                       0.0,1.0,0.0,0.0,
+                       0.0,0.0,1.0,0.0,
+                       es,0.0,0.0,1.0);
+}
+
+osg::Matrixd SceneView::computeRightEyeProjectionImplementation(const osg::Matrixd& projection) const
+{
+    double fusionDistance = _displaySettings->getScreenDistance();
+    switch(_fusionDistanceMode)
+    {
+        case(USE_FUSION_DISTANCE_VALUE):
+            fusionDistance = _fusionDistanceValue;
+            break;
+        case(PROPORTIONAL_TO_SCREEN_DISTANCE):
+            fusionDistance *= _fusionDistanceValue;
+            break;
+    }
+
+    double iod = _displaySettings->getEyeSeparation();
+    double sd = _displaySettings->getScreenDistance();
+    double scale_x = 1.0;
+    double scale_y = 1.0;
+
+    if (_displaySettings->getSplitStereoAutoAjustAspectRatio())
+    {
+        switch(_displaySettings->getStereoMode())
+        {
+            case(osg::DisplaySettings::HORIZONTAL_SPLIT):
+                scale_x = 2.0;
+                break;
+            case(osg::DisplaySettings::VERTICAL_SPLIT):
+                scale_y = 2.0;
+                break;
+            default:
+                break;
+        }
+    }
+
+    if (_displaySettings->getDisplayType()==osg::DisplaySettings::HEAD_MOUNTED_DISPLAY)
+    {
+        // head mounted display has the same projection matrix for left and right eyes.
+        return osg::Matrixd::scale(scale_x,scale_y,1.0) *
+               projection;
+    }
+    else
+    {
+        // all other display types assume working like a projected power wall
+        // need to shjear projection matrix to account for asymetric frustum due to eye offset.
+        return osg::Matrixd(1.0,0.0,0.0,0.0,
+                           0.0,1.0,0.0,0.0,
+                           -iod/(2.0*sd),0.0,1.0,0.0,
+                           0.0,0.0,0.0,1.0) *
+               osg::Matrixd::scale(scale_x,scale_y,1.0) *
+               projection;
+    }
+}
+
+osg::Matrixd SceneView::computeRightEyeViewImplementation(const osg::Matrixd& view) const
+{
+    float fusionDistance = _displaySettings->getScreenDistance();
+    switch(_fusionDistanceMode)
+    {
+        case(USE_FUSION_DISTANCE_VALUE):
+            fusionDistance = _fusionDistanceValue;
+            break;
+        case(PROPORTIONAL_TO_SCREEN_DISTANCE):
+            fusionDistance *= _fusionDistanceValue;
+            break;
+    }
+
+    double iod = _displaySettings->getEyeSeparation();
+    double sd = _displaySettings->getScreenDistance();
+    double es = 0.5*iod*(fusionDistance/sd);
+
+    return view *
+           osg::Matrixd(1.0,0.0,0.0,0.0,
+                       0.0,1.0,0.0,0.0,
+                       0.0,0.0,1.0,0.0,
+                       -es,0.0,0.0,1.0);
+}
+
 void SceneView::cull()
 {
 
@@ -217,12 +362,6 @@ void SceneView::cull()
     _state->setDisplaySettings(_displaySettings.get());
 
 
-    osg::ref_ptr<osg::RefMatrix> projection = _projectionMatrix.get();
-    osg::ref_ptr<osg::RefMatrix> modelview = _viewMatrix.get();
-       
-    if (!projection) projection = new osg::RefMatrix();
-    if (!modelview)  modelview  = new osg::RefMatrix();
-
     if (!_cullVisitor)
     {
         osg::notify(osg::INFO) << "Warning: no valid osgUtil::SceneView:: attached, creating a default CullVisitor automatically."<< std::endl;
@@ -242,60 +381,18 @@ void SceneView::cull()
     if (_displaySettings.valid() && _displaySettings->getStereo()) 
     {
 
-        float fusionDistance = _displaySettings->getScreenDistance();
-        switch(_fusionDistanceMode)
-        {
-            case(USE_FUSION_DISTANCE_VALUE):
-                fusionDistance = _fusionDistanceValue;
-                break;
-            case(PROPORTIONAL_TO_SCREEN_DISTANCE):
-                fusionDistance *= _fusionDistanceValue;
-                break;
-        }
-
-        float iod = _displaySettings->getEyeSeparation();
-        float sd = _displaySettings->getScreenDistance();
-        float es = 0.5f*iod*(fusionDistance/sd);
-
         if (_displaySettings->getStereoMode()==osg::DisplaySettings::LEFT_EYE)
         {
             // set up the left eye.
-            osg::ref_ptr<osg::RefMatrix> projectionLeft = new osg::RefMatrix(osg::Matrix(1.0f,0.0f,0.0f,0.0f,
-                                                                                         0.0f,1.0f,0.0f,0.0f,
-                                                                                         iod/(2.0f*sd),0.0f,1.0f,0.0f,
-                                                                                         0.0f,0.0f,0.0f,1.0f)*
-                                                                             (*projection));
-
-
-            osg::ref_ptr<osg::RefMatrix> modelviewLeft = new osg::RefMatrix( (*modelview) *
-                                                                             osg::Matrix(1.0f,0.0f,0.0f,0.0f,
-                                                                                         0.0f,1.0f,0.0f,0.0f,
-                                                                                         0.0f,0.0f,1.0f,0.0f,
-                                                                                         es,0.0f,0.0f,1.0f));
-
             _cullVisitor->setTraversalMask(_cullMaskLeft);
-            cullStage(projectionLeft.get(),modelviewLeft.get(),_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
+            cullStage(computeLeftEyeProjection(_projectionMatrix),computeLeftEyeView(_viewMatrix),_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
 
         }
         else if (_displaySettings->getStereoMode()==osg::DisplaySettings::RIGHT_EYE)
         {
             // set up the right eye.
-            osg::ref_ptr<osg::RefMatrix> projectionRight = new osg::RefMatrix(osg::Matrix(1.0f,0.0f,0.0f,0.0f,
-                                                                                          0.0f,1.0f,0.0f,0.0f,
-                                                                                          -iod/(2.0f*sd),0.0f,1.0f,0.0f,
-                                                                                          0.0f,0.0f,0.0f,1.0f)*
-                                                                              (*projection));
-
-            osg::ref_ptr<osg::RefMatrix> modelviewRight = new osg::RefMatrix( (*modelview) *
-                                                                              osg::Matrix(1.0f,0.0f,0.0f,0.0f,
-                                                                                          0.0f,1.0f,0.0f,0.0f,
-                                                                                          0.0f,0.0f,1.0f,0.0f,
-                                                                                          -es,0.0f,0.0f,1.0f));
-
             _cullVisitor->setTraversalMask(_cullMaskRight);
-            cullStage(projectionRight.get(),modelviewRight.get(),_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
-
-
+            cullStage(computeRightEyeProjection(_projectionMatrix),computeRightEyeView(_viewMatrix),_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
         }
         else
         {
@@ -309,65 +406,13 @@ void SceneView::cull()
             if (!_renderStageRight.valid()) _renderStageRight = dynamic_cast<RenderStage*>(_renderStage->clone(osg::CopyOp::DEEP_COPY_ALL));
 
 
-
-
-            osg::Matrix projection_scale;
-            
-            
-            if (_displaySettings->getSplitStereoAutoAjustAspectRatio())
-            {
-
-                switch(_displaySettings->getStereoMode())
-                {
-                    case(osg::DisplaySettings::HORIZONTAL_SPLIT):
-                        projection_scale.makeScale(2.0f,1.0f,1.0f);
-                        break;
-                    case(osg::DisplaySettings::VERTICAL_SPLIT):
-                        projection_scale.makeScale(1.0f,2.0f,1.0f);
-                        break;
-                    default:
-                        break;
-                }
-            }
-            
-            // set up the left eye.
-            osg::ref_ptr<osg::RefMatrix> projectionLeft = new osg::RefMatrix(osg::Matrix(1.0f,0.0f,0.0f,0.0f,
-                                                                                         0.0f,1.0f,0.0f,0.0f,
-                                                                                         iod/(2.0f*sd),0.0f,1.0f,0.0f,
-                                                                                         0.0f,0.0f,0.0f,1.0f)*
-                                                                             projection_scale*
-                                                                             (*projection));
-
-
-
-            osg::ref_ptr<osg::RefMatrix> modelviewLeft = new osg::RefMatrix( (*modelview) *
-                                                             osg::Matrix(1.0f,0.0f,0.0f,0.0f,
-                                                                         0.0f,1.0f,0.0f,0.0f,
-                                                                         0.0f,0.0f,1.0f,0.0f,
-                                                                         es,0.0f,0.0f,1.0f));
-
             _cullVisitorLeft->setTraversalMask(_cullMaskLeft);
-            cullStage(projectionLeft.get(),modelviewLeft.get(),_cullVisitorLeft.get(),_rendergraphLeft.get(),_renderStageLeft.get());
+            cullStage(computeLeftEyeProjection(_projectionMatrix),computeLeftEyeView(_viewMatrix),_cullVisitorLeft.get(),_rendergraphLeft.get(),_renderStageLeft.get());
 
 
             // set up the right eye.
-            osg::ref_ptr<osg::RefMatrix> projectionRight = new osg::RefMatrix(osg::Matrix(1.0f,0.0f,0.0f,0.0f,
-                                                                                          0.0f,1.0f,0.0f,0.0f,
-                                                                                          -iod/(2.0f*sd),0.0f,1.0f,0.0f,
-                                                                                          0.0f,0.0f,0.0f,1.0f)*
-                                                                              projection_scale*
-                                                                              (*projection));
-
-            osg::ref_ptr<osg::RefMatrix> modelviewRight = new osg::RefMatrix( (*modelview) *
-                                                                              osg::Matrix(1.0f,0.0f,0.0f,0.0f,
-                                                                                         0.0f,1.0f,0.0f,0.0f,
-                                                                                         0.0f,0.0f,1.0f,0.0f,
-                                                                                         -es,0.0f,0.0f,1.0f));
-
-
-
             _cullVisitorRight->setTraversalMask(_cullMaskRight);
-            cullStage(projectionRight.get(),modelviewRight.get(),_cullVisitorRight.get(),_rendergraphRight.get(),_renderStageRight.get());
+            cullStage(computeRightEyeProjection(_projectionMatrix),computeRightEyeView(_viewMatrix),_cullVisitorRight.get(),_rendergraphRight.get(),_renderStageRight.get());
            
         }
 
@@ -376,14 +421,14 @@ void SceneView::cull()
     {
 
         _cullVisitor->setTraversalMask(_cullMask);
-        cullStage(projection.get(),modelview.get(),_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
+        cullStage(_projectionMatrix,_viewMatrix,_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
 
     }
     
     
 }
 
-void SceneView::cullStage(osg::RefMatrix* projection,osg::RefMatrix* modelview,osgUtil::CullVisitor* cullVisitor, osgUtil::RenderGraph* rendergraph, osgUtil::RenderStage* renderStage)
+void SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& modelview,osgUtil::CullVisitor* cullVisitor, osgUtil::RenderGraph* rendergraph, osgUtil::RenderStage* renderStage)
 {
 
     if (!_sceneData || !_viewport->valid()) return;
@@ -391,6 +436,8 @@ void SceneView::cullStage(osg::RefMatrix* projection,osg::RefMatrix* modelview,o
     if (!_initCalled) init();
 
 
+    osg::ref_ptr<RefMatrix> proj = new osg::RefMatrix(projection);
+    osg::ref_ptr<RefMatrix> mv = new osg::RefMatrix(modelview);
 
     // collect any occluder in the view frustum.
     if (_sceneData->containsOccluderNodes())
@@ -408,8 +455,8 @@ void SceneView::cullStage(osg::RefMatrix* projection,osg::RefMatrix* modelview,o
         }
 
         cov.pushViewport(_viewport.get());
-        cov.pushProjectionMatrix(projection);
-        cov.pushModelViewMatrix(modelview);
+        cov.pushProjectionMatrix(proj.get());
+        cov.pushModelViewMatrix(mv.get());
 
         // traverse the scene graph to search for occluder in there new positions.
         _sceneData->accept(cov);
@@ -473,7 +520,7 @@ void SceneView::cullStage(osg::RefMatrix* projection,osg::RefMatrix* modelview,o
         else osg::notify(osg::WARN)<<"Warning: no osg::Light attached to ogUtil::SceneView to provide head light.*/"<<std::endl;
         break;
     case(SKY_LIGHT):
-        if (_light.valid()) renderStage->addPositionedAttribute(modelview,_light.get());
+        if (_light.valid()) renderStage->addPositionedAttribute(mv.get(),_light.get());
         else osg::notify(osg::WARN)<<"Warning: no osg::Light attached to ogUtil::SceneView to provide sky light.*/"<<std::endl;
         break;
     case(NO_SCENEVIEW_LIGHT):
@@ -485,8 +532,8 @@ void SceneView::cullStage(osg::RefMatrix* projection,osg::RefMatrix* modelview,o
 
 
     cullVisitor->pushViewport(_viewport.get());
-    cullVisitor->pushProjectionMatrix(projection);
-    cullVisitor->pushModelViewMatrix(modelview);
+    cullVisitor->pushProjectionMatrix(proj.get());
+    cullVisitor->pushModelViewMatrix(mv.get());
     
 
     // traverse the scene graph to generate the rendergraph.
@@ -553,7 +600,7 @@ void SceneView::draw()
     //osg::Timer_t tend = timer.tick();
     //std::cout<<"time to flush rendering objects"<<timer.delta_m(tstart,tend)<<std::endl;
 
-    if (_viewMatrix.valid()) _state->setInitialViewMatrix(_viewMatrix.get());
+    _state->setInitialViewMatrix(new osg::RefMatrix(_viewMatrix));
 
     RenderLeaf* previous = NULL;
     if (_displaySettings.valid() && _displaySettings->getStereo()) 
@@ -862,13 +909,7 @@ bool SceneView::projectObjectIntoWindow(const osg::Vec3& object,osg::Vec3& windo
 
 const osg::Matrix SceneView::computeMVPW() const
 {
-    osg::Matrix matrix;
-    
-    if (_viewMatrix.valid())
-        matrix = (*_viewMatrix);
-        
-    if (_projectionMatrix.valid())
-        matrix.postMult(*_projectionMatrix);
+    osg::Matrix matrix( _viewMatrix * _projectionMatrix);
         
     if (_viewport.valid())
         matrix.postMult(_viewport->computeWindowMatrix());
@@ -893,18 +934,11 @@ void SceneView::clearArea(int x,int y,int width,int height,const osg::Vec4& colo
     glDisable( GL_SCISSOR_TEST );
 }
 
-void SceneView::setProjectionMatrix(const osg::Matrix& matrix)
-{
-    if (!_projectionMatrix) _projectionMatrix = new osg::RefMatrix(matrix);
-    else _projectionMatrix->set(matrix);
-}
-
-
 void SceneView::setProjectionMatrixAsOrtho(double left, double right,
                                            double bottom, double top,
                                            double zNear, double zFar)
 {
-    setProjectionMatrix(osg::Matrix::ortho(left, right,
+    setProjectionMatrix(osg::Matrixd::ortho(left, right,
                                            bottom, top,
                                            zNear, zFar));
 }                                           
@@ -912,7 +946,7 @@ void SceneView::setProjectionMatrixAsOrtho(double left, double right,
 void SceneView::setProjectionMatrixAsOrtho2D(double left, double right,
                                              double bottom, double top)
 {
-    setProjectionMatrix(osg::Matrix::ortho2D(left, right,
+    setProjectionMatrix(osg::Matrixd::ortho2D(left, right,
                                              bottom, top));
 }
 
@@ -920,7 +954,7 @@ void SceneView::setProjectionMatrixAsFrustum(double left, double right,
                                              double bottom, double top,
                                              double zNear, double zFar)
 {
-    setProjectionMatrix(osg::Matrix::frustum(left, right,
+    setProjectionMatrix(osg::Matrixd::frustum(left, right,
                                              bottom, top,
                                              zNear, zFar));
 }
@@ -928,7 +962,7 @@ void SceneView::setProjectionMatrixAsFrustum(double left, double right,
 void SceneView::setProjectionMatrixAsPerspective(double fovy,double aspectRatio,
                                                  double zNear, double zFar)
 {
-    setProjectionMatrix(osg::Matrix::perspective(fovy,aspectRatio,
+    setProjectionMatrix(osg::Matrixd::perspective(fovy,aspectRatio,
                                                  zNear, zFar));
 }                                      
 
@@ -936,53 +970,32 @@ bool SceneView::getProjectionMatrixAsOrtho(double& left, double& right,
                                            double& bottom, double& top,
                                            double& zNear, double& zFar)
 {
-    if (_projectionMatrix.valid()) 
-    {
-        return _projectionMatrix->getOrtho(left, right,
-                                           bottom, top,
-                                           zNear, zFar);
-    }
-    return false;
+    return _projectionMatrix.getOrtho(left, right,
+                                       bottom, top,
+                                       zNear, zFar);
 }
 
 bool SceneView::getProjectionMatrixAsFrustum(double& left, double& right,
                                              double& bottom, double& top,
                                              double& zNear, double& zFar)
 {
-    if (_projectionMatrix.valid()) 
-    {
-        return _projectionMatrix->getFrustum(left, right,
-                                             bottom, top,
-                                             zNear, zFar);
-    }
-    return false;
+    return _projectionMatrix.getFrustum(left, right,
+                                         bottom, top,
+                                         zNear, zFar);
 }                                  
 
 bool SceneView::getProjectionMatrixAsPerspective(double& fovy,double& aspectRatio,
                                                  double& zNear, double& zFar)
 {
-    if (_projectionMatrix.valid()) 
-    {
-        return _projectionMatrix->getPerspective(fovy, aspectRatio, zNear, zFar);
-    }
-    return false;
+    return _projectionMatrix.getPerspective(fovy, aspectRatio, zNear, zFar);
 }                                                 
-
-void SceneView::setViewMatrix(const osg::Matrix& matrix)
-{
-    if (!_viewMatrix) _viewMatrix = new osg::RefMatrix(matrix);
-    else _viewMatrix->set(matrix);
-}
 
 void SceneView::setViewMatrixAsLookAt(const Vec3& eye,const Vec3& center,const Vec3& up)
 {
-    setViewMatrix(osg::Matrix::lookAt(eye,center,up));
+    setViewMatrix(osg::Matrixd::lookAt(eye,center,up));
 }
 
 void SceneView::getViewMatrixAsLookAt(Vec3& eye,Vec3& center,Vec3& up,float lookDistance)
 {
-    if (_viewMatrix.valid())
-    {
-        _viewMatrix->getLookAt(eye,center,up,lookDistance);
-    }
+    _viewMatrix.getLookAt(eye,center,up,lookDistance);
 }

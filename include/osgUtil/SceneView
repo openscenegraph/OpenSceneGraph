@@ -130,7 +130,10 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
 
 
         /** Set the projection matrix. Can be thought of as setting the lens of a camera. */
-        void setProjectionMatrix(const osg::Matrix& matrix);
+        inline void setProjectionMatrix(const osg::Matrixf& matrix) { _projectionMatrix.set(matrix); }
+
+        /** Set the projection matrix. Can be thought of as setting the lens of a camera. */
+        inline void setProjectionMatrix(const osg::Matrixd& matrix) { _projectionMatrix.set(matrix); }
 
         /** Set to a orthographic projection. See OpenGL glOrtho for documentation further details.*/
         void setProjectionMatrixAsOrtho(double left, double right,
@@ -152,10 +155,10 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
                                               double zNear, double zFar);
 
         /** Get the projection matrix.*/
-        osg::Matrix& getProjectionMatrix() { return *_projectionMatrix; }
+        osg::Matrixd& getProjectionMatrix() { return _projectionMatrix; }
 
         /** Get the const projection matrix.*/
-        const osg::Matrix& getProjectionMatrix() const { return *_projectionMatrix; }
+        const osg::Matrixd& getProjectionMatrix() const { return _projectionMatrix; }
 
         /** Get the othorgraphic settings of the orthographic projection matrix. 
           * Returns false if matrix is not an orthographic matrix, where parameter values are undefined.*/
@@ -179,17 +182,20 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
 
 
         /** Set the view matrix. Can be thought of as setting the position of the world relative to the camera in camera coordinates. */
-        void setViewMatrix(const osg::Matrix& matrix);
+        inline void setViewMatrix(const osg::Matrixf& matrix) { _viewMatrix.set(matrix); }
+        
+        /** Set the view matrix. Can be thought of as setting the position of the world relative to the camera in camera coordinates. */
+        inline void setViewMatrix(const osg::Matrixd& matrix) { _viewMatrix.set(matrix); }
 
         /** Set to the position and orientation of view matrix, using the same convention as gluLookAt. */
         void setViewMatrixAsLookAt(const osg::Vec3& eye,const osg::Vec3& center,const osg::Vec3& up);
 
 
         /** Get the view matrix. */
-        osg::Matrix& getViewMatrix() { return *_viewMatrix; }
+        osg::Matrixd& getViewMatrix() { return _viewMatrix; }
 
         /** Get the const view matrix. */
-        const osg::Matrix& getViewMatrix() const { return *_viewMatrix; }
+        const osg::Matrixd& getViewMatrix() const { return _viewMatrix; }
 
         /** Get to the position and orientation of a modelview matrix, using the same convention as gluLookAt. */
         void getViewMatrixAsLookAt(osg::Vec3& eye,osg::Vec3& center,osg::Vec3& up,float lookDistance=1.0f);
@@ -344,6 +350,52 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         inline const osg::FrameStamp* getFrameStamp() const { return _frameStamp.get(); }
 
 
+
+        /** callback for overidding the default method for compute the offset projection and view matrices.*/
+        struct ComputeStereoMatricesCallback : public osg::Referenced
+        {
+            virtual osg::Matrixd computeLeftEyeProjection(const osg::Matrixd& projection) const = 0;
+            virtual osg::Matrixd computeLeftEyeView(const osg::Matrixd& view) const = 0;
+
+            virtual osg::Matrixd computeRightEyeProjection(const osg::Matrixd& projection) const = 0;
+            virtual osg::Matrixd computeRightEyeView(const osg::Matrixd& view) const = 0;
+        };
+        
+        void setComputeStereoMatricesCallback(ComputeStereoMatricesCallback* callback) { _computeStereoMatricesCallback=callback; }
+        ComputeStereoMatricesCallback* getComputeStereoMatricesCallback(ComputeStereoMatricesCallback* callback) { return _computeStereoMatricesCallback.get(); }
+        const ComputeStereoMatricesCallback* getComputeStereoMatricesCallback() const { return _computeStereoMatricesCallback.get(); }
+
+        inline osg::Matrixd computeLeftEyeProjection(const osg::Matrixd& projection)  const
+        {
+            if (_computeStereoMatricesCallback.valid()) return _computeStereoMatricesCallback->computeLeftEyeProjection(projection);
+            else return computeLeftEyeProjectionImplementation(projection);
+        }
+
+        inline osg::Matrixd computeLeftEyeView(const osg::Matrixd& view) const
+        {
+            if (_computeStereoMatricesCallback.valid()) return _computeStereoMatricesCallback->computeLeftEyeView(view);
+            else return computeLeftEyeViewImplementation(view);
+        }
+        
+        inline osg::Matrixd computeRightEyeProjection(const osg::Matrixd& projection)  const
+        {
+            if (_computeStereoMatricesCallback.valid()) return _computeStereoMatricesCallback->computeRightEyeProjection(projection);
+            else return computeRightEyeProjectionImplementation(projection);
+        }
+
+        inline osg::Matrixd computeRightEyeView(const osg::Matrixd& view) const
+        {
+            if (_computeStereoMatricesCallback.valid()) return _computeStereoMatricesCallback->computeRightEyeView(view);
+            else return computeRightEyeViewImplementation(view);
+        }
+
+        virtual osg::Matrixd computeLeftEyeProjectionImplementation(const osg::Matrixd& projection) const;
+        virtual osg::Matrixd computeLeftEyeViewImplementation(const osg::Matrixd& view) const;
+
+        virtual osg::Matrixd computeRightEyeProjectionImplementation(const osg::Matrixd& projection) const;
+        virtual osg::Matrixd computeRightEyeViewImplementation(const osg::Matrixd& view) const;
+
+
         /** Do init traversal of attached scene graph using Init NodeVisitor.
           * The init traversal is called once for each SceneView, and should
           * be used to compile display list, texture objects intialize data
@@ -355,9 +407,6 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
 
         /** Do app traversal of attached scene graph using App NodeVisitor.*/
         virtual void update();
-#ifdef USE_DEPREACTED_API
-        virtual void app() { update(); }
-#endif       
 
         /** Do cull traversal of attached scene graph using Cull NodeVisitor.*/
         virtual void cull();
@@ -370,7 +419,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         virtual ~SceneView();
 
         /** Do cull traversal of attached scene graph using Cull NodeVisitor.*/
-        virtual void cullStage(osg::RefMatrix* projection,osg::RefMatrix* modelview,osgUtil::CullVisitor* cullVisitor, osgUtil::RenderGraph* rendergraph, osgUtil::RenderStage* renderStage);
+        virtual void cullStage(const osg::Matrixd& projection,const osg::Matrixd& modelview,osgUtil::CullVisitor* cullVisitor, osgUtil::RenderGraph* rendergraph, osgUtil::RenderStage* renderStage);
 
         const osg::Matrix computeMVPW() const;
 
@@ -380,8 +429,8 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         osg::ref_ptr<osg::StateSet>                 _globalStateSet;
         osg::ref_ptr<osg::StateSet>                 _localStateSet;
         osg::ref_ptr<osg::Light>                    _light;
-        osg::ref_ptr<osg::RefMatrix>                _projectionMatrix;
-        osg::ref_ptr<osg::RefMatrix>                _viewMatrix;
+        osg::Matrixd                                _projectionMatrix;
+        osg::Matrixd                                _viewMatrix;
         osg::ref_ptr<osg::DisplaySettings>          _displaySettings;
         osg::ref_ptr<osg::State>                    _state;
         
@@ -392,6 +441,8 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         osg::ref_ptr<osgUtil::CullVisitor>          _cullVisitor;
         osg::ref_ptr<osgUtil::RenderGraph>          _rendergraph;
         osg::ref_ptr<osgUtil::RenderStage>          _renderStage;
+
+        osg::ref_ptr<ComputeStereoMatricesCallback> _computeStereoMatricesCallback;
 
         osg::Node::NodeMask                          _cullMaskLeft;
         osg::ref_ptr<osgUtil::CullVisitor>          _cullVisitorLeft;

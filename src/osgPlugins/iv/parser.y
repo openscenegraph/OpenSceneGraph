@@ -23,7 +23,7 @@
 #  pragma warning (disable:4541)
 #endif
 
-#ifdef __DARWIN_OSX__
+#ifdef __APPLE__
 #include <sys/malloc.h>
 #else
 #include <malloc.h>

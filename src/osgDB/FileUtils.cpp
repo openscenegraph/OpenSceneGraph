@@ -10,7 +10,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
  * OpenSceneGraph Public License for more details.
 */
-#if 0 // defined(__DARWIN_OSX__)
+#if 0 // defined(__APPLE__)
 #include "FileUtils_Mac.cpp" // this is not functional yet -- fix!
 #else
 

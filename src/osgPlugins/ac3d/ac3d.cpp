@@ -6,7 +6,7 @@
 
 
 #include <stdio.h>
-#ifdef __DARWIN_OSX__
+#ifdef __APPLE__
 #include <sys/malloc.h>
 #else
 #include <malloc.h>
@@ -158,10 +158,9 @@ static std::vector<osg::Material*> palette; // change to dynamic array
 static int startmatindex = 0;
 
 
-osg::Material*ac_palette_get_material(const unsigned int id)
+osg::Material*ac_palette_get_material(int id)
 {
-    if (id<palette.size()) return(palette[id]);
-    else return NULL;
+    return(palette[id]);
 }
 
 

@@ -21,7 +21,7 @@
     #define WIN32_LEAN_AND_MEAN
     #define NOMINMAX
     #include <windows.h>
-#elif defined(__DARWIN_OSX__)
+#elif defined(__APPLE__)
     #include <mach-o/dyld.h>
 #else
     #include <dlfcn.h>
@@ -50,7 +50,7 @@ inline void* getGLExtensionFuncPtr(const char *funcName)
 
     return (void*)wglGetProcAddress(funcName);
 
-#elif defined(__DARWIN_OSX__)
+#elif defined(__APPLE__)
 
     std::string temp( "_" );
     temp += funcName;	// Mac OS X prepends an underscore on function names

@@ -30,7 +30,7 @@
 #elif defined(__sun) 
     #include <unistd.h>
     #include <sys/sockio.h>
-#elif defined (__DARWIN_OSX__)
+#elif defined (__APPLE__)
     #include <unistd.h>
     #include <sys/sockio.h>
 #elif defined (WIN32)

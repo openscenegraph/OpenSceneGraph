@@ -21,7 +21,8 @@ class CreateShadowTextureCullCallback : public osg::NodeCallback
             _position(position),
             _ambientLightColor(ambientLightColor),
             _unit(textureUnit),
-            _shadowState(new osg::StateSet)
+            _shadowState(new osg::StateSet),
+            _shadowedState(new osg::StateSet)
         {
             _texture = new osg::Texture2D;
             _texture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
@@ -57,6 +58,7 @@ class CreateShadowTextureCullCallback : public osg::NodeCallback
         osg::Vec4                    _ambientLightColor;
         unsigned int                 _unit;
         osg::ref_ptr<osg::StateSet>  _shadowState;
+        osg::ref_ptr<osg::StateSet>  _shadowedState;
 
         // we need this to get round the order dependance
         // of eye linear tex gen...    
@@ -217,9 +219,6 @@ void CreateShadowTextureCullCallback::doPreRender(osg::Node& node, osgUtil::Cull
 
     // set up the stateset to decorate the shadower with the shadow texture
     // with the appropriate tex gen coords.
-    osg::StateSet* stateset = new osg::StateSet;
-
-
     MyTexGen* texgen = new MyTexGen;
     texgen->setMatrix(MV);
     texgen->setMode(osg::TexGen::EYE_LINEAR);
@@ -228,14 +227,14 @@ void CreateShadowTextureCullCallback::doPreRender(osg::Node& node, osgUtil::Cull
     texgen->setPlane(osg::TexGen::R,osg::Plane(MVPT(0,2),MVPT(1,2),MVPT(2,2),MVPT(3,2)));
     texgen->setPlane(osg::TexGen::Q,osg::Plane(MVPT(0,3),MVPT(1,3),MVPT(2,3),MVPT(3,3)));
 
-    stateset->setTextureAttributeAndModes(_unit,_texture.get(),osg::StateAttribute::ON);
-    stateset->setTextureAttribute(_unit,texgen);
-    stateset->setTextureMode(_unit,GL_TEXTURE_GEN_S,osg::StateAttribute::ON);
-    stateset->setTextureMode(_unit,GL_TEXTURE_GEN_T,osg::StateAttribute::ON);
-    stateset->setTextureMode(_unit,GL_TEXTURE_GEN_R,osg::StateAttribute::ON);
-    stateset->setTextureMode(_unit,GL_TEXTURE_GEN_Q,osg::StateAttribute::ON);
+    _shadowedState->setTextureAttributeAndModes(_unit,_texture.get(),osg::StateAttribute::ON);
+    _shadowedState->setTextureAttribute(_unit,texgen);
+    _shadowedState->setTextureMode(_unit,GL_TEXTURE_GEN_S,osg::StateAttribute::ON);
+    _shadowedState->setTextureMode(_unit,GL_TEXTURE_GEN_T,osg::StateAttribute::ON);
+    _shadowedState->setTextureMode(_unit,GL_TEXTURE_GEN_R,osg::StateAttribute::ON);
+    _shadowedState->setTextureMode(_unit,GL_TEXTURE_GEN_Q,osg::StateAttribute::ON);
 
-    cv.pushStateSet(stateset);
+    cv.pushStateSet(_shadowedState.get());
 
         // must traverse the shadower            
         traverse(&node,&cv);

@@ -31,6 +31,7 @@ CXXFILES =\
 	LOD.cpp\
 	Light.cpp\
 	LightSource.cpp\
+	LightModel.cpp\
 	Material.cpp\
 	MatrixTransform.cpp\
 	MultiSwitch.cpp\

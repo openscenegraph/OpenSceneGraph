@@ -232,6 +232,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\Light.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\ive\LightModel.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\ive\LightPoint.cpp
 # End Source File
 # Begin Source File
@@ -509,6 +513,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\Impostor.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\Light.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\LightModel.h
 # End Source File
 # Begin Source File
 

@@ -369,7 +369,7 @@ void LocalVertexPoolRecord::endian()
   // If equal, vertex pool record was not continued.
   // If 16bit record length is less than length of vertex pool, then the original vertex
   //   pool record was continued with one or more CONTINUATION_OP records.
-  assert ( pool->RecHeader._wLength <= ( ( (uint32) vertex ) - ( (uint32) pool ) ) );
+  assert ( pool->RecHeader._wLength <= ( ( (unsigned long) vertex ) - ( (unsigned long) pool ) ) );
 }
 
 

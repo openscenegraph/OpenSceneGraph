@@ -26,7 +26,7 @@
 
 namespace flt {
 
- typedef signed long     int32;
+ typedef signed int     int32;	
 
  class AttrData : public osg::Object { 
   public:

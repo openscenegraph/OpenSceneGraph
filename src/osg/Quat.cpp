@@ -42,15 +42,15 @@ void Quat::makeRot( const float angle, const Vec3& vec )
 // and then use a cross product to get the rotation axis
 // Watch out for the two special cases of when the vectors
 // are co-incident or opposite in direction.
-void Quat::makeRot( const Vec3& vec1, const Vec3& vec2 )
+void Quat::makeRot( const Vec3& from, const Vec3& to )
 {
     const float epsilon = 0.00001f;
 
-    float length1  = vec1.length();
-    float length2  = vec2.length();
+    float length1  = from.length();
+    float length2  = to.length();
     
     // dot product vec1*vec2
-    float cosangle = vec1*vec2/(length1*length2);
+    float cosangle = from*to/(length1*length2);
 
     if ( fabs(cosangle - 1) < epsilon )
     {
@@ -60,30 +60,32 @@ void Quat::makeRot( const Vec3& vec1, const Vec3& vec2 )
         makeRot( 0.0, 1.0, 0.0, 0.0 );
     }
     else
-#if 0 /// This is broken and entirely unecessary.  - Don Burns.
-    if ( fabs(cosangle + 1) < epsilon )
+    if ( fabs(cosangle + 1.0) < epsilon )
     {
+        // vectors are close to being opposite, so will need to find a
+        // vector orthongonal to from to rotate about.
+        osg::Vec3 tmp;
+        if (fabs(from.x())<fabs(from.y()))
+            if (fabs(from.x())<fabs(from.z())) tmp.set(1.0,0.0,0.0); // use x axis.
+            else tmp.set(0.0,0.0,1.0);
+        else if (fabs(from.y())<fabs(from.z())) tmp.set(0.0,1.0,0.0);
+        else tmp.set(0.0,0.0,1.0);
+        
+        // find orthogonal axis.
+        Vec3 axis(from^tmp);
+        axis.normalize();
+        
+        _fv[0] = axis[0]; // sin of half angle of PI is 1.0.
+        _fv[1] = axis[1]; // sin of half angle of PI is 1.0.
+        _fv[2] = axis[2]; // sin of half angle of PI is 1.0.
+        _fv[3] = 0; // cos of half angle of PI is zero.
 
-        // cosangle is close to -1, so the vectors are close to being opposite
-        // The angle of rotation is going to be Pi, but around which axis?
-        // Basically, any one perpendicular to vec1 = (x,y,z) is going to work.
-        // Choose a vector to cross product vec1 with.  Find the biggest
-        // in magnitude of x, y and z and then put a zero in that position.
-        float biggest = fabs(vec1[0]); int bigposn = 0;
-        if ( fabs(vec1[1]) > biggest ) { biggest=fabs(vec1[1]); bigposn = 1; }
-        if ( fabs(vec1[2]) > biggest ) { biggest=fabs(vec1[2]); bigposn = 2; }
-        Vec3 temp = Vec3( 1.0, 1.0, 1.0 );
-        temp[bigposn] = 0.0;
-        Vec3 axis = vec1^temp;   // this is a cross-product to generate the
-        //  axis around which to rotate
-        makeRot( (float)M_PI, axis );
     }
     else
-#endif
     {
         // This is the usual situation - take a cross-product of vec1 and vec2
         // and that is the axis around which to rotate.
-        Vec3 axis = vec1^vec2;
+        Vec3 axis(from^to);
         float angle = acos( cosangle );
         makeRot( angle, axis );
     }
@@ -224,7 +226,7 @@ void Quat::get( Matrix& m ) const
     //
     //http://www.gamasutra.com/features/programming/19980703/quaternions_01.htm
 
-    float wx, wy, wz, xx, yy, yz, xy, xz, zz, x2, y2, z2;
+    double wx, wy, wz, xx, yy, yz, xy, xz, zz, x2, y2, z2;
 
     // calculate coefficients
     x2 = QX + QX;

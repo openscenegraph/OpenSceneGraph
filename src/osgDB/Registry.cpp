@@ -567,7 +567,7 @@ Object* Registry::readObject(const std::string& fileName)
         ++itr)
     {
         rwOriginal.insert(itr->get());
-        Object* obj = (*itr)->readObject(file);
+        Object* obj = (*itr)->readObject(file,_options.get());
         if (obj) return obj;
     }
 
@@ -581,7 +581,7 @@ Object* Registry::readObject(const std::string& fileName)
         {
             if (rwOriginal.find(itr->get())==rwOriginal.end())
             {
-                Object* obj = (*itr)->readObject(file);
+                Object* obj = (*itr)->readObject(file,_options.get());
                 if (obj) return obj;
             }
         }
@@ -608,7 +608,7 @@ bool Registry::writeObject(const Object& obj,const std::string& fileName)
         ++itr)
     {
         rwOriginal.insert(itr->get());
-        if ((*itr)->writeObject(obj,fileName)) return true;
+        if ((*itr)->writeObject(obj,fileName,_options.get())) return true;
     }
 
     // now look for a plug-in to save the file.
@@ -621,7 +621,7 @@ bool Registry::writeObject(const Object& obj,const std::string& fileName)
         {
             if (rwOriginal.find(itr->get())==rwOriginal.end())
             {
-                if ((*itr)->writeObject(obj,fileName)) return true;
+                if ((*itr)->writeObject(obj,fileName,_options.get())) return true;
             }
         }
     }
@@ -651,7 +651,7 @@ Image* Registry::readImage(const std::string& fileName)
         ++itr)
     {
         rwOriginal.insert(itr->get());
-        Image* image = (*itr)->readImage(file);
+        Image* image = (*itr)->readImage(file,_options.get());
         if (image) return image;
     }
 
@@ -665,7 +665,7 @@ Image* Registry::readImage(const std::string& fileName)
         {
             if (rwOriginal.find(itr->get())==rwOriginal.end())
             {
-                Image* image = (*itr)->readImage(file);
+                Image* image = (*itr)->readImage(file,_options.get());
                 if (image) return image;
             }
         }
@@ -692,7 +692,7 @@ bool Registry::writeImage(const Image& image,const std::string& fileName)
         ++itr)
     {
         rwOriginal.insert(itr->get());
-        if ((*itr)->writeImage(image,fileName)) return true;
+        if ((*itr)->writeImage(image,fileName,_options.get())) return true;
     }
 
     // now look for a plug-in to save the file.
@@ -705,7 +705,7 @@ bool Registry::writeImage(const Image& image,const std::string& fileName)
         {
             if (rwOriginal.find(itr->get())==rwOriginal.end())
             {
-                if ((*itr)->writeImage(image,fileName)) return true;
+                if ((*itr)->writeImage(image,fileName,_options.get())) return true;
             }
         }
     }
@@ -735,7 +735,7 @@ Node* Registry::readNode(const std::string& fileName)
         ++itr)
     {
         rwOriginal.insert(itr->get());
-        Node* node = (*itr)->readNode(file);
+        Node* node = (*itr)->readNode(file,_options.get());
         if (node) return node;
     }
 
@@ -752,7 +752,7 @@ Node* Registry::readNode(const std::string& fileName)
         {
             if (rwOriginal.find(itr->get())==rwOriginal.end())
             {
-                Node* node = (*itr)->readNode(file);
+                Node* node = (*itr)->readNode(file,_options.get());
                 if (node) return node;
             }
         }
@@ -794,7 +794,7 @@ bool Registry::writeNode(const Node& node,const std::string& fileName)
         ++itr)
     {
         rwOriginal.insert(itr->get());
-        if ((*itr)->writeNode(node,fileName)) return true;
+        if ((*itr)->writeNode(node,fileName,_options.get())) return true;
     }
 
     // now look for a plug-in to save the file.
@@ -807,7 +807,7 @@ bool Registry::writeNode(const Node& node,const std::string& fileName)
         {
             if (rwOriginal.find(itr->get())==rwOriginal.end())
             {
-                if ((*itr)->writeNode(node,fileName)) return true;
+                if ((*itr)->writeNode(node,fileName,_options.get())) return true;
             }
         }
     }

@@ -19,9 +19,9 @@ class OSGReaderWriter : public ReaderWriter
             return equalCaseInsensitive(extension,"osg");
         }
 
-        virtual Object* readObject(const std::string& fileName) { return readNode(fileName); }
+        virtual Object* readObject(const std::string& fileName, const osgDB::ReaderWriter::Options* opt) { return readNode(fileName,opt); }
 
-        virtual Node* readNode(const std::string& fileName)
+        virtual Node* readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*)
         {
             std::string ext = getFileExtension(fileName);
             if (!acceptsExtension(ext)) return NULL;

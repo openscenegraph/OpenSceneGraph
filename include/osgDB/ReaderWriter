@@ -22,13 +22,32 @@ class OSGDB_EXPORT ReaderWriter : public osg::Referenced
         virtual const char* className() = 0;
         virtual bool acceptsExtension(const std::string& /*extension*/) { return false; }
 
-        virtual osg::Object* readObject(const std::string& /*fileName*/) { return NULL; }
-        virtual osg::Image* readImage(const std::string& /*fileName*/) { return NULL; }
-        virtual osg::Node* readNode(const std::string& /*fileName*/) { return NULL; }
+        class Options : public osg::Referenced
+        {
+            public:
 
-        virtual bool writeObject(const osg::Object& /*obj*/,const std::string& /*fileName*/) {return false; }
-        virtual bool writeImage(const osg::Image& /*image*/,const std::string& /*fileName*/) {return false; }
-        virtual bool writeNode(const osg::Node& /*node*/,const std::string& /*fileName*/) { return false; }
+                Options() {}
+                Options(const std::string& str):_str(str) {}
+                
+                void setOptionString(const std::string& str) { _str = str; }
+                const std::string& getOptionString() const { return _str; }
+
+            protected:
+
+                virtual ~Options() {}
+
+                std::string _str;
+
+        };
+
+
+        virtual osg::Object* readObject(const std::string& /*fileName*/,const Options* =NULL) { return NULL; }
+        virtual osg::Image* readImage(const std::string& /*fileName*/,const Options* =NULL) { return NULL; }
+        virtual osg::Node* readNode(const std::string& /*fileName*/,const Options* =NULL) { return NULL; }
+
+        virtual bool writeObject(const osg::Object& /*obj*/,const std::string& /*fileName*/,const Options* =NULL) {return false; }
+        virtual bool writeImage(const osg::Image& /*image*/,const std::string& /*fileName*/,const Options* =NULL) {return false; }
+        virtual bool writeNode(const osg::Node& /*node*/,const std::string& /*fileName*/,const Options* =NULL) { return false; }
 };
 
 

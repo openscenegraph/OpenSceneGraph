@@ -30,7 +30,7 @@ class sgReaderWriterOSGTGZ : public osgDB::ReaderWriter
             return osgDB::equalCaseInsensitive(extension,"osgtgz");
         }
 
-        virtual Node* readNode(const std::string& fileName)
+        virtual Node* readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*)
         {
             std::string ext = osgDB::getFileExtension(fileName);
             if (!acceptsExtension(ext)) return NULL;

@@ -293,7 +293,7 @@ inline ostream& operator<< (ostream& os, const Matrix& m )
     for(int row=0; row<4; ++row) {
         os << "\t";
         for(int col=0; col<4; ++col)
-            os << m(col,row) << " ";
+            os << m(row,col) << " ";
         os << endl;
     }
     os << "}" << endl;

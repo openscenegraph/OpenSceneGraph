@@ -2,7 +2,7 @@
 SHELL=/bin/sh
 
 
-DIRS = osg osgDB osgUtil osgGLUT Demos osgPlugins
+DIRS = osg osgDB osgUtil osgText osgGLUT Demos osgPlugins
 
 all :
 	for f in $(DIRS) ; do cd $$f; $(MAKE) || exit 1; cd ..; done
@@ -21,6 +21,7 @@ docs :
 	(cd osgUtil; $(MAKE) docs; )
 	(cd osgDB; $(MAKE) docs; )
 	(cd osgGLUT; $(MAKE) docs; )
+	(cd osgText; $(MAKE) docs; )
 
 to_unix : 
 	for f in $(DIRS) ; do cd $$f; to_unix Makefile Makefile; cd ..;  done

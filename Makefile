@@ -122,11 +122,13 @@ instcheck :
 	diff -q include/osg/       /usr/include/osg/
 	diff -q include/osgUtil/   /usr/include/osgUtil/
 	diff -q include/osgDB/     /usr/include/osgDB/
+	diff -q include/osgText/     /usr/include/osgText/
 	diff -q include/osgGLUT/   /usr/include/osgGLUT/
 	diff -q lib/libosg.so      /usr/lib/libosg.so
 	diff -q lib/libosgUtil.so  /usr/lib/libosgUtil.so
 	diff -q lib/libosgDB.so    /usr/lib/libosgDB.so
 	diff -q lib/libosgGLUT.so  /usr/lib/libosgGLUT.so
+	diff -q lib/libosgText.so  /usr/lib/libosgText.so
 	diff -q lib/osgPlugins/    /usr/lib/osgPlugins/
 
 stats :

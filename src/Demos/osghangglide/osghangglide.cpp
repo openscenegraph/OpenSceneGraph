@@ -12,6 +12,9 @@
 
 #include <osgGA/AnimationPathManipulator>
 
+#include <osgGLUT/glut>
+#include <osgGLUT/Viewer>
+
 #include "GliderManipulator.h"
 
 extern osg::Node *makeTerrain( void );
@@ -99,11 +102,6 @@ osg::Group* createModel()
     return group;
 }
 
-#ifdef USE_GLUT
-
-#include <osgGLUT/glut>
-#include <osgGLUT/Viewer>
-
 int main( int argc, char **argv )
 {
     glutInit( &argc, argv );
@@ -142,93 +140,3 @@ int main( int argc, char **argv )
     return 0;
 }
 
-#else
-
-#include <osgProducer/Viewer>
-
-int main( int argc, char **argv )
-{
-    // create the commandline args.
-    std::string pathfile;
-    std::string configfile;
-    std::vector<std::string> commandLine;
-    for(int i=1;i<argc;++i) {
-	if( std::string(argv[i]) == "-p" ) {
-	    if( (i+1) >= argc ) {
-		std::cout << "path argument required for -p option."<<std::endl;
-	    	return 1;
-	    }
-	    else
-		pathfile = std::string(argv[++i]);
-	}
-	else 
-	if( std::string(argv[i]) == "-c" ) {
-	    if( (i+1) >= argc ) {
-		std::cout << "path argument required for -c option."<<std::endl;
-	    	return 1;
-	    }
-	    else
-		configfile = std::string(argv[++i]);
-	}
-	else 
-	    commandLine.push_back(argv[i]);
-    }
-
-    osg::DisplaySettings::instance()->readCommandLine(commandLine);
-    osgDB::readCommandLine(commandLine);
-
-    osgProducer::Viewer* viewer = 0;
-    if (!configfile.empty()) viewer = new osgProducer::Viewer(configfile);
-    else viewer = new osgProducer::Viewer;
-
-    // configure the plugin registry from the commandline arguments, and 
-    // eat any parameters that have been matched.
-    osgDB::readCommandLine(commandLine);
-
-    // load the nodes from the commandline arguments.
-    osg::Node* rootnode = osgDB::readNodeFiles(commandLine);
-    if (!rootnode) rootnode = createModel();
-
-
-    // set the scene to render
-    viewer->setSceneData(rootnode);
-
-    // set up the value with sensible defaults.
-    viewer->setUpViewer();
-
-    unsigned int pos = viewer->addCameraManipulator(new GliderManipulator());
-    viewer->selectCameraManipulator(pos);
-
-    if( !pathfile.empty() ) {
-	osg::ref_ptr<osgGA::AnimationPathManipulator> apm = new osgGA::AnimationPathManipulator(pathfile);
-	if( apm.valid() && apm->valid() ) 
-        {
-            unsigned int num = viewer->addCameraManipulator(apm.get());
-            viewer->selectCameraManipulator(num);
-        }
-    }
-
-
-    // set up the stack size
-    viewer->setStackSize( 20* 1024 * 1024);
-
-    // create the windows and run the threads.
-    viewer->realize(Producer::CameraGroup::ThreadPerCamera);
-
-    while( !viewer->done() )
-    {
-        // wait for all cull and draw threads to complete.
-        viewer->sync();
-
-        // update the scene by traversing it with the the update visitor which will
-        // call all node update callbacks and animations.
-        viewer->update();
-         
-        // fire off the cull and draw traversals of the scene.
-        viewer->frame();
-        
-    }
-    return 0;
-}
-
-#endif

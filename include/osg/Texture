@@ -176,10 +176,27 @@ class SG_EXPORT Texture : public StateAttribute
 	    ANISOTROPIC               = GL_TEXTURE_MAX_ANISOTROPY_EXT
         };
 
+
         /** Set the texture filter mode.*/
         void setFilter(const FilterParameter which, const FilterMode filter);
         /** Get the texture filter mode.*/
         const FilterMode getFilter(const FilterParameter which) const;
+
+	enum CompileFlags {
+	    COMPILE_NONE       = 0x0,
+	    COMPILE_MAG_FILTER = 0x1,
+	    COMPILE_MIN_FILTER = 0x2,
+	    COMPILE_WRAP_S     = 0x4,
+	    COMPILE_WRAP_T     = 0x8,
+	    COMPILE_ALL        = 0xFF
+	};
+
+	/** Set the compile flags. Whatever is set will be compiled
+	 ** when the texture object is built.  Otherwise, immediate mode
+	 ** setting of these modes will occur during the apply
+	 **/
+	void setCompileFlags( const CompileFlags compile_flags ) { _compile_flags = compile_flags; }  
+	const CompileFlags getCompileFlags( void ) const { return _compile_flags; }
 
 
         enum InternalFormatMode {
@@ -326,6 +343,8 @@ class SG_EXPORT Texture : public StateAttribute
 
         FilterMode _min_filter;
         FilterMode _mag_filter;
+
+	CompileFlags _compile_flags;
 
         InternalFormatMode  _internalFormatMode;
         int                 _internalFormatValue;

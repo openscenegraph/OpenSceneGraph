@@ -120,7 +120,8 @@ osg::Node* createModel()
     osg::Billboard* center = osgNew osg::Billboard();
     center->setMode(osg::Billboard::POINT_ROT_EYE);
     center->addDrawable(
-        createSquare(osg::Vec3(-0.5f,0.0f,-0.5f),osg::Vec3(1.0f,0.0f,0.0f),osg::Vec3(0.0f,0.0f,1.0f),osgDB::readImageFile("reflect.rgb")),
+       
+createSquare(osg::Vec3(-0.5f,0.0f,-0.5f),osg::Vec3(1.0f,0.0f,0.0f),osg::Vec3(0.0f,0.0f,1.0f),osgDB::readImageFile("Images/reflect.rgb")),
         osg::Vec3(0.0f,0.0f,0.0f));
         
     osg::Billboard* x_arrow = osgNew osg::Billboard();
@@ -128,7 +129,8 @@ osg::Node* createModel()
     x_arrow->setAxis(osg::Vec3(1.0f,0.0f,0.0f));
     x_arrow->setNormal(osg::Vec3(0.0f,-1.0f,0.0f));
     x_arrow->addDrawable(
-        createSquare(osg::Vec3(-0.5f,0.0f,-0.5f),osg::Vec3(1.0f,0.0f,0.0f),osg::Vec3(0.0f,0.0f,1.0f),osgDB::readImageFile("osg_posx.png")),
+       
+createSquare(osg::Vec3(-0.5f,0.0f,-0.5f),osg::Vec3(1.0f,0.0f,0.0f),osg::Vec3(0.0f,0.0f,1.0f),osgDB::readImageFile("Images/osg_posx.png")),
         osg::Vec3(5.0f,0.0f,0.0f));
 
     osg::Billboard* y_arrow = osgNew osg::Billboard();
@@ -136,7 +138,7 @@ osg::Node* createModel()
     y_arrow->setAxis(osg::Vec3(0.0f,1.0f,0.0f));
     y_arrow->setNormal(osg::Vec3(1.0f,0.0f,0.0f));
     y_arrow->addDrawable(
-        createSquare(osg::Vec3(0.0f,-0.5f,-0.5f),osg::Vec3(0.0f,1.0f,0.0f),osg::Vec3(0.0f,0.0f,1.0f),osgDB::readImageFile("osg_posy.png")),
+        createSquare(osg::Vec3(0.0f,-0.5f,-0.5f),osg::Vec3(0.0f,1.0f,0.0f),osg::Vec3(0.0f,0.0f,1.0f),osgDB::readImageFile("Images/osg_posy.png")),
         osg::Vec3(0.0f,5.0f,0.0f));
 
     osg::Billboard* z_arrow = osgNew osg::Billboard();
@@ -144,7 +146,7 @@ osg::Node* createModel()
     z_arrow->setAxis(osg::Vec3(0.0f,0.0f,1.0f));
     z_arrow->setNormal(osg::Vec3(0.0f,-1.0f,0.0f));
     z_arrow->addDrawable(
-        createSquare(osg::Vec3(-0.5f,0.0f,-0.5f),osg::Vec3(1.0f,0.0f,0.0f),osg::Vec3(0.0f,0.0f,1.0f),osgDB::readImageFile("osg_posz.png")),
+        createSquare(osg::Vec3(-0.5f,0.0f,-0.5f),osg::Vec3(1.0f,0.0f,0.0f),osg::Vec3(0.0f,0.0f,1.0f),osgDB::readImageFile("Images/osg_posz.png")),
         osg::Vec3(0.0f,0.0f,5.0f));
 
 

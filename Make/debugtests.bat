@@ -87,8 +87,8 @@ echo osgscribe cow.osg
 osgscribe cow.osg
 more memleaks.log
 
-echo osgstereoimage dog_left_eye.jpg dog_right_eye.jpg
-osgstereoimage dog_left_eye.jpg dog_right_eye.jpg
+echo osgstereoimage Images/dog_left_eye.jpg Images/dog_right_eye.jpg
+osgstereoimage Images/dog_left_eye.jpg Images/dog_right_eye.jpg
 more memleaks.log
 
 echo osgtext
@@ -99,8 +99,8 @@ echo osgtexture1D cow.osg
 osgtexture1D cow.osg
 more memleaks.log
 
-echo osgtexture2D reflect.rgb lz.rgb
-osgtexture2D reflect.rgb lz.rgb
+echo osgtexture2D Images/reflect.rgb Images/lz.rgb
+osgtexture2D Images/reflect.rgb Images/lz.rgb
 more memleaks.log
 
 echo osgtexture3D

@@ -62,6 +62,12 @@ irix:
 	ln -sf makerules.irix makerules 
 	$(MAKE)
 
+irix64:
+	cd Make;\
+	ln -sf makedefs.irix.std.64 makedefs ;\
+	ln -sf makerules.irix makerules 
+	$(MAKE)
+
 irix.old:
 	cd Make;\
 	ln -sf makedefs.irix.nonstd makedefs ;\
@@ -101,7 +107,7 @@ clean : $(MAKE_PREP)
 clobber : $(MAKE_PREP) clean
 	for f in $(DIRS) ; do cd $$f; $(MAKE) clobber; cd ..;  done
 	rm -f $(MAKE_PREP)
-	
+
 depend : $(MAKE_PREP)
 	for f in $(DIRS) ; do cd $$f; $(MAKE) depend; cd ..;  done
 

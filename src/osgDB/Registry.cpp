@@ -1126,7 +1126,38 @@ ReaderWriter::ReadResult Registry::readObject(const std::string& fileName)
         rwOriginal.insert(itr->get());;
         ReaderWriter::ReadResult rr = (*itr)->readObject(fileName,_options.get());
         if (rr.validObject()) return rr;
-        else if (rr.error()) results.push_back(rr);
+        else results.push_back(rr);
+    }
+
+    if (!results.empty())
+    {
+        unsigned int num_FILE_NOT_HANDLED = 0;
+        unsigned int num_FILE_NOT_FOUND = 0;
+        unsigned int num_ERROR_IN_READING_FILE = 0;
+
+        for(Results::iterator ritr=results.begin();
+            ritr!=results.end();
+            ++ritr)
+        {
+            if (ritr->status()==ReaderWriter::ReadResult::FILE_NOT_HANDLED) ++num_FILE_NOT_HANDLED;
+            else if (ritr->status()==ReaderWriter::ReadResult::FILE_NOT_FOUND) ++num_FILE_NOT_FOUND;
+            else if (ritr->status()==ReaderWriter::ReadResult::ERROR_IN_READING_FILE) ++num_ERROR_IN_READING_FILE;
+        }
+        
+        if (num_FILE_NOT_HANDLED!=results.size())
+        {
+            // we've come across a file not found or error in reading file.
+            if (num_ERROR_IN_READING_FILE)
+            {
+                osg::notify(osg::NOTICE)<<"Warning: error reading file \""<<fileName<<"\""<<std::endl;
+                return NULL;
+            }
+            else if (num_FILE_NOT_FOUND)
+            {
+                osg::notify(osg::NOTICE)<<"Warning: could not find file \""<<fileName<<"\""<<std::endl;
+                return NULL;
+            }
+        }
     }
 
     // now look for a plug-in to load the file.
@@ -1141,7 +1172,7 @@ ReaderWriter::ReadResult Registry::readObject(const std::string& fileName)
             {
                 ReaderWriter::ReadResult rr = (*itr)->readObject(fileName,_options.get());
                 if (rr.validObject()) return rr;
-                else if (rr.error()) results.push_back(rr);
+                else results.push_back(rr);
             }
         }
     }
@@ -1216,7 +1247,7 @@ ReaderWriter::WriteResult Registry::writeObject(const Object& obj,const std::str
         rwOriginal.insert(itr->get());
         ReaderWriter::WriteResult rr = (*itr)->writeObject(obj,fileName,_options.get());
         if (rr.success()) return rr;
-        else if (rr.error()) results.push_back(rr);
+        else results.push_back(rr);
     }
 
     // now look for a plug-in to save the file.
@@ -1231,7 +1262,7 @@ ReaderWriter::WriteResult Registry::writeObject(const Object& obj,const std::str
             {
                 ReaderWriter::WriteResult rr = (*itr)->writeObject(obj,fileName,_options.get());
                 if (rr.success()) return rr;
-                else if (rr.error()) results.push_back(rr);
+                else results.push_back(rr);
             }
         }
     }
@@ -1261,7 +1292,38 @@ ReaderWriter::ReadResult Registry::readImage(const std::string& fileName)
         rwOriginal.insert(itr->get());
         ReaderWriter::ReadResult rr = (*itr)->readImage(fileName,_options.get());
         if (rr.validImage())  return rr;
-        else if (rr.error()) results.push_back(rr);
+        else results.push_back(rr);
+    }
+
+    if (!results.empty())
+    {
+        unsigned int num_FILE_NOT_HANDLED = 0;
+        unsigned int num_FILE_NOT_FOUND = 0;
+        unsigned int num_ERROR_IN_READING_FILE = 0;
+
+        for(Results::iterator ritr=results.begin();
+            ritr!=results.end();
+            ++ritr)
+        {
+            if (ritr->status()==ReaderWriter::ReadResult::FILE_NOT_HANDLED) ++num_FILE_NOT_HANDLED;
+            else if (ritr->status()==ReaderWriter::ReadResult::FILE_NOT_FOUND) ++num_FILE_NOT_FOUND;
+            else if (ritr->status()==ReaderWriter::ReadResult::ERROR_IN_READING_FILE) ++num_ERROR_IN_READING_FILE;
+        }
+        
+        if (num_FILE_NOT_HANDLED!=results.size())
+        {
+            // we've come across a file not found or error in reading file.
+            if (num_ERROR_IN_READING_FILE)
+            {
+                osg::notify(osg::NOTICE)<<"Warning: error reading file \""<<fileName<<"\""<<std::endl;
+                return NULL;
+            }
+            else if (num_FILE_NOT_FOUND)
+            {
+                osg::notify(osg::NOTICE)<<"Warning: could not find file \""<<fileName<<"\""<<std::endl;
+                return NULL;
+            }
+        }
     }
 
     // now look for a plug-in to load the file.
@@ -1276,7 +1338,7 @@ ReaderWriter::ReadResult Registry::readImage(const std::string& fileName)
             {
                 ReaderWriter::ReadResult rr = (*itr)->readImage(fileName,_options.get());
                 if (rr.validImage()) return rr;
-                else if (rr.error()) results.push_back(rr);
+                else results.push_back(rr);
             }
         }
     }
@@ -1356,7 +1418,7 @@ ReaderWriter::WriteResult Registry::writeImage(const Image& image,const std::str
         rwOriginal.insert(itr->get());
         ReaderWriter::WriteResult rr = (*itr)->writeImage(image,fileName,_options.get());
         if (rr.success()) return rr;
-        else if (rr.error()) results.push_back(rr);
+        else results.push_back(rr);
     }
 
     // now look for a plug-in to save the file.
@@ -1371,7 +1433,7 @@ ReaderWriter::WriteResult Registry::writeImage(const Image& image,const std::str
             {
                 ReaderWriter::WriteResult rr = (*itr)->writeImage(image,fileName,_options.get());
                 if (rr.success()) return rr;
-                else if (rr.error()) results.push_back(rr);
+                else results.push_back(rr);
             }
         }
     }
@@ -1401,7 +1463,38 @@ ReaderWriter::ReadResult Registry::readHeightField(const std::string& fileName)
         rwOriginal.insert(itr->get());
         ReaderWriter::ReadResult rr = (*itr)->readHeightField(fileName,_options.get());
         if (rr.validHeightField())  return rr;
-        else if (rr.error()) results.push_back(rr);
+        else results.push_back(rr);
+    }
+
+    if (!results.empty())
+    {
+        unsigned int num_FILE_NOT_HANDLED = 0;
+        unsigned int num_FILE_NOT_FOUND = 0;
+        unsigned int num_ERROR_IN_READING_FILE = 0;
+
+        for(Results::iterator ritr=results.begin();
+            ritr!=results.end();
+            ++ritr)
+        {
+            if (ritr->status()==ReaderWriter::ReadResult::FILE_NOT_HANDLED) ++num_FILE_NOT_HANDLED;
+            else if (ritr->status()==ReaderWriter::ReadResult::FILE_NOT_FOUND) ++num_FILE_NOT_FOUND;
+            else if (ritr->status()==ReaderWriter::ReadResult::ERROR_IN_READING_FILE) ++num_ERROR_IN_READING_FILE;
+        }
+        
+        if (num_FILE_NOT_HANDLED!=results.size())
+        {
+            // we've come across a file not found or error in reading file.
+            if (num_ERROR_IN_READING_FILE)
+            {
+                osg::notify(osg::NOTICE)<<"Warning: error reading file \""<<fileName<<"\""<<std::endl;
+                return NULL;
+            }
+            else if (num_FILE_NOT_FOUND)
+            {
+                osg::notify(osg::NOTICE)<<"Warning: could not find file \""<<fileName<<"\""<<std::endl;
+                return NULL;
+            }
+        }
     }
 
     // now look for a plug-in to load the file.
@@ -1416,7 +1509,7 @@ ReaderWriter::ReadResult Registry::readHeightField(const std::string& fileName)
             {
                 ReaderWriter::ReadResult rr = (*itr)->readHeightField(fileName,_options.get());
                 if (rr.validHeightField()) return rr;
-                else if (rr.error()) results.push_back(rr);
+                else  results.push_back(rr);
             }
         }
     }
@@ -1495,7 +1588,7 @@ ReaderWriter::WriteResult Registry::writeHeightField(const HeightField& HeightFi
         rwOriginal.insert(itr->get());
         ReaderWriter::WriteResult rr = (*itr)->writeHeightField(HeightField,fileName,_options.get());
         if (rr.success()) return rr;
-        else if (rr.error()) results.push_back(rr);
+        else results.push_back(rr);
     }
 
     // now look for a plug-in to save the file.
@@ -1510,7 +1603,7 @@ ReaderWriter::WriteResult Registry::writeHeightField(const HeightField& HeightFi
             {
                 ReaderWriter::WriteResult rr = (*itr)->writeHeightField(HeightField,fileName,_options.get());
                 if (rr.success()) return rr;
-                else if (rr.error()) results.push_back(rr);
+                else results.push_back(rr);
             }
         }
     }
@@ -1542,9 +1635,40 @@ ReaderWriter::ReadResult Registry::readNode(const std::string& fileName)
         rwOriginal.insert(itr->get());
         ReaderWriter::ReadResult rr = (*itr)->readNode(fileName,_options.get());
         if (rr.validNode())  return rr;
-        else if (rr.error()) results.push_back(rr);
+        else results.push_back(rr);
     }
 
+    if (!results.empty())
+    {
+        unsigned int num_FILE_NOT_HANDLED = 0;
+        unsigned int num_FILE_NOT_FOUND = 0;
+        unsigned int num_ERROR_IN_READING_FILE = 0;
+
+        for(Results::iterator ritr=results.begin();
+            ritr!=results.end();
+            ++ritr)
+        {
+            if (ritr->status()==ReaderWriter::ReadResult::FILE_NOT_HANDLED) ++num_FILE_NOT_HANDLED;
+            else if (ritr->status()==ReaderWriter::ReadResult::FILE_NOT_FOUND) ++num_FILE_NOT_FOUND;
+            else if (ritr->status()==ReaderWriter::ReadResult::ERROR_IN_READING_FILE) ++num_ERROR_IN_READING_FILE;
+        }
+        
+        if (num_FILE_NOT_HANDLED!=results.size())
+        {
+            // we've come across a file not found or error in reading file.
+            if (num_ERROR_IN_READING_FILE)
+            {
+                osg::notify(osg::NOTICE)<<"Warning: error reading file \""<<fileName<<"\""<<std::endl;
+                return NULL;
+            }
+            else if (num_FILE_NOT_FOUND)
+            {
+                osg::notify(osg::NOTICE)<<"Warning: could not find file \""<<fileName<<"\""<<std::endl;
+                return NULL;
+            }
+        }
+    }
+    
     // now look for a plug-in to load the file.
     std::string libraryName = createLibraryNameForFile(fileName);
     notify(INFO) << "Now checking for plug-in "<<libraryName<< std::endl;
@@ -1558,7 +1682,7 @@ ReaderWriter::ReadResult Registry::readNode(const std::string& fileName)
             {
                 ReaderWriter::ReadResult rr = (*itr)->readNode(fileName,_options.get());
                 if (rr.validNode()) return rr;
-                else if (rr.error()) results.push_back(rr);
+                else results.push_back(rr);
             }
         }
     }
@@ -1571,7 +1695,7 @@ ReaderWriter::ReadResult Registry::readNode(const std::string& fileName)
     {
         ReaderWriter::ReadResult rr = readImage(fileName,useObjectCache);
         if (rr.validImage()) return createGeodeForImage(rr.takeImage());
-        //else if (rr.error()) results.push_back(rr);
+        //else results.push_back(rr);
     }
 
     if (results.empty())
@@ -1643,7 +1767,7 @@ ReaderWriter::WriteResult Registry::writeNode(const Node& node,const std::string
         rwOriginal.insert(itr->get());
         ReaderWriter::WriteResult rr = (*itr)->writeNode(node,fileName,_options.get());
         if (rr.success()) return rr;
-        else if (rr.error()) results.push_back(rr);
+        else results.push_back(rr);
     }
 
     // now look for a plug-in to save the file.
@@ -1658,7 +1782,7 @@ ReaderWriter::WriteResult Registry::writeNode(const Node& node,const std::string
             {
                 ReaderWriter::WriteResult rr = (*itr)->writeNode(node,fileName,_options.get());
                 if (rr.success()) return rr;
-                else if (rr.error()) results.push_back(rr);
+                else results.push_back(rr);
             }
         }
     }

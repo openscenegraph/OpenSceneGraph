@@ -65,25 +65,6 @@ DynamicLibrary* DynamicLibrary::loadLibrary(const std::string& libraryName)
 
     HANDLE handle = NULL;
 
-
-/*
-// Daniel's proposed version.
-    // try letting the OS find the library first
-    handle = getLibraryHandle( libraryName );
-    if (handle) return new DynamicLibrary(libraryName,handle);
-
-    // else try to locate it ourselves
-    std::string fullLibraryName = osgDB::findLibraryFile(libraryName);
-    if (fullLibraryName.empty()) return NULL;
-    handle = getLibraryHandle( fullLibraryName );
-    if (handle) return new DynamicLibrary(libraryName,handle);
-
-    notify(WARN)
-        << "DynamicLibrary::failed loading "<<fullLibraryName<<std::endl;
-*/
-
-// Robert's version of above reordering of findLibraryFile path.
-
     std::string fullLibraryName = osgDB::findLibraryFile(libraryName);
     if (!fullLibraryName.empty()) handle = getLibraryHandle( fullLibraryName ); // try the lib we have found
     else handle = getLibraryHandle( libraryName ); // havn't found a lib ourselves, see if the OS can find it simply from the library name.
@@ -91,22 +72,12 @@ DynamicLibrary* DynamicLibrary::loadLibrary(const std::string& libraryName)
     if (handle) return new DynamicLibrary(libraryName,handle);
 
     // else no lib found so report errors.
-    notify(WARN) << "DynamicLibrary::failed loading "<<fullLibraryName<<std::endl;
+    notify(WARN) << "DynamicLibrary::failed loading \""<<libraryName<<"\""<<std::endl;
 
-#if defined(WIN32) && !defined(__CYGWIN__)
-    // nothing more
-#elif defined(__DARWIN_OSX__)
-    // nothing more
-#elif defined(__hpux__)
-    notify(WARN) << "DynamicLibrary::error "<<strerror(errno)<<std::endl;
-#else // other unix
-    notify(WARN) << "DynamicLibrary::error "<<dlerror()<<std::endl;
-#endif
     return NULL;
 }
 
-DynamicLibrary::HANDLE
-DynamicLibrary::getLibraryHandle( const std::string& libraryName)
+DynamicLibrary::HANDLE DynamicLibrary::getLibraryHandle( const std::string& libraryName)
 {
     HANDLE handle = NULL;
 
@@ -122,8 +93,7 @@ DynamicLibrary::getLibraryHandle( const std::string& libraryName)
     }
 #elif defined(__hpux__)
     // BIND_FIRST is neccessary for some reason
-    handle = shl_load ( libraryName.c_str(),
-            BIND_DEFERRED|BIND_FIRST|BIND_VERBOSE, 0);
+    handle = shl_load ( libraryName.c_str(), BIND_DEFERRED|BIND_FIRST|BIND_VERBOSE, 0);
     return handle;
 #else // other unix
 

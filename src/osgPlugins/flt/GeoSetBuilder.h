@@ -6,6 +6,7 @@
 #include <osg/Vec3>
 #include <osg/Vec4>
 #include <osg/GeoSet>
+#include <osg/Geometry>
 #include <osg/Geode>
 #include <osg/Material>
 #include <osg/StateSet>
@@ -47,7 +48,6 @@ class DynGeoSet : public osg::GeoSet
 
         int compare(const DynGeoSet& rhs) const
         {
-            COMPARE_DynGeoSet_Parameter(_primtype)
             COMPARE_DynGeoSet_Parameter(_color_binding)
             COMPARE_DynGeoSet_Parameter(_normal_binding)
             COMPARE_DynGeoSet_Parameter(_texture_binding)
@@ -57,7 +57,30 @@ class DynGeoSet : public osg::GeoSet
             &&  (_colorList[0] != rhs._colorList[0]))
                 return -1;
 
-            return getStateSet()->compare(*rhs.getStateSet(), true);
+            int result=getStateSet()->compare(*rhs.getStateSet(), true);
+            if (result!=0) return result;
+            
+            COMPARE_DynGeoSet_Parameter(_primtype);
+            return 0;
+        }
+        
+        int compatible(const DynGeoSet& rhs) const
+        {
+            COMPARE_DynGeoSet_Parameter(_color_binding)
+            COMPARE_DynGeoSet_Parameter(_normal_binding)
+            COMPARE_DynGeoSet_Parameter(_texture_binding)
+
+
+            int result=getStateSet()->compare(*rhs.getStateSet(), true);
+            if (result!=0) return result;
+
+            if ((_color_binding == osg::GeoSet::BIND_OVERALL)
+            &&  (_colorList.size() >= 1) &&  (rhs._colorList.size() >= 1)
+            &&  (_colorList[0] != rhs._colorList[0]))
+                return -1;
+
+            return 0;
+
         }
         
         bool operator <  (const DynGeoSet& rhs) const { return compare(rhs)<0; }
@@ -73,6 +96,8 @@ class DynGeoSet : public osg::GeoSet
         void append(DynGeoSet* source);
         void setBinding();
         bool setLists();
+        
+        void addToGeometry(osg::Geometry* geom);
 
         inline const int primLenListSize() const { return _primLenList.size(); }
         inline const int coordListSize() const { return _coordList.size(); }

@@ -194,14 +194,30 @@ bool Geometry::getStats(Statistics &)
 
 Drawable::AttributeBitMask Geometry::suppportsAttributeOperation() const
 {
-    return 0;
+    // we do support coords,normals,texcoords and colors so return true.
+    return COORDS | NORMALS | COLORS | TEXTURE_COORDS;
 }
 
 
 /** return the attributes successully applied in applyAttributeUpdate.*/
-Drawable::AttributeBitMask Geometry::applyAttributeOperation(AttributeFunctor& )
+Drawable::AttributeBitMask Geometry::applyAttributeOperation(AttributeFunctor& auf)
 {
-    return 0;
+    AttributeBitMask amb = auf.getAttributeBitMask();
+    AttributeBitMask ramb = 0;
+    
+    if ((amb & COORDS) && _vertexArray.valid() && !_vertexArray->empty())
+    {
+        if (auf.apply(COORDS,&(*(_vertexArray->begin())),&(*(_vertexArray->end())))) ramb = COORDS;
+    }
+    
+    if ((amb & NORMALS) && _normalArray.valid() && !_normalArray->empty())
+    {
+        if (auf.apply(NORMALS,&(*(_normalArray->begin())),&(*(_normalArray->end())))) ramb = NORMALS;
+    }
+    
+    // colors and texture coords to implement...
+    
+    return ramb;
 }
 
 void Geometry::applyPrimitiveOperation(PrimitiveFunctor& functor)

@@ -126,6 +126,113 @@ bool DynGeoSet::setLists()
     return false;
 }
 
+void DynGeoSet::addToGeometry(osg::Geometry* geom)
+{
+    int indexBase = 0;
+    
+    geom->setStateSet(getStateSet());
+
+    osg::Vec3Array* vertices = geom->getVertexArray();
+    if (vertices)
+    {
+        indexBase = vertices->size();
+        vertices->insert(vertices->end(),_coordList.begin(),_coordList.end());
+    }
+    else
+    {
+        vertices = new osg::Vec3Array(_coordList.begin(),_coordList.end());
+        geom->setVertexArray(vertices);
+    }
+
+    if (!_normalList.empty())
+    {
+        osg::Vec3Array* normals = geom->getNormalArray();
+        if (normals)
+        {
+            if (_normal_binding==osg::GeoSet::BIND_PERVERTEX || _normal_binding==osg::GeoSet::BIND_PERPRIM)
+                normals->insert(normals->end(),_normalList.begin(),_normalList.end());
+        }
+        else
+        {
+            normals = new osg::Vec3Array(_normalList.begin(),_normalList.end());
+            geom->setNormalArray(normals);
+
+            switch(_normal_binding)
+            {
+                case(osg::GeoSet::BIND_OVERALL):geom->setNormalBinding(osg::Geometry::BIND_OVERALL);break;
+                case(osg::GeoSet::BIND_PERVERTEX):geom->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);break;        
+                case(osg::GeoSet::BIND_PERPRIM):geom->setNormalBinding(osg::Geometry::BIND_PER_PRIMITIVE);break;        
+                default:geom->setNormalBinding(osg::Geometry::BIND_OFF); break;
+            }
+        }
+    }
+
+    if (!_tcoordList.empty())
+    {
+        osg::Vec2Array* texcoords = dynamic_cast<osg::Vec2Array*>(geom->getTexCoordArray(0));
+        if (texcoords)
+        {
+            texcoords->insert(texcoords->end(),_tcoordList.begin(),_tcoordList.end());
+        }
+        else
+        {
+            texcoords = new osg::Vec2Array(_tcoordList.begin(),_tcoordList.end());
+            geom->setTexCoordArray(0,texcoords);
+        }
+    }
+    
+    if (!_colorList.empty())
+    {
+        osg::Vec4Array* colors = dynamic_cast<osg::Vec4Array*>(geom->getColorArray());
+        if (colors)
+        {
+            if (_color_binding==osg::GeoSet::BIND_PERVERTEX || _color_binding==osg::GeoSet::BIND_PERPRIM)
+                colors->insert(colors->end(),_colorList.begin(),_colorList.end());
+        }
+        else
+        {
+            colors = new osg::Vec4Array(_colorList.begin(),_colorList.end());
+            geom->setColorArray(colors);
+
+            switch(_color_binding)
+            {
+                case(osg::GeoSet::BIND_OVERALL):geom->setColorBinding(osg::Geometry::BIND_OVERALL);break;
+                case(osg::GeoSet::BIND_PERVERTEX):geom->setColorBinding(osg::Geometry::BIND_PER_VERTEX);break;        
+                case(osg::GeoSet::BIND_PERPRIM):geom->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE);break;        
+                default:geom->setColorBinding(osg::Geometry::BIND_OFF); break;
+            }
+        }
+    }
+        
+    osg::Primitive::Mode mode = osg::Primitive::POLYGON;
+    switch(_primtype)
+    {
+        case(osg::GeoSet::POINTS):mode = osg::Primitive::POINTS; break;
+        case(osg::GeoSet::LINES):mode = osg::Primitive::LINES; break;
+        case(osg::GeoSet::TRIANGLES):mode = osg::Primitive::TRIANGLES; break;
+        case(osg::GeoSet::QUADS):mode = osg::Primitive::QUADS; break;
+        case(osg::GeoSet::POLYGON):mode = osg::Primitive::POLYGON; break;
+    }        
+    
+    
+    if (mode!=osg::Primitive::POLYGON)
+    {
+        geom->addPrimitive(new osg::DrawArrays(mode,indexBase,_coordList.size()));
+    }
+    else
+    {
+        for(PrimLenList::iterator itr=_primLenList.begin();
+            itr!=_primLenList.end();
+            ++itr)
+        {
+            geom->addPrimitive(new osg::DrawArrays(mode,indexBase,*itr));
+            indexBase += *itr;
+        }
+    }    
+
+}
+
+
 ////////////////////////////////////////////////////////////////////
 //
 //                       GeoSetBuilder
@@ -149,6 +256,13 @@ void GeoSetBuilder::initPrimData()
     _dynGeoSet->setStateSet(new osg::StateSet);
 }
 
+struct SortDynGeoSet
+{
+    bool operator () (const osg::ref_ptr<DynGeoSet>& lhs,const osg::ref_ptr<DynGeoSet>& rhs)
+    {
+        return *lhs<*rhs;
+    }
+};
 
 osg::Geode* GeoSetBuilder::createOsgGeoSets(osg::Geode* geode)
 {
@@ -156,22 +270,61 @@ osg::Geode* GeoSetBuilder::createOsgGeoSets(osg::Geode* geode)
 
     if( geode == NULL) return geode;
 
-    for(DynGeoSetList::iterator itr=_dynGeoSetList.begin();
-        itr!=_dynGeoSetList.end();
-        ++itr)
+    DynGeoSetList::iterator itr;
+
+    if (_dynGeoSetList.size()==1)
     {
-        DynGeoSet* dgset = itr->get();
-        if (dgset)
+        osg::Geometry* geom = new osg::Geometry;
+        geode->addDrawable(geom);
+        
+        _dynGeoSetList.front()->addToGeometry(geom);
+    }
+    else if (_dynGeoSetList.size()>1)
+    {
+        std::sort(_dynGeoSetList.begin(),_dynGeoSetList.end(),SortDynGeoSet());
+
+        osg::Geometry* geom = new osg::Geometry;
+        geode->addDrawable(geom);
+        _dynGeoSetList.front()->addToGeometry(geom);
+
+
+        static int counter=0;
+        itr = _dynGeoSetList.begin();
+        DynGeoSetList::iterator prev = itr++;
+        for(;
+            itr!=_dynGeoSetList.end();
+            ++itr)
         {
-            int prims = dgset->primLenListSize();
-            if (prims > 0)
+            if ((*itr)->compatible(*(*prev))==0)
             {
-                dgset->setLists();
-                dgset->setNumPrims(prims);
-                geode->addDrawable(dgset);
+                (*itr)->addToGeometry(geom);
+                counter++;
+            } else
+            {
+                geom = new osg::Geometry;
+                geode->addDrawable(geom);
+                (*itr)->addToGeometry(geom);
             }
         }
     }
+
+//Old GeoSet code.    
+//     for(itr=_dynGeoSetList.begin();
+//         itr!=_dynGeoSetList.end();
+//         ++itr)
+//     {
+//         DynGeoSet* dgset = itr->get();
+//         if (dgset)
+//         {
+//             int prims = dgset->primLenListSize();
+//             if (prims > 0)
+//             {
+//                 dgset->setLists();
+//                 dgset->setNumPrims(prims);
+//                 geode->addDrawable(dgset);
+//             }
+//         }
+//     }
 
     return geode;
 }

@@ -926,7 +926,7 @@ bool GeoSet_readIndexData(Input& fr, const char* IndexName, GeoSet::IndexPointer
             if (is_ushort)
             {
                 // read ushorts...
-                osg::ushort* coordIndexList = osgNew osg::ushort[capacity];
+                GLushort* coordIndexList = osgNew GLushort[capacity];
 
                 while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
                 {
@@ -938,8 +938,8 @@ bool GeoSet_readIndexData(Input& fr, const char* IndexName, GeoSet::IndexPointer
                         {
                             int oldCapacity = capacity;
                             while(capacity<=size) capacity *= 2;
-                            osg::ushort* oldList = coordIndexList;
-                            coordIndexList = osgNew osg::ushort[capacity];
+                            GLushort* oldList = coordIndexList;
+                            coordIndexList = osgNew GLushort[capacity];
                             for(int i=0;i<oldCapacity;++i)
                             {
                                 coordIndexList[i] = oldList[i];
@@ -962,7 +962,7 @@ bool GeoSet_readIndexData(Input& fr, const char* IndexName, GeoSet::IndexPointer
             else
             {
                 // read uints...
-                osg::uint* coordIndexList = osgNew osg::uint[capacity];
+                GLuint* coordIndexList = osgNew GLuint[capacity];
 
                 while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
                 {
@@ -974,8 +974,8 @@ bool GeoSet_readIndexData(Input& fr, const char* IndexName, GeoSet::IndexPointer
                         {
                             int oldCapacity = capacity;
                             while(capacity<=size) capacity *= 2;
-                            osg::uint* oldList = coordIndexList;
-                            coordIndexList = osgNew osg::uint[capacity];
+                            GLuint* oldList = coordIndexList;
+                            coordIndexList = osgNew GLuint[capacity];
                             for(int i=0;i<oldCapacity;++i)
                             {
                                 coordIndexList[i] = oldList[i];

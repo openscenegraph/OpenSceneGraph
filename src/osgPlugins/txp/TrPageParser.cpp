@@ -173,8 +173,7 @@ Texture2D* txp::GetLocalTexture(trpgrImageHelper& image_helper, trpgLocalMateria
             image->setMipmapData(mipmaps);
 
         }
-//	delete [] data;
-//	image->unref();
+
         //  AAAARRRGH! TOOK ME 2 DAYS TO FIGURE IT OUT
         //  EVERY IMAGE HAS TO HAVE UNIQUE NAME FOR OPTIMIZER NOT TO OPTIMIZE IT OFF
         //

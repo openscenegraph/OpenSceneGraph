@@ -63,11 +63,11 @@ class SG_EXPORT Timer {
         double                  _secsPerClick;
         bool                    _useStandardClock;
        
-        #ifdef __sgi
-        unsigned long*          _clockAddress;
+#       ifdef __sgi
+        unsigned long*          _clockAddress_32;
+        unsigned long long*     _clockAddress_64;
         int                     _cycleCntrSize;
-        static unsigned long    _dummy;
-        #endif
+#       endif
         
 };
 
@@ -164,7 +164,10 @@ class SG_EXPORT Timer {
             }
             else
             {
-                return *_clockAddress;
+                if ( _clockAddress_64 )
+                    return *_clockAddress_64;
+                else
+                    return *_clockAddress_32;
             }
         }
     }

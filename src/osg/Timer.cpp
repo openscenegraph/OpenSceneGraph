@@ -140,8 +140,6 @@ using namespace osg;
     #include <sys/immu.h>
     #include <sys/mman.h>
 
-    unsigned long Timer::_dummy = 0;
-
     Timer::Timer( void )
     {
         _useStandardClock = false; // default to false.
@@ -150,37 +148,43 @@ using namespace osg;
         {
             __psunsigned_t phys_addr, raddr;
             unsigned int cycleval;
-            volatile unsigned long counter_value, *iotimer_addr;
+            volatile unsigned long long *iotimer_addr;
             int fd, poffmask;
 
             poffmask     = getpagesize() - 1;
-            phys_addr     = syssgi( SGI_QUERY_CYCLECNTR, &cycleval );
+            phys_addr    = syssgi( SGI_QUERY_CYCLECNTR, &cycleval );
             raddr        = phys_addr & ~poffmask;
 
-            _clockAddress = &_dummy;
+            _clockAddress_32 = 0;
+            _clockAddress_64 = 0;
 
             if( (fd = open( "/dev/mmem", O_RDONLY )) < 0 )
             {
                 perror( "/dev/mmem" );
+                _useStandardClock=true;
                 return;
             }
 
-            iotimer_addr = (volatile unsigned long *)mmap(
+            iotimer_addr = (volatile unsigned long long *)mmap(
                 (void *)0L,
                 (size_t)poffmask,
                 (int)PROT_READ,
                 (int)MAP_PRIVATE, fd, (off_t)raddr);
 
-            iotimer_addr = (unsigned long *)(
+            iotimer_addr = (unsigned long long *)(
                 (__psunsigned_t)iotimer_addr + (phys_addr & poffmask)
                 );
 
             _cycleCntrSize = syssgi( SGI_CYCLECNTR_SIZE );
 
+            // Warning:  this casts away the volatile; not good
             if( _cycleCntrSize > 32 )
-                ++iotimer_addr;
+                _clockAddress_32 = 0,
+                _clockAddress_64 = (unsigned long long *) iotimer_addr;
+            else
+                _clockAddress_32 = (unsigned long *) iotimer_addr,
+                _clockAddress_64 = 0;
 
-            _clockAddress = (unsigned long *)iotimer_addr;
             _secsPerClick = (double)(cycleval)* 1e-12;
             
             // this is to force the use of the standard clock in

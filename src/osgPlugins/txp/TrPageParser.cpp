@@ -392,7 +392,7 @@ void* billboardRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
         Billboard* bl = new Billboard();
         int m;
         bill.GetMode(m);
-        if( m = trpgBillboard::Eye) 
+        if( m == trpgBillboard::Eye) 
             bl->setMode(Billboard::POINT_ROT_EYE);
         else if(m == trpgBillboard::World )
             bl->setMode(Billboard::POINT_ROT_WORLD);

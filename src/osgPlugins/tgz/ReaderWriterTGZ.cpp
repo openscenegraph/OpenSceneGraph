@@ -70,7 +70,8 @@ class ReaderWriterTGZ : public osgDB::ReaderWriter
             system( command );
 
             osg::Group *grp = new osg::Group;
-            osgDB::setFilePath( dirname );
+ 
+            osgDB::PushAndPopDataPath tmppath(dirname );
 
             // deactivate the automatic generation of images to geode's.
             bool prevCreateNodeFromImage = osgDB::Registry::instance()->getCreateNodeFromImage();

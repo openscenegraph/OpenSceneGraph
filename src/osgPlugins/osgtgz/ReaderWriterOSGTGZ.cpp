@@ -71,7 +71,8 @@ class sgReaderWriterOSGTGZ : public osgDB::ReaderWriter
             system( command );
 
             osg::Group *grp = new osg::Group;
-            osgDB::setFilePath( dirname );
+            
+            osgDB::PushAndPopDataPath tmppath(dirname );
 
             osgDB::DirectoryContents contents = osgDB::getDirectoryContents(dirname);
             for(osgDB::DirectoryContents::iterator itr = contents.begin();

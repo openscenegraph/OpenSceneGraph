@@ -57,7 +57,9 @@ bool TrPageArchive::OpenFile(const char* file)
         SetDirectory(".");
     else
     {
-        osgDB::setFilePath(m_alternate_path.c_str());
+        // push the path to the front of the list so that all subsequenct
+        // files get loaded relative to this if possible.
+        osgDB::getDataFilePathList().push_front(m_alternate_path);
         SetDirectory(m_alternate_path.c_str());
     }
     

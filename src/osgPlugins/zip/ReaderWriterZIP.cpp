@@ -61,7 +61,8 @@ class ReaderWriterZIP : public osgDB::ReaderWriter
         #endif
 
             osg::Group *grp = new osg::Group;
-            osgDB::setFilePath( dirname );
+ 
+            osgDB::PushAndPopDataPath tmppath(dirname );
 
             bool prevCreateNodeFromImage = osgDB::Registry::instance()->getCreateNodeFromImage();
             osgDB::Registry::instance()->setCreateNodeFromImage(false);

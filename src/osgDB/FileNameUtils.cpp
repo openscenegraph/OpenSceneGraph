@@ -18,9 +18,9 @@ std::string osgDB::getFilePath(const std::string& fileName)
     {
         // then try windows directory slash.
         slash = fileName.find_last_of('\\');
-        if (slash==std::string::npos) return std::string("");
+        if (slash==std::string::npos) return std::string();
     }
-    return std::string(fileName.begin(),fileName.begin()+slash+1);
+    return std::string(fileName,0,slash);
 }
 
 

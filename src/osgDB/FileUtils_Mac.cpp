@@ -498,49 +498,7 @@ char *osgDB::findDSO( const char *name )
 }
 
 
-std::string osgDB::findFileInDirectory(const std::string& fileName,const std::string& dirName,bool caseInsensitive)
-{
-    bool needFollowingBackslash = false;
-    bool needDirectoryName = true;
-    osgDB::DirectoryContents dc;
-
-    if (dirName.empty())
-    {
-        dc = osgDB::getDirectoryContents(".");
-        needFollowingBackslash = false;
-        needDirectoryName = false;
-    }
-    else if (dirName=="." || dirName=="./" || dirName==".\\")
-    {
-        dc = osgDB::getDirectoryContents(".");
-        needFollowingBackslash = false;
-        needDirectoryName = false;
-    }
-    else
-    {
-        dc = osgDB::getDirectoryContents(dirName);
-        char lastChar = dirName[dirName.size()-1];
-        if (lastChar=='/') needFollowingBackslash = false;
-        else if (lastChar=='\\') needFollowingBackslash = false;
-        else needFollowingBackslash = true;
-        needDirectoryName = true;
-    }
-
-    for(osgDB::DirectoryContents::iterator itr=dc.begin();
-        itr!=dc.end();
-        ++itr)
-    {
-        if ((caseInsensitive && osgDB::equalCaseInsensitive(fileName,*itr)) ||
-            (fileName==*itr))
-        {
-            if (!needDirectoryName) return *itr;
-            else if (needFollowingBackslash) return dirName+'/'+*itr;
-            else return dirName+*itr;
-        }
-    }
-    return "";
-}
-
+/***************************************************************************/
 
 // TODO
 osgDB::DirectoryContents osgDB::getDirectoryContents(const std::string& dirName)
@@ -549,3 +507,28 @@ osgDB::DirectoryContents osgDB::getDirectoryContents(const std::string& dirName)
     notify(WARN)<<"Warning : MAC implementation doesn't implement getDirectoryContents yet"<<endl;
     return contents;
 }
+
+std::string osg::findFileInPath(const std::string& filename, const FilePath& filePath)
+{
+    notify(WARN)<<"Warning : MAC implementation doesn't findFileInPath yet"<<endl;
+    return std::string;
+}
+
+std::string osg::findLibraryInPath(const std::string& filename, const FilePath& filePath)
+{
+    notify(WARN)<<"Warning : MAC implementation doesn't findLibraryInPath yet"<<endl;
+    return std::string;
+}
+
+bool osgDB::fileExists(const std::string& filename)
+{
+    CFURLRef	fileURL;
+    FSRef	fileRef;
+    bool	fileExists;
+
+    fileURL=CFURLCreateFromFileSystemRepresentation(NULL,(const UInt8 *)filename.c_str(),filename.size(),false); // hopefully this isolates us from dealing with what form the path is in - i think it should assume the native path format for the platfrom we're running on.
+    fileExists=CFURLGetFSRef(fileURL,&fileRef);
+    CFRelease(fileURL);
+    return fileExists;
+}
+

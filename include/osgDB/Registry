@@ -5,18 +5,23 @@
 #ifndef OSGDB_REGISTRY
 #define OSGDB_REGISTRY 1
 
-#include <vector>
-#include <map>
-#include <string>
-
 #include <osg/ref_ptr>
 
 #include <osgDB/DynamicLibrary>
 #include <osgDB/ReaderWriter>
 #include <osgDB/DotOsgWrapper>
 
+#include <vector>
+#include <map>
+#include <string>
+#include <deque>
+
+
 namespace osgDB {
 
+
+/** list of directories to search through which searching for files. */
+typedef std::deque<std::string> FilePathList;
 
 /**
     Registry is a singleton factory which stores
@@ -97,6 +102,46 @@ class OSGDB_EXPORT Registry
         const ReaderWriter::Options*  getOptions() const { return _options.get(); }
 
 
+        /** initilize both the Data and Library FilePaths, by default called by the 
+          * constructor, so it should only be required if you want to force
+          * the re-reading of environmental variables.*/
+        void initFilePathLists() { initDataFilePathList(); initLibraryFilePathList(); }
+        
+        /** initilize the Data FilePath by reading the OSG_FILE_PATH environmental variable.*/
+        void initDataFilePathList();
+
+        /** Set the data file path using a list of paths stored in a FilePath, which is used when search for data files.*/
+        void setDataFilePathList(const FilePathList& filepath) { _dataFilePath = filepath; }
+
+        /** Set the data file path using a single string deliminated either with ';' (Windows) or ':' (All other platforms), which is used when search for data files.*/
+        void setDataFilePathList(const std::string& paths) { _dataFilePath.clear(); convertStringPathIntoFilePathList(paths,_dataFilePath); }
+
+        /** get the data file path which is used when search for data files.*/
+        FilePathList& getDataFilePathList() { return _dataFilePath; }
+
+        /** get the const data file path which is used when search for data files.*/
+        const FilePathList& getDataFilePathList() const { return _dataFilePath; }
+
+        /** initilize the Library FilePath by reading the OSG_LIBRARY_PATH 
+          * and the appropriate system environmental variables*/
+        void initLibraryFilePathList();
+
+        /** Set the library file path using a list of paths stored in a FilePath, which is used when search for data files.*/
+        void setLibraryFilePathList(const FilePathList& filepath) { _libraryFilePath = filepath; }
+
+        /** Set the library file path using a single string deliminated either with ';' (Windows) or ':' (All other platforms), which is used when search for data files.*/
+        void setLibraryFilePathList(const std::string& paths) { _libraryFilePath.clear(); convertStringPathIntoFilePathList(paths,_libraryFilePath); }
+
+        /** get the library file path which is used when search for library (dso/dll's) files.*/
+        FilePathList& getLibraryFilePathList() { return _libraryFilePath; }
+        
+        /** get the const library file path which is used when search for library (dso/dll's) files.*/
+        const FilePathList& getLibraryFilePathList() const { return _libraryFilePath; }
+
+        /** convert a string containing a list of paths  deliminated either with ';' (Windows) or ':' (All other platforms) into FilePath represetation.*/
+        static void convertStringPathIntoFilePathList(const std::string& paths,FilePathList& filepath);
+
+
     private:
 
         typedef std::map<std::string,osg::ref_ptr<DotOsgWrapper> >  DotOsgWrapperMap;
@@ -138,6 +183,9 @@ class OSGDB_EXPORT Registry
         
         // options to pass to reader writers.
         osg::ref_ptr<ReaderWriter::Options>  _options;
+        
+        FilePathList       _dataFilePath;
+        FilePathList       _libraryFilePath;
 
 };
 

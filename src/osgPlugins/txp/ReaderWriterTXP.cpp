@@ -32,7 +32,7 @@ public:
     {
         Group* ret = 0; 
         // search the SGL data path
-        std::string foundname =  osgDB::findFile(filename.c_str());
+        std::string foundname =  osgDB::findDataFile(filename);
         if( !foundname.empty())
         {
             if (archive.OpenFile(foundname.c_str()))

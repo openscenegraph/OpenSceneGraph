@@ -20,27 +20,29 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define ERROR_NO_ERROR         0
-#define ERROR_READING_HEADER   1
-#define ERROR_READING_PALETTE  2
-#define ERROR_MEMORY           3
-#define ERROR_READ_ERROR       4
-#define ERROR_NO_FILE           5
+enum { ERROR_NO_ERROR =0,ERROR_READING_HEADER,ERROR_READING_PALETTE, ERROR_MEMORY, ERROR_READ_ERROR,
+ERROR_NO_FILE,ERROR_READING_COLORS};
 
 static int bmperror = ERROR_NO_ERROR;
 
 // BMP format bits - at start of file is 512 bytes of pure garbage
-enum ftype {MB=19778}; // magic number identifies a bmp file
+enum ftype {MB=19778}; // magic number identifies a bmp file; actually chars 'B''M'
+// allowed ftypes are 'BM'  for windoze;  OS2 allows:
+//'BA' - Bitmap Array
+//'CI' - Color Icon
+//'CP' - Color Pointer (mouse cursor)
+//'IC' - Icon
+//'PT' - Pointer (mouse cursor)
+
 enum ncol { BW=1, IA, RGB, RGBA};
 
 struct bmpheader {
     short FileType; //always MB
-    short siz[2];
+    short siz[2]; // a dword for whole file size
     short Reserved1, Reserved2; //reserved for future purposes
     short offset[2]; //offset to image in bytes
 };
 struct BMPInfo {
-    long size;    //size of BMPinfo in bytes
     long width;   //width of the image in pixels
     long height;    //   height of the image in pixels
     short planes;       //:word: number of planes (always 1)
@@ -49,8 +51,9 @@ struct BMPInfo {
     long ImageSize;    //image size in bytes
     long XpixPerMeter; //pixels per meter in X
     long YpixPerMeter; //pixels per meter in Y
-    long ColorUsed;   //number of the color used ¿¿¿???
+    long ColorUsed;   //number of colors used
     long Important;   //number of "important" colors
+    long os2stuff[6]; // allows os2.1 with 64 bytes to be read.  Dont know what these are yet.
 };
 
 int
@@ -58,6 +61,9 @@ bmp_error(char *buffer, int bufferlen)
 {
     switch (bmperror)
     {
+        case ERROR_READING_COLORS:
+            strncpy(buffer, "BMP loader: Error reading colours", bufferlen);
+            break;
         case ERROR_READING_HEADER:
             strncpy(buffer, "BMP loader: Error reading header", bufferlen);
             break;
@@ -75,7 +81,7 @@ bmp_error(char *buffer, int bufferlen)
 }
 
 /* byte order workarounds *sigh* */
-void swapbyte(long &i)
+void swapbyte(long *i)
 {
     char *vv=(char *)i;
     char tmp=vv[0];
@@ -85,7 +91,7 @@ void swapbyte(long &i)
     vv[1]=vv[2];
     vv[2]=tmp;
 }
-void swapbyte(unsigned long &i)
+void swapbyte(unsigned long *i)
 {
     char *vv=(char *)i;
     char tmp=vv[0];
@@ -105,14 +111,14 @@ void swapbyte(float *i)
     vv[1]=vv[2];
     vv[2]=tmp;
 }
-void swapbyte(unsigned short &i)
+void swapbyte(unsigned short *i)
 {
     char *vv=(char *)i;
     char tmp=vv[0];
     vv[0]=vv[1];
     vv[1]=tmp;
 }
-void swapbyte(short &i)
+void swapbyte(short *i)
 {
     char *vv=(char *)i;
     char tmp=vv[0];
@@ -132,7 +138,7 @@ int *numComponents_ret)
     // It is extremely expensive on disk space - every RGB pixel uses 3 bytes plus a header!
     // BMP - sponsored by Seagate.
  //   unsigned char palette[256][3];
-    unsigned char *buffer, *imbuff; // returned to sender & as read from the disk
+    unsigned char *buffer; // returned to sender & as read from the disk
 
     bmperror = ERROR_NO_FILE;
 
@@ -142,14 +148,17 @@ int *numComponents_ret)
     int ncolours;
     int ncomp=0;
     bool swap=false; // dont need to swap bytes
+    long infsize;    //size of BMPinfo in bytes
+     // actual size of the bitmap header; 12=os2; 40 = normal; 64=os2.1
     
     struct bmpheader hd;
     struct BMPInfo inf;
     bmperror = ERROR_NO_ERROR;
     fread((char *)&hd, sizeof(bmpheader), 1, fp);
-    fread((char *)&inf, sizeof(BMPInfo), 1, fp);
+    fread((char *)&infsize, sizeof(long), 1, fp);
+    fread((char *)&inf, infsize-sizeof(long), 1, fp);
     if (hd.FileType != MB) {
-        swapbyte((hd.FileType));
+        swapbyte(&(hd.FileType));
         swap=true;
         if (hd.FileType != MB) {
             bmperror=ERROR_READING_HEADER;
@@ -157,16 +166,22 @@ int *numComponents_ret)
         }
     }
     if (hd.FileType == MB) {
+        unsigned char *cols=NULL; // dynamic colour palette
+        unsigned char *imbuff; // returned to sender & as read from the disk
         if (swap) { // inverse the field of the header which need swapping
-            swapbyte(hd.siz[0]);
-            swapbyte(hd.siz[1]);
-            swapbyte(inf.Colorbits);
-            swapbyte(inf.width);
-            swapbyte(inf.height);
-            swapbyte(inf.ImageSize);
+            swapbyte(&hd.siz[0]);
+            swapbyte(&hd.siz[1]);
+            swapbyte(&inf.Colorbits);
+            swapbyte(&inf.width);
+            swapbyte(&inf.height);
+            swapbyte(&inf.ImageSize);
         }
         long size = hd.siz[1]*65536+hd.siz[0];
-        size -= sizeof(bmpheader)+sizeof(BMPInfo);
+        size -= sizeof(bmpheader)+infsize;
+        if (inf.ImageSize<size) inf.ImageSize=size;
+        imbuff = (unsigned char *)malloc( inf.ImageSize); // read from disk
+        fread((char *)imbuff, sizeof(unsigned char),inf.ImageSize, fp);
+        fclose(fp);
         ncolours=inf.Colorbits/8;
         switch (ncolours) {
         case 1:
@@ -181,10 +196,19 @@ int *numComponents_ret)
         case 4:
             ncomp = RGBA;
             break;
+        default:
+            cols=imbuff; // colour palette address - uses 4 bytes/colour
+        /*    osg::notify(osg::NOTICE)<<"BMP: "<<filename  << " sz " << inf.ImageSize << " sz " << size <<" "<<inf.width<<" "<<inf.height<<endl;
+            osg::notify(osg::NOTICE)<<" Components: "<<ncomp  <<" ncols " << ncolours<< " cmpr " << inf.compression << " colorbitz " << inf.Colorbits << endl;
+            osg::notify(osg::NOTICE)<<" used: "<<inf.ColorUsed  <<" import " << inf.Important<< " colorbitz " << inf.Colorbits << endl;
+            for (int ii=0; ii<inf.ColorUsed; ii++) {
+                osg::notify(osg::NOTICE)<<" Col: "<<ii  <<" " << (int)cols[ii*4+0] <<" " << (int)cols[ii*4+1] <<" " << (int)cols[ii*4+2];
+                if (!(ii%3)) osg::notify(osg::NOTICE)<< endl;
+            } */
         }
-        imbuff = (unsigned char *)malloc( inf.ImageSize); // read from disk
-        buffer = (unsigned char *)malloc( ncomp*inf.width*inf.height*sizeof(unsigned char)); //
-        if (ncomp==BW) {
+        if (ncomp>0) buffer = (unsigned char *)malloc( ncomp*inf.width*inf.height*sizeof(unsigned char)); // to be returned
+        else buffer = (unsigned char *)malloc( 3*inf.width*inf.height*sizeof(unsigned char)); // default full colour to be returned
+        if (ncomp==BW) { // BW currently error on display
             osg::notify(osg::NOTICE)<<"BMP file: "<<filename  << " sz " << inf.ImageSize <<endl;
             osg::notify(osg::NOTICE)<<"sizes: "<< inf.width << " " << inf.height << " = " << ncomp*inf.width*inf.height << endl;
         }
@@ -194,9 +218,27 @@ int *numComponents_ret)
         unsigned long doff=(rowbytes)/4;
         if ((rowbytes%4)) doff++; // round up if needed
         doff*=4; // to find dword alignment
-        fread((char *)imbuff, sizeof(unsigned char),inf.ImageSize, fp);
         for(int j=0; j<inf.height; j++) {
-            memcpy(buffer+j*rowbytes, imbuff+off, rowbytes); // pack bytes closely
+            if (ncomp>0) memcpy(buffer+j*rowbytes, imbuff+off, rowbytes); // pack bytes closely
+            else { // find from the palette..
+                unsigned char *imptr=imbuff+inf.ColorUsed*4; // add size of the palette- start of image
+                int npixperbyte=8/inf.Colorbits; // no of pixels per byte
+                for (int ii=0; ii<inf.width/npixperbyte; ii++) {
+                    unsigned char mask=0x00; // masked with index to extract colorbits bits
+                    unsigned char byte=imptr[(j*inf.width/npixperbyte)+ii];
+                    int jj;
+                                        for (jj=0; jj<inf.Colorbits; jj++) mask |= (0x80>>jj); // fill N High end bits
+                    for (jj=0; jj<npixperbyte; jj++) {
+                        int colidx=(byte&mask)>>((npixperbyte-1-jj)*inf.Colorbits);
+                        buffer[3*(j*inf.width+ii*npixperbyte+jj)+0]=cols[4*colidx+2];
+                        buffer[3*(j*inf.width+ii*npixperbyte+jj)+1]=cols[4*colidx+1];
+                        buffer[3*(j*inf.width+ii*npixperbyte+jj)+2]=cols[4*colidx];
+                        // osg::notify(osg::NOTICE)<<"-"<< colidx;
+                        mask>>=inf.Colorbits;
+                    }
+                }
+            //    osg::notify(osg::NOTICE) << endl;
+            }
             off+=doff;
             if (ncomp>2) { // yes bill, colours are usually BGR aren't they
                 for(int i=0; i<inf.width; i++) {
@@ -210,10 +252,13 @@ int *numComponents_ret)
         delete [] imbuff; // free the on-disk storage
         
     } // else error in header
-    fclose(fp);
+    else
+    {
+        fclose(fp);
+    }
     *width_ret = inf.width;
     *height_ret = inf.height;
-    *numComponents_ret = ncomp;
+    *numComponents_ret = ncomp>0?ncomp:3;
 
     return buffer;
 }
@@ -242,16 +287,12 @@ class ReaderWriterBMP : public osgDB::ReaderWriter
             int r = 1;
 
             int internalFormat = numComponents_ret;
-            
 
             unsigned int pixelFormat =
                 numComponents_ret == 1 ? GL_LUMINANCE :
-                numComponents_ret == 2 ? GL_LUMINANCE_ALPHA :
-                numComponents_ret == 3 ? GL_RGB :
-                numComponents_ret == 4 ? GL_RGBA : (GLenum)-1;
-
-            cout << "internalFormat="<<internalFormat<<endl;
-            cout << "pixelFormat="<<pixelFormat<<endl;
+            numComponents_ret == 2 ? GL_LUMINANCE_ALPHA :
+            numComponents_ret == 3 ? GL_RGB :
+            numComponents_ret == 4 ? GL_RGBA : (GLenum)-1;
 
             unsigned int dataType = GL_UNSIGNED_BYTE;
 

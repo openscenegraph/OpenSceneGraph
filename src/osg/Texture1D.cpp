@@ -118,7 +118,7 @@ void Texture1D::apply(State& state) const
     {
 
         // we don't have a applyTexImage1D_subload yet so can't reuse.. so just generate a new texture object.        
-        _textureObjectBuffer[contextID] = textureObject = getTextureObjectManager()->generateTextureObject(contextID,GL_TEXTURE_2D);
+        _textureObjectBuffer[contextID] = textureObject = getTextureObjectManager()->generateTextureObject(contextID,GL_TEXTURE_1D);
 
         textureObject->bind();
 
@@ -139,7 +139,7 @@ void Texture1D::apply(State& state) const
     {
 
         // we don't have a applyTexImage1D_subload yet so can't reuse.. so just generate a new texture object.        
-        _textureObjectBuffer[contextID] = textureObject = getTextureObjectManager()->generateTextureObject(contextID,GL_TEXTURE_2D);
+        _textureObjectBuffer[contextID] = textureObject = getTextureObjectManager()->generateTextureObject(contextID,GL_TEXTURE_1D);
 
         textureObject->bind();
 
@@ -292,7 +292,7 @@ void Texture1D::copyTexImage1D(State& state, int x, int y, int width)
         if (width==(int)_textureWidth)
         {
             // we have a valid texture object which is the right size
-            // so lets play clever and use copyTexSubImage2D instead.
+            // so lets play clever and use copyTexSubImage1D instead.
             // this allows use to reuse the texture object and avoid
             // expensive memory allocations.
             copyTexSubImage1D(state,0 ,x, y, width);
@@ -316,7 +316,7 @@ void Texture1D::copyTexImage1D(State& state, int x, int y, int width)
     _min_filter = LINEAR;
     _mag_filter = LINEAR;
 
-    _textureObjectBuffer[contextID] = textureObject = getTextureObjectManager()->generateTextureObject(contextID,GL_TEXTURE_2D);
+    _textureObjectBuffer[contextID] = textureObject = getTextureObjectManager()->generateTextureObject(contextID,GL_TEXTURE_1D);
 
     textureObject->bind();
 
@@ -348,9 +348,6 @@ void Texture1D::copyTexSubImage1D(State& state, int xoffset, int x, int y, int w
         // we have a valid image
         applyTexParameters(GL_TEXTURE_1D,state);
         glCopyTexSubImage1D( GL_TEXTURE_1D, 0, xoffset, x, y, width);
-
-        /* Redundant, delete later */
-        //glBindTexture( GL_TEXTURE_1D, handle );
 
         // inform state that this texture is the current one bound.
         state.haveAppliedAttribute(this);

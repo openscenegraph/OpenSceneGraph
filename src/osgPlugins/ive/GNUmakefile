@@ -57,9 +57,10 @@ CXXFILES =\
 	Texture.cpp\
 	Texture1D.cpp\
 	Texture2D.cpp\
+	Texture3D.cpp\
+	TextureCubeMap.cpp\
 	FragmentProgram.cpp\
 	VertexProgram.cpp\
-	TextureCubeMap.cpp\
 	Transform.cpp\
 	ReaderWriterIVE.cpp\
 	AzimElevationSector.cpp\

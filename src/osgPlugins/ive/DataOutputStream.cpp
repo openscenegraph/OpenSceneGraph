@@ -28,6 +28,7 @@
 #include "LineWidth.h"
 #include "Texture1D.h"
 #include "Texture2D.h"
+#include "Texture3D.h"
 #include "TextureCubeMap.h"
 #include "TexEnv.h"
 #include "TexEnvCombine.h"
@@ -454,6 +455,10 @@ void DataOutputStream::writeStateAttribute(const osg::StateAttribute* attribute)
         // This is a Texture2D
         else if(dynamic_cast<const osg::Texture2D*>(attribute)){
             ((ive::Texture2D*)(attribute))->write(this);
+        }
+        // This is a Texture2D
+        else if(dynamic_cast<const osg::Texture3D*>(attribute)){
+            ((ive::Texture3D*)(attribute))->write(this);
         }
         // This is a TextureCubeMap
         else if(dynamic_cast<const osg::TextureCubeMap*>(attribute)){

@@ -85,7 +85,6 @@ void create_specular_highlights(osg::Node *node)
 
     // enable texturing, replacing any textures in the subgraphs
     ss->setTextureAttributeAndModes(0, tcm, osg::StateAttribute::OVERRIDE | osg::StateAttribute::ON);
-    ss->setTextureMode(0, GL_TEXTURE_CUBE_MAP, osg::StateAttribute::OVERRIDE | osg::StateAttribute::ON);
 
     // texture coordinate generation
     osg::TexGen *tg = osgNew osg::TexGen;
@@ -95,8 +94,10 @@ void create_specular_highlights(osg::Node *node)
     // use TexEnvCombine to add the highlights to the original lighting
     osg::TexEnvCombine *te = osgNew osg::TexEnvCombine;    
     te->setCombine_RGB(osg::TexEnvCombine::ADD);
-    te->setOperand0_RGB(osg::TexEnvCombine::TEXTURE0);
-    te->setOperand1_RGB(osg::TexEnvCombine::PRIMARY_COLOR);
+    te->setSource0_RGB(osg::TexEnvCombine::TEXTURE);
+    te->setOperand0_RGB(osg::TexEnvCombine::SRC_COLOR);
+    te->setSource1_RGB(osg::TexEnvCombine::PRIMARY_COLOR);
+    te->setOperand1_RGB(osg::TexEnvCombine::SRC_COLOR);
     ss->setTextureAttributeAndModes(0, te, osg::StateAttribute::OVERRIDE | osg::StateAttribute::ON);
 }
 

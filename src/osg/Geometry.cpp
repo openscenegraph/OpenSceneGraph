@@ -420,6 +420,19 @@ Geometry::~Geometry()
     // no need to delete, all automatically handled by ref_ptr :-)
 }
 
+bool Geometry::empty() const
+{
+    if (!_primitives.empty()) return false;
+    if (!_vertexData.empty()) return false;
+    if (!_normalData.empty()) return false;
+    if (!_colorData.empty()) return false;
+    if (!_secondaryColorData.empty()) return false;
+    if (!_fogCoordData.empty()) return false;
+    if (!_texCoordList.empty()) return false;
+    if (!_vertexAttribList.empty()) return false;
+    return true;
+}
+
 void Geometry::setTexCoordData(unsigned int unit,const ArrayData& arrayData)
 {
 	if (_texCoordList.size()<=unit)

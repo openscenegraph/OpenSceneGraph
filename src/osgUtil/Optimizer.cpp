@@ -1018,6 +1018,16 @@ bool Optimizer::CombineStaticTransformsVisitor::removeTransforms(osg::Node* node
 
 void Optimizer::RemoveEmptyNodesVisitor::apply(osg::Geode& geode)
 {
+    for(int i=geode.getNumDrawables()-1;i>=0;--i)
+    {
+        osg::Geometry* geom = geode.getDrawable(i)->asGeometry();
+        if (geom && geom->empty())
+        {
+           geode.removeDrawable(i);
+        }
+    }
+
+
     if (geode.getNumParents()>0)
     {
         if (geode.getNumDrawables()==0 && isNodeEmpty(geode)) _redundantNodeList.insert(&geode);

@@ -827,9 +827,9 @@ void DrawShapeVisitor::apply(const Capsule& capsule)
     glPopMatrix();
 }
 
-void DrawShapeVisitor::apply(const InfinitePlane& plane)
+void DrawShapeVisitor::apply(const InfinitePlane&)
 {
-    std::cout << "draw a Plane ("<<plane<<") "<<std::endl;
+    notify(NOTICE)<<"Warning: DrawShapeVisitor::apply(const InfinitePlane& plane) not yet implementated. "<<std::endl;
 }
 
 void DrawShapeVisitor::apply(const TriangleMesh& mesh)
@@ -1661,9 +1661,9 @@ void PrimitiveShapeVisitor::apply(const Capsule& /*capsule*/)
 #endif   
 }
 
-void PrimitiveShapeVisitor::apply(const InfinitePlane& plane)
+void PrimitiveShapeVisitor::apply(const InfinitePlane&)
 {
-    std::cout << "Primitive a Plane ("<<plane<<") "<<std::endl;
+    notify(NOTICE)<<"Warning: PrimitiveShapeVisitor::apply(const InfinitePlane& plane) not yet implementated. "<<std::endl;
 }
 
 void PrimitiveShapeVisitor::apply(const TriangleMesh& mesh)

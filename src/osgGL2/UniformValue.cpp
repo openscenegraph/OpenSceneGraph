@@ -38,6 +38,9 @@ int UniformValue::getLocation( Extensions *ext, const GLhandleARB progObj ) cons
 
 ///////////////////////////////////////////////////////////////////////////
 
+#ifdef sgi
+template <>
+#endif
 void UniformValue_int::apply( Extensions *ext, const GLhandleARB progObj ) const
 {
     int loc = getLocation( ext, progObj );
@@ -47,6 +50,9 @@ void UniformValue_int::apply( Extensions *ext, const GLhandleARB progObj ) const
     }
 } 
 
+#ifdef sgi
+template <>
+#endif
 void UniformValue_float::apply( Extensions *ext, const GLhandleARB progObj ) const
 {
     int loc = getLocation( ext, progObj );
@@ -56,6 +62,9 @@ void UniformValue_float::apply( Extensions *ext, const GLhandleARB progObj ) con
     }
 }
 
+#ifdef sgi
+template <>
+#endif
 void UniformValue_Vec2::apply( Extensions *ext, const GLhandleARB progObj ) const
 {
     int loc = getLocation( ext, progObj );
@@ -65,6 +74,9 @@ void UniformValue_Vec2::apply( Extensions *ext, const GLhandleARB progObj ) cons
     }
 }
 
+#ifdef sgi
+template <>
+#endif
 void UniformValue_Vec3::apply( Extensions *ext, const GLhandleARB progObj ) const
 {
     int loc = getLocation( ext, progObj );
@@ -74,6 +86,9 @@ void UniformValue_Vec3::apply( Extensions *ext, const GLhandleARB progObj ) cons
     }
 }
 
+#ifdef sgi
+template <>
+#endif
 void UniformValue_Vec4::apply( Extensions *ext, const GLhandleARB progObj ) const
 {
     int loc = getLocation( ext, progObj );

@@ -401,8 +401,6 @@ void Image::readImageFromCurrentTexture(unsigned int contextID)
 
             allocateImage(width,height,1,internalformat,internalformat);
             
-            std::cout << "width="<<width<<" height="<<height<<" internalFormat="<<internalformat<<" _internalFormat="<<_internalTextureFormat<<std::endl;
-            
             extensions->glGetCompressedTexImage(GL_TEXTURE_2D, 0, _data);
             
             _internalTextureFormat = internalformat;

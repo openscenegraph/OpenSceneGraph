@@ -134,7 +134,7 @@ class ReaderWriterAC : public osgDB::ReaderWriter
              //   else if(dynamic_cast<const osg::Geode*>(&node))
              //       const_cast<ac3d::Geode*>(static_cast<const ac3d::Geode*>(&node))->Process(fout);
                 else
-                    std::cout<<"File must start with a geode "<<std::endl;
+                    osg::notify(osg::WARN)<<"File must start with a geode "<<std::endl;
                 fout.flush();
                 return WriteResult::FILE_SAVED;
             }

@@ -25,20 +25,8 @@ CullingSet::~CullingSet()
 {
 }
 
-void PrintNodePath(const NodePath& nodePath)
-{
-    for(NodePath::const_iterator itr=nodePath.begin();
-        itr!=nodePath.end();
-        ++itr)
-    {
-        std::cout<<*itr<<"  ";
-    }
-}
-
-
 void CullingSet::disableAndPushOccludersCurrentMask(NodePath& nodePath)
 {
-    //std::cout<<"  trying to disable occluder ";PrintNodePath(nodePath);std::cout<<std::endl;
     for(OccluderList::iterator itr=_occluderList.begin();
         itr!=_occluderList.end();
         ++itr)

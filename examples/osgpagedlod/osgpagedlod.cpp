@@ -13,6 +13,8 @@
 
 #include <osgUtil/Optimizer>
 
+#include <iostream>
+
 osg::Geode* createTile(const osg::Vec3& lb, const osg::Vec3& rb,
                        const osg::Vec3& lt, const osg::Vec3& rt,
                        const std::string& imageFile)

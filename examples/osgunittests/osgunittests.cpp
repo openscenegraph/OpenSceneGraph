@@ -4,6 +4,7 @@
 
 #include <osg/Matrix>
 
+#include <iostream>
 
 void testFrustum(double left,double right,double bottom,double top,double zNear,double zFar)
 {

@@ -16,10 +16,6 @@
 
 #include <math.h>
 
-#if defined(__GNUC__) && defined(WIN32)
-#  include <iostream>
-#endif
-
 // for OSX users :
 // comment in if you want backwards compatibility with 10.1.x versions
 // otherwise you'll have problems with missing floorf and __isnan*()

@@ -39,12 +39,12 @@ public:
                 osg::Geometry* geom = geoset->convertToGeometry();
                 if (geom)
                 {
-                    std::cout<<"Successfully converted GeoSet to Geometry"<<std::endl;
+                    osg::notify(osg::NOTICE)<<"Successfully converted GeoSet to Geometry"<<std::endl;
                     geode.replaceDrawable(geoset,geom);
                 }
                 else
                 {
-                    std::cout<<"*** Failed to convert GeoSet to Geometry"<<std::endl;
+                    osg::notify(osg::NOTICE)<<"*** Failed to convert GeoSet to Geometry"<<std::endl;
                 }
 
             }

@@ -32,6 +32,7 @@
 
 #include <set>
 #include <map>
+#include <iostream>
 
 using namespace std;
 using namespace osg;
@@ -41,7 +42,9 @@ class PrintVisitor : public NodeVisitor
 
    public:
    
-        PrintVisitor():NodeVisitor(NodeVisitor::TRAVERSE_ALL_CHILDREN)
+        PrintVisitor(std::ostream& out):
+            NodeVisitor(NodeVisitor::TRAVERSE_ALL_CHILDREN),
+            _out(out)
         {
             _indent = 0;
             _step = 4;
@@ -51,29 +54,32 @@ class PrintVisitor : public NodeVisitor
         inline void moveOut() { _indent -= _step; }
         inline void writeIndent() 
         {
-            for(int i=0;i<_indent;++i) std::cout << " ";
+            for(int i=0;i<_indent;++i) _out << " ";
         }
                 
         virtual void apply(Node& node)
         {
             moveIn();
-            writeIndent(); std::cout << node.className() << " name=" << node.getName() << std::endl;
+            writeIndent(); _out << node.className() <<std::endl;
             traverse(node);
             moveOut();
         }
 
         virtual void apply(Geode& node)         { apply((Node&)node); }
         virtual void apply(Billboard& node)     { apply((Geode&)node); }
-        virtual void apply(LightSource& node)   { apply((Node&)node); }
+        virtual void apply(LightSource& node)   { apply((Group&)node); }
+        virtual void apply(ClipNode& node)      { apply((Group&)node); }
         
         virtual void apply(Group& node)         { apply((Node&)node); }
         virtual void apply(Transform& node)     { apply((Group&)node); }
+        virtual void apply(Projection& node)    { apply((Group&)node); }
         virtual void apply(Switch& node)        { apply((Group&)node); }
         virtual void apply(LOD& node)           { apply((Group&)node); }
         virtual void apply(Impostor& node)      { apply((LOD&)node); }
 
    protected:
     
+        std::ostream& _out;
         int _indent;
         int _step;
 };
@@ -124,7 +130,7 @@ ReaderWriter3DS::ReaderWriter3DS()
     These print methods for 3ds hacking
 */
 void pad(int level) {
-    for(int i=0;i<level;i++) cout<<"  ";
+    for(int i=0;i<level;i++) std::cout<<"  ";
 }
 void print(Lib3dsMesh *mesh,int level);
 void print(Lib3dsUserData *user,int level);

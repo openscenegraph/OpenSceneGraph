@@ -385,7 +385,7 @@ bool TestSuite::accept( Test::Visitor& v )
 
 bool QualifiedTestPrinter::visit( TestCase* pTest )
 {
-    std::cout << currentPath() + pTest->name() << std::endl;
+    osg::notify(osg::NOTICE) << currentPath() + pTest->name() << std::endl;
     return true;
 }
 

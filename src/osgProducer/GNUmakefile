@@ -7,6 +7,7 @@ CXXFILES =\
         OsgCameraGroup.cpp\
         OsgSceneHandler.cpp\
         StatsEventHandler.cpp\
+        FullScreenEventHandler.cpp\
         Viewer.cpp\
 
 LIBS += -lProducer $(GL_LIBS) -losgGA -losgUtil -losgDB -losg $(OTHER_LIBS)

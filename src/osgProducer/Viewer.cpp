@@ -14,6 +14,7 @@
 #include <osgProducer/Viewer>
 #include <osgProducer/FrameStatsHandler>
 #include <osgProducer/StatsEventHandler>
+#include <osgProducer/FullScreenEventHandler>
 
 using namespace osgProducer;
 
@@ -83,7 +84,7 @@ void Viewer::setUpViewer(unsigned int options)
     _start_tick = _timer.tick();
 
     // set the keyboard mouse callback to catch the events from the windows.
-    _kbmcb = new osgProducer::KeyboardMouseCallback(_done);
+    _kbmcb = new osgProducer::KeyboardMouseCallback( _done, (options & ESCAPE_SETS_DONE)!=0 );
     _kbmcb->setStartTick(_start_tick);
     
     // register the callback with the keyboard mouse manger.
@@ -153,6 +154,12 @@ void Viewer::setUpViewer(unsigned int options)
         
         
     }
+    
+    if (options&FULLSCREEN_MANIPULATOR)
+    {
+        getEventHandlerList().push_back(new FullScreenEventHandler(this));
+    }
+    
 }
 
 unsigned int Viewer::addCameraManipulator(osgGA::CameraManipulator* cm)

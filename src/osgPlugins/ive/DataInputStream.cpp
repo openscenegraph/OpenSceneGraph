@@ -27,6 +27,7 @@
 #include "LineWidth.h"
 #include "Texture1D.h"
 #include "Texture2D.h"
+#include "Texture3D.h"
 #include "TextureCubeMap.h"
 #include "TexEnv.h"
 #include "TexEnvCombine.h"
@@ -656,6 +657,10 @@ osg::StateAttribute* DataInputStream::readStateAttribute()
     else if(attributeID == IVETEXTURE2D){
         attribute = new osg::Texture2D();
         ((ive::Texture2D*)(attribute))->read(this);
+    }
+    else if(attributeID == IVETEXTURE3D){
+        attribute = new osg::Texture3D();
+        ((ive::Texture3D*)(attribute))->read(this);
     }
     else if(attributeID == IVETEXTURECUBEMAP){
         attribute = new osg::TextureCubeMap();

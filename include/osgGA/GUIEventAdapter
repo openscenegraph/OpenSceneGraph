@@ -33,6 +33,7 @@ public:
         enum EventType {
                 PUSH,
                 RELEASE,
+                DOUBLECLICK,
                 DRAG,
                 MOVE,
                 KEYDOWN,

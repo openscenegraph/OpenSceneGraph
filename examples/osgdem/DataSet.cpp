@@ -147,7 +147,7 @@ osg::BoundingBox DataSet::SourceData::getExtents(const osgTerrain::CoordinateSys
         if (_gdalDataSet)
         {
 
-            std::cout<<"Projecting bounding volume for "<<_source->getFileName()<<std::endl;
+            //std::cout<<"Projecting bounding volume for "<<_source->getFileName()<<std::endl;
 
             osg::BoundingBox bb;
             
@@ -205,7 +205,7 @@ DataSet::SpatialProperties DataSet::SourceData::computeSpatialProperties(osgTerr
         if (_gdalDataSet)
         {
 
-            std::cout<<"Projecting bounding volume for "<<_source->getFileName()<<std::endl;
+            //std::cout<<"Projecting bounding volume for "<<_source->getFileName()<<std::endl;
 
             
             DataSet::SpatialProperties sp;
@@ -742,14 +742,26 @@ void DataSet::Source::consolodateRequiredResolutions()
     
     double minResX = itr->_resX;
     double minResY = itr->_resY;
+    double maxResX = itr->_resX;
+    double maxResY = itr->_resY;
     ++itr;
     for(;itr!=_requiredResolutions.end();++itr)
     {
         minResX = osg::minimum(minResX,itr->_resX);
         minResY = osg::minimum(minResY,itr->_resY);
+        maxResX = osg::minimum(maxResX,itr->_resX);
+        maxResY = osg::minimum(maxResY,itr->_resY);
     }
     
-    consolodated.push_back(ResolutionPair(minResX,minResY));
+    double currResX = minResX;
+    double currResY = minResY;
+    while (currResX<=maxResX && currResY<=maxResY)
+    {
+        consolodated.push_back(ResolutionPair(currResX,currResY));
+        currResX *= 2.0f;
+        currResY *= 2.0f;
+    }
+    
 
     _requiredResolutions.swap(consolodated);
 }
@@ -803,7 +815,7 @@ void DataSet::DestinationTile::computeMaximumSourceResolution(CompositeSource* s
 
             if (!sp._extents.intersects(_extents))
             {
-                std::cout<<"DataSet::DestinationTile::computeMaximumSourceResolution:: source does not overlap ignoring for this tile."<<std::endl;
+//                std::cout<<"DataSet::DestinationTile::computeMaximumSourceResolution:: source does not overlap ignoring for this tile."<<std::endl;
                 continue;
             }
 
@@ -835,7 +847,7 @@ void DataSet::DestinationTile::computeMaximumSourceResolution(CompositeSource* s
     }
 }
 
-bool DataSet::DestinationTile::computeImageResolution(double& resX, double& resY)
+bool DataSet::DestinationTile::computeImageResolution(unsigned int& numColumns, unsigned int& numRows, double& resX, double& resY)
 {
     if (_imagery_maxSourceResolutionX!=0.0f && _imagery_maxSourceResolutionY!=0.0f &&
         _imagery_maxNumColumns!=0 && _imagery_maxNumRows!=0)
@@ -843,49 +855,42 @@ bool DataSet::DestinationTile::computeImageResolution(double& resX, double& resY
 
         unsigned int numColumnsAtFullRes = 1+(unsigned int)ceilf((_extents.xMax()-_extents.xMin())/_imagery_maxSourceResolutionX);
         unsigned int numRowsAtFullRes = 1+(unsigned int)ceilf((_extents.yMax()-_extents.yMin())/_imagery_maxSourceResolutionY);
-        unsigned int texture_numColumns = osg::minimum(_imagery_maxNumColumns,numColumnsAtFullRes);
-        unsigned int texture_numRows    = osg::minimum(_imagery_maxNumRows,numRowsAtFullRes);
+        numColumns = osg::minimum(_imagery_maxNumColumns,numColumnsAtFullRes);
+        numRows    = osg::minimum(_imagery_maxNumRows,numRowsAtFullRes);
         
-        resX = (_extents.xMax()-_extents.xMin())/(double)(texture_numColumns-1);
-        resY = (_extents.yMax()-_extents.yMin())/(double)(texture_numRows-1);
+        resX = (_extents.xMax()-_extents.xMin())/(double)(numColumns-1);
+        resY = (_extents.yMax()-_extents.yMin())/(double)(numRows-1);
         
         return true;
     }
     return false;
 }
 
-bool DataSet::DestinationTile::computeTerrainResolution(double& resX, double& resY)
+bool DataSet::DestinationTile::computeTerrainResolution(unsigned int& numColumns, unsigned int& numRows, double& resX, double& resY)
 {
     if (_terrain_maxSourceResolutionX!=0.0f && _terrain_maxSourceResolutionY!=0.0f &&
         _terrain_maxNumColumns!=0 && _terrain_maxNumRows!=0)
     {
         unsigned int numColumnsAtFullRes = 1+(unsigned int)ceilf((_extents.xMax()-_extents.xMin())/_terrain_maxSourceResolutionX);
         unsigned int numRowsAtFullRes = 1+(unsigned int)ceilf((_extents.yMax()-_extents.yMin())/_terrain_maxSourceResolutionY);
-        unsigned int dem_numColumns = osg::minimum(_terrain_maxNumColumns,numColumnsAtFullRes);
-        unsigned int dem_numRows    = osg::minimum(_terrain_maxNumRows,numRowsAtFullRes);
+        numColumns = osg::minimum(_terrain_maxNumColumns,numColumnsAtFullRes);
+        numRows    = osg::minimum(_terrain_maxNumRows,numRowsAtFullRes);
 
-        resX = (_extents.xMax()-_extents.xMin())/(double)(dem_numColumns-1);
-        resY = (_extents.yMax()-_extents.yMin())/(double)(dem_numRows-1);
+        resX = (_extents.xMax()-_extents.xMin())/(double)(numColumns-1);
+        resY = (_extents.yMax()-_extents.yMin())/(double)(numRows-1);
         
         return true;
     }
     return false;
 }
 
+
 void DataSet::DestinationTile::allocate()
 {
-
-    if (_imagery_maxSourceResolutionX!=0.0f && _imagery_maxSourceResolutionY!=0.0f &&
-        _imagery_maxNumColumns!=0 && _imagery_maxNumRows!=0)
+    unsigned int texture_numColumns, texture_numRows;
+    double texture_dx, texture_dy;
+    if (computeImageResolution(texture_numColumns,texture_numRows,texture_dx,texture_dy))
     {
-
-        unsigned int numColumnsAtFullRes = 1+(unsigned int)ceilf((_extents.xMax()-_extents.xMin())/_imagery_maxSourceResolutionX);
-        unsigned int numRowsAtFullRes = 1+(unsigned int)ceilf((_extents.yMax()-_extents.yMin())/_imagery_maxSourceResolutionY);
-        unsigned int texture_numColumns = osg::minimum(_imagery_maxNumColumns,numColumnsAtFullRes);
-        unsigned int texture_numRows    = osg::minimum(_imagery_maxNumRows,numRowsAtFullRes);
-        
-        double texture_dx = (_extents.xMax()-_extents.xMin())/(double)(texture_numColumns-1);
-        double texture_dy = (_extents.yMax()-_extents.yMin())/(double)(texture_numRows-1);
 
         _imagery = new DestinationData;
         _imagery->_cs = _cs;
@@ -898,17 +903,11 @@ void DataSet::DestinationTile::allocate()
         _imagery->_image->allocateImage(texture_numColumns,texture_numRows,1,GL_RGB,GL_UNSIGNED_BYTE);
     }
 
-    if (_terrain_maxSourceResolutionX!=0.0f && _terrain_maxSourceResolutionY!=0.0f &&
-        _terrain_maxNumColumns!=0 && _terrain_maxNumRows!=0)
+
+    unsigned int dem_numColumns, dem_numRows;
+    double dem_dx, dem_dy;
+    if (computeTerrainResolution(dem_numColumns,dem_numRows,dem_dx,dem_dy))
     {
-        unsigned int numColumnsAtFullRes = 1+(unsigned int)ceilf((_extents.xMax()-_extents.xMin())/_terrain_maxSourceResolutionX);
-        unsigned int numRowsAtFullRes = 1+(unsigned int)ceilf((_extents.yMax()-_extents.yMin())/_terrain_maxSourceResolutionY);
-        unsigned int dem_numColumns = osg::minimum(_terrain_maxNumColumns,numColumnsAtFullRes);
-        unsigned int dem_numRows    = osg::minimum(_terrain_maxNumRows,numRowsAtFullRes);
-
-        double dem_dx = (_extents.xMax()-_extents.xMin())/(double)(dem_numColumns-1);
-        double dem_dy = (_extents.yMax()-_extents.yMin())/(double)(dem_numRows-1);
-
         _terrain = new DestinationData;
         _terrain->_cs = _cs;
         _terrain->_extents = _extents;
@@ -1363,8 +1362,9 @@ void DataSet::DestinationTile::addRequiredResolutions(CompositeSource* sourceGra
         {
             if (source->intersects(*_imagery))
             {
+                unsigned int numCols,numRows;
                 double resX, resY;
-                if (computeImageResolution(resX,resY))
+                if (computeImageResolution(numCols,numRows,resX,resY))
                 {
                     source->addRequiredResolution(resX,resY);
                 }
@@ -1374,8 +1374,9 @@ void DataSet::DestinationTile::addRequiredResolutions(CompositeSource* sourceGra
         {
             if (source->intersects(*_terrain))
             {
+                unsigned int numCols,numRows;
                 double resX, resY;
-                if (computeTerrainResolution(resX,resY))
+                if (computeTerrainResolution(numCols,numRows,resX,resY))
                 {
                     source->addRequiredResolution(resX,resY);
                 }
@@ -1528,6 +1529,116 @@ void DataSet::loadSources()
     }
 }
 
+DataSet::CompositeDestination* DataSet::createDestinationGraph(osgTerrain::CoordinateSystem* cs,
+                                                           const osg::BoundingBox& extents,
+                                                           unsigned int maxImageSize,
+                                                           unsigned int maxTerrainSize,
+                                                           unsigned int currentLevel,
+                                                           unsigned int maxNumLevels)
+{
+
+    DataSet::CompositeDestination* destinationGraph = new DataSet::CompositeDestination;
+
+    // first create the topmost tile
+
+    DestinationTile* tile = new DestinationTile;
+    tile->_name = _tileBasename;
+    tile->_cs = cs;
+    tile->_extents = extents;
+    tile->setMaximumImagerySize(maxImageSize,maxImageSize);
+    tile->setMaximumTerrainSize(maxTerrainSize,maxTerrainSize);
+    tile->computeMaximumSourceResolution(_sourceGraph.get());
+
+    if (currentLevel>=maxNumLevels-1)
+    {    
+        // bottom level can't divide any further.
+        destinationGraph->_tiles.push_back(tile);
+    }
+    else
+    {
+        destinationGraph->_tiles.push_back(tile);
+
+        bool needToDivideX = false;
+        bool needToDivideY = false;
+
+        unsigned int texture_numColumns;
+        unsigned int texture_numRows;
+        double texture_dx;
+        double texture_dy;
+        if (tile->computeImageResolution(texture_numColumns,texture_numRows,texture_dx,texture_dy))
+        {
+            if (texture_dx>tile->_imagery_maxSourceResolutionX) needToDivideX = true;
+            if (texture_dy>tile->_imagery_maxSourceResolutionY) needToDivideY = true;
+        }
+
+        unsigned int dem_numColumns;
+        unsigned int dem_numRows;
+        double dem_dx;
+        double dem_dy;
+        if (tile->computeTerrainResolution(dem_numColumns,dem_numRows,dem_dx,dem_dy))
+        {
+            if (dem_dx>tile->_terrain_maxSourceResolutionX) needToDivideX = true;
+            if (dem_dy>tile->_terrain_maxSourceResolutionY) needToDivideY = true;
+        }
+        
+        float xCenter = (extents.xMin()+extents.xMax())*0.5f;
+        float yCenter = (extents.yMin()+extents.yMax())*0.5f;
+
+        if (needToDivideX && needToDivideY)
+        {
+            std::cout<<"Need to Divide X + Y for level "<<currentLevel<<std::endl;
+            // create four tiles.
+            osg::BoundingBox bottom_left(extents.xMin(),extents.yMin(),extents.zMin(),xCenter,yCenter,extents.zMax());
+            osg::BoundingBox bottom_right(xCenter,extents.yMin(),extents.zMin(),extents.xMax(),yCenter,extents.zMax());
+            osg::BoundingBox top_left(extents.xMin(),yCenter,extents.zMin(),xCenter,extents.yMax(),extents.zMax());
+            osg::BoundingBox top_right(xCenter,yCenter,extents.zMin(),extents.xMax(),extents.yMax(),extents.zMax());
+
+            destinationGraph->_children.push_back(createDestinationGraph(cs,
+                                                                         bottom_left,
+                                                                         maxImageSize,
+                                                                         maxTerrainSize,
+                                                                         currentLevel+1,
+                                                                         maxNumLevels));
+
+            destinationGraph->_children.push_back(createDestinationGraph(cs,
+                                                                         bottom_left,
+                                                                         maxImageSize,
+                                                                         maxTerrainSize,
+                                                                         currentLevel+1,
+                                                                         maxNumLevels));
+
+            destinationGraph->_children.push_back(createDestinationGraph(cs,
+                                                                         bottom_left,
+                                                                         maxImageSize,
+                                                                         maxTerrainSize,
+                                                                         currentLevel+1,
+                                                                         maxNumLevels));
+
+            destinationGraph->_children.push_back(createDestinationGraph(cs,
+                                                                         bottom_left,
+                                                                         maxImageSize,
+                                                                         maxTerrainSize,
+                                                                         currentLevel+1,
+                                                                         maxNumLevels));
+
+        }
+        else if (needToDivideX)
+        {
+            std::cout<<"Need to Divide X only"<<std::endl;
+        }
+        else if (needToDivideY)
+        {
+            std::cout<<"Need to Divide Y only"<<std::endl;
+        }
+        else
+        {
+            std::cout<<"No Need to Divide"<<std::endl;
+        }
+    }
+    
+    return destinationGraph;
+}
+
 void DataSet::computeDestinationGraphFromSources()
 {
 
@@ -1561,7 +1672,20 @@ void DataSet::computeDestinationGraphFromSources()
     }
 
     // then create the destinate graph accordingly.
-    
+
+#if 1    
+    unsigned int imageSize = 256;
+    unsigned int terrainSize = 256;
+    unsigned int numLevels = 5;
+
+     _destinationGraph = createDestinationGraph(_coordinateSystem.get(),
+                                                extents,
+                                                imageSize,
+                                                terrainSize,
+                                                0,
+                                                numLevels);
+                                                           
+#else                                                           
     _destinationGraph = new CompositeDestination;
     _destinationGraph->_cs = _coordinateSystem;
     _destinationGraph->_extents = extents;
@@ -1664,6 +1788,8 @@ void DataSet::computeDestinationGraphFromSources()
 
 
     }    
+#endif
+
 }
 
 template<class T>

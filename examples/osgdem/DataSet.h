@@ -644,9 +644,9 @@ class DataSet : public osg::Referenced
             
             void computeMaximumSourceResolution(CompositeSource* sourceGraph);
 
-            bool computeImageResolution(double& resX, double& resY);
-            bool computeTerrainResolution(double& resX, double& resY);
-
+            bool computeImageResolution(unsigned int& numColumns, unsigned int& numRows, double& resX, double& resY);
+            bool computeTerrainResolution(unsigned int& numColumns, unsigned int& numRows, double& resX, double& resY);
+            
             void allocate();
             
             void addRequiredResolutions(CompositeSource* sourceGraph);
@@ -720,6 +720,13 @@ class DataSet : public osg::Referenced
         
         void setDestinationTileBaseName(const std::string& basename) { _tileBasename = basename; }
         void setDestinationTileExtension(const std::string& extension) { _tileExtension = _tileExtension; }
+        
+        CompositeDestination* createDestinationGraph(osgTerrain::CoordinateSystem* cs,
+                                                     const osg::BoundingBox& extents,
+                                                     unsigned int maxImageSize,
+                                                     unsigned int maxTerrainSize,
+                                                     unsigned int currentLevel,
+                                                     unsigned int maxNumLevels);
         
         
         void computeDestinationGraphFromSources();

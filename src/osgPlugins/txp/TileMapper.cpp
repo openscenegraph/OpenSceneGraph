@@ -44,6 +44,12 @@ float TileMapper::getDistanceFromEyePoint(const osg::Vec3& pos, bool withLODScal
 
 void TileMapper::apply(osg::Node& node)
 {
+    if (node.getName()=="TileContent") 
+    {
+        _containsGeode = true;
+        return;
+    }
+
     if (isCulled(node)) return;
 
     // push the culling mode.
@@ -57,6 +63,12 @@ void TileMapper::apply(osg::Node& node)
 
 void TileMapper::apply(osg::Group& node)
 {
+    if (node.getName()=="TileContent") 
+    {
+        _containsGeode = true;
+        return;
+    }
+
     if (isCulled(node)) return;
 
     // push the culling mode.
@@ -348,7 +360,7 @@ void TileMapper::checkValidityOfAllVisibleTiles()
         
     } while (!toRemoveList.empty());
     
-    if (!_blackListedNodeSet.empty()) std::cout<<"********** We have blacked list "<<_blackListedNodeSet.size()<<std::endl;
+//    if (!_blackListedNodeSet.empty()) std::cout<<"********** We have blacked list "<<_blackListedNodeSet.size()<<std::endl;
     
 }
 

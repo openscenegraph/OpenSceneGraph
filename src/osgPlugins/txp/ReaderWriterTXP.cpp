@@ -66,6 +66,8 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::readNode(const std::string& fil
             return ReadResult::ERROR_IN_READING_FILE;
 
         osg::ref_ptr<osg::Node> tileContent = getTileContent(info,x,y,lod,archive);
+        
+        tileContent->setName("TileContent");
 
         int numLods = archive->getNumLODs();
         if (lod < (numLods-1))
@@ -123,6 +125,8 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::readNode(const std::string& fil
                 continue;
 
             osg::ref_ptr<osg::Node> tileContent = getTileContent(info,tileX,tileY,tileLOD,archive);
+
+            tileContent->setName("TileContent");
 
             if (tileLOD < (numLods-1))
             {

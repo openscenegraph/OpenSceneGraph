@@ -92,12 +92,12 @@ IntersectVisitor::IntersectState::~IntersectState()
 }
 
 
-bool IntersectVisitor::IntersectState::isCulled(const BoundingSphere& bs,LineSegmentmentMask& segMaskOut)
+bool IntersectVisitor::IntersectState::isCulled(const BoundingSphere& bs,LineSegmentMask& segMaskOut)
 {
     bool hit = false;
-    LineSegmentmentMask mask = 0x00000001;
+    LineSegmentMask mask = 0x00000001;
     segMaskOut = 0x00000000;
-    LineSegmentmentMask segMaskIn = _segmentMaskStack.back();
+    LineSegmentMask segMaskIn = _segmentMaskStack.back();
     //    notify(INFO) << << "IntersectState::isCulled() mask in "<<segMaskIn<<"  ";
     for(IntersectState::LineSegmentList::iterator sitr=_segList.begin();
         sitr!=_segList.end();
@@ -116,12 +116,12 @@ bool IntersectVisitor::IntersectState::isCulled(const BoundingSphere& bs,LineSeg
 }
 
 
-bool IntersectVisitor::IntersectState::isCulled(const BoundingBox& bb,LineSegmentmentMask& segMaskOut)
+bool IntersectVisitor::IntersectState::isCulled(const BoundingBox& bb,LineSegmentMask& segMaskOut)
 {
     bool hit = false;
-    LineSegmentmentMask mask = 0x00000001;
+    LineSegmentMask mask = 0x00000001;
     segMaskOut = 0x00000000;
-    LineSegmentmentMask segMaskIn = _segmentMaskStack.back();
+    LineSegmentMask segMaskIn = _segmentMaskStack.back();
     for(IntersectState::LineSegmentList::iterator sitr=_segList.begin();
         sitr!=_segList.end();
         ++sitr)
@@ -226,8 +226,8 @@ void IntersectVisitor::pushMatrix(const Matrix& matrix)
     inverse_world->invert(*(nis->_matrix));
     nis->_inverse = inverse_world;
 
-    IntersectState::LineSegmentmentMask segMaskIn = cis->_segmentMaskStack.back();
-    IntersectState::LineSegmentmentMask mask = 0x00000001;
+    IntersectState::LineSegmentMask segMaskIn = cis->_segmentMaskStack.back();
+    IntersectState::LineSegmentMask mask = 0x00000001;
     for(IntersectState::LineSegmentList::iterator sitr=cis->_segList.begin();
         sitr!=cis->_segList.end();
         ++sitr)
@@ -260,7 +260,7 @@ bool IntersectVisitor::enterNode(Node& node)
     if (bs.valid())
     {
         IntersectState* cis = _intersectStateStack.back().get();
-        IntersectState::LineSegmentmentMask sm=0xffffffff;
+        IntersectState::LineSegmentMask sm=0xffffffff;
         if (cis->isCulled(bs,sm)) return false;
         cis->_segmentMaskStack.push_back(sm);
         _nodePath.push_back(&node);

@@ -339,6 +339,10 @@ int main( int argc, char **argv )
         viewer.frame();
         
     }
+    
+    // wait for all cull and draw threads to complete.
+    viewer.sync();
+    
 
     return 0;
 }

@@ -178,7 +178,7 @@ void CullVisitor::popProjectionMatrix()
     if (!_nearPlaneCandidateMap.empty())
     { 
     
-        osg::Timer_t start_t = osg::Timer::instance()->tick();
+        // osg::Timer_t start_t = osg::Timer::instance()->tick();
         
         // update near from defferred list of drawables
         unsigned int numTests = 0;
@@ -196,7 +196,7 @@ void CullVisitor::popProjectionMatrix()
             }
         } 
 
-        osg::Timer_t end_t = osg::Timer::instance()->tick();
+        // osg::Timer_t end_t = osg::Timer::instance()->tick();
         // osg::notify(osg::NOTICE)<<"Took "<<osg::Timer::instance()->delta_m(start_t,end_t)<<"ms to test "<<numTests<<" out of "<<_nearPlaneCandidateMap.size()<<std::endl;
     }
 
@@ -501,8 +501,6 @@ bool CullVisitor::updateCalculatedNearFar(const osg::Matrix& matrix,const osg::B
 
 bool CullVisitor::updateCalculatedNearFar(const osg::Matrix& matrix,const osg::Drawable& drawable, bool isBillboard)
 {
-    //const_cast<osg::Drawable&>(drawable).dirtyBound();
-
     const osg::BoundingBox& bb = drawable.getBound();
 
     value_type d_near, d_far;
@@ -911,7 +909,6 @@ void CullVisitor::apply(Transform& node)
 
 void CullVisitor::apply(Projection& node)
 {
-    if (isCulled(node)) return;
 
     // push the culling mode.
     pushCurrentMask();
@@ -936,7 +933,12 @@ void CullVisitor::apply(Projection& node)
     ref_ptr<osg::RefMatrix> matrix = createOrReuseMatrix(node.getMatrix());
     pushProjectionMatrix(matrix.get());
     
-    handle_cull_callbacks_and_traverse(node);
+    // note do culling check after the frustum has been updated to ensure
+    // that the node is not culled prematurely.
+    if (!isCulled(node))
+    {
+        handle_cull_callbacks_and_traverse(node);
+    }
 
     popProjectionMatrix();
 

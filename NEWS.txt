@@ -11,12 +11,30 @@ OSG News (most significant items from ChangeLog)
     
     DatabasePager
     
-    Double Vec & Matrix classes
+    Double Vec & Matrix classes & CoordinateSystemNode/EllipsoidModel
     
     osgUtil - tristipper, simplifier, GLObjectVisitor.
     
-    Examples - osgdem, osgphotoalbum, osgbluemarble, osgtesselate, osgsimulation
+    Examples
+        osgdem
+        osgphotoalbum
+        osgbluemarble
+        
+        osgtesselate
+        osgsimulation
+        osgdepthshadow
+        osgsimplifier
+        osgspacewarp
+        osgdistortion
+        
+        osgsimple
+        osgkeyboardmouse
+        osgsimplepager
     
+        osgmovie
+        
+        osgvolume
+        
     New manipulators - TerrainManipulator and TrackerManipulator.
     
     Movie support under Linux and OSX via LibMpeg3 and Quicktime respectively. 

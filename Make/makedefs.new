@@ -23,9 +23,9 @@ LIBINST    = lib
 PLUGININST = lib/osgPlugins
 
 INST_DEMOS    = /usr/share/OpenSceneGraph/bin
-INST_LIBS     = /usr/share/OpenSceneGraph/lib
-INST_PLUGINS  = /usr/share/OpenSceneGraph/lib/osgPlugins
-INST_INCLUDE  = /usr/share/OpenSceneGraph/include
+INST_LIBS     = /usr/lib$(ARCH)
+INST_PLUGINS  = /usr/lib$(ARCH)/osgPlugins
+INST_INCLUDE  = /usr/include
 INST_DEMO_SRC = /usr/share/OpenSceneGraph/src/demos
 INST_DATA     = /usr/share/OpenSceneGraph/data
 
@@ -92,6 +92,7 @@ ifeq ($(OS),IRIX)
   OPTF              = -O2 
   DBGF              = -g
   SHARED            = -shared
+  ARCH              = 32
 ifeq ($(ARCH),64)
     ARCHARGS          = -64
 else
@@ -109,8 +110,8 @@ endif
   SO_EXT            = so
   PLUGIN_EXT        = so
 
-  INSTLINKBIN       = install -t -m 755
-  INSTLINKDEV       = install -t -m 644
+#  INSTLINKBIN       = install -t -m 755
+#  INSTLINKDEV       = install -t -m 644
 
 endif
 

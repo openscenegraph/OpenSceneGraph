@@ -9,7 +9,16 @@ debug : $(EXEC:=.dbg)\
 	$(LIB:=.dbg)\
 	$(PLUGIN:=.dbg)\
 
+cleanlite : cleanliteopt cleanlitedbg
+
+cleanliteopt : 
+	@[ -d $(OPTDIR) ] && cd $(OPTDIR); rm -f $(EXEC) $(LIB) $(PLUGIN)
+
+cleanlitedbg : 
+	@[ -d $(DEBUGDIR) ] && cd $(DEBUGDIR); rm -f $(EXEC) $(LIB) $(PLUGIN)
+
 clean : cleanopt cleandbg
+	@[ -d $(OPTDIR) ] && cd $(OPTDIR); rm -f $(OBJS) $(MAKEDEPEND)
 
 cleanopt : 
 	@[ -d $(OPTDIR) ] && cd $(OPTDIR); rm -f $(OBJS) $(MAKEDEPEND)

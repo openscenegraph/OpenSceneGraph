@@ -222,25 +222,25 @@ void Geometry::accept(PrimitiveFunctor& functor)
     
 }
 
-
-const bool Geometry::computeBound() const
-{
-    _bbox.init();
-    
-    const Vec3Array* coords = dynamic_cast<const Vec3Array*>(_vertexArray.get());
-    if (coords)
-    {
-        for(Vec3Array::const_iterator itr=coords->begin();
-            itr!=coords->end();
-            ++itr)
-        {
-            _bbox.expandBy(*itr);
-        }
-    }
-    _bbox_computed = true;
-    
-    return _bbox.valid();
-}
+// just use the base Drawable's PrimitiveFunctor based implementation.
+// const bool Geometry::computeBound() const
+// {
+//     _bbox.init();
+//     
+//     const Vec3Array* coords = dynamic_cast<const Vec3Array*>(_vertexArray.get());
+//     if (coords)
+//     {
+//         for(Vec3Array::const_iterator itr=coords->begin();
+//             itr!=coords->end();
+//             ++itr)
+//         {
+//             _bbox.expandBy(*itr);
+//         }
+//     }
+//     _bbox_computed = true;
+//     
+//     return _bbox.valid();
+// }
 
 bool Geometry::verifyBindings() const
 {

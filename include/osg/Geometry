@@ -103,7 +103,7 @@ class SG_EXPORT Geometry : public Drawable
 
         virtual ~Geometry();
 
-        virtual const bool computeBound() const;
+        //virtual const bool computeBound() const;
         
         
         

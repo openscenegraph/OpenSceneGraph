@@ -4,37 +4,70 @@ OSG News (most significant items from ChangeLog)
 
 July 2002 - OpenSceneGraph-0.9.0.tar.gz
 
-    osgcluster - ported to windows.
+    >>> OpenSceneGraph goes beta - Multitexturing, Occlusion Culling, Particles and much more added!
 
-    Multitexturing support added to osg::StateSet, osg::Geometry, osg::State
+    This release marks the beginning of the beta phase of the OpenSceneGraph
+    development, which means that all the major core features are now
+    in the scene graph, and 1.0 is not far away.  Its performance, features 
+    and portability already compares very favorably to other scene graphs, 
+    both comerical and open source.  
+
+    Multi-texturing support added to osg::StateSet, osg::Geometry, osg::State
     and txp loader.
     
-    Geometry classes which superseeds the old Performer sytle osg::GeoSet.
+    New osg::Geometry classes which supersedes the old Performer style osg::GeoSet,
+    support multi-texturing, and uses sharable osg::Arrays which use
+    std::vector<> for data storage and manipulation.
 
-    Occlusion culling adding to the core OSG.
+    Shadow volume occlusion culling adding to the core OSG, developed as a
+    collobaration between Mike Connell and Robert Osfield. Our implementation
+    uses convex planer occluders, with support for holes to allow larger
+    and more effective occluders to be used. The approach is software 
+    based so it 100% portable, and by culling during the cull traversal 
+    both CPU and GPU loads are significantly reduced, making it an extremely 
+    powerful feature for large scale urban and indoor visulisation. 
 
     osgParticle developed by Marco Jez adds support for a range of particle
     effects.
-
-    osgSim a seperate add-on library adds support for navigational light points.
     
-    osgGA (Gui Abstraction) library introduced to provide classes for adatping
-    different GUI toolkits to work with a standard set of manipulators for
+    osgGA (Gui Abstraction) library written by Neil Salter adds classes for 
+    adapting different GUI toolkits to work with a standard set of manipulators for
     modifying the scene, such as camera and state manipulators.
     
-    Support for NodeKits.
+    Support has been added to the plugin architecture to facilitate the
+    development of NodeKits - add on libraries which can used directly
+    in your code, or loaded indirectly when loading from file.  The 
+    later allows you to load a .osg file with text or particle effects
+    in them,the plugin architecture automatically loads the required 
+    library which supports these features.
 
-    New demos:
+    A range of new demos have been as code examples, and to demonstrate
+    the range of features that OpenSceneGraph delivers:
 
-        osgoccluder
-        osghud
-        osgparticle
-        osgprerender
-        osgcallback
-        osglight
-        osgclip
-        osggeometry
-        osgmultitexture
+        osgoccluder  - demonstrates ocllusion culling, and has a mode
+                       which allows the users to interactively create
+                       their own convex planer occluders.
+        osghud       - how to mix head up display with 3d views.
+        osgparticle  - shows the new osgParticle node kit in action.                
+        osgprerender - pre renders and scene then textures the result onto
+                       an animated flag.
+        osgcallback  - examples of the full range of callbacks that you
+                       can use to add dynamic behaviors to your scene graph.
+        osglight     - a simple example of how to set up spot and position
+                       lights in the scene.
+        osgclip      - illustrates how to add clip planes to you scene.
+        osggeometry  - examples of the different ways to set up primitives
+                       and vertex/color/normal and texture attributes in
+                       the new osg::Geometry class.
+        osgmultitexture - a simple example which adds a spherical reflection
+                        map to a whole scene using the second texture unit
+                        if one exists.
+        
+    osg::Drawable::PrimtiveFunctor has also been added to allow querrying 
+    of primitive data with Drawables subclasses without requiring knowledge 
+    of the types of Drawable subclasses that exists.  This decoupling makes
+    it a very powerful and flexible utility.
+
 
 26th April 2002 - OpenSceneGraph-0.8.45.tar.gz
 

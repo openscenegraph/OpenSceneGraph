@@ -14,7 +14,6 @@
 #include <osg/LOD>
 #include <osg/Transparency>
 #include <osg/Geode>
-#include <osg/GeoSet>
 #include <osg/StateSet>
 #include <osg/Material>
 #include <osg/Texture>

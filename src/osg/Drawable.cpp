@@ -227,3 +227,77 @@ void Drawable::setAppCallback(AppCallback* ac)
         }
     }
 }
+
+struct ComputeBound : public Drawable::PrimitiveFunctor
+{
+        ComputeBound():_vertices(0) {}
+        
+        virtual void setVertexArray(unsigned int,Vec3* vertices) { _vertices = vertices; }
+
+        virtual void drawArrays(GLenum,GLint first,GLsizei count)
+        {
+            if (_vertices)
+            {
+                osg::Vec3* vert = _vertices+first;
+                for(;count>0;--count,++vert)
+                {
+                    _bb.expandBy(*vert);
+                }
+            }
+        }
+
+        virtual void drawElements(GLenum,GLsizei count,GLubyte* indices)
+        {
+            if (_vertices)
+            {
+                for(;count>0;--count,++indices)
+                {
+                    _bb.expandBy(_vertices[*indices]);
+                }
+            }
+        }
+
+        virtual void drawElements(GLenum,GLsizei count,GLushort* indices)
+        {
+            if (_vertices)
+            {
+                for(;count>0;--count,++indices)
+                {
+                    _bb.expandBy(_vertices[*indices]);
+                }
+            }
+        }
+
+        virtual void drawElements(GLenum,GLsizei count,GLuint* indices)
+        {
+            if (_vertices)
+            {
+                for(;count>0;--count,++indices)
+                {
+                    _bb.expandBy(_vertices[*indices]);
+                }
+            }
+        }
+
+        virtual void begin(GLenum) {}
+        virtual void vertex(const Vec3& vert) { _bb.expandBy(vert); }
+        virtual void vertex(float x,float y,float z) { _bb.expandBy(x,y,z); }
+        virtual void end() {}
+        
+        Vec3*           _vertices;
+        BoundingBox     _bb;
+};
+
+const bool Drawable::computeBound() const
+{
+    ComputeBound cb;
+
+    Drawable* non_const_this = const_cast<Drawable*>(this);
+    non_const_this->accept(cb);
+    
+    _bbox = cb._bb;
+    _bbox_computed = true;
+
+    return true;
+}
+

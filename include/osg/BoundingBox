@@ -124,7 +124,31 @@ class SG_EXPORT BoundingBox
 
         /** If the vertex is out-with the box expand to encompass vertex.
             If this box is empty then move set this box's min max to vertex. */
-        void expandBy(const Vec3& v);
+        inline void expandBy(const Vec3& v)
+        {
+            if(v.x()<_min.x()) _min.x() = v.x();
+            if(v.x()>_max.x()) _max.x() = v.x();
+
+            if(v.y()<_min.y()) _min.y() = v.y();
+            if(v.y()>_max.y()) _max.y() = v.y();
+
+            if(v.z()<_min.z()) _min.z() = v.z();
+            if(v.z()>_max.z()) _max.z() = v.z();
+        }
+
+        /** If the vertex is out-with the box expand to encompass vertex.
+            If this box is empty then move set this box's min max to vertex. */
+        inline void expandBy(float x,float y,float z)
+        {
+            if(x<_min.x()) _min.x() = x;
+            if(x>_max.x()) _max.x() = x;
+
+            if(y<_min.y()) _min.y() = y;
+            if(y>_max.y()) _max.y() = y;
+
+            if(x<_min.z()) _min.z() = x;
+            if(x>_max.z()) _max.z() = x;
+        }
 
         /** If incoming box is out-with the box expand to encompass incoming box.
             If this box is empty then move set this box to incoming box. */

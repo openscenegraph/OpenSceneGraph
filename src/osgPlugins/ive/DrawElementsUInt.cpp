@@ -34,7 +34,7 @@ void DrawElementsUInt::write(DataOutputStream* out){
 	// Write array length and its elements.
 	out->writeInt(size());
 	for(unsigned int i=0; i<size(); i++){
-		out->writeUInt(((osg::VectorUInt)(*this))[i]);
+		out->writeUInt((*this)[i]);
 	}
 }
 

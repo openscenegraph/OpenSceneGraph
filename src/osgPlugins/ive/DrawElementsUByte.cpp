@@ -34,7 +34,7 @@ void DrawElementsUByte::write(DataOutputStream* out){
 	// Write array length and its elements.
 	out->writeInt(size());
 	for(unsigned int i=0; i<size(); i++){
-		out->writeUChar(((osg::VectorUByte)(*this))[i]);
+		out->writeUChar((*this)[i]);
 	}
 }
 

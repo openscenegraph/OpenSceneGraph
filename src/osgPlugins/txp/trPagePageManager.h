@@ -19,7 +19,7 @@
 
 #include <string>
 
-#ifndef WIN32
+#if defined(__CYGWIN__) || !defined(WIN32)
 #include <pthread.h>
 #endif
 
@@ -50,7 +50,7 @@ namespace txp
 		Fill this in for your specific platform.
 		Should be water ID you use for threads.
 	 */
-#if defined(_WIN32)
+#if defined(_WIN32) && !defined(__CYGWIN__)
 	typedef HANDLE ThreadID;
 	typedef HANDLE ThreadMutex;
 	typedef HANDLE ThreadEvent;

@@ -34,7 +34,7 @@ using namespace txp;
 using namespace osg;
 
 // disable 'this' used in base pointer initilialization..
-#if defined(WIN32) && !(defined(__CYGWIN__) || defined(__MINGW32__))
+#if defined(WIN32) && !defined(__GNUC__)
     #pragma warning( disable : 4355 )
 #endif
 

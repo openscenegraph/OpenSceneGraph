@@ -1,6 +1,7 @@
 #ifndef WAIT_BLOCK_H
 #define WAIT_BLOCK_H
-#ifndef WIN32
+
+#if !defined(WIN32) || defined(__CYGWIN__)
 #include <pthread.h>
 
 namespace osgTXP {

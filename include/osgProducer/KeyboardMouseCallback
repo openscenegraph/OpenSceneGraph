@@ -16,6 +16,8 @@
 
 #include <OpenThreads/Mutex>
 
+#include <osgProducer/Export>      // To disable MSVC warnings
+
 #include <Producer/RenderSurface> // For definition of KeySymbol
 #include <Producer/KeyboardMouse>
 

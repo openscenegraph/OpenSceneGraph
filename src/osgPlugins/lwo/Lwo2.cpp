@@ -165,7 +165,7 @@ Lwo2::ReadFile( const string& filename )
 unsigned char 
 Lwo2::_read_char()
 {
-  char c;
+  char c = 0;
   if (_fin.is_open())
     {
       _fin.read(&c, 1);

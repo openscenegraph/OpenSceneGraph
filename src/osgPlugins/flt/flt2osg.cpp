@@ -1299,7 +1299,7 @@ void ConvertFromFLT::setTexture ( FaceRecord *rec, SFace *pSFace, osg::StateSet 
                 //use scale_rgb and scale_alpha of osg::TexEnvCombine to make this effect
                 // Julian Ortiz, June 18th 2003.
 
-                flt::AttrData *detailTextureAttrData;                                
+                flt::AttrData *detailTextureAttrData = NULL;                                
                 if (pSFace->iDetailTexturePattern != -1) {                 
                  int nIndex2 = (int)pSFace->iDetailTexturePattern;
                  detailTextureAttrData = pTexturePool->getTexture(nIndex2,rec->getFlightVersion());

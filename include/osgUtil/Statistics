@@ -122,10 +122,10 @@ class Statistics : public osg::Drawable::PrimitiveFunctor
         }
         virtual void vertex(float,float,float) { vertex(); }
         virtual void vertex(const osg::Vec3&)  { vertex(); }
-        virtual void vertex(const osg::Vec2& vert)  { vertex(); }
-        virtual void vertex(const osg::Vec4& vert)  { vertex(); }
-        virtual void vertex(float x,float y)   { vertex(); }
-        virtual void vertex(float x,float y,float z,float w)  { vertex(); }
+        virtual void vertex(const osg::Vec2&)  { vertex(); }
+        virtual void vertex(const osg::Vec4&)  { vertex(); }
+        virtual void vertex(float,float)   { vertex(); }
+        virtual void vertex(float,float,float,float)  { vertex(); }
 
         virtual void end() 
         {

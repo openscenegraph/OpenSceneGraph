@@ -28,7 +28,9 @@ class OSGDB_EXPORT Output : public std::ofstream
         virtual ~Output();
 
         void open(const char *name);
-        void open(const char *name,int mode);
+        
+        // comment out temporarily to avoid compilation problems, RO Jan 2002.
+        // void open(const char *name,int mode);
 
         Output& indent();
 

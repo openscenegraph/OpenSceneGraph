@@ -1,12 +1,20 @@
 #include <osgDB/FileNameUtils>
 
-
-// mac requires std::tolower, but IRIX MipsPro doesn't like it,
-// so use this preprocessor to allow mac and mipspro to work.
-#ifdef macintosh
-using std::tolower;
-using std::strlen;
+#ifdef __sgi
+    #include <cctype.h>
+#else
+    #include <cctype>
+    using std::tolower;
+    using std::strlen;    
 #endif
+
+// 
+// // mac requires std::tolower, but IRIX MipsPro doesn't like it,
+// // so use this preprocessor to allow mac and mipspro to work.
+// #ifdef macintosh
+// using std::tolower;
+// using std::strlen;
+// #endif
 
 std::string osgDB::getFilePath(const std::string& fileName)
 {

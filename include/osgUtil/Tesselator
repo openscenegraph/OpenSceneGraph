@@ -75,13 +75,13 @@ class OSGUTIL_EXPORT Tesselator
         void error(GLenum errorCode);
 
     
-        static void beginCallback(GLenum which, void* userData);
-        static void vertexCallback(GLvoid *data, void* userData);
-        static void combineCallback(GLdouble coords[3], void* vertex_data[4],
+        static void CALLBACK beginCallback(GLenum which, void* userData);
+        static void CALLBACK vertexCallback(GLvoid *data, void* userData);
+        static void CALLBACK combineCallback(GLdouble coords[3], void* vertex_data[4],
                               GLfloat weight[4], void** outData,
                               void* useData);
-        static void endCallback(void* userData);
-        static void errorCallback(GLenum errorCode, void* userData);
+        static void CALLBACK endCallback(void* userData);
+        static void CALLBACK errorCallback(GLenum errorCode, void* userData);
         
         
         struct Vec3d

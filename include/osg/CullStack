@@ -41,11 +41,6 @@ class SG_EXPORT CullStack
         
         typedef unsigned int CullingMode;
         
-        /** Sets the current CullingMode.*/
-        void setCullingMode(CullingMode mode) { _cullingMode = mode; }
-        
-        /** Returns the current CullingMode.*/
-        CullingMode getCullingMode() const { return _cullingMode; }
 
         void reset();
         
@@ -65,11 +60,16 @@ class SG_EXPORT CullStack
         inline float getFrustumVolume() { if (_frustumVolume<0.0f) computeFrustumVolume(); return _frustumVolume; }
 
 
+        /** Sets the current CullingMode.*/
+        void setCullingMode(CullingMode mode) { _cullingMode = mode; }
+        
+        /** Returns the current CullingMode.*/
+        CullingMode getCullingMode() const { return _cullingMode; }
+
         void setLODBias(const float bias) { _LODBias = bias; }
         const float getLODBias() const    { return _LODBias; }
         
         void setSmallFeatureCullingPixelSize(float value) { _smallFeatureCullingPixelSize=value; }
-        float& getSmallFeatureCullingPixelSize() { return _smallFeatureCullingPixelSize; }
         float getSmallFeatureCullingPixelSize() const { return _smallFeatureCullingPixelSize; }
     
     

@@ -19,14 +19,13 @@ SceneView::SceneView(DisplaySettings* ds)
 {
     _displaySettings = ds;
 
-    _calc_nearfar = true;
-
     _backgroundColor.set(0.2f, 0.2f, 0.4f, 1.0f);
 
-    _near_plane = 1.0f;
-    _far_plane = 1.0f;
+    _computeNearFar = CullVisitor::COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES;
 
-    _lodBias = 1.0f;
+    _cullingMode = osg::CullStack::ENABLE_ALL_CULLING;
+    _LODBias = 1.0f;
+    _smallFeatureCullingPixelSize = 2.0f;
 
     _lightingMode=HEADLIGHT;
     
@@ -315,6 +314,7 @@ void SceneView::cullStage(osg::Matrix* projection,osg::Matrix* modelview,osgUtil
     if (!_initCalled) init();
 
 
+
     // collect any occluder in the view frustum.
     if (_sceneData->containsOccluderNodes())
     {
@@ -363,7 +363,10 @@ void SceneView::cullStage(osg::Matrix* projection,osg::Matrix* modelview,osgUtil
          cullVisitor->setTraversalNumber(_frameStamp->getFrameNumber());
     }
 
-    cullVisitor->setLODBias(_lodBias);
+    cullVisitor->setComputeNearFarMode(_computeNearFar);
+    cullVisitor->setLODBias(_LODBias);
+    cullVisitor->setSmallFeatureCullingPixelSize(_smallFeatureCullingPixelSize);
+
     cullVisitor->setEarthSky(NULL); // reset earth sky on each frame.
     
     cullVisitor->setRenderGraph(rendergraph);

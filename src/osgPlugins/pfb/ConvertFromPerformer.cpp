@@ -1121,8 +1121,15 @@ osg::Texture* ConvertFromPerformer::visitTexture(osg::StateSet* osgStateSet,pfTe
 {
     if (tex==NULL) return NULL;
 
-    osg::Texture* osgTexture = new osg::Texture;
-    _pfToOsgMap[tex] = osgTexture;
+    osg::Texture* osgTexture = dynamic_cast<osg::Texture*>(getOsgObject(tex));
+    if (osgTexture) {
+        if (osgStateSet) osgStateSet->setAttribute(osgTexture);
+        return osgTexture;
+    }
+
+    osgTexture = new osg::Texture;
+    registerPfObjectForOsgObject(tex, osgTexture);
+    //_pfToOsgMap[tex] = osgTexture;
 
     if (osgStateSet) osgStateSet->setAttribute(osgTexture);
 
@@ -1130,24 +1137,30 @@ osg::Texture* ConvertFromPerformer::visitTexture(osg::StateSet* osgStateSet,pfTe
     int repeat_s = tex->getRepeat(PFTEX_WRAP_S);
     int repeat_t = tex->getRepeat(PFTEX_WRAP_T);
 
-    if (repeat_r==PFTEX_CLAMP) osgTexture->setWrap(osg::Texture::WRAP_R,osg::Texture::CLAMP);
-    else osgTexture->setWrap(osg::Texture::WRAP_R,osg::Texture::REPEAT);
+    if (repeat_r==PFTEX_CLAMP)
+        osgTexture->setWrap(osg::Texture::WRAP_R,osg::Texture::CLAMP);
+    else
+        osgTexture->setWrap(osg::Texture::WRAP_R,osg::Texture::REPEAT);
 
-    if (repeat_s==PFTEX_CLAMP) osgTexture->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP);
-    else osgTexture->setWrap(osg::Texture::WRAP_S,osg::Texture::REPEAT);
+    if (repeat_s==PFTEX_CLAMP)
+        osgTexture->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP);
+    else
+        osgTexture->setWrap(osg::Texture::WRAP_S,osg::Texture::REPEAT);
 
-    if (repeat_t==PFTEX_CLAMP) osgTexture->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP);
-    else osgTexture->setWrap(osg::Texture::WRAP_T,osg::Texture::REPEAT);
+    if (repeat_t==PFTEX_CLAMP)
+        osgTexture->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP);
+    else
+        osgTexture->setWrap(osg::Texture::WRAP_T,osg::Texture::REPEAT);
 
     // filter
-    #if 1
+#if 1
     osgTexture->setFilter(osg::Texture::MIN_FILTER,
-        getTexfilter(PFTEX_MINFILTER,
-        tex->getFilter(PFTEX_MINFILTER)));
+                          getTexfilter(PFTEX_MINFILTER,
+                                       tex->getFilter(PFTEX_MINFILTER)));
     osgTexture->setFilter(osg::Texture::MAG_FILTER,
-        getTexfilter(PFTEX_MAGFILTER,
-        tex->getFilter(PFTEX_MAGFILTER)));
-    #endif
+                          getTexfilter(PFTEX_MAGFILTER,
+                                       tex->getFilter(PFTEX_MAGFILTER)));
+#endif
 
     // image
     std::string texName = tex->getName();
@@ -1173,19 +1186,23 @@ osg::Texture* ConvertFromPerformer::visitTexture(osg::StateSet* osgStateSet,pfTe
 
     unsigned int pixelFormat =
         comp == 1 ? GL_LUMINANCE :
-    comp == 2 ? GL_LUMINANCE_ALPHA :
-    comp == 3 ? GL_RGB :
-    comp == 4 ? GL_RGBA : (GLenum)-1;
+        comp == 2 ? GL_LUMINANCE_ALPHA :
+        comp == 3 ? GL_RGB :
+        comp == 4 ? GL_RGBA : (GLenum)-1;
 
     unsigned int dataType = GL_UNSIGNED_BYTE;
+
+    // copy image data
+    int size = s * t * comp;
+    unsigned char* data = (unsigned char*) malloc(size);
+    memcpy(data, imageData, size);
 
     osg::Image* image = new osg::Image;
     image->setFileName(texName.c_str());
     image->setImage(s,t,r,
-        internalFormat,
-        pixelFormat,
-        dataType,
-        (unsigned char*)imageData);
+                    internalFormat,
+                    pixelFormat,
+                    dataType,data);
 
     osgTexture->setImage(image);
 

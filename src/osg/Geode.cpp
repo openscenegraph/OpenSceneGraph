@@ -99,9 +99,9 @@ const bool Geode::replaceDrawable( Drawable *origDrawable, Drawable *newDrawable
 
 const bool Geode::computeBound() const
 {
-    BoundingBox bb;
+    _bsphere.init();
 
-//     if (_occluder.valid()) _occluder->computeBound(bb);
+    BoundingBox bb;
 
     DrawableList::const_iterator itr;
     for(itr=_drawables.begin();
@@ -119,7 +119,6 @@ const bool Geode::computeBound() const
     }
     else
     {
-        _bsphere.init();
         _bsphere_computed=true;
         return false;
     }

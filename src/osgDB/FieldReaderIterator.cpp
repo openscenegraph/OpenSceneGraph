@@ -34,16 +34,16 @@ void FieldReaderIterator::_free()
     // free all data
     if (_previousField)
     {
-        delete _previousField;
+        osgDelete _previousField;
     }
     if (_fieldQueue)
     {
         for(int i=0;i<_fieldQueueCapacity;++i)
         {
-            if (_fieldQueue[i]) delete _fieldQueue[i];
+            if (_fieldQueue[i]) osgDelete _fieldQueue[i];
             _fieldQueue[i] = NULL;
         }
-        delete [] _fieldQueue;
+        osgDelete [] _fieldQueue;
     }
     _init();
 
@@ -258,7 +258,7 @@ FieldReaderIterator& FieldReaderIterator::operator += (int no)
         {
             _fieldQueue[_fieldQueueSize+i] = tmpFields[i];
         }
-        delete [] tmpFields;
+        osgDelete [] tmpFields;
     }
     return *this;
 }

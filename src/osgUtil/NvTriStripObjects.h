@@ -6,6 +6,8 @@
 #include <vector>
 #include <list>
 
+#include <osg/MemoryManager>
+
 /////////////////////////////////////////////////////////////////////////////////
 //
 // Types defined for stripification
@@ -133,7 +135,7 @@ class NvEdgeInfo
         }
 
         // ref and unref
-        void Unref () { if (--m_refCount == 0) delete this; }
+        void Unref () { if (--m_refCount == 0) osgDelete this; }
 
         // data members are left public
         UINT         m_refCount;

@@ -15,7 +15,7 @@ using namespace osg;
 
 GeoSet::GeoSet()
 {
-    // we will use the a default delete functor which
+    // we will use the a default osgDelete functor which
     // assumes that users have allocated arrays with new only
     // and that now sharing of attributes exists between GeoSet's.
     _adf = osgNew AttributeDeleteFunctor;
@@ -144,19 +144,19 @@ GeoSet::GeoSet(const GeoSet& geoset,const CopyOp& copyop):
 
 void GeoSet::AttributeDeleteFunctor::operator() (GeoSet* gset)
 {
-    // note, delete checks for NULL so want delete NULL pointers.
-    delete [] gset->getPrimLengths();
-    delete [] gset->getCoords();
-    delete [] gset->getNormals();
-    delete [] gset->getColors();
-    delete [] gset->getTextureCoords();
-    // can't delete a void* right now... interleaved arrays needs to be reimplemented with a proper pointer..
-    //    delete [] gset->getInterleavedArray();
+    // note, osgDelete checks for NULL so want osgDelete NULL pointers.
+    osgDelete [] gset->getPrimLengths();
+    osgDelete [] gset->getCoords();
+    osgDelete [] gset->getNormals();
+    osgDelete [] gset->getColors();
+    osgDelete [] gset->getTextureCoords();
+    // can't osgDelete a void* right now... interleaved arrays needs to be reimplemented with a proper pointer..
+    //    osgDelete [] gset->getInterleavedArray();
 
 
     // coord indicies may be shared so we have to go through the long winded
     // step of creating unique pointer sets which we then delete.  This
-    // ensures that arrays aren't delete twice. Robert. 
+    // ensures that arrays aren't osgDelete twice. Robert. 
     std::set<osg::ushort*> ushortList;
     std::set<osg::uint*>   uintList;
     
@@ -170,14 +170,14 @@ void GeoSet::AttributeDeleteFunctor::operator() (GeoSet* gset)
         sitr!=ushortList.end();
         ++sitr)
     {
-        delete [] *sitr;
+        osgDelete [] *sitr;
     }
     
     for(std::set<osg::uint*>::iterator iitr=uintList.begin();
         iitr!=uintList.end();
         ++iitr)
     {
-        delete [] *iitr;
+        osgDelete [] *iitr;
     }
 }
 

@@ -30,7 +30,7 @@ VertexCache::VertexCache(int size)
 
 VertexCache::~VertexCache()
 {
-    delete[] entries;
+    osgDelete [] entries;
 }
 
 
@@ -832,7 +832,7 @@ void NvStripifier::RemoveSmallStrips(NvStripInfoVec& allStrips, NvStripInfoVec& 
     }
 
     osgDelete vcache;
-    delete[] bVisitedList;
+    osgDelete [] bVisitedList;
 }
 
 
@@ -1634,7 +1634,7 @@ MyVertexVec& optimizedVerts)
         }
     }
 
-    delete[] indexCache;
+    osgDelete [] indexCache;
 
     assert(optimizedVerts.size() == vertices.size());
 }

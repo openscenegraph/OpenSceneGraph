@@ -501,15 +501,16 @@ int main( int argc, char **argv )
     viewer.setSceneData(rootNode.get());
 
 
+    viewer.getCullSettings().setCullMask(0xffffffff);
+    viewer.getCullSettings().setCullMaskLeft(0x00000001);
+    viewer.getCullSettings().setCullMaskRight(0x00000002);
+
     // set all the sceneview's up so that their left and right add cull masks are set up.
     for(osgProducer::OsgCameraGroup::SceneHandlerList::iterator itr=viewer.getSceneHandlerList().begin();
         itr!=viewer.getSceneHandlerList().end();
         ++itr)
     {
         osgUtil::SceneView* sceneview = (*itr)->getSceneView();
-        sceneview->setCullMask(0xffffffff);
-        sceneview->setCullMaskLeft(0x00000001);
-        sceneview->setCullMaskRight(0x00000002);
         sceneview->setFusionDistance(osgUtil::SceneView::USE_FUSION_DISTANCE_VALUE,radius);
     }
 

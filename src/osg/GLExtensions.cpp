@@ -60,7 +60,7 @@ const bool osg::isGLExtensionSupported(const char *extension)
 
 void* osg::getGLExtensionFuncPtr(const char *funcName)
 {
-#if defined(_WIN32)
+#if defined(_WIN32) || defined(__CYGWIN__)
    return wglGetProcAddress(funcName);
 #elif defined(macintosh)
    return NULL;

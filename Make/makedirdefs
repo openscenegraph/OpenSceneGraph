@@ -48,7 +48,7 @@ PLUGIN_DIRS = \
 	txp\
 	zip\
         3dc\
-        ive
+        ive\
 
 
 # comment in if you have Performer installed.
@@ -137,7 +137,6 @@ EXAMPLE_DIRS = \
 	osgshaders\
 	osgshadowtexture\
 	osgshape\
-	osgslideshow\
 	osgstereoimage\
 	osgteapot\
 	osgtext\
@@ -150,6 +149,7 @@ EXAMPLE_DIRS = \
 	osgvertexprogram\
 	osgviewer\
 	osgwindows\
+	slideshow3D\
         
 #	osgpagedlod\
 #	osgsimulation\

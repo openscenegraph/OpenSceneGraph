@@ -41,7 +41,8 @@ PLUGIN_TARGET_BASENAME = txp
 include $(TOPDIR)/Make/cygwin_plugin_def
 PLUGIN = $(PLUGIN_PREFIX)$(PLUGIN_TARGET_BASENAME).$(PLUGIN_EXT)
 
-LIB_TARGET_BASENAME=osgTXP
-LIB = $(LIB_PREFIX)$(LIB_TARGET_BASENAME).$(LIB_EXT)
+#### LIB NOT NEEDED ANYMORE and causes a race condition when doing a parallel make.
+####LIB_TARGET_BASENAME=osgTXP
+####LIB = $(LIB_PREFIX)$(LIB_TARGET_BASENAME).$(LIB_EXT)
 
 include $(TOPDIR)/Make/makerules 

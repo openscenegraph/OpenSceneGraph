@@ -96,7 +96,8 @@ class SG_EXPORT TextureRectangle : public Texture
 
         void applyTexParameters(GLenum target, State& state) const;
 
-        void applyTexImage(GLenum target, Image* image, State& state, GLsizei& inwidth, GLsizei& inheight) const;
+        void applyTexImage_load(GLenum target, Image* image, State& state, GLsizei& inwidth, GLsizei& inheight) const;
+        void applyTexImage_subload(GLenum target, Image* image, State& state, GLsizei& inwidth, GLsizei& inheight) const;
 
         // not ideal that _image is mutable, but its required since
         // Image::ensureDimensionsArePowerOfTwo() can only be called

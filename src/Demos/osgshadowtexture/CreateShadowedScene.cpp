@@ -10,7 +10,7 @@
 
 #include "CreateShadowedScene.h"
 
-
+using namespace osg;
 
 class CreateShadowTextureCullCallback : public osg::NodeCallback
 {
@@ -55,7 +55,7 @@ class CreateShadowTextureCullCallback : public osg::NodeCallback
 
         // we need this to get round the order dependance
         // of eye linear tex gen...    
-        class MyTexGen : public osg::TexGen
+        class MyTexGen : public TexGen
         {
             public:
 

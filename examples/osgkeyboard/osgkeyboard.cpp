@@ -28,7 +28,8 @@ protected:
         
         ~KeyboardModel() {}
 
-        void addKey(osg::Vec3& pos, int key,const std::string& text,float width, float height);
+        osg::Switch* addKey(osg::Vec3& pos, int key,const std::string& text,float width, float height);
+        osg::Switch* addKey(int key,osg::Switch* sw);
 
         void createKeyboard();
 
@@ -36,21 +37,50 @@ protected:
         
         osg::ref_ptr<osg::Group>    _scene;
         KeyModelMap                 _keyModelMap;
+        osg::ref_ptr<osgText::Text> _inputText;
 
 };
 
 void KeyboardModel::keyChange(int key,int value)
 {
-    std::cout << std::hex << key << "\t"<< value << std::dec  << std::endl;
+    std::cout << "key value change, code="<<std::hex << key << "\t value="<< value << std::dec  << std::endl;
 
+    // toggle the keys graphical representation on or off via osg::Swithc
     KeyModelMap::iterator itr = _keyModelMap.find(key);
     if (itr!=_keyModelMap.end())
     {
         itr->second->setSingleChildOn(value);
     }
+    
+    if (value)
+    {
+        // when a key is pressed add the new data to the text field
+        
+        if (key>0 && key<256)
+        {
+            // just add ascii characters right now...
+            _inputText->getText().push_back(key);
+            _inputText->update();
+        }
+        else if (key==osgGA::GUIEventAdapter::KEY_Return)
+        {
+            _inputText->getText().push_back('\n');
+            _inputText->update();
+        }
+        else if (key==osgGA::GUIEventAdapter::KEY_BackSpace || key==osgGA::GUIEventAdapter::KEY_Delete) 
+        {
+            if (!_inputText->getText().empty())
+            {
+                _inputText->getText().pop_back();
+                _inputText->update();
+            }
+        }
+        
+    }
+    
 }
 
-void KeyboardModel::addKey(osg::Vec3& pos, int key,const std::string& text,float width, float height)
+osg::Switch* KeyboardModel::addKey(osg::Vec3& pos, int key,const std::string& text,float width, float height)
 {
 
     osg::Geode* geodeUp = new osg::Geode;
@@ -93,13 +123,22 @@ void KeyboardModel::addKey(osg::Vec3& pos, int key,const std::string& text,float
     
     pos.x() += width;
     
+    return model;
+    
+}
+
+osg::Switch* KeyboardModel::addKey(int key,osg::Switch* sw)
+{
+    _keyModelMap[key] = sw;
+    return sw;
 }
 
 void KeyboardModel::createKeyboard()
 {
     _scene = new osg::Group;
     
-    osg::Vec3 pos(0.0f,0.0f,0.0f);
+    osg::Vec3 origin(0.0f,0.0f,0.0f);
+    osg::Vec3 pos=origin;
     
     addKey(pos,osgGA::GUIEventAdapter::KEY_Control_L,"Ctrl",2.0f,0.5f);
     addKey(pos,osgGA::GUIEventAdapter::KEY_Super_L,"Super",2.0f,0.5f);
@@ -117,52 +156,52 @@ void KeyboardModel::createKeyboard()
 
     addKey(pos,osgGA::GUIEventAdapter::KEY_Shift_L,"Shift",2.0f,0.5f);
     addKey(pos,'\\',"\\",1.0f,1.0f);
-    addKey(pos,'z',"Z",1.0f,1.0f);
-    addKey(pos,'x',"X",1.0f,1.0f);
-    addKey(pos,'c',"C",1.0f,1.0f);
-    addKey(pos,'v',"V",1.0f,1.0f);
-    addKey(pos,'b',"B",1.0f,1.0f);
-    addKey(pos,'n',"N",1.0f,1.0f);
-    addKey(pos,'m',"M",1.0f,1.0f);
-    addKey(pos,',',",",1.0f,1.0f);
-    addKey(pos,'.',".",1.0f,1.0f);
-    addKey(pos,'/',"/",1.0f,1.0f);
+    addKey('Z',addKey(pos,'z',"Z",1.0f,1.0f));
+    addKey('X',addKey(pos,'x',"X",1.0f,1.0f));
+    addKey('C',addKey(pos,'c',"C",1.0f,1.0f));
+    addKey('V',addKey(pos,'v',"V",1.0f,1.0f));
+    addKey('B',addKey(pos,'b',"B",1.0f,1.0f));
+    addKey('N',addKey(pos,'n',"N",1.0f,1.0f));
+    addKey('M',addKey(pos,'m',"M",1.0f,1.0f));
+    addKey('<',addKey(pos,',',",",1.0f,1.0f));
+    addKey('>',addKey(pos,'.',".",1.0f,1.0f));
+    addKey('?',addKey(pos,'/',"/",1.0f,1.0f));
     addKey(pos,osgGA::GUIEventAdapter::KEY_Shift_R,"Shift",2.0f,0.5f);
 
     pos.x() = 0.0f;
     pos.z() += 1.0f;
     
     addKey(pos,osgGA::GUIEventAdapter::KEY_Caps_Lock,"Caps",2.0f,0.5f);
-    addKey(pos,'a',"A",1.0f,1.0f);
-    addKey(pos,'s',"S",1.0f,1.0f);
-    addKey(pos,'d',"D",1.0f,1.0f);
-    addKey(pos,'f',"F",1.0f,1.0f);
-    addKey(pos,'g',"G",1.0f,1.0f);
-    addKey(pos,'h',"H",1.0f,1.0f);
-    addKey(pos,'j',"J",1.0f,1.0f);
-    addKey(pos,'k',"K",1.0f,1.0f);
-    addKey(pos,'l',"L",1.0f,1.0f);
-    addKey(pos,';',";",1.0f,1.0f);
-    addKey(pos,'\'',"'",1.0f,1.0f);
-    addKey(pos,'#',"#",1.0f,1.0f);
+    addKey('A',addKey(pos,'a',"A",1.0f,1.0f));
+    addKey('S',addKey(pos,'s',"S",1.0f,1.0f));
+    addKey('D',addKey(pos,'d',"D",1.0f,1.0f));
+    addKey('F',addKey(pos,'f',"F",1.0f,1.0f));
+    addKey('G',addKey(pos,'g',"G",1.0f,1.0f));
+    addKey('H',addKey(pos,'h',"H",1.0f,1.0f));
+    addKey('J',addKey(pos,'j',"J",1.0f,1.0f));
+    addKey('K',addKey(pos,'k',"K",1.0f,1.0f));
+    addKey('L',addKey(pos,'l',"L",1.0f,1.0f));
+    addKey(':',addKey(pos,';',";",1.0f,1.0f));
+    addKey('@',addKey(pos,'\'',"'",1.0f,1.0f));
+    addKey('~',addKey(pos,'#',"#",1.0f,1.0f));
     addKey(pos,osgGA::GUIEventAdapter::KEY_Return,"Return",4.0f,0.5f);
 
     pos.x() = 0.0f;
     pos.z() += 1.0f;
     
     addKey(pos,osgGA::GUIEventAdapter::KEY_Tab,"Tab",2.0f,0.5f);
-    addKey(pos,'q',"Q",1.0f,1.0f);
-    addKey(pos,'w',"W",1.0f,1.0f);
-    addKey(pos,'e',"E",1.0f,1.0f);
-    addKey(pos,'r',"R",1.0f,1.0f);
-    addKey(pos,'t',"T",1.0f,1.0f);
-    addKey(pos,'y',"Y",1.0f,1.0f);
-    addKey(pos,'u',"U",1.0f,1.0f);
-    addKey(pos,'i',"I",1.0f,1.0f);
-    addKey(pos,'o',"O",1.0f,1.0f);
-    addKey(pos,'p',"P",1.0f,1.0f);
-    addKey(pos,'[',"[",1.0f,1.0f);
-    addKey(pos,']',"]",1.0f,1.0f);
+    addKey('Q',addKey(pos,'q',"Q",1.0f,1.0f));
+    addKey('W',addKey(pos,'w',"W",1.0f,1.0f));
+    addKey('E',addKey(pos,'e',"E",1.0f,1.0f));
+    addKey('R',addKey(pos,'r',"R",1.0f,1.0f));
+    addKey('T',addKey(pos,'t',"T",1.0f,1.0f));
+    addKey('Y',addKey(pos,'y',"Y",1.0f,1.0f));
+    addKey('U',addKey(pos,'u',"U",1.0f,1.0f));
+    addKey('I',addKey(pos,'i',"I",1.0f,1.0f));
+    addKey('O',addKey(pos,'o',"O",1.0f,1.0f));
+    addKey('P',addKey(pos,'p',"P",1.0f,1.0f));
+    addKey('{',addKey(pos,'[',"[",1.0f,1.0f));
+    addKey('}',addKey(pos,']',"]",1.0f,1.0f));
 
     pos.x() = 0.0f;
     pos.z() += 1.0f;
@@ -270,6 +309,28 @@ void KeyboardModel::createKeyboard()
     addKey(pos,osgGA::GUIEventAdapter::KEY_KP_Divide,"/",1.0f,1.0f);
     addKey(pos,osgGA::GUIEventAdapter::KEY_KP_Multiply,"*",1.0f,1.0f);
     addKey(pos,osgGA::GUIEventAdapter::KEY_KP_Subtract,"-",1.0f,1.0f);
+    
+    float totalWidth = pos.x()-origin.x();
+    pos = origin;
+    pos.z() += -1.5f;
+
+    osg::Geode* geodeInput = new osg::Geode;
+    {
+        _inputText = new osgText::Text;
+        _inputText->setFont("fonts/arial.ttf");
+        _inputText->setColor(osg::Vec4(1.0f,1.0f,0.0f,1.0f));
+        _inputText->setCharacterSize(1.0f);
+        _inputText->setMaximumWidth(totalWidth);
+        _inputText->setPosition(pos);
+        _inputText->setDrawMode(osgText::Text::TEXT/*||osgText::Text::BOUNDINGBOX*/);
+        _inputText->setAlignment(osgText::Text::BASE_LINE);
+        _inputText->setAxisAlignment(osgText::Text::XZ_PLANE);
+        _inputText->setText("Press some keys...");
+        
+        geodeInput->addDrawable(_inputText.get());
+        
+        _scene->addChild(geodeInput);
+    }
 
 }
 

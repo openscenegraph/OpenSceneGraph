@@ -100,11 +100,12 @@ namespace osg {
     protected:
         virtual ~MpegImageStream();
 
-    private:
         bool _useMMX;
         float _fps;
         long _frames;
         float _len;
+        
+        void swapData();
 
         enum ThreadCommand {
             THREAD_IDLE = 0,
@@ -129,6 +130,7 @@ namespace osg {
         
         void* _mpg;
         unsigned char** _rows;
+        unsigned char* _videoWriteData;
 
     };
 

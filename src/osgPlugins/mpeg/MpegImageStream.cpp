@@ -74,8 +74,13 @@ MpegImageStream::~MpegImageStream()
         mpg = NULL;
     }
     if (_rows) {
-        ::free(_rows);
+        delete [] _rows;
         _rows = NULL;
+    }
+    
+    if (_videoWriteData)
+    {
+        delete [] _videoWriteData;
     }
 
 }
@@ -151,39 +156,39 @@ void MpegImageStream::load(const char* fileName)
 
     // Allocate image data
     // maybe use BGR888 and save some conversion somewhere?
-    unsigned char* data = (unsigned char*) ::malloc(s * t * 3);
-
+    unsigned char* data = new unsigned char [s * t * 3];
+    _videoWriteData = new unsigned char [s * t * 3];
 
     setImage(s, t, 0,
              GL_RGB,
              GL_RGB, GL_UNSIGNED_BYTE, data,
-             osg::Image::USE_MALLOC_FREE);
+             osg::Image::USE_NEW_DELETE);
+
 
     // Allocate decoder rows
     // documentation says we need add'l bytes at the end of each
     // row for MMX but this is more efficient and works so far.
-    _rows = (unsigned char**) ::malloc(t * sizeof(unsigned char*));
-    unsigned char* dp = data;
-    for (int i = 0; i < t; i++) {
-        _rows[t-i-1] = dp;
-        dp += (s * 3);
-    }
+    _rows = new unsigned char* [t];
+    
+    // set up the rows to the current view write data. 
+    swapData();
 
-    //  
-    // #if 0
-    //                     // Setup texture matrix
-    //                     Matrix mat;
-    //                     mat.makeScale((float) s / (float) texWidth,
-    //                                   ((float) t / (float) texHeight) * -1.0f, 1.0f);
-    //                     mat = mat * Matrix::translate(0.0f, (float) t / (float) texHeight, 0.0f);
-    //                     _texMat->setMatrix(mat);
-    // #else
-    //                     _texMat->setMatrix(osg::Matrix::scale(s,-t,1.0f)*osg::Matrix::translate(0.0f,t,0.0f));
-    // #endif
-    // XXX
+
     osg::notify(INFO) << _frames << " @ " << _fps << " " << _len << "s" << std::endl;
     osg::notify(INFO) << "img " << s << "x" << t << std::endl;
     osg::notify(INFO) << "tex " << texWidth << "x" << texHeight << std::endl;
+}
+
+
+void MpegImageStream::swapData()
+{
+    std::swap(_videoWriteData,_data);
+    unsigned char* dp = _videoWriteData;
+    for (int i = 0; i < t(); i++)
+    {
+        _rows[t()-i-1] = dp;
+        dp += (s() * 3);
+    }
 }
 
 
@@ -266,6 +271,8 @@ void MpegImageStream::run()
                              0, 0, _s, _t,
                              _s, _t,
                              MPEG3_RGB888, str);
+
+            swapData();
 
             dirty(); //Image();
 

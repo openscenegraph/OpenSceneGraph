@@ -171,9 +171,9 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
             return _rootRenderStage.get();
         }
 
-        const float getCalculatedNearPlane() const { return _calculated_znear; }
+        const float getCalculatedNearPlane() const { return _computed_znear; }
         
-        const float getCalculatedFarPlane() const { return _calculated_zfar; }
+        const float getCalculatedFarPlane() const { return _computed_zfar; }
 
     protected:
 
@@ -195,11 +195,6 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
             osg::NodeCallback* callback = node.getCullCallback();
             if (callback) (*callback)(&node,this);
             else acceptNode->accept(*this);
-        }
-
-        inline osg::Matrix* getCurrentMatrix()
-        {
-            return _modelviewStack.back().get();
         }
 
         inline const osg::Vec3& getEyeLocal() const
@@ -245,8 +240,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
             return !_modelviewClippingVolumeStack.back().contains(bb,mode);
         }
 	
-	void updateCalculatedNearFar(const osg::BoundingBox& bb);
-
+	void updateCalculatedNearFar(const osg::Matrix& matrix,const osg::Drawable& drawable);
     	void updateCalculatedNearFar(const osg::Vec3& pos);
 		
         /** Add a drawable to current render graph.*/
@@ -392,8 +386,17 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
 
         float   _LODBias;
 
-        float _calculated_znear;
-        float _calculated_zfar;
+
+        enum ComputeNearFarMode
+        {
+            DO_NOT_COMPUTE_NEAR_FAR = 0,
+            COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES,
+            COMPUTE_NEAR_FAR_USING_PRIMITIVES
+        };
+
+        ComputeNearFarMode  _computeNearFar;
+        float               _computed_znear;
+        float               _computed_zfar;
         
         osg::ref_ptr<const osg::EarthSky> _earthSky;
 

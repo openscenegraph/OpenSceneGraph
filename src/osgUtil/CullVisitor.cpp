@@ -93,8 +93,9 @@ CullVisitor::CullVisitor()
     _tsm = OBJECT_EYE_POINT_DISTANCE;
 
 
-    _calculated_znear = FLT_MAX;
-    _calculated_zfar = -FLT_MAX;
+    _computeNearFar = COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES;
+    _computed_znear = FLT_MAX;
+    _computed_zfar = -FLT_MAX;
     
     _impostorActive = true;
     _depthSortImpostorSprites = false;
@@ -132,8 +133,9 @@ void CullVisitor::reset()
 
 
     // reset the calculated near far planes.
-    _calculated_znear = FLT_MAX;
-    _calculated_zfar = -FLT_MAX;
+    _computeNearFar = COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES;
+    _computed_znear = FLT_MAX;
+    _computed_zfar = -FLT_MAX;
     
     
     osg::Vec3 lookVector(0.0,0.0,-1.0);
@@ -196,6 +198,32 @@ void CullVisitor::pushProjectionMatrix(Matrix* matrix)
 
 void CullVisitor::popProjectionMatrix()
 {
+
+    if (_computed_zfar>0.0f)
+    {
+
+        // adjust the projection matrix so that it encompases the local coords.
+        // so it doesn't cull them out.
+        osg::Matrix& projection = *_projectionStack.back();
+
+        double desired_znear = _computed_znear*0.95;
+        double desired_zfar = _computed_zfar*1.05;
+
+        double min_near_plane = _computed_zfar*0.0005f;
+        if (desired_znear<min_near_plane) desired_znear=min_near_plane;
+
+        double trans_near_plane = (-desired_znear*projection(0,2)-desired_znear*projection(1,2)-desired_znear*projection(2,2)+projection(3,2))/(-desired_znear*projection(2,3));
+        double trans_far_plane = (-desired_zfar*projection(0,2)-desired_zfar*projection(1,2)-desired_zfar*projection(2,2)+projection(3,2))/(-desired_zfar*projection(2,3));
+
+        double ratio = fabs(2.0f/(trans_near_plane-trans_far_plane));
+        double center = -(trans_near_plane+trans_far_plane)/2.0f;
+
+        projection.postMult(osg::Matrix(1.0f,0.0f,0.0f,0.0f,
+                                        0.0f,1.0f,0.0f,0.0f,
+                                        0.0f,0.0f,ratio,0.0f,
+                                        0.0f,0.0f,center*ratio,1.0f));
+    }
+
     _projectionStack.pop_back();
     _projectionClippingVolumeStack.pop_back();
 
@@ -264,34 +292,16 @@ inline float distance(const osg::Vec3& coord,const osg::Matrix& matrix)
 }
 
 
-void CullVisitor::updateCalculatedNearFar(const osg::BoundingBox& bb)
+void CullVisitor::updateCalculatedNearFar(const osg::Matrix& matrix,const osg::Drawable& drawable)
 {
-
-    if (!bb.isValid())
-    {
-        osg::notify(osg::WARN)<<"Warning: CullVisitor::updateCalculatedNearFar(..) passed a null bounding box."<< std::endl;
-        return;
-    }
-    
-    float d_near,d_far;
-    if (!_modelviewStack.empty())
-    {
-    
-        const osg::Matrix& matrix = *(_modelviewStack.back());
-        d_near = distance(bb.corner(_bbCornerNear),matrix);
-        d_far = distance(bb.corner(_bbCornerFar),matrix);
-
-    }
-    else
-    {
-        d_near = -(bb.corner(_bbCornerNear)).z();
-        d_far = -(bb.corner(_bbCornerFar)).z();
-    }
+    const osg::BoundingBox& bb = drawable.getBound();
+    float d_near = distance(bb.corner(_bbCornerNear),matrix);
+    float d_far = distance(bb.corner(_bbCornerFar),matrix);
 
     if (d_near<=d_far)
     {
-        if (d_near<_calculated_znear) _calculated_znear = d_near;
-        if (d_far>_calculated_zfar) _calculated_zfar = d_far;
+        if (d_near<_computed_znear) _computed_znear = d_near;
+        if (d_far>_computed_zfar) _computed_zfar = d_far;
     }
     else
     {
@@ -302,9 +312,10 @@ void CullVisitor::updateCalculatedNearFar(const osg::BoundingBox& bb)
         }
         // note, need to reverse the d_near/d_far association because they are
         // the wrong way around...
-        if (d_far<_calculated_znear) _calculated_znear = d_far;
-        if (d_near>_calculated_zfar) _calculated_zfar = d_near;
+        if (d_far<_computed_znear) _computed_znear = d_far;
+        if (d_near>_computed_zfar) _computed_zfar = d_near;
     }
+
 }
 
 void CullVisitor::updateCalculatedNearFar(const osg::Vec3& pos)
@@ -320,8 +331,8 @@ void CullVisitor::updateCalculatedNearFar(const osg::Vec3& pos)
         d = -pos.z();
     }
 
-    if (d<_calculated_znear) _calculated_znear = d;
-    if (d>_calculated_zfar) _calculated_zfar = d;
+    if (d<_computed_znear) _computed_znear = d;
+    if (d>_computed_zfar) _computed_zfar = d;
 }   
 
 void CullVisitor::setCullingMode(CullViewState::CullingMode mode)
@@ -374,7 +385,7 @@ void CullVisitor::apply(Geode& node)
     StateSet* node_state = node.getStateSet();
     if (node_state) pushStateSet(node_state);
 
-    Matrix* matrix = getCurrentMatrix();
+    Matrix& matrix = getModelViewMatrix();
     for(int i=0;i<node.getNumDrawables();++i)
     {
         Drawable* drawable = node.getDrawable(i);
@@ -391,7 +402,7 @@ void CullVisitor::apply(Geode& node)
         }
 
 
-        updateCalculatedNearFar(bb);
+        if (_computeNearFar) updateCalculatedNearFar(matrix,*drawable);
 
         // push the geoset's state on the geostate stack.    
         StateSet* stateset = drawable->getStateSet();
@@ -400,15 +411,7 @@ void CullVisitor::apply(Geode& node)
         if (isTransparent)
         {
 
-            Vec3 center;
-            if (matrix)
-            {
-                center = (drawable->getBound().center())*(*matrix);
-            }
-            else
-            {
-                center = drawable->getBound().center();
-            }
+            Vec3 center = (drawable->getBound().center())*matrix;
 
             float depth;
             switch(_tsm)
@@ -419,14 +422,14 @@ void CullVisitor::apply(Geode& node)
             }
 
             if (stateset) pushStateSet(stateset);
-            addDrawableAndDepth(drawable,matrix,depth);
+            addDrawableAndDepth(drawable,&matrix,depth);
             if (stateset) popStateSet();
 
         }
         else
         {
             if (stateset) pushStateSet(stateset);
-            addDrawable(drawable,matrix);
+            addDrawable(drawable,&matrix);
             if (stateset) popStateSet();
         }
 
@@ -462,12 +465,19 @@ void CullVisitor::apply(Billboard& node)
         // need to modify isCulled to handle the billboard offset.
         // if (isCulled(drawable->getBound())) continue;
 
-        updateCalculatedNearFar(pos);
-
         Matrix* billboard_matrix = createOrReuseMatrix(modelview);
 
         node.getMatrix(*billboard_matrix,eye_local,pos);
 
+        Vec3 center;
+        center = pos*modelview;
+
+        if (_computeNearFar)
+        {
+            float d =  center.z();
+            if (d<_computed_znear) _computed_znear = d;
+            if (d>_computed_zfar) _computed_zfar = d;
+        }
 
         StateSet* stateset = drawable->getStateSet();
         
@@ -475,8 +485,6 @@ void CullVisitor::apply(Billboard& node)
         if (isTransparent)
         {
 
-            Vec3 center;
-            center = pos*modelview;
 
             float depth;
             switch(_tsm)
@@ -512,11 +520,11 @@ void CullVisitor::apply(LightSource& node)
     StateSet* node_state = node.getStateSet();
     if (node_state) pushStateSet(node_state);
 
-    Matrix* matrix = getCurrentMatrix();
+    Matrix& matrix = getModelViewMatrix();
     Light* light = node.getLight();
     if (light)
     {
-        addLight(light,matrix);
+        addLight(light,&matrix);
     }
 
     // pop the node's state off the geostate stack.    
@@ -596,12 +604,24 @@ void CullVisitor::apply(Projection& node)
     StateSet* node_state = node.getStateSet();
     if (node_state) pushStateSet(node_state);
 
+
+    // record previous near and far values.
+    float previous_znear = _computed_znear;
+    float previous_zfar = _computed_zfar;
+    
+    _computed_znear = FLT_MAX;
+    _computed_zfar = -FLT_MAX;
+
     ref_ptr<osg::Matrix> matrix = createOrReuseMatrix(node.getMatrix());
     pushProjectionMatrix(matrix.get());
     
     handle_cull_callbacks_and_traverse(node);
 
     popProjectionMatrix();
+
+    _computed_znear = previous_znear;
+    _computed_zfar = previous_zfar;
+
 
     // pop the node's state off the render graph stack.    
     if (node_state) popStateSet();
@@ -709,7 +729,7 @@ void CullVisitor::apply(Impostor& node)
         // within the impostor distance threshold therefore attempt
         // to use impostor instead.
         
-        Matrix* matrix = getCurrentMatrix();
+        Matrix& matrix = getModelViewMatrix();
 
         // search for the best fit ImpostorSprite;
         ImpostorSprite* impostorSprite = node.findBestImpostorSprite(eyeLocal);
@@ -743,7 +763,7 @@ void CullVisitor::apply(Impostor& node)
         if (impostorSprite)
         {
             
-            updateCalculatedNearFar(impostorSprite->getBound());
+            if (_computeNearFar) updateCalculatedNearFar(matrix,*impostorSprite);
 
             StateSet* stateset = impostorSprite->getStateSet();
             
@@ -751,15 +771,7 @@ void CullVisitor::apply(Impostor& node)
             
             if (_depthSortImpostorSprites)
             {
-                Vec3 center;
-                if (matrix)
-                {
-                    center = node.getCenter()*(*matrix);
-                }
-                else
-                {
-                    center = node.getCenter();
-                }
+                Vec3 center = node.getCenter()*matrix;
 
                 float depth;
                 switch(_tsm)
@@ -769,11 +781,11 @@ void CullVisitor::apply(Impostor& node)
                     default: depth = center.length2();break;
                 }
 
-                addDrawableAndDepth(impostorSprite,matrix,depth);
+                addDrawableAndDepth(impostorSprite,&matrix,depth);
             }
             else
             {
-                addDrawable(impostorSprite,matrix);
+                addDrawable(impostorSprite,&matrix);
             }
 
             if (stateset) popStateSet();
@@ -805,7 +817,7 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
     // projection matrix...
     bool isPerspectiveProjection = true;
 
-    Matrix* matrix = getCurrentMatrix();
+    const Matrix& matrix = getModelViewMatrix();
     const BoundingSphere& bs = node.getBound();
     osg::Vec3 eye_local = getEyeLocal();
     int eval = node.evaluate(eye_local,_LODBias);
@@ -818,7 +830,7 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
 
 
     Vec3 eye_world(0.0,0.0,0.0);
-    Vec3 center_world = bs.center()*(*matrix);
+    Vec3 center_world = bs.center()*matrix;
 
     // no appropriate sprite has been found therefore need to create
     // one for use.
@@ -888,25 +900,10 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
     Vec3 top_local   ( center_local+up_local);
     Vec3 right_local ( center_local+sv_local);
     
-    Vec3 near_world;
-    Vec3 far_world;
-    Vec3 top_world;
-    Vec3 right_world;
-    
-    if (matrix)
-    {
-        near_world  = near_local * (*matrix);
-        far_world   = far_local * (*matrix);
-        top_world   = top_local * (*matrix);
-        right_world = right_local * (*matrix);
-    }
-    else
-    {
-        near_world  = near_local;
-        far_world   = far_local;
-        top_world   = top_local;
-        right_world = right_local;
-    }
+    Vec3 near_world = near_local * matrix;
+    Vec3 far_world = far_local * matrix;
+    Vec3 top_world = top_local * matrix;
+    Vec3 right_world = right_local * matrix;
     
     float znear = (near_world-eye_world).length();
     float zfar  = (far_world-eye_world).length();

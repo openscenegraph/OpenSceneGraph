@@ -280,6 +280,8 @@ void TerrainManipulator::setByMatrix(const osg::Matrixd& matrix)
         }
     }    
 
+    CoordinateFrame coordinateFrame = getCoordinateFrame(_center);
+    _previousUp = getUpVector(coordinateFrame);
 
     clampOrientation();
 }
@@ -340,6 +342,9 @@ void TerrainManipulator::computePosition(const osg::Vec3d& eye,const osg::Vec3d&
     rotation_matrix.get(_rotation);
     _rotation = _rotation.inverse();
 
+    CoordinateFrame coordinateFrame = getCoordinateFrame(_center);
+    _previousUp = getUpVector(coordinateFrame);
+
     clampOrientation();
 }
 
@@ -391,6 +396,7 @@ bool TerrainManipulator::calcMovement()
             
             CoordinateFrame coordinateFrame = getCoordinateFrame(_center);
             osg::Vec3d localUp = getUpVector(coordinateFrame);
+            //osg::Vec3d localUp = _previousUp;
             
 
             osg::Vec3d forwardVector = localUp^sideVector;
@@ -406,6 +412,7 @@ bool TerrainManipulator::calcMovement()
             rotate_azim.makeRotate(-dx,localUp);
             
             _rotation = _rotation * rotate_elevation * rotate_azim;
+            
         }
         
         return true;
@@ -427,8 +434,9 @@ bool TerrainManipulator::calcMovement()
         osg::Vec3d sideVector = getSideVector(rotation_matrix);
         osg::Vec3d upVector = getFrontVector(rotation_matrix);
 
-        CoordinateFrame coordinateFrame = getCoordinateFrame(_center);
-        osg::Vec3d localUp = getUpVector(coordinateFrame);
+        // CoordinateFrame coordinateFrame = getCoordinateFrame(_center);
+        // osg::Vec3d localUp = getUpVector(coordinateFrame);
+        osg::Vec3d localUp = _previousUp;
 
         osg::Vec3d forwardVector =localUp^sideVector;
         sideVector = forwardVector^localUp;
@@ -443,13 +451,13 @@ bool TerrainManipulator::calcMovement()
         // need to recompute the itersection point along the look vector.
         
         // now reorientate the coordinate frame to the frame coords.
-        coordinateFrame =  getCoordinateFrame(_center);
+        CoordinateFrame coordinateFrame =  getCoordinateFrame(_center);
 
         // need to reintersect with the terrain
         osgUtil::IntersectVisitor iv;
 
         double distance = _node->getBound().radius();
-        osg::Vec3d start_segment = osg::Vec3d(_center[0],_center[1],_center[2]) + getUpVector(coordinateFrame) * distance;
+        osg::Vec3d start_segment = _center + getUpVector(coordinateFrame) * distance;
         osg::Vec3d end_segment = start_segment - getUpVector(coordinateFrame) * (2.0f*distance);
 
         osg::notify(INFO)<<"start="<<start_segment<<"\tend="<<end_segment<<"\tupVector="<<getUpVector(coordinateFrame)<<std::endl;
@@ -483,13 +491,23 @@ bool TerrainManipulator::calcMovement()
         coordinateFrame = getCoordinateFrame(_center);
         osg::Vec3d new_localUp = getUpVector(coordinateFrame);
         
+        
         osg::Quat pan_rotation;
         pan_rotation.makeRotate(localUp,new_localUp);
-        _rotation = _rotation * pan_rotation;
-        
-        osg::notify(osg::NOTICE)<<"Rotating from "<<localUp<<" to "<<new_localUp<<"  angle = "<<acos(localUp*new_localUp/(localUp.length()*new_localUp.length()))<<std::endl;
 
-        //clampOrientation();
+        if (!pan_rotation.zeroRotation())
+        {
+            _rotation = _rotation * pan_rotation;
+            _previousUp = new_localUp;
+            //osg::notify(osg::NOTICE)<<"Rotating from "<<localUp<<" to "<<new_localUp<<"  angle = "<<acos(localUp*new_localUp/(localUp.length()*new_localUp.length()))<<std::endl;
+
+            //clampOrientation();
+        }
+        else
+        {
+            osg::notify(osg::NOTICE)<<"New up orientation nearly inline - no need to rotate"<<std::endl;
+        }
+        
 
         return true;
     }
@@ -526,6 +544,7 @@ void TerrainManipulator::clampOrientation()
 
         CoordinateFrame coordinateFrame = getCoordinateFrame(_center);
         osg::Vec3d localUp = getUpVector(coordinateFrame);
+        //osg::Vec3d localUp = _previousUp;
 
         osg::Vec3d sideVector = lookVector ^ localUp;
 
@@ -544,7 +563,10 @@ void TerrainManipulator::clampOrientation()
         osg::Quat rotate_roll;
         rotate_roll.makeRotate(upVector,newUpVector);
 
-        _rotation = _rotation * rotate_roll;
+        if (!rotate_roll.zeroRotation())
+        {
+            _rotation = _rotation * rotate_roll;
+        }
     }
 }
 

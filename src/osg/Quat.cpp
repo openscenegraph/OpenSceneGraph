@@ -14,6 +14,7 @@
 #include <osg/Quat>
 #include <osg/Matrixf>
 #include <osg/Matrixd>
+#include <osg/Notify>
 
 #include <math.h>
 
@@ -103,7 +104,7 @@ void Quat::makeRotate( const Vec3f& from, const Vec3f& to )
 // are co-incident or opposite in direction.
 void Quat::makeRotate( const Vec3d& from, const Vec3d& to )
 {
-    const value_type epsilon = 0.00001;
+    const value_type epsilon = 0.0000001;
 
     value_type length1  = from.length();
     value_type length2  = to.length();
@@ -113,10 +114,12 @@ void Quat::makeRotate( const Vec3d& from, const Vec3d& to )
 
     if ( fabs(cosangle - 1) < epsilon )
     {
+        osg::notify(osg::INFO)<<"*** Quat::makeRotate(from,to) with near co-linear vectors, epsilon= "<<fabs(cosangle-1)<<std::endl;
+    
         // cosangle is close to 1, so the vectors are close to being coincident
         // Need to generate an angle of zero with any vector we like
         // We'll choose (1,0,0)
-        makeRotate( 0.0, 1.0, 0.0, 0.0 );
+        makeRotate( 0.0, 0.0, 0.0, 1.0 );
     }
     else
     if ( fabs(cosangle + 1.0) < epsilon )

@@ -113,6 +113,10 @@
 #define TEXTURE_COMPARE_FAIL_VALUE_ARB    0x80BF
 #endif
 
+#if !defined( GL_MAX_TEXTURE_UNITS )
+#define GL_MAX_TEXTURE_UNITS              0x84E2
+#endif
+
 namespace osg {
 
 /** Texture base class which encapsulates OpenGl texture functionality which common betweent the various types of OpenGL textures.*/
@@ -360,6 +364,9 @@ class SG_EXPORT Texture : public osg::StateAttribute
                 void setMaxTextureSize(GLint maxsize) { _maxTextureSize=maxsize; }
                 GLint maxTextureSize() const { return _maxTextureSize; }
 
+                void setNumTextureUnits(GLint nunits ) { _numTextureUnits=nunits; }
+                GLint numTextureUnits() const { return _numTextureUnits; }
+
                 bool isCompressedTexImage2DSupported() const { return _glCompressedTexImage2D!=0; }
 
                 void setCompressedTexImage2DProc(void* ptr) { _glCompressedTexImage2D = ptr; }
@@ -391,6 +398,7 @@ class SG_EXPORT Texture : public osg::StateAttribute
                 bool    _isClientStorageSupported;
                 
                 GLint   _maxTextureSize;
+                GLint   _numTextureUnits;
 
                 void*   _glCompressedTexImage2D;
                 void*   _glCompressedTexSubImage2D;

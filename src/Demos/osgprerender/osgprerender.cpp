@@ -102,7 +102,7 @@ void MyCullCallback::doPreRender(osg::Node&, osgUtil::CullVisitor& cv)
     osgUtil::RenderStage* previous_stage = cv.getCurrentRenderBin()->_stage;
 
     // set up the background color and clear mask.
-    rtts->setClearColor(osg::Vec4(0.0f,0.0f,0.0f,0.0f));
+    rtts->setClearColor(osg::Vec4(0.1f,0.1f,0.3f,0.0f));
     rtts->setClearMask(previous_stage->getClearMask());
 
     // set up to charge the same RenderStageLighting is the parent previous stage.
@@ -120,7 +120,8 @@ void MyCullCallback::doPreRender(osg::Node&, osgUtil::CullVisitor& cv)
     float znear = 1.0f*bs.radius();
     float zfar  = 3.0f*bs.radius();
         
-    float top   = 0.5f*znear;
+    // 2:1 aspect ratio as per flag geomtry below.
+    float top   = 0.25f*znear;
     float right = 0.5f*znear;
 
     znear *= 0.9f;
@@ -199,6 +200,7 @@ void MyCullCallback::doPreRender(osg::Node&, osgUtil::CullVisitor& cv)
 }
 
 
+// call back which cretes a deformation field to oscilate the model.
 class MyGeometryCallback : 
     public osg::Drawable::AppCallback, 
     public osg::Drawable::AttributeFunctor
@@ -365,7 +367,7 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph)
         
         osg::TexEnv* overlay_texenv = new osg::TexEnv;
         overlay_texenv->setMode(osg::TexEnv::BLEND);
-        overlay_texenv->setColor(osg::Vec4(0.1f,0.1f,0.1f,1.0f));
+        overlay_texenv->setColor(osg::Vec4(0.3f,0.3f,0.3f,1.0f));
         stateset->setTextureAttribute(1, overlay_texenv);
     }    
 

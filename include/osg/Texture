@@ -77,30 +77,8 @@ class SG_EXPORT Texture : public StateAttribute
         Texture();
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
-        Texture(const Texture& text,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
-            StateAttribute(text,copyop),
-            _handleList(),
-            _modifiedTag(),
-            _image(copyop(text._image.get())),
-            _unrefImageAfterApply(text._unrefImageAfterApply),
-            _target(text._target),
-            _wrap_s(text._wrap_s),
-            _wrap_t(text._wrap_t),
-            _wrap_r(text._wrap_r),
-            _min_filter(text._min_filter),
-            _mag_filter(text._mag_filter),
-            _texParamtersDirty(false),
-            _internalFormatMode(text._internalFormatMode),
-            _internalFormatValue(text._internalFormatValue),
-            _borderColor(text._borderColor),
-            _textureWidth(text._textureWidth),
-            _textureHeight(text._textureHeight),
-            _subloadMode(text._subloadMode),
-            _subloadOffsX(text._subloadOffsX),
-            _subloadOffsY(text._subloadOffsY),
-            _subloadWidth(text._subloadWidth),
-            _subloadHeight(text._subloadHeight) {}
-
+        Texture(const Texture& text,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+        
         META_StateAttribute(osg, Texture,TEXTURE);
         
         virtual bool isTextureAttribute() const { return true; }
@@ -121,9 +99,16 @@ class SG_EXPORT Texture : public StateAttribute
 
         /** Get the const texture image. */
         inline const Image* getImage() const { return _image.get(); }
-        
+
+        /** Set the unreference image after apply flag, default value is false.
+          * If set to true the attached image is unreferenced via a _image = 0;
+          * if the image has no other references to it, it will be automatically
+          * deleted.  Note, this should only by used in case where only a single
+          * graphics context is being used, otherwise only the first context will 
+          * be set, with the rest left with no image to apply.*/        
         void setUnrefImageAfterApply(bool unrefImage) { _unrefImageAfterApply = unrefImage; }
 
+        /** Get the unreference image after apply flag.*/
         bool getUnrefImageAfterApply() const { return _unrefImageAfterApply; }
 
         /** Copy pixels into a 2D texture image.As per glCopyTexImage2D.
@@ -238,29 +223,63 @@ class SG_EXPORT Texture : public StateAttribute
         /** Get the texture subload mode. */
         inline const SubloadMode getSubloadMode() const { return _subloadMode; }
 
-        /** Set the texture subload offsets. */
-        inline void setSubloadOffset(const int x, const int y) {
-            _subloadOffsX = x;
-            _subloadOffsY = y;
+        /** Set the texture subload texture offsets. */
+        inline void setSubloadTextureOffset(const int x, const int y)
+        {
+            _subloadTextureOffsetX = x;
+            _subloadTextureOffsetY = y;
         }
 
-        /** Get the texture subload offsets. */
-        inline void getSubloadOffset(int& x, int& y) const {
-            x = _subloadOffsX;
-            y = _subloadOffsY;
+        /** Get the texture subload texture offsets. */
+        inline void getSubloadTextureOffset(int& x, int& y) const
+        {
+            x = _subloadTextureOffsetX;
+            y = _subloadTextureOffsetY;
         }
         
         /** Set the texture subload width. If width or height are zero then
           * the repsective size value is calculated from the source image sizes. */
-        inline void setSubloadSize(const int width, const int height) {
-            _subloadWidth = width;
-            _subloadHeight = height;
+        inline void setSubloadTextureSize(const int width, const int height)
+        {
+            _textureWidth = width;
+            _textureHeight = height;
         }
 
         /** Get the texture subload width. */
-        inline void getSubloadSize(int& width, int& height) const {
-            width = _subloadWidth;
-            height = _subloadHeight;
+        inline void getSubloadTextureSize(int& width, int& height) const
+        {
+            width = _textureWidth;
+            height = _textureHeight;
+        }
+
+
+        /** Set the subload image offsets. */
+        inline void setSubloadImageOffset(const int x, const int y)
+        {
+            _subloadImageOffsetX = x;
+            _subloadImageOffsetY = y;
+        }
+
+        /** Get the subload image offsets. */
+        inline void getSubloadImageOffset(int& x, int& y) const
+        {
+            x = _subloadImageOffsetX;
+            y = _subloadImageOffsetY;
+        }
+
+        /** Set the image subload width. If width or height are zero then
+          * the repsective size value is calculated from the source image sizes. */
+        inline void setSubloadImageSize(const int width, const int height)
+        {
+            _subloadImageWidth = width;
+            _subloadImageHeight = height;
+        }
+
+        /** Get the image subload width. */
+        inline void getSubloadImageSize(int& width, int& height) const
+        {
+            width = _subloadImageWidth;
+            height = _subloadImageHeight;
         }
 
         /** Get the handle to the texture object for the current context.*/
@@ -358,8 +377,9 @@ class SG_EXPORT Texture : public StateAttribute
         mutable GLsizei _textureWidth, _textureHeight;
 
         SubloadMode _subloadMode;
-        GLint _subloadOffsX, _subloadOffsY;
-        GLsizei _subloadWidth, _subloadHeight;
+        GLint _subloadTextureOffsetX, _subloadTextureOffsetY;
+        GLint _subloadImageOffsetX, _subloadImageOffsetY;
+        GLsizei _subloadImageWidth, _subloadImageHeight;
 
         // static cache of deleted display lists which can only 
         // by completely deleted once the appropriate OpenGL context

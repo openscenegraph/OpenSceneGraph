@@ -195,20 +195,31 @@ void TextureCubeMap::apply(State& state) const
             modifiedTag = 0;
             glBindTexture( _target, handle );
             if (_texParamtersDirty) applyTexParameters(_target,state);
+            
+            
+            unsigned int rowwidth = 0;
             for (int n=0; n<6; n++)
             {
                 if ((_subloadMode == AUTO) ||
                     (_subloadMode == IF_DIRTY && modifiedTag != _images[n]->getModifiedTag()))
                 {
+                
+                    if (rowwidth != _images[n]->getRowSizeInBytes())
+                    {
+                        rowwidth = _images[n]->getRowSizeInBytes();
+                        glPixelStorei(GL_UNPACK_ROW_LENGTH,rowwidth);
+                    }
+
                     glTexSubImage2D(faceTarget[n], 0,
-                                    _subloadOffsX, _subloadOffsY,
-                                    (_subloadWidth>0)?_subloadWidth:_images[n]->s(), (_subloadHeight>0)?_subloadHeight:_images[n]->t(),
+                                    _subloadTextureOffsetX, _subloadTextureOffsetX,
+                                    (_subloadImageWidth>0)?_subloadImageWidth:_images[n]->s(), (_subloadImageHeight>0)?_subloadImageHeight:_images[n]->t(),
                                     (GLenum) _images[n]->getPixelFormat(), (GLenum) _images[n]->getDataType(),
-                                    _images[n]->data());
+                                    _images[n]->data(_subloadImageOffsetX,_subloadImageOffsetY));
                     // update the modified flag to show that the image has been loaded.
                     modifiedTag += _images[n]->getModifiedTag();
                 }
             }
+            glPixelStorei(GL_UNPACK_ROW_LENGTH,0);
         }
     }
     else if (imagesValid())

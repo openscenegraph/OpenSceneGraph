@@ -19,8 +19,8 @@ using namespace osg;
 Texture::DeletedTextureObjectCache Texture::s_deletedTextureObjectCache;
 
 Texture::Texture():
+    _unrefImageAfterApply(false),
     _target(GL_TEXTURE_2D),
-    _unrefImageAfterApply(true),
     _wrap_s(CLAMP),
     _wrap_t(CLAMP),
     _wrap_r(CLAMP),
@@ -33,16 +33,44 @@ Texture::Texture():
     _textureWidth(0),
     _textureHeight(0),
     _subloadMode(OFF),
-    _subloadOffsX(0),
-    _subloadOffsY(0),
-    _subloadWidth(0),
-    _subloadHeight(0)
+    _subloadTextureOffsetX(0),
+    _subloadTextureOffsetY(0),
+    _subloadImageOffsetX(0),
+    _subloadImageOffsetY(0),
+    _subloadImageWidth(0),
+    _subloadImageHeight(0)
 {
     _handleList.resize(DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),0);
     _modifiedTag.resize(DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),0);
 
 }
 
+Texture::Texture(const Texture& text,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            StateAttribute(text,copyop),
+            _handleList(),
+            _modifiedTag(),
+            _image(copyop(text._image.get())),
+            _unrefImageAfterApply(text._unrefImageAfterApply),
+            _target(text._target),
+            _wrap_s(text._wrap_s),
+            _wrap_t(text._wrap_t),
+            _wrap_r(text._wrap_r),
+            _min_filter(text._min_filter),
+            _mag_filter(text._mag_filter),
+            _texParamtersDirty(false),
+            _internalFormatMode(text._internalFormatMode),
+            _internalFormatValue(text._internalFormatValue),
+            _borderColor(text._borderColor),
+            _textureWidth(text._textureWidth),
+            _textureHeight(text._textureHeight),
+            _subloadMode(text._subloadMode),
+            _subloadTextureOffsetX(text._subloadTextureOffsetX),
+            _subloadTextureOffsetY(text._subloadTextureOffsetY),
+            _subloadImageOffsetX(text._subloadImageOffsetX),
+            _subloadImageOffsetY(text._subloadImageOffsetY),
+            _subloadImageWidth(text._subloadImageWidth),
+            _subloadImageHeight(text._subloadImageHeight)
+{}
 
 Texture::~Texture()
 {
@@ -87,10 +115,12 @@ int Texture::compare(const StateAttribute& sa) const
     COMPARE_StateAttribute_Parameter(_textureWidth)
     COMPARE_StateAttribute_Parameter(_textureHeight)
     COMPARE_StateAttribute_Parameter(_subloadMode)
-    COMPARE_StateAttribute_Parameter(_subloadOffsX)
-    COMPARE_StateAttribute_Parameter(_subloadOffsY)
-    COMPARE_StateAttribute_Parameter(_subloadWidth)
-    COMPARE_StateAttribute_Parameter(_subloadHeight)
+    COMPARE_StateAttribute_Parameter(_subloadTextureOffsetX)
+    COMPARE_StateAttribute_Parameter(_subloadTextureOffsetY)
+    COMPARE_StateAttribute_Parameter(_subloadImageOffsetX)
+    COMPARE_StateAttribute_Parameter(_subloadImageOffsetY)
+    COMPARE_StateAttribute_Parameter(_subloadImageWidth)
+    COMPARE_StateAttribute_Parameter(_subloadImageHeight)
 
     return 0; // passed all the above comparison macro's, must be equal.
 }
@@ -200,11 +230,16 @@ void Texture::apply(State& state) const
             if (_subloadMode == AUTO ||
                 (_subloadMode == IF_DIRTY && modifiedTag != _image->getModifiedTag()))
             {
+                glPixelStorei(GL_UNPACK_ROW_LENGTH,_image->getRowSizeInBytes());
+
                 glTexSubImage2D(_target, 0,
-                                _subloadOffsX, _subloadOffsY,
-                                (_subloadWidth>0)?_subloadWidth:_image->s(), (_subloadHeight>0)?_subloadHeight:_image->t(),
+                                _subloadTextureOffsetX, _subloadTextureOffsetY,
+                                (_subloadImageWidth>0)?_subloadImageWidth:_image->s(), (_subloadImageHeight>0)?_subloadImageHeight:_image->t(),
                                 (GLenum) _image->getPixelFormat(), (GLenum) _image->getDataType(),
-                                _image->data());
+                                _image->data(_subloadImageOffsetX,_subloadImageOffsetY));
+
+                glPixelStorei(GL_UNPACK_ROW_LENGTH,0);
+
                 // update the modified flag to show that the image has been loaded.
                 modifiedTag = _image->getModifiedTag();
             }
@@ -517,29 +552,39 @@ void Texture::applyTexImage(GLenum target, Image* image, State& state) const
             glTexParameteri(target, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
         }
         
-        GLsizei width = (_subloadWidth>0)?_subloadWidth:image->s();
-        GLsizei height = (_subloadHeight>0)?_subloadHeight:image->t();
+        GLsizei width = (_subloadImageWidth>0)?_subloadImageWidth:image->s();
+        GLsizei height = (_subloadImageHeight>0)?_subloadImageHeight:image->t();
+
+        if (_textureWidth==0)
+        {
+            // need to calculate texture dimension
+            _textureWidth = 1;
+            for (; _textureWidth < (static_cast<GLsizei>(_subloadTextureOffsetX) + width); _textureWidth <<= 1) {}
+         }
+
+        if (_textureHeight==0)
+        {
+            // need to calculate texture dimension
+            _textureHeight = 1;
+            for (; _textureHeight < (static_cast<GLsizei>(_subloadTextureOffsetY) + height); _textureHeight <<= 1) {}
+        }
         
-        // calculate texture dimension
-        _textureWidth = 1;
-        for (; _textureWidth < (static_cast<GLsizei>(_subloadOffsX) + width); _textureWidth <<= 1)
-            ;
-
-        _textureHeight = 1;
-        for (; _textureHeight < (static_cast<GLsizei>(_subloadOffsY) + height); _textureHeight <<= 1)
-            ;
-
         // reserve appropriate texture memory
         glTexImage2D(target, 0, internalFormat,
                      _textureWidth, _textureHeight, 0,
                      (GLenum) image->getPixelFormat(), (GLenum) image->getDataType(),
                      NULL);
 
+
+        glPixelStorei(GL_UNPACK_ROW_LENGTH,image->getRowSizeInBytes());
+
         glTexSubImage2D(target, 0,
-                        _subloadOffsX, _subloadOffsY,
+                        _subloadTextureOffsetX, _subloadTextureOffsetY,
                         width, height,
                         (GLenum) image->getPixelFormat(), (GLenum) image->getDataType(),
-                        image->data());
+                        image->data(_subloadImageOffsetX,_subloadImageOffsetY));
+
+        glPixelStorei(GL_UNPACK_ROW_LENGTH,0);
     }
     
 }

@@ -611,7 +611,6 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_STORAGE_HINT_APPLE , GL_STORAGE_CACHED_APPLE);
         #endif
     }
-
     
     unsigned char* data = (unsigned char*)image->data();
  

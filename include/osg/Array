@@ -116,6 +116,13 @@ class TemplateArray : public Array, public std::vector<T>
             Array(ARRAYTYPE,DataSize,DataType),
             std::vector<T>(first,last) {}        
 
+        TemplateArray& operator = (const TemplateArray& array)
+        {
+            if (this==&array) return *this;
+            assign(array.begin(),array.end());
+            return *this;
+        } 
+
         virtual Object* cloneType() const { return new TemplateArray(); }
         virtual Object* clone(const CopyOp& copyop) const { return new TemplateArray(*this,copyop); }        
 
@@ -186,6 +193,13 @@ class TemplateIndexArray : public IndexArray, public std::vector<T>
         TemplateIndexArray(InputIterator first,InputIterator last) : 
             IndexArray(ARRAYTYPE,DataSize,DataType),
             std::vector<T>(first,last) {}        
+
+        TemplateIndexArray& operator = (const TemplateIndexArray& array)
+        {
+            if (this==&array) return *this;
+            assign(array.begin(),array.end());
+            return *this;
+        } 
 
         virtual Object* cloneType() const { return new TemplateIndexArray(); }
         virtual Object* clone(const CopyOp& copyop) const { return new TemplateIndexArray(*this,copyop); }        

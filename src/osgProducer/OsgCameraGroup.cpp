@@ -19,6 +19,37 @@
 using namespace Producer;
 using namespace osgProducer;
 
+
+
+
+class RenderSurfaceRealizeCallback : public Producer::RenderSurface::Callback
+{
+public:
+
+    RenderSurfaceRealizeCallback(OsgCameraGroup* cameraGroup,OsgSceneHandler* sceneHandler):
+        _cameraGroup(cameraGroup),
+        _sceneHandler(sceneHandler) {}
+    
+    virtual void operator()( const RenderSurface & rs)
+    {
+        if (_cameraGroup)
+        {
+            if (_cameraGroup->getRealizeCallback())
+            {
+                (*(_cameraGroup->getRealizeCallback()))(rs,_cameraGroup,_sceneHandler);
+            }
+            else if (_sceneHandler) _sceneHandler->init();
+        }
+        else if (_sceneHandler) _sceneHandler->init();
+    }
+
+    OsgCameraGroup* _cameraGroup;
+    OsgSceneHandler* _sceneHandler;
+
+};
+
+
+
 std::string findCameraConfigFile(const std::string& configFile)
 {
     std::string foundFile = osgDB::findDataFile(configFile);
@@ -191,29 +222,25 @@ void OsgCameraGroup::realize( ThreadingModel thread_model)
     if (!_ds) _ds = osg::DisplaySettings::instance();
 
     _ds->setMaxNumberOfGraphicsContexts( _cfg->getNumberOfCameras() );
+    
+    _shvec.clear();
 
     for( unsigned int i = 0; i < _cfg->getNumberOfCameras(); i++ )
     {
         Producer::Camera *cam = _cfg->getCamera(i);
         osgProducer::OsgSceneHandler *sh = new osgProducer::OsgSceneHandler(_ds.get());
         sh->setDefaults();
-        if( _global_stateset != NULL )
-            sh->setGlobalStateSet( _global_stateset.get() );
-        if( _scene_data != NULL )
-            sh->setSceneData( _scene_data.get() );
-        sh->setBackgroundColor( _background_color);
-        sh->getState()->setContextID(i);
-        sh->setFrameStamp( _frameStamp.get() );
         _shvec.push_back( sh );
-
         cam->setSceneHandler( sh );
+        RenderSurface* rs = cam->getRenderSurface();
+        rs->setRealizeCallback( new RenderSurfaceRealizeCallback(this, sh));
     }
 
     if( _global_stateset == NULL && _shvec.size() > 0 )
-	{
+    {
         SceneHandlerList::iterator p = _shvec.begin();
-		_global_stateset = (*p)->getGlobalStateSet();
-	}
+        _global_stateset = (*p)->getGlobalStateSet();
+    }
 
     setUpSceneViewsWithData();
 

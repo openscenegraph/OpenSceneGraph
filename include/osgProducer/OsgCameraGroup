@@ -105,12 +105,40 @@ class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
         void setFusionDistance( osgUtil::SceneView::FusionDistanceMode mode,float value=1.0f);
 
 
+        /** RealizeCallback class one should override to provide an the implemention of realize callbacks.
+          * Note, this callback overrides the normal call to OsgSceneHandler::init() so it become the your
+          * responisibility to call this within your callback if required, it is a safe assumption to
+          * always call OsgSceneHandler::init() within your callback..*/
+        class OSGPRODUCER_EXPORT RealizeCallback : public osg::Referenced
+        {
+        public:
+            virtual void operator()( const Producer::RenderSurface & rs, OsgCameraGroup* cg, OsgSceneHandler* sh) = 0;
+            
+        protected:
+            virtual ~RealizeCallback() {}
+        };
+
+        /** Set the realize callback to use when once the render surfaces are realized.*/
+        void setRealizeCallback( RealizeCallback* cb) { _realizeCallback = cb; }
+
+        /** Get the realize callback.*/
+        RealizeCallback* getRealizeCallback() { return _realizeCallback.get(); }
+        
+        /** Get the const realize callback.*/
+        const RealizeCallback* getRealizeCallback() const { return _realizeCallback.get(); }
+        
+
+
+
+
         void advance();
 
 
+        /** Realize the render surfaces (OpenGL graphics) and various threads, and call any realize callbacks.*/
         virtual void realize( ThreadingModel thread_model= SingleThreaded );
 
 
+        /** Dispatch the cull and draw for each of the Camera's for this frame.*/
         virtual void frame();
 
 
@@ -130,6 +158,9 @@ class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
         float                                   _fusionDistanceValue;
         
         SceneHandlerList                        _shvec;
+        
+        osg::ref_ptr<RealizeCallback>           _realizeCallback;
+        
         osg::ref_ptr<osg::DisplaySettings>      _ds;
         bool                                    _initialized;
         osg::ref_ptr<osg::FrameStamp>           _frameStamp;

@@ -56,7 +56,6 @@ osg::Node* createHUD()
         geode->addDrawable( text );
 
         text->setFont(timesFont);
-        text->setAutoScaleToScreen(true);
         text->setPosition(position);
         text->setText("All you need to do is create your text in a subgraph.");
         

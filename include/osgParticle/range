@@ -6,11 +6,16 @@
 #ifndef OSGPARTICLE_RANGE_
 #define OSGPARTICLE_RANGE_ 1
 
+// include Export simply to disable Visual Studio silly warnings.
+#include <osgParticle/Export>
+
 #include <cstdlib>
 
 #include <osg/Vec2>
 #include <osg/Vec3>
 #include <osg/Vec4>
+
+//using std::rand;
 
 namespace osgParticle
 {
@@ -43,7 +48,7 @@ namespace osgParticle
         /// Get a random value between min and max.
         T_ get_random() const
         {
-            return min + (max - min) * std::rand() / RAND_MAX;
+            return min + (max - min) * rand() / RAND_MAX;
         }
 
     };

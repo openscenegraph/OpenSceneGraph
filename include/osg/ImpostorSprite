@@ -102,9 +102,9 @@ class SG_EXPORT ImpostorSprite : public Drawable
         inline const Vec3* getControlCoords() const { return _controlcoords; }
 
 
-        /** calculate the pixel error value for current camera position and object position.*/
-        const float calcPixelError(const Camera& camera,const Viewport& viewport,const osg::Matrix* matrix) const;
-
+        /** calculate the pixel error value for passing in the ModelViewProjectionWindow transform,
+          * which transform local coords into screen space.*/
+        const float ImpostorSprite::calcPixelError(const Matrix& MVPW) const;
 
         void setTexture(Texture* tex,int s,int t);
 

@@ -40,31 +40,16 @@ ImpostorSprite::~ImpostorSprite()
     }
 }
 
-const float ImpostorSprite::calcPixelError(const Camera& camera,const Viewport& viewport,const osg::Matrix* matrix) const
+const float ImpostorSprite::calcPixelError(const Matrix& MVPW) const
 {
     // find the maximum screen space pixel error between the control coords and the quad coners.
     float max_error_sqrd = 0.0f;
+
     for(int i=0;i<4;++i)
     {
 
-        Vec3 projected_coord;
-        Vec3 projected_control;
-        if (matrix)
-        {
-            // project the coords of the quad into screen space.
-            camera.project(_coords[i]*(*matrix),viewport,projected_coord);
-
-            // project the controls coords into screen space.
-            camera.project(_controlcoords[i]*(*matrix),viewport,projected_control);
-        }
-        else
-        {
-            // project the coords of the quad into screen space.
-            camera.project(_coords[i],viewport,projected_coord);
-
-            // project the controls coords into screen space.
-            camera.project(_controlcoords[i],viewport,projected_control);
-        }    
+        Vec3 projected_coord = _coords[i]*MVPW;
+        Vec3 projected_control = _controlcoords[i]*MVPW;
 
         float dx = (projected_coord.x()-projected_control.x());
         float dy = (projected_coord.y()-projected_control.y());
@@ -77,7 +62,6 @@ const float ImpostorSprite::calcPixelError(const Camera& camera,const Viewport& 
 
     return sqrtf(max_error_sqrd);
 }
-
 void ImpostorSprite::drawImmediateMode(State&)
 {
     // when the tex env is set to REPLACE, and the 

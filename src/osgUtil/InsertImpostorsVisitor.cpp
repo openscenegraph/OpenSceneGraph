@@ -12,7 +12,7 @@ using namespace osgUtil;
 InsertImpostorsVisitor::InsertImpostorsVisitor()
 {
     setTraversalMode(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN);
-    _impostorThresholdRatio = 10.0f;
+    _impostorThresholdRatio = 30.0f;
     _maximumNumNestedImpostors = 3;
     _numNestedImpostors = 0;
 }

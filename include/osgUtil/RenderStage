@@ -5,7 +5,6 @@
 #ifndef OSGUTIL_RENDERSTAGE
 #define OSGUTIL_RENDERSTAGE 1
 
-#include <osg/Camera>
 #include <osg/ColorMask>
 
 #include <osgUtil/RenderBin>
@@ -92,12 +91,6 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
         /** Get the clear color.*/
         const int getClearStencil() const { return _clearStencil; }
 
-        
-        void setCamera(osg::Camera* camera) { _camera = camera; }
-        osg::Camera* getCamera() { return _camera.get(); }
-        const osg::Camera* getCamera() const { return _camera.get(); }
-
-
         void setRenderStageLighting(RenderStageLighting* rsl) { _renderStageLighting = rsl; }
 
         RenderStageLighting* getRenderStageLighting() const
@@ -124,8 +117,6 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
 
         bool                                _stageDrawnThisFrame;
         DependencyList                      _dependencyList;
-
-        osg::ref_ptr<osg::Camera>           _camera;
 
         // viewport x,y,width,height.
         osg::ref_ptr<osg::Viewport>         _viewport;

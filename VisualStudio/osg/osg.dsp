@@ -277,10 +277,6 @@ SOURCE=..\..\src\osg\MatrixTransform.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osg\MemoryManager.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\osg\Node.cpp
 # End Source File
 # Begin Source File
@@ -822,6 +818,10 @@ SOURCE=..\..\Include\Osg\Timer
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\Transform
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\TriangleFunctor
 # End Source File
 # Begin Source File
 

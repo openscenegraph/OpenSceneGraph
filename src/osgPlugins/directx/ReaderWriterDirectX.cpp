@@ -23,8 +23,6 @@
 
 #include "directx.h"
 
-#include <string>
-
 #include <osg/TexEnv>
 #include <osg/CullFace>
 
@@ -39,6 +37,7 @@
 #include <osgDB/ReadFile>
 #include <osgDB/FileNameUtils>
 
+#include <assert.h>
 
 /**
  * OpenSceneGraph plugin wrapper/converter.
@@ -145,7 +144,7 @@ osg::Geode* ReaderWriterDirectX::convertFromDX(DX::Object& obj,
      *
      * - Polys are CW oriented
      */
-    vector<osg::Geometry*> geomList;
+    std::vector<osg::Geometry*> geomList;
 
     unsigned int i;
     for (i = 0; i < meshMaterial->material.size(); i++) {

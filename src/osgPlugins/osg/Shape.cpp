@@ -421,10 +421,13 @@ bool HeightField_writeLocalData(const Object& obj, Output& fw)
 {
     const HeightField& heightfield = static_cast<const HeightField&>(obj);
 
-    fw.indent()<<"Origin "<<heightfield.getOrigin()<<std::endl;
+    int prec = fw.precision();
+    fw.precision(15);
+    fw.indent()<<"Origin "<<heightfield.getOrigin().x()<<" "<<heightfield.getOrigin().y()<<" "<<heightfield.getOrigin().z()<<std::endl;
     fw.indent()<<"XInterval "<<heightfield.getXInterval()<<std::endl;
     fw.indent()<<"YInterval "<<heightfield.getYInterval()<<std::endl;
     fw.indent()<<"Rotation "<<heightfield.getRotation()<<std::endl;
+    fw.precision(prec);
 
     fw.indent()<<"NumColumnsAndRows "<<heightfield.getNumColumns()<<" "<<heightfield.getNumRows()<<std::endl;
 

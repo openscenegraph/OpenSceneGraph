@@ -333,7 +333,7 @@ void CullVisitor::apply(Billboard& node)
 
         if (_computeNearFar)
         {
-            float d =  center.z();
+            float d = -center.z();
             if (d<_computed_znear) _computed_znear = d;
             if (d>_computed_zfar) _computed_zfar = d;
         }

@@ -123,9 +123,9 @@ public:
         
         virtual void getHomePosition(osg::Vec3d& eye, osg::Vec3d& center, osg::Vec3d& up)
         {
-            _homeEye = eye;
-            _homeCenter = center;
-            _homeUp = up;
+            eye = _homeEye;
+            center = _homeCenter;
+            up = _homeUp;
         }
         
         virtual void setAutoComputeHomePosition(bool flag) { _autoComputeHomePosition = flag; }

@@ -34,7 +34,9 @@ using namespace flt;
 RegisterRecordProxy<LocalVertexPoolRecord> g_LocalVertexPoolProxy;
 LocalVertexPoolRecord *_current = NULL;
 
-LocalVertexPoolRecord::LocalVertexPoolRecord() : AncillaryRecord()
+LocalVertexPoolRecord::LocalVertexPoolRecord()
+  : AncillaryRecord(),
+    _vertexSizeBytesCache(0)
 {
 }
 
@@ -72,35 +74,22 @@ char *LocalVertexPoolRecord::_getStartOfAttribute ( const uint32 &whichVertex, c
   // Get pointer to start of vertex data.
   char *startOfVertices = (char *) this->_getStartOfVertices();
 
-  // The size of all the vertex information is the size of the entire record 
-  // minus the size of the record's header.
-  size_t sizeOfAllVertices = _pData->_wLength - sizeof ( SLocalVertexPool );
-
   // The number of vertices.
-  uint32 numVertices = this->getNumVertices();
+  //uint32 numVertices = this->getNumVertices();
 
-  // The size of each individual vertex is the size of all of them divided by 
-  // how many there are.
-  size_t sizeOfVertex = sizeOfAllVertices / numVertices;
+  // NOTE This function formerly computed sizeOfVertex by taking the record length and dividing
+  //   by the number of vertices. This is wrong in 15.7 and beyond, as the record could
+  //   exceed 65535 bytes and be continued, in which case the "original" record length
+  //   field does not contain the actual length of the data.
 
-  // If we're doing the math right (and the record data is good) then there 
-  // should not be a remainder when doing the integer division above.
-  assert ( 0 == ( sizeOfAllVertices % numVertices ) );
-  assert ( 0 == ( sizeOfAllVertices % sizeOfVertex ) );
-  assert ( sizeOfAllVertices == sizeOfVertex * numVertices );
+  // The size of each individual vertex depends on its attributes, and is cached.
+  size_t sizeOfVertex = this->_getVertexSizeBytes();
 
   // Set the start of the desired vertex's data.
   char *startOfAttribute = &startOfVertices[whichVertex * sizeOfVertex];
 
   // Now adjust for the offset within this vertex.
   startOfAttribute += offset;
-
-  // Should be true. It means that the address we are returning should not be 
-  // greater than the start of the last vertex's attribute.
-  assert ( ( ( (uint32) startOfAttribute ) - ( (uint32) startOfVertices ) ) <= ( sizeOfAllVertices - sizeOfVertex + offset ) );
-
-  // Double check, make sure we are not off the end of this record.
-  assert ( ( ( (uint32) startOfAttribute ) - ( (uint32) startOfVertices ) ) < sizeOfAllVertices );
 
   // Return the pointer.
   return startOfAttribute;
@@ -377,7 +366,10 @@ void LocalVertexPoolRecord::endian()
 
   // Should be true. It means that we walked the pointer "vertex" to the 
   // end of the record, but not past it.
-  assert ( pool->RecHeader._wLength == ( (uint16) ( ( ( (uint32) vertex ) - ( (uint32) pool ) ) ) ) );
+  // If equal, vertex pool record was not continued.
+  // If 16bit record length is less than length of vertex pool, then the original vertex
+  //   pool record was continued with one or more CONTINUATION_OP records.
+  assert ( pool->RecHeader._wLength <= ( ( (uint32) vertex ) - ( (uint32) pool ) ) );
 }
 
 
@@ -480,6 +472,55 @@ void LocalVertexPoolRecord::_initAttributeOffsets()
     _offset.uv7 = current;
     current += SIZE_UV_7;
   }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Compute the size of each vertex based on its attributes. Cache the
+//  result for later reference.
+//
+///////////////////////////////////////////////////////////////////////////////
+
+int LocalVertexPoolRecord::_getVertexSizeBytes() const
+{
+  if (_vertexSizeBytesCache == 0)
+  {
+    if ( hasAttribute ( POSITION ) )
+      _vertexSizeBytesCache += SIZE_POSITION;
+
+    if ( hasAttribute ( COLOR_INDEX ) || hasAttribute ( RGB_COLOR ) )
+      _vertexSizeBytesCache += SIZE_COLOR;
+
+    if ( hasAttribute ( NORMAL ) )
+      _vertexSizeBytesCache += SIZE_NORMAL;
+
+    if ( hasAttribute ( BASE_UV ) )
+      _vertexSizeBytesCache += SIZE_BASE_UV;
+
+    if ( hasAttribute ( UV_1 ) )
+      _vertexSizeBytesCache += SIZE_UV_1;
+
+    if ( hasAttribute ( UV_2 ) )
+      _vertexSizeBytesCache += SIZE_UV_2;
+
+    if ( hasAttribute ( UV_3 ) )
+      _vertexSizeBytesCache += SIZE_UV_3;
+
+    if ( hasAttribute ( UV_4 ) )
+      _vertexSizeBytesCache += SIZE_UV_4;
+
+    if ( hasAttribute ( UV_5 ) )
+      _vertexSizeBytesCache += SIZE_UV_5;
+
+    if ( hasAttribute ( UV_6 ) )
+      _vertexSizeBytesCache += SIZE_UV_6;
+
+    if ( hasAttribute ( UV_7 ) )
+      _vertexSizeBytesCache += SIZE_UV_7;
+  }
+
+  return _vertexSizeBytesCache;
 }
 
 

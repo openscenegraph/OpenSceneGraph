@@ -7,6 +7,9 @@
 
 using namespace osg;
 
+#ifndef 
+#define GL_TEXTURE_WRAP_R                 0x8072
+#endif
 
 Texture::Texture():
             _wrap_s(CLAMP),

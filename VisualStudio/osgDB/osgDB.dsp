@@ -155,6 +155,10 @@ SOURCE=..\..\Src\osgDB\Registry.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\Src\osgDB\ReentrantMutex.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgDB\SharedStateManager.cpp
 # End Source File
 # Begin Source File
@@ -236,6 +240,10 @@ SOURCE=..\..\Include\osgDB\ReadFile
 # Begin Source File
 
 SOURCE=..\..\Include\osgDB\Registry
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\osgDB\ReentrantMutex
 # End Source File
 # Begin Source File
 

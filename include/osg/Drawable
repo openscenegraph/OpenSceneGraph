@@ -16,6 +16,13 @@
 
 namespace osg {
 
+class Statistics;
+class Vec2;
+class Vec3;
+class Vec4;
+
+
+
 /** Pure virtual base class for drawable Geometry.  Contains no drawing primitives
     directly, these are provided by subclasses such as GeoSet. State attributes 
     for a Drawable are maintained in StateSet which the Drawable maintains
@@ -67,6 +74,8 @@ class SG_EXPORT Drawable : public Object
         /** Force a recompile on next draw() of any OpenGL display list associated with this geoset.*/
         void dirtyDisplayList();
         
+        
+        
         inline void dirtyBound() { _bbox_computed = false; }
 
         /** get bounding box of geoset. 
@@ -84,45 +93,11 @@ class SG_EXPORT Drawable : public Object
           * If the drawable has _useDisplayList set to true then use an OpenGL display
           * list, automatically compiling one if required.
           * Otherwise call drawImmediateMode().
-          * Note, draw method should not be overridden in subclasses as it 
+          * Note, draw method should *not* be overridden in subclasses as it 
           * manages the optional display list.
           */
-        inline void draw(State& state)
-        {
-            if (_useDisplayList)
-            {
-
-                // get the contextID (user defined ID of 0 upwards) for the 
-                // current OpenGL context.
-                uint contextID = state.getContextID();
+        inline void draw(State& state);
         
-                // fill in array if required.
-                while (_globjList.size()<=contextID) _globjList.push_back(0);
-    
-                // get the globj for the current contextID.
-                uint& globj = _globjList[contextID];
-        
-                // call the globj if already set otherwise compile and execute.
-                if( globj != 0 )
-                {
-                    glCallList( globj );
-                }
-                else if (_useDisplayList)
-                {
-                    globj = glGenLists( 1 );
-                    glNewList( globj, GL_COMPILE_AND_EXECUTE );
-                    drawImmediateMode(state);
-                    glEndList();
-                }
-
-            }
-            else
-            {
-                // draw object as nature intended..
-                drawImmediateMode(state);
-            }
-        }
-
         /** Immediately compile this drawable into an OpenGL Display List.
             Note I, operation is ignored if _useDisplayList to false.
             Note II, compile is not intended to be overridden in subclasses.*/
@@ -143,6 +118,35 @@ class SG_EXPORT Drawable : public Object
         /** flush all the cached display list which need to be deleted
           * in the OpenGL context related to contextID.*/
         static void flushDeletedDisplayLists(uint contextID);
+        
+
+        /** Collect Stistics count from Drawable.*/
+        virtual bool getStats(Statistics&) { return false; }
+        
+
+        enum AttributeBitMask
+        {
+            COORDS              = 0x1,
+            NORMALS             = 0x2,
+            COLORS              = 0x4,
+            TEXTURE_COORDS      = 0x8,
+            TEXTURE_COORDS_0    = TEXTURE_COORDS,
+            TEXTURE_COORDS_1    = 0x16,
+            TEXTURE_COORDS_2    = 0x32,
+            TEXTURE_COORDS_3    = 0x64
+        };
+        
+        struct AttributeUpdateFunctor
+        {
+            virtual bool apply(AttributeBitMask abm,Vec2* begin,Vec2* end) { return false; }
+            virtual bool apply(AttributeBitMask abm,Vec3* begin,Vec3* end) { return false; }
+            virtual bool apply(AttributeBitMask abm,Vec4* begin,Vec4* end) { return false; }
+        };
+
+        virtual bool suppportsAttributeUpdate(AttributeBitMask) { return false; }
+
+        virtual bool applyAttributeUpdate(AttributeBitMask,AttributeUpdateFunctor&) { return false; }
+        
 
     protected:
 
@@ -173,6 +177,42 @@ class SG_EXPORT Drawable : public Object
         static DeletedDisplayListCache s_deletedDisplayListCache;
 
 };
+
+inline void Drawable::draw(State& state)
+{
+    if (_useDisplayList)
+    {
+
+        // get the contextID (user defined ID of 0 upwards) for the 
+        // current OpenGL context.
+        uint contextID = state.getContextID();
+
+        // fill in array if required.
+        while (_globjList.size()<=contextID) _globjList.push_back(0);
+
+        // get the globj for the current contextID.
+        uint& globj = _globjList[contextID];
+
+        // call the globj if already set otherwise compile and execute.
+        if( globj != 0 )
+        {
+            glCallList( globj );
+        }
+        else if (_useDisplayList)
+        {
+            globj = glGenLists( 1 );
+            glNewList( globj, GL_COMPILE_AND_EXECUTE );
+            drawImmediateMode(state);
+            glEndList();
+        }
+
+    }
+    else
+    {
+        // draw object as nature intended..
+        drawImmediateMode(state);
+    }
+}
 
 };
 

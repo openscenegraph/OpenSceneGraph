@@ -22,7 +22,19 @@ class Impostor;
 class EarthSky;
 
 /** Visitor for type safe operations on osg::Node's.
-    Based on GOF's Visitor pattern.*/ 
+    Based on GOF's Visitor pattern. The NodeVisitor 
+    is useful for developing type safe operations to nodes
+    in the scene graph (as per Visitor pattern), and adds to this
+    support for optional scene graph traversal to allow
+    operations to be applied to whole scenes at once. The Visitor
+    pattern uses a technique of double dispatch as a mechanism to
+    called the appropriate apply(..) method of the NodeVisitor.  To
+    use this feature one must use the Node::accept(NodeVisitor) which
+    is extended in each Node subclass, rather than the NodeVisitor
+    apply directly.  So use root->accept(myVisitor); instead of
+    myVisitor.apply(*root).  The later method will bypass the double
+    dispatch and the appropriate NodeVisitor::apply(..) method will
+    not be called. */ 
 class SG_EXPORT NodeVisitor : public Referenced
 {
     public:

@@ -4,6 +4,7 @@ using namespace osg;
 
 Transform::Transform()
 {
+    _type = DYNAMIC;
     _matrix = new osg::Matrix();
     _matrix->makeIdent();
 }
@@ -11,6 +12,7 @@ Transform::Transform()
 
 Transform::Transform(const Matrix& mat )
 {
+    _type = DYNAMIC;
     (*_matrix) = mat;
 }
 

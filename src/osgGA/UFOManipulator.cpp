@@ -59,7 +59,7 @@ osg::Node* UFOManipulator::getNode()
 
 const char* UFOManipulator::className() const 
 { 
-    return "UFOManipulator"; 
+    return "UFO"; 
 }
 
 void UFOManipulator::setByMatrix( const osg::Matrix &mat ) 
@@ -209,6 +209,7 @@ void UFOManipulator::getUsage(osg::ApplicationUsage& usage) const
     usage.addKeyboardMouseBinding("UFO Manipulator: <Ctrl/DownArrow>",  "Rotate view (but not direction of travel) down.");
     usage.addKeyboardMouseBinding("UFO Manipulator: <Ctrl/LeftArrow>",  "Rotate view (but not direction of travel) left.");
     usage.addKeyboardMouseBinding("UFO Manipulator: <Ctrl/RightArrow>", "Rotate view (but not direction of travel) right.");
+    usage.addKeyboardMouseBinding("UFO Manipulator: 'H'", "go to Home position.");
 }
 
 

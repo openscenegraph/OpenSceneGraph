@@ -3,6 +3,8 @@
 // 2002
 // actions & behaviours for Geo loader in OSG
 
+#include <string>
+
 #include <stdio.h>
 #include <math.h>
 #include <osg/Image>

@@ -228,10 +228,12 @@ const unsigned char SIZEOF_BITFLAGS						= (SIZEOF_INT);
 
 
 
-const unsigned short MIN_CHAR_VAL						= -128;
+// Is this really meant to be unsigned????
+const unsigned short MIN_CHAR_VAL						= (unsigned short)(-128);
 const unsigned short MAX_CHAR_VAL			            = 127;
 const unsigned short MAX_UCHAR_VAL			            = 255;
-const unsigned short MIN_SHORT_VAL			            = -32768;
+// Is this really meant to be unsigned????
+const unsigned short MIN_SHORT_VAL			            = (unsigned short)(-32768);
 const unsigned short MAX_SHORT_VAL			            = 32767;
 const unsigned short MAX_USHORT_VAL			            = 65535;
 

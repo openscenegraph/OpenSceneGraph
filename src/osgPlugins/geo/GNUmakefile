@@ -2,10 +2,12 @@ TOPDIR = ../../..
 include $(TOPDIR)/Make/makedefs 
 
 CXXFILES =\
-        geoActions.cpp\
+	geoActions.cpp\
 	ReaderWriterGEO.cpp
 
-LIBS  += -losgText -losgSim $(OSG_LIBS) $(OTHER_LIBS)
+
+##LIBS  += -losgText -losgSim $(OSG_LIBS) $(OTHER_LIBS)
+LIBS  = 
 
 TARGET_BASENAME = geo
 include $(TOPDIR)/Make/cygwin_plugin_def

@@ -7,6 +7,8 @@
 // 2- animation (see geoActions.cpp).
 // ver 1.1 GWM Dec 2002
 
+#include <string>
+
 #include <osg/Image>
 #include <osg/Group>
 #include <osg/LOD>
@@ -702,7 +704,8 @@ class ReaderWriterGEO : public ReaderWriter
         osg::MatrixTransform *makeText(georecord *gr) { // make transform, geode & text
             osg::MatrixTransform *numt=NULL;
             std::string    ttfPath("fonts/times.ttf");
-            int    gFontSize1=2;
+			// unused
+            //int    gFontSize1=2;
             osgText::Text *text= new  osgText::Text;
             text->setFont(ttfPath);
             const geoField *gfd=gr->getField(GEO_DB_TEXT_NAME);
@@ -1927,7 +1930,8 @@ void internalVars::update(const osg::FrameStamp *_frameStamp) {
 
 void geoField::parseExt(std::ifstream &fin) const { // Feb 2003 parse onme extension fields
 	static int nread=0; // debug only
-	geoExtensionDefRec *geoExt=(geoExtensionDefRec *)storage;
+	// unused
+	//geoExtensionDefRec *geoExt=(geoExtensionDefRec *)storage;
 	for (uint i=0; i<numItems; i++) {
 		geoExtensionDefRec rec;
 			fin.read((char *)&rec,sizeof(rec));

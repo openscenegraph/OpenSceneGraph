@@ -128,12 +128,13 @@
 #include "AreaGeoSetTriangulator.h"
 #include "StateSetStr.h"
 
+
 #if defined(__sgi) || defined(__FreeBSD__)
     #include <unistd.h>
     #include <ieeefp.h>
 #else
     #include <math.h>
-    #if (defined(WIN32) || defined (macintosh)) && !defined(__CYGWIN__)
+    #if (defined(WIN32) || defined (__DARWIN_OSX__)) && !defined(__CYGWIN__)
         #include <float.h>
     #else
         #include <unistd.h>
@@ -601,8 +602,10 @@ inline int IsNaNorInf( float f )
     case FP_PINF : return 1;
     default      : return 0;
   }
-#elif defined(__FreeBSD__) || defined(__linux) || defined(__CYGWIN__) || defined(__DARWIN_OSX__)
+#elif defined(__FreeBSD__) || defined(__linux) || defined(__CYGWIN__) 
   return isnanf(f) || isinf(f);
+#elif  defined(__DARWIN_OSX__)
+  return __isnanf(f) || __isinf(f);
 #elif defined(__sun)
   return isnan(f);  // KLUDGE - hack to get this to compile w/g++. 
 #elif defined(WIN32)

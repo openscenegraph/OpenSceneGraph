@@ -23,7 +23,11 @@
 #  pragma warning (disable:4541)
 #endif
 
+#ifdef __DARWIN_OSX__
+#include <sys/malloc.h>
+#else
 #include <malloc.h>
+#endif
 #include "mynode.h"
 #include <stdlib.h>
 #include "geometry.h"

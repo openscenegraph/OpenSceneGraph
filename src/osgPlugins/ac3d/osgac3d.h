@@ -52,8 +52,12 @@ typedef struct ACObject_t
 #define Prototype
 #define Private static
 #define Boolean int
+#ifndef FALSE
 #define FALSE (0)
+#endif
+#ifndef TRUE
 #define TRUE (!FALSE)
+#endif
 #define STRING(s)  (char *)(strcpy((char *)myalloc(strlen(s)+1), s))
 #define streq(a,b)  (!strcmp(a,b))
 #define myalloc malloc

@@ -66,6 +66,18 @@ Package=<4>
 
 ###############################################################################
 
+Project: "Core osgIntrospection"=.\osgIntrospection\osgIntrospection.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "Core osgGL2"=.\osgGL2\osgGL2.dsp - Package Owner=<4>
 
 Package=<5>
@@ -814,6 +826,30 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osgintrospection"=.\examples\osgintrospection\osgintrospection.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgIntrospection
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name Core osgUtil
@@ -2851,6 +2887,24 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name Core osgDB
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "osgWrapper osg"=.\osgWrappers\osg\wrapper_osg.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgIntrospection
     End Project Dependency
 }}}
 

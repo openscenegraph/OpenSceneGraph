@@ -2431,15 +2431,38 @@ osg::Group* ConvertFromFLT::visitExternal(osg::Group& osgParent, ExternalRecord*
     osg::Group* external = NULL;
     if (pFile)
     {
+        //Path for Nested external references
+        osgDB::ReaderWriter::Options *options = pFile->getOptions();
+
 #ifdef USE_PROXYNODE_FOR_EXTERNAL_FILES
-        external = dynamic_cast<osg::Group*> (osgDB::Registry::instance()->getFromObjectCache(rec->getFilename()));
-        if(external)
+        if(options->getObjectCacheHint() & osgDB::ReaderWriter::Options::CACHE_ARCHIVES)
         {
-            osg::Group *tempParent = visitAncillary(osgParent, *external, rec);
-            tempParent->addChild(external);
-            return external;
+            external = dynamic_cast<osg::Group*> (osgDB::Registry::instance()->getFromObjectCache(rec->getFilename()));
+            if(external)
+            {
+                osg::Group *tempParent = visitAncillary(osgParent, *external, rec);
+                tempParent->addChild(external);
+                return external;
+            }
         }
 #endif
+        
+        osgDB::FilePathList& fpl = options->getDatabasePathList();
+        const std::string& filePath = osgDB::getFilePath(rec->getFilename());
+        std::string pushAndPopPath;
+        //If absolute path
+        if( (filePath.length()>0 && filePath.find_first_of("/\\")==0) ||
+            (filePath.length()>2 && filePath.substr(1,1)==":" && filePath.find_first_of("/\\")==2) )
+        {
+            pushAndPopPath = filePath;
+        }
+        else
+        {
+            pushAndPopPath = (fpl.empty() | fpl.back().empty() ? "." : fpl.back()) + "/" + filePath;
+        }
+        fpl.push_back(pushAndPopPath);
+        
+
         pFile->setDesiredUnits( rec->getFltFile()->getDesiredUnits() );
         external = pFile->convert();
         if (external)
@@ -2467,7 +2490,8 @@ osg::Group* ConvertFromFLT::visitExternal(osg::Group& osgParent, ExternalRecord*
                 proxynode->setCenterMode(osg::ProxyNode::USE_BOUNDING_SPHERE_CENTER);
                 proxynode->addChild(external, rec->getFilename());
                 tempParent->addChild(proxynode);
-                osgDB::Registry::instance()->addEntryToObjectCache(rec->getFilename(), proxynode);
+                if(options->getObjectCacheHint() & osgDB::ReaderWriter::Options::CACHE_ARCHIVES)
+                    osgDB::Registry::instance()->addEntryToObjectCache(rec->getFilename(), proxynode);
 #else
                 tempParent->addChild(external);
 #endif
@@ -2486,7 +2510,8 @@ osg::Group* ConvertFromFLT::visitExternal(osg::Group& osgParent, ExternalRecord*
                 proxynode->setCenterMode(osg::ProxyNode::USE_BOUNDING_SPHERE_CENTER);
                 proxynode->addChild(model, rec->getFilename());
                 tempParent->addChild(proxynode);
-                osgDB::Registry::instance()->addEntryToObjectCache(rec->getFilename(), proxynode);
+                if(options->getObjectCacheHint() & osgDB::ReaderWriter::Options::CACHE_ARCHIVES)
+                    osgDB::Registry::instance()->addEntryToObjectCache(rec->getFilename(), proxynode);
 #else
                 //tempParent->addChild(model);
 #endif
@@ -2500,6 +2525,8 @@ osg::Group* ConvertFromFLT::visitExternal(osg::Group& osgParent, ExternalRecord*
             }
           }
         }
+
+        fpl.pop_back();
     }
     return external;
 }
@@ -3271,4 +3298,5 @@ void ConvertFromFLT::setMeshTexCoordinates ( const uint32 &numVerts, const Local
 
     return;
 }
+
 

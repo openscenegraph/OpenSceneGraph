@@ -81,8 +81,8 @@ FltFile::FltFile(
     }
     else
     {
-		// If they aren't both set, then they must both be NULL.
-		assert( (pLtPtAppearancePool==NULL) && (pLtPtAppearancePool==NULL) );
+        // If they aren't both set, then they must both be NULL.
+        assert( (pLtPtAppearancePool==NULL) && (pLtPtAppearancePool==NULL) );
         // use internal light point palettes
         _useInternalLtPtPalettes = true;
         setLtPtAppearancePool( new LtPtAppearancePool );
@@ -225,10 +225,10 @@ bool FltFile::readFile(const std::string& fileName)
                         if (rec.getFlightVersion() >= 1580)
                         {
                             if (!(pSExternal->dwFlags & ExternalRecord::LIGHT_POINT_PALETTE_OVERRIDE))
-							{
+                            {
                                 pLtPtAppearancePool = _pFltFile->getLtPtAppearancePool();
                                 pLtPtAnimationPool = _pFltFile->getLtPtAnimationPool();
-							}
+                            }
                         }
                     }
 
@@ -244,8 +244,7 @@ bool FltFile::readFile(const std::string& fileName)
                     {
                         osg::ref_ptr<osgDB::ReaderWriter::Options> options = 
                             _pFltFile->getOptions() ? _pFltFile->getOptions() : 
-						                              new osgDB::ReaderWriter::Options;
-
+                                                      new osgDB::ReaderWriter::Options;
                         //Path for Nested external references
                         osgDB::FilePathList& fpl = options->getDatabasePathList();
                         const std::string& filePath = osgDB::getFilePath(filename);
@@ -258,7 +257,7 @@ bool FltFile::readFile(const std::string& fileName)
                         }
                         else
                         {
-                            pushAndPopPath = (fpl.empty() ? "." : fpl.back()) + "/" + filePath;
+                            pushAndPopPath = (fpl.empty() | fpl.back().empty() ? "." : fpl.back()) + "/" + filePath;
                         }
 
                         char optionsString[256];
@@ -279,6 +278,8 @@ bool FltFile::readFile(const std::string& fileName)
                         }
 
                         pExternalFltFile->readModel(filename);
+
+                        fpl.pop_back();
                     }
 
                     rec.setExternal(pExternalFltFile);
@@ -347,4 +348,5 @@ std::string FltFile::getDesiredUnitsString() const
         break;
     }
 }
+
 

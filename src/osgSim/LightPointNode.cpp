@@ -261,34 +261,67 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
             // adjust pixel size to account for intensity.
             if (intensity!=1.0) pixelSize *= sqrt(intensity);
             
+            
             osg::Vec3 xpos(position*matrix);
-            if (pixelSize<1.0f)
+
+            if (lp._blendingMode==LightPoint::BLENDED)
             {
-                // need to use alpha blending...
-                //color[3] = pixelSize;
-                color[3] *= osg::square(pixelSize);
+                if (pixelSize<1.0f)
+                {
+                    // need to use alpha blending...
+                    //color[3] = pixelSize;
+                    color[3] *= osg::square(pixelSize);
 
-                if (color[3]<=minimumIntensity) continue;
+                    if (color[3]<=minimumIntensity) continue;
 
-                drawable->addBlendedLightPoint(0, xpos,color);
+                    drawable->addBlendedLightPoint(0, xpos,color);
+                }
+                else if (pixelSize<lp._maxPixelSize)
+                {
+
+                    unsigned int lowerBoundPixelSize = (unsigned int)pixelSize;
+                    //float remainder = pixelSize-(float)lowerBoundPixelSize;
+                    float remainder = osg::square(pixelSize-(float)lowerBoundPixelSize);
+                    float alpha = color[3];
+                    drawable->addBlendedLightPoint(lowerBoundPixelSize-1, xpos,color);
+
+                    color[3] = alpha*remainder;
+                    drawable->addBlendedLightPoint(lowerBoundPixelSize, xpos,color);
+                }
+                else // use a billboard geometry.
+                {
+                    drawable->addBlendedLightPoint((unsigned int)(lp._maxPixelSize-1.0), xpos,color);
+                }
             }
-            else if (pixelSize<lp._maxPixelSize)
+            else // ADDITIVE blending.
             {
+                if (pixelSize<1.0f)
+                {
+                    // need to use alpha blending...
+                    //color[3] = pixelSize;
+                    color[3] *= osg::square(pixelSize);
 
-                unsigned int lowerBoundPixelSize = (unsigned int)pixelSize;
-                //float remainder = pixelSize-(float)lowerBoundPixelSize;
-                float remainder = osg::square(pixelSize-(float)lowerBoundPixelSize);
-                float alpha = color[3];
-//                color[3] = alpha*(1.0f-remainder);
-                drawable->addBlendedLightPoint(lowerBoundPixelSize-1, xpos,color);
+                    if (color[3]<=minimumIntensity) continue;
 
-//                 //color[3] = osg::square(remainder);
-                color[3] = alpha*remainder;
-                drawable->addBlendedLightPoint(lowerBoundPixelSize, xpos,color);
-            }
-            else // use a billboard geometry.
-            {
-                drawable->addOpaqueLightPoint((unsigned int)(lp._maxPixelSize-1.0), xpos,color);
+                    drawable->addAdditiveLightPoint(0, xpos,color);
+                }
+                else if (pixelSize<lp._maxPixelSize)
+                {
+
+                    unsigned int lowerBoundPixelSize = (unsigned int)pixelSize;
+                    //float remainder = pixelSize-(float)lowerBoundPixelSize;
+                    float remainder = osg::square(pixelSize-(float)lowerBoundPixelSize);
+                    float alpha = color[3];
+                    color[3] = alpha*(1.0f-remainder);
+                    drawable->addAdditiveLightPoint(lowerBoundPixelSize-1, xpos,color);
+
+                    color[3] = alpha*remainder;
+                    drawable->addAdditiveLightPoint(lowerBoundPixelSize, xpos,color);
+                }
+                else // use a billboard geometry.
+                {
+                    drawable->addAdditiveLightPoint((unsigned int)(lp._maxPixelSize-1.0), xpos,color);
+                }
             }
         }
         

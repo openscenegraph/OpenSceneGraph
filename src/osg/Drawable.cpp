@@ -202,8 +202,8 @@ void Drawable::flushDeletedDisplayLists(uint contextID)
     DeletedDisplayListCache::iterator citr = s_deletedDisplayListCache.find(contextID);
     if (citr!=s_deletedDisplayListCache.end())
     {
-        std::set<uint>& displayListSet = citr->second;
-        for(std::set<uint>::iterator gitr=displayListSet.begin();
+        std::set<GLuint>& displayListSet = citr->second;
+        for(std::set<GLuint>::iterator gitr=displayListSet.begin();
                                      gitr!=displayListSet.end();
                                      ++gitr)
         {

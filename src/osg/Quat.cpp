@@ -14,6 +14,8 @@
 #include <osg/Quat>
 #include <osg/Vec4>
 #include <osg/Vec3>
+#include <osg/Matrixf>
+#include <osg/Matrixd>
 
 #include <math.h>
 
@@ -22,6 +24,27 @@
 /// http://mathworld.wolfram.com/Quaternion.html
 
 using namespace osg;
+
+
+void Quat::set(const Matrixf& matrix)
+{
+    matrix.get(*this);
+}
+
+void Quat::set(const Matrixd& matrix)
+{
+    matrix.get(*this);
+}
+
+void Quat::get(Matrixf& matrix) const
+{
+    matrix.set(*this);
+}
+
+void Quat::get(Matrixd& matrix) const
+{
+    matrix.set(*this);
+}
 
 
 /// Set the elements of the Quat to represent a rotation of angle

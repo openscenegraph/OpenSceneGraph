@@ -16,7 +16,7 @@ RegisterDotOsgWrapperProxy g_LightSourceProxy
 (
     new osg::LightSource,
     "LightSource",
-    "Object Node LightSource",
+    "Object Node LightSource Group",
     &LightSource_readLocalData,
     &LightSource_writeLocalData
 );

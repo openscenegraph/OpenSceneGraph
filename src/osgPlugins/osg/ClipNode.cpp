@@ -16,7 +16,7 @@ RegisterDotOsgWrapperProxy g_ClipNodeProxy
 (
     new osg::ClipNode,
     "ClipNode",
-    "Object Node ClipNode",
+    "Object Node ClipNode Group",
     &ClipNode_readLocalData,
     &ClipNode_writeLocalData
 );

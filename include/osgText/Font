@@ -25,6 +25,8 @@
 
 #include <string>
 
+//#define OSG_FONT_USE_LUMINANCE_ALPHA
+
 namespace osgText {
 
 class Font;

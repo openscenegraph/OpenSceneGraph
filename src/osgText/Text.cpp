@@ -36,7 +36,7 @@ Text::Text():
 }
 
 Text::Text(const Text& text,const osg::CopyOp& copyop):
-    Drawable(text,copyop),
+    osg::Drawable(text,copyop),
     _font(text._font),
     _fontWidth(text._fontWidth),
     _fontHeight(text._fontHeight),

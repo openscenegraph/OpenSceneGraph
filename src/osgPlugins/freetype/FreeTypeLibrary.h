@@ -20,6 +20,9 @@ class FreeTypeLibrary
 {
 public:
 
+    /** protected destrcutor to prevent inappropriate deletion.*/
+    virtual ~FreeTypeLibrary();
+
     /** get the singleton instance.*/
     static FreeTypeLibrary* instance();
 
@@ -31,8 +34,6 @@ protected:
       * library is via the singleton instance method.*/
     FreeTypeLibrary();
 
-    /** protected destrcutor to prevent inappropriate deletion.*/
-    virtual ~FreeTypeLibrary();
 
     FT_Library  _ftlibrary;
 

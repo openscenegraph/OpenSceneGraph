@@ -40,6 +40,9 @@ osgprerender dumptruck.osg
 echo osgparticle
 osgparticle
 
+echo osglightpoint
+osglightpoint
+
 echo osgbillboard
 osgbillboard
 

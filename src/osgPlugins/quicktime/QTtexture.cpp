@@ -60,7 +60,7 @@ PORTIONS OF THIS CODE ARE COPYRIGHT APPLE COMPUTER -
 #include <OpenGL/glu.h> // for OpenGL API
 #include <OpenGL/glext.h> // for OpenGL extension support 
 
-#include "QTTexture.h"
+#include "QTtexture.h"
 
 // ==================================
 

@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
  * 
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -33,7 +33,7 @@
         typedef int GLintptrARB;
         typedef int GLsizeiptrARB;
     #endif
-    
+
     #define GL_ARRAY_BUFFER_ARB               0x8892
     #define GL_ELEMENT_ARRAY_BUFFER_ARB       0x8893
     #define GL_ARRAY_BUFFER_BINDING_ARB       0x8894
@@ -101,17 +101,28 @@ class Geometry;
 
 // this is defined to alter the way display lists are compiled inside the
 // the draw method, it has been found that the NVidia drivers fail completely
-// to optimize COMPILE_AND_EXECUTE in fact make it go slower than for no display 
+// to optimize COMPILE_AND_EXECUTE in fact make it go slower than for no display
 // lists, but optimize a separate COMPILE very well?!  Define it as default
 // the use of a separate COMPILE, then glCallList rather than use COMPILE_AND_EXECUTE.
 
 #define USE_SEPARATE_COMPILE_AND_EXECUTE
 
-/** Pure virtual base class for drawable Geometry.  Contains no drawing primitives
-    directly, these are provided by subclasses such as osg::Geometry. State attributes 
-    for a Drawable are maintained in StateSet which the Drawable maintains
-    a referenced counted pointer to.  Both Drawable's and StateSet's can 
-    be shared for optimal memory usage and graphics performance.
+/** Pure virtual base class for drawable geometry. In OSG, everything that can
+ *  be rendered is implemented as a class derived from \c Drawable. The
+ *  \c Drawable class contains no drawing primitives, since these are provided
+ *  by subclasses such as \c osg::Geometry.
+ *  <p>Notice that a \c Drawable is not a \c Node, and therefore it cannot be
+ *  directly added to a scene graph. Instead, <tt>Drawable</tt>s are attached to
+ *  <tt>Geode</tt>s, which are scene graph nodes.
+ *  <p>The OpenGL state that must be used when rendering a \c Drawable is
+ *  represented by a \c StateSet. Since a \c Drawable has a reference
+ *  (\c osg::ref_ptr) to a \c StateSet, <tt>StateSet</tt>s can be shared between
+ *  different <tt>Drawable</tt>s. In fact, sharing <tt>StateSet</tt>s is a good
+ *  way to improve performance, since this allows OSG to reduce the number of
+ *  expensive changes in the OpenGL state.
+ *  <p>Finally, <tt>Drawable</tt>s can also be shared between different
+ *  <tt>Geode</tt>s, so that the same geometry (loaded to memory just once) can
+ *  be used in different parts of the scene graph.
 */
 class SG_EXPORT Drawable : public Object
 {
@@ -130,10 +141,10 @@ class SG_EXPORT Drawable : public Object
         virtual const char* libraryName() const { return "osg"; }
         virtual const char* className() const { return "Drawable"; }
 
-        /** convert 'this' into a Geometry pointer if Drawable is a Geometry, otherwise return 0.
+        /** Convert 'this' into a Geometry pointer if Drawable is a Geometry, otherwise return 0.
           * Equivalent to dynamic_cast<Geometry*>(this).*/
         virtual Geometry* asGeometry() { return 0; }
-        /** convert 'const this' into a const Geometry pointer if Drawable is a Geometry, otherwise return 0.
+        /** Convert 'const this' into a const Geometry pointer if Drawable is a Geometry, otherwise return 0.
           * Equivalent to dynamic_cast<const Geometry*>(this).*/
         virtual const Geometry* asGeometry() const { return 0; }
 
@@ -144,7 +155,7 @@ class SG_EXPORT Drawable : public Object
         /** Get the parent list of drawable. */
         inline const ParentList& getParents() const { return _parents; }
 
-        /** Get the a copy of parent list of node. A copy is returned to 
+        /** Get the a copy of parent list of node. A copy is returned to
           * prevent modification of the parent list.*/
         inline ParentList getParents() { return _parents; }
 
@@ -168,28 +179,28 @@ class SG_EXPORT Drawable : public Object
 
 
         /** Set the StateSet attached to the Drawable.
-            Previously attached StateSet are automatically unreferenced on 
+            Previously attached StateSet are automatically unreferenced on
             assignment of a new drawstate.*/
         inline void setStateSet(StateSet *state) { _stateset = state; }
-        
+
         /** Get the attached StateSet.*/
         inline StateSet* getStateSet() { return _stateset.get();}
 
         /** Get the attached const StateSet.*/
         inline const StateSet* getStateSet() const { return _stateset.get();}
 
-        /** Get the attached const StateSet, 
-          * if one is not already attached create one, 
+        /** Get the attached const StateSet,
+          * if one is not already attached create one,
           * attach it to the drawable and return a pointer to it.*/
         StateSet* getOrCreateStateSet();
 
 
         /** Dirty the bounding box, forcing a computeBound() on the next call
           * to getBound(). Should be called in the internal geometry of the Drawable
-          * is modified.*/        
+          * is modified.*/
         void dirtyBound();
 
-        /** get bounding box of geoset. 
+        /** get bounding box of geoset.
           * Note, now made virtual to make it possible to implement user-drawn
           * objects albeit somewhat crudely, to be improved later.
           */
@@ -201,14 +212,16 @@ class SG_EXPORT Drawable : public Object
         }
 
 
-        /** Set the Shape of the drawable. The shape can be used to
-      * speed up collision detection or as a guide for procedural
-      * geometry generation - see osg::Shape.*/
+        /** Set the Shape of the \c Drawable. The shape can be used to
+         *  speed up collision detection or as a guide for procedural
+         *  geometry generation.
+         * @see osg::Shape.
+        */
         inline void setShape(Shape* shape) { _shape = shape; }
 
         /** Get the Shape of the Drawable.*/
         inline Shape* getShape() { return _shape.get(); }
-    
+
         /** Get the const Shape of the const Drawable.*/
         inline const Shape* getShape() const { return _shape.get(); }
 
@@ -222,8 +235,8 @@ class SG_EXPORT Drawable : public Object
           * on objects with dynamic internal data such as continuous Level of Detail
           * algorithms.*/
         void setSupportsDisplayList(bool flag);
-      
-        /** Get whether display lists are supported for this drawable instance.*/  
+
+        /** Get whether display lists are supported for this drawable instance.*/
         inline bool getSupportsDisplayList() const { return _supportsDisplayList; }
 
 
@@ -253,23 +266,27 @@ class SG_EXPORT Drawable : public Object
 
 
 
-        /** draw OpenGL primitives. 
-          * If the drawable has _useDisplayList set to true then use an OpenGL display
-          * list, automatically compiling one if required.
-          * Otherwise call drawImplementation().
-          * Note, draw method should *not* be overridden in subclasses as it 
-          * manages the optional display list.
+        /** Draw OpenGL primitives.
+          * If the \c Drawable has \c _useDisplayList set to \c true, then use
+          * an OpenGL display list, automatically compiling one if required.
+          * Otherwise, call \c drawImplementation().
+          * @note This method should \e not be overridden in subclasses, as it
+          *       manages the optional display list (notice this is not even
+          *       \c virtual). Subclasses should override
+          *       \c drawImplementation() instead.
           */
         inline void draw(State& state) const;
-        
-        /** Immediately compile this drawable into an OpenGL Display List.
-            Note I, operation is ignored if _useDisplayList to false.
-            Note II, compile is not intended to be overridden in subclasses.*/
+
+        /** Immediately compile this \c Drawable into an OpenGL Display List.
+          * @note Operation is ignored if \c _useDisplayList is \c false.
+          * @note This member function is not intended to be overridden in
+          *       subclasses (notice that it is not even \c virtual).
+        */
         virtual void compileGLObjects(State& state) const;
 
-        /** 
+        /**
             if osg::State object is supplied: release any OpenGL display lists associated with graphics context specified
-            or 
+            or
             if state pointer is NULL: release all display lists for all graphics contexts */
         virtual void releaseGLObjects(State* state=0) const;
 
@@ -284,16 +301,16 @@ class SG_EXPORT Drawable : public Object
             /** do customized update code.*/
             virtual void update(osg::NodeVisitor*, osg::Drawable*) {}
         };
-        
+
         /** Set the UpdateCallback which allows users to attach customize the updating of an object during the update traversal.*/
         virtual void setUpdateCallback(UpdateCallback* ac);
-        
+
         /** Get the non const UpdateCallback.*/
         UpdateCallback* getUpdateCallback() { return _updateCallback.get(); }
 
         /** Get the const UpdateCallback.*/
         const UpdateCallback* getUpdateCallback() const { return _updateCallback.get(); }
-        
+
 
         struct CullCallback : public virtual osg::Object
         {
@@ -309,14 +326,14 @@ class SG_EXPORT Drawable : public Object
 
         /** Set the CullCallback which allows users to customize the culling of Drawable during the cull traversal.*/
         virtual void setCullCallback(CullCallback* cc) { _cullCallback=cc; }
-        
+
         /** Get the non const CullCallback.*/
         CullCallback* getCullCallback() { return _cullCallback.get(); }
-        
+
         /** Get the const CullCallback.*/
         const CullCallback* getCullCallback() const { return _cullCallback.get(); }
-        
-        
+
+
 
 
         /** Callback attached to an Drawable which allows the users to customize the drawing of an exist Drawable object.
@@ -338,18 +355,20 @@ class SG_EXPORT Drawable : public Object
 
         /** Set the DrawCallback which allows users to attach customize the drawing of existing Drawable object.*/
         virtual void setDrawCallback(DrawCallback* dc) { _drawCallback=dc; dirtyDisplayList(); }
-        
+
         /** Get the non const DrawCallback.*/
         DrawCallback* getDrawCallback() { return _drawCallback.get(); }
-        
+
         /** Get the const DrawCallback.*/
         const DrawCallback* getDrawCallback() const { return _drawCallback.get(); }
 
 
 
-        /** draw directly ignoring an OpenGL display list which could be attached.
-          * This is the internal draw method which does the drawing itself,
-          * and is the method to override when deriving from Drawable.
+        /** Draw the \c Geometry "directly", that is, by issuing all the OpenGL
+          * calls needed to draw it. Contrast this with \c draw(), that can
+          * compile and use an OpenGL display list to do the rendering.
+          * <p> This is the internal draw method which does the drawing itself,
+          * and is the method to override when deriving from \c Drawable.
           */
         virtual void drawImplementation(State& state) const = 0;
 
@@ -363,32 +382,32 @@ class SG_EXPORT Drawable : public Object
         /** Get the minimum number of display lists to retain in the deleted display list cache. */
         static unsigned int getMinimumNumberOfDisplayListsToRetainInCache();
 
-        /** use deleteDisplayList instead of glDeleteList to allow
+        /** Use deleteDisplayList instead of glDeleteList to allow
           * OpenGL display list to be cached until they can be deleted
           * by the OpenGL context in which they were created, specified
           * by contextID.*/
         static void deleteDisplayList(unsigned int contextID,GLuint globj, unsigned int sizeHint = 0);
-        
-        /** flush all the cached display list which need to be deleted
+
+        /** Flush all the cached display list which need to be deleted
           * in the OpenGL context related to contextID.*/
         static void flushAllDeletedDisplayLists(unsigned int contextID);
 
-        /** flush the cached display list which need to be deleted
+        /** Flush the cached display list which need to be deleted
           * in the OpenGL context related to contextID.*/
         static void flushDeletedDisplayLists(unsigned int contextID,double& availableTime);
 
-        /** use deleteVertexBufferObject instead of glDeleteList to allow
+        /** Use deleteVertexBufferObject instead of glDeleteList to allow
           * OpenGL buffer objects to be cached until they can be deleted
           * by the OpenGL context in which they were created, specified
           * by contextID.*/
         static void deleteVertexBufferObject(unsigned int contextID,GLuint globj);
-        
-        /** flush all the cached vertex buffer objects which need to be deleted
+
+        /** Flush all the cached vertex buffer objects which need to be deleted
           * in the OpenGL context related to contextID.*/
         static void flushDeletedVertexBufferObjects(unsigned int contextID,double currentTime, double& availableTime);
 
         typedef unsigned int AttributeType;
-        
+
         enum AttributeTypes
         {
             VERTICES            = 0,
@@ -407,17 +426,16 @@ class SG_EXPORT Drawable : public Object
             TEXTURE_COORDS_4    = TEXTURE_COORDS_0+4,
             TEXTURE_COORDS_5    = TEXTURE_COORDS_0+5,
             TEXTURE_COORDS_6    = TEXTURE_COORDS_0+6,
-            TEXTURE_COORDS_7    = TEXTURE_COORDS_0+7 
+            TEXTURE_COORDS_7    = TEXTURE_COORDS_0+7
             // only eight texture coord examples provided here, but underlying code can handle any no of texure units,
             // simply co them as (TEXTURE_COORDS_0+unit).
         };
-        
+
         class AttributeFunctor
         {
         public:
-        
             virtual ~AttributeFunctor() {}
-            
+
             virtual void apply(AttributeType,unsigned int,GLbyte*) {}
             virtual void apply(AttributeType,unsigned int,GLshort*) {}
             virtual void apply(AttributeType,unsigned int,GLint*) {}
@@ -432,23 +450,23 @@ class SG_EXPORT Drawable : public Object
             virtual void apply(AttributeType,unsigned int,Vec4*) {}
             virtual void apply(AttributeType,unsigned int,UByte4*) {}
         };
-        
-        
-        /** return true if the Drawable subclass supports accept(AttributeFunctor&).*/
+
+
+        /** Return true if the Drawable subclass supports accept(AttributeFunctor&).*/
         virtual bool supports(AttributeFunctor&) const { return false; }
 
         /** accept an AttributeFunctor and call its methods to tell it about the internal attributes that this Drawable has.
-          * return true if functor handled by drawable, 
+          * return true if functor handled by drawable,
           * return false on failure of drawable to generate functor calls.*/
         virtual void accept(AttributeFunctor&) {}
-        
+
 
         class ConstAttributeFunctor
         {
         public:
-        
+
             virtual ~ConstAttributeFunctor() {}
-            
+
             virtual void apply(AttributeType,const unsigned int,const GLbyte*) {}
             virtual void apply(AttributeType,const unsigned int,const GLshort*) {}
             virtual void apply(AttributeType,const unsigned int,const GLint*) {}
@@ -464,11 +482,11 @@ class SG_EXPORT Drawable : public Object
             virtual void apply(AttributeType,const unsigned int,const UByte4*) {}
         };
 
-        /** return true if the Drawable subclass supports accept(ConstAttributeFunctor&).*/
+        /** Return true if the Drawable subclass supports accept(ConstAttributeFunctor&).*/
         virtual bool supports(ConstAttributeFunctor&) const { return false; }
 
-        /** accept an AttributeFunctor and call its methods to tell it about the internal attributes that this Drawable has.
-          * return true if functor handled by drawable, 
+        /** Accept an AttributeFunctor and call its methods to tell it about the internal attributes that this Drawable has.
+          * return true if functor handled by drawable,
           * return false on failure of drawable to generate functor calls.*/
         virtual void accept(ConstAttributeFunctor&) const {}
 
@@ -476,18 +494,18 @@ class SG_EXPORT Drawable : public Object
         class PrimitiveFunctor
         {
         public:
-            
+
             virtual ~PrimitiveFunctor() {}
 
             virtual void setVertexArray(unsigned int count,const Vec2* vertices) = 0;
             virtual void setVertexArray(unsigned int count,const Vec3* vertices) = 0;
             virtual void setVertexArray(unsigned int count,const Vec4* vertices) = 0;
-            
+
             virtual void drawArrays(GLenum mode,GLint first,GLsizei count) = 0;
             virtual void drawElements(GLenum mode,GLsizei count,const GLubyte* indices) = 0;
             virtual void drawElements(GLenum mode,GLsizei count,const GLushort* indices) = 0;
             virtual void drawElements(GLenum mode,GLsizei count,const GLuint* indices) = 0;
-            
+
             virtual void begin(GLenum mode) = 0;
             virtual void vertex(const Vec2& vert) = 0;
             virtual void vertex(const Vec3& vert) = 0;
@@ -496,43 +514,41 @@ class SG_EXPORT Drawable : public Object
             virtual void vertex(float x,float y,float z) = 0;
             virtual void vertex(float x,float y,float z,float w) = 0;
             virtual void end() = 0;
-            
         };
-        
+
         class PrimitiveIndexFunctor
         {
         public:
-            
+
             virtual ~PrimitiveIndexFunctor() {}
 
             virtual void setVertexArray(unsigned int count,const Vec2* vertices) = 0;
             virtual void setVertexArray(unsigned int count,const Vec3* vertices) = 0;
             virtual void setVertexArray(unsigned int count,const Vec4* vertices) = 0;
-            
+
             virtual void drawArrays(GLenum mode,GLint first,GLsizei count) = 0;
             virtual void drawElements(GLenum mode,GLsizei count,const GLubyte* indices) = 0;
             virtual void drawElements(GLenum mode,GLsizei count,const GLushort* indices) = 0;
             virtual void drawElements(GLenum mode,GLsizei count,const GLuint* indices) = 0;
-            
+
             virtual void begin(GLenum mode) = 0;
             virtual void vertex(unsigned int pos) = 0;
             virtual void end() = 0;
-            
         };
 
-        /** return true if the Drawable subclass supports accept(PrimitiveFunctor&).*/
+        /** Return true if the Drawable subclass supports accept(PrimitiveFunctor&).*/
         virtual bool supports(PrimitiveFunctor&) const { return false; }
 
-        /** accept a PrimitiveFunctor and call its methods to tell it about the internal primitives that this Drawable has.
+        /** Accept a PrimitiveFunctor and call its methods to tell it about the internal primitives that this Drawable has.
           * return true if functor handled by drawable, return false on failure of drawable to generate functor calls.
           * Note, PrimtiveFunctor only provides const access of the primitives, as primitives may be procedurally generated
           * so one cannot modify it.*/
         virtual void accept(PrimitiveFunctor&) const {}
 
-        /** return true if the Drawable subclass supports accept(PrimitiveIndexFunctor&).*/
+        /** Return true if the Drawable subclass supports accept(PrimitiveIndexFunctor&).*/
         virtual bool supports(PrimitiveIndexFunctor&) const { return false; }
 
-        /** accept a PrimitiveIndexFunctor and call its methods to tell it about the internal primitives that this Drawable has.
+        /** Accept a PrimitiveIndexFunctor and call its methods to tell it about the internal primitives that this Drawable has.
           * return true if functor handled by drawable, return false on failure of drawable to generate functor calls.
           * Note, PrimtiveIndexFunctor only provide const access of the primitives, as primitives may be procedurally generated
           * so one cannot modify it.*/
@@ -540,8 +556,8 @@ class SG_EXPORT Drawable : public Object
 
 
         /** Extensions class which encapsulates the querying of extensions and
-        * associated function pointers, and provide convenience wrappers to 
-        * check for the extensions or use the associated functions.*/        
+        * associated function pointers, and provide convenience wrappers to
+        * check for the extensions or use the associated functions.*/
         class SG_EXPORT Extensions : public osg::Referenced
         {
         public:
@@ -721,13 +737,13 @@ class SG_EXPORT Drawable : public Object
 
         virtual ~Drawable();
 
-        /** compute the bounding box of the drawable. Method must be 
+        /** Compute the bounding box of the drawable. Method must be 
             implemented by subclasses.*/
         virtual bool computeBound() const;
-        
+
         /** set the bounding box .*/
         void setBound(const BoundingBox& bb) const;
- 
+
         void addParent(osg::Node* node);
         void removeParent(osg::Node* node);
 
@@ -739,7 +755,7 @@ class SG_EXPORT Drawable : public Object
 
         mutable BoundingBox     _bbox;
         mutable bool            _bbox_computed;
-        
+
         ref_ptr<Shape>           _shape;
 
         bool                    _supportsDisplayList;
@@ -754,15 +770,13 @@ class SG_EXPORT Drawable : public Object
         ref_ptr<UpdateCallback> _updateCallback;
         ref_ptr<CullCallback>   _cullCallback;
         ref_ptr<DrawCallback>   _drawCallback;
-        
-
 };
 
 inline void Drawable::draw(State& state) const
 {
     if (_useDisplayList && !(_supportsVertexBufferObjects && _useVertexBufferObjects && state.isVertexBufferObjectSupported()))
     {
-        // get the contextID (user defined ID of 0 upwards) for the 
+        // get the contextID (user defined ID of 0 upwards) for the
         // current OpenGL context.
         unsigned int contextID = state.getContextID();
 
@@ -781,22 +795,22 @@ inline void Drawable::draw(State& state) const
             glNewList( globj, GL_COMPILE );
             if (_drawCallback.valid())
                 _drawCallback->drawImplementation(state,this);
-            else 
+            else
                 drawImplementation(state);
             glEndList();
-            
+
             glCallList( globj);
 #else
             globj = generateDisplayList(contextID, getGLObjectSizeHint());
             glNewList( globj, GL_COMPILE_AND_EXECUTE );
             if (_drawCallback.valid())
                 _drawCallback->drawImplementation(state,this);
-            else 
-                drawImplementation(state);                
+            else
+                drawImplementation(state);
             glEndList();
 #endif
         }
-        
+
         return;
 
     }
@@ -804,7 +818,7 @@ inline void Drawable::draw(State& state) const
     // draw object as nature intended..
     if (_drawCallback.valid())
         _drawCallback->drawImplementation(state,this);
-    else 
+    else
         drawImplementation(state);
 };
 

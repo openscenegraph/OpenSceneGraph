@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -20,7 +20,11 @@
 
 namespace osg {
 
-/** Leaf Node for grouping Drawables.*/
+/** A \c Geode is a "geometry node", that is, a leaf node on the scene graph
+  * that can have "renderable things" attached to it. In OSG, renderable things
+  * are represented by objects from the \c Drawable class, so a \c Geode is a
+  * \c Node whose purpose is grouping <tt>Drawable</tt>s.
+*/
 class SG_EXPORT Geode : public Node
 {
     public:
@@ -34,51 +38,66 @@ class SG_EXPORT Geode : public Node
 
         META_Node(osg, Geode);
 
-        /** Add Drawable to Geode.
-         *  If drawable is not NULL and is not contained in Geode then increment its  
-         *  reference count, add it to the drawables list and dirty the bounding 
-         *  sphere to force it to recompute on next getBound() and return true for success.
-         *  Otherwise return false.
-         */
+        /** Add a \c Drawable to the \c Geode.
+          * If \c drawable is not \c NULL and is not contained in the \c Geode
+          * then increment its reference count, add it to the drawables list and
+          * dirty the bounding sphere to force it to be recomputed on the next
+          * call to \c getBound().
+          * @param drawable The \c Drawable to be added to the \c Geode.
+          * @return  \c true for success; \c false otherwise.
+        */
         virtual bool addDrawable( Drawable *drawable );
 
-        /** Remove Drawable from Geode.
-          * Equivalent to setDrawable(getDrawableIndex(originChild),node), 
-          * see docs for setNode for further details on implementation.*/
+        /** Remove a \c Drawable from the \c Geode.
+          * Equivalent to <tt>removeDrawable(getDrawableIndex(drawable)</tt>.
+          * @param drawable The drawable to be removed.
+          * @return \c true if at least one \c Drawable was removed. \c false
+          *         otherwise.
+        */
         virtual bool removeDrawable( Drawable *drawable );
 
-        /** Remove drawable(s) from the specified position in Geode's drawable list.*/
+        /** Remove <tt>Drawable</tt>(s) from the specified position in
+          * <tt>Geode</tt>'s drawable list.
+          * @param i The index of the first \c Drawable to remove.
+          * @param numDrawablesToRemove The number of <tt>Drawable</tt> to
+          *        remove.
+          * @return \c true if at least one \c Drawable was removed. \c false
+          *         otherwise.
+        */
         virtual bool removeDrawable(unsigned int i,unsigned int numDrawablesToRemove=1);
 
         /** Replace specified Drawable with another Drawable.
-          * Equivalent to setDrawable(getDrawableIndex(originChild),node), 
-          * see docs for setDrawable for further details on implementation.*/
+         * Equivalent to <tt>setDrawable(getDrawableIndex(origDraw),newDraw)</tt>,
+         * see docs for \c setDrawable() for further details on implementation.
+        */
         virtual bool replaceDrawable( Drawable *origDraw, Drawable *newDraw );
 
-        /** set drawable at position i.
-         * return true if set correctly, false on failure (if node==NULL || i is out of range).
-         *  Decrement the reference count origGSet and increments the
-         *  reference count of newGset, and dirty the bounding sphere
-         *  to force it to recompute on next getBound() and returns true.
-         *  If origDrawable is not found then return false and do not 
-         *  add newGset.  If newGset is NULL then return false and do
-         *  not remove origGset.
-         */
+        /** Set \c Drawable at position \c i.
+          * Decrement the reference count origGSet and increments the
+          * reference count of newGset, and dirty the bounding sphere
+          * to force it to recompute on next getBound() and returns true.
+          * If origDrawable is not found then return false and do not
+          * add newGset.  If newGset is NULL then return false and do
+          * not remove origGset.
+          * @return \c true if set correctly, \c false on failure
+          *         (if node==NULL || i is out of range).
+        */
         virtual bool setDrawable( unsigned int i, Drawable* drawable );
 
-        /** return the number of drawables.*/
+        /** Return the number of <tt>Drawable</tt>s currently attached to the
+          * \c Geode.
+        */
         inline unsigned int getNumDrawables() const { return _drawables.size(); }
 
-        /** return drawable at position i.*/
+        /** Return the \c Drawable at position \c i.*/
         inline Drawable* getDrawable( unsigned int i ) { return _drawables[i].get(); }
 
-        /** return drawable at position i.*/
+        /** Return the \c Drawable at position \c i.*/
         inline const Drawable* getDrawable( unsigned int i ) const { return _drawables[i].get(); }
 
-        /** return true if drawable is contained within Geode.*/
+        /** Return \c true if a given \c Drawable is contained within \c Geode.*/
         inline bool containsDrawable(const Drawable* gset) const
         {
-            
             for (DrawableList::const_iterator itr=_drawables.begin();
                  itr!=_drawables.end();
                  ++itr)
@@ -88,29 +107,31 @@ class SG_EXPORT Geode : public Node
             return false;
         }
 
-        /** Get the index number of drawable, return a value between
-          * 0 and _drawables.size()-1 if found, if not found then
-          * return _drawables.size().*/
-        inline unsigned int getDrawableIndex( const Drawable* node ) const
+        /** Get the index number of \c drawable.
+          * @return A value between 0 and <tt>getNumDrawables()-1</tt> if
+          *         \c drawable is found; if not found, then
+          *         <tt>getNumDrawables()</tt> is returned.
+        */
+        inline unsigned int getDrawableIndex( const Drawable* drawable ) const
         {
             for (unsigned int drawableNum=0;drawableNum<_drawables.size();++drawableNum)
             {
-                if (_drawables[drawableNum]==node) return drawableNum;
+                if (_drawables[drawableNum]==drawable) return drawableNum;
             }
-            return _drawables.size(); // node not found.
+            return _drawables.size(); // drawable not found.
         }
 
-        /** compile OpenGL Display List for each drawable.*/
+        /** Compile OpenGL Display List for each drawable.*/
         void compileDrawables(State& state);
-        
-        /** return the Geode's bounding box, which is the union of all the
+
+        /** Return the Geode's bounding box, which is the union of all the
           * bounding boxes of the geode's drawables.*/
         inline const BoundingBox& getBoundingBox() const
         {
             if(!_bsphere_computed) computeBound();
             return _bbox;
         }
-        
+
     protected:
 
         virtual ~Geode();

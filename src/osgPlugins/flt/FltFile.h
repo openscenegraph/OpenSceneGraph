@@ -34,10 +34,12 @@ class FltFile : public osg::Referenced
         ColorPool*      getColorPool()      { return _colorPool.get(); }
         TexturePool*    getTexturePool()    { return _texturePool.get(); }
         MaterialPool*   getMaterialPool()   { return _materialPool.get(); }
+        InstancePool*   getInstancePool()   { return _instancePool.get(); }
 
         void setColorPool(ColorPool* colorPool)         { _colorPool = colorPool; }
         void setTexturePool(TexturePool* texturePool)   { _texturePool = texturePool; }
         void setMaterialPool(MaterialPool* materialPool){ _materialPool = materialPool; }
+        void setInstancePool(InstancePool* instancePool){ _instancePool = instancePool; }
 
         inline const bool useInternalColorPalette() const    { return _useInternalColorPalette; }
         inline const bool useInternalTexturePalette() const  { return _useInternalTexturePalette; }
@@ -66,6 +68,7 @@ class FltFile : public osg::Referenced
         osg::ref_ptr<ColorPool>     _colorPool;
         osg::ref_ptr<TexturePool>   _texturePool;
         osg::ref_ptr<MaterialPool>  _materialPool;
+        osg::ref_ptr<InstancePool>  _instancePool;
 };
 
 

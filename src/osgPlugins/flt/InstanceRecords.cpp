@@ -27,6 +27,9 @@ InstanceDefinitionRecord::~InstanceDefinitionRecord()
 
 void InstanceDefinitionRecord::endian()
 {
+	SInstanceDefinition *pSInstDef = (SInstanceDefinition*)getData();
+
+	ENDIAN( pSInstDef->iInstDefNumber );
 }
 
 
@@ -51,4 +54,7 @@ InstanceReferenceRecord::~InstanceReferenceRecord()
 
 void InstanceReferenceRecord::endian()
 {
+	SInstanceReference *pSInstRef = (SInstanceReference*)getData();
+
+	ENDIAN( pSInstRef->iInstDefNumber );
 }

@@ -50,6 +50,8 @@ class ExternalRecord;
 class LightPointRecord;
 class VertexListRecord;
 class LongIDRecord;
+class InstanceDefinitionRecord;
+class InstanceReferenceRecord;
 
 //class GeoSetBuilder;
 
@@ -132,6 +134,8 @@ class ConvertFromFLT
         osg::Node* visitObject(osg::Group* osgParent, ObjectRecord* rec);
         osg::Node* visitMatrix(osg::Group* osgParent, MatrixRecord* rec);
         osg::Node* visitExternal(osg::Group* osgParent, ExternalRecord* rec);
+        osg::Node* visitInstanceDefinition(osg::Group* osgParent,InstanceDefinitionRecord* rec);
+        osg::Node* visitInstanceReference(osg::Group* osgParent,InstanceReferenceRecord* rec);
 
         void visitFace(GeoSetBuilder* pParent, FaceRecord* rec);
         void visitLightPoint(GeoSetBuilder* pBuilder, LightPointRecord* rec);

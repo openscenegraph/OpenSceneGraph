@@ -56,6 +56,7 @@
 #include "Input.h"
 #include "GeoSetBuilder.h"
 #include "LongIDRecord.h"
+#include "InstanceRecords.h"
 
 
 
@@ -127,6 +128,8 @@ osg::Node* ConvertFromFLT::visitNode(osg::Group* osgParent, Record* rec)
     else if (rec->isOfType(DOF_OP))                 return visitDOF(osgParent, (DofRecord*)rec);
     else if (rec->isOfType(SWITCH_OP))              return visitSwitch(osgParent, (SwitchRecord*)rec);
     else if (rec->isOfType(OBJECT_OP))              return visitObject(osgParent, (ObjectRecord*)rec);
+    else if (rec->isOfType(INSTANCE_REFERENCE_OP))  return visitInstanceReference(osgParent, (InstanceReferenceRecord*)rec);
+    else if (rec->isOfType(INSTANCE_DEFINITION_OP)) return visitInstanceDefinition(osgParent, (InstanceDefinitionRecord*)rec);
     else if (rec->isOfType(EXTERNAL_REFERENCE_OP))  return visitExternal(osgParent, (ExternalRecord*)rec);
     else if (rec->isOfType(MATRIX_OP))              return visitMatrix(osgParent, (MatrixRecord*)rec);
     else if (rec->isOfType(LONG_ID_OP))             return visitLongID(osgParent, (LongIDRecord*)rec);
@@ -134,6 +137,39 @@ osg::Node* ConvertFromFLT::visitNode(osg::Group* osgParent, Record* rec)
     return NULL;
 }
 
+osg::Node* ConvertFromFLT::visitInstanceDefinition(osg::Group* osgParent,InstanceDefinitionRecord* rec)
+{
+    osg::Group* group = new osg::Group;
+    InstancePool* pInstancePool = rec->getFltFile()->getInstancePool();
+
+    if (group)
+    {
+        osg::Node* node = visitAncillary(osgParent, rec);
+        if (node) osgParent = (osg::Group*)node;
+
+        pInstancePool->addInstance((int)rec->getData()->iInstDefNumber,group);
+        visitPrimaryNode(group, (PrimNodeRecord*)rec);
+    }
+
+    return (osg::Node*)group;
+}
+
+osg::Node* ConvertFromFLT::visitInstanceReference(osg::Group* osgParent,InstanceReferenceRecord* rec)
+{
+    osg::Group* group;
+    InstancePool* pInstancePool = rec->getFltFile()->getInstancePool();
+
+    group = pInstancePool->getInstance((int)rec->getData()->iInstDefNumber);
+    if (group)
+    {
+        osgParent->addChild( group );
+    }
+    else
+    {
+        osg::notify(osg::INFO) << "Warning: cannot find the instance definition in flt file."<<std::endl;
+    }
+    return (osg::Node*)group;
+}
 
 osg::Node* ConvertFromFLT::visitAncillary(osg::Group* osgParent, PrimNodeRecord* rec)
 {

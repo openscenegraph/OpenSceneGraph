@@ -9,6 +9,7 @@
 #include <osg/Texture>
 #include <osg/Material>
 #include <osg/StateSet>
+#include <osg/Group>
 
 #include <string>
 #include <algorithm>
@@ -102,6 +103,25 @@ class MaterialPool : public osg::Referenced
         MaterialMap _MaterialMap;
 };
 
+
+class InstancePool : public osg::Referenced
+{
+    public :
+
+        InstancePool() {}
+
+        osg::Group* getInstance(int nIndex);
+        void addInstance(int nIndex, osg::Group* instance);
+
+    protected :
+
+        virtual ~InstancePool() {}
+
+    private :
+
+        typedef std::map<int,osg::ref_ptr<osg::Group> > InstanceMap;
+        InstanceMap _instanceMap;
+};
 
 }; // end namespace flt
 

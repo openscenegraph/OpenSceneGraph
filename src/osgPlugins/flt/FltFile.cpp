@@ -26,6 +26,7 @@ FltFile::FltFile(
 {
     _useTextureAlphaForTransparancyBinning = true;
     _doUnitsConversion = true;
+    _desiredUnits = ConvertToMeters;
 
     if (pColorPool)
     {
@@ -251,3 +252,30 @@ int FltFile::getFlightVersion() const
     }
     return 0;
 }
+
+
+std::string FltFile::getDesiredUnitsString() const
+{
+    switch (_desiredUnits)
+    {
+    case ConvertToMeters:
+        return "ConvertToMeters";
+        break;
+    case ConvertToKilometers:
+        return "ConvertToKilometers";
+        break;
+    case ConvertToFeet:
+        return "ConvertToFeet";
+        break;
+    case ConvertToInches:
+        return "ConvertToInches";
+        break;
+    case ConvertToNauticalMiles:
+        return "ConvertToNauticalMiles";
+        break;
+    default:
+        return "Invalid";
+        break;
+    }
+}
+

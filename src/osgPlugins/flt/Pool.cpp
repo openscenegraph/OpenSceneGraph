@@ -96,4 +96,18 @@ void MaterialPool::addMaterial(int nIndex, PoolMaterial* material)
     _MaterialMap[nIndex] = material;
 }
 
+osg::Group* InstancePool::getInstance(int nIndex)
+{
+    InstanceMap::iterator fitr = _instanceMap.find(nIndex);
+    if (fitr != _instanceMap.end())
+        return (*fitr).second.get();
+    else
+        return NULL;
+}
+
+
+void InstancePool::addInstance(int nIndex, osg::Group* instance)
+{
+    _instanceMap[nIndex] = instance;
+}
 

@@ -62,6 +62,9 @@ FltFile::FltFile(
         _useInternalMaterialPalette = true;
         setMaterialPool( new MaterialPool );
     }
+
+	// instances are always internally defined 
+	setInstancePool( new InstancePool );
 }
 
 

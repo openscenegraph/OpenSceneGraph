@@ -34,7 +34,7 @@ $(MAKEDEPEND) : $(C++FILES) $(CFILES)
 	$(C++) $(C++FLAGS) -c $*.cpp -o $*.o
 
 %.o : %.c
-	$(C++) $(C++FLAGS) -c $*.c -o $*.o
+	$(CC) $(C++FLAGS) -c $*.c -o $*.o
 
 docs:
 	[ "$(TARGET_BASENAME)" != "" ] && \

@@ -54,13 +54,13 @@ class SG_EXPORT Geode : public Node
 
 
         /** return the number of geoset's.*/
-        inline const int getNumDrawables() const { return _drawables.size(); }
+        inline const unsigned int getNumDrawables() const { return _drawables.size(); }
 
         /** return geoset at position i.*/
-        inline Drawable* getDrawable( const int i ) { return _drawables[i].get(); }
+        inline Drawable* getDrawable( const unsigned int i ) { return _drawables[i].get(); }
 
         /** return geoset at position i.*/
-        inline const Drawable* getDrawable( const int i ) const { return _drawables[i].get(); }
+        inline const Drawable* getDrawable( const unsigned int i ) const { return _drawables[i].get(); }
 
         /** return true if geoset is contained within Geode.*/
         inline const bool containsDrawable(const Drawable* gset) const

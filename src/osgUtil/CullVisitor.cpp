@@ -250,7 +250,7 @@ void CullVisitor::apply(Geode& node)
     if (node_state) pushStateSet(node_state);
 
     Matrix& matrix = getModelViewMatrix();
-    for(int i=0;i<node.getNumDrawables();++i)
+    for(unsigned int i=0;i<node.getNumDrawables();++i)
     {
         Drawable* drawable = node.getDrawable(i);
         const BoundingBox &bb =drawable->getBound();
@@ -316,7 +316,7 @@ void CullVisitor::apply(Billboard& node)
     const Vec3& eye_local = getEyeLocal();
     const Matrix& modelview = getModelViewMatrix();
 
-    for(int i=0;i<node.getNumDrawables();++i)
+    for(unsigned int i=0;i<node.getNumDrawables();++i)
     {
         const Vec3& pos = node.getPos(i);
 

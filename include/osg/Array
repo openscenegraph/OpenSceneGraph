@@ -58,9 +58,10 @@ class SG_EXPORT Array : public Object
 
 
         Type                    getType() const { return _arrayType; }
-        GLint                   dataSize() const { return _dataSize; }
-        GLenum                  dataType() const { return _dataType; }
-        virtual const GLvoid*   dataPointer() const = 0;
+        GLint                   getDataSize() const { return _dataSize; }
+        GLenum                  getDataType() const { return _dataType; }
+        virtual const GLvoid*   getDataPointer() const = 0;
+        virtual unsigned int    getNumElements() const = 0;
 
     protected:
     
@@ -101,7 +102,8 @@ class TemplateArray : public Array, public std::vector<T>
         virtual Object* clone(const CopyOp& copyop) const { return osgNew TemplateArray(*this,copyop); }        
         virtual void accept(ArrayVisitor& av) { av.apply(*this); }
 
-        virtual const GLvoid*   dataPointer() const { if (!empty()) return &front(); else return 0; }
+        virtual const GLvoid*   getDataPointer() const { if (!empty()) return &front(); else return 0; }
+        virtual unsigned int    getNumElements() const { return size(); }
 
     protected:
     

@@ -80,6 +80,10 @@ class SG_EXPORT Geometry : public Drawable
         void addPrimitive(Primitive* primitive) { if (primitive) _primitives.push_back(primitive); dirtyDisplayList(); }
 
 
+        bool verifyBindings() const;
+
+        void computeCorrectBindingsAndArraySizes();
+
 
         /** draw Geometry directly ignoring an OpenGL display list which could be attached.
           * This is the internal draw method which does the drawing itself,

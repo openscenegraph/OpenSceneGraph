@@ -124,6 +124,8 @@ class Primitive : public Object
         virtual void draw() const = 0;
         
         virtual void applyPrimitiveOperation(Drawable::PrimitiveFunctor&) {}
+        
+        virtual void offsetIndices(int offset) = 0;
 
     protected:
 
@@ -174,6 +176,8 @@ class SG_EXPORT DrawArrays : public Primitive
         
         virtual void applyPrimitiveOperation(Drawable::PrimitiveFunctor& functor);
         
+        virtual void offsetIndices(int offset) { _first += offset; }
+
     protected:
 
         GLint   _first;
@@ -223,6 +227,8 @@ class SG_EXPORT DrawArrayLengths : public Primitive, public VectorSizei
         
         virtual void applyPrimitiveOperation(Drawable::PrimitiveFunctor& functor);
         
+        virtual void offsetIndices(int offset) { _first += offset; }
+
     protected:
 
         GLint   _first;
@@ -261,6 +267,8 @@ class SG_EXPORT DrawElementsUByte : public Primitive, public VectorUByte
         virtual void draw() const ;
         
         virtual void applyPrimitiveOperation(Drawable::PrimitiveFunctor& functor);
+
+        virtual void offsetIndices(int offset);
 };
 
 
@@ -297,6 +305,8 @@ class SG_EXPORT DrawElementsUShort : public Primitive, public VectorUShort
         virtual void draw() const;
         
         virtual void applyPrimitiveOperation(Drawable::PrimitiveFunctor& functor);
+
+        virtual void offsetIndices(int offset);
 };
 
 class SG_EXPORT DrawElementsUInt : public Primitive, public VectorUInt
@@ -333,6 +343,7 @@ class SG_EXPORT DrawElementsUInt : public Primitive, public VectorUInt
         
         virtual void applyPrimitiveOperation(Drawable::PrimitiveFunctor& functor);
 
+        virtual void offsetIndices(int offset);
 };
 
 // backwards compatibility with first incarnation of DrawElements nameing convention.

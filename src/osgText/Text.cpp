@@ -262,7 +262,12 @@ void Text::computeGlyphRepresentation()
     
     _textureGlyphQuadMap.clear();
     
-    if (_text.empty()) return;
+    if (_text.empty()) 
+	{
+	    _textBB.set(0,0,0,0,0,0);//no size text
+	    computePositions(); //to reset the origin
+		return;
+	}
     
     osg::Vec2 startOfLine(0.0f,0.0f);
     osg::Vec2 cursor(startOfLine);
@@ -299,7 +304,11 @@ void Text::computeGlyphRepresentation()
 
             float width = (float)(glyph->s()-2*activefont->getGlyphImageMargin()) * wr;
             float height = (float)(glyph->t()-2*activefont->getGlyphImageMargin()) * hr;
-
+            //#define TREES_CODE_FOR_MAKING_SPACES_EDITABLE
+            #ifdef TREES_CODE_FOR_MAKING_SPACES_EDITABLE
+	        if (width == 0.0f)  width = glyph->getHorizontalAdvance() * wr;
+	        if (height == 0.0f) height = glyph->getVerticalAdvance() * hr;
+            #endif
             if (_layout==RIGHT_TO_LEFT)
             {
                 cursor.x() -= glyph->getHorizontalAdvance() * wr;

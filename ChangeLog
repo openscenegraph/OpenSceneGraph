@@ -1,6 +1,11 @@
 OSG Change log
 ==============
 
+
+  o Made spelling corrections in include/osgDB,osgUtil,osgGLUT,osgWX,
+    spelling mistakes picked up by a script written by Neil Salter.
+  o Made osg::Matrix::_mat private, and updated the rest of the osg
+    to use the Matrix::operate(row,col) method instead of _mat[row][col].
   o Placed #ifdef USE_DEPRECATED_MATRIX_METHODS about pre/postScale,
     pre/postTrans and pre/postRot methods since these are now 
     deprecated, there functionality replace by scale,trans,rotate

@@ -9,7 +9,10 @@
 class OrientationConverter {
     public :
     	OrientationConverter(void);
-	void setConversion( const osg::Vec3 &from, const osg::Vec3 &to);
+	void setRotation( const osg::Vec3 &from, 
+	                    const osg::Vec3 &to  );
+	void setTranslation( const osg::Vec3 &trans);
+	void setScale( const osg::Vec3 &trans);
 	void convert( osg::Node &node );
 
     private :
@@ -78,6 +81,8 @@ class OrientationConverter {
 	};
 
 	ConvertVisitor _cv;
+	osg::Matrix R, T, S;
+	bool _trans_set;
 
 };
 #endif

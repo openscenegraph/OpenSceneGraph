@@ -331,15 +331,6 @@ void SceneView::draw()
                 left_camera->adjustEyeOffsetForStereo(osg::Vec3(-iod*0.5,0.0f,0.0f),screenDistance);
                 right_camera->adjustEyeOffsetForStereo(osg::Vec3(iod*0.5,0.0f,0.0f),screenDistance);
                 
-
-                osg::ColorMatrix* cm = new osg::ColorMatrix;
-                cm->setMatrix(osg::Matrix(0.3f,0.3f,0.3f,0.0f,
-                                          0.6f,0.6f,0.6f,0.0f,
-                                          0.1f,0.1f,0.1f,0.0f,
-                                          0.0f,0.0f,0.0f,1.0f));
-
-                _globalState->setAttribute(cm);                                          
-
                 osg::ColorMask* red = new osg::ColorMask;
                 osg::ColorMask* green = new osg::ColorMask;
 

@@ -122,9 +122,20 @@ class SG_EXPORT Camera: public osg::Referenced
         /** Calculate and return the projection aspect ratio.
           * Aspect ratio is defined as width/height.*/
         const double calc_aspectRatio() const;
-        
+
         const Matrix& getProjectionMatrix() const;
+
         
+        /** set the fusion distance, the distance in model coords, when viewing stereo, that the
+          * left and right eye images converge.  This value is dual of the screen distance, 
+          * which is distance between viewers eyes and display device, while the fusion distance is
+          * this equivilant distance but in the virtual world (model coords.)*/
+        inline const double setFusionDistance() const { return _fusionDistance; }
+
+        /** get fusion distance.*/
+        inline const double getFusionDistance() const { return _fusionDistance; }
+
+
         enum LookAtType
         {
             USE_HOME_POSITON,
@@ -184,8 +195,6 @@ class SG_EXPORT Camera: public osg::Referenced
         /** calculate side vector.*/
         const Vec3 getSideVector() const;
 
-        /** get focal distance.*/
-        inline const double getFocalLength() const { return _focalLength; }
         
 
         enum TransformMode
@@ -237,10 +246,19 @@ class SG_EXPORT Camera: public osg::Referenced
         const Matrix& getModelViewMatrix() const;
         
         
+        /** Switch on/off the use of the near clipping plane which creating the
+          * getClippingVolume(), uses the camera _znear value for the position of the 
+          * near clipping plane. By default this value is off.*/
         void setUseNearClippingPlane(const bool use);
+        /** get whether the ClippingVolume uses a near clipping plane.*/
         const bool getUseNearClippingPlane() const { return _useNearClippingPlane; }
         
+
+        /** Switch on/off the use of the far clipping plane which creating the
+          * getClippingVolume(), uses the camera _zfar value for the position 
+          * of the far clipping plane. By default this value is off.*/
         void setUseFarClippingPlane(const bool use);
+        /** Get whether the ClippingVolume uses a far clipping plane.*/
         const bool getUseFarClippingPlane() const { return _useFarClippingPlane; }
         
         /** get the view frustum clipping in model coordinates */
@@ -261,6 +279,9 @@ class SG_EXPORT Camera: public osg::Referenced
           * a seperate camera for each eye, adjustEyePointForStereo(..) being used to
           * specialize the camera for each eye view.*/ 
         void adjustEyeOffsetForStereo(const osg::Vec3& offset,float screenDistance);
+
+        /** Set up the OpenGL projection and model view matrices.*/
+        virtual void apply(State& state);
 
     protected:
 
@@ -291,7 +312,7 @@ class SG_EXPORT Camera: public osg::Referenced
         Vec3            _center;
         Vec3            _up;
         
-        double          _focalLength;
+        double          _fusionDistance;
         
         TransformMode   _attachedTransformMode;
         ref_ptr<Matrix> _eyeToModelTransform;
@@ -311,12 +332,11 @@ class SG_EXPORT Camera: public osg::Referenced
         mutable ref_ptr<Matrix> _inversemp;
 
         void calculateMatricesAndClippingVolume() const;
-        
-        // values to offset
-        bool            _useEyeOffset;
-        osg::Vec3       _eyeOffset;
-        float           _screenDistance;
 
+        // used for offsetting camera to ajust for left and right stereo views.
+        bool        _useEyeOffset;
+        osg::Vec3   _eyeOffset;
+        float       _screenDistance;
 
 };
 

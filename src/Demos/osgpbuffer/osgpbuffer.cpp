@@ -76,6 +76,8 @@ class MyCullCallback : public osg::NodeCallback
         
         osg::ref_ptr<osg::Node>      _subgraph;
         osg::ref_ptr<osg::Texture2D> _texture;
+        osg::ref_ptr<osg::StateSet>  _localState
+
 };
 
 
@@ -133,9 +135,9 @@ void MyCullCallback::doPreRender(osg::Node&, osgUtil::CullVisitor& cv)
 
     cv.pushModelViewMatrix(matrix);
 
-    osg::ref_ptr<osg::StateSet> dummyState = new osg::StateSet;
+    if (!_localState) _localState = new osg::StateSet;
 
-    cv.pushStateSet(dummyState.get());
+    cv.pushStateSet(_localState.get());
 
     {
         // traverse the subgraph
@@ -176,10 +178,10 @@ void MyCullCallback::doPreRender(osg::Node&, osgUtil::CullVisitor& cv)
 
     osg::Viewport* new_viewport = new osg::Viewport;
 //  new_viewport->setViewport(center_x-width/2,center_y-height/2,width,height);
-new_viewport->setViewport(0,0,width,height);
+    new_viewport->setViewport(0,0,width,height);
     rtts->setViewport(new_viewport);
 
-    dummyState->setAttribute(new_viewport);    
+    _localState->setAttribute(new_viewport);    
 
     // and the render to texture stage to the current stages
     // dependancy list.

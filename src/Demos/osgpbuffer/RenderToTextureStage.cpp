@@ -28,7 +28,7 @@ void MyRenderToTextureStage::draw(osg::State& state, osgUtil::RenderLeaf*& previ
     if (_pbuffer && _texture.valid())
     {
         // Create pbuffer texture
-        const osg::uint contextID = state.getContextID();
+        const unsigned int contextID = state.getContextID();
         GLuint& handle = _texture->getTextureObject(contextID);
         if (handle == 0)
         {

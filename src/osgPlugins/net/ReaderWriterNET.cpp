@@ -6,6 +6,7 @@
 
 #include <osgDB/Input>
 #include <osgDB/Registry>
+#include <osgDB/FileUtils>
 #include <osgDB/FileNameUtils>
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
@@ -13,7 +14,6 @@
 #include <osg/MatrixTransform>
 #include <osg/Group>
 #include "sockinet.h"
-#include "makeDir.h"
 
  /*
   *  Semantics:
@@ -286,7 +286,7 @@ class NetReader : public osgDB::ReaderWriter
             if( !localCacheDir.empty() && cacheMode & Write )
             {
                 std::string cacheFile = localCacheDir + '/' + fileName;
-                if( TemporaryFileUtils::makeDirectory( cacheFile ) )
+                if( osgDB::makeDirectoryForFile( cacheFile ) )
                 {
                     osgDB::writeNodeFile( *(readResult.getNode()), cacheFile );
                     osg::notify(osg::DEBUG_INFO) << "osgPlugin .net: " << fileName << 

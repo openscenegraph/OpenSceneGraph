@@ -14,6 +14,7 @@ CXXFILES = \
 	FlightManipulator.cpp\
 	InsertImpostorsVisitor.cpp\
 	IntersectVisitor.cpp\
+	NewCullVisitor.cpp\
 	NvTriStripObjects.cpp\
 	Optimizer.cpp\
 	RenderBin.cpp\

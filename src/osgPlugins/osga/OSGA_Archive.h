@@ -15,8 +15,6 @@
 #include <osgDB/Archive>
 #include <osgDB/FileNameUtils>
 
-using namespace osgDB;
-
 class OSGA_Archive : public osgDB::Archive
 {
     public:
@@ -149,7 +147,7 @@ class OSGA_Archive : public osgDB::Archive
                 _options(options) {}
 
             virtual ~ReadFunctor() {}
-            virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw, std::istream& input) const = 0;
+            virtual osgDB::ReaderWriter::ReadResult doRead(osgDB::ReaderWriter& rw, std::istream& input) const = 0;
 
             std::string _filename;
             const ReaderWriter::Options* _options;
@@ -168,7 +166,7 @@ class OSGA_Archive : public osgDB::Archive
                 _options(options) {}
 
             virtual ~WriteFunctor() {}
-            virtual ReaderWriter::WriteResult doWrite(ReaderWriter& rw, std::ostream& output) const = 0;
+            virtual osgDB::ReaderWriter::WriteResult doWrite(osgDB::ReaderWriter& rw, std::ostream& output) const = 0;
 
             std::string _filename;
             const ReaderWriter::Options* _options;

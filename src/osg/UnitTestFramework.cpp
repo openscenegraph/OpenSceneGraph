@@ -270,7 +270,7 @@ bool TestRunner::visitEnter( TestSuite* pSuite )
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
-namespace{
+namespace osgUtx{
 
 struct isSpecified{
 
@@ -290,7 +290,7 @@ struct isSpecified{
 bool TestRunner::visit( TestCase* pTest )
 {
     if ( std::find_if(_tests.begin(),_tests.end(),
-                      isSpecified(currentPath() + pTest->name() ) ) != _tests.end()) perform( pTest );
+                      osgUtx::isSpecified(currentPath() + pTest->name() ) ) != _tests.end()) perform( pTest );
 
     return !_ctx.shouldStop();
 }

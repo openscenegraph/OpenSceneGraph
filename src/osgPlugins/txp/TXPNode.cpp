@@ -185,6 +185,12 @@ bool TXPNode::loadArchive()
 
 void TXPNode::updateEye(osg::NodeVisitor& nv)
 {
+    if (!_pageManager)
+    {
+        osg::notify(osg::NOTICE)<<"TXPNode::updateEye() no pageManager created"<<std::endl;
+        return;
+    }
+
     trpg2dPoint loc;
     loc.x = nv.getEyePoint().x() - _originX;
     loc.y = nv.getEyePoint().y() - _originY;

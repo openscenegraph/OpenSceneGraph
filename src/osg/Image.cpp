@@ -68,6 +68,79 @@ void Image::setFileName(const std::string& fileName)
 
 void Image::computePixelSize()
 {
+
+
+//     /* Data types */
+
+//     #define GL_BITMAP				0x1A00
+
+//     #define GL_BYTE					0x1400
+//     #define GL_UNSIGNED_BYTE			0x1401
+//     #define GL_SHORT				0x1402
+//     #define GL_UNSIGNED_SHORT			0x1403
+//     #define GL_INT					0x1404
+//     #define GL_UNSIGNED_INT				0x1405
+//     #define GL_FLOAT				0x1406
+//     #define GL_DOUBLE				0x140A
+//     #define GL_2_BYTES				0x1407
+//     #define GL_3_BYTES				0x1408
+//     #define GL_4_BYTES				0x1409
+// 
+#ifndef GL_VERSION_1_1
+    /* Internal texture formats (GL 1.1) */
+    #define GL_ALPHA4				0x803B
+    #define GL_ALPHA8				0x803C
+    #define GL_ALPHA12				0x803D
+    #define GL_ALPHA16				0x803E
+    #define GL_LUMINANCE4				0x803F
+    #define GL_LUMINANCE8				0x8040
+    #define GL_LUMINANCE12				0x8041
+    #define GL_LUMINANCE16				0x8042
+    #define GL_LUMINANCE4_ALPHA4			0x8043
+    #define GL_LUMINANCE6_ALPHA2			0x8044
+    #define GL_LUMINANCE8_ALPHA8			0x8045
+    #define GL_LUMINANCE12_ALPHA4			0x8046
+    #define GL_LUMINANCE12_ALPHA12			0x8047
+    #define GL_LUMINANCE16_ALPHA16			0x8048
+    #define GL_INTENSITY				0x8049
+    #define GL_INTENSITY4				0x804A
+    #define GL_INTENSITY8				0x804B
+    #define GL_INTENSITY12				0x804C
+    #define GL_INTENSITY16				0x804D
+    #define GL_R3_G3_B2				0x2A10
+    #define GL_RGB4					0x804F
+    #define GL_RGB5					0x8050
+    #define GL_RGB8					0x8051
+    #define GL_RGB10				0x8052
+    #define GL_RGB12				0x8053
+    #define GL_RGB16				0x8054
+    #define GL_RGBA2				0x8055
+    #define GL_RGBA4				0x8056
+    #define GL_RGB5_A1				0x8057
+    #define GL_RGBA8				0x8058
+    #define GL_RGB10_A2				0x8059
+    #define GL_RGBA12				0x805A
+    #define GL_RGBA16				0x805B
+#endif
+
+#ifndef GL_VERSION_1_2
+    /* 1.2 definitions...*/
+    #define GL_BGR					0x80E0
+    #define GL_BGRA					0x80E1
+    #define GL_UNSIGNED_BYTE_3_3_2			0x8032
+    #define GL_UNSIGNED_BYTE_2_3_3_REV		0x8362
+    #define GL_UNSIGNED_SHORT_5_6_5			0x8363
+    #define GL_UNSIGNED_SHORT_5_6_5_REV		0x8364
+    #define GL_UNSIGNED_SHORT_4_4_4_4		0x8033
+    #define GL_UNSIGNED_SHORT_4_4_4_4_REV		0x8365
+    #define GL_UNSIGNED_SHORT_5_5_5_1		0x8034
+    #define GL_UNSIGNED_SHORT_1_5_5_5_REV		0x8366
+    #define GL_UNSIGNED_INT_8_8_8_8			0x8035
+    #define GL_UNSIGNED_INT_8_8_8_8_REV		0x8367
+    #define GL_UNSIGNED_INT_10_10_10_2		0x8036
+    #define GL_UNSIGNED_INT_2_10_10_10_REV		0x8368
+#endif
+
     // temporary code.. to be filled in properly ASAP. RO.
     _pixelSizeInBits=32;
 }

@@ -12,13 +12,15 @@
 
 #include <osg/GeoSet>
 
-#include <osgUtil/CullVisitor>
+#include <osgUtil/NewCullVisitor>
 #include <osgUtil/RenderToTextureStage>
 
 #include <osgDB/ReadFile>
 
 #include <float.h>
 #include <algorithm>
+
+#include <osg/Timer>
 
 using namespace osg;
 using namespace osgUtil;
@@ -72,318 +74,7 @@ class PrintVisitor : public NodeVisitor
         int _step;
 };
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//    SandB change to this
-
-struct TriangleViewFrustumIntersect
-{
-        //members .................
-
-        //the clipping volume, so that triangle vertices can be shecked if inside
-        osg::ClippingVolume _cv;
-
-        //map serves not to have mulitple entries of same vertices
-        std::map<osg::Vec3, bool> _listVectors;
-
-        //transformation matrix
-        const osg::Matrix* _t_mat;
-
-        //value needed to set up triangles properly
-        double _current_near;
-
-        //eye point of camera
-        osg::Vec3 _eye;
-
-        osg::Vec3 _LeftUp;
-        osg::Vec3 _LeftDown;
-        osg::Vec3 _RightUp;
-        osg::Vec3 _RightDown;
-
-        //constructor
-        TriangleViewFrustumIntersect(
-            const osg::ClippingVolume& clip_vol, 
-            const osg::Matrix* matr, 
-//            double current_near,
-            const osg::Vec3& eyePoint,
-            const osg::Vec3& LeftUp,
-            const osg::Vec3& LeftDown,
-            const osg::Vec3& RightUp,
-            const osg::Vec3& RightDown)
-        {
-            _cv = clip_vol;
-            _t_mat = matr;
-//            _current_near = current_near;
-            _eye = eyePoint;
-            _LeftUp = LeftUp;
-            _LeftDown = LeftDown;
-            _RightUp = RightUp;
-            _RightDown = RightDown;
-        }
-
-        //pretty much the copy of IntersectVisitor intersect() function
-        int intersect_linesegment_and_triangle(
-            osg::Vec3& to_return,
-            const osg::LineSegment& ls,
-            const osg::Vec3& vertex1,
-            const osg::Vec3& vertex2,
-            const osg::Vec3& vertex3);
-        
-        void intersect_triangle(const osg::Vec3& vert1, const osg::Vec3& vert2, const osg::Vec3& vert3);
-
-    //and crucial:
-    void operator() (const osg::Vec3& vert1, const osg::Vec3& vert2, const osg::Vec3& vert3)
-        {
-            intersect_triangle(vert1, vert2, vert3);
-        }
-};
-
-
-//SandB added: pretty much copy of the IntersectVisitor intersection of traingle function
-int TriangleViewFrustumIntersect::intersect_linesegment_and_triangle(osg::Vec3& to_return,
-        const osg::LineSegment& ls,
-        const osg::Vec3& v1,
-        const osg::Vec3& v2,
-        const osg::Vec3& v3)
-{
-
-    if(v1 == v2 || v1 == v3 || v2 == v3) return -1;
-
-    osg::Vec3 _s = ls.start();
-    osg::Vec3 _d = ls.end() - ls.start();
-    float _length = _d.length();
-    _d /= _length;
-
-    osg::Vec3 v12 = v2 - v1;
-    osg::Vec3 n12 = v12^_d;
-
-    float ds12 = (_s-v1)*n12;
-    float d312 = (v3-v1)*n12;
-    if (d312>=0.0f)
-    {
-        if (ds12<0.0f) return 3;
-        if (ds12>d312) return 3;
-    }
-    else                     // d312 < 0
-    {
-        if (ds12>0.0f) return 3;
-        if (ds12<d312) return 3;
-    }
-
-    osg::Vec3 v23 = v3-v2;
-    osg::Vec3 n23 = v23^_d;
-    float ds23 = (_s-v2)*n23;
-    float d123 = (v1-v2)*n23;
-    if (d123>=0.0f)
-    {
-        if (ds23<0.0f) return 3;
-        if (ds23>d123) return 3;
-    }
-    else                     // d123 < 0
-    {
-        if (ds23>0.0f) return 3;
-        if (ds23<d123) return 3;
-    }
-
-    osg::Vec3 v31 = v1-v3;
-    osg::Vec3 n31 = v31^_d;
-    float ds31 = (_s-v3)*n31;
-    float d231 = (v2-v3)*n31;
-    if (d231>=0.0f)
-    {
-        if (ds31<0.0f) return 3;
-        if (ds31>d231) return 3;
-    }
-    else                     // d231 < 0
-    {
-        if (ds31>0.0f) return 3;
-        if (ds31<d231) return 3;
-    }
-
-    float r3 = ds12/d312;
-    float r1 = ds23/d123;
-    float r2 = ds31/d231;
-
-    to_return = v1*r1+v2*r2+v3*r3;
-
-    float d = (to_return-_s)*_d;
-
-    if (d<0.0f) return 1;
-    if (d>_length) return 2;
-
-    return 0;
-}
-
-void TriangleViewFrustumIntersect::intersect_triangle(const osg::Vec3& vert1, const osg::Vec3& vert2, const osg::Vec3& vert3)
-{
-    //if we have vertices in "transformed" coordinates, transform them to "global" coordinates
-    osg::Vec3 v1, v2, v3;
-    if(_t_mat)
-    {
-        v1 = vert1*(*_t_mat);
-        v2 = vert2*(*_t_mat);
-        v3 = vert3*(*_t_mat);
-    }
-    else
-    {
-        v1 = vert1;
-        v2 = vert2;
-        v3 = vert3;
-    }
-
-    
-    //construct positions of truncated clipping volume corners
-    /*
-    osg::Vec3 UpLeft(_eye + _LeftUp * _current_near);
-    osg::Vec3 DownLeft(_eye + _LeftDown*_current_near);
-    osg::Vec3 UpRight(_eye + _RightUp*_current_near);
-    osg::Vec3 DownRight(_eye + _RightDown*_current_near);
-    */
-    osg::Vec3 UpLeft(_eye + _LeftUp);
-    osg::Vec3 DownLeft(_eye + _LeftDown);
-    osg::Vec3 UpRight(_eye + _RightUp);
-    osg::Vec3 DownRight(_eye + _RightDown);
-    
-
-    //construct truncation "back plane"
-    osg::Plane back_plane(DownLeft, DownRight, UpRight);//CCW, to have normal where it should be
-
-    //add this plane to clipping volume
-    _cv.add(back_plane);
-
-    //check if all three triangle vertices are contained in truncated clipping volume
-    unsigned int check = 0;
-
-    //check if all three triangle vertices are behind truncation ("back") plane
-    unsigned int check2 = 0;
-
-    if(back_plane.distance(v1) <= 0.0)
-            check2 |= 1;
-    else if(_cv.contains(v1)) //can not be contained if behind
-    {
-        _listVectors[v1] = true;
-        check |= 1;
-    }
-
-    if(back_plane.distance(v2)<=0.0)
-            check2 |= 2;
-    else if(_cv.contains(v2)) 
-    {
-        _listVectors[v2] = true;
-        check |= 2;
-    }
-
-    if(back_plane.distance(v3) <= 0.0) 
-        check2 |= 4;
-    else if(_cv.contains(v3))
-    {
-        _listVectors[v3] = true;
-        check |= 4;
-    }
-
-    if(check2 == 7) 
-    {
-        //all three traingle vertices are behind truncation plane so no need to check them
-        //for heavily tesselated situation, htis is where most of tries will end
-        return;
-    }
-
-
-
-    if(check != 7)
-    {
-        //just if it happens that all three are contained in truncated clipping volume, no need to do extra calculation
-        //(and they already are added to candidate vertices))
-
-        //at least one of the trianngle vertices is not contained in clipping volume, so extra checks are necessary
-
-        //"working" variable
-        osg::Vec3 returned;
-
-        //construct line segment of two triangle vertices and check if they intersect any clipping plane
-        //but within correct clipping plane triangle
-        osg::ref_ptr<osg::LineSegment> s12 = osgNew LineSegment(v1, v2);
-
-
-        //left triangle
-        if(intersect_linesegment_and_triangle(returned, *s12, _eye, UpLeft, DownLeft) == 0)
-            _listVectors[returned] = true;
-
-        //up triangle
-        if(intersect_linesegment_and_triangle(returned, *s12, _eye, UpLeft, UpRight) == 0)
-            _listVectors[returned] = true;
-
-        //right triangle
-        if(intersect_linesegment_and_triangle(returned, *s12, _eye, UpRight, DownRight) == 0)
-            _listVectors[returned] = true;
-
-        //bottom triangled
-        if(intersect_linesegment_and_triangle(returned, *s12, _eye, DownLeft, DownRight) == 0)
-            _listVectors[returned] = true;
-
-        //now for second edge of triangle
-        s12->set(v2, v3);
-
-            //left triangle
-        if(intersect_linesegment_and_triangle(returned, *s12, _eye, UpLeft, DownLeft) == 0)
-            _listVectors[returned] = true;
-
-        //up triangle
-        if(intersect_linesegment_and_triangle(returned, *s12, _eye, UpLeft, UpRight) == 0)
-            _listVectors[returned] = true;
-
-        //right triangle
-        if(intersect_linesegment_and_triangle(returned, *s12, _eye, UpRight, DownRight) == 0)
-            _listVectors[returned] = true;
-
-        //bottom triangled
-        if(intersect_linesegment_and_triangle(returned, *s12, _eye, DownLeft, DownRight) == 0)
-            _listVectors[returned] = true;
-
-        s12->set(v3, v1);
-
-        //left triangle
-        if(intersect_linesegment_and_triangle(returned, *s12, _eye, UpLeft, DownLeft) == 0)
-            _listVectors[returned] = true;
-
-        //up triangle
-        if(intersect_linesegment_and_triangle(returned, *s12, _eye, UpLeft, UpRight) == 0)
-            _listVectors[returned] = true;
-
-        //right triangle
-        if(intersect_linesegment_and_triangle(returned, *s12, _eye, UpRight, DownRight) == 0)
-            _listVectors[returned] = true;
-
-        //bottom triangled
-        if(intersect_linesegment_and_triangle(returned, *s12, _eye, DownLeft, DownRight) == 0)
-            _listVectors[returned] = true;
-
-
-        //we still have possibility of camera being above huge triangle, so it is possible that clipping volume
-        //intersects this triangle thus giving coordinates relevant for determination of near plane
-
-        s12->set(_eye, UpLeft);
-
-        if(intersect_linesegment_and_triangle(returned, *s12, v1, v2, v3) == 0)
-            _listVectors[returned] = true;
-
-        s12->set(_eye, DownLeft);
-
-        if(intersect_linesegment_and_triangle(returned, *s12, v1, v2, v3) == 0)
-            _listVectors[returned] = true;
-
-        s12->set(_eye, UpRight);
-
-        if(intersect_linesegment_and_triangle(returned, *s12, v1, v2, v3) == 0)
-            _listVectors[returned] = true;
-
-        s12->set(_eye, DownRight);
-
-        if(intersect_linesegment_and_triangle(returned, *s12, v1, v2, v3) == 0)
-            _listVectors[returned] = true;
-    }
-}
-
-CullVisitor::CullVisitor()
+NewCullVisitor::NewCullVisitor()
 {
     // overide the default node visitor mode.
     setTraversalMode(NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
@@ -397,22 +88,13 @@ CullVisitor::CullVisitor()
     // unless there is bug somewhere...
     _cullingModeStack.push_back(CullViewState::ENABLE_ALL_CULLING);
 
-    _tvs = osgNew CullViewState;
-    _tvs->_eyePoint.set(0.0f,0.0f,1.0f);
-    _tvs->_centerPoint.set(0.0f,0.0f,0.0f);
-    _tvs->_lookVector.set(0.0f,0.0f,-1.0f);
-    _tvs->_upVector.set(0.0f,1.0f,0.0f);
 
-    _cvs = _tvs;
-
-    _tsm = LOOK_VECTOR_DISTANCE;
+    //_tsm = LOOK_VECTOR_DISTANCE;
     _tsm = OBJECT_EYE_POINT_DISTANCE;
 
 
     _calculated_znear = FLT_MAX;
     _calculated_zfar = -FLT_MAX;
-    
-    _viewport = NULL;
     
     _impostorActive = true;
     _depthSortImpostorSprites = false;
@@ -420,38 +102,47 @@ CullVisitor::CullVisitor()
     _numFramesToKeepImpostorSprites = 10;
     _impostorSpriteManager = osgNew ImpostorSpriteManager;
 
-    //SandB change
-    _detailedCulling = false;
-
 }
 
 
-CullVisitor::~CullVisitor()
+NewCullVisitor::~NewCullVisitor()
 {
     reset();
 }
 
 
-void CullVisitor::reset()
+void NewCullVisitor::reset()
 {
 
     //
     // first unref all referenced objects and then empty the containers.
     //
-    _viewStateStack.clear();
+    _projectionStack.clear();
+    _projectionClippingVolumeStack.clear();
 
-    if (_cvs!=_tvs)
-    {
-        _cvs = _tvs;
-    }
+    _modelviewStack.clear();
+    _modelviewClippingVolumeStack.clear();
+
+    _viewportStack.clear();
+
+    _eyePointStack.clear();
+
+    // remove all accept the first element of the stack.
+    _cullingModeStack.erase(_cullingModeStack.begin()+1,_cullingModeStack.end());
+
 
     // reset the calculated near far planes.
     _calculated_znear = FLT_MAX;
     _calculated_zfar = -FLT_MAX;
     
     
-    // remove all accept the first element of the stack.
-    _cullingModeStack.erase(_cullingModeStack.begin()+1,_cullingModeStack.end());
+    osg::Vec3 lookVector(0.0,0.0,-1.0);
+    
+    _bbCornerFar = (lookVector.x()>=0?1:0) |
+                   (lookVector.y()>=0?2:0) |
+                   (lookVector.z()>=0?4:0);
+
+    _bbCornerNear = (~_bbCornerFar)&7;
     
     // reset the resuse lists.
     _currentReuseMatrixIndex = 0;
@@ -466,316 +157,106 @@ void CullVisitor::reset()
     
 }
 
-void CullVisitor::setCamera(const Camera& camera)
+void NewCullVisitor::pushClippingVolume()
 {
-    _camera = &camera;
+    _modelviewClippingVolumeStack.push_back(_projectionClippingVolumeStack.back());
+    if (!_modelviewStack.empty()) _modelviewClippingVolumeStack.back().transformProvidingInverse(*_modelviewStack.back());
 
-    _tvs->_clippingVolume = camera.getClippingVolume();
-
-    _tvs->_eyePoint = camera.getEyePoint_Model();
-
-    _tvs->_centerPoint = camera.getCenterPoint_Model();
-
-    _tvs->_lookVector = _tvs->_centerPoint-_tvs->_eyePoint;
-    _tvs->_lookVector.normalize();
-
-    _tvs->_upVector = camera.getUpVector_Model();
-
-    _tvs->_bbCornerFar = (_tvs->_lookVector.x()>=0?1:0) |
-                        (_tvs->_lookVector.y()>=0?2:0) |
-                        (_tvs->_lookVector.z()>=0?4:0);
-
-    _tvs->_bbCornerNear = (~_tvs->_bbCornerFar)&7;
-
+    _MVPW_Stack.push_back(0L);
 }
 
-void CullVisitor::pushCullViewState_Projection(Matrix* matrix)
+void NewCullVisitor::popClippingVolume()
 {
-    std::cout<<"CullVisitor::pushCullViewState_Projection(Matrix* matrix) not properly implemented yet..."<<std::endl;
-    pushCullViewState_ModelView(NULL,NULL);
+    _modelviewClippingVolumeStack.pop_back();
+    _MVPW_Stack.pop_back();
 }
 
-
-void CullVisitor::pushCullViewState_ModelView(Matrix* matrix)
+void NewCullVisitor::pushViewport(osg::Viewport* viewport)
 {
-    if (matrix)
-    {
-        osg::Matrix* inverse = osgNew osg::Matrix;
-        inverse->invert(*matrix);
-        pushCullViewState_ModelView(matrix,inverse);
-    }
-    else
-        pushCullViewState_ModelView(NULL,NULL);
+    _viewportStack.push_back(viewport);
+    _MVPW_Stack.push_back(0L);
 }
 
-void CullVisitor::pushCullViewState_ModelView(Matrix* matrix,osg::Matrix* inverse)
+void NewCullVisitor::popViewport()
 {
+    _viewportStack.pop_back();
+    _MVPW_Stack.pop_back();
+}
 
-    osg::ref_ptr<CullViewState> nvs = osgNew CullViewState;
-
-    Matrix* inverse_world = NULL;
-
-    if (matrix)
-    {    
-        if (_cvs.valid() && _cvs->_matrix.valid())
-        {
-            matrix->postMult(*(_cvs->_matrix));
-        }
-
-        nvs->_matrix = matrix;
-        
-    }
-    else
-    {
-        if (_cvs.valid())
-        {
-            nvs->_matrix = _cvs->_matrix;
-
-        }
-        else
-        {
-            nvs->_matrix = NULL;
-        }
-    }
-
-    if (inverse)
-    {    
-        if (_cvs.valid() && _cvs->_inverse.valid())
-        {
-            inverse->preMult(*(_cvs->_inverse));
-        }
-
-        nvs->_inverse = inverse;
-        
-    }
-    else
-    {
-        if (_cvs.valid())
-        {
-            nvs->_inverse = _cvs->_inverse;
-        }
-        else
-        {
-            nvs->_inverse = NULL;
-        }
-    }
-    inverse_world = nvs->_inverse.get();
+void NewCullVisitor::pushProjectionMatrix(Matrix* matrix)
+{
+    _projectionStack.push_back(matrix);
     
-    if (inverse_world)
-    {
-        nvs->_eyePoint = _tvs->_eyePoint*(*inverse_world);
-        //nvs->_eyePoint = inverse_world->getTrans();
-
-        nvs->_centerPoint = _tvs->_centerPoint*(*inverse_world);
-
-        nvs->_lookVector = nvs->_centerPoint - nvs->_eyePoint;
-        nvs->_lookVector.normalize();
-
-        Vec3 zero_transformed = Vec3(0.0f,0.0f,0.0f)*(*inverse_world);
-        nvs->_upVector = (_tvs->_upVector)*(*inverse_world) - zero_transformed;
-        nvs->_upVector.normalize();
-
-        nvs->_clippingVolume = _tvs->_clippingVolume;
-        nvs->_clippingVolume.transformProvidingInverse(*(nvs->_matrix));
-
-    }
-    else
-    {
-        nvs->_eyePoint = _tvs->_eyePoint;
-
-        nvs->_lookVector = _tvs->_lookVector;
-
-        nvs->_centerPoint = _tvs->_centerPoint;
-
-        nvs->_upVector = _tvs->_upVector;
-
-        nvs->_clippingVolume = _tvs->_clippingVolume;
-    }
-
-
-    nvs->_bbCornerFar = (nvs->_lookVector.x()>=0?1:0) |
-                        (nvs->_lookVector.y()>=0?2:0) |
-                        (nvs->_lookVector.z()>=0?4:0);
-
-    nvs->_bbCornerNear = (~nvs->_bbCornerFar)&7;
-
-    _cvs = nvs;
-
-    _viewStateStack.push_back(nvs);
+    _projectionClippingVolumeStack.push_back(ClippingVolume());
+    _projectionClippingVolumeStack.back().setToUnitFrustumWithoutNearFar();
+    _projectionClippingVolumeStack.back().transformProvidingInverse(*matrix);
+    
+    pushClippingVolume();
 }
 
-void CullVisitor::popCullViewState()
+void NewCullVisitor::popProjectionMatrix()
 {
-    // pop the top of the view stack and unref it.
-    _viewStateStack.pop_back();
+    _projectionStack.pop_back();
+    _projectionClippingVolumeStack.pop_back();
 
-    // to new cvs and ref it.
-    if (_viewStateStack.empty())
-    {
-        _cvs = _tvs;
-    }
-    else
-    {
-        _cvs = _viewStateStack.back().get();
-    }
-
+    popClippingVolume();
 }
 
-double CullVisitor::calculateZNear(const osg::Vec3& position, const osg::Vec3& eye, const osg::Vec3& look)
+void NewCullVisitor::pushModelViewMatrix(Matrix* matrix)
 {
-    //note: the candidate points are always in "global" coordinates
-    return (position - eye)*look;
+    _modelviewStack.push_back(matrix);
+    
+    pushClippingVolume();
+
+    // fast method for computing the eye point in local coords which doesn't require the inverse matrix.
+    const float x_0 = (*matrix)(0,0);
+    const float x_1 = (*matrix)(1,0);
+    const float x_2 = (*matrix)(2,0);
+    const float x_scale = (*matrix)(3,0) / -(x_0*x_0+x_1*x_1+x_2*x_2);
+
+    const float y_0 = (*matrix)(0,1);
+    const float y_1 = (*matrix)(1,1);
+    const float y_2 = (*matrix)(2,1);
+    const float y_scale = (*matrix)(3,1) / -(y_0*y_0+y_1*y_1+y_2*y_2);
+
+    const float z_0 = (*matrix)(0,2);
+    const float z_1 = (*matrix)(1,2);
+    const float z_2 = (*matrix)(2,2);
+    const float z_scale = (*matrix)(3,2) / -(z_0*z_0+z_1*z_1+z_2*z_2);
+    
+    _eyePointStack.push_back(osg::Vec3(x_0*x_scale + y_0*y_scale + z_0*z_scale,
+                                       x_1*x_scale + y_1*y_scale + z_1*z_scale,
+                                       x_2*x_scale + y_2*y_scale + z_2*z_scale));
+                                       
+                    
+    osg::Vec3 lookVector = getLookVectorLocal();                   
+    
+    _bbCornerFar = (lookVector.x()>=0?1:0) |
+                   (lookVector.y()>=0?2:0) |
+                   (lookVector.z()>=0?4:0);
+
+    _bbCornerNear = (~_bbCornerFar)&7;
+                                       
 }
 
-void CullVisitor::calcClippingDirections() const
+void NewCullVisitor::popModelViewMatrix()
 {
-    //need to calculate intersections of clipping planes
-    osg::Vec3 t_up = _camera->getUpVector();
-    osg::Vec3 t_side = _camera->getSideVector();
+    _modelviewStack.pop_back();
+    _eyePointStack.pop_back();
+    popClippingVolume();
 
-    double pitch_up_angle = atan(_camera->top()/_camera->zNear());
 
-    //we need to pitch up the cameras up vector for angle that is half fovy, 
-//        osg::Vec3 pitched_up_up = t_up * osg::Matrix::rotate(t_VFOV_2, t_side.x(), t_side.y(), t_side.z());
-    osg::Vec3 pitched_up_up = t_up * osg::Matrix::rotate(pitch_up_angle, t_side.x(), t_side.y(), t_side.z());
+    osg::Vec3 lookVector(0.0f,0.0f,-1.0f);
+    if (!_modelviewStack.empty())
+    {
+        lookVector = getLookVectorLocal();
+    }
+    _bbCornerFar = (lookVector.x()>=0?1:0) |
+                   (lookVector.y()>=0?2:0) |
+                   (lookVector.z()>=0?4:0);
 
-    //we need also pitched down cameras up vector
-//    osg::Vec3 pitched_down_up = t_up * osg::Matrix::rotate(-t_VFOV_2, t_side.x(), t_side.y(), t_side.z());
-    double pitch_down_angle = atan(_camera->bottom()/_camera->zNear());
-//    osg::Vec3 pitched_down_up = t_up * osg::Matrix::rotate(-t_VFOV_2, t_side.x(), t_side.y(), t_side.z());
-    osg::Vec3 pitched_down_up = t_up * osg::Matrix::rotate(pitch_down_angle, t_side.x(), t_side.y(), t_side.z());
-
-    //we need either left and right or up and down planes of clipping volume (their normals better said)
-
-    osg::Vec4 temp_plane = _cvs.get()->_clippingVolume.getPlaneList()[0].asVec4();//take left
-    osg::Vec3 left(temp_plane.x(), temp_plane.y(), temp_plane.z());
-
-    temp_plane = _cvs.get()->_clippingVolume.getPlaneList()[1].asVec4();//take right
-    osg::Vec3 right(temp_plane.x(), temp_plane.y(), temp_plane.z());
-
-        //now, the line from eye along intersecion of left and up clipping planes is cross product of properly pitched up "up" vector and left
-        //clipping plane normal
-            _LeftUp = pitched_up_up^left; _LeftUp.normalize();//upper left line of clipping volume
-            _LeftDown = pitched_down_up^left; _LeftDown.normalize();//lower left line of clipping volume
-            _RightUp = right^pitched_up_up; _RightUp.normalize();//upper right line of clipping volume
-            _RightDown = right^pitched_down_up; _RightDown.normalize();//lower right line of clipping volume
+    _bbCornerNear = (~_bbCornerFar)&7;
 }
-
-void CullVisitor::updateCalculatedNearFar(osg::Drawable* pDrawable)
-{
-    //new philosophy, to have detailed checking
-
-    //do all the same as non-detailed update near and far
-    const BoundingBox& bb = pDrawable->getBound();
-
-    const osg::Vec3& eyePoint = _tvs->_eyePoint; // note world eye point.
-    const osg::Vec3& lookVector = _tvs->_lookVector; // world look vector.
-
-    float d_near,d_far;
-
-    if (_cvs->_matrix.valid())
-    {
-
-        const osg::Matrix& matrix = *(_cvs->_matrix);
-        // calculate the offset from the eye in local coords then transform
-        // the offset into world and then compare against the world look vector.
-        d_near = ((bb.corner(_cvs->_bbCornerNear)*matrix) - eyePoint)*lookVector;
-        d_far = ((bb.corner(_cvs->_bbCornerFar)*matrix) - eyePoint)*lookVector;
-
-    }
-    else
-    {
-        d_near = (bb.corner(_cvs->_bbCornerNear)-eyePoint)*lookVector;
-        d_far = (bb.corner(_cvs->_bbCornerFar)-eyePoint)*lookVector;
-    }
-
-    //this is where difference arises: check if near is less than zero:
-
-    if(d_near >= 0.0)
-    {
-        //this is the same as before (non detailed:
-        if(d_near <= d_far)
-        {
-            if(d_near < _calculated_znear) _calculated_znear = d_near;
-            if(d_far > _calculated_zfar) _calculated_zfar = d_far;
-        }
-        else
-        {
-            if ( !EQUAL_F(d_near, d_far) ) 
-            {
-                osg::notify(osg::WARN)<<"Warning: CullVisitor::updateCalculatedNearFar(.) near>far in range calculation,"<<std::endl;
-                osg::notify(osg::WARN)<<"         correcting by swapping values d_near="<<d_near<<" dfar="<<d_far<<std::endl;
-            }
-            // note, need to reverse the d_near/d_far association because they are
-            // the wrong way around...
-            if (d_far<_calculated_znear) _calculated_znear = d_far;
-            if (d_near>_calculated_zfar) _calculated_zfar = d_near;
-        }
-    }
-    else if(d_far > 0.0)
-    {
-        //SandB change
-        
-
-        //we need to determine what has to be checked: everything that is actually behind current near clipping
-        //plane needs not be rechecked
-
-        double current_near = _camera->right()/_camera->zNear();//this is tan (HFOV/2)
-        current_near = sqrt(1.0 + current_near*current_near);//his is 1 / cos(HFOV/2)
-        
-        if(_calculated_znear != FLT_MAX)//just in case this is the very first entry (i.e. the first bounding box contained eyePoint of camera
-            current_near = _calculated_znear * current_near;//this is side of triangle ...
-        else if(_calculated_zfar != -FLT_MAX) 
-            current_near = _calculated_zfar * current_near;
-        else current_near = 10000.0;//something must be put
-
-        double mult_factor;
-        if(_calculated_znear != FLT_MAX)//just in case this is the very first entry (i.e. the first bounding box contained eyePoint of camera
-            mult_factor = _calculated_znear * current_near;//this is side of triangle ...
-        else if(_calculated_zfar != -FLT_MAX) 
-            mult_factor = _calculated_zfar * current_near;
-        else mult_factor = 10000.0;//something must be put
-
-        double LUdistance = _LeftUp*lookVector;
-        LUdistance = mult_factor / LUdistance;
-
-        double LDdistance = _LeftDown*lookVector;
-        LDdistance = mult_factor / LDdistance;
-
-        double RUdistance = _RightUp*lookVector;
-        RUdistance = mult_factor / RUdistance;
-
-        double RDdistance = _RightDown*lookVector;
-        RDdistance = mult_factor / RDdistance;
-
-        //construct functor: needs clipping volume, matrix, and current near, while some members for speed are kept in CullVisitor since
-        //they need be calculated only once per frame
-        /*
-        TriangleViewFrustumIntersect ti(_cvs->_clippingVolume, 
-            _cvs->_matrix.get(), current_near, eyePoint, 
-            _LeftUp,_LeftDown,_RightUp,_RightDown);
-        */
-        TriangleViewFrustumIntersect ti(_cvs->_clippingVolume, 
-            _cvs->_matrix.get(), eyePoint, 
-            _LeftUp*LUdistance,_LeftDown*LDdistance,_RightUp*RUdistance,_RightDown*RDdistance);
-
-        //this is ok, since the GeoSets are the ones we are really interested in here
-        osg::GeoSet* p_gset = (osg::GeoSet*) pDrawable;
-        for_each_triangle(*p_gset, ti);//that's it, all triangles of this geoset have been checked out
-
-        //now, take the smallest positive near from candidate coordinates
-        std::map<osg::Vec3, bool>::iterator it = ti._listVectors.begin();
-        double calc_znear = 0.0;
-        for(; it != ti._listVectors.end(); ++it)
-        {
-            calc_znear = calculateZNear(it->first, eyePoint, lookVector);//determine near produced by this coordinate
-            if(calc_znear > 0.0 && calc_znear < _calculated_znear) _calculated_znear = calc_znear;//just to make sure , but should not be negative here
-            //since we intersect triangles nad line segments
-        }
-    }    
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 inline float distance(const osg::Vec3& coord,const osg::Matrix& matrix)
 {
@@ -783,28 +264,28 @@ inline float distance(const osg::Vec3& coord,const osg::Matrix& matrix)
 }
 
 
-void CullVisitor::updateCalculatedNearFar(const osg::BoundingBox& bb)
+void NewCullVisitor::updateCalculatedNearFar(const osg::BoundingBox& bb)
 {
 
     if (!bb.isValid())
     {
-        osg::notify(osg::WARN)<<"Warning: CullVisitor::updateCalculatedNearFar(..) passed a null bounding box."<< std::endl;
+        osg::notify(osg::WARN)<<"Warning: NewCullVisitor::updateCalculatedNearFar(..) passed a null bounding box."<< std::endl;
         return;
     }
     
     float d_near,d_far;
-    if (_cvs->_matrix.valid())
+    if (!_modelviewStack.empty())
     {
     
-        const osg::Matrix& matrix = *(_cvs->_matrix);
-        d_near = distance(bb.corner(_cvs->_bbCornerNear),matrix);
-        d_far = distance(bb.corner(_cvs->_bbCornerFar),matrix);
+        const osg::Matrix& matrix = *(_modelviewStack.back());
+        d_near = distance(bb.corner(_bbCornerNear),matrix);
+        d_far = distance(bb.corner(_bbCornerFar),matrix);
 
     }
     else
     {
-        d_near = -(bb.corner(_cvs->_bbCornerNear)).z();
-        d_far = -(bb.corner(_cvs->_bbCornerFar)).z();
+        d_near = -(bb.corner(_bbCornerNear)).z();
+        d_far = -(bb.corner(_bbCornerFar)).z();
     }
 
     if (d_near<=d_far)
@@ -816,7 +297,7 @@ void CullVisitor::updateCalculatedNearFar(const osg::BoundingBox& bb)
     {
         if ( !EQUAL_F(d_near, d_far) ) 
         {
-            osg::notify(osg::WARN)<<"Warning: CullVisitor::updateCalculatedNearFar(.) near>far in range calculation,"<< std::endl;
+            osg::notify(osg::WARN)<<"Warning: NewCullVisitor::updateCalculatedNearFar(.) near>far in range calculation,"<< std::endl;
             osg::notify(osg::WARN)<<"         correcting by swapping values d_near="<<d_near<<" dfar="<<d_far<< std::endl;
         }
         // note, need to reverse the d_near/d_far association because they are
@@ -826,42 +307,35 @@ void CullVisitor::updateCalculatedNearFar(const osg::BoundingBox& bb)
     }
 }
 
-void CullVisitor::updateCalculatedNearFar(const osg::Vec3& pos)
+void NewCullVisitor::updateCalculatedNearFar(const osg::Vec3& pos)
 {
-    const osg::Vec3& eyePoint = _cvs->_eyePoint; // note local eye point.
-    const osg::Vec3& lookVector = _tvs->_lookVector; // world look vector.
-
     float d;
-
-    if (_cvs->_matrix.valid())
+    if (!_modelviewStack.empty())
     {
-        const osg::Matrix& matrix = *(_cvs->_matrix);
-
-        // calculate the offset from the eye in local coords then transform
-        // the offset into world and then compare against the world look vector.
-        d = osg::Matrix::transform3x3(pos-eyePoint,matrix)*lookVector;
+        const osg::Matrix& matrix = *(_modelviewStack.back());
+        d = distance(pos,matrix);
     }
     else
     {
-        d = (pos-eyePoint)*lookVector;
+        d = -pos.z();
     }
 
     if (d<_calculated_znear) _calculated_znear = d;
     if (d>_calculated_zfar) _calculated_zfar = d;
 }   
 
-void CullVisitor::setCullingMode(CullViewState::CullingMode mode)
+void NewCullVisitor::setCullingMode(CullViewState::CullingMode mode)
 {
     _cullingModeStack.back()=mode;
 }
 
 
-CullViewState::CullingMode CullVisitor::getCullingMode() const
+CullViewState::CullingMode NewCullVisitor::getCullingMode() const
 {
     return _cullingModeStack.back();
 }
 
-void CullVisitor::apply(Node& node)
+void NewCullVisitor::apply(Node& node)
 {
     CullViewState::CullingMode mode = _cullingModeStack.back();
     
@@ -886,7 +360,7 @@ void CullVisitor::apply(Node& node)
 }
 
 
-void CullVisitor::apply(Geode& node)
+void NewCullVisitor::apply(Geode& node)
 {
 
     // return if object's bounding sphere is culled.
@@ -917,17 +391,7 @@ void CullVisitor::apply(Geode& node)
         }
 
 
-        //SandB change:      
-    //        updateCalculatedNearFar(bb);
-        if(_detailedCulling)
-        {
-            updateCalculatedNearFar(drawable);
-        }
-        else
-        {
-            updateCalculatedNearFar(bb);
-        }
-        //end of SandB change
+        updateCalculatedNearFar(bb);
 
         // push the geoset's state on the geostate stack.    
         StateSet* stateset = drawable->getStateSet();
@@ -945,14 +409,13 @@ void CullVisitor::apply(Geode& node)
             {
                 center = drawable->getBound().center();
             }
-            Vec3 delta_center = center-_tvs->_eyePoint;
 
             float depth;
             switch(_tsm)
             {
-                case(LOOK_VECTOR_DISTANCE):depth = _tvs->_lookVector*delta_center;break;
+                case(LOOK_VECTOR_DISTANCE):depth = -center.z();break;
                 case(OBJECT_EYE_POINT_DISTANCE):
-                default: depth = delta_center.length2();break;
+                default: depth = center.length2();break;
             }
 
             if (stateset) pushStateSet(stateset);
@@ -975,7 +438,7 @@ void CullVisitor::apply(Geode& node)
 }
 
 
-void CullVisitor::apply(Billboard& node)
+void NewCullVisitor::apply(Billboard& node)
 {
     // return if object's bounding sphere is culled.
     CullViewState::CullingMode mode = _cullingModeStack.back();
@@ -1000,19 +463,7 @@ void CullVisitor::apply(Billboard& node)
         // need to modify isCulled to handle the billboard offset.
         // if (isCulled(drawable->getBound())) continue;
 
-        //SandB change:
         updateCalculatedNearFar(pos);
-        /*
-        if(_detailedCulling)
-        {
-            updateCalculatedNearFar(drawable);
-        }
-        else
-        {
-            updateCalculatedNearFar(pos);
-        }
-        //end of SandB change
-        */
 
         Matrix* billboard_matrix = createOrReuseMatrix();
         node.getMatrix(*billboard_matrix,eye_local,up_local,pos);
@@ -1037,14 +488,13 @@ void CullVisitor::apply(Billboard& node)
             {
                 center = pos;
             }
-            Vec3 delta_center = center-_tvs->_eyePoint;
 
             float depth;
             switch(_tsm)
             {
-                case(LOOK_VECTOR_DISTANCE):depth = _tvs->_lookVector*delta_center;break;
+                case(LOOK_VECTOR_DISTANCE):depth = -center.z();break;
                 case(OBJECT_EYE_POINT_DISTANCE):
-                default: depth = delta_center.length2();break;
+                default: depth = center.length2();break;
             }
 
             if (stateset) pushStateSet(stateset);
@@ -1067,7 +517,7 @@ void CullVisitor::apply(Billboard& node)
 }
 
 
-void CullVisitor::apply(LightSource& node)
+void NewCullVisitor::apply(LightSource& node)
 {
     // push the node's state.
     StateSet* node_state = node.getStateSet();
@@ -1085,7 +535,7 @@ void CullVisitor::apply(LightSource& node)
 }
 
 
-void CullVisitor::apply(Group& node)
+void NewCullVisitor::apply(Group& node)
 {
     // return if object's bounding sphere is culled.
     CullViewState::CullingMode mode = _cullingModeStack.back();
@@ -1110,7 +560,7 @@ void CullVisitor::apply(Group& node)
     _cullingModeStack.pop_back();
 }
 
-void CullVisitor::apply(Transform& node)
+void NewCullVisitor::apply(Transform& node)
 {
     // return if object's bounding sphere is culled.
     CullViewState::CullingMode mode = _cullingModeStack.back();
@@ -1127,14 +577,13 @@ void CullVisitor::apply(Transform& node)
     if (node_state) pushStateSet(node_state);
 
     ref_ptr<osg::Matrix> matrix = createOrReuseMatrix();
-    ref_ptr<osg::Matrix> inverse = createOrReuseMatrix();
     node.getLocalToWorldMatrix(*matrix,this);
-    node.getWorldToLocalMatrix(*inverse,this);
-    pushCullViewState_ModelView(matrix.get(),inverse.get());
+    matrix->postMult(*getCurrentMatrix());
+    pushModelViewMatrix(matrix.get());
     
     traverse(node);
 
-    popCullViewState();
+    popModelViewMatrix();
 
     // pop the node's state off the render graph stack.    
     if (node_state) popStateSet();
@@ -1143,7 +592,7 @@ void CullVisitor::apply(Transform& node)
     _cullingModeStack.pop_back();
 }
 
-void CullVisitor::apply(Projection& node)
+void NewCullVisitor::apply(Projection& node)
 {
     // return if object's bounding sphere is culled.
     CullViewState::CullingMode mode = _cullingModeStack.back();
@@ -1161,11 +610,11 @@ void CullVisitor::apply(Projection& node)
 
     ref_ptr<osg::Matrix> matrix = createOrReuseMatrix();
     *matrix = node.getMatrix();
-    pushCullViewState_Projection(matrix.get());
+    pushProjectionMatrix(matrix.get());
     
     traverse(node);
 
-    popCullViewState();
+    popProjectionMatrix();
 
     // pop the node's state off the render graph stack.    
     if (node_state) popStateSet();
@@ -1174,13 +623,13 @@ void CullVisitor::apply(Projection& node)
     _cullingModeStack.pop_back();
 }
 
-void CullVisitor::apply(Switch& node)
+void NewCullVisitor::apply(Switch& node)
 {
     apply((Group&)node);
 }
 
 
-void CullVisitor::apply(LOD& node)
+void NewCullVisitor::apply(LOD& node)
 {
     // return if object's bounding sphere is culled.
     CullViewState::CullingMode mode = _cullingModeStack.back();
@@ -1209,7 +658,7 @@ void CullVisitor::apply(LOD& node)
     _cullingModeStack.pop_back();
 }
 
-void CullVisitor::apply(osg::EarthSky& node)
+void NewCullVisitor::apply(osg::EarthSky& node)
 {
     // simply override the current earth sky.
     setEarthSky(&node);
@@ -1226,7 +675,7 @@ void CullVisitor::apply(osg::EarthSky& node)
 }
 
 
-void CullVisitor::apply(Impostor& node)
+void NewCullVisitor::apply(Impostor& node)
 {
     const BoundingSphere& bs = node.getBound();
 
@@ -1261,7 +710,7 @@ void CullVisitor::apply(Impostor& node)
         // traverse the appropriate child of the LOD.
         node.getChild(eval)->accept(*this);
     }
-    else if (!_viewport.valid())
+    else if (_viewportStack.empty())
     {
         // need to use impostor but no valid viewport is defined to simply
         // default to using the LOD child as above.
@@ -1269,6 +718,7 @@ void CullVisitor::apply(Impostor& node)
     }
     else
     {    
+
         // within the impostor distance threshold therefore attempt
         // to use impostor instead.
         
@@ -1280,11 +730,8 @@ void CullVisitor::apply(Impostor& node)
         if (impostorSprite)
         {
             // impostor found, now check to see if it is good enough to use
-            // RO, commenting this out since the calcPixelError's calling convention
-            // has changed, this version of CullVisitor is soon to be removed
-            // so this shouldn't be a problem.
-            //float error = impostorSprite->calcPixelError(*_camera,*_viewport,matrix);
-            float error = 0.0f;            
+            float error = impostorSprite->calcPixelError(getMVPW());
+
             if (error>_impostorPixelErrorThreshold)
             {
                 // chosen impostor sprite pixel error is too great to use
@@ -1326,14 +773,13 @@ void CullVisitor::apply(Impostor& node)
                 {
                     center = node.getCenter();
                 }
-                Vec3 delta_center = center-_tvs->_eyePoint;
 
                 float depth;
                 switch(_tsm)
                 {
-                    case(LOOK_VECTOR_DISTANCE):depth = _tvs->_lookVector*delta_center;break;
+                    case(LOOK_VECTOR_DISTANCE):depth = -center.z();break;
                     case(OBJECT_EYE_POINT_DISTANCE):
-                    default: depth = delta_center.length2();break;
+                    default: depth = center.length2();break;
                 }
 
                 addDrawableAndDepth(impostorSprite,matrix,depth);
@@ -1351,8 +797,8 @@ void CullVisitor::apply(Impostor& node)
         }
         else
         {
-            // no impostor has been selected or created so default to 
-            // traversing the usual LOD selected child.
+           // no impostor has been selected or created so default to 
+           // traversing the usual LOD selected child.
             node.getChild(eval)->accept(*this);
         }
                 
@@ -1365,12 +811,12 @@ void CullVisitor::apply(Impostor& node)
     _cullingModeStack.pop_back();
 }
 
-ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
+ImpostorSprite* NewCullVisitor::createImpostorSprite(Impostor& node)
 {
-    if (!_camera.valid()) return NULL;
-
-    bool isPerspectiveCamera = _camera->getProjectionType()==Camera::FRUSTUM ||
-                               _camera->getProjectionType()==Camera::PERSPECTIVE;
+   
+    // default to true right now, will dertermine if perspective from the
+    // projection matrix...
+    bool isPerspectiveProjection = true;
 
     Matrix* matrix = getCurrentMatrix();
     const BoundingSphere& bs = node.getBound();
@@ -1379,11 +825,12 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
 
     if (!bs.isValid())
     {
+        cout << "bb invalid"<<&node<<endl;
         return NULL;
     }
 
 
-    Vec3 eye_world = _tvs->_eyePoint;
+    Vec3 eye_world(0.0,0.0,0.0);
     Vec3 center_world = bs.center()*(*matrix);
 
     // no appropriate sprite has been found therefore need to create
@@ -1402,14 +849,10 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
     clear_color[3] = 0.0f; // set the alpha to zero.
     rtts->setClearColor(clear_color);
     rtts->setClearMask(previous_stage->getClearMask());
-    
+
     // set up to charge the same RenderStageLighting is the parent previous stage.
     rtts->setRenderStageLighting(previous_stage->getRenderStageLighting());
-    
-// temporarily commeted out to keep things compiling.    
-   osg::Camera* camera = osgNew osg::Camera(*_camera);
-//    rtts->setCamera(camera);
-std::cout<<"Warning:: in createImpostorSprite() rtts->setCamera(camera) call has been removed, this will cause problems."<<std::endl;
+
 
     // record the render bin, to be restored after creation
     // of the render to text
@@ -1418,86 +861,10 @@ std::cout<<"Warning:: in createImpostorSprite() rtts->setCamera(camera) call has
     // set the current renderbin to be the newly created stage.
     _currentRenderBin = rtts.get();
 
-    // store the previous camera setting
-
-    Vec3 rotate_from = bs.center()-eye_local;
-    Vec3 rotate_to   = getLookVectorLocal();
-
-    osg::Matrix* rotate_matrix = osgNew osg::Matrix(
-        osg::Matrix::translate(-eye_local)*        
-        osg::Matrix::rotate(rotate_from,rotate_to)*
-        osg::Matrix::translate(eye_local));
-
-    // pushing the cull view state will update it so it takes
-    // into account the new camera orientation.
-    pushCullViewState_ModelView(rotate_matrix);
-
-    // what shall we do about the near far?
-    // we could need to save the near and far, or switch it off.
-    // simplicist to save near and far.  will do this for now.
-
-    float previous_znear = _calculated_znear;
-    float previous_zfar = _calculated_zfar;
-
-    _calculated_znear = FLT_MAX;
-    _calculated_zfar = -FLT_MAX;
-
-    ref_ptr<StateSet> dummyState = osgNew StateSet;
-    
-    
-//    dummyState->setMode(GL_BLEND,osg::StateAttribute::OVERRIDE_OFF);
-    
-    pushStateSet(dummyState.get());
-
-
-    // switch off the view frustum culling, since we will have
-    // the whole subgraph in view.
-    _cullingModeStack.push_back((_cullingModeStack.back() & ~CullViewState::VIEW_FRUSTUM_CULLING));
-
-    {
-
-        // traversing the usual LOD selected child.
-        node.getChild(eval)->accept(*this);
-
-    }
-
-    popStateSet();
-
-    // restore the culling mode.
-    _cullingModeStack.pop_back();
-
-    float local_znear = _calculated_znear;
-    float local_zfar = _calculated_zfar;
-
-    // restore the previous near and far.            
-    _calculated_znear = previous_znear;
-    _calculated_zfar = previous_zfar;
-
-    // restor the previous renderbin.
-    _currentRenderBin = previousRenderBin;
-
-    // restore the previous _tvs and _cvs;
-    popCullViewState();
-
-
-    if (rtts->_renderGraphList.size()==0 && rtts->_bins.size()==0)
-    {
-        // getting to this point means that all the subgraph has been
-        // culled by small feature culling or is beyond LOD ranges.
-        return NULL;
-    }
-
-    if (local_znear>local_zfar)
-    {
-        notify(WARN) << "Warning : problem with osg::CullVisitor::creatImpostorSprite() local_znear ("<<local_znear<<") "<<" > ("<<local_zfar<<") local_zfar"<< std::endl;
-        return NULL;        
-    }
-
-
-// create texture quad coords (in local coords)
+    // create quad coords (in local coords)
 
     Vec3 center_local = bs.center();
-    Vec3 camera_up_local = _cvs->_upVector;
+    Vec3 camera_up_local = getUpLocal();
     Vec3 lv_local = center_local-eye_local;
 
     float distance_local = lv_local.length();
@@ -1511,7 +878,7 @@ std::cout<<"Warning:: in createImpostorSprite() rtts->setCamera(camera) call has
 
     
     float width = bs.radius();
-    if (isPerspectiveCamera)
+    if (isPerspectiveProjection)
     {
         // expand the width to account for projection onto sprite.
         width *= (distance_local/sqrtf(distance_local*distance_local-bs.radius2()));
@@ -1529,55 +896,33 @@ std::cout<<"Warning:: in createImpostorSprite() rtts->setCamera(camera) call has
     
 // adjust camera left,right,up,down to fit (in world coords)
 
-#define USE_SPHERE_NEAR_FAR    
-
-#ifdef USE_SPHERE_NEAR_FAR    
     Vec3 near_local  ( center_local-lv_local*width );
     Vec3 far_local   ( center_local+lv_local*width );
-#endif
     Vec3 top_local   ( center_local+up_local);
     Vec3 right_local ( center_local+sv_local);
     
-#ifdef USE_SPHERE_NEAR_FAR    
     Vec3 near_world;
     Vec3 far_world;
-#endif
     Vec3 top_world;
     Vec3 right_world;
     
     if (matrix)
     {
-#ifdef USE_SPHERE_NEAR_FAR    
         near_world  = near_local * (*matrix);
         far_world   = far_local * (*matrix);
-#endif
         top_world   = top_local * (*matrix);
         right_world = right_local * (*matrix);
     }
     else
     {
-#ifdef USE_SPHERE_NEAR_FAR    
         near_world  = near_local;
         far_world   = far_local;
-#endif        
         top_world   = top_local;
         right_world = right_local;
     }
     
-#ifdef USE_SPHERE_NEAR_FAR
     float znear = (near_world-eye_world).length();
     float zfar  = (far_world-eye_world).length();
-#else    
-    float znear = local_znear;
-    float zfar = local_zfar;
-#endif
-
-    if (local_zfar>=local_znear)
-    {
-        znear = local_znear;
-        zfar = local_zfar;
-    }
-    
         
     float top   = (top_world-center_world).length();
     float right = (right_world-center_world).length();
@@ -1585,62 +930,89 @@ std::cout<<"Warning:: in createImpostorSprite() rtts->setCamera(camera) call has
     znear *= 0.9f;
     zfar *= 1.1f;
 
-    if (isPerspectiveCamera)
+    // set up projection.
+    osg::Matrix* projection = osgNew osg::Matrix;
+    if (isPerspectiveProjection)
     {
         // deal with projection issue move the top and right points
         // onto the near plane.
-    float ratio = znear/(center_world-eye_world).length();
+        float ratio = znear/(center_world-eye_world).length();
         top *= ratio;
         right *= ratio;
-        camera->setFrustum(-right,right,-top,top,znear,zfar);
-    
+        projection->makeFrustum(-right,right,-top,top,znear,zfar);
     }
     else
     {
-        // othographic projection.
-
-        camera->setOrtho(-right,right,-top,top,znear,zfar);
+        projection->makeOrtho(-right,right,-top,top,znear,zfar);
     }
-    
-    if (local_znear<znear)
+
+    pushProjectionMatrix(projection);
+
+    Vec3 rotate_from = bs.center()-eye_local;
+    Vec3 rotate_to   = getLookVectorLocal();
+
+    osg::Matrix* rotate_matrix = osgNew osg::Matrix(
+        osg::Matrix::translate(-eye_local)*        
+        osg::Matrix::rotate(rotate_from,rotate_to)*
+        osg::Matrix::translate(eye_local)*
+        getModelViewMatrix());
+
+    // pushing the cull view state will update it so it takes
+    // into account the new camera orientation.
+    pushModelViewMatrix(rotate_matrix);
+
+    ref_ptr<StateSet> dummyState = osgNew StateSet;
+
+    pushStateSet(dummyState.get());
+
+
+    // switch off the view frustum culling, since we will have
+    // the whole subgraph in view.
+    _cullingModeStack.push_back((_cullingModeStack.back() & ~CullViewState::VIEW_FRUSTUM_CULLING));
+
     {
-        znear = local_znear;
+
+        // traversing the usual LOD selected child.
+        node.getChild(eval)->accept(*this);
+
     }
-    
-    if (local_zfar>zfar)
+
+    // restore the culling mode.
+    _cullingModeStack.pop_back();
+
+    popStateSet();
+
+    // restore the previous model view matrix.
+    popModelViewMatrix();
+
+    // restore the previous model view matrix.
+    popProjectionMatrix();
+
+    // restore the previous renderbin.
+    _currentRenderBin = previousRenderBin;
+
+
+
+    if (rtts->_renderGraphList.size()==0 && rtts->_bins.size()==0)
     {
-        zfar = local_zfar;
+        // getting to this point means that all the subgraph has been
+        // culled by small feature culling or is beyond LOD ranges.
+        return NULL;
     }
 
-    // restore the previous near and far.            
-    local_znear = previous_znear;
-    local_zfar = previous_zfar;
 
 
-// calc texture size for eye, bs.
 
-    Vec3 c00_world;
-    Vec3 c11_world;
+    const osg::Viewport& viewport = *getViewport();
     
-    if (matrix)
-    {    
-        c00_world = c00 * (*matrix);
-        c11_world = c11 * (*matrix);
-    }
-    else
-    {
-        c00_world = c00;
-        c11_world = c11;
-    }
-    
+
+    // calc texture size for eye, bs.
 
     // convert the corners of the sprite (in world coords) into their
     // equivilant window coordinates by using the camera's project method.
-    Vec3 c00_win;
-    Vec3 c11_win;
-    _camera->project(c00_world,*_viewport,c00_win);
-    _camera->project(c11_world,*_viewport,c11_win);    
-
+    const osg::Matrix& MVPW = getMVPW();
+    Vec3 c00_win = c00 * MVPW;
+    Vec3 c11_win = c11 * MVPW;
 
 // adjust texture size to be nearest power of 2.
 
@@ -1667,21 +1039,21 @@ std::cout<<"Warning:: in createImpostorSprite() rtts->setCamera(camera) call has
     int new_t = (int)(powf(2.0f,rounded_tp2));
 
     // if dimension is bigger than window divide it down.    
-    while (new_s>_viewport->width()) new_s /= 2;
+    while (new_s>viewport.width()) new_s /= 2;
 
     // if dimension is bigger than window divide it down.    
-    while (new_t>_viewport->height()) new_t /= 2;
+    while (new_t>viewport.height()) new_t /= 2;
 
 
     // offset the impostor viewport from the center of the main window
     // viewport as often the edges of the viewport might be obscured by
     // other windows, which can cause image/reading writing problems.
-    int center_x = _viewport->x()+_viewport->width()/2;
-    int center_y = _viewport->y()+_viewport->height()/2;
+    int center_x = viewport.x()+viewport.width()/2;
+    int center_y = viewport.y()+viewport.height()/2;
 
-    Viewport* viewport = osgNew Viewport;
-    viewport->setViewport(center_x-new_s/2,center_y-new_t/2,new_s,new_t);
-    rtts->setViewport(viewport);
+    Viewport* new_viewport = osgNew Viewport;
+    new_viewport->setViewport(center_x-new_s/2,center_y-new_t/2,new_s,new_t);
+    rtts->setViewport(new_viewport);
 
 // create the impostor sprite.
 
@@ -1726,7 +1098,7 @@ std::cout<<"Warning:: in createImpostorSprite() rtts->setCamera(camera) call has
     
     Vec3* controlcoords = impostorSprite->getControlCoords();
     
-    if (isPerspectiveCamera)
+    if (isPerspectiveProjection)
     {
         // deal with projection issue by moving the coorners of the quad
         // towards the eye point.

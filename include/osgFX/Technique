@@ -37,7 +37,7 @@
 namespace osgFX
 {
 
-	class Effect;
+    class Effect;
 
     /**
      This is the base class for effect techniques. A technique represents one
@@ -115,10 +115,10 @@ namespace osgFX
          */
         virtual void define_passes() = 0;
         
-		/**
-		 traverse children with multipass if necessary. Don't call this method
-		 directly unless you are in a customized version of traverse().
-		 */
+        /**
+         traverse children with multipass if necessary. Don't call this method
+         directly unless you are in a customized version of traverse().
+         */
         void traverse_implementation(osg::NodeVisitor &nv, Effect *fx);
 
     private:
@@ -150,7 +150,7 @@ namespace osgFX
     
     inline void Technique::traverse(osg::NodeVisitor &nv, Effect *fx)
     {
-		traverse_implementation(nv, fx);
+        traverse_implementation(nv, fx);
     }
 
 }

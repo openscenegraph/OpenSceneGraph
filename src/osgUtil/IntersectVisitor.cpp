@@ -536,33 +536,7 @@ void IntersectVisitor::apply(Geode& geode)
 void IntersectVisitor::apply(Billboard& node)
 {
     if (!enterNode(node)) return;
-    //     Vec3 eye_local = getEyeLocal();
-    //     for(int i=0;i<node.getNumGeosets();++i)
-    //     {
-    //         Vec3 pos;
-    //         node.getPos(i,pos);
-    //
-    //         GeoSet* gset = node.getGeoSet(i);
-    //
-    //         Matrix local_mat;
-    //         node.calcTransform(eye_local,pos,local_mat);
-    //
-    //         Matrix* matrix = NULL;
-    //         Matrix* currMatrix = getCurrentMatrix();
-    //         if (currMatrix)
-    //         {
-    //             matrix = new Matrix();
-    //             matrix->mult(local_mat,*(currMatrix));
-    //         }
-    //         else
-    //         {
-    //             matrix = new Matrix(local_mat);
-    //         }
-    //
-    //         matrix->ref();
-    //         matrix->unref();
-    //
-    //     }
+
     leaveNode();
 }
 

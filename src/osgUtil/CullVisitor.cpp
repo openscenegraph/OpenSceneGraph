@@ -924,7 +924,8 @@ void CullVisitor::apply(Billboard& node)
     StateSet* node_state = node.getStateSet();
     if (node_state) pushStateSet(node_state);
 
-    Vec3 eye_local = getEyeLocal();
+    const Vec3& eye_local = getEyeLocal();
+    const Vec3& up_local = getUpLocal();
     Matrix* matrix = getCurrentMatrix();
 
     for(int i=0;i<node.getNumDrawables();++i)
@@ -950,7 +951,7 @@ void CullVisitor::apply(Billboard& node)
         */
 
         Matrix* billboard_matrix = createOrReuseMatrix();
-        node.calcTransform(eye_local,pos,*billboard_matrix);
+        node.calcTransform(eye_local,up_local,pos,*billboard_matrix);
 
         StateSet* stateset = drawable->getStateSet();
         

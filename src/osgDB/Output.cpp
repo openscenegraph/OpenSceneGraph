@@ -44,12 +44,16 @@ void Output::open(const char *name)
     _filename = name;
 }
 
-void Output::open(const char *name,int mode)
-{
-    init();
-    ofstream::open(name,mode);
-    _filename = name;
-}
+// Comment out to avoid compile errors under new compilers, the int mode
+// is now a replaced by a class to wrap the mode.  
+// This method is not used right now to hopefully nobody will miss it... 
+// Jan 2002.
+// void Output::open(const char *name,int mode)
+// {
+//     init();
+//     ofstream::open(name,mode);
+//     _filename = name;
+// }
 
 Output& Output::indent()
 {

@@ -1,0 +1,188 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+//osgFX - Copyright (C) 2003 Marco Jez
+
+#ifndef OSGFX_TECHNIQUE_
+#define OSGFX_TECHNIQUE_
+
+#include <osgFX/Export>
+
+#include <osg/Referenced>
+#include <osg/State>
+#include <osg/Group>
+#include <osg/NodeVisitor>
+
+#include <vector>
+#include <string>
+
+/**
+ An helper macro that defines the methods techniqueName() and 
+ techniqueDescription() making them return the strings passed as parameters.
+ */
+#define META_Technique(name, description) \
+    inline virtual const char *techniqueName() { return name; } \
+    inline virtual const char *techniqueDescription() { return description; }
+
+
+namespace osgFX
+{
+
+    /**
+     This is the base class for effect techniques. A technique represents one
+     of the possible ways to implement a special effect. This base class is
+     abstract, you will have to subclass your own techniques for your custom
+     effects.
+     Derived classes will have to implement the define_passes() method to
+     configure the rendering pass(es) that make up the technique. Usually
+     you will create one StateSet object for each rendering pass and then
+     you'll call addPass(stateset).
+     The validate() method should return true if the technique is valid within
+     the current rendering context, false otherwise. The default implementation
+     of validate() calls getRequiredExtensions() and tests whether all required
+     extensions are supported or not, returning false if at least one extension
+     is not supported.
+     */
+    class OSGFX_EXPORT Technique: public osg::Referenced {
+    public:
+        Technique();
+
+        /** get the name of this technique */
+        virtual const char *techniqueName()        { return "Default"; }
+
+        /** get a brief description of this technique */
+        virtual const char *techniqueDescription() { return "This is the default technique"; }
+
+        /**
+         collect the GL extension strings which are required for this technique
+         to work properly. This method is called from the default implementation
+         of validate().
+         */
+        virtual void getRequiredExtensions(std::vector<std::string> & /*extensions*/) const {};
+
+        /**
+         tests whether this technique is valid for the current rendering context.
+         The default behavior is to call getRequiredExtensions() and check for
+         extension availability.
+         */
+        virtual bool validate(osg::State &) const;
+
+        /** get the number of rendering passes defined in this technique */
+        inline int getNumPasses() const;
+
+        /** get the Group object associated to the i-th pass */
+        inline osg::Group *getPassGroup(int i);
+
+        /** get the const Group object associated to the i-th pass */
+        inline const osg::Group *getPassGroup(int i) const;
+
+        /** get the StateSet object associated to the i-th pass */
+        inline osg::StateSet *getPassStateSet(int i);
+
+        /** get the const StateSet object associated to the i-th pass */
+        inline const osg::StateSet *getPassStateSet(int i) const;
+
+        /** 
+         traverses the child nodes with multipass if necessary.
+         Don't call this method directly as it is called by osgFX::Effect
+         */
+        virtual void accept(osg::NodeVisitor &nv, osg::Node *child);
+
+    protected:
+        Technique(const Technique &): osg::Referenced() {}    // copying is nonsense ;)
+        virtual ~Technique() {}
+        Technique &operator=(const Technique &)  { return *this; }
+
+        /** force rebuilding of pass nodes on next traversal */
+        inline void dirtyPasses();
+
+        /** optional: return a node that overrides the child node on a specified pass */
+        inline virtual osg::Node *getOverrideChild(int)  { return 0; }
+
+        /** create a new pass node, add it to the technique and associate a StateSet */
+        void addPass(osg::StateSet *ss = 0);
+
+        /**
+         add a new pass to the technique specifying an user-defined pass node.
+         You should call this version of addPass() only when you need to gain direct
+         control over the pass node (i.e. for setting up a cull callback); otherwise
+         please use addPass(StateSet*) and let the class create the pass node for you.
+        */
+        void addPass(osg::Group *pass);
+
+        /**
+         get the control node which holds the user's subgraph.
+         You may want to do something on it like applying a cull callback.
+         */
+        inline osg::Group *getControlNode();
+
+        /** get the const control node which holds the user's subgraph */
+        inline const osg::Group *getControlNode() const;
+
+        /**
+         define the rendering passes that make up this technique. You must
+         implement this method in derived classes to add the required passes.
+         */
+        virtual void define_passes() = 0;
+
+    private:
+        bool passes_defined_;
+
+        osg::ref_ptr<osg::Group> control_node_;
+        osg::ref_ptr<osg::Node> prev_child_;
+    };
+
+    // INLINE METHODS
+
+    inline int Technique::getNumPasses() const
+    {
+        return static_cast<int>(control_node_->getNumChildren());
+    }
+
+    inline osg::Group *Technique::getPassGroup(int i)
+    {
+        return static_cast<osg::Group *>(control_node_->getChild(i));
+    }
+
+    inline const osg::Group *Technique::getPassGroup(int i) const
+    {
+        return static_cast<const osg::Group *>(control_node_->getChild(i));
+    }
+
+    inline osg::StateSet *Technique::getPassStateSet(int i)
+    {
+        return control_node_->getChild(i)->getStateSet();
+    }
+
+    inline const osg::StateSet *Technique::getPassStateSet(int i) const
+    {
+        return control_node_->getChild(i)->getStateSet();
+    }
+    
+    inline osg::Group *Technique::getControlNode()
+    {
+        return control_node_.get();
+    }
+
+    inline const osg::Group *Technique::getControlNode() const
+    {
+        return control_node_.get();
+    }
+    
+    inline void Technique::dirtyPasses()
+    {
+        passes_defined_ = false;
+    }
+
+}
+
+#endif

@@ -219,14 +219,14 @@ public:
         _tiltEarth                  = 18.0; // degrees
         
         _mapSpace       = "Images/spacemap2.jpg";
-        _mapSun         = "Solarsystem/sun256128.jpg";
-        _mapMercury     = "Solarsystem/mercury256128.jpg";
-        _mapVenus       = "Solarsystem/venus256128.jpg";
+        _mapSun         = "SolarSystem/sun256128.jpg";
+        _mapMercury     = "SolarSystem/mercury256128.jpg";
+        _mapVenus       = "SolarSystem/venus256128.jpg";
         _mapEarth       = "Images/land_shallow_topo_2048.jpg";
         _mapEarthNight  = "Images/land_ocean_ice_lights_2048.jpg";
-        _mapMoon        = "Solarsystem/moon256128.jpg";
-        _mapMars        = "Solarsystem/mars256128.jpg";
-        _mapJupiter     = "Solarsystem/jupiter256128.jpg";
+        _mapMoon        = "SolarSystem/moon256128.jpg";
+        _mapMars        = "SolarSystem/mars256128.jpg";
+        _mapJupiter     = "SolarSystem/jupiter256128.jpg";
     }
     
     osg::MatrixTransform* createTranslationAndTilt( double translation, double tilt );

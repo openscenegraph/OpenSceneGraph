@@ -1062,7 +1062,7 @@ void Texture::setExtensions(unsigned int contextID,Extensions* extensions)
 
 Texture::Extensions::Extensions()
 {
-    setupGLExtenions();
+    setupGLExtensions();
 }
 
 Texture::Extensions::Extensions(const Extensions& rhs):
@@ -1113,7 +1113,7 @@ void Texture::Extensions::lowestCommonDenominator(const Extensions& rhs)
     if (!rhs._isClientStorageSupported) _isClientStorageSupported = false;
 }
 
-void Texture::Extensions::setupGLExtenions()
+void Texture::Extensions::setupGLExtensions()
 {
     float glVersion = atof( (const char *)glGetString( GL_VERSION ) );
     

@@ -132,9 +132,6 @@ typedef struct _DDSURFACEDESC2
 
 osg::Image* ReadDDSFile(const char *filename)
 {
-    osg::Image* osgImage = new osg::Image();    
-
-    osgImage->setFileName(filename);
 
     DDSURFACEDESC2 ddsd;
 
@@ -158,14 +155,17 @@ osg::Image* ReadDDSFile(const char *filename)
 
     // Read image data.
     unsigned int size = ddsd.dwMipMapCount > 1 ? ddsd.dwLinearSize * (ddsd.ddpfPixelFormat.dwFourCC==FOURCC_DXT1 ? 2: 4) : ddsd.dwLinearSize;
-    //###################unsigned int size = ddsd.dwMipMapCount > 1 ? ddsd.dwLinearSize * 2 : ddsd.dwLinearSize;
 
-	if(size <= 0){
-		osg::notify(osg::WARN)<<"Warning:: dwLinearSize is not defined in dds file, image not loaded."<<std::endl;
+    if(size <= 0)
+    {
+        osg::notify(osg::WARN)<<"Warning:: dwLinearSize is not defined in dds file, image not loaded."<<std::endl;
         return NULL;
-	}
+    }
     
-	unsigned char* imageData = new unsigned char [size];
+    osg::ref_ptr<osg::Image> osgImage = new osg::Image();    
+    osgImage->setFileName(filename);
+
+    unsigned char* imageData = new unsigned char [size];
     fread(imageData, 1, size, fp);
     // Close the file.
     fclose(fp);
@@ -214,11 +214,7 @@ osg::Image* ReadDDSFile(const char *filename)
                 else
                 {
                     internalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
-#if 1                    
                     pixelFormat    = GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
-#else                    
-                    pixelFormat    = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
-#endif                    
                 }
                 break;
             case FOURCC_DXT3:
@@ -234,6 +230,9 @@ osg::Image* ReadDDSFile(const char *filename)
                 delete [] imageData;
                 return NULL;
         }
+
+        
+        
     }
     else
     {
@@ -273,7 +272,7 @@ osg::Image* ReadDDSFile(const char *filename)
         {
             int width = ddsd.dwWidth;
             int height = ddsd.dwHeight;
-            int blockSize = (pixelFormat == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT) ? 8 : 16;
+            int blockSize = (ddsd.ddpfPixelFormat.dwFourCC==FOURCC_DXT1) ? 8 : 16;
             int offset = 0;
             for (unsigned int k = 1; k < ddsd.dwMipMapCount && (width || height); ++k)
             {
@@ -312,7 +311,7 @@ osg::Image* ReadDDSFile(const char *filename)
     }
 
     // Return Image.
-    return osgImage;
+    return osgImage.release();
 }
 
 class ReaderWriterDDS : public osgDB::ReaderWriter

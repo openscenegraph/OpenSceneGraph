@@ -41,7 +41,7 @@ namespace
             NodeVisitor::apply(geode);
         }
     private:
-        osg::ref_ptr<BumpMapping> bm_;
+        BumpMapping *bm_;
     };
 
 
@@ -600,8 +600,8 @@ void BumpMapping::prepareGeometry(osg::Geometry *geo)
 
 void BumpMapping::prepareNode(osg::Node *node)
 {
-    TsgVisitor tv(this);
-    node->accept(tv);
+    osg::ref_ptr<TsgVisitor> tv = new TsgVisitor(this);
+    node->accept(*tv.get());
 }
 
 void BumpMapping::prepareChildren()

@@ -568,15 +568,7 @@ osg::Geode* SolarSystem::createPlanet( double radius, const std::string& name, c
             texenv->setOperand1_RGB(osg::TexEnvCombine::SRC_COLOR);
             texenv->setSource2_RGB(osg::TexEnvCombine::PRIMARY_COLOR);
             texenv->setOperand2_RGB(osg::TexEnvCombine::SRC_COLOR);
-/*
-            texenv->setCombine_Alpha(osg::TexEnvCombine::INTERPOLATE);
-            texenv->setSource0_Alpha(osg::TexEnvCombine::PREVIOUS);
-            texenv->setOperand0_Alpha(osg::TexEnvCombine::SRC_ALPHA);
-            texenv->setSource1_Alpha(osg::TexEnvCombine::TEXTURE);
-            texenv->setOperand1_Alpha(osg::TexEnvCombine::ONE_MINUS_SRC_ALPHA);
-            texenv->setSource2_RGB(osg::TexEnvCombine::PRIMARY_COLOR);
-            texenv->setOperand2_RGB(osg::TexEnvCombine::SRC_ALPHA);
-*/
+
             stateset->setTextureAttribute( 1, texenv );
             stateset->setTextureAttributeAndModes( 1, new osg::Texture2D( image ), osg::StateAttribute::ON );
         }

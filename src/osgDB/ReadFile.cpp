@@ -22,33 +22,33 @@
 using namespace osg;
 using namespace osgDB;
 
-Object* osgDB::readObjectFile(const std::string& filename)
+Object* osgDB::readObjectFile(const std::string& filename,bool useObjectCache)
 {
-    ReaderWriter::ReadResult rr = Registry::instance()->readObject(filename);
+    ReaderWriter::ReadResult rr = Registry::instance()->readObject(filename,useObjectCache);
     if (rr.validObject()) return rr.takeObject();
     if (rr.error()) notify(WARN) << rr.message() << std::endl;
     return NULL;
 }
 
 
-Image* osgDB::readImageFile(const std::string& filename)
+Image* osgDB::readImageFile(const std::string& filename,bool useObjectCache)
 {
-    ReaderWriter::ReadResult rr = Registry::instance()->readImage(filename);
+    ReaderWriter::ReadResult rr = Registry::instance()->readImage(filename,useObjectCache);
     if (rr.validImage()) return rr.takeImage();
     if (rr.error()) notify(WARN) << rr.message() << std::endl;
     return NULL;
 }
 
 
-Node* osgDB::readNodeFile(const std::string& filename)
+Node* osgDB::readNodeFile(const std::string& filename,bool useObjectCache)
 {
-    ReaderWriter::ReadResult rr = Registry::instance()->readNode(filename);
+    ReaderWriter::ReadResult rr = Registry::instance()->readNode(filename,useObjectCache);
     if (rr.validNode()) return rr.takeNode();
     if (rr.error()) notify(WARN) << rr.message() << std::endl;
     return NULL;
 }
 
-Node* osgDB::readNodeFiles(std::vector<std::string>& commandLine)
+Node* osgDB::readNodeFiles(std::vector<std::string>& commandLine,bool useObjectCache)
 {
     typedef std::vector<osg::Node*> NodeList;
     NodeList nodeList;
@@ -62,7 +62,7 @@ Node* osgDB::readNodeFiles(std::vector<std::string>& commandLine)
         if ((*itr)[0]!='-')
         {
             // not an option so assume string is a filename.
-            osg::Node *node = osgDB::readNodeFile( *itr );
+            osg::Node *node = osgDB::readNodeFile( *itr ,useObjectCache );
 
             if( node != (osg::Node *)0L )
             {
@@ -97,7 +97,7 @@ Node* osgDB::readNodeFiles(std::vector<std::string>& commandLine)
     
 }
 
-Node* osgDB::readNodeFiles(osg::ArgumentParser& arguments)
+Node* osgDB::readNodeFiles(osg::ArgumentParser& arguments,bool useObjectCache)
 {
 
     typedef std::vector<osg::Node*> NodeList;
@@ -110,7 +110,7 @@ Node* osgDB::readNodeFiles(osg::ArgumentParser& arguments)
         if (!arguments.isOption(pos))
         {
             // not an option so assume string is a filename.
-            osg::Node *node = osgDB::readNodeFile( arguments[pos] );
+            osg::Node *node = osgDB::readNodeFile( arguments[pos], useObjectCache);
 
             if(node)
             {

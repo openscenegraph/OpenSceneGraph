@@ -92,13 +92,13 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         bool                 writeObject(const osg::Object& obj,Output& fw);
 
         
-        ReaderWriter::ReadResult readObject(const std::string& fileName);
+        ReaderWriter::ReadResult readObject(const std::string& fileName,bool useObjectCache);
         ReaderWriter::WriteResult writeObject(const osg::Object& obj, const std::string& fileName);
 
-        ReaderWriter::ReadResult readImage(const std::string& fileName);
+        ReaderWriter::ReadResult readImage(const std::string& fileName,bool useObjectCache);
         ReaderWriter::WriteResult writeImage(const osg::Image& obj, const std::string& fileName);
 
-        ReaderWriter::ReadResult readNode(const std::string& fileName);
+        ReaderWriter::ReadResult readNode(const std::string& fileName,bool useObjectCache);
         ReaderWriter::WriteResult writeNode(const osg::Node& node, const std::string& fileName);
         
         void setCreateNodeFromImage(bool flag) { _createNodeFromImage = flag; }
@@ -149,14 +149,38 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         static void convertStringPathIntoFilePathList(const std::string& paths,FilePathList& filepath);
 
 
+        /** For each object in the cache which has an reference count greater than 1 
+          * (and therefore referenced by elsewhere in the application) set the time stamp
+          * for that object in the cache to specified time.
+          * This would typically be called once per frame by applications which are doing database paging,
+          * and need to prune objects that are no longer required.
+          * Time value is time in sceonds.*/
+        void updateTimeStampOfObjectsInCacheWithExtenalReferences(double currentTime);
+
+        /** Removed object in the cache which have a time stamp at or before the specified expiry time.
+          * This would typically be called once per frame by applications which are doing database paging,
+          * and need to prune objects that are no longer required, and called after the a called
+          * after the call to updateTimeStampOfObjectsInCacheWithExtenalReferences(currentTime). 
+          * Note, the currentTime is not the expiryTime, one would typically set the expiry time
+          * to a fixed amount of time before currentTime, such as expiryTime = currentTime-10.0.
+          * Time value is time in sceonds.*/
+        void removeExpiredObjectsInCache(double expiryTime);
+        
+        /** Remove all objects in the cache regardless of having external references or expiry times.*/ 
+        void clearObjectCache();
+
+
     protected:
 
         virtual ~Registry();
 
-        typedef std::map<std::string,osg::ref_ptr<DotOsgWrapper> >  DotOsgWrapperMap;
-        typedef std::vector<osg::ref_ptr<ReaderWriter> >            ReaderWriterList;
-        typedef std::vector<osg::ref_ptr<DynamicLibrary> >          DynamicLibraryList;
-        typedef std::map<std::string,std::string>                   ExtensionAliasMap;
+        typedef std::map< std::string, osg::ref_ptr<DotOsgWrapper> >    DotOsgWrapperMap;
+        typedef std::vector< osg::ref_ptr<ReaderWriter> >               ReaderWriterList;
+        typedef std::vector< osg::ref_ptr<DynamicLibrary> >             DynamicLibraryList;
+        typedef std::map< std::string, std::string>                     ExtensionAliasMap;
+        
+        typedef std::pair<osg::ref_ptr<osg::Object>, double >           ObjectTimeStampPair;
+        typedef std::map<std::string, ObjectTimeStampPair >             ObjectCache;
 
         /** constructor is private, as its a singleton, preventing
             construction other than via the instance() method and
@@ -173,6 +197,9 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
         void eraseWrapper(DotOsgWrapperMap& wrappermap,DotOsgWrapper* wrapper);
 
+        ReaderWriter::ReadResult readObject(const std::string& fileName);
+        ReaderWriter::ReadResult readImage(const std::string& fileName);
+        ReaderWriter::ReadResult readNode(const std::string& fileName);
 
         DotOsgWrapperMap   _objectWrapperMap;
         DotOsgWrapperMap   _imageWrapperMap;
@@ -195,6 +222,8 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         
         FilePathList       _dataFilePath;
         FilePathList       _libraryFilePath;
+        
+        ObjectCache         _objectCache;
 
 };
 

@@ -289,12 +289,13 @@ void TriStripVisitor::stripify(GeoSet& gset)
                         break;
                 }
             }
-
+            gset.computeNumVerts();
             gset.dirtyDisplayList();
+            gset.dirtyBound();
         }
         else
         {
-			notify(INFO) << "No triangles to stripify"<< std::endl;
+            notify(INFO) << "No triangles to stripify"<< std::endl;
         }
 
     }

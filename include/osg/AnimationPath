@@ -20,7 +20,7 @@
 #include <osg/NodeCallback>
 
 #include <map>
-#include <values.h>
+#include <float.h>
 
 namespace osg {
 

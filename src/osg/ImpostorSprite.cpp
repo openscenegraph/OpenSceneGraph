@@ -6,11 +6,13 @@
 #include <math.h>
 #include <float.h>
 
+#include <osg/GeoSet>
 #include <osg/ImpostorSprite>
 #include <osg/Texture>
 #include <osg/TexEnv>
 #include <osg/AlphaFunc>
 #include <osg/Notify>
+#include <osg/Statistics>
 
 
 using namespace osg;
@@ -282,4 +284,17 @@ ImpostorSprite* ImpostorSpriteManager::createOrReuseImpostorSprite(int s,int t,i
     
     return is;
 
+}
+
+
+bool ImpostorSprite::getStats(Statistics &stat) 
+{ // analyse the drawable Impostor Sprite
+    stat.primtypes[0]++;
+    stat.primtypes[GeoSet::QUADS]++;
+    stat.primlens[GeoSet::QUADS]+=2; // 1 quads quad is equiv to 2 triangles
+    stat.numprimtypes[GeoSet::QUADS]++;
+    stat.primverts[GeoSet::QUADS]+=4;
+    stat.primverts[0]+=38;
+    stat.nimpostor++;
+    return true;
 }

@@ -8,6 +8,7 @@
 
 #include <osg/GeoSet>
 #include <osg/Notify>
+#include <osg/Statistics>
 
 //#include <osg/mem_ptr>
 
@@ -681,4 +682,109 @@ Drawable::AttributeBitMask GeoSet::applyAttributeOperation(AttributeFunctor& auf
     }
     
     return ramb;
+}
+bool GeoSet::getStats(Statistics &stat)
+{ // analyse the drawable GeoSet
+    const int np=getNumPrims(); // number of primitives in this geoset
+    stat.nprims += np;
+    const int type=getPrimType();
+    switch (type) {
+    case    osg::GeoSet::POINTS:
+    case    osg::GeoSet::LINES:
+    case    osg::GeoSet::LINE_STRIP:
+    case    osg::GeoSet::FLAT_LINE_STRIP:
+    case    osg::GeoSet::LINE_LOOP:
+    case    osg::GeoSet::TRIANGLE_STRIP:
+    case    osg::GeoSet::FLAT_TRIANGLE_STRIP:
+    case    osg::GeoSet::TRIANGLE_FAN:
+    case    osg::GeoSet::FLAT_TRIANGLE_FAN:
+    case    osg::GeoSet::QUAD_STRIP:
+    case    osg::GeoSet::POLYGON:
+        stat.primtypes[type]++;
+        stat.primtypes[0]++;
+        break;
+    case    osg::GeoSet::TRIANGLES: // should not have any lengths for tris & quads
+        stat.primtypes[type]++;
+        stat.primtypes[0]++;
+        stat.primlens[0]+=np;
+        stat.primlens[type]+=np;
+        stat.numprimtypes[type]+=np;
+        stat.primverts[type]+=3*np;
+        stat.primverts[0]+=3*np;
+        break;
+    case    osg::GeoSet::QUADS:
+        stat.primtypes[type]++;
+        stat.primtypes[0]++;
+        stat.primlens[0]+=np*2;
+        stat.primlens[type]+=np*2; // quad is equiv to 2 triangles
+        stat.numprimtypes[type]+=np;
+        stat.primverts[type]+=4*np;
+        stat.primverts[0]+=4*np;
+        break;
+    case    osg::GeoSet::NO_TYPE:
+    default:
+        break;
+    }
+    // now count the lengths, ie efficiency of triangulation
+    const int *lens=getPrimLengths(); // primitive lengths
+    if (lens) {
+        for (int i=0; i<np; i++) {
+            switch (type) {
+            case    osg::GeoSet::POINTS:
+            case    osg::GeoSet::LINES:
+            case    osg::GeoSet::LINE_STRIP:
+            case    osg::GeoSet::FLAT_LINE_STRIP:
+            case    osg::GeoSet::LINE_LOOP:
+            case    osg::GeoSet::TRIANGLES: // should not have any lengths for tris & quads
+            case    osg::GeoSet::QUADS:
+            case    osg::GeoSet::QUAD_STRIP:
+            case    osg::GeoSet::POLYGON:
+                stat.primlens[0]+=lens[i];
+                stat.primlens[type]+=lens[i];
+                break;
+            case    osg::GeoSet::TRIANGLE_STRIP:
+            case    osg::GeoSet::FLAT_TRIANGLE_STRIP:
+            case    osg::GeoSet::TRIANGLE_FAN:
+            case    osg::GeoSet::FLAT_TRIANGLE_FAN:
+                stat.primlens[0]+=lens[i]-2;
+                stat.primlens[type]+=lens[i]-2; // tri strips & fans create lens[i]-2 triangles
+                break;
+            case    osg::GeoSet::NO_TYPE:
+            default:
+                break;
+            }
+            switch (type) {
+            case    osg::GeoSet::POINTS:
+            case    osg::GeoSet::LINES:
+            case    osg::GeoSet::LINE_STRIP:
+            case    osg::GeoSet::FLAT_LINE_STRIP:
+            case    osg::GeoSet::LINE_LOOP:
+            case    osg::GeoSet::TRIANGLES:
+            case    osg::GeoSet::QUADS:
+            case    osg::GeoSet::TRIANGLE_STRIP:
+            case    osg::GeoSet::FLAT_TRIANGLE_STRIP:
+            case    osg::GeoSet::TRIANGLE_FAN:
+            case    osg::GeoSet::FLAT_TRIANGLE_FAN:
+            case    osg::GeoSet::QUAD_STRIP:
+            case    osg::GeoSet::POLYGON:
+                stat.numprimtypes[0]++;
+                stat.numprimtypes[type]++;
+                stat.primverts[type]+=lens[i];
+                stat.primverts[0]+=lens[i];
+                break;
+            case    osg::GeoSet::NO_TYPE:
+            default:
+                break;
+            }
+        }
+    } else { // no lengths - num prims is the length of a point set
+        switch (type) {
+        case    osg::GeoSet::POINTS:
+            stat.numprimtypes[0]++;
+            stat.numprimtypes[type]++;
+            stat.primverts[type]+=np;
+            break;
+        }
+    }
+    return true;
 }

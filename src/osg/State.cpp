@@ -161,6 +161,36 @@ void State::popStateSet()
     _drawStateStack.pop_back();
 }
 
+void State::captureCurrentState(StateSet& stateset) const
+{
+    // empty the stateset first.
+    stateset.setAllToInherit();
+    
+    for(ModeMap::const_iterator mitr=_modeMap.begin();
+        mitr!=_modeMap.end();
+        ++mitr)
+    {
+        // note GLMode = mitr->first
+        const ModeStack& ms = mitr->second;
+        if (!ms.valueVec.empty())
+        {
+            stateset.setMode(mitr->first,ms.valueVec.back());
+        }
+    }        
+
+    for(AttributeMap::const_iterator aitr=_attributeMap.begin();
+        aitr!=_attributeMap.end();
+        ++aitr)
+    {
+        const AttributeStack& as = aitr->second;
+        if (!as.attributeVec.empty())
+        {
+            stateset.setAttribute(const_cast<StateAttribute*>(as.attributeVec.back().first));
+        }
+    }        
+}
+
+
 void State::apply(const StateSet* dstate)
 {
     // equivilant to:

@@ -290,6 +290,10 @@ class SG_EXPORT GeoSet : public Drawable
 
         const bool check() const;
 
+        /** Statistics collection for each drawable- 26.09.01
+         */
+        bool getStats(Statistics &);
+
 
         /** return the attributes supported by applyAttrbuteUpdate() as an AttributeBitMask.*/
         virtual AttributeBitMask suppportsAttributeOperation() const;

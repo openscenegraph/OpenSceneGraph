@@ -28,6 +28,8 @@ class SG_EXPORT StateSet : public Object
     
             
         StateSet();
+        StateSet(const StateSet&);
+
         virtual Object* clone() const { return new StateSet(); }
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const StateSet*>(obj)!=NULL; }
         virtual const char* className() const { return "StateSet"; }
@@ -154,7 +156,6 @@ class SG_EXPORT StateSet : public Object
 
         virtual ~StateSet();
 
-        StateSet(const StateSet&):Object() {}
         StateSet& operator = (const StateSet&) { return *this; }
 
 

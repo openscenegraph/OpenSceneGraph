@@ -23,6 +23,7 @@ ClearNode::ClearNode():
     _requiresClear(true),
     _clearColor(0.0f,0.0f,0.0f,1.0f)
 {
+    setCullingActive(false);
     StateSet* stateset = new StateSet;
     stateset->setRenderBinDetails(-1,"RenderBin");
     setStateSet(stateset);

@@ -132,7 +132,7 @@ public:
 };
 
 // event handler to capture keyboard events and use them to advance the technique used for rendering
-class TechniqueEventHandler : public osgGA::GUIEventHandler, public osg::NodeCallback
+class TechniqueEventHandler : public osgGA::GUIEventHandler
 {
 public:
 

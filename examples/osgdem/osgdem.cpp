@@ -191,14 +191,24 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("--compressed","Use OpenGL compression on destination imagery");     
     arguments.getApplicationUsage()->addCommandLineOption("--RGB_16","Use 16bit RGB destination imagery");     
     arguments.getApplicationUsage()->addCommandLineOption("--RGB_24","Use 24bit RGB destination imagery");     
-    arguments.getApplicationUsage()->addCommandLineOption("--max_visible_distance_of_top_level","Set the maximum visiable distance that the top most tile can be viewed at");     
-    arguments.getApplicationUsage()->addCommandLineOption("--radius_to_max_visible_distance_ratio","Set the maximum visiable distance ratio for all tiles apart from the top most tile. The maximum visuble distance is computed from the ratio * tile radius.");     
+    arguments.getApplicationUsage()->addCommandLineOption("--max_visible_distance_of_top_level","Set the maximum visible distance that the top most tile can be viewed at");     
+    arguments.getApplicationUsage()->addCommandLineOption("--radius_to_max_visible_distance_ratio","Set the maximum visible distance ratio for all tiles apart from the top most tile. The maximum visuble distance is computed from the ratio * tile radius.");     
     arguments.getApplicationUsage()->addCommandLineOption("--no_mip_mapping","Disable mip mapping of textures");     
     arguments.getApplicationUsage()->addCommandLineOption("--mip_mapping_hardware","Use mip mapped textures, and generate the mipmaps in hardware when available.");     
     arguments.getApplicationUsage()->addCommandLineOption("--mip_mapping_imagery","Use mip mapped textures, and generate the mipmaps in imagery.");     
     arguments.getApplicationUsage()->addCommandLineOption("--max_anisotropy","Max anisotropy level to use when texturing, defaults to 1.0.");
-//    arguments.getApplicationUsage()->addCommandLineOption("","");     
-
+    arguments.getApplicationUsage()->addCommandLineOption("--bluemarble-east","");     
+    arguments.getApplicationUsage()->addCommandLineOption("--bluemarble-west","");     
+    arguments.getApplicationUsage()->addCommandLineOption("--whole-globe","");
+    arguments.getApplicationUsage()->addCommandLineOption("--geocentric","");
+    arguments.getApplicationUsage()->addCommandLineOption("--range","");     
+    arguments.getApplicationUsage()->addCommandLineOption("--xx","");     
+    arguments.getApplicationUsage()->addCommandLineOption("--xt","");     
+    arguments.getApplicationUsage()->addCommandLineOption("--yy","");     
+    arguments.getApplicationUsage()->addCommandLineOption("--yt","");     
+    arguments.getApplicationUsage()->addCommandLineOption("--zz","");     
+    arguments.getApplicationUsage()->addCommandLineOption("--zt","");     
+        
     // create DataSet.
     osg::ref_ptr<osgTerrain::DataSet> dataset = new osgTerrain::DataSet;
 
@@ -248,7 +258,7 @@ int main( int argc, char **argv )
     dataset->setDestinationTileExtension(".ive");
 
 
-    unsigned int numLevels = 6;
+    unsigned int numLevels = 10;
     while (arguments.read("-l",numLevels)) {}
 
     float verticalScale;

@@ -198,11 +198,11 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         }
         
         
-        /** Turn the compilation of rendering objects for specfied graphics context on (true) or off(false).*/
-        void setCompileGLObjectsForContexID(unsigned int contextID, bool on);
+        /** Turn the compilation of rendering objects for specfied graphics context on (true) or off(false). */
+        void setCompileGLObjectsForContextID(unsigned int contextID, bool on);
         
-        /** Get whether the compilation of rendering objects for specfied graphics context on (true) or off(false).*/
-        bool getCompileGLObjectsForContexID(unsigned int contextID);
+        /** Get whether the compilation of rendering objects for specfied graphics context on (true) or off(false). */
+        bool getCompileGLObjectsForContextID(unsigned int contextID);
 
         /** Compile the rendering objects (display lists,texture objects, VBO's) on loaded subgraph.
           * note, should only be called from the draw thread.*/
@@ -248,6 +248,10 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
     protected :
 
         virtual ~DatabasePager();
+        
+        OpenThreads::Mutex              _run_mutex;
+        bool                            _startThreadCalled;
+
         
         osg::ref_ptr<Block>             _databasePagerThreadBlock;
 

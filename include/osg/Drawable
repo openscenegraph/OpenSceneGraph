@@ -116,6 +116,7 @@ class SG_EXPORT Drawable : public Object
 {
     public:
 
+        static unsigned int s_numberDrawablesReusedLastInLastFrame;
         static unsigned int s_numberNewDrawablesInLastFrame;
         static unsigned int s_numberDeletedDrawablesInLastFrame;
 
@@ -352,7 +353,14 @@ class SG_EXPORT Drawable : public Object
         virtual void drawImplementation(State& state) const = 0;
 
 
+        /** Return a OpenGL display list handle a newly generated or reused from display list cache. */
         static GLuint generateDisplayList(unsigned int contextID, unsigned int sizeHint = 0);
+
+        /** Set the minimum number of display lists to retain in the deleted display list cache. */
+        static void setMinimumNumberOfDisplayListsToRetainInCache(unsigned int minimum);
+
+        /** Get the minimum number of display lists to retain in the deleted display list cache. */
+        static unsigned int getMinimumNumberOfDisplayListsToRetainInCache();
 
         /** use deleteDisplayList instead of glDeleteList to allow
           * OpenGL display list to be cached until they can be deleted
@@ -362,7 +370,11 @@ class SG_EXPORT Drawable : public Object
         
         /** flush all the cached display list which need to be deleted
           * in the OpenGL context related to contextID.*/
-        static void flushDeletedDisplayLists(unsigned int contextID,double currentTime, double& availableTime);
+        static void flushAllDeletedDisplayLists(unsigned int contextID);
+
+        /** flush the cached display list which need to be deleted
+          * in the OpenGL context related to contextID.*/
+        static void flushDeletedDisplayLists(unsigned int contextID,double& availableTime);
 
         /** use deleteVertexBufferObject instead of glDeleteList to allow
           * OpenGL buffer objects to be cached until they can be deleted
@@ -764,7 +776,7 @@ inline void Drawable::draw(State& state) const
         else if (_useDisplayList)
         {
 #ifdef USE_SEPARATE_COMPILE_AND_EXECUTE
-            globj = generateDisplayList(contextID, getGLObjectSizeHint()); // glGenLists( 1 );
+            globj = generateDisplayList(contextID, getGLObjectSizeHint());
             glNewList( globj, GL_COMPILE );
             if (_drawCallback.valid())
                 _drawCallback->drawImplementation(state,this);
@@ -774,7 +786,7 @@ inline void Drawable::draw(State& state) const
             
             glCallList( globj);
 #else
-            globj = generateDisplayList(contextID, getGLObjectSizeHint()); // glGenLists( 1 );
+            globj = generateDisplayList(contextID, getGLObjectSizeHint());
             glNewList( globj, GL_COMPILE_AND_EXECUTE );
             if (_drawCallback.valid())
                 _drawCallback->drawImplementation(state,this);

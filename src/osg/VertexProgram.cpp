@@ -18,10 +18,8 @@
 
 #include <list>
 
-#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
-    #include <OpenThreads/ScopedLock>
-    #include <OpenThreads/Mutex>
-#endif
+#include <OpenThreads/ScopedLock>
+#include <OpenThreads/Mutex>
 
 using namespace osg;
 
@@ -31,18 +29,14 @@ using namespace osg;
 typedef std::list<GLuint> VertexProgramObjectList;
 typedef std::map<unsigned int,VertexProgramObjectList> DeletedVertexProgramObjectCache;
 
-#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
-    static OpenThreads::Mutex              s_mutex_deletedVertexProgramObjectCache;
-#endif
+static OpenThreads::Mutex              s_mutex_deletedVertexProgramObjectCache;
 static DeletedVertexProgramObjectCache s_deletedVertexProgramObjectCache;
 
 void VertexProgram::deleteVertexProgramObject(unsigned int contextID,GLuint handle)
 {
     if (handle!=0)
     {
-#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedVertexProgramObjectCache);
-#endif
 
         // insert the handle into the cache for the appropriate context.
         s_deletedVertexProgramObjectCache[contextID].push_back(handle);
@@ -60,9 +54,7 @@ void VertexProgram::flushDeletedVertexProgramObjects(unsigned int contextID,doub
     double elapsedTime = 0.0;
 
     {
-#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedVertexProgramObjectCache);
-#endif
 
         DeletedVertexProgramObjectCache::iterator citr = s_deletedVertexProgramObjectCache.find(contextID);
         if (citr!=s_deletedVertexProgramObjectCache.end())

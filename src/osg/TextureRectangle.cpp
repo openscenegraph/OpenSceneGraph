@@ -154,7 +154,7 @@ void TextureRectangle::apply(State& state) const
     else if (_subloadCallback.valid())
     {
         // we don't have a applyTexImage1D_subload yet so can't reuse.. so just generate a new texture object.        
-        _textureObjectBuffer[contextID] = textureObject = getTextureObjectManager()->generateTextureObject(contextID,GL_TEXTURE_RECTANGLE);
+        _textureObjectBuffer[contextID] = textureObject = generateTextureObject(contextID,GL_TEXTURE_RECTANGLE);
 
         textureObject->bind();
 
@@ -173,7 +173,7 @@ void TextureRectangle::apply(State& state) const
     else if (_image.valid() && _image->data())
     {
         // we don't have a applyTexImage1D_subload yet so can't reuse.. so just generate a new texture object.        
-        _textureObjectBuffer[contextID] = textureObject = getTextureObjectManager()->generateTextureObject(contextID,GL_TEXTURE_RECTANGLE);
+        _textureObjectBuffer[contextID] = textureObject = generateTextureObject(contextID,GL_TEXTURE_RECTANGLE);
 
         textureObject->bind();
 

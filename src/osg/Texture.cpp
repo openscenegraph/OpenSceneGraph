@@ -18,6 +18,9 @@
 #include <osg/GLU>
 #include <osg/Timer>
 
+#include <OpenThreads/ScopedLock>
+#include <OpenThreads/Mutex>
+
 using namespace osg;
 
 #ifndef GL_TEXTURE_WRAP_R
@@ -41,7 +44,80 @@ unsigned int Texture::s_numberTextureReusedLastInLastFrame = 0;
 unsigned int Texture::s_numberNewTextureInLastFrame = 0;
 unsigned int Texture::s_numberDeletedTextureInLastFrame = 0;
 
-Texture::TextureObject* Texture::TextureObjectManager::generateTextureObject(unsigned int /*contextID*/,GLenum target)
+unsigned int s_minimumNumberOfTextureObjectsToRetainInCache = 0;
+void Texture::setMinimumNumberOfTextureObjectsToRetainInCache(unsigned int minimum)
+{
+    s_minimumNumberOfTextureObjectsToRetainInCache = minimum;
+}
+
+unsigned int Texture::getMinimumNumberOfTextureObjectsToRetainInCache()
+{
+    return s_minimumNumberOfTextureObjectsToRetainInCache;
+}
+
+class SG_EXPORT TextureObjectManager : public osg::Referenced
+{
+public:
+
+    TextureObjectManager():
+        _expiryDelay(0.0) {}
+
+    virtual Texture::TextureObject* generateTextureObject(unsigned int contextID,GLenum target);
+
+    virtual Texture::TextureObject* generateTextureObject(unsigned int contextID,
+                                                 GLenum    target,
+                                                 GLint     numMipmapLevels,
+                                                 GLenum    internalFormat,
+                                                 GLsizei   width,
+                                                 GLsizei   height,
+                                                 GLsizei   depth,
+                                                 GLint     border);
+
+    virtual Texture::TextureObject* reuseTextureObject(unsigned int contextID,
+                                              GLenum    target,
+                                              GLint     numMipmapLevels,
+                                              GLenum    internalFormat,
+                                              GLsizei   width,
+                                              GLsizei   height,
+                                              GLsizei   depth,
+                                              GLint     border);
+
+    inline Texture::TextureObject* reuseOrGenerateTextureObject(unsigned int contextID,
+                                              GLenum    target,
+                                              GLint     numMipmapLevels,
+                                              GLenum    internalFormat,
+                                              GLsizei   width,
+                                              GLsizei   height,
+                                              GLsizei   depth,
+                                              GLint     border)
+    {
+        Texture::TextureObject* to = reuseTextureObject(contextID,target,numMipmapLevels,internalFormat,width,height,depth,border);
+        if (to) return to;
+        else return generateTextureObject(contextID,target,numMipmapLevels,internalFormat,width,height,depth,border);
+    }                                                      
+
+    void addTextureObjects(Texture::TextureObjectListMap& toblm);
+
+    void addTextureObjectsFrom(Texture& texture);
+
+    void flushAllTextureObjects(unsigned int contextID);
+
+    void flushTextureObjects(unsigned int contextID,double currentTime, double& availableTime);
+
+    void setExpiryDelay(double expiryDelay) { _expiryDelay = expiryDelay; }
+
+    double getExpiryDelay() const { return _expiryDelay; }
+
+    /** How long to keep unused texture objects before deletion. */
+    double                  _expiryDelay;
+
+    Texture::TextureObjectListMap    _textureObjectListMap;
+
+    // mutex to keep access serialized.
+    OpenThreads::Mutex      _mutex;
+};
+
+Texture::TextureObject* TextureObjectManager::generateTextureObject(unsigned int /*contextID*/,GLenum target)
 {
     GLuint id;
     glGenTextures( 1L, &id );
@@ -51,7 +127,7 @@ Texture::TextureObject* Texture::TextureObjectManager::generateTextureObject(uns
 
 static int s_number = 0;
 
-Texture::TextureObject* Texture::TextureObjectManager::generateTextureObject(unsigned int /*contextID*/,
+Texture::TextureObject* TextureObjectManager::generateTextureObject(unsigned int /*contextID*/,
                                                                              GLenum    target,
                                                                              GLint     numMipmapLevels,
                                                                              GLenum    internalFormat,
@@ -61,7 +137,7 @@ Texture::TextureObject* Texture::TextureObjectManager::generateTextureObject(uns
                                                                              GLint     border)
 {
     ++s_number;
-    ++s_numberNewTextureInLastFrame;
+    ++Texture::s_numberNewTextureInLastFrame;
     // notify(NOTICE)<<"creating new texture object "<<s_number<<std::endl;
 
     // no useable texture object found so return 0
@@ -71,7 +147,7 @@ Texture::TextureObject* Texture::TextureObjectManager::generateTextureObject(uns
     return new Texture::TextureObject(id,target,numMipmapLevels,internalFormat,width,height,depth,border);
 }
 
-Texture::TextureObject* Texture::TextureObjectManager::reuseTextureObject(unsigned int contextID,
+Texture::TextureObject* TextureObjectManager::reuseTextureObject(unsigned int contextID,
                                                                              GLenum    target,
                                                                              GLint     numMipmapLevels,
                                                                              GLenum    internalFormat,
@@ -80,12 +156,10 @@ Texture::TextureObject* Texture::TextureObjectManager::reuseTextureObject(unsign
                                                                              GLsizei   depth,
                                                                              GLint     border)
 {
-#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-#endif
 
-    TextureObjectList& tol = _textureObjectListMap[contextID];
-    for(TextureObjectList::iterator itr = tol.begin();
+    Texture::TextureObjectList& tol = _textureObjectListMap[contextID];
+    for(Texture::TextureObjectList::iterator itr = tol.begin();
         itr != tol.end();
         ++itr)
     {
@@ -97,7 +171,7 @@ Texture::TextureObject* Texture::TextureObjectManager::reuseTextureObject(unsign
             
             // notify(NOTICE)<<"reusing texture object "<<std::endl;
             
-            ++s_numberTextureReusedLastInLastFrame;
+            ++Texture::s_numberTextureReusedLastInLastFrame;
 
             return textureObject;
         }
@@ -108,31 +182,46 @@ Texture::TextureObject* Texture::TextureObjectManager::reuseTextureObject(unsign
 
     
 
-void Texture::TextureObjectManager::addTextureObjects(Texture::TextureObjectListMap& toblm)
+void TextureObjectManager::addTextureObjects(Texture::TextureObjectListMap& toblm)
 {
-#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-#endif
 
-    for(TextureObjectListMap::iterator itr = toblm.begin();
+    for(Texture::TextureObjectListMap::iterator itr = toblm.begin();
         itr != toblm.end();
         ++itr)
     {
-        TextureObjectList& tol = _textureObjectListMap[itr->first];
+        Texture::TextureObjectList& tol = _textureObjectListMap[itr->first];
         tol.insert(tol.end(),itr->second.begin(),itr->second.end());
     }
 }
 
-void Texture::TextureObjectManager::addTextureObjectsFrom(Texture& texture)
+void TextureObjectManager::addTextureObjectsFrom(Texture& texture)
 {
-#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-#endif
 
     texture.takeTextureObjects(_textureObjectListMap);
 }
 
-void Texture::TextureObjectManager::flushTextureObjects(unsigned int contextID,double currentTime, double& availableTime)
+void TextureObjectManager::flushAllTextureObjects(unsigned int contextID)
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+
+    Texture::TextureObjectListMap::iterator tmitr = _textureObjectListMap.find(contextID);
+    if (tmitr!=_textureObjectListMap.end())
+    {
+        Texture::TextureObjectList& tol = tmitr->second;
+
+        for(Texture::TextureObjectList::iterator itr=tol.begin();
+            itr!=tol.end();
+            ++itr)
+        {
+            glDeleteTextures( 1L, &((*itr)->_id));
+        }
+        tol.clear();
+    }
+}
+
+void TextureObjectManager::flushTextureObjects(unsigned int contextID,double currentTime, double& availableTime)
 {
     // if no time available don't try to flush objects.
     if (availableTime<=0.0) return;
@@ -146,17 +235,15 @@ void Texture::TextureObjectManager::flushTextureObjects(unsigned int contextID,d
 
     unsigned int numTexturesDeleted = 0;
     {    
-#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-#endif
 
-        TextureObjectListMap::iterator tmitr = _textureObjectListMap.find(contextID);
+        Texture::TextureObjectListMap::iterator tmitr = _textureObjectListMap.find(contextID);
         if (tmitr!=_textureObjectListMap.end())
         {
-            TextureObjectList& tol = tmitr->second;
+            Texture::TextureObjectList& tol = tmitr->second;
 
             // reset the time of any uninitialized objects.
-            TextureObjectList::iterator itr;
+            Texture::TextureObjectList::iterator itr;
             for(itr=tol.begin();
                 itr!=tol.end();
                 ++itr)
@@ -167,13 +254,13 @@ void Texture::TextureObjectManager::flushTextureObjects(unsigned int contextID,d
             double expiryTime = currentTime-_expiryDelay;
 
             for(itr=tol.begin();
-                itr!=tol.end() && elapsedTime<availableTime && numObjectsDeleted<maxNumObjectsToDelete;
+                itr!=tol.end() && elapsedTime<availableTime && tol.size()>s_minimumNumberOfTextureObjectsToRetainInCache && numObjectsDeleted<maxNumObjectsToDelete;
                 )
             {
                 if ((*itr)->_timeStamp<expiryTime)
                 {
                     --s_number;
-                    ++s_numberDeletedTextureInLastFrame;
+                    ++Texture::s_numberDeletedTextureInLastFrame;
                 
                     glDeleteTextures( 1L, &((*itr)->_id));
                     itr = tol.erase(itr);
@@ -195,20 +282,45 @@ void Texture::TextureObjectManager::flushTextureObjects(unsigned int contextID,d
     availableTime -= elapsedTime;
 }
 
-static ref_ptr<Texture::TextureObjectManager> s_textureObjectManager;
 
-void Texture::setTextureObjectManager(Texture::TextureObjectManager* tom)
+static TextureObjectManager* getTextureObjectManager()
 {
-    s_textureObjectManager = tom;
-}
-
-Texture::TextureObjectManager* Texture::getTextureObjectManager()
-{
-    if (!s_textureObjectManager) s_textureObjectManager = new Texture::TextureObjectManager;
+    static ref_ptr<TextureObjectManager> s_textureObjectManager;
+    if (!s_textureObjectManager) s_textureObjectManager = new TextureObjectManager;
     return s_textureObjectManager.get();
 }
 
-void Texture::flushTextureObjects(unsigned int contextID,double currentTime, double& availbleTime)
+
+Texture::TextureObject* Texture::generateTextureObject(unsigned int contextID,GLenum target)
+{
+    return getTextureObjectManager()->generateTextureObject(contextID,target);
+}
+
+Texture::TextureObject* Texture::generateTextureObject(unsigned int contextID,
+                                             GLenum    target,
+                                             GLint     numMipmapLevels,
+                                             GLenum    internalFormat,
+                                             GLsizei   width,
+                                             GLsizei   height,
+                                             GLsizei   depth,
+                                             GLint     border)
+{
+    return getTextureObjectManager()->reuseOrGenerateTextureObject(contextID,
+                                             target,
+                                             numMipmapLevels,
+                                             internalFormat,
+                                             width,
+                                             height,
+                                             depth,
+                                             border);
+}                                             
+
+void Texture::flushAllDeletedTextureObjects(unsigned int contextID)
+{
+    getTextureObjectManager()->flushAllTextureObjects(contextID);
+}
+
+void Texture::flushDeletedTextureObjects(unsigned int contextID,double currentTime, double& availbleTime)
 {
     getTextureObjectManager()->flushTextureObjects(contextID, currentTime, availbleTime);
 }
@@ -1097,9 +1209,7 @@ void Texture::releaseGLObjects(State* state) const
         unsigned int contextID = state->getContextID();
         if (_textureObjectBuffer[contextID].valid()) 
         {
-#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(getTextureObjectManager()->_mutex);
-#endif
             
             getTextureObjectManager()->_textureObjectListMap[contextID].push_back(_textureObjectBuffer[contextID]);
             _textureObjectBuffer[contextID] = 0;

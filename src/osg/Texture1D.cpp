@@ -118,7 +118,7 @@ void Texture1D::apply(State& state) const
     {
 
         // we don't have a applyTexImage1D_subload yet so can't reuse.. so just generate a new texture object.        
-        _textureObjectBuffer[contextID] = textureObject = getTextureObjectManager()->generateTextureObject(contextID,GL_TEXTURE_1D);
+        _textureObjectBuffer[contextID] = textureObject = generateTextureObject(contextID,GL_TEXTURE_1D);
 
         textureObject->bind();
 
@@ -139,7 +139,7 @@ void Texture1D::apply(State& state) const
     {
 
         // we don't have a applyTexImage1D_subload yet so can't reuse.. so just generate a new texture object.        
-        _textureObjectBuffer[contextID] = textureObject = getTextureObjectManager()->generateTextureObject(contextID,GL_TEXTURE_1D);
+        _textureObjectBuffer[contextID] = textureObject = generateTextureObject(contextID,GL_TEXTURE_1D);
 
         textureObject->bind();
 
@@ -310,7 +310,7 @@ void Texture1D::copyTexImage1D(State& state, int x, int y, int width)
     _min_filter = LINEAR;
     _mag_filter = LINEAR;
 
-    _textureObjectBuffer[contextID] = textureObject = getTextureObjectManager()->generateTextureObject(contextID,GL_TEXTURE_1D);
+    _textureObjectBuffer[contextID] = textureObject = generateTextureObject(contextID,GL_TEXTURE_1D);
 
     textureObject->bind();
 

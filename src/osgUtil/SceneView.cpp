@@ -615,13 +615,27 @@ void SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
 }
 
 
+void SceneView::flushAllDeletedGLObjects()
+{
+    _requiresFlush = false;
+    
+    double availableTime = 100.0f;
+    double currentTime = _state->getFrameStamp()?_state->getFrameStamp()->getReferenceTime():0.0;
+    
+    osg::Texture::flushAllDeletedTextureObjects(_state->getContextID());
+    osg::Drawable::flushAllDeletedDisplayLists(_state->getContextID());
+    osg::Drawable::flushDeletedVertexBufferObjects(_state->getContextID(),currentTime,availableTime);
+    osg::VertexProgram::flushDeletedVertexProgramObjects(_state->getContextID(),currentTime,availableTime);
+    osg::FragmentProgram::flushDeletedFragmentProgramObjects(_state->getContextID(),currentTime,availableTime);
+}
+
 void SceneView::flushDeletedGLObjects(double& availableTime)
 {
     _requiresFlush = false;
 
     double currentTime = _state->getFrameStamp()?_state->getFrameStamp()->getReferenceTime():0.0;
-    osg::Texture::flushTextureObjects(_state->getContextID(),currentTime,availableTime);
-    osg::Drawable::flushDeletedDisplayLists(_state->getContextID(),currentTime,availableTime);
+    osg::Texture::flushDeletedTextureObjects(_state->getContextID(),currentTime,availableTime);
+    osg::Drawable::flushDeletedDisplayLists(_state->getContextID(),availableTime);
     osg::Drawable::flushDeletedVertexBufferObjects(_state->getContextID(),currentTime,availableTime);
     osg::VertexProgram::flushDeletedVertexProgramObjects(_state->getContextID(),currentTime,availableTime);
     osg::FragmentProgram::flushDeletedFragmentProgramObjects(_state->getContextID(),currentTime,availableTime);

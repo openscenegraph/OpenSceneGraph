@@ -24,11 +24,6 @@
 #include <list>
 #include <map>
 
-#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
-    #include <OpenThreads/ScopedLock>
-    #include <OpenThreads/Mutex>
-#endif
-
 // If not defined by gl.h use the definition found in:
 // http://oss.sgi.com/projects/ogl-sample/registry/EXT/texture_filter_anisotropic.txt
 #ifndef GL_TEXTURE_MAX_ANISOTROPY_EXT
@@ -651,79 +646,35 @@ class SG_EXPORT Texture : public osg::StateAttribute
           * in the specified TextureObjectListMap. */
         void takeTextureObjects(TextureObjectListMap& toblm);
         
+        
+        static TextureObject* generateTextureObject(unsigned int contextID,GLenum target);
+
+        static TextureObject* generateTextureObject(unsigned int contextID,
+                                                     GLenum    target,
+                                                     GLint     numMipmapLevels,
+                                                     GLenum    internalFormat,
+                                                     GLsizei   width,
+                                                     GLsizei   height,
+                                                     GLsizei   depth,
+                                                     GLint     border);
+
+
+        /** Set the minimum number of texture objects to retain in the deleted display list cache. */
+        static void setMinimumNumberOfTextureObjectsToRetainInCache(unsigned int minimum);
+
+        /** Get the minimum number of display lists to retain in the deleted display list cache. */
+        static unsigned int getMinimumNumberOfTextureObjectsToRetainInCache();
+
+        static void flushAllDeletedTextureObjects(unsigned int contextID);
+        
+        static void flushDeletedTextureObjects(unsigned int contextID,double currentTime, double& availableTime);
+
+
+    protected:
+
         typedef buffered_object< ref_ptr<TextureObject> >  TextureObjectBuffer;
         mutable TextureObjectBuffer _textureObjectBuffer;
 
-
-        class SG_EXPORT TextureObjectManager : public osg::Referenced
-        {
-        public:
-        
-            TextureObjectManager():
-                _expiryDelay(0.0) {}
-
-            virtual TextureObject* generateTextureObject(unsigned int contextID,GLenum target);
-
-            virtual TextureObject* generateTextureObject(unsigned int contextID,
-                                                         GLenum    target,
-                                                         GLint     numMipmapLevels,
-                                                         GLenum    internalFormat,
-                                                         GLsizei   width,
-                                                         GLsizei   height,
-                                                         GLsizei   depth,
-                                                         GLint     border);
-
-            virtual TextureObject* reuseTextureObject(unsigned int contextID,
-                                                      GLenum    target,
-                                                      GLint     numMipmapLevels,
-                                                      GLenum    internalFormat,
-                                                      GLsizei   width,
-                                                      GLsizei   height,
-                                                      GLsizei   depth,
-                                                      GLint     border);
-            
-            inline TextureObject* reuseOrGenerateTextureObject(unsigned int contextID,
-                                                      GLenum    target,
-                                                      GLint     numMipmapLevels,
-                                                      GLenum    internalFormat,
-                                                      GLsizei   width,
-                                                      GLsizei   height,
-                                                      GLsizei   depth,
-                                                      GLint     border)
-            {
-                TextureObject* to = reuseTextureObject(contextID,target,numMipmapLevels,internalFormat,width,height,depth,border);
-                if (to) return to;
-                else return generateTextureObject(contextID,target,numMipmapLevels,internalFormat,width,height,depth,border);
-            }                                                      
-
-            virtual void addTextureObjects(TextureObjectListMap& toblm);
-            
-            virtual void addTextureObjectsFrom(Texture& texture);
-            
-            virtual void flushTextureObjects(unsigned int contextID,double currentTime, double& availableTime);
-            
-
-            void setExpiryDelay(double expiryDelay) { _expiryDelay = expiryDelay; }
-
-            double getExpiryDelay() const { return _expiryDelay; }
-            
-            /** How long to keep unused texture objects before deletion. */
-            double                  _expiryDelay;
-            
-            TextureObjectListMap    _textureObjectListMap;
-            
-#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
-            // mutex to keep access serialized.
-            OpenThreads::Mutex      _mutex;
-#endif            
-        };
-        
-        
-        static void setTextureObjectManager(TextureObjectManager* tom);
-        static TextureObjectManager* getTextureObjectManager();
-        static void flushTextureObjects(unsigned int contextID,double currentTime, double& availableTime);
-        
-        
 
 };
 

@@ -94,6 +94,7 @@ lwosg::Converter::Options ReaderWriterLWO::parse_options(const Options *options)
         std::istringstream iss(options->getOptionString());
         std::string opt;
         while (iss >> opt) {
+            if (opt == "COMBINE_GEODES")           conv_options.combine_geodes = true;
             if (opt == "FORCE_ARB_COMPRESSION")    conv_options.force_arb_compression = true;
             if (opt == "USE_OSGFX")                conv_options.use_osgfx = true;
             if (opt == "NO_LIGHTMODEL_ATTRIBUTE")  conv_options.apply_light_model = false;

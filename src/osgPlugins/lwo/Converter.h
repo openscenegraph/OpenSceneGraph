@@ -30,8 +30,17 @@ namespace lwosg
 			bool apply_light_model;
 			bool use_osgfx;
 			bool force_arb_compression;
+			bool combine_geodes;
 
-			Options(): csf(new LwoCoordFixer), max_tex_units(0), apply_light_model(true), use_osgfx(false), force_arb_compression(false) {}
+			Options()
+			:	csf(new LwoCoordFixer), 
+				max_tex_units(0), 
+				apply_light_model(true), 
+				use_osgfx(false), 
+				force_arb_compression(false), 
+				combine_geodes(false)
+			{
+			}
 		};
 
 		Converter();

@@ -44,11 +44,11 @@ int FTSize::Height() const
 		float height;
 		if( FT_IS_SFNT((*ftFace))) // Don't think this is correct
 		{
-			height = (*ftFace)->bbox.yMax - (*ftFace)->bbox.yMin; // bbox.yMax-bbox.yMin
+			height = ((*ftFace)->bbox.yMax - (*ftFace)->bbox.yMin); // bbox.yMax-bbox.yMin
 		}
 		else
 		{
-			height = (*ftFace)->bbox.yMax - (*ftFace)->bbox.yMin >> 16; // bbox.yMax-bbox.yMin
+			height = ((*ftFace)->bbox.yMax - (*ftFace)->bbox.yMin) >> 16; // bbox.yMax-bbox.yMin
 		}
 
 		height =  height * ( (float)ftSize->metrics.y_ppem / (float)(*ftFace)->units_per_EM);

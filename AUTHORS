@@ -70,6 +70,13 @@ Geoff Michel
         - .bmp (Windows Bitmap fiile) loader plugin.
         - OpenGL based stats reporting added to osgGLUT::Viewer.
         
+Max Rheiner <mrn@paus.ch>
+        - osgText wrapping of FTGL text library.
+        - osgtext demo application.
+
+Henry Maddocks <henryj@paradise.net.nz>
+        - FTGL from which osgText is based.
+
 Paul Fredrikson
         - new Matrix implementation.
 

@@ -1234,62 +1234,65 @@ ConvertFromFLT::addMultiTexture( DynGeoSet* dgset, MultiTextureRecord* mtr )
     assert( geom );
     assert( mtr );
     assert( mtr->isAncillaryRecord() );
-    SMultiTexture* mt =
-    reinterpret_cast<SMultiTexture*>(mtr->getData());
+    SMultiTexture* mt = reinterpret_cast<SMultiTexture*>(mtr->getData());
     assert( mt );
     CERR << "ConvertFromFLT::addMultiTexture\n";
     int l = 0;
-    for ( int i = 0; i < 8; i++ ) {
-    if ( (1 << (32-i)) & mt->layers ) {
-        CERR << "Has layer " << i << "\n";
-        mt->data[l].endian();
-        CERR << "texture: " << mt->data[l].texture << "\n";
-        CERR << "effect: " << mt->data[l].effect << "\n";
-        CERR << "mapping: " << mt->data[l].mapping << "\n";
-        CERR << "data: " << mt->data[l].data << "\n";
+    for ( int i = 0; i < 8; i++ )
+    {
+        if ( (1 << (32-i)) & mt->layers )
+        {
+            CERR << "Has layer " << i << "\n";
+            mt->data[l].endian();
+            CERR << "texture: " << mt->data[l].texture << "\n";
+            CERR << "effect: " << mt->data[l].effect << "\n";
+            CERR << "mapping: " << mt->data[l].mapping << "\n";
+            CERR << "data: " << mt->data[l].data << "\n";
 
-        TexturePool* pTexturePool = mtr->getFltFile()->getTexturePool();
-        assert( pTexturePool );
-            osg::StateSet *textureStateSet = dynamic_cast<osg::StateSet *>
-                (pTexturePool->getTexture((int)mt->data[l].texture,mtr->getFlightVersion()));
-        
+            TexturePool* pTexturePool = mtr->getFltFile()->getTexturePool();
+            assert( pTexturePool );
+            osg::StateSet *textureStateSet = dynamic_cast<osg::StateSet *> (pTexturePool->getTexture((int)mt->data[l].texture,mtr->getFlightVersion()));
+
             CERR << "pTexturePool->getTexture((int)mt->data[l].texture): " << pTexturePool->getTexture((int)mt->data[l].texture,mtr->getFlightVersion()) << "\n";
             CERR << "textureStateSet: " << textureStateSet << "\n";
-        assert( textureStateSet );
-        osg::Texture2D *texture =
-        dynamic_cast<osg::Texture2D*>(
-            textureStateSet->getTextureAttribute(
-                0, osg::StateAttribute::TEXTURE));
+
+            if (!textureStateSet)
+            {
+                CERR << "unable to set up multi-texture layer." << std::endl;
+                return;
+            }
+
+            osg::Texture2D *texture = dynamic_cast<osg::Texture2D*>(textureStateSet->getTextureAttribute(0, osg::StateAttribute::TEXTURE));
             CERR << "texture: " << texture << "\n";
 
-        osg::StateSet* texture_stateset = new osg::StateSet;
+            osg::StateSet* texture_stateset = new osg::StateSet;
             CERR << "texture_stateset: " << texture_stateset << "\n";
 
-        assert( texture );
-            texture_stateset->setTextureAttributeAndModes(
-            i, texture,osg::StateAttribute::ON);
+            assert( texture );
+                texture_stateset->setTextureAttributeAndModes(
+                i, texture,osg::StateAttribute::ON);
 
-            osg::TexEnv* osgTexEnv = new osg::TexEnv;
-            CERR << "osgTexEnv: " << osgTexEnv << "\n";
-            osgTexEnv->setMode(osg::TexEnv::MODULATE);
-            texture_stateset->setTextureAttribute( i, osgTexEnv );
+                osg::TexEnv* osgTexEnv = new osg::TexEnv;
+                CERR << "osgTexEnv: " << osgTexEnv << "\n";
+                osgTexEnv->setMode(osg::TexEnv::MODULATE);
+                texture_stateset->setTextureAttribute( i, osgTexEnv );
 
-        assert( geom );
-            CERR << "geom: " << geom << "\n";
-            CERR  << ", referenceCount: "
-                << geom->referenceCount() << "\n";
-        osg::StateSet* geom_stateset = geom->getStateSet();
-            CERR << "geom_stateset: " << geom_stateset << "\n";
-        if ( geom_stateset ) {
-        geom_stateset->merge( *texture_stateset );
-        CERR << "Merging layer " << i << "\n";
-        } else {
-        geom->setStateSet( texture_stateset );
-        CERR << "Setting layer " << i << "\n";
+            assert( geom );
+                CERR << "geom: " << geom << "\n";
+                CERR  << ", referenceCount: "
+                    << geom->referenceCount() << "\n";
+            osg::StateSet* geom_stateset = geom->getStateSet();
+                CERR << "geom_stateset: " << geom_stateset << "\n";
+            if ( geom_stateset ) {
+            geom_stateset->merge( *texture_stateset );
+            CERR << "Merging layer " << i << "\n";
+            } else {
+            geom->setStateSet( texture_stateset );
+            CERR << "Setting layer " << i << "\n";
+            }
+
+            l++;
         }
-
-        l++;
-    }
     }
 }
 

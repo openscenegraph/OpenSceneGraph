@@ -13,6 +13,8 @@
 #include <osgDB/FileUtils>
 #include <osgDB/FileNameUtils>
 
+#include <osgSim/GeographicLocation>
+
 #include <string>
 
 
@@ -89,7 +91,21 @@ osg::Node* FltFile::readNode(const std::string& fileName)
     if (readModel(fileName))
     {
         // Convert record tree to osg scene graph
-        return convert();
+        osg::Node* model = convert();
+        
+        if (model)
+        {
+            // Store model origin in returned Node userData.
+            osg::ref_ptr<osgSim::GeographicLocation> loc = new osgSim::GeographicLocation;
+            double lat, lon;
+            getOrigin( lat, lon );
+            loc->set( lat, lon );
+            model->setUserData( loc.get() );
+            
+            osg::notify(osg::INFO)<<"FltFile::readNode("<<fileName<<") lat="<<lat<<" lon="<<lon<<std::endl;
+        
+            return model;
+        }
     }
 
     return NULL;
@@ -251,6 +267,20 @@ int FltFile::getFlightVersion() const
             return pSHeader->diFormatRevLev;
     }
     return 0;
+}
+
+
+void FltFile::getOrigin( double& latitude, double& longitude ) const
+{
+    if (_headerRecord.get())
+    {
+        SHeader* pSHeader = (SHeader*)_headerRecord.get()->getData();
+        if (pSHeader)
+        {
+            latitude = pSHeader->Origin.x();
+            longitude = pSHeader->Origin.y();
+        }
+    }
 }
 
 

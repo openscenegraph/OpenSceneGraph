@@ -8,7 +8,7 @@
 // define used to include in API which is being fazed out
 // if you can compile your apps with this turned off you are
 // well placed for compatablity with future versions.
-// #define USE_DEPRECATED_API
+#define USE_DEPRECATED_API
 
 #if defined(_MSC_VER)
     #pragma warning( disable : 4244 )

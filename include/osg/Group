@@ -50,6 +50,13 @@ class SG_EXPORT Group : public Node
          */
         virtual bool addChild( Node *child );
 
+        /** Insert Node to Group at specific location.
+         *  The new child node is inserted into the child list
+         *  before the node at the specified index.  No nodes
+         *  are removed from the group with this operation. 
+         */
+        virtual bool insertChild( unsigned int index, Node *child );
+
         /** Remove Node from Group.
          *  If Node is contained in Group then remove it from the child
          *  list, decrement its reference count, and dirty the 

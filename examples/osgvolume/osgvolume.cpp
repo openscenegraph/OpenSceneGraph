@@ -442,9 +442,9 @@ osg::Image* createNormalMapTexture(osg::Image* image_3d)
                     grad.z() = osg::clampBetween((grad.z()+1.0f)*128.0f,0.0f,255.0f);
                 }
 
-                *destination++ = (unsigned char)(grad.x()); // scale and bias X.
-                *destination++ = (unsigned char)(grad.y()); // scale and bias Y.
-                *destination++ = (unsigned char)(grad.z()); // scale and bias Z.
+                *(destination++) = (unsigned char)(grad.x()); // scale and bias X.
+                *(destination++) = (unsigned char)(grad.y()); // scale and bias Y.
+                *(destination++) = (unsigned char)(grad.z()); // scale and bias Z.
 
                 *destination++ = *ptr;
 

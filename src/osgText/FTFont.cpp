@@ -141,17 +141,18 @@ float FTFont::Advance( const char* string)
     return width;
 }
 
-float FTFont::Advance( std::vector<int>::const_iterator string)
+float FTFont::Advance( std::vector<int>::const_iterator first,
+                       std::vector<int>::const_iterator last)
 {
     // all are the same, a bit a hack
     FTGlyphContainer* glyphList=_contextGlyphList[0];
-    std::vector<int>::const_iterator c = string; 
     float width = 0;
 
-    while( *c)
+    for (std::vector<int>::const_iterator c = first;
+         c!=last;
+         ++c)
     {
         width += glyphList->Advance( *c, *(c + 1));    
-        c++;
     }
 
     return width;
@@ -198,21 +199,22 @@ void FTFont::render( const wchar_t* string , unsigned int renderContext)
     }
 }
 
-void FTFont::render( std::vector<int>::const_iterator string , unsigned int renderContext)
+void FTFont::render( std::vector<int>::const_iterator first,
+                     std::vector<int>::const_iterator last,
+                     unsigned int renderContext)
 {
     FTGlyphContainer* glyphList=_contextGlyphList[renderContext];
  
-    std::vector<int>::const_iterator c = string;
     FT_Vector kernAdvance;
     pen.x = 0; pen.y = 0;
 
-    while( *c)
+    for (std::vector<int>::const_iterator c = first;
+         c!=last;
+         ++c)
     {
         kernAdvance = glyphList->render( *c, *(c + 1), pen);
         pen.x += kernAdvance.x;
         pen.y += kernAdvance.y;
-
-        c++;
     }
 }
 

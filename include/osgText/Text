@@ -121,8 +121,8 @@ class OSGTEXT_EXPORT Text : public osg::Drawable
 
         const osg::Vec3& getAlignmentPos() const { return _alignmentPos; };
 
-		void setEncodedText(EncodedText* encodedText) { _encodedText = encodedText; }
-		const EncodedText* getEncodedText() const { return _encodedText.get(); }
+        void setEncodedText(EncodedText* encodedText) { _encodedText = encodedText; }
+        const EncodedText* getEncodedText() const { return _encodedText.get(); }
 
     protected:
 
@@ -155,7 +155,7 @@ class OSGTEXT_EXPORT Text : public osg::Drawable
         int                 _boundingBoxType;
         AxisAlignment       _axisAlignment;
 
-        osg::ref_ptr<EncodedText>	_encodedText;
+        osg::ref_ptr<EncodedText>    _encodedText;
         
         osg::Vec3           _pos;        
         osg::Vec3           _alignmentPos;

@@ -349,6 +349,7 @@ ifeq ($(OS),Darwin)
   OTHER_LIBS        = -lm -lstdc++ -lobjc
   LIB_EXT           = dylib
   QUICKTIME	        = -framework QuickTime $(CARBON_LIB)
+  FREETYPE_INCLUDE  = -I/sw/include/freetype2
   TIFF_LIB	        = -ltiff
   LIBVERSION	    = -dylib_current_version 0.9.3
 

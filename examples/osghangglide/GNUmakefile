@@ -27,7 +27,7 @@ INSTFILES = \
 
 EXEC = osghangglide
 
-INC += $(PRODUCER_INCLUDE_DIR)
+INC += $(PRODUCER_INCLUDE_DIR) -I/usr/X11R6/include
 LDFLAGS  += $(PRODUCER_LIB_DIR)
 
 include $(TOPDIR)/Make/makerules 

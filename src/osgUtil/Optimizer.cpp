@@ -8,6 +8,8 @@
 #include <osg/GeoSet>
 #include <osg/Notify>
 #include <osg/OccluderNode>
+#include <osg/Sequence>
+#include <osg/Switch>
 
 #include <typeinfo>
 #include <algorithm>
@@ -838,7 +840,7 @@ void Optimizer::RemoveEmptyNodesVisitor::removeEmptyNodes()
             ++itr)
         {
             
-            osg::Node* nodeToRemove = (*itr);
+            osg::ref_ptr<osg::Node> nodeToRemove = (*itr);
             
             // take a copy of parents list since subsequent removes will modify the original one.
             osg::Node::ParentList parents = nodeToRemove->getParents();
@@ -847,8 +849,13 @@ void Optimizer::RemoveEmptyNodesVisitor::removeEmptyNodes()
                 pitr!=parents.end();
                 ++pitr)
             {
-                (*pitr)->removeChild(nodeToRemove);
-                if ((*pitr)->getNumChildren()==0) newEmptyGroups.insert(*pitr);
+                osg::Group* parent = *pitr;
+                if (!dynamic_cast<osg::Sequence*>(parent) &&
+                    !dynamic_cast<osg::Switch*>(parent))
+                {
+                    parent->removeChild(nodeToRemove.get());
+                    if (parent->getNumChildren()==0) newEmptyGroups.insert(*pitr);
+                }
             }                
         }
 

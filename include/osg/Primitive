@@ -183,7 +183,7 @@ class SG_EXPORT UShortDrawElements : public Primitive, public std::vector<unsign
         virtual void applyPrimitiveOperation(Drawable::PrimitiveFunctor& functor);
 };
 
-class UIntDrawElements : public Primitive, public std::vector<unsigned int>
+class SG_EXPORT UIntDrawElements : public Primitive, public std::vector<unsigned int>
 {
     public:
 

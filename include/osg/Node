@@ -27,7 +27,7 @@ class Group;
         virtual osg::Object* clone(const osg::CopyOp& copyop) const { return new name (*this,copyop); } \
         virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const name *>(obj)!=NULL; } \
         virtual const char* className() const { return #name; } \
-        virtual void accept(osg::NodeVisitor& nv) { if (nv.validNodeMask(*this)) nv.apply(*this); } \
+        virtual void accept(osg::NodeVisitor& nv) { if (nv.validNodeMask(*this)) { nv.pushOntoNodePath(this); nv.apply(*this); nv.popFromNodePath(); } } \
         
 
 /** Base class for all internal nodes in the scene graph.

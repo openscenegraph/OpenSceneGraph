@@ -453,19 +453,19 @@ void Viewer::showStats(const unsigned int /*viewport*/)
 
         char clin[72]; // buffer to print
         glColor4fv((GLfloat * )&app_color);
-        sprintf(clin,"App %.1f ms.", timeApp);
+        sprintf(clin,"App %.2f ms.", timeApp);
         displaytext((int)(.15f*tmax),(int)(0.98f*vh),clin);
  
         glColor4fv((GLfloat * )&cull_color);
-        sprintf(clin,"Cull %.1f ms.", timeCull);
+        sprintf(clin,"Cull %.2f ms.", timeCull);
         displaytext((int)(.35*tmax),(int)(0.98f*vh),clin);
 
         glColor4fv((GLfloat * )&draw_color);
-        sprintf(clin,"Draw %.1f ms.", timeDraw);
+        sprintf(clin,"Draw %.2f ms.", timeDraw);
         displaytext((int)(.55*tmax),(int)(0.98f*vh),clin);
 
         glColor4fv((GLfloat * )&frame_color);
-        sprintf(clin,"Frame %.1f ms.", timeFrame);
+        sprintf(clin,"Frame %.2f ms.", timeFrame);
         displaytext((int)(.75*tmax),(int)(0.98f*vh),clin);
 
  /*       osg::notify(osg::NOTICE) << "Time of App  "<<timeApp<<"ms   "<< std::endl;
@@ -1483,7 +1483,7 @@ int writePrims( const int ypos, osg::Statistics& stats)
     npix+=12;
     strcpy(clin,"Vertices:  ");
     for (i=0; i<=osg::Statistics::POLYGON; i++) {
-        if (stats.primtypes[i]) {
+        if (stats.primverts[i]) {
             sprintf(ctmp,"%5d", stats.primverts[i]);
             strcat(clin, ctmp);
         }

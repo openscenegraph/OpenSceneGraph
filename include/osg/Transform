@@ -10,10 +10,13 @@
 
 namespace osg {
 
-/** Transform - is group which all children
-  * are transformed by the the Transform's osg::Matrix.  Typical uses
+/** Transform - is group which all children are transformed by the the Transform's osg::Matrix.  
+  * Typical uses
   * of the Transform is for positioning objects within a scene or 
   * producing trackball functionality or for animation.
+  * The Transform node can be customized via the ComputeTransfromCallback which can be
+  * attached to the node, this might be used to convert internal representations of the transformation
+  * into generic osg::Matrix'c which are used during scene grpah traversal, such as CullTraversal and IntersectionTraversal.
   * Note, if the transformation matrix scales the subgraph then the
   * normals of the underlying geometry will need to be renormalized to
   * be unit vectors once more.  One can done transparently through OpenGL's 
@@ -26,6 +29,7 @@ namespace osg {
 class SG_EXPORT Transform : public Group
 {
     public :
+
 
         Transform();
 
@@ -56,37 +60,78 @@ class SG_EXPORT Transform : public Group
         inline const Type getType() const { return _type; }
         
 
+        /** Set the matrix mode which tells traversers them how to treat this Transform - as Projection, View or Model transformation.*/
+        inline void setMatrixMode(MatrixMode mode) { _mode = mode; }
+        
+        /** Get the transform mode.*/
+        inline const MatrixMode getMatrixMode() const { return _mode; }
+        
 
-        enum Mode
+        /** Callback attached to an Transform to specifiy how to compute the modelview or projection transformation
+          * for the transform below the Transform node.*/
+        class ComputeTransformCallback : public osg::Referenced
         {
-            VIEW,
-            MODEL
+        
+            public:
+            
+                /** Get the transformation matrix which moves from local coords to world coords.*/
+                virtual const bool computeLocalToWorldMatrix(Matrix& matrix,const Transform* transform, NodeVisitor* nv) const = 0;
+
+                /** Get the transformation matrix which moves from world coords to local coords.*/
+                virtual const bool computeWorldToLocalMatrix(Matrix& matrix,const Transform* transform, NodeVisitor* nv) const = 0;
+            
+            protected:
+            
+                virtual ~ComputeTransformCallback() {}            
+            
         };
 
-        inline void setMode(Mode mode) { _mode = mode; }
+
+        /** Set the ComputerTransfromCallback which allows users to attach custom computation of the local transformation as 
+          * seen by cull traversers and alike.*/
+        void setComputeTransformCallback(ComputeTransformCallback* ctc) { _computeTransformCallback=ctc; }
         
-        inline const Mode getMode() const { return _mode; }
+        /** Get the non const ComputerTransfromCallback.*/
+        ComputeTransformCallback* getComputeTransformCallback() { return _computeTransformCallback.get(); }
+        
+        /** Get the const ComputerTransfromCallback.*/
+        const ComputeTransformCallback* getComputeTransformCallback() const { return _computeTransformCallback.get(); }
+
+
+
+        /** Get the transformation matrix which moves from local coords to world coords.
+          * Return true if Matrix passed in has been modified and */
+        inline const bool getLocalToWorldMatrix(Matrix& matrix,NodeVisitor* nv) const
+        {
+            if (_computeTransformCallback.valid())
+                return _computeTransformCallback->computeLocalToWorldMatrix(matrix,this,nv);
+            else
+                return computeLocalToWorldMatrix(matrix,nv);
+        }
         
 
-        /** Get the transformation matrix which moves from local coords to world coords.*/
-        inline const Matrix& getLocalToWorldMatrix() const { if (_localToWorldDirty) computeLocalToWorld(); return *_localToWorld; }
-
-        /** Get the transformation matrix which moves from world coords to local coords.*/
-        inline const Matrix& getWorldToLocalMatrix() const { if (_worldToLocalDirty) computeWorldToLocal(); return *_worldToLocal; }
-
+        /** Get the transformation matrix which moves from world coords to local coords.
+          * Return true if Matrix passed in has been modified and */
+        inline const bool getWorldToLocalMatrix(Matrix& matrix,NodeVisitor* nv) const
+        {
+            if (_computeTransformCallback.valid())
+                return _computeTransformCallback->computeWorldToLocalMatrix(matrix,this,nv);
+            else
+                return computeWorldToLocalMatrix(matrix,nv);
+        }
         
 
         /** Set the transform's matrix.*/
-        void setMatrix(const Matrix& mat);
+        void setMatrix(const Matrix& mat) { (*_matrix) = mat; dirtyBound(); }
         
         /** Get the transform's matrix. */
-        inline const Matrix& getMatrix() const { if (_mode==MODEL) return *_localToWorld; else return *_worldToLocal; }
+        inline const Matrix& getMatrix() const { return *_matrix; }
 
         /** preMult transform.*/
-        void preMult(const Matrix& mat);
+        void preMult(const Matrix& mat) { _matrix->preMult(mat); dirtyBound(); }
         
         /** postMult transform.*/
-        void postMult(const Matrix& mat);
+        void postMult(const Matrix& mat)  { _matrix->postMult(mat); dirtyBound(); }
     
 
     protected :
@@ -98,23 +143,26 @@ class SG_EXPORT Transform : public Group
           * the underlying matrix (calling computeMatrix if required.) */
         virtual const bool computeBound() const;
         
-        /** If you subclass from osg::Transform you must override computeLocalToWorld() to provide your own mechanism for
-          * setting up the 4x4 matrix. An example of a subclass might a PositionAttitudeTransfrom which is its own
-          * Vec3 and Quat to calculate the matrix.*/
-        virtual void computeLocalToWorld() const;
+        virtual const bool computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor* nv) const
+        {
+            matrix = *_matrix;
+            return true;
+        }
 
-        /** If you subclass from osg::Transform it must also override computeWorldToLocal() to provide your own mechanism for
-          * setting up the 4x4 matrix.*/
-        virtual void computeWorldToLocal() const;
+        virtual const bool computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor* nv) const
+        {
+            matrix.invert(*_matrix);
+            return true;
+        }
 
-        Type                    _type;
-        Mode                    _mode;
+
+        Type                                _type;
+        MatrixMode                          _mode;
+        ref_ptr<ComputeTransformCallback>   _computeTransformCallback;
+
+        ref_ptr<Matrix>                     _matrix;
         
-        mutable bool            _localToWorldDirty;
-        mutable ref_ptr<Matrix> _localToWorld;
-        
-        mutable bool            _worldToLocalDirty;
-        mutable ref_ptr<Matrix> _worldToLocal;
+
 };
 
 }

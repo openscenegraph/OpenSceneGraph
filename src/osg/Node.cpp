@@ -44,7 +44,12 @@ Node::~Node()
 
 void Node::accept(NodeVisitor& nv)
 {
-    if (nv.validNodeMask(*this)) nv.apply(*this);
+    if (nv.validNodeMask(*this)) 
+    {
+        nv.pushOntoNodePath(this);
+        nv.apply(*this);
+        nv.popFromNodePath();
+    }
 }
 
 

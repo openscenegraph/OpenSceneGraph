@@ -6,6 +6,7 @@
 #define OSG_NODEVISITOR 1
 
 #include <osg/Node>
+#include <osg/Matrix>
 #include <osg/FrameStamp>
 
 namespace osg {
@@ -15,7 +16,6 @@ class Billboard;
 class LightSource;
 class Group;
 class Transform;
-class AutoTransform;
 class LOD;
 class Switch;
 class Impostor;
@@ -120,18 +120,48 @@ class SG_EXPORT NodeVisitor : public Referenced
         void setTraversalVisitor(NodeVisitor* nv);
         
         /** Get the traversal visitor, returns NULL if none is attached.*/
-        NodeVisitor* getTraversalVisitor() { return _traversalVisitor.get(); }
+        inline NodeVisitor* getTraversalVisitor() { return _traversalVisitor.get(); }
 
-        /** Inline method for handling traversal of a nodes.
+        /** Method for handling traversal of a nodes.
             If you intend to use the visitor for actively traversing 
             the scene graph then make sure the accept() methods call
             this method unless they handle traversal directly.*/
-        void traverse(Node& node)
+        inline void traverse(Node& node)
         {
             if (_traversalVisitor.valid()) node.accept(*_traversalVisitor);
             else if (_traversalMode==TRAVERSE_PARENTS) node.ascend(*this);
             else if (_traversalMode!=TRAVERSE_NONE) node.traverse(*this);
         }
+        
+        /** Method called by osg::Node::accept() method before
+          * a call the NodeVisitor::apply(..).  The back of the list will,
+          * therefore, be the current node being visited inside the apply(..),
+          * and the rest of the list will be the parental sequence of nodes 
+          * from the top most node applied down the graph to the current node.
+          * Note, the user does not typically call pushNodeOnPath() as it
+          * will be called automatically by the Node::accept() method.*/
+        inline void pushOntoNodePath(Node* node) { _nodePath.push_back(node); }
+        
+        /** Method callby osg::Node::accept() method after
+          * a call the NodeVisitor::apply(..).
+          * Note, the user does not typically call pushNodeOnPath() as it
+          * will be called automatically by the Node::accept() method.*/
+        inline void popFromNodePath()            { _nodePath.pop_back(); }
+        
+        /** Get the non const NodePath from the top most node applied down
+          * to the current Node being visited.*/
+        NodePath& getNodePath() { return _nodePath; }
+
+        /** Get the const NodePath from the top most node applied down
+          * to the current Node being visited.*/
+        const NodePath& getNodePath() const { return _nodePath; }
+        
+        /** Get the Local To World Matrix from the NodePath for specified Transform::Mode.*/
+        const bool getLocalToWorldMatrix(Matrix& matrix, MatrixMode mode);
+        
+        /** Get the World To Local Matrix from the NodePath for specified Transform::Mode.*/
+        const bool getWorldToLocalMatrix(Matrix& matrix, MatrixMode mode);
+
 
         virtual void apply(Node& node)       { traverse(node);}
         
@@ -141,11 +171,11 @@ class SG_EXPORT NodeVisitor : public Referenced
         
         virtual void apply(Group& node)      { apply((Node&)node); }
         virtual void apply(Transform& node)  { apply((Group&)node); }
-        virtual void apply(AutoTransform& node)  { apply((Group&)node); }
         virtual void apply(Switch& node)     { apply((Group&)node); }
         virtual void apply(LOD& node)        { apply((Group&)node); }
         virtual void apply(Impostor& node)   { apply((LOD&)node); }
         virtual void apply(EarthSky& node)   { apply((Group&)node); }
+
 
     protected:
 
@@ -158,6 +188,8 @@ class SG_EXPORT NodeVisitor : public Referenced
         TraversalMode           _traversalMode;
         Node::NodeMask          _traversalMask;
         Node::NodeMask          _nodeMaskOverride;
+        
+        NodePath                _nodePath;
 
 };
 

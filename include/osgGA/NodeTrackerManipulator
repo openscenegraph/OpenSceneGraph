@@ -32,6 +32,16 @@ class OSGGA_EXPORT NodeTrackerManipulator : public MatrixManipulator
         const osg::Node* getTrackNode() const { return _trackNode.get(); }
 
 
+        enum TrackerMode 
+        {
+            NODE_CENTER,
+            NODE_CENTER_AND_ROTATION,
+        };
+        
+        void setTrackerMode(TrackerMode mode);
+        TrackerMode getTrackerNode() const { return _trackerMode; }
+
+
         enum RotationMode 
         {
             ELEVATION_AZIM_ROLL,
@@ -94,7 +104,10 @@ class OSGGA_EXPORT NodeTrackerManipulator : public MatrixManipulator
         /** Add the current mouse GUIEvent to internal stack.*/
         void addMouseEvent(const GUIEventAdapter& ea);
 
-        osg::Vec3d computeCenter() const;
+        void computeNodeWorldToLocal(osg::Matrixd& worldToLocal) const;
+        void computeNodeLocalToWorld(osg::Matrixd& localToWorld) const;
+
+        void computeNodeCenterAndRotation(osg::Vec3d& center, osg::Quat& rotation) const;
 
         void computePosition(const osg::Vec3d& eye,const osg::Vec3d& lv,const osg::Vec3d& up);
 
@@ -121,11 +134,13 @@ class OSGGA_EXPORT NodeTrackerManipulator : public MatrixManipulator
         osg::ref_ptr<osg::Node> _node;
         osg::ref_ptr<osg::Node> _trackNode;
 
+        TrackerMode             _trackerMode;
         RotationMode            _rotationMode;
 
         bool                    _thrown;
         
         osg::Vec3d              _center;
+        osg::Quat               _nodeRotation;
         osg::Quat               _rotation;
         float                   _distance;
         osg::Vec3d              _previousUp;

@@ -40,19 +40,19 @@ class OSGSIM_EXPORT MultiSwitch : public osg::Group
         
         bool getNewChildDefaultValue() const { return _newChildDefaultValue; }
 
-        virtual bool addChild( Node *child );
+        virtual bool addChild( osg::Node *child );
 
-        virtual bool insertChild( unsigned int index, Node *child );
+        virtual bool insertChild( unsigned int index, osg::Node *child );
 
-        virtual bool removeChild( Node *child );
+        virtual bool removeChild( osg::Node *child );
 
         void setValue(unsigned int switchSet, unsigned int pos,bool value);
 
         bool getValue(unsigned int switchSet, unsigned int pos) const;
 
-        void setChildValue(const Node* child,unsigned int switchSet, bool value);
+        void setChildValue(const osg::Node* child,unsigned int switchSet, bool value);
         
-        bool getChildValue(const Node* child,unsigned int switchSet) const;
+        bool getChildValue(const osg::Node* child,unsigned int switchSet) const;
 
         /** Set all the children off (false), and set the new default child value to off (false).*/
         bool setAllChildrenOff(unsigned int switchSet);

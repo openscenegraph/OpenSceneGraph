@@ -75,12 +75,17 @@ private:
 
 typedef std::list<GLhandleARB> GL2ObjectList;
 typedef std::map<unsigned int, GL2ObjectList> DeletedGL2ObjectCache;
+
+static OpenThreads::Mutex    s_mutex_deletedGL2ObjectCache;
 static DeletedGL2ObjectCache s_deletedGL2ObjectCache;
 
 void ProgramObject::deleteObject(unsigned int contextID, GLhandleARB handle)
 {
     if (handle!=0)
     {
+#ifdef THREAD_SAFE_DELETE_LISTS
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedGL2ObjectCache);
+#endif
         // add handle to the cache for the appropriate context.
         s_deletedGL2ObjectCache[contextID].push_back(handle);
     }
@@ -95,30 +100,36 @@ void ProgramObject::flushDeletedGL2Objects(unsigned int contextID,double /*curre
     osg::Timer_t start_tick = timer.tick();
     double elapsedTime = 0.0;
 
-    DeletedGL2ObjectCache::iterator citr = s_deletedGL2ObjectCache.find(contextID);
-    if( citr != s_deletedGL2ObjectCache.end() )
     {
-        const Extensions* extensions = Extensions::Get(contextID,true);
+#ifdef THREAD_SAFE_DELETE_LISTS
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedGL2ObjectCache);
+#endif
 
-	if (!extensions->isGlslSupported())
-	{
-	    // can we really get here?
-	    osg::notify(osg::WARN) << "flushDeletedGL2Objects not supported by OpenGL driver" << std::endl;
-	    return;
-	}
-
-        GL2ObjectList& vpObjectList = citr->second;
-
-        for(GL2ObjectList::iterator titr=vpObjectList.begin();
-            titr!=vpObjectList.end() && elapsedTime<availableTime;
-            )
+        DeletedGL2ObjectCache::iterator citr = s_deletedGL2ObjectCache.find(contextID);
+        if( citr != s_deletedGL2ObjectCache.end() )
         {
-            extensions->glDeleteObject( *titr );
-            titr = vpObjectList.erase( titr );
-            elapsedTime = timer.delta_s(start_tick,timer.tick());
+            const Extensions* extensions = Extensions::Get(contextID,true);
+
+	    if (!extensions->isGlslSupported())
+	    {
+	        // can we really get here?
+	        osg::notify(osg::WARN) << "flushDeletedGL2Objects not supported by OpenGL driver" << std::endl;
+	        return;
+	    }
+
+            GL2ObjectList& vpObjectList = citr->second;
+
+            for(GL2ObjectList::iterator titr=vpObjectList.begin();
+                titr!=vpObjectList.end() && elapsedTime<availableTime;
+                )
+            {
+                extensions->glDeleteObject( *titr );
+                titr = vpObjectList.erase( titr );
+                elapsedTime = timer.delta_s(start_tick,timer.tick());
+            }
         }
     }
-    
+        
     availableTime -= elapsedTime;
 }
 

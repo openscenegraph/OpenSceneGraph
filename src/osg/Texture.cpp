@@ -70,6 +70,10 @@ Texture::TextureObject* Texture::TextureObjectManager::reuseTextureObject(unsign
                                                                              GLsizei   depth,
                                                                              GLint     border)
 {
+#ifdef THREAD_SAFE_DELETE_LISTS
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+#endif
+
     TextureObjectList& tol = _textureObjectListMap[contextID];
     for(TextureObjectList::iterator itr = tol.begin();
         itr != tol.end();
@@ -94,6 +98,10 @@ Texture::TextureObject* Texture::TextureObjectManager::reuseTextureObject(unsign
 
 void Texture::TextureObjectManager::addTextureObjects(Texture::TextureObjectListMap& toblm)
 {
+#ifdef THREAD_SAFE_DELETE_LISTS
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+#endif
+
     for(TextureObjectListMap::iterator itr = toblm.begin();
         itr != toblm.end();
         ++itr)
@@ -105,6 +113,8 @@ void Texture::TextureObjectManager::addTextureObjects(Texture::TextureObjectList
 
 void Texture::TextureObjectManager::addTextureObjectsFrom(Texture& texture)
 {
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+
     texture.takeTextureObjects(_textureObjectListMap);
 }
 
@@ -113,47 +123,54 @@ void Texture::TextureObjectManager::flushTextureObjects(unsigned int contextID,d
     // if no time available don't try to flush objects.
     if (availableTime<=0.0) return;
 
+
     const osg::Timer& timer = *osg::Timer::instance();
     osg::Timer_t start_tick = timer.tick();
     double elapsedTime = 0.0;
-    
-    TextureObjectListMap::iterator tmitr = _textureObjectListMap.find(contextID);
-    if (tmitr!=_textureObjectListMap.end())
-    {
-        TextureObjectList& tol = tmitr->second;
 
-        // reset the time of any uninitialized objects.
-        TextureObjectList::iterator itr;
-        for(itr=tol.begin();
-            itr!=tol.end();
-            ++itr)
+    {    
+#ifdef THREAD_SAFE_DELETE_LISTS
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+#endif
+
+        TextureObjectListMap::iterator tmitr = _textureObjectListMap.find(contextID);
+        if (tmitr!=_textureObjectListMap.end())
         {
-            if ((*itr)->_timeStamp==0.0) (*itr)->_timeStamp=currentTime;
-        }
+            TextureObjectList& tol = tmitr->second;
 
-        double expiryTime = currentTime-_expiryDelay;
-
-        unsigned int numTexturesDeleted = 0;
-        for(itr=tol.begin();
-            itr!=tol.end() && elapsedTime<availableTime;
-            )
-        {
-            if ((*itr)->_timeStamp<expiryTime)
+            // reset the time of any uninitialized objects.
+            TextureObjectList::iterator itr;
+            for(itr=tol.begin();
+                itr!=tol.end();
+                ++itr)
             {
-                glDeleteTextures( 1L, &((*itr)->_id));
-                itr = tol.erase(itr);
-                ++numTexturesDeleted;
+                if ((*itr)->_timeStamp==0.0) (*itr)->_timeStamp=currentTime;
             }
-            else
-            {
-                ++itr;
-            }
-            elapsedTime = timer.delta_s(start_tick,timer.tick());
-        }
 
-        if (numTexturesDeleted) notify(osg::INFO)<<"Number of Texture's deleted = "<<numTexturesDeleted<<std::endl;
+            double expiryTime = currentTime-_expiryDelay;
+
+            unsigned int numTexturesDeleted = 0;
+            for(itr=tol.begin();
+                itr!=tol.end() && elapsedTime<availableTime;
+                )
+            {
+                if ((*itr)->_timeStamp<expiryTime)
+                {
+                    glDeleteTextures( 1L, &((*itr)->_id));
+                    itr = tol.erase(itr);
+                    ++numTexturesDeleted;
+                }
+                else
+                {
+                    ++itr;
+                }
+                elapsedTime = timer.delta_s(start_tick,timer.tick());
+            }
+
+            if (numTexturesDeleted) notify(osg::INFO)<<"Number of Texture's deleted = "<<numTexturesDeleted<<std::endl;
+        }
     }
-    
+        
     availableTime -= elapsedTime;
 }
 

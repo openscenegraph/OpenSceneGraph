@@ -647,6 +647,9 @@ class SG_EXPORT Texture : public osg::StateAttribute
             
             TextureObjectListMap    _textureObjectListMap;
             
+            // mutex to keep access serialized.
+            OpenThreads::Mutex      _mutex;
+            
         };
         
         

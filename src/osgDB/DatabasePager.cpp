@@ -28,8 +28,8 @@ DatabasePager::DatabasePager()
     _threadPriorityDuringFrame = PRIORITY_MIN;
     _threadPriorityOutwithFrame = PRIORITY_MIN;
 
-    _changeAutoUnRef = false;
-    _valueAutoUnRef = false;
+    _changeAutoUnRef = true;
+    _valueAutoUnRef = true;
     _changeAnisotropy = false;
     _valueAnisotropy = 1.0f;
 

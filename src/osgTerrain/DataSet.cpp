@@ -1934,7 +1934,7 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
 
     color[0].set(255,255,255,255);
 
-    osg::Vec3Array* n = 0; // new osg::Vec3Array(numVertices);
+    osg::Vec3Array* n = new osg::Vec3Array(numVertices);
     
     
     float skirtRatio = 0.01f;
@@ -2091,8 +2091,8 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
     	}
     }
 
-//    osgUtil::SmoothingVisitor sv;
-//    sv.smooth(*geometry);
+    osgUtil::SmoothingVisitor sv;
+    sv.smooth(*geometry);
 
     if (numVerticesInSkirt>0)
     {

@@ -24,11 +24,23 @@ namespace osgUtil {
 
 /** A simplifier for reducing the number of traingles in osg::Geometry.
   */
-class OSGUTIL_EXPORT Simplifier
+class OSGUTIL_EXPORT Simplifier : public osg::NodeVisitor
 {
     public:
 
-        Simplifier();
+        Simplifier(float sampleRatio=0.5f);
+            
+        virtual void apply(osg::Geode& geode)
+        {
+            for(unsigned int i=0;i<geode.getNumDrawables();++i)
+            {
+                osg::Geometry* geometry = geode.getDrawable(i)->asGeometry();
+                if (geometry)
+                {
+                    simplify(*geometry,_sampleRatio);
+                }
+            }
+        }
 
         /** simply the geometry to defined ratio of original size.*/
         void simplify(osg::Geometry& geometry, float sampleRatio);
@@ -38,7 +50,10 @@ class OSGUTIL_EXPORT Simplifier
 
     protected:
     
+        float _sampleRatio;
+    
 };
+
 
 }
 

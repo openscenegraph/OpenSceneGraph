@@ -15,6 +15,13 @@ namespace osg {
     the eye point are rendered at a lower level of detail, and at times
     of high stress on the graphics pipeline lower levels of detail can
     also be chosen.
+    The children are ordered from most detailed (for close up views) to the least 
+    (see from a distance), and a set of ranges are used to decide which LOD is used 
+    at different view distances, the criteria used is child 'i' is used when 
+    range[i]<dist<range[i+1] is true. This requires there to be n+1 range values where the number of
+    children is n, since no maximum distance of infinity is assumed.  If the number of range values (m)
+    is insufficient then the children m through to n will be ignored, only 0..m-1 will be used
+    during rendering.
 */
 class SG_EXPORT LOD : public Group
 {

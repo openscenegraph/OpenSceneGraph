@@ -19,11 +19,11 @@
 
 <td><a href="dependencies.html">Dependencies</a></td>
 
-<td><a href="demos.html">Demos</a></td>
+<td><a href="examples.html">examples</a></td>
 
 <td><a href="data.html">Data</a></td>
 
-<td><a href="sgv.html">Viewer</a></td>
+<td><a href="osgviewer.html">Viewer</a></td>
 
 <td><a href="stereo.html">Stereo</a></td>
 
@@ -43,7 +43,7 @@ potential for stereo support simply by setting the relevant environmental
 variables, or via command line arguments. Little or no code changes will
 be required, the support is handled transparently inside osgUtil::SceneView's
 handling of rendering. It is a simple as:
-<br><b>&nbsp;&nbsp;&nbsp; sgv -stereo cow.osg</b>
+<br><b>&nbsp;&nbsp;&nbsp; osgviewer --stereo cow.osg</b>
 <p>If the user is planning to use head tracked stereo, or a cave then it
 is currently recommend to set it up via a VR toolkit such as VRjuggler,
 in this case refer to the VR toolkits handling of stereo, and keep all
@@ -246,19 +246,19 @@ Command line arguments can be used to override these settings:</h3>
 <h3>
 Examples:</h3>
 To invoke stereo from the comandline:
-<br><b>&nbsp;&nbsp;&nbsp; sgv -stereo cow.osg</b>
+<br><b>&nbsp;&nbsp;&nbsp; osgviewer -stereo cow.osg</b>
 <p>To invoke quad buffered stereo from the commandline:
-<br><b>&nbsp;&nbsp;&nbsp; sgv -stereo QUAD_BUFFER cow.osg</b>
+<br><b>&nbsp;&nbsp;&nbsp; osgviewer -stereo QUAD_BUFFER cow.osg</b>
 <p>To force all apps to start up in quad buffered stereo (if system supports
 it)
 <br><b>&nbsp;&nbsp;&nbsp; export OSG_STEREO=ON</b>
 <br><b>&nbsp;&nbsp;&nbsp; export OSG_STEREO_MODE=QUAD_BUFFER</b>
-<br><b>&nbsp;&nbsp;&nbsp; sgv cow.osg</b>
+<br><b>&nbsp;&nbsp;&nbsp; osgviewer cow.osg</b>
 <p>To set quad buffered stereo to the default, but use the commandline
 to switch stereo on:
 <br><b>&nbsp;&nbsp;&nbsp; export OSG_STEREO=OFF</b>
 <br><b>&nbsp;&nbsp;&nbsp; export OSG_STEREO_MODE=QUAD_BUFFER</b>
-<br><b>&nbsp;&nbsp;&nbsp; sgv -stereo cow.osg</b>
+<br><b>&nbsp;&nbsp;&nbsp; osgviewer -stereo cow.osg</b>
 <p>
 <hr>
 <h3>
@@ -284,7 +284,7 @@ achieve this then the object will be perceived as at infinity.
 <h3>
 Camera Manipulator Modes:</h3>
 There are three osgUtil::CameraManipulator's which come with osgUtil, which
-operate as a Trackball, Drive and Flight modes of interaction (see sgv.html
+operate as a Trackball, Drive and Flight modes of interaction (see osgviewer.html
 for how to invoke them in the scene graph viewer). The osgUtil::Trackball
 Manipulator automatically scales the fusion distance to that which will
 fusion on center point of rotation - this will appear at the middle of

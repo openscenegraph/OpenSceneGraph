@@ -3,7 +3,7 @@
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
    <meta name="GENERATOR" content="Mozilla/4.77 [en] (X11; U; Linux 2.4.3-20mdk i686) [Netscape]">
-   <title>Demos</title>
+   <title>examples</title>
 </head>
 <body text="#000000" bgcolor="#FFFFFF" link="#0000FF" vlink="#990066" alink="#FF0000">
 <img SRC="images/OpenSceneGraphBanner_Distribution.jpg" height=77 width=640>
@@ -19,11 +19,11 @@
 
 <td><a href="dependencies.html">Dependencies</a></td>
 
-<td><a href="demos.html">Demos</a></td>
+<td><a href="examples.html">examples</a></td>
 
 <td><a href="data.html">Data</a></td>
 
-<td><a href="sgv.html">Viewer</a></td>
+<td><a href="osgviewer.html">Viewer</a></td>
 
 <td><a href="stereo.html">Stereo</a></td>
 
@@ -34,7 +34,7 @@
 </table>
 
 <h2>
-<a NAME="Running the demos"></a><u>Running the demos</u></h2>
+<a NAME="Running the demos"></a><u>Running the examples</u></h2>
 Once the OpenSceneGraph is <a href="install.html">installed</a> you will
 need place the location where it was installed on the you systems paths
 environmental variables, and then download the <a href="data.html">demo
@@ -72,24 +72,24 @@ it will either run, or provide help on what options it accepts.
 <br>&nbsp;
 <table>
 <tr>
-<td><a href="sgv.html"><img SRC="images/sgv_cow.jpg" BORDER=0 height=100 width=128></a></td>
+<td><a href="osgviewer.html"><img SRC="images/osgviewer_cow.jpg" BORDER=0 height=100 width=128></a></td>
 
-<td><b>sgv cow.osg</b></td>
+<td><b>osgviewer cow.osg</b></td>
 
-<td>The scene graph viewer demo uses osgGLUT::Viewer to bring up a basic
-viewer. To find out what command line arguments it takes simply run sgv
-without any arguments. To load a model simple run sgv filename.ext. The
-osgGLUT::Viewer provides an extensive set of operations that can be used
+<td>The scene graph viewer demo uses osgProducer::Viewer to bring up a basic
+viewer. To find out what command line arguments it takes simply run osgviewer
+without any arguments. To load a model simple run osgviewer filename.ext. The
+osgProducer::Viewer provides an extensive set of operations that can be used
 to display information about the loaded database such as performance stats,
 through to output a snapshot of the screen, which is how these thumbnails
 were created. For a full list of key presses and mouse interaction read
-the <a href="sgv.html">sgv</a> documentation.</td>
+the <a href="osgviewer.html">osgviewer</a> documentation.</td>
 </tr>
 
 <tr>
-<td><a href="stereo.html"><img SRC="images/sgv_stereo.jpg" BORDER=0 height=100 width=128></a></td>
+<td><a href="stereo.html"><img SRC="images/osgviewer_stereo.jpg" BORDER=0 height=100 width=128></a></td>
 
-<td><b>sgv -stereo cessna.osg</b></td>
+<td><b>osgviewer --stereo cessna.osg</b></td>
 
 <td>The scene graph viewer also supports anaglyphic, quad buffered, and
 split screen stereo modes, for a full list of options and environmental
@@ -118,19 +118,11 @@ effects.&nbsp;</td>
 </tr>
 
 <tr>
-<td><img SRC="images/osgcube.jpg" BORDER=0 height=100 width=128></td>
-
-<td><b>osgcube</b></td>
-
-<td>Simplest of all demos, create a cube geometry and spin it!&nbsp;</td>
-</tr>
-
-<tr>
 <td><img SRC="images/osghud.jpg" BORDER=0 height=100 width=128></td>
 
 <td><b>osghud glider.osg</b></td>
 
-<td>Very similar to the basic sgv demo, but adds an orthographic projection
+<td>Very similar to the basic osgviewer demo, but adds an orthographic projection
 over the top of the main 3D view to create a head up display effect. Also
 demonstrates how to use osgText. .</td>
 </tr>
@@ -206,11 +198,11 @@ texture parameters, including anisotrophic filtering and texture compression!&nb
 </tr>
 
 <tr>
-<td><img SRC="images/osgviews.jpg" BORDER=0 height=100 width=128></td>
+<td><img SRC="images/osgwindows.jpg" BORDER=0 height=100 width=128></td>
 
-<td><b>osgviews.cow.osg</b></td>
+<td><b>osgwindows cow.osg</b></td>
 
-<td>An example of multiple viewports all running at once.&nbsp;</td>
+<td>An example of multiple windows all running at once.&nbsp;</td>
 </tr>
 </table>
 

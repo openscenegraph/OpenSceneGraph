@@ -1184,7 +1184,7 @@ void Registry::convertStringPathIntoFilePathList(const std::string& paths,FilePa
             start = end+1;
         }
 
-        filepath.push_back(std::string(paths,start));
+        filepath.push_back(std::string(paths,start,std::string::npos));
     }
  
 }

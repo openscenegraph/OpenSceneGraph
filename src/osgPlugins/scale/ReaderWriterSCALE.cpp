@@ -54,7 +54,7 @@ class ReaderWriterSCALE : public osgDB::ReaderWriter
 public:
     ReaderWriterSCALE() { }
     
-    virtual const char* className() { return "scaling pseudo-loader"; }
+    virtual const char* className() const { return "scaling pseudo-loader"; }
 
     virtual bool acceptsExtension(const std::string& extension)
     { 

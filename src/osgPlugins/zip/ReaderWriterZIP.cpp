@@ -22,7 +22,7 @@
 class ReaderWriterZIP : public osgDB::ReaderWriter
 {
     public:
-        virtual const char* className() { return "ZIP Database Reader/Writer"; }
+        virtual const char* className() const { return "ZIP Database Reader/Writer"; }
 
         virtual bool acceptsExtension(const std::string& extension)
         {

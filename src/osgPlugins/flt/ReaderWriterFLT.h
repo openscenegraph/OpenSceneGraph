@@ -48,7 +48,7 @@ class ReaderWriterFLT : public osgDB::ReaderWriter
 {
 public:
 
-    virtual const char* className() { return "FLT Reader/Writer"; }
+    virtual const char* className() const { return "FLT Reader/Writer"; }
     virtual bool acceptsExtension(const std::string& extension)
     {
         return osgDB::equalCaseInsensitive(extension,"flt");

@@ -75,7 +75,7 @@ class NetReader : public osgDB::ReaderWriter
     public:
         NetReader() {}
                                                                                             
-        virtual const char* className() { return "HTTP Protocol Model Reader"; }
+        virtual const char* className() const { return "HTTP Protocol Model Reader"; }
                                                                                             
         virtual bool acceptsExtension(const std::string& extension)
         {

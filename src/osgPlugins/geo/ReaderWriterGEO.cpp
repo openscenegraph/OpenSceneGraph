@@ -391,7 +391,7 @@ private:
 class ReaderWriterGEO : public osgDB::ReaderWriter
 {
     public:
-        virtual const char* className() { return "GEO Reader/Writer"; }
+        virtual const char* className() const { return "GEO Reader/Writer"; }
 
         virtual bool acceptsExtension(const std::string& extension)
         {

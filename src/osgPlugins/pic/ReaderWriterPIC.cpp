@@ -191,7 +191,7 @@ int *numComponents_ret)
 class ReaderWriterPIC : public osgDB::ReaderWriter
 {
     public:
-        virtual const char* className() { return "PIC Image Reader"; }
+        virtual const char* className() const { return "PIC Image Reader"; }
         virtual bool acceptsExtension(const std::string& extension) { return osgDB::equalCaseInsensitive(extension,"pic"); }
 
         virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options*)

@@ -25,7 +25,7 @@ class ReaderWriterLWS : public osgDB::ReaderWriter
 public:
     ReaderWriterLWS() {}
 
-    virtual const char* className() { return "ReaderWriterLWS"; }
+    virtual const char* className() const { return "ReaderWriterLWS"; }
 
     virtual bool acceptsExtension(const std::string &extension) {
         return osgDB::equalCaseInsensitive(extension, "lws");

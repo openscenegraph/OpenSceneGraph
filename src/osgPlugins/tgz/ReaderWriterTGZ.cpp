@@ -24,7 +24,7 @@ using namespace osg;
 class ReaderWriterTGZ : public osgDB::ReaderWriter
 {
     public:
-        virtual const char* className() { return "TGZ Database Reader/Writer"; }
+        virtual const char* className() const { return "TGZ Database Reader/Writer"; }
 
         virtual bool acceptsExtension(const std::string& extension)
         {

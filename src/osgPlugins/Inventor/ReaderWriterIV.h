@@ -9,7 +9,7 @@ class ReaderWriterIV : public osgDB::ReaderWriter
     public:
         ReaderWriterIV();
         
-        virtual const char* className()
+        virtual const char* className() const
         { 
             return "Inventor Reader"; 
         }

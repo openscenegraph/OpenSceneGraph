@@ -184,7 +184,7 @@ class Logos: public osg::Drawable
 class LOGOReaderWriter : public osgDB::ReaderWriter
 {
 public:
-        virtual const char* className() { return "Logo Database Reader/Writer"; }
+        virtual const char* className() const { return "Logo Database Reader/Writer"; }
 
         virtual bool acceptsExtension(const std::string& extension)
         {

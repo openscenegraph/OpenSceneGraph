@@ -52,7 +52,7 @@ class ReaderWriterROT : public osgDB::ReaderWriter
 public:
     ReaderWriterROT() { }
     
-    virtual const char* className() { return "rotation pseudo-loader"; }
+    virtual const char* className() const { return "rotation pseudo-loader"; }
 
     virtual bool acceptsExtension(const std::string& extension)
     { 

@@ -412,7 +412,7 @@ int *numComponents_ret)
 class ReaderWriterTIFF : public osgDB::ReaderWriter
 {
     public:
-        virtual const char* className() { return "TIFF Image Reader"; }
+        virtual const char* className() const { return "TIFF Image Reader"; }
         virtual bool acceptsExtension(const std::string& extension) 
         { 
             if( osgDB::equalCaseInsensitive(extension,"tiff")) return true;

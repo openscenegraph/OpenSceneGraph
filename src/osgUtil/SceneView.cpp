@@ -268,7 +268,7 @@ void SceneView::cull()
         cullStage(projectionRight.get(),modelviewRight.get(),_cullVisitorRight.get(),_rendergraphRight.get(),_renderStageRight.get());
 
 
-        if (_camera.valid())
+        if (_camera.valid() && _computeNearFar != CullVisitor::DO_NOT_COMPUTE_NEAR_FAR)
         {
             // clamp the camera to the near/far computed in cull traversal.
             _camera->setNearFar(_cullVisitorRight->getCalculatedNearPlane(),_cullVisitorRight->getCalculatedFarPlane());
@@ -296,7 +296,7 @@ void SceneView::cull()
         _cullVisitor->setTraversalMask(_cullMask);
         cullStage(projection.get(),modelview.get(),_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
 
-        if (_camera.valid())
+        if (_camera.valid() && _computeNearFar != CullVisitor::DO_NOT_COMPUTE_NEAR_FAR)
         {
             // clamp the camera to the near/far computed in cull traversal.
             _camera->setNearFar(_cullVisitor->getCalculatedNearPlane(),_cullVisitor->getCalculatedFarPlane());

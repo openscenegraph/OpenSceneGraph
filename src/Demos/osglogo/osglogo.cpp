@@ -4,6 +4,7 @@
 #include <osg/Texture2D>
 #include <osg/Geometry>
 #include <osg/MatrixTransform>
+#include <osg/BlendFunc>
 
 #include <osgUtil/Tesselator>
 #include <osgUtil/TransformCallback>
@@ -92,8 +93,11 @@ osg:: Node* createTextLeft(const osg::BoundingBox& bb)
 {
     osg::Geode* geode = osgNew osg::Geode();
 
-    osgText::PolygonFont*   polygonFont= osgNew  osgText::PolygonFont("fonts/times.ttf",100, 3);
-    osgText::Text*          text = osgNew  osgText::Text(polygonFont);
+    //std::string font("fonts/times.ttf");
+    std::string font("fonts/arial.ttf");
+
+    //osgText::Text* text = osgNew  osgText::Text(osgNew osgText::PolygonFont(font,80, 3));
+    osgText::Text* text = osgNew  osgText::Text(osgNew osgText::TextureFont(font,80));
  
     text->setText("OpenSceneGraph");
     text->setAlignment(osgText::Text::RIGHT_CENTER);
@@ -101,9 +105,20 @@ osg:: Node* createTextLeft(const osg::BoundingBox& bb)
     text->setPosition(bb.center()-osg::Vec3((bb.xMax()-bb.xMin()),-(bb.yMax()-bb.yMin())*0.5f,(bb.zMax()-bb.zMin())*0.2f));
     //text->setColor(osg::Vec4(0.37f,0.48f,0.67f,1.0f)); // Neil's orignal OSG colour
     text->setColor(osg::Vec4(0.20f,0.45f,0.60f,1.0f)); // OGL logo colour
+
+
     osg::StateSet* stateset = text->getOrCreateStateSet();
+
+
+    osg::BlendFunc *transp= osgNew osg::BlendFunc();
+    transp->setFunction(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
- 
+    stateset->setAttributeAndModes(transp,osg::StateAttribute::ON);
+    stateset->setTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::ON);
+    stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+
+
     geode->addDrawable( text );
     return geode;
 }

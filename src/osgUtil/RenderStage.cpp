@@ -43,6 +43,7 @@ void RenderStage::addToDependencyList(RenderStage* rs)
 {
     if (rs) _dependencyList.push_back(rs);
 }
+
 void RenderStage::draw(osg::State& state,RenderLeaf*& previous)
 {
     if (_stageDrawnThisFrame) return;
@@ -63,9 +64,7 @@ void RenderStage::draw(osg::State& state,RenderLeaf*& previous)
     }
     
     // set up the back buffer.
-
-    //state.applyAttribute(_viewport.get());
-    _viewport->apply(state);
+    state.applyAttribute(_viewport.get());
 
 #define USE_SISSOR_TEST
 #ifdef USE_SISSOR_TEST

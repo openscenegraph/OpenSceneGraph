@@ -1041,6 +1041,8 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
     Viewport* new_viewport = osgNew Viewport;
     new_viewport->setViewport(center_x-new_s/2,center_y-new_t/2,new_s,new_t);
     rtts->setViewport(new_viewport);
+    
+    dummyState->setAttribute(new_viewport);
 
 // create the impostor sprite.
 

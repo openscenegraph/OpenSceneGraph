@@ -11,11 +11,11 @@
 <HR>
 
 <H2>Inheritance:</H2>
-<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=155>
-<param name=classes value="CReferenced,MReferenced.html,CObject,MObject.html,CDrawable,MDrawable.html,CImpostorSprite,MImpostorSprite.html,CGeoSet,MGeoSet.html">
-<param name=before value="M,M,M,M|_,Mr_">
-<param name=after value="Md_SP,Md_,M,M,M">
-<param name=indent value="0,1,2,2,2">
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=185>
+<param name=classes value="CReferenced,MReferenced.html,CObject,MObject.html,CDrawable,MDrawable.html,CImpostorSprite,MImpostorSprite.html,CGeoSet,MGeoSet.html,CDrawPixels,MDrawPixels.html">
+<param name=before value="M,M,M,M|_,MR_,Mr_">
+<param name=after value="Md_SP,Md_,M,M,M,M">
+<param name=indent value="0,1,2,2,2,2">
 <param name=arrowdir value="down">
 </APPLET>
 <HR>
@@ -23,143 +23,156 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.30.1">Drawable</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.31.1">Drawable</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.30.2">Drawable</A></B>(const <!1><A HREF="Drawable.html#DOC.2.30.2">Drawable</A>&amp; drawable, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.31.2">Drawable</A></B>(const <!1><A HREF="Drawable.html#DOC.2.31.2">Drawable</A>&amp; drawable, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
 <DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.30.3">isSameKindAs</A></B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.31.3">isSameKindAs</A></B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.30.4">className</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.31.4">className</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Drawable.html#DOC.2.30.5">ParentList</A>&amp; <B><A HREF="#DOC.2.30.6">getParents</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Drawable.html#DOC.2.31.5">ParentList</A>&amp; <B><A HREF="#DOC.2.31.6">getParents</A></B>() const 
 <DD><I>Get the parent list of drawable.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Drawable.html#DOC.2.30.5">ParentList</A> <B><A HREF="#DOC.2.30.7">getParents</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Drawable.html#DOC.2.31.5">ParentList</A> <B><A HREF="#DOC.2.31.7">getParents</A></B>()
 <DD><I>Get the a copy of parent list of node.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Node.html">Node</A>* <B><A HREF="#DOC.2.30.8">getParent</A></B>(const int i)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   Node* <B><A HREF="#DOC.2.31.8">getParent</A></B>(const int i)
 <DD><I>Get a single parent of Drawable.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Node.html">Node</A>* <B><A HREF="#DOC.2.30.9">getParent</A></B>(const int i) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const Node* <B><A HREF="#DOC.2.31.9">getParent</A></B>(const int i) const 
 <DD><I>Get a single const parent of Drawable.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const int <B><A HREF="#DOC.2.30.10">getNumParents</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const int <B><A HREF="#DOC.2.31.10">getNumParents</A></B>() const 
 <DD><I> Get the number of parents of node.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.30.11">setStateSet</A></B>(<!1><A HREF="StateSet.html">StateSet</A>* state)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.31.11">setStateSet</A></B>(<!1><A HREF="StateSet.html">StateSet</A>* state)
 <DD><I>Set the StateSet attached to the Drawable.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="StateSet.html">StateSet</A>* <B><A HREF="#DOC.2.30.12">getStateSet</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="StateSet.html">StateSet</A>* <B><A HREF="#DOC.2.31.12">getStateSet</A></B>()
 <DD><I>Get the attached StateSet</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="StateSet.html">StateSet</A>* <B><A HREF="#DOC.2.30.13">getStateSet</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="StateSet.html">StateSet</A>* <B><A HREF="#DOC.2.31.13">getStateSet</A></B>() const 
 <DD><I>Get the attached const StateSet</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.30.14">setSupportsDisplayList</A></B>(const bool flag)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.31.14">setSupportsDisplayList</A></B>(const bool flag)
 <DD><I>Set the drawable to it can or cannot be used in conjunction with OpenGL display lists.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const bool <B><A HREF="#DOC.2.30.15">getSupportsDisplayList</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const bool <B><A HREF="#DOC.2.31.15">getSupportsDisplayList</A></B>() const 
 <DD><I>Get whether display lists are supported for this drawable instance</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.30.16">setUseDisplayList</A></B>(const bool flag)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.31.16">setUseDisplayList</A></B>(const bool flag)
 <DD><I>When set to true, force the draw method to use OpenGL Display List for rendering.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const bool <B><A HREF="#DOC.2.30.17">getUseDisplayList</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const bool <B><A HREF="#DOC.2.31.17">getUseDisplayList</A></B>() const 
 <DD><I>Return whether OpenGL display lists are being used for rendering</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.30.18">dirtyDisplayList</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.31.18">dirtyDisplayList</A></B>()
 <DD><I>Force a recompile on next draw() of any OpenGL display list associated with this geoset</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.30.19">dirtyBound</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.31.19">dirtyBound</A></B>()
 <DD><I>Dirty the bounding box, forcing a computeBound() on the next call to getBound().</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="BoundingBox.html">BoundingBox</A>&amp; <B><A HREF="#DOC.2.30.20">getBound</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="BoundingBox.html">BoundingBox</A>&amp; <B><A HREF="#DOC.2.31.20">getBound</A></B>() const 
 <DD><I>get bounding box of geoset.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.30.21">compile</A></B>(<!1><A HREF="State.html">State</A>&amp; state)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.31.21">compile</A></B>(<!1><A HREF="State.html">State</A>&amp; state)
 <DD><I>Immediately compile this drawable into an OpenGL Display List.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.30.23">setDrawCallback</A></B>(<!1><A HREF="Drawable.html#DOC.2.30.22">DrawCallback</A>* dc)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.31.23">setDrawCallback</A></B>(<!1><A HREF="Drawable.html#DOC.2.31.22">DrawCallback</A>* dc)
 <DD><I>Set the DrawCallback which allows users to attach customize the drawing of existing Drawable object</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Drawable.html#DOC.2.30.22">DrawCallback</A>* <B><A HREF="#DOC.2.30.24">getDrawCallback</A></B>()
-<DD><I>Get the non const ComputerTransfromCallback</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Drawable.html#DOC.2.31.22">DrawCallback</A>* <B><A HREF="#DOC.2.31.24">getDrawCallback</A></B>()
+<DD><I>Get the non const DrawCallback</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Drawable.html#DOC.2.30.22">DrawCallback</A>* <B><A HREF="#DOC.2.30.25">getDrawCallback</A></B>() const 
-<DD><I>Get the const ComputerTransfromCallback</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Drawable.html#DOC.2.31.22">DrawCallback</A>* <B><A HREF="#DOC.2.31.25">getDrawCallback</A></B>() const 
+<DD><I>Get the const DrawCallback</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.30.26">drawImmediateMode</A></B>(<!1><A HREF="State.html">State</A>&amp; state) = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.31.27">setCullCallback</A></B>(<!1><A HREF="Drawable.html#DOC.2.31.26">CullCallback</A>* cc)
+<DD><I>Set the CullCallback which allows users to attach customize the drawing of existing Drawable object</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Drawable.html#DOC.2.31.26">CullCallback</A>* <B><A HREF="#DOC.2.31.28">getCullCallback</A></B>()
+<DD><I>Get the non const CullCallback</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Drawable.html#DOC.2.31.26">CullCallback</A>* <B><A HREF="#DOC.2.31.29">getCullCallback</A></B>() const 
+<DD><I>Get the const CullCallback</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.31.30">drawImmediateMode</A></B>(<!1><A HREF="State.html">State</A>&amp; state) = 0
 <DD><I>draw directly ignoring an OpenGL display list which could be attached.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void <B><A HREF="#DOC.2.30.27">deleteDisplayList</A></B>(uint contextID, uint globj)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void <B><A HREF="#DOC.2.31.31">deleteDisplayList</A></B>(uint contextID, uint globj)
 <DD><I>use deleteDisplayList instead of glDeleteList to allow OpenGL display list to cached until they can be deleted by the OpenGL context in which they were created, specified by contextID</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void <B><A HREF="#DOC.2.30.28">flushDeletedDisplayLists</A></B>(uint contextID)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void <B><A HREF="#DOC.2.31.32">flushDeletedDisplayLists</A></B>(uint contextID)
 <DD><I>flush all the cached display list which need to be deleted in the OpenGL context related to contextID</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.30.29">getStats</A></B>(<!1><A HREF="Statistics.html">Statistics</A>&amp;)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.31.33">getStats</A></B>(<!1><A HREF="Statistics.html">Statistics</A>&amp;)
 <DD><I>Collect Stistics count from Drawable</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   AttributeBitMask <B><A HREF="#DOC.2.30.32">suppportsAttributeOperation</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   AttributeBitMask <B><A HREF="#DOC.2.31.36">suppportsAttributeOperation</A></B>() const 
 <DD><I>return the attributes supported by applyAttrbuteOperation() as an AttributeBitMask</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   AttributeBitMask <B><A HREF="#DOC.2.30.33">applyAttributeOperation</A></B>(<!1><A HREF="AttributeFunctor.html">AttributeFunctor</A>&amp;)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   AttributeBitMask <B><A HREF="#DOC.2.31.37">applyAttributeOperation</A></B>(<!1><A HREF="AttributeFunctor.html">AttributeFunctor</A>&amp;)
 <DD><I>return the attributes successully applied in applyAttributeUpdate</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.30.48">draw</A></B>(<!1><A HREF="State.html">State</A>&amp; state)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.31.53">draw</A></B>(<!1><A HREF="State.html">State</A>&amp; state)
 <DD><I>draw OpenGL primitives.</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="Node.html">Node</A>*&gt; <B><A HREF="#DOC.2.30.5">ParentList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;Node*&gt; <B><A HREF="#DOC.2.31.5">ParentList</A></B>
 <DD><I>A vector of osg::Node pointers which is used to store the parent(s) of drawable</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.2.30.22">DrawCallback</A></B>: public <!1><A HREF="Referenced.html">osg::Referenced</A>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.2.31.22">DrawCallback</A></B>: public <!1><A HREF="Referenced.html">osg::Referenced</A>
 <DD><I>Callback attached to an Drawable which allows the users to customize the drawing of an exist Drawable object.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  uint AttributeBitMaskenum  <B><A HREF="#DOC.2.30.30">AttributeBitMaskValues</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.2.31.26">CullCallback</A></B>: public <!1><A HREF="Referenced.html">osg::Referenced</A>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  uint AttributeBitMaskenum  <B><A HREF="#DOC.2.31.34">AttributeBitMaskValues</A></B>
 <DT>
 class  <B><A HREF="AttributeFunctor.html">AttributeFunctor</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Drawable.html#DOC.2.30.5">ParentList</A> <B><A HREF="#DOC.2.30.39">_parents</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Drawable.html#DOC.2.31.5">ParentList</A> <B><A HREF="#DOC.2.31.43">_parents</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="StateSet.html">StateSet</A>&gt;  <B><A HREF="#DOC.2.30.40">_dstate</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="StateSet.html">StateSet</A>&gt;  <B><A HREF="#DOC.2.31.44">_dstate</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.30.41">_supportsDisplayList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.31.45">_supportsDisplayList</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.30.42">_useDisplayList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.31.46">_useDisplayList</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="BoundingBox.html">BoundingBox</A> <B><A HREF="#DOC.2.30.44">_bbox</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="BoundingBox.html">BoundingBox</A> <B><A HREF="#DOC.2.31.48">_bbox</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable bool <B><A HREF="#DOC.2.30.45">_bbox_computed</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable bool <B><A HREF="#DOC.2.31.49">_bbox_computed</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Drawable.html#DOC.2.30.22">DrawCallback</A>&gt;  <B><A HREF="#DOC.2.30.46">_drawCallback</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Drawable.html#DOC.2.31.22">DrawCallback</A>&gt;  <B><A HREF="#DOC.2.31.50">_drawCallback</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Drawable.html#DOC.2.31.26">CullCallback</A>&gt;  <B><A HREF="#DOC.2.31.51">_cullCallback</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Drawable.html">Drawable</A>&amp; <B><A HREF="#DOC.2.30.34">operator = </A></B>(const <!1><A HREF="Drawable.html">Drawable</A>&amp;)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Drawable.html">Drawable</A>&amp; <B><A HREF="#DOC.2.31.38">operator = </A></B>(const <!1><A HREF="Drawable.html">Drawable</A>&amp;)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.30.35">~Drawable</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.31.39">~Drawable</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.30.36">computeBound</A></B>() const  = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.31.40">computeBound</A></B>() const  = 0
 <DD><I>compute the bounding box of the drawable.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.30.37">addParent</A></B>(<!1><A HREF="Node.html">osg::Node</A>* node)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.31.41">addParent</A></B>(osg::Node* node)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.30.38">removeParent</A></B>(<!1><A HREF="Node.html">osg::Node</A>* node)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.31.42">removeParent</A></B>(osg::Node* node)
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;uint&gt; GLObjectList mutable GLObjectList <B><A HREF="#DOC.2.30.43">_globjList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;uint&gt; GLObjectList mutable GLObjectList <B><A HREF="#DOC.2.31.47">_globjList</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt;uint,std::set&lt;uint&gt; &gt;static  DeletedDisplayListCache DeletedDisplayListCache <B><A HREF="#DOC.2.30.47">s_deletedDisplayListCache</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt;uint,std::set&lt;uint&gt; &gt;static  DeletedDisplayListCache DeletedDisplayListCache <B><A HREF="#DOC.2.31.52">s_deletedDisplayListCache</A></B>
 </DL></P>
 
 </DL>
@@ -170,6 +183,20 @@ class  <B><A HREF="AttributeFunctor.html">AttributeFunctor</A></B>
 <IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B>cloneType</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B>clone</B>(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp;) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(const <!1><A HREF="Object.html#DOC.2.75.7">DataVariance</A> dv)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Object.html#DOC.2.75.7">DataVariance</A> <B>getDataVariance</B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>DataVariance</B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.75.7">DataVariance</A> <B>_dataVariance</B>
 </DL></P>
 
 </DL>
@@ -180,6 +207,8 @@ class  <B><A HREF="AttributeFunctor.html">AttributeFunctor</A></B>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>ref</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>unref</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref_nodelete</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   const int <B>referenceCount</B>() const 
 </DL></P>
@@ -215,78 +244,78 @@ quads are in the display list).</BLOCKQUOTE>
 <DL>
 
 <A NAME="Drawable"></A>
-<A NAME="DOC.2.30.1"></A>
+<A NAME="DOC.2.31.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Drawable()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Drawable"></A>
-<A NAME="DOC.2.30.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Drawable(const <!1><A HREF="Drawable.html#DOC.2.30.2">Drawable</A>&amp; drawable, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="DOC.2.31.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Drawable(const <!1><A HREF="Drawable.html#DOC.2.31.2">Drawable</A>&amp; drawable, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
 <DD>Copy constructor using CopyOp to manage deep vs shallow copy
 <DL><DT><DD></DL><P>
 <A NAME="isSameKindAs"></A>
-<A NAME="DOC.2.30.3"></A>
+<A NAME="DOC.2.31.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(const <!1><A HREF="Object.html">Object</A>* obj) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="className"></A>
-<A NAME="DOC.2.30.4"></A>
+<A NAME="DOC.2.31.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ParentList"></A>
-<A NAME="DOC.2.30.5"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="Node.html">Node</A>*&gt; ParentList</B></TT>
+<A NAME="DOC.2.31.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;Node*&gt; ParentList</B></TT>
 <DD>A vector of osg::Node pointers which is used to store the parent(s) of drawable
 <DL><DT><DD></DL><P>
 <A NAME="getParents"></A>
-<A NAME="DOC.2.30.6"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Drawable.html#DOC.2.30.5">ParentList</A>&amp; getParents() const </B></TT>
+<A NAME="DOC.2.31.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Drawable.html#DOC.2.31.5">ParentList</A>&amp; getParents() const </B></TT>
 <DD>Get the parent list of drawable. 
 <DL><DT><DD></DL><P>
 <A NAME="getParents"></A>
-<A NAME="DOC.2.30.7"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Drawable.html#DOC.2.30.5">ParentList</A> getParents()</B></TT>
+<A NAME="DOC.2.31.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Drawable.html#DOC.2.31.5">ParentList</A> getParents()</B></TT>
 <DD>Get the a copy of parent list of node. A copy is returned to 
 prevent modification of the parent list.
 <DL><DT><DD></DL><P>
 <A NAME="getParent"></A>
-<A NAME="DOC.2.30.8"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Node.html">Node</A>* getParent(const int i)</B></TT>
+<A NAME="DOC.2.31.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   Node* getParent(const int i)</B></TT>
 <DD>Get a single parent of Drawable.
 
 <DL><DT><DT><B>Parameters:</B><DD><B>i</B> -  index of the parent to get.
 <BR><DT><B>Returns:</B><DD>  the parent i.<BR><DD></DL><P>
 <A NAME="getParent"></A>
-<A NAME="DOC.2.30.9"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Node.html">Node</A>* getParent(const int i) const </B></TT>
+<A NAME="DOC.2.31.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const Node* getParent(const int i) const </B></TT>
 <DD>Get a single const parent of Drawable.
 
 <DL><DT><DT><B>Parameters:</B><DD><B>i</B> -  index of the parent to get.
 <BR><DT><B>Returns:</B><DD>  the parent i.<BR><DD></DL><P>
 <A NAME="getNumParents"></A>
-<A NAME="DOC.2.30.10"></A>
+<A NAME="DOC.2.31.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const int getNumParents() const </B></TT>
 <DD>
 Get the number of parents of node.
 
 <DL><DT><DT><B>Returns:</B><DD>  the number of parents of this node.<BR><DD></DL><P>
 <A NAME="setStateSet"></A>
-<A NAME="DOC.2.30.11"></A>
+<A NAME="DOC.2.31.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setStateSet(<!1><A HREF="StateSet.html">StateSet</A>* state)</B></TT>
 <DD>Set the StateSet attached to the Drawable.
 Previously attached StateSet are automatically unreferenced on 
 assignment of a new drawstate.
 <DL><DT><DD></DL><P>
 <A NAME="getStateSet"></A>
-<A NAME="DOC.2.30.12"></A>
+<A NAME="DOC.2.31.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="StateSet.html">StateSet</A>* getStateSet()</B></TT>
 <DD>Get the attached StateSet
 <DL><DT><DD></DL><P>
 <A NAME="getStateSet"></A>
-<A NAME="DOC.2.30.13"></A>
+<A NAME="DOC.2.31.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="StateSet.html">StateSet</A>* getStateSet() const </B></TT>
 <DD>Get the attached const StateSet
 <DL><DT><DD></DL><P>
 <A NAME="setSupportsDisplayList"></A>
-<A NAME="DOC.2.30.14"></A>
+<A NAME="DOC.2.31.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSupportsDisplayList(const bool flag)</B></TT>
 <DD>Set the drawable to it can or cannot be used in conjunction with OpenGL
 display lists.  With set to true, calls to Drawable::setUseDisplayList,
@@ -297,50 +326,50 @@ on objects with dynamic internal data such as continuous Level of Detail
 algorithms.
 <DL><DT><DD></DL><P>
 <A NAME="getSupportsDisplayList"></A>
-<A NAME="DOC.2.30.15"></A>
+<A NAME="DOC.2.31.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const bool getSupportsDisplayList() const </B></TT>
 <DD>Get whether display lists are supported for this drawable instance
 <DL><DT><DD></DL><P>
 <A NAME="setUseDisplayList"></A>
-<A NAME="DOC.2.30.16"></A>
+<A NAME="DOC.2.31.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setUseDisplayList(const bool flag)</B></TT>
 <DD>When set to true, force the draw method to use OpenGL Display List for rendering.
 If false rendering directly.  If the display list has not been already
 compile the next call to draw will automatically create the display list.
 <DL><DT><DD></DL><P>
 <A NAME="getUseDisplayList"></A>
-<A NAME="DOC.2.30.17"></A>
+<A NAME="DOC.2.31.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const bool getUseDisplayList() const </B></TT>
 <DD>Return whether OpenGL display lists are being used for rendering
 <DL><DT><DD></DL><P>
 <A NAME="dirtyDisplayList"></A>
-<A NAME="DOC.2.30.18"></A>
+<A NAME="DOC.2.31.18"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void dirtyDisplayList()</B></TT>
 <DD>Force a recompile on next draw() of any OpenGL display list associated with this geoset
 <DL><DT><DD></DL><P>
 <A NAME="dirtyBound"></A>
-<A NAME="DOC.2.30.19"></A>
+<A NAME="DOC.2.31.19"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void dirtyBound()</B></TT>
 <DD>Dirty the bounding box, forcing a computeBound() on the next call
 to getBound(). Should be called in the internal geometry of the Drawable
 is modified.
 <DL><DT><DD></DL><P>
 <A NAME="getBound"></A>
-<A NAME="DOC.2.30.20"></A>
+<A NAME="DOC.2.31.20"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="BoundingBox.html">BoundingBox</A>&amp; getBound() const </B></TT>
 <DD>get bounding box of geoset. 
 Note, now made virtual to make it possible to implement user-drawn
 objects albeit so what crudely, to be improved later.
 <DL><DT><DD></DL><P>
 <A NAME="compile"></A>
-<A NAME="DOC.2.30.21"></A>
+<A NAME="DOC.2.31.21"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void compile(<!1><A HREF="State.html">State</A>&amp; state)</B></TT>
 <DD>Immediately compile this drawable into an OpenGL Display List.
 Note I, operation is ignored if _useDisplayList to false.
 Note II, compile is not intended to be overridden in subclasses.
 <DL><DT><DD></DL><P>
 <A NAME="DrawCallback"></A>
-<A NAME="DOC.2.30.22"></A>
+<A NAME="DOC.2.31.22"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>struct  DrawCallback: public <!1><A HREF="Referenced.html">osg::Referenced</A></B></TT>
 <DD>Callback attached to an Drawable which allows the users to customize the drawing of an exist Drawable object.
 The draw callback is implement as a replacement to the Drawable's own drawImmediateMode() method, if the
@@ -350,35 +379,61 @@ without fuss and can even diable the inner draw in required.
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="drawImmediateMode"></A>
-<A NAME="DOC.2.30.22.1"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void drawImmediateMode(<!1><A HREF="State.html">State</A>&amp; state, <!1><A HREF="Drawable.html">osg::Drawable</A>* drawable) const </B></TT>
+<A NAME="DOC.2.31.22.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void drawImmediateMode(<!1><A HREF="State.html">State</A>&amp; state, <!1><A HREF="Drawable.html">osg::Drawable</A>* drawable) const  = 0</B></TT>
 <DD>do customized draw code
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="setDrawCallback"></A>
-<A NAME="DOC.2.30.23"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDrawCallback(<!1><A HREF="Drawable.html#DOC.2.30.22">DrawCallback</A>* dc)</B></TT>
+<A NAME="DOC.2.31.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDrawCallback(<!1><A HREF="Drawable.html#DOC.2.31.22">DrawCallback</A>* dc)</B></TT>
 <DD>Set the DrawCallback which allows users to attach customize the drawing of existing Drawable object
 <DL><DT><DD></DL><P>
 <A NAME="getDrawCallback"></A>
-<A NAME="DOC.2.30.24"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Drawable.html#DOC.2.30.22">DrawCallback</A>* getDrawCallback()</B></TT>
-<DD>Get the non const ComputerTransfromCallback
+<A NAME="DOC.2.31.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Drawable.html#DOC.2.31.22">DrawCallback</A>* getDrawCallback()</B></TT>
+<DD>Get the non const DrawCallback
 <DL><DT><DD></DL><P>
 <A NAME="getDrawCallback"></A>
-<A NAME="DOC.2.30.25"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Drawable.html#DOC.2.30.22">DrawCallback</A>* getDrawCallback() const </B></TT>
-<DD>Get the const ComputerTransfromCallback
+<A NAME="DOC.2.31.25"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Drawable.html#DOC.2.31.22">DrawCallback</A>* getDrawCallback() const </B></TT>
+<DD>Get the const DrawCallback
+<DL><DT><DD></DL><P>
+<A NAME="CullCallback"></A>
+<A NAME="DOC.2.31.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>struct  CullCallback: public <!1><A HREF="Referenced.html">osg::Referenced</A></B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="cull"></A>
+<A NAME="DOC.2.31.26.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool cull(<!1><A HREF="NodeVisitor.html">osg::NodeVisitor</A>* visitor, <!1><A HREF="Drawable.html">osg::Drawable</A>* drawable) = 0</B></TT>
+<DD>do customized cull code
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="setCullCallback"></A>
+<A NAME="DOC.2.31.27"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setCullCallback(<!1><A HREF="Drawable.html#DOC.2.31.26">CullCallback</A>* cc)</B></TT>
+<DD>Set the CullCallback which allows users to attach customize the drawing of existing Drawable object
+<DL><DT><DD></DL><P>
+<A NAME="getCullCallback"></A>
+<A NAME="DOC.2.31.28"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Drawable.html#DOC.2.31.26">CullCallback</A>* getCullCallback()</B></TT>
+<DD>Get the non const CullCallback
+<DL><DT><DD></DL><P>
+<A NAME="getCullCallback"></A>
+<A NAME="DOC.2.31.29"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Drawable.html#DOC.2.31.26">CullCallback</A>* getCullCallback() const </B></TT>
+<DD>Get the const CullCallback
 <DL><DT><DD></DL><P>
 <A NAME="drawImmediateMode"></A>
-<A NAME="DOC.2.30.26"></A>
+<A NAME="DOC.2.31.30"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void drawImmediateMode(<!1><A HREF="State.html">State</A>&amp; state) = 0</B></TT>
 <DD>draw directly ignoring an OpenGL display list which could be attached.
 This is the internal draw method which does the drawing itself,
 and is the method to override when deriving from Drawable.
 <DL><DT><DD></DL><P>
 <A NAME="deleteDisplayList"></A>
-<A NAME="DOC.2.30.27"></A>
+<A NAME="DOC.2.31.31"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   void deleteDisplayList(uint contextID, uint globj)</B></TT>
 <DD>use deleteDisplayList instead of glDeleteList to allow
 OpenGL display list to cached until they can be deleted
@@ -386,124 +441,128 @@ by the OpenGL context in which they were created, specified
 by contextID
 <DL><DT><DD></DL><P>
 <A NAME="flushDeletedDisplayLists"></A>
-<A NAME="DOC.2.30.28"></A>
+<A NAME="DOC.2.31.32"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   void flushDeletedDisplayLists(uint contextID)</B></TT>
 <DD>flush all the cached display list which need to be deleted
 in the OpenGL context related to contextID
 <DL><DT><DD></DL><P>
 <A NAME="getStats"></A>
-<A NAME="DOC.2.30.29"></A>
+<A NAME="DOC.2.31.33"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool getStats(<!1><A HREF="Statistics.html">Statistics</A>&amp;)</B></TT>
 <DD>Collect Stistics count from Drawable
 <DL><DT><DD></DL><P>
 <A NAME="AttributeBitMaskValues"></A>
-<A NAME="DOC.2.30.30"></A>
+<A NAME="DOC.2.31.34"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  uint AttributeBitMaskenum  AttributeBitMaskValues</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="COORDS"></A>
-<A NAME="DOC.2.30.30.1"></A>
+<A NAME="DOC.2.31.34.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> COORDS</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="NORMALS"></A>
-<A NAME="DOC.2.30.30.2"></A>
+<A NAME="DOC.2.31.34.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NORMALS</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="COLORS"></A>
-<A NAME="DOC.2.30.30.3"></A>
+<A NAME="DOC.2.31.34.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> COLORS</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="TEXTURE_COORDS"></A>
-<A NAME="DOC.2.30.30.4"></A>
+<A NAME="DOC.2.31.34.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TEXTURE_COORDS</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="TEXTURE_COORDS_0"></A>
-<A NAME="DOC.2.30.30.5"></A>
+<A NAME="DOC.2.31.34.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TEXTURE_COORDS_0</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="TEXTURE_COORDS_1"></A>
-<A NAME="DOC.2.30.30.6"></A>
+<A NAME="DOC.2.31.34.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TEXTURE_COORDS_1</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="TEXTURE_COORDS_2"></A>
-<A NAME="DOC.2.30.30.7"></A>
+<A NAME="DOC.2.31.34.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TEXTURE_COORDS_2</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="TEXTURE_COORDS_3"></A>
-<A NAME="DOC.2.30.30.8"></A>
+<A NAME="DOC.2.31.34.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TEXTURE_COORDS_3</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="suppportsAttributeOperation"></A>
-<A NAME="DOC.2.30.32"></A>
+<A NAME="DOC.2.31.36"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   AttributeBitMask suppportsAttributeOperation() const </B></TT>
 <DD>return the attributes supported by applyAttrbuteOperation() as an AttributeBitMask
 <DL><DT><DD></DL><P>
 <A NAME="applyAttributeOperation"></A>
-<A NAME="DOC.2.30.33"></A>
+<A NAME="DOC.2.31.37"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   AttributeBitMask applyAttributeOperation(<!1><A HREF="AttributeFunctor.html">AttributeFunctor</A>&amp;)</B></TT>
 <DD>return the attributes successully applied in applyAttributeUpdate
 <DL><DT><DD></DL><P>
 <A NAME="operator = "></A>
-<A NAME="DOC.2.30.34"></A>
+<A NAME="DOC.2.31.38"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Drawable.html">Drawable</A>&amp; operator = (const <!1><A HREF="Drawable.html">Drawable</A>&amp;)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~Drawable"></A>
-<A NAME="DOC.2.30.35"></A>
+<A NAME="DOC.2.31.39"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Drawable()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeBound"></A>
-<A NAME="DOC.2.30.36"></A>
+<A NAME="DOC.2.31.40"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const bool computeBound() const  = 0</B></TT>
 <DD>compute the bounding box of the drawable. Method must be 
 implemented by subclasses.
 <DL><DT><DD></DL><P>
 <A NAME="addParent"></A>
-<A NAME="DOC.2.30.37"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addParent(<!1><A HREF="Node.html">osg::Node</A>* node)</B></TT>
+<A NAME="DOC.2.31.41"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addParent(osg::Node* node)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="removeParent"></A>
-<A NAME="DOC.2.30.38"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void removeParent(<!1><A HREF="Node.html">osg::Node</A>* node)</B></TT>
+<A NAME="DOC.2.31.42"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void removeParent(osg::Node* node)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_parents"></A>
-<A NAME="DOC.2.30.39"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Drawable.html#DOC.2.30.5">ParentList</A> _parents</B></TT>
+<A NAME="DOC.2.31.43"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Drawable.html#DOC.2.31.5">ParentList</A> _parents</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_dstate"></A>
-<A NAME="DOC.2.30.40"></A>
+<A NAME="DOC.2.31.44"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="StateSet.html">StateSet</A>&gt;  _dstate</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_supportsDisplayList"></A>
-<A NAME="DOC.2.30.41"></A>
+<A NAME="DOC.2.31.45"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _supportsDisplayList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_useDisplayList"></A>
-<A NAME="DOC.2.30.42"></A>
+<A NAME="DOC.2.31.46"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _useDisplayList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_globjList"></A>
-<A NAME="DOC.2.30.43"></A>
+<A NAME="DOC.2.31.47"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;uint&gt; GLObjectList mutable GLObjectList _globjList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_bbox"></A>
-<A NAME="DOC.2.30.44"></A>
+<A NAME="DOC.2.31.48"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable <!1><A HREF="BoundingBox.html">BoundingBox</A> _bbox</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_bbox_computed"></A>
-<A NAME="DOC.2.30.45"></A>
+<A NAME="DOC.2.31.49"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable bool _bbox_computed</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_drawCallback"></A>
-<A NAME="DOC.2.30.46"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Drawable.html#DOC.2.30.22">DrawCallback</A>&gt;  _drawCallback</B></TT>
+<A NAME="DOC.2.31.50"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Drawable.html#DOC.2.31.22">DrawCallback</A>&gt;  _drawCallback</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_cullCallback"></A>
+<A NAME="DOC.2.31.51"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Drawable.html#DOC.2.31.26">CullCallback</A>&gt;  _cullCallback</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="s_deletedDisplayListCache"></A>
-<A NAME="DOC.2.30.47"></A>
+<A NAME="DOC.2.31.52"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt;uint,std::set&lt;uint&gt; &gt;static  DeletedDisplayListCache DeletedDisplayListCache s_deletedDisplayListCache</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="draw"></A>
-<A NAME="DOC.2.30.48"></A>
+<A NAME="DOC.2.31.53"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void draw(<!1><A HREF="State.html">State</A>&amp; state)</B></TT>
 <DD>draw OpenGL primitives. 
 If the drawable has _useDisplayList set to true then use an OpenGL display
@@ -516,9 +575,10 @@ manages the optional display list.
 <DL><DT><B>Direct child classes:
 </B><DD><A HREF="ImpostorSprite.html">ImpostorSprite</A><BR>
 <A HREF="GeoSet.html">GeoSet</A><BR>
+<A HREF="DrawPixels.html">DrawPixels</A><BR>
 </DL>
 
-<DL><DT><DT><B>Friends:</B><DD>  struct <!1><A HREF="Drawable.html#DOC.2.30.22">osg::Drawable::DrawCallback</A><BR>  class <!1><A HREF="Node.html">Node</A><BR>  class <!1><A HREF="Geode.html">Geode</A><BR><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<DL><DT><DT><B>Friends:</B><DD>  struct <!1><A HREF="Drawable.html#DOC.2.31.22">osg::Drawable::DrawCallback</A><BR>  struct <!1><A HREF="Drawable.html#DOC.2.31.26">osg::Drawable::CullCallback</A><BR>  class Node<BR>  class <!1><A HREF="Geode.html">Geode</A><BR><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
 <BR>
 This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
 </BODY>

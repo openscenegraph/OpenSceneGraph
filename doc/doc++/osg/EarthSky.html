@@ -11,11 +11,11 @@
 <HR>
 
 <H2>Inheritance:</H2>
-<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=155>
-<param name=classes value="CReferenced,MReferenced.html,CObject,MObject.html,CNode,MNode.html,CGroup,MGroup.html,CEarthSky,MEarthSky.html">
-<param name=before value="M,M,M,M,M">
-<param name=after value="Md_SPSPSP,Md_SPSP,Md_SP,Md_,M">
-<param name=indent value="0,1,2,3,4">
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=95>
+<param name=classes value="MNode,M,CGroup,MGroup.html,CEarthSky,MEarthSky.html">
+<param name=before value="M,M,M">
+<param name=after value="Md_SP,Md_,M">
+<param name=indent value="0,1,2">
 <param name=arrowdir value="down">
 </APPLET>
 <HR>
@@ -23,35 +23,35 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.31.1">EarthSky</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.33.1">EarthSky</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.31.2">EarthSky</A></B>(const <!1><A HREF="EarthSky.html#DOC.2.31.2">EarthSky</A>&amp; es, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.33.2">EarthSky</A></B>(const <!1><A HREF="EarthSky.html#DOC.2.33.2">EarthSky</A>&amp; es, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.31.3">META_Node</A></B>(<!1><A HREF="EarthSky.html">EarthSky</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.33.3">META_Node</A></B>(<!1><A HREF="EarthSky.html">EarthSky</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.31.4">setRequiresClear</A></B>(const bool requiresClear)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.33.4">setRequiresClear</A></B>(const bool requiresClear)
 <DD><I>Sets the flag which control whether a glClear is required at the beginning of each frame.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const bool <B><A HREF="#DOC.2.31.5">getRequiresClear</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const bool <B><A HREF="#DOC.2.33.5">getRequiresClear</A></B>() const 
 <DD><I>Gets the flag which control whether a glClear is required at the beginning of each frame.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.31.6">setClearColor</A></B>(const <!1><A HREF="Vec4.html">Vec4</A>&amp; color)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.33.6">setClearColor</A></B>(const <!1><A HREF="Vec4.html">Vec4</A>&amp; color)
 <DD><I>Sets the clear color.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec4.html">Vec4</A>&amp; <B><A HREF="#DOC.2.31.7">getClearColor</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec4.html">Vec4</A>&amp; <B><A HREF="#DOC.2.33.7">getClearColor</A></B>() const 
 <DD><I>Returns the clear color.</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.31.9">_requiresClear</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.33.9">_requiresClear</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.31.10">_clearColor</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.33.10">_clearColor</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.31.8">~EarthSky</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.33.8">~EarthSky</A></B>()
 </DL></P>
 
 </DL>
@@ -61,23 +61,23 @@
 <DT><H3>Public Methods</H3><DD><DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   void <B>traverse</B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>addChild</B>( <!1><A HREF="Node.html">Node</A>* child )
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>addChild</B>( Node* child )
 <DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>removeChild</B>( <!1><A HREF="Node.html">Node</A>* child )
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>removeChild</B>( Node* child )
 <DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>replaceChild</B>( <!1><A HREF="Node.html">Node</A>* origChild, <!1><A HREF="Node.html">Node</A>* newChild )
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>replaceChild</B>( Node* origChild, Node* newChild )
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   const int <B>getNumChildren</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html">Node</A>* <B>getChild</B>( const int i )
+<IMG ALT="o" SRC=icon2.gif>inline   Node* <B>getChild</B>( const int i )
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html">Node</A>* <B>getChild</B>( const int i ) const 
+<IMG ALT="o" SRC=icon2.gif>inline   const Node* <B>getChild</B>( const int i ) const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   bool <B>containsNode</B>( const <!1><A HREF="Node.html">Node</A>* node ) const 
+<IMG ALT="o" SRC=icon2.gif>inline   bool <B>containsNode</B>( const Node* node ) const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   ChildList::iterator <B>findNode</B>( const <!1><A HREF="Node.html">Node</A>* node )
+<IMG ALT="o" SRC=icon2.gif>inline   ChildList::iterator <B>findNode</B>( const Node* node )
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   ChildList::const_iterator <B>findNode</B>( const <!1><A HREF="Node.html">Node</A>* node ) const 
+<IMG ALT="o" SRC=icon2.gif>inline   ChildList::const_iterator <B>findNode</B>( const Node* node ) const 
 </DL></P>
 
 <P><DL>
@@ -88,153 +88,6 @@
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   const bool <B>computeBound</B>() const 
-</DL></P>
-
-</DL>
-<HR><H3>Inherited from <A HREF="Node.html">Node</A>:</H3>
-<DL>
-<P><DL>
-<DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B>cloneType</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B>clone</B>(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop) const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isSameKindAs</B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   void <B>accept</B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
-<DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   void <B>ascend</B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setName</B>( const std::string&amp; name )
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setName</B>( const char* name )
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const std::string&amp; <B>getName</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.71.13">ParentList</A>&amp; <B>getParents</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.71.13">ParentList</A> <B>getParents</B>()
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Group.html">Group</A>* <B>getParent</B>(const int i)
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Group.html">Group</A>* <B>getParent</B>(const int i) const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const int <B>getNumParents</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>setAppCallback</B>(<!1><A HREF="NodeCallback.html">NodeCallback</A>* nc)
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="NodeCallback.html">NodeCallback</A>* <B>getAppCallback</B>()
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="NodeCallback.html">NodeCallback</A>* <B>getAppCallback</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const int <B>getNumChildrenRequiringAppTraversal</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>setCullingActive</B>(const bool active)
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const bool <B>getCullingActive</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const int <B>getNumChildrenWithCullingDisabled</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">osg::Referenced</A>* obj)
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>* <B>getUserData</B>()
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Referenced.html">Referenced</A>* <B>getUserData</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setNodeMask</B>(const NodeMask nm)
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const NodeMask <B>getNodeMask</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.71.31">DescriptionList</A>&amp; <B>getDescriptions</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.71.31">DescriptionList</A>&amp; <B>getDescriptions</B>()
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const std::string&amp; <B>getDescription</B>(const int i) const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   std::string&amp; <B>getDescription</B>(const int i)
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const int <B>getNumDescriptions</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>addDescription</B>(const std::string&amp; desc)
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setStateSet</B>(<!1><A HREF="StateSet.html">osg::StateSet</A>* dstate)
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="StateSet.html">osg::StateSet</A>* <B>getStateSet</B>()
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="StateSet.html">osg::StateSet</A>* <B>getStateSet</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="BoundingSphere.html">BoundingSphere</A>&amp; <B>getBound</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>dirtyBound</B>()
-</DL></P>
-
-<P><DL>
-<DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt;<!1><A HREF="Group.html">Group</A>*&gt; <B>ParentList</B>
-<DT>
-<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt;std::string&gt; <B>DescriptionList</B>
-</DL></P>
-
-<P><DL>
-<DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>mutable <!1><A HREF="BoundingSphere.html">BoundingSphere</A> <B>_bsphere</B>
-<DT>
-<IMG ALT="o" SRC=icon2.gif>mutable bool <B>_bsphere_computed</B>
-<DT>
-<IMG ALT="o" SRC=icon2.gif>std::string <B>_name</B>
-<DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.71.13">ParentList</A> <B>_parents</B>
-<DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="NodeCallback.html">NodeCallback</A>&gt;  <B>_appCallback</B>
-<DT>
-<IMG ALT="o" SRC=icon2.gif>int <B>_numChildrenRequiringAppTraversal</B>
-<DT>
-<IMG ALT="o" SRC=icon2.gif>bool <B>_cullingActive</B>
-<DT>
-<IMG ALT="o" SRC=icon2.gif>int <B>_numChildrenWithCullingDisabled</B>
-<DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">osg::ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
-<DT>
-<IMG ALT="o" SRC=icon2.gif>NodeMask <B>_nodeMask</B>
-<DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.71.31">DescriptionList</A> <B>_descriptions</B>
-<DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="StateSet.html">StateSet</A>&gt;  <B>_dstate</B>
-</DL></P>
-
-<P><DL>
-<DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>addParent</B>(<!1><A HREF="Group.html">osg::Group</A>* node)
-<DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>removeParent</B>(<!1><A HREF="Group.html">osg::Group</A>* node)
-<DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>setNumChildrenRequiringAppTraversal</B>(const int num)
-<DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>setNumChildrenWithCullingDisabled</B>(const int num)
-</DL></P>
-
-</DL>
-<HR><H3>Inherited from <A HREF="Object.html">Object</A>:</H3>
-<DL>
-</DL>
-<HR><H3>Inherited from <A HREF="Referenced.html">Referenced</A>:</H3>
-<DL>
-<P><DL>
-<DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>&amp; <B>operator = </B>(<!1><A HREF="Referenced.html">Referenced</A>&amp;)
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>ref</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const int <B>referenceCount</B>() const 
-</DL></P>
-
-<P><DL>
-<DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>mutable int <B>_refCount</B>
 </DL></P>
 
 </DL>
@@ -254,47 +107,47 @@ are rendered prior to standard opaque and transparent drawables.</BLOCKQUOTE>
 <DL>
 
 <A NAME="EarthSky"></A>
-<A NAME="DOC.2.31.1"></A>
+<A NAME="DOC.2.33.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> EarthSky()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="EarthSky"></A>
-<A NAME="DOC.2.31.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> EarthSky(const <!1><A HREF="EarthSky.html#DOC.2.31.2">EarthSky</A>&amp; es, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="DOC.2.33.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> EarthSky(const <!1><A HREF="EarthSky.html#DOC.2.33.2">EarthSky</A>&amp; es, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="META_Node"></A>
-<A NAME="DOC.2.31.3"></A>
+<A NAME="DOC.2.33.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Node(<!1><A HREF="EarthSky.html">EarthSky</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setRequiresClear"></A>
-<A NAME="DOC.2.31.4"></A>
+<A NAME="DOC.2.33.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setRequiresClear(const bool requiresClear)</B></TT>
 <DD>Sets the flag which control whether a glClear is required at the beginning of each frame. 
 <DL><DT><DD></DL><P>
 <A NAME="getRequiresClear"></A>
-<A NAME="DOC.2.31.5"></A>
+<A NAME="DOC.2.33.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const bool getRequiresClear() const </B></TT>
 <DD>Gets the flag which control whether a glClear is required at the beginning of each frame. 
 <DL><DT><DD></DL><P>
 <A NAME="setClearColor"></A>
-<A NAME="DOC.2.31.6"></A>
+<A NAME="DOC.2.33.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setClearColor(const <!1><A HREF="Vec4.html">Vec4</A>&amp; color)</B></TT>
 <DD>Sets the clear color. 
 <DL><DT><DD></DL><P>
 <A NAME="getClearColor"></A>
-<A NAME="DOC.2.31.7"></A>
+<A NAME="DOC.2.33.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Vec4.html">Vec4</A>&amp; getClearColor() const </B></TT>
 <DD>Returns the clear color. 
 <DL><DT><DD></DL><P>
 <A NAME="~EarthSky"></A>
-<A NAME="DOC.2.31.8"></A>
+<A NAME="DOC.2.33.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~EarthSky()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_requiresClear"></A>
-<A NAME="DOC.2.31.9"></A>
+<A NAME="DOC.2.33.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _requiresClear</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_clearColor"></A>
-<A NAME="DOC.2.31.10"></A>
+<A NAME="DOC.2.33.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec4.html">Vec4</A> _clearColor</B></TT>
 <DL><DT><DD></DL><P></DL>
 

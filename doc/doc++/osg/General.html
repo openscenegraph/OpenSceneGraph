@@ -13,6 +13,9 @@
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_ALPHAFUNC"></A>
 <B>OSG_ALPHAFUNC</B><DT>
 
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_ANIMATIONPATH"></A>
+<B>OSG_ANIMATIONPATH</B><DT>
+
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_BILLBOARD"></A>
 <B>OSG_BILLBOARD</B><DT>
 
@@ -54,6 +57,9 @@
 
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_DRAWABLE"></A>
 <B>OSG_DRAWABLE</B><DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_DRAWPIXELS"></A>
+<B>OSG_DRAWPIXELS</B><DT>
 
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_EARTHSKY"></A>
 <B>OSG_EARTHSKY</B><DT>
@@ -139,6 +145,9 @@
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_LIGHT"></A>
 <B>OSG_LIGHT</B><DT>
 
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_LIGHTMODEL"></A>
+<B>OSG_LIGHTMODEL</B><DT>
+
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_LIGHTSOURCE"></A>
 <B>OSG_LIGHTSOURCE</B><DT>
 
@@ -160,44 +169,89 @@
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="__OSG_MATH"></A>
 <B>__OSG_MATH</B><DT>
 
-<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="acosf"></A>
-<B>acosf</B>(float)<DT>
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>ifndef acosf defineacosf(float)(float)(float)(float)(float)(float)(float)(float)<A NAME="(float)"></A>
+<B>(float)</B>(float)<DT>
 
-<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="asinf"></A>
-<B>asinf</B>(float)<DT>
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="_H_MMGR"></A>
+<B>_H_MMGR</B><DT>
 
-<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="cosf"></A>
-<B>cosf</B>(float)<DT>
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="__FUNCTION__"></A>
+<B>__FUNCTION__</B><DT>
 
-<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="sinf"></A>
-<B>sinf</B>(float)<DT>
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>SG_EXPORT extern const unsigned int<A NAME="m_alloc_unknown"></A>
+<B>m_alloc_unknown</B><DT>
 
-<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="logf"></A>
-<B>logf</B>(float)<DT>
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>SG_EXPORT extern const unsigned int<A NAME="m_alloc_new"></A>
+<B>m_alloc_new</B><DT>
 
-<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="floorf"></A>
-<B>floorf</B>(float)<DT>
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>SG_EXPORT extern const unsigned int<A NAME="m_alloc_new_array"></A>
+<B>m_alloc_new_array</B><DT>
 
-<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="powf"></A>
-<B>powf</B>(float)<DT>
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>SG_EXPORT extern const unsigned int<A NAME="m_alloc_malloc"></A>
+<B>m_alloc_malloc</B><DT>
 
-<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="sqrtf"></A>
-<B>sqrtf</B>(float)<DT>
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>SG_EXPORT extern const unsigned int<A NAME="m_alloc_calloc"></A>
+<B>m_alloc_calloc</B><DT>
 
-<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="fabsf"></A>
-<B>fabsf</B>(float)<DT>
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>SG_EXPORT extern const unsigned int<A NAME="m_alloc_realloc"></A>
+<B>m_alloc_realloc</B><DT>
 
-<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_MATRIX"></A>
-<B>OSG_MATRIX</B><DT>
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>SG_EXPORT extern const unsigned int<A NAME="m_alloc_delete"></A>
+<B>m_alloc_delete</B><DT>
 
-<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_MEMORYADAPTER"></A>
-<B>OSG_MEMORYADAPTER</B><DT>
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>SG_EXPORT extern const unsigned int<A NAME="m_alloc_delete_array"></A>
+<B>m_alloc_delete_array</B><DT>
 
-<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_MEM_PTR"></A>
-<B>OSG_MEM_PTR</B><DT>
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>SG_EXPORT extern const unsigned int<A NAME="m_alloc_free"></A>
+<B>m_alloc_free</B><DT>
 
-<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_NODE"></A>
-<B>OSG_NODE</B><DT>
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>SG_EXPORT extern void<A NAME="m_setOwner"></A>
+<B>m_setOwner</B>(const char* file, const unsigned int line, const char* func)<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>SG_EXPORT extern bool&amp;<A NAME="m_breakOnRealloc"></A>
+<B>m_breakOnRealloc</B>(void* reportedAddress)<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>SG_EXPORT extern bool&amp;<A NAME="m_breakOnDealloc"></A>
+<B>m_breakOnDealloc</B>(void* reportedAddress)<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>SG_EXPORT extern void<A NAME="m_breakOnAllocation"></A>
+<B>m_breakOnAllocation</B>(unsigned int count)<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>SG_EXPORT extern void*<A NAME="m_allocator"></A>
+<B>m_allocator</B>(const char* sourceFile, const unsigned int sourceLine, const char* sourceFunc, const unsigned int allocationType, const size_t reportedSize)<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>SG_EXPORT extern void*<A NAME="m_reallocator"></A>
+<B>m_reallocator</B>(const char* sourceFile, const unsigned int sourceLine, const char* sourceFunc, const unsigned int reallocationType, const size_t reportedSize, void* reportedAddress)<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>SG_EXPORT extern void<A NAME="m_deallocator"></A>
+<B>m_deallocator</B>(const char* sourceFile, const unsigned int sourceLine, const char* sourceFunc, const unsigned int deallocationType, const void* reportedAddress)<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>bool<A NAME="m_validateAddress"></A>
+<B>m_validateAddress</B>(const void* reportedAddress)<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>bool<A NAME="m_validateAllocUnit"></A>
+<B>m_validateAllocUnit</B>(const sAllocUnit* allocUnit)<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>bool<A NAME="m_validateAllAllocUnits"></A>
+<B>m_validateAllAllocUnits</B>()<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>SG_EXPORT extern unsigned int<A NAME="m_calcUnused"></A>
+<B>m_calcUnused</B>(const sAllocUnit* allocUnit)<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>SG_EXPORT extern unsigned int<A NAME="m_calcAllUnused"></A>
+<B>m_calcAllUnused</B>()<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>SG_EXPORT extern void<A NAME="m_dumpAllocUnit"></A>
+<B>m_dumpAllocUnit</B>(const sAllocUnit* allocUnit, const char* prefix = "")<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>SG_EXPORT extern void<A NAME="m_dumpMemoryReport"></A>
+<B>m_dumpMemoryReport</B>(const char* filename = "memreport.log", const bool overwrite = true)<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>SG_EXPORT extern sMStats<A NAME="m_getMemoryStatistics"></A>
+<B>m_getMemoryStatistics</B>()<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>define<A NAME="osgNew"></A>
+<B>osgNew</B>(m_setOwner (__FILE__, __LINE__, __FUNCTION__), false)<DT>
 
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_NODEVISITOR"></A>
 <B>OSG_NODEVISITOR</B><DT>
@@ -222,6 +276,9 @@
 
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_POSITIONATTITIDETRANSFORM"></A>
 <B>OSG_POSITIONATTITIDETRANSFORM</B><DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_PROJECTION"></A>
+<B>OSG_PROJECTION</B><DT>
 
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_QUAT"></A>
 <B>OSG_QUAT</B><DT>
@@ -319,11 +376,23 @@
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="GL_CLAMP_TO_EDGE"></A>
 <B>GL_CLAMP_TO_EDGE</B><DT>
 
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="GL_CLAMP_TO_BORDER_ARB"></A>
+<B>GL_CLAMP_TO_BORDER_ARB</B><DT>
+
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="GL_GENERATE_MIPMAP_SGIS"></A>
 <B>GL_GENERATE_MIPMAP_SGIS</B><DT>
 
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="GL_GENERATE_MIPMAP_HINT_SGIS"></A>
 <B>GL_GENERATE_MIPMAP_HINT_SGIS</B><DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="GL_TEXTURE_3D"></A>
+<B>GL_TEXTURE_3D</B><DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_TEXTURECUBEMAP"></A>
+<B>OSG_TEXTURECUBEMAP</B><DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="GL_TEXTURE_CUBE_MAP"></A>
+<B>GL_TEXTURE_CUBE_MAP</B><DT>
 
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_TIMER"></A>
 <B>OSG_TIMER</B><DT>

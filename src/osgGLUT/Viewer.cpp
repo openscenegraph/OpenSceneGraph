@@ -996,7 +996,7 @@ void Viewer::keyboard(unsigned char key, int x, int y)
             texture = 1 - texture;
             if (texture)
             {
-                globalStateSet->setModeToInherit(GL_TEXTURE_2D);
+                globalStateSet->setTextureModeToInherit(0,GL_TEXTURE_2D);
 //                globalStateSet->setAttributeToInherit(osg::StateAttribute::TEXTURE);
             }
             else
@@ -1004,9 +1004,9 @@ void Viewer::keyboard(unsigned char key, int x, int y)
                 // use blank texture to override all local texture in scene graph.
                 // thus causing them to all use the same texture attribute, hence
                 // preventing a state attribute change due to unused textures.
-                static osg::ref_ptr<osg::Texture> blank_texture = osgNew osg::Texture;
-                globalStateSet->setMode(GL_TEXTURE_2D,osg::StateAttribute::OVERRIDE_OFF);
-//                globalStateSet->setAttribute(blank_texture.get(),true);
+                globalStateSet->setTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::OVERRIDE_OFF);
+//                static osg::ref_ptr<osg::Texture> blank_texture = osgNew osg::Texture;
+//                globalStateSet->setTextureAttribute(0,blank_texture.get());
             }
             break;
 

@@ -64,7 +64,7 @@ SceneView::~SceneView()
 
 void SceneView::setDefaults()
 {
-    _globalState = new osg::StateSet;
+    _globalStateSet = new osg::StateSet;
 
     _lightingMode=HEADLIGHT;
     _light = new osg::Light;
@@ -99,28 +99,28 @@ void SceneView::setDefaults()
     _cullVisitor->setRenderGraph(_rendergraph.get());
     _cullVisitor->setRenderStage(_renderStage.get());
 
-    _globalState->setGlobalDefaults();
+    _globalStateSet->setGlobalDefaults();
     
     // enable lighting by default.
-    _globalState->setMode(GL_LIGHTING, osg::StateAttribute::ON);
-    _globalState->setAssociatedModes(_light.get(),osg::StateAttribute::ON);
+    _globalStateSet->setMode(GL_LIGHTING, osg::StateAttribute::ON);
+    _globalStateSet->setAssociatedModes(_light.get(),osg::StateAttribute::ON);
     
     // enable depth testing by default.
-    _globalState->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);
+    _globalStateSet->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);
 
     // set up an alphafunc by default to speed up blending operations.
     osg::AlphaFunc* alphafunc = new osg::AlphaFunc;
     alphafunc->setFunction(osg::AlphaFunc::GREATER,0.0f);
-    _globalState->setAttributeAndModes(alphafunc, osg::StateAttribute::ON);
+    _globalStateSet->setAttributeAndModes(alphafunc, osg::StateAttribute::ON);
 
     // set up an texture environment by default to speed up blending operations.
      osg::TexEnv* texenv = new osg::TexEnv;
      texenv->setMode(osg::TexEnv::MODULATE);
-     _globalState->setTextureAttributeAndModes(0,texenv, osg::StateAttribute::ON);
+     _globalStateSet->setTextureAttributeAndModes(0,texenv, osg::StateAttribute::ON);
 
     osg::LightModel* lightmodel = new osg::LightModel;
     lightmodel->setAmbientIntensity(osg::Vec4(0.1f,0.1f,0.1f,1.0f));
-    _globalState->setAttributeAndModes(lightmodel, osg::StateAttribute::ON);
+    _globalStateSet->setAttributeAndModes(lightmodel, osg::StateAttribute::ON);
 
     _backgroundColor.set(0.2f, 0.2f, 0.4f, 1.0f);
 
@@ -190,12 +190,9 @@ void SceneView::cull()
         _state = new osg::State;
     }
 
-    if (!_globalState)
+    if (!_localStateSet)
     {
-        osg::notify(osg::INFO) << "Warning: no valid osgUtil::SceneView::_globalState attached, creating a default global stateset automatically."<< std::endl;
-
-        _globalState = new osg::StateSet;
-        _globalState->setGlobalDefaults();
+        _localStateSet = new osg::StateSet;
     }
     
     // we in theory should be able to be able to bypass reset, but we'll call it just incase.
@@ -503,7 +500,8 @@ void SceneView::cullStage(osg::RefMatrix* projection,osg::RefMatrix* modelview,o
         break;
     }            
 
-    if (_globalState.valid()) cullVisitor->pushStateSet(_globalState.get());
+    if (_globalStateSet.valid()) cullVisitor->pushStateSet(_globalStateSet.get());
+    if (_localStateSet.valid()) cullVisitor->pushStateSet(_localStateSet.get());
 
 
     cullVisitor->pushViewport(_viewport.get());
@@ -518,7 +516,8 @@ void SceneView::cullStage(osg::RefMatrix* projection,osg::RefMatrix* modelview,o
     cullVisitor->popProjectionMatrix();
     cullVisitor->popViewport();
 
-    if (_globalState.valid()) cullVisitor->popStateSet();
+    if (_localStateSet.valid()) cullVisitor->popStateSet();
+    if (_globalStateSet.valid()) cullVisitor->popStateSet();
     
 
     const osg::ClearNode* clearNode = cullVisitor->getClearNode();
@@ -571,7 +570,7 @@ void SceneView::draw()
         case(osg::DisplaySettings::QUAD_BUFFER):
             {
 
-                _globalState->setAttribute(_viewport.get());
+                _localStateSet->setAttribute(_viewport.get());
 
                 _renderStageLeft->drawPreRenderStages(*_state,previous);
                 _renderStageRight->drawPreRenderStages(*_state,previous);
@@ -587,7 +586,7 @@ void SceneView::draw()
         case(osg::DisplaySettings::ANAGLYPHIC):
             {
                 
-                _globalState->setAttribute(_viewport.get());
+                _localStateSet->setAttribute(_viewport.get());
 
                 _renderStageLeft->drawPreRenderStages(*_state,previous);
                 _renderStageRight->drawPreRenderStages(*_state,previous);
@@ -595,14 +594,14 @@ void SceneView::draw()
                 // draw left eye.
                 osg::ref_ptr<osg::ColorMask> red = new osg::ColorMask;
                 red->setMask(true,false,false,true);
-                _globalState->setAttribute(red.get());
+                _localStateSet->setAttribute(red.get());
                 _renderStageLeft->setColorMask(red.get());
                 _renderStageLeft->draw(*_state,previous);
 
                 // draw right eye.
                 osg::ref_ptr<osg::ColorMask> green = new osg::ColorMask;
                 green->setMask(false,true,true,true);
-                _globalState->setAttribute(green.get());
+                _localStateSet->setAttribute(green.get());
                 _renderStageRight->setColorMask(green.get());
                 _renderStageRight->draw(*_state,previous);
 
@@ -630,21 +629,21 @@ void SceneView::draw()
 
                 if (_displaySettings->getSplitStereoHorizontalEyeMapping()==osg::DisplaySettings::LEFT_EYE_LEFT_VIEWPORT)
                 {
-                    _globalState->setAttribute(viewportLeft.get());
+                    _localStateSet->setAttribute(viewportLeft.get());
                     _renderStageLeft->setViewport(viewportLeft.get());
                     _renderStageLeft->draw(*_state,previous);
 
-                    _globalState->setAttribute(viewportRight.get());
+                    _localStateSet->setAttribute(viewportRight.get());
                     _renderStageRight->setViewport(viewportRight.get());
                     _renderStageRight->draw(*_state,previous);
                 }
                 else
                 {
-                    _globalState->setAttribute(viewportRight.get());
+                    _localStateSet->setAttribute(viewportRight.get());
                     _renderStageLeft->setViewport(viewportRight.get());
                     _renderStageLeft->draw(*_state,previous);
 
-                    _globalState->setAttribute(viewportLeft.get());
+                    _localStateSet->setAttribute(viewportLeft.get());
                     _renderStageRight->setViewport(viewportLeft.get());
                     _renderStageRight->draw(*_state,previous);
                 }
@@ -673,21 +672,21 @@ void SceneView::draw()
 
                 if (_displaySettings->getSplitStereoVerticalEyeMapping()==osg::DisplaySettings::LEFT_EYE_TOP_VIEWPORT)
                 {
-                    _globalState->setAttribute(viewportTop.get());
+                    _localStateSet->setAttribute(viewportTop.get());
                     _renderStageLeft->setViewport(viewportTop.get());
                     _renderStageLeft->draw(*_state,previous);
 
-                    _globalState->setAttribute(viewportBottom.get());
+                    _localStateSet->setAttribute(viewportBottom.get());
                     _renderStageRight->setViewport(viewportBottom.get());
                     _renderStageRight->draw(*_state,previous);
                 }
                 else
                 {
-                    _globalState->setAttribute(viewportBottom.get());
+                    _localStateSet->setAttribute(viewportBottom.get());
                     _renderStageLeft->setViewport(viewportBottom.get());
                     _renderStageLeft->draw(*_state,previous);
 
-                    _globalState->setAttribute(viewportTop.get());
+                    _localStateSet->setAttribute(viewportTop.get());
                     _renderStageRight->setViewport(viewportTop.get());
                     _renderStageRight->draw(*_state,previous);
                 }
@@ -696,7 +695,7 @@ void SceneView::draw()
         case(osg::DisplaySettings::RIGHT_EYE):
         case(osg::DisplaySettings::LEFT_EYE):
             {
-                _globalState->setAttribute(_viewport.get());
+                _localStateSet->setAttribute(_viewport.get());
                 _renderStage->drawPreRenderStages(*_state,previous);
                 _renderStage->draw(*_state,previous);
             }
@@ -710,10 +709,10 @@ void SceneView::draw()
     }
     else
     {
-        _globalState->setAttribute(_viewport.get());
-         osg::ref_ptr<osg::ColorMask> cmask = new osg::ColorMask;
-         cmask->setMask(true,true,true,true);
-         _globalState->setAttribute(cmask.get());
+        _localStateSet->setAttribute(_viewport.get());
+        osg::ref_ptr<osg::ColorMask> cmask = new osg::ColorMask;
+        cmask->setMask(true,true,true,true);
+        _localStateSet->setAttribute(cmask.get());
 
         // bog standard draw.
         _renderStage->drawPreRenderStages(*_state,previous);

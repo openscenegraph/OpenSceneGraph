@@ -106,10 +106,14 @@ class DeleteHandler
 inline void Referenced::unref() const
 {
     --_refCount;
-    if (_refCount<=0)
+    if (_refCount==0)
     {
         if (getDeleteHandler()) getDeleteHandler()->requestDelete(this);
         else delete this;
+    }
+    else if (_refCount<0)
+    {
+        throw 2325;
     }
 }
 

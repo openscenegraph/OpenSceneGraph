@@ -139,7 +139,7 @@ void State::popStateSet()
 {
     if (_drawStateStack.empty()) return;
     
-    const StateSet* dstate = _drawStateStack.back().get();
+    const StateSet* dstate = _drawStateStack.back();
 
     if (dstate)
     {

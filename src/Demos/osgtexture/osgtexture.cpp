@@ -23,6 +23,47 @@
 
 typedef std::vector< osg::ref_ptr<osg::Image> > ImageList;
 
+class TextureCallback : public osg::NodeCallback
+{
+    public:
+        TextureCallback(osg::Texture* texture):_texture(texture)
+        {
+            _filterRange.push_back(osg::Texture::LINEAR);
+            _filterRange.push_back(osg::Texture::LINEAR_MIPMAP_LINEAR);
+            _filterRange.push_back(osg::Texture::LINEAR_MIPMAP_NEAREST);
+            _filterRange.push_back(osg::Texture::NEAREST);
+            _filterRange.push_back(osg::Texture::NEAREST_MIPMAP_LINEAR);
+            _filterRange.push_back(osg::Texture::NEAREST_MIPMAP_NEAREST);
+	    _filterRange.push_back(osg::Texture::ANISOTROPIC);
+            _currPos = 0;
+            _prevTime = 0.0;
+        }
+        
+        virtual ~TextureCallback() {}
+        
+        virtual void operator()(osg::Node*, osg::NodeVisitor* nv)
+        {
+            if (nv->getFrameStamp())
+            {
+                double currTime = nv->getFrameStamp()->getReferenceTime();
+                if (currTime-_prevTime>1.0) 
+                {
+                    std::cout<<"Updating texturing filter to "<<hex<<_filterRange[_currPos]<<dec<<std::endl;
+                    _texture->setFilter(osg::Texture::MAG_FILTER,_filterRange[_currPos]);
+                    _currPos++;
+                    if (_currPos>=_filterRange.size()) _currPos=0;                    
+                    _prevTime = currTime;
+                }
+            }
+        }
+        
+        osg::ref_ptr<osg::Texture>              _texture;
+        std::vector<osg::Texture::FilterMode>   _filterRange;
+        osg::uint                               _currPos;
+        double                                  _prevTime;
+};
+
+
 /**
   * Function to read several images files (typically one) as specified 
   * on the command line, and return them in an ImageList
@@ -134,6 +175,8 @@ osg::Node* createLayer(const osg::Vec3& offset,osg::Image* image,osg::Node* geom
         top_transform->addChild(createTexturedItem(local_offset,texture,geometry));
 
         local_offset += local_delta;
+        
+        // top_transform->setAppCallback(new TextureCallback(texture));
 
     }
         

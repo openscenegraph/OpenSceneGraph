@@ -49,7 +49,7 @@ using namespace ive;
 
 DataOutputStream::DataOutputStream(std::ostream * ostream)
 {
-    _verboseOutput = true;
+    _verboseOutput = false;
 
     _includeImageData= true;
     _ostream = ostream;

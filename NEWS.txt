@@ -3,76 +3,95 @@
 OSG News (most significant items from ChangeLog)
 ================================================
 
-    osgProducer library adds very tight integration with OpenProducer,
-    provide the OpenSceneGraph with a scalable, configurable and portable 
-    framework for developing real-time and interactive graphics application.
-    The scalability afforded by OpenProducer allows applications to be
-    developed which seemlessly run on single pipe machines up to multi-pipe
-    machines such as Sgi Onyx IR system, and Sun Zulu systems, through
-    to running of clusters.  The osgProducer/OpenProducer framework
-    automatically handles the multi-threading of cull-draw pairs and GUI 
-    events.
+18th April 2003  - OpenSceneGraph-0.9.4
+
+    >>> Multi-threaded, multi-pipe support via integration with OpenProducer,
+    >>> 64bit Linux support for Intel Intanium and AMD Opteron,
+    >>> new osgText library with greater performance, and thread safety,
+    >>> new DDS plug-in for compressed and non-compressed images,
+    >>> new MD2 plug-in adds support for animate Quake character,
+    >>> support added for NV_texture_rectangle.
+
+    The most significant new feature is the osgProducer library that adds 
+    tight integration with OpenProducer, providing the OpenSceneGraph with a 
+    scalable, configurable and portable framework for developing real-time 
+    and interactive graphics applications.  The scalability afforded by 
+    OpenProducer allows applications to be developed which run seamlessly 
+    on single pipe machines up to multi-pipe machines such as Sgi Onyx 
+    IR system, and Sun Zulu systems.
+    The osgProducer/OpenProducer framework automatically handles the 
+    multi-threading of cull-draw pairs and GUI events.
 
     All the example programs have been ported over from being based on
-    GLUT to using osgProducer.  This allows all the examples to scale from
-    running on laptops up to multiple cpu and graphics pipe systems. The
+    GLUT to using osgProducer. This allows all the examples to scale from
+    running on laptops up to multiple CPU and graphics pipe systems. The
     configuration of threading and multiple camera views can all be done
-    via ASCII configuration files, no need to recompile. 
+    via ASCII configuration files, no need to recompile.  A number of 
+    new examples have also been added or revamped, bringing the total to 42.
 
-    Added Linux 64 bit support for IA64 (Intel Itanium) and x86-64 (AMD Opteron)
-    which augments the existing support for Solaris and IRIX 64 bit compilation.
-    64 bit supports allows the use of very large data set, and potential 
-    peformance improvemnts.
+    Also in the theme of increasing scalability there is support for 64bit Linux for both
+    IA64 (Intel Itanium) and x86-64 (AMD Opteron) which compliments the existing 
+    support for Solaris and IRIX 64 bit compilation.  64 bit supports allows 
+    the use of very large data sets, and potential performance improvements.
 
-    Improvements to the makefile system, all makefiles are now named
-    GNUmakefile which ensures that they are only run by gmake.  The new system
-    allow multiple build targets to be built from one source code install.
+    To help support development teams working with multiple build configuration,
+    the makefile system has been extended to allow multiple build targets to be 
+    built from one source code base.  All makefiles are also now named GNUmakefile 
+    which ensures that they are only run by gmake to avoid an confusion on system
+    where gmake isn't the default make tool.
 
-    Completely new osgText implemention which is simpler to use, faster, and
-    thread safe.  Support for high quality true type fonts has now been moved
-    to a freetype plugin which is dynamically loaded on demand, with the
-    core osgText library providing a default font when the plugin is
-    unavailable.  Moving the freetype dependancy out of the osgText allows
-    the text library to be just dependant on OpenGL and Standard C++ like
-    the rest of the core libraries, virtual of this osgText now compiles 
-    by default on platforms.
+    A completely new osgText implemention has been developed which is simpler 
+    to use, faster, and thread safe.  Support for high quality true type fonts 
+    has now been moved to a freetype plug-in which is dynamically loaded on demand, 
+    with the core osgText library providing a default font when the plug-in is
+    unavailable.  Moving the freetype dependency out of the osgText library makes
+    it just dependant on OpenGL and Standard C++ like the rest of the core libraries, 
+    allowing osgText to compile by default on all platforms.
 
-    Improved thread safety when working multipipe systems.
+    Improved thread safety has also been achieved in the core osg and osgUtil libraries
+    making work on multiple CPU/multi-pipe systems robust and with improved performance.
 
-    New DDS plugin for loading compressed and non-compressed images.
-
-    New MD2 plugin which allows Quake animated characters to be loaded
-    into the OSG.
+    Two new plug-ins have been added, for loading DDS and MD2 data formats. The DDS plug-in
+    is for loading compressed and non-compressed images.  The MD2 plug-in loads Quake 
+    animated characters.
     
-    New osg::TextureRectangle texture class which encapsulates the
-    NV_texture_rectangle and EXT_texture_rectange extensions.
+    osg::TextureRectangle class has been added, which encapsulates the
+    NV_texture_rectangle and EXT_texture_rectangle extensions.  This is particularly
+    useful for render to texture algorithms, and dynamic paging of images such as for
+    rendering video streams.
 
-    Added automatic subloading of textures when image data is updated.
+    Support for automatic subloading of osg::Texture2D textures has been added
+    so that when image data is updated the corresponding OpenGL texture is
+    automatically updated - no need for callbacks.  Also added to the osg::Texture
+    classes is the option of automatic unref'ing of texture image data once the data has
+    been download to all active OpenGL graphics contexts.
     
-    Added the option of automatic unref'ing of texture image data once the data has
-    been download to OpenGL to active graphics contexts.
-    
-    New osgUtil::DelaunayTriangulator utlity class for tesselating data points.
+    A new osgUtil::DelaunayTriangulator utility class has been added.  This is ideal for
+    creating optimal triangular meshes from unconnected data points.
 
-    New osg::ArgumentParser and osg::ApplicationUsage classes for 
-    convineiently and robustly parsing command line arguments and
-    report command line usage, environmental variables and
-    keyboard and mouse bindings used by applications.  Running any
-    of the examples with -h or --help will report full details example
-    usage.  Keyboard and Mouse bindings usage is now also available as
-    a HUD on all examples, simply press 'h' while the app is runing to
+    Two new classes, osg::ArgumentParser and osg::ApplicationUsage, have been introduced
+    to convineiently and robustly parse command line arguments and
+    report command line usage, environmental variables and keyboard and mouse bindings 
+    used by applications.  Running any of the examples with -h or --help will report 
+    full details example usage.  Keyboard and Mouse bindings usage is now also available as
+    a HUD on all examples, simply press 'h' while the app is running to
     bring up help.
 
-    New database cache in the osgDB library.
+    A database cache in the osgDB library has been added, along with a clean up
+    of memory management in the OpenFlight loader, make development of
+    dynamic paging of databases easier and more robust.
     
-    Added support for early abort of rendering, useful for interactive
-    applications which occasional have rendering that takes that long
-    enough (i.e. several seconds) that end users may wish to abort 
-    during the drawing.
+    Support for early abort of rendering has been added, which is useful for 
+    interactive applications which occasionally have rendering that takes that long
+    enough (i.e.several seconds) that end users may wish to abort during the drawing.
 
-    Clean up of memory management in the OpenFlight loader.
+    There have also been many general API improvements and bug fixes, too many to enumerate,
+    but all go to solidify the quality of the scene graph and its accompanying libraries.  
+    
+    The combination of new features, robustness and scalability mark this release as a
+    significant step towards 1.0.  
+    
 
-    Various API clean ups and bug fixes.
 
 24th January 2003 - OpenSceneGraph-0.9.3.tar.gz
 
@@ -395,7 +414,7 @@ OSG News (most significant items from ChangeLog)
     far away!
     
 
-24th February 2002 - osg-0.8.44.tar.gz
+24th February 2002 - osg-0.8.44.tar.gzosg-
 
     >>> Support added for Mac OSX, Cygwin and MinGW, and new TerraPage loader.
     

@@ -437,7 +437,7 @@ bool Viewer::computeNearFarPoints(float x,float y,unsigned int cameraNum,osg::Ve
     float pixel_x,pixel_y;
     if (computePixelCoords(x,y,cameraNum,pixel_x,pixel_y))
     {
-        return scenehandler->projectWindowXYIntoObject(pixel_x,pixel_y,near_point,far_point);
+        return scenehandler->projectWindowXYIntoObject((int)(pixel_x+0.5f),(int)(pixel_y+0.5f),near_point,far_point);
     }
     return false;
 

@@ -26,7 +26,7 @@ class OccluderEventHandler : public osgGA::GUIEventHandler
 {
     public:
     
-        OccluderEventHandler(osgUtil::SceneView* sceneview,osg::Group* rootnode):_sceneview(sceneview),_rootnode(rootnode) {}
+        OccluderEventHandler(osgProducer::Viewer* viewer):_viewer(viewer) {}
     
         virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&);
 
@@ -39,8 +39,10 @@ class OccluderEventHandler : public osgGA::GUIEventHandler
                 
         void endOccluder();
         
+        osg::Group* rootNode() { return dynamic_cast<osg::Group*>(_viewer->getSceneData()); }
         
-        osg::ref_ptr<osgUtil::SceneView>        _sceneview;
+        
+        osgProducer::Viewer*                    _viewer;
         osg::ref_ptr<osg::Group>                _rootnode;
         osg::ref_ptr<osg::Group>                _occluders;
         osg::ref_ptr<osg::ConvexPlanarOccluder> _convexPlanarOccluder;
@@ -55,34 +57,20 @@ bool OccluderEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAct
             if (ea.getKey()=='a')
             {
 
-                float x = ea.getX();
-                float y = ea.getY();
+                float x = ea.getXnormalized();
+                float y = ea.getYnormalized();
  
-                osg::Vec3 near_point,far_point;
-                if (!_sceneview->projectWindowXYIntoObject(x,ea.getYmax()-y,near_point,far_point))
+                osgUtil::IntersectVisitor::HitList hitList;
+                if (!_viewer->computeIntersections(x,y,hitList))
                 {
                      return true;
                 }
 
-                osg::ref_ptr<osg::LineSegment> lineSegment = new osg::LineSegment;
-                lineSegment->set(near_point,far_point);
-
-                osgUtil::IntersectVisitor iv;
-                iv.addLineSegment(lineSegment.get());
-
-                _rootnode->accept(iv);
-
-                if (iv.hits())
+                if (!hitList.empty())
                 {
-                
-                    osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(lineSegment.get());
-                    if (!hitList.empty())
-                    {
-                    
-                        osgUtil::Hit& hit = hitList.front();
-                        addPoint(hit.getWorldIntersectPoint());
-                    }
 
+                    osgUtil::Hit& hit = hitList.front();
+                    addPoint(hit.getWorldIntersectPoint());
                 }
 
                 return true;
@@ -96,8 +84,9 @@ bool OccluderEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAct
             {
                 if (_occluders.valid())
                 {
-                    std::cout<<"saving occluders to 'saved_occluders.osg'"<<std::endl;
-                    osgDB::writeNodeFile(*_occluders,"saved_occluders.osg");
+                    
+                    if (osgDB::writeNodeFile(*_occluders,"saved_occluders.osg"))
+                        std::cout<<"saved occluders to 'saved_occluders.osg'"<<std::endl;
                 }
                 else
                 {
@@ -136,7 +125,7 @@ void OccluderEventHandler::endOccluder()
             if (!_occluders.valid())
             {
                 _occluders = new osg::Group;
-                _rootnode->addChild(_occluders.get());
+                if (rootNode()) rootNode()->addChild(_occluders.get());
             }
             _occluders->addChild(occluderNode);
 
@@ -297,6 +286,11 @@ int main( int argc, char **argv )
     bool manuallyCreateOccluders = false;
     while (arguments.read("-m")) { manuallyCreateOccluders = true; }
 
+    if (manuallyCreateOccluders)
+    {
+        viewer.getEventHandlerList().push_front(new OccluderEventHandler(&viewer));
+    }
+
     // get details on keyboard and mouse bindings used by the viewer.
     viewer.getUsage(*arguments.getApplicationUsage());
 
@@ -349,12 +343,6 @@ int main( int argc, char **argv )
     // create the windows and run the threads.
     viewer.realize();
 
-    if (manuallyCreateOccluders)
-    {
-        osgUtil::SceneView* sceneview = viewer.getSceneHandlerList()[0].get();
-    
-        viewer.getEventHandlerList().push_front(new OccluderEventHandler(sceneview,rootnode.get()));
-    }
 
     while( !viewer.done() )
     {

@@ -226,7 +226,7 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::createHelpText()
             osgText::Text* text = new osgText::Text;
             text->setFont("fonts/arial.ttf");
             text->setColor(colorDescription);
-            text->setFontSize(characterSize,characterSize);
+            text->setFontSize((unsigned int)characterSize,(unsigned int)characterSize);
             text->setCharacterSize(characterSize);
             text->setPosition(posDescription);
             text->setMaximumWidth(maxWidthOfDisplayRegion);
@@ -252,7 +252,7 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::createHelpText()
             osgText::Text* text = new osgText::Text;
             text->setFont("fonts/arial.ttf");
             text->setColor(colorOption);
-            text->setFontSize(characterSize,characterSize);
+            text->setFontSize((unsigned int)characterSize,(unsigned int)characterSize);
             text->setCharacterSize(characterSize);
             text->setPosition(posOption);
             text->setAlignment(osgText::Text::BASE_LINE);
@@ -279,7 +279,7 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::createHelpText()
             osgText::Text* text = new osgText::Text;
             text->setFont("fonts/arial.ttf");
             text->setColor(colorExplanation);
-            text->setFontSize(characterSize,characterSize);
+            text->setFontSize((unsigned int)characterSize,(unsigned int)characterSize);
             text->setCharacterSize(characterSize);
             text->setPosition(posExplanation);
             text->setMaximumWidth(maxWidth);
@@ -613,7 +613,7 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::createStatsText()
         osgText::Text* text = new osgText::Text;
         text->setFont("fonts/arial.ttf");
         text->setColor(colorUpdate);
-        text->setFontSize(characterSize,characterSize);
+        text->setFontSize((unsigned int)characterSize,(unsigned int)characterSize);
         text->setCharacterSize(characterSize);
         text->setPosition(pos);
         text->setAlignment(osgText::Text::BASE_LINE);
@@ -627,7 +627,7 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::createStatsText()
 
         _updateTimeText->setFont("fonts/arial.ttf");
         _updateTimeText->setColor(colorUpdate);
-        _updateTimeText->setFontSize(characterSize,characterSize);
+        _updateTimeText->setFontSize((unsigned int)characterSize,(unsigned int)characterSize);
         _updateTimeText->setCharacterSize(characterSize);
         _updateTimeText->setPosition(pos);
         _updateTimeText->setAlignment(osgText::Text::BASE_LINE);
@@ -650,7 +650,7 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::createStatsText()
         osgText::Text* cullLabel = new osgText::Text;
         cullLabel->setFont("fonts/arial.ttf");
         cullLabel->setColor(colorCull);
-        cullLabel->setFontSize(characterSize,characterSize);
+        cullLabel->setFontSize((unsigned int)characterSize,(unsigned int)characterSize);
         cullLabel->setCharacterSize(characterSize);
         cullLabel->setPosition(pos);
         cullLabel->setAlignment(osgText::Text::BASE_LINE);
@@ -664,7 +664,7 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::createStatsText()
 
         cullField->setFont("fonts/arial.ttf");
         cullField->setColor(colorCull);
-        cullField->setFontSize(characterSize,characterSize);
+        cullField->setFontSize((unsigned int)characterSize,(unsigned int)characterSize);
         cullField->setCharacterSize(characterSize);
         cullField->setPosition(pos);
         cullField->setAlignment(osgText::Text::BASE_LINE);
@@ -680,7 +680,7 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::createStatsText()
         osgText::Text* drawLabel = new osgText::Text;
         drawLabel->setFont("fonts/arial.ttf");
         drawLabel->setColor(colorDraw);
-        drawLabel->setFontSize(characterSize,characterSize);
+        drawLabel->setFontSize((unsigned int)characterSize,(unsigned int)characterSize);
         drawLabel->setCharacterSize(characterSize);
         drawLabel->setPosition(pos);
         drawLabel->setAlignment(osgText::Text::BASE_LINE);
@@ -694,7 +694,7 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::createStatsText()
 
         drawField->setFont("fonts/arial.ttf");
         drawField->setColor(colorDraw);
-        drawField->setFontSize(characterSize,characterSize);
+        drawField->setFontSize((unsigned int)characterSize,(unsigned int)characterSize);
         drawField->setCharacterSize(characterSize);
         drawField->setPosition(pos);
         drawField->setAlignment(osgText::Text::BASE_LINE);

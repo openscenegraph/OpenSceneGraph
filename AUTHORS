@@ -3,16 +3,17 @@
 # The is a list of authors and contributors to the project.
 # Feel free to add your name and change list.
 
-Robert Osfield <robertosfield@yahoo.co.uk>
+Robert Osfield <robert@openscenegraph.com>
         - osg, osgUtil and osgDB.
         - pfb, 3ds, gif, jpeg, tiff, tga, pic, tgz & zip plugins.
-        - sgv, various revisions, now most of code in osgGLUT.
+        - sgv, various revisions, now most of code is in osgGLUT.
         - 2nd iteration of impostor implemtentation.
+        - 2nd iteration of shadow occlusion culling.
         - documentation?!
         - visual studio workspace files/unix makefiles.
         - project adim & lead.
 
-Don Burns <don@openscenegraph.org>
+Don Burns <don@andesengineering.com>
         - osg (particularily OpenGL)
         - first version of sgv.
         - fly database & osgtgz plugins.
@@ -78,6 +79,9 @@ Max Rheiner <mrn@paus.ch>
 
 Henry Maddocks <henryj@paradise.net.nz>
         - FTGL from which osgText is based.
+
+Mike Connell <mikec@vsect.chalmers.se>
+        - First implementation of shadow occlusion culling.
 
 Paul Fredrikson
         - new Matrix implementation.

@@ -30,61 +30,61 @@ class MyNodeCallback: public osg::NodeCallback
 // void MyNodeCallback::operator()(osg::Node* n,osg::NodeVisitor* nv)
 // {
 //     if(osgSim::SphereSegment* ss=dynamic_cast<osgSim::SphereSegment*>(n))
-// 	{
-// 		osg::Vec3 vec;
-// 	    float azRange, elevRange;
-// 	    ss->getArea(vec,azRange,elevRange);
+//     {
+//         osg::Vec3 vec;
+//         float azRange, elevRange;
+//         ss->getArea(vec,azRange,elevRange);
 //
-// 		float azRangeDeg = osg::RadiansToDegrees(azRange);
+//         float azRangeDeg = osg::RadiansToDegrees(azRange);
 //
-// 		static bool azAscending = false;
+//         static bool azAscending = false;
 //
 //         if(azAscending){
-// 		    azRangeDeg += 1.0f;
-// 			if(azRangeDeg>89.0f) azAscending = false;
-// 		}else{
-// 		    azRangeDeg -= 1.0f;
-// 			if(azRangeDeg<2.0f) azAscending = true;
-// 		}
+//             azRangeDeg += 1.0f;
+//             if(azRangeDeg>89.0f) azAscending = false;
+//         }else{
+//             azRangeDeg -= 1.0f;
+//             if(azRangeDeg<2.0f) azAscending = true;
+//         }
 //
-// 		ss->setArea(vec,osg::DegreesToRadians(azRangeDeg),elevRange);
+//         ss->setArea(vec,osg::DegreesToRadians(azRangeDeg),elevRange);
 //
-// 	}
+//     }
 //     traverse(n,nv);
 // }
 
 void MyNodeCallback::operator()(osg::Node* n,osg::NodeVisitor* nv)
 {
     if(osgSim::SphereSegment* ss=dynamic_cast<osgSim::SphereSegment*>(n))
-	{
-		osg::Vec3 vec;
-	    float azRange, elevRange;
-	    ss->getArea(vec,azRange,elevRange);
+    {
+        osg::Vec3 vec;
+        float azRange, elevRange;
+        ss->getArea(vec,azRange,elevRange);
 
         static float angle = 0.0f;
-		if(++angle > 359.0f) angle = 0.0f;
-		vec.set(sin(osg::DegreesToRadians(angle)),cos(osg::DegreesToRadians(angle)),0.0f);
+        if(++angle > 359.0f) angle = 0.0f;
+        vec.set(sin(osg::DegreesToRadians(angle)),cos(osg::DegreesToRadians(angle)),0.0f);
 
         std::cout<<"angle "<<angle<<" degrees, vec is "<<vec
-		                <<", azRange is "<<osg::RadiansToDegrees(azRange)
-						<<", elevRange is "<<osg::RadiansToDegrees(elevRange)
-						<<std::endl;
+                        <<", azRange is "<<osg::RadiansToDegrees(azRange)
+                        <<", elevRange is "<<osg::RadiansToDegrees(elevRange)
+                        <<std::endl;
 
-		ss->setArea(vec,azRange,elevRange);
-	}
+        ss->setArea(vec,azRange,elevRange);
+    }
     traverse(n,nv);
 }
 
 osg::Node* createSphereSegment()
 {
-	SphereSegment* ss = new SphereSegment(osg::Vec3(0.0f,0.0f,0.0f), 1.0f,
-					osg::Vec3(0.0f,1.0f,0.0f),
-					osg::DegreesToRadians(90.0f),
-					osg::DegreesToRadians(45.0f),
-					60);
-	ss->setAllColors(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
-	ss->setSideColor(osg::Vec4(0.0f,0.0f,1.0f,0.1f));
-	//ss->setDrawMask(SphereSegment::DrawMask(SphereSegment::SPOKES | SphereSegment::EDGELINE));
+    SphereSegment* ss = new SphereSegment(osg::Vec3(0.0f,0.0f,0.0f), 1.0f,
+                    osg::Vec3(0.0f,1.0f,0.0f),
+                    osg::DegreesToRadians(90.0f),
+                    osg::DegreesToRadians(45.0f),
+                    60);
+    ss->setAllColors(osg::Vec4(1.0f,1.0f,1.0f,0.5f));
+    ss->setSideColor(osg::Vec4(0.0f,0.0f,1.0f,0.5f));
+    //ss->setDrawMask(SphereSegment::DrawMask(SphereSegment::SPOKES | SphereSegment::EDGELINE));
 
     //ss->setUpdateCallback(new MyNodeCallback);
 

@@ -1,5 +1,7 @@
 #include <osgSim/SphereSegment>
 #include <osg/Notify>
+#include <osg/CullFace>
+#include <osg/LineWidth>
 
 using namespace osgSim;
 
@@ -59,10 +61,11 @@ of the specified area of the sphere's EdgeLine.
 class SphereSegment::EdgeLine: public osg::Drawable
 {
 public:
-    EdgeLine(SphereSegment* ss): osg::Drawable(), _ss(ss) {}
+    EdgeLine(SphereSegment* ss): osg::Drawable(), _ss(ss) { init(); }
 
     EdgeLine():_ss(0)
     {
+    	init();
         osg::notify(osg::WARN)<<
             "Warning: unexpected call to osgSim::SphereSegment::EdgeLine() default constructor"<<std::endl;
     }
@@ -78,6 +81,15 @@ public:
     void drawImplementation(osg::State& state) const;
 
 protected:
+
+    void init()
+    {
+	// switch off lighting.
+	getOrCreateStateSet()->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
+	
+	//getOrCreateStateSet()->setAttributeAndModes(new osg::LineWidth(2.0),osg::StateAttribute::OFF);
+    }
+
 
     virtual bool computeBound() const;
 
@@ -156,10 +168,11 @@ class SphereSegment::Spoke: public osg::Drawable
 {
 public:
     Spoke(SphereSegment* ss, SphereSegment::BoundaryAngle azAngle, SphereSegment::BoundaryAngle elevAngle):
-            osg::Drawable(), _ss(ss), _azAngle(azAngle), _elevAngle(elevAngle) {}
+            osg::Drawable(), _ss(ss), _azAngle(azAngle), _elevAngle(elevAngle) { init(); }
 
     Spoke():_ss(0)
     {
+    	init();
         osg::notify(osg::WARN)<<
             "Warning: unexpected call to osgSim::SphereSegment::Spoke() default constructor"<<std::endl;
     }
@@ -176,6 +189,14 @@ public:
 
 protected:
 
+    void init()
+    {
+	// switch off lighting.
+	getOrCreateStateSet()->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
+
+	//getOrCreateStateSet()->setAttributeAndModes(new osg::LineWidth(2.0),osg::StateAttribute::OFF);
+    }
+    
     virtual bool computeBound() const;
 
 private:
@@ -347,47 +368,101 @@ void SphereSegment::Surface_drawImplementation(osg::State& /* state */) const
     {
         glColor4fv(_surfaceColor.ptr());
 
-        for(int i=0; i+1<=_density; i++)
-        {
-            // Because we're drawing quad strips, we need to work out
-            // two azimuth values, to form each edge of the (z-vertical)
-            // strips
-            float az1 = _azMin + (i*azIncr);
-            float az2 = _azMin + ((i+1)*azIncr);
+    	bool drawBackSide = true;
+    	bool drawFrontSide = true;
 
-            glBegin(GL_QUAD_STRIP);
-            for (int j=0; j<=_density; j++)
+    	// draw back side.
+	if (drawBackSide)
+	{
+            for(int i=0; i+1<=_density; i++)
             {
-                float elev = _elevMin + (j*elevIncr);
+        	// Because we're drawing quad strips, we need to work out
+        	// two azimuth values, to form each edge of the (z-vertical)
+        	// strips
+        	float az1 = _azMin + (i*azIncr);
+        	float az2 = _azMin + ((i+1)*azIncr);
 
-                // QuadStrip Edge formed at az1
-                // ----------------------------
+        	glBegin(GL_QUAD_STRIP);
+        	for (int j=0; j<=_density; j++)
+        	{
+                    float elev = _elevMin + (j*elevIncr);
 
-                // Work out the sphere normal
-                float x = cos(elev)*sin(az1);
-                float y = cos(elev)*cos(az1);
-                float z = sin(elev);
+                    // QuadStrip Edge formed at az1
+                    // ----------------------------
 
-                glNormal3f(x, y, z);
-                glVertex3f(_centre.x() + _radius*x,
-                        _centre.y() + _radius*y,
-                        _centre.z() + _radius*z);
+                    // Work out the sphere normal
+                    float x = cos(elev)*sin(az1);
+                    float y = cos(elev)*cos(az1);
+                    float z = sin(elev);
 
-                // QuadStrip Edge formed at az2
-                // ----------------------------
+                    glNormal3f(-x, -y, -z);
+                    glVertex3f(_centre.x() + _radius*x,
+                            _centre.y() + _radius*y,
+                            _centre.z() + _radius*z);
 
-                // Work out the sphere normal
-                x = cos(elev)*sin(az2);
-                y = cos(elev)*cos(az2);
-                // z = sin(elev);   z doesn't change
+                    // QuadStrip Edge formed at az2
+                    // ----------------------------
 
-                glNormal3f(x, y, z);
-                glVertex3f(_centre.x() + _radius*x,
-                        _centre.y() + _radius*y,
-                        _centre.z() + _radius*z);
+                    // Work out the sphere normal
+                    x = cos(elev)*sin(az2);
+                    y = cos(elev)*cos(az2);
+                    // z = sin(elev);   z doesn't change
+
+                    glNormal3f(-x, -y, -z);
+                    glVertex3f(_centre.x() + _radius*x,
+                            _centre.y() + _radius*y,
+                            _centre.z() + _radius*z);
+        	}
+        	glEnd();
             }
-            glEnd();
-        }
+    	}
+	
+    	// draw front side
+	if (drawFrontSide)
+	{
+            for(int i=0; i+1<=_density; i++)
+            {
+        	// Because we're drawing quad strips, we need to work out
+        	// two azimuth values, to form each edge of the (z-vertical)
+        	// strips
+        	float az1 = _azMin + (i*azIncr);
+        	float az2 = _azMin + ((i+1)*azIncr);
+
+        	glBegin(GL_QUAD_STRIP);
+        	for (int j=0; j<=_density; j++)
+        	{
+                    float elev = _elevMin + (j*elevIncr);
+
+                    // QuadStrip Edge formed at az1
+                    // ----------------------------
+
+                    // Work out the sphere normal
+                    float x = cos(elev)*sin(az2);
+                    float y = cos(elev)*cos(az2);
+                    float z = sin(elev);
+
+                    glNormal3f(x, y, z);
+                    glVertex3f(_centre.x() + _radius*x,
+                            _centre.y() + _radius*y,
+                            _centre.z() + _radius*z);
+
+                    // QuadStrip Edge formed at az2
+                    // ----------------------------
+
+                    // Work out the sphere normal
+                    // z = sin(elev);   z doesn't change
+
+                    x = cos(elev)*sin(az1);
+                    y = cos(elev)*cos(az1);
+
+                    glNormal3f(x, y, z);
+                    glVertex3f(_centre.x() + _radius*x,
+                            _centre.y() + _radius*y,
+                            _centre.z() + _radius*z);
+        	}
+        	glEnd();
+            }
+    	}
     }
 }
 
@@ -541,52 +616,154 @@ void SphereSegment::Side_drawImplementation(osg::State& /* state */,
     // ----------------------------
     if(_drawMask & SIDES)
     {
-        if(orientation == AZIM)      // This is a plane at a given azimuth
-        {
-            const float az = (boundaryAngle==MIN?_azMin:_azMax);
-            const float elevIncr = (_elevMax - _elevMin)/_density;
+    	bool drawBackSide = true;
+    	bool drawFrontSide = true;
+    	int start, end, delta;
 
-            // Normal
-            osg::Vec3 normal = osg::Vec3(cos(_elevMin)*sin(az), cos(_elevMin)*cos(az), sin(_elevMin))
-                                ^ osg::Vec3(cos(_elevMax)*sin(az), cos(_elevMax)*cos(az), sin(_elevMax));
-            if(boundaryAngle==MIN) normal = -normal;   // Make sure normals orientationint 'outwards'
-            glNormal3fv(normal.ptr());
+        glColor4fv(_planeColor.ptr());
 
-            // Tri fan
-            glBegin(GL_TRIANGLE_FAN);
-            glVertex3fv(_centre.ptr());
-            for (int j=0; j<=_density; j++)
+    	// draw back side.
+	if (drawBackSide)
+	{
+
+            if(orientation == AZIM)      // This is a plane at a given azimuth
             {
-                float elev = _elevMin + (j*elevIncr);
-                glVertex3f( _centre.x() + _radius*cos(elev)*sin(az),
-                            _centre.y() + _radius*cos(elev)*cos(az),
-                            _centre.z() + _radius*sin(elev));
+        	const float az = (boundaryAngle==MIN?_azMin:_azMax);
+        	const float elevIncr = (_elevMax - _elevMin)/_density;
+
+        	// Normal
+        	osg::Vec3 normal = osg::Vec3(cos(_elevMin)*sin(az), cos(_elevMin)*cos(az), sin(_elevMin))
+                                    ^ osg::Vec3(cos(_elevMax)*sin(az), cos(_elevMax)*cos(az), sin(_elevMax));
+
+    	    	if (boundaryAngle==MIN)
+		{
+		    start = _density;
+		    end = 0;
+		}
+		else
+		{
+		    start = 0;
+		    end = _density;
+		    normal = -normal;   // Make sure normals orientationint 'outwards'
+		}		
+		delta = end>start?1:-1;
+
+    	    	if (drawBackSide)
+		{
+        	    // Tri fan
+        	    glNormal3f(-normal.x(),-normal.y(),-normal.z());
+        	    glBegin(GL_TRIANGLE_FAN);
+        	    glVertex3fv(_centre.ptr());
+        	    for (int j=start; j!=end+delta; j+=delta)
+        	    {
+                	float elev = _elevMin + (j*elevIncr);
+                	glVertex3f( _centre.x() + _radius*cos(elev)*sin(az),
+                        	    _centre.y() + _radius*cos(elev)*cos(az),
+                        	    _centre.z() + _radius*sin(elev));
+        	    }
+        	    glEnd();
+    	    	}
+		
+    	    	if (boundaryAngle==MIN)
+		{
+		    start = 0;
+		    end = _density;
+		}
+		else
+		{
+		    start = _density;
+		    end = 0;
+		}		
+		delta = end>start?1:-1;
+
+		if (drawFrontSide)
+		{
+        	    glNormal3fv(normal.ptr());
+        	    glBegin(GL_TRIANGLE_FAN);
+        	    glVertex3fv(_centre.ptr());
+        	    for (int j=start; j!=end+delta; j+=delta)
+        	    {
+                	float elev = _elevMin + (j*elevIncr);
+                	glVertex3f( _centre.x() + _radius*cos(elev)*sin(az),
+                        	    _centre.y() + _radius*cos(elev)*cos(az),
+                        	    _centre.z() + _radius*sin(elev));
+        	    }
+    	   	    glEnd();
+		}
+
             }
-            glEnd();
-        }
-        else if(orientation == ELEV) // This is a plane at a given elevation
-        {
-            const float elev = (boundaryAngle==MIN?_elevMin:_elevMax);
-            const float azIncr = (_azMax - _azMin)/_density;
-
-            // Normal
-            osg::Vec3 normal = osg::Vec3(cos(elev)*sin(_azMax), cos(elev)*cos(_azMax), sin(elev))
-                                ^ osg::Vec3(cos(elev)*sin(_azMin), cos(elev)*cos(_azMin), sin(elev));
-            if(boundaryAngle==MIN) normal = -normal;   // Make sure normals orientationint 'outwards'
-            glNormal3fv(normal.ptr());
-
-            // Tri fan
-            glBegin(GL_TRIANGLE_FAN);
-            glVertex3fv(_centre.ptr());
-            for(int i=0; i<=_density; i++)
+            else if(orientation == ELEV) // This is a plane at a given elevation
             {
-                float az = _azMin + (i*azIncr);
-                glVertex3f( _centre.x() + _radius*cos(elev)*sin(az),
-                            _centre.y() + _radius*cos(elev)*cos(az),
-                            _centre.z() + _radius*sin(elev));
+        	const float elev = (boundaryAngle==MIN?_elevMin:_elevMax);
+        	const float azIncr = (_azMax - _azMin)/_density;
+
+        	// Normal
+        	osg::Vec3 normal = osg::Vec3(cos(elev)*sin(_azMax), cos(elev)*cos(_azMax), sin(elev))
+                                    ^ osg::Vec3(cos(elev)*sin(_azMin), cos(elev)*cos(_azMin), sin(elev));
+
+
+    	    	if (boundaryAngle==MIN)
+		{
+		    start = _density;
+		    end = 0;
+		    normal = -normal;   // Make sure normals orientationint 'outwards'
+		}
+		else
+		{
+		    start = 0;
+		    end = _density;
+		}		
+		delta = end>start?1:-1;
+
+    	    	if (drawBackSide)
+		{
+        	    glNormal3f(-normal.x(),-normal.y(),-normal.z());
+
+        	    // Tri fan
+        	    glBegin(GL_TRIANGLE_FAN);
+        	    glVertex3fv(_centre.ptr());
+        	    for (int j=start; j!=end+delta; j+=delta)
+        	    {
+                	float az = _azMin + (j*azIncr);
+                	glVertex3f( _centre.x() + _radius*cos(elev)*sin(az),
+                        	    _centre.y() + _radius*cos(elev)*cos(az),
+                        	    _centre.z() + _radius*sin(elev));
+        	    }
+        	    glEnd();
+		}
+		
+    	    	if (boundaryAngle==MIN)
+		{
+		    start = 0;
+		    end = _density;
+		}
+		else
+		{
+		    start = _density;
+		    end = 0;
+		}		
+		delta = end>start?1:-1;
+
+    	    	if (drawFrontSide)
+		{
+        	    glNormal3fv(normal.ptr());
+
+        	    // Tri fan
+        	    glBegin(GL_TRIANGLE_FAN);
+        	    glVertex3fv(_centre.ptr());
+        	    for (int j=start; j!=end+delta; j+=delta)
+        	    {
+                	float az = _azMin + (j*azIncr);
+                	glVertex3f( _centre.x() + _radius*cos(elev)*sin(az),
+                        	    _centre.y() + _radius*cos(elev)*cos(az),
+                        	    _centre.z() + _radius*sin(elev));
+        	    }
+        	    glEnd();
+		}
+		
             }
-            glEnd();
-        }
+	}
+	
     }
 }
 
@@ -631,8 +808,6 @@ bool SphereSegment::Side_computeBound(osg::BoundingBox& bbox,
 
 void SphereSegment::Spoke_drawImplementation(osg::State&, BoundaryAngle azAngle, BoundaryAngle elevAngle) const
 {
-    // FIXME: Disable lighting for this draw routine
-
     if(_drawMask & SPOKES){
 
         glColor4fv(_spokeColor.ptr());
@@ -680,18 +855,11 @@ struct ActivateTransparencyOnType
     {
         if(typeid(*dptr)==_t)
         {
-            osg::StateSet* ss = dptr->getStateSet();
-            if(!ss)
-            {
-                ss = new osg::StateSet();
-                dptr->setStateSet(ss);
-            }
+            osg::StateSet* ss = dptr->getOrCreateStateSet();
             ss->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
 
-            osg::BlendFunc* trans = new osg::BlendFunc;
-            trans->setFunction(osg::BlendFunc::ONE,osg::BlendFunc::ONE);
-
-            ss->setAttributeAndModes(trans,osg::StateAttribute::ON);
+            ss->setAttributeAndModes(new osg::CullFace(osg::CullFace::BACK),osg::StateAttribute::ON);
+            ss->setMode(GL_BLEND,osg::StateAttribute::ON);
 
             dptr->dirtyDisplayList();
         }

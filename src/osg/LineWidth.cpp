@@ -17,9 +17,9 @@
 using namespace osg;
 
 
-LineWidth::LineWidth()
+LineWidth::LineWidth(float width)
 {
-    _width = 1.0f;
+    _width = width;
 }
 
 

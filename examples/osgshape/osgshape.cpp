@@ -41,6 +41,7 @@ osg::Geode* createShapes()
     geode->addDrawable(new osg::ShapeDrawable(new osg::Box(osg::Vec3(2.0f,0.0f,0.0f),2*radius),hints));
     geode->addDrawable(new osg::ShapeDrawable(new osg::Cone(osg::Vec3(4.0f,0.0f,0.0f),radius,height),hints));
     geode->addDrawable(new osg::ShapeDrawable(new osg::Cylinder(osg::Vec3(6.0f,0.0f,0.0f),radius,height),hints));
+    geode->addDrawable(new osg::ShapeDrawable(new osg::Capsule(osg::Vec3(8.0f,0.0f,0.0f),radius,height),hints));
 
     osg::HeightField* grid = new osg::HeightField;
     grid->allocateGrid(38,39);
@@ -58,10 +59,10 @@ osg::Geode* createShapes()
     
     osg::ConvexHull* mesh = new osg::ConvexHull;
     osg::Vec3Array* vertices = new osg::Vec3Array(4);
-    (*vertices)[0].set(7.0+0.0f,-1.0f+2.0f,-1.0f+0.0f);
-    (*vertices)[1].set(7.0+1.0f,-1.0f+0.0f,-1.0f+0.0f);
-    (*vertices)[2].set(7.0+2.0f,-1.0f+2.0f,-1.0f+0.0f);
-    (*vertices)[3].set(7.0+1.0f,-1.0f+1.0f,-1.0f+2.0f);
+    (*vertices)[0].set(9.0+0.0f,-1.0f+2.0f,-1.0f+0.0f);
+    (*vertices)[1].set(9.0+1.0f,-1.0f+0.0f,-1.0f+0.0f);
+    (*vertices)[2].set(9.0+2.0f,-1.0f+2.0f,-1.0f+0.0f);
+    (*vertices)[3].set(9.0+1.0f,-1.0f+1.0f,-1.0f+2.0f);
     osg::UByteArray* indices = new osg::UByteArray(12);
     (*indices)[0]=0;
     (*indices)[1]=2;

@@ -46,6 +46,7 @@ class DrawShapeVisitor : public ConstShapeVisitor
     	virtual void apply(const Box&);
     	virtual void apply(const Cone&);
     	virtual void apply(const Cylinder&);
+    	virtual void apply(const Capsule&);
     	virtual void apply(const InfinitePlane&);
 
     	virtual void apply(const TriangleMesh&);
@@ -56,12 +57,223 @@ class DrawShapeVisitor : public ConstShapeVisitor
 	
 	State&	    	    _state;
 	const TessellationHints*  _hints;
+        
+    protected:
+        enum SphereHalf { SphereTopHalf, SphereBottomHalf };
+    
+        // helpers for apply( Cylinder | Sphere | Capsule )
+        void drawCylinderBody(unsigned int numSegments, float radius, float height);
+        void drawHalfSphere(unsigned int numSegments, unsigned int numRows, float radius, SphereHalf which, float zOffset = 0.0f);
 };
+
+
+void DrawShapeVisitor::drawCylinderBody(unsigned int numSegments, float radius, float height)
+{
+    const float angleDelta = 2.0f*osg::PI/(float)numSegments;
+    const float texCoordDelta = 1.0f/(float)numSegments;
+    
+    const float r = radius;
+    const float h = height;
+    
+    float basez = -h*0.5f;
+    float topz = h*0.5f;
+    
+    float angle = 0.0f;
+    float texCoord = 0.0f;
+    
+    bool drawFrontFace = _hints ? _hints->getCreateFrontFace() : true;
+    bool drawBackFace = _hints ? _hints->getCreateBackFace() : false;
+    
+    // The only difference between the font & back face loops is that the
+    //  normals are inverted and the order of the vertex pairs is reversed.
+    //  The code is mostly duplicated in order to hoist the back/front face 
+    //  test out of the loop for efficiency
+
+    glBegin(GL_QUAD_STRIP);
+
+    if (drawFrontFace) {
+
+      for(unsigned int bodyi=0;
+          bodyi<numSegments;
+          ++bodyi,angle+=angleDelta,texCoord+=texCoordDelta)
+      {
+          float c = cosf(angle);
+          float s = sinf(angle);
+  
+          glNormal3f(c,s,0.0f);
+  
+          glTexCoord2f(texCoord,1.0f);
+          glVertex3f(c*r,s*r,topz);
+  
+          glTexCoord2f(texCoord,0.0f);
+          glVertex3f(c*r,s*r,basez);
+      }
+  
+      // do last point by hand to ensure no round off errors.
+      glNormal3f(1.0f,0.0f,0.0f);
+  
+      glTexCoord2f(1.0f,1.0f);
+      glVertex3f(r,0.0f,topz);
+  
+      glTexCoord2f(1.0f,0.0f);
+      glVertex3f(r,0.0f,basez);
+    }
+    
+    if (drawBackFace) {
+      for(unsigned int bodyi=0;
+          bodyi<numSegments;
+          ++bodyi,angle+=angleDelta,texCoord+=texCoordDelta)
+      {
+          float c = cosf(angle);
+          float s = sinf(angle);
+  
+          glNormal3f(-c,-s,0.0f);
+  
+          glTexCoord2f(texCoord,0.0f);
+          glVertex3f(c*r,s*r,basez);
+
+          glTexCoord2f(texCoord,1.0f);
+          glVertex3f(c*r,s*r,topz);
+      }
+  
+      // do last point by hand to ensure no round off errors.
+      glNormal3f(-1.0f,0.0f,0.0f);
+  
+      glTexCoord2f(1.0f,0.0f);
+      glVertex3f(r,0.0f,basez);
+  
+      glTexCoord2f(1.0f,1.0f);
+      glVertex3f(r,0.0f,topz);
+    }
+
+    glEnd();
+}
+
+
+void DrawShapeVisitor::drawHalfSphere(unsigned int numSegments, unsigned int numRows, float radius, SphereHalf which, float zOffset)
+{
+    float lDelta = osg::PI/(float)numRows;
+    float vDelta = 1.0f/(float)numRows;
+
+    bool top = (which==SphereTopHalf);
+
+    bool drawFrontFace = _hints ? _hints->getCreateFrontFace() : true;
+    bool drawBackFace = _hints ? _hints->getCreateBackFace() : false;
+
+    float angleDelta = osg::PI*2.0f/(float)numSegments;
+    float texCoordHorzDelta = 1.0f/(float)numSegments;
+
+    float lBase=-osg::PI*0.5f + (top?(lDelta*(numRows/2)):0.0f);
+    float rBase=(top?(cosf(lBase)*radius):0.0f);
+    float zBase=(top?(sinf(lBase)*radius):-radius);
+    float vBase=(top?(vDelta*(numRows/2)):0.0f);
+    float nzBase=(top?(sinf(lBase)):-1.0f);
+    float nRatioBase=(top?(cosf(lBase)):0.0f);
+
+    unsigned int rowbegin = top?numRows/2:0;
+    unsigned int rowend   = top?numRows:numRows/2;
+
+    for(unsigned int rowi=rowbegin; rowi<rowend; ++rowi)
+    {
+
+        float lTop = lBase+lDelta;
+        float rTop = cosf(lTop)*radius;
+        float zTop = sinf(lTop)*radius;
+        float vTop = vBase+vDelta;
+        float nzTop= sinf(lTop);
+        float nRatioTop= cosf(lTop);
+
+        glBegin(GL_QUAD_STRIP);
+
+            float angle = 0.0f;
+            float texCoord = 0.0f;
+
+            // The only difference between the font & back face loops is that the
+            //  normals are inverted and the order of the vertex pairs is reversed.
+            //  The code is mostly duplicated in order to hoist the back/front face 
+            //  test out of the loop for efficiency
+            
+            if (drawFrontFace) {
+              for(unsigned int topi=0; topi<numSegments;
+                  ++topi,angle+=angleDelta,texCoord+=texCoordHorzDelta)
+              {
+  
+                  float c = cosf(angle);
+                  float s = sinf(angle);
+  
+                  glNormal3f(c*nRatioTop,s*nRatioTop,nzTop);
+  
+                  glTexCoord2f(texCoord,vTop);
+                  glVertex3f(c*rTop,s*rTop,zTop+zOffset);
+  
+                  glNormal3f(c*nRatioBase,s*nRatioBase,nzBase);
+  
+                  glTexCoord2f(texCoord,vBase);
+                  glVertex3f(c*rBase,s*rBase,zBase+zOffset);
+  
+              }
+  
+              // do last point by hand to ensure no round off errors.
+              glNormal3f(nRatioTop,0.0f,nzTop);
+  
+              glTexCoord2f(1.0f,vTop);
+              glVertex3f(rTop,0.0f,zTop+zOffset);
+  
+              glNormal3f(nRatioBase,0.0f,nzBase);
+  
+              glTexCoord2f(1.0f,vBase);
+              glVertex3f(rBase,0.0f,zBase+zOffset);
+            }
+            
+          if (drawBackFace) {
+              for(unsigned int topi=0; topi<numSegments;
+                  ++topi,angle+=angleDelta,texCoord+=texCoordHorzDelta)
+              {
+  
+                  float c = cosf(angle);
+                  float s = sinf(angle);
+  
+                  glNormal3f(-c*nRatioBase,-s*nRatioBase,-nzBase);
+  
+                  glTexCoord2f(texCoord,vBase);
+                  glVertex3f(c*rBase,s*rBase,zBase+zOffset);
+  
+                  glNormal3f(-c*nRatioTop,-s*nRatioTop,-nzTop);
+  
+                  glTexCoord2f(texCoord,vTop);
+                  glVertex3f(c*rTop,s*rTop,zTop+zOffset);
+              }
+  
+              // do last point by hand to ensure no round off errors.
+              glNormal3f(-nRatioBase,0.0f,-nzBase);
+  
+              glTexCoord2f(1.0f,vBase);
+              glVertex3f(rBase,0.0f,zBase+zOffset);
+
+              glNormal3f(-nRatioTop,0.0f,-nzTop);
+  
+              glTexCoord2f(1.0f,vTop);
+              glVertex3f(rTop,0.0f,zTop+zOffset);
+  
+          }
+
+        glEnd();
+        
+        
+        lBase=lTop;
+        rBase=rTop;
+        zBase=zTop;
+        vBase=vTop;
+        nzBase=nzTop;
+        nRatioBase=nRatioTop;
+
+    }
+        
+}
 
 
 void DrawShapeVisitor::apply(const Sphere& sphere)
 {
-
     glPushMatrix();
 
 	glTranslatef(sphere.getCenter().x(),sphere.getCenter().y(),sphere.getCenter().z());
@@ -496,6 +708,11 @@ void DrawShapeVisitor::apply(const Cylinder& cylinder)
                 numSegments = MIN_NUM_SEGMENTS;
         }
 	
+
+    	// cylinder body
+        if (createBody) 
+            drawCylinderBody(numSegments, cylinder.getRadius(), cylinder.getHeight());
+
 	float angleDelta = 2.0f*osg::PI/(float)numSegments;
 	float texCoordDelta = 1.0f/(float)numSegments;
 	
@@ -507,38 +724,6 @@ void DrawShapeVisitor::apply(const Cylinder& cylinder)
 	
         float angle = 0.0f;
         float texCoord = 0.0f;
-
-    	// cylinder body
-        if (createBody) {
-            glBegin(GL_QUAD_STRIP);
-	
-    	    for(unsigned int bodyi=0;
-		bodyi<numSegments;
-		++bodyi,angle+=angleDelta,texCoord+=texCoordDelta)
-    	    {
-    		float c = cosf(angle);
-    		float s = sinf(angle);
-
-		glNormal3f(c,s,0.0f);
-
-		glTexCoord2f(texCoord,1.0f);
-		glVertex3f(c*r,s*r,topz);
-
-		glTexCoord2f(texCoord,0.0f);
-		glVertex3f(c*r,s*r,basez);
-    	    }
-
-    	    // do last point by hand to ensure no round off errors.
-	    glNormal3f(1.0f,0.0f,0.0f);
-
-	    glTexCoord2f(1.0f,1.0f);
-	    glVertex3f(r,0.0f,topz);
-
-	    glTexCoord2f(1.0f,0.0f);
-	    glVertex3f(r,0.0f,basez);
-	
-            glEnd();
-        }
 
         // cylinder top
         if (createTop) {
@@ -593,6 +778,51 @@ void DrawShapeVisitor::apply(const Cylinder& cylinder)
 	
             glEnd();
         }
+
+    glPopMatrix();
+}
+
+void DrawShapeVisitor::apply(const Capsule& capsule)
+{
+    glPushMatrix();
+
+	glTranslatef(capsule.getCenter().x(),capsule.getCenter().y(),capsule.getCenter().z());
+
+	if (!capsule.zeroRotation())
+	{
+    	    Matrix rotation(capsule.getRotationMatrix());
+    	    glMultMatrix(rotation.ptr());
+	}
+
+        // evaluate hints
+        bool createBody = (_hints ? _hints->getCreateBody() : true);
+        bool createTop = (_hints ? _hints->getCreateTop() : true);
+        bool createBottom = (_hints ? _hints->getCreateBottom() : true);
+
+    	unsigned int numSegments = 40;
+    	unsigned int numRows = 20;
+        if (_hints && _hints->getDetailRatio() != 1.0f) {
+            float ratio = _hints->getDetailRatio();
+            numSegments = (unsigned int) (numSegments * ratio);
+            if (numSegments < MIN_NUM_SEGMENTS)
+                numSegments = MIN_NUM_SEGMENTS;
+            numRows = (unsigned int) (numRows * ratio);
+            if (numRows < MIN_NUM_ROWS)
+                numRows = MIN_NUM_ROWS;
+        }
+	
+
+    	// capsule cylindrical body
+        if (createBody) 
+            drawCylinderBody(numSegments, capsule.getRadius(), capsule.getHeight());
+
+        // capsule top cap
+        if (createTop) 
+            drawHalfSphere(numSegments, numRows, capsule.getRadius(), SphereTopHalf, capsule.getHeight()/2.0f);
+
+    	// capsule bottom cap
+        if (createBottom) 
+            drawHalfSphere(numSegments, numRows, capsule.getRadius(), SphereBottomHalf, -capsule.getHeight()/2.0f);
 
     glPopMatrix();
 }
@@ -814,6 +1044,7 @@ class ComputeBoundShapeVisitor : public ConstShapeVisitor
     	virtual void apply(const Box&);
     	virtual void apply(const Cone&);
     	virtual void apply(const Cylinder&);
+    	virtual void apply(const Capsule&);
     	virtual void apply(const InfinitePlane&);
 
     	virtual void apply(const TriangleMesh&);
@@ -931,6 +1162,43 @@ void ComputeBoundShapeVisitor::apply(const Cylinder& cylinder)
     }
 }
 
+void ComputeBoundShapeVisitor::apply(const Capsule& capsule)
+{
+    if (capsule.zeroRotation())
+    {
+        Vec3 halfLengths(capsule.getRadius(),capsule.getRadius(),capsule.getHeight()*0.5f + capsule.getRadius());
+    	_bb.expandBy(capsule.getCenter()-halfLengths);
+	_bb.expandBy(capsule.getCenter()+halfLengths);
+
+    }
+    else
+    {
+    	float r = capsule.getRadius();
+    	float z = capsule.getHeight()*0.5f + capsule.getRadius();
+
+    	Vec3 base_1(Vec3(-r,-r,-z));
+    	Vec3 base_2(Vec3(r,-r,-z));
+    	Vec3 base_3(Vec3(r,r,-z));
+    	Vec3 base_4(Vec3(-r,r,-z));
+    
+    	Vec3 top_1(Vec3(-r,-r,z));
+    	Vec3 top_2(Vec3(r,-r,z));
+    	Vec3 top_3(Vec3(r,r,z));
+    	Vec3 top_4(Vec3(-r,r,z));
+
+        Matrix matrix = capsule.getRotationMatrix();
+    	_bb.expandBy(capsule.getCenter()+base_1*matrix);
+    	_bb.expandBy(capsule.getCenter()+base_2*matrix);
+    	_bb.expandBy(capsule.getCenter()+base_3*matrix);
+    	_bb.expandBy(capsule.getCenter()+base_4*matrix);
+
+    	_bb.expandBy(capsule.getCenter()+top_1*matrix);
+    	_bb.expandBy(capsule.getCenter()+top_2*matrix);
+    	_bb.expandBy(capsule.getCenter()+top_3*matrix);
+    	_bb.expandBy(capsule.getCenter()+top_4*matrix);
+    }
+}
+
 void ComputeBoundShapeVisitor::apply(const InfinitePlane&)
 {
     // can't compute the bounding box of an infinite plane!!! :-)
@@ -1043,6 +1311,7 @@ class PrimitiveShapeVisitor : public ConstShapeVisitor
     	virtual void apply(const Box&);
     	virtual void apply(const Cone&);
     	virtual void apply(const Cylinder&);
+    	virtual void apply(const Capsule&);
     	virtual void apply(const InfinitePlane&);
 
     	virtual void apply(const TriangleMesh&);
@@ -1383,6 +1652,13 @@ void PrimitiveShapeVisitor::apply(const Cylinder& cylinder)
 	_functor.vertex(Vec3(r,0.0f,basez)*matrix);
 
     _functor.end();
+}
+
+void PrimitiveShapeVisitor::apply(const Capsule& /*capsule*/)
+{
+#if 0
+     notify(NOTICE)<<"Warning: PrimitiveShapeVisitor doesn't implement apply(Capsule&) (yet)."<<std::endl;
+#endif   
 }
 
 void PrimitiveShapeVisitor::apply(const InfinitePlane& plane)

@@ -43,7 +43,9 @@
 #include "Switch.h"
 #include "OccluderNode.h"
 #include "Impostor.h"
+
 #include "LightPointNode.h"
+#include "MultiSwitch.h"
 
 #include "Geometry.h"
 
@@ -532,6 +534,9 @@ void DataOutputStream::writeNode(const osg::Node* node)
         }
         else if(dynamic_cast<const osg::Switch*>(node)){
             ((ive::Switch*)(node))->write(this);
+        }
+        else if(dynamic_cast<const osgSim::MultiSwitch*>(node)){
+            ((ive::MultiSwitch*)(node))->write(this);
         }
         else if(dynamic_cast<const osg::OccluderNode*>(node)){
             ((ive::OccluderNode*)(node))->write(this);

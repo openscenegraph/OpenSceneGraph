@@ -41,7 +41,9 @@
 #include "Switch.h"
 #include "OccluderNode.h"
 #include "Impostor.h"
+
 #include "LightPointNode.h"
+#include "MultiSwitch.h"
 
 #include "Geometry.h"
 
@@ -667,6 +669,10 @@ osg::Node* DataInputStream::readNode()
     else if(nodeTypeID== IVESWITCH){
         node = new osg::Switch();
         ((ive::Switch*)(node))->read(this);
+    }
+    else if(nodeTypeID== IVEMULTISWITCH){
+        node = new osgSim::MultiSwitch();
+        ((ive::MultiSwitch*)(node))->read(this);
     }
     else if(nodeTypeID== IVEIMPOSTOR){
         node = new osg::Impostor();

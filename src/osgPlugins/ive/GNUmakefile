@@ -30,6 +30,7 @@ CXXFILES =\
 	LightSource.cpp\
 	Material.cpp\
 	MatrixTransform.cpp\
+	MultiSwitch.cpp\
 	Node.cpp\
 	Object.cpp\
 	OccluderNode.cpp\

@@ -13,6 +13,7 @@
 #include <osg/StateAttribute>
 #include <osg/StateSet>
 #include <osg/ref_ptr>
+#include <osg/Vec4>
 
 #include <vector>
 #include <map>
@@ -76,8 +77,8 @@ class SG_EXPORT Texture : public StateAttribute
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         Texture(const Texture& text,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             StateAttribute(text,copyop),
-            _handleList(text._handleList),
-            _modifiedTag(text._modifiedTag),
+            _handleList(),
+            _modifiedTag(),
             _textureObjectSize(text._textureObjectSize),
             _image(copyop(text._image.get())),
             _textureUnit(text._textureUnit),
@@ -88,6 +89,7 @@ class SG_EXPORT Texture : public StateAttribute
             _mag_filter(text._mag_filter),
             _internalFormatMode(text._internalFormatMode),
             _internalFormatValue(text._internalFormatValue),
+            _borderColor(text._borderColor),
             _textureWidth(text._textureWidth),
             _textureHeight(text._textureHeight),
             _subloadMode(text._subloadMode),
@@ -280,6 +282,11 @@ class SG_EXPORT Texture : public StateAttribute
           * does not set or use texture binding. */
         virtual void applyImmediateMode(State& state) const;
 
+        /** Sets the border color for this texture. Makes difference only if
+          * wrap mode is CLAMP_TO_BORDER_ARB */
+        void setBorderColor(const Vec4& color) {_borderColor = color;}
+        const Vec4& borderColor(void) const {return _borderColor;}
+
 
         /** use deleteTextureObject instead of glDeleteTextures to allow
           * OpenGL texture objects to cached until they can be deleted
@@ -322,6 +329,8 @@ class SG_EXPORT Texture : public StateAttribute
 
         InternalFormatMode  _internalFormatMode;
         int                 _internalFormatValue;
+
+        Vec4 _borderColor;
 
         // subloaded images can have different texture and image sizes.
         mutable unsigned int _textureWidth, _textureHeight;

@@ -40,6 +40,8 @@ Texture::Texture()
 
     _subloadMode   = OFF;
     _subloadOffsX = _subloadOffsY = 0;
+
+    _borderColor.set(0.0, 0.0, 0.0, 0.0);//OpenGL default
 }
 
 
@@ -285,6 +287,11 @@ void Texture::applyImmediateMode(State& state) const
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wt );
 
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _min_filter);
+
+    if (s_borderClampSupported)
+    {
+        glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, _borderColor.ptr());
+    }
 
     if (_mag_filter == ANISOTROPIC)
     {

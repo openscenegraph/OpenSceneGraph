@@ -17,8 +17,18 @@
 class ReaderWriterSS3D : public osgDB::ReaderWriter
 {
 public:
-    ReaderWriterSS3D() { }
-
+    ReaderWriterSS3D()
+    {
+        _colorMap["WHITE"]  .set(1.0f,1.0f,1.0f,1.0f);
+        _colorMap["BLACK"]  .set(0.0f,0.0f,0.0f,1.0f);
+        _colorMap["PURPLE"] .set(1.0f,0.0f,1.0f,1.0f);
+        _colorMap["BLUE"]   .set(0.0f,0.0f,1.0f,1.0f);
+        _colorMap["RED"]    .set(1.0f,0.0f,0.0f,1.0f);
+        _colorMap["CYAN"]   .set(0.0f,1.0f,1.0f,1.0f);
+        _colorMap["YELLOW"] .set(1.0f,1.0f,0.0f,1.0f);
+        _colorMap["GREEN"]  .set(0.0f,1.0f,0.0f,1.0f);
+    }
+    
     virtual const char* className()
     {
         return "slideshow3D XML Reader/Writer";
@@ -42,9 +52,11 @@ public:
 
     osg::Vec4 mapStringToColor(const std::string& str)
     {
-        if (str=="BLACK") return osg::Vec4(0.0f,0.0f,0.0f,1.0f);
-        else return osg::Vec4(1.0f,1.0f,1.0f,1.0f);
+        return _colorMap[str];
     }
+    
+    
+    std::map<std::string,osg::Vec4> _colorMap;
 
 };
 

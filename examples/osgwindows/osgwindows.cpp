@@ -15,6 +15,9 @@
 
 static Producer::CameraConfig *BuildConfig(void)
 {
+#define TWO_SEPERATE_WINDOWS
+
+#ifdef TWO_SEPERATE_WINDOWS
     Producer::RenderSurface *rs1 = new Producer::RenderSurface;
     rs1->setScreenNum(0);
     rs1->setWindowName("osgwindows");
@@ -45,6 +48,32 @@ static Producer::CameraConfig *BuildConfig(void)
     cfg->addCamera("Camera 2", camera2);
     cfg->setInputArea(ia);
     return cfg;
+
+#else
+    // one window with four camera's.
+    Producer::Camera* pcam1 = new Producer::Camera ();
+    pcam1->setProjectionRectangle (0.0f, 0.5f, 0.5f, 1.0f);
+   
+    Producer::Camera* pcam2 = new Producer::Camera ();
+    pcam2->setRenderSurface (pcam1->getRenderSurface ());
+    pcam2->setProjectionRectangle (0.5f, 1.0f, 0.5f, 1.0f);
+
+    Producer::Camera* pcam3 = new Producer::Camera ();
+    pcam3->setRenderSurface (pcam1->getRenderSurface ());
+    pcam3->setProjectionRectangle (0.0f, 0.5f, 0.0f, 0.5f);
+
+    Producer::Camera* pcam4 = new Producer::Camera ();
+    pcam4->setRenderSurface (pcam1->getRenderSurface ());
+    pcam4->setProjectionRectangle (0.5f, 1.0f, 0.0f, 0.5f);
+
+    Producer::CameraConfig *cfg = new Producer::CameraConfig;
+    cfg->addCamera("Camera 1",pcam1);
+    cfg->addCamera("Camera 2",pcam2);
+    cfg->addCamera("Camera 3",pcam3);
+    cfg->addCamera("Camera 4",pcam4);
+    
+    return cfg;
+#endif
 }
 
 int main( int argc, char **argv )

@@ -58,7 +58,7 @@ class OSGGA_EXPORT AnimationPathManipulator : public CameraManipulator
         /** Get the keyboard and mouse usage of this manipulator.*/
         virtual void getUsage(osg::ApplicationUsage& usage) const;
             
-    private:
+    protected:
 
 	bool _valid;
 

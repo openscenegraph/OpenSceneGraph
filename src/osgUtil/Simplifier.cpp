@@ -1492,7 +1492,7 @@ void Simplifier::simplify(osg::Geometry& geometry)
 
 void Simplifier::simplify(osg::Geometry& geometry, const IndexList& protectedPoints)
 {
-    osg::notify(osg::WARN)<<"++++++++++++++simplifier************"<<std::endl;
+    osg::notify(osg::INFO)<<"++++++++++++++simplifier************"<<std::endl;
 
     EdgeCollapse ec;
     ec.setGeometry(&geometry, protectedPoints);
@@ -1505,7 +1505,7 @@ void Simplifier::simplify(osg::Geometry& geometry, const IndexList& protectedPoi
            continueSimplification((*ec._edgeSet.begin())->getErrorMetric() , numOriginalPrimitives, ec._triangleSet.size()) && 
            ec.collapseMinimumErrorEdge())
     {
-       //osg::notify(osg::WARN)<<"   Collapsed edge ec._triangleSet.size()="<<ec._triangleSet.size()<<" error="<<(*ec._edgeSet.begin())->getErrorMetric()<<" vs "<<getMaximumError()<<std::endl;
+       //osg::notify(osg::INFO)<<"   Collapsed edge ec._triangleSet.size()="<<ec._triangleSet.size()<<" error="<<(*ec._edgeSet.begin())->getErrorMetric()<<" vs "<<getMaximumError()<<std::endl;
     }
 
     osg::notify(osg::INFO)<<"******* AFTER EDGE COLLAPSE *********"<<ec._triangleSet.size()<<std::endl;
@@ -1518,9 +1518,9 @@ void Simplifier::simplify(osg::Geometry& geometry, const IndexList& protectedPoi
     osg::notify(osg::INFO)<<"Number of edges= "<<ec._edgeSet.size()<<std::endl;
     osg::notify(osg::INFO)<<"Number of boundary edges= "<<ec.computeNumBoundaryEdges()<<std::endl;
 
-    osg::notify(osg::WARN)<<std::endl<<"Simplifier, in = "<<numOriginalPrimitives<<"\tout = "<<ec._triangleSet.size()<<"\terror="<<(*ec._edgeSet.begin())->getErrorMetric()<<"\tvs "<<getMaximumError()<<std::endl<<std::endl;
-    osg::notify(osg::WARN)<<           "        !ec._edgeSet.empty()  = "<<!ec._edgeSet.empty()<<std::endl;
-    osg::notify(osg::WARN)<<           "        continueSimplification(,,)  = "<<continueSimplification((*ec._edgeSet.begin())->getErrorMetric() , numOriginalPrimitives, ec._triangleSet.size())<<std::endl;
+    osg::notify(osg::INFO)<<std::endl<<"Simplifier, in = "<<numOriginalPrimitives<<"\tout = "<<ec._triangleSet.size()<<"\terror="<<(*ec._edgeSet.begin())->getErrorMetric()<<"\tvs "<<getMaximumError()<<std::endl<<std::endl;
+    osg::notify(osg::INFO)<<           "        !ec._edgeSet.empty()  = "<<!ec._edgeSet.empty()<<std::endl;
+    osg::notify(osg::INFO)<<           "        continueSimplification(,,)  = "<<continueSimplification((*ec._edgeSet.begin())->getErrorMetric() , numOriginalPrimitives, ec._triangleSet.size())<<std::endl;
     
     ec.copyBackToGeometry();
 }

@@ -5,8 +5,6 @@
 #include <osg/Notify>
 #include <osg/GLU>
 
-typedef void (APIENTRY * MyCompressedTexImage2DArbProc) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid *data);
-
 using namespace osg;
 
 
@@ -142,8 +140,11 @@ void Texture::dirtyTextureParameters()
 
 void Texture::computeInternalFormatWithImage(osg::Image& image) const
 {
-    static bool s_ARB_Compression = isGLExtensionSupported("GL_ARB_texture_compression");
-    static bool s_S3TC_Compression = isGLExtensionSupported("GL_EXT_texture_compression_s3tc");
+    const uint contextID = 0; // state.getContextID();  // set to 0 right now, assume same paramters for each graphics context...
+    const Extensions* extensions = getExtensions(contextID,true);
+
+//    static bool s_ARB_Compression = isGLExtensionSupported("GL_ARB_texture_compression");
+//    static bool s_S3TC_Compression = isGLExtensionSupported("GL_EXT_texture_compression_s3tc");
 
     GLint internalFormat = image.getInternalTextureFormat();
     switch(_internalFormatMode)
@@ -153,7 +154,7 @@ void Texture::computeInternalFormatWithImage(osg::Image& image) const
             break;
 
         case(USE_ARB_COMPRESSION):
-            if (s_ARB_Compression)
+            if (extensions->isTextureCompressionARBSupported())
             {
                 switch(image.getPixelFormat())
                 {
@@ -173,7 +174,7 @@ void Texture::computeInternalFormatWithImage(osg::Image& image) const
             break;
 
         case(USE_S3TC_DXT1_COMPRESSION):
-            if (s_S3TC_Compression)
+            if (extensions->isTextureCompressionS3TCSupported())
             {
                 switch(image.getPixelFormat())
                 {
@@ -188,7 +189,7 @@ void Texture::computeInternalFormatWithImage(osg::Image& image) const
             break;
 
         case(USE_S3TC_DXT3_COMPRESSION):
-            if (s_S3TC_Compression)
+            if (extensions->isTextureCompressionS3TCSupported())
             {
                 switch(image.getPixelFormat())
                 {
@@ -203,7 +204,7 @@ void Texture::computeInternalFormatWithImage(osg::Image& image) const
             break;
 
         case(USE_S3TC_DXT5_COMPRESSION):
-            if (s_S3TC_Compression)
+            if (extensions->isTextureCompressionS3TCSupported())
             {
                 switch(image.getPixelFormat())
                 {
@@ -248,11 +249,15 @@ bool Texture::isCompressedInternalFormat(GLint internalFormat) const
 
 void Texture::applyTexParameters(GLenum target, State& state) const
 {
+    // get the contextID (user defined ID of 0 upwards) for the 
+    // current OpenGL context.
+    const uint contextID = state.getContextID();
+    const Extensions* extensions = getExtensions(contextID,true);
+
     WrapMode ws = _wrap_s, wt = _wrap_t;
 
     // GL_IBM_texture_mirrored_repeat, fall-back REPEAT
-    static bool s_mirroredSupported = isGLExtensionSupported("GL_IBM_texture_mirrored_repeat");
-    if (!s_mirroredSupported)
+    if (!extensions->isTextureMirroredRepeatSupported())
     {
         if (ws == MIRROR)
             ws = REPEAT;
@@ -261,8 +266,7 @@ void Texture::applyTexParameters(GLenum target, State& state) const
     }
 
     // GL_EXT_texture_edge_clamp, fall-back CLAMP
-    static bool s_edgeClampSupported = isGLExtensionSupported("GL_EXT_texture_edge_clamp");
-    if (!s_edgeClampSupported)
+    if (!extensions->isTextureEdgeClampSupported())
     {
         if (ws == CLAMP_TO_EDGE)
             ws = CLAMP;
@@ -270,8 +274,7 @@ void Texture::applyTexParameters(GLenum target, State& state) const
             wt = CLAMP;
     }
 
-    static bool s_borderClampSupported = isGLExtensionSupported("GL_ARB_texture_border_clamp");
-    if(!s_borderClampSupported)
+    if(!extensions->isTextureBorderClampSupported())
     {
         if(ws == CLAMP_TO_BORDER)
             ws = CLAMP;
@@ -285,24 +288,14 @@ void Texture::applyTexParameters(GLenum target, State& state) const
     glTexParameteri( target, GL_TEXTURE_MIN_FILTER, _min_filter);
     glTexParameteri( target, GL_TEXTURE_MAG_FILTER, _mag_filter);
 
-    if (_maxAnisotropy>1.0f)
+    if (_maxAnisotropy>1.0f && extensions->isTextureFilterAnisotropicSupported())
     {
-        // check for support for anisotropic filter,
-        // note since this is static varible it is intialised
-        // only on the first time entering this code block,
-        // is then never reevaluated on subsequent calls.
-        static bool s_anisotropicSupported =
-            isGLExtensionSupported("GL_EXT_texture_filter_anisotropic");
-
-        if (s_anisotropicSupported)
-        {
-            // note, GL_TEXTURE_MAX_ANISOTROPY_EXT will either be defined
-            // by gl.h (or via glext.h) or by include/osg/Texture.
-            glTexParameterf(target, GL_TEXTURE_MAX_ANISOTROPY_EXT, _maxAnisotropy);
-        }
+        // note, GL_TEXTURE_MAX_ANISOTROPY_EXT will either be defined
+        // by gl.h (or via glext.h) or by include/osg/Texture.
+        glTexParameterf(target, GL_TEXTURE_MAX_ANISOTROPY_EXT, _maxAnisotropy);
     }
 
-    if (s_borderClampSupported)
+    if (extensions->isTextureBorderClampSupported())
     {
         glTexParameterfv(target, GL_TEXTURE_BORDER_COLOR, _borderColor.ptr());
     }
@@ -320,6 +313,7 @@ void Texture::applyTexImage2D(GLenum target, Image* image, State& state, GLsizei
     // get the contextID (user defined ID of 0 upwards) for the 
     // current OpenGL context.
     const uint contextID = state.getContextID();
+    const Extensions* extensions = getExtensions(contextID,true);
 
     // update the modified tag to show that it is upto date.
     getModifiedTag(contextID) = image->getModifiedTag();
@@ -331,12 +325,9 @@ void Texture::applyTexImage2D(GLenum target, Image* image, State& state, GLsizei
     // select the internalFormat required for the texture.
     bool compressed = isCompressedInternalFormat(_internalFormat);
     
-    image->ensureValidSizeForTexturing();
+    image->ensureValidSizeForTexturing(extensions->maxTextureSize());
 
     glPixelStorei(GL_UNPACK_ALIGNMENT,image->getPacking());
-
-    static MyCompressedTexImage2DArbProc glCompressedTexImage2D_ptr = 
-        (MyCompressedTexImage2DArbProc)getGLExtensionFuncPtr("glCompressedTexImage2DARB");
 
     if( _min_filter == LINEAR || _min_filter == NEAREST )
     {
@@ -350,15 +341,15 @@ void Texture::applyTexImage2D(GLenum target, Image* image, State& state, GLsizei
                 image->data() );
 
         }
-        else if(glCompressedTexImage2D_ptr)
+        else if (extensions->isCompressedTexImage2DSupported())
         {
             numMimpmapLevels = 1;
             GLint blockSize = ( _internalFormat == GL_COMPRESSED_RGB_S3TC_DXT1_EXT ? 8 : 16 ); 
             GLint size = ((image->s()+3)/4)*((image->t()+3)/4)*blockSize;
-            glCompressedTexImage2D_ptr(target, 0, _internalFormat, 
-                  image->s(), image->t(),0, 
-                  size, 
-                  image->data());                
+            extensions->glCompressedTexImage2D(target, 0, _internalFormat, 
+                                               image->s(), image->t(),0, 
+                                               size, 
+                                               image->data());                
 
         }
 
@@ -403,7 +394,7 @@ void Texture::applyTexImage2D(GLenum target, Image* image, State& state, GLsizei
                     height >>= 1;
                 }
             }
-            else if(glCompressedTexImage2D_ptr)
+            else if (extensions->isCompressedTexImage2DSupported())
             {
                 GLint blockSize = ( _internalFormat == GL_COMPRESSED_RGB_S3TC_DXT1_EXT ? 8 : 16 ); 
                 GLint size = 0; 
@@ -415,8 +406,8 @@ void Texture::applyTexImage2D(GLenum target, Image* image, State& state, GLsizei
                         height = 1;
 
                     size = ((width+3)/4)*((height+3)/4)*blockSize;
-                    glCompressedTexImage2D_ptr(target, k, _internalFormat, 
-                        width, height, 0, size, image->getMipmapData(k));                
+                    extensions->glCompressedTexImage2D(target, k, _internalFormat, 
+                                                       width, height, 0, size, image->getMipmapData(k));                
 
                     width >>= 1;
                     height >>= 1;
@@ -471,36 +462,102 @@ void Texture::flushDeletedTextureObjects(uint contextID)
     }
 }
 
-
-GLint Texture::getMaxTextureSize()
-{
-    static GLint s_maxTextureSize = 0;
-    if (s_maxTextureSize == 0)
-    {
-    
-        glGetIntegerv(GL_MAX_TEXTURE_SIZE,&s_maxTextureSize);
-        notify(INFO) << "GL_MAX_TEXTURE_SIZE "<<s_maxTextureSize<<std::endl;
-        
-        char *ptr;
-        if( (ptr = getenv("OSG_MAX_TEXTURE_SIZE")) != 0)
-        {
-            GLint osg_max_size = atoi(ptr);
-            
-            notify(INFO) << "OSG_MAX_TEXTURE_SIZE "<<osg_max_size<<std::endl;
-            
-            if (osg_max_size<s_maxTextureSize)
-            {
-                
-                s_maxTextureSize = osg_max_size;
-            }
-            
-        }      
-        notify(INFO) << "Selected max texture size "<<s_maxTextureSize<<std::endl;
-    }
-    return s_maxTextureSize;
-}
-
 void Texture::compile(State& state) const
 {
     apply(state);
+}
+
+
+typedef buffered_value< ref_ptr<Texture::Extensions> > BufferedExtensions;
+static BufferedExtensions s_extensions;
+
+const Texture::Extensions* Texture::getExtensions(uint contextID,bool createIfNotInitalized)
+{
+    if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new Extensions;
+    return s_extensions[contextID].get();
+}
+
+void Texture::setExtensions(uint contextID,Extensions* extensions)
+{
+    s_extensions[contextID] = extensions;
+}
+
+Texture::Extensions::Extensions()
+{
+    setupGLExtenions();
+}
+
+Texture::Extensions::Extensions(const Extensions& rhs):
+    Referenced()
+{
+    _isTextureFilterAnisotropicSupported = rhs._isTextureFilterAnisotropicSupported;
+    _isTextureMirroredRepeatSupported = rhs._isTextureMirroredRepeatSupported;
+    _isTextureEdgeClampSupported = rhs._isTextureEdgeClampSupported;
+    _isTextureBorderClampSupported = rhs._isTextureBorderClampSupported;
+
+    _isTextureCompressionARBSupported = rhs._isTextureCompressionARBSupported;
+    _isTextureCompressionS3TCSupported = rhs._isTextureCompressionS3TCSupported;
+
+    _maxTextureSize = rhs._maxTextureSize;
+
+    _glCompressedTexImage2D = rhs._glCompressedTexImage2D;
+}
+
+void Texture::Extensions::lowestCommonDenominator(const Extensions& rhs)
+{
+    if (!rhs._isTextureFilterAnisotropicSupported) _isTextureFilterAnisotropicSupported = false;
+    if (!rhs._isTextureMirroredRepeatSupported) _isTextureMirroredRepeatSupported = false;
+    if (!rhs._isTextureEdgeClampSupported) _isTextureEdgeClampSupported = false;
+    if (!rhs._isTextureBorderClampSupported) _isTextureBorderClampSupported = false;
+    
+    if (!rhs._isTextureCompressionARBSupported) _isTextureCompressionARBSupported = false;
+    if (!rhs._isTextureCompressionS3TCSupported) _isTextureCompressionS3TCSupported = false;
+
+    if (rhs._maxTextureSize<_maxTextureSize) _maxTextureSize = rhs._maxTextureSize;
+
+    if (!rhs._glCompressedTexImage2D) _glCompressedTexImage2D = 0;
+}
+
+void Texture::Extensions::setupGLExtenions()
+{
+ 
+    _isTextureFilterAnisotropicSupported = isGLExtensionSupported("GL_EXT_texture_filter_anisotropic");
+    _isTextureMirroredRepeatSupported = isGLExtensionSupported("GL_IBM_texture_mirrored_repeat");
+    _isTextureEdgeClampSupported = isGLExtensionSupported("GL_EXT_texture_edge_clamp");
+    _isTextureBorderClampSupported = isGLExtensionSupported("GL_ARB_texture_border_clamp");
+
+    _isTextureCompressionARBSupported = isGLExtensionSupported("GL_ARB_texture_compression");
+    _isTextureCompressionS3TCSupported = isGLExtensionSupported("GL_EXT_texture_compression_s3tc");
+
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE,&_maxTextureSize);
+
+    char *ptr;
+    if( (ptr = getenv("OSG_MAX_TEXTURE_SIZE")) != 0)
+    {
+        GLint osg_max_size = atoi(ptr);
+
+        if (osg_max_size<_maxTextureSize)
+        {
+
+            _maxTextureSize = osg_max_size;
+        }
+
+    }      
+
+    _glCompressedTexImage2D = getGLExtensionFuncPtr("glCompressedTexImage2DARB");;
+
+}
+
+void Texture::Extensions::glCompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid *data) const
+{
+    if (_glCompressedTexImage2D)
+    {
+        typedef void (APIENTRY * CompressedTexImage2DArbProc) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid *data);
+        (*((CompressedTexImage2DArbProc)_glCompressedTexImage2D))(target, level, internalformat, width, height, border, imageSize, data);
+    }
+    else
+    {
+        notify(WARN)<<"Error: glCompressedTexImage2D not supported by OpenGL driver"<<std::endl;
+    }
+    
 }

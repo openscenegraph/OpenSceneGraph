@@ -153,7 +153,7 @@ class SG_EXPORT Image : public Object
           * Mip Mapped texture require the image dimensions to be
           * power of two and are within the maxiumum texture size for
           * the host machine.*/
-        void ensureValidSizeForTexturing();
+        void ensureValidSizeForTexturing(GLint maxTextureSize);
       
         /** Dirty the image, which increments the modified flag, to force osg::Texture to reload the image.*/
         inline void dirty() { ++_modifiedTag; }      

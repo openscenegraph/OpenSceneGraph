@@ -453,15 +453,13 @@ void Image::flipVertical(int image)
 
 
 
-void Image::ensureValidSizeForTexturing()
+void Image::ensureValidSizeForTexturing(GLint maxTextureSize)
 {
     int new_s = computeNearestPowerOfTwo(_s);
     int new_t = computeNearestPowerOfTwo(_t);
     
-    static GLint max_size=Texture::getMaxTextureSize();
-    
-    if (new_s>max_size) new_s = max_size;
-    if (new_t>max_size) new_t = max_size;
+    if (new_s>maxTextureSize) new_s = maxTextureSize;
+    if (new_t>maxTextureSize) new_t = maxTextureSize;
     
     if (new_s!=_s || new_t!=_t)
     {

@@ -147,6 +147,7 @@ void Texture1D::applyTexImage1D(GLenum target, Image* image, State& state, GLsiz
     // get the contextID (user defined ID of 0 upwards) for the 
     // current OpenGL context.
     const uint contextID = state.getContextID();
+    const Extensions* extensions = getExtensions(contextID,true);
 
     // update the modified tag to show that it is upto date.
     getModifiedTag(contextID) = image->getModifiedTag();
@@ -158,7 +159,7 @@ void Texture1D::applyTexImage1D(GLenum target, Image* image, State& state, GLsiz
     // select the internalFormat required for the texture.
     bool compressed = isCompressedInternalFormat(_internalFormat);
     
-    image->ensureValidSizeForTexturing();
+    image->ensureValidSizeForTexturing(extensions->maxTextureSize());
 
     glPixelStorei(GL_UNPACK_ALIGNMENT,image->getPacking());
 

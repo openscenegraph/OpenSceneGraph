@@ -183,7 +183,7 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
         return;
     }    
     
-    image->ensureValidSizeForTexturing();
+    image->ensureValidSizeForTexturing(extensions->maxTexture3DSize());
 
     glPixelStorei(GL_UNPACK_ALIGNMENT,image->getPacking());
 

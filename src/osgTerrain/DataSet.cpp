@@ -1693,33 +1693,79 @@ void DataSet::DestinationTile::optimizeResolution()
 
 osg::Node* DataSet::DestinationTile::createScene()
 {
+    osg::Geode* geode = new osg::Geode;
+
+    bool imagePresent = _imagery.valid() && _imagery->_image.valid();
+    
+    if (_dataSet->getGeometryType()==HEIGHT_FIELD)
+    {
+        osg::ShapeDrawable* shapeDrawable = createDrawableHeightField();
+        
+        if (shapeDrawable)
+        {
+            geode->addDrawable(shapeDrawable);
+
+            if (!imagePresent)
+            {
+                shapeDrawable->setColor(_dataSet->getDefaultColor());
+            }
+        }
+    }
+    else
+    {
+        osg::Geometry* geometry = createDrawablePolygonal();
+        
+        if (geometry) 
+        {       
+            geode->addDrawable(geometry);
+        
+            if (!imagePresent)
+            {
+                osg::Vec4Array* colours = new osg::Vec4Array(1);
+                (*colours)[0] = _dataSet->getDefaultColor();
+
+                geometry->setColorArray(colours);
+                geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+            }
+        }
+    }
+
+    if (imagePresent)
+    {
+        std::string imageName(_name+".rgb");
+        _imagery->_image->setFileName(imageName.c_str());
+
+        //std::cout<<"Writing out imagery to "<<imageName<<std::endl;
+        //osgDB::writeImageFile(*_imagery->_image,_imagery->_image->getFileName().c_str());
+
+        osg::StateSet* stateset = geode->getOrCreateStateSet();
+        osg::Texture2D* texture = new osg::Texture2D(_imagery->_image.get());
+        texture->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP);
+        texture->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP);
+        stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
+    }
+
+    return geode;
+
+
+}
+
+osg::ShapeDrawable* DataSet::DestinationTile::createDrawableHeightField()
+{
 
     bool heightFieldPresent = _terrain.valid() && _terrain->_heightField.valid();
-    bool imagePresent = _imagery.valid() && _imagery->_image.valid();
 
-    if (!heightFieldPresent && !imagePresent)
-    {
-        std::cout<<"**** No terrain or imagery to build tile from, will need to create some fallback ****"<<std::endl;
-        return 0;
-    }
-    
-    osg::Geode* geode = 0;
-    osg::ShapeDrawable* shapeDrawable = 0;
-    
     if (heightFieldPresent)
     {
         std::cout<<"--- Have terrain build tile ----"<<std::endl;
 
         osg::HeightField* hf = _terrain->_heightField.get();
         
-        geode = new osg::Geode;
+        osg::ShapeDrawable* shapeDrawable = new osg::ShapeDrawable(hf);
 
+        hf->setSkirtHeight(shapeDrawable->getBound().radius()*0.01f);
 
-        shapeDrawable = new osg::ShapeDrawable(hf);
-        geode->addDrawable(shapeDrawable);
-
-        hf->setSkirtHeight(geode->getBound().radius()*0.01f);
-        
+        return shapeDrawable;
     }
     else 
     {
@@ -1731,35 +1777,39 @@ osg::Node* DataSet::DestinationTile::createScene()
         hf->setXInterval(_extents.xMax()-_extents.xMin());
         hf->setYInterval(_extents.yMax()-_extents.yMin());
 
-        geode = new osg::Geode;
 
         osg::ShapeDrawable* shapeDrawable = new osg::ShapeDrawable(hf);
-        geode->addDrawable(shapeDrawable);
 
-        hf->setSkirtHeight(geode->getBound().radius()*0.01f);
-    }
-
-    if (imagePresent)
-    {
-        std::string imageName(_name+".rgb");
-        std::cout<<"Writing out imagery to "<<imageName<<std::endl;
-        _imagery->_image->setFileName(imageName.c_str());
-        //osgDB::writeImageFile(*_imagery->_image,_imagery->_image->getFileName().c_str());
-
-        osg::StateSet* stateset = geode->getOrCreateStateSet();
-        osg::Texture2D* texture = new osg::Texture2D(_imagery->_image.get());
-        texture->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP);
-        texture->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP);
-        stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
-    }
-    else if (shapeDrawable)
-    {
-        shapeDrawable->setColor(_dataSet->getDefaultColor());
-    }
+        hf->setSkirtHeight(shapeDrawable->getBound().radius()*0.01f);
         
-    return geode;
+        return shapeDrawable;
+    }
+}
+
+osg::Geometry* DataSet::DestinationTile::createDrawablePolygonal()
+{
+    std::cout<<"--------- DataSet::DestinationTile::createSceneGeometry() ------------- "<<std::endl;
 
 
+    bool heightFieldPresent = _terrain.valid() && _terrain->_heightField.valid();
+
+    if (!heightFieldPresent)
+    {
+        std::cout<<"--- Have terrain build tile ----"<<std::endl;
+
+        osg::HeightField* grid = _terrain->_heightField.get();
+
+        osg::Geometry* geometry = new osg::Geometry;
+        
+        return geometry;
+        
+    }
+    else 
+    {
+        std::cout<<"**** No terrain to build tile from use flat terrain fallback ****"<<std::endl;
+        
+        return 0;
+    }
 }
 
 void DataSet::DestinationTile::readFrom(CompositeSource* sourceGraph)
@@ -2147,7 +2197,7 @@ DataSet::DataSet()
     
     _defaultColor.set(0.5f,0.5f,1.0f,1.0f);
     _databaseType = PagedLOD_DATABASE;
-    _geometryType = POLYGONAL;
+    _geometryType = HEIGHT_FIELD;
     _textureType = COMPRESSED_TEXTURE;
 
 }

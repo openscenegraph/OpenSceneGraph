@@ -148,7 +148,8 @@ inline size_t heap_array<T, CmpT>::size() const {
 template <class T, class CmpT> 
 inline const T & heap_array<T, CmpT>::top() const {
     // Debug check to ensure heap is not empty
-    assert(! empty());
+    //assert(! empty());
+    if (empty()) throw "heap_array<T, CmpT>::top() error, heap empty";
 
     return m_Heap.front().m_Elem;
 }
@@ -157,7 +158,8 @@ inline const T & heap_array<T, CmpT>::top() const {
 template <class T, class CmpT> 
 inline const T & heap_array<T, CmpT>::peek(size_t i) const {
     // Debug check to ensure element is still present
-    assert(! removed(i));
+    //assert(! removed(i));
+    if (removed(i)) throw "heap_array<T, CmpT>::peek(size_t i) error";
 
     return (m_Heap[m_Finder[i]].m_Elem);
 }
@@ -174,8 +176,9 @@ inline void heap_array<T, CmpT>::pop() {
     m_Locked = true;
 
     // Debug check to ensure heap is not empty
-    assert(! empty());
-
+    //assert(! empty());
+    if (empty()) throw "heap_array<T, CmpT>::pop() error, heap empty";
+    
     Swap(0, size() - 1);
     m_Heap.pop_back();
     Adjust(0);
@@ -185,7 +188,7 @@ inline void heap_array<T, CmpT>::pop() {
 template <class T, class CmpT> 
 inline size_t heap_array<T, CmpT>::push(const T & Elem) {
     if (m_Locked)
-        throw heap_is_locked();
+        throw "heap_is_locked";
 
     size_t Id = size();
     m_Finder.push_back(Id);
@@ -201,7 +204,8 @@ inline void heap_array<T, CmpT>::erase(size_t i) {
     m_Locked = true;
 
     // Debug check to ensure element is still present
-    assert(! removed(i));
+    // assert(! removed(i));
+    if (removed(i)) throw "heap_array<T, CmpT>::erase(size_t i) error";
 
     size_t j = m_Finder[i];
     Swap(j, size() - 1);
@@ -225,7 +229,8 @@ inline bool heap_array<T, CmpT>::valid(size_t i) const {
 template <class T, class CmpT> 
 inline void heap_array<T, CmpT>::update(size_t i, const T & Elem) {
     // Debug check to ensure element is still present
-    assert(! removed(i));
+    // assert(! removed(i));
+    if (removed(i)) throw "heap_array<T, CmpT>::update(size_t i, const T & Elem) error";
 
     size_t j = m_Finder[i];
     m_Heap[j].m_Elem = Elem;

@@ -51,7 +51,10 @@ namespace osg {
         virtual const char* className() const { return "QuicktimeImageStream"; }
 
         /// Start or continue stream.
-        virtual void start() { setCmd(THREAD_START); }
+        virtual void play() { setCmd(THREAD_START); }
+
+        /// Pause stream at current position.
+        virtual void pause() { setCmd(THREAD_STOP); }
 
         /// Stop stream at current position.
         virtual void stop() { setCmd(THREAD_STOP); }

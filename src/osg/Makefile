@@ -88,6 +88,7 @@ TARGET_INCLUDE_FILES = \
 	osg/LightSource\
 	osg/LineSegment\
 	osg/Material\
+	osg/Math\
 	osg/Matrix\
 	osg/MemoryAdapter\
 	osg/Node\

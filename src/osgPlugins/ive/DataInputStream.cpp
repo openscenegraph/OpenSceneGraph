@@ -370,15 +370,20 @@ osg::Vec4Array* DataInputStream::readVec4Array(){
     return a;
 }
 
-osg::Matrix DataInputStream::readMatrix(){
+osg::Matrix DataInputStream::readMatrix()
+{
     osg::Matrix mat;
-    _istream->read((char*)(mat.ptr()), FLOATSIZE*16);
+    for(int r=0;r<4;r++)
+    {
+        for(int c=0;c<4;c++)
+        {
+            mat(r,c) = readFloat();
+        }
+    }
+
     if (_istream->rdstate() & _istream->failbit)
         throw Exception("DataInputStream::readMatrix(): Failed to read Matrix array.");
-//     float* p = mat.ptr();
-//     for(int i=0;i<16;i++){
-//         p[i] = readFloat();
-//     }
+
     return mat;
 }
 

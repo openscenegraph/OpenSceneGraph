@@ -20,11 +20,11 @@ osgParticle::ParticleProcessor::ParticleProcessor()
     need_ltw_matrix_(false),
     need_wtl_matrix_(false),
     current_nodevisitor_(0),
-	endless_(true),
-	lifeTime_(0.0),
-	startTime_(0.0),
-	currentTime_(0.0),
-	resetTime_(0.0)
+    endless_(true),
+    lifeTime_(0.0),
+    startTime_(0.0),
+    currentTime_(0.0),
+    resetTime_(0.0)
 {
     setCullingActive(false);
 }
@@ -38,11 +38,11 @@ osgParticle::ParticleProcessor::ParticleProcessor(const ParticleProcessor &copy,
     need_ltw_matrix_(copy.need_ltw_matrix_),
     need_wtl_matrix_(copy.need_wtl_matrix_),
     current_nodevisitor_(0),
-	endless_(copy.endless_),
-	lifeTime_(copy.lifeTime_),
-	startTime_(copy.startTime_),
-	currentTime_(copy.currentTime_),
-	resetTime_(copy.resetTime_)
+    endless_(copy.endless_),
+    lifeTime_(copy.lifeTime_),
+    startTime_(copy.startTime_),
+    currentTime_(copy.currentTime_),
+    resetTime_(copy.resetTime_)
 {
 }
 
@@ -64,30 +64,30 @@ void osgParticle::ParticleProcessor::traverse(osg::NodeVisitor &nv)
                 // retrieve the current time
                 double t = nv.getFrameStamp()->getReferenceTime();
 
-				// reset this processor if we've reached the reset point
-				if ((currentTime_ >= resetTime_) && (resetTime_ > 0)) {
-					currentTime_ = 0;
-					t0_ = -1;
-				}
+                // reset this processor if we've reached the reset point
+                if ((currentTime_ >= resetTime_) && (resetTime_ > 0)) {
+                    currentTime_ = 0;
+                    t0_ = -1;
+                }
 
-				// skip if we haven't initialized t0_ yet
+                // skip if we haven't initialized t0_ yet
                 if (t0_ != -1) {
 
-					// check whether the processor is alive
-					bool alive = false;
-					if (currentTime_ >= startTime_)	{
-						if (endless_ || (currentTime_ < (startTime_ + lifeTime_)))
-							alive = true;
-					}
+                    // check whether the processor is alive
+                    bool alive = false;
+                    if (currentTime_ >= startTime_)    {
+                        if (endless_ || (currentTime_ < (startTime_ + lifeTime_)))
+                            alive = true;
+                    }
 
-					// update current time
-					currentTime_ += t - t0_;
+                    // update current time
+                    currentTime_ += t - t0_;
 
                     // process only if the particle system is not frozen/culled
                     if (alive && 
-						enabled_ && 
-						!ps_->isFrozen() && 
-						(ps_->getLastFrameNumber() >= (nv.getFrameStamp()->getFrameNumber() - 1) || !ps_->getFreezeOnCull())) {
+                        enabled_ && 
+                        !ps_->isFrozen() && 
+                        (ps_->getLastFrameNumber() >= (nv.getFrameStamp()->getFrameNumber() - 1) || !ps_->getFreezeOnCull())) {
 
                         // initialize matrix flags
                         need_ltw_matrix_ = true;

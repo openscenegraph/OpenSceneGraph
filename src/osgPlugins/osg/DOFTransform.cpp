@@ -43,11 +43,13 @@ bool DOFTransform_readLocalData(Object& obj, Input& fr)
         {
             osg::Matrix matrix;
             int k=0;
+            double v;
             for(int i=0;i<4;++i)
             {
                 for(int j=0;j<4;++j)
                 {
-                    fr[k].getFloat(matrix(i,j));
+                    fr[k].getDouble(v);
+                    matrix(i,j)=v;
                     k++;
                 }
             }

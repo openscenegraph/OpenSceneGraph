@@ -12,7 +12,7 @@ LIBS     += -lxml2 -losgProducer -lProducer -losgDB -losgText -losgUtil -losg $(
 
 EXEC = slideshow3D
 
-INC += $(PRODUCER_INCLUDE_DIR) -I/usr/X11R6/include -I/usr/include/libxml2
+INC += $(PRODUCER_INCLUDE_DIR) $(X_INC) -I/usr/include/libxml2
 LDFLAGS  += $(PRODUCER_LIB_DIR)
 
 include $(TOPDIR)/Make/makerules

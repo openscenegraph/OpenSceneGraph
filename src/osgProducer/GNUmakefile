@@ -16,6 +16,6 @@ DEF  += -DOSGPRODUCER_LIBRARY
 TARGET_BASENAME = osgProducer
 LIB = $(LIB_PREFIX)$(TARGET_BASENAME).$(LIB_EXT)
 
-INC += -I/usr/X11R6/include
+INC += $(X_INC)
     
 include $(TOPDIR)/Make/makerules 

@@ -6,6 +6,7 @@
 #include <osg/Texture2D>
 #include <osg/TexGen>
 #include <osg/Material>
+#include <osg/LightSource>
 
 #include <osgUtil/Optimizer>
 #include <osgUtil/RenderToTextureStage>
@@ -25,6 +26,26 @@
 // for the grid data..
 #include "../osghangglide/terrain_coords.h"
 
+
+class MyTexGen : public osg::TexGen
+{
+    public:
+    
+        void setMatrix(const osg::Matrix& matrix)
+        {
+            _matrix = matrix;
+        }
+    
+        virtual void apply(osg::State& state) const
+        {
+            glPushMatrix();
+            glLoadMatrixf(_matrix.ptr());
+            TexGen::apply(state);
+            glPopMatrix();
+        }
+        
+        osg::Matrix _matrix;
+};
 
 class MyCullCallback : public osg::NodeCallback
 {
@@ -117,8 +138,7 @@ void MyCullCallback::doPreRender(osg::Node& node, osgUtil::CullVisitor& cv)
     matrix->makeLookAt(_position,bs.center(),osg::Vec3(0.0f,1.0f,0.0f));
 
 
-    osg::Matrix inverseMV;
-    inverseMV.invert(cv.getModelViewMatrix());
+    osg::Matrix MV = cv.getModelViewMatrix();
 
     // compute the matrix which takes a vertex from local coords into tex coords
     // will use this later to specify osg::TexGen..
@@ -200,12 +220,36 @@ void MyCullCallback::doPreRender(osg::Node& node, osgUtil::CullVisitor& cv)
     // with the appropriate tex gen coords.
     osg::StateSet* stateset = new osg::StateSet;
 
-    osg::TexGen* texgen = new osg::TexGen;
-    texgen->setMode(osg::TexGen::OBJECT_LINEAR);
-    texgen->setPlane(osg::TexGen::S,osg::Vec4(MVPT(0,0),MVPT(1,0),MVPT(2,0),MVPT(3,0)));
-    texgen->setPlane(osg::TexGen::T,osg::Vec4(MVPT(0,1),MVPT(1,1),MVPT(2,1),MVPT(3,1)));
-    texgen->setPlane(osg::TexGen::R,osg::Vec4(MVPT(0,2),MVPT(1,2),MVPT(2,2),MVPT(3,2)));
-    texgen->setPlane(osg::TexGen::Q,osg::Vec4(MVPT(0,3),MVPT(1,3),MVPT(2,3),MVPT(3,3)));
+
+    osg::Plane plane_s(MVPT(0,0),MVPT(1,0),MVPT(2,0),MVPT(3,0));
+    osg::Plane plane_t(MVPT(0,1),MVPT(1,1),MVPT(2,1),MVPT(3,1));
+    osg::Plane plane_r(MVPT(0,2),MVPT(1,2),MVPT(2,2),MVPT(3,2));
+    osg::Plane plane_q(MVPT(0,3),MVPT(1,3),MVPT(2,3),MVPT(3,3));
+    
+    
+//     plane_s.makeUnitLength();
+//     plane_t.makeUnitLength();
+//     plane_r.makeUnitLength();
+//     plane_q.makeUnitLength();
+    
+//     plane_s.set(inverseMV*plane_s.asVec4());
+//     plane_t.set(inverseMV*plane_t.asVec4());
+//     plane_r.set(inverseMV*plane_r.asVec4());
+//     plane_q.set(inverseMV*plane_q.asVec4());
+
+//     plane_s.transformProvidingInverse(inverseMV);
+//     plane_t.transformProvidingInverse(inverseMV);
+//     plane_r.transformProvidingInverse(inverseMV);
+//     plane_q.transformProvidingInverse(inverseMV);
+
+
+    MyTexGen* texgen = new MyTexGen;
+    texgen->setMatrix(MV);
+    texgen->setMode(osg::TexGen::EYE_LINEAR);
+    texgen->setPlane(osg::TexGen::S,plane_s);
+    texgen->setPlane(osg::TexGen::T,plane_t);
+    texgen->setPlane(osg::TexGen::R,plane_r);
+    texgen->setPlane(osg::TexGen::Q,plane_q);
 
     int _unit = 1;
 
@@ -259,136 +303,63 @@ osg::AnimationPath* createAnimationPath(const osg::Vec3& center,float radius,dou
 
 osg::Node* createBase(const osg::Vec3& center,float radius)
 {
-// 
-//     osg::Geode* geode = osgNew osg::Geode;
-//     
-//     // set up the texture of the base.
-//     osg::StateSet* stateset = osgNew osg::StateSet();
-//     osg::Image* image = osgDB::readImageFile("Images/lz.rgb");
-//     if (image)
-//     {
-// 	osg::Texture2D* texture = osgNew osg::Texture2D;
-// 	texture->setImage(image);
-// 	stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
-//     }
-//     
-//     geode->setStateSet( stateset );
-// 
-// 
-//     osg::Grid* grid = new osg::Grid;
-//     grid->allocateGrid(38,39);
-//     grid->setOrigin(center+osg::Vec3(-radius,-radius,0.0f));
-//     grid->setXInterval(radius*2.0f/(float)(38-1));
-//     grid->setYInterval(radius*2.0f/(float)(39-1));
-//     
-//     float minHeight = FLT_MAX;
-//     float maxHeight = -FLT_MAX;
-// 
-// 
-//     unsigned int r;
-//     for(r=0;r<39;++r)
-//     {
-// 	for(unsigned int c=0;c<38;++c)
-// 	{
-//             float h = vertex[r+c*39][2];
-//             if (h>maxHeight) maxHeight=h;
-//             if (h<minHeight) minHeight=h;
-//         }
-//     }
-//     
-//     float hieghtScale = radius*0.5f/(maxHeight-minHeight);
-//     float hieghtOffset = -(minHeight+maxHeight)*0.5f;
-// 
-//     for(r=0;r<39;++r)
-//     {
-// 	for(unsigned int c=0;c<38;++c)
-// 	{
-//             float h = vertex[r+c*39][2];
-// 	    grid->setHeight(c,r,(h+hieghtOffset)*hieghtScale);
-// 	}
-//     }
-// 
-//     
-//     geode->addDrawable(new osg::ShapeDrawable(grid));
-//      
-//     osg::Group* group = osgNew osg::Group;
-//     group->addChild(geode);
-//      
-//     return group;
-// 
 
-    int numTilesX = 10;
-    int numTilesY = 10;
-    
-    float width = 2*radius;
-    float height = 2*radius;
-    
-    osg::Vec3 v000(center - osg::Vec3(width*0.5f,height*0.5f,0.0f));
-    osg::Vec3 dx(osg::Vec3(width/((float)numTilesX),0.0,0.0f));
-    osg::Vec3 dy(osg::Vec3(0.0f,height/((float)numTilesY),0.0f));
-    
-    // fill in vertices for grid, note numTilesX+1 * numTilesY+1...
-    osg::Vec3Array* coords = osgNew osg::Vec3Array;
-    int iy;
-    for(iy=0;iy<=numTilesY;++iy)
-    {
-        for(int ix=0;ix<=numTilesX;++ix)
-        {
-            coords->push_back(v000+dx*(float)ix+dy*(float)iy);
-        }
-    }
-    
-    //Just two colours - black and white.
-    osg::Vec4Array* colors = osgNew osg::Vec4Array;
-    colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f)); // white
-    colors->push_back(osg::Vec4(0.0f,1.0f,1.0f,1.0f)); // black
-    int numColors=colors->size();
-    
-    
-    int numIndicesPerRow=numTilesX+1;
-    osg::UByteArray* coordIndices = osgNew osg::UByteArray; // assumes we are using less than 256 points...
-    osg::UByteArray* colorIndices = osgNew osg::UByteArray;
-    for(iy=0;iy<numTilesY;++iy)
-    {
-        for(int ix=0;ix<numTilesX;++ix)
-        {
-            // four vertices per quad.
-            coordIndices->push_back(ix    +(iy+1)*numIndicesPerRow);
-            coordIndices->push_back(ix    +iy*numIndicesPerRow);
-            coordIndices->push_back((ix+1)+iy*numIndicesPerRow);
-            coordIndices->push_back((ix+1)+(iy+1)*numIndicesPerRow);
-            
-            // one color per quad
-            colorIndices->push_back((ix+iy)%numColors);
-        }
-    }
-    
-
-    // set up a single normal
-    osg::Vec3Array* normals = osgNew osg::Vec3Array;
-    normals->push_back(osg::Vec3(0.0f,0.0f,1.0f));
-    
-
-    osg::Geometry* geom = osgNew osg::Geometry;
-    geom->setVertexArray(coords);
-    geom->setVertexIndices(coordIndices);
-    
-    geom->setColorArray(colors);
-    geom->setColorIndices(colorIndices);
-    geom->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE);
-    
-    geom->setNormalArray(normals);
-    geom->setNormalBinding(osg::Geometry::BIND_OVERALL);
-    
-    geom->addPrimitiveSet(osgNew osg::DrawArrays(osg::PrimitiveSet::QUADS,0,coordIndices->size()));
-    
     osg::Geode* geode = osgNew osg::Geode;
-    geode->addDrawable(geom);
     
+    // set up the texture of the base.
+    osg::StateSet* stateset = osgNew osg::StateSet();
+    osg::Image* image = osgDB::readImageFile("Images/lz.rgb");
+    if (image)
+    {
+	osg::Texture2D* texture = osgNew osg::Texture2D;
+	texture->setImage(image);
+	stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
+    }
+    
+    geode->setStateSet( stateset );
+
+
+    osg::Grid* grid = new osg::Grid;
+    grid->allocateGrid(38,39);
+    grid->setOrigin(center+osg::Vec3(-radius,-radius,0.0f));
+    grid->setXInterval(radius*2.0f/(float)(38-1));
+    grid->setYInterval(radius*2.0f/(float)(39-1));
+    
+    float minHeight = FLT_MAX;
+    float maxHeight = -FLT_MAX;
+
+
+    unsigned int r;
+    for(r=0;r<39;++r)
+    {
+	for(unsigned int c=0;c<38;++c)
+	{
+            float h = vertex[r+c*39][2];
+            if (h>maxHeight) maxHeight=h;
+            if (h<minHeight) minHeight=h;
+        }
+    }
+    
+    float hieghtScale = radius*0.5f/(maxHeight-minHeight);
+    float hieghtOffset = -(minHeight+maxHeight)*0.5f;
+
+    for(r=0;r<39;++r)
+    {
+	for(unsigned int c=0;c<38;++c)
+	{
+            float h = vertex[r+c*39][2];
+	    grid->setHeight(c,r,(h+hieghtOffset)*hieghtScale);
+	}
+    }
+
+    
+    geode->addDrawable(new osg::ShapeDrawable(grid));
+     
     osg::Group* group = osgNew osg::Group;
     group->addChild(geode);
-    
+     
     return group;
+
 }
 
 osg::Node* createMovingModel(const osg::Vec3& center, float radius)
@@ -419,7 +390,7 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
 // 
 //         model->addChild(xform);
 //     }
-//  
+ 
     osg::Node* cessna = osgDB::readNodeFile("cessna.osg");
     if (cessna)
     {
@@ -430,7 +401,7 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
         positioned->setDataVariance(osg::Object::STATIC);
         positioned->setMatrix(osg::Matrix::translate(-bs.center())*
                               osg::Matrix::scale(size,size,size)*
-                              osg::Matrix::rotate(osg::inDegrees(180.0f),0.0f,0.0f,1.0f));
+                              osg::Matrix::rotate(osg::inDegrees(180.0f),0.0f,0.0f,2.0f));
     
         positioned->addChild(cessna);
     
@@ -467,9 +438,17 @@ osg::Node* createModel()
     osg::Geode* lightgeode = new osg::Geode;
     lightgeode->addDrawable(new osg::ShapeDrawable(new osg::Sphere(lightPosition,radius/100.0f)));
 
+    osg::Light* light = new osg::Light;
+    light->setPosition(osg::Vec4(lightPosition,1.0f));
+    light->setLightNum(0);
+
+    osg::LightSource* lightsource = new osg::LightSource;
+    lightsource->setLight(light);
+
     occludee->setCullCallback(new MyCullCallback(occluder,texture,lightPosition));
 
     root->addChild(lightgeode);
+    root->addChild(lightsource);
     root->addChild(occluder);
     root->addChild(occludee);
 

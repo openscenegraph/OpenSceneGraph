@@ -1,4 +1,4 @@
-include $(TOPDIR)/Make/dependancies
+include $(TOPDIR)/Make/dependencies
 
 
 ################################################################

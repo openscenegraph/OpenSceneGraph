@@ -11,6 +11,7 @@
 #include <osgGA/FlightManipulator>
 #include <osgGA/DriveManipulator>
 #include <osgGA/TerrainManipulator>
+#include <osgGA/UFOManipulator>
 #include <osgGA/StateSetManipulator>
 
 #include <osgProducer/Viewer>
@@ -491,6 +492,7 @@ void Viewer::setUpViewer(unsigned int options)
     if (options&FLIGHT_MANIPULATOR) addCameraManipulator(new osgGA::FlightManipulator);
     if (options&DRIVE_MANIPULATOR) addCameraManipulator(new osgGA::DriveManipulator);
     if (options&TERRAIN_MANIPULATOR) addCameraManipulator(new osgGA::TerrainManipulator);
+    if (options&UFO_MANIPULATOR) addCameraManipulator(new osgGA::UFOManipulator);
     
     if (options&STATE_MANIPULATOR)
     {

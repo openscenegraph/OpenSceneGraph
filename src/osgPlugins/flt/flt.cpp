@@ -25,20 +25,20 @@ void flt::endian2(void* pSrc, int nSrc, void* pDst, int )
     }
     else if (nSrc == 4)
     {
-        long tmp1;
-        tmp1 = *(long *)pSrc;
+        uint32 tmp1;
+        tmp1 = *(uint32 *)pSrc;
         tmp1 = (tmp1 << 24) | ((tmp1 << 8) & 0xff0000) | ((tmp1 >> 8) & 0xff00) | ((tmp1 >> 24) & 0xff);
-        *(long *)pDst = tmp1;
+        *(uint32 *)pDst = tmp1;
     }
     else if (nSrc == 8)
     {
-        long tmp1, tmp2;
-        tmp1 = *(long *)pSrc;
-        tmp2 = *(1 + (long *)pSrc);
+        uint32 tmp1, tmp2;
+        tmp1 = *(uint32 *)pSrc;
+        tmp2 = *(1 + (uint32 *)pSrc);
         tmp1 = (tmp1 << 24) | ((tmp1 << 8) & 0xff0000) | ((tmp1 >> 8) & 0xff00) | ((tmp1 >> 24) & 0xff);
         tmp2 = (tmp2 << 24) | ((tmp2 << 8) & 0xff0000) | ((tmp2 >> 8) & 0xff00) | ((tmp2 >> 24) & 0xff);
-        *(long *)pDst = tmp2;
-        *(1 + (long *)pDst) = tmp1;
+        *(uint32 *)pDst = tmp2;
+        *(1 + (uint32 *)pDst) = tmp1;
     }
 }
 

@@ -3,8 +3,27 @@
 #include <algorithm>
 
 using namespace osg;
-
 using namespace std;
+
+class DisplaySettingsPtr
+{
+    public:
+        DisplaySettingsPtr() : _ptr(0L) {}
+        DisplaySettingsPtr(DisplaySettings* t): _ptr(t) {}
+        DisplaySettingsPtr(const DisplaySettingsPtr& rp):_ptr(rp._ptr) { }
+        ~DisplaySettingsPtr() { if (_ptr) delete _ptr; _ptr=0L; }
+
+        inline DisplaySettings* get() { return _ptr; }
+
+        DisplaySettings* _ptr;
+};
+
+DisplaySettings* DisplaySettings::instance()
+{
+    static DisplaySettingsPtr s_displaySettings = new DisplaySettings;
+    return s_displaySettings.get();
+}
+
 
 DisplaySettings::DisplaySettings(const DisplaySettings& vs):Referenced()
 {
@@ -15,7 +34,8 @@ DisplaySettings::~DisplaySettings()
 {
 }
 
-DisplaySettings& DisplaySettings::operator = (const DisplaySettings& vs)
+ 
+ DisplaySettings& DisplaySettings::operator = (const DisplaySettings& vs)
 {
     if (this==&vs) return *this;
     copy(vs);
@@ -34,6 +54,8 @@ void DisplaySettings::copy(const DisplaySettings& vs)
     _depthBuffer = vs._depthBuffer;
     _minimumNumberAlphaBits = vs._minimumNumberAlphaBits;
     _minimumNumberStencilBits = vs._minimumNumberStencilBits;
+
+    _maxNumOfGraphicsContexts = vs._maxNumOfGraphicsContexts;
 }
 
 void DisplaySettings::merge(const DisplaySettings& vs)
@@ -63,6 +85,12 @@ void DisplaySettings::setDefaults()
     _depthBuffer = true;
     _minimumNumberAlphaBits = 0;
     _minimumNumberStencilBits = 0;
+    
+    #ifdef __sgi
+    _maxNumOfGraphicsContexts = 4;
+    #else
+    _maxNumOfGraphicsContexts = 1;
+    #endif
 }
 
 void DisplaySettings::readEnvironmentalVariables()
@@ -117,6 +145,11 @@ void DisplaySettings::readEnvironmentalVariables()
     if( (ptr = getenv("OSG_SCREEN_HEIGHT")) != 0)
     {
         _screenHeight = atof(ptr);
+    }
+
+    if( (ptr = getenv("OSG_MAX_NUMBER_OF_GRAPHICS_CONTEXTS")) != 0)
+    {
+        _maxNumOfGraphicsContexts = atof(ptr);
     }
 }
 

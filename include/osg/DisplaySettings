@@ -19,6 +19,10 @@ class SG_EXPORT DisplaySettings : public osg::Referenced
 
     public:
 
+        /** Maintain a DisplaySettings singleton for objects to querry at runtime.*/
+        static DisplaySettings* instance();
+
+
         DisplaySettings()
         {
             setDefaults();
@@ -36,7 +40,10 @@ class SG_EXPORT DisplaySettings : public osg::Referenced
         
         virtual ~DisplaySettings();
 
+        
+
         DisplaySettings& operator = (const DisplaySettings& vs);
+ 
         
         void merge(const DisplaySettings& vs);
 
@@ -95,6 +102,11 @@ class SG_EXPORT DisplaySettings : public osg::Referenced
         const unsigned int getMinimumNumStencilBits() const { return _minimumNumberStencilBits; }
         const bool getStencilBuffer() const { return _minimumNumberStencilBits!=0; }
 
+
+        void setMaxNumberOfGraphicsContexts(const int num) { _maxNumOfGraphicsContexts = num; }
+        const int getMaxNumberOfGraphicsContexts() const { return _maxNumOfGraphicsContexts; }
+
+
     protected:
     
         void copy(const DisplaySettings& vs);
@@ -111,6 +123,7 @@ class SG_EXPORT DisplaySettings : public osg::Referenced
         unsigned int    _minimumNumberAlphaBits;
         unsigned int    _minimumNumberStencilBits;
 
+        int             _maxNumOfGraphicsContexts;
 
 };
 

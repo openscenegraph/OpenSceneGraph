@@ -15,6 +15,8 @@ Drawable::DeletedDisplayListCache Drawable::s_deletedDisplayListCache;
 
 Drawable::Drawable()
 {
+    _globjList.resize(DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),0);
+
     _bbox_computed = false;
 
     // Note, if your are defining a subclass from drawable which is

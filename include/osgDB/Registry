@@ -34,9 +34,9 @@ class OSGDB_EXPORT Registry
 {
     public:
 
-        ~Registry();
-
         static Registry* instance();
+
+        ~Registry();
 
 
         /** read the command line string list, removing any matched control sequences.*/

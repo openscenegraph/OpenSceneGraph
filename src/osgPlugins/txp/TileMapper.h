@@ -61,7 +61,7 @@ protected:
         }
     };
     
-    typedef std::map< TileTriple, osg::ref_ptr<osg::PagedLOD> > TileMap;
+    typedef std::map< TileTriple, osg::PagedLOD* > TileMap;
     
     OpenThreads::Mutex  _mutex;
     TileMap             _tileMap;

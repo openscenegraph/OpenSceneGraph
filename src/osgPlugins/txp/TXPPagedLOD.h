@@ -63,14 +63,16 @@ namespace txp
             _neighbours.push_back(n);
         }
 
-        int _tileX;
+		int _tileX;
         int _tileY;
         int _tileLOD;
+
+		inline const int getLastTraversedChild() const { return _lastChildTraversed; }
 
     protected:
         virtual ~TXPPagedLOD();
 
-        
+        int _lastChildTraversed;
 
         struct Neighbour
         {

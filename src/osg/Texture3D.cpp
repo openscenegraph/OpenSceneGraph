@@ -117,7 +117,7 @@ void Texture3D::apply(State& state) const
     {
 
         glBindTexture( GL_TEXTURE_3D, handle );
-        if (_texParamtersDirty) applyTexParameters(GL_TEXTURE_3D,state);
+        if (_texParametersDirty) applyTexParameters(GL_TEXTURE_3D,state);
 
         if (_subloadCallback.valid())
         {

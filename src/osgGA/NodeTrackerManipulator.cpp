@@ -72,6 +72,16 @@ void NodeTrackerManipulator::setNode(osg::Node* node)
     if (getAutoComputeHomePosition()) computeHomePosition();    
 }
 
+void NodeTrackerManipulator::setTrackNode(osg::Node* node)
+{
+    CollectParentPaths cpp;
+    node->accept(cpp);
+
+    if (!cpp._nodePaths.empty())
+    {
+        _trackNodePath = cpp._nodePaths[0];
+    }
+}
 
 const osg::Node* NodeTrackerManipulator::getNode() const
 {
@@ -321,32 +331,19 @@ void NodeTrackerManipulator::setByMatrix(const osg::Matrixd& matrix)
 
 void NodeTrackerManipulator::computeNodeWorldToLocal(osg::Matrixd& worldToLocal) const
 {
-    if (_trackNode.valid())
+    if (validateNodePath())
     {
-        CollectParentPaths cpp;
-        NodeTrackerManipulator* non_const_this = const_cast<NodeTrackerManipulator*>(this);
-        non_const_this->_trackNode->accept(cpp);
-
-        if (!cpp._nodePaths.empty())
-        {
-            worldToLocal = osg::computeWorldToLocal(cpp._nodePaths[0]);
-        }
+        worldToLocal = osg::computeWorldToLocal(_trackNodePath);
     }
 }
 
 void NodeTrackerManipulator::computeNodeLocalToWorld(osg::Matrixd& localToWorld) const
 {
-    if (_trackNode.valid())
+    if (validateNodePath())
     {
-        CollectParentPaths cpp;
-        NodeTrackerManipulator* non_const_this = const_cast<NodeTrackerManipulator*>(this);
-        non_const_this->_trackNode->accept(cpp);
-
-        if (!cpp._nodePaths.empty())
-        {
-            localToWorld = osg::computeLocalToWorld(cpp._nodePaths[0]);
-        }
+        localToWorld = osg::computeLocalToWorld(_trackNodePath);
     }
+
 }
 
 void NodeTrackerManipulator::computeNodeCenterAndRotation(osg::Vec3d& nodeCenter, osg::Quat& nodeRotation) const
@@ -354,8 +351,8 @@ void NodeTrackerManipulator::computeNodeCenterAndRotation(osg::Vec3d& nodeCenter
     osg::Matrixd localToWorld;
     computeNodeLocalToWorld(localToWorld);
     
-    if (_trackNode.valid())
-        nodeCenter = _trackNode->getBound().center()*localToWorld;
+    if (validateNodePath())
+        nodeCenter = _trackNodePath.back()->getBound().center()*localToWorld;
     else
         nodeCenter = osg::Vec3d(0.0f,0.0f,0.0f)*localToWorld;
 
@@ -482,25 +479,13 @@ bool NodeTrackerManipulator::calcMovement()
     if (dx==0 && dy==0) return false;
 
 
-    if (_trackNode.valid())
+    if (validateNodePath())
     {
-        // osg::notify(osg::NOTICE)<<"_trackNode="<<_trackNode->getName()<<std::endl;
+        osg::Matrix localToWorld;
+        localToWorld = osg::computeLocalToWorld(_trackNodePath);
 
-        CollectParentPaths cpp;
-        _trackNode->accept(cpp);
-
-        // osg::notify(osg::NOTICE)<<"number of nodepaths = "<<cpp._nodePaths.size()<<std::endl;
-        
-        if (!cpp._nodePaths.empty())
-        {
-            osg::Matrix localToWorld;
-            localToWorld = osg::computeLocalToWorld(cpp._nodePaths[0]);
-            
-            _center = _trackNode->getBound().center() * localToWorld;
-
-            
-        }
-    }        
+        _center = _trackNodePath.back()->getBound().center() * localToWorld;
+    }
 
     unsigned int buttonMask = _ga_t1->getButtonMask();
     if (buttonMask==GUIEventAdapter::LEFT_MOUSE_BUTTON)

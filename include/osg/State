@@ -411,9 +411,9 @@ class SG_EXPORT State : public Referenced
         /** Get the DisplaySettings */
         inline const DisplaySettings* getDisplaySettings() const { return _displaySettings.get(); }
 
-        typedef std::pair<const StateAttribute*,StateAttribute::OverrideValue> AttributePair;
-        typedef std::vector<AttributePair>                                     AttributeVec;
-        typedef std::vector<StateAttribute::GLModeValue>  ValueVec;
+        typedef std::pair<const StateAttribute*,StateAttribute::OverrideValue>  AttributePair;
+        typedef std::vector<AttributePair>                                      AttributeVec;
+        typedef std::vector<StateAttribute::GLModeValue>                        ValueVec;
 
     private:
 
@@ -590,7 +590,7 @@ inline void State::pushModeList(ModeMap& modeMap,const StateSet::ModeList& modeL
             // first pair so simply push incomming pair to back.
             ms.valueVec.push_back(mitr->second);
         }
-        else if (ms.valueVec.back() & StateAttribute::OVERRIDE) // check the existing override flag 
+        else if ((ms.valueVec.back() & StateAttribute::OVERRIDE) && !(mitr->second & StateAttribute::PROTECTED)) // check the existing override flag 
         {
             // push existing back since override keeps the previoius value.
             ms.valueVec.push_back(ms.valueVec.back());
@@ -618,7 +618,7 @@ inline void State::pushAttributeList(AttributeMap& attributeMap,const StateSet::
             as.attributeVec.push_back(
                 AttributePair(aitr->second.first.get(),aitr->second.second));
         }
-        else if (as.attributeVec.back().second & StateAttribute::OVERRIDE) // check the existing override flag 
+        else if ((as.attributeVec.back().second & StateAttribute::OVERRIDE) && !(aitr->second.second & StateAttribute::PROTECTED)) // check the existing override flag 
         {
             // push existing back since override keeps the previoius value.
             as.attributeVec.push_back(as.attributeVec.back());
@@ -720,7 +720,7 @@ inline void State::applyModeList(ModeMap& modeMap,const StateSet::ModeList& mode
 
             ModeStack& ms = this_mitr->second;
 
-            if (!ms.valueVec.empty() && ms.valueVec.back() & StateAttribute::OVERRIDE)
+            if (!ms.valueVec.empty() && (ms.valueVec.back() & StateAttribute::OVERRIDE) && !(ds_mitr->second & StateAttribute::PROTECTED))
             {
                 // override is on, there just treat as a normal apply on modes.
 
@@ -835,14 +835,14 @@ inline void State::applyAttributeList(AttributeMap& attributeMap,const StateSet:
         }
         else
         {
-            // this_mitr & ds_mitr refer to the same mode, check the overide
-            // if any otherwise just apply the incomming mode.
+            // this_mitr & ds_mitr refer to the same attribute, check the overide
+            // if any otherwise just apply the incomming attribute
 
             AttributeStack& as = this_aitr->second;
 
-            if (!as.attributeVec.empty() && as.attributeVec.back().second)
+            if (!as.attributeVec.empty() && (as.attributeVec.back().second & StateAttribute::OVERRIDE) && !(ds_aitr->second.second & StateAttribute::PROTECTED))
             {
-                // override is os, there just treat as a normal apply on modes.
+                // override is on, there just treat as a normal apply on modes.
 
                 if (as.changed)
                 {

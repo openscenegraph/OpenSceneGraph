@@ -457,7 +457,7 @@ class CollectLowestTransformsVisitor : public osg::NodeVisitor
 
 
         CollectLowestTransformsVisitor(Optimizer* optimizer=0):
-                    osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
+                    osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_PARENTS),
                     _optimizer(optimizer) {}
 
         virtual void apply(osg::Node& node)
@@ -760,7 +760,7 @@ void CollectLowestTransformsVisitor::setUpMaps()
         ObjectStruct& os = oitr->second;
         if (os._canBeApplied)
         {
-            if (os._moreThanOneMatrixRequired || isOperationPermissableForObject(object))
+            if (os._moreThanOneMatrixRequired || !isOperationPermissableForObject(object))
             {
                 disableObject(oitr);
             }

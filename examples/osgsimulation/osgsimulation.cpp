@@ -26,7 +26,6 @@ class GraphicsContext {
             rs->useBorder(false);
             rs->useConfigEventThread(false);
             rs->realize();
-            std::cout<<"Realized window"<<std::endl;
         }
 
         virtual ~GraphicsContext()
@@ -43,6 +42,9 @@ osg::Node* createEarth()
     
     {
         std::string filename = osgDB::findDataFile("Images/land_shallow_topo_2048.jpg");
+
+        // make osgTerrain::DataSet quieter..
+        osgTerrain::DataSet::setNotifyOffset(1);
 
         osg::ref_ptr<osgTerrain::DataSet> dataSet = new osgTerrain::DataSet;
 

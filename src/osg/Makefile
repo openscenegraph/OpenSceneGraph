@@ -12,6 +12,7 @@ C++FILES = \
 	CullFace.cpp\
 	Depth.cpp \
 	Drawable.cpp\
+	EarthSky.cpp\
 	Fog.cpp\
 	FrameStamp.cpp\
 	FrontFace.cpp\
@@ -69,6 +70,7 @@ TARGET_INCLUDE_FILES = \
 	osg/CullFace\
 	osg/Depth\
 	osg/Drawable\
+	osg/EarthSky\
 	osg/Export\
 	osg/Fog\
 	osg/FrameStamp\

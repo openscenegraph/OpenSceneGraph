@@ -2,6 +2,7 @@
 #include <osg/Notify>
 #include <osg/Depth>
 #include <osg/StateSet>
+#include <osg/EarthSky>
 
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
@@ -130,9 +131,13 @@ int main( int argc, char **argv )
         // model and clear the color and depth buffer for us, by using
         // osg::Depth, and setting their bin numbers to less than 0,
         // to force them to draw before the rest of the scene.
+  
+        osg::EarthSky* earthSky = new osg::EarthSky;
+        earthSky->setRequiresClear(false); // we've got base and sky to do it.
+        earthSky->addChild(makeSky());  // bin number -2 so drawn first.
+        earthSky->addChild(makeBase()); // bin number -1 so draw second.      
         
-        group->addChild(makeSky());  // bin number -2 so drawn first.
-        group->addChild(makeBase()); // bin number -1 so draw second.
+        group->addChild(earthSky);
 
         // the rest of the scene drawn after the base and sky above.
         group->addChild(makeTrees()); // will drop into a transparent, depth sorted bin (1)
@@ -158,10 +163,6 @@ int main( int argc, char **argv )
 
     osgUtil::SceneView* sv = viewer.getViewportSceneView(0);
     
-    // switch off the render stages clear mask as we use the earth/sky
-    // to clear it for us, see above.
-    sv->getRenderStage()->setClearMask(0);
-
     viewer.run();
 
     return 0;

@@ -3,7 +3,6 @@
 #include <osg/LOD>
 #include <osg/Billboard>
 #include <osg/LightSource>
-#include <osg/Impostor>
 #include <osg/Notify>
 #include <osg/TexEnv>
 #include <osg/AlphaFunc>
@@ -644,6 +643,23 @@ void CullVisitor::apply(LOD& node)
     // pop the culling mode.
     _cullingModeStack.pop_back();
 }
+
+void CullVisitor::apply(osg::EarthSky& node)
+{
+    // simply override the current earth sky.
+    setEarthSky(&node);
+
+    // push the node's state.
+    StateSet* node_state = node.getStateSet();
+    if (node_state) pushStateSet(node_state);
+
+    traverse(node);
+
+    // pop the node's state off the render graph stack.    
+    if (node_state) popStateSet();
+
+}
+
 
 void CullVisitor::apply(Impostor& node)
 {

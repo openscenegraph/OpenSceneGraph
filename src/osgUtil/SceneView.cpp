@@ -135,6 +135,7 @@ void SceneView::cull()
     _cullVisitor->setLODBias(_lodBias);
     _cullVisitor->setCamera(*_camera);
     _cullVisitor->setViewport(_viewport.get());
+    _cullVisitor->setEarthSky(NULL); // reset earth sky on each frame.
 
     _renderStage->reset();
 
@@ -169,6 +170,24 @@ void SceneView::cull()
     // do any state sorting required.
     _renderStage->sort();
 
+
+    const osg::EarthSky* earthSky = _cullVisitor->getEarthSky();
+    if (earthSky)
+    {
+        if (earthSky->getRequiresClear())
+        {
+            _renderStage->setClearColor(earthSky->getClearColor());
+            // really should set clear mask here, but what to? Need
+            // to consider the stencil and accumulation buffers..
+            // will defer to later.  Robert Osfield. October 2001.
+        }
+        else
+        {
+            // we have an earth sky implementation to do the work for use
+            // so we don't need to clear.
+            _renderStage->setClearMask(0);
+        }
+    }
 
     // prune out any empty RenderGraph children.
     // note, this would be not required if the _renderGraph had been

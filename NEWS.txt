@@ -1,6 +1,22 @@
 OSG News (most significant items from ChangeLog)
 ================================================
 
+OpenSceneGraph-0.9.6
+
+    >>> Improved build support, thread safety and robustness.
+    
+    The 0.9.6 release is primiarily a release which tackles build and
+    stability problems under various platforms.
+    
+    The key areas of work have been on OpenThreads and OpenProducer in 
+    particular to improve thread safety and robustness on the Win32 platform.
+    Reported crashes on exit from osgProducer::Viewer based apps, and 
+    freezes during runtime have been fixed.
+    
+    Threading problems which caused crashes in recent updates of the Terrapage
+    loader have also been fixed, and additional internal changes have been made
+    to improve the Terrapage loader's abilty to hit constant frame rates.
+
 23rd July 2003 - OpenSceneGraph-0.9.5
 
     >>> Support added for OpenGL2.0 shaders, native multi-threaded Database paging,

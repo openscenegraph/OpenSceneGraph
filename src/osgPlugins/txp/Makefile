@@ -1,6 +1,5 @@
 #!smake
 SHELL   = /bin/sh
-OSGHOME = $(shell cd ../../..; pwd)
 
 include $(OSGHOME)/Make/makedefs
 

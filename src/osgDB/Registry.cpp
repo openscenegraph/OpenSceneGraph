@@ -91,6 +91,7 @@ void Registry::readCommandLine(std::vector<std::string>& commandLine)
             if (itr!=commandLine.end())
             {
                 loadLibrary(*itr);
+                ++itr;
             }
             commandLine.erase(start,itr);
             found = true;
@@ -112,6 +113,7 @@ void Registry::readCommandLine(std::vector<std::string>& commandLine)
             {
                 std::string libName = osgDB::Registry::instance()->createLibraryNameForExt(*itr);
                 loadLibrary(libName);
+                ++itr;
             }
             commandLine.erase(start,itr);
             found = true;

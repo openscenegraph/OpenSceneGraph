@@ -28,30 +28,29 @@ rendering of true type fonts is supplied by the osgText library, this
 is optional, you only need to compile it if you require font rendering.
 
 <p>There are also support libraries such as osgGLUT  for bringing up a basic
-UI, however this is not the focus of the OSG.&nbsp; For more sophisticated
+UI, however this is not the focus of the OSG.  For more sophisticated
 user interfaces it is recommended to integrate the OSG graphics with a
-fully fledge UI toolkit, this has already been done by users for FLTK, SDL, 
-WxWindows, Qt and X, with the potential for many more. For example, osgWX is 
-also included to assist integration of wxWindows with the OSG and demonstrated
-in the wxsgv demo,  however both these libraries are not compiled by default 
-since most systems won't have wxWindows installed.  Check the mailing list 
-archives for info on these developments.  
+fully fledge UI toolkit, this has already been done by users for most of the
+leading UI toolkits, see the bazaar section on the 
+<a href="http://www.openscenegraph.org/download">http://www.openscenegraph.org/download</a>
+for examples of SDL,QT,FLTK,MFX and WX viewers.
+
 
 <p>For the purpose of demonstating the functionality of the osg, ten demo
 apps are provided, sgv (a scene graph viewer), osgconv (a command line
-utility for converted multiple input files into a native .osg target file),&nbsp;
+utility for converted multiple input files into a native .osg target file),
 hangglide (a flight simulation demo over small hang gliding site), osgcube
 (a very simple demo of an animated cube) and osgreflect (a demo of how planar
 reflections can be achieved), osgtexture (a demo of some of the various
 texture modes that the OSG supports), osgimpostor (a demo of impostors in 
 action) and osgviews (a demo of using mulitple viewports on the same or
-multiple scenes), and finally wxsgv a viewer demostrating osg integration 
-with wxWindows applications (not compiled by default.) Finally there is
-the osgtext demo which illustrates the different types of font rendering 
-support by the osgText library.
+multiple scenes). Finally there is the osgtext demo which illustrates 
+the different types of font rendering support by the osgText library.
 
 <p>This release is a ALPHA version, and is under continuous development
-with the API and features subject to change.  If you plan to use the OSG
+with the API and features subject to change.  Although this disclaimer sounds
+severe you'll probably find the OSG pretty competitive feature and maturity
+wise, even with well established commericial scene graphs. If you plan to use the OSG
 then please join the mailing list and provide us with feedback on how
 you're getting on or the problems that you come across.  This helps keep
 the OSG development going in the right direction and ensures the problems
@@ -63,7 +62,7 @@ run the demos please read the <a href="INSTALL">INSTALL</a> file.
 
 <p>Robert Osfield.
 <p>robert@openscenegraph.com.
-<br>August 2001.
+<br>Feburaru 2002.
 <p>
 <hr WIDTH="100%">
 <p><a NAME="Contacts"></a><u>Contacts</u>
@@ -110,9 +109,7 @@ file listing&nbsp; left to implement/extend/rewrite.
 <br><tt><a href="doc/doc++/osgText/HIER.html">osgText/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </tt>Scene graph text reference guide.
 <br><tt><a href="doc/doc++/osgGLUT/HIER.html">osgGLUT/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</tt>Simple GLUT based viewer base classes reference guide.
-<br><tt><a href="doc/doc++/osgWX/HIER.html">osgWX/</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</tt>wxWindows integration classes reference guide</blockquote>
+</tt>Simple GLUT based viewer base classes reference guide.</blockquote>
 
 
 <p><a href="include/">include/</a>&nbsp;&nbsp;&nbsp;&nbsp; External includes
@@ -126,9 +123,7 @@ OSG Database library header files.
 <br><tt><a href="include/osgText">include/osgText/</a>&nbsp; </tt>The
 OSG text library header files.
 <br><tt><a href="include/osgGLUT">include/osgGLUT/</a>&nbsp; </tt>The OSG
-GLUT utiltiy library header files.
-<br><tt><a href="include/osgWX">include/osgWX/</a>&nbsp;&nbsp;&nbsp; </tt>The OSG
-WX utiltiy library header files.</blockquote>
+GLUT utiltiy library header files.</blockquote>
 
 
 <p><a href="src/">src/</a>&nbsp;&nbsp;&nbsp; source files (including internal
@@ -163,10 +158,6 @@ source files.
 </tt>demo programs to bring up window and provide keyboard
 <br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </tt>and mouse interaction.
-<p><tt><a href="src/osgWX">src/osgWX</a>&nbsp; &nbsp; </tt>The OSG WX library
-source files.
-<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</tt>Contains WXEventAdapter to assist integration of wxWindnows with the OSG.
 <p><tt><a href="src/osgPlugins/">src/osgPlugins/</a>&nbsp;&nbsp;&nbsp;&nbsp;
 </tt>Import/Export/Node kit plug-ins to the OSG.</tt>
 <br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="src/osgPlugins/osg/">osg/</a>&nbsp;&nbsp;&nbsp;&nbsp;
@@ -245,12 +236,12 @@ CodeWarroir's</tt> Make/Workspace files for Mac.
 <h3>
 <a NAME="Scene graph dependencies"></a><u>Scene graph dependencies</u></h3>
 Currently the only dependancy of the core scene graph libraries (osg,osgUtil
-and osgDB) is Standard C++ and OpenGL. The osgText library, osgGLUT and osgWX 
+and osgDB) is Standard C++ and OpenGL. The osgText library, osgGLUT 
 have the following dependancies, these arn't core libraries so arn't needed
 to be compiled unless you need that feature.  The demos do however require 
 osgGLUT so its likely that you will typically need it when trying out the osg.
-The osgtext and wxsgv demos add osgText and osgWX dependancies as well, you 
-only need to compile them if you need to a demo of those features.
+The osgtext demo adds an osgText dependancies as well, you only need to compile
+them if you need to a demo of those features.
 
 <ul>
 <li>

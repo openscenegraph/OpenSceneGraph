@@ -18,7 +18,9 @@
 using namespace osg;
 
 LOD::LOD():
-    _centerMode(USE_BOUNDING_SPHERE_CENTER)
+    _centerMode(USE_BOUNDING_SPHERE_CENTER),
+    _radius(-1.0f),
+    _rangeMode(DISTANCE_FROM_EYE_POINT)
 {
 }
 
@@ -27,6 +29,7 @@ LOD::LOD(const LOD& lod,const CopyOp& copyop):
         _centerMode(lod._centerMode),
         _userDefinedCenter(lod._userDefinedCenter),
         _radius(lod._radius),
+        _rangeMode(lod._rangeMode),
         _rangeList(lod._rangeList)
 {
 }

@@ -7,7 +7,7 @@
 
 #include <stdio.h>
 // Where is malloc.h really needed?
-#if !defined(__APPLE__) && !defined(macintosh)
+#if !defined(__APPLE__) && !defined(macintosh) && !defined(__FreeBSD__)
 #include <malloc.h>
 #endif
 #include <math.h>

@@ -128,7 +128,8 @@ int main( int argc, char **argv )
                 itr!=files.end();
                 ++itr)
             {
-                osg::ref_ptr<osg::Object> obj = osgDB::readObjectFile(*itr);
+                osgDB::ReaderWriter::ReadResult result = archive.readObject(*itr);                
+                osg::ref_ptr<osg::Object> obj = result.getObject();
                 if (obj.valid())
                 {
                     if (obj.valid()) osgDB::writeObjectFile(*obj, *itr);

@@ -166,6 +166,7 @@ EXAMPLE_DIRS = \
 	osgspheresegment\
 	osgsimulation\
 	osgsimple\
+	osgsimplepager\
 	osgshaders\
 	osgshadowtexture\
 	osgdepthshadow\

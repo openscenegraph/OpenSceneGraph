@@ -141,12 +141,59 @@ int main( int argc, char **argv )
         std::string def;
         if (arguments.read(pos, "--cs",def))
         {
+            argumentRead = true;
             currentCS = !def.empty() ? SanitizeSRS(def.c_str()) : "";
             std::cout<<"--cs "<<currentCS<<std::endl;
-            argumentRead = true;
         }
         
+        if (arguments.read(pos, "--identity"))
+        {
+            argumentRead = true;
+            geoTransformSet = false;
+            geoTransform.makeIdentity();            
+        }
         
+        if (arguments.read(pos, "--xx",geoTransform(0,0)))
+        {
+            argumentRead = true;
+            geoTransformSet = true;
+            std::cout<<"--xs "<<geoTransform(0,0)<<std::endl;
+        }
+        
+        if (arguments.read(pos, "--xt",geoTransform(3,0)))
+        {
+            argumentRead = true;
+            geoTransformSet = true;
+            std::cout<<"--xo "<<geoTransform(3,0)<<std::endl;
+        }
+
+        if (arguments.read(pos, "--yy",geoTransform(1,1)))
+        {
+            argumentRead = true;
+            geoTransformSet = true;
+            std::cout<<"--yy "<<geoTransform(1,1)<<std::endl;
+        }
+
+        if (arguments.read(pos, "--yt",geoTransform(3,1)))
+        {
+            argumentRead = true;
+            geoTransformSet = true;
+            std::cout<<"--yt "<<geoTransform(3,1)<<std::endl;
+        }
+
+        if (arguments.read(pos, "--zz",geoTransform(2,2)))
+        {
+            argumentRead = true;
+            geoTransformSet = true;
+            std::cout<<"--zz "<<geoTransform(2,2)<<std::endl;
+        }
+
+        if (arguments.read(pos, "--zt",geoTransform(3,2)))
+        {
+            argumentRead = true;
+            geoTransformSet = true;
+            std::cout<<"--zt "<<geoTransform(3,2)<<std::endl;
+        }
 
         osgTerrain::DataSet::Source* source = 0;
         if (arguments.read(pos, "-d",filename))
@@ -233,8 +280,6 @@ int main( int argc, char **argv )
         arguments.writeErrorMessages(std::cout);
         return 1;
     }
-    
-    return 0;
     
     dataset->loadSources();
 

@@ -245,7 +245,7 @@ class SG_EXPORT Texture : public StateAttribute
         
         /** Set the texture subload width. If width or height are zero then
           * the repsective size value is calculated from the source image sizes. */
-        inline void setSubloadTextureSize(const int width, const int height)
+        inline void setSubloadTextureSize(const int width, const int height) const
         {
             _textureWidth = width;
             _textureHeight = height;
@@ -288,6 +288,21 @@ class SG_EXPORT Texture : public StateAttribute
             height = _subloadImageHeight;
         }
 
+        class SubloadCallback : public Referenced
+        {
+            public:
+                virtual void load(GLenum target, const Texture& texture,State& state) const = 0;
+                virtual void subload(GLenum target, const Texture& texture,State& state) const = 0;
+        };
+        
+        void setSubloadCallback(SubloadCallback* cb) { _subloadCallback = cb; _subloadMode = cb ? USE_CALLBACK:OFF; }
+        
+        SubloadCallback* getSubloadCallback() { return _subloadCallback.get(); }
+
+        const SubloadCallback* getSubloadCallback() const { return _subloadCallback.get(); }
+
+
+
         /** Get the handle to the texture object for the current context.*/
         /** return the OpenGL texture object for specified context.*/
         inline GLuint& getTextureObject(const uint contextID) const
@@ -321,24 +336,13 @@ class SG_EXPORT Texture : public StateAttribute
         virtual void compile(State& state) const;
 
 
-        /** Get the number of mip map levels the the texture has been created with,*/
+        /** Set the number of mip map levels the the texture has been created with,
+            should only be called within an osg::Texuture::apply() and custom OpenGL texture load.*/
+        void setNumMipmapLevels(unsigned int num) const { _numMimpmapLevels=num; }
+
+        /** Get the number of mip map levels the the texture has been created with.*/
         unsigned int getNumMipmapLevels() const { return _numMimpmapLevels; }
         
-
-
-        class SubloadCallback : public Referenced
-        {
-            public:
-                virtual void load(GLenum target, const Texture& texture,State& state) const;
-                virtual void subload(GLenum target, const Texture& texture,State& state) const;
-        };
-        
-        void setSubloadCallback(SubloadCallback* cb) { _subloadCallback = cb; _subloadMode = cb ? USE_CALLBACK:OFF; }
-        
-        SubloadCallback* getSubloadCallback() { return _subloadCallback.get(); }
-
-        const SubloadCallback* getSubloadCallback() const { return _subloadCallback.get(); }
-
 
 
         /** use deleteTextureObject instead of glDeleteTextures to allow

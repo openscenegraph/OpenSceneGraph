@@ -23,7 +23,6 @@
 #include <osgGLUT/glut>
 #include <osgGLUT/Viewer>
 
-
 class MyAppCallback : public osg::NodeCallback
 {
     public:
@@ -284,6 +283,119 @@ class MyGeometryCallback :
         
 };
 
+// Custom Texture subload callback, just acts the the standard subload modes in osg::Texture right now
+// but code be used to define your own style callbacks.
+class MyTextureSubloadCallback : public osg::Texture::SubloadCallback
+{
+    public:
+        virtual void load(GLenum target, const osg::Texture& texture,osg::State&) const
+        {
+            osg::notify(osg::INFO)<<"doing load"<<std::endl;
+
+            static bool s_SGIS_GenMipmap = osg::isGLExtensionSupported("GL_SGIS_generate_mipmap");
+
+            if (s_SGIS_GenMipmap && (texture.getFilter(osg::Texture::MIN_FILTER) != osg::Texture::LINEAR && texture.getFilter(osg::Texture::MIN_FILTER) != osg::Texture::NEAREST))
+            {
+                texture.setNumMipmapLevels(1); // will leave this at one, since the mipmap will be created internally by OpenGL.
+                glTexParameteri(target, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
+            }
+            else
+            {
+                texture.setNumMipmapLevels(1);
+            }
+
+            int subloadImageOffsetX;
+            int subloadImageOffsetY;
+            texture.getSubloadImageOffset(subloadImageOffsetX,subloadImageOffsetY);
+            
+            int subloadImageWidth;
+            int subloadImageHeight;
+            texture.getSubloadImageSize(subloadImageWidth,subloadImageHeight);
+
+            GLsizei width = (subloadImageWidth>0)?subloadImageWidth:texture.getImage()->s();
+            GLsizei height = (subloadImageHeight>0)?subloadImageHeight:texture.getImage()->t();
+
+            int subloadTextureOffsetX;
+            int subloadTextureOffsetY;
+            texture.getSubloadTextureOffset(subloadTextureOffsetX,subloadTextureOffsetY);
+
+            int textureWidth;
+            int textureHeight;
+            texture.getSubloadTextureSize(textureWidth, textureHeight);
+        
+            bool sizeChanged = false;
+            if (textureWidth==0)
+            {
+                // need to calculate texture dimension
+                sizeChanged = true;
+                textureWidth = 1;
+                for (; textureWidth < (static_cast<GLsizei>(subloadTextureOffsetX) + width); textureWidth <<= 1) {}
+             }
+
+            if (textureHeight==0)
+            {
+                // need to calculate texture dimension
+                sizeChanged = true;
+                textureHeight = 1;
+                for (; textureHeight < (static_cast<GLsizei>(subloadTextureOffsetY) + height); textureHeight <<= 1) {}
+            }
+            
+            if (sizeChanged)
+            {
+                texture.setSubloadTextureSize(textureWidth, textureHeight);
+            }
+
+            // reserve appropriate texture memory
+            glTexImage2D(target, 0, texture.getInternalFormatValue(),
+                         textureWidth, textureHeight, 0,
+                         (GLenum) texture.getImage()->getPixelFormat(), (GLenum) texture.getImage()->getDataType(),
+                         NULL);
+
+
+            glPixelStorei(GL_UNPACK_ROW_LENGTH,texture.getImage()->s());
+            
+
+            glTexSubImage2D(target, 0,
+                            subloadTextureOffsetX, subloadTextureOffsetY,
+                            width, height,
+                            (GLenum) texture.getImage()->getPixelFormat(), (GLenum) texture.getImage()->getDataType(),
+                            texture.getImage()->data(subloadImageOffsetX,subloadImageOffsetY));
+
+            glPixelStorei(GL_UNPACK_ROW_LENGTH,0);
+
+        }
+        
+        virtual void subload(GLenum target, const osg::Texture& texture,osg::State&) const
+        {
+            osg::notify(osg::INFO)<<"doing subload"<<std::endl;
+        
+            glPixelStorei(GL_UNPACK_ROW_LENGTH,texture.getImage()->s());
+
+            int subloadTextureOffsetX;
+            int subloadTextureOffsetY;
+            texture.getSubloadTextureOffset(subloadTextureOffsetX,subloadTextureOffsetY);
+
+            int subloadImageOffsetX;
+            int subloadImageOffsetY;
+            texture.getSubloadImageOffset(subloadImageOffsetX,subloadImageOffsetY);
+            
+            int subloadImageWidth;
+            int subloadImageHeight;
+            texture.getSubloadImageSize(subloadImageWidth,subloadImageHeight);
+
+            glTexSubImage2D(target, 0,
+                            subloadTextureOffsetX, subloadTextureOffsetY,
+                            (subloadImageWidth>0)?subloadImageWidth:texture.getImage()->s(), (subloadImageHeight>0)?subloadImageHeight:texture.getImage()->t(),
+                            (GLenum) texture.getImage()->getPixelFormat(), (GLenum) texture.getImage()->getDataType(),
+                            texture.getImage()->data(subloadImageOffsetX,subloadImageOffsetY));
+
+            glPixelStorei(GL_UNPACK_ROW_LENGTH,0);
+        }
+};
+
+
+
+
 
 osg::Node* createPreRenderSubGraph(osg::Node* subgraph)
 {
@@ -348,27 +460,12 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph)
     image->setInternalTextureFormat(GL_RGBA);
 
     osg::Texture* texture = new osg::Texture;
-    texture->setSubloadMode(osg::Texture::IF_DIRTY);
+    //texture->setSubloadMode(osg::Texture::IF_DIRTY);
+    texture->setSubloadCallback(new MyTextureSubloadCallback());
     texture->setImage(image);
     texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
     texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
     stateset->setTextureAttributeAndModes(0, texture,osg::StateAttribute::ON);
-
-//     {    
-//         // set up the second tex coord array for the an additional texture
-//         // to add texture to the flag.
-//         polyGeom->setTexCoordArray(1,texcoords);
-// 
-//         osg::Image* overlay_image = osgDB::readImageFile("tank.rgb");
-//         osg::Texture* overlay_texture = new osg::Texture;
-//         overlay_texture->setImage(overlay_image);
-//         stateset->setTextureAttributeAndModes(1, overlay_texture,osg::StateAttribute::ON);
-//         
-//         osg::TexEnv* overlay_texenv = new osg::TexEnv;
-//         overlay_texenv->setMode(osg::TexEnv::BLEND);
-//         overlay_texenv->setColor(osg::Vec4(0.3f,0.3f,0.3f,1.0f));
-//         stateset->setTextureAttribute(1, overlay_texenv);
-//     }    
 
     polyGeom->setStateSet(stateset);
 
@@ -381,10 +478,8 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph)
     
     parent->setAppCallback(new MyAppCallback(subgraph));
     
-//    parent->setCullCallback(new MyCullCallback(subgraph,texture));
     parent->setCullCallback(new MyCullCallback(subgraph,image));
  
-//    parent->addChild(billboard);
     parent->addChild(geode);
     
     return parent;

@@ -1,4 +1,4 @@
-# Microsoft Developer Studio Project File - Name="Demo osggeoemtry" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="Demo osggeometry" - Package Owner=<4>
 
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 
@@ -10,7 +10,7 @@
 
 
 
-CFG=Demo osggeoemtry - Win32 Release
+CFG=Demo osggeometry - Win32 Release
 
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 
@@ -18,7 +18,7 @@ CFG=Demo osggeoemtry - Win32 Release
 
 !MESSAGE 
 
-!MESSAGE NMAKE /f "osggeoemtry.mak".
+!MESSAGE NMAKE /f "osggeometry.mak".
 
 !MESSAGE 
 
@@ -28,7 +28,7 @@ CFG=Demo osggeoemtry - Win32 Release
 
 !MESSAGE 
 
-!MESSAGE NMAKE /f "osggeoemtry.mak" CFG="Demo osggeoemtry - Win32 Release"
+!MESSAGE NMAKE /f "osggeometry.mak" CFG="Demo osggeometry - Win32 Release"
 
 !MESSAGE 
 
@@ -36,9 +36,9 @@ CFG=Demo osggeoemtry - Win32 Release
 
 !MESSAGE 
 
-!MESSAGE "Demo osggeoemtry - Win32 Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "Demo osggeometry - Win32 Release" (based on "Win32 (x86) Console Application")
 
-!MESSAGE "Demo osggeoemtry - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "Demo osggeometry - Win32 Debug" (based on "Win32 (x86) Console Application")
 
 !MESSAGE 
 
@@ -58,7 +58,7 @@ RSC=rc.exe
 
 
 
-!IF  "$(CFG)" == "Demo osggeoemtry - Win32 Release"
+!IF  "$(CFG)" == "Demo osggeometry - Win32 Release"
 
 
 
@@ -102,11 +102,11 @@ LINK32=link.exe
 
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
 
-# ADD LINK32 /nologo /subsystem:console /pdb:none /machine:I386 /out:"../../../bin/osggeoemtry.exe" /libpath:"../../../lib"
+# ADD LINK32 /nologo /subsystem:console /pdb:none /machine:I386 /out:"../../../bin/osggeometry.exe" /libpath:"../../../lib"
 
 
 
-!ELSEIF  "$(CFG)" == "Demo osggeoemtry - Win32 Debug"
+!ELSEIF  "$(CFG)" == "Demo osggeometry - Win32 Debug"
 
 
 
@@ -150,7 +150,7 @@ LINK32=link.exe
 
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
 
-# ADD LINK32 /nologo /subsystem:console /debug /machine:I386 /nodefaultlib:"libcmt" /out:"../../../bin/osggeoemtryd.exe" /pdbtype:sept /libpath:"../../../lib"
+# ADD LINK32 /nologo /subsystem:console /debug /machine:I386 /nodefaultlib:"libcmt" /out:"../../../bin/osggeometryd.exe" /pdbtype:sept /libpath:"../../../lib"
 
 # SUBTRACT LINK32 /incremental:no
 
@@ -164,15 +164,15 @@ LINK32=link.exe
 
 
 
-# Name "Demo osggeoemtry - Win32 Release"
+# Name "Demo osggeometry - Win32 Release"
 
-# Name "Demo osggeoemtry - Win32 Debug"
+# Name "Demo osggeometry - Win32 Debug"
 
 # Begin Source File
 
 
 
-SOURCE=..\..\..\src\Demos\osggeoemtry\osggeoemtry.cpp
+SOURCE=..\..\..\src\Demos\osggeometry\osggeometry.cpp
 
 # End Source File
 

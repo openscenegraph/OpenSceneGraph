@@ -516,20 +516,31 @@ void Texture::computeRequiredTextureDimensions(State& state, const osg::Image& i
     inwidth = width;
     inheight = height;
     
-    numMipmapLevels = 0;
-    
-    for( ; (width || height) ;++numMipmapLevels)
+    bool useHardwareMipMapGeneration = !image.isMipmap() && _useHardwareMipMapGeneration && extensions->isGenerateMipMapSupported();
+
+    if( _min_filter == LINEAR || _min_filter == NEAREST || useHardwareMipMapGeneration )
     {
+        numMipmapLevels = 1;
+    }
+    else if( image.isMipmap() )
+    {
+        numMipmapLevels = image.getNumMipmapLevels();
+    }
+    else
+    {
+        numMipmapLevels = 0;
+        for( ; (width || height) ;++numMipmapLevels)
+        {
 
-        if (width == 0)
-            width = 1;
-        if (height == 0)
-            height = 1;
+            if (width == 0)
+                width = 1;
+            if (height == 0)
+                height = 1;
 
-
-        width >>= 1;
-        height >>= 1;
-    }    
+            width >>= 1;
+            height >>= 1;
+        }    
+    }
 }
 
 bool Texture::areAllTextureObjectsLoaded() const

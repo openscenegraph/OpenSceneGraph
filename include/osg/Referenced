@@ -36,7 +36,7 @@ class SG_EXPORT Referenced
 
         inline Referenced& operator = (Referenced&) { return *this; }
 
-        friend DeleteHandler;
+        friend struct DeleteHandler;
 
         static void setDeleteHandler(DeleteHandler* handler);
 

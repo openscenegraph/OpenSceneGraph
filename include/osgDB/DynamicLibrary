@@ -59,7 +59,7 @@ class OSGDB_EXPORT DynamicLibrary : public osg::Referenced
         /** disallow copy constructor.*/
         DynamicLibrary(const DynamicLibrary&):osg::Referenced() {}
         /** disallow copy operator.*/
-        DynamicLibrary& operator == (const DynamicLibrary&) { return *this; }
+        DynamicLibrary& operator = (const DynamicLibrary&) { return *this; }
         
         /** Disallow public construction so that users have to go
           * through loadLibrary() above which returns NULL on 

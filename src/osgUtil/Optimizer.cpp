@@ -2024,6 +2024,12 @@ bool Optimizer::SpatializeGroupsVisitor::divide(osg::Group* group, unsigned int 
 
     osg::notify(osg::INFO)<<"Dividing "<<group->className()<<"  num children = "<<group->getNumChildren()<<"  xAxis="<<xAxis<<"  yAxis="<<yAxis<<"   zAxis="<<zAxis<<std::endl;
     
+    if (!xAxis && !yAxis && !zAxis)
+    {
+        osg::notify(osg::INFO)<<"  No axis to divide, stopping division."<<std::endl;
+        return false;
+    }
+    
     unsigned int numChildrenOnEntry = group->getNumChildren();
     
     typedef std::pair< osg::BoundingBox, osg::ref_ptr<osg::Group> > BoxGroupPair;

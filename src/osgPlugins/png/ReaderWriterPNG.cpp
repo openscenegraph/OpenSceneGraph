@@ -102,7 +102,7 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
             data = (png_bytep) malloc(png_get_rowbytes(png, info)*height);
             row_p = (png_bytep *) malloc(sizeof(png_bytep)*height);
 
-            bool StandardOrientation = false;
+            bool StandardOrientation = true;
             for (i = 0; i < height; i++)
             {
                 if (StandardOrientation)

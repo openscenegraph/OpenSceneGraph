@@ -208,8 +208,8 @@ void CullVisitor::popProjectionMatrix()
 
             //std::cout << "Perspective projection "<<projection<<std::endl;
 
-            std::cout << "_computed_znear"<<_computed_znear<<std::endl;
-            std::cout << "_computed_zfar"<<_computed_zfar<<std::endl;
+            //std::cout << "_computed_znear"<<_computed_znear<<std::endl;
+            //std::cout << "_computed_zfar"<<_computed_zfar<<std::endl;
 
 
             NearFarReal desired_znear = _computed_znear *0.98;
@@ -221,8 +221,8 @@ void CullVisitor::popProjectionMatrix()
             double min_near_plane = _computed_zfar*_nearFarRatio;
             if (desired_znear<min_near_plane) desired_znear=min_near_plane;
 
-            std::cout << "   desired_znear"<<desired_znear<<std::endl;
-            std::cout << "   desired_zfar"<<desired_zfar<<std::endl;
+            //std::cout << "   desired_znear"<<desired_znear<<std::endl;
+            //std::cout << "   desired_zfar"<<desired_zfar<<std::endl;
 
             // assign the clamped values back to the computed values.
             _computed_znear = desired_znear;

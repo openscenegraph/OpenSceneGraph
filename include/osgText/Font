@@ -66,8 +66,8 @@ public:
     /** Set the pixel width and height hint.*/
     virtual void setSize(unsigned int width, unsigned int height);
     
-    unsigned int getWidth();
-    unsigned int getHeight();
+    unsigned int getWidth() const;
+    unsigned int getHeight() const;
 
     /** Get a kerning (adjustment of spacing of two adjacent character) for specified charcodes, w.r.t the current font size hint.*/
     virtual osg::Vec2 getKerning(unsigned int leftcharcode,unsigned int rightcharcode, KerningType kerningType);

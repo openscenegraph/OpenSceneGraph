@@ -122,12 +122,12 @@ void Font::setSize(unsigned int width, unsigned int height)
     if (_implementation.valid()) _implementation->setSize(width, height);
 }
 
-unsigned int Font::getWidth()
+unsigned int Font::getWidth() const
 {
     return _width;
 }
 
-unsigned int Font::getHeight()
+unsigned int Font::getHeight() const
 {
     return _height;
 }

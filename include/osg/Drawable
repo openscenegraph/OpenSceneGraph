@@ -185,7 +185,7 @@ class SG_EXPORT Drawable : public Object
         struct CullCallback : public osg::Referenced
         {
                 /** do customized cull code.*/
-                virtual bool cull(osg::NodeVisitor *visitor, osg::Drawable* drawable) const = 0;
+                virtual bool cull(osg::NodeVisitor *visitor, osg::Drawable* drawable, osg::State *state=NULL) const = 0;
         };
 
         /** Set the CullCallback which allows users to attach customize the drawing of existing Drawable object.*/

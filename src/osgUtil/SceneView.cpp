@@ -369,6 +369,8 @@ void SceneView::cullStage(osg::Matrix* projection,osg::Matrix* modelview,osgUtil
     cullVisitor->setRenderGraph(rendergraph);
     cullVisitor->setRenderStage(renderStage);
 
+    cullVisitor->setState( _state.get() );
+
     renderStage->reset();
 
     // comment out reset of rendergraph since clean is more efficient.

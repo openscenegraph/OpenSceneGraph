@@ -373,8 +373,8 @@ class SG_EXPORT Texture : public StateAttribute
         mutable unsigned int _textureWidth, _textureHeight;
 
         SubloadMode _subloadMode;
-        unsigned GLint _subloadOffsX, _subloadOffsY;
-        unsigned GLsizei _subloadWidth, _subloadHeight;
+        GLint _subloadOffsX, _subloadOffsY;
+        GLsizei _subloadWidth, _subloadHeight;
 
         // static cache of deleted display lists which can only 
         // by completely deleted once the appropriate OpenGL context

@@ -15,12 +15,17 @@
 
 using namespace osg;
 
-PolygonOffset::PolygonOffset()
+PolygonOffset::PolygonOffset():
+    _factor(0.0f),
+    _units(0.0f)
 {
-    _factor = 0.0f;              // are these sensible defaut values?
-    _units = 0.0f;
 }
 
+PolygonOffset::PolygonOffset(float factor, float units):
+    _factor(factor),
+    _units(units)
+{
+}
 
 PolygonOffset::~PolygonOffset()
 {

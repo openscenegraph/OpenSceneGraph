@@ -238,11 +238,13 @@ ImpostorSprite* ImpostorSpriteManager::createOrReuseImpostorSprite(int s,int t,i
     stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
     stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
 
+
+    stateset->setAttributeAndModes( _alphafunc.get(), StateAttribute::ON );
+
     Texture* texture = osgNew Texture;
 
-    stateset->setAttributeAndModes(texture,StateAttribute::ON);
-    stateset->setAttributeAndModes( _alphafunc.get(), StateAttribute::ON );
-    stateset->setAttribute(_texenv.get());
+    stateset->setTextureAttributeAndModes(0,texture,StateAttribute::ON);
+    stateset->setTextureAttribute(0,_texenv.get());
 
 /*
     TexEnv* texenv = osgNew TexEnv;

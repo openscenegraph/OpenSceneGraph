@@ -171,6 +171,10 @@ SOURCE=..\..\src\osg\ConvexPlanarPolygon.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\CoordinateSystemNode.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\CopyOp.cpp
 # End Source File
 # Begin Source File
@@ -548,6 +552,10 @@ SOURCE=..\..\Include\Osg\ConvexPlanarOccluder
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\ConvexPlanarPolygon
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\CoordinateSystemNode
 # End Source File
 # Begin Source File
 

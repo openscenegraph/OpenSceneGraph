@@ -1093,6 +1093,11 @@ void ClusterCullingCallback::computeFrom(const osg::Drawable* drawable)
     TriangleFunctor<ComputeDeviationFunctor> cdf;
     cdf.set(_controlPoint,_normal);
     drawable->accept(cdf);
+    
+//    osg::notify(osg::NOTICE)<<"ClusterCullingCallback::computeFrom() _controlPoint="<<_controlPoint<<std::endl;
+//    osg::notify(osg::NOTICE)<<"                                      _normal="<<_normal<<std::endl;
+//    osg::notify(osg::NOTICE)<<"                                      cdf._deviation="<<cdf._deviation<<std::endl;
+    
 
     if (_normal.length2()==0.0) _deviation = -1.0f;
     else 
@@ -1115,11 +1120,18 @@ void ClusterCullingCallback::set(const osg::Vec3& controlPoint, const osg::Vec3&
 
 bool ClusterCullingCallback::cull(osg::NodeVisitor* nv, osg::Drawable* , osg::State*) const
 {
-    if (_deviation<=-1.0f) return false;
+    if (_deviation<=-1.0f)
+    {
+//        osg::notify(osg::NOTICE)<<"ClusterCullingCallback::cull()  _deviation="<<_deviation<<std::endl;
+        return false;
+    }
     
     osg::Vec3 eye_cp = nv->getEyePoint() - _controlPoint;
     
     float deviation = (eye_cp * _normal)/eye_cp.length();
+
+//    osg::notify(osg::NOTICE)<<"ClusterCullingCallback::cull() _normal="<<_normal<<" _controlPointtest="<<_controlPoint<<" eye_cp="<<eye_cp<<std::endl;
+//    osg::notify(osg::NOTICE)<<"                             deviation="<<deviation<<" _deviation="<<_deviation<<" test="<<(deviation < _deviation)<<std::endl;
 
     return deviation < _deviation;
 }

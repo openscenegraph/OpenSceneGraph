@@ -20,6 +20,7 @@ CXXFILES =\
 	CollectOccludersVisitor.cpp\
 	ConvexPlanarPolygon.cpp\
 	ConvexPlanarOccluder.cpp\
+	CoordinateSystemNode.cpp\
 	CopyOp.cpp\
 	CullFace.cpp\
 	CullingSet.cpp\

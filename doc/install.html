@@ -22,7 +22,7 @@ than C++, STL and OpenGL.
 </p>
 
 <p>
-The new osgText library adds the dependency of the freetype library
+The osgText library adds the dependency of the freetype library
 for support of true type fonts, however it is not essential to the core
 library, so you can comment it out from compilation by modifying the src/Makefile,
 and src/Demos/Makefile. I you wish to use fonts then you can download freetype
@@ -44,20 +44,48 @@ core osg library and viewer has been designed to load the plug-ins at run-time
 only and if they are required to load a specific data set. If you don't
 need them for your datasets then it won't matter that you haven't been
 able to compile all the plug-ins. A full list of dependencies and where
-to download the required libraries are listed in the index.html.
+to download the required libraries are listed in the
+<i><a href="dependencies.html">
+dependencies.html</a></i>
 </p>
 
 <p>
 If you're coming across the OSG for the first time and want to get started
 quickly, go right ahead and follow the compilation instructions. You can
 always later download the libraries which the plug-ins require if you eventually
-need them. If you haven't already checked it out, for a list of distribution
-contents, contacts and links to documentation check out index.html.
+need them.
+</p>
 
+<ul>
+<li><a href="#Compiling under Windows with Visual Studio">Compiling under Windows with Visual Studio</a></li>
+<br>
+
+<li>Compiling under Unix (including Mac OSX and Cygwin)</li>
+<br>
+
+<p>
+Building the OSG requires 'gmake', due to the extensive use of gmake directives
+in the Makefiles. You can get gmake from here if you don't already have
+it installed: http://www.gnu.org/software/make/
+</p>
+
+<p>
+Almost all of the unix compling is done simply with <b>make; make install</b> with <b>make help</b> to bring up help.
+For platform specific details:
+</p>
+<ul>
+<li><a href="#Cygwin">Cygwin</a></li>
+<li><a href="#Linux">Linux</a></li>
+<li><a href="#Free BSD">Free BSD</a></li>
+<li><a href="#Mac OSX">Mac OSX</a></li>
+<li><a href="#IRIX">IRIX</a></li>
+<li><a href="#Solaris">Solaris</a></li>
+</ul>
+</ul>
 <hr>
 
 <h2>
-Compiling under Windows</h2>
+<u><a name="Compiling under Windows with Visual Studio">Compiling under Windows with Visual Studio.</a></u></h2>
 <p>The Microsoft Visual C++ 6.0 workspace file is VisualStudio.dsw located
 in the VisualStudio below the OSG this root directory. The OSG will compile
 with the basic VisualC++6.0, but its recommended that you use Service Pack
@@ -109,17 +137,10 @@ list, thus overriding MS's own STL implementations.
 </p>
 
 <br>
-<br>
 <hr>
 
 
-<h2>
-Compiling under all UNIX (including CYGWIN & Mac OSX) Platforms</h2>
-Building the OSG requires 'gmake', due to the extensive use of gmake directives
-in the Makefiles. You can get gmake from here if you don't already have
-it installed: http://www.gnu.org/software/make/
-<h2>
-Compiling under Linux</h2>
+<h2><u><a name="Linux">Compiling under Linux</a></u></h2>
 Compile, from the OSG root directory, ('%' is UNIX csh prompt) type:
 <blockquote><tt>% make</tt></blockquote>
 Note, make should automatically detect linux and build optimized targets
@@ -164,8 +185,7 @@ osgText.) Good luck everyone. - Clay
 <br>
 <hr>
 
-<h2>
-Compiling under FreeBSD</h2>
+<h2><u><a name="Free BSD">Compiling under FreeBSD</a></u></h2>
 Compile, from the OSG root directory, ('%' is UNIX csh prompt) type:
 <blockquote><tt>% make</tt></blockquote>
 Note, make should automatically detect linux and build optimized targets
@@ -181,8 +201,7 @@ To get full details of make options, type:
 <br>
 <hr>
 
-<h2>
-Compiling under IRIX</h2>
+<h2><u><a name="IRIX">Compiling under IRIX</a></u></h2>
 Since the OSG uses Standard C++ features such as STL it is important to
 have an up to date version of the MIPSPro compilers, ie. 7.3 or later.
 Support for MIPSPro7.2.1 has now been dropped since it was becoming to
@@ -202,8 +221,7 @@ To get full details of make options, type:
 
 <hr>
 
-<h2>
-Compiling under Solaris</h2>
+<h2><u><a name="Solaris">Compiling under Solaris</a></u></h2>
 Compile, from the OSG root directory, ('%' is UNIX csh prompt) type:
 <blockquote><tt>% make</tt></blockquote>
 Note, make should automatically detect linux and build optimized targets
@@ -218,8 +236,7 @@ To get full details of make options, type:
 
 <hr>
 
-<h2>
-Compiling under MacOS X (instructions written by Phil Atkin)</h2>
+<h2><u><a name="Mac OSX">Compiling under MacOS X (instructions written by Phil Atkin)</a></u></h2>
 For anyone who's ever used a Unix box for development it really is so simple
 it's insane.
 <p>You need to have installed the Developer tools from the CD that comes
@@ -282,8 +299,7 @@ forewarned is forearmed.
 
 <hr>
 
-<h2>
-Compiling under Cygwin</h2>
+<h2><u><a name="Cygwin">Compiling under Cygwin</a></u></h2>
 To compile, from the OSG root directory, type: make Note, make should automatically
 detect your system and build optimized targets for your system. And if
 you wish to install the OSG type: make install Note that make symbolic

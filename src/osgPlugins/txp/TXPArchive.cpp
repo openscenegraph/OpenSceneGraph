@@ -82,11 +82,28 @@ bool TXPArchive::openFile(const std::string& archiveName)
         header->GetExtents(_swExtents,_neExtents);
     }
 
+    /*
+    int numTextures;
+    texTable.GetNumTextures(numTextures);
+    _textures.resize(numTextures);
+    */
+
+    int numModel;
+    modelTable.GetNumModels(numModel);
+    _models.resize(numModel);
+
     return true;
+}
+
+bool TXPArchive::loadMaterial(int ix)
+{
+    return false;
 }
 
 bool TXPArchive::loadMaterials()
 {
+    osg::notify(osg::NOTICE) << "txp:: Loading materials ..." << std::endl;
+
     trpgrImageHelper image_helper(this->GetEndian(),getDir(),materialTable,texTable);
 
     int numTextures;
@@ -341,53 +358,68 @@ bool TXPArchive::loadMaterials()
           _gstates[i] = osg_state_set;
         }
     }
+
+    osg::notify(osg::NOTICE) << "txp:: ... done." << std::endl;
+    return true;
+}
+
+bool TXPArchive::loadModel(int ix)
+{
+    trpgModel *mod = modelTable.GetModelRef(ix);
+    int type;
+    mod->GetType(type);
+
+    // Only dealing with external models currently
+    if (type == trpgModel::External)
+    {
+        char name[1024];
+        mod->GetName(name,1023);
+
+        // Load the model.  It's probably not TerraPage
+        osg::Node *osg_model = osgDB::readNodeFile(name);
+        if (!osg_model)
+        {
+            osg::notify(osg::WARN) << "TrPageArchive::LoadModels() error: "
+                            << "failed to load model: "
+                            << name << std::endl;
+        }
+        // Do this even if it's NULL
+        _models[ix] = osg_model;
+    }
+/*
+    else
+    {
+        trpgMemReadBuffer buf(GetEndian());
+        mod->Read(buf);
+        Group *osg_model = parse->ParseScene(buf, m_gstates , m_models);
+        m_models.push_back(osg_model);  
+    }
+*/
     return true;
 }
 
 bool TXPArchive::loadModels()
 {
+    osg::notify(osg::NOTICE) << "txp:: Loading models ..." << std::endl;
+
     int numModel;
     modelTable.GetNumModels(numModel);
+    _models.resize(numModel);
 
     // Iterate over the models
     for (int i=0; i< numModel; i++)
     {
-        trpgModel *mod = modelTable.GetModelRef(i);
-        int type;
-        mod->GetType(type);
-
-        // Only dealing with external models currently
-        if (type == trpgModel::External)
-        {
-            char name[1024];
-            mod->GetName(name,1023);
-
-            // Load the model.  It's probably not TerraPage
-            osg::Node *osg_model = osgDB::readNodeFile(name);
-            if (!osg_model)
-            {
-                osg::notify(osg::WARN) << "TrPageArchive::LoadModels() error: "
-                                << "failed to load model: "
-                                << name << std::endl;
-            }
-            // Do this even if it's NULL
-            _models.push_back(osg_model);
-        }
-    /*
-        else
-        {
-            trpgMemReadBuffer buf(GetEndian());
-            mod->Read(buf);
-            Group *osg_model = parse->ParseScene(buf, m_gstates , m_models);
-            m_models.push_back(osg_model);  
-        }
-    */
+        loadModel(i);
     }
+
+    osg::notify(osg::NOTICE) << "txp:: ... done." << std::endl;
     return true;
 }
 
 bool TXPArchive::loadLightAttributes()
 {
+    osg::notify(osg::NOTICE) << "txp:: Loading light attributes ..." << std::endl;
+
     int num;
     lightTable.GetNumLightAttrs(num);
     for ( int attr_num = 0; attr_num < num; attr_num++    )
@@ -484,6 +516,8 @@ bool TXPArchive::loadLightAttributes()
 
         addLightAttribute(osgLight, stateSet, osg::Vec3(normal.x,normal.y,normal.z));
     }
+
+    osg::notify(osg::NOTICE) << "txp:: ... done." << std::endl;
     return true;
 }
 
@@ -557,7 +591,7 @@ osg::Group* TXPArchive::getTileContent(int x, int y, int lod)
     trpgMemReadBuffer buf(GetEndian());
     if (!ReadTile(x,y,lod,buf))
     {
-		return new osg::Group;
+        return new osg::Group;
     }
 
     osg::Group *tileGroup = _parser->parseScene(buf,_gstates,_models);

@@ -293,7 +293,7 @@ void Texture2D::copyTexImage2D(State& state, int x, int y, int width, int height
 
 
     // inform state that this texture is the current one bound.
-    state.haveAppliedAttribute(this);
+    state.haveAppliedTextureAttribute(state.getActiveTextureUnit(), this);
 }
 
 void Texture2D::copyTexSubImage2D(State& state, int xoffset, int yoffset, int x, int y, int width, int height )
@@ -336,7 +336,7 @@ void Texture2D::copyTexSubImage2D(State& state, int xoffset, int yoffset, int x,
         if (hardwareMipMapOn) glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_FALSE);
 
         // inform state that this texture is the current one bound.
-        state.haveAppliedAttribute(this);
+        state.haveAppliedTextureAttribute(state.getActiveTextureUnit(), this);
 
     }
     else

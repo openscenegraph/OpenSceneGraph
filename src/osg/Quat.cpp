@@ -36,23 +36,24 @@ void Quat::makeRotate( const float angle, const Vec3& vec )
     makeRotate( angle, vec[0], vec[1], vec[2] );
 }
 
+
+// assume Z up, Y north, X east and euler convention
+// as per Open Flight & Performer.
+// applies a positive rotation about Y axis for roll,
+// then applies a positive roation about X for pitch,
+// and finally a negative rotation about the Z axis.
 void Quat::makeRotate( float heading, float pitch, float roll)
 {
-
-    // lifted straight from SOLID library v1.01 Quaternion.h
-    // available from http://www.win.tue.nl/~gino/solid/
-    // and also distributed under the LGPL
-    float cosHeading = cos(heading / 2);
-    float sinHeading = sin(heading / 2);
-    float cosPitch = cos(pitch / 2);
-    float sinPitch = sin(pitch / 2);
-    float cosRoll = cos(roll / 2);
-    float sinRoll = sin(roll / 2);
-    set(sinRoll * cosPitch * cosHeading - cosRoll * sinPitch * sinHeading,
-            cosRoll * sinPitch * cosHeading + sinRoll * cosPitch * sinHeading,
-            cosRoll * cosPitch * sinHeading - sinRoll * sinPitch * cosHeading,
-            cosRoll * cosPitch * cosHeading + sinRoll * sinPitch * sinHeading);
-            
+    Quat q_roll; q_roll.makeRotate(roll,0.0,1.0,0.0);
+    Quat q_pitch; q_pitch.makeRotate(pitch,1.0,0.0,0.0);
+    Quat q_heading; q_heading.makeRotate(-heading,0.0,0.0,1.0);
+    
+    // note reverse order than would be done using matrices
+    // which raises the interesting question whether the definition
+    // of Quat*Quat should be changed to fit with the v' = v x M 
+    // convention of Matrix.  Will investigate further later on.
+    // Robert Osfield. April 2002.
+    *this = q_heading*q_pitch*q_roll;
 }
 
 // Make a rotation Quat which will rotate vec1 to vec2
@@ -288,3 +289,47 @@ void Quat::get( Matrix& m ) const
     m(2,3) = 0;
     m(3,3) = 1;
 }
+
+#ifdef OSG_USE_UNIT_TESTS
+void test_Quat_Eueler(float heading,float pitch,float roll)
+{
+    osg::Quat q;
+    q.makeRotate(heading,pitch,roll);
+    
+    osg::Matrix q_m;
+    q.get(q_m);
+    
+    osg::Vec3 xAxis(1,0,0);
+    osg::Vec3 yAxis(0,1,0);
+    osg::Vec3 zAxis(0,0,1);
+    
+    cout << "heading = "<<heading<<"  pitch = "<<pitch<<"  roll = "<<roll<<endl;
+
+    cout <<"q_m = "<<q_m;
+    cout <<"xAxis*q_m = "<<xAxis*q_m << endl;
+    cout <<"yAxis*q_m = "<<yAxis*q_m << endl;
+    cout <<"zAxis*q_m = "<<zAxis*q_m << endl;
+    
+    osg::Matrix r_m = osg::Matrix::rotate(roll,0.0,1.0,0.0)*
+                      osg::Matrix::rotate(pitch,1.0,0.0,0.0)*
+                      osg::Matrix::rotate(-heading,0.0,0.0,1.0);
+                      
+    cout << "r_m = "<<r_m;
+    cout <<"xAxis*r_m = "<<xAxis*r_m << endl;
+    cout <<"yAxis*r_m = "<<yAxis*r_m << endl;
+    cout <<"zAxis*r_m = "<<zAxis*r_m << endl;
+    
+    cout << endl<<"*****************************************" << endl<< endl;
+    
+}
+
+void test_Quat()
+{
+
+    test_Quat_Eueler(osg::DegreesToRadians(20),0,0);
+    test_Quat_Eueler(0,osg::DegreesToRadians(20),0);
+    test_Quat_Eueler(0,0,osg::DegreesToRadians(20));
+    test_Quat_Eueler(osg::DegreesToRadians(20),osg::DegreesToRadians(20),osg::DegreesToRadians(20));
+    return 0;
+}
+#endif

@@ -18,6 +18,13 @@
 // Global variables - this is basically the stuff which will be animated
 // ----------------------------------------------------------------------
 
+
+osg::Geode* createCube();   //Forward Declaration added by SMW
+
+
+
+
+
 class MyTransformCallback : public osg::NodeCallback{
 
     public:
@@ -52,6 +59,23 @@ class MyTransformCallback : public osg::NodeCallback{
                         _nodeToOperateOn->setMatrix(matrix);
 
                         _previousTraversalNumber = nv->getTraversalNumber();
+
+// Some memory stress testing added by Steve to reveal crashes under Windows.
+//                         //  Start Added by SMW
+//                         osg::Transform* Tnode = (osg::Transform *)node;
+//                         int i;
+//                         osg::Node *n;
+//                         while (Tnode->getNumChildren() > 0)
+//                         {
+//                            n = Tnode->getChild(0);
+//                            Tnode->removeChild(n);
+//                         }
+//                         for (i = 0;i < 500;i++)
+//                         {
+//                             Tnode->addChild( createCube() );
+//                         }
+//                         //  End Added by SMW
+
                     }
                 }
             }

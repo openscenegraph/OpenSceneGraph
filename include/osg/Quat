@@ -70,13 +70,13 @@ class SG_EXPORT Quat
 	Also define methods for conjugate and the multiplicative inverse.		    
 	------------------------------------------------------------- */
 	/// Multiply by scalar 
-        inline const Quat operator * (const float& rhs) const
+        inline const Quat operator * (const float rhs) const
         {
             return Quat(_fv*rhs);
         }
 
 	/// Unary multiply by scalar 
-        inline Quat& operator *= (const float& rhs)
+        inline Quat& operator *= (const float rhs)
         {
             _fv*=rhs;
             return *this;		// enable nesting
@@ -200,7 +200,7 @@ class SG_EXPORT Quat
 	Not inlined - see the Quat.cpp file for implementation
 	-------------------------------------------------------- */
         void makeRotate ( const float angle, 
-                       const float x, const float y, const float z );
+                          const float x, const float y, const float z );
         void makeRotate ( const float angle, const Vec3& vec );
 
         /** Make a rotation Quat which will rotate vec1 to vec2.
@@ -210,7 +210,12 @@ class SG_EXPORT Quat
             are co-incident or opposite in direction.*/
         void makeRotate( const Vec3& vec1, const Vec3& vec2 );
 
-        /** make a rotation Quat from euler angles.*/
+        /** make a rotation Quat from euler angles.
+          * assume Z up, Y north, X east and euler convention
+          * as per Open Flight & Performer.
+          * Applies a positive rotation about Y axis for roll,
+          * then applies a positive roation about X for pitch,
+          * and finally a negative rotation about the Z axis.*/
         void makeRotate( float heading, float pitch, float roll);
     
     

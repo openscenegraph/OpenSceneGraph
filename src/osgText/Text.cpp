@@ -76,10 +76,10 @@ void Text::setFontSize(unsigned int width, unsigned int height)
 }
 
 
-void Text::setCharacterSize(float height,float ascpectRatio)
+void Text::setCharacterSize(float height,float aspectRatio)
 {
     _characterHeight = height;
-    _characterAspectRatio = ascpectRatio;
+    _characterAspectRatio = aspectRatio;
     computeGlyphRepresentation();
 }
 

@@ -19,8 +19,8 @@ osgwindows glider.osg
 echo osgviewer --stereo cessna.osg
 osgviewer --stereo cessna.osg
 
-echo osgviewer cessnafire.osg
-osgviewer cessnafire.osg
+echo osgcameragroup cessnafire.osg
+osgcameragroup cessnafire.osg
 
 echo osgviewer spaceship.osg
 osgviewer spaceship.osg

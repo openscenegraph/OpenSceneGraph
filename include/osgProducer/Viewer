@@ -83,8 +83,6 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
 
         virtual bool realize();
 
-        virtual void sync();
-
         virtual void update();
 
         /** Dispatch the cull and draw for each of the Camera's for this frame.*/
@@ -143,10 +141,6 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
 
         bool            _done;
 
-        unsigned int    _frameNumber;
-        osg::Timer      _timer;
-        osg::Timer_t    _start_tick;
-        
         osgProducer::KeyboardMouseCallback* _kbmcb;
 
         EventHandlerList _eventHandlerList;

@@ -152,6 +152,8 @@ class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
         const osg::Matrix getViewMatrix() const;
 
 
+        virtual void sync();
+
         /** Dispatch the cull and draw for each of the Camera's for this frame.*/
         virtual void frame();
         
@@ -180,6 +182,10 @@ class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
         
         osg::ref_ptr<osg::DisplaySettings>      _ds;
         bool                                    _initialized;
+
+        unsigned int    _frameNumber;
+        osg::Timer      _timer;
+        osg::Timer_t    _start_tick;
         osg::ref_ptr<osg::FrameStamp>           _frameStamp;
 
         void _init();

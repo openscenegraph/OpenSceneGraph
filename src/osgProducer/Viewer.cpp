@@ -125,7 +125,6 @@ private:
 //
 Viewer::Viewer():
     _done(0),
-    _frameNumber(0),
     _kbmcb(0),
     _recordingAnimationPath(false)
 {
@@ -134,7 +133,6 @@ Viewer::Viewer():
 Viewer::Viewer(Producer::CameraConfig *cfg):
     OsgCameraGroup(cfg),
     _done(false),
-    _frameNumber(0),
     _kbmcb(0),
     _recordingAnimationPath(false)
 {
@@ -143,7 +141,6 @@ Viewer::Viewer(Producer::CameraConfig *cfg):
 Viewer::Viewer(const std::string& configFile):
     OsgCameraGroup(configFile),
     _done(false),
-    _frameNumber(0),
     _kbmcb(0),
     _recordingAnimationPath(false)
 {
@@ -152,7 +149,6 @@ Viewer::Viewer(const std::string& configFile):
 Viewer::Viewer(osg::ArgumentParser& arguments):
     OsgCameraGroup(arguments),
     _done(false),
-    _frameNumber(0),
     _kbmcb(0),
     _recordingAnimationPath(false)
 {
@@ -187,9 +183,6 @@ void Viewer::setUpViewer(unsigned int options)
                                    (new Producer::KeyboardMouse(ia)) : 
                                    (new Producer::KeyboardMouse(getCamera(0)->getRenderSurface()));
 
-    // set up the time and frame counter.
-    _frameNumber = 0;
-    _start_tick = _timer.tick();
 
     // set the keyboard mouse callback to catch the events from the windows.
     if (!_kbmcb)
@@ -338,15 +331,6 @@ bool Viewer::realize()
     return _realized;
 }
 
-void Viewer::sync()
-{
-    OsgCameraGroup::sync();
-
-    // set the frame stamp for the new frame.
-    double time_since_start = _timer.delta_s(_start_tick,_timer.tick());
-    _frameStamp->setFrameNumber(_frameNumber++);
-    _frameStamp->setReferenceTime(time_since_start);
-}        
 
 void Viewer::update()
 {

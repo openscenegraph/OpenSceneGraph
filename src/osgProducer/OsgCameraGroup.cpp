@@ -126,6 +126,10 @@ void OsgCameraGroup::_init()
 
     _initialized = false;
 
+    // set up the time and frame counter.
+    _frameNumber = 0;
+    _start_tick = _timer.tick();
+
     if (!_frameStamp) _frameStamp = new osg::FrameStamp;
 
     // set up the maximum number of graphics contexts, before loading the scene graph
@@ -133,6 +137,7 @@ void OsgCameraGroup::_init()
     osg::DisplaySettings::instance()->setMaxNumberOfGraphicsContexts( getNumberOfCameras() );
     
     _applicationUsage = osg::ApplicationUsage::instance();
+
 }
 
 void OsgCameraGroup::setSceneData( osg::Node *scene ) 
@@ -404,12 +409,21 @@ const osg::Matrix OsgCameraGroup::getViewMatrix() const
     return matrix;
 }
 
+void OsgCameraGroup::sync()
+{
+    CameraGroup::sync();
+
+    // set the frame stamp for the new frame.
+    double time_since_start = _timer.delta_s(_start_tick,_timer.tick());
+    _frameStamp->setFrameNumber(_frameNumber++);
+    _frameStamp->setReferenceTime(time_since_start);
+}        
+
 void OsgCameraGroup::frame()
 {
     osg::Node* node = getTopMostSceneData();
     if (node) node->getBound();
 
     CameraGroup::frame();
-    _frameStamp->setFrameNumber( _frameStamp->getFrameNumber() + 1 );
 }
 

@@ -6,6 +6,7 @@
 #define OSGUTIL_STATISTICS 1
 
 #include <osg/Referenced>
+#include <osg/Drawable>
 
 namespace osg {
 
@@ -22,11 +23,12 @@ namespace osg {
  * each trifan or tristrip = (length-2) triangles and so on.
  */
 
-class SG_EXPORT Statistics : public osg::Referenced
+class SG_EXPORT Statistics : public osg::Referenced, public osg::Drawable::AttributeFunctor
 {
     public:
     
-        Statistics()
+        Statistics():
+            osg::Drawable::AttributeFunctor(osg::Drawable::COORDS)
         {
             reset();
         };
@@ -70,6 +72,15 @@ class SG_EXPORT Statistics : public osg::Referenced
 
         void setType(statsType t) {stattype=t;}
 
+        virtual bool apply(osg::Drawable::AttributeBitMask abm,osg::Vec3* begin,osg::Vec3* end)
+        {
+            if (abm == osg::Drawable::COORDS)
+            {
+                primverts[0] += (end-begin);
+                return true;
+            }
+        }
+
         void addNumPrims(const int typ, const int nprimlen, const int numprimtype, const int primvert)
         {
             if (typ>NO_TYPE && typ<=POLYGON) {
@@ -79,7 +90,7 @@ class SG_EXPORT Statistics : public osg::Referenced
                 numprimtypes[typ]+=numprimtype;
                 primlens[0]+=nprimlen;
                 primlens[typ]+=nprimlen;
-                primverts[0]+=primvert;
+                //primverts[0]+=primvert;
                 primverts[typ]+=primvert;
             }
         }

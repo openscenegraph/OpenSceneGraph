@@ -185,7 +185,12 @@ bool RenderBin::getStats(osg::Statistics* primStats)
             primStats->addOpaque(); // number of geosets
             if (rl->_matrix.get()) primStats->addMatrix(); // number of matrices
             if (dw) { // then tot up the types 1-14
+                // commenting out as having intrusive stats in base classes is
+                // undersirable.
                 dw->getStats(*primStats); // use sub-class to find the stats for each drawable
+                
+                // use an AttributeOption to get the stats we require.
+                dw->applyAttributeOperation(*primStats);
             }
         }
         somestats=true;

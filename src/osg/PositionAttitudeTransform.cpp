@@ -6,38 +6,35 @@ PositionAttitudeTransform::PositionAttitudeTransform()
 {
 }
 
-void PositionAttitudeTransform::computeLocalToWorld() const
+const bool PositionAttitudeTransform::computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const
 {
-    if (_localToWorldDirty) 
+    if (_mode==MODEL || _mode==MODELVIEW)
     {
-        if (_mode==MODEL)
-        {
-            _localToWorld->makeRotate(_attitude);
-            _localToWorld->setTrans(_position);
-        }
-        else
-        {
-            _localToWorld->makeTranslate(-_position);
-            _localToWorld->postMult(osg::Matrix::rotate(_attitude.inverse()));
-        }
-        _localToWorldDirty = false;
+        matrix.makeRotate(_attitude);
+        matrix.setTrans(_position);
+        return true;
+    }
+    else // _mode==VIEW
+    {
+        matrix.makeTranslate(-_position);
+        matrix.postMult(osg::Matrix::rotate(_attitude.inverse()));
+        return true;
     }
 }
 
-void PositionAttitudeTransform::computeWorldToLocal() const
+
+const bool PositionAttitudeTransform::computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor*) const
 {
-    if (_worldToLocalDirty) 
+    if (_mode==MODEL || _mode==MODELVIEW)
     {
-        if (_mode==MODEL)
-        {
-            _worldToLocal->makeTranslate(-_position);
-            _worldToLocal->postMult(osg::Matrix::rotate(_attitude.inverse()));
-        }
-        else
-        {
-            _worldToLocal->makeRotate(_attitude);
-            _worldToLocal->setTrans(_position);
-        }
-        _worldToLocalDirty = false;
+        matrix.makeTranslate(-_position);
+        matrix.postMult(osg::Matrix::rotate(_attitude.inverse()));
+        return true;
+    }
+    else // _mode==VIEW
+    {
+        matrix.makeRotate(_attitude);
+        matrix.setTrans(_position);
+        return true;
     }
 }

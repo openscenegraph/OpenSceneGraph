@@ -54,15 +54,15 @@ class PrintVisitor : public NodeVisitor
             moveOut();
         }
 
-        virtual void apply(Geode& node)      { apply((Node&)node); }
-        virtual void apply(Billboard& node)  { apply((Geode&)node); }
-        virtual void apply(LightSource& node){ apply((Node&)node); }
+        virtual void apply(Geode& node)         { apply((Node&)node); }
+        virtual void apply(Billboard& node)     { apply((Geode&)node); }
+        virtual void apply(LightSource& node)   { apply((Node&)node); }
         
-        virtual void apply(Group& node)      { apply((Node&)node); }
-        virtual void apply(Transform& node)  { apply((Group&)node); }
-        virtual void apply(Switch& node)     { apply((Group&)node); }
-        virtual void apply(LOD& node)        { apply((Group&)node); }
-        virtual void apply(Impostor& node)   { apply((LOD&)node); }
+        virtual void apply(Group& node)         { apply((Node&)node); }
+        virtual void apply(Transform& node)     { apply((Group&)node); }
+        virtual void apply(Switch& node)        { apply((Group&)node); }
+        virtual void apply(LOD& node)           { apply((Group&)node); }
+        virtual void apply(Impostor& node)      { apply((LOD&)node); }
 
    protected:
     
@@ -479,7 +479,7 @@ void CullVisitor::setCamera(const Camera& camera)
 
 }
 
-void CullVisitor::pushCullViewState(const Matrix* matrix)
+void CullVisitor::pushCullViewState(Matrix* matrix)
 {
 
     osg::ref_ptr<CullViewState> nvs = new CullViewState;
@@ -487,20 +487,18 @@ void CullVisitor::pushCullViewState(const Matrix* matrix)
     Matrix* inverse_world = NULL;
 
     if (matrix)
-    {
+    {    
         if (_cvs.valid() && _cvs->_matrix.valid())
         {
-            nvs->_matrix = new Matrix;
-            nvs->_matrix->mult(*matrix,*(_cvs->_matrix));
-        }
-        else
-        {
-            nvs->_matrix = new Matrix(*matrix);
+            matrix->postMult(*(_cvs->_matrix));
         }
 
-        inverse_world = new Matrix;
-        inverse_world->invert(*(nvs->_matrix));
-        nvs->_inverse = inverse_world;
+        nvs->_matrix = matrix;
+
+        inverse_world = createOrReuseMatrix();
+        inverse_world->invert(*(matrix));
+        nvs->_inverse = inverse_world;        
+        
     }
     else
     {
@@ -1034,7 +1032,6 @@ void CullVisitor::apply(Group& node)
     _cullingModeStack.pop_back();
 }
 
-
 void CullVisitor::apply(Transform& node)
 {
     // return if object's bounding sphere is culled.
@@ -1051,7 +1048,12 @@ void CullVisitor::apply(Transform& node)
     StateSet* node_state = node.getStateSet();
     if (node_state) pushStateSet(node_state);
 
-    pushCullViewState(&node.getLocalToWorldMatrix());
+    ref_ptr<osg::Matrix> matrix = createOrReuseMatrix();
+    matrix->makeIdentity();
+    node.getLocalToWorldMatrix(*matrix,this);
+    pushCullViewState(matrix.get());
+
+//    pushCullViewState(&node.getMatrix());
 
     traverse(node);
 
@@ -1063,7 +1065,6 @@ void CullVisitor::apply(Transform& node)
     // pop the culling mode.
     _cullingModeStack.pop_back();
 }
-
 
 void CullVisitor::apply(Switch& node)
 {

@@ -505,7 +505,10 @@ void IntersectVisitor::apply(Transform& node)
 {
     if (!enterNode(node)) return;
 
-    pushMatrix(node.getLocalToWorldMatrix());
+    osg::ref_ptr<Matrix> matrix = new Matrix;
+    node.getLocalToWorldMatrix(*matrix,this);
+
+    pushMatrix(*matrix);
 
     traverse(node);
 

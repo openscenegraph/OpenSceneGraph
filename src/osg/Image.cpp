@@ -464,6 +464,8 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
             return; 
         }
 
+        deallocateData(); // and sets it to NULL.
+
         glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &internalformat);
         glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
         glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &height);
@@ -478,12 +480,15 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
         _dataType = internalformat;
         _internalTextureFormat = internalformat;
         _mipmapData = mipMapData;
+        _allocationMode=USE_NEW_DELETE;
         
         for(i=0;i<numMipMaps;++i)
         {
             extensions->glGetCompressedTexImage(GL_TEXTURE_2D, i, getMipmapData(i));
         }
 
+        ++_modifiedTag;
+    
     }
     else
     {
@@ -512,6 +517,8 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
             return; 
         }
 
+        deallocateData(); // and sets it to NULL.
+
         glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &internalformat);
         glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
         glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &height);
@@ -526,12 +533,14 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
         _dataType = GL_UNSIGNED_BYTE;
         _internalTextureFormat = internalformat;
         _mipmapData = mipMapData;
+        _allocationMode=USE_NEW_DELETE;
         
         for(i=0;i<numMipMaps;++i)
         {
             glGetTexImage(GL_TEXTURE_2D,i,_pixelFormat,_dataType,getMipmapData(i));
         }
 
+        ++_modifiedTag;
     }    
 }
 

@@ -52,7 +52,7 @@ CXXFILES =\
 
 INC += -I$(THISDIR)
 
-LIBS  += -losgSim $(OSG_LIBS) $(OTHER_LIBS)
+LIBS  += -losgSim -losgText $(OSG_LIBS) $(OTHER_LIBS)
 
 TARGET_BASENAME = flt
 include $(TOPDIR)/Make/cygwin_plugin_def

@@ -921,8 +921,8 @@ osg::StateSet* ConvertFromPerformer::visitGeoState(osg::GeoSet* osgGeoSet,pfGeoS
                 osgStateSet->setAttribute(osgTexGen);
                 break;
             case(PFTG_EYE_LINEAR_IDENT) :
-                cerr << "TexGen Mode PFTG_EYE_LINEAR_IDENT not currently supported by the OSG,"<<std::endl;
-                cerr << "       assuming osg::TexGen::EYE_LINEAR."<<std::endl;
+                std::cerr << "TexGen Mode PFTG_EYE_LINEAR_IDENT not currently supported by the OSG,"<<std::endl;
+                std::cerr << "       assuming osg::TexGen::EYE_LINEAR."<<std::endl;
             case(PFTG_EYE_LINEAR) :
                 osgTexGen->setMode(osg::TexGen::EYE_LINEAR);
                 osgStateSet->setAttribute(osgTexGen);
@@ -935,15 +935,15 @@ osg::StateSet* ConvertFromPerformer::visitGeoState(osg::GeoSet* osgGeoSet,pfGeoS
                 osgTexGen->setStateSetModes(*osgStateSet,osg::StateAttribute::OFF);
                 break;
             case(PFTG_OBJECT_DISTANCE_TO_LINE) :
-                cerr << "TexGen Mode PFTG_OBJECT_DISTANCE_TO_LINE not currently supported by the OSG."<<std::endl;
+                std::cerr << "TexGen Mode PFTG_OBJECT_DISTANCE_TO_LINE not currently supported by the OSG."<<std::endl;
                 osgTexGen->setStateSetModes(*osgStateSet,osg::StateAttribute::OFF);
                 break;
             case(PFTG_EYE_DISTANCE_TO_LINE) :
-                cerr << "TexGen Mode PFTG_EYE_DISTANCE_TO_LINE not currently supported by the OSG."<<std::endl;
+                std::cerr << "TexGen Mode PFTG_EYE_DISTANCE_TO_LINE not currently supported by the OSG."<<std::endl;
                 osgTexGen->setStateSetModes(*osgStateSet,osg::StateAttribute::OFF);
                 break;
             default:
-                cerr << "TexGen Mode "<<mode<<" not currently supported by the OSG."<<std::endl;
+                std::cerr << "TexGen Mode "<<mode<<" not currently supported by the OSG."<<std::endl;
                 osgTexGen->setStateSetModes(*osgStateSet,osg::StateAttribute::OFF);
                 break;
         }

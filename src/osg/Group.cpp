@@ -160,7 +160,7 @@ bool Group::setChild( unsigned  int i, Node* newNode )
     if (i<_children.size() && newNode)
     {
     
-        Node* origNode = _children[i].get();
+        ref_ptr<Node> origNode = _children[i];
     
         // first remove for origNode's parent list.
         origNode->removeParent(this);
@@ -213,7 +213,28 @@ bool Group::setChild( unsigned  int i, Node* newNode )
         if (delta_numChildrenWithCullingDisabled!=0)
         {
             setNumChildrenWithCullingDisabled(
-                getNumChildrenWithCullingDisabled()-1
+                getNumChildrenWithCullingDisabled()+delta_numChildrenWithCullingDisabled
+                );
+        }
+
+        // could now require disabling of culling thanks to the new subgraph,
+        // so need to check and update if required.
+        int delta_numChildrenWithOccluderNodes = 0;
+        if (origNode->getNumChildrenWithOccluderNodes()>0 ||
+            !origNode->getCullingActive())
+        {
+            --delta_numChildrenWithOccluderNodes;
+        }
+        if (newNode->getNumChildrenWithOccluderNodes()>0 ||
+            !newNode->getCullingActive())
+        {
+            ++delta_numChildrenWithOccluderNodes;
+        }
+        
+        if (delta_numChildrenWithOccluderNodes!=0)
+        {
+            setNumChildrenWithOccluderNodes(
+                getNumChildrenWithOccluderNodes()+delta_numChildrenWithOccluderNodes
                 );
         }
 

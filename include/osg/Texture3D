@@ -201,6 +201,8 @@ class SG_EXPORT Texture3D : public Texture
 
         virtual ~Texture3D();
 
+        void computeRequiredTextureDimensions(State& state, const osg::Image& image,GLsizei& width, GLsizei& height,GLsizei& depth, GLsizei& numMipmapLevels) const;
+
         virtual void computeInternalFormat() const;
 
         void applyTexImage3D(GLenum target, Image* image, State& state, GLsizei& inwidth, GLsizei& inheight, GLsizei& indepth, GLsizei& numMipmapLevels) const;

@@ -7,6 +7,7 @@
 #include <osg/Vec3>
 #include <osg/Geometry>
 #include <osg/Texture2D>
+#include <osg/Texture3D>
 
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
@@ -87,7 +88,9 @@ class CompressTexturesVisitor : public osg::NodeVisitor
 {
 public:
 
-    CompressTexturesVisitor():osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+    CompressTexturesVisitor(osg::Texture::InternalFormatMode internalFormatMode):
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
+        _internalFormatMode(internalFormatMode) {}
 
     virtual void apply(osg::Node& node)
     {
@@ -113,7 +116,7 @@ public:
         // search for the existance of any texture object attributes
         for(unsigned int i=0;i<stateset.getTextureAttributeList().size();++i)
         {
-            osg::Texture2D* texture = dynamic_cast<osg::Texture2D*>(stateset.getTextureAttribute(i,osg::StateAttribute::TEXTURE));
+            osg::Texture* texture = dynamic_cast<osg::Texture*>(stateset.getTextureAttribute(i,osg::StateAttribute::TEXTURE));
             if (texture)
             {
                 _textureSet.insert(texture);
@@ -131,13 +134,17 @@ public:
             itr!=_textureSet.end();
             ++itr)
         {
-            osg::Texture2D* texture = const_cast<osg::Texture2D*>(itr->get());
-            osg::Image* image = texture->getImage();
+            osg::Texture* texture = const_cast<osg::Texture*>(itr->get());
+            
+            osg::Texture2D* texture2D = dynamic_cast<osg::Texture2D*>(texture);
+            osg::Texture3D* texture3D = dynamic_cast<osg::Texture3D*>(texture);
+            
+            osg::Image* image = texture2D ? texture2D->getImage() : texture3D ? texture3D->getImage() : 0;
             if (image && 
                 (image->getPixelFormat()==GL_RGB || image->getPixelFormat()==GL_RGBA) &&
                 (image->s()>=32 && image->t()>=32))
             {
-                texture->setInternalFormatMode(osg::Texture::USE_S3TC_DXT3_COMPRESSION);
+                texture->setInternalFormatMode(_internalFormatMode);
 
                 // get OpenGL driver to create texture from image.
                 texture->apply(*state);
@@ -149,10 +156,10 @@ public:
         }
     }
     
-    typedef std::set< osg::ref_ptr<osg::Texture2D> > TextureSet;
-    TextureSet _textureSet;
+    typedef std::set< osg::ref_ptr<osg::Texture> > TextureSet;
+    TextureSet                          _textureSet;
+    osg::Texture::InternalFormatMode    _internalFormatMode;
     
-
 };
 
 
@@ -169,7 +176,14 @@ static void usage( const char *prog, const char *msg )
     osg::notify(osg::NOTICE)<< std::endl;
     osg::notify(osg::NOTICE)<<"options:"<< std::endl;
     osg::notify(osg::NOTICE)<<"    -O option          - ReaderWriter option"<< std::endl;
+    osg::notify(osg::NOTICE)<< std::endl;
     osg::notify(osg::NOTICE)<<"    --compressed       - Compress textures."<< std::endl;
+    osg::notify(osg::NOTICE)<<"    --compressed       - Enable the usage of compressed textures."<< std::endl;
+    osg::notify(osg::NOTICE)<<"    --compressed-arb   - Enable the usage of OpenGL ARB compressed textures"<< std::endl;
+    osg::notify(osg::NOTICE)<<"    --compressed-dxt1  - Enable the usage of S3TC DXT1 compressed textures"<< std::endl;
+    osg::notify(osg::NOTICE)<<"    --compressed-dxt3  - Enable the usage of S3TC DXT3 compressed textures"<< std::endl;
+    osg::notify(osg::NOTICE)<<"    --compressed-dxt5  - Enable the usage of S3TC DXT5 compressed textures"<< std::endl;
+    osg::notify(osg::NOTICE)<< std::endl;
     osg::notify(osg::NOTICE)<<"    -l libraryName     - load plugin of name libraryName"<< std::endl;
     osg::notify(osg::NOTICE)<<"                         i.e. -l osgdb_pfb"<< std::endl;
     osg::notify(osg::NOTICE)<<"                         Useful for loading reader/writers which can load"<< std::endl;
@@ -228,6 +242,7 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the standard OpenSceneGraph example which loads and visualises 3d models.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
 
+
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
     { 
@@ -246,7 +261,6 @@ int main( int argc, char **argv )
     FileNameList fileNames;
     OrientationConverter oc;
     bool do_convert = false;
-    bool compressTextures = false;
 
     std::string str;
     while (arguments.read("-O",str))
@@ -347,10 +361,12 @@ int main( int argc, char **argv )
     }
 
 
-    while (arguments.read("--compressed"))
-    {
-        compressTextures = true;
-    }
+    osg::Texture::InternalFormatMode internalFormatMode = osg::Texture::USE_IMAGE_DATA_FORMAT;
+    while(arguments.read("--compressed") || arguments.read("--compressed-arb")) { internalFormatMode = osg::Texture::USE_ARB_COMPRESSION; }
+
+    while(arguments.read("--compressed-dxt1")) { internalFormatMode = osg::Texture::USE_S3TC_DXT1_COMPRESSION; }
+    while(arguments.read("--compressed-dxt3")) { internalFormatMode = osg::Texture::USE_S3TC_DXT3_COMPRESSION; }
+    while(arguments.read("--compressed-dxt5")) { internalFormatMode = osg::Texture::USE_S3TC_DXT5_COMPRESSION; }
 
     // any option left unread are converted into errors to write out later.
     arguments.reportRemainingOptionsAsUnrecognized();
@@ -393,12 +409,12 @@ int main( int argc, char **argv )
         if( do_convert )
             root = oc.convert( root.get() );
             
-        if (compressTextures)
+        if (internalFormatMode != osg::Texture::USE_IMAGE_DATA_FORMAT)
         {
             std::string ext = osgDB::getFileExtension(fileNameOut);
             if (ext=="ive")
             {
-                CompressTexturesVisitor ctv;
+                CompressTexturesVisitor ctv(internalFormatMode);
                 root->accept(ctv);
                 ctv.compress();
             }

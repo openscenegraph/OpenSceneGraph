@@ -600,6 +600,16 @@ bool Texture::isCompressedInternalFormat(GLint internalFormat) const
     }
 }
 
+void Texture::getCompressedSize(GLenum internalFormat, GLint width, GLint height, GLint depth, GLint& blockSize, GLint& size) const
+{
+    if (_internalFormat == GL_COMPRESSED_RGB_S3TC_DXT1_EXT || _internalFormat == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT)
+        blockSize = 8;
+    else
+        blockSize = 16;
+         
+    size = ((width+3)/4)*((height+3)/4)*depth*blockSize;        
+}
+
 void Texture::applyTexParameters(GLenum target, State& state) const
 {
     // get the contextID (user defined ID of 0 upwards) for the 
@@ -738,6 +748,7 @@ bool Texture::areAllTextureObjectsLoaded() const
     return true;
 }
 
+
 void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* image, GLsizei inwidth, GLsizei inheight,GLsizei numMipmapLevels) const
 {
     // if we don't have a valid image we can't create a texture!
@@ -833,8 +844,8 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
         {
             numMipmapLevels = 1;
 
-            GLint blockSize = ( _internalFormat == GL_COMPRESSED_RGB_S3TC_DXT1_EXT ? 8 : 16 ); 
-            GLint size = ((inwidth+3)/4)*((inheight+3)/4)*blockSize;
+            GLint blockSize, size;
+            getCompressedSize(_internalFormat, inwidth, inheight, 1, blockSize,size);
 
             extensions->glCompressedTexImage2D(target, 0, _internalFormat, 
                 inwidth, inheight,0, 
@@ -879,8 +890,8 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
             }
             else if (extensions->isCompressedTexImage2DSupported())
             {
-                GLint blockSize = ( _internalFormat == GL_COMPRESSED_RGB_S3TC_DXT1_EXT ? 8 : 16 ); 
-                GLint size = 0; 
+                GLint blockSize, size;
+
                 for( GLsizei k = 0 ; k < numMipmapLevels  && (width || height) ;k++)
                 {
                     if (width == 0)
@@ -888,7 +899,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
                     if (height == 0)
                         height = 1;
 
-                    size = ((width+3)/4)*((height+3)/4)*blockSize;
+                    getCompressedSize(_internalFormat, width, height, 1, blockSize,size);
                     extensions->glCompressedTexImage2D(target, k, _internalFormat, 
                                                        width, height, _borderWidth, 
                                                        size, image->getMipmapData(k));                
@@ -1034,8 +1045,8 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
         }
         else if (extensions->isCompressedTexImage2DSupported())
         {        
-            GLint blockSize = ( _internalFormat == GL_COMPRESSED_RGB_S3TC_DXT1_EXT ? 8 : 16 ); 
-            GLint size = ((inwidth+3)/4)*((inheight+3)/4)*blockSize;
+            GLint blockSize,size;
+            getCompressedSize(_internalFormat, inwidth, inheight, 1, blockSize,size);
 
             extensions->glCompressedTexSubImage2D(target, 0, 
                 0,0,
@@ -1079,8 +1090,7 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
             }
             else if (extensions->isCompressedTexImage2DSupported())
             {
-                GLint blockSize = ( _internalFormat == GL_COMPRESSED_RGB_S3TC_DXT1_EXT ? 8 : 16 ); 
-                GLint size = 0; 
+                GLint blockSize,size;
                 for( GLsizei k = 0 ; k < numMipmapLevels  && (width || height) ;k++)
                 {
                     if (width == 0)
@@ -1088,7 +1098,7 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
                     if (height == 0)
                         height = 1;
 
-                    size = ((width+3)/4)*((height+3)/4)*blockSize;
+                    getCompressedSize(_internalFormat, inwidth, inheight, 1, blockSize,size);
 
                     //state.checkGLErrors("before extensions->glCompressedTexSubImage2D(");
 

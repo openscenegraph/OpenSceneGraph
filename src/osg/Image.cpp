@@ -448,7 +448,7 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
             glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_COMPRESSED_ARB,&compressed);
         }
     }
-    else if (textureMode==GL_TEXTURE_2D)
+    else if (textureMode==GL_TEXTURE_3D)
     {
         if (extensions3D->isCompressedTexImage3DSupported())
         {

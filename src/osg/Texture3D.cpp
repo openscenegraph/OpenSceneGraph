@@ -93,6 +93,53 @@ void Texture3D::setImage(Image* image)
     _image = image;
 }
 
+void Texture3D::computeRequiredTextureDimensions(State& state, const osg::Image& image,GLsizei& inwidth, GLsizei& inheight,GLsizei& indepth, GLsizei& numMipmapLevels) const
+{
+    const unsigned int contextID = state.getContextID();
+    const Extensions* extensions = getExtensions(contextID,true);
+
+    int width = Image::computeNearestPowerOfTwo(image.s()-2*_borderWidth)+2*_borderWidth;
+    int height = Image::computeNearestPowerOfTwo(image.t()-2*_borderWidth)+2*_borderWidth;
+    int depth = Image::computeNearestPowerOfTwo(image.r()-2*_borderWidth)+2*_borderWidth;
+
+    // cap the size to what the graphics hardware can handle.
+    if (width>extensions->maxTexture3DSize()) width = extensions->maxTexture3DSize();
+    if (height>extensions->maxTexture3DSize()) height = extensions->maxTexture3DSize();
+    if (depth>extensions->maxTexture3DSize()) depth = extensions->maxTexture3DSize();
+    
+    inwidth = width;
+    inheight = height;
+    indepth = depth;
+    
+    bool useHardwareMipMapGeneration = false; //!image.isMipmap() && _useHardwareMipMapGeneration && extensions->isGenerateMipMapSupported();
+
+    if( _min_filter == LINEAR || _min_filter == NEAREST || useHardwareMipMapGeneration )
+    {
+        numMipmapLevels = 1;
+    }
+    else if( image.isMipmap() )
+    {
+        numMipmapLevels = image.getNumMipmapLevels();
+    }
+    else
+    {
+        numMipmapLevels = 0;
+        for( ; (width || height || depth) ;++numMipmapLevels)
+        {
+
+            if (width == 0)
+                width = 1;
+            if (height == 0)
+                height = 1;
+            if (depth == 0)
+                depth = 1;
+
+            width >>= 1;
+            height >>= 1;
+            depth >>= 1;
+        }    
+    }
+}
 
 void Texture3D::apply(State& state) const
 {
@@ -155,9 +202,16 @@ void Texture3D::apply(State& state) const
     else if (_image.valid() && _image->data())
     {
 
+        // compute the internal texture format, this set the _internalFormat to an appropriate value.
+        computeInternalFormat();
+
+        // compute the dimensions of the texture.
+        computeRequiredTextureDimensions(state,*_image,_textureWidth, _textureHeight, _textureDepth,_numMipmapLevels);
+
         _textureObjectBuffer[contextID] = textureObject = generateTextureObject(contextID,GL_TEXTURE_3D);
 
         textureObject->bind();
+
 
         applyTexParameters(GL_TEXTURE_3D,state);
 
@@ -195,7 +249,6 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
     // get the contextID (user defined ID of 0 upwards) for the 
     // current OpenGL context.
     const unsigned int contextID = state.getContextID();
-
     const Extensions* extensions = getExtensions(contextID,true);    
 
     // compute the internal texture format, this set the _internalFormat to an appropriate value.
@@ -203,6 +256,8 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
 
     // select the internalFormat required for the texture.
     bool compressed = isCompressedInternalFormat(_internalFormat);
+    bool compressed_image = isCompressedInternalFormat((GLenum)image->getPixelFormat());
+
     if (compressed)
     {
         //notify(WARN)<<"Warning::cannot currently use compressed format with 3D textures."<<std::endl;
@@ -216,11 +271,33 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
     if( _min_filter == LINEAR || _min_filter == NEAREST )
     {
         numMipmapLevels = 1;
-        extensions->glTexImage3D( target, 0, _internalFormat,
-                                  image->s(), image->t(), image->r(), _borderWidth,
-                                  (GLenum)image->getPixelFormat(),
-                                  (GLenum)image->getDataType(),
-                                  image->data() );
+
+        if (!compressed_image)
+        {
+            // notify(WARN)<<"glTexImage3D"<<std::endl;
+            extensions->glTexImage3D( target, 0, _internalFormat,
+                                      inwidth, inheight, indepth,
+                                      _borderWidth,
+                                      (GLenum)image->getPixelFormat(),
+                                      (GLenum)image->getDataType(),
+                                      image->data() );
+        }
+        else if (extensions->isCompressedTexImage3DSupported())
+        {
+            // notify(WARN)<<"glCompressedTexImage3D "<<inwidth<<", "<<inheight<<", "<<indepth<<std::endl;
+            numMipmapLevels = 1;
+
+            GLint blockSize, size;
+            getCompressedSize(_internalFormat, inwidth, inheight, indepth, blockSize,size);
+
+            extensions->glCompressedTexImage3D(target, 0, _internalFormat, 
+                inwidth, inheight, indepth, 
+                _borderWidth,
+                size, 
+                image->data());
+        }
+
+
     }
     else
     {

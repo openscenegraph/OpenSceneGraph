@@ -45,7 +45,7 @@ class MyBillboardTransform : public osg::PositionAttitudeTransform
                 osg::Vec3 side = _axis^_normal;
                 side.normalize();
 
-                float angle = atan2f(eyevector*_normal,eyevector*side);
+                float angle = atan2(eyevector*_normal,eyevector*side);
                 billboardRotation.makeRotate(osg::PI_2-angle,_axis);
 
             }

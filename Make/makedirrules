@@ -1,6 +1,6 @@
 
 default : $(DIRS)
-	@for f in $(DIRS); do cd $$f; $(MAKE) $@ || exit 1; cd ..; done
+	@for f in $(DIRS); do echo "Entering directory $$f"; cd $$f; $(MAKE) $@ || exit 1; cd ..; done
 
 $(RECURSIVE_TARGETS) :  $(DIRS)
-	@for f in $(DIRS); do cd $$f; $(MAKE) $@ || exit 1; cd ..; done
+	@for f in $(DIRS); do echo "Entering directory $$f"; cd $$f; $(MAKE) $@ || exit 1; cd ..; done

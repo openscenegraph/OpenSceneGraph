@@ -3,14 +3,14 @@
 
 int main( int /*argc*/, char** /*argv*/ )
 {
-//     cout<<"*****   Qualified Tests  ******"<<endl;
+//     std::cout<<"*****   Qualified Tests  ******"<<std::endl;
 // 
 //     osgUtx::QualifiedTestPrinter printer;
 //     osgUtx::TestGraph::instance().root()->accept( printer );    
-//     
+//     std::cout<<endl;
 
-    cout<<endl;
-    cout<<"******   Running tests   ******"<<endl;
+
+    std::cout<<"******   Running tests   ******"<<std::endl;
 
     // Global Data or Context
     osgUtx::TestContext ctx;

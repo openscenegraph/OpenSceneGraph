@@ -27,7 +27,7 @@ void TileMapper::removePagedLOD(int x, int y, int lod)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
     TileMap::iterator itr = _tileMap.find(TileTriple(x,y,lod));
-    if (itr!=_tileMap.end()) return _tileMap.erase(itr);
+    if (itr!=_tileMap.end()) _tileMap.erase(itr);
 }
 
 void TileMapper::prunePagedLOD()

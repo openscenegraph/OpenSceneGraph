@@ -21,7 +21,7 @@ static std::auto_ptr<DeleteHandler> s_deleteHandler(0);
 
 void Referenced::setDeleteHandler(DeleteHandler* handler)
 {
-    s_deleteHandler.reset(handler);
+//    s_deleteHandler.reset(handler);
 }
 
 DeleteHandler* Referenced::getDeleteHandler()

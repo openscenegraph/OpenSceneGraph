@@ -141,8 +141,8 @@ class SG_EXPORT StateAttribute : public Object
             TEXMAT,
             LIGHTMODEL,
             BLENDFUNC,
-	    BLENDEQUATION,
-	    LOGICOP,
+            BLENDEQUATION,
+            LOGICOP,
             STENCIL,
             COLORMASK,
             DEPTH,
@@ -169,13 +169,21 @@ class SG_EXPORT StateAttribute : public Object
             VIEWMATRIXEXTRACTOR,
             
             // osgNV namespace
-            PARAMETER_BLOCK,
+            OSGNV_PARAMETER_BLOCK,
+
             // osgNVExt namespace
-            TEXTURE_SHADER,
-            VERTEX_PROGRAM,
-            REGISTER_COMBINERS,
+            OSGNVEXT_TEXTURE_SHADER,
+            OSGNVEXT_VERTEX_PROGRAM,
+            OSGNVEXT_REGISTER_COMBINERS,
+
+            // osgNVCg namespace
+            OSGNVCG_PROGRAM,
+
+            // osgNVSlang namespace
+            OSGNVSLANG_PROGRAM,
+
             // osgNVParse
-            PROGRAM_PARSER,
+            OSGNVPARSE_PROGRAM_PARSER,
         };
         
         /** Simple pairing between an attribute type and the member within that attribute type group.*/

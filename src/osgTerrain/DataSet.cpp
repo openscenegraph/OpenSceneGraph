@@ -2833,19 +2833,40 @@ void DataSet::DestinationTile::readFrom(CompositeSource* sourceGraph)
     {
     
         Source* source = itr->get();
-        if (source && _level>=source->getMinLevel() && _level<=source->getMaxLevel()) 
+        if (source && 
+            _level>=source->getMinLevel() && _level<=source->getMaxLevel() && 
+            (*itr)->getSourceData()) 
         {
-            unsigned int layerNum = source->getLayer();
+            my_notify(osg::INFO)<<"DataSet::DestinationTile::readFrom -> SourceData::read() "<<std::endl;
+            my_notify(osg::INFO)<<"    destination._level="<<_level<<"\t"<<source->getMinLevel()<<"\t"<<source->getMaxLevel()<<std::endl;
+
             SourceData* data = (*itr)->getSourceData();
-            if (data)
+            if (source->getType()==DataSet::Source::IMAGE)
             {
-                my_notify(osg::INFO)<<"DataSet::DestinationTile::readFrom -> SourceData::read() "<<std::endl;
-                my_notify(osg::INFO)<<"    destination._level="<<_level<<"\t"<<source->getMinLevel()<<"\t"<<source->getMaxLevel()<<std::endl;
-                if (layerNum<_imagery.size() &&
-                    _imagery[layerNum]._imagery.valid())
+                unsigned int layerNum = source->getLayer();
+                
+                if (layerNum==0)
                 {
-                    data->read(*(_imagery[layerNum]._imagery));
+                    // copy the base layer 0 into layer 0 and all subsequent layers to provide a backdrop.
+                    for(unsigned int i=0;i<_imagery.size();++i)
+                    {
+                        if (_imagery[i]._imagery.valid())
+                        {
+                            data->read(*(_imagery[i]._imagery));
+                        }
+                    }
                 }
+                else
+                {
+                    // copy specific layer.
+                    if (layerNum<_imagery.size() && _imagery[layerNum]._imagery.valid())
+                    {
+                        data->read(*(_imagery[layerNum]._imagery));
+                    }
+                }
+            }
+            else
+            {
                 if (_terrain.valid()) data->read(*_terrain);
             }
         }

@@ -39,6 +39,7 @@ Sequence::Sequence(const Sequence& seq, const CopyOp& copyop) :
     Group(seq, copyop),
     _value(seq._value),
     _last(seq._last),
+    _frameTime(seq._frameTime),
     _step(seq._step),
     _loopMode(seq._loopMode),
     _begin(seq._begin),

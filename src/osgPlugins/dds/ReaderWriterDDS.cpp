@@ -110,6 +110,10 @@ typedef struct _DDSURFACEDESC2
     unsigned long         dwTextureStage;
 } DDSURFACEDESC2; 
 
+#define DDPF_ALPHAPIXELS        0x00000001l
+#define DDPF_FOURCC                0x00000004l
+#define DDPF_RGB                0x00000040l
+
 #ifndef MAKEFOURCC
     #define MAKEFOURCC(ch0, ch1, ch2, ch3)                              \
                 ((unsigned long)(char)(ch0) | ((unsigned long)(char)(ch1) << 8) |   \
@@ -124,6 +128,15 @@ typedef struct _DDSURFACEDESC2
 #define FOURCC_DXT3  (MAKEFOURCC('D','X','T','3'))
 #define FOURCC_DXT4  (MAKEFOURCC('D','X','T','4'))
 #define FOURCC_DXT5  (MAKEFOURCC('D','X','T','5'))
+
+
+void shiftAlpha(int*imageData, int size){
+
+    for(int i=0;i<size/4;i++){
+        imageData[i] = imageData[i]<<8;
+    }
+
+}
 
 osg::Image* ReadDDSFile(const char *filename)
 {
@@ -161,44 +174,108 @@ osg::Image* ReadDDSFile(const char *filename)
     int t = ddsd.dwHeight;
     int r = 1; // we're not a 3d texture...
     unsigned int dataType = GL_UNSIGNED_BYTE;
-    unsigned int pixelFormat;
-    unsigned int internalFormat;
-    switch(ddsd.ddpfPixelFormat.dwFourCC)
+    unsigned int pixelFormat = 0;
+    unsigned int internalFormat = 0;
+
+    // Uncompressed formats will usually use DDPF_RGB to indicate an RGB format,
+    // while compressed formats will use DDPF_FOURCC with a four-character code.
+
+    // Uncompressed formats.
+    if(ddsd.ddpfPixelFormat.dwFlags & DDPF_RGB)
     {
-        case FOURCC_DXT1:
-            internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
-            pixelFormat    = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
-            break;
-        case FOURCC_DXT3:
-            internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
-            pixelFormat    = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
-            break;
-        case FOURCC_DXT5:
-            internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
-            pixelFormat    = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
-            break;
-        default:
-            delete [] imageData;
-            return NULL;
+        bool usingAlpha = ddsd.ddpfPixelFormat.dwFlags & DDPF_ALPHAPIXELS;
+        switch(ddsd.ddpfPixelFormat.dwRGBBitCount)
+        {
+            case 32:
+                internalFormat = usingAlpha ? 4 : 3;
+                pixelFormat = usingAlpha ? GL_RGBA  : GL_RGB;
+                break;
+            case 24:
+            case 16:
+            default:
+                delete [] imageData;
+                return NULL;
+        }
     }
-    
+    // Compressed formats.
+    else if(ddsd.ddpfPixelFormat.dwFlags & DDPF_FOURCC)
+    {
+        switch(ddsd.ddpfPixelFormat.dwFourCC)
+        {
+            case FOURCC_DXT1:
+                internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
+                pixelFormat    = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
+                break;
+            case FOURCC_DXT3:
+                internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
+                pixelFormat    = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
+                break;
+            case FOURCC_DXT5:
+                internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
+                pixelFormat    = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
+                break;
+            default:
+                delete [] imageData;
+                return NULL;
+        }
+    }
+    else
+    {
+        osg::notify(osg::WARN)<<"Warning:: unhanlded pixel format in dds file, image not loaded."<<std::endl;
+        delete [] imageData;
+        return NULL;
+    }
+
+    // Take care of mipmaps if any.
     if (ddsd.dwMipMapCount>1)
     {
-        osg::notify(osg::WARN)<<"Warning: Mipmaps in dds file are ignored."<<std::endl;
+        // Now set mipmap data (offsets into image raw data).
+        osg::Image::MipmapDataType mipmaps;
+        // Number of offsets in osg is one less than num_mipmaps
+        // because it's assumed that first offset is 0.
+        mipmaps.resize(ddsd.dwMipMapCount-1);
 
-//      this is code from the txp plugin, so won't compile here, but it'll be useful guide
-//      to implementing the real mip mapping code.
-//         // now set mipmap data (offsets into image raw data)
-//         Image::MipmapDataType mipmaps;
-//         // number of offsets in osg is one less than num_mipmaps
-//         // because it's assumed that first offset iz 0 
-//         mipmaps.resize(num_mipmaps-1);
-//         for( int k = 1 ; k < num_mipmaps;k++ )
-//         {
-//             mipmaps[k-1] = tmp_tex->MipLevelOffset(k);
-//         }
-//         image->setMipmapData(mipmaps);
-
+        // Handle compressed mipmaps.
+        if(ddsd.ddpfPixelFormat.dwFlags & DDPF_FOURCC)
+        {
+            int width = ddsd.dwWidth;
+            int height = ddsd.dwHeight;
+            int blockSize = (pixelFormat == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT) ? 8 : 16;
+            int offset = 0;
+            for (unsigned int k = 1; k < ddsd.dwMipMapCount && (width || height); ++k)
+            {
+                if (width == 0)
+                    width = 1;
+                if (height == 0)
+                    height = 1;
+                size = ((width+3)/4)*((height+3)/4)*blockSize;
+                offset += size;
+                mipmaps[k-1] = offset;
+                width >>= 1;
+                height >>= 1;
+            }
+            osgImage->setMipmapData(mipmaps);
+        }
+        // Handle uncompressed mipmaps
+        if(ddsd.ddpfPixelFormat.dwFlags & DDPF_RGB)
+        {
+            int offset = 0;
+            int width = ddsd.dwWidth;
+            int height = ddsd.dwHeight;
+            for (unsigned int k = 1; k < ddsd.dwMipMapCount && (width || height); ++k)
+            {
+                if (width == 0)
+                    width = 1;
+                if (height == 0)
+                    height = 1;
+                size = s*t*(ddsd.ddpfPixelFormat.dwRGBBitCount/8);
+                offset += size;
+                mipmaps[k-1] = offset;
+                width >>= 1;
+                height >>= 1;
+            }
+            osgImage->setMipmapData(mipmaps);
+        }
     }
 
     // Set image data and properties.

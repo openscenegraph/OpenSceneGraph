@@ -107,7 +107,7 @@ class Attr
             MIN_FILTER_MIPMAP_TRILINEAR = 6,
             MIN_FILTER_NONE = 7,
             MIN_FILTER_BICUBIC = 8,
-            MIN_FILTER_BILINEAR_GEQUAL = 8,
+            MIN_FILTER_BILINEAR_GEQUAL = 9,
             MIN_FILTER_BILINEAR_LEQUAL = 10,
             MIN_FILTER_BICUBIC_GEQUAL = 11,
             MIN_FILTER_BICUBIC_LEQUAL = 12
@@ -609,8 +609,14 @@ StateSet* Attr::createOsgStateSet()
 
     switch (minFilterMode)
     {
+    case MIN_FILTER_POINT:
+        osgTexture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::NEAREST);
+        break;
+    case MIN_FILTER_BILINEAR:
+        osgTexture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::LINEAR);
+        break;
     case MIN_FILTER_MIPMAP_POINT:
-        osgTexture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::LINEAR_MIPMAP_NEAREST);
+        osgTexture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::NEAREST_MIPMAP_NEAREST);
         break;
     case MIN_FILTER_MIPMAP_LINEAR:
         osgTexture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::NEAREST_MIPMAP_LINEAR);
@@ -621,15 +627,17 @@ StateSet* Attr::createOsgStateSet()
     case MIN_FILTER_MIPMAP_TRILINEAR:
         osgTexture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::LINEAR_MIPMAP_LINEAR);
         break;
-    case MIN_FILTER_POINT:
-    case MIN_FILTER_BILINEAR:
     case MIN_FILTER_BICUBIC:
-//    case MIN_FILTER_BILINEAR_GEQUAL:
+        osgTexture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::LINEAR);
+        break;
+    case MIN_FILTER_BILINEAR_GEQUAL:
     case MIN_FILTER_BILINEAR_LEQUAL:
+        osgTexture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::LINEAR);
+        break;
     case MIN_FILTER_BICUBIC_GEQUAL:
     case MIN_FILTER_BICUBIC_LEQUAL:
     default:
-          osgTexture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::LINEAR_MIPMAP_LINEAR);
+          osgTexture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::LINEAR);
           break;
     }
 

@@ -99,7 +99,12 @@ Registry::Registry()
     // wont't add type1 and type2 until resolve extension collision with Peformer binary and ascii files.
     // addFileExtensionAlias("pfb",   "freetype");  // type1 binary
     // addFileExtensionAlias("pfa",   "freetype");  // type2 ascii
-    
+
+
+    // portable bitmap, greyscale and colour/pixmap image formats
+    addFileExtensionAlias("pbm", "pnm");
+    addFileExtensionAlias("pgm", "pnm");
+    addFileExtensionAlias("ppm", "pnm");
 }
 
 

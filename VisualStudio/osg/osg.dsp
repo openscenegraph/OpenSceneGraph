@@ -113,6 +113,10 @@ SOURCE=..\..\src\osg\Array.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\AutoTransform.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\Billboard.cpp
 # End Source File
 # Begin Source File
@@ -474,6 +478,10 @@ SOURCE=..\..\Include\osg\ArgumentParser
 # Begin Source File
 
 SOURCE=..\..\Include\osg\ApplicationUsage
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\osg\AutoTransform
 # End Source File
 # Begin Source File
 

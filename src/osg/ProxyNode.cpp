@@ -76,7 +76,7 @@ bool ProxyNode::addChild( Node *child )
 {
     if (Group::addChild(child))
     {
-        expandFileNameListTo(_children.size());
+        expandFileNameListTo(_children.size()-1);
         return true;
     }
     return false;

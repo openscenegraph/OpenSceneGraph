@@ -14,14 +14,35 @@
 
 #include <osgDB/WriteFile>
 #include <osgDB/ReadFile>
+#include <osgDB/FileUtils>
 #include <osgDB/FileNameUtils>
 
 #include "Exception.h"
 #include "ProxyNode.h"
-#include "Group.h"
+#include "Node.h"
 
 using namespace ive;
+/*
+for(osgDB::FilePathList::iterator itr=osgDB::getDataFilePathList().begin(); itr!=osgDB::getDataFilePathList().end(); ++itr)
+printf("#1######%s\n", itr->c_str());
+for(osgDB::FilePathList::const_iterator itrO=in->getOptions()->getDatabasePathList().begin(); itrO!=in->getOptions()->getDatabasePathList().end(); ++itrO)
+printf("#2######%s\n", itrO->c_str());
+namespace osgDB {
+class PushAndPopDataPath
+{
+    public:
+        PushAndPopDataPath(const std::string& path)
+        {
+            getDataFilePathList().push_front(path);
+        }
 
+        ~PushAndPopDataPath()
+        {
+            getDataFilePathList().pop_front();
+        }
+};
+}
+*/
 
 void ProxyNode::write(DataOutputStream* out)
 {
@@ -29,59 +50,29 @@ void ProxyNode::write(DataOutputStream* out)
     out->writeInt(IVEPROXYNODE);
 
     // If the osg class is inherited by any other class we should also write this to file.
-    osg::Group* node = dynamic_cast<osg::Group*>(this);
+    osg::Node* node = dynamic_cast<osg::Node*>(this);
     if(node)
     {
-        static_cast<ive::Group*>(node)->write(out);
+        static_cast<ive::Node*>(node)->write(out);
     }
-    else throw Exception("PagedLOD::write(): Could not cast this osg::PagedLOD to an osg::LOD.");
-
-    if ( out->getVersion() > VERSION_0006 ) 
-    {
-        out->writeString(getDatabasePath());
-    }
+    else
+        throw Exception("ProxyNode::write(): Could not cast this osg::ProxyNode to an osg::Node.");
 
     out->writeFloat(getRadius());
     out->writeInt(getCenterMode());
     out->writeVec3(getCenter());
 
-    if(out->getIncludeExternalReferences()) // inlined mode
+    out->writeUInt(getNumFileNames());
+    unsigned int numChildrenToWriteOut = 0;
+    unsigned int i;
+    for(i=0; i<getNumFileNames(); i++)
     {
-        out->writeUInt(getNumChildren());
-        unsigned int i;
-        for(i=0; i<getNumChildren(); i++)
+        if (getFileName(i).empty())
         {
-            out->writeNode(getChild(i));
+            out->writeString("");
+            ++numChildrenToWriteOut;
         }
-        out->writeUInt(getNumFileNames());
-        for(i=0; i<getNumFileNames(); i++)
-        {
-            out->writeString(getFileName(i));
-        }
-    }
-    else //no inlined mode
-    {
-        unsigned int numChildrenToWriteOut = 0;
-        unsigned int i;
-        for(i=0; i<getNumFileNames();++i)
-        {
-            if (getFileName(i).empty())
-            {
-                ++numChildrenToWriteOut;
-            }
-        }
-
-        out->writeUInt(numChildrenToWriteOut);
-        for(i=0; i<getNumChildren(); i++)
-        {
-            if (getFileName(i).empty())
-            {
-                out->writeNode(getChild(i));
-            }
-        }
-
-        out->writeUInt(getNumFileNames());
-        for(i=0; i<getNumFileNames(); i++)
+        else
         {
             if(out->getUseOriginalExternalReferences())
             {
@@ -91,14 +82,37 @@ void ProxyNode::write(DataOutputStream* out)
             {
                 std::string ivename = osgDB::getFilePath(getFileName(i)) +"/"+ osgDB::getStrippedName(getFileName(i)) +".ive";
                 out->writeString(ivename);
+            }
+        }
+    }
 
-                if(out->getWriteExternalReferenceFiles())
+    if(out->getIncludeExternalReferences()) //--------- inlined mode
+    {
+        out->writeUInt(getNumChildren());
+        for(i=0; i<getNumChildren(); i++)
+        {
+            out->writeNode(getChild(i));
+        }
+    }
+    else //----------------------------------------- no inlined mode
+    {
+        out->writeUInt(numChildrenToWriteOut);
+
+        for(i=0; i<getNumFileNames(); i++)
+        {
+            if (getFileName(i).empty())
+            {
+                out->writeNode(getChild(i));
+            }
+            else if(out->getWriteExternalReferenceFiles())
+            {
+                if(out->getUseOriginalExternalReferences())
                 {
-                    std::string path = getDatabasePath();
-                    if (path.empty() && out->getOptions() && !out->getOptions()->getDatabasePathList().empty())
-                        path = out->getOptions()->getDatabasePathList().front();
-                    if(!path.empty()) path += "/";
-                    ivename = path + ivename;
+                    osgDB::writeNodeFile(*getChild(i), getFileName(i));
+                }
+                else
+                {
+                    std::string ivename = osgDB::getFilePath(getFileName(i)) +"/"+ osgDB::getStrippedName(getFileName(i)) +".ive";
                     osgDB::writeNodeFile(*getChild(i), ivename);
                 }
             }
@@ -115,21 +129,15 @@ void ProxyNode::read(DataInputStream* in)
         // Read ProxyNode's identification.
         id = in->readInt();
         // If the osg class is inherited by any other class we should also read this from file.
-        osg::Group* node = dynamic_cast<osg::Group*>(this);
+        osg::Node* node = dynamic_cast<osg::Node*>(this);
         if(node)
         {
-            ((ive::Group*)(node))->read(in);
+            ((ive::Node*)(node))->read(in);
         }
         else
-            throw Exception("Group::read(): Could not cast this osg::Group to an osg::Node.");
+            throw Exception("ProxyNode::read(): Could not cast this osg::ProxyNode to an osg::Node.");
 
-
-        if ( in->getVersion() > VERSION_0006 ) 
-        {
-            setDatabasePath(in->readString());
-        }
-
-        if (getDatabasePath().empty() && in->getOptions() && !in->getOptions()->getDatabasePathList().empty())
+        if (in->getOptions() && !in->getOptions()->getDatabasePathList().empty())
         {
             const std::string& path = in->getOptions()->getDatabasePathList().front();
             if (!path.empty()) 
@@ -142,28 +150,39 @@ void ProxyNode::read(DataInputStream* in)
         setCenterMode((osg::ProxyNode::CenterMode)in->readInt());
         setCenter(in->readVec3());
 
-        // Read groups properties.
-        // Read number of children.
-        unsigned int size = in->readUInt();
-        // Read children.
+        unsigned int numFileNames = in->readUInt();
         unsigned int i;
-        for(i=0; i<size; i++)
+        for(i=0; i<numFileNames; i++)
         {
-            addChild(in->readNode());            
+            setFileName(i, in->readString());
         }
 
-        size = in->readUInt();
-        for(i=0;i<size;i++)
+        unsigned int numChildren = in->readUInt();
+        for(i=0; i<numChildren; i++)
         {
-            //setFileName(i, in->readString());
-            std::string filename = in->readString();
-            osg::Node *node = osgDB::readNodeFile(getDatabasePath() + filename); // If filename is flt, will need getDatabasePath()
-            if(node)
-                addChild(node, filename);
+            osgDB::FilePathList& fpl = ((osgDB::ReaderWriter::Options*)in->getOptions())->getDatabasePathList();
+            fpl.push_front( fpl.empty() ? osgDB::getFilePath(getFileName(i)) : fpl.front()+'/'+ osgDB::getFilePath(getFileName(i)));
+            addChild(in->readNode());            
+            fpl.pop_front();
+        }
+
+        for(i=0; i<numFileNames; i++)
+        {
+            if(i>=numChildren && !getFileName(i).empty())
+            {
+                osgDB::FilePathList& fpl = ((osgDB::ReaderWriter::Options*)in->getOptions())->getDatabasePathList();
+                fpl.push_front( fpl.empty() ? osgDB::getFilePath(getFileName(i)) : fpl.front()+'/'+ osgDB::getFilePath(getFileName(i)));
+                osg::Node *node = osgDB::readNodeFile(getFileName(i), in->getOptions());
+                fpl.pop_front();
+                if(node)
+                {
+                    insertChild(i, node);
+                }
+            }
         }
     }
     else
     {
         throw Exception("ProxyNode::read(): Expected ProxyNode identification.");
-    	}
+    }
 }

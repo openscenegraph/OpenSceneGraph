@@ -5,6 +5,9 @@
 #include "osgDB/Input"
 #include "osgDB/Output"
 #include <osgDB/ReadFile>
+#include <osgDB/WriteFile>
+#include <osgDB/FileUtils>
+#include <osgDB/FileNameUtils>
 
 using namespace osg;
 using namespace osgDB;
@@ -40,8 +43,8 @@ bool ProxyNode_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
         fr+=4;
     }
-	else
-		proxyNode.setCenterMode(osg::ProxyNode::USE_BOUNDING_SPHERE_CENTER);
+    else
+        proxyNode.setCenterMode(osg::ProxyNode::USE_BOUNDING_SPHERE_CENTER);
 
     float radius;
     if (fr[0].matchWord("Radius") && fr[1].getFloat(radius))
@@ -51,7 +54,7 @@ bool ProxyNode_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
-	if (proxyNode.getDatabasePath().empty() && fr.getOptions() && !fr.getOptions()->getDatabasePathList().empty())
+    if (fr.getOptions() && !fr.getOptions()->getDatabasePathList().empty())
     {
         const std::string& path = fr.getOptions()->getDatabasePathList().front();
         if (!path.empty()) 
@@ -80,16 +83,7 @@ bool ProxyNode_readLocalData(Object& obj, Input& fr)
         {
             if (fr[0].isString() || fr[0].isQuotedString())
             {
-				if (fr[0].getStr())
-				{
-					osg::Node *node = osgDB::readNodeFile(proxyNode.getDatabasePath() + fr[0].getStr()); // If filename is flt, will need getDatabasePath()
-					if(node)
-					{
-						printf("cargando: %s\n", fr[0].getStr());
-						proxyNode.addChild(node, fr[0].getStr());
-					}
-				}
-				//if (fr[0].getStr()) proxyNode.setFileName(i,fr[0].getStr());
+                if (fr[0].getStr()) proxyNode.setFileName(i,fr[0].getStr());
                 else proxyNode.setFileName(i,"");
                 
                 ++fr;
@@ -115,11 +109,32 @@ bool ProxyNode_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
-    Node* node = NULL;
-    while((node=fr.readNode())!=NULL)
+    for(int i=0; i<num_children; i++)
     {
-        proxyNode.addChild(node);
-        iteratorAdvanced = true;
+        osgDB::FilePathList& fpl = ((osgDB::ReaderWriter::Options*)fr.getOptions())->getDatabasePathList();
+        fpl.push_front( fpl.empty() ? osgDB::getFilePath(proxyNode.getFileName(i)) : fpl.front()+'/'+ osgDB::getFilePath(proxyNode.getFileName(i)));
+        Node* node = NULL;
+        if((node=fr.readNode())!=NULL)
+        {
+            proxyNode.addChild(node);
+            iteratorAdvanced = true;
+        }
+        fpl.pop_front();
+    }
+
+    for(unsigned int i=0; i<proxyNode.getNumFileNames(); i++)
+    {
+        if(i>=proxyNode.getNumChildren() && !proxyNode.getFileName(i).empty())
+        {
+            osgDB::FilePathList& fpl = ((osgDB::ReaderWriter::Options*)fr.getOptions())->getDatabasePathList();
+            fpl.push_front( fpl.empty() ? osgDB::getFilePath(proxyNode.getFileName(i)) : fpl.front()+'/'+ osgDB::getFilePath(proxyNode.getFileName(i)));
+            osg::Node *node = osgDB::readNodeFile(proxyNode.getFileName(i), fr.getOptions());
+            fpl.pop_front();
+            if(node)
+            {
+                proxyNode.insertChild(i, node);
+            }
+        }
     }
 
     return iteratorAdvanced;
@@ -128,13 +143,17 @@ bool ProxyNode_readLocalData(Object& obj, Input& fr)
 
 bool ProxyNode_writeLocalData(const Object& obj, Output& fw)
 {
+    bool includeExternalReferences = false;
+    bool useOriginalExternalReferences = false;
+    bool writeExternalReferenceFiles = true;
+
     const ProxyNode& proxyNode = static_cast<const ProxyNode&>(obj);
 
     if (proxyNode.getCenterMode()==osg::ProxyNode::USER_DEFINED_CENTER) fw.indent() << "Center "<< proxyNode.getCenter() << std::endl;
 
     fw.indent() << "Radius "<<proxyNode.getRadius()<<std::endl;
 
-	fw.indent() << "FileNameList "<<proxyNode.getNumFileNames()<<" {"<< std::endl;
+    fw.indent() << "FileNameList "<<proxyNode.getNumFileNames()<<" {"<< std::endl;
     fw.moveIn();
     
     unsigned int numChildrenToWriteOut = 0;
@@ -148,21 +167,52 @@ bool ProxyNode_writeLocalData(const Object& obj, Output& fw)
         }
         else 
         {
-            fw.indent() << proxyNode.getFileName(i) << std::endl;
+            if(useOriginalExternalReferences)
+            {
+                fw.indent() << proxyNode.getFileName(i) << std::endl;
+            }
+            else
+            {
+                std::string osgname = osgDB::getFilePath(proxyNode.getFileName(i)) +"/"+ osgDB::getStrippedName(proxyNode.getFileName(i)) +".osg";
+                fw.indent() << osgname << std::endl;
+            }
         }
     }
     fw.moveOut();
     fw.indent() << "}"<< std::endl;
 
-    fw.indent() << "num_children " << numChildrenToWriteOut << std::endl;
-    for(unsigned int j=0;j<proxyNode.getNumChildren();++j)
+
+    if(includeExternalReferences) //out->getIncludeExternalReferences()) // inlined mode
     {
-        if (proxyNode.getFileName(j).empty())
+        fw.indent() << "num_children " << proxyNode.getNumChildren() << std::endl;
+        for(unsigned int i=0; i<proxyNode.getNumChildren(); i++)
         {
-            fw.writeObject(*proxyNode.getChild(j));
+            fw.writeObject(*proxyNode.getChild(i));
         }
     }
-
+    else //----------------------------------------- no inlined mode
+    {
+        fw.indent() << "num_children " << numChildrenToWriteOut << std::endl;
+        for(unsigned int i=0; i<proxyNode.getNumChildren(); ++i)
+        {
+            if (proxyNode.getFileName(i).empty())
+            {
+                fw.writeObject(*proxyNode.getChild(i));
+            }
+            else if(writeExternalReferenceFiles) //out->getWriteExternalReferenceFiles())
+            {
+                if(useOriginalExternalReferences) //out->getUseOriginalExternalReferences())
+                {
+                    osgDB::writeNodeFile(*proxyNode.getChild(i), proxyNode.getFileName(i));
+                }
+                else
+                {
+                    std::string osgname = osgDB::getFilePath(proxyNode.getFileName(i)) +"/"+ osgDB::getStrippedName(proxyNode.getFileName(i)) +".osg";
+                    osgDB::writeNodeFile(*proxyNode.getChild(i), osgname);
+                }
+            }
+        }
+    }
 
     return true;
 }

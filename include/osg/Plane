@@ -78,7 +78,9 @@ class SG_EXPORT Plane
         inline float  operator [] (const int i) const { return _fv[i]; }
         
         
-        /** calculate the distance between a point and the plane.*/
+        inline osg::Vec3 getNormal() { return osg::Vec3(_fv[0],_fv[1],_fv[2]); }
+      
+              /** calculate the distance between a point and the plane.*/
         inline const float distance(const osg::Vec3& v) const
         {
             return _fv[0]*v.x()+

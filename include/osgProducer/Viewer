@@ -104,6 +104,8 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
 
         typedef std::vector< osg::ref_ptr<osg::Node> > RefNodePath;
         
+        void computeActiveCoordindateSystemNodePath();
+
         void setCoordindateSystemNodePath(const RefNodePath& nodePath) { _coordinateSystemNodePath = nodePath; }
         
         void setCoordindateSystemNodePath(const osg::NodePath& nodePath);

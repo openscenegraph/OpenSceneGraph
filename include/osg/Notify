@@ -13,7 +13,8 @@
 #else
 #include <iostream>
 #include <fstream>
-using namespace std;
+using std::ostream;
+using std::ofstream;
 #endif
 
 

@@ -11,7 +11,7 @@
 #include <iostream.h>
 #else
 #include <iostream>
-using namespace std;
+using std::ostream;
 #endif
 
 namespace osg {

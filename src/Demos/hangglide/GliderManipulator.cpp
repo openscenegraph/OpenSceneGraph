@@ -43,7 +43,7 @@ void GliderManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
 
         const osg::BoundingSphere& boundingSphere=_node->getBound();
 
-        osg::Vec3 eye = boundingSphere._center+osg::Vec3(-boundingSphere._radius*0.15f,-boundingSphere._radius*0.15f,-boundingSphere._radius*0.03f);
+        osg::Vec3 eye = boundingSphere._center+osg::Vec3(-boundingSphere._radius*0.25f,-boundingSphere._radius*0.25f,-boundingSphere._radius*0.03f);
 
         _camera->setView(eye,
             eye+osg::Vec3(1.0f,1.0f,-0.1f),

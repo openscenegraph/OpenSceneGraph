@@ -14,7 +14,7 @@ namespace osg {
 class BoundingBox;
 class BoundingSphere;
 
-/** A ClippingVolume class for representing convex clipping volumes made up.
+/** A class for representing convex clipping volumes made up.
   * When adding planes, their normals should point inwards (into the volume) */
 class SG_EXPORT ConvexPlanerPolygon
 {

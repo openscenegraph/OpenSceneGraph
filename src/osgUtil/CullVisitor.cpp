@@ -125,10 +125,10 @@ void CullVisitor::reset()
     // first unref all referenced objects and then empty the containers.
     //
     _projectionStack.clear();
-    _projectionClippingVolumeStack.clear();
+    _projectionPolytopeStack.clear();
 
     _modelviewStack.clear();
-    _modelviewClippingVolumeStack.clear();
+    _modelviewPolytopeStack.clear();
 
     _viewportStack.clear();
 
@@ -139,7 +139,6 @@ void CullVisitor::reset()
     _cullingModeStack.clear();
 
     // reset the calculated near far planes.
-    _computeNearFar = COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES;
     _computed_znear = FLT_MAX;
     _computed_zfar = -FLT_MAX;
     
@@ -167,13 +166,11 @@ void CullVisitor::reset()
     _windowToModelFactor = 1.0f;
 }
 
-void CullVisitor::pushClippingVolume()
+void CullVisitor::pushPolytope()
 {
-    _modelviewClippingVolumeStack.push_back(osg::ClippingVolume());
-    osg::ClippingVolume& cv = _modelviewClippingVolumeStack.back();
-    //cv.set(_projectionClippingVolumeStack.back());
-    cv.set(_projectionClippingVolumeStack.back(),_cullingModeStack.back());
-    _cullingModeStack.push_back(cv.getLocalMask() | (_cullingModeStack.back()&SMALL_FEATURE_CULLING));
+    _modelviewPolytopeStack.push_back();
+    osg::Polytope& cv = _modelviewPolytopeStack.back();
+    cv = _projectionPolytopeStack.back();
 
     if (!_modelviewStack.empty()) cv.transformProvidingInverse(*_modelviewStack.back());
 
@@ -182,11 +179,10 @@ void CullVisitor::pushClippingVolume()
     _windowToModelFactorDirty = true;
 }
 
-void CullVisitor::popClippingVolume()
+void CullVisitor::popPolytope()
 {
-    _modelviewClippingVolumeStack.pop_back();
+    _modelviewPolytopeStack.pop_back();
     _MVPW_Stack.pop_back();
-    _cullingModeStack.pop_back();
     
     _windowToModelFactorDirty = true;
 }
@@ -207,11 +203,11 @@ void CullVisitor::pushProjectionMatrix(Matrix* matrix)
 {
     _projectionStack.push_back(matrix);
     
-    _projectionClippingVolumeStack.push_back(ClippingVolume());
-    _projectionClippingVolumeStack.back().setToUnitFrustumWithoutNearFar();
-    _projectionClippingVolumeStack.back().transformProvidingInverse(*matrix);
+    _projectionPolytopeStack.push_back();
+    _projectionPolytopeStack.back().setToUnitFrustumWithoutNearFar();
+    _projectionPolytopeStack.back().transformProvidingInverse(*matrix);
     
-    pushClippingVolume();
+    pushPolytope();
 }
 
 void CullVisitor::popProjectionMatrix()
@@ -243,16 +239,16 @@ void CullVisitor::popProjectionMatrix()
     }
 
     _projectionStack.pop_back();
-    _projectionClippingVolumeStack.pop_back();
+    _projectionPolytopeStack.pop_back();
 
-    popClippingVolume();
+    popPolytope();
 }
 
 void CullVisitor::pushModelViewMatrix(Matrix* matrix)
 {
     _modelviewStack.push_back(matrix);
     
-    pushClippingVolume();
+    pushPolytope();
 
     // fast method for computing the eye point in local coords which doesn't require the inverse matrix.
     const float x_0 = (*matrix)(0,0);
@@ -289,7 +285,7 @@ void CullVisitor::popModelViewMatrix()
 {
     _modelviewStack.pop_back();
     _eyePointStack.pop_back();
-    popClippingVolume();
+    popPolytope();
 
 
     osg::Vec3 lookVector(0.0f,0.0f,-1.0f);
@@ -364,14 +360,10 @@ CullVisitor::CullingMode CullVisitor::getCullingMode() const
 
 void CullVisitor::apply(Node& node)
 {
-    CullingMode mode = _cullingModeStack.back();
-    
-    if (!node.getCullingActive()) mode = 0;
-    else if (node.getNumChildrenWithCullingDisabled()==0 && 
-             isCulled(node.getBound(),mode)) return;
+    if (isCulled(node)) return;
 
     // push the culling mode.
-    _cullingModeStack.push_back(mode);
+    pushCurrentMask();
     
     // push the node's state.
     StateSet* node_state = node.getStateSet();
@@ -383,19 +375,13 @@ void CullVisitor::apply(Node& node)
     if (node_state) popStateSet();
     
     // pop the culling mode.
-    _cullingModeStack.pop_back();
+    popCurrentMask();
 }
 
 
 void CullVisitor::apply(Geode& node)
 {
-
-    // return if object's bounding sphere is culled.
-    CullingMode mode = _cullingModeStack.back();
-
-    if (!node.getCullingActive()) mode = 0;
-    else if (node.getNumChildrenWithCullingDisabled()==0 && 
-       isCulled(node.getBound(),mode)) return;
+    if (isCulled(node)) return;
 
     // push the node's state.
     StateSet* node_state = node.getStateSet();
@@ -414,7 +400,7 @@ void CullVisitor::apply(Geode& node)
         }
         else
         {
-            if (isCulled(bb,mode)) continue;
+            if (isCulled(bb)) continue;
         }
 
 
@@ -490,12 +476,7 @@ void CullVisitor::apply(Geode& node)
 
 void CullVisitor::apply(Billboard& node)
 {
-    // return if object's bounding sphere is culled.
-    CullingMode mode = _cullingModeStack.back();
-
-    if (!node.getCullingActive()) mode = 0;
-    else if (node.getNumChildrenWithCullingDisabled()==0 && 
-             isCulled(node.getBound(),mode)) return;
+    if (isCulled(node)) return;
 
     // push the node's state.
     StateSet* node_state = node.getStateSet();
@@ -602,15 +583,10 @@ void CullVisitor::apply(ClipNode& node)
 
 void CullVisitor::apply(Group& node)
 {
-    // return if object's bounding sphere is culled.
-    CullingMode mode = _cullingModeStack.back();
-
-    if (!node.getCullingActive()) mode = 0;
-    else if (node.getNumChildrenWithCullingDisabled()==0 && 
-             isCulled(node.getBound(),mode)) return;
+    if (isCulled(node)) return;
 
     // push the culling mode.
-    _cullingModeStack.push_back(mode);
+    pushCurrentMask();
 
     // push the node's state.
     StateSet* node_state = node.getStateSet();
@@ -622,20 +598,15 @@ void CullVisitor::apply(Group& node)
     if (node_state) popStateSet();
 
     // pop the culling mode.
-    _cullingModeStack.pop_back();
+    popCurrentMask();
 }
 
 void CullVisitor::apply(Transform& node)
 {
-    // return if object's bounding sphere is culled.
-    CullingMode mode = _cullingModeStack.back();
-
-    if (!node.getCullingActive()) mode = 0;
-    else if (node.getNumChildrenWithCullingDisabled()==0 && 
-             isCulled(node.getBound(),mode)) return;
+    if (isCulled(node)) return;
 
     // push the culling mode.
-    _cullingModeStack.push_back(mode);
+    pushCurrentMask();
 
     // push the node's state.
     StateSet* node_state = node.getStateSet();
@@ -653,20 +624,15 @@ void CullVisitor::apply(Transform& node)
     if (node_state) popStateSet();
 
     // pop the culling mode.
-    _cullingModeStack.pop_back();
+    popCurrentMask();
 }
 
 void CullVisitor::apply(Projection& node)
 {
-    // return if object's bounding sphere is culled.
-    CullingMode mode = _cullingModeStack.back();
-
-    if (!node.getCullingActive()) mode = 0;
-    else if (node.getNumChildrenWithCullingDisabled()==0 && 
-             isCulled(node.getBound(),mode)) return;
+    if (isCulled(node)) return;
 
     // push the culling mode.
-    _cullingModeStack.push_back(mode);
+    pushCurrentMask();
 
     // push the node's state.
     StateSet* node_state = node.getStateSet();
@@ -695,7 +661,7 @@ void CullVisitor::apply(Projection& node)
     if (node_state) popStateSet();
 
     // pop the culling mode.
-    _cullingModeStack.pop_back();
+    popCurrentMask();
 }
 
 void CullVisitor::apply(Switch& node)
@@ -706,18 +672,13 @@ void CullVisitor::apply(Switch& node)
 
 void CullVisitor::apply(LOD& node)
 {
-    // return if object's bounding sphere is culled.
-    CullingMode mode = _cullingModeStack.back();
-
-    if (!node.getCullingActive()) mode = 0;
-    else if (node.getNumChildrenWithCullingDisabled()==0 && 
-             isCulled(node.getBound(),mode)) return;
+    if (isCulled(node)) return;
 
     int eval = node.evaluate(getEyeLocal(),_LODBias);
     if (eval<0) return;
 
     // push the culling mode.
-    _cullingModeStack.push_back(mode);
+    pushCurrentMask();
 
     // push the node's state.
     StateSet* node_state = node.getStateSet();
@@ -730,7 +691,7 @@ void CullVisitor::apply(LOD& node)
     if (node_state) popStateSet();
 
     // pop the culling mode.
-    _cullingModeStack.pop_back();
+    popCurrentMask();
 }
 
 void CullVisitor::apply(osg::EarthSky& node)
@@ -752,29 +713,22 @@ void CullVisitor::apply(osg::EarthSky& node)
 
 void CullVisitor::apply(Impostor& node)
 {
-    const BoundingSphere& bs = node.getBound();
 
-    // return if object's bounding sphere is culled.
-    CullingMode mode = _cullingModeStack.back();
-
-    if (!node.getCullingActive()) mode = 0;
-    else if (node.getNumChildrenWithCullingDisabled()==0 && 
-             isCulled(node.getBound(),mode)) return;
+    if (isCulled(node)) return;
 
     osg::Vec3 eyeLocal = getEyeLocal();
 
     int eval = node.evaluate(eyeLocal,_LODBias);
-    if (eval<0){
-        return;
-    }
+    if (eval<0) return;
 
     // push the culling mode.
-    _cullingModeStack.push_back(mode);
+    pushCurrentMask();
 
     // push the node's state.
     StateSet* node_state = node.getStateSet();
     if (node_state) pushStateSet(node_state);
 
+    const BoundingSphere& bs = node.getBound();
 
     float distance2 = (eyeLocal-bs.center()).length2();
     if (!_impostorActive ||
@@ -875,7 +829,7 @@ void CullVisitor::apply(Impostor& node)
     if (node_state) popStateSet();
 
     // pop the culling mode.
-    _cullingModeStack.pop_back();
+    popCurrentMask();
 }
 
 ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
@@ -1030,7 +984,7 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
     }
 
     // restore the culling mode.
-    _cullingModeStack.pop_back();
+    popCurrentMask();
 
     popStateSet();
 

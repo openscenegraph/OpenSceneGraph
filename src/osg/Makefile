@@ -16,6 +16,7 @@ CXXFILES =\
 	ConvexPlanerOccluder.cpp\
 	CopyOp.cpp\
 	CullFace.cpp\
+	CullingSet.cpp\
 	Depth.cpp\
 	DisplaySettings.cpp\
 	Drawable.cpp\

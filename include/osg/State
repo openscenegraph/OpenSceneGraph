@@ -11,7 +11,7 @@
 
 #include <osg/FrameStamp>
 #include <osg/DisplaySettings>
-#include <osg/ClippingVolume>
+#include <osg/Polytope>
 
 #include <vector>
 #include <map>
@@ -100,8 +100,7 @@ class SG_EXPORT State : public Referenced
         }
 
 
-        ClippingVolume getClippingVolume() const;
-
+        Polytope getViewFrustum() const;
 
 
         /** Apply stateset.*/

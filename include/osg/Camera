@@ -10,7 +10,6 @@
 #include <osg/Referenced>
 #include <osg/Matrix>
 #include <osg/Quat>
-#include <osg/ClippingVolume>
 #include <osg/Viewport>
 #include <osg/DisplaySettings>
 

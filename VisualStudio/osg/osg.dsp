@@ -149,6 +149,10 @@ SOURCE=..\..\src\osg\CullFace.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\CullingSet.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\Depth.cpp
 # End Source File
 # Begin Source File
@@ -397,10 +401,6 @@ SOURCE=..\..\Include\Osg\ClipNode
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\ClippingVolume
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\Include\Osg\ClipPlane
 # End Source File
 # Begin Source File
@@ -426,6 +426,10 @@ SOURCE=..\..\Include\Osg\CopyOp
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\CullFace
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\CullingSet
 # End Source File
 # Begin Source File
 
@@ -586,6 +590,10 @@ SOURCE=..\..\Include\Osg\PolygonMode
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\PolygonOffset
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\Polytope
 # End Source File
 # Begin Source File
 

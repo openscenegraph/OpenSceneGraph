@@ -2,48 +2,48 @@
 //Distributed under the terms of the GNU Library General Public License (LGPL)
 //as published by the Free Software Foundation.
 
-#ifndef OSG_CLIPPINGVOLUME
-#define OSG_CLIPPINGVOLUME 1
+#ifndef OSG_POLYTOPE
+#define OSG_POLYTOPE 1
 
 #include <osg/Plane>
-
-#include <vector>
+#include <osg/fast_back_stack>
 
 namespace osg {
 
-/** A ClippingVolume class for representing convex clipping volumes made up.
+
+/** A Polytope class for representing convex clipping volumes made up.
   * When adding planes, their normals should point inwards (into the volume) */
-class SG_EXPORT ClippingVolume
+class SG_EXPORT Polytope
 {
 
     public:
 
+        typedef unsigned int ClippingMask;
         typedef std::vector<osg::Plane> PlaneList;
 
-        inline ClippingVolume() {setupMask();}
+        inline Polytope() {setupMask();}
 
-        inline ClippingVolume(const ClippingVolume& cs, const unsigned int mask)
-        {
-            set(cs,mask);
-        }
-
-        inline ClippingVolume(const ClippingVolume& cv) : _localMask(cv._localMask), _planeList(cv._planeList)  {}
+        inline Polytope(const Polytope& cv) : 
+            _maskStack(cv._maskStack),
+            _resultsMask(cv._resultsMask),
+            _planeList(cv._planeList) {}
         
-        inline ClippingVolume(const PlaneList& pl) : _planeList(pl) {setupMask();}
+        inline Polytope(const PlaneList& pl) : _planeList(pl) {setupMask();}
 
-        inline ~ClippingVolume() {}
+        inline ~Polytope() {}
 
         inline void clear() { _planeList.clear(); setupMask(); }
 
-        inline ClippingVolume& operator = (const ClippingVolume& cv)
+        inline Polytope& operator = (const Polytope& cv)
         {
             if (&cv==this) return *this;
-           _localMask = cv._localMask;
-           _planeList = cv._planeList;
-           return *this;
+            _maskStack = cv._maskStack;
+            _resultsMask = cv._resultsMask;
+            _planeList = cv._planeList;
+            return *this;
         }
         
-        /** Create a ClippingVolume with is cube, centered at 0,0,0, with sides of 2 units.*/
+        /** Create a Polytope with is cube, centered at 0,0,0, with sides of 2 units.*/
         void setToUnitFrustum()
         {
             _planeList.erase(_planeList.begin(),_planeList.end());
@@ -66,22 +66,6 @@ class SG_EXPORT ClippingVolume
             setupMask();
         }
 
-        inline void set(const ClippingVolume& cs, const unsigned int mask)
-        {
-            _planeList.erase(_planeList.begin(),_planeList.end());
-            unsigned int selector_mask = 0x1;
-            for(PlaneList::const_iterator itr=cs._planeList.begin();
-                itr!=cs._planeList.end();
-                ++itr)
-            {
-                if (mask&selector_mask) _planeList.push_back(*itr);
-                selector_mask <<= 1;
-            }
-            setupMask();
-        }
-
-        inline void set(const ClippingVolume& cs) { _planeList = cs._planeList; setupMask(); }
-
         inline void set(const PlaneList& pl) { _planeList = pl; setupMask(); }
         
         inline void add(const osg::Plane& pl) { _planeList.push_back(pl); setupMask(); }
@@ -92,37 +76,44 @@ class SG_EXPORT ClippingVolume
 
         inline void setupMask()
         {
-            _localMask = 0;
+            _resultsMask = 0;
             for(unsigned int i=0;i<_planeList.size();++i)
             {
-                _localMask = (_localMask<<1) | 1;
+                _resultsMask = (_resultsMask<<1) | 1;
             }
+            _maskStack.back() = _resultsMask;
         }
-        
-        unsigned int getLocalMask() const { return _localMask; }
 
+        inline ClippingMask& getCurrentMask() { return _maskStack.back(); }
+
+        inline ClippingMask getCurrentMask() const { return _maskStack.back(); }
+
+        inline ClippingMask getResultsMask() const
+        {
+            return _resultsMask;
+        }       
+        
+        inline void pushCurrentMask()
+        {
+            _maskStack.push_back(_resultsMask);
+        }
+
+        inline void popCurrentMask()
+        {
+            _maskStack.pop_back();
+        }
 
         /** Check whether a vertex is contained with clipping set.*/
         inline const bool contains(const osg::Vec3& v) const
         {
-            for(PlaneList::const_iterator itr=_planeList.begin();
-                itr!=_planeList.end();
-                ++itr)
-            {
-                if (itr->distance(v)<0.0f) return false;
-            }
-            return true;
-        }
-
-        inline const bool contains(const osg::Vec3& v,const unsigned int mask) const
-        {
-            if (!(mask & _localMask)) return true;
+            if (!_maskStack.back()) return true;
+            
             unsigned int selector_mask = 0x1;
             for(PlaneList::const_iterator itr=_planeList.begin();
                 itr!=_planeList.end();
                 ++itr)
             {
-                if (mask&selector_mask && (itr->distance(v)<0.0f)) return false;
+                if ((_maskStack.back()&selector_mask) && (itr->distance(v)<0.0f)) return false;
                 selector_mask <<= 1;
             }
             return true;
@@ -133,95 +124,97 @@ class SG_EXPORT ClippingVolume
             modifying the mask to turn off planes which wouldn't contribute to clipping
             of any internal objects.  This feature is used in osgUtil::CullVisitor
             to prevent redundant plane checking.*/
-        inline const bool contains(const osg::BoundingSphere& bs,unsigned int& mask) const
+        inline const bool contains(const osg::BoundingSphere& bs)
         {
-            if (!(mask & _localMask)) return true;
+            if (!_maskStack.back()) return true;
 
-            unsigned int selector_mask = 0x1;
+            _resultsMask = _maskStack.back();
+            ClippingMask selector_mask = 0x1;
+
             for(PlaneList::const_iterator itr=_planeList.begin();
                 itr!=_planeList.end();
                 ++itr)
             {
-                if (mask&selector_mask)
+                if (_resultsMask&selector_mask)
                 {
                     int res=itr->intersect(bs);
                     if (res<0) return false; // outside clipping set.
-                    else if (res>0) mask ^= selector_mask; // subsequent checks against this plane not required.
+                    else if (res>0) _resultsMask ^= selector_mask; // subsequent checks against this plane not required.
                 }
                 selector_mask <<= 1; 
             }
             return true;
         }
         
-        /** Check whether any part of a bounding sphere is contained within clipping set.*/
-        inline const bool contains(const osg::BoundingSphere& bs) const
-        {
-            for(PlaneList::const_iterator itr=_planeList.begin();
-                itr!=_planeList.end();
-                ++itr)
-            {
-                if (itr->intersect(bs)<0) return false; // outside clipping set.
-            }
-            return true;
-        }
-
         /** Check whether any part of a bounding box is contained within clipping set.
             Using a mask to determine which planes should be used for the check, and
             modifying the mask to turn off planes which wouldn't contribute to clipping
             of any internal objects.  This feature is used in osgUtil::CullVisitor
             to prevent redundant plane checking.*/
-        inline const bool contains(const osg::BoundingBox& bb,unsigned int& mask) const
+        inline const bool contains(const osg::BoundingBox& bb)
         {
-            if (!(mask & _localMask)) return true;
+            if (!_maskStack.back()) return true;
 
-            unsigned int selector_mask = 0x1;
+            _resultsMask = _maskStack.back();
+            ClippingMask selector_mask = 0x1;
+
             for(PlaneList::const_iterator itr=_planeList.begin();
                 itr!=_planeList.end();
                 ++itr)
             {
-                if (mask&selector_mask)
+                if (_resultsMask&selector_mask)
                 {
                     int res=itr->intersect(bb);
                     if (res<0) return false; // outside clipping set.
-                    else if (res>0) mask ^= selector_mask; // subsequent checks against this plane not required.
+                    else if (res>0) _resultsMask ^= selector_mask; // subsequent checks against this plane not required.
                 }
                 selector_mask <<= 1; 
             }
             return true;
         }
 
-        /** Check whether any part of a bounding box is contained within clipping set.*/
-        inline const bool contains(const osg::BoundingBox& bb) const
-        {
-            for(PlaneList::const_iterator itr=_planeList.begin();
-                itr!=_planeList.end();
-                ++itr)
-            {
-                if (itr->intersect(bb)<0) return false; // outside clipping set.
-            }
-            return true;
-        }
-
         /** Check whether the entire bounding sphere is contained within clipping set.*/
-        inline const bool containsAllOf(const osg::BoundingSphere& bs) const
+        inline const bool containsAllOf(const osg::BoundingSphere& bs)
         {
+            if (!_maskStack.back()) return false;
+
+            _resultsMask = _maskStack.back();
+            ClippingMask selector_mask = 0x1;
+            
             for(PlaneList::const_iterator itr=_planeList.begin();
                 itr!=_planeList.end();
                 ++itr)
             {
-                if (itr->intersect(bs)<1) return false; // intersects, or is below plane.
+                if (_resultsMask&selector_mask)
+                {
+                    int res=itr->intersect(bs);
+                    if (res<1) return false;  // intersects, or is below plane.
+                    _resultsMask ^= selector_mask; // subsequent checks against this plane not required.
+                }
+                selector_mask <<= 1; 
             }
             return true;
         }
         
         /** Check whether the entire bounding box is contained within clipping set.*/
-        inline const bool containsAllOf(const osg::BoundingBox& bb) const
+        inline const bool containsAllOf(const osg::BoundingBox& bb)
         {
+            if (!_maskStack.back()) return false;
+
+            _resultsMask = _maskStack.back();
+            ClippingMask selector_mask = 0x1;
+
             for(PlaneList::const_iterator itr=_planeList.begin();
                 itr!=_planeList.end();
                 ++itr)
             {
-                if (itr->intersect(bb)<1) return false; // intersects, or is below plane.
+                if (_resultsMask&selector_mask)
+                {
+                    int res=itr->intersect(bb);
+                    if (res<1) return false;  // intersects, or is below plane.
+                    _resultsMask ^= selector_mask; // subsequent checks against this plane not required.
+                }
+                selector_mask <<= 1; 
             }
             return true;
         }
@@ -244,19 +237,28 @@ class SG_EXPORT ClippingVolume
           * see transform for details. */
         inline void transformProvidingInverse(const osg::Matrix& matrix)
         {
+            if (!_maskStack.back()) return;
+
+            _resultsMask = _maskStack.back();
+            ClippingMask selector_mask = 0x1;
             for(PlaneList::iterator itr=_planeList.begin();
                 itr!=_planeList.end();
                 ++itr)
             {
-                itr->transformProvidingInverse(matrix);
+                if (_resultsMask&selector_mask)
+                {
+                    itr->transformProvidingInverse(matrix);
+                    selector_mask <<= 1; 
+                }
             }
         }
         
     protected:
 
 
-        unsigned int _localMask;
-        PlaneList _planeList;
+        fast_back_stack<ClippingMask>       _maskStack;
+        ClippingMask                        _resultsMask;
+        PlaneList                           _planeList;
 
 };
 

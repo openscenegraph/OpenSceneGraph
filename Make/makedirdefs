@@ -113,6 +113,9 @@ ifeq ($(LIBMPEG3_INSTALLED),yes)
   PLUGIN_DIRS += mpeg
 endif
 
+ifeq ($(AVIFILE_INSTALLED),yes)
+  PLUGIN_DIRS += avi
+endif
 
 ifeq ($(COIN_INSTALLED),yes)
     PLUGIN_DIRS += Inventor

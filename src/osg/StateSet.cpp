@@ -281,6 +281,37 @@ int StateSet::compare(const StateSet& rhs,bool compareAttributeContents) const
     }
     else if (rhs_mode_itr == rhs._modeList.end()) return 1;
 
+
+    // check uniforms.
+    UniformList::const_iterator lhs_uniform_itr = _uniformList.begin();
+    UniformList::const_iterator rhs_uniform_itr = rhs._uniformList.begin();
+    while (lhs_uniform_itr!=_uniformList.end() && rhs_uniform_itr!=rhs._uniformList.end())
+    {
+        if      (lhs_uniform_itr->first<rhs_uniform_itr->first) return -1;
+        else if (rhs_uniform_itr->first<lhs_uniform_itr->first) return 1;
+        if      (lhs_uniform_itr->second<rhs_uniform_itr->second) return -1;
+        else if (rhs_uniform_itr->second<lhs_uniform_itr->second) return 1;
+        ++lhs_uniform_itr;
+        ++rhs_uniform_itr;
+    }
+    if (lhs_uniform_itr==_uniformList.end())
+    {
+        if (rhs_uniform_itr!=rhs._uniformList.end()) return -1;
+    }
+    else if (rhs_uniform_itr == rhs._uniformList.end()) return 1;
+
+    if (_program.valid())
+    {
+        if (rhs._program.valid())
+        {
+            int result = _program->compare(*rhs._program);
+            if (result!=0) return result;
+        }
+        else return 1;
+    }
+    else if (rhs._program.valid()) return -1;
+    
+
     return 0;
 }
 
@@ -629,6 +660,58 @@ const StateAttribute* StateSet::getAttribute(StateAttribute::Type type, unsigned
 const StateSet::RefAttributePair* StateSet::getAttributePair(StateAttribute::Type type, unsigned int member) const
 {
     return getAttributePair(_attributeList,type,member);
+}
+
+void StateSet::setUniform(Uniform* uniform, StateAttribute::OverrideValue value)
+{
+    if (uniform)
+    {
+        RefUniformPair& up = _uniformList[uniform->getName()];
+        up.first = uniform;
+        up.second = value;
+    }
+}
+
+void StateSet::removeUniform(const std::string& name)
+{
+    UniformList::iterator itr = _uniformList.find(name);
+    if (itr!=_uniformList.end())
+    {
+        _uniformList.erase(itr);
+    }
+}
+
+void StateSet::removeUniform(Uniform* uniform)
+{
+    if (!uniform) return;
+    
+    UniformList::iterator itr = _uniformList.find(uniform->getName());
+    if (itr!=_uniformList.end())
+    {
+        if (itr->second.first != uniform) return;
+        _uniformList.erase(itr);
+    }
+}
+
+Uniform* StateSet::getUniform(const std::string& name)
+{
+    UniformList::iterator itr = _uniformList.find(name);
+    if (itr!=_uniformList.end()) return itr->second.first.get();
+    else return 0;
+}
+
+const Uniform* StateSet::getUniform(const std::string& name) const
+{
+    UniformList::const_iterator itr = _uniformList.find(name);
+    if (itr!=_uniformList.end()) return itr->second.first.get();
+    else return 0;
+}
+
+const StateSet::RefUniformPair* StateSet::getUniformPair(const std::string& name) const
+{
+    UniformList::const_iterator itr = _uniformList.find(name);
+    if (itr!=_uniformList.end()) return &(itr->second);
+    else return 0;
 }
 
 void StateSet::setTextureMode(unsigned int unit,StateAttribute::GLMode mode, StateAttribute::GLModeValue value)

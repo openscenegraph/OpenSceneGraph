@@ -1912,7 +1912,7 @@ Program::Program()
 
 
 Program::Program(const Program& rhs, const osg::CopyOp& copyop):
-    osg::StateAttribute(rhs, copyop)
+    osg::Object(rhs, copyop)
 {
     osg::notify(osg::FATAL) << "how got here?" << std::endl;
 }
@@ -1932,7 +1932,7 @@ Program::~Program()
     }
 }
 
-int Program::compare(const osg::StateAttribute& sa) const
+int Program::compare(const osg::Program& sa) const
 {
     // check the types are equal and then create the rhs variable
     // used by the COMPARE_StateAttribute_Paramter macro's below.

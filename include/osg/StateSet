@@ -18,6 +18,10 @@
 #include <osg/StateAttribute>
 #include <osg/ref_ptr>
 
+#include <osg/Uniform>
+#include <osg/Program>
+
+
 #include <map>
 #include <vector>
 #include <string>
@@ -252,6 +256,56 @@ class SG_EXPORT StateSet : public Object
 
         void setAssociatedTextureModes(unsigned int unit,const StateAttribute* attribute, StateAttribute::GLModeValue value);
 
+
+
+
+        /** Simple pairing between an attribute and its override flag.*/
+        typedef std::pair<ref_ptr<Uniform>,StateAttribute::OverrideValue>  RefUniformPair;
+
+        /** a container to map <StateAttribyte::Types,Member> to their respective RefAttributePair.*/
+        typedef std::map<std::string,RefUniformPair> UniformList;
+
+        /** Set this StateSet to contain specified uniform and override flag.*/
+        void setUniform(Uniform* uniform, StateAttribute::OverrideValue value=StateAttribute::OFF);
+        
+        /** remove uniform of specified name from StateSet.*/
+        void removeUniform(const std::string& name);
+
+        /** remove attribute from StateSet.*/
+        void removeUniform(Uniform* attribute);
+
+        /** Get Uniform for specified name.
+          * Returns NULL if no matching uniform is contained within StateSet.*/
+        Uniform* getUniform(const std::string& name);
+
+        /** Get const Uniform for specified name.
+          * Returns NULL if no matching uniform is contained within StateSet.*/
+        const Uniform* getUniform(const std::string& name) const;
+
+        /** Get specified RefUniformPair for specified type.
+          * Returns NULL if no type is contained within StateSet.*/
+        const RefUniformPair* getUniformPair(const std::string& name) const;
+
+        /** set the list of all Uniforms contained in this StateSet.*/
+        inline void setUniformList(UniformList& al) { _uniformList=al; }
+
+        /** return the list of all Uniforms contained in this StateSet.*/
+        inline UniformList& getUniformList() { return _uniformList; }
+
+        /** return the const list of all Uniforms contained in this const StateSet.*/
+        inline const UniformList& getUniformList() const { return _uniformList; }
+
+        
+        void setProgram(Program* program) { _program = program; }
+
+        Program* getProgram() { return _program.get(); }
+        
+        const Program* getProgram() const { return _program.get(); }
+
+
+
+
+
         enum RenderingHint
         {
             DEFAULT_BIN = 0,
@@ -329,6 +383,9 @@ class SG_EXPORT StateSet : public Object
 
         TextureModeList                     _textureModeList;
         TextureAttributeList                _textureAttributeList;
+
+        UniformList                         _uniformList;
+        osg::ref_ptr<osg::Program>          _program;
 
         inline ModeList& getOrCreateTextureModeList(unsigned int unit)
         {

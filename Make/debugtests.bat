@@ -34,6 +34,10 @@ echo sgv Town.osg
 sgv Town.osg
 more memleaks.log
 
+echo osgshape
+osgshape
+more memleaks.log
+
 echo osganimate
 osganimate
 more memleaks.log

@@ -91,6 +91,7 @@ DEMOS_DIRS = \
 	osgscribe\
 	osgstereoimage\
 	osgsequence\
+	osgshape\
 	osgteapot\
 	osgtext\
 	osgtexture1D\

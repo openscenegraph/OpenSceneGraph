@@ -33,11 +33,12 @@ Drawable::Drawable(const Drawable& drawable,const CopyOp& copyop):
     Object(drawable,copyop),
     _parents(), // leave empty as parentList is managed by Geode
     _stateset(copyop(drawable._stateset.get())),
+    _bbox(drawable._bbox),
+    _bbox_computed(drawable._bbox_computed),
+    _shape(copyop(drawable._shape.get())),
     _supportsDisplayList(drawable._supportsDisplayList),
     _useDisplayList(drawable._useDisplayList),
     _globjList(drawable._globjList),
-    _bbox(drawable._bbox),
-    _bbox_computed(drawable._bbox_computed),
     _drawCallback(drawable._drawCallback),
     _cullCallback(drawable._cullCallback)
 {}

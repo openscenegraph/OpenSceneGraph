@@ -75,7 +75,7 @@ ifeq ($(OS),HP-UX)
 # we need to explicitly tell the linker the library name - else it will
 # include paths like ../../../libosg.sl into executables
 $(LIB) $(PLUGIN) : $(OBJS)
-	$(C++) $(LDFLAGS) $(SHARED) $(OBJS) $(LIBS) -Wl,+h -Wl,$@ -Wl,-v -o $@
+	$(C++) $(LDFLAGS) $(SHARED) $(OBJS) $(LIBS) -Wl,+h -Wl,$@ -o $@
 else
 $(LIB) $(PLUGIN) : $(OBJS)
 	$(C++) $(LDFLAGS) $(SHARED) $(OBJS) $(LIBS) -o $@

@@ -7,7 +7,7 @@
 
 #include <math.h>
 
-#if defined(WIN32) || defined (macintosh)|| defined (sun) || defined (__DARWIN_OSX__) || defined(__hpux__)
+#if defined(WIN32) || defined (macintosh)|| defined (sun) || defined (__DARWIN_OSX__)
 
     #include <float.h>
 
@@ -36,9 +36,6 @@
     #define logf (float)log
     #endif
 
-    #ifndef floorf
-    #define floorf (float)floor
-    #endif
 
     #ifndef powf
     #define powf (float)pow
@@ -54,6 +51,14 @@
 
     #ifndef isnanf
     #define isnanf (float)isnan
+    #endif
+    
+#endif
+
+#if defined(WIN32) || defined (macintosh)|| defined (sun) || defined (__DARWIN_OSX__) || defined (__hpux__)
+
+    #ifndef floorf
+    #define floorf (float)floor
     #endif
 
 #endif

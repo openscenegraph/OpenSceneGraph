@@ -216,6 +216,8 @@ namespace
             texenv->setMode(osg::TexEnv::DECAL);
             ss->setTextureAttributeAndModes(0, texenv.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
 
+            ss->setMode( GL_ALPHA_TEST, osg::StateAttribute::OFF );
+
             addPass(ss.get());
         }
 

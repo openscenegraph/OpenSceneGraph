@@ -1,4 +1,6 @@
 #include <osg/Math>
+#include <osg/Notify>
+
 #include <osgProducer/KeyboardMouseCallback>
 
 #include <float.h>
@@ -7,8 +9,8 @@ using namespace osgProducer;
 
 void KeyboardMouseCallback::mouseScroll( Producer::KeyboardMouseCallback::ScrollingMotion sm )
 {
-	osg::ref_ptr<EventAdapter> event = createEventAdapter();
-	event->adaptMouseScroll(getTime(), sm);
+    osg::ref_ptr<EventAdapter> event = createEventAdapter();
+    event->adaptMouseScroll(getTime(), sm);
 
     _eventQueueMutex.lock();
     _eventQueue.push_back(event);
@@ -131,6 +133,8 @@ void KeyboardMouseCallback::passiveMouseMotion( float mx, float my)
     _mx = mx;
     _my = my;
     
+    //std::cout << "mx="<<mx<<" my="<<my<<std::endl;
+
     osg::ref_ptr<EventAdapter> event = createEventAdapter();
     event->adaptMouseMotion(getTime(),mx,my);
     
@@ -185,7 +189,15 @@ EventAdapter* KeyboardMouseCallback::createEventAdapter()
     }
     else if (rs)
     {
-        ea->setWindowSize(-1.0f,-1.0f,1.0f,1.0f);
+        //ea->setWindowSize(-1.0f,-1.0f,1.0f,1.0f);
+        
+        const Producer::RenderSurface::InputRectangle &ir = 
+            rs->getInputRectangle();
+
+
+        osg::notify(osg::INFO) << "RenderSurface::InputRectange left="<<ir.left()<<"\twidth="<<ir.width()<<"\tbottom="<<ir.bottom()<<"\theight="<<ir.height()<<std::endl;
+       
+        ea->setWindowSize(0.0f,rs->getWindowHeight(),rs->getWindowWidth(),0.0f);
     }
     
     return ea;

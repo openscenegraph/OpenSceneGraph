@@ -2,6 +2,7 @@
 #include <osgUtil/RenderStage>
 
 #include <osg/Statistics>
+#include <osg/ImpostorSprite>
 
 #include <algorithm>
 
@@ -274,6 +275,7 @@ bool RenderBin::getStats(osg::Statistics* primStats)
             {
                 // then tot up the primtive types and no vertices.
                 dw->accept(*primStats); // use sub-class to find the stats for each drawable
+                if (typeid(*dw)==typeid(osg::ImpostorSprite)) primStats->addImpostor(1);
             }
         }
         somestats=true;

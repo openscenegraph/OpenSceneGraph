@@ -126,7 +126,7 @@ Visual Studio6.0 + STLport  (see details below)</li>
 </ol>
 <p>The OSG is composed of a number of scene graph libraries (with Core in
 front of the project names), executables (with Demos in front of the project
-names), and plugins which read and write 3D data formats and 2D image formats 
+names), and plugins which read and write 3D data formats and 2D image formats
 (with osgPlugins in front of the project names).
 To get the OSG running you'll need at least to compile Core osg,osgUtil,osgDB,osgGLUT,
 osgPlugin dot_osg and Demo sgv. The rest of the libraries and executables
@@ -147,12 +147,12 @@ to help the location of datafiles. For example :
 <br>SET PATH=C:\WINDOWS;C:\WINDOWS\COMMAND;D:\osg-0.8.43\bin;
 <p>To help compilation of the image reader plugins, various image libraries
 have been zipped up for your convenience, your find these on the OSG release
-download directory.
+download directory
+
 <h3>
 Using Visual Studio .NET</h3>
-Looks like Microsoft have eventually got their act together on the compiler
-front, the compiler looks Standard C++ compliant with a solid STL implement,
-so this is the recommend route.
+Visual Studio 7.0 .MET has a solid STL implementation and improve standard C++ complient
+and works with the OpenSceneGraph without problems.  This is the recommended route.
 <h3>
 Using Dinkumware STL</h3>
 The basic jist is that you'll need to download their STL implementation,
@@ -168,23 +168,49 @@ doesn't seem to be a special define associated with the Dinkumware STL
 for the #ifdef to pick up on.
 <h3>
 Using STLport</h3>
-The OSG has been tested under Windows with STLport-4.5, which allows the
+
+<p>A very good HOWTO for installing and making the STLPort libs on MSVC6
+can be found at <a href="http://www.softadvances.com/articles/stlportusing.html">http://www.softadvances.com/articles/stlportusing.html</a>
+
+
+<p>The OSG has been tested under Windows with STLport-4.5, which allows the
 users to configure the type of STL support required for STLport itself.
 The key configuration that the OSG needs to do is to enable the wrapping
 of MS's own iostreams, than using STLport's own implementation. The later
 is not required because this has not be problematic under Windows, it is
-only the container classes and algorithms that need replacing (thanks to
-MS's utterly hopeless implementation of these). Using the iostream wrapping
+only the container classes and algorithms that need replacing. Using the iostream wrapping
 option means the STLport can just be used on your include path, there is
 no need to compile STLport itself, or link into any special libraries.
 To configure STLport simply comment IN (its commented out by default),
 the following line from STLport-4.5/stlport/stl_user_config.h so it should
-look: # define _STLP_NO_OWN_IOSTREAMS 1 Then configure the includes path
-in Visual Studio to pick up on STLport: Select the "Tools" menu. Select
+look:
+<ul>
+# define _STLP_NO_OWN_IOSTREAMS 1
+</ul>
+<p>Then configure the includes path in Visual Studio to pick up on STLport: Select the "Tools" menu. Select
 "Options" In the Options dialog, select the "Directories" tab Under the
 "include" option, add the path to STLport4.5, something like: D:/STLport4.5/stlport
 Then press the up array to move the entry all the way to the top of the
 list, thus overriding MS's own STL implementations.
+
+<h3>Linking your own apps to the OpenSceneGraph</h3>
+<p>All OpenSceneGraph libraries, plugins and executables are compiled with
+the multi-threaded dll option turned ON, and with RTTI turned ON.  Your own
+projects which link to the OpenSceneGraph must uses these same options or
+your application will crash or produce unpredicatable behavior.
+
+
+<h3>Syntax highlight + OpenScenegraph Standard C++ style headers</h3>
+<p>The OpenSceneGraph uses Standard C++ style extensionless headers, which
+poor VisualStudio doesn't automatically recognize as suitable for
+syntax highlighting (compile works fine though), even the StandardC++
+header themselves require a hack to get VisualStudio to highlight them
+properly.  The easy answer is to use that same hack to get it to recognize
+the OpenSceneGraph headers too.  To make easy a modified header listing file
+can be found in the VisualStudio/LANDEXT.DAT.  First copy the original
+LANDEXT.DAT file (located in C:\Progam Files\Microsoft Visual Studio\Common\MSDev98\Bin)
+to LANDEXT.DAT.BKP, and then copy over the OpenSceneGraph one.  Once you have
+done this VisualStudio will syntax highlight them without problem.
 <hr>
 <h3>
 <a NAME="Linux"></a><u>Compiling under Linux</u></h3>

@@ -270,16 +270,16 @@ endif
 
 #### MacOS X specific definitions
 ifeq ($(OS),Darwin)
-  C++               = cc
-  INC               +=  -I/usr/include
+  C++               = c++
+  INC               +=
   DEF               += -Wall -D__DARWIN_OSX__
   OPTF              = -O2
-  DBGF              = -g
+  DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
   DEPARG            = -M $(DEF)
   SHARED            = -shared
   ARCHARGS          = 
-  LINKARGS          = -L/usr/lib
-  DYNAMICLIBRARYLIB = 
+  LINKARGS          =
+  DYNAMICLIBRARYLIB =
   OSG_LIBS          = -losgGLUT -losgGA -losgDB -losgUtil -losg 
   FREETYPE_LIB      = -lfreetype
   GLUT_LIB          = -framework GLUT
@@ -295,6 +295,8 @@ ifeq ($(OS),Darwin)
                         osgGA osgGLUT \
                         osgPlugins osgParticle \
                         Demos
+  LIBVERSION	    =  -dylib_current_version 0.9.1
+
   # Plugins which require external libs: gif jpeg png tiff
   PLUGIN_DIRS       = bmp dw flt \
                         lib3ds logos lwo obj \

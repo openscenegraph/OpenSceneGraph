@@ -37,6 +37,18 @@ using namespace osgUtil;
 // Overall Optimizetion function.
 ////////////////////////////////////////////////////////////////////////////
 
+static bool isNodeEmpty(const osg::Node& node)
+{
+    if (node.getUserData()) return false;
+    if (node.getUpdateCallback()) return false;
+    if (node.getCullCallback()) return false;
+    if (node.getNumDescriptions()>0) return false;
+    if (node.getStateSet()) return false;
+    if (node.getNodeMask()!=0xffffffff) return false;
+    return true;
+}
+
+
 void Optimizer::optimize(osg::Node* node, unsigned int options)
 {
 
@@ -849,7 +861,7 @@ void Optimizer::RemoveEmptyNodesVisitor::apply(osg::Geode& geode)
 {
     if (geode.getNumParents()>0)
     {
-        if (geode.getNumDrawables()==0) _redundantNodeList.insert(&geode);
+        if (geode.getNumDrawables()==0 && isNodeEmpty(geode)) _redundantNodeList.insert(&geode);
     }
 }
 
@@ -858,7 +870,7 @@ void Optimizer::RemoveEmptyNodesVisitor::apply(osg::Group& group)
     if (group.getNumParents()>0)
     {
         // only remove empty groups, but not empty occluders.
-        if (group.getNumChildren()==0 && 
+        if (group.getNumChildren()==0 && isNodeEmpty(group) && 
             (typeid(group)==typeid(osg::Group) || dynamic_cast<osg::Transform*>(&group)))
         {
             _redundantNodeList.insert(&group);
@@ -917,10 +929,7 @@ void Optimizer::RemoveRedundantNodesVisitor::apply(osg::Group& group)
         {
             if (group.getNumParents()>0 && group.getNumChildren()<=1)
             {
-                if (!group.getUserData() &&
-                    !group.getUpdateCallback() &&
-                    !group.getStateSet() &&
-                    group.getNodeMask()==0xffffffff)
+                if (isNodeEmpty(group))
                 {
                     _redundantNodeList.insert(&group);
                 }

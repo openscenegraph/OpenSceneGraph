@@ -278,29 +278,29 @@ void Object::parseMaterial(ifstream& fin, Material& material)
             switch (i) {
             case 0: {
                 // ColorRGBA
-                material.faceColor.red = atof(token[0].c_str());
-                material.faceColor.green = atof(token[1].c_str());
-                material.faceColor.blue = atof(token[2].c_str());
-                material.faceColor.alpha = atof(token[3].c_str());
+                material.faceColor.red = (float) atof(token[0].c_str());
+                material.faceColor.green = (float) atof(token[1].c_str());
+                material.faceColor.blue = (float) atof(token[2].c_str());
+                material.faceColor.alpha = (float) atof(token[3].c_str());
                 i++;
             } break;
             case 1: {
                 // Power
-                material.power = atof(token[0].c_str());
+                material.power = (float) atof(token[0].c_str());
                 i++;
             } break;
             case 2: {
                 // ColorRGB
-                material.specularColor.red = atof(token[0].c_str());
-                material.specularColor.green = atof(token[1].c_str());
-                material.specularColor.blue = atof(token[2].c_str());
+                material.specularColor.red = (float) atof(token[0].c_str());
+                material.specularColor.green = (float) atof(token[1].c_str());
+                material.specularColor.blue = (float) atof(token[2].c_str());
                 i++;
             } break;
             case 3: {
                 // ColorRGB
-                material.emissiveColor.red = atof(token[0].c_str());
-                material.emissiveColor.green = atof(token[1].c_str());
-                material.emissiveColor.blue = atof(token[2].c_str());
+                material.emissiveColor.red = (float) atof(token[0].c_str());
+                material.emissiveColor.green = (float) atof(token[1].c_str());
+                material.emissiveColor.blue = (float) atof(token[2].c_str());
                 i++;
             } break;
             }
@@ -326,8 +326,8 @@ void Object::readCoords2d(ifstream& fin, vector<Coords2d>& v, unsigned int count
             continue;
 
         Coords2d c;
-        c.u = atof(token[0].c_str());
-        c.v = atof(token[1].c_str());
+        c.u = (float) atof(token[0].c_str());
+        c.v = (float) atof(token[1].c_str());
         v.push_back(c);
         i++;
     }
@@ -465,9 +465,9 @@ void Object::readVector(ifstream& fin, vector<Vector>& v, unsigned int count)
             continue;
 
         Vector vec;
-        vec.x = atof(token[0].c_str());
-        vec.y = atof(token[1].c_str());
-        vec.z = atof(token[2].c_str());
+        vec.x = (float) atof(token[0].c_str());
+        vec.y = (float) atof(token[1].c_str());
+        vec.z = (float) atof(token[2].c_str());
         v.push_back(vec);
         i++;
     }
@@ -535,18 +535,10 @@ void Object::parseMeshNormals(ifstream& fin)
             cerr << "* nNormals=" << _normals->normals.size() << endl;
             assert(nNormals == _normals->normals.size());
 
+#define NORMALIZE_NORMALS
 #ifdef NORMALIZE_NORMALS
-            for (unsigned int i = 0; i < _normals->normals.size(); i++) {
-                DX::Vector vec = _normals->normals[i];
-
-                // Normalize
-                float len = sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
-                vec.x /= len;
-                vec.y /= len;
-                vec.z /= len;
-
-                _normals->normals[i] = vec;
-            }
+            for (unsigned int i = 0; i < _normals->normals.size(); i++)
+                _normals->normals[i].normalize();
 #endif
         }
         else if (nFaceNormals == 0) {

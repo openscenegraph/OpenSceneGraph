@@ -19,8 +19,10 @@
 #  include <sys/sockio.h>
 #elif defined(__sgi)
 #  include <net/soioctl.h>
-#elif defined(__CYGWIN__)
+#elif defined(__CYGWIN__) 
 // nothing needed
+#elif defined(__sun) 
+#  include <sys/sockio.h>
 #else
 #  error Teach me how to build on this system
 #endif
@@ -64,8 +66,10 @@ bool Broadcaster::init( void )
     {
     struct ifreq ifr;
     setsockopt( _so, SOL_SOCKET, SO_BROADCAST, &on, sizeof(on));
-#ifdef __linux
+#if defined (__linux)
     strcpy( ifr.ifr_name, "eth0" );
+#elif defined(__sun)
+    strcpy( ifr.ifr_name, "hme0" );
 #else
     strcpy( ifr.ifr_name, "ef0" );
 #endif

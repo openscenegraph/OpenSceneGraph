@@ -123,7 +123,7 @@ void TXPParser::replaceTileLod(osg::Group* group)
     }
 }
 
-bool TXPParser::StartChildren(void *in)
+bool TXPParser::StartChildren(void * /*in*/)
 {
 
     bool pushParent = true;
@@ -822,19 +822,23 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     osg::Geometry *geometry = 0L;
     
     // Get texture coordinates
-    trpgTexData td;
+    ;
     int num_tex;
     geom.GetNumTexCoordSets(num_tex);
     osg::Vec2Array** tex_coords = new osg::Vec2Array*[num_tex];
     for (int texno = 0; texno < num_tex; texno++)
     {
         tex_coords[texno] = 0L;
-        if (geom.GetTexCoordSet(texno,&td))
+        const trpgTexData* td = geom.GetTexCoordSet(texno);
+        if (td)
         {
-            tex_coords[texno] = new osg::Vec2Array(numVert); 
-            for (int i=0 ;i < numVert; i++)
+            tex_coords[texno] = new osg::Vec2Array(numVert);
+            const float* sourcePtr = &(td->floatData[0]); 
+            float* destinationPtr = (float*)&((*tex_coords[texno])[0]);
+            for (int i=0 ;i < numVert; ++i)
             {
-                (*(tex_coords[texno]))[i].set(td.floatData[2*i+0],td.floatData[2*i+1]);
+                *destinationPtr++ = *sourcePtr++;
+                *destinationPtr++ = *sourcePtr++;
             }
         }
     }
@@ -1085,6 +1089,11 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
         
         
     }
+    else
+    {
+        std::cout<<"Detected potential memory leak in TXPParerse.cpp"<<std::endl;
+    }
+    
 
     return (void *) 1;
 }

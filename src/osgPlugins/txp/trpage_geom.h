@@ -2114,6 +2114,13 @@ public:
         coordinate sets.
      */
     bool        GetTexCoordSet(int id,trpgTexData *) const;
+
+    /* This method returns this trpgGeometry's texture coordinate set specified by the given
+        index.  GetNumTexCoordSets determines the total number of texture
+        coordinate sets.
+     */
+    const trpgTexData *GetTexCoordSet(int id) const;
+
     /* Returns the number of edge flags in this geometry node.
         Edge flags are used on certain primitive types, but are rather rare.
      */

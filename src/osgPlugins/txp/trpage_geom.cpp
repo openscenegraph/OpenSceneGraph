@@ -457,6 +457,14 @@ bool trpgGeometry::GetTexCoordSet(int id,trpgTexData *tx) const
     *tx = texData[id];
     return true;
 }
+
+const trpgTexData *trpgGeometry::GetTexCoordSet(int id) const
+{
+    if (!isValid() || id < 0 || id >= (int)texData.size()) return 0;
+    return &(texData[id]);
+}
+
+
 bool trpgGeometry::GetNumEdgeFlag(int &n) const
 {
     if (!isValid()) return false;

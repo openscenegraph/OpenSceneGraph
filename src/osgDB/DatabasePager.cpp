@@ -43,8 +43,10 @@ DatabasePager::~DatabasePager()
         
 }
 
-void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* group)
+void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* group, float priority, const osg::FrameStamp* framestamp)
 {
+   
+    double timestamp = framestamp?framestamp->getReferenceTime():0.0;
    
     // search to see if filename already exist in the file loaded list.
     bool foundEntry = false;
@@ -58,6 +60,8 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
             if ((*litr)->_fileName==fileName)
             {
                 foundEntry = true;
+                (*litr)->_timestampLastRequest = timestamp;
+                (*litr)->_priorityLastRequest = priority;
                 ++((*litr)->_numOfRequests);
             }
         }        
@@ -75,6 +79,8 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
                 if ((*litr)->_fileName==fileName)
                 {
                     foundEntry = true;
+                    (*litr)->_timestampLastRequest = timestamp;
+                    (*litr)->_priorityLastRequest = priority;
                     ++((*litr)->_numOfRequests);
                 }
             }        
@@ -96,6 +102,8 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
                 if ((*ritr)->_fileName==fileName)
                 {
                     foundEntry = true;
+                    (*ritr)->_timestampLastRequest = timestamp;
+                    (*ritr)->_priorityLastRequest = priority;
                     ++((*ritr)->_numOfRequests);
                 }
             }        
@@ -105,6 +113,10 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
                 osg::ref_ptr<DatabaseRequest> databaseRequest = new DatabaseRequest;
 
                 databaseRequest->_fileName = fileName;
+                databaseRequest->_timestampFirstRequest = timestamp;
+                databaseRequest->_priorityFirstRequest = priority;
+                databaseRequest->_timestampLastRequest = timestamp;
+                databaseRequest->_priorityLastRequest = priority;
                 databaseRequest->_groupForAddingLoadedSubgraph = group;
 
                 _fileRequestList.push_back(databaseRequest);
@@ -199,6 +211,17 @@ public:
 };
 
 
+struct SortFileRequestFunctor
+{
+    bool operator() (const osg::ref_ptr<DatabasePager::DatabaseRequest>& lhs,const osg::ref_ptr<DatabasePager::DatabaseRequest>& rhs) const
+    {
+        if (lhs->_timestampLastRequest>rhs->_timestampLastRequest) return true;
+        else if (lhs->_timestampLastRequest<rhs->_timestampLastRequest) return false;
+        else return (lhs->_priorityLastRequest>rhs->_priorityLastRequest);
+    }
+};
+
+
 void DatabasePager::run()
 {
     osg::notify(osg::NOTICE)<<"DatabasePager::run()"<<std::endl;
@@ -231,7 +254,11 @@ void DatabasePager::run()
     
         // get the front of the file request list.
         _fileRequestListMutex.lock();
-            if (!_fileRequestList.empty()) databaseRequest = _fileRequestList.front();
+            if (!_fileRequestList.empty())
+            {
+                std::sort(_fileRequestList.begin(),_fileRequestList.end(),SortFileRequestFunctor());
+                databaseRequest = _fileRequestList.front();
+            }
         _fileRequestListMutex.unlock();
         
         if (databaseRequest.valid())
@@ -504,7 +531,11 @@ void DatabasePager::compileRenderingObjects(osg::State& state, double& available
     
     // get the first compileable entry.
     _dataToCompileListMutex.lock();
-        if (!_dataToCompileList.empty()) databaseRequest = _dataToCompileList.front();
+        if (!_dataToCompileList.empty())
+        {
+            std::sort(_dataToCompileList.begin(),_dataToCompileList.end(),SortFileRequestFunctor());
+            databaseRequest = _dataToCompileList.front();
+        }
     _dataToCompileListMutex.unlock();
 
     // while there are valid databaseRequest's in the to compile list and there is
@@ -576,7 +607,11 @@ void DatabasePager::compileRenderingObjects(osg::State& state, double& available
 
                 _dataToCompileList.erase(_dataToCompileList.begin());
                 
-                if (!_dataToCompileList.empty()) databaseRequest = _dataToCompileList.front();
+                if (!_dataToCompileList.empty())
+                {
+                    std::sort(_dataToCompileList.begin(),_dataToCompileList.end(),SortFileRequestFunctor());
+                    databaseRequest = _dataToCompileList.front();
+                }
                 else databaseRequest = 0;
 
             _dataToCompileListMutex.unlock();

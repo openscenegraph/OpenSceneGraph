@@ -26,7 +26,7 @@
 #ifndef READER_WRITER_TXP_H
 #define READER_WRITER_TXP_H
 
-#include "trpage_sys.h"
+#include <osgTXP/trpage_sys.h>
 #include <osg/Object>
 #include <osg/Node>
 

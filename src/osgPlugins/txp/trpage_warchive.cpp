@@ -28,10 +28,10 @@
      again, subclass and override if you need to change them.
     */
 
-#include "trpage_geom.h"
-#include "trpage_write.h"
-#include "trpage_compat.h"
-#include "trpage_read.h"
+#include <osgTXP/trpage_geom.h>
+#include <osgTXP/trpage_write.h>
+#include <osgTXP/trpage_compat.h>
+#include <osgTXP/trpage_read.h>
 
 // Constructor
 trpgwArchive::trpgwArchive(trpgEndian inNess,TileMode inTileMode,int inVersion)

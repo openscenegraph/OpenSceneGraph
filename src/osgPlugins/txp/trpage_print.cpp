@@ -23,7 +23,7 @@
     within a TerraPage archive.
  */
 
-#include "trpage_print.h"
+#include <osgTXP/trpage_print.h>
 
 /* ******************************************
    Print Buffer implementation

@@ -22,8 +22,8 @@
     The Read Archive is used to read a paging archive from disk.
     */
 
-#include "trpage_read.h"
-#include "trpage_compat.h"
+#include <osgTXP/trpage_read.h>
+#include <osgTXP/trpage_compat.h>
 
 // Constructor
 trpgr_Archive::trpgr_Archive()

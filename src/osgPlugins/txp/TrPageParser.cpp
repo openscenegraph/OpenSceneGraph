@@ -19,7 +19,7 @@
 * All Rights Reserved.
 *
 *****************************************************************************/
-#include "trpage_sys.h"
+#include <osgTXP/trpage_sys.h>
 #include <osg/AlphaFunc>
 #include <osg/Group>
 #include <osg/Material>
@@ -35,8 +35,8 @@
 #include <osg/Notify>
 
 
-#include "TrPageParser.h"
-#include "TrPageArchive.h"
+#include <osgTXP/TrPageParser.h>
+#include <osgTXP/TrPageArchive.h>
 /*
 #include <stdlib.h>
 #include <stdio.h>
@@ -121,6 +121,7 @@ Texture2D* txp::GetLocalTexture(trpgrImageHelper& image_helper, trpgLocalMateria
     if(gltype!=(GLenum)-1)
     {
         osg_texture = new Texture2D();
+
         osg_texture->setInternalFormatMode(internalFormat);
 
         Image* image = new Image;
@@ -132,7 +133,7 @@ Texture2D* txp::GetLocalTexture(trpgrImageHelper& image_helper, trpgLocalMateria
         {
             int32 size = s.x*s.y*depth; 
             // int32 size = const_cast<trpgTexture*>(tex)->MipLevelSize(1) ;
-            data = (char*)::malloc(size);
+            data = (char *)::malloc(size);
 
             if(locmat)            
                image_helper.GetImageForLocalMat(locmat,data,size);
@@ -148,7 +149,7 @@ Texture2D* txp::GetLocalTexture(trpgrImageHelper& image_helper, trpgLocalMateria
             int32 size = tex->CalcTotalSize();
             trpgTexture* tmp_tex = const_cast<trpgTexture*>(tex);
 
-            data = (char*)::malloc(size);
+            data = (char *)::malloc(size);
 
             if(locmat)            
                image_helper.GetImageForLocalMat(locmat,data,size);
@@ -172,6 +173,8 @@ Texture2D* txp::GetLocalTexture(trpgrImageHelper& image_helper, trpgLocalMateria
             image->setMipmapData(mipmaps);
 
         }
+//	delete [] data;
+//	image->unref();
         //  AAAARRRGH! TOOK ME 2 DAYS TO FIGURE IT OUT
         //  EVERY IMAGE HAS TO HAVE UNIQUE NAME FOR OPTIMIZER NOT TO OPTIMIZE IT OFF
         //
@@ -216,7 +219,7 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     
     Vec3Array* vertices = new Vec3Array(numVert);
     // Get vertices
-    geom.GetVertices(&(vertices->front()));
+    geom.GetVertices((float *)&(vertices->front()));
     
     // Turn the trpgGeometry into something Performer can understand
     Geometry *geometry      = 0L;
@@ -431,6 +434,7 @@ void* billboardRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     Group* osg_Group = new Group;
     int type;
     bill.GetType(type); 
+// Note:  Must deal with the billboard type here
     if( type == trpgBillboard::Group ) 
     {
         // Create a new Performer group
@@ -489,7 +493,8 @@ void* lodRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     Vec3 osg_Center;
     osg_Center[0] = center.x;  osg_Center[1] = center.y;  osg_Center[2] = center.z;
     osg_Lod->setCenter(osg_Center);
-    osg_Lod->setRange(0,minRange,maxRange);
+    osg_Lod->setRange(0,0.0, minRange);
+    osg_Lod->setRange(1,minRange, maxRange );
     
     // Our LODs are binary so we need to add a group under this LOD and attach stuff
     //  to that instead of the LOD
@@ -535,7 +540,12 @@ void *modelRefRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
         );
     
     // Note: Array check before you do this
-    Node *osg_Model = (*parse->GetModels())[modelID].get();
+    Node *osg_Model = NULL;
+    std::vector<osg::ref_ptr<osg::Node> >*modelList = parse->GetModels();
+    if( modelList->size() > size_t(modelID) )
+    {
+    //(*parse->GetModels())[modelID].get();
+       osg_Model = (*modelList)[modelID].get();
     // Create the SCS and position the model
     if (osg_Model) {
         MatrixTransform *scs = new MatrixTransform();
@@ -545,6 +555,7 @@ void *modelRefRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
         Group *top = parse->GetCurrTop();
         if (top)
             top->addChild(scs);
+    }
     }
     return (void *) 1;
 }

@@ -24,9 +24,9 @@
    
  */
 
-#include "trpage_geom.h"
-#include "trpage_read.h"
-#include "trpage_compat.h"
+#include <osgTXP/trpage_geom.h>
+#include <osgTXP/trpage_read.h>
+#include <osgTXP/trpage_compat.h>
 
 /* Old short Material definition from 1.0.
     {secret}

@@ -20,9 +20,9 @@
     Byte swapping utility functions.
   */
 
-#include "trpage_sys.h"
+#include <osgTXP/trpage_sys.h>
 
-#include "trpage_io.h"
+#include <osgTXP/trpage_io.h>
 
 // Byte swap and return a short
 // {group:Byte Ordering Utilities}

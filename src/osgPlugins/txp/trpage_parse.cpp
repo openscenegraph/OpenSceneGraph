@@ -30,7 +30,7 @@
      for the rest of the tokens that you want.
      */
 
-#include "trpage_read.h"
+#include <osgTXP/trpage_read.h>
 
 /* ***************************
     Paging token callback structure

@@ -23,15 +23,24 @@ CXXFILES =\
     trpage_compat.cpp\
     trpage_light.cpp\
     trpage_pparse.cpp\
-    trpage_print.cpp
+    trpage_print.cpp\
+    trpage_managers.cpp\
+    trPagePageManager.cpp\
+    trpage_print_parse.cpp\
+    trpage_util.cpp\
+    TrPageViewer.cpp\
 
 
-INC += -I$(THISDIR)
+
+INC += -I$(THISDIR) 
 
 LIBS  += $(OSG_LIBS) $(OTHER_LIBS)
 
-TARGET_BASENAME = txp
+PLUGIN_TARGET_BASENAME = txp
 include $(TOPDIR)/Make/cygwin_plugin_def
-PLUGIN = $(PLUGIN_PREFIX)$(TARGET_BASENAME).$(PLUGIN_EXT)
+PLUGIN = $(PLUGIN_PREFIX)$(PLUGIN_TARGET_BASENAME).$(PLUGIN_EXT)
+
+LIB_TARGET_BASENAME=osgTXP
+LIB = $(LIB_PREFIX)$(LIB_TARGET_BASENAME).$(LIB_EXT)
 
 include $(TOPDIR)/Make/makerules 

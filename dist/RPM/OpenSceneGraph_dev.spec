@@ -1,11 +1,11 @@
 
 Summary: A C++ scene graph API on OpenGL for real time graphics
 Name: OpenSceneGraph_dev
-Version: 0.9.1
+Version: 0.9.2
 Release: 1
 Copyright: LGPL
 Group: Graphics
-Source: OpenSceneGraph_dev-0.9.1.tar.gz
+Source: OpenSceneGraph_dev-0.9.2.tar.gz
 URL: http://www.openscenegraph.org
 Packager: Don Burns
 
@@ -26,7 +26,7 @@ graphics rendering, protability, and extensibility
 
 %install
 
-cd /usr/src/redhat/BUILD/OpenSceneGraph_dev-0.9.1 
+cd /usr/src/redhat/BUILD/OpenSceneGraph_dev-0.9.2 
 tar cvf - . | tar xvfC - /
 
 # ---------------------
@@ -41,6 +41,7 @@ tar cvf - . | tar xvfC - /
 %attr(755, root, root) /usr/local/include/osg/BoundingBox
 %attr(755, root, root) /usr/local/include/osg/BoundingSphere
 %attr(755, root, root) /usr/local/include/osg/BoundsChecking
+%attr(755, root, root) /usr/local/include/osg/buffered_value
 %attr(755, root, root) /usr/local/include/osg/Camera
 %attr(755, root, root) /usr/local/include/osg/ClearNode
 %attr(755, root, root) /usr/local/include/osg/ClipNode
@@ -96,9 +97,10 @@ tar cvf - . | tar xvfC - /
 %attr(755, root, root) /usr/local/include/osg/Point
 %attr(755, root, root) /usr/local/include/osg/PolygonMode
 %attr(755, root, root) /usr/local/include/osg/PolygonOffset
+%attr(755, root, root) /usr/local/include/osg/PolygonStipple
 %attr(755, root, root) /usr/local/include/osg/Polytope
 %attr(755, root, root) /usr/local/include/osg/PositionAttitudeTransform
-%attr(755, root, root) /usr/local/include/osg/Primitive
+%attr(755, root, root) /usr/local/include/osg/PrimitiveSet
 %attr(755, root, root) /usr/local/include/osg/Projection
 %attr(755, root, root) /usr/local/include/osg/Quat
 %attr(755, root, root) /usr/local/include/osg/Referenced
@@ -106,6 +108,8 @@ tar cvf - . | tar xvfC - /
 %attr(755, root, root) /usr/local/include/osg/Sequence
 %attr(755, root, root) /usr/local/include/osg/ShadeModel
 %attr(755, root, root) /usr/local/include/osg/ShadowVolumeOccluder
+%attr(755, root, root) /usr/local/include/osg/Shape
+%attr(755, root, root) /usr/local/include/osg/ShapeDrawable
 %attr(755, root, root) /usr/local/include/osg/State
 %attr(755, root, root) /usr/local/include/osg/StateAttribute
 %attr(755, root, root) /usr/local/include/osg/StateSet
@@ -146,6 +150,7 @@ tar cvf - . | tar xvfC - /
 %attr(755, root, root) /usr/local/include/osgDB/Registry
 %attr(755, root, root) /usr/local/include/osgDB/Version
 %attr(755, root, root) /usr/local/include/osgDB/WriteFile
+%attr(755, root, root) /usr/local/include/osgGA/AnimationPathManipulator
 %attr(755, root, root) /usr/local/include/osgGA/CameraManipulator
 %attr(755, root, root) /usr/local/include/osgGA/DriveManipulator
 %attr(755, root, root) /usr/local/include/osgGA/Export
@@ -193,20 +198,30 @@ tar cvf - . | tar xvfC - /
 %attr(755, root, root) /usr/local/include/osgParticle/Shooter
 %attr(755, root, root) /usr/local/include/osgParticle/VariableRateCounter
 %attr(755, root, root) /usr/local/include/osgParticle/Version
+%attr(755, root, root) /usr/local/include/osgSim/BlinkSequence
+%attr(755, root, root) /usr/local/include/osgSim/Export
+%attr(755, root, root) /usr/local/include/osgSim/LightPoint
+%attr(755, root, root) /usr/local/include/osgSim/LightPointDrawable
+%attr(755, root, root) /usr/local/include/osgSim/LightPointNode
+%attr(755, root, root) /usr/local/include/osgSim/Sector
+%attr(755, root, root) /usr/local/include/osgSim/Version
 %attr(755, root, root) /usr/local/include/osgText/Export
 %attr(755, root, root) /usr/local/include/osgText/Font
 %attr(755, root, root) /usr/local/include/osgText/Paragraph
 %attr(755, root, root) /usr/local/include/osgText/Text
 %attr(755, root, root) /usr/local/include/osgText/Version
 %attr(755, root, root) /usr/local/include/osgUtil/AppVisitor
+%attr(755, root, root) /usr/local/include/osgUtil/CubeMapGenerator
 %attr(755, root, root) /usr/local/include/osgUtil/CullVisitor
-%attr(755, root, root) /usr/local/include/osgUtil/DepthSortedBin
 %attr(755, root, root) /usr/local/include/osgUtil/DisplayListVisitor
 %attr(755, root, root) /usr/local/include/osgUtil/DisplayRequirementsVisitor
 %attr(755, root, root) /usr/local/include/osgUtil/Export
+%attr(755, root, root) /usr/local/include/osgUtil/HalfWayMapGenerator
+%attr(755, root, root) /usr/local/include/osgUtil/HighlightMapGenerator
 %attr(755, root, root) /usr/local/include/osgUtil/InsertImpostorsVisitor
 %attr(755, root, root) /usr/local/include/osgUtil/IntersectVisitor
 %attr(755, root, root) /usr/local/include/osgUtil/Optimizer
+%attr(755, root, root) /usr/local/include/osgUtil/ReflectionMapGenerator
 %attr(755, root, root) /usr/local/include/osgUtil/RenderBin
 %attr(755, root, root) /usr/local/include/osgUtil/RenderGraph
 %attr(755, root, root) /usr/local/include/osgUtil/RenderLeaf
@@ -219,80 +234,5 @@ tar cvf - . | tar xvfC - /
 %attr(755, root, root) /usr/local/include/osgUtil/TransformCallback
 %attr(755, root, root) /usr/local/include/osgUtil/TriStripVisitor
 %attr(755, root, root) /usr/local/include/osgUtil/Version
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgbillboard/Makefile
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgbillboard/osgbillboard.cpp
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgcallback/Makefile
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgcallback/osgcallback.cpp
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgclip/Makefile
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgclip/osgclip.cpp
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgcluster/broadcaster.cpp
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgcluster/broadcaster.h
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgcluster/Makefile
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgcluster/osgcluster.cpp
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgcluster/receiver.cpp
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgcluster/receiver.h
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgconv/Makefile
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgconv/OrientationConverter.cpp
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgconv/OrientationConverter.h
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgconv/osgconv.cpp
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgcopy/Makefile
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgcopy/osgcopy.cpp
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgcube/Makefile
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgcube/osgcube.cpp
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osggeometry/Makefile
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osggeometry/osggeometry.cpp
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osghangglide/base.cpp
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osghangglide/GliderManipulator.cpp
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osghangglide/GliderManipulator.h
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osghangglide/hat.cpp
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osghangglide/hat.h
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osghangglide/Makefile
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osghangglide/osghangglide.cpp
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osghangglide/ReaderWriterFLY.cpp
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osghangglide/sky.cpp
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osghangglide/tank.cpp
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osghangglide/terrain_coords.h
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osghangglide/terrain.cpp
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osghangglide/terrain_normals.h
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osghangglide/terrain_texcoords.h
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osghangglide/trees.cpp
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osghud/Makefile
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osghud/osghud.cpp
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgimpostor/Makefile
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgimpostor/osgimpostor.cpp
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osglight/Makefile
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osglight/osglight.cpp
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgmultitexture/Makefile
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgmultitexture/osgmultitexture.cpp
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgoccluder/Makefile
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgoccluder/osgoccluder.cpp
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgparticle/Makefile
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgparticle/osgparticle.cpp
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgprerender/Makefile
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgprerender/osgprerender.cpp
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgreflect/Makefile
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgreflect/osgreflect.cpp
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgscribe/Makefile
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgscribe/osgscribe.cpp
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgsequence/Makefile
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgsequence/osgsequence.cpp
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgstereoimage/Makefile
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgstereoimage/osgstereoimage.cpp
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgtext/main.cpp
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgtext/Makefile
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgtexture1D/Makefile
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgtexture1D/osgtexture1D.cpp
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgtexture2D/Makefile
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgtexture2D/osgtexture2D.cpp
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgtexture3D/Makefile
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgtexture3D/osgtexture3D.cpp
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgunittests/Makefile
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgunittests/osgunittests.cpp
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgversion/Makefile
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgversion/osgversion.cpp
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgviews/Makefile
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/osgviews/osgviews.cpp
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/sgv/Makefile
-%attr(755, root, root) /usr/share/OpenSceneGraph/src/demos/sgv/sgv.cpp
 %attr(755, root, root) /usr/share/OpenSceneGraph/src/Make/makedefs
 %attr(755, root, root) /usr/share/OpenSceneGraph/src/Make/makerules

@@ -18,10 +18,8 @@
 
 #include <list>
 
-#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
-    #include <OpenThreads/ScopedLock>
-    #include <OpenThreads/Mutex>
-#endif
+#include <OpenThreads/ScopedLock>
+#include <OpenThreads/Mutex>
 
 using namespace osg;
 
@@ -31,18 +29,14 @@ using namespace osg;
 typedef std::list<GLuint> FragmentProgramObjectList;
 typedef std::map<unsigned int,FragmentProgramObjectList> DeletedFragmentProgramObjectCache;
 
-#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
-    static OpenThreads::Mutex                s_mutex_deletedFragmentProgramObjectCache;
-#endif
+static OpenThreads::Mutex                s_mutex_deletedFragmentProgramObjectCache;
 static DeletedFragmentProgramObjectCache s_deletedFragmentProgramObjectCache;
 
 void FragmentProgram::deleteFragmentProgramObject(unsigned int contextID,GLuint handle)
 {
     if (handle!=0)
     {
-#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedFragmentProgramObjectCache);
-#endif
 
         // insert the handle into the cache for the appropriate context.
         s_deletedFragmentProgramObjectCache[contextID].push_back(handle);
@@ -60,9 +54,7 @@ void FragmentProgram::flushDeletedFragmentProgramObjects(unsigned int contextID,
     double elapsedTime = 0.0;
 
     {
-#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedFragmentProgramObjectCache);
-#endif
 
         DeletedFragmentProgramObjectCache::iterator citr = s_deletedFragmentProgramObjectCache.find(contextID);
         if (citr!=s_deletedFragmentProgramObjectCache.end())

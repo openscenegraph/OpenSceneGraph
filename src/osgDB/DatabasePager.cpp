@@ -21,6 +21,8 @@ DatabasePager::DatabasePager()
 {
     //osg::notify(osg::INFO)<<"Constructing DatabasePager()"<<std::endl;
     
+    _startThreadCalled = false;
+
     _done = false;
     _acceptNewRequests = true;
     _databasePagerThreadPaused = false;
@@ -82,6 +84,7 @@ int DatabasePager::cancel()
             OpenThreads::Thread::YieldCurrentThread();
         }
         
+        _startThreadCalled = false;
     }
     //std::cout<<"DatabasePager::~DatabasePager() stopped running"<<std::endl;
     return result;
@@ -209,15 +212,11 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
     
     if (!isRunning())
     {
-        static OpenThreads::Mutex s_mutex;
-                
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex);
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_run_mutex);
         
-        static bool s_startThreadCalled = false;
-        
-        if (!s_startThreadCalled)
+        if (!_startThreadCalled)
         {
-            s_startThreadCalled = true;
+            _startThreadCalled = true;
             _done = false;
             osg::notify(osg::DEBUG_INFO)<<"DatabasePager::startThread()"<<std::endl;
             setSchedulePriority(_threadPriorityDuringFrame);
@@ -355,8 +354,12 @@ void DatabasePager::run()
 
     // need to set the texture object manager to be able to reuse textures
     // by keeping deleted texture objects around for 10 seconds after being deleted.
-    osg::Texture::getTextureObjectManager()->setExpiryDelay(30.0f);
+    osg::Texture::setMinimumNumberOfTextureObjectsToRetainInCache(100);
     
+    // need to set the texture object manager to be able to reuse textures
+    // by keeping deleted texture objects around for 10 seconds after being deleted.
+    osg::Drawable::setMinimumNumberOfDisplayListsToRetainInCache(2000);
+
     bool firstTime = true;
     
     do
@@ -416,7 +419,22 @@ void DatabasePager::run()
                 // it is created this thread is the only one to write to the _loadedModel pointer.
                 // osg::notify(osg::NOTICE)<<"In DatabasePager thread readNodeFile("<<databaseRequest->_fileName<<")"<<std::endl;
                 //osg::Timer_t before = osg::Timer::instance()->tick();
-                databaseRequest->_loadedModel = osgDB::readNodeFile(databaseRequest->_fileName);
+                
+                
+                bool serialize_readNodeFile = true;
+                if (serialize_readNodeFile)
+                {
+                    // do *not* assume that we only have one DatabasePager, or that reaNodeFile is thread safe...
+                    static OpenThreads::Mutex s_serialize_readNodeFile_mutex;
+                    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_serialize_readNodeFile_mutex);
+                    databaseRequest->_loadedModel = osgDB::readNodeFile(databaseRequest->_fileName);
+                }
+                else
+                {
+                    // assume that we only have one DatabasePager, or that reaNodeFile is thread safe...
+                    databaseRequest->_loadedModel = osgDB::readNodeFile(databaseRequest->_fileName);
+                }
+                    
                 //osg::notify(osg::NOTICE)<<"     node read in "<<osg::Timer::instance()->delta_m(before,osg::Timer::instance()->tick())<<" ms"<<std::endl;
                 
                 bool loadedObjectsNeedToBeCompiled = false;
@@ -508,16 +526,17 @@ void DatabasePager::run()
 
 void DatabasePager::addLoadedDataToSceneGraph(double timeStamp)
 {
+
+/*    
     static double s_previous = timeStamp;
     double timeDelta = timeStamp-s_previous;
-
-    
     if (timeDelta>0.02) 
     {
         std::string str;
         if (osg::Texture::s_numberTextureReusedLastInLastFrame > 0) str += " RT ";
         if (osg::Texture::s_numberNewTextureInLastFrame > 0) str += " NT ";
         if (osg::Texture::s_numberDeletedTextureInLastFrame > 0) str += " DT ";
+        if (osg::Drawable::s_numberDrawablesReusedLastInLastFrame > 0) str += " RD ";
         if (osg::Drawable::s_numberNewDrawablesInLastFrame > 0) str += " ND ";
         if (osg::Drawable::s_numberDeletedDrawablesInLastFrame > 0) str += " DD ";
         
@@ -528,13 +547,14 @@ void DatabasePager::addLoadedDataToSceneGraph(double timeStamp)
         osg::notify(osg::NOTICE)<<"\tosg::Texture::s_numberTextureReusedLastInLastFrame = "<<osg::Texture::s_numberTextureReusedLastInLastFrame<<std::endl;
         osg::notify(osg::NOTICE)<<"\tosg::Texture::s_numberNewTextureInLastFrame = "<<osg::Texture::s_numberNewTextureInLastFrame <<std::endl;
         osg::notify(osg::NOTICE)<<"\tosg::Texture::s_numberDeletedTextureInLastFrame = "<<osg::Texture::s_numberDeletedTextureInLastFrame <<std::endl;
+        osg::notify(osg::NOTICE)<<"\tosg::Drawable::s_numberDrawablesReusedLastInLastFrame = "<<osg::Drawable::s_numberDrawablesReusedLastInLastFrame <<std::endl;
         osg::notify(osg::NOTICE)<<"\tosg::Drawable::s_numberNewDrawablesInLastFrame = "<<osg::Drawable::s_numberNewDrawablesInLastFrame <<std::endl;
         osg::notify(osg::NOTICE)<<"\tosg::Drawable::s_numberDeletedDrawablesInLastFrame = "<<osg::Drawable::s_numberDeletedDrawablesInLastFrame <<std::endl;
 
     }
     
     s_previous = timeStamp;
-    
+*/    
     // osg::Timer_t before = osg::Timer::instance()->tick();
 
     DatabaseRequestList localFileLoadedList;
@@ -625,7 +645,7 @@ void DatabasePager::removeExpiredSubgraphs(double currentFrameTime)
     }
     
     unsigned int i = 0;
-    unsigned int numberOfPagedLODToTest = _inactivePagedLODList.size();
+    // unsigned int numberOfPagedLODToTest = _inactivePagedLODList.size();
     unsigned int targetNumOfInActivePagedLODs = 1000;
     unsigned int targetNumOfRemovedChildPagedLODs = 0;
     if (_inactivePagedLODList.size()>targetNumOfInActivePagedLODs) targetNumOfRemovedChildPagedLODs = _inactivePagedLODList.size()-targetNumOfInActivePagedLODs;
@@ -751,7 +771,7 @@ void DatabasePager::registerPagedLODs(osg::Node* subgraph)
     if (subgraph) subgraph->accept(fplv);
 }
 
-void DatabasePager::setCompileGLObjectsForContexID(unsigned int contextID, bool on)
+void DatabasePager::setCompileGLObjectsForContextID(unsigned int contextID, bool on)
 {
     if (on)
     {
@@ -763,7 +783,7 @@ void DatabasePager::setCompileGLObjectsForContexID(unsigned int contextID, bool 
     }
 }
 
-bool DatabasePager::getCompileGLObjectsForContexID(unsigned int contextID)
+bool DatabasePager::getCompileGLObjectsForContextID(unsigned int contextID)
 {
     return _activeGraphicsContexts.count(contextID)!=0;
 }

@@ -576,7 +576,7 @@ bool Viewer::realize()
 
             
             // tell the database pager which graphic context the compile of rendering objexts is needed.
-            databasePager->setCompileGLObjectsForContexID((*p)->getSceneView()->getState()->getContextID(),true);
+            databasePager->setCompileGLObjectsForContextID((*p)->getSceneView()->getState()->getContextID(),true);
         }
 
     

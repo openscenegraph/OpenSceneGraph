@@ -81,6 +81,74 @@ osg::Node* createEarth()
 }
 
 
+class ModelPositionCallback : public osg::NodeCallback
+{
+public:
+
+    ModelPositionCallback():
+        _latitude(0.0),
+        _longitude(0.0),
+        _height(1000.0)
+         {}
+
+    void updateParameters()
+    {
+        _longitude += (2.0*osg::PI)/360.0;
+    }
+
+
+    virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
+    {
+        updateParameters();
+        
+        osg::NodePath nodePath = nv->getNodePath();
+
+        osg::MatrixTransform* mt = nodePath.empty() ? 0 : dynamic_cast<osg::MatrixTransform*>(nodePath.back());
+        if (mt)
+        {
+            osg::CoordinateSystemNode* csn = 0;
+
+            // find coordinate system node from our parental chain
+            unsigned int i;
+            for(i=0; i<nodePath.size() && csn==0; ++i)
+            {
+                csn = dynamic_cast<osg::CoordinateSystemNode*>(nodePath[i]);
+            }
+            
+            if (csn)
+            {
+
+
+                osg::EllipsoidModel* ellipsoid = csn->getEllipsoidModel();
+                if (ellipsoid)
+                {
+                    osg::Matrixd matrix;
+                    for(i+=1; i<nodePath.size()-1; ++i)
+                    {
+                        osg::Transform* transform = nodePath[i]->asTransform();
+                        if (transform) transform->computeLocalToWorldMatrix(matrix, nv);
+                    }
+
+                    //osg::Matrixd matrix;
+                    ellipsoid->computeLocalToWorldTransformFromLatLongHeight(_latitude,_longitude,_height,matrix);
+                    matrix.preMult(osg::Matrixd::rotate(_rotation));
+                    
+                    mt->setMatrix(matrix);
+                }
+
+            }        
+        }
+            
+        traverse(node,nv);
+    }   
+    
+    double                  _latitude;
+    double                  _longitude;
+    double                  _height;
+    osg::Quat               _rotation;
+};
+
+
 class FindNamedNodeVisitor : public osg::NodeVisitor
 {
 public:
@@ -103,6 +171,11 @@ public:
     NodeList _foundNodes;
 };
 
+
+void addModel(osgProducer::Viewer* viewer,osg::Node* model)
+{
+    
+}
 
 
 int main(int argc, char **argv)

@@ -134,7 +134,7 @@ void Texture2D::apply(State& state) const
     else if (_subloadCallback.valid())
     {
 
-        _textureObjectBuffer[contextID] = textureObject = getTextureObjectManager()->generateTextureObject(contextID,GL_TEXTURE_2D);
+        _textureObjectBuffer[contextID] = textureObject = generateTextureObject(contextID,GL_TEXTURE_2D);
 
         textureObject->bind();
 
@@ -161,7 +161,7 @@ void Texture2D::apply(State& state) const
         computeRequiredTextureDimensions(state,*_image,_textureWidth, _textureHeight, _numMipmapLevels);
         
         
-        _textureObjectBuffer[contextID] = textureObject = getTextureObjectManager()->reuseOrGenerateTextureObject(
+        _textureObjectBuffer[contextID] = textureObject = generateTextureObject(
                 contextID,GL_TEXTURE_2D,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,0);
         
         textureObject->bind();
@@ -251,7 +251,7 @@ void Texture2D::copyTexImage2D(State& state, int x, int y, int width, int height
     _min_filter = LINEAR;
     _mag_filter = LINEAR;
 
-    _textureObjectBuffer[contextID] = textureObject = getTextureObjectManager()->generateTextureObject(contextID,GL_TEXTURE_2D);
+    _textureObjectBuffer[contextID] = textureObject = generateTextureObject(contextID,GL_TEXTURE_2D);
 
     textureObject->bind();
     

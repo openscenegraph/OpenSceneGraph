@@ -31,10 +31,8 @@
 
 #include <list>
 
-#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
-    #include <OpenThreads/ScopedLock>
-    #include <OpenThreads/Mutex>
-#endif
+#include <OpenThreads/ScopedLock>
+#include <OpenThreads/Mutex>
 
 using namespace osgGL2;
 
@@ -81,18 +79,15 @@ private:
 typedef std::list<GLhandleARB> GL2ObjectList;
 typedef std::map<unsigned int, GL2ObjectList> DeletedGL2ObjectCache;
 
-#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
-    static OpenThreads::Mutex    s_mutex_deletedGL2ObjectCache;
-#endif
+static OpenThreads::Mutex    s_mutex_deletedGL2ObjectCache;
 static DeletedGL2ObjectCache s_deletedGL2ObjectCache;
 
 void ProgramObject::deleteObject(unsigned int contextID, GLhandleARB handle)
 {
     if (handle!=0)
     {
-#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedGL2ObjectCache);
-#endif
+
         // add handle to the cache for the appropriate context.
         s_deletedGL2ObjectCache[contextID].push_back(handle);
     }
@@ -108,9 +103,7 @@ void ProgramObject::flushDeletedGL2Objects(unsigned int contextID,double /*curre
     double elapsedTime = 0.0;
 
     {
-#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedGL2ObjectCache);
-#endif
 
         DeletedGL2ObjectCache::iterator citr = s_deletedGL2ObjectCache.find(contextID);
         if( citr != s_deletedGL2ObjectCache.end() )

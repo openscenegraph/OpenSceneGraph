@@ -26,13 +26,12 @@
 #include <map>
 #include <list>
 
-#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
-    #include <OpenThreads/ScopedLock>
-    #include <OpenThreads/Mutex>
-#endif
+#include <OpenThreads/ScopedLock>
+#include <OpenThreads/Mutex>
 
 using namespace osg;
 
+unsigned int Drawable::s_numberDrawablesReusedLastInLastFrame = 0;
 unsigned int Drawable::s_numberNewDrawablesInLastFrame = 0;
 unsigned int Drawable::s_numberDeletedDrawablesInLastFrame = 0;
 
@@ -42,43 +41,72 @@ unsigned int Drawable::s_numberDeletedDrawablesInLastFrame = 0;
 typedef std::list<GLuint> DisplayListList;
 typedef std::map<GLuint,DisplayListList> DeletedDisplayListCache;
 
-#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
-   static OpenThreads::Mutex s_mutex_deletedDisplayListCache;
-#endif
-
+static OpenThreads::Mutex s_mutex_deletedDisplayListCache;
 static DeletedDisplayListCache s_deletedDisplayListCache;
 
-GLuint Drawable::generateDisplayList(unsigned int contextID, unsigned int sizeHint)
+GLuint Drawable::generateDisplayList(unsigned int contextID, unsigned int /*sizeHint*/)
 {
-#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedDisplayListCache);
-#endif
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedDisplayListCache);
+
     DisplayListList& dll = s_deletedDisplayListCache[contextID];
-    if (dll.empty()) return  glGenLists( 1 );
+    if (dll.empty())
+    {
+        ++s_numberNewDrawablesInLastFrame;
+        return  glGenLists( 1 );
+    }
     else 
     {
-        notify(NOTICE)<<"reusing display list "<<std::endl;
+        ++s_numberDrawablesReusedLastInLastFrame;
+        // notify(NOTICE)<<"reusing display list "<<std::endl;
         GLuint globj = dll.back();
         dll.pop_back();
         return globj;
     }
 }
 
-void Drawable::deleteDisplayList(unsigned int contextID,GLuint globj, unsigned int sizeHint)
+unsigned int s_minimumNumberOfDisplayListsToRetainInCache = 0;
+void Drawable::setMinimumNumberOfDisplayListsToRetainInCache(unsigned int minimum)
+{
+    s_minimumNumberOfDisplayListsToRetainInCache = minimum;
+}
+
+unsigned int Drawable::getMinimumNumberOfDisplayListsToRetainInCache()
+{
+    return s_minimumNumberOfDisplayListsToRetainInCache;
+}
+
+void Drawable::deleteDisplayList(unsigned int contextID,GLuint globj, unsigned int /*sizeHint*/)
 {
     if (globj!=0)
     {
-#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedDisplayListCache);
-#endif
+
         // insert the globj into the cache for the appropriate context.
         s_deletedDisplayListCache[contextID].push_back(globj);
     }
 }
 
-/** flush all the cached display list which need to be deleted
-  * in the OpenGL context related to contextID.*/
-void Drawable::flushDeletedDisplayLists(unsigned int contextID,double /*currentTime*/, double& availableTime)
+void Drawable::flushAllDeletedDisplayLists(unsigned int contextID)
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedDisplayListCache);
+
+    DeletedDisplayListCache::iterator citr = s_deletedDisplayListCache.find(contextID);
+    if (citr!=s_deletedDisplayListCache.end())
+    {
+        DisplayListList& dll = citr->second;
+
+        for(DisplayListList::iterator ditr=dll.begin();
+            ditr!=dll.end();
+            ++ditr)
+        {
+            glDeleteLists(*ditr,1);
+        }
+        
+        dll.clear();         
+    }
+}
+
+void Drawable::flushDeletedDisplayLists(unsigned int contextID, double& availableTime)
 {
     // if no time available don't try to flush objects.
     if (availableTime<=0.0) return;
@@ -90,17 +118,15 @@ void Drawable::flushDeletedDisplayLists(unsigned int contextID,double /*currentT
     unsigned int noDeleted = 0;
 
     {
-#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedDisplayListCache);
-#endif
 
         DeletedDisplayListCache::iterator citr = s_deletedDisplayListCache.find(contextID);
         if (citr!=s_deletedDisplayListCache.end())
         {
             DisplayListList& dll = citr->second;
-
+            
             for(DisplayListList::iterator ditr=dll.begin();
-                ditr!=dll.end() && elapsedTime<availableTime;
+                ditr!=dll.end() && elapsedTime<availableTime && dll.size()>s_minimumNumberOfDisplayListsToRetainInCache;
                 )
             {
                 glDeleteLists(*ditr,1);
@@ -114,24 +140,20 @@ void Drawable::flushDeletedDisplayLists(unsigned int contextID,double /*currentT
     }
     elapsedTime = timer.delta_s(start_tick,timer.tick());
     
-    if (noDeleted) notify(NOTICE)<<"Number display lists deleted = "<<noDeleted<<" elapsed time"<<elapsedTime<<std::endl;
+    // if (noDeleted) notify(NOTICE)<<"Number display lists deleted = "<<noDeleted<<" elapsed time"<<elapsedTime<<std::endl;
 
     availableTime -= elapsedTime;
 }
 
 
-#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
-    static OpenThreads::Mutex s_mutex_deletedVertexBufferObjectCache;
-#endif
+static OpenThreads::Mutex s_mutex_deletedVertexBufferObjectCache;
 static DeletedDisplayListCache s_deletedVertexBufferObjectCache;
 
 void Drawable::deleteVertexBufferObject(unsigned int contextID,GLuint globj)
 {
     if (globj!=0)
     {
-#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedVertexBufferObjectCache);
-#endif
         
         // insert the globj into the cache for the appropriate context.
         s_deletedVertexBufferObjectCache[contextID].push_back(globj);
@@ -151,9 +173,7 @@ void Drawable::flushDeletedVertexBufferObjects(unsigned int contextID,double /*c
 
 
     {
-#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedVertexBufferObjectCache);
-#endif
 
         DeletedDisplayListCache::iterator citr = s_deletedVertexBufferObjectCache.find(contextID);
         if (citr!=s_deletedVertexBufferObjectCache.end())
@@ -267,11 +287,11 @@ void Drawable::compileGLObjects(State& state) const
 
     // call the globj if already set otherwise comple and execute.
     if( globj != 0 )
-    {
+    {   
         glDeleteLists( globj, 1 );
     }
 
-    globj = glGenLists( 1 );
+    globj = generateDisplayList(contextID, getGLObjectSizeHint());
     glNewList( globj, GL_COMPILE );
 
     if (_drawCallback.valid())

@@ -20,8 +20,6 @@
 
 #include <typeinfo>
 
-#define THREAD_SAFE_GLOBJECT_DELETE_LISTS 1
-
 namespace osg {
 
 

@@ -234,7 +234,7 @@ void TextureCubeMap::apply(State& state) const
     }
     else if (_subloadCallback.valid())
     {
-        _textureObjectBuffer[contextID] = textureObject = getTextureObjectManager()->generateTextureObject(contextID,GL_TEXTURE_CUBE_MAP);
+        _textureObjectBuffer[contextID] = textureObject = generateTextureObject(contextID,GL_TEXTURE_CUBE_MAP);
 
         textureObject->bind();
 
@@ -258,7 +258,7 @@ void TextureCubeMap::apply(State& state) const
         // compute the dimensions of the texture.
         computeRequiredTextureDimensions(state,*_images[0],_textureWidth, _textureHeight, _numMipmapLevels);
 
-        _textureObjectBuffer[contextID] = textureObject = getTextureObjectManager()->reuseOrGenerateTextureObject(
+        _textureObjectBuffer[contextID] = textureObject = generateTextureObject(
                 contextID,GL_TEXTURE_CUBE_MAP,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,0);
         
         textureObject->bind();

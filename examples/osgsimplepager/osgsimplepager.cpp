@@ -144,6 +144,9 @@ int main( int argc, char **argv )
     // setting frame block to true can help achieve constant frame rates on single CPU systems.
     databasePager->setUseFrameBlock(false);
 
+    // set whether to pre compile GL objects before merging new subgraphs with main scene graph
+    databasePager->setCompileGLObjectsForContextID(sceneView->getState()->getContextID(),true);
+
     // register any PagedLOD that need to be tracked in the scene graph
     databasePager->registerPagedLODs(sceneView->getSceneData());
 

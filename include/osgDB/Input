@@ -20,6 +20,7 @@
 #include <osg/StateAttribute>
 
 #include <osgDB/FieldReaderIterator>
+#include <osgDB/ReaderWriter>
 
 #include <map>
 #include <string>
@@ -35,6 +36,9 @@ class OSGDB_EXPORT Input : public FieldReaderIterator
 
         Input();
         virtual ~Input();
+        
+        void setOptions(const ReaderWriter::Options* options) { _options = options; }
+        const ReaderWriter::Options* getOptions() const { return _options.get(); }
 
         virtual osg::Object*         readObjectOfType(const osg::Object& compObj);
         virtual osg::Object*         readObjectOfType(const basic_type_wrapper &btw);
@@ -56,6 +60,8 @@ class OSGDB_EXPORT Input : public FieldReaderIterator
     
         typedef std::map< std::string, osg::ref_ptr<osg::Object> > UniqueIDToObjectMapping;
         UniqueIDToObjectMapping _uniqueIDToObjectMap;
+        
+        osg::ref_ptr<const ReaderWriter::Options> _options;
 
 };
 

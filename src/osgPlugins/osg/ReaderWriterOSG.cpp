@@ -43,11 +43,12 @@ class OSGReaderWriter : public ReaderWriter
                         
         }
         
-        virtual ReadResult readNode(std::istream& fin, const Options*)
+        virtual ReadResult readNode(std::istream& fin, const Options* options)
         {
 
             Input fr;
             fr.attach(&fin);
+            fr.setOptions(options);
 
             typedef std::vector<osg::Node*> NodeList;
             NodeList nodeList;

@@ -182,6 +182,14 @@ unsigned int Viewer::addCameraManipulator(osgGA::CameraManipulator* cm)
 
 void Viewer::realize( ThreadingModel thread_model)
 {
+
+    OsgCameraGroup::realize( thread_model );
+    
+    // force a sync before we intialize the keyswitch manipulator to home
+    // so that Producer has a chance to set up the windows before we do
+    // any work on them.
+    OsgCameraGroup::sync();
+ 
     if (_keyswitchManipulator.valid() && _keyswitchManipulator->getCurrentCameraManipulator())
     {
         osg::ref_ptr<osgProducer::EventAdapter> init_event = new osgProducer::EventAdapter;
@@ -191,15 +199,14 @@ void Viewer::realize( ThreadingModel thread_model)
         _keyswitchManipulator->setNode(getSceneDecorator());
         _keyswitchManipulator->home(*init_event,*this);
     }
-
-    OsgCameraGroup::realize( thread_model );
     
-    // set up osg::State objects with a the _done prt to allow early termination of 
+    // set up osg::State objects with the _done prt to allow early termination of 
     // draw traversal.
     for(SceneHandlerList::iterator p=_shvec.begin(); p!=_shvec.end(); p++ )
     {
         (*p)->getState()->setAbortRenderingPtr(&_done);
     }
+   OsgCameraGroup::sync();
     
 }
 
@@ -258,7 +265,29 @@ void Viewer::selectCameraManipulator(unsigned int no)
 
 void Viewer::requestWarpPointer(int x,int y)
 {
-    osg::notify(osg::WARN) << "Warning: requestWarpPointer("<<x<<","<<y<<") not implemented yet."<<std::endl;
+    
+    Producer::RenderSurface* rs = 0;
+    
+    // here we need to search for which render surface contains the pointer, 
+    // but havn't implemented this yet.. follows is dummy loop really.    
+    for( unsigned int i = 0; i < _cfg->getNumberOfCameras(); i++ )
+    {
+        Producer::Camera* cam = _cfg->getCamera(i);
+        rs = cam->getRenderSurface();
+    }
+    
+    if (rs)
+    {
+        EventAdapter::_s_mx = x;
+        EventAdapter::_s_my = y;
+        rs->positionPointer(x,y);
+    }
+    else
+    {
+        osg::notify(osg::WARN) << "Warning: requestWarpPointer("<<x<<","<<y<<") not handled."<<std::endl;
+    }
+    
+   
 }
 
 

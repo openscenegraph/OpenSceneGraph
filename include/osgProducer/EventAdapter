@@ -107,6 +107,8 @@ class OSGPRODUCER_EXPORT EventAdapter : public osgGA::GUIEventAdapter
         unsigned int _modKeyMask;
         double _time;
 
+    public:
+
         // used to accumulate the button mask state, it represents
         // the current button mask state, which is modified by the
         // adaptMouse() method which then copies it to value _buttonMask

@@ -53,7 +53,6 @@ void KeyboardMouseCallback::mouseMotion( float mx, float my)
     _mx = mx;
     _my = my;
     
-    
     osg::ref_ptr<EventAdapter> event = new EventAdapter;
     event->adaptMouseMotion(getTime(),mx,my);
     

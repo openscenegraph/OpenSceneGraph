@@ -326,6 +326,21 @@ void Matrix::makeOrtho(double left, double right,
     SET_ROW(3,                tx,                ty,                 tz, 1.0f )
 }
 
+void Matrix::getOrtho(double& left, double& right,
+                      double& bottom, double& top,
+                      double& zNear, double& zFar)
+{
+    zNear = (_mat[3][2]+1.0f) / _mat[2][2];
+    zFar = (_mat[3][2]-1.0f) / _mat[2][2];
+    
+    left = -(1.0f+_mat[3][0]) / _mat[0][0];
+    right = (1.0f-_mat[3][0]) / _mat[0][0];
+
+    bottom = -(1.0f+_mat[3][1]) / _mat[1][1];
+    top = (1.0f-_mat[3][1]) / _mat[1][1];
+}            
+
+
 void Matrix::makeFrustum(double left, double right,
                          double bottom, double top,
                          double zNear, double zFar)
@@ -340,6 +355,20 @@ void Matrix::makeFrustum(double left, double right,
     SET_ROW(2,                       A,                       B,    C, -1.0f )
     SET_ROW(3,                    0.0f,                   0.0f,     D,  0.0f )
 }
+
+void Matrix::getFrustum(double& left, double& right,
+                        double& bottom, double& top,
+                        double& zNear, double& zFar)
+{
+    zNear = _mat[3][2] / (_mat[2][2]-1.0f);
+    zFar = _mat[3][2] / (1.0f+_mat[2][2]);
+    
+    left = zNear * (_mat[2][0]-1.0f) / _mat[0][0];
+    right = zNear * (1.0f+_mat[2][0]) / _mat[0][0];
+
+    top = zNear * (1.0f+_mat[2][1]) / _mat[1][1];
+    bottom = zNear * (_mat[2][1]-1.0f) / _mat[1][1];
+}                 
 
 
 void Matrix::makePerspective(double fovy,double aspectRatio,
@@ -371,6 +400,17 @@ void Matrix::makeLookAt(const Vec3& eye,const Vec3& center,const Vec3& up)
         0.0f,     0.0f,     0.0f,      1.0f);
 
     preMult(Matrix::translate(-eye));
+}
+
+void Matrix::getLookAt(Vec3& eye,Vec3& center,Vec3& up,float lookDistance)
+{
+    Matrix inv;
+    inv.invert(*this);
+    eye = osg::Vec3(0.0f,0.0f,0.0f)*inv;
+    up = transform3x3(*this,osg::Vec3(0.0f,1.0f,0.0f));
+    center = transform3x3(*this,osg::Vec3(0.0f,0.0f,-1));
+    center.normalize();
+    center = eye + center*lookDistance;
 }
 
 #undef SET_ROW

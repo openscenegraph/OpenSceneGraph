@@ -107,6 +107,12 @@ class SG_EXPORT Matrix
                        double bottom, double top,
                        double zNear, double zFar);
 
+        /** Get the othorgraphic settings of the orthographic projection matrix. 
+          * Note, if matrix is not an orthographic matrix then invalid values will be returned.*/
+        void getOrtho(double& left, double& right,
+                      double& bottom, double& top,
+                      double& zNear, double& zFar);
+
         /** Set to a 2D orthographic projection. See glOrtho2D for further details.*/
         inline void makeOrtho2D(double left, double right,
                                 double bottom, double top)
@@ -114,19 +120,28 @@ class SG_EXPORT Matrix
             makeOrtho(left,right,bottom,top,-1.0,1.0);
         }
 
+
         /** Set to a perspective projection. See glFrustum for further details.*/
         void makeFrustum(double left, double right,
                          double bottom, double top,
                          double zNear, double zFar);
+
+        /** Get the frustum setting of a perspective projection matrix.
+          * Note, if matrix is not an orthographic matrix then invalid values will be returned.*/
+        void getFrustum(double& left, double& right,
+                         double& bottom, double& top,
+                         double& zNear, double& zFar);
 
         /** Set to a symmetrical perspective projection, See gluPerspective for further details.
           * Aspect ratio is defined as width/height.*/
         void makePerspective(double fovy,double aspectRatio,
                              double zNear, double zFar);
 
-        /** Set to the position and orientation as per a camera, using the same convention as gluLookAt. */
+        /** Set to the position and orientation modelview matrix, using the same convention as gluLookAt. */
         void makeLookAt(const Vec3& eye,const Vec3& center,const Vec3& up);
         
+        /** Get to the position and orientation of a modelview matrix, using the same convention as gluLookAt. */
+        void getLookAt(Vec3& eye,Vec3& center,Vec3& up,float lookDistance=1.0f);
 
         bool invert( const Matrix& );
 
@@ -208,31 +223,6 @@ class SG_EXPORT Matrix
             r.mult(*this,m);
 	    return  r;
 	}
-
-
-// temporarily commented out while waiting for a more generic implementation
-// of MatrixProduct proxy class.
-//         // Helper class to optimize product expressions somewhat
-//         class MatrixProduct {
-//         public:
-//             const Matrix& A;
-//             const Matrix& B;
-// 
-//             MatrixProduct( const Matrix& lhs, const Matrix& rhs ) : A(lhs), B(rhs) {}
-//         };
-// 
-//         inline MatrixProduct operator * ( const Matrix& other ) const    
-//             {    return MatrixProduct(*this, other); }
-// 
-//         inline void operator = ( const MatrixProduct& p ) 
-//             {
-//                 if( this == &(p.A)) postMult(p.B);
-//                 else if( this == &(p.B)) preMult(p.A);
-//                 else mult( p.A, p.B );
-//             }
-// 
-//         Matrix( const MatrixProduct& p ) //allows implicit evaluation of the product
-//             {    mult( p.A, p.B ); }
 
     protected:
         float _mat[4][4];

@@ -61,7 +61,7 @@ bool Switch::addChild( Node *child, bool value )
 bool Switch::removeChild( Node *child )
 {
     // find the child's position.
-    unsigned int pos=findChildNum(child);
+    unsigned int pos=getChildIndex(child);
     if (pos==_children.size()) return false;
     
     _values.erase(_values.begin()+pos);
@@ -78,7 +78,7 @@ void Switch::setValue(unsigned int pos,bool value)
 void Switch::setValue(const Node* child,bool value)
 {
     // find the child's position.
-    unsigned int pos=findChildNum(child);
+    unsigned int pos=getChildIndex(child);
     if (pos==_children.size()) return;
     
     _values[pos]=value;
@@ -93,7 +93,7 @@ bool Switch::getValue(unsigned int pos) const
 bool Switch::getValue(const Node* child) const
 {
     // find the child's position.
-    unsigned int pos=findChildNum(child);
+    unsigned int pos=getChildIndex(child);
     if (pos==_children.size()) return false;
     
     return _values[pos];

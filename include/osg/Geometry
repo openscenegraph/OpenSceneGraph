@@ -128,7 +128,22 @@ class SG_EXPORT Geometry : public Drawable
         PrimitiveSet* getPrimitiveSet(unsigned int pos) { return _primitives[pos].get(); }
         const PrimitiveSet* getPrimitiveSet(unsigned int pos) const { return _primitives[pos].get(); }
         
-        void addPrimitiveSet(PrimitiveSet* primitive) { if (primitive) _primitives.push_back(primitive); dirtyDisplayList(); dirtyBound(); }
+        /** Add a primtive set to the geometry.*/
+        bool addPrimitiveSet(PrimitiveSet* primitiveset);
+        
+        /** Set a primtive set to the specified position in geometry's primtive set list.*/
+        bool setPrimitiveSet(unsigned int i,PrimitiveSet* primitiveset);
+        
+        /** Insert a primtive set to the specified position in geometry's primtive set list.*/
+        bool insertPrimitiveSet(unsigned int i,PrimitiveSet* primitiveset);
+        
+        /** Remove primtive set(s) from the specified position in geometry's primtive set list.*/
+        bool removePrimitiveSet(unsigned int i,unsigned int numElementsToRemove=1);
+
+        /** Get the index number of a primitive set, return a value between
+          * 0 and getNumPrimitiveSet()-1 if found, if not found then return getNumPrimitiveSet().
+          * When checking for a valid find value use if ((value=geoemtry->getPrimitiveSetIndex(primitive))!=geometry.getNumPrimitiveSet()) as*/
+        unsigned int getPrimitiveSetIndex(const PrimitiveSet* primitiveset) const;
 
 
         /** return true if OpenGL fast paths will be used with drawing this Geometry.

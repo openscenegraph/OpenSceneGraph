@@ -84,7 +84,7 @@ bool Geode::replaceDrawable( Drawable *origDrawable, Drawable *newDrawable )
 {
     if (newDrawable==NULL || origDrawable==newDrawable) return false;
 
-    unsigned int pos = findDrawableNum(origDrawable);
+    unsigned int pos = getDrawableIndex(origDrawable);
     if (pos<_drawables.size())
     {
         return setDrawable(pos,newDrawable);

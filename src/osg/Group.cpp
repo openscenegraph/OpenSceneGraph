@@ -146,7 +146,7 @@ bool Group::replaceChild( Node *origNode, Node *newNode )
 {
     if (newNode==NULL || origNode==newNode) return false;
 
-    unsigned int pos = findChildNum(origNode);
+    unsigned int pos = getChildIndex(origNode);
     if (pos<_children.size())
     {
         return setChild(pos,newNode);

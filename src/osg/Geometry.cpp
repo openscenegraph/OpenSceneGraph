@@ -269,6 +269,86 @@ const IndexArray* Geometry::getTexCoordIndices(unsigned int unit) const
     else return 0;
 }
 
+bool Geometry::addPrimitiveSet(PrimitiveSet* primitiveset)
+{
+    if (primitiveset)
+    {
+        _primitives.push_back(primitiveset);
+        dirtyDisplayList();
+        dirtyBound();
+        return true;
+    }
+    notify(WARN)<<"Warning: invalid index i or primitiveset passed to osg::Geometry::addPrimitiveSet(i,primitiveset), ignoring call."<<std::endl;
+    return false;
+}
+
+bool Geometry::setPrimitiveSet(unsigned int i,PrimitiveSet* primitiveset)
+{
+    if (i<_primitives.size() && primitiveset)
+    {
+        _primitives[i] = primitiveset;
+        dirtyDisplayList();
+        dirtyBound();
+        return true;
+    }
+    notify(WARN)<<"Warning: invalid index i or primitiveset passed to osg::Geometry::setPrimitiveSet(i,primitiveset), ignoring call."<<std::endl;
+    return false;
+}
+
+bool Geometry::insertPrimitiveSet(unsigned int i,PrimitiveSet* primitiveset)
+{
+    if (primitiveset)
+    {
+        if (i<_primitives.size())
+        {
+            _primitives.insert(_primitives.begin()+i,primitiveset);
+            dirtyDisplayList();
+            dirtyBound();
+            return true;
+        }
+        else if (i==_primitives.size())
+        {
+            return addPrimitiveSet(primitiveset);
+        }
+    }
+    notify(WARN)<<"Warning: invalid index i or primitiveset passed to osg::Geometry::insertPrimitiveSet(i,primitiveset), ignoring call."<<std::endl;
+    return false;
+}
+
+bool Geometry::removePrimitiveSet(unsigned int i, unsigned int numElementsToRemove)
+{
+    if (i<_primitives.size() && numElementsToRemove>0)
+    {
+        if (i+numElementsToRemove<_primitives.size())
+        {
+            _primitives.erase(_primitives.begin()+i,_primitives.begin()+i+numElementsToRemove);
+        }
+        else
+        {
+            // asking to delete too many elements, report a warning, and delete to
+            // the end of the primitive list.
+            notify(WARN)<<"Warning: osg::Geometry::removePrimitiveSet(i,numElementsToRemove) has been asked to remove more elements than are available,"<<std::endl;
+            notify(WARN)<<"         removing on from i to the end of the list of primitive sets."<<endl;
+            _primitives.erase(_primitives.begin()+i,_primitives.end());
+        }
+    
+        dirtyDisplayList();
+        dirtyBound();
+        return true;
+    }
+    notify(WARN)<<"Warning: invalid index i passed to osg::Geometry::removePrimitiveSet(i,numElementsToRemove), ignoring call."<<std::endl;
+    return false;
+}
+
+unsigned int Geometry::getPrimitiveSetIndex(const PrimitiveSet* primitiveset) const
+{
+    for (unsigned int primitiveSetIndex=0;primitiveSetIndex<_primitives.size();++primitiveSetIndex)
+    {
+        if (_primitives[primitiveSetIndex]==primitiveset) return primitiveSetIndex;
+    }
+    return _primitives.size(); // node not found.
+}
+
 bool Geometry::areFastPathsUsed() const
 {
     if (_fastPathComputed) return _fastPath;

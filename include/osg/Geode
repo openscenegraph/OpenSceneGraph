@@ -34,13 +34,13 @@ class SG_EXPORT Geode : public Node
         virtual bool addDrawable( Drawable *drawable );
 
         /** Remove Drawable from Geode.
-          * Equivalent to setDrawabke(findDrawableNum(orignChild),node), 
+          * Equivalent to setDrawabke(getDrawableIndex(orignChild),node), 
           * see docs for setNode for futher details on implementation.*/
 
         virtual bool removeDrawable( Drawable *drawable );
 
         /** Replace specified Drawable with another Drawable.
-          * Equivalent to setDrawable(findDrawableNum(orignChild),node), 
+          * Equivalent to setDrawable(getDrawableIndex(orignChild),node), 
           * see docs for setDrawable for futher details on implementation.*/
         virtual bool replaceDrawable( Drawable *origDraw, Drawable *newDraw );
 
@@ -107,10 +107,10 @@ class SG_EXPORT Geode : public Node
             return _drawables.end();
         }
 
-        /** Find the index number of drawable, return a value between
+        /** Get the index number of drawable, return a value between
           * 0 and _drawables.size()-1 if found, if not found then
           * return _drawables.size().*/
-        inline unsigned int findDrawableNum( const Drawable* node ) const
+        inline unsigned int getDrawableIndex( const Drawable* node ) const
         {
             for (unsigned int drawableNum=0;drawableNum<_drawables.size();++drawableNum)
             {

@@ -27,8 +27,11 @@ FTPixmapGlyph::FTPixmapGlyph( FT_Glyph glyph)
     int srcHeight = source->rows;
     int srcPitch = source->pitch;
 
-    if (srcWidth*srcHeight==0) return;
-
+    if (srcWidth*srcHeight==0) 
+    {
+        FT_Done_Glyph( glyph );
+        return;
+    }
     numGreys = source->num_grays;
 
      pos.x = bitmap->left;

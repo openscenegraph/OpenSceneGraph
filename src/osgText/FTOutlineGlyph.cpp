@@ -15,6 +15,7 @@ FTOutlineGlyph::FTOutlineGlyph( FT_Glyph glyph)
 {
     if( ft_glyph_format_outline != glyph->format)
     {
+        FT_Done_Glyph( glyph);
         return;
     }
 
@@ -27,6 +28,7 @@ FTOutlineGlyph::FTOutlineGlyph( FT_Glyph glyph)
     
     if (numContours==0)
     {
+        FT_Done_Glyph( glyph);
         return;
     }
     
@@ -50,7 +52,10 @@ FTOutlineGlyph::FTOutlineGlyph( FT_Glyph glyph)
     vectoriser=0;
     
     if ( ( numContours < 1) || ( numPoints < 3))
+    {
+        FT_Done_Glyph( glyph);
         return;
+    }
         
     glList = glGenLists(1);
     int d = 0;

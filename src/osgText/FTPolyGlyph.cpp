@@ -64,7 +64,10 @@ FTPolyGlyph::FTPolyGlyph( FT_Glyph glyph)
     glList(0)
 {
     if( ft_glyph_format_outline != glyph->format)
-    { return;}
+    { 
+        FT_Done_Glyph( glyph );
+        return;
+    }
 
     advance = glyph->advance.x >> 16;
 
@@ -96,7 +99,10 @@ FTPolyGlyph::FTPolyGlyph( FT_Glyph glyph)
     vectoriser=0; // delete it, using ref_ptr.
 
     if ( ( numContours < 1) || ( numPoints < 3))
+    {
+        FT_Done_Glyph( glyph );
         return;
+    }
 
     Tesselate();
 

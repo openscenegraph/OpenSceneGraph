@@ -84,7 +84,7 @@ void Viewer::setUpViewer(unsigned int options)
     _start_tick = _timer.tick();
 
     // set the keyboard mouse callback to catch the events from the windows.
-    _kbmcb = new osgProducer::KeyboardMouseCallback( _done, (options & ESCAPE_SETS_DONE)!=0 );
+    _kbmcb = new osgProducer::KeyboardMouseCallback( kbm, _done, (options & ESCAPE_SETS_DONE)!=0 );
     _kbmcb->setStartTick(_start_tick);
     
     // register the callback with the keyboard mouse manger.
@@ -263,8 +263,14 @@ void Viewer::selectCameraManipulator(unsigned int no)
     if (_keyswitchManipulator.valid()) _keyswitchManipulator->selectCameraManipulator(no);
 }
 
-void Viewer::requestWarpPointer(int x,int y)
+void Viewer::requestWarpPointer(float x,float y)
 {
+    
+    if (_kbmcb)
+    {
+        _kbmcb->getKeyboardMouse()->positionPointer(x,y);
+        return;
+    }
     
     Producer::RenderSurface* rs = 0;
     

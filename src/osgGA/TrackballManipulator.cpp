@@ -187,10 +187,10 @@ bool TrackballManipulator::isMouseMoving()
 {
     if (_ga_t0.get()==NULL || _ga_t1.get()==NULL) return false;
 
-    static const float velocity = 100.0f;
+    static const float velocity = 0.1f;
 
-    float dx = _ga_t0->getX()-_ga_t1->getX();
-    float dy = _ga_t0->getY()-_ga_t1->getY();
+    float dx = _ga_t0->getXnormalized()-_ga_t1->getXnormalized();
+    float dy = _ga_t0->getYnormalized()-_ga_t1->getYnormalized();
     float len = sqrtf(dx*dx+dy*dy);
     float dt = _ga_t0->time()-_ga_t1->time();
 
@@ -253,8 +253,8 @@ bool TrackballManipulator::calcMovement()
     // return if less then two events have been added.
     if (_ga_t0.get()==NULL || _ga_t1.get()==NULL) return false;
 
-    float dx = _ga_t0->getX()-_ga_t1->getX();
-    float dy = _ga_t0->getY()-_ga_t1->getY();
+    float dx = _ga_t0->getXnormalized()-_ga_t1->getXnormalized();
+    float dy = _ga_t0->getYnormalized()-_ga_t1->getYnormalized();
 
 
     // return if there is no movement.
@@ -306,7 +306,7 @@ bool TrackballManipulator::calcMovement()
 
         // pan model.
 
-        float scale = 0.0015f*focalLength;
+        float scale = 0.5f*focalLength;
 
         osg::Vec3 uv = _camera->getUpVector();
         osg::Vec3 sv = _camera->getSideVector();
@@ -325,7 +325,7 @@ bool TrackballManipulator::calcMovement()
         // zoom model.
 
         float fd = focalLength;
-        float scale = 1.0f-dy*0.001f;
+        float scale = 1.0f-dy;
         if (fd*scale>_modelScale*_minimumZoomScale)
         {
 
@@ -339,7 +339,7 @@ bool TrackballManipulator::calcMovement()
 
             // notify(DEBUG_INFO) << "Pushing forward"<<std::endl;
             // push the camera forward.
-            float scale = 0.0015f*fd;
+            float scale = fd;
             osg::Vec3 dv = _camera->getLookVector()*(dy*scale);
 
             _center += dv;

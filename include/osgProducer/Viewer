@@ -80,7 +80,7 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
 
         virtual void requestRedraw() {}
         virtual void requestContinuousUpdate(bool) {}
-        virtual void requestWarpPointer(int x,int y);
+        virtual void requestWarpPointer(float x,float y);
 
         typedef std::list< osg::ref_ptr<osgGA::GUIEventHandler> > EventHandlerList;
         EventHandlerList& getEventHandlerList() { return _eventHandlerList; }

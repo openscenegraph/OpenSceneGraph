@@ -83,7 +83,7 @@ int main( int argc, char **argv )
 
     // set the keyboard mouse callback to catch the events from the windows.
     bool done = false;
-    osgProducer::KeyboardMouseCallback kbmcb(done);
+    osgProducer::KeyboardMouseCallback kbmcb(kbm,done);
     kbmcb.setStartTick(start_tick);
     
     // register the callback with the keyboard mouse manger.

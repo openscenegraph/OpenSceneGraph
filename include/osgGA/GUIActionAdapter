@@ -75,7 +75,7 @@ public:
         to initialise the mouse pointer when mouse position relative to a controls
         neutral mouse position is required, i.e when mimicking a aircrafts joystick.
         */
-    virtual void requestWarpPointer(int x,int y) = 0;
+    virtual void requestWarpPointer(float x,float y) = 0;
 
 };
 

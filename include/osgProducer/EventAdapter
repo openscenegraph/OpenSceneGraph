@@ -40,22 +40,22 @@ class OSGPRODUCER_EXPORT EventAdapter : public osgGA::GUIEventAdapter
         virtual int getButton() const { return _button; }
 
         /** window minimum x. */
-        virtual int getXmin() const  { return _Xmin; }
+        virtual float getXmin() const  { return _Xmin; }
 
         /** window maximum x. */
-        virtual int getXmax() const  { return _Xmax; }
+        virtual float getXmax() const  { return _Xmax; }
 
         /** window minimum y. */
-        virtual int getYmin() const { return _Ymin; }
+        virtual float getYmin() const { return _Ymin; }
 
         /** window maximum y. */
-        virtual int getYmax() const { return _Ymax; }
+        virtual float getYmax() const { return _Ymax; }
 
         /** current mouse x position.*/
-        virtual int getX() const { return _mx; }
+        virtual float getX() const { return _mx; }
 
         /** current mouse y position.*/
-        virtual int getY() const { return _my; }
+        virtual float getY() const { return _my; }
 
         /** current mouse button state */
         virtual unsigned int getButtonMask() const { return _buttonMask; }
@@ -66,14 +66,14 @@ class OSGPRODUCER_EXPORT EventAdapter : public osgGA::GUIEventAdapter
         virtual unsigned int getModKeyMask() const { return _modKeyMask; }
 
         /** static method for setting window dimensions.*/
-        static void setWindowSize(int Xmin, int Ymin, int Xmax, int Ymax);
+        static void setWindowSize(float Xmin, float Ymin, float Xmax, float Ymax);
 
         /** static method for setting button state.*/
         static void setButtonMask(unsigned int buttonMask);
 
-        /** method for adapting resize events. */
-        void adaptResize(double t, int Xmin, int Ymin, int Xmax, int Ymax);
 
+        /** method for adapting resize events. */
+        void adaptResize(double t, float Xmin, float Ymin, float Xmax, float Ymax);
 
         /** method for adapting mouse motion events whilst mouse buttons are pressed.*/
         void adaptMouseMotion(double t, float x, float y);
@@ -99,10 +99,10 @@ class OSGPRODUCER_EXPORT EventAdapter : public osgGA::GUIEventAdapter
         EventType _eventType;
         int _key;
         int _button;
-        int _Xmin,_Xmax;
-        int _Ymin,_Ymax;
-        int _mx;
-        int _my;
+        float _Xmin,_Xmax;
+        float _Ymin,_Ymax;
+        float _mx;
+        float _my;
         unsigned int _buttonMask;
         unsigned int _modKeyMask;
         double _time;
@@ -119,21 +119,14 @@ class OSGPRODUCER_EXPORT EventAdapter : public osgGA::GUIEventAdapter
 	static int _s_button;
 
         // used to store window min and max values.
-        static int _s_Xmin;
-        static int _s_Xmax;
-        static int _s_Ymin;
-        static int _s_Ymax;
-        static int _s_mx;
-        static int _s_my;
+        static float _s_Xmin;
+        static float _s_Xmax;
+        static float _s_Ymin;
+        static float _s_Ymax;
+        static float _s_mx;
+        static float _s_my;
         static int _s_modKeyMask;
         
-        typedef std::map<int,int> KeySymbolMap;
-        static KeySymbolMap s_keySymbolMap;
-        static bool s_keySymbolMapInitialized;
-        
-        bool initKeySymbolMap();
-        int adaptKeySymbol(Producer::KeySymbol key);
-
 };
 
 }

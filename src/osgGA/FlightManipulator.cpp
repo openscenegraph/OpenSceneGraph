@@ -58,7 +58,7 @@ void FlightManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
 
         us.requestRedraw();
 
-        us.requestWarpPointer((ea.getXmin()+ea.getXmax())/2,(ea.getYmin()+ea.getYmax())/2);
+        us.requestWarpPointer((ea.getXmin()+ea.getXmax())/2.0f,(ea.getYmin()+ea.getYmax())/2.0f);
 
         computeLocalDataFromCamera();
 
@@ -79,7 +79,7 @@ void FlightManipulator::init(const GUIEventAdapter& ea,GUIActionAdapter& us)
 
     if (ea.getEventType()!=GUIEventAdapter::RESIZE)
     {
-        us.requestWarpPointer((ea.getXmin()+ea.getXmax())/2,(ea.getYmin()+ea.getYmax())/2);
+        us.requestWarpPointer((ea.getXmin()+ea.getXmax())/2.0f,(ea.getYmin()+ea.getYmax())/2.0f);
     }
 
     computeLocalDataFromCamera();
@@ -269,11 +269,8 @@ bool FlightManipulator::calcMovement()
 
     }
 
-    float mx = (_ga_t0->getXmin()+_ga_t0->getXmax())/2.0f;
-    float my = (_ga_t0->getYmin()+_ga_t0->getYmax())/2.0f;
-
-    float dx = _ga_t0->getX()-mx;
-    float dy = _ga_t0->getY()-my;
+    float dx = _ga_t0->getXnormalized();
+    float dy = _ga_t0->getYnormalized();
 
     osg::Matrix rotation_matrix;
     rotation_matrix.makeRotate(_rotation);
@@ -284,8 +281,8 @@ bool FlightManipulator::calcMovement()
     osg::Vec3 sv = lv^up;
     sv.normalize();
 
-    float pitch = inDegrees(dy*0.15f*dt);
-    float roll = inDegrees(dx*0.1f*dt);
+    float pitch = inDegrees(dy*75.0f*dt);
+    float roll = inDegrees(dx*50.0f*dt);
 
     osg::Quat delta_rotate;
 

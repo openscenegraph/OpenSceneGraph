@@ -14,14 +14,15 @@
 #include <osg/LightSource>
 #include <osg/PolygonOffset>
 #include <osg/CullFace>
+#include <osg/Material>
 
 #include <osgUtil/TransformCallback>
 #include <osgUtil/RenderToTextureStage>
 
 using namespace osg;
 
-const int depth_texture_height = 256;
-const int depth_texture_width  = 256;
+const int depth_texture_height = 512;
+const int depth_texture_width  = 512;
 
 ref_ptr<RefMatrix> bias = new RefMatrix(0.5f, 0.0f, 0.0f, 0.0f,
                                         0.0f, 0.5f, 0.0f, 0.0f,
@@ -109,13 +110,13 @@ public:
     _local_stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
    
     ref_ptr<PolygonOffset> polygon_offset = new PolygonOffset;
-    polygon_offset->setFactor(2.0f);
-    polygon_offset->setUnits(6.0f);
+    polygon_offset->setFactor(1.1f);
+    polygon_offset->setUnits(4.0f);
     _local_stateset->setAttribute(polygon_offset.get(), StateAttribute::ON | StateAttribute::OVERRIDE);
     _local_stateset->setMode(GL_POLYGON_OFFSET_FILL, StateAttribute::ON | StateAttribute::OVERRIDE);
 
     ref_ptr<CullFace> cull_face = new CullFace;
-    cull_face->setMode(CullFace::BACK);
+    cull_face->setMode(CullFace::FRONT);
     _local_stateset->setAttribute(cull_face.get(), StateAttribute::ON | StateAttribute::OVERRIDE);
     _local_stateset->setMode(GL_CULL_FACE, StateAttribute::ON | StateAttribute::OVERRIDE);
 
@@ -243,10 +244,10 @@ ref_ptr<MatrixTransform> _create_lights(ref_ptr<StateSet> root_stateset)
   ref_ptr<Light> light_0 = new Light;
   light_0->setLightNum(0);
   light_0->setPosition(Vec4(0, 0, 0, 1.0f));
-  light_0->setAmbient(Vec4(0.2f, 0.2f, 0.2f, 1.0f));
-  light_0->setDiffuse(Vec4(1.0f, 0.5f, 0.5f, 1.0f));
+  light_0->setAmbient(Vec4(0.0f, 0.0f, 0.0f, 1.0f));
+  light_0->setDiffuse(Vec4(1.0f, 0.8f, 0.8f, 1.0f));
   light_0->setSpotCutoff(60.0f);
-  light_0->setSpotExponent(5.0f);
+  light_0->setSpotExponent(2.0f);
 
   ref_ptr<LightSource> light_source_0 = new LightSource;	
   light_source_0->setLight(light_0.get());
@@ -301,7 +302,7 @@ ref_ptr<Group> _create_scene()
   geode_1->addDrawable(shape.get());
 
   shape = new ShapeDrawable(new Sphere(Vec3(0.0f, 0.0f, 0.0f), radius * 2), hints.get());
-  shape->setColor(Vec4(0.8f, 0.4f, 0.4f, 1.0f));
+  shape->setColor(Vec4(0.8f, 0.8f, 0.8f, 1.0f));
   geode_1->addDrawable(shape.get());
 
   shape = new ShapeDrawable(new Sphere(Vec3(-3.0f, 0.0f, 0.0f), radius), hints.get());
@@ -323,6 +324,14 @@ ref_ptr<Group> _create_scene()
   shape = new ShapeDrawable(new Box(Vec3(0.0f, 3.0f, 0.0f), 2, 0.1f, 2), hints.get());
   shape->setColor(Vec4(0.8f, 0.8f, 0.4f, 1.0f));
   geode_3->addDrawable(shape.get());
+
+  // material
+  ref_ptr<Material> matirial = new Material;
+  matirial->setColorMode(Material::DIFFUSE);
+  matirial->setAmbient(Material::FRONT_AND_BACK, Vec4(0, 0, 0, 1));
+  matirial->setSpecular(Material::FRONT_AND_BACK, Vec4(1, 1, 1, 1));
+  matirial->setShininess(Material::FRONT_AND_BACK, 64.0f);
+  scene->getOrCreateStateSet()->setAttributeAndModes(matirial.get(), StateAttribute::ON);
 
   return scene;
 }
@@ -377,21 +386,10 @@ int main(int argc, char** argv)
   texture->setShadowComparison(true);
   texture->setShadowTextureMode(Texture::LUMINANCE);
 
-  ref_ptr<TexEnvCombine> tex_env_combine = new TexEnvCombine;    
-  tex_env_combine->setCombine_RGB(TexEnvCombine::INTERPOLATE);
-  tex_env_combine->setSource0_RGB(TexEnvCombine::PREVIOUS);
-  tex_env_combine->setOperand0_RGB(TexEnvCombine::SRC_COLOR);
-  tex_env_combine->setSource1_RGB(TexEnvCombine::TEXTURE);
-  tex_env_combine->setOperand1_RGB(TexEnvCombine::SRC_COLOR);
-  tex_env_combine->setSource2_RGB(TexEnvCombine::CONSTANT);
-  tex_env_combine->setOperand2_RGB(TexEnvCombine::SRC_COLOR);
-  tex_env_combine->setConstantColor(Vec4(0.8f, 0.8f, 0.8f, 1.0f));
-
   ref_ptr<TexGen> tex_gen = new TexGen;
   tex_gen->setMode(TexGen::EYE_LINEAR);
   shadowed_scene->getOrCreateStateSet()->setTextureAttributeAndModes(0, texture.get(), StateAttribute::ON);
   shadowed_scene->getOrCreateStateSet()->setTextureAttributeAndModes(0, tex_gen.get(), StateAttribute::ON);
-  shadowed_scene->getOrCreateStateSet()->setTextureAttributeAndModes(0, tex_env_combine.get(), StateAttribute::ON);
 
   scene->setCullCallback(new RenderToTextureCallback(shadowed_scene.get(), texture.get(), light_transform.get(), tex_gen.get()));
 

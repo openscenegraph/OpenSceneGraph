@@ -8,6 +8,7 @@ CXXFILES = \
     LightPointDrawable.cpp\
     LightPointNode.cpp\
     Sector.cpp\
+    Version.cpp\
 
 DEF     += -DOSGSIM_LIBRARY
 

@@ -47,13 +47,13 @@ GLUTEventAdapter::getModKeyMask() const
     int modifiers = glutGetModifiers();
     unsigned int modmask = 0;
     if ( modifiers & GLUT_ACTIVE_SHIFT ) {
-        modmask |= MOD_LEFT_SHIFT | MOD_RIGHT_SHIFT;
+        modmask |= MODKEY_LEFT_SHIFT | MODKEY_RIGHT_SHIFT;
     }
     if ( modifiers & GLUT_ACTIVE_ALT ) {
-        modmask |= MOD_LEFT_ALT | MOD_RIGHT_ALT;
+        modmask |= MODKEY_LEFT_ALT | MODKEY_RIGHT_ALT;
     }
     if ( modifiers & GLUT_ACTIVE_CTRL ) {
-        modmask |= MOD_LEFT_CTRL | MOD_RIGHT_CTRL;
+        modmask |= MODKEY_LEFT_CTRL | MODKEY_RIGHT_CTRL;
     }
     return modmask;
 }

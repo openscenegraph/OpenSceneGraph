@@ -88,10 +88,10 @@ void DisplaySettings::setDefaults()
     _screenHeight = 0.26f;
 
     _splitStereoHorizontalEyeMapping = LEFT_EYE_LEFT_VIEWPORT;
-    _splitStereoHorizontalSeparation = 42;
+    _splitStereoHorizontalSeparation = 0;
 
     _splitStereoVerticalEyeMapping = LEFT_EYE_TOP_VIEWPORT;
-    _splitStereoVerticalSeparation = 42;
+    _splitStereoVerticalSeparation = 0;
 
     _doubleBuffer = true;
     _RGB = true;

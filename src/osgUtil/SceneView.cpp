@@ -305,6 +305,7 @@ void SceneView::cull()
                                                                              (*projection));
 
 
+
             osg::ref_ptr<osg::RefMatrix> modelviewLeft = new osg::RefMatrix( (*modelview) *
                                                              osg::Matrix(1.0f,0.0f,0.0f,0.0f,
                                                                          0.0f,1.0f,0.0f,0.0f,
@@ -327,6 +328,21 @@ void SceneView::cull()
                                                                                          0.0f,1.0f,0.0f,0.0f,
                                                                                          0.0f,0.0f,1.0f,0.0f,
                                                                                          -es,0.0f,0.0f,1.0f));
+
+            switch(_displaySettings->getStereoMode())
+            {
+                case(osg::DisplaySettings::HORIZONTAL_SPLIT):
+                    (*projectionLeft).postMult(osg::Matrix::scale(2.0f,1.0f,1.0f));
+                    (*projectionRight).postMult(osg::Matrix::scale(2.0f,1.0f,1.0f));
+                    break;
+                case(osg::DisplaySettings::VERTICAL_SPLIT):
+                    (*projectionLeft).postMult(osg::Matrix::scale(1.0f,2.0f,1.0f));
+                    (*projectionRight).postMult(osg::Matrix::scale(1.0f,2.0f,1.0f));
+                    break;
+                default:
+                    break;
+            }
+
 
             _cullVisitorRight->setTraversalMask(_cullMaskRight);
             cullStage(projectionRight.get(),modelviewRight.get(),_cullVisitorRight.get(),_rendergraphRight.get(),_renderStageRight.get());

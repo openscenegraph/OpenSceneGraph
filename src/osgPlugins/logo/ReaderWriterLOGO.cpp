@@ -75,6 +75,7 @@ class Logos: public osg::Drawable
 	}
 
         Logos(const Logos& logo, const CopyOp& copyop=CopyOp::SHALLOW_COPY) :Drawable( logo, copyop ) {}
+
         virtual Object* cloneType() const { return new Logos(); }
         virtual Object* clone( const CopyOp& copyop) const { return new Logos(*this, copyop ); }
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Logos*>(obj)!=NULL; }
@@ -165,7 +166,6 @@ class Logos: public osg::Drawable
 	}
 
     protected:
-        Logos(const Logos&):Drawable() {}
         Logos& operator = (const Logos&) { return *this;}
 
         virtual ~Logos() {}

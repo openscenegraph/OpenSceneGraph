@@ -97,13 +97,13 @@ void Texture3D::setImage(Image* image)
 
 void Texture3D::apply(State& state) const
 {
-
     static bool s_texturing_supported = strncmp((const char*)glGetString(GL_VERSION),"1.2",3)>=0 ||
                                         isGLExtensionSupported("GL_EXT_texture3D");
                                         
-    if (s_texturing_supported)
+    if (!s_texturing_supported)
     {
         notify(WARN)<<"Warning: Texture3D::apply(..) failed, 3D texturing is not support by your OpenGL drivers."<<std::endl;
+        return;
     }
 
     // get the contextID (user defined ID of 0 upwards) for the 
@@ -205,8 +205,6 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
     image->ensureValidSizeForTexturing();
 
     glPixelStorei(GL_UNPACK_ALIGNMENT,image->getPacking());
-    
-
 
     if( _min_filter == LINEAR || _min_filter == NEAREST )
     {

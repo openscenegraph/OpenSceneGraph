@@ -91,8 +91,16 @@ echo osgtext
 osgtext
 more memleaks.log
 
-echo osgtexture reflect.rgb lz.rgb
-osgtexture reflect.rgb lz.rgb
+echo osgtexture1D reflect.rgb lz.rgb
+osgtexture1D reflect.rgb lz.rgb
+more memleaks.log
+
+echo osgtexture2D reflect.rgb lz.rgb
+osgtexture2D reflect.rgb lz.rgb
+more memleaks.log
+
+echo osgtexture3D
+osgtexture3D
 more memleaks.log
 
 echo osgviews cow.osg

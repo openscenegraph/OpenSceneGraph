@@ -1,24 +1,24 @@
-# Microsoft Developer Studio Project File - Name="Demo osgtexture" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="Demo osgtexture3D" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Console Application" 0x0103
 
-CFG=Demo osgtexture - Win32 Release
+CFG=Demo osgtexture3D - Win32 Release
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "osgtexture.mak".
+!MESSAGE NMAKE /f "osgtexture3D.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "osgtexture.mak" CFG="Demo osgtexture - Win32 Release"
+!MESSAGE NMAKE /f "osgtexture3D.mak" CFG="Demo osgtexture3D - Win32 Release"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "Demo osgtexture - Win32 Release" (based on "Win32 (x86) Console Application")
-!MESSAGE "Demo osgtexture - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "Demo osgtexture3D - Win32 Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "Demo osgtexture3D - Win32 Debug" (based on "Win32 (x86) Console Application")
 !MESSAGE 
 
 # Begin Project
@@ -28,7 +28,7 @@ CFG=Demo osgtexture - Win32 Release
 CPP=cl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "Demo osgtexture - Win32 Release"
+!IF  "$(CFG)" == "Demo osgtexture3D - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -50,9 +50,9 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 /nologo /subsystem:console /pdb:none /machine:I386 /out:"../../../bin/osgtexture.exe" /libpath:"../../../lib"
+# ADD LINK32 /nologo /subsystem:console /pdb:none /machine:I386 /out:"../../../bin/osgtexture3D.exe" /libpath:"../../../lib"
 
-!ELSEIF  "$(CFG)" == "Demo osgtexture - Win32 Debug"
+!ELSEIF  "$(CFG)" == "Demo osgtexture3D - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -74,18 +74,18 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 /nologo /subsystem:console /debug /machine:I386 /nodefaultlib:"libcmt" /out:"../../../bin/osgtextured.exe" /pdbtype:sept /libpath:"../../../lib"
+# ADD LINK32 /nologo /subsystem:console /debug /machine:I386 /nodefaultlib:"libcmt" /out:"../../../bin/osgtexture3Dd.exe" /pdbtype:sept /libpath:"../../../lib"
 # SUBTRACT LINK32 /incremental:no
 
 !ENDIF 
 
 # Begin Target
 
-# Name "Demo osgtexture - Win32 Release"
-# Name "Demo osgtexture - Win32 Debug"
+# Name "Demo osgtexture3D - Win32 Release"
+# Name "Demo osgtexture3D - Win32 Debug"
 # Begin Source File
 
-SOURCE=..\..\..\src\Demos\osgtexture\osgtexture.cpp
+SOURCE=..\..\..\src\Demos\osgtexture3D\osgtexture3D.cpp
 # End Source File
 # End Target
 # Begin Group "Resource Files"

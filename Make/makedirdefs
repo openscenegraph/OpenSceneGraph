@@ -90,7 +90,9 @@ DEMOS_DIRS = \
 	osgstereoimage\
 	osgsequence\
 	osgtext\
-	osgtexture\
+	osgtexture1D\
+	osgtexture2D\
+	osgtexture3D\
 	osgviews\
 	osgversion\
 	sgv

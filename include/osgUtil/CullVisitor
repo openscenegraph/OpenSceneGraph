@@ -126,7 +126,10 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
         /** Get the viewport. */
         osg::Viewport* getViewport() { return _viewport.get(); }
 
-        void pushCullViewState(osg::Matrix* matrix=NULL);
+        inline void pushCullViewState() { pushCullViewState(NULL,NULL); }
+        void pushCullViewState(osg::Matrix* matrix);
+        void pushCullViewState(osg::Matrix* matrix,osg::Matrix* inverse);
+        
         void popCullViewState();
 
         /** Push state set on the current state group.

@@ -18,6 +18,7 @@
 #include <osg/Group>
 #include <osg/Geometry>
 
+#include <osgUtil/SmoothingVisitor>
 #include <osgUtil/TriStripVisitor>
 
 #include <osgDB/ReadFile>
@@ -42,6 +43,7 @@ using namespace osgTerrain;
 
 enum CoordinateSystemType
 {
+    GEOCENTRIC,
     GEOGRAPHIC,
     PROJECTED,
     LOCAL
@@ -58,12 +60,15 @@ CoordinateSystemType getCoordinateSystemType(const osgTerrain::CoordinateSystem*
     
     free(projection_string);
     
+    
     std::cout<<"getCoordinateSystemType("<<projection_string<<")"<<std::endl;
     std::cout<<"    lhsSR.IsGeographic()="<<lhsSR.IsGeographic()<<std::endl;
     std::cout<<"    lhsSR.IsProjected()="<<lhsSR.IsProjected()<<std::endl;
     std::cout<<"    lhsSR.IsLocal()="<<lhsSR.IsLocal()<<std::endl;
+    if (strcmp(lhsSR.GetRoot()->GetValue(),"GEOCCS")==0) std::cout<<"    lhsSR. is GEOCENTRIC "<<std::endl;
     
 
+    if (strcmp(lhsSR.GetRoot()->GetValue(),"GEOCCS")==0) return GEOCENTRIC;    
     if (lhsSR.IsGeographic()) return GEOGRAPHIC;
     if (lhsSR.IsProjected()) return PROJECTED;
     if (lhsSR.IsLocal()) return LOCAL;
@@ -620,7 +625,7 @@ void DataSet::SourceData::readHeightField(DestinationData& destination)
             else
             {
                 std::cout<<"We have no Scale"<<std::endl;
-                scale = xyInDegrees ? 1.0f/111319.0f : 1.0f;
+                // scale = xyInDegrees ? 1.0f/111319.0f : 1.0f;
             }
             
             std::cout<<"********* getLinearUnits = "<<getLinearUnits(_cs.get())<<std::endl;
@@ -1904,26 +1909,69 @@ osg::Geometry* DataSet::DestinationTile::createDrawablePolygonal()
 
     color[0].set(255,255,255,255);
 
-    osg::Vec3Array* n = new osg::Vec3Array(numVertices);
+    osg::Vec3Array* n = 0; // new osg::Vec3Array(numVertices);
+    
+    bool needConversion = _dataSet->getConvertFromGeographicToGeocentric();
+    if (needConversion) std::cout<<">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> need to do conversion <<<<<<<<<<<<<<<<<<<< "<<std::endl;
 
 
     unsigned int vi=0;
     unsigned int r,c;
-    for(r=0;r<numRows;++r)
+    
+    if (needConversion)
     {
-	for(c=0;c<numColumns;++c)
-	{
-	    v[vi] = grid->getVertex(c,r);
+        double orig_longitude = grid->getOrigin().x();
+        double delta_longitude = grid->getXInterval();
 
-            if (n) (*n)[vi] = grid->getNormal(c,r);
-            
-	    t[vi].x() = (c==numColumns-1)? 1.0f : (float)(c)/(float)(numColumns-1);
-	    t[vi].y() = (r==numRows-1)? 1.0f : (float)(r)/(float)(numRows-1);
-            
-            ++vi;
-	}
+        double orig_latitude = grid->getOrigin().y();
+        double delta_latitude = grid->getYInterval();
+        
+        double orig_height = grid->getOrigin().z();
+
+        osgTerrain::EllipsodeTransform& et = _dataSet->getEllipsodeTransform();
+
+        for(r=0;r<numRows;++r)
+        {
+	    for(c=0;c<numColumns;++c)
+	    {
+                double longitude = orig_longitude + delta_longitude*(double)c;
+                double latitude = orig_latitude + delta_latitude*(double)r;
+                double height = orig_height + grid->getHeight(c,r);
+                double X,Y,Z;
+
+                et.convertLatLongHeightToXYZ(osg::DegreesToRadians(latitude),osg::DegreesToRadians(longitude),height,
+                                             X,Y,Z);
+                
+	        v[vi].set(X,Y,Z);
+
+                // note normal will need rotating.
+                if (n) (*n)[vi] = grid->getNormal(c,r);
+
+	        t[vi].x() = (c==numColumns-1)? 1.0f : (float)(c)/(float)(numColumns-1);
+	        t[vi].y() = (r==numRows-1)? 1.0f : (float)(r)/(float)(numRows-1);
+
+                ++vi;
+	    }
+        }
     }
+    else
+    {
+        for(r=0;r<numRows;++r)
+        {
+	    for(c=0;c<numColumns;++c)
+	    {
+	        v[vi] = grid->getVertex(c,r);
 
+                if (n) (*n)[vi] = grid->getNormal(c,r);
+
+	        t[vi].x() = (c==numColumns-1)? 1.0f : (float)(c)/(float)(numColumns-1);
+	        t[vi].y() = (r==numRows-1)? 1.0f : (float)(r)/(float)(numRows-1);
+
+                ++vi;
+	    }
+        }
+    }
+    
     //geometry->setUseDisplayList(false);
     geometry->setVertexArray(&v);
 
@@ -1975,6 +2023,10 @@ osg::Geometry* DataSet::DestinationTile::createDrawablePolygonal()
             }
     	}
     }
+
+    osgUtil::SmoothingVisitor sv;
+    sv.smooth(*geometry);
+
 
     if (numVerticesInSkirt>0)
     {
@@ -2447,6 +2499,8 @@ DataSet::DataSet()
 {
     init();
     
+    _convertFromGeographicToGeocentric = false;
+    
     _defaultColor.set(0.5f,0.5f,1.0f,1.0f);
     _databaseType = PagedLOD_DATABASE;
     _geometryType = POLYGONAL;
@@ -2733,7 +2787,7 @@ void DataSet::computeDestinationGraphFromSources(unsigned int numLevels)
 {
 
     // ensure we have a valid coordinate system
-    if (!_coordinateSystem)
+    if (!_destinationCoordinateSystem)
     {
         for(CompositeSource::source_iterator itr(_sourceGraph.get());itr.valid();++itr)
         {
@@ -2742,11 +2796,36 @@ void DataSet::computeDestinationGraphFromSources(unsigned int numLevels)
             {
                 if (sd->_cs.valid())
                 {
-                    _coordinateSystem = sd->_cs;
-                    std::cout<<"Setting coordinate system to "<<_coordinateSystem->getWKT()<<std::endl;
+                    _destinationCoordinateSystem = sd->_cs;
+                    std::cout<<"Setting coordinate system to "<<_destinationCoordinateSystem->getWKT()<<std::endl;
                     break;
                 }
             }
+        }
+    }
+    
+    if (!_intermediateCoordinateSystem)
+    {
+        CoordinateSystemType cst = getCoordinateSystemType(_destinationCoordinateSystem.get());
+
+        std::cout<<"new DataSet::createDestination()"<<std::endl;
+        if (cst==GEOCENTRIC)
+        {
+            // need to use the geocentric coordinate system as a base for creating an geographic intermediate
+            // coordinate system.
+            OGRSpatialReference oSRS;
+            
+            char    *pszWKT = NULL;
+            oSRS.SetWellKnownGeogCS( "WGS84" );
+            oSRS.exportToWkt( &pszWKT );
+            
+            setIntermediateCoordinateSystem(pszWKT);
+
+            _convertFromGeographicToGeocentric = true;
+        }
+        else
+        {
+            _intermediateCoordinateSystem = _destinationCoordinateSystem;
         }
     }
 
@@ -2760,7 +2839,7 @@ void DataSet::computeDestinationGraphFromSources(unsigned int numLevels)
             SourceData* sd = (*itr)->getSourceData();
             if (sd)
             {
-                osg::BoundingBox local_extents(sd->getExtents(_coordinateSystem.get()));
+                osg::BoundingBox local_extents(sd->getExtents(_intermediateCoordinateSystem.get()));
                 std::cout<<"local_extents = xMin()"<<local_extents.xMin()<<" "<<local_extents.xMax()<<std::endl;
                 std::cout<<"                yMin()"<<local_extents.yMin()<<" "<<local_extents.yMax()<<std::endl;
                 extents.expandBy(local_extents);
@@ -2777,7 +2856,7 @@ void DataSet::computeDestinationGraphFromSources(unsigned int numLevels)
     unsigned int terrainSize = 64;
 
     _destinationGraph = createDestinationGraph(0,
-                                               _coordinateSystem.get(),
+                                               _intermediateCoordinateSystem.get(),
                                                extents,
                                                imageSize,
                                                terrainSize,
@@ -2877,12 +2956,12 @@ void DataSet::updateSourcesForDestinationGraphNeeds()
         for(CompositeSource::source_iterator itr(_sourceGraph.get());itr.valid();++itr)
         {
             Source* source = itr->get();
-            if (source->needReproject(_coordinateSystem.get()))
+            if (source->needReproject(_intermediateCoordinateSystem.get()))
             {
                 // do the reprojection to a tempory file.
                 std::string newFileName = temporyFilePrefix + osgDB::getStrippedName(source->getFileName()) + ".tif";
                 
-                Source* newSource = source->doReproject(newFileName,_coordinateSystem.get());
+                Source* newSource = source->doReproject(newFileName,_intermediateCoordinateSystem.get());
                 
                 // replace old source by new one.
                 if (newSource) *itr = newSource;
@@ -3036,8 +3115,6 @@ void DataSet::_writeRow(Row& row)
 void DataSet::createDestination(unsigned int numLevels)
 {
 
-    std::cout<<"new DataSet::createDestination()"<<std::endl;
-    
     computeDestinationGraphFromSources(numLevels);
     
     updateSourcesForDestinationGraphNeeds();

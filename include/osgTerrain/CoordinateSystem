@@ -35,6 +35,9 @@ class EllipsodeTransform
             _radiusEquator(radiusEquator),
             _radiusPolar(radiusPolar) { computeCoefficients(); }
 
+        EllipsodeTransform(const EllipsodeTransform& et):
+            _radiusEquator(et._radiusEquator),
+            _radiusPolar(et._radiusPolar) { computeCoefficients(); }
 
         void setRadiusEquator(double radius) { _radiusEquator = radius; computeCoefficients(); }
         double getRadiusEquator() const { return _radiusEquator; }

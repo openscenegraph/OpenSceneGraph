@@ -2,7 +2,6 @@ TOPDIR = ../../..
 include $(TOPDIR)/Make/makedefs 
 
 CXXFILES =\
-	main.cpp\
 	nodecache.cpp\
 	normals.cpp\
 	osgvisitor.cpp\

@@ -17,10 +17,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifdef WIN32
-#  pragma warning (disable:4786)
-#  pragma warning (disable:4541)
-#endif
+#include <osg/Notify>
+
 #include <iostream>
 #include "osgvisitor.h"
 #include "material.h"
@@ -98,7 +96,7 @@ public:
 	    texture->setImage(osgDB::readImageFile(_texture));
 	    texture->setWrap(osg::Texture::WRAP_S,osg::Texture::REPEAT);
 	    texture->setWrap(osg::Texture::WRAP_T,osg::Texture::REPEAT);
-	    std::cout << "Loading texture " << _texture << std::endl;
+	    osg::notify(osg::INFO) << "Loading texture " << _texture << std::endl;
 	    textures[_texture]=texture;
 	} 
 	return textures[_texture].get();
@@ -128,7 +126,7 @@ OSGVisitor::OSGVisitor(MyNode *nodo) {
     total_vert=0;
     two_sided=false;
     nodo->accept(this);
-    std::cout << "Model of " << total_vert << " vertices" << std::endl;
+    osg::notify(osg::INFO) << "Model of " << total_vert << " vertices" << std::endl;
 }
 
 void OSGVisitor::applyMyNode(MyNode *) {
@@ -228,7 +226,7 @@ void OSGVisitor::makeGeode(osg::Geode *geode, osg::Geometry *geometry, bool twoS
     if (!twoSided) {
 	state->setAttributeAndModes(cull,osg::StateAttribute::ON);
     } else {
-	//std::cout <<  "Deactivating culling for this object" << std::endl;
+	//osg::notify(osg::INFO) <<  "Deactivating culling for this object" << std::endl;
 	state->setAttributeAndModes(cull,osg::StateAttribute::OFF);
 	osg::Transparency    *transp=new osg::Transparency();
 	transp->setFunction(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
@@ -255,13 +253,13 @@ void OSGVisitor::makeGeode(osg::Geode *geode, osg::Geometry *geometry, bool twoS
     if (material_active) {
 	AtrVec3List *diffuse=dynamic_cast<AtrVec3List*>(material_active->getAttribute("diffuseColor"));
 	if (diffuse) { // Has per-vertex colors
-	    std::cout << "Per vertex colors" << std::endl;
+	    osg::notify(osg::INFO) << "Per vertex colors" << std::endl;
 	    VertexList *colors=diffuse->getList();
 	    osg::Vec3Array *colors_osg=new osg::Vec3Array();
 	    for (unsigned i=0;i<colors->size();i++) {
 		colors_osg->push_back((*colors)[i]);
 	    }
-	    std::cout << colors->size() << " colors" << std::endl;
+	    osg::notify(osg::INFO) << colors->size() << " colors" << std::endl;
 	    geometry->setColorArray(colors_osg);
 	    geometry->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
 	}

@@ -30,9 +30,10 @@ class VrmlReaderWriter: public osgDB::ReaderWriter {
 public:
     VrmlReaderWriter() {  }
     virtual const char* className() { return "VRML"; }
-    virtual bool acceptsExtension(const std::string& extension) {
-		return osgDB::equalCaseInsensitive(extension,"wrl")
-            || osgDB::equalCaseInsensitive(extension,"iv");
+    virtual bool acceptsExtension(const std::string& extension)
+    {
+        return osgDB::equalCaseInsensitive(extension,"wrl") ||
+               osgDB::equalCaseInsensitive(extension,"iv");
     }
     virtual ReadResult readNode(const std::string& fileName,const osgDB::ReaderWriter::Options*);
 };

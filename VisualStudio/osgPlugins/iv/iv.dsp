@@ -93,10 +93,6 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\iv\main.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\src\osgPlugins\iv\nodecache.cpp
 # End Source File
 # Begin Source File
@@ -166,10 +162,6 @@ SOURCE=..\..\..\src\osgPlugins\iv\indexedtristripset.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\iv\ltstr.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\iv\main.h
 # End Source File
 # Begin Source File
 

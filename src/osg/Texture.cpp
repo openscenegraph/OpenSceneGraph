@@ -590,10 +590,10 @@ bool Texture::isCompressedInternalFormat(GLint internalFormat) const
         case(GL_COMPRESSED_LUMINANCE_ARB):
         case(GL_COMPRESSED_RGBA_ARB):
         case(GL_COMPRESSED_RGB_ARB):
+        case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT):
         case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT):
         case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT):
         case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT):
-        case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT):
             return true;
         default:
             return false;
@@ -900,6 +900,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
                         height = 1;
 
                     getCompressedSize(_internalFormat, width, height, 1, blockSize,size);
+                    
                     extensions->glCompressedTexImage2D(target, k, _internalFormat, 
                                                        width, height, _borderWidth, 
                                                        size, image->getMipmapData(k));                
@@ -1098,7 +1099,7 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
                     if (height == 0)
                         height = 1;
 
-                    getCompressedSize(_internalFormat, inwidth, inheight, 1, blockSize,size);
+                    getCompressedSize(_internalFormat, width, height, 1, blockSize,size);
 
                     //state.checkGLErrors("before extensions->glCompressedTexSubImage2D(");
 

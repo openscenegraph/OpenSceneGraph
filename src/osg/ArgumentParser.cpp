@@ -1,6 +1,8 @@
 #include <osg/ArgumentParser>
 #include <osg/ApplicationUsage>
 
+#include <set>
+
 using namespace osg;
 
 ArgumentParser::ArgumentParser(int* argc,char **argv):
@@ -20,7 +22,10 @@ int ArgumentParser::find(const std::string& str) const
 {
     for(int pos=1;pos<*_argc;++pos)
     {
-        if (str==_argv[pos]) return pos;
+        if (str==_argv[pos])
+        {
+            return pos;
+        }
     }
     return 0;
 }
@@ -275,9 +280,33 @@ void ArgumentParser::reportError(const std::string& message,ErrorSeverity severi
 
 void ArgumentParser::reportRemainingOptionsAsUnrecognized(ErrorSeverity severity)
 {
+    std::set<std::string> options;
+    if (_usage) 
+    {
+        // parse the usage options to get all the option that the application can potential handle.
+        for(ApplicationUsage::UsageMap::const_iterator itr=_usage->getCommandLineOptions().begin();
+            itr!=_usage->getCommandLineOptions().end();
+            ++itr)
+        {
+            const std::string& option = itr->first;
+            unsigned int prevpos = 0, pos = 0;
+            while ((pos=option.find(' ',prevpos))!=std::string::npos)
+            {
+                if (option[prevpos]=='-') options.insert(std::string(option,prevpos,pos-prevpos));
+                prevpos=pos+1;
+            }
+            if (option[prevpos]=='-') options.insert(std::string(option,prevpos,std::string::npos));
+        }
+        
+    }
+
     for(int pos=1;pos<argc();++pos)
     {
-        if (isOption(pos)) reportError(getProgramName() +": unrceognized option "+_argv[pos],severity);
+        // if an option and havn't been previous querried for report as unrecognized.
+        if (isOption(pos) && options.find(_argv[pos])==options.end()) 
+        {
+            reportError(getProgramName() +": unrceognized option "+_argv[pos],severity);
+        }
     }
 }
 void ArgumentParser::writeErrorMessages(std::ostream& output,ErrorSeverity severity)

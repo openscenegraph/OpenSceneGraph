@@ -36,8 +36,6 @@ TextureRectangle::TextureRectangle():
     _textureWidth(0),
     _textureHeight(0)
 {
-    osg::notify(osg::NOTICE)<<"TextureRectangle::TextureRectangle() "<<this<<std::endl;
-
     setWrap(WRAP_S, CLAMP);
     setWrap(WRAP_T, CLAMP);
 
@@ -49,8 +47,6 @@ TextureRectangle::TextureRectangle(Image* image):
             _textureWidth(0),
             _textureHeight(0)
 {
-    osg::notify(osg::NOTICE)<<"TextureRectangle::TextureRectangle(Image*) "<<this<<std::endl;
-
     setWrap(WRAP_S, CLAMP);
     setWrap(WRAP_T, CLAMP);
 
@@ -217,8 +213,6 @@ void TextureRectangle::applyTexParameters(GLenum target, State& state) const
 void TextureRectangle::applyTexImage_load(GLenum target, Image* image, State& state, GLsizei& inwidth, GLsizei& inheight) const
 {
     // if we don't have a valid image we can't create a texture!
-    osg::notify(osg::NOTICE)<<"TextureRectangle::applyTexImage_load "<<this<<std::endl;
-
     if (!image || !image->data())
         return;
 
@@ -264,8 +258,6 @@ void TextureRectangle::applyTexImage_load(GLenum target, Image* image, State& st
 
 void TextureRectangle::applyTexImage_subload(GLenum target, Image* image, State& state, GLsizei& inwidth, GLsizei& inheight, GLint& inInternalFormat) const
 {
-    osg::notify(osg::NOTICE)<<"TextureRectangle::applyTexImage_subload "<<this<<std::endl;
-
     // if we don't have a valid image we can't create a texture!
     if (!image || !image->data())
         return;

@@ -1,12 +1,13 @@
 #!/bin/sh
 
+VERSION=`make -s version`
 
 print_header()
 {
     cat <<- EOF 
 [Setup]
 AppName=Open Scene Graph
-AppVerName=Open Scene Graph `make -s version`
+AppVerName=Open Scene Graph $VERSION
 AppPublisher=OpenSceneGraph
 AppPublisherURL=http://www.openscenegraph.com
 AppSupportURL=http://www.openscenegraph.com
@@ -15,38 +16,70 @@ DefaultDirName={pf}\OpenSceneGraph
 DisableDirPage=yes
 DefaultGroupName=OpenSceneGraph
 DisableProgramGroupPage=yes
-LicenseFile=COPYING.txt
+LicenseFile=LICENSE.txt
 EOF
 }
 
 # Usage:
 # do_dir $DIR
 #
+
+print_file_entry()
+{
+    DIR=$1
+    FILE=$2
+    printf "Source: \"%s\\\%s\"; DestDir: \"{app}\\\%s\\\"; Flags: ignoreversion\n"\
+            $DIR $FILE  $DIR
+
+}
+
 do_dir()
 {
     DIR=$1
+    shift;
+
     DOS_DIR=`echo $DIR | sed 's/\\//\\\/g'`
 
-    for f in `find $DIR -type f -print | grep -v CVS`
-    do
-        FILE=`basename $f`
-        printf "Source: \"%s\\\%s\"; DestDir: \"{app}\\\%s\\\"; CopyMode: alwaysoverwrite\n"\
-            $DOS_DIR $FILE  $DOS_DIR
-    done
+    if [ $# -gt 0 ]
+    then 
+	while [ $# -gt 0 ]
+        do
+	    match=$1
+            shift;
+	    for f in `find $DIR -type f | \
+				grep -v CVS | \
+				grep osg |
+				grep "$match"` 
+            do
+		print_file_entry $DOS_DIR `basename $f`
+            done
+        done
+    else
+	for f in `find $DIR -type f | grep -v CVS | grep osg`
+        do
+	    print_file_entry $DOS_DIR `basename $f`
+	done
+ 
+    fi
 }
 
 print_files()
 {
     echo "[Files]"
 
-    do_dir lib 
-    do_dir bin 
-    for dir in `ls -1 include| grep -v CVS`
+    do_dir lib .lib
+    do_dir bin .exe .dll
+    for dir in `ls -1 include | grep osg | grep -v CVS`
     do
-        do_dir "include/$dir"
+        do_dir include/"$dir"
     done
 }
 
+print_script()
+{
+    print_header 
+    print_files  
+}
 
 BUILD_ISS=1
 BUILD_DISTRIBUTION=1
@@ -60,6 +93,16 @@ do
             BUILD_DISTRIBUTION=0
             CLEAN_UP=1
             ;;
+
+       -d )
+	    BUILD_ISS=0
+            BUILD_DISTRIBUTION=1
+            CLEAN_UP=0
+		;;
+
+       -n )
+	   CLEAN_UP=0
+	    ;;
 
        -s )
            BUILD_ISS=1
@@ -75,19 +118,20 @@ if [ $BUILD_ISS = 1 ]
 then
     echo Building Inno Setup script ....
     rm -f osg.iss
-    print_header >> osg.iss
-    print_files  >> osg.iss
+	
+    print_script | awk '{ printf "%s\r\n", $0 }' > osg.iss
 fi
 
 if [ $BUILD_DISTRIBUTION = 1 ]
 then
     echo Building distribution ...
     OS=`uname | cut -b1-6`
-    if [ "$OS" = "Cygwin" ]
+
+    if [ "$OS" = "CYGWIN" ]
     then 
         C:/Program\ Files/Inno\ Setup\ 3/iscc.exe osg.iss
         [ -d dist/Win32 ] || mkdir -p dist/Win32
-        mv Output/setup.exe dist/Win32/OpenSceneGraph_setup.exe
+        mv Output/setup.exe dist/Win32/OpenSceneGraph_"$VERSION"_setup.exe
         rm -rf Output
      else
         echo "     Distribution may only be built under Cygwin with Inno Setup"

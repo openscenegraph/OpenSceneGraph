@@ -14,6 +14,7 @@
 #include <vector>
 #include <list>
 #include <fstream>
+#include <iostream>
 
 namespace osgUtx{
 
@@ -289,8 +290,8 @@ private:
 		is passed in as components in a list, represented by the iterator parameters.
 	*/
 	TestSuite* suite(
-		list<std::string>::iterator it,
-		list<std::string>::iterator end,
+		std::list<std::string>::iterator it,
+		std::list<std::string>::iterator end,
 		TestSuite* tsuite, bool createIfNecessary);
 
 	TestGraph();
@@ -400,7 +401,7 @@ public:
 	}
 
 private:
-	list<TestRecord>	_records;
+	std::list<TestRecord>	_records;
 
 };
 

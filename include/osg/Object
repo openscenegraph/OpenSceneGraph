@@ -6,9 +6,12 @@
 #define OSG_OBJECT 1
 
 #include <osg/Referenced>
-#include <osg/ShallowCopy>
+#include <osg/CopyOp>
 
 namespace osg {
+
+typedef CopyOp Cloner;
+typedef CopyOp ShallowCopy;
 
 /** META_Object macro define the standard clone, isSameKindAs and className methods.
   * Use when subclassing from Object to make it more convinient to define 
@@ -38,7 +41,7 @@ class SG_EXPORT Object : public Referenced
 
         /** Copy constructor, optional Cloner object can be used to control
           * shallow vs deep copying of dynamic data.*/
-        Object(const Object&,const Cloner& cloner=ShallowCopy());
+        Object(const Object&,const Cloner& cloner=CopyOp::SHALLOW_COPY);
 
         /** Clone the type of an object, with Object* return type.
             Must be defined by derived classes.*/

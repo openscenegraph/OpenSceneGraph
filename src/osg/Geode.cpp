@@ -18,7 +18,7 @@ Geode::Geode(const Geode& geode,const Cloner& cloner):
         ++itr)
     {
         Drawable* drawable = cloner(itr->get());
-        if (drawable) _drawables.push_back(drawable);
+        if (drawable) addDrawable(drawable);
     }
 }
 

@@ -11,11 +11,11 @@
 <HR>
 
 <H2>Inheritance:</H2>
-<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=185>
-<param name=classes value="CReferenced,MReferenced.html,CObject,MObject.html,CNode,MNode.html,CGroup,MGroup.html,CTransform,MTransform.html,CPositionAttitudeTransform,MPositionAttitudeTransform.html">
-<param name=before value="M,M,M,M,M,M">
-<param name=after value="Md_SPSPSPSP,Md_SPSPSP,Md_SPSP,Md_SP,Md_,M">
-<param name=indent value="0,1,2,3,4,5">
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=125>
+<param name=classes value="MNode,M,CGroup,MGroup.html,CTransform,MTransform.html,CPositionAttitudeTransform,MPositionAttitudeTransform.html">
+<param name=before value="M,M,M,M">
+<param name=after value="Md_SPSP,Md_SP,Md_,M">
+<param name=indent value="0,1,2,3">
 <param name=arrowdir value="down">
 </APPLET>
 <HR>
@@ -23,33 +23,33 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.91.1">PositionAttitudeTransform</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.81.1">PositionAttitudeTransform</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.91.2">PositionAttitudeTransform</A></B>(const <!1><A HREF="PositionAttitudeTransform.html#DOC.2.91.2">PositionAttitudeTransform</A>&amp; pat, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.81.2">PositionAttitudeTransform</A></B>(const <!1><A HREF="PositionAttitudeTransform.html#DOC.2.81.2">PositionAttitudeTransform</A>&amp; pat, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.91.3">META_Node</A></B>(<!1><A HREF="PositionAttitudeTransform.html">PositionAttitudeTransform</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.81.3">META_Node</A></B>(<!1><A HREF="PositionAttitudeTransform.html">PositionAttitudeTransform</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.91.4">setPosition</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; pos)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.81.4">setPosition</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; pos)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Vec3.html">Vec3</A>&amp; <B><A HREF="#DOC.2.91.5">getPosition</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Vec3.html">Vec3</A>&amp; <B><A HREF="#DOC.2.81.5">getPosition</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.91.6">setAttitude</A></B>(const <!1><A HREF="Quat.html">Quat</A>&amp; quat)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.81.6">setAttitude</A></B>(const <!1><A HREF="Quat.html">Quat</A>&amp; quat)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Quat.html">Quat</A>&amp; <B><A HREF="#DOC.2.91.7">getAttitude</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Quat.html">Quat</A>&amp; <B><A HREF="#DOC.2.81.7">getAttitude</A></B>() const 
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.91.10">_position</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.81.10">_position</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Quat.html">Quat</A> <B><A HREF="#DOC.2.91.11">_attitude</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Quat.html">Quat</A> <B><A HREF="#DOC.2.81.11">_attitude</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.91.8">computeLocalToWorldMatrix</A></B>(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.81.8">computeLocalToWorldMatrix</A></B>(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.91.9">computeWorldToLocalMatrix</A></B>(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.81.9">computeWorldToLocalMatrix</A></B>(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv) const 
 </DL></P>
 
 </DL>
@@ -57,23 +57,15 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setType</B>(<!1><A HREF="Transform.html#DOC.2.112.5">Type</A> type)
+<IMG ALT="o" SRC=icon2.gif>void <B>setReferenceFrame</B>(<!1><A HREF="Transform.html#DOC.2.106.5">ReferenceFrame</A> rf)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Transform.html#DOC.2.112.5">Type</A> <B>getType</B>() const 
+<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="Transform.html#DOC.2.106.5">ReferenceFrame</A> <B>getReferenceFrame</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setMatrixMode</B>(<!1><A HREF="MatrixMode.html">MatrixMode</A> mode)
+<IMG ALT="o" SRC=icon2.gif>void <B>setComputeTransformCallback</B>(<!1><A HREF="Transform.html#DOC.2.106.8">ComputeTransformCallback</A>* ctc)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="MatrixMode.html">MatrixMode</A> <B>getMatrixMode</B>() const 
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Transform.html#DOC.2.106.8">ComputeTransformCallback</A>* <B>getComputeTransformCallback</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const bool <B>isProjectionTransform</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const bool <B>isModelViewTransform</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>setComputeTransformCallback</B>(<!1><A HREF="Transform.html#DOC.2.112.12">ComputeTransformCallback</A>* ctc)
-<DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Transform.html#DOC.2.112.12">ComputeTransformCallback</A>* <B>getComputeTransformCallback</B>()
-<DT>
-<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="Transform.html#DOC.2.112.12">ComputeTransformCallback</A>* <B>getComputeTransformCallback</B>() const 
+<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="Transform.html#DOC.2.106.8">ComputeTransformCallback</A>* <B>getComputeTransformCallback</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   const bool <B>getLocalToWorldMatrix</B>(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv) const 
 <DT>
@@ -90,18 +82,16 @@
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>enum  <B>Type</B>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>ReferenceFrame</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif>struct  <B>ComputeTransformCallback</B>: public <!1><A HREF="Referenced.html">osg::Referenced</A>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Transform.html#DOC.2.112.5">Type</A> <B>_type</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Transform.html#DOC.2.106.8">ComputeTransformCallback</A>&gt;  <B>_computeTransformCallback</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="MatrixMode.html">MatrixMode</A> <B>_mode</B>
-<DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Transform.html#DOC.2.112.12">ComputeTransformCallback</A>&gt;  <B>_computeTransformCallback</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Transform.html#DOC.2.106.5">ReferenceFrame</A> <B>_referenceFrame</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Matrix.html">Matrix</A>&gt;  <B>_matrix</B>
 <DT>
@@ -124,175 +114,28 @@
 <DT><H3>Public Methods</H3><DD><DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   void <B>traverse</B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>addChild</B>( <!1><A HREF="Node.html">Node</A>* child )
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>addChild</B>( Node* child )
 <DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>removeChild</B>( <!1><A HREF="Node.html">Node</A>* child )
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>removeChild</B>( Node* child )
 <DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>replaceChild</B>( <!1><A HREF="Node.html">Node</A>* origChild, <!1><A HREF="Node.html">Node</A>* newChild )
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>replaceChild</B>( Node* origChild, Node* newChild )
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   const int <B>getNumChildren</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html">Node</A>* <B>getChild</B>( const int i )
+<IMG ALT="o" SRC=icon2.gif>inline   Node* <B>getChild</B>( const int i )
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html">Node</A>* <B>getChild</B>( const int i ) const 
+<IMG ALT="o" SRC=icon2.gif>inline   const Node* <B>getChild</B>( const int i ) const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   bool <B>containsNode</B>( const <!1><A HREF="Node.html">Node</A>* node ) const 
+<IMG ALT="o" SRC=icon2.gif>inline   bool <B>containsNode</B>( const Node* node ) const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   ChildList::iterator <B>findNode</B>( const <!1><A HREF="Node.html">Node</A>* node )
+<IMG ALT="o" SRC=icon2.gif>inline   ChildList::iterator <B>findNode</B>( const Node* node )
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   ChildList::const_iterator <B>findNode</B>( const <!1><A HREF="Node.html">Node</A>* node ) const 
+<IMG ALT="o" SRC=icon2.gif>inline   ChildList::const_iterator <B>findNode</B>( const Node* node ) const 
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
 <IMG ALT="o" SRC=icon2.gif>ChildList <B>_children</B>
-</DL></P>
-
-</DL>
-<HR><H3>Inherited from <A HREF="Node.html">Node</A>:</H3>
-<DL>
-<P><DL>
-<DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B>cloneType</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B>clone</B>(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop) const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isSameKindAs</B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   void <B>accept</B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
-<DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   void <B>ascend</B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setName</B>( const std::string&amp; name )
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setName</B>( const char* name )
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const std::string&amp; <B>getName</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.71.13">ParentList</A>&amp; <B>getParents</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.71.13">ParentList</A> <B>getParents</B>()
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Group.html">Group</A>* <B>getParent</B>(const int i)
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Group.html">Group</A>* <B>getParent</B>(const int i) const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const int <B>getNumParents</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>setAppCallback</B>(<!1><A HREF="NodeCallback.html">NodeCallback</A>* nc)
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="NodeCallback.html">NodeCallback</A>* <B>getAppCallback</B>()
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="NodeCallback.html">NodeCallback</A>* <B>getAppCallback</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const int <B>getNumChildrenRequiringAppTraversal</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>setCullingActive</B>(const bool active)
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const bool <B>getCullingActive</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const int <B>getNumChildrenWithCullingDisabled</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">osg::Referenced</A>* obj)
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>* <B>getUserData</B>()
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Referenced.html">Referenced</A>* <B>getUserData</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setNodeMask</B>(const NodeMask nm)
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const NodeMask <B>getNodeMask</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.71.31">DescriptionList</A>&amp; <B>getDescriptions</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.71.31">DescriptionList</A>&amp; <B>getDescriptions</B>()
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const std::string&amp; <B>getDescription</B>(const int i) const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   std::string&amp; <B>getDescription</B>(const int i)
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const int <B>getNumDescriptions</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>addDescription</B>(const std::string&amp; desc)
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setStateSet</B>(<!1><A HREF="StateSet.html">osg::StateSet</A>* dstate)
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="StateSet.html">osg::StateSet</A>* <B>getStateSet</B>()
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="StateSet.html">osg::StateSet</A>* <B>getStateSet</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="BoundingSphere.html">BoundingSphere</A>&amp; <B>getBound</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>dirtyBound</B>()
-</DL></P>
-
-<P><DL>
-<DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt;<!1><A HREF="Group.html">Group</A>*&gt; <B>ParentList</B>
-<DT>
-<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt;std::string&gt; <B>DescriptionList</B>
-</DL></P>
-
-<P><DL>
-<DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>mutable <!1><A HREF="BoundingSphere.html">BoundingSphere</A> <B>_bsphere</B>
-<DT>
-<IMG ALT="o" SRC=icon2.gif>mutable bool <B>_bsphere_computed</B>
-<DT>
-<IMG ALT="o" SRC=icon2.gif>std::string <B>_name</B>
-<DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.71.13">ParentList</A> <B>_parents</B>
-<DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="NodeCallback.html">NodeCallback</A>&gt;  <B>_appCallback</B>
-<DT>
-<IMG ALT="o" SRC=icon2.gif>int <B>_numChildrenRequiringAppTraversal</B>
-<DT>
-<IMG ALT="o" SRC=icon2.gif>bool <B>_cullingActive</B>
-<DT>
-<IMG ALT="o" SRC=icon2.gif>int <B>_numChildrenWithCullingDisabled</B>
-<DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">osg::ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
-<DT>
-<IMG ALT="o" SRC=icon2.gif>NodeMask <B>_nodeMask</B>
-<DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.71.31">DescriptionList</A> <B>_descriptions</B>
-<DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="StateSet.html">StateSet</A>&gt;  <B>_dstate</B>
-</DL></P>
-
-<P><DL>
-<DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>addParent</B>(<!1><A HREF="Group.html">osg::Group</A>* node)
-<DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>removeParent</B>(<!1><A HREF="Group.html">osg::Group</A>* node)
-<DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>setNumChildrenRequiringAppTraversal</B>(const int num)
-<DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>setNumChildrenWithCullingDisabled</B>(const int num)
-</DL></P>
-
-</DL>
-<HR><H3>Inherited from <A HREF="Object.html">Object</A>:</H3>
-<DL>
-</DL>
-<HR><H3>Inherited from <A HREF="Referenced.html">Referenced</A>:</H3>
-<DL>
-<P><DL>
-<DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>&amp; <B>operator = </B>(<!1><A HREF="Referenced.html">Referenced</A>&amp;)
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>ref</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const int <B>referenceCount</B>() const 
-</DL></P>
-
-<P><DL>
-<DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>mutable int <B>_refCount</B>
 </DL></P>
 
 </DL>
@@ -305,47 +148,47 @@ up via a Vec3 position and Quat attitude</BLOCKQUOTE>
 <DL>
 
 <A NAME="PositionAttitudeTransform"></A>
-<A NAME="DOC.2.91.1"></A>
+<A NAME="DOC.2.81.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> PositionAttitudeTransform()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="PositionAttitudeTransform"></A>
-<A NAME="DOC.2.91.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> PositionAttitudeTransform(const <!1><A HREF="PositionAttitudeTransform.html#DOC.2.91.2">PositionAttitudeTransform</A>&amp; pat, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="DOC.2.81.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> PositionAttitudeTransform(const <!1><A HREF="PositionAttitudeTransform.html#DOC.2.81.2">PositionAttitudeTransform</A>&amp; pat, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="META_Node"></A>
-<A NAME="DOC.2.91.3"></A>
+<A NAME="DOC.2.81.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Node(<!1><A HREF="PositionAttitudeTransform.html">PositionAttitudeTransform</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setPosition"></A>
-<A NAME="DOC.2.91.4"></A>
+<A NAME="DOC.2.81.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setPosition(const <!1><A HREF="Vec3.html">Vec3</A>&amp; pos)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getPosition"></A>
-<A NAME="DOC.2.91.5"></A>
+<A NAME="DOC.2.81.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec3.html">Vec3</A>&amp; getPosition() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setAttitude"></A>
-<A NAME="DOC.2.91.6"></A>
+<A NAME="DOC.2.81.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setAttitude(const <!1><A HREF="Quat.html">Quat</A>&amp; quat)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getAttitude"></A>
-<A NAME="DOC.2.91.7"></A>
+<A NAME="DOC.2.81.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Quat.html">Quat</A>&amp; getAttitude() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeLocalToWorldMatrix"></A>
-<A NAME="DOC.2.91.8"></A>
+<A NAME="DOC.2.81.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const bool computeLocalToWorldMatrix(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeWorldToLocalMatrix"></A>
-<A NAME="DOC.2.91.9"></A>
+<A NAME="DOC.2.81.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const bool computeWorldToLocalMatrix(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_position"></A>
-<A NAME="DOC.2.91.10"></A>
+<A NAME="DOC.2.81.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec3.html">Vec3</A> _position</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_attitude"></A>
-<A NAME="DOC.2.91.11"></A>
+<A NAME="DOC.2.81.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Quat.html">Quat</A> _attitude</B></TT>
 <DL><DT><DD></DL><P></DL>
 

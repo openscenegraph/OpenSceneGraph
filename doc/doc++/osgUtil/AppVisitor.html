@@ -41,22 +41,24 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.1.9">apply</A></B>(osg::Transform&amp; node)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.1.10">apply</A></B>(osg::Switch&amp; node)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.1.10">apply</A></B>(osg::Projection&amp; node)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.1.11">apply</A></B>(osg::LOD&amp; node)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.1.11">apply</A></B>(osg::Switch&amp; node)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.1.12">apply</A></B>(osg::Impostor&amp; node)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.1.12">apply</A></B>(osg::LOD&amp; node)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.1.13">apply</A></B>(osg::Impostor&amp; node)
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.1.13">AppVisitor</A></B>(const <!1><A HREF="AppVisitor.html#DOC.2.1.13">AppVisitor</A>&amp;)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.1.14">AppVisitor</A></B>(const <!1><A HREF="AppVisitor.html#DOC.2.1.14">AppVisitor</A>&amp;)
 <DD><I>prevent unwanted copy construction</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="AppVisitor.html">AppVisitor</A>&amp; <B><A HREF="#DOC.2.1.14">operator = </A></B>(const <!1><A HREF="AppVisitor.html">AppVisitor</A>&amp;)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="AppVisitor.html">AppVisitor</A>&amp; <B><A HREF="#DOC.2.1.15">operator = </A></B>(const <!1><A HREF="AppVisitor.html">AppVisitor</A>&amp;)
 <DD><I>prevent unwanted copy operator</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.1.15">handle_callbacks</A></B>(osg::Node&amp; node)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.1.16">handle_callbacks_and_traverse</A></B>(osg::Node&amp; node)
 </DL></P>
 
 </DL>
@@ -108,29 +110,33 @@ it exists. </BLOCKQUOTE>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
 <A NAME="DOC.2.1.10"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::Switch&amp; node)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::Projection&amp; node)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
 <A NAME="DOC.2.1.11"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::LOD&amp; node)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::Switch&amp; node)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
 <A NAME="DOC.2.1.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::LOD&amp; node)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="apply"></A>
+<A NAME="DOC.2.1.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::Impostor&amp; node)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="AppVisitor"></A>
-<A NAME="DOC.2.1.13"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> AppVisitor(const <!1><A HREF="AppVisitor.html#DOC.2.1.13">AppVisitor</A>&amp;)</B></TT>
+<A NAME="DOC.2.1.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> AppVisitor(const <!1><A HREF="AppVisitor.html#DOC.2.1.14">AppVisitor</A>&amp;)</B></TT>
 <DD>prevent unwanted copy construction
 <DL><DT><DD></DL><P>
 <A NAME="operator = "></A>
-<A NAME="DOC.2.1.14"></A>
+<A NAME="DOC.2.1.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="AppVisitor.html">AppVisitor</A>&amp; operator = (const <!1><A HREF="AppVisitor.html">AppVisitor</A>&amp;)</B></TT>
 <DD>prevent unwanted copy operator
 <DL><DT><DD></DL><P>
-<A NAME="handle_callbacks"></A>
-<A NAME="DOC.2.1.15"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void handle_callbacks(osg::Node&amp; node)</B></TT>
+<A NAME="handle_callbacks_and_traverse"></A>
+<A NAME="DOC.2.1.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void handle_callbacks_and_traverse(osg::Node&amp; node)</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <HR><DL><DT><B>This class has no child classes.</B></DL>

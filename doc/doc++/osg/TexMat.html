@@ -23,37 +23,37 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.109.1">TexMat</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.102.1">TexMat</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.109.2">TexMat</A></B>(const <!1><A HREF="TexMat.html#DOC.2.109.2">TexMat</A>&amp; texmat, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.102.2">TexMat</A></B>(const <!1><A HREF="TexMat.html#DOC.2.102.2">TexMat</A>&amp; texmat, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
 <DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.109.3">META_StateAttribute</A></B>(<!1><A HREF="TexMat.html">TexMat</A>, <!1><A HREF="StateAttribute.html#DOC.2.102.6.30">TEXMAT</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.102.3">META_StateAttribute</A></B>(<!1><A HREF="TexMat.html">TexMat</A>, <!1><A HREF="StateAttribute.html#DOC.2.93.6.30">TEXMAT</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.109.4">compare</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.102.4">compare</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const 
 <DD><I>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.109.5">setMatrix</A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; matrix)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.102.5">setMatrix</A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; matrix)
 <DD><I>Set the texture matrix </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrix.html">Matrix</A>&amp; <B><A HREF="#DOC.2.109.6">getMatrix</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrix.html">Matrix</A>&amp; <B><A HREF="#DOC.2.102.6">getMatrix</A></B>()
 <DD><I>Get the texture matrix </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Matrix.html">Matrix</A>&amp; <B><A HREF="#DOC.2.109.7">getMatrix</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Matrix.html">Matrix</A>&amp; <B><A HREF="#DOC.2.102.7">getMatrix</A></B>() const 
 <DD><I>Get the const texture matrix </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.109.8">apply</A></B>(<!1><A HREF="State.html">State</A>&amp; state) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.102.8">apply</A></B>(<!1><A HREF="State.html">State</A>&amp; state) const 
 <DD><I>apply as OpenGL texture matrix</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.109.10">_matrix</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.102.10">_matrix</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.109.9">~TexMat</A></B>( void )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.102.9">~TexMat</A></B>( void )
 </DL></P>
 
 </DL>
@@ -69,7 +69,7 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   const <!1><A HREF="StateAttribute.html#DOC.2.102.5">Type</A> <B>getType</B>() const 
+<IMG ALT="o" SRC=icon2.gif>virtual   const <!1><A HREF="StateAttribute.html#DOC.2.93.5">Type</A> <B>getType</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>bool <B>operator <  </B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; rhs) const 
 <DT>
@@ -77,7 +77,7 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>bool <B>operator != </B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; rhs) const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   void <B>setStateSetModes</B>(<!1><A HREF="StateSet.html">StateSet</A>&amp;, const <!1><A HREF="StateAttribute.html#DOC.2.102.2">GLModeValue</A>) const 
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>setStateSetModes</B>(<!1><A HREF="StateSet.html">StateSet</A>&amp;, const <!1><A HREF="StateAttribute.html#DOC.2.93.2">GLModeValue</A>) const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   void <B>compile</B>(<!1><A HREF="State.html">State</A>&amp;) const 
 </DL></P>
@@ -100,6 +100,23 @@
 </DL>
 <HR><H3>Inherited from <A HREF="Object.html">Object</A>:</H3>
 <DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(const <!1><A HREF="Object.html#DOC.2.75.7">DataVariance</A> dv)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Object.html#DOC.2.75.7">DataVariance</A> <B>getDataVariance</B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>DataVariance</B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.75.7">DataVariance</A> <B>_dataVariance</B>
+</DL></P>
+
 </DL>
 <HR><H3>Inherited from <A HREF="Referenced.html">Referenced</A>:</H3>
 <DL>
@@ -110,6 +127,8 @@
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>ref</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>unref</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref_nodelete</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   const int <B>referenceCount</B>() const 
 </DL></P>
@@ -128,49 +147,49 @@
 <DL>
 
 <A NAME="TexMat"></A>
-<A NAME="DOC.2.109.1"></A>
+<A NAME="DOC.2.102.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TexMat()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="TexMat"></A>
-<A NAME="DOC.2.109.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TexMat(const <!1><A HREF="TexMat.html#DOC.2.109.2">TexMat</A>&amp; texmat, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="DOC.2.102.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TexMat(const <!1><A HREF="TexMat.html#DOC.2.102.2">TexMat</A>&amp; texmat, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
 <DD>Copy constructor using CopyOp to manage deep vs shallow copy
 <DL><DT><DD></DL><P>
 <A NAME="META_StateAttribute"></A>
-<A NAME="DOC.2.109.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_StateAttribute(<!1><A HREF="TexMat.html">TexMat</A>, <!1><A HREF="StateAttribute.html#DOC.2.102.6.30">TEXMAT</A>)</B></TT>
+<A NAME="DOC.2.102.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_StateAttribute(<!1><A HREF="TexMat.html">TexMat</A>, <!1><A HREF="StateAttribute.html#DOC.2.93.6.30">TEXMAT</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="compare"></A>
-<A NAME="DOC.2.109.4"></A>
+<A NAME="DOC.2.102.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   int compare(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const </B></TT>
 <DD>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs
 <DL><DT><DD></DL><P>
 <A NAME="setMatrix"></A>
-<A NAME="DOC.2.109.5"></A>
+<A NAME="DOC.2.102.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setMatrix(const <!1><A HREF="Matrix.html">Matrix</A>&amp; matrix)</B></TT>
 <DD>Set the texture matrix 
 <DL><DT><DD></DL><P>
 <A NAME="getMatrix"></A>
-<A NAME="DOC.2.109.6"></A>
+<A NAME="DOC.2.102.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Matrix.html">Matrix</A>&amp; getMatrix()</B></TT>
 <DD>Get the texture matrix 
 <DL><DT><DD></DL><P>
 <A NAME="getMatrix"></A>
-<A NAME="DOC.2.109.7"></A>
+<A NAME="DOC.2.102.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Matrix.html">Matrix</A>&amp; getMatrix() const </B></TT>
 <DD>Get the const texture matrix 
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.109.8"></A>
+<A NAME="DOC.2.102.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="State.html">State</A>&amp; state) const </B></TT>
 <DD>apply as OpenGL texture matrix
 <DL><DT><DD></DL><P>
 <A NAME="~TexMat"></A>
-<A NAME="DOC.2.109.9"></A>
+<A NAME="DOC.2.102.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~TexMat( void )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_matrix"></A>
-<A NAME="DOC.2.109.10"></A>
+<A NAME="DOC.2.102.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Matrix.html">Matrix</A> _matrix</B></TT>
 <DL><DT><DD></DL><P></DL>
 

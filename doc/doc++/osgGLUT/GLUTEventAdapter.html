@@ -57,7 +57,7 @@
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   unsigned int <B><A HREF="#DOC.7.1.12">getButtonMask</A></B>() const 
 <DD><I>current mouse button state </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.7.1.13">time</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   double <B><A HREF="#DOC.7.1.13">time</A></B>() const 
 <DD><I>time in seconds of event.</I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void <B><A HREF="#DOC.7.1.14">setWindowSize</A></B>(int Xmin, int Ymin, int Xmax, int Ymax)
@@ -66,22 +66,22 @@
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void <B><A HREF="#DOC.7.1.15">setButtonMask</A></B>(unsigned int buttonMask)
 <DD><I>static method for setting button state</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.7.1.16">adaptResize</A></B>(float t, int Xmin, int Ymin, int Xmax, int Ymax)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.7.1.16">adaptResize</A></B>(double t, int Xmin, int Ymin, int Xmax, int Ymax)
 <DD><I>method for adapting resize events.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.7.1.17">adaptMouseMotion</A></B>(float t, int x, int y)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.7.1.17">adaptMouseMotion</A></B>(double t, int x, int y)
 <DD><I>method for adapting mouse motion events whilst mouse buttons are pressed</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.7.1.18">adaptMousePassiveMotion</A></B>(float t, int x, int y)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.7.1.18">adaptMousePassiveMotion</A></B>(double t, int x, int y)
 <DD><I>method for adapting mouse motion events whilst no mouse button are pressed</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.7.1.19">adaptMouse</A></B>(float t, int button, int state, int x, int y)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.7.1.19">adaptMouse</A></B>(double t, int button, int state, int x, int y)
 <DD><I>method for adapting mouse button pressed/released events</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.7.1.20">adaptKeyboard</A></B>(float t, unsigned char key, int x, int y )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.7.1.20">adaptKeyboard</A></B>(double t, unsigned char key, int x, int y )
 <DD><I>method for adapting keyboard events</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.7.1.21">adaptFrame</A></B>(float t)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.7.1.21">adaptFrame</A></B>(double t)
 <DD><I>method for adapting frame events, ie.</I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.7.1.22">copyStaticVariables</A></B>()
@@ -109,7 +109,7 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.7.1.32">_buttonMask</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.7.1.33">_time</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.7.1.33">_time</A></B>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   unsigned int <B><A HREF="#DOC.7.1.34">_s_accumulatedButtonMask</A></B>
 <DT>
@@ -196,7 +196,7 @@
 <DL><DT><DD></DL><P>
 <A NAME="time"></A>
 <A NAME="DOC.7.1.13"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   float time() const </B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   double time() const </B></TT>
 <DD>time in seconds of event. 
 <DL><DT><DD></DL><P>
 <A NAME="setWindowSize"></A>
@@ -211,32 +211,32 @@
 <DL><DT><DD></DL><P>
 <A NAME="adaptResize"></A>
 <A NAME="DOC.7.1.16"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void adaptResize(float t, int Xmin, int Ymin, int Xmax, int Ymax)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void adaptResize(double t, int Xmin, int Ymin, int Xmax, int Ymax)</B></TT>
 <DD>method for adapting resize events. 
 <DL><DT><DD></DL><P>
 <A NAME="adaptMouseMotion"></A>
 <A NAME="DOC.7.1.17"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void adaptMouseMotion(float t, int x, int y)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void adaptMouseMotion(double t, int x, int y)</B></TT>
 <DD>method for adapting mouse motion events whilst mouse buttons are pressed
 <DL><DT><DD></DL><P>
 <A NAME="adaptMousePassiveMotion"></A>
 <A NAME="DOC.7.1.18"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void adaptMousePassiveMotion(float t, int x, int y)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void adaptMousePassiveMotion(double t, int x, int y)</B></TT>
 <DD>method for adapting mouse motion events whilst no mouse button are pressed
 <DL><DT><DD></DL><P>
 <A NAME="adaptMouse"></A>
 <A NAME="DOC.7.1.19"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void adaptMouse(float t, int button, int state, int x, int y)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void adaptMouse(double t, int button, int state, int x, int y)</B></TT>
 <DD>method for adapting mouse button pressed/released events
 <DL><DT><DD></DL><P>
 <A NAME="adaptKeyboard"></A>
 <A NAME="DOC.7.1.20"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void adaptKeyboard(float t, unsigned char key, int x, int y )</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void adaptKeyboard(double t, unsigned char key, int x, int y )</B></TT>
 <DD>method for adapting keyboard events
 <DL><DT><DD></DL><P>
 <A NAME="adaptFrame"></A>
 <A NAME="DOC.7.1.21"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void adaptFrame(float t)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void adaptFrame(double t)</B></TT>
 <DD>method for adapting frame events, ie. idle/display callback.
 <DL><DT><DD></DL><P>
 <A NAME="copyStaticVariables"></A>
@@ -285,7 +285,7 @@
 <DL><DT><DD></DL><P>
 <A NAME="_time"></A>
 <A NAME="DOC.7.1.33"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _time</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _time</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_s_accumulatedButtonMask"></A>
 <A NAME="DOC.7.1.34"></A>

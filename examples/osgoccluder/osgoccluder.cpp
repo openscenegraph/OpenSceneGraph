@@ -290,10 +290,14 @@ int main( int argc, char **argv )
     // initialize the viewer.
     osgProducer::Viewer viewer(arguments);
 
+    // set up the value with sensible default event handlers.
+    viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
+
     bool manuallyCreateOccluders = false;
     while (arguments.read("-c")) { manuallyCreateOccluders = true; }
 
-    // register trackball, flight and drive.
+    // get details on keyboard and mouse bindings used by the viewer.
+    viewer.getUsage(*arguments.getApplicationUsage());
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
@@ -316,7 +320,6 @@ int main( int argc, char **argv )
     osg::Node* loadedmodel = osgDB::readNodeFiles(arguments);
     if (!loadedmodel)
     {
-//        write_usage(osg::notify(osg::NOTICE),argv[0]);
         return 1;
     }
     
@@ -325,7 +328,7 @@ int main( int argc, char **argv )
     optimzer.optimize(loadedmodel);
 
     // add the occluders to the loaded model.
-    osg::Group* rootnode = NULL;
+    osg::ref_ptr<osg::Group> rootnode;
     
     if (manuallyCreateOccluders)
     {
@@ -339,7 +342,7 @@ int main( int argc, char **argv )
     
      
     // add a viewport to the viewer and attach the scene graph.
-    viewer.setSceneData( rootnode );
+    viewer.setSceneData( rootnode.get() );
 
 
     // create the windows and run the threads.
@@ -349,7 +352,7 @@ int main( int argc, char **argv )
     {
         osgUtil::SceneView* sceneview = viewer.getSceneHandlerList()[0].get();
     
-        viewer.getEventHandlerList().push_front(new OccluderEventHandler(sceneview,rootnode));
+        viewer.getEventHandlerList().push_front(new OccluderEventHandler(sceneview,rootnode.get()));
     }
 
     while( !viewer.done() )
@@ -365,6 +368,8 @@ int main( int argc, char **argv )
         viewer.frame();
         
     }
+
+    //viewer.sync();
 
     return 0;
 }

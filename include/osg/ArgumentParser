@@ -60,6 +60,10 @@ class SG_EXPORT ArgumentParser
             
             Parameter(std::string& value) { _type = STRING_PARAMETER; _value._string = &value; }
 
+            Parameter(const Parameter& param) { _type = param._type; _value = param._value; }
+
+            Parameter& operator = (const Parameter& param) { _type = param._type; _value = param._value; return *this; }
+
             bool valid(const char* str) const;
             bool assign(const char* str);
 
@@ -134,9 +138,13 @@ class SG_EXPORT ArgumentParser
         bool read(const std::string& str, Parameter value1, Parameter value2);
         bool read(const std::string& str, Parameter value1, Parameter value2, Parameter value3);
         bool read(const std::string& str, Parameter value1, Parameter value2, Parameter value3, Parameter value4);
+        bool read(const std::string& str, Parameter value1, Parameter value2, Parameter value3, Parameter value4, Parameter value5);
+        bool read(const std::string& str, Parameter value1, Parameter value2, Parameter value3, Parameter value4, Parameter value5, Parameter value6);
+        bool read(const std::string& str, Parameter value1, Parameter value2, Parameter value3, Parameter value4, Parameter value5, Parameter value6, Parameter value7);
+        bool read(const std::string& str, Parameter value1, Parameter value2, Parameter value3, Parameter value4, Parameter value5, Parameter value6, Parameter value7, Parameter value8);
 
 
-        /** If the argument value at the speciified position matches the given string,
+        /** If the argument value at the specified position matches the given string,
           * and subsequent parameters are also matched, then set the parameter values,
           * remove the arguments from the list, and return true. Otherwise, return false. */
         bool read(int pos, const std::string& str);
@@ -144,6 +152,10 @@ class SG_EXPORT ArgumentParser
         bool read(int pos, const std::string& str, Parameter value1, Parameter value2);
         bool read(int pos, const std::string& str, Parameter value1, Parameter value2, Parameter value3);
         bool read(int pos, const std::string& str, Parameter value1, Parameter value2, Parameter value3, Parameter value4);
+        bool read(int pos, const std::string& str, Parameter value1, Parameter value2, Parameter value3, Parameter value4, Parameter value5);
+        bool read(int pos, const std::string& str, Parameter value1, Parameter value2, Parameter value3, Parameter value4, Parameter value5, Parameter value6);
+        bool read(int pos, const std::string& str, Parameter value1, Parameter value2, Parameter value3, Parameter value4, Parameter value5, Parameter value6, Parameter value7);
+        bool read(int pos, const std::string& str, Parameter value1, Parameter value2, Parameter value3, Parameter value4, Parameter value5, Parameter value6, Parameter value7, Parameter value8);
 
 
         enum ErrorSeverity

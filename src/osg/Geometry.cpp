@@ -192,13 +192,6 @@ void Geometry::drawImmediateMode(State& state)
 
 }
 
-/** Statistics collection for each drawable- 26.09.01
- */
-bool Geometry::getStats(Statistics &)
-{
-    return false;
-}
-
 Drawable::AttributeBitMask Geometry::suppportsAttributeOperation() const
 {
     // we do support coords,normals,texcoords and colors so return true.

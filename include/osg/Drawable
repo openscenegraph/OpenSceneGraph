@@ -17,7 +17,6 @@
 
 namespace osg {
 
-class Statistics;
 class Vec2;
 class Vec3;
 class Vec4;
@@ -36,19 +35,6 @@ class Node;
     for a Drawable are maintained in StateSet which the Drawable maintains
     a referenced counted pointer to.  Both Drawable's and StateSet's can 
     be shared for optimal memory usage and graphics performance.
-
-    Subclasses should provide an instance of getStats(Statistics *st) if the subclass
-    contains drawing primitives.  This member function should add the primitives it 
-    draws into the Statistics class; for example add the number of quads, triangles etc
-    created.  For an example see Geometry.cpp:
-     getStats(osgUtil::Statistics *stat).
-    Failure to implement this routine will only result in the stats displayed for
-    your drawable being wrong.
-    Another example is in the InfinitePlane class- this draws a normal geoset AND
-    its own special set of quads, so this case of getPrims calls:
-    the normal geoset stats gs->getStats(..), and then adds the number of quads 
-    rendered directly (it is rendered in a display list, but we do know how many
-    quads are in the display list).
 */
 class SG_EXPORT Drawable : public Object
 {
@@ -231,11 +217,6 @@ class SG_EXPORT Drawable : public Object
         /** flush all the cached display list which need to be deleted
           * in the OpenGL context related to contextID.*/
         static void flushDeletedDisplayLists(uint contextID);
-        
-
-        /** Collect Stistics count from Drawable.*/
-        virtual bool getStats(Statistics&) { return false; }
-        
 
         typedef uint AttributeBitMask;
 

@@ -6,11 +6,13 @@
 #define OSGUTIL_RENDERBIN 1
 
 #include <osgUtil/RenderGraph>
-#include <osg/Statistics>
 
 #include <map>
 #include <vector>
 #include <string>
+
+// forward declare Statistics to remove link dependancy.
+namespace osg { class Statistics; }
 
 namespace osgUtil {
 

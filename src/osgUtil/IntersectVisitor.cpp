@@ -493,7 +493,7 @@ void IntersectVisitor::apply(Geode& geode)
 {
     if (!enterNode(geode)) return;
 
-    for(int i = 0; i < geode.getNumDrawables(); i++ )
+    for(unsigned int i = 0; i < geode.getNumDrawables(); i++ )
     {
         intersect(*geode.getDrawable(i));
     }

@@ -8,6 +8,8 @@
 #include <osg/Referenced>
 #include <osg/Drawable>
 
+#include <map>
+
 namespace osg {
 
 /**
@@ -23,84 +25,60 @@ namespace osg {
  * each trifan or tristrip = (length-2) triangles and so on.
  */
 
-class Statistics : public osg::Referenced, public osg::Drawable::AttributeFunctor
-{
+class Statistics : public osg::Referenced, public osg::Drawable::PrimitiveFunctor{
     public:
-    
-        Statistics():
-            osg::Drawable::AttributeFunctor(osg::Drawable::COORDS)
+
+        typedef std::pair<unsigned int,unsigned int>    PrimitivePair;
+        typedef std::map<GLenum,PrimitivePair>          PrimtiveValueMap;
+
+
+        Statistics()
         {
             reset();
         };
-        
-        enum PrimitiveType
-        {
-            NO_TYPE,
-            POINTS,
-            LINES,
-            LINE_STRIP,
-            FLAT_LINE_STRIP,
-            LINE_LOOP,
-            TRIANGLES,
-            TRIANGLE_STRIP,
-            FLAT_TRIANGLE_STRIP,
-            TRIANGLE_FAN,
-            FLAT_TRIANGLE_FAN,
-            QUADS,
-            QUAD_STRIP,
-            POLYGON,
-            IMPOSTOR
-        };
-
 
         ~Statistics() {}; // no dynamic allocations, so no need to free
         
         enum statsType
         {
             STAT_NONE, // default
-            STAT_FRAMERATE, STAT_GRAPHS,
-            STAT_VIEWPARMS,  // descrbe the view parameters (FOV, near/far...)
-            STAT_PRIMS, STAT_PRIMSPERVIEW, STAT_PRIMSPERBIN,
+            STAT_FRAMERATE, 
+            STAT_GRAPHS,
+            STAT_PRIMS, 
+            STAT_PRIMSPERVIEW, 
+            STAT_PRIMSPERBIN,
             STAT_DC,
             STAT_RESTART // hint to restart the stats
         };
+        
         void reset()
         {
             numOpaque=0, nummat=0; depth=0; stattype=STAT_NONE;
-            nprims=0, nlights=0; nbins=0; nimpostor=0;
-            for (int i=0; i<=POLYGON; i++) primverts[i]=numprimtypes[i]=primlens[i]=primtypes[i]=0;
+            nlights=0; nbins=0; nimpostor=0;
+            
+            _vertexCount=0;
+            _primitiveCount.clear();            
+            
+            _currentPrimtiveFunctorMode=0;
         }
 
         void setType(statsType t) {stattype=t;}
+        
+        virtual void setVertexArray(unsigned int count,Vec3*) { _vertexCount += count; }
 
-        virtual bool apply(osg::Drawable::AttributeBitMask abm,osg::Vec3* begin,osg::Vec3* end)
-        {
-            if (abm == osg::Drawable::COORDS)
-            {
-                primverts[0] += (end-begin);
-                return true;
-            }
-            return false;
-        }
+        virtual void drawArrays(GLenum mode,GLint,GLsizei count) { PrimitivePair& prim = _primitiveCount[mode]; ++prim.first; prim.second+=count; } 
+        virtual void drawElements(GLenum mode,GLsizei count,GLubyte*) { PrimitivePair& prim = _primitiveCount[mode]; ++prim.first; prim.second+=count; } 
+        virtual void drawElements(GLenum mode,GLsizei count,GLushort*) { PrimitivePair& prim = _primitiveCount[mode]; ++prim.first; prim.second+=count; } 
+        virtual void drawElements(GLenum mode,GLsizei count,GLuint*) { PrimitivePair& prim = _primitiveCount[mode]; ++prim.first; prim.second+=count; } 
 
-        void addNumPrims(const int typ, const int nprimlen, const int numprimtype, const int primvert)
-        {
-            if (typ>NO_TYPE && typ<=POLYGON) {
-                primtypes[0]++;
-                primtypes[typ]++;
-                numprimtypes[0]+=numprimtype;
-                numprimtypes[typ]+=numprimtype;
-                primlens[0]+=nprimlen;
-                primlens[typ]+=nprimlen;
-                //primverts[0]+=primvert;
-                primverts[typ]+=primvert;
-            }
-        }
+        virtual void begin(GLenum mode) { _currentPrimtiveFunctorMode=mode; PrimitivePair& prim = _primitiveCount[mode]; ++prim.first; }
+        virtual void vertex(const Vec3&) { PrimitivePair& prim = _primitiveCount[_currentPrimtiveFunctorMode]; ++prim.second; }
+        virtual void vertex(float,float,float) {  PrimitivePair& prim = _primitiveCount[_currentPrimtiveFunctorMode]; ++prim.second; }
+        virtual void end() {}
         
         void addOpaque() { numOpaque++;}
         void addMatrix() { nummat++;}
         void addLight(const int np) { nlights+=np;}
-        void addNumPrims(const int np) { nprims += np; }
         void addImpostor(const int np) { nimpostor+= np; }
         inline const int getBins() { return nbins;}
         void setDepth(const int d) { depth=d; }
@@ -111,15 +89,15 @@ class Statistics : public osg::Referenced, public osg::Drawable::AttributeFuncto
 public:
                 
         int numOpaque, nummat, nbins;
-        int nprims, nlights;
+        int nlights;
         int depth; // depth into bins - eg 1.1,1.2,1.3 etc
         int _binNo;
         statsType stattype;
         int nimpostor; // number of impostors rendered
-        int numprimtypes[16]; // histogram of number of each type of prim
-        int primtypes[16]; // histogram of number of each type of prim
-        int primlens[16]; // histogram of lengths of each type of prim
-        int primverts[16]; // histogram of number of vertices to be transformed
+        
+        unsigned int        _vertexCount;
+        PrimtiveValueMap    _primitiveCount;
+        GLenum              _currentPrimtiveFunctorMode;
         
 };
 

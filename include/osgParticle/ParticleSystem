@@ -19,7 +19,6 @@
 #include <osg/CopyOp>
 #include <osg/State>
 #include <osg/Vec3>
-#include <osg/Statistics>
 #include <osg/BoundingBox>
 
 namespace osgParticle
@@ -117,9 +116,8 @@ namespace osgParticle
         /// Update the particles. Don't call this directly, use a <CODE>ParticleSystemUpdater</CODE> instead.
         virtual void update(double dt);
 
-        inline virtual bool getStats(osg::Statistics &stats);
-
     protected:
+
         virtual ~ParticleSystem();
 
         ParticleSystem &operator=(const ParticleSystem &) { return *this; }
@@ -228,12 +226,6 @@ namespace osgParticle
             _bbox._max = bmax_;
         }
         _bbox_computed = true;
-        return true;
-    }
-
-    inline bool ParticleSystem::getStats(osg::Statistics &stats)
-    {
-        stats.addNumPrims(draw_count_);
         return true;
     }
 

@@ -12,7 +12,6 @@
 #include <osg/TexEnv>
 #include <osg/AlphaFunc>
 #include <osg/Notify>
-#include <osg/Statistics>
 
 
 using namespace osg;
@@ -267,13 +266,4 @@ ImpostorSprite* ImpostorSpriteManager::createOrReuseImpostorSprite(int s,int t,i
     
     return is;
 
-}
-
-
-bool ImpostorSprite::getStats(Statistics &stat) 
-{ // analyse the drawable Impostor Sprite
-    stat.addNumPrims(1); // use new member functions of Statistics class to update
-    stat.addNumPrims(Statistics::QUADS, 2, 1, 4);
-    stat.addImpostor(1);
-    return true;
 }

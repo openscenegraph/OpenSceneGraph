@@ -113,11 +113,8 @@ class SG_EXPORT ImpostorSprite : public Drawable
         const int s() const { return _s; }
         const int t() const { return _t; }
 
-
         /** draw ImpostorSprite directly. */
         virtual void drawImmediateMode(State& state);
-        
-        bool getStats(Statistics &stat);
 
     protected:
 

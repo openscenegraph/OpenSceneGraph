@@ -11,7 +11,9 @@
 #include <sys/time.h>
 #endif
 #include <stdio.h>
+
 #include <osg/Math>
+#include <osg/Statistics>
 
 #include <string>
 
@@ -535,7 +537,7 @@ void Viewer::showStats(const unsigned int /*viewport*/)
         glEnd();
         glLineWidth(1.0f);
     }
-    if (_printStats==Statistics::STAT_PRIMS) { // yet more stats - add triangles, number of strips...
+    if (_printStats==osg::Statistics::STAT_PRIMS) { // yet more stats - add triangles, number of strips...
     /* 
        * Use the new renderStage.  Required mods to RenderBin.cpp, and RenderStage.cpp (add getPrims)
        * also needed to define a new class called Statistic (see osgUtil/Statistic).
@@ -1503,128 +1505,84 @@ void displaytext(int x, int y, char *s)
     glListBase(0);
     //    glPopAttrib ();
 }
-/*
-void writePrims( const int ypos, osg::Statistics& stats)
-{
-    char clin[100]; // buffer to print
-    char ctmp[12];
-    int i; // a counter
-    static char *prtypes[]={"Total", 
-            "   Pt", "   Ln", " Lstr", " LSTf", " Llop", // 1- 5
-            " Tris", " TStr", " TSfl", " TFan", " TFnf", // 6-10
-            " Quad", " QStr", " Pols", "", "", // 11-15
-            "", "", "", "", ""};
-    glColor3f(.9f,.9f,0.0f);
 
-    sprintf(clin,"%d Prims %d Matxs %d Gsets %d nlts %d bins %d imps", 
-    stats.nprims, stats.nummat, stats.numOpaque, stats.nlights, stats.nbins, stats.nimpostor);
-    displaytext(0,ypos,clin);
-    strcpy(clin,"           ");
-    for (i=0; i<15; i++) {
-        if (i==0 || stats.primtypes[i]) {
-            strcat(clin, prtypes[i]);
-        }
-    }
-    displaytext(0,ypos-12,clin);
-    strcpy(clin,"GSet type: ");
-    for (i=0; i<15; i++) {
-        if (stats.primtypes[i]) {
-            sprintf(ctmp,"%5d", stats.primtypes[i]);
-            strcat(clin, ctmp);
-        }
-    }
-    displaytext(0,ypos-24,clin);
-    strcpy(clin,"Prims:     ");
-    for (i=0; i<15; i++) {
-        if (stats.primtypes[i]) {
-            sprintf(ctmp,"%5d", stats.numprimtypes[i]);
-            strcat(clin, ctmp);
-        }
-    }
-    displaytext(0,ypos-36,clin);
-    strcpy(clin,"Triangles: ");
-    for (i=0; i<15; i++) {
-        if (stats.primtypes[i]) {
-            sprintf(ctmp,"%5d", stats.primlens[i]);
-            strcat(clin, ctmp);
-        }
-    }
-    displaytext(0,ypos-48,clin);
-    strcpy(clin,"Vertices:  ");
-    for (i=0; i<15; i++) {
-        if (stats.primtypes[i]) {
-            sprintf(ctmp,"%5d", stats.primverts[i]);
-            strcat(clin, ctmp);
-        }
-    }
-    displaytext(0,ypos-60,clin);
-}
-*/
+
 int writePrims( const int ypos, osg::Statistics& stats)
 {
     char clin[100]; // buffer to print
     char ctmp[12];
-    int i; // a counter
     int npix=0; // offset from ypos
     char intro[12]; // start of first line
-    static char *prtypes[]={"Total", 
-            "   Pt", "   Ln", " Lstr", " LSTf", " Llop", // 1- 5
-            " Tris", " TStr", " TSfl", " TFan", " TFnf", // 6-10
-            " Quad", " QStr", " Pols", "", "", // 11-15
-            "", "", "", "", ""};
+    static char *prtypes[]=
+    {
+        "  Point", // GL_POINTS				0x0000
+        "  Lines", // GL_LINES				0x0001
+        " LnLoop", // GL_LINE_LOOP			0x0002
+        "  LnStr", // GL_LINE_SRIP        		0x0002
+        "   Tris", // GL_TRIANGLES			0x0004 
+        " TriStr", // GL_TRIANGLE_STRIP			0x0005
+        " TriFan", // GL_TRIANGLE_FAN			0x0006
+        "  Quads", // GL_QUADS				0x0007
+        " QudStr", // GL_QUAD_STRIP			0x0008
+        "   Poly"  // GL_POLYGON				0x0009
+    };         
+            
     glColor3f(.9f,.9f,0.0f);
 
     if (stats.depth==1) sprintf(intro,"==> Bin %2d", stats._binNo);
-    else         sprintf(intro,"          ");
-    sprintf(clin,"%s %d Prims %d Matxs %d Gsets %d nlts %d bins %d imps", 
-        intro ,stats.nprims, stats.nummat, stats.numOpaque, stats.nlights, stats.nbins, stats.nimpostor);
+    else                sprintf(intro,"General Stats: ");
+    sprintf(clin,"%s  %d Opaque Drawables   %d Lights   %d Bins   %d Impostors", 
+        intro ,stats.numOpaque, stats.nlights, stats.nbins, stats.nimpostor);
     displaytext(0,ypos-npix,clin);
-    npix+=12;
-    strcpy(clin,"           ");
-    for (i=0; i<=osg::Statistics::POLYGON; i++) {
-        if (i==0 || stats.primtypes[i]) {
-            strcat(clin, prtypes[i]);
-        }
+    npix+=24;
+    
+    strcpy(clin,"              Total");
+    
+    unsigned int totalNumPrimives = 0;
+    unsigned int totalNumIndices = 0;
+    osg::Statistics::PrimtiveValueMap::iterator pItr;
+    for(pItr=stats._primitiveCount.begin();
+        pItr!=stats._primitiveCount.end();
+        ++pItr)
+    {
+        totalNumPrimives += (pItr->second.first);
+        totalNumIndices += (pItr->second.second);
+        strcat(clin, prtypes[pItr->first]);
     }
     displaytext(0,ypos-npix,clin);
     npix+=12;
-    strcpy(clin,"GSet type: ");
-    for (i=0; i<=osg::Statistics::POLYGON; i++) {
-        if (stats.primtypes[i]) {
-            sprintf(ctmp,"%5d", stats.primtypes[i]);
-            strcat(clin, ctmp);
-        }
+    
+    strcpy(clin,"Primitives: ");
+    sprintf(ctmp,"%7d", totalNumPrimives);
+    strcat(clin, ctmp);
+    for(pItr=stats._primitiveCount.begin();
+        pItr!=stats._primitiveCount.end();
+        ++pItr)
+    {
+        sprintf(ctmp,"%7d", pItr->second.first);
+        strcat(clin, ctmp);
     }
     displaytext(0,ypos-npix,clin);
     npix+=12;
-    strcpy(clin,"Prims:     ");
-    for (i=0; i<=osg::Statistics::POLYGON; i++) {
-        if (stats.primtypes[i]) {
-            sprintf(ctmp,"%5d", stats.numprimtypes[i]);
-            strcat(clin, ctmp);
-        }
+
+    strcpy(clin,"Indices:    ");
+    sprintf(ctmp,"%7d", totalNumIndices);
+    strcat(clin, ctmp);
+    for(pItr=stats._primitiveCount.begin();
+        pItr!=stats._primitiveCount.end();
+        ++pItr)
+    {
+        sprintf(ctmp,"%7d", pItr->second.second);
+        strcat(clin, ctmp);
     }
     displaytext(0,ypos-npix,clin);
     npix+=12;
-    strcpy(clin,"Triangles: ");
-    for (i=0; i<=osg::Statistics::POLYGON; i++) {
-        if (stats.primtypes[i]) {
-            sprintf(ctmp,"%5d", stats.primlens[i]);
-            strcat(clin, ctmp);
-        }
-    }
+
+    strcpy(clin,"Vertices:   ");
+    sprintf(ctmp,"%7d", stats._vertexCount);
+    strcat(clin, ctmp);
     displaytext(0,ypos-npix,clin);
     npix+=12;
-    strcpy(clin,"Vertices:  ");
-    for (i=0; i<=osg::Statistics::POLYGON; i++) {
-        if (stats.primverts[i]) {
-            sprintf(ctmp,"%5d", stats.primverts[i]);
-            strcat(clin, ctmp);
-        }
-    }
-    displaytext(0,ypos-npix,clin);
-    npix+=12;
-    if (stats.stattype!=osg::Statistics::STAT_PRIMSPERBIN) {
-    }
+
     return npix;
 }

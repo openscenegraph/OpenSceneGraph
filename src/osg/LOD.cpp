@@ -33,15 +33,17 @@ void LOD::setRange(const unsigned int index, const float range)
 const int LOD::evaluate(const Vec3& eye_local, const float bias) const
 {
     // For cache coherency, use _rangeList2 exclusively
-    if (_rangeList2.size()==0) return -1;
+    if (_rangeList2.empty()) return -1;
 
     // Test distance-squared against the stored array of squared ranges
     float LODRange = (eye_local-_center).length2()*bias;
     if (LODRange<_rangeList2[0]) return -1;
 
-    for(unsigned int i=0;i<_rangeList2.size()-1;++i)
+    unsigned int end_marker = _rangeList2.size()-1;
+    if (end_marker>_children.size()) end_marker=_children.size();
+    for(unsigned int i=0;i<end_marker;++i)
     {
-        if (_rangeList2[i]<=LODRange && LODRange<_rangeList2[i+1])
+        if (LODRange<_rangeList2[i+1])
         {
             return i;
         }

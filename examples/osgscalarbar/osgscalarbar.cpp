@@ -55,7 +55,7 @@ osg::Node* createScalarBar()
     };
 
     ColorRange* cr = new ColorRange(0.0f,1.0f,cs);
-    ScalarBar* sb = new ScalarBar(20, 11, cr, "ScalarBar", ScalarBar::VERTICAL, 4.0f, new MyScalarPrinter);
+    ScalarBar* sb = new ScalarBar(20, 11, cr, "ScalarBar", ScalarBar::VERTICAL, 0.1f, new MyScalarPrinter);
     sb->setScalarPrinter(new MyScalarPrinter);
 
     return sb;

@@ -367,19 +367,8 @@ struct TriangleIntersect
 
     }
 
-    //     void operator () (const Vec3& v1,const Vec3& v2,const Vec3& v3)
-    //     {
-    //         float r;
-    //         if (_seg.intersect(v1,v2,v3,r))
-    //         {
-    //             _thl.insert(std::pair<float,int>(r,_index));
-    //             _hit = true;
-    //         }
-    //         ++_index;
-    //     }
-
     //   bool intersect(const Vec3& v1,const Vec3& v2,const Vec3& v3,float& r)
-    void operator () (const Vec3& v1,const Vec3& v2,const Vec3& v3)
+    inline void operator () (const Vec3& v1,const Vec3& v2,const Vec3& v3)
     {
         ++_index;
 
@@ -429,13 +418,38 @@ struct TriangleIntersect
             if (ds31>0.0f) return;
             if (ds31<d231) return;
         }
+        
+        if (d312==0.0f || d123==0.0f || d231==0.0f)
+        {
+            // the triangle and the line must be parallel intersection.
+            
+        }
 
-        float r3 = ds12/d312;
-        float r1 = ds23/d123;
-        float r2 = ds31/d231;
+        float r3;
+        if (ds12==0.0f) r3=0.0f;
+        else if (d312>0.0f) r3 = ds12/d312;
+        else return; // the triangle and the line must be parallel intersection.
+        
+        float r1;
+        if (ds23==0.0f) r1=0.0f;
+        else if (d123>0.0f) r1 = ds23/d123;
+        else return; // the triangle and the line must be parallel intersection.
+        
+        float r2;
+        if (ds31==0.0f) r2=0.0f;
+        else if (d231>0.0f) r2 = ds31/d231;
+        else return; // the triangle and the line must be parallel intersection.
 
-        //float rt = r1+r2+r3;
-
+        float total_r = (r1+r2+r3);
+        if (total_r!=1.0f)
+        {
+            if (total_r==0.0f) return; // the triangle and the line must be parallel intersection.
+            float inv_total_r = 1.0f/total_r;
+            r1 *= inv_total_r;
+            r2 *= inv_total_r;
+            r3 *= inv_total_r;
+        }
+        
         Vec3 in = v1*r1+v2*r2+v3*r3;
 
         float d = (in-_s)*_d;

@@ -377,7 +377,7 @@ void Text::setFont(Font* font)
 	else if(dynamic_cast<OutlineFont*>(_font.get()))
 		_fontType=OUTLINE;
 
-        _initAlignement = false;
+        _initAlignment = false;
         dirtyBound();            
 
     }
@@ -389,16 +389,16 @@ setDefaults()
 	_init=false;
 	
 	_pos.set(0,0,0);
-	_alignementPos.set(0,0,0);
+	_alignmentPos.set(0,0,0);
 	
 	_fontType=UNDEF;
-	_alignement=LEFT_BOTTOM;
+	_alignment=LEFT_BOTTOM;
 	_drawMode=DEFAULT;
 
 	_boundingBoxType=GLYPH;
 	_boundingBoxType=GEOMETRY;
 
-	_initAlignement=false;
+	_initAlignment=false;
 
 	_useDisplayList=false;
 }
@@ -430,8 +430,11 @@ computeBound() const
 		_bbox.init();
 
 		// to be sure that the obj isn't culled
+//		_bbox.expandBy(_pos);
+
 		_bbox.expandBy(_pos + Vec3(-100,-100,-100));
 		_bbox.expandBy(_pos + Vec3(100,100,100));
+
 		/*
 		_bbox.expandBy(Vec3(-FLT_MAX,-FLT_MAX,-FLT_MAX));
 		_bbox.expandBy(Vec3(FLT_MAX,FLT_MAX,FLT_MAX));
@@ -453,20 +456,20 @@ void Text::drawImmediateMode(State& state)
 		dirtyBound();
 	}
 
-	if(!_initAlignement)
-		initAlignement();
+	if(!_initAlignment)
+		initAlignment();
 	
 	// draw boundingBox
 	if(_drawMode & BOUNDINGBOX)
 		drawBoundingBox();
-	// draw alignement
+	// draw alignment
 	if(_drawMode & ALIGNEMENT)
-		drawAlignement();
+		drawAlignment();
 
 	// draw boundingBox
 	if(_drawMode & TEXT)
 	{
-		Vec3	drawPos(_pos+_alignementPos);
+		Vec3	drawPos(_pos+_alignmentPos);
 		glPushMatrix();
 			switch(_fontType)
 			{
@@ -515,7 +518,7 @@ drawBoundingBox(void)
 }
 
 void Text::
-drawAlignement(void)
+drawAlignment(void)
 {
 	if(!_init)
 		return;
@@ -563,7 +566,7 @@ calcBounds(Vec3* min,Vec3* max) const
 }
 
 bool Text::
-initAlignement(void)
+initAlignment(void)
 {
 	if(!_init)
 		return false;
@@ -574,14 +577,14 @@ initAlignement(void)
 		_bbox.init();
 
 		Vec3 min,max;
-		initAlignement(&min,&max);
+		initAlignment(&min,&max);
 
 		_bbox.expandBy(min);
 		_bbox.expandBy(max);
 
 		_bbox_computed=true;
 
-		_initAlignement=true;
+		_initAlignment=true;
 	}
 	else
 	{	// have to wait for the init.
@@ -598,7 +601,7 @@ initAlignement(void)
 }
 
 void Text::
-initAlignement(Vec3* min,Vec3* max)
+initAlignment(Vec3* min,Vec3* max)
 {
 	if(!_init)
 		return;
@@ -614,81 +617,81 @@ initAlignement(Vec3* min,Vec3* max)
 	{
 		case GLYPH:
 			h+=descender;
-			switch(_alignement)
+			switch(_alignment)
 			{
 				case LEFT_TOP:
-					_alignementPos.set(0.0,h,0.0);
+					_alignmentPos.set(0.0,h,0.0);
 					break;
 				case LEFT_CENTER:
-					_alignementPos.set(0.0,h/2.0,0.0);
+					_alignmentPos.set(0.0,h/2.0,0.0);
 					break;
 				case LEFT_BOTTOM:
-					_alignementPos.set(0.0,0.0,0.0);
+					_alignmentPos.set(0.0,0.0,0.0);
 					break;
 
 				case CENTER_TOP:
-					_alignementPos.set(w/2.0,h,0.0);
+					_alignmentPos.set(w/2.0,h,0.0);
 					break;
 				case CENTER_CENTER:
-					_alignementPos.set(w/2.0,h/2.0,0.0);
+					_alignmentPos.set(w/2.0,h/2.0,0.0);
 					break;
 				case CENTER_BOTTOM:
-					_alignementPos.set(w/2.0,0.0,0.0);
+					_alignmentPos.set(w/2.0,0.0,0.0);
 					break;
 
 				case RIGHT_TOP:
-					_alignementPos.set(w,h,0.0);
+					_alignmentPos.set(w,h,0.0);
 					break;
 				case RIGHT_CENTER:
-					_alignementPos.set(w,h/2.0,0.0);
+					_alignmentPos.set(w,h/2.0,0.0);
 					break;
 				case RIGHT_BOTTOM:
-					_alignementPos.set(w,0.0,0.0);
+					_alignmentPos.set(w,0.0,0.0);
 					break;
 			};
-			_alignementPos=-_alignementPos;
+			_alignmentPos=-_alignmentPos;
 
-			*min+=_pos+_alignementPos;
-			*max+=_pos+_alignementPos;
+			*min+=_pos+_alignmentPos;
+			*max+=_pos+_alignmentPos;
 			break;
 
 		case GEOMETRY:
-			switch(_alignement)
+			switch(_alignment)
 			{
 				case LEFT_TOP:
-					_alignementPos.set(0.0,h + descender,0.0);
+					_alignmentPos.set(0.0,h + descender,0.0);
 					break;
 				case LEFT_CENTER:
-					_alignementPos.set(0.0,(max->y()-min->y()) /2.0 + descender,0.0);
+					_alignmentPos.set(0.0,(max->y()-min->y()) /2.0 + descender,0.0);
 					break;
 				case LEFT_BOTTOM:
-					_alignementPos.set(0.0,descender,0.0);
+					_alignmentPos.set(0.0,descender,0.0);
 					break;
 
 				case CENTER_TOP:
-					_alignementPos.set(w/2.0,h + descender,0.0);
+					_alignmentPos.set(w/2.0,h + descender,0.0);
 					break;
 				case CENTER_CENTER:
-					_alignementPos.set(w/2.0,(max->y()-min->y()) /2.0 + descender,0.0);
+					_alignmentPos.set(w/2.0,(max->y()-min->y()) /2.0 + descender,0.0);
 					break;
 				case CENTER_BOTTOM:
-					_alignementPos.set(w/2.0,descender,0.0);
+					_alignmentPos.set(w/2.0,descender,0.0);
 					break;
 
 				case RIGHT_TOP:
-					_alignementPos.set(w,h + descender,0.0);
+					_alignmentPos.set(w,h + descender,0.0);
 					break;
 				case RIGHT_CENTER:
-					_alignementPos.set(w,(max->y()-min->y()) /2.0 + descender,0.0);
+					_alignmentPos.set(w,(max->y()-min->y()) /2.0 + descender,0.0);
 					break;
 				case RIGHT_BOTTOM:
-					_alignementPos.set(w,descender,0.0);
+					_alignmentPos.set(w,descender,0.0);
 					break;
 			};
-			_alignementPos=-_alignementPos;
+			_alignmentPos=-_alignmentPos;
 
-			*min+=_pos+_alignementPos;
-			*max+=_pos+_alignementPos;
+			*min+=_pos+_alignmentPos;
+			*max+=_pos+_alignmentPos;
 			break;
 	};
 
@@ -706,14 +709,14 @@ initAlignement(Vec3* min,Vec3* max)
 
 
 void Text::
-setAlignement(int alignement)
+setAlignment(int alignment)
 {
-	_alignement=alignement;
+	_alignment=alignment;
 	
 	if(!_init || !_font->isCreated())
 		return;
 
-	initAlignement();
+	initAlignment();
 }
 
 void Text::
@@ -724,7 +727,7 @@ setBoundingBox(int mode)
 	if(!_init || !_font->isCreated())
 		return;
 
-	initAlignement();
+	initAlignment();
 }
 
 // Text

@@ -1,214 +1,184 @@
-<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<!DOCTYPE doctype PUBLIC "-//w3c//dtd html 4.0 transitional//en">
 <html>
 <head>
-   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <meta name="GENERATOR" content="Mozilla/4.77 [en] (X11; U; Linux 2.4.3-20mdk i686) [Netscape]">
-   <title>Installation instructions</title>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+  <meta name="GENERATOR"
+ content="Mozilla/4.77 [en] (X11; U; Linux 2.4.3-20mdk i686) [Netscape]">
+  <title>Installation instructions</title>
 </head>
-<body text="#000000" bgcolor="#FFFFFF" link="#0000FF" vlink="#990066" alink="#FF0000">
-<img SRC="images/OpenSceneGraphBanner_Distribution.jpg">
+<body text="#000000" bgcolor="#ffffff" link="#0000ff" vlink="#990066"
+ alink="#ff0000">
+<img src="images/OpenSceneGraphBanner_Distribution.jpg">
 <table>
-<tr>
-<td><a href="index.html">Index</a></td>
-
-<td><a href="introduction.html">Introduction</a></td>
-
-<td><a href="contents.html">Contents</a></td>
-
-<td><a href="install.html">Install</a></td>
-
-<td><a href="dependencies.html">Dependencies</a></td>
-
-<td><a href="examples.html">examples</a></td>
-
-<td><a href="data.html">Data</a></td>
-
-<td><a href="osgviewer.html">Viewer</a></td>
-
-<td><a href="stereo.html">Stereo</a></td>
-
-<td><a href="plan.html">Plan</a></td>
-
-<td><a href="documentation.html">Reference Guides</a></td>
-</tr>
+  <tbody>
+    <tr>
+      <td><a href="index.html">Index</a></td>
+      <td><a href="introduction.html">Introduction</a></td>
+      <td><a href="contents.html">Contents</a></td>
+      <td><a href="install.html">Install</a></td>
+      <td><a href="dependencies.html">Dependencies</a></td>
+      <td><a href="examples.html">examples</a></td>
+      <td><a href="data.html">Data</a></td>
+      <td><a href="osgviewer.html">Viewer</a></td>
+      <td><a href="stereo.html">Stereo</a></td>
+      <td><a href="plan.html">Plan</a></td>
+      <td><a href="documentation.html">Reference Guides</a></td>
+    </tr>
+  </tbody>
 </table>
-
-<h2>
-<u>Compiling and installing the OpenSceneGraph</u></h2>
+<h2> <u>Compiling and installing the OpenSceneGraph</u></h2>
 The scene graph depends upon Standard C++, STL and OpenGL so you need a
-C++ compiler up to the task and OpenGL or Mesa installed. The example applications depend
-upon Open Producer which you'll need to download and install from the Producer website.
-The OSG has it own native ascii file format, and .rgb image reader
-which allows you read the example data with any dependencies other than
-C++, STL and OpenGL.
-<p>The OSG also has a set of plug-ins which support non-native 3d database
-and image formats, several have no dependencies on external libraries (flt,3ds,obj,
-lwo,dw, tga &amp; pic), while others (pfb,jpeg,gif,tiff) require other
-libraries to be installed to compile them. If you don't already have them
-installed then don't worry, you'll still be able to use the OSG, just comment
-out the plugins you can't compile from the src/osgPlugins/Makefile. The
-core osg library and viewer has been designed to load the plug-ins at run-time
-only and if they are required to load a specific data set. If you don't
-need them for your datasets then it won't matter that you haven't been
-able to compile all the plug-ins. A full list of dependencies and where
-to download the required libraries are listed in the
-<i><a href="dependencies.html">dependencies.html</a></i>
-<p>If you're coming across the OSG for the first time and want to get started
-quickly, go right ahead and follow the compilation instructions. You can
-always later download the libraries which the plug-ins require if you eventually
-need them.
+C++ compiler up to the task and OpenGL or Mesa installed. The example
+applications depend upon Open Producer which you'll need to download and
+install from the Producer website. The OSG has it own native ascii file
+format, and .rgb image reader which allows you read the example data
+with any dependencies other than C++, STL and OpenGL.
+<p>The OSG also has a set of plug-ins which support non-native 3d
+database and image formats, several have no dependencies on external
+libraries (flt,3ds,obj, lwo,dw, tga &amp; pic), while others
+(pfb,jpeg,gif,tiff) require other libraries to be installed to compile
+them. If you don't already have them installed then don't worry, you'll
+still be able to use the OSG, just comment out the plugins you can't
+compile from the Make/makedirdefs file. The core osg library and viewer
+has been designed to load the plug-ins at run-time only and if they are
+required to load a specific data set. If you don't need them for your
+datasets then it won't matter that you haven't been able to compile all
+the plug-ins. A full list of dependencies and where to download the
+required libraries are listed in the <i><a href="dependencies.html">dependencies.html</a></i> </p>
+<p>If you're coming across the OSG for the first time and want to get
+started quickly, go right ahead and follow the compilation instructions.
+You can always later download the libraries which the plug-ins require
+if you eventually need them. </p>
 <ul>
-<li>
-<a href="#Compiling under Windows with Visual Studio">Compiling under Windows
-with Visual Studio</a></li>
-
-<li>
-Compiling under Unix (including Mac OSX and Cygwin)</li>
-
-<p><br>Building the OSG requires 'gmake', due to the extensive use of gmake
-directives in the Makefiles. You can get gmake from here if you don't already
-have it installed: http://www.gnu.org/software/make/
-<p>Almost all of the unix compiling is done simply with <b>make; make install</b>
-with <b>make help</b> to bring up help. For platform specific details:
-<ul>
-<li>
-<a href="#Cygwin">Cygwin</a></li>
-
-<li>
-<a href="#Linux">Linux</a></li>
-
-<li>
-<a href="#Free BSD">Free BSD</a></li>
-
-<li>
-<a href="#Mac OSX">Mac OSX</a></li>
-
-<li>
-<a href="#IRIX">IRIX</a></li>
-
-<li>
-<a href="#Solaris">Solaris</a></li>
+  <li> <a href="#Compiling%20under%20Windows%20with%20Visual%20Studio">Compiling
+under Windows with Visual Studio</a></li>
+  <li> Compiling under Unix (including Mac OSX and Cygwin)</li>
+  <p><br>
+Building the OSG requires 'gmake', due to the extensive use of gmake
+directives in the Makefiles. You can get gmake from here if you don't
+already have it installed: http://www.gnu.org/software/make/ </p>
+  <p>Almost all of the unix compiling is done simply with <b>make;
+make install</b> with <b>make help</b> to bring up help. For platform
+specific details: </p>
+  <ul>
+    <li> <a href="#Cygwin">Cygwin</a></li>
+    <li> <a href="#Linux">Linux</a></li>
+    <li> <a href="#Free%20BSD">Free BSD</a></li>
+    <li> <a href="#Mac%20OSX">Mac OSX</a></li>
+    <li> <a href="#IRIX">IRIX</a></li>
+    <li> <a href="#Solaris">Solaris</a></li>
+  </ul>
 </ul>
-</ul>
-
 <hr>
-<h3>
-<a NAME="Compiling under Windows with Visual Studio"></a><u>Compiling under
-Windows with Visual Studio.</u></h3>
-
-<p>The Microsoft Visual C++ 6.0 workspace file is VisualStudio.dsw located
-in the VisualStudio below the OSG this root directory.  VC++6.0 workspace
-files can also be used in VisualStudio7.0 without problem.
-
-<p><b>IMPORTANT NOTE:</b> Whilst the OSG will compile cleanly with the basic VC++6.0 and
-its own STL implementation, the OSG will crash regularily due to bugs in VC++6.0's
-STL.  VC++6.0's STL is horribly broken and therefore is <b>*NOT*</b> supported.  Do not
-attempt to use the OSG in conjunction with native VC++6.0 STL implemention.
-<p>The supported combinations are:
+<h3> <a name="Compiling under Windows with Visual Studio"></a><u>Compiling
+under Windows with Visual Studio.</u></h3>
+<p>The Microsoft Visual C++ 6.0 workspace file is VisualStudio.dsw
+located in the VisualStudio below the OSG this root directory.  VC++6.0
+workspace files can also be used in VisualStudio7.0 without problem. </p>
+<p><b>IMPORTANT NOTE:</b> Whilst the OSG will compile cleanly with the
+basic VC++6.0 and its own STL implementation, the OSG will crash
+regularily due to bugs in VC++6.0's STL.  VC++6.0's STL is horribly
+broken and therefore is <b>*NOT*</b> supported.  Do not attempt to use
+the OSG in conjunction with native VC++6.0 STL implemention. </p>
+<p>The supported combinations are: </p>
 <ol>
-
-<li>
-Visual Studio7.0 .NET </li>
-<li>
-Visual Studio6.0 + Dinkumware's STL bug fix patches (see details below).</li>
-
-<li>
-Visual Studio6.0 + STLport  (see details below)</li>
+  <li> Visual Studio7.0 .NET </li>
+  <li> Visual Studio6.0 + Dinkumware's STL bug fix patches (see details
+below).</li>
+  <li> Visual Studio6.0 + STLport  (see details below)</li>
 </ol>
-<p>The OSG is composed of a number of scene graph libraries (with Core in
-front of the project names), executables (with examples in front of the project
-names), and plugins which read and write 3D data formats and 2D image formats
-(with osgPlugins in front of the project names).
-To get the OSG running you'll need at least to compile Core osg,osgUtil,osgDB,osgProducer,
-osgPlugin dot_osg and Demo osgviewer. The rest of the libraries and executables
-are optional and can be compiled if you need them, however for simplicity
-I would recommend doing a batch build of all the libraries and executables
-in the distribution, some of the plug-ins which support non native file
-formats may not compile due to dependencies on other libraries (such as
-libpng), you can ignore these compilation errors unless you need to load
-the related file types. To help the compilation the plugins, osgProducer and
+<p>The OSG is composed of a number of scene graph libraries (with Core
+in front of the project names), executables (with examples in front of
+the project names), and plugins which read and write 3D data formats and
+2D image formats (with osgPlugins in front of the project names). To
+get the OSG running you'll need at least to compile Core
+osg,osgUtil,osgDB,osgProducer, osgPlugin dot_osg and Demo osgviewer. The
+rest of the libraries and executables are optional and can be compiled
+if you need them, however for simplicity I would recommend doing a
+batch build of all the libraries and executables in the distribution,
+some of the plug-ins which support non native file formats may not
+compile due to dependencies on other libraries (such as libpng), you
+can ignore these compilation errors unless you need to load the related
+file types. To help the compilation the plugins, osgProducer and
 osgText one can download .zip archive will all the dependencies in it.
-Further details on this .zip file can be found in <i><a href="dependencies.html">dependencies.html</a></i>
-
-<p>To execute the viewer the file path for the .dll's and .exe, both compiled
-into the OSG's bin directory, need to be setup, such as by adding the PATH
-to your autoexec.bat, its also useful to add the OSGFILEPATH to your autoexec.bat
-to help the location of datafiles. For example :
-<p>SET OSGFILEPATH=D:\OpenSceneGraph-Data;D:\OpenSceneGraph-Data\Images
-<br>SET PATH=C:\WINDOWS;C:\WINDOWS\COMMAND;D:\osg-0.8.43\bin;
-<p>To help compilation of the image reader plugins, various image libraries
-have been zipped up for your convenience, your find these on the OSG release
-download directory
-
-<h3>
-Using Visual Studio .NET</h3>
-Visual Studio 7.0 .MET has a solid STL implementation and improve standard C++ complient
-and works with the OpenSceneGraph without problems.  This is the recommended route.
-<h3>
-Using Dinkumware STL</h3>
-The basic jist is that you'll need to download their STL implementation,
-and follow their instructions of how to force VisualStudio to pick up the
-new STL implementation. More details at <a href="http://www.dinkumware.com/vc_fixes.html">http://www.dinkumware.com/vc_fixes.html</a>.
-<p>Once it is installed everything should compile fine and not crash, but
-you won't be running at full speed since the build #ifdef's out some important
-state optimizations since the basic VisualStudio can't handle it. You can
-safely remove the #ifdef from src/osgUtil/Otimizer.cpp, Line 44. The #ifdef
-is smart enough to do this automatically when using VisualStudio .NET and
-STLport so that modification by hand won't be required. Unfortunately there
-doesn't seem to be a special define associated with the Dinkumware STL
-for the #ifdef to pick up on.
-<h3>
-Using STLport</h3>
-
-<p>A very good HOWTO for installing and making the STLPort libs on MSVC6
-can be found at <a href="http://www.softadvances.com/articles/stlportusing.html">http://www.softadvances.com/articles/stlportusing.html</a>
-
-
-<p>The OSG has been tested under Windows with STLport-4.5, which allows the
-users to configure the type of STL support required for STLport itself.
-The key configuration that the OSG needs to do is to enable the wrapping
-of MS's own iostreams, than using STLport's own implementation. The later
-is not required because this has not be problematic under Windows, it is
-only the container classes and algorithms that need replacing. Using the iostream wrapping
-option means the STLport can just be used on your include path, there is
-no need to compile STLport itself, or link into any special libraries.
-To configure STLport simply comment IN (its commented out by default),
-the following line from STLport-4.5/stlport/stl_user_config.h so it should
-look:
+Further details on this .zip file can be found in <i><a
+ href="dependencies.html">dependencies.html</a></i> </p>
+<p>To execute the viewer the file path for the .dll's and .exe, both
+compiled into the OSG's bin directory, need to be setup, such as by
+adding the PATH to your autoexec.bat, its also useful to add the
+OSGFILEPATH to your autoexec.bat to help the location of datafiles. For
+example : </p>
+<p>SET OSGFILEPATH=D:\OpenSceneGraph-Data;D:\OpenSceneGraph-Data\Images <br>
+SET PATH=C:\WINDOWS;C:\WINDOWS\COMMAND;D:\osg-0.8.43\bin; </p>
+<p>To help compilation of the image reader plugins, various image
+libraries have been zipped up for your convenience, your find these on
+the OSG release download directory </p>
+<h3> Using Visual Studio .NET</h3>
+Visual Studio 7.0 .MET has a solid STL implementation and improve
+standard C++ complient and works with the OpenSceneGraph without
+problems. This is the recommended route.
+<h3> Using Dinkumware STL</h3>
+The basic jist is that you'll need to download their STL
+implementation, and follow their instructions of how to force
+VisualStudio to pick up the new STL implementation. More details at <a
+ href="http://www.dinkumware.com/vc_fixes.html">http://www.dinkumware.com/vc_fixes.html</a>.
+<p>Once it is installed everything should compile fine and not crash,
+but you won't be running at full speed since the build #ifdef's out some
+important state optimizations since the basic VisualStudio can't handle
+it. You can safely remove the #ifdef from src/osgUtil/Otimizer.cpp,
+Line 44. The #ifdef is smart enough to do this automatically when using
+VisualStudio .NET and STLport so that modification by hand won't be
+required. Unfortunately there doesn't seem to be a special define
+associated with the Dinkumware STL for the #ifdef to pick up on. </p>
+<h3> Using STLport</h3>
+<p>A very good HOWTO for installing and making the STLPort libs on
+MSVC6 can be found at <a
+ href="http://www.softadvances.com/articles/stlportusing.html">http://www.softadvances.com/articles/stlportusing.html</a> </p>
+<p>The OSG has been tested under Windows with STLport-4.5, which allows
+the users to configure the type of STL support required for STLport
+itself. The key configuration that the OSG needs to do is to enable the
+wrapping of MS's own iostreams, than using STLport's own implementation.
+The later is not required because this has not be problematic under
+Windows, it is only the container classes and algorithms that need
+replacing. Using the iostream wrapping option means the STLport can
+just be used on your include path, there is no need to compile STLport
+itself, or link into any special libraries. To configure STLport simply
+comment IN (its commented out by default), the following line from
+STLport-4.5/stlport/stl_user_config.h so it should look: </p>
 <ul>
 # define _STLP_NO_OWN_IOSTREAMS 1
 </ul>
-<p>Then configure the includes path in Visual Studio to pick up on STLport: Select the "Tools" menu. Select
-"Options" In the Options dialog, select the "Directories" tab Under the
-"include" option, add the path to STLport4.5, something like: D:/STLport4.5/stlport
-Then press the up array to move the entry all the way to the top of the
-list, thus overriding MS's own STL implementations.
-
+<p>Then configure the includes path in Visual Studio to pick up on
+STLport: Select the "Tools" menu. Select "Options" In the Options
+dialog, select the "Directories" tab Under the "include" option, add the
+path to STLport4.5, something like: D:/STLport4.5/stlport Then press
+the up array to move the entry all the way to the top of the list, thus
+overriding MS's own STL implementations. </p>
 <h3>Linking your own apps to the OpenSceneGraph</h3>
-<p>All OpenSceneGraph libraries, plugins and executables are compiled with
-the multi-threaded dll option turned ON, and with RTTI turned ON.  Your own
-projects which link to the OpenSceneGraph must uses these same options or
-your application will crash or produce unpredicatable behavior.
-
-
+<p>All OpenSceneGraph libraries, plugins and executables are compiled
+with the multi-threaded dll option turned ON, and with RTTI turned ON.
+Your own projects which link to the OpenSceneGraph must uses these same
+options or your application will crash or produce unpredicatable
+behavior. </p>
 <h3>Syntax highlight + OpenScenegraph Standard C++ style headers</h3>
-<p>The OpenSceneGraph uses Standard C++ style extensionless headers, which
-poor VisualStudio doesn't automatically recognize as suitable for
+<p>The OpenSceneGraph uses Standard C++ style extensionless headers,
+which poor VisualStudio doesn't automatically recognize as suitable for
 syntax highlighting (compile works fine though), even the StandardC++
 header themselves require a hack to get VisualStudio to highlight them
-properly.  The easy answer is to use that same hack to get it to recognize
-the OpenSceneGraph headers too.  To make easy a modified header listing file
-can be found in the VisualStudio/LANDEXT.DAT.  First copy the original
-LANDEXT.DAT file (located in C:\Progam Files\Microsoft Visual Studio\Common\MSDev98\Bin)
-to LANDEXT.DAT.BKP, and then copy over the OpenSceneGraph one.  Once you have
-done this VisualStudio will syntax highlight them without problem.
+properly. The easy answer is to use that same hack to get it to
+recognize the OpenSceneGraph headers too.  To make easy a modified
+header listing file can be found in the VisualStudio/LANDEXT.DAT. First
+copy the original LANDEXT.DAT file (located in C:\Progam
+Files\Microsoft Visual Studio\Common\MSDev98\Bin) to LANDEXT.DAT.BKP,
+and then copy over the OpenSceneGraph one.  Once you have done this
+VisualStudio will syntax highlight them without problem. </p>
 <hr>
-<h3>
-<a NAME="Linux"></a><u>Compiling under Linux</u></h3>
+<h3> <a name="Linux"></a><u>Compiling under Linux</u></h3>
 Compile, from the OSG root directory, ('%' is UNIX csh prompt) type:
 <blockquote><tt>% make</tt></blockquote>
-Note, make should automatically detect linux and build optimized targets
-for your system. And if you wish to install the OSG type:
+Note, make should automatically detect linux and build optimized
+targets for your system. And if you wish to install the OSG type:
 <blockquote><tt>% make install</tt></blockquote>
 or
 <blockquote><tt>% make instlinks</tt></blockquote>
@@ -216,168 +186,158 @@ To get full details of make options, type:
 <blockquote><tt>% make help</tt></blockquote>
 (highly recommended)
 <p>The osgText library now depends upon GLU1.3 functionality, and only
-the recent Mesa version have this as standard. Unfortunately not all Linux
-distributions are up to date even recent ones. If you have problems compiling
-osgText due to GLU problems then check out the details at the bottom of
-this file, under the title RedHat7.1 &amp; GLU1.3 for a quick way of installing
-GLU1.3 in the right place.
-<h3>
-RedHat 7.2 &amp; GLU1.3</h3>
-I have posted a simple fix for those of us who have been unable to correctly
-build OSG 0.8.43 on Redhat 7.2. You can download it at http://www.openscenegraph.org/download/dependencies/ReadHat7.2_fixglu.tar.gz
+the recent Mesa version have this as standard. Unfortunately not all
+Linux distributions are up to date even recent ones. If you have
+problems compiling osgText due to GLU problems then check out the
+details at the bottom of this file, under the title RedHat7.1 &amp;
+GLU1.3 for a quick way of installing GLU1.3 in the right place. </p>
+<h3> RedHat 7.2 &amp; GLU1.3</h3>
+I have posted a simple fix for those of us who have been unable to
+correctly build OSG 0.8.43 on Redhat 7.2. You can download it at
+http://www.openscenegraph.org/download/dependencies/ReadHat7.2_fixglu.tar.gz
 To install it, follow these steps:
-<p>English
-<blockquote>1) Untar the tarball. It will create a directory called fixosg/
-<br>2) Change to the ReadHat7.2_fixglu/ directory
-<br>3) Become root
-<br>4) Run the script called fixglu</blockquote>
+<p>English </p>
+<blockquote>1) Untar the tarball. It will create a directory called
+fixosg/ <br>
+2) Change to the ReadHat7.2_fixglu/ directory <br>
+3) Become root <br>
+4) Run the script called fixglu</blockquote>
 Cmd line
-<blockquote>tar xvzf ReadHat7.2_fixglu.tar.gz
-<br>cd ReadHat7.2_fixglu/
-<br>su (your root password)
-<br>./fixglu
-<br>exit</blockquote>
-You should then be able to do a "make" in your OSG directory and everything
-will build as it should. Let me know if this doesn't work and I will try
-to improve it. Email me directly for help instead of posting here. There's
-a README in the tarball with some info on what the script actually does.
-There's nothing wrong with OSG itself; the problem with Redhat 7.2 is that
-it doesn't have GLU 1.3 by default, which OSG is now dependent on (for
-osgText.) Good luck everyone. - Clay
-<p>
+<blockquote>tar xvzf ReadHat7.2_fixglu.tar.gz <br>
+cd ReadHat7.2_fixglu/ <br>
+su (your root password) <br>
+./fixglu <br>
+exit</blockquote>
+You should then be able to do a "make" in your OSG directory and
+everything will build as it should. Let me know if this doesn't work and
+I will try to improve it. Email me directly for help instead of posting
+here. There's a README in the tarball with some info on what the script
+actually does. There's nothing wrong with OSG itself; the problem with
+Redhat 7.2 is that it doesn't have GLU 1.3 by default, which OSG is now
+dependent on (for osgText.) Good luck everyone. - Clay
+<p> </p>
 <hr>
-<h3>
-<a NAME="Free BSD"></a><u>Compiling under FreeBSD</u></h3>
+<h3> <a name="Free BSD"></a><u>Compiling under FreeBSD</u></h3>
 Compile, from the OSG root directory, ('%' is UNIX csh prompt) type:
 <blockquote><tt>% make</tt></blockquote>
-Note, make should automatically detect linux and build optimized targets
-for your system. And if you wish to install the OSG type:
+Note, make should automatically detect linux and build optimized
+targets for your system. And if you wish to install the OSG type:
 <blockquote><tt>% make install</tt></blockquote>
 or
 <blockquote><tt>% make instlinks</tt></blockquote>
 To get full details of make options, type:
 <blockquote><tt>% make help</tt></blockquote>
 (highly recommended)
-<p>
+<p> </p>
 <hr>
-<h3>
-<a NAME="IRIX"></a><u>Compiling under IRIX</u></h3>
+<h3> <a name="IRIX"></a><u>Compiling under IRIX</u></h3>
 Since the OSG uses Standard C++ features such as STL it is important to
 have an up to date version of the MIPSPro compilers, ie. 7.3 or later.
 Support for MIPSPro7.2.1 has now been dropped since it was becoming to
 unwildy to support and is very rarely used in the OSG community. It is
 recommended to use MIPSPro7.3.1.1m.
-<p>Compile, from the OSG root directory, ('%' is UNIX csh prompt) type:
+<p>Compile, from the OSG root directory, ('%' is UNIX csh prompt) type: </p>
 <blockquote><tt>% make</tt></blockquote>
-Note, make should automatically detect linux and build optimized targets
-for your system. And if you wish to install the OSG type:
+Note, make should automatically detect linux and build optimized
+targets for your system. And if you wish to install the OSG type:
 <blockquote><tt>% make install</tt></blockquote>
 or
 <blockquote><tt>% make instlinks</tt></blockquote>
 To get full details of make options, type:
 <blockquote><tt>% make help</tt></blockquote>
-(highly recommended)
-<br>
+(highly recommended) <br>
 <hr>
-<h3>
-<a NAME="Solaris"></a><u>Compiling under Solaris</u></h3>
+<h3> <a name="Solaris"></a><u>Compiling under Solaris</u></h3>
 Compile, from the OSG root directory, ('%' is UNIX csh prompt) type:
 <blockquote><tt>% make</tt></blockquote>
-Note, make should automatically detect linux and build optimized targets
-for your system. And if you wish to install the OSG type:
+Note, make should automatically detect linux and build optimized
+targets for your system. And if you wish to install the OSG type:
 <blockquote><tt>% make install</tt></blockquote>
 or
 <blockquote><tt>% make instlinks</tt></blockquote>
 To get full details of make options, type:
 <blockquote><tt>% make help</tt></blockquote>
-(highly recommended)
-<br>
+(highly recommended) <br>
 <hr>
-<h3>
-<a NAME="Mac OSX"></a><u>Compiling under MacOS X</u></h3>
-For anyone who's ever used a Unix box for development, well, the mac
-<i>is</i> a Unix box. It's very simple to get OpenSceneGraph building
-and running under Mac OS X. The main requirement is that you need to have
-installed the Developer tools from the CD that comes
-for free with OS X. This gives you compilers, headers, frameworks - stuff
-like Producer and Carbon for developers. Get those here:
-
+<h3> <a name="Mac OSX"></a><u>Compiling under MacOS X</u></h3>
+For anyone who's ever used a Unix box for development, well, the mac <i>is</i>
+a Unix box. It's very simple to get OpenSceneGraph building and running
+under Mac OS X. The main requirement is that you need to have installed
+the Developer tools from the CD that comes for free with OS X. This
+gives you compilers, headers, frameworks - stuff like Producer and
+Carbon for developers. Get those here:
 <ul>
-<li> The Apple <a href="http://developer.apple.com/tools/macosxtools.html">
-    developer tools website</a>.
+  <li> The Apple <a
+ href="http://developer.apple.com/tools/macosxtools.html"> developer
+tools website</a>. </li>
 </ul>
-
-<p>Everything is done command-line, so you need to get to a shell before
-proceeding. The Mac comes with an app in Applications/Utilities
-called Terminal - open up any Finder window (e.g double-click on your hard
-disk icon), click on the Applications icon at the top right of the window,
-then click on the Utilities folder to get access to the Terminal.
-When you start Terminal it brings you up a csh running from your ~/ directory.
-Now, go to your OpenSceneGraph directory, and simply type:
-<p>
-<blockquote>
-<tt>make -j2</tt>
-</blockquote>
-
-And some time later you'll be rewarded with a lovely set of binaries and
-libraries. The Mac OSX build currently only builds a subset of the total
-functionality in OpenSceneGraph, but a large subset at that. Some of
-the remaining projects are known to build as well, but have external
-dependencies on libraries such as libtiff, libjpg, libpng, etc. and
-so are not included in the default build. However, if you examine
-the file <tt>OpenSceneGraph/Make/makedefs</tt> you will find which extra
-projects build for the mac, provided you have the external libraries
-required. Details
-on how to install these external libraries are outside the scope of
-this document, but for starting points, see one of:
+<p>Everything is done command-line, so you need to get to a shell
+before proceeding. The Mac comes with an app in Applications/Utilities
+called Terminal - open up any Finder window (e.g double-click on your
+hard disk icon), click on the Applications icon at the top right of the
+window, then click on the Utilities folder to get access to the
+Terminal. When you start Terminal it brings you up a csh running from
+your ~/ directory. Now, go to your OpenSceneGraph directory, and simply
+type: </p>
+<p> </p>
+<blockquote> <tt>make -j2</tt> </blockquote>
+And some time later you'll be rewarded with a lovely set of binaries
+and libraries. The Mac OSX build currently only builds a subset of the
+total functionality in OpenSceneGraph, but a large subset at that. Some
+of the remaining projects are known to build as well, but have external
+dependencies on libraries such as libtiff, libjpg, libpng, etc. and so
+are not included in the default build. However, if you examine the file <tt>OpenSceneGraph/Make/makedefs</tt>
+you will find which extra projects build for the mac, provided you have
+the external libraries required. Details on how to install these
+external libraries are outside the scope of this document, but for
+starting points, see one of:
 <ul>
-<li> The <a href="http://fink.sourceforge.net">fink project</a>.
-<li> The <a href="http://gnu-darwin.sourceforge.net/">GNU-Darwin project</a>.
+  <li> The <a href="http://fink.sourceforge.net">fink project</a>. </li>
+  <li> The <a href="http://gnu-darwin.sourceforge.net/">GNU-Darwin
+project</a>. </li>
 </ul>
 <h4> Running the examples </h4>
-Once you've got OpenSceneGraph built, you're ready to run your examples.
-As with other builds on other platforms, OpenSceneGraph requires
-you to set a few environment variables which describe your installation. These
-environment variables should be full-path, not relative, and a list
-of these for a csh-derived environment follow:
-
-<blockquote>
-<tt>
-setenv OSGHOME              `pwd`/OpenSceneGraph <br>
+Once you've got OpenSceneGraph built, you're ready to run your
+examples. As with other builds on other platforms, OpenSceneGraph
+requires you to set a few environment variables which describe your
+installation. These environment variables should be full-path, not
+relative, and a list of these for a csh-derived environment follow:
+<blockquote> <tt> setenv OSGHOME              `pwd`/OpenSceneGraph <br>
 setenv OSGFILEPATH          `pwd`/OpenSceneGraph-Data <br>
 setenv OSG_LD_LIBRARY_PATH  ${OSGHOME}/lib <br>
 setenv DYLD_LIBRARY_PATH    ${OSG_LD_LIBRARY_PATH} <br>
 setenv DYLD_BIND_AT_LAUNCH <br>
-</tt>
-</blockquote>
-
+  </tt> </blockquote>
 <h4> Notes </h4>
-
 <ul>
-<li> <b>Input Focus</b>: Many OSG examples have keyboard commands, however, when launching
-apps from the Mac Terminal, the focus seems to remain in the Terminal. Option-Clicking on
-the graphics window focuses it as the recipient of events, and allows these keyboard commands
-to then function properly.
-<li> <b>Known Bugs</b>:
-<li> <b>Installation</b>: No package based version of an OS X installer yet exists.
+  <li> <b>Input Focus</b>: Many OSG examples have keyboard commands,
+however, when launching apps from the Mac Terminal, the focus seems to
+remain in the Terminal. Option-Clicking on the graphics window focuses
+it as the recipient of events, and allows these keyboard commands to
+then function properly. </li>
+  <li> <b>Known Bugs</b>: </li>
+  <li> <b>Installation</b>: No package based version of an OS X
+installer yet exists. </li>
 </ul>
-
-<h3>
-<a NAME="Cygwin"></a><u>Compiling under Cygwin</u></h3>
-To compile, from the OSG root directory, type: make Note, make should automatically
-detect your system and build optimized targets for your system. And if
-you wish to install the OSG type: make install Note that make symbolic
-links don't seem to work under cygwin, so a make instlinks will simply
-copy files just like make install. 'make install' places all files in /usr/local/OpenSceneGraph
-under appropriate sub directories. To get full details of make options,
-type: make help (highly recommended)
-<p>OSG_FILE_PATH environmental variable
-<p>For the OSG to locate file data files easily an environmental variable
-OSG_FILE_PATH is used at run-time by the osgDB library. Note, for examples
-below substitute in the ${OSGDATA} directory with your own path where appropriate)
-Add the following to your .cshrc (note paths separated by colon's): setenv&nbsp;
-OSG_FILE_PATH ./:${OSGDATA}:${OSGDATA}/Images Or the following if you're
-using a sh compatible shell : export&nbsp; OSG_FILE_PATH=./:${OSGDATA}:${OSGDATA}/Images:
-Or under windows (note paths seperated by semi-colon's) : SET&nbsp; OSG_FILE_PATH=./:${OSGDATA};${OSGDATA}/Images
+<h3> <a name="Cygwin"></a><u>Compiling under Cygwin</u></h3>
+To compile, from the OSG root directory, type: make Note, make should
+automatically detect your system and build optimized targets for your
+system. And if you wish to install the OSG type: make install Note that
+make symbolic links don't seem to work under cygwin, so a make instlinks
+will simply copy files just like make install. 'make install' places
+all files in /usr/local/OpenSceneGraph under appropriate sub
+directories. To get full details of make options, type: make help
+(highly recommended)
+<p>OSG_FILE_PATH environmental variable </p>
+<p>For the OSG to locate file data files easily an environmental
+variable OSG_FILE_PATH is used at run-time by the osgDB library. Note,
+for examples below substitute in the ${OSGDATA} directory with your own
+path where appropriate) Add the following to your .cshrc (note paths
+separated by colon's): setenv&nbsp; OSG_FILE_PATH
+./:${OSGDATA}:${OSGDATA}/Images Or the following if you're using a sh
+compatible shell : export&nbsp;
+OSG_FILE_PATH=./:${OSGDATA}:${OSGDATA}/Images: Or under windows (note
+paths seperated by semi-colon's) : SET&nbsp;
+OSG_FILE_PATH=./:${OSGDATA};${OSGDATA}/Images </p>
 </body>
 </html>

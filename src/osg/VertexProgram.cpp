@@ -14,14 +14,17 @@
 #include <osg/GLExtensions>
 #include <osg/VertexProgram>
 #include <osg/State>
+#include <osg/Timer>
+
+#include <list>
 
 using namespace osg;
 
 // static cache of deleted vertex programs which can only 
 // by completely deleted once the appropriate OpenGL context
 // is set.
-typedef std::vector<GLuint> VertexProgramObjectVector;
-typedef std::map<unsigned int,VertexProgramObjectVector> DeletedVertexProgramObjectCache;
+typedef std::list<GLuint> VertexProgramObjectList;
+typedef std::map<unsigned int,VertexProgramObjectList> DeletedVertexProgramObjectCache;
 static DeletedVertexProgramObjectCache s_deletedVertexProgramObjectCache;
 
 void VertexProgram::deleteVertexProgramObject(unsigned int contextID,GLuint handle)
@@ -34,30 +37,34 @@ void VertexProgram::deleteVertexProgramObject(unsigned int contextID,GLuint hand
 }
 
 
-void VertexProgram::flushDeletedVertexProgramObjects(unsigned int contextID,double currentTime, double& availableTime)
+void VertexProgram::flushDeletedVertexProgramObjects(unsigned int contextID,double /*currentTime*/, double& availableTime)
 {
-    const Extensions* extensions = getExtensions(contextID,true);
+    // if no time available don't try to flush objects.
+    if (availableTime<=0.0) return;
 
-    if (!extensions->isVertexProgramSupported())
-        return;
+    const osg::Timer& timer = *osg::Timer::instance();
+    osg::Timer_t start_tick = timer.tick();
+    double elapsedTime = 0.0;
 
     DeletedVertexProgramObjectCache::iterator citr = s_deletedVertexProgramObjectCache.find(contextID);
     if (citr!=s_deletedVertexProgramObjectCache.end())
     {
-        VertexProgramObjectVector vpObjectSet;
-        vpObjectSet.reserve(1000);
+    
+        const Extensions* extensions = getExtensions(contextID,true);
 
-        // this swap will transfer the content of and empty citr->second
-        // in one quick pointer change.
-        vpObjectSet.swap(citr->second);
-
-        for(VertexProgramObjectVector::iterator titr=vpObjectSet.begin();
-            titr!=vpObjectSet.end();
-            ++titr)
+        VertexProgramObjectList& vpol = citr->second;
+    
+        for(VertexProgramObjectList::iterator titr=vpol.begin();
+            titr!=vpol.end() && elapsedTime<availableTime;
+            )
         {
             extensions->glDeletePrograms( 1L, &(*titr ) );
+            titr = vpol.erase(titr);
+            elapsedTime = timer.delta_s(start_tick,timer.tick());
         }
     }
+    
+    availableTime -= elapsedTime;
 }
 
 

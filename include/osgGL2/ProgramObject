@@ -34,15 +34,6 @@
 
 namespace osgGL2 {
 
-/** use deleteObject instead of glDeleteObject to allow
-  * GL2 Objects to cached until they can be deleted
-  * by the OpenGL context in which they were created, specified
-  * by contextID.*/
-extern OSGGL2_EXPORT void DeleteObject(unsigned int contextID, GLhandleARB handle);
-
-/** flush all the cached glProgramObjects which need to be deleted
-  * in the OpenGL context related to contextID.*/
-extern OSGGL2_EXPORT void FlushDeletedGL2Objects(unsigned int contextID);
 
 
 ///////////////////////////////////////////////////////////////////////////
@@ -87,6 +78,16 @@ class OSGGL2_EXPORT ProgramObject : public osg::StateAttribute
         void dirtyProgramObject();        
 
 	void addShader( ShaderObject* shader );
+        
+        /** use deleteObject instead of glDeleteObject to allow
+          * GL2 Objects to cached until they can be deleted
+          * by the OpenGL context in which they were created, specified
+          * by contextID.*/
+        static void deleteObject(unsigned int contextID, GLhandleARB handle);
+
+        /** flush all the cached glProgramObjects which need to be deleted
+          * in the OpenGL context related to contextID.*/
+        static void flushDeletedGL2Objects(unsigned int contextID,double currentTime, double& availableTime);
 
     protected:
 

@@ -32,22 +32,55 @@ inline Endian getCpuByteOrder()
         return LittleEndian;
 } 
 
-
-template <class T>
-inline void swapBytes( T& in )
+inline void swapBytes( char* in, unsigned int size )
 {
-    if( sizeof( T ) == 1 ) return;
-
-    typedef unsigned char * BytePtr;
-
-    T tmp = in;
-    BytePtr sptr = (BytePtr)&in;
-    BytePtr tptr = (BytePtr)&tmp + sizeof(T)-1;
-
-    for( unsigned int i = 0; i < sizeof(T); ++i )
-        *(sptr++) = *(dptr--);
+    char* start = in;
+    char* end = start+size-1;
+    while (start<end)
+    {
+        std::swap(*start++,*end--);
+    }
+    
 }
 
+inline void swapBytes2( char* in )
+{
+    char* start = in;
+    char* end = start+1;
+    std::swap(*start,*end);
+}
+
+inline void swapBytes4( char* in )
+{
+    char* start = in;
+    char* end = start+3;
+    std::swap(*start++,*end--);
+    std::swap(*start,*end);
+}
+
+inline void swapBytes8( char* in )
+{
+    char* start = in;
+    char* end = start+7;
+    std::swap(*start++,*end--);
+    std::swap(*start++,*end--);
+    std::swap(*start++,*end--);
+    std::swap(*start,*end);
+}
+
+inline void swapBytes16( char* in )
+{
+    char* start = in;
+    char* end = start+15;
+    std::swap(*start++,*end--);
+    std::swap(*start++,*end--);
+    std::swap(*start++,*end--);
+    std::swap(*start++,*end--);
+    std::swap(*start++,*end--);
+    std::swap(*start++,*end--);
+    std::swap(*start++,*end--);
+    std::swap(*start,*end);
+}
 
 }
 

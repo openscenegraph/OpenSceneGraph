@@ -10,8 +10,6 @@ typedef void (APIENTRY * MyCompressedTexImage2DArbProc) (GLenum target, GLint le
 using namespace osg;
 
 
-Texture::DeletedTextureObjectCache Texture::s_deletedTextureObjectCache;
-
 Texture::Texture():
             _wrap_s(CLAMP),
             _wrap_t(CLAMP),
@@ -23,9 +21,9 @@ Texture::Texture():
             _internalFormatMode(USE_IMAGE_DATA_FORMAT),
             _internalFormat(0)
 {
-    _handleList.resize(DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),0);
-    _modifiedTag.resize(DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),0);
-    _texParametersDirtyList.resize(DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),true);
+//     _handleList.resize(DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),0);
+//     _modifiedTag.resize(DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),0);
+//     _texParametersDirtyList.resize(DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),true);
 }
 
 Texture::Texture(const Texture& text,const CopyOp& copyop):
@@ -40,9 +38,9 @@ Texture::Texture(const Texture& text,const CopyOp& copyop):
             _internalFormatMode(text._internalFormatMode),
             _internalFormat(text._internalFormat)
 {
-    _handleList.resize(DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),0);
-    _modifiedTag.resize(DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),0);
-    _texParametersDirtyList.resize(DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),true);
+//     _handleList.resize(DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),0);
+//     _modifiedTag.resize(DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),0);
+//     _texParametersDirtyList.resize(DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),true);
 }
 
 Texture::~Texture()
@@ -136,11 +134,9 @@ void Texture::dirtyTextureObject()
 
 void Texture::dirtyTextureParameters()
 {
-    for(TexParameterDirtyList::iterator itr=_texParametersDirtyList.begin();
-        itr!=_texParametersDirtyList.end();
-        ++itr)
+    for(uint i=0;i<_texParametersDirtyList.size();++i)
     {
-        *itr = true;
+        _texParametersDirtyList[i] = 0;
     }
 }
 
@@ -435,10 +431,20 @@ void Texture::applyTexImage2D(GLenum target, Image* image, State& state, GLsizei
     
 }
 
-/** use deleteTextureObject instead of glDeleteTextures to allow
-  * OpenGL texture objects to cached until they can be deleted
-  * by the OpenGL context in which they were created, specified
-  * by contextID.*/
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+//  Static map to manage the deletion of texture objects are the right time.
+//////////////////////////////////////////////////////////////////////////////////////////////
+#include <map>
+#include <set>
+
+// static cache of deleted display lists which can only 
+// by completely deleted once the appropriate OpenGL context
+// is set.
+typedef std::map<osg::uint,std::set<GLuint> > DeletedTextureObjectCache;
+static DeletedTextureObjectCache s_deletedTextureObjectCache;
+
+
 void Texture::deleteTextureObject(uint contextID,GLuint handle)
 {
     if (handle!=0)
@@ -449,8 +455,6 @@ void Texture::deleteTextureObject(uint contextID,GLuint handle)
 }
 
 
-/** flush all the cached display list which need to be deleted
-  * in the OpenGL context related to contextID.*/
 void Texture::flushDeletedTextureObjects(uint contextID)
 {
     DeletedTextureObjectCache::iterator citr = s_deletedTextureObjectCache.find(contextID);
@@ -461,7 +465,7 @@ void Texture::flushDeletedTextureObjects(uint contextID)
                                      titr!=textureObjectSet.end();
                                      ++titr)
         {
-            glDeleteTextures( 1L, (const GLuint *)&(*titr ));
+            glDeleteTextures( 1L, &(*titr ));
         }
         s_deletedTextureObjectCache.erase(citr);
     }

@@ -38,7 +38,6 @@ void Tesselator::beginContour()
     if (_tobj)
     {
         gluTessBeginContour(_tobj);
-//        cout<<"begin"<<endl;
     }
 }
       
@@ -52,7 +51,6 @@ void Tesselator::addVertex(osg::Vec3* vertex)
         (*data)._v[1]=(*vertex)[1];
         (*data)._v[2]=(*vertex)[2];
         gluTessVertex(_tobj,data->_v,vertex);
-//        cout<<"\t"<<*vertex<<endl;
     }
 }
 
@@ -61,7 +59,6 @@ void Tesselator::endContour()
     if (_tobj)
     {
         gluTessEndContour(_tobj);
-//        cout<<"end"<<endl;
     }
 }
 
@@ -283,29 +280,43 @@ void Tesselator::retesselatePolygons(osg::Geometry& geom)
             }
             
             
-            for(PrimList::iterator primItr=_primList.begin();
+            {
+                osg::Vec3Array* normals = NULL; // GWM Sep 2002 - add normals for extra facets
+                int iprim=0;
+                if (geom.getNormalBinding()==osg::Geometry::BIND_PER_PRIMITIVE)
+                {
+                    normals = geom.getNormalArray(); // GWM Sep 2002
+                }
+                for(PrimList::iterator primItr=_primList.begin();
                 primItr!=_primList.end();
                 ++primItr)
-            {
-                Prim* prim = primItr->get();
-
-                osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(prim->_mode);
-                for(Prim::VecList::iterator vitr=prim->_vertices.begin();
+                {
+                    Prim* prim = primItr->get();
+                    osg::Vec3 norm(0.0f,0.0f,0.0f);
+                    
+                    osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(prim->_mode);
+                    for(Prim::VecList::iterator vitr=prim->_vertices.begin();
                     vitr!=prim->_vertices.end();
                     ++vitr)
-                {
-                    elements->push_back(vertexPtrToIndexMap[*vitr]);
-                }
-
-                if (primItr==_primList.begin()) 
-                {
-                    // first new primitive so overwrite the previous polygon.
-                    geom.getPrimitiveList()[primNo] = elements;                    
-                }
-                else
-                {
-                    // subsequence primtives add to the back of the primitive list.
-                    geom.addPrimitive(elements);
+                    {
+                        elements->push_back(vertexPtrToIndexMap[*vitr]);
+                    }
+                    
+                    if (primItr==_primList.begin()) 
+                    {
+                        // first new primitive so overwrite the previous polygon.
+                        geom.getPrimitiveList()[primNo] = elements;                    
+                        if (normals) {
+                            norm=(*normals)[iprim]; // GWM Sep 2002 the flat shaded normal
+                        }
+                    }
+                    else
+                    {
+                        // subsequence primitives add to the back of the primitive list.
+                        geom.addPrimitive(elements);
+                        if (normals) normals->push_back(norm); // GWM Sep 2002 add flat shaded normal for new facet
+                    }
+                    iprim++; // GWM Sep 2002 count which normal we should use
                 }
             }
             

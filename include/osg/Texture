@@ -11,10 +11,8 @@
 #include <osg/StateAttribute>
 #include <osg/ref_ptr>
 #include <osg/Vec4>
+#include <osg/buffered_value>
 
-#include <vector>
-#include <map>
-#include <set>
 
 // if not defined by gl.h use the definition found in:
 // http://oss.sgi.com/projects/ogl-sample/registry/EXT/texture_filter_anisotropic.txt
@@ -179,34 +177,55 @@ class SG_EXPORT Texture : public osg::StateAttribute
         bool isCompressedInternalFormat() const;
 
         
+//         /** Get the handle to the texture object for the current context.*/
+//         /** return the OpenGL texture object for specified context.*/
+//         inline GLuint& getTextureObject(uint contextID) const
+//         {
+//             // pad out handle list if required.
+//             if (_handleList.size()<=contextID)
+//                 _handleList.resize(contextID+1,0);
+// 
+//             // get the globj for the current contextID.
+//             return _handleList[contextID];
+//         }
+// 
+//         inline uint& getModifiedTag(uint contextID) const
+//         {
+//             // pad out handle list if required.
+//             if (_modifiedTag.size()<=contextID)
+//                 _modifiedTag.resize(contextID+1,0);
+// 
+//             // get the modified tag for the current contextID.
+//             return _modifiedTag[contextID];
+//         }
+// 
+//         inline uint& getTextureParameterDity(uint contextID) const
+//         {
+//             // pad out handle list if required.
+//             if (_texParametersDirtyList.size()<=contextID)
+//                 _texParametersDirtyList.resize(contextID+1,0);
+// 
+//             // get the dirty flag for the current contextID.
+//             return _texParametersDirtyList[contextID];
+//         }
+
+
         /** Get the handle to the texture object for the current context.*/
         /** return the OpenGL texture object for specified context.*/
         inline GLuint& getTextureObject(uint contextID) const
         {
-            // pad out handle list if required.
-            if (_handleList.size()<=contextID)
-                _handleList.resize(contextID+1,0);
-
             // get the globj for the current contextID.
             return _handleList[contextID];
         }
 
         inline uint& getModifiedTag(uint contextID) const
         {
-            // pad out handle list if required.
-            if (_modifiedTag.size()<=contextID)
-                _modifiedTag.resize(contextID+1,0);
-
             // get the modified tag for the current contextID.
             return _modifiedTag[contextID];
         }
 
         inline uint& getTextureParameterDity(uint contextID) const
         {
-            // pad out handle list if required.
-            if (_texParametersDirtyList.size()<=contextID)
-                _texParametersDirtyList.resize(contextID+1,0);
-
             // get the dirty flag for the current contextID.
             return _texParametersDirtyList[contextID];
         }
@@ -259,13 +278,16 @@ class SG_EXPORT Texture : public osg::StateAttribute
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
         int compareTexture(const Texture& rhs) const;
 
-        typedef std::vector<GLuint> TextureNameList;
+//        typedef std::vector<GLuint> TextureNameList;
+        typedef buffered_value<GLuint> TextureNameList;
         mutable TextureNameList _handleList;
 
-        typedef std::vector<uint> ImageModifiedTag;
+//        typedef std::vector<uint> ImageModifiedTag;
+        typedef buffered_value<uint> ImageModifiedTag;
         mutable ImageModifiedTag _modifiedTag;
 
-        typedef std::vector<uint> TexParameterDirtyList;
+//        typedef std::vector<uint> TexParameterDirtyList;
+        typedef buffered_value<uint> TexParameterDirtyList;
         mutable TexParameterDirtyList _texParametersDirtyList;
 
         WrapMode _wrap_s;
@@ -281,11 +303,6 @@ class SG_EXPORT Texture : public osg::StateAttribute
         InternalFormatMode  _internalFormatMode;
         mutable GLint       _internalFormat;
 
-        // static cache of deleted display lists which can only 
-        // by completely deleted once the appropriate OpenGL context
-        // is set.
-        typedef std::map<uint,std::set<uint> > DeletedTextureObjectCache;
-        static DeletedTextureObjectCache s_deletedTextureObjectCache;
 };
 
 }

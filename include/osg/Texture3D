@@ -92,6 +92,26 @@ class SG_EXPORT Texture3D : public Texture
         /** On first apply (unless already compiled), create the minmapped 
           * texture and bind it, subsequent apply will simple bind to texture.*/
         virtual void apply(State& state) const;
+        
+        
+        struct Extensions : public osg::Referenced
+        {
+            Extensions();
+
+            
+            bool                    isTexture3DSupported;
+            bool                    isTexture3DFast;
+            GLint                   maxTexture3DSize;
+            
+            
+            void glTexImage3D( GLenum target, GLint level, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const GLvoid *pixels);
+            void glTexSubImage3D( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *pixels);
+            void glCopyTexSubImage3D( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height );
+            void gluBuild3DMipmaps( GLenum target, GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *data);
+
+        };
+        
+        static Extensions* getExtensions(uint contextID=0);
 
     protected :
 

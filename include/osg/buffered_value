@@ -1,0 +1,59 @@
+//C++ header - Open Scene Graph - Copyright (C) 1998-2002 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+
+#ifndef OSG_BUFFERED_VALUE
+#define OSG_BUFFERED_VALUE 1
+
+#include <osg/DisplaySettings>
+#include <vector>
+
+namespace osg {
+
+/** Simple buffered value array which is used for values that need to multibuffered on
+  * one per graphics context basis.*/
+  
+template<class T>
+class buffered_value
+{
+    public:
+    
+        inline buffered_value():
+            _array(DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),0)
+            {}
+
+        buffered_value& operator = (const buffered_value& rhs)
+        {
+            _array = rhs._array;
+            return *this;
+        }
+
+        inline void clear() { _array.clear(); }
+
+        inline bool empty() const { return _array.empty(); }
+
+        inline unsigned int size() const { return _array.size(); }
+
+        inline T& operator[] (unsigned int pos)
+        {
+            // automatically resize array.
+            if (_array.size()<=pos)
+                _array.resize(pos+1,0);
+
+            return _array[pos];
+        }
+/* // do we implement the const version???
+        inline T operator[] (unsigned int pos) const
+        {
+            return 0;
+        }
+*/        
+
+    protected:
+    
+        std::vector<T> _array;
+};
+
+}
+
+#endif

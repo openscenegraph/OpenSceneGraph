@@ -20,6 +20,7 @@
 #include "CullFace.h"
 #include "PolygonOffset.h"
 #include "ShadeModel.h"
+#include "Texture1D.h"
 #include "Texture2D.h"
 #include "TextureCubeMap.h"
 #include "TexEnv.h"
@@ -131,7 +132,7 @@ void StateSet::read(DataInputStream* in){
             case 3:        
                 setRenderBinDetails(num, name, osg::StateSet::ENCLOSE_RENDERBIN_DETAILS); 
                 break;
-            default: throw Exception("Unkown RenderBinMode in StateSet::read()");
+            default: throw Exception("Unknown RenderBinMode in StateSet::read()");
         }
 
         // Read stateset modes.

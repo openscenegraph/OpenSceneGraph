@@ -8,6 +8,7 @@
  *    CREATED BY:        Rune Schmidt Jensen
  *
  *    HISTORY:        Created 11.03.2003
+ *                    Updated for texture1D by Don Burns, 27.1.2004
  *
  *    Copyright 2003 VR-C
  **********************************************************************/
@@ -21,6 +22,7 @@
 #include "PolygonOffset.h"
 #include "ShadeModel.h"
 #include "Point.h"
+#include "Texture1D.h"
 #include "Texture2D.h"
 #include "TextureCubeMap.h"
 #include "TexEnv.h"
@@ -629,6 +631,10 @@ osg::StateAttribute* DataInputStream::readStateAttribute()
         attribute = new osg::Point();
         ((ive::Point*)(attribute))->read(this);
     }
+    else if(attributeID == IVETEXTURE1D){
+        attribute = new osg::Texture1D();
+        ((ive::Texture1D*)(attribute))->read(this);
+    }
     else if(attributeID == IVETEXTURE2D){
         attribute = new osg::Texture2D();
         ((ive::Texture2D*)(attribute))->read(this);
@@ -654,7 +660,7 @@ osg::StateAttribute* DataInputStream::readStateAttribute()
         ((ive::TexMat*)(attribute))->read(this);
     }
     else{
-        throw Exception("Unkown StateAttribute in StateSet::read()");
+        throw Exception("Unknown StateAttribute in StateSet::read()");
     }
        
     // and add it to the stateattribute map,

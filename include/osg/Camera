@@ -11,6 +11,7 @@
 #include <osg/Quat>
 #include <osg/ClippingVolume>
 #include <osg/Viewport>
+#include <osg/DisplaySettings>
 
 namespace osg {
 
@@ -24,7 +25,8 @@ class SG_EXPORT Camera: public osg::Referenced
 
     public:
 
-        Camera();
+        Camera(DisplaySettings* ds=NULL);
+        
         Camera(const Camera&);
         Camera& operator=(const Camera&);
         virtual ~Camera();
@@ -275,25 +277,25 @@ class SG_EXPORT Camera: public osg::Referenced
             PROPORTIONAL_TO_SCREEN_DISTANCE
         };
         
-        /** Set the fusion distance function which in use to calculate the
+        /** Set the mode of the fusion distance function which in use to calculate the
           * fusion distance used in stereo rendering. Default value is
-          * PROPORTIONAL_TO_LOOK_DISTANCE, 1.0f.*/
-        void setFusionDistanceFunction(FusionDistanceMode mode, float ratio=1.0f)
-        {
-            _fusionDistanceMode = mode;
-            _fusionDistanceRatio = ratio;
-             _dirty = true;
-        }
+          * PROPORTIONAL_TO_LOOK_DISTANCE. Use in conjunction with setFusionDistanceRatio(float).*/
+        void setFusionDistanceMode(FusionDistanceMode mode) { _fusionDistanceMode = mode; _dirty = true; }
 
-        /** Get the fusion distance function.*/
-        void getFusionDistanceFunction(FusionDistanceMode& mode, float& ratio)
-        {
-            mode = _fusionDistanceMode;
-            ratio = _fusionDistanceRatio;
-        }
+        /** Get the mode of the fusion distance function.*/
+        FusionDistanceMode getFusionDistanceMode() const { return _fusionDistanceMode; }
+
+        /** Set the ratio of the fusion distance function which in use to calculate the
+          * fusion distance used in stereo rendering. Default value is 1.0f
+          * Use in conjunction with setFusionDistanceMode(..).*/
+        void setFusionDistanceRatio(float ratio) { _fusionDistanceRatio = ratio; _dirty = true; }
+
+        /** Get the ratio of the fusion distance function.*/
+        float getFusionDistanceRatio() const { return _fusionDistanceRatio; }
 
         /** Calculate and return the fusion distance, using the FusionDistanceFunction.*/
         const float getFusionDistance() const;
+                
                 
         /** Set the physical distance between the viewers eyes and the display system.
            * Note, only used when rendering in stereo.*/

@@ -72,8 +72,9 @@ bool TrackballManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us
             if (calcMovement()) us.requestRedraw();
             us.requestContinuousUpdate(false);
             _thrown = false;
+            return true;
         }
-        return true;
+
         case(GUIEventAdapter::RELEASE):
         {
             if (ea.getButtonMask()==0)
@@ -106,20 +107,23 @@ bool TrackballManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us
                 us.requestContinuousUpdate(false);
                 _thrown = false;
             }
+            return true;
         }
-        return true;
+
         case(GUIEventAdapter::DRAG):
         {
             addMouseEvent(ea);
             if (calcMovement()) us.requestRedraw();
             us.requestContinuousUpdate(false);
             _thrown = false;
+            return true;
         }
-        return true;
+
         case(GUIEventAdapter::MOVE):
         {
+            return false;
         }
-        return false;
+
         case(GUIEventAdapter::KEYBOARD):
             if (ea.getKey()==' ')
             {
@@ -128,6 +132,15 @@ bool TrackballManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us
                 home(ea,us);
                 us.requestRedraw();
                 us.requestContinuousUpdate(false);
+                return true;
+            } else if (ea.getKey()=='+')
+            {
+                _camera->setFusionDistanceRatio(_camera->getFusionDistanceRatio()*1.25f);
+                return true;
+            }
+            else if (ea.getKey()=='-')
+            {
+                _camera->setFusionDistanceRatio(_camera->getFusionDistanceRatio()/1.25f);
                 return true;
             }
             return false;
@@ -175,7 +188,7 @@ void TrackballManipulator::addMouseEvent(const GUIEventAdapter& ea)
 
 bool TrackballManipulator::calcMovement()
 {
-    _camera->setFusionDistanceFunction(osg::Camera::PROPORTIONAL_TO_LOOK_DISTANCE,1.0f);
+    _camera->setFusionDistanceMode(osg::Camera::PROPORTIONAL_TO_LOOK_DISTANCE);
 
     // return if less then two events have been added.
     if (_ga_t0.get()==NULL || _ga_t1.get()==NULL) return false;

@@ -13,8 +13,10 @@
 using namespace osg;
 using namespace osgUtil;
 
-SceneView::SceneView()
+SceneView::SceneView(DisplaySettings* ds)
 {
+    _displaySettings = ds;
+
     _calc_nearfar = true;
 
     _backgroundColor.set(0.2f, 0.2f, 0.4f, 1.0f);
@@ -52,7 +54,7 @@ void SceneView::setDefaults()
 
     _state = new State;
     
-    _camera = new Camera;
+    _camera = new Camera(_displaySettings.get());
 
     _rendergraph = new RenderGraph;
     _renderStage = new RenderStage;
@@ -282,7 +284,7 @@ void SceneView::draw()
     _state->reset();
     
     _state->setFrameStamp(_frameStamp.get());
-    _state->setVisualsSettings(_visualsSettings.get());
+    _state->setDisplaySettings(_displaySettings.get());
 
     // note, to support multi-pipe systems the deletion of OpenGL display list
     // and texture objects is deferred until the OpenGL context is the correct
@@ -294,19 +296,19 @@ void SceneView::draw()
     RenderLeaf* previous = NULL;
     
 
-    if (_visualsSettings.valid() && _visualsSettings->getStereo()) 
+    if (_displaySettings.valid() && _displaySettings->getStereo()) 
     {
     
-        _camera->setScreenDistance(_visualsSettings->getScreenDistance());
+        _camera->setScreenDistance(_displaySettings->getScreenDistance());
 
-        switch(_visualsSettings->getStereoMode())
+        switch(_displaySettings->getStereoMode())
         {
-        case(osg::VisualsSettings::QUAD_BUFFER):
+        case(osg::DisplaySettings::QUAD_BUFFER):
             {
                 osg::ref_ptr<osg::Camera> left_camera = new osg::Camera(*_camera);
                 osg::ref_ptr<osg::Camera> right_camera = new osg::Camera(*_camera);
                 
-                float iod = _visualsSettings->getEyeSeperation();
+                float iod = _displaySettings->getEyeSeperation();
 
                 left_camera->adjustEyeOffsetForStereo(osg::Vec3(-iod*0.5,0.0f,0.0f));
                 right_camera->adjustEyeOffsetForStereo(osg::Vec3(iod*0.5,0.0f,0.0f));
@@ -322,12 +324,12 @@ void SceneView::draw()
                 _renderStage->draw(*_state,previous);
             }
             break;
-        case(osg::VisualsSettings::ANAGLYPHIC):
+        case(osg::DisplaySettings::ANAGLYPHIC):
             {
                 osg::ref_ptr<osg::Camera> left_camera = new osg::Camera(*_camera);
                 osg::ref_ptr<osg::Camera> right_camera = new osg::Camera(*_camera);
 
-                float iod = _visualsSettings->getEyeSeperation();
+                float iod = _displaySettings->getEyeSeperation();
 
                 left_camera->adjustEyeOffsetForStereo(osg::Vec3(-iod*0.5,0.0f,0.0f));
                 right_camera->adjustEyeOffsetForStereo(osg::Vec3(iod*0.5,0.0f,0.0f));

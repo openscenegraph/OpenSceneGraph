@@ -12,6 +12,7 @@ C++FILES = \
 	ColorMatrix.cpp \
 	CullFace.cpp\
 	Depth.cpp \
+        DisplaySettings.cpp\
 	Drawable.cpp\
 	EarthSky.cpp\
 	Fog.cpp\
@@ -54,7 +55,6 @@ C++FILES = \
 	Transparency.cpp\
         Version.cpp\
         Viewport.cpp\
-        VisualsSettings.cpp\
         
 
 TARGET_BASENAME = osg
@@ -74,6 +74,7 @@ TARGET_INCLUDE_FILES = \
 	osg/ColorMatrix\
 	osg/CullFace\
 	osg/Depth\
+        osg/VisualsSettings\
 	osg/Drawable\
 	osg/EarthSky\
 	osg/Export\
@@ -127,7 +128,6 @@ TARGET_INCLUDE_FILES = \
 	osg/Vec4\
 	osg/Version\
 	osg/Viewport\
-        osg/VisualsSettings\
 	osg/mem_ptr\
 	osg/ref_ptr\
 

@@ -1,30 +1,31 @@
-#include <osg/VisualsSettings>
+#include <osg/DisplaySettings>
 
 #include <algorithm>
 
 using namespace osg;
 
-VisualsSettings::VisualsSettings(const VisualsSettings& vs):Referenced()
+DisplaySettings::DisplaySettings(const DisplaySettings& vs):Referenced()
 {
     copy(vs);
 }
 
-VisualsSettings::~VisualsSettings()
+DisplaySettings::~DisplaySettings()
 {
 }
 
-VisualsSettings& VisualsSettings::operator = (const VisualsSettings& vs)
+DisplaySettings& DisplaySettings::operator = (const DisplaySettings& vs)
 {
     if (this==&vs) return *this;
     copy(vs);
     return *this;
 }
 
-void VisualsSettings::copy(const VisualsSettings& vs)
+void DisplaySettings::copy(const DisplaySettings& vs)
 {
     _stereoMode = vs._stereoMode;
     _eyeSeperation = vs._eyeSeperation;
     _screenDistance = vs._screenDistance;
+    _screenHeight = vs._screenHeight;
 
     _doubleBuffer = vs._doubleBuffer;
     _RGB = vs._RGB;
@@ -33,7 +34,7 @@ void VisualsSettings::copy(const VisualsSettings& vs)
     _minimumNumberStencilBits = vs._minimumNumberStencilBits;
 }
 
-void VisualsSettings::merge(const VisualsSettings& vs)
+void DisplaySettings::merge(const DisplaySettings& vs)
 {
     if (_stereo       || vs._stereo)        _stereo = true;
     
@@ -47,12 +48,13 @@ void VisualsSettings::merge(const VisualsSettings& vs)
     if (vs._minimumNumberStencilBits>_minimumNumberStencilBits) _minimumNumberStencilBits = vs._minimumNumberStencilBits;
 }
 
-void VisualsSettings::setDefaults()
+void DisplaySettings::setDefaults()
 {
     _stereo = false;
     _stereoMode = ANAGLYPHIC;
     _eyeSeperation = 0.05f;
-    _screenDistance = 1.0f;
+    _screenDistance = 0.5f;
+    _screenHeight = 0.26f;
 
     _doubleBuffer = true;
     _RGB = true;
@@ -61,7 +63,7 @@ void VisualsSettings::setDefaults()
     _minimumNumberStencilBits = 0;
 }
 
-void VisualsSettings::readEnvironmentalVariables()
+void DisplaySettings::readEnvironmentalVariables()
 {
     char *ptr;
     if( (ptr = getenv("OSG_STEREO_MODE")) )
@@ -109,9 +111,14 @@ void VisualsSettings::readEnvironmentalVariables()
     {
         _screenDistance = atof(ptr);
     }
+
+    if( (ptr = getenv("OSG_SCREEN_HEIGHT")) )
+    {
+        _screenHeight = atof(ptr);
+    }
 }
 
-void VisualsSettings::readCommandLine(std::vector<std::string>& commandLine)
+void DisplaySettings::readCommandLine(std::vector<std::string>& commandLine)
 {
 
     bool found = true;

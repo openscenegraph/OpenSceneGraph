@@ -9,7 +9,7 @@
 #include <osg/NodeVisitor>
 #include <osg/Geode>
 #include <osg/Timer>
-#include <osg/VisualsSettings>
+#include <osg/DisplaySettings>
 
 #include <osgUtil/GUIEventAdapter>
 #include <osgUtil/CameraManipulator>
@@ -178,7 +178,7 @@ class OSGGLUT_EXPORT Viewer : public osgUtil::GUIActionAdapter
 
 
         osg::ref_ptr<osg::FrameStamp>       _frameStamp;
-        osg::ref_ptr<osg::VisualsSettings>  _visualsSettings;
+        osg::ref_ptr<osg::DisplaySettings>  _displaySettings;
 
 
 };

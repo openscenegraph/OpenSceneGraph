@@ -6,6 +6,7 @@
 #define RENDERTOTEXTURESTAGE 1
 
 #include <osg/Texture2D>
+#include <osg/State>
 
 #include <osgUtil/RenderStage>
 
@@ -49,9 +50,10 @@ class /*OSGUTIL_EXPORT*/ MyRenderToTextureStage : public osgUtil::RenderStage
     
         virtual ~MyRenderToTextureStage();
         
-        osg::ref_ptr<osg::Texture2D> _texture;
-        osg::ref_ptr<osg::Image> _image;
-        PBuffer* _pbuffer;
+        osg::ref_ptr<osg::Texture2D>    _texture;
+        osg::ref_ptr<osg::Image>        _image;
+        osg::ref_ptr<osg::State>        _localState;
+        PBuffer*                        _pbuffer;
 };
 
 // }

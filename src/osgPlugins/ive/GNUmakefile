@@ -78,7 +78,7 @@ CXXFILES =\
 	VertexProgram.cpp\
 	VisibilityGroup.cpp\
 
-LIBS   += -losgFX -losgSim -losgText $(OSG_LIBS) $(OTHER_LIBS)
+LIBS   += -losgFX -losgGL2 -losgSim -losgText $(OSG_LIBS) $(OTHER_LIBS)
 
 TARGET_BASENAME = ive
 include $(TOPDIR)/Make/cygwin_plugin_def

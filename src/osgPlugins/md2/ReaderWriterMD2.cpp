@@ -45,7 +45,7 @@ class ReaderWriterMD2 : public osgDB::ReaderWriter
 public:
     ReaderWriterMD2 () { }
 
-    virtual const char* className () {
+    virtual const char* className () const {
 	return "Quake MD2 Reader";
     }
 

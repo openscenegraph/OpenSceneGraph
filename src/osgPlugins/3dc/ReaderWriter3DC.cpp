@@ -15,7 +15,7 @@ using namespace osg;
 class ReaderWriter3DC : public osgDB::ReaderWriter
 {
     public:
-        virtual const char* className() { return "3DC point cloud reader"; }
+        virtual const char* className() const { return "3DC point cloud reader"; }
         
         virtual bool acceptsExtension(const std::string& extension)
         {

@@ -13,7 +13,7 @@ class ReaderWriterMPEG : public osgDB::ReaderWriter
 {
     public:
 
-        virtual const char* className() { return "MPEG ImageStream Reader"; }
+        virtual const char* className() const { return "MPEG ImageStream Reader"; }
 
         virtual bool acceptsExtension(const std::string& extension)
         {

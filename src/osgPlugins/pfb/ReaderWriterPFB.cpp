@@ -29,7 +29,7 @@ class ReaderWriterPFB : public osgDB::ReaderWriter
 
         void initPerformer();
 
-        virtual const char* className() { return "Performer Reader/Writer"; }
+        virtual const char* className() const { return "Performer Reader/Writer"; }
         virtual bool acceptsExtension(const std::string& extension) 
 	{ 
 	    return 

@@ -50,7 +50,7 @@ namespace txp
 class ReaderWriterTXP : public osgDB::ReaderWriter
 {
 public:
-    virtual const char* className()
+    virtual const char* className() const
     {
         return "TXP Reader/Writer";
     }

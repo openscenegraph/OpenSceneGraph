@@ -702,7 +702,7 @@ bool WriteDDSFile(const osg::Image *img, const char *filename)
 class ReaderWriterDDS : public osgDB::ReaderWriter
 {
 public:
-    virtual const char* className()
+    virtual const char* className() const
     { 
         return "DDS Image Reader/Writer"; 
     }

@@ -792,7 +792,7 @@ void _dwobj::buildDrawable(Group *grp)
 class ReaderWriterDW : public osgDB::ReaderWriter
 {
     public:
-        virtual const char* className() { return "Design Workshop Database Reader"; }
+        virtual const char* className() const { return "Design Workshop Database Reader"; }
 
         virtual bool acceptsExtension(const std::string& extension)
         {

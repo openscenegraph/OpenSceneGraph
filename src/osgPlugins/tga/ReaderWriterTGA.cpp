@@ -475,7 +475,7 @@ int headerlen)
 class ReaderWriterTGA : public osgDB::ReaderWriter
 {
     public:
-        virtual const char* className() { return "TGA Image Reader"; }
+        virtual const char* className() const { return "TGA Image Reader"; }
         virtual bool acceptsExtension(const std::string& extension) { return osgDB::equalCaseInsensitive(extension,"tga"); }
 
         virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options*)

@@ -70,7 +70,7 @@ class geodeVisitor : public osg::NodeVisitor { // collects geodes from scene sub
 class ReaderWriterAC : public osgDB::ReaderWriter
 {
     public:
-        virtual const char* className() { return "AC3D Database Reader"; }
+        virtual const char* className() const { return "AC3D Database Reader"; }
 
         virtual bool acceptsExtension(const std::string& extension)
         {

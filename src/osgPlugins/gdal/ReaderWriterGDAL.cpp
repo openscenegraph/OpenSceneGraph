@@ -13,7 +13,7 @@
 class ReaderWriterGDAL : public osgDB::ReaderWriter
 {
     public:
-        virtual const char* className() { return "GDAL Image Reader"; }
+        virtual const char* className() const { return "GDAL Image Reader"; }
         virtual bool acceptsExtension(const std::string& extension)
         {
             return osgDB::equalCaseInsensitive(extension,"gdal") || osgDB::equalCaseInsensitive(extension,"gdal");

@@ -46,7 +46,7 @@ class ReaderWriterLWO : public osgDB::ReaderWriter
 public:
     ReaderWriterLWO() { }
 
-    virtual const char* className() { return "Lightwave Object Reader"; }
+    virtual const char* className() const { return "Lightwave Object Reader"; }
     virtual bool acceptsExtension(const std::string& extension) {
         return osgDB::equalCaseInsensitive(extension,"lwo") || osgDB::equalCaseInsensitive(extension,"lw") || osgDB::equalCaseInsensitive(extension,"geo");
     }

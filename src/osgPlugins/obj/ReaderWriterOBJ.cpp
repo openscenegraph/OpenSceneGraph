@@ -50,7 +50,7 @@ class ReaderWriterOBJ : public osgDB::ReaderWriter
 public:
     ReaderWriterOBJ() { }
 
-    virtual const char* className() { return "Wavefront OBJ Reader"; }
+    virtual const char* className() const { return "Wavefront OBJ Reader"; }
     virtual bool acceptsExtension(const std::string& extension) {
         return osgDB::equalCaseInsensitive(extension,"obj");
     }

@@ -7,7 +7,7 @@
 class ReaderWriterFreeType : public osgDB::ReaderWriter
 {
     public:
-        virtual const char* className() { return "FreeType Font Reader/Writer"; }
+        virtual const char* className() const { return "FreeType Font Reader/Writer"; }
         
         virtual bool acceptsExtension(const std::string& extension)
         {

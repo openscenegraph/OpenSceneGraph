@@ -16,7 +16,7 @@ using namespace osg;
 class ReaderWriterPNM : public osgDB::ReaderWriter
 {
     public:
-        virtual const char* className() { return "PNM Image Reader/Writer"; }
+        virtual const char* className() const { return "PNM Image Reader/Writer"; }
         virtual bool acceptsExtension(const std::string& extension) 
 		{ 
 			return osgDB::equalCaseInsensitive(extension, "pnm") ||

@@ -318,7 +318,7 @@ int *numComponents_ret)
 class ReaderWriterGIF : public osgDB::ReaderWriter
 {
     public:
-        virtual const char* className() { return "GIF Image Reader"; }
+        virtual const char* className() const { return "GIF Image Reader"; }
         virtual bool acceptsExtension(const std::string& extension)
         {
             return osgDB::equalCaseInsensitive(extension,"gif");

@@ -742,7 +742,7 @@ flt::AttrData* Attr::createOsgStateSet()
 class ReaderWriterATTR : public osgDB::ReaderWriter
 {
     public:
-        virtual const char* className() { return "ATTR Image Attribute Reader/Writer"; }
+        virtual const char* className() const { return "ATTR Image Attribute Reader/Writer"; }
         
         virtual bool acceptsExtension(const std::string& extension)
         {

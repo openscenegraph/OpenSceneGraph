@@ -50,7 +50,7 @@ class ReaderWriterDirectX : public osgDB::ReaderWriter
 public:
     ReaderWriterDirectX() { }
 
-    virtual const char* className() {
+    virtual const char* className() const {
         return "DirectX Reader/Writer";
     }
 

@@ -52,7 +52,7 @@ class ReaderWriterTRANS : public osgDB::ReaderWriter
 public:
     ReaderWriterTRANS() { }
     
-    virtual const char* className() { return "translation pseudo-loader"; }
+    virtual const char* className() const { return "translation pseudo-loader"; }
 
     virtual bool acceptsExtension(const std::string& extension)
     { 

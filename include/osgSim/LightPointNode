@@ -73,9 +73,9 @@ class OSGSIM_EXPORT LightPointNode : public osg::Node
         
         float getMaxPixelSize() const { return _maxPixelSize; }
 
-        void setMaxVisableDistance2(float maxVisableDistance2) { _maxVisableDistance2 = maxVisableDistance2; }
+        void setMaxVisibleDistance2(float maxVisibleDistance2) { _maxVisibleDistance2 = maxVisibleDistance2; }
         
-        float setMaxVisableDistance2() const { return _maxVisableDistance2; }
+        float getMaxVisibleDistance2() const { return _maxVisibleDistance2; }
 
     protected:
     
@@ -91,7 +91,7 @@ class OSGSIM_EXPORT LightPointNode : public osg::Node
 
         float _minPixelSize;
         float _maxPixelSize;
-        float _maxVisableDistance2;
+        float _maxVisibleDistance2;
         
         
 };

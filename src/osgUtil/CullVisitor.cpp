@@ -12,7 +12,7 @@
 
 #include <osg/GeoSet>
 
-#include <osgUtil/NewCullVisitor>
+#include <osgUtil/CullVisitor>
 #include <osgUtil/RenderToTextureStage>
 
 #include <osgDB/ReadFile>
@@ -74,7 +74,7 @@ class PrintVisitor : public NodeVisitor
         int _step;
 };
 
-NewCullVisitor::NewCullVisitor()
+CullVisitor::CullVisitor()
 {
     // overide the default node visitor mode.
     setTraversalMode(NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
@@ -105,13 +105,13 @@ NewCullVisitor::NewCullVisitor()
 }
 
 
-NewCullVisitor::~NewCullVisitor()
+CullVisitor::~CullVisitor()
 {
     reset();
 }
 
 
-void NewCullVisitor::reset()
+void CullVisitor::reset()
 {
 
     //
@@ -157,7 +157,7 @@ void NewCullVisitor::reset()
     
 }
 
-void NewCullVisitor::pushClippingVolume()
+void CullVisitor::pushClippingVolume()
 {
     _modelviewClippingVolumeStack.push_back(_projectionClippingVolumeStack.back());
     if (!_modelviewStack.empty()) _modelviewClippingVolumeStack.back().transformProvidingInverse(*_modelviewStack.back());
@@ -165,25 +165,25 @@ void NewCullVisitor::pushClippingVolume()
     _MVPW_Stack.push_back(0L);
 }
 
-void NewCullVisitor::popClippingVolume()
+void CullVisitor::popClippingVolume()
 {
     _modelviewClippingVolumeStack.pop_back();
     _MVPW_Stack.pop_back();
 }
 
-void NewCullVisitor::pushViewport(osg::Viewport* viewport)
+void CullVisitor::pushViewport(osg::Viewport* viewport)
 {
     _viewportStack.push_back(viewport);
     _MVPW_Stack.push_back(0L);
 }
 
-void NewCullVisitor::popViewport()
+void CullVisitor::popViewport()
 {
     _viewportStack.pop_back();
     _MVPW_Stack.pop_back();
 }
 
-void NewCullVisitor::pushProjectionMatrix(Matrix* matrix)
+void CullVisitor::pushProjectionMatrix(Matrix* matrix)
 {
     _projectionStack.push_back(matrix);
     
@@ -194,7 +194,7 @@ void NewCullVisitor::pushProjectionMatrix(Matrix* matrix)
     pushClippingVolume();
 }
 
-void NewCullVisitor::popProjectionMatrix()
+void CullVisitor::popProjectionMatrix()
 {
     _projectionStack.pop_back();
     _projectionClippingVolumeStack.pop_back();
@@ -202,7 +202,7 @@ void NewCullVisitor::popProjectionMatrix()
     popClippingVolume();
 }
 
-void NewCullVisitor::pushModelViewMatrix(Matrix* matrix)
+void CullVisitor::pushModelViewMatrix(Matrix* matrix)
 {
     _modelviewStack.push_back(matrix);
     
@@ -239,7 +239,7 @@ void NewCullVisitor::pushModelViewMatrix(Matrix* matrix)
                                        
 }
 
-void NewCullVisitor::popModelViewMatrix()
+void CullVisitor::popModelViewMatrix()
 {
     _modelviewStack.pop_back();
     _eyePointStack.pop_back();
@@ -264,12 +264,12 @@ inline float distance(const osg::Vec3& coord,const osg::Matrix& matrix)
 }
 
 
-void NewCullVisitor::updateCalculatedNearFar(const osg::BoundingBox& bb)
+void CullVisitor::updateCalculatedNearFar(const osg::BoundingBox& bb)
 {
 
     if (!bb.isValid())
     {
-        osg::notify(osg::WARN)<<"Warning: NewCullVisitor::updateCalculatedNearFar(..) passed a null bounding box."<< std::endl;
+        osg::notify(osg::WARN)<<"Warning: CullVisitor::updateCalculatedNearFar(..) passed a null bounding box."<< std::endl;
         return;
     }
     
@@ -297,7 +297,7 @@ void NewCullVisitor::updateCalculatedNearFar(const osg::BoundingBox& bb)
     {
         if ( !EQUAL_F(d_near, d_far) ) 
         {
-            osg::notify(osg::WARN)<<"Warning: NewCullVisitor::updateCalculatedNearFar(.) near>far in range calculation,"<< std::endl;
+            osg::notify(osg::WARN)<<"Warning: CullVisitor::updateCalculatedNearFar(.) near>far in range calculation,"<< std::endl;
             osg::notify(osg::WARN)<<"         correcting by swapping values d_near="<<d_near<<" dfar="<<d_far<< std::endl;
         }
         // note, need to reverse the d_near/d_far association because they are
@@ -307,7 +307,7 @@ void NewCullVisitor::updateCalculatedNearFar(const osg::BoundingBox& bb)
     }
 }
 
-void NewCullVisitor::updateCalculatedNearFar(const osg::Vec3& pos)
+void CullVisitor::updateCalculatedNearFar(const osg::Vec3& pos)
 {
     float d;
     if (!_modelviewStack.empty())
@@ -324,18 +324,18 @@ void NewCullVisitor::updateCalculatedNearFar(const osg::Vec3& pos)
     if (d>_calculated_zfar) _calculated_zfar = d;
 }   
 
-void NewCullVisitor::setCullingMode(CullViewState::CullingMode mode)
+void CullVisitor::setCullingMode(CullViewState::CullingMode mode)
 {
     _cullingModeStack.back()=mode;
 }
 
 
-CullViewState::CullingMode NewCullVisitor::getCullingMode() const
+CullViewState::CullingMode CullVisitor::getCullingMode() const
 {
     return _cullingModeStack.back();
 }
 
-void NewCullVisitor::apply(Node& node)
+void CullVisitor::apply(Node& node)
 {
     CullViewState::CullingMode mode = _cullingModeStack.back();
     
@@ -360,7 +360,7 @@ void NewCullVisitor::apply(Node& node)
 }
 
 
-void NewCullVisitor::apply(Geode& node)
+void CullVisitor::apply(Geode& node)
 {
 
     // return if object's bounding sphere is culled.
@@ -438,7 +438,7 @@ void NewCullVisitor::apply(Geode& node)
 }
 
 
-void NewCullVisitor::apply(Billboard& node)
+void CullVisitor::apply(Billboard& node)
 {
     // return if object's bounding sphere is culled.
     CullViewState::CullingMode mode = _cullingModeStack.back();
@@ -517,7 +517,7 @@ void NewCullVisitor::apply(Billboard& node)
 }
 
 
-void NewCullVisitor::apply(LightSource& node)
+void CullVisitor::apply(LightSource& node)
 {
     // push the node's state.
     StateSet* node_state = node.getStateSet();
@@ -535,7 +535,7 @@ void NewCullVisitor::apply(LightSource& node)
 }
 
 
-void NewCullVisitor::apply(Group& node)
+void CullVisitor::apply(Group& node)
 {
     // return if object's bounding sphere is culled.
     CullViewState::CullingMode mode = _cullingModeStack.back();
@@ -560,7 +560,7 @@ void NewCullVisitor::apply(Group& node)
     _cullingModeStack.pop_back();
 }
 
-void NewCullVisitor::apply(Transform& node)
+void CullVisitor::apply(Transform& node)
 {
     // return if object's bounding sphere is culled.
     CullViewState::CullingMode mode = _cullingModeStack.back();
@@ -592,7 +592,7 @@ void NewCullVisitor::apply(Transform& node)
     _cullingModeStack.pop_back();
 }
 
-void NewCullVisitor::apply(Projection& node)
+void CullVisitor::apply(Projection& node)
 {
     // return if object's bounding sphere is culled.
     CullViewState::CullingMode mode = _cullingModeStack.back();
@@ -623,13 +623,13 @@ void NewCullVisitor::apply(Projection& node)
     _cullingModeStack.pop_back();
 }
 
-void NewCullVisitor::apply(Switch& node)
+void CullVisitor::apply(Switch& node)
 {
     apply((Group&)node);
 }
 
 
-void NewCullVisitor::apply(LOD& node)
+void CullVisitor::apply(LOD& node)
 {
     // return if object's bounding sphere is culled.
     CullViewState::CullingMode mode = _cullingModeStack.back();
@@ -658,7 +658,7 @@ void NewCullVisitor::apply(LOD& node)
     _cullingModeStack.pop_back();
 }
 
-void NewCullVisitor::apply(osg::EarthSky& node)
+void CullVisitor::apply(osg::EarthSky& node)
 {
     // simply override the current earth sky.
     setEarthSky(&node);
@@ -675,7 +675,7 @@ void NewCullVisitor::apply(osg::EarthSky& node)
 }
 
 
-void NewCullVisitor::apply(Impostor& node)
+void CullVisitor::apply(Impostor& node)
 {
     const BoundingSphere& bs = node.getBound();
 
@@ -811,7 +811,7 @@ void NewCullVisitor::apply(Impostor& node)
     _cullingModeStack.pop_back();
 }
 
-ImpostorSprite* NewCullVisitor::createImpostorSprite(Impostor& node)
+ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
 {
    
     // default to true right now, will dertermine if perspective from the

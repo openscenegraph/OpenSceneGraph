@@ -226,7 +226,8 @@ int *numComponents_ret)
         case 1:
             ncomp = BW; // actually this is a 256 colour, paletted image
             inf.Colorbits=8; // so this is how many bits there are per index
-            inf.ColorUsed=256; // and number of colours used
+            //inf.ColorUsed=256; // and number of colours used
+		if(!inf.ColorUsed) inf.ColorUsed=256; /*the bitmap has 256 colours if ColorUsed = 0 otherwise as many as stored in ColorUsed*/
             cols=imbuff; // colour palette address - uses 4 bytes/colour
             break;
         case 2:

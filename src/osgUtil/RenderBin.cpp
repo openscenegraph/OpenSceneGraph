@@ -133,7 +133,7 @@ void RenderBin::draw(osg::State& state,RenderLeaf*& previous)
     // draw first set of draw bins.
     RenderBinList::iterator itr;
     for(itr = _bins.begin();
-        itr->first<0 && itr!=_bins.end();
+        itr!=_bins.end() && itr->first<0;
         ++itr)
     {
         itr->second->draw(state,previous);

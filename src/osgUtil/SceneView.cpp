@@ -60,42 +60,57 @@ SceneView::~SceneView()
 }
 
 
-void SceneView::setDefaults()
+void SceneView::setDefaults(unsigned int options)
 {
-    // CullSettings::setDefaults();
-
     _projectionMatrix.makePerspective(50.0f,1.4f,1.0f,10000.0f);
     _viewMatrix.makeIdentity();
 
     _globalStateSet = new osg::StateSet;
 
-    _lightingMode=HEADLIGHT;
-    _light = new osg::Light;
-    _light->setLightNum(0);
-    _light->setAmbient(Vec4(0.00f,0.0f,0.00f,1.0f));
-    _light->setDiffuse(Vec4(0.8f,0.8f,0.8f,1.0f));
-    _light->setSpecular(Vec4(1.0f,1.0f,1.0f,1.0f));
+    if ((options & HEADLIGHT) || (options & SKY_LIGHT))
+    {
+        _lightingMode=(options&HEADLIGHT) ? HEADLIGHT : SKY_LIGHT;
+        _light = new osg::Light;
+        _light->setLightNum(0);
+        _light->setAmbient(Vec4(0.00f,0.0f,0.00f,1.0f));
+        _light->setDiffuse(Vec4(0.8f,0.8f,0.8f,1.0f));
+        _light->setSpecular(Vec4(1.0f,1.0f,1.0f,1.0f));
 
+        _globalStateSet->setAssociatedModes(_light.get(),osg::StateAttribute::ON);
+
+        osg::LightModel* lightmodel = new osg::LightModel;
+        lightmodel->setAmbientIntensity(osg::Vec4(0.1f,0.1f,0.1f,1.0f));
+        _globalStateSet->setAttributeAndModes(lightmodel, osg::StateAttribute::ON);
+
+        // enable lighting by default.
+        _globalStateSet->setMode(GL_LIGHTING, osg::StateAttribute::ON);
+
+    }
+    
     _state = new State;
     
     _rendergraph = new RenderGraph;
     _renderStage = new RenderStage;
 
 
-    GLObjectsVisitor::Mode  dlvMode = GLObjectsVisitor::COMPILE_DISPLAY_LISTS|GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES;
+    if (options & COMPILE_GLOBJECTS_AT_INIT)
+    {
+        GLObjectsVisitor::Mode  dlvMode = GLObjectsVisitor::COMPILE_DISPLAY_LISTS|GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES;
 
-#ifdef __sgi
-    dlvMode = GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES;
-#endif
+    #ifdef __sgi
+        dlvMode = GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES;
+    #endif
 
-    // sgi's IR graphics has a problem with lighting and display lists, as it seems to store 
-    // lighting state with the display list, and the display list visitor doesn't currently apply
-    // state before creating display lists. So will disable the init visitor default, this won't
-    // affect functionality since the display lists will be created as and when needed.
-    GLObjectsVisitor* dlv = new GLObjectsVisitor(dlvMode);
-    dlv->setNodeMaskOverride(0xffffffff);
-    _initVisitor = dlv;
+        // sgi's IR graphics has a problem with lighting and display lists, as it seems to store 
+        // lighting state with the display list, and the display list visitor doesn't currently apply
+        // state before creating display lists. So will disable the init visitor default, this won't
+        // affect functionality since the display lists will be created as and when needed.
+        GLObjectsVisitor* dlv = new GLObjectsVisitor(dlvMode);
+        dlv->setNodeMaskOverride(0xffffffff);
+        _initVisitor = dlv;
 
+    }
+    
     _updateVisitor = new UpdateVisitor;
 
     _cullVisitor = new CullVisitor;
@@ -105,9 +120,6 @@ void SceneView::setDefaults()
 
     _globalStateSet->setGlobalDefaults();
     
-    // enable lighting by default.
-    _globalStateSet->setMode(GL_LIGHTING, osg::StateAttribute::ON);
-    _globalStateSet->setAssociatedModes(_light.get(),osg::StateAttribute::ON);
     
     // enable depth testing by default.
     _globalStateSet->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);
@@ -122,9 +134,6 @@ void SceneView::setDefaults()
      texenv->setMode(osg::TexEnv::MODULATE);
      _globalStateSet->setTextureAttributeAndModes(0,texenv, osg::StateAttribute::ON);
 
-    osg::LightModel* lightmodel = new osg::LightModel;
-    lightmodel->setAmbientIntensity(osg::Vec4(0.1f,0.1f,0.1f,1.0f));
-    _globalStateSet->setAttributeAndModes(lightmodel, osg::StateAttribute::ON);
 
     _clearColor.set(0.2f, 0.2f, 0.4f, 1.0f);
 }
@@ -552,7 +561,7 @@ void SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
         if (_light.valid()) renderStage->addPositionedAttribute(mv.get(),_light.get());
         else osg::notify(osg::WARN)<<"Warning: no osg::Light attached to ogUtil::SceneView to provide sky light.*/"<<std::endl;
         break;
-    case(NO_SCENEVIEW_LIGHT):
+    default:
         break;
     }            
 

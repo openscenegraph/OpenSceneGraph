@@ -38,10 +38,20 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSetting
         /** Construct a default scene view.*/
         SceneView(osg::DisplaySettings* ds=NULL);
 
+        enum Options
+        {
+            NO_SCENEVIEW_LIGHT = 0x0,
+            HEADLIGHT = 0x1,
+            SKY_LIGHT = 0x2,
+            COMPILE_GLOBJECTS_AT_INIT = 0x4,
+            STANDARD_SETTINGS = HEADLIGHT |
+                                COMPILE_GLOBJECTS_AT_INIT                                
+        };
+
         /** Set scene view to use default global state, light, camera
          *  and render visitor.
         */
-        void setDefaults();
+        void setDefaults(unsigned int options = STANDARD_SETTINGS);
 
         /** Set the data which to view. The data will typically be
          *  an osg::Scene but can be any osg::Node type.
@@ -121,12 +131,15 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSetting
         osg::StateSet* getLocalStateSet() { return _localStateSet.get(); }
         const osg::StateSet* getLocalStateSet() const { return _localStateSet.get(); }
 
+#if 1
+        typedef Options LightingMode;
+#else
         enum LightingMode {
             HEADLIGHT, // default
             SKY_LIGHT,
             NO_SCENEVIEW_LIGHT
         };
-
+#endif
         void setLightingMode(LightingMode mode) { _lightingMode=mode; }
         LightingMode getLightingMode() const { return _lightingMode; }
 

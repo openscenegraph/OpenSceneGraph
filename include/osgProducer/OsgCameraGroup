@@ -116,8 +116,13 @@ class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
 
         float getLODScale() const { return _LODScale; }
 
-
         void setFusionDistance( osgUtil::SceneView::FusionDistanceMode mode,float value=1.0f);
+
+
+        /** Set the options to set up SceneView with, see osgUtil::SceneView::Options for available options.*/
+        void setRealizeSceneViewOptions(unsigned int options) { _realizeSceneViewOptions = options; }
+
+        unsigned int getRealizeSceneViewOptions() { return _realizeSceneViewOptions; }
 
 
         /** RealizeCallback class one should override to provide an the implemention of realize callbacks.
@@ -184,6 +189,8 @@ class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
         
         osgUtil::SceneView::FusionDistanceMode  _fusionDistanceMode;
         float                                   _fusionDistanceValue;
+
+        unsigned int                            _realizeSceneViewOptions;
         
         SceneHandlerList                        _shvec;
         

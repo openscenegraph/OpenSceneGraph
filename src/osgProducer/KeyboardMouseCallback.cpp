@@ -9,7 +9,52 @@
 
 using namespace osgProducer;
 
-void KeyboardMouseCallback::keyPress( Producer::KeySymbol key )
+void KeyboardMouseCallback::buttonPress( float mx, float my, unsigned int mbutton ) 
+{
+    _mx = mx;
+    _my = my;
+    _mbutton |= (1<<(mbutton-1));
+    
+    
+    osg::ref_ptr<EventAdapter> event = new EventAdapter;
+    event->adaptButtonPress(getTime(),mx,my,mbutton);
+    
+    _eventQueueMutex.lock();
+    _eventQueue.push_back(event);
+    _eventQueueMutex.unlock();
+}
+
+void KeyboardMouseCallback::buttonRelease( float mx, float my, unsigned int mbutton ) 
+{
+    _mx = mx;
+    _my = my;
+    _mbutton &= ~(1<<(mbutton-1));
+    
+    
+    osg::ref_ptr<EventAdapter> event = new EventAdapter;
+    event->adaptButtonRelease(getTime(),mx,my,mbutton);
+    
+    _eventQueueMutex.lock();
+    _eventQueue.push_back(event);
+    _eventQueueMutex.unlock();
+}
+
+void KeyboardMouseCallback::doubleButtonPress( float mx, float my, unsigned int mbutton ) 
+{
+    _mx = mx;
+    _my = my;
+    _mbutton |= (1<<(mbutton-1));
+    
+    
+    osg::ref_ptr<EventAdapter> event = new EventAdapter;
+    event->adaptButtonPress(getTime(),mx,my,mbutton);
+    
+    _eventQueueMutex.lock();
+    _eventQueue.push_back(event);
+    _eventQueueMutex.unlock();
+}
+
+void KeyboardMouseCallback::keyPress( Producer::KeyCharacter key )
 {
 
            
@@ -32,7 +77,41 @@ void KeyboardMouseCallback::keyPress( Producer::KeySymbol key )
     _eventQueueMutex.unlock();
 }
 
-void KeyboardMouseCallback::keyRelease( Producer::KeySymbol key )
+void KeyboardMouseCallback::keyRelease( Producer::KeyCharacter key )
+{
+
+    osg::ref_ptr<EventAdapter> event = new EventAdapter;
+    event->adaptKeyRelease(getTime(),key);
+    
+    _eventQueueMutex.lock();
+    _eventQueue.push_back(event);
+    _eventQueueMutex.unlock();
+}
+
+void KeyboardMouseCallback::specialKeyPress( Producer::KeyCharacter key )
+{
+
+           
+    osg::ref_ptr<EventAdapter> event = new EventAdapter;
+    event->adaptKeyPress(getTime(),key);
+
+
+#ifdef WIN32
+    if (_escapeKeySetsDone && 
+        event->getKey()==VK_ESCAPE) _done = true;
+#endif
+
+    // check against adapted key symbol.    
+    if (_escapeKeySetsDone && 
+        event->getKey()==osgGA::GUIEventAdapter::KEY_Escape) _done = true;
+
+
+    _eventQueueMutex.lock();
+    _eventQueue.push_back(event);
+    _eventQueueMutex.unlock();
+}
+
+void KeyboardMouseCallback::specialKeyRelease( Producer::KeyCharacter key )
 {
 
     osg::ref_ptr<EventAdapter> event = new EventAdapter;
@@ -69,36 +148,6 @@ void KeyboardMouseCallback::passiveMouseMotion( float mx, float my)
     _eventQueue.push_back(event);
     _eventQueueMutex.unlock();
 
-}
-
-void KeyboardMouseCallback::buttonPress( float mx, float my, unsigned int mbutton ) 
-{
-    _mx = mx;
-    _my = my;
-    _mbutton |= (1<<(mbutton-1));
-    
-    
-    osg::ref_ptr<EventAdapter> event = new EventAdapter;
-    event->adaptButtonPress(getTime(),mx,my,mbutton);
-    
-    _eventQueueMutex.lock();
-    _eventQueue.push_back(event);
-    _eventQueueMutex.unlock();
-}
-
-void KeyboardMouseCallback::buttonRelease( float mx, float my, unsigned int mbutton ) 
-{
-    _mx = mx;
-    _my = my;
-    _mbutton &= ~(1<<(mbutton-1));
-    
-    
-    osg::ref_ptr<EventAdapter> event = new EventAdapter;
-    event->adaptButtonRelease(getTime(),mx,my,mbutton);
-    
-    _eventQueueMutex.lock();
-    _eventQueue.push_back(event);
-    _eventQueueMutex.unlock();
 }
 
 void KeyboardMouseCallback::getEventQueue(EventQueue& queue)

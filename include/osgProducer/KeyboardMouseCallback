@@ -39,18 +39,22 @@ class OSGPRODUCER_EXPORT KeyboardMouseCallback : public Producer::KeyboardMouseC
 
         virtual ~KeyboardMouseCallback() {}
 
-        virtual void keyPress( Producer::KeySymbol key );
-                
-        virtual void keyRelease( Producer::KeySymbol key );
-
+        // override KeyboardMouseCallback methods.
         virtual void mouseMotion( float mx, float my);
-                
         virtual void passiveMouseMotion( float mx, float my);
 
         virtual void buttonPress( float mx, float my, unsigned int mbutton );
-                
+	virtual void doubleButtonPress( float mx, float mx, unsigned int mbutton);
         virtual void buttonRelease( float mx, float my, unsigned int mbutton );
 
+        virtual void keyPress( Producer::KeyCharacter key );
+        virtual void keyRelease( Producer::KeyCharacter key );
+
+	virtual void specialKeyPress( Producer::KeyCharacter key);
+	virtual void specialKeyRelease( Producer::KeyCharacter key);
+
+
+        // local methods and members
         typedef std::vector< osg::ref_ptr<EventAdapter> > EventQueue;
 
         void getEventQueue(EventQueue& queue);
@@ -64,7 +68,7 @@ class OSGPRODUCER_EXPORT KeyboardMouseCallback : public Producer::KeyboardMouseC
         
         double getTime() { return _timer.delta_s(_startTick,_timer.tick()); }
         
-    private:
+    protected:
     
         float _mx, _my;
         unsigned int _mbutton;

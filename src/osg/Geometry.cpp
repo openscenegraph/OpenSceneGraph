@@ -810,6 +810,8 @@ void Geometry::drawImplementation(State& state) const
     DrawVertexAttribMap drawVertexAttribMap;
     
     bool handleVertexAttributes = (!_vertexAttribList.empty() && extensions->isVertexProgramSupported());
+
+    bool usingVertexBufferObjects = _useVertexBufferObjects && state.isVertexBufferObjectSupported();
     
     if (areFastPathsUsed())
     {
@@ -817,7 +819,7 @@ void Geometry::drawImplementation(State& state) const
         //
         // fast path.        
         //
-        if (_useVertexBufferObjects && state.isVertexBufferObjectSupported())
+        if (usingVertexBufferObjects)
         {
             //
             // Vertex Buffer Object path for defining vertex arrays.
@@ -1131,7 +1133,7 @@ void Geometry::drawImplementation(State& state) const
 
         }
 
-        if (_useVertexBufferObjects)
+        if (usingVertexBufferObjects)
         {
             extensions->glBindBuffer(GL_ARRAY_BUFFER_ARB,0);
         }

@@ -55,8 +55,6 @@ osg::Node* DriveManipulator::getNode()
 void DriveManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
 {
 
-    std::cout<<"home()"<<std::endl;
-
     if(_node.get())
     {
 
@@ -99,7 +97,6 @@ void DriveManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
 
                 positionSet = true;
 
-                std::cout << "settin1"<<std::endl;
             }
 
         }
@@ -134,8 +131,6 @@ void DriveManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
                     computePosition(ep,lv,uv);
 
                     positionSet = true;
-
-                    std::cout << "settin2"<<std::endl;
 
                 }
 

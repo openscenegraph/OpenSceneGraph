@@ -45,9 +45,9 @@ public:
     virtual void applyTransform(Transform *trans)=0;
 
     /** clone the an object of the same type as the node.*/
-    virtual Object* cloneType() const = 0;
+    virtual osg::Object* cloneType() const = 0;
     /** return a clone of a node, with Object* return type.*/
-    virtual Object* clone(const osg::CopyOp& copyop) const { return cloneType(); }
+    virtual osg::Object* clone(const osg::CopyOp& copyop) const { return cloneType(); }
     /** return the name of the node's library.*/
     virtual const char* libraryName() const { return "osgdb_wrl"; }
     /** return the name of the node's class type.*/

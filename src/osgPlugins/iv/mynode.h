@@ -73,9 +73,9 @@ public:
     // OSG Object API
 
     /** clone the an object of the same type as the node.*/
-    virtual Object* cloneType() const { return new MyNode(); }
+    virtual osg::Object* cloneType() const { return new MyNode(); }
     /** return a clone of a node, with Object* return type.*/
-    virtual Object* clone(const osg::CopyOp& copyop) const { return new MyNode(this); }
+    virtual osg::Object* clone(const osg::CopyOp& copyop) const { return new MyNode(this); }
     /** return the name of the node's library.*/
     virtual const char* libraryName() const { return "osgdb_wrl"; }
     /** return the name of the node's class type.*/

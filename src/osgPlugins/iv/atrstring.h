@@ -30,7 +30,7 @@ public:
     virtual char *type() { return "AtrString"; }
     char *getValue() { return value; }
     /** clone the an object of the same type as the node.*/
-    virtual Object* cloneType() const { return new AtrString(name,value); }
+    virtual osg::Object* cloneType() const { return new AtrString(name,value); }
 };
 
 #endif

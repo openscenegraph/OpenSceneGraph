@@ -313,7 +313,7 @@ static void RawImageGetData(rawImageRec *raw, unsigned char **data )
 class ReaderWriterRGB : public osgDB::ReaderWriter
 {
     public:
-        virtual const char* className() { return "Default RGB Image Reader/Writer"; }
+        virtual const char* className() { return "RGB Image Reader/Writer"; }
         
         virtual bool acceptsExtension(const std::string& extension)
         {

@@ -16,6 +16,11 @@
 
 using namespace osg;
 
+LOD::LOD():
+    _centerMode(USE_BOUNDING_SPHERE_CENTER)
+{
+}
+
 LOD::LOD(const LOD& lod,const CopyOp& copyop):
         Group(lod,copyop),
         _centerMode(lod._centerMode),

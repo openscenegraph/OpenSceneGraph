@@ -2,6 +2,11 @@
 
 using namespace osg;
 
+PagedLOD::PagedLOD()
+{
+    _centerMode = USER_DEFINED_CENTER;
+}
+
 PagedLOD::PagedLOD(const PagedLOD& plod,const CopyOp& copyop):
     LOD(plod,copyop)
 {

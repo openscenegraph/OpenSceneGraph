@@ -253,7 +253,7 @@ void DatabasePager::run()
     join();   
 }
 
-void DatabasePager::addLoadedDataToSceneGraph()
+void DatabasePager::addLoadedDataToSceneGraph(double timeStamp)
 {
     DatabaseRequestList localFileLoadedList;
 
@@ -269,8 +269,15 @@ void DatabasePager::addLoadedDataToSceneGraph()
     {
         DatabaseRequest* databaseRequest = itr->get();
         registerPagedLODs(databaseRequest->_loadedModel.get());
-        databaseRequest->_groupForAddingLoadedSubgraph->addChild(databaseRequest->_loadedModel.get());
-        //std::cout<<"merged subgraph"<<databaseRequest->_fileName<<" after "<<databaseRequest->_numOfRequests<<" requests."<<std::endl;
+        
+        osg::Group* group = databaseRequest->_groupForAddingLoadedSubgraph.get();
+        osg::PagedLOD* plod = dynamic_cast<osg::PagedLOD*>(group);
+        if (plod)
+        {
+            plod->setTimeStamp(plod->getNumChildren(),timeStamp);
+        } 
+        group->addChild(databaseRequest->_loadedModel.get());
+        std::cout<<"merged subgraph"<<databaseRequest->_fileName<<" after "<<databaseRequest->_numOfRequests<<" requests."<<std::endl;
 
     }
     
@@ -393,7 +400,7 @@ void DatabasePager::compileRenderingObjects(osg::State& state)
                 itr!=sslist.end() && elapsedTime<_maximumTimeForCompiling;
                 ++itr)
             {
-                //std::cout<<"    Compiling stateset"<<(*itr).get()<<std::endl;
+                std::cout<<"    Compiling stateset "<<(*itr).get()<<std::endl;
                 (*itr)->compile(state);
                 elapsedTime = timer.delta_s(start_tick,timer.tick());
             }
@@ -410,7 +417,7 @@ void DatabasePager::compileRenderingObjects(osg::State& state)
                 itr!=dwlist.end() && elapsedTime<_maximumTimeForCompiling;
                 ++itr)
             {
-                //std::cout<<"    Compiling drawable"<<(*itr).get()<<std::endl;
+                std::cout<<"    Compiling drawable "<<(*itr).get()<<std::endl;
                 (*itr)->compile(state);
                 elapsedTime = timer.delta_s(start_tick,timer.tick());
             }
@@ -434,7 +441,7 @@ void DatabasePager::compileRenderingObjects(osg::State& state)
         
         if (allCompiled)
         {
-            //std::cout<<"All compiled"<<std::endl;
+            std::cout<<"All compiled"<<std::endl;
 
             // we've compile all of the current databaseRequest so we can now pop it off the
             // to compile list and place it on the merge list.
@@ -453,7 +460,7 @@ void DatabasePager::compileRenderingObjects(osg::State& state)
         }
         else 
         {
-            //std::cout<<"Not all compiled"<<std::endl;
+            std::cout<<"Not all compiled"<<std::endl;
             databaseRequest = 0;
         }
         

@@ -399,7 +399,7 @@ void Viewer::update()
         _databasePager->removeExpiredSubgraphs(_frameStamp->getReferenceTime());
         
         // add the newly loaded data into the scene graph.
-        _databasePager->addLoadedDataToSceneGraph();        
+        _databasePager->addLoadedDataToSceneGraph(_frameStamp->getReferenceTime());
     }    
     
     

@@ -59,7 +59,7 @@ public:
         _helpInitialized(false),
         _statsInitialized(false)
     {
-	_fs.resize(20);
+	_fs.resize(10);
 	_index = 0;
         
         _veh->getOsgCameraGroup()->setStatsHandler(this);

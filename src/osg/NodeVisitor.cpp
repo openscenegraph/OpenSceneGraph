@@ -33,7 +33,7 @@ NodeVisitor::~NodeVisitor()
 }
 
 
-void NodeVisitor::setTraversalMode(const TraversalMode mode)
+void NodeVisitor::setTraversalMode(TraversalMode mode)
 {
     if (_traversalMode==mode) return;
     if (mode==TRAVERSE_VISITOR)

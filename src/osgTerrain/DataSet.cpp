@@ -1190,12 +1190,14 @@ bool DataSet::DestinationTile::computeImageResolution(unsigned int& numColumns, 
 
         unsigned int numColumnsAtFullRes = 1+(unsigned int)ceilf((_extents.xMax()-_extents.xMin())/_imagery_maxSourceResolutionX);
         unsigned int numRowsAtFullRes = 1+(unsigned int)ceilf((_extents.yMax()-_extents.yMin())/_imagery_maxSourceResolutionY);
-        numColumns = osg::minimum(_imagery_maxNumColumns,numColumnsAtFullRes);
-        numRows    = osg::minimum(_imagery_maxNumRows,numRowsAtFullRes);
+        unsigned int numColumnsRequired = osg::minimum(_imagery_maxNumColumns,numColumnsAtFullRes);
+        unsigned int numRowsRequired    = osg::minimum(_imagery_maxNumRows,numRowsAtFullRes);
 
-        // round to nearest power of two        
-        numColumns = osg::Image::computeNearestPowerOfTwo(numColumns);
-        numRows = osg::Image::computeNearestPowerOfTwo(numRows);
+        numColumns = 1;
+        numRows = 1;
+        // round to nearest power of two above or equal to the required resolution
+        while (numColumns<numColumnsRequired) numColumns *= 2;
+        while (numRows<numRowsRequired) numRows *= 2;
         
         resX = (_extents.xMax()-_extents.xMin())/(double)(numColumns-1);
         resY = (_extents.yMax()-_extents.yMin())/(double)(numRows-1);
@@ -1302,14 +1304,14 @@ void DataSet::DestinationTile::setNeighbours(DestinationTile* left, DestinationT
     _neighbour[ABOVE_LEFT] = above_left;
     
     
-    std::cout<<"LEFT="<<_neighbour[LEFT]<<std::endl;
-    std::cout<<"LEFT_BELOW="<<_neighbour[LEFT_BELOW]<<std::endl;
-    std::cout<<"BELOW="<<_neighbour[BELOW]<<std::endl;
-    std::cout<<"BELOW_RIGHT="<<_neighbour[BELOW_RIGHT]<<std::endl;
-    std::cout<<"RIGHT="<<_neighbour[RIGHT]<<std::endl;
-    std::cout<<"RIGHT_ABOVE="<<_neighbour[RIGHT_ABOVE]<<std::endl;
-    std::cout<<"ABOVE="<<_neighbour[ABOVE]<<std::endl;
-    std::cout<<"ABOVE_LEFT="<<_neighbour[ABOVE_LEFT]<<std::endl;
+//     std::cout<<"LEFT="<<_neighbour[LEFT]<<std::endl;
+//     std::cout<<"LEFT_BELOW="<<_neighbour[LEFT_BELOW]<<std::endl;
+//     std::cout<<"BELOW="<<_neighbour[BELOW]<<std::endl;
+//     std::cout<<"BELOW_RIGHT="<<_neighbour[BELOW_RIGHT]<<std::endl;
+//     std::cout<<"RIGHT="<<_neighbour[RIGHT]<<std::endl;
+//     std::cout<<"RIGHT_ABOVE="<<_neighbour[RIGHT_ABOVE]<<std::endl;
+//     std::cout<<"ABOVE="<<_neighbour[ABOVE]<<std::endl;
+//     std::cout<<"ABOVE_LEFT="<<_neighbour[ABOVE_LEFT]<<std::endl;
     
     for(int i=0;i<NUMBER_OF_POSITIONS;++i)
     {
@@ -1875,11 +1877,12 @@ osg::Geometry* DataSet::DestinationTile::createDrawablePolygonal()
     }
     else
     {
+        unsigned int numCells = 8;
         grid = new osg::HeightField;
-        grid->allocate(2,2);
+        grid->allocate(numCells,numCells);
         grid->setOrigin(osg::Vec3(_extents.xMin(),_extents.yMin(),0.0f));
-        grid->setXInterval(_extents.xMax()-_extents.xMin());
-        grid->setYInterval(_extents.yMax()-_extents.yMin());
+        grid->setXInterval((_extents.xMax()-_extents.xMin())/(float)(numCells-1));
+        grid->setYInterval((_extents.yMax()-_extents.yMin())/(float)(numCells-1));
     }
 
     if (!grid)

@@ -16,37 +16,15 @@
 
 #include <osg/Export>
 
-
-#if defined(_MSC_VER)
-    namespace osg {
-        typedef __int64 Timer_t;
-    }
-#elif defined(__linux) || defined(__FreeBSD__) || defined(__CYGWIN__)|| defined(__MINGW32__)
-    namespace osg {
-        typedef unsigned long long Timer_t;
-    }
-#elif defined(__sgi)
-    namespace osg {
-        typedef unsigned long long Timer_t;
-    }
-#elif defined(unix)
-    namespace osg {
-        typedef unsigned long long Timer_t;
-    }
-#elif defined __APPLE__ || defined macintosh
-    namespace osg {
-        typedef double Timer_t;
-    }
-#else
-    #include <ctime>
-    namespace osg {
-        typedef std::clock_t Timer_t;
-    }
-#endif
-
 namespace osg {
 
-/** A high resolution, low latency time stamper. */
+#if defined(_MSC_VER)
+    typedef __int64 Timer_t;
+#else
+    typedef unsigned long long Timer_t;
+#endif
+
+/** Time stamper. */
 class SG_EXPORT Timer {
 
     public:
@@ -56,7 +34,7 @@ class SG_EXPORT Timer {
 
         static const Timer* instance();
 
-        inline Timer_t tick() const;
+        Timer_t tick() const;
         
         inline double delta_s( Timer_t t1, Timer_t t2 ) const { return (double)(t2 - t1)*_secsPerTick; }
         inline double delta_m( Timer_t t1, Timer_t t2 ) const { return delta_s(t1,t2)*1e3; }
@@ -67,198 +45,9 @@ class SG_EXPORT Timer {
 
     protected :
 
-        double                          _secsPerTick;
-        bool                            _useStandardClock;
-       
-#       ifdef __sgi
-        unsigned long*                  _clockAddress_32;
-        unsigned long long*             _clockAddress_64;
-        int                             _cycleCntrSize;
-    // for SGI machines with 32 bit clocks.
-        mutable unsigned long           _lastClockValue;
-        mutable unsigned long long      _rollOver;
-#       endif
-        
+        double _secsPerTick;
+
 };
 
 }
-
-#if defined(_MSC_VER)
-
-    #include <time.h>
-    #pragma optimize("",off)
-
-    namespace osg{
-
-        inline Timer_t Timer::tick( void ) const
-        {
-            if (_useStandardClock) return clock();
-
-            volatile Timer_t ts;
-            volatile unsigned int HighPart;
-            volatile unsigned int LowPart;
-            _asm
-            {
-                xor eax, eax        //  Used when QueryPerformanceCounter()
-                xor edx, edx        //  not supported or minimal overhead
-                _emit 0x0f          //  desired
-                _emit 0x31          //
-                mov HighPart,edx
-                mov LowPart,eax
-            }
-            //ts = LowPart | HighPart >> 32;
-            *((unsigned int*)&ts) = LowPart;
-            *((unsigned int*)&ts+1) = HighPart;
-            return ts;
-        }
-
-    }
-    #pragma optimize("",on)
-
-#elif defined(__MINGW32__)
-
-    #include <sys/time.h>
-
-    #define CLK(x)      __asm__ volatile (".byte 0x0f, 0x31" : "=A" (x))
-    namespace osg{
-
-    inline Timer_t Timer::tick() const
-    {
-        if (_useStandardClock)
-            return clock();
-        else
-        {
-            Timer_t x;CLK(x);return x;
-        }
-    }
-
-    }
-
-#elif defined(__linux) || defined(__FreeBSD__) || defined(__CYGWIN__)
-
-    #include <sys/time.h>
-
-#  if defined(__powerpc)
-#    ifndef __HAVE_POWERPC_GET_TBL
-#      define __HAVE_POWERPC_GET_TBL 1
-static inline unsigned long get_tbl(void)
-{
-        unsigned long tbl;
-        asm volatile ("mftb %0":"=r" (tbl));
-        return tbl;
-}
-#    endif
-
-#    define CLK(x)\
-{ \
-        unsigned long tb, tblu; \
-        do { \
-                tb = get_tbl(); \
-               __asm__ __volatile__ ("mftbu %0":"=r" (tblu)); \
-        } while (tb != get_tbl()); \
-        x = (((Timer_t) tblu) << 32) | (Timer_t) tb; \
-}
-
-#  elif defined(__i386)
-    #define CLK(x)      __asm__ volatile (".byte 0x0f, 0x31" : "=A" (x))
-
-#  endif
-
-    namespace osg{
-
-        inline Timer_t Timer::tick() const
-        {
-#  ifdef CLK
-            if (_useStandardClock)
-            {
-                struct timeval tv;
-                gettimeofday(&tv, NULL);
-                return ((osg::Timer_t)tv.tv_sec)*1000000+(osg::Timer_t)tv.tv_usec;
-            }
-            else
-            {
-                Timer_t x;CLK(x);return x;
-            }
-#  else // CLK
-            struct timeval tv;
-            gettimeofday(&tv, NULL);
-            return ((osg::Timer_t)tv.tv_sec)*1000000+(osg::Timer_t)tv.tv_usec;
-#  endif // CLK
-        }
-
-    }
-  
-#elif defined(__sgi)
-
-    #include <sys/types.h>
-    #include <sys/time.h>
-
-    namespace osg{
-
-        inline  Timer_t Timer::tick() const
-        {
-            if (_useStandardClock)
-            {
-                struct timeval tv;
-                gettimeofday(&tv, NULL);
-                return ((osg::Timer_t)tv.tv_sec)*1000000+(osg::Timer_t)tv.tv_usec;
-            }
-            else
-            {
-                if ( _clockAddress_64 )
-                    return *_clockAddress_64;
-                else
-                {
-                    unsigned long clockValue = *_clockAddress_32;
-                    if( _lastClockValue > clockValue )
-                    {
-                        # ifdef __GNUC__
-                        _rollOver += 0x100000000LL;
-                        #else
-                        _rollOver += 0x100000000L;
-                        #endif
-                    }
-                    _lastClockValue = clockValue;
-                    return _rollOver + clockValue;
-                }
-            }
-        }
-    }
-    
-#elif defined (__APPLE__) || defined (macintosh)
-
-    #include <sys/time.h>
-
-    namespace osg{
-        inline Timer_t Timer::tick() const
-        {
-            // Always uses std::clock()
-            struct timeval tv;
-            gettimeofday(&tv, NULL);
-            return ((osg::Timer_t)tv.tv_sec)*1000000+(osg::Timer_t)tv.tv_usec;
-        }
-    }
-#elif defined(unix)
-
-    #include <sys/time.h>
-
-    namespace osg{
-        inline  Timer_t Timer::tick() const
-        {
-            struct timeval tv;
-            gettimeofday(&tv, NULL);
-            return ((osg::Timer_t)tv.tv_sec)*1000000+(osg::Timer_t)tv.tv_usec;
-        }
-    }
-
-#else
-
-    // no choice, always use std::clock()
-    namespace osg{
-
-        inline  Timer_t Timer::tick( void ) const { return std::clock(); }
-    }
-
-#endif
-
 #endif

@@ -45,6 +45,7 @@ CXXFILES =\
     ReaderWriterATTR.cpp\
     MultiTextureRecord.cpp\
     UVListRecord.cpp\
+    BSPRecord.cpp\
 #    PointLight.cpp\
 
 

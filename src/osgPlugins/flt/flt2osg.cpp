@@ -73,6 +73,7 @@
 #include "LightSourceRecord.h"
 #include "LightSourcePaletteRecord.h"
 #include "AttrData.h"
+#include "BSPRecord.h"
 
 
 
@@ -292,6 +293,9 @@ osg::Group* ConvertFromFLT::visitPrimaryNode(osg::Group& osgParent, PrimNodeReco
                 break;
             case DOF_OP:
                 osgPrim = visitDOF(osgParent, (DofRecord*)child);
+                break;
+            case BSP_OP:
+                osgPrim = visitBSP(osgParent, (BSPRecord*)child);
                 break;
             case SWITCH_OP:
                 osgPrim = visitSwitch(osgParent, (SwitchRecord*)child);
@@ -628,6 +632,18 @@ void ConvertFromFLT::visitNormalTextureVertex(osg::Group& , NormalTextureVertexR
     _diCurrentOffset += rec->getSize();
 }
 
+
+osg::Group* ConvertFromFLT::visitBSP(osg::Group& osgParent, BSPRecord* rec)
+{
+    // create group node for the time being
+		osg::Group* group = new osg::Group;
+		group->setName(rec->getData()->szIdent);
+
+		visitAncillary(osgParent, *group, rec)->addChild( group );
+		visitPrimaryNode(*group, rec);
+
+		return group;
+}
 
 osg::Group* ConvertFromFLT::visitGroup(osg::Group& osgParent, GroupRecord* rec)
 {
@@ -969,6 +985,7 @@ osg::Group* ConvertFromFLT::visitDOF(osg::Group& osgParent, DofRecord* rec)
 #endif
 
 }
+
 
 
 osg::Group* ConvertFromFLT::visitSwitch(osg::Group& osgParent, SwitchRecord* rec)

@@ -57,6 +57,7 @@ class MultiTextureRecord;
 class UVListRecord;
 class LightSourceRecord;
 class LightSourcePaletteRecord;
+class BSPRecord;
 struct SFace;
 
 //class GeoSetBuilder;
@@ -139,6 +140,7 @@ class ConvertFromFLT
         // Primary records
         osg::Group* visitHeader(HeaderRecord* rec);
         osg::Group* visitGroup(osg::Group& osgParent, GroupRecord* rec);
+        osg::Group* visitBSP(osg::Group& osgParent, BSPRecord* rec);
         osg::Group* visitLightSource(osg::Group& osgParent, LightSourceRecord* rec);
         osg::Group* visitRoadConstruction(osg::Group& osgParent, GroupRecord* rec);
         osg::Group* visitLOD(osg::Group& osgParent, LodRecord* rec);

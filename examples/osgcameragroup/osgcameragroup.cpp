@@ -137,10 +137,10 @@ int main( int argc, char **argv )
                                    (new Producer::KeyboardMouse(cg.getCamera(0)->getRenderSurface()));
 
 
-    MyKeyboardMouseCallback kbmcb;
+    osg::ref_ptr<MyKeyboardMouseCallback> kbmcb = new MyKeyboardMouseCallback;
     
     // register the callback with the keyboard mouse manger.
-    kbm->setCallback( &kbmcb );
+    kbm->setCallback( kbmcb.get() );
     kbm->startThread();
     
     // set the scene to render
@@ -159,7 +159,7 @@ int main( int argc, char **argv )
 
     osgUtil::UpdateVisitor update;
 
-    while( !kbmcb.done() )
+    while( !kbmcb->done() )
     {
         // syncronize to the when cull and draw threads have completed.
         cg.sync();
@@ -168,7 +168,7 @@ int main( int argc, char **argv )
         // call all node update callbacks and animations.
         cg.getSceneData()->accept(update);
 
-	tb->input( kbmcb.mx(), kbmcb.my(), kbmcb.mbutton() );
+	tb->input( kbmcb->mx(), kbmcb->my(), kbmcb->mbutton() );
 
         // update the main producer camera
         cg.setViewByMatrix(tb->getMatrix());

@@ -199,7 +199,7 @@ void Geometry::read(DataInputStream* in){
                 addPrimitiveSet(prim);
             }
             else{
-                throw Exception("Unkown PrimitiveSet in Geometry::read()");
+                throw Exception("Unknown PrimitiveSet in Geometry::read()");
             }
         }
     

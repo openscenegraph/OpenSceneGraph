@@ -8,6 +8,7 @@
  *    CREATED BY:     Rune Schmidt Jensen
  *
  *    HISTORY:        Created 11.03.2003
+ *                    Updated for 1D textures - Don Burns 27.1.2004
  *
  *    Copyright 2003 VR-C
  **********************************************************************/
@@ -23,6 +24,7 @@
 #include "PolygonOffset.h"
 #include "ShadeModel.h"
 #include "Point.h"
+#include "Texture1D.h"
 #include "Texture2D.h"
 #include "TextureCubeMap.h"
 #include "TexEnv.h"
@@ -428,6 +430,10 @@ void DataOutputStream::writeStateAttribute(const osg::StateAttribute* attribute)
         }
         else if(dynamic_cast<const osg::Point*>(attribute)){
             ((ive::Point*)(attribute))->write(this);
+        }
+        // This is a Texture1D
+        else if(dynamic_cast<const osg::Texture1D*>(attribute)){
+            ((ive::Texture1D*)(attribute))->write(this);
         }
         // This is a Texture2D
         else if(dynamic_cast<const osg::Texture2D*>(attribute)){

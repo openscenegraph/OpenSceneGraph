@@ -283,188 +283,6 @@ class MyGeometryCallback :
         
 };
 
-// Custom Texture subload callback, just acts the the standard subload modes in osg::Texture right now
-// but code be used to define your own style callbacks.
-class MyTextureSubloadCallback : public osg::Texture2D::SubloadCallback
-{
-    public:
-    
-        MyTextureSubloadCallback():
-            _subloadMode(AUTO),
-            _textureWidth(0),
-            _textureHeight(0),
-            _subloadTextureOffsetX(0),
-            _subloadTextureOffsetY(0),
-            _subloadImageOffsetX(0),
-            _subloadImageOffsetY(0),
-            _subloadImageWidth(0),
-            _subloadImageHeight(0)
-        {
-        }
-
-        enum SubloadMode {
-            OFF,
-            AUTO,
-            IF_DIRTY
-        };
-
-        /** Set the texture subload mode. */
-        inline void setSubloadMode(const SubloadMode mode) { _subloadMode = mode; }
-
-        /** Get the texture subload mode. */
-        inline const SubloadMode getSubloadMode() const { return _subloadMode; }
-
-        /** Set the texture subload texture offsets. */
-        inline void setSubloadTextureOffset(const int x, const int y)
-        {
-            _subloadTextureOffsetX = x;
-            _subloadTextureOffsetY = y;
-        }
-
-        /** Get the texture subload texture offsets. */
-        inline void getSubloadTextureOffset(int& x, int& y) const
-        {
-            x = _subloadTextureOffsetX;
-            y = _subloadTextureOffsetY;
-        }
-        
-        /** Set the texture subload width. If width or height are zero then
-          * the repsective size value is calculated from the source image sizes. */
-        inline void setSubloadTextureSize(const int width, const int height)
-        {
-            _textureWidth = width;
-            _textureHeight = height;
-        }
-
-        /** Get the texture subload width. */
-        inline void getSubloadTextureSize(int& width, int& height) const
-        {
-            width = _textureWidth;
-            height = _textureHeight;
-        }
-
-
-        /** Set the subload image offsets. */
-        inline void setSubloadImageOffset(const int x, const int y)
-        {
-            _subloadImageOffsetX = x;
-            _subloadImageOffsetY = y;
-        }
-
-        /** Get the subload image offsets. */
-        inline void getSubloadImageOffset(int& x, int& y) const
-        {
-            x = _subloadImageOffsetX;
-            y = _subloadImageOffsetY;
-        }
-
-        /** Set the image subload width. If width or height are zero then
-          * the repsective size value is calculated from the source image sizes. */
-        inline void setSubloadImageSize(const int width, const int height)
-        {
-            _subloadImageWidth = width;
-            _subloadImageHeight = height;
-        }
-
-        /** Get the image subload width. */
-        inline void getSubloadImageSize(int& width, int& height) const
-        {
-            width = _subloadImageWidth;
-            height = _subloadImageHeight;
-        }
-    
-    
-    
-        virtual void load(const osg::Texture2D& texture,osg::State&) const
-        {
-            osg::notify(osg::INFO)<<"doing load"<<std::endl;
-
-            static bool s_SGIS_GenMipmap = osg::isGLExtensionSupported("GL_SGIS_generate_mipmap");
-
-            if (s_SGIS_GenMipmap && (texture.getFilter(osg::Texture2D::MIN_FILTER) != osg::Texture2D::LINEAR && texture.getFilter(osg::Texture2D::MIN_FILTER) != osg::Texture2D::NEAREST))
-            {
-                texture.setNumMipmapLevels(1); // will leave this at one, since the mipmap will be created internally by OpenGL.
-                glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
-            }
-            else
-            {
-                texture.setNumMipmapLevels(1);
-            }
-
-
-            GLsizei width = (_subloadImageWidth>0)?_subloadImageWidth:texture.getImage()->s();
-            GLsizei height = (_subloadImageHeight>0)?_subloadImageHeight:texture.getImage()->t();
-
-        
-            bool sizeChanged = false;
-            if (_textureWidth==0)
-            {
-                // need to calculate texture dimension
-                sizeChanged = true;
-                _textureWidth = 1;
-                for (; _textureWidth < (static_cast<GLsizei>(_subloadTextureOffsetX) + width); _textureWidth <<= 1) {}
-             }
-
-            if (_textureHeight==0)
-            {
-                // need to calculate texture dimension
-                sizeChanged = true;
-                _textureHeight = 1;
-                for (; _textureHeight < (static_cast<GLsizei>(_subloadTextureOffsetY) + height); _textureHeight <<= 1) {}
-            }
-            
-            if (sizeChanged)
-            {
-                texture.setTextureSize(_textureWidth, _textureHeight);
-            }
-
-            // reserve appropriate texture memory
-            glTexImage2D(GL_TEXTURE_2D, 0, texture.getInternalFormat(),
-                         _textureWidth, _textureHeight, 0,
-                         (GLenum) texture.getImage()->getPixelFormat(), (GLenum) texture.getImage()->getDataType(),
-                         NULL);
-
-
-            glPixelStorei(GL_UNPACK_ROW_LENGTH,texture.getImage()->s());
-            
-
-            glTexSubImage2D(GL_TEXTURE_2D, 0,
-                            _subloadTextureOffsetX, _subloadTextureOffsetY,
-                            width, height,
-                            (GLenum) texture.getImage()->getPixelFormat(), (GLenum) texture.getImage()->getDataType(),
-                            texture.getImage()->data(_subloadImageOffsetX,_subloadImageOffsetY));
-
-            glPixelStorei(GL_UNPACK_ROW_LENGTH,0);
-
-        }
-        
-        virtual void subload(const osg::Texture2D& texture,osg::State&) const
-        {
-            osg::notify(osg::INFO)<<"doing subload"<<std::endl;
-        
-            glPixelStorei(GL_UNPACK_ROW_LENGTH,texture.getImage()->s());
-
-            glTexSubImage2D(GL_TEXTURE_2D, 0,
-                            _subloadTextureOffsetX, _subloadTextureOffsetY,
-                            (_subloadImageWidth>0)?_subloadImageWidth:texture.getImage()->s(), (_subloadImageHeight>0)?_subloadImageHeight:texture.getImage()->t(),
-                            (GLenum) texture.getImage()->getPixelFormat(), (GLenum) texture.getImage()->getDataType(),
-                            texture.getImage()->data(_subloadImageOffsetX,_subloadImageOffsetY));
-
-            glPixelStorei(GL_UNPACK_ROW_LENGTH,0);
-        }
-
-
-        SubloadMode _subloadMode;
-        mutable GLsizei _textureWidth, _textureHeight;
-        GLint _subloadTextureOffsetX, _subloadTextureOffsetY;
-        GLint _subloadImageOffsetX, _subloadImageOffsetY;
-        GLsizei _subloadImageWidth, _subloadImageHeight;
-};
-
-
-
-
-
 osg::Node* createPreRenderSubGraph(osg::Node* subgraph)
 {
     if (!subgraph) return 0;
@@ -523,14 +341,7 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph)
     // StateSet to contain the Texture StateAttribute.
     osg::StateSet* stateset = new osg::StateSet;
 
-    // set up the texture.
-    osg::Image* image = new osg::Image;
-    image->setInternalTextureFormat(GL_RGBA);
-
     osg::Texture2D* texture = new osg::Texture2D;
-    //texture->setSubloadMode(osg::Texture::IF_DIRTY);
-    texture->setSubloadCallback(new MyTextureSubloadCallback());
-    texture->setImage(image);
     texture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
     texture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
     stateset->setTextureAttributeAndModes(0, texture,osg::StateAttribute::ON);
@@ -546,7 +357,7 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph)
     
     parent->setUpdateCallback(new MyUpdateCallback(subgraph));
     
-    parent->setCullCallback(new MyCullCallback(subgraph,image));
+    parent->setCullCallback(new MyCullCallback(subgraph,texture));
  
     parent->addChild(geode);
     

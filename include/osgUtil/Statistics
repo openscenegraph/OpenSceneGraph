@@ -165,7 +165,7 @@ class Statistics : public osg::Drawable::PrimitiveFunctor
         unsigned int                         _total_primitives_count;
         unsigned int                         _number_of_vertexes;
 
-        unsigned int _calculate_primitives_number_by_mode(GLenum, GLsizei);
+        inline unsigned int _calculate_primitives_number_by_mode(GLenum, GLsizei);
 };
 
 inline unsigned int Statistics::_calculate_primitives_number_by_mode(GLenum mode, GLsizei count)

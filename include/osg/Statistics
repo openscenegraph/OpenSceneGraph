@@ -53,7 +53,7 @@ class Statistics : public osg::Referenced, public osg::Drawable::PrimitiveFuncto
         
         void reset()
         {
-            numOpaque=0, nummat=0; depth=0; stattype=STAT_NONE;
+            numDrawables=0, nummat=0; depth=0; stattype=STAT_NONE;
             nlights=0; nbins=0; nimpostor=0;
             
             _vertexCount=0;
@@ -76,7 +76,7 @@ class Statistics : public osg::Referenced, public osg::Drawable::PrimitiveFuncto
         virtual void vertex(float,float,float) {  PrimitivePair& prim = _primitiveCount[_currentPrimtiveFunctorMode]; ++prim.second; }
         virtual void end() {}
         
-        void addOpaque() { numOpaque++;}
+        void addDrawable() { numDrawables++;}
         void addMatrix() { nummat++;}
         void addLight(const int np) { nlights+=np;}
         void addImpostor(const int np) { nimpostor+= np; }
@@ -88,7 +88,7 @@ class Statistics : public osg::Referenced, public osg::Drawable::PrimitiveFuncto
                 
 public:
                 
-        int numOpaque, nummat, nbins;
+        int numDrawables, nummat, nbins;
         int nlights;
         int depth; // depth into bins - eg 1.1,1.2,1.3 etc
         int _binNo;

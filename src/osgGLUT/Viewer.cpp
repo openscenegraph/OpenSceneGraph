@@ -1598,8 +1598,8 @@ int writePrims( const int ypos, osg::Statistics& stats)
 
     if (stats.depth==1) sprintf(intro,"==> Bin %2d", stats._binNo);
     else                sprintf(intro,"General Stats: ");
-    sprintf(clin,"%s  %d Opaque Drawables   %d Lights   %d Bins   %d Impostors", 
-        intro ,stats.numOpaque, stats.nlights, stats.nbins, stats.nimpostor);
+    sprintf(clin,"%s  %d Drawables   %d Lights   %d Bins   %d Impostors", 
+        intro ,stats.numDrawables, stats.nlights, stats.nbins, stats.nimpostor);
     displaytext(0,ypos-npix,clin);
     npix+=24;
     

@@ -269,7 +269,7 @@ bool RenderBin::getStats(osg::Statistics* primStats)
         {
             RenderLeaf* rl = dw_itr->get();
             Drawable* dw= rl->_drawable;
-            primStats->addOpaque(); // number of geosets
+            primStats->addDrawable(); // number of geosets
             if (rl->_modelview.get()) primStats->addMatrix(); // number of matrices
             if (dw)
             {

@@ -360,19 +360,24 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the standard OpenSceneGraph example which loads and visualises 3d models.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
-    arguments.getApplicationUsage()->addCommandLineOption("-i <filename>","Specify the input file to process");
+    arguments.getApplicationUsage()->addCommandLineOption("-e <filename>","Specify the east hemisphere input file to process");
+    arguments.getApplicationUsage()->addCommandLineOption("-w <filename>","Specify the west hemisphere input file to process");
     arguments.getApplicationUsage()->addCommandLineOption("-o <outputfile>","Specify the output master file to generate");
     arguments.getApplicationUsage()->addCommandLineOption("-l <numOfLevels>","Specify the number of PagedLOD levels to generate");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
     
-    std::string inputFile;
-    while (arguments.read("-i",inputFile)) {}
-    
-    std::string basename("output.ive");
+    std::string west_hemisphere("land_shallow_topo_west.tif");
+    while (arguments.read("-w",west_hemisphere)) {}
+
+    std::string east_hemisphere("land_shallow_topo_east.tif");
+    while (arguments.read("-e",east_hemisphere)) {}
+
+    std::string basename("bluemarble.ive");
     while (arguments.read("-o",basename)) {}
 
-    float numLevels;
+    float numLevels=4;
     while (arguments.read("-l",numLevels)) {}
+
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
@@ -397,13 +402,11 @@ int main( int argc, char **argv )
 //         return 1;
 //     }
 
-    std::string left_hemisphere("land_shallow_topo_west.tif");
-    std::string right_hemisphere("land_shallow_topo_east.tif");
 
     // create a graphics context to allow us to use OpenGL to compress textures.    
     GraphicsContext gfx;
 
-    createWorld(left_hemisphere,right_hemisphere,basename,4);
+    createWorld(west_hemisphere,east_hemisphere,basename,numLevels);
 
     return 0;
 }

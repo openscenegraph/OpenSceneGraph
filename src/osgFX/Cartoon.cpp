@@ -184,7 +184,7 @@ namespace
 		"varying float CartoonTexCoord;"
 		"void main( void )"
 		"{"
-		    "vec3 eye_space_normal = normalize(gl_NormalMatrix * gl_Normal).xyz;"
+		    "vec3 eye_space_normal = normalize(gl_NormalMatrix * gl_Normal);"
 		    "CartoonTexCoord = max(0.0, dot(normalize(LightPosition), eye_space_normal));"
 		    "gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;"
 		"}";

@@ -54,6 +54,33 @@
 #define GL_COMPRESSED_RGBA_S3TC_DXT5_EXT        0x83F3
 #endif
 
+#ifndef GL_NV_texture_shader
+#define GL_HILO_NV                              0x86F4
+#define GL_DSDT_NV                              0x86F5
+#define GL_DSDT_MAG_NV                          0x86F6
+#define GL_DSDT_MAG_VIB_NV                      0x86F7
+#define GL_HILO16_NV                            0x86F8
+#define GL_SIGNED_HILO_NV                       0x86F9
+#define GL_SIGNED_HILO16_NV                     0x86FA
+#define GL_SIGNED_RGBA_NV                       0x86FB
+#define GL_SIGNED_RGBA8_NV                      0x86FC
+#define GL_SIGNED_RGB_NV                        0x86FE
+#define GL_SIGNED_RGB8_NV                       0x86FF
+#define GL_SIGNED_LUMINANCE_NV                  0x8701
+#define GL_SIGNED_LUMINANCE8_NV                 0x8702
+#define GL_SIGNED_LUMINANCE_ALPHA_NV            0x8703
+#define GL_SIGNED_LUMINANCE8_ALPHA8_NV          0x8704
+#define GL_SIGNED_ALPHA_NV                      0x8705
+#define GL_SIGNED_ALPHA8_NV                     0x8706
+#define GL_SIGNED_INTENSITY_NV                  0x8707
+#define GL_SIGNED_INTENSITY8_NV                 0x8708
+#define GL_DSDT8_NV                             0x8709
+#define GL_DSDT8_MAG8_NV                        0x870A
+#define GL_DSDT8_MAG8_INTENSITY8_NV             0x870B
+#define GL_SIGNED_RGB_UNSIGNED_ALPHA_NV         0x870C
+#define GL_SIGNED_RGB8_UNSIGNED_ALPHA8_NV       0x870D
+#endif
+
 #ifndef GL_MIRRORED_REPEAT_IBM
 #define GL_MIRRORED_REPEAT_IBM            0x8370
 #endif

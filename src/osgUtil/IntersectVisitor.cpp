@@ -155,9 +155,10 @@ void IntersectVisitor::reset()
     _intersectStateStack.clear();
 
     // create a empty IntersectState on the the intersectStateStack.
-    IntersectState* nis = osgNew IntersectState;
+    _intersectStateStack.push_back(osgNew IntersectState);
 
-    _intersectStateStack.push_back(nis);
+    _nodePath.clear();
+    _segHitList.clear();
 
 }
 

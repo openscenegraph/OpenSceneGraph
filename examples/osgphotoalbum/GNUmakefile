@@ -2,6 +2,8 @@ TOPDIR = ../..
 include $(TOPDIR)/Make/makedefs 
 
 CXXFILES =\
+        ImageReaderWriter.cpp\
+        PhotoArchive.cpp\
 	osgphotoalbum.cpp\
 
 LIBS     += -losgProducer -lProducer -losgText -losgGA -losgDB -losgUtil -losg $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 

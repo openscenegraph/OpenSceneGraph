@@ -1,9 +1,8 @@
 /* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
- * (at your option) any later version.  The full license is in LICENSE file
- * included with this distribution, and on the openscenegraph.org website.
+ * This application is open source and may be redistributed and/or modified under  
+ * the terms of the GNU Public License (GPL) version 1.0 or 
+ * (at your option) any later version.
  * 
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -11,222 +10,23 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#include <osg/Geode>
 #include <osg/Notify>
 #include <osg/MatrixTransform>
 #include <osg/Switch>
-#include <osg/TexMat>
-#include <osg/Texture2D>
 #include <osg/PolygonOffset>
 #include <osg/CullFace>
 
 #include <osgUtil/Optimizer>
 
-#include <osgDB/ReadFile>
-#include <osgDB/WriteFile>
-#include <osgDB/ImageOptions>
-
 #include <osgText/Text>
 
 #include <osgProducer/Viewer>
 
-#include <sstream>
+#include "ImageReaderWriter.h"
 
-class ImageReaderWriter : public osgDB::ReaderWriter
-{
-    public:
-        virtual const char* className() { return "Image Reader"; }
-        
-        
-        struct DataReference
-        {
-            DataReference():
-                _fileName(),
-                _resolutionX(256),
-                _resolutionY(256),
-                _center(0.625f,0.0f,0.0f),
-                _maximumWidth(1.25f,0.0f,0.0f),
-                _maximumHeight(0.0f,0.0f,1.0f),
-                _numPointsAcross(10), 
-                _numPointsUp(10),
-                _backPage(false) {}
-
-            DataReference(const std::string& fileName, unsigned int res, float width, float height,bool backPage):
-                _fileName(fileName),
-                _resolutionX(res),
-                _resolutionY(res),
-                _center(width*0.5f,0.0f,height*0.5f),
-                _maximumWidth(width,0.0f,0.0f),
-                _maximumHeight(0.0f,0.0f,height),
-                _numPointsAcross(10), 
-                _numPointsUp(10),
-                _backPage(backPage) {}
-        
-            DataReference(const DataReference& rhs):
-                _fileName(rhs._fileName),
-                _resolutionX(rhs._resolutionX),
-                _resolutionY(rhs._resolutionY),
-                _center(rhs._center),
-                _maximumWidth(rhs._maximumWidth),
-                _maximumHeight(rhs._maximumHeight),
-                _numPointsAcross(rhs._numPointsAcross), 
-                _numPointsUp(rhs._numPointsUp),
-                _backPage(rhs._backPage) {}
-
-            std::string     _fileName;
-            unsigned int    _resolutionX;
-            unsigned int    _resolutionY;
-            osg::Vec3       _center;
-            osg::Vec3       _maximumWidth; 
-            osg::Vec3       _maximumHeight;
-            unsigned int    _numPointsAcross; 
-            unsigned int    _numPointsUp;
-            bool            _backPage;
-        };
-        
-        typedef std::map<std::string,DataReference> DataReferenceMap;
-        DataReferenceMap _dataReferences;
-        
-        std::string insertReference(const std::string& fileName, unsigned int res, float width, float height, bool backPage)
-        {
-	    std::stringstream ostr;
-	    ostr<<"res_"<<res<<"_"<<fileName;
-
-            std::string myReference = ostr.str();
-            _dataReferences[myReference] = DataReference(fileName,res,width,height,backPage);
-            return myReference;
-        }
-        
-        
-
-        virtual ReadResult readNode(const std::string& fileName, const Options*)
-        {
-            std::cout<<"Trying to read paged image "<<fileName<<std::endl;
-            
-            DataReferenceMap::iterator itr = _dataReferences.find(fileName);
-            if (itr==_dataReferences.end()) return ReaderWriter::ReadResult::FILE_NOT_HANDLED;
-
-            DataReference& dr = itr->second;
-            
-            // record previous options.
-            osg::ref_ptr<osgDB::ReaderWriter::Options> previousOptions = osgDB::Registry::instance()->getOptions();
-
-            osg::ref_ptr<osgDB::ImageOptions> options = new osgDB::ImageOptions;
-            options->_destinationImageWindowMode = osgDB::ImageOptions::PIXEL_WINDOW;
-            options->_destinationPixelWindow.set(0,0,dr._resolutionX,dr._resolutionY);
-
-            osgDB::Registry::instance()->setOptions(options.get());
-            
-            osg::Image* image = osgDB::readImageFile(dr._fileName);
-            
-            // restore previous options.
-            osgDB::Registry::instance()->setOptions(previousOptions.get());
-
-            if (image)
-            {
-            
-                float s = options.valid()?options->_sourcePixelWindow.windowWidth:1.0f;
-                float t = options.valid()?options->_sourcePixelWindow.windowHeight:1.0f;
-            
-                float photoWidth = 0.0f;
-                float photoHeight = 0.0f;
-                float maxWidth = dr._maximumWidth.length();
-                float maxHeight = dr._maximumHeight.length();
-                
-                
-                if ((s/t)>(maxWidth/maxHeight))
-                {
-                    // photo wider than tall relative to the required pictures size.
-                    // so need to clamp the width to the maximum width and then
-                    // set the height to keep the original photo aspect ratio.
-                    
-                    photoWidth = maxWidth;
-                    photoHeight = photoWidth*(t/s);
-                }
-                else
-                {
-                    // photo tall than wide relative to the required pictures size.
-                    // so need to clamp the height to the maximum height and then
-                    // set the width to keep the original photo aspect ratio.
-                    
-                    photoHeight = maxHeight;
-                    photoWidth = photoHeight*(s/t);
-                }
-                
-                photoWidth*=0.95;
-                photoHeight*=0.95;
-                
-                osg::Vec3 halfWidthVector(dr._maximumWidth*(photoWidth*0.5f/maxWidth));
-                osg::Vec3 halfHeightVector(dr._maximumHeight*(photoHeight*0.5f/maxHeight));
-
-
-                // set up the texture.
-                osg::Texture2D* texture = new osg::Texture2D;
-                texture->setImage(image);
-                texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
-                texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
-
-                // set up the drawstate.
-                osg::StateSet* dstate = new osg::StateSet;
-                dstate->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
-                dstate->setTextureAttributeAndModes(0, texture,osg::StateAttribute::ON);
-
-                // set up the geoset.
-                osg::Geometry* geom = new osg::Geometry;
-                geom->setStateSet(dstate);
-
-                osg::Vec3Array* coords = new osg::Vec3Array(4);
-                
-                if (!dr._backPage)
-                {
-                    (*coords)[0] = dr._center - halfWidthVector + halfHeightVector;
-                    (*coords)[1] = dr._center - halfWidthVector - halfHeightVector;
-                    (*coords)[2] = dr._center + halfWidthVector - halfHeightVector;
-                    (*coords)[3] = dr._center + halfWidthVector + halfHeightVector;
-                }
-                else
-                {
-                    (*coords)[3] = dr._center - halfWidthVector + halfHeightVector;
-                    (*coords)[2] = dr._center - halfWidthVector - halfHeightVector;
-                    (*coords)[1] = dr._center + halfWidthVector - halfHeightVector;
-                    (*coords)[0] = dr._center + halfWidthVector + halfHeightVector;
-                }
-                geom->setVertexArray(coords);
-
-                osg::Vec2Array* tcoords = new osg::Vec2Array(4);
-                (*tcoords)[0].set(0.0f,1.0f);
-                (*tcoords)[1].set(0.0f,0.0f);
-                (*tcoords)[2].set(1.0f,0.0f);
-                (*tcoords)[3].set(1.0f,1.0f);
-                geom->setTexCoordArray(0,tcoords);
-
-                osg::Vec4Array* colours = new osg::Vec4Array(1);
-                (*colours)[0].set(1.0f,1.0f,1.0,1.0f);
-                geom->setColorArray(colours);
-                geom->setColorBinding(osg::Geometry::BIND_OVERALL);
-
-                geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::QUADS,0,4));
-
-                // set up the geode.
-                osg::Geode* geode = new osg::Geode;
-                geode->addDrawable(geom);
-                
-                return geode;
-            
-            }
-            else
-            {
-                return ReaderWriter::ReadResult::FILE_NOT_HANDLED;
-            }
-            
-                        
-        }
-
-};
-
-
-// now register with Registry to instantiate the above
-// reader/writer.
+// now register with Registry to instantiate the above reader/writer,
+// declaring in main so that the code to set up PagedLOD can get a handle
+// to the ImageReaderWriter's 
 osgDB::RegisterReaderWriterProxy<ImageReaderWriter> g_ImageReaderWriter;
 
 class Album;

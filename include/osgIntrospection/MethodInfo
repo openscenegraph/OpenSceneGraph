@@ -25,6 +25,9 @@ namespace osgIntrospection
     public:
         /// Direct initialization constructor.
         inline MethodInfo(const std::string &qname, const Type &decltype, const Type &rtype, const ParameterInfoList &plist);
+        
+        /// Destructor
+        inline ~MethodInfo();
 
         /// Returns the Type object associated to the type that
         /// declares the reflected method.
@@ -42,14 +45,25 @@ namespace osgIntrospection
 
         /// Returns whether the reflected method is const or not.
         virtual bool isConst() const = 0;
+        
+        /// Returns whether the reflected method is static or not.
+        virtual bool isStatic() const = 0;
+        
+        /// Returns whether this method would override the given
+        /// method.
+        bool overrides(const MethodInfo *other) const;
 
         /// Invokes the reflected method dynamically on the given const
         /// instance, passing it the arguments as a list of Value objects.
-        virtual Value invoke(const Value &instance, ValueList &args) const = 0;
+        inline virtual Value invoke(const Value &instance, ValueList &args) const;
 
         /// Invokes the reflected method dynamically on the given instance,
         /// passing it the arguments as a list of Value objects.
-        virtual Value invoke(Value &instance, ValueList &args) const = 0;
+        inline virtual Value invoke(Value &instance, ValueList &args) const;
+
+        /// Invokes the reflected static method dynamically passing it the 
+        /// arguments as a list of Value objects.
+        inline virtual Value invoke(ValueList &args) const;
 
         /// Invokes the reflected method dynamically on the given const
         /// instance, without arguments.
@@ -58,6 +72,9 @@ namespace osgIntrospection
         /// Invokes the reflected method dynamically on the given
         /// instance, without arguments.
         inline Value invoke(Value &instance) const;
+        
+        /// Invokes the reflected static method without arguments.
+        inline Value invoke() const;
 
     private:
         inline std::string strip_namespace(const std::string &s) const;
@@ -73,7 +90,7 @@ namespace osgIntrospection
     // INLINE METHODS
     
     inline MethodInfo::MethodInfo(const std::string &qname, const Type &decltype, const Type &rtype, const ParameterInfoList &plist)
-    :    CustomAttributeProvider(),
+    :   CustomAttributeProvider(),
         decltype_(decltype), 
         rtype_(rtype),
         params_(plist)
@@ -109,6 +126,21 @@ namespace osgIntrospection
         return params_;
     }
 
+	inline Value MethodInfo::invoke(const Value &, ValueList &) const
+	{
+		throw InvokeNotImplementedException();
+	}
+
+	inline Value MethodInfo::invoke(Value &, ValueList &) const
+	{
+		throw InvokeNotImplementedException();
+	}
+
+	inline Value MethodInfo::invoke(ValueList &) const
+	{
+		throw InvokeNotImplementedException();
+	}
+
     inline Value MethodInfo::invoke(const Value &instance) const
     {
         ValueList args;
@@ -120,6 +152,18 @@ namespace osgIntrospection
         ValueList args;
         return invoke(instance, args);
     }
+    
+	inline Value MethodInfo::invoke() const
+	{
+        ValueList args;
+		return invoke(args);
+	}
+	
+	inline MethodInfo::~MethodInfo()
+	{
+		for (ParameterInfoList::iterator i=params_.begin(); i!=params_.end(); ++i)
+			delete *i;
+	}
 
 }
 

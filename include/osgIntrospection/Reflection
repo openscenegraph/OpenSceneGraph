@@ -61,6 +61,7 @@ namespace osgIntrospection
         
     private:
         template<typename C> friend class Reflector;
+        template<typename C> friend struct TypeNameAliasProxy;
 
         struct StaticData
         {
@@ -70,7 +71,7 @@ namespace osgIntrospection
 
         static StaticData &getOrCreateStaticData();
         static Type *registerType(const std::type_info &ti);
-        static Type *registerOrReplaceType(const std::type_info &ti);        
+        static Type *getOrRegisterType(const std::type_info &ti, bool replace_if_defined = false);
 
     private:
         static StaticData *staticdata__;

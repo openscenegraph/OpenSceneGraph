@@ -10,6 +10,7 @@
 #include <typeinfo>
 #include <vector>
 #include <map>
+#include <algorithm>
 
 namespace osgIntrospection
 {
@@ -19,49 +20,18 @@ namespace osgIntrospection
     class PropertyInfo;
     class ParameterInfo;
     class ReaderWriter;
+    class ConstructorInfo;
+    struct Comparator;
 
     // typedefs for member info lists
     typedef std::vector<const MethodInfo *> MethodInfoList;    
     typedef std::vector<const PropertyInfo *> PropertyInfoList;    
     typedef std::vector<const ParameterInfo *> ParameterInfoList;
+    typedef std::vector<const ConstructorInfo *> ConstructorInfoList;
 
     // typedef for enum label map
     typedef std::map<int, std::string> EnumLabelMap;
 
-    /// Base class for instance creators. An instance creator is
-    /// a lightweight object that creates a Value containing an
-    /// instance of some type. Every non-abstract Type object has
-    /// an instance creator that creates instances of that type.
-    /// This is an abstract interface, it must be derived to
-    /// provide the actual implementation of createInstance().
-    struct InstanceCreatorBase
-    {
-        virtual Value createInstance() const = 0;
-    };
-
-    /// This is an instance creator to be used with types that ought to
-    /// be created on the heap, for example all classes derived from
-    /// osg::Referenced.
-    template<typename T>
-    struct InstanceCreator: public InstanceCreatorBase
-    {
-        Value createInstance() const
-        {
-            return new T();
-        }
-    };
-
-    /// This is an instance creator to be used with types that can be
-    /// created on the stack (for example: int, std::string, or other
-    /// possibly small user-defined structs or classes).
-    template<typename T>
-    struct ValueInstanceCreator: public InstanceCreatorBase
-    {
-        Value createInstance() const
-        {
-            return T();
-        }
-    };
 
     /// Objects of class Type are used to maintain information about
     /// reflected types. They also provide a number of services, like
@@ -96,6 +66,10 @@ namespace osgIntrospection
         /// name is formed by the namespace, if present, plus other modifiers 
         /// like 'const' and/or '*' (pointer) where applicable.
         inline std::string getQualifiedName() const;
+        
+        /// Returns true if either the fully-qualified name or one of the
+        /// name aliases match the given argument
+        inline bool matchesName(const std::string &name) const;
 
         /// Returns the number of base types.
         /// This number is zero if the type is not derived from any other 
@@ -104,6 +78,12 @@ namespace osgIntrospection
 
         /// Returns the i-th base type.
         inline const Type &getBaseType(int i) const;
+        
+        /// Returns the number of type name aliases.
+        inline int getNumAliases() const;
+        
+        /// Returns the i-th name alias
+        const std::string &getAlias(int i) const;
 
         /// Returns whether the reflected type is abstract.
         inline bool isAbstract() const;
@@ -140,6 +120,9 @@ namespace osgIntrospection
         /// Fills a list of properties that are either defined in this Type 
         /// or in inherited types.
         void getAllProperties(PropertyInfoList &props) const;
+        
+        /// Returns the list of constructors defined for this type.
+        inline const ConstructorInfoList &getConstructors() const;
 
         /// Returns the list of methods defined for this type. The list
         /// does not include methods inherited from base types.
@@ -152,6 +135,16 @@ namespace osgIntrospection
         /// Returns the map of enumeration labels. If the type is not an
         /// enumeration, an empty map is returned.
         inline const EnumLabelMap &getEnumLabels() const;
+
+        /// Searches for a constructor that can be called with the given list 
+        /// of arguments without raising type conversion errors. If more than
+        /// one constructors are suitable for calling, the best match is 
+        /// returned.
+        const ConstructorInfo *getCompatibleConstructor(const ValueList &values) const;
+        
+        /// Searches for a constructor whose parameters match exactly the given 
+        /// list of parameter descriptions.
+        const ConstructorInfo *getConstructor(const ParameterInfoList &params) const;
 
         /// Searches for a method that can be called with the given list of 
         /// arguments without raising type conversion errors. If more than
@@ -180,20 +173,26 @@ namespace osgIntrospection
         /// Returns the instance of the reader/writer object assigned to 
         /// this type, if any. Otherwise it returns the null pointer.
         inline const ReaderWriter *getReaderWriter() const;
+        
+        /// Returns the instance of the comparator object assigned to
+        /// this type, if any. Otherwise it returns the null pointer.
+        inline const Comparator *getComparator() const;
 
         /// Creates an instance of the reflected type. The returned Value 
         /// can be casted to T*, where T is the reflected type. If the type 
         ///    is abstract, an exception is thrown.
+        Value createInstance(ValueList &args) const;
         inline Value createInstance() const;
 
     protected:
         Type(const std::type_info &ti)
         :    ti_(ti), 
             is_const_(false), 
+            is_abstract_(false),
             pointed_type_(0), 
             is_defined_(false), 
-            icb_(0), 
-            rw_(0) 
+            rw_(0),
+            cmp_(0)
         {
         }
 
@@ -202,14 +201,9 @@ namespace osgIntrospection
 
         virtual void getInheritedProviders(CustomAttributeProviderList &providers) const;
 
-        void set_instance_creator(const InstanceCreatorBase *icb)
-        {
-            delete icb_;
-            icb_ = icb;
-        }
-
     private:
         template<typename C> friend class Reflector;
+        template<typename C> friend struct TypeNameAliasProxy;
         friend class Reflection;
 
         Type(const Type &copy): CustomAttributeProvider(copy), ti_(copy.ti_) {}
@@ -223,16 +217,21 @@ namespace osgIntrospection
         TypeList base_;
 
         bool is_const_;
+        bool is_abstract_;
         const Type *pointed_type_;
 
+        ConstructorInfoList cons_;
         PropertyInfoList props_;
         MethodInfoList methods_;
 
         EnumLabelMap labels_;
         bool is_defined_;
 
-        const InstanceCreatorBase *icb_;
         const ReaderWriter *rw_;
+        const Comparator *cmp_;
+        
+        typedef std::vector<std::string> AliasList;
+        AliasList aliases_;
     };
 
     // OPERATORS
@@ -326,7 +325,7 @@ namespace osgIntrospection
     inline bool Type::isAbstract() const
     {
         check_defined();
-        return icb_ == 0;
+        return is_abstract_;
     }
 
     inline bool Type::isAtomic() const
@@ -339,6 +338,12 @@ namespace osgIntrospection
     {
         check_defined();
         return props_;
+    }
+    
+    inline const ConstructorInfoList &Type::getConstructors() const
+    {
+		check_defined();
+		return cons_;
     }
 
     inline const MethodInfoList &Type::getMethods() const
@@ -389,6 +394,12 @@ namespace osgIntrospection
         return rw_;
     }
 
+    inline const Comparator *Type::getComparator() const
+    {
+        check_defined();
+        return cmp_;
+    }
+
     inline const Type &Type::getBaseType(int i) const
     {
         check_defined();
@@ -397,10 +408,27 @@ namespace osgIntrospection
 
     inline Value Type::createInstance() const
     {
-        check_defined();
-        if (!icb_)
-            throw TypeIsAbstractException(ti_);
-        return icb_->createInstance();
+		ValueList args;
+        return createInstance(args);
+    }
+    
+    inline int Type::getNumAliases() const
+    {
+		return static_cast<int>(aliases_.size());
+    }
+    
+    inline const std::string &Type::getAlias(int i) const
+    {
+		return aliases_[i];
+    }
+    
+    inline bool Type::matchesName(const std::string &name) const
+    {
+		if (getQualifiedName() == name) 
+			return true;
+		if (std::find(aliases_.begin(), aliases_.end(), name) != aliases_.end()) 
+			return true;
+		return false;
     }
 
 }

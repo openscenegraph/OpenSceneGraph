@@ -90,18 +90,24 @@ namespace osgIntrospection
         /// getType().
         inline const Type &getInstanceType() const;
 
-        /// Equality test operator. Returns true if the value passed
-        /// as parameter is equal to this instance. The compare() method
-        /// is used to perform the actual comparison.
-        inline bool operator==(const Value &other) const;
+        /// Equal to operator.
+        bool operator==(const Value &other) const;
 
-        /// Inequality test operator. Returns !operator==(other).
-        inline bool operator!=(const Value &other) const;
-
-        /// Conversion to bool operator. Returns true if the value is
-        /// not empty, false otherwise.
-        inline operator bool() const;
+        /// Less than or equal to operator.
+        bool operator<=(const Value &other) const;
         
+        /// Inequality test operator. Returns !operator==(other).
+        bool operator!=(const Value &other) const;
+
+        /// Greater than operator. Returns !operator<=(other).
+        bool operator>(const Value &other) const;
+
+        /// Less than operator. Returns !operator==(other) && operator<=(other).
+        bool operator<(const Value &other) const;
+        
+        /// Greater than or equal to operator. Returns operator==(other) || !operator<=(other)
+        bool operator>=(const Value &other) const;
+
         /// Tries to convert this instance to a Value of the given type.
         /// The conversion is performed by rendering to a temporary stream
         /// in the source format and trying to read back from the stream
@@ -126,15 +132,15 @@ namespace osgIntrospection
         /// associated to it. If the conversion can't be completed, an
         /// exception is thrown.
         std::string toString() const;
+        
+        /// Swaps the content of this Value with another Value
+        void swap(Value &v);
 
-        /// Compares two values for equality. Two empty values are considered
-        /// equal. If the two values' types are different, a conversion is
-        /// attempted and then the equality test is performed again.
-        static bool compare(const Value &v1, const Value &v2);
 
     private:
         // It's good to have friends!
         template<typename T> friend T variant_cast(const Value &v);
+        template<typename T> friend bool requires_conversion(const Value &v);
         template<typename T> friend T *extract_raw_data(Value &v);
         template<typename T> friend const T *extract_raw_data(const Value &v);
 
@@ -188,8 +194,6 @@ namespace osgIntrospection
             virtual const Type *type() const = 0;
             // returns the actual pointed type if applicable
             virtual const Type *ptype() const { return 0; }
-            // tests for equality
-            virtual bool equal(const Value &v) const = 0;
             // returns whether the data is a null pointer
             virtual bool nullptr() const = 0;
 
@@ -232,12 +236,6 @@ namespace osgIntrospection
             virtual const Type *type() const
             {
                 return &typeof(static_cast<Instance<T> *>(inst_)->data_);
-            }
-
-            virtual bool equal(const Value &v) const
-            {
-                return static_cast<Instance<T> *>(static_cast<Instance_box<T> *>(v.inbox_)->inst_)->data_ ==
-                    static_cast<Instance<T> *>(inst_)->data_;
             }
 
             virtual bool nullptr() const
@@ -292,12 +290,6 @@ namespace osgIntrospection
                 return &typeof(*static_cast<Instance<T> *>(inst_)->data_);
             }
 
-            virtual bool equal(const Value &v) const
-            {
-                return static_cast<Instance<T> *>(static_cast<Instance_box<T> *>(v.inbox_)->inst_)->data_ ==
-                    static_cast<Instance<T> *>(inst_)->data_;
-            }
-
             virtual bool nullptr() const
             {
                 return static_cast<Instance<T> *>(inst_)->data_ == 0;
@@ -312,8 +304,8 @@ namespace osgIntrospection
 
     /// A vector of values.
     typedef std::vector<Value> ValueList;
-
-
+    
+    
     // INLINE METHODS
 
     inline Value::Value()
@@ -373,21 +365,6 @@ namespace osgIntrospection
         type_ = copy.type_;
         ptype_ = copy.ptype_;
         return *this;
-    }
-
-    inline bool Value::operator==(const Value &other) const
-    {
-        return compare(*this, other);
-    }
-
-    inline bool Value::operator!=(const Value &other) const
-    {
-        return !compare(*this, other);
-    }
-
-    inline Value::operator bool() const
-    {
-        return !isEmpty();
     }
 
     inline Value::~Value()

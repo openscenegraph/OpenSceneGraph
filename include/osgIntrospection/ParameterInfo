@@ -22,27 +22,26 @@ namespace osgIntrospection
         {
             NONE  = 0,
 
-            IN    = 1,    // parameter is used to pass data to the function
+            IN    = 1,  // parameter is used to pass data to the function
             OUT   = 2,  // parameter is used to return data from the function
 
             INOUT = IN | OUT
         };
 
         /// Direct initialization constructor.
-        inline ParameterInfo(const std::string &name, const Type &type, int position, int attribs);
+        inline ParameterInfo(const std::string &name, const Type &type, int attribs, const Value &defval = Value());
 
         /// Returns the parameter's name.
         inline const std::string &getName() const;
-
-        /// Return the parameter's position within the function's parameter
-        /// list. This position is zero-based.
-        inline int getPosition() const;
 
         /// Returns the parameter's type.
         inline const Type &getParameterType() const;
 
         /// Returns the parameter's attributes.
         inline int getAttributes() const;
+        
+        /// Returns the default value.
+        inline const Value &getDefaultValue() const;
 
         /// Returns whether the parameter has the IN attribute.
         inline bool isIn() const { return (attribs_ & IN) != 0; }
@@ -57,28 +56,23 @@ namespace osgIntrospection
     private:
         std::string name_;
         const Type &type_;
-        int position_;
         int attribs_;
+        Value default_;
     };
 
     // INLINE METHODS
 
-    inline ParameterInfo::ParameterInfo(const std::string &name, const Type &type, int position, int attribs)
-    :    name_(name),
+    inline ParameterInfo::ParameterInfo(const std::string &name, const Type &type, int attribs, const Value &defval)
+    :   name_(name),
         type_(type),
-        position_(position),
-        attribs_(attribs)
+        attribs_(attribs),
+        default_(defval)
     {
     }
 
     inline const std::string &ParameterInfo::getName() const
     {
         return name_;
-    }
-
-    inline int ParameterInfo::getPosition() const
-    {
-        return position_;
     }
 
     inline const Type &ParameterInfo::getParameterType() const
@@ -89,6 +83,11 @@ namespace osgIntrospection
     inline int ParameterInfo::getAttributes() const
     {
         return attribs_;
+    }
+    
+    inline const Value &ParameterInfo::getDefaultValue() const
+    {
+		return default_;
     }
 
 }

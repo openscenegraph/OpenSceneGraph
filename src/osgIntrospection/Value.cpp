@@ -2,6 +2,7 @@
 #include <osgIntrospection/Type>
 #include <osgIntrospection/Exceptions>
 #include <osgIntrospection/ReaderWriter>
+#include <osgIntrospection/Comparator>
 
 #include <sstream>
 #include <memory>
@@ -71,17 +72,115 @@ std::string Value::toString() const
     throw StreamingNotSupportedException(StreamingNotSupportedException::ANY, type_->getStdTypeInfo());
 }
 
-bool Value::compare(const Value &v1, const Value &v2)
-{
-    if (v1.isEmpty() && v2.isEmpty()) return true;
-    if (v1.isEmpty() || v2.isEmpty()) return false;
-    if (v1.type_ == v2.type_) return v1.inbox_->equal(v2);
-    Value temp(v2.convertTo(v1.getType()));
-    return compare(v1, temp);
-}
-
 void Value::check_empty() const
 {
     if (!type_ || !inbox_)
         throw EmptyValueException();
+}
+
+void Value::swap(Value &v)
+{
+	std::swap(inbox_, v.inbox_);
+	std::swap(type_, v.type_);
+	std::swap(ptype_, v.ptype_);
+}
+
+bool Value::operator ==(const Value &other) const
+{
+	if (isEmpty() && other.isEmpty())
+		return true;
+
+	if (isEmpty() ^ other.isEmpty())
+		return false;
+
+	const Comparator *cmp1 = type_->getComparator();
+	const Comparator *cmp2 = other.type_->getComparator();
+	
+	const Comparator *cmp = cmp1? cmp1: cmp2;
+	
+	if (!cmp)
+		throw ComparisonNotPermittedException(type_->getStdTypeInfo());
+
+	if (cmp1 == cmp2)
+		return cmp->isEqualTo(*this, other);
+
+	if (cmp1)
+		return cmp1->isEqualTo(*this, other.convertTo(*type_));
+
+	return cmp2->isEqualTo(convertTo(*other.type_), other);
+}
+
+bool Value::operator <=(const Value &other) const
+{
+	const Comparator *cmp1 = type_->getComparator();
+	const Comparator *cmp2 = other.type_->getComparator();
+	
+	const Comparator *cmp = cmp1? cmp1: cmp2;
+	
+	if (!cmp)
+		throw ComparisonNotPermittedException(type_->getStdTypeInfo());
+
+	if (cmp1 == cmp2)
+		return cmp->isLessThanOrEqualTo(*this, other);
+
+	if (cmp1)
+		return cmp1->isLessThanOrEqualTo(*this, other.convertTo(*type_));
+
+	return cmp2->isLessThanOrEqualTo(convertTo(*other.type_), other);
+}
+
+bool Value::operator !=(const Value &other) const
+{
+	return !operator==(other);
+}
+
+bool Value::operator >(const Value &other) const
+{
+	return !operator<=(other);
+}
+
+bool Value::operator <(const Value &other) const
+{
+	const Comparator *cmp1 = type_->getComparator();
+	const Comparator *cmp2 = other.type_->getComparator();
+	
+	const Comparator *cmp = cmp1? cmp1: cmp2;
+	
+	if (!cmp)
+		throw ComparisonNotPermittedException(type_->getStdTypeInfo());
+
+	if (cmp1 == cmp2)
+		return cmp->isLessThanOrEqualTo(*this, other) && !cmp->isEqualTo(*this, other);
+
+	if (cmp1)
+	{
+		Value temp(other.convertTo(*type_));
+		return cmp1->isLessThanOrEqualTo(*this, temp) && !cmp1->isEqualTo(*this, temp);
+	}
+
+	Value temp(convertTo(*other.type_));
+	return cmp2->isLessThanOrEqualTo(temp, other) && !cmp2->isEqualTo(temp, other);
+}
+
+bool Value::operator >=(const Value &other) const
+{
+	const Comparator *cmp1 = type_->getComparator();
+	const Comparator *cmp2 = other.type_->getComparator();
+	
+	const Comparator *cmp = cmp1? cmp1: cmp2;
+	
+	if (!cmp)
+		throw ComparisonNotPermittedException(type_->getStdTypeInfo());
+
+	if (cmp1 == cmp2)
+		return !cmp->isLessThanOrEqualTo(*this, other) || cmp->isEqualTo(*this, other);
+
+	if (cmp1)
+	{
+		Value temp(other.convertTo(*type_));
+		return !cmp1->isLessThanOrEqualTo(*this, temp) || cmp1->isEqualTo(*this, temp);
+	}
+
+	Value temp(convertTo(*other.type_));
+	return !cmp2->isLessThanOrEqualTo(temp, other) || cmp2->isEqualTo(temp, other);
 }

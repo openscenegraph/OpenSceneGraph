@@ -145,7 +145,7 @@ osg::Geode* ReaderWriterDirectX::convertFromDX(DX::Object& obj,
      *
      * - Polys are CW oriented
      */
-	std::vector<osg::Geometry*> geomList;
+    vector<osg::Geometry*> geomList;
 
     unsigned int i;
     for (i = 0; i < meshMaterial->material.size(); i++) {
@@ -220,7 +220,12 @@ osg::Geode* ReaderWriterDirectX::convertFromDX(DX::Object& obj,
         geom->addPrimitiveSet(new osg::DrawArrayLengths(osg::PrimitiveSet::POLYGON));
     }
 
-    assert(mesh->faces.size() == meshMaterial->faceIndices.size());
+    if (mesh->faces.size() != meshMaterial->faceIndices.size())
+    {
+        osg::notify(osg::FATAL)<<"Error: internal error in DirectX .x loader,"<<std::endl;
+        osg::notify(osg::FATAL)<<"       mesh->faces.size() == meshMaterial->faceIndices.size()"<<std::endl;
+        return NULL;
+    }
 
     // Add faces to Geometry
     for (i = 0; i < meshMaterial->faceIndices.size(); i++) {

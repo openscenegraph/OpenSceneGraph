@@ -51,6 +51,9 @@ void write_usage(std::ostream& out,const std::string& name)
     out << std::endl;
 }
 
+
+
+
 osg::Node* createOccludersAroundModel(osg::Node* model)
 {
     osg::Group* scene = osgNew osg::Group;
@@ -63,14 +66,17 @@ osg::Node* createOccludersAroundModel(osg::Node* model)
     osg::OccluderNode* occluderNode = osgNew osg::OccluderNode;
 
     // get the bounding volume of the model.
-    const osg::BoundingSphere& bs = model->getBound();
+    const osg::BoundingSphere bs = model->getBound();
     
     // create a bounding box around the sphere.
     osg::BoundingBox bb;
     bb.expandBy(bs);
 
-    
+    // create the convex planer occluder 
     osg::ConvexPlanerOccluder* cpo = osgNew osg::ConvexPlanerOccluder;
+
+    // attach it to the occluder node.
+    occluderNode->setOccluder(cpo);
     
     // set the occluder up for the front face of the bounding box.
     osg::ConvexPlanerPolygon& occluder = cpo->getOccluder();
@@ -79,7 +85,19 @@ osg::Node* createOccludersAroundModel(osg::Node* model)
     occluder.add(osg::Vec3(bb.xMax(),bb.yMin(),bb.zMax()));
     occluder.add(osg::Vec3(bb.xMin(),bb.yMin(),bb.zMax()));
     
-    occluderNode->setOccluder(cpo);
+// 
+//     // create a hole in the occluder.    
+//     osg::Vec3 center((bb.xMin()+bb.xMax())*0.5f,bb.yMin(),(bb.zMin()+bb.zMax())*0.5f);
+//     float dx = (bb.xMax()-bb.xMin())*0.25f;
+//     float dz = (bb.zMax()-bb.zMin())*0.25f;
+//     
+// 
+//     cpo->getHoleList().push_back();
+//     osg::ConvexPlanerPolygon& hole = cpo->getHoleList().back();
+//     hole.add(center+osg::Vec3(-dx,0.0,-dz));
+//     hole.add(center+osg::Vec3(dx,0.0,-dz));
+//     hole.add(center+osg::Vec3(dx,0.0,dz));
+//     hole.add(center+osg::Vec3(-dx,0.0,dz));
     
 
    // create a drawable for occluder.

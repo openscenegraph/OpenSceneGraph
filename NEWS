@@ -3,12 +3,20 @@
 OSG News (most significant items from ChangeLog)
 ================================================
 
+24th January 2003 - OpenSceneGraph-0.9.3.tar.gz
+
+    >>> adds support navigational light points, multi-threaded dynamic
+    >>> paging of Terrapage databases, ARB_vertex_program extension, 
+    >>> DirectD .x model loader, and integration with OpenProducer for 
+    >>> multi-threaded, multi-window/pipe rendering.
 
     Added osgProducer library which integrates the OpenSceneGraph seemlessly
     with OpenProducer to provide runtime configurable management of windows
     and multipipe graphic systems.  The osgproducer demo illustrate how
     developers can write applications very simply that harness the power
     of the OpenProducer and OpenSceneGraph in an extremely flexible way.
+    OpenProducer can be downloaded from:
+    http://www.andesengineering.com/BlueMarbleViewer/producer_install.html
 
     Support added for dynamic paging of Terrage databases, the required
     multi-threading is set up by defult.  All the end user application need
@@ -51,6 +59,7 @@ OSG News (most significant items from ChangeLog)
     
     Improvements to the GEO loaders.
     
+    Numerous bug fixes and API refinements.
 
 
 13th November 2002 - OpenSceneGraph-0.9.2.tar.gz

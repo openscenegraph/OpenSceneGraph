@@ -157,7 +157,7 @@ bool DOFTransform_writeLocalData(const Object& obj, Output& fw)
     fw.indent()<<"currentTranslate   "<<transform.getCurrentTranslate()<<std::endl;
 
     fw.indent()<<"minScale           "<<transform.getMinScale()<<std::endl;
-    fw.indent()<<"axScale            "<<transform.getMaxScale()<<std::endl;
+    fw.indent()<<"maxScale           "<<transform.getMaxScale()<<std::endl;
     fw.indent()<<"incrementScale     "<<transform.getIncrementScale()<<std::endl;
     fw.indent()<<"currentScale       "<<transform.getCurrentScale()<<std::endl;
 

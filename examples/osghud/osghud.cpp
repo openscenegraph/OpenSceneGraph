@@ -133,7 +133,7 @@ int main( int argc, char **argv )
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
     {
-        arguments.getApplicationUsage()->write(cout);
+        arguments.getApplicationUsage()->write(std::cout);
         return 1;
     }
 
@@ -143,7 +143,7 @@ int main( int argc, char **argv )
     // report any errors if they have occured when parsing the program aguments.
     if (arguments.errors())
     {
-        arguments.writeErrorMessages(cout);
+        arguments.writeErrorMessages(std::cout);
         return 1;
     }
 

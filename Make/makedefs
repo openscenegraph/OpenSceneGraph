@@ -351,12 +351,6 @@ ifeq ($(OS),Darwin)
   TIFF_LIB	        = -ltiff
   LIBVERSION	    = -dylib_current_version 0.9.3
 
-  # Plugins which require external libs: gif jpeg png tiff osgText
-  PLUGIN_DIRS       = bmp dw flt \
-                      lib3ds logos lwo obj \
-                      osg osgParticle osgtgz pic \
-                      quicktime rgb tga tgz \
-                      txp zip
 endif
 
 #### Cygwin/Mingw specific definitions

@@ -211,7 +211,7 @@ bool trpgr_Parser::Parse(trpgReadBuffer &buf)
 class trpgSceneHelperPush : public trpgr_Callback {
 public:
 	trpgSceneHelperPush(trpgSceneParser *in_parse) { parse = in_parse; };
-	void *Parse(trpgToken tok,trpgReadBuffer &buf) {
+	void *Parse(trpgToken /*tok*/,trpgReadBuffer& /*buf*/) {
 		// Call the start children callback
 		parse->StartChildren(parse->lastObject);
 		parse->parents.push_back(parse->lastObject);
@@ -225,7 +225,7 @@ protected:
 class trpgSceneHelperPop : public trpgr_Callback {
 public:
 	trpgSceneHelperPop(trpgSceneParser *in_parse) { parse = in_parse; };
-	void *Parse(trpgToken tok,trpgReadBuffer &buf) {
+	void *Parse(trpgToken /*tok*/,trpgReadBuffer& /*buf*/) {
 		// Make sure we don't have an extra pop
 		if (parse->parents.size() == 0)
 			// Note: let someone know about the extra pop
@@ -246,7 +246,7 @@ protected:
 class trpgSceneHelperDefault : public trpgr_Callback {
 public:
 	trpgSceneHelperDefault(trpgSceneParser *in_parse) { parse = in_parse; }
-	void *Parse(trpgToken tok,trpgReadBuffer &buf) {
+	void *Parse(trpgToken /*tok*/,trpgReadBuffer& /*buf*/) {
 		// Absorb it quietly
 		return (void *)1;
 	}

@@ -53,7 +53,7 @@ bool trpgMatTable::isValid() const
 	if (numTable <= 0 || numMat <= 0)
 		return false;
 
-	for (int i=0;i<matTables.size();i++)
+	for (unsigned int i=0;i<matTables.size();i++)
 		if (!matTables[i].isValid())
 			return false;
 
@@ -185,7 +185,7 @@ int trpgMatTable::AddMaterialInSubtable(const trpgMaterial &mat,int table, bool 
 				cmat.autoNormal == bm.autoNormal && cmat.texEnvs.size() == bm.texEnvs.size()) {
 				// Test the texture envs
 				bool isSame=true;
-				int i;
+				unsigned int i;
 				for (i=0;i<cmat.texEnvs.size();i++) {
 					trpgTextureEnv &e1 = cmat.texEnvs[i];
 					trpgTextureEnv &e2 = bm.texEnvs[i];
@@ -221,8 +221,6 @@ int trpgMatTable::AddMaterialInSubtable(const trpgMaterial &mat,int table, bool 
 // Write out material table
 bool trpgMatTable::Write(trpgWriteBuffer &buf)
 {
-	int i;
-
 	if (!isValid())
 		return false;
 
@@ -233,7 +231,7 @@ bool trpgMatTable::Write(trpgWriteBuffer &buf)
 	buf.Add((int32)numMat);
 
 	// Write the materials
-	for (i=0;i<matTables.size();i++)
+	for (unsigned int i=0;i<matTables.size();i++)
 		matTables[i].Write(buf);
 
 	buf.End();
@@ -1039,7 +1037,8 @@ trpgTexture::trpgTexture()
 }
 
 // Copy construction
-trpgTexture::trpgTexture(const trpgTexture &in)
+trpgTexture::trpgTexture(const trpgTexture &in):
+	trpgReadWriteable(in)
 {
 	mode = in.mode;
 	type = in.type;
@@ -1348,7 +1347,7 @@ int32 trpgTexture::CalcTotalSize() const
 	(const_cast<trpgTexture *>(this))->CalcMipLevelSizes();
 
 	int totSize = 0;
-	for (int i=0;i<storageSize.size();i++)
+	for (unsigned int i=0;i<storageSize.size();i++)
 		totSize += storageSize[i];
 
 	return totSize;
@@ -1487,6 +1486,8 @@ void trpgTexture::CalcMipLevelSizes()
 	case trpg_FXT1:
 		isFXT = true;
 		break;
+	default:
+		break;
 	}
 
 
@@ -1589,7 +1590,8 @@ trpgTexTable::trpgTexTable()
 {
 
 }
-trpgTexTable::trpgTexTable(const trpgTexTable &in)
+trpgTexTable::trpgTexTable(const trpgTexTable &in):
+	trpgReadWriteable(in)
 {
 	*this = in;
 }
@@ -1642,7 +1644,7 @@ int trpgTexTable::AddTexture(const trpgTexture &inTex)
 }
 int trpgTexTable::FindAddTexture(const trpgTexture &inTex)
 {
-	for (int i=0;i<texList.size();i++)
+	for (unsigned int i=0;i<texList.size();i++)
 		if (texList[i] == inTex)
 			return i;
 
@@ -1660,7 +1662,7 @@ void trpgTexTable::SetTexture(int id,const trpgTexture &inTex)
 trpgTexTable &trpgTexTable::operator = (const trpgTexTable &in)
 {
 	Reset();
-	for (int i=0;i<in.texList.size();i++)
+	for (unsigned int i=0;i<in.texList.size();i++)
 		AddTexture(in.texList[i]);
 
 	return *this;
@@ -1698,14 +1700,14 @@ bool trpgTexTable::GetNumTextures(int &no) const
 bool trpgTexTable::GetTexture(int id,trpgTexture &ret) const
 {
 	if (!isValid()) return false;
-	if (id < 0 || id >= texList.size()) return false;
+	if (id < 0 || id >= (int)texList.size()) return false;
 
 	ret = texList[id];
 	return true;
 }
 const trpgTexture *trpgTexTable::GetTextureRef(int id) const
 {
-	if (id < 0 || id >= texList.size()) return NULL;
+	if (id < 0 || id >= (int)texList.size()) return NULL;
 	return &texList[id];
 }
 
@@ -1718,7 +1720,7 @@ bool trpgTexTable::Read(trpgReadBuffer &buf)
 	try {
 		buf.Get(numTex);
 		texList.resize(numTex);
-		for (unsigned int i=0;i<numTex;i++) {
+		for (int i=0;i<numTex;i++) {
 			buf.GetToken(texTok,len);
 			if (texTok != TRPGTEXTURE) throw 1;
 			buf.PushLimit(len);

@@ -344,14 +344,14 @@ bool trpgwAppFile::Append(const trpgMemWriteBuffer *buf1,const trpgMemWriteBuffe
 	// Write the data out
 	const char *data = buf1->getData();
 	int len = buf1->length();
-	if (fwrite(data,sizeof(char),len,fp) != len) {
+	if (fwrite(data,sizeof(char),len,fp) != (unsigned int)len) {
 		valid = false;
 		return false;
 	}
 	if (buf2) {
 		data = buf2->getData();
 		len = buf2->length();
-		if (fwrite(data,sizeof(char),len,fp) != len) {
+		if (fwrite(data,sizeof(char),len,fp) != (unsigned int)len) {
 			valid = false;
 			return false;
 		}
@@ -377,7 +377,7 @@ bool trpgwAppFile::Append(const char *data,int size)
 	}
 
 	// Write the data out
-	if (fwrite(data,sizeof(char),size,fp) != size) {
+	if (fwrite(data,sizeof(char),size,fp) != (unsigned int)size) {
 		valid = false;
 		return false;
 	}

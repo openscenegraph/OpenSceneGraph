@@ -1,7 +1,12 @@
 SHELL = /bin/sh
 OS := $(shell uname)
 
-include $(TOPDIR)/Make/dependencies
+## Set up dependencies
+ifneq ("$(OSG_DEPENDENCIES)","")
+    include $(OSG_DEPENDENCIES)
+else
+    include $(TOPDIR)/Make/dependencies
+endif
 
 ## We don't care about architectural distinguishers in the OS
 ## such as IRIX64, IRIX32, etc. so we truncate IRIX?? to IRIX
@@ -169,7 +174,6 @@ ifeq ($(OS),SunOS)
     TIFF_LIB	      = -ltiff 
     JPEG_LIBS         = -ljpeg 
     PNG_LIBS          = -lpng -lz 
-    FREETYPE_LIB      = -lfreetype
     OTHER_LIBS        = -lOpenThreads
 
   #### using forte compilers (default)
@@ -195,7 +199,6 @@ ifeq ($(OS),SunOS)
     TIFF_LIB	      = /usr/local/lib/libtiff.a
     JPEG_LIBS         = /usr/local/lib/libjpeg.a
     PNG_LIBS          = /usr/local/lib/libpng.a /usr/local/lib/libz.a
-    FREETYPE_LIB      = /usr/local/lib/libfreetype.a
   endif 
 
   DYNAMICLIBRARYLIB = -ldl
@@ -210,6 +213,9 @@ ifeq ($(OS),SunOS)
   MAKEDIST          = $(TOPDIR)/Make/makepkg
   OTHER_LIBS        = -lOpenThreads
 
+  FREETYPE_INCLUDE  = `freetype-config --cflags`
+  FREETYPE_LIB      = `freetype-config --libs`
+
   GDAL_INCLUDES     = -I`gdal-config --prefix`/include
   GDAL_LIBS         = `gdal-config --dep-libs`
   GDAL_LIBS         += `gdal-config --libs`
@@ -219,87 +225,88 @@ endif
 
 #### IRIX Specific definitions
 ifeq ($(OS),IRIX)
-	CXX = CC
-	ifeq ($(CXX),CC)
-		LINKARGS          = -L${TOPDIR}/lib -LANG:std -OPT:Olimit=0  
-		C++               = CC
-		DEPARG            = -M
-		INC               += -I${TOPDIR}/include -I/usr/freeware/include
-		DEF               += -LANG:std -OPT:Olimit=0 \
-		                   -DEBUG:woff=1681 -DEBUG:woff=1682 -DEBUG:woff=3303\
-		                   -MDupdate $(MAKEDEPEND)
-		OPTF              = -O2 
-		DBGF              = -g -DOSG_COMPILE_UNIT_TESTS  
-		SHARED            = -shared
-		PFLIBS            = \
-		                  -lpf3ds -lpfdem -lpfdted -lpfdwb -lpfdxf -lpfevt \
-		                  -lpfflt -lpfgds -lpfgfo -lpfim -lpflsa -lpflsb \
-		                  -lpfnff -lpfobj -lpfpegg -lpfpfb -lpfphd -lpfpts \
-		                  -lpfrot -lpfscale -lpfsgf -lpfsgo -lpfsphere -lpfsv \
-		                  -lpftri -lpfunc -lpfvct -lpfdu -lpfutil -lpf -all -limage
-		FREETYPE_LIB      = -lfreetype
-		ARCH              = 32
-		ifeq ($(ARCH),64)
-			ARCHARGS          = -64 -DARCH64
-			ARCHINST          = 64
-			LINKARGS          += -L/usr/freeware/lib64
-			PF_XTRA_LIBS      = -L/usr/lib64/libpfdb -rpath /usr/lib64/libpfdb \
-			                     $(PFLIBS)
-		else 
-			ARCHARGS          = -n32
-			ARCHINST          = 32
-			LINKARGS          += -L/usr/freeware/lib32
-			PF_XTRA_LIBS      = -L/usr/lib32/libpfdb -rpath /usr/lib32/libpfdb \
-			                     $(PFLIBS)
-		endif
-	else		
-	 	LIBS              = -lstdc++
-		LINKARGS          = -L${TOPDIR}/lib  
-		C++               = g++
-		INC               += -I${TOPDIR}/include -I/usr/freeware/include
-		DEF               += -fPIC -W -Wno-unused 
-		OPTF              = -O2 
-		DBGF              = -g -gstabs+ -DOSG_COMPILE_UNIT_TESTS  
-		SHARED            = -shared
-		PFLIBS            = \
-		                  -lpf3ds -lpfdem -lpfdted -lpfdwb -lpfdxf -lpfevt \
-		                  -lpfflt -lpfgds -lpfgfo -lpfim -lpflsa -lpflsb \
-		                  -lpfnff -lpfobj -lpfpegg -lpfpfb -lpfphd -lpfpts \
-		                  -lpfrot -lpfscale -lpfsgf -lpfsgo -lpfsphere -lpfsv \
-		                  -lpftri -lpfunc -lpfvct -lpfdu -lpfutil -lpf -all -limage
-		FREETYPE_LIB      = -lfreetype
-		ARCH              = 32
-		ifeq ($(ARCH),64)
-			ARCHARGS          = -mabi=64 -mips4 -DARCH64
-			ARCHINST          = 64
-			LINKARGS          += -L/usr/freeware/lib64
-			PF_XTRA_LIBS      = -L/usr/lib64/libpfdb -rpath /usr/lib64/libpfdb \
-			                     $(PFLIBS)
-		else 
-			ARCHARGS          = -mabi=n32 -mips4
-			ARCHINST          = 32
-			LINKARGS          += -L/usr/freeware/lib32
-			PF_XTRA_LIBS      = -L/usr/lib32/libpfdb -rpath /usr/lib32/libpfdb \
-			                     $(PFLIBS)
-		endif	
-	endif
+  CXX = CC
+  ifeq ($(CXX),CC)
+	  LINKARGS          = -L${TOPDIR}/lib -LANG:std -OPT:Olimit=0  
+	  C++               = CC
+	  DEPARG            = -M
+	  INC               += -I${TOPDIR}/include -I/usr/freeware/include
+	  DEF               += -LANG:std -OPT:Olimit=0 \
+		             -DEBUG:woff=1681 -DEBUG:woff=1682 -DEBUG:woff=3303\
+		             -MDupdate $(MAKEDEPEND)
+	  OPTF              = -O2 
+	  DBGF              = -g -DOSG_COMPILE_UNIT_TESTS  
+	  SHARED            = -shared
+	  PFLIBS            = \
+		            -lpf3ds -lpfdem -lpfdted -lpfdwb -lpfdxf -lpfevt \
+		            -lpfflt -lpfgds -lpfgfo -lpfim -lpflsa -lpflsb \
+		            -lpfnff -lpfobj -lpfpegg -lpfpfb -lpfphd -lpfpts \
+		            -lpfrot -lpfscale -lpfsgf -lpfsgo -lpfsphere -lpfsv \
+		            -lpftri -lpfunc -lpfvct -lpfdu -lpfutil -lpf -all -limage
+	  ARCH              = 32
+	  ifeq ($(ARCH),64)
+		  ARCHARGS          = -64 -DARCH64
+		  ARCHINST          = 64
+		  LINKARGS          += -L/usr/freeware/lib64
+		  PF_XTRA_LIBS      = -L/usr/lib64/libpfdb -rpath /usr/lib64/libpfdb \
+			               $(PFLIBS)
+	  else 
+		  ARCHARGS          = -n32
+		  ARCHINST          = 32
+		  LINKARGS          += -L/usr/freeware/lib32
+		  PF_XTRA_LIBS      = -L/usr/lib32/libpfdb -rpath /usr/lib32/libpfdb \
+			               $(PFLIBS)
+	  endif
+  else		
+	  LIBS              = -lstdc++
+	  LINKARGS          = -L${TOPDIR}/lib  
+	  C++               = g++
+	  INC               += -I${TOPDIR}/include -I/usr/freeware/include
+	  DEF               += -fPIC -W -Wno-unused 
+	  OPTF              = -O2 
+	  DBGF              = -g -gstabs+ -DOSG_COMPILE_UNIT_TESTS  
+	  SHARED            = -shared
+	  PFLIBS            = \
+		            -lpf3ds -lpfdem -lpfdted -lpfdwb -lpfdxf -lpfevt \
+		            -lpfflt -lpfgds -lpfgfo -lpfim -lpflsa -lpflsb \
+		            -lpfnff -lpfobj -lpfpegg -lpfpfb -lpfphd -lpfpts \
+		            -lpfrot -lpfscale -lpfsgf -lpfsgo -lpfsphere -lpfsv \
+		            -lpftri -lpfunc -lpfvct -lpfdu -lpfutil -lpf -all -limage
+	  ARCH              = 32
+	  ifeq ($(ARCH),64)
+		  ARCHARGS          = -mabi=64 -mips4 -DARCH64
+		  ARCHINST          = 64
+		  LINKARGS          += -L/usr/freeware/lib64
+		  PF_XTRA_LIBS      = -L/usr/lib64/libpfdb -rpath /usr/lib64/libpfdb \
+			               $(PFLIBS)
+	  else 
+		  ARCHARGS          = -mabi=n32 -mips4
+		  ARCHINST          = 32
+		  LINKARGS          += -L/usr/freeware/lib32
+		  PF_XTRA_LIBS      = -L/usr/lib32/libpfdb -rpath /usr/lib32/libpfdb \
+			               $(PFLIBS)
+	  endif	
+  endif
 
-	DYNAMICLIBRARYLIB = 
-	OSG_LIBS          = -losgGA -losgDB -losgUtil -losg 
-	GL_LIBS           = -lGLU -lGL 
-	X_INC             = -I/usr/X11R6/include
-	X_LIBS            = -lXext -lXi -lXmu -lX11
-	SOCKET_LIBS       = 
-	OTHER_LIBS        = -lm -lOpenThreads
-	PNG_LIBS          = -lpng
-	JPEG_LIBS         = -ljpeg
-	TIFF_LIB          = -ltiff
-	GIF_LIBS          = -lungif
-	MAKEDIST          = $(TOPDIR)/Make/makeirixdist
+  DYNAMICLIBRARYLIB = 
+  OSG_LIBS          = -losgGA -losgDB -losgUtil -losg 
+  GL_LIBS           = -lGLU -lGL 
+  X_INC             = -I/usr/X11R6/include
+  X_LIBS            = -lXext -lXi -lXmu -lX11
+  SOCKET_LIBS       = 
+  OTHER_LIBS        = -lm -lOpenThreads
+  PNG_LIBS          = -lpng
+  JPEG_LIBS         = -ljpeg
+  TIFF_LIB          = -ltiff
+  GIF_LIBS          = -lungif
+  MAKEDIST          = $(TOPDIR)/Make/makeirixdist
 
-        GDAL_INCLUDES     = -I`gdal-config --prefix`/include
-        GDAL_LIBS         = `gdal-config --dep-libs`
-        GDAL_LIBS         += `gdal-config --libs`
+  FREETYPE_INCLUDE  = `freetype-config --cflags`
+  FREETYPE_LIB      = `freetype-config --libs`
+
+  GDAL_INCLUDES     = -I`gdal-config --prefix`/include
+  GDAL_LIBS         = `gdal-config --dep-libs`
+  GDAL_LIBS         += `gdal-config --libs`
 
 
 endif
@@ -357,7 +364,6 @@ ifeq ($(OS),Linux)
   endif
   DYNAMICLIBRARYLIB = -ldl
   OSG_LIBS          = -losgGA -losgDB -losgUtil -losg 
-  FREETYPE_LIB      = -lfreetype
   GL_LIBS           = -lGLU -lGL 
   X_INC             = -I/usr/X11R6/include
   X_LIBS            = -lXi -lXmu -lX11
@@ -380,6 +386,9 @@ ifeq ($(OS),Linux)
     OTHER_LIBS += -lfnccheck
   endif
 
+  FREETYPE_INCLUDE  = `freetype-config --cflags`
+  FREETYPE_LIB      = `freetype-config --libs`
+
   GDAL_INCLUDES     = -I`gdal-config --prefix`/include
   GDAL_LIBS         = `gdal-config --dep-libs`
   GDAL_LIBS         += `gdal-config --libs`
@@ -401,7 +410,6 @@ ifeq ($(OS),FreeBSD)
   LINKARGS          = -L/usr/X11R6/lib -L/usr/local/lib -rpath /usr/local/lib -pthread
  DYNAMICLIBRARYLIB = 
   OSG_LIBS          = -losgGA -losgDB -losgUtil -losg 
-  FREETYPE_LIB      = -lfreetype
   GL_LIBS           = -lGLU -lGL 
   X_INC             = -I/usr/X11R6/include
   X_LIBS            = -lXmu -lX11
@@ -411,6 +419,9 @@ ifeq ($(OS),FreeBSD)
   JPEG_LIBS         = -ljpeg
   TIFF_LIB          = -ltiff
   GIF_LIBS          = -lungif
+
+  FREETYPE_INCLUDE  = `freetype-config --cflags`
+  FREETYPE_LIB      = `freetype-config --libs`
 
   GDAL_INCLUDES     = -I`gdal-config --prefix`/include
   GDAL_LIBS         = `gdal-config --dep-libs`
@@ -438,7 +449,6 @@ ifeq ($(OS),Darwin)
   LINKARGS          =
   DYNAMICLIBRARYLIB =
   OSG_LIBS          = -losgGA -losgDB -losgUtil -losg 
-  FREETYPE_LIB      = -lfreetype
   CARBON_LIB        = -framework Carbon
   GL_LIBS           = -framework OpenGL $(CARBON_LIB)
   X_INC             = -I/usr/X11R6/include
@@ -446,7 +456,6 @@ ifeq ($(OS),Darwin)
   SOCKET_LIBS       = 
   OTHER_LIBS        = -lm -lstdc++ -lobjc -lOpenThreads
   LIB_EXT           = dylib
-  FREETYPE_INCLUDE  = -I/usr/X11R6/include/freetype2 -I/sw/include/freetype2
   LIBXML2_INCLUDE   = -I/usr/include/libxml2 -I/sw/include/libxml2 
   LIBVERSION	    = -current_version $(VERSION) \
                         -compatibility_version \
@@ -461,6 +470,9 @@ ifeq ($(OS),Darwin)
   JPEG_LIBS       = -ljpeg
   GIF_LIBS        = -lungif
   TIFF_LIBS       = -ltiff -lz -ljpeg
+
+  FREETYPE_INCLUDE  = `freetype-config --cflags`
+  FREETYPE_LIB      = `freetype-config --libs`
 
   GDAL_INCLUDES     = -I`gdal-config --prefix`/include
   GDAL_LIBS         = `gdal-config --dep-libs`
@@ -496,6 +508,8 @@ ifeq ($(OS),CYGWIN)
   JPEG_LIBS         = -ljpeg
   GIF_LIBS          = -lungif
   TIFF_LIB          = -ltiff -lz -ljpeg
+
+  FREETYPE_INCLUDE  = `freetype-config --cflags`
   FREETYPE_LIB      = `freetype-config --libs`
 
   GDAL_INCLUDES     = -I`gdal-config --prefix`/include
@@ -552,7 +566,9 @@ ifeq ($(OS),MINGW)
   JPEG_LIBS         = -ljpeg
   GIF_LIBS          = -lungif
   TIFF_LIB          = -ltiff -lz -ljpeg
+
   FREETYPE_LIB      = -lfreetype
+
   GDAL_LIB          =  -lgdal -ljpeg -lgeotiff -ltiff -lpng -lz
 
   LIBXML2_INCLUDE = -I/usr/mingw/include/libxml2
@@ -612,8 +628,6 @@ endif
   # make sure that global constructors/destructors are called upon
   # shl_load() / shl_unload() - this is a gcc specific workaround
   OTHER_LIBS        = -lm -Wl,+init -Wl,_GLOBAL__DI -Wl,+fini -Wl,_GLOBAL__DD -lOpenThreads
-  FREETYPE_INCLUDE  = -I/opt/freetype/include -I/opt/freetype/include/freetype2
-  FREETYPE_LIB      = -L/opt/freetype/lib -lfreetype
   PNG_INCLUDE       = -I/opt/libpng/include
   PNG_LIBS          = -L/opt/libpng/lib -lpng -L/opt/zlib/lib -lz
   JPEG_INCLUDE		= -I/opt/jpeg-6/include
@@ -622,6 +636,9 @@ endif
   TIFF_LIB          = -L/opt/tiff-3.5/lib -ltiff
   GIF_INCLUDE		= -I/opt/libungif/include
   GIF_LIBS          = -L/opt/libungif/lib -lungif
+
+  FREETYPE_INCLUDE  = `freetype-config --cflags`
+  FREETYPE_LIB      = `freetype-config --libs`
 
   GDAL_INCLUDES     = -I`gdal-config --prefix`/include
   GDAL_LIBS         = `gdal-config --dep-libs`

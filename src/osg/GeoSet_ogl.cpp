@@ -96,7 +96,7 @@ void GeoSet::draw_fast_path( State& state )
         
             state.disableNormalPointer();
             state.disableColorPointer();
-            state.disableTexCoordPointer(0);
+            state.disableTexCoordPointersAboveAndIncluding(0);
             state.setVertexPointer(3, GL_FLOAT, 0,_coords);
 //             glDisableClientState( GL_COLOR_ARRAY );
 //             glDisableClientState( GL_NORMAL_ARRAY );
@@ -109,6 +109,7 @@ void GeoSet::draw_fast_path( State& state )
             state.disableNormalPointer();
             state.disableColorPointer();
             state.setTexCoordPointer(0, 2, GL_FLOAT, 0, (GLfloat *)_tcoords );
+            state.disableTexCoordPointersAboveAndIncluding(1);
             state.setVertexPointer(3, GL_FLOAT, 0,_coords);
 //             glDisableClientState( GL_COLOR_ARRAY );
 //             glDisableClientState( GL_NORMAL_ARRAY );
@@ -120,7 +121,7 @@ void GeoSet::draw_fast_path( State& state )
 
         case (N_ON|V_ON) :
             state.disableColorPointer();
-            state.disableTexCoordPointer(0);
+            state.disableTexCoordPointersAboveAndIncluding(0);
             state.setVertexPointer(3, GL_FLOAT, 0,_coords);
             state.setNormalPointer( GL_FLOAT, 0, (GLfloat *)_normals );
 //             glDisableClientState( GL_COLOR_ARRAY );
@@ -135,6 +136,7 @@ void GeoSet::draw_fast_path( State& state )
             state.disableColorPointer();
             state.setNormalPointer( GL_FLOAT, 0, (GLfloat *)_normals );
             state.setTexCoordPointer(0, 2, GL_FLOAT, 0, (GLfloat *)_tcoords );
+            state.disableTexCoordPointersAboveAndIncluding(1);
             state.setVertexPointer(3, GL_FLOAT, 0,_coords);
 //             glDisableClientState( GL_COLOR_ARRAY );
 //             glEnableClientState( GL_NORMAL_ARRAY );
@@ -147,7 +149,7 @@ void GeoSet::draw_fast_path( State& state )
 
         case (C_ON|V_ON) :
             state.disableNormalPointer();
-            state.disableTexCoordPointer(0);
+            state.disableTexCoordPointersAboveAndIncluding(0);
             state.setColorPointer( 4, GL_FLOAT, 0, (GLfloat *)_colors );
             state.setVertexPointer(3, GL_FLOAT, 0,_coords);
 //             glEnableClientState( GL_COLOR_ARRAY );
@@ -162,6 +164,7 @@ void GeoSet::draw_fast_path( State& state )
             state.disableNormalPointer();
             state.setColorPointer( 4, GL_FLOAT, 0, (GLfloat *)_colors );
             state.setTexCoordPointer(0, 2, GL_FLOAT, 0, (GLfloat *)_tcoords );
+            state.disableTexCoordPointersAboveAndIncluding(1);
             state.setVertexPointer(3, GL_FLOAT, 0,_coords);
 //             glEnableClientState( GL_COLOR_ARRAY );
 //             glColorPointer( 4, GL_FLOAT, 0, (GLfloat *)_colors );
@@ -173,7 +176,7 @@ void GeoSet::draw_fast_path( State& state )
             break;
 
         case (C_ON|N_ON|V_ON) :
-            state.disableTexCoordPointer(0);
+            state.disableTexCoordPointersAboveAndIncluding(0);
             state.setNormalPointer( GL_FLOAT, 0, (GLfloat *)_normals );
             state.setColorPointer( 4, GL_FLOAT, 0, (GLfloat *)_colors );
             state.setVertexPointer(3, GL_FLOAT, 0,_coords);
@@ -190,6 +193,7 @@ void GeoSet::draw_fast_path( State& state )
             state.setNormalPointer( GL_FLOAT, 0, (GLfloat *)_normals );
             state.setColorPointer( 4, GL_FLOAT, 0, (GLfloat *)_colors );
             state.setTexCoordPointer(0, 2, GL_FLOAT, 0, (GLfloat *)_tcoords );
+            state.disableTexCoordPointersAboveAndIncluding(1);
             state.setVertexPointer(3, GL_FLOAT, 0,_coords);
 //             glEnableClientState( GL_COLOR_ARRAY );
 //             glColorPointer( 4, GL_FLOAT, 0, (GLfloat *)_colors );
@@ -305,9 +309,10 @@ void GeoSet::draw_alternate_path( State& state  )
 //         glEnableClientState( GL_TEXTURE_COORD_ARRAY );
 //         glTexCoordPointer( 2, GL_FLOAT, 0, _tcoords );
         state.setTexCoordPointer( 0, 2, GL_FLOAT, 0, _tcoords );
+        state.disableTexCoordPointersAboveAndIncluding(1);
     }
     else
-        state.disableTexCoordPointer(0);
+        state.disableTexCoordPointersAboveAndIncluding(0);
 //        glDisableClientState( GL_TEXTURE_COORD_ARRAY );
 
 //     glEnableClientState( GL_VERTEX_ARRAY );

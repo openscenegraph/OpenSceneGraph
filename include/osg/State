@@ -356,6 +356,22 @@ class SG_EXPORT State : public Referenced
             }
         }
 
+        inline void disableTexCoordPointersAboveAndIncluding( unsigned int unit )
+        {
+            while (unit<_texCoordArrayList.size())
+            {
+                EnabledArrayPair& eap = _texCoordArrayList[unit];
+                if (eap._enabled)
+                {
+                    if (setClientActiveTextureUnit(unit))
+                    {
+                        eap._enabled = false;
+                        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+                    }
+                }
+                ++unit;
+            }
+        }
 
         /** set the current tex coord array texture unit, return true if selected, false if selection failed such as when multitexturing is not supported.
           * note, only updates values that change.*/

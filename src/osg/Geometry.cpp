@@ -48,7 +48,8 @@ void Geometry::drawImmediateMode(State& state)
     state.setVertexPointer(3,GL_FLOAT,0,_vertexArray->dataPointer());
     
     // set up texture coordinates.
-    for(unsigned int i=0;i<_texCoordList.size();++i)
+    unsigned int i;
+    for(i=0;i<_texCoordList.size();++i)
     {
         Array* array = _texCoordList[i].get();
         if (array)
@@ -56,6 +57,7 @@ void Geometry::drawImmediateMode(State& state)
         else
             state.disableTexCoordPointer(i);
     }
+    state.disableTexCoordPointersAboveAndIncluding(i);
     
     
     // set up normals.

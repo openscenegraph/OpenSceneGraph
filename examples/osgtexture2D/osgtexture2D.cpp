@@ -519,10 +519,10 @@ public:
     {
 
         
-        _imageList.push_back(osgDB::readImageFile("dog_left_eye.jpg"));
+        _imageList.push_back(osgDB::readImageFile("Images/dog_left_eye.jpg"));
         _textList.push_back("Subloaded Image 1 - dog_left_eye.jpg");
         
-        _imageList.push_back(osgDB::readImageFile("dog_right_eye.jpg"));
+        _imageList.push_back(osgDB::readImageFile("Images/dog_right_eye.jpg"));
         _textList.push_back("Subloaded Image 2 - dog_right_eye.jpg");
         
         setValues();

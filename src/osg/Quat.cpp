@@ -36,6 +36,7 @@ void Quat::makeRotate( const float angle, const Vec3& vec )
     makeRotate( angle, vec[0], vec[1], vec[2] );
 }
 
+#ifdef USE_DEPRECATED_API        
 
 // assume Z up, Y north, X east and euler convention
 // as per Open Flight & Performer.
@@ -48,13 +49,20 @@ void Quat::makeRotate( float heading, float pitch, float roll)
     Quat q_pitch; q_pitch.makeRotate(pitch,1.0,0.0,0.0);
     Quat q_heading; q_heading.makeRotate(-heading,0.0,0.0,1.0);
     
-    // note reverse order than would be done using matrices
-    // which raises the interesting question whether the definition
-    // of Quat*Quat should be changed to fit with the v' = v x M 
-    // convention of Matrix.  Will investigate further later on.
-    // Robert Osfield. April 2002.
-    *this = q_heading*q_pitch*q_roll;
+    *this = q_roll*q_pitch*q_heading;
 }
+#endif
+
+void Quat::makeRotate ( float angle1, const Vec3& axis1, 
+                        float angle2, const Vec3& axis2,
+                        float angle3, const Vec3& axis3)
+{
+    Quat q1; q1.makeRotate(angle1,axis1);
+    Quat q2; q2.makeRotate(angle2,axis2);
+    Quat q3; q3.makeRotate(angle3,axis3);
+
+    *this = q1*q2*q3;
+}                        
 
 // Make a rotation Quat which will rotate vec1 to vec2
 // Generally take adot product to get the angle between these

@@ -180,6 +180,10 @@ inline std::ostream& operator << (std::ostream& output, const Vec3& vec)
     return output; 	// to enable cascading
 }
 
+const Vec3 X_AXIS(1.0f,0.0f,0.0f);
+const Vec3 Y_AXIS(0.0f,1.0f,0.0f);
+const Vec3 Z_AXIS(0.0f,0.0f,1.0f);
+
 }	// end of namespace osg
 
 #endif

@@ -136,10 +136,23 @@ void Matrix::makeRotate( const Quat& q )
     q.get(*this);    
 }
 
+#ifdef USE_DEPRECATED_API        
 void Matrix::makeRotate( float heading, float pitch, float roll)
 {
     Quat quat;
     quat.makeRotate(heading,pitch,roll);
+    quat.get(*this);
+}
+#endif
+
+void Matrix::makeRotate( float angle1, const Vec3& axis1, 
+                         float angle2, const Vec3& axis2,
+                         float angle3, const Vec3& axis3)
+{
+    Quat quat;
+    quat.makeRotate(angle1, axis1, 
+                    angle2, axis2,
+                    angle3, axis3);
     quat.get(*this);
 }
 

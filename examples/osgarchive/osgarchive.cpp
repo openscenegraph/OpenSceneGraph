@@ -146,7 +146,7 @@ int main( int argc, char **argv )
     if (insert)
     {
         osgDB::Archive archive;
-        archive.create(archiveFilename);
+        archive.open(archiveFilename, osgDB::Archive::WRITE);
         
         for (FileNameList::iterator itr=files.begin();
             itr!=files.end();

@@ -115,12 +115,14 @@ void Archive::IndexBlock::write(std::ostream& out)
 {
     if (_filePosition==pos_type(0))
     {
+        osg::notify(osg::NOTICE)<<"Archive::IndexBlock::write() setting _filePosition"<<std::endl;
         _filePosition = out.tellp();
     }
     else
     {
          out.seekp(_filePosition);
     }
+    osg::notify(osg::NOTICE)<<"Archive::IndexBlock::write() to _filePosition"<<out.tellp()<<std::endl;
 
     out.write(reinterpret_cast<char*>(&_blockSize), sizeof(_blockSize));
     out.write(reinterpret_cast<char*>(&_filePositionNextIndexBlock), sizeof(_filePositionNextIndexBlock));
@@ -181,29 +183,14 @@ Archive::~Archive()
 {
     close();
 }
+#include <sys/stat.h>
 
-bool Archive::create(const std::string& filename, unsigned int indexBlockSize)
-{
-    _status = WRITE;
-    _output.open(filename.c_str());
-    _output<<"osga";
-    _output.write(reinterpret_cast<char*>(&s_currentSupportedVersion),sizeof(float));
-    
-    IndexBlock *indexBlock = new IndexBlock(indexBlockSize);
-    if (indexBlock)
-    {
-        indexBlock->write(_output);
-        _indexBlockList.push_back(indexBlock);
-    }
-    return true;
-}
-
-bool Archive::open(const std::string& filename, Status status)
+bool Archive::open(const std::string& filename, Status status, unsigned int indexBlockSize)
 {
     if (status==READ)
     {
         _status = status;
-        _input.open(filename.c_str());
+        _input.open(filename.c_str(), std::ios_base::binary | std::ios_base::in);
 
         if (_input)
         {
@@ -255,22 +242,70 @@ bool Archive::open(const std::string& filename, Status status)
         _input.close();
         return false;
     }
-    else // status==WRITE
+    else if (status==WRITE)
     {
-        if (open(filename,READ))
+        if (status==WRITE && open(filename,READ))
         {
             _input.close();
             
+            struct stat results;
+            pos_type end_of_file = 0;
+            if (stat(filename.c_str(), &results) == 0)
+            {
+                // The size of the file in bytes is in
+                // results.st_size
+                end_of_file = results.st_size;
+            }
+    
             _status = WRITE;
-            _output.open(filename.c_str());
+
+            _output.open(filename.c_str(), std::ios_base::binary | std::ios_base::out);
+  
             
+            
+            osg::notify(osg::NOTICE)<<"File position after open = "<<(int)_output.tellp()<<" is_open "<<_output.is_open()<<std::endl;
+
+            // place write position at end of file.
+            //_output.seekp(0,std::ios::end);
+            _output.seekp(end_of_file, std::ios::end);
+            
+
+            osg::notify(osg::NOTICE)<<"File position after seekp = "<<(int)_output.tellp()<<std::endl;
+
+            osg::notify(osg::NOTICE)<<"Archive::open("<<filename<<") open for writing"<<std::endl;
+
             return true;
         }
-        else // no file opened so resort to creating the archive.
+        else // no file opened or using create so resort to creating the archive.
         {
-            return create(filename, 4096);
+            osg::notify(osg::NOTICE)<<"Archive::open("<<filename<<"), archive being created."<<std::endl;
+
+            _status = WRITE;
+            _output.open(filename.c_str(), std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
+            _output<<"osga";
+            _output.write(reinterpret_cast<char*>(&s_currentSupportedVersion),sizeof(float));
+
+            IndexBlock *indexBlock = new IndexBlock(indexBlockSize);
+            if (indexBlock)
+            {
+                indexBlock->write(_output);
+                _indexBlockList.push_back(indexBlock);
+            }
+
+            osg::notify(osg::NOTICE)<<"File position after write = "<<(int)_output.tellp()<<std::endl;
+
+            // place write position at end of file.
+            _output.seekp(0,std::ios::end);
+
+            osg::notify(osg::NOTICE)<<"File position after seekp = "<<(int)_output.tellp()<<std::endl;
+
+            return true;
         }
         
+    }
+    else
+    {
+        osg::notify(osg::NOTICE)<<"Archive::open("<<filename<<") is a strange place!!."<<std::endl;
     }
 }
 
@@ -460,6 +495,9 @@ ReaderWriter::WriteResult Archive::writeObject(const osg::Object& obj,const std:
     }
     
     osg::notify(osg::NOTICE)<<"Archive::writeObject(obj, "<<fileName<<")"<<std::endl;
+    
+    // place write position at end of file.
+    // _output.seekp(0,std::ios::end);
     
     pos_type position = _output.tellp();
     

@@ -36,7 +36,6 @@ PLUGIN_DIRS = \
 	dds\
 	dw\
 	flt\
-#	gz\
 	lib3ds\
 	logo\
 	lwo\

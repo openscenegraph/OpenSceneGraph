@@ -50,13 +50,13 @@ PLUGIN_DIRS += dx
 # PLUGIN_DIRS += quicktime
 
 # comment in if you have libpng installed.
-#PLUGIN_DIRS += png
+PLUGIN_DIRS += png
 
 # comment in if you have libjpeg installed.
 PLUGIN_DIRS += jpeg
 
 # comment in if you have libungif installed.
-#PLUGIN_DIRS += gif
+PLUGIN_DIRS += gif
 
 # comment in if you have libtiff installed.
 PLUGIN_DIRS += tiff
@@ -78,6 +78,7 @@ DEMOS_DIRS = \
 	osgimpostor\
 	osgoccluder\
 	osgparticle\
+	osgprerender\
 	osgreflect\
 	osgscribe\
 	osgstereoimage\

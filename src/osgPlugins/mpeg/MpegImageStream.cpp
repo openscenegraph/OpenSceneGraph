@@ -29,11 +29,17 @@
 #include <osg/Notify>
 #include <osg/Timer>
 
+#include <OpenThreads/ScopedLock>
+#include <OpenThreads/Mutex>
+
+
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/time.h>
 
 #include "libmpeg3/libmpeg3.h"
+
+
 
 using namespace osg;
 

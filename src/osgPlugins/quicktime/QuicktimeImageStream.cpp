@@ -27,6 +27,8 @@
 #include <osg/Notify>
 #include <osg/Timer>
 
+#include <OpenThreads/ScopedLock>
+
 #include "QTUtils.h"
 #include "MovieData.h"
 

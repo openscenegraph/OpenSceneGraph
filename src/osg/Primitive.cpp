@@ -48,6 +48,16 @@ void DrawElementsUByte::applyPrimitiveOperation(Drawable::PrimitiveFunctor& func
     if (!empty()) functor.drawElements(_mode,size(),&front());
 }
 
+void DrawElementsUByte::offsetIndices(int offset)
+{
+    for(iterator itr=begin();
+        itr!=end();
+        ++itr)
+    {
+        *itr += offset;
+    }
+}
+
 
 void DrawElementsUShort::draw() const 
 {
@@ -59,6 +69,15 @@ void DrawElementsUShort::applyPrimitiveOperation(Drawable::PrimitiveFunctor& fun
     if (!empty()) functor.drawElements(_mode,size(),&front());
 }
 
+void DrawElementsUShort::offsetIndices(int offset)
+{
+    for(iterator itr=begin();
+        itr!=end();
+        ++itr)
+    {
+        *itr += offset;
+    }
+}
 
 
 void DrawElementsUInt::draw() const 
@@ -69,4 +88,14 @@ void DrawElementsUInt::draw() const
 void DrawElementsUInt::applyPrimitiveOperation(Drawable::PrimitiveFunctor& functor)
 {
     if (!empty()) functor.drawElements(_mode,size(),&front());
+}
+
+void DrawElementsUInt::offsetIndices(int offset)
+{
+    for(iterator itr=begin();
+        itr!=end();
+        ++itr)
+    {
+        *itr += offset;
+    }
 }

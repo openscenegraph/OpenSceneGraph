@@ -73,7 +73,7 @@ class OSGUTIL_EXPORT AppVisitor : public osg::NodeVisitor
             else if (node.getNumChildrenRequiringAppTraversal()>0) traverse(node);
             
             // call the app callbacks on the drawables.
-            for(int i=0;i<node.getNumDrawables();++i)
+            for(unsigned int i=0;i<node.getNumDrawables();++i)
             {
                 osg::Drawable::AppCallback* callback = node.getDrawable(i)->getAppCallback();
                 if (callback) callback->app(this,node.getDrawable(i));

@@ -82,9 +82,11 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
         StateVisitor osv;
         node->accept(osv);
         osv.optimize();
+
+        MergeGeometryVisitor mgv;
+        node->accept(mgv);
     #endif
     }
-    
 
 
 
@@ -138,7 +140,7 @@ class TransformFunctor : public osg::Drawable::AttributeFunctor
 
 void Optimizer::ConvertGeoSetsToGeometryVisitor::apply(osg::Geode& geode)
 {
-    for(int i=0;i<geode.getNumDrawables();++i)
+    for(unsigned int i=0;i<geode.getNumDrawables();++i)
     {
         osg::GeoSet* geoset = dynamic_cast<osg::GeoSet*>(geode.getDrawable(i));
         if (geoset)
@@ -204,7 +206,7 @@ void Optimizer::StateVisitor::apply(osg::Geode& geode)
 {
     osg::StateSet* ss = geode.getStateSet();
     if (ss && ss->getDataVariance()==osg::Object::STATIC) addStateSet(ss,&geode);
-    for(int i=0;i<geode.getNumDrawables();++i)
+    for(unsigned int i=0;i<geode.getNumDrawables();++i)
     {
         osg::Drawable* drawable = geode.getDrawable(i);
         if (drawable)
@@ -385,7 +387,7 @@ void Optimizer::FlattenStaticTransformsVisitor::apply(osg::Geode& geode)
     osg::Matrix matrix;
     if (!_matrixStack.empty()) matrix = _matrixStack.back();
 
-    for(int i=0;i<geode.getNumDrawables();++i)
+    for(unsigned int i=0;i<geode.getNumDrawables();++i)
     {
         // register each drawable with the objectMap.
         _objectMap[geode.getDrawable(i)].add(_transformStack,matrix);
@@ -493,7 +495,7 @@ void Optimizer::FlattenStaticTransformsVisitor::doTransform(osg::Object* obj,osg
         axis.normalize();
         billboard->setAxis(axis);
 
-        for(int i=0;i<billboard->getNumDrawables();++i)
+        for(unsigned int i=0;i<billboard->getNumDrawables();++i)
         {
             billboard->setPos(i,billboard->getPos(i)*matrix);
             billboard->getDrawable(i)->applyAttributeOperation(tf);
@@ -650,7 +652,7 @@ void Optimizer::RemoveLowestStaticTransformsVisitor::apply(osg::Geode& geode)
     osg::Matrix matrix;
     if (!_matrixStack.empty()) matrix = _matrixStack.back();
 
-    for(int i=0;i<geode.getNumDrawables();++i)
+    for(unsigned int i=0;i<geode.getNumDrawables();++i)
     {
         // register each drawable with the objectMap.
         _objectMap[geode.getDrawable(i)].add(transform,matrix);
@@ -755,7 +757,7 @@ void Optimizer::RemoveLowestStaticTransformsVisitor::doTransform(osg::Object* ob
         axis.normalize();
         billboard->setAxis(axis);
 
-        for(int i=0;i<billboard->getNumDrawables();++i)
+        for(unsigned int i=0;i<billboard->getNumDrawables();++i)
         {
             billboard->setPos(i,billboard->getPos(i)*matrix);
             billboard->getDrawable(i)->applyAttributeOperation(tf);
@@ -1162,3 +1164,166 @@ void Optimizer::CombineLODsVisitor::combineLODs()
     _groupList.clear();
 }
 
+////////////////////////////////////////////////////////////////////////////
+// code to merge geometry object which share, state, and attribute bindings.
+////////////////////////////////////////////////////////////////////////////
+
+struct LessGeometry
+{
+    bool operator() (const osg::Geometry* lhs,const osg::Geometry* rhs)
+    {
+        if (lhs->getStateSet()<rhs->getStateSet()) return true;
+        if (rhs->getStateSet()<lhs->getStateSet()) return false;
+        
+        if (lhs->getColorBinding()<rhs->getColorBinding()) return true;
+        if (rhs->getColorBinding()<lhs->getColorBinding()) return false;
+        
+        if (lhs->getNormalBinding()<rhs->getNormalBinding()) return true;
+        if (rhs->getNormalBinding()<lhs->getNormalBinding()) return false;
+        
+        if (lhs->getNumTexCoordArrays()<rhs->getNumTexCoordArrays()) return true;
+        if (rhs->getNumTexCoordArrays()<lhs->getNumTexCoordArrays()) return false;
+    
+        // therefore lhs->getNumTexCoordArrays()==rhs->getNumTexCoordArrays()
+        
+        for(unsigned int i=0;i<lhs->getNumTexCoordArrays();++i)
+        {
+            if (rhs->getTexCoordArray(i))
+            {
+                if (!lhs->getTexCoordArray(i)) return true;
+            }
+            else if (lhs->getTexCoordArray(i)) return false;
+        }
+        
+        if (lhs->getNormalBinding()==osg::Geometry::BIND_OVERALL)
+        {
+            // assumes that the bindings and arrays are set up correctly, this
+            // should be the case after running computeCorrectBindingsAndArraySizes();
+            const osg::Vec3& lhs_normal = (*(lhs->getNormalArray()))[0];
+            const osg::Vec3& rhs_normal = (*(rhs->getNormalArray()))[0];
+            if (lhs_normal<rhs_normal) return true;            
+            if (rhs_normal<lhs_normal) return false;            
+        }
+        
+        if (lhs->getColorBinding()==osg::Geometry::BIND_OVERALL)
+        {
+            if (lhs->getColorArray()->getType()<rhs->getColorArray()->getType()) return true;
+            if (rhs->getColorArray()->getType()<lhs->getColorArray()->getType()) return false;
+        }
+
+        return false;
+
+    }
+};
+
+bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
+{
+    if (geode.getNumDrawables()<2) return false;
+    
+    typedef std::vector<osg::Geometry*>                         DuplicateList;
+    typedef std::map<osg::Geometry*,DuplicateList,LessGeometry> GeometryDuplicateMap;
+
+    GeometryDuplicateMap geometryDuplicateMap;
+    
+    for(unsigned int i=0;i<geode.getNumDrawables();++i)
+    {
+        osg::Geometry* geom = dynamic_cast<osg::Geometry*>(geode.getDrawable(i));
+        if (geom)
+        {
+            geom->computeCorrectBindingsAndArraySizes();
+            
+            geometryDuplicateMap[geom].push_back(geom);
+        }
+    }
+    
+    for(GeometryDuplicateMap::iterator itr=geometryDuplicateMap.begin();
+        itr!=geometryDuplicateMap.end();
+        ++itr)
+    {
+        if (itr->second.size()>1)
+        {
+            osg::Geometry* lhs = itr->second[0];
+            for(DuplicateList::iterator dupItr=itr->second.begin()+1;
+                dupItr!=itr->second.end();
+                ++dupItr)
+            {
+                osg::Geometry* rhs = *dupItr;
+                if (mergeGeometry(*lhs,*rhs))
+                {
+                    geode.removeDrawable(rhs);
+
+                    static int co = 0;
+                    osg::notify(osg::INFO)<<"merged and removed Geometry "<<++co<<std::endl;
+                }
+            }
+        }
+    }
+
+
+    return false;
+}
+
+bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geometry& rhs)
+{
+    unsigned int base = 0;
+    if (lhs.getVertexArray() && rhs.getVertexArray())
+    {
+        base = lhs.getVertexArray()->size();
+        lhs.getVertexArray()->insert(lhs.getVertexArray()->end(),rhs.getVertexArray()->begin(),rhs.getVertexArray()->end());
+    }
+    else if (rhs.getVertexArray())
+    {
+        lhs.setVertexArray(rhs.getVertexArray());
+    }
+    
+    if (lhs.getNormalArray() && rhs.getNormalArray() && lhs.getNormalBinding()!=osg::Geometry::BIND_OVERALL)
+    {
+        lhs.getNormalArray()->insert(lhs.getNormalArray()->end(),rhs.getNormalArray()->begin(),rhs.getNormalArray()->end());
+    }
+    else if (rhs.getNormalArray())
+    {
+        lhs.setNormalArray(rhs.getNormalArray());
+    }
+
+    if (lhs.getColorArray() && rhs.getColorArray() && lhs.getColorBinding()!=osg::Geometry::BIND_OVERALL)
+    {
+        // we need to add the handling of the other array types...
+        osg::Vec4Array* col_lhs = dynamic_cast<osg::Vec4Array*>(lhs.getColorArray());
+        osg::Vec4Array* col_rhs = dynamic_cast<osg::Vec4Array*>(rhs.getColorArray());
+        
+        if (col_lhs && col_rhs)
+        {
+            col_lhs->insert(col_lhs->end(),col_rhs->begin(),col_rhs->end());
+        }
+    }
+    else if (rhs.getColorArray())
+    {
+        lhs.setColorArray(rhs.getColorArray());
+    }
+    
+    for(unsigned int unit=0;unit<lhs.getNumTexCoordArrays();++unit)
+    {
+        // we need to add the handling of the other array types...
+        osg::Vec2Array* tex_lhs = dynamic_cast<osg::Vec2Array*>(lhs.getTexCoordArray(unit));
+        osg::Vec2Array* tex_rhs = dynamic_cast<osg::Vec2Array*>(rhs.getTexCoordArray(unit));
+        
+        if (tex_lhs && tex_rhs)
+        {
+            tex_lhs->insert(tex_lhs->end(),tex_rhs->begin(),tex_rhs->end());
+        }
+    }
+    
+    // shift the indices of the incomming primitives to account for the pre exisiting geometry.
+    for(osg::Geometry::PrimitiveList::iterator primItr=rhs.getPrimitiveList().begin();
+        primItr!=rhs.getPrimitiveList().end();
+        ++primItr)
+    {
+        osg::Primitive* primitive = primItr->get();
+        primitive->offsetIndices(base);
+    }
+    
+    lhs.getPrimitiveList().insert(lhs.getPrimitiveList().end(),rhs.getPrimitiveList().begin(),rhs.getPrimitiveList().end());
+    
+    
+    return true;
+}

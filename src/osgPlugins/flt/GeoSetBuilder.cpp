@@ -49,39 +49,39 @@ void DynGeoSet::append(DynGeoSet* source)
 {
     APPEND_DynGeoSet_List(_primLenList)
     APPEND_DynGeoSet_List(_coordList)
-    APPEND_DynGeoSet_List(_normalList)
-    APPEND_DynGeoSet_List(_colorList)
-    APPEND_DynGeoSet_List(_tcoordList)
+    if (_normal_binding==osg::Geometry::BIND_PER_VERTEX || _normal_binding==osg::Geometry::BIND_PER_PRIMITIVE) APPEND_DynGeoSet_List(_normalList)
+    if (_color_binding==osg::Geometry::BIND_PER_VERTEX || _color_binding==osg::Geometry::BIND_PER_PRIMITIVE) APPEND_DynGeoSet_List(_colorList)
+    if (_texture_binding==osg::Geometry::BIND_PER_VERTEX || _texture_binding==osg::Geometry::BIND_PER_PRIMITIVE) APPEND_DynGeoSet_List(_tcoordList)
 }
 
 
 #define VERIFY_DynGeoSet_Binding(binding,list)          \
         switch (binding)                                \
         {                                               \
-        case osg::GeoSet::BIND_PERVERTEX:               \
+        case osg::Geometry::BIND_PER_VERTEX:               \
             if (list.size() < _coordList.size()) {      \
-                binding = osg::GeoSet::BIND_OFF;        \
+                binding = osg::Geometry::BIND_OFF;        \
                 list.clear(); }                         \
             break;                                      \
-        case osg::GeoSet::BIND_PERPRIM:                 \
+        case osg::Geometry::BIND_PER_PRIMITIVE:                 \
             if (list.size() < _primLenList.size()) {    \
-                binding = osg::GeoSet::BIND_OFF;        \
+                binding = osg::Geometry::BIND_OFF;        \
                 list.clear(); }                         \
             break;                                      \
-        case osg::GeoSet::BIND_OVERALL:                 \
+        case osg::Geometry::BIND_OVERALL:                 \
             if (list.size() < 1) {                      \
-                binding = osg::GeoSet::BIND_OFF;        \
+                binding = osg::Geometry::BIND_OFF;        \
                 list.clear(); }                         \
             break;                                      \
         default:                                        \
             break;                                      \
         }
 
-DynGeoSet::DynGeoSet():osg::GeoSet()
+const osg::Primitive::Mode NO_PRIMITIVE_TYPE = (osg::Primitive::Mode)0xffff;
+
+DynGeoSet::DynGeoSet()
 {
-    // disable the attribute delete functor since the vectors contained in DynGeoSet
-    // will delete the memory for us.
-    _adf = NULL;
+    _primtype=NO_PRIMITIVE_TYPE;
 }
 
 void DynGeoSet::setBinding()
@@ -98,37 +98,12 @@ void DynGeoSet::setBinding()
     osg::StateSet* stateset = getStateSet();
     if (stateset)
     {
-        if (_normal_binding == osg::GeoSet::BIND_OFF)
+        if (_normal_binding == osg::Geometry::BIND_OFF)
             stateset->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
     }
 }
 
 
-
-bool DynGeoSet::setLists()
-{
-    if ((_primLenList.size() > 0) && (_coordList.size() > 0))
-    {
-        setPrimLengths(&_primLenList.front());
-        setCoords(&_coordList.front());
-
-        if ((_normalList.size() > 0)
-        &&  (getNormalBinding() != osg::GeoSet::BIND_OFF))
-            setNormals(&_normalList.front());
-
-        if ((_colorList.size() > 0)
-        &&  (getColorBinding() != osg::GeoSet::BIND_OFF))
-            setColors(&_colorList.front());
-
-        if ((_tcoordList.size() > 0)
-        &&  (getTextureBinding() != osg::GeoSet::BIND_OFF))
-            setTextureCoords(&_tcoordList.front());
-
-        return true;
-    }
-
-    return false;
-}
 
 void DynGeoSet::addToGeometry(osg::Geometry* geom)
 {
@@ -153,7 +128,7 @@ void DynGeoSet::addToGeometry(osg::Geometry* geom)
         osg::Vec3Array* normals = geom->getNormalArray();
         if (normals)
         {
-            if (_normal_binding==osg::GeoSet::BIND_PERVERTEX || _normal_binding==osg::GeoSet::BIND_PERPRIM)
+            if (_normal_binding==osg::Geometry::BIND_PER_VERTEX || _normal_binding==osg::Geometry::BIND_PER_PRIMITIVE)
                 normals->insert(normals->end(),_normalList.begin(),_normalList.end());
         }
         else
@@ -163,9 +138,9 @@ void DynGeoSet::addToGeometry(osg::Geometry* geom)
 
             switch(_normal_binding)
             {
-                case(osg::GeoSet::BIND_OVERALL):geom->setNormalBinding(osg::Geometry::BIND_OVERALL);break;
-                case(osg::GeoSet::BIND_PERVERTEX):geom->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);break;        
-                case(osg::GeoSet::BIND_PERPRIM):geom->setNormalBinding(osg::Geometry::BIND_PER_PRIMITIVE);break;        
+                case(osg::Geometry::BIND_OVERALL):geom->setNormalBinding(osg::Geometry::BIND_OVERALL);break;
+                case(osg::Geometry::BIND_PER_VERTEX):geom->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);break;        
+                case(osg::Geometry::BIND_PER_PRIMITIVE):geom->setNormalBinding(osg::Geometry::BIND_PER_PRIMITIVE);break;        
                 default:geom->setNormalBinding(osg::Geometry::BIND_OFF); break;
             }
         }
@@ -190,7 +165,7 @@ void DynGeoSet::addToGeometry(osg::Geometry* geom)
         osg::Vec4Array* colors = dynamic_cast<osg::Vec4Array*>(geom->getColorArray());
         if (colors)
         {
-            if (_color_binding==osg::GeoSet::BIND_PERVERTEX || _color_binding==osg::GeoSet::BIND_PERPRIM)
+            if (_color_binding==osg::Geometry::BIND_PER_VERTEX || _color_binding==osg::Geometry::BIND_PER_PRIMITIVE)
                 colors->insert(colors->end(),_colorList.begin(),_colorList.end());
         }
         else
@@ -200,29 +175,17 @@ void DynGeoSet::addToGeometry(osg::Geometry* geom)
 
             switch(_color_binding)
             {
-                case(osg::GeoSet::BIND_OVERALL):geom->setColorBinding(osg::Geometry::BIND_OVERALL);break;
-                case(osg::GeoSet::BIND_PERVERTEX):geom->setColorBinding(osg::Geometry::BIND_PER_VERTEX);break;        
-                case(osg::GeoSet::BIND_PERPRIM):geom->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE);break;        
+                case(osg::Geometry::BIND_OVERALL):geom->setColorBinding(osg::Geometry::BIND_OVERALL);break;
+                case(osg::Geometry::BIND_PER_VERTEX):geom->setColorBinding(osg::Geometry::BIND_PER_VERTEX);break;        
+                case(osg::Geometry::BIND_PER_PRIMITIVE):geom->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE);break;        
                 default:geom->setColorBinding(osg::Geometry::BIND_OFF); break;
             }
         }
-    }
-        
-    osg::Primitive::Mode mode = osg::Primitive::POLYGON;
-    switch(_primtype)
-    {
-        case(osg::GeoSet::POINTS):mode = osg::Primitive::POINTS; break;
-        case(osg::GeoSet::LINES):mode = osg::Primitive::LINES; break;
-        case(osg::GeoSet::TRIANGLES):mode = osg::Primitive::TRIANGLES; break;
-        case(osg::GeoSet::QUADS):mode = osg::Primitive::QUADS; break;
-        case(osg::GeoSet::POLYGON):mode = osg::Primitive::POLYGON; break;
-        default: mode = osg::Primitive::POLYGON;
-    }        
+    }    
     
-    
-    if (mode!=osg::Primitive::POLYGON)
+    if (_primtype!=osg::Primitive::POLYGON)
     {
-        geom->addPrimitive(new osg::DrawArrays(mode,indexBase,_coordList.size()));
+        geom->addPrimitive(new osg::DrawArrays(_primtype,indexBase,_coordList.size()));
     }
     else
     {
@@ -230,7 +193,7 @@ void DynGeoSet::addToGeometry(osg::Geometry* geom)
             itr!=_primLenList.end();
             ++itr)
         {
-            geom->addPrimitive(new osg::DrawArrays(mode,indexBase,*itr));
+            geom->addPrimitive(new osg::DrawArrays(_primtype,indexBase,*itr));
             indexBase += *itr;
         }
     }    
@@ -314,29 +277,11 @@ osg::Geode* GeoSetBuilder::createOsgGeoSets(osg::Geode* geode)
     }
 
     osgUtil::Tesselator tesselator;
-    for(int i=0;i<geode->getNumDrawables();++i)
+    for(unsigned int i=0;i<geode->getNumDrawables();++i)
     {
         osg::Geometry* geom = dynamic_cast<osg::Geometry*>(geode->getDrawable(i));
         if (geom) tesselator.retesselatePolygons(*geom);
     }
-
-//Old GeoSet code.    
-//     for(itr=_dynGeoSetList.begin();
-//         itr!=_dynGeoSetList.end();
-//         ++itr)
-//     {
-//         DynGeoSet* dgset = itr->get();
-//         if (dgset)
-//         {
-//             int prims = dgset->primLenListSize();
-//             if (prims > 0)
-//             {
-//                 dgset->setLists();
-//                 dgset->setNumPrims(prims);
-//                 geode->addDrawable(dgset);
-//             }
-//         }
-//     }
 
     return geode;
 }
@@ -346,11 +291,13 @@ bool GeoSetBuilder::addPrimitive(bool dontMerge)
 {
     DynGeoSet* dgset = getDynGeoSet();  // This is the new geoset we want to add
 
-    if (dgset->getPrimType() == osg::GeoSet::NO_TYPE)
+    if (dgset->getPrimType()==NO_PRIMITIVE_TYPE)
+    {
         dgset->setPrimType(findPrimType(dgset->coordListSize()));
+    }
 
     // Still no primitive type?
-    if (dgset->getPrimType() == osg::GeoSet::NO_TYPE)
+    if (dgset->getPrimType()==NO_PRIMITIVE_TYPE)
         return false;
 
     dgset->setBinding();
@@ -389,18 +336,19 @@ DynGeoSet* GeoSetBuilder::findMatchingGeoSet()
 }
 
 
-osg::GeoSet::PrimitiveType GeoSetBuilder::findPrimType(const int nVertices)
+osg::Primitive::Mode GeoSetBuilder::findPrimType(const int nVertices)
 {
     switch (nVertices)
     {
-        case 1: return osg::GeoSet::POINTS;
-        case 2: return osg::GeoSet::LINES;
-        case 3: return osg::GeoSet::TRIANGLES;
-        case 4: return osg::GeoSet::QUADS;
+        case 1: return osg::Primitive::POINTS;
+        case 2: return osg::Primitive::LINES;
+        case 3: return osg::Primitive::TRIANGLES;
+        case 4: return osg::Primitive::QUADS;
     }
 
-    if (nVertices >= 5) return osg::GeoSet::POLYGON;
-    return osg::GeoSet::NO_TYPE;
+    if (nVertices>=5) return osg::Primitive::POLYGON;
+    
+    return NO_PRIMITIVE_TYPE;
 }
 
 

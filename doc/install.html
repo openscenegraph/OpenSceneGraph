@@ -274,66 +274,73 @@ To get full details of make options, type:
 <br>
 <hr>
 <h3>
-<a NAME="Mac OSX"></a><u>Compiling under MacOS X (instructions written
-by Phil Atkin)</u></h3>
-For anyone who's ever used a Unix box for development it really is so simple
-it's insane.
-<p>You need to have installed the Developer tools from the CD that comes
+<a NAME="Mac OSX"></a><u>Compiling under MacOS X</u></h3>
+For anyone who's ever used a Unix box for development, well, the mac
+<i>is</i> a Unix box. It's very simple to get OpenSceneGraph building
+and running under Mac OS X. The main requirement is that you need to have
+installed the Developer tools from the CD that comes
 for free with OS X. This gives you compilers, headers, frameworks - stuff
-like GLUT and Carbon for developers.
-<p>Everything is done command-line, so you need to get to the underlying
-OS rather than the Aqua gloss. The Mac comes with an app in Applications/Utilities
+like GLUT and Carbon for developers. Get those here:
+
+<ul>
+<li> The Apple <a href="http://developer.apple.com/tools/macosxtools.html">
+    developer tools website</a>.
+</ul>
+
+<p>Everything is done command-line, so you need to get to a shell before
+proceeding. The Mac comes with an app in Applications/Utilities
 called Terminal - open up any Finder window (e.g double-click on your hard
 disk icon), click on the Applications icon at the top right of the window,
-then click on the Utilities folder to get access to all the grubby apps
-which give away the real OS roots underneath the shiny paint work. Anyone
-developing will need Terminal so much they should put it in their Dock.
-You do that by grabbing the icon of the app in the Utilities folder and
-dragging it to the bottom of your screen, at which point the other app
-icons in the Dock slide away to leave a gap which when you release the
-mouse button leaves Terminal permanently available, just a mouse click
-away on your desktop. When you start Terminal it brings you up a csh running
-under Darwin (which is the BSD-with-knobs-on that underlies OS X), and
-does a cd to ~ (otherwise /Users/username of whoever you are logged in
-as, as far as the Finder in OS X is concerned you are in the Users/username
-folder of the harddisk the machine booted from).
-<p>Then you are in Unix land, and it's all very familiar.
-<p>You will need a .cshrc file with $OSGHOME (as above), and this is a
-filename that the Mac won't let you see from the Finder or in fact generate
-from an app, so I used vi to create that. Then I just went
-<p>cd $OSGHOME
-<blockquote><tt>% make clean</tt>
-<br><tt>% make macosx</tt></blockquote>
+then click on the Utilities folder to get access to the Terminal.
+When you start Terminal it brings you up a csh running from your ~/ directory.
+Now, go to your OpenSceneGraph directory, and simply type:
+<p>
+<blockquote>
+<tt>make -j2</tt>
+</blockquote>
 
-<p><br>And it sounds too good to be true but it is that simple. It's worth
-doing some editing on the Makefiles in the Plugins and Demos directories
-so that it only tries to build a subset, otherwise the developer will have
-to dig out the support projects like jpeg etc. I have only built up to
-now sgv, hangglide, osgcube, osgreflect, osgviews and in the Plugins have
-built osg rgb 3ds and a couple others - will check and get back to you.
-<p><u>Tricky bit :</u>
-<p>Installing the libdl.a is more trouble, as you have to enable the root
-account on the machine, which by default is switched off as the machines
-ship for security reasons. Rather than typing in and risking error through
-paraphrase, here is a link to a site which tells you how to do this -
-<blockquote><a href="http://www.macos.utah.edu/Documentation/macosx/security/enablerootuser.html">http://www.macos.utah.edu/Documentation/macosx/security/enablerootuser.html</a></blockquote>
-Or alternately,
-<blockquote><a href="http://www.thinkmacintosh.com/osxfaq.html">http://www.thinkmacintosh.com/osxfaq.html</a></blockquote>
+And some time later you'll be rewarded with a lovely set of binaries and
+libraries. The Mac OSX build currently only builds a subset of the total
+functionality in OpenSceneGraph, but a large subset at that. Some of
+the remaining projects are known to build as well, but have external
+dependencies on libraries such as libtiff, libjpg, libpng, etc. and
+so are not included in the default build. However, if you examine
+the file <tt>OpenSceneGraph/Make/makedefs</tt> you will find which extra
+projects build for the mac, provided you have the external libraries
+required. Details
+on how to install these external libraries are outside the scope of
+this document, but for starting points, see one of:
+<ul>
+<li> The <a href="http://fink.sourceforge.net">fink project</a>.
+<li> The <a href="http://gnu-darwin.sourceforge.net/">GNU-Darwin project</a>.
+</ul>
+<h4> Running the examples </h4>
+Once you've got OpenSceneGraph built, you're ready to run your examples.
+As with other builds on other platforms, OpenSceneGraph requires
+you to set a few environment variables which describe your installation. These
+environment variables should be full-path, not relative, and a list
+of these for a csh-derived environment follow:
 
-<p><br>One you have a root account enabled, you have to su root you cd
-to the directory which the Fink installer generates, and it puts libdl.a
-and the associated .h files in sensible system places so the compiler just
-finds them.
-<p>There is one oddball problem - if you rely on Path to find the resulting
-executables, a weird Core Graphics error occurs - so even though I set
-up my path to include $(OSGHOME)/bin, and when I cd to $OSGHOME and type
-for example hangglide, the application starts fine (so it is in the path),
-but at the point it tries to use GLUT to open a window it falls over with
-a CGS error (which is I think Core Graphics System). If you explicitly
-go bin/hangglide it works fine. Weird, it may be an OS X 10.04 issue which
-is gone in 10.1 or it may be a weirdy in the Mac GLUT implementation, but
-forewarned is forearmed.&nbsp;
-<hr>
+<blockquote>
+<tt>
+setenv OSGHOME              `pwd`/OpenSceneGraph <br>
+setenv OSGFILEPATH          `pwd`/OpenSceneGraph-Data <br>
+setenv OSG_LD_LIBRARY_PATH  ${OSGHOME}/lib <br>
+setenv DYLD_LIBRARY_PATH    ${OSG_LD_LIBRARY_PATH} <br>
+</tt>
+</blockquote>
+
+<h4> Notes </h4>
+
+<ul>
+<li> <b>Input Focus</b>: Many OSG examples have keyboard commands, however, when launching
+apps from the Mac Terminal, the focus seems to remain in the Terminal. Option-Clicking on
+the graphics window focuses it as the recipient of events, and allows these keyboard commands
+to then function properly.
+<li> <b>Known Bugs</b>:
+<li> <b>Installation</b>: No package based version of an OS X installer yet exists.
+</ul>
+
 <h3>
 <a NAME="Cygwin"></a><u>Compiling under Cygwin</u></h3>
 To compile, from the OSG root directory, type: make Note, make should automatically

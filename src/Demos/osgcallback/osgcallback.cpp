@@ -170,7 +170,7 @@ class InsertCallbacksVisitor : public osg::NodeVisitor
             //If you wish to control the culling of drawables
             //then use a drawable cullback...
 
-            for(int i=0;i<geode.getNumDrawables();++i)
+            for(unsigned int i=0;i<geode.getNumDrawables();++i)
             {
                 geode.getDrawable(i)->setAppCallback(new DrawableAppCallback());
                 geode.getDrawable(i)->setCullCallback(new DrawableCullCallback());

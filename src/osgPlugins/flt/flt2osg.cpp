@@ -7,7 +7,6 @@
 #include <osg/MatrixTransform>
 #include <osg/Switch>
 #include <osg/Geode>
-#include <osg/GeoSet>
 #include <osg/StateSet>
 #include <osg/CullFace>
 #include <osg/TexEnv>
@@ -672,16 +671,27 @@ osg::Group* ConvertFromFLT::visitSwitch(osg::Group& osgParent, SwitchRecord* rec
     visitAncillary(osgParent, *group, rec)->addChild( group );
     visitPrimaryNode(*group, (PrimNodeRecord*)rec);
 
-    for(int nChild=0; nChild<rec->getNumChildren(); nChild++)
+    for(unsigned int nChild=0; nChild<(unsigned int)rec->getNumChildren(); nChild++)
     {
-        int nMaskBit = nChild % 32;
-        int nMaskWord = pSSwitch->nCurrentMask * pSSwitch->nWordsInMask + nChild / 32;
+        unsigned int nMaskBit = nChild % 32;
+        unsigned int nMaskWord = pSSwitch->nCurrentMask * pSSwitch->nWordsInMask + nChild / 32;
 
         if (!(pSSwitch->aMask[nMaskWord] & (uint32(1) << nMaskBit)))
         {
-            osg::Node* node = group->getChild(nChild);
-            if (node)
-                node->setNodeMask(0);
+            if (nChild<group->getNumChildren())
+            {
+                osg::Node* node = group->getChild(nChild);
+                if (node)
+                    node->setNodeMask(0);
+            }
+            else
+            {
+                osg::notify(osg::WARN)<<"Warning::OpenFlight loader has come across an incorrectly handled switch."<<std::endl;
+                osg::notify(osg::WARN)<<"         The number of OpenFlight children ("<<rec->getNumChildren()<<") "<<std::endl;
+                osg::notify(osg::WARN)<<"         exceeds the number convered to OSG ("<<group->getNumChildren()<<")"<<std::endl;
+            }
+             
+             
         }
     }
 
@@ -742,11 +752,11 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
             break;
 
         case FaceRecord::WIREFRAME_NOT_CLOSED:
-            dgset->setPrimType(osg::GeoSet::LINE_STRIP);
+            dgset->setPrimType(osg::Primitive::LINE_STRIP);
             break;
 
         case FaceRecord::WIREFRAME_CLOSED:
-            dgset->setPrimType(osg::GeoSet::LINE_LOOP);
+            dgset->setPrimType(osg::Primitive::LINE_LOOP);
             break;
     }
 
@@ -776,39 +786,39 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
             case FaceRecord::FACE_COLOR:
                 // Use face color, not illuminated
                 osgStateSet->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
-                dgset->setColorBinding( osg::GeoSet::BIND_OVERALL /*BIND_PERPRIM*/ );
+                dgset->setColorBinding( osg::Geometry::BIND_OVERALL /*BIND_PERPRIM*/ );
                 break;
 
             case FaceRecord::VERTEX_COLOR:
                 // Use vertex colors, not illuminated
                 osgStateSet->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
-                dgset->setColorBinding( osg::GeoSet::BIND_PERVERTEX );
+                dgset->setColorBinding( osg::Geometry::BIND_PER_VERTEX );
                 break;
 
             case FaceRecord::FACE_COLOR_LIGHTING:
                 // Use face color and vertex normal
                 osgStateSet->setMode( GL_LIGHTING, osg::StateAttribute::ON );
-                dgset->setColorBinding( osg::GeoSet::BIND_OVERALL );
-                dgset->setNormalBinding(osg::GeoSet::BIND_PERVERTEX);
+                dgset->setColorBinding( osg::Geometry::BIND_OVERALL );
+                dgset->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
                 break;
 
             case FaceRecord::VERTEX_COLOR_LIGHTING:
                 // Use vertex color and vertex normal
                 osgStateSet->setMode( GL_LIGHTING, osg::StateAttribute::ON );
-                dgset->setColorBinding( osg::GeoSet::BIND_PERVERTEX );
-                dgset->setNormalBinding(osg::GeoSet::BIND_PERVERTEX);
+                dgset->setColorBinding( osg::Geometry::BIND_PER_VERTEX );
+                dgset->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
                 break;
 
             default :
                 osgStateSet->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
-                dgset->setColorBinding( osg::GeoSet::BIND_OVERALL );
+                dgset->setColorBinding( osg::Geometry::BIND_OVERALL );
                 break;
         }
     }
     else // Version 11, 12 & 13
     {
         osgStateSet->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
-        dgset->setColorBinding( osg::GeoSet::BIND_OVERALL /*BIND_PERPRIM*/ );
+        dgset->setColorBinding( osg::Geometry::BIND_OVERALL /*BIND_PERPRIM*/ );
     }
 
 
@@ -857,8 +867,8 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
     _faceColor[3] = 1.0f - ((float)pSFace->wTransparency / 65535.0f);
     if (pSFace->wTransparency > 0) bBlend = true;
 
-    if ((dgset->getColorBinding() == osg::GeoSet::BIND_OVERALL)
-    ||  (dgset->getColorBinding() == osg::GeoSet::BIND_PERPRIM))
+    if ((dgset->getColorBinding() == osg::Geometry::BIND_OVERALL)
+    ||  (dgset->getColorBinding() == osg::Geometry::BIND_PER_PRIMITIVE))
         dgset->addColor(_faceColor);
 
     //
@@ -974,7 +984,7 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
                 }
 #endif
 
-                dgset->setTextureBinding(osg::GeoSet::BIND_PERVERTEX);
+                dgset->setTextureBinding(osg::Geometry::BIND_PER_VERTEX);
             }
         }
     }
@@ -1050,7 +1060,7 @@ int ConvertFromFLT::addVertices(GeoSetBuilder* pBuilder, PrimNodeRecord* primRec
 
     if (vertices > 0)
     {
-        if (dgset->getPrimType() == osg::GeoSet::POINTS)
+        if (dgset->getPrimType() == osg::Primitive::POINTS)
         {
             for (i=0; i < vertices; i++)
                 dgset->addPrimLen(1);
@@ -1095,7 +1105,7 @@ int ConvertFromFLT::addVertex(DynGeoSet* dgset, Record* rec)
             osg::Vec3 coord(pVert->Coord.x(), pVert->Coord.y(), pVert->Coord.z());
             coord *= (float)_unitScale;
             dgset->addCoord(coord);
-            if (dgset->getColorBinding() == osg::GeoSet::BIND_PERVERTEX)
+            if (dgset->getColorBinding() == osg::Geometry::BIND_PER_VERTEX)
                 ADD_VERTEX_COLOR(dgset, pVert, rec->getFltFile()->getColorPool())
 
         }
@@ -1107,9 +1117,9 @@ int ConvertFromFLT::addVertex(DynGeoSet* dgset, Record* rec)
             osg::Vec3 coord(pVert->Coord.x(), pVert->Coord.y(), pVert->Coord.z());
             coord *= (float)_unitScale;
             dgset->addCoord(coord);
-            if (dgset->getNormalBinding() == osg::GeoSet::BIND_PERVERTEX)
+            if (dgset->getNormalBinding() == osg::Geometry::BIND_PER_VERTEX)
                 ADD_NORMAL(dgset, pVert)
-            if (dgset->getColorBinding() == osg::GeoSet::BIND_PERVERTEX)
+            if (dgset->getColorBinding() == osg::Geometry::BIND_PER_VERTEX)
                 ADD_VERTEX_COLOR(dgset, pVert, rec->getFltFile()->getColorPool())
         }
         break;
@@ -1120,11 +1130,11 @@ int ConvertFromFLT::addVertex(DynGeoSet* dgset, Record* rec)
             osg::Vec3 coord(pVert->Coord.x(), pVert->Coord.y(), pVert->Coord.z());
             coord *= (float)_unitScale;
             dgset->addCoord(coord);
-            if (dgset->getNormalBinding() == osg::GeoSet::BIND_PERVERTEX)
+            if (dgset->getNormalBinding() == osg::Geometry::BIND_PER_VERTEX)
                 ADD_NORMAL(dgset, pVert)
-            if (dgset->getTextureBinding() == osg::GeoSet::BIND_PERVERTEX)
+            if (dgset->getTextureBinding() == osg::Geometry::BIND_PER_VERTEX)
                 ADD_TCOORD(dgset, pVert)
-            if (dgset->getColorBinding() == osg::GeoSet::BIND_PERVERTEX)
+            if (dgset->getColorBinding() == osg::Geometry::BIND_PER_VERTEX)
                 ADD_VERTEX_COLOR(dgset, pVert, rec->getFltFile()->getColorPool())
         }
         break;
@@ -1135,9 +1145,9 @@ int ConvertFromFLT::addVertex(DynGeoSet* dgset, Record* rec)
             osg::Vec3 coord(pVert->Coord.x(), pVert->Coord.y(), pVert->Coord.z());
             coord *= (float)_unitScale;
             dgset->addCoord(coord);
-            if (dgset->getTextureBinding() == osg::GeoSet::BIND_PERVERTEX)
+            if (dgset->getTextureBinding() == osg::Geometry::BIND_PER_VERTEX)
                 ADD_TCOORD(dgset, pVert)
-            if (dgset->getColorBinding() == osg::GeoSet::BIND_PERVERTEX)
+            if (dgset->getColorBinding() == osg::Geometry::BIND_PER_VERTEX)
                 ADD_VERTEX_COLOR(dgset, pVert, rec->getFltFile()->getColorPool())
         }
         break;
@@ -1148,7 +1158,7 @@ int ConvertFromFLT::addVertex(DynGeoSet* dgset, Record* rec)
             osg::Vec3 coord(pVert->v[0], pVert->v[1], pVert->v[2]);
             coord *= (float)_unitScale;
             dgset->addCoord(coord);
-            if ((dgset->getTextureBinding() == osg::GeoSet::BIND_PERVERTEX)
+            if ((dgset->getTextureBinding() == osg::Geometry::BIND_PER_VERTEX)
             &&  (rec->getSize() >= sizeof(SOldVertex)))
                 ADD_OLD_TCOORD(dgset, pVert)
         }
@@ -1160,9 +1170,9 @@ int ConvertFromFLT::addVertex(DynGeoSet* dgset, Record* rec)
             osg::Vec3 coord(pVert->v[0], pVert->v[1], pVert->v[2]);
             coord *= (float)_unitScale;
             dgset->addCoord(coord);
-            if (dgset->getColorBinding() == osg::GeoSet::BIND_PERVERTEX)
+            if (dgset->getColorBinding() == osg::Geometry::BIND_PER_VERTEX)
                 ADD_OLD_COLOR(dgset, pVert, rec->getFltFile()->getColorPool())
-            if ((dgset->getTextureBinding() == osg::GeoSet::BIND_PERVERTEX)
+            if ((dgset->getTextureBinding() == osg::Geometry::BIND_PER_VERTEX)
             &&  (rec->getSize() >= sizeof(SOldVertexColor)))
                 ADD_OLD_TCOORD(dgset, pVert)
         }
@@ -1174,15 +1184,15 @@ int ConvertFromFLT::addVertex(DynGeoSet* dgset, Record* rec)
             osg::Vec3 coord(pVert->v[0], pVert->v[1], pVert->v[2]);
             coord *= (float)_unitScale;
             dgset->addCoord(coord);
-            if (dgset->getNormalBinding() == osg::GeoSet::BIND_PERVERTEX)
+            if (dgset->getNormalBinding() == osg::Geometry::BIND_PER_VERTEX)
             {
                 osg::Vec3 normal(pVert->n[0], pVert->n[1], pVert->n[2]);
                 normal /= (float)(1L<<30);
                 dgset->addNormal(normal);
             }
-            if (dgset->getColorBinding() == osg::GeoSet::BIND_PERVERTEX)
+            if (dgset->getColorBinding() == osg::Geometry::BIND_PER_VERTEX)
                 ADD_OLD_COLOR(dgset, pVert, rec->getFltFile()->getColorPool())
-            if ((dgset->getTextureBinding() == osg::GeoSet::BIND_PERVERTEX)
+            if ((dgset->getTextureBinding() == osg::Geometry::BIND_PER_VERTEX)
             &&  (rec->getSize() >= sizeof(SOldVertexColorNormal)))
                 ADD_OLD_TCOORD(dgset, pVert)
         }
@@ -1249,10 +1259,10 @@ void ConvertFromFLT::visitLightPoint(GeoSetBuilder* pBuilder, LightPointRecord* 
     osg::StateSet* stateSet = dgset->getStateSet();
     SLightPoint *pSLightPoint = (SLightPoint*)rec->getData();
 
-    dgset->setPrimType(osg::GeoSet::POINTS);
+    dgset->setPrimType(osg::Primitive::POINTS);
     stateSet->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
     stateSet->setMode(GL_POINT_SMOOTH, osg::StateAttribute::ON);
-    dgset->setColorBinding(osg::GeoSet::BIND_PERVERTEX);
+    dgset->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
 
     osg::Point* point = new osg::Point;
     if (point)

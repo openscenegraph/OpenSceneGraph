@@ -21,8 +21,6 @@ using namespace osgUtil;
 
 void Optimizer::optimize(osg::Node* node, unsigned int options)
 {
-
-
     if (options & COMBINE_ADJACENT_LODS)
     {
         CombineLODsVisitor clv;
@@ -69,7 +67,6 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
     // convert the old style GeoSet to Geometry
 //    ConvertGeoSetsToGeometryVisitor cgtg;
 //    node->accept(cgtg);
-
 
     if (options & SHARE_DUPLICATE_STATE)
     {
@@ -1205,8 +1202,26 @@ struct LessGeometry
         
         if (lhs->getColorBinding()==osg::Geometry::BIND_OVERALL)
         {
-            if (lhs->getColorArray()->getType()<rhs->getColorArray()->getType()) return true;
-            if (rhs->getColorArray()->getType()<lhs->getColorArray()->getType()) return false;
+            const osg::Array* lhs_colorArray = lhs->getColorArray();
+            const osg::Array* rhs_colorArray = rhs->getColorArray();
+            if (lhs_colorArray->getType()<rhs_colorArray->getType()) return true;
+            if (rhs_colorArray->getType()<lhs_colorArray->getType()) return false;
+            switch(lhs_colorArray->getType())
+            {
+                case(osg::Array::UByte4ArrayType):
+                    if ((*static_cast<const osg::UByte4Array*>(lhs_colorArray))[0]<(*static_cast<const osg::UByte4Array*>(rhs_colorArray))[0]) return true;
+                    if ((*static_cast<const osg::UByte4Array*>(lhs_colorArray))[0]>(*static_cast<const osg::UByte4Array*>(rhs_colorArray))[0]) return false;
+                case(osg::Array::Vec3ArrayType):
+                    if ((*static_cast<const osg::Vec3Array*>(lhs_colorArray))[0]<(*static_cast<const osg::Vec3Array*>(rhs_colorArray))[0]) return true;
+                    if ((*static_cast<const osg::Vec3Array*>(lhs_colorArray))[0]>(*static_cast<const osg::Vec3Array*>(rhs_colorArray))[0]) return false;
+                case(osg::Array::Vec4ArrayType):
+                    if ((*static_cast<const osg::Vec4Array*>(lhs_colorArray))[0]<(*static_cast<const osg::Vec4Array*>(rhs_colorArray))[0]) return true;
+                    if ((*static_cast<const osg::Vec4Array*>(lhs_colorArray))[0]>(*static_cast<const osg::Vec4Array*>(rhs_colorArray))[0]) return false;
+                    break;
+                default:
+                    break;
+            }
+            
         }
 
         return false;

@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <osg/Notify>
+#include <osg/Statistics>
 
 #include <osgUtil/RenderStage>
+
 
 using namespace osg;
 using namespace osgUtil;

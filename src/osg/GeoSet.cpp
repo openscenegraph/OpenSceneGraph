@@ -7,7 +7,6 @@
 
 #include <osg/GeoSet>
 #include <osg/Notify>
-#include <osg/Statistics>
 
 #include <osg/Geometry>
 #include <osg/ShadeModel>
@@ -887,98 +886,6 @@ Drawable::AttributeBitMask GeoSet::applyAttributeOperation(AttributeFunctor& auf
     return ramb;
 }
 
-bool GeoSet::getStats(Statistics &stat)
-{ // analyse the drawable GeoSet
-    const int np=getNumPrims(); // number of primitives in this geoset
-    stat.addNumPrims(np);
-    const int type=getPrimType();
-    int nprimlens=0, numprimtypes=0, primverts=0; 
-    switch (type) {
-    case    osg::GeoSet::POINTS:
-    case    osg::GeoSet::LINES:
-    case    osg::GeoSet::LINE_STRIP:
-    case    osg::GeoSet::FLAT_LINE_STRIP:
-    case    osg::GeoSet::LINE_LOOP:
-    case    osg::GeoSet::TRIANGLE_STRIP:
-    case    osg::GeoSet::FLAT_TRIANGLE_STRIP:
-    case    osg::GeoSet::TRIANGLE_FAN:
-    case    osg::GeoSet::FLAT_TRIANGLE_FAN:
-    case    osg::GeoSet::QUAD_STRIP:
-    case    osg::GeoSet::POLYGON:
-        break;
-    case    osg::GeoSet::TRIANGLES: // should not have any lengths for tris & quads
-        nprimlens=np;
-        numprimtypes=np;
-        primverts=3*np;
-        break;
-    case    osg::GeoSet::QUADS:
-        nprimlens=np*2;
-        primverts=4*np;
-        numprimtypes=np;
-        break;
-    case    osg::GeoSet::NO_TYPE:
-    default:
-        break;
-    }
-    // now count the lengths, ie efficiency of triangulation
-    const int *lens=getPrimLengths(); // primitive lengths
-    if (lens) { // then count for each length
-        for (int i=0; i<np; i++) {
-            switch (type) {
-            case    osg::GeoSet::POINTS:
-            case    osg::GeoSet::LINES:
-            case    osg::GeoSet::LINE_STRIP:
-            case    osg::GeoSet::FLAT_LINE_STRIP:
-            case    osg::GeoSet::LINE_LOOP:
-            case    osg::GeoSet::TRIANGLES: // should not have any lengths for tris & quads
-            case    osg::GeoSet::QUADS:
-            case    osg::GeoSet::QUAD_STRIP:
-                nprimlens+=lens[i];
-                break;
-            case    osg::GeoSet::POLYGON: // moved Nov 2001 to count triangles cf lengths
-            case    osg::GeoSet::TRIANGLE_STRIP:
-            case    osg::GeoSet::FLAT_TRIANGLE_STRIP:
-            case    osg::GeoSet::TRIANGLE_FAN:
-            case    osg::GeoSet::FLAT_TRIANGLE_FAN:
-                nprimlens+=lens[i]-2; // tri strips & fans create lens[i]-2 triangles
-                break;
-            case    osg::GeoSet::NO_TYPE:
-            default:
-                break;
-            }
-            switch (type) {
-            case    osg::GeoSet::POINTS:
-            case    osg::GeoSet::LINES:
-            case    osg::GeoSet::LINE_STRIP:
-            case    osg::GeoSet::FLAT_LINE_STRIP:
-            case    osg::GeoSet::LINE_LOOP:
-            case    osg::GeoSet::TRIANGLES:
-            case    osg::GeoSet::QUADS:
-            case    osg::GeoSet::TRIANGLE_STRIP:
-            case    osg::GeoSet::FLAT_TRIANGLE_STRIP:
-            case    osg::GeoSet::TRIANGLE_FAN:
-            case    osg::GeoSet::FLAT_TRIANGLE_FAN:
-            case    osg::GeoSet::QUAD_STRIP:
-            case    osg::GeoSet::POLYGON:
-                numprimtypes++;
-                primverts+=lens[i];
-                break;
-            case    osg::GeoSet::NO_TYPE:
-            default:
-                break;
-            }
-        }
-    } else { // no lengths - num prims is the length of a point set
-        switch (type) {
-        case    osg::GeoSet::POINTS:
-            numprimtypes++;
-            primverts+=np;
-            break;
-        }
-    }
-    stat.addNumPrims(type, nprimlens, numprimtypes, primverts);
-    return true;
-}
 
 void GeoSet::applyPrimitiveOperation(PrimitiveFunctor& functor)
 {

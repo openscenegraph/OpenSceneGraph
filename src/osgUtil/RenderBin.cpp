@@ -1,6 +1,8 @@
 #include <osgUtil/RenderBin>
 #include <osgUtil/RenderStage>
 
+#include <osg/Statistics>
+
 #include <algorithm>
 
 using namespace osg;
@@ -186,13 +188,10 @@ bool RenderBin::getStats(osg::Statistics* primStats)
             Drawable* dw= rl->_drawable;
             primStats->addOpaque(); // number of geosets
             if (rl->_modelview.get()) primStats->addMatrix(); // number of matrices
-            if (dw) { // then tot up the types 1-14
-                // commenting out as having intrusive stats in base classes is
-                // undersirable.
-                dw->getStats(*primStats); // use sub-class to find the stats for each drawable
-                
-                // use an AttributeOption to get the stats we require.
-                dw->applyAttributeOperation(*primStats);
+            if (dw)
+            {
+                // then tot up the primtive types and no vertices.
+                dw->applyPrimitiveOperation(*primStats); // use sub-class to find the stats for each drawable
             }
         }
         somestats=true;

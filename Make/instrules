@@ -61,22 +61,23 @@ __install : $(TARGET) $(LIB)
 	  else\
 		echo No loaders installed ...;\
 	fi
-	@if [ -n "$(TARGET_DATA_FILES)" ] ;\
-	  then\
-	      if [ -n "$(OSGDATA)" ] ;\
-	      then\
-	          for f in $(TARGET_DATA_FILES);\
-	          do\
-	              (echo copying $(OSGDATA)/$$f to  $(TARGET_DATA)/$$f; \
-	              cp -f $(OSGDATA)/$$f $(TARGET_DATA)/$$f; )\
-	          done\
-	      else\
-		  echo;\
-	          echo "-------------- > Please define OSGDATA";\
-		  echo; \
-		  [ -n "$(OSGDATA)" ] && echo > /dev/null;\
-	      fi\
-	  fi
+# deprecate OSGDATA
+#	@if [ -n "$(TARGET_DATA_FILES)" ] ;\
+#	  then\
+#	      if [ -n "$(OSGDATA)" ] ;\
+#	      then\
+#	          for f in $(TARGET_DATA_FILES);\
+#	          do\
+#	              (echo copying $(OSGDATA)/$$f to  $(TARGET_DATA)/$$f; \
+#	              cp -f $(OSGDATA)/$$f $(TARGET_DATA)/$$f; )\
+#	          done\
+#	      else\
+#		  echo;\
+#	          echo "-------------- > Please define OSGDATA";\
+#		  echo; \
+#		  [ -n "$(OSGDATA)" ] && echo > /dev/null;\
+#	      fi\
+#	  fi
 
 
 __instlinks : $(TARGET) $(LIB) 

@@ -121,28 +121,6 @@ TARGET_INCLUDE_FILES = \
 	osg/ref_ptr\
 
 
-TARGET_DATA_FILES = \
-	cessna.osg\
-	cow.osg\
-	dumptruck.osg\
-	e-s-bike.osg\
-	flight_park.fly\
-	glider.osg\
-	ncc1701d.osg\
-	paraglider.osg\
-	torus.osg\
-	turtle.osg\
-	Test/CullFace.osg\
-	Test/Point.osg\
-	Test/PolygonOffset.osg\
-	Images/lz.rgb\
-	Images/reflect.rgb\
-	Images/tank.rgb\
-	Images/tree0.rgba\
-	Images/water.rgb\
-	Images/white.rgb\
-
-
 LIBS    =  -lGLU -lGL -lm
 
 LIB	= ../../lib/lib$(TARGET_BASENAME).so

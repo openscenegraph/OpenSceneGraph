@@ -183,21 +183,12 @@ public:
     {
         osg::notify(osg::INFO)<<"getCoordinateFrame("<<position<<")"<<std::endl;
 
-        const Viewer::RefNodePath& refNodePath = _viewer->getCoordindateSystemNodePath();
+        // do automatic conversion between RefNodePath and NodePath.
+        osg::NodePath tmpPath = _viewer->getCoordindateSystemNodePath();
         
-        if (!refNodePath.empty())
+        if (!tmpPath.empty())
         {        
             osg::Matrixd coordinateFrame;
-
-            // have to create a copy of the RefNodePath to create an osg::NodePath
-            // to allow it to be used along with the computeLocalToWorld call.
-            osg::NodePath tmpPath;
-            for(Viewer::RefNodePath::const_iterator itr=refNodePath.begin();
-                itr!=refNodePath.end();
-                ++itr)
-            {
-                tmpPath.push_back(const_cast<osg::Node*>(itr->get()));
-            }
 
             osg::CoordinateSystemNode* csn = dynamic_cast<osg::CoordinateSystemNode*>(tmpPath.back());
             if (csn)

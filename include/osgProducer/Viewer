@@ -18,6 +18,7 @@
 #include <osg/ArgumentParser>
 #include <osg/ApplicationUsage>
 #include <osg/AnimationPath>
+#include <osg/RefNodePath>
 
 #include <osgUtil/IntersectVisitor>
 
@@ -102,15 +103,13 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
         const osg::NodeVisitor* getUpdateVisitor() const { return _updateVisitor.get(); }
         
 
-        typedef std::vector< osg::ref_ptr<osg::Node> > RefNodePath;
-        
         void computeActiveCoordindateSystemNodePath();
 
-        void setCoordindateSystemNodePath(const RefNodePath& nodePath) { _coordinateSystemNodePath = nodePath; }
+        void setCoordindateSystemNodePath(const osg::RefNodePath& nodePath) { _coordinateSystemNodePath = nodePath; }
         
         void setCoordindateSystemNodePath(const osg::NodePath& nodePath);
         
-        const RefNodePath& getCoordindateSystemNodePath() const { return _coordinateSystemNodePath; }
+        const osg::RefNodePath& getCoordindateSystemNodePath() const { return _coordinateSystemNodePath; }
 
         /** Dispatch the cull and draw for each of the Camera's for this frame.*/
         virtual void frame();
@@ -194,7 +193,7 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
         osg::ref_ptr<osg::NodeVisitor>      _updateVisitor;
 
 
-        RefNodePath                         _coordinateSystemNodePath;
+        osg::RefNodePath                    _coordinateSystemNodePath;
 
         bool                                _recordingAnimationPath;
         double                              _recordingStartTime;

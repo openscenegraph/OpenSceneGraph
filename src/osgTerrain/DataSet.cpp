@@ -3773,6 +3773,13 @@ void DataSet::_writeRow(Row& row)
                 {
                     my_notify(osg::NOTICE)<<"   writeSubTile filename="<<filename<<std::endl;
                     osgDB::writeNodeFile(*node,filename);
+
+                    if (_tileExtension==".osg")
+                    {
+                        WriteImageFilesVisitor wifv;
+                        node->accept(wifv);
+                    }
+
                     parent->setSubTilesGenerated(true);
                     parent->unrefSubTileData();
                 }

@@ -46,9 +46,9 @@ PLUGIN_DIRS = \
 	tgz\
 	txp\
 	zip\
+        3dc\
         ive
 
-#        3dc\
 
 # comment in if you have Performer installed.
 # PLUGIN_DIRS += pfb

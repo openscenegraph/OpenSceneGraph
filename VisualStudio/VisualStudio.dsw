@@ -1677,6 +1677,24 @@ Package=<4>
 
 ###############################################################################
 
+Project: "osgPlugin 3dc"=.\osgPlugins\3dc\3dc.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "osgPlugin pnm"=.\osgPlugins\pnm\pnm.dsp - Package Owner=<4>
 
 Package=<5>

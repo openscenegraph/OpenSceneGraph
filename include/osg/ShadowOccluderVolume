@@ -43,6 +43,18 @@ class SG_EXPORT ShadowOccluderVolume
           * within this shadow occluder volume.*/
         bool contains(const BoundingBox& bound);
 
+        inline void transformProvidingInverse(const osg::Matrix& matrix)
+        {
+            _occluderVolume.transformProvidingInverse(matrix);
+            for(HoleList::iterator itr=_holeList.begin();
+                itr!=_holeList.end();
+                ++itr)
+            {
+                itr->transformProvidingInverse(matrix);
+            }
+        }
+        
+
     protected:
     
         Polytope    _occluderVolume;

@@ -1,0 +1,165 @@
+//C++ header - Open Scene Graph - Copyright (C) 1998-2001 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+
+#ifndef OSG_CullingSet
+#define OSG_CullingSet 1
+
+#include <osg/Polytope>
+#include <osg/ShadowOccluderVolume>
+#include <osg/Referenced>
+
+namespace osg {
+
+/** A CullingSet class which contains a frustum and a list of occluder. */
+class SG_EXPORT CullingSet : public Referenced
+{
+
+    public:
+    
+    
+        CullingSet();
+        CullingSet(const CullingSet& cs,const osg::Matrix& matrix):
+            _mask(cs._mask),
+            _clippingVolume(cs._clippingVolume),
+            _occluderList(cs._occluderList),
+            _pixelSizeOffset(cs._pixelSizeOffset),
+            _pixelSizeVector(cs._pixelSizeVector)
+        {
+            _clippingVolume.transformProvidingInverse(matrix);
+            for(OccluderList::iterator itr=_occluderList.begin();
+                itr!=_occluderList.end();
+                ++itr)
+            {
+                itr->transformProvidingInverse(matrix);
+            }
+        }
+        
+        ~CullingSet();
+    
+        typedef std::vector<ShadowOccluderVolume>   OccluderList;
+
+        typedef unsigned int Mask;
+
+        enum MaskValues
+        {
+            VIEW_FRUSTUM_CULLING        = 0x1,
+            SMALL_FEATURE_CULLING       = 0x2,
+            SHADOW_OCCLUSION_CULLING    = 0x4,
+            ALL_CULLING                 = 0xffffffff
+        };
+        
+        void setCullingMask(Mask mask) { _mask = mask; }
+
+        void setFrustum(Polytope& cv) { _clippingVolume = cv; }
+
+        Polytope& getFrustum() { return _clippingVolume; }
+        
+        void addOccluder(ShadowOccluderVolume& cv) { _occluderList.push_back(cv); }
+
+        inline bool isCulled(const BoundingBox& bb)
+        {
+            if (_mask&VIEW_FRUSTUM_CULLING)
+            {
+                // is it outside the view frustum...
+                if (!_clippingVolume.contains(bb)) return true;
+            }
+            
+            if (_mask&SMALL_FEATURE_CULLING)
+            {
+            }
+
+            if (_mask&SHADOW_OCCLUSION_CULLING)
+            {
+                // is it in one of the shadow occluder volumes.
+                if (!_occluderList.empty())
+                {
+                    for(OccluderList::iterator itr=_occluderList.begin();
+                        itr!=_occluderList.end();
+                        ++itr)
+                    {
+                        if (itr->contains(bb)) return true;
+                    }
+                }
+            }
+                        
+            return false;
+        }
+        
+        inline bool isCulled(const BoundingSphere& bs)
+        {
+            if (_mask&VIEW_FRUSTUM_CULLING)
+            {
+                // is it outside the view frustum...
+                if (!_clippingVolume.contains(bs)) return true;
+            }
+            
+            if (_mask&SMALL_FEATURE_CULLING)
+            {
+                if ((bs.center()*_pixelSizeVector+_pixelSizeOffset)>bs.radius()) return true;
+            }
+
+            if (_mask&SHADOW_OCCLUSION_CULLING)
+            {
+                // is it in one of the shadow occluder volumes.
+                if (!_occluderList.empty())
+                {
+                    for(OccluderList::iterator itr=_occluderList.begin();
+                        itr!=_occluderList.end();
+                        ++itr)
+                    {
+                        if (itr->contains(bs)) return true;
+                    }
+                }
+            }
+            
+            return false;
+        }
+        
+        inline void pushCurrentMask()
+        {
+            _clippingVolume.pushCurrentMask();
+            
+            if (!_occluderList.empty())
+            {
+                for(OccluderList::iterator itr=_occluderList.begin();
+                    itr!=_occluderList.end();
+                    ++itr)
+                {
+                    itr->pushCurrentMask();
+                }
+            }
+        }
+        
+        inline void popCurrentMask()
+        {
+            _clippingVolume.popCurrentMask();
+
+            if (!_occluderList.empty())
+            {
+                for(OccluderList::iterator itr=_occluderList.begin();
+                    itr!=_occluderList.end();
+                    ++itr)
+                {
+                    itr->popCurrentMask();
+                }
+            }
+        }
+        
+        
+    protected:
+    
+        Mask _mask;
+
+        Polytope  _clippingVolume;
+        
+        OccluderList    _occluderList;
+        
+        float           _pixelSizeOffset;
+        Vec3            _pixelSizeVector;
+
+};
+
+}	// end of namespace
+
+#endif 

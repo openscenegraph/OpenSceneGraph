@@ -79,7 +79,9 @@ bool Window::open()
     glutPassiveMotionFunc( mousePassiveMotionCB );
 
     glutSpecialFunc( specialCB );
+#if (GLUT_API_VERSION >= 4 || GLUT_XLIB_IMPLEMENTATION >= 13)
     glutSpecialUpFunc( specialUpCB );
+#endif
     glutSpaceballMotionFunc( spaceballMotionCB );
     glutSpaceballRotateFunc( spaceballRotateCB );
     glutSpaceballButtonFunc( spaceballButtonCB );

@@ -6,7 +6,9 @@
 #include <osgDB/FileNameUtils>
 
 // Inventor headers
+#include <Inventor/SoDB.h>
 #include <Inventor/SoInteraction.h>
+#include <Inventor/nodekits/SoNodeKit.h>
 #include <Inventor/nodes/SoSeparator.h>
 
 #include "ConvertFromInventor.h"
@@ -34,7 +36,10 @@ ReaderWriterIV::readNode(const std::string& file,
                            << fileName.data() << std::endl;
     
     // Initialize Inventor
+    SoDB::init();
+    SoNodeKit::init();
     SoInteraction::init();
+    
 
     // Initial GroupSoLOD node
     GroupSoLOD::initClass();

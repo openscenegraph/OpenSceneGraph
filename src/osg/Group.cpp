@@ -1,9 +1,11 @@
-#include <stdio.h>
-#include <math.h>
 #include <osg/Group>
 #include <osg/BoundingBox>
 #include <osg/Transform>
 #include <osg/OccluderNode>
+#include <osg/Notify>
+
+#include <stdio.h>
+#include <math.h>
 
 #include <algorithm>
 
@@ -94,48 +96,60 @@ bool Group::addChild( Node *child )
     else return false;
 }
 
-
 bool Group::removeChild( Node *child )
 {
-    ChildList::iterator itr = findNode(child);
-    if (itr!=_children.end())
+    return removeChild(getChildIndex(child));
+}
+
+bool Group::removeChild(unsigned int pos,unsigned int numChildrenToRemove)
+{
+    if (pos<_children.size() && numChildrenToRemove>0)
     {
-        // remove this group from the child parent list.
-        child->removeParent(this);
-
-        // could now require app traversal thanks to the new subgraph,
-        // so need to check and update if required.
-        // note, need to do this checking before the erase of the child
-        // otherwise child will be invalid.
-        if (child->getNumChildrenRequiringAppTraversal()>0 ||
-            child->getAppCallback())
+        unsigned int endOfRemoveRange = pos+numChildrenToRemove;
+        if (endOfRemoveRange>_children.size())
         {
-            setNumChildrenRequiringAppTraversal(
-                getNumChildrenRequiringAppTraversal()-1
-                );
+            notify(DEBUG_INFO)<<"Warning: Group::removeChild(i,numChildrenToRemove) has been passed an excessive number"<<std::endl;
+            notify(DEBUG_INFO)<<"         of chilren to remove, trimming just to end of child list."<<std::endl;
+            endOfRemoveRange=_children.size();
         }
 
-        if (child->getNumChildrenWithCullingDisabled()>0 ||
-            !child->getCullingActive())
+        unsigned int appCallbackRemoved = 0;
+        unsigned int numChildrenWithCullingDisabledRemoved = 0;
+        unsigned int numChildrenWithOccludersRemoved = 0;
+
+        for(unsigned i=pos;i<endOfRemoveRange;++i)
         {
-            setNumChildrenWithCullingDisabled(
-                getNumChildrenWithCullingDisabled()-1
-                );
+            osg::Node* child = _children[i].get();
+            // remove this Geode from the child parent list.
+            child->removeParent(this);
+
+            if (child->getNumChildrenRequiringAppTraversal()>0 || child->getAppCallback()) ++appCallbackRemoved;
+
+            if (child->getNumChildrenWithCullingDisabled()>0 || !child->getCullingActive()) ++numChildrenWithCullingDisabledRemoved;
+
+            if (child->getNumChildrenWithOccluderNodes()>0 || dynamic_cast<osg::OccluderNode*>(child)) ++numChildrenWithOccludersRemoved;
+
         }
 
-        if (child->getNumChildrenWithOccluderNodes()>0 ||
-            dynamic_cast<osg::OccluderNode*>(child))
-        {
-            setNumChildrenWithOccluderNodes(
-                getNumChildrenWithOccluderNodes()-1
-                );
-        }
+        _children.erase(_children.begin()+pos,_children.begin()+endOfRemoveRange);
 
-        // note ref_ptr<> automatically handles decrementing child's reference count.
-        _children.erase(itr);
+        if (appCallbackRemoved)
+        {
+            setNumChildrenRequiringAppTraversal(getNumChildrenRequiringAppTraversal()-appCallbackRemoved);
+        }
+        
+        if (numChildrenWithCullingDisabledRemoved)
+        {
+            setNumChildrenWithCullingDisabled(getNumChildrenWithCullingDisabled()-numChildrenWithCullingDisabledRemoved);
+        }
+        
+        if (numChildrenWithOccludersRemoved)
+        {
+            setNumChildrenWithOccluderNodes(getNumChildrenWithOccluderNodes()-numChildrenWithOccludersRemoved);
+        }
+        
         dirtyBound();
-
-
+        
         return true;
     }
     else return false;

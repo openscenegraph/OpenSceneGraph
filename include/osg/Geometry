@@ -128,16 +128,16 @@ class SG_EXPORT Geometry : public Drawable
         PrimitiveSet* getPrimitiveSet(unsigned int pos) { return _primitives[pos].get(); }
         const PrimitiveSet* getPrimitiveSet(unsigned int pos) const { return _primitives[pos].get(); }
         
-        /** Add a primtive set to the geometry.*/
+        /** Add a primitive set to the geometry.*/
         bool addPrimitiveSet(PrimitiveSet* primitiveset);
         
-        /** Set a primtive set to the specified position in geometry's primtive set list.*/
+        /** Set a primitive set to the specified position in geometry's primitive set list.*/
         bool setPrimitiveSet(unsigned int i,PrimitiveSet* primitiveset);
         
-        /** Insert a primtive set to the specified position in geometry's primtive set list.*/
+        /** Insert a primitive set to the specified position in geometry's primitive set list.*/
         bool insertPrimitiveSet(unsigned int i,PrimitiveSet* primitiveset);
         
-        /** Remove primtive set(s) from the specified position in geometry's primtive set list.*/
+        /** Remove primitive set(s) from the specified position in geometry's primitive set list.*/
         bool removePrimitiveSet(unsigned int i,unsigned int numElementsToRemove=1);
 
         /** Get the index number of a primitive set, return a value between
@@ -148,7 +148,7 @@ class SG_EXPORT Geometry : public Drawable
 
         /** return true if OpenGL fast paths will be used with drawing this Geometry.
           * Fast paths use vertex arrays, and glDrawArrays/glDrawElements.  Slow paths
-          * use glBegin()/glVertex.../glEnd(). Use of per primtive bindings or per vertex indexed
+          * use glBegin()/glVertex.../glEnd(). Use of per primitive bindings or per vertex indexed
           * arrays will drop the rendering path off the fast path.*/
         bool areFastPathsUsed() const;
 
@@ -178,7 +178,7 @@ class SG_EXPORT Geometry : public Drawable
         /** return true, osg::Geometry does support accept(PrimitiveFunctor&) .*/
         virtual bool supports(PrimitiveFunctor&) const { return true; }
 
-        /** accept a PrimtiveFunctor and call its methods to tell it about the interal primtives that this Drawable has.*/
+        /** accept a PrimitiveFunctor and call its methods to tell it about the interal primitives that this Drawable has.*/
         virtual void accept(PrimitiveFunctor& pf) const;
 
     protected:

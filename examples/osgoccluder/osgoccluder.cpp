@@ -369,7 +369,7 @@ int main( int argc, char **argv )
         
     }
 
-    //viewer.sync();
+    viewer.sync();
 
     return 0;
 }

@@ -385,7 +385,9 @@ int main(int argc, char **argv)
     viewer.setSceneData(root);
         
     // create the windows and run the threads.
-    viewer.realize(Producer::CameraGroup::ThreadPerCamera);
+    //    viewer.realize(Producer::CameraGroup::ThreadPerCamera);
+    // run single threaded since osgParticle still writes during cull.
+    viewer.realize(Producer::CameraGroup::SingleThreaded);
 
     while( !viewer.done() )
     {
@@ -400,6 +402,9 @@ int main(int argc, char **argv)
         viewer.frame();
         
     }
+    
+    // wait for all cull and draw threads to complete before exit.
+    viewer.sync();
 
     return 0;
 }

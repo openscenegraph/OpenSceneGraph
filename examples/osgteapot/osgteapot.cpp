@@ -4,8 +4,6 @@
 
 #include <osgDB/ReadFile>
 
-#include <osgGA/TrackballManipulator>
-
 #include <osgProducer/Viewer>
 
 
@@ -369,6 +367,9 @@ int main( int argc, char **argv )
         viewer.frame();
         
     }
+    
+    // wait for all cull and draw threads to complete before exit.
+    viewer.sync();
 
     return 0;
 }

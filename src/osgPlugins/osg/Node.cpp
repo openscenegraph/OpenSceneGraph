@@ -73,7 +73,7 @@ bool Node_readLocalData(Object& obj, Input& fr)
 
         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
         {
-            node.addDescription(fr[0].getStr());
+            if (fr[0].getStr()) node.addDescription(std::string(fr[0].getStr()));
             ++fr;
         }
         iteratorAdvanced = true;

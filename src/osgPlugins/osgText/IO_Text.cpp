@@ -300,7 +300,8 @@ bool Text_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     // text
     const osgText::String& textstring = text.getText();
     bool isACString = true;
-    for(osgText::String::const_iterator itr=textstring.begin();
+    osgText::String::const_iterator itr;
+    for(itr=textstring.begin();
         itr!=textstring.end() && isACString;
         ++itr)
     {
@@ -309,7 +310,16 @@ bool Text_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     if (isACString)
     {
         std::string str;
-        std::copy(textstring.begin(),textstring.end(),std::back_inserter(str));
+
+        for(itr=textstring.begin();
+            itr!=textstring.end();
+            ++itr)
+        {
+            str.push_back((char)*itr);
+        }
+
+        //std::copy(textstring.begin(),textstring.end(),std::back_inserter(str));
+        
         fw.indent() << "text " << fw.wrapString(str) << std::endl;
     }
     else

@@ -358,7 +358,7 @@ class ReaderWriterRGB : public osgDB::ReaderWriter
             RawImageGetData(raw, &data);
             RawImageClose(raw);
 
-            Image* image = osgNew Image();
+            Image* image = new Image();
             image->setFileName(fileName.c_str());
             image->setImage(s,t,r,
                 internalFormat,

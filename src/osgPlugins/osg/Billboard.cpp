@@ -14,7 +14,7 @@ bool Billboard_writeLocalData(const Object& obj, Output& fw);
 // register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_BillboardProxy
 (
-    osgNew osg::Billboard,
+    new osg::Billboard,
     "Billboard",
     "Object Node Geode Billboard",
     &Billboard_readLocalData,

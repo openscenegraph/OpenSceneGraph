@@ -17,10 +17,10 @@ using namespace osg;
 
 GeoSet::GeoSet()
 {
-    // we will use the a default osgDelete functor which
+    // we will use the a default delete functor which
     // assumes that users have allocated arrays with new only
     // and that now sharing of attributes exists between GeoSet's.
-    _adf = osgNew AttributeDeleteFunctor;
+    _adf = new AttributeDeleteFunctor;
 
     _coords         = (Vec3 *)0;
 
@@ -74,7 +74,7 @@ GeoSet::GeoSet(const GeoSet& geoset,const CopyOp& copyop):
     _flat_shaded_skip = geoset._flat_shaded_skip;
     if (geoset._primLengths)
     {
-        _primLengths = osgNew int [_numprims];
+        _primLengths = new int [_numprims];
         memcpy(_primLengths,geoset._primLengths,_numprims*sizeof(int));
     }
     else
@@ -86,7 +86,7 @@ GeoSet::GeoSet(const GeoSet& geoset,const CopyOp& copyop):
     _cindex = geoset._cindex;
     if (geoset._coords)
     {
-        _coords = osgNew Vec3 [_numcoords];
+        _coords = new Vec3 [_numcoords];
         memcpy(_coords,geoset._coords,_numcoords*sizeof(Vec3));
     }
     else
@@ -99,7 +99,7 @@ GeoSet::GeoSet(const GeoSet& geoset,const CopyOp& copyop):
     _nindex = geoset._nindex;
     if (geoset._normals)
     {
-        _normals = osgNew Vec3 [_numnormals];
+        _normals = new Vec3 [_numnormals];
         memcpy(_normals,geoset._normals,_numnormals*sizeof(Vec3));
     }
     else
@@ -112,7 +112,7 @@ GeoSet::GeoSet(const GeoSet& geoset,const CopyOp& copyop):
     _colindex = geoset._colindex;
     if (geoset._colors)
     {
-        _colors = osgNew Vec4 [_numcolors];
+        _colors = new Vec4 [_numcolors];
         memcpy(_colors,geoset._colors,_numcolors*sizeof(Vec4));
     }
     else
@@ -125,7 +125,7 @@ GeoSet::GeoSet(const GeoSet& geoset,const CopyOp& copyop):
     _tindex = geoset._tindex;
     if (geoset._tcoords)
     {
-        _tcoords = osgNew Vec2 [_numtcoords];
+        _tcoords = new Vec2 [_numtcoords];
         memcpy(_tcoords,geoset._tcoords,_numtcoords*sizeof(Vec2));
     }
     else
@@ -152,19 +152,19 @@ GeoSet::GeoSet(const GeoSet& geoset,const CopyOp& copyop):
 
 void GeoSet::AttributeDeleteFunctor::operator() (GeoSet* gset)
 {
-    // note, osgDelete checks for NULL so want osgDelete NULL pointers.
-    osgDelete [] gset->getPrimLengths();
-    osgDelete [] gset->getCoords();
-    osgDelete [] gset->getNormals();
-    osgDelete [] gset->getColors();
-    osgDelete [] gset->getTextureCoords();
-    // can't osgDelete a void* right now... interleaved arrays needs to be reimplemented with a proper pointer..
-    //    osgDelete [] gset->getInterleavedArray();
+    // note, delete checks for NULL so want delete NULL pointers.
+    delete [] gset->getPrimLengths();
+    delete [] gset->getCoords();
+    delete [] gset->getNormals();
+    delete [] gset->getColors();
+    delete [] gset->getTextureCoords();
+    // can't delete a void* right now... interleaved arrays needs to be reimplemented with a proper pointer..
+    //    delete [] gset->getInterleavedArray();
 
 
     // coord indicies may be shared so we have to go through the long winded
     // step of creating unique pointer sets which we then delete.  This
-    // ensures that arrays aren't osgDelete twice. Robert. 
+    // ensures that arrays aren't delete twice. Robert. 
     std::set<GLushort*> ushortList;
     std::set<GLuint*>   uintList;
     
@@ -178,14 +178,14 @@ void GeoSet::AttributeDeleteFunctor::operator() (GeoSet* gset)
         sitr!=ushortList.end();
         ++sitr)
     {
-        osgDelete [] *sitr;
+        delete [] *sitr;
     }
     
     for(std::set<GLuint*>::iterator iitr=uintList.begin();
         iitr!=uintList.end();
         ++iitr)
     {
-        osgDelete [] *iitr;
+        delete [] *iitr;
     }
 }
 
@@ -961,7 +961,7 @@ Geometry* GeoSet::convertToGeometry()
     set_fast_path();
     computeNumVerts();
     
-    ref_ptr<Geometry> geom = osgNew Geometry;
+    ref_ptr<Geometry> geom = new Geometry;
     geom->setStateSet(getStateSet());
     
     if (_flat_shaded_skip)
@@ -972,7 +972,7 @@ Geometry* GeoSet::convertToGeometry()
         ShadeModel* shademodel = dynamic_cast<ShadeModel*>(stateset->getAttribute(StateAttribute::SHADEMODEL));
         if (!shademodel)
         {
-            shademodel = osgNew osg::ShadeModel;
+            shademodel = new osg::ShadeModel;
             stateset->setAttribute(shademodel);
         }
         shademodel->setMode( ShadeModel::FLAT );
@@ -1018,11 +1018,11 @@ Geometry* GeoSet::convertToGeometry()
 
     if (_coords)
     {
-        geom->setVertexArray(osgNew Vec3Array(_numcoords,_coords));
+        geom->setVertexArray(new Vec3Array(_numcoords,_coords));
         if (_cindex.valid())
         {
-            if (_cindex._is_ushort)         geom->setVertexIndices(osgNew UShortArray(_cindex._size,_cindex._ptr._ushort));
-            else /* _nindex._is_uint*/      geom->setVertexIndices(osgNew UIntArray(_cindex._size,_cindex._ptr._uint));
+            if (_cindex._is_ushort)         geom->setVertexIndices(new UShortArray(_cindex._size,_cindex._ptr._ushort));
+            else /* _nindex._is_uint*/      geom->setVertexIndices(new UIntArray(_cindex._size,_cindex._ptr._uint));
         }
     }
         
@@ -1032,10 +1032,10 @@ Geometry* GeoSet::convertToGeometry()
         {
             if (_nindex.valid())
             {
-                geom->setNormalArray(osgNew Vec3Array(_numnormals,_normals));
+                geom->setNormalArray(new Vec3Array(_numnormals,_normals));
                 if (_nindex._is_ushort)
                 {
-                    UShortArray* indices = osgNew UShortArray;
+                    UShortArray* indices = new UShortArray;
                     int index=0;
                     for(int primNo = 0; primNo<_numprims; ++primNo)
                     {
@@ -1049,7 +1049,7 @@ Geometry* GeoSet::convertToGeometry()
                 }
                 else
                 {
-                    UIntArray* indices = osgNew UIntArray;
+                    UIntArray* indices = new UIntArray;
                     int index=0;
                     for(int primNo = 0; primNo<_numprims; ++primNo)
                     {
@@ -1064,7 +1064,7 @@ Geometry* GeoSet::convertToGeometry()
             }
             else
             {
-                Vec3Array* normals = osgNew Vec3Array;
+                Vec3Array* normals = new Vec3Array;
                 int index=0;
                 for(int primNo = 0; primNo<_numprims; ++primNo)
                 {
@@ -1080,12 +1080,12 @@ Geometry* GeoSet::convertToGeometry()
         else
         {
             // usual path.
-            geom->setNormalArray(osgNew Vec3Array(_numnormals,_normals));
+            geom->setNormalArray(new Vec3Array(_numnormals,_normals));
             if (_nindex.valid())
             {
                 if (_nindex==_cindex)           geom->setNormalIndices(geom->getVertexIndices());
-                else if (_nindex._is_ushort)    geom->setNormalIndices(osgNew UShortArray(_nindex._size,_nindex._ptr._ushort));
-                else /* _nindex._is_uint*/      geom->setNormalIndices(osgNew UIntArray(_nindex._size,_nindex._ptr._uint));
+                else if (_nindex._is_ushort)    geom->setNormalIndices(new UShortArray(_nindex._size,_nindex._ptr._ushort));
+                else /* _nindex._is_uint*/      geom->setNormalIndices(new UIntArray(_nindex._size,_nindex._ptr._uint));
             }
         }
     }
@@ -1096,14 +1096,14 @@ Geometry* GeoSet::convertToGeometry()
         {
             if (_colindex.valid())
             {
-                geom->setColorArray(osgNew Vec4Array(_numcolors,_colors));
+                geom->setColorArray(new Vec4Array(_numcolors,_colors));
                 if (_colindex==_nindex && _normal_binding==BIND_PERVERTEX)
                 {
                     geom->setColorIndices(geom->getNormalIndices());
                 }
                 else if (_colindex._is_ushort)
                 {
-                    UShortArray* indices = osgNew UShortArray;
+                    UShortArray* indices = new UShortArray;
                     int index=0;
                     for(int primNo = 0; primNo<_numprims; ++primNo)
                     {
@@ -1117,7 +1117,7 @@ Geometry* GeoSet::convertToGeometry()
                 }
                 else
                 {
-                    UIntArray* indices = osgNew UIntArray;
+                    UIntArray* indices = new UIntArray;
                     int index=0;
                     for(int primNo = 0; primNo<_numprims; ++primNo)
                     {
@@ -1132,7 +1132,7 @@ Geometry* GeoSet::convertToGeometry()
             }
             else
             {
-                Vec4Array* colors = osgNew Vec4Array;
+                Vec4Array* colors = new Vec4Array;
                 int index=0;
                 for(int primNo = 0; primNo<_numprims; ++primNo)
                 {
@@ -1149,38 +1149,38 @@ Geometry* GeoSet::convertToGeometry()
         else
         {
             // usual path.
-            geom->setColorArray(osgNew Vec4Array(_numcolors,_colors));
+            geom->setColorArray(new Vec4Array(_numcolors,_colors));
             if (_colindex.valid())
             {
                 if (_colindex==_cindex)         geom->setColorIndices(geom->getVertexIndices());
                 else if (_colindex==_nindex)    geom->setColorIndices(geom->getNormalIndices());
-                else if (_colindex._is_ushort)  geom->setColorIndices(osgNew UShortArray(_colindex._size,_colindex._ptr._ushort));
-                else /* _colindex._is_uint*/    geom->setColorIndices(osgNew UIntArray(_colindex._size,_colindex._ptr._uint));
+                else if (_colindex._is_ushort)  geom->setColorIndices(new UShortArray(_colindex._size,_colindex._ptr._ushort));
+                else /* _colindex._is_uint*/    geom->setColorIndices(new UIntArray(_colindex._size,_colindex._ptr._uint));
             }
         }
     }
     
     if (_tcoords)
     {
-        geom->setTexCoordArray(0,osgNew Vec2Array(_numtcoords,_tcoords));
+        geom->setTexCoordArray(0,new Vec2Array(_numtcoords,_tcoords));
         if (_tindex.valid())
         {
             if (_tindex==_cindex)           geom->setTexCoordIndices(0,geom->getVertexIndices());
             else if (_tindex==_nindex)      geom->setTexCoordIndices(0,geom->getNormalIndices());
             else if (_tindex==_colindex)    geom->setTexCoordIndices(0,geom->getColorIndices());
-            else if (_tindex._is_ushort)    geom->setTexCoordIndices(0,osgNew UShortArray(_tindex._size,_tindex._ptr._ushort));
-            else /* _tindex._is_uint*/      geom->setTexCoordIndices(0,osgNew UIntArray(_tindex._size,_tindex._ptr._uint));
+            else if (_tindex._is_ushort)    geom->setTexCoordIndices(0,new UShortArray(_tindex._size,_tindex._ptr._ushort));
+            else /* _tindex._is_uint*/      geom->setTexCoordIndices(0,new UIntArray(_tindex._size,_tindex._ptr._uint));
         }
     }
     
 
     if (_needprimlen)
     {
-        geom->addPrimitiveSet(osgNew DrawArrayLengths((GLenum)_oglprimtype,0, _primLengths, _primLengths+_numprims ));
+        geom->addPrimitiveSet(new DrawArrayLengths((GLenum)_oglprimtype,0, _primLengths, _primLengths+_numprims ));
     }
     else
     {
-        geom->addPrimitiveSet(osgNew DrawArrays((GLenum)_oglprimtype,0, _numcoords));
+        geom->addPrimitiveSet(new DrawArrays((GLenum)_oglprimtype,0, _numcoords));
     }
 
     return geom.take();

@@ -16,7 +16,7 @@ const char* AlphaFunc_getFuncStr(AlphaFunc::ComparisonFunction func);
 // register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_AlphaFuncProxy
 (
-    osgNew osg::AlphaFunc,
+    new osg::AlphaFunc,
     "AlphaFunc",
     "Object StateAttribute AlphaFunc",
     &AlphaFunc_readLocalData,

@@ -30,7 +30,7 @@ bool ParticleProcessor_readLocalData(osg::Object &obj, osgDB::Input &fr)
     osgParticle::ParticleProcessor &myobj = static_cast<osgParticle::ParticleProcessor &>(obj);
     bool itAdvanced = false;
 
-    osg::ref_ptr<osgParticle::ParticleSystem> ps_proto = osgNew osgParticle::ParticleSystem;
+    osg::ref_ptr<osgParticle::ParticleSystem> ps_proto = new osgParticle::ParticleSystem;
     
     osgParticle::ParticleSystem *ps = static_cast<osgParticle::ParticleSystem *>(fr.readObjectOfType(*ps_proto));
     if (ps) {

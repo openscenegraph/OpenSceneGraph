@@ -56,7 +56,7 @@ void write_usage(std::ostream& out,const std::string& name)
 
 osg::Node* decorate_with_clip_node(osg::Node* subgraph)
 {
-    osg::Group* rootnode = osgNew osg::Group;
+    osg::Group* rootnode = new osg::Group;
     
 
     // create wireframe view of the model so the user can see
@@ -67,7 +67,7 @@ osg::Node* decorate_with_clip_node(osg::Node* subgraph)
     polymode->setMode(osg::PolygonMode::FRONT_AND_BACK,osg::PolygonMode::LINE);
     stateset->setAttributeAndModes(polymode,osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
     
-    osg::Group* wireframe_subgraph = osgNew osg::Group;
+    osg::Group* wireframe_subgraph = new osg::Group;
     wireframe_subgraph->setStateSet(stateset);
     wireframe_subgraph->addChild(subgraph);
     rootnode->addChild(wireframe_subgraph);
@@ -76,7 +76,7 @@ osg::Node* decorate_with_clip_node(osg::Node* subgraph)
     // simple approach to adding a clipnode above a subrgaph.
 
     // create clipped part.
-    osg::ClipNode* clipped_subgraph = osgNew osg::ClipNode;
+    osg::ClipNode* clipped_subgraph = new osg::ClipNode;
 
     osg::BoundingSphere bs = subgraph->getBound();
     bs.radius()*= 0.4f;
@@ -95,12 +95,12 @@ osg::Node* decorate_with_clip_node(osg::Node* subgraph)
     // ClipNode node to be transformed independantly from the subgraph
     // that it is clipping.
     
-    osg::MatrixTransform* transform= osgNew osg::MatrixTransform;
+    osg::MatrixTransform* transform= new osg::MatrixTransform;
 
     osg::NodeCallback* nc = new osgUtil::TransformCallback(subgraph->getBound().center(),osg::Vec3(0.0f,0.0f,1.0f),osg::inDegrees(45.0f));
     transform->setAppCallback(nc);
 
-    osg::ClipNode* clipnode = osgNew osg::ClipNode;
+    osg::ClipNode* clipnode = new osg::ClipNode;
     osg::BoundingSphere bs = subgraph->getBound();
     bs.radius()*= 0.4f;
 
@@ -115,7 +115,7 @@ osg::Node* decorate_with_clip_node(osg::Node* subgraph)
 
 
     // create clipped part.
-    osg::Group* clipped_subgraph = osgNew osg::Group;
+    osg::Group* clipped_subgraph = new osg::Group;
 
     clipped_subgraph->setStateSet(clipnode->getStateSet());
     clipped_subgraph->addChild(subgraph);

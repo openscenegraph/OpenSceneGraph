@@ -94,7 +94,7 @@ void MyCullCallback::doPreRender(osg::Node&, osgUtil::CullVisitor& cv)
     
 
     // create the render to texture stage.
-    osg::ref_ptr<osgUtil::RenderToTextureStage> rtts = osgNew osgUtil::RenderToTextureStage;
+    osg::ref_ptr<osgUtil::RenderToTextureStage> rtts = new osgUtil::RenderToTextureStage;
 
     // set up lighting.
     // currently ignore lights in the scene graph itself..
@@ -128,7 +128,7 @@ void MyCullCallback::doPreRender(osg::Node&, osgUtil::CullVisitor& cv)
     zfar *= 1.1f;
 
     // set up projection.
-    osg::Matrix* projection = osgNew osg::Matrix;
+    osg::Matrix* projection = new osg::Matrix;
     projection->makeFrustum(-right,right,-top,top,znear,zfar);
 
     cv.pushProjectionMatrix(projection);
@@ -138,7 +138,7 @@ void MyCullCallback::doPreRender(osg::Node&, osgUtil::CullVisitor& cv)
 
     cv.pushModelViewMatrix(matrix);
 
-    osg::ref_ptr<osg::StateSet> dummyState = osgNew osg::StateSet;
+    osg::ref_ptr<osg::StateSet> dummyState = new osg::StateSet;
 
     cv.pushStateSet(dummyState.get());
 
@@ -540,7 +540,7 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph)
 
     polyGeom->setAppCallback(new MyGeometryCallback(origin,xAxis,yAxis,zAxis,1.0,1.0/width,0.2f));
 
-    osg::Geode* geode = osgNew osg::Geode();
+    osg::Geode* geode = new osg::Geode();
     geode->addDrawable(polyGeom);
 
     osg::Group* parent = new osg::Group;

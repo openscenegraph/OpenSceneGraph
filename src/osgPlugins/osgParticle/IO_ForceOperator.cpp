@@ -14,7 +14,7 @@ bool  ForceOperator_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
 osgDB::RegisterDotOsgWrapperProxy  ForceOperator_Proxy
 (
-    osgNew osgParticle::ForceOperator,
+    new osgParticle::ForceOperator,
     "ForceOperator",
     "Object Operator ForceOperator",
     ForceOperator_readLocalData,

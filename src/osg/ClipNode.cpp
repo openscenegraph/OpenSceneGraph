@@ -5,7 +5,7 @@ using namespace osg;
 ClipNode::ClipNode()
 {
     _value = StateAttribute::ON;
-    _stateset = osgNew StateSet;
+    _stateset = new StateSet;
 }
 
 ClipNode::ClipNode(const ClipNode& cn, const CopyOp& copyop):Group(cn,copyop)
@@ -28,14 +28,14 @@ void ClipNode::createClipBox(const BoundingBox& bb,unsigned int clipPlaneNumberB
 {
     _planes.clear();
 
-    _planes.push_back(osgNew ClipPlane(clipPlaneNumberBase  ,1.0,0.0,0.0,-bb.xMin()));
-    _planes.push_back(osgNew ClipPlane(clipPlaneNumberBase+1,-1.0,0.0,0.0,bb.xMax()));
+    _planes.push_back(new ClipPlane(clipPlaneNumberBase  ,1.0,0.0,0.0,-bb.xMin()));
+    _planes.push_back(new ClipPlane(clipPlaneNumberBase+1,-1.0,0.0,0.0,bb.xMax()));
 
-    _planes.push_back(osgNew ClipPlane(clipPlaneNumberBase+2,0.0,1.0,0.0,-bb.yMin()));
-    _planes.push_back(osgNew ClipPlane(clipPlaneNumberBase+3,0.0,-1.0,0.0,bb.yMax()));
+    _planes.push_back(new ClipPlane(clipPlaneNumberBase+2,0.0,1.0,0.0,-bb.yMin()));
+    _planes.push_back(new ClipPlane(clipPlaneNumberBase+3,0.0,-1.0,0.0,bb.yMax()));
 
-    _planes.push_back(osgNew ClipPlane(clipPlaneNumberBase+4,0.0,0.0,1.0,-bb.zMin()));
-    _planes.push_back(osgNew ClipPlane(clipPlaneNumberBase+5,0.0,0.0,-1.0,bb.zMax()));
+    _planes.push_back(new ClipPlane(clipPlaneNumberBase+4,0.0,0.0,1.0,-bb.zMin()));
+    _planes.push_back(new ClipPlane(clipPlaneNumberBase+5,0.0,0.0,-1.0,bb.zMax()));
 
     setLocalStateSetModes(_value);
 }
@@ -108,7 +108,7 @@ void ClipNode::setStateSetModes(StateSet& stateset,const StateAttribute::GLModeV
 
 void ClipNode::setLocalStateSetModes(const StateAttribute::GLModeValue value)
 {
-    if (!_stateset) _stateset = osgNew StateSet;
+    if (!_stateset) _stateset = new StateSet;
     _stateset->setAllToInherit();
     setStateSetModes(*_stateset,value);
 }

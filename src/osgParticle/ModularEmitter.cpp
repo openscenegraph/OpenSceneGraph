@@ -3,9 +3,9 @@
 
 osgParticle::ModularEmitter::ModularEmitter()
 :    Emitter(),
-    counter_(osgNew RandomRateCounter),
-    placer_(osgNew PointPlacer),
-    shooter_(osgNew RadialShooter)
+    counter_(new RandomRateCounter),
+    placer_(new PointPlacer),
+    shooter_(new RadialShooter)
 {
 }
     

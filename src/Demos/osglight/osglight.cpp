@@ -156,14 +156,14 @@ osg::Geometry* createWall(const osg::Vec3& v1,const osg::Vec3& v2,const osg::Vec
 {
 
    // create a drawable for occluder.
-    osg::Geometry* geom = osgNew osg::Geometry;
+    osg::Geometry* geom = new osg::Geometry;
     
     geom->setStateSet(stateset);
 
     unsigned int noXSteps = 100;
     unsigned int noYSteps = 100;
     
-    osg::Vec3Array* coords = osgNew osg::Vec3Array;
+    osg::Vec3Array* coords = new osg::Vec3Array;
     coords->reserve(noXSteps*noYSteps);
     
     
@@ -185,7 +185,7 @@ osg::Geometry* createWall(const osg::Vec3& v1,const osg::Vec3& v2,const osg::Vec
     
     geom->setVertexArray(coords);
     
-    osg::Vec4Array* colors = osgNew osg::Vec4Array(1);
+    osg::Vec4Array* colors = new osg::Vec4Array(1);
     (*colors)[0].set(1.0f,1.0f,1.0f,1.0f);
     geom->setColorArray(colors);
     geom->setColorBinding(osg::Geometry::BIND_OVERALL);

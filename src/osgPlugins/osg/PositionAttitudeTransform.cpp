@@ -14,7 +14,7 @@ bool PositionAttitudeTransform_writeLocalData(const Object& obj, Output& fw);
 // register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_PositionAttitudeTransformProxy
 (
-    osgNew osg::PositionAttitudeTransform,
+    new osg::PositionAttitudeTransform,
     "PositionAttitudeTransform",
     "Object Node Transform PositionAttitudeTransform Group",
     &PositionAttitudeTransform_readLocalData,

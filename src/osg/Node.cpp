@@ -72,7 +72,7 @@ void Node::ascend(NodeVisitor& nv)
 
 osg::StateSet* Node::getOrCreateStateSet()
 {
-    if (!_stateset) _stateset = osgNew StateSet;
+    if (!_stateset) _stateset = new StateSet;
     return _stateset.get();
 }
 

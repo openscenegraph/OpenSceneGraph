@@ -14,7 +14,7 @@ bool FrontFace_writeLocalData(const Object& obj, Output& fw);
 // register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_FrontFaceProxy
 (
-    osgNew osg::FrontFace,
+    new osg::FrontFace,
     "FrontFace",
     "Object StateAttribute FrontFace",
     &FrontFace_readLocalData,

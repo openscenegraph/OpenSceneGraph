@@ -23,7 +23,7 @@ const char* TexEnvCombine_getOperandParamStr(GLint value);
 // register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_TexEnvCombineProxy
 (
-    osgNew osg::TexEnvCombine,
+    new osg::TexEnvCombine,
     "TexEnvCombine",
     "Object StateAttribute TexEnvCombine",
     &TexEnvCombine_readLocalData,

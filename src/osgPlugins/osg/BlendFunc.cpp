@@ -18,7 +18,7 @@ const char* BlendFunc_getModeStr(int value);
 
 RegisterDotOsgWrapperProxy g_TransparencyProxy
 (
-    osgNew osg::BlendFunc,
+    new osg::BlendFunc,
     "Transparency",
     "Object StateAttribute Transparency",
     &BlendFunc_readLocalData,
@@ -27,7 +27,7 @@ RegisterDotOsgWrapperProxy g_TransparencyProxy
 
 RegisterDotOsgWrapperProxy g_BlendFuncProxy
 (
-    osgNew osg::BlendFunc,
+    new osg::BlendFunc,
     "BlendFunc",
     "Object StateAttribute BlendFunc",
     &BlendFunc_readLocalData,

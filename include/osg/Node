@@ -1,6 +1,17 @@
-//C++ header - Open Scene Graph - Copyright (C) 1998-2002 Robert Osfield
-//Distributed under the terms of the GNU Library General Public License (LGPL)
-//as published by the Free Software Foundation.
+//C++ header - OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+//
+// This file may be distributed and/or modified under the terms of the 
+// GNU Lesser General Public License (LGPL) version 2.1 as published 
+// by the Free Software Foundation appearing in the file COPYING included in 
+// this distribution.
+// 
+// Licensees holding valid OpenSceneGraph Professional Licenses (OSGPL) may use 
+// this file in accordance with the OpenSceneGraph Professional License
+// Agreement provided to you by OpenSceneGraph Professional Services.
+// 
+// See http::/www.openscenegraph.org/licensing.html for details on and pricing
+// of the OpenSceneGraph Professional license.
+
 
 #ifndef OSG_NODE
 #define OSG_NODE 1
@@ -23,8 +34,8 @@ class Transform;
   * and accept methods.  Use when subclassing from Node to make it
   * more convinient to define the required pure virtual methods.*/
 #define META_Node(library,name) \
-        virtual osg::Object* cloneType() const { return osgNew name (); } \
-        virtual osg::Object* clone(const osg::CopyOp& copyop) const { return osgNew name (*this,copyop); } \
+        virtual osg::Object* cloneType() const { return new name (); } \
+        virtual osg::Object* clone(const osg::CopyOp& copyop) const { return new name (*this,copyop); } \
         virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const name *>(obj)!=NULL; } \
         virtual const char* className() const { return #name; } \
         virtual const char* libraryName() const { return #library; } \
@@ -47,10 +58,10 @@ class SG_EXPORT Node : public Object
         Node(const Node&,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
         /** clone the an object of the same type as the node.*/
-        virtual Object* cloneType() const { return osgNew Node(); }
+        virtual Object* cloneType() const { return new Node(); }
 
         /** return a clone of a node, with Object* return type.*/
-        virtual Object* clone(const CopyOp& copyop) const { return osgNew Node(*this,copyop); }
+        virtual Object* clone(const CopyOp& copyop) const { return new Node(*this,copyop); }
 
         /** return true if this and obj are of the same kind of object.*/
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Node*>(obj)!=NULL; }

@@ -141,7 +141,7 @@ TestSuite* TestGraph::suite(
 
     if(createIfNecessary){
 
-        TestSuite* childSuite = osgNew TestSuite(*it);
+        TestSuite* childSuite = new TestSuite(*it);
         tsuite->add(childSuite);
         return suite(it, end, childSuite, createIfNecessary);
     }
@@ -149,7 +149,7 @@ TestSuite* TestGraph::suite(
     return 0;
 }
 
-TestGraph::TestGraph(): root_(osgNew TestSuite("root"))
+TestGraph::TestGraph(): root_(new TestSuite("root"))
 {
 }
 

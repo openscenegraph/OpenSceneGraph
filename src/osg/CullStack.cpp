@@ -91,7 +91,7 @@ void CullStack::pushCullingSet()
 
         pixelSizeVector *= scaleRatio;
         
-        _modelviewCullingStack.push_back(osgNew osg::CullingSet(*_projectionCullingStack.back(),*_modelviewStack.back(),pixelSizeVector));
+        _modelviewCullingStack.push_back(new osg::CullingSet(*_projectionCullingStack.back(),*_modelviewStack.back(),pixelSizeVector));
         
     }
     
@@ -130,7 +130,7 @@ void CullStack::pushProjectionMatrix(Matrix* matrix)
 {
     _projectionStack.push_back(matrix);
     
-    osg::CullingSet* cullingSet = osgNew osg::CullingSet();
+    osg::CullingSet* cullingSet = new osg::CullingSet();
     
     // set up view frustum.
     cullingSet->getFrustum().setToUnitFrustum(((_cullingMode&NEAR_PLANE_CULLING)!=0),((_cullingMode&FAR_PLANE_CULLING)!=0));

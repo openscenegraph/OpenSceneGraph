@@ -55,7 +55,7 @@ FTVectoriser::~FTVectoriser()
 {
     for( int c = 0; c < contours(); ++c)
     {
-        osgDelete contourList[c];
+        delete contourList[c];
     }
 
     contourList.clear();
@@ -82,7 +82,7 @@ bool FTVectoriser::Process()
     
     for( short c = 0; c < cont; ++c)
     {
-        contour = osgNew FTContour;
+        contour = new FTContour;
         contourFlag = ftOutline.flags;
         last = ftOutline.contours[c];
 

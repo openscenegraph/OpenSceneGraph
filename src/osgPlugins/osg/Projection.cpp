@@ -15,7 +15,7 @@ bool Projection_writeLocalData(const Object& obj, Output& fw);
 // register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_ProjectionProxy
 (
-    osgNew osg::Projection,
+    new osg::Projection,
     "Projection",
     "Object Node Group Projection",
     &Projection_readLocalData,

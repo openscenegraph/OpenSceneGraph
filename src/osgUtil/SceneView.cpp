@@ -34,7 +34,7 @@ SceneView::SceneView(DisplaySettings* ds)
     
     _prioritizeTextures = false;
     
-    _viewport = osgNew Viewport;
+    _viewport = new Viewport;
     
     _initCalled = false;
 
@@ -52,21 +52,21 @@ SceneView::~SceneView()
 
 void SceneView::setDefaults()
 {
-    _globalState = osgNew osg::StateSet;
+    _globalState = new osg::StateSet;
 
     _lightingMode=HEADLIGHT;
-    _light = osgNew osg::Light;
+    _light = new osg::Light;
     _light->setLightNum(0);
     _light->setAmbient(Vec4(0.00f,0.0f,0.00f,1.0f));
     _light->setDiffuse(Vec4(0.8f,0.8f,0.8f,1.0f));
     _light->setSpecular(Vec4(1.0f,1.0f,1.0f,1.0f));
 
-    _state = osgNew State;
+    _state = new State;
     
-    _camera = osgNew Camera(_displaySettings.get());
+    _camera = new Camera(_displaySettings.get());
 
-    _rendergraph = osgNew RenderGraph;
-    _renderStage = osgNew RenderStage;
+    _rendergraph = new RenderGraph;
+    _renderStage = new RenderStage;
 
 
 #ifndef __sgi
@@ -74,15 +74,15 @@ void SceneView::setDefaults()
     // lighting state with the display list, and the display list visitor doesn't currently apply
     // state before creating display lists. So will disable the init visitor default, this won't
     // affect functionality since the display lists will be created as and when needed.
-    DisplayListVisitor* dlv = osgNew DisplayListVisitor();
+    DisplayListVisitor* dlv = new DisplayListVisitor();
     dlv->setState(_state.get());
     dlv->setNodeMaskOverride(0xffffffff);
     _initVisitor = dlv;
 #endif
 
-    _appVisitor = osgNew AppVisitor;    
+    _appVisitor = new AppVisitor;    
 
-    _cullVisitor = osgNew CullVisitor;
+    _cullVisitor = new CullVisitor;
 
     _cullVisitor->setRenderGraph(_rendergraph.get());
     _cullVisitor->setRenderStage(_renderStage.get());
@@ -97,16 +97,16 @@ void SceneView::setDefaults()
     _globalState->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);
 
     // set up an alphafunc by default to speed up blending operations.
-    osg::AlphaFunc* alphafunc = osgNew osg::AlphaFunc;
+    osg::AlphaFunc* alphafunc = new osg::AlphaFunc;
     alphafunc->setFunction(osg::AlphaFunc::GREATER,0.0f);
     _globalState->setAttributeAndModes(alphafunc, osg::StateAttribute::ON);
 
     // set up an texture environment by default to speed up blending operations.
-     osg::TexEnv* texenv = osgNew osg::TexEnv;
+     osg::TexEnv* texenv = new osg::TexEnv;
      texenv->setMode(osg::TexEnv::MODULATE);
      _globalState->setTextureAttributeAndModes(0,texenv, osg::StateAttribute::ON);
 
-    osg::LightModel* lightmodel = osgNew osg::LightModel;
+    osg::LightModel* lightmodel = new osg::LightModel;
     lightmodel->setAmbientIntensity(osg::Vec4(0.1f,0.1f,0.1f,1.0f));
     _globalState->setAttributeAndModes(lightmodel, osg::StateAttribute::ON);
 
@@ -188,14 +188,14 @@ void SceneView::cull()
 
         // note the constructor for osg::State will set ContextID to 0 which will be fine to single context graphics
         // applications which is ok for most apps, but not multiple context/pipe applications.
-        _state = osgNew osg::State;
+        _state = new osg::State;
     }
 
     if (!_globalState)
     {
         osg::notify(osg::INFO) << "Warning: no valid osgUtil::SceneView::_globalState attached, creating a default global stateset automatically."<< std::endl;
 
-        _globalState = osgNew osg::StateSet;
+        _globalState = new osg::StateSet;
         _globalState->setGlobalDefaults();
     }
     
@@ -235,30 +235,30 @@ void SceneView::cull()
         if (_displaySettings.valid())
             _camera->setScreenDistance(_displaySettings->getScreenDistance());
         
-        if (!projection) projection = osgNew osg::Matrix(_camera->getProjectionMatrix());
-        if (!modelview)  modelview  = osgNew osg::Matrix(_camera->getModelViewMatrix());
+        if (!projection) projection = new osg::Matrix(_camera->getProjectionMatrix());
+        if (!modelview)  modelview  = new osg::Matrix(_camera->getModelViewMatrix());
 
         //cout <<"fovx="<<_camera->calc_fovx()<<endl;
         
     }
     
-    if (!projection) projection = osgNew osg::Matrix();
-    if (!modelview)  modelview  = osgNew osg::Matrix();
+    if (!projection) projection = new osg::Matrix();
+    if (!modelview)  modelview  = new osg::Matrix();
 
     if (!_cullVisitor)
     {
         osg::notify(osg::INFO) << "Warning: no valid osgUtil::SceneView:: attached, creating a default CullVisitor automatically."<< std::endl;
-        _cullVisitor = osgNew CullVisitor;
+        _cullVisitor = new CullVisitor;
     }
     if (!_rendergraph)
     {
         osg::notify(osg::INFO) << "Warning: no valid osgUtil::SceneView:: attached, creating a global default RenderGraph automatically."<< std::endl;
-        _rendergraph = osgNew RenderGraph;
+        _rendergraph = new RenderGraph;
     }
     if (!_renderStage)
     {
         osg::notify(osg::INFO) << "Warning: no valid osgUtil::SceneView::_renderStage attached, creating a default RenderStage automatically."<< std::endl;
-        _renderStage = osgNew RenderStage;
+        _renderStage = new RenderStage;
     }
 
     if (_displaySettings.valid() && _displaySettings->getStereo()) 
@@ -288,14 +288,14 @@ void SceneView::cull()
         if (_displaySettings->getStereoMode()==osg::DisplaySettings::LEFT_EYE)
         {
             // set up the left eye.
-            osg::ref_ptr<osg::Matrix> projectionLeft = osgNew osg::Matrix(osg::Matrix(1.0f,0.0f,0.0f,0.0f,
+            osg::ref_ptr<osg::Matrix> projectionLeft = new osg::Matrix(osg::Matrix(1.0f,0.0f,0.0f,0.0f,
                                                                           0.0f,1.0f,0.0f,0.0f,
                                                                           iod/(2.0f*sd),0.0f,1.0f,0.0f,
                                                                           0.0f,0.0f,0.0f,1.0f)*
                                                               (*projection));
 
 
-            osg::ref_ptr<osg::Matrix> modelviewLeft = osgNew osg::Matrix( (*modelview) *
+            osg::ref_ptr<osg::Matrix> modelviewLeft = new osg::Matrix( (*modelview) *
                                                              osg::Matrix(1.0f,0.0f,0.0f,0.0f,
                                                                          0.0f,1.0f,0.0f,0.0f,
                                                                          0.0f,0.0f,1.0f,0.0f,
@@ -313,13 +313,13 @@ void SceneView::cull()
         else if (_displaySettings->getStereoMode()==osg::DisplaySettings::RIGHT_EYE)
         {
             // set up the right eye.
-            osg::ref_ptr<osg::Matrix> projectionRight = osgNew osg::Matrix(osg::Matrix(1.0f,0.0f,0.0f,0.0f,
+            osg::ref_ptr<osg::Matrix> projectionRight = new osg::Matrix(osg::Matrix(1.0f,0.0f,0.0f,0.0f,
                                                                           0.0f,1.0f,0.0f,0.0f,
                                                                           -iod/(2.0f*sd),0.0f,1.0f,0.0f,
                                                                           0.0f,0.0f,0.0f,1.0f)*
                                                               (*projection));
 
-            osg::ref_ptr<osg::Matrix> modelviewRight = osgNew osg::Matrix( (*modelview) *
+            osg::ref_ptr<osg::Matrix> modelviewRight = new osg::Matrix( (*modelview) *
                                                              osg::Matrix(1.0f,0.0f,0.0f,0.0f,
                                                                          0.0f,1.0f,0.0f,0.0f,
                                                                          0.0f,0.0f,1.0f,0.0f,
@@ -348,14 +348,14 @@ void SceneView::cull()
 
 
             // set up the left eye.
-            osg::ref_ptr<osg::Matrix> projectionLeft = osgNew osg::Matrix(osg::Matrix(1.0f,0.0f,0.0f,0.0f,
+            osg::ref_ptr<osg::Matrix> projectionLeft = new osg::Matrix(osg::Matrix(1.0f,0.0f,0.0f,0.0f,
                                                                           0.0f,1.0f,0.0f,0.0f,
                                                                           iod/(2.0f*sd),0.0f,1.0f,0.0f,
                                                                           0.0f,0.0f,0.0f,1.0f)*
                                                               (*projection));
 
 
-            osg::ref_ptr<osg::Matrix> modelviewLeft = osgNew osg::Matrix( (*modelview) *
+            osg::ref_ptr<osg::Matrix> modelviewLeft = new osg::Matrix( (*modelview) *
                                                              osg::Matrix(1.0f,0.0f,0.0f,0.0f,
                                                                          0.0f,1.0f,0.0f,0.0f,
                                                                          0.0f,0.0f,1.0f,0.0f,
@@ -366,13 +366,13 @@ void SceneView::cull()
 
 
             // set up the right eye.
-            osg::ref_ptr<osg::Matrix> projectionRight = osgNew osg::Matrix(osg::Matrix(1.0f,0.0f,0.0f,0.0f,
+            osg::ref_ptr<osg::Matrix> projectionRight = new osg::Matrix(osg::Matrix(1.0f,0.0f,0.0f,0.0f,
                                                                           0.0f,1.0f,0.0f,0.0f,
                                                                           -iod/(2.0f*sd),0.0f,1.0f,0.0f,
                                                                           0.0f,0.0f,0.0f,1.0f)*
                                                               (*projection));
 
-            osg::ref_ptr<osg::Matrix> modelviewRight = osgNew osg::Matrix( (*modelview) *
+            osg::ref_ptr<osg::Matrix> modelviewRight = new osg::Matrix( (*modelview) *
                                                              osg::Matrix(1.0f,0.0f,0.0f,0.0f,
                                                                          0.0f,1.0f,0.0f,0.0f,
                                                                          0.0f,0.0f,1.0f,0.0f,
@@ -594,14 +594,14 @@ void SceneView::draw()
                 _renderStageRight->drawPreRenderStages(*_state,previous);
 
                 // draw left eye.
-                osg::ref_ptr<osg::ColorMask> red = osgNew osg::ColorMask;
+                osg::ref_ptr<osg::ColorMask> red = new osg::ColorMask;
                 red->setMask(true,false,false,true);
                 _globalState->setAttribute(red.get());
                 _renderStageLeft->setColorMask(red.get());
                 _renderStageLeft->draw(*_state,previous);
 
                 // draw right eye.
-                osg::ref_ptr<osg::ColorMask> green = osgNew osg::ColorMask;
+                osg::ref_ptr<osg::ColorMask> green = new osg::ColorMask;
                 green->setMask(false,true,true,true);
                 _globalState->setAttribute(green.get());
                 _renderStageRight->setColorMask(green.get());
@@ -620,10 +620,10 @@ void SceneView::draw()
                 int right_half_begin = (_viewport->width()+separation)/2;
                 int right_half_width = _viewport->width()-right_half_begin;
 
-                osg::ref_ptr<osg::Viewport> viewportLeft = osgNew osg::Viewport;
+                osg::ref_ptr<osg::Viewport> viewportLeft = new osg::Viewport;
                 viewportLeft->setViewport(_viewport->x(),_viewport->y(),left_half_width,_viewport->height());
 
-                osg::ref_ptr<osg::Viewport> viewportRight = osgNew osg::Viewport;
+                osg::ref_ptr<osg::Viewport> viewportRight = new osg::Viewport;
                 viewportRight->setViewport(_viewport->x()+right_half_begin,_viewport->y(),right_half_width,_viewport->height());
 
 
@@ -664,10 +664,10 @@ void SceneView::draw()
                 int top_half_begin = (_viewport->height()+separation)/2;
                 int top_half_height = _viewport->height()-top_half_begin;
 
-                osg::ref_ptr<osg::Viewport> viewportTop = osgNew osg::Viewport;
+                osg::ref_ptr<osg::Viewport> viewportTop = new osg::Viewport;
                 viewportTop->setViewport(_viewport->x(),_viewport->y()+top_half_begin,_viewport->width(),top_half_height);
 
-                osg::ref_ptr<osg::Viewport> viewportBottom = osgNew osg::Viewport;
+                osg::ref_ptr<osg::Viewport> viewportBottom = new osg::Viewport;
                 viewportBottom->setViewport(_viewport->x(),_viewport->y(),_viewport->width(),bottom_half_height);
 
                 clearArea(_viewport->x(),_viewport->y()+bottom_half_height,_viewport->width(),separation,_renderStageLeft->getClearColor());
@@ -712,7 +712,7 @@ void SceneView::draw()
     else
     {
         _globalState->setAttribute(_viewport.get());
-         osg::ref_ptr<osg::ColorMask> cmask = osgNew osg::ColorMask;
+         osg::ref_ptr<osg::ColorMask> cmask = new osg::ColorMask;
          cmask->setMask(true,true,true,true);
          _globalState->setAttribute(cmask.get());
 
@@ -794,7 +794,7 @@ const osg::Matrix SceneView::computeMVPW() const
 
 void SceneView::clearArea(int x,int y,int width,int height,const osg::Vec4& color)
 {
-    osg::ref_ptr<osg::Viewport> viewport = osgNew osg::Viewport;
+    osg::ref_ptr<osg::Viewport> viewport = new osg::Viewport;
     viewport->setViewport(x,y,width,height);
 
     _state->applyAttribute(viewport.get());

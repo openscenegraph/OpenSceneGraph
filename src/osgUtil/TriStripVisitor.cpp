@@ -124,7 +124,7 @@ void TriStripVisitor::stripify(Geometry& geom)
             NvStripInfo *strip = strips[i];
             int nStripFaceCount = strip->m_faces.size();
 
-            osg::DrawElementsUShort* elements = osgNew osg::DrawElementsUShort(osg::PrimitiveSet::TRIANGLE_STRIP);
+            osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(osg::PrimitiveSet::TRIANGLE_STRIP);
             elements->reserve(nStripFaceCount+2);
             new_primitives.push_back(elements);
 
@@ -187,7 +187,7 @@ void TriStripVisitor::stripify(Geometry& geom)
         if (leftoverFaces.size())
         {
 
-            osg::DrawElementsUShort* triangles = osgNew osg::DrawElementsUShort(osg::PrimitiveSet::TRIANGLES);
+            osg::DrawElementsUShort* triangles = new osg::DrawElementsUShort(osg::PrimitiveSet::TRIANGLES);
             triangles->reserve(leftoverFaces.size()*3);
             new_primitives.push_back(triangles);
 

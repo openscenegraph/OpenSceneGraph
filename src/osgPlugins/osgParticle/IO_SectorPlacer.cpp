@@ -12,7 +12,7 @@ bool  SectorPlacer_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
 osgDB::RegisterDotOsgWrapperProxy  SectorPlacer_Proxy
 (
-    osgNew osgParticle::SectorPlacer,
+    new osgParticle::SectorPlacer,
     "SectorPlacer",
     "Object Placer CenteredPlacer SectorPlacer",
     SectorPlacer_readLocalData,

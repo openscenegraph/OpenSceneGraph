@@ -71,10 +71,10 @@ osg::Geometry* createWing(const osg::Vec3& left, const osg::Vec3& nose, const os
 
 osg:: Node* createTextBelow(const osg::BoundingBox& bb)
 {
-    osg::Geode* geode = osgNew osg::Geode();
+    osg::Geode* geode = new osg::Geode();
 
-    osgText::PolygonFont*   polygonFont= osgNew  osgText::PolygonFont("fonts/times.ttf",20, 3);
-    osgText::Text*          text = osgNew  osgText::Text(polygonFont);
+    osgText::PolygonFont*   polygonFont= new  osgText::PolygonFont("fonts/times.ttf",20, 3);
+    osgText::Text*          text = new  osgText::Text(polygonFont);
  
     text->setText("OpenSceneGraph");
     text->setAlignment(osgText::Text::CENTER_CENTER);
@@ -91,13 +91,13 @@ osg:: Node* createTextBelow(const osg::BoundingBox& bb)
 
 osg:: Node* createTextLeft(const osg::BoundingBox& bb)
 {
-    osg::Geode* geode = osgNew osg::Geode();
+    osg::Geode* geode = new osg::Geode();
 
     //std::string font("fonts/times.ttf");
     std::string font("fonts/arial.ttf");
 
-    //osgText::Text* text = osgNew  osgText::Text(osgNew osgText::PolygonFont(font,80, 3));
-    osgText::Text* text = osgNew  osgText::Text(osgNew osgText::TextureFont(font,85));
+    //osgText::Text* text = new  osgText::Text(new osgText::PolygonFont(font,80, 3));
+    osgText::Text* text = new  osgText::Text(new osgText::TextureFont(font,85));
  
     text->setText("OpenSceneGraph");
     text->setAlignment(osgText::Text::RIGHT_CENTER);
@@ -110,7 +110,7 @@ osg:: Node* createTextLeft(const osg::BoundingBox& bb)
     osg::StateSet* stateset = text->getOrCreateStateSet();
 
 
-    osg::BlendFunc *transp= osgNew osg::BlendFunc();
+    osg::BlendFunc *transp= new osg::BlendFunc();
     transp->setFunction(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
@@ -125,14 +125,14 @@ osg:: Node* createTextLeft(const osg::BoundingBox& bb)
 
 osg:: Node* createGlobe(const osg::BoundingBox& bb,float ratio)
 {
-    osg::Geode* geode = osgNew osg::Geode();
+    osg::Geode* geode = new osg::Geode();
 
-    osg::StateSet* stateset = osgNew osg::StateSet();
+    osg::StateSet* stateset = new osg::StateSet();
 
     osg::Image* image = osgDB::readImageFile("land_shallow_topo_2048.jpg");
     if (image)
     {
-	osg::Texture2D* texture = osgNew osg::Texture2D;
+	osg::Texture2D* texture = new osg::Texture2D;
 	texture->setImage(image);
 	texture->setMaxAnisotropy(8);
 	stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
@@ -141,7 +141,7 @@ osg:: Node* createGlobe(const osg::BoundingBox& bb,float ratio)
     geode->setStateSet( stateset );
     
     // the globe
-    geode->addDrawable(new osg::ShapeDrawable(osgNew osg::Sphere(bb.center(),bb.radius()*ratio)));
+    geode->addDrawable(new osg::ShapeDrawable(new osg::Sphere(bb.center(),bb.radius()*ratio)));
     
     
     osg::MatrixTransform* xform = new osg::MatrixTransform;
@@ -153,7 +153,7 @@ osg:: Node* createGlobe(const osg::BoundingBox& bb,float ratio)
 
 osg:: Node* createBox(const osg::BoundingBox& bb,float chordRatio)
 {
-    osg::Geode* geode = osgNew osg::Geode();
+    osg::Geode* geode = new osg::Geode();
 
     osg::Vec4 white(1.0f,1.0f,1.0f,1.0f);
 
@@ -182,7 +182,7 @@ osg:: Node* createBox(const osg::BoundingBox& bb,float chordRatio)
 
 osg:: Node* createBoxNo5(const osg::BoundingBox& bb,float chordRatio)
 {
-    osg::Geode* geode = osgNew osg::Geode();
+    osg::Geode* geode = new osg::Geode();
 
     osg::Vec4 white(1.0f,1.0f,1.0f,1.0f);
 
@@ -208,7 +208,7 @@ osg:: Node* createBoxNo5(const osg::BoundingBox& bb,float chordRatio)
 
 osg:: Node* createBoxNo5No2(const osg::BoundingBox& bb,float chordRatio)
 {
-    osg::Geode* geode = osgNew osg::Geode();
+    osg::Geode* geode = new osg::Geode();
 
     osg::Vec4 red(1.0f,0.0f,0.0f,1.0f);
     osg::Vec4 green(0.0f,1.0f,0.0f,1.0f);
@@ -249,7 +249,7 @@ osg:: Node* createBackdrop(const osg::Vec3& corner,const osg::Vec3& top,const os
 
     geom->addPrimitiveSet(new osg::DrawArrays(GL_QUADS,0,vertices->getNumElements()));
 
-    osg::Geode* geode = osgNew osg::Geode();
+    osg::Geode* geode = new osg::Geode();
     geode->addDrawable(geom);
     
     return geode;    
@@ -335,7 +335,7 @@ int main( int argc, char **argv )
     viewer.addViewport( node );
 
     // register trackball maniupulators.
-    viewer.registerCameraManipulator(osgNew osgGA::TrackballManipulator);
+    viewer.registerCameraManipulator(new osgGA::TrackballManipulator);
     
     viewer.open();
 

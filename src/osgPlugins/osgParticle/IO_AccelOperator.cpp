@@ -14,7 +14,7 @@ bool  AccelOperator_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
 osgDB::RegisterDotOsgWrapperProxy  AccelOperator_Proxy
 (
-    osgNew osgParticle::AccelOperator,
+    new osgParticle::AccelOperator,
     "AccelOperator",
     "Object Operator AccelOperator",
     AccelOperator_readLocalData,

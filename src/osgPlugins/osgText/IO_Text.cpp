@@ -16,7 +16,7 @@ bool Text_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
 osgDB::RegisterDotOsgWrapperProxy Text_Proxy
 (
-    osgNew osgText::Text,
+    new osgText::Text,
     "Text",
     "Object Drawable Text",
     Text_readLocalData,

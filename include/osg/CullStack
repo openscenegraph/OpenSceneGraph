@@ -290,7 +290,7 @@ inline Matrix* CullStack::createOrReuseMatrix(const osg::Matrix& value)
     }
 
     // otherwise need to create new matrix.
-    osg::Matrix* matrix = osgNew Matrix(value);
+    osg::Matrix* matrix = new Matrix(value);
     _reuseMatrixList.push_back(matrix);
     ++_currentReuseMatrixIndex;
     return matrix;

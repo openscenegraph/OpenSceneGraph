@@ -21,7 +21,7 @@ const char* Stencil_getOperationStr(Stencil::Operation op);
 // register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_StencilProxy
 (
-    osgNew osg::Stencil,
+    new osg::Stencil,
     "Stencil",
     "Object StateAttribute Stencil",
     &Stencil_readLocalData,

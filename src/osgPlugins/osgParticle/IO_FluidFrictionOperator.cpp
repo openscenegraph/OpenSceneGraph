@@ -12,7 +12,7 @@ bool  FluidFrictionOperator_writeLocalData(const osg::Object &obj, osgDB::Output
 
 osgDB::RegisterDotOsgWrapperProxy  FluidFrictionOperator_Proxy
 (
-    osgNew osgParticle::FluidFrictionOperator,
+    new osgParticle::FluidFrictionOperator,
     "FluidFrictionOperator",
     "Object Operator FluidFrictionOperator",
     FluidFrictionOperator_readLocalData,

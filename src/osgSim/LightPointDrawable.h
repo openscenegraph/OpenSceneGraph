@@ -33,8 +33,8 @@ class OSGSIM_EXPORT LightPointDrawable : public osg::Drawable
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         LightPointDrawable(const LightPointDrawable&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
-        virtual osg::Object* cloneType() const { return osgNew LightPointDrawable(); }
-        virtual osg::Object* clone(const osg::CopyOp&) const { return osgNew LightPointDrawable(); }
+        virtual osg::Object* cloneType() const { return new LightPointDrawable(); }
+        virtual osg::Object* clone(const osg::CopyOp&) const { return new LightPointDrawable(); }
         virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const LightPointDrawable*>(obj)!=NULL; }
         virtual const char* className() const { return "LightPointDrawable"; }
 

@@ -100,7 +100,7 @@ Viewer::Viewer()
     _printStats = 0; // gwm change from bool was : false;
 
     #ifdef SGV_USE_RTFS
-    fs = osgNew RTfs( RTFS_MODE_RTC_SPIN );
+    fs = new RTfs( RTFS_MODE_RTC_SPIN );
     frame_rate = 16;
     fs->setUpdateRate( frame_rate );
     #endif
@@ -125,9 +125,9 @@ Viewer::Viewer()
     _focusedViewport = 0;         // The viewport with mouse/keyboard focus
     
     
-    _frameStamp = osgNew osg::FrameStamp;
+    _frameStamp = new osg::FrameStamp;
     
-    _displaySettings = osgNew osg::DisplaySettings;
+    _displaySettings = new osg::DisplaySettings;
 
     _recordingAnimationPath = false;
 
@@ -230,7 +230,7 @@ bool Viewer::open()
 
         sceneView->setViewport(view[0], view[1], view[2], view[3]);
 
-        osg::ref_ptr<GLUTEventAdapter> ea = osgNew GLUTEventAdapter;
+        osg::ref_ptr<GLUTEventAdapter> ea = new GLUTEventAdapter;
         ea->adaptResize(clockSeconds(), 
                         view[0], view[1], 
                         view[0]+view[2], view[1]+view[3]);
@@ -356,7 +356,7 @@ void Viewer::selectCameraManipulator(unsigned int pos, unsigned int viewport)
     viewp._cameraManipulator->setCamera(sceneView->getCamera());
     viewp._cameraManipulator->setNode(sceneView->getSceneData());
 
-    osg::ref_ptr<GLUTEventAdapter> ea = osgNew GLUTEventAdapter;
+    osg::ref_ptr<GLUTEventAdapter> ea = new GLUTEventAdapter;
     viewp._cameraManipulator->init(*ea,*this);
 }
 
@@ -378,7 +378,7 @@ float Viewer::app(unsigned int viewport)
 
 
     // update the camera manipulator.
-    osg::ref_ptr<GLUTEventAdapter> ea = osgNew GLUTEventAdapter;
+    osg::ref_ptr<GLUTEventAdapter> ea = new GLUTEventAdapter;
     ea->adaptFrame(_frameStamp->getReferenceTime());
 
     for (EventHandlerList::iterator eh = _viewportList[viewport]._eventHandlerList.begin();
@@ -628,7 +628,7 @@ void Viewer::showStats(const unsigned int /*viewport*/)
             //osg::notify(osg::INFO) << "ntop "<< ntop<< std::endl;
         }
         maxbins=(primStats[0].getBins()>maxbins)?primStats[0].getBins():maxbins;
-        osgDelete [] primStats; // free up
+        delete [] primStats; // free up
     }
     if (_printStats==Statistics::STAT_DC) { // yet more stats - read the depth complexity
         int wid=_ww, ht=_wh; // temporary local screen size - must change during this section
@@ -668,9 +668,9 @@ void Viewer::showStats(const unsigned int /*viewport*/)
                 displaytext(0,(int)(0.86f*vh),ctext);
                 
                 glEnable(GL_STENCIL_TEST); // re-enable stencil buffer counting
-                osgDelete [] buffer;
+                delete [] buffer;
             }
-            osgDelete [] clin;
+            delete [] clin;
         }
     }
 
@@ -756,7 +756,7 @@ void Viewer::reshape(GLint w, GLint h)
 
         sceneView->setViewport(view[0], view[1], view[2], view[3]);
 
-        osg::ref_ptr<GLUTEventAdapter> ea = osgNew GLUTEventAdapter;
+        osg::ref_ptr<GLUTEventAdapter> ea = new GLUTEventAdapter;
         ea->adaptResize(clockSeconds(), 
                         view[0], view[1], 
                         view[0]+view[2], view[1]+view[3]);
@@ -780,7 +780,7 @@ void Viewer::reshape(GLint w, GLint h)
 
 void Viewer::mouseMotion(int x, int y)
 {
-    osg::ref_ptr<GLUTEventAdapter> ea = osgNew GLUTEventAdapter;
+    osg::ref_ptr<GLUTEventAdapter> ea = new GLUTEventAdapter;
     ea->adaptMouseMotion(clockSeconds(),x,y);
 
     bool handled = false;
@@ -810,7 +810,7 @@ void Viewer::mouseMotion(int x, int y)
 
 void Viewer::mousePassiveMotion(int x, int y)
 {
-    osg::ref_ptr<GLUTEventAdapter> ea = osgNew GLUTEventAdapter;
+    osg::ref_ptr<GLUTEventAdapter> ea = new GLUTEventAdapter;
     ea->adaptMousePassiveMotion(clockSeconds(),x,y);
 
     // Switch viewport focus if no buttons are pressed
@@ -844,7 +844,7 @@ void Viewer::mousePassiveMotion(int x, int y)
 
 void Viewer::mouse(int button, int state, int x, int y)
 {
-    osg::ref_ptr<GLUTEventAdapter> ea = osgNew GLUTEventAdapter;
+    osg::ref_ptr<GLUTEventAdapter> ea = new GLUTEventAdapter;
     ea->adaptMouse(clockSeconds(),button,state,x,y);
 
     // Switch viewport focus if button is pressed, and it is the only one
@@ -884,7 +884,7 @@ void Viewer::mouse(int button, int state, int x, int y)
 
 void Viewer::keyboard(unsigned char key, int x, int y)
 {
-    osg::ref_ptr<GLUTEventAdapter> ea = osgNew GLUTEventAdapter;
+    osg::ref_ptr<GLUTEventAdapter> ea = new GLUTEventAdapter;
     ea->adaptKeyboard(clockSeconds(),key,x,y);
 
     for ( EventHandlerList::iterator eh =
@@ -912,7 +912,7 @@ void Viewer::keyboard(unsigned char key, int x, int y)
     osg::StateSet* globalStateSet = sceneView->getGlobalStateSet();
     if (!globalStateSet)
     {
-        globalStateSet = osgNew osg::StateSet;
+        globalStateSet = new osg::StateSet;
         sceneView->setGlobalStateSet(globalStateSet);
     }
 
@@ -1022,7 +1022,7 @@ void Viewer::keyboard(unsigned char key, int x, int y)
             osg::ShadeModel* shademodel = dynamic_cast<osg::ShadeModel*>(stateset->getAttribute(osg::StateAttribute::SHADEMODEL));
             if (!shademodel)
             {
-                shademodel = osgNew osg::ShadeModel;
+                shademodel = new osg::ShadeModel;
                 stateset->setAttribute(shademodel,osg::StateAttribute::OVERRIDE);
             }
 
@@ -1096,7 +1096,7 @@ void Viewer::keyboard(unsigned char key, int x, int y)
                 // thus causing them to all use the same texture attribute, hence
                 // preventing a state attribute change due to unused textures.
                 globalStateSet->setTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF);
-//                static osg::ref_ptr<osg::Texture> blank_texture = osgNew osg::Texture2D;
+//                static osg::ref_ptr<osg::Texture> blank_texture = new osg::Texture2D;
 //                globalStateSet->setTextureAttribute(0,blank_texture.get());
             }
             break;
@@ -1106,7 +1106,7 @@ void Viewer::keyboard(unsigned char key, int x, int y)
                 osg::LightModel* lightmodel = dynamic_cast<LightModel*>(globalStateSet->getAttribute(osg::StateAttribute::LIGHTMODEL));
                 if (lightmodel)
                 {
-                    lightmodel = osgNew osg::LightModel;
+                    lightmodel = new osg::LightModel;
                     globalStateSet->setAttribute(lightmodel);
                 }
                 lightmodel->setTwoSided(!lightmodel->getTwoSided());
@@ -1116,7 +1116,7 @@ void Viewer::keyboard(unsigned char key, int x, int y)
         case 'w' :
             {
                 polymode = (polymode+1)%3;
-                osg::PolygonMode* polyModeObj = osgNew osg::PolygonMode;
+                osg::PolygonMode* polyModeObj = new osg::PolygonMode;
                 polyModeObj->setMode(osg::PolygonMode::FRONT_AND_BACK,polymodes[polymode]);
                 globalStateSet->setAttribute(polyModeObj);
             }
@@ -1183,12 +1183,12 @@ void Viewer::keyboard(unsigned char key, int x, int y)
 
         case 'O' :
             {
-                osg::ref_ptr<osg::Viewport> viewport = osgNew osg::Viewport;
+                osg::ref_ptr<osg::Viewport> viewport = new osg::Viewport;
                 viewport->setViewport(_wx,_wy,_ww,_wh);
                 std::string filename("screenshot.bmp");
 
                 glReadBuffer(GL_FRONT);
-                osg::ref_ptr<Image> image = osgNew osg::Image;
+                osg::ref_ptr<Image> image = new osg::Image;
                 image->readPixels(viewport->x(),viewport->y(),viewport->width(),viewport->height(),
                                   GL_RGB,GL_UNSIGNED_BYTE);
 
@@ -1207,12 +1207,12 @@ void Viewer::keyboard(unsigned char key, int x, int y)
                 cov.pushViewport(sceneView->getViewport());
                 
                 if (sceneView->getProjectionMatrix()) cov.pushProjectionMatrix(sceneView->getProjectionMatrix());
-                else if (sceneView->getCamera()) cov.pushProjectionMatrix(osgNew Matrix(sceneView->getCamera()->getProjectionMatrix()));
-                else cov.pushProjectionMatrix(osgNew Matrix());
+                else if (sceneView->getCamera()) cov.pushProjectionMatrix(new Matrix(sceneView->getCamera()->getProjectionMatrix()));
+                else cov.pushProjectionMatrix(new Matrix());
                 
                 if (sceneView->getModelViewMatrix()) cov.pushModelViewMatrix(sceneView->getModelViewMatrix());
-                else if (sceneView->getCamera()) cov.pushModelViewMatrix(osgNew Matrix(sceneView->getCamera()->getModelViewMatrix()));
-                else cov.pushModelViewMatrix(osgNew Matrix());
+                else if (sceneView->getCamera()) cov.pushModelViewMatrix(new Matrix(sceneView->getCamera()->getModelViewMatrix()));
+                else cov.pushModelViewMatrix(new Matrix());
                 
                 sceneView->getSceneData()->accept(cov);
 
@@ -1236,7 +1236,7 @@ void Viewer::keyboard(unsigned char key, int x, int y)
                     return;
                 }
 
-                osg::ref_ptr<osg::LineSegment> lineSegment = osgNew osg::LineSegment;
+                osg::ref_ptr<osg::LineSegment> lineSegment = new osg::LineSegment;
                 lineSegment->set(near_point,far_point);
                 osg::notify(osg::NOTICE) << "start("<<lineSegment->start()<<")  end("<<lineSegment->end()<<")"<< std::endl;
 
@@ -1455,7 +1455,7 @@ void Viewer::help(std::ostream& fout)
         <<"      current mouse x and mouse y position."<< std::endl
         << std::endl
         <<"r     Calculate and report the intersections with the scene under the"<< std::endl
-        <<"      current mouse x and mouse y position and osgDelete the nearest"<< std::endl
+        <<"      current mouse x and mouse y position and delete the nearest"<< std::endl
         <<"      interesected geoset."<< std::endl
         << std::endl
         <<"7     Set the background color to black."<< std::endl
@@ -1507,7 +1507,7 @@ bool Viewer::run()
 
     {
         // Reset the views of all of SceneViews
-        osg::ref_ptr<GLUTEventAdapter> ea = osgNew GLUTEventAdapter;
+        osg::ref_ptr<GLUTEventAdapter> ea = new GLUTEventAdapter;
 
         for(ViewportList::iterator itr=_viewportList.begin();
             itr!=_viewportList.end();
@@ -1554,7 +1554,7 @@ unsigned int Viewer::addViewport(osgUtil::SceneView* sv,
 unsigned int Viewer::addViewport(osg::Node* rootnode,
                          float x, float y, float width, float height) 
 {
-    osgUtil::SceneView *sceneView = osgNew osgUtil::SceneView(_displaySettings.get());
+    osgUtil::SceneView *sceneView = new osgUtil::SceneView(_displaySettings.get());
     sceneView->setDefaults();
     sceneView->setSceneData(rootnode);
 

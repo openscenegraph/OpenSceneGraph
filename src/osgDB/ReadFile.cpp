@@ -72,7 +72,7 @@ Node* osgDB::readNodeFiles(std::vector<std::string>& commandLine)
     }
     else  // size >1
     {
-        osg::Group* group = osgNew osg::Group;
+        osg::Group* group = new osg::Group;
         for(NodeList::iterator itr=nodeList.begin();
             itr!=nodeList.end();
             ++itr)

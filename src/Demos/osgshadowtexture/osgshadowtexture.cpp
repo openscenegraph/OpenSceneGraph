@@ -58,14 +58,14 @@ osg::AnimationPath* createAnimationPath(const osg::Vec3& center,float radius,dou
 osg::Node* createBase(const osg::Vec3& center,float radius)
 {
 
-    osg::Geode* geode = osgNew osg::Geode;
+    osg::Geode* geode = new osg::Geode;
     
     // set up the texture of the base.
-    osg::StateSet* stateset = osgNew osg::StateSet();
+    osg::StateSet* stateset = new osg::StateSet();
     osg::Image* image = osgDB::readImageFile("Images/lz.rgb");
     if (image)
     {
-	osg::Texture2D* texture = osgNew osg::Texture2D;
+	osg::Texture2D* texture = new osg::Texture2D;
 	texture->setImage(image);
 	stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
     }
@@ -108,7 +108,7 @@ osg::Node* createBase(const osg::Vec3& center,float radius)
     
     geode->addDrawable(new osg::ShapeDrawable(grid));
      
-    osg::Group* group = osgNew osg::Group;
+    osg::Group* group = new osg::Group;
     group->addChild(geode);
      
     return group;
@@ -129,7 +129,7 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
         const osg::BoundingSphere& bs = cessna->getBound();
 
         float size = radius/bs.radius()*0.3f;
-        osg::MatrixTransform* positioned = osgNew osg::MatrixTransform;
+        osg::MatrixTransform* positioned = new osg::MatrixTransform;
         positioned->setDataVariance(osg::Object::STATIC);
         positioned->setMatrix(osg::Matrix::translate(-bs.center())*
                               osg::Matrix::scale(size,size,size)*
@@ -137,7 +137,7 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
     
         positioned->addChild(cessna);
     
-        osg::MatrixTransform* xform = osgNew osg::MatrixTransform;
+        osg::MatrixTransform* xform = new osg::MatrixTransform;
         xform->setAppCallback(new osg::MatrixTransform::AnimationPathCallback(animationPath,0.0f,2.0));
         xform->addChild(positioned);
 

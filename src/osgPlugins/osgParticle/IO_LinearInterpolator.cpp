@@ -10,7 +10,7 @@ bool  LinearInterpolator_writeLocalData(const osg::Object &obj, osgDB::Output &f
 
 osgDB::RegisterDotOsgWrapperProxy  LinearInterpolator_Proxy
 (
-    osgNew osgParticle::LinearInterpolator,
+    new osgParticle::LinearInterpolator,
     "LinearInterpolator",
     "Object Interpolator LinearInterpolator",
     LinearInterpolator_readLocalData,

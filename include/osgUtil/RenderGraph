@@ -71,7 +71,7 @@ class OSGUTIL_EXPORT RenderGraph : public osg::Referenced
             
         ~RenderGraph() {}
         
-        RenderGraph* cloneType() const { return osgNew RenderGraph; }
+        RenderGraph* cloneType() const { return new RenderGraph; }
         
         void setUserData(osg::Referenced* obj) { _userData = obj; }
         osg::Referenced* getUserData() { return _userData.get(); }
@@ -149,7 +149,7 @@ class OSGUTIL_EXPORT RenderGraph : public osg::Referenced
             
             // create a state group and insert it into the children list
             // then return the state group.
-            RenderGraph* sg = osgNew RenderGraph(this,stateset);
+            RenderGraph* sg = new RenderGraph(this,stateset);
             _children[stateset] = sg;
             return sg;
         }

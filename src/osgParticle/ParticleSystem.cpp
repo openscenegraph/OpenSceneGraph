@@ -125,30 +125,30 @@ void osgParticle::ParticleSystem::drawImplementation(osg::State &state) const
 
 void osgParticle::ParticleSystem::setDefaultAttributes(const std::string &texturefile, bool emissive_particles, bool lighting, int texture_unit)
 {
-    osg::StateSet *stateset = osgNew osg::StateSet;
+    osg::StateSet *stateset = new osg::StateSet;
 
     stateset->setMode(GL_LIGHTING, lighting? osg::StateAttribute::ON: osg::StateAttribute::OFF);
     stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
 
-    osg::Material *material = osgNew osg::Material;
+    osg::Material *material = new osg::Material;
     material->setSpecular(osg::Material::FRONT, osg::Vec4(0, 0, 0, 1));
     material->setEmission(osg::Material::FRONT, osg::Vec4(0, 0, 0, 1));
     material->setColorMode(lighting? osg::Material::AMBIENT_AND_DIFFUSE : osg::Material::OFF);
     stateset->setAttributeAndModes(material, osg::StateAttribute::ON);
 
     if (!texturefile.empty()) {
-        osg::Texture2D *texture = osgNew osg::Texture2D;
+        osg::Texture2D *texture = new osg::Texture2D;
         texture->setImage(osgDB::readImageFile(texturefile));
         texture->setFilter(osg::Texture2D::MIN_FILTER, osg::Texture2D::LINEAR);
         texture->setFilter(osg::Texture2D::MAG_FILTER, osg::Texture2D::LINEAR);
         stateset->setTextureAttributeAndModes(texture_unit, texture, osg::StateAttribute::ON);
 
-        osg::TexEnv *texenv = osgNew osg::TexEnv;
+        osg::TexEnv *texenv = new osg::TexEnv;
         texenv->setMode(osg::TexEnv::MODULATE);
         stateset->setTextureAttribute(texture_unit, texenv);
     }
 
-    osg::BlendFunc *blend = osgNew osg::BlendFunc;
+    osg::BlendFunc *blend = new osg::BlendFunc;
     if (emissive_particles) {    
         blend->setFunction(osg::BlendFunc::SRC_ALPHA, osg::BlendFunc::ONE);
     } else {

@@ -109,7 +109,7 @@ osgParticle::ParticleSystem *create_simple_particle_system(osg::Group *root)
 	// our particles and expose the interface for managing them; this object
 	// is a Drawable, so we'll have to add it to a Geode later.
 
-	osgParticle::ParticleSystem *ps = osgNew osgParticle::ParticleSystem;
+	osgParticle::ParticleSystem *ps = new osgParticle::ParticleSystem;
 
 	// As for other Drawable classes, the aspect of graphical elements of
 	// ParticleSystem (the particles) depends on the StateAttribute's we
@@ -137,7 +137,7 @@ osgParticle::ParticleSystem *create_simple_particle_system(osg::Group *root)
 	// these default objects there, but we'll modify the counter so that it
 	// counts faster (more particles are emitted at each frame).
 
-	osgParticle::ModularEmitter *emitter = osgNew osgParticle::ModularEmitter;
+	osgParticle::ModularEmitter *emitter = new osgParticle::ModularEmitter;
 
 	// the first thing you *MUST* do after creating an emitter is to set the
 	// destination particle system, otherwise it won't know where to create
@@ -169,7 +169,7 @@ osgParticle::ParticleSystem *create_simple_particle_system(osg::Group *root)
 	// to create a Geode and add the particle system to it, so it can be
 	// displayed.
 
-	osg::Geode *geode = osgNew osg::Geode;	
+	osg::Geode *geode = new osg::Geode;	
 	geode->addDrawable(ps);
 
 	// add the geode to the scene graph
@@ -221,7 +221,7 @@ osgParticle::ParticleSystem *create_complex_particle_system(osg::Group *root)
 	// "smoke.rgb", you can find it in the data distribution of OSG.
 	// We turn off the additive blending, because smoke has no self-
 	// illumination.
-	osgParticle::ParticleSystem *ps = osgNew osgParticle::ParticleSystem;
+	osgParticle::ParticleSystem *ps = new osgParticle::ParticleSystem;
 	ps->setDefaultAttributes("Images/smoke.rgb", false, false);
 
 	// assign the particle template to the system.
@@ -230,17 +230,17 @@ osgParticle::ParticleSystem *create_complex_particle_system(osg::Group *root)
 	// now we have to create an emitter; this will be a ModularEmitter, for which
 	// we define a RandomRateCounter as counter, a SectorPlacer as placer, and
 	// a RadialShooter as shooter.
-	osgParticle::ModularEmitter *emitter = osgNew osgParticle::ModularEmitter;
+	osgParticle::ModularEmitter *emitter = new osgParticle::ModularEmitter;
 	emitter->setParticleSystem(ps);
 
 	// setup the counter
-	osgParticle::RandomRateCounter *counter = osgNew osgParticle::RandomRateCounter;
+	osgParticle::RandomRateCounter *counter = new osgParticle::RandomRateCounter;
 	counter->setRateRange(60, 60);
 	emitter->setCounter(counter);
 
 	// setup the placer; it will be a circle of radius 5 (the particles will
 	// be placed inside this circle).
-	osgParticle::SectorPlacer *placer = osgNew osgParticle::SectorPlacer;
+	osgParticle::SectorPlacer *placer = new osgParticle::SectorPlacer;
 	placer->setCenter(8, 0, 10);
 	placer->setRadiusRange(2.5, 5);
 	placer->setPhiRange(0, 2 * osg::PI);	// 360° angle to make a circle
@@ -250,7 +250,7 @@ osgParticle::ParticleSystem *create_complex_particle_system(osg::Group *root)
 	// initial speed to zero, because we want the particles to fall down
 	// only under the effect of the gravity force. Since we se the speed
 	// to zero, there is no need to setup the shooting angles.
-	osgParticle::RadialShooter *shooter = osgNew osgParticle::RadialShooter;
+	osgParticle::RadialShooter *shooter = new osgParticle::RadialShooter;
 	shooter->setInitialSpeedRange(0, 0);
 	emitter->setShooter(shooter);
 
@@ -272,22 +272,22 @@ osgParticle::ParticleSystem *create_complex_particle_system(osg::Group *root)
 	// Program (and its descendants) should be placed *after* the instances
 	// of Emitter objects in the scene graph.
 
-	osgParticle::ModularProgram *program = osgNew osgParticle::ModularProgram;
+	osgParticle::ModularProgram *program = new osgParticle::ModularProgram;
 	program->setParticleSystem(ps);
 
 	// create an operator that simulates the gravity acceleration.
-	osgParticle::AccelOperator *op1 = osgNew osgParticle::AccelOperator;
+	osgParticle::AccelOperator *op1 = new osgParticle::AccelOperator;
 	op1->setToGravity();
 	program->addOperator(op1);
 
 	// now create a custom operator, we have defined it before (see
 	// class VortexOperator).
-	VortexOperator *op2 = osgNew VortexOperator;
+	VortexOperator *op2 = new VortexOperator;
 	op2->setCenter(osg::Vec3(8, 0, 0));
 	program->addOperator(op2);
 
 	// let's add a fluid operator to simulate air friction.
-	osgParticle::FluidFrictionOperator *op3 = osgNew osgParticle::FluidFrictionOperator;
+	osgParticle::FluidFrictionOperator *op3 = new osgParticle::FluidFrictionOperator;
 	op3->setFluidToAir();
 	program->addOperator(op3);
 
@@ -295,7 +295,7 @@ osgParticle::ParticleSystem *create_complex_particle_system(osg::Group *root)
 	root->addChild(program);
 
 	// create a Geode to contain our particle system.
-	osg::Geode *geode = osgNew osg::Geode;
+	osg::Geode *geode = new osg::Geode;
 	geode->addDrawable(ps);
 
 	// add the geode to the scene graph.
@@ -328,7 +328,7 @@ void build_world(osg::Group *root)
 	// created, we have to add an "updater" node to the scene graph. This node
 	// will react to cull traversal by updating the specified particles system.
 
-	osgParticle::ParticleSystemUpdater *psu = osgNew osgParticle::ParticleSystemUpdater;
+	osgParticle::ParticleSystemUpdater *psu = new osgParticle::ParticleSystemUpdater;
 	psu->addParticleSystem(ps1);
 	psu->addParticleSystem(ps2);
 
@@ -353,7 +353,7 @@ int main(int argc, char **argv)
     osgGLUT::Viewer viewer;
     //viewer.setWindowTitle(argv[0]);
 
-	osg::Group *root = osgNew osg::Group;
+	osg::Group *root = new osg::Group;
 	build_world(root);
    
    // add a viewport to the viewer and attach the scene graph.

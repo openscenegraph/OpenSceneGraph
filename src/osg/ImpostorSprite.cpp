@@ -143,10 +143,10 @@ ImpostorSpriteManager::ImpostorSpriteManager():
     _first(NULL),
     _last(NULL)
 {
-    _texenv = osgNew TexEnv;
+    _texenv = new TexEnv;
     _texenv->setMode(TexEnv::REPLACE);
 
-    _alphafunc = osgNew osg::AlphaFunc;
+    _alphafunc = new osg::AlphaFunc;
     _alphafunc->setFunction( AlphaFunc::GREATER, 0.000f );
 }
 
@@ -250,7 +250,7 @@ ImpostorSprite* ImpostorSpriteManager::createOrReuseImpostorSprite(int s,int t,i
     // creating new impostor sprite.
     
 
-    StateSet* stateset = osgNew StateSet;
+    StateSet* stateset = new StateSet;
 
     stateset->setMode(GL_CULL_FACE,osg::StateAttribute::OFF);
     stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
@@ -259,7 +259,7 @@ ImpostorSprite* ImpostorSpriteManager::createOrReuseImpostorSprite(int s,int t,i
 
     stateset->setAttributeAndModes( _alphafunc.get(), StateAttribute::ON );
 
-    Texture2D* texture = osgNew Texture2D;
+    Texture2D* texture = new Texture2D;
     texture->setFilter(Texture2D::MIN_FILTER,Texture2D::LINEAR);
     texture->setFilter(Texture2D::MAG_FILTER,Texture2D::LINEAR);
 
@@ -267,11 +267,11 @@ ImpostorSprite* ImpostorSpriteManager::createOrReuseImpostorSprite(int s,int t,i
     stateset->setTextureAttribute(0,_texenv.get());
 
 /*
-    TexEnv* texenv = osgNew TexEnv;
+    TexEnv* texenv = new TexEnv;
     texenv->setMode(TexEnv::REPLACE);
     stateset->setAttribute(texenv);
 
-    AlphaFunc* alphafunc = osgNew osg::AlphaFunc;
+    AlphaFunc* alphafunc = new osg::AlphaFunc;
     alphafunc->setFunction( AlphaFunc::GREATER, 0.000f );
     stateset->setAttributeAndModes( alphafunc, StateAttribute::ON );
 */
@@ -279,7 +279,7 @@ ImpostorSprite* ImpostorSpriteManager::createOrReuseImpostorSprite(int s,int t,i
 
     //    stateset->setMode( GL_ALPHA_TEST, StateAttribute::OFF );
 
-    ImpostorSprite* is = osgNew ImpostorSprite;
+    ImpostorSprite* is = new ImpostorSprite;
     is->setStateSet(stateset);
     is->setTexture(texture,s,t);
 

@@ -162,7 +162,7 @@ ifeq ($(OS),IRIX)
 	 	       -DEBUG:woff=1682 -DEBUG:woff=3303\
 		       -MDupdate $(MAKEDEPEND)
   OPTF              = -O2 
-  DBGF              = -g -DOSG_COMPILE_UNIT_TESTS  -DOSG_USE_MEMORY_MANAGER
+  DBGF              = -g -DOSG_COMPILE_UNIT_TESTS  
   SHARED            = -shared
   ARCH              = 32
   PFLIBS            = \
@@ -212,7 +212,7 @@ endif
   INC               += 
   DEF               += -W -Wall
   OPTF              = -O2 
-  DBGF              = -g -DOSG_COMPILE_UNIT_TESTS -DOSG_USE_MEMORY_MANAGER
+  DBGF              = -g -DOSG_COMPILE_UNIT_TESTS 
   SHARED            = -shared
   ARCHARGS          = 
   LINKARGS          = -L/usr/X11R6/lib

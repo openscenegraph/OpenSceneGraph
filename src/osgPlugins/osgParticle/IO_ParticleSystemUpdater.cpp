@@ -11,7 +11,7 @@ bool  PSU_writeLocalData(const osg::Object &obj, osgDB::Output &fr);
 
 osgDB::RegisterDotOsgWrapperProxy PSU_Proxy
 (
-    osgNew osgParticle::ParticleSystemUpdater,
+    new osgParticle::ParticleSystemUpdater,
     "ParticleSystemUpdater",
     "Object Node ParticleSystemUpdater",
     PSU_readLocalData,
@@ -23,7 +23,7 @@ bool PSU_readLocalData(osg::Object &obj, osgDB::Input &fr)
     osgParticle::ParticleSystemUpdater &myobj = static_cast<osgParticle::ParticleSystemUpdater &>(obj);    
     bool itAdvanced = false;
 
-    osg::ref_ptr<osgParticle::ParticleSystem> proto = osgNew osgParticle::ParticleSystem;
+    osg::ref_ptr<osgParticle::ParticleSystem> proto = new osgParticle::ParticleSystem;
     osgParticle::ParticleSystem *ps = static_cast<osgParticle::ParticleSystem *>(fr.readObjectOfType(*proto));
     if (ps) {
         myobj.addParticleSystem(ps);

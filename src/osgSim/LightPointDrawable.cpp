@@ -19,22 +19,22 @@ LightPointDrawable::LightPointDrawable():
 {
     setSupportsDisplayList(false);
     
-    _depthOff = osgNew osg::Depth;
+    _depthOff = new osg::Depth;
     _depthOff->setWriteMask(false);
 
-    _depthOn = osgNew osg::Depth;
+    _depthOn = new osg::Depth;
     _depthOn->setWriteMask(true);
 
-    _blendOne = osgNew osg::BlendFunc;
+    _blendOne = new osg::BlendFunc;
     _blendOne->setFunction(osg::BlendFunc::SRC_ALPHA,osg::BlendFunc::ONE);
     
-    _blendOneMinusSrcAlpha = osgNew osg::BlendFunc;
+    _blendOneMinusSrcAlpha = new osg::BlendFunc;
     _blendOneMinusSrcAlpha->setFunction(osg::BlendFunc::SRC_ALPHA,osg::BlendFunc::ONE_MINUS_SRC_ALPHA);
 
-    _colorMaskOff = osgNew osg::ColorMask;
+    _colorMaskOff = new osg::ColorMask;
     _colorMaskOff->setMask(false,false,false,false);
 
-    _point = osgNew osg::Point;
+    _point = new osg::Point;
 }
 
 LightPointDrawable::LightPointDrawable(const LightPointDrawable& lpd,const osg::CopyOp& copyop):

@@ -87,7 +87,7 @@ CullVisitor::CullVisitor():
     _numFramesToKeepImpostorSprites(10),
     _currentReuseRenderLeafIndex(0)
 {
-    _impostorSpriteManager = osgNew ImpostorSpriteManager;
+    _impostorSpriteManager = new ImpostorSpriteManager;
 }
 
 
@@ -669,7 +669,7 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
     // one for use.
 
     // create the render to texture stage.
-    ref_ptr<RenderToTextureStage> rtts = osgNew RenderToTextureStage;
+    ref_ptr<RenderToTextureStage> rtts = new RenderToTextureStage;
 
     // set up lighting.
     // currently ignore lights in the scene graph itself..
@@ -748,7 +748,7 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
     zfar *= 1.1f;
 
     // set up projection.
-    osg::Matrix* projection = osgNew osg::Matrix;
+    osg::Matrix* projection = new osg::Matrix;
     if (isPerspectiveProjection)
     {
         // deal with projection issue move the top and right points
@@ -768,7 +768,7 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
     Vec3 rotate_from = bs.center()-eye_local;
     Vec3 rotate_to   = getLookVectorLocal();
 
-    osg::Matrix* rotate_matrix = osgNew osg::Matrix(
+    osg::Matrix* rotate_matrix = new osg::Matrix(
         osg::Matrix::translate(-eye_local)*        
         osg::Matrix::rotate(rotate_from,rotate_to)*
         osg::Matrix::translate(eye_local)*
@@ -778,7 +778,7 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
     // into account the new camera orientation.
     pushModelViewMatrix(rotate_matrix);
 
-    ref_ptr<StateSet> dummyState = osgNew StateSet;
+    ref_ptr<StateSet> dummyState = new StateSet;
 
     pushStateSet(dummyState.get());
 
@@ -860,7 +860,7 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
     int center_x = viewport.x()+viewport.width()/2;
     int center_y = viewport.y()+viewport.height()/2;
 
-    Viewport* new_viewport = osgNew Viewport;
+    Viewport* new_viewport = new Viewport;
     new_viewport->setViewport(center_x-new_s/2,center_y-new_t/2,new_s,new_t);
     rtts->setViewport(new_viewport);
     

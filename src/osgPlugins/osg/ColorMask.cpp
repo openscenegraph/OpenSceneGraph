@@ -16,7 +16,7 @@ const char* ColorMask_getModeStr(bool mode);
 // register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_ColorMaskProxy
 (
-    osgNew osg::ColorMask,
+    new osg::ColorMask,
     "ColorMask",
     "Object StateAttribute ColorMask",
     &ColorMask_readLocalData,

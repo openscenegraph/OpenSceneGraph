@@ -41,7 +41,7 @@ FTPixmapGlyph::FTPixmapGlyph( FT_Glyph glyph)
     destWidth = srcWidth;
     destHeight = srcHeight;
     
-    data = osgNew unsigned char[destWidth * destHeight * 4];
+    data = new unsigned char[destWidth * destHeight * 4];
     
     // Get the current glColor.
     float ftglColour[4] = { 1.0, 1.0, 1.0, 1.0 };
@@ -71,7 +71,7 @@ FTPixmapGlyph::FTPixmapGlyph( FT_Glyph glyph)
 
 FTPixmapGlyph::~FTPixmapGlyph()
 {
-    osgDelete [] data;
+    delete [] data;
 }
 
 

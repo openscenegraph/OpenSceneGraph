@@ -172,8 +172,8 @@ class SG_EXPORT DrawArrays : public PrimitiveSet
             _first(da._first),
             _count(da._count) {}
 
-        virtual Object* cloneType() const { return osgNew DrawArrays(); }
-        virtual Object* clone(const CopyOp& copyop) const { return osgNew DrawArrays(*this,copyop); }        
+        virtual Object* cloneType() const { return new DrawArrays(); }
+        virtual Object* clone(const CopyOp& copyop) const { return new DrawArrays(*this,copyop); }        
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const DrawArrays*>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osg"; }
         virtual const char* className() const { return "DrawArrays"; }
@@ -235,8 +235,8 @@ class SG_EXPORT DrawArrayLengths : public PrimitiveSet, public VectorSizei
             VectorSizei(firstItr,lastItr),
             _first(first) {}
 
-        virtual Object* cloneType() const { return osgNew DrawArrayLengths(); }
-        virtual Object* clone(const CopyOp& copyop) const { return osgNew DrawArrayLengths(*this,copyop); }        
+        virtual Object* cloneType() const { return new DrawArrayLengths(); }
+        virtual Object* clone(const CopyOp& copyop) const { return new DrawArrayLengths(*this,copyop); }        
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const DrawArrayLengths*>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osg"; }
         virtual const char* className() const { return "DrawArrayLengths"; }
@@ -300,8 +300,8 @@ class SG_EXPORT DrawElementsUByte : public PrimitiveSet, public VectorUByte
             PrimitiveSet(DrawElementsUBytePrimitiveType,mode),
             VectorUByte(first,last) {}
 
-        virtual Object* cloneType() const { return osgNew DrawElementsUByte(); }
-        virtual Object* clone(const CopyOp& copyop) const { return osgNew DrawElementsUByte(*this,copyop); }        
+        virtual Object* cloneType() const { return new DrawElementsUByte(); }
+        virtual Object* clone(const CopyOp& copyop) const { return new DrawElementsUByte(*this,copyop); }        
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const DrawElementsUByte*>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osg"; }
         virtual const char* className() const { return "DrawElementsUByte"; }
@@ -340,8 +340,8 @@ class SG_EXPORT DrawElementsUShort : public PrimitiveSet, public VectorUShort
             PrimitiveSet(DrawElementsUShortPrimitiveType,mode),
             VectorUShort(first,last) {}
 
-        virtual Object* cloneType() const { return osgNew DrawElementsUShort(); }
-        virtual Object* clone(const CopyOp& copyop) const { return osgNew DrawElementsUShort(*this,copyop); }        
+        virtual Object* cloneType() const { return new DrawElementsUShort(); }
+        virtual Object* clone(const CopyOp& copyop) const { return new DrawElementsUShort(*this,copyop); }        
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const DrawElementsUShort*>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osg"; }
         virtual const char* className() const { return "DrawElementsUShort"; }
@@ -379,8 +379,8 @@ class SG_EXPORT DrawElementsUInt : public PrimitiveSet, public VectorUInt
             PrimitiveSet(DrawElementsUIntPrimitiveType,mode),
             VectorUInt(first,last) {}
 
-        virtual Object* cloneType() const { return osgNew DrawElementsUInt(); }
-        virtual Object* clone(const CopyOp& copyop) const { return osgNew DrawElementsUInt(*this,copyop); }        
+        virtual Object* cloneType() const { return new DrawElementsUInt(); }
+        virtual Object* clone(const CopyOp& copyop) const { return new DrawElementsUInt(*this,copyop); }        
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const DrawElementsUInt*>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osg"; }
         virtual const char* className() const { return "DrawElementsUInt"; }

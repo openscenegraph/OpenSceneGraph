@@ -10,7 +10,7 @@ bool  PointPlacer_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
 osgDB::RegisterDotOsgWrapperProxy  PointPlacer_Proxy
 (
-    osgNew osgParticle::PointPlacer,
+    new osgParticle::PointPlacer,
     "PointPlacer",
     "Object Placer CenteredPlacer PointPlacer",
     PointPlacer_readLocalData,

@@ -64,7 +64,7 @@ void Drawable::removeParent(osg::Node* node)
 
 osg::StateSet* Drawable::getOrCreateStateSet()
 {
-    if (!_stateset) _stateset = osgNew StateSet;
+    if (!_stateset) _stateset = new StateSet;
     return _stateset.get();
 }
 

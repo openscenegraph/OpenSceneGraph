@@ -34,7 +34,7 @@ class RegistryPtr
         RegistryPtr() : _ptr(0L) {}
         RegistryPtr(Registry* t): _ptr(t) {}
         RegistryPtr(const RegistryPtr& rp):_ptr(rp._ptr) { }
-        ~RegistryPtr() { if (_ptr) osgDelete _ptr; _ptr=0L; }
+        ~RegistryPtr() { if (_ptr) delete _ptr; _ptr=0L; }
 
         inline Registry* get() { return _ptr; }
 
@@ -43,7 +43,7 @@ class RegistryPtr
 
 Registry* Registry::instance()
 {
-    static RegistryPtr s_nodeFactory = osgNew Registry;
+    static RegistryPtr s_nodeFactory = new Registry;
     return s_nodeFactory.get();
 }
 

@@ -709,7 +709,7 @@ bool CollectLowestTransformsVisitor::removeTransforms()
             transformRemoved = true;
         
             osg::ref_ptr<osg::Transform> transform = titr->first;
-            osg::ref_ptr<osg::Group>     group = osgNew osg::Group;
+            osg::ref_ptr<osg::Group>     group = new osg::Group;
             group->setDataVariance(osg::Object::STATIC);
             for(unsigned int i=0;i<transform->getNumChildren();++i)
             {
@@ -1012,7 +1012,7 @@ void Optimizer::CombineLODsVisitor::combineLODs()
                 }
 
                 // create new LOD containing all other LOD's children.
-                osg::LOD* newLOD = osgNew osg::LOD;
+                osg::LOD* newLOD = new osg::LOD;
                 newLOD->setName("newLOD");
                 newLOD->setCenter(bb.center());
 

@@ -459,7 +459,7 @@ Starts a TestSuite singleton function
 	{ \
 		static osg::ref_ptr<osgUtx::TestSuite> s_suite = 0; \
 		if ( s_suite == 0 ) { \
-			s_suite = osgNew osgUtx::TestSuite( #tsuite );
+			s_suite = new osgUtx::TestSuite( #tsuite );
 
 
 
@@ -468,7 +468,7 @@ Adds a test case to a suite object being created in a TestSuite singleton functi
 @see OSGUTX_BEGIN_TESTSUITE, OSGUTX_END_TESTSUITE
 */
 #define OSGUTX_ADD_TESTCASE( tfixture, tmethod ) \
-			s_suite->add( osgNew osgUtx::TestCase_<tfixture>(  \
+			s_suite->add( new osgUtx::TestCase_<tfixture>(  \
 								#tmethod, &tfixture::tmethod ) );
 
 /**

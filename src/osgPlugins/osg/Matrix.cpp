@@ -14,7 +14,7 @@ bool Matrix_writeLocalData(const Object& obj, Output& fw);
 // register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_MatrixFuncProxy
 (
-    osgNew osg::Matrix,
+    new osg::Matrix,
     "Matrix",
     "Object Matrix",
     &Matrix_readLocalData,

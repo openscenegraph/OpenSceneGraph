@@ -435,7 +435,7 @@ void Image::flipVertical(int image)
     unsigned char* imageData = _data+image*imageSizeInBytes;
 
     // make temp. buffer for one image
-    unsigned char *tmpData = (unsigned char*) osgMalloc(imageSizeInBytes);
+    unsigned char *tmpData = (unsigned char*) malloc(imageSizeInBytes);
 
     for (int t=0; t<_t; ++t)
     {
@@ -447,7 +447,7 @@ void Image::flipVertical(int image)
     // insert fliped image
     memcpy(imageData, tmpData, imageSizeInBytes);
 
-    osgFree(tmpData);
+    free(tmpData);
     ++_modifiedTag;
 }
 
@@ -547,42 +547,42 @@ Geode* osg::createGeodeForImage(osg::Image* image,float s,float t)
             float x = y*(s/t);
 
             // set up the texture.
-            osg::Texture2D* texture = osgNew osg::Texture2D;
+            osg::Texture2D* texture = new osg::Texture2D;
             texture->setImage(image);
 
             // set up the drawstate.
-            osg::StateSet* dstate = osgNew osg::StateSet;
+            osg::StateSet* dstate = new osg::StateSet;
             dstate->setMode(GL_CULL_FACE,osg::StateAttribute::OFF);
             dstate->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
             dstate->setTextureAttributeAndModes(0, texture,osg::StateAttribute::ON);
 
             // set up the geoset.
-            Geometry* geom = osgNew Geometry;
+            Geometry* geom = new Geometry;
             geom->setStateSet(dstate);
 
-            Vec3Array* coords = osgNew Vec3Array(4);
+            Vec3Array* coords = new Vec3Array(4);
             (*coords)[0].set(-x,0.0f,y);
             (*coords)[1].set(-x,0.0f,-y);
             (*coords)[2].set(x,0.0f,-y);
             (*coords)[3].set(x,0.0f,y);
             geom->setVertexArray(coords);
 
-            Vec2Array* tcoords = osgNew Vec2Array(4);
+            Vec2Array* tcoords = new Vec2Array(4);
             (*tcoords)[0].set(0.0f,1.0f);
             (*tcoords)[1].set(0.0f,0.0f);
             (*tcoords)[2].set(1.0f,0.0f);
             (*tcoords)[3].set(1.0f,1.0f);
             geom->setTexCoordArray(0,tcoords);
 
-            osg::Vec4Array* colours = osgNew osg::Vec4Array(1);
+            osg::Vec4Array* colours = new osg::Vec4Array(1);
             (*colours)[0].set(1.0f,1.0f,1.0,1.0f);
             geom->setColorArray(colours);
             geom->setColorBinding(Geometry::BIND_OVERALL);
 
-            geom->addPrimitiveSet(osgNew DrawArrays(PrimitiveSet::QUADS,0,4));
+            geom->addPrimitiveSet(new DrawArrays(PrimitiveSet::QUADS,0,4));
 
             // set up the geode.
-            osg::Geode* geode = osgNew osg::Geode;
+            osg::Geode* geode = new osg::Geode;
             geode->addDrawable(geom);
 
             return geode;

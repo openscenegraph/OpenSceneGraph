@@ -14,7 +14,7 @@ bool Sequence_writeLocalData(const Object& obj, Output& fw);
 // register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_SequenceProxy
 (
-    osgNew osg::Sequence,
+    new osg::Sequence,
     "Sequence",
     "Object Node Switch Sequence Group",
     &Sequence_readLocalData,

@@ -14,7 +14,7 @@ bool ShapeDrawable_writeLocalData(const Object& obj, Output& fw);
 //register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_ShapeDrawableFuncProxy
 (
-    osgNew osg::ShapeDrawable,
+    new osg::ShapeDrawable,
     "ShapeDrawable",
     "Object Drawable ShapeDrawable",
     &ShapeDrawable_readLocalData,

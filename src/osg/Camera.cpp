@@ -369,7 +369,7 @@ void Camera::attachTransform(TransformMode mode, Matrix* matrix)
             if (_eyeToModelTransform.valid())
             {
                 _attachedTransformMode = mode;
-                if (!_modelToEyeTransform.valid()) _modelToEyeTransform = osgNew Matrix;
+                if (!_modelToEyeTransform.valid()) _modelToEyeTransform = new Matrix;
                 if (!_modelToEyeTransform->invert(*_eyeToModelTransform))
                 {
                     notify(WARN)<<"Warning: Camera::attachTransform() failed to invert _modelToEyeTransform"<<std::endl;
@@ -388,7 +388,7 @@ void Camera::attachTransform(TransformMode mode, Matrix* matrix)
             if (_modelToEyeTransform.valid())
             {
                 _attachedTransformMode = mode;
-                if (!_eyeToModelTransform.valid()) _eyeToModelTransform = osgNew Matrix;
+                if (!_eyeToModelTransform.valid()) _eyeToModelTransform = new Matrix;
                 if (!_eyeToModelTransform->invert(*_modelToEyeTransform))
                 {
                     notify(WARN)<<"Warning: Camera::attachTransform() failed to invert _modelToEyeTransform"<<std::endl;

@@ -15,7 +15,7 @@ bool DOFTransform_writeLocalData(const Object& obj, Output& fw);
 // register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_DOFTransformProxy
 (
-    osgNew osg::DOFTransform,
+    new osg::DOFTransform,
     "DOFTransform",
     "Object Node Transform DOFTransform Group",
     &DOFTransform_readLocalData,

@@ -155,7 +155,7 @@ void IntersectVisitor::reset()
     _intersectStateStack.clear();
 
     // create a empty IntersectState on the the intersectStateStack.
-    _intersectStateStack.push_back(osgNew IntersectState);
+    _intersectStateStack.push_back(new IntersectState);
 
     _nodePath.clear();
     _segHitList.clear();
@@ -196,7 +196,7 @@ void IntersectVisitor::addLineSegment(LineSegment* seg)
 
     // create a new segment transformed to local coordintes.
     IntersectState* cis = _intersectStateStack.back().get();
-    LineSegment* ns = osgNew LineSegment;
+    LineSegment* ns = new LineSegment;
 
     if (cis->_inverse.valid()) ns->mult(*seg,*(cis->_inverse));
     else *ns = *seg;
@@ -208,21 +208,21 @@ void IntersectVisitor::addLineSegment(LineSegment* seg)
 
 void IntersectVisitor::pushMatrix(const Matrix& matrix)
 {
-    IntersectState* nis = osgNew IntersectState;
+    IntersectState* nis = new IntersectState;
 
     IntersectState* cis = _intersectStateStack.back().get();
 
     if (cis->_matrix.valid())
     {
-        nis->_matrix = osgNew Matrix;
+        nis->_matrix = new Matrix;
         nis->_matrix->mult(matrix,*(cis->_matrix));
     }
     else
     {
-        nis->_matrix = osgNew Matrix(matrix);
+        nis->_matrix = new Matrix(matrix);
     }
 
-    Matrix* inverse_world = osgNew Matrix;
+    Matrix* inverse_world = new Matrix;
     inverse_world->invert(*(nis->_matrix));
     nis->_inverse = inverse_world;
 
@@ -234,7 +234,7 @@ void IntersectVisitor::pushMatrix(const Matrix& matrix)
     {
         if ((segMaskIn & mask))
         {
-            LineSegment* seg = osgNew LineSegment;
+            LineSegment* seg = new LineSegment;
             seg->mult(*(sitr->first),*inverse_world);
             nis->addLineSegmentPair(sitr->first.get(),seg);
         }
@@ -526,7 +526,7 @@ void IntersectVisitor::apply(Transform& node)
 {
     if (!enterNode(node)) return;
 
-    osg::ref_ptr<Matrix> matrix = osgNew Matrix;
+    osg::ref_ptr<Matrix> matrix = new Matrix;
     node.getLocalToWorldMatrix(*matrix,this);
 
     pushMatrix(*matrix);

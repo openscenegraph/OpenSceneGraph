@@ -2,6 +2,8 @@
 #include    "FTGlyphContainer.h"
 #include    "FTTextureGlyph.h"
 
+#include <osg/DisplaySettings>
+
 inline GLuint NextPowerOf2( GLuint in)
 {
      in -= 1;
@@ -25,7 +27,9 @@ FTGLTextureFont::FTGLTextureFont()
     glyphHeight(0),
     glyphWidth(0),
     padding(1)
-{}
+{
+    glContextTextureID.resize(osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),0);
+}
 
 FTGLTextureFont::FTGLTextureFont(int textureSize)
 :    maxTextSize(textureSize),
@@ -36,7 +40,9 @@ FTGLTextureFont::FTGLTextureFont(int textureSize)
     glyphHeight(0),
     glyphWidth(0),
     padding(1)
-{}
+{
+    glContextTextureID.resize(osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),0);
+}
 
 FTGLTextureFont::~FTGLTextureFont()
 {
@@ -55,8 +61,8 @@ bool FTGLTextureFont::MakeGlyphList(unsigned int renderContext)
     // FTGlyphContainer* glyphList=_contextGlyphList[renderContext];
 
     // check the context
-    while (glContextTextureID.size() <= renderContext) 
-        glContextTextureID.push_back(NULL);
+    if (glContextTextureID.size() <= renderContext) 
+        glContextTextureID.resize(renderContext,0);
  
     unsigned long* glTextureID=glContextTextureID[renderContext];
     if(glTextureID)

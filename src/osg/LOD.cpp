@@ -39,7 +39,7 @@ void LOD::setRange(const unsigned int index, const float range)
 }
 
 
-const int LOD::evaluate(const Vec3& eye_local, const float bias) const
+const int LOD::evaluateLODChild(const Vec3& eye_local, const float bias) const
 {
     // For cache coherency, use _rangeList2 exclusively
     if (_rangeList2.empty()) return -1;

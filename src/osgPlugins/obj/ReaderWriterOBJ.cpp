@@ -225,7 +225,7 @@ osg::Drawable* ReaderWriterOBJ::makeDrawable(GLMmodel* obj,
     IndexVec tcount(obj->numtexcoords+1,0);
 
     bool needNormals = obj->normals && obj->normals>0;
-    bool needTexcoords = obj->texcoords && obj->numtexcoords>0;
+    bool needTexcoords = obj->texcoords && obj->numtexcoords>0 && grp->hastexcoords;
 
     // first count the number of vertices used in this group.
     for (i = 0; i < ntris; i++)

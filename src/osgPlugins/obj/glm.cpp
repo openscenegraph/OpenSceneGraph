@@ -206,6 +206,7 @@ _glmAddGroup(GLMmodel* model, char* name)
     group->material = 0;
     group->numtriangles = 0;
     group->triangles = NULL;
+    group->hastexcoords = false;
     group->next = model->groups;
     model->groups = group;
     model->numgroups++;
@@ -764,6 +765,7 @@ _glmSecondPass(GLMmodel* model, FILE* file)
 	T(numtriangles).tindices[2] = t;
 	T(numtriangles).nindices[2] = n;
 	group->triangles[group->numtriangles++] = numtriangles;
+	group->hastexcoords = true;
 	numtriangles++;
 	while(fscanf(file, "%d/%d/%d", &v, &t, &n) > 0) {
 	  T(numtriangles).vindices[0] = T(numtriangles-1).vindices[0];
@@ -789,6 +791,7 @@ _glmSecondPass(GLMmodel* model, FILE* file)
 	T(numtriangles).vindices[2] = v;
 	T(numtriangles).tindices[2] = t;
 	group->triangles[group->numtriangles++] = numtriangles;
+	group->hastexcoords = true;
 	numtriangles++;
 	while(fscanf(file, "%d/%d", &v, &t) > 0) {
 	  T(numtriangles).vindices[0] = T(numtriangles-1).vindices[0];

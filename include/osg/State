@@ -499,7 +499,11 @@ class SG_EXPORT State : public Referenced
             set up unique ID for each OpenGL context.  This value is
             then used by osg::StateAttribure's and osg::Drawable's to
             help manage OpenGL display list and texture binds appropriate
-            for each context.*/ 
+            for each context, the contextID simply acts as an index local
+            arrays that they maintain for the purpose.
+            Typical settings for contextID are 0,1,2,3... up to the maximum
+            number of graphics contexts you have setup.
+            By default contextID is 0.*/ 
         inline void setContextID(unsigned int contextID) { _contextID=contextID; }
 
         /** Get the current OpenGL context unique ID.*/ 

@@ -29,7 +29,7 @@ class TransformFunctor : public osg::Drawable::AttributeFunctor
         osg::Matrix _im;
 
         TransformFunctor(const osg::Matrix& m):
-            AttributeFunctor(osg::Drawable::COORDS|osg::Drawable::NORMALS)
+            osg::Drawable::AttributeFunctor(osg::Drawable::COORDS|osg::Drawable::NORMALS)
         {
             _m = m;
             _im.invert(_m);
@@ -74,7 +74,7 @@ class FlattenStaticTransformsVisitor : public osg::NodeVisitor
         typedef std::set<osg::Transform*> TransformList;
         TransformList                     _transformList;
     
-        FlattenStaticTransformsVisitor():NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+        FlattenStaticTransformsVisitor():osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
 
         virtual void apply(osg::Geode& geode)
         {
@@ -147,7 +147,7 @@ class RemoveRedundentNodesVisitor : public osg::NodeVisitor
         typedef std::set<osg::Node*> NodeList;
         NodeList                     _redundentNodeList;
     
-        RemoveRedundentNodesVisitor():NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+        RemoveRedundentNodesVisitor():osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
 
         virtual void apply(osg::Group& group)
         {

@@ -50,7 +50,7 @@ class ReaderWriterFLY : public osgDB::ReaderWriter
             return osgDB::equalCaseInsensitive(extension,"fly");
         }
 
-        virtual Node* readNode(const std::string& fileName)
+        virtual Node* readNode(const std::string& fileName,const osgDB::ReaderWriter::Options*)
         {
         
             std::string ext = osgDB::getFileExtension(fileName);

@@ -32,7 +32,7 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
         virtual const char* className() { return "PNG Image Reader/Writer"; }
         virtual bool acceptsExtension(const std::string& extension) { return extension=="png"; }
 
-        virtual Image* readImage(const std::string& fileName)
+        virtual Image* readImage(const std::string& fileName,const osgDB::ReaderWriter::Options*)
         {
 
             int trans = PNG_ALPHA;

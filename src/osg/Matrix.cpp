@@ -2,9 +2,7 @@
 #include <osg/Quat>
 #include <osg/Notify>
 #include <osg/Types>
-
-#include <cstdlib> //memcpy
-#include <cmath> //acos
+#include <osg/Math>
 
 #include <stdlib.h>
 
@@ -52,10 +50,10 @@ Matrix::Matrix() : Object(), fully_realized(false) {}
 
 Matrix::Matrix( const Matrix& other ) : Object()
 {
-    set( (float const * const) other._mat );
+    set( (const float *) other._mat );
 }
 
-Matrix::Matrix( float const * const def )
+Matrix::Matrix( const float * def )
 {    
     set( def ); 
 }

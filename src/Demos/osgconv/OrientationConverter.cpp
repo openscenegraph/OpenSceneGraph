@@ -12,7 +12,7 @@ class TransformFunctor : public osg::Drawable::AttributeFunctor
         osg::Matrix _im;
 
         TransformFunctor(const osg::Matrix& m):
-            AttributeFunctor(osg::Drawable::COORDS|osg::Drawable::NORMALS)
+            osg::Drawable::AttributeFunctor(osg::Drawable::COORDS|osg::Drawable::NORMALS)
         {
             _m = m;
             _im.invert(_m);

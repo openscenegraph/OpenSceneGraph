@@ -26,8 +26,8 @@
 #include <osgGA/KeySwitchCameraManipulator>
 #include <osgGA/StateSetManipulator>
 
-#include <osgProducer/CameraGroup>
-#include <osgProducer/SceneHandler>
+#include <osgProducer/OsgCameraGroup>
+#include <osgProducer/OsgSceneHandler>
 #include <osgProducer/KeyboardMouseCallback>
 #include <osgProducer/ActionAdapter>
 
@@ -53,9 +53,9 @@ int main( int argc, char **argv )
 
 
     // create the camera group.
-    osgProducer::CameraGroup *cg = configFile.empty() ?
-         (new osgProducer::CameraGroup()):
-         (new osgProducer::CameraGroup(configFile));
+    osgProducer::OsgCameraGroup *cg = configFile.empty() ?
+         (new osgProducer::OsgCameraGroup()):
+         (new osgProducer::OsgCameraGroup(configFile));
 
     // set up the maximum number of graphics contexts, before loading the scene graph
     // to ensure that texture objects and display buffers are configured to the correct size.

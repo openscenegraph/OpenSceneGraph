@@ -11,25 +11,13 @@
  * OpenSceneGraph Public License for more details.
 */
 
+#include <osgProducer/Viewer>
 #include <osgDB/ReadFile>
 #include <osgUtil/Optimizer>
-#include <osgProducer/Viewer>
 
-
-
-#include <osg/Node>
+#include <osg/Geode>
 #include <osg/Notify>
 #include <osg/MatrixTransform>
-
-#include <osgGA/TrackballManipulator>
-#include <osgGA/FlightManipulator>
-#include <osgGA/DriveManipulator>
-
-#include <osgDB/Registry>
-#include <osgDB/ReadFile>
-
-#include <osgGLUT/glut>
-#include <osgGLUT/Viewer>
 
 
 int main( int argc, char **argv )
@@ -116,7 +104,7 @@ int main( int argc, char **argv )
     viewer.realize(Producer::CameraGroup::ThreadPerCamera);
 
     // set all the sceneview's up so that their left and right add cull masks are set up.
-    for(osgProducer::CameraGroup::SceneHandlerList::iterator itr=viewer.getSceneHandlerList().begin();
+    for(osgProducer::OsgCameraGroup::SceneHandlerList::iterator itr=viewer.getSceneHandlerList().begin();
         itr!=viewer.getSceneHandlerList().end();
         ++itr)
     {

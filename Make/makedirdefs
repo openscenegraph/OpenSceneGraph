@@ -108,7 +108,6 @@ DEMOS_DIRS = \
 	osgoccluder\
 	osgparticle\
 	osgprerender\
-	osgproducer\
 	osgshadowtexture\
 	osgreflect\
 	osgscribe\

@@ -9,6 +9,7 @@
 
 #include <osg/Object>
 #include <osg/Node>
+#include <osg/Notify>
 
 #include <osgDB/Registry>
 
@@ -29,7 +30,8 @@ osgDB::ReaderWriter::ReadResult ReaderWriterFLT::readNode(const std::string& fil
     
     if (options)
     {
-        read->setUseTextureAlphaForTransparancyBinning(options->getOptionString().find("noTextureAlphaForTransparancyBinning")!=std::string::npos);
+        read->setUseTextureAlphaForTransparancyBinning(options->getOptionString().find("noTextureAlphaForTransparancyBinning")==std::string::npos);
+        osg::notify(osg::DEBUG_INFO) << "FltFile.getUseTextureAlphaForTransparancyBinning()=" << read->getUseTextureAlphaForTransparancyBinning() << std::endl;
     }
 
     osg::Node* node = read->readNode(fileName);

@@ -83,8 +83,19 @@ void CullStack::pushCullingSet()
         //cout << "pixelSizeVector = "<<pixelSizeVector<<" pixelSizeVector2="<<pixelSizeVector2<<endl;
         
         _modelviewCullingStack.push_back(osgNew osg::CullingSet(*_projectionCullingStack.back(),*_modelviewStack.back(),pixelSizeVector));
+        
     }
     
+//     const osg::Polytope& polytope = _modelviewCullingStack.back()->getFrustum();
+//     const osg::Polytope::PlaneList& pl = polytope.getPlaneList();
+//     std::cout <<"new cull stack"<<std::endl;
+//     for(osg::Polytope::PlaneList::const_iterator pl_itr=pl.begin();
+//         pl_itr!=pl.end();
+//         ++pl_itr)
+//     {
+//         std::cout << "    plane "<<*pl_itr<<std::endl;
+//     }
+
 }
 
 void CullStack::popCullingSet()

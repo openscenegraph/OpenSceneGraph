@@ -592,6 +592,16 @@ void SceneView::draw()
         drawStage(_renderStage.get());
     }
 
+//     const osg::Polytope& polytope = _state->getViewFrustum();
+//     const osg::Polytope::PlaneList& pl = polytope.getPlaneList();
+//     std::cout <<"draw frustum"<<std::endl;
+//     for(osg::Polytope::PlaneList::const_iterator pl_itr=pl.begin();
+//         pl_itr!=pl.end();
+//         ++pl_itr)
+//     {
+//         std::cout << "    plane "<<*pl_itr<<std::endl;
+//     }
+
 }
 
 void SceneView::drawStage(osgUtil::RenderStage* renderStage)

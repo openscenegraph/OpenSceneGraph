@@ -10,6 +10,9 @@ osgviewer cow.osg
 echo osgkeyboard 
 osgkeyboard
 
+echo osgpick fountain.osg
+osgpick fountain.osg
+
 echo osgwindows glider.osg
 osgwindows glider.osg
 

@@ -107,7 +107,8 @@ osgUtil::IntersectVisitor::HitList& PickVisitor::getHits(osg::Node *scene,
 void PickVisitor::apply(osg::Projection& pr)
 { // stack the intersect rays, transform to new projection, traverse
     // Assumes that the Projection is an absolute projection
-    osg::Matrix mt=osg::Matrix::inverse(pr.getMatrix());
+    osg::Matrix mt;
+    mt.invert(pr.getMatrix());
     osg::Vec3 npt=osg::Vec3(xp,yp,1.0f) * mt, farpt=osg::Vec3(xp,yp,-1.0f) * mt;
 
     // traversing the nodes children, using the projection direction

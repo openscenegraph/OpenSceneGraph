@@ -28,41 +28,6 @@
 
 #include <osgText/Text>
 
-#include <osgUtil/PickVisitor>
-
-
-
-static Producer::CameraConfig *BuildConfig(void)
-{
-    Producer::RenderSurface *rs1 = new Producer::RenderSurface;
-    rs1->setScreenNum(0);
-    //rs1->useBorder(false);
-    rs1->setWindowRect(0,0,640,480);
-    Producer::Camera *camera1 = new Producer::Camera;
-    camera1->setRenderSurface(rs1);
-    camera1->setOffset( 1.0, 0.0 );
-
-    Producer::RenderSurface *rs2 = new Producer::RenderSurface;
-    rs2->setScreenNum(0);
-    //rs2->useBorder(false);
-    rs2->setWindowRect(640,0,640,480);
-    Producer::Camera *camera2 = new Producer::Camera;
-    camera2->setRenderSurface(rs2);
-    camera2->setOffset( -1.0, 0.0 );
-
-    Producer::InputArea *ia = new Producer::InputArea;
-    ia->addInputRectangle( rs1, Producer::InputRectangle(0.0,0.5,0.0,1.0));
-    ia->addInputRectangle( rs2, Producer::InputRectangle(0.5,1.0,0.0,1.0));
-//    ia->addInputRectangle( rs1, Producer::InputRectangle(-1.0,0.0,-1.0,1.0));
-//    ia->addInputRectangle( rs2, Producer::InputRectangle(0.0,1.0,-1.0,1.0));
-
-
-    Producer::CameraConfig *cfg = new Producer::CameraConfig;
-    cfg->addCamera("Camera 1",camera1);
-    cfg->addCamera("Camera 2", camera2);
-    cfg->setInputArea(ia);
-    return cfg;
-}
 
 // class to handle events with a pick
 class PickHandler : public osgGA::GUIEventHandler {
@@ -106,104 +71,33 @@ bool PickHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapte
 
 void PickHandler::pick(const osgGA::GUIEventAdapter& ea)
 {
-    // OK here is the interesting bit - How To Pick a Geode
-    // including geodes in a HUD under a Projection Matrix
-    osg::Node *scene=_viewer->getSceneData();//main node of the scene.
-    if (scene)
+    osgUtil::IntersectVisitor::HitList hlist;
+    
+    std::string gdlist="";
+    if (_viewer->computeIntersections(ea.getX(),ea.getY(),hlist))
     {
-        float x=ea.getX();
-        float y=ea.getY();
-
-
-        Producer::KeyboardMouse* km = _viewer->getKeyboardMouse();
-
-
-        std::string gdlist="";
-
-        for(unsigned int i=0;i<_viewer->getNumberOfCameras();++i)
+        for(osgUtil::IntersectVisitor::HitList::iterator hitr=hlist.begin();
+            hitr!=hlist.end();
+            ++hitr)
         {
-            Producer::Camera* cmm=_viewer->getCamera(i);
-            Producer::RenderSurface* rs = cmm->getRenderSurface();
-
-            //std::cout << "checking camara "<<i<<std::endl;
-
-            float pixel_x,pixel_y;
-            if (km->computePixelCoords(x,y,rs,pixel_x,pixel_y))
+            //osg::Vec3 ip = hitr->getLocalIntersectPoint();
+            //osg::Vec3 in = hitr->getLocalIntersectNormal();
+            osg::Geode* geode = hitr->_geode.get();
+            // the geodes are identified by name.
+            if (geode)
             {
-                //std::cout << "    compute pixel coords "<<pixel_x<<"  "<<pixel_y<<std::endl;
-
-                int pr_wx, pr_wy;
-                unsigned int pr_width, pr_height;
-                cmm->getProjectionRect( pr_wx, pr_wy, pr_width, pr_height );
-
-                int rs_wx, rs_wy;
-                unsigned int rs_width, rs_height;
-                rs->getWindowRect( rs_wx, rs_wy, rs_width, rs_height );
-                
-                pr_wx += rs_wx;
-                pr_wy += rs_wy;
-
-                //std::cout << "    wx = "<<pr_wx<<"  wy = "<<pr_wy<<" width="<<pr_width<<" height="<<pr_height<<std::endl;
-
-
-
-                if (pixel_x<(float)pr_wx) break;
-                if (pixel_x>(float)(pr_wx+pr_width)) break;
-
-                if (pixel_y<(float)pr_wy) break;
-                if (pixel_y>(float)(pr_wy+pr_height)) break;
-
-
-                float rx = 2.0f*(pixel_x - (float)pr_wx)/(float)pr_width-1.0f;
-                float ry = 2.0f*(pixel_y - (float)pr_wy)/(float)pr_height-1.0f;
-
-                //std::cout << "    rx "<<rx<<"  "<<ry<<std::endl;
-                
-                osgProducer::OsgSceneHandler* sh = dynamic_cast<osgProducer::OsgSceneHandler*>(cmm->getSceneHandler());
-                osg::Matrix vum;
-                if (sh!=0 && sh->getModelViewMatrix()!=0 && sh->getProjectionMatrix()!=0)
+                if (!geode->getName().empty())
                 {
-                    vum.set((*(sh->getModelViewMatrix())) *
-                            (*(sh->getProjectionMatrix())));
+                    gdlist=gdlist+" "+geode->getName();
                 }
                 else
                 {
-                    vum.set(osg::Matrix(cmm->getViewMatrix()) *
-                            osg::Matrix(cmm->getProjectionMatrix())/* * 
-                            osg::Matrix::translate(1.0f,1.0f,1.0f) *
-                            osg::Matrix::scale(0.5f,0.5f,0.5f)*/);
+                    gdlist=gdlist+" geode";
                 }
-                
-                osgUtil::PickVisitor iv;
-                osgUtil::IntersectVisitor::HitList& hlist=iv.getHits(scene, vum, rx,ry);
-                if (iv.hits())
-                {
-                    for(osgUtil::IntersectVisitor::HitList::iterator hitr=hlist.begin();
-                    hitr!=hlist.end();
-                    ++hitr)
-                    {
-                        //osg::Vec3 ip = hitr->getLocalIntersectPoint();
-                        //osg::Vec3 in = hitr->getLocalIntersectNormal();
-                        osg::Geode* geode = hitr->_geode.get();
-                        // the geodes are identified by name.
-                        if (geode)
-                        {
-                            if (!geode->getName().empty())
-                            {
-                                gdlist=gdlist+" "+geode->getName();
-                            }
-                            else
-                            {
-                                gdlist=gdlist+" geode";
-                            }
-                        } 
-                    }
-                }
-            }
+            } 
         }
-
-        setLabel(gdlist);
     }
+    setLabel(gdlist);
 }
 
 osg::Node* createHUD(osgText::Text* updateText)
@@ -311,8 +205,7 @@ int main( int argc, char **argv )
     
 
     // construct the viewer.
-    //osgProducer::Viewer viewer(arguments);
-    osgProducer::Viewer viewer(BuildConfig());
+    osgProducer::Viewer viewer(arguments);
 
     // set up the value with sensible default event handlers.
     viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);

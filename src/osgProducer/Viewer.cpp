@@ -2,6 +2,7 @@
 #include <osg/ApplicationUsage>
 
 #include <osgUtil/UpdateVisitor>
+#include <osgUtil/PickVisitor>
 
 #include <osgDB/Registry>
 
@@ -299,6 +300,116 @@ void Viewer::frame()
     OsgCameraGroup::frame();
 }
 
+bool Viewer::computePixelCoords(float x,float y,unsigned int cameraNum,float& pixel_x,float& pixel_y)
+{
+    Producer::KeyboardMouse* km = getKeyboardMouse();
+    if (!km) return false;
+
+    if (cameraNum>=getNumberOfCameras()) return false;
+
+    Producer::Camera* camera=getCamera(cameraNum);
+    Producer::RenderSurface* rs = camera->getRenderSurface();
+
+    //std::cout << "checking camara "<<i<<std::endl;
+
+    if (km->computePixelCoords(x,y,rs,pixel_x,pixel_y))
+    {
+        //std::cout << "    compute pixel coords "<<pixel_x<<"  "<<pixel_y<<std::endl;
+
+        int pr_wx, pr_wy;
+        unsigned int pr_width, pr_height;
+        camera->getProjectionRect( pr_wx, pr_wy, pr_width, pr_height );
+
+        int rs_wx, rs_wy;
+        unsigned int rs_width, rs_height;
+        rs->getWindowRect( rs_wx, rs_wy, rs_width, rs_height );
+
+        pixel_x -= (float)rs_wx;
+        pixel_y -= (float)rs_wy;
+
+        //std::cout << "    wx = "<<pr_wx<<"  wy = "<<pr_wy<<" width="<<pr_width<<" height="<<pr_height<<std::endl;
+
+        if (pixel_x<(float)pr_wx) return false;
+        if (pixel_x>(float)(pr_wx+pr_width)) return false;
+
+        if (pixel_y<(float)pr_wy) return false;
+        if (pixel_y>(float)(pr_wy+pr_height)) return false;
+
+        return true;
+    }
+    return false;
+}
+
+bool Viewer::computeNearFar(float x,float y,unsigned int cameraNum,osg::Vec3& near, osg::Vec3& far)
+{
+    if (cameraNum>=getSceneHandlerList().size()) return false;
+
+    OsgSceneHandler* scenehandler = getSceneHandlerList()[cameraNum].get();
+    
+    float pixel_x,pixel_y;
+    if (computePixelCoords(x,y,cameraNum,pixel_x,pixel_y))
+    {
+        return scenehandler->projectWindowXYIntoObject(pixel_x,pixel_y,near,far);
+    }
+    return false;
+
+}
+
+bool Viewer::computeIntersections(float x,float y,unsigned int cameraNum,osgUtil::IntersectVisitor::HitList& hits)
+{
+    float pixel_x,pixel_y;
+    if (computePixelCoords(x,y,cameraNum,pixel_x,pixel_y))
+    {
+
+        Producer::Camera* camera=getCamera(cameraNum);
+
+        int pr_wx, pr_wy;
+        unsigned int pr_width, pr_height;
+        camera->getProjectionRect( pr_wx, pr_wy, pr_width, pr_height );
+
+        // convert into clip coords.
+        float rx = 2.0f*(pixel_x - (float)pr_wx)/(float)pr_width-1.0f;
+        float ry = 2.0f*(pixel_y - (float)pr_wy)/(float)pr_height-1.0f;
+
+        //std::cout << "    rx "<<rx<<"  "<<ry<<std::endl;
+
+        osgProducer::OsgSceneHandler* sh = dynamic_cast<osgProducer::OsgSceneHandler*>(camera->getSceneHandler());
+        osg::Matrix vum;
+        if (sh!=0 && sh->getModelViewMatrix()!=0 && sh->getProjectionMatrix()!=0)
+        {
+            vum.set((*(sh->getModelViewMatrix())) *
+                    (*(sh->getProjectionMatrix())));
+        }
+        else
+        {
+            vum.set(osg::Matrix(camera->getViewMatrix()) *
+                    osg::Matrix(camera->getProjectionMatrix()));
+        }
+
+        osgUtil::PickVisitor iv;
+        
+        osgUtil::IntersectVisitor::HitList localHits;        
+        localHits = iv.getHits(getSceneData(), vum, rx,ry);
+        
+        if (localHits.empty()) return false;
+        
+        hits.insert(hits.begin(),localHits.begin(),localHits.end());
+        
+        return true;
+    }
+    return false;
+}
+
+bool Viewer::computeIntersections(float x,float y,osgUtil::IntersectVisitor::HitList& hits)
+{
+    bool hitFound = false;
+    osgUtil::IntersectVisitor::HitList hlist;
+    for(unsigned int i=0;i<getNumberOfCameras();++i)
+    {
+        if (computeIntersections(x,y,i,hits)) hitFound = true;
+    }
+    return hitFound;
+}
 
 void Viewer::selectCameraManipulator(unsigned int no)
 {

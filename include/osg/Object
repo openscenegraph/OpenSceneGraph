@@ -104,7 +104,7 @@ class SG_EXPORT Object : public Referenced
             = new Node().*/
         virtual ~Object() {}
         
-         DataVariance _dataVariance;
+        DataVariance _dataVariance;
 
         ref_ptr<Referenced> _userData;
 

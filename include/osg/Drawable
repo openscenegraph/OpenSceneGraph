@@ -214,16 +214,8 @@ class SG_EXPORT Drawable : public Object
           * without fuss and can even diable the inner draw in required.*/
         struct DrawCallback : public osg::Referenced
         {
-#ifdef USE_DEPRECATED_API
-            // adapt old drawImmediateMode API into new API to keep things compiling on old code.
-            virtual void drawImplementation(State& state,const osg::Drawable* drawable) const { drawImmediateMode(state,const_cast<Drawable*>(drawable)); }
-
             /** do customized draw code.*/
-            virtual void drawImmediateMode(State&,osg::Drawable*) const {};
-#else
-            /** do customized draw code.*/
-            virtual void drawImplementation(State& state,const osg::Drawable* drawable) const = 0;            
-#endif            
+            virtual void drawImplementation(State& state,const osg::Drawable* drawable) const = 0;
         };
 
         /** Set the DrawCallback which allows users to attach customize the drawing of existing Drawable object.*/
@@ -237,26 +229,13 @@ class SG_EXPORT Drawable : public Object
 
 
 
-#ifdef USE_DEPRECATED_API
-
-        // adapt old drawImmediateMode API into new API to keep things compiling on old code.
-        virtual void drawImplementation(State& state) const { (const_cast<Drawable*>(this))->drawImmediateMode(state); }
-
-        /** draw directly ignoring an OpenGL display list which could be attached.
-          * This is the internal draw method which does the drawing itself,
-          * and is the method to override when deriving from Drawable.
-          */
-        virtual void drawImmediateMode(State&) {}
-
-#else
-
         /** draw directly ignoring an OpenGL display list which could be attached.
           * This is the internal draw method which does the drawing itself,
           * and is the method to override when deriving from Drawable.
           */
         virtual void drawImplementation(State& state) const = 0;
 
-#endif
+
 
         /** use deleteDisplayList instead of glDeleteList to allow
           * OpenGL display list to cached until they can be deleted
@@ -267,6 +246,7 @@ class SG_EXPORT Drawable : public Object
         /** flush all the cached display list which need to be deleted
           * in the OpenGL context related to contextID.*/
         static void flushDeletedDisplayLists(uint contextID);
+
 
         enum AttributeType
         {

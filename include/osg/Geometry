@@ -130,21 +130,6 @@ class SG_EXPORT Geometry : public Drawable
         
         void addPrimitiveSet(PrimitiveSet* primitive) { if (primitive) _primitives.push_back(primitive); dirtyDisplayList(); dirtyBound(); }
 
-#ifdef USE_DEPRECATED_API
-
-        typedef PrimitiveSetList PrimitiveList;
-
-        void setPrimitiveList(const PrimitiveSetList& primitives) { _primitives = primitives; dirtyDisplayList(); dirtyBound(); }
-        PrimitiveList& getPrimitiveList() { return _primitives; }
-        const PrimitiveList& getPrimitiveList() const { return _primitives; }
-
-        unsigned int getNumPrimitives() const { return _primitives.size(); }
-        Primitive* getPrimitive(unsigned int pos) { return _primitives[pos].get(); }
-        const Primitive* getPrimitive(unsigned int pos) const { return _primitives[pos].get(); }
-
-        void addPrimitive(PrimitiveSet* primitive) { if (primitive) _primitives.push_back(primitive); dirtyDisplayList(); dirtyBound(); }
-
-#endif
 
         /** return true if OpenGL fast paths will be used with drawing this Geometry.
           * Fast paths use vertex arrays, and glDrawArrays/glDrawElements.  Slow paths

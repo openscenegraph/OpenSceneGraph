@@ -270,6 +270,10 @@ SOURCE=..\..\..\src\osgPlugins\osg\Switch.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\osg\TessellationHints.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\osg\TexEnv.cpp
 # End Source File
 # Begin Source File

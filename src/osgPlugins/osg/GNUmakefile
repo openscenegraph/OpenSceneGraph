@@ -47,6 +47,7 @@ CXXFILES =\
         Sequence.cpp\
         Stencil.cpp\
         Switch.cpp\
+	TessellationHints.cpp\
         TexEnv.cpp\
         TexEnvCombine.cpp\
         TexGen.cpp\

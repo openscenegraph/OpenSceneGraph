@@ -13,7 +13,6 @@
 #include <osgUtil/Optimizer>
 
 #include <osg/Transform>
-#include <osg/TransformAttributeFunctor>
 #include <osg/MatrixTransform>
 #include <osg/PositionAttitudeTransform>
 #include <osg/LOD>
@@ -24,6 +23,8 @@
 #include <osg/OccluderNode>
 #include <osg/Sequence>
 #include <osg/Switch>
+
+#include <osgUtil/TransformAttributeFunctor>
 
 #include <typeinfo>
 #include <algorithm>
@@ -497,7 +498,7 @@ void CollectLowestTransformsVisitor::doTransform(osg::Object* obj,osg::Matrix& m
     osg::Drawable* drawable = dynamic_cast<osg::Drawable*>(obj);
     if (drawable)
     {
-        osg::TransformAttributeFunctor tf(matrix);
+        osgUtil::TransformAttributeFunctor tf(matrix);
         drawable->accept(tf);
         drawable->dirtyBound();
         return;
@@ -532,7 +533,7 @@ void CollectLowestTransformsVisitor::doTransform(osg::Object* obj,osg::Matrix& m
         osg::Matrix matrix_no_trans = matrix;
         matrix_no_trans.setTrans(0.0f,0.0f,0.0f);
   
-        osg::TransformAttributeFunctor tf(matrix_no_trans);
+        osgUtil::TransformAttributeFunctor tf(matrix_no_trans);
 
         osg::Vec3 axis = osg::Matrix::transform3x3(tf._im,billboard->getAxis());
         axis.normalize();

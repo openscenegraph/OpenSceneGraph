@@ -26,6 +26,8 @@ class SG_EXPORT Texture2D : public Texture
         
         Texture2D();
 
+        Texture2D(osg::Image* image);
+
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         Texture2D(const Texture2D& text,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
         

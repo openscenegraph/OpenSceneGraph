@@ -1,4 +1,5 @@
 #include <osg/ShapeDrawable>
+#include <osg/Notify>
 
 #include <osgDB/Registry>
 #include <osgDB/Input>
@@ -10,17 +11,6 @@ using namespace osgDB;
 // forward declare functions to use later.
 bool ShapeDrawable_readLocalData(Object& obj, Input& fr);
 bool ShapeDrawable_writeLocalData(const Object& obj, Output& fw);
-
-// //register the read and write functions with the osgDB::Registry.
-// RegisterDotOsgWrapperProxy g_ShapeDrawableFuncProxy
-// (
-//     new osg::ShapeDrawable,
-//     "ShapeDrawable",
-//     "Object Drawable ShapeDrawable",
-//     0,
-//     0,
-//     DotOsgWrapper::READ_AND_WRITE
-// );
 
 RegisterDotOsgWrapperProxy g_ShapeDrawableFuncProxy
 (
@@ -52,6 +42,16 @@ bool ShapeDrawable_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
+    ref_ptr<Object> readObject = fr.readObject();
+    if (readObject.valid()) {
+        TessellationHints* hints = dynamic_cast<TessellationHints*>(readObject.get());
+        if (hints)
+            geom.setTessellationHints(hints);
+        else
+            notify(WARN) << "Warning: " << readObject->className() << " loaded but cannot be attached to ShapeDrawable.\n";
+        iteratorAdvanced = true;
+    }
+
     return iteratorAdvanced;
 }
 
@@ -60,6 +60,10 @@ bool ShapeDrawable_writeLocalData(const Object& obj, Output& fw)
     const ShapeDrawable& geom = static_cast<const ShapeDrawable&>(obj);
 
     fw.indent() << "color " << geom.getColor() << std::endl;
+
+    const TessellationHints* hints = geom.getTessellationHints();
+    if (hints)
+        fw.writeObject(*hints);
 
     return true;
 }

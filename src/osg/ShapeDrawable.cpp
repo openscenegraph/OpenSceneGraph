@@ -16,6 +16,11 @@
 
 using namespace osg;
 
+// arbitrary minima for rows & segments
+const unsigned int MIN_NUM_ROWS = 3;
+const unsigned int MIN_NUM_SEGMENTS = 5;
+
+
 ///////////////////////////////////////////////////////////////////////////////
 //
 // draw shape
@@ -29,11 +34,12 @@ class DrawShapeVisitor : public ConstShapeVisitor
 	    _state(state),
 	    _hints(hints)
         {
+#if 0
             if (hints)
             {
                 notify(NOTICE)<<"Warning: TessellationHints ignored in present osg::ShapeDrawable implementation."<<std::endl;
             }
-        
+#endif   
         }
     
     	virtual void apply(const Sphere&);
@@ -59,9 +65,17 @@ void DrawShapeVisitor::apply(const Sphere& sphere)
 
 	glTranslatef(sphere.getCenter().x(),sphere.getCenter().y(),sphere.getCenter().z());
 	
-	
     	unsigned int numSegments = 40;
     	unsigned int numRows = 20;
+        if (_hints && _hints->getDetailRatio() != 1.0f) {
+            float ratio = _hints->getDetailRatio();
+            numRows = (unsigned int) (numRows * ratio);
+            if (numRows < MIN_NUM_ROWS)
+                numRows = MIN_NUM_ROWS;
+            numSegments = (unsigned int) (numSegments * ratio);
+            if (numSegments < MIN_NUM_SEGMENTS)
+                numSegments = MIN_NUM_SEGMENTS;
+        }
 	
 	float lDelta = osg::PI/(float)numRows;
 	float vDelta = 1.0f/(float)numRows;
@@ -76,9 +90,7 @@ void DrawShapeVisitor::apply(const Sphere& sphere)
     	float nzBase=-1.0f;
     	float nRatioBase=0.0f;
 	
-    	for(unsigned int rowi=0;
-	    rowi<numRows;
-	    ++rowi)
+    	for(unsigned int rowi=0; rowi<numRows; ++rowi)
     	{
 
 	    float lTop = lBase+lDelta;
@@ -93,8 +105,7 @@ void DrawShapeVisitor::apply(const Sphere& sphere)
     		float angle = 0.0f;
     		float texCoord = 0.0f;
 
-    		for(unsigned int topi=0;
-		    topi<numSegments;
+    		for(unsigned int topi=0; topi<numSegments;
 		    ++topi,angle+=angleDelta,texCoord+=texCoordHorzDelta)
     		{
 
@@ -135,14 +146,16 @@ void DrawShapeVisitor::apply(const Sphere& sphere)
 	    nRatioBase=nRatioTop;
 
     	}
-	
-	
 
     glPopMatrix();        
 }
 
 void DrawShapeVisitor::apply(const Box& box)
 {
+    // evaluate hints
+    bool createBody = (_hints ? _hints->getCreateBody() : true);
+    bool createTop = (_hints ? _hints->getCreateTop() : true);
+    bool createBottom = (_hints ? _hints->getCreateBottom() : true);
 
     float dx = box.getHalfLengths().x();
     float dy = box.getHalfLengths().y();
@@ -160,6 +173,7 @@ void DrawShapeVisitor::apply(const Box& box)
 
 	glBegin(GL_QUADS);
 
+        if (createBody) {
 	    // -ve y plane
 	    glNormal3f(0.0f,-1.0f,0.0f);
 
@@ -219,7 +233,9 @@ void DrawShapeVisitor::apply(const Box& box)
 
 	    glTexCoord2f(1.0f,1.0f);
 	    glVertex3f(-dx,-dy,dz);
+        }
 
+        if (createTop) {
 	    // +ve z plane
 	    glNormal3f(0.0f,0.0f,1.0f);
 
@@ -234,7 +250,9 @@ void DrawShapeVisitor::apply(const Box& box)
 
 	    glTexCoord2f(1.0f,1.0f);
 	    glVertex3f(dx,dy,dz);
+        }
 
+        if (createBottom) {
 	    // -ve z plane
 	    glNormal3f(0.0f,0.0f,-1.0f);
 
@@ -249,6 +267,7 @@ void DrawShapeVisitor::apply(const Box& box)
 
 	    glTexCoord2f(1.0f,1.0f);
 	    glVertex3f(-dx,dy,-dz);
+        }
 
 	glEnd();
 
@@ -268,9 +287,21 @@ void DrawShapeVisitor::apply(const Cone& cone)
     	    glMultMatrixf(rotation.ptr());
 	}
 
+        // evaluate hints
+        bool createBody = (_hints ? _hints->getCreateBody() : true);
+        bool createBottom = (_hints ? _hints->getCreateBottom() : true);
 
     	unsigned int numSegments = 40;
     	unsigned int numRows = 10;
+        if (_hints && _hints->getDetailRatio() != 1.0f) {
+            float ratio = _hints->getDetailRatio();
+            numRows = (unsigned int) (numRows * ratio);
+            if (numRows < MIN_NUM_ROWS)
+                numRows = MIN_NUM_ROWS;
+            numSegments = (unsigned int) (numSegments * ratio);
+            if (numSegments < MIN_NUM_SEGMENTS)
+                numSegments = MIN_NUM_SEGMENTS;
+        }
 	
 	float r = cone.getRadius();
 	float h = cone.getHeight();
@@ -294,79 +325,71 @@ void DrawShapeVisitor::apply(const Cone& cone)
     	float angle;
 	float texCoord;
 
-    	for(unsigned int rowi=0;
-	    rowi<numRows;
-	    ++rowi,topz=basez, basez-=hDelta, topr=baser, baser+=rDelta, topv=basev, basev-=texCoordRowDelta)
-    	{
-    	    // we can't use a fan for the cone top
-	    // since we need different normals at the top
-	    // for each face..
-	    glBegin(GL_QUAD_STRIP);
+        if (createBody) {
+            for(unsigned int rowi=0; rowi<numRows;
+                ++rowi,topz=basez, basez-=hDelta, topr=baser, baser+=rDelta, topv=basev, basev-=texCoordRowDelta) {
+                    // we can't use a fan for the cone top
+                    // since we need different normals at the top
+                    // for each face..
+                    glBegin(GL_QUAD_STRIP);
 
-    		angle = 0.0f;
-    		texCoord = 0.0f;
-    		for(unsigned int topi=0;
-		    topi<numSegments;
-		    ++topi,angle+=angleDelta,texCoord+=texCoordHorzDelta)
-    		{
+                    angle = 0.0f;
+                    texCoord = 0.0f;
+                    for(unsigned int topi=0; topi<numSegments;
+                        ++topi,angle+=angleDelta,texCoord+=texCoordHorzDelta) {
 
-    		    float c = cosf(angle);
-    		    float s = sinf(angle);
+                        float c = cosf(angle);
+                        float s = sinf(angle);
 
-		    glNormal3f(c*normalRatio,s*normalRatio,normalz);
+                        glNormal3f(c*normalRatio,s*normalRatio,normalz);
 
-		    glTexCoord2f(texCoord,topv);
-		    glVertex3f(c*topr,s*topr,topz);
+                        glTexCoord2f(texCoord,topv);
+                        glVertex3f(c*topr,s*topr,topz);
 
-		    glTexCoord2f(texCoord,basev);
-		    glVertex3f(c*baser,s*baser,basez);
+                        glTexCoord2f(texCoord,basev);
+                        glVertex3f(c*baser,s*baser,basez);
+                    }
 
-    		}
+                    // do last point by hand to ensure no round off errors.
+                    glNormal3f(normalRatio,0.0f,normalz);
 
-    		// do last point by hand to ensure no round off errors.
-		glNormal3f(normalRatio,0.0f,normalz);
+                    glTexCoord2f(1.0f,topv);
+                    glVertex3f(topr,0.0f,topz);
 
-		glTexCoord2f(1.0f,topv);
-		glVertex3f(topr,0.0f,topz);
+                    glTexCoord2f(1.0f,basev);
+                    glVertex3f(baser,0.0f,basez);
 
-		glTexCoord2f(1.0f,basev);
-		glVertex3f(baser,0.0f,basez);
+                    glEnd();
+            }
+        }
 
-	    glEnd();
-
-    	}
-
-    	// we can't use a fan for the cone top
-	// since we need different normals at the top
-	// for each face..
-	glBegin(GL_TRIANGLE_FAN);
+        if (createBottom) {
+            glBegin(GL_TRIANGLE_FAN);
 	
-    	    angle = osg::PI*2.0f;
-    	    texCoord = 1.0f;
-    	    basez = cone.getBaseOffset();
+            angle = osg::PI*2.0f;
+            texCoord = 1.0f;
+            basez = cone.getBaseOffset();
 
-	    glNormal3f(0.0f,0.0f,-1.0f);
-	    glTexCoord2f(0.5f,0.5f);
-	    glVertex3f(0.0f,0.0f,basez);
+            glNormal3f(0.0f,0.0f,-1.0f);
+            glTexCoord2f(0.5f,0.5f);
+            glVertex3f(0.0f,0.0f,basez);
 
-    	    for(unsigned int bottomi=0;
-		bottomi<numSegments;
-		++bottomi,angle-=angleDelta,texCoord-=texCoordHorzDelta)
-    	    {
+            for(unsigned int bottomi=0;	bottomi<numSegments;
+                ++bottomi,angle-=angleDelta,texCoord-=texCoordHorzDelta) {
 
-    		float c = cosf(angle);
-    		float s = sinf(angle);
+                float c = cosf(angle);
+                float s = sinf(angle);
 
-		glTexCoord2f(c*0.5f+0.5f,s*0.5f+0.5f);
-		glVertex3f(c*r,s*r,basez);
+                glTexCoord2f(c*0.5f+0.5f,s*0.5f+0.5f);
+                glVertex3f(c*r,s*r,basez);
+            }
 
-    	    }
+            glTexCoord2f(1.0f,0.0f);
+            glVertex3f(r,0.0f,basez);
 
-	    glTexCoord2f(1.0f,0.0f);
-	    glVertex3f(r,0.0f,basez);
+            glEnd();
+        }
 	
-	glEnd();
-
     glPopMatrix();
 }
 
@@ -382,12 +405,21 @@ void DrawShapeVisitor::apply(const Cylinder& cylinder)
     	    glMultMatrixf(rotation.ptr());
 	}
 
+        // evaluate hints
+        bool createBody = (_hints ? _hints->getCreateBody() : true);
+        bool createTop = (_hints ? _hints->getCreateTop() : true);
+        bool createBottom = (_hints ? _hints->getCreateBottom() : true);
 
     	unsigned int numSegments = 40;
+        if (_hints && _hints->getDetailRatio() != 1.0f) {
+            float ratio = _hints->getDetailRatio();
+            numSegments = (unsigned int) (numSegments * ratio);
+            if (numSegments < MIN_NUM_SEGMENTS)
+                numSegments = MIN_NUM_SEGMENTS;
+        }
 	
 	float angleDelta = 2.0f*osg::PI/(float)numSegments;
-	
-	float texCoordDelta = 1.0/(float)numSegments;
+	float texCoordDelta = 1.0f/(float)numSegments;
 	
 	float r = cylinder.getRadius();
 	float h = cylinder.getHeight();
@@ -395,16 +427,17 @@ void DrawShapeVisitor::apply(const Cylinder& cylinder)
 	float basez = -h*0.5f;
 	float topz = h*0.5f;
 	
+        float angle = 0.0f;
+        float texCoord = 0.0f;
+
     	// cylinder body
-	glBegin(GL_QUAD_STRIP);
+        if (createBody) {
+            glBegin(GL_QUAD_STRIP);
 	
-    	    float angle = 0.0f;
-    	    float texCoord = 0.0f;
     	    for(unsigned int bodyi=0;
 		bodyi<numSegments;
 		++bodyi,angle+=angleDelta,texCoord+=texCoordDelta)
     	    {
-
     		float c = cosf(angle);
     		float s = sinf(angle);
 
@@ -415,7 +448,6 @@ void DrawShapeVisitor::apply(const Cylinder& cylinder)
 
 		glTexCoord2f(texCoord,0.0f);
 		glVertex3f(c*r,s*r,basez);
-
     	    }
 
     	    // do last point by hand to ensure no round off errors.
@@ -427,12 +459,12 @@ void DrawShapeVisitor::apply(const Cylinder& cylinder)
 	    glTexCoord2f(1.0f,0.0f);
 	    glVertex3f(r,0.0f,basez);
 	
-	glEnd();
+            glEnd();
+        }
 
-
-
-    	// cylinder top
-	glBegin(GL_TRIANGLE_FAN);
+        // cylinder top
+        if (createTop) {
+            glBegin(GL_TRIANGLE_FAN);
 	
 	    glNormal3f(0.0f,0.0f,1.0f);
 	    glTexCoord2f(0.5f,0.5f);
@@ -444,22 +476,22 @@ void DrawShapeVisitor::apply(const Cylinder& cylinder)
 		topi<numSegments;
 		++topi,angle+=angleDelta,texCoord+=texCoordDelta)
     	    {
-
     		float c = cosf(angle);
     		float s = sinf(angle);
 
 		glTexCoord2f(c*0.5f+0.5f,s*0.5f+0.5f);
 		glVertex3f(c*r,s*r,topz);
-
     	    }
 
 	    glTexCoord2f(1.0f,0.0f);
 	    glVertex3f(r,0.0f,topz);
 	
-	glEnd();
+            glEnd();
+        }
 
     	// cylinder bottom
-	glBegin(GL_TRIANGLE_FAN);
+        if (createBottom) {
+            glBegin(GL_TRIANGLE_FAN);
 	
 	    glNormal3f(0.0f,0.0f,-1.0f);
 	    glTexCoord2f(0.5f,0.5f);
@@ -471,19 +503,18 @@ void DrawShapeVisitor::apply(const Cylinder& cylinder)
 		bottomi<numSegments;
 		++bottomi,angle-=angleDelta,texCoord-=texCoordDelta)
     	    {
-
     		float c = cosf(angle);
     		float s = sinf(angle);
 
 		glTexCoord2f(c*0.5f+0.5f,s*0.5f+0.5f);
 		glVertex3f(c*r,s*r,basez);
-
     	    }
 
 	    glTexCoord2f(0.0f,0.0f);
 	    glVertex3f(r,0.0f,basez);
 	
-	glEnd();
+            glEnd();
+        }
 
     glPopMatrix();
 }
@@ -519,8 +550,6 @@ void DrawShapeVisitor::apply(const TriangleMesh& mesh)
 
 	glEnd();
      }
-
-
 }
 
 void DrawShapeVisitor::apply(const ConvexHull& hull)
@@ -1262,8 +1291,9 @@ ShapeDrawable::ShapeDrawable():
 {
 }
 
-ShapeDrawable::ShapeDrawable(Shape* shape):
-  _color(1.0f,1.0f,1.0f,1.0f)
+ShapeDrawable::ShapeDrawable(Shape* shape,TessellationHints* hints):
+  _color(1.0f,1.0f,1.0f,1.0f),
+  _tessellationHints(hints)
 {
     setShape(shape);
 }

@@ -28,6 +28,15 @@ Texture2D::Texture2D():
     setUseHardwareMipMapGeneration(true);
 }
 
+Texture2D::Texture2D(osg::Image* image):
+            _textureWidth(0),
+            _textureHeight(0),
+            _numMipmapLevels(0)
+{
+    setUseHardwareMipMapGeneration(true);
+    setImage(image);
+}
+
 Texture2D::Texture2D(const Texture2D& text,const CopyOp& copyop):
             Texture(text,copyop),
             _image(copyop(text._image.get())),

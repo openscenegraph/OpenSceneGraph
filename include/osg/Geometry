@@ -394,6 +394,11 @@ class SG_EXPORT Geometry : public Drawable
         mutable bool                    _fastPath;
 };
 
+/** Convenience function to be used for creating quad geometry with texture coords.
+  * Tex coords go from bottom left (0,0) to top right (1,1).*/
+extern SG_EXPORT Geometry* createTexturedQuadGeometry(const Vec3& corner,const Vec3& widthVec,const Vec3& heightVec);
+
+
 
 }
 

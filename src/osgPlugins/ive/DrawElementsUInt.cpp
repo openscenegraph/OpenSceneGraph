@@ -15,6 +15,7 @@
 #include "Exception.h"
 #include "DrawElementsUInt.h"
 #include "PrimitiveSet.h"
+#include <osg/Endian>
 
 using namespace ive;
 
@@ -36,7 +37,8 @@ void DrawElementsUInt::write(DataOutputStream* out){
     out->writeCharArray((const char*)&front(), size() * INTSIZE);
 }
 
-void DrawElementsUInt::read(DataInputStream* in){
+void DrawElementsUInt::read(DataInputStream* in)
+{
     // Read DrawElementsUInt's identification.
     int id = in->peekInt();
     if(id == IVEDRAWELEMENTSUINT){
@@ -54,6 +56,14 @@ void DrawElementsUInt::read(DataInputStream* in){
         int size = in->readInt();
         resize(size);
         in->readCharArray((char*)&front(), size * INTSIZE);
+
+        if (in->_byteswap)
+        {
+           for (int i = 0 ; i < size ; i++ )
+           {
+                osg::swapBytes4((char*)&((*this)[i])) ;
+           }
+        }        
     }
     else{
         throw Exception("DrawElementsUInt::read(): Expected DrawElementsUInt identification.");

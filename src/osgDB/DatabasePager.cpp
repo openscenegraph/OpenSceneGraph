@@ -19,6 +19,7 @@ DatabasePager::DatabasePager()
 {
     //osg::notify(osg::INFO)<<"Constructing DatabasePager()"<<std::endl;
     
+    _useFrameBlock = false;    
     _frameNumber = 0;
     _frameBlock = new Block;
     _fileRequestListEmptyBlock = new Block;
@@ -45,8 +46,7 @@ DatabasePager::~DatabasePager()
         }
         
     }
-    std::cout<<"DatabasePager::~DatabasePager() stopped running"<<std::endl;
-        
+    //std::cout<<"DatabasePager::~DatabasePager() stopped running"<<std::endl;
 }
 
 void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* group, float priority, const osg::FrameStamp* framestamp)
@@ -263,20 +263,18 @@ void DatabasePager::run()
     // by keeping deleted texture objects around for 10 seconds after being deleted.
     osg::Texture::getTextureObjectManager()->setExpiryDelay(10.0f);
     
+    bool firstTime = true;
+    
     do
     {
-        //std::cout<<"In run loop"<<std::endl;
     
-    
-        //osg::Timer_t t1 = osg::Timer::instance()->tick();
         _fileRequestListEmptyBlock->block();
-        //osg::Timer_t t2 = osg::Timer::instance()->tick();
-        _frameBlock->block();
-        //osg::Timer_t t3 = osg::Timer::instance()->tick();
-        
-        //std::cout<<"Time in _fileRequestListEmptyBlock block()"<<osg::Timer::instance()->delta_m(t1,t2)<<std::endl;
-        //std::cout<<"Time in _frameBlock block()"<<osg::Timer::instance()->delta_m(t2,t3)<<std::endl;
-    
+
+        if (_useFrameBlock)
+        {
+            _frameBlock->block();
+        }      
+   
         //
         // delete any children if required.
         //
@@ -316,7 +314,7 @@ void DatabasePager::run()
                 osg::notify(osg::INFO)<<"In DatabasePager thread readNodeFile("<<databaseRequest->_fileName<<")"<<std::endl;
                 osg::Timer_t before = osg::Timer::instance()->tick();
                 databaseRequest->_loadedModel = osgDB::readNodeFile(databaseRequest->_fileName);
-                osg::notify(osg::INFO)<<"     node read"<<osg::Timer::instance()->delta_m(before,osg::Timer::instance()->tick())<<std::endl;
+                osg::notify(osg::INFO)<<"     node read in "<<osg::Timer::instance()->delta_m(before,osg::Timer::instance()->tick())<<" ms"<<std::endl;
 
                 bool loadedObjectsNeedToBeCompiled = false;
 
@@ -350,7 +348,6 @@ void DatabasePager::run()
                     }
                 }            
 
-
                 // move the databaseRequest from the front of the fileRequest to the end of
                 // dataLoad list.
                 _fileRequestListMutex.lock();
@@ -376,6 +373,7 @@ void DatabasePager::run()
                     if (_fileRequestList.empty()) _fileRequestListEmptyBlock->reset();
 
                 _fileRequestListMutex.unlock();
+
             }
             else
             {
@@ -389,13 +387,19 @@ void DatabasePager::run()
                     if (_fileRequestList.empty()) _fileRequestListEmptyBlock->reset();
 
                 _fileRequestListMutex.unlock();
+
             }
         }
         
         // go to sleep till our the next time our thread gets scheduled.
-        //YieldCurrentThread();
 
-        //std::cout<<"At end of loop"<<std::endl;
+        if (firstTime)
+        {
+            // do a yield to get round a peculiar thread hang when testCancel() is called 
+            // in certain cirumstances - of which there is no particular pattern.
+            YieldCurrentThread();
+            firstTime = false;
+        }
 
     } while (!testCancel());
     

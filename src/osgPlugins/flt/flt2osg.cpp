@@ -627,125 +627,68 @@ osg::Group* ConvertFromFLT::visitDOF(osg::Group& osgParent, DofRecord* rec)
     visitAncillary(osgParent, *transform, rec)->addChild( transform );
     visitPrimaryNode(*transform, (PrimNodeRecord*)rec);
         
-    // note for Judd (and others) shouldn't there be code in here to set up the transform matrix?
-    // as a transform with an identity matrix is effectively only a
-    // a Group... I will leave for other more familiar with the
-    // DofRecord to create the matrix as I don't have any Open Flight
-    // documentation.  RO August 2001.
-
-    // below is DOF code submitted by Sasa Bistrovic
     SDegreeOfFreedom* p_data = rec->getData();
 
-	//this first transfrom is the transformation fo the local coordinate system in DOF to global;
-	//that one is "fixed for all times"
-	//the second transform describes transfromation relative to local coordinate system
+    // get transformation to O_world
+    osg::Vec3 O ( p_data->OriginLocalDOF.x(),
+                  p_data->OriginLocalDOF.y(),
+                  p_data->OriginLocalDOF.z());
 
-	//first we need to setup local-to-global transform:
+    osg::Vec3 xAxis ( p_data->PointOnXaxis.x(),
+                      p_data->PointOnXaxis.y(),
+                      p_data->PointOnXaxis.z());
+    xAxis = xAxis - O;
+	xAxis.normalize();
 
-	//the translation matrix:
-	osg::Matrix l2g_translation;
+    osg::Vec3 xyPlane ( p_data->PointInXYplane.x(),
+                        p_data->PointInXYplane.y(),
+                        p_data->PointInXYplane.z());
+    xyPlane = xyPlane - O;
+	xyPlane.normalize();
+    
+    osg::Vec3 normalz = xAxis ^ xyPlane;
+	normalz.normalize();
 
-	//translation vector
-	osg::Vec3 origin_translation(p_data->OriginLocalDOF.x(), p_data->OriginLocalDOF.y(), p_data->OriginLocalDOF.z());
-	origin_translation *= _unitScale;//of course, has to be scaled to units used
+    // get X, Y, Z axis of the DOF in terms of global coordinates
+    osg::Vec3 Rz = normalz;
+    if (Rz == osg::Vec3(0,0,0)) Rz[2] = 1;
+    osg::Vec3 Rx = xAxis;
+    if (Rx == osg::Vec3(0,0,0)) Rx[0] = 1;
+    osg::Vec3 Ry = Rz ^ Rx;
 
-	//so we make translation matrix
-	l2g_translation.makeTranslate(origin_translation);
+    // create the putmatrix
+    osg::Matrix putmat( Rx.x(), Rx.y(), Rx.z(), 0, 
+                        Ry.x(), Ry.y(), Ry.z(), 0,
+                        Rz.x(), Rz.y(), Rz.z(), 0,
+                        O.x(), O.y(), O.z(), 1);
 
-	//now we need to construct rotation matrix that describes how is local coordinate system
-	//rotatoed in global:
-	osg::Matrix l2g_rotation;
+    // apply DOF transformation
+    osg::Vec3 trans(_unitScale*p_data->dfX._dfCurrent,
+                    _unitScale*p_data->dfY._dfCurrent,
+                    _unitScale*p_data->dfZ._dfCurrent);
 
-	//we make two normalized osg::Vec3s so we can cross-multiply them ....
-
-	//first we have "point on x axis", i.e. what the DOF local looks like in global
-	osg::Vec3 point_on_x_axis(p_data->PointOnXaxis.x(), p_data->PointOnXaxis.y(), p_data->PointOnXaxis.z());
-	point_on_x_axis *= _unitScale;
-	point_on_x_axis -= origin_translation;//we need to offset it for the origin
-
-	//second, we have "point in xy plane", so x ^ y gives us local z vector
-	osg::Vec3 point_in_xy_plane(p_data->PointInXYplane.x(), p_data->PointInXYplane.y(), p_data->PointInXYplane.z());
-	point_in_xy_plane *= _unitScale;
-	point_in_xy_plane -= origin_translation;//also offset it
-
-	//just in case, normalize them:
-	point_on_x_axis.normalize();
-
-	//now, local x in global is [1 0 0 1] * rotation_matrix, so we can directly write down first row
-	l2g_rotation.ptr()[0] = point_on_x_axis.x(); //that is mat[0][0]
-	l2g_rotation.ptr()[1] = point_on_x_axis.y(); //that is mat[0][1]
-	l2g_rotation.ptr()[2] = point_on_x_axis.z(); //that is mat[0][2]
-
-	
-	//the cross product of x ^point_in_local_xy_plane gives local z
-	osg::Vec3 z_transformed = point_on_x_axis ^ point_in_xy_plane;
-	z_transformed.normalize();//we have to normalize it, and than we can directly writ it down to rotation matrix
-	//we can write it down to matrix directly:
-	l2g_rotation.ptr()[8] = z_transformed.x(); //that is mat[2][0]
-	l2g_rotation.ptr()[9] = z_transformed.y(); //that is mat[2][1]
-	l2g_rotation.ptr()[10] = z_transformed.z(); //that is mat[2][2]
-
-	//now that we have x and z, we can get y = z ^ x
-	osg::Vec3 y_transformed = z_transformed ^ point_on_x_axis;
-	//and just in case, we can normalize it:
-	// y_transformed.normalize();
-
-	//this goes to rotation matrix:
-	l2g_rotation.ptr()[4] = y_transformed.x(); //that is mat[1][0]
-	l2g_rotation.ptr()[5] = y_transformed.y(); //that is mat[1][0]
-	l2g_rotation.ptr()[6] = y_transformed.z(); //that is mat[1][0]
-
-
-	//now we have actually the second "PUT" transformation, and the first is inverse
-	osg::Matrix second_put = l2g_rotation * l2g_translation;
-
-	//and we take invers of it since it has to be done at the end, see FLT spec
-	osg::Matrix the_first = osg::Matrix::inverse(second_put);
-
-	//now the vertices underneath DOF are "in local system" and we do TRS, as in record
-
-	//we setup matrix for this "second transformation"
-
-    osg::Matrix mat;
-
-	//first we write down translation
-	mat.makeTranslate(_unitScale*p_data->dfX._dfCurrent,
-                      _unitScale*p_data->dfY._dfCurrent,
-                      _unitScale*p_data->dfZ._dfCurrent);
-	
-	//now we read roll, pitch and yaw angles and convert them to radians
     float roll_rad = osg::inDegrees(p_data->dfRoll._dfCurrent);
     float pitch_rad = osg::inDegrees(p_data->dfPitch._dfCurrent);
     float yaw_rad = osg::inDegrees(p_data->dfYaw._dfCurrent);
 
-	osg::Matrix local_rotation;
+    float sx = rec->getData()->dfXscale.current();
+    float sy = rec->getData()->dfYscale.current();
+    float sz = rec->getData()->dfZscale.current();
 
-	//the rotation part: the flt spec says this order:
-	osg::Matrix mat_pitch = osg::Matrix::rotate(pitch_rad, 1.0, 0.0, 0.0);
-	osg::Matrix mat_roll = osg::Matrix::rotate(roll_rad, 0.0, 1.0, 0.0);	
-	osg::Matrix mat_yaw = osg::Matrix::rotate(yaw_rad, 0.0, 0.0, 1.0);
-	
-	local_rotation.preMult(mat_pitch);
-	local_rotation.preMult(mat_roll);
-	local_rotation.preMult(mat_yaw);
+	// this is the local DOF transformation
+	osg::Matrix dof_matrix = osg::Matrix::scale(sx, sy, sz)*
+                             osg::Matrix::rotate(yaw_rad,  0.0f,0.0f,1.0f)*
+                             osg::Matrix::rotate(roll_rad,  0.0f,1.0f,0.0f)*
+                             osg::Matrix::rotate(pitch_rad, 1.0f,0.0f,0.0f)*
+                             osg::Matrix::translate(trans);
 
-	mat.preMult(local_rotation);
+	// transforming local into global
+	dof_matrix.preMult(osg::Matrix::inverse(putmat));
 
-	//and finally, we have to put up a scale as read from record
-	osg::Matrix scale;
-	scale.makeScale(p_data->dfXscale._dfCurrent, 
-		p_data->dfYscale._dfCurrent, 
-		p_data->dfZscale._dfCurrent);
+	// transforming global into local
+	dof_matrix.postMult(putmat);
 
-	mat.preMult(scale);
-
-	//we have everything ready now: the first transformation is followed by "local transformation" and than "put back"
-
-	the_first.postMult(mat);
-	the_first.postMult(second_put);
-
-	transform->setMatrix(the_first);
-
+	transform->setMatrix(dof_matrix);
     return transform;        
 }
 

@@ -26,7 +26,7 @@ bool VariableRateCounter_readLocalData(osg::Object &obj, osgDB::Input &fr)
 
     osgParticle::rangef r;
     if (fr[0].matchWord("rateRange")) {
-        if (fr[1].getFloat(r.min) && fr[2].getFloat(r.max)) {
+        if (fr[1].getFloat(r.minimum) && fr[2].getFloat(r.maximum)) {
             myobj.setRateRange(r);
             fr += 3;
             itAdvanced = true;
@@ -41,7 +41,7 @@ bool VariableRateCounter_writeLocalData(const osg::Object &obj, osgDB::Output &f
     const osgParticle::VariableRateCounter &myobj = static_cast<const osgParticle::VariableRateCounter &>(obj);
 
     osgParticle::rangef r = myobj.getRateRange();
-    fw.indent() << "rateRange " << r.min << " " << r.max << std::endl;
+    fw.indent() << "rateRange " << r.minimum << " " << r.maximum << std::endl;
     
     return true;
 }

@@ -49,7 +49,7 @@ bool  read_particle(osgDB::Input &fr, osgParticle::Particle &P)
             }
             if (fr[0].matchWord("sizeRange")) {
                 osgParticle::rangef r;
-                if (fr[1].getFloat(r.min) && fr[2].getFloat(r.max)) {
+                if (fr[1].getFloat(r.minimum) && fr[2].getFloat(r.maximum)) {
                     P.setSizeRange(r);
                     fr += 3;
                     itAdvanced = true;
@@ -57,7 +57,7 @@ bool  read_particle(osgDB::Input &fr, osgParticle::Particle &P)
             }
             if (fr[0].matchWord("alphaRange")) {
                 osgParticle::rangef r;
-                if (fr[1].getFloat(r.min) && fr[2].getFloat(r.max)) {
+                if (fr[1].getFloat(r.minimum) && fr[2].getFloat(r.maximum)) {
                     P.setAlphaRange(r);
                     fr += 3;
                     itAdvanced = true;
@@ -65,8 +65,8 @@ bool  read_particle(osgDB::Input &fr, osgParticle::Particle &P)
             }
             if (fr[0].matchWord("colorRange")) {
                 osgParticle::rangev4 r;
-                if (fr[1].getFloat(r.min.x()) && fr[2].getFloat(r.min.y()) && fr[3].getFloat(r.min.z()) && fr[4].getFloat(r.min.w()) &&
-                    fr[5].getFloat(r.max.x()) && fr[6].getFloat(r.max.y()) && fr[7].getFloat(r.max.z()) && fr[8].getFloat(r.max.w())) {
+                if (fr[1].getFloat(r.minimum.x()) && fr[2].getFloat(r.minimum.y()) && fr[3].getFloat(r.minimum.z()) && fr[4].getFloat(r.minimum.w()) &&
+                    fr[5].getFloat(r.maximum.x()) && fr[6].getFloat(r.maximum.y()) && fr[7].getFloat(r.maximum.z()) && fr[8].getFloat(r.maximum.w())) {
                     P.setColorRange(r);
                     fr += 9;
                     itAdvanced = true;
@@ -159,15 +159,15 @@ void  write_particle(const osgParticle::Particle &P, osgDB::Output &fw)
     fw.indent() << "lifeTime " << P.getLifeTime() << std::endl;
 
     osgParticle::rangef rf = P.getSizeRange();
-    fw.indent() << "sizeRange " << rf.min << " " << rf.max << std::endl;
+    fw.indent() << "sizeRange " << rf.minimum << " " << rf.maximum << std::endl;
 
     rf = P.getAlphaRange();
-    fw.indent() << "alphaRange " << rf.min << " " << rf.max << std::endl;
+    fw.indent() << "alphaRange " << rf.minimum << " " << rf.maximum << std::endl;
 
     osgParticle::rangev4 rv4 = P.getColorRange();
     fw.indent() << "colorRange ";
-    fw << rv4.min.x() << " " << rv4.min.y() << " " << rv4.min.z() << " " << rv4.min.w() << " ";
-    fw << rv4.max.x() << " " << rv4.max.y() << " " << rv4.max.z() << " " << rv4.max.w() << std::endl;
+    fw << rv4.minimum.x() << " " << rv4.minimum.y() << " " << rv4.minimum.z() << " " << rv4.minimum.w() << " ";
+    fw << rv4.maximum.x() << " " << rv4.maximum.y() << " " << rv4.maximum.z() << " " << rv4.maximum.w() << std::endl;
 
     osg::Vec3 v = P.getPosition();
     fw.indent() << "position ";

@@ -111,8 +111,8 @@ namespace osgParticle
 
     inline void RadialShooter::setThetaRange(float r1, float r2)
     {
-        theta_range_.min = r1;
-        theta_range_.max = r2;
+        theta_range_.minimum = r1;
+        theta_range_.maximum = r2;
     }
 
     inline void RadialShooter::setPhiRange(const rangef &r)
@@ -122,8 +122,8 @@ namespace osgParticle
 
     inline void RadialShooter::setPhiRange(float r1, float r2)
     {
-        phi_range_.min = r1;
-        phi_range_.max = r2;
+        phi_range_.minimum = r1;
+        phi_range_.maximum = r2;
     }
 
     inline void RadialShooter::setInitialSpeedRange(const rangef &r)
@@ -133,8 +133,8 @@ namespace osgParticle
 
     inline void RadialShooter::setInitialSpeedRange(float r1, float r2)
     {
-        speed_range_.min = r1;
-        speed_range_.max = r2;
+        speed_range_.minimum = r1;
+        speed_range_.maximum = r2;
     }
 
     inline void RadialShooter::shoot(Particle *P) const

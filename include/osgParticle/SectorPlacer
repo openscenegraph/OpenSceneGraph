@@ -90,8 +90,8 @@ namespace osgParticle
     
     inline void SectorPlacer::setRadiusRange(float r1, float r2)
     {
-        rad_range_.min = r1;
-        rad_range_.max = r2;
+        rad_range_.minimum = r1;
+        rad_range_.maximum = r2;
     }
     
     inline void SectorPlacer::setPhiRange(const rangef &r)
@@ -101,8 +101,8 @@ namespace osgParticle
     
     inline void SectorPlacer::setPhiRange(float r1, float r2)
     {
-        phi_range_.min = r1;
-        phi_range_.max = r2;
+        phi_range_.minimum = r1;
+        phi_range_.maximum = r2;
     }
 
     inline void SectorPlacer::place(Particle *P) const

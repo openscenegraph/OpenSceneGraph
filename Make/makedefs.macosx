@@ -10,6 +10,7 @@ YFLAGS = -d
 LCINCS += -I/usr/local/include -I/sw/include
 LC++INCS += ${LCINCS}
 CFLAGS   = -O2 -W -Wall $(LCINCS) -D__DARWIN_OSX__
+#CFLAGS   = -g -DOSG_USE_MEMORY_TRACKING -W -Wall $(LCINCS) -D__DARWIN_OSX__
 C++FLAGS = ${CFLAGS}
 CPPFLAGS = ${CFLAGS}
 # this distinction is necessary for Darwin / OS X as shared libs and loadable (dylib) modules

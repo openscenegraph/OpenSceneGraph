@@ -49,13 +49,7 @@ INST_DOC           = $(INST_SHARE_PREFIX)/OpenSceneGraph/doc
 INST_DATA          = $(INST_SHARE_PREFIX)/OpenSceneGraph/data
 INST_DEMO_SRC      = $(INST_SRC)/demos
 
-ifneq ($(OS),HP-UX)
 LINK               = ln -sf
-else
-# HP-UX linker seems to have problems with symlinked libs -
-# somehow paths like "../../.." get into the executables
-LINK               = cp -f
-endif
 INSTBINCMD         = install -m 755
 INSTDEVCMD         = install -m 644
 INSTLINKBINCMD     = $(LINK)
@@ -467,25 +461,11 @@ ifeq ($(OS),HP-UX)
   SHARED            = -shared -fPIC
   ARCH              = 32
 ifeq ($(ARCH),64)
-	# not yet tested
+    # not yet tested
     ARCHARGS          = -march=2.0
-	# I don't have performer - just a wild guess of the directory
-    PF_XTRA_LIBS      = -L/opt/graphics/libpfdb   -Wl,-rpath -Wl,/opt/graphics/libpfdb \
-                      -lpf3ds -lpfdem -lpfdted -lpfdwb -lpfdxf -lpfevt \
-                      -lpfflt -lpfgds -lpfgfo -lpfim -lpflsa -lpflsb \
-                      -lpfnff -lpfobj -lpfpegg -lpfpfb -lpfphd -lpfpts \
-                      -lpfrot -lpfscale -lpfsgf -lpfsgo -lpfsphere -lpfsv \
-                      -lpftri -lpfunc -lpfvct -lpfdu -lpfutil -lpf -limage
 else
-    # at least my gcc 3.1 defaults to HP-PA RISC 1.1
-    ARCHARGS          = 
-	# I don't have performer - just a wild guess of the directory
-    PF_XTRA_LIBS      = -L/opt/graphics/libpfdb   -Wl,-rpath -Wl,/usr/lib64/libpfdb \
-                      -lpf3ds -lpfdem -lpfdted -lpfdwb -lpfdxf -lpfevt \
-                      -lpfflt -lpfgds -lpfgfo -lpfim -lpflsa -lpflsb \
-                      -lpfnff -lpfobj -lpfpegg -lpfpfb -lpfphd -lpfpts \
-                      -lpfrot -lpfscale -lpfsgf -lpfsgo -lpfsphere -lpfsv \
-                      -lpftri -lpfunc -lpfvct -lpfdu -lpfutil -lpf -limage
+   # at least my gcc 3.1 defaults to HP-PA RISC 1.1
+  ARCHARGS          = 
 endif
   LINKARGS          = -lpthread
   LIB_EXT           = sl

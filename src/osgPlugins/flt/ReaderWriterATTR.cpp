@@ -32,7 +32,7 @@
 
 #include <osg/Notify>
 #include <osg/TexEnv>
-#include <osg/Texture>
+#include <osg/Texture2D>
 #include <osg/StateSet>
 #include <osg/GL>
 
@@ -573,18 +573,18 @@ StateSet* Attr::createOsgStateSet()
 {
     StateSet* osgStateSet = new StateSet;
     TexEnv* osgTexEnv = new TexEnv;
-    Texture* osgTexture = new Texture;
+    Texture2D* osgTexture = new Texture2D;
 
     if ((wrapMode_u != WRAP_CLAMP) && ((wrapMode_u != WRAP_REPEAT)))
         wrapMode_u = wrapMode;
     if ((wrapMode_v != WRAP_CLAMP) && ((wrapMode_v != WRAP_REPEAT)))
         wrapMode_v = wrapMode;
 
-    if (wrapMode_u == WRAP_CLAMP) osgTexture->setWrap(Texture::WRAP_S,Texture::CLAMP);
-    else osgTexture->setWrap(Texture::WRAP_S,Texture::REPEAT);
+    if (wrapMode_u == WRAP_CLAMP) osgTexture->setWrap(Texture2D::WRAP_S,Texture2D::CLAMP);
+    else osgTexture->setWrap(Texture2D::WRAP_S,Texture2D::REPEAT);
 
-    if (wrapMode_v == WRAP_CLAMP) osgTexture->setWrap(Texture::WRAP_T,Texture::CLAMP);
-    else osgTexture->setWrap(Texture::WRAP_T,Texture::REPEAT);
+    if (wrapMode_v == WRAP_CLAMP) osgTexture->setWrap(Texture2D::WRAP_T,Texture2D::CLAMP);
+    else osgTexture->setWrap(Texture2D::WRAP_T,Texture2D::REPEAT);
 
 
     switch (texEnvMode)
@@ -610,16 +610,16 @@ StateSet* Attr::createOsgStateSet()
     switch (minFilterMode)
     {
     case MIN_FILTER_MIPMAP_POINT:
-        osgTexture->setFilter(osg::Texture::MIN_FILTER, Texture::LINEAR_MIPMAP_NEAREST);
+        osgTexture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::LINEAR_MIPMAP_NEAREST);
         break;
     case MIN_FILTER_MIPMAP_LINEAR:
-        osgTexture->setFilter(osg::Texture::MIN_FILTER, Texture::NEAREST_MIPMAP_LINEAR);
+        osgTexture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::NEAREST_MIPMAP_LINEAR);
         break;
     case MIN_FILTER_MIPMAP_BILINEAR:
-        osgTexture->setFilter(osg::Texture::MIN_FILTER, Texture::LINEAR_MIPMAP_NEAREST);
+        osgTexture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::LINEAR_MIPMAP_NEAREST);
         break;
     case MIN_FILTER_MIPMAP_TRILINEAR:
-        osgTexture->setFilter(osg::Texture::MIN_FILTER, Texture::LINEAR_MIPMAP_LINEAR);
+        osgTexture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::LINEAR_MIPMAP_LINEAR);
         break;
     case MIN_FILTER_POINT:
     case MIN_FILTER_BILINEAR:
@@ -629,7 +629,7 @@ StateSet* Attr::createOsgStateSet()
     case MIN_FILTER_BICUBIC_GEQUAL:
     case MIN_FILTER_BICUBIC_LEQUAL:
     default:
-          osgTexture->setFilter(osg::Texture::MIN_FILTER, Texture::LINEAR_MIPMAP_LINEAR);
+          osgTexture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::LINEAR_MIPMAP_LINEAR);
           break;
     }
 
@@ -641,24 +641,24 @@ StateSet* Attr::createOsgStateSet()
     switch (magFilterMode)
     {
     case MAG_FILTER_POINT:
-        osgTexture->setFilter(osg::Texture::MAG_FILTER, Texture::NEAREST);
+        osgTexture->setFilter(osg::Texture2D::MAG_FILTER, Texture2D::NEAREST);
         break;
     case MAG_FILTER_BILINEAR:
     case MAG_FILTER_BILINEAR_GEQUAL:
     case MAG_FILTER_BILINEAR_LEQUAL:
     case MAG_FILTER_SHARPEN:
-        osgTexture->setFilter(osg::Texture::MAG_FILTER, Texture::LINEAR);
+        osgTexture->setFilter(osg::Texture2D::MAG_FILTER, Texture2D::LINEAR);
         break;
     case MAG_FILTER_BICUBIC:
     case MAG_FILTER_BICUBIC_GEQUAL:
     case MAG_FILTER_BICUBIC_LEQUAL:
-        osgTexture->setFilter(osg::Texture::MAG_FILTER, Texture::LINEAR);
+        osgTexture->setFilter(osg::Texture2D::MAG_FILTER, Texture2D::LINEAR);
         osgTexture->setMaxAnisotropy(2.0f);
         break;
 
 //  case MAG_FILTER_ADD_DETAIL:
 //  case MAG_FILTER_MODULATE_DETAIL:
-//        osgTexture->setFilter(osg::Texture::MAG_FILTER, Texture::LINEAR);
+//        osgTexture->setFilter(osg::Texture2D::MAG_FILTER, Texture2D::LINEAR);
 //        break;
     }
 

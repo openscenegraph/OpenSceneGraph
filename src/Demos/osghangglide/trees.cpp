@@ -4,7 +4,7 @@
 #include <osg/Group>
 #include <osg/Geode>
 #include <osg/Geometry>
-#include <osg/Texture>
+#include <osg/Texture2D>
 #include <osg/TexEnv>
 #include <osg/BlendFunc>
 #include <osg/AlphaFunc>
@@ -216,7 +216,7 @@ Node *makeTrees( void )
     getDatabaseCenterRadius( dbcenter, &dbradius );
     struct _tree  *t;
 
-    Texture *tex = new Texture;
+    Texture2D *tex = new Texture2D;
     tex->setImage(osgDB::readImageFile("Images/tree0.rgba"));
 
     StateSet *dstate = new StateSet;

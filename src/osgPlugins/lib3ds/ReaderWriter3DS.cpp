@@ -2,7 +2,7 @@
 #include <osg/Group>
 #include <osg/Geode>
 #include <osg/Geometry>
-#include <osg/Texture>
+#include <osg/Texture2D>
 #include <osg/Material>
 #include <osg/TexEnv>
 #include <osg/ref_ptr>
@@ -93,7 +93,7 @@ class ReaderWriter3DS : public osgDB::ReaderWriter
 
     protected:
 
-        osg::Texture*  createTexture(Lib3dsTextureMap *texture,const char* label,bool& transparancy);
+        osg::Texture2D* createTexture(Lib3dsTextureMap *texture,const char* label,bool& transparancy);
         osg::StateSet* createStateSet(Lib3dsMaterial *materials);
         osg::Drawable* createDrawable(Lib3dsMesh *meshes,FaceList& faceList, Lib3dsMatrix* matrix);
 
@@ -609,7 +609,7 @@ osg::Drawable*   ReaderWriter3DS::createDrawable(Lib3dsMesh *m,FaceList& faceLis
 }
 
 
-osg::Texture*  ReaderWriter3DS::createTexture(Lib3dsTextureMap *texture,const char* label,bool& transparancy)
+osg::Texture2D*  ReaderWriter3DS::createTexture(Lib3dsTextureMap *texture,const char* label,bool& transparancy)
 {
     if (texture && *(texture->name))
     {
@@ -641,20 +641,20 @@ osg::Texture*  ReaderWriter3DS::createTexture(Lib3dsTextureMap *texture,const ch
             return NULL;
         }
 
-        osg::Texture* osg_texture = new osg::Texture;
+        osg::Texture2D* osg_texture = new osg::Texture2D;
         osg_texture->setImage(osg_image);
 
         // does the texture support transparancy?
         transparancy = ((texture->flags)&LIB3DS_ALPHA_SOURCE)!=0;
 
         // what is the wrap mode of the texture.
-        osg::Texture::WrapMode wm = ((texture->flags)&LIB3DS_NO_TILE) ?
-        osg::Texture::CLAMP : wm=osg::Texture::REPEAT;
-        osg_texture->setWrap(osg::Texture::WRAP_S,wm);
-        osg_texture->setWrap(osg::Texture::WRAP_T,wm);
-        osg_texture->setWrap(osg::Texture::WRAP_R,wm);
+        osg::Texture2D::WrapMode wm = ((texture->flags)&LIB3DS_NO_TILE) ?
+        osg::Texture2D::CLAMP : wm=osg::Texture2D::REPEAT;
+        osg_texture->setWrap(osg::Texture2D::WRAP_S,wm);
+        osg_texture->setWrap(osg::Texture2D::WRAP_T,wm);
+        osg_texture->setWrap(osg::Texture2D::WRAP_R,wm);
                                  // bilinear.
-        osg_texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR_MIPMAP_NEAREST);
+        osg_texture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR_MIPMAP_NEAREST);
 
         return osg_texture;
     }
@@ -689,7 +689,7 @@ osg::StateSet* ReaderWriter3DS::createStateSet(Lib3dsMaterial *mat)
 
     bool decal = true;
     bool textureTransparancy=false;
-    osg::Texture* texture1_map = createTexture(&(mat->texture1_map),"texture1_map",textureTransparancy);
+    osg::Texture2D* texture1_map = createTexture(&(mat->texture1_map),"texture1_map",textureTransparancy);
     if (texture1_map)
     {
         stateset->setTextureAttributeAndModes(0,texture1_map,osg::StateAttribute::ON);

@@ -12,10 +12,11 @@
 #include <osg/BlendFunc>
 #include <osg/Depth>
 
+#include <osg/TextureBase>
+#include <osg/TextureCubeMap>
+
 #include <set>
 
-#include <osg/Texture>
-#include <osg/TextureCubeMap>
 
 using namespace osg;
 

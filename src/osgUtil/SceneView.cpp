@@ -3,7 +3,7 @@
 #include <osgUtil/DisplayListVisitor>
 
 #include <osg/Notify>
-#include <osg/Texture>
+#include <osg/TextureBase>
 #include <osg/AlphaFunc>
 #include <osg/TexEnv>
 #include <osg/ColorMatrix>
@@ -615,7 +615,7 @@ void SceneView::drawStage(osgUtil::RenderStage* renderStage)
     // context for when the object were originally created.  Here we know what
     // context we are in so can flush the appropriate caches.
     osg::Drawable::flushDeletedDisplayLists(_state->getContextID());
-    osg::Texture::flushDeletedTextureObjects(_state->getContextID());
+    osg::TextureBase::flushDeletedTextureObjects(_state->getContextID());
 
     RenderLeaf* previous = NULL;
     

@@ -2,7 +2,7 @@
 
 #include <osg/Geode>
 #include <osg/Geometry>
-#include <osg/Texture>
+#include <osg/Texture2D>
 #include <osg/TexEnv>
 #include <osg/Depth>
 #include <osg/StateSet>
@@ -94,7 +94,7 @@ Node *makeSky( void )
     geom->setColorBinding( Geometry::BIND_PER_VERTEX );
 
 
-    Texture *tex = new Texture;
+    Texture2D *tex = new Texture2D;
     tex->setImage(osgDB::readImageFile("Images/white.rgb"));
 
     StateSet *dstate = new StateSet;

@@ -8,7 +8,7 @@
 #include <osg/Matrix>
 #include <osg/GL>
 #include <osg/StateSet>
-#include <osg/Texture>
+#include <osg/Texture2D>
 #include <osg/BlendFunc>
 #include <osg/TexEnv>
 #include <osg/Material>
@@ -137,10 +137,10 @@ void osgParticle::ParticleSystem::setDefaultAttributes(const std::string &textur
     stateset->setAttributeAndModes(material, osg::StateAttribute::ON);
 
     if (!texturefile.empty()) {
-        osg::Texture *texture = osgNew osg::Texture;
+        osg::Texture2D *texture = osgNew osg::Texture2D;
         texture->setImage(osgDB::readImageFile(texturefile));
-        texture->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR);
-        texture->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);
+        texture->setFilter(osg::Texture2D::MIN_FILTER, osg::Texture2D::LINEAR);
+        texture->setFilter(osg::Texture2D::MAG_FILTER, osg::Texture2D::LINEAR);
         stateset->setTextureAttributeAndModes(texture_unit, texture, osg::StateAttribute::ON);
 
         osg::TexEnv *texenv = osgNew osg::TexEnv;

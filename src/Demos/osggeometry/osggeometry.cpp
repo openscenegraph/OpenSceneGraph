@@ -3,7 +3,7 @@
 #include <osg/Material>
 #include <osg/Vec3>
 #include <osg/MatrixTransform>
-#include <osg/Texture>
+#include <osg/Texture2D>
 
 #include <osgDB/ReadFile>
 
@@ -601,11 +601,11 @@ osg::Node* createBackground()
     polyGeom->addPrimitive(new osg::UShortDrawElements(osg::Primitive::QUADS,numIndices,myIndices));
 
     // new we need to add the texture to the Drawable, we do so by creating a 
-    // StateSet to contain the Texture StateAttribute.
+    // StateSet to contain the Texture2D StateAttribute.
     osg::StateSet* stateset = new osg::StateSet;
 
     // set up the texture.
-    osg::Texture* texture = new osg::Texture;
+    osg::Texture2D* texture = new osg::Texture2D;
     texture->setImage(image);
 
     stateset->setTextureAttributeAndModes(0, texture,osg::StateAttribute::ON);

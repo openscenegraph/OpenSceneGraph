@@ -27,7 +27,7 @@
 #include <osg/Geometry>
 #include <osg/StateSet>
 #include <osg/Material>
-#include <osg/Texture>
+#include <osg/Texture2D>
 #include <osg/TexGen>
 
 #include <osgDB/Registry>
@@ -130,7 +130,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
                     osg::Image* osg_image = osgDB::readImageFile(fileName.c_str());
                     if (osg_image)
                     {
-                        osg::Texture* osg_texture = new osg::Texture;
+                        osg::Texture2D* osg_texture = new osg::Texture2D;
                         osg_texture->setImage(osg_image);
                         stateset->setTextureAttributeAndModes(0,osg_texture,osg::StateAttribute::ON);
                         

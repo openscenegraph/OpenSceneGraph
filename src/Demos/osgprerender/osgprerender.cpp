@@ -3,7 +3,7 @@
 #include <osg/Geometry>
 #include <osg/Notify>
 #include <osg/MatrixTransform>
-#include <osg/Texture>
+#include <osg/Texture2D>
 #include <osg/Stencil>
 #include <osg/ColorMask>
 #include <osg/Depth>

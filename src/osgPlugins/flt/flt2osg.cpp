@@ -19,7 +19,7 @@
 #include <osg/Vec3>
 #include <osg/Vec4>
 #include <osg/Billboard>
-#include <osg/Texture>
+#include <osg/Texture2D>
 #include <osg/Image>
 #include <osg/Notify>
 
@@ -511,9 +511,9 @@ void ConvertFromFLT::visitTexturePalette(osg::Group& , TexturePaletteRecord* rec
         {
             osgStateSet = new osg::StateSet;
 
-            osg::Texture* osgTexture = new osg::Texture;
-            osgTexture->setWrap(osg::Texture::WRAP_S,osg::Texture::REPEAT);
-            osgTexture->setWrap(osg::Texture::WRAP_T,osg::Texture::REPEAT);
+            osg::Texture2D* osgTexture = new osg::Texture2D;
+            osgTexture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::REPEAT);
+            osgTexture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::REPEAT);
             osgStateSet->setTextureAttributeAndModes( unit, osgTexture,osg::StateAttribute::ON);
 
             osg::TexEnv* osgTexEnv = new osg::TexEnv;
@@ -521,10 +521,10 @@ void ConvertFromFLT::visitTexturePalette(osg::Group& , TexturePaletteRecord* rec
             osgStateSet->setTextureAttribute( unit, osgTexEnv );
         }
 
-        osg::Texture *osgTexture = dynamic_cast<osg::Texture*>(osgStateSet->getTextureAttribute( unit, osg::StateAttribute::TEXTURE));
+        osg::Texture2D *osgTexture = dynamic_cast<osg::Texture2D*>(osgStateSet->getTextureAttribute( unit, osg::StateAttribute::TEXTURE));
         if (osgTexture == NULL)
         {
-            osgTexture = new osg::Texture;
+            osgTexture = new osg::Texture2D;
             osgStateSet->setTextureAttributeAndModes( unit, osgTexture,osg::StateAttribute::ON);
         }
 
@@ -1160,7 +1160,7 @@ void ConvertFromFLT::setTexture ( FaceRecord *rec, SFace *pSFace, osg::StateSet 
                 osgStateSet->merge(*textureStateSet);
 
                 // Alpha channel in texture?
-                osg::Texture *osgTexture = dynamic_cast<osg::Texture*>(textureStateSet->getTextureAttribute( 0, osg::StateAttribute::TEXTURE));
+                osg::Texture2D *osgTexture = dynamic_cast<osg::Texture2D*>(textureStateSet->getTextureAttribute( 0, osg::StateAttribute::TEXTURE));
                 if (osgTexture)
                 {
                     osg::Image* osgImage = osgTexture->getImage();

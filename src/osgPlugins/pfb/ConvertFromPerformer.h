@@ -12,7 +12,7 @@
 #include <osg/Group>
 #include <osg/GeoSet>
 #include <osg/StateSet>
-#include <osg/Texture>
+#include <osg/Texture2D>
 #include <osg/Material>
 
 // Performer includes.
@@ -50,7 +50,7 @@ class ConvertFromPerformer {
         osg::Drawable* visitGeoSet(osg::Geode* osgParent,pfGeoSet* geoset);
         osg::StateSet* visitGeoState(osg::Drawable* osgDrawble,pfGeoState* geostate);
         osg::Material* visitMaterial(osg::StateSet* osgStateSet,pfMaterial* front_mat,pfMaterial* back_mat);
-        osg::Texture* visitTexture(osg::StateSet* osgStateSet,pfTexture* tex);
+        osg::Texture2D* visitTexture(osg::StateSet* osgStateSet,pfTexture* tex);
 
         typedef std::map<int,osg::GeoSet::PrimitiveType> GSetPrimitiveMap;
         typedef std::map<int,osg::GeoSet::BindingType> GSetBindingMap;

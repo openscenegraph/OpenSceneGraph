@@ -4,7 +4,7 @@
 #include <osg/Group>
 #include <osg/Geode>
 #include <osg/Geometry>
-#include <osg/Texture>
+#include <osg/Texture2D>
 #include <osg/TexEnv>
 #include <osg/StateSet>
 #include <osg/Matrix>
@@ -149,10 +149,10 @@ Node *makeTank( void )
 
 
 
-    Texture *tex = new Texture;
+    Texture2D *tex = new Texture2D;
 
-    tex->setWrap( Texture::WRAP_S, Texture::REPEAT );
-    tex->setWrap( Texture::WRAP_T, Texture::REPEAT );
+    tex->setWrap( Texture2D::WRAP_S, Texture2D::REPEAT );
+    tex->setWrap( Texture2D::WRAP_T, Texture2D::REPEAT );
     tex->setImage(osgDB::readImageFile("Images/tank.rgb"));
 
     StateSet *dstate = new StateSet;

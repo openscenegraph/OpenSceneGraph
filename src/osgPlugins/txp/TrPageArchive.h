@@ -77,7 +77,7 @@ namespace txp
         /// This class does most of the actual parsing. 
         std::auto_ptr<TrPageParser> parse;
         //  Texture, material, and model lists.
-        std::vector< osg::ref_ptr<osg::Texture> >   m_textures;
+        std::vector< osg::ref_ptr<osg::Texture2D> >   m_textures;
         std::vector< osg::ref_ptr<osg::StateSet> >  m_gstates;
         std::vector< osg::ref_ptr<osg::Node> >      m_models;
         std::string   m_alternate_path;

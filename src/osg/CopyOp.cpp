@@ -2,7 +2,6 @@
 #include <osg/Node>
 #include <osg/StateSet>
 #include <osg/TextureBase>
-#include <osg/Texture>
 #include <osg/Drawable>
 #include <osg/Array>
 #include <osg/Primitive>

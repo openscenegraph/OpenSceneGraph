@@ -3,7 +3,7 @@
 #include <osg/Geode>
 #include <osg/Group>
 #include <osg/Notify>
-#include <osg/Texture>
+#include <osg/TextureBase>
 
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>

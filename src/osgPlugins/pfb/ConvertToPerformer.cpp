@@ -5,7 +5,6 @@
 #include <osg/Switch>
 #include <osg/Geode>
 #include <osg/Billboard>
-#include <osg/Texture>
 #include <osg/Image>
 #include <osg/Notify>
 
@@ -509,7 +508,7 @@ pfGeoState* ConvertToPerformer::visitStateSet(osg::StateSet* stateset)
         case(osg::StateAttribute::INHERIT): break;
     }
 
-    const osg::Texture *tex = dynamic_cast<const osg::Texture *>(stateset->getAttribute( osg::StateAttribute::TEXTURE));
+    const osg::Texture2D *tex = dynamic_cast<const osg::Texture2D *>(stateset->getAttribute( osg::StateAttribute::TEXTURE));
 
     if( tex != NULL )
     {
@@ -547,7 +546,7 @@ pfMaterial* ConvertToPerformer::visitMaterial(osg::Material* material)
 }
 
 
-pfTexture* ConvertToPerformer::visitTexture(osg::Texture* tex)
+pfTexture* ConvertToPerformer::visitTexture(osg::Texture2D* tex)
 {
     if (tex==NULL) return NULL;
 

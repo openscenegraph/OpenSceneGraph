@@ -27,7 +27,7 @@
 #include <osg/Vec2>
 #include <osg/StateSet>
 #include <osg/ref_ptr>
-#include <osg/Texture>
+#include <osg/Texture2D>
 #include <osg/Group>
 #include <osg/StateSet>
 #include <vector>
@@ -92,7 +92,7 @@ namespace txp
         std::vector<osg::ref_ptr<osg::Node> >*    models;
     };
 
-    osg::Texture* GetLocalTexture(trpgrImageHelper& image_helper, trpgLocalMaterial* locmat, const trpgTexture* tex);
+    osg::Texture2D* GetLocalTexture(trpgrImageHelper& image_helper, trpgLocalMaterial* locmat, const trpgTexture* tex);
 
     //! callback functions for various scene graph elements
     class geomRead : public trpgr_Callback {

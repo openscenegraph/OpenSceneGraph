@@ -5,7 +5,6 @@
 #endif
 
 #include <osg/Vec4>
-#include <osg/Texture>
 
 #include "MaterialPaletteRecord.h"
 #include "OldMaterialPaletteRecord.h"

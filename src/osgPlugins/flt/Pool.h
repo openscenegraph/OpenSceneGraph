@@ -6,7 +6,6 @@
 #include <osg/ref_ptr>
 #include <osg/Referenced>
 #include <osg/Vec4>
-#include <osg/Texture>
 #include <osg/Material>
 #include <osg/StateSet>
 #include <osg/Group>

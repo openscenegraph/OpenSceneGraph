@@ -23,7 +23,6 @@
 #include <osg/AlphaFunc>
 #include <osg/Group>
 #include <osg/Material>
-#include <osg/Texture>
 #include <osg/TexEnv>
 #include <osg/LOD>
 #include <osg/Geode>
@@ -50,9 +49,9 @@ using namespace osg;
 using std::vector;
 using std::string;
 
-Texture* txp::GetLocalTexture(trpgrImageHelper& image_helper, trpgLocalMaterial* locmat, const trpgTexture* tex)
+Texture2D* txp::GetLocalTexture(trpgrImageHelper& image_helper, trpgLocalMaterial* locmat, const trpgTexture* tex)
 {
-    Texture* osg_texture= 0L;
+    Texture2D* osg_texture= 0L;
 
     trpg2iPoint s;
     tex->GetImageSize(s);
@@ -61,7 +60,7 @@ Texture* txp::GetLocalTexture(trpgrImageHelper& image_helper, trpgLocalMaterial*
     trpgTexture::ImageType type;
     tex->GetImageType(type);
     
-    Texture::InternalFormatMode internalFormat = Texture::USE_IMAGE_DATA_FORMAT;
+    Texture2D::InternalFormatMode internalFormat = Texture2D::USE_IMAGE_DATA_FORMAT;
     
     GLenum gltype = (GLenum)-1;
     switch(type)
@@ -93,7 +92,7 @@ Texture* txp::GetLocalTexture(trpgrImageHelper& image_helper, trpgLocalMaterial*
         {
             gltype = GL_RGBA;
         }
-        internalFormat = Texture::USE_S3TC_DXT1_COMPRESSION;
+        internalFormat = Texture2D::USE_S3TC_DXT1_COMPRESSION;
         break;
     case trpgTexture::trpg_DXT3:
         if(depth == 3)
@@ -104,7 +103,7 @@ Texture* txp::GetLocalTexture(trpgrImageHelper& image_helper, trpgLocalMaterial*
         {
             gltype = GL_RGBA;
         }
-        internalFormat = Texture::USE_S3TC_DXT3_COMPRESSION;
+        internalFormat = Texture2D::USE_S3TC_DXT3_COMPRESSION;
         break;
     case trpgTexture::trpg_DXT5:
         if(depth == 3)
@@ -115,13 +114,13 @@ Texture* txp::GetLocalTexture(trpgrImageHelper& image_helper, trpgLocalMaterial*
         {
             gltype = GL_RGBA;
         }
-        internalFormat = Texture::USE_S3TC_DXT5_COMPRESSION;
+        internalFormat = Texture2D::USE_S3TC_DXT5_COMPRESSION;
         break;
     }
     
     if(gltype!=(GLenum)-1)
     {
-        osg_texture = new Texture();
+        osg_texture = new Texture2D();
         osg_texture->setInternalFormatMode(internalFormat);
 
         Image* image = new Image;
@@ -683,7 +682,7 @@ void TrPageParser::LoadLocalMaterials()
             
             osg_state_set->setTextureAttribute(0,osg_texenv);
             
-            Texture* osg_texture = GetLocalTexture(image_helper,&locmat, tex);
+            Texture2D* osg_texture = GetLocalTexture(image_helper,&locmat, tex);
 
             if(osg_texture)
             {
@@ -700,8 +699,8 @@ void TrPageParser::LoadLocalMaterials()
 
                 int wrap_s, wrap_t;   
                 texEnv.GetWrap(wrap_s, wrap_t);
-                osg_texture->setWrap(Texture::WRAP_S, wrap_s == trpgTextureEnv::Repeat ? Texture::REPEAT: Texture::CLAMP );
-                osg_texture->setWrap(Texture::WRAP_T, wrap_t == trpgTextureEnv::Repeat ? Texture::REPEAT: Texture::CLAMP );
+                osg_texture->setWrap(Texture2D::WRAP_S, wrap_s == trpgTextureEnv::Repeat ? Texture2D::REPEAT: Texture2D::CLAMP );
+                osg_texture->setWrap(Texture2D::WRAP_T, wrap_t == trpgTextureEnv::Repeat ? Texture2D::REPEAT: Texture2D::CLAMP );
             }
             
             Material     *osg_material     = new Material;

@@ -30,6 +30,11 @@ void PagedLOD::write(DataOutputStream* out){
         else
 		throw Exception("PagedLOD::write(): Could not cast this osg::PagedLOD to an osg::LOD.");
 
+
+        out->writeFloat(getRadius());
+        out->writeUInt(getNumChildrenThatCannotBeExpired());
+
+
         unsigned int numChildrenToWriteOut = 0;
 
         int i;
@@ -87,6 +92,9 @@ void PagedLOD::read(DataInputStream* in){
                 }
                 else
                     throw Exception("Group::read(): Could not cast this osg::Group to an osg::Node.");
+
+                setRadius(in->readFloat());
+                setNumChildrenThatCannotBeExpired(in->readUInt());
 
 
                 // Read groups properties.

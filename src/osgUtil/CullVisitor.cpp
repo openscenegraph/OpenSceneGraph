@@ -180,27 +180,37 @@ void CullVisitor::popProjectionMatrix()
         // so it doesn't cull them out.
         osg::Matrix& projection = *_projectionStack.back();
 
+        clampProjectionMatrix(projection, _computed_znear, _computed_zfar);
+    }
+
+    CullStack::popProjectionMatrix();
+}
+
+bool CullVisitor::clampProjectionMatrix(osg::Matrix& projection, value_type& znear, value_type& zfar) const
+{
+    if (zfar>0.0f)
+    {
+
         if (projection(0,3)==0.0f && projection(1,3)==0.0f && projection(2,3)==0.0f)
         {
             //std::cout << "Orthographic projection "<<projection<<std::endl;
 
-            value_type span = (_computed_zfar-_computed_znear);
-            value_type desired_znear = _computed_znear - span*0.02f;
-            value_type desired_zfar = _computed_zfar + span*0.02f;
+            value_type span = (zfar-znear);
+            value_type desired_znear = znear - span*0.02f;
+            value_type desired_zfar = zfar + span*0.02f;
             
             // near plane clamping.
             //double min_near_plane = _computed_zfar*_nearFarRatio;
             //if (desired_znear<min_near_plane) desired_znear=min_near_plane;
 
             // assign the clamped values back to the computed values.
-            _computed_znear = desired_znear;
-            _computed_zfar = desired_zfar;
+            znear = desired_znear;
+            zfar = desired_zfar;
 
             projection(2,2)=-2.0f/(desired_zfar-desired_znear);
             projection(3,2)=-(desired_zfar+desired_znear)/(desired_zfar-desired_znear);
             
-            //projection(2,2)=-2.0f/(-desired_zfar+desired_znear);
-            //projection(3,2)=(desired_zfar+desired_znear)/(desired_zfar-desired_znear);
+            return true;
 
         }
         else
@@ -211,22 +221,16 @@ void CullVisitor::popProjectionMatrix()
             //std::cout << "_computed_znear"<<_computed_znear<<std::endl;
             //std::cout << "_computed_zfar"<<_computed_zfar<<std::endl;
 
-
-            value_type desired_znear = _computed_znear *0.98;
-            value_type desired_zfar = _computed_zfar *1.02;
-//            value_type desired_znear = _computed_znear *0.5;
-//            value_type desired_zfar = _computed_zfar *2.0;
+            value_type desired_znear = znear *0.98;
+            value_type desired_zfar = zfar *1.02;
 
             // near plane clamping.
-            double min_near_plane = _computed_zfar*_nearFarRatio;
+            double min_near_plane = zfar*_nearFarRatio;
             if (desired_znear<min_near_plane) desired_znear=min_near_plane;
 
-            //std::cout << "   desired_znear"<<desired_znear<<std::endl;
-            //std::cout << "   desired_zfar"<<desired_zfar<<std::endl;
-
             // assign the clamped values back to the computed values.
-            _computed_znear = desired_znear;
-            _computed_zfar = desired_zfar;
+            znear = desired_znear;
+            zfar = desired_zfar;
 
             value_type trans_near_plane = (-desired_znear*projection(2,2)+projection(3,2))/(-desired_znear*projection(2,3)+projection(3,3));
             value_type trans_far_plane = (-desired_zfar*projection(2,2)+projection(3,2))/(-desired_zfar*projection(2,3)+projection(3,3));
@@ -238,12 +242,12 @@ void CullVisitor::popProjectionMatrix()
                                             0.0f,1.0f,0.0f,0.0f,
                                             0.0f,0.0f,ratio,0.0f,
                                             0.0f,0.0f,center*ratio,1.0f));
+                                            
+            return true;
         }
     }
-
-    CullStack::popProjectionMatrix();
+    return false;
 }
-
 
 
 void CullVisitor::updateCalculatedNearFar(const osg::Matrix& matrix,const osg::BoundingBox& bb)

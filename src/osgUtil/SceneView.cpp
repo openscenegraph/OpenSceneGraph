@@ -389,12 +389,27 @@ void SceneView::cull()
             _cullVisitor->setTraversalMask(_cullMaskLeft);
             cullStage(computeLeftEyeProjection(_projectionMatrix),computeLeftEyeView(_viewMatrix),_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
 
+            if (_cullVisitor->getComputeNearFarMode()!=osgUtil::CullVisitor::DO_NOT_COMPUTE_NEAR_FAR)
+            {
+                CullVisitor::value_type zNear = _cullVisitor->getCalculatedNearPlane();
+                CullVisitor::value_type zFar = _cullVisitor->getCalculatedFarPlane();
+                _cullVisitor->clampProjectionMatrix(_projectionMatrix,zNear,zFar);
+            }
+
         }
         else if (_displaySettings->getStereoMode()==osg::DisplaySettings::RIGHT_EYE)
         {
             // set up the right eye.
             _cullVisitor->setTraversalMask(_cullMaskRight);
             cullStage(computeRightEyeProjection(_projectionMatrix),computeRightEyeView(_viewMatrix),_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
+
+            if (_cullVisitor->getComputeNearFarMode()!=osgUtil::CullVisitor::DO_NOT_COMPUTE_NEAR_FAR)
+            {
+                CullVisitor::value_type zNear = _cullVisitor->getCalculatedNearPlane();
+                CullVisitor::value_type zFar = _cullVisitor->getCalculatedFarPlane();
+                _cullVisitor->clampProjectionMatrix(_projectionMatrix,zNear,zFar);
+            }
+
         }
         else
         {
@@ -407,8 +422,6 @@ void SceneView::cull()
             if (!_rendergraphRight.valid()) _rendergraphRight = dynamic_cast<RenderGraph*>(_rendergraph->cloneType());
             if (!_renderStageRight.valid()) _renderStageRight = dynamic_cast<RenderStage*>(_renderStage->clone(osg::CopyOp::DEEP_COPY_ALL));
             
-            
-
             _cullVisitorLeft->setDatabaseRequestHandler(_cullVisitor->getDatabaseRequestHandler());
             _cullVisitorLeft->setTraversalMask(_cullMaskLeft);
             cullStage(computeLeftEyeProjection(_projectionMatrix),computeLeftEyeView(_viewMatrix),_cullVisitorLeft.get(),_rendergraphLeft.get(),_renderStageLeft.get());
@@ -419,6 +432,14 @@ void SceneView::cull()
             _cullVisitorRight->setTraversalMask(_cullMaskRight);
             cullStage(computeRightEyeProjection(_projectionMatrix),computeRightEyeView(_viewMatrix),_cullVisitorRight.get(),_rendergraphRight.get(),_renderStageRight.get());
            
+            if (_cullVisitorLeft->getComputeNearFarMode()!=osgUtil::CullVisitor::DO_NOT_COMPUTE_NEAR_FAR &&
+                _cullVisitorRight->getComputeNearFarMode()!=osgUtil::CullVisitor::DO_NOT_COMPUTE_NEAR_FAR)
+            {
+                CullVisitor::value_type zNear = osg::minimum(_cullVisitorLeft->getCalculatedNearPlane(),_cullVisitorRight->getCalculatedNearPlane());
+                CullVisitor::value_type zFar =  osg::maximum(_cullVisitorLeft->getCalculatedFarPlane(),_cullVisitorRight->getCalculatedFarPlane());
+                _cullVisitor->clampProjectionMatrix(_projectionMatrix,zNear,zFar);
+            }
+
         }
 
     }
@@ -428,6 +449,12 @@ void SceneView::cull()
         _cullVisitor->setTraversalMask(_cullMask);
         cullStage(_projectionMatrix,_viewMatrix,_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
 
+        if (_cullVisitor->getComputeNearFarMode()!=osgUtil::CullVisitor::DO_NOT_COMPUTE_NEAR_FAR)
+        {
+            CullVisitor::value_type zNear = _cullVisitor->getCalculatedNearPlane();
+            CullVisitor::value_type zFar = _cullVisitor->getCalculatedFarPlane();
+            _cullVisitor->clampProjectionMatrix(_projectionMatrix,zNear,zFar);
+        }
     }
     
     

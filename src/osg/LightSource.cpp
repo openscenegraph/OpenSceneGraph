@@ -36,7 +36,7 @@ void LightSource::setReferenceFrame(ReferenceFrame rf)
     setCullingActive(_referenceFrame==RELATIVE_TO_PARENTS);
 }
 
-void LightSource::setLight(StateAttribute* light)
+void LightSource::setLight(Light* light)
 {
     _light = light;
     setLocalStateSetModes(_value);
@@ -64,15 +64,11 @@ bool LightSource::computeBound() const
     
     if (_light.valid() && _referenceFrame==RELATIVE_TO_PARENTS)
     {
-        const Light* light = dynamic_cast<const Light*>(_light.get());
-        if (light)
+        const Vec4& pos = _light->getPosition();
+        if (pos[3]!=0.0f)
         {
-            const Vec4& pos = light->getPosition();
-            if (pos[3]!=0.0f)
-            {
-                float div = 1.0f/pos[3];
-                _bsphere.expandBy(Vec3(pos[0]*div,pos[1]*div,pos[2]*div));
-            }
+            float div = 1.0f/pos[3];
+            _bsphere.expandBy(Vec3(pos[0]*div,pos[1]*div,pos[2]*div));
         }
     }
 

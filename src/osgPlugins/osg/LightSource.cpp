@@ -40,7 +40,8 @@ bool LightSource_readLocalData(Object& obj, Input& fr)
         }
     }
 
-    StateAttribute* light=fr.readStateAttribute();
+    osg::ref_ptr<StateAttribute> sa=fr.readStateAttribute();
+    osg::Light* light = dynamic_cast<Light*>(sa.get());
     if (light)
     {
         lightsource.setLight(light);

@@ -30,7 +30,7 @@ class SG_EXPORT LightSource : public Group
         LightSource(const LightSource& ls, const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             Group(ls,copyop),
             _value(ls._value),
-            _light(dynamic_cast<osg::StateAttribute*>(copyop(ls._light.get()))) {}
+            _light(dynamic_cast<osg::Light*>(copyop(ls._light.get()))) {}
 
         META_Node(osg, LightSource);
 
@@ -55,13 +55,13 @@ class SG_EXPORT LightSource : public Group
         ReferenceFrame getReferenceFrame() const { return _referenceFrame; }
 
         /** Set the attached light.*/
-        void setLight(StateAttribute* light);
+        void setLight(Light* light);
 
         /** Get the attached light.*/
-        inline StateAttribute* getLight() { return _light.get(); }
+        inline Light* getLight() { return _light.get(); }
 
         /** Get the const attached light.*/
-        inline const StateAttribute* getLight() const { return _light.get(); }
+        inline const Light* getLight() const { return _light.get(); }
 
         /** Set the GLModes on StateSet associated with the LightSource.*/
         void setStateSetModes(StateSet&,StateAttribute::GLModeValue) const;
@@ -76,7 +76,7 @@ class SG_EXPORT LightSource : public Group
         virtual bool computeBound() const;
 
         StateAttribute::GLModeValue     _value;
-        ref_ptr<StateAttribute>         _light;
+        ref_ptr<Light>                  _light;
 
         ReferenceFrame                  _referenceFrame;
 };

@@ -279,11 +279,6 @@ void SceneView::cull()
         _cullVisitor->setTraversalMask(_cullMask);
         cullStage(projection.get(),modelview.get(),_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
     }
-
-    if (_camera.valid() && _calc_nearfar)
-    {
-        _camera->setNearFar(_near_plane,_far_plane);
-    }
     
 }
 
@@ -312,11 +307,6 @@ void SceneView::cullStage(osg::Matrix* projection,osg::Matrix* modelview,osgUtil
     
     cullVisitor->setRenderGraph(rendergraph);
     cullVisitor->setRenderStage(renderStage);
-
-//     // SandB
-//     //now make it compute "clipping directions" needed for detailed culling
-//     if(cullVisitor->getDetailedCulling()) 
-// 	    cullVisitor->calcClippingDirections();//only once pre frame
 
     renderStage->reset();
 
@@ -381,37 +371,6 @@ void SceneView::cullStage(osg::Matrix* projection,osg::Matrix* modelview,osgUtil
         }
     }
 
-
-    if (_calc_nearfar)
-    {
-        _near_plane = cullVisitor->getCalculatedNearPlane();
-        _far_plane = cullVisitor->getCalculatedFarPlane();
-
-        if (_near_plane<=_far_plane)
-        {
-            // shift the far plane slight further away from the eye point.
-            // and shift the near plane slightly near the eye point, this
-            // will give a little space betwenn the near and far planes
-            // and the model, crucial when the naer and far planes are
-            // coincedent.
-            _far_plane  *= 1.05;
-            _near_plane *= 0.95;
-
-//             // if required clamp the near plane to prevent negative or near zero
-//             // near planes.
-//             if(!cullVisitor->getDetailedCulling())
-//             {
-                float min_near_plane = _far_plane*0.0005f;
-                if (_near_plane<min_near_plane) _near_plane=min_near_plane;
-//             }
-        }
-        else
-        {
-            _near_plane = 1.0f;
-            _far_plane = 1000.0f;
-        }
-
-    }
 
     // prune out any empty RenderGraph children.
     // note, this would be not required if the rendergraph had been

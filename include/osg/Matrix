@@ -299,7 +299,7 @@ inline Matrix Matrix::rotate(const Vec3& from, const Vec3& to )
     return m;
 }
 
-inline Matrix inverse( const Matrix& matrix)
+inline Matrix Matrix::inverse( const Matrix& matrix)
 {
     Matrix m;
     m.invert(matrix);

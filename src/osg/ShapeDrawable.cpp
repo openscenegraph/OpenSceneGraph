@@ -12,6 +12,7 @@
 */
 #include <osg/ShapeDrawable>
 #include <osg/GL>
+#include <osg/Notify>
 
 using namespace osg;
 
@@ -26,7 +27,14 @@ class DrawShapeVisitor : public ConstShapeVisitor
     
     	DrawShapeVisitor(State& state,const TessellationHints* hints):
 	    _state(state),
-	    _hints(hints) {}
+	    _hints(hints)
+        {
+            if (hints)
+            {
+                notify(NOTICE)<<"Warning: TessellationHints ignored in present osg::ShapeDrawable implementation."<<std::endl;
+            }
+        
+        }
     
     	virtual void apply(const Sphere&);
     	virtual void apply(const Box&);
@@ -1249,17 +1257,21 @@ void PrimitiveShapeVisitor::apply(const CompositeShape& group)
 //
 
 
-ShapeDrawable::ShapeDrawable()
+ShapeDrawable::ShapeDrawable():
+    _color(1.0f,1.0f,1.0f,1.0f)
 {
 }
 
-ShapeDrawable::ShapeDrawable(Shape* shape)
+ShapeDrawable::ShapeDrawable(Shape* shape):
+  _color(1.0f,1.0f,1.0f,1.0f)
 {
     setShape(shape);
 }
 
 ShapeDrawable::ShapeDrawable(const ShapeDrawable& pg,const CopyOp& copyop):
-    Drawable(pg,copyop)
+    Drawable(pg,copyop),
+    _color(pg._color),
+    _tessellationHints(pg._tessellationHints)
 {
 }
 
@@ -1271,7 +1283,10 @@ void ShapeDrawable::drawImplementation(State& state) const
 {
     if (_shape.valid())
     {
+        glColor4fv(_color.ptr());
+    
     	DrawShapeVisitor dsv(state,_tessellationHints.get());
+        
 	_shape->accept(dsv);
     }
 }

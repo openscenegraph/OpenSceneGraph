@@ -11,8 +11,11 @@ State::State()
 {
     _contextID = 0;
     _identity = new osg::Matrix(); // default Matrix constructs to identity.
-    _modelView = _identity;
     _projection = _identity;
+    _modelView = _identity;
+
+    _currentActiveTextureUnit=0;
+    _currentClientActiveTextureUnit=0;
 }
 
 State::~State()

@@ -39,7 +39,8 @@ const Timer* Timer::instance()
     #include <winbase.h>
     Timer::Timer()
     {
-        _useStandardClock = false;
+        //_useStandardClock = false;
+        _useStandardClock = true;
 
         if (_useStandardClock)
         {
@@ -161,9 +162,9 @@ const Timer* Timer::instance()
     Timer::Timer()
     {
 #if defined(__ia64) || defined(__x86_64__) || defined(__powerpc)
-        _useStandardClock = true;
+        _useStandardClock = true; // set to true to avoid problems with variable CPU speeds
 #else
-        _useStandardClock = true;
+        _useStandardClock = true; // set to true to avoid problems with variable CPU speeds
 #endif
 
         if (_useStandardClock)

@@ -302,7 +302,9 @@ void Image::allocateImage(int s,int t,int r,
 {
     _mipmapData.clear();
 
-    unsigned int previousTotalSize = computeRowWidthInBytes(_s,_pixelFormat,_dataType,_packing)*_t*_r;
+    unsigned int previousTotalSize = 0;
+    
+    if (_data) previousTotalSize = computeRowWidthInBytes(_s,_pixelFormat,_dataType,_packing)*_t*_r;
     
     unsigned int newTotalSize = computeRowWidthInBytes(s,format,type,packing)*t*r;
 

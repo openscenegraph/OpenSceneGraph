@@ -14,6 +14,7 @@
 #include <osgProducer/Viewer>
 #include <osgProducer/ViewerEventHandler>
 
+using namespace Producer;
 using namespace osgProducer;
 
 

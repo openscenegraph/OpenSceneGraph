@@ -15,19 +15,21 @@
 #define OSG_GLEXTENSIONS 1
 
 #include <osg/Export>
+#include <string>
 
 #if defined(WIN32)
     #define WIN32_LEAN_AND_MEAN
     #define NOMINMAX
     #include <windows.h>
 #elif defined(__DARWIN_OSX__)
-    #include <string>
     #include <mach-o/dyld.h>
 #else
     #include <dlfcn.h>
 #endif
 
 namespace osg {
+
+
 
 /** return true if OpenGL "extension" is supported.
   * note: Must only called within a valid OpenGL context,
@@ -70,6 +72,21 @@ inline void* getGLExtensionFuncPtr(const char *funcName)
 
 #endif
 }
+
+/** Set a list of extensions to disable for different OpenGL renders, this allows
+  * OSG applications to work around OpenGL drivers bugs which are due to problemenatic extension support.
+  * The format of the string is:
+  * "GLRendererString : ExtensionName, ExtensionName; GLRenderString2 : ExtensionName;"
+  * An example of is : "SUN_XVR1000:GL_EXT_texture_filter_anisotropic"
+  * The default setting of GLExtensionDisableString is obtain from the OSG_GL_EXTENSION_DISABLE
+  * environmental variable.
+  */
+extern SG_EXPORT void setGLExtensionDisableString(const std::string& disableString);
+
+/** Get the list of extensions that are disabled for various OpenGL renders.*/
+extern SG_EXPORT std::string& getGLExtensionDisableString();
+
+
 
 /** return the address of the specified OpenGL function, if not found then
   * check a second function name, if this fails then return NULL as function is

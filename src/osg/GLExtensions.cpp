@@ -58,11 +58,90 @@ bool osg::isGLExtensionSupported(const char *extension)
     // true if extension found in extensionSet.
     bool result = s_extensionSet.find(extension)!=s_extensionSet.end();
 
-    if (result) osg::notify(INFO)<<"OpenGL extension '"<<extension<<"' is supported."<<std::endl;
+    bool extensionDisabled = false;
+
+    if (result)
+    {
+
+        const std::string& disableString = getGLExtensionDisableString();
+        if (!disableString.empty())
+        {
+        
+            static const GLubyte* s_renderer = glGetString(GL_RENDERER);
+            static std::string s_rendererString(s_renderer?(const char*)s_renderer:"");
+            
+            std::string::size_type pos=0;
+            while ( pos!=std::string::npos && (pos=disableString.find(extension,pos))!=std::string::npos )
+            {
+                std::string::size_type previousColon = disableString.find_last_of(':',pos);
+                std::string::size_type previousSemiColon = disableString.find_last_of(';',pos);
+                
+                std::string renderer = "";
+                if (previousColon!=std::string::npos)
+                {
+                    if (previousSemiColon==std::string::npos) renderer = disableString.substr(0,previousColon);
+                    else if (previousSemiColon<previousColon) renderer = disableString.substr(previousSemiColon+1,previousColon-previousSemiColon-1);
+                }
+
+                if (!renderer.empty())
+                {
+                
+                    // remove leading spaces if they exist.
+                    std::string::size_type leadingSpaces = renderer.find_first_not_of(' ');
+                    if (leadingSpaces==std::string::npos) renderer = ""; // nothing but spaces
+                    else if (leadingSpaces!=0) renderer.erase(0,leadingSpaces);
+
+                    // remove trailing spaces if they exist.
+                    std::string::size_type trailingSpaces = renderer.find_last_not_of(' ');
+                    if (trailingSpaces!=std::string::npos) renderer.erase(trailingSpaces+1,std::string::npos);
+
+                }
+                            
+                std::cout<<"render='"<<renderer<<"'"<<std::endl;
+
+                if (renderer.empty())
+                {
+                    extensionDisabled = true;
+                    break;
+                }
+                
+                if (s_rendererString.find(renderer)!=std::string::npos)
+                {
+                    extensionDisabled = true;
+                    break;
+                    
+                }
+                
+                // move the position in the disable string along so that the same extension is found multiple times
+                ++pos;
+            }
+
+        }
+    }
+
+    if (result)
+    {
+        if (!extensionDisabled) osg::notify(INFO)<<"OpenGL extension '"<<extension<<"' is supported."<<std::endl;
+        else osg::notify(INFO)<<"OpenGL extension '"<<extension<<"' is supported by OpenGL\ndriver but has been disabled by osg::getGLExtensionDisableString()."<<std::endl;
+    }
     else osg::notify(INFO)<<"OpenGL extension '"<<extension<<"' is not supported."<<std::endl;
 
-    return result;
+
+    return result && !extensionDisabled;
 }
+
+void osg::setGLExtensionDisableString(const std::string& disableString)
+{
+    getGLExtensionDisableString() = disableString;
+}
+
+std::string& osg::getGLExtensionDisableString()
+{
+    static const char* envVar = getenv("OSG_GL_EXTENSION_DISABLE");
+    static std::string s_GLExtensionDisableString(envVar?envVar:"Nothing defined");
+    return s_GLExtensionDisableString;
+}
+
 
 bool osg::isGLUExtensionSupported(const char *extension)
 {

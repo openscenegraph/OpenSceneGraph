@@ -15,12 +15,8 @@ INC += -I$(OSGHOME)/include \
     -I/usr/local/include/freetype2  \
     -I/usr/freeware/include \
     -I/usr/freeware/include/freetype2
-        
-LINKARGS += -L/usr/local/lib\
-        -L/usr/freeware/lib$(ARCH)
-else
-INC += $(FREETYPE_INCLUDE)
 endif
+INC += $(FREETYPE_INCLUDE)
 
 TARGET_BASENAME = freetype
 include $(TOPDIR)/Make/cygwin_plugin_def

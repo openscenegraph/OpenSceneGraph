@@ -11,11 +11,11 @@ CXXFILES =\
 
 LIBS += -lProducer $(GL_LIBS) -losgText -losgGA -losgUtil -losgDB -losg $(OTHER_LIBS)
 DEF  += -DOSGPRODUCER_LIBRARY
-INC  += -I/usr/X11R6/include
+
 TARGET_BASENAME = osgProducer
 LIB = $(LIB_PREFIX)$(TARGET_BASENAME).$(LIB_EXT)
 
-INC += $(PRODUCER_INCLUDE_DIR)
+INC += $(PRODUCER_INCLUDE_DIR) -I/usr/X11R6/include
 LDFLAGS  += $(PRODUCER_LIB_DIR)
 
 include $(TOPDIR)/Make/makerules 

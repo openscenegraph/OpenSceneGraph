@@ -279,9 +279,12 @@ class SG_EXPORT Quat
             get(matrix);
             return matrix;
         }
-
-
+        
         friend inline std::ostream& operator << (std::ostream& output, const Quat& vec);
+        
+    protected:
+    
+        void _set(const Matrix& m );
 
 };	// end of class prototype
 

@@ -33,7 +33,6 @@ static void usage( const char *prog, const char *msg )
     osg::notify(osg::NOTICE)<<"                         done with -l above, as it automatically expands to the"<<endl;
     osg::notify(osg::NOTICE)<<"                         full library name appropriate for each platform."<<endl;
     osg::notify(osg::NOTICE)<<"    -o orientation     - Convert geometry from input files to output files."<<endl;
-
     osg::notify(osg::NOTICE)<<
                               "                         Format of orientation argument must be the following:\n"
 			      "\n"
@@ -47,6 +46,22 @@ static void usage( const char *prog, const char *msg )
 			      "\n"
 			      "                             0,1,0-0,0,1"
 			      "\n"
+			      << endl;
+    osg::notify(osg::NOTICE)<<"    -t translation     - Convert spatial position of output files.  Format of\n"
+                              "                         translation argument must be the following :\n"
+			      "\n"
+			      "                             X,Y,Z\n"
+			      "\n"
+			      "                         where X, Y, and Z represent the coordinates of the\n"
+			      "                         absolute position in world space\n"
+			      << endl;
+    osg::notify(osg::NOTICE)<<"    -s scale           - Scale size of model.  Scale argument must be the \n"
+                              "                         following :\n"
+			      "\n"
+			      "                             SX,SY,SZ\n"
+			      "\n"
+			      "                         where SX, SY, and SZ represent the scale factors\n"
+			      "                         Caution: Scaling will be done in destination orientation\n"
 			      << endl;
 }
 
@@ -96,12 +111,13 @@ parse_args( int argc, char **argv, FileNameList &fileNames, OrientationConverter
 			    osg::Vec3 from, to;
 			    if( sscanf( argv[nexti++], "%f,%f,%f-%f,%f,%f",
 			    	&from[0], &from[1], &from[2],
-			    	&to[0], &to[1], &to[2] ) != 6 )
+			    	&to[0], &to[1], &to[2]  )
+				!= 6 )
 			    {
 			        usage( argv[0], "Orientation argument format incorrect." );
 				return false;
 			    }
-			    oc.setConversion( from, to );
+			    oc.setRotation( from, to );
 			    do_convert = true;
 			}
 			else
@@ -111,8 +127,48 @@ parse_args( int argc, char **argv, FileNameList &fileNames, OrientationConverter
 			}
 		        break;
 
+		    case 't' :
+		        if( nexti < argc )
+			{
+			    osg::Vec3 trans(0,0,0);
+			    if( sscanf( argv[nexti++], "%f,%f,%f",
+			    	&trans[0], &trans[1], &trans[2] ) != 3 )
+			    {
+			        usage( argv[0], "Translation argument format incorrect." );
+				return false;
+			    }
+			    oc.setTranslation( trans );
+			    do_convert = true;
+			}
+			else
+			{
+			    usage( argv[0], "Translation conversion option requires an argument." );
+			    return false;
+			}
+		        break;
+
+		    case 's' :
+		        if( nexti < argc )
+			{
+			    osg::Vec3 scale(0,0,0);
+			    if( sscanf( argv[nexti++], "%f,%f,%f",
+			    	&scale[0], &scale[1], &scale[2] ) != 3 )
+			    {
+			        usage( argv[0], "Scale argument format incorrect." );
+				return false;
+			    }
+			    oc.setScale( scale );
+			    do_convert = true;
+			}
+			else
+			{
+			    usage( argv[0], "Scale conversion option requires an argument." );
+			    return false;
+			}
+		        break;
+
 		    default :
-		        std::string a = "Invalide option " ;
+		        std::string a = "Invalid option " ;
 			a += "'"; 
 			a += argv[i][j] ;
 			a += "'.";

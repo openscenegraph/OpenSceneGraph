@@ -68,13 +68,24 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 {
     public:
 
+        /// bit mask for setting up which object types get cached by readObject/Image/HeightField/Node(filename) calls
         enum CacheHintOptions
-        {
+        {   /// do not cache objects of any type
             CACHE_NONE          = 0,
+            
+            /// cache nodes loaded via readNode(filename)
             CACHE_NODES         = 1,
+            
+            /// cache images loaded via readImage(filename)
             CACHE_IMAGES        = 2,
-            CACHE_HEIGHTFIELDS  = 4,
-            CACHE_OBJECTS       = 8,
+             
+            /// cache heightfield loaded via readHeightField(filename)
+            CACHE_HEIGHTFIELDS  = 4, 
+            
+            /// cache objects loaded via readObject(filename)
+            CACHE_OBJECTS       = 8, 
+            
+            /// cache on all read*(filename) calls
             CACHE_ALL           = CACHE_NODES |
                                   CACHE_IMAGES |
                                   CACHE_HEIGHTFIELDS |

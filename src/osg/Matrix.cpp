@@ -34,7 +34,7 @@ Matrix::Matrix( const Matrix& other) : Object()
     set( (const float *) other._mat );
 }
 
-Matrix::Matrix( const float * def )
+Matrix::Matrix( const float * const def )
 {    
     set( def ); 
 }

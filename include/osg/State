@@ -116,14 +116,18 @@ class SG_EXPORT State : public Referenced
         /** Get the DisplaySettings */
         inline const DisplaySettings* getDisplaySettings() const { return _displaySettings.get(); }
 
+        typedef std::pair<const StateAttribute*,StateAttribute::OverrideValue> AttributePair;
+        typedef std::vector<AttributePair>                                     AttributeVec;
+        typedef std::vector<StateAttribute::GLModeValue>  ValueVec;
+
     private:
+
     
         unsigned int                _contextID;
         ref_ptr<FrameStamp>         _frameStamp;
         ref_ptr<Camera>             _camera;
         ref_ptr<DisplaySettings>    _displaySettings;
         
-        typedef std::vector<StateAttribute::GLModeValue>  ValueVec;
 
         struct ModeStack
         {
@@ -141,8 +145,6 @@ class SG_EXPORT State : public Referenced
         };
 
 
-        typedef std::pair<const StateAttribute*,StateAttribute::OverrideValue> AttributePair;
-        typedef std::vector<AttributePair>                                     AttributeVec;
 
         struct AttributeStack
         {

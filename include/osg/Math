@@ -7,7 +7,7 @@
 
 #include <math.h>
 
-#if defined(WIN32) || defined (macintosh)
+#if defined(WIN32) || defined (macintosh)|| defined (sun)
 
     #include <float.h>
 

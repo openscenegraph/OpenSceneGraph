@@ -43,7 +43,7 @@ class IVEReaderWriter : public ReaderWriter
                         return rootNode;
                 }
                 else{
-	                cout <<"Unknown class identification in file "<< id << endl;
+                    std::cout <<"Unknown class identification in file "<< id << std::endl;
                 }
 	    }
 	    catch(ive::Exception e)
@@ -58,7 +58,7 @@ class IVEReaderWriter : public ReaderWriter
         {
             try
             {
-                std::ofstream ostream(fileName.c_str(), ios::out | ios::binary);
+                std::ofstream ostream(fileName.c_str(), std::ios::out | std::ios::binary);
                 ive::DataOutputStream* out = new ive::DataOutputStream(&ostream);
                 // write ive file.
                 if(dynamic_cast<const osg::MatrixTransform*>(&node))

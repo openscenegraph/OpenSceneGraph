@@ -69,18 +69,18 @@ class SG_EXPORT Stencil : public StateAttribute
             ALWAYS = GL_ALWAYS
         };
 
-        inline void setFunction(const Function func,int ref,uint mask)
+        inline void setFunction(Function func,int ref,uint mask)
         {
             _func = func;
             _funcRef = ref;
             _funcMask = mask;
         }
         
-        inline const Function getFunction() const { return _func; }
+        inline Function getFunction() const { return _func; }
         
         inline int getFunctionRef() const { return _funcRef; }
 
-        inline const uint getFunctionMask() const { return _funcMask; }
+        inline uint getFunctionMask() const { return _funcMask; }
         
         
         enum Operation 
@@ -100,7 +100,7 @@ class SG_EXPORT Stencil : public StateAttribute
           * third parameter controls the operation when both the stencil test
           * and depth pass.  Ordering of parameter is the same as if using
           * glStencilOp(,,).*/
-        inline void setOperation(const Operation sfail, const Operation zfail, const Operation zpass)
+        inline void setOperation(Operation sfail, Operation zfail, Operation zpass)
         {
             _sfail = sfail;
             _zfail = zfail;
@@ -108,18 +108,18 @@ class SG_EXPORT Stencil : public StateAttribute
         }
         
         /** get the operation when the stencil test fails.*/
-        inline const Operation getStencilFailOperation() const { return _sfail; }
+        inline Operation getStencilFailOperation() const { return _sfail; }
         
         /** get the operation when the stencil test passes but the depth test fails*/
-        inline const Operation getStencilPassAndDepthFailOperation() const { return _zfail; }
+        inline Operation getStencilPassAndDepthFailOperation() const { return _zfail; }
         
         /** get the operation when both the stencil test and the depth test pass*/
-        inline const Operation getStencilPassAndDepthPassOperation() const { return _zpass; }
+        inline Operation getStencilPassAndDepthPassOperation() const { return _zpass; }
         
 
         inline void setWriteMask(uint mask) { _writeMask = mask; }
         
-        inline const uint getWriteMask() const { return _writeMask; }
+        inline uint getWriteMask() const { return _writeMask; }
 
 
         virtual void apply(State& state) const;

@@ -51,9 +51,9 @@ class SG_EXPORT TexEnv : public StateAttribute
             ADD       = GL_ADD
         };
 
-        void setMode( const Mode mode ) { _mode = mode; }
+        void setMode( Mode mode ) { _mode = mode; }
         
-        const Mode getMode() const { return _mode; }
+        Mode getMode() const { return _mode; }
         
         void setColor( const Vec4& color ) { _color = color; }
         

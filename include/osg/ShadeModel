@@ -44,9 +44,9 @@ class SG_EXPORT ShadeModel : public StateAttribute
             SMOOTH = GL_SMOOTH
         };
     
-        inline void setMode(const Mode mode) { _mode = mode; }
+        inline void setMode(Mode mode) { _mode = mode; }
 
-        inline const Mode getMode() const { return _mode; }
+        inline Mode getMode() const { return _mode; }
     
         virtual void apply(State& state) const;
         

@@ -30,10 +30,10 @@ static void conv( const Vec3& a, const Matrix& mat, Vec3& b )
 
     for( i = 0; i < 3; i++ )
     {
-        t[i] =  (a[0] * mat._mat[0][i]) +
-            (a[1] * mat._mat[1][i]) +
-            (a[2] * mat._mat[2][i]) +
-            mat._mat[3][i];
+        t[i] =  (a[0] * mat(0,i)) +
+            (a[1] * mat(1,i)) +
+            (a[2] * mat(2,i)) +
+            mat(3,i);
     }
     b[0] = t[0];
     b[1] = t[1];

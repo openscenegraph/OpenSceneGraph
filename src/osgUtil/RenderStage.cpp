@@ -102,7 +102,7 @@ void RenderStage::draw(osg::State& state,RenderLeaf*& previous)
     const Matrix& projectionMat = _camera->getProjectionMatrix();
     glMatrixMode( GL_PROJECTION );
     glLoadIdentity();
-    glMultMatrixf((GLfloat*)projectionMat._mat);
+    glMultMatrixf(projectionMat.ptr());
 
     glMatrixMode( GL_MODELVIEW );
     glLoadIdentity();
@@ -115,7 +115,7 @@ void RenderStage::draw(osg::State& state,RenderLeaf*& previous)
 
     // set up camera modelview.
     const Matrix& modelView = _camera->getModelViewMatrix();
-    glMultMatrixf((GLfloat*)modelView._mat);
+    glMultMatrixf(modelView.ptr());
     
 
     if (getLightingMode()==RenderStageLighting::SKY_LIGHT && light)

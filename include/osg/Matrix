@@ -12,19 +12,22 @@
 using namespace std;
 #endif
 
+// temporary #define to keep backwards compatibility.
+#define USE_DEPRECATED_MATRIX_METHODS
+
 namespace osg {
 
 class Quat;
 
 class SG_EXPORT Matrix : public Object
 {
-//    private:
-    public:
+    private:
+
         float _mat[4][4];
         bool fully_realized;
 
     public:
-//        const char* name() { return "My Matrix "; }
+
         META_Object(Matrix);
 
         Matrix();
@@ -53,7 +56,9 @@ class SG_EXPORT Matrix : public Object
                   float a10, float a11, float a12, float a13,
                   float a20, float a21, float a22, float a23,
                   float a30, float a31, float a32, float a33);
-        const float * values() { return (const float *)_mat; }
+                  
+        float * ptr() { return (float *)_mat; }
+        const float * ptr() const { return (const float *)_mat; }
 
         void makeIdent();
         void makeScale( const Vec3& );
@@ -89,8 +94,6 @@ class SG_EXPORT Matrix : public Object
         inline Vec4 preMult( const Vec4& v ) const;
         inline Vec4 postMult( const Vec4& v ) const;
         inline Vec4 operator* ( const Vec4& v ) const;
-
-//start of Deprecated methods 
 
         void setTrans( float tx, float ty, float tz );
 	void setTrans( const Vec3& v );

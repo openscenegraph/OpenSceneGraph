@@ -801,7 +801,7 @@ osg::Node* ConvertFromFLT::visitMatrix(osg::Group* osgParent, MatrixRecord* rec)
         {
             for(int j=0;j<4;++j)
             {
-                m._mat[i][j] = pSMatrix->sfMat[i][j];
+                m(i,j) = pSMatrix->sfMat[i][j];
             }
         }
         dcs->setMatrix(m);

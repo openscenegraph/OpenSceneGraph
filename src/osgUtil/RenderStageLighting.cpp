@@ -45,7 +45,7 @@ void RenderStageLighting::draw(osg::State& state,RenderLeaf*& previous)
             if (matrix)
             {
                 glPushMatrix();
-                glMultMatrixf((GLfloat*)matrix->_mat);
+                glMultMatrixf(matrix->ptr());
             }
 
             prev_matrix = matrix;

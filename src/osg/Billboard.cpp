@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <math.h>
-#include "osg/Billboard"
+
+#include <osg/Billboard>
 
 using namespace osg;
 
@@ -88,10 +89,10 @@ void Billboard::calcRotation(const Vec3& eye_local, const Vec3& pos_local,Matrix
                 float inv = 1.0f/ev_length;
                 float c = ev.y()*inv;
                 float s = ev.x()*inv;
-                mat._mat[0][0] = c;
-                mat._mat[0][1] = -s;
-                mat._mat[1][0] = s;
-                mat._mat[1][1] = c;
+                mat(0,0) = c;
+                mat(0,1) = -s;
+                mat(1,0) = s;
+                mat(1,1) = c;
             }
             break;
         }
@@ -138,9 +139,9 @@ void Billboard::calcTransform(const Vec3& eye_local, const Vec3& pos_local,Matri
     calcRotation(eye_local,pos_local,mat);
 
     //    mat.postTrans(pos_local[0],pos_local[1],pos_local[2]);
-    mat._mat[3][0] += pos_local[0];
-    mat._mat[3][1] += pos_local[1];
-    mat._mat[3][2] += pos_local[2];
+    mat(3,0) += pos_local[0];
+    mat(3,1) += pos_local[1];
+    mat(3,2) += pos_local[2];
 
 }
 

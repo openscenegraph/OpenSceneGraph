@@ -148,6 +148,20 @@ Under Windows
 char *osgDB::findDSO( const char *name )
 {
 
+    char path[FILEUTILS_MAX_PATH_LENGTH];
+    char *ptr;
+
+    strcpy( path, "./" );
+
+    if((ptr = getenv( "OSG_LD_LIBRARY_PATH" )))
+    {
+        strcat( path, PathDelimitor );
+        strcat( path, ptr );
+    }
+
+    strcat( path, PathDelimitor );
+    strcat( path, s_default_dso_path );
+
     if ((ptr = getenv( "PATH" )))
     {
         notify(DEBUG_INFO) << "PATH = "<<ptr<<std::endl;

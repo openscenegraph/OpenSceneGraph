@@ -48,7 +48,7 @@ PLUGIN_DIRS = \
 	zip
 
 # comment in if you have Performer installed.
-# PLUGIN_DIRS += pfb
+PLUGIN_DIRS += pfb
 
 
 # comment in if have freetype2.x installed, provides type type font support to osgText.
@@ -101,6 +101,7 @@ endif
 
 EXAMPLE_DIRS = \
 	osganimate\
+	osgautotransform\
 	osgbillboard\
 	osgcallback\
 	osgcameragroup\
@@ -140,7 +141,6 @@ EXAMPLE_DIRS = \
 	osgvertexprogram\
 	osgviewer\
 
-#	osgautotransform\
 #	osgprerendercubemap\
 #	osgjigsaw\
 

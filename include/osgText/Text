@@ -202,11 +202,12 @@ public:
     enum DrawModeMask
     {
         TEXT        = 1, /// default
-        BOUNDINGBOX = 2,
-        ALIGNMENT   = 4
+        TEXT_PIXMAP = 2,
+        BOUNDINGBOX = 4,
+        ALIGNMENT   = 8
     };
 
-    void setDrawMode(unsigned int mode) { _drawMode=mode; }
+    void setDrawMode(unsigned int mode);
     
     unsigned int getDrawMode() const { return _drawMode; }
 
@@ -238,13 +239,19 @@ public:
     // internal structures, variable and methods used for rendering of characters.
     struct OSGTEXT_EXPORT GlyphQuads
     {
+        typedef std::vector<Font::Glyph*> Glyphs;
         typedef std::vector<osg::Vec2> Coords2;
         typedef std::vector<osg::Vec3> Coords3;
         typedef std::vector<osg::Vec2> TexCoords;
 
+        Glyphs      _glyphs;
         Coords2     _coords;
         Coords3     _transformedCoords;
         TexCoords   _texcoords;
+
+        Glyphs getGlyphs() { return _glyphs; }
+        const Glyphs getGlyphs() const { return _glyphs; }
+        
 
         Coords2& getCoords() { return _coords; }
         const Coords2& getCoords() const { return _coords; }

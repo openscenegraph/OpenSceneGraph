@@ -1,0 +1,103 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSG_AUTOTRANSFORM
+#define OSG_AUTOTRANSFORM 1
+
+#include <osg/Group>
+#include <osg/Transform>
+#include <osg/AnimationPath>
+#include <osg/Quat>
+
+namespace osg {
+
+/** AutoTransform - is Transform the automatically scales or rotates 
+  * to keep its children relative to screen space coordinates.
+*/
+class SG_EXPORT AutoTransform : public Transform
+{
+    public :
+        AutoTransform();
+
+        AutoTransform(const AutoTransform& pat,const CopyOp& copyop=CopyOp::SHALLOW_COPY);            
+
+        virtual osg::Object* cloneType() const { return new AutoTransform (); }
+        virtual osg::Object* clone(const osg::CopyOp& copyop) const { return new AutoTransform (*this,copyop); }
+        virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const AutoTransform *>(obj)!=NULL; }
+        virtual const char* className() const { return "AutoTransform"; }
+        virtual const char* libraryName() const { return "osg"; }
+
+        virtual void accept(NodeVisitor& nv);
+
+        virtual AutoTransform* asAutoTransform() { return this; }
+        virtual const AutoTransform* asAutoTransform() const { return this; }
+
+        inline void setPosition(const Vec3& pos) { _position = pos; dirtyBound(); }
+        inline const Vec3& getPosition() const { return _position; }
+
+
+        inline void setRotation(const Quat& quat) { _rotation = quat; dirtyBound(); }
+        inline const Quat& getRotation() const { return _rotation; }
+        
+        inline void setScale(float scale) { _scale.set(scale,scale,scale); dirtyBound(); }
+        inline void setScale(const Vec3& scale) { _scale = scale; dirtyBound(); }
+        inline const Vec3& getScale() const { return _scale; }
+        
+        inline void setPivotPoint(const Vec3& pivot) { _pivotPoint = pivot; dirtyBound(); }
+        inline const Vec3& getPivotPoint() const { return _pivotPoint; }
+        
+
+        void setAutoUpdateEyeMovementTolerance(float tolerance) { _autoUpdateEyeMovementTolerance = tolerance; }
+        float getAutoUpdateEyeMovementTolerance() const { return _autoUpdateEyeMovementTolerance; }
+
+        void setAutoRotateToScreen(bool autoRotateToScreen) { _autoRotateToScreen = autoRotateToScreen; }
+        bool getAutoRotateToScreen() const { return _autoRotateToScreen; }
+
+        void setAutoScaleToScreen(bool autoScaleToScreen) { _autoScaleToScreen = autoScaleToScreen; }
+        bool getAutoScaleToScreen() const { return _autoScaleToScreen; }
+
+
+        virtual bool computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor* nv) const;
+
+        virtual bool computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor* nv) const;
+
+
+
+    protected :
+            
+        virtual ~AutoTransform() {}
+        
+
+        Vec3                _position;
+        Vec3                _pivotPoint;
+        float               _autoUpdateEyeMovementTolerance;
+        bool                _autoRotateToScreen;
+        bool                _autoScaleToScreen;
+        
+        mutable Quat        _rotation;
+        mutable Vec3        _scale;
+        mutable bool        _firstTimeToInitEyePoint;
+        mutable osg::Vec3   _previousEyePoint;
+        mutable int         _previousWidth;
+        mutable int         _previousHeight;
+
+        void computeMatrix() const;
+
+        mutable bool        _matrixDirty;
+        mutable osg::Matrix _cachedMatrix;
+        
+};
+
+}
+
+#endif

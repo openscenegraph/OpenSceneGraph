@@ -252,6 +252,8 @@ public:
         const osg::Vec2& getMaxTexCoord() const;
         
         void subload() const;
+        
+        void draw(osg::State& state) const;
 
     protected:
 
@@ -269,6 +271,9 @@ public:
         int                         _texturePosY;
         osg::Vec2                   _minTexCoord;
         osg::Vec2                   _maxTexCoord;
+        
+        typedef osg::buffered_value<GLuint> GLObjectList;
+        mutable GLObjectList _globjList;
 
     };
 

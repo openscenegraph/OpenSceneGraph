@@ -23,7 +23,7 @@
 namespace osgUtil {
 
 /** A tri stripping visitor for converting Geometry surface primitives into tri strips.
-  * The current implemention is based up NVidia's NvTriStrip.
+  * The current implemention is based up Tanguy Fautre's triangulation code.
   */
 class OSGUTIL_EXPORT TriStripVisitor : public osg::NodeVisitor
 {
@@ -36,8 +36,8 @@ class OSGUTIL_EXPORT TriStripVisitor : public osg::NodeVisitor
                 _minStripSize( 0 )
         {}
 
-        /** convert mesh primitives in Geometry into Tri Strips using
-          * NvTriStrip.  Converts all primitive types except points
+        /** Convert mesh primitives in Geometry into Tri Strips.
+          * Converts all primitive types except points
           * and lines, linestrips which it leaves unchanged.
           */
         void stripify(osg::Geometry& drawable);

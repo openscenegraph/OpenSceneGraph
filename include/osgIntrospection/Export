@@ -1,0 +1,43 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGINTROSPECTION_EXPORTHDR
+#define OSGINTROSPECTION_EXPORTHDR 1
+
+// define USE_DEPRECATED_API is used to include in API which is being fazed out
+// if you can compile your apps with this turned off you are
+// well placed for compatablity with future versions.
+//#define USE_DEPRECATED_API
+
+#if defined(_MSC_VER)
+    #pragma warning(disable : 4251)
+#endif
+
+#if defined(_MSC_VER) || defined(__CYGWIN__) || defined(__MINGW32__) || defined( __BCPLUSPLUS__)  || defined( __MWERKS__)
+	#  ifdef OSGINTROSPECTION_LIBRARY
+	#    define OSGINTROSPECTION_EXPORT   __declspec(dllexport)
+	#  else
+	#    define OSGINTROSPECTION_EXPORT   __declspec(dllimport)
+	#  endif /* OSGINTROSPECTION_LIBRARY */
+#else
+	#  define OSGINTROSPECTION_EXPORT
+#endif  
+
+// set up define for whether member templates are supported by VisualStudio compilers.
+#ifdef _MSC_VER
+# if (_MSC_VER < 1300)
+#  error Your compiler doesn't support member templates. The reflection framework can't be compiled.
+# endif
+#endif
+
+#endif

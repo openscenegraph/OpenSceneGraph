@@ -1,0 +1,81 @@
+#ifndef OSGINTROSPECTION_REFLECTION_
+#define OSGINTROSPECTION_REFLECTION_
+
+#include <osgIntrospection/Export>
+
+#include <typeinfo>
+#include <map>
+
+/// This macro emulates the behavior of the standard typeid operator,
+/// returning the Type object associated to the type of the given
+/// expression.
+#define typeof(expr)  osgIntrospection::Reflection::getType(typeid(expr))
+
+namespace osgIntrospection
+{
+
+	class Type;
+
+	/// This predicate compares two instances of std::type_info for equality.
+	/// Note that we can't rely on default pointer comparison because it is
+	/// not guaranteed that &typeid(T) always returns the same pointer for a
+	/// given T (thanks Andrew Koenig).
+	struct TypeInfoCmp
+	{
+		bool operator()(const std::type_info *t1, const std::type_info *t2) const
+		{
+			return t1->before(*t2) != 0;
+		}
+	};
+
+	/// A map of types, indexed by their associated type_info structure.
+	typedef std::map<const std::type_info *, Type *, TypeInfoCmp> TypeMap;
+
+
+	/// This class provides basic reflection services such as registration
+	/// of new types and queries on the global type map.
+	class OSGINTROSPECTION_EXPORT Reflection
+	{
+	public:
+		/// Returns the Type object associated to the given type_info
+		/// structure. If the type hasn't been created yet it is 
+		/// automatically created and added to the global type map. 
+		/// Please note that such type will have the status of
+		/// "declared", you still need to give details about it through
+		/// a Reflector class before you can query it.
+		static const Type &getType(const std::type_info &ti);
+
+		/// Finds a Type object given its qualified name, which must
+		/// be identical to the qualified name returned by that Type's
+		/// getQualifiedName() method. If the type hasn't been created
+		/// yet, an exception is thrown.
+		static const Type &getType(const std::string &qname);
+
+		/// Returns the global map of types.
+		static const TypeMap &getTypes();
+
+		/// Return the Type object associated to the C++ type 'void'.
+		/// This is a shortcut for typeof(void), which may be slow if
+		/// the type map is large.
+		static const Type &type_void();
+		
+	private:
+		template<typename C> friend class Reflector;
+
+		struct StaticData
+		{
+			TypeMap typemap;
+			const Type *type_void;
+		};
+
+		static StaticData &getOrCreateStaticData();
+		static Type *registerType(const std::type_info &ti);
+		static Type *registerOrReplaceType(const std::type_info &ti);		
+
+	private:
+		static StaticData *staticdata__;
+	};
+
+}
+
+#endif

@@ -1,0 +1,189 @@
+#ifndef OSGINTROSPECTION_EXCEPTIONS_
+#define OSGINTROSPECTION_EXCEPTIONS_
+
+#include <string>
+#include <typeinfo>
+
+namespace osgIntrospection
+{
+
+	class Exception
+	{
+	public:
+		Exception(const std::string &msg): msg_(msg) {}
+		const std::string &what() const throw()  { return msg_; }
+
+	private:
+		std::string msg_;
+	};
+
+	struct ReflectionException: public Exception 
+	{
+		ReflectionException(const std::string &msg): Exception(msg) {}
+	};
+
+	struct TypeNotDefinedException: public ReflectionException
+	{
+		TypeNotDefinedException(const std::type_info &ti)
+		:	ReflectionException("type `" + std::string(ti.name()) + "' is declared but not defined")
+		{
+		}
+	};
+
+	struct TypeIsAbstractException: public ReflectionException
+	{
+		TypeIsAbstractException(const std::type_info &ti)
+		:	ReflectionException("cannot create instances of abstract type `" + std::string(ti.name()) + "'")
+		{
+		}
+	};
+
+	struct InvalidFunctionPointerException: public ReflectionException
+	{
+		InvalidFunctionPointerException()
+		:	ReflectionException("invalid function pointer during invoke()")
+		{
+		}
+	};
+
+	struct ConstIsConstException: public ReflectionException
+	{
+		ConstIsConstException()
+		:	ReflectionException("cannot modify a const value")
+		{
+		}
+	};
+
+	struct EmptyValueException: public ReflectionException
+	{
+		EmptyValueException()
+		:	ReflectionException("cannot retrieve an empty value")
+		{
+		}
+	};
+	
+	struct TypeNotFoundException: public ReflectionException
+	{
+		TypeNotFoundException(const std::string &qname)
+		:	ReflectionException("type `" + qname + "' not found")
+		{
+		}
+	};
+
+	struct MethodNotFoundException: public ReflectionException
+	{
+		MethodNotFoundException(const std::string &name, const std::string &cname)
+		:	ReflectionException("could not find a suitable method of name `" + name + "' in class `" + cname + "'")
+		{
+		}
+	};
+
+	struct StreamWriteErrorException: public ReflectionException
+	{
+		StreamWriteErrorException()
+		:	ReflectionException("an error occured while trying to write to a stream")
+		{
+		}
+	};
+
+	struct StreamReadErrorException: public ReflectionException
+	{
+		StreamReadErrorException()
+		:	ReflectionException("an error occured while trying to read from a stream")
+		{
+		}
+	};
+
+	class StreamingNotSupportedException: public ReflectionException
+	{
+	public:
+		enum OperationType
+		{
+			ANY,
+			TEXT_WRITE,
+			TEXT_READ,
+			BINARY_WRITE,
+			BINARY_READ
+		};
+
+		StreamingNotSupportedException(OperationType op, const std::type_info &type)
+		:	ReflectionException(build_msg(op, type))
+		{
+		}
+
+	private:
+		std::string build_msg(OperationType op, const std::type_info &type)
+		{
+			std::string opstr;
+			switch (op)
+			{
+			case TEXT_WRITE: opstr = "writing to text stream"; break;
+			case TEXT_READ: opstr = "reading from text stream"; break;
+			case BINARY_WRITE: opstr = "writing to binary stream"; break;
+			case BINARY_READ: opstr = "reading from binary stream"; break;
+			case ANY:
+			default: opstr = "streaming";
+			}
+			return opstr + std::string(" is not supported on type `" + std::string(type.name()) + "'");
+		}
+	};
+
+	struct TypeConversionException: public ReflectionException
+	{
+		TypeConversionException(const std::type_info &type1, const std::type_info &type2)
+		:	ReflectionException("cannot convert from type `" + std::string(type1.name()) + "' to type `" + std::string(type2.name()) + "'")
+		{
+		}
+	};
+
+	class PropertyAccessException: public ReflectionException
+	{
+	public:
+		enum AccessType
+		{
+			GET,
+			SET,
+			IGET,
+			ISET,
+			AGET,
+			ASET,
+			ADD,
+			COUNT
+		};
+
+		PropertyAccessException(const std::string &pname, AccessType denied)
+		:	ReflectionException(build_msg(pname, denied))
+		{
+		}
+
+	private:
+		std::string build_msg(const std::string &pname, AccessType denied) const
+		{
+			std::string msg;
+			switch (denied)
+			{
+			case GET: msg = "retrieved"; break;
+			case SET: msg = "set"; break;
+			case IGET: msg = "retrieved with indices"; break;
+			case ISET: msg = "set with indices"; break;
+			case AGET: msg = "retrieved with array index"; break;
+			case ASET: msg = "set with array index"; break;
+			case ADD: msg = "added"; break;
+			case COUNT: msg = "counted"; break;
+			default: msg = "?";
+			}
+			return std::string("value for property `" + pname + "' cannot be " + msg);
+		}
+	};
+
+	struct IndexValuesNotDefinedException: ReflectionException
+	{
+		IndexValuesNotDefinedException(const std::string &name, const std::string &iname)
+			:	ReflectionException("couldn't determine a finite set of values for index `" + iname + "' of property `" + name + "'. Make sure that either: 1) the index is an enumeration, or 2) a valid custom indexing attribute was assigned to the property.")
+		{
+		}
+	};
+
+}
+
+#endif

@@ -1,0 +1,427 @@
+#ifndef OSGINTROSPECTION_VALUE_
+#define OSGINTROSPECTION_VALUE_
+
+#include <osgIntrospection/Export>
+#include <osgIntrospection/Reflection>
+
+#include <vector>
+#include <memory>
+#include <string>
+
+namespace osgIntrospection
+{
+
+	class Type;
+
+	class OSGINTROSPECTION_EXPORT Value
+	{
+	public:
+		/// Default constructor. Initializes internal structures
+		/// so that the Type returned by getType() is typeof(void),
+		/// and the value is empty so that isEmpty() returns true.
+		/// Be careful when using empty values, as some operations
+		/// on them may throw an exception.
+		inline Value();
+
+		/// Direct initialization constructor for void pointers.
+		/// Although one of the constructor templates below could
+		/// certainly handle void pointers as well, we need to treat 
+		/// them separately because void* can't be dereferenced.
+		inline Value(void *v);
+
+		/// Direct initialization constructor for const void pointers.
+		/// Although one of the constructor templates below could
+		/// certainly handle void pointers as well, we need to treat 
+		/// them separately because void* can't be dereferenced.
+		inline Value(const void *v);
+
+		/// Direct initialization constructor template for non-const
+		/// pointers. By initializing an instance of Value through
+		/// this constructor, internal structures will be configured
+		/// to handle polymorphic types. This means you'll be able to
+		/// call getInstanceType() to get the actual type of the
+		/// dereferenced value.
+		template<typename T> Value(T *v);
+
+		/// Direct initialization constructor template for non-const
+		/// pointers. By initializing an instance of Value through
+		/// this constructor, internal structures will be configured
+		/// to handle polymorphic types. This means you'll be able to
+		/// call getInstanceType() to get the actual type of the
+		/// dereferenced value.
+		template<typename T> Value(const T *v);
+
+		/// Direct initialization constructor template for all types
+		/// that are not handled by any of the constructors above.
+		/// Calling getInstanceType() on an instance constructed
+		/// this way returns the same as getType().
+		template<typename T> Value(const T &v);
+
+		/// Copy constructor. The underlying value's type must have
+		/// consistent copy semantics.
+		inline Value(const Value &copy);
+
+		/// Destructor. Frees internal resources but it does NOT delete
+		/// the value held. For example, this function will produce a
+		/// memory leak:  void f() { Value v(new int); }
+		inline ~Value();
+
+		/// Assignment operator. Behaves like the copy constructor.
+		inline Value &operator=(const Value &copy);
+
+		/// Returns whether the value is a pointer and it points to
+		/// something whose type is different than void.
+		inline bool isTypedPointer() const;
+
+		/// Returns whether this Value is empty.
+		inline bool isEmpty() const;
+
+		/// Returns whether the value is a null pointer.
+		inline bool isNullPointer() const;
+
+		/// Returns the exact type of the value held.
+		inline const Type &getType() const;
+
+		/// If the value is a pointer to a non-void type, this method
+		/// returns the actual type of the dereferenced pointer. Please
+		/// note it is not the same as getType().getPointedType(),
+		/// because the latter would return the non-polymorphic type.
+		/// If the value is not a pointer, this method behaves like
+		/// getType().
+		inline const Type &getInstanceType() const;
+
+		/// Equality test operator. Returns true if the value passed
+		/// as parameter is equal to this instance. The compare() method
+		/// is used to perform the actual comparison.
+		inline bool operator==(const Value &other) const;
+
+		/// Inequality test operator. Returns !operator==(other).
+		inline bool operator!=(const Value &other) const;
+
+		/// Conversion to bool operator. Returns true if the value is
+		/// not empty, false otherwise.
+		inline operator bool() const;
+		
+		/// Tries to convert this instance to a Value of the given type.
+		/// The conversion is performed by rendering to a temporary stream
+		/// in the source format and trying to read back from the stream
+		/// in the destination format. If either the source or destination
+		/// types, or both, don't have a ReaderWriter object, the conversion
+		/// fails and an exception is thrown. If the conversion can't be
+		/// completed for other reasons, other exceptions may be thrown.
+		Value convertTo(const Type &outtype) const;
+
+		/// Tries to convert this instance to a Value of the given type.
+		/// The conversion is performed by rendering to a temporary stream
+		/// in the source format and trying to read back from the stream
+		/// in the destination format. If either the source or destination
+		/// types, or both, don't have a ReaderWriter object, the conversion
+		/// fails and an empty Value is returned.
+		/// Please note that unlike convertTo(), this method does not 
+		/// intentionally throw any exceptions.
+		Value tryConvertTo(const Type &outtype) const;
+
+		/// Tries to get a string representation of the underlying value.
+		/// This requires the value's type to have a ReaderWriter object
+		/// associated to it. If the conversion can't be completed, an
+		/// exception is thrown.
+		std::string toString() const;
+
+		/// Compares two values for equality. Two empty values are considered
+		/// equal. If the two values' types are different, a conversion is
+		/// attempted and then the equality test is performed again.
+		static bool compare(const Value &v1, const Value &v2);
+
+	private:
+		// It's good to have friends!
+		template<typename T> friend T variant_cast(const Value &v);
+		template<typename T> friend T *extract_raw_data(Value &v);
+		template<typename T> friend const T *extract_raw_data(const Value &v);
+
+		// throw an exception if the value is empty
+		void check_empty() const;
+
+		// Base class for holding values. Provides a clone() method
+		// which must be overriden in descendant classes.
+		struct Instance_base  
+		{ 
+			virtual Instance_base *clone() const = 0;
+			virtual ~Instance_base() {} 
+		};
+
+		// Generic descendant of Instance_base for holding values of
+		// type T. Note that values are created on the stack.
+		template<typename T>
+		struct Instance: Instance_base
+		{
+			Instance(T data): data_(data) {}
+			virtual Instance_base *clone() const { return new Instance<T>(*this); }
+			virtual ~Instance() {}
+			T data_;
+		};
+
+		// Base class for storage of Instance objects. Actually three
+		// instances are created: the main instance which keeps the
+		// desired value, an additional instance that keeps a reference
+		// to that value, and another instance that keeps a const
+		// reference to that value. These additional instances are queried 
+		// when casting the Value to a reference type.
+		struct Instance_box_base
+		{
+			Instance_box_base()
+			:	inst_(0),
+				ref_inst_(0),
+				const_ref_inst_(0)
+			{
+			}
+
+			virtual ~Instance_box_base()
+			{
+				delete inst_;
+				delete ref_inst_;
+				delete const_ref_inst_;
+			}
+
+			// clones the instance box
+			virtual Instance_box_base *clone() const = 0;
+			// returns the type of the value held
+			virtual const Type *type() const = 0;
+			// returns the actual pointed type if applicable
+			virtual const Type *ptype() const { return 0; }
+			// tests for equality
+			virtual bool equal(const Value &v) const = 0;
+			// returns whether the data is a null pointer
+			virtual bool nullptr() const = 0;
+
+			Instance_base *inst_;
+			Instance_base *ref_inst_;
+			Instance_base *const_ref_inst_;
+		};
+
+		// Generic instance box for non-pointer values.
+		template<typename T>
+		struct Instance_box: Instance_box_base
+		{
+			Instance_box(): Instance_box_base(), nullptr_(false) {}
+
+			Instance_box(const T &d, bool nullptr = false)
+			:	Instance_box_base(),
+				nullptr_(nullptr)
+			{
+				Instance<T> *vl = new Instance<T>(d);
+				inst_ = vl;
+				ref_inst_ = new Instance<T &>(vl->data_);
+				const_ref_inst_ = new Instance<const T &>(vl->data_);
+			}
+
+			virtual Instance_box_base *clone() const
+			{
+				Instance_box<T> *new_inbox = new Instance_box<T>();
+
+				// ??? this static_cast<> shouldn't be necessary, but the 
+				// MSVC++ compiler complains about invalid casting without it!
+				Instance<T> *vl = static_cast<Instance<T> *>(inst_->clone());
+				
+				new_inbox->inst_ = vl;
+				new_inbox->ref_inst_ = new Instance<T &>(vl->data_);
+				new_inbox->const_ref_inst_ = new Instance<const T &>(vl->data_);
+				new_inbox->nullptr_ = nullptr_;
+				return new_inbox;
+			}
+
+			virtual const Type *type() const
+			{
+				return &typeof(static_cast<Instance<T> *>(inst_)->data_);
+			}
+
+			virtual bool equal(const Value &v) const
+			{
+				return static_cast<Instance<T> *>(static_cast<Instance_box<T> *>(v.inbox_)->inst_)->data_ ==
+					static_cast<Instance<T> *>(inst_)->data_;
+			}
+
+			virtual bool nullptr() const
+			{
+				return nullptr_;
+			}
+
+		private:
+			bool nullptr_;
+		};
+
+		// Generic instance box for pointer values. Unlike Instance_box<>, 
+		// this struct template provides a ptype() method that unreferences
+		// the pointer (T is supposed to be a pointer) and gets its actual
+		// type.
+		template<typename T>
+		struct Ptr_instance_box: Instance_box_base
+		{
+			Ptr_instance_box(): Instance_box_base() {}
+
+			Ptr_instance_box(const T &d)
+			:	Instance_box_base()
+			{
+				Instance<T> *vl = new Instance<T>(d);
+				inst_ = vl;
+				ref_inst_ = new Instance<T &>(vl->data_);
+				const_ref_inst_ = new Instance<const T &>(vl->data_);
+			}
+
+			virtual Instance_box_base *clone() const
+			{
+				Ptr_instance_box<T> *new_inbox = new Ptr_instance_box<T>();
+
+				// ??? this static_cast<> shouldn't be necessary, but the 
+				// MSVC++ compiler complains about invalid casting without it!
+				Instance<T> *vl = static_cast<Instance<T> *>(inst_->clone());
+				
+				new_inbox->inst_ = vl;
+				new_inbox->ref_inst_ = new Instance<T &>(vl->data_);
+				new_inbox->const_ref_inst_ = new Instance<const T &>(vl->data_);
+				return new_inbox;
+			}
+
+			virtual const Type *type() const
+			{
+				return &typeof(static_cast<Instance<T> *>(inst_)->data_);
+			}
+
+			virtual const Type *ptype() const
+			{
+				if (!static_cast<Instance<T> *>(inst_)->data_) return 0;
+				return &typeof(*static_cast<Instance<T> *>(inst_)->data_);
+			}
+
+			virtual bool equal(const Value &v) const
+			{
+				return static_cast<Instance<T> *>(static_cast<Instance_box<T> *>(v.inbox_)->inst_)->data_ ==
+					static_cast<Instance<T> *>(inst_)->data_;
+			}
+
+			virtual bool nullptr() const
+			{
+				return static_cast<Instance<T> *>(inst_)->data_ == 0;
+			}
+
+		};
+
+		Instance_box_base *inbox_;
+		const Type *type_;
+		const Type *ptype_;
+	};
+
+	/// A vector of values.
+	typedef std::vector<Value> ValueList;
+
+
+	// INLINE METHODS
+
+	inline Value::Value()
+	:	inbox_(0),
+		type_(&Reflection::type_void()),
+		ptype_(0)
+	{
+	}
+
+	template<typename T> Value::Value(const T &v)
+	:	ptype_(0)
+	{
+		inbox_ = new Instance_box<T>(v);
+		type_ = inbox_->type();
+	}
+
+	inline Value::Value(const void *v)
+	:	ptype_(0)
+	{
+		inbox_ = new Instance_box<const void *>(v, v == 0);
+		type_ = inbox_->type();
+	}
+
+	inline Value::Value(void *v)
+	:	ptype_(0)
+	{
+		inbox_ = new Instance_box<void *>(v, v == 0);
+		type_ = inbox_->type();
+	}
+
+	template<typename T> Value::Value(const T *v)
+	{
+		inbox_ = new Ptr_instance_box<const T *>(v);
+		type_ = inbox_->type();
+		ptype_ = inbox_->ptype();
+	}
+
+	template<typename T> Value::Value(T *v)
+	{
+		inbox_ = new Ptr_instance_box<T *>(v);
+		type_ = inbox_->type();
+		ptype_ = inbox_->ptype();
+	}
+
+	inline Value::Value(const Value &copy)
+	:	inbox_(copy.inbox_? copy.inbox_->clone(): 0),
+		type_(copy.type_),
+		ptype_(copy.ptype_)
+	{
+	}
+
+	inline Value &Value::operator=(const Value &copy)
+	{
+		std::auto_ptr<Instance_box_base> new_inbox(copy.inbox_? copy.inbox_->clone(): 0);
+		delete inbox_;
+		inbox_ = new_inbox.release();
+		type_ = copy.type_;
+		ptype_ = copy.ptype_;
+		return *this;
+	}
+
+	inline bool Value::operator==(const Value &other) const
+	{
+		return compare(*this, other);
+	}
+
+	inline bool Value::operator!=(const Value &other) const
+	{
+		return !compare(*this, other);
+	}
+
+	inline Value::operator bool() const
+	{
+		return !isEmpty();
+	}
+
+	inline Value::~Value()
+	{
+		delete inbox_;
+	}
+
+	inline const Type &Value::getType() const 
+	{ 
+		return *type_; 
+	}
+
+	inline const Type &Value::getInstanceType() const
+	{
+		if (ptype_)
+			return *ptype_;
+		return *type_;
+	}
+
+	inline bool Value::isTypedPointer() const
+	{
+		return ptype_ != 0;
+	}
+
+	inline bool Value::isEmpty() const
+	{
+		return inbox_ == 0;
+	}
+
+	inline bool Value::isNullPointer() const
+	{
+		return inbox_->nullptr();
+	}
+
+}
+
+#endif

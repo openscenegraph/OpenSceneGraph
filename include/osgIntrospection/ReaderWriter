@@ -1,0 +1,271 @@
+#ifndef OSGINTROSPECTION_READERWRITER_
+#define OSGINTROSPECTION_READERWRITER_
+
+#include <osgIntrospection/Value>
+#include <osgIntrospection/Type>
+#include <osgIntrospection/Exceptions>
+#include <osgIntrospection/variant_cast>
+
+#include <osg/Vec2>
+#include <osg/Vec3>
+#include <osg/Vec4>
+#include <osg/ref_ptr>
+
+#include <iostream>
+
+namespace osg
+{
+
+	/// ----------------------------------------------------------------------
+	/// TEMPORARY FIX
+	/// (currently osg::Vec? classes don't support input streaming)
+	/// (currently osg::ref_ptr<> class doesn't support I/O streaming)
+	inline std::istream& operator >> (std::istream& input, Vec2f& vec)
+	{
+		input >> vec._v[0] >> vec._v[1];
+		return input;
+	}
+
+	inline std::istream& operator >> (std::istream& input, Vec3f& vec)
+	{
+		input >> vec._v[0] >> vec._v[1] >> vec._v[2];
+		return input;
+	}
+
+	inline std::istream& operator >> (std::istream& input, Vec4& vec)
+	{
+		input >> vec._v[0] >> vec._v[1] >> vec._v[2] >> vec._v[3];
+		return input;
+	}
+
+	template<typename T>
+	std::ostream &operator << (std::ostream &s, const osg::ref_ptr<T> &r)
+	{
+		return s << r.get();
+	}
+
+	template<typename T>
+	std::istream &operator >> (std::istream &s, osg::ref_ptr<T> &r)
+	{
+		void *ptr;
+		s >> ptr;
+		r = (T *)ptr;
+		return s;
+	}
+
+	///
+	/// END OF TEMPORARY FIX
+	/// ----------------------------------------------------------------------
+}
+
+namespace osgIntrospection
+{
+
+	/// This is the base class for reader/writer objects. A ReaderWriter's
+	/// purpose is to provide the means for writing the content of a Value
+	/// object to a stream and for reading it back. Descendants can either
+	/// be specialized for just one data type or they can handle several
+	/// types, that's up to the implementor. A derived class is not required
+	/// to support all streaming operations (text write, text read, bin write
+	/// and bin read), it can implement just some of them, although full
+	/// support is strongly encouraged.
+	class ReaderWriter
+	{
+	public:
+		class Options
+		{
+		public:
+			Options(): fno_(false) {}
+			virtual ~Options() {}
+
+			bool getForceNumericOutput() const    { return fno_; }
+			void setForceNumericOutput(bool fno)  { fno_ = fno; }
+
+		private:
+			bool fno_;
+		};
+
+		/// Writes a textual representation of the value's content to a stream.
+		virtual std::ostream &writeTextValue(std::ostream &, const Value &v, const Options* = 0) const { throw StreamingNotSupportedException(StreamingNotSupportedException::TEXT_WRITE, v.getType().getStdTypeInfo()); }
+
+		/// Reads a textual representation of the value's content from a stream.
+		virtual std::istream &readTextValue(std::istream &, Value &v, const Options* = 0) const { throw StreamingNotSupportedException(StreamingNotSupportedException::TEXT_READ, v.getType().getStdTypeInfo()); }
+
+		/// Writes a binary representation of the value's content to a stream.
+		virtual std::ostream &writeBinaryValue(std::ostream &, const Value &v, const Options* = 0) const { throw StreamingNotSupportedException(StreamingNotSupportedException::BINARY_WRITE, v.getType().getStdTypeInfo()); }
+
+		/// Reads a binary representation of the value's content from a stream.
+		virtual std::istream &readBinaryValue(std::istream &, Value &v, const Options* = 0) const { throw StreamingNotSupportedException(StreamingNotSupportedException::BINARY_READ, v.getType().getStdTypeInfo()); }
+
+		/// Virtual destructor.
+		virtual ~ReaderWriter() {}
+	};
+
+	/// This class template provides basic default streaming capabilities
+	/// for all types that define streaming operators (<< and >>). Most of
+	/// the standard types are able to be read and written this way, so the
+	/// StdReaderWriter template can be a convenient default for several
+	/// types. The binary representation is a raw copy of the memory content.
+	///
+	/// TO-DO: improve binary streaming and avoid arch dependency.
+	///
+	template<typename T>
+	class StdReaderWriter: public ReaderWriter
+	{
+	public:
+		virtual std::ostream &writeTextValue(std::ostream &os, const Value &v, const Options * = 0) const
+		{
+			return (os << variant_cast<T>(v));
+		}
+
+		virtual std::istream &readTextValue(std::istream &is, Value &v, const Options * = 0) const
+		{
+			if (v.isEmpty()) v = Value(T());
+			return (is >> variant_cast<T &>(v));
+		}
+
+		virtual std::ostream &writeBinaryValue(std::ostream &os, const Value &v, const Options * = 0) const
+		{
+			return os.write(reinterpret_cast<const char *>(extract_raw_data<T>(v)), sizeof(T));
+		}
+
+		virtual std::istream &readBinaryValue(std::istream &is, Value &v, const Options * = 0) const
+		{
+			if (v.isEmpty()) v = Value(T());
+			return is.read(reinterpret_cast<char *>(extract_raw_data<T>(v)), sizeof(T));
+		}
+
+	};
+
+	/// This ReaderWriter can be used to read and write enumeration values.
+	/// The textual representation will be the enum label, if found, or the
+	/// numerical value. The binary representation doesn't take label names
+	/// into account.
+	template<typename T>
+	class EnumReaderWriter: public ReaderWriter
+	{
+		virtual std::ostream &writeTextValue(std::ostream &os, const Value &v, const Options *options = 0) const
+		{
+			int numeric = static_cast<int>(variant_cast<T>(v));
+
+			if (!options || !options->getForceNumericOutput())
+			{
+				const Type &type = v.getType();
+				const EnumLabelMap &elm = type.getEnumLabels();
+				EnumLabelMap::const_iterator i = elm.find(numeric);
+				if (i != elm.end())
+				{
+					os << i->second;
+					return os;
+				}
+				else
+				{
+					std::vector<std::string> labels;
+
+					// it could be a bitmask
+					for (EnumLabelMap::const_iterator i=elm.begin(); i!=elm.end(); ++i)
+					{
+						if (i->first != 0 && ((i->first & numeric) == i->first))
+						{
+							numeric ^= i->first;
+							labels.push_back(i->second);
+						}
+					}
+
+					// check whether all bits were discovered
+					if (numeric == 0)
+					{
+						for (std::vector<std::string>::const_iterator i=labels.begin(); i!=labels.end(); ++i)
+						{
+							os << *i;
+							if ((i+1) != labels.end()) os << " | ";
+						}
+						return os;
+					}
+				}
+			}
+
+			return os << numeric;
+		}
+
+		virtual std::istream &readTextValue(std::istream &is, Value &v, const Options * = 0) const
+		{
+			if (v.isEmpty()) v = Value(T());
+
+			int i;
+			if (is >> i)
+			{
+				variant_cast<T &>(v) = static_cast<T>(i);
+				return is;
+			}
+
+			is.clear();
+
+			std::string s;			
+			if (is >> s)
+			{
+				const Type &type = v.getType();
+				const EnumLabelMap &elm = type.getEnumLabels();
+				for (EnumLabelMap::const_iterator i=elm.begin(); i!=elm.end(); ++i)
+				{
+					if (i->second.compare(s) == 0)
+					{
+						variant_cast<T &>(v) = static_cast<T>(i->first);
+						return is;
+					}
+				}
+			}
+
+			return is;
+		}
+
+		virtual std::ostream &writeBinaryValue(std::ostream &os, const Value &v, const Options *options = 0) const
+		{
+			return os.write(reinterpret_cast<const char *>(extract_raw_data<T>(v)), sizeof(T));
+		}
+
+		virtual std::istream &readBinaryValue(std::istream &is, Value &v, const Options *options = 0) const
+		{
+			if (v.isEmpty())
+				v = Value(T());
+			return is.read(reinterpret_cast<char *>(extract_raw_data<T>(v)), sizeof(T));
+		}
+
+	};
+
+	/// This is a ReaderWriter class that can be used to read and write
+	/// pointer values. Note: template parameter T must be a pointer!
+	template<typename T>
+	class PtrReaderWriter: public ReaderWriter
+	{
+	public:
+		virtual std::ostream &writeTextValue(std::ostream &os, const Value &v, const Options* = 0) const
+		{
+			return (os << (void*)variant_cast<T>(v));
+		}
+
+		virtual std::istream &readTextValue(std::istream &is, Value &v, const Options* = 0) const
+		{
+			void *ptr;
+			is >> ptr;
+			v = Value(T(ptr));
+			return is;
+		}
+
+		virtual std::ostream &writeBinaryValue(std::ostream &os, const Value &v, const Options* = 0) const
+		{
+			return os.write(reinterpret_cast<const char *>(extract_raw_data<T>(v)), sizeof(T));
+		}
+
+		virtual std::istream &readBinaryValue(std::istream &is, Value &v, const Options* = 0) const
+		{
+			T ptr;
+			is.read(reinterpret_cast<char *>(&ptr), sizeof(T));
+			v = Value(ptr);
+			return is;
+		}
+	};
+
+}
+
+#endif

@@ -1,0 +1,246 @@
+#ifndef OSGINTROSPECTION_ATTRIBUTES_
+#define OSGINTROSPECTION_ATTRIBUTES_
+
+#include <osgIntrospection/CustomAttribute>
+#include <osgIntrospection/Value>
+#include <osgIntrospection/Exceptions>
+
+namespace osgIntrospection
+{
+
+	/// By adding this attribute to a PropertyInfo you specify that there
+	/// is no default value for that property.
+	class NoDefaultValueAttribute: public CustomAttribute {};
+
+
+	/// By adding this attribute to a PropertyInfo you specify a custom
+	/// default value for that property.
+	class DefaultValueAttribute: public CustomAttribute
+	{
+	public:
+		DefaultValueAttribute(const Value &v): v_(v) {}
+		const Value &getDefaultValue() const { return v_; }
+	private:
+		Value v_;
+	};
+
+	/// Base struct for custom property getters. Descendants may override
+	/// one or more of the get() methods to provide the means for retrieving
+	/// the value of a property. The first version of get() is used with
+	/// indexed properties, the second one serves simple properties and the
+	/// last one is used with array properties.
+	struct PropertyGetter
+	{
+		virtual Value get(const Value &instance, const ValueList &indices) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::IGET); }
+		virtual Value get(const Value &instance) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::GET); }
+		virtual Value get(const Value &instance, int i) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::AGET); }
+		virtual ~PropertyGetter() {}
+	};
+
+	/// By setting an attribute of this class you can specify a custom object
+	/// that will be used to retrieve the value of a property instead of the
+	/// default getter method.
+	class CustomPropertyGetAttribute: public CustomAttribute
+	{
+	public:
+		CustomPropertyGetAttribute(const PropertyGetter *getter)
+		:	CustomAttribute(), getter_(getter) {}
+
+		const PropertyGetter *getGetter() const { return getter_; }
+
+		~CustomPropertyGetAttribute()
+		{
+			delete getter_;
+		}
+
+	private:
+		const PropertyGetter *getter_;
+	};
+
+	/// Base struct for custom property setters. Descendants may override
+	/// one or more of the set() methods to provide the means for setting
+	/// the value of a property. The first version of set() is used with
+	/// indexed properties, the second one serves simple properties and the
+	/// last one is used with array properties.
+	struct PropertySetter
+	{
+		virtual void set(Value &instance, ValueList &indices, const Value &value) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::ISET); }
+		virtual void set(Value &instance, const Value &value) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::SET); }
+		virtual void set(Value &instance, int i, const Value &value) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::ASET); }
+		virtual ~PropertySetter() {}
+	};
+
+	/// By setting an attribute of this class you can specify a custom object
+	/// that will be used to set the value of a property instead of the
+	/// default setter method.
+	class CustomPropertySetAttribute: public CustomAttribute
+	{
+	public:
+		CustomPropertySetAttribute(const PropertySetter *setter)
+		:	CustomAttribute(), setter_(setter) {}
+
+		const PropertySetter *getSetter() const { return setter_; }
+
+		~CustomPropertySetAttribute()
+		{
+			delete setter_;
+		}
+
+	private:
+		const PropertySetter *setter_;
+	};
+
+	/// Base struct for custom array property counters. Descendants should
+	/// override the count() method which must return the number of items
+	/// in a chosen array property for the given instance.
+	struct PropertyCounter
+	{
+		virtual int count(const Value &instance) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::COUNT); }
+		virtual ~PropertyCounter() {}
+	};
+
+	/// By setting an attribute of this class you can specify a custom object
+	/// that will be used to count the number of items in an array property.
+	class CustomPropertyCountAttribute: public CustomAttribute
+	{
+	public:
+		CustomPropertyCountAttribute(const PropertyCounter *counter)
+		:	CustomAttribute(), counter_(counter) {}
+
+		const PropertyCounter *getCounter() const { return counter_; }
+
+		~CustomPropertyCountAttribute()
+		{
+			delete counter_;
+		}
+
+	private:
+		const PropertyCounter *counter_;
+	};
+
+	/// Base struct for custom array property adders. Descendants should
+	/// override the add() method whose purpose is to add a new item to
+	/// an array property.
+	struct PropertyAdder
+	{
+		virtual void add(Value&, const Value&) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::ADD); }
+		virtual ~PropertyAdder() {}
+	};
+
+	/// By setting an attribute of this class you can specify a custom object
+	/// that will be used to add a new item to an array property.
+	class CustomPropertyAddAttribute: public CustomAttribute
+	{
+	public:
+		CustomPropertyAddAttribute(const PropertyAdder *adder)
+		:	CustomAttribute(), adder_(adder) {}
+
+		const PropertyAdder *getAdder() const { return adder_; }
+
+		~CustomPropertyAddAttribute()
+		{
+			delete adder_;
+		}
+
+	private:
+		const PropertyAdder *adder_;
+	};
+
+
+	/// This struct allows customization of an indexed property's index set.
+	/// You must derive from this struct and provide a concrete implementation
+	/// of getIndexValueSet(), which must return (in parameter values) a list
+	/// of valid values to be used as indices. The whichindex parameter
+	/// specifies which index is being queried (0 = first index, 1 = second
+	/// index, ...).
+	/// See CustomIndexAttribute for details.
+	struct IndexInfo
+	{
+		virtual const ParameterInfoList &getIndexParameters() const = 0;
+		virtual void getIndexValueSet(int whichindex, const Value &instance, ValueList &values) const = 0;
+		virtual ~IndexInfo() {}
+	};
+
+
+	/// By default each index in an indexed property is assumed to be an
+	/// enumeration. When serialization is performed, indices are chosen
+	/// from the set of enum labels that were defined for the index type.
+	/// With this attribute you can provide custom code to determine the
+	/// set of values to be used as indices, instead of the default enum
+	/// values. This attribute is required, for example, when the number
+	/// and/or value of indices is not constant over time (such as in
+	/// associative containers).
+	class CustomIndexAttribute: public CustomAttribute
+	{
+	public:
+		CustomIndexAttribute(const IndexInfo *ii)
+		:	CustomAttribute(), ii_(ii) {}
+
+		const IndexInfo *getIndexInfo() const
+		{
+			return ii_;
+		}
+
+		~CustomIndexAttribute()
+		{
+			delete ii_;
+		}
+
+	private:
+		const IndexInfo *ii_;
+	};
+
+	/// Attribute for overriding the type of a property with a custom
+	/// type. If you add this attribute to a PropertyInfo object, then
+	/// all subsequent calls to getValue()/getArrayItem()/getIndexedValue()
+	/// will perform a conversion from the actual property's type to
+	/// the custom type specified through this attribute. Similarly, all
+	/// methods in PropertyInfo that alter the property's value will accept
+	/// a value of the custom type instead of the actual type. In this
+	/// case the conversion is implicit and occurs later within the accessor
+	/// methods.
+	class PropertyTypeAttribute: public CustomAttribute
+	{
+	public:
+		PropertyTypeAttribute(const Type &type)
+		:	CustomAttribute(), type_(type) {}
+
+		const Type &getPropertyType() const
+		{
+			return type_;
+		}
+
+	private:
+		const Type &type_;
+	};
+
+	/// Attribute for overriding the type of an index (of an indexed 
+	/// property) with a custom type. Behaves like PropertyTypeAttribute,
+	/// but it affects the value of an index instead of the property's
+	/// value itself.
+	/// NOTE: property with custom indexing attributes are not affected
+	///       by this attribute!
+	class IndexTypeAttribute: public CustomAttribute
+	{
+	public:
+		IndexTypeAttribute(int whichindex, const Type &type)
+		:	CustomAttribute(), wi_(whichindex), type_(type) {}
+
+		int getWhichIndex() const
+		{
+			return wi_;
+		}
+
+		const Type &getIndexType() const
+		{
+			return type_;
+		}
+
+	private:
+		int wi_;
+		const Type &type_;
+	};
+
+}
+
+#endif

@@ -1,0 +1,17 @@
+#ifndef OSGINTROSPECTION_CUSTOMATTRIBUTE_
+#define OSGINTROSPECTION_CUSTOMATTRIBUTE_
+
+namespace osgIntrospection
+{
+
+	/// The base class for custom attributes. This is an empty class
+	/// for now.
+	class CustomAttribute
+	{
+	public:
+		virtual ~CustomAttribute() {}
+	};
+
+}
+
+#endif

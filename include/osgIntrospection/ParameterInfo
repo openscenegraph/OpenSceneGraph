@@ -1,0 +1,96 @@
+#ifndef OSGINTROSPECTION_PARAMETERINFO_
+#define OSGINTROSPECTION_PARAMETERINFO_
+
+#include <osgIntrospection/Type>
+#include <osgIntrospection/Value>
+
+#include <string>
+#include <vector>
+
+namespace osgIntrospection
+{
+
+	/// This class stores information about a function parameter. A parameter
+	/// is defined by its name, its type, its position within the parameter
+	/// list, and zero or more attributes. Attributes describe how the
+	/// parameter behave, for example whether it is an input or an output
+	/// parameter.
+	class ParameterInfo
+	{
+	public:
+		enum ParameterAttributes
+		{
+			NONE  = 0,
+
+			IN    = 1,	// parameter is used to pass data to the function
+			OUT   = 2,  // parameter is used to return data from the function
+
+			INOUT = IN | OUT
+		};
+
+		/// Direct initialization constructor.
+		inline ParameterInfo(const std::string &name, const Type &type, int position, int attribs);
+
+		/// Returns the parameter's name.
+		inline const std::string &getName() const;
+
+		/// Return the parameter's position within the function's parameter
+		/// list. This position is zero-based.
+		inline int getPosition() const;
+
+		/// Returns the parameter's type.
+		inline const Type &getParameterType() const;
+
+		/// Returns the parameter's attributes.
+		inline int getAttributes() const;
+
+		/// Returns whether the parameter has the IN attribute.
+		inline bool isIn() const { return (attribs_ & IN) != 0; }
+
+		/// Returns whether the parameter has the OUT attribute.
+		inline bool isOut() const { return (attribs_ & OUT) != 0; }
+
+		/// Returns whether the parameter has both the IN and the 
+		/// OUT attribute.
+		inline bool isInOut() const { return isIn() && isOut(); }
+
+	private:
+		std::string name_;
+		const Type &type_;
+		int position_;
+		int attribs_;
+	};
+
+	// INLINE METHODS
+
+	inline ParameterInfo::ParameterInfo(const std::string &name, const Type &type, int position, int attribs)
+	:	name_(name),
+		type_(type),
+		position_(position),
+		attribs_(attribs)
+	{
+	}
+
+	inline const std::string &ParameterInfo::getName() const
+	{
+		return name_;
+	}
+
+	inline int ParameterInfo::getPosition() const
+	{
+		return position_;
+	}
+
+	inline const Type &ParameterInfo::getParameterType() const
+	{
+		return type_;
+	}
+
+	inline int ParameterInfo::getAttributes() const
+	{
+		return attribs_;
+	}
+
+}
+
+#endif

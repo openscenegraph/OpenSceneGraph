@@ -70,7 +70,7 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
         };
 
 
-        class ReadResult
+        class OSGDB_EXPORT ReadResult
         {
             public:
 

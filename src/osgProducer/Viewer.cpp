@@ -422,11 +422,11 @@ bool Viewer::computePixelCoords(float x,float y,unsigned int cameraNum,float& pi
 
         int pr_wx, pr_wy;
         unsigned int pr_width, pr_height;
-        camera->getProjectionRect( pr_wx, pr_wy, pr_width, pr_height );
+        camera->getProjectionRectangle( pr_wx, pr_wy, pr_width, pr_height );
 
         int rs_wx, rs_wy;
         unsigned int rs_width, rs_height;
-        rs->getWindowRect( rs_wx, rs_wy, rs_width, rs_height );
+        rs->getWindowRectangle( rs_wx, rs_wy, rs_width, rs_height );
 
         pixel_x -= (float)rs_wx;
         pixel_y -= (float)rs_wy;
@@ -469,7 +469,7 @@ bool Viewer::computeIntersections(float x,float y,unsigned int cameraNum,osgUtil
 
         int pr_wx, pr_wy;
         unsigned int pr_width, pr_height;
-        camera->getProjectionRect( pr_wx, pr_wy, pr_width, pr_height );
+        camera->getProjectionRectangle( pr_wx, pr_wy, pr_width, pr_height );
 
         // convert into clip coords.
         float rx = 2.0f*(pixel_x - (float)pr_wx)/(float)pr_width-1.0f;

@@ -27,7 +27,7 @@ public:
         
         int x,y;
         unsigned int width,height;
-        camera.getProjectionRect(x,y,width,height);
+        camera.getProjectionRectangle(x,y,width,height);
 
         osg::ref_ptr<osg::Image> image = new osg::Image;
         image->readPixels(x,y,width,height,
@@ -134,7 +134,7 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::operator()( const Producer::C
 
     int x,y;
     unsigned int width,height;
-    camera.getProjectionRect(x,y,width,height);
+    camera.getProjectionRectangle(x,y,width,height);
     _viewport->setViewport(x,y,width,height);
 
     OsgSceneHandler* osh = _veh->getOsgCameraGroup()->getSceneHandlerList()[_cameraNumber].get();
@@ -785,7 +785,7 @@ bool ViewerEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActio
                     
                     if (_firstTimeTogglingFullScreen && rs->isFullScreen())
                     {
-                        rs->setWindowRect(240,220,800,600);
+                        rs->setWindowRectangle(240,220,800,600);
                         rs->useBorder(true);
                     }
                     else

@@ -571,8 +571,8 @@ osg::Group* ConvertFromFLT::visitGroup(osg::Group& osgParent, GroupRecord* rec)
     SGroup* currentGroup = (SGroup*) rec->getData();
 
     // OpenFlight 15.7 has two animation flags, forward and swing 
-    bool forwardAnim = (currentGroup->dwFlags & GroupRecord::FORWARD_ANIM);
-    bool swingAnim = (currentGroup->dwFlags & GroupRecord::SWING_ANIM);
+    bool forwardAnim = (currentGroup->dwFlags & GroupRecord::FORWARD_ANIM)!=0;
+    bool swingAnim = (currentGroup->dwFlags & GroupRecord::SWING_ANIM)!=0;
      
     if( forwardAnim || swingAnim )
     {

@@ -34,15 +34,19 @@ struct TriangleAcumulatorFunctor
     
     void setCoords( const Vec3* vbase ) { _vbase = vbase; }
 
-    inline void operator() ( const Vec3 &v1, const Vec3 &v2, const Vec3 &v3 )
+    inline void operator() ( const Vec3 &v1, const Vec3 &v2, const Vec3 &v3, bool treatVertexDataAsTemporary )
     {
-        int p1 = (int)(&v1-_vbase);
-        int p2 = (int)(&v2-_vbase);
-        int p3 = (int)(&v3-_vbase);
-        if (p1==p2 || p1==p3 || p2==p3) return;
-        in_indices.push_back(p1);
-        in_indices.push_back(p2);
-        in_indices.push_back(p3);
+    
+        if (!treatVertexDataAsTemporary)
+        {
+            int p1 = (int)(&v1-_vbase);
+            int p2 = (int)(&v2-_vbase);
+            int p3 = (int)(&v3-_vbase);
+            if (p1==p2 || p1==p3 || p2==p3) return;
+            in_indices.push_back(p1);
+            in_indices.push_back(p2);
+            in_indices.push_back(p3);
+        }
     }
 };
 

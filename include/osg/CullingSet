@@ -28,6 +28,17 @@ class SG_EXPORT CullingSet : public Referenced
     
     
         CullingSet();
+
+        CullingSet(const CullingSet& cs):
+            Referenced(),
+            _mask(cs._mask),
+            _frustum(cs._frustum),
+            _occluderList(cs._occluderList),
+            _pixelSizeVector(cs._pixelSizeVector),
+            _smallFeatureCullingPixelSize(cs._smallFeatureCullingPixelSize)
+        {
+        }
+
         CullingSet(const CullingSet& cs,const Matrix& matrix, const Vec4& pixelSizeVector):
             _mask(cs._mask),
             _frustum(cs._frustum),
@@ -42,6 +53,34 @@ class SG_EXPORT CullingSet : public Referenced
             {
                 itr->transformProvidingInverse(matrix);
             }
+        }
+        
+        inline void set(const CullingSet& cs)
+        {
+            _mask = cs._mask;
+            _frustum = cs._frustum;
+            _occluderList = cs._occluderList;
+            _pixelSizeVector = cs._pixelSizeVector;
+            _smallFeatureCullingPixelSize = cs._smallFeatureCullingPixelSize;
+        }
+        
+        inline void set(const CullingSet& cs,const Matrix& matrix, const Vec4& pixelSizeVector)
+        {
+            _mask = cs._mask;
+            _frustum = cs._frustum;
+            _occluderList = cs._occluderList;
+            _pixelSizeVector = pixelSizeVector;
+            _smallFeatureCullingPixelSize = cs._smallFeatureCullingPixelSize;
+
+            _frustum.transformProvidingInverse(matrix);
+            
+            for(OccluderList::iterator itr=_occluderList.begin();
+                itr!=_occluderList.end();
+                ++itr)
+            {
+                itr->transformProvidingInverse(matrix);
+            }
+        
         }
         
         typedef std::vector<ShadowVolumeOccluder>   OccluderList;
@@ -218,9 +257,10 @@ class SG_EXPORT CullingSet : public Referenced
 
         void popOccludersCurrentMask(NodePath& nodePath);
         
+        virtual ~CullingSet();
+
     protected:
     
-        virtual ~CullingSet();
 
         Mask            _mask;
         Polytope        _frustum;

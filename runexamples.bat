@@ -22,6 +22,9 @@ osgkeyboard
 echo osgpick fountain.osg
 osgpick fountain.osg
 
+echo osgforest
+osgforest
+
 echo osgwindows glider.osg
 osgwindows glider.osg
 

@@ -40,7 +40,7 @@
 
 struct NormalPrint
 {
-    void operator() (const osg::Vec3& v1,const osg::Vec3& v2,const osg::Vec3& v3) const 
+    void operator() (const osg::Vec3& v1,const osg::Vec3& v2,const osg::Vec3& v3, bool) const 
     {
         osg::Vec3 normal = (v2-v1)^(v3-v2);
         normal.normalize();

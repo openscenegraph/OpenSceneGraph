@@ -251,12 +251,12 @@ bool _clampProjectionMatrix(matrix_type& projection, value_type& znear, value_ty
 }
 
 
-bool CullVisitor::clampProjectionMatrix(osg::Matrixf& projection, value_type& znear, value_type& zfar) const
+bool CullVisitor::clampProjectionMatrixImplementation(osg::Matrixf& projection, double& znear, double& zfar) const
 {
     return _clampProjectionMatrix( projection, znear, zfar, _nearFarRatio );
 }
 
-bool CullVisitor::clampProjectionMatrix(osg::Matrixd& projection, value_type& znear, value_type& zfar) const
+bool CullVisitor::clampProjectionMatrixImplementation(osg::Matrixd& projection, double& znear, double& zfar) const
 {
     return _clampProjectionMatrix( projection, znear, zfar, _nearFarRatio );
 }

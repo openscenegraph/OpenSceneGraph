@@ -181,7 +181,7 @@ int *numComponents_ret)
         jpegerror = ERR_JPEGLIB;
         jpeg_destroy_decompress(&cinfo);
         fclose(infile);
-        if (buffer) free(buffer);
+        if (buffer) delete [] buffer;
         return NULL;
     }
     /* Now we can initialize the JPEG decompression object. */
@@ -235,8 +235,7 @@ int *numComponents_ret)
         ((j_common_ptr) &cinfo, JPOOL_IMAGE, row_stride, 1);
     width = cinfo.output_width;
     height = cinfo.output_height;
-    buffer = currPtr = (unsigned char*)
-        malloc(width*height*cinfo.output_components);
+    buffer = currPtr = new unsigned char [width*height*cinfo.output_components];
 
     /* Step 6: while (scan lines remain to be read) */
     /*           jpeg_read_scanlines(...); */
@@ -340,7 +339,8 @@ class ReaderWriterJPEG : public osgDB::ReaderWriter
                 internalFormat,
                 pixelFormat,
                 dataType,
-                imageData);
+                imageData,
+                osg::Image::USE_NEW_DELETE);
 
             return pOsgImage;
 

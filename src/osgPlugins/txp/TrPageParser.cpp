@@ -138,7 +138,7 @@ Texture2D* txp::GetLocalTexture(trpgrImageHelper& image_helper, trpgLocalMateria
         {
             int32 size = s.x*s.y*depth; 
             // int32 size = const_cast<trpgTexture*>(tex)->MipLevelSize(1) ;
-            data = (char *)::malloc(size);
+            data = new char [size];
 
             if(locmat)            
                image_helper.GetImageForLocalMat(locmat,data,size);
@@ -147,14 +147,14 @@ Texture2D* txp::GetLocalTexture(trpgrImageHelper& image_helper, trpgLocalMateria
 
             image->setImage(s.x,s.y,1,depth,
                     gltype,GL_UNSIGNED_BYTE,
-                    (unsigned char*)data);
+                    (unsigned char*)data,osg::Image::USE_NEW_DELETE);
         }
         else
         {
             int32 size = tex->CalcTotalSize();
             trpgTexture* tmp_tex = const_cast<trpgTexture*>(tex);
 
-            data = (char *)::malloc(size);
+            data = new char [size];
 
             if(locmat)            
                image_helper.GetImageForLocalMat(locmat,data,size);
@@ -164,7 +164,8 @@ Texture2D* txp::GetLocalTexture(trpgrImageHelper& image_helper, trpgLocalMateria
             // Load entire texture including mipmaps
             image->setImage(s.x,s.y,1,depth,
                     gltype,GL_UNSIGNED_BYTE,
-                    (unsigned char*)data);
+                    (unsigned char*)data,
+                    osg::Image::USE_NEW_DELETE);
 
             // now set mipmap data (offsets into image raw data)
             Image::MipmapDataType mipmaps;

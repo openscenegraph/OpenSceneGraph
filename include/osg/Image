@@ -64,6 +64,19 @@ class SG_EXPORT Image : public Object
         inline const std::string& getFileName() const { return _fileName; }
         
         
+        enum AllocationMode {
+            NO_DELETE,
+            USE_NEW_DELETE,
+            USE_MALLOC_FREE
+        };
+        
+        /** Set the method used for deleting data once it goes out of scope.*/
+        void setAllocationMode(AllocationMode mode) { _allocationMode = mode; }
+
+        /** Get the method used for deleting data once it goes out of scope.*/
+        AllocationMode setAllocationMode() const { return _allocationMode; }
+
+
         /* allocated a pixel block of specified size and type.*/
         void allocateImage(int s,int t,int r,
                            GLenum format,GLenum type,
@@ -80,6 +93,7 @@ class SG_EXPORT Image : public Object
                       GLint internalTextureformat,
                       GLenum format,GLenum type,
                       unsigned char *data,
+                      AllocationMode mode,
                       int packing=1);
             
         /** readPixels from screen at specified position and size, using glReadPixels.
@@ -220,12 +234,19 @@ class SG_EXPORT Image : public Object
         Image& operator = (const Image&) { return *this; }
 
         std::string _fileName;
+
         int _s, _t, _r;
         GLint _internalTextureFormat;
         GLenum _pixelFormat;
         GLenum _dataType;
         unsigned int _packing;
+
+        AllocationMode _allocationMode;
         unsigned char *_data;
+        
+        void deallocateData();
+        
+        void setData(unsigned char *data,AllocationMode allocationMode);
 
         unsigned int _modifiedTag;
 

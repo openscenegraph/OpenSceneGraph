@@ -143,8 +143,8 @@ int *numComponents_ret)
         picerror = ERROR_READING_PALETTE;
     }
 
-    tmpbuf = (unsigned char *)malloc(width);
-    buffer = (unsigned char*) malloc(3*width*height);
+    tmpbuf = new unsigned char [width];
+    buffer = new unsigned char [3*width*height];
     if (tmpbuf == NULL || buffer == NULL)
     {
         picerror = ERROR_MEMORY;
@@ -160,8 +160,8 @@ int *numComponents_ret)
         {
             picerror = ERROR_READ_ERROR;
             fclose(fp);
-            if (tmpbuf) free(tmpbuf);
-            if (buffer) free(buffer);
+            if (tmpbuf) delete [] tmpbuf;
+            if (buffer) delete [] buffer;
             buffer = NULL;
             width = height = 0;
             return NULL;
@@ -180,6 +180,9 @@ int *numComponents_ret)
     *width_ret = width;
     *height_ret = height;
     *numComponents_ret = format;
+
+    if (tmpbuf) delete [] tmpbuf;
+
     return buffer;
 }
 
@@ -222,7 +225,8 @@ class ReaderWriterPIC : public osgDB::ReaderWriter
                 internalFormat,
                 pixelFormat,
                 dataType,
-                imageData);
+                imageData,
+                osg::Image::USE_NEW_DELETE);
 
             return pOsgImage;
 

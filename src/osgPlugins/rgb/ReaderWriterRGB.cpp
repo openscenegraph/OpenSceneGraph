@@ -87,16 +87,16 @@ static void RawImageClose(rawImageRec *raw)
     {
         fclose(raw->file);
         
-        if (raw->tmp) free(raw->tmp);
-        if (raw->tmpR) free(raw->tmpR);
-        if (raw->tmpG) free(raw->tmpG);
-        if (raw->tmpB) free(raw->tmpB);
-        if (raw->tmpA) free(raw->tmpA);
+        if (raw->tmp) delete [] raw->tmp;
+        if (raw->tmpR) delete [] raw->tmpR;
+        if (raw->tmpG) delete [] raw->tmpG;
+        if (raw->tmpB) delete [] raw->tmpB;
+        if (raw->tmpA) delete [] raw->tmpA;
 
-        if (raw->rowStart) free(raw->rowStart);        
-        if (raw->rowSize) free(raw->rowSize);        
+        if (raw->rowStart) delete [] raw->rowStart;        
+        if (raw->rowSize) delete [] raw->rowSize;        
 
-        free(raw);
+        delete raw;
     }
 }
 
@@ -122,7 +122,7 @@ static rawImageRec *RawImageOpen(const char *fileName)
         swapFlag = GL_FALSE;
     }
 
-    raw = (rawImageRec *)malloc(sizeof(rawImageRec));
+    raw = new rawImageRec;
     if (raw == NULL)
     {
         notify(WARN)<< "Out of memory!"<< std::endl;
@@ -130,7 +130,7 @@ static rawImageRec *RawImageOpen(const char *fileName)
     }
     if ((raw->file = fopen(fileName, "rb")) == NULL)
     {
-        free(raw);
+        delete raw;
         perror(fileName);
         return NULL;
     }
@@ -146,7 +146,7 @@ static rawImageRec *RawImageOpen(const char *fileName)
     raw->rowStart = 0;
     raw->rowSize = 0;
 
-    raw->tmp = (unsigned char *)malloc(raw->sizeX*256);
+    raw->tmp = new unsigned char [raw->sizeX*256];
     if (raw->tmp == NULL )
     {
         notify(FATAL)<< "Out of memory!"<< std::endl;
@@ -156,7 +156,7 @@ static rawImageRec *RawImageOpen(const char *fileName)
 
     if( raw->sizeZ >= 1 )
     {
-        if( (raw->tmpR = (unsigned char *)malloc(raw->sizeX)) == NULL )
+        if( (raw->tmpR = new unsigned char [raw->sizeX]) == NULL )
         {
             notify(FATAL)<< "Out of memory!"<< std::endl;
             RawImageClose(raw);
@@ -165,7 +165,7 @@ static rawImageRec *RawImageOpen(const char *fileName)
     }
     if( raw->sizeZ >= 2 )
     {
-        if( (raw->tmpG = (unsigned char *)malloc(raw->sizeX)) == NULL )
+        if( (raw->tmpG = new unsigned char [raw->sizeX]) == NULL )
         {
             notify(FATAL)<< "Out of memory!"<< std::endl;
             RawImageClose(raw);
@@ -174,7 +174,7 @@ static rawImageRec *RawImageOpen(const char *fileName)
     }
     if( raw->sizeZ >= 3 )
     {
-        if( (raw->tmpB = (unsigned char *)malloc(raw->sizeX)) == NULL )
+        if( (raw->tmpB = new unsigned char [raw->sizeX]) == NULL )
         {
             notify(FATAL)<< "Out of memory!"<< std::endl;
             RawImageClose(raw);
@@ -183,7 +183,7 @@ static rawImageRec *RawImageOpen(const char *fileName)
     }
     if (raw->sizeZ >= 4)
     {
-        if( (raw->tmpA = (unsigned char *)malloc(raw->sizeX)) == NULL )
+        if( (raw->tmpA = new unsigned char [raw->sizeX]) == NULL )
         {
             notify(FATAL)<< "Out of memory!"<< std::endl;
             RawImageClose(raw);
@@ -193,20 +193,21 @@ static rawImageRec *RawImageOpen(const char *fileName)
 
     if ((raw->type & 0xFF00) == 0x0100)
     {
-        x = raw->sizeY * raw->sizeZ * sizeof(GLuint);
-        if ( (raw->rowStart = (GLuint *)malloc(x)) == NULL )
+        unsigned int ybyz = raw->sizeY * raw->sizeZ;
+        if ( (raw->rowStart = new GLuint [ybyz]) == NULL )
         {
             notify(FATAL)<< "Out of memory!"<< std::endl;
             RawImageClose(raw);
             return NULL;
         }
 
-        if ( (raw->rowSize = (GLint *)malloc(x)) == NULL )
+        if ( (raw->rowSize = new GLint [ybyz]) == NULL )
         {
             notify(FATAL)<< "Out of memory!"<< std::endl;
             RawImageClose(raw);
             return NULL;
         }
+        x = ybyz * sizeof(GLuint);
         raw->rleEnd = 512 + (2 * x);
         fseek(raw->file, 512, SEEK_SET);
         fread(raw->rowStart, 1, x, raw->file);
@@ -278,8 +279,8 @@ static void RawImageGetData(rawImageRec *raw, unsigned char **data )
     //     int width = (int)(floorf((float)raw->sizeX/4.0f)*4.0f);
     //     if (width!=raw->sizeX) width += 4;
 
-    *data = (unsigned char *)malloc(2 * (raw->sizeX+1)*(raw->sizeY+1)*4);
-    //    *data = (unsigned char *)malloc(2 * (width+1)*(raw->sizeY+1)*4);
+    // byte aligned.
+    *data = new unsigned char [(raw->sizeX)*(raw->sizeY)*(raw->sizeZ)];
 
     ptr = *data;
     for (i = 0; i < (int)(raw->sizeY); i++)
@@ -364,7 +365,8 @@ class ReaderWriterRGB : public osgDB::ReaderWriter
                 internalFormat,
                 pixelFormat,
                 dataType,
-                data);
+                data,
+                osg::Image::USE_NEW_DELETE);
 
             notify(INFO) << "image read ok "<<s<<"  "<<t<< std::endl;
             return image;

@@ -163,17 +163,17 @@ int *numComponents_ret)
     transparent = -1;            /* no transparent color by default */
 
     n = giffile->SHeight * giffile->SWidth;
-    buffer = (unsigned char *)malloc(n * 4);
+    buffer = new unsigned char [n * 4];
     if (!buffer)
     {
         giferror = ERR_MEM;
         return NULL;
     }
-    rowdata = (unsigned char *)malloc(giffile->SWidth);
+    rowdata = new unsigned char [giffile->SWidth];
     if (!rowdata)
     {
         giferror = ERR_MEM;
-        free(buffer);
+        delete [] buffer;
         return NULL;
     }
 
@@ -208,8 +208,8 @@ int *numComponents_ret)
         if (DGifGetRecordType(giffile, &recordtype) == GIF_ERROR)
         {
             giferror = ERR_READ;
-            free(buffer);
-            free(rowdata);
+            delete [] buffer;
+            delete [] rowdata;
             return NULL;
         }
         switch (recordtype)
@@ -218,8 +218,8 @@ int *numComponents_ret)
                 if (DGifGetImageDesc(giffile) == GIF_ERROR)
                 {
                     giferror = ERR_READ;
-                    free(buffer);
-                    free(rowdata);
+                    delete [] buffer;
+                    delete [] rowdata;
                     return NULL;
                 }
                                  /* subimage position in composite image */
@@ -232,8 +232,8 @@ int *numComponents_ret)
                 {
                     /* image is not confined to screen dimension */
                     giferror = ERR_READ;
-                    free(buffer);
-                    free(rowdata);
+                    delete [] buffer;
+                    delete [] rowdata;
                     return NULL;
                 }
                 if (giffile->Image.Interlace)
@@ -248,8 +248,8 @@ int *numComponents_ret)
                             if (DGifGetLine(giffile, rowdata, width) == GIF_ERROR)
                             {
                                 giferror = ERR_READ;
-                                free(buffer);
-                                free(rowdata);
+                                delete [] buffer;
+                                delete [] rowdata;
                                 return NULL;
                             }
                             else decode_row(giffile, buffer, rowdata, col, j, width, transparent);
@@ -263,8 +263,8 @@ int *numComponents_ret)
                         if (DGifGetLine(giffile, rowdata, width) == GIF_ERROR)
                         {
                             giferror = ERR_READ;
-                            free(buffer);
-                            free(rowdata);
+                            delete [] buffer;
+                            delete [] rowdata;
                             return NULL;
                         }
                         else decode_row(giffile, buffer, rowdata, col, row, width, transparent);
@@ -276,8 +276,8 @@ int *numComponents_ret)
                 if (DGifGetExtension(giffile, &extcode, &extension) == GIF_ERROR)
                 {
                     giferror = ERR_READ;
-                    free(buffer);
-                    free(rowdata);
+                    delete [] buffer;
+                    delete [] rowdata;
                     return NULL;
                 }
                 /* transparent test from the gimp gif-plugin. Open Source rulez! */
@@ -291,8 +291,8 @@ int *numComponents_ret)
                     if (DGifGetExtensionNext(giffile, &extension) == GIF_ERROR)
                     {
                         giferror = ERR_READ;
-                        free(buffer);
-                        free(rowdata);
+                        delete [] buffer;
+                        delete [] rowdata;
                         return NULL;
                     }
                 }
@@ -305,7 +305,7 @@ int *numComponents_ret)
     }
     while (recordtype != TERMINATE_RECORD_TYPE);
 
-    free(rowdata);
+    delete [] rowdata;
     *width_ret = giffile->SWidth;
     *height_ret = giffile->SHeight;
     *numComponents_ret = 4;
@@ -368,7 +368,8 @@ class ReaderWriterGIF : public osgDB::ReaderWriter
                 internalFormat,
                 pixelFormat,
                 dataType,
-                imageData);
+                imageData,
+                osg::Image::USE_NEW_DELETE);
 
             return pOsgImage;
 

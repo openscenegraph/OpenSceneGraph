@@ -78,12 +78,12 @@ class SG_EXPORT GeoSet : public Drawable
 	};
 
 
-        struct IndexPointer
+        struct SG_EXPORT IndexPointer
         {
         
             mutable uint _size;
             bool _is_ushort;
-            union
+            union _TPtr
             {
                 GLushort* _ushort;
                 GLuint*   _uint;
@@ -315,7 +315,7 @@ class SG_EXPORT GeoSet : public Drawable
           * momory attached to the GeoSet is owned by this GeoSet and can be deleted
           * using delete [].  If this is not the cause derive your own AttributeDeleteFunctor
           * a specify your own memory deletion operation.*/
-        struct AttributeDeleteFunctor : public osg::Referenced
+        struct SG_EXPORT AttributeDeleteFunctor : public osg::Referenced
         {
             // see GeoSet.cpp for implemention.
             virtual void operator() (GeoSet* gset);

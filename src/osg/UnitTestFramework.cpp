@@ -82,8 +82,8 @@ TestSuite* TestGraph::suite(const std::string& path, TestSuite* tsuite, bool cre
 
     list<string> pathComponents;
 
-    string::const_iterator it1 = path.begin();
-    string::const_iterator it2 = it1;
+    std::string::const_iterator it1 = path.begin();
+    std::string::const_iterator it2 = it1;
 
     // Dissect the path into it's constituent components
     do{
@@ -91,7 +91,7 @@ TestSuite* TestGraph::suite(const std::string& path, TestSuite* tsuite, bool cre
         while( *it2 != '.' && it2 != path.end() ) ++it2;
 
         // Consider a check for "" empty strings?
-        pathComponents.push_back( string(it1,it2) );
+        pathComponents.push_back( std::string(it1,it2) );
 
         if( it2 != path.end()) ++it2;
 
@@ -174,7 +174,7 @@ bool TestQualifier::visitLeave( TestSuite* pSuite )
 }
 
 // Provide read-only access to the current qualifier
-const string& TestQualifier::currentPath() const
+const std::string& TestQualifier::currentPath() const
 {
     return _path;
 }
@@ -221,7 +221,7 @@ void TestRecord::log(const std::string& s)
     problem_ = s;
 }
 
-TestRecord::TestRecord(const string& name):
+TestRecord::TestRecord(const std::string& name):
     name_(name),
     start_(0),
     stop_(0),
@@ -257,7 +257,7 @@ TestRunner::TestRunner( TestContext& ctx ) : _ctx( ctx )
 {
 }
 
-void TestRunner::specify( const string& sQualifiedName )
+void TestRunner::specify( const std::string& sQualifiedName )
 {
     _tests.push_back( sQualifiedName );
 }

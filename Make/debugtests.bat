@@ -76,7 +76,7 @@ osgimpostor Town.osg
 more memleaks.log
 
 echo osgmultitexture cessnafire.osg
-osmultitexture cessnafire.osg
+osgmultitexture cessnafire.osg
 more memleaks.log
 
 echo osgreflect cessna.osg

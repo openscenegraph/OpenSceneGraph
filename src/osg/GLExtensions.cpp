@@ -1,4 +1,4 @@
-#if defined(_WIN32) || defined(__CYGWIN__)
+#if defined(WIN32)
 #include <windows.h>
 #elif !defined macintosh
 #include <dlfcn.h>
@@ -60,7 +60,7 @@ const bool osg::isGLExtensionSupported(const char *extension)
 
 void* osg::getGLExtensionFuncPtr(const char *funcName)
 {
-#if defined(_WIN32) || defined(__CYGWIN__)
+#if defined(WIN32)
    return wglGetProcAddress(funcName);
 #elif defined(macintosh)
    return NULL;

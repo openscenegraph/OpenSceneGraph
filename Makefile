@@ -6,11 +6,7 @@ DIRS = src
 
 VERSION = osg-0.8.44
 
-ifeq (IRIX|IRIX64,true)
-        export OSGHOME = `pwd`
-else
-	export OSGHOME := $(shell pwd)
-endif
+export OSGHOME = $(shell pwd)
 
 all : $(MAKE_PREP)
 	for f in $(DIRS) ; do cd $$f; $(MAKE) || exit 1; cd ..; done
@@ -53,6 +49,12 @@ cygwin:
 	ln -sf makerules.cyg makerules
 	$(MAKE)
 
+mingw:
+	cd Make;\
+	ln -sf makedefs.mingw makedefs;\
+	ln -sf makerules.mingw makerules
+	$(MAKE)
+
 freebsd:
 	cd Make;\
 	ln -sf makedefs.freebsd makedefs;\
@@ -72,12 +74,6 @@ irix64:
 	ln -sf makerules.irix makerules 
 	$(MAKE)
 
-irix.old:
-	cd Make;\
-	ln -sf makedefs.irix.nonstd makedefs ;\
-	ln -sf makerules.irix makerules 
-	$(MAKE)
-
 macosx:
 	cd Make;\
 	ln -sf makedefs.macosx makedefs;\
@@ -90,17 +86,24 @@ help :
 	@echo \	$(MAKE) 
 	@echo \	$(MAKE) linux
 	@echo \	$(MAKE) cygwin
+	@echo \	$(MAKE) mingw
+	@echo \	$(MAKE) freebsd
+	@echo \	$(MAKE) macosx
 	@echo \	$(MAKE) irix
-	@echo \	$(MAKE) irix.old
+	@echo \	$(MAKE) irix64
+	@echo  
 	@echo \	$(MAKE) depend
 	@echo \	$(MAKE) clean
 	@echo \	$(MAKE) clobber
+	@echo  
 	@echo \	$(MAKE) doc
 	@echo \	$(MAKE) release
 	@echo \	$(MAKE) dev
+	@echo  
 	@echo \	$(MAKE) install
 	@echo \	$(MAKE) instlinks
 	@echo \	$(MAKE) instclean
+	@echo  
 
 
 clean : $(MAKE_PREP)

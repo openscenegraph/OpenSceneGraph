@@ -19,6 +19,8 @@
 #  include <sys/sockio.h>
 #elif defined(__sgi)
 #  include <net/soioctl.h>
+#elif defined(__CYGWIN__)
+// nothing needed
 #else
 #  error Teach me how to build on this system
 #endif

@@ -2,33 +2,35 @@ MAKEDIR    = $(OSGHOME)/Make
 INSTRULES  = $(MAKEDIR)/instrules
 MAKEDEPEND = Makedepend
 
+MINGW_HOME = d:/usr/mingw
+
 OBJS = $(C++FILES:.cpp=.o)  $(CFILES:.c=.o) $(YACCFILES:.y=.o) $(LEXFILES:.l=.o)
 
 DEPFILES = $(OBJS:.o=.d)
 
 C++       = c++
+
+# need thunking when using wxWindows 
+# C++ += -fvtable-thunks
+
 YFLAGS    = -d
 
 #LCINCS   += -I/usr/X11R6/include
 #LC++INCS += ${LCINCS}
 
-CFLAGS    = -O2 -DWIN32 -W -Wall $(LCINCS)
-#CFLAGS   = -g -DWIN32 -W -Wall $(LCINCS)
+OPT_FLAGS = -O
+DBG_FLAGS = -g
+WARN_FLAGS = -Wall -W
 
-# need thunking when using wxWindows 
-# CFLAGS += -fvtable-thunks
+LDFLAGS = $(OPT_FLAGS) $(DBG_FLAGS) $(WARN_FLAGS)
+
+CFLAGS    = -DWIN32 $(LDFLAGS) $(LCINCS)
 
 C++FLAGS  = ${CFLAGS}
 CPPFLAGS  = ${CFLAGS}
 
 SO_EXT = dll
 DL_EXT = dll
-
-LDFLAGS = -O2 -W -Wall
-#LDFLAGS = -g -W -Wall
-
-# need thunking when using wxWindows 
-# LDFLAGS += -fvtable-thunks
 
 LINKERARGS =
 
@@ -47,22 +49,22 @@ OSGDB_LIBS = -losgdb_3ds -losgdb_bmp -losgdb_dw -losgdb_flt -losgdb_jpg -losgdb_
 # directories
 #
 TARGET_DIRS    = \
-		/usr/include/osg \
-		/usr/include/osgDB \
-		/usr/include/osgGLUT \
-		/usr/include/osgUtil \
-		/usr/include/osgText \
-		/usr/share/OpenSceneGraph\
-		/usr/share/OpenSceneGraph/data\
-		/usr/share/OpenSceneGraph/data/Images\
-		/usr/share/OpenSceneGraph/data/Test\
-		/usr/lib/osgPlugins\
+		$(MINGW_HOME)/include/osg \
+		$(MINGW_HOME)/include/osgDB \
+		$(MINGW_HOME)/include/osgGLUT \
+		$(MINGW_HOME)/include/osgUtil \
+		$(MINGW_HOME)/include/osgText \
+		$(MINGW_HOME)/share/OpenSceneGraph\
+		$(MINGW_HOME)/share/OpenSceneGraph/data\
+		$(MINGW_HOME)/share/OpenSceneGraph/data/Images\
+		$(MINGW_HOME)/share/OpenSceneGraph/data/Test\
+		$(MINGW_HOME)/lib/osgPlugins\
 
 
-TARGET_BIN     = /usr/bin
-TARGET_LIB     = /usr/lib
-TARGET_INCLUDE = /usr/include
-TARGET_DATA    = /usr/share/OpenSceneGraph/data
+TARGET_BIN     = $(MINGW_HOME)/bin
+TARGET_LIB     = $(MINGW_HOME)/lib
+TARGET_INCLUDE = $(MINGW_HOME)/include
+TARGET_DATA    = $(MINGW_HOME)/share/OpenSceneGraph/data
 
 #
 # This definitions are necessary for IRIX. The following statement
@@ -80,7 +82,8 @@ TARGET_INCLUDE_FILES = ""
 TARGET_DATA_FILES = ""
 TARGET_LOADER_FILES = ""
 
-WXDIR = /src/wxMSW
+# set to your wxWindows TOP directory
+WXDIR = d:/src/wxMSW
 
 WX_CFLAGS = -DWXUSINGDLL -D_X86_=1 -DWIN32 -D_WIN32 -DWINVER=0x0400 -D__WIN95__ -D__GNUWIN32__ -D__WIN32__ -I$(WXDIR)/include -I$(WXDIR)/contrib/include -I$(WXDIR)/src/png -I$(WXDIR)/src/jpeg -I$(WXDIR)/src/zlib -I$(WXDIR)/src/tiff -I$(WXDIR)/include/wx/msw/gnuwin32 -DSTRICT -D__WXMSW__ -D__WINDOWS__ -D__WXDEBUG__ -Wall -mwin32 -fno-pcc-struct-return -O2 -fno-exceptions -DWIN32_LEAN_AND_MEAN
 # -fno-rtti

@@ -30,8 +30,13 @@ AutoTransform::AutoTransform(const AutoTransform& pat,const CopyOp& copyop):
     Transform(pat,copyop),
     _position(pat._position),
     _pivotPoint(pat._pivotPoint),
+    _autoUpdateEyeMovementTolerance(pat._autoUpdateEyeMovementTolerance),
+    _autoRotateToScreen(pat._autoRotateToScreen),
+    _autoScaleToScreen(pat._autoScaleToScreen),
     _rotation(pat._rotation),
-    _scale(pat._scale)
+    _scale(pat._scale),
+    _firstTimeToInitEyePoint(true),
+    _matrixDirty(true)
 {
 //    setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);            
 }

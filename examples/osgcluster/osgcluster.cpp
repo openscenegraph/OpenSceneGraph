@@ -160,6 +160,7 @@ int main( int argc, char **argv )
     // create the windows and run the threads.
     viewer.realize(Producer::CameraGroup::ThreadPerCamera);
 
+    // objects for managing the broadcasting and recieving of camera packets.
     Broadcaster     bc;
     Receiver        rc;
 
@@ -207,7 +208,8 @@ int main( int argc, char **argv )
                 if (cp.getMasterKilled()) 
                 {
                     std::cout << "recieved master killed"<<std::endl;
-                    viewerMode = STAND_ALONE;
+                    // break out of while (!done) loop since we've now want to shut down.
+                    break;
                 }
             }
             break;
@@ -215,7 +217,6 @@ int main( int argc, char **argv )
             // no need to anything here, just a normal interactive viewer.
             break;
         }
-         
          
         // fire off the cull and draw traversals of the scene.
         viewer.frame();

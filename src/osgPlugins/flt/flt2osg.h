@@ -50,6 +50,7 @@ class GeneralMatrixRecord;
 class ExternalRecord;
 class LightPointRecord;
 class LightPointIndexRecord;
+class LightPointSystemRecord;
 class VertexListRecord;
 class LocalVertexPoolRecord;
 class LongIDRecord;
@@ -163,6 +164,7 @@ class ConvertFromFLT
         void visitLightPoint(GeoSetBuilder* pBuilder, LightPointRecord* rec);
         void visitLightPoint(osg::Group& osgParent, LightPointRecord* rec);
         void visitLightPointIndex(osg::Group& osgParent, LightPointIndexRecord* rec);
+        osg::Group* visitLightPointSystem(osg::Group& osgParent, LightPointSystemRecord* rec);
         int  visitVertexList(GeoSetBuilder* pParent, VertexListRecord* rec);
         int  visitLocalVertexPool(GeoSetBuilder* pBuilder, LocalVertexPoolRecord* rec);
 

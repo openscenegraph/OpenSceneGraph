@@ -165,6 +165,10 @@ SOURCE=..\..\..\src\osgPlugins\flt\LightPointRecord.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\flt\LightPointSystemRecord.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\flt\LightPointPaletteRecords.cpp
 # End Source File
 # Begin Source File
@@ -354,6 +358,10 @@ SOURCE=..\..\..\src\osgPlugins\flt\InstanceRecords.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\flt\LightPointRecord.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\flt\LightPointSystemRecord.h
 # End Source File
 # Begin Source File
 

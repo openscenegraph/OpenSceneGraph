@@ -41,8 +41,8 @@ public:
 
     void copyBackToGeometry() {}
 
-    class Triangle;
-    class Edge;
+    struct Triangle;
+    struct Edge;
 
     typedef std::vector<float> FloatList;
 

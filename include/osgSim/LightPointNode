@@ -16,6 +16,7 @@
 
 #include <osgSim/Export>
 #include <osgSim/LightPoint>
+#include <osgSim/LightPointSystem>
 
 #include <osg/Node>
 #include <osg/NodeVisitor>
@@ -76,9 +77,13 @@ class OSGSIM_EXPORT LightPointNode : public osg::Node
         void setMaxVisibleDistance2(float maxVisibleDistance2) { _maxVisibleDistance2 = maxVisibleDistance2; }
         
         float getMaxVisibleDistance2() const { return _maxVisibleDistance2; }
+        
+        void setLightPointSystem( osgSim::LightPointSystem* lps) { _lightSystem = lps; }
+
+        osgSim::LightPointSystem* getLightPointSystem() { return _lightSystem.get(); }
 
     protected:
-    
+
         ~LightPointNode() {}
 
         // used to cache the bouding box of the lightpoints as a tighter
@@ -92,8 +97,9 @@ class OSGSIM_EXPORT LightPointNode : public osg::Node
         float _minPixelSize;
         float _maxPixelSize;
         float _maxVisibleDistance2;
-        
-        
+
+        osg::ref_ptr<osgSim::LightPointSystem> _lightSystem;        
+
 };
 
 }

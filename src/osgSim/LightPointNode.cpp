@@ -12,6 +12,7 @@
 */
 
 #include <osgSim/LightPointNode>
+#include <osgSim/LightPointSystem>
 
 #include "LightPointDrawable.h"
 
@@ -27,7 +28,7 @@
 namespace osgSim
 {
 
-osg::StateSet* getSingletonLightPointStateSet()
+osg::StateSet* getSingletonLightPointSystemSet()
 {
     static osg::ref_ptr<osg::StateSet> s_stateset = 0;
     if (!s_stateset)
@@ -44,9 +45,10 @@ osg::StateSet* getSingletonLightPointStateSet()
 LightPointNode::LightPointNode():
     _minPixelSize(0.0f),
     _maxPixelSize(30.0f),
-    _maxVisibleDistance2(FLT_MAX)
+    _maxVisibleDistance2(FLT_MAX),
+    _lightSystem(0)
 {
-    setStateSet(getSingletonLightPointStateSet());
+    setStateSet(getSingletonLightPointSystemSet());
 }
 
 /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
@@ -55,7 +57,8 @@ LightPointNode::LightPointNode(const LightPointNode& lpn,const osg::CopyOp& copy
     _lightPointList(lpn._lightPointList),
     _minPixelSize(lpn._minPixelSize),
     _maxPixelSize(lpn._maxPixelSize),
-    _maxVisibleDistance2(lpn._maxVisibleDistance2)    
+    _maxVisibleDistance2(lpn._maxVisibleDistance2),
+    _lightSystem(lpn._lightSystem)
 {
 }
 
@@ -260,9 +263,9 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
                         
             // delta vector between eyepoint and light point.
             osg::Vec3 dv(eyePoint-position);
-            
-            float intensity = lp._intensity;
-            
+
+            float intensity = (_lightSystem.valid()) ? _lightSystem->getIntensity() : lp._intensity;
+
             // slip light point if it is intensity is 0.0 or negative.
             if (intensity<=minimumIntensity) continue;
 
@@ -289,7 +292,11 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
             //color *= intensity;
 
             // check the blink sequence.
-            if (lp._blinkSequence.valid())
+            bool doBlink = lp._blinkSequence.valid();
+            if (doBlink && _lightSystem.valid())
+                doBlink = (_lightSystem->getAnimationState() == LightPointSystem::ANIMATION_ON);
+
+            if (doBlink)
             {
                 osg::Vec4 bs = lp._blinkSequence->color(time,timeInterval);
                 color[0] *= bs[0];

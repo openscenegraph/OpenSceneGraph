@@ -33,6 +33,7 @@
 #include <osgSim/MultiSwitch>
 #include <osgSim/DOFTransform>
 #include <osgSim/LightPointNode>
+#include <osgSim/LightPointSystem>
 #include <osgSim/Sector>
 #include <osgSim/BlinkSequence>
 
@@ -68,6 +69,7 @@
 #include "TransformationRecords.h"
 #include "ExternalRecord.h"
 #include "LightPointRecord.h"
+#include "LightPointSystemRecord.h"
 #include "Input.h"
 #include "GeoSetBuilder.h"
 #include "LongIDRecord.h"
@@ -314,6 +316,9 @@ osg::Group* ConvertFromFLT::visitPrimaryNode(osg::Group& osgParent, PrimNodeReco
                 break;
             case INDEXED_LIGHT_PT_OP:
                 visitLightPointIndex(osgParent, (LightPointIndexRecord*)child);
+                break;
+            case LIGHT_PT_SYSTEM_OP:
+                osgPrim = visitLightPointSystem(osgParent, (LightPointSystemRecord*)child);
                 break;
             case GROUP_OP:
                 osgPrim = visitGroup(osgParent, (GroupRecord*)child);
@@ -743,7 +748,7 @@ void ConvertFromFLT::visitTexturePalette(osg::Group& , TexturePaletteRecord* rec
 }
 
 
-void ConvertFromFLT::visitLtPtAppearancePalette(osg::Group& osgParent, LtPtAppearancePaletteRecord* rec)
+void ConvertFromFLT::visitLtPtAppearancePalette(osg::Group& /*osgParent*/, LtPtAppearancePaletteRecord* rec)
 {
     SLightPointAppearancePalette* ltPtApp = (SLightPointAppearancePalette*)rec->getData();
     LtPtAppearancePool* pool = rec->getFltFile()->getLtPtAppearancePool();
@@ -2355,6 +2360,74 @@ void ConvertFromFLT::visitLightPointIndex(osg::Group& osgParent, LightPointIndex
     }
 
     osgParent.addChild(lpNode);
+}
+
+
+// OpenFlight 15.8 (1580)
+// Light point systems allow an application to control intensity, animation
+//   state, and on/off state of all child light point nodes from a single node.
+// On/off state implemented with an osgSim::MultiSwitch. Set 0 turns all children
+//   off, set 1 turns them on. Applications can define other sets if desired, or
+//   redefine these sets.
+// Children LightPointNodes all have a reference to a common LightPointState object
+//   An application controls intensity and animation state parameters by finding
+//   the first child of the Light Point System MultiSwitch, calling
+//   getLightPointState(), and setting intensity and animation state accordingly.
+osg::Group* ConvertFromFLT::visitLightPointSystem(osg::Group& osgParent, LightPointSystemRecord* rec)
+{
+    SLightPointSystem *ltPtSys = (SLightPointSystem*)rec->getData();
+
+    osgSim::MultiSwitch* system = new osgSim::MultiSwitch;
+    osg::ref_ptr<osgSim::LightPointSystem> lightState = new osgSim::LightPointSystem;
+
+    // Attach children
+    visitAncillary( osgParent, *system, rec )->addChild( system );
+    visitPrimaryNode( *system, rec );
+
+    system->setName( ltPtSys->ident );
+
+    // Set default sets: 0 for all off, 1 for all on
+    system->setAllChildrenOn( 1 );
+    system->setAllChildrenOff( 0 );
+
+    // Set initial on/off state
+    unsigned int initialSet = ( (ltPtSys->flags & 0x80000000) != 0 ) ? 1 : 0;
+    system->setActiveSwitchSet( initialSet );
+
+
+    lightState->setIntensity( ltPtSys->intensity );
+    switch( ltPtSys->animationState )
+    {
+        // Note that OpenFlight 15.8 spec says 0 means on and 1 means off.
+        //   However, if animation is set on in Creator, it stores a 1, and
+        //   a zero is stored for off! So, for now, we ignore the spec...
+    case 0:
+        lightState->setAnimationState( osgSim::LightPointSystem::ANIMATION_OFF );
+        break;
+    default:
+    case 1:
+        lightState->setAnimationState( osgSim::LightPointSystem::ANIMATION_ON );
+        break;
+    case 2:
+        lightState->setAnimationState( osgSim::LightPointSystem::ANIMATION_RANDOM );
+        break;
+    }
+
+    // Set light point state in all children
+    int errorChildren = 0;
+    for ( unsigned int i=0; i<system->getNumChildren(); i++)
+    {
+        osg::Node* child = system->getChild( i );
+        if (osgSim::LightPointNode* lpn = dynamic_cast<osgSim::LightPointNode*>(child))
+            lpn->setLightPointSystem (lightState.get() );
+        else
+            // Should never have a non-LightPointNode child
+            errorChildren++;
+    }
+    if (errorChildren > 0)
+        osg::notify( osg::WARN ) << "ConvertFromFLT::visitLightPointSystem found " << errorChildren << " non-LightPointNode child(ren)." << std::endl;
+
+    return ( (osg::Group*) system );
 }
 
 

@@ -34,9 +34,10 @@
 
 #include <set>
 
-#include <gdal_priv.h>
-
 #include <osgTerrain/Export>
+
+// forward declare so we can avoid tieing osgTerrain to GDAL.
+class GDALDataset;
 
 namespace osgTerrain
 {
@@ -131,11 +132,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
                 _hasGCPs(false),
                 _gdalDataSet(0) {}
                 
-                
-            virtual ~SourceData()
-            {
-                if (_gdalDataSet) GDALClose(_gdalDataSet);
-            }
+            virtual ~SourceData();
 
             static SourceData* readData(Source* source);
             

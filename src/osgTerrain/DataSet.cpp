@@ -206,6 +206,11 @@ bool areCoordinateSystemEquivalent(const osg::CoordinateSystemNode* lhs,const os
 	 return result ? true : false;
 }
 
+DataSet::SourceData::~SourceData()
+{
+    if (_gdalDataSet) GDALClose(_gdalDataSet);
+}
+
 DataSet::SourceData* DataSet::SourceData::readData(Source* source)
 {
     if (!source) return 0;

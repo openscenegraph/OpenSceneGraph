@@ -2,8 +2,8 @@
 //Distributed under the terms of the GNU Library General Public License (LGPL)
 //as published by the Free Software Foundation.
 
-#ifndef OSG_GEOMETRY
-#define OSG_GEOMETRY 1
+#ifndef OSG_INDEXEDGEOMETRY
+#define OSG_INDEXEDGEOMETRY 1
 
 #include <osg/Drawable>
 #include <osg/Vec2>
@@ -109,7 +109,7 @@ class SG_EXPORT IndexedGeometry : public Drawable
         Array* getTexCoordArray(unsigned int unit);
         const Array* getTexCoordArray(unsigned int unit) const;
         
-        void setTexCoordIndices(unsigned int unit,Array*);
+        void setTexCoordIndices(unsigned int unit,IndexArray*);
         IndexArray* getTexCoordIndices(unsigned int unit);
         const IndexArray* getTexCoordIndices(unsigned int unit) const;
 

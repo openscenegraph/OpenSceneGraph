@@ -5,6 +5,7 @@
 #include <osg/Impostor>
 #include <osg/Billboard>
 #include <osg/Geometry>
+#include <osg/IndexedGeometry>
 #include <osg/GeoSet>
 #include <osg/Notify>
 #include <osg/OccluderNode>
@@ -14,6 +15,9 @@
 #include <numeric>
 
 using namespace osgUtil;
+
+//#define CONVERT_GEOSET_TO_GEOMETRY
+//#define CONVERT_GEOSET_TO_INDEXEDGEOMETRY 
 
 ////////////////////////////////////////////////////////////////////////////
 // Overall Optimizetion function.
@@ -59,9 +63,11 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 
     }
     
+#if defined(CONVERT_GEOSET_TO_GEOMETRY) || defined(CONVERT_GEOSET_TO_INDEXEDGEOMETRY) 
     // convert the old style GeoSet to Geometry
-//    ConvertGeoSetsToGeometryVisitor cgtg;
-//    node->accept(cgtg);
+    ConvertGeoSetsToGeometryVisitor cgtg;
+    node->accept(cgtg);
+#endif
 
     if (options & SHARE_DUPLICATE_STATE)
     {
@@ -127,16 +133,33 @@ void Optimizer::ConvertGeoSetsToGeometryVisitor::apply(osg::Geode& geode)
         osg::GeoSet* geoset = dynamic_cast<osg::GeoSet*>(geode.getDrawable(i));
         if (geoset)
         {
-            osg::Geometry* geom = geoset->convertToGeometry();
-            if (geom)
-            {
-                std::cout<<"Successfully converted GeoSet to Geometry"<<std::endl;
-                geode.replaceDrawable(geoset,geom);
-            }
-            else
-            {
-                std::cout<<"*** Failed to convert GeoSet to Geometry"<<std::endl;
-            }
+            #if defined(CONVERT_GEOSET_TO_GEOMETRY)
+            
+                osg::Geometry* geom = geoset->convertToGeometry();
+                if (geom)
+                {
+                    std::cout<<"Successfully converted GeoSet to Geometry"<<std::endl;
+                    geode.replaceDrawable(geoset,geom);
+                }
+                else
+                {
+                    std::cout<<"*** Failed to convert GeoSet to Geometry"<<std::endl;
+                }
+
+            #else
+            
+                osg::IndexedGeometry* geom = geoset->convertToIndexedGeometry();
+                if (geom)
+                {
+                    std::cout<<"Successfully converted GeoSet to IndexedGeometry"<<std::endl;
+                    geode.replaceDrawable(geoset,geom);
+                }
+                else
+                {
+                    std::cout<<"*** Failed to convert GeoSet to IndexedGeometry"<<std::endl;
+                }
+                
+            #endif
         }
     }
 }

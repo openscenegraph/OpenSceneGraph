@@ -9,6 +9,7 @@
 #include <osg/Notify>
 
 #include <osg/Geometry>
+#include <osg/IndexedGeometry>
 #include <osg/ShadeModel>
 
 //#include <osg/mem_ptr>
@@ -1310,6 +1311,237 @@ Geometry* GeoSet::convertToGeometry()
         
 }
 
+IndexedGeometry* GeoSet::convertToIndexedGeometry()
+{
+    set_fast_path();
+    computeNumVerts();
+    
+    ref_ptr<IndexedGeometry> geom = osgNew IndexedGeometry;
+    geom->setStateSet(getStateSet());
+    
+    if (_flat_shaded_skip)
+    {
+        // will need to add flat shading to primitive.
+
+        StateSet* stateset = geom->getOrCreateStateSet();
+        ShadeModel* shademodel = dynamic_cast<ShadeModel*>(stateset->getAttribute(StateAttribute::SHADEMODEL));
+        if (!shademodel)
+        {
+            shademodel = osgNew osg::ShadeModel;
+            stateset->setAttribute(shademodel);
+        }
+        shademodel->setMode( ShadeModel::FLAT );
+    }
+
+    switch(_normal_binding)
+    {
+        case(BIND_OFF):
+            geom->setNormalBinding(IndexedGeometry::BIND_OFF);
+            break;
+        case(BIND_OVERALL):
+            geom->setNormalBinding(IndexedGeometry::BIND_OVERALL);
+            break;
+        case(BIND_PERPRIM):
+            geom->setNormalBinding(IndexedGeometry::BIND_PER_PRIMITIVE);
+            break;
+        case(BIND_PERVERTEX):
+            geom->setNormalBinding(IndexedGeometry::BIND_PER_VERTEX);
+            break;
+        default:
+            geom->setNormalBinding(IndexedGeometry::BIND_OFF);
+            break;
+    }
+
+    switch(_color_binding)
+    {
+        case(BIND_OFF):
+            geom->setColorBinding(IndexedGeometry::BIND_OFF);
+            break;
+        case(BIND_OVERALL):
+            geom->setColorBinding(IndexedGeometry::BIND_OVERALL);
+            break;
+        case(BIND_PERPRIM):
+            geom->setColorBinding(IndexedGeometry::BIND_PER_PRIMITIVE);
+            break;
+        case(BIND_PERVERTEX):
+            geom->setColorBinding(IndexedGeometry::BIND_PER_VERTEX);
+            break;
+        default:
+            geom->setColorBinding(IndexedGeometry::BIND_OFF);
+            break;
+    }
+
+    if (_coords)
+    {
+        geom->setVertexArray(osgNew Vec3Array(_numcoords,_coords));
+        if (_cindex.valid())
+        {
+            if (_cindex._is_ushort)         geom->setVertexIndices(osgNew UShortArray(_cindex._size,_cindex._ptr._ushort));
+            else /* _nindex._is_uint*/      geom->setVertexIndices(osgNew UIntArray(_cindex._size,_cindex._ptr._uint));
+        }
+    }
+        
+    if (_normals)
+    {
+        if (_flat_shaded_skip && _needprimlen && _normal_binding==BIND_PERVERTEX) 
+        {
+            if (_nindex.valid())
+            {
+                geom->setNormalArray(osgNew Vec3Array(_numnormals,_normals));
+                if (_nindex._is_ushort)
+                {
+                    UShortArray* indices = osgNew UShortArray;
+                    int index=0;
+                    for(int primNo = 0; primNo<_numprims; ++primNo)
+                    {
+                        for (int i=0;i<_primLengths[primNo];++i)
+                        {
+                            indices->push_back(_nindex._ptr._ushort[index]);
+                            if (i>=_flat_shaded_skip) ++index;
+                        }                        
+                    }
+                    geom->setNormalIndices(indices);
+                }
+                else
+                {
+                    UIntArray* indices = osgNew UIntArray;
+                    int index=0;
+                    for(int primNo = 0; primNo<_numprims; ++primNo)
+                    {
+                        for (int i=0;i<_primLengths[primNo];++i)
+                        {
+                            indices->push_back(_nindex._ptr._uint[index]);
+                            if (i>=_flat_shaded_skip) ++index;
+                        }                        
+                    }
+                    geom->setNormalIndices(indices);
+                }
+            }
+            else
+            {
+                Vec3Array* normals = osgNew Vec3Array;
+                int index=0;
+                for(int primNo = 0; primNo<_numprims; ++primNo)
+                {
+                    for (int i=0;i<_primLengths[primNo];++i)
+                    {
+                        normals->push_back(_normals[index]);
+                        if (i>=_flat_shaded_skip) ++index;
+                    }                        
+                }
+                geom->setNormalArray(normals);
+            }
+        }
+        else
+        {
+            // usual path.
+            geom->setNormalArray(osgNew Vec3Array(_numnormals,_normals));
+            if (_nindex.valid())
+            {
+                if (_nindex==_cindex)           geom->setNormalIndices(geom->getVertexIndices());
+                else if (_nindex._is_ushort)    geom->setNormalIndices(osgNew UShortArray(_nindex._size,_nindex._ptr._ushort));
+                else /* _nindex._is_uint*/      geom->setNormalIndices(osgNew UIntArray(_nindex._size,_nindex._ptr._uint));
+            }
+        }
+    }
+    
+    if (_colors) 
+    {
+        if (_flat_shaded_skip && _needprimlen && _color_binding==BIND_PERVERTEX) 
+        {
+            if (_colindex.valid())
+            {
+                geom->setColorArray(osgNew Vec4Array(_numcolors,_colors));
+                if (_colindex==_nindex && _normal_binding==BIND_PERVERTEX)
+                {
+                    geom->setColorIndices(geom->getNormalIndices());
+                }
+                else if (_colindex._is_ushort)
+                {
+                    UShortArray* indices = osgNew UShortArray;
+                    int index=0;
+                    for(int primNo = 0; primNo<_numprims; ++primNo)
+                    {
+                        for (int i=0;i<_primLengths[primNo];++i)
+                        {
+                            indices->push_back(_colindex._ptr._ushort[index]);
+                            if (i>=_flat_shaded_skip) ++index;
+                        }                        
+                    }
+                    geom->setColorIndices(indices);
+                }
+                else
+                {
+                    UIntArray* indices = osgNew UIntArray;
+                    int index=0;
+                    for(int primNo = 0; primNo<_numprims; ++primNo)
+                    {
+                        for (int i=0;i<_primLengths[primNo];++i)
+                        {
+                            indices->push_back(_colindex._ptr._uint[index]);
+                            if (i>=_flat_shaded_skip) ++index;
+                        }                        
+                    }
+                    geom->setColorIndices(indices);
+                }
+            }
+            else
+            {
+                Vec4Array* colors = osgNew Vec4Array;
+                int index=0;
+                for(int primNo = 0; primNo<_numprims; ++primNo)
+                {
+                    for (int i=0;i<_primLengths[primNo];++i)
+                    {
+                        colors->push_back(_colors[index]);
+                        if (i>=_flat_shaded_skip) ++index;
+                    }                        
+                }
+                geom->setColorArray(colors);
+            }
+
+        }
+        else
+        {
+            // usual path.
+            geom->setColorArray(osgNew Vec4Array(_numcolors,_colors));
+            if (_colindex.valid())
+            {
+                if (_colindex==_cindex)         geom->setColorIndices(geom->getVertexIndices());
+                else if (_colindex==_nindex)    geom->setColorIndices(geom->getNormalIndices());
+                else if (_colindex._is_ushort)  geom->setColorIndices(osgNew UShortArray(_colindex._size,_colindex._ptr._ushort));
+                else /* _colindex._is_uint*/    geom->setColorIndices(osgNew UIntArray(_colindex._size,_colindex._ptr._uint));
+            }
+        }
+    }
+    
+    if (_tcoords)
+    {
+        geom->setTexCoordArray(0,osgNew Vec2Array(_numtcoords,_tcoords));
+        if (_tindex.valid())
+        {
+            if (_tindex==_cindex)           geom->setTexCoordIndices(0,geom->getVertexIndices());
+            else if (_tindex==_nindex)      geom->setTexCoordIndices(0,geom->getNormalIndices());
+            else if (_tindex==_colindex)    geom->setTexCoordIndices(0,geom->getColorIndices());
+            else if (_tindex._is_ushort)    geom->setTexCoordIndices(0,osgNew UShortArray(_tindex._size,_tindex._ptr._ushort));
+            else /* _tindex._is_uint*/      geom->setTexCoordIndices(0,osgNew UIntArray(_tindex._size,_tindex._ptr._uint));
+        }
+    }
+    
+
+    if (_needprimlen)
+    {
+        geom->addPrimitiveSet(osgNew DrawArrayLengths((GLenum)_oglprimtype,0, _primLengths, _primLengths+_numprims ));
+    }
+    else
+    {
+        geom->addPrimitiveSet(osgNew DrawArrays((GLenum)_oglprimtype,0, _numcoords));
+    }
+
+    return geom.take();
+    
+        
+}
 
 
 

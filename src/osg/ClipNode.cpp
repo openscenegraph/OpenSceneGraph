@@ -28,14 +28,14 @@ void ClipNode::createClipBox(const BoundingBox& bb,unsigned int clipPlaneNumberB
 {
     _planes.clear();
 
-    _planes.push_back(new ClipPlane(clipPlaneNumberBase  ,1.0,0.0,0.0,-bb.xMin()));
-    _planes.push_back(new ClipPlane(clipPlaneNumberBase+1,-1.0,0.0,0.0,bb.xMax()));
+    _planes.push_back(osgNew ClipPlane(clipPlaneNumberBase  ,1.0,0.0,0.0,-bb.xMin()));
+    _planes.push_back(osgNew ClipPlane(clipPlaneNumberBase+1,-1.0,0.0,0.0,bb.xMax()));
 
-    _planes.push_back(new ClipPlane(clipPlaneNumberBase+2,0.0,1.0,0.0,-bb.yMin()));
-    _planes.push_back(new ClipPlane(clipPlaneNumberBase+3,0.0,-1.0,0.0,bb.yMax()));
+    _planes.push_back(osgNew ClipPlane(clipPlaneNumberBase+2,0.0,1.0,0.0,-bb.yMin()));
+    _planes.push_back(osgNew ClipPlane(clipPlaneNumberBase+3,0.0,-1.0,0.0,bb.yMax()));
 
-    _planes.push_back(new ClipPlane(clipPlaneNumberBase+4,0.0,0.0,1.0,-bb.zMin()));
-    _planes.push_back(new ClipPlane(clipPlaneNumberBase+5,0.0,0.0,-1.0,bb.zMax()));
+    _planes.push_back(osgNew ClipPlane(clipPlaneNumberBase+4,0.0,0.0,1.0,-bb.zMin()));
+    _planes.push_back(osgNew ClipPlane(clipPlaneNumberBase+5,0.0,0.0,-1.0,bb.zMax()));
 
     setLocalStateSetModes(_value);
 }

@@ -174,7 +174,7 @@ void Registry::initDataFilePathList()
     }
 
     //osg::notify(INFO)<<"Data FilePathList"<<std::endl;
-    PrintFilePathList(osg::notify(INFO),getDataFilePathList());
+    //PrintFilePathList(osg::notify(INFO),getDataFilePathList());
 }
 
 #ifndef WIN32
@@ -304,14 +304,14 @@ void Registry::addDotOsgWrapper(DotOsgWrapper* wrapper)
 
     if (_openingLibrary) notify(INFO) << "Opening Library : "<< std::endl;
 
-    notify(INFO) << "osg::Registry::addDotOsgWrapper("<<wrapper->getName()<<")"<< std::endl;
+    //notify(INFO) << "osg::Registry::addDotOsgWrapper("<<wrapper->getName()<<")"<< std::endl;
     const DotOsgWrapper::Associates& assoc = wrapper->getAssociates();
     
     for(DotOsgWrapper::Associates::const_iterator itr=assoc.begin();
                                                   itr!=assoc.end();
                                                   ++itr)
     {
-        notify(INFO) << "    ("<<*itr<<")"<< std::endl;
+        //notify(INFO) << "    ("<<*itr<<")"<< std::endl;
     }
 
     const std::string& name = wrapper->getName();
@@ -390,9 +390,9 @@ void Registry::addReaderWriter(ReaderWriter* rw)
 {
     if (rw==0L) return;
 
-    if (_openingLibrary) notify(INFO) << "Opening Library : "<< std::endl;
+    // if (_openingLibrary) notify(INFO) << "Opening Library : "<< std::endl;
 
-    notify(INFO) << "osg::Registry::addReaderWriter("<<rw->className()<<")"<< std::endl;
+    // notify(INFO) << "osg::Registry::addReaderWriter("<<rw->className()<<")"<< std::endl;
 
     _rwList.push_back(rw);
 

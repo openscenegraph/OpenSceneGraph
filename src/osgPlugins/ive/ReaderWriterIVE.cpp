@@ -28,8 +28,18 @@ class IVEReaderWriter : public ReaderWriter
             std::string fileName = osgDB::findDataFile( file );
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
     
+            // code for setting up the database path so that any paged
+            // databases can be automatically located. 
+            osg::ref_ptr<Options> local_opt = const_cast<Options*>(options);
+            if (!local_opt) local_opt = new Options;
+
+            if (local_opt.valid() && local_opt->getDatabasePath().empty())
+            {
+                local_opt->setDatabasePath(osgDB::getFilePath(fileName));
+            } 
+
             std::ifstream istream(fileName.c_str(), std::ios::in | std::ios::binary);
-            return readNode(istream,options);
+            return readNode(istream,local_opt.get());
         }
         
         virtual ReadResult readNode(std::istream& fin, const Options* options)

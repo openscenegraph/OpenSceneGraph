@@ -1,4 +1,5 @@
 #include "osg/PagedLOD"
+#include "osg/Notify"
 
 #include "osgDB/Registry"
 #include "osgDB/Input"
@@ -26,6 +27,15 @@ bool PagedLOD_readLocalData(Object& obj, Input& fr)
     bool iteratorAdvanced = false;
 
     PagedLOD& lod = static_cast<PagedLOD&>(obj);
+    
+    if (lod.getDatabasePath().empty() && fr.getOptions())
+    {
+        const std::string& path = fr.getOptions()->getDatabasePath();
+        if (!path.empty()) 
+        {
+            lod.setDatabasePath(path);
+        }
+    } 
 
     unsigned int num;
     if (fr[0].matchWord("NumChildrenThatCannotBeExpired") && fr[1].getUInt(num))

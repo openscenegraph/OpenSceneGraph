@@ -308,12 +308,23 @@ class NetReader : public osgDB::ReaderWriter
 
             } while( linebuff[0] != '\r' );
 
+            // code for setting up the database path so that any paged
+            // databases can be automatically located. 
+            osg::ref_ptr<Options> local_opt = const_cast<Options*>(options);
+            if (!local_opt) local_opt = new Options;
+
+            if (local_opt.valid() && local_opt->getDatabasePath().empty())
+            {
+                local_opt->setDatabasePath(osgDB::getFilePath(inFileName));
+            }
+            
+            
 
             osg::notify(osg::DEBUG_INFO) << "osgPlugin .net: " << fileName << 
                                          " fetched from server." << std::endl;
 
             if( reader != 0L )
-                readResult = readFile(objectType, reader, sio, options );
+                readResult = readFile(objectType, reader, sio, local_opt.get() );
 
             if( !localCacheDir.empty() && cacheMode & Write )
             {

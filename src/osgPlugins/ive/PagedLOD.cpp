@@ -97,6 +97,17 @@ void PagedLOD::read(DataInputStream* in){
                 else
                     throw Exception("Group::read(): Could not cast this osg::Group to an osg::Node.");
 
+
+                if (getDatabasePath().empty() && in->getOptions())
+                {
+                    const std::string& path = in->getOptions()->getDatabasePath();
+                    if (!path.empty()) 
+                    {
+                        setDatabasePath(path);
+                    }
+                } 
+
+
                 setRadius(in->readFloat());
                 setNumChildrenThatCannotBeExpired(in->readUInt());
 

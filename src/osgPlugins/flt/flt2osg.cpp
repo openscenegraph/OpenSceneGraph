@@ -473,15 +473,6 @@ osg::Node* ConvertFromFLT::visitTexturePalette(osg::Group* , TexturePaletteRecor
 
         osgTexture->setImage(image.get());
 
-        switch (image->pixelFormat())
-        {
-            case GL_LUMINANCE_ALPHA:
-            case GL_RGBA:
-                osgStateSet->setMode(GL_BLEND,osg::StateAttribute::ON);
-                osgStateSet->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
-                break;
-        }
-
         // Add new texture to registry pool
         Registry::instance()->addTexture(pFilename, osgStateSet);
 
@@ -681,7 +672,7 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
     DynGeoSet* dgset = pBuilder->getDynGeoSet();
     osg::StateSet* osgStateSet = dgset->getStateSet();
     SFace *pSFace = (SFace*)rec->getData();
-
+    bool bBlend = false;
 
     if (rec->getFlightVersion() > 13)
     {
@@ -718,6 +709,7 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
             dgset->setPrimType(osg::GeoSet::LINE_LOOP);
             break;
     }
+
     /*
         TODO:
 
@@ -732,7 +724,6 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
             break;
         }
     */
-
 
     //
     // Lighting and color binding
@@ -788,13 +779,12 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
     if (pSFace->swTexWhite && (pSFace->iTexturePattern != -1))
     {
         // Render textured polygons white
-        _faceColor.set(1,1,1,1);
+        _faceColor.set(1, 1, 1, 1);
     }
     else
     {
-        float alpha = 1.0f;
         ColorPool* pColorPool = rec->getFltFile()->getColorPool();
-        _faceColor.set(1,1,1,1);
+        _faceColor.set(1, 1, 1, 1);
 
         if (rec->getFlightVersion() > 13)
         {
@@ -809,9 +799,6 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
                     _faceColor = pSFace->PrimaryPackedColor.get();
                 else
                     _faceColor = pColorPool->getColor(pSFace->dwPrimaryColorIndex);
-
-                alpha = 1.0f - (float)pSFace->wTransparency / 65535.0f;
-                _faceColor[3] = alpha;
             }
         }
         else // Version 11, 12 & 13
@@ -822,23 +809,17 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
                 _faceColor = pSFace->PrimaryPackedColor.get();
             else
                 _faceColor = pColorPool->getColor(pSFace->wPrimaryNameIndex);
-
-            alpha = 1.0f - (float)pSFace->wTransparency / 65535.0f;
-            _faceColor[3] = alpha;
         }
 
-        // Transparency
-        if (alpha < 1.0f)
-        {
-            osgStateSet->setMode(GL_BLEND, osg::StateAttribute::ON);
-            osgStateSet->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
-        }
     }
+
+    // Face color alpha
+    _faceColor[3] = 1.0f - ((float)pSFace->wTransparency / 65535.0f);
+    if (pSFace->wTransparency > 0) bBlend = true;
 
     if ((dgset->getColorBinding() == osg::GeoSet::BIND_OVERALL)
     ||  (dgset->getColorBinding() == osg::GeoSet::BIND_PERPRIM))
         dgset->addColor(_faceColor);
-
 
     //
     // Material
@@ -848,7 +829,6 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
     if (pMaterialPool)
     {
         MaterialPool::PoolMaterial* pSMaterial = pMaterialPool->getMaterial((int)pSFace->iMaterial);
-
         if (pSMaterial)
         {
             osg::Material* osgMaterial = new osg::Material;
@@ -858,8 +838,10 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
             osg::Vec4 emissiv;
             float alpha;
 
-            alpha = pSMaterial->sfAlpha * (1.0f - (
-                ((float)pSFace->wTransparency / 65535.0f) * ((float)_wObjTransparency / 65535.0f) ));
+            // In contrast to the OpenFlight Specification this works!
+            alpha = pSMaterial->sfAlpha * 
+                (1.0f - ((float)pSFace->wTransparency / 65535.0f)) *
+                (1.0f - ((float)_wObjTransparency / 65535.0f));
 
             ambient[0] = pSMaterial->Ambient[0] * _faceColor[0];
             ambient[1] = pSMaterial->Ambient[1] * _faceColor[1];
@@ -881,27 +863,16 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
             emissiv[2] = pSMaterial->Emissive[2];
             emissiv[3] = alpha;
 
+            osgMaterial->setColorMode(osg::Material::OFF);
             osgMaterial->setAmbient(osg::Material::FRONT_AND_BACK, ambient);
             osgMaterial->setDiffuse(osg::Material::FRONT_AND_BACK, diffuse);
             osgMaterial->setSpecular(osg::Material::FRONT_AND_BACK, specular);
             osgMaterial->setEmission(osg::Material::FRONT_AND_BACK, emissiv);
             osgMaterial->setAlpha(osg::Material::FRONT_AND_BACK, alpha);
             osgMaterial->setShininess(osg::Material::FRONT_AND_BACK, pSMaterial->sfShininess/128.0f);
-
-            // Brede,
-            // is there anything in the fly material which might control color mode??
-            // some models work better without color mode defined, other work better without it, the
-            // effect is particularily noticable with models with alpha blending on color coords but not
-            // on material. Robert Osfield, Feb 02.
-            //osgMaterial->setColorMode(osg::Material::AMBIENT_AND_DIFFUSE);
-
-            if (alpha < 1.0f)
-            {
-                osgStateSet->setMode(GL_BLEND, osg::StateAttribute::ON);
-                osgStateSet->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
-            }
-
             osgStateSet->setAttribute(osgMaterial);
+
+            if (alpha < 1.0f) bBlend = true;
         }
     }
 
@@ -940,10 +911,19 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
                 // Merge face stateset with texture stateset
                 osgStateSet->merge(*textureStateSet);
 
-                // current version of merge dosn't merge rendering hint
-                if (textureStateSet->getRenderingHint() == osg::StateSet::TRANSPARENT_BIN)
-                    osgStateSet->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
-
+                // Alpha channel in texture?
+                osg::Texture *osgTexture = dynamic_cast<osg::Texture*>(textureStateSet->getAttribute( osg::StateAttribute::TEXTURE));
+                if (osgTexture)
+                {
+                    osg::Image* osgImage = osgTexture->getImage();
+                    switch (osgImage->pixelFormat())
+                    {
+                    case GL_LUMINANCE_ALPHA:
+                    case GL_RGBA:
+                        bBlend = true;
+                        break;
+                    }
+                }
 
 #if 0           // Started to experiment with OpenFlight texture mapping modes
                 if (pSFace->iTextureMapIndex > -1)
@@ -957,6 +937,20 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
                 dgset->setTextureBinding(osg::GeoSet::BIND_PERVERTEX);
             }
         }
+    }
+
+
+    //
+    // Transparency
+    //
+
+    if (bBlend)
+    {
+        osg::Transparency* osgTransparency = new osg::Transparency();
+        osgTransparency->setFunction(osg::Transparency::SRC_ALPHA, osg::Transparency::ONE_MINUS_SRC_ALPHA);
+        osgStateSet->setAttribute(osgTransparency);
+        osgStateSet->setMode(GL_BLEND, osg::StateAttribute::ON);
+        osgStateSet->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
     }
 
     //

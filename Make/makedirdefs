@@ -87,6 +87,7 @@ DEMOS_DIRS = \
 	osglight\
 	osgmultitexture\
 	osgoccluder\
+	osggeodemo\
 	osgparticle\
 	osgprerender\
 	osgreflect\

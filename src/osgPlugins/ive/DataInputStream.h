@@ -30,6 +30,7 @@ class DataInputStream{
 public:
 	DataInputStream(std::istream* istream);
 	~DataInputStream();
+	unsigned int getVersion();
 	bool readBool();
 	char readChar();
 	unsigned char readUChar();

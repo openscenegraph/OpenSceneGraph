@@ -113,6 +113,11 @@ bool DataInputStream::readBool(){
     return c!=0;
 }
 
+unsigned int DataInputStream::getVersion()
+{
+    return( _version );
+}
+
 char DataInputStream::readChar(){
     char c;
     _istream->read(&c, CHARSIZE);

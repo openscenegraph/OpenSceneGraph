@@ -17,17 +17,18 @@
 #include <osg/Matrixd>
 #include <osg/Matrixf>
 
+#define OSG_USE_DOUBLE_MATRICES 1
+
 namespace osg {
 
-
-// default to using floating Matrices - Matrixf 
-//    typedef Matrixf Matrix;
-//    typedef RefMatrixf RefMatrix;
-
-// // default to using double Matrices - Matrixd
+#ifdef OSG_USE_DOUBLE_MATRICES
     typedef Matrixd Matrix;
     typedef RefMatrixd RefMatrix;
+#else
+    typedef Matrixf Matrix;
+    typedef RefMatrixf RefMatrix;
 
+#endif
 
 } //namespace osg
 

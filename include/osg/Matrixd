@@ -33,7 +33,7 @@ class SG_EXPORT Matrixd
 
     public:
     
-        typedef float value_type;
+        typedef double value_type;
 
         inline Matrixd() { makeIdentity(); }
         inline Matrixd( const Matrixd& mat) { set(mat.ptr()); }

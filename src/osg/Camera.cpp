@@ -264,8 +264,8 @@ const double Camera::left() const
     {
         case(FRUSTUM):
         case(PERSPECTIVE): return _left * _zNear;
+        default: return _left;
     }
-    return _left;
 }
 const double Camera::right() const
 {
@@ -273,8 +273,8 @@ const double Camera::right() const
     {
         case(FRUSTUM):
         case(PERSPECTIVE): return _right * _zNear;
+        default: return _right;
     }
-    return _right;
 }
 
 const double Camera::top() const
@@ -283,8 +283,8 @@ const double Camera::top() const
     {
         case(FRUSTUM):
         case(PERSPECTIVE): return _top * _zNear;
+        default: return _top;
     }
-    return _top;
 }
 
 const double Camera::bottom() const
@@ -293,8 +293,8 @@ const double Camera::bottom() const
     {
         case(FRUSTUM):
         case(PERSPECTIVE): return _bottom * _zNear;
+        default: return _bottom;
     }
-    return _bottom;
 }
 
 const double Camera::zNear() const
@@ -501,6 +501,8 @@ void Camera::dirtyTransform()
         {
             notify(WARN)<<"Warning: Camera::dirtyTransform() failed to invert _eyeToModelTransform"<<std::endl;
         }
+        break;
+    default: // NO_ATTACHED_TRANSFORM
         break;
     }
 

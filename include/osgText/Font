@@ -115,7 +115,7 @@ class OSGTEXT_EXPORT RasterFont:public Font
         RasterFont():Font(){}
         RasterFont(const RasterFont& font,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
             Font(font,copyop) {}            
-        RasterFont(const std::string& font):Font() {}
+        RasterFont(const std::string& /*font*/):Font() {}
 
         virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const RasterFont *>(obj)!=NULL; } 
         virtual const char* className() const { return "RasterFont"; } 
@@ -132,7 +132,7 @@ class OSGTEXT_EXPORT VectorFont:public Font
         VectorFont():Font(){}
         VectorFont(const VectorFont& font,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
             Font(font,copyop) {}
-        VectorFont(const std::string& font):Font(){}
+        VectorFont(const std::string& /*font*/):Font(){}
 
         virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const VectorFont *>(obj)!=NULL; } 
         virtual const char* className() const { return "VectorFont"; } 

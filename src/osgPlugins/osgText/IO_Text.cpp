@@ -38,13 +38,13 @@ bool Text_readLocalData(osg::Object &obj, osgDB::Input &fr)
         
     }
 
-    if (fr[0].matchWord("fontSize"))
+    if (fr[0].matchWord("fontResolution") || fr[0].matchWord("fontSize"))
     {
         unsigned int width;
         unsigned int height;
         if (fr[1].getUInt(width) && fr[2].getUInt(height))
         {
-            text.setFontSize(width,height);
+            text.setFontResolution(width,height);
             fr += 3;
             itAdvanced = true;
         }
@@ -125,6 +125,38 @@ bool Text_readLocalData(osg::Object &obj, osgDB::Input &fr)
             fr += 4;
             itAdvanced = true;
         }
+    }
+
+    if (fr.matchSequence("scale %f"))
+    {
+        float scale;
+        fr[1].getFloat(scale);
+        text.setScale(scale);
+        fr += 2;
+        itAdvanced = true;
+    }
+
+    if (fr.matchSequence("autoUpdateEyeMovementTolerance %f"))
+    {
+        float scale;
+        fr[1].getFloat(scale);
+        text.setAutoUpdateEyeMovementTolerance(scale);
+        fr += 2;
+        itAdvanced = true;
+    }
+
+    if (fr.matchSequence("autoRotateToScreen TRUE"))
+    {
+        text.setAutoRotateToScreen(true);
+        fr += 2;
+        itAdvanced = true;
+    }
+
+    if (fr.matchSequence("autoScaleToScreen TRUE"))
+    {
+        text.setAutoScaleToScreen(true);
+        fr += 2;
+        itAdvanced = true;
     }
 
     if (fr.matchSequence("layout %w"))
@@ -226,7 +258,7 @@ bool Text_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     }
 
     // font resolution
-    fw.indent() << "fontSize " << text.getFontWidth() << " " << text.getFontHeight() << std::endl;
+    fw.indent() << "fontResolution " << text.getFontWidth() << " " << text.getFontHeight() << std::endl;
 
     // charater size.
     fw.indent() << "characterSize " << text.getCharacterHeight() << " " << text.getCharacterAspectRatio() << std::endl;
@@ -264,21 +296,30 @@ bool Text_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     };
 
 
-    // axis alignment
-    fw.indent() << "axisAlignment ";
-    switch(text.getAxisAlignment())
-    {
-      case osgText::Text::XY_PLANE: fw << "XY_PLANE" << std::endl; break;
-      case osgText::Text::XZ_PLANE: fw << "XZ_PLANE" << std::endl; break;
-      case osgText::Text::YZ_PLANE: fw << "YZ_PLANE" << std::endl; break;
-      case osgText::Text::SCREEN:   fw << "SCREEN" << std::endl; break;
-    };
-
     if (!text.getRotation().zeroRotation())
     {
         fw.indent() << "rotation " << text.getRotation() << std::endl;
     }
 
+    if (text.getScale()!=1.0f)
+    {
+        fw.indent() << "scale " << text.getScale() << std::endl;
+    }
+
+    if (text.getAutoUpdateEyeMovementTolerance()!=0.0f)
+    {
+        fw.indent() << "autoUpdateEyeMovementTolerance " << text.getAutoUpdateEyeMovementTolerance() << std::endl;
+    }
+
+    if (text.getAutoRotateToScreen())
+    {
+        fw.indent() << "autoRotateToScreen TRUE"<< std::endl;
+    }
+
+    if (text.getAutoScaleToScreen())
+    {
+        fw.indent() << "autoScaleToScreen TRUE"<< std::endl;
+    }
 
     // layout
     fw.indent() << "layout ";

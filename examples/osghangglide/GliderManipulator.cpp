@@ -210,7 +210,7 @@ bool GliderManipulator::calcMovement()
     osg::Vec3 sv = _camera->getSideVector();
     osg::Vec3 lv = _camera->getLookVector();
 
-    float pitch = inDegrees(dy*70.0f*dt);
+    float pitch = inDegrees(-dy*70.0f*dt);
     float roll = inDegrees(dx*60.0f*dt);
 
     osg::Matrix mat;

@@ -23,7 +23,7 @@ using namespace osg;
 Texture2D::Texture2D():
             _textureWidth(0),
             _textureHeight(0),
-            _numMimpmapLevels(0)
+            _numMipmapLevels(0)
 {
     setUseHardwareMipMapGeneration(true);
 }
@@ -33,7 +33,7 @@ Texture2D::Texture2D(const Texture2D& text,const CopyOp& copyop):
             _image(copyop(text._image.get())),
             _textureWidth(text._textureWidth),
             _textureHeight(text._textureHeight),
-            _numMimpmapLevels(text._numMimpmapLevels),
+            _numMipmapLevels(text._numMipmapLevels),
             _subloadCallback(text._subloadCallback)
 {
 }
@@ -109,7 +109,7 @@ void Texture2D::apply(State& state) const
         else if (_image.valid() && getModifiedTag(contextID) != _image->getModifiedTag())
         {
             applyTexImage2D_subload(GL_TEXTURE_2D,_image.get(),state,
-                                    _textureWidth, _textureHeight, _numMimpmapLevels);
+                                    _textureWidth, _textureHeight, _numMipmapLevels);
  
             // update the modified tag to show that it is upto date.
             getModifiedTag(contextID) = _image->getModifiedTag();
@@ -143,7 +143,7 @@ void Texture2D::apply(State& state) const
         applyTexParameters(GL_TEXTURE_2D,state);
 
         applyTexImage2D_load(GL_TEXTURE_2D,_image.get(),state,
-                             _textureWidth, _textureHeight, _numMimpmapLevels);
+                             _textureWidth, _textureHeight, _numMipmapLevels);
 
         // update the modified tag to show that it is upto date.
         getModifiedTag(contextID) = _image->getModifiedTag();

@@ -114,9 +114,9 @@ osg::Group* createHUDText()
         text->setPosition(cursor);
         
         // use text that uses 10 by 10 texels as a target resolution for fonts.
-        text->setFontSize(10,10); // blocky but small texture memory usage
+        text->setFontResolution(10,10); // blocky but small texture memory usage
         
-        text->setText("text->setFontSize(10,10); // blocky but small texture memory usage");
+        text->setText("text->setFontResolution(10,10); // blocky but small texture memory usage");
         geode->addDrawable(text);
     }
     
@@ -129,9 +129,9 @@ osg::Group* createHUDText()
         text->setPosition(cursor);
         
         // use text that uses 10 by 10 texels as a target resolution for fonts.
-        text->setFontSize(20,20); // smoother but higher texture memory usage (but still quite low).
+        text->setFontResolution(20,20); // smoother but higher texture memory usage (but still quite low).
         
-        text->setText("text->setFontSize(20,20); // smoother but higher texture memory usage (but still quite low).");
+        text->setText("text->setFontResolution(20,20); // smoother but higher texture memory usage (but still quite low).");
         geode->addDrawable(text);
     }
     
@@ -144,9 +144,9 @@ osg::Group* createHUDText()
         text->setPosition(cursor);
         
         // use text that uses 10 by 10 texels as a target resolution for fonts.
-        text->setFontSize(40,40); // even smoother but again higher texture memory usage.
+        text->setFontResolution(40,40); // even smoother but again higher texture memory usage.
         
-        text->setText("text->setFontSize(40,40); // even smoother but again higher texture memory usage.");
+        text->setText("text->setFontResolution(40,40); // even smoother but again higher texture memory usage.");
         geode->addDrawable(text);
     }
 
@@ -164,7 +164,7 @@ osg::Group* createHUDText()
         osgText::Text* text = new osgText::Text;
         text->setFont(font);
         text->setColor(characterSizeColor);
-        text->setFontSize(20,20);
+        text->setFontResolution(20,20);
         text->setPosition(cursor);
         
         // use text that 20 units high.
@@ -179,7 +179,7 @@ osg::Group* createHUDText()
         osgText::Text* text = new osgText::Text;
         text->setFont(font);
         text->setColor(characterSizeColor);
-        text->setFontSize(30,30);
+        text->setFontResolution(30,30);
         text->setPosition(cursor);
         
         // use text that 20 units high.
@@ -194,7 +194,7 @@ osg::Group* createHUDText()
         osgText::Text* text = new osgText::Text;
         text->setFont(font);
         text->setColor(characterSizeColor);
-        text->setFontSize(40,40);
+        text->setFontResolution(40,40);
         text->setPosition(cursor);
         
         // use text that uses 10 by 10 texels as a target resolution for fonts.

@@ -135,17 +135,6 @@ class SG_EXPORT Node : public Object
         /** Get const update node callback, called during update traversal. */
         inline const NodeCallback* getUpdateCallback() const { return _updateCallback.get(); }
 
-#ifdef USE_DEPRECATED_API
-        /** deprecated. */
-        void setAppCallback(NodeCallback* nc) { setUpdateCallback(nc); }
-
-        /** deprecated. */
-        inline NodeCallback* getAppCallback() { return getUpdateCallback(); }
-
-        /** deprecated. */
-        inline const NodeCallback* getAppCallback() const { return getUpdateCallback(); }
-#endif
-
         /** Get the number of Children of this node which require App traversal,
           * since they have an AppCallback attached to them or their children.*/
         inline unsigned int getNumChildrenRequiringUpdateTraversal() const { return _numChildrenRequiringUpdateTraversal; }

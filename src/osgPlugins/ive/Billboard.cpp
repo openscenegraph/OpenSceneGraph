@@ -40,7 +40,7 @@ void Billboard::write(DataOutputStream* out){
 	int size = _positionList.size();
 	out->writeInt(size);
 	for(int i=0;i<size;i++){
-		out->writeVec3(getPos(i));
+		out->writeVec3(getPosition(i));
 	}
 }
 
@@ -68,7 +68,7 @@ void Billboard::read(DataInputStream* in){
 		// Read positions
 		int size = in->readInt();
 		for(int i=0;i<size;i++){
-			setPos(i,in->readVec3());
+			setPosition(i,in->readVec3());
 		}
 
 	}

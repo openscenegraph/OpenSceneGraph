@@ -55,11 +55,18 @@ class SG_EXPORT Billboard : public Geode
         inline const Vec3& getNormal() const { return _normal; }
 
 
+#ifdef USE_DEPRECTATED_API
         /** Set the position of specified drawable. */
         inline void setPos(unsigned int i,const Vec3& pos)      { _positionList[i] = pos; }
         /** Get the position of specified drawable. */
         inline const Vec3& getPos(unsigned int i) const         { return _positionList[i]; }
+#endif
         
+        /** Set the position of specified drawable. */
+        inline void setPosition(unsigned int i,const Vec3& pos)      { _positionList[i] = pos; }
+        /** Get the position of specified drawable. */
+        inline const Vec3& getPosition(unsigned int i) const         { return _positionList[i]; }
+
         /** PositionList represents a list of pivot points for each drawable.*/
         typedef std::vector<Vec3> PositionList;
         

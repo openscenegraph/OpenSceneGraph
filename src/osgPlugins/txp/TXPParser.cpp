@@ -854,7 +854,7 @@ void* labelRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
                 billboard->setAxis(osg::Vec3(0.0f,0.0,1.0f) );
                 billboard->setNormal(osg::Vec3(0.0f,-1.0,0.0f));
                 billboard->setMode(osg::Billboard::AXIAL_ROT);
-                billboard->setPos(0,pos);
+                billboard->setPosition(0,pos);
 
                 _parse->getCurrTop()->addChild(billboard.get());
             }
@@ -1314,7 +1314,7 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
                 geometry->dirtyBound();
 
                 billboard->addDrawable(geometry);
-                billboard->setPos(0, center);
+                billboard->setPosition(0, center);
             }
             break;
             case trpgBillboard::Group:
@@ -1330,7 +1330,7 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
                 geometry->dirtyBound();
 
                 billboard->addDrawable(geometry);
-                billboard->setPos(0, center);
+                billboard->setPosition(0, center);
             }
             break;
             default:

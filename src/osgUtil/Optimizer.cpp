@@ -704,7 +704,7 @@ void CollectLowestTransformsVisitor::doTransform(osg::Object* obj,osg::Matrix& m
 
         for(unsigned int i=0;i<billboard->getNumDrawables();++i)
         {
-            billboard->setPos(i,billboard->getPos(i)*matrix);
+            billboard->setPosition(i,billboard->getPosition(i)*matrix);
             billboard->getDrawable(i)->accept(tf);
             billboard->getDrawable(i)->dirtyBound();
         }

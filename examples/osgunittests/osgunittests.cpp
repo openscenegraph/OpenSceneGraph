@@ -119,6 +119,21 @@ void sizeOfTest()
 }
 
 
+void testQuatRotate(const osg::Vec3d& from, const osg::Vec3d& to)
+{
+    osg::Quat q_nicolas;
+    q_nicolas.makeRotate(from,to);
+    
+    osg::Quat q_original;
+    q_original.makeRotate_original(from,to);
+    
+    std::cout<<"osg::Quat::makeRotate("<<from<<", "<<to<<")"<<std::endl;
+    std::cout<<"  q_nicolas = "<<q_nicolas<<std::endl;
+    std::cout<<"  q_original = "<<q_original<<std::endl;
+    std::cout<<"  from * M4x4(q_nicolas) = "<<from * osg::Matrixd::rotate(q_nicolas)<<std::endl;
+    std::cout<<"  from * M4x4(q_original) = "<<from * osg::Matrixd::rotate(q_original)<<std::endl;
+}
+
 void testQuat()
 {
     osg::Quat q1;
@@ -147,6 +162,18 @@ void testQuat()
     std::cout<<"m1*m2 = "<<qm1_2<<std::endl;
     std::cout<<"m2*m1 = "<<qm2_1<<std::endl;
 
+
+    testQuatRotate(osg::Vec3d(1.0,0.0,0.0),osg::Vec3d(0.0,1.0,0.0));
+    testQuatRotate(osg::Vec3d(0.0,1.0,0.0),osg::Vec3d(1.0,0.0,0.0));
+    testQuatRotate(osg::Vec3d(0.0,0.0,1.0),osg::Vec3d(0.0,1.0,0.0));
+    testQuatRotate(osg::Vec3d(1.0,1.0,1.0),osg::Vec3d(1.0,0.0,0.0));
+    testQuatRotate(osg::Vec3d(1.0,0.0,0.0),osg::Vec3d(1.0,0.0,0.0));
+    testQuatRotate(osg::Vec3d(1.0,0.0,0.0),osg::Vec3d(-1.0,0.0,0.0));
+    testQuatRotate(osg::Vec3d(-1.0,0.0,0.0),osg::Vec3d(1.0,0.0,0.0));
+    testQuatRotate(osg::Vec3d(0.0,1.0,0.0),osg::Vec3d(0.0,-1.0,0.0));
+    testQuatRotate(osg::Vec3d(0.0,-1.0,0.0),osg::Vec3d(0.0,1.0,0.0));
+    testQuatRotate(osg::Vec3d(0.0,0.0,1.0),osg::Vec3d(0.0,0.0,-1.0));
+    testQuatRotate(osg::Vec3d(0.0,0.0,-1.0),osg::Vec3d(0.0,0.0,1.0));
     
 }
 

@@ -259,31 +259,31 @@ class SG_EXPORT StateSet : public Object
 
 
 
-        /** Simple pairing between an attribute and its override flag.*/
+        /** Simple pairing between a Uniform and its override flag.*/
         typedef std::pair<ref_ptr<Uniform>,StateAttribute::OverrideValue>  RefUniformPair;
 
-        /** a container to map <StateAttribyte::Types,Member> to their respective RefAttributePair.*/
+        /** a container to map Uniform name to its respective RefUniformPair.*/
         typedef std::map<std::string,RefUniformPair> UniformList;
 
         /** Set this StateSet to contain specified uniform and override flag.*/
-        void setUniform(Uniform* uniform, StateAttribute::OverrideValue value=StateAttribute::OFF);
+        void addUniform(Uniform* uniform, StateAttribute::OverrideValue value=StateAttribute::ON);
         
         /** remove uniform of specified name from StateSet.*/
         void removeUniform(const std::string& name);
 
-        /** remove attribute from StateSet.*/
-        void removeUniform(Uniform* attribute);
+        /** remove Uniform from StateSet.*/
+        void removeUniform(Uniform* uniform);
 
         /** Get Uniform for specified name.
-          * Returns NULL if no matching uniform is contained within StateSet.*/
+          * Returns NULL if no matching Uniform is contained within StateSet.*/
         Uniform* getUniform(const std::string& name);
 
         /** Get const Uniform for specified name.
-          * Returns NULL if no matching uniform is contained within StateSet.*/
+          * Returns NULL if no matching Uniform is contained within StateSet.*/
         const Uniform* getUniform(const std::string& name) const;
 
-        /** Get specified RefUniformPair for specified type.
-          * Returns NULL if no type is contained within StateSet.*/
+        /** Get specified RefUniformPair for specified Uniform name.
+          * Returns NULL if no Uniform is contained within StateSet.*/
         const RefUniformPair* getUniformPair(const std::string& name) const;
 
         /** set the list of all Uniforms contained in this StateSet.*/

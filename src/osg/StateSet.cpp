@@ -29,7 +29,6 @@
 
 #include <set>
 
-
 using namespace osg;
 
 // local class to help porting from OSG0.8.x to 0.9.x 
@@ -113,7 +112,22 @@ StateSet::StateSet(const StateSet& rhs,const CopyOp& copyop):Object(rhs,copyop)
             if (attr) lhs_attributeList[typemember]=RefAttributePair(attr,rap.second);
         }
     }
-    
+
+#if 0 //[ TODO
+    // copy uniform values
+    for(UniformList::const_iterator rhs_uitr = rhs._uniformList.begin();
+        rhs_uitr != rhs._uniformList.end();
+        ++rhs_uitr)
+    {
+	const std::string& name = rhs_uitr->first;
+	const RefUniformPair& rup = rhs_uitr->second;
+	Uniform* uni = copyop(rup.first.get());
+	if( uni ) _uniformList[name] = RefUniformPair(uni, rup.second);
+    }
+
+    Program* prog = copyop( rhs._program );
+    if( prog ) _program = prog;
+#endif //]
     
     _renderingHint = rhs._renderingHint;
 
@@ -410,6 +424,9 @@ void StateSet::clear()
     
     _textureModeList.clear();
     _textureAttributeList.clear();
+
+    _uniformList.clear();
+    _program = 0;
     
 }
 
@@ -518,6 +535,29 @@ void StateSet::merge(const StateSet& rhs)
                 // entry doesn't exist so insert it.
                 lhs_attributeList.insert(*rhs_aitr);
             }
+        }
+    }
+
+    // merge the uniforms of rhs into this, 
+    // this overrides rhs if OVERRIDE defined in this.
+    for(UniformList::const_iterator rhs_uitr = rhs._uniformList.begin();
+        rhs_uitr != rhs._uniformList.end();
+        ++rhs_uitr)
+    {
+        UniformList::iterator lhs_uitr = _uniformList.find(rhs_uitr->first);
+        if (lhs_uitr!=_uniformList.end())
+        {
+            if (!(lhs_uitr->second.second & StateAttribute::OVERRIDE)) 
+            {
+                // override isn't on in rhs, so overrite it with incomming
+                // value.
+                lhs_uitr->second = rhs_uitr->second;
+            }
+        }
+        else
+        {
+            // entry doesn't exist so insert it.
+            _uniformList.insert(*rhs_uitr);
         }
     }
 
@@ -662,7 +702,7 @@ const StateSet::RefAttributePair* StateSet::getAttributePair(StateAttribute::Typ
     return getAttributePair(_attributeList,type,member);
 }
 
-void StateSet::setUniform(Uniform* uniform, StateAttribute::OverrideValue value)
+void StateSet::addUniform(Uniform* uniform, StateAttribute::OverrideValue value)
 {
     if (uniform)
     {

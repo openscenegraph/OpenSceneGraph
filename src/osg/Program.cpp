@@ -1,5 +1,6 @@
 /* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2005 Robert Osfield 
  * Copyright (C) 2003-2005 3Dlabs Inc. Ltd.
+ * Copyright (C) 2004-2005 Nathan Cournia
  *
  * This application is open source and may be redistributed and/or modified   
  * freely and without restriction, both in commericial and non commericial
@@ -12,7 +13,7 @@
 */
 
 /* file:	src/osg/Program.cpp
- * author:	Mike Weiblen 2005-02-20
+ * author:	Mike Weiblen 2005-03-23
 */
 
 // NOTICE: This code is CLOSED during construction and/or renovation!
@@ -28,11 +29,11 @@
 #include <osg/Notify>
 #include <osg/State>
 #include <osg/Timer>
-#include <osg/FrameStamp>
 #include <osg/buffered_value>
 #include <osg/ref_ptr>
 #include <osg/Program>
 #include <osg/Shader>
+#include <osg/Uniform>
 #include <osg/GLExtensions>
 
 #include <OpenThreads/ScopedLock>
@@ -41,15 +42,7 @@
 using namespace osg;
 
 ///////////////////////////////////////////////////////////////////////////
-// static cache of GL objects flagged for deletion, which will actually
-// be deleted in the correct GL context.
-
-typedef std::list<GLuint> GlProgramHandleList;
-typedef std::map<unsigned int, GlProgramHandleList> DeletedGlProgramCache;
-
-static OpenThreads::Mutex    s_mutex_deletedGL2ObjectCache;
-static DeletedGlProgramCache s_deletedGlProgramCache;
-
+// Extension function pointers for OpenGL v2.0
 
 GL2Extensions::GL2Extensions()
 {
@@ -1855,19 +1848,28 @@ bool GL2Extensions::getShaderInfoLog( GLuint shader, std::string& result ) const
     return (strLen > 0);
 }
 
+///////////////////////////////////////////////////////////////////////////
+// static cache of glPrograms flagged for deletion, which will actually
+// be deleted in the correct GL context.
 
-void Program::deleteProgram(unsigned int contextID, GLuint program)
+typedef std::list<GLuint> GlProgramHandleList;
+typedef std::map<unsigned int, GlProgramHandleList> DeletedGlProgramCache;
+
+static OpenThreads::Mutex    s_mutex_deletedGlProgramCache;
+static DeletedGlProgramCache s_deletedGlProgramCache;
+
+void Program::deleteGlProgram(unsigned int contextID, GLuint program)
 {
     if( program )
     {
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedGL2ObjectCache);
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedGlProgramCache);
 
-        // add program to the cache for the appropriate context.
+        // add glProgram to the cache for the appropriate context.
         s_deletedGlProgramCache[contextID].push_back(program);
     }
 }
 
-void Program::flushDeletedGlslObjects(unsigned int contextID,double /*currentTime*/, double& availableTime)
+void Program::flushDeletedGlPrograms(unsigned int contextID,double /*currentTime*/, double& availableTime)
 {
     // if no time available don't try to flush objects.
     if (availableTime<=0.0) return;
@@ -1880,7 +1882,7 @@ void Program::flushDeletedGlslObjects(unsigned int contextID,double /*currentTim
     double elapsedTime = 0.0;
 
     {
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedGL2ObjectCache);
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedGlProgramCache);
 
         DeletedGlProgramCache::iterator citr = s_deletedGlProgramCache.find(contextID);
         if( citr != s_deletedGlProgramCache.end() )
@@ -1912,7 +1914,7 @@ Program::Program()
 
 
 Program::Program(const Program& rhs, const osg::CopyOp& copyop):
-    osg::Object(rhs, copyop)
+    osg::StateAttribute(rhs, copyop)
 {
     osg::notify(osg::FATAL) << "how got here?" << std::endl;
 }
@@ -1920,19 +1922,15 @@ Program::Program(const Program& rhs, const osg::CopyOp& copyop):
 
 Program::~Program()
 {
-    for( unsigned int cxt=0; cxt < _pcpoList.size(); ++cxt )
+    // inform any attached Shaders that we're going away
+    for( unsigned int i=0; i < _shaderList.size(); ++i )
     {
-        if( ! _pcpoList[cxt] ) continue;
-
-	PerContextProgObj* pcpo = _pcpoList[cxt].get();
-
-	deleteProgram( cxt, pcpo->getHandle() );
-	// TODO add shader objects to delete list.
-	_pcpoList[cxt] = 0;
+	_shaderList[i]->removeProgramRef( this );
     }
 }
 
-int Program::compare(const osg::Program& sa) const
+
+int Program::compare(const osg::StateAttribute& sa) const
 {
     // check the types are equal and then create the rhs variable
     // used by the COMPARE_StateAttribute_Paramter macro's below.
@@ -1941,8 +1939,8 @@ int Program::compare(const osg::Program& sa) const
     if( _shaderList.size() < rhs._shaderList.size() ) return -1;
     if( rhs._shaderList.size() < _shaderList.size() ) return 1;
 
-    if( getComment() < rhs.getComment() ) return -1;
-    if( rhs.getComment() < getComment() ) return 1;
+    if( getName() < rhs.getName() ) return -1;
+    if( rhs.getName() < getName() ) return 1;
 
     ShaderList::const_iterator litr=_shaderList.begin();
     ShaderList::const_iterator ritr=rhs._shaderList.begin();
@@ -1954,73 +1952,79 @@ int Program::compare(const osg::Program& sa) const
         if (result!=0) return result;
     }
 
+    // TODO should Program comparison depend on the values of
+    // its uniforms?  I'd assert not.
+
     return 0; // passed all the above comparison macro's, must be equal.
 }
 
 
 void Program::compileGLObjects( osg::State& state ) const
 {
-    if( _shaderList.empty() ) return;
+    if( isFixedFunction() ) return;
 
     const unsigned int contextID = state.getContextID();
-    const GL2Extensions* extensions = GL2Extensions::Get(contextID,true);
-    if( ! extensions->isGlslSupported() )
-    {
-	osg::notify(osg::WARN) << "GLSL not supported by OpenGL driver" << std::endl;
-        return;
-    }
 
-    PerContextProgObj* pcpo = getPCPO( contextID );
-    for( unsigned int i=0; i < _shaderList.size() ; ++i )
+    for( unsigned int i=0; i < _shaderList.size(); ++i )
     {
 	_shaderList[i]->compileShader( contextID );
     }
-    pcpo->linkProgram();
 
-    // TODO pcpo->releaseActiveUniformList();
-    // TODO pcpo->buildActiveUniformList;
-
-    // TODO regenerate pcpo->_activeAttribList;
+    getPCP( contextID )->linkProgram();
 }
 
 
 void Program::dirtyProgram()
 {
-    // mark all PCPOs as needing a relink
-    for( unsigned int cxt=0; cxt < _pcpoList.size(); ++cxt )
+    // mark our PCPs as needing relink
+    for( unsigned int cxt=0; cxt < _pcpList.size(); ++cxt )
     {
-        if( ! _pcpoList[cxt] ) continue;
-
-	PerContextProgObj* pcpo = _pcpoList[cxt].get();
-	pcpo->markAsDirty();
+        if( _pcpList[cxt].valid() ) _pcpList[cxt]->requestLink();
     }
 }
 
-
-void Program::dirtyShaders()
-{
-    // mark all attached Shaders as needing a rebuild
-    for( unsigned int i=0; i < _shaderList.size() ; ++i )
-    {
-	_shaderList[i]->dirtyShader();
-    }
-}
 
 void Program::releaseGLObjects(osg::State* state) const
 {
-    if (!state) const_cast<Program*>(this)->dirtyShaders();
-    else
-    {
-        unsigned int contextID = state->getContextID();
-        const_cast<Program*>(this)->_shaderList[contextID]->dirtyShader();
-    }
+    // TODO
 }
 
 
-void Program::addShader( Shader* shader )
+bool Program::addShader( Shader* shader )
 {
+    // Shader can only be added once to a Program
+    for( unsigned int i=0; i < _shaderList.size(); ++i )
+    {
+	if( shader == _shaderList[i].get() ) return false;
+    }
+
+    shader->addProgramRef( this );
     _shaderList.push_back( shader );
-    shader->addProgObjRef( this );
+    dirtyProgram();
+    return true;
+}
+
+
+bool Program::removeShader( Shader* shader )
+{
+    // Shader must exist to be removed.
+    for( unsigned int i=0; i < _shaderList.size(); ++i )
+    {
+	if( shader == _shaderList[i].get() )
+	{
+	    shader->removeProgramRef( this );
+	    _shaderList[i] = 0;
+	    dirtyProgram();
+	    return true;
+	}
+    }
+    return false;
+}
+
+
+void Program::bindAttribLocation( GLuint index, const char* name )
+{
+    // TODO add to binding list
     dirtyProgram();
 }
 
@@ -2031,44 +2035,55 @@ void Program::apply( osg::State& state ) const
     const GL2Extensions* extensions = GL2Extensions::Get(contextID,true);
     if( ! extensions->isGlslSupported() ) return;
 
-    // A Program object having no attached Shaders is a special
-    // case: it indicates that programmable shading is to be disabled,
-    // and thus use GL 1.x "fixed functionality" rendering.
-    if( _shaderList.empty() )
+    if( isFixedFunction() )
     {
 	extensions->glUseProgram( 0 );
 	return;
     }
 
-    PerContextProgObj* pcpo = getPCPO( contextID );
-    if( pcpo->isDirty() ) compileGLObjects( state );
-
-    if( pcpo->isDirty() )
+    PerContextProgram* pcp = getPCP( contextID );
+    if( pcp->needsLink() ) compileGLObjects( state );
+    if( pcp->isLinked() )
     {
-	// _still_ dirty, something went wrong
-	extensions->glUseProgram( 0 );
+	pcp->useProgram();
+	pcp->applyUniforms( state );
     }
     else
     {
-	pcpo->useProgram();
-	pcpo->applyUniforms( state );
+	// program not usable, fallback to fixed function.
+	extensions->glUseProgram( 0 );
     }
 }
 
 
-Program::PerContextProgObj* Program::getPCPO(unsigned int contextID) const
+Program::PerContextProgram* Program::getPCP(unsigned int contextID) const
 {
-    if( ! _pcpoList[contextID].valid() )
+    if( ! _pcpList[contextID].valid() )
     {
-	_pcpoList[contextID] = new PerContextProgObj( this, contextID );
+	_pcpList[contextID] = new PerContextProgram( this, contextID );
 
-	// attach all PCSOs to this new PCPO
-	for( unsigned int i=0; i < _shaderList.size() ; ++i )
+	// attach all PCSs to this new PCP
+	for( unsigned int i=0; i < _shaderList.size(); ++i )
 	{
-	    _shaderList[i]->attachShader( contextID, _pcpoList[contextID]->getHandle() );
+	    _shaderList[i]->attachShader( contextID, _pcpList[contextID]->getHandle() );
 	}
     }
-    return _pcpoList[contextID].get();
+    return _pcpList[contextID].get();
+}
+
+
+bool Program::isFixedFunction() const
+{
+    // A Program object having no attached Shaders is a special case:
+    // it indicates that programmable shading is to be disabled,
+    // and thus use GL 1.x "fixed functionality" rendering.
+    return _shaderList.empty();
+}
+
+
+void Program::getGlProgramInfoLog(unsigned int contextID, std::string& log) const
+{
+    getPCP( contextID )->getInfoLog( log );
 }
 
 
@@ -2083,67 +2098,69 @@ Program::ActiveUniform::ActiveUniform( const GLchar* name, GLenum type ) :
 
 
 ///////////////////////////////////////////////////////////////////////////
-// osg::Program::PerContextProgObj
-// PCPO is an OSG abstraction of the per-context glProgram
+// osg::Program::PerContextProgram
+// PCP is an OSG abstraction of the per-context glProgram
 ///////////////////////////////////////////////////////////////////////////
 
-Program::PerContextProgObj::PerContextProgObj(const Program* program, unsigned int contextID ) :
+Program::PerContextProgram::PerContextProgram(const Program* program, unsigned int contextID ) :
 	osg::Referenced(),
 	_contextID( contextID )
 {
     _program = program;
     _extensions = GL2Extensions::Get( _contextID, true );
     _glProgramHandle = _extensions->glCreateProgram();
-    markAsDirty();
+    requestLink();
 }
 
-Program::PerContextProgObj::PerContextProgObj(const PerContextProgObj& rhs) :
-	osg::Referenced(),
-	_contextID( rhs._contextID )
+Program::PerContextProgram::~PerContextProgram()
 {
-    _program = rhs._program;
-    _extensions = rhs._extensions;
-    _glProgramHandle = rhs._glProgramHandle ;
-    _dirty = rhs._dirty;
-}
-
-Program::PerContextProgObj::~PerContextProgObj()
-{
+    Program::deleteGlProgram( _contextID, _glProgramHandle );
 }
 
 
-void Program::PerContextProgObj::markAsDirty()
+void Program::PerContextProgram::requestLink()
 {
-    // TODO releaseActiveUniformList();
-    _dirty = true;
+    _needsLink = true;
+    _isLinked = false;
 }
 
 
-void Program::PerContextProgObj::linkProgram()
+void Program::PerContextProgram::linkProgram()
 {
+    if( ! _needsLink ) return;
+    _needsLink = false;
+
+    // TODO for( each itr in binding list )
+    // {
+    //     _extensions->glBindAttribLocation( _glProgramHandle, index, name );
+    // }
+
     GLint linked;
-
     _extensions->glLinkProgram( _glProgramHandle );
     _extensions->glGetProgramiv( _glProgramHandle, GL_LINK_STATUS, &linked );
-    _dirty = (linked == 0);
 
-    if( _dirty )
+    _isLinked = (linked == GL_TRUE);
+    if( ! _isLinked )
     {
-	// _still_ dirty, something went wrong
+	// link failed
 	std::string infoLog;
-	_extensions->getProgramInfoLog( _glProgramHandle, infoLog );
+	getInfoLog( infoLog );
 	osg::notify(osg::WARN) << "glLinkProgram FAILED:\n" << infoLog << std::endl;
     }
 }
 
+void Program::PerContextProgram::getInfoLog( std::string& infoLog ) const
+{
+    _extensions->getProgramInfoLog( _glProgramHandle, infoLog );
+}
 
-void Program::PerContextProgObj::useProgram() const
+void Program::PerContextProgram::useProgram() const
 {
     _extensions->glUseProgram( _glProgramHandle  );
 }
 
 
-void Program::PerContextProgObj::applyUniforms( osg::State& /*state*/ ) const
+void Program::PerContextProgram::applyUniforms( osg::State& /*state*/ ) const
 {
     bool uniformDoesNeedSetting = true;
 
@@ -2161,3 +2178,5 @@ void Program::PerContextProgObj::applyUniforms( osg::State& /*state*/ ) const
 	// TODO set the uniform value on the currently active glProgram.
     }
 }
+
+/*EOF*/

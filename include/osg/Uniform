@@ -11,7 +11,7 @@
 */
 
 /* file:	include/osg/Uniform
- * author:	Mike Weiblen 2005-02-20
+ * author:	Mike Weiblen 2005-03-23
 */
 
 // NOTICE: This code is CLOSED during construction and/or renovation!
@@ -190,13 +190,13 @@ class SG_EXPORT Uniform : public Object
 		//TODO void set( const osg::Matrix3& m3 );
 		void set( const osg::Matrix& m4 );
 		void set( int i );
-		//TODO void set( int i0, int i1 );
-		//TODO void set( int i0, int i1, int i2 );
-		//TODO void set( int i0, int i1, int i2, int i3 );
-		//TODO void set( bool b );
-		//TODO void set( bool b0, bool b1 );
-		//TODO void set( bool b0, bool b1, bool b2 );
-		//TODO void set( bool b0, bool b1, bool b2, bool b3 );
+		void set( int i0, int i1 );
+		void set( int i0, int i1, int i2 );
+		void set( int i0, int i1, int i2, int i3 );
+		void set( bool b );
+		void set( bool b0, bool b1 );
+		void set( bool b0, bool b1, bool b2 );
+		void set( bool b0, bool b1, bool b2, bool b3 );
 
 
 	    protected:
@@ -231,21 +231,21 @@ class SG_EXPORT Uniform : public Object
 	Uniform( const char* name, Value::Type type );
 
 	/** convenient construction w/ assignment */
-	Uniform( const char* name, float f );
+	explicit Uniform( const char* name, float f );
+	explicit Uniform( const char* name, int i );
+	explicit Uniform( const char* name, bool b );
 	Uniform( const char* name, const osg::Vec2& v2 );
 	Uniform( const char* name, const osg::Vec3& v3 );
 	Uniform( const char* name, const osg::Vec4& v4 );
 	//TODO Uniform( const char* name, const osg::Matrix2& m2 );
 	//TODO Uniform( const char* name, const osg::Matrix3& m3 );
 	Uniform( const char* name, const osg::Matrix& m4 );
-	Uniform( const char* name, int i );
-	//TODO Uniform( const char* name, int i0, int i1 );
-	//TODO Uniform( const char* name, int i0, int i1, int i2 );
-	//TODO Uniform( const char* name, int i0, int i1, int i2, int i3 );
-	//TODO Uniform( const char* name, bool b );
-	//TODO Uniform( const char* name, bool b0, bool b1 );
-	//TODO Uniform( const char* name, bool b0, bool b1, bool b2 );
-	//TODO Uniform( const char* name, bool b0, bool b1, bool b2, bool b3 );
+	Uniform( const char* name, int i0, int i1 );
+	Uniform( const char* name, int i0, int i1, int i2 );
+	Uniform( const char* name, int i0, int i1, int i2, int i3 );
+	Uniform( const char* name, bool b0, bool b1 );
+	Uniform( const char* name, bool b0, bool b1, bool b2 );
+	Uniform( const char* name, bool b0, bool b1, bool b2, bool b3 );
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         Uniform(const Uniform& gu,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
@@ -268,20 +268,20 @@ class SG_EXPORT Uniform : public Object
 
 	/** assignment */
 	bool set( float f );
+	bool set( int i );
+	bool set( bool b );
 	bool set( const osg::Vec2& v2 );
 	bool set( const osg::Vec3& v3 );
 	bool set( const osg::Vec4& v4 );
 	//TODO bool set( const osg::Matrix2& m2 );
 	//TODO bool set( const osg::Matrix3& m3 );
 	bool set( const osg::Matrix& m4 );
-	bool set( int i );
-	//TODO bool set( int i0, int i1 );
-	//TODO bool set( int i0, int i1, int i2 );
-	//TODO bool set( int i0, int i1, int i2, int i3 );
-	//TODO bool set( bool b );
-	//TODO bool set( bool b0, bool b1 );
-	//TODO bool set( bool b0, bool b1, bool b2 );
-	//TODO bool set( bool b0, bool b1, bool b2, bool b3 );
+	bool set( int i0, int i1 );
+	bool set( int i0, int i1, int i2 );
+	bool set( int i0, int i1, int i2, int i3 );
+	bool set( bool b0, bool b1 );
+	bool set( bool b0, bool b1, bool b2 );
+	bool set( bool b0, bool b1, bool b2, bool b3 );
 
     protected:
         virtual ~Uniform() {}

@@ -27,7 +27,7 @@ RegisterDotOsgWrapperProxy g_BlendFuncProxy
 RegisterDotOsgWrapperProxy g_TransparencyProxy
 (
     osgNew osg::BlendFunc,
-    "Transparancy",
+    "Transparency",
     "Object StateAttribute Transparency",
     &BlendFunc_readLocalData,
     &BlendFunc_writeLocalData

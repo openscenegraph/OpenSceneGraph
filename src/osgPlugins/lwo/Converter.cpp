@@ -161,6 +161,9 @@ void Converter::build_scene_graph(Object &obj)
 			// create normal array
 			osg::ref_ptr<osg::Vec3Array> normals = j->normals()->asVec3Array(j->points()->size());
 
+			// create first geode
+			osg::ref_ptr<osg::Geode> geode = new osg::Geode;
+
 			for (GeometryBin_map::iterator i=bins.begin(); i!=bins.end(); ++i) {
 				const Surface *surface = i->first;
 				GeometryBin &bin = i->second;
@@ -180,17 +183,18 @@ void Converter::build_scene_graph(Object &obj)
 				
 				osg::notify(osg::DEBUG_INFO) << "DEBUG INFO: lwosg::Converter: \tcreating geometry for surface '" << (surface ? surface->get_name() : std::string("anonymous")) << "'\n";
 
-				osg::ref_ptr<osg::Geode> geode = new osg::Geode;
-
 				osg::ref_ptr<osg::Geometry> geo = new osg::Geometry;
-				geode->addDrawable(geo.get());
-
 				geo->setVertexArray(new_points.get());
 				geo->setNormalArray(new_normals.get());
 				geo->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);				
 
+				bool group_used = false;
+
 				if (surface) {
-					geode->setName(surface->get_name());
+					if (!options_.combine_geodes)
+					{
+						geode->setName(surface->get_name());
+					}
 
 					// apply surface parameters and texture/color maps according to remapping map
 					osg::ref_ptr<VertexMap_map> rm_texture_maps = j->texture_maps()->remap(remapping);
@@ -204,14 +208,29 @@ void Converter::build_scene_graph(Object &obj)
 						options_.use_osgfx,
 						options_.force_arb_compression,
 						db_options_.get());
-					if (sgrp) {
-						sgrp->addChild(geode.get());
+					if (sgrp) 
+					{
+						group_used = true;
+						osg::ref_ptr<osg::Geode> grp_geode = new osg::Geode;
+						grp_geode->setName(surface->get_name());
+						grp_geode->addDrawable(geo.get());
+						sgrp->addChild(grp_geode.get());
 						layer_group->addChild(sgrp);
-					} else {
+					}
+				}
+
+				if (!group_used)
+				{
+					geode->addDrawable(geo.get());
+					if (geode->getNumParents() == 0)
+					{
 						layer_group->addChild(geode.get());
 					}
-				} else {
-					layer_group->addChild(geode.get());
+				}
+
+				if (!options_.combine_geodes)
+				{
+					geode = new osg::Geode;
 				}
 
 				// add primitive sets to geometry

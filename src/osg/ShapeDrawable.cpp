@@ -906,7 +906,7 @@ void ComputeBoundShapeVisitor::apply(const HeightField& field)
     if (field.zeroRotation())
     {
 	_bb.expandBy(field.getOrigin()+osg::Vec3(0.0f,0.0f,zMin));
-	_bb.expandBy(field.getOrigin()+osg::Vec3(field.getXInterval()*field.getNumColumns(),field.getYInterval()*field.getNumRows(),zMax));
+	_bb.expandBy(field.getOrigin()+osg::Vec3(field.getXInterval()*(field.getNumColumns()-1),field.getYInterval()*(field.getNumRows()-1),zMax));
     }
     else
     {

@@ -17,8 +17,7 @@
 #include <osg/Notify>
 #include <osg/Notify>
 
-#include <osg/CullingSet>
-#include <osg/fast_back_stack>
+#include <osg/CullStack>
 
 #include <osgUtil/RenderGraph>
 #include <osgUtil/RenderStage>
@@ -38,26 +37,9 @@ namespace osgUtil {
  * transparent bin in rendered in order from the furthest osg::Drawable
  * from the eye to the one nearest the eye. 
  */
-class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
+class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStack
 {
     public:
-
-        enum 
-        {
-            NO_CULLING                  = 0x00,
-            FRUSTUM_LEFT_CULLING        = 0x01,
-            FRUSTUM_RIGHT_CULLING       = 0x02,
-            FRUSTUM_BOTTOM_CULLING      = 0x04,
-            FRUSTUM_TOP_CULLING         = 0x08,
-            FRUSTUM_NEAR_CULLING        = 0x10,
-            FRUSTUM_FAR_CULLING         = 0x20,
-            VIEW_FRUSTUM_CULLING        = 0x3F,
-            SMALL_FEATURE_CULLING       = 0x40,
-            ENABLE_ALL_CULLING          = 0x7F
-        };
-        
-        typedef unsigned int CullingMode;
-
 
         CullVisitor();
         virtual ~CullVisitor();
@@ -136,25 +118,6 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
         };
 
         void setTransparencySortMode(TransparencySortMode tsm) { _tsm = tsm; }
-        
-        /** Sets the current CullingMode.*/
-        void setCullingMode(CullingMode mode);
-
-        /** Returns the current CullingMode.*/
-        CullingMode getCullingMode() const;
-        
-        void setSmallFeatureCullingPixelSize(float s) { _smallFeatureCullingPixelSize=s; }
-        float getSmallFeatureCullingPixelSize() const { return _smallFeatureCullingPixelSize; }
-
-        void pushViewport(osg::Viewport* viewport);
-        void popViewport();
-
-        void pushProjectionMatrix(osg::Matrix* matrix);
-        void popProjectionMatrix();
-
-        void pushModelViewMatrix(osg::Matrix* matrix);
-        void popModelViewMatrix();
-
         /** Push state set on the current state group.
           * If the state exists in a child state group of the current
           * state group then move the current state group to that child.
@@ -216,46 +179,10 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
             return _currentRenderBin;
         }
 
-        inline osg::Viewport* getViewport();
-        inline osg::Matrix& getModelViewMatrix();
-        inline osg::Matrix& getProjectionMatrix();
-        inline const osg::Matrix getWindowMatrix();
-        inline const osg::Matrix& getMVPW();
-
-        inline const osg::Vec3& getEyeLocal() const
-        {
-            return _eyePointStack.back();
-        }
-
         inline const float getCalculatedNearPlane() const { return _computed_znear; }
         
         inline const float getCalculatedFarPlane() const { return _computed_zfar; }
 
-        inline float pixelSize(const osg::Vec3& v, float const radius)
-        {
-            return _modelviewCullingStack.back()->pixelSize(v,radius);
-        }
-
-        inline bool isCulled(const osg::Node& node)
-        {
-            return node.isCullingActive() && _modelviewCullingStack.back()->isCulled(node.getBound());
-        }
-
-        inline const bool isCulled(const osg::BoundingBox& bb)
-        {
-            return bb.isValid() && _modelviewCullingStack.back()->isCulled(bb);
-        }
-        
-        inline void pushCurrentMask()
-        {
-            _modelviewCullingStack.back()->pushCurrentMask();
-        }
-        
-        inline void popCurrentMask()
-        {
-            _modelviewCullingStack.back()->popCurrentMask();
-        }
-        
 	void updateCalculatedNearFar(const osg::Matrix& matrix,const osg::Drawable& drawable) { updateCalculatedNearFar(matrix,drawable.getBound()); }
 	void updateCalculatedNearFar(const osg::Matrix& matrix,const osg::BoundingBox& bb);
     	void updateCalculatedNearFar(const osg::Vec3& pos);
@@ -269,10 +196,13 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
         /** Add an attribute which is positioned related to the modelview matrix.*/
         inline void addPositionedAttribute(osg::Matrix* matrix,const osg::StateAttribute* attr);
 
+        /** reimplement CullStack's popProjectionMatrix() adding clamping of the projection matrix to the computed near and far.*/
+        void popProjectionMatrix();
+
     protected:
 
         /** prevent unwanted copy construction.*/
-        CullVisitor(const CullVisitor&):osg::NodeVisitor() {}
+        CullVisitor(const CullVisitor&):osg::NodeVisitor(),osg::CullStack() {}
 
         /** prevent unwanted copy operator.*/
         CullVisitor& operator = (const CullVisitor&) { return *this; }
@@ -291,60 +221,10 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
             else acceptNode->accept(*this);
         }
 
-        
-        inline const osg::Vec3 getUpLocal() const
-        {
-            const osg::Matrix& matrix = *_modelviewStack.back();
-            return osg::Vec3(matrix(0,1),matrix(1,1),matrix(2,1));
-        }
-
-        inline const osg::Vec3 getLookVectorLocal() const
-        {
-            const osg::Matrix& matrix = *_modelviewStack.back();
-            return osg::Vec3(-matrix(0,2),-matrix(1,2),-matrix(2,2));
-        }
-
-
-	
-
 
         /** create an impostor sprite by setting up a pre-rendering stage
           * to generate the impostor texture. */
         osg::ImpostorSprite* createImpostorSprite(osg::Impostor& node);
-
-
-
-        void pushCullingSet();
-        void popCullingSet();
-
-        
-        typedef osg::fast_back_stack<osg::Polytope>           PolytopeStack;
-        typedef osg::fast_back_stack< osg::ref_ptr<osg::Matrix> >   MatrixStack;
-
-        MatrixStack                                                 _projectionStack;
-        MatrixStack                                                 _PW_Stack;
-
-        MatrixStack                                                 _modelviewStack;
-        MatrixStack                                                 _MVPW_Stack;
-                       
-        typedef osg::fast_back_stack<osg::ref_ptr<osg::Viewport> >  ViewportStack;
-        ViewportStack                                               _viewportStack;
-        
-        typedef osg::fast_back_stack<osg::Vec3>                     EyePointStack;
-        EyePointStack                                               _eyePointStack;
-        
-        CullingMode                                                 _cullingMode;
-
-        typedef osg::fast_back_stack<osg::ref_ptr<osg::CullingSet> > CullingStack;
-        CullingStack                                                _clipspaceCullingStack;
-        CullingStack                                                _projectionCullingStack;
-        CullingStack                                                _modelviewCullingStack;
-
-        
-        unsigned int                                                _bbCornerNear;
-        unsigned int                                                _bbCornerFar;
-
-        osg::Matrix                                                 _identity;
 
         osg::ref_ptr<RenderGraph>                                   _rootRenderGraph;
         RenderGraph*                                                _currentRenderGraph;
@@ -354,8 +234,6 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
 
 
         float                                                       _LODBias;
-        float                                                       _smallFeatureCullingPixelSize;
-
 
         ComputeNearFarMode  _computeNearFar;
         float               _computed_znear;
@@ -370,11 +248,6 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
         float _impostorPixelErrorThreshold;
         int _numFramesToKeepImpostorSprites;
 	
-	typedef std::vector< osg::ref_ptr<osg::Matrix> > MatrixList;
-	MatrixList _reuseMatrixList;
-	unsigned int _currentReuseMatrixIndex;
-	
-	inline osg::Matrix* createOrReuseMatrix(const osg::Matrix& value);
         
 	typedef std::vector< osg::ref_ptr<RenderLeaf> > RenderLeafList;
 	RenderLeafList _reuseRenderLeafList;
@@ -385,75 +258,6 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
         osg::ref_ptr<osg::ImpostorSpriteManager> _impostorSpriteManager;
 	
 };
-
-
-
-inline osg::Viewport* CullVisitor::getViewport()
-{
-    if (!_viewportStack.empty())
-    {
-        return _viewportStack.back().get();
-    }
-    else
-    {
-        return 0L;
-    }
-}
-
-inline osg::Matrix& CullVisitor::getModelViewMatrix()
-{
-    if (!_modelviewStack.empty())
-    {
-        return *_modelviewStack.back();
-    }
-    else
-    {
-        return _identity;
-    }
-}
-
-inline osg::Matrix& CullVisitor::getProjectionMatrix()
-{
-    if (!_projectionStack.empty())
-    {
-        return *_projectionStack.back();
-    }
-    else
-    {
-        return _identity;
-    }
-}
-
-inline const osg::Matrix CullVisitor::getWindowMatrix()
-{
-    if (!_viewportStack.empty())
-    {
-        osg::Viewport* viewport = _viewportStack.back().get();
-        return viewport->computeWindowMatrix();
-    }
-    else
-    {
-        return _identity;
-    }
-}
-
-inline const osg::Matrix& CullVisitor::getMVPW()
-{
-    if (!_MVPW_Stack.empty())
-    {
-        if (!_MVPW_Stack.back())
-        {
-            _MVPW_Stack.back() = createOrReuseMatrix(getModelViewMatrix());
-            (*_MVPW_Stack.back()) *= getProjectionMatrix();
-            (*_MVPW_Stack.back()) *= getWindowMatrix();
-        }
-        return *_MVPW_Stack.back();
-    }
-    else
-    {
-        return _identity;
-    }
-}
 
 inline void CullVisitor::addDrawable(osg::Drawable* drawable,osg::Matrix* matrix)
 {
@@ -488,32 +292,6 @@ inline void CullVisitor::addPositionedAttribute(osg::Matrix* matrix,const osg::S
     _currentRenderBin->_stage->addPositionedAttribute(matrix,attr);
 }
 
-inline osg::Matrix* CullVisitor::createOrReuseMatrix(const osg::Matrix& value)
-{
-    // skip of any already reused matrix.
-    while (_currentReuseMatrixIndex<_reuseMatrixList.size() && 
-           _reuseMatrixList[_currentReuseMatrixIndex]->referenceCount()>1)
-    {
-        osg::notify(osg::NOTICE)<<"Warning:createOrReuseMatrix() skipping multiply refrenced entry."<< std::endl;
-        ++_currentReuseMatrixIndex;
-    }
-
-    // if still within list, element must be singularly referenced
-    // there return it to be reused.
-    if (_currentReuseMatrixIndex<_reuseMatrixList.size())
-    {
-        osg::Matrix* matrix = _reuseMatrixList[_currentReuseMatrixIndex++].get();
-        matrix->set(value);
-        return matrix;
-    }
-
-    // otherwise need to create new matrix.
-    osg::Matrix* matrix = new osg::Matrix(value);
-    _reuseMatrixList.push_back(matrix);
-    ++_currentReuseMatrixIndex;
-    return matrix;
-}
-
 inline RenderLeaf* CullVisitor::createOrReuseRenderLeaf(osg::Drawable* drawable,osg::Matrix* projection,osg::Matrix* matrix, float depth)
 {
     // skip of any already reused renderleaf.
@@ -539,7 +317,6 @@ inline RenderLeaf* CullVisitor::createOrReuseRenderLeaf(osg::Drawable* drawable,
     ++_currentReuseRenderLeafIndex;
     return renderleaf;
 }
-
 
 
 }

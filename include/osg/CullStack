@@ -1,0 +1,260 @@
+//C++ header - Open Scene Graph - Copyright (C) 1998-2001 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+
+#ifndef OSG_CULLSTACK
+#define OSG_CULLSTACK 1
+
+#include <osg/CullingSet>
+#include <osg/Viewport>
+#include <osg/fast_back_stack>
+#include <osg/Notify>
+
+namespace osg {
+
+/** A CullStack class which accumulates the current project, modelview matrices
+and the CullingSet. */
+class SG_EXPORT CullStack
+{
+
+    public:
+    
+    
+        CullStack();
+        
+        ~CullStack();
+    
+        typedef std::vector<ShadowVolumeOccluder>   OccluderList;
+
+        enum CullingModeValues
+        {
+            NO_CULLING                  = 0x00,
+            VIEW_FRUSTUM_CULLING        = 0x1,
+            SMALL_FEATURE_CULLING       = 0x2,
+            SHADOW_OCCLUSION_CULLING    = 0x4,
+            ENABLE_ALL_CULLING          = 0xffffffff
+        };
+        
+        typedef unsigned int CullingMode;
+        
+        /** Sets the current CullingMode.*/
+        void setCullingMode(CullingMode mode) { _cullingMode = mode; }
+        
+        /** Returns the current CullingMode.*/
+        CullingMode getCullingMode() const { return _cullingMode; }
+
+        void reset();
+
+        void pushViewport(osg::Viewport* viewport);
+        void popViewport();
+
+        void pushProjectionMatrix(osg::Matrix* matrix);
+        void popProjectionMatrix();
+
+        void pushModelViewMatrix(osg::Matrix* matrix);
+        void popModelViewMatrix();
+
+        void setSmallFeatureCullingPixelSize(float value) { _smallFeatureCullingPixelSize=value; }
+        float& getSmallFeatureCullingPixelSize() { return _smallFeatureCullingPixelSize; }
+        float getSmallFeatureCullingPixelSize() const { return _smallFeatureCullingPixelSize; }
+    
+    
+        /** Compute the pixel of an object at position v, with specified radius.*/
+        float pixelSize(const Vec3& v,float radius) const
+        {
+            return _modelviewCullingStack.back()->pixelSize(v,radius);
+        }
+        
+        /** Compute the pixel of an bounding sphere.*/
+        float pixelSize(const BoundingSphere& bs) const
+        {
+            return pixelSize(bs.center(),bs.radius());
+        }
+
+        inline void disableOccluder(NodePath& nodePath)
+        {
+            _modelviewCullingStack.back()->disableOccluder(nodePath);
+        }
+
+        inline bool isCulled(const BoundingBox& bb)
+        {
+            return bb.isValid() && _modelviewCullingStack.back()->isCulled(bb);
+        }
+        
+        inline bool isCulled(const BoundingSphere& bs)
+        {
+            return _modelviewCullingStack.back()->isCulled(bs);
+        }
+        
+        inline bool isCulled(const osg::Node& node)
+        {
+            return node.isCullingActive() && _modelviewCullingStack.back()->isCulled(node.getBound());
+        }
+
+        inline void pushCurrentMask()
+        {
+            _modelviewCullingStack.back()->pushCurrentMask();
+        }
+        
+        inline void popCurrentMask()
+        {
+            _modelviewCullingStack.back()->popCurrentMask();
+        }
+        
+        
+        inline osg::Viewport* getViewport();
+        inline osg::Matrix& getModelViewMatrix();
+        inline osg::Matrix& getProjectionMatrix();
+        inline const osg::Matrix getWindowMatrix();
+        inline const osg::Matrix& getMVPW();
+
+        inline const osg::Vec3& getEyeLocal() const { return _eyePointStack.back(); }
+
+        inline const osg::Vec3 getUpLocal() const
+        {
+            const osg::Matrix& matrix = *_modelviewStack.back();
+            return osg::Vec3(matrix(0,1),matrix(1,1),matrix(2,1));
+        }
+
+        inline const osg::Vec3 getLookVectorLocal() const
+        {
+            const osg::Matrix& matrix = *_modelviewStack.back();
+            return osg::Vec3(-matrix(0,2),-matrix(1,2),-matrix(2,2));
+        }
+
+    protected:
+    
+        void pushCullingSet();
+        void popCullingSet();
+
+        CullingMode                                                 _cullingMode;
+        float                                                       _smallFeatureCullingPixelSize;
+
+        typedef fast_back_stack< ref_ptr<Matrix> >                  MatrixStack;
+
+        MatrixStack                                                 _projectionStack;
+
+        MatrixStack                                                 _modelviewStack;
+        MatrixStack                                                 _MVPW_Stack;
+
+        typedef fast_back_stack<ref_ptr<Viewport> >                 ViewportStack;
+        ViewportStack                                               _viewportStack;
+        
+        typedef fast_back_stack<Vec3>                               EyePointStack;
+        EyePointStack                                               _eyePointStack;
+
+        typedef fast_back_stack<ref_ptr<CullingSet> >               CullingStack;
+        CullingStack                                                _clipspaceCullingStack;
+        CullingStack                                                _projectionCullingStack;
+        CullingStack                                                _modelviewCullingStack;
+
+        unsigned int                                                _bbCornerNear;
+        unsigned int                                                _bbCornerFar;
+
+        osg::Matrix                                                 _identity;
+        
+        typedef std::vector< osg::ref_ptr<osg::Matrix> > MatrixList;
+	MatrixList _reuseMatrixList;
+	unsigned int _currentReuseMatrixIndex;
+	
+	inline osg::Matrix* createOrReuseMatrix(const osg::Matrix& value);
+
+        
+};
+
+inline osg::Viewport* CullStack::getViewport()
+{
+    if (!_viewportStack.empty())
+    {
+        return _viewportStack.back().get();
+    }
+    else
+    {
+        return 0L;
+    }
+}
+
+inline osg::Matrix& CullStack::getModelViewMatrix()
+{
+    if (!_modelviewStack.empty())
+    {
+        return *_modelviewStack.back();
+    }
+    else
+    {
+        return _identity;
+    }
+}
+
+inline osg::Matrix& CullStack::getProjectionMatrix()
+{
+    if (!_projectionStack.empty())
+    {
+        return *_projectionStack.back();
+    }
+    else
+    {
+        return _identity;
+    }
+}
+
+inline const osg::Matrix CullStack::getWindowMatrix()
+{
+    if (!_viewportStack.empty())
+    {
+        osg::Viewport* viewport = _viewportStack.back().get();
+        return viewport->computeWindowMatrix();
+    }
+    else
+    {
+        return _identity;
+    }
+}
+
+inline const osg::Matrix& CullStack::getMVPW()
+{
+    if (!_MVPW_Stack.empty())
+    {
+        if (!_MVPW_Stack.back())
+        {
+            _MVPW_Stack.back() = createOrReuseMatrix(getModelViewMatrix());
+            (*_MVPW_Stack.back()) *= getProjectionMatrix();
+            (*_MVPW_Stack.back()) *= getWindowMatrix();
+        }
+        return *_MVPW_Stack.back();
+    }
+    else
+    {
+        return _identity;
+    }
+}
+
+inline Matrix* CullStack::createOrReuseMatrix(const osg::Matrix& value)
+{
+    // skip of any already reused matrix.
+    while (_currentReuseMatrixIndex<_reuseMatrixList.size() && 
+           _reuseMatrixList[_currentReuseMatrixIndex]->referenceCount()>1)
+    {
+        notify(osg::NOTICE)<<"Warning:createOrReuseMatrix() skipping multiply refrenced entry."<< std::endl;
+        ++_currentReuseMatrixIndex;
+    }
+
+    // if still within list, element must be singularly referenced
+    // there return it to be reused.
+    if (_currentReuseMatrixIndex<_reuseMatrixList.size())
+    {
+        Matrix* matrix = _reuseMatrixList[_currentReuseMatrixIndex++].get();
+        matrix->set(value);
+        return matrix;
+    }
+
+    // otherwise need to create new matrix.
+    osg::Matrix* matrix = osgNew Matrix(value);
+    _reuseMatrixList.push_back(matrix);
+    ++_currentReuseMatrixIndex;
+    return matrix;
+}
+
+}	// end of namespace
+
+#endif 

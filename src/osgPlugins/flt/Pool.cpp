@@ -109,12 +109,25 @@ osg::StateSet* TexturePool::getTexture(int nIndex)
         return NULL;
 }
 
+std::string* TexturePool::getTextureName(int nIndex)
+{
+    TextureNameMap::iterator fitr = _textureNameMap.find(nIndex);
+    if (fitr != _textureNameMap.end())
+        return (*fitr).second;
+    else
+        return NULL;
+}
+
 
 void TexturePool::addTexture(int nIndex, osg::StateSet* stateset)
 {
     _textureMap[nIndex] = stateset;
 }
 
+void TexturePool::addTextureName(int nIndex, std::string* name)
+{
+    _textureNameMap[nIndex] = name;
+}
 
 ////////////////////////////////////////////////////////////////////
 

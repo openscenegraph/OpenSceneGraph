@@ -1,0 +1,60 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGTERRAIN_Renderer
+#define OSGTERRAIN_Renderer 1
+
+#include <osg/Object>
+
+#include <osgUtil/UpdateVisitor>
+#include <osgUtil/CullVisitor>
+
+#include <osgTerrain/Export>
+
+namespace osgTerrain {
+
+class Terrain;
+
+class OSGTERRAIN_EXPORT Renderer : public osg::Object
+{
+    public:
+
+        Renderer();
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        Renderer(const Renderer&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+        
+        Terrain* getTerrain() { return _terrain; }
+        const Terrain* getTerrain() const { return _terrain; }
+
+        virtual void initialize() = 0;
+
+        virtual void terrainHasBeenModified() = 0;
+
+        virtual void update(osgUtil::UpdateVisitor* nv) = 0;
+
+        virtual void cull(osgUtil::CullVisitor* nv) = 0;
+
+    protected:
+
+        virtual ~Renderer();
+        
+        friend class osgTerrain::Terrain;
+
+        Terrain* _terrain;
+
+};
+
+}
+
+#endif

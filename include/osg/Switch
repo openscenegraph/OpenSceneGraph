@@ -45,6 +45,10 @@ class SG_EXPORT Switch : public Group
 
         virtual bool addChild( Node *child, bool value );
 
+        virtual bool insertChild( unsigned int index, Node *child );
+
+        virtual bool insertChild( unsigned int index, Node *child, bool value );
+
         virtual bool removeChild( Node *child );
 
         void setValue(unsigned int pos,bool value);

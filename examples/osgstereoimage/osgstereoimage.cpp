@@ -23,8 +23,6 @@
 #include <osg/TexMat>
 #include <osg/Texture2D>
 
-
-
 typedef std::vector<std::string> FileList;
 
 class SlideEventHandler : public osgGA::GUIEventHandler, public osg::NodeCallback
@@ -482,7 +480,7 @@ int main( int argc, char **argv )
         Producer::Camera* cam = viewer.getCameraConfig()->getCamera(i);
         Producer::RenderSurface* rs = cam->getRenderSurface();
         rs->useCursor(false);
-        fovy = cam->getLensVerticalFov();
+        fovy = osg::DegreesToRadians(cam->getLensVerticalFov());
     }
 
     float radius = 1.0f;

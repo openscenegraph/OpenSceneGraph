@@ -1,3 +1,28 @@
+/*
+ * Lightwave Object version 2 loader for Open Scene Graph
+ * Version 2 introduced in Lightwave v6.0
+ *
+ * Copyright (C) 2002 Pavel Moloshtan <pasha@moloshtan.com>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+ *
+ * The Open Scene Graph (OSG) is a cross platform C++/OpenGL library for 
+ * real-time rendering of large 3D photo-realistic models. 
+ * The OSG homepage is http://www.openscenegraph.org/
+ */
+
 #ifndef LWO2LAYER_H
 #define LWO2LAYER_H 1
 
@@ -9,7 +34,8 @@
 #include <osg/Vec2>
 #include <osg/Vec3>
 #include <osg/Notify>
-#include <osg/Geometry>
+#include <osg/Geode>
+#include <osg/StateSet>
 
 #include <osgUtil/SmoothingVisitor>
 
@@ -27,12 +53,13 @@ struct Lwo2Surface
 {
   short image_index;
   string name;
+  Vec3 color;
+  StateSet* state_set;
 };
 
 struct Lwo2PolygonMapping
 {
-
-  Lwo2PolygonMapping(short s,const Vec2& v2):
+  Lwo2PolygonMapping(short s, const Vec2& v2):
     polygon_index(s),
     uv(v2) {}
   
@@ -47,7 +74,7 @@ class Lwo2Layer
   Lwo2Layer();
   ~Lwo2Layer();
   void notify(NotifySeverity);
-  void GenerateGeometry( Geometry& );
+  void GenerateGeode( Geode&, short );
 
  private:
   short _number;

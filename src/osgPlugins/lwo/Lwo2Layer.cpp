@@ -1,3 +1,28 @@
+/*
+ * Lightwave Object version 2 loader for Open Scene Graph
+ * Version 2 introduced in Lightwave v6.0
+ *
+ * Copyright (C) 2002 Pavel Moloshtan <pasha@moloshtan.com>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+ *
+ * The Open Scene Graph (OSG) is a cross platform C++/OpenGL library for 
+ * real-time rendering of large 3D photo-realistic models. 
+ * The OSG homepage is http://www.openscenegraph.org/
+ */
+
 #include "Lwo2Layer.h"
 
 Lwo2Layer::Lwo2Layer()
@@ -50,9 +75,9 @@ Lwo2Layer::notify(NotifySeverity severity)
     {
       osg::notify(severity) << "    " << (*pol_itr)->size() << ":";
       for (short_itr = (*pol_itr)->begin(); short_itr != (*pol_itr)->end(); short_itr++)
-         {
-            osg::notify(severity) << "\t" << (*short_itr);
-         }
+    {
+      osg::notify(severity) << "\t" << (*short_itr);
+    }
       osg::notify(severity) << endl;
     }
 
@@ -65,76 +90,93 @@ Lwo2Layer::notify(NotifySeverity severity)
 }
 
 void
-Lwo2Layer::GenerateGeometry( Geometry& geometry )
+Lwo2Layer::GenerateGeode( Geode& geode, short tags_count )
 {
-    notify(DEBUG_INFO);
-
-    IteratorPointsList pol_itr;
-    Vec3Array* coords = new Vec3Array;
-
-    // create texture array
-    Vec2Array* texcoords = 0;
-    if (_points_map.size() > 0)
+  notify(DEBUG_INFO);
+  
+  // create diffirent geomerty for each tag
+  for (short current_tag = 0; current_tag < tags_count; current_tag++)
     {
-          texcoords = new Vec2Array;
-    }
+      // new geometry
+      ref_ptr<Geometry> geometry = osgNew Geometry;
 
-    // variables for VMAD data processing
-    pair<multimap< short, Lwo2PolygonMapping >::iterator,
+      // create coords array
+      ref_ptr<Vec3Array> coords = osgNew Vec3Array;
+
+      // create texture array
+      ref_ptr<Vec2Array> texcoords = osgNew Vec2Array;
+
+      // variables for VMAD data processing
+      pair<multimap< short, Lwo2PolygonMapping >::iterator,
     multimap< short, Lwo2PolygonMapping >::iterator> range; 
-    multimap< short, Lwo2PolygonMapping >::iterator itr;
+      multimap< short, Lwo2PolygonMapping >::iterator itr;
 
-    // all polygons
-    int polygon_index = 0;
-    for (pol_itr = _polygons.begin(); pol_itr != _polygons.end(); pol_itr++, polygon_index++)
+      // all polygons
+      int polygon_index = 0;
+      for (IteratorPointsList pol_itr = _polygons.begin(); pol_itr != _polygons.end(); pol_itr++, polygon_index++)
     {
-        vector< short >::reverse_iterator short_itr;
-        for (short_itr = (*pol_itr)->rbegin(); short_itr != (*pol_itr)->rend(); short_itr++)
+
+      // polygons of current tag only
+      if (_polygons_tag[polygon_index] == current_tag)
         {
 
-            // polygons coords
-            (*coords).push_back(_points[*short_itr]);
+          // all points
+          vector< short >::iterator short_itr;
+          for (short_itr = (*pol_itr)->begin(); short_itr != (*pol_itr)->end(); short_itr++)
+        {
 
-            // point texture coords
-            if (_points_map.size() > 0)
+          // polygons coords
+          (*coords).push_back(_points[*short_itr]);
+
+          // point texture coords
+          if (_points_map.size() > 0)
             {
-                // VMAP data
-                Vec2 uv = _points_map[*short_itr];
+              // VMAP data
+              Vec2 uv = _points_map[*short_itr];
 
-                // chech if present VMAD data
-                if (_polygons_map.size() > 0)
+              // chech if present VMAD data
+              if (_polygons_map.size() > 0)
+            {
+
+              // select data for current point
+              range = _polygons_map.equal_range(*short_itr); 
+
+              for (itr = range.first; itr != range.second; itr++)
                 {
 
-                    // select data for current point
-                    range = _polygons_map.equal_range(*short_itr); 
-
-                    for (itr = range.first; itr != range.second; itr++)
-                     {
-
-                        // found current polygon
-                        if ((*itr).second.polygon_index == polygon_index)
-                            {
-                             uv = (*itr).second.uv;
-                            }
-                     }
+                  // found current polygon
+                  if ((*itr).second.polygon_index == polygon_index)
+                {
+                  uv = (*itr).second.uv;
                 }
+                }
+            }
 
-                (*texcoords).push_back(uv);
+              (*texcoords).push_back(uv);
             }
         }
-        geometry.addPrimitive(new DrawArrays(Primitive::POLYGON, 
-                                                        (*coords).size() - (*pol_itr)->size(), 
-                                                        (*pol_itr)->size()));
+          geometry->addPrimitive(new DrawArrays(Primitive::POLYGON, 
+                           (*coords).size() - (*pol_itr)->size(), 
+                           (*pol_itr)->size()));
+        }
     }
-    geometry.setVertexArray(coords);
 
-    // assign texture array
-    if (_points_map.size() > 0)
+      // add geometry if it contains any points
+      if (coords->size() != 0) 
     {
-        geometry.setTexCoordArray(0, texcoords);
-    }
+      geometry->setVertexArray(coords.get());
 
-    // generate normals
-    osgUtil::SmoothingVisitor smoother;
-    smoother.smooth(geometry);
+      // assign texture array
+      if ((*texcoords).size() > 0)
+        {
+          geometry->setTexCoordArray(0, texcoords.get());
+        }
+
+      // generate normals
+      osgUtil::SmoothingVisitor smoother;
+      smoother.smooth(*(geometry.get()));
+
+      geode.addDrawable(geometry.get());
+    }
+    }
 }

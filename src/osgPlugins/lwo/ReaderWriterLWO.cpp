@@ -11,7 +11,7 @@
  */
 
 #if defined(_MSC_VER)
-	#pragma warning( disable : 4786 )
+    #pragma warning( disable : 4786 )
 #endif
 
 #include <string>
@@ -21,6 +21,7 @@
 #include <osg/Node>
 #include <osg/Group>
 #include <osg/Geode>
+#include <osg/Group>
 #include <osg/Texture>
 #include <osg/Geometry>
 #include <osg/StateSet>
@@ -71,8 +72,8 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO2(const std::string
     std::auto_ptr<Lwo2> lwo2(new Lwo2());
     lwo2->ReadFile(fileName);
 
-    osg::ref_ptr<Geode> geode = new osg::Geode();
-    if (lwo2->GenerateGeode(*geode)) return geode.take();
+    osg::ref_ptr<Group> group = new osg::Group();
+    if (lwo2->GenerateGroup(*group)) return group.take();
 
     return ReadResult::FILE_NOT_HANDLED;
 }

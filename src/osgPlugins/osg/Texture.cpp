@@ -123,7 +123,7 @@ bool Texture_readLocalData(Object& obj, Input& fr)
         int x, y;
         if (fr[1].getInt(x) && fr[2].getInt(y))
         {
-            texture.setSubloadOffset(x, y);
+            texture.setSubloadTextureOffset(x, y);
             fr += 3;
             iteratorAdvanced = true;
         }
@@ -133,7 +133,47 @@ bool Texture_readLocalData(Object& obj, Input& fr)
         int width, height;
         if (fr[1].getInt(width) && fr[2].getInt(height))
         {
-            texture.setSubloadSize(width, height);
+            texture.setSubloadImageSize(width, height);
+            fr += 3;
+            iteratorAdvanced = true;
+        }
+    }
+    if (fr[0].matchWord("subloadTextureOffset"))
+    {
+        int x, y;
+        if (fr[1].getInt(x) && fr[2].getInt(y))
+        {
+            texture.setSubloadTextureOffset(x, y);
+            fr += 3;
+            iteratorAdvanced = true;
+        }
+    }
+    if (fr[0].matchWord("subloadTextureSize"))
+    {
+        int width, height;
+        if (fr[1].getInt(width) && fr[2].getInt(height))
+        {
+            texture.setSubloadTextureSize(width, height);
+            fr += 3;
+            iteratorAdvanced = true;
+        }
+    }
+    if (fr[0].matchWord("subloadImageOffset"))
+    {
+        int x, y;
+        if (fr[1].getInt(x) && fr[2].getInt(y))
+        {
+            texture.setSubloadImageOffset(x, y);
+            fr += 3;
+            iteratorAdvanced = true;
+        }
+    }
+    if (fr[0].matchWord("subloadImageSize"))
+    {
+        int width, height;
+        if (fr[1].getInt(width) && fr[2].getInt(height))
+        {
+            texture.setSubloadImageSize(width, height);
             fr += 3;
             iteratorAdvanced = true;
         }
@@ -172,12 +212,18 @@ bool Texture_writeLocalData(const Object& obj, Output& fw)
     if (texture.getSubloadMode()!=Texture::OFF)
     {
         int x, y;
-        texture.getSubloadOffset(x, y);
-        fw.indent() << "subloadOffset " << x << " " << y << std::endl;
+        texture.getSubloadTextureOffset(x, y);
+        fw.indent() << "subloadTextureOffset " << x << " " << y << std::endl;
 
         int width, height;
-        texture.getSubloadSize(width, height);
-        fw.indent() << "subloadSize " << width << " " << height << std::endl;
+        texture.getSubloadTextureSize(width, height);
+        fw.indent() << "subloadTextureSize " << width << " " << height << std::endl;
+
+        texture.getSubloadImageOffset(x, y);
+        fw.indent() << "subloadImageOffset " << x << " " << y << std::endl;
+
+        texture.getSubloadImageSize(width, height);
+        fw.indent() << "subloadImageSize " << width << " " << height << std::endl;
     }
 
     return true;

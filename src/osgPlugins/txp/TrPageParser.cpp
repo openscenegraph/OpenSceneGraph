@@ -127,7 +127,12 @@ Texture2D* txp::GetLocalTexture(trpgrImageHelper& image_helper, trpgLocalMateria
         Image* image = new Image;
         char* data = 0L;
 
-        int32 num_mipmaps = tex->CalcNumMipmaps();
+
+
+        bool bMipmap;
+        tex->GetIsMipmap(bMipmap);
+        int32 num_mipmaps = bMipmap  ?  tex->CalcNumMipmaps() : 1; // this is currently line 130
+
         // osg::Image do their own mipmaps
         if(num_mipmaps <= 1)
         {

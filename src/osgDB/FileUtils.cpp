@@ -356,19 +356,18 @@ osgDB::DirectoryContents osgDB::getDirectoryContents(const std::string& dirName)
 {
     osgDB::DirectoryContents contents;
 
-    struct _finddata_t data;
-    long handle = FindFirstFile((dirName + "\\*").c_str(), &data);
-    if (handle != -1)
+    WIN32_FIND_DATA data;
+    HANDLE handle = FindFirstFile((dirName + "\\*").c_str(), &data);
+    if (handle != INVALID_HANDLE_VALUE)
     {
         do
         {
-            contents.push_back(data.name);
+            contents.push_back(data.cFileName);
         }
-        while (FindNextFile(handle, &data) != -1);
+        while (FindNextFile(handle, &data) != 0);
 
-        _findclose(handle);
+        FindClose(handle);
     }
-
     return contents;
 }
 

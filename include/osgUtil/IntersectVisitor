@@ -186,7 +186,6 @@ class OSGUTIL_EXPORT IntersectVisitor : public osg::NodeVisitor
         
         IntersectStateStack         _intersectStateStack;
 
-        osg::NodePath               _nodePath;
         LineSegmentHitListMap       _segHitList;
         
         LODSelectionMode            _lodSelectionMode;

@@ -41,8 +41,8 @@ void CullSettings::setDefaults()
     _cullMaskRight = 0xffffffff;
 
     // override during testing
-    _computeNearFar = COMPUTE_NEAR_FAR_USING_PRIMITIVES;
-    _nearFarRatio = 0.00005f;
+    //_computeNearFar = COMPUTE_NEAR_FAR_USING_PRIMITIVES;
+    //_nearFarRatio = 0.00005f;
 }
 
 void CullSettings::setCullSettings(const CullSettings& settings)

@@ -37,8 +37,8 @@ class OSGDB_EXPORT FieldReaderIterator
         FieldReaderIterator& operator ++ ();
         FieldReaderIterator& operator += (int no);
 
-/** increments the itetor of the next simple field or
-    whole block if the current field[0] is an open bracket */
+        /** increments the iterator of the next simple field or
+          * whole block if the current field[0] is an open bracket */
         void advanceOverCurrentFieldOrBlock();
         void advanceToEndOfCurrentBlock();
         void advanceToEndOfBlock(int noNestBrackets);

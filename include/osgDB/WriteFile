@@ -11,7 +11,7 @@
 namespace osgDB {
 
 /** Write an osg::Object to file. 
-  * Return true on sucess,
+  * Return true on success,
   * return false on failure.
   * The osgDB::Registry is used to load the appropriate ReaderWriter plugin
   * for the filename extension, and this plugin then handles the request
@@ -20,7 +20,7 @@ namespace osgDB {
 OSGDB_EXPORT extern bool writeObjectFile(const osg::Object& object, const std::string& filename);
 
 /** Write an osg::Image to file. 
-  * Return true on sucess,
+  * Return true on success,
   * return false on failure.
   * The osgDB::Registry is used to load the appropriate ReaderWriter plugin
   * for the filename extension, and this plugin then handles the request
@@ -28,7 +28,7 @@ OSGDB_EXPORT extern bool writeObjectFile(const osg::Object& object, const std::s
 OSGDB_EXPORT extern bool writeImageFile(const osg::Image& image, const std::string& filename);
 
 /** Write an osg::Node to file. 
-  * Return true on sucess,
+  * Return true on success,
   * return false on failure.
   * The osgDB::Registry is used to load the appropriate ReaderWriter plugin
   * for the filename extension, and this plugin then handles the request

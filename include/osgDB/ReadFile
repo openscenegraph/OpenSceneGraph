@@ -11,7 +11,7 @@
 namespace osgDB {
 
 /** Read an osg::Object from file. 
-  * Return valid osg::Object on sucess,
+  * Return valid osg::Object on success,
   * return NULL on failure.
   * The osgDB::Registry is used to load the appropriate ReaderWriter plugin
   * for the filename extension, and this plugin then handles the request
@@ -19,7 +19,7 @@ namespace osgDB {
 OSGDB_EXPORT extern osg::Object* readObjectFile(const std::string& filename);
 
 /** Read an osg::Image from file. 
-  * Return valid osg::Image on sucess,
+  * Return valid osg::Image on success,
   * return NULL on failure.
   * The osgDB::Registry is used to load the appropriate ReaderWriter plugin
   * for the filename extension, and this plugin then handles the request
@@ -27,7 +27,7 @@ OSGDB_EXPORT extern osg::Object* readObjectFile(const std::string& filename);
 OSGDB_EXPORT extern osg::Image*  readImageFile(const std::string& filename);
 
 /** Read an osg::Node from file. 
-  * Return valid osg::Node on sucess,
+  * Return valid osg::Node on success,
   * return NULL on failure.
   * The osgDB::Registry is used to load the appropriate ReaderWriter plugin
   * for the filename extension, and this plugin then handles the request

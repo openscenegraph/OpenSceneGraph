@@ -12,7 +12,7 @@
 namespace osgUtil {
 
 /**
- * SceneView is literaly a view of a scene, encapsulating the
+ * SceneView is literally a view of a scene, encapsulating the
  * camera, global state, lights and the scene itself.  Provides
  * methods for setting up the view and rendering it.
 */
@@ -20,7 +20,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
 {
     public:
 
-        /** Constrcut a default scene view.*/
+        /** Construct a default scene view.*/
         SceneView();
 
         /** Set scene view to use default global state, light, camera
@@ -130,7 +130,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
            internal near and far planes.  Default value is true.
         */
 	void setCalcNearFar(bool calc) { _calc_nearfar = calc; }
-        /** return true if SceneView automatically caclculates near and 
+        /** return true if SceneView automatically calculates near and 
             far clipping planes for each frame.
         */
         bool getCalcNearFar() const { return _calc_nearfar; }

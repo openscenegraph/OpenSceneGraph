@@ -11,7 +11,7 @@ namespace osgUtil {
 
 /** A visitor for traversing a scene graph establishing the OpenGL visuals are required
   * to support rendering of that scene graph.  The results can then be used by
-  * applications to set up there windows with the corret visuals.  Have a look at
+  * applications to set up there windows with the correct visuals.  Have a look at
   * src/osgGLUT/Viewer.cpp's Viewer::open() method for an example how to use it.
   */
 class OSGUTIL_EXPORT VisualsRequirementsVisitor : public osg::NodeVisitor

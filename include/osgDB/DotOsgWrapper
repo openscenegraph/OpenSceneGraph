@@ -14,7 +14,7 @@
 namespace osgDB {
 
 
-/** Wrapper class for specifing read and write functions for extending
+/** Wrapper class for specifying read and write functions for extending
   * the .osg file format. */ 
 class OSGDB_EXPORT DotOsgWrapper : public osg::Referenced
 {

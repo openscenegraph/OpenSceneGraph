@@ -1,4 +1,4 @@
-// The following symbole has a underscore suffix for compatibility.
+// The following symbol has a underscore suffix for compatibility.
 #ifndef OSGWX_EXPORT_
 #define OSGWX_EXPORT_ 1
 

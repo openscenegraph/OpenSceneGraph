@@ -282,7 +282,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
 
         TransparencySortMode _tsm;
 	
-        // viewport x,y,width,height respectiveyly.
+        // viewport x,y,width,height respectively.
         osg::ref_ptr<osg::Viewport> _viewport;
 
         bool _impostorActive;
@@ -304,7 +304,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
                 ++_currentReuseMatrixIndex;
             }
 
-            // if still within list, element must be singularily referenced
+            // if still within list, element must be singularly referenced
             // there return it to be reused.
             if (_currentReuseMatrixIndex<_reuseMatrixList.size())
             {
@@ -334,7 +334,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
                 ++_currentReuseRenderLeafIndex;
             }
 
-            // if still within list, element must be singularily referenced
+            // if still within list, element must be singularly referenced
             // there return it to be reused.
             if (_currentReuseRenderLeafIndex<_reuseRenderLeafList.size())
             {

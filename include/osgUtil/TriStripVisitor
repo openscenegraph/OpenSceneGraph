@@ -23,7 +23,7 @@ class OSGUTIL_EXPORT TriStripVisitor : public osg::NodeVisitor
         }
 
         /** convert mesh primitives in geoset into Tri Strips using
-          * NvTriStrip.  Converts all primtive types except points
+          * NvTriStrip.  Converts all primitive types except points
           * and lines, linestrips which it leaves unchanged.
           */
         static void stripify(osg::GeoSet& gset);

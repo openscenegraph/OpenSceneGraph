@@ -113,7 +113,16 @@ void TextureRectangle::apply(State& state) const
             applyTexParameters(GL_TEXTURE_RECTANGLE_NV, state);
 
         if (_subloadCallback.valid())
+        {
             _subloadCallback->subload(*this, state);
+        }
+        else if (_image.valid() && getModifiedTag(contextID) != _image->getModifiedTag())
+        {
+            applyTexImage_subload(GL_TEXTURE_RECTANGLE_NV, _image.get(), state, _textureWidth, _textureHeight);
+ 
+            // update the modified tag to show that it is upto date.
+            getModifiedTag(contextID) = _image->getModifiedTag();
+        }
     }
     else if (_subloadCallback.valid())
     {
@@ -143,7 +152,7 @@ void TextureRectangle::apply(State& state) const
 
         applyTexParameters(GL_TEXTURE_RECTANGLE_NV, state);
      
-        applyTexImage(GL_TEXTURE_RECTANGLE_NV, _image.get(), state, _textureWidth, _textureHeight);
+        applyTexImage_load(GL_TEXTURE_RECTANGLE_NV, _image.get(), state, _textureWidth, _textureHeight);
 
         textureObject->setAllocated(1,_internalFormat,_textureWidth,_textureHeight,1,0);
 
@@ -174,7 +183,7 @@ void TextureRectangle::applyTexParameters(GLenum target, State& state) const
     getTextureParameterDirty(contextID) = false;
 }
 
-void TextureRectangle::applyTexImage(GLenum target, Image* image, State& state, GLsizei& inwidth, GLsizei& inheight) const
+void TextureRectangle::applyTexImage_load(GLenum target, Image* image, State& state, GLsizei& inwidth, GLsizei& inheight) const
 {
     // if we don't have a valid image we can't create a texture!
     if (!image || !image->data())
@@ -201,6 +210,41 @@ void TextureRectangle::applyTexImage(GLenum target, Image* image, State& state, 
     
     inwidth = image->s();
     inheight = image->t();
+}
+
+void TextureRectangle::applyTexImage_subload(GLenum target, Image* image, State& state, GLsizei& inwidth, GLsizei& inheight) const
+{
+    // if we don't have a valid image we can't create a texture!
+    if (!image || !image->data())
+        return;
+
+    if (image->s()!=inwidth || image->t()!=inheight) 
+    {
+        applyTexImage_load(target, image, state, inwidth, inheight);
+        return;
+    }
+
+
+    // get the contextID (user defined ID of 0 upwards) for the 
+    // current OpenGL context.
+    const unsigned int contextID = state.getContextID();
+
+    // update the modified tag to show that it is upto date.
+    getModifiedTag(contextID) = image->getModifiedTag();
+
+    // compute the internal texture format, sets _internalFormat.
+    computeInternalFormat();
+
+    glPixelStorei(GL_UNPACK_ALIGNMENT, image->getPacking());
+
+    // UH: ignoring compressed for now.
+    glTexSubImage2D(target, 0, 
+                 0,0,
+                 image->s(), image->t(),
+                 (GLenum)image->getPixelFormat(),
+                 (GLenum)image->getDataType(),
+                 image->data());
+    
 }
 
 void TextureRectangle::computeInternalFormat() const

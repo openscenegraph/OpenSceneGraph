@@ -114,7 +114,7 @@ bool GeoSet_readLocalData(Object& obj, Input& fr)
         else if (fr.matchSequence("flat_linestrip %i {"))
         {
             readPrimitiveLengths = true;
-            geoset.setPrimType(GeoSet::LINE_STRIP);
+            geoset.setPrimType(GeoSet::FLAT_LINE_STRIP);
         }
         else if (fr.matchSequence("tfans %i {"))
         {
@@ -682,11 +682,11 @@ bool GeoSet_writeLocalData(const Object& obj, Output& fw)
             break;
         case (GeoSet::LINE_STRIP):
             fw.indent()<<"linestrip "<< geoset.getNumPrims() << std::endl;
-            writeOutPrimitiveLengths = false;
+            writeOutPrimitiveLengths = true;
             break;
         case (GeoSet::FLAT_LINE_STRIP):
             fw.indent()<<"flat_linestrip "<< geoset.getNumPrims() << std::endl;
-            writeOutPrimitiveLengths = false;
+            writeOutPrimitiveLengths = true;
             break;
         case (GeoSet::TRIANGLE_FAN):
             fw.indent()<<"tfans "<< geoset.getNumPrims() << std::endl;

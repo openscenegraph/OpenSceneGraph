@@ -65,7 +65,7 @@ bool TXPNode_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     const txp::TXPNode &txpNode = static_cast<const txp::TXPNode&>(obj);
 
     if (!txpNode.getOptions().empty()) fw.indent() << "databaseOptions \"" << txpNode.getOptions() << "\""<<std::endl;
-    if (!txpNode.getArchiveName().empty()) fw.indent() << "archive name\"" << txpNode.getArchiveName() << "\"" << std::endl;
+    if (!txpNode.getArchiveName().empty()) fw.indent() << "databaseName \"" << txpNode.getArchiveName() << "\"" << std::endl;
 
     osg::Group* grp = const_cast<osg::Group*>(txpNode.asGroup());
 

@@ -10,14 +10,8 @@ using namespace osg;
 using namespace osgUtil;
 
 // register a RenderStage prototype with the RenderBin prototype list.
-RegisterRenderBinProxy<RenderBin> s_registerRenderBinProxy;
-
-#ifdef __DARWIN_OSX__
-// PJA 10/1/02 - this is a hack to get OS X to build, if this code is included in DepthSortedBin.cpp it isnt executed
-// register a RenderStage prototype with the RenderBin prototype list.
-#include <osgUtil/DepthSortedBin>
-RegisterRenderBinProxy<DepthSortedBin> s_registerDepthSortedBinProxy;
-#endif
+RegisterRenderBinProxy s_registerRenderBinProxy("RenderBin",osgNew RenderBin(RenderBin::SORT_BY_STATE));
+RegisterRenderBinProxy s_registerDepthSortedBinProxy("DepthSortedBin",osgNew RenderBin(RenderBin::SORT_BACK_TO_FRONT));
 
 typedef std::map< std::string, osg::ref_ptr<RenderBin> > RenderBinPrototypeList;
 
@@ -27,21 +21,25 @@ RenderBinPrototypeList* renderBinPrototypeList()
     return &s_renderBinPrototypeList;
 }
 
-RenderBin* RenderBin::createRenderBin(const std::string& binName)
+RenderBin* RenderBin::getRenderBinPrototype(const std::string& binName)
 {
-//    cout << "creating RB "<<binName<<std::endl;
-
     RenderBinPrototypeList::iterator itr = renderBinPrototypeList()->find(binName);
-    if (itr != renderBinPrototypeList()->end()) return dynamic_cast<RenderBin*>(itr->second->cloneType());
+    if (itr != renderBinPrototypeList()->end()) return itr->second.get();
     else return NULL;
 }
 
-void RenderBin::addRenderBinPrototype(RenderBin* proto)
+RenderBin* RenderBin::createRenderBin(const std::string& binName)
+{
+    RenderBin* prototype = getRenderBinPrototype(binName);
+    if (prototype) return dynamic_cast<RenderBin*>(prototype->clone(osg::CopyOp::DEEP_COPY_ALL));
+    else return NULL;
+}
+
+void RenderBin::addRenderBinPrototype(const std::string& binName,RenderBin* proto)
 {
     if (proto)
     {
-        (*renderBinPrototypeList())[proto->className()] = proto;
-//        cout << "Adding RB "<<proto->className()<<std::endl;
+        (*renderBinPrototypeList())[binName] = proto;
     }
 }
 
@@ -54,12 +52,30 @@ void RenderBin::removeRenderBinPrototype(RenderBin* proto)
     }
 }
 
-RenderBin::RenderBin()
+RenderBin::RenderBin(SortMode mode)
 {
     _binNum = 0;
     _parent = NULL;
     _stage = NULL;
-    _sortMode = SORT_BY_STATE;
+    _sortMode = mode;
+    _requiresDepthValueForSort = (_sortMode==SORT_FRONT_TO_BACK ||
+                                  _sortMode==SORT_BACK_TO_FRONT);
+
+}
+
+RenderBin::RenderBin(const RenderBin& rhs,const CopyOp& copyop):
+        Object(rhs,copyop),
+        _requiresDepthValueForSort(rhs._requiresDepthValueForSort),
+        _binNum(rhs._binNum),
+        _parent(rhs._parent),
+        _stage(rhs._stage),
+        _bins(rhs._bins),
+        _renderGraphList(rhs._renderGraphList),
+        _renderLeafList(rhs._renderLeafList),
+        _sortMode(rhs._sortMode),
+        _sortLocalCallback(rhs._sortLocalCallback)
+{
+
 }
 
 RenderBin::~RenderBin()
@@ -81,8 +97,18 @@ void RenderBin::sort()
         itr->second->sort();
     }
     
-    if (_sortLocalCallback.valid()) _sortLocalCallback->sort(this);
+    if (_sortLocalCallback.valid()) 
+    {
+        _sortLocalCallback->sort(this);
+    }
     else sort_local();
+}
+
+void RenderBin::setSortMode(SortMode mode)
+{
+    _sortMode = mode;
+    _requiresDepthValueForSort = (_sortMode==SORT_FRONT_TO_BACK ||
+                                  _sortMode==SORT_BACK_TO_FRONT);
 }
 
 void RenderBin::sort_local()
@@ -95,7 +121,7 @@ void RenderBin::sort_local()
         case(SORT_FRONT_TO_BACK):
             sort_local_front_to_back();
             break;
-        case(SORT_BACK_TO_FONT):
+        case(SORT_BACK_TO_FRONT):
             sort_local_back_to_front();
             break;
         default:
@@ -117,6 +143,7 @@ void RenderBin::sort_local_by_state()
     // appears to cost more to do than it saves in draw.  The contents of
     // the RenderGraph leaves is already coasrse grained sorted, this
     // sorting is as a function of the cull traversal.
+    // cout << "doing sort_local_by_state "<<this<<endl;
 }
 
 struct FrontToBackSortFunctor
@@ -134,6 +161,8 @@ void RenderBin::sort_local_front_to_back()
 
     // now sort the list into acending depth order.
     std::sort(_renderLeafList.begin(),_renderLeafList.end(),FrontToBackSortFunctor());
+    
+//    cout << "sort front to back"<<endl;
 }
 
 struct BackToFrontSortFunctor
@@ -150,6 +179,8 @@ void RenderBin::sort_local_back_to_front()
 
     // now sort the list into acending depth order.
     std::sort(_renderLeafList.begin(),_renderLeafList.end(),BackToFrontSortFunctor());
+
+//    cout << "sort back to front"<<endl;
 }
 
 void RenderBin::copyLeavesFromRenderGraphListToRenderLeafList()
@@ -234,22 +265,37 @@ void RenderBin::draw(osg::State& state,RenderLeaf*& previous)
 
 void RenderBin::draw_local(osg::State& state,RenderLeaf*& previous)
 {
-    sort_local();
-
     // draw local bin.
-    for(RenderGraphList::iterator oitr=_renderGraphList.begin();
-        oitr!=_renderGraphList.end();
-        ++oitr)
+    
+    if (!_renderLeafList.empty())
     {
-
-        for(RenderGraph::LeafList::iterator dw_itr = (*oitr)->_leaves.begin();
-            dw_itr != (*oitr)->_leaves.end();
-            ++dw_itr)
+        // draw fine grained ordering.
+        for(RenderLeafList::iterator itr= _renderLeafList.begin();
+            itr!= _renderLeafList.end();
+            ++itr)
         {
-            RenderLeaf* rl = dw_itr->get();
+            RenderLeaf* rl = *itr;
             rl->render(state,previous);
             previous = rl;
+        }
+    }
+    else
+    {    
+        // draw coarse grained ordering.
+        for(RenderGraphList::iterator oitr=_renderGraphList.begin();
+            oitr!=_renderGraphList.end();
+            ++oitr)
+        {
 
+            for(RenderGraph::LeafList::iterator dw_itr = (*oitr)->_leaves.begin();
+                dw_itr != (*oitr)->_leaves.end();
+                ++dw_itr)
+            {
+                RenderLeaf* rl = dw_itr->get();
+                rl->render(state,previous);
+                previous = rl;
+
+            }
         }
     }
 }

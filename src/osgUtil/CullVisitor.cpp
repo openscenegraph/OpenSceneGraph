@@ -266,9 +266,9 @@ void CullVisitor::apply(Geode& node)
 
         // push the geoset's state on the geostate stack.    
         StateSet* stateset = drawable->getStateSet();
+        if (stateset) pushStateSet(stateset);
 
-        bool isTransparent = stateset && stateset->getRenderingHint()==osg::StateSet::TRANSPARENT_BIN;
-        if (isTransparent)
+        if (_currentRenderBin->getRequiresDepthValueForSort())
         {
 
             Vec3 center = (drawable->getBound().center())*matrix;
@@ -281,17 +281,15 @@ void CullVisitor::apply(Geode& node)
                 default: depth = center.length2();break;
             }
 
-            if (stateset) pushStateSet(stateset);
             addDrawableAndDepth(drawable,&matrix,depth);
-            if (stateset) popStateSet();
 
         }
         else
         {
-            if (stateset) pushStateSet(stateset);
             addDrawable(drawable,&matrix);
-            if (stateset) popStateSet();
         }
+
+        if (stateset) popStateSet();
 
     }
 
@@ -335,12 +333,10 @@ void CullVisitor::apply(Billboard& node)
         }
 
         StateSet* stateset = drawable->getStateSet();
+        if (stateset) pushStateSet(stateset);
         
-        bool isTransparent = stateset && stateset->getRenderingHint()==osg::StateSet::TRANSPARENT_BIN;
-        if (isTransparent)
+        if (_currentRenderBin->getRequiresDepthValueForSort())
         {
-
-
             float depth;
             switch(_tsm)
             {
@@ -349,17 +345,15 @@ void CullVisitor::apply(Billboard& node)
                 default: depth = center.length2();break;
             }
 
-            if (stateset) pushStateSet(stateset);
             addDrawableAndDepth(drawable,billboard_matrix,depth);
-            if (stateset) popStateSet();
 
         }
         else
         {
-            if (stateset) pushStateSet(stateset);
             addDrawable(drawable,billboard_matrix);
-            if (stateset) popStateSet();
         }
+
+        if (stateset) popStateSet();
 
     }
 

@@ -5,7 +5,6 @@ include $(TOPDIR)/Make/makedefs
 CXXFILES = \
 	AppVisitor.cpp\
 	CullVisitor.cpp\
-	DepthSortedBin.cpp\
 	DisplayListVisitor.cpp\
 	DisplayRequirementsVisitor.cpp\
 	InsertImpostorsVisitor.cpp\

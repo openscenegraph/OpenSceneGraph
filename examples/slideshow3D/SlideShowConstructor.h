@@ -13,6 +13,14 @@ public:
 
     SlideShowConstructor();
     
+    struct HomePosition : public osg::Referenced
+    {
+        osg::Vec3   eye;
+        osg::Vec3   center;
+        osg::Vec3   up;
+    };
+    
+    
     void createPresentation();
     
     void setBackgroundColor(const osg::Vec4& color);
@@ -20,6 +28,10 @@ public:
     void setTextColor(const osg::Vec4& color);
     
     void setPresentationName(const std::string& name);
+    
+    void setPresentationAspectRatio(float aspectRatio);
+
+    void setPresentationAspectRatio(const std::string& str);
     
     void addSlide();
     
@@ -34,6 +46,8 @@ public:
     void addParagraph(const std::string& paragraph);
     
     void addImage(const std::string& filename,float height);
+    
+    void addStereoImagePair(const std::string& filenameLeft,const std::string& filenameRight,float height);
     
     void addModel(const std::string& filename,float scale,float rotation,float position);
     

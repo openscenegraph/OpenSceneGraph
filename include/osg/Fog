@@ -5,10 +5,10 @@
 #ifndef OSG_FOG
 #define OSG_FOG 1
 
-#include <osg/Types>
-#include <osg/Vec4>
 #include <osg/StateAttribute>
 #include <osg/StateSet>
+#include <osg/Types>
+#include <osg/Vec4>
 
 namespace osg {
 

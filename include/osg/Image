@@ -8,6 +8,7 @@
 #define OSG_IMAGE 1
 
 #include <osg/Object>
+#include <osg/GL>
 
 #include <string>
 
@@ -30,12 +31,14 @@ class SG_EXPORT Image : public Object
         virtual const char* className() const { return "Image"; }
 
 
-        inline const std::string& getFileName() const { return _fileName; }
         void setFileName(const std::string& fileName);
+        inline const std::string& getFileName() const { return _fileName; }
         
         
-        void createImage(const int s,const int t,const int r,
-                         const unsigned int pixelFormat,const unsigned int dataType);
+        /* allocated a pixel block of specified size and type.*/
+        void createImage(int s,int t,int r,
+                         GLenum format,GLenum type,
+                         int packing=1);
         
         
         /** set the image data and format.
@@ -44,44 +47,66 @@ class SG_EXPORT Image : public Object
           * otherwise automatically sets to _packing to 4. If a positive
           * value of packing is supplied than _packing is simply set to that value.
           */
-        void setImage(const int s,const int t,const int r,
-                      const int internalFormat,const unsigned int pixelFormat,const unsigned int dataType,
+        void setImage(int s,int t,int r,
+                      GLint internalTextureformat,
+                      GLenum format,GLenum type,
                       unsigned char *data,
-                      const int packing=-1);
+                      int packing=1);
             
         /** readPixels from screen at specified position and size, using glReadPixels.
           * Create memory for storage if required, reuse existing pixel coords if possible.
           * if pixelFormat or dataType*/
         void readPixels(int x,int y,int width,int height,
-                        unsigned int pixelFormat,unsigned int dataType,
-                        const int packing=-1);
+                        GLenum format,GLenum type);
             
+
+        /** Scale image to specified size. */
+        void scaleImage(const int s,const int t,const int r);
+
+
 
         /** Width of image.*/
         inline const int s() const { return _s; }
+
         /** Height of image.*/
         inline const int t() const { return _t; }
+        
         /** Depth of image.*/
         inline const int r() const { return _r; }
         
-        inline const int internalFormat() const { return _internalFormat; }
+        inline const GLint internalTextureFormat() const { return _internalTextureFormat; }
         
-        inline const unsigned int pixelFormat() const { return _pixelFormat; }
+        inline const GLenum pixelFormat() const { return _pixelFormat; }
         
-        inline const unsigned int dataType() const { return _dataType; }
+        inline const GLenum dataType() const { return _dataType; }
         
         inline const unsigned int packing() const { return _packing; }
         
-        inline const unsigned int pixelSizeInBits() const { return _pixelSizeInBits; }
+        /** return the numbers of bits required for each pixel.*/        
+        inline const unsigned int pixelSizeInBits() const { return computePixelSizeInBits(_pixelFormat,_dataType); }
+
+        /** return the numbers of bytes each row of pixels occupies once it has been packed.*/        
+        inline const unsigned int rowSizeInBytes() const { return computeRowWidthInBytes(_s,_pixelFormat,_dataType,_packing); }
+
+        /** return the numbers of bytes each image (_s*_t) of pixels occupies..*/
+        inline const unsigned int imageSizeInBytes() const { return rowSizeInBytes()*_t; }
         
+        /** return the numbers of bytes the whole row/image/volume of pixels occupies.*/        
+        inline const unsigned int totalSizeInBytes() const { return imageSizeInBytes()*_r; }
+
         /** raw image data.*/
         inline unsigned char *data() { return _data; }
         
         /** raw const image data.*/
         inline const unsigned char *data() const { return _data; }
 
-        /** Scale image to specified size. */
-        void scaleImage(const int s,const int t,const int r);
+
+        unsigned char* data(int column, int row=0,int image=0)
+        {
+            if (!_data) return NULL;
+            return _data+(column*pixelSizeInBits())/8+row*rowSizeInBytes()+image*imageSizeInBytes();
+        }
+
 
         /** Ensure image dimensions are a power of two.
           * Mip Mapped texture require the image dimensions to be
@@ -98,6 +123,14 @@ class SG_EXPORT Image : public Object
         /** Get modified tag value, only used by osg::Texture when using texture subloading. */
         inline const unsigned int getModifiedTag() const { return _modifiedTag; }
 
+
+        static const bool isPackedType(GLenum type);
+        static const unsigned int computeNumComponents(GLenum format);
+        static const unsigned int computePixelSizeInBits(GLenum format,GLenum type);
+        static const unsigned int computeRowWidthInBytes(int width,GLenum format,GLenum type,int packing);
+        
+
+
     protected :
 
         virtual ~Image();
@@ -108,11 +141,10 @@ class SG_EXPORT Image : public Object
 
         std::string _fileName;
         int _s, _t, _r;
-        int _internalFormat;
-        unsigned int _pixelFormat;
-        unsigned int _dataType;
+        GLint _internalTextureFormat;
+        GLenum _pixelFormat;
+        GLenum _dataType;
         unsigned int _packing;
-        unsigned int _pixelSizeInBits;
         unsigned char *_data;
 
         unsigned int _modifiedTag;

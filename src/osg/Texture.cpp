@@ -339,11 +339,11 @@ void Texture::applyTexImage(GLenum target, Image* image, State& state) const
     static bool s_S3TC_Compression = isGLExtensionSupported("GL_EXT_texture_compression_s3tc");
 
     // select the internalFormat required for the texture.
-    int internalFormat = image->internalFormat();
+    int internalFormat = image->internalTextureFormat();
     switch(_internalFormatMode)
     {
         case(USE_IMAGE_DATA_FORMAT):
-            internalFormat = image->internalFormat();
+            internalFormat = image->internalTextureFormat();
             break;
 
         case(USE_ARB_COMPRESSION):
@@ -363,7 +363,7 @@ void Texture::applyTexImage(GLenum target, Image* image, State& state) const
                     case(GL_INTENSITY): internalFormat = GL_COMPRESSED_INTENSITY_ARB; break;
                 }
             }
-            else internalFormat = image->internalFormat();
+            else internalFormat = image->internalTextureFormat();
             break;
 
         case(USE_S3TC_DXT1_COMPRESSION):
@@ -375,10 +375,10 @@ void Texture::applyTexImage(GLenum target, Image* image, State& state) const
                     case(4):        internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT; break;
                     case(GL_RGB):   internalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT; break;
                     case(GL_RGBA):  internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT; break;
-                    default:        internalFormat = image->internalFormat(); break;
+                    default:        internalFormat = image->internalTextureFormat(); break;
                 }
             }
-            else internalFormat = image->internalFormat();
+            else internalFormat = image->internalTextureFormat();
             break;
 
         case(USE_S3TC_DXT3_COMPRESSION):
@@ -390,10 +390,10 @@ void Texture::applyTexImage(GLenum target, Image* image, State& state) const
                     case(GL_RGB):   internalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT; break;
                     case(4):
                     case(GL_RGBA):  internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT; break;
-                    default:        internalFormat = _image->internalFormat(); break;
+                    default:        internalFormat = _image->internalTextureFormat(); break;
                 }
             }
-            else internalFormat = image->internalFormat();
+            else internalFormat = image->internalTextureFormat();
             break;
 
         case(USE_S3TC_DXT5_COMPRESSION):
@@ -405,10 +405,10 @@ void Texture::applyTexImage(GLenum target, Image* image, State& state) const
                     case(GL_RGB):   internalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT; break;
                     case(4):
                     case(GL_RGBA):  internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT; break;
-                    default:        internalFormat = image->internalFormat(); break;
+                    default:        internalFormat = image->internalTextureFormat(); break;
                 }
             }
-            else internalFormat = image->internalFormat();
+            else internalFormat = image->internalTextureFormat();
             break;
 
         case(USE_USER_DEFINED_FORMAT):

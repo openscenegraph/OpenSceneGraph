@@ -3,7 +3,6 @@ include $(TOPDIR)/Make/makedefs
 
 
 CXXFILES = \
-    CoordinateSystem.cpp\
     DataSet.cpp\
     Terrain.cpp\
     Renderer.cpp\

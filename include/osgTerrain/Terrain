@@ -18,7 +18,7 @@
 #include <osg/Image>
 
 #include <osgTerrain/Renderer>
-#include <osgTerrain/CoordinateSystem>
+#include <osg/CoordinateSystemNode>
 
 namespace osgTerrain {
 
@@ -36,16 +36,6 @@ class OSGTERRAIN_EXPORT Terrain : public osg::Group
         META_Node(osgTerrain, Terrain);
 
         virtual void traverse(osg::NodeVisitor& nv);
-
-
-        /** Set the coordinates system associated with this Terrain*/
-        void setCoordinateSystem(CoordinateSystem* cs) { _coordinateSystem = cs; }
-        
-        /** Get the coordinates system associated with this Terrain*/
-        CoordinateSystem* getCoordinateSystem() { return _coordinateSystem.get(); }
-
-        /** Get the const coordinates system associated with this Terrain*/
-        const CoordinateSystem* getCoordinateSystem() const { return _coordinateSystem.get(); }
 
 
         /** Set the HeightField for this Terrain.
@@ -96,7 +86,6 @@ class OSGTERRAIN_EXPORT Terrain : public osg::Group
         virtual ~Terrain();
 
 
-        osg::ref_ptr<CoordinateSystem>  _coordinateSystem;
         osg::ref_ptr<osg::HeightField>  _heightField;
         osg::ref_ptr<Renderer>   _renderer;
         

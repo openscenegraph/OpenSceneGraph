@@ -51,10 +51,10 @@ enum CoordinateSystemType
     LOCAL
 };
 
-CoordinateSystemType getCoordinateSystemType(const osgTerrain::CoordinateSystem* lhs)
+CoordinateSystemType getCoordinateSystemType(const osg::CoordinateSystemNode* lhs)
 {
     // set up LHS SpatialReference
-    char* projection_string = strdup(lhs->getWKT().c_str());
+    char* projection_string = strdup(lhs->getCoordinateSystem().c_str());
     char* importString = projection_string;
     
     OGRSpatialReference lhsSR;
@@ -79,10 +79,10 @@ CoordinateSystemType getCoordinateSystemType(const osgTerrain::CoordinateSystem*
     return PROJECTED;
 }
 
-double getAngularUnits(const osgTerrain::CoordinateSystem* lhs)
+double getAngularUnits(const osg::CoordinateSystemNode* lhs)
 {
     // set up LHS SpatialReference
-    char* projection_string = strdup(lhs->getWKT().c_str());
+    char* projection_string = strdup(lhs->getCoordinateSystem().c_str());
     char* importString = projection_string;
     
     OGRSpatialReference lhsSR;
@@ -97,10 +97,10 @@ double getAngularUnits(const osgTerrain::CoordinateSystem* lhs)
     return result;
 }
 
-double getLinearUnits(const osgTerrain::CoordinateSystem* lhs)
+double getLinearUnits(const osg::CoordinateSystemNode* lhs)
 {
     // set up LHS SpatialReference
-    char* projection_string = strdup(lhs->getWKT().c_str());
+    char* projection_string = strdup(lhs->getCoordinateSystem().c_str());
     char* importString = projection_string;
     
     OGRSpatialReference lhsSR;
@@ -119,7 +119,7 @@ double getLinearUnits(const osgTerrain::CoordinateSystem* lhs)
     return result;
 }
 
-bool areCoordinateSystemEquivilant(const osgTerrain::CoordinateSystem* lhs,const osgTerrain::CoordinateSystem* rhs)
+bool areCoordinateSystemEquivilant(const osg::CoordinateSystemNode* lhs,const osg::CoordinateSystemNode* rhs)
 {
     // if ptr's equal the return true
     if (lhs == rhs) return true;
@@ -132,10 +132,10 @@ bool areCoordinateSystemEquivilant(const osgTerrain::CoordinateSystem* lhs,const
     }
     
     // use compare on ProjectionRef strings.
-    if (*lhs == *rhs) return true;
+    if (lhs->getCoordinateSystem() == rhs->getCoordinateSystem()) return true;
     
     // set up LHS SpatialReference
-    char* projection_string = strdup(lhs->getWKT().c_str());
+    char* projection_string = strdup(lhs->getCoordinateSystem().c_str());
     char* importString = projection_string;
     
     OGRSpatialReference lhsSR;
@@ -144,7 +144,7 @@ bool areCoordinateSystemEquivilant(const osgTerrain::CoordinateSystem* lhs,const
     free(projection_string);
 
     // set up RHS SpatialReference
-    projection_string = strdup(rhs->getWKT().c_str());
+    projection_string = strdup(rhs->getCoordinateSystem().c_str());
     importString = projection_string;
 
     OGRSpatialReference rhsSR;
@@ -158,8 +158,8 @@ bool areCoordinateSystemEquivilant(const osgTerrain::CoordinateSystem* lhs,const
     int result2 = lhsSR.IsSameGeogCS(&rhsSR);
 
      std::cout<<"areCoordinateSystemEquivilant "<<std::endl
-              <<"LHS = "<<lhs->getWKT()<<std::endl
-              <<"RHS = "<<rhs->getWKT()<<std::endl
+              <<"LHS = "<<lhs->getCoordinateSystem()<<std::endl
+              <<"RHS = "<<rhs->getCoordinateSystem()<<std::endl
               <<"result = "<<result<<"  result2 = "<<result2<<std::endl;
 #endif
 	 return result ? true : false;
@@ -189,7 +189,7 @@ DataSet::SourceData* DataSet::SourceData::readData(Source* source)
                 const char* pszSourceSRS = gdalDataSet->GetProjectionRef();
                 if (!pszSourceSRS || strlen(pszSourceSRS)==0) pszSourceSRS = gdalDataSet->GetGCPProjection();
                 
-                data->_cs = new osgTerrain::CoordinateSystem(pszSourceSRS);
+                data->_cs = new osg::CoordinateSystemNode(pszSourceSRS);
 
                 double geoTransform[6];
                 if (gdalDataSet->GetGeoTransform(geoTransform)==CE_None)
@@ -279,12 +279,12 @@ DataSet::SourceData* DataSet::SourceData::readData(Source* source)
     return 0;
 }
 
-osg::BoundingBox DataSet::SourceData::getExtents(const osgTerrain::CoordinateSystem* cs) const
+osg::BoundingBox DataSet::SourceData::getExtents(const osg::CoordinateSystemNode* cs) const
 {
     return computeSpatialProperties(cs)._extents;
 }
 
-const DataSet::SpatialProperties& DataSet::SourceData::computeSpatialProperties(const osgTerrain::CoordinateSystem* cs) const
+const DataSet::SpatialProperties& DataSet::SourceData::computeSpatialProperties(const osg::CoordinateSystemNode* cs) const
 {
     // check to see it exists in the _spatialPropertiesMap first.
     SpatialPropertiesMap::const_iterator itr = _spatialPropertiesMap.find(cs);
@@ -316,8 +316,8 @@ const DataSet::SpatialProperties& DataSet::SourceData::computeSpatialProperties(
             /*      destination coordinate system.                                  */
             /* -------------------------------------------------------------------- */
             void *hTransformArg = 
-                GDALCreateGenImgProjTransformer( _gdalDataSet,_cs->getWKT().c_str(),
-                                                 NULL, cs->getWKT().c_str(),
+                GDALCreateGenImgProjTransformer( _gdalDataSet,_cs->getCoordinateSystem().c_str(),
+                                                 NULL, cs->getCoordinateSystem().c_str(),
                                                  TRUE, 0.0, 1 );
 
             if (!hTransformArg)
@@ -339,7 +339,7 @@ const DataSet::SpatialProperties& DataSet::SourceData::computeSpatialProperties(
 
             sp._numValuesX = nPixels;
             sp._numValuesY = nLines;
-            sp._cs = const_cast<osgTerrain::CoordinateSystem*>(cs);
+            sp._cs = const_cast<osg::CoordinateSystemNode*>(cs);
             sp._geoTransform.set( adfDstGeoTransform[1],    adfDstGeoTransform[4],  0.0,    0.0,
                                   adfDstGeoTransform[2],    adfDstGeoTransform[5],  0.0,    0.0,
                                   0.0,                      0.0,                    1.0,    0.0,
@@ -752,12 +752,12 @@ void DataSet::Source::assignCoordinateSystemAndGeoTransformAccordingToParameterP
     _extents = _sourceData->_extents;
 }
 
-bool DataSet::Source::needReproject(const osgTerrain::CoordinateSystem* cs) const
+bool DataSet::Source::needReproject(const osg::CoordinateSystemNode* cs) const
 {
     return needReproject(cs,0.0,0.0);
 }
 
-bool DataSet::Source::needReproject(const osgTerrain::CoordinateSystem* cs, double minResolution, double maxResolution) const
+bool DataSet::Source::needReproject(const osg::CoordinateSystemNode* cs, double minResolution, double maxResolution) const
 {
     if (!_sourceData) return false;
     
@@ -791,7 +791,7 @@ bool DataSet::Source::needReproject(const osgTerrain::CoordinateSystem* cs, doub
     return false;
 }
 
-DataSet::Source* DataSet::Source::doReproject(const std::string& filename, osgTerrain::CoordinateSystem* cs, double targetResolution) const
+DataSet::Source* DataSet::Source::doReproject(const std::string& filename, osg::CoordinateSystemNode* cs, double targetResolution) const
 {
     // return nothing when repoject is inappropriate.
     if (!_sourceData) return 0;
@@ -818,8 +818,8 @@ DataSet::Source* DataSet::Source::doReproject(const std::string& filename, osgTe
 /*      destination coordinate system.                                  */
 /* -------------------------------------------------------------------- */
     void *hTransformArg = 
-         GDALCreateGenImgProjTransformer( _sourceData->_gdalDataSet,_sourceData->_cs->getWKT().c_str(),
-                                          NULL, cs->getWKT().c_str(),
+         GDALCreateGenImgProjTransformer( _sourceData->_gdalDataSet,_sourceData->_cs->getCoordinateSystem().c_str(),
+                                          NULL, cs->getCoordinateSystem().c_str(),
                                           TRUE, 0.0, 1 );
 
     if (!hTransformArg)
@@ -888,21 +888,21 @@ DataSet::Source* DataSet::Source::doReproject(const std::string& filename, osgTe
 /* -------------------------------------------------------------------- */
 /*      Write out the projection definition.                            */
 /* -------------------------------------------------------------------- */
-    GDALSetProjection( hDstDS, cs->getWKT().c_str() );
+    GDALSetProjection( hDstDS, cs->getCoordinateSystem().c_str() );
     GDALSetGeoTransform( hDstDS, adfDstGeoTransform );
 
 
 // Set up the transformer along with the new datasets.
 
     hTransformArg = 
-         GDALCreateGenImgProjTransformer( _sourceData->_gdalDataSet,_sourceData->_cs->getWKT().c_str(),
-                                          hDstDS, cs->getWKT().c_str(),
+         GDALCreateGenImgProjTransformer( _sourceData->_gdalDataSet,_sourceData->_cs->getCoordinateSystem().c_str(),
+                                          hDstDS, cs->getCoordinateSystem().c_str(),
                                           TRUE, 0.0, 1 );
 
     GDALTransformerFunc pfnTransformer = GDALGenImgProjTransform;
 
     
-    std::cout<<"Setting projection "<<cs->getWKT()<<std::endl;
+    std::cout<<"Setting projection "<<cs->getCoordinateSystem()<<std::endl;
 
 /* -------------------------------------------------------------------- */
 /*      Copy the color table, if required.                              */
@@ -1915,6 +1915,12 @@ static osg::Vec3 computeLocalPosition(const osg::Matrixd& localToWorld, double X
                      X*localToWorld(2,0) + Y*localToWorld(2,1) + Z*localToWorld(2,2));
 }
 
+static osg::Vec3 computeLocalPosition2(const osg::Matrixd& worldToLocal, double X, double Y, double Z)
+{
+    return osg::Vec3(X*worldToLocal(0,0) + Y*worldToLocal(1,0) + Z*worldToLocal(2,0) + worldToLocal(3,0),
+                     X*worldToLocal(0,1) + Y*worldToLocal(1,1) + Z*worldToLocal(2,1) + worldToLocal(3,1),
+                     X*worldToLocal(0,2) + Y*worldToLocal(1,2) + Z*worldToLocal(2,2) + worldToLocal(3,2));
+}
 
 osg::Node* DataSet::DestinationTile::createPolygonal()
 {
@@ -1967,12 +1973,17 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
     
     float skirtRatio = 0.01f;
     osg::Matrixd localToWorld;
+    osg::Matrixd worldToLocal;
     osg::Vec3 skirtVector(0.0f,0.0f,0.0f);
 
-    osgTerrain::EllipsodeTransform& et = _dataSet->getEllipsodeTransform();
-    bool mapLatLongsToXYZ = _dataSet->getConvertFromGeographicToGeocentric();
+    const osg::EllipsoidModel* et = _dataSet->getEllipsoidModel();
+    bool mapLatLongsToXYZ = _dataSet->getConvertFromGeographicToGeocentric() && et;
     bool useLocalToTileTransform = _dataSet->getUseLocalTileTransform();
     
+    osg::Vec3 center_position(0.0f,0.0f,0.0f);
+    osg::Vec3 center_normal(0.0f,0.0f,1.0f);
+    osg::Vec3 transformed_center_normal(0.0f,0.0f,1.0f);
+
     if (useLocalToTileTransform)
     {
         if (mapLatLongsToXYZ)
@@ -1980,20 +1991,30 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
             double midLong = grid->getOrigin().x()+grid->getXInterval()*((double)(numColumns-1))*0.5;
             double midLat = grid->getOrigin().y()+grid->getYInterval()*((double)(numRows-1))*0.5;
             double midZ = grid->getOrigin().z();
-            et.computeLocalToWorldTransform(osg::DegreesToRadians(midLat),osg::DegreesToRadians(midLong),midZ,localToWorld);
+            et->computeLocalToWorldTransformFromLatLongHeight(osg::DegreesToRadians(midLat),osg::DegreesToRadians(midLong),midZ,localToWorld);
             
             double minLong = grid->getOrigin().x();
             double minLat = grid->getOrigin().y();
 
             double minX,minY,minZ;
-            et.convertLatLongHeightToXYZ(osg::DegreesToRadians(minLat),osg::DegreesToRadians(minLong),midZ,minX,minY,minZ);
+            et->convertLatLongHeightToXYZ(osg::DegreesToRadians(minLat),osg::DegreesToRadians(minLong),midZ,minX,minY,minZ);
             
             double midX,midY;
-            et.convertLatLongHeightToXYZ(osg::DegreesToRadians(midLat),osg::DegreesToRadians(midLong),midZ,midX,midY,midZ);
+            et->convertLatLongHeightToXYZ(osg::DegreesToRadians(midLat),osg::DegreesToRadians(midLong),midZ,midX,midY,midZ);
             
             double length = sqrt((midX-minX)*(midX-minX) + (midY-minY)*(midY-minY)); 
             
             skirtVector.set(0.0f,0.0f,-length*skirtRatio);
+            
+            center_normal.set(midX,midY,midZ);
+            center_normal.normalize();
+            
+            worldToLocal.invert(localToWorld);
+            
+            //center_position = computeLocalPosition(localToWorld,midX,midY,midZ);
+            center_position = computeLocalPosition2(worldToLocal,midX,midY,midZ);
+            transformed_center_normal = osg::Matrixd::transform3x3(localToWorld,center_normal);
+            
         }
         else
         {
@@ -2001,8 +2022,11 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
             double midY = grid->getOrigin().y()+grid->getYInterval()*((double)(numRows-1))*0.5;
             double midZ = grid->getOrigin().z();
             localToWorld.makeTranslate(midX,midY,midZ);
+            worldToLocal.invert(localToWorld);
+            
             skirtVector.set(0.0f,0.0f,-_extents.radius()*skirtRatio);
-        }    
+        }
+        
     }
     else if (mapLatLongsToXYZ) 
     {
@@ -2012,8 +2036,8 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
         double midLat = grid->getOrigin().y()+grid->getYInterval()*((double)(numRows-1))*0.5;
         double midZ = grid->getOrigin().z();
         double X,Y,Z;
-        et.convertLatLongHeightToXYZ(osg::DegreesToRadians(midLat),osg::DegreesToRadians(midLong),midZ,X,Y,Z);
-        osg::Vec3 gravitationVector = et.computeGavitationVector(X,Y,Z);
+        et->convertLatLongHeightToXYZ(osg::DegreesToRadians(midLat),osg::DegreesToRadians(midLong),midZ,X,Y,Z);
+        osg::Vec3 gravitationVector = et->computeLocalUpVector(X,Y,Z);
         gravitationVector.normalize();
         skirtVector = gravitationVector * _extents.radius()* skirtRatio;
     }
@@ -2033,6 +2057,9 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
     double delta_Y = grid->getYInterval();
     double orig_Z = grid->getOrigin().z();
 
+
+    float min_dot_product = 1.0f;
+
     for(r=0;r<numRows;++r)
     {
 	for(c=0;c<numColumns;++c)
@@ -2043,16 +2070,22 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
 
             if (mapLatLongsToXYZ)
             {
-                et.convertLatLongHeightToXYZ(osg::DegreesToRadians(Y),osg::DegreesToRadians(X),Z,
+                et->convertLatLongHeightToXYZ(osg::DegreesToRadians(Y),osg::DegreesToRadians(X),Z,
                                              X,Y,Z);
             }
-#if 1
+
+            // upadate the cluster culling data.
+            osg::Vec3 local_normal(X,Y,Z);
+            local_normal.normalize();
+            float local_dot_product = center_normal * local_normal;
+            min_dot_product = osg::minimum(min_dot_product, local_dot_product);
+
             if (useLocalToTileTransform)
             {
-                v[vi] = computeLocalPosition(localToWorld,X,Y,Z);
+                //v[vi] = computeLocalPosition(localToWorld,X,Y,Z);
+                v[vi] = computeLocalPosition2(worldToLocal,X,Y,Z);
             }
             else
-#endif
             {
 	        v[vi].set(X,Y,Z);
             }
@@ -2064,9 +2097,12 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
 	    t[vi].y() = (r==numRows-1)? 1.0f : (float)(r)/(float)(numRows-1);
 
             ++vi;
+            
 	}
     }
     
+
+
     //geometry->setUseDisplayList(false);
     geometry->setVertexArray(&v);
 
@@ -2128,6 +2164,28 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
     if (n.valid() && n->size()!=numVertices) n->resize(numVertices);
 #endif
 
+
+    bool useClusterCullingCallback = mapLatLongsToXYZ;
+    if (useClusterCullingCallback)
+    {
+        // set up cluster cullling, 
+        osg::ClusterCullingCallback* ccc = new osg::ClusterCullingCallback;
+
+        float angle = acosf(min_dot_product)+osg::PI*0.5f;
+        float deviation = (angle<osg::PI) ? cos(angle) : -1.0f;
+
+        std::cout<<" center_position="<<center_position<<" center_normal="<<center_normal<<" min_dot_product="<<min_dot_product<<std::endl;
+        ccc->set(center_position, transformed_center_normal, deviation);
+        geometry->setCullCallback(ccc);
+
+        std::cout<<"manual      ccc->getControlPoint()==\t"<<ccc->getControlPoint()<<"\t"<<ccc->getNormal()<<"\t"<<ccc->getDeviation()<<std::endl;
+
+        #if 0    
+            ccc->computeFrom(geometry);
+            std::cout<<"computeFrom ccc->getControlPoint()==\t"<<ccc->getControlPoint()<<"\t"<<ccc->getNormal()<<"\t"<<ccc->getDeviation()<<std::endl;
+        #endif
+    }
+    
     osgUtil::Simplifier::IndexList pointsToProtectDuringSimplification;
 
     if (numVerticesInSkirt>0)
@@ -2236,8 +2294,10 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
     
     simplifier.simplify(*geometry, pointsToProtectDuringSimplification);  // this will replace the normal vector with a new one
 
+
     osgUtil::TriStripVisitor tsv;
     tsv.stripify(*geometry);
+
 
     osg::Geode* geode = new osg::Geode;
     geode->addDrawable(geometry);
@@ -2682,6 +2742,8 @@ DataSet::DataSet()
     _geometryType = POLYGONAL;
     _textureType = COMPRESSED_TEXTURE;
     _useLocalTileTransform = true;
+    
+    setEllipsoidModel(new osg::EllipsoidModel());
 }
 
 void DataSet::init()
@@ -2721,7 +2783,7 @@ void DataSet::loadSources()
 }
 
 DataSet::CompositeDestination* DataSet::createDestinationGraph(CompositeDestination* parent,
-                                                           osgTerrain::CoordinateSystem* cs,
+                                                           osg::CoordinateSystemNode* cs,
                                                            const osg::BoundingBox& extents,
                                                            unsigned int maxImageSize,
                                                            unsigned int maxTerrainSize,
@@ -2973,7 +3035,7 @@ void DataSet::computeDestinationGraphFromSources(unsigned int numLevels)
                 if (sd->_cs.valid())
                 {
                     _destinationCoordinateSystem = sd->_cs;
-                    std::cout<<"Setting coordinate system to "<<_destinationCoordinateSystem->getWKT()<<std::endl;
+                    std::cout<<"Setting coordinate system to "<<_destinationCoordinateSystem->getCoordinateSystem()<<std::endl;
                     break;
                 }
             }

@@ -19,8 +19,7 @@
 #include <osg/BoundingBox>
 #include <osg/Image>
 #include <osg/Shape>
-
-#include <osgTerrain/CoordinateSystem>
+#include <osg/CoordinateSystemNode>
 
 #include <set>
 
@@ -53,7 +52,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
                 _numValuesY(sp._numValuesY),
                 _numValuesZ(sp._numValuesZ) {}
 
-            SpatialProperties(osgTerrain::CoordinateSystem* cs, const osg::BoundingBox& extents):
+            SpatialProperties(osg::CoordinateSystemNode* cs, const osg::BoundingBox& extents):
                 _cs(cs),
                 _extents(extents),
                 _numValuesX(0),
@@ -81,7 +80,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
                 _extents.expandBy( osg::Vec3(_numValuesX,_numValuesY,0.0)*_geoTransform);
             }
 
-            osg::ref_ptr<osgTerrain::CoordinateSystem>  _cs;
+            osg::ref_ptr<osg::CoordinateSystemNode>  _cs;
             osg::Matrixd                                _geoTransform;
             osg::BoundingBox                            _extents;
             unsigned int                                _numValuesX;
@@ -123,9 +122,9 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
 
             static SourceData* readData(Source* source);
             
-            osg::BoundingBox getExtents(const osgTerrain::CoordinateSystem* cs) const;
+            osg::BoundingBox getExtents(const osg::CoordinateSystemNode* cs) const;
             
-            const SpatialProperties& computeSpatialProperties(const osgTerrain::CoordinateSystem* cs) const;
+            const SpatialProperties& computeSpatialProperties(const osg::CoordinateSystemNode* cs) const;
 
             bool intersects(const SpatialProperties& sp) const;
 
@@ -142,7 +141,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
             osg::ref_ptr<osg::Node>                     _model;
             GDALDataset*                                _gdalDataSet;
             
-            typedef std::map<const osgTerrain::CoordinateSystem*,SpatialProperties> SpatialPropertiesMap;
+            typedef std::map<const osg::CoordinateSystemNode*,SpatialProperties> SpatialPropertiesMap;
             mutable SpatialPropertiesMap _spatialPropertiesMap;
             
             
@@ -201,9 +200,9 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
             void setCoordinateSystemPolicy(ParameterPolicy policy) { _coordinateSystemPolicy = policy; }
             ParameterPolicy getCoordinateSystemPolicy() const { return _coordinateSystemPolicy; }
 
-            void setCoordinateSystem(const std::string& wellKnownText) { _cs = new osgTerrain::CoordinateSystem(wellKnownText); }
-            void setCoordinateSystem(osgTerrain::CoordinateSystem* cs) { _cs = cs; }
-            osgTerrain::CoordinateSystem* getCoordinateSystem() { return  _cs.get(); }
+            void setCoordinateSystem(const std::string& wellKnownText) { _cs = new osg::CoordinateSystemNode(wellKnownText); }
+            void setCoordinateSystem(osg::CoordinateSystemNode* cs) { _cs = cs; }
+            osg::CoordinateSystemNode* getCoordinateSystem() { return  _cs.get(); }
 
             
             void setGeoTransformPolicy(ParameterPolicy policy)  { _geoTransformPolicy = policy; }
@@ -225,11 +224,11 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
             void loadSourceData();
 
             
-            bool needReproject(const osgTerrain::CoordinateSystem* cs) const;
+            bool needReproject(const osg::CoordinateSystemNode* cs) const;
 
-            bool needReproject(const osgTerrain::CoordinateSystem* cs, double minResolution, double maxResolution) const;
+            bool needReproject(const osg::CoordinateSystemNode* cs, double minResolution, double maxResolution) const;
             
-            Source* doReproject(const std::string& filename, osgTerrain::CoordinateSystem* cs, double targetResolution=0.0) const;
+            Source* doReproject(const std::string& filename, osg::CoordinateSystemNode* cs, double targetResolution=0.0) const;
            
             void buildOverviews();
             
@@ -745,7 +744,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
                 _maxVisibleDistance(FLT_MAX),
                 _subTileGenerated(false) {}
         
-            CompositeDestination(osgTerrain::CoordinateSystem* cs, const osg::BoundingBox& extents):
+            CompositeDestination(osg::CoordinateSystemNode* cs, const osg::BoundingBox& extents):
                 SpatialProperties(cs,extents),
                 _dataSet(0),
                 _parent(0),
@@ -851,19 +850,19 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
         void setDefaultColor(const osg::Vec4& defaultColor) { _defaultColor = defaultColor; }
         const osg::Vec4& getDefaultColor() const { return _defaultColor; }
 
-        void setDestinationCoordinateSystem(const std::string& wellKnownText) { setDestinationCoordinateSystem(new osgTerrain::CoordinateSystem(wellKnownText)); }
-        void setDestinationCoordinateSystem(osgTerrain::CoordinateSystem* cs) { _destinationCoordinateSystem = cs; }
-        osgTerrain::CoordinateSystem* getDestinationCoordinateSystem() { return _destinationCoordinateSystem .get(); }
+        void setDestinationCoordinateSystem(const std::string& wellKnownText) { setDestinationCoordinateSystem(new osg::CoordinateSystemNode(wellKnownText)); }
+        void setDestinationCoordinateSystem(osg::CoordinateSystemNode* cs) { _destinationCoordinateSystem = cs; }
+        osg::CoordinateSystemNode* getDestinationCoordinateSystem() { return _destinationCoordinateSystem .get(); }
         
-        void setIntermediateCoordinateSystem(const std::string& wellKnownText) { setIntermediateCoordinateSystem(new osgTerrain::CoordinateSystem(wellKnownText)); }
-        void setIntermediateCoordinateSystem(osgTerrain::CoordinateSystem* cs) { _intermediateCoordinateSystem = cs; }
-        osgTerrain::CoordinateSystem* getIntermediateCoordinateSystem() { return _intermediateCoordinateSystem.get(); }
+        void setIntermediateCoordinateSystem(const std::string& wellKnownText) { setIntermediateCoordinateSystem(new osg::CoordinateSystemNode(wellKnownText)); }
+        void setIntermediateCoordinateSystem(osg::CoordinateSystemNode* cs) { _intermediateCoordinateSystem = cs; }
+        osg::CoordinateSystemNode* getIntermediateCoordinateSystem() { return _intermediateCoordinateSystem.get(); }
 
         void setConvertFromGeographicToGeocentric(bool flag) { _convertFromGeographicToGeocentric = flag; }
         bool getConvertFromGeographicToGeocentric() const { return _convertFromGeographicToGeocentric; }
 
-        void setEllipsodeTransform(const osgTerrain::EllipsodeTransform& et) { _ellipsodeTransform = et; }
-        osgTerrain::EllipsodeTransform& getEllipsodeTransform() { return _ellipsodeTransform; }
+        void setEllipsoidModel(osg::EllipsoidModel* et) { _ellipsoidModel = et; }
+        osg::EllipsoidModel* getEllipsoidModel() { return _ellipsoidModel.get(); }
 
         void setDestinationExtents(const osg::BoundingBox& extents) { _extents = extents; }
         
@@ -907,7 +906,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
 
 
         CompositeDestination* createDestinationGraph(CompositeDestination* parent,
-                                                     osgTerrain::CoordinateSystem* cs,
+                                                     osg::CoordinateSystemNode* cs,
                                                      const osg::BoundingBox& extents,
                                                      unsigned int maxImageSize,
                                                      unsigned int maxTerrainSize,
@@ -950,11 +949,11 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
 	float                                       _radiusToMaxVisibleDistanceRatio;
         float                                       _verticalScale;
             
-        osg::ref_ptr<osgTerrain::CoordinateSystem>  _destinationCoordinateSystem;
-        osg::ref_ptr<osgTerrain::CoordinateSystem>  _intermediateCoordinateSystem;
+        osg::ref_ptr<osg::CoordinateSystemNode>  _destinationCoordinateSystem;
+        osg::ref_ptr<osg::CoordinateSystemNode>  _intermediateCoordinateSystem;
 
         bool                                        _convertFromGeographicToGeocentric;
-        osgTerrain::EllipsodeTransform              _ellipsodeTransform;
+        osg::ref_ptr<osg::EllipsoidModel>           _ellipsoidModel;
  
         osg::Matrixd                                _geoTransform;
         osg::BoundingBox                            _extents;

@@ -895,11 +895,18 @@ void CullVisitor::apply(Geode& node)
     Matrix* matrix = getCurrentMatrix();
     for(int i=0;i<node.getNumDrawables();++i)
     {
-
         Drawable* drawable = node.getDrawable(i);
         const BoundingBox &bb =drawable->getBound();
 
-        if (isCulled(bb,mode)) continue;
+	if( drawable->getCullCallback() )
+	{
+	    if( drawable->getCullCallback()->cull( this, drawable ) == true )
+		continue;
+	}
+	else
+	{
+            if (isCulled(bb,mode)) continue;
+	}
 
 
         //SandB change:      

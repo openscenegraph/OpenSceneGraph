@@ -10,6 +10,7 @@
 #include <osg/State>
 #include <osg/Types>
 #include <osg/Vec2>
+#include <osg/NodeVisitor>
 
 #include <vector>
 #include <map>
@@ -168,7 +169,7 @@ class SG_EXPORT Drawable : public Object
         struct DrawCallback : public osg::Referenced
         {
                 /** do customized draw code.*/
-                virtual void drawImmediateMode(State& state,osg::Drawable* drawable) const;
+                virtual void drawImmediateMode(State& state,osg::Drawable* drawable) const = 0;
         };
         
         friend struct osg::Drawable::DrawCallback;
@@ -181,6 +182,23 @@ class SG_EXPORT Drawable : public Object
         
         /** Get the const ComputerTransfromCallback.*/
         const DrawCallback* getDrawCallback() const { return _drawCallback.get(); }
+
+        struct CullCallback : public osg::Referenced
+        {
+                /** do customized cull code.*/
+                virtual bool cull(osg::NodeVisitor *visitor, osg::Drawable* drawable) = 0;
+        };
+        
+        friend struct osg::Drawable::CullCallback;
+
+        /** Set the CullCallback which allows users to attach customize the drawing of existing Drawable object.*/
+        void setCullCallback(CullCallback* cc) { _cullCallback=cc; }
+        
+        /** Get the non const ComputerTransfromCallback.*/
+        CullCallback* getCullCallback() { return _cullCallback.get(); }
+        
+        /** Get the const ComputerTransfromCallback.*/
+        const CullCallback* getCullCallback() const { return _cullCallback.get(); }
 
 
         /** draw directly ignoring an OpenGL display list which could be attached.
@@ -277,6 +295,7 @@ class SG_EXPORT Drawable : public Object
         mutable bool            _bbox_computed;
         
         ref_ptr<DrawCallback>   _drawCallback;
+        ref_ptr<CullCallback>   _cullCallback;
         
         // static cache of deleted display lists which can only 
         // by completely deleted once the appropriate OpenGL context

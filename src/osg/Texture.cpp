@@ -191,6 +191,7 @@ void Texture::apply(State& state) const
         if (_subloadMode == OFF)
         {
             glBindTexture( GL_TEXTURE_2D, handle );
+            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _min_filter);
         }
         else  if (_image.valid() && _image->data())
         {

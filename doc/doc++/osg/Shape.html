@@ -23,35 +23,35 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.170.1">Shape</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.171.1">Shape</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.170.2">Shape</A></B>(const <!1><A HREF="Shape.html#DOC.2.170.2">Shape</A>&amp; sa, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.171.2">Shape</A></B>(const <!1><A HREF="Shape.html#DOC.2.171.2">Shape</A>&amp; sa, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.170.3">cloneType</A></B>() const  = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.171.3">cloneType</A></B>() const  = 0
 <DD><I>Clone the type of an attribute, with Object* return type.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.170.4">clone</A></B>(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp;) const  = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.171.4">clone</A></B>(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp;) const  = 0
 <DD><I>Clone an attribute, with Object* return type.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.170.5">isSameKindAs</A></B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.171.5">isSameKindAs</A></B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
 <DD><I>return true if this and obj are of the same kind of object</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.170.6">libraryName</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.171.6">libraryName</A></B>() const 
 <DD><I>return the name of the attribute's library</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.170.7">className</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.171.7">className</A></B>() const 
 <DD><I>return the name of the attribute's class type</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.170.8">accept</A></B>(<!1><A HREF="ShapeVisitor.html">ShapeVisitor</A>&amp;) = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.171.8">accept</A></B>(<!1><A HREF="ShapeVisitor.html">ShapeVisitor</A>&amp;) = 0
 <DD><I>accept a non const shape visitor which can be used on non const shape objects.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.170.9">accept</A></B>(<!1><A HREF="ConstShapeVisitor.html">ConstShapeVisitor</A>&amp;) const  = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.171.9">accept</A></B>(<!1><A HREF="ConstShapeVisitor.html">ConstShapeVisitor</A>&amp;) const  = 0
 <DD><I>accept a const shape visitor which can be used on const shape objects.</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.170.10">~Shape</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.171.10">~Shape</A></B>()
 </DL></P>
 
 </DL>
@@ -59,9 +59,9 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.135.8">DataVariance</A> dv)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.136.8">DataVariance</A> dv)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.135.8">DataVariance</A> <B>getDataVariance</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.136.8">DataVariance</A> <B>getDataVariance</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
 <DT>
@@ -77,7 +77,7 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.135.8">DataVariance</A> <B>_dataVariance</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.136.8">DataVariance</A> <B>_dataVariance</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
 </DL></P>
@@ -118,54 +118,54 @@ to define the geometric shape of procedurally generate Geometry.</BLOCKQUOTE>
 <DL>
 
 <A NAME="Shape"></A>
-<A NAME="DOC.2.170.1"></A>
+<A NAME="DOC.2.171.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Shape()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Shape"></A>
-<A NAME="DOC.2.170.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Shape(const <!1><A HREF="Shape.html#DOC.2.170.2">Shape</A>&amp; sa, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="DOC.2.171.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Shape(const <!1><A HREF="Shape.html#DOC.2.171.2">Shape</A>&amp; sa, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="cloneType"></A>
-<A NAME="DOC.2.170.3"></A>
+<A NAME="DOC.2.171.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html">Object</A>* cloneType() const  = 0</B></TT>
 <DD>Clone the type of an attribute, with Object* return type.
 Must be defined by derived classes.
 <DL><DT><DD></DL><P>
 <A NAME="clone"></A>
-<A NAME="DOC.2.170.4"></A>
+<A NAME="DOC.2.171.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html">Object</A>* clone(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp;) const  = 0</B></TT>
 <DD>Clone an attribute, with Object* return type.
 Must be defined by derived classes.
 <DL><DT><DD></DL><P>
 <A NAME="isSameKindAs"></A>
-<A NAME="DOC.2.170.5"></A>
+<A NAME="DOC.2.171.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(const <!1><A HREF="Object.html">Object</A>* obj) const </B></TT>
 <DD>return true if this and obj are of the same kind of object
 <DL><DT><DD></DL><P>
 <A NAME="libraryName"></A>
-<A NAME="DOC.2.170.6"></A>
+<A NAME="DOC.2.171.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* libraryName() const </B></TT>
 <DD>return the name of the attribute's library
 <DL><DT><DD></DL><P>
 <A NAME="className"></A>
-<A NAME="DOC.2.170.7"></A>
+<A NAME="DOC.2.171.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
 <DD>return the name of the attribute's class type
 <DL><DT><DD></DL><P>
 <A NAME="accept"></A>
-<A NAME="DOC.2.170.8"></A>
+<A NAME="DOC.2.171.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void accept(<!1><A HREF="ShapeVisitor.html">ShapeVisitor</A>&amp;) = 0</B></TT>
 <DD>accept a non const shape visitor which can be used on non const shape objects.
 Must be defined by derived classes.
 <DL><DT><DD></DL><P>
 <A NAME="accept"></A>
-<A NAME="DOC.2.170.9"></A>
+<A NAME="DOC.2.171.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void accept(<!1><A HREF="ConstShapeVisitor.html">ConstShapeVisitor</A>&amp;) const  = 0</B></TT>
 <DD>accept a const shape visitor which can be used on const shape objects.
 Must be defined by derived classes.
 <DL><DT><DD></DL><P>
 <A NAME="~Shape"></A>
-<A NAME="DOC.2.170.10"></A>
+<A NAME="DOC.2.171.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Shape()</B></TT>
 <DL><DT><DD></DL><P></DL>
 <HR>

@@ -86,19 +86,34 @@ class  <B><A HREF="ParameterOutput.html">ParameterOutput</A></B>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>template&lt;class Iterator&gt;  void <B><A HREF="#DOC.2.32">writeArrayAsInts</A></B>(<!1><A HREF="Output.html">Output</A>&amp; fw, Iterator first, Iterator last, int noItemsPerLine=0)
 <DT>
-extern OSGDB_EXPORT osg::Object* <B><A HREF="readObjectFile.html">readObjectFile</A></B>(const std::string&amp; filename, bool useObjectCache=false)
+extern OSGDB_EXPORT osg::Object* <B><A HREF="readObjectFile.html">readObjectFile</A></B>(const std::string&amp; filename, bool useObjectCache)
 <DD><I>Read an osg::Object from file.</I>
 <DT>
-extern OSGDB_EXPORT osg::Image* <B><A HREF="readImageFile.html">readImageFile</A></B>(const std::string&amp; filename, bool useObjectCache=false)
+inline   osg::Object* <B><A HREF="readObjectFile.2.html">readObjectFile</A></B>(const std::string&amp; filename)
+<DD><I>Read an osg::Object from file.</I>
+<DT>
+extern OSGDB_EXPORT osg::Image* <B><A HREF="readImageFile.html">readImageFile</A></B>(const std::string&amp; filename, bool useObjectCache)
 <DD><I>Read an osg::Image from file.</I>
 <DT>
-extern OSGDB_EXPORT osg::Node* <B><A HREF="readNodeFile.html">readNodeFile</A></B>(const std::string&amp; filename, bool useObjectCache=false)
+inline   osg::Image* <B><A HREF="readImageFile.2.html">readImageFile</A></B>(const std::string&amp; filename)
+<DD><I>Read an osg::Image from file.</I>
+<DT>
+extern OSGDB_EXPORT osg::Node* <B><A HREF="readNodeFile.html">readNodeFile</A></B>(const std::string&amp; filename, bool useObjectCache)
 <DD><I>Read an osg::Node from file.</I>
 <DT>
-extern OSGDB_EXPORT osg::Node* <B><A HREF="readNodeFiles.html">readNodeFiles</A></B>(std::vector&lt;std::string&gt;&amp; commandLine, bool useObjectCache=false)
+inline   osg::Node* <B><A HREF="readNodeFile.2.html">readNodeFile</A></B>(const std::string&amp; filename)
+<DD><I>Read an osg::Node from file.</I>
+<DT>
+extern OSGDB_EXPORT osg::Node* <B><A HREF="readNodeFiles.html">readNodeFiles</A></B>(std::vector&lt;std::string&gt;&amp; commandLine, bool useObjectCache)
+<DD><I>Read an osg::Node subgraph from files, creating a osg::Group to contain the nodes if more than one subgraph has been loaded.</I>
+<DT>
+inline   osg::Node* <B><A HREF="readNodeFiles.2.html">readNodeFiles</A></B>(std::vector&lt;std::string&gt;&amp; commandLine)
 <DD><I>Read an osg::Node subgraph from files, creating a osg::Group to contain the nodes if more than one subgraph has been loaded</I>
 <DT>
-extern OSGDB_EXPORT osg::Node* <B><A HREF="readNodeFiles.2.html">readNodeFiles</A></B>(osg::ArgumentParser&amp; parser, bool useObjectCache=false)
+extern OSGDB_EXPORT osg::Node* <B><A HREF="readNodeFiles.3.html">readNodeFiles</A></B>(osg::ArgumentParser&amp; parser, bool useObjectCache)
+<DD><I>Read an osg::Node subgraph from files, creating a osg::Group to contain the nodes if more than one subgraph has been loaded.</I>
+<DT>
+inline   osg::Node* <B><A HREF="readNodeFiles.4.html">readNodeFiles</A></B>(osg::ArgumentParser&amp; parser)
 <DD><I>Read an osg::Node subgraph from files, creating a osg::Group to contain the nodes if more than one subgraph has been loaded</I>
 <DT>
 class  OSGDB_EXPORT <B><A HREF="ReaderWriter.html">ReaderWriter</A></B>: public osg::Referenced

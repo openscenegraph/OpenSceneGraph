@@ -90,7 +90,7 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.107.35">makeRotate</A></B>( float angle, const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.107.36">makeRotate</A></B>( float angle, float <!1><A HREF="Viewport.html#DOC.2.232.8">x</A>, float <!1><A HREF="Viewport.html#DOC.2.232.9">y</A>, float <!1><A HREF="Vec4.html#DOC.2.228.15">z</A> )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.107.36">makeRotate</A></B>( float angle, float <!1><A HREF="Viewport.html#DOC.2.233.8">x</A>, float <!1><A HREF="Viewport.html#DOC.2.233.9">y</A>, float <!1><A HREF="Vec4.html#DOC.2.229.15">z</A> )
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.107.37">makeRotate</A></B>( const <!1><A HREF="Quat.html">Quat</A>&amp; )
 <DT>
@@ -99,7 +99,7 @@
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.107.39">makeOrtho</A></B>(double left, double right, double bottom, double top, double zNear, double zFar)
 <DD><I>Set to a orthographic projection.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.107.40">getOrtho</A></B>(double&amp; left, double&amp; right, double&amp; bottom, double&amp; top, double&amp; zNear, double&amp; zFar)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.107.40">getOrtho</A></B>(double&amp; left, double&amp; right, double&amp; bottom, double&amp; top, double&amp; zNear, double&amp; zFar)
 <DD><I>Get the othorgraphic settings of the orthographic projection matrix.</I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.107.41">makeOrtho2D</A></B>(double left, double right, double bottom, double top)
@@ -108,128 +108,131 @@
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.107.42">makeFrustum</A></B>(double left, double right, double bottom, double top, double zNear, double zFar)
 <DD><I>Set to a perspective projection.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.107.43">getFrustum</A></B>(double&amp; left, double&amp; right, double&amp; bottom, double&amp; top, double&amp; zNear, double&amp; zFar)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.107.43">getFrustum</A></B>(double&amp; left, double&amp; right, double&amp; bottom, double&amp; top, double&amp; zNear, double&amp; zFar)
 <DD><I>Get the frustum setting of a perspective projection matrix.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.107.44">makePerspective</A></B>(double fovy, double <!1><A HREF="Viewport.html#DOC.2.232.13">aspectRatio</A>, double zNear, double zFar)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.107.44">makePerspective</A></B>(double fovy, double <!1><A HREF="Viewport.html#DOC.2.233.13">aspectRatio</A>, double zNear, double zFar)
 <DD><I>Set to a symmetrical perspective projection, See gluPerspective for further details.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.107.45">makeLookAt</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye, const <!1><A HREF="Vec3.html">Vec3</A>&amp; <!1><A HREF="BoundingSphere.html#DOC.2.30.8">center</A>, const <!1><A HREF="Vec3.html">Vec3</A>&amp; up)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.107.45">getPerspective</A></B>(double&amp; fovy, double&amp; <!1><A HREF="Viewport.html#DOC.2.233.13">aspectRatio</A>, double&amp; zNear, double&amp; zFar)
+<DD><I>Get the frustum setting of a symetric perspective projection matrix.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.107.46">makeLookAt</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye, const <!1><A HREF="Vec3.html">Vec3</A>&amp; <!1><A HREF="BoundingSphere.html#DOC.2.31.8">center</A>, const <!1><A HREF="Vec3.html">Vec3</A>&amp; up)
 <DD><I>Set to the position and orientation modelview matrix, using the same convention as gluLookAt.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.107.46">getLookAt</A></B>(<!1><A HREF="Vec3.html">Vec3</A>&amp; eye, <!1><A HREF="Vec3.html">Vec3</A>&amp; <!1><A HREF="BoundingSphere.html#DOC.2.30.8">center</A>, <!1><A HREF="Vec3.html">Vec3</A>&amp; up, float lookDistance=1.0f)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.107.47">getLookAt</A></B>(<!1><A HREF="Vec3.html">Vec3</A>&amp; eye, <!1><A HREF="Vec3.html">Vec3</A>&amp; <!1><A HREF="BoundingSphere.html#DOC.2.31.8">center</A>, <!1><A HREF="Vec3.html">Vec3</A>&amp; up, float lookDistance=1.0f)
 <DD><I>Get to the position and orientation of a modelview matrix, using the same convention as gluLookAt.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.107.47">invert</A></B>( const <!1><A HREF="Matrixd.html">Matrixd</A>&amp; )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.107.48">invert</A></B>( const <!1><A HREF="Matrixd.html">Matrixd</A>&amp; )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.48">identity</A></B>( void )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.49">identity</A></B>( void )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.49">scale</A></B>( const <!1><A HREF="Vec3.html">Vec3</A>&amp; sv)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.50">scale</A></B>( const <!1><A HREF="Vec3.html">Vec3</A>&amp; sv)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.50">scale</A></B>( <!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> sx, <!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> sy, <!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> sz)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.51">scale</A></B>( <!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> sx, <!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> sy, <!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> sz)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.51">translate</A></B>( const <!1><A HREF="Vec3.html">Vec3</A>&amp; dv)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.52">translate</A></B>( const <!1><A HREF="Vec3.html">Vec3</A>&amp; dv)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.52">translate</A></B>( <!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> <!1><A HREF="Viewport.html#DOC.2.232.8">x</A>, <!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> <!1><A HREF="Viewport.html#DOC.2.232.9">y</A>, <!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> <!1><A HREF="Vec4.html#DOC.2.228.15">z</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.53">translate</A></B>( <!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> <!1><A HREF="Viewport.html#DOC.2.233.8">x</A>, <!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> <!1><A HREF="Viewport.html#DOC.2.233.9">y</A>, <!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> <!1><A HREF="Vec4.html#DOC.2.229.15">z</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.53">rotate</A></B>( const <!1><A HREF="Vec3.html">Vec3</A>&amp; from, const <!1><A HREF="Vec3.html">Vec3</A>&amp; to)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.54">rotate</A></B>( const <!1><A HREF="Vec3.html">Vec3</A>&amp; from, const <!1><A HREF="Vec3.html">Vec3</A>&amp; to)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.54">rotate</A></B>( float angle, float <!1><A HREF="Viewport.html#DOC.2.232.8">x</A>, float <!1><A HREF="Viewport.html#DOC.2.232.9">y</A>, float <!1><A HREF="Vec4.html#DOC.2.228.15">z</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.55">rotate</A></B>( float angle, float <!1><A HREF="Viewport.html#DOC.2.233.8">x</A>, float <!1><A HREF="Viewport.html#DOC.2.233.9">y</A>, float <!1><A HREF="Vec4.html#DOC.2.229.15">z</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.55">rotate</A></B>( float angle, const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.56">rotate</A></B>( float angle, const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.56">rotate</A></B>( float angle1, const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis1, float angle2, const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis2, float angle3, const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis3)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.57">rotate</A></B>( float angle1, const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis1, float angle2, const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis2, float angle3, const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis3)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.57">rotate</A></B>( const <!1><A HREF="Quat.html">Quat</A>&amp; quat)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.58">rotate</A></B>( const <!1><A HREF="Quat.html">Quat</A>&amp; quat)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.58">inverse</A></B>( const <!1><A HREF="Matrixd.html">Matrixd</A>&amp; matrix)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.59">inverse</A></B>( const <!1><A HREF="Matrixd.html">Matrixd</A>&amp; matrix)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.59">ortho</A></B>(double left, double right, double bottom, double top, double zNear, double zFar)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.60">ortho</A></B>(double left, double right, double bottom, double top, double zNear, double zFar)
 <DD><I>Create a orthographic projection.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.60">ortho2D</A></B>(double left, double right, double bottom, double top)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.61">ortho2D</A></B>(double left, double right, double bottom, double top)
 <DD><I>Create a 2D orthographic projection.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.61">frustum</A></B>(double left, double right, double bottom, double top, double zNear, double zFar)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.62">frustum</A></B>(double left, double right, double bottom, double top, double zNear, double zFar)
 <DD><I>Create a perspective projection.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.62">perspective</A></B>(double fovy, double <!1><A HREF="Viewport.html#DOC.2.232.13">aspectRatio</A>, double zNear, double zFar)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.63">perspective</A></B>(double fovy, double <!1><A HREF="Viewport.html#DOC.2.233.13">aspectRatio</A>, double zNear, double zFar)
 <DD><I>Create a symmetrical perspective projection, See gluPerspective for further details.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.63">lookAt</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye, const <!1><A HREF="Vec3.html">Vec3</A>&amp; <!1><A HREF="BoundingSphere.html#DOC.2.30.8">center</A>, const <!1><A HREF="Vec3.html">Vec3</A>&amp; up)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.64">lookAt</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye, const <!1><A HREF="Vec3.html">Vec3</A>&amp; <!1><A HREF="BoundingSphere.html#DOC.2.31.8">center</A>, const <!1><A HREF="Vec3.html">Vec3</A>&amp; up)
 <DD><I>Create the position and orientation as per a camera, using the same convention as gluLookAt.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.107.64">setTrans</A></B>( <!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> tx, <!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> ty, <!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> tz )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.107.65">setTrans</A></B>( <!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> tx, <!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> ty, <!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> tz )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.107.65">setTrans</A></B>( const <!1><A HREF="Vec3.html">Vec3</A>&amp; v )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.107.66">setTrans</A></B>( const <!1><A HREF="Vec3.html">Vec3</A>&amp; v )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.107.66">getTrans</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.107.67">getTrans</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.107.67">getScale</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.107.68">getScale</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.107.68">transform3x3</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v, const <!1><A HREF="Matrixd.html">Matrixd</A>&amp; m)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.107.69">transform3x3</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v, const <!1><A HREF="Matrixd.html">Matrixd</A>&amp; m)
 <DD><I>apply apply an 3x3 transform of v*M[02,02]  </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.107.69">transform3x3</A></B>(const <!1><A HREF="Matrixd.html">Matrixd</A>&amp; m, const <!1><A HREF="Vec3.html">Vec3</A>&amp; v)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.107.70">transform3x3</A></B>(const <!1><A HREF="Matrixd.html">Matrixd</A>&amp; m, const <!1><A HREF="Vec3.html">Vec3</A>&amp; v)
 <DD><I>apply apply an 3x3 transform of M[02,02]*v  </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.107.70">mult</A></B>( const <!1><A HREF="Matrixd.html">Matrixd</A>&amp;, const <!1><A HREF="Matrixd.html">Matrixd</A>&amp; )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.107.71">mult</A></B>( const <!1><A HREF="Matrixd.html">Matrixd</A>&amp;, const <!1><A HREF="Matrixd.html">Matrixd</A>&amp; )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.107.71">preMult</A></B>( const <!1><A HREF="Matrixd.html">Matrixd</A>&amp; )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.107.72">preMult</A></B>( const <!1><A HREF="Matrixd.html">Matrixd</A>&amp; )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.107.72">postMult</A></B>( const <!1><A HREF="Matrixd.html">Matrixd</A>&amp; )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.107.73">postMult</A></B>( const <!1><A HREF="Matrixd.html">Matrixd</A>&amp; )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.107.73">operator *= </A></B>( const <!1><A HREF="Matrixd.html">Matrixd</A>&amp; other )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.107.74">operator *= </A></B>( const <!1><A HREF="Matrixd.html">Matrixd</A>&amp; other )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.74">operator * </A></B>( const <!1><A HREF="Matrixd.html">Matrixd</A> &amp;m ) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.75">operator * </A></B>( const <!1><A HREF="Matrixd.html">Matrixd</A> &amp;m ) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.76">identity</A></B>(void)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.77">identity</A></B>(void)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.77">scale</A></B>(<!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> sx, <!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> sy, <!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> sz)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.78">scale</A></B>(<!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> sx, <!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> sy, <!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> sz)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.78">scale</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.79">scale</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.79">translate</A></B>(<!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> tx, <!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> ty, <!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> tz)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.80">translate</A></B>(<!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> tx, <!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> ty, <!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> tz)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.80">translate</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.81">translate</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.81">rotate</A></B>( const <!1><A HREF="Quat.html">Quat</A>&amp; q )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.82">rotate</A></B>( const <!1><A HREF="Quat.html">Quat</A>&amp; q )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.82">rotate</A></B>(float angle, float <!1><A HREF="Viewport.html#DOC.2.232.8">x</A>, float <!1><A HREF="Viewport.html#DOC.2.232.9">y</A>, float <!1><A HREF="Vec4.html#DOC.2.228.15">z</A> )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.83">rotate</A></B>(float angle, float <!1><A HREF="Viewport.html#DOC.2.233.8">x</A>, float <!1><A HREF="Viewport.html#DOC.2.233.9">y</A>, float <!1><A HREF="Vec4.html#DOC.2.229.15">z</A> )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.83">rotate</A></B>(float angle, const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.84">rotate</A></B>(float angle, const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.84">rotate</A></B>( float angle1, const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis1, float angle2, const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis2, float angle3, const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis3)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.85">rotate</A></B>( float angle1, const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis1, float angle2, const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis2, float angle3, const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis3)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.85">rotate</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; from, const <!1><A HREF="Vec3.html">Vec3</A>&amp; to )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.86">rotate</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; from, const <!1><A HREF="Vec3.html">Vec3</A>&amp; to )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.86">inverse</A></B>( const <!1><A HREF="Matrixd.html">Matrixd</A>&amp; matrix)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.87">inverse</A></B>( const <!1><A HREF="Matrixd.html">Matrixd</A>&amp; matrix)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.87">ortho</A></B>(double left, double right, double bottom, double top, double zNear, double zFar)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.88">ortho</A></B>(double left, double right, double bottom, double top, double zNear, double zFar)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.88">ortho2D</A></B>(double left, double right, double bottom, double top)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.89">ortho2D</A></B>(double left, double right, double bottom, double top)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.89">frustum</A></B>(double left, double right, double bottom, double top, double zNear, double zFar)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.90">frustum</A></B>(double left, double right, double bottom, double top, double zNear, double zFar)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.90">perspective</A></B>(double fovy, double <!1><A HREF="Viewport.html#DOC.2.232.13">aspectRatio</A>, double zNear, double zFar)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.91">perspective</A></B>(double fovy, double <!1><A HREF="Viewport.html#DOC.2.233.13">aspectRatio</A>, double zNear, double zFar)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.91">lookAt</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye, const <!1><A HREF="Vec3.html">Vec3</A>&amp; <!1><A HREF="BoundingSphere.html#DOC.2.30.8">center</A>, const <!1><A HREF="Vec3.html">Vec3</A>&amp; up)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrixd.html">Matrixd</A> <B><A HREF="#DOC.2.107.92">lookAt</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye, const <!1><A HREF="Vec3.html">Vec3</A>&amp; <!1><A HREF="BoundingSphere.html#DOC.2.31.8">center</A>, const <!1><A HREF="Vec3.html">Vec3</A>&amp; up)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.107.92">postMult</A></B>( const <!1><A HREF="Vec3.html">Vec3</A>&amp; v ) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.107.93">postMult</A></B>( const <!1><A HREF="Vec3.html">Vec3</A>&amp; v ) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.107.93">preMult</A></B>( const <!1><A HREF="Vec3.html">Vec3</A>&amp; v ) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.107.94">preMult</A></B>( const <!1><A HREF="Vec3.html">Vec3</A>&amp; v ) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.107.94">postMult</A></B>( const <!1><A HREF="Vec4.html">Vec4</A>&amp; v ) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.107.95">postMult</A></B>( const <!1><A HREF="Vec4.html">Vec4</A>&amp; v ) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.107.95">preMult</A></B>( const <!1><A HREF="Vec4.html">Vec4</A>&amp; v ) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.107.96">preMult</A></B>( const <!1><A HREF="Vec4.html">Vec4</A>&amp; v ) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.107.96">transform3x3</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v, const <!1><A HREF="Matrixd.html">Matrixd</A>&amp; m)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.107.97">transform3x3</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v, const <!1><A HREF="Matrixd.html">Matrixd</A>&amp; m)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.107.97">transform3x3</A></B>(const <!1><A HREF="Matrixd.html">Matrixd</A>&amp; m, const <!1><A HREF="Vec3.html">Vec3</A>&amp; v)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.107.98">transform3x3</A></B>(const <!1><A HREF="Matrixd.html">Matrixd</A>&amp; m, const <!1><A HREF="Vec3.html">Vec3</A>&amp; v)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.107.98">operator* </A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.107.99">operator* </A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.107.99">operator* </A></B>(const <!1><A HREF="Vec4.html">Vec4</A>&amp; v) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.107.100">operator* </A></B>(const <!1><A HREF="Vec4.html">Vec4</A>&amp; v) const 
 </DL></P>
 
 <P><DL>
@@ -239,7 +242,7 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> <B><A HREF="#DOC.2.107.75">_mat</A></B>[4][4]
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> <B><A HREF="#DOC.2.107.76">_mat</A></B>[4][4]
 </DL></P>
 
 </DL>
@@ -391,7 +394,7 @@
 <DL><DT><DD></DL><P>
 <A NAME="makeRotate"></A>
 <A NAME="DOC.2.107.36"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void makeRotate( float angle, float <!1><A HREF="Viewport.html#DOC.2.232.8">x</A>, float <!1><A HREF="Viewport.html#DOC.2.232.9">y</A>, float <!1><A HREF="Vec4.html#DOC.2.228.15">z</A> )</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void makeRotate( float angle, float <!1><A HREF="Viewport.html#DOC.2.233.8">x</A>, float <!1><A HREF="Viewport.html#DOC.2.233.9">y</A>, float <!1><A HREF="Vec4.html#DOC.2.229.15">z</A> )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="makeRotate"></A>
 <A NAME="DOC.2.107.37"></A>
@@ -408,7 +411,7 @@
 <DL><DT><DD></DL><P>
 <A NAME="getOrtho"></A>
 <A NAME="DOC.2.107.40"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void getOrtho(double&amp; left, double&amp; right, double&amp; bottom, double&amp; top, double&amp; zNear, double&amp; zFar)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getOrtho(double&amp; left, double&amp; right, double&amp; bottom, double&amp; top, double&amp; zNear, double&amp; zFar)</B></TT>
 <DD>Get the othorgraphic settings of the orthographic projection matrix. 
 Note, if matrix is not an orthographic matrix then invalid values will be returned.
 <DL><DT><DD></DL><P>
@@ -424,244 +427,253 @@ Note, if matrix is not an orthographic matrix then invalid values will be return
 <DL><DT><DD></DL><P>
 <A NAME="getFrustum"></A>
 <A NAME="DOC.2.107.43"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void getFrustum(double&amp; left, double&amp; right, double&amp; bottom, double&amp; top, double&amp; zNear, double&amp; zFar)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getFrustum(double&amp; left, double&amp; right, double&amp; bottom, double&amp; top, double&amp; zNear, double&amp; zFar)</B></TT>
 <DD>Get the frustum setting of a perspective projection matrix.
 Note, if matrix is not an perspective matrix then invalid values will be returned.
 <DL><DT><DD></DL><P>
 <A NAME="makePerspective"></A>
 <A NAME="DOC.2.107.44"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void makePerspective(double fovy, double <!1><A HREF="Viewport.html#DOC.2.232.13">aspectRatio</A>, double zNear, double zFar)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void makePerspective(double fovy, double <!1><A HREF="Viewport.html#DOC.2.233.13">aspectRatio</A>, double zNear, double zFar)</B></TT>
 <DD>Set to a symmetrical perspective projection, See gluPerspective for further details.
 Aspect ratio is defined as width/height.
 <DL><DT><DD></DL><P>
-<A NAME="makeLookAt"></A>
+<A NAME="getPerspective"></A>
 <A NAME="DOC.2.107.45"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void makeLookAt(const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye, const <!1><A HREF="Vec3.html">Vec3</A>&amp; <!1><A HREF="BoundingSphere.html#DOC.2.30.8">center</A>, const <!1><A HREF="Vec3.html">Vec3</A>&amp; up)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getPerspective(double&amp; fovy, double&amp; <!1><A HREF="Viewport.html#DOC.2.233.13">aspectRatio</A>, double&amp; zNear, double&amp; zFar)</B></TT>
+<DD>Get the frustum setting of a symetric perspective projection matrix.
+Returns false if matrix is not a perspective matrix, where parameter values are undefined. 
+Note, if matrix is not a symetric perspective matrix then the shear will be lost.
+Asymetric metrices occur when stereo, power walls, caves and reality center display are used.
+In these configuration one should use the AsFrustum method instead.
+<DL><DT><DD></DL><P>
+<A NAME="makeLookAt"></A>
+<A NAME="DOC.2.107.46"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void makeLookAt(const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye, const <!1><A HREF="Vec3.html">Vec3</A>&amp; <!1><A HREF="BoundingSphere.html#DOC.2.31.8">center</A>, const <!1><A HREF="Vec3.html">Vec3</A>&amp; up)</B></TT>
 <DD>Set to the position and orientation modelview matrix, using the same convention as gluLookAt. 
 <DL><DT><DD></DL><P>
 <A NAME="getLookAt"></A>
-<A NAME="DOC.2.107.46"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void getLookAt(<!1><A HREF="Vec3.html">Vec3</A>&amp; eye, <!1><A HREF="Vec3.html">Vec3</A>&amp; <!1><A HREF="BoundingSphere.html#DOC.2.30.8">center</A>, <!1><A HREF="Vec3.html">Vec3</A>&amp; up, float lookDistance=1.0f)</B></TT>
+<A NAME="DOC.2.107.47"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void getLookAt(<!1><A HREF="Vec3.html">Vec3</A>&amp; eye, <!1><A HREF="Vec3.html">Vec3</A>&amp; <!1><A HREF="BoundingSphere.html#DOC.2.31.8">center</A>, <!1><A HREF="Vec3.html">Vec3</A>&amp; up, float lookDistance=1.0f)</B></TT>
 <DD>Get to the position and orientation of a modelview matrix, using the same convention as gluLookAt. 
 <DL><DT><DD></DL><P>
 <A NAME="invert"></A>
-<A NAME="DOC.2.107.47"></A>
+<A NAME="DOC.2.107.48"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool invert( const <!1><A HREF="Matrixd.html">Matrixd</A>&amp; )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="identity"></A>
-<A NAME="DOC.2.107.48"></A>
+<A NAME="DOC.2.107.49"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> identity( void )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="scale"></A>
-<A NAME="DOC.2.107.49"></A>
+<A NAME="DOC.2.107.50"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> scale( const <!1><A HREF="Vec3.html">Vec3</A>&amp; sv)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="scale"></A>
-<A NAME="DOC.2.107.50"></A>
+<A NAME="DOC.2.107.51"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> scale( <!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> sx, <!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> sy, <!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> sz)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="translate"></A>
-<A NAME="DOC.2.107.51"></A>
+<A NAME="DOC.2.107.52"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> translate( const <!1><A HREF="Vec3.html">Vec3</A>&amp; dv)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="translate"></A>
-<A NAME="DOC.2.107.52"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> translate( <!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> <!1><A HREF="Viewport.html#DOC.2.232.8">x</A>, <!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> <!1><A HREF="Viewport.html#DOC.2.232.9">y</A>, <!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> <!1><A HREF="Vec4.html#DOC.2.228.15">z</A>)</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="rotate"></A>
 <A NAME="DOC.2.107.53"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> rotate( const <!1><A HREF="Vec3.html">Vec3</A>&amp; from, const <!1><A HREF="Vec3.html">Vec3</A>&amp; to)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> translate( <!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> <!1><A HREF="Viewport.html#DOC.2.233.8">x</A>, <!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> <!1><A HREF="Viewport.html#DOC.2.233.9">y</A>, <!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> <!1><A HREF="Vec4.html#DOC.2.229.15">z</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="rotate"></A>
 <A NAME="DOC.2.107.54"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> rotate( float angle, float <!1><A HREF="Viewport.html#DOC.2.232.8">x</A>, float <!1><A HREF="Viewport.html#DOC.2.232.9">y</A>, float <!1><A HREF="Vec4.html#DOC.2.228.15">z</A>)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> rotate( const <!1><A HREF="Vec3.html">Vec3</A>&amp; from, const <!1><A HREF="Vec3.html">Vec3</A>&amp; to)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="rotate"></A>
 <A NAME="DOC.2.107.55"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> rotate( float angle, const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> rotate( float angle, float <!1><A HREF="Viewport.html#DOC.2.233.8">x</A>, float <!1><A HREF="Viewport.html#DOC.2.233.9">y</A>, float <!1><A HREF="Vec4.html#DOC.2.229.15">z</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="rotate"></A>
 <A NAME="DOC.2.107.56"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> rotate( float angle1, const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis1, float angle2, const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis2, float angle3, const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis3)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> rotate( float angle, const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="rotate"></A>
 <A NAME="DOC.2.107.57"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> rotate( float angle1, const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis1, float angle2, const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis2, float angle3, const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis3)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="rotate"></A>
+<A NAME="DOC.2.107.58"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> rotate( const <!1><A HREF="Quat.html">Quat</A>&amp; quat)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="inverse"></A>
-<A NAME="DOC.2.107.58"></A>
+<A NAME="DOC.2.107.59"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> inverse( const <!1><A HREF="Matrixd.html">Matrixd</A>&amp; matrix)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ortho"></A>
-<A NAME="DOC.2.107.59"></A>
+<A NAME="DOC.2.107.60"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> ortho(double left, double right, double bottom, double top, double zNear, double zFar)</B></TT>
 <DD>Create a orthographic projection. See glOrtho for further details.
 <DL><DT><DD></DL><P>
 <A NAME="ortho2D"></A>
-<A NAME="DOC.2.107.60"></A>
+<A NAME="DOC.2.107.61"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> ortho2D(double left, double right, double bottom, double top)</B></TT>
 <DD>Create a 2D orthographic projection. See glOrtho for further details.
 <DL><DT><DD></DL><P>
 <A NAME="frustum"></A>
-<A NAME="DOC.2.107.61"></A>
+<A NAME="DOC.2.107.62"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> frustum(double left, double right, double bottom, double top, double zNear, double zFar)</B></TT>
 <DD>Create a perspective projection. See glFrustum for further details.
 <DL><DT><DD></DL><P>
 <A NAME="perspective"></A>
-<A NAME="DOC.2.107.62"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> perspective(double fovy, double <!1><A HREF="Viewport.html#DOC.2.232.13">aspectRatio</A>, double zNear, double zFar)</B></TT>
+<A NAME="DOC.2.107.63"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> perspective(double fovy, double <!1><A HREF="Viewport.html#DOC.2.233.13">aspectRatio</A>, double zNear, double zFar)</B></TT>
 <DD>Create a symmetrical perspective projection, See gluPerspective for further details.
 Aspect ratio is defined as width/height.
 <DL><DT><DD></DL><P>
 <A NAME="lookAt"></A>
-<A NAME="DOC.2.107.63"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> lookAt(const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye, const <!1><A HREF="Vec3.html">Vec3</A>&amp; <!1><A HREF="BoundingSphere.html#DOC.2.30.8">center</A>, const <!1><A HREF="Vec3.html">Vec3</A>&amp; up)</B></TT>
+<A NAME="DOC.2.107.64"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline static   <!1><A HREF="Matrixd.html">Matrixd</A> lookAt(const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye, const <!1><A HREF="Vec3.html">Vec3</A>&amp; <!1><A HREF="BoundingSphere.html#DOC.2.31.8">center</A>, const <!1><A HREF="Vec3.html">Vec3</A>&amp; up)</B></TT>
 <DD>Create the position and orientation as per a camera, using the same convention as gluLookAt. 
 <DL><DT><DD></DL><P>
 <A NAME="setTrans"></A>
-<A NAME="DOC.2.107.64"></A>
+<A NAME="DOC.2.107.65"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setTrans( <!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> tx, <!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> ty, <!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> tz )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setTrans"></A>
-<A NAME="DOC.2.107.65"></A>
+<A NAME="DOC.2.107.66"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setTrans( const <!1><A HREF="Vec3.html">Vec3</A>&amp; v )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getTrans"></A>
-<A NAME="DOC.2.107.66"></A>
+<A NAME="DOC.2.107.67"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Vec3.html">Vec3</A> getTrans() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getScale"></A>
-<A NAME="DOC.2.107.67"></A>
+<A NAME="DOC.2.107.68"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Vec3.html">Vec3</A> getScale() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="transform3x3"></A>
-<A NAME="DOC.2.107.68"></A>
+<A NAME="DOC.2.107.69"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline static   <!1><A HREF="Vec3.html">Vec3</A> transform3x3(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v, const <!1><A HREF="Matrixd.html">Matrixd</A>&amp; m)</B></TT>
 <DD>apply apply an 3x3 transform of v*M[02,02]  
 <DL><DT><DD></DL><P>
 <A NAME="transform3x3"></A>
-<A NAME="DOC.2.107.69"></A>
+<A NAME="DOC.2.107.70"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline static   <!1><A HREF="Vec3.html">Vec3</A> transform3x3(const <!1><A HREF="Matrixd.html">Matrixd</A>&amp; m, const <!1><A HREF="Vec3.html">Vec3</A>&amp; v)</B></TT>
 <DD>apply apply an 3x3 transform of M[02,02]*v  
 <DL><DT><DD></DL><P>
 <A NAME="mult"></A>
-<A NAME="DOC.2.107.70"></A>
+<A NAME="DOC.2.107.71"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void mult( const <!1><A HREF="Matrixd.html">Matrixd</A>&amp;, const <!1><A HREF="Matrixd.html">Matrixd</A>&amp; )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="preMult"></A>
-<A NAME="DOC.2.107.71"></A>
+<A NAME="DOC.2.107.72"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void preMult( const <!1><A HREF="Matrixd.html">Matrixd</A>&amp; )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="postMult"></A>
-<A NAME="DOC.2.107.72"></A>
+<A NAME="DOC.2.107.73"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void postMult( const <!1><A HREF="Matrixd.html">Matrixd</A>&amp; )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator *= "></A>
-<A NAME="DOC.2.107.73"></A>
+<A NAME="DOC.2.107.74"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void operator *= ( const <!1><A HREF="Matrixd.html">Matrixd</A>&amp; other )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator * "></A>
-<A NAME="DOC.2.107.74"></A>
+<A NAME="DOC.2.107.75"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Matrixd.html">Matrixd</A> operator * ( const <!1><A HREF="Matrixd.html">Matrixd</A> &amp;m ) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_mat"></A>
-<A NAME="DOC.2.107.75"></A>
+<A NAME="DOC.2.107.76"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> _mat[4][4]</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="identity"></A>
-<A NAME="DOC.2.107.76"></A>
+<A NAME="DOC.2.107.77"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Matrixd.html">Matrixd</A> identity(void)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="scale"></A>
-<A NAME="DOC.2.107.77"></A>
+<A NAME="DOC.2.107.78"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Matrixd.html">Matrixd</A> scale(<!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> sx, <!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> sy, <!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> sz)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="scale"></A>
-<A NAME="DOC.2.107.78"></A>
+<A NAME="DOC.2.107.79"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Matrixd.html">Matrixd</A> scale(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="translate"></A>
-<A NAME="DOC.2.107.79"></A>
+<A NAME="DOC.2.107.80"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Matrixd.html">Matrixd</A> translate(<!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> tx, <!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> ty, <!1><A HREF="Matrixd.html#DOC.2.107.1">value_type</A> tz)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="translate"></A>
-<A NAME="DOC.2.107.80"></A>
+<A NAME="DOC.2.107.81"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Matrixd.html">Matrixd</A> translate(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="rotate"></A>
-<A NAME="DOC.2.107.81"></A>
+<A NAME="DOC.2.107.82"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Matrixd.html">Matrixd</A> rotate( const <!1><A HREF="Quat.html">Quat</A>&amp; q )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="rotate"></A>
-<A NAME="DOC.2.107.82"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Matrixd.html">Matrixd</A> rotate(float angle, float <!1><A HREF="Viewport.html#DOC.2.232.8">x</A>, float <!1><A HREF="Viewport.html#DOC.2.232.9">y</A>, float <!1><A HREF="Vec4.html#DOC.2.228.15">z</A> )</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="rotate"></A>
 <A NAME="DOC.2.107.83"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Matrixd.html">Matrixd</A> rotate(float angle, const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis )</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Matrixd.html">Matrixd</A> rotate(float angle, float <!1><A HREF="Viewport.html#DOC.2.233.8">x</A>, float <!1><A HREF="Viewport.html#DOC.2.233.9">y</A>, float <!1><A HREF="Vec4.html#DOC.2.229.15">z</A> )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="rotate"></A>
 <A NAME="DOC.2.107.84"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Matrixd.html">Matrixd</A> rotate( float angle1, const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis1, float angle2, const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis2, float angle3, const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis3)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Matrixd.html">Matrixd</A> rotate(float angle, const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="rotate"></A>
 <A NAME="DOC.2.107.85"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Matrixd.html">Matrixd</A> rotate( float angle1, const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis1, float angle2, const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis2, float angle3, const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis3)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="rotate"></A>
+<A NAME="DOC.2.107.86"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Matrixd.html">Matrixd</A> rotate(const <!1><A HREF="Vec3.html">Vec3</A>&amp; from, const <!1><A HREF="Vec3.html">Vec3</A>&amp; to )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="inverse"></A>
-<A NAME="DOC.2.107.86"></A>
+<A NAME="DOC.2.107.87"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Matrixd.html">Matrixd</A> inverse( const <!1><A HREF="Matrixd.html">Matrixd</A>&amp; matrix)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ortho"></A>
-<A NAME="DOC.2.107.87"></A>
+<A NAME="DOC.2.107.88"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Matrixd.html">Matrixd</A> ortho(double left, double right, double bottom, double top, double zNear, double zFar)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ortho2D"></A>
-<A NAME="DOC.2.107.88"></A>
+<A NAME="DOC.2.107.89"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Matrixd.html">Matrixd</A> ortho2D(double left, double right, double bottom, double top)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="frustum"></A>
-<A NAME="DOC.2.107.89"></A>
+<A NAME="DOC.2.107.90"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Matrixd.html">Matrixd</A> frustum(double left, double right, double bottom, double top, double zNear, double zFar)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="perspective"></A>
-<A NAME="DOC.2.107.90"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Matrixd.html">Matrixd</A> perspective(double fovy, double <!1><A HREF="Viewport.html#DOC.2.232.13">aspectRatio</A>, double zNear, double zFar)</B></TT>
+<A NAME="DOC.2.107.91"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Matrixd.html">Matrixd</A> perspective(double fovy, double <!1><A HREF="Viewport.html#DOC.2.233.13">aspectRatio</A>, double zNear, double zFar)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="lookAt"></A>
-<A NAME="DOC.2.107.91"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Matrixd.html">Matrixd</A> lookAt(const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye, const <!1><A HREF="Vec3.html">Vec3</A>&amp; <!1><A HREF="BoundingSphere.html#DOC.2.30.8">center</A>, const <!1><A HREF="Vec3.html">Vec3</A>&amp; up)</B></TT>
+<A NAME="DOC.2.107.92"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Matrixd.html">Matrixd</A> lookAt(const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye, const <!1><A HREF="Vec3.html">Vec3</A>&amp; <!1><A HREF="BoundingSphere.html#DOC.2.31.8">center</A>, const <!1><A HREF="Vec3.html">Vec3</A>&amp; up)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="postMult"></A>
-<A NAME="DOC.2.107.92"></A>
+<A NAME="DOC.2.107.93"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Vec3.html">Vec3</A> postMult( const <!1><A HREF="Vec3.html">Vec3</A>&amp; v ) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="preMult"></A>
-<A NAME="DOC.2.107.93"></A>
+<A NAME="DOC.2.107.94"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Vec3.html">Vec3</A> preMult( const <!1><A HREF="Vec3.html">Vec3</A>&amp; v ) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="postMult"></A>
-<A NAME="DOC.2.107.94"></A>
+<A NAME="DOC.2.107.95"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Vec4.html">Vec4</A> postMult( const <!1><A HREF="Vec4.html">Vec4</A>&amp; v ) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="preMult"></A>
-<A NAME="DOC.2.107.95"></A>
+<A NAME="DOC.2.107.96"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Vec4.html">Vec4</A> preMult( const <!1><A HREF="Vec4.html">Vec4</A>&amp; v ) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="transform3x3"></A>
-<A NAME="DOC.2.107.96"></A>
+<A NAME="DOC.2.107.97"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Vec3.html">Vec3</A> transform3x3(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v, const <!1><A HREF="Matrixd.html">Matrixd</A>&amp; m)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="transform3x3"></A>
-<A NAME="DOC.2.107.97"></A>
+<A NAME="DOC.2.107.98"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Vec3.html">Vec3</A> transform3x3(const <!1><A HREF="Matrixd.html">Matrixd</A>&amp; m, const <!1><A HREF="Vec3.html">Vec3</A>&amp; v)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator* "></A>
-<A NAME="DOC.2.107.98"></A>
+<A NAME="DOC.2.107.99"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Vec3.html">Vec3</A> operator* (const <!1><A HREF="Vec3.html">Vec3</A>&amp; v) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator* "></A>
-<A NAME="DOC.2.107.99"></A>
+<A NAME="DOC.2.107.100"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Vec4.html">Vec4</A> operator* (const <!1><A HREF="Vec4.html">Vec4</A>&amp; v) const </B></TT>
 <DL><DT><DD></DL><P></DL>
 <HR>

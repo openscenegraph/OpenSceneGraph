@@ -28,12 +28,12 @@
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.74.2">FragmentProgram</A></B>(const <!1><A HREF="FragmentProgram.html#DOC.2.74.2">FragmentProgram</A>&amp; vp, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
 <DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.74.3">META_StateAttribute</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="FragmentProgram.html">FragmentProgram</A>, <!1><A HREF="StateAttribute.html#DOC.2.194.6.43">FRAGMENTPROGRAM</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.74.3">META_StateAttribute</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="FragmentProgram.html">FragmentProgram</A>, <!1><A HREF="StateAttribute.html#DOC.2.195.6.45">FRAGMENTPROGRAM</A>)
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.74.4">compare</A></B>(const <!1><A HREF="StateAttribute.html">osg::StateAttribute</A>&amp; sa) const 
 <DD><I>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.74.5">getAssociatedModes</A></B>(std::vector&lt;<!1><A HREF="StateAttribute.html#DOC.2.194.1">GLMode</A>&gt;&amp; modes) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.74.5">getAssociatedModes</A></B>(std::vector&lt;<!1><A HREF="StateAttribute.html#DOC.2.195.1">GLMode</A>&gt;&amp; modes) const 
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   GLuint&amp; <B><A HREF="#DOC.2.74.6">getFragmentProgramID</A></B>(unsigned int contextID) const 
 <DD><I>Get the handle to the fragment program id for the current context</I>
@@ -66,16 +66,16 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.74.16">compile</A></B>(<!1><A HREF="State.html">State</A>&amp; state) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   <!1><A HREF="Extensions.2.html">Extensions</A>* <B><A HREF="#DOC.2.74.18">getExtensions</A></B>(unsigned int contextID, bool createIfNotInitalized)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   <!1><A HREF="Extensions.3.html">Extensions</A>* <B><A HREF="#DOC.2.74.18">getExtensions</A></B>(unsigned int contextID, bool createIfNotInitalized)
 <DD><I>Function to call to get the extension of a specified context.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void <B><A HREF="#DOC.2.74.19">setExtensions</A></B>(unsigned int contextID, <!1><A HREF="Extensions.2.html">Extensions</A>* extensions)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void <B><A HREF="#DOC.2.74.19">setExtensions</A></B>(unsigned int contextID, <!1><A HREF="Extensions.3.html">Extensions</A>* extensions)
 <DD><I>setExtensions allows users to override the extensions across graphics contexts.</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
-class  SG_EXPORT <B><A HREF="Extensions.2.html">Extensions</A></B>: public <!1><A HREF="Referenced.html">osg::Referenced</A>
+class  SG_EXPORT <B><A HREF="Extensions.3.html">Extensions</A></B>: public <!1><A HREF="Referenced.html">osg::Referenced</A>
 <DD><I>Extensions class which encapsulates the querring of extensions and associated function pointers, and provide convinience wrappers to  check for the extensions or use the associated functions</I>
 </DL></P>
 
@@ -119,7 +119,7 @@ class  SG_EXPORT <B><A HREF="Extensions.2.html">Extensions</A></B>: public <!1><
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="StateAttribute.html#DOC.2.194.5">Type</A> <B>getType</B>() const 
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="StateAttribute.html#DOC.2.195.5">Type</A> <B>getType</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isTextureAttribute</B>() const 
 <DT>
@@ -150,9 +150,9 @@ class  SG_EXPORT <B><A HREF="Extensions.2.html">Extensions</A></B>: public <!1><
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.135.8">DataVariance</A> dv)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.136.8">DataVariance</A> dv)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.135.8">DataVariance</A> <B>getDataVariance</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.136.8">DataVariance</A> <B>getDataVariance</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
 <DT>
@@ -168,7 +168,7 @@ class  SG_EXPORT <B><A HREF="Extensions.2.html">Extensions</A></B>: public <!1><
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.135.8">DataVariance</A> <B>_dataVariance</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.136.8">DataVariance</A> <B>_dataVariance</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
 </DL></P>
@@ -217,7 +217,7 @@ class  SG_EXPORT <B><A HREF="Extensions.2.html">Extensions</A></B>: public <!1><
 <DL><DT><DD></DL><P>
 <A NAME="META_StateAttribute"></A>
 <A NAME="DOC.2.74.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_StateAttribute(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="FragmentProgram.html">FragmentProgram</A>, <!1><A HREF="StateAttribute.html#DOC.2.194.6.43">FRAGMENTPROGRAM</A>)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_StateAttribute(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="FragmentProgram.html">FragmentProgram</A>, <!1><A HREF="StateAttribute.html#DOC.2.195.6.45">FRAGMENTPROGRAM</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="compare"></A>
 <A NAME="DOC.2.74.4"></A>
@@ -226,7 +226,7 @@ class  SG_EXPORT <B><A HREF="Extensions.2.html">Extensions</A></B>: public <!1><
 <DL><DT><DD></DL><P>
 <A NAME="getAssociatedModes"></A>
 <A NAME="DOC.2.74.5"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void getAssociatedModes(std::vector&lt;<!1><A HREF="StateAttribute.html#DOC.2.194.1">GLMode</A>&gt;&amp; modes) const </B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void getAssociatedModes(std::vector&lt;<!1><A HREF="StateAttribute.html#DOC.2.195.1">GLMode</A>&gt;&amp; modes) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getFragmentProgramID"></A>
 <A NAME="DOC.2.74.6"></A>
@@ -287,7 +287,7 @@ in the OpenGL context related to contextID
 <DL><DT><DD></DL><P>
 <A NAME="getExtensions"></A>
 <A NAME="DOC.2.74.18"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   <!1><A HREF="Extensions.2.html">Extensions</A>* getExtensions(unsigned int contextID, bool createIfNotInitalized)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   <!1><A HREF="Extensions.3.html">Extensions</A>* getExtensions(unsigned int contextID, bool createIfNotInitalized)</B></TT>
 <DD>Function to call to get the extension of a specified context.
 If the Exentsion object for that context has not yet been created then 
 and the 'createIfNotInitalized' flag been set to false then returns NULL.
@@ -297,7 +297,7 @@ only be created with the graphics context associated with ContextID..
 <DL><DT><DD></DL><P>
 <A NAME="setExtensions"></A>
 <A NAME="DOC.2.74.19"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   void setExtensions(unsigned int contextID, <!1><A HREF="Extensions.2.html">Extensions</A>* extensions)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   void setExtensions(unsigned int contextID, <!1><A HREF="Extensions.3.html">Extensions</A>* extensions)</B></TT>
 <DD>setExtensions allows users to override the extensions across graphics contexts.
 typically used when you have different extensions supported across graphics pipes
 but need to ensure that they all use the same low common denominator extensions.

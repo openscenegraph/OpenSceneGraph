@@ -32,19 +32,19 @@ class IVEReaderWriter : public ReaderWriter
         {
         #define IVE_CATCH_EXCEPTIONS
         #ifdef IVE_CATCH_EXCEPTIONS
-	    try{
+        try{
         #endif
                 // Create datainputstream.
                 ive::DataInputStream in(&fin);
 
                 return in.readNode();
         #ifdef IVE_CATCH_EXCEPTIONS
-	    }
-	    catch(ive::Exception e)
+        }
+        catch(ive::Exception e)
             {
-	        std::cout<<"Error reading file: "<< e.getError()<<std::endl;
-	        return ReadResult::FILE_NOT_HANDLED;
-	    }
+            std::cout<<"Error reading file: "<< e.getError()<<std::endl;
+            return ReadResult::FILE_NOT_HANDLED;
+        }
             return 0;
         #endif
         }
@@ -66,18 +66,18 @@ class IVEReaderWriter : public ReaderWriter
             {
                 ive::DataOutputStream out(&fout);
 
-				if (options)
-				{
-					out.setIncludeImageData(options->getOptionString().find("noTexturesInIVEFile")==std::string::npos);
-					osg::notify(osg::DEBUG_INFO) << "ive::DataOutpouStream.setIncludeImageData()=" << out.getIncludeImageData() << std::endl;
-				}
+                if (options)
+                {
+                    out.setIncludeImageData(options->getOptionString().find("noTexturesInIVEFile")==std::string::npos);
+                    osg::notify(osg::DEBUG_INFO) << "ive::DataOutpouStream.setIncludeImageData()=" << out.getIncludeImageData() << std::endl;
+                }
                 
                 out.writeNode(const_cast<osg::Node*>(&node));
                 return WriteResult::FILE_SAVED;
             }
             catch(ive::Exception e)
             {
-	        osg::notify(osg::WARN)<<"Error parsing OSG file: "<< e.getError() << std::endl;			
+            osg::notify(osg::WARN)<<"Error parsing OSG file: "<< e.getError() << std::endl;
             }
             return WriteResult::FILE_NOT_HANDLED;
 

@@ -13,14 +13,14 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.164.1">~DeleteHandler</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.165.1">~DeleteHandler</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.164.2">flush</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.165.2">flush</A></B>()
 <DD><I>flush any cache of objects that need to be deleted by doing an actual delete</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.164.3">doDelete</A></B>(const <!1><A HREF="Referenced.html">Referenced</A>* object)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.165.3">doDelete</A></B>(const <!1><A HREF="Referenced.html">Referenced</A>* object)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.164.4">requestDelete</A></B>(const <!1><A HREF="Referenced.html">Referenced</A>* object)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.165.4">requestDelete</A></B>(const <!1><A HREF="Referenced.html">Referenced</A>* object)
 <DD><I>Request the deletion of an object.</I>
 </DL></P>
 
@@ -39,20 +39,20 @@ DeleteHandler's memory.</BLOCKQUOTE>
 <DL>
 
 <A NAME="~DeleteHandler"></A>
-<A NAME="DOC.2.164.1"></A>
+<A NAME="DOC.2.165.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~DeleteHandler()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="flush"></A>
-<A NAME="DOC.2.164.2"></A>
+<A NAME="DOC.2.165.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void flush()</B></TT>
 <DD>flush any cache of objects that need to be deleted by doing an actual delete
 <DL><DT><DD></DL><P>
 <A NAME="doDelete"></A>
-<A NAME="DOC.2.164.3"></A>
+<A NAME="DOC.2.165.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void doDelete(const <!1><A HREF="Referenced.html">Referenced</A>* object)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="requestDelete"></A>
-<A NAME="DOC.2.164.4"></A>
+<A NAME="DOC.2.165.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void requestDelete(const <!1><A HREF="Referenced.html">Referenced</A>* object)</B></TT>
 <DD>Request the deletion of an object. 
 Depending on users implementation of DeleteHandler, the delete of the object may occur 

@@ -28,62 +28,68 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.1.3">className</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.1.4">setByMatrix</A></B>(const osg::Matrixd&amp; matrix)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.1.4">setPrintOutTimingInfo</A></B>(bool printOutTiminInfo)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.1.5">getPrintOutTimingInfo</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.1.6">setByMatrix</A></B>(const osg::Matrixd&amp; matrix)
 <DD><I>set the position of the matrix manipulator using a 4x4 Matrix</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.1.5">setByInverseMatrix</A></B>(const osg::Matrixd&amp; matrix)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.1.7">setByInverseMatrix</A></B>(const osg::Matrixd&amp; matrix)
 <DD><I>set the position of the matrix manipulator using a 4x4 Matrix</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Matrixd <B><A HREF="#DOC.2.1.6">getMatrix</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Matrixd <B><A HREF="#DOC.2.1.8">getMatrix</A></B>() const 
 <DD><I>get the position of the manipulator as 4x4 Matrix</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Matrixd <B><A HREF="#DOC.2.1.7">getInverseMatrix</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Matrixd <B><A HREF="#DOC.2.1.9">getInverseMatrix</A></B>() const 
 <DD><I>get the position of the manipulator as a inverse matrix of the manipulator, typically used as a model view matrix</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.1.8">setAnimationPath</A></B>( osg::AnimationPath* animationPath )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.1.10">setAnimationPath</A></B>( osg::AnimationPath* animationPath )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::AnimationPath* <B><A HREF="#DOC.2.1.9">getAnimationPath</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::AnimationPath* <B><A HREF="#DOC.2.1.11">getAnimationPath</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::AnimationPath* <B><A HREF="#DOC.2.1.10">getAnimationPath</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::AnimationPath* <B><A HREF="#DOC.2.1.12">getAnimationPath</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.1.11">valid</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.1.13">valid</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.1.12">init</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.1.14">init</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.1.13">home</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.1.15">home</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.1.14">handle</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.1.16">handle</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.1.15">getUsage</A></B>(osg::ApplicationUsage&amp; usage) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.1.17">getUsage</A></B>(osg::ApplicationUsage&amp; usage) const 
 <DD><I>Get the keyboard and mouse usage of this manipulator</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.1.16">_valid</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.1.18">_valid</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::AnimationPath&gt;  <B><A HREF="#DOC.2.1.18">_animationPath</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.1.19">_printOutTiminInfo</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.1.19">_timeOffset</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::AnimationPath&gt;  <B><A HREF="#DOC.2.1.21">_animationPath</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.1.20">_timeScale</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.1.22">_timeOffset</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.1.21">_pauseTime</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.1.23">_timeScale</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.1.22">_isPaused</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.1.24">_pauseTime</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.1.23">_realStartOfTimedPeriod</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.1.25">_isPaused</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.1.24">_animStartOfTimedPeriod</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.1.26">_realStartOfTimedPeriod</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.1.25">_numOfFramesSinceStartOfTimedPeriod</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.1.27">_animStartOfTimedPeriod</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Matrixd <B><A HREF="#DOC.2.1.26">_matrix</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.1.28">_numOfFramesSinceStartOfTimedPeriod</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Matrixd <B><A HREF="#DOC.2.1.29">_matrix</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.1.17">handleFrame</A></B>( double <!1><A HREF="GUIEventAdapter.html#DOC.2.5.19">time</A> )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.1.20">handleFrame</A></B>( double <!1><A HREF="GUIEventAdapter.html#DOC.2.5.19">time</A> )
 </DL></P>
 
 </DL>
@@ -133,101 +139,113 @@
 <A NAME="DOC.2.1.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="setByMatrix"></A>
+<A NAME="setPrintOutTimingInfo"></A>
 <A NAME="DOC.2.1.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setPrintOutTimingInfo(bool printOutTiminInfo)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getPrintOutTimingInfo"></A>
+<A NAME="DOC.2.1.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getPrintOutTimingInfo() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setByMatrix"></A>
+<A NAME="DOC.2.1.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setByMatrix(const osg::Matrixd&amp; matrix)</B></TT>
 <DD>set the position of the matrix manipulator using a 4x4 Matrix
 <DL><DT><DD></DL><P>
 <A NAME="setByInverseMatrix"></A>
-<A NAME="DOC.2.1.5"></A>
+<A NAME="DOC.2.1.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setByInverseMatrix(const osg::Matrixd&amp; matrix)</B></TT>
 <DD>set the position of the matrix manipulator using a 4x4 Matrix
 <DL><DT><DD></DL><P>
 <A NAME="getMatrix"></A>
-<A NAME="DOC.2.1.6"></A>
+<A NAME="DOC.2.1.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Matrixd getMatrix() const </B></TT>
 <DD>get the position of the manipulator as 4x4 Matrix
 <DL><DT><DD></DL><P>
 <A NAME="getInverseMatrix"></A>
-<A NAME="DOC.2.1.7"></A>
+<A NAME="DOC.2.1.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Matrixd getInverseMatrix() const </B></TT>
 <DD>get the position of the manipulator as a inverse matrix of the manipulator, typically used as a model view matrix
 <DL><DT><DD></DL><P>
 <A NAME="setAnimationPath"></A>
-<A NAME="DOC.2.1.8"></A>
+<A NAME="DOC.2.1.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setAnimationPath( osg::AnimationPath* animationPath )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getAnimationPath"></A>
-<A NAME="DOC.2.1.9"></A>
+<A NAME="DOC.2.1.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::AnimationPath* getAnimationPath()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getAnimationPath"></A>
-<A NAME="DOC.2.1.10"></A>
+<A NAME="DOC.2.1.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::AnimationPath* getAnimationPath() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="valid"></A>
-<A NAME="DOC.2.1.11"></A>
+<A NAME="DOC.2.1.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool valid() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="init"></A>
-<A NAME="DOC.2.1.12"></A>
+<A NAME="DOC.2.1.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void init(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="home"></A>
-<A NAME="DOC.2.1.13"></A>
+<A NAME="DOC.2.1.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void home(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="handle"></A>
-<A NAME="DOC.2.1.14"></A>
+<A NAME="DOC.2.1.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool handle(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getUsage"></A>
-<A NAME="DOC.2.1.15"></A>
+<A NAME="DOC.2.1.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void getUsage(osg::ApplicationUsage&amp; usage) const </B></TT>
 <DD>Get the keyboard and mouse usage of this manipulator
 <DL><DT><DD></DL><P>
 <A NAME="_valid"></A>
-<A NAME="DOC.2.1.16"></A>
+<A NAME="DOC.2.1.18"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _valid</B></TT>
 <DL><DT><DD></DL><P>
+<A NAME="_printOutTiminInfo"></A>
+<A NAME="DOC.2.1.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _printOutTiminInfo</B></TT>
+<DL><DT><DD></DL><P>
 <A NAME="handleFrame"></A>
-<A NAME="DOC.2.1.17"></A>
+<A NAME="DOC.2.1.20"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void handleFrame( double <!1><A HREF="GUIEventAdapter.html#DOC.2.5.19">time</A> )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_animationPath"></A>
-<A NAME="DOC.2.1.18"></A>
+<A NAME="DOC.2.1.21"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::AnimationPath&gt;  _animationPath</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_timeOffset"></A>
-<A NAME="DOC.2.1.19"></A>
+<A NAME="DOC.2.1.22"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _timeOffset</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_timeScale"></A>
-<A NAME="DOC.2.1.20"></A>
+<A NAME="DOC.2.1.23"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _timeScale</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_pauseTime"></A>
-<A NAME="DOC.2.1.21"></A>
+<A NAME="DOC.2.1.24"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _pauseTime</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_isPaused"></A>
-<A NAME="DOC.2.1.22"></A>
+<A NAME="DOC.2.1.25"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _isPaused</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_realStartOfTimedPeriod"></A>
-<A NAME="DOC.2.1.23"></A>
+<A NAME="DOC.2.1.26"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _realStartOfTimedPeriod</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_animStartOfTimedPeriod"></A>
-<A NAME="DOC.2.1.24"></A>
+<A NAME="DOC.2.1.27"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _animStartOfTimedPeriod</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_numOfFramesSinceStartOfTimedPeriod"></A>
-<A NAME="DOC.2.1.25"></A>
+<A NAME="DOC.2.1.28"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _numOfFramesSinceStartOfTimedPeriod</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_matrix"></A>
-<A NAME="DOC.2.1.26"></A>
+<A NAME="DOC.2.1.29"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Matrixd _matrix</B></TT>
 <DL><DT><DD></DL><P></DL>
 

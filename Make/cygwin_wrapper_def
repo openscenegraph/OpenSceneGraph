@@ -1,0 +1,15 @@
+
+#
+# blessed are those who try to make Windows behave like it should ...
+#
+
+ifeq ($(OS),CYGWIN)
+TARGET_BASENAME := $(WRAPPER_PREFIX)$(TARGET_BASENAME)
+WRAPPER_PREFIX := cyg
+endif
+
+ifeq ($(OS),MINGW)
+TARGET_BASENAME := $(WRAPPER_PREFIX)$(TARGET_BASENAME)
+WRAPPER_PREFIX := lib
+endif
+

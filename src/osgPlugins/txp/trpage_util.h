@@ -14,8 +14,8 @@
    */
 
 /* trpage_sys.h
-	System specific declarations.
-	*/
+    System specific declarations.
+    */
 
 #ifndef trpage_util_h_
 #define trpage_util_h_
@@ -26,7 +26,7 @@
 
 TX_EXDECL class TX_CLDECL trpgUtil {
 public:
-	enum {DoReport = 1<<0,DoCopy = 1<<1, DoTileOpt = 1<<2};
-	int merge(trpgr_Archive &inArch1,trpgr_Archive &inArch2,trpgwArchive &outArch, int flags = 0);
+    enum {DoReport = 1<<0,DoCopy = 1<<1, DoTileOpt = 1<<2};
+    int merge(trpgr_Archive &inArch1,trpgr_Archive &inArch2,trpgwArchive &outArch, int flags = 0);
 };
 #endif

@@ -17,7 +17,7 @@
 #define trpage_swap_h_
 
 /* trpage_swap.h
-	Byte swapping utility functions.
+    Byte swapping utility functions.
   */
 
 #include <trpage_sys.h>
@@ -29,7 +29,7 @@
 short trpg_byteswap_short( short number );
 // Byte swap and return an integer
 // {group:Byte Ordering Utilities}
-int	trpg_byteswap_int( int number );
+int    trpg_byteswap_int( int number );
 // Byte swap and return a long
 // {group:Byte Ordering Utilities}
 long trpg_byteswap_long( long number );

@@ -14,9 +14,9 @@
    */
 
 /* trdll.h
-	Windows Only
+    Windows Only
 
-	This header file defines the declaration macros for DLLs.
+    This header file defines the declaration macros for DLLs.
   */
 
 // Export/import declaration for classes and functions

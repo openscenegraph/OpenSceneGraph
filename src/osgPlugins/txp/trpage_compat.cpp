@@ -33,10 +33,10 @@
  */
 class trpgShortMaterial {
 public:
-	// Full trpgMaterial definition this one is based on
-	int baseMat;
-	// Currently the only thing a short material overrides is texture
-	std::vector<int> texids;
+    // Full trpgMaterial definition this one is based on
+    int baseMat;
+    // Currently the only thing a short material overrides is texture
+    std::vector<int> texids;
 };
 
 trpgMatTable1_0::trpgMatTable1_0(const trpgMatTable &inTbl)
@@ -46,84 +46,84 @@ trpgMatTable1_0::trpgMatTable1_0(const trpgMatTable &inTbl)
 
 bool trpgMatTable1_0::Read(trpgReadBuffer &buf)
 {
-	trpgMaterial mat;
-	trpgToken matTok;
-	int32 len;
-	bool status;
-	unsigned int i,j,k;
+    trpgMaterial mat;
+    trpgToken matTok;
+    int32 len;
+    bool status;
+    unsigned int i,j,k;
 
-	std::vector<trpgShortMaterial> shortTable;
-	std::vector<trpgMaterial> baseMats;
+    std::vector<trpgShortMaterial> shortTable;
+    std::vector<trpgMaterial> baseMats;
 
-	try {
-		buf.Get(numTable);
-		buf.Get(numMat);
-		if (numTable <= 0 || numMat < 0) throw 1;
+    try {
+        buf.Get(numTable);
+        buf.Get(numMat);
+        if (numTable <= 0 || numMat < 0) throw 1;
 
-		// Short material tables are always full size
-		shortTable.resize(numTable*numMat);
+        // Short material tables are always full size
+        shortTable.resize(numTable*numMat);
 
-		// Look for short material table
-		buf.GetToken(matTok,len);
-		if (matTok == TRPGSHORTMATTABLE) {
-			int32 numTex,texId;
-			buf.PushLimit(len);
-			for (i=0;i<(unsigned int)numTable;i++)
-				for (j=0;j<(unsigned int)numMat;j++) {
-					trpgShortMaterial &smat = shortTable[i*numMat+j];
-					buf.Get(smat.baseMat);
-					buf.Get(numTex);
-					for (k=0;k<(unsigned int)numTex;k++) {
-						buf.Get(texId);
-						smat.texids.push_back(texId);
-					}
-				}
-			buf.PopLimit();
+        // Look for short material table
+        buf.GetToken(matTok,len);
+        if (matTok == TRPGSHORTMATTABLE) {
+            int32 numTex,texId;
+            buf.PushLimit(len);
+            for (i=0;i<(unsigned int)numTable;i++)
+                for (j=0;j<(unsigned int)numMat;j++) {
+                    trpgShortMaterial &smat = shortTable[i*numMat+j];
+                    buf.Get(smat.baseMat);
+                    buf.Get(numTex);
+                    for (k=0;k<(unsigned int)numTex;k++) {
+                        buf.Get(texId);
+                        smat.texids.push_back(texId);
+                    }
+                }
+            buf.PopLimit();
 
-			// Now read the base materials
-			int32 numBaseMat;
-			buf.Get(numBaseMat);
-			if (numBaseMat < 0) throw 1;
-			baseMats.resize(numBaseMat);
-			for (i=0;i<(unsigned int)numBaseMat;i++) {
-				buf.GetToken(matTok,len);
-				if (matTok != TRPGMATERIAL) throw 1;
-				buf.PushLimit(len);
-				mat.Reset();
-				status = mat.Read(buf);
-				buf.PopLimit();
-				if (!status) throw 1;
-				baseMats[i] = mat;
-			}
-		}
-	}
-	catch (...) {
-	    return false;
-	}
+            // Now read the base materials
+            int32 numBaseMat;
+            buf.Get(numBaseMat);
+            if (numBaseMat < 0) throw 1;
+            baseMats.resize(numBaseMat);
+            for (i=0;i<(unsigned int)numBaseMat;i++) {
+                buf.GetToken(matTok,len);
+                if (matTok != TRPGMATERIAL) throw 1;
+                buf.PushLimit(len);
+                mat.Reset();
+                status = mat.Read(buf);
+                buf.PopLimit();
+                if (!status) throw 1;
+                baseMats[i] = mat;
+            }
+        }
+    }
+    catch (...) {
+        return false;
+    }
 
-	// Now convert to the new style material table
-	for (i=0;i<shortTable.size();i++) {
-	    trpgShortMaterial &shortMat = shortTable[i];
-	    trpgMaterial &baseMat = baseMats[shortMat.baseMat];
-	    matTables.push_back(baseMat);
-	    trpgMaterial &newMat = matTables[matTables.size()-1];
-	    newMat.SetNumTexture(shortMat.texids.size());
-	    for (j=0;j<shortMat.texids.size();j++) {
-		int texId;
-		trpgTextureEnv texEnv;
-		baseMat.GetTexture(j,texId,texEnv);
-		newMat.SetTexture(j,shortMat.texids[j],texEnv);
-	    }
-	}
+    // Now convert to the new style material table
+    for (i=0;i<shortTable.size();i++) {
+        trpgShortMaterial &shortMat = shortTable[i];
+        trpgMaterial &baseMat = baseMats[shortMat.baseMat];
+        matTables.push_back(baseMat);
+        trpgMaterial &newMat = matTables[matTables.size()-1];
+        newMat.SetNumTexture(shortMat.texids.size());
+        for (j=0;j<shortMat.texids.size();j++) {
+        int texId;
+        trpgTextureEnv texEnv;
+        baseMat.GetTexture(j,texId,texEnv);
+        newMat.SetTexture(j,shortMat.texids[j],texEnv);
+        }
+    }
 
-	valid = true;
-	return true;
+    valid = true;
+    return true;
 }
 
 bool trpgMatTable1_0::Write(trpgWriteBuffer &buf)
 {
     if (!isValid())
-	return false;
+    return false;
 
     // Create one short material for every material
     std::vector<trpgShortMaterial> shortMats;
@@ -132,19 +132,19 @@ bool trpgMatTable1_0::Write(trpgWriteBuffer &buf)
     // Iterate over the existing materials
     int i;
     for (i=0;i<numTable*numMat;i++) {
-		trpgMaterial &mat = matTables[i];
-		// Fill in the short material
-		trpgShortMaterial &sMat = shortMats[i];
-		sMat.baseMat = 0;
-		int numTex;
-		mat.GetNumTexture(numTex);
-		for (int j=0;j<numTex;j++) {
-			int texId;
-			trpgTextureEnv texEnv;
-			mat.GetTexture(j,texId,texEnv);
-			sMat.texids.push_back(texId);
-			sMat.baseMat = i;
-		}
+        trpgMaterial &mat = matTables[i];
+        // Fill in the short material
+        trpgShortMaterial &sMat = shortMats[i];
+        sMat.baseMat = 0;
+        int numTex;
+        mat.GetNumTexture(numTex);
+        for (int j=0;j<numTex;j++) {
+            int texId;
+            trpgTextureEnv texEnv;
+            mat.GetTexture(j,texId,texEnv);
+            sMat.texids.push_back(texId);
+            sMat.baseMat = i;
+        }
     }
 
     // Write the 1.0 material table
@@ -155,22 +155,22 @@ bool trpgMatTable1_0::Write(trpgWriteBuffer &buf)
     // Write the short materials
     buf.Begin(TRPGSHORTMATTABLE);
     for (i=0;i<(int)shortMats.size();i++) {
-	trpgShortMaterial &sMat = shortMats[i];
-	buf.Add(sMat.baseMat);
-	buf.Add((int)(sMat.texids.size()));
-	unsigned int j;
-	for (j=0;j<sMat.texids.size();j++)
-	    buf.Add(sMat.texids[j]);
+    trpgShortMaterial &sMat = shortMats[i];
+    buf.Add(sMat.baseMat);
+    buf.Add((int)(sMat.texids.size()));
+    unsigned int j;
+    for (j=0;j<sMat.texids.size();j++)
+        buf.Add(sMat.texids[j]);
     }
     buf.End();
 
     // Write the regular materials
     buf.Add(numTable*numMat);
     for (i=0;i<numTable*numMat;i++) {
-	trpgMaterial &mat = matTables[i];
-	// This will be bigger than the old 1.0 material, but it doesn't matter since
-	//  the new stuff is on the end.
-	mat.Write(buf);
+    trpgMaterial &mat = matTables[i];
+    // This will be bigger than the old 1.0 material, but it doesn't matter since
+    //  the new stuff is on the end.
+    mat.Write(buf);
     }
 
     // Close Mat Table
@@ -188,26 +188,26 @@ trpgTexture1_0 trpgTexture1_0::operator = (const trpgTexture &inTex)
 
 bool trpgTexture1_0::Read(trpgReadBuffer &buf)
 {
-	mode = External;
+    mode = External;
 
-	try {
-	    char texName[1024];
-	    buf.Get(texName,1023);
-	    SetName(texName);
-	    buf.Get(useCount);
-	}
-	catch (...) {
-	    return false;
-	}
+    try {
+        char texName[1024];
+        buf.Get(texName,1023);
+        SetName(texName);
+        buf.Get(useCount);
+    }
+    catch (...) {
+        return false;
+    }
 
-	return true;
+    return true;
 }
 
 bool trpgTexture1_0::Write(trpgWriteBuffer &buf)
 {
     // Can only deal with external textures in 1.0
     if (mode != External)
-	return false;
+    return false;
 
     // Write the name and use count
     buf.Add(name);
@@ -223,44 +223,44 @@ trpgTexTable1_0::trpgTexTable1_0(const trpgTexTable &inTbl)
 
 bool trpgTexTable1_0::Read(trpgReadBuffer &buf)
 {
-	int32 numTex;
+    int32 numTex;
 
-	try {
-		buf.Get(numTex);
-		texList.resize(numTex);
-		for (unsigned int i=0;i<(unsigned int)numTex;i++) {
-			trpgTexture1_0 tex1_0;
-			tex1_0.Read(buf);
-			texList[i] = tex1_0;
-		}
-	}
-	catch (...) {
-		return false;
-	}
+    try {
+        buf.Get(numTex);
+        texList.resize(numTex);
+        for (unsigned int i=0;i<(unsigned int)numTex;i++) {
+            trpgTexture1_0 tex1_0;
+            tex1_0.Read(buf);
+            texList[i] = tex1_0;
+        }
+    }
+    catch (...) {
+        return false;
+    }
 
-	valid = true;
-	return true;
+    valid = true;
+    return true;
 }
 
 bool trpgTexTable1_0::Write(trpgWriteBuffer &buf)
 {
-	int32 numTex;
+    int32 numTex;
 
-	if (!isValid())
-		return false;
+    if (!isValid())
+        return false;
 
-	buf.Begin(TRPGTEXTABLE);
-	numTex = texList.size();
-	buf.Add(numTex);
-	for (unsigned int i=0;i<texList.size();i++) {
-	    trpgTexture1_0 tex1_0;
-	    tex1_0 = texList[i];
-	    if (!tex1_0.Write(buf))
-		return false;
-	}
-	buf.End();
+    buf.Begin(TRPGTEXTABLE);
+    numTex = texList.size();
+    buf.Add(numTex);
+    for (unsigned int i=0;i<texList.size();i++) {
+        trpgTexture1_0 tex1_0;
+        tex1_0 = texList[i];
+        if (!tex1_0.Write(buf))
+        return false;
+    }
+    buf.End();
 
-	return true;
+    return true;
 
 }
 
@@ -272,12 +272,12 @@ trpgTileTable1_0::trpgTileTable1_0(const trpgTileTable& /*inTable*/)
 bool trpgTileTable1_0::Write(trpgWriteBuffer &buf)
 {
     try {
-	buf.Begin(TRPGTILETABLE);
-	buf.Add("");
-	buf.End();
+    buf.Begin(TRPGTILETABLE);
+    buf.Add("");
+    buf.End();
     }
     catch (...) {
-	return false;
+    return false;
     }
 
     return true;

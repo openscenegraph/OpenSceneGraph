@@ -24,77 +24,77 @@
 #include <trpage_managers.h>
 
 /* Managed Tile class.
-	Check the header file for details.
+    Check the header file for details.
  */
 
 trpgManagedTile::trpgManagedTile()
 {
-	isLoaded = false;
-	x = y = -1;
-	lod = -1;
-	localData = NULL;
+    isLoaded = false;
+    x = y = -1;
+    lod = -1;
+    localData = NULL;
 }
 
 void trpgManagedTile::Reset()
 {
-	// Null out the local material data
-	for (unsigned int i=0;i<localMatData.size();i++)
-		localMatData[i] = NULL;
-	groupIDs.resize(0);
+    // Null out the local material data
+    for (unsigned int i=0;i<localMatData.size();i++)
+        localMatData[i] = NULL;
+    groupIDs.resize(0);
 
-	isLoaded = false;
-	x = y = -1;
-	lod = -1;
-	localData = NULL;
+    isLoaded = false;
+    x = y = -1;
+    lod = -1;
+    localData = NULL;
 }
 
 bool trpgManagedTile::ParseTileHeader(trpgReadBuffer &buf)
 {
-	isLoaded = false;
-	if (!tileHead.Read(buf))
-		return false;
+    isLoaded = false;
+    if (!tileHead.Read(buf))
+        return false;
 
-	int numLoc;
-	tileHead.GetNumLocalMaterial(numLoc);
-	localMatData.resize(numLoc);
+    int numLoc;
+    tileHead.GetNumLocalMaterial(numLoc);
+    localMatData.resize(numLoc);
 
-	// The tile considers itself loaded with just
-	//  the header.  This isn't true as far as the paging
-	//  manager is concerned.
-	isLoaded = true;
-	return true;
+    // The tile considers itself loaded with just
+    //  the header.  This isn't true as far as the paging
+    //  manager is concerned.
+    isLoaded = true;
+    return true;
 }
 
 bool trpgManagedTile::IsLoaded()
 {
-	return isLoaded;
+    return isLoaded;
 }
 
 bool trpgManagedTile::SetTileLoc(int inX,int inY,int inLod)
 {
-	x = inX;  y = inY;
-	if (inLod < 0)
-		return false;
-	lod = inLod;
+    x = inX;  y = inY;
+    if (inLod < 0)
+        return false;
+    lod = inLod;
 
-	return true;
+    return true;
 }
 
 bool trpgManagedTile::GetTileLoc(int &retx,int &rety,int &retLod)
 {
-	retx = x;  rety = y;  retLod = lod;
+    retx = x;  rety = y;  retLod = lod;
 
-	return true;
+    return true;
 }
 
 const trpgTileHeader *trpgManagedTile::GetTileHead()
 {
-	return &tileHead;
+    return &tileHead;
 }
 
 const std::vector<trpgLocalMaterial> *trpgManagedTile::GetLocMatList() const
 {
-	return tileHead.GetLocalMaterialList();
+    return tileHead.GetLocalMaterialList();
 }
 
 const trpgLocalMaterial *trpgManagedTile::GetLocMaterial(int id) const
@@ -103,7 +103,7 @@ const trpgLocalMaterial *trpgManagedTile::GetLocMaterial(int id) const
     matList = tileHead.GetLocalMaterialList();
 
     if (id <0 || id >= (int)matList->size())
-	return NULL;
+    return NULL;
     
     return &(*matList)[id];
 }
@@ -120,20 +120,20 @@ void *trpgManagedTile::GetLocalData() const
 
 bool trpgManagedTile::SetMatData(int id,void *info)
 {
-	if (id < 0 || id >= (int)localMatData.size())
-		return false;
+    if (id < 0 || id >= (int)localMatData.size())
+        return false;
 
-	localMatData[id] = info;
+    localMatData[id] = info;
 
-	return true;
+    return true;
 }
 
 void *trpgManagedTile::GetMatData(int id) const
 {
-	if (id < 0 || id >= (int)localMatData.size())
-		return NULL;
+    if (id < 0 || id >= (int)localMatData.size())
+        return NULL;
 
-	return localMatData[id];
+    return localMatData[id];
 }
 
 void trpgManagedTile::AddGroupID(int id)
@@ -154,83 +154,83 @@ void trpgManagedTile::Print(trpgPrintBuffer &buf)
 }
  
 /*  Page Manager LOD Page Info class.
-	Used by the page manager to keep track of paging information
-	for a single terrain LOD.  See the header file for details.
+    Used by the page manager to keep track of paging information
+    for a single terrain LOD.  See the header file for details.
  */
 
 trpgPageManager::LodPageInfo::LodPageInfo()
 {
-	valid = false;
-	pageDist = 0.0;
-	cell.x = cell.y = -100;
+    valid = false;
+    pageDist = 0.0;
+    cell.x = cell.y = -100;
 }
 
 trpgPageManager::LodPageInfo::~LodPageInfo()
 {
-	Clean();
+    Clean();
 }
 
 void trpgPageManager::LodPageInfo::Clean()
 {
-	// Clean up managed tile structures
+    // Clean up managed tile structures
         unsigned int i;
-	for (i=0;i<load.size();i++)
-	    if (load[i])
-		delete load[i];
-	load.resize(0);
-	for (i=0;i<unload.size();i++)
-	    if (unload[i])
-		delete unload[i];
-	unload.resize(0);
-	for (i=0;i<current.size();i++)
-	    if (current[i])
-		delete current[i];
-	current.resize(0);
-	for (i=0;i<freeList.size();i++)
-		delete freeList[i];
-	freeList.resize(0);
-	activeLoad = false;
-	activeUnload = false;
+    for (i=0;i<load.size();i++)
+        if (load[i])
+        delete load[i];
+    load.resize(0);
+    for (i=0;i<unload.size();i++)
+        if (unload[i])
+        delete unload[i];
+    unload.resize(0);
+    for (i=0;i<current.size();i++)
+        if (current[i])
+        delete current[i];
+    current.resize(0);
+    for (i=0;i<freeList.size();i++)
+        delete freeList[i];
+    freeList.resize(0);
+    activeLoad = false;
+    activeUnload = false;
 }
 
 bool trpgPageManager::LodPageInfo::Init(trpgr_Archive *archive, int myLod, double scale)
 {
-	Clean();
+    Clean();
 
-	lod = myLod;
-	// In theory we could have a negative scale, but I don't
-	//  really want to deal with that.
-	if (scale < 0)  scale = 0.0;
+    lod = myLod;
+    // In theory we could have a negative scale, but I don't
+    //  really want to deal with that.
+    if (scale < 0)  scale = 0.0;
 
-	// Need some size and shape info about our terrain LOD
-	const trpgHeader *head = archive->GetHeader();
-	head->GetTileSize(lod,cellSize);
-	head->GetLodRange(lod,pageDist);
-	head->GetLodSize(lod,lodSize);
-	pageDist *= scale;
+    // Need some size and shape info about our terrain LOD
+    const trpgHeader *head = archive->GetHeader();
+    head->GetTileSize(lod,cellSize);
+    head->GetLodRange(lod,pageDist);
+    head->GetLodSize(lod,lodSize);
+    pageDist *= scale;
 
-	// Area of interest size (in cells)
-	aoiSize.x = (int)(pageDist/cellSize.x);
-	aoiSize.y = (int)(pageDist/cellSize.y);
+    // Area of interest size (in cells)
+    aoiSize.x = (int)(pageDist/cellSize.x);
+    aoiSize.y = (int)(pageDist/cellSize.y);
 
-	/* Make a guess as to how many tiles we might have loaded
-		in at any given time.  Give ourselves 15% extra room.
-	   From the area of interest in cells, we can guess the max
-	   number of tiles (aka cells) we'll have loaded in at once.
-	   Note that the AOI size is only ahead, so it must be doubled.
-	 */
-	maxNumTiles = (int)(1.15*(2*aoiSize.x+1)*(2*aoiSize.y+1));
+    /* Make a guess as to how many tiles we might have loaded
+        in at any given time.  Give ourselves 15% extra room.
+       From the area of interest in cells, we can guess the max
+       number of tiles (aka cells) we'll have loaded in at once.
+       Note that the AOI size is only ahead, so it must be doubled.
+     */
+    maxNumTiles = (int)(1.15*(2*aoiSize.x+1)*(2*aoiSize.y+1));
 
-	// Allocate 'em
-	for (int i=0;i<maxNumTiles;i++) {
-	    trpgManagedTile *tile = new trpgManagedTile();
-	    freeList.push_back(tile);
-	}
+    // Allocate 'em
+    for (int i=0;i<maxNumTiles;i++) {
+        trpgManagedTile *tile = new trpgManagedTile();
+        freeList.push_back(tile);
+    }
 
-	// We still don't have a position yet
-	valid = true;
+    // We still don't have a position yet
+    valid = true;
 
-	return true;
+    return true;
 }
 
 bool trpgPageManager::LodPageInfo::SetLocation(trpg2dPoint &loc)
@@ -248,7 +248,7 @@ bool trpgPageManager::LodPageInfo::SetLocation(trpg2dPoint &loc)
 
     // Nothing to page.  Done.
     if (newCell.x == cell.x && newCell.y == cell.y)
-	return false;
+    return false;
 
     // Cell has changed.  Update.
     cell = newCell;
@@ -262,15 +262,15 @@ trpgManagedTile *trpgPageManager::LodPageInfo::GetNextLoad()
 {
     // Can only load one tile at a time
     if (activeLoad)
-	return NULL;
+    return NULL;
 
     // Clear any NULLs at the beginning
     while (load.size() && !load[0])
-	load.pop_front();
+    load.pop_front();
 
     if (load.size() > 0) {
-	activeLoad = true;
-	return load[0];
+    activeLoad = true;
+    return load[0];
     }
 
     return NULL;
@@ -279,8 +279,8 @@ trpgManagedTile *trpgPageManager::LodPageInfo::GetNextLoad()
 void trpgPageManager::LodPageInfo::AckLoad()
 {
     if (activeLoad) {
-	current.push_back(load[0]);
-	load.pop_front();
+    current.push_back(load[0]);
+    load.pop_front();
     }
     activeLoad = false;
 }
@@ -289,15 +289,15 @@ trpgManagedTile *trpgPageManager::LodPageInfo::GetNextUnload()
 {
     // Can only unload one tile at a time
     if (activeUnload)
-	return NULL;
+    return NULL;
 
     // Clear any NULLs at the beginning
     while (unload.size() && !unload[0])
-	unload.pop_front();
+    unload.pop_front();
 
     if (unload.size() > 0) {
-	activeUnload = true;
-	return unload[0];
+    activeUnload = true;
+    return unload[0];
     }
 
     return NULL;
@@ -306,10 +306,10 @@ trpgManagedTile *trpgPageManager::LodPageInfo::GetNextUnload()
 void trpgPageManager::LodPageInfo::AckUnload()
 {
     if (activeUnload) {
-	trpgManagedTile *tile = unload[0];
-	tile->Reset();
-	freeList.push_back(tile);
-	unload.pop_front();
+    trpgManagedTile *tile = unload[0];
+    tile->Reset();
+    freeList.push_back(tile);
+    unload.pop_front();
     }
     activeUnload = false;
 }
@@ -319,8 +319,8 @@ bool trpgPageManager::LodPageInfo::isWithin(trpgManagedTile *tile,trpg2iPoint &s
     int tileX,tileY,tileLod;
     tile->GetTileLoc(tileX,tileY,tileLod);
     if (tileX >= sw.x && tileX <= ne.x &&
-	tileY >= sw.y && tileY <= ne.y)
-	return true;
+    tileY >= sw.y && tileY <= ne.y)
+    return true;
 
     return false;
 }
@@ -330,13 +330,13 @@ bool trpgPageManager::LodPageInfo::Stop()
     // Empty the load list
     unsigned int i;
     for (i=0;i<load.size();i++)
-	freeList.push_back(load[i]);
+    freeList.push_back(load[i]);
     load.resize(0);
 
     // Move the current tiles to the unload list
     for (i=0;i<current.size();i++)
-	if (current[i])
-	    unload.push_back(current[i]);
+    if (current[i])
+        unload.push_back(current[i]);
     current.resize(0);
 
     return (unload.size() > 0);
@@ -354,54 +354,54 @@ void trpgPageManager::LodPageInfo::Update()
     //  in cell coordinates
     sw.x = cell.x - aoiSize.x;  sw.y = cell.y - aoiSize.y;
     ne.x = cell.x + aoiSize.x;  ne.y = cell.y + aoiSize.y;
-    sw.x = MAX(0,sw.x);		    sw.y = MAX(0,sw.y);
+    sw.x = MAX(0,sw.x);            sw.y = MAX(0,sw.y);
     ne.x = MIN(lodSize.x-1,ne.x);   ne.y = MIN(lodSize.y-1,ne.y);
 
     /* Load list -
-	Some of the tiles we're supposed to load may now be
-	out of range.  Take them off the load list.
+    Some of the tiles we're supposed to load may now be
+    out of range.  Take them off the load list.
      */
     unsigned int i;
     for (i=0;i<load.size();i++) {
-	if (load[i] && !isWithin(load[i],sw,ne)) {
-	    freeList.push_back(load[i]);
-	    load[i] = NULL;
-	}
+    if (load[i] && !isWithin(load[i],sw,ne)) {
+        freeList.push_back(load[i]);
+        load[i] = NULL;
+    }
     }
 
     /* Unload list -
-	Some of the tiles we were planning on unloading may now
-	be in view again.  Move them back to current.
+    Some of the tiles we were planning on unloading may now
+    be in view again.  Move them back to current.
      */
     for (i=0;i<unload.size();i++) {
-	if (unload[i] && isWithin(unload[i],sw,ne)) {
-	    current.push_back(unload[i]);
-	    unload[i] = NULL;
-	}
+    if (unload[i] && isWithin(unload[i],sw,ne)) {
+        current.push_back(unload[i]);
+        unload[i] = NULL;
+    }
     }
 
     /* Current list -
-	We need to figure out a few things here.
-	1) What's in the current list that should be paged out.
-	2) What's already paged, sorted into tmpCurrent.
-	3) What's missing from tmpCurrent and should be paged in.
+    We need to figure out a few things here.
+    1) What's in the current list that should be paged out.
+    2) What's already paged, sorted into tmpCurrent.
+    3) What's missing from tmpCurrent and should be paged in.
      */
 
     // Look for tiles to page out
     // Move them to the unload list
     for (i=0;i<current.size();i++) {
-	if (current[i] && !isWithin(current[i],sw,ne)) {
-	    unload.push_back(current[i]);
-	    current[i] = NULL;
-	}
+    if (current[i] && !isWithin(current[i],sw,ne)) {
+        unload.push_back(current[i]);
+        current[i] = NULL;
+    }
     }
     // Clean the NULLs out of the current list
     int curPos = 0;
     for (i=0;i<current.size();i++) {
-	if (current[i]) {
-	    current[curPos] = current[i];
-	    curPos++;
-	}
+    if (current[i]) {
+        current[curPos] = current[i];
+        curPos++;
+    }
     }
     current.resize(curPos);
     
@@ -413,30 +413,30 @@ void trpgPageManager::LodPageInfo::Update()
     tmpCurrent.resize(dx*dy);
     for (i=0;i<tmpCurrent.size();i++)  tmpCurrent[i] = false;
     for (i=0;i<current.size();i++) {
-	trpgManagedTile *tile = current[i];
-	if (tile) {
-	    int tileX,tileY,tileLod;
-	    tile->GetTileLoc(tileX,tileY,tileLod);
-	    tmpCurrent[(tileY-sw.y)*dx + (tileX-sw.x)] = true;
-	}
+    trpgManagedTile *tile = current[i];
+    if (tile) {
+        int tileX,tileY,tileLod;
+        tile->GetTileLoc(tileX,tileY,tileLod);
+        tmpCurrent[(tileY-sw.y)*dx + (tileX-sw.x)] = true;
+    }
     }
 
     // Now figure out which ones are missing and add them
     //  to the load list
     for (int x=0;x<dx;x++) {
-	for (int y=0;y<dy;y++) {
-	    if (!tmpCurrent[y*dx + x]) {
-		// Allocate a new tile
-		trpgManagedTile *tile = NULL;
-		if (freeList.size() > 0) {
-		    tile = freeList[0];
-		    freeList.pop_front();
-		} else
-		    tile = new trpgManagedTile();
-		tile->SetTileLoc(x+sw.x,y+sw.y,lod);
-		load.push_back(tile);
-	    }
-	}
+    for (int y=0;y<dy;y++) {
+        if (!tmpCurrent[y*dx + x]) {
+        // Allocate a new tile
+        trpgManagedTile *tile = NULL;
+        if (freeList.size() > 0) {
+            tile = freeList[0];
+            freeList.pop_front();
+        } else
+            tile = new trpgManagedTile();
+        tile->SetTileLoc(x+sw.x,y+sw.y,lod);
+        load.push_back(tile);
+        }
+    }
     }
 
     // That's it.  All the rest is handled by the caller
@@ -456,22 +456,22 @@ void trpgPageManager::LodPageInfo::Print(trpgPrintBuffer &buf)
     sprintf(line,"Loads:  (activeLoad = %s)",(activeLoad ? "yes" : "no"));  buf.prnLine(line);
     buf.IncreaseIndent();
     for (i=0;i<load.size();i++)
-	if (load[i])
-	    load[i]->Print(buf);
+    if (load[i])
+        load[i]->Print(buf);
     buf.DecreaseIndent();
 
     sprintf(line,"Unloads:  (activeUnload = %s)",(activeUnload ? "yes" : "no"));  buf.prnLine(line);
     buf.IncreaseIndent();
     for (i=0;i<unload.size();i++)
-	if (unload[i])
-	    unload[i]->Print(buf);
+    if (unload[i])
+        unload[i]->Print(buf);
     buf.DecreaseIndent();
 
     buf.prnLine("Currently loaded:");
     buf.IncreaseIndent();
     for (i=0;i<current.size();i++)
-	if (current[i])
-	    current[i]->Print(buf);
+    if (current[i])
+        current[i]->Print(buf);
     buf.DecreaseIndent();
 
     sprintf(line,"Free list size = %d",freeList.size());  buf.prnLine(line);
@@ -513,7 +513,7 @@ void trpgPageManager::Init(trpgr_Archive *inArch)
     valid = true;
     pageInfo.resize(numLod);
     for (int i=0;i<numLod;i++) {
-	pageInfo[i].Init(archive,i,scale);
+    pageInfo[i].Init(archive,i,scale);
     }
 }
 
@@ -521,7 +521,7 @@ bool trpgPageManager::SetPageDistFactor(double inFact)
 {
     // A scaling factor less than 1 will break the archive display.
     if (inFact <= 1.0)
-	return false;
+    return false;
 
     scale = inFact;
 
@@ -532,15 +532,15 @@ bool trpgPageManager::SetLocation(trpg2dPoint &pt)
 {
     // Do a basic sanity check
     if (!valid || (pagePt.x == pt.x && pagePt.y == pt.y))
-	return false;
+    return false;
     pagePt = pt;
 
     // Call each terrain LOD and let if figure out if something
     //  has changed.
     bool change = false;
     for (unsigned int i=0;i<pageInfo.size();i++) {
-	if (pageInfo[i].SetLocation(pt))
-	    change = true;
+    if (pageInfo[i].SetLocation(pt))
+        change = true;
     }
 
     return change;
@@ -550,22 +550,22 @@ trpgManagedTile *trpgPageManager::GetNextLoad()
 {
     // If we're already doing something, let them know about it
     if (lastLoad != None)
-	throw 1;
+    throw 1;
 
     // Look for anything that needs loaded
     // Start with lowest LOD, work up to highest
     trpgManagedTile *tile = NULL;
     for (unsigned int i=0;i<pageInfo.size();i++) {
-	LodPageInfo &info = pageInfo[i];
-	if ((tile = info.GetNextLoad()))
-	    break;
+    LodPageInfo &info = pageInfo[i];
+    if ((tile = info.GetNextLoad()))
+        break;
     }
 
     // Found one.  Now the user has to load it.
     if (tile) {
-	lastLoad = Load;
-	lastTile = tile;
-	lastLod = tile->lod;
+    lastLoad = Load;
+    lastTile = tile;
+    lastLod = tile->lod;
     }
 
     return tile;
@@ -575,7 +575,7 @@ void trpgPageManager::AckLoad()
 {
     // If we're not in the middle of a load, register our displeasure
     if (lastLoad != Load)
-	throw 1;
+    throw 1;
 
     LodPageInfo &info = pageInfo[lastLod];
     info.AckLoad();
@@ -593,7 +593,7 @@ void *trpgPageManager::GetGroupData(int groupID)
 {
     ManageGroupMap::const_iterator p = groupMap.find(groupID);
     if (p != groupMap.end())
-	return (*p).second;
+    return (*p).second;
 
     return NULL;
 }
@@ -602,22 +602,22 @@ trpgManagedTile *trpgPageManager::GetNextUnload()
 {
     // If we're already doing something, let them know about it
     if (lastLoad != None)
-	throw 1;
+    throw 1;
 
     // Look for anything that needs unloaded
     // Start with highest LOD, work down to lowest
     trpgManagedTile *tile = NULL;
     for (int i=pageInfo.size()-1;i>=0;i--) {
-	LodPageInfo &info = pageInfo[i];
-	if ((tile = info.GetNextUnload()))
-	    break;
+    LodPageInfo &info = pageInfo[i];
+    if ((tile = info.GetNextUnload()))
+        break;
     }
 
     // Found one.  Now the user has to unload it.
     if (tile) {
-	lastLoad = Unload;
-	lastTile = tile;
-	lastLod = tile->lod;
+    lastLoad = Unload;
+    lastTile = tile;
+    lastLod = tile->lod;
     }
 
     return tile;
@@ -627,14 +627,14 @@ void trpgPageManager::AckUnload()
 {
     // If we're not in the middle of an unload, let 'em know.
     if (lastLoad != Unload)
-	throw 1;
+    throw 1;
 
     // Remove this tile's group IDs from the map
     const std::vector<int> *groupIDs = lastTile->GetGroupIDs();
     for (unsigned int i=0;i<groupIDs->size();i++) {
-	ManageGroupMap::iterator p = groupMap.find((*groupIDs)[i]);
-	if (p != groupMap.end())
-	    groupMap.erase(p);
+    ManageGroupMap::iterator p = groupMap.find((*groupIDs)[i]);
+    if (p != groupMap.end())
+        groupMap.erase(p);
     }
 
     LodPageInfo &info = pageInfo[lastLod];
@@ -647,7 +647,7 @@ bool trpgPageManager::Stop()
 {
     bool res=false;
     for (unsigned int i=0;i<pageInfo.size();i++)
-	res |= pageInfo[i].Stop();
+    res |= pageInfo[i].Stop();
 
     lastLoad = None;
 
@@ -661,10 +661,10 @@ void trpgPageManager::Print(trpgPrintBuffer &buf)
     buf.prnLine("Terrain LODs:");
 
     for (unsigned int i=0;i<pageInfo.size();i++) {
-	sprintf(line,"----Terrain lod %d---",i);  buf.prnLine(line);
+    sprintf(line,"----Terrain lod %d---",i);  buf.prnLine(line);
         buf.IncreaseIndent();
-	pageInfo[i].Print(buf);
-	buf.DecreaseIndent();
+    pageInfo[i].Print(buf);
+    buf.DecreaseIndent();
     }
 }
 
@@ -689,7 +689,7 @@ void trpgPageManageTester::Init(trpgPrintBuffer *pBuf,trpgPageManager *pMan,trpg
     printBuf = pBuf;
 
     if (!archive->isValid())
-	throw 1;
+    throw 1;
 
     // Start up the paging manager
     manager->Init(archive);
@@ -698,11 +698,11 @@ void trpgPageManageTester::Init(trpgPrintBuffer *pBuf,trpgPageManager *pMan,trpg
 void trpgPageManageTester::RandomTest(int num,int seed)
 {
     if (!manager || !archive || !printBuf)
-	throw 1;
+    throw 1;
 
     // Seed the random number generator so we can replicate runs
     if (seed != -1)
-	srand(seed);
+    srand(seed);
 
     // Need the extents
     trpg2dPoint ll,ur,lod0Size;
@@ -718,20 +718,20 @@ void trpgPageManageTester::RandomTest(int num,int seed)
     int i;
     char line[1024];
     for (i=0;i<num;i++) {
-	// Generate a point
-	double randNum1 = rand()/(double)RAND_MAX;
-	double randNum2 = rand()/(double)RAND_MAX;
-	trpg2dPoint pt;
-	pt.x = (ur.x - ll.x)*randNum1;
-	pt.y = (ur.y - ll.y)*randNum2;
+    // Generate a point
+    double randNum1 = rand()/(double)RAND_MAX;
+    double randNum2 = rand()/(double)RAND_MAX;
+    trpg2dPoint pt;
+    pt.x = (ur.x - ll.x)*randNum1;
+    pt.y = (ur.y - ll.y)*randNum2;
 
-	// Jump to the point
-	bool changes = manager->SetLocation(pt);
-	sprintf(line,"Jumped to (%f,%f).  Tiles to load/unload = %s",pt.x,pt.y,
-	        (changes ? "yes" : "no"));  printBuf->prnLine(line);
+    // Jump to the point
+    bool changes = manager->SetLocation(pt);
+    sprintf(line,"Jumped to (%f,%f).  Tiles to load/unload = %s",pt.x,pt.y,
+            (changes ? "yes" : "no"));  printBuf->prnLine(line);
 
-	// Process the results
-	ProcessChanges();
+    // Process the results
+    ProcessChanges();
     }
 
     // Ask the page manager for its final status
@@ -745,7 +745,7 @@ void trpgPageManageTester::Fly_LL_to_UR(double dist)
     char line[1024];
 
     if (!manager || !archive || !printBuf)
-	throw 1;
+    throw 1;
 
     // Need the extents
     trpg2dPoint ll,ur,lod0Size;
@@ -761,15 +761,15 @@ void trpgPageManageTester::Fly_LL_to_UR(double dist)
     // Fly the path
     trpg2dPoint loc;   loc = ll;
     do {
-	loc.x += dist;  loc.y += dist;
+    loc.x += dist;  loc.y += dist;
 
-	// Jump to next point
-	bool changes = manager->SetLocation(loc);
-	sprintf(line,"Moved to (%f,%f).  Tiles to load/unload = %s",loc.x,loc.y,
-		(changes ? "yes" : "no"));  printBuf->prnLine(line);
+    // Jump to next point
+    bool changes = manager->SetLocation(loc);
+    sprintf(line,"Moved to (%f,%f).  Tiles to load/unload = %s",loc.x,loc.y,
+        (changes ? "yes" : "no"));  printBuf->prnLine(line);
 
-	// Process new location
-	ProcessChanges();
+    // Process new location
+    ProcessChanges();
     } while (loc.x < ur.x && loc.y < ur.y);
 
     // Ask the page manager for its final status
@@ -788,9 +788,9 @@ void trpgPageManageTester::ProcessChanges()
     printBuf->prnLine("Tiles to unload:");
     printBuf->IncreaseIndent();
     while ((unloadTile = manager->GetNextUnload())) {
-	unloadTile->GetTileLoc(x,y,lod);
-	sprintf(line,"x = %d, y = %d, lod = %d",x,y,lod);  printBuf->prnLine(line);
-	manager->AckUnload();
+    unloadTile->GetTileLoc(x,y,lod);
+    sprintf(line,"x = %d, y = %d, lod = %d",x,y,lod);  printBuf->prnLine(line);
+    manager->AckUnload();
     }
     printBuf->DecreaseIndent();
 
@@ -799,9 +799,9 @@ void trpgPageManageTester::ProcessChanges()
     printBuf->prnLine("Tiles to load:");
     printBuf->IncreaseIndent();
     while ((loadTile = manager->GetNextLoad())) {
-	loadTile->GetTileLoc(x,y,lod);
-	sprintf(line,"x = %d, y = %d, lod = %d",x,y,lod);  printBuf->prnLine(line);
-	manager->AckLoad();
+    loadTile->GetTileLoc(x,y,lod);
+    sprintf(line,"x = %d, y = %d, lod = %d",x,y,lod);  printBuf->prnLine(line);
+    manager->AckLoad();
     }
     printBuf->DecreaseIndent();
 }

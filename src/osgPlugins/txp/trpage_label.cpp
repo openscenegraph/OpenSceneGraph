@@ -14,8 +14,8 @@
    */
 
 /* trpage_label.cpp
-	Methods for the trpgLable object and its associated support structure
-	including trpgTextStyle and trpgTextStyleTable.
+    Methods for the trpgLable object and its associated support structure
+    including trpgTextStyle and trpgTextStyleTable.
  */
 
 #include <stdlib.h>
@@ -30,7 +30,7 @@
 
 trpgTextStyle::trpgTextStyle(void)
 {
-	Reset();
+    Reset();
 }
 
 trpgTextStyle::~trpgTextStyle(void)
@@ -39,70 +39,70 @@ trpgTextStyle::~trpgTextStyle(void)
 
 void trpgTextStyle::Reset(void)
 {
-	font = "";
-	bold = italic = underline = false;
-	characterSize = float32(0.0042333333333); // 12 point in meter
-	matId = -1;
+    font = "";
+    bold = italic = underline = false;
+    characterSize = float32(0.0042333333333); // 12 point in meter
+    matId = -1;
 }
 
 void trpgTextStyle::SetMaterial(int inMatId)
 {
-	matId = inMatId;
+    matId = inMatId;
 }
 
 int trpgTextStyle::GetMaterial(void) const
 {
-	return matId;
+    return matId;
 }
 
 void trpgTextStyle::SetFont(std::string &inFont)
 {
-	font = inFont;
+    font = inFont;
 }
 
 const std::string *trpgTextStyle::GetFont(void) const
 {
-	return &font;
+    return &font;
 }
 
 void trpgTextStyle::SetBold(bool inBold)
 {
-	bold = inBold;
+    bold = inBold;
 }
 
 bool trpgTextStyle::GetBold(void) const
 {
-	return bold;
+    return bold;
 }
 
 void trpgTextStyle::SetItalic(bool inItalic)
 {
-	italic = inItalic;
+    italic = inItalic;
 }
 
 bool trpgTextStyle::GetItalic(void) const
 {
-	return italic;
+    return italic;
 }
 
 void trpgTextStyle::SetUnderline(bool inUnder)
 {
-	underline = inUnder;
+    underline = inUnder;
 }
 
 bool trpgTextStyle::GetUnderline(void) const
 {
-	return underline;
+    return underline;
 }
 
 void trpgTextStyle::SetCharacterSize(float32 inSize)
 {
-	characterSize = inSize;
+    characterSize = inSize;
 }
 
 float32 trpgTextStyle::GetCharacterSize(void) const
 {
-	return characterSize;
+    return characterSize;
 }
 
 
@@ -110,20 +110,20 @@ float32 trpgTextStyle::GetCharacterSize(void) const
 
 bool trpgTextStyle::Write(trpgWriteBuffer &buf)
 {
-	buf.Begin(TRPG_TEXT_STYLE);
+    buf.Begin(TRPG_TEXT_STYLE);
 
-	buf.Begin(TRPG_TEXT_STYLE_BASIC);
-	buf.Add(font);
-	buf.Add(bold);
-	buf.Add(italic);
-	buf.Add(underline);
-	buf.Add(characterSize);
-	buf.Add(matId);
-	buf.End();
+    buf.Begin(TRPG_TEXT_STYLE_BASIC);
+    buf.Add(font);
+    buf.Add(bold);
+    buf.Add(italic);
+    buf.Add(underline);
+    buf.Add(characterSize);
+    buf.Add(matId);
+    buf.End();
 
-	buf.End();
+    buf.End();
 
-	return true;
+    return true;
 }
 
 // TextStyle CB
@@ -131,94 +131,94 @@ bool trpgTextStyle::Write(trpgWriteBuffer &buf)
 // If we do it this way it's easier to expand later.
 class textStyleCB : public trpgr_Callback {
 public:
-	void * Parse(trpgToken,trpgReadBuffer &);
-	trpgTextStyle *style;
+    void * Parse(trpgToken,trpgReadBuffer &);
+    trpgTextStyle *style;
 };
 
 void * textStyleCB::Parse(trpgToken tok,trpgReadBuffer &buf)
 {
-	std::string sVal;
-	int iVal;
-	float32 fVal;
+    std::string sVal;
+    int iVal;
+    float32 fVal;
 
-	try {
-		switch (tok) {
-		case TRPG_TEXT_STYLE_BASIC:
-			buf.Get(sVal);
-			style->SetFont(sVal);
-			buf.Get(iVal);
-			style->SetBold((iVal ? true : false));
-			buf.Get(iVal);
-			style->SetItalic((iVal ? true : false));
-			buf.Get(iVal);
-			style->SetUnderline((iVal ? true : false));
-			buf.Get(fVal);
-			style->SetCharacterSize(fVal);
-			buf.Get(iVal);
-			style->SetMaterial(iVal);
-			break;
-		default:
-			break;
-		}
-	}
-	catch (...) {
-		return NULL;
-	}
+    try {
+        switch (tok) {
+        case TRPG_TEXT_STYLE_BASIC:
+            buf.Get(sVal);
+            style->SetFont(sVal);
+            buf.Get(iVal);
+            style->SetBold((iVal ? true : false));
+            buf.Get(iVal);
+            style->SetItalic((iVal ? true : false));
+            buf.Get(iVal);
+            style->SetUnderline((iVal ? true : false));
+            buf.Get(fVal);
+            style->SetCharacterSize(fVal);
+            buf.Get(iVal);
+            style->SetMaterial(iVal);
+            break;
+        default:
+            break;
+        }
+    }
+    catch (...) {
+        return NULL;
+    }
 
-	return style;
+    return style;
 }
 
 // Read from a buffer
 
 bool trpgTextStyle::Read(trpgReadBuffer &buf)
 {
-	Reset();
+    Reset();
 
-	trpgr_Parser parse;
-	textStyleCB textStyleCb;
+    trpgr_Parser parse;
+    textStyleCB textStyleCb;
 
-	textStyleCb.style = this;
-	parse.AddCallback(TRPG_TEXT_STYLE_BASIC,&textStyleCb,false);
-	parse.Parse(buf);
+    textStyleCb.style = this;
+    parse.AddCallback(TRPG_TEXT_STYLE_BASIC,&textStyleCb,false);
+    parse.Parse(buf);
 
-	return isValid();
+    return isValid();
 }
 
 bool trpgTextStyle::isValid(void) const
 {
-	// Need to have a font designation at least
-	if (font.size() > 0)
-		return true;
+    // Need to have a font designation at least
+    if (font.size() > 0)
+        return true;
 
-	return false;
+    return false;
 }
 
 
 bool trpgTextStyle::operator == (const trpgTextStyle& in) const
 {
-	if (font.compare(in.font) != 0)
-		return false;
+    if (font.compare(in.font) != 0)
+        return false;
 
-	if (bold      != in.bold || 
-		italic    != in.italic || 
-		underline != in.underline)
-		return false;
+    if (bold      != in.bold || 
+        italic    != in.italic || 
+        underline != in.underline)
+        return false;
 
-	if(fabs(double(characterSize - in.characterSize)) > 0.0001)
-		return false;
+    if(fabs(double(characterSize - in.characterSize)) > 0.0001)
+        return false;
 
 
-	if (matId != in.matId)
-		return false;
+    if (matId != in.matId)
+        return false;
 
-	return true;
+    return true;
 }
 
 // ******************* Text Style Table implementation
 
 trpgTextStyleTable::trpgTextStyleTable()
 {
-	Reset();
+    Reset();
 }
 trpgTextStyleTable::~trpgTextStyleTable()
 {
@@ -226,98 +226,98 @@ trpgTextStyleTable::~trpgTextStyleTable()
 
 void trpgTextStyleTable::Reset()
 {
-	styles.resize(0);
+    styles.resize(0);
 }
 
 bool trpgTextStyleTable::isValid() const
 {
-	for (unsigned int i=0;i<styles.size();i++)
-		if (!styles[i].isValid())
-			return false;
+    for (unsigned int i=0;i<styles.size();i++)
+        if (!styles[i].isValid())
+            return false;
 
-	return true;
+    return true;
 }
 
 int trpgTextStyleTable::AddStyle(const trpgTextStyle &style)
 {
-	styles.push_back(style);
-	return styles.size() -1;
+    styles.push_back(style);
+    return styles.size() -1;
 }
 
 int trpgTextStyleTable::FindAddStyle(const trpgTextStyle &style)
 {
-	for (unsigned int i=0;i<styles.size();i++)
-		if (styles[i] == style)
-			return i;
+    for (unsigned int i=0;i<styles.size();i++)
+        if (styles[i] == style)
+            return i;
 
-	return AddStyle(style);
+    return AddStyle(style);
 }
 
 int trpgTextStyleTable::GetNumStyle() const
 {
-	return styles.size();
+    return styles.size();
 }
 
 const trpgTextStyle *trpgTextStyleTable::GetStyleRef(int id) const
 {
-	if (id < 0 || id >= (int)styles.size())
-		return NULL;
+    if (id < 0 || id >= (int)styles.size())
+        return NULL;
 
-	return &styles[id];
+    return &styles[id];
 }
 
 bool trpgTextStyleTable::Write(trpgWriteBuffer &buf)
 {
-	if (!isValid())
-		return false;
+    if (!isValid())
+        return false;
 
-	buf.Begin(TRPG_TEXT_STYLE_TABLE);
+    buf.Begin(TRPG_TEXT_STYLE_TABLE);
 
-	// Number of styles
-	int numStyle = styles.size();
-	buf.Add((int32)numStyle);
+    // Number of styles
+    int numStyle = styles.size();
+    buf.Add((int32)numStyle);
 
-	// Write the styles
-	for (unsigned int i=0;i<styles.size();i++)
-		styles[i].Write(buf);
+    // Write the styles
+    for (unsigned int i=0;i<styles.size();i++)
+        styles[i].Write(buf);
 
-	buf.End();
+    buf.End();
 
-	return true;
+    return true;
 }
 
 bool trpgTextStyleTable::Read(trpgReadBuffer &buf)
 {
-	trpgTextStyle style;
-	trpgToken styleTok;
-	int32 len;
-	bool status;
-	int numStyle;
-	int i;
+    trpgTextStyle style;
+    trpgToken styleTok;
+    int32 len;
+    bool status;
+    int numStyle;
+    int i;
 
-	Reset();
+    Reset();
 
-	try {
-		buf.Get(numStyle);
-		if (numStyle < 0)
-			throw 1;
-		styles.resize(numStyle);
-		for (i=0;i<numStyle;i++) {
-			buf.GetToken(styleTok,len);
-			if (styleTok != TRPG_TEXT_STYLE) throw 1;
-			buf.PushLimit(len);
-			style.Reset();
-			status = style.Read(buf);
-			buf.PopLimit();
-			if (!status) throw 1;
-			styles[i] = style;
-		}
-	}
-	catch (...) {
-		return false;
-	}
+    try {
+        buf.Get(numStyle);
+        if (numStyle < 0)
+            throw 1;
+        styles.resize(numStyle);
+        for (i=0;i<numStyle;i++) {
+            buf.GetToken(styleTok,len);
+            if (styleTok != TRPG_TEXT_STYLE) throw 1;
+            buf.PushLimit(len);
+            style.Reset();
+            status = style.Read(buf);
+            buf.PopLimit();
+            if (!status) throw 1;
+            styles[i] = style;
+        }
+    }
+    catch (...) {
+        return false;
+    }
 
-	return isValid();
+    return isValid();
 }
 
 
@@ -327,7 +327,7 @@ bool trpgTextStyleTable::Read(trpgReadBuffer &buf)
 
 trpgSupportStyle::trpgSupportStyle(void)
 {
-	Reset();
+    Reset();
 }
 
 trpgSupportStyle::~trpgSupportStyle(void)
@@ -336,43 +336,43 @@ trpgSupportStyle::~trpgSupportStyle(void)
 
 void trpgSupportStyle::Reset(void)
 {
-	type = Line;
-	matId = -1;
+    type = Line;
+    matId = -1;
 }
 
 void trpgSupportStyle::SetType(SupportType s)
 {
-	type = s;
+    type = s;
 }
 
 trpgSupportStyle::SupportType trpgSupportStyle::GetType() const
 {
-	return type;
+    return type;
 }
 
 void trpgSupportStyle::SetMaterial(int inMatId)
 {
-	matId = inMatId;
+    matId = inMatId;
 }
 
 int trpgSupportStyle::GetMaterial(void) const
 {
-	return matId;
+    return matId;
 }
 
 // Write method
 bool trpgSupportStyle::Write(trpgWriteBuffer &buf)
 {
-	buf.Begin(TRPG_SUPPORT_STYLE);
+    buf.Begin(TRPG_SUPPORT_STYLE);
 
-	buf.Begin(TRPG_SUPPORT_STYLE_BASIC);
-	buf.Add(type);
-	buf.Add(matId);
-	buf.End();
+    buf.Begin(TRPG_SUPPORT_STYLE_BASIC);
+    buf.Add(type);
+    buf.Add(matId);
+    buf.End();
 
-	buf.End();
+    buf.End();
 
-	return true;
+    return true;
 }
 
 // SupportStyle CB
@@ -380,61 +380,61 @@ bool trpgSupportStyle::Write(trpgWriteBuffer &buf)
 // If we do it this way it's easier to expand later.
 class supportStyleCB : public trpgr_Callback {
 public:
-	void * Parse(trpgToken,trpgReadBuffer &);
-	trpgSupportStyle *style;
+    void * Parse(trpgToken,trpgReadBuffer &);
+    trpgSupportStyle *style;
 };
 
 void * supportStyleCB::Parse(trpgToken tok,trpgReadBuffer &buf)
 {
-	int iVal;
+    int iVal;
 
-	try {
-		switch (tok) {
-		case TRPG_SUPPORT_STYLE_BASIC:
-			buf.Get(iVal);
-			style->SetType(trpgSupportStyle::SupportType(iVal));
-			buf.Get(iVal);
-			style->SetMaterial(iVal);
-			break;
-		default:
-			break;
-		}
-	}
-	catch (...) {
-		return NULL;
-	}
+    try {
+        switch (tok) {
+        case TRPG_SUPPORT_STYLE_BASIC:
+            buf.Get(iVal);
+            style->SetType(trpgSupportStyle::SupportType(iVal));
+            buf.Get(iVal);
+            style->SetMaterial(iVal);
+            break;
+        default:
+            break;
+        }
+    }
+    catch (...) {
+        return NULL;
+    }
 
-	return style;
+    return style;
 }
 
 // Read from a buffer
 
 bool trpgSupportStyle::Read(trpgReadBuffer &buf)
 {
-	Reset();
+    Reset();
 
-	trpgr_Parser parse;
-	supportStyleCB supportStyleCb;
+    trpgr_Parser parse;
+    supportStyleCB supportStyleCb;
 
-	supportStyleCb.style = this;
-	parse.AddCallback(TRPG_SUPPORT_STYLE_BASIC,&supportStyleCb,false);
-	parse.Parse(buf);
+    supportStyleCb.style = this;
+    parse.AddCallback(TRPG_SUPPORT_STYLE_BASIC,&supportStyleCb,false);
+    parse.Parse(buf);
 
-	return isValid();
+    return isValid();
 }
 
 bool trpgSupportStyle::isValid(void) const
 {
-	return true;
+    return true;
 }
 
 
 bool trpgSupportStyle::operator == (const trpgSupportStyle& in) const
 {
-	if (type != in.type || matId != in.matId)
-		return false;
+    if (type != in.type || matId != in.matId)
+        return false;
 
-	return true;
+    return true;
 }
 
 
@@ -442,7 +442,7 @@ bool trpgSupportStyle::operator == (const trpgSupportStyle& in) const
 
 trpgSupportStyleTable::trpgSupportStyleTable()
 {
-	Reset();
+    Reset();
 }
 trpgSupportStyleTable::~trpgSupportStyleTable()
 {
@@ -450,97 +450,97 @@ trpgSupportStyleTable::~trpgSupportStyleTable()
 
 void trpgSupportStyleTable::Reset()
 {
-	styles.resize(0);
+    styles.resize(0);
 }
 
 bool trpgSupportStyleTable::isValid() const
 {
-	for (unsigned int i=0;i<styles.size();i++)
-		if (!styles[i].isValid())
-			return false;
+    for (unsigned int i=0;i<styles.size();i++)
+        if (!styles[i].isValid())
+            return false;
 
-	return true;
+    return true;
 }
 
 int trpgSupportStyleTable::AddStyle(const trpgSupportStyle &style)
 {
-			styles.push_back(style);
-	return styles.size() -1;
+            styles.push_back(style);
+    return styles.size() -1;
 }
 
 int trpgSupportStyleTable::FindAddStyle(const trpgSupportStyle &style)
 {
-	for (unsigned int i=0;i<styles.size();i++)
-		if (styles[i] == style)
-			return i;
+    for (unsigned int i=0;i<styles.size();i++)
+        if (styles[i] == style)
+            return i;
 
-	return AddStyle(style);
+    return AddStyle(style);
 }
 
 int trpgSupportStyleTable::GetNumStyle() const
 {
-	return styles.size();
+    return styles.size();
 }
 
 const trpgSupportStyle *trpgSupportStyleTable::GetStyleRef(int id) const
 {
-	if (id < 0 || id >= (int)styles.size())
-		return NULL;
+    if (id < 0 || id >= (int)styles.size())
+        return NULL;
 
-	return &styles[id];
+    return &styles[id];
 }
 
 bool trpgSupportStyleTable::Write(trpgWriteBuffer &buf)
 {
-	if (!isValid())
-		return false;
+    if (!isValid())
+        return false;
 
-	buf.Begin(TRPG_SUPPORT_STYLE_TABLE);
+    buf.Begin(TRPG_SUPPORT_STYLE_TABLE);
 
-	// Number of styles
-	int numStyle = styles.size();
-	buf.Add((int32)numStyle);
+    // Number of styles
+    int numStyle = styles.size();
+    buf.Add((int32)numStyle);
 
-	// Write the styles
-	for (unsigned int i=0;i<styles.size();i++)
-		styles[i].Write(buf);
+    // Write the styles
+    for (unsigned int i=0;i<styles.size();i++)
+        styles[i].Write(buf);
 
-	buf.End();
+    buf.End();
 
-	return true;
+    return true;
 }
 
 bool trpgSupportStyleTable::Read(trpgReadBuffer &buf)
 {
-	trpgSupportStyle style;
-	trpgToken styleTok;
-	int32 len;
-	bool status;
-	int numStyle;
+    trpgSupportStyle style;
+    trpgToken styleTok;
+    int32 len;
+    bool status;
+    int numStyle;
 
-	Reset();
+    Reset();
 
-	try {
-		buf.Get(numStyle);
-		if (numStyle < 0)
-			throw 1;
-		styles.resize(numStyle);
-		for (int i=0;i<numStyle;i++) {
-			buf.GetToken(styleTok,len);
-			if (styleTok != TRPG_SUPPORT_STYLE) throw 1;
-			buf.PushLimit(len);
-			style.Reset();
-			status = style.Read(buf);
-			buf.PopLimit();
-			if (!status) throw 1;
-			styles[i] = style;
-		}
-	}
-	catch (...) {
-		return false;
-	}
+    try {
+        buf.Get(numStyle);
+        if (numStyle < 0)
+            throw 1;
+        styles.resize(numStyle);
+        for (int i=0;i<numStyle;i++) {
+            buf.GetToken(styleTok,len);
+            if (styleTok != TRPG_SUPPORT_STYLE) throw 1;
+            buf.PushLimit(len);
+            style.Reset();
+            status = style.Read(buf);
+            buf.PopLimit();
+            if (!status) throw 1;
+            styles[i] = style;
+        }
+    }
+    catch (...) {
+        return false;
+    }
 
-	return isValid();
+    return isValid();
 }
 
 
@@ -549,7 +549,7 @@ bool trpgSupportStyleTable::Read(trpgReadBuffer &buf)
 
 trpgLabelProperty::trpgLabelProperty(void)
 {
-	Reset();
+    Reset();
 }
 
 trpgLabelProperty::~trpgLabelProperty(void)
@@ -558,55 +558,55 @@ trpgLabelProperty::~trpgLabelProperty(void)
 
 void trpgLabelProperty::Reset(void)
 {
-	fontId = -1;
-	supportId = -1;
-	type = VertBillboard;
+    fontId = -1;
+    supportId = -1;
+    type = VertBillboard;
 }
 
 void trpgLabelProperty::SetType(LabelType inType)
 {
-	type = inType;
+    type = inType;
 }
 
 trpgLabelProperty::LabelType trpgLabelProperty::GetType() const
 {
-	return type;
+    return type;
 }
 
 void trpgLabelProperty::SetFontStyle(int id)
 {
-	fontId = id;
+    fontId = id;
 }
 
 int trpgLabelProperty::GetFontStyle() const
 {
-	return fontId;
+    return fontId;
 }
 
 void trpgLabelProperty::SetSupport(int id)
 {
-	supportId = id;
+    supportId = id;
 }
 
 int trpgLabelProperty::GetSupport(void) const
 {
-	return supportId;
+    return supportId;
 }
 
 // Write method
 bool trpgLabelProperty::Write(trpgWriteBuffer &buf)
 {
-	buf.Begin(TRPG_LABEL_PROPERTY);
+    buf.Begin(TRPG_LABEL_PROPERTY);
 
-	buf.Begin(TRPG_LABEL_PROPERTY_BASIC);
-	buf.Add(fontId);
-	buf.Add(supportId);
-	buf.Add(type);
-	buf.End();
+    buf.Begin(TRPG_LABEL_PROPERTY_BASIC);
+    buf.Add(fontId);
+    buf.Add(supportId);
+    buf.Add(type);
+    buf.End();
 
-	buf.End();
+    buf.End();
 
-	return true;
+    return true;
 }
 
 // LabelProperty CB
@@ -614,71 +614,71 @@ bool trpgLabelProperty::Write(trpgWriteBuffer &buf)
 // If we do it this way it's easier to expand later.
 class labelPropertyCB : public trpgr_Callback {
 public:
-	void * Parse(trpgToken,trpgReadBuffer &);
-	trpgLabelProperty *property;
+    void * Parse(trpgToken,trpgReadBuffer &);
+    trpgLabelProperty *property;
 };
 
 void * labelPropertyCB::Parse(trpgToken tok,trpgReadBuffer &buf)
 {
-	int iVal;
+    int iVal;
 
-	try {
-		int ival;
-		switch (tok) {
-		case TRPG_LABEL_PROPERTY_BASIC:
-			buf.Get(iVal);
-			property->SetFontStyle(iVal);
-			buf.Get(iVal);
-			property->SetSupport(iVal);
-			buf.Get(ival);
-			property->SetType(trpgLabelProperty::LabelType(ival));
-			break;
-		default:
-			break;
-		}
-	}
-	catch (...) {
-		return NULL;
-	}
+    try {
+        int ival;
+        switch (tok) {
+        case TRPG_LABEL_PROPERTY_BASIC:
+            buf.Get(iVal);
+            property->SetFontStyle(iVal);
+            buf.Get(iVal);
+            property->SetSupport(iVal);
+            buf.Get(ival);
+            property->SetType(trpgLabelProperty::LabelType(ival));
+            break;
+        default:
+            break;
+        }
+    }
+    catch (...) {
+        return NULL;
+    }
 
-	return property;
+    return property;
 }
 
 // Read from a buffer
 
 bool trpgLabelProperty::Read(trpgReadBuffer &buf)
 {
-	Reset();
+    Reset();
 
-	trpgr_Parser parse;
-	labelPropertyCB labelPropertyCb;
+    trpgr_Parser parse;
+    labelPropertyCB labelPropertyCb;
 
-	labelPropertyCb.property = this;
-	parse.AddCallback(TRPG_LABEL_PROPERTY_BASIC,&labelPropertyCb,false);
-	parse.Parse(buf);
+    labelPropertyCb.property = this;
+    parse.AddCallback(TRPG_LABEL_PROPERTY_BASIC,&labelPropertyCb,false);
+    parse.Parse(buf);
 
-	return isValid();
+    return isValid();
 }
 
 bool trpgLabelProperty::isValid(void) const
 {
-	return supportId != -1 && fontId != -1 && type >=0  && type < MaxLabelType;
+    return supportId != -1 && fontId != -1 && type >=0  && type < MaxLabelType;
 }
 
 
 bool trpgLabelProperty::operator == (const trpgLabelProperty& in)const
 {
-	if (fontId != in.fontId || supportId != in.supportId || type != in.type)
-		return false;
+    if (fontId != in.fontId || supportId != in.supportId || type != in.type)
+        return false;
 
-	return true;
+    return true;
 }
 
 // ******************* Label Property Table implementation
 
 trpgLabelPropertyTable::trpgLabelPropertyTable()
 {
-	Reset();
+    Reset();
 }
 trpgLabelPropertyTable::~trpgLabelPropertyTable()
 {
@@ -686,97 +686,97 @@ trpgLabelPropertyTable::~trpgLabelPropertyTable()
 
 void trpgLabelPropertyTable::Reset()
 {
-	properties.resize(0);
+    properties.resize(0);
 }
 
 bool trpgLabelPropertyTable::isValid() const
 {
-	for (unsigned int i=0;i<properties.size();i++)
-		if (!properties[i].isValid())
-			return false;
+    for (unsigned int i=0;i<properties.size();i++)
+        if (!properties[i].isValid())
+            return false;
 
-	return true;
+    return true;
 }
 
 int trpgLabelPropertyTable::AddProperty(const trpgLabelProperty &property)
 {
-	properties.push_back(property);
-	return properties.size() -1;
+    properties.push_back(property);
+    return properties.size() -1;
 }
 
 int trpgLabelPropertyTable::FindAddProperty(const trpgLabelProperty& property)
 {
-	for (unsigned int i=0;i<properties.size();i++)
-		if (properties[i] == property)
-			return i;
+    for (unsigned int i=0;i<properties.size();i++)
+        if (properties[i] == property)
+            return i;
 
-	return AddProperty(property);
+    return AddProperty(property);
 }
 
 int trpgLabelPropertyTable::GetNumProperty() const
 {
-	return properties.size();
+    return properties.size();
 }
 
 const trpgLabelProperty *trpgLabelPropertyTable::GetPropertyRef(int id) const
 {
-	if (id < 0 || id >= (int)properties.size())
-		return NULL;
+    if (id < 0 || id >= (int)properties.size())
+        return NULL;
 
-	return &properties[id];
+    return &properties[id];
 }
 
 bool trpgLabelPropertyTable::Write(trpgWriteBuffer &buf)
 {
-	if (!isValid())
-		return false;
+    if (!isValid())
+        return false;
 
-	buf.Begin(TRPG_LABEL_PROPERTY_TABLE);
+    buf.Begin(TRPG_LABEL_PROPERTY_TABLE);
 
-	// Number of styles
-	int numProperty = properties.size();
-	buf.Add((int32)numProperty);
+    // Number of styles
+    int numProperty = properties.size();
+    buf.Add((int32)numProperty);
 
-	// Write the properties
-	for (unsigned int i=0;i<properties.size();i++)
-		properties[i].Write(buf);
+    // Write the properties
+    for (unsigned int i=0;i<properties.size();i++)
+        properties[i].Write(buf);
 
-	buf.End();
+    buf.End();
 
-	return true;
+    return true;
 }
 
 bool trpgLabelPropertyTable::Read(trpgReadBuffer &buf)
 {
-	trpgLabelProperty property;
-	trpgToken propertyTok;
-	int32 len;
-	bool status;
-	int numProperty;
+    trpgLabelProperty property;
+    trpgToken propertyTok;
+    int32 len;
+    bool status;
+    int numProperty;
 
-	Reset();
+    Reset();
 
-	try {
-		buf.Get(numProperty);
-		if (numProperty < 0)
-			throw 1;
-		properties.resize(numProperty);
-		for (unsigned int i=0;i<(unsigned int)numProperty;i++) {
-			buf.GetToken(propertyTok,len);
-			if (propertyTok != TRPG_LABEL_PROPERTY) throw 1;
-			buf.PushLimit(len);
-			property.Reset();
-			status = property.Read(buf);
-			buf.PopLimit();
-			if (!status) throw 1;
-			properties[i] = property;
-		}
-	}
-	catch (...) {
-		return false;
-	}
+    try {
+        buf.Get(numProperty);
+        if (numProperty < 0)
+            throw 1;
+        properties.resize(numProperty);
+        for (unsigned int i=0;i<(unsigned int)numProperty;i++) {
+            buf.GetToken(propertyTok,len);
+            if (propertyTok != TRPG_LABEL_PROPERTY) throw 1;
+            buf.PushLimit(len);
+            property.Reset();
+            status = property.Read(buf);
+            buf.PopLimit();
+            if (!status) throw 1;
+            properties[i] = property;
+        }
+    }
+    catch (...) {
+        return false;
+    }
 
-	return isValid();
+    return isValid();
 }
 
 
@@ -785,7 +785,7 @@ bool trpgLabelPropertyTable::Read(trpgReadBuffer &buf)
 
 trpgLabel::trpgLabel()
 {
-	Reset();
+    Reset();
 }
 trpgLabel::~trpgLabel()
 {
@@ -793,179 +793,179 @@ trpgLabel::~trpgLabel()
 
 void trpgLabel::Reset()
 {
-	propertyId = -1;
-	text = "";
-	alignment = Left;
-	tabSize = 8;
-	scale = 1.0;
-	thickness = 0.0;
-	desc = "";
-	url = "";
-	location.x = 0;
-	location.y = 0;
-	location.z = 0;
-	supports.resize(0);
+    propertyId = -1;
+    text = "";
+    alignment = Left;
+    tabSize = 8;
+    scale = 1.0;
+    thickness = 0.0;
+    desc = "";
+    url = "";
+    location.x = 0;
+    location.y = 0;
+    location.z = 0;
+    supports.resize(0);
 }
 
 bool trpgLabel::isValid() const
 {
-	if (text.empty() || propertyId == -1)
-		return false;
+    if (text.empty() || propertyId == -1)
+        return false;
 
-	return true;
+    return true;
 }
 
 void trpgLabel::SetProperty(int id)
 {
-	propertyId = id;
+    propertyId = id;
 }
 
 int trpgLabel::GetProperty() const
 {
-	return propertyId;
+    return propertyId;
 }
 
 
 
 void trpgLabel::SetText(const std::string &inText)
 {
-	text = inText;
+    text = inText;
 }
 
 const std::string *trpgLabel::GetText() const
 {
-	return &text;
+    return &text;
 }
 
 void trpgLabel::SetAlignment(AlignmentType inType)
 {
-	alignment = inType;
+    alignment = inType;
 }
 
 trpgLabel::AlignmentType trpgLabel::GetAlignment() const
 {
-	return alignment;
+    return alignment;
 }
 
 void trpgLabel::SetTab(int size)
 {
-	tabSize = size;
+    tabSize = size;
 }
 
 int trpgLabel::GetTab(void) const
 {
-	return tabSize;
+    return tabSize;
 }
 
 void trpgLabel::SetScale(float32 inScale)
 {
-	scale = inScale;
+    scale = inScale;
 }
 
 float32 trpgLabel::GetScale(void) const
 {
-	return scale;
+    return scale;
 }
 
 void trpgLabel::SetThickness(float32 inThickness)
 {
-	thickness = inThickness;
+    thickness = inThickness;
 }
 
 float32 trpgLabel::GetThickness(void) const
 {
-	return thickness;
+    return thickness;
 }
 
 void trpgLabel::SetDesc(const std::string &inText)
 {
-	desc = inText;
+    desc = inText;
 }
 
 const std::string *trpgLabel::GetDesc() const
 {
-	return &desc;
+    return &desc;
 }
 
 
 void trpgLabel::SetURL(const std::string &inText)
 {
-	url = inText;
+    url = inText;
 }
 
 const std::string *trpgLabel::GetURL() const
 {
-	return &url;
+    return &url;
 }
 
 void trpgLabel::SetLocation(const trpg3dPoint &pt)
 {
-	location = pt;
+    location = pt;
 }
 
 const trpg3dPoint& trpgLabel::GetLocation() const
 {
-	return location;
+    return location;
 }
 
 void trpgLabel::AddSupport(const trpg3dPoint &pt)
 {
-	supports.push_back(pt);
+    supports.push_back(pt);
 }
 
 const std::vector<trpg3dPoint> *trpgLabel::GetSupports() const
 {
-	return &supports;
+    return &supports;
 }
 
 bool trpgLabel::Write(trpgWriteBuffer &buf)
 {
-	buf.Begin(TRPG_LABEL);
-	buf.Add(propertyId);
-	buf.Add(text);
-	buf.Add(alignment);
-	buf.Add(tabSize);
-	buf.Add(scale);
-	buf.Add(thickness);
-	buf.Add(desc);
-	buf.Add(url);
-	buf.Add(location);
-	buf.Add((int)supports.size());
-	for (unsigned i=0;i<supports.size();i++)
-		buf.Add(supports[i]);
-	buf.End();
+    buf.Begin(TRPG_LABEL);
+    buf.Add(propertyId);
+    buf.Add(text);
+    buf.Add(alignment);
+    buf.Add(tabSize);
+    buf.Add(scale);
+    buf.Add(thickness);
+    buf.Add(desc);
+    buf.Add(url);
+    buf.Add(location);
+    buf.Add((int)supports.size());
+    for (unsigned i=0;i<supports.size();i++)
+        buf.Add(supports[i]);
+    buf.End();
 
-	return true;
+    return true;
 }
 
 bool trpgLabel::Read(trpgReadBuffer &buf)
 {
-	int numSupport,i;
-	trpg3dPoint support;
-	int iVal;
+    int numSupport,i;
+    trpg3dPoint support;
+    int iVal;
 
-	try {
-		buf.Get(iVal);
-		propertyId = iVal;
-		buf.Get(text);
-		buf.Get(iVal);
-		alignment = (AlignmentType)iVal;
-		buf.Get(tabSize);
-		buf.Get(scale);
-		buf.Get(thickness);
-		buf.Get(desc);
-		buf.Get(url);
-		buf.Get(location);
-		buf.Get(numSupport);
-		if (numSupport < 0) throw 1;
-		for (i=0;i<numSupport;i++) {
-			buf.Get(support);
-			supports.push_back(support);
-		}
-	}
-	catch (...) {
-		return false;
-	}
+    try {
+        buf.Get(iVal);
+        propertyId = iVal;
+        buf.Get(text);
+        buf.Get(iVal);
+        alignment = (AlignmentType)iVal;
+        buf.Get(tabSize);
+        buf.Get(scale);
+        buf.Get(thickness);
+        buf.Get(desc);
+        buf.Get(url);
+        buf.Get(location);
+        buf.Get(numSupport);
+        if (numSupport < 0) throw 1;
+        for (i=0;i<numSupport;i++) {
+            buf.Get(support);
+            supports.push_back(support);
+        }
+    }
+    catch (...) {
+        return false;
+    }
 
-	return isValid();
+    return isValid();
 }

@@ -19,87 +19,87 @@
 #include <trpage_read.h>
 
 /* Print Buffer for TerraPage.  Subclasses of this object
-	are used to print out to stdout or disk (or whatever).
-	You won't create one of these directly, instead you'll create
-	something which inherits from it.
+    are used to print out to stdout or disk (or whatever).
+    You won't create one of these directly, instead you'll create
+    something which inherits from it.
  */
 TX_EXDECL class TX_CLDECL trpgPrintBuffer {
 public:
-	trpgPrintBuffer(void);
-	virtual ~trpgPrintBuffer(void) { };
+    trpgPrintBuffer(void);
+    virtual ~trpgPrintBuffer(void) { };
 
-	// Check if print buffer is valid
-	virtual bool isValid(void) { return true; }
+    // Check if print buffer is valid
+    virtual bool isValid(void) { return true; }
 
-	// The main print function.  Subclasses must fill this in.
-	virtual bool prnLine(char *str=NULL)=0;
+    // The main print function.  Subclasses must fill this in.
+    virtual bool prnLine(char *str=NULL)=0;
 
-	// This increases the current indentation by the amount given (defaults to one)
-	virtual void IncreaseIndent(int amount=1);
-	// Decreases the current indentation by the amount given (defaults to one)
-	virtual void DecreaseIndent(int amount=1);
+    // This increases the current indentation by the amount given (defaults to one)
+    virtual void IncreaseIndent(int amount=1);
+    // Decreases the current indentation by the amount given (defaults to one)
+    virtual void DecreaseIndent(int amount=1);
 protected:
-	void updateIndent(void);
-	int curIndent;
-	char indentStr[200];
+    void updateIndent(void);
+    int curIndent;
+    char indentStr[200];
 };
 
 /* File print buffer for TerraPage.  The file print buffer writes
-	debugging output to a file.
+    debugging output to a file.
  */
 TX_EXDECL class TX_CLDECL trpgFilePrintBuffer : public trpgPrintBuffer {
 public:
-	// This class can be constructed with either a FILE pointer or a file name
-	trpgFilePrintBuffer(FILE *);
-	trpgFilePrintBuffer(char *);
-	~trpgFilePrintBuffer(void);
+    // This class can be constructed with either a FILE pointer or a file name
+    trpgFilePrintBuffer(FILE *);
+    trpgFilePrintBuffer(char *);
+    ~trpgFilePrintBuffer(void);
 
-	// Check if file print buffer is valid (i.e. if file was opened)
-	bool isValid(void) { return valid; };
+    // Check if file print buffer is valid (i.e. if file was opened)
+    bool isValid(void) { return valid; };
 
-	// For a file printer buffer, this writes a string out to a file
-	bool prnLine(char *str = NULL);
+    // For a file printer buffer, this writes a string out to a file
+    bool prnLine(char *str = NULL);
 protected:
-	bool valid;
-	bool isMine;
-	FILE *fp;
+    bool valid;
+    bool isMine;
+    FILE *fp;
 };
 
 /* The Print Graph Parser is a scene graph parser that
-	prints out the scene graph as it goes.  It's simpler
-	than the scene example in trpage_scene.cpp since it
-	isn't trying to build up a working scene graph.
+    prints out the scene graph as it goes.  It's simpler
+    than the scene example in trpage_scene.cpp since it
+    isn't trying to build up a working scene graph.
  */
 TX_EXDECL class TX_CLDECL trpgPrintGraphParser : public trpgSceneParser {
 public:
-	trpgPrintGraphParser(trpgr_Archive *,trpgrImageHelper *,trpgPrintBuffer *);
-	virtual ~trpgPrintGraphParser(void) { };
+    trpgPrintGraphParser(trpgr_Archive *,trpgrImageHelper *,trpgPrintBuffer *);
+    virtual ~trpgPrintGraphParser(void) { };
 
-	/* The read helper class is the callback for all the various
-		token (node) types.  Normally we would use a number of
-		these, probably one per token.  However, since we're just
-		printing we can use a switch statement instead.
-	 */
-	class ReadHelper : public trpgr_Callback {
-	public:
-		ReadHelper(trpgPrintGraphParser *inPG,trpgPrintBuffer *inBuf) {pBuf = inBuf; parse = inPG;};
-		void *Parse(trpgToken,trpgReadBuffer &buf);
-	protected:
-		trpgPrintBuffer *pBuf;
-		trpgPrintGraphParser *parse;
-	};
+    /* The read helper class is the callback for all the various
+        token (node) types.  Normally we would use a number of
+        these, probably one per token.  However, since we're just
+        printing we can use a switch statement instead.
+     */
+    class ReadHelper : public trpgr_Callback {
+    public:
+        ReadHelper(trpgPrintGraphParser *inPG,trpgPrintBuffer *inBuf) {pBuf = inBuf; parse = inPG;};
+        void *Parse(trpgToken,trpgReadBuffer &buf);
+    protected:
+        trpgPrintBuffer *pBuf;
+        trpgPrintGraphParser *parse;
+    };
 
-	// Fetch the archive associated with this print
-	trpgr_Archive *GetArchive() {return archive; };
-	trpgrImageHelper *GetImageHelp() {return imageHelp; };
-	
+    // Fetch the archive associated with this print
+    trpgr_Archive *GetArchive() {return archive; };
+    trpgrImageHelper *GetImageHelp() {return imageHelp; };
+    
 protected:
-	bool StartChildren(void *);
-	bool EndChildren(void *);
+    bool StartChildren(void *);
+    bool EndChildren(void *);
 
-	trpgPrintBuffer *printBuf;
-	trpgr_Archive *archive;
-	trpgrImageHelper *imageHelp;
+    trpgPrintBuffer *printBuf;
+    trpgr_Archive *archive;
+    trpgrImageHelper *imageHelp;
 };
 
 // Print utitility for while archive

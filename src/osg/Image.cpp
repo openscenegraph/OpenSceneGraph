@@ -328,7 +328,7 @@ void Image::allocateImage(int s,int t,int r,
         _pixelFormat = format;
         _dataType = type;
         _packing = packing;
-
+        _internalTextureFormat = format;
     }
     else
     {
@@ -340,6 +340,7 @@ void Image::allocateImage(int s,int t,int r,
         _pixelFormat = 0;
         _dataType = 0;
         _packing = 0;
+        _internalTextureFormat = 0;
     }
     
     ++_modifiedTag;

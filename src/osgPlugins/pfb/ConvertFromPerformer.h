@@ -1,3 +1,5 @@
+// -*-c++-*-
+
 #ifndef __CONVERTFROMPERFORMER_H
 #define __CONVERTFROMPERFORMER_H
 
@@ -31,7 +33,7 @@ class ConvertFromPerformer {
     private:
 
         osg::Object* getOsgObject(pfObject* pfObj);
-        void regisiterPfObjectForOsgObject(pfObject* pfObj,osg::Object* osgObj);
+        void registerPfObjectForOsgObject(pfObject* pfObj,osg::Object* osgObj);
 
         osg::Node* visitNode(osg::Group* osgParent,pfNode* node);
         osg::Node* visitScene(osg::Group* osgParent,pfScene* scene);

@@ -60,6 +60,7 @@ int main( int argc, char **argv )
 
     // load the nodes from the commandline arguments.
     osg::Node* model = osgDB::readNodeFiles(commandLine);
+    if (!model) return 0;
     
 
     // the osgUtil::InsertImpostorsVisitor used lower down to insert impostors

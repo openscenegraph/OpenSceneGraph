@@ -59,6 +59,7 @@ int main( int argc, char **argv )
 
     // load the nodes from the commandline arguments.
     osg::Node* rootnode = osgDB::readNodeFiles(commandLine);
+    if (!rootnode) return 0;
 
     
     // create the vewiports

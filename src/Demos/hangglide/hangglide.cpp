@@ -22,106 +22,29 @@ extern osg::Node *makeSky( void );
 extern osg::Node *makeBase( void );
 extern osg::Node *makeClouds( void );
 
-/*
- * Function to read several files (typically one) as specified on the command
- * line, and return them in an osg::Node
- */
-osg::Node* getNodeFromFiles(int argc,char **argv)
-{
-
-    int i;
-
-    typedef std::vector<osg::Node*> NodeList;
-    NodeList nodeList;
-    for( i = 1; i < argc; i++ )
-    {
-
-        if (argv[i][0]=='-')
-        {
-            switch(argv[i][1])
-            {
-                case('l'):
-                    ++i;
-                    if (i<argc)
-                    {
-                        osgDB::Registry::instance()->loadLibrary(argv[i]);
-                    }
-                    break;
-                case('e'):
-                    ++i;
-                    if (i<argc)
-                    {
-                        std::string libName = osgDB::Registry::instance()->createLibraryNameForExt(argv[i]);
-                        osgDB::Registry::instance()->loadLibrary(libName);
-                    }
-                    break;
-            }
-        } else
-        {
-            osg::Node *node = osgDB::readNodeFile( argv[i] );
-
-            if( node != (osg::Node *)0L )
-            {
-                if (node->getName().empty()) node->setName( argv[i] );
-                nodeList.push_back(node);
-            }
-        }
-
-    }
-
-    if (nodeList.size()==0)
-    {
-        osg::notify(osg::INFO) << "No data loaded."<< std::endl;
-        return 0;
-    }
-
-    osg::Node *rootnode = new osg::Node;
-    if (nodeList.size()==1)
-    {
-        rootnode = nodeList.front();
-    }
-    else                         // size >1
-    {
-        osg::Group* group = new osg::Group();
-        for(NodeList::iterator itr=nodeList.begin();
-            itr!=nodeList.end();
-            ++itr)
-        {
-            group->addChild(*itr);
-        }
-
-        rootnode = group;
-    }
-
-    return rootnode;
-}
-
 
 int main( int argc, char **argv )
 {
+    glutInit( &argc, argv );
 
-    //     if (argc<2)
-    //     {
-    //         osg::notify(osg::NOTICE)<<"usage:"<< std::endl;
-    //         osg::notify(osg::NOTICE)<<"    sgv [options] infile1 [infile2 ...]"<< std::endl;
-    //         osg::notify(osg::NOTICE)<< std::endl;
-    //         osg::notify(osg::NOTICE)<<"options:"<< std::endl;
-    //         osg::notify(osg::NOTICE)<<"    -l libraryName     - load plugin of name libraryName"<< std::endl;
-    //         osg::notify(osg::NOTICE)<<"                         i.e. -l osgdb_pfb"<< std::endl;
-    //         osg::notify(osg::NOTICE)<<"                         Useful for loading reader/writers which can load"<< std::endl;
-    //         osg::notify(osg::NOTICE)<<"                         other file formats in addition to its extension."<< std::endl;
-    //         osg::notify(osg::NOTICE)<<"    -e extensionName   - load reader/wrter plugin for file extension"<< std::endl;
-    //         osg::notify(osg::NOTICE)<<"                         i.e. -e pfb"<< std::endl;
-    //         osg::notify(osg::NOTICE)<<"                         Useful short hand for specifying full library name as"<< std::endl;
-    //         osg::notify(osg::NOTICE)<<"                         done with -l above, as it automatically expands to the"<< std::endl;
-    //         osg::notify(osg::NOTICE)<<"                         full library name appropriate for each platform."<< std::endl;
-    //         osg::notify(osg::NOTICE)<< std::endl;
-    //
-    //         return 0;
-    //     }
+    // create the commandline args.
+    std::vector<std::string> commandLine;
+    for(int i=1;i<argc;++i) commandLine.push_back(argv[i]);
 
-    osg::Node* rootnode = getNodeFromFiles( argc, argv);
-    if (rootnode==NULL)
+    // initialize the viewer.
+    osgGLUT::Viewer viewer;
+    
+    // configure the viewer from the commandline arguments, and eat any
+    // parameters that have been matched.
+    viewer.readCommandLine(commandLine);
+    
+    // configure the plugin registry from the commandline arguments, and 
+    // eat any parameters that have been matched.
+    osgDB::readCommandLine(commandLine);
+
+    // load the nodes from the commandline arguments.
+    osg::Node* rootnode = osgDB::readNodeFiles(commandLine);
+    if (!rootnode)
     {
         // no database loaded so automatically create Ed Levin Park..
         osg::Group* group = new osg::Group;
@@ -149,9 +72,6 @@ int main( int argc, char **argv )
 
     }
 
-    glutInit( &argc, argv );
-
-    osgGLUT::Viewer viewer;
     viewer.addViewport( rootnode );
 
     unsigned int pos = viewer.registerCameraManipulator(new GliderManipulator());

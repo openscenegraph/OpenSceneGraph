@@ -69,6 +69,8 @@ class SG_EXPORT Timer {
         inline double delta_m( Timer_t t1, Timer_t t2 ) const { return delta_s(t1,t2)*1e3; }
         inline double delta_u( Timer_t t1, Timer_t t2 ) const { return delta_s(t1,t2)*1e6; }
         inline double delta_n( Timer_t t1, Timer_t t2 ) const { return delta_s(t1,t2)*1e9; }
+        
+        inline double getSecondsPerClick() const { return _secsPerClick; }
 
     private :
 

@@ -25,8 +25,8 @@ BlinkSequence::BlinkSequence():
 {
 }
 
-BlinkSequence::BlinkSequence(const BlinkSequence& bs):
-    osg::Referenced(),
+BlinkSequence::BlinkSequence(const BlinkSequence& bs, const osg::CopyOp& copyop):
+    osg::Object(bs,copyop),
     _pulsePeriod(bs._pulsePeriod),
     _phaseShift(bs._phaseShift),
     _pulseData(bs._pulseData),

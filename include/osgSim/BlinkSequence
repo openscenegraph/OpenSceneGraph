@@ -25,7 +25,7 @@
 
 namespace osgSim {
 
-class OSGSIM_EXPORT BlinkSequence : public osg::Referenced
+class OSGSIM_EXPORT BlinkSequence : public osg::Object
 {
     public:
 
@@ -43,7 +43,9 @@ class OSGSIM_EXPORT BlinkSequence : public osg::Referenced
 
         BlinkSequence();
 
-        BlinkSequence(const BlinkSequence& bs);
+        BlinkSequence(const BlinkSequence& bs, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
+        
+        META_Object(osgSim,BlinkSequence);
 
         
         /** add a pulse of specified color and duration to the BlinkSequence.*/

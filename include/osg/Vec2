@@ -148,8 +148,6 @@ class Vec2
 	    return( norm );
 	}
 
-        inline operator float * (void) { return _v; }
-
 	friend inline ostream& operator << (ostream& output, const Vec2& vec)
         {
 	    output << vec._v[0] << " "

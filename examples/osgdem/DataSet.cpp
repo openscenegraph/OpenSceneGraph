@@ -17,6 +17,7 @@
 #include <osg/ShapeDrawable>
 #include <osg/Texture2D>
 #include <osg/Group>
+#include <osg/Geometry>
 
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
@@ -772,6 +773,7 @@ void DataSet::Source::buildOverviews()
 
 
 DataSet::DestinationTile::DestinationTile():
+    _dataSet(0),
     _imagery_maxNumColumns(4096),
     _imagery_maxNumRows(4096),
     _imagery_maxSourceResolutionX(0.0f),
@@ -916,6 +918,17 @@ void DataSet::DestinationTile::allocate()
 
     }
 
+}
+
+void DataSet::DestinationTile::computeNeighboursFromQuadMap()
+{
+    if (_dataSet)
+    {
+        setNeighbours(_dataSet->getTile(_level,_X-1,_Y),_dataSet->getTile(_level,_X-1,_Y-1),
+                      _dataSet->getTile(_level,_X,_Y-1),_dataSet->getTile(_level,_X+1,_Y-1),
+                      _dataSet->getTile(_level,_X+1,_Y),_dataSet->getTile(_level,_X+1,_Y+1),
+                      _dataSet->getTile(_level,_X,_Y+1),_dataSet->getTile(_level,_X-1,_Y+1));
+    }
 }
 
 void DataSet::DestinationTile::setNeighbours(DestinationTile* left, DestinationTile* left_below, 
@@ -1302,8 +1315,12 @@ osg::Node* DataSet::DestinationTile::createScene()
 {
     if (_terrain.valid() && _terrain->_heightField.valid())
     {
+        osg::HeightField* hf = _terrain->_heightField.get();
+        
+        hf->setSkirtHeight(0.003f);
+    
         osg::Geode* geode = new osg::Geode;
-        geode->addDrawable(new osg::ShapeDrawable(_terrain->_heightField.get()));
+        geode->addDrawable(new osg::ShapeDrawable(hf));
         
         if (_imagery.valid() && _imagery->_image.valid())
         {
@@ -1317,6 +1334,89 @@ osg::Node* DataSet::DestinationTile::createScene()
             texture->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP);
             texture->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP);
             stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
+        }
+        
+        // create the skirt.
+        if (false)
+        {
+
+            osg::Vec3 skirtVector(0.0f,0.0f,-0.003f);
+
+            int numColumns = hf->getNumColumns();
+            int numRows = hf->getNumRows();
+
+            int numVerticesInSkirt = 2*(numColumns*2 + numRows*2 - 3);
+
+            osg::Geometry* skirt = new osg::Geometry;
+            osg::Vec3Array& v = *(new osg::Vec3Array(numVerticesInSkirt));
+            osg::Vec3Array& n = *(new osg::Vec3Array(numVerticesInSkirt));
+            osg::Vec2Array& t = *(new osg::Vec2Array(numVerticesInSkirt));
+
+            osg::DrawArrays& skirtDrawArrays = *(new osg::DrawArrays(GL_QUAD_STRIP,0,numVerticesInSkirt));
+            int vi=0;
+            int r,c;
+            // create bottom skirt vertices
+            r=0;
+            float dt_dx = 1.0f/(float)(numColumns-1);
+            float dt_dy = 1.0f/(float)(numRows-1);
+            for(c=0;c<numColumns-1;++c)
+            {
+                v[vi] = hf->getVertex(c,r);
+                n[vi] = hf->getNormal(c,r);
+                t[vi++] = osg::Vec2(c*dt_dx,r*dt_dy);
+
+                v[vi] = hf->getVertex(c,r)+skirtVector;
+                n[vi] = hf->getNormal(c,r);
+                t[vi++] = osg::Vec2(c*dt_dx,r*dt_dy);
+
+            }
+            // create right skirt vertices
+            c=numColumns-1;
+            for(r=0;r<numRows-1;++r)
+            {
+                v[vi] = hf->getVertex(c,r);
+                n[vi] = hf->getNormal(c,r);
+                t[vi++] = osg::Vec2(c*dt_dx,r*dt_dy);
+
+                v[vi] = hf->getVertex(c,r)+skirtVector;
+                n[vi] = hf->getNormal(c,r);
+                t[vi++] = osg::Vec2(c*dt_dx,r*dt_dy);
+            }
+            // create top skirt vertices
+            r=numRows-1;
+            for(c=numColumns-1;c>0;--c)
+            {
+                v[vi] = hf->getVertex(c,r);
+                n[vi] = hf->getNormal(c,r);
+                t[vi++] = osg::Vec2(c*dt_dx,r*dt_dy);
+
+                v[vi] = hf->getVertex(c,r)+skirtVector;
+                n[vi] = hf->getNormal(c,r);
+                t[vi++] = osg::Vec2(c*dt_dx,r*dt_dy);
+            }
+            // create left skirt vertices
+            c=0;
+            for(r=numRows-1;r>=0;--r)
+            {
+                v[vi] = hf->getVertex(c,r);
+                n[vi] = hf->getNormal(c,r);
+                t[vi++] = osg::Vec2(c*dt_dx,r*dt_dy);
+
+                v[vi] = hf->getVertex(c,r)+skirtVector;
+                n[vi] = hf->getNormal(c,r);
+                t[vi++] = osg::Vec2(c*dt_dx,r*dt_dy);
+            }
+
+            // pass arrays to Geometry
+            skirt->setVertexArray(&v);
+            skirt->setNormalArray(&n);
+            skirt->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+            skirt->setTexCoordArray(0,&t);
+            
+            skirt->addPrimitiveSet(&skirtDrawArrays);
+            
+            geode->addDrawable(skirt);
+            
         }
         
         return geode;
@@ -1375,6 +1475,24 @@ void DataSet::DestinationTile::addRequiredResolutions(CompositeSource* sourceGra
     }
 }
 
+void DataSet::CompositeDestination::computeNeighboursFromQuadMap()
+{
+    // handle leaves
+    for(TileList::iterator titr=_tiles.begin();
+        titr!=_tiles.end();
+        ++titr)
+    {
+        (*titr)->computeNeighboursFromQuadMap();
+    }
+    
+    // handle chilren
+    for(ChildList::iterator citr=_children.begin();
+        citr!=_children.end();
+        ++citr)
+    {
+        (*citr)->computeNeighboursFromQuadMap();
+    }
+}
 
 void DataSet::CompositeDestination::addRequiredResolutions(CompositeSource* sourceGraph)
 {
@@ -1617,6 +1735,7 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(osgTerrain::Coord
 
     DestinationTile* tile = new DestinationTile;
     tile->_name = os.str();
+    tile->_dataSet = this;
     tile->_cs = cs;
     tile->_extents = extents;
     tile->_level = currentLevel;
@@ -1626,6 +1745,8 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(osgTerrain::Coord
     tile->setMaximumTerrainSize(maxTerrainSize,maxTerrainSize);
     tile->computeMaximumSourceResolution(_sourceGraph.get());
     tile->allocate();
+
+    insertTileToQuadMap(tile);
 
     if (currentLevel>=maxNumLevels-1)
     {    
@@ -1801,9 +1922,8 @@ void DataSet::computeDestinationGraphFromSources(unsigned int numLevels)
                                                0,
                                                numLevels);
                                                            
-        
-
-
+    // now traverse the destination graph to build neighbours.        
+    _destinationGraph->computeNeighboursFromQuadMap();
 
 }
 
@@ -1913,7 +2033,7 @@ void DataSet::updateSourcesForDestinationGraphNeeds()
         for(CompositeSource::source_iterator itr(_sourceGraph.get());itr.valid();++itr)
         {
             Source* source = itr->get();
-            //source->buildOverviews();
+            source->buildOverviews();
         }
     }
 

@@ -564,6 +564,7 @@ void DrawShapeVisitor::apply(const HeightField& field)
     glPushMatrix();
 
 	glTranslatef(field.getOrigin().x(),field.getOrigin().y(),field.getOrigin().z());
+        
 
 	if (!field.zeroRotation())
 	{
@@ -578,21 +579,102 @@ void DrawShapeVisitor::apply(const HeightField& field)
 	float dv = 1.0f/((float)field.getNumRows()-1.0f);
 
     	float vBase = 0.0f;
+        
+    	Vec3 vertTop;
+    	Vec3 normTop;
+
+    	Vec3 vertBase;
+    	Vec3 normBase;
+
+        if (field.getSkirtHeight()!=0.0f)
+        {
+    	    glBegin(GL_QUAD_STRIP);
+
+	    float u = 0.0f;
+
+            // draw bottom skirt
+            unsigned int col;
+            vertTop.y() = 0.0f;
+	    for(col=0;col<field.getNumColumns();++col,u+=du)
+	    {
+    	        vertTop.x() = dx*(float)col;
+                vertTop.z() = field.getHeight(col,0);
+    	        normTop.set(field.getNormal(col,0));
+
+	    	glTexCoord2f(u,0.0f);
+		glNormal3fv(normTop.ptr());
+
+		glVertex3fv(vertTop.ptr());
+                
+                vertTop.z()-=field.getSkirtHeight();
+                
+		glVertex3fv(vertTop.ptr());
+            }
+
+	    glEnd();
+
+            // draw top skirt
+    	    glBegin(GL_QUAD_STRIP);
+
+            unsigned int row = field.getNumRows()-1;
+            
+	    u = 0.0f;
+            vertTop.y() = dy*(float)(row);
+	    for(col=0;col<field.getNumColumns();++col,u+=du)
+	    {
+    	        vertTop.x() = dx*(float)col;
+                vertTop.z() = field.getHeight(col,row);
+    	        normTop.set(field.getNormal(col,row));
+
+	    	glTexCoord2f(u,1.0f);
+		glNormal3fv(normTop.ptr());
+
+		glVertex3f(vertTop.x(),vertTop.y(),vertTop.z()-field.getSkirtHeight());
+                
+                //vertTop.z()-=field.getSkirtHeight();
+                
+		glVertex3fv(vertTop.ptr());
+            }
+
+	    glEnd();
+        }
+
+
+                    
 	for(unsigned int row=0;row<field.getNumRows()-1;++row,vBase+=dv)
 	{
 	
 	    float vTop = vBase+dv;
 	    float u = 0.0f;
 	
+
     	    glBegin(GL_QUAD_STRIP);
+
+            // draw skirt at begining if required.
+            if (field.getSkirtHeight()!=0.0f)
+            {
+    	    	vertTop.set(0.0f,dy*(float)row+dy,field.getHeight(0,row+1)-field.getSkirtHeight());
+    	    	normTop.set(field.getNormal(0,row+1));
+
+    	    	vertBase.set(0.0f,dy*(float)row,field.getHeight(0,row)-field.getSkirtHeight());
+    	    	normBase.set(field.getNormal(0,row));
+
+	    	glTexCoord2f(u,vTop);
+		glNormal3fv(normTop.ptr());
+		glVertex3fv(vertTop.ptr());
+
+	    	glTexCoord2f(u,vBase);
+		glNormal3fv(normBase.ptr());
+		glVertex3fv(vertBase.ptr());
+            }
 
 	    for(unsigned int col=0;col<field.getNumColumns();++col,u+=du)
 	    {
-    	    	Vec3 vertTop(dx*(float)col,dy*(float)row+dy,field.getHeight(col,row+1));
-    	    	Vec3 normTop(field.getNormal(col,row+1));
+    	    	vertTop.set(dx*(float)col,dy*(float)row+dy,field.getHeight(col,row+1));
+    	    	normTop.set(field.getNormal(col,row+1));
 
-    	    	Vec3 vertBase(dx*(float)col,dy*(float)row,field.getHeight(col,row));
-    	    	Vec3 normBase(field.getNormal(col,row));
+    	    	vertBase.set(dx*(float)col,dy*(float)row,field.getHeight(col,row));
+    	    	normBase.set(field.getNormal(col,row));
 	
 	    	glTexCoord2f(u,vTop);
 		glNormal3fv(normTop.ptr());
@@ -604,6 +686,22 @@ void DrawShapeVisitor::apply(const HeightField& field)
 
 	    }
 	    
+            // draw skirt at end if required.
+            if (field.getSkirtHeight()!=0.0f)
+            {
+
+                vertBase.z()-=field.getSkirtHeight();
+                vertTop.z()-=field.getSkirtHeight();
+
+	    	glTexCoord2f(u,vTop);
+		glNormal3fv(normTop.ptr());
+		glVertex3fv(vertTop.ptr());
+
+	    	glTexCoord2f(u,vBase);
+		glNormal3fv(normBase.ptr());
+		glVertex3fv(vertBase.ptr());
+            }
+
 	    glEnd();
 	}
 

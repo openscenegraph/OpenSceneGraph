@@ -378,7 +378,7 @@ osg::Group* setupGraph()                                                        
 
 int main( int argc, char **argv )
 {
-    if (argv[1] == NULL)
+    if (argc<=1)
     {
         std::cout << "Error: First argument missing!" << std::endl << "First argument -> confFile" << std::endl;
         return 0;

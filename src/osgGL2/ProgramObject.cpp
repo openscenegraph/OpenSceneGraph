@@ -208,7 +208,7 @@ int ProgramObject::compare(const osg::StateAttribute& sa) const
 }
 
 
-void ProgramObject::compileGLObjects(osg::State& state) const
+void ProgramObject::compileGLObjects(osg::State&) const
 {
 }
 

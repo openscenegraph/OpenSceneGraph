@@ -7,7 +7,7 @@ DEPFILES = $(OBJS:.o=.d)
 
 C++ = cc 
 YFLAGS = -d
-LCINCS += -I/usr/local/include 
+LCINCS += -I/usr/local/include -I/sw/include
 LC++INCS += ${LCINCS}
 CFLAGS   = -O2 -W -Wall $(LCINCS) -D__DARWIN_OSX__
 C++FLAGS = ${CFLAGS}
@@ -17,7 +17,7 @@ CPPFLAGS = ${CFLAGS}
 SO_EXT = dylib
 DL_EXT = so
 
-FRAMEWORKS = -framework GLUT -framework Carbon -framework OpenGL
+FRAMEWORKS =  -L/sw/lib -framework GLUT -framework Carbon -framework OpenGL
 LDFLAGS =-all_load  -L/usr/local/lib -L/usr/lib  
 
 DYNAMICLIBRARYLIB = 

@@ -12,7 +12,7 @@
 #include <osgUtil/FlightManipulator>
 #include <osgUtil/DriveManipulator>
 
-#include <GL/glut.h>
+#include <osgGLUT/glut>
 #include <osgGLUT/Viewer>
 
 #include <osg/Quat>

@@ -1,0 +1,46 @@
+#ifndef OSG_NODECALLBACK
+#define OSG_NODECALLBACK 1
+
+#include <osg/Referenced>
+
+namespace osg {
+
+class Node;
+class NodeVisitor;
+
+class SG_EXPORT NodeCallback : public Referenced {
+
+    public :
+    
+        /** The range of values which can be accumulated by the NodeVisitor. */
+        enum Requirements
+        {
+            NO_REQUIREMENTS = 0x0,
+            REQUIRES_TRAVERSAL = 0x1,
+            REQUIRES_PARENT_PATH = 0x2,
+            REQUIRES_ACCUMULATED_MATRIX = 0x4,
+            REQUIRES_ACCUMULATED_INVERSE = 0x8,
+        };
+
+        NodeCallback(const Requirements ncr=NO_REQUIREMENTS):_requirements(ncr) {}
+        virtual ~NodeCallback() {}
+        
+        
+        /** Set what values from traversal are required by this NodeCallback.*/
+        inline void setRequirements(const Requirements ncr) { _requirements=ncr; }
+
+        /** Get what values from traversal are required by this NodeCallback.*/
+        inline const Requirements getRequirements() const { return _requirements; }
+        
+        /** Callback method call by the NodeVisitor when visiting a node.*/
+        virtual void operator()(Node*, NodeVisitor*) {}
+        
+   public:
+
+        Requirements _requirements;
+};
+
+}; // namespace
+
+#endif
+

@@ -1,0 +1,224 @@
+
+#ifndef OSG_Matrix
+#define OSG_Matrix 1
+
+#include <osg/Object>
+#include <osg/Vec3>
+#include <osg/Vec4>
+//#include <osg/Quat>
+
+#ifdef OSG_USE_IO_DOT_H
+#include <iostream.h>
+#else
+#include <iostream>
+using namespace std;
+#endif
+
+#define METAOBJ(name) \
+        virtual Object* clone() const { return new name (); } \
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const name *>(obj)!=NULL; } \
+        virtual const char* className() const { return #name; }
+
+namespace osg {
+
+class Quat;
+
+class SG_EXPORT Matrix : public Object
+{
+//    private:
+    public:
+        float _mat[4][4];
+        bool fully_realized;
+
+    public:
+//        const char* name() { return "My Matrix "; }
+        METAOBJ(Matrix)
+
+        Matrix();
+        Matrix( const Matrix& other );
+        explicit Matrix( float const * const def );
+        Matrix( float a00, float a01, float a02, float a03,
+            float a10, float a11, float a12, float a13,
+            float a20, float a21, float a22, float a23,
+            float a30, float a31, float a32, float a33);
+
+        virtual ~Matrix() {}
+
+        Matrix& operator = (const Matrix& );
+
+        inline float& operator()(int col, int row) { return _mat[col][row]; }
+        inline float operator()(int col, int row) const { return _mat[col][row]; }
+
+        void set( float const * const );
+        void set( float a00, float a01, float a02, float a03,
+                  float a10, float a11, float a12, float a13,
+                  float a20, float a21, float a22, float a23,
+                  float a30, float a31, float a32, float a33);
+        const float * values() { return (const float *)_mat; }
+
+        void makeIdent();
+        void makeScale( const Vec3& );
+        void makeScale( float, float, float );
+        
+        void makeTrans( const Vec3& );
+        void makeTrans( float, float, float );
+        //TODO: original preTrans was optimized (M=Tr*M)
+        // but also has the assumption that M (this) is an affine transformation Matrix
+        // can I still do something to optimize the same case now?
+
+        void makeRot( const Vec3& from, const Vec3& to );
+        void makeRot( float angle, const Vec3& orientation );
+        void makeRot( float angle, float x, float y, float z );
+        void makeRot( const Quat& );
+        void makeRot( float, float, float ); //Euler angles
+
+        bool invert( const Matrix& );
+        bool invertAffine( const Matrix& );
+
+        //basic utility functions to create new matrices or vectors
+        static Matrix scale( const Vec3& );
+        static Matrix scale( float, float, float );
+        static Matrix trans( const Vec3& );
+        static Matrix trans( float, float, float );
+        static Matrix rotate( const Vec3&, const Vec3& );
+        static Matrix rotate( float, float, float, float );
+        static Matrix rotate( const Quat& );
+
+        inline Vec3 preMult( const Vec3& v ) const;
+        inline Vec3 postMult( const Vec3& v ) const;
+        inline Vec3 operator* ( const Vec3& v ) const;
+        inline Vec4 preMult( const Vec4& v ) const;
+        inline Vec4 postMult( const Vec4& v ) const;
+        inline Vec4 operator* ( const Vec4& v ) const;
+
+//start of Deprecated methods 
+
+        void copy( const Matrix& );
+        void preScale( float sx, float sy, float sz, const Matrix& m );
+        void postScale( const Matrix& m, float sx, float sy, float sz );
+        void preScale( float sx, float sy, float sz );
+        void postScale( float sx, float sy, float sz );
+
+        void preTrans( float tx, float ty, float tz, const Matrix& m );
+        void postTrans( const Matrix& m, float tx, float ty, float tz );
+        void preTrans( float tx, float ty, float tz);
+        void postTrans( float tx, float ty, float tz );
+
+        void preRot( float deg, float x, float y, float z, const Matrix& m  );
+        void postRot( const Matrix& m, float deg, float x, float y, float z );
+        void preRot( float deg, float x, float y, float z );
+        void postRot( float deg, float x, float y, float z );
+
+    	/** apply apply an 3x3 transform of v*M[0..2,0..2]  */
+    	inline static Vec3 transform3x3(const Vec3& v,const Matrix& m);
+    	/** apply apply an 3x3 transform of M[0..2,0..2]*v  */
+    	inline static Vec3 transform3x3(const Matrix& m,const Vec3& v);
+        
+//end of Deprecated methods 
+
+
+        // basic matrix multiplication, our workhorse methods.
+        void mult( const Matrix&, const Matrix& );
+        void preMult( const Matrix& );
+        void postMult( const Matrix& );
+
+        // Helper class to optimize product expressions somewhat
+        class MatrixProduct {
+        public:
+            const Matrix& A;
+            const Matrix& B;
+
+            MatrixProduct( const Matrix& lhs, const Matrix& rhs ) : A(lhs), B(rhs) {}
+        };
+
+        inline MatrixProduct operator * ( const Matrix& other ) const    
+            {    return MatrixProduct(*this, other); }
+
+        inline void operator *= ( const Matrix& other ) 
+            {    if( this == &other ) {
+                    Matrix temp(other);
+                    postMult( temp );
+                }
+                else postMult( other ); 
+            }
+        inline void operator = ( const MatrixProduct& p ) 
+            {
+                if( this == &(p.A)) postMult(p.B);
+                else if( this == &(p.B)) preMult(p.A);
+                else mult( p.A, p.B );
+            }
+
+        Matrix( const MatrixProduct& p ) //allows implicit evaluation of the product
+            {    mult( p.A, p.B ); }
+};
+
+inline Vec3 Matrix::postMult ( const Vec3& v ) const {
+    float d = 1.0f/(_mat[3][0]*v.x()+_mat[3][1]*v.y()+_mat[3][2]*v.z()+_mat[3][3]) ;
+    return Vec3( (_mat[0][0]*v.x() + _mat[0][1]*v.y() + _mat[0][2]*v.z() + _mat[0][3])*d,
+        (_mat[1][0]*v.x() + _mat[1][1]*v.y() + _mat[1][2]*v.z() + _mat[1][3])*d,
+        (_mat[2][0]*v.x() + _mat[2][1]*v.y() + _mat[2][2]*v.z() + _mat[2][3])*d) ;
+}
+
+inline Vec3 Matrix::preMult (const Vec3& v ) const {
+    float d = 1.0f/(_mat[0][3]*v.x()+_mat[1][3]*v.y()+_mat[2][3]*v.z()+_mat[3][3]) ;
+    return Vec3( (_mat[0][0]*v.x() + _mat[1][0]*v.y() + _mat[2][0]*v.z() + _mat[3][0])*d,
+        (_mat[0][1]*v.x() + _mat[1][1]*v.y() + _mat[2][1]*v.z() + _mat[3][1])*d,
+        (_mat[0][2]*v.x() + _mat[1][2]*v.y() + _mat[2][2]*v.z() + _mat[3][2])*d);
+}
+inline Vec3 Matrix::operator* (const Vec3& v) const {
+    return postMult(v);
+}
+inline Vec3 operator* (const Vec3& v, const Matrix& m ) {
+    return m.preMult(v);
+}
+inline Vec4 Matrix::postMult(const Vec4& v) const {
+    return Vec4( (_mat[0][0]*v.x() + _mat[0][1]*v.y() + _mat[0][2]*v.z() + _mat[0][3]*v.w()),
+        (_mat[1][0]*v.x() + _mat[1][1]*v.y() + _mat[1][2]*v.z() + _mat[1][3]*v.w()),
+        (_mat[2][0]*v.x() + _mat[2][1]*v.y() + _mat[2][2]*v.z() + _mat[2][3]*v.w()),
+        (_mat[3][0]*v.x() + _mat[3][1]*v.y() + _mat[3][2]*v.z() + _mat[3][3]*v.w())) ;
+}
+/*
+inline Vec4 Matrix::preMult(const Vec4& v,const Matrix& m) {
+    return Vec4( (m._mat[0][0]*v.x() + m._mat[1][0]*v.y() + m._mat[2][0]*v.z() + m._mat[3][0]*v.w()),
+        (m._mat[0][1]*v.x() + m._mat[1][1]*v.y() + m._mat[2][1]*v.z() + m._mat[3][1]*v.w()),
+        (m._mat[0][2]*v.x() + m._mat[1][2]*v.y() + m._mat[2][2]*v.z() + m._mat[3][2]*v.w()),
+        (m._mat[0][3]*v.x() + m._mat[1][3]*v.y() + m._mat[2][3]*v.z() + m._mat[3][3]*v.w()));
+}
+*/
+inline Vec4 Matrix::operator* (const Vec4& v) const {
+    return postMult(v);
+}
+inline Vec4 operator* (const Vec4& v, const Matrix& m ) {
+    return m.preMult(v);
+}
+
+inline Vec3 Matrix::transform3x3(const Vec3& v,const Matrix& m)
+{
+    return Vec3( (m._mat[0][0]*v.x() + m._mat[1][0]*v.y() + m._mat[2][0]*v.z()),
+                 (m._mat[0][1]*v.x() + m._mat[1][1]*v.y() + m._mat[2][1]*v.z()),
+                 (m._mat[0][2]*v.x() + m._mat[1][2]*v.y() + m._mat[2][2]*v.z()));
+}
+
+inline Vec3 Matrix::transform3x3(const Matrix& m,const Vec3& v)
+{
+    return Vec3( (m._mat[0][0]*v.x() + m._mat[0][1]*v.y() + m._mat[0][2]*v.z()),
+                 (m._mat[1][0]*v.x() + m._mat[1][1]*v.y() + m._mat[1][2]*v.z()),
+                 (m._mat[2][0]*v.x() + m._mat[2][1]*v.y() + m._mat[2][2]*v.z()) ) ;
+}
+
+inline ostream& operator<< (ostream& os, const Matrix& m ) {
+    os << "{";
+    for(int row=0; row<4; ++row) {
+        os << "\t";
+        for(int col=0; col<4; ++col)
+            os << m(col,row) << " ";
+        os << endl;
+    }
+    os << "}" << endl;
+    return os;
+}
+
+}; //namespace osg
+
+
+#endif

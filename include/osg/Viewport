@@ -1,0 +1,63 @@
+#ifndef OSG_VIEWPORT
+#define OSG_VIEWPORT 1
+
+#include <osg/StateAttribute>
+#include <osg/StateSet>
+#include <osg/Types>
+
+namespace osg {
+
+/** Encapsulte OpenGL glViewport.
+*/     
+class SG_EXPORT Viewport : public StateAttribute
+{
+    public :
+    
+    
+        Viewport();
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Viewport*>(obj)!=0L; }
+        virtual Object* clone() const { return new Viewport(); }
+        virtual const char* className() const { return "Viewport"; }
+    
+        virtual const Type getType() const { return VIEWPORT; }
+        
+        inline void setViewport(const int x,const int y,const int width,const int height)
+        {
+            _x = x;
+            _y = y;
+            _width = width;
+            _height = height;
+        }
+        
+        void getViewport(int& x,int& y,int& width,int& height)
+        {
+            x = _x;
+            y = _y;
+            width = _width;
+            height = _height;
+        }
+
+        inline const int x() const { return _x; }
+        inline const int y() const { return _y; }
+        inline const int width() const { return _width; }
+        inline const int height() const { return _height; }
+
+        /** return the aspcetRatio of the viewport, which is equal to width/height.*/
+        inline const float aspectRatio() const { return (float)_width/(float)_height; }
+
+        virtual void apply(State& state) const;
+
+    protected:
+    
+        virtual ~Viewport();
+
+        int _x;
+        int _y;
+        int _width;
+        int _height;
+
+};
+
+};
+
+#endif

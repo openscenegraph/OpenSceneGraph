@@ -116,7 +116,7 @@ namespace osgParticle
 
     inline void SectorPlacer::place(Particle *P) const
     {
-        float rad = rad_range_.get_random();
+        float rad = rad_range_.get_random_sqrtf();
         float phi = phi_range_.get_random();
         
         osg::Vec3 pos(

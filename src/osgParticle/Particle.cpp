@@ -86,9 +86,17 @@ bool osgParticle::Particle::update(double dt)
 	}
 	
     // compute the current values for size, alpha and color.
-    current_size_ = si_.get()->interpolate(x, sr_);
-    current_alpha_ = ai_.get()->interpolate(x, ar_);
-    current_color_ = ci_.get()->interpolate(x, cr_);
+    if (lifetime_ <= 0) {
+       if (dt == t0_) {
+          current_size_ = sr_.get_random();
+          current_alpha_ = ar_.get_random();
+          current_color_ = cr_.get_random();
+       }
+    } else {
+       current_size_ = si_.get()->interpolate(x, sr_);
+       current_alpha_ = ai_.get()->interpolate(x, ar_);
+       current_color_ = ci_.get()->interpolate(x, cr_);
+    }
 
     // update position
     prev_pos_ = position_;

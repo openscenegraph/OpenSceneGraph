@@ -8,11 +8,9 @@ using namespace osgGA;
 
 TerrainManipulator::TerrainManipulator()
 {
-    _modelScale = 0.01f;
-    
     _rotationMode =ELEVATION_AZIM; 
-    _minimumZoomScale = 0.0005f;
-    _distance = 1.0f;
+    _minimumDistance = 1.0;
+    _distance = 1.0;
 
     _thrown = false;
 
@@ -34,11 +32,6 @@ void TerrainManipulator::setRotationMode(RotationMode mode)
 void TerrainManipulator::setNode(osg::Node* node)
 {
     _node = node;
-    if (_node.get())
-    {
-        const osg::BoundingSphere& boundingSphere=_node->getBound();
-        _modelScale = boundingSphere._radius;
-    }
 }
 
 
@@ -456,7 +449,7 @@ bool TerrainManipulator::calcMovement()
         // need to reintersect with the terrain
         osgUtil::IntersectVisitor iv;
 
-        double distance = _node->getBound().radius();
+        double distance = _node->getBound().radius()*0.1f;
         osg::Vec3d start_segment = _center + getUpVector(coordinateFrame) * distance;
         osg::Vec3d end_segment = start_segment - getUpVector(coordinateFrame) * (2.0f*distance);
 
@@ -505,7 +498,7 @@ bool TerrainManipulator::calcMovement()
         }
         else
         {
-            osg::notify(osg::NOTICE)<<"New up orientation nearly inline - no need to rotate"<<std::endl;
+            osg::notify(osg::INFO)<<"New up orientation nearly inline - no need to rotate"<<std::endl;
         }
         
 
@@ -518,11 +511,14 @@ bool TerrainManipulator::calcMovement()
 
         double fd = _distance;
         double scale = 1.0f+dy;
-        if (fd*scale>_modelScale*_minimumZoomScale)
+        if (fd*scale>_minimumDistance)
         {
 
             _distance *= scale;
 
+        } else
+        {
+            _distance = _minimumDistance;
         }
         
         return true;

@@ -420,7 +420,7 @@ osg::Image* createNormalMapTexture(osg::Image* image_3d)
 
 
 
-osg::Node* createCube(float size,float alpha, unsigned int numSlices)
+osg::Node* createCube(float size,float alpha, unsigned int numSlices, float sliceEnd=1.0f)
 {
 
     // set up the Geometry.
@@ -428,7 +428,7 @@ osg::Node* createCube(float size,float alpha, unsigned int numSlices)
 
     float halfSize = size*0.5f;
     float y = halfSize;
-    float dy =-size/(float)(numSlices-1);
+    float dy =-size/(float)(numSlices-1)*sliceEnd;
 
     //y = -halfSize;
     //dy *= 0.5;
@@ -463,7 +463,7 @@ osg::Node* createCube(float size,float alpha, unsigned int numSlices)
     return billboard;
 }
 
-osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, bool createNormalMap)
+osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, bool createNormalMap, unsigned int numSlices=500,float sliceEnd=1.0f)
 {
     unsigned int diffuse_unit = createNormalMap ? 1 : 0;
     unsigned int bumpmap_unit = 0;
@@ -497,7 +497,7 @@ osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, bool createNormalMap)
     osg::BoundingBox bb(-0.5f,-0.5f,-0.20f,0.5f,0.5f,0.20f);
 
     osg::ClipNode* clipnode = new osg::ClipNode;
-    clipnode->addChild(createCube(1.0f,0.9f, 500));
+    clipnode->addChild(createCube(1.0f,0.9f, numSlices,sliceEnd));
     clipnode->createClipBox(bb);
 
     {
@@ -617,6 +617,9 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates use of 3D textures.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
+    arguments.getApplicationUsage()->addCommandLineOption("-n","create normal map for per voxel lighting.");
+    arguments.getApplicationUsage()->addCommandLineOption("-s","num of slices to create.");
+    arguments.getApplicationUsage()->addCommandLineOption("--clip","clip volume as a ratio, 0.0 clip all, 1.0 clip none.");
     
 
     // construct the viewer.
@@ -639,8 +642,17 @@ int main( int argc, char **argv )
     while (arguments.read("-o",outputFile)) {}
 
 
+    unsigned int numSlices=500;
+    while (arguments.read("-s",numSlices)) {}
+    
+    
+    float sliceEnd=1.0f;
+    while (arguments.read("--clip",sliceEnd)) {}
+
+
     bool createNormalMap = false;
     while (arguments.read("-n")) createNormalMap=true;
+
     
     osg::ref_ptr<osg::Image> image_3d;
     
@@ -687,7 +699,7 @@ int main( int argc, char **argv )
     if (!image_3d) return 0;
     
     // create a model from the images.
-    osg::Node* rootNode = createModel(image_3d, createNormalMap);
+    osg::Node* rootNode = createModel(image_3d, createNormalMap, numSlices, sliceEnd);
 
     if (!outputFile.empty())
     {   

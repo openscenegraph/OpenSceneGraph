@@ -1,0 +1,67 @@
+#ifndef OSGUTIL_APPVISITOR
+#define OSGUTIL_APPVISITOR 1
+
+#include <osg/NodeVisitor>
+#include <osg/Node>
+#include <osg/Geode>
+#include <osg/Billboard>
+#include <osg/LOD>
+#include <osg/Switch>
+#include <osg/LightSource>
+#include <osg/Transform>
+#include <osg/Impostor>
+
+#include <osgUtil/Export>
+
+namespace osgUtil {
+
+/**
+ * Basic AppVisitor implementation for animating a scene.
+ * This visitor traverses the scene graph, call each nodes appCallback if
+ * it exists. 
+ */
+class OSGUTIL_EXPORT AppVisitor : public osg::NodeVisitor
+{
+    public:
+
+        AppVisitor();
+        virtual ~AppVisitor();
+
+        virtual void reset();
+
+        virtual void apply(osg::Node& node)       { handle_callbacks(node); }
+        
+        virtual void apply(osg::Geode& node)      { handle_callbacks(node); }
+        virtual void apply(osg::Billboard& node)  { handle_callbacks(node); }
+        virtual void apply(osg::LightSource& node){ handle_callbacks(node); }
+        
+        virtual void apply(osg::Group& node)      { handle_callbacks(node); }
+        virtual void apply(osg::Transform& node)  { handle_callbacks(node); }
+        virtual void apply(osg::Switch& node)     { handle_callbacks(node); }
+        virtual void apply(osg::LOD& node)        { handle_callbacks(node); }
+        virtual void apply(osg::Impostor& node)   { handle_callbacks(node); }
+
+
+    protected:
+
+        /** prevent unwanted copy construction.*/
+        AppVisitor(const AppVisitor&):osg::NodeVisitor() {}
+
+        /** prevent unwanted copy operator.*/
+        AppVisitor& operator = (const AppVisitor&) { return *this; }
+        
+        inline void handle_callbacks(osg::Node& node)
+        {
+            osg::NodeCallback* callback = node.getAppCallback();
+            if (callback) (*callback)(&node,this);
+            else if (node.getNumChildrenRequiringAppTraversal()>0) traverse(node);
+        }
+
+        
+	
+};
+
+};
+
+#endif
+

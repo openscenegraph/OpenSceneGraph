@@ -41,8 +41,16 @@ class OSGGA_EXPORT NodeTrackerManipulator : public MatrixManipulator
 
         enum TrackerMode 
         {
+            /** Track the center of the node's bounding sphere, but not rotations of the node.  
+              * For datatbases which have a CoordinateSystemNode, the orientation is kept relative the coordinate frame if the center of the node.
+              */
             NODE_CENTER,
+            /** Track the center of the node's bounding sphere, and the azimuth rotation (about the z axis of the current coordinate frame).
+              * For datatbases which have a CoordinateSystemNode, the orientation is kept relative the coordinate frame if the center of the node.
+              */
             NODE_CENTER_AND_AZIM,
+            /** Tack the center of the node's bounding sphere, and the all rotations of the node.
+              */
             NODE_CENTER_AND_ROTATION,
         };
         
@@ -52,7 +60,11 @@ class OSGGA_EXPORT NodeTrackerManipulator : public MatrixManipulator
 
         enum RotationMode 
         {
+            /** Use a trackball style manipulation of the view direction w.r.t the tracked orientation.
+              */
             TRACKBALL,
+            /** Allow the elevation and azimuth angles to be adjust w.r.t the tracked orientation.
+              */
             ELEVATION_AZIM,
         };
         

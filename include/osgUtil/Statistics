@@ -74,6 +74,8 @@ class Statistics : public osg::Drawable::PrimitiveFunctor
         void setType(statsType t) {stattype=t;}
         
         virtual void setVertexArray(unsigned int count,const osg::Vec3*) { _vertexCount += count; }
+        virtual void setVertexArray(unsigned int count,const osg::Vec2*) { _vertexCount += count; }
+        virtual void setVertexArray(unsigned int count,const osg::Vec4*) { _vertexCount += count; }
 
         virtual void drawArrays(GLenum mode,GLint,GLsizei count) 
         { 
@@ -111,18 +113,20 @@ class Statistics : public osg::Drawable::PrimitiveFunctor
             ++prim.first; 
             _number_of_vertexes = 0;
         }
-        virtual void vertex(const osg::Vec3&) 
+
+        inline void vertex() 
         { 
             PrimitivePair& prim = _primitiveCount[_currentPrimtiveFunctorMode]; 
             ++prim.second; 
            _number_of_vertexes++;
         }
-        virtual void vertex(float,float,float) 
-        {  
-            PrimitivePair& prim = _primitiveCount[_currentPrimtiveFunctorMode]; 
-            ++prim.second; 
-            _number_of_vertexes++;
-        }
+        virtual void vertex(float,float,float) { vertex(); }
+        virtual void vertex(const osg::Vec3&)  { vertex(); }
+        virtual void vertex(const osg::Vec2& vert)  { vertex(); }
+        virtual void vertex(const osg::Vec4& vert)  { vertex(); }
+        virtual void vertex(float x,float y)   { vertex(); }
+        virtual void vertex(float x,float y,float z,float w)  { vertex(); }
+
         virtual void end() 
         {
           _primitives_count[_currentPrimtiveFunctorMode] += 

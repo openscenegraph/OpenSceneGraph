@@ -12,8 +12,6 @@
 #include <osgGA/StateSetManipulator>
 
 #include <osgProducer/Viewer>
-#include <osgProducer/FrameStatsHandler>
-#include <osgProducer/StatsEventHandler>
 #include <osgProducer/ViewerEventHandler>
 
 using namespace osgProducer;

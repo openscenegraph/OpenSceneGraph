@@ -113,10 +113,6 @@ SOURCE=..\..\src\osgProducer\EventAdapter.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgProducer\StatsEventHandler.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\osgProducer\ViewerEventHandler.cpp
 # End Source File
 # Begin Source File
@@ -149,15 +145,7 @@ SOURCE=..\..\Include\osgProducer\Viewer
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\osgProducer\FrameStatsHandler
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\Include\osgProducer\KeyboardMouseCallback
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\Include\osgProducer\StatsEventHandler
 # End Source File
 # Begin Source File
 

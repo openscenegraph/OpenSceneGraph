@@ -161,7 +161,7 @@ int main( int argc, char **argv )
     std::string executablePath = osgDB::getFilePath(argv[0]);
     if (!executablePath.empty())
     {
-        std::osg::notify(osg::NOTICE) << "Adding executable path '"<<executablePath<<"' to OpenSceneGraph data and library file paths."<<std::endl;
+        osg::notify(osg::NOTICE) << "Adding executable path '"<<executablePath<<"' to OpenSceneGraph data and library file paths."<<std::endl;
         osgDB::getDataFilePathList().push_front(executablePath);
         osgDB::getLibraryFilePathList().push_front(executablePath);
     }

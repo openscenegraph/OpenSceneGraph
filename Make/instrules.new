@@ -2,11 +2,11 @@ install  : instbin instdev
 
 instbin :
 	@$(MAKE) INSTSRC=$(TOPDIR)/bin INSTDEST=$(INST_DEMOS) \
-		INSTARGS="$(INSTARGS) -m 755" __install
+		INSTALL?="$(INSTBIN)" __install
 	@$(MAKE) INSTSRC=$(TOPDIR)/lib INSTDEST=$(INST_LIBS) \
-		INSTARGS="$(INSTARGS) -m 755" __install
+		INSTALL?="$(INSTBIN)" __install
 	@$(MAKE) INSTSRC=$(TOPDIR)/lib/osgPlugins INSTDEST=$(INST_PLUGINS)\
-		INSTARGS="$(INSTARGS) -m 755" __install
+		INSTALL?="$(INSTBIN)" __install
 
 
 instdev :
@@ -15,7 +15,7 @@ instdev :
 	  if [ -d $(TOPDIR)/include/$$d ]; \
 	  then \
 	    $(MAKE) INSTSRC=$(TOPDIR)/include/$$d INSTDEST=$(INST_INCLUDE)/$$d\
-		   INSTARGS="$(INSTARGS) -m 644" __install;\
+		   INSTALL?="$(INSTDEV)" __install;\
 	  fi\
 	done
 	@for d in `ls -1  $(TOPDIR)/src/Demos | grep -v CVS`; \
@@ -23,17 +23,18 @@ instdev :
 	  if [ -d $(TOPDIR)/src/Demos/$$d ]; \
 	  then \
 	    $(MAKE) INSTSRC=$(TOPDIR)/src/Demos/$$d INSTDEST=$(INST_DEMO_SRC)/$$d\
-		   INSTARGS="$(INSTARGS) -m 644" __install;\
+		   INSTALL?="$(INSTDEV)" __install;\
 	  fi\
 	done
 
 instlinks : instlinksbin instlinksdev
 
 instlinksbin :
-	@$(MAKE) INSTARGS=" -t " instbin
+	$(MAKE) INSTALL="$(INSTLINKBIN)" instbin
 
 instlinksdev :
-	@$(MAKE) INSTARGS=" -t " instdev
+	$(MAKE) INSTALL="$(INSTLINKDEV)" instbin
+
 
 
 __install :
@@ -48,11 +49,9 @@ __install :
 	  do\
 	    if [ -f $$f ] ; \
 	    then \
-	        echo install $(INSTARGS) $$f $(INSTDEST);\
-	        install $(INSTARGS) $$f $(INSTDEST);\
+	        echo $(INSTALL) $$f $(INSTDEST);\
 	    fi\
 	  done\
 	fi
 
 
-	

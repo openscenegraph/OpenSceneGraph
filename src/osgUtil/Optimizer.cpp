@@ -295,7 +295,9 @@ void Optimizer::FlattenStaticTransformsVisitor::apply(osg::Geode& geode)
         for(int i=0;i<geode.getNumDrawables();++i)
         {
             geode.getDrawable(i)->applyAttributeOperation(tf);
+            geode.getDrawable(i)->dirtyBound();
         }
+        geode.dirtyBound();
     }
 }
 

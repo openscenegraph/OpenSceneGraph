@@ -95,7 +95,7 @@ class ReaderWriterPFB : public osgDB::ReaderWriter
 		false;
 	}
 
-        virtual osg::Image* readImage(const std::string& fileName, const osgDB::ReaderWriter::Options*)
+        virtual ReadResult readImage(const std::string& fileName, const osgDB::ReaderWriter::Options*)
         {
             osg::notify(osg::INFO)<<   "ReaderWriterPFB::readImage( "<<fileName.c_str()<<" )\n";
 
@@ -133,26 +133,34 @@ class ReaderWriterPFB : public osgDB::ReaderWriter
                 return image;
             }
 
-            return NULL;
+            return ReadResult::FILE_NOT_HANDLED;
         }
 
-        virtual osg::Node* readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*)
+        virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*)
         {
             osg::notify(osg::INFO)<<   "ReaderWriterPFB::readNode( "<<fileName.c_str()<<" )\n";
 
             initPerformer();
 
             pfNode* root = pfdLoadFile(fileName.c_str());
+            
+            if (root)
+            {
 
-            ConvertFromPerformer converter;
-            return converter.convert(root);
+                ConvertFromPerformer converter;
+                return converter.convert(root);
+            }
+            else
+            {
+                return ReadResult::FILE_NOT_HANDLED;
+            }
 
         }
 
-        virtual bool writeNode(const osg::Node& node,const std::string& fileName, const osgDB::ReaderWriter::Options*)
+        virtual WriteResult writeNode(const osg::Node& node,const std::string& fileName, const osgDB::ReaderWriter::Options*)
         {
             std::string ext = osgDB::getLowerCaseFileExtension(fileName);
-            if (!acceptsExtension(ext)) return false;
+            if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
 
 
             osg::notify(osg::INFO)<<   "ReaderWriterPFB::writeNode( "<<fileName.c_str()<<" )\n";
@@ -161,11 +169,12 @@ class ReaderWriterPFB : public osgDB::ReaderWriter
             pfNode* root = converter.convert(&node);
             if (root)
             {
-                return pfdStoreFile(root,fileName.c_str())!=0;
+                if (pfdStoreFile(root,fileName.c_str())!=0) return WriteResult::FILE_SAVED;
+                else return "Unable to write file from performer.";
             }
             else
             {
-                return false;
+                return "Unable to convert scene to performer, cannot write file.";
             }
         }
 

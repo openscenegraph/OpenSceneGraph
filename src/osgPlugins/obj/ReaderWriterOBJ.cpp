@@ -48,7 +48,7 @@ public:
         return (extension == "obj");
     }
 
-    virtual osg::Node* readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*);
+    virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*);
 
 protected:
     osg::Drawable* makeDrawable(GLMmodel* obj, GLMgroup* grp, osg::StateSet**);
@@ -60,11 +60,11 @@ osgDB::RegisterReaderWriterProxy<ReaderWriterOBJ> g_objReaderWriterProxy;
 
 
 // read file and convert to OSG.
-osg::Node* ReaderWriterOBJ::readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*)
+osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*)
 {
     GLMmodel* obj = glmReadOBJ((char*) fileName.c_str());
     if (!obj)
-        return NULL;
+        return ReadResult::FILE_NOT_HANDLED;
 
     std::string directory = osgDB::getFilePath(fileName);
 

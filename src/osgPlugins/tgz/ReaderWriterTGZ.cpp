@@ -31,10 +31,10 @@ class ReaderWriterTGZ : public osgDB::ReaderWriter
             return osgDB::equalCaseInsensitive(extension,"tgz");
         }
 
-        virtual Node* readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*)
+        virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*)
         {
             std::string ext = osgDB::getLowerCaseFileExtension(fileName);
-            if (!acceptsExtension(ext)) return NULL;
+            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
             osg::notify(osg::INFO)<<   "ReaderWriterTGZ::readNode( "<<fileName.c_str()<<" )\n";
 
@@ -107,7 +107,7 @@ class ReaderWriterTGZ : public osgDB::ReaderWriter
             if( grp->getNumChildren() == 0 )
             {
                 grp->unref();
-                return NULL;
+                return ReadResult::FILE_NOT_HANDLED;
             }
 
             return grp;

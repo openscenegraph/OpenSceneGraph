@@ -560,6 +560,10 @@ Object* Registry::readObject(const std::string& fileName)
 
     // record the existing reader writer.
     std::set<ReaderWriter*> rwOriginal;
+    
+    // record the errors reported by readerwriters.
+    typedef std::vector<ReaderWriter::ReadResult> Results;
+    Results results;
 
     // first attempt to load the file from existing ReaderWriter's
     for(ReaderWriterList::iterator itr=_rwList.begin();
@@ -567,8 +571,9 @@ Object* Registry::readObject(const std::string& fileName)
         ++itr)
     {
         rwOriginal.insert(itr->get());
-        Object* obj = (*itr)->readObject(file,_options.get());
-        if (obj) return obj;
+        ReaderWriter::ReadResult rr = (*itr)->readObject(file,_options.get());
+        if (rr.validObject()) return rr.takeObject();
+        else if (rr.error()) results.push_back(rr);
     }
 
     // now look for a plug-in to load the file.
@@ -581,17 +586,27 @@ Object* Registry::readObject(const std::string& fileName)
         {
             if (rwOriginal.find(itr->get())==rwOriginal.end())
             {
-                Object* obj = (*itr)->readObject(file,_options.get());
-                if (obj) return obj;
+                ReaderWriter::ReadResult rr = (*itr)->readObject(file,_options.get());
+                if (rr.validObject()) return rr.takeObject();
+                else if (rr.error()) results.push_back(rr);
             }
         }
     }
-    else
+    
+    if (results.empty())
     {
         notify(NOTICE)<<"Warning: Could not find plugin to read file with extension ."
             <<getLowerCaseFileExtension(fileName)<<endl;
     }
-    notify(NOTICE)<<"Warning: Unable to read file "<<fileName<<endl;
+    else
+    {
+        for(Results::iterator itr=results.begin();
+            itr!=results.end();
+            ++itr)
+        {
+            notify(NOTICE)<<itr->message()<<endl;
+        }
+    }
 
     return NULL;
 }
@@ -602,13 +617,19 @@ bool Registry::writeObject(const Object& obj,const std::string& fileName)
     // record the existing reader writer.
     std::set<ReaderWriter*> rwOriginal;
 
+    // record the errors reported by readerwriters.
+    typedef std::vector<ReaderWriter::WriteResult> Results;
+    Results results;
+
     // first attempt to load the file from existing ReaderWriter's
     for(ReaderWriterList::iterator itr=_rwList.begin();
         itr!=_rwList.end();
         ++itr)
     {
         rwOriginal.insert(itr->get());
-        if ((*itr)->writeObject(obj,fileName,_options.get())) return true;
+        ReaderWriter::WriteResult rr = (*itr)->writeObject(obj,fileName,_options.get());
+        if (rr.success()) return true;
+        else if (rr.error()) results.push_back(rr);
     }
 
     // now look for a plug-in to save the file.
@@ -621,16 +642,27 @@ bool Registry::writeObject(const Object& obj,const std::string& fileName)
         {
             if (rwOriginal.find(itr->get())==rwOriginal.end())
             {
-                if ((*itr)->writeObject(obj,fileName,_options.get())) return true;
+                ReaderWriter::WriteResult rr = (*itr)->writeObject(obj,fileName,_options.get());
+                if (rr.success()) return true;
+                else if (rr.error()) results.push_back(rr);
             }
         }
     }
-    else
+
+    if (results.empty())
     {
         notify(NOTICE)<<"Warning: Could not find plugin to write file with extension ."
             <<getLowerCaseFileExtension(fileName)<<endl;
     }
-    notify(NOTICE)<<"Warning: Unable to write file "<<fileName<<endl;
+    else
+    {
+        for(Results::iterator itr=results.begin();
+            itr!=results.end();
+            ++itr)
+        {
+            notify(NOTICE)<<itr->message()<<endl;
+        }
+    }
 
     return false;
 }
@@ -645,14 +677,19 @@ Image* Registry::readImage(const std::string& fileName)
     // record the existing reader writer.
     std::set<ReaderWriter*> rwOriginal;
 
+    // record the errors reported by readerwriters.
+    typedef std::vector<ReaderWriter::ReadResult> Results;
+    Results results;
+
     // first attempt to load the file from existing ReaderWriter's
     for(ReaderWriterList::iterator itr=_rwList.begin();
         itr!=_rwList.end();
         ++itr)
     {
         rwOriginal.insert(itr->get());
-        Image* image = (*itr)->readImage(file,_options.get());
-        if (image) return image;
+        ReaderWriter::ReadResult rr = (*itr)->readImage(file,_options.get());
+        if (rr.validImage()) return rr.takeImage();
+        else if (rr.error()) results.push_back(rr);
     }
 
     // now look for a plug-in to load the file.
@@ -665,17 +702,27 @@ Image* Registry::readImage(const std::string& fileName)
         {
             if (rwOriginal.find(itr->get())==rwOriginal.end())
             {
-                Image* image = (*itr)->readImage(file,_options.get());
-                if (image) return image;
+                ReaderWriter::ReadResult rr = (*itr)->readImage(file,_options.get());
+                if (rr.validImage()) return rr.takeImage();
+                else if (rr.error()) results.push_back(rr);
             }
         }
     }
-    else
+
+    if (results.empty())
     {
         notify(NOTICE)<<"Warning: Could not find plugin to read file with extension ."
             <<getLowerCaseFileExtension(fileName)<<endl;
     }
-    notify(NOTICE)<<"Warning: Unable to read file "<<fileName<<endl;
+    else
+    {
+        for(Results::iterator itr=results.begin();
+            itr!=results.end();
+            ++itr)
+        {
+            notify(NOTICE)<<itr->message()<<endl;
+        }
+    }
 
     return NULL;
 }
@@ -686,13 +733,19 @@ bool Registry::writeImage(const Image& image,const std::string& fileName)
     // record the existing reader writer.
     std::set<ReaderWriter*> rwOriginal;
 
+    // record the errors reported by readerwriters.
+    typedef std::vector<ReaderWriter::WriteResult> Results;
+    Results results;
+
     // first attempt to load the file from existing ReaderWriter's
     for(ReaderWriterList::iterator itr=_rwList.begin();
         itr!=_rwList.end();
         ++itr)
     {
         rwOriginal.insert(itr->get());
-        if ((*itr)->writeImage(image,fileName,_options.get())) return true;
+        ReaderWriter::WriteResult rr = (*itr)->writeImage(image,fileName,_options.get());
+        if (rr.success()) return true;
+        else if (rr.error()) results.push_back(rr);
     }
 
     // now look for a plug-in to save the file.
@@ -705,16 +758,27 @@ bool Registry::writeImage(const Image& image,const std::string& fileName)
         {
             if (rwOriginal.find(itr->get())==rwOriginal.end())
             {
-                if ((*itr)->writeImage(image,fileName,_options.get())) return true;
+                ReaderWriter::WriteResult rr = (*itr)->writeImage(image,fileName,_options.get());
+                if (rr.success()) return true;
+                else if (rr.error()) results.push_back(rr);
             }
         }
     }
-    else
+
+    if (results.empty())
     {
         notify(NOTICE)<<"Warning: Could not find plugin to write file with extension ."
             <<getLowerCaseFileExtension(fileName)<<endl;
     }
-    notify(NOTICE)<<"Warning: Unable to write file "<<fileName<<endl;
+    else
+    {
+        for(Results::iterator itr=results.begin();
+            itr!=results.end();
+            ++itr)
+        {
+            notify(NOTICE)<<itr->message()<<endl;
+        }
+    }
 
     return false;
 }
@@ -729,14 +793,19 @@ Node* Registry::readNode(const std::string& fileName)
     // record the existing reader writer.
     std::set<ReaderWriter*> rwOriginal;
 
+    // record the errors reported by readerwriters.
+    typedef std::vector<ReaderWriter::ReadResult> Results;
+    Results results;
+
     // first attempt to load the file from existing ReaderWriter's
     for(ReaderWriterList::iterator itr=_rwList.begin();
         itr!=_rwList.end();
         ++itr)
     {
         rwOriginal.insert(itr->get());
-        Node* node = (*itr)->readNode(file,_options.get());
-        if (node) return node;
+        ReaderWriter::ReadResult rr = (*itr)->readNode(file,_options.get());
+        if (rr.validNode()) return rr.takeNode();
+        else if (rr.error()) results.push_back(rr);
     }
 
     bool couldNotFindPlugin = false;
@@ -752,8 +821,9 @@ Node* Registry::readNode(const std::string& fileName)
         {
             if (rwOriginal.find(itr->get())==rwOriginal.end())
             {
-                Node* node = (*itr)->readNode(file,_options.get());
-                if (node) return node;
+                ReaderWriter::ReadResult rr = (*itr)->readNode(file,_options.get());
+                if (rr.validNode()) return rr.takeNode();
+                else if (rr.error()) results.push_back(rr);
             }
         }
     }
@@ -762,22 +832,38 @@ Node* Registry::readNode(const std::string& fileName)
         couldNotFindPlugin = true;
     }
 
-    if (_createNodeFromImage)
-    {
-        ref_ptr<Image> image = readImage(fileName);
-        if (image.valid())
-        {
-            return createGeodeForImage(image.get());
-        }
-    }
+// 
+//     if (_createNodeFromImage)
+//     {
+//         ref_ptr<Image> image = readImage(fileName);
+//         if (image.valid())
+//         {
+//             return createGeodeForImage(image.get());
+//         }
+//     }
+// 
+//     if (couldNotFindPlugin)
+//     {
+//         notify(NOTICE)<<"Warning: Could not find plugin to read file with extension ."
+//             <<getLowerCaseFileExtension(fileName)<<endl;
+//     }
+// 
+//     notify(NOTICE)<<"Warning: Unable to read file "<<fileName<<endl;
 
-    if (couldNotFindPlugin)
+    if (results.empty())
     {
         notify(NOTICE)<<"Warning: Could not find plugin to read file with extension ."
             <<getLowerCaseFileExtension(fileName)<<endl;
     }
-
-    notify(NOTICE)<<"Warning: Unable to read file "<<fileName<<endl;
+    else
+    {
+        for(Results::iterator itr=results.begin();
+            itr!=results.end();
+            ++itr)
+        {
+            notify(NOTICE)<<itr->message()<<endl;
+        }
+    }
 
     return NULL;
 }
@@ -788,13 +874,19 @@ bool Registry::writeNode(const Node& node,const std::string& fileName)
     // record the existing reader writer.
     std::set<ReaderWriter*> rwOriginal;
 
+    // record the errors reported by readerwriters.
+    typedef std::vector<ReaderWriter::WriteResult> Results;
+    Results results;
+
     // first attempt to write the file from existing ReaderWriter's
     for(ReaderWriterList::iterator itr=_rwList.begin();
         itr!=_rwList.end();
         ++itr)
     {
         rwOriginal.insert(itr->get());
-        if ((*itr)->writeNode(node,fileName,_options.get())) return true;
+        ReaderWriter::WriteResult rr = (*itr)->writeNode(node,fileName,_options.get());
+        if (rr.success()) return true;
+        else if (rr.error()) results.push_back(rr);
     }
 
     // now look for a plug-in to save the file.
@@ -807,16 +899,27 @@ bool Registry::writeNode(const Node& node,const std::string& fileName)
         {
             if (rwOriginal.find(itr->get())==rwOriginal.end())
             {
-                if ((*itr)->writeNode(node,fileName,_options.get())) return true;
+                ReaderWriter::WriteResult rr = (*itr)->writeNode(node,fileName,_options.get());
+                if (rr.success()) return true;
+                else if (rr.error()) results.push_back(rr);
             }
         }
     }
-    else
+
+    if (results.empty())
     {
         notify(NOTICE)<<"Warning: Could not find plugin to write file with extension ."
             <<getLowerCaseFileExtension(fileName)<<endl;
     }
-    notify(NOTICE)<<"Warning: Unable to write file "<<fileName<<endl;
+    else
+    {
+        for(Results::iterator itr=results.begin();
+            itr!=results.end();
+            ++itr)
+        {
+            notify(NOTICE)<<itr->message()<<endl;
+        }
+    }
 
     return false;
 }

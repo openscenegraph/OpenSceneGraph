@@ -29,11 +29,11 @@ class ReaderWriterZIP : public osgDB::ReaderWriter
             return osgDB::equalCaseInsensitive(extension,"zip");
         }
 
-        virtual osg::Node* readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*)
+        virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*)
         {
 
             std::string ext = osgDB::getLowerCaseFileExtension(fileName);
-            if (!acceptsExtension(ext)) return NULL;
+            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
             osg::notify(osg::INFO)<<"ReaderWriterZIP::readNode( "<<fileName.c_str()<<" )\n";
 
@@ -97,7 +97,7 @@ class ReaderWriterZIP : public osgDB::ReaderWriter
             if( grp->getNumChildren() == 0 )
             {
                 grp->unref();
-                return NULL;
+                return ReadResult::FILE_NOT_HANDLED;
             }
 
             return grp;

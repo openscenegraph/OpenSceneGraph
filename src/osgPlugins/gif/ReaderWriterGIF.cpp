@@ -323,7 +323,7 @@ class ReaderWriterGIF : public osgDB::ReaderWriter
             return osgDB::equalCaseInsensitive(extension,"gif");
         }
 
-        virtual osg::Image* readImage(const std::string& fileName, const osgDB::ReaderWriter::Options*)
+        virtual ReadResult readImage(const std::string& fileName, const osgDB::ReaderWriter::Options*)
         {
 
             unsigned char *imageData = NULL;
@@ -333,7 +333,17 @@ class ReaderWriterGIF : public osgDB::ReaderWriter
 
             imageData = simage_gif_load(fileName.c_str(),&width_ret,&height_ret,&numComponents_ret);
 
-            if (imageData==NULL) return NULL;
+            switch (giferror)
+            {
+                case ERR_OPEN:
+                    return ReadResult("GIF loader: Error opening file");
+                case ERR_READ:
+                    return ReadResult("GIF loader: Error reading file");
+                case ERR_MEM:
+                    return ReadResult("GIF loader: Out of memory error");
+            }
+
+            if (imageData==NULL) return ReadResult::FILE_NOT_HANDLED;
 
             int s = width_ret;
             int t = height_ret;

@@ -32,7 +32,7 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
         virtual const char* className() { return "PNG Image Reader/Writer"; }
         virtual bool acceptsExtension(const std::string& extension) { return extension=="png"; }
 
-        virtual Image* readImage(const std::string& fileName, const osgDB::ReaderWriter::Options*)
+        virtual ReadResult readImage(const std::string& fileName, const osgDB::ReaderWriter::Options*)
         {
 
             int trans = PNG_ALPHA;
@@ -62,7 +62,7 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
             else
             {
                 png_destroy_read_struct(&png, &info, &endinfo);
-                return NULL;
+                return ReadResult::FILE_NOT_HANDLED;
             }
             png_set_sig_bytes(png, 8);
 
@@ -134,7 +134,7 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
                         break;
 
                     default:
-                        return NULL;
+                        return ReadResult::FILE_NOT_HANDLED;
                 }
             }
 

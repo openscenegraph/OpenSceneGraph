@@ -469,7 +469,7 @@ class ReaderWriterTGA : public osgDB::ReaderWriter
         virtual const char* className() { return "TGA Image Reader"; }
         virtual bool acceptsExtension(const std::string& extension) { return extension=="tga"; }
 
-        virtual osg::Image* readImage(const std::string& fileName, const osgDB::ReaderWriter::Options*)
+        virtual ReadResult readImage(const std::string& fileName, const osgDB::ReaderWriter::Options*)
         {
 
             unsigned char *imageData = NULL;
@@ -479,7 +479,7 @@ class ReaderWriterTGA : public osgDB::ReaderWriter
 
             imageData = simage_tga_load(fileName.c_str(),&width_ret,&height_ret,&numComponents_ret);
 
-            if (imageData==NULL) return NULL;
+            if (imageData==NULL) return ReadResult::FILE_NOT_HANDLED;
 
             int s = width_ret;
             int t = height_ret;

@@ -32,7 +32,7 @@ class ReaderWriter3DS : public osgDB::ReaderWriter
         virtual const char* className() { return "3DS Auto Studio Reader"; }
         virtual bool acceptsExtension(const std::string& extension) { return extension=="3ds"; }
 
-        virtual osg::Node* readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*);
+        virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*);
 
         typedef std::vector<int> FaceList;
         typedef std::map<std::string,osg::StateSet*> GeoStateMap;
@@ -59,11 +59,11 @@ ReaderWriter3DS::ReaderWriter3DS()
 }
 
 
-osg::Node* ReaderWriter3DS::readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*)
+osgDB::ReaderWriter::ReadResult ReaderWriter3DS::readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*)
 {
 
     Lib3dsFile *f = lib3ds_open(fileName.c_str());
-    if (f==NULL) return NULL;
+    if (f==NULL) return ReadResult::FILE_NOT_HANDLED;
 
     _directory = osgDB::getFilePath(fileName);
 

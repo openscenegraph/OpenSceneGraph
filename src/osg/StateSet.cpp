@@ -9,7 +9,7 @@
 #include <osg/CullFace>
 #include <osg/FrontFace>
 #include <osg/PolygonMode>
-#include <osg/Transparency>
+#include <osg/BlendFunc>
 #include <osg/Depth>
 
 using namespace osg;
@@ -306,7 +306,7 @@ void StateSet::setGlobalDefaults()
 
     setMode(GL_DEPTH_TEST,StateAttribute::ON);
     setAttributeAndModes(osgNew AlphaFunc,StateAttribute::OFF);
-    setAttributeAndModes(osgNew Transparency,StateAttribute::OFF);
+    setAttributeAndModes(osgNew BlendFunc,StateAttribute::OFF);
 
     Material *material       = osgNew Material;
     material->setColorMode(Material::AMBIENT_AND_DIFFUSE);

@@ -2,14 +2,14 @@
 #include <osgGLUT/glut>
 #include <osgGLUT/Viewer>
 
-#include <osg/Transform>
+#include <osg/MatrixTransform>
 #include <osg/Projection>
 #include <osg/Billboard>
 #include <osg/Geode>
 #include <osg/Group>
 #include <osg/Notify>
 #include <osg/Material>
-#include <osg/Transparency>
+#include <osg/BlendFunc>
 #include <osg/Depth>
 
 #include <osgDB/Registry>
@@ -136,7 +136,7 @@ void set2dScene(osg::Group* rootNode)
     textMaterial->setColorMode( osg::Material::AMBIENT_AND_DIFFUSE);
     textMaterial->setDiffuse( osg::Material::FRONT_AND_BACK,TEXT_COL_2D);
     // to get antiaA pixmapFonts we have to draw them with blending
-    osg::Transparency    *transp= osgNew  osg::Transparency();
+    osg::BlendFunc    *transp= osgNew  osg::BlendFunc();
     transp->setFunction(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
 
@@ -176,7 +176,7 @@ void set2dScene(osg::Group* rootNode)
     textMaterial->setColorMode( osg::Material::AMBIENT_AND_DIFFUSE);
     textMaterial->setDiffuse( osg::Material::FRONT_AND_BACK, TEXT_COL_2D);
     // to get antiaA pixmapFonts we have to draw them with blending
-    transp= osgNew  osg::Transparency();
+    transp= osgNew  osg::BlendFunc();
     transp->setFunction(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     textState = osgNew osg::StateSet();
@@ -332,7 +332,7 @@ int main( int argc, char **argv )
     osg::Projection* projection = osgNew osg::Projection;
     projection->setMatrix(osg::Matrix::ortho2D(0,1024,0,768));
     
-    osg::Transform* modelview_abs = osgNew osg::Transform;
+    osg::MatrixTransform* modelview_abs = osgNew osg::MatrixTransform;
     modelview_abs->setReferenceFrame(osg::Transform::RELATIVE_TO_ABSOLUTE);
     modelview_abs->setMatrix(osg::Matrix::identity());
     

@@ -115,7 +115,7 @@ class SG_EXPORT Transform : public Group
             }
             else // absolute
             {
-                matrix.makeIdent();
+                matrix.makeIdentity();
                 return true;
             }
         }
@@ -128,12 +128,10 @@ class SG_EXPORT Transform : public Group
             }
             else // absolute
             {
-                matrix.makeIdent();
+                matrix.makeIdentity();
                 return true;
             }
         }
-
-        virtual const bool computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const { return false; }
 
 #else
 

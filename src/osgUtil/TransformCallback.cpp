@@ -1,4 +1,4 @@
-#include <osg/Transform>
+#include <osg/MatrixTransform>
 
 #include <osgUtil/TransformCallback>
 
@@ -16,7 +16,7 @@ TransformCallback::TransformCallback(const osg::Vec3& pivot,const osg::Vec3& axi
 
 void TransformCallback::operator() (osg::Node* node, osg::NodeVisitor* nv)
 {
-    osg::Transform* transform = dynamic_cast<osg::Transform*>(node);
+    osg::MatrixTransform* transform = dynamic_cast<osg::MatrixTransform*>(node);
     if (nv && transform)
     {
         

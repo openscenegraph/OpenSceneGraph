@@ -2,7 +2,7 @@
 #include <osg/Geometry>
 #include <osg/Material>
 #include <osg/Vec3>
-#include <osg/Transform>
+#include <osg/MatrixTransform>
 #include <osg/Texture>
 
 #include <osgDB/ReadFile>
@@ -513,7 +513,7 @@ class MyTransformCallback : public osg::NodeCallback
 
         virtual void operator() (osg::Node* node, osg::NodeVisitor* nv)
         {
-            osg::Transform* transform = dynamic_cast<osg::Transform*>(node);                
+            osg::MatrixTransform* transform = dynamic_cast<osg::MatrixTransform*>(node);                
             if (nv && transform && nv->getFrameStamp())
             {
                 double time = nv->getFrameStamp()->getReferenceTime();
@@ -623,7 +623,7 @@ osg::Node* createBackground()
 
     // create a tranform to move the background back and forward with.
  
-    osg::Transform* transform = new osg::Transform();
+    osg::MatrixTransform* transform = new osg::MatrixTransform();
     transform->setAppCallback(new MyTransformCallback(1.0f));
     transform->addChild(geode);
 

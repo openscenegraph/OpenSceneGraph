@@ -1,9 +1,9 @@
 #include <osg/Node>
 #include <osg/Geometry>
 #include <osg/Notify>
-#include <osg/Transform>
+#include <osg/MatrixTransform>
 #include <osg/Texture>
-#include <osg/Transparency>
+#include <osg/BlendFunc>
 #include <osg/Stencil>
 #include <osg/ColorMask>
 #include <osg/Depth>
@@ -167,7 +167,7 @@ int main( int argc, char **argv )
         return 1;
     }
     
-    osg::Transform* loadedModelTransform = new osg::Transform;
+    osg::MatrixTransform* loadedModelTransform = new osg::MatrixTransform;
     loadedModelTransform->addChild(loadedModel);
 
     // calculate where to place the mirror according to the
@@ -318,7 +318,7 @@ int main( int argc, char **argv )
         dstate->setAttributeAndModes(stencil,osg::StateAttribute::ON);
         dstate->setAttributeAndModes(clipplane,osg::StateAttribute::ON);
 
-        osg::Transform* dcs = new osg::Transform;
+        osg::MatrixTransform* dcs = new osg::MatrixTransform;
         dcs->setStateSet(dstate);
         dcs->preMult(osg::Matrix::translate(0.0f,0.0f,-z)*
                      osg::Matrix::scale(1.0f,1.0f,-1.0f)*
@@ -343,8 +343,8 @@ int main( int argc, char **argv )
         stencil->setOperation(osg::Stencil::KEEP, osg::Stencil::KEEP, osg::Stencil::ZERO);
 
         // set up additive blending.
-        osg::Transparency* trans = new osg::Transparency;
-        trans->setFunction(osg::Transparency::ONE,osg::Transparency::ONE);
+        osg::BlendFunc* trans = new osg::BlendFunc;
+        trans->setFunction(osg::BlendFunc::ONE,osg::BlendFunc::ONE);
 
         osg::StateSet* statesetBin5 = createMirrorTexturedState("Images/tank.rgb");
 

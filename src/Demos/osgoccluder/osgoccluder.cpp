@@ -2,7 +2,7 @@
 #include <osgGLUT/glut>
 #include <osgGLUT/Viewer>
 
-#include <osg/Transform>
+#include <osg/MatrixTransform>
 #include <osg/Billboard>
 #include <osg/Geode>
 #include <osg/Group>

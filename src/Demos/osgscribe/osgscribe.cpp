@@ -1,5 +1,3 @@
-#include <osg/Transform>
-#include <osg/Billboard>
 #include <osg/Geode>
 #include <osg/Group>
 #include <osg/Notify>

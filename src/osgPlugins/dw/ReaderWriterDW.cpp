@@ -17,7 +17,6 @@
 #include <osg/LightSource>
 #include <osg/Material>
 #include <osg/Texture>
-#include <osg/Transparency>
 #include <osg/TexEnv>
 #include <osg/StateSet>
 #include <osg/Notify>

@@ -4,6 +4,8 @@
 #include "osgDB/Input"
 #include "osgDB/Output"
 
+#include "osg/Notify"
+
 using namespace osg;
 using namespace osgDB;
 
@@ -22,16 +24,6 @@ RegisterDotOsgWrapperProxy g_TransformProxy
     DotOsgWrapper::READ_AND_WRITE
 );
 
-// register old style 'DCS' read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_DCSProxy
-(
-    osgNew osg::Transform,
-    "DCS",
-    "Object Node Group DCS",
-    &Transform_readLocalData,
-    NULL,
-    DotOsgWrapper::READ_ONLY
-);
 
 bool Transform_readLocalData(Object& obj, Input& fr)
 {
@@ -61,7 +53,14 @@ bool Transform_readLocalData(Object& obj, Input& fr)
     if (Matrix* tmpMatrix = static_cast<Matrix*>(fr.readObjectOfType(s_matrix)))
     {
 
+        #ifdef USE_DEPRECATED_API
         transform.setMatrix(*tmpMatrix);
+        #else
+        osg::notify(osg::WARN)<<"Warning: loaded Matrix inside a osg::Transform, "<<std::endl;
+        osg::notify(osg::WARN)<<"         this indicates that the file is out of date, "<<std::endl;
+        osg::notify(osg::WARN)<<"         the matrix data will be lost, convert the file by replacing "<<std::endl;
+        osg::notify(osg::WARN)<<"         instances with MatrixTransform in the .osg file, and then reload."<<endl;
+        #endif
 
         osgDelete tmpMatrix;
 
@@ -89,7 +88,9 @@ bool Transform_writeLocalData(const Object& obj, Output& fw)
 {
     const Transform& transform = static_cast<const Transform&>(obj);
 
+    #ifdef USE_DEPRECATED_API
     fw.writeObject(transform.getMatrix());
+    #endif
 
     fw.indent() << "referenceFrame ";
     switch (transform.getReferenceFrame()) {

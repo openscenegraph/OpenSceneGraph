@@ -21,7 +21,7 @@
 
 #include <osg/Notify>
 #include <osg/Node>
-#include <osg/Transform>
+#include <osg/MatrixTransform>
 #include <osg/Geode>
 
 #include <osg/Geometry>
@@ -157,7 +157,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
     // toplevel group or transform
     osg::Group* osg_top = NULL;
     if (obj->position[0] != 0.0f || obj->position[2] != 0.0f || obj->position[2] != 0.0f) {
-        osg::Transform* xform = new osg::Transform;
+        osg::MatrixTransform* xform = new osg::MatrixTransform;
 		// note obj_x -> osg_x,
 		//      obj_y -> osg_z,
 		//      obj_z -> osg_y,

@@ -2,10 +2,7 @@
 #include <osgGLUT/glut>
 #include <osgGLUT/Viewer>
 
-#include <osg/Transform>
-#include <osg/Billboard>
-#include <osg/Geode>
-#include <osg/Group>
+#include <osg/Node>
 #include <osg/Notify>
 
 #include <osgDB/Registry>

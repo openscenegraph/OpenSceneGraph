@@ -7,7 +7,6 @@
 #include <osg/Texture>
 #include <osg/Material>
 #include <osg/TexEnv>
-#include <osg/Transparency>
 #include <osg/CullFace>
 #include <osg/Light>
 #include <osg/StateSet>

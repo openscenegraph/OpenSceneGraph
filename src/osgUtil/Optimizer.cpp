@@ -999,10 +999,12 @@ void Optimizer::RemoveRedundentNodesVisitor::apply(osg::Group& group)
 
 void Optimizer::RemoveRedundentNodesVisitor::apply(osg::Transform& transform)
 {
-    if (transform.getNumParents()>0)
+    if (transform.getNumParents()>0 && transform.getDataVariance()==osg::Object::STATIC)
     {
         static osg::Matrix identity;
-        if (transform.getMatrix()==identity && transform.getDataVariance()==osg::Object::STATIC)
+        osg::Matrix matrix;
+        transform.getWorldToLocalMatrix(matrix,NULL);
+        if (matrix==identity)
         {
             _redundentNodeList.insert(&transform);
         }

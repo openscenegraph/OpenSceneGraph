@@ -1,125 +1,151 @@
 echo osgversion
 osgversion
 
-echo osglogo
-osglogo
-
-echo osgviewer cow.osg
-osgviewer cow.osg
-
-echo osgfxbrowser dumptruck.osg
-osgfxbrowser dumptruck.osg
-
-echo osgshaders
-osgshaders
-
-echo osgkeyboard 
-osgkeyboard
-
-echo osgpick fountain.osg
-osgpick fountain.osg
-
-echo osgforest
-osgforest
-
-echo osgwindows glider.osg
-osgwindows glider.osg
-
-echo osgviewer --stereo cessna.osg
-osgviewer --stereo cessna.osg
-
-echo osgcameragroup cessnafire.osg
-osgcameragroup cessnafire.osg
-
-echo osgviewer spaceship.osg
-osgviewer spaceship.osg
-
-echo osgviewer osgcool.osg
-osgviewer osgcool.osg
-
-echo osgviewer cube_mapped_torus.osg
-osgviewer cube_mapped_torus.osg
-
-echo osgvertexprogram
-osgvertexprogram
-
-echo osgmotionblur cow.osg
-osgmotionblur cow.osg
-
-echo osgviewer Town.osg
-osgviewer Town.osg
-
-echo osgshape
-osgshape
+echo osgunittests
+osgunittests matrix
+osgunittests qt
+osgunittests sizeof
 
 echo osganimate
 osganimate
 
-echo osghangglide
-osghangglide
-
-echo osggeometry 
-osggeometry
-
-echo osgprerender dumptruck.osg
-osgprerender dumptruck.osg
-
-echo osgshadowtexture cessna.osg
-osgshadowtexture cessna.osg
-
-echo osgparticle
-osgparticle
-
-echo osglightpoint
-osglightpoint
+echo osgautotransform
+osgautotransform
 
 echo osgbillboard
 osgbillboard
 
-echo osgcubemap cessna.osg
-osgcubemap cessna.osg
+echo osgcallback
+osgcallback cow.osg
+
+echo osgcameragroup
+osgcameragroup cessnafire.osg
 
 echo osgclip
 osgclip cow.osg
 
-echo osghud dumptruck.osg
-osghud dumptruck.osg
+echo osgcubemap
+osgcubemap cessna.osg
 
-echo osglight glider.osg
-osglight glider.osg
+echo osgdepthshadow
+osgdepthshadow
+
+echo osgdistortion
+osgdistortion cow.osg
+
+echo osgforest
+osgforest
+
+echo osgfxbrowser
+osgfxbrowser dumptruck.osg
+
+echo osggeometry
+osggeometry
+
+echo osghangglide
+osghangglide
+
+echo osghud
+osghud dumptruck.osg
 
 echo osgimpostor
 osgimpostor
 
-echo osgmultitexture cessnafire.osg
+echo osgkeyboard
+osgkeyboard
+
+echo osgkeyboardmouse
+osgkeyboardmouse
+
+echo osglight
+osglight glider.osg
+
+echo osglightpoint
+osglightpoint
+
+echo osglogo
+osglogo
+
+echo osgmotionblur
+osgmotionblur cow.osg
+
+echo osgmultitexture
 osgmultitexture cessnafire.osg
 
-echo osgreflect cessna.osg
+echo osgoccluder
+osgoccluder glider.osg
+
+echo osgparticle
+osgparticle
+
+echo osgpick
+osgpick fountain.osg
+
+echo osgpointsprite
+osgpointsprite
+
+echo osgprerender
+osgprerender dumptruck.osg
+
+echo osgprerendercubemap
+osgprerendercubemap
+
+echo osgreflect
 osgreflect cessna.osg
 
-echo osgscribe cow.osg
+echo osgscalarbar
+osgscalarbar
+
+echo osgscribe
 osgscribe cow.osg
 
-echo osgstereoimage Images/dog_left_eye.jpg Images/dog_right_eye.jpg
+echo osgsequence
+osgsequence cow.osg dumptruck.osg cessna.osg
+
+echo osgshaders
+osgshaders
+
+echo osgshadowtexture
+osgshadowtexture cessna.osg
+
+echo osgshape
+osgshape
+
+echo osgsimplifier
+osgsimplifier -s 0.1 cessna.osg
+
+echo osgsimulation
+osgsimulation
+
+echo osgspheresegment
+osgspheresegment
+
+echo osgstereoimage
 osgstereoimage Images/dog_left_eye.jpg Images/dog_right_eye.jpg
 
 echo osgteapot
 osgteapot
 
+echo osgtesselate
+osgtesselate
+
 echo osgtext
 osgtext
 
-echo osgtexture1D cow.osg
-osgtexture1D cow.osg
+echo osgtexture1D
+osgtexture1D dumptruck.osg
 
-echo osgtexture2D 
+echo osgtexture2D
 osgtexture2D
-
-echo osgtexturerectangle
-osgtexturerectangle
 
 echo osgtexture3D
 osgtexture3D
 
-echo osgoccluder glider.osg
-osgoccluder glider.osg
+echo osgtexturerectangle
+osgtexturerectangle
+
+echo osgvertexprogram
+osgvertexprogram
+
+echo osgwindows
+osgwindows cow.osg

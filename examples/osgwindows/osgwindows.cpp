@@ -17,6 +17,7 @@ static Producer::CameraConfig *BuildConfig(void)
 {
     Producer::RenderSurface *rs1 = new Producer::RenderSurface;
     rs1->setScreenNum(0);
+    rs1->setWindowName("osgwindows");
     //rs1->useBorder(false);
     rs1->setWindowRectangle(0,0,640,480);
     Producer::Camera *camera1 = new Producer::Camera;
@@ -25,6 +26,7 @@ static Producer::CameraConfig *BuildConfig(void)
 
     Producer::RenderSurface *rs2 = new Producer::RenderSurface;
     rs2->setScreenNum(0);
+    rs2->setWindowName("osgwindows");
     //rs2->useBorder(false);
     rs2->setWindowRectangle(640,0,640,480);
     Producer::Camera *camera2 = new Producer::Camera;

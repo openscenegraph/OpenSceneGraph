@@ -25,7 +25,6 @@
 #include <osgText/Text>
 
 
-
 osg::Group* createHUDText()
 {
 

@@ -138,13 +138,14 @@ class SG_EXPORT Image : public Object
         static const unsigned int computeNumComponents(GLenum format);
         static const unsigned int computePixelSizeInBits(GLenum format,GLenum type);
         static const unsigned int computeRowWidthInBytes(int width,GLenum format,GLenum type,int packing);
+        static const unsigned int computeNearestPowerOfTwo(unsigned int s,float bias=0.5f);
         
         // precomputed mipmaps stuff;
         typedef std::vector< unsigned int > MipmapDataType;
 
         inline bool isMipmap() const {return !_mipmapData.empty();};
 
-        unsigned int getNumMipmaps() const
+        unsigned int getNumMipmapLevels() const
         {
             return _mipmapData.size()+1;
         };
@@ -160,10 +161,14 @@ class SG_EXPORT Image : public Object
         {
             if(mipmapNumber == 0)
                 return _data;
-            else if(mipmapNumber < getNumMipmaps())
+            else if(mipmapNumber < getNumMipmapLevels())
                return _data + _mipmapData[mipmapNumber-1];
             return 0L;
         };
+        
+        
+        /** converts a single image into mip mapped version image.*/
+        void computeMipMaps();
 
     protected :
 

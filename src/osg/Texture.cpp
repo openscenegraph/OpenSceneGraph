@@ -33,6 +33,7 @@ Texture::Texture():
             _borderColor(0.0, 0.0, 0.0, 0.0),
             _textureWidth(0),
             _textureHeight(0),
+            _numMimpmapLevels(0),
             _subloadMode(OFF),
             _subloadTextureOffsetX(0),
             _subloadTextureOffsetY(0),
@@ -65,13 +66,15 @@ Texture::Texture(const Texture& text,const CopyOp& copyop):
             _borderColor(text._borderColor),
             _textureWidth(text._textureWidth),
             _textureHeight(text._textureHeight),
+            _numMimpmapLevels(text._numMimpmapLevels),
             _subloadMode(text._subloadMode),
             _subloadTextureOffsetX(text._subloadTextureOffsetX),
             _subloadTextureOffsetY(text._subloadTextureOffsetY),
             _subloadImageOffsetX(text._subloadImageOffsetX),
             _subloadImageOffsetY(text._subloadImageOffsetY),
             _subloadImageWidth(text._subloadImageWidth),
-            _subloadImageHeight(text._subloadImageHeight)
+            _subloadImageHeight(text._subloadImageHeight),
+            _subloadCallback(text._subloadCallback)
 {}
 
 Texture::~Texture()
@@ -223,7 +226,7 @@ void Texture::apply(State& state) const
     const uint contextID = state.getContextID();
 
     // get the globj for the current contextID.
-    GLuint& handle = getHandle(contextID);
+    GLuint& handle = getTextureObject(contextID);
 
     if (handle != 0)
     {
@@ -254,6 +257,11 @@ void Texture::apply(State& state) const
                 // update the modified flag to show that the image has been loaded.
                 modifiedTag = _image->getModifiedTag();
             }
+            else if (_subloadMode == USE_CALLBACK)
+            {
+                _subloadCallback->subload(_target,*this,state);
+            }
+            
         }
     }
     else if (_image.valid() && _image->data())
@@ -455,6 +463,8 @@ void Texture::applyTexImage(GLenum target, Image* image, State& state) const
 
     }
     
+    _internalFormatValue = internalFormat;
+    
     // an experiment to look at the changes in performance
     // when use 16 bit textures rather than 24/32bit textures.
     // internalFormat = GL_RGBA4;
@@ -464,10 +474,12 @@ void Texture::applyTexImage(GLenum target, Image* image, State& state) const
         (MyCompressedTexImage2DArbProc)getGLExtensionFuncPtr("glCompressedTexImage2DARB");
 
     if (_subloadMode == OFF) {
+
         if( _min_filter == LINEAR || _min_filter == NEAREST )
         {
             if ( !compressed )
             {
+                _numMimpmapLevels = 1;
                 glTexImage2D( target, 0, internalFormat,
                     image->s(), image->t(), 0,
                     (GLenum)image->getPixelFormat(),
@@ -477,6 +489,7 @@ void Texture::applyTexImage(GLenum target, Image* image, State& state) const
             }
             else if(glCompressedTexImage2D_ptr)
             {
+                _numMimpmapLevels = 1;
                 GLint blockSize = ( internalFormat == GL_COMPRESSED_RGB_S3TC_DXT1_EXT ? 8 : 16 ); 
                 GLint size = ((image->s()+3)/4)*((image->t()+3)/4)*blockSize;
                 glCompressedTexImage2D_ptr(target, 0, internalFormat, 
@@ -491,21 +504,26 @@ void Texture::applyTexImage(GLenum target, Image* image, State& state) const
         {
             if(!image->isMipmap())
             {
+
+                _numMimpmapLevels = 1;
+
+
                 gluBuild2DMipmaps( target, internalFormat,
-                image->s(),image->t(),
-                (GLenum)image->getPixelFormat(), (GLenum)image->getDataType(),
-                image->data() );
+                    image->s(),image->t(),
+                    (GLenum)image->getPixelFormat(), (GLenum)image->getDataType(),
+                    image->data() );
 
             }
             else
             {
-                size_t no_mipmaps = image->getNumMipmaps();
+                _numMimpmapLevels = image->getNumMipmapLevels();
+                
                 int width  = image->s();
                 int height = image->t();
  
                 if( !compressed )
                 {
-                    for( size_t k = 0 ; k < no_mipmaps && (width || height) ;k++)
+                    for( size_t k = 0 ; k < _numMimpmapLevels  && (width || height) ;k++)
                     {
                         
                         if (width == 0)
@@ -527,7 +545,7 @@ void Texture::applyTexImage(GLenum target, Image* image, State& state) const
                 {
                     GLint blockSize = ( internalFormat == GL_COMPRESSED_RGB_S3TC_DXT1_EXT ? 8 : 16 ); 
                     GLint size = 0; 
-                    for( size_t k = 0 ; k < no_mipmaps && (width || height) ;k++)
+                    for( size_t k = 0 ; k < _numMimpmapLevels  && (width || height) ;k++)
                     {
                         if (width == 0)
                             width = 1;
@@ -549,12 +567,22 @@ void Texture::applyTexImage(GLenum target, Image* image, State& state) const
         _textureWidth = image->s();
         _textureHeight = image->t();
     }
+    else if (_subloadMode == USE_CALLBACK)
+    {
+        _subloadCallback->load(target,*this,state);
+    }
     else
     {
         static bool s_SGIS_GenMipmap = isGLExtensionSupported("GL_SGIS_generate_mipmap");
 
-        if (s_SGIS_GenMipmap && (_min_filter != LINEAR && _min_filter != NEAREST)) {
+        if (s_SGIS_GenMipmap && (_min_filter != LINEAR && _min_filter != NEAREST))
+        {
+            _numMimpmapLevels = 1; // will leave this at one, since the mipmap will be created internally by OpenGL.
             glTexParameteri(target, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
+        }
+        else
+        {
+            _numMimpmapLevels = 1;
         }
         
         GLsizei width = (_subloadImageWidth>0)?_subloadImageWidth:image->s();
@@ -631,7 +659,7 @@ void Texture::copyTexImage2D(State& state, int x, int y, int width, int height )
     const uint contextID = state.getContextID();
 
     // get the globj for the current contextID.
-    GLuint& handle = getHandle(contextID);
+    GLuint& handle = getTextureObject(contextID);
     
     if (handle)
     {
@@ -687,7 +715,7 @@ void Texture::copyTexSubImage2D(State& state, int xoffset, int yoffset, int x, i
     const uint contextID = state.getContextID();
 
     // get the globj for the current contextID.
-    GLuint& handle = getHandle(contextID);
+    GLuint& handle = getTextureObject(contextID);
     
     if (handle)
     {
@@ -710,4 +738,32 @@ void Texture::copyTexSubImage2D(State& state, int xoffset, int yoffset, int x, i
         // create it upfront - simply call copyTexImage2D.
         copyTexImage2D(state,x,y,width,height);
     }
+}
+
+GLint Texture::getMaxTextureSize()
+{
+    static GLint s_maxTextureSize = 0;
+    if (s_maxTextureSize == 0)
+    {
+    
+        glGetIntegerv(GL_MAX_TEXTURE_SIZE,&s_maxTextureSize);
+        notify(INFO) << "GL_MAX_TEXTURE_SIZE "<<s_maxTextureSize<<std::endl;
+        
+        char *ptr;
+        if( (ptr = getenv("OSG_MAX_TEXTURE_SIZE")) != 0)
+        {
+            GLint osg_max_size = atoi(ptr);
+            
+            notify(INFO) << "OSG_MAX_TEXTURE_SIZE "<<osg_max_size<<std::endl;
+            
+            if (osg_max_size<s_maxTextureSize)
+            {
+                
+                s_maxTextureSize = osg_max_size;
+            }
+            
+        }      
+        notify(INFO) << "Selected max texture size "<<s_maxTextureSize<<std::endl;
+    }
+    return s_maxTextureSize;
 }

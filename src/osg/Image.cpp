@@ -169,6 +169,21 @@ const unsigned int Image::computeRowWidthInBytes(int width,GLenum format,GLenum 
     return (widthInBits/packingInBits + ((widthInBits%packingInBits)?1:0))*packing;
 }
 
+const unsigned int Image::computeNearestPowerOfTwo(unsigned int s,float bias)
+{
+    if ((s & (s-1))!=0)
+    {
+        // it isn't so lets find the closest power of two.
+        // yes, logf and powf are slow, but this code should
+        // only be called during scene graph initilization,
+        // if at all, so not critical in the greater scheme.
+        float p2 = logf((float)s)/logf(2.0f);
+        float rounded_p2 = floorf(p2+bias);
+        s = (int)(powf(2.0f,rounded_p2));
+    }
+    return s;
+}
+
 void Image::setInternalTextureFormat(GLint internalFormat)
 {
     // won't do any sanity checking right now, leave it to 
@@ -397,58 +412,10 @@ void Image::flipVertical(int image)
 
 void Image::ensureValidSizeForTexturing()
 {
-    int new_s = _s;
-    int new_t = _t;
+    int new_s = computeNearestPowerOfTwo(_s);
+    int new_t = computeNearestPowerOfTwo(_t);
     
-    // check if _s is a power of 2 already.
-    if ((_s & (_s-1))!=0)
-    {
-        // it isn't so lets find the closest power of two.
-        // yes, logf and powf are slow, but this code should
-        // only be called during scene graph initilization,
-        // if at all, so not critical in the greater scheme.
-        float p2 = logf((float)_s)/logf(2.0f);
-        float rounded_p2 = floorf(p2+0.5f);
-        new_s = (int)(powf(2.0f,rounded_p2));
-    }
-
-    if ((_t & (_t-1))!=0)
-    {
-        // it isn't so lets find the closest power of two.
-        // yes, logf and powf are slow, but this code should
-        // only be called during scene graph initilization,
-        // if at all, so not critical in the greater scheme.
-        float p2 = logf((float)_t)/logf(2.0f);
-        float rounded_p2 = floorf(p2+0.5f);
-        new_t = (int)(powf(2.0f,rounded_p2));
-    }
-    
-    static GLint max_size=256;
-
-    static bool init = true;
-    if (init)
-    {
-        init = false;
-        glGetIntegerv(GL_MAX_TEXTURE_SIZE,&max_size);
-        notify(INFO) << "GL_MAX_TEXTURE_SIZE "<<max_size<<std::endl;
-        
-        char *ptr;
-        if( (ptr = getenv("OSG_MAX_TEXTURE_SIZE")) != 0)
-        {
-            GLint osg_max_size = atoi(ptr);
-            
-            notify(INFO) << "OSG_MAX_TEXTURE_SIZE "<<osg_max_size<<std::endl;
-            
-            if (osg_max_size<max_size)
-            {
-                
-                max_size = osg_max_size;
-            }
-            
-        }      
-        notify(INFO) << "Selected max texture size "<<max_size<<std::endl;
-    }
-    //max_size = 64;
+    static GLint max_size=Texture::getMaxTextureSize();
     
     if (new_s>max_size) new_s = max_size;
     if (new_t>max_size) new_t = max_size;
@@ -461,6 +428,13 @@ void Image::ensureValidSizeForTexturing()
         scaleImage(new_s,new_t,_r);
     }
 }
+
+void Image::computeMipMaps()
+{
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
 
 
 Geode* osg::createGeodeForImage(osg::Image* image)
@@ -531,3 +505,4 @@ Geode* osg::createGeodeForImage(osg::Image* image,const float s,const float t)
         return NULL;
     }
 }
+

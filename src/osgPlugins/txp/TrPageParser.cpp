@@ -493,8 +493,7 @@ void* lodRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     Vec3 osg_Center;
     osg_Center[0] = center.x;  osg_Center[1] = center.y;  osg_Center[2] = center.z;
     osg_Lod->setCenter(osg_Center);
-    osg_Lod->setRange(0,0.0, minRange);
-    osg_Lod->setRange(1,minRange, maxRange );
+    osg_Lod->setRange(0,minRange, maxRange );
     
     // Our LODs are binary so we need to add a group under this LOD and attach stuff
     //  to that instead of the LOD
@@ -846,7 +845,7 @@ bool TrPageParser::AddToGroupList(int ID,Group *group)
 // Initialize the group list
 void TrPageParser::SetMaxGroupID(int maxGroupID)
 {
-    notify(WARN) << "trpgFPParser: max group ID = " << maxGroupID << std::endl;
+    //notify(WARN) << "trpgFPParser: max group ID = " << maxGroupID << std::endl;
     // Initialize the group list with -1's
     groupList.resize(0);
     // Note: Fix this

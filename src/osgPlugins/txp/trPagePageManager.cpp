@@ -212,12 +212,14 @@ bool OSGPageManager::StartThread(ThreadMode mode,ThreadID &newThread)
 	// Was successfull
 	if (newThread != NULL)
 		threadMode = mode;
-#endif
+#else
 	//locationChangeEvent is self-initialized.
 	pthread_mutex_init( &changeListMutex, 0L );
 	pthread_mutex_init( &locationMutex, 0L );
-	if( pthread_create( &newThread, 0L, ThreadFunc, (void *)this ) == 0 )
-	    threadMode = mode;
+	threadMode = mode;
+	if( pthread_create( &newThread, 0L, ThreadFunc, (void *)this ) != 0 )
+	    threadMode = ThreadNone;
+#endif
 	return threadMode != ThreadNone;
 }
 
@@ -274,7 +276,7 @@ bool OSGPageManager::ThreadLoop()
 			// Form the delete list first
 			trpgManagedTile *tile=NULL;
 			std::vector<osg::Group *> unhook;
-			while (tile = pageManage->GetNextUnload()) {
+			while ((tile = pageManage->GetNextUnload())) {
 				unhook.push_back((Group *)tile->GetLocalData());
 				pageManage->AckUnload();
 			}

@@ -102,21 +102,9 @@ float PagingViewer::app(unsigned int viewport)
 {
     osg::Timer_t beforeApp = _timer.tick();
 
-
     // update the camera manipulator.
     osg::ref_ptr<GLUTEventAdapter> ea = osgNew GLUTEventAdapter;
     ea->adaptFrame(_frameStamp->getReferenceTime());
-
-#if 0  // This is the old way...   
-    if (_viewportList[viewport]._eventHandler.valid() && _viewportList[viewport]._eventHandler->handle(*ea,*this))
-    {
-        // event handler handle this call.
-    }
-    else if (_viewportList[viewport]._cameraManipulator->handle(*ea,*this))
-    {
-        //        osg::notify(osg::INFO) << "Handled update frame"<< std::endl;
-    }
-#else // this is the new way
 
     bool handled = false;
     for (EventHandlerList::iterator eh = _viewportList[viewport]._eventHandlerList.begin();         eh != _viewportList[viewport]._eventHandlerList.end();
@@ -131,11 +119,17 @@ float PagingViewer::app(unsigned int viewport)
             }
         }
     }
-//    if ( !handled ) {
         _viewportList[viewport]._cameraManipulator->handle(*ea,*this);
-//    }
 
-#endif
+    if (getRecordingAnimationPath() && getAnimationPath())
+    {
+        osg::Camera* camera = getViewportSceneView(viewport)->getCamera();
+        osg::Matrix matrix;
+        matrix.invert(camera->getModelViewMatrix());
+        osg::Quat quat;
+        quat.set(matrix);
+        getAnimationPath()->insert(_frameStamp->getReferenceTime(),osg::AnimationPath::ControlPoint(matrix.getTrans(),quat));
+    }
 
 	// Update the paging
 	if (pageManage) {
@@ -163,20 +157,6 @@ float PagingViewer::app(unsigned int viewport)
     getViewportSceneView(viewport)->app();
 
     osg::Timer_t beforeCull = _timer.tick();
-
-#if 0
-// We're going for 66ms per frame
-float targetFrameTime = 30;
-
-	static osg::Timer_t lastCull = 0;
-	if (lastCull > 0) {
-		float deltaT = _timer.delta_m(lastCull,beforeCull);
-		int extraTime = targetFrameTime - deltaT;
-		if (extraTime > 0)
-			Sleep(extraTime);
-	}
-	lastCull = beforeCull;
-#endif
 
     return  _timer.delta_m(beforeApp,beforeCull);
 }

@@ -1,6 +1,8 @@
 SHELL = /bin/sh
 OS := $(shell uname)
 
+include $(TOPDIR)/Make/dependencies
+
 ## We don't care about architectural distinguishers in the OS
 ## such as IRIX64, IRIX32, etc. so we truncate IRIX?? to IRIX
 ifeq ($(findstring IRIX,$(OS)),IRIX)
@@ -406,13 +408,21 @@ ifeq ($(OS),Darwin)
   SOCKET_LIBS       = 
   OTHER_LIBS        = -lm -lstdc++ -lobjc -lOpenThreads
   LIB_EXT           = dylib
-  QUICKTIME	    = -framework QuickTime $(CARBON_LIB)
   FREETYPE_INCLUDE  = -I/usr/X11R6/include/freetype2 -I/sw/include/freetype2
   LIBXML2_INCLUDE   = -I/usr/include/libxml2 -I/sw/include/libxml2 
-  TIFF_LIB	    = -ltiff
   LIBVERSION	    = -current_version $(VERSION) \
                         -compatibility_version \
                         $(VERSION_MAJOR).$(VERSION_MINOR).0
+  DARWIN_QUICKTIME  = yes
+  ifeq ($(DARWIN_QUICKTIME),yes)
+    QUICKTIME	    = -framework QuickTime $(CARBON_LIB)
+    DEF             += -DDARWIN_QUICKTIME
+  else
+    PNG_LIBS        = -lpng -lz
+    JPEG_LIBS       = -ljpeg
+    GIF_LIBS        = -lungif
+    TIFF_LIBS       = -ltiff -lz -ljpeg
+  endif
 endif
 
 #### Cygwin/Mingw specific definitions

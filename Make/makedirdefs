@@ -1,5 +1,3 @@
-include $(TOPDIR)/Make/dependencies
-
 
 ################################################################
 # Directories traversed from the top level
@@ -47,14 +45,14 @@ PLUGIN_DIRS = \
 	osg\
 	osgtgz\
 	pic\
-        pnm\
+	pnm\
 	rgb\
 	tga\
 	tgz\
 	txp\
 	zip\
-        3dc\
-        ive\
+	3dc\
+	ive\
 
 ifeq ($(GDAL_INSTALLED),yes)
     PLUGIN_DIRS += gdal
@@ -74,19 +72,19 @@ ifeq ($(QUICKTIME_INSTALLED),yes)
 endif
   
 ifeq ($(LIBJPEG_INSTALLED),yes)
-  PLUGIN_DIRS += tiff
-endif
-
-ifeq ($(LIBUNGIF_INSTALLED),yes)
   PLUGIN_DIRS += jpeg
 endif
 
-ifeq ($(LIBTIFF_INSTALLED),yes)
-  PLUGIN_DIRS += png
+ifeq ($(LIBUNGIF_INSTALLED),yes)
+  PLUGIN_DIRS += gif
 endif
 
-ifeq ($(LIBMPEG3_INSTALLED),yes)
-  PLUGIN_DIRS += gif
+ifeq ($(LIBTIFF_INSTALLED),yes)
+  PLUGIN_DIRS += tiff
+endif
+
+ifeq ($(LIBPNG_INSTALLED),yes)
+  PLUGIN_DIRS += png
 endif
 
 

@@ -2,40 +2,37 @@
 # Dependency library which have been installed on this system
 
 GDAL_INSTALLED = yes
-
 LIBXML2_INSTALLED = yes
-
 JASPER_INSTALLED = yes
 
 FREETYPE_INSTALLED = yes
 
 ifeq ($(OS),Darwin)
+    DARWIN_QUICKTIME  = yes
+endif
+
+ifeq ($(DARWIN_QUICKTIME),yes)
 
     QUICKTIME_INSTALLED = yes
-
     LIBJPEG_INSTALLED = no
-
     LIBUNGIF_INSTALLED = no
-
     LIBTIFF_INSTALLED = no
-
+    LIBPNG_INSTALLED = no
     LIBMPEG3_INSTALLED = no
 
 else
 
+    QUICKTIME_INSTALLED = no
     LIBJPEG_INSTALLED = yes
-
     LIBUNGIF_INSTALLED = yes
-
     LIBTIFF_INSTALLED = yes
-
+    LIBPNG_INSTALLED = yes
     LIBMPEG3_INSTALLED = no
 
 endif
 
 
 COIN_INSTALLED = no
-
 INVENTOR_INSTALLED = no
 
 PERFORMER_INSTALLED = no

@@ -368,7 +368,7 @@ void StateSet::setGlobalDefaults()
 }
 
 
-void StateSet::setAllToInherit()
+void StateSet::clear()
 {
     _renderingHint = DEFAULT_BIN;
 
@@ -513,7 +513,7 @@ void StateSet::setMode(StateAttribute::GLMode mode, StateAttribute::GLModeValue 
     }
 }
 
-void StateSet::setModeToInherit(StateAttribute::GLMode mode)
+void StateSet::removeMode(StateAttribute::GLMode mode)
 {
     if (!s_textureGLModeSet.isTextureMode(mode))
     {
@@ -525,7 +525,7 @@ void StateSet::setModeToInherit(StateAttribute::GLMode mode)
         notify(NOTICE)<<"         assuming setTextureModeToInherit(unit=0,mode) instead."<<std::endl;
         notify(NOTICE)<<"         please change calling code to use appropriate call."<<std::endl;
 
-        setTextureModeToInherit(0,mode);
+        removeTextureMode(0,mode);
     }
 
 }
@@ -573,7 +573,7 @@ void StateSet::setAttributeAndModes(StateAttribute *attribute, StateAttribute::G
         {
             if (value&StateAttribute::INHERIT)
             {
-                setAttributeToInherit(attribute->getType());
+                removeAttribute(attribute->getType());
             }    
             else
             {
@@ -592,11 +592,25 @@ void StateSet::setAttributeAndModes(StateAttribute *attribute, StateAttribute::G
     }
 }
 
-void StateSet::setAttributeToInherit(StateAttribute::Type type)
+void StateSet::removeAttribute(StateAttribute::Type type)
 {
     AttributeList::iterator itr = _attributeList.find(type);
     if (itr!=_attributeList.end())
     {
+        setAssociatedModes(itr->second.first.get(),StateAttribute::INHERIT);
+        _attributeList.erase(itr);
+    }
+}
+
+void StateSet::removeAttribute(StateAttribute* attribute)
+{
+    if (!attribute) return;
+    
+    AttributeList::iterator itr = _attributeList.find(attribute->getType());
+    if (itr!=_attributeList.end())
+    {
+        if (itr->second.first != attribute) return;
+        
         setAssociatedModes(itr->second.first.get(),StateAttribute::INHERIT);
         _attributeList.erase(itr);
     }
@@ -633,7 +647,7 @@ void StateSet::setTextureMode(unsigned int unit,StateAttribute::GLMode mode, Sta
     }
 }
 
-void StateSet::setTextureModeToInherit(unsigned int unit,StateAttribute::GLMode mode)
+void StateSet::removeTextureMode(unsigned int unit,StateAttribute::GLMode mode)
 {
     if (s_textureGLModeSet.isTextureMode(mode))
     {
@@ -646,7 +660,7 @@ void StateSet::setTextureModeToInherit(unsigned int unit,StateAttribute::GLMode 
         notify(NOTICE)<<"         assuming setModeToInherit(unit=0,mode) instead."<<std::endl;
         notify(NOTICE)<<"         please change calling code to use appropriate call."<<std::endl;
 
-        setModeToInherit(mode);
+        removeMode(mode);
     }
 }
 
@@ -696,7 +710,7 @@ void StateSet::setTextureAttributeAndModes(unsigned int unit,StateAttribute *att
         {
             if (value&StateAttribute::INHERIT)
             {
-                setTextureAttributeToInherit(unit,attribute->getType());
+                removeTextureAttribute(unit,attribute->getType());
             }
             else
             {
@@ -715,7 +729,7 @@ void StateSet::setTextureAttributeAndModes(unsigned int unit,StateAttribute *att
 }
 
 
-void StateSet::setTextureAttributeToInherit(unsigned int unit,StateAttribute::Type type)
+void StateSet::removeTextureAttribute(unsigned int unit,StateAttribute::Type type)
 {
     if (unit>=_textureAttributeList.size()) return;
     AttributeList& attributeList = _textureAttributeList[unit];

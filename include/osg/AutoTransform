@@ -73,24 +73,6 @@ class SG_EXPORT AutoTransform : public Transform
 
         AutoRotateMode getAutoRotateMode() const { return _autoRotateMode; }
 
-#ifdef USE_DEPRECATED_API
-        void setAutoRotateToScreen(bool autoRotateToScreen)
-        {
-            setAutoRotateMode(autoRotateToScreen?ROTATE_TO_SCREEN:NO_ROTATION);
-        }
-
-        bool getAutoRotateToCamera() const { return _autoRotateMode==ROTATE_TO_SCREEN; }
-
-        void setAutoRotateToCamera(bool autoRotateToCamera)
-        {
-            setAutoRotateMode(autoRotateToScreen?ROTATE_TO_CAMERA:NO_ROTATION);
-        }
-        
-        bool getAutoRotateToCamera() const { return _autoRotateMode==ROTATE_TO_SCREEN; }
-#endif
-
-
-
         void setAutoScaleToScreen(bool autoScaleToScreen) { _autoScaleToScreen = autoScaleToScreen; _matrixDirty=true; }
 
         bool getAutoScaleToScreen() const { return _autoScaleToScreen; }

@@ -192,7 +192,7 @@ void State::popStateSet()
 void State::captureCurrentState(StateSet& stateset) const
 {
     // empty the stateset first.
-    stateset.setAllToInherit();
+    stateset.clear();
     
     for(ModeMap::const_iterator mitr=_modeMap.begin();
         mitr!=_modeMap.end();

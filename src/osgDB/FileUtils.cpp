@@ -448,7 +448,7 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
 #elif defined(__APPLE__)
 
     // #define COMPILE_COCOA_VERSION
-    // #define COMPILE_CARBON_VERSION
+    #define COMPILE_CARBON_VERSION
     
 
     // The Cocoa version is about 10 lines of code.

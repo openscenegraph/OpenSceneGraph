@@ -6,7 +6,9 @@ DIRS = osg rgb lib3ds flt obj lwo dw bmp pic tga osgtgz tgz zip
 # comment in if you have Performer installed.
 # DIRS += pfb
 
-# comment in if you have Performer installed.
+# comment in if you have Quicktime installed, i.e under Mac OS.
+# if in this case then its likely you'll want to comment out the below
+# png, jpeg, gif and tiff plugins.
 # DIRS += quicktime
 
 # comment in if you have libpng installed.
@@ -16,7 +18,7 @@ DIRS += png
 DIRS += jpeg
 
 # comment in if you have libungif installed.
-#DIRS += gif
+DIRS += gif
 
 # comment in if you have libtiff installed.
 DIRS += tiff

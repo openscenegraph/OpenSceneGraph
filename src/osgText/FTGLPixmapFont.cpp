@@ -42,13 +42,13 @@ void FTGLPixmapFont::render( const char* string,unsigned int renderContext)
 {    
     glPushAttrib( GL_ENABLE_BIT | GL_PIXEL_MODE_BIT);
 
+    // Why is this modifying state here? - DB
     glEnable(GL_BLEND);
-     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     FTFont::render( string,renderContext);
 
     glPopAttrib();
-
 }
 
 
@@ -56,6 +56,7 @@ void FTGLPixmapFont::render( const wchar_t* string,unsigned int renderContext)
 {    
     glPushAttrib( GL_ENABLE_BIT | GL_PIXEL_MODE_BIT);
 
+    // Why is this modifying state here? - DB
     glEnable(GL_BLEND);
      glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 

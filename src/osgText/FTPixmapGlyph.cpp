@@ -34,7 +34,7 @@ FTPixmapGlyph::FTPixmapGlyph( FT_Glyph glyph)
     }
     numGreys = source->num_grays;
 
-     pos.x = bitmap->left;
+    pos.x = bitmap->left;
     pos.y = srcHeight - bitmap->top;
     
    // FIXME What about dest alignment?
@@ -44,8 +44,10 @@ FTPixmapGlyph::FTPixmapGlyph( FT_Glyph glyph)
     data = osgNew unsigned char[destWidth * destHeight * 4];
     
     // Get the current glColor.
-    float ftglColour[4];
-    glGetFloatv( GL_CURRENT_COLOR, ftglColour);
+    float ftglColour[4] = { 1.0, 1.0, 1.0, 1.0 };
+    // What if the current color is black... Nah.
+    //glGetFloatv( GL_CURRENT_COLOR, ftglColour);
+
     
     for(int y = 0; y < srcHeight; ++y)
     {

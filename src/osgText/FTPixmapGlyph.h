@@ -40,6 +40,8 @@ class  FTGL_EXPORT FTPixmapGlyph : public FTGlyph
         virtual float Render( const FT_Vector& pen);
         
         // attributes
+	//
+	
 
     private:
         /**

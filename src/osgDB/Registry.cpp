@@ -1115,15 +1115,110 @@ bool Registry::writeObject(const osg::Object& obj,Output& fw)
 }
 
 
-//
-// read object from specified file.
-//
-ReaderWriter::ReadResult Registry::openArchive(const std::string& fileName, ReaderWriter::ArchiveStatus status, unsigned int indexBlockSizeHint)
+
+struct ReadObjectFunctor : public Registry::ReadFunctor
 {
-    if (containsServerAddress(fileName))
+    ReadObjectFunctor(const std::string& filename, const ReaderWriter::Options* options):ReadFunctor(filename,options) {}
+
+    virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw) const { return rw.readObject(_filename, _options); }    
+    virtual bool isValid(ReaderWriter::ReadResult& readResult) const { return readResult.validObject(); }
+    virtual bool isValid(osg::Object* object) const { return object!=0;  }
+};
+
+struct ReadImageFunctor : public Registry::ReadFunctor
+{
+    ReadImageFunctor(const std::string& filename, const ReaderWriter::Options* options):ReadFunctor(filename,options) {}
+
+    virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw)const  { return rw.readImage(_filename, _options); }    
+    virtual bool isValid(ReaderWriter::ReadResult& readResult) const { return readResult.validImage(); }
+    virtual bool isValid(osg::Object* object) const { return dynamic_cast<osg::Image*>(object)!=0;  }
+};
+
+struct ReadHeightFieldFunctor : public Registry::ReadFunctor
+{
+    ReadHeightFieldFunctor(const std::string& filename, const ReaderWriter::Options* options):ReadFunctor(filename,options) {}
+
+    virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw) const { return rw.readHeightField(_filename, _options); }    
+    virtual bool isValid(ReaderWriter::ReadResult& readResult) const { return readResult.validHeightField(); }
+    virtual bool isValid(osg::Object* object) const { return dynamic_cast<osg::HeightField*>(object)!=0;  }
+};
+
+struct ReadNodeFunctor : public Registry::ReadFunctor
+{
+    ReadNodeFunctor(const std::string& filename, const ReaderWriter::Options* options):ReadFunctor(filename,options) {}
+
+    virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw) const { return rw.readNode(_filename, _options); }    
+    virtual bool isValid(ReaderWriter::ReadResult& readResult) const { return readResult.validNode(); }
+    virtual bool isValid(osg::Object* object) const { return dynamic_cast<osg::Node*>(object)!=0;  }
+
+};
+
+struct ReadArchiveFunctor : public Registry::ReadFunctor
+{
+    ReadArchiveFunctor(const std::string& filename, ReaderWriter::ArchiveStatus status, unsigned int indexBlockSizeHint, const ReaderWriter::Options* options):
+        ReadFunctor(filename,options),
+        _status(status),
+        _indexBlockSizeHint(indexBlockSizeHint) {}
+        
+    ReaderWriter::ArchiveStatus _status;
+    unsigned int _indexBlockSizeHint;
+
+    virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw) const { return rw.openArchive(_filename, _status, _indexBlockSizeHint, _options); }
+    virtual bool isValid(ReaderWriter::ReadResult& readResult) const { return readResult.validArchive(); }
+    virtual bool isValid(osg::Object* object) const { return dynamic_cast<osgDB::Archive*>(object)!=0;  }
+
+};
+
+ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
+{
+    std::string archiveName(".osga");
+
+    std::string::size_type positionArchive = readFunctor._filename.find(archiveName+'/');
+    if (positionArchive==std::string::npos) positionArchive = readFunctor._filename.find(archiveName+'\\');
+    if (positionArchive!=std::string::npos)
     {
-        std::string serverName = getServerAddress(fileName);
-        std::string serverFile = getServerFileName(fileName);
+        std::string archiveName(readFunctor._filename.substr(0,positionArchive+5));
+        std::string fileName(readFunctor._filename.substr(positionArchive+6,std::string::npos));
+        osg::notify(osg::INFO)<<"Contains archive : "<<readFunctor._filename<<std::endl;
+        osg::notify(osg::INFO)<<"         archive : "<<archiveName<<std::endl;
+        osg::notify(osg::INFO)<<"         filename : "<<fileName<<std::endl;
+        
+        //ReaderWriter::ReadResult result = openArchiveImplementation(archiveName,ReaderWriter::READ, 4096, CACHE_ARCHIVES);
+        //osgDB::Archive* archive = result.takeArchive();
+
+        
+        static osg::ref_ptr<Archive> s_archive;
+        if (!s_archive)
+        {
+            s_archive = new Archive;
+            s_archive->open(archiveName,ReaderWriter::READ, 4096);
+        }
+        
+        osg::ref_ptr<ReaderWriter::Options> options = new ReaderWriter::Options;
+        options->setDatabasePath(archiveName);
+
+        if (s_archive.valid())
+        {        
+            osg::notify(osg::INFO)<<"      archive loaded"<<fileName<<std::endl;
+            return s_archive->readObject(fileName,options.get());
+        }
+        else
+        {   
+            osg::notify(osg::INFO)<<"      no archive loaded"<<fileName<<std::endl;
+            return NULL;
+        }
+    }
+
+    // if filename contains archive
+    // then get archive name
+    // if archive name is not in the cache then do an openArchive on
+    // that archive name
+    // use that archive to read the file.
+
+    if (containsServerAddress(readFunctor._filename))
+    {
+        std::string serverName = getServerAddress(readFunctor._filename);
+        std::string serverFile = getServerFileName(readFunctor._filename);
         osg::notify(osg::INFO)<<"Contains sever address : "<<serverName<<std::endl;
         osg::notify(osg::INFO)<<"         file name on server : "<<serverFile<<std::endl;
 
@@ -1140,7 +1235,7 @@ ReaderWriter::ReadResult Registry::openArchive(const std::string& fileName, Read
         ReaderWriter* rw = getReaderWriterForExtension("net");
         if (rw)
         {
-            return rw->openArchive(serverName+":"+serverFile, status, indexBlockSizeHint, _options.get());
+            return readFunctor.doRead(*rw);
         }
         else
         {
@@ -1156,8 +1251,8 @@ ReaderWriter::ReadResult Registry::openArchive(const std::string& fileName, Read
     AvailableReaderWriterIterator itr(_rwList);
     for(;itr.valid();++itr)
     {
-        ReaderWriter::ReadResult rr = itr->openArchive(fileName,status, indexBlockSizeHint, _options.get());
-        if (rr.validArchive()) return rr;
+        ReaderWriter::ReadResult rr = readFunctor.doRead(*itr);
+        if (readFunctor.isValid(rr)) return rr;
         else results.push_back(rr);
     }
 
@@ -1181,247 +1276,102 @@ ReaderWriter::ReadResult Registry::openArchive(const std::string& fileName, Read
             // we've come across a file not found or error in reading file.
             if (num_ERROR_IN_READING_FILE)
             {
-                osg::notify(osg::NOTICE)<<"Warning: error reading file \""<<fileName<<"\""<<std::endl;
+                osg::notify(osg::NOTICE)<<"Warning: error reading file \""<<readFunctor._filename<<"\""<<std::endl;
                 return NULL;
             }
             else if (num_FILE_NOT_FOUND)
             {
-                osg::notify(osg::NOTICE)<<"Warning: could not find file \""<<fileName<<"\""<<std::endl;
+                osg::notify(osg::NOTICE)<<"Warning: could not find file \""<<readFunctor._filename<<"\""<<std::endl;
                 return NULL;
             }
         }
     }
 
     // now look for a plug-in to load the file.
-    std::string libraryName = createLibraryNameForFile(fileName);
+    std::string libraryName = createLibraryNameForFile(readFunctor._filename);
     if (loadLibrary(libraryName))
     {
         for(;itr.valid();++itr)
         {
-            ReaderWriter::ReadResult rr = itr->openArchive(fileName,status, indexBlockSizeHint, _options.get());
-            if (rr.validArchive()) return rr;
+            ReaderWriter::ReadResult rr = readFunctor.doRead(*itr);
+            if (readFunctor.isValid(rr)) return rr;
             else results.push_back(rr);
         }
     }
     
     if (results.empty())
     {
-        return ReaderWriter::ReadResult("Warning: Could not find plugin to read objects from file \""+fileName+"\".");
+        return ReaderWriter::ReadResult("Warning: Could not find plugin to read objects from file \""+readFunctor._filename+"\".");
     }
     
 
     return results.front();
 }
+
+ReaderWriter::ReadResult Registry::readImplementation(const ReadFunctor& readFunctor, CacheHintOptions useObjectCache)
+{
+    std::string file(readFunctor._filename);
+
+    if (useObjectCache & CACHE_OBJECTS)
+    {
+        // search for entry in the object cache.
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
+            ObjectCache::iterator oitr=_objectCache.find(file);
+            if (oitr!=_objectCache.end())
+            {
+                notify(INFO)<<"returning cached instanced of "<<file<<std::endl;
+                if (readFunctor.isValid(oitr->second.first.get())) return ReaderWriter::ReadResult(oitr->second.first.get(), ReaderWriter::ReadResult::FILE_LOADED_FROM_CACHE);
+                else return ReaderWriter::ReadResult("Error file does not contain an osg::Object");
+            }
+        }
+        
+        PushAndPopDataPath tmpfile(getFilePath(file));
+
+        ReaderWriter::ReadResult rr = read(readFunctor);
+        if (rr.validObject()) 
+        {
+            // update cache with new entry.
+            notify(INFO)<<"Adding to object cache "<<file<<std::endl;
+            addEntryToObjectCache(file,rr.getObject());
+        }
+        
+        return rr;
+
+    }
+    else
+    {
+    
+        ObjectCache tmpObjectCache;
+        
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
+            tmpObjectCache.swap(_objectCache);
+        }
+        
+        PushAndPopDataPath tmpfile(getFilePath(file));
+
+        ReaderWriter::ReadResult rr = read(readFunctor);
+
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
+            tmpObjectCache.swap(_objectCache);
+        }
+        
+        return rr;
+    }
+}
+
 
 ReaderWriter::ReadResult Registry::openArchiveImplementation(const std::string& fileName, ReaderWriter::ArchiveStatus status, unsigned int indexBlockSizeHint, CacheHintOptions useObjectCache)
 {
-    std::string file(fileName);
-
-    if (useObjectCache & CACHE_OBJECTS)
-    {
-        // search for entry in the object cache.
-        {
-            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
-            ObjectCache::iterator oitr=_objectCache.find(file);
-            if (oitr!=_objectCache.end())
-            {
-                notify(INFO)<<"returning cached instanced of "<<file<<std::endl;
-                osgDB::Archive* archive = dynamic_cast<osgDB::Archive*>(oitr->second.first.get());
-                if (archive) return ReaderWriter::ReadResult(archive, ReaderWriter::ReadResult::FILE_LOADED_FROM_CACHE);
-                else return ReaderWriter::ReadResult("Error file does not contain an osg::Object");
-            }
-        }
-        
-        PushAndPopDataPath tmpfile(getFilePath(file));
-
-        ReaderWriter::ReadResult rr = openArchive(file, status, indexBlockSizeHint);
-        if (rr.validObject()) 
-        {
-            // update cache with new entry.
-            notify(INFO)<<"Adding to cache object "<<file<<std::endl;
-            addEntryToObjectCache(file,rr.getObject());
-        }
-        
-        return rr;
-
-    }
-    else
-    {
-    
-        ObjectCache tmpObjectCache;
-        
-        {
-            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
-            tmpObjectCache.swap(_objectCache);
-        }
-        
-        PushAndPopDataPath tmpfile(getFilePath(file));
-
-        ReaderWriter::ReadResult rr = openArchive(file, status, indexBlockSizeHint);
-
-        {
-            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
-            tmpObjectCache.swap(_objectCache);
-        }
-        
-        return rr;
-
-    }
+    return readImplementation(ReadArchiveFunctor(fileName, status, indexBlockSizeHint, _options.get()),useObjectCache);
 }
 
 
-//
-// read object from specified file.
-//
-ReaderWriter::ReadResult Registry::readObject(const std::string& fileName)
+ReaderWriter::ReadResult Registry::readObjectImplementation(const std::string& fileName,CacheHintOptions useObjectCache)
 {
-    if (containsServerAddress(fileName))
-    {
-        std::string serverName = getServerAddress(fileName);
-        std::string serverFile = getServerFileName(fileName);
-        osg::notify(osg::INFO)<<"Contains sever address : "<<serverName<<std::endl;
-        osg::notify(osg::INFO)<<"         file name on server : "<<serverFile<<std::endl;
-
-        if (serverName.empty())
-        {
-            return ReaderWriter::ReadResult("Warning: Server address invalid.");
-        }
-        
-        if (serverFile.empty())
-        {
-            return ReaderWriter::ReadResult("Warning: Server file name invalid.");
-        }
-
-        ReaderWriter* rw = getReaderWriterForExtension("net");
-        if (rw)
-        {
-            return rw->readObject(serverName+":"+serverFile,_options.get());
-        }
-        else
-        {
-            return  ReaderWriter::ReadResult("Warning: Could not find the .net plugin to read from server.");
-        }
-    }
-    
-    // record the errors reported by readerwriters.
-    typedef std::vector<ReaderWriter::ReadResult> Results;
-    Results results;
-
-    // first attempt to load the file from existing ReaderWriter's
-    AvailableReaderWriterIterator itr(_rwList);
-    for(;itr.valid();++itr)
-    {
-        ReaderWriter::ReadResult rr = itr->readObject(fileName,_options.get());
-        if (rr.validObject()) return rr;
-        else results.push_back(rr);
-    }
-
-    if (!results.empty())
-    {
-        unsigned int num_FILE_NOT_HANDLED = 0;
-        unsigned int num_FILE_NOT_FOUND = 0;
-        unsigned int num_ERROR_IN_READING_FILE = 0;
-
-        for(Results::iterator ritr=results.begin();
-            ritr!=results.end();
-            ++ritr)
-        {
-            if (ritr->status()==ReaderWriter::ReadResult::FILE_NOT_HANDLED) ++num_FILE_NOT_HANDLED;
-            else if (ritr->status()==ReaderWriter::ReadResult::FILE_NOT_FOUND) ++num_FILE_NOT_FOUND;
-            else if (ritr->status()==ReaderWriter::ReadResult::ERROR_IN_READING_FILE) ++num_ERROR_IN_READING_FILE;
-        }
-        
-        if (num_FILE_NOT_HANDLED!=results.size())
-        {
-            // we've come across a file not found or error in reading file.
-            if (num_ERROR_IN_READING_FILE)
-            {
-                osg::notify(osg::NOTICE)<<"Warning: error reading file \""<<fileName<<"\""<<std::endl;
-                return NULL;
-            }
-            else if (num_FILE_NOT_FOUND)
-            {
-                osg::notify(osg::NOTICE)<<"Warning: could not find file \""<<fileName<<"\""<<std::endl;
-                return NULL;
-            }
-        }
-    }
-
-    // now look for a plug-in to load the file.
-    std::string libraryName = createLibraryNameForFile(fileName);
-    if (loadLibrary(libraryName))
-    {
-        for(;itr.valid();++itr)
-        {
-            ReaderWriter::ReadResult rr = itr->readObject(fileName,_options.get());
-            if (rr.validObject()) return rr;
-            else results.push_back(rr);
-        }
-    }
-    
-    if (results.empty())
-    {
-        return ReaderWriter::ReadResult("Warning: Could not find plugin to read objects from file \""+fileName+"\".");
-    }
-    
-
-    return results.front();
-}
-
-ReaderWriter::ReadResult Registry::readObjectImplementation(const std::string& constFile,CacheHintOptions useObjectCache)
-{
-    std::string file(constFile);
-
-    if (useObjectCache & CACHE_OBJECTS)
-    {
-        // search for entry in the object cache.
-        {
-            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
-            ObjectCache::iterator oitr=_objectCache.find(file);
-            if (oitr!=_objectCache.end())
-            {
-                notify(INFO)<<"returning cached instanced of "<<file<<std::endl;
-                osg::Object* object = oitr->second.first.get();
-                if (object) return ReaderWriter::ReadResult(object, ReaderWriter::ReadResult::FILE_LOADED_FROM_CACHE);
-                else return ReaderWriter::ReadResult("Error file does not contain an osg::Object");
-            }
-        }
-        
-        PushAndPopDataPath tmpfile(getFilePath(file));
-
-        ReaderWriter::ReadResult rr = readObject(file);
-        if (rr.validObject()) 
-        {
-            // update cache with new entry.
-            notify(INFO)<<"Adding to cache object "<<file<<std::endl;
-            addEntryToObjectCache(file,rr.getObject());
-        }
-        
-        return rr;
-
-    }
-    else
-    {
-    
-        ObjectCache tmpObjectCache;
-        
-        {
-            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
-            tmpObjectCache.swap(_objectCache);
-        }
-        
-        PushAndPopDataPath tmpfile(getFilePath(file));
-
-        ReaderWriter::ReadResult rr = readObject(file);
-
-        {
-            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
-            tmpObjectCache.swap(_objectCache);
-        }
-        
-        return rr;
-
-    }
+    return readImplementation(ReadObjectFunctor(fileName, _options.get()),useObjectCache);
 }
 
 ReaderWriter::WriteResult Registry::writeObjectImplementation(const Object& obj,const std::string& fileName)
@@ -1459,158 +1409,12 @@ ReaderWriter::WriteResult Registry::writeObjectImplementation(const Object& obj,
     return results.front();
 }
 
-ReaderWriter::ReadResult Registry::readImage(const std::string& fileName)
+
+
+ReaderWriter::ReadResult Registry::readImageImplementation(const std::string& fileName,CacheHintOptions useObjectCache)
 {
-    if (containsServerAddress(fileName))
-    {
-        std::string serverName = getServerAddress(fileName);
-        std::string serverFile = getServerFileName(fileName);
-        osg::notify(osg::INFO)<<"Contains sever address : "<<serverName<<std::endl;
-        osg::notify(osg::INFO)<<"         file name on server : "<<serverFile<<std::endl;
-
-        if (serverName.empty())
-        {
-            return ReaderWriter::ReadResult("Warning: Server address invalid.");
-        }
-        
-        if (serverFile.empty())
-        {
-            return ReaderWriter::ReadResult("Warning: Server file name invalid.");
-        }
-
-        ReaderWriter* rw = getReaderWriterForExtension("net");
-        if (rw)
-        {
-            return rw->readImage(serverName+":"+serverFile,_options.get());
-        }
-        else
-        {
-            return  ReaderWriter::ReadResult("Warning: Could not find the .net plugin to read from server.");
-        }
-    }
-
-
-    // record the errors reported by readerwriters.
-    typedef std::vector<ReaderWriter::ReadResult> Results;
-    Results results;
-
-    // first attempt to load the file from existing ReaderWriter's
-    AvailableReaderWriterIterator itr(_rwList);
-    for(;itr.valid();++itr)
-    {
-        ReaderWriter::ReadResult rr = itr->readImage(fileName,_options.get());
-        if (rr.validImage())  return rr;
-        else results.push_back(rr);
-    }
-
-    if (!results.empty())
-    {
-        unsigned int num_FILE_NOT_HANDLED = 0;
-        unsigned int num_FILE_NOT_FOUND = 0;
-        unsigned int num_ERROR_IN_READING_FILE = 0;
-
-        for(Results::iterator ritr=results.begin();
-            ritr!=results.end();
-            ++ritr)
-        {
-            if (ritr->status()==ReaderWriter::ReadResult::FILE_NOT_HANDLED) ++num_FILE_NOT_HANDLED;
-            else if (ritr->status()==ReaderWriter::ReadResult::FILE_NOT_FOUND) ++num_FILE_NOT_FOUND;
-            else if (ritr->status()==ReaderWriter::ReadResult::ERROR_IN_READING_FILE) ++num_ERROR_IN_READING_FILE;
-        }
-        
-        if (num_FILE_NOT_HANDLED!=results.size())
-        {
-            // we've come across a file not found or error in reading file.
-            if (num_ERROR_IN_READING_FILE)
-            {
-                osg::notify(osg::NOTICE)<<"Warning: error reading file \""<<fileName<<"\""<<std::endl;
-                return NULL;
-            }
-            else if (num_FILE_NOT_FOUND)
-            {
-                osg::notify(osg::NOTICE)<<"Warning: could not find file \""<<fileName<<"\""<<std::endl;
-                return NULL;
-            }
-        }
-    }
-
-    // now look for a plug-in to load the file.
-    std::string libraryName = createLibraryNameForFile(fileName);
-    if (loadLibrary(libraryName))
-    {
-        for(;itr.valid();++itr)
-        {
-            ReaderWriter::ReadResult rr = itr->readImage(fileName,_options.get());
-            if (rr.validImage()) return rr;
-            else results.push_back(rr);
-        }
-    }
-
-    if (results.empty())
-    {
-        return ReaderWriter::ReadResult("Warning: Could not find plugin to read image from file \""+fileName+"\".");
-    }
-
-    return results.front();
+    return readImplementation(ReadImageFunctor(fileName, _options.get()),useObjectCache);
 }
-
-
-ReaderWriter::ReadResult Registry::readImageImplementation(const std::string& file,CacheHintOptions useObjectCache)
-{
-    if (useObjectCache & CACHE_IMAGES)
-    {
-        // search for entry in the object cache.
-        {
-            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
-            ObjectCache::iterator oitr=_objectCache.find(file);
-            if (oitr!=_objectCache.end())
-            {
-                notify(INFO)<< "returning cached instanced of "<<file<<std::endl;
-                osg::Image* image = dynamic_cast<osg::Image*>(oitr->second.first.get());
-                if (image) return ReaderWriter::ReadResult(image, ReaderWriter::ReadResult::FILE_LOADED_FROM_CACHE);
-                else return ReaderWriter::ReadResult("Error file not of type osg::Image");
-            }
-        }
-        
-        PushAndPopDataPath tmpfile(getFilePath(file));
-
-        ReaderWriter::ReadResult rr = readImage(file);
-        if (rr.validImage()) 
-        {
-            // update cache with new entry.
-            notify(INFO)<<"Adding to cache image "<<file<<std::endl;
-            addEntryToObjectCache(file,rr.getObject());
-        }
-        else
-            return ReaderWriter::ReadResult("Warning: file \""+file+"\" not found.");
-        
-        return rr;
-
-    }
-    else
-    {
-    
-        ObjectCache tmpObjectCache;
-        {
-            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
-            tmpObjectCache.swap(_objectCache);
-        }
-
-        PushAndPopDataPath tmpfile(getFilePath(file));
-
-        ReaderWriter::ReadResult rr = readImage(file);
-
-        {
-            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
-            tmpObjectCache.swap(_objectCache);
-        }
-
-        return rr;
-
-    }
-}
-
-
 
 ReaderWriter::WriteResult Registry::writeImageImplementation(const Image& image,const std::string& fileName)
 {
@@ -1647,157 +1451,11 @@ ReaderWriter::WriteResult Registry::writeImageImplementation(const Image& image,
     return results.front();
 }
 
-ReaderWriter::ReadResult Registry::readHeightField(const std::string& fileName)
+
+ReaderWriter::ReadResult Registry::readHeightFieldImplementation(const std::string& fileName,CacheHintOptions useObjectCache)
 {
-    if (containsServerAddress(fileName))
-    {
-        std::string serverName = getServerAddress(fileName);
-        std::string serverFile = getServerFileName(fileName);
-        osg::notify(osg::INFO)<<"Contains sever address : "<<serverName<<std::endl;
-        osg::notify(osg::INFO)<<"         file name on server : "<<serverFile<<std::endl;
-
-        if (serverName.empty())
-        {
-            return ReaderWriter::ReadResult("Warning: Server address invalid.");
-        }
-        
-        if (serverFile.empty())
-        {
-            return ReaderWriter::ReadResult("Warning: Server file name invalid.");
-        }
-
-        ReaderWriter* rw = getReaderWriterForExtension("net");
-        if (rw)
-        {
-            return rw->readHeightField(serverName+":"+serverFile,_options.get());
-        }
-        else
-        {
-            return  ReaderWriter::ReadResult("Warning: Could not find the .net plugin to read from server.");
-        }
-    }
-
-    // record the errors reported by readerwriters.
-    typedef std::vector<ReaderWriter::ReadResult> Results;
-    Results results;
-
-    // first attempt to load the file from existing ReaderWriter's
-    AvailableReaderWriterIterator itr(_rwList);
-    for(;itr.valid();++itr)
-    {
-        ReaderWriter::ReadResult rr = itr->readHeightField(fileName,_options.get());
-        if (rr.validHeightField())  return rr;
-        else results.push_back(rr);
-    }
-
-    if (!results.empty())
-    {
-        unsigned int num_FILE_NOT_HANDLED = 0;
-        unsigned int num_FILE_NOT_FOUND = 0;
-        unsigned int num_ERROR_IN_READING_FILE = 0;
-
-        for(Results::iterator ritr=results.begin();
-            ritr!=results.end();
-            ++ritr)
-        {
-            if (ritr->status()==ReaderWriter::ReadResult::FILE_NOT_HANDLED) ++num_FILE_NOT_HANDLED;
-            else if (ritr->status()==ReaderWriter::ReadResult::FILE_NOT_FOUND) ++num_FILE_NOT_FOUND;
-            else if (ritr->status()==ReaderWriter::ReadResult::ERROR_IN_READING_FILE) ++num_ERROR_IN_READING_FILE;
-        }
-        
-        if (num_FILE_NOT_HANDLED!=results.size())
-        {
-            // we've come across a file not found or error in reading file.
-            if (num_ERROR_IN_READING_FILE)
-            {
-                osg::notify(osg::NOTICE)<<"Warning: error reading file \""<<fileName<<"\""<<std::endl;
-                return NULL;
-            }
-            else if (num_FILE_NOT_FOUND)
-            {
-                osg::notify(osg::NOTICE)<<"Warning: could not find file \""<<fileName<<"\""<<std::endl;
-                return NULL;
-            }
-        }
-    }
-
-    // now look for a plug-in to load the file.
-    std::string libraryName = createLibraryNameForFile(fileName);
-    if (loadLibrary(libraryName))
-    {
-        for(;itr.valid();++itr)
-        {
-            ReaderWriter::ReadResult rr = itr->readHeightField(fileName,_options.get());
-            if (rr.validHeightField()) return rr;
-            else  results.push_back(rr);
-        }
-    }
-
-    if (results.empty())
-    {
-        return ReaderWriter::ReadResult("Warning: Could not find plugin to read HeightField from file \""+fileName+"\".");
-    }
-
-    return results.front();
+    return readImplementation(ReadHeightFieldFunctor(fileName, _options.get()),useObjectCache);
 }
-
-
-ReaderWriter::ReadResult Registry::readHeightFieldImplementation(const std::string& file,CacheHintOptions useObjectCache)
-{
-    if (useObjectCache & CACHE_HEIGHTFIELDS)
-    {
-        // search for entry in the object cache.
-        {
-            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
-            ObjectCache::iterator oitr=_objectCache.find(file);
-            if (oitr!=_objectCache.end())
-            {
-                notify(INFO)<< "returning cached instanced of "<<file<<std::endl;
-                osg::HeightField* heightField = dynamic_cast<osg::HeightField*>(oitr->second.first.get());
-                if (heightField) return ReaderWriter::ReadResult(heightField, ReaderWriter::ReadResult::FILE_LOADED_FROM_CACHE);
-                else return ReaderWriter::ReadResult("Error file not of type osg::HeightField");
-            }
-        }
-        
-        PushAndPopDataPath tmpfile(getFilePath(file));
-
-        ReaderWriter::ReadResult rr = readHeightField(file);
-        if (rr.validHeightField()) 
-        {
-            // update cache with new entry.
-            notify(INFO)<<"Adding to cache HeightField "<<file<<std::endl;
-            addEntryToObjectCache(file,rr.getObject());
-        }
-        else
-            return ReaderWriter::ReadResult("Warning: file \""+file+"\" not found.");
-        
-        return rr;
-
-    }
-    else
-    {
-    
-        ObjectCache tmpObjectCache;
-        {
-            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
-            tmpObjectCache.swap(_objectCache);
-        }
-        
-        PushAndPopDataPath tmpfile(getFilePath(file));
-
-        ReaderWriter::ReadResult rr = readHeightField(file);
-
-        {
-            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
-            tmpObjectCache.swap(_objectCache);
-        }
-
-        return rr;
-
-    }
-}
-
-
 
 ReaderWriter::WriteResult Registry::writeHeightFieldImplementation(const HeightField& HeightField,const std::string& fileName)
 {
@@ -1835,164 +1493,9 @@ ReaderWriter::WriteResult Registry::writeHeightFieldImplementation(const HeightF
 }
 
 
-
-ReaderWriter::ReadResult Registry::readNode(const std::string& fileName)
+ReaderWriter::ReadResult Registry::readNodeImplementation(const std::string& fileName,CacheHintOptions useObjectCache)
 {
-
-    if (containsServerAddress(fileName))
-    {
-        std::string serverName = getServerAddress(fileName);
-        std::string serverFile = getServerFileName(fileName);
-        osg::notify(osg::INFO)<<"Contains sever address : "<<serverName<<std::endl;
-        osg::notify(osg::INFO)<<"         file name on server : "<<serverFile<<std::endl;
-
-        if (serverName.empty())
-        {
-            return ReaderWriter::ReadResult("Warning: Server address invalid.");
-        }
-        
-        if (serverFile.empty())
-        {
-            return ReaderWriter::ReadResult("Warning: Server file name invalid.");
-        }
-
-        ReaderWriter* rw = getReaderWriterForExtension("net");
-        if (rw)
-        {
-            return rw->readNode(serverName+":"+serverFile,_options.get());
-        }
-        else
-        {
-            return  ReaderWriter::ReadResult("Warning: Could not find the .net plugin to read from server.");
-        }
-    }
-
-    // record the errors reported by readerwriters.
-    typedef std::vector<ReaderWriter::ReadResult> Results;
-    Results results;
-
-    AvailableReaderWriterIterator itr(_rwList);
-    for(;itr.valid();++itr)
-    {
-        ReaderWriter::ReadResult rr = itr->readNode(fileName,_options.get());
-        if (rr.validNode())  return rr;
-        else results.push_back(rr);
-    }
-
-    if (!results.empty())
-    {
-        unsigned int num_FILE_NOT_HANDLED = 0;
-        unsigned int num_FILE_NOT_FOUND = 0;
-        unsigned int num_ERROR_IN_READING_FILE = 0;
-
-        for(Results::iterator ritr=results.begin();
-            ritr!=results.end();
-            ++ritr)
-        {
-            if (ritr->status()==ReaderWriter::ReadResult::FILE_NOT_HANDLED) ++num_FILE_NOT_HANDLED;
-            else if (ritr->status()==ReaderWriter::ReadResult::FILE_NOT_FOUND) ++num_FILE_NOT_FOUND;
-            else if (ritr->status()==ReaderWriter::ReadResult::ERROR_IN_READING_FILE) ++num_ERROR_IN_READING_FILE;
-        }
-        
-        if (num_FILE_NOT_HANDLED!=results.size())
-        {
-            // we've come across a file not found or error in reading file.
-            if (num_ERROR_IN_READING_FILE)
-            {
-                osg::notify(osg::NOTICE)<<"Warning: error reading file \""<<fileName<<"\""<<std::endl;
-                return NULL;
-            }
-            else if (num_FILE_NOT_FOUND)
-            {
-                osg::notify(osg::NOTICE)<<"Warning: could not find file \""<<fileName<<"\""<<std::endl;
-                return NULL;
-            }
-        }
-    }
-    
-    // now look for a plug-in to load the file.
-    std::string libraryName = createLibraryNameForFile(fileName);
-    notify(INFO) << "Now checking for plug-in "<<libraryName<< std::endl;
-    if (loadLibrary(libraryName))
-    {
-        for(;itr.valid();++itr)
-        {
-            ReaderWriter::ReadResult rr = itr->readNode(fileName,_options.get());
-            if (rr.validNode()) return rr;
-            else results.push_back(rr);
-        }
-    }
-
-
-    // need to sort out.
-    CacheHintOptions useObjectCache = CACHE_ALL;
-
-    if (_createNodeFromImage)
-    {
-        ReaderWriter::ReadResult rr = readImage(fileName,useObjectCache);
-        if (rr.validImage()) return createGeodeForImage(rr.takeImage());
-        //else results.push_back(rr);
-    }
-
-    if (results.empty())
-    {
-        return ReaderWriter::ReadResult("Warning: Could not find plugin to read nodes from file \""+fileName+"\".");
-    }
-
-    return results.front();
-}
-
-ReaderWriter::ReadResult Registry::readNodeImplementation(const std::string& file,CacheHintOptions useObjectCache)
-{
-    if (useObjectCache & CACHE_NODES)
-    {
-        // search for entry in the object cache.
-        {
-            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
-            ObjectCache::iterator oitr=_objectCache.find(file);
-            if (oitr!=_objectCache.end())
-            {
-                notify(INFO)<< "returning cached instanced of "<<file<<std::endl;
-                osg::Node* node = dynamic_cast<osg::Node*>(oitr->second.first.get());
-                if (node) return ReaderWriter::ReadResult(node, ReaderWriter::ReadResult::FILE_LOADED_FROM_CACHE);
-                else return ReaderWriter::ReadResult("Error file not of type osg::Node");
-            }
-        }
-        
-        PushAndPopDataPath tmpfile(getFilePath(file));
-
-        ReaderWriter::ReadResult rr = readNode(file);
-        if (rr.validNode()) 
-        {
-            // update cache with new entry.
-            notify(INFO)<<"Adding to cache node "<<file<<std::endl;
-            addEntryToObjectCache(file,rr.getObject());
-        }
-        
-        return rr;
-
-    }
-    else
-    {
-    
-        ObjectCache tmpObjectCache;
-        {
-            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
-            tmpObjectCache.swap(_objectCache);
-        }
-        
-        PushAndPopDataPath tmpfile(getFilePath(file));
-
-        ReaderWriter::ReadResult rr = readNode(file);
-
-        {
-            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
-            tmpObjectCache.swap(_objectCache);
-        }
-        
-        return rr;
-
-    }
+    return readImplementation(ReadNodeFunctor(fileName, _options.get()),useObjectCache);
 }
 
 ReaderWriter::WriteResult Registry::writeNodeImplementation(const Node& node,const std::string& fileName)

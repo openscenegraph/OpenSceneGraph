@@ -81,11 +81,11 @@ Archive::IndexBlock* Archive::IndexBlock::read(std::istream& in)
     }
     else
     {
-        osg::notify(osg::NOTICE)<<"Allocation Problem in Archive::IndexBlock::read(std::istream& in)"<<std::endl;
+        osg::notify(osg::INFO)<<"Allocation Problem in Archive::IndexBlock::read(std::istream& in)"<<std::endl;
         return 0;
     }
 
-    osg::notify(osg::NOTICE)<<"Read index block"<<std::endl;
+    osg::notify(osg::INFO)<<"Read index block"<<std::endl;
     
     return indexBlock.release();
     
@@ -126,14 +126,14 @@ void Archive::IndexBlock::write(std::ostream& out)
 {
     if (_filePosition==pos_type(0))
     {
-        osg::notify(osg::NOTICE)<<"Archive::IndexBlock::write() setting _filePosition"<<std::endl;
+        osg::notify(osg::INFO)<<"Archive::IndexBlock::write() setting _filePosition"<<std::endl;
         _filePosition = out.tellp();
     }
     else
     {
          out.seekp(_filePosition);
     }
-    osg::notify(osg::NOTICE)<<"Archive::IndexBlock::write() to _filePosition"<<out.tellp()<<std::endl;
+    osg::notify(osg::INFO)<<"Archive::IndexBlock::write() to _filePosition"<<out.tellp()<<std::endl;
 
     out.write(reinterpret_cast<char*>(&_blockSize), sizeof(_blockSize));
     out.write(reinterpret_cast<char*>(&_filePositionNextIndexBlock), sizeof(_filePositionNextIndexBlock));
@@ -141,7 +141,7 @@ void Archive::IndexBlock::write(std::ostream& out)
 
     out.write(reinterpret_cast<char*>(_data),_blockSize);
     
-    osg::notify(osg::NOTICE)<<"Archive::IndexBlock::write()"<<std::endl;
+    osg::notify(osg::INFO)<<"Archive::IndexBlock::write()"<<std::endl;
 }
 
 
@@ -169,7 +169,7 @@ bool Archive::IndexBlock::addFileReference(pos_type position, size_type size, co
         
         _requiresWrite = true;
 
-        osg::notify(osg::NOTICE)<<"Archive::IndexBlock::addFileReference("<<(unsigned int)position<<", "<<filename<<")"<<std::endl;
+        osg::notify(osg::INFO)<<"Archive::IndexBlock::addFileReference("<<(unsigned int)position<<", "<<filename<<")"<<std::endl;
         
         return true;
     }
@@ -205,7 +205,7 @@ bool Archive::open(const std::string& filename, ArchiveStatus status, unsigned i
 
         if (_input)
         {
-            osg::notify(osg::NOTICE)<<"trying Archive::open("<<filename<<")"<<std::endl;
+            osg::notify(osg::INFO)<<"trying Archive::open("<<filename<<")"<<std::endl;
 
             char identifier[4];
             _input.read(identifier,4);
@@ -225,7 +225,7 @@ bool Archive::open(const std::string& filename, ArchiveStatus status, unsigned i
                     _input.seekg(indexBlock->getPositionNextIndexBlock());
                 }
                 
-                osg::notify(osg::NOTICE)<<"Archive::open("<<filename<<") succeeded"<<std::endl;
+                osg::notify(osg::INFO)<<"Archive::open("<<filename<<") succeeded"<<std::endl;
                 
                 // now need to build the filename map.
                 _indexMap.clear();                
@@ -240,7 +240,7 @@ bool Archive::open(const std::string& filename, ArchiveStatus status, unsigned i
                     mitr!=_indexMap.end();
                     ++mitr)
                 {
-                    osg::notify(osg::NOTICE)<<"    filename "<<(mitr->first)<<" pos="<<(int)((mitr->second).first)<<" size="<<(int)((mitr->second).second)<<std::endl;
+                    osg::notify(osg::INFO)<<"    filename "<<(mitr->first)<<" pos="<<(int)((mitr->second).first)<<" size="<<(int)((mitr->second).second)<<std::endl;
                 }
 
 
@@ -248,7 +248,7 @@ bool Archive::open(const std::string& filename, ArchiveStatus status, unsigned i
             }
         }
 
-        osg::notify(osg::NOTICE)<<"Archive::open("<<filename<<") failed"<<std::endl;
+        osg::notify(osg::INFO)<<"Archive::open("<<filename<<") failed"<<std::endl;
 
         _input.close();
         return false;
@@ -264,21 +264,21 @@ bool Archive::open(const std::string& filename, ArchiveStatus status, unsigned i
   
             
             
-            osg::notify(osg::NOTICE)<<"File position after open = "<<(int)_output.tellp()<<" is_open "<<_output.is_open()<<std::endl;
+            osg::notify(osg::INFO)<<"File position after open = "<<(int)_output.tellp()<<" is_open "<<_output.is_open()<<std::endl;
 
             // place write position at end of file.
             _output.seekp(0, std::ios::end);
             
 
-            osg::notify(osg::NOTICE)<<"File position after seekp = "<<(int)_output.tellp()<<std::endl;
+            osg::notify(osg::INFO)<<"File position after seekp = "<<(int)_output.tellp()<<std::endl;
 
-            osg::notify(osg::NOTICE)<<"Archive::open("<<filename<<") open for writing"<<std::endl;
+            osg::notify(osg::INFO)<<"Archive::open("<<filename<<") open for writing"<<std::endl;
 
             return true;
         }
         else // no file opened or using create so resort to creating the archive.
         {
-            osg::notify(osg::NOTICE)<<"Archive::open("<<filename<<"), archive being created."<<std::endl;
+            osg::notify(osg::INFO)<<"Archive::open("<<filename<<"), archive being created."<<std::endl;
 
             _status = WRITE;
             _output.open(filename.c_str(), std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
@@ -292,12 +292,12 @@ bool Archive::open(const std::string& filename, ArchiveStatus status, unsigned i
                 _indexBlockList.push_back(indexBlock);
             }
 
-            osg::notify(osg::NOTICE)<<"File position after write = "<<(int)_output.tellp()<<std::endl;
+            osg::notify(osg::INFO)<<"File position after write = "<<(int)_output.tellp()<<std::endl;
 
             // place write position at end of file.
             _output.seekp(0,std::ios::end);
 
-            osg::notify(osg::NOTICE)<<"File position after seekp = "<<(int)_output.tellp()<<std::endl;
+            osg::notify(osg::INFO)<<"File position after seekp = "<<(int)_output.tellp()<<std::endl;
 
             return true;
         }
@@ -346,13 +346,13 @@ bool Archive::addFileReference(pos_type position, size_type size, const std::str
 {
     if (_status==READ)
     {
-        osg::notify(osg::NOTICE)<<"Archive::getPositionForNewEntry("<<fileName<<") failed, archive opened as read only."<<std::endl;
+        osg::notify(osg::INFO)<<"Archive::getPositionForNewEntry("<<fileName<<") failed, archive opened as read only."<<std::endl;
         return false;
     }
     
     if (!_output)
     {
-        osg::notify(osg::NOTICE)<<"Archive::getPositionForNewEntry("<<fileName<<") failed, _output set up."<<std::endl;
+        osg::notify(osg::INFO)<<"Archive::getPositionForNewEntry("<<fileName<<") failed, _output set up."<<std::endl;
         return false;
     }
     
@@ -438,25 +438,25 @@ ReaderWriter::ReadResult Archive::readObject(const std::string& fileName,const O
 {
     if (_status!=READ) 
     {
-        osg::notify(osg::NOTICE)<<"Archive::readObject(obj, "<<fileName<<") failed, archive opened as read only."<<std::endl;
+        osg::notify(osg::INFO)<<"Archive::readObject(obj, "<<fileName<<") failed, archive opened as read only."<<std::endl;
         return ReadResult(ReadResult::FILE_NOT_HANDLED);
     }
     
     FileNamePositionMap::const_iterator itr = _indexMap.find(fileName);
     if (itr==_indexMap.end())
     {
-        osg::notify(osg::NOTICE)<<"Archive::readObject(obj, "<<fileName<<") failed, file not found in archive"<<std::endl;
+        osg::notify(osg::INFO)<<"Archive::readObject(obj, "<<fileName<<") failed, file not found in archive"<<std::endl;
         return ReadResult(ReadResult::FILE_NOT_FOUND);
     }
     
     ReaderWriter* rw = osgDB::Registry::instance()->getReaderWriterForExtension(getLowerCaseFileExtension(fileName));
     if (!rw)
     {
-        osg::notify(osg::NOTICE)<<"Archive::readObject(obj, "<<fileName<<") failed to find appropriate plugin to write file."<<std::endl;
+        osg::notify(osg::INFO)<<"Archive::readObject(obj, "<<fileName<<") failed to find appropriate plugin to write file."<<std::endl;
         return ReadResult(ReadResult::FILE_NOT_HANDLED);
     }
     
-    osg::notify(osg::NOTICE)<<"Archive::readObject(obj, "<<fileName<<")"<<std::endl;
+    osg::notify(osg::INFO)<<"Archive::readObject(obj, "<<fileName<<")"<<std::endl;
     
     _input.seekg(itr->second.first);
 

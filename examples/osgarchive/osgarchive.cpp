@@ -16,8 +16,11 @@
 #include <osgDB/Archive>
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
+#include <osgDB/FileUtils>
 
 #include <iostream>
+#include <algorithm>
+
 
 int main( int argc, char **argv )
 {
@@ -94,7 +97,23 @@ int main( int argc, char **argv )
     {
         if (!arguments.isOption(pos))
         {
-            files.push_back(arguments[pos]);
+            if (insert)
+            {
+                osgDB::FileType fileType = osgDB::fileType(arguments[pos]);
+                if (fileType==osgDB::REGULAR_FILE)
+                {
+                    files.push_back(arguments[pos]);
+                }
+                else if (fileType==osgDB::DIRECTORY)
+                {
+                    osgDB::DirectoryContents directory = osgDB::getDirectoryContents(arguments[pos]);
+                    files.insert(files.end(),directory.begin(),directory.end());
+                }
+            }
+            else
+            {
+                files.push_back(arguments[pos]);
+            }
         }
     }
     

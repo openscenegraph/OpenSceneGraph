@@ -120,9 +120,10 @@ class SG_EXPORT StateAttribute : public Object
             LIGHT_5         =LIGHT+1,
             LIGHT_6         =LIGHT+1,
             LIGHT_7         =LIGHT+1,
-            POINT           =LIGHT_7+1,
-            
-            POLYGONMODE     =POINT+1,
+
+            POINT           =LIGHT_7+1,            
+            LINEWIDTH       =POINT+1,
+            POLYGONMODE     =LINEWIDTH+1,
             POLYGONOFFSET   =POLYGONMODE+1,
             TEXENV          =POLYGONOFFSET+1,
             TEXGEN          =TEXENV+1,

@@ -197,6 +197,10 @@ SOURCE=..\..\src\osg\LineSegment.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\LineWidth.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\LOD.cpp
 # End Source File
 # Begin Source File
@@ -422,6 +426,10 @@ SOURCE=..\..\Include\Osg\LightSource
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\LineSegment
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\LineWidth
 # End Source File
 # Begin Source File
 

@@ -385,7 +385,7 @@ int main(int argc, char **argv)
     viewer.setSceneData(root);
         
     // create the windows and run the threads.
-    //    viewer.realize(Producer::CameraGroup::ThreadPerCamera);
+    //    viewer.realize();
     // run single threaded since osgParticle still writes during cull.
     viewer.realize(Producer::CameraGroup::SingleThreaded);
 

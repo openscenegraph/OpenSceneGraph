@@ -423,7 +423,7 @@ int main( int argc, char **argv )
     //osgDB::writeNodeFile(*keyboardModel->getScene(),"test.osg");
 
     // create the windows and run the threads.
-    viewer.realize(Producer::CameraGroup::ThreadPerCamera);
+    viewer.realize();
 
 
     while( !viewer.done() )

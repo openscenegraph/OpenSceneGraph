@@ -109,8 +109,7 @@ int main( int argc, char **argv )
     viewer.setSceneData(loadedModel.get());
 
     // create the windows and run the threads.
-//    viewer.realize(Producer::CameraGroup::ThreadPerCamera);
-    viewer.realize(Producer::CameraGroup::SingleThreaded);
+    viewer.realize();
 
     while( !viewer.done() )
     {

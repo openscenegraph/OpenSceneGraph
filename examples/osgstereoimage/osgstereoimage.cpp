@@ -471,7 +471,7 @@ int main( int argc, char **argv )
     if (ds) ds->setStereo(true);
 
     // create the windows and run the threads.
-    viewer.realize(Producer::CameraGroup::ThreadPerCamera);
+    viewer.realize();
 
     // now the windows have been realized we switch off the cursor to prevent it
     // distracting the people seeing the stereo images.

@@ -53,7 +53,7 @@ class CameraPacket {
         void getModelView(osg::Matrix& matrix,float angle_offset=0.0f)
         {
         
-            matrix = _matrix * osg::Matrix::rotate(angle_offset,0.0f,1.0f,1.0f);
+            matrix = _matrix * osg::Matrix::rotate(angle_offset,0.0f,1.0f,0.0f);
         }
         
 	void checkByteOrder( void )
@@ -164,7 +164,7 @@ int main( int argc, char **argv )
     viewer.setSceneData(rootnode.get());
 
     // create the windows and run the threads.
-    viewer.realize(Producer::CameraGroup::ThreadPerCamera);
+    viewer.realize();
 
     // objects for managing the broadcasting and recieving of camera packets.
     Broadcaster     bc;

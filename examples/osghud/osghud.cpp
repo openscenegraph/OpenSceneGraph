@@ -164,7 +164,7 @@ int main( int argc, char **argv )
     viewer.setSceneData(group.get());
 
     // create the windows and run the threads.
-    viewer.realize(Producer::CameraGroup::ThreadPerCamera);
+    viewer.realize();
 
     while( !viewer.done() )
     {

@@ -72,7 +72,10 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
         
         bool done() const { return _done; }
 
-        virtual void realize( ThreadingModel thread_model= SingleThreaded );
+        /** Set the threading model and then call realize().*/
+        virtual bool realize(ThreadingModel thread_model);
+
+        virtual bool realize();
 
         virtual void sync();
 

@@ -347,7 +347,7 @@ int main( int argc, char **argv )
     
 
     // create the windows and run the threads.
-    viewer.realize(Producer::CameraGroup::ThreadPerCamera);
+    viewer.realize();
 
     // set all the sceneview's up so that their left and right add cull masks are set up.
     for(osgProducer::OsgCameraGroup::SceneHandlerList::iterator itr=viewer.getSceneHandlerList().begin();

@@ -201,14 +201,10 @@ int main( int argc, char **argv )
     // read the scene from the list of file specified commandline args.
     osg::ref_ptr<osg::Node> scene = osgDB::readNodeFiles(arguments);
 
-    osg::ref_ptr<osg::Group> group = dynamic_cast<osg::Group*>(scene.get());
-    if (!group)
-    {
-        group = new osg::Group;
-        group->addChild(scene.get());
-    }
-
+    osg::ref_ptr<osg::Group> group  = new osg::Group;
+    
     // add the HUD subgraph.    
+    if (scene.valid()) group->addChild(scene.get());
     group->addChild(createHUD());
 
     // set the scene to render

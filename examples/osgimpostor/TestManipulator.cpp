@@ -272,7 +272,7 @@ bool TestManipulator::calcMovement()
 
         // pan model.
 
-	osg::Vec3 dv = osg::Vec3(0.0f, 0.0f, 500.0f) * dy;
+	osg::Vec3 dv = osg::Vec3(0.0f, 0.0f, -500.0f) * dy;
 
         _center += dv;
         
@@ -287,7 +287,7 @@ bool TestManipulator::calcMovement()
         osg::Vec3 uv = _camera->getUpVector();
         osg::Vec3 sv = _camera->getSideVector();
         osg::Vec3 fv = uv ^ sv;
-        osg::Vec3 dv = fv*(dy*500.0f)-sv*(dx*500.0f);
+        osg::Vec3 dv = fv*(dy*-500.0f)-sv*(dx*500.0f);
 
         _center += dv;
         computeCameraFromLocalData();

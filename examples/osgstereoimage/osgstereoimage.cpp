@@ -173,16 +173,16 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
         case(osgGA::GUIEventAdapter::DRAG):
         case(osgGA::GUIEventAdapter::MOVE):
         {
-            static float px = ea.getX();
-            static float py = ea.getY();
+            static float px = ea.getXnormalized();
+            static float py = ea.getYnormalized();
             
-            float dx = ea.getX()-px;
-            float dy = ea.getY()-py;
+            float dx = ea.getXnormalized()-px;
+            float dy = ea.getYnormalized()-py;
             
-            px = ea.getX();
-            py = ea.getY();
+            px = ea.getXnormalized();
+            py = ea.getYnormalized();
             
-            rotateImage((float)dx/(float)(ea.getXmax()-ea.getXmin()),(float)dy/(float)(ea.getYmax()-ea.getYmin()));
+            rotateImage(dx,dy);
             
             return true;
         }
@@ -267,8 +267,8 @@ void SlideEventHandler::offsetImage(float ds,float dt)
 void SlideEventHandler::rotateImage(float rx,float ry)
 {
     const float scale = 0.5f;
-    _texmatLeft->setMatrix(_texmatLeft->getMatrix()*osg::Matrix::translate(-rx*scale,ry*scale,0.0f));
-    _texmatRight->setMatrix(_texmatRight->getMatrix()*osg::Matrix::translate(-rx*scale,ry*scale,0.0f));
+    _texmatLeft->setMatrix(_texmatLeft->getMatrix()*osg::Matrix::translate(-rx*scale,-ry*scale,0.0f));
+    _texmatRight->setMatrix(_texmatRight->getMatrix()*osg::Matrix::translate(-rx*scale,-ry*scale,0.0f));
 }
 
 void SlideEventHandler::initTexMatrices()

@@ -32,6 +32,16 @@ bool Light_readLocalData(Object& obj, Input& fr)
 
     Light& light = static_cast<Light&>(obj);
 
+    if (fr[0].matchWord("light_num"))
+    {
+        int lightnum=0;
+        if (fr[1].getInt(lightnum))
+        {
+            light.setLightNum(lightnum);
+            fr += 2;
+            iteratorAdvanced = true;
+        }
+    }
 
 #define ReadVec4(A,B) {  \
     if (fr[0].matchWord(B) && \
@@ -95,6 +105,8 @@ bool Light_readLocalData(Object& obj, Input& fr)
 bool Light_writeLocalData(const Object& obj,Output& fw)
 {
     const Light& light = static_cast<const Light&>(obj);
+
+    fw.indent() << "light_num " << light.getLightNum() << std::endl;
 
     // Vec4's
     fw.indent() << "ambient " << light.getAmbient() << std::endl;

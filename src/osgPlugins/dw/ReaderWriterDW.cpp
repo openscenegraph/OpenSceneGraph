@@ -44,6 +44,7 @@ public:
         opacity=1; specular=0; specexp=0; fname="";TextureWidth=1; TextureHeight=1;
         ctx=NULL; tx=NULL; id=0; dstate=NULL;colour[0]=colour[1]=colour[2]=colour[3]=1;
         bright=halfIn=halfOut=falloff=0;atyp=NONE;
+        _lightnum=0;
     }
     ~dwmaterial() { }
     void settexture() {
@@ -135,14 +136,15 @@ public:
         fname= (buff+13);
         fname+= ".tga";
     }
-    LightSource *makeLight(const Vec4 pos) {
+    LightSource *makeLight(const Vec4 pos)
+    {
         Light *lt= new Light;
         Vec4 cdef;
         cdef[0]=cdef[1]=cdef[2]=0.0f; cdef[3]=0.0f;
+        lt->setLightNum(_lightnum++);
         lt->setSpecular(colour*bright/2.0f);
         lt->setDiffuse(colour*bright/4.0f);
         lt->setAmbient(cdef);
-        lt->on();
         if (atyp==NONE) ;
         else if (atyp==INVERSE_DIST) {
             lt->setLinearAttenuation(1.0f);
@@ -174,6 +176,7 @@ private:
     float bright,halfIn,halfOut,falloff; // light brightness
     Image *ctx;
     Texture *tx;
+    int _lightnum;
     StateSet *dstate; // used to represent the dw material in OSG
 };
 // structure to use as data for tesselation

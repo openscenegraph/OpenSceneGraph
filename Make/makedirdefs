@@ -30,7 +30,6 @@ PLUGIN_DIRS = \
 	directx\
 	dw\
 	flt\
-	freetype\
 	geo\
 	iv\
 	lib3ds\
@@ -56,22 +55,31 @@ PLUGIN_DIRS = \
 # since we havn't yet checked compilation on all platforms yet.
 PLUGIN_DIRS += dx
 
-# comment in if you have Quicktime installed, i.e under Mac OS.
-# if in this case then its likely you'll want to comment out the below
-# png, jpeg, gif and tiff plugins.
-# PLUGIN_DIRS += quicktime
+# comment in if have freetype2.x installed, provides type type font support to osgText.
+PLUGIN_DIRS += freetype
 
-# comment in if you have libpng installed.
-PLUGIN_DIRS += png
 
-# comment in if you have libjpeg installed.
-PLUGIN_DIRS += jpeg
+#### MacOS X specific definitions
+ifeq ($(OS),Darwin)
 
-# comment in if you have libungif installed.
-PLUGIN_DIRS += gif
+  PLUGIN_DIRS += quicktime
+  
+else  
 
-# comment in if you have libtiff installed.
-PLUGIN_DIRS += tiff
+  # comment in if you have libtiff installed.
+  PLUGIN_DIRS += tiff
+
+  # comment in if you have libjpeg installed.
+  PLUGIN_DIRS += jpeg
+
+  # comment in if you have libpng installed.
+  PLUGIN_DIRS += png
+
+  # comment in if you have libungif installed.
+  PLUGIN_DIRS += gif
+
+endif
+
 
 
 ################################################################
@@ -95,7 +103,6 @@ DEMOS_DIRS = \
 	osgbillboard\
 	osgcallback\
 	osgclip\
-	osgcluster\
 	osgconv\
 	osgcopy\
 	osgcube\
@@ -128,3 +135,6 @@ DEMOS_DIRS = \
 	osgvertexprogram\
 	osgviews\
 	sgv
+        
+# comment in you want to compile the cluster demo.
+# DEMOS_DIRS += osgcluster

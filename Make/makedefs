@@ -295,11 +295,6 @@ ifeq ($(OS),Darwin)
   LIB_EXT            = dylib
   QUICKTIME	    = -framework QuickTime $(CARBON_LIB)
   TIFF_LIB	    = -ltiff
-  # src libs which require external libs: osgText
-  SRC_DIRS          = osg osgUtil osgDB osgParticle osgSim\
-                        osgGA   osgGLUT \
-                        osgPlugins \
-                        Demos
   LIBVERSION	    =  -dylib_current_version 0.9.1
 
   # Plugins which require external libs: gif jpeg png tiff osgText
@@ -308,13 +303,6 @@ ifeq ($(OS),Darwin)
                       osg osgParticle osgtgz pic \
                       quicktime rgb tga tgz \
                       txp zip
-  # Demos which require external libs: osghud osgtext
-  DEMOS_DIRS        = osgbillboard osgcallback osgclip \
-                      osgcluster osgconv osgcopy osgcube osggeometry \
-                      osghangglide osgimpostor osgmultitexture osgoccluder \
-                      osgparticle osglightpoint osgprerender osgshadowtexture osgreflect osgscribe osgstereoimage \
-                      osgtexture1D osgtexture2D osgtexture3D osgversion osgviews sgv \
-                      osgshape osganimate osgteapot
 endif
 
 #### Cygwin/Mingw specific definitions
@@ -338,22 +326,6 @@ ifeq ($(OS),CYGWIN)
   GL_LIBS           = -lglu32 -lopengl32
   GLUT_LIB          = -lglut32 $(GL_LIBS)
   X_LIBS            = -lgdi32 -luser32
-  OSGDB_LIBS        = -losgdb_3ds \
-  		      -losgdb_bmp \
-		      -losgdb_dw \
-		      -losgdb_flt \
-		      -losgdb_jpg \
-		      -losgdb_lwo \
-		      -losgdb_obj \
-		      -losgdb_osg \
-		      -losgdb_osgtgz \
-		      -losgdb_pic \
-		      -losgdb_png \
-		      -losgdb_rgb \
-		      -losgdb_tga \
-		      -losgdb_tgz \
-		      -losgdb_tiff \
-		      -losgdb_zip
   SOCKET_LIBS       = 
   OTHER_LIBS        = $(GL_LIBS)
   PNG_LIBS          = -lpng -lz
@@ -380,14 +352,6 @@ ifeq ($(OS),CYGWIN)
   INST_DOC          = $(INST_SHARE_PREFIX)/doc
   INST_DATA         = $(INST_SHARE_PREFIX)/data
 
-  # Demos which require external libs: osghud osgtext
-  DEMOS_DIRS        = osgbillboard osgcallback osgclip \
-                      osgconv osgcopy osgcube osggeometry \
-                      osghangglide osgimpostor osgmultitexture osgoccluder \
-                      osgparticle osgprerender osgreflect osgscribe osgstereoimage \
-                      osgtexture1D osgtexture2D osgtexture3D osgversion osgviews sgv \
-                      osgshape osganimate osgteapot
-#osgcluster 
 
 endif
 
@@ -413,22 +377,6 @@ ifeq ($(OS),MINGW)
   GL_LIBS           = -lglu32 -lopengl32
   GLUT_LIB          = -lglut32 $(GL_LIBS)
   X_LIBS            = -lgdi32 -luser32
-  OSGDB_LIBS        = -losgdb_3ds \
-  		      -losgdb_bmp \
-		      -losgdb_dw \
-		      -losgdb_flt \
-		      -losgdb_jpg \
-		      -losgdb_lwo \
-		      -losgdb_obj \
-		      -losgdb_osg \
-		      -losgdb_osgtgz \
-		      -losgdb_pic \
-		      -losgdb_png \
-		      -losgdb_rgb \
-		      -losgdb_tga \
-		      -losgdb_tgz \
-		      -losgdb_tiff \
-		      -losgdb_zip
   SOCKET_LIBS       = 
   OTHER_LIBS        = $(GL_LIBS)
   PNG_LIBS          = -lpng -lz
@@ -456,12 +404,6 @@ ifeq ($(OS),MINGW)
   INST_DOC          = $(INST_SHARE_PREFIX)/doc
   INST_DATA         = $(INST_SHARE_PREFIX)/data
 
-  PLUGIN_DIRS       = osg rgb lib3ds flt obj lwo bmp pic tga osgtgz tgz zip
-# txp
-  DEMOS_DIRS        = osghangglide osgbillboard osgconv osgcopy osgcube osgimpostor\
-                       osgreflect osgscribe osgstereoimage osgtexture1D osgtexture2D osgtexture3D\
-                       osgviews osgversion sgv osghud osgtext 
-# osgcluster
 endif
 
 #### HP-UX Specific definitions

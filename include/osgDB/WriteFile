@@ -2,8 +2,8 @@
 //Distributed under the terms of the GNU Library General Public License (LGPL)
 //as published by the Free Software Foundation.
 
-#ifndef OSGDB_FILEUTILS
-#define OSGDB_FILEUTILS 1
+#ifndef OSGDB_WRITEFILE
+#define OSGDB_WRITEFILE 1
 
 #include <osg/Image>
 #include <osg/Node>

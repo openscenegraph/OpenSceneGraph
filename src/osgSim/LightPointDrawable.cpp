@@ -28,6 +28,7 @@ LightPointDrawable::LightPointDrawable():
 
     _blendOn = osgNew osg::BlendFunc;
     _blendOn->setFunction(osg::BlendFunc::SRC_ALPHA,osg::BlendFunc::ONE);
+    //_blendOn->setFunction(osg::BlendFunc::SRC_ALPHA,osg::BlendFunc::ONE_MINUS_SRC_ALPHA);
 
     _colorMaskOff = osgNew osg::ColorMask;
     _colorMaskOff->setMask(false,false,false,false);
@@ -60,6 +61,7 @@ void LightPointDrawable::drawImplementation(osg::State& state) const
     
     state.applyAttribute(_blendOn.get());    
     state.applyAttribute(_depthOff.get());
+    //state.applyMode(GL_DEPTH_TEST,false);
 
     int pointsize;
     SizedLightPointList::const_iterator sitr;

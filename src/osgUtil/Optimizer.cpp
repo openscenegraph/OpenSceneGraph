@@ -1027,7 +1027,8 @@ void Optimizer::RemoveEmptyNodesVisitor::removeEmptyNodes()
             {
                 osg::Group* parent = *pitr;
                 if (!dynamic_cast<osg::Sequence*>(parent) &&
-                    !dynamic_cast<osg::Switch*>(parent))
+                    !dynamic_cast<osg::Switch*>(parent) && 
+                    strcmp(parent->className(),"MultiSwitch")!=0)
                 {
                     parent->removeChild(nodeToRemove.get());
                     if (parent->getNumChildren()==0) newEmptyGroups.insert(*pitr);

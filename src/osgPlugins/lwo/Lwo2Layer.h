@@ -26,10 +26,6 @@
 #ifndef LWO2LAYER_H
 #define LWO2LAYER_H 1
 
-#include <vector>
-#include <map>
-#include <string>
-
 #include <osg/Referenced>
 #include <osg/Vec2>
 #include <osg/Vec3>
@@ -38,6 +34,10 @@
 #include <osg/StateSet>
 
 #include <osgUtil/SmoothingVisitor>
+
+#include <vector>
+#include <map>
+#include <string>
 
 using namespace osg;
 using namespace std;

@@ -1,6 +1,6 @@
+#include <osg/GLExtensions>
 #include <osg/Geometry>
 #include <osg/Notify>
-#include <osg/GLExtensions>
 
 using namespace osg;
 

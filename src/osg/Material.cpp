@@ -45,6 +45,30 @@ Material::~Material()
 {
 }
 
+Material& Material:: operator = (const Material& rhs)
+{
+    if (&rhs==this) return *this;
+    
+    _colorMode= rhs._colorMode;
+    _ambientFrontAndBack= rhs._ambientFrontAndBack;
+    _ambientFront= rhs._ambientFront;
+    _ambientBack= rhs._ambientBack;
+    _diffuseFrontAndBack= rhs._diffuseFrontAndBack;
+    _diffuseFront= rhs._diffuseFront;
+    _diffuseBack= rhs._diffuseBack;
+    _specularFrontAndBack= rhs._specularFrontAndBack;
+    _specularFront= rhs._specularFront;
+    _specularBack= rhs._specularBack;
+    _emissionFrontAndBack= rhs._emissionFrontAndBack;
+    _emissionFront= rhs._emissionFront;
+    _emissionBack= rhs._emissionBack;
+    _shininessFrontAndBack= rhs._shininessFrontAndBack;
+    _shininessFront= rhs._shininessFront;
+    _shininessBack= rhs._shininessBack;
+    
+    return *this;
+}
+
 
 void Material::setAmbient(Face face, const Vec4& ambient )
 {

@@ -77,6 +77,8 @@ class SG_EXPORT Material : public StateAttribute
             return 0; // passed all the above comparison macro's, must be equal.
         }
 
+        Material& operator = (const Material& rhs);
+
         virtual void getAssociatedModes(std::vector<GLMode>& modes) const 
         {
             // Have to think about the role of _colorMode

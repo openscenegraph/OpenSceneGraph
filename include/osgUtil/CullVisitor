@@ -196,6 +196,10 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         /** reimplement CullStack's popProjectionMatrix() adding clamping of the projection matrix to the computed near and far.*/
         void popProjectionMatrix();
 
+        void setState(osg::State* state) { _state = state; }
+        osg::State* getState() { return _state.get(); }
+        const osg::State* getState() const { return _state.get(); }
+
     protected:
 
         /** prevent unwanted copy construction.*/
@@ -251,6 +255,8 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
 	inline RenderLeaf* createOrReuseRenderLeaf(osg::Drawable* drawable,osg::Matrix* projection,osg::Matrix* matrix, float depth=0.0f);
         
         osg::ref_ptr<osg::ImpostorSpriteManager> _impostorSpriteManager;
+
+        osg::ref_ptr<osg::State>                    _state;
 	
 };
 

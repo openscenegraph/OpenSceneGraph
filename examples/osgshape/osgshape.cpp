@@ -12,7 +12,7 @@
 // for the grid data..
 #include "../osghangglide/terrain_coords.h"
 
-osg::Geode* createShapes()
+osg::Geode* createShapes( char* img_filename )
 {
     osg::Geode* geode = new osg::Geode();
 
@@ -21,7 +21,9 @@ osg::Geode* createShapes()
     // ---------------------------------------
     osg::StateSet* stateset = new osg::StateSet();
 
-    osg::Image* image = osgDB::readImageFile("Images/lz.rgb");
+    if( ! img_filename ) img_filename = "Images/lz.rgb";
+    osg::Image* image = osgDB::readImageFile( img_filename );
+
     if (image)
     {
 	osg::Texture2D* texture = new osg::Texture2D;
@@ -91,7 +93,7 @@ int main( int argc, char **argv )
 
     // set up the usage document, in case we need to print out how to use this program.
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates the osg::Shape classes.");
-    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
+    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] [image_filename]");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
    
     // construct the viewer.
@@ -119,8 +121,18 @@ int main( int argc, char **argv )
         arguments.writeErrorMessages(std::cout);
         return 1;
     }
+
+    char* img_filename = 0;
+    for( int pos = 1; pos < arguments.argc(); ++pos )
+    {
+	if( arguments.isString(pos) )
+	{
+	    img_filename = arguments[pos];
+	    break;
+	}
+    }
     
-    osg::Node* node = createShapes();
+    osg::Node* node = createShapes( img_filename );
 
     // add model to viewer.
     viewer.setSceneData( node );

@@ -33,14 +33,15 @@ bool FTGlyphContainer::Add( FTGlyph* tempGlyph)
 	return true;
 }
 
-
 float FTGlyphContainer::Advance( unsigned int index, unsigned int next)
 {
 	unsigned int left = face->CharIndex( index);
 	unsigned int right = face->CharIndex( next);
+        
+        
 	
 	float width = face->KernAdvance( left, right).x;
-	width += glyphs[left]->Advance();
+	if (left<glyphs.size()) width += glyphs[left]->Advance();
 	
 	return width;
 }
@@ -57,7 +58,7 @@ FT_Vector& FTGlyphContainer::render( unsigned int index, unsigned int next, FT_V
 		
 	if( !face->Error())
 	{
-		advance = glyphs[left]->Render( pen);
+		if (left<glyphs.size()) advance = glyphs[left]->Render( pen);
 	}
 	
 	kernAdvance.x = advance + kernAdvance.x;

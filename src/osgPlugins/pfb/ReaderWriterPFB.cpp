@@ -30,7 +30,70 @@ class ReaderWriterPFB : public osgDB::ReaderWriter
         void initPerformer();
 
         virtual const char* className() { return "Performer Reader/Writer"; }
-        virtual bool acceptsExtension(const std::string& extension) { return extension=="pfb"; }
+        virtual bool acceptsExtension(const std::string& extension) 
+	{ 
+	    return 
+                extension=="3ds"     ? true :
+                extension=="arcinfo" ? true :
+                extension=="bin"     ? true :
+                extension=="bpoly"   ? true :
+                extension=="bw"      ? true :
+                extension=="byu"     ? true :
+                extension=="closest" ? true :
+                extension=="csb"     ? true :
+                extension=="ct"      ? true :
+                extension=="dem"     ? true :
+                extension=="doublerot" ? true :
+                extension=="doublescale" ? true :
+                extension=="doubletrans" ? true :
+                extension=="dted"    ? true :
+                extension=="dwb"     ? true :
+                extension=="dxf"     ? true :
+                extension=="evt"     ? true :
+                extension=="flt"     ? true :
+                extension=="gds"     ? true :
+                extension=="gfo"     ? true :
+                extension=="im"      ? true :
+                extension=="irtp"    ? true :
+                extension=="iv20"    ? true :
+                extension=="iv"      ? true :
+                extension=="lodfix"  ? true :
+                extension=="lsa"     ? true :
+                extension=="lsb"     ? true :
+                extension=="medit"   ? true :
+                extension=="m"       ? true :
+                extension=="nff"     ? true :
+                extension=="obj"     ? true :
+                extension=="pegg"    ? true :
+                extension=="pfb"     ? true :
+                extension=="pfs"     ? true :
+                extension=="phd"     ? true :
+                extension=="poly"    ? true :
+                extension=="post"    ? true :
+                extension=="proc"    ? true :
+                extension=="projtex" ? true :
+                extension=="pts"     ? true :
+                extension=="rot"     ? true :
+                extension=="scale"   ? true :
+                extension=="sgf"     ? true :
+                extension=="sgo"     ? true :
+                extension=="so"      ? true :
+                extension=="spf"     ? true :
+                extension=="spherepatch3" ? true :
+                extension=="spherepatch" ? true :
+                extension=="sphere"  ? true :
+                extension=="sponge"  ? true :
+                extension=="star"    ? true :
+                extension=="stla"    ? true :
+                extension=="stlb"    ? true :
+                extension=="substclip" ? true :
+                extension=="sv"      ? true :
+                extension=="trans"   ? true :
+                extension=="tri"     ? true :
+                extension=="unc"     ? true :
+                extension=="vct"     ? true :
+		false;
+	}
 
         virtual osg::Image* readImage(const std::string& fileName, const osgDB::ReaderWriter::Options*)
         {
@@ -79,11 +142,7 @@ class ReaderWriterPFB : public osgDB::ReaderWriter
 
             initPerformer();
 
-            #ifdef __sgi
             pfNode* root = pfdLoadFile(fileName.c_str());
-            #else
-            pfNode* root = pfdLoadFile_pfb(fileName.c_str());
-            #endif
 
             ConvertFromPerformer converter;
             return converter.convert(root);
@@ -102,7 +161,7 @@ class ReaderWriterPFB : public osgDB::ReaderWriter
             pfNode* root = converter.convert(&node);
             if (root)
             {
-                return pfdStoreFile_pfb(root,fileName.c_str())!=0;
+                return pfdStoreFile(root,fileName.c_str())!=0;
             }
             else
             {

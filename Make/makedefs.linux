@@ -6,28 +6,22 @@ OBJS = $(C++FILES:.cpp=.o)  $(CFILES:.c=.o) $(YACCFILES:.y=.o) $(LEXFILES:.l=.o)
 DEPFILES = $(OBJS:.o=.d)
 
 
-C++ = g++
-YFLAGS = -d
+C++       = g++
+YFLAGS    = -d
 LCINCS   += -I/usr/X11R6/include
 LC++INCS += ${LCINCS}
-CFLAGS   = -O2 -W -Wall $(LCINCS)
+CFLAGS    = -O2 -W -Wall $(LCINCS)
 #CFLAGS   = -g -W -Wall $(LCINCS)
-C++FLAGS = ${CFLAGS}
-CPPFLAGS = ${CFLAGS}
+C++FLAGS  = ${CFLAGS}
+CPPFLAGS  = ${CFLAGS}
 
 LDFLAGS = -O2 -W -Wall -L/usr/X11R6/lib
 #LDFLAGS = -g -W -Wall -L/usr/X11R6/lib
 
 DYNAMICLIBRARYLIB = -ldl
-PFLIBS = \
-	/usr/lib/Performer/Static/libpfdb/libpfpfb.a\
-	/usr/lib/Performer/Static/libpfdu.a\
-	/usr/lib/Performer/Static/libpfutil.a\
-	/usr/lib/Performer/Static/libpf.a\
-
+PFLOADERPATH = /usr/lib/libpfdb
 
 GLUTLIB = -lglut
-
 
 #
 # TARGET_DIRS are directories that would not exist on the system except

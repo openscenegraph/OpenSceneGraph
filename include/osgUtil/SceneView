@@ -190,6 +190,17 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         /** Set to the position and orientation of view matrix, using the same convention as gluLookAt. */
         void setViewMatrixAsLookAt(const osg::Vec3& eye,const osg::Vec3& center,const osg::Vec3& up);
 
+        /** Set the draw buffer value used at the start of each frame draw.  Note, overridden in quad buffer stereo mode */
+        void setDrawBufferValue( GLenum drawBufferValue )
+        {
+            _drawBufferValue = drawBufferValue;
+        }
+
+        /** Get the draw buffer value used at the start of each frame draw. */
+        GLenum getDrawBufferValue() const
+        {
+            return _drawBufferValue;
+        }
 
         /** Get the view matrix. */
         osg::Matrixd& getViewMatrix() { return _viewMatrix; }
@@ -296,10 +307,10 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
 
         /** Set the FusionDistanceMode and Value. Note, is used only when working in stereo.*/
         void setFusionDistance(FusionDistanceMode mode,float value=1.0f)
-	{
-	    _fusionDistanceMode = mode;
-	    _fusionDistanceValue = value;
-	}
+        {
+            _fusionDistanceMode = mode;
+            _fusionDistanceValue = value;
+        }
 
         /** Get the FusionDistanceMode.*/
         FusionDistanceMode getFusionDistanceMode() const { return _fusionDistanceMode; }
@@ -471,6 +482,8 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         LightingMode                                _lightingMode;
         
         bool                                        _prioritizeTextures;
+        
+        GLenum                                      _drawBufferValue;
         
 };
 

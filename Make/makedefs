@@ -292,7 +292,7 @@ ifeq ($(OS),Darwin)
   QUICKTIME	    = -framework QuickTime $(CARBON_LIB)
   TIFF_LIB	    = -ltiff
   # src libs which require external libs: osgText
-  SRC_DIRS          = osg osgUtil osgDB osgParticle\
+  SRC_DIRS          = osg osgUtil osgDB osgParticle osgSim\
                         osgGA   osgGLUT \
                         osgPlugins \
                         Demos
@@ -308,7 +308,7 @@ ifeq ($(OS),Darwin)
   DEMOS_DIRS        = osgbillboard osgcallback osgclip \
                       osgcluster osgconv osgcopy osgcube osggeometry \
                       osghangglide osgimpostor osgmultitexture osgoccluder \
-                      osgparticle osgprerender osgreflect osgscribe osgstereoimage \
+                      osgparticle osglightpoint osgprerender osgreflect osgscribe osgstereoimage \
                       osgtexture1D osgtexture2D osgtexture3D osgversion osgviews sgv \
                       osgshape osganimate osgteapot
 endif

@@ -7,6 +7,7 @@
 
 #include "osgDB/FileNameUtils"
 #include "osgDB/Registry"
+#include "osgDB/FileUtils"
 
 #include <stdio.h>
 #include <stdlib.h>

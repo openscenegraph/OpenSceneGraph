@@ -81,9 +81,13 @@ class OSGUTIL_EXPORT Simplifier : public osg::NodeVisitor
             }
         }
 
-        /** simply the geometry to defined ratio of original size.*/
+        /** simply the geometry.*/
         void simplify(osg::Geometry& geometry);
+        
+        typedef std::vector<unsigned int> IndexList; /// a list of point indices
 
+        /** simply the geometry, whilst protecting key points from being modified.*/
+        void simplify(osg::Geometry& geometry, const IndexList& protectedPoints);
 
     protected:
     

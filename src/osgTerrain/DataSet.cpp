@@ -1924,7 +1924,7 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
         return 0;
     }
 
-    bool createSkirt = false;
+    bool createSkirt = true;
 
     // compute sizes.
     unsigned int numColumns = grid->getNumColumns();
@@ -2108,6 +2108,8 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
     if (n.valid() && n->size()!=numVertices) n->resize(numVertices);
 #endif
 
+    osgUtil::Simplifier::IndexList pointsToProtectDuringSimplification;
+
     if (numVerticesInSkirt>0)
     {
         osg::DrawElementsUShort& skirtDrawElements = *(new osg::DrawElementsUShort(GL_QUAD_STRIP,2*numVerticesInSkirt+2));
@@ -2118,8 +2120,15 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
         r=0;
         for(c=0;c<numColumns-1;++c)
         {
+            // assign indices to primitive set
 	    skirtDrawElements[ei++] = (r)*numColumns+c;
 	    skirtDrawElements[ei++] = vi;
+            
+            // mark these points as protected to prevent them from being removed during simplification
+            pointsToProtectDuringSimplification.push_back((r)*numColumns+c);
+            pointsToProtectDuringSimplification.push_back(vi);
+            
+            // add in the new point on the bottom of the skirt
             v[vi] = v[(r)*numColumns+c]+skirtVector;
             if (n.valid()) (*n)[vi] = (*n)[r*numColumns+c];
             t[vi++] = t[(r)*numColumns+c];
@@ -2128,8 +2137,15 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
         c=numColumns-1;
         for(r=0;r<numRows-1;++r)
         {
+            // assign indices to primitive set
 	    skirtDrawElements[ei++] = (r)*numColumns+c;
 	    skirtDrawElements[ei++] = vi;
+            
+            // mark these points as protected to prevent them from being removed during simplification
+            pointsToProtectDuringSimplification.push_back((r)*numColumns+c);
+            pointsToProtectDuringSimplification.push_back(vi);
+
+            // add in the new point on the bottom of the skirt
             v[vi] = v[(r)*numColumns+c]+skirtVector;
             if (n.valid()) (*n)[vi] = (*n)[(r)*numColumns+c];
             t[vi++] = t[(r)*numColumns+c];
@@ -2138,8 +2154,15 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
         r=numRows-1;
         for(c=numColumns-1;c>0;--c)
         {
+            // assign indices to primitive set
 	    skirtDrawElements[ei++] = (r)*numColumns+c;
 	    skirtDrawElements[ei++] = vi;
+            
+            // mark these points as protected to prevent them from being removed during simplification
+            pointsToProtectDuringSimplification.push_back((r)*numColumns+c);
+            pointsToProtectDuringSimplification.push_back(vi);
+
+            // add in the new point on the bottom of the skirt
             v[vi] = v[(r)*numColumns+c]+skirtVector;
             if (n.valid()) (*n)[vi] = (*n)[(r)*numColumns+c];
             t[vi++] = t[(r)*numColumns+c];
@@ -2148,8 +2171,15 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
         c=0;
         for(r=numRows-1;r>0;--r)
         {
+            // assign indices to primitive set
 	    skirtDrawElements[ei++] = (r)*numColumns+c;
 	    skirtDrawElements[ei++] = vi;
+            
+            // mark these points as protected to prevent them from being removed during simplification
+            pointsToProtectDuringSimplification.push_back((r)*numColumns+c);
+            pointsToProtectDuringSimplification.push_back(vi);
+
+            // add in the new point on the bottom of the skirt
             v[vi] = v[(r)*numColumns+c]+skirtVector;
             if (n.valid()) (*n)[vi] = (*n)[(r)*numColumns+c];
             t[vi++] = t[(r)*numColumns+c];
@@ -2179,18 +2209,12 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
         geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
     }
     
-#if 1
     osgUtil::Simplifier simplifier(0.5f,geometry->getBound().radius()/2000.0f);
-//    osgUtil::Simplifier simplifier(1.0f,1.0f);
     
-    simplifier.simplify(*geometry);  // this will replace the normal vector with a new one
-#endif
+    simplifier.simplify(*geometry, pointsToProtectDuringSimplification);  // this will replace the normal vector with a new one
 
-#if 1
     osgUtil::TriStripVisitor tsv;
     tsv.stripify(*geometry);
-#endif
-
 
     osg::Geode* geode = new osg::Geode;
     geode->addDrawable(geometry);

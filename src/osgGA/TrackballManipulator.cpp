@@ -53,6 +53,8 @@ void TrackballManipulator::home(const GUIEventAdapter& ,GUIActionAdapter& us)
                         boundingSphere._center,
                         osg::Vec3(0.0f,0.0f,1.0f));
 
+        computeLocalDataFromCamera();
+
         us.requestRedraw();
     }
 
@@ -62,8 +64,9 @@ void TrackballManipulator::home(const GUIEventAdapter& ,GUIActionAdapter& us)
 void TrackballManipulator::init(const GUIEventAdapter& ,GUIActionAdapter& )
 {
     flushMouseEventStack();
+    
+    computeLocalDataFromCamera();
 }
-
 
 bool TrackballManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
 {
@@ -200,6 +203,41 @@ void TrackballManipulator::addMouseEvent(const GUIEventAdapter& ea)
 }
 
 
+
+void TrackballManipulator::computeLocalDataFromCamera()
+{
+    // maths from gluLookAt/osg::Matrix::makeLookAt
+    osg::Vec3 f(_camera->getCenterPoint()-_camera->getEyePoint());
+    f.normalize();
+    osg::Vec3 s(f^_camera->getUpVector());
+    s.normalize();
+    osg::Vec3 u(s^f);
+    u.normalize();
+
+    osg::Matrix rotation_matrix(s[0],     u[0],     -f[0],     0.0f,
+                                s[1],     u[1],     -f[1],     0.0f,
+                                s[2],     u[2],     -f[2],     0.0f,
+                                0.0f,     0.0f,     0.0f,      1.0f);
+                   
+    _center = _camera->getCenterPoint();
+    _distance = _camera->getLookDistance();
+    _rotation.set(rotation_matrix);
+    _rotation = _rotation.inverse();
+     
+}
+
+void TrackballManipulator::computeCameraFromLocalData()
+{
+    osg::Matrix new_rotation;
+    new_rotation.makeRotate(_rotation);
+    
+    osg::Vec3 up = osg::Vec3(0.0f,1.0f,0.0) * new_rotation;
+    osg::Vec3 eye = (osg::Vec3(0.0f,0.0f,_distance) * new_rotation) + _center;
+
+    _camera->setLookAt(eye,_center,up);
+}
+
+
 bool TrackballManipulator::calcMovement()
 {
 
@@ -220,7 +258,6 @@ bool TrackballManipulator::calcMovement()
 
         // rotate camera.
 
-        osg::Vec3 center = _camera->getCenterPoint();
         osg::Vec3 axis;
         float angle;
 
@@ -244,12 +281,12 @@ bool TrackballManipulator::calcMovement()
 
         trackball(axis,angle,px1,py1,px0,py0);
 
-        osg::Matrix mat;
-        mat.makeTranslate(-center.x(),-center.y(),-center.z());
-        mat *= Matrix::rotate(angle,axis.x(),axis.y(),axis.z());
-        mat *= Matrix::translate(center.x(),center.y(),center.z());
+        osg::Quat new_rotate;
+        new_rotate.makeRotate(angle,axis);
+        
+        _rotation = _rotation*new_rotate;
 
-        _camera->transformLookAt(mat);
+        computeCameraFromLocalData();
 
         return true;
 
@@ -259,7 +296,6 @@ bool TrackballManipulator::calcMovement()
     {
 
         // pan model.
-        
 
         float scale = 0.0015f*focalLength;
 
@@ -267,11 +303,10 @@ bool TrackballManipulator::calcMovement()
         osg::Vec3 sv = _camera->getSideVector();
         osg::Vec3 dv = uv*(dy*scale)-sv*(dx*scale);
 
-        osg::Matrix mat;
-        mat.makeTranslate(dv.x(),dv.y(),dv.z());
-
-        _camera->transformLookAt(mat);
+        _center += dv;
         
+        computeCameraFromLocalData();
+
         return true;
 
     }
@@ -284,29 +319,23 @@ bool TrackballManipulator::calcMovement()
         float scale = 1.0f-dy*0.001f;
         if (fd*scale>_modelScale*_minimumZoomScale)
         {
-            // zoom camera in.
-            osg::Vec3 center = _camera->getCenterPoint();
 
-            osg::Matrix mat;
-            mat.makeTranslate(-center.x(),-center.y(),-center.z());
-            mat *= Matrix::scale(scale,scale,scale);
-            mat *= Matrix::translate(center.x(),center.y(),center.z());
+            _distance *= scale;
 
-            _camera->transformLookAt(mat);
+            computeCameraFromLocalData();
 
         }
         else
         {
 
-            //            notify(DEBUG_INFO) << "Pushing forward"<<std::endl;
+            // notify(DEBUG_INFO) << "Pushing forward"<<std::endl;
             // push the camera forward.
             float scale = 0.0015f*fd;
             osg::Vec3 dv = _camera->getLookVector()*(dy*scale);
 
-            osg::Matrix mat;
-            mat.makeTranslate(dv.x(),dv.y(),dv.z());
+            _center += dv;
 
-            _camera->transformLookAt(mat);
+            computeCameraFromLocalData();
 
         }
 

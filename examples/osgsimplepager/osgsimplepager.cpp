@@ -129,15 +129,7 @@ int main( int argc, char **argv )
     {
         numTimesToRun = atoi(argv[2]);
     }
-    
-    
-    
 
-    // create the view of the scene.
-    osg::ref_ptr<osgUtil::SceneView> sceneView = new osgUtil::SceneView;
-    sceneView->setDefaults();
-    sceneView->setSceneData(loadedModel.get());
-    sceneView->setLightingMode(osgUtil::SceneView::SKY_LIGHT);
     
     // do the set up of the DatabasePager...
     // create the database pager via the osgDB::Registry
@@ -151,11 +143,8 @@ int main( int argc, char **argv )
     // databasePager->setCompileGLObjectsForContextID(sceneView->getState()->getContextID(),true);
 
     // register any PagedLOD that need to be tracked in the scene graph
-    databasePager->registerPagedLODs(sceneView->getSceneData());
+    databasePager->registerPagedLODs(loadedModel.get());
 
-    // need to register the DatabasePager with the SceneView's CullVisitor so it can pass on request
-    // for files to be loaded.
-    sceneView->getCullVisitor()->setDatabaseRequestHandler(databasePager);
  
     
     // record the timer tick at the start of rendering.    
@@ -177,6 +166,17 @@ int main( int argc, char **argv )
 
     for(unsigned int i=0;i<numTimesToRun;++i)
     {
+        // create the view of the scene.
+        osg::ref_ptr<osgUtil::SceneView> sceneView = new osgUtil::SceneView;
+        sceneView->setDefaults();
+        sceneView->setSceneData(loadedModel.get());
+        sceneView->setLightingMode(osgUtil::SceneView::SKY_LIGHT);
+
+        // need to register the DatabasePager with the SceneView's CullVisitor so it can pass on request
+        // for files to be loaded.
+        sceneView->getCullVisitor()->setDatabaseRequestHandler(databasePager);
+
+
         // create the window to draw to.
         osg::ref_ptr<Producer::RenderSurface> renderSurface = new Producer::RenderSurface;
         renderSurface->setWindowName("osgsimplepager");
@@ -260,7 +260,7 @@ int main( int argc, char **argv )
         sceneView->flushAllDeletedGLObjects();
 
         // reset the osg::State so that next time its used its in a cleaned state.
-        sceneView->getState()->reset();
+        // sceneView->getState()->reset();
     
     }
 

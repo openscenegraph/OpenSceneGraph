@@ -7,6 +7,7 @@
 #include <osg/GeoSet>
 #include <osg/Geode>
 #include <osg/Types>
+#include <osg/Notify>
 
 #include <osgUtil/TriStripVisitor>
 
@@ -293,7 +294,7 @@ void TriStripVisitor::stripify(GeoSet& gset)
         }
         else
         {
-            cout << "No triangles to stripify"<<endl;
+			notify(INFO) << "No triangles to stripify"<<endl;
         }
 
     }

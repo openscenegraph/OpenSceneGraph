@@ -303,7 +303,7 @@ void SceneView::draw()
         {
             osg::ref_ptr<osg::Camera> left_camera = new osg::Camera(*_camera);
             osg::ref_ptr<osg::Camera> right_camera = new osg::Camera(*_camera);
-            float iod = 0.05;
+            float iod = 0.05f;
 
             left_camera->adjustEyeOffsetForStereo(osg::Vec3(-iod*0.5,0.0f,0.0f),_screenDistance);
             right_camera->adjustEyeOffsetForStereo(osg::Vec3(iod*0.5,0.0f,0.0f),_screenDistance);
@@ -323,7 +323,7 @@ void SceneView::draw()
         {
             osg::ref_ptr<osg::Camera> left_camera = new osg::Camera(*_camera);
             osg::ref_ptr<osg::Camera> right_camera = new osg::Camera(*_camera);
-            float iod = 0.05;
+            float iod = 0.05f;
 
             left_camera->adjustEyeOffsetForStereo(osg::Vec3(-iod*0.5,0.0f,0.0f),_screenDistance);
             right_camera->adjustEyeOffsetForStereo(osg::Vec3(iod*0.5,0.0f,0.0f),_screenDistance);

@@ -1,0 +1,93 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSG_APPLICATIONUSAGE
+#define OSG_APPLICATIONUSAGE 1
+
+#include <osg/Export>
+
+#include <map>
+#include <string>
+#include <iostream>
+
+namespace osg {
+
+class SG_EXPORT ApplicationUsage
+{
+    public:
+        
+        static ApplicationUsage* instance();
+
+        ApplicationUsage() {}
+
+        ApplicationUsage(const std::string& commandLineUsage);
+
+        typedef std::map<std::string,std::string> UsageMap;
+        
+        enum Type
+        {
+            COMMAND_LINE_OPTION,
+            ENVIRONMENTAL_VARIABLE,
+            KEYBOARD_MOUSE_BINDING
+        };
+        
+        void addUsageExplanation(Type type,const std::string& option,const std::string& explanation);
+        
+        void setCommandLineUsage(const std::string& explanation) { _commandLineUsage=explanation; }
+
+        const std::string& getCommandLineUsage() const { return _commandLineUsage; }
+
+
+        void addCommandLineOption(const std::string& option,const std::string& explanation);
+        
+        const UsageMap& getCommandLineOptions() const { return _commandLineOptions; }
+
+
+        void addEnvironmentalVariable(const std::string& option,const std::string& explanation);
+        
+        const UsageMap& getEnvironmentalVariables() const { return _environmentalVariables; }
+
+
+        void addKeyboardMouseBinding(const std::string& option,const std::string& explanation);
+
+        const UsageMap& getKeyboardMouseBindings() const { return _keyboardMouse; }
+
+
+        void write(std::ostream& output,const UsageMap& um,unsigned int widthOfOutput=80);
+        
+        void write(std::ostream& output,unsigned int widthOfOutput=80);
+
+    protected:
+    
+
+        std::string _commandLineUsage;
+        UsageMap    _commandLineOptions;
+        UsageMap    _environmentalVariables;
+        UsageMap    _keyboardMouse;
+        
+};
+
+class ApplicationUsageProxy
+{   
+    public:
+
+        /** register an explanation of commandline/evironmentalvaraible/keyboard mouse usage.*/
+        ApplicationUsageProxy(ApplicationUsage::Type type,const std::string& option,const std::string& explanation)
+        {
+            ApplicationUsage::instance()->addUsageExplanation(type,option,explanation);
+        }
+};
+
+}
+
+#endif

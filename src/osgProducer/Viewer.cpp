@@ -6,12 +6,16 @@
 
 #include <osgUtil/UpdateVisitor>
 
+#include <osgDB/Registry>
+
+#include <osgGA/AnimationPathManipulator>
 #include <osgGA/TrackballManipulator>
 #include <osgGA/FlightManipulator>
 #include <osgGA/DriveManipulator>
 #include <osgGA/StateSetManipulator>
 
 using namespace osgProducer;
+
 
 Viewer::Viewer():
     _done(0),
@@ -35,6 +39,27 @@ Viewer::Viewer(const std::string& configFile):
     _kbmcb(0)
 {
 }
+
+Viewer::Viewer(osg::ArgumentParser& arguments):
+    CameraGroup(arguments),
+    _done(false),
+    _frameNumber(0),
+    _kbmcb(0)
+{
+    osg::DisplaySettings::instance()->readCommandLine(arguments);
+
+    std::string pathfile;
+    while (arguments.read("-p",pathfile))
+    {
+	osg::ref_ptr<osgGA::AnimationPathManipulator> apm = new osgGA::AnimationPathManipulator(pathfile);
+	if( apm.valid() && apm->valid() ) 
+        {
+            unsigned int num = addCameraManipulator(apm.get());
+            selectCameraManipulator(num);
+        }
+    }
+}
+
 
 void Viewer::setUpViewer(unsigned int options)
 {
@@ -108,7 +133,7 @@ void Viewer::setUpViewer(unsigned int options)
     if (options&STATS_MANIPULATOR)
     {
         // register the drawing of stats to pipe 0.
-        Producer::FrameStatsHandler* fsh = new Producer::FrameStatsHandler;
+        FrameStatsHandler* fsh = new FrameStatsHandler;
         setStatsHandler(fsh);
         getCamera(0)->addPostDrawCallback(fsh);
 

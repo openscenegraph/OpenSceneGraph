@@ -13,6 +13,7 @@ SRC_DIRS = \
 	osgGA\
 	osgParticle\
 	osgGLUT\
+	osgProducer\
 	osgText\
 	osgSim\
 	osgPlugins\
@@ -94,6 +95,7 @@ DEMOS_DIRS = \
 	osgoccluder\
 	osgparticle\
 	osgprerender\
+	osgproducer\
 	osgshadowtexture\
 	osgreflect\
 	osgscribe\

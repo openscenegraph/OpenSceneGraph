@@ -11,6 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/DisplaySettings>
+#include <osg/ApplicationUsage>
 #include <osg/ref_ptr>
 
 #include <algorithm>
@@ -103,6 +104,17 @@ void DisplaySettings::setDefaults()
     _maxNumOfGraphicsContexts = 1;
     #endif
 }
+
+ApplicationUsageProxy e0(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_STEREO_MODE <mode>","QUAD_BUFFER | ANAGLYPHIC | HORIZONTAL_SPLIT | VERTICAL_SPLIT | LEFT_EYE | RIGHT_EYE");
+ApplicationUsageProxy e1(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_STEREO <mode>","OFF | ON");
+ApplicationUsageProxy e2(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_EYE_SEPARATION <float>","physical distance between eyes");
+ApplicationUsageProxy e3(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_SCREEN_DISTANCE <float>","physical distance between eyes and screen");
+ApplicationUsageProxy e4(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_SCREEN_HEIGHT <float>","physical screen height");
+ApplicationUsageProxy e5(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_SPLIT_STEREO_HORIZONTAL_EYE_MAPPING <mode>","LEFT_EYE_LEFT_VIEWPORT | LEFT_EYE_RIGHT_VIEWPORT");
+ApplicationUsageProxy e8(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_SPLIT_STEREO_HORIZONTAL_SEPARATION <float>","number of pixels between viewports");
+ApplicationUsageProxy e9(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_SPLIT_STEREO_VERTICAL_EYE_MAPPING <mode>","LEFT_EYE_TOP_VIEWPORT | LEFT_EYE_BOTTOM_VIEWPORT");
+ApplicationUsageProxy e11(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_SPLIT_STEREO_VERTICAL_SEPARATION <float>","number of pixels between viewports");
+ApplicationUsageProxy e12(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_MAX_NUMBER_OF_GRAPHICS_CONTEXTS <int>","maximum number of graphics contexts to be used with applications.");
 
 void DisplaySettings::readEnvironmentalVariables()
 {
@@ -280,4 +292,32 @@ void DisplaySettings::readCommandLine(std::vector<std::string>& commandLine)
         }
 
     }    
+}
+
+void DisplaySettings::readCommandLine(ArgumentParser& parser)
+{
+    int pos;
+    while ((pos=parser.find("-stereo"))!=0)
+    {
+        if (parser.match(pos+1,"ANAGLYPHIC"))            { parser.remove(pos,2); _stereo = true;_stereoMode = ANAGLYPHIC; }
+        else if (parser.match(pos+1,"QUAD_BUFFER"))      { parser.remove(pos,2); _stereo = true;_stereoMode = QUAD_BUFFER; }
+        else if (parser.match(pos+1,"HORIZONTAL_SPLIT")) { parser.remove(pos,2); _stereo = true;_stereoMode = HORIZONTAL_SPLIT; }
+        else if (parser.match(pos+1,"VERTICAL_SPLIT"))   { parser.remove(pos,2); _stereo = true;_stereoMode = VERTICAL_SPLIT; }
+        else if (parser.match(pos+1,"LEFT_EYE"))         { parser.remove(pos,2); _stereo = true;_stereoMode = LEFT_EYE; }
+        else if (parser.match(pos+1,"RIGHT_EYE"))        { parser.remove(pos,2); _stereo = true;_stereoMode = RIGHT_EYE; }
+        else if (parser.match(pos+1,"ON"))               { parser.remove(pos,2); _stereo = true; }
+        else if (parser.match(pos+1,"OFF"))              { parser.remove(pos,2); _stereo = false; }
+        else                                             { parser.remove(pos); _stereo = true; }
+    }
+
+    while (parser.read("-rgba"))
+    {
+        _RGB = true;
+        _minimumNumberAlphaBits = 1;
+    }            
+
+    while (parser.read("-stencil"))
+    {
+        _minimumNumberStencilBits = 1;
+    }
 }

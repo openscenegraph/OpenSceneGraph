@@ -17,6 +17,7 @@
 #include <osg/Node>
 #include <osg/Group>
 #include <osg/Geode>
+#include <osg/ApplicationUsage>
 
 #include <osgDB/Registry>
 #include <osgDB/FileUtils>
@@ -83,7 +84,11 @@ Registry::~Registry()
 {
 }
 
-
+#ifndef WIN32
+osg::ApplicationUsageProxy e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_FILE_PATH <path>[:path]..","Paths for locating datafiles");
+#else
+osg::ApplicationUsageProxy e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_FILE_PATH <path>[;path]..","Paths for locating datafiles");
+#endif
 
 void Registry::initDataFilePathList()
 {
@@ -105,6 +110,12 @@ void Registry::initDataFilePathList()
     osg::notify(INFO)<<"Data FilePathList"<<std::endl;
     PrintFilePathList(osg::notify(INFO),getDataFilePathList());
 }
+
+#ifndef WIN32
+osg::ApplicationUsageProxy e1(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_LIBRARY_PATH <path>[:path]..","Paths for locating libraries/ plugins");
+#else
+osg::ApplicationUsageProxy e1(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_LIBRARY_PATH <path>[;path]..","Paths for locating libraries/ plugins");
+#endif
 
 void Registry::initLibraryFilePathList()
 {
@@ -264,6 +275,27 @@ void Registry::readCommandLine(std::vector<std::string>& commandLine)
         }
         
     }    
+}
+
+void Registry::readCommandLine(osg::ArgumentParser& parser)
+{
+
+    std::string value;
+    while(parser.read("-l",value))
+    {
+        loadLibrary(value);
+    }
+        
+    while(parser.read("-e",value))
+    {
+        std::string libName = createLibraryNameForExt(value);
+        loadLibrary(libName);
+    }
+
+    while(parser.read("-O",value))
+    {
+        setOptions(new osgDB::ReaderWriter::Options(value));
+    }
 }
 
 void Registry::addDotOsgWrapper(DotOsgWrapper* wrapper)

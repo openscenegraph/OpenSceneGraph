@@ -14,18 +14,33 @@ std::string findCameraConfigFile(const std::string& configFile)
     else return foundFile;
 }
 
+std::string extractCameraConfigFile(osg::ArgumentParser& arguments)
+{
+    std::string filename;
+    if (arguments.read("-c",filename)) return filename;
+    return "";
+}
+
 
 CameraGroup::CameraGroup() : Producer::CameraGroup() 
 {
     _init();
 }
 
-CameraGroup::CameraGroup(Producer::CameraConfig *cfg): Producer::CameraGroup(cfg) 
+CameraGroup::CameraGroup(Producer::CameraConfig *cfg):
+    Producer::CameraGroup(cfg) 
 {
     _init();
 }
 
-CameraGroup::CameraGroup(const std::string& configFile) : Producer::CameraGroup(findCameraConfigFile(configFile)) 
+CameraGroup::CameraGroup(const std::string& configFile):
+    Producer::CameraGroup(findCameraConfigFile(configFile)) 
+{
+    _init();
+}
+
+CameraGroup::CameraGroup(osg::ArgumentParser& arguments):
+    Producer::CameraGroup(extractCameraConfigFile(arguments))
 {
     _init();
 }

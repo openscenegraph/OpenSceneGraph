@@ -16,6 +16,7 @@
 
 #include <osg/Timer>
 #include <osg/NodeVisitor>
+#include <osg/ArgumentParser>
 
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventHandler>
@@ -37,6 +38,8 @@ class OSGPRODUCER_EXPORT Viewer : public CameraGroup, public osgGA::GUIActionAda
         Viewer(Producer::CameraConfig *cfg);
 
         Viewer(const std::string& configFile);
+
+        Viewer(osg::ArgumentParser& arguments);
 
         virtual ~Viewer() {}
 

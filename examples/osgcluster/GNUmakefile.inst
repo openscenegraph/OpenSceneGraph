@@ -6,7 +6,7 @@ CXXFILES =\
 	osgcluster.cpp\
 	receiver.cpp\
 
-LIBS     += -losgProducer -lProducer -losgDB -losgUtil -losg $(GL_LIBS) $(X_LIBS) $(SOCKET_LIBS) $(OTHER_LIBS) 
+LIBS     += -losgProducer -lProducer -losgDB -losgText -losgUtil -losg $(GL_LIBS) $(X_LIBS) $(SOCKET_LIBS) $(OTHER_LIBS) 
 
 EXEC = osgcluster
 

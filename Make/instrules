@@ -137,8 +137,12 @@ __install :
 	  done\
 	fi
 
+# These lines cause instlinks to install links pointing to the actual files
+# rather than the links in $(TOPDIR)/{bin,lib,include}.  Advantage of this
+# is for systems that hold multiple platforms  in the same nfs mounted source
+# but install different executables.  Disadvantage is that it is not trivial
+# to change to debug version by simply doing a 'make debug'.
 #		while [ -L $$INSTPATH ]; \
-
 #		while `csh -f -c "test -L $$INSTPATH"` ;\
 #		do \
 #		    ll=`ls -l $$INSTPATH | cut -f2 -d">"`;\

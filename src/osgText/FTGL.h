@@ -17,16 +17,11 @@
         #ifdef __APPLE_CC__
             #include <OpenGL/gl.h>
             #include <OpenGL/glu.h>
-            #ifndef GL_TEXTURE_2D_BINDING_EXT
-            	#include <OpenGL/glext.h>
-            #endif
         #else
-	    	#include <GL/gl.h>
-	    	#include <GL/glu.h>
-            #ifndef GL_TEXTURE_2D_BINDING_EXT
-            	#include <GL/glext.h>
-            #endif
-		#endif
+	    #include <GL/gl.h>
+	    #include <GL/glu.h>
+        #endif                
+
     #endif
 
     // required for compatibility with glext.h style function definitions of 
@@ -77,11 +72,17 @@
     #ifndef __gl_h_
         #include <GL/gl.h>
         #include <GL/glu.h>
-            #ifndef GL_TEXTURE_2D_BINDING_EXT
-            	#include <GL/glext.h>
-            #endif
     #endif
 
+#endif
+
+// lifted from glext.h, to remove dependancy on glext.h
+#ifndef GL_EXT_texture_object
+    #define GL_TEXTURE_PRIORITY_EXT           0x8066
+    #define GL_TEXTURE_RESIDENT_EXT           0x8067
+    #define GL_TEXTURE_1D_BINDING_EXT         0x8068
+    #define GL_TEXTURE_2D_BINDING_EXT         0x8069
+    #define GL_TEXTURE_3D_BINDING_EXT         0x806A
 #endif
 
 #if defined(_MSC_VER)

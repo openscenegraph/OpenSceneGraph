@@ -29,14 +29,7 @@
 #include <osg/Vec2>
 
 // http://homepages.paradise.net.nz/henryj/code/
-/*
-#include <FTFace.h>
-#include <FTGLBitmapFont.h>
-#include <FTGLPixmapFont.h>
-#include <FTGLOutlineFont.h>
-#include <FTGLPolygonFont.h>
-#include <FTGLTextureFont.h>
-*/
+
 #include <osgText/Export>
 
 class FTFont;

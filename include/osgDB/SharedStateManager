@@ -57,10 +57,10 @@ namespace osgDB {
     protected:
 
         void process(osg::StateSet* ss, osg::Object* parent);
-        inline osg::StateAttribute *find(osg::StateAttribute *sa);
-        inline osg::StateSet *find(osg::StateSet *ss);
-        inline void setStateSet(osg::StateSet* ss, osg::Object* object);
-        inline void shareTextures(osg::StateSet* ss);
+        osg::StateAttribute *find(osg::StateAttribute *sa);
+        osg::StateSet *find(osg::StateSet *ss);
+        void setStateSet(osg::StateSet* ss, osg::Object* object);
+        void shareTextures(osg::StateSet* ss);
 
         // Lists of shared objects
         typedef std::set< osg::ref_ptr<osg::StateAttribute> > TextureSet;

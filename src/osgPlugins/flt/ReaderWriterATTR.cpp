@@ -613,7 +613,11 @@ StateSet* Attr::createOsgStateSet()
         osgTexture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::NEAREST);
         break;
     case MIN_FILTER_BILINEAR:
-        osgTexture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::LINEAR);
+        // TX_BILINEAR is an old IrisGL mode which should map to OpenGL's LINEAR
+        // osgTexture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::LINEAR);
+        // but we're getting awful quality so we'll use LINEAR_MIP_MAP_LINEAR instead.
+        osg::notify(osg::INFO) << "texture mode MIN_FILTER_BILINEAR encountered, remapping to LINEAR_MIPMAP_LINEAR"<<std::endl;
+        osgTexture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::LINEAR_MIPMAP_LINEAR);
         break;
     case MIN_FILTER_MIPMAP_POINT:
         osgTexture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::NEAREST_MIPMAP_NEAREST);
@@ -628,15 +632,22 @@ StateSet* Attr::createOsgStateSet()
         osgTexture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::LINEAR_MIPMAP_LINEAR);
         break;
     case MIN_FILTER_BICUBIC:
+        cout << "MIN_FILTER_BICUBIC"<<endl;
         osgTexture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::LINEAR);
         break;
     case MIN_FILTER_BILINEAR_GEQUAL:
     case MIN_FILTER_BILINEAR_LEQUAL:
+        // from IrisGL->OpenGL doc its looks like this is old IrisGL mdoe for shadowing support.
+        // should probably look
+        osg::notify(osg::INFO) << "texture mode MIN_FILTER_BILINEAR_*EQUAL encountered, remapping to LINEAR"<<std::endl;
         osgTexture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::LINEAR);
         break;
     case MIN_FILTER_BICUBIC_GEQUAL:
     case MIN_FILTER_BICUBIC_LEQUAL:
     default:
+        // from IrisGL->OpenGL doc its looks like this is old IrisGL mdoe for shadowing support.
+        // should probably look
+          osg::notify(osg::INFO) << "texture mode MIN_FILTER_BICUBIC_*EQUAL encountered, remapping to LINEAR"<<std::endl;
           osgTexture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::LINEAR);
           break;
     }

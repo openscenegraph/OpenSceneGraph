@@ -159,6 +159,7 @@ sMStats    m_getMemoryStatistics()
     static        bool        alwaysValidateAll      = true;
     static        bool        alwaysLogAll           = true;
     static        bool        alwaysWipeAll          = true;
+    static        bool        checkOnAllocations     = true;
     static        bool        checkForUnitialized    = true;
     static        bool        cleanupLogOnFirstRun   = true;
     static    const    unsigned int    paddingSize            = 1024; // An extra 8K per allocation!
@@ -168,6 +169,7 @@ sMStats    m_getMemoryStatistics()
     static        bool        alwaysValidateAll      = false;
     static        bool        alwaysLogAll           = false;
     static        bool        alwaysWipeAll          = true;
+    static        bool        checkOnAllocations     = true;
     static        bool        checkForUnitialized    = false;
     static        bool        cleanupLogOnFirstRun   = true;
     static    const    unsigned int    paddingSize            = 4;
@@ -258,6 +260,17 @@ sMStats    m_getMemoryStatistics()
                         m_breakOnAllocation(value);
                     }
                 }
+                
+                
+
+                if( (ptr = getenv("OSG_MM_CHECK_ON_ALLOCATIONS")) != 0)
+                {
+                    if (strcmp(ptr,"OFF")!=0)
+                    {
+                        checkOnAllocations=true;
+                    }
+                }
+                
 
                 if( (ptr = getenv("OSG_MM_CHECK_FOR_UNINITIALIZED")) != 0)
                 {
@@ -470,7 +483,7 @@ sMStats    m_getMemoryStatistics()
         int numNotMatching=0;
 
 
-        long    *lptr = (long *) ((char *)allocUnit->reportedAddress);
+        unsigned long    *lptr = (unsigned long *) ((char *)allocUnit->reportedAddress);
         int    length = allocUnit->reportedSize;
         int    i;
         for (i = 0; i < (length >> 2); i++, lptr++)
@@ -995,7 +1008,7 @@ sMStats    m_getMemoryStatistics()
     {
 
         // check that exists allocated units havn't been damaged.
-        if (checkForUnitialized) m_validateAllAllocUnits();
+        if (checkOnAllocations || checkForUnitialized) m_validateAllAllocUnits();
 
         try
         {
@@ -1731,4 +1744,3 @@ sMStats    m_getMemoryStatistics()
 // ---------------------------------------------------------------------------------------------------------------------------------
 // mmgr.cpp - End of file
 // ---------------------------------------------------------------------------------------------------------------------------------
-

@@ -123,7 +123,7 @@ public:
         
         bool isBoundaryPoint() const
         {
-            for(TriangleSet::iterator itr=_triangles.begin();
+            for(TriangleSet::const_iterator itr=_triangles.begin();
                 itr!=_triangles.end();
                 ++itr)
             {

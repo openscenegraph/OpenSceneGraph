@@ -36,6 +36,8 @@ class SG_EXPORT ConvexPlanarPolygon
 
         void add(const Vec3& v) { _vertexList.push_back(v); }
         
+        void setVertexList(const VertexList& vertexList) { _vertexList=vertexList; }
+
         VertexList& getVertexList() { return _vertexList; }
         
         const VertexList& getVertexList() const { return _vertexList; }

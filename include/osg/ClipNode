@@ -39,15 +39,15 @@ class SG_EXPORT ClipNode : public Group
 
 
         /** Adds the clipplane. Returns true on success, and false if the plane
-		  * has already been added, or if clipplane is NULL. */
+          * has already been added, or if clipplane is NULL. */
         bool addClipPlane(ClipPlane* clipplane);
 
         /** Removes the clipplane. Returns true on success, false if clipplane
-		  * isn't in this ClipNode.*/
+         * isn't in this ClipNode.*/
         bool removeClipPlane(ClipPlane* clipplane);
 
         /** Remove the ClipPlane with the given index. Returns true on success,
-		  * false if pos is not a valid plane index. */
+          * false if pos is not a valid plane index. */
         bool removeClipPlane(unsigned int pos);
 
         /** Returns the number of ClipPlanes. */
@@ -59,6 +59,9 @@ class SG_EXPORT ClipNode : public Group
 
         /** Get const ClipPlane at the given index position. */
         inline const ClipPlane* getClipPlane(unsigned int pos) const { return _planes[pos].get(); }
+
+        /** Set the ClipPlaneList. */
+        inline void getClipPlaneList(const ClipPlaneList& cpl) { _planes=cpl; }
 
         /** Get the ClipPlaneList. */
         inline ClipPlaneList& getClipPlaneList() { return _planes; }

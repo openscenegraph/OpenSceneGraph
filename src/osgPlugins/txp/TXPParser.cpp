@@ -1526,7 +1526,7 @@ osg::Texture2D* txp::getLocalTexture(trpgrImageHelper& image_helper, const trpgT
             {
                 mipmaps[k-1] = tmp_tex->MipLevelOffset(k);
             }
-            image->setMipmapData(mipmaps);
+            image->setMipmapLevels(mipmaps);
 
         }
 
@@ -1601,7 +1601,7 @@ osg::Texture2D* txp::getTemplateTexture(trpgrImageHelper& image_helper, trpgLoca
             {
                 mipmaps[k-1] = tmp_tex->MipLevelOffset(k);
             }
-            image->setMipmapData(mipmaps);
+            image->setMipmapLevels(mipmaps);
 
         }
 

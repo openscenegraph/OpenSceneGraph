@@ -243,7 +243,7 @@ osg::Node* createMirroredScene(osg::Node* model)
         // poke through the mirror.  However, this clip plane should really
         // flip sides once the eye point goes to the back of the mirror...
         osg::ClipPlane* clipplane = new osg::ClipPlane;
-        clipplane->setClipPlane(osg::Vec4(0.0f,0.0f,-1.0f,z));
+        clipplane->setClipPlane(0.0,0.0,-1.0,z);
         clipplane->setClipPlaneNum(0);
 
         osg::ClipNode* clipNode = new osg::ClipNode;

@@ -86,11 +86,7 @@ bool AnimationPath_readLocalData(osg::Object &obj, osgDB::Input &fr)
             {
 
 
-                osg::AnimationPath::ControlPoint ctrlPoint;
-                ctrlPoint._position = position;
-                ctrlPoint._rotation = rotation;
-                ctrlPoint._scale = scale;
-
+                osg::AnimationPath::ControlPoint ctrlPoint(position,rotation,scale);
                 ap->insert(time, ctrlPoint);
 
                 fr+=11; 
@@ -138,7 +134,7 @@ bool AnimationPath_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
          itr!=tcpm.end(); 
          ++itr)
     {
-        fw.indent() << itr->first << " " << itr->second._position << " " << itr->second._rotation << " " << itr->second._scale << std::endl;
+        fw.indent() << itr->first << " " << itr->second.getPosition() << " " << itr->second.getRotation() << " " <<itr->second.getScale() << std::endl;
 
     }
 

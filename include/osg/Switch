@@ -70,28 +70,11 @@ class SG_EXPORT Switch : public Group
         /** Set a single child on, switch off all other children. */
         bool setSingleChildOn(unsigned int pos);
         
-#ifdef USE_DEPRECATED_API
-        /** Special values for the Switch. Use these if you want to
-          * turn on/off all child nodes. */
-        enum Values {
-                /** All children turned on. */
-		ALL_CHILDREN_ON=-1,
-                /** All children off. */
-		ALL_CHILDREN_OFF=-2,
-                /** Multiple children turned on.*/
-                MULTIPLE_CHILDREN_ON=-3
-        };
-
-        /** Selects the active child Node or enables a special SwitchType mode.
-          * @param value the number of the active child (first child == number
-          * 0) or SwitchType. Invalid values will be ignored. */
-        void setValue(int value);
-
-        int getValue() const;
-#endif        
 
         typedef std::vector<bool>   ValueList;
         
+        void setValueList(const ValueList& values) { _values=values; }
+
         const ValueList& getValueList() const { return _values; }
 
     protected :

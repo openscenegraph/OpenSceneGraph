@@ -106,7 +106,7 @@ void AnimationPath::write(std::ostream& fout) const
         ++tcpmitr)
     {
         const ControlPoint& cp = tcpmitr->second;
-        fout<<tcpmitr->first<<" "<<cp._position<<" "<<cp._rotation<<std::endl;
+        fout<<tcpmitr->first<<" "<<cp.getPosition()<<" "<<cp.getRotation()<<std::endl;
     }
 
     fout.precision(prec);
@@ -139,16 +139,16 @@ class AnimationPathCallbackVisitor : public NodeVisitor
                 Matrix matrix;
                 _cp.getInverse(matrix);
                 pat.setPosition(matrix.getTrans());
-                pat.setAttitude(_cp._rotation.inverse());
-                pat.setScale(osg::Vec3(1.0f/_cp._scale.x(),1.0f/_cp._scale.y(),1.0f/_cp._scale.z()));
+                pat.setAttitude(_cp.getRotation().inverse());
+                pat.setScale(osg::Vec3(1.0f/_cp.getScale().x(),1.0f/_cp.getScale().y(),1.0f/_cp.getScale().z()));
                 pat.setPivotPoint(_pivotPoint);
                 
             }
             else
             {
-                pat.setPosition(_cp._position);
-                pat.setAttitude(_cp._rotation);
-                pat.setScale(_cp._scale);
+                pat.setPosition(_cp.getPosition());
+                pat.setAttitude(_cp.getRotation());
+                pat.setScale(_cp.getScale());
                 pat.setPivotPoint(_pivotPoint);
             }
         }

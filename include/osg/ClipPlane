@@ -14,6 +14,7 @@
 #ifndef OSG_CLIPPLANE
 #define OSG_CLIPPLANE 1
 
+#include <osg/Vec4d>
 #include <osg/Plane>
 #include <osg/StateAttribute>
 
@@ -26,7 +27,7 @@ class SG_EXPORT ClipPlane : public StateAttribute
     public :
 
         ClipPlane();
-        inline ClipPlane(unsigned int no,const Vec4& plane)    { setClipPlaneNum(no); setClipPlane(plane); }
+        inline ClipPlane(unsigned int no,const Vec4d& plane)    { setClipPlaneNum(no); setClipPlane(plane); }
         inline ClipPlane(unsigned int no,const Plane& plane)   { setClipPlaneNum(no); setClipPlane(plane); }
         inline ClipPlane(unsigned int no,double a,double b,double c,double d)  { setClipPlaneNum(no); setClipPlane(a,b,c,d); }
 
@@ -69,29 +70,24 @@ class SG_EXPORT ClipPlane : public StateAttribute
         }
 
 
-        /** Defines the clip plane with the given Vec4. */
-        void setClipPlane(const Vec4& plane);
-
-        /** Defines this plane with the given Plane. */
-        void setClipPlane(const Plane& plane);
-
-        /** Defines the clip plane with the given double[4]. */
-        void setClipPlane(const double* plane);
+        /** Set the clip plane with the given Plane. */
+        void setClipPlane(const Plane& plane) 
+	{
+           _clipPlane.set(plane[0],plane[1],plane[2],plane[3]);
+	}
 
         /** Defines the plane as [ a b c d ]. */
         void setClipPlane(double a,double b,double c,double d)
         {
-            _clipPlane[0]=a;_clipPlane[1]=b;_clipPlane[2]=c;_clipPlane[3]=d;
+            _clipPlane.set(a,b,c,d);
         }
 
-        /** Gets the clip plane as a Vec4. */
-        void getClipPlane(Vec4& plane) const;
+        /** Set the clip plane with the given Vec4. */
+        inline void setClipPlane(const Vec4d& plane) { _clipPlane = plane; }
 
-        /** Gets the clip plane as a Plane. */
-        void getClipPlane(Plane& plane) const;
+        /** Gets the clip plane as a Vec4d. */
+        const Vec4d& getClipPlane() const { return _clipPlane; }
 
-        /** Gets the clip plane as an array of doubles. */
-        void getClipPlane(double* plane) const;
 
         /** Sets the clip plane number. */
         void setClipPlaneNum(unsigned int num);
@@ -106,7 +102,7 @@ class SG_EXPORT ClipPlane : public StateAttribute
     
         virtual ~ClipPlane();
         
-        double              _clipPlane[4];
+        Vec4d               _clipPlane;
         unsigned int        _clipPlaneNum;
 
 };

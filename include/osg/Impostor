@@ -77,16 +77,13 @@ class SG_EXPORT Impostor : public LOD
 		*/
         inline void setImpostorThreshold(float distance) { _impostorThreshold = distance; }
         
-        /** Set the Impostor threshold distance relative to the node's bounding
-          * sphere's radius.
-		*/
-        inline void setImpostorThresholdToBound(float ratio=1.0f) { _impostorThreshold = getBound().radius()*ratio; }
-
         /* Get the Impostor threshold distance. */
         inline float getImpostorThreshold() const { return _impostorThreshold; }
 
-        /* Get the Impostor threshold distance squared. */
-        inline float getImpostorThreshold2() const { return _impostorThreshold*_impostorThreshold; }
+        /** Set the Impostor threshold distance relative to the node's bounding
+          * sphere's radius.
+          */
+        inline void setImpostorThresholdToBound(float ratio=1.0f) { _impostorThreshold = getBound().radius()*ratio; }
 
         /** Find the ImposterSprite which fits the current eye point best. */
         ImpostorSprite* findBestImpostorSprite(unsigned int contextID, const osg::Vec3& currLocalEyePoint) const;

@@ -92,6 +92,9 @@ class SG_EXPORT StateSet : public Object
           * returns INHERIT if no GLModeValue is contained within StateSet.*/
         StateAttribute::GLModeValue getMode(StateAttribute::GLMode mode) const;
 
+        /** set the list of all GLModes contained in this StateSet.*/
+        inline void setModeList(ModeList& ml) { _modeList=ml; }
+
         /** return the list of all GLModes contained in this StateSet.*/
         inline ModeList& getModeList() { return _modeList; }
 
@@ -135,6 +138,9 @@ class SG_EXPORT StateSet : public Object
           * Returns NULL if no type is contained within StateSet.*/
         const RefAttributePair* getAttributePair(StateAttribute::Type type, unsigned int member = 0) const;
         
+        /** set the list of all StateAttributes contained in this StateSet.*/
+        inline void setAttributeList(AttributeList& al) { _attributeList=al; }
+
         /** return the list of all StateAttributes contained in this StateSet.*/
         inline AttributeList& getAttributeList() { return _attributeList; }
 
@@ -159,6 +165,9 @@ class SG_EXPORT StateSet : public Object
         /** Get specified GLModeValue for specified GLMode.
           * returns INHERIT if no GLModeValue is contained within StateSet.*/
         StateAttribute::GLModeValue getTextureMode(unsigned int unit,StateAttribute::GLMode mode) const;
+
+        /** set the list of all Texture related GLModes contained in this StateSet.*/
+        inline void setTextureModeList(TextureModeList& tml) { _textureModeList=tml; }
 
         /** return the list of all Texture related GLModes contained in this StateSet.*/
         inline TextureModeList& getTextureModeList() { return _textureModeList; }
@@ -198,6 +207,9 @@ class SG_EXPORT StateSet : public Object
           * Returns NULL if no type is contained within StateSet.*/
         const RefAttributePair* getTextureAttributePair(unsigned int unit,StateAttribute::Type type) const;
         
+        /** Set the list of all Texture related StateAttributes contained in this StateSet.*/
+        inline void setTextureAttributeList(TextureAttributeList& tal) { _textureAttributeList=tal; }
+
         /** Return the list of all Texture related StateAttributes contained in this StateSet.*/
         inline TextureAttributeList& getTextureAttributeList() { return _textureAttributeList; }
 
@@ -240,14 +252,23 @@ class SG_EXPORT StateSet : public Object
         /** Set the render bin details to inherit.*/
         void setRenderBinToInherit();
         
-        /** Get the render bin mode.*/
-        inline RenderBinMode getRenderBinMode() const { return _binMode; }
-
         /** Get whether the render bin details are set and should be used.*/
         inline bool useRenderBinDetails() const { return _binMode!=INHERIT_RENDERBIN_DETAILS; }
 
+        /** Set the render bin mode.*/
+        inline void setRenderBinMode(RenderBinMode mode) { _binMode=mode; }
+
+        /** Get the render bin mode.*/
+        inline RenderBinMode getRenderBinMode() const { return _binMode; }
+
+        /** Set the render bin number.*/
+        inline void setBinNumber(int num) { _binNum=num; }
+
         /** Get the render bin number.*/
         inline int getBinNumber() const { return _binNum; }
+
+        /** Set the render bin name.*/
+        inline void setBinName(const std::string& name) { _binName=name; }
 
         /** Get the render bin name.*/
         inline const std::string& getBinName() const { return _binName; }

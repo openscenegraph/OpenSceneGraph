@@ -410,7 +410,7 @@ osg::Image* ReadDDSFile(std::istream& _istream)
 
 
     osgImage->setImage(s,t,r, internalFormat, pixelFormat, dataType, 0, osg::Image::USE_NEW_DELETE);
-    if (mipmaps.size()>0)  osgImage->setMipmapData(mipmaps);
+    if (mipmaps.size()>0)  osgImage->setMipmapLevels(mipmaps);
     unsigned int size = osgImage->getTotalSizeInBytesIncludingMipmaps();
 
     if(size <= 0)
@@ -428,7 +428,7 @@ osg::Image* ReadDDSFile(std::istream& _istream)
     _istream.read((char*)imageData, size);
 
     osgImage->setImage(s,t,r, internalFormat, pixelFormat, dataType, imageData, osg::Image::USE_NEW_DELETE);
-    if (mipmaps.size()>0)  osgImage->setMipmapData(mipmaps);
+    if (mipmaps.size()>0)  osgImage->setMipmapLevels(mipmaps);
  
 
 
@@ -463,10 +463,10 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
     // Initialize ddsd structure and its members 
     DDSURFACEDESC2 ddsd;
     DDPIXELFORMAT  ddpf;
-    DDCOLORKEY     ddckCKDestOverlay;
-    DDCOLORKEY     ddckCKDestBlt;
-    DDCOLORKEY     ddckCKSrcOverlay;
-    DDCOLORKEY     ddckCKSrcBlt;
+    //DDCOLORKEY     ddckCKDestOverlay;
+    //DDCOLORKEY     ddckCKDestBlt;
+    //DDCOLORKEY     ddckCKSrcOverlay;
+    //DDCOLORKEY     ddckCKSrcBlt;
     DDSCAPS2       ddsCaps;
 
     ddsd.dwSize = sizeof(ddsd);  
@@ -647,7 +647,7 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
         if(img->isMipmap())
         {
             dataPtr += imageSize;
-            unsigned char *mmdPtr, *next_mmdPtr;
+            const unsigned char *mmdPtr, *next_mmdPtr;
             int offset;
             unsigned int mipmaps = img->getNumMipmapLevels();
             unsigned int blockSize;

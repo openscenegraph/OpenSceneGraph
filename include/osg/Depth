@@ -73,8 +73,7 @@ class SG_EXPORT Depth : public StateAttribute
             return true;
         }
 
-        inline void setFunction(Function func) { _func = func; }
-        
+        inline void setFunction(Function func) { _func = func; }        
         inline Function getFunction() const { return _func; }
                
 
@@ -84,11 +83,13 @@ class SG_EXPORT Depth : public StateAttribute
             _zFar = zFar;
         }
 
+        inline void setZNear(double zNear) { _zNear=zNear; }
         inline double getZNear() const { return _zNear; }
+	
+        inline void setZFar(double zFar) { _zFar=zFar; }
         inline double getZFar() const { return _zFar; }
 
-        inline void setWriteMask(bool mask) { _depthWriteMask = mask; }
-        
+        inline void setWriteMask(bool mask) { _depthWriteMask = mask; }        
         inline bool getWriteMask() const { return _depthWriteMask; }
 
 

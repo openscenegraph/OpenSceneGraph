@@ -50,6 +50,7 @@ class SG_EXPORT NodeCallback : public virtual Object {
         
         void setNestedCallback(NodeCallback* nc) { _nestedCallback = nc; }
         NodeCallback* getNestedCallback() { return _nestedCallback.get(); }
+        const NodeCallback* getNestedCallback() const { return _nestedCallback.get(); }
         
         inline void addNestedCallback(NodeCallback* nc)
         {

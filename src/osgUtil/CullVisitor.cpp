@@ -1083,7 +1083,7 @@ void CullVisitor::apply(Impostor& node)
 
     float distance2 = (eyeLocal-bs.center()).length2();
     if (!_impostorActive ||
-        distance2*_LODScale*_LODScale<node.getImpostorThreshold2() ||
+        distance2*_LODScale*_LODScale<osg::square(node.getImpostorThreshold()) ||
         distance2<bs.radius2()*2.0f)
     {
         // outwith the impostor distance threshold therefore simple

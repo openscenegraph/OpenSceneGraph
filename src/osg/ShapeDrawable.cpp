@@ -457,7 +457,7 @@ void DrawShapeVisitor::apply(const Box& box)
 
 	if (!box.zeroRotation())
 	{
-    	    Matrix rotation(box.getRotationMatrix());
+    	    Matrix rotation(box.computeRotationMatrix());
     	    glMultMatrix(rotation.ptr());
 	}
 
@@ -573,7 +573,7 @@ void DrawShapeVisitor::apply(const Cone& cone)
 
 	if (!cone.zeroRotation())
 	{
-    	    Matrix rotation(cone.getRotationMatrix());
+    	    Matrix rotation(cone.computeRotationMatrix());
     	    glMultMatrix(rotation.ptr());
 	}
 
@@ -691,7 +691,7 @@ void DrawShapeVisitor::apply(const Cylinder& cylinder)
 
 	if (!cylinder.zeroRotation())
 	{
-    	    Matrix rotation(cylinder.getRotationMatrix());
+    	    Matrix rotation(cylinder.computeRotationMatrix());
     	    glMultMatrix(rotation.ptr());
 	}
 
@@ -790,7 +790,7 @@ void DrawShapeVisitor::apply(const Capsule& capsule)
 
 	if (!capsule.zeroRotation())
 	{
-    	    Matrix rotation(capsule.getRotationMatrix());
+    	    Matrix rotation(capsule.computeRotationMatrix());
     	    glMultMatrix(rotation.ptr());
 	}
 
@@ -876,7 +876,7 @@ void DrawShapeVisitor::apply(const HeightField& field)
 
 	if (!field.zeroRotation())
 	{
-    	    Matrix rotation(field.getRotationMatrix());
+    	    Matrix rotation(field.computeRotationMatrix());
     	    glMultMatrix(rotation.ptr());
 	}
 	
@@ -1087,7 +1087,7 @@ void ComputeBoundShapeVisitor::apply(const Box& box)
     	Vec3 top_3(Vec3(x,y,z));
     	Vec3 top_4(Vec3(-x,y,z));
 
-        Matrix matrix = box.getRotationMatrix();
+        Matrix matrix = box.computeRotationMatrix();
     	_bb.expandBy(box.getCenter()+base_1*matrix);
     	_bb.expandBy(box.getCenter()+base_2*matrix);
     	_bb.expandBy(box.getCenter()+base_3*matrix);
@@ -1116,7 +1116,7 @@ void ComputeBoundShapeVisitor::apply(const Cone& cone)
     	Vec3 base_3(Vec3(cone.getRadius(),cone.getRadius(),cone.getBaseOffset()));
     	Vec3 base_4(Vec3(-cone.getRadius(),cone.getRadius(),cone.getBaseOffset()));
     
-        Matrix matrix = cone.getRotationMatrix();
+        Matrix matrix = cone.computeRotationMatrix();
     	_bb.expandBy(cone.getCenter()+base_1*matrix);
     	_bb.expandBy(cone.getCenter()+base_2*matrix);
     	_bb.expandBy(cone.getCenter()+base_3*matrix);
@@ -1149,7 +1149,7 @@ void ComputeBoundShapeVisitor::apply(const Cylinder& cylinder)
     	Vec3 top_3(Vec3(r,r,z));
     	Vec3 top_4(Vec3(-r,r,z));
 
-        Matrix matrix = cylinder.getRotationMatrix();
+        Matrix matrix = cylinder.computeRotationMatrix();
     	_bb.expandBy(cylinder.getCenter()+base_1*matrix);
     	_bb.expandBy(cylinder.getCenter()+base_2*matrix);
     	_bb.expandBy(cylinder.getCenter()+base_3*matrix);
@@ -1186,7 +1186,7 @@ void ComputeBoundShapeVisitor::apply(const Capsule& capsule)
     	Vec3 top_3(Vec3(r,r,z));
     	Vec3 top_4(Vec3(-r,r,z));
 
-        Matrix matrix = capsule.getRotationMatrix();
+        Matrix matrix = capsule.computeRotationMatrix();
     	_bb.expandBy(capsule.getCenter()+base_1*matrix);
     	_bb.expandBy(capsule.getCenter()+base_2*matrix);
     	_bb.expandBy(capsule.getCenter()+base_3*matrix);
@@ -1269,7 +1269,7 @@ void ComputeBoundShapeVisitor::apply(const HeightField& field)
     	Vec3 top_3(Vec3(x,y,zMax));
     	Vec3 top_4(Vec3(0,y,zMax));
 
-        Matrix matrix = field.getRotationMatrix();
+        Matrix matrix = field.computeRotationMatrix();
     	_bb.expandBy(field.getOrigin()+base_1*matrix);
     	_bb.expandBy(field.getOrigin()+base_2*matrix);
     	_bb.expandBy(field.getOrigin()+base_3*matrix);
@@ -1424,7 +1424,7 @@ void PrimitiveShapeVisitor::apply(const Box& box)
     }
     else
     {
-        Matrix matrix = box.getRotationMatrix();
+        Matrix matrix = box.computeRotationMatrix();
         matrix.setTrans(box.getCenter());
         
     	base_1 = base_1*matrix;
@@ -1476,7 +1476,7 @@ void PrimitiveShapeVisitor::apply(const Box& box)
 
 void PrimitiveShapeVisitor::apply(const Cone& cone)
 {
-    Matrix matrix = cone.getRotationMatrix();
+    Matrix matrix = cone.computeRotationMatrix();
     matrix.setTrans(cone.getCenter());
 
 
@@ -1567,7 +1567,7 @@ void PrimitiveShapeVisitor::apply(const Cone& cone)
 
 void PrimitiveShapeVisitor::apply(const Cylinder& cylinder)
 {
-    Matrix matrix = cylinder.getRotationMatrix();
+    Matrix matrix = cylinder.computeRotationMatrix();
     matrix.setTrans(cylinder.getCenter());
 
     unsigned int numSegments = 40;
@@ -1697,7 +1697,7 @@ void PrimitiveShapeVisitor::apply(const HeightField& field)
 {
     if (field.getNumColumns()==0 || field.getNumRows()==0) return;
     
-    Matrix matrix = field.getRotationMatrix();
+    Matrix matrix = field.computeRotationMatrix();
     matrix.setTrans(field.getOrigin());
 
     float dx = field.getXInterval();

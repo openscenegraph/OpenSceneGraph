@@ -198,10 +198,13 @@ class SG_EXPORT Node : public Object
         /** A vector of std::string's which are used to describe the object.*/
         typedef std::vector<std::string> DescriptionList;
 
+        /** Set the description list of the const node.*/        
+        inline void setDescriptions(const DescriptionList& descriptions) { _descriptions=descriptions; }
         /** Get the description list of the const node.*/        
         inline const DescriptionList& getDescriptions() const { return _descriptions; }
         /** Get the description list of the const node.*/        
         inline DescriptionList& getDescriptions() { return _descriptions; }
+
         /** Get a single const description of the const node.*/
         inline const std::string& getDescription(unsigned int i) const { return _descriptions[i]; }
         /** Get a single description of the node.*/

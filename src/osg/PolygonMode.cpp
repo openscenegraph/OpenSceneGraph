@@ -18,7 +18,6 @@ using namespace osg;
 
 PolygonMode::PolygonMode()
 {
-    _frontAndBack = true;
     _modeFront = FILL;
     _modeBack = FILL;
 }
@@ -33,15 +32,12 @@ void PolygonMode::setMode(Face face,Mode mode)
     switch(face)
     {
         case(FRONT):
-            _frontAndBack = false;
             _modeFront = mode;
             break;
         case(BACK):
-            _frontAndBack = false;
             _modeBack = mode;
             break;
         case(FRONT_AND_BACK):
-            _frontAndBack = true;
             _modeFront = mode;
             _modeBack = mode;
             break;
@@ -65,7 +61,7 @@ PolygonMode::Mode PolygonMode::getMode(Face face) const
 
 void PolygonMode::apply(State&) const
 {
-    if (_frontAndBack)
+    if (_modeFront==_modeBack)
     {
         glPolygonMode(GL_FRONT_AND_BACK,(GLenum)_modeFront);
     }

@@ -9,6 +9,9 @@
 #include <osg/Vec2>
 #include <osg/Vec3>
 #include <osg/Vec4>
+#include <osg/Vec2d>
+#include <osg/Vec3d>
+#include <osg/Vec4d>
 #include <osg/Quat>
 #include <osg/Array>
 #include <osg/Matrix>
@@ -54,6 +57,9 @@ public:
 	osg::Vec2 readVec2();
 	osg::Vec3 readVec3();
 	osg::Vec4 readVec4();
+	osg::Vec2d readVec2d();
+	osg::Vec3d readVec3d();
+	osg::Vec4d readVec4d();
 	osg::Plane readPlane();
 	osg::UByte4 readUByte4();
 	osg::Quat readQuat();

@@ -50,7 +50,7 @@ bool ClipPlane_readLocalData(Object& obj, Input& fr)
         fr[2].getFloat(plane[1]);
         fr[3].getFloat(plane[2]);
         fr[4].getFloat(plane[3]);
-        clipplane.setClipPlane(plane);
+        clipplane.setClipPlane(plane[0],plane[1],plane[2],plane[3]);
 
         fr+=5;
         iteratorAdvanced = true;
@@ -66,9 +66,7 @@ bool ClipPlane_writeLocalData(const Object& obj,Output& fw)
 
     fw.indent() << "clipPlaneNum " << clipplane.getClipPlaneNum() <<std::endl;
 
-    double plane[4];
-    clipplane.getClipPlane(plane);
-    fw.indent() << "plane " << plane[0] << ' ' << plane[1] << ' ' << plane[2] << ' ' << plane[3] << std::endl;
+    fw.indent() << "plane " << clipplane.getClipPlane()<< std::endl;
     return true;
 }
 

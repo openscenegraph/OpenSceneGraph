@@ -194,7 +194,7 @@ inline void clampArray4GEQUAL(A& value,const T minValue,const char* valueName)
   * less than or equal to maxValue do nothing - legal value, Otherwise clamp
   * the element to maxValue, and warn that valueName[i] was clamped. */
 template <class A, class T>
-inline void clampArray4LEQUAL(A& value,unsigned int first,unsigned int last,const T maxValue,const char* valueName)
+inline void clampArray4LEQUAL(A& value,const T maxValue,const char* valueName)
 {
     clampArrayElementsLEQUAL(value,0u,3u,maxValue,valueName);
 }

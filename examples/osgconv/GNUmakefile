@@ -13,7 +13,7 @@ LIBS     += -losg -losgUtil -losgGA -losgDB $(GL_LIBS) $(OTHER_LIBS)
 INSTFILES = \
 	$(CXXFILES)\
 	$(HEADERFILES)\
-	Makefile.inst=Makefile
+	GNUmakefile.inst=GNUmakefile
 
 EXEC = osgconv
 

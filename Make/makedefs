@@ -92,7 +92,7 @@ INST_DEMOS     = $(INST_SHARE)/OpenSceneGraph/bin
 INST_SRC       = $(INST_SHARE)/OpenSceneGraph/src
 INST_DOC       = $(INST_SHARE)/OpenSceneGraph/doc
 INST_DATA      = $(INST_SHARE)/OpenSceneGraph/data
-INST_DEMO_SRC  = $(INST_SRC)/demos
+INST_DEMO_SRC  = $(INST_SRC)/examples
 LINK           = ln -sf
 INSTBINCMD     = install -m 755
 INSTDEVCMD     = install -m 644
@@ -443,7 +443,7 @@ ifeq ($(OS),MINGW)
   INST_SHARE_PREFIX = /usr/local/OpenSceneGraph
   INST_SRC          = $(INST_SHARE_PREFIX)/src
   INST_DEMOS        = $(INST_SHARE_PREFIX)/bin
-  INST_DEMO_SRC     = $(INST_SHARE_PREFIX)/src/demos
+  INST_DEMO_SRC     = $(INST_SHARE_PREFIX)/src/examples
   INST_DOC          = $(INST_SHARE_PREFIX)/doc
   INST_DATA         = $(INST_SHARE_PREFIX)/data
 endif

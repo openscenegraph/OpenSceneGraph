@@ -137,7 +137,7 @@ class SG_EXPORT NodeVisitor : public Referenced
             NodeVisitor has been attached via setTraverseVisitor()
             and the new mode is not TRAVERSE_VISITOR then the attached
             visitor is detached. Default mode is TRAVERSE_NONE.*/
-        void setTraversalMode(TraversalMode mode);
+        void setTraversalMode(const TraversalMode mode);
         
         /** Get the traversal mode.*/
         inline TraversalMode getTraversalMode() const { return _traversalMode; }

@@ -151,6 +151,10 @@ SOURCE=..\..\src\osgGA\NodeTrackerManipulator.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgGA\UFOManipulator.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgGA\Version.cpp
 # End Source File
 # End Group
@@ -216,6 +220,10 @@ SOURCE=..\..\Include\osgGA\TerrainManipulator
 # Begin Source File
 
 SOURCE=..\..\Include\osgGA\TrackballManipulator
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\osgGA\UFOManipulator
 # End Source File
 # Begin Source File
 

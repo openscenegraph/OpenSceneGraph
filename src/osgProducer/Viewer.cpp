@@ -309,7 +309,9 @@ public:
             
             sh.drawImplementation(camera);
 
-            _databasePager->compileRenderingObjects(*(sh.getSceneView()->getState()));
+            double availableTime = 0.005; //  5 ms
+
+            _databasePager->compileRenderingObjects(*(sh.getSceneView()->getState()),availableTime);
        }
        
        osg::ref_ptr<DatabasePager> _databasePager;

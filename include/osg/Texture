@@ -523,8 +523,12 @@ class SG_EXPORT Texture : public osg::StateAttribute
             
             virtual void addTextureObjectsFrom(Texture& texture);
             
-            virtual void deleteTextureObjects(unsigned int contextID,double currentTime);
+            virtual void flushTextureObjects(unsigned int contextID,double currentTime, double& availableTime);
             
+
+            void setExpiryDelay(double expiryDelay) { _expiryDelay = expiryDelay; }
+
+            double getExpiryDelay() const { return _expiryDelay; }
             
             // how long to keep unsed texture objects around for before deleting.
             double                  _expiryDelay;
@@ -536,6 +540,7 @@ class SG_EXPORT Texture : public osg::StateAttribute
         
         static void setTextureObjectManager(TextureObjectManager* tom);
         static TextureObjectManager* getTextureObjectManager();
+        static void flushTextureObjects(unsigned int contextID,double currentTime, double& availableTime);
         
         
 

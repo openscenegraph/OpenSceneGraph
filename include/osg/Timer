@@ -54,6 +54,9 @@ class SG_EXPORT Timer {
         Timer();
         ~Timer() {}
 
+        static const Timer* instance();
+
+
 	#if defined __DARWIN_OSX__  || defined macintosh
 	    // PJA MAC OSX - inline Tick() pollutes namespace so badly 
 	    // we cant compile, due to Carbon.h ...

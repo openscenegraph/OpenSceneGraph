@@ -98,7 +98,7 @@ void Texture2D::setImage(Image* image)
 void Texture2D::apply(State& state) const
 {
 
-    state.setReportGLErrors(true);
+    //state.setReportGLErrors(true);
 
     // get the contextID (user defined ID of 0 upwards) for the 
     // current OpenGL context.

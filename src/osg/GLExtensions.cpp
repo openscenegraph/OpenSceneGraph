@@ -1,6 +1,8 @@
 #if defined(WIN32)
 #include <windows.h>
-#elif !defined macintosh
+#elif defined(__DARWIN_OSX__)
+#include <mach-o/dyld.h>
+#else
 #include <dlfcn.h>
 #endif
 
@@ -62,12 +64,14 @@ void* osg::getGLExtensionFuncPtr(const char *funcName)
 {
 #if defined(WIN32)
    return wglGetProcAddress(funcName);
-#else
-#if defined( __DARWIN_OSX__ )
-   static void *lib = dlopen("libGL.dylib", RTLD_LAZY);
+#elif defined(__DARWIN_OSX__)
+    std::string temp( "_" );
+    NSSymbol symbol;
+    temp += funcName;	// Mac OS X prepends an underscore on function names
+    symbol = NSLookupAndBindSymbol( temp.c_str() );
+    return NSAddressOfSymbol( symbol );
 #else // all other unixes
    static void *lib = dlopen("libGL.so", RTLD_LAZY);
-#endif
    if (lib)
       return dlsym(lib, funcName);
    else

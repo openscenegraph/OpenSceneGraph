@@ -38,6 +38,8 @@ class SG_EXPORT PositionAttitudeTransform : public Transform
 
         META_Node(osg, PositionAttitudeTransform);
 
+        virtual PositionAttitudeTransform* asPositionAttitudeTransform() { return this; }
+        virtual const PositionAttitudeTransform* asPositionAttitudeTransform() const { return this; }
 
         inline void setPosition(const Vec3& pos) { _position = pos; dirtyBound(); }
         

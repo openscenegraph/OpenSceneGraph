@@ -37,6 +37,10 @@ class SG_EXPORT MatrixTransform : public Transform
 
         META_Node(osg, MatrixTransform);
 
+        virtual MatrixTransform* asMatrixTransform() { return this; }
+        virtual const MatrixTransform* asMatrixTransform() const { return this; }
+
+
         /** Set the transform's matrix.*/
         void setMatrix(const Matrix& mat) { _matrix = mat; _inverseDirty=true; dirtyBound(); }
         

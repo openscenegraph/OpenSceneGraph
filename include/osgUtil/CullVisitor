@@ -214,8 +214,70 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         /** reimplement CullStack's popProjectionMatrix() adding clamping of the projection matrix to the computed near and far.*/
         virtual void popProjectionMatrix();
         
-        bool clampProjectionMatrix(osg::Matrixf& projection, value_type& znear, value_type& zfar) const;
-        bool clampProjectionMatrix(osg::Matrixd& projection, value_type& znear, value_type& zfar) const;
+
+        /** Callback for overriding the CullVisitor's default clamping of the projection matrix to computed near and far values.
+          * Note, both Matrixf and Matrixd versions of clampProjectionMatrixImplementation must be implemented as the CullVisitor
+          * can target either Matrix data type, configured at compile time.*/
+        struct ClampProjectionMatrixCallback : public osg::Referenced
+        {
+            virtual bool clampProjectionMatrixImplementation(osg::Matrixf& projection, double& znear, double& zfar) const = 0;
+            virtual bool clampProjectionMatrixImplementation(osg::Matrixd& projection, double& znear, double& zfar) const = 0;
+        };
+        
+        /** set the ClampProjectionMatrixCallback.*/
+        void setClampProjectionMatrixCallback(ClampProjectionMatrixCallback* cpmc) { _clampProjectionMatrixCallback = cpmc; }
+        /** get the non const ClampProjectionMatrixCallback.*/
+        ClampProjectionMatrixCallback* getClampProjectionMatrixCallback() { return _clampProjectionMatrixCallback.get(); }
+        /** get the const ClampProjectionMatrixCallback.*/
+        const ClampProjectionMatrixCallback* getClampProjectionMatrixCallback() const { return _clampProjectionMatrixCallback.get(); }
+
+        /** CullVisitor's default clamping of the projection float matrix to computed near and far values.
+          * Note, do not call this method directly, use clampProjectionMatrix(..) instead, unless you want to bypass the callback.*/
+        virtual bool clampProjectionMatrixImplementation(osg::Matrixf& projection, double& znear, double& zfar) const;
+
+        /** CullVisitor's default clamping of the projection double matrix to computed near and far values.
+          * Note, do not call this method directly, use clampProjectionMatrix(..) instead, unless you want to bypass the callback.*/
+        virtual bool clampProjectionMatrixImplementation(osg::Matrixd& projection, double& znear, double& zfar) const;
+
+        /** clamp the projection float matrix to computed near and far values, use callback if it exists, otherwise use default CullVisitro implemntation.*/
+        inline bool clampProjectionMatrix(osg::Matrixf& projection, value_type& znear, value_type& zfar) const
+        {
+            double zn = znear;
+            double zf = zfar;
+            bool result = false;
+            if (_clampProjectionMatrixCallback.valid()) result = _clampProjectionMatrixCallback->clampProjectionMatrixImplementation(projection, zn, zf);
+            else result = clampProjectionMatrixImplementation(projection, zn, zf);
+
+            if (result)
+            {
+                znear = zn;
+                zfar = zn;
+                return true;
+            }
+            else 
+                return false;
+        }
+
+        /** clamp the projection double matrix to computed near and far values, use callback if it exists, otherwise use default CullVisitro implemntation.*/
+        inline bool clampProjectionMatrix(osg::Matrixd& projection, value_type& znear, value_type& zfar) const
+        {
+            double zn = znear;
+            double zf = zfar;
+            bool result = false;
+
+            if (_clampProjectionMatrixCallback.valid()) result = _clampProjectionMatrixCallback->clampProjectionMatrixImplementation(projection, zn, zf);
+            else result = clampProjectionMatrixImplementation(projection, zn, zf);
+
+            if (result)
+            {
+                znear = zn;
+                zfar = zn;
+                return true;
+            }
+            else 
+                return false;
+        }
+        
 
         void setState(osg::State* state) { _state = state; }
         osg::State* getState() { return _state.get(); }
@@ -259,6 +321,8 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         value_type               _nearFarRatio;
         value_type               _computed_znear;
         value_type               _computed_zfar;
+        
+        osg::ref_ptr<ClampProjectionMatrixCallback> _clampProjectionMatrixCallback;
         
         osg::ref_ptr<const osg::ClearNode> _clearNode;
 	

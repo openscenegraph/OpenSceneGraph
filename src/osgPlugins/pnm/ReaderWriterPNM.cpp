@@ -12,6 +12,229 @@
 #include <stdio.h>
 
 using namespace osg;
+template <class T>
+    unsigned char* read_bitmap_ascii(FILE* fp, int width, int height)
+{
+    T* data = new T[width*height];
+
+    T* dst = data;
+    T* end = data + width*height;
+
+    while(dst < end)
+    {
+        T value = 0;
+
+        // read in characters looking for '0's and '1's, these
+        // values map to 255 and 0. Any other characters
+        // are silently ignored.
+        while(1)
+        {
+            int ch = fgetc(fp);
+            if (feof(fp) || ferror(fp))
+            {
+                fclose(fp);
+                delete [] data;
+                return NULL;
+            }
+
+            if (ch == '0')
+            {
+                value = 255;
+                break;
+            }
+            else if (ch == '1')
+            {
+                value = 0;
+                break;
+            }
+        }
+
+        // place value in the image
+        *(dst++) = value;
+    }
+
+    return reinterpret_cast<unsigned char*>(data);
+}
+
+template <class T>
+    unsigned char* read_grayscale_ascii(FILE* fp, int width, int height)
+{
+    T* data = new T[width*height];
+
+    T* dst = data;
+    T* end = data + width*height;
+
+    while(dst < end)
+    {
+        int ch;
+        T value = 0;
+
+        // read and discard any whitespace
+        // until a digit is reached
+        do
+        {
+            ch = fgetc(fp);
+            if (feof(fp) || ferror(fp))
+            {
+                fclose(fp);
+                delete [] data;
+                return NULL;
+            }
+        }
+        while(!isdigit(ch));
+
+        // continue reading digits and incrementally
+        // construct the integer value
+        do
+        {
+            value = 10*value + (ch - '0');
+            ch = fgetc(fp);
+            if (feof(fp) || ferror(fp))
+            {
+                fclose(fp);
+                delete [] data;
+                return NULL;
+            }
+        }
+        while(isdigit(ch));
+
+        // place value in the image
+        *(dst++) = value;
+    }
+
+    return reinterpret_cast<unsigned char*>(data);
+}
+
+template <class T>
+    unsigned char* read_color_ascii(FILE* fp, int width, int height)
+{
+    T* data = new T[3*width*height];
+
+    T* dst = data;
+    T* end = data + 3*width*height;
+
+    while(dst < end)
+    {
+        int ch;
+        T value = 0;
+
+        // read and discard any whitespace
+        // until a digit is reached
+        do
+        {
+            ch = fgetc(fp);
+            if (feof(fp) || ferror(fp))
+            {
+                fclose(fp);
+                delete [] data;
+                return NULL;
+            }
+        }
+        while(!isdigit(ch));
+
+        // continue reading digits and incrementally
+        // construct the integer value
+        do
+        {
+            value = 10*value + (ch - '0');
+            ch = fgetc(fp);
+            if (feof(fp) || ferror(fp))
+            {
+                fclose(fp);
+                delete [] data;
+                return NULL;
+            }
+        }
+        while(isdigit(ch));
+
+        // place value in the image
+        *(dst++) = value;
+    }
+
+    return reinterpret_cast<unsigned char*>(data);
+}
+
+template <class T>
+    unsigned char* read_bitmap_binary(FILE* fp, int width, int height)
+{
+    T* data = new T[width*height];
+
+    for(int y = 0; y < height; y++)
+    {
+        T* dst = data + (y+0)*width;
+        T* end = data + (y+1)*width;
+
+        while(dst < end)
+        {
+            unsigned char b = fgetc(fp);
+            if (feof(fp) || ferror(fp))
+            {
+                fclose(fp);
+                delete [] data;
+                return NULL;
+            }
+
+            for(int i = 7; i >= 0 && dst < end; i--)
+            {
+                // 1 means black, 0 means white
+                T data_value = (b & (1<<i)) ? 0 : 255;
+                *(dst++) = data_value;
+            }
+        }
+    }
+
+    return reinterpret_cast<unsigned char*>(data);
+}
+
+template <class T>
+    unsigned char* read_grayscale_binary(FILE* fp, int width, int height)
+{
+    T* data = new T[width*height];
+
+    if (fread(data, sizeof(T)*width*height, 1, fp) != 1)
+    {
+        fclose(fp);
+        delete [] data;
+        return NULL;
+    }
+
+    // if the machine is little endian swap the bytes around
+    if (sizeof(T) > 1 && getCpuByteOrder() == osg::LittleEndian)
+    {
+        for(int i = 0; i < width*height; i++)
+        {
+            unsigned char* bs = (unsigned char*)(&data[i]);
+            std::swap(bs[0], bs[1]);
+        }
+    }
+
+    return reinterpret_cast<unsigned char*>(data);
+}
+
+template <class T>
+    unsigned char* read_color_binary(FILE* fp, int width, int height)
+{
+    T* data = new T[3*width*height];
+
+    if (fread(data, 3*sizeof(T)*width*height, 1, fp) != 1)
+    {
+        fclose(fp);
+        delete [] data;
+        return NULL;
+    }
+
+    // if the machine is little endian swap the bytes around
+    if (sizeof(T) > 1 && getCpuByteOrder() == osg::LittleEndian)
+    {
+        for(int i = 0; i < 3*width*height; i++)
+        {
+            unsigned char* bs = (unsigned char*)(&data[i]);
+            std::swap(bs[0], bs[1]);
+        }
+    }
+
+    return reinterpret_cast<unsigned char*>(data);
+}
 
 class ReaderWriterPNM : public osgDB::ReaderWriter
 {
@@ -25,229 +248,6 @@ class ReaderWriterPNM : public osgDB::ReaderWriter
                 osgDB::equalCaseInsensitive(extension, "pbm");
         }
 
-        template <class T>
-            unsigned char* read_bitmap_ascii(FILE* fp, int width, int height) const
-        {
-            T* data = new T[width*height];
-
-            T* dst = data;
-            T* end = data + width*height;
-
-            while(dst < end)
-            {
-                T value = 0;
-
-                // read in characters looking for '0's and '1's, these
-                // values map to 255 and 0. Any other characters
-                // are silently ignored.
-                while(1)
-                {
-                    int ch = fgetc(fp);
-                    if (feof(fp) || ferror(fp))
-                    {
-                        fclose(fp);
-                        delete [] data;
-                        return NULL;
-                    }
-
-                    if (ch == '0')
-                    {
-                        value = 255;
-                        break;
-                    }
-                    else if (ch == '1')
-                    {
-                        value = 0;
-                        break;
-                    }
-                }
-
-                // place value in the image
-                *(dst++) = value;
-            }
-
-            return reinterpret_cast<unsigned char*>(data);
-        }
-
-        template <class T>
-            unsigned char* read_grayscale_ascii(FILE* fp, int width, int height) const
-        {
-            T* data = new T[width*height];
-
-            T* dst = data;
-            T* end = data + width*height;
-
-            while(dst < end)
-            {
-                int ch;
-                T value = 0;
-
-                // read and discard any whitespace
-                // until a digit is reached
-                do
-                {
-                    ch = fgetc(fp);
-                    if (feof(fp) || ferror(fp))
-                    {
-                        fclose(fp);
-                        delete [] data;
-                        return NULL;
-                    }
-                }
-                while(!isdigit(ch));
-
-                // continue reading digits and incrementally
-                // construct the integer value
-                do
-                {
-                    value = 10*value + (ch - '0');
-                    ch = fgetc(fp);
-                    if (feof(fp) || ferror(fp))
-                    {
-                        fclose(fp);
-                        delete [] data;
-                        return NULL;
-                    }
-                }
-                while(isdigit(ch));
-
-                // place value in the image
-                *(dst++) = value;
-            }
-
-            return reinterpret_cast<unsigned char*>(data);
-        }
-
-        template <class T>
-            unsigned char* read_color_ascii(FILE* fp, int width, int height) const
-        {
-            T* data = new T[3*width*height];
-
-            T* dst = data;
-            T* end = data + 3*width*height;
-
-            while(dst < end)
-            {
-                int ch;
-                T value = 0;
-
-                // read and discard any whitespace
-                // until a digit is reached
-                do
-                {
-                    ch = fgetc(fp);
-                    if (feof(fp) || ferror(fp))
-                    {
-                        fclose(fp);
-                        delete [] data;
-                        return NULL;
-                    }
-                }
-                while(!isdigit(ch));
-
-                // continue reading digits and incrementally
-                // construct the integer value
-                do
-                {
-                    value = 10*value + (ch - '0');
-                    ch = fgetc(fp);
-                    if (feof(fp) || ferror(fp))
-                    {
-                        fclose(fp);
-                        delete [] data;
-                        return NULL;
-                    }
-                }
-                while(isdigit(ch));
-
-                // place value in the image
-                *(dst++) = value;
-            }
-
-            return reinterpret_cast<unsigned char*>(data);
-        }
-
-        template <class T>
-            unsigned char* read_bitmap_binary(FILE* fp, int width, int height) const
-        {
-            T* data = new T[width*height];
-
-            for(int y = 0; y < height; y++)
-            {
-                T* dst = data + (y+0)*width;
-                T* end = data + (y+1)*width;
-
-                while(dst < end)
-                {
-                    unsigned char b = fgetc(fp);
-                    if (feof(fp) || ferror(fp))
-                    {
-                        fclose(fp);
-                        delete [] data;
-                        return NULL;
-                    }
-
-                    for(int i = 7; i >= 0 && dst < end; i--)
-                    {
-                        // 1 means black, 0 means white
-                        T data_value = (b & (1<<i)) ? 0 : 255;
-                        *(dst++) = data_value;
-                    }
-                }
-            }
-
-            return reinterpret_cast<unsigned char*>(data);
-        }
-
-        template <class T>
-            unsigned char* read_grayscale_binary(FILE* fp, int width, int height) const
-        {
-            T* data = new T[width*height];
-
-            if (fread(data, sizeof(T)*width*height, 1, fp) != 1)
-            {
-                fclose(fp);
-                delete [] data;
-                return NULL;
-            }
-
-            // if the machine is little endian swap the bytes around
-            if (sizeof(T) > 1 && getCpuByteOrder() == osg::LittleEndian)
-            {
-                for(int i = 0; i < width*height; i++)
-                {
-                    unsigned char* bs = (unsigned char*)(&data[i]);
-                    std::swap(bs[0], bs[1]);
-                }
-            }
-
-            return reinterpret_cast<unsigned char*>(data);
-        }
-
-        template <class T>
-            unsigned char* read_color_binary(FILE* fp, int width, int height) const
-        {
-            T* data = new T[3*width*height];
-
-            if (fread(data, 3*sizeof(T)*width*height, 1, fp) != 1)
-            {
-                fclose(fp);
-                delete [] data;
-                return NULL;
-            }
-
-            // if the machine is little endian swap the bytes around
-            if (sizeof(T) > 1 && getCpuByteOrder() == osg::LittleEndian)
-            {
-                for(int i = 0; i < 3*width*height; i++)
-                {
-                    unsigned char* bs = (unsigned char*)(&data[i]);
-                    std::swap(bs[0], bs[1]);
-                }
-            }
-
-            return reinterpret_cast<unsigned char*>(data);
-        }
 
         virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
         {

@@ -525,11 +525,11 @@ class CollectLowestTransformsVisitor : public osg::NodeVisitor
                     else if (transform->getReferenceFrame()==osg::Transform::RELATIVE_TO_ABSOLUTE) _moreThanOneMatrixRequired=true;
                     else
                     {
-                        if (_transformSet.empty()) transform->getLocalToWorldMatrix(_firstMatrix,0);
+                        if (_transformSet.empty()) transform->computeLocalToWorldMatrix(_firstMatrix,0);
                         else
                         {
                             osg::Matrix matrix;
-                            transform->getLocalToWorldMatrix(_firstMatrix,0);
+                            transform->computeLocalToWorldMatrix(_firstMatrix,0);
                             if (_firstMatrix!=matrix) _moreThanOneMatrixRequired=true;
                         }
                     }
@@ -1029,7 +1029,7 @@ void Optimizer::RemoveRedundantNodesVisitor::apply(osg::Transform& transform)
     {
         static osg::Matrix identity;
         osg::Matrix matrix;
-        transform.getWorldToLocalMatrix(matrix,NULL);
+        transform.computeWorldToLocalMatrix(matrix,NULL);
         if (matrix==identity)
         {
             _redundantNodeList.insert(&transform);

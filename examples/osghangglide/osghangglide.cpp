@@ -26,10 +26,11 @@ extern osg::Node *makeSky( void );
 extern osg::Node *makeBase( void );
 extern osg::Node *makeClouds( void );
 
-struct MoveEarthySkyWithEyePointCallback : public osg::Transform::ComputeTransformCallback
+class MoveEarthySkyWithEyePointTransform : public osg::Transform
 {
+public:
     /** Get the transformation matrix which moves from local coords to world coords.*/
-    virtual bool computeLocalToWorldMatrix(osg::Matrix& matrix,const osg::Transform*, osg::NodeVisitor* nv) const 
+    virtual bool computeLocalToWorldMatrix(osg::Matrix& matrix,osg::NodeVisitor* nv) const 
     {
         osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(nv);
         if (cv)
@@ -41,8 +42,10 @@ struct MoveEarthySkyWithEyePointCallback : public osg::Transform::ComputeTransfo
     }
 
     /** Get the transformation matrix which moves from world coords to local coords.*/
-    virtual bool computeWorldToLocalMatrix(osg::Matrix& matrix,const osg::Transform*, osg::NodeVisitor* nv) const
+    virtual bool computeWorldToLocalMatrix(osg::Matrix& matrix,osg::NodeVisitor* nv) const
     {
+        std::cout<<"computing transform"<<std::endl;
+    
         osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(nv);
         if (cv)
         {
@@ -67,7 +70,7 @@ osg::Group* createModel()
     clearNode->setRequiresClear(false); // we've got base and sky to do it.
 
     // use a transform to make the sky and base around with the eye point.
-    osg::Transform* transform = new osg::Transform;
+    osg::Transform* transform = new MoveEarthySkyWithEyePointTransform;
 
     // transform's value isn't knowm until in the cull traversal so its bounding
     // volume is can't be determined, therefore culling will be invalid,
@@ -75,10 +78,6 @@ osg::Group* createModel()
     // off as well. But don't worry culling will be back on once underneath
     // this node or any other branch above this transform.
     transform->setCullingActive(false);
-
-    // set the compute transform callback to do all the work of
-    // determining the transform according to the current eye point.
-    transform->setComputeTransformCallback(new MoveEarthySkyWithEyePointCallback);
 
     // add the sky and base layer.
     transform->addChild(makeSky());  // bin number -2 so drawn first.

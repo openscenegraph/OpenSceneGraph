@@ -93,14 +93,7 @@ class SG_EXPORT Billboard : public Geode
         virtual bool removeDrawable( Drawable *gset );
                 
 
-
-        
-        inline bool getMatrix(Matrix& modelview, const Vec3& eye_local, const Vec3& pos_local) const
-        {
-            return computeMatrix(modelview,eye_local,pos_local);
-        }
-
-        virtual bool computeMatrix(Matrix& modelview, const Vec3& eye_local, const Vec3& pos_local) const;
+        bool computeMatrix(Matrix& modelview, const Vec3& eye_local, const Vec3& pos_local) const;
 
     protected:
 

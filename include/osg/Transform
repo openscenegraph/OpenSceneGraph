@@ -105,55 +105,6 @@ class SG_EXPORT Transform : public Group
         
         ReferenceFrame getReferenceFrame() const { return _referenceFrame; }
 
-        
-        /** Callback attached to an Transform to specify how to compute the
-          * modelview transformation for the transform below the Transform
-          * node. */
-        struct ComputeTransformCallback : public virtual osg::Referenced
-        {
-            /** Get the transformation matrix which moves from local coords
-              * to world coords.*/
-            virtual bool computeLocalToWorldMatrix(Matrix& matrix,const Transform* transform, NodeVisitor* nv) const = 0;
-
-            /** Get the transformation matrix which moves from world coords
-              * to local coords.*/
-            virtual bool computeWorldToLocalMatrix(Matrix& matrix,const Transform* transform, NodeVisitor* nv) const = 0;
-        };
-
-        /** Set the ComputerTransfromCallback which allows users to attach
-          * custom computation of the local transformation as seen by cull
-          * traversers and the like. */
-        void setComputeTransformCallback(ComputeTransformCallback* ctc) { _computeTransformCallback=ctc; dirtyBound(); }
-        
-        /** Get the non const ComputerTransfromCallback.*/
-        ComputeTransformCallback* getComputeTransformCallback() { return _computeTransformCallback.get(); }
-        
-        /** Get the const ComputerTransfromCallback.*/
-        const ComputeTransformCallback* getComputeTransformCallback() const { return _computeTransformCallback.get(); }
-
-
-        /** Get the transformation matrix which moves from local coords to
-          * world coords.
-          * Returns true if the Matrix passed in has been updated. */
-        inline bool getLocalToWorldMatrix(Matrix& matrix,NodeVisitor* nv) const
-        {
-            if (_computeTransformCallback.valid())
-                return _computeTransformCallback->computeLocalToWorldMatrix(matrix,this,nv);
-            else
-                return computeLocalToWorldMatrix(matrix,nv);
-        }
-        
-        /** Get the transformation matrix which moves from world coords to
-          * local coords.
-          * Return true if the Matrix passed in has been updated. */
-        inline bool getWorldToLocalMatrix(Matrix& matrix,NodeVisitor* nv) const
-        {
-            if (_computeTransformCallback.valid())
-                return _computeTransformCallback->computeWorldToLocalMatrix(matrix,this,nv);
-            else
-                return computeWorldToLocalMatrix(matrix,nv);
-        }
-        
         virtual bool computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const
         {
             if (_referenceFrame==RELATIVE_TO_PARENTS)
@@ -190,9 +141,6 @@ class SG_EXPORT Transform : public Group
           * computeMatrix if required.) */
         virtual bool computeBound() const;
         
-        
-        ref_ptr<ComputeTransformCallback>   _computeTransformCallback;
-
         ReferenceFrame                      _referenceFrame;
 
 };

@@ -361,15 +361,15 @@ void Geometry::drawImmediateMode(State& state)
             switch(secondaryColorType)
             {
                 case(Array::UByte4ArrayType):
-                    s_glSecondaryColor3ubv(reinterpret_cast<const GLubyte*>(colorPointer));
+                    s_glSecondaryColor3ubv(reinterpret_cast<const GLubyte*>(secondaryColorPointer));
                     break;
                 case(Array::Vec3ArrayType):
-                    s_glSecondaryColor3fv(reinterpret_cast<const GLfloat*>(colorPointer));
+                    s_glSecondaryColor3fv(reinterpret_cast<const GLfloat*>(secondaryColorPointer));
                     break;
                 default:
                     break;
             }
-            colorPointer += colorStride;
+            secondaryColorPointer += secondaryColorStride;
         }
 
         if (fogCoordBinding==BIND_PER_PRIMITIVE)

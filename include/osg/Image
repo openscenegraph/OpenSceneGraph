@@ -76,7 +76,7 @@ class SG_EXPORT Image : public Object
         void setAllocationMode(AllocationMode mode) { _allocationMode = mode; }
 
         /** Get the method used for deleting data once it goes out of scope.*/
-        AllocationMode setAllocationMode() const { return _allocationMode; }
+        AllocationMode getAllocationMode() const { return _allocationMode; }
 
 
         /* allocated a pixel block of specified size and type.*/

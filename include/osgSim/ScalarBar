@@ -56,7 +56,7 @@ public:
     overriding the printScalar() method. Users may map the scalar float passed in
     to any string they wish.
     */
-    struct ScalarPrinter: public osg::Referenced
+    struct OSGSIM_EXPORT ScalarPrinter: public osg::Referenced
     {
         virtual std::string printScalar(float scalar);
     };

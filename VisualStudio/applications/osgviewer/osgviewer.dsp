@@ -172,7 +172,7 @@ LINK32=link.exe
 
 
 
-SOURCE=..\..\..\examples\osgviewer\osgviewer.cpp
+SOURCE=..\..\..\applications\osgviewer\osgviewer.cpp
 
 # End Source File
 

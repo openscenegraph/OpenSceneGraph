@@ -23,7 +23,7 @@ class Vec4
 
 	// Methods are defined here so that they are implicitly inlined
 
-        Vec4() {} // no operations done to maintain speed
+        Vec4() { _v[0]=0.0f; _v[1]=0.0f; _v[2]=0.0f; _v[3]=0.0f;}
         Vec4(float x, float y, float z, float w)
         {
             _v[0]=x; _v[1]=y; _v[2]=z; _v[3]=w;

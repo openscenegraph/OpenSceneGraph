@@ -21,7 +21,7 @@ class Vec3
 {
     public:
 
-        Vec3() {} // no operations done to maintain speed
+        Vec3() { _v[0]=0.0f; _v[1]=0.0f; _v[2]=0.0f;}
         Vec3(float x,float y,float z) { _v[0]=x; _v[1]=y; _v[2]=z; }
 
         float _v[3];

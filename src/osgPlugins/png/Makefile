@@ -4,7 +4,7 @@ include $(TOPDIR)/Make/makedefs
 CXXFILES =\
         ReaderWriterPNG.cpp\
 
-LIBS  += $(OSG_LIBS) $(OTHER_LIBS)
+LIBS  += $(OSG_LIBS) $(PNG_LIBS) $(OTHER_LIBS)
 INC  += -I/usr/local/include\
 	-I/usr/freeware/include\
 

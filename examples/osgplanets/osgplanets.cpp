@@ -27,28 +27,26 @@ struct SolarSystemParameters
         radiusMoon(2.0),
         RorbitMoon(20.0),
         tiltEarth(5.0),
-        rotateSpeedEarth(5.0),
+        rotateSpeedEarth(5.0)
     {}
+    
+    double radiusSun;
+    double RorbitEarth;
+    double radiusEarth;
+    double radiusMoon;
+    double RorbitMoon;
+    double tiltEarth;
+    double rotateSpeedEarth;
 };
-/*
-osg::Node* createSolarSystem()
+
+osg::Node* createSolarSystem(SolarSystemParameters& parameters)
 {
-    osg::Vec3 center(0.0f,0.0f,0.0f);
-    float radius = 100.0f;
-
-    osg::Group* root = new osg::Group;
-
-    root->addChild(createMovingModel(center,radius*0.8f));
-
-    root->addChild(createBase(center-osg::Vec3(0.0f,0.0f,radius*0.5),radius));
-
-    return root;
+    return 0;
 }
-*/
 
 int main( int argc, char **argv )
 {
-    / use an ArgumentParser object to manage the program arguments.
+    // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
 
     // set up the usage document, in case we need to print out how to use this program.
@@ -67,9 +65,9 @@ int main( int argc, char **argv )
 
 
 
-    SolarSystemParameters myValues;
+    SolarSystemParameters parameters;
 
-    while (arguments.read("--radiusMoon",myValues.radiusMoon)) {}
+    while (arguments.read("--radiusMoon",parameters.radiusMoon)) {}
 
 
     // if user request help write it out to cout.
@@ -90,20 +88,20 @@ int main( int argc, char **argv )
     }
     
     // load the nodes from the commandline arguments.
-    // osg::Node* model = createModel();
+    osg::Node* model = createSolarSystem(parameters);
     if (!model)
     {
         return 1;
     }
     
-    std::cout << "radiusSun = " << myValues.radiusSun << std::endl;
-    std::cout << "RorbitEarth = " << myValues.RorbitEarth << std::endl;
-    std::cout << "radiusEarth = " << myValues.radiusEarth << std::endl;
-    std::cout << "radiusMoon = " << myValues.radiusMoon << std::endl;
-    std::cout << "RorbitMoon = " << myValues.RorbitMoon << std::endl;
-    std::cout << "tiltEarth = " << myValues.tiltEarth << std::endl;
-    std::cout << "rotateSpeedEarth = " << myValues.rotateSpeedEarth << std::endl;
-    std::cout << "rotateSpeedMoon = " << myValues.rotateSpeedMoon << std::endl;
+    std::cout << "radiusSun = " << parameters.radiusSun << std::endl;
+    std::cout << "RorbitEarth = " << parameters.RorbitEarth << std::endl;
+    std::cout << "radiusEarth = " << parameters.radiusEarth << std::endl;
+    std::cout << "radiusMoon = " << parameters.radiusMoon << std::endl;
+    std::cout << "RorbitMoon = " << parameters.RorbitMoon << std::endl;
+    std::cout << "tiltEarth = " << parameters.tiltEarth << std::endl;
+    std::cout << "rotateSpeedEarth = " << parameters.rotateSpeedEarth << std::endl;
+
     
     /*
     // tilt the scene so the default eye position is looking down on the model.

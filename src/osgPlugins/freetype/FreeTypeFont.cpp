@@ -12,7 +12,6 @@
 */
 
 #include "FreeTypeFont.h"
-//#include FT_GLYPH_H
 
 #include <osg/Notify>  
 #include <osgDB/WriteFile>
@@ -126,10 +125,11 @@ osgText::Font::Glyph* FreeTypeFont::getGlyph(unsigned int charcode)
 
 }
 
-osg::Vec2 FreeTypeFont::getKerning(unsigned int leftcharcode,unsigned int rightcharcode)
+osg::Vec2 FreeTypeFont::getKerning(unsigned int leftcharcode,unsigned int rightcharcode, osgText::KerningType kerningType)
 {
-    if (!FT_HAS_KERNING(_face)) return osg::Vec2(0.0f,0.0f);
+    if (!FT_HAS_KERNING(_face) || (kerningType == osgText::KERNING_NONE)) return osg::Vec2(0.0f,0.0f);
 
+    FT_Kerning_Mode mode = (kerningType==osgText::KERNING_DEFAULT) ? ft_kerning_default : ft_kerning_unfitted;
 
     // convert character code to glyph index
     FT_UInt left = FT_Get_Char_Index( _face, leftcharcode );
@@ -137,10 +137,11 @@ osg::Vec2 FreeTypeFont::getKerning(unsigned int leftcharcode,unsigned int rightc
     
     // get the kerning distances.   
     FT_Vector  kerning;
+
     FT_Error error = FT_Get_Kerning( _face,                     // handle to face object
                                      left,                      // left glyph index
                                      right,                     // right glyph index
-                                     FT_KERNING_UNFITTED,        // kerning mode
+                                     mode,                      // kerning mode
                                      &kerning );                // target vector
 
     if (error)

@@ -211,7 +211,10 @@ public:
     
     unsigned int getDrawMode() const { return _drawMode; }
 
-   
+    void setKerningType(KerningType kerningType) { _kerningType = kerningType; }
+
+    KerningType getKerningType() const { return _kerningType; }
+
     /** Draw the text.*/
     virtual void drawImplementation(osg::State& state) const;
 
@@ -266,13 +269,12 @@ public:
     typedef std::map<osg::ref_ptr<osg::StateSet>,GlyphQuads> TextureGlyphQuadMap;
 
     /** Direct Access to GlyphQuads */
-    const GlyphQuads* getGlyphQuad(unsigned int index) const
+    const GlyphQuads* getGlyphQuads(osg::StateSet* stateSet) const 
     {
-        if (index>=_textureGlyphQuadMap.size()) return NULL;
+        TextureGlyphQuadMap::iterator itGlyphQuad = _textureGlyphQuadMap.find(stateSet);
+        if (itGlyphQuad == _textureGlyphQuadMap.end()) return NULL;
 
-        TextureGlyphQuadMap::const_iterator itGlyph = _textureGlyphQuadMap.begin();
-        while((index--) && (itGlyph!=_textureGlyphQuadMap.end())) itGlyph++;
-        return &itGlyph->second;
+        return &itGlyphQuad->second;
     }
 
 protected:
@@ -303,6 +305,7 @@ protected:
     Layout                                  _layout;
     osg::Vec4                               _color;
     unsigned int                            _drawMode;
+    KerningType                                _kerningType;
 
     // iternal map used for rendering. Set up by the computeGlyphRepresentation() method.
     mutable TextureGlyphQuadMap            _textureGlyphQuadMap;

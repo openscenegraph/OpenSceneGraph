@@ -35,7 +35,8 @@ Text::Text():
     _autoRotateToScreen(false),
     _layout(LEFT_TO_RIGHT),
     _color(1.0f,1.0f,1.0f,1.0f),
-    _drawMode(TEXT)
+    _drawMode(TEXT),
+    _kerningType(KERNING_DEFAULT)
 {
     setUseDisplayList(false);
 }
@@ -57,7 +58,8 @@ Text::Text(const Text& text,const osg::CopyOp& copyop):
     _autoRotateToScreen(text._autoRotateToScreen),
     _layout(text._layout),
     _color(text._color),
-    _drawMode(text._drawMode)
+    _drawMode(text._drawMode),
+    _kerningType(text._kerningType)
 {
     computeGlyphRepresentation();
 }
@@ -310,14 +312,14 @@ void Text::computeGlyphRepresentation()
                 {
                   case LEFT_TO_RIGHT:
                   {
-                    osg::Vec2 delta(activefont->getKerning(previous_charcode,charcode));
+                    osg::Vec2 delta(activefont->getKerning(previous_charcode,charcode,_kerningType));
                     cursor.x() += delta.x() * wr;
                     cursor.y() += delta.y() * hr;
                     break;
                   }
                   case RIGHT_TO_LEFT:
                   {
-                    osg::Vec2 delta(activefont->getKerning(charcode,previous_charcode));
+                    osg::Vec2 delta(activefont->getKerning(charcode,previous_charcode,_kerningType));
                     cursor.x() -= delta.x() * wr;
                     cursor.y() -= delta.y() * hr;
                     break;
@@ -526,7 +528,7 @@ void Text::computePositions(unsigned int contextID) const
 
             float pixelSizeVector_w = M(3,2)*P23 + M(3,3)*P33;
 
-	    float pixelSize = (_characterHeight*sqrtf(scale_00.length2()+scale_10.length2()))/(pixelSizeVector_w*0.701f);
+            float pixelSize = (_characterHeight*sqrtf(scale_00.length2()+scale_10.length2()))/(pixelSizeVector_w*0.701f);
 
             if (_characterSizeMode==SCREEN_COORDS)
             {

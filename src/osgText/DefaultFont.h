@@ -35,7 +35,7 @@ public:
 
     virtual Font::Glyph* getGlyph(unsigned int charcode);
     
-    virtual osg::Vec2 getKerning(unsigned int leftcharcode,unsigned int rightcharcode);
+    virtual osg::Vec2 getKerning(unsigned int leftcharcode,unsigned int rightcharcode, KerningType kerningType);
     
     virtual bool hasVertical() const;
 

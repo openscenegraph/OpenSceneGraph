@@ -29,6 +29,13 @@ namespace osgText {
 class Font;
 class Text;
 
+enum KerningType
+{
+    KERNING_DEFAULT,    //default locked to integer kerning values
+    KERNING_UNFITTED,    //use floating point value for kerning
+    KERNING_NONE,        //no kerning
+};
+
 /** read a font from specified file.*/
 extern OSGTEXT_EXPORT Font* readFontFile(const std::string& filename);
 
@@ -62,11 +69,11 @@ public:
     unsigned int getWidth();
     unsigned int getHeight();
 
+    /** Get a kerning (adjustment of spacing of two adjacent character) for specified charcodes, w.r.t the current font size hint.*/
+    virtual osg::Vec2 getKerning(unsigned int leftcharcode,unsigned int rightcharcode, KerningType kerningType);
+
     /** Get a Glyph for specified charcode, and the font size nearest to the current font size hint.*/
     virtual Glyph* getGlyph(unsigned int charcode);
-    
-    /** Get a kerning (adjustment of spacing of two adjacent character) for specified charcodes, w.r.t the current font size hint.*/
-    virtual osg::Vec2 getKerning(unsigned int leftcharcode,unsigned int rightcharcode);
     
     /** Return true if this font provides vertical alignments and spacing or glyphs.*/
     virtual bool hasVertical() const;
@@ -149,7 +156,7 @@ public:
         virtual Glyph* getGlyph(unsigned int charcode) = 0;
 
         /** Get a kerning (adjustment of spacing of two adjacent character) for specified charcodes, w.r.t the current font size hint.*/
-        virtual osg::Vec2 getKerning(unsigned int leftcharcode,unsigned int rightcharcode) = 0;
+        virtual osg::Vec2 getKerning(unsigned int leftcharcode,unsigned int rightcharcode, KerningType kerningType) = 0;
 
         /** Return true if this font provides vertical alignments and spacing or glyphs.*/
         virtual bool hasVertical() const = 0;
@@ -165,7 +172,6 @@ public:
 
         Font* _facade;
     };
-
 
     class OSGTEXT_EXPORT GlyphTexture : public osg::Texture2D
     {

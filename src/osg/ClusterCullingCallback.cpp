@@ -12,6 +12,7 @@
 */
 #include <osg/ClusterCullingCallback>
 #include <osg/TriangleFunctor>
+#include <osg/CullSettings>
 
 using namespace osg;
 
@@ -145,11 +146,16 @@ void ClusterCullingCallback::set(const osg::Vec3& controlPoint, const osg::Vec3&
 
 bool ClusterCullingCallback::cull(osg::NodeVisitor* nv, osg::Drawable* , osg::State*) const
 {
-//    return false;
+    CullSettings* cs = dynamic_cast<CullSettings*>(nv);
+    if (cs && !(cs->getCullingMode() & CullSettings::CLUSTER_CULLING))
+    {
+        // cluster culling switched off cull settings.
+        return false;
+    }
 
     if (_deviation<=-1.0f)
     {
-//        osg::notify(osg::NOTICE)<<"ClusterCullingCallback::cull()  _deviation="<<_deviation<<std::endl;
+        // cluster culling switch off by deviation.
         return false;
     }
     

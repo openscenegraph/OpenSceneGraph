@@ -42,7 +42,7 @@ class SG_EXPORT CullSettings
 
         CullSettings(const CullSettings& cs);
 
-        ~CullSettings() {}
+        virtual ~CullSettings() {}
         
         CullSettings& operator = (const CullSettings& settings)
         {
@@ -117,12 +117,15 @@ class SG_EXPORT CullSettings
                                           FAR_PLANE_CULLING,
             SMALL_FEATURE_CULLING       = 0x8,
             SHADOW_OCCLUSION_CULLING    = 0x10,
+            CLUSTER_CULLING             = 0x20,
             DEFAULT_CULLING             = VIEW_FRUSTUM_SIDES_CULLING|
                                           SMALL_FEATURE_CULLING|
-                                          SHADOW_OCCLUSION_CULLING,
+                                          SHADOW_OCCLUSION_CULLING|
+                                          CLUSTER_CULLING,
             ENABLE_ALL_CULLING          = VIEW_FRUSTUM_CULLING|
                                           SMALL_FEATURE_CULLING|
-                                          SHADOW_OCCLUSION_CULLING
+                                          SHADOW_OCCLUSION_CULLING|
+                                          CLUSTER_CULLING
         };
         
         typedef unsigned int CullingMode;

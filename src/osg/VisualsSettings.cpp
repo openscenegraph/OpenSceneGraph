@@ -124,8 +124,6 @@ void VisualsSettings::readCommandLine(std::vector<std::string>& commandLine)
         if (itr!=commandLine.end())
         {
         
-            std::cout << "stereo turned on"<<endl;
-        
             _stereo = true;
 
             std::vector<std::string>::iterator start = itr; 

@@ -5,6 +5,8 @@
 #ifndef OSG_GLUT
 #define OSG_GLUT 1
 
+#include <stdlib.h>
+
 #if defined(__DARWIN_OSX__)
     #include <GLUT/glut.h>
 #else

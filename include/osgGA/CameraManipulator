@@ -36,7 +36,7 @@ class OSGGA_EXPORT CameraManipulator : public GUIEventHandler
 public:
 
 
-        virtual const char* className() { return "CameraManipulator"; }
+        virtual const char* className() const { return "CameraManipulator"; }
 
         /** Attach a camera to the manipulator to be used for specifying view.*/
         virtual void setCamera(osg::Camera*);

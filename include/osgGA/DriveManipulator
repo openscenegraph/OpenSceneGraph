@@ -31,7 +31,7 @@ class OSGGA_EXPORT DriveManipulator : public CameraManipulator
 
         DriveManipulator();
 
-        virtual const char* className() { return "Drive"; }
+        virtual const char* className() const { return "Drive"; }
 
         virtual void setNode(osg::Node*);
 

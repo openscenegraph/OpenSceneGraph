@@ -40,6 +40,7 @@ class SG_EXPORT ImageStream : public Image
 
 	enum StreamStatus
         {
+            INVALID,
             PLAYING,
             PAUSED,
             REWINDING

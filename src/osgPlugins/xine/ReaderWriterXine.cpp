@@ -75,24 +75,51 @@ class XineImageStream : public osg::ImageStream
 
         virtual void play()
         {
-            if (_status!=PLAYING)
+            if (_status!=PLAYING && _stream)
             {
-                osg::notify(osg::NOTICE)<<"XineImageStream::play()"<<std::endl;
-                xine_play(_stream, 0, 0);
-                while (!_ready)
+                if (_status==PAUSED)
                 {
-                    osg::notify(osg::NOTICE)<<"waiting..."<<std::endl;
-                    usleep(10000);
+                    xine_set_param (_stream, XINE_PARAM_SPEED, XINE_SPEED_NORMAL);
+                }
+                else
+                {
+                    osg::notify(osg::NOTICE)<<"XineImageStream::play()"<<std::endl;
+                    xine_play(_stream, 0, 0);
+                    while (!_ready)
+                    {
+                        osg::notify(osg::NOTICE)<<"waiting..."<<std::endl;
+                        usleep(10000);
+                    }
                 }
             }
             _status=PLAYING;
         }
 
-        virtual void pause() { _status=PAUSED; }
+        virtual void pause()
+        {
+            if (_status==PAUSED) return;
+        
+            _status=PAUSED;
+            
+            if (_stream)
+            {
+                xine_set_param (_stream, XINE_PARAM_SPEED, XINE_SPEED_PAUSE);
+            }
+        }
 
-        virtual void rewind() { _status=REWINDING; }
+        virtual void rewind()
+        {
+            _status=REWINDING;
+            if (_stream)
+            {
+                xine_trick_mode(_stream,XINE_TRICK_MODE_FAST_REWIND,0);
+            }
+        }
 
-        virtual void quit(bool /*waitForThreadToExit*/ = true) {}
+        virtual void quit(bool /*waitForThreadToExit*/ = true)
+        {
+            close();
+        }
 
         static void my_render_frame(uint32_t width, uint32_t height, void* data, void* userData)
         {
@@ -100,7 +127,7 @@ class XineImageStream : public osg::ImageStream
 
             GLenum pixelFormat = GL_BGRA;
 
-        #if 0    
+        #if 0   
             if (!imageStream->_ready)
             {
                 imageStream->allocateImage(width,height,1,pixelFormat,GL_UNSIGNED_BYTE,1);
@@ -142,14 +169,22 @@ class XineImageStream : public osg::ImageStream
 
         virtual ~XineImageStream()
         {
+            osg::notify(osg::NOTICE)<<"Killing XineImageStream"<<std::endl;
             close();
+            osg::notify(osg::NOTICE)<<"Closed XineImageStream"<<std::endl;
         }
 
         void close()
         {
+
             if (_stream)
             {
+                  osg::notify(osg::NOTICE)<<"Closing stream"<<std::endl;
+                
                   xine_close(_stream);
+
+                  osg::notify(osg::NOTICE)<<"Disposing stream"<<std::endl;
+
                   xine_dispose(_stream);
                   _stream = 0;
             }
@@ -157,11 +192,15 @@ class XineImageStream : public osg::ImageStream
 
             if (_ao)
             {
+               osg::notify(osg::NOTICE)<<"Closing audio driver"<<std::endl;
+
                 xine_close_audio_driver(_xine, _ao);  
             }
             
             if (_vo)
             {
+               osg::notify(osg::NOTICE)<<"Closing video driver"<<std::endl;
+
                 xine_close_video_driver(_xine, _vo);  
             }
 
@@ -190,13 +229,12 @@ class ReaderWriterXine : public osgDB::ReaderWriter
             xine_init(_xine);
             
             register_rgbout_plugin(_xine);
-
-            // register_plugin(_xine, "/usr/local/lib/osgPlugins", "osgdb_xine.so");      
-
         }
      
         virtual ~ReaderWriterXine()
         {
+            osg::notify(osg::NOTICE)<<"Killing Xine"<<std::endl;
+        
             if (_xine) xine_exit(_xine);
             _xine = NULL;
         }
@@ -209,7 +247,7 @@ class ReaderWriterXine : public osgDB::ReaderWriter
                    osgDB::equalCaseInsensitive(extension,"mov");
         }
 
-        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
+        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options*) const
         {
             //std::string ext = osgDB::getLowerCaseFileExtension(file);
             //if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;

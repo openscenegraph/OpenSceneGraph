@@ -318,6 +318,7 @@ void Registry::addDotOsgWrapper(DotOsgWrapper* wrapper)
     const osg::Object* proto = wrapper->getPrototype();
 
     _objectWrapperMap[name] = wrapper;
+	if (wrapper->getReadWriteMode()==DotOsgWrapper::READ_AND_WRITE) _classNameWrapperMap[name] = wrapper;
     
     if (proto)
     {
@@ -325,8 +326,7 @@ void Registry::addDotOsgWrapper(DotOsgWrapper* wrapper)
         std::string compositeName = libraryName + "::" + name;
 
         _objectWrapperMap[compositeName] = wrapper;
-
-        if (wrapper->getReadWriteMode()==DotOsgWrapper::READ_AND_WRITE) _classNameWrapperMap[proto->className()] = wrapper;
+        if (wrapper->getReadWriteMode()==DotOsgWrapper::READ_AND_WRITE) _classNameWrapperMap[compositeName] = wrapper;
 
         if (dynamic_cast<const Image*>(proto))
         {
@@ -973,8 +973,16 @@ bool Registry::writeObject(const osg::Object& obj,Output& fw)
     }
 
     std::string classname = obj.className();
-    DotOsgWrapperMap::iterator itr = _classNameWrapperMap.find(classname);
+	std::string libraryName = obj.libraryName();
+	std::string compositeName = libraryName + "::" + classname;
 
+	// try composite name first
+	DotOsgWrapperMap::iterator itr = _classNameWrapperMap.find(compositeName);
+
+	// composite name not found, try simple class name
+	if (itr == _classNameWrapperMap.end()) {
+		itr = _classNameWrapperMap.find(classname);
+	}
 
     if (itr==_classNameWrapperMap.end())
     {
@@ -1033,6 +1041,39 @@ bool Registry::writeObject(const osg::Object& obj,Output& fw)
                                                       ++aitr)
         {
             DotOsgWrapperMap::iterator mitr = _objectWrapperMap.find(*aitr);
+            if (mitr==_objectWrapperMap.end())
+            {
+                // not found so check if a library::class composite name.
+                std::string token = *aitr;
+                std::string::size_type posDoubleColon = token.rfind("::");
+                if (posDoubleColon != std::string::npos)
+                {
+
+                    // we have a composite name so now strip off the library name
+                    // are try to load it, and then retry the find to see
+                    // if we can recongise the objects.
+
+                    std::string libraryName = std::string(token,0,posDoubleColon);
+
+                    // first try the standard nodekit library.
+                    std::string nodeKitLibraryName = createLibraryNameForNodeKit(libraryName);
+                    if (loadLibrary(nodeKitLibraryName)) 
+                    {
+                        mitr = _objectWrapperMap.find(*aitr);
+                    }
+
+                    if (mitr==_objectWrapperMap.end())
+                    {
+                        // otherwise try the osgdb_ plugin library.
+                        std::string pluginLibraryName = createLibraryNameForExtension(libraryName);
+                        if (loadLibrary(pluginLibraryName))
+                        {
+                            mitr = _objectWrapperMap.find(*aitr);
+                        }
+                    }
+
+                }
+            }
             if (mitr!=_objectWrapperMap.end())
             {
                 // get the function to read the data...

@@ -203,7 +203,6 @@ namespace osgParticle
     inline void ParticleProcessor::setLifeTime(double t)
     {
 		lifeTime_ = t;
-		endless_ = false;
 	}
         
     inline double ParticleProcessor::getLifeTime() const

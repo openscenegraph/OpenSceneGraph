@@ -28,7 +28,6 @@ CXXFILES =\
     trPagePageManager.cpp\
     trpage_print_parse.cpp\
     trpage_util.cpp\
-    TrPageViewer.cpp\
 
 
 

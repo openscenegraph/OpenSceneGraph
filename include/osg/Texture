@@ -84,7 +84,6 @@ class SG_EXPORT Texture : public StateAttribute
             _modifiedTag(),
             _image(copyop(text._image.get())),
             _target(text._target),
-            _textureUnit(text._textureUnit),
             _wrap_s(text._wrap_s),
             _wrap_t(text._wrap_t),
             _wrap_r(text._wrap_r),
@@ -102,7 +101,7 @@ class SG_EXPORT Texture : public StateAttribute
             _subloadWidth(text._subloadWidth),
             _subloadHeight(text._subloadHeight) {}
 
-        META_StateAttribute(osg, Texture,(Type)(TEXTURE_0+_textureUnit));
+        META_StateAttribute(osg, Texture,TEXTURE);
         
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
         virtual int compare(const StateAttribute& rhs) const;
@@ -135,17 +134,6 @@ class SG_EXPORT Texture : public StateAttribute
           * and writing into the texture with offset \a xoffset and \a yoffset.
           */
         void copyTexSubImage2D(State& state, int xoffset, int yoffset, int x, int y, int width, int height );
-
-        /** Set the texture unit.
-          * Valid values are 0,1,2,3.
-          * Default value of texture unit is 0.
-          * note, multi-texturing not fully implemented yet... April 2001.
-          */        
-        inline void setTextureUnit(const unsigned int textureUnit) { _textureUnit = textureUnit; }
-        
-        /** get the texture unit.*/
-        inline const unsigned int getTextureUnit() const { return _textureUnit; }
-
 
         enum WrapParameter {
             WRAP_S,
@@ -341,8 +329,6 @@ class SG_EXPORT Texture : public StateAttribute
         mutable ref_ptr<Image> _image;
 
         GLenum _target; // defaults to GL_TEXTURE_2D
-
-        unsigned int _textureUnit;
 
         WrapMode _wrap_s;
         WrapMode _wrap_t;

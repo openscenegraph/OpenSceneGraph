@@ -118,6 +118,15 @@ class SG_EXPORT State : public Referenced
             return applyMode(mode,enabled,ms);
         }
 
+        inline const bool applyTextureMode(unsigned int unit, const StateAttribute::GLMode mode,const bool enabled)
+        {
+            if (unit>=_textureModeMapList.size()) _textureModeMapList.resize(unit);
+            ModeMap& modeMap = _textureModeMapList[unit];
+            
+            ModeStack& ms = modeMap[mode];
+            ms.changed = true;    
+            return applyMode(mode,enabled,ms);
+        }
 
         /** Apply an attribute if required. */
         inline const bool applyAttribute(const StateAttribute* attribute)
@@ -127,6 +136,15 @@ class SG_EXPORT State : public Referenced
             return applyAttribute(attribute,as);
         }
 
+        inline const bool applyTextureAttribute(unsigned int unit, const StateAttribute* attribute)
+        {
+            if (unit>=_textureAttributeMapList.size()) _textureAttributeMapList.resize(unit);
+            AttributeMap& attributeMap = _textureAttributeMapList[unit];
+            
+            AttributeStack& as = attributeMap[attribute->getType()];
+            as.changed = true;
+            return applyAttribute(attribute,as);
+        }
        
         /** Mode has been set externally, update state to reflect this setting.*/
         void haveAppliedMode(const StateAttribute::GLMode mode,const StateAttribute::GLModeValue value);
@@ -152,6 +170,219 @@ class SG_EXPORT State : public Referenced
         
         /** Get the current specified attribute, return NULL is one has not yet been applied.*/ 
         const StateAttribute* getLastAppliedAttribute(const StateAttribute::Type type) const;
+        
+
+
+        /** texture Mode has been set externally, update state to reflect this setting.*/
+        void haveAppliedTextureMode(unsigned int unit, const StateAttribute::GLMode mode,const StateAttribute::GLModeValue value);
+        
+        /** texture Mode has been set externally, therefore dirty the associated mode in osg::State
+          * so it is applied on next call to osg::State::apply(..)*/
+        void haveAppliedTextureMode(unsigned int unit, const StateAttribute::GLMode mode);
+
+        /** texture Attribute has been applied externally, update state to reflect this setting.*/
+        void haveAppliedTextureAttribute(unsigned int unit, const StateAttribute* attribute);
+
+        /** texture Attribute has been applied externally, 
+          * and therefore this attribute type has been dirtied 
+          * and will need to be re-appplied on next osg::State.apply(..).
+          * note, if you have an osg::StateAttribute which you have applied externally
+          * then use the have_applied(attribute) method as this will the osg::State to
+          * track the current state more accuratly and enable lazy state updating such
+          * that only changed state will be applied.*/
+        void haveAppliedTextureAttribute(unsigned int unit, const StateAttribute::Type type);
+
+        /** Get whether the current specified texture mode is enabled (true) or disabled (false).*/ 
+        const bool getLastAppliedTextureMode(unsigned int unit, const StateAttribute::GLMode mode) const;
+        
+        /** Get the current specified texture attribute, return NULL is one has not yet been applied.*/ 
+        const StateAttribute* getLastAppliedTextureAttribute(unsigned int unit, const StateAttribute::Type type) const;
+
+
+
+        /** wrapper around glEnableClientState(GL_VERTEX_ARRAY);glVertexPointer(..);
+          * note, only updates values that change.*/
+        inline void setVertexPointer( GLint size, GLenum type,
+                                      GLsizei stride, const GLvoid *ptr )
+        {
+            if (!_vertexArray._enabled)
+            {
+                _vertexArray._enabled = true;
+                glEnableClientState(GL_VERTEX_ARRAY);
+            }
+            if (_vertexArray._pointer!=ptr)
+            {
+                _vertexArray._pointer=ptr;
+                glVertexPointer( size, type, stride, ptr );
+            }
+        }
+        
+        /** wrapper glDisableClientState(GL_VERTEX_ARRAY).
+          * note, only updates values that change.*/
+        inline void disableVertexPointer()
+        {
+            if (_vertexArray._enabled)
+            {
+                _vertexArray._enabled = false;
+                glDisableClientState(GL_VERTEX_ARRAY);
+            }
+        }
+
+        /** wrapper around glEnableClientState(GL_NORMAL_ARRAY);glNormalPointer(..);
+          * note, only updates values that change.*/
+        inline void setNormalPointer( GLenum type, GLsizei stride,
+                                      const GLvoid *ptr )
+        {
+            if (!_normalArray._enabled)
+            {
+                _normalArray._enabled = true;
+                glEnableClientState(GL_NORMAL_ARRAY);
+            }
+            if (_normalArray._pointer!=ptr)
+            {
+                _normalArray._pointer=ptr;
+                glNormalPointer( type, stride, ptr );
+            }
+        }
+
+        /** wrapper around glDisableClientState(GL_NORMAL_ARRAY);
+          * note, only updates values that change.*/
+        inline void disableNormalPointer()
+        {
+            if (_normalArray._enabled)
+            {
+                _normalArray._enabled = false;
+                glDisableClientState(GL_NORMAL_ARRAY);
+            }
+        }
+
+        /** wrapper around glEnableClientState(GL_COLOR_ARRAY);glColorPointer(..);
+          * note, only updates values that change.*/
+        inline void setColorPointer( GLint size, GLenum type,
+                                     GLsizei stride, const GLvoid *ptr )
+        {
+            if (!_colorArray._enabled)
+            {
+                _colorArray._enabled = true;
+                glEnableClientState(GL_COLOR_ARRAY);
+            }
+            if (_colorArray._pointer!=ptr)
+            {
+                _colorArray._pointer=ptr;
+                glColorPointer( size, type, stride, ptr );
+            }
+        }
+
+        /** wrapper around glDisableClientState(GL_COLOR_ARRAY);
+          * note, only updates values that change.*/
+        inline void disableColorPointer()
+        {
+            if (_colorArray._enabled)
+            {
+                _colorArray._enabled = false;
+                glDisableClientState(GL_COLOR_ARRAY);
+            }
+        }
+
+        /** wrapper around glEnableClientState(GL_INDEX_ARRAY);glIndexPointer(..);
+          * note, only updates values that change.*/
+        inline void setIndexPointer( GLenum type, GLsizei stride,
+                              const GLvoid *ptr )
+        {
+            if (!_indexArray._enabled)
+            {
+                _indexArray._enabled = true;
+                glEnableClientState(GL_INDEX_ARRAY);
+            }
+            if (_indexArray._pointer!=ptr)
+            {
+                _indexArray._pointer=ptr;
+                glIndexPointer( type, stride, ptr );
+            }
+        }
+
+        /** wrapper around glDisableClientState(GL_INDEX_ARRAY);
+          * note, only updates values that change.*/
+        inline void disableIndexPointer()
+        {
+            //if (_indexArray._enabled)
+            {
+                _indexArray._enabled = false;
+                glDisableClientState(GL_INDEX_ARRAY);
+            }
+        }
+
+        /** wrapper around glEnableClientState(GL_TEXTURE_COORD_ARRAY);glTexCoordPointer(..);
+          * note, only updates values that change.*/
+        inline void setTexCoordPointer( unsigned int unit,
+                                 GLint size, GLenum type,
+                                 GLsizei stride, const GLvoid *ptr )
+        {
+            if (setClientActiveTextureUnit(unit))
+            {
+                if ( unit >= _texCoordArrayList.size()) _texCoordArrayList.resize(unit+1);
+                EnabledArrayPair& eap = _texCoordArrayList[unit];
+
+                //if (!eap._enabled)
+                {
+                    eap._enabled = true;
+                    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+                }
+                if (eap._pointer!=ptr)
+                {
+                    glTexCoordPointer( size, type, stride, ptr );
+                    eap._pointer = ptr;
+                }
+            }
+        }
+        
+        /** wrapper around glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+          * note, only updates values that change.*/
+        inline void disableTexCoordPointer( unsigned int unit )
+        {
+            if (setClientActiveTextureUnit(unit))
+            {
+                if ( unit > _texCoordArrayList.size()) _texCoordArrayList.resize(unit+1);
+                EnabledArrayPair& eap = _texCoordArrayList[unit];
+
+                if (eap._enabled)
+                {
+                    eap._enabled = false;
+                    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+                }
+            }
+        }
+
+
+        /** set the current tex coord array texture unit, return true if selected, false if selection failed such as when multitexturing is not supported.
+          * note, only updates values that change.*/
+        inline bool setClientActiveTextureUnit( unsigned int unit )
+        {
+            return unit==0;
+//  will need to check for extensions etc.       
+//             if (unit!=_currentClientActiveTextureUnit)
+//             {
+//                 glClientActiveTextureARB(GL_TEXTURE0_ARB+unit);
+//                 _currentClientActiveTextureUnit = unit;
+//             }
+//             return true;
+        }
+
+
+        /** set the current texture unit, return true if selected, false if selection failed such as when multitexturing is not supported.
+          * note, only updates values that change.*/
+        inline bool setActiveTextureUnit( unsigned int unit )
+        {
+            return unit==0;
+// 
+//             if (unit!=_currentActiveTextureUnit)
+//             {
+//                 glActiveTextureARB(GL_TEXTURE0_ARB+unit);
+//                 _currentActiveTextureUnit = unit;
+//             }
+//             return true;
+        }
+        
 
         
         /** Set the current OpenGL context uniqueID.
@@ -275,13 +506,42 @@ class SG_EXPORT State : public Referenced
         }
 
         typedef std::map<StateAttribute::GLMode,ModeStack>      ModeMap;
+        typedef std::vector<ModeMap>                            TextureModeMapList;
+
         typedef std::map<StateAttribute::Type,AttributeStack>   AttributeMap;
+        typedef std::vector<AttributeMap>                       TextureAttributeMapList;
+
         typedef std::vector<ref_ptr<const StateSet> >           StateSetStack;
         typedef std::vector<ref_ptr<const Matrix> >             MatrixStack;
 
-        ModeMap         _modeMap;
-        AttributeMap    _attributeMap;
-        StateSetStack   _drawStateStack;
+        ModeMap                                                 _modeMap;
+        AttributeMap                                            _attributeMap;
+        
+        TextureModeMapList                                      _textureModeMapList;
+        TextureAttributeMapList                                 _textureAttributeMapList;
+        
+        StateSetStack                                           _drawStateStack;
+        
+        struct EnabledArrayPair
+        {
+            EnabledArrayPair():_enabled(false),_pointer(0) {}
+            EnabledArrayPair(const EnabledArrayPair& eap):_enabled(eap._enabled),_pointer(eap._pointer) {}
+            EnabledArrayPair& operator = (const EnabledArrayPair& eap) { _enabled=eap._enabled; _pointer=eap._pointer; return *this; }
+            
+            bool          _enabled;
+            const GLvoid* _pointer;
+        };
+        
+        typedef std::vector<EnabledArrayPair>                   EnabledTexCoordArrayList;
+
+        EnabledArrayPair            _vertexArray;
+        EnabledArrayPair            _colorArray;
+        EnabledArrayPair            _indexArray;
+        EnabledArrayPair            _normalArray;
+        EnabledTexCoordArrayList    _texCoordArrayList;
+        
+        unsigned int                _currentActiveTextureUnit;
+        unsigned int                _currentClientActiveTextureUnit;
         
 };
 

@@ -95,10 +95,6 @@ static void initOSGAttrNames()
   if (!first_time) return;
 
   ADD_ATTR( osg::StateAttribute::TEXTURE         , "TEXTURE"      );
-  ADD_ATTR( osg::StateAttribute::TEXTURE_0       , "TEXTURE_0"    );
-  ADD_ATTR( osg::StateAttribute::TEXTURE_1       , "TEXTURE_1"    );
-  ADD_ATTR( osg::StateAttribute::TEXTURE_2       , "TEXTURE_2"    );
-  ADD_ATTR( osg::StateAttribute::TEXTURE_3       , "TEXTURE_3"    );
   ADD_ATTR( osg::StateAttribute::MATERIAL        , "MATERIAL"     );
   ADD_ATTR( osg::StateAttribute::ALPHAFUNC       , "ALPHAFUNC"    );
   ADD_ATTR( osg::StateAttribute::ANTIALIAS       , "ANTIALIAS"    );

@@ -12,36 +12,61 @@ void DrawArrays::applyPrimitiveOperation(Drawable::PrimitiveFunctor& functor)
     functor.drawArrays(_mode,_first,_count);
 }
 
+void DrawArrayLengths::draw() const
+{
+    GLint first = _first;
+    for(VectorSizei::const_iterator itr=begin();
+        itr!=end();
+        ++itr)
+    {
+        glDrawArrays(_mode,first,*itr);
+        first += *itr;
+    }
+}
 
-void UByteDrawElements::draw() const 
+void DrawArrayLengths::applyPrimitiveOperation(Drawable::PrimitiveFunctor& functor)
+{
+    GLint first = _first;
+    for(VectorSizei::iterator itr=begin();
+        itr!=end();
+        ++itr)
+    {
+        functor.drawArrays(_mode,first,*itr);
+        first += *itr;
+    }
+}
+
+
+
+void DrawElementsUByte::draw() const 
 {
     glDrawElements(_mode,size(),GL_UNSIGNED_BYTE,&front());
 }
 
-void UByteDrawElements::applyPrimitiveOperation(Drawable::PrimitiveFunctor& functor)
+void DrawElementsUByte::applyPrimitiveOperation(Drawable::PrimitiveFunctor& functor)
 {
     if (!empty()) functor.drawElements(_mode,size(),&front());
 }
 
 
-void UShortDrawElements::draw() const 
+void DrawElementsUShort::draw() const 
 {
     glDrawElements(_mode,size(),GL_UNSIGNED_SHORT,&front());
 }
 
-void UShortDrawElements::applyPrimitiveOperation(Drawable::PrimitiveFunctor& functor)
+void DrawElementsUShort::applyPrimitiveOperation(Drawable::PrimitiveFunctor& functor)
 {
     if (!empty()) functor.drawElements(_mode,size(),&front());
 }
 
 
 
-void UIntDrawElements::draw() const 
+void DrawElementsUInt::draw() const 
 {
     glDrawElements(_mode,size(),GL_UNSIGNED_INT,&front());
 }
 
-void UIntDrawElements::applyPrimitiveOperation(Drawable::PrimitiveFunctor& functor)
+void DrawElementsUInt::applyPrimitiveOperation(Drawable::PrimitiveFunctor& functor)
 {
     if (!empty()) functor.drawElements(_mode,size(),&front());
 }

@@ -123,10 +123,10 @@ void Tesselator::retesselatePolygons(osg::Geometry& geom)
                     }
                     break;
                 }
-                case(osg::Primitive::UByteDrawElementsPrimitiveType):
+                case(osg::Primitive::DrawElementsUBytePrimitiveType):
                 {
-                    osg::UByteDrawElements* drawElements = static_cast<osg::UByteDrawElements*>(primitive);
-                    for(osg::UByteDrawElements::iterator indexItr=drawElements->begin();
+                    osg::DrawElementsUByte* drawElements = static_cast<osg::DrawElementsUByte*>(primitive);
+                    for(osg::DrawElementsUByte::iterator indexItr=drawElements->begin();
                         indexItr!=drawElements->end();
                         ++indexItr)
                     {
@@ -134,10 +134,10 @@ void Tesselator::retesselatePolygons(osg::Geometry& geom)
                     }
                     break;
                 }
-                case(osg::Primitive::UShortDrawElementsPrimitiveType):
+                case(osg::Primitive::DrawElementsUShortPrimitiveType):
                 {
-                    osg::UShortDrawElements* drawElements = static_cast<osg::UShortDrawElements*>(primitive);
-                    for(osg::UShortDrawElements::iterator indexItr=drawElements->begin();
+                    osg::DrawElementsUShort* drawElements = static_cast<osg::DrawElementsUShort*>(primitive);
+                    for(osg::DrawElementsUShort::iterator indexItr=drawElements->begin();
                         indexItr!=drawElements->end();
                         ++indexItr)
                     {
@@ -145,10 +145,10 @@ void Tesselator::retesselatePolygons(osg::Geometry& geom)
                     }
                     break;
                 }
-                case(osg::Primitive::UIntDrawElementsPrimitiveType):
+                case(osg::Primitive::DrawElementsUIntPrimitiveType):
                 {
-                    osg::UIntDrawElements* drawElements = static_cast<osg::UIntDrawElements*>(primitive);
-                    for(osg::UIntDrawElements::iterator indexItr=drawElements->begin();
+                    osg::DrawElementsUInt* drawElements = static_cast<osg::DrawElementsUInt*>(primitive);
+                    for(osg::DrawElementsUInt::iterator indexItr=drawElements->begin();
                         indexItr!=drawElements->end();
                         ++indexItr)
                     {
@@ -170,7 +170,7 @@ void Tesselator::retesselatePolygons(osg::Geometry& geom)
             {
                 Prim* prim = primItr->get();
 
-                osg::UShortDrawElements* elements = new osg::UShortDrawElements(prim->_mode);
+                osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(prim->_mode);
                 for(Prim::VecList::iterator vitr=prim->_vertices.begin();
                     vitr!=prim->_vertices.end();
                     ++vitr)

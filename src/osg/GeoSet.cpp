@@ -1117,23 +1117,42 @@ Geometry* GeoSet::convertToGeometry()
                 return 0;
             }
 
-            for( int i = 0; i < _numprims; i++ )
+            if( _cindex.valid() )
             {
-                if( _cindex.valid() )
+
+                for( int i = 0; i < _numprims; i++ )
                 {
                     UShortDrawElements* n = new UShortDrawElements;
                     geom->addPrimitive(n);
-                    
+
                     if (_cindex._is_ushort)
                         geom->addPrimitive(osgNew UShortDrawElements( (GLenum)_oglprimtype, _primLengths[i],&_cindex._ptr._ushort[index] ));
                     else
                         geom->addPrimitive(osgNew UIntDrawElements( (GLenum)_oglprimtype, _primLengths[i], &_cindex._ptr._uint[index] ));
+
+                    index += _primLengths[i];
+                }
+            }
+            else
+            {
+                if (_numprims==1)
+                {
+                    DrawArrays* da = new DrawArrays(_oglprimtype,0,_primLengths[0]);
+                    geom->addPrimitive(da);
                 }
                 else
-                    geom->addPrimitive(osgNew DrawArrays( (GLenum)_oglprimtype, index, _primLengths[i] ));
+                {
+                    DrawArrayLengths* dal = new DrawArrayLengths(_oglprimtype,0,_numprims);
+                    geom->addPrimitive(dal);
+                    for( int i = 0; i < _numprims; i++ )
+                    {
+                        (*dal)[i] = _primLengths[i];
+                        index += _primLengths[i];
+                    }
+                }
 
-                index += _primLengths[i];
             }
+            
         }
         else                         // POINTS, LINES, TRIANGLES, QUADS
         {
@@ -1284,10 +1303,12 @@ Geometry* GeoSet::convertToGeometry()
 
             index += _primLengths[i];
         }
+        
 
     }
     else
     {
+        // POINTS, LINES, TRIANGLES, QUADS
     
         Vec3Array* coords = osgNew Vec3Array;
         Vec3Array* normals = 0;

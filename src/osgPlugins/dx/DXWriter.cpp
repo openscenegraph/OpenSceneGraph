@@ -1319,7 +1319,7 @@ std::string DXWriter::BuildStateSetAttributes( MyStateSet &sset,
   }
 
   // Texture
-  if ( sset.HasAttribute( osg::StateAttribute::TEXTURE_0 ) ) {
+  if ( sset.HasAttribute( osg::StateAttribute::TEXTURE ) ) {
     sprintf( buf, "attribute \"texture wrap s\" string \"%s\"\n",
              sset.wrap_s == GL_CLAMP ? "clamp" : "repeat" );
     str += buf;
@@ -1631,7 +1631,7 @@ std::string DXWriter::WriteGeoSetField( const std::string &field_name,
   // If texturing is on, write the texture as a DX image field, and give
   //   us back the name of field
   int has_uv = num_tcoords > 0 && tbinding == osg::GeoSet::BIND_PERVERTEX;
-  int has_texture = sset.HasAttribute( osg::StateAttribute::TEXTURE_0 );
+  int has_texture = sset.HasAttribute( osg::StateAttribute::TEXTURE );
   int has_texgen  = sset.HasAttribute( osg::StateAttribute::TEXGEN );
 
   std::string texture_name;
@@ -2002,7 +2002,7 @@ void MyStateSet::Query( const osg::StateSet &sset )
   }
 
   // TEXTURE / TEXTURE_0
-  attr = sset.getAttribute( osg::StateAttribute::TEXTURE_0 );
+  attr = sset.getAttribute( osg::StateAttribute::TEXTURE );
   if ( attr &&
        ( sset.getMode( GL_TEXTURE_2D ) & osg::StateAttribute::ON )) {
 
@@ -2011,7 +2011,7 @@ void MyStateSet::Query( const osg::StateSet &sset )
     // NOTE:  If OSG failed to load the texture, we'll get a NULL right here
     image = texture.getImage();
     if ( image ) 
-      AddAttribute( osg::StateAttribute::TEXTURE_0 );
+      AddAttribute( osg::StateAttribute::TEXTURE );
     
     // NOTE:  DX limitations
     //   Traditional DX doesn't support any texture control besides specifying

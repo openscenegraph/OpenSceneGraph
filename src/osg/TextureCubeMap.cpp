@@ -181,9 +181,6 @@ void TextureCubeMap::apply(State& state) const
     // get the globj for the current contextID.
     GLuint& handle = getHandle(contextID);
 
-    // For multi-texturing will need something like...
-    // glActiveTextureARB((GLenum)(GL_TEXTURE0_ARB+_textureUnit));
-
     if (handle != 0)
     {
         if (_subloadMode == OFF)

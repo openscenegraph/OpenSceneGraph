@@ -52,7 +52,7 @@ public:
     {
         if (!_indexCache.empty())
         {
-            drawArrays(_modeCache,0,_indexCache.size());
+            drawElements(_modeCache,_indexCache.size(),&_indexCache.front());
         }
     }
 
@@ -70,7 +70,7 @@ public:
                 break;
             }
             case(GL_TRIANGLE_STRIP):
-            {
+             {
                 unsigned int pos=first;
                 for(GLsizei i=2;i<count;++i,++pos)
                 {
@@ -122,7 +122,7 @@ public:
     virtual void drawElements(GLenum mode,GLsizei count,const GLubyte* indices)
     {
         if (indices==0 || count==0) return;
-    
+
         typedef const GLubyte* IndexPointer;
     
         switch(mode)
@@ -189,7 +189,7 @@ public:
     virtual void drawElements(GLenum mode,GLsizei count,const GLushort* indices)
     {
         if (indices==0 || count==0) return;
-    
+
         typedef const GLushort* IndexPointer;
     
         switch(mode)

@@ -242,11 +242,16 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
             if (titr==textureMap.end())
             {
         
-                std::string fileName = osgDB::findFileInDirectory(omtl->textureName,directory,true);
-                if (!fileName.empty())
-                {
-
-                    osg::Image* osg_image = osgDB::readImageFile(fileName.c_str());
+//                 std::string fileName = osgDB::findFileInDirectory(omtl->textureName,directory,true);
+//                 
+//                 std::cout << "omtl->textureName "<<omtl->textureName<<std::endl;
+//                 std::cout << "directory "<<directory<<std::endl;
+//                 std::cout << "fileName "<<fileName<<std::endl;
+//                 
+//                 if (!fileName.empty())
+//                 {
+// 
+                    osg::Image* osg_image = osgDB::readImageFile(omtl->textureName);
                     if (osg_image)
                     {
                         osg::Texture2D* osg_texture = new osg::Texture2D;
@@ -260,11 +265,11 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
                     {
                         osg::notify(osg::NOTICE) << "Warning: Cannot create texture "<<omtl->textureName<< std::endl;
                     }
-                }
-                else
-                {
-                    osg::notify(osg::WARN) << "texture '"<<omtl->textureName<<"' not found"<< std::endl;
-                }
+//                 }
+//                 else
+//                 {
+//                     osg::notify(osg::WARN) << "texture '"<<omtl->textureName<<"' not found"<< std::endl;
+//                 }
                 
             }
             else

@@ -5,14 +5,14 @@ using namespace osg;
 MatrixTransform::MatrixTransform():
     _inverseDirty(false)
 {
-    _matrix = osgNew Matrix;
-    _inverse = osgNew Matrix;
+    _matrix = new Matrix;
+    _inverse = new Matrix;
 }
 
 MatrixTransform::MatrixTransform(const MatrixTransform& transform,const CopyOp& copyop):
     Transform(transform,copyop),
-    _matrix(osgNew Matrix(*transform._matrix)),
-    _inverse(osgNew Matrix(*transform._inverse)),
+    _matrix(new Matrix(*transform._matrix)),
+    _inverse(new Matrix(*transform._inverse)),
     _inverseDirty(transform._inverseDirty),
     _animationPath(dynamic_cast<AnimationPath*>(copyop(transform._animationPath.get())))
 {    
@@ -23,8 +23,8 @@ MatrixTransform::MatrixTransform(const Matrix& mat )
 {
     _referenceFrame = RELATIVE_TO_PARENTS;
 
-    _matrix = osgNew Matrix(mat);
-    _inverse = osgNew Matrix();
+    _matrix = new Matrix(mat);
+    _inverse = new Matrix();
     _inverseDirty = false;
 }
 
@@ -46,7 +46,7 @@ void MatrixTransform::traverse(NodeVisitor& nv)
     }
     
     // must call any nested node callbacks and continue subgraph traversal.
-    MatrixTransform::traverse(nv);
+    Transform::traverse(nv);
 }
 
 void MatrixTransform::AnimationPathCallback::operator()(Node* node, NodeVisitor* nv)

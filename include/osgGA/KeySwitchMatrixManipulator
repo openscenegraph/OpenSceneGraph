@@ -34,7 +34,7 @@ class OSGGA_EXPORT KeySwitchMatrixManipulator : public MatrixManipulator
 {
 public:
 
-        virtual const char* className() { return "KeySwitchMatrixManipulator"; }
+        virtual const char* className() const { return "KeySwitchMatrixManipulator"; }
 
         /**
         Add a camera manipulator with an associated name, and a key to

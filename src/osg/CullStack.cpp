@@ -4,13 +4,13 @@ using namespace osg;
 
 CullStack::CullStack()
 {
-
     _cullingMode = ENABLE_ALL_CULLING;
     _LODBias = 1.0f;
     _smallFeatureCullingPixelSize = 2.0f;
     _frustumVolume=-1.0f;
     _bbCornerNear = 0;
     _bbCornerFar = 7;
+   _currentReuseMatrixIndex=0;
 }
 
 

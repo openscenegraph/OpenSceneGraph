@@ -116,6 +116,7 @@ void SceneView::setDefaults()
 
 void SceneView::init()
 {
+
     _initCalled = true;
 
     if (_sceneData.valid() && _initVisitor.valid())
@@ -138,7 +139,9 @@ void SceneView::app()
     if (!_initCalled) init();
 
 
-
+#ifdef OSG_USE_MEMORY_MANAGER
+    m_validateAllAllocUnits();
+#endif
     //std::cout<<std::endl;
     //std::cout<<std::endl;
     //std::cout<<"*************************** New frame ************"<<std::endl;

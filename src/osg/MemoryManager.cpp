@@ -169,7 +169,7 @@ sMStats    m_getMemoryStatistics()
     static        bool        alwaysValidateAll      = false;
     static        bool        alwaysLogAll           = false;
     static        bool        alwaysWipeAll          = true;
-    static        bool        checkOnAllocations     = true;
+    static        bool        checkOnAllocations     = false;
     static        bool        checkForUnitialized    = false;
     static        bool        cleanupLogOnFirstRun   = true;
     static    const    unsigned int    paddingSize            = 4;
@@ -268,6 +268,10 @@ sMStats    m_getMemoryStatistics()
                     if (strcmp(ptr,"OFF")!=0)
                     {
                         checkOnAllocations=true;
+                    }
+                    else
+                    {
+                        checkOnAllocations=false;
                     }
                 }
                 
@@ -1010,7 +1014,7 @@ sMStats    m_getMemoryStatistics()
     {
 
         // check that exists allocated units havn't been damaged.
-        if (checkOnAllocations || checkForUnitialized) m_validateAllAllocUnits();
+        if (checkOnAllocations) m_validateAllAllocUnits();
 
         try
         {

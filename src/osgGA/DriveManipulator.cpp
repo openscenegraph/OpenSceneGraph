@@ -13,6 +13,8 @@ DriveManipulator::DriveManipulator()
 {
     _modelScale = 0.01f;
     _velocity = 0.0f;
+    _height = 1.0f;
+    _buffer = 1.0f;
     //_speedMode = USE_MOUSE_Y_FOR_SPEED;
     _speedMode = USE_MOUSE_BUTTONS_FOR_SPEED;
 }

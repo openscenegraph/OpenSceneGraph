@@ -227,6 +227,7 @@ int main(int argc, char** argv)
         {
             osg::Image* image = osgDB::readImageFile(arguments[i]);
             geode->addDrawable(createTexturedQuadGeometry(pos,image->s(),image->t(),image));
+            geode->getOrCreateStateSet()->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
         }
 
     }

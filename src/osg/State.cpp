@@ -8,7 +8,6 @@ using namespace osg;
 State::State()
 {
     _contextID = 0;
-    _fineGrainedErrorDetection = true;
 }
 
 State::~State()
@@ -17,8 +16,34 @@ State::~State()
 
 void State::reset()
 {
+/*
+    for(ModeMap::iterator mitr=_modeMap.begin();
+        mitr!=_modeMap.end();
+        ++mitr)
+    {
+        ModeStack& ms = mitr->second;
+        ms.valueVec.clear();
+        ms.last_applied_value = !ms.global_default_value;
+        ms.changed = true;
+    }        
+*/
+
     _modeMap.clear();
-    _attributeMap.clear();
+    _modeMap[GL_DEPTH_TEST].global_default_value = true;
+
+    // go through all active StateAttribute's, applying where appropriate.
+    for(AttributeMap::iterator aitr=_attributeMap.begin();
+        aitr!=_attributeMap.end();
+        ++aitr)
+    {
+        AttributeStack& as = aitr->second;
+        as.attributeVec.clear();
+        as.last_applied_attribute = NULL;
+        as.changed = true;
+    }        
+
+//    _attributeMap.clear();
+
     _drawStateStack.clear();
 }
 
@@ -172,7 +197,7 @@ void State::apply(const StateSet* dstate)
                         else
                         {
                             // assume default of disabled.
-                            apply_mode(this_mitr->first,false,ms);
+                            apply_mode(this_mitr->first,ms.global_default_value,ms);
 
                         }
             
@@ -249,7 +274,7 @@ void State::apply(const StateSet* dstate)
                     else
                     {
                         // assume default of disabled.
-                        apply_mode(this_mitr->first,false,ms);
+                        apply_mode(this_mitr->first,ms.global_default_value,ms);
 
                     }
             
@@ -297,9 +322,7 @@ void State::apply(const StateSet* dstate)
                         }
                         else
                         {
-                            // this is really an error state, in theory we *should* have a
-                            // global state attribute set for all types.
-                            //notify(WARN)<<"    No global StateAttribute set for type"<<(int)aitr->first<<endl;
+                            apply_global_default_attribute(as);
                         }
                     }
 
@@ -372,9 +395,7 @@ void State::apply(const StateSet* dstate)
                     }
                     else
                     {
-                        // this is really an error state, in theory we *should* have a
-                        // global state attribute set for all types.
-                        //notify(WARN)<<"    No global StateAttribute set for type"<<(int)aitr->first<<endl;
+                        apply_global_default_attribute(as);
                     }
                 }
             }        
@@ -427,7 +448,7 @@ void State::apply()
             else
             {
                 // assume default of disabled.
-                apply_mode(mitr->first,false,ms);
+                apply_mode(mitr->first,ms.global_default_value,ms);
             }
             
         }
@@ -449,9 +470,7 @@ void State::apply()
             }
             else
             {
-                // this is really an error state, in theory we *should* have a
-                // global state attribute set for all types.
-                //notify(WARN)<<"    No global StateAttribute set for type"<<(int)aitr->first<<endl;
+                apply_global_default_attribute(as);
             }
             
         }

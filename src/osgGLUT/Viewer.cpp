@@ -572,9 +572,12 @@ void displaytext(int x, int y, char *s)
 
 void Viewer::showStats()
 {
+
     static GLfloat tmax=100;
     glViewport(0,0,ww,wh);
     float vh = wh;
+
+    //glPushAttrib (GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT | GL_LIGHTING_BIT | GL_ENABLE_BIT | GL_STENCIL_BUFFER_BIT);
 
     glDisable( GL_DEPTH_TEST ); // to see the stats always
     glDisable( GL_ALPHA_TEST );
@@ -811,6 +814,9 @@ void Viewer::showStats()
 
     glMatrixMode( GL_PROJECTION );
     glPopMatrix();
+
+    //glPopAttrib ();
+
 }
 
 void Viewer::display()

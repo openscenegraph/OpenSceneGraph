@@ -82,6 +82,14 @@ void StateSet::setGlobalDefaults()
 
     setRendingBinToInherit();
 
+
+    setAttributeAndModes(new AlphaFunc,StateAttribute::OFF);
+    setAttributeAndModes(new Transparency,StateAttribute::OFF);
+
+    Material *material       = new Material;
+    material->setColorMode(Material::AMBIENT_AND_DIFFUSE);
+    setAttributeAndModes(material,StateAttribute::ON);
+/*
     setMode(GL_LIGHTING,StateAttribute::OFF);
     setMode(GL_FOG,StateAttribute::OFF);
     setMode(GL_POINT_SMOOTH,StateAttribute::OFF);
@@ -103,8 +111,8 @@ void StateSet::setGlobalDefaults()
     
     setAttributeAndModes(new PolygonMode,StateAttribute::OFF);
     setAttributeAndModes(new Transparency,StateAttribute::OFF);
-    
     setAttributeAndModes(new Depth,StateAttribute::ON);
+*/
 }
 
 

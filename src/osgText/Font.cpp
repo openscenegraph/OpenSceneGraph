@@ -51,7 +51,7 @@ std::string findFontFile(const std::string& str)
         filename = osgDB::findFileInPath(str.c_str(),s_FontFilePath);
         if (filename) return std::string(filename);
     }
-    osg::notify(osg::WARN)<<"Warning: font file \""<<str<<"\" not found."<<endl;    
+    osg::notify(osg::WARN)<<"Warning: font file \""<<str<<"\" not found."<<std::endl;    
     return std::string();
 }
 

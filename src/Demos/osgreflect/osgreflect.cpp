@@ -164,7 +164,7 @@ int main( int argc, char **argv )
 
     if (!loadedModel)
     {
-        write_usage(osg::notify(osg::NOTICE),argv[0]);
+//        write_usage(osg::notify(osg::NOTICE),argv[0]);
         return 1;
     }
     
@@ -347,7 +347,7 @@ int main( int argc, char **argv )
         osg::Transparency* trans = new osg::Transparency;
         trans->setFunction(osg::Transparency::ONE,osg::Transparency::ONE);
 
-        osg::StateSet* statesetBin5 = createMirrorTexturedState("tank.rgb");
+        osg::StateSet* statesetBin5 = createMirrorTexturedState("Images/tank.rgb");
 
         statesetBin5->setRenderBinDetails(5,"RenderBin");
         statesetBin5->setMode(GL_CULL_FACE,osg::StateAttribute::OFF);

@@ -118,7 +118,7 @@ Node *makeTerrain( void )
 
     Texture *tex = new Texture;
 
-    tex->setImage(osgDB::readImageFile("lz.rgb"));
+    tex->setImage(osgDB::readImageFile("Images/lz.rgb"));
 
     StateSet *dstate = new StateSet;
     dstate->setMode( GL_LIGHTING, StateAttribute::OFF );

@@ -87,9 +87,6 @@ void Matrix::setTrans( float tx, float ty, float tz )
 
 void Matrix::setTrans( const Vec3& v )
 {
-#ifdef WARN_DEPRECATED
-    notify(NOTICE) << "Matrix::setTrans is deprecated."<<endl;
-#endif
     _mat[3][0] = v[0];
     _mat[3][1] = v[1];
     _mat[3][2] = v[2];

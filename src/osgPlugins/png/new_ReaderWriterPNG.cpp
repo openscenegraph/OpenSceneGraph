@@ -64,7 +64,7 @@ warn_callback(png_structp /*ps*/, png_const_charp pc)
   /*FIXME: notify? */
   osg::notify(osg::WARN)<<"Warning in .png reader: ";
   if (pc) osg::notify(osg::WARN)<< pc;
-  osg::notify(osg::WARN)<<endl;
+  osg::notify(osg::WARN)<<std::endl;
 }
 
 static void 
@@ -75,7 +75,7 @@ err_callback(png_structp /*ps*/, png_const_charp pc)
 
   osg::notify(osg::WARN)<<"Error in .png reader: ";
   if (pc) osg::notify(osg::WARN)<< pc;
-  osg::notify(osg::WARN)<<endl;
+  osg::notify(osg::WARN)<<std::endl;
 }
 
 int 

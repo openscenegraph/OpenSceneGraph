@@ -94,7 +94,7 @@ osg::Object* ConvertFromPerformer::getOsgObject(pfObject* pfObj)
     PfObjectToOsgObjectMap::iterator fitr = _pfToOsgMap.find(pfObj);
     if (fitr != _pfToOsgMap.end())
     {
-        //         osg::notify(DEBUG) << "Found shared object"<<endl;
+        //         osg::notify(DEBUG) << "Found shared object"<<std::endl;
         return (*fitr).second;
     }
     else return NULL;
@@ -254,7 +254,7 @@ osg::Node* ConvertFromPerformer::visitSwitch(osg::Group* osgParent,pfSwitch* swi
 osg::Node* ConvertFromPerformer::visitSequence(osg::Group* osgParent,pfSequence* sequence)
 {
 
-    osg::notify(osg::WARN)<<"Warning : cannot convert pfSequence as no osg::Sequence exists, using osg::Switch instead."<<endl;
+    osg::notify(osg::WARN)<<"Warning : cannot convert pfSequence as no osg::Sequence exists, using osg::Switch instead."<<std::endl;
 
     osg::Switch* osgSequence = dynamic_cast<osg::Switch*>(getOsgObject(sequence));
     if (osgSequence)
@@ -724,38 +724,38 @@ osg::StateSet* ConvertFromPerformer::visitGeoState(osg::GeoSet* osgGeoSet,pfGeoS
 
     // Don could you fill in some of these blanks???
     unsigned int inherit = geostate->getInherit();
-    //     osg::notify(DEBUG) << endl << "Inherit = "<<inherit<<endl;
-    //     if (inherit & PFSTATE_TRANSPARENCY) osg::notify(DEBUG) << "Inherit PFSTATE_TRANSPARENCY"<<endl;
-    //     else osg::notify(DEBUG) << "Define PFSTATE_TRANSPARENCY"<<endl;
-    //     if (inherit & PFSTATE_ENTEXTURE) osg::notify(DEBUG) << "Inherit PFSTATE_ENTEXTURE"<<endl;
-    //     else osg::notify(DEBUG) << "Define PFSTATE_ENTEXTURE"<<endl;
-    //     if (inherit & PFSTATE_CULLFACE) osg::notify(DEBUG) << "Inherit PFSTATE_CULLFACE"<<endl;
-    //     else osg::notify(DEBUG) << "Define PFSTATE_CULLFACE"<<endl;
-    //     if (inherit & PFSTATE_ENLIGHTING) osg::notify(DEBUG) << "Inherit PFSTATE_ENLIGHTING"<<endl;
-    //     else osg::notify(DEBUG) << "Define PFSTATE_ENLIGHTING"<<endl;
-    //     if (inherit & PFSTATE_ENFOG) osg::notify(DEBUG) << "Inherit PFSTATE_ENFOG"<<endl;
-    //     else osg::notify(DEBUG) << "Define PFSTATE_ENFOG"<<endl;
-    //     if (inherit & PFSTATE_ENWIREFRAME) osg::notify(DEBUG) << "Inherit PFSTATE_ENWIREFRAME"<<endl;
-    //     else osg::notify(DEBUG) << "Define PFSTATE_ENWIREFRAME"<<endl;
-    //     if (inherit & PFSTATE_ENTEXMAT) osg::notify(DEBUG) << "Inherit PFSTATE_ENTEXMAT"<<endl;
-    //     else osg::notify(DEBUG) << "Define PFSTATE_ENTEXMAT"<<endl;
-    //     if (inherit & PFSTATE_ENTEXGEN) osg::notify(DEBUG) << "Inherit PFSTATE_ENTEXGEN"<<endl;
-    //     else osg::notify(DEBUG) << "Define PFSTATE_ENTEXGEN"<<endl;
+    //     osg::notify(DEBUG) << endl << "Inherit = "<<inherit<<std::endl;
+    //     if (inherit & PFSTATE_TRANSPARENCY) osg::notify(DEBUG) << "Inherit PFSTATE_TRANSPARENCY"<<std::endl;
+    //     else osg::notify(DEBUG) << "Define PFSTATE_TRANSPARENCY"<<std::endl;
+    //     if (inherit & PFSTATE_ENTEXTURE) osg::notify(DEBUG) << "Inherit PFSTATE_ENTEXTURE"<<std::endl;
+    //     else osg::notify(DEBUG) << "Define PFSTATE_ENTEXTURE"<<std::endl;
+    //     if (inherit & PFSTATE_CULLFACE) osg::notify(DEBUG) << "Inherit PFSTATE_CULLFACE"<<std::endl;
+    //     else osg::notify(DEBUG) << "Define PFSTATE_CULLFACE"<<std::endl;
+    //     if (inherit & PFSTATE_ENLIGHTING) osg::notify(DEBUG) << "Inherit PFSTATE_ENLIGHTING"<<std::endl;
+    //     else osg::notify(DEBUG) << "Define PFSTATE_ENLIGHTING"<<std::endl;
+    //     if (inherit & PFSTATE_ENFOG) osg::notify(DEBUG) << "Inherit PFSTATE_ENFOG"<<std::endl;
+    //     else osg::notify(DEBUG) << "Define PFSTATE_ENFOG"<<std::endl;
+    //     if (inherit & PFSTATE_ENWIREFRAME) osg::notify(DEBUG) << "Inherit PFSTATE_ENWIREFRAME"<<std::endl;
+    //     else osg::notify(DEBUG) << "Define PFSTATE_ENWIREFRAME"<<std::endl;
+    //     if (inherit & PFSTATE_ENTEXMAT) osg::notify(DEBUG) << "Inherit PFSTATE_ENTEXMAT"<<std::endl;
+    //     else osg::notify(DEBUG) << "Define PFSTATE_ENTEXMAT"<<std::endl;
+    //     if (inherit & PFSTATE_ENTEXGEN) osg::notify(DEBUG) << "Inherit PFSTATE_ENTEXGEN"<<std::endl;
+    //     else osg::notify(DEBUG) << "Define PFSTATE_ENTEXGEN"<<std::endl;
     //
-    //     if (inherit & PFSTATE_ANTIALIAS) osg::notify(DEBUG) << "Inherit PFSTATE_ANTIALIAS"<<endl;
-    //     else osg::notify(DEBUG) << "Define PFSTATE_ANTIALIAS"<<endl;
-    //     if (inherit & PFSTATE_DECAL) osg::notify(DEBUG) << "Inherit PFSTATE_DECAL"<<endl;
-    //     else osg::notify(DEBUG) << "Define PFSTATE_DECAL"<<endl;
-    //     if (inherit & PFSTATE_ALPHAFUNC) osg::notify(DEBUG) << "Inherit PFSTATE_ALPHAFUNC"<<endl;
-    //     else osg::notify(DEBUG) << "Define PFSTATE_ALPHAFUNC"<<endl;
-    //     if (inherit & PFSTATE_ENCOLORTABLE) osg::notify(DEBUG) << "Inherit PFSTATE_ENCOLORTABLE"<<endl;
-    //     else osg::notify(DEBUG) << "Define PFSTATE_ENCOLORTABLE"<<endl;
-    //     if (inherit & PFSTATE_ENHIGHLIGHTING) osg::notify(DEBUG) << "Inherit PFSTATE_ENHIGHLIGHTING"<<endl;
-    //     else osg::notify(DEBUG) << "Define PFSTATE_ENHIGHLIGHTING"<<endl;
-    //     if (inherit & PFSTATE_ENLPOINTSTATE) osg::notify(DEBUG) << "Inherit PFSTATE_ENLPOINTSTATE"<<endl;
-    //     else osg::notify(DEBUG) << "Define PFSTATE_ENLPOINTSTATE"<<endl;
-    //     if (inherit & PFSTATE_ENTEXLOD) osg::notify(DEBUG) << "Inherit PFSTATE_ENTEXLOD"<<endl;
-    //     else osg::notify(DEBUG) << "Define PFSTATE_ENTEXLOD"<<endl;
+    //     if (inherit & PFSTATE_ANTIALIAS) osg::notify(DEBUG) << "Inherit PFSTATE_ANTIALIAS"<<std::endl;
+    //     else osg::notify(DEBUG) << "Define PFSTATE_ANTIALIAS"<<std::endl;
+    //     if (inherit & PFSTATE_DECAL) osg::notify(DEBUG) << "Inherit PFSTATE_DECAL"<<std::endl;
+    //     else osg::notify(DEBUG) << "Define PFSTATE_DECAL"<<std::endl;
+    //     if (inherit & PFSTATE_ALPHAFUNC) osg::notify(DEBUG) << "Inherit PFSTATE_ALPHAFUNC"<<std::endl;
+    //     else osg::notify(DEBUG) << "Define PFSTATE_ALPHAFUNC"<<std::endl;
+    //     if (inherit & PFSTATE_ENCOLORTABLE) osg::notify(DEBUG) << "Inherit PFSTATE_ENCOLORTABLE"<<std::endl;
+    //     else osg::notify(DEBUG) << "Define PFSTATE_ENCOLORTABLE"<<std::endl;
+    //     if (inherit & PFSTATE_ENHIGHLIGHTING) osg::notify(DEBUG) << "Inherit PFSTATE_ENHIGHLIGHTING"<<std::endl;
+    //     else osg::notify(DEBUG) << "Define PFSTATE_ENHIGHLIGHTING"<<std::endl;
+    //     if (inherit & PFSTATE_ENLPOINTSTATE) osg::notify(DEBUG) << "Inherit PFSTATE_ENLPOINTSTATE"<<std::endl;
+    //     else osg::notify(DEBUG) << "Define PFSTATE_ENLPOINTSTATE"<<std::endl;
+    //     if (inherit & PFSTATE_ENTEXLOD) osg::notify(DEBUG) << "Inherit PFSTATE_ENTEXLOD"<<std::endl;
+    //     else osg::notify(DEBUG) << "Define PFSTATE_ENTEXLOD"<<std::endl;
 
     if (inherit & PFSTATE_TRANSPARENCY) osgStateSet->setMode(GL_BLEND,osg::StateAttribute::INHERIT);
     else
@@ -921,8 +921,8 @@ osg::StateSet* ConvertFromPerformer::visitGeoState(osg::GeoSet* osgGeoSet,pfGeoS
                 osgStateSet->setAttribute(osgTexGen);
                 break;
             case(PFTG_EYE_LINEAR_IDENT) :
-                cerr << "TexGen Mode PFTG_EYE_LINEAR_IDENT not currently supported by the OSG,"<<endl;
-                cerr << "       assuming osg::TexGen::EYE_LINEAR."<<endl;
+                cerr << "TexGen Mode PFTG_EYE_LINEAR_IDENT not currently supported by the OSG,"<<std::endl;
+                cerr << "       assuming osg::TexGen::EYE_LINEAR."<<std::endl;
             case(PFTG_EYE_LINEAR) :
                 osgTexGen->setMode(osg::TexGen::EYE_LINEAR);
                 osgStateSet->setAttribute(osgTexGen);
@@ -935,15 +935,15 @@ osg::StateSet* ConvertFromPerformer::visitGeoState(osg::GeoSet* osgGeoSet,pfGeoS
                 osgTexGen->setStateSetModes(*osgStateSet,osg::StateAttribute::OFF);
                 break;
             case(PFTG_OBJECT_DISTANCE_TO_LINE) :
-                cerr << "TexGen Mode PFTG_OBJECT_DISTANCE_TO_LINE not currently supported by the OSG."<<endl;
+                cerr << "TexGen Mode PFTG_OBJECT_DISTANCE_TO_LINE not currently supported by the OSG."<<std::endl;
                 osgTexGen->setStateSetModes(*osgStateSet,osg::StateAttribute::OFF);
                 break;
             case(PFTG_EYE_DISTANCE_TO_LINE) :
-                cerr << "TexGen Mode PFTG_EYE_DISTANCE_TO_LINE not currently supported by the OSG."<<endl;
+                cerr << "TexGen Mode PFTG_EYE_DISTANCE_TO_LINE not currently supported by the OSG."<<std::endl;
                 osgTexGen->setStateSetModes(*osgStateSet,osg::StateAttribute::OFF);
                 break;
             default:
-                cerr << "TexGen Mode "<<mode<<" not currently supported by the OSG."<<endl;
+                cerr << "TexGen Mode "<<mode<<" not currently supported by the OSG."<<std::endl;
                 osgTexGen->setStateSetModes(*osgStateSet,osg::StateAttribute::OFF);
                 break;
         }

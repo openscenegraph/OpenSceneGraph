@@ -1,8 +1,23 @@
 #!smake
 SHELL=/bin/sh
 
-#DIRS = osg rgb lib3ds flt pfb obj lwo dw bmp pic png jpeg tga tiff gif osgtgz tgz zip  
-DIRS = osg rgb lib3ds flt obj lwo dw bmp pic png jpeg tga tiff gif osgtgz tgz zip  
+DIRS = osg rgb lib3ds flt obj lwo dw bmp pic tga osgtgz tgz zip  
+
+# comment in if you have Performer installed.
+# DIRS += pfb
+
+# comment in if you have libpng installed.
+DIRS += png
+
+# comment in if you have libjpeg installed.
+DIRS += jpeg
+
+# comment in if you have libungif installed.
+DIRS += gif
+
+# comment in if you have libtiff installed.
+DIRS += tiff
+
 all :
 	for f in $(DIRS) ; do cd $$f; $(MAKE) || exit 1; cd ..; done
 

@@ -95,7 +95,7 @@ pfObject* ConvertToPerformer::getPfObject(osg::Object* osgObj)
     OsgObjectToPfObjectMap::iterator fitr = _osgToPfMap.find(osgObj);
     if (fitr != _osgToPfMap.end())
     {
-        osg::notify(osg::DEBUG_INFO) << "Found shared object"<<endl;
+        osg::notify(osg::DEBUG_INFO) << "Found shared object"<<std::endl;
         return (*fitr).second;
     }
     else return NULL;
@@ -304,21 +304,21 @@ pfGeoSet* ConvertToPerformer::visitGeoSet(osg::GeoSet* geoset)
     osg::GeoSet::IndexPointer& cindex = geoset->getCoordIndices();
     if (cindex.valid() && !cindex._is_ushort) 
     {
-        osg::notify(osg::WARN)<<"Warning: Cannot convert osg::GeoSet to pfGeoSet due to uint coord index."<<endl;
+        osg::notify(osg::WARN)<<"Warning: Cannot convert osg::GeoSet to pfGeoSet due to uint coord index."<<std::endl;
         return NULL;
     }
 
     osg::GeoSet::IndexPointer& nindex = geoset->getNormalIndices();
     if (nindex.valid() && !nindex._is_ushort) 
     {
-        osg::notify(osg::WARN)<<"Warning: Cannot convert osg::GeoSet to pfGeoSet due to uint normal index."<<endl;
+        osg::notify(osg::WARN)<<"Warning: Cannot convert osg::GeoSet to pfGeoSet due to uint normal index."<<std::endl;
         return NULL;
     }
 
     osg::GeoSet::IndexPointer& colindex = geoset->getColorIndices();
     if (colindex.valid() && !colindex._is_ushort) 
     {
-        osg::notify(osg::WARN)<<"Warning: Cannot convert osg::GeoSet to pfGeoSet due to uint color index."<<endl;
+        osg::notify(osg::WARN)<<"Warning: Cannot convert osg::GeoSet to pfGeoSet due to uint color index."<<std::endl;
         return NULL;
     }
 

@@ -80,7 +80,7 @@ int main( int argc, char **argv )
     osg::Node* rootnode = osgDB::readNodeFiles(commandLine);
     if (!rootnode)
     {
-        write_usage(osg::notify(osg::NOTICE),argv[0]);
+//        write_usage(osg::notify(osg::NOTICE),argv[0]);
         return 1;
     }
     

@@ -79,7 +79,7 @@ int main( int argc, char **argv )
     osg::Node* model = osgDB::readNodeFiles(commandLine);
     if (!model)
     {
-        write_usage(osg::notify(osg::NOTICE),argv[0]);
+//        write_usage(osg::notify(osg::NOTICE),argv[0]);
         return 1;
     }
     

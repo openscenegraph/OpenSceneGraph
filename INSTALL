@@ -9,11 +9,21 @@ OSG has it own native ascii file format, and .rgb image reader inbuilt which
 allows you read the example data with any dependencies other than C++, STL and
 OpenGL.
 
+The new osgText library adds the dependency of the freetype library for support
+of true type fonts, however it is not essential to the core library, so you can 
+comment it out from compilation by modifying the src/Makefile, and src/Demos/Makefile.
+I you wish to use fonts then you can download freetype from www.freetype.org.  The 
+osgText library also requires an up to date GLU implementation which supports
+GLU1.3 tessellation routines.  If you your current GLU is out of date you'll need
+to download the latest, for instance the sgi's sample implementation for 
+GLU from the www.opengl.org website.
+
 The OSG also has a set of plug-ins which support non-native 3d database and 
 image formats, several have no dependencies on external libraries (flt,3ds,obj,
 lwo,dw, tga & pic), while others (pfb,jpeg,gif,tiff) require other libraries 
 to be installed to compile them.  If you don't already have them installed then
-don't worry, you'll still be able to use the OSG.  The core osg library and
+don't worry, you'll still be able to use the OSG, just comment out the plugins
+you can't compile from the src/osgPlugins/Makefile.  The core osg library and
 viewer has been designed to load the plug-ins at run-time only  and if they 
 are required to load a specific data set. If you don't need them for your 
 datasets then it won't matter that you haven't been able to compile 
@@ -42,7 +52,7 @@ Environmental settings under Unix
 
         setenv OSGHOME <location of OSG root>
         setenv OSGDATA <location of OSG data root>
-        setenv OSGFILEPATH ./:${OSGDATA}:${OSGDATA}/Images:
+        setenv OSGFILEPATH ./:${OSGDATA}:
         setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:${OSGHOME}/lib
         setenv PATH ${PATH}:${OSGHOME}/bin
 
@@ -221,7 +231,7 @@ Compiling under MacOS X (instructions written by Phil Atkin)
 
     Then you are in Unix land, and it's all very familiar.
 
-    You will need a .cshrc file with $OSGHOME (as in your instructions), and
+    You will need a .cshrc file with $OSGHOME (as above), and
     this is a filename that the Mac won't let you see from the Finder or in fact
     generate from an app, so I used vi to create that. Then I just went
 
@@ -307,6 +317,8 @@ Running the demos
           or
           
         osgviews glider.osg
+        
+        To 
           
 
     (Note: the file is picked up by checking the directories pointed to

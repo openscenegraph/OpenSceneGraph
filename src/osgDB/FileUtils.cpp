@@ -119,12 +119,17 @@ char *osgDB::findFileInPath( const char *_file, const char * filePath )
         #define F_OK 4
     #endif
 
-    notify(DEBUG_INFO) << "FindFileInPath() : trying " << _file << " ...\n";
-    if( access( _file, F_OK ) == 0 ) return (char *)_file;
 
     char pathbuff[1024];
     char *tptr, *tmppath;
     char *path = 0L;
+
+    notify(DEBUG_INFO) << "FindFileInPath() : trying ./" << _file << " ...\n";
+    if( access( _file, F_OK ) == 0 ) 
+    {
+        sprintf( pathbuff,"./%s", _file );
+        return (char *)strdup(pathbuff);
+    }
 
     tptr    = strdup( filePath );
     tmppath = strtok(  tptr, PathDelimitor );

@@ -14,7 +14,7 @@
 #ifndef OSG_REF_PTR
 #define OSG_REF_PTR 1
 
-// #define AUTOMATIC_CAST_TO_POINTER
+#define AUTOMATIC_CAST_TO_POINTER
 
 namespace osg {
 

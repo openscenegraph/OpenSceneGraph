@@ -26,7 +26,6 @@ FreeTypeLibrary::FreeTypeLibrary()
 
 FreeTypeLibrary::~FreeTypeLibrary()
 {
-
     for(FontMap::iterator itr=_fontMap.begin();
         itr!=_fontMap.end();
         ++itr)
@@ -37,7 +36,7 @@ FreeTypeLibrary::~FreeTypeLibrary()
             // external references must exist...
             itr->second = 0;
             
-            delete freetypefont;            
+            freetypefont->_facade->setImplementation(0);
         }
         else
         {
@@ -55,11 +54,11 @@ FreeTypeLibrary* FreeTypeLibrary::instance()
     return &s_library;
 }
 
-FreeTypeFont* FreeTypeLibrary::getFont(const std::string& fontfile,unsigned int index)
+osgText::Font* FreeTypeLibrary::getFont(const std::string& fontfile,unsigned int index)
 {
 
     FontMap::iterator itr = _fontMap.find(fontfile);
-    if (itr!=_fontMap.end()) return itr->second.get();
+    if (itr!=_fontMap.end()) return itr->second->_facade;
 
     FT_Face face;      /* handle to face object */
     FT_Error error = FT_New_Face( _ftlibrary, fontfile.c_str(), index, &face );
@@ -76,8 +75,10 @@ FreeTypeFont* FreeTypeLibrary::getFont(const std::string& fontfile,unsigned int 
         return 0;
     }
     
-    FreeTypeFont* font = new FreeTypeFont(fontfile,face);
-    _fontMap[fontfile]=font;
+    FreeTypeFont* fontImp = new FreeTypeFont(fontfile,face);
+    _fontMap[fontfile]=fontImp;
+    
+    osgText::Font* font = new osgText::Font(fontImp);
     return font;
 
 }

@@ -13,7 +13,8 @@
 
 #include "FreeTypeFont.h"
 #include FT_GLYPH_H
-  
+
+#include <osg/Notify>  
 #include <osgDB/WriteFile>
 
 FreeTypeFont::FreeTypeFont(const std::string& filename, FT_Face face):
@@ -28,32 +29,35 @@ FreeTypeFont::~FreeTypeFont()
 
 void FreeTypeFont::setSize(unsigned int width, unsigned int height)
 {
+    if (width+2*_facade->getGlyphImageMargin()>_facade->getTextureWidthHint() ||
+        height+2*_facade->getGlyphImageMargin()>_facade->getTextureHeightHint())
+    {
+        osg::notify(osg::WARN)<<"Warning: FreeTypeFont::setSize("<<width<<","<<height<<") sizes too large,"<<std::endl;
+    
+        width = _facade->getTextureWidthHint()-2*_facade->getGlyphImageMargin();
+        height = _facade->getTextureHeightHint()-2*_facade->getGlyphImageMargin();
+
+        osg::notify(osg::WARN)<<"         sizes capped ("<<width<<","<<height<<") to fit int current glyph texture size."<<std::endl;
+    }
+
     FT_Error error = FT_Set_Pixel_Sizes( _face,   /* handle to face object            */
                                          width,      /* pixel_width                      */
                                          height );   /* pixel_height */
 
     if (error)
     {
-        std::cout<<"FT_Set_Pixel_Sizes() - error "<<error<<std::endl;
+        osg::notify(osg::WARN)<<"FT_Set_Pixel_Sizes() - error "<<error<<std::endl;
     }
     else
     {
-        _width = width;
-        _height = height;
+        setWidth(width);
+        setHeight(height);
     }
 
 }
 
 osgText::Font::Glyph* FreeTypeFont::getGlyph(unsigned int charcode)
 {
-    SizeGlyphMap::iterator itr = _sizeGlyphMap.find(SizePair(_width,_height));
-    if (itr!=_sizeGlyphMap.end())
-    {
-        GlyphMap& glyphmap = itr->second;    
-        GlyphMap::iterator gitr = glyphmap.find(charcode);
-        if (gitr!=glyphmap.end()) return gitr->second.get();
-    }
-
     FT_Error error = FT_Load_Char( _face, charcode, FT_LOAD_RENDER|FT_LOAD_NO_BITMAP );
     if (error)
     {
@@ -64,29 +68,47 @@ osgText::Font::Glyph* FreeTypeFont::getGlyph(unsigned int charcode)
 
     FT_GlyphSlot glyphslot = _face->glyph;
 
-    int rows = glyphslot->bitmap.rows;
-    int width = glyphslot->bitmap.width;
     int pitch = glyphslot->bitmap.pitch;
     unsigned char* buffer = glyphslot->bitmap.buffer;
 
-    osg::ref_ptr<Glyph> glyph = new Glyph;
-    unsigned char* data = new unsigned char[width*rows*2];
-    glyph->setImage(width,rows,1,
+    unsigned int sourceWidth = glyphslot->bitmap.width;;
+    unsigned int sourceHeight = glyphslot->bitmap.rows;
+    
+    unsigned int margin = _facade->getGlyphImageMargin();
+    unsigned int width = sourceWidth+2*margin;
+    unsigned int height = sourceHeight+2*margin;
+
+    osg::ref_ptr<osgText::Font::Glyph> glyph = new osgText::Font::Glyph;
+    
+    unsigned int dataSize = width*height*2;
+    unsigned char* data = new unsigned char[dataSize];
+    
+
+    // clear the image to zeros.
+    for(unsigned char* p=data;p!=data+dataSize;++p) *p = 0;
+
+    glyph->setImage(width,height,1,
                     GL_LUMINANCE_ALPHA,
                     GL_LUMINANCE_ALPHA,GL_UNSIGNED_BYTE,
                     data,
                     osg::Image::USE_NEW_DELETE,
                     1);
 
+    // skip the top margin        
+    data += (margin*width)*2;
+
     // copy image across to osgText::Glyph image.     
-    for(int r=rows-1;r>=0;--r)
+    for(int r=sourceHeight-1;r>=0;--r)
     {
+        data+=2*margin; // skip the left margin
+
         unsigned char* ptr = buffer+r*pitch;
-        for(int c=0;c<width;++c,++ptr)
+        for(unsigned int c=0;c<sourceWidth;++c,++ptr)
         {
             (*data++)=255;
             (*data++)=*ptr;
         }
+        data+=2*margin; // skip the right margin.
     }
     
     FT_Glyph_Metrics* metrics = &(glyphslot->metrics);
@@ -96,7 +118,7 @@ osgText::Font::Glyph* FreeTypeFont::getGlyph(unsigned int charcode)
     glyph->setVerticalBearing(osg::Vec2((float)metrics->vertBearingX/64.0f,(float)(metrics->vertBearingY-metrics->height)/64.0f)); // top middle.
     glyph->setVerticalAdvance((float)metrics->vertAdvance/64.0f);
 
-    addGlyph(_width,_height,charcode,glyph.get());
+    addGlyph(_facade->getWidth(),_facade->getHeight(),charcode,glyph.get());
 
     return glyph.get();
 

@@ -22,6 +22,8 @@ using namespace osgText;
 
 DefaultFont::DefaultFont()
 {
+    _minFilterHint = osg::Texture::LINEAR_MIPMAP_LINEAR;
+    _magFilterHint = osg::Texture::NEAREST;
     constructGlyphs();
 }
 
@@ -190,15 +192,25 @@ void DefaultFont::constructGlyphs()
         {0x00, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x00, 0x00}
     };
     
-    _width = 8;
-    _height = 12;
+    unsigned int sourceWidth = 8;
+    unsigned int sourceHeight = 12;
+    
+    _width = sourceWidth+2*_margin;
+    _height = sourceHeight+2*_margin;
+    
+    
 
     // populate the glyph mp
     for(unsigned int i=32;i<127;i++)
     {
         osg::ref_ptr<Glyph> glyph = new Glyph;
         
-        unsigned char* data = new unsigned char[8*12*2];
+        unsigned int dataSize = _width*_height*2;
+        unsigned char* data = new unsigned char[dataSize];
+
+        // clear the image to zeros.
+        for(unsigned char* p=data;p!=data+dataSize;++p) *p = 0;
+        
         glyph->setImage(_width,_height,1,
                         GL_LUMINANCE_ALPHA,
                         GL_LUMINANCE_ALPHA,GL_UNSIGNED_BYTE,
@@ -210,8 +222,13 @@ void DefaultFont::constructGlyphs()
         unsigned char* ptr = rasters[i-32];
         unsigned char value_on = 255;
         unsigned char value_off = 0;
-        for(unsigned int row=0;row<_height;++row,++ptr)
+
+        // skip the top margin        
+        data += (_margin*_width)*2;
+        
+        for(unsigned int row=0;row<sourceHeight;++row,++ptr)
         {
+            data+=2*_margin; // skip the left margin
             (*data++)=((*ptr)&128)?value_on:value_off;
             (*data++)=((*ptr)&128)?value_on:value_off;
             (*data++)=((*ptr)&64)?value_on:value_off;
@@ -228,6 +245,7 @@ void DefaultFont::constructGlyphs()
             (*data++)=((*ptr)&2)?value_on:value_off;
             (*data++)=((*ptr)&1)?value_on:value_off;
             (*data++)=((*ptr)&1)?value_on:value_off;
+            data+=2*_margin; // skip the right margin.
         }
         
                         

@@ -71,13 +71,13 @@ public:
     {
         std::string         _fontFile;
         std::pair<int,int>  _fontResolution;
-        int                 _characterSize;
+        float               _characterSize;
         osg::Vec4           _color;
 
         TextProperties():
             _fontFile("fonts/arial.ttf"),
             _fontResolution(40,40),
-            _characterSize(0),
+            _characterSize(0.0f),
             _color(1.0f,1.0f,1.0f,1.0f)
         {
         }
@@ -89,8 +89,10 @@ public:
         _numLabels(11),
         _stc(new ColorRange(0.0f,1.0f)),
         _title("Scalar Bar"),
-        _orientation(HORIZONTAL),
+        _position(0.0f,0.0f,0.0f),
+        _width(1.0f),
         _aspectRatio(0.03),
+        _orientation(HORIZONTAL),
         _sp(new ScalarPrinter)
     {
         createDrawables();
@@ -123,8 +125,10 @@ public:
         _numLabels(numLabels),
         _stc(stc),
         _title(title),
-        _orientation(orientation),
+        _position(0.0f,0.0f,0.0f),
+        _width(1.0f),
         _aspectRatio(aspectRatio),
+        _orientation(orientation),
         _sp(sp)
     {
         createDrawables();
@@ -136,8 +140,10 @@ public:
         _numLabels(rhs._numLabels),
         _stc(rhs._stc),                     // Consider clone for deep copy?
         _title(rhs._title),
-        _orientation(rhs._orientation),
+        _position(rhs._position),
+        _width(rhs._width),
         _aspectRatio(rhs._aspectRatio),
+        _orientation(rhs._orientation),
         _sp(rhs._sp),                        // Consider clone for deep copy?
         _textProperties(rhs._textProperties)
     {
@@ -172,11 +178,18 @@ public:
     /** Get the title for the ScalarBar. */
     std::string getTitle() const;
 
-    /** Set the orientation of the ScalarBar. @see Orientation */
-    void setOrientation(ScalarBar::Orientation orientation);
 
-    /** Get the orientation of the ScalarBar.  @see Orientation */
-    ScalarBar::Orientation getOrientation() const;
+    /** Set the position of scalar bar's lower left corner.*/
+    void setPosition(const osg::Vec3& pos);
+    
+    /** Get the position of scalar bar.*/
+    const osg::Vec3& getPosition() const { return _position; }
+
+    /** Set the width of the scalar bar.*/
+    void setWidth(float width);
+
+    /** Get the width of the scalar bar.*/
+    float getWidth() { return _width; }
 
     /** Set the aspect ration (y/x) for the displayed bar. Bear in mind you
     may want to change this if you change the orientation. */
@@ -184,6 +197,14 @@ public:
 
     /** Get the aspect ration (y/x) for the displayed bar. */
     float getAspectRatio() const;
+
+
+    /** Set the orientation of the ScalarBar. @see Orientation */
+    void setOrientation(ScalarBar::Orientation orientation);
+
+    /** Get the orientation of the ScalarBar.  @see Orientation */
+    ScalarBar::Orientation getOrientation() const;
+
 
     /** Set a ScalarPrinter object for the ScalarBar. For every displayed
     ScalarBar label, the scalar value will be passed to the ScalarPrinter
@@ -209,8 +230,10 @@ private:
     int _numLabels;
     osg::ref_ptr<ScalarsToColors> _stc;
     std::string _title;
-    Orientation _orientation;
+    osg::Vec3 _position;
+    float _width;
     float _aspectRatio;
+    Orientation _orientation;
     osg::ref_ptr<ScalarPrinter> _sp;
     TextProperties  _textProperties;
 

@@ -56,6 +56,18 @@ std::string ScalarBar::getTitle() const
     return _title;
 }
 
+void ScalarBar::setPosition(const osg::Vec3& pos)
+{
+    _position = pos;
+    createDrawables();
+}
+
+void ScalarBar::setWidth(float width)
+{
+    _width = width;
+    createDrawables();
+}
+
 void ScalarBar::setOrientation(ScalarBar::Orientation orientation)
 {
     _orientation = orientation;
@@ -101,43 +113,21 @@ const ScalarBar::TextProperties& ScalarBar::getTextProperties() const
     return _textProperties;
 }
 
-namespace
-{
-
-struct MaxCoordLess
-{
-    enum Axis{X_AXIS, Y_AXIS, Z_AXIS};
-    Axis _axis;
-
-    MaxCoordLess(Axis axis): _axis(axis) {}
-
-    bool operator()(const osgText::Text* d1, const osgText::Text* d2)
-    {
-        if(_axis == X_AXIS )     return d1->getBound().xMax() < d2->getBound().xMax();
-        else if(_axis == Y_AXIS) return d1->getBound().yMax() < d2->getBound().yMax();
-        else if(_axis == Z_AXIS) return d1->getBound().zMax() < d2->getBound().zMax();
-
-        return false;
-    }
-};
-
-struct AlignCentreOnYValue
-{
-    float _y;
-    AlignCentreOnYValue(float y): _y(y) {}
-    void operator()(osgText::Text* t)
-    {
-        t->setPosition(osg::Vec3(t->getBound().center().x(), _y, t->getBound().center().z()));
-        t->setAlignment(osgText::Text::CENTER_CENTER);
-    }
-};
-
-}
 
 void ScalarBar::createDrawables()
 {
     // Remove any existing Drawables
     _drawables.erase(_drawables.begin(), _drawables.end());
+    
+    osg::Matrix matrix;
+    if(_orientation==HORIZONTAL)
+    {
+        matrix = osg::Matrix::translate(_position);
+    }
+    else
+    {
+        matrix = osg::Matrix::rotate(osg::DegreesToRadians(90.0f),1.0f,0.0f,0.0f) * osg::Matrix::translate(_position);
+    }
 
     // 1. First the bar
     // =================
@@ -152,34 +142,16 @@ void ScalarBar::createDrawables()
     vs->reserve(2*(_numColors+1));
 
     float incr = (_stc->getMax() - _stc->getMin()) / _numColors;
-    float arOffset;
-    if(_orientation==HORIZONTAL)
-    {
-        arOffset = _numColors * incr * _aspectRatio; // Bar height for a horizontal bar
-    }
-    else
-    {
-        arOffset = (_numColors*incr)/_aspectRatio;  // Bar width for a vertical bar
-    }
+    float xincr = (_width) / _numColors;
+    float arOffset = _width * _aspectRatio;
 
     int i;
     for(i=1; i<=_numColors; ++i)
     {
-        // Make a quad
-        if(_orientation==HORIZONTAL)
-        {
-            vs->push_back(osg::Vec3(_stc->getMin() + (i-1) * incr, 0.0f,     0.0f));
-            vs->push_back(osg::Vec3(_stc->getMin() + (i-1) * incr, arOffset, 0.0f));
-            vs->push_back(osg::Vec3(_stc->getMin() + i     * incr, arOffset, 0.0f));
-            vs->push_back(osg::Vec3(_stc->getMin() + i     * incr, 0.0f,     0.0f));
-        }
-        else
-        {
-            vs->push_back(osg::Vec3(0.0f,     _stc->getMin() + (i-1) * incr, 0.0f));
-            vs->push_back(osg::Vec3(arOffset, _stc->getMin() + (i-1) * incr, 0.0f));
-            vs->push_back(osg::Vec3(arOffset, _stc->getMin() + i     * incr, 0.0f));
-            vs->push_back(osg::Vec3(0.0f,     _stc->getMin() + i     * incr, 0.0f));
-        }
+        vs->push_back(osg::Vec3((i-1) * xincr, 0.0f,     0.0f)*matrix);
+        vs->push_back(osg::Vec3((i-1) * xincr, arOffset, 0.0f)*matrix);
+        vs->push_back(osg::Vec3(i     * xincr, arOffset, 0.0f)*matrix);
+        vs->push_back(osg::Vec3(i     * xincr, 0.0f,     0.0f)*matrix);
     }
     bar->setVertexArray(vs.get());
 
@@ -198,7 +170,7 @@ void ScalarBar::createDrawables()
 
     // Normal
     osg::ref_ptr<osg::Vec3Array> ns(new osg::Vec3Array);
-    ns->push_back(osg::Vec3(0.0f,0.0f,1.0f));
+    ns->push_back(osg::Matrix::transform3x3(osg::Vec3(0.0f,0.0f,1.0f),matrix));
     bar->setNormalArray(ns.get());
     bar->setNormalBinding(osg::Geometry::BIND_OVERALL);
 
@@ -212,12 +184,13 @@ void ScalarBar::createDrawables()
 
     // Check the character size, if it's 0, estimate a good character size
     float characterSize = _textProperties._characterSize;
-    if(characterSize == 0) characterSize = ((_stc->getMax()-_stc->getMin())*0.3)/_numLabels;
+    if(characterSize == 0) characterSize = _width * 0.03f;
 
     osgText::Font* font = osgText::readFontFile(_textProperties._fontFile.c_str());
 
     std::vector<osgText::Text*> texts(_numLabels);      // We'll need to collect pointers to these for later
     float labelIncr = (_stc->getMax()-_stc->getMin())/(_numLabels-1);
+    float labelxIncr = (_width)/(_numLabels-1);
     for(i=0; i<_numLabels; ++i)
     {
         osgText::Text* text = new osgText::Text;
@@ -227,29 +200,15 @@ void ScalarBar::createDrawables()
         text->setCharacterSize(characterSize);
         text->setText(_sp->printScalar(_stc->getMin()+(i*labelIncr)));
 
-        if(_orientation == HORIZONTAL)
-        {
-            text->setPosition(osg::Vec3(_stc->getMin() + (i*labelIncr), arOffset, 0.0f));
-            text->setAlignment(osgText::Text::CENTER_BOTTOM);
-        }
-        else
-        {
-            text->setPosition(osg::Vec3(arOffset, _stc->getMin() + (i*labelIncr), 0.0f));
-            text->setAlignment(osgText::Text::LEFT_CENTER);
-        }
+        text->setPosition(osg::Vec3((i*labelxIncr), arOffset, 0.0f)*matrix);
+        text->setAlignment(osgText::Text::CENTER_BASE_LINE);
+        text->setAxisAlignment( (_orientation==HORIZONTAL) ? osgText::Text::XY_PLANE :  osgText::Text::XZ_PLANE );
 
         addDrawable(text);
 
         texts[i] = text;
     }
 
-    // Make sure the text labels are all properly aligned - different words will have a different
-    // vertical alignment depending on the letters used in the labels. E.g. a 'y' has a dangling tail.
-    if(_orientation == HORIZONTAL)
-    {
-        std::vector<osgText::Text*>::iterator maxYIt = std::max_element(texts.begin(), texts.end(), MaxCoordLess(MaxCoordLess::Y_AXIS));
-        std::for_each(texts.begin(), texts.end(), AlignCentreOnYValue((*maxYIt)->getBound().center().y()));
-    }
 
     // 3. And finally the title
     // ========================
@@ -263,38 +222,12 @@ void ScalarBar::createDrawables()
         text->setCharacterSize(characterSize);
         text->setText(_title);
 
-        if(_orientation==HORIZONTAL)
-        {
-            // Horizontal bars have the title above the scalar bar and the labels.
-            // Need to move the title above any labels, using maximum y value of the
-            // existing text objects
+        float titleY = (_numLabels>0) ? arOffset + characterSize : arOffset;
 
-            std::vector<osgText::Text*>::iterator maxYIt = std::max_element(texts.begin(), texts.end(), MaxCoordLess(MaxCoordLess::Y_AXIS));
-
-            float titleY;
-            if(maxYIt != texts.end()) titleY = (*maxYIt)->getBound().yMax() * 1.1f;
-            else titleY = arOffset; // No labels, so just use arOffset
-
-            // Position the title at the middle of the bar above any labels.
-            text->setPosition(osg::Vec3(_stc->getMin() + ((_stc->getMax()-_stc->getMin())/2.0f), titleY, 0.0f));
-            text->setAlignment(osgText::Text::CENTER_BOTTOM);
-        }
-        else if(_orientation==VERTICAL)
-        {
-            // Vertical bars have the title to the right of the scalar bar and the labels.
-            // Need to move the title out beyond any labels, using the maximum x value of the
-            // existing text objects
-
-            std::vector<osgText::Text*>::iterator maxXIt = std::max_element(texts.begin(), texts.end(), MaxCoordLess(MaxCoordLess::X_AXIS));
-
-            float titleX;
-            if(maxXIt != texts.end()) titleX = (*maxXIt)->getBound().xMax() * 1.1f;
-            else titleX = arOffset; // No labels, so just use arOffset
-
-            // Position the title in the at the middle of the bar, to the right of any labels.
-            text->setPosition(osg::Vec3(titleX, _stc->getMin() + ((_stc->getMax()-_stc->getMin())/2.0f), 0.0f));
-            text->setAlignment(osgText::Text::LEFT_CENTER);
-        }
+        // Position the title at the middle of the bar above any labels.
+        text->setPosition(osg::Vec3((_width/2.0f), titleY, 0.0f)*matrix);
+        text->setAlignment(osgText::Text::CENTER_BASE_LINE);
+        text->setAxisAlignment( (_orientation==HORIZONTAL) ? osgText::Text::XY_PLANE :  osgText::Text::XZ_PLANE );
 
         addDrawable(text);
     }

@@ -248,6 +248,10 @@ SOURCE=..\..\src\osg\Group.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\dxtctool.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\Image.cpp
 # End Source File
 # Begin Source File
@@ -659,6 +663,11 @@ SOURCE=..\..\include\osg\Glu
 SOURCE=..\..\Include\Osg\Group
 # End Source File
 # Begin Source File
+
+SOURCE=..\..\src\osg\dxtctool.h
+# End Source File
+# Begin Source File
+
 
 SOURCE=..\..\Include\Osg\Image
 # End Source File

@@ -395,21 +395,6 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         /** Get the SharedStateManager. Return 0 if no SharedStateManager has been assigned.*/
         SharedStateManager* getSharedStateManager() { return _sharedStateManager.get(); }
 
-        /** Functor used in internal implementations.*/
-        struct ReadFunctor
-        {
-            ReadFunctor(const std::string& filename, const ReaderWriter::Options* options):
-                _filename(filename),
-                _options(options) {}
-
-            virtual ~ReadFunctor() {}
-            virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw) const = 0;
-            virtual bool isValid(ReaderWriter::ReadResult& readResult) const = 0;
-            virtual bool isValid(osg::Object* object) const = 0;
-
-            std::string _filename;
-            const ReaderWriter::Options* _options;
-        };
 
     protected:
 
@@ -435,6 +420,28 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         osg::Object*       readObject(DotOsgWrapperMap& dowMap,Input& fr);
 
         void eraseWrapper(DotOsgWrapperMap& wrappermap,DotOsgWrapper* wrapper);
+
+        /** Functor used in internal implementations.*/
+        struct ReadFunctor
+        {
+            ReadFunctor(const std::string& filename, const ReaderWriter::Options* options):
+                _filename(filename),
+                _options(options) {}
+
+            virtual ~ReadFunctor() {}
+            virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw) const = 0;
+            virtual bool isValid(ReaderWriter::ReadResult& readResult) const = 0;
+            virtual bool isValid(osg::Object* object) const = 0;
+
+            std::string _filename;
+            const ReaderWriter::Options* _options;
+        };
+
+        struct ReadObjectFunctor;
+        struct ReadImageFunctor;
+        struct ReadHeightFieldFunctor;
+        struct ReadNodeFunctor;
+        struct ReadArchiveFunctor;
 
         ReaderWriter::ReadResult read(const ReadFunctor& readFunctor);
         ReaderWriter::ReadResult readImplementation(const ReadFunctor& readFunctor,CacheHintOptions useObjectCache);

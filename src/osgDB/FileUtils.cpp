@@ -26,6 +26,8 @@
     #define F_OK 4
 #else // unix
     #include <unistd.h>
+    #include <sys/types.h>
+    #include <sys/stat.h>
 #endif
 
 #include <osg/Notify>
@@ -38,6 +40,40 @@
 bool osgDB::fileExists(const std::string& filename)
 {
     return access( filename.c_str(), F_OK ) == 0;
+}
+
+osgDB::FileType osgDB::fileType(const std::string& filename)
+{
+#if defined(WIN32) && !defined(__CYGWIN__)
+    if (!fileExists(const std::string& filename))
+    {
+        return FILE_NOT_FOUND;
+    } 
+    else
+    {
+        return REGULAR_FILE;
+    }
+
+#else
+    struct stat fileStat;
+
+    if(stat(filename.c_str(), &fileStat) == -1)
+    {
+	return FILE_NOT_FOUND;
+    }
+    
+    if(S_ISREG(fileStat.st_mode))
+    {
+	return REGULAR_FILE;
+    }
+
+    if(S_ISDIR(fileStat.st_mode))
+    {
+	return DIRECTORY;
+    }
+
+    return FILE_NOT_FOUND;
+#endif
 }
 
 std::string osgDB::findFileInPath(const std::string& filename, const FilePathList& filepath,CaseSensitivity caseSensitivity)

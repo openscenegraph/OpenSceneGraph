@@ -15,13 +15,14 @@
 #define OSG_MULTISWITCH 1
 
 #include <osg/Group>
+#include <osgSim/Export>
 
 namespace osgSim {
 
 /** MultiSwitch is a Group node which allows switching between sets of selected children.
     MultiSwtich is based on the OpenFlight switch behaviour.
 */
-class SG_EXPORT MultiSwitch : public osg::Group
+class OSGSIM_EXPORT MultiSwitch : public osg::Group
 {
     public :
         

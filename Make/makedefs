@@ -22,8 +22,38 @@ TOPDIR     ?= ../
 THISDIR    = .
 MAKEDEPEND = ignore
 
+####################################################################### 
+##
+##                   VERSIONING SEMANTICS
+##
+## Version consistes of <major> . <minor> . <release> - <revision>
+## Where:
+##    major   : Production (0 = pre-production)
+##    minor   : 0-7 = Production minor, 8 = Alpha, 9 = Beta
+##    release : Release tag
+##    revision: Release revision - 0 = development (cutting edge). 
+##
+## Usage:
+##     Default - VERSION_REVISION is set to the value defined here
+##     Env variable PRODUCER_VERSION_REVISION overrides default    
+##           e.g.:
+##               % setenv PRODUCER_VERSION_REVISION 5
+##               % make version
+##     Command line overrides env variable
+##               % make VERSION_REVISION=  
+####################################################################### 
+VERSION_MAJOR    = 0
+VERSION_MINOR    = 9
+VERSION_RELEASE  = 4
+VERSION_REVISION ?= 0
+ifneq (,$(OSG_VERSION_REVISION))
+VERSION_REVISION = $(OSG_VERSION_REVISION)
+endif
+VERSION       = $(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_RELEASE)
+
 INC        = -I$(TOPDIR)/include
-DEF        = 
+DEF        = -DOSG_VERSION="$(VERSION)"\
+             -DOSG_VERSION_REVISION="$(VERSION_REVISION)"
 
 ############################################################################
 ## NOTE - Semantics for the use of ARCH, ARCHARGS, and ARCHINST parameters

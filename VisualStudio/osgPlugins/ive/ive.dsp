@@ -126,6 +126,14 @@ SOURCE=..\..\..\src\osgPlugins\ive\ConvexPlanarPolygon.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\ive\CoordinateSystemNode.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\EllipsoidModel.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\ive\CullFace.cpp
 # End Source File
 # Begin Source File
@@ -391,6 +399,14 @@ SOURCE=..\..\..\src\osgPlugins\ive\ConvexPlanarPolygon.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\CullFace.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\CoordinateSystemNode.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\EllipsoidModel.h
 # End Source File
 # Begin Source File
 

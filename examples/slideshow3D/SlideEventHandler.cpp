@@ -53,7 +53,7 @@ void SlideEventHandler::set(osg::Node* model)
     }
     else
     {
-        std::cout<<"Not found presentation "<<std::endl;
+        std::cout<<"No presentation present in scene."<<std::endl;
 
         _presentationSwitch = 0;
         _activeSlide = 0;
@@ -70,7 +70,7 @@ void SlideEventHandler::set(osg::Node* model)
         }
         else
         {
-            std::cout<<"Not found slide either "<<std::endl;
+            std::cout<<"No slides present in scene, unable to operate as a slideshow."<<std::endl;
         }
     
     }

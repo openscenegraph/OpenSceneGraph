@@ -39,9 +39,19 @@ int main( int argc, char **argv )
     // get details on keyboard and mouse bindings used by the viewer.
     viewer.getUsage(*arguments.getApplicationUsage());
 
+    // read any time delay argument.
+    float timeDelayBetweenSlides = 1.5f;
+    while (arguments.read("-d",timeDelayBetweenSlides)) {}
+
+    bool autoSteppingActive = false;
+    while (arguments.read("-a")) autoSteppingActive = true;
+
     // register the slide event handler - which moves the presentation from slide to slide, layer to layer.
     SlideEventHandler* seh = new SlideEventHandler;
     viewer.getEventHandlerList().push_front(seh);
+    
+    seh->setAutoSteppingActive(autoSteppingActive);
+    seh->setTimeDelayBetweenSlides(timeDelayBetweenSlides);
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
@@ -66,11 +76,11 @@ int main( int argc, char **argv )
     // read the scene from the list of file specified commandline args.
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
 
-    // if no model loaded create a default presentation.
-    if (!loadedModel)
-    {
-        loadedModel = createDefaultPresentation();
-    }
+//     // if no model loaded create a default presentation.
+//     if (!loadedModel)
+//     {
+//         loadedModel = createDefaultPresentation();
+//     }
 
 
     // if no model has been successfully loaded report failure.

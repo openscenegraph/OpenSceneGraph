@@ -21,13 +21,15 @@ and optimized version of targets reside in parallel.
   make opt            - Makes optimized versions of all targets
   make debug          - Makes debug versions of all targets.
   make clean          - Removes all object files (both optimized and debug 
+                        versions) and Makedepend files.
+  make cleanopt       - Removes optimized version of object files and 
+                        Makedepend files.
+  make cleandbg       - Removes debug version of object files and Makedepend
+                        files.
+  make cleandepend    - Removes Makedepend file(s) (both optimized and debug 
                         versions)
-  make cleanopt       - Removes optimized version of object files
-  make cleandbg       - Removes debug version of object files
-  make cleandepend    - Removes Makedepend file (both optimized and debug 
-                        versions)
-  make cleandependopt - Removes optimized version Makedepend file 
-  make cleandependdbg - Removes debug version Makedepend file 
+  make cleandependopt - Removes optimized version Makedepend file(s) 
+  make cleandependdbg - Removes debug version Makedepend file(s)
   make cleantarget    - Removes only targets but leaves object files (both
                         optimized and debug versions)
   make cleantargetopt - Removes only optimized targets but leaves optimized

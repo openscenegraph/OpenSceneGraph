@@ -11,11 +11,11 @@
 <b><i><u>Stereo</u></i></b></h1>
 The OSG has support for stereo out of the box. Currently both anaglyphic
 stereo (i.e. red/green or red/cyan glasses) and quad buffered stereo (i.e.
-active stereo using shutter glasses, or passive stereo using polarised
+active stereo using shutter glasses, or passive stereo using polarized
 projectors &amp; glasses). It is planned to extend this support horizontal
-and virtical split window stereo implementations.
+and vertical split window stereo implementations.
 <p>Almost all OSG applications have the potential for stereo support simply
-by setting the relevent environmental variables, or via command line arguments.
+by setting the relevant environmental variables, or via command line arguments.
 Little or no code changes will be required, the support is handled transparently
 inside osgUtil::SceneView's handling of rendering.
 <p>If the user is planning to use head tracked stereo, or a cave then it
@@ -149,18 +149,45 @@ to switch stereo on:
 <br>&nbsp;
 <h3>
 Size matters:</h3>
-For appropriate depth perception the stereo code creates seperate left
+For appropriate depth perception the stereo code creates separate left
 and eye views, both the frustum and modelview are shifted to account for
-the seperate eye views.&nbsp; To achieve the right amount of adjustment
-the OSG requires the users eye seperation, the distance from the eyes to
+the separate eye views.&nbsp; To achieve the right amount of adjustment
+the OSG requires the users eye separation, the distance from the eyes to
 the screen and the height of the screen.&nbsp; The OSG will use the defaults
 of 0.05m,0.5m and 0.26m respectively which are assumed to be reasonable
 defaults for most users workstation configurations, note the OSG_SCREEN_HEIGHT
 is the image height rather than total size of your monitor/display surface.&nbsp;
 For the best stereo effects please measure these values and set them up
 via the environmental variables.&nbsp; Once set the views you get should
-give improved depth perception.
+give improved depth perception.&nbsp; A good way of measuring how well you are
+configured for your display is to fly away from objects (using the FlightManipulator
+for instance, but not the TrackballManipulator, see below) so that they go of
+toward infinity.  As they move away the offset between the two images should
+tend towards your eye separation, if you achieve this then the object will
+be perceived as at infinity.
 <br>&nbsp;
+<br>&nbsp;
+<h3>
+Camera Manipulator Modes:</h3>
+There are three osgUtil::CameraManipulator's which come with osgUtil, which
+operate as a Trackball, Drive and Flight modes of interaction (see sgv.html for
+how to invoke them in the scene graph viewer). The osgUtil::Trackball
+Manipulator automatically scales the fusion distance to that which will fusion on 
+center point of rotation - this will appear at the middle of the monitor at
+the monitors depth.  Whereas, the osgUtil::DriveManipualtor, osgUtil::FlightManipulator
+scale the fusion distance to the distance the viewer is from the screen, the
+results in a perception that the virtual world is scaled to physical world, this
+is clearly better for simulators and alike.  You can control the fusion of
+the image in these two modes via the osg::Camera::setFusionDistanceMode(FusionDistanceMode mode)
+where mode can be osg::Camera::PROPORTIONAL_TO_LOOK_DISTANCE (used by Trackball) or 
+osg::Camera::PROPORTIONAL_TO_SCREEN_DISTANCE (used by Drive and Flight),
+and osg::Camera::setFusionDistanceRatio(float).  See include/osg/Camera for
+further details, and the camera manipulators for implementation details.  The
+fusion distance ratio defaults to 1.0 but can be biased to move objects out or 
+into screen, they will also appear to get smaller and larger respectively.  The
+camera manipulators allow the user to alter this value at runtime via the '+'
+and '-' keys. 
+
 <br>&nbsp;
 <br>&nbsp;
 </body>

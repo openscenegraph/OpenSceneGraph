@@ -38,9 +38,9 @@ class Vec2d
 
         Vec2d(float x,float y) { _v[0]=x; _v[1]=y; }
 
-        inline Vec2d(const Vec2f& vec) { _v[0]=vec._v[0]; _v[1]=vec._v[1]}
+        inline Vec2d(const Vec2f& vec) { _v[0]=vec._v[0]; _v[1]=vec._v[1]; }
         
-        inline operator Vec3f() const { return Vec2f(_v[0],_v[1]);}
+        inline operator Vec2f() const { return Vec2f(_v[0],_v[1]);}
 
 
         inline bool operator == (const Vec2d& v) const { return _v[0]==v._v[0] && _v[1]==v._v[1]; }

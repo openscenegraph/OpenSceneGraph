@@ -96,6 +96,8 @@ class SG_EXPORT Matrix : public Object
 	void setTrans( const Vec3& v );
         Vec3 getTrans() const { return Vec3(_mat[3][0],_mat[3][1],_mat[3][2]); } 
 
+#ifdef USE_DEPRECATED_MATRIX_METHODS
+
         void copy( const Matrix& );
         void preScale( float sx, float sy, float sz, const Matrix& m );
         void postScale( const Matrix& m, float sx, float sy, float sz );
@@ -111,6 +113,8 @@ class SG_EXPORT Matrix : public Object
         void postRot( const Matrix& m, float deg, float x, float y, float z );
         void preRot( float deg, float x, float y, float z );
         void postRot( float deg, float x, float y, float z );
+        
+#endif
 
     	/** apply apply an 3x3 transform of v*M[0..2,0..2]  */
     	inline static Vec3 transform3x3(const Vec3& v,const Matrix& m);

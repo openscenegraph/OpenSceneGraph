@@ -208,20 +208,19 @@ bool GliderManipulator::calcMovement()
     float roll = -dx*0.1f*dt;
 
     osg::Matrix mat;
-    mat.makeTrans(-center.x(),-center.y(),-center.z());
-    mat.postRot(pitch,sv.x(),sv.y(),sv.z());
-    mat.postRot(roll,lv.x(),lv.y(),lv.z());
+    mat.makeTrans(-center);
+    mat *= Matrix::rotate(pitch,sv.x(),sv.y(),sv.z());
+    mat *= Matrix::rotate(roll,lv.x(),lv.y(),lv.z());
     if (_yawMode==YAW_AUTOMATICALLY_WHEN_BANKED)
     {
         float bank = asinf(sv.z());
         float yaw = (-bank*180.0f/M_PI)*dt;
-        mat.postRot(yaw,0.0f,0.0f,1.0f);
+        mat *= Matrix::rotate(yaw,0.0f,0.0f,1.0f);
     }
-    mat.postTrans(center.x(),center.y(),center.z());
 
     lv *= (_velocity*dt);
 
-    mat.postTrans(lv.x(),lv.y(),lv.z());
+    mat *= Matrix::trans(center + lv);
 
     _camera->transformLookAt(mat);
 

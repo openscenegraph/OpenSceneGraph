@@ -6,6 +6,8 @@
 #include <cstdlib> //memcpy
 #include <cmath> //acos
 
+#include <stdlib.h>
+
 using namespace osg;
 
 
@@ -13,8 +15,25 @@ using namespace osg;
 #define RAD2DEG(x)    ((x)*180.0/M_PI)
 
 
-//#define WARN_DEPRECATED
+#define WARN_DEPRECATED
+#define ABORT_DEPRECATED
+
+#ifdef WARN_DEPRECATED
+    #ifdef ABORT_DEPRECATED
+
+        #define DEPRECATED(message) \
+                notify(NOTICE) << message<<endl; \
+                abort();
+    #else
+        #define DEPRECATED(message) \
+                notify(NOTICE) << message<<endl;
+    #endif
+#else
+    #define DEPRECATED(message)
+#endif        
+
 #define ANGLES_IN_DEGREES
+
 
 #define SET_ROW(row, v1, v2, v3, v4 )    \
     _mat[(row)][0] = (v1); \
@@ -83,7 +102,7 @@ void Matrix::set( float a00, float a01, float a02, float a03,
 void Matrix::setTrans( float tx, float ty, float tz )
 {
 #ifdef WARN_DEPRECATED
-    notify(NOTICE) << "Matrix::setTrans is deprecated.";
+    notify(NOTICE) << "Matrix::setTrans is deprecated."<<endl;
 #endif
     _mat[3][0] = tx;
     _mat[3][1] = ty;
@@ -94,7 +113,7 @@ void Matrix::setTrans( float tx, float ty, float tz )
 void Matrix::setTrans( const Vec3& v )
 {
 #ifdef WARN_DEPRECATED
-    notify(NOTICE) << "Matrix::setTrans is deprecated.";
+    notify(NOTICE) << "Matrix::setTrans is deprecated."<<endl;
 #endif
     _mat[3][0] = v[0];
     _mat[3][1] = v[1];
@@ -373,8 +392,8 @@ bool Matrix::invert( const Matrix& _m )
 
         if ( fabs( pivot) <= 1e-20)
         {
-            notify(WARN) << "*** pivot = %f in mat_inv. ***\n";
-            //exit( 0);
+            notify(WARN) << "*** pivot = %f in mat_inv. ***"<<endl;
+            //abort( 0);
             return false;
         }
 
@@ -486,82 +505,87 @@ bool Matrix::invertAffine( const Matrix& _m )
     return true;
 }
 
+#ifdef USE_DEPRECATED_MATRIX_METHODS
+
 //Deprecated methods 
-void Matrix::copy( const Matrix& other) {
-#ifdef WARN_DEPRECATED
-    notify(NOTICE) << "Matrix::copy is deprecated.  Use = instead.";
-#endif
+void Matrix::copy( const Matrix& other)
+{
+    DEPRECATED("Matrix::copy is deprecated.  Use = instead.")
+
     (*this) = other;
 }
-void Matrix::preScale( float sx, float sy, float sz, const Matrix& m ) {
-#ifdef WARN_DEPRECATED
-    notify(NOTICE) << "Matrix::preScale is deprecated. Use result = (Matrix::scale * m) instead.";
-#endif
+void Matrix::preScale( float sx, float sy, float sz, const Matrix& m )
+{
+    DEPRECATED("Matrix::preScale is deprecated. Use result = (Matrix::scale * m) instead.")
+
     (*this) = ( scale(sx,sy,sz) * m );
 }
-void Matrix::postScale( const Matrix& m, float sx, float sy, float sz ) {
-#ifdef WARN_DEPRECATED
-    notify(NOTICE) << "Matrix::postScale is deprecated.  Use result = (m * Matrix::scale()) instead.";
-#endif
+void Matrix::postScale( const Matrix& m, float sx, float sy, float sz )
+{
+    DEPRECATED("Matrix::postScale is deprecated.  Use result = (m * Matrix::scale()) instead.")
+
     (*this) = ( m * scale(sx,sy,sz) );
 }
-void Matrix::preScale( float sx, float sy, float sz ) {
-#ifdef WARN_DEPRECATED
-    notify(NOTICE) << "Matrix::preScale is deprecated. Use M.preMult( Matrix::scale ) instead.";
-#endif
+void Matrix::preScale( float sx, float sy, float sz )
+{
+    DEPRECATED("Matrix::preScale is deprecated. Use M.preMult( Matrix::scale ) instead.")
+
     preMult( scale(sx,sy,sz) );
 }
-void Matrix::postScale( float sx, float sy, float sz ) {
-#ifdef WARN_DEPRECATED
-    notify(NOTICE) << "Matrix::postScale is deprecated.  Use M.postMult( Matrix::scale ) instead.";
-#endif
+void Matrix::postScale( float sx, float sy, float sz )
+{
+    DEPRECATED("Matrix::postScale is deprecated.  Use M.postMult( Matrix::scale ) instead.")
+
     postMult( scale(sx,sy,sz) );
 }
-void Matrix::preTrans( float tx, float ty, float tz, const Matrix& m ) {
-#ifdef WARN_DEPRECATED
-    notify(NOTICE) << "Matrix::preTrans is deprecated.  Use result = Matrix::trans * m instead.";
-#endif
+void Matrix::preTrans( float tx, float ty, float tz, const Matrix& m )
+{
+    DEPRECATED("Matrix::preTrans is deprecated.  Use result = Matrix::trans * m instead.")
+
     (*this) = trans(tx,ty,tz) * m;
 }
-void Matrix::postTrans( const Matrix& m, float tx, float ty, float tz ) {
-#ifdef WARN_DEPRECATED
-    notify(NOTICE) << "Matrix::postTrans is deprecated.  Use result = m * Matrix::trans instead.";
-#endif
+void Matrix::postTrans( const Matrix& m, float tx, float ty, float tz )
+{
+    DEPRECATED("Matrix::postTrans is deprecated.  Use result = m * Matrix::trans instead.")
+
     (*this) = m * trans(tx,ty,tz);
 }
-void Matrix::preTrans( float tx, float ty, float tz ) {
-#ifdef WARN_DEPRECATED
-    notify(NOTICE) << "Matrix::preTrans is deprecated.  Use result = Matrix::trans * m instead.";
-#endif
+
+void Matrix::preTrans( float tx, float ty, float tz )
+{
+    DEPRECATED("Matrix::preTrans is deprecated.  Use result = Matrix::trans * m instead.")
+
     preMult( trans(tx,ty,tz) );
 }
-void Matrix::postTrans( float sx, float sy, float sz ) {
-#ifdef WARN_DEPRECATED
-    notify(NOTICE) << "Matrix::postTrans is deprecated.  Use result = m * Matrix::trans instead.";
-#endif
+void Matrix::postTrans( float sx, float sy, float sz )
+{
+    DEPRECATED("Matrix::postTrans is deprecated.  Use result = m * Matrix::trans instead.")
+
     postMult( trans(sx,sy,sz) );
 }
-void Matrix::preRot( float deg, float x, float y, float z, const Matrix& m  ) {
-#ifdef WARN_DEPRECATED
-    notify(NOTICE) << "Matrix::preRot is deprecated.  Use result = Matrix::rot * m instead.";
-#endif
+void Matrix::preRot( float deg, float x, float y, float z, const Matrix& m  )
+{
+    DEPRECATED("Matrix::preRot is deprecated.  Use result = Matrix::rot * m instead.")
+
     (*this) = rotate(deg,x,y,z) * m;
 }
-void Matrix::postRot( const Matrix& m, float deg, float x, float y, float z ) {
-#ifdef WARN_DEPRECATED
-    notify(NOTICE) << "Matrix::postRot is deprecated.  Use result = m * Matrix::rotate instead.";
-#endif
+void Matrix::postRot( const Matrix& m, float deg, float x, float y, float z )
+{
+    DEPRECATED("Matrix::postRot is deprecated.  Use result = m * Matrix::rotate instead.")
+
     (*this) = m * rotate(deg,x,y,z);
 }
-void Matrix::preRot( float deg, float x, float y, float z ) {
-#ifdef WARN_DEPRECATED
-    notify(NOTICE) << "Matrix::preRot is deprecated.  Use m.preMult( Matrix::rotate ) instead.";
-#endif
+
+void Matrix::preRot( float deg, float x, float y, float z )
+{
+    DEPRECATED("Matrix::preRot is deprecated.  Use m.preMult( Matrix::rotate ) instead.")
+
     preMult( rotate(deg,x,y,z) );
 }
-void Matrix::postRot( float deg, float x, float y, float z ) {
-#ifdef WARN_DEPRECATED
-    notify(NOTICE) << "Matrix::postRot is deprecated.  Use m.postMult( Matrix::rotate ) instead.";
-#endif
+void Matrix::postRot( float deg, float x, float y, float z )
+{
+    DEPRECATED("Matrix::postRot is deprecated.  Use m.postMult( Matrix::rotate ) instead.")
+
     postMult( rotate(deg,x,y,z) );
 }
+#endif

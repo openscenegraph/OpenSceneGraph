@@ -29,26 +29,26 @@ void Transform::setMatrix(const Matrix& mat )
 
 void Transform::preMult( const Matrix& mat )
 {
-    _matrix->preMult( mat );
+    (*_matrix) =  mat * (*_matrix);
     dirtyBound();
 }
 
 void Transform::preScale( const float sx, const float sy, const float sz )
 {
-    _matrix->preScale( sx, sy, sz );
+    (*_matrix) = Matrix::scale( sx, sy, sz ) * (*_matrix);
     dirtyBound();
 }
 
 void Transform::preTranslate( const float tx, const float ty, const float tz )
 {
-    _matrix->preTrans( tx, ty, tz );
+    (*_matrix) = Matrix::trans( tx, ty, tz ) * (*_matrix);
     dirtyBound();
 }
 
 
 void Transform::preRotate( const float deg, const float x, const float y, const float z )
 {
-    _matrix->preRot( deg, x, y, z );
+    (*_matrix) = Matrix::rotate( deg, x, y, z ) * (*_matrix);
     dirtyBound();
 }
 

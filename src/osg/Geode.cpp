@@ -43,6 +43,11 @@ const bool Geode::addDrawable( Drawable *drawable )
         // register as parent of drawable.
         drawable->addParent(this);
         
+        if (drawable->getAppCallback())
+        {
+            setNumChildrenRequiringAppTraversal(getNumChildrenRequiringAppTraversal()+1);
+        }
+        
         dirtyBound();        
         
         return true;
@@ -58,6 +63,11 @@ const bool Geode::removeDrawable( Drawable *drawable )
     {
         // remove this Geode from the child parent list.
         drawable->removeParent(this);
+
+        if (drawable->getAppCallback())
+        {
+            setNumChildrenRequiringAppTraversal(getNumChildrenRequiringAppTraversal()-1);
+        }
 
         // note ref_ptr<> automatically handles decrementing drawable's reference count.
         _drawables.erase(itr);        
@@ -77,7 +87,14 @@ const bool Geode::replaceDrawable( Drawable *origDrawable, Drawable *newDrawable
     DrawableList::iterator itr = findDrawable(origDrawable);
     if (itr!=_drawables.end())
     {
-        
+        int delta = 0;
+        if (origDrawable->getAppCallback()) --delta;
+        if (newDrawable->getAppCallback()) ++delta;
+        if (delta!=0)
+        {
+            setNumChildrenRequiringAppTraversal(getNumChildrenRequiringAppTraversal()+delta);
+        }
+
         // remove from origDrawable's parent list.
         origDrawable->removeParent(this);
         
@@ -87,6 +104,7 @@ const bool Geode::replaceDrawable( Drawable *origDrawable, Drawable *newDrawable
 
         // register as parent of child.
         newDrawable->addParent(this);
+
 
         dirtyBound();
         

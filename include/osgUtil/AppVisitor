@@ -37,8 +37,9 @@ class OSGUTIL_EXPORT AppVisitor : public osg::NodeVisitor
 
         virtual void apply(osg::Node& node)         { handle_callbacks_and_traverse(node); }
         
-        virtual void apply(osg::Geode& node)        { handle_callbacks_and_traverse(node); }
-        virtual void apply(osg::Billboard& node)    { handle_callbacks_and_traverse(node); }
+        virtual void apply(osg::Geode& node)        { handle_geode_callbacks(node); }
+        virtual void apply(osg::Billboard& node)    { handle_geode_callbacks(node); }
+        
         virtual void apply(osg::LightSource& node)  { handle_callbacks_and_traverse(node); }
         
         virtual void apply(osg::Group& node)        { handle_callbacks_and_traverse(node); }
@@ -65,6 +66,20 @@ class OSGUTIL_EXPORT AppVisitor : public osg::NodeVisitor
             else if (node.getNumChildrenRequiringAppTraversal()>0) traverse(node);
         }
 
+        inline void handle_geode_callbacks(osg::Geode& node)
+        {
+            osg::NodeCallback* callback = node.getAppCallback();
+            if (callback) (*callback)(&node,this);
+            else if (node.getNumChildrenRequiringAppTraversal()>0) traverse(node);
+            
+            // call the app callbacks on the drawables.
+            for(int i=0;i<node.getNumDrawables();++i)
+            {
+                osg::Drawable::AppCallback* callback = node.getDrawable(i)->getAppCallback();
+                if (callback) callback->app(this,node.getDrawable(i));
+            }
+            
+        }
         
 	
 };

@@ -146,8 +146,6 @@ bool AnimationPath_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
 }
 
 
-
-
 // forward declare functions to use later.
 bool  AnimationPathCallback_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool  AnimationPathCallback_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
@@ -169,12 +167,28 @@ bool AnimationPathCallback_readLocalData(osg::Object &obj, osgDB::Input &fr)
     osg::AnimationPathCallback *apc = dynamic_cast<osg::AnimationPathCallback*>(&obj);
     if (!apc) return false;
 
+    bool itrAdvanced = false;
+    if (fr.matchSequence("timeOffset %f"))
+    {
+        fr[1].getFloat(apc->_timeOffset);
+        fr+=2;
+        itrAdvanced = true;
+    }
+    else if(fr.matchSequence("timeMultiplier %f"))
+    {
+        fr[1].getFloat(apc->_timeMultiplier);
+        fr+=2;
+        itrAdvanced = true;
+    }
+
     static osg::ref_ptr<osg::AnimationPath> s_path = new osg::AnimationPath;
     ref_ptr<osg::Object> object = fr.readObjectOfType(*s_path);
-    osg::AnimationPath* animpath = dynamic_cast<osg::AnimationPath*>(object.get());
-    if (animpath) apc->setAnimationPath(animpath);
-    
-    bool itrAdvanced = object.valid();
+    if (object.valid())
+    {
+        osg::AnimationPath* animpath = dynamic_cast<osg::AnimationPath*>(object.get());
+        if (animpath) apc->setAnimationPath(animpath);
+        itrAdvanced = true;
+    }
     
     return itrAdvanced;
 }
@@ -182,8 +196,14 @@ bool AnimationPathCallback_readLocalData(osg::Object &obj, osgDB::Input &fr)
 
 bool AnimationPathCallback_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
 {
+
+
     const osg::AnimationPathCallback* apc = dynamic_cast<const osg::AnimationPathCallback*>(&obj);
     if (!apc) return false;
+
+
+    fw.indent() <<"timeOffset " <<apc->_timeOffset<<std::endl;
+    fw.indent() <<"timeMultiplier " <<apc->_timeMultiplier << std::endl;
 
     if (apc->getAnimationPath())
     {

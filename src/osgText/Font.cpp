@@ -129,6 +129,7 @@ void Font::addGlyph(unsigned int width, unsigned int height, unsigned int charco
         glyphTexture->setStateSet(stateset);
         stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
         stateset->setTextureAttributeAndModes(0,glyphTexture,osg::StateAttribute::ON);
+        stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
 
         if (!glyphTexture->getSpaceForGlyph(glyph,posX,posY))
         {

@@ -434,6 +434,8 @@ void Text::drawImplementation(osg::State& state) const
     {
 
         bool first = false;
+        
+        state.disableAllVertexArrays();
 
         for(TextureGlyphQuadMap::const_iterator titr=_textureGlyphQuadMap.begin();
             titr!=_textureGlyphQuadMap.end();

@@ -10,10 +10,9 @@
 #include <osgUtil/TrackballManipulator>
 
 #include <osgGLUT/Viewer>
+#include <osgGLUT/glut>
 
-#include <GL/glut.h>
-
-#include <math.h>
+#include <osg/Math>
 
 // ----------------------------------------------------------------------
 // Global variables - this is basically the stuff which will be animated

@@ -34,6 +34,12 @@ enum NotifySeverity {
 /** global notify level. */
 SG_EXPORT extern NotifySeverity g_NotifyLevel;
 
+/** global notify nul stream. added for Mac OSX */
+SG_EXPORT extern ofstream *g_NotifyNulStream;
+
+/** global notify nul stream. added for Mac OSX */
+SG_EXPORT extern bool g_NotifyInit;
+
 /** set the notify level, overriding the default or value set by
   * the environmental variable OSGNOTIFYLEVEL.
   */
@@ -59,31 +65,25 @@ SG_EXPORT extern bool initNotifyLevel();
   * with your code simply use the notify function as a normal file
   * stream (like cout) i.e osg::notify(osg::DEBUG) << "Hello Bugs!"<<endl;
   */
-inline ostream& notify(const NotifySeverity severity=INFO)
+  
+//
+// PJA MAC OSX 30-09-01 
+// previous implementation was causing Mac OSX to misbehave. This version
+// places less stress on compiler and runs on Mac
+
+inline ostream& notify(const NotifySeverity severity)
 {
-    static bool s_initialized = initNotifyLevel();
-
-#ifdef __GNUC__
-    /* a little hack to prevent gcc's warning message (will be optimized away) */
-    if ( 0 && s_initialized )
-        ;
-#endif
-
-
-#ifdef WIN32
-    static ofstream s_abosorbStr("nul");
-#else
-    static ofstream s_abosorbStr("/dev/null");
-#endif
+    if (!g_NotifyInit) initNotifyLevel();
 
     if (severity<=g_NotifyLevel)
     {
         if (severity<=osg::WARN) return cerr;
         else return cout;
     }
-    return s_abosorbStr;
+    return *osg::g_NotifyNulStream;
 }
 
+inline ostream& notify(void) { return notify(osg::INFO); }
 };
 
 #endif

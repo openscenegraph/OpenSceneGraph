@@ -1,13 +1,14 @@
-#include "osg/Image"
-#include "osg/GL"
-#include "osg/Notify"
+#include <osg/GL>
+#include <osg/GLU>
+
+#include <osg/Image>
+#include <osg/Notify>
 
 #include <osg/Geode>
 #include <osg/GeoSet>
 #include <osg/StateSet>
 #include <osg/Texture>
 
-#include <GL/glu.h>
 
 using namespace osg;
 

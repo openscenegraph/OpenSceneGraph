@@ -1,0 +1,10 @@
+#ifndef OSG_GLU
+#define OSG_GL 1
+
+#ifdef __APPLE_CC__
+	#include <OpenGL/glu.h>
+#else
+	#include <GL/glu.h>
+#endif
+
+#endif  // __osgGL_h

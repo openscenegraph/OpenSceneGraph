@@ -1,0 +1,62 @@
+MAKEDIR    = $(OSGHOME)/Make
+INSTRULES  = $(MAKEDIR)/instrules
+MAKEDEPEND = Makedepend
+OBJS = $(C++FILES:.cpp=.o) $(CFILES:.c=.o) $(YACCFILES:.y=.o) $(LEXFILES:.l=.o)
+
+DEPFILES = $(OBJS:.o=.d)
+
+C++ = cc 
+YFLAGS = -d
+LCINCS += -I/usr/local/include 
+LC++INCS += ${LCINCS}
+CFLAGS   = -O2 -W -Wall $(LCINCS) 
+C++FLAGS = ${CFLAGS}
+CPPFLAGS = ${CFLAGS}
+LIBTOOL = libtool
+LD = ld
+PLUGINLIBS = ../../../lib/osgPlugins/osgdb_rgb.so ../../../lib/osgPlugins/osgdb_3ds.so ../../../lib/osgPlugins/osgdb_osg.so
+MACOSXLIBS = ../../../lib/libosg.so ../../../lib/libosgUtil.so ../../../lib/libosgGLUT.so ../../../lib/libosgDB.so
+PLUGINS = $(PLUGINLIBS) 
+
+LDFLAGS = -all_load -framework GLUT -framework Carbon -L/usr/local/lib -L/usr/lib -L../../../lib/osgPlugins -ldl -lstdc++ -lm 
+  
+
+DYNAMICLIBRARYLIB = 
+PFLIBS = 
+
+#
+# TARGET_DIRS are directories that would not exist on the system except
+# for the presence of OpenSceneGraph.  'make instclean' removes these
+# directories
+#
+TARGET_DIRS    = \
+		/usr/include/osg \
+		/usr/include/osgDB \
+		/usr/include/osgGLUT \
+		/usr/include/osgUtil \
+		/usr/share/OpenSceneGraph\
+		/usr/share/OpenSceneGraph/data\
+		/usr/share/OpenSceneGraph/data/Images\
+		/usr/share/OpenSceneGraph/data/Test\
+		/usr/lib/osgPlugins\
+
+TARGET_BIN     = /usr/bin
+TARGET_LIB     = /usr/lib
+TARGET_INCLUDE = /usr/include
+TARGET_DATA    = /usr/share/OpenSceneGraph/data
+
+#
+# This definitions are necessary for IRIX. The following statement
+# does not work for smake using a sh:
+#
+#    for variable in $(LIST); do ...; done
+#
+# .. if $(LIST) is a NULL variable.  So we have to define 0 length
+# strings and check for them inside the for loop
+#
+
+TARGET_LIB_FILES = ""
+TARGET_BIN_FILES = ""
+TARGET_INCLUDE_FILES = ""
+TARGET_DATA_FILES = ""
+TARGET_LOADER_FILES = ""

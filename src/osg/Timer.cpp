@@ -180,7 +180,23 @@ using namespace osg;
             _secsPerClick = (double)(cycleval)* 1e-12;
         }
     }
+#elif defined (__APPLE_CC__)       // MACOSX PJA
+#include <Carbon/Carbon.h>         // do I really have to link against the Carbon framework just for this?
 
+Timer_t Timer::tick(void)
+{
+	UnsignedWide usecs;
+	Microseconds(&usecs);
+	
+	return (usecs.hi * 4294967296.0) + usecs.lo;
+}
+
+Timer::Timer( void )
+{
+	_useStandardClock = false;
+	_secsPerClick = 1e-6; // Carbon timer's precision.
+
+}
 
 #elif defined(unix)
 

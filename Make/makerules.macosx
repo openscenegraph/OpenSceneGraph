@@ -1,0 +1,59 @@
+
+all : $(MAKEDEPEND) $(TARGET) $(LIB) $(DYLIB)
+
+$(TARGET) : $(OBJS) $(PLUGINLIBS) $(MACOSXLIBS)
+	$(C++) $(LDFLAGS) $(MACOSXLIBS) $(OBJS) $(PLUGINS) -o $@
+
+$(LIB) : $(OBJS)
+	$(LIBTOOL) -static -o $@ $(OBJS)
+	
+$(DYLIB) : $(OBJS)
+	$(LIBTOOL) -static -o $@ $(OBJS)
+
+clean :
+	rm -f $(OBJS) core $(TARGET) $(MAKEDEPEND)
+	touch $(MAKEDEPEND)
+
+clobber : clean
+	rm -f $(TARGET) a.out $(LIB) 
+
+to_unix : 
+	for f in *.cpp ; do to_unix $$f $$f; done
+	for f in *.h ; do to_unix $$f $$f; done
+
+# force it
+depend : 
+	$(C++) $(C++FLAGS) -M $(C++FILES) $(CFILES) > $(MAKEDEPEND)
+
+$(MAKEDEPEND) : $(C++FILES) $(CFILES) 
+	$(C++) $(C++FLAGS) -M $(C++FILES) $(CFILES) > $(MAKEDEPEND)
+
+%.o : %.cpp
+	$(C++) $(C++FLAGS) -c $*.cpp -o $*.o
+
+%.o : %.c
+	$(C++) $(C++FLAGS) -c $*.c -o $*.o
+
+docs:
+	[ "$(TARGET_BASENAME)" != "" ] && \
+	mkdir -p ../../doc/doc++/$(TARGET_BASENAME) && \
+	doc++ -d ../../doc/doc++/$(TARGET_BASENAME) -H -A ../../include/$(TARGET_BASENAME)/* && \
+	echo $(TARGET_BASENAME) HTML documentation created in ../../doc/doc++/$(TARGET_BASENAME)
+
+install : home
+	@ $(MAKE) __install
+
+instlinks : home
+	@ $(MAKE) __instlinks
+
+instclean : home
+	@ $(MAKE) __instclean
+
+
+home :
+	@ [ -n "$(OSGHOME)" ] || (echo ; echo "-------------> Please define OSGHOME"; echo)
+	@ [ -n "$(OSGHOME)" ] && echo > /dev/null;
+
+sinclude $(INSTRULES)
+
+include $(MAKEDEPEND)

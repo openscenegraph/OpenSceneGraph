@@ -7,7 +7,7 @@
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
 
-#include <GL/glut.h>
+#include <osgGLUT/glut>
 #include <osgGLUT/Viewer>
 
 #include "GliderManipulator.h"

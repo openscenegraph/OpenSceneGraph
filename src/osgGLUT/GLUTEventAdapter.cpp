@@ -1,5 +1,5 @@
 #include "osgGLUT/GLUTEventAdapter"
-#include "GL/glut.h"
+#include <osgGLUT/glut>
 
 using namespace osgGLUT;
 

@@ -47,11 +47,14 @@ Ben Discoe <ben@vterrain.org>
 
 Byan Woods <byran@tapestrysolutions.com>
         - Port to MacOS, various code changes to support this.
-        - Metrowerks CodeWarrior makefiles.
+        - Metrowerks CodeWarrior makefiles.        
 
 Randall Hopper <aa8vb@yahoo.com>
         - port to FreeBSD.
         - warning fixes to IRIX compilation.
+
+Phil Akin <Phil Atkin <philatkin@philatkin.com>
+        - port to OSX.
 
 Ulrich Hertlein <u.hertlein@bit-side.com>
         - support for IBM Mirror Repeat extension in osg::Texture

@@ -14,6 +14,8 @@ namespace osg {
     typedef unsigned long long Timer_t;
 #elif defined(unix)
     typedef unsigned long long Timer_t;
+#elif defined __APPLE__  // MACOSX PJA
+	typedef double Timer_t;
 #else
     #include <ctime>
     typedef std::clock_t Timer_t;
@@ -27,8 +29,14 @@ class SG_EXPORT Timer {
         Timer();
         ~Timer() {}
 
-        inline Timer_t tick();
-
+        #ifdef __APPLE__   
+	// PJA MAC OSX - inline Tick() pollutes namespace so badly 
+	// we cant compile, due to Carbon.h ...
+        Timer_t tick();
+	#else
+	inline Timer_t tick();
+	#endif
+		
         inline double delta_s( Timer_t t1, Timer_t t2 ) const { return (double)(t2 - t1)*_secsPerClick; }
         inline double delta_m( Timer_t t1, Timer_t t2 ) const { return delta_s(t1,t2)*1e3; }
         inline double delta_u( Timer_t t1, Timer_t t2 ) const { return delta_s(t1,t2)*1e6; }
@@ -138,7 +146,7 @@ namespace osg{
     }
 };
 
-#else
+#elif !defined (__APPLE_CC__) 
 
     // no choice, always use std::clock()
 
@@ -148,5 +156,7 @@ namespace osg{
 };
 
 #endif
+
+// note, MacOSX compiled in the Timer.cpp.
 
 #endif

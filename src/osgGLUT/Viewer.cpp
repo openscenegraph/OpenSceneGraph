@@ -8,7 +8,7 @@
 #include <sys/time.h>
 #endif
 #include <stdio.h>
-#include <math.h>
+#include <osg/Math>
 
 #include <string>
 
@@ -48,7 +48,7 @@
 #define USE_GLUT
 #endif
 
-#include <GL/glut.h>
+#include <osgGLUT/glut>
 
 #ifdef WIN32
 #include <sys/timeb.h>
@@ -1049,7 +1049,7 @@ void Viewer::keyboard(unsigned char key, int x, int y)
             if (_printStats>4) _printStats=0;
             if (_printStats==4) { // count depth complexity by incrementing the stencil buffer every 
                 // time a pixel is hit
-                int nsten=0; // Number of stencil planes available
+                GLint nsten=0; // Number of stencil planes available
                 glGetIntegerv(GL_STENCIL_BITS , &nsten);
                 if (nsten>0) {
                     glEnable(GL_STENCIL_TEST);

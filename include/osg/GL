@@ -5,7 +5,11 @@
 
     // non windows, doesn't require nonsense as seen below :-)    
     #ifndef __gl_h_
-        #include <GL/gl.h>
+        #ifdef __APPLE_CC__
+            #include <OpenGL/gl.h>
+        #else
+	    #include <GL/gl.h>
+	#endif
     #endif
 
     // required for compatibility with glext.h sytle function definitions of 

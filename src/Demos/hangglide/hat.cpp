@@ -3,8 +3,8 @@
 #pragma warning( disable : 4244 )
 #endif
 
-#include <GL/gl.h>
-#include <math.h>
+#include <osg/GL>
+#include <osg/Math>
 #include <stdio.h>
 
 #include "terrain_data.h"

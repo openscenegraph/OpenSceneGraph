@@ -29,7 +29,7 @@ If you haven't already checked it out, for a list of distribution contents,
 contacts and links to documentation check out index.html.
 
 
-Environmental settings under Unix:
+Environmental settings under Unix
 ---------------------------------
 
     These enviromental settings are useful to help develop with an
@@ -57,8 +57,8 @@ Environmental settings under Unix:
     note: under IRIX you'll need to use LD_LIBRARYN32_PATH instead
     of LD_LIBRARY_PATH. 
 
-Compiling under Linux :
------------------------
+Compiling under Linux
+---------------------
 
     To compile, from the OSG root directory, type:
 
@@ -83,8 +83,8 @@ Compiling under Linux :
         make help
 
 
-Compiling under FreeBSD :
--------------------------
+Compiling under FreeBSD
+-----------------------
 
    To compile, from the OSG root directory, type :
 
@@ -104,8 +104,8 @@ Compiling under FreeBSD :
         make help
 
 
-Compiling under IRIX :
-----------------------
+Compiling under IRIX
+--------------------
 
     When setting up environmental variables, specified above,
     LD_LIBRARY_PATH should of course be replaced by LD_LIBRARYN32_PATH.
@@ -140,8 +140,8 @@ Compiling under IRIX :
         make help
 
 
-Compiling under Windows :
--------------------------
+Compiling under Windows
+-----------------------
 
     The Microsoft Visual C++ 6.0 workspace file is VisualStudio.dsw located
     in the VisualStudio\ below the OSG this root directory.  The OSG will 
@@ -174,8 +174,9 @@ Compiling under Windows :
     have been zipped up for your convienice, your find these on the OSG
     release download directory.
 
-Compiling under Mac :
----------------------
+
+Compiling under MacOS 9
+-----------------------
 
     The Microwerks Codewarrior workspace files can be found under the
     Microwerks directory.  Further details to be fleshed out since
@@ -184,6 +185,78 @@ Compiling under Mac :
     Codewarrior files as a starting place.  If you get it running and
     have time to maintian the port please email robert@openscenegraph.org.
 
+
+Compiling under MacOS X (instructions written by Phil Atkin)
+------------------------------------------------------------
+
+    For anyone who's ever used a Unix box for development it really is so simple
+    it's insane. 
+
+    You need to have installed the Developer tools from the CD that comes for
+    free with OS X. This gives you compilers, headers, frameworks - stuff like
+    GLUT and Carbon for developers.
+
+    Everything is done command-line, so you need to get to the underlying OS
+    rather than the Aqua gloss. The Mac comes with an app in
+    Applications/Utilities called Terminal - open up any Finder window (e.g
+    double-click on your hard disk icon), click on the Applications icon at the
+    top right of the window, then click on the Utilities folder to get access to
+    all the grubby apps which give away the real OS roots underneath the shiny
+    paintwork. Anyone developing will need Terminal so much they should put it
+    in their Dock. You do that by grabbing the icon of the app in the Utilities
+    folder and dragging it to the bottom of your screen, at which point the
+    other app icons in the Dock slide away to leave a gap which when you release
+    the mouse button leaves Terminal permanently available, just a mouse click
+    away on your desktop.  When you start Terminal it brings you up a csh
+    running under Darwin (which is the BSD-with-knobs-on that underlies OS X),
+    and does a cd to ~ (otherwise /Users/username of whoever you are logged in
+    as, as far as the Finder in OS X is concerned you are in the Users/username
+    folder of the harddisk the machine booted from).
+
+    Then you are in Unix land, and it's all very familiar.
+
+    You will need a .cshrc file with $OSGHOME (as in your instructions), and
+    this is a filename that the Mac won't let you see from the Finder or in fact
+    generate from an app, so I used vi to create that. Then I just went
+
+    cd $OSGHOME 
+    make clean
+    make macosx
+
+    And it sounds too good to be true but it is that simple. It's worth doing
+    some editing on the Makefiles in the Plugins and Demos directories so that
+    it only tries to build a subset, otherwise the developer will have to dig
+    out the support projects like jpeg etc. I have only built up to now sgv,
+    hangglide, osgcube, osgreflect, osgviews and in the Plugins have built osg
+    rgb 3ds and a couple others - will check and get back to you.
+
+    Tricky bit - 
+    Installing the libdl.a is more trouble, as you have to enable the root
+    account on the machine, which by default is switched off as the machines
+    ship for security reasons. Rather than typing in and risking error through
+    paraphrase, here is a link to a site which tells you how to do this -
+
+    http://www.macos.utah.edu/Documentation/macosx/security/enablerootuser.html
+
+    Or alternately 
+
+    http://www.thinkmacintosh.com/osxfaq.html
+
+
+    One you have a root account enabled, you have to su root you cd to the
+    directory which the Fink installer generates, and it puts libdl.a and the
+    associated .h files in sensible system places so the compiler just finds
+    them. 
+
+    There is one oddball problem - if you rely on Path to find the resulting
+    executables, a weird Core Graphics error occurs - so even though I set up my
+    path to include $(OSGHOME)/bin, and when I cd to $OSGHOME and type for
+    example hangglide, the application starts fine (so it is in the path), but
+    at the point it tries to use GLUT to open a window it falls over with a CGS
+    error (which is I think Core Graphics System). If you explicitly go
+    bin/hangglide it works fine. Weird, it may be an OS X 10.04 issue which is
+    gone in 10.1 or it may be a weirdy in the Mac GLUT implementation, but
+    forewarned is forearmed.
 
 Running the demos
 -----------------

@@ -33,9 +33,17 @@ void CALLBACK ftglEnd()
 }
 
 
+// this static vector is to keep track of memory allocated by the combine
+// callback below, so that it can be later deleted.  This approach does
+// assume that the Tesselate method is single threaded.
+typedef std::vector<double*> CreatedVertices;
+static CreatedVertices s_createdVertices;
+
 void CALLBACK ftglCombine( GLdouble coords[3], void* /*vertex_data*/[4], GLfloat /*weight*/[4], void** outData)
 {
     double* vertex = osgNew double[3]; // FIXME MEM LEAK
+
+    s_createdVertices.push_back(vertex);
 
     vertex[0] = coords[0];
     vertex[1] = coords[1];
@@ -130,6 +138,15 @@ void FTPolyGlyph::Tesselate()
     glEndList();
 
     gluDeleteTess( tobj);
+
+    // clean up the vertices create in the combine callback.
+    for(CreatedVertices::iterator itr=s_createdVertices.begin();
+        itr!=s_createdVertices.end();
+        ++itr)
+    {
+        osgDelete [] (*itr);
+    }
+    s_createdVertices.clear();
 }
 
 

@@ -7,6 +7,10 @@
 #include <osg/Geode>
 #include <osg/ShapeDrawable>
 #include <osg/Texture2D>
+#include <osg/Material>
+#include <osg/Light>
+#include <osg/LightSource>
+#include <osg/LightModel>
 
 
 #include <osgUtil/Optimizer>
@@ -19,6 +23,32 @@
 #include <osgGA/DriveManipulator>
 
 #include <osgProducer/Viewer>
+
+
+static osg::Vec3 defaultPos( 0.0f, 0.0f, 0.0f );
+static osg::Vec3 centerScope(0.0f, 0.0f, 0.0f);
+
+
+osg::Group* createSunLight()
+{
+    osg::Group* lightNode = new osg::Group;
+
+    osg::Light* sunLight = new osg::Light;
+    sunLight->setPosition( osg::Vec4( 0.0f, 0.0f, 0.0f, 1.0f ) );
+    sunLight->setAmbient( osg::Vec4( 0.0f, 0.0f, 0.0f, 1.0f ) );
+
+    osg::LightSource* sunLightSource = new osg::LightSource;
+    sunLightSource->setLight( sunLight );
+    
+    lightNode->addChild( sunLightSource );
+    
+    osg::LightModel* lightModel = new osg::LightModel;
+    lightModel->setAmbientIntensity(osg::Vec4(0.0f,0.0f,0.0f,1.0f));
+    lightNode->getOrCreateStateSet()->setAttribute(lightModel);
+
+
+    return lightNode;        
+}// end createSunLight
 
 
 osg::AnimationPath* createAnimationPath(const osg::Vec3& center,float radius,double looptime)
@@ -88,6 +118,34 @@ osg::MatrixTransform* createMoonTranslation( double RorbitMoon )
 }// end createMoonTranslation
 
 
+osg::Geode* createSpace( double radius, const std::string& name, const std::string& textureName )
+{
+    osg::Sphere *spaceSphere = new osg::Sphere( osg::Vec3( 0.0, 0.0, 0.0 ), radius );
+    
+    osg::ShapeDrawable *sSpaceSphere = new osg::ShapeDrawable( spaceSphere );
+    
+    if( !textureName.empty() )
+    {
+        osg::Image* image = osgDB::readImageFile( textureName );
+        if ( image )
+        {
+            sSpaceSphere->getOrCreateStateSet()->setTextureAttributeAndModes( 0, new osg::Texture2D( image ), osg::StateAttribute::ON );
+
+            // reset the object color to white to allow the texture to set the colour.
+            sSpaceSphere->setColor( osg::Vec4(1.0f,1.0f,1.0f,1.0f) );
+        }
+    }
+    
+    osg::Geode* geodeSpace = new osg::Geode();
+    geodeSpace->setName( name );
+    
+    geodeSpace->addDrawable( sSpaceSphere );
+
+    return( geodeSpace );
+    
+}// end createSpace
+
+
 osg::Geode* createPlanet( double radius, const std::string& name, const osg::Vec4& color , const std::string& textureName )
 {
     // create a cube shape
@@ -120,9 +178,9 @@ osg::Geode* createPlanet( double radius, const std::string& name, const osg::Vec
     geodePlanet->addDrawable( sPlanetSphere );
 
     return( geodePlanet );
+    
 }// end createPlanet
-//--radiusSun 5.0 --radiusEarth 2.0 --RorbitEarth 10.0 --RorbitMoon 2.0 --radiusMoon 0.5 --tiltEarth 18.0 --rotateSpeedEarth 1.0 
-//--rotateSpeedMoon 1.0 --rotateSpeedEarthAndMoon 1.0
+
 
 class SolarSystem
 {
@@ -137,6 +195,7 @@ public:
     double _radiusMoon;
     double _RorbitMoon;
     double _rotateSpeedMoon;
+    double _radiusSpace;
     
     SolarSystem()
     {
@@ -149,20 +208,30 @@ public:
         _radiusMoon = 0.5;
         _RorbitMoon = 2.0;
         _rotateSpeedMoon = 1.0;
+        _radiusSpace = 300.0;
     }
     
     osg::Group* built()
     {
         osg::Group* thisSystem = new osg::Group;
         
+        osg::StateSet* sunStateSet = new osg::StateSet;
+        osg::Material* material = new osg::Material;
+        material->setEmission( osg::Material::FRONT_AND_BACK, osg::Vec4( 1.0f, 1.0f, 0.0f, 0.0f ) );
+        sunStateSet->setAttributeAndModes( material, osg::StateAttribute::ON );
+        
+        
         
         // create the sun
-        osg::Node* sun = createPlanet( _radiusSun, "Sun", osg::Vec4( 1.0f, 1.0f, 0.5f, 1.0f), "" );
+        osg::Node* sun = createPlanet( _radiusSun, "Sun", osg::Vec4( 0, 0, 0, 1.0f), "" );
+        sun->setStateSet( sunStateSet );
         
         // stick sun right under root, no transformations for the sun
         thisSystem->addChild( sun );
         
         
+        // create light source in the sun
+        osg::Group* sunLight = createSunLight();
         
         //creating right side of the graph with earth and moon and the rotations above it
         
@@ -196,8 +265,16 @@ public:
         earthPosition->addChild( earthMoonGroup );
         aroundSunRotation->addChild( earthPosition );
         
+        sunLight->addChild( aroundSunRotation );
         
-        thisSystem->addChild( aroundSunRotation );
+        thisSystem->addChild( sunLight );
+
+#if 0
+        // add space, but don't light it, as its not illuminated by our sun
+        osg::Node* space = createSpace( _radiusSpace, "Space", "Images/spacemap1.jpg" );
+        space->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+        thisSystem->addChild( space );
+#endif        
                 
         return( thisSystem );
     }
@@ -213,6 +290,8 @@ public:
         std::cout << "radiusMoon\t= " << _radiusMoon << std::endl;
         std::cout << "RorbitMoon\t= " << _RorbitMoon << std::endl;
         std::cout << "rotateSpeedMoon\t= " << _rotateSpeedMoon << std::endl;
+        std::cout << "radiusSpace\t= " << _radiusSpace << std::endl;
+        
     }
     
 };  // end SolarSystem
@@ -248,6 +327,8 @@ int main( int argc, char **argv )
     while (arguments.read("--radiusMoon",solarSystem._radiusMoon)) { }
     while (arguments.read("--RorbitMoon",solarSystem._RorbitMoon)) { }
     while (arguments.read("--rotateSpeedMoon",solarSystem._rotateSpeedMoon)) { }
+    while (arguments.read("--radiusSpace",solarSystem._radiusSpace)) { }
+    
 
     solarSystem.printParameters();
 
@@ -264,6 +345,8 @@ int main( int argc, char **argv )
         std::cout << "--radiusMoon: double" << std::endl;
         std::cout << "--RorbitMoon: double" << std::endl;
         std::cout << "--rotateSpeedMoon: double" << std::endl;
+        std::cout << "--radiusSpace: double" << std::endl;
+        
                 
         return 1;
     }
@@ -297,6 +380,13 @@ int main( int argc, char **argv )
 
     // create the windows and run the threads.
     viewer.realize();
+    
+    osg::Matrix lookAt;
+    lookAt.makeLookAt( osg::Vec3(0.0f, -80.0f, 0.0f), centerScope, osg::Vec3(0.0f, 0.0f, 1.0f ) );
+
+    viewer.setView( lookAt );
+    
+    viewer.setClearColor(osg::Vec4(0.0f,0.0f,0.0f,1.0f));
 
     while( !viewer.done() )
     {

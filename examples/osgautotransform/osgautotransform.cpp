@@ -60,9 +60,9 @@ osg::Node* createLabel2(const osg::Vec3& pos, float size, const std::string& lab
         text->setPosition(pos);
         text->setFontResolution(40,40);
         text->setCharacterSize(size);
+        text->setCharacterSizeMode(osgText::Text::SCREEN_COORDS);
         text->setAlignment(osgText::Text::CENTER_CENTER);
         text->setAutoRotateToScreen(true);
-        text->setAutoScaleToLimitScreenSizeToFontResolution(true);
         text->setDrawMode(osgText::Text::TEXT_PIXMAP);
         text->setText(label);
         
@@ -87,7 +87,7 @@ osg::Node* createLabel3(const osg::Vec3& pos, float size, const std::string& lab
         text->setCharacterSize(size);
         text->setAlignment(osgText::Text::CENTER_CENTER);
         text->setAutoRotateToScreen(true);
-        text->setAutoScaleToLimitScreenSizeToFontResolution(true);
+        text->setCharacterSizeMode(osgText::Text::OBJECT_COORDS_WITH_MAXIMUM_SCREEN_SIZE_CAPPED_BY_FONT_HEIGHT);
         text->setText(label);
         
     }

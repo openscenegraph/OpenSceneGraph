@@ -110,6 +110,14 @@ SOURCE=..\..\..\src\osgPlugins\ive\BlendFunc.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\ive\ConvexPlanarOccluder.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\ConvexPlanarPolygon.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\ive\CullFace.cpp
 # End Source File
 # Begin Source File
@@ -134,6 +142,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\DrawArrays.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\ive\DrawElementsUInt.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\ive\DrawElementsUShort.cpp
 # End Source File
 # Begin Source File
@@ -155,6 +167,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\Group.cpp
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\Image.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\Impostor.cpp
 # End Source File
 # Begin Source File
 
@@ -186,7 +202,27 @@ SOURCE=..\..\..\src\osgPlugins\ive\Object.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\ive\OccluderNode.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\ive\PositionAttitudeTransform.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\PolygonOffset.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\Point.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\ReaderWriterIVE.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\ShadeModel.cpp
 # End Source File
 # Begin Source File
 
@@ -199,6 +235,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\Sequence.cpp
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\StateSet.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\Switch.cpp
 # End Source File
 # Begin Source File
 
@@ -234,151 +274,183 @@ SOURCE=..\..\..\src\osgPlugins\ive\Transform.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\AnimationPath
+SOURCE=..\..\..\src\osgPlugins\ive\AnimationPath.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\AnimationPathCallback
+SOURCE=..\..\..\src\osgPlugins\ive\AnimationPathCallback.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\Billboard
+SOURCE=..\..\..\src\osgPlugins\ive\Billboard.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\BlendFunc
+SOURCE=..\..\..\src\osgPlugins\ive\BlendFunc.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\CullFace
+SOURCE=..\..\..\src\osgPlugins\ive\ConvexPlanarOccluder.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\DataInputStream
+SOURCE=..\..\..\src\osgPlugins\ive\ConvexPlanarPolygon.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\DataOutputStream
+SOURCE=..\..\..\src\osgPlugins\ive\CullFace.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\DataTypeSize
+SOURCE=..\..\..\src\osgPlugins\ive\DataInputStream.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\Drawable
+SOURCE=..\..\..\src\osgPlugins\ive\DataOutputStream.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\DrawArrayLengths
+SOURCE=..\..\..\src\osgPlugins\ive\DataTypeSize.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\DrawArrays
+SOURCE=..\..\..\src\osgPlugins\ive\Drawable.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\DrawElementsUShort
+SOURCE=..\..\..\src\osgPlugins\ive\DrawArrayLengths.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\Exception
+SOURCE=..\..\..\src\osgPlugins\ive\DrawArrays.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\Export
+SOURCE=..\..\..\src\osgPlugins\ive\DrawElementsUInt.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\Geode
+SOURCE=..\..\..\src\osgPlugins\ive\DrawElementsUShort.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\Geometry
+SOURCE=..\..\..\src\osgPlugins\ive\Exception.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\Group
+SOURCE=..\..\..\src\osgPlugins\ive\Geode.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\Image
+SOURCE=..\..\..\src\osgPlugins\ive\Geometry.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\Light
+SOURCE=..\..\..\src\osgPlugins\ive\Group.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\LightSource
+SOURCE=..\..\..\src\osgPlugins\ive\Image.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\LOD
+SOURCE=..\..\..\src\osgPlugins\ive\Impostor.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\Material
+SOURCE=..\..\..\src\osgPlugins\ive\Light.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\MatrixTransform
+SOURCE=..\..\..\src\osgPlugins\ive\LightSource.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\Node
+SOURCE=..\..\..\src\osgPlugins\ive\LOD.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\Object
+SOURCE=..\..\..\src\osgPlugins\ive\Material.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\PositionAttitudeTransform
+SOURCE=..\..\..\src\osgPlugins\ive\MatrixTransform.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\PrimitiveSet
+SOURCE=..\..\..\src\osgPlugins\ive\Node.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\ReadWrite
+SOURCE=..\..\..\src\osgPlugins\ive\Object.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\Sequence
+SOURCE=..\..\..\src\osgPlugins\ive\OccluderNode.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\StateSet
+SOURCE=..\..\..\src\osgPlugins\ive\PositionAttitudeTransform.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\TexEnv
+SOURCE=..\..\..\src\osgPlugins\ive\PrimitiveSet.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\TexEnvCombine
+SOURCE=..\..\..\src\osgPlugins\ive\PolygonOffset.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\TexGen
+SOURCE=..\..\..\src\osgPlugins\ive\Point.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\Texture
+SOURCE=..\..\..\src\osgPlugins\ive\ShadeModel.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\Texture2D
+SOURCE=..\..\..\src\osgPlugins\ive\ReadWrite.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\TextureCubeMap
+SOURCE=..\..\..\src\osgPlugins\ive\Sequence.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\Transform
+SOURCE=..\..\..\src\osgPlugins\ive\Switch.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\StateSet.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\TexEnv.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\TexEnvCombine.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\TexGen.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\Texture.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\Texture2D.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\TextureCubeMap.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\Transform.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

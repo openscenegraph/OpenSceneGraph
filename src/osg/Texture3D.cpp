@@ -336,12 +336,13 @@ void Texture3D::Extensions::setupGLExtenions()
     _glTexImage3D           = getGLExtensionFuncPtr("glTexImage3D","glTexImage3DEXT");;
     _glTexSubImage3D        = getGLExtensionFuncPtr("glTexSubImage3D","glTexSubImage3DEXT");
     _glCopyTexSubImage3D    = getGLExtensionFuncPtr("glCopyTexSubImage3D","glCopyTexSubImage3DEXT");
-    _gluBuild3DMipmaps      = getGLUExtensionFuncPtr("gluBuild3DMipmaps");
+    _gluBuild3DMipmaps      = getGLExtensionFuncPtr("gluBuild3DMipmaps");
 
 }
 
 void Texture3D::Extensions::glTexImage3D( GLenum target, GLint level, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const GLvoid *pixels) const
 {
+//    ::glTexImage3D( target, level, internalFormat, width, height, depth, border, format, type, pixels);
     if (_glTexImage3D)
     {
         typedef void (APIENTRY * GLTexImage3DProc)      ( GLenum target, GLint level, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const GLvoid *pixels);
@@ -355,6 +356,7 @@ void Texture3D::Extensions::glTexImage3D( GLenum target, GLint level, GLenum int
 
 void Texture3D::Extensions::glTexSubImage3D( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *pixels) const
 {
+//    ::glTexSubImage3D( target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, pixels);
     if (_glTexSubImage3D)
     {
         typedef void (APIENTRY * GLTexSubImage3DProc)   ( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *pixels);
@@ -368,6 +370,7 @@ void Texture3D::Extensions::glTexSubImage3D( GLenum target, GLint level, GLint x
 
 void Texture3D::Extensions::glCopyTexSubImage3D( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height ) const
 {
+//    ::glCopyTexSubImage3D(target, level, xoffset, yoffset, zoffset, x, y, width, height);
     if (_glCopyTexSubImage3D)
     {
         typedef void (APIENTRY * GLCopyTexSubImageProc) ( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height );
@@ -381,6 +384,7 @@ void Texture3D::Extensions::glCopyTexSubImage3D( GLenum target, GLint level, GLi
 
 void Texture3D::Extensions::gluBuild3DMipmaps( GLenum target, GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *data) const
 {
+//    ::gluBuild3DMipmaps(target, internalFormat, width, height, depth, format, type, data);
     if (_gluBuild3DMipmaps)
     {
         typedef void (APIENTRY * GLUBuild3DMipMapsProc) ( GLenum target, GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *data);

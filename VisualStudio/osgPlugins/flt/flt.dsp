@@ -269,6 +269,10 @@ SOURCE=..\..\..\src\osgPlugins\flt\VertexPoolRecords.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl;"
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\flt\AttrData.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\flt\BoundingVolumeRecords.h
 # End Source File
 # Begin Source File

@@ -133,9 +133,6 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
 
         osg::ref_ptr<DrawCallback>      _drawCallback;
 
-        typedef std::map< std::string, osg::ref_ptr<RenderBin> > RenderBinPrototypeList;
-        static RenderBinPrototypeList s_renderBinPrototypeList;
-        
     protected:
     
         virtual ~RenderBin();

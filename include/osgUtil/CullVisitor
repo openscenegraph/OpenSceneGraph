@@ -12,7 +12,6 @@
 #include <osg/Drawable>
 #include <osg/StateSet>
 #include <osg/State>
-#include <osg/Camera>
 #include <osg/Impostor>
 #include <osg/EarthSky>
 #include <osg/Notify>
@@ -59,12 +58,6 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
         virtual void apply(osg::LOD& node);
         virtual void apply(osg::EarthSky& node);
         virtual void apply(osg::Impostor& node);
-
-
-
-        void setCamera(const osg::Camera& camera);
-        const osg::Camera* getCamera() const { return _camera.get(); }
-
 
         void setEarthSky(const osg::EarthSky* earthSky) { _earthSky = earthSky; }
         const osg::EarthSky* getEarthSky() const { return _earthSky.get(); }
@@ -118,24 +111,14 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
         CullViewState::CullingMode getCullingMode() const;
         
 
-        /** Set the viewport.
-          * Used to enable the CullVisitor can make decision 
-          * such as based on viewport dimensions.*/
-        void setViewport(osg::Viewport* viewport) { _viewport = viewport; }
+        void pushViewport(osg::Viewport* viewport);
+        void popViewport();
 
-        /** Get the const viewport. */
-        const osg::Viewport* getViewport() const { return _viewport.get(); }
+        void pushProjectionMatrix(osg::Matrix* matrix);
+        void popProjectionMatrix();
 
-        /** Get the viewport. */
-        osg::Viewport* getViewport() { return _viewport.get(); }
-
-        inline void pushCullViewState() { pushCullViewState_ModelView(NULL,NULL); }
-        
-        void pushCullViewState_Projection(osg::Matrix* matrix);
-        void pushCullViewState_ModelView(osg::Matrix* matrix);
-        void pushCullViewState_ModelView(osg::Matrix* matrix,osg::Matrix* inverse);
-        
-        void popCullViewState();
+        void pushModelViewMatrix(osg::Matrix* matrix);
+        void popModelViewMatrix();
 
         /** Push state set on the current state group.
           * If the state exists in a child state group of the current
@@ -192,16 +175,6 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
         
         const float getCalculatedFarPlane() const { return _calculated_zfar; }
 
-	//SandB
-	/**sets the flag for detailed culling*/
-	void setDetailedCulling(bool detailed) {_detailedCulling = detailed;}
-
-	/**gets the status of detailed culling*/
-	const bool getDetailedCulling() const {return _detailedCulling;}
-
-        /**calculates unit directions of vectors that are intersections of cameras' clipping planes*/
-        void calcClippingDirections() const;
-
     protected:
 
         /** prevent unwanted copy construction.*/
@@ -212,70 +185,56 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
         
         inline osg::Matrix* getCurrentMatrix()
         {
-            return _cvs->_matrix.get();
-        }
-
-
-        inline osg::Matrix* getInverseCurrentMatrix()
-        {
-            return _cvs->_inverse.get();
+            return _modelviewStack.back().get();
         }
 
         inline const osg::Vec3& getEyeLocal() const
         {
-            return _cvs->_eyePoint;
+            return _eyePointStack.back();
+        }
+        
+        inline const osg::Vec3 getUpLocal() const
+        {
+            const osg::Matrix& matrix = *_modelviewStack.back();
+            return osg::Vec3(matrix(0,1),matrix(1,1),matrix(2,1));
         }
 
-        inline const osg::Vec3& getUpLocal() const
+        inline const osg::Vec3 getLookVectorLocal() const
         {
-            return _cvs->_upVector;
-        }
-
-        inline const osg::Vec3& getCenterLocal() const
-        {
-            return _cvs->_centerPoint;
-        }
-
-
-        inline const osg::Vec3& getLookVectorLocal() const
-        {
-            return _cvs->_lookVector;
+            const osg::Matrix& matrix = *_modelviewStack.back();
+            return osg::Vec3(-matrix(0,2),-matrix(1,2),-matrix(2,2));
         }
 
 
         inline bool isCulled(const osg::BoundingSphere& sp,CullViewState::CullingMode& mode) const
         {
-            return _cvs->isCulled(sp,mode);
+            if (!sp.isValid()) return true;
+
+            if (!(_modelviewClippingVolumeStack.back().contains(sp,mode))) return true;
+
+            if (mode&CullViewState::SMALL_FEATURE_CULLING)
+            {
+                const float _ratio2 = 0.002f*0.002f;
+                osg::Vec3 delta(sp._center-getEyeLocal());
+                if (sp.radius2()<delta.length2()*_ratio2)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
-        inline const bool isCulled(const osg::BoundingBox& bb,const CullViewState::CullingMode mode) const
+        inline const bool isCulled(const osg::BoundingBox& bb,CullViewState::CullingMode mode) const
         {
-            return _cvs->isCulled(bb,mode);
+            if (!bb.isValid()) return true;
+
+            return !_modelviewClippingVolumeStack.back().contains(bb,mode);
         }
 	
 	void updateCalculatedNearFar(const osg::BoundingBox& bb);
 
     	void updateCalculatedNearFar(const osg::Vec3& pos);
 		
-
-        //SandB added: ////////////////////////////////////////////////////////////////////////////////
-        /**updates near and far clipping values for case of detailed culling*/
-        void updateCalculatedNearFar(osg::Drawable* pDrawable);
-
-        /**calculates near for "global" vertex in scene*/
-        double calculateZNear(const osg::Vec3& position, const osg::Vec3& eye, const osg::Vec3& look);
-        ///////////////////////////////////////////////////////////////////////////////////////////////
-
-        /**unit vector of direction along intersection of cameras left and top clipping planes in "global" coordinates*/
-        mutable osg::Vec3 _LeftUp;
-        /**unit vector of direction along intersection of cameras right and top clipping planes in "global" coordinates*/
-        mutable osg::Vec3 _RightUp;
-        /**unit vector of direction along intersection of cameras left and down clipping planes in "global" coordinates*/
-        mutable osg::Vec3 _LeftDown;
-        /**unit vector of direction along intersection of cameras right and down clipping planes in "global" coordinates*/
-        mutable osg::Vec3 _RightDown;
-
-
         /** Add a drawable to current render graph.*/
         inline void addDrawable(osg::Drawable* drawable,osg::Matrix* matrix)
         {
@@ -287,7 +246,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
                 _currentRenderBin->addRenderGraph(_currentRenderGraph);
             }
             //_currentRenderGraph->addLeaf(new RenderLeaf(drawable,matrix));
-    	    _currentRenderGraph->addLeaf(createOrReuseRenderLeaf(drawable,_cvs->_projection.get(),matrix));
+    	    _currentRenderGraph->addLeaf(createOrReuseRenderLeaf(drawable,_projectionStack.back().get(),matrix));
         }
 
         /** Add a drawable and depth to current render graph.*/
@@ -301,7 +260,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
                 _currentRenderBin->addRenderGraph(_currentRenderGraph);
             }
             //_currentRenderGraph->addLeaf(new RenderLeaf(drawable,matrix,depth));
-    	    _currentRenderGraph->addLeaf(createOrReuseRenderLeaf(drawable,_cvs->_projection.get(),matrix,depth));
+    	    _currentRenderGraph->addLeaf(createOrReuseRenderLeaf(drawable,_projectionStack.back().get(),matrix,depth));
         }
 
         /** Add a light to current render graph.*/
@@ -314,35 +273,125 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
           * to generate the impostor texture. */
         osg::ImpostorSprite* createImpostorSprite(osg::Impostor& node);
 
-		bool _detailedCulling;
 
-        typedef std::vector< osg::ref_ptr<CullViewState> > CullViewStateStack;
-        CullViewStateStack          _viewStateStack;
-        osg::ref_ptr<CullViewState> _tvs;
-        osg::ref_ptr<CullViewState> _cvs;
+        osg::Viewport* getViewport()
+        {
+            if (!_viewportStack.empty())
+            {
+                return _viewportStack.back().get();
+            }
+            else
+            {
+                return 0L;
+            }
+        }
+
+        osg::Matrix& getModelViewMatrix()
+        {
+            if (!_modelviewStack.empty())
+            {
+                return *_modelviewStack.back();
+            }
+            else
+            {
+                 // default construction to identity.
+                static osg::Matrix identity;
+                return identity;
+            }
+        }
+
+        osg::Matrix& getProjectionMatrix()
+        {
+            if (!_projectionStack.empty())
+            {
+                return *_projectionStack.back();
+            }
+            else
+            {
+                 // default construction to identity.
+                static osg::Matrix identity;
+                return identity;
+            }
+        }
+
+        const osg::Matrix getWindowMatrix()
+        {
+            if (!_viewportStack.empty())
+            {
+                osg::Viewport* viewport = _viewportStack.back().get();
+                return osg::Matrix::scale(0.5f*viewport->width(),viewport->height(),0.5f)*osg::Matrix::translate(0.5f,0.5f,0.5f);
+            }
+            else
+            {
+                 // default construction to identity.
+                static osg::Matrix identity;
+                return identity;
+            }
+        }
+
+        const osg::Matrix& getMVPW()
+        {
+            if (!_MVPW_Stack.empty())
+            {
+                if (!_MVPW_Stack.back())
+                {
+                    _MVPW_Stack.back() = new osg::Matrix(getModelViewMatrix()*getProjectionMatrix()*getWindowMatrix());
+                }
+                return *_MVPW_Stack.back();
+            }
+            else
+            {
+                 // default construction to identity.
+                static osg::Matrix identity;
+                return identity;
+            }
+        }
+
+
+        void pushClippingVolume();
+        void popClippingVolume();
+
         
+        typedef std::vector<osg::ClippingVolume>            ClippingVolumeStack;
+        typedef std::vector<osg::ref_ptr<osg::Matrix> >     MatrixStack;
+
+        MatrixStack                                         _projectionStack;
+        MatrixStack                                         _PW_Stack;
+        ClippingVolumeStack                                 _projectionClippingVolumeStack;
+
+        MatrixStack                                         _modelviewStack;
+        MatrixStack                                         _MVPW_Stack;
+        ClippingVolumeStack                                 _modelviewClippingVolumeStack;
+
+        typedef std::vector<osg::ref_ptr<osg::Viewport> >   ViewportStack;
+        ViewportStack                                       _viewportStack;
+        
+        typedef std::vector<osg::Vec3>                      EyePointStack;
+        EyePointStack                                       _eyePointStack;
+        
+        typedef std::vector<CullViewState::CullingMode>     CullingModeStack;
+        CullingModeStack                                    _cullingModeStack;
+        
+        unsigned int                                       _bbCornerNear;
+        unsigned int                                       _bbCornerFar;
+
+
         osg::ref_ptr<RenderGraph>   _rootRenderGraph;
         RenderGraph*                _currentRenderGraph;
 
         osg::ref_ptr<RenderStage>   _rootRenderStage;        
         RenderBin*                  _currentRenderBin;
 
-        std::vector<CullViewState::CullingMode> _cullingModeStack;
 
         float   _LODBias;
 
         float _calculated_znear;
         float _calculated_zfar;
         
-        osg::ref_ptr<const osg::Camera> _camera;
-        
         osg::ref_ptr<const osg::EarthSky> _earthSky;
 
         TransparencySortMode _tsm;
 	
-        // viewport x,y,width,height respectively.
-        osg::ref_ptr<osg::Viewport> _viewport;
-
         bool _impostorActive;
         bool _depthSortImpostorSprites;
         float _impostorPixelErrorThreshold;

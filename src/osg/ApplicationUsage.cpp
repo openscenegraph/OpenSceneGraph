@@ -54,7 +54,7 @@ void ApplicationUsage::write(std::ostream& output, const ApplicationUsage::Usage
         citr!=um.end();
         ++citr)
     {
-        maxNumCharsInOptions = std::max(maxNumCharsInOptions,citr->first.length());
+        maxNumCharsInOptions = std::max(maxNumCharsInOptions,(unsigned int)citr->first.length());
     }
     
     unsigned int fullWidth = widthOfOutput;
@@ -89,7 +89,7 @@ void ApplicationUsage::write(std::ostream& output, const ApplicationUsage::Usage
             
             firstInLine = false;
         
-            unsigned int width = std::min(explanation.length()-pos,explanationWidth-offset);
+            unsigned int width = std::min((unsigned int)explanation.length()-pos,explanationWidth-offset);
             unsigned int slashn_pos = explanation.find('\n',pos);
             unsigned int extraSkip = 0;
             bool concatinated = false;

@@ -18,6 +18,7 @@
 
 #if defined(WIN32)
     #define WIN32_LEAN_AND_MEAN
+    #define NOMINMAX
     #include <windows.h>
 #elif defined(__DARWIN_OSX__)
     #include <string>

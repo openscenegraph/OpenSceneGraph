@@ -228,9 +228,6 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
 
 
-
-
-
         class WriteFileCallback : public osg::Referenced
         {
         public:
@@ -398,6 +395,22 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         /** Get the SharedStateManager. Return 0 if no SharedStateManager has been assigned.*/
         SharedStateManager* getSharedStateManager() { return _sharedStateManager.get(); }
 
+        /** Functor used in internal implementations.*/
+        struct ReadFunctor
+        {
+            ReadFunctor(const std::string& filename, const ReaderWriter::Options* options):
+                _filename(filename),
+                _options(options) {}
+
+            virtual ~ReadFunctor() {}
+            virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw) const = 0;
+            virtual bool isValid(ReaderWriter::ReadResult& readResult) const = 0;
+            virtual bool isValid(osg::Object* object) const = 0;
+
+            std::string _filename;
+            const ReaderWriter::Options* _options;
+        };
+
     protected:
 
         virtual ~Registry();
@@ -423,11 +436,8 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
         void eraseWrapper(DotOsgWrapperMap& wrappermap,DotOsgWrapper* wrapper);
 
-        ReaderWriter::ReadResult openArchive(const std::string& fileName, ReaderWriter::ArchiveStatus status, unsigned int indexBlockSizeHint);
-        ReaderWriter::ReadResult readObject(const std::string& fileName);
-        ReaderWriter::ReadResult readImage(const std::string& fileName);
-        ReaderWriter::ReadResult readHeightField(const std::string& fileName);
-        ReaderWriter::ReadResult readNode(const std::string& fileName);
+        ReaderWriter::ReadResult read(const ReadFunctor& readFunctor);
+        ReaderWriter::ReadResult readImplementation(const ReadFunctor& readFunctor,CacheHintOptions useObjectCache);
 
         osg::ref_ptr<ReadFileCallback>      _readFileCallback;
         osg::ref_ptr<WriteFileCallback>     _writeFileCallback;

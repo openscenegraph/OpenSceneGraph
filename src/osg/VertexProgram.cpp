@@ -67,7 +67,7 @@ void VertexProgram::apply(State& state) const
             _vertexProgram.length(), _vertexProgram.c_str());
 
         // Check for errors
-        int errorposition;
+        GLint errorposition;
         ::glGetIntegerv(GL_PROGRAM_ERROR_POSITION_ARB, &errorposition);
         if (errorposition != -1)
         {

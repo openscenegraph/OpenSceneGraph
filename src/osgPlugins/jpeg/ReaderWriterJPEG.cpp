@@ -254,7 +254,7 @@ int *numComponents_ret)
     catch (j_common_ptr)
     {
 
-	std::cout << " Here we are"<<std::endl;
+	std::cerr<< "JPEG reading error - erron num: "<<ERR_JPEGLIB<<std::endl;
 
 	/* If we get here, the JPEG code has signaled an error.
 	* We need to clean up the JPEG object, close the input file, and return.

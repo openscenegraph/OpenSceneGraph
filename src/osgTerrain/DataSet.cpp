@@ -2055,7 +2055,7 @@ void DataSet::DestinationTile::readFrom(CompositeSource* sourceGraph)
 
 }
 
-void DataSet::DestinationTile::empty()
+void DataSet::DestinationTile::unrefData()
 {
     _imagery = 0;
     _terrain = 0;
@@ -2416,6 +2416,28 @@ osg::Node* DataSet::CompositeDestination::createSubTileScene()
     else
     {
         return 0;
+    }
+}
+
+void DataSet::CompositeDestination::unrefSubTileData()
+{
+    for(CompositeDestination::ChildList::iterator citr=_children.begin();
+        citr!=_children.end();
+        ++citr)
+    {
+        (*citr)->unrefLocalData();
+    } 
+}
+
+void DataSet::CompositeDestination::unrefLocalData()
+{
+    for(CompositeDestination::TileList::iterator titr=_tiles.begin();
+        titr!=_tiles.end();
+        ++titr)
+    {
+        DestinationTile* tile = titr->get();
+        std::cout<<"   unref tile level="<<tile->_level<<" X="<<tile->_tileX<<" Y="<<tile->_tileY<<std::endl;
+        tile->unrefData();
     }
 }
 
@@ -2983,6 +3005,7 @@ void DataSet::_writeRow(Row& row)
                     std::cout<<"   writeSubTile filename="<<filename<<std::endl;
                     osgDB::writeNodeFile(*node,filename);
                     parent->setSubTilesGenerated(true);
+                    parent->unrefSubTileData();
                 }
                 else
                 {
@@ -3009,32 +3032,6 @@ void DataSet::_writeRow(Row& row)
         }
     }
 }
-
-void DataSet::_emptyRow(Row& row)
-{
-    std::cout<<"_emptyRow"<<row.size()<<std::endl;
-
-    for(Row::iterator citr=row.begin();
-        citr!=row.end();
-        ++citr)
-    {
-        CompositeDestination* cd = citr->second;
-        CompositeDestination* parent = cd->_parent;
-        if (!parent || parent->getSubTilesGenerated())
-        {
-            for(CompositeDestination::TileList::iterator titr=cd->_tiles.begin();
-                titr!=cd->_tiles.end();
-                ++titr)
-            {
-                DestinationTile* tile = titr->get();
-                std::cout<<"   empty tile level="<<tile->_level<<" X="<<tile->_tileX<<" Y="<<tile->_tileY<<std::endl;
-                tile->empty();
-            }
-        }
-    }
-
-}
-
 
 void DataSet::createDestination(unsigned int numLevels)
 {
@@ -3086,14 +3083,12 @@ void DataSet::writeDestination()
                     
                     _equalizeRow(prev_itr->second);
                     _writeRow(prev_itr->second);
-                    _emptyRow(prev_itr->second);
                     
                     prev_itr = curr_itr;
                 }
                 
                 _equalizeRow(prev_itr->second);
                 _writeRow(prev_itr->second);
-                _emptyRow(prev_itr->second);
             }
         }
     }

@@ -36,18 +36,18 @@
 #include <memory> // for auto_ptr
 
 namespace osgSim{
-	class LightPointNode;
+    class LightPointNode;
 }
 
 namespace txp
 {
-	// this one handles different placement of light direction in osg and terrapage
-	struct DefferedLightAttribute{
-		// light point at (0,0,0) looking in (0,0,0) direction
-		osg::ref_ptr<osgSim::LightPointNode> lightPoint;
-		osg::ref_ptr<osg::StateSet> fallback;
-		osg::Vec3 attitude;
-	};
+    // this one handles different placement of light direction in osg and terrapage
+    struct DefferedLightAttribute{
+        // light point at (0,0,0) looking in (0,0,0) direction
+        osg::ref_ptr<osgSim::LightPointNode> lightPoint;
+        osg::ref_ptr<osg::StateSet> fallback;
+        osg::Vec3 attitude;
+    };
     /// main class for loading terrapage archives  
     class TrPageArchive : public trpgr_Archive
     {
@@ -65,13 +65,13 @@ namespace txp
         /// Load and create models, usualy OpenFlight models
         bool LoadModels();
 
-		void LoadLightAttributes();
+        void LoadLightAttributes();
 
-		void AddLightAttribute(osgSim::LightPointNode* lpn, osg::StateSet* fallback , const osg::Vec3& attitude);
+        void AddLightAttribute(osgSim::LightPointNode* lpn, osg::StateSet* fallback , const osg::Vec3& attitude);
 
-		DefferedLightAttribute& GetLightAttribute(std::size_t i) {
-			return lightAttrTable[i];
-		};
+        DefferedLightAttribute& GetLightAttribute(unsigned int i) {
+            return lightAttrTable[i];
+        };
  
         /** Load a TXP tile and 
         @param x Tile location input - x dimension.
@@ -88,29 +88,29 @@ namespace txp
         */
         osg::Group *LoadTile(int x,int y,int lod,int &parent);
 
-		/* This version is used during the paging and takes a Managed Tile
-			instead of location.  These are used to keep track of what to
-			page in and out.
-		 */
+        /* This version is used during the paging and takes a Managed Tile
+            instead of location.  These are used to keep track of what to
+            page in and out.
+         */
         osg::Group *LoadTile(osg::Group *rootNode,trpgPageManager *,trpgManagedTile *,osg::Group **parentNode=NULL);
 
-		/* Unload Tile
-			This is called to get rid of a tile from the scenegraph
-		 */
-		bool UnLoadTile(trpgPageManager *,trpgManagedTile *);
+        /* Unload Tile
+            This is called to get rid of a tile from the scenegraph
+         */
+        bool UnLoadTile(trpgPageManager *,trpgManagedTile *);
         
         /** Load all the tiles . No paging.
         @return The parent of the complete scene graph.
         */
         osg::Group *LoadAllTiles();
 
-		// Calculate the center
-		void GetCenter(osg::Vec3 &center);
+        // Calculate the center
+        void GetCenter(osg::Vec3 &center);
 
-		osg::Texture2D* getGlobalTexture(int id) 
-		{
-			return m_textures[id].get();
-		}
+        osg::Texture2D* getGlobalTexture(int id) 
+        {
+            return m_textures[id].get();
+        }
 
     protected:
         /// This class does most of the actual parsing. 
@@ -119,11 +119,11 @@ namespace txp
         std::vector< osg::ref_ptr<osg::Texture2D> >   m_textures;
         std::vector< osg::ref_ptr<osg::StateSet> >  m_gstates;
         std::vector< osg::ref_ptr<osg::Node> >      m_models;
-		// light attributes vector
-        std::vector<DefferedLightAttribute>	lightAttrTable;
+        // light attributes vector
+        std::vector<DefferedLightAttribute>    lightAttrTable;
 
         std::string   m_alternate_path;
-		trpgMemReadBuffer buf;
+        trpgMemReadBuffer buf;
     };
 }; // end namespace
 

@@ -183,10 +183,10 @@ osg::Geometry* createTexturedQuadGeometry(const osg::Vec3& pos,float width,float
     bool useTextureRectangle = true;
     if (useTextureRectangle)
     {
-        osg::Geometry* pictureQuad = osg::createTexturedQuadGeometry(pos,
+        osg::Geometry* pictureQuad = createTexturedQuadGeometry(pos,
                                            osg::Vec3(width,0.0f,0.0f),
                                            osg::Vec3(0.0f,0.0f,height),
-                                           image->s(),image->t());
+                                           0.0f,image->t(), image->s(),0.0f);
                                        
         pictureQuad->getOrCreateStateSet()->setTextureAttributeAndModes(0,
                     new osg::TextureRectangle(image),
@@ -196,10 +196,10 @@ osg::Geometry* createTexturedQuadGeometry(const osg::Vec3& pos,float width,float
     }
     else
     {
-        osg::Geometry* pictureQuad = osg::createTexturedQuadGeometry(pos,
+        osg::Geometry* pictureQuad = createTexturedQuadGeometry(pos,
                                            osg::Vec3(width,0.0f,0.0f),
                                            osg::Vec3(0.0f,0.0f,height),
-                                           1.0f,1.0f);
+                                           0.0f,0.0f, 1.0f,1.0f);
                                        
         pictureQuad->getOrCreateStateSet()->setTextureAttributeAndModes(0,
                     new osg::Texture2D(image),

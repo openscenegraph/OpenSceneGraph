@@ -2,6 +2,7 @@
 #include <osgGA/AnimationPathManipulator>
 #include <osgDB/WriteFile>
 #include <osgText/Text>
+#include <osg/BlendFunc>
 
 #include <algorithm>
 
@@ -67,6 +68,11 @@ public:
         _stateset = new osg::StateSet;
         _viewport = new osg::Viewport(0,0,1280,1024);
         _stateset->setAttribute(_viewport.get());
+        _stateset->setAttribute(new osg::BlendFunc());
+        _stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
+        
+        _projection = new osg::RefMatrix(osg::Matrix::ortho2D(0.0,1280,0,1024));
+        _modelview = new osg::RefMatrix();
     
         //createHelpText();
         //createStatsText();
@@ -93,6 +99,8 @@ protected:
 
     osg::ref_ptr<osg::StateSet> _stateset;
     osg::ref_ptr<osg::Viewport> _viewport;
+    osg::ref_ptr<osg::RefMatrix> _projection;
+    osg::ref_ptr<osg::RefMatrix> _modelview;
     
     // help related methods and data
     void displayHelp();
@@ -120,6 +128,7 @@ protected:
     TextList                    _cullTimeText;
     CameraTimes                 _drawTimes;
     TextList                    _drawTimeText;
+    
 
     std::vector <Producer::CameraGroup::FrameStats> _fs;
     unsigned int _index;
@@ -139,17 +148,27 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::operator()( const Producer::C
 
     OsgSceneHandler* osh = _veh->getOsgCameraGroup()->getSceneHandlerList()[_cameraNumber].get();
     osgUtil::SceneView* sv = osh->getSceneView();
-    sv->getState()->pushStateSet(_stateset.get());
-
-    if (_veh->getDisplayHelp()) displayHelp();
+    osg::State& state = *(sv->getState());
     
+    
+    state.applyProjectionMatrix(_projection.get());
+    state.applyModelViewMatrix(_modelview.get());
+    
+    state.pushStateSet(_stateset.get());
+    state.apply();
+
     if (_veh->getFrameStatsMode()!=ViewerEventHandler::NO_STATS && camera.getInstrumentationMode())
     {
-        sv->getState()->apply();
         displayStats();
     }
+    
+    if (_veh->getDisplayHelp())
+    {
+        displayHelp();
+    }
+       
 
-    sv->getState()->popStateSet();
+    state.popStateSet();
 
 }
 
@@ -159,23 +178,6 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::displayHelp()
 
     OsgSceneHandler* osh = _veh->getOsgCameraGroup()->getSceneHandlerList()[_cameraNumber].get();
     osgUtil::SceneView* sv = osh->getSceneView();
-
-    // should possibly update _viewport...
-
-    // Set up the Orthographic view
-    glMatrixMode( GL_PROJECTION );
-    glPushMatrix();
-    glLoadIdentity();
-    glOrtho( 0.0, 1280.0, 0.0, 1024, -1.0, 1.0 ); 
-
-    glPushAttrib( GL_ENABLE_BIT );
-    glDisable( GL_LIGHTING );
-    glDisable( GL_DEPTH_TEST );
-    glEnable( GL_BLEND );
-
-    glMatrixMode( GL_MODELVIEW );
-    glPushMatrix();
-    glLoadIdentity();
 
 
     for(TextList::iterator ditr=_descriptionList.begin();
@@ -198,14 +200,6 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::displayHelp()
     {
         (*eitr)->draw(*(sv->getState()));
     }
-
-
-    glPopMatrix();
-    glMatrixMode( GL_PROJECTION );
-    glPopMatrix();
-    glMatrixMode( GL_MODELVIEW );
-
-    glPopAttrib();
 }
 
 void ViewerEventHandler::StatsAndHelpDrawCallback::createHelpText()
@@ -364,103 +358,6 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::displayStats()
     OsgSceneHandler* osh = _veh->getOsgCameraGroup()->getSceneHandlerList()[_cameraNumber].get();
     osgUtil::SceneView* sv = osh->getSceneView();
 
-    // render the text
-    if (_veh->getFrameStatsMode()>=ViewerEventHandler::FRAME_RATE)
-    {
-        // Set up the Orthographic view
-        glMatrixMode( GL_PROJECTION );
-        glPushMatrix();
-        glLoadIdentity();
-        glOrtho( 0.0, 1280.0, 0.0, 1024, -1.0, 1.0 ); 
-
-        glPushAttrib( GL_ENABLE_BIT );
-        glDisable( GL_LIGHTING );
-        glDisable( GL_DEPTH_TEST );
-        glEnable( GL_BLEND );
-
-        glMatrixMode( GL_MODELVIEW );
-        glPushMatrix();
-        glLoadIdentity();
-        
-        
-        // update and draw the frame rate text.
-        
-        char tmpText[128];
-
-        _frameRateLabelText->draw(*(sv->getState()));
-
-        if (_fs.size()>1)
-        {
-            unsigned int lindex = (_index + 1) % _fs.size();
-            double timeForFrames = (_fs[_index]._startOfFrame-_fs[lindex]._startOfFrame);
-            double timePerFrame = timeForFrames/(double)(_fs.size()-1);
-            sprintf(tmpText,"%4.2f",1.0/timePerFrame);
-            _frameRateCounterText->setText(tmpText);
-        }
-        _frameRateCounterText->draw(*(sv->getState()));
-        
-
-        if (_veh->getFrameStatsMode()>=ViewerEventHandler::CAMERA_STATS)
-        {
-
-            TextList::iterator itr;
-            for(itr=_statsLabelList.begin();
-                itr!=_statsLabelList.end();
-                ++itr)
-            {
-                (*itr)->draw(*(sv->getState()));
-            }
-
-            double updateTime = 0.0;
-            std::fill(_cullTimes.begin(),_cullTimes.end(),0.0);
-            std::fill(_drawTimes.begin(),_drawTimes.end(),0.0);
-
-            for(unsigned int frame = 0; frame < _fs.size(); frame++ )
-            {
-	        Producer::CameraGroup::FrameStats fs = _fs[frame];
-                updateTime += (fs._endOfUpdate-fs._startOfUpdate);
-
-	        for(unsigned int i = 0; i < fs.getNumFrameTimeStampSets(); i++ )
-                {
-	            Producer::Camera::FrameTimeStampSet fts = fs.getFrameTimeStampSet(i);
-
-	            _cullTimes[i] += fts[Producer::Camera::EndCull]-fts[Producer::Camera::BeginCull];
-	            _drawTimes[i] += fts[Producer::Camera::EndDraw]-fts[Producer::Camera::BeginDraw];
-                }
-            }
-
-            sprintf(tmpText,"%4.2f",1000.0*updateTime/(double)_fs.size());
-            _updateTimeText->setText(tmpText);
-
-            _updateTimeText->draw(*(sv->getState()));
-
-            CameraTimes::iterator titr;
-            for(itr=_cullTimeText.begin(),titr = _cullTimes.begin();
-                itr!=_cullTimeText.end() && titr!=_cullTimes.end();
-                ++itr,++titr)
-            {
-                sprintf(tmpText,"%4.2f",1000.0*(*titr)/(double)_fs.size());
-                (*itr)->setText(tmpText);
-                (*itr)->draw(*(sv->getState()));
-            }
-            for(itr=_drawTimeText.begin(),titr = _drawTimes.begin();
-                itr!=_drawTimeText.end() && titr!=_cullTimes.end();
-                ++itr,++titr)
-            {
-                sprintf(tmpText,"%4.2f",1000.0*(*titr)/(double)_fs.size());
-                (*itr)->setText(tmpText);
-                (*itr)->draw(*(sv->getState()));
-            }
-        }
-        
-        glPopMatrix();
-        glMatrixMode( GL_PROJECTION );
-        glPopMatrix();
-        glMatrixMode( GL_MODELVIEW );
-
-        glPopAttrib();
-    }
-
     // render graphs
     if (_veh->getFrameStatsMode()>=ViewerEventHandler::CAMERA_STATS)
     {
@@ -471,14 +368,6 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::displayStats()
         glLoadIdentity();
         glOrtho( -.025, .128, 600.0, -10.0, -1.0, 1.0 ); 
 
-        glPushAttrib( GL_ENABLE_BIT );
-        glDisable( GL_LIGHTING );
-        glDisable( GL_DEPTH_TEST );
-        glEnable( GL_BLEND );
-
-        glMatrixMode( GL_MODELVIEW );
-        glPushMatrix();
-        glLoadIdentity();
 
         unsigned int lindex = (_index + 1) % _fs.size();
         Producer::Camera::TimeStamp zero = _fs[lindex]._startOfFrame;
@@ -565,14 +454,87 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::displayStats()
 
         glEnd();
 
-        glPopMatrix();
         glMatrixMode( GL_PROJECTION );
         glPopMatrix();
         glMatrixMode( GL_MODELVIEW );
-
-        glPopAttrib();
         
     }
+
+    // render the text
+    if (_veh->getFrameStatsMode()>=ViewerEventHandler::FRAME_RATE)
+    {
+        // update and draw the frame rate text.
+        
+        char tmpText[128];
+
+        _frameRateLabelText->draw(*(sv->getState()));
+
+        if (_fs.size()>1)
+        {
+            unsigned int lindex = (_index + 1) % _fs.size();
+            double timeForFrames = (_fs[_index]._startOfFrame-_fs[lindex]._startOfFrame);
+            double timePerFrame = timeForFrames/(double)(_fs.size()-1);
+            sprintf(tmpText,"%4.2f",1.0/timePerFrame);
+            _frameRateCounterText->setText(tmpText);
+        }
+        _frameRateCounterText->draw(*(sv->getState()));
+        
+
+        if (_veh->getFrameStatsMode()>=ViewerEventHandler::CAMERA_STATS)
+        {
+
+            TextList::iterator itr;
+            for(itr=_statsLabelList.begin();
+                itr!=_statsLabelList.end();
+                ++itr)
+            {
+                (*itr)->draw(*(sv->getState()));
+            }
+
+            double updateTime = 0.0;
+            std::fill(_cullTimes.begin(),_cullTimes.end(),0.0);
+            std::fill(_drawTimes.begin(),_drawTimes.end(),0.0);
+
+            for(unsigned int frame = 0; frame < _fs.size(); frame++ )
+            {
+	        Producer::CameraGroup::FrameStats fs = _fs[frame];
+                updateTime += (fs._endOfUpdate-fs._startOfUpdate);
+
+	        for(unsigned int i = 0; i < fs.getNumFrameTimeStampSets(); i++ )
+                {
+	            Producer::Camera::FrameTimeStampSet fts = fs.getFrameTimeStampSet(i);
+
+	            _cullTimes[i] += fts[Producer::Camera::EndCull]-fts[Producer::Camera::BeginCull];
+	            _drawTimes[i] += fts[Producer::Camera::EndDraw]-fts[Producer::Camera::BeginDraw];
+                }
+            }
+
+            sprintf(tmpText,"%4.2f",1000.0*updateTime/(double)_fs.size());
+            _updateTimeText->setText(tmpText);
+
+            _updateTimeText->draw(*(sv->getState()));
+
+            CameraTimes::iterator titr;
+            for(itr=_cullTimeText.begin(),titr = _cullTimes.begin();
+                itr!=_cullTimeText.end() && titr!=_cullTimes.end();
+                ++itr,++titr)
+            {
+                sprintf(tmpText,"%4.2f",1000.0*(*titr)/(double)_fs.size());
+                (*itr)->setText(tmpText);
+                (*itr)->draw(*(sv->getState()));
+            }
+            for(itr=_drawTimeText.begin(),titr = _drawTimes.begin();
+                itr!=_drawTimeText.end() && titr!=_cullTimes.end();
+                ++itr,++titr)
+            {
+                sprintf(tmpText,"%4.2f",1000.0*(*titr)/(double)_fs.size());
+                (*itr)->setText(tmpText);
+                (*itr)->draw(*(sv->getState()));
+            }
+        }
+        
+    }
+
 }
 
 void ViewerEventHandler::StatsAndHelpDrawCallback::createStatsText()

@@ -549,9 +549,9 @@ bool Texture::areAllTextureObjectsLoaded() const
 {
     for(unsigned int i=0;i<DisplaySettings::instance()->getMaxNumberOfGraphicsContexts();++i)
     {
-        if (_textureObjectBuffer[i]==0) return true;
+        if (_textureObjectBuffer[i]==0) return false;
     }
-    return false;
+    return true;
 }
 
 void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* image, GLsizei inwidth, GLsizei inheight,GLsizei numMipmapLevels) const

@@ -2503,7 +2503,7 @@ DataSet::DataSet()
 {
     init();
     
-    _radiusToMaxVisibleDistanceRatio = 11.0f;
+    _radiusToMaxVisibleDistanceRatio = 7.0f;
     _verticalScale = 1.0f;
 
     _convertFromGeographicToGeocentric = false;

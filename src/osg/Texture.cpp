@@ -384,9 +384,13 @@ int Texture::compareTexture(const Texture& rhs) const
     COMPARE_StateAttribute_Parameter(_maxAnisotropy)
     COMPARE_StateAttribute_Parameter(_useHardwareMipMapGeneration)
     COMPARE_StateAttribute_Parameter(_internalFormatMode)
-#if 1    
-    COMPARE_StateAttribute_Parameter(_internalFormat)
-#endif
+
+    // only compare _internalFomat is it has alrady been set in both lhs, and rhs
+    if (_internalFormat!=0 && rhs._internalFormat!=0)
+    {
+        COMPARE_StateAttribute_Parameter(_internalFormat)
+    }
+
     COMPARE_StateAttribute_Parameter(_use_shadow_comparison)
     COMPARE_StateAttribute_Parameter(_shadow_compare_func)
     COMPARE_StateAttribute_Parameter(_shadow_texture_mode)

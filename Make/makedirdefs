@@ -123,5 +123,7 @@ EXAMPLE_DIRS = \
 	osgvertexprogram\
 	osgviewer\
 
+#	osgjigsaw\
+
 # comment in you want to compile the cluster demo.
 EXAMPLE_DIRS += osgcluster

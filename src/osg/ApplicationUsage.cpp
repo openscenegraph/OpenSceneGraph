@@ -145,12 +145,12 @@ void ApplicationUsage::write(std::ostream& output, const ApplicationUsage::Usage
     output << str << std::endl;
 }
 
-void ApplicationUsage::write(std::ostream& output,unsigned int widthOfOutput)
+void ApplicationUsage::write(std::ostream& output, unsigned int type, unsigned int widthOfOutput)
 {
 
     output << "Usage: "<<getCommandLineUsage()<<std::endl;
     bool needspace = false;
-    if (!getCommandLineOptions().empty())
+    if ((type&COMMAND_LINE_OPTION) && !getCommandLineOptions().empty())
     {
         if (needspace) output << std::endl;
         output << "Options:"<<std::endl;
@@ -158,7 +158,7 @@ void ApplicationUsage::write(std::ostream& output,unsigned int widthOfOutput)
         needspace = true;
     }
     
-    if (!getEnvironmentalVariables().empty())
+    if ((type&ENVIRONMENTAL_VARIABLE) && !getEnvironmentalVariables().empty())
     {
         if (needspace) output << std::endl;
         output << "Environmental Variables:"<<std::endl;
@@ -166,7 +166,7 @@ void ApplicationUsage::write(std::ostream& output,unsigned int widthOfOutput)
         needspace = true;
     }
 
-    if (!getKeyboardMouseBindings().empty())
+    if ((type&KEYBOARD_MOUSE_BINDING) && !getKeyboardMouseBindings().empty())
     {
         if (needspace) output << std::endl;
         output << "Keyboard and Mouse Bindings:"<<std::endl;

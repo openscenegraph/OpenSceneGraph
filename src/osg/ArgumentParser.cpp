@@ -14,7 +14,7 @@ ArgumentParser::ArgumentParser(int* argc,char **argv):
 {
 }
 
-std::string ArgumentParser::getProgramName() const
+std::string ArgumentParser::getApplicationName() const
 {
     if (_argc>0) return std::string(_argv[0]);
     return "";
@@ -314,7 +314,7 @@ void ArgumentParser::reportRemainingOptionsAsUnrecognized(ErrorSeverity severity
         // if an option and havn't been previous querried for report as unrecognized.
         if (isOption(pos) && options.find(_argv[pos])==options.end()) 
         {
-            reportError(getProgramName() +": unrceognized option "+_argv[pos],severity);
+            reportError(getApplicationName() +": unrceognized option "+_argv[pos],severity);
         }
     }
 }
@@ -326,7 +326,7 @@ void ArgumentParser::writeErrorMessages(std::ostream& output,ErrorSeverity sever
     {
         if (itr->second>=severity)
         {
-            output<< getProgramName() << ": " << itr->first << std::endl;
+            output<< getApplicationName() << ": " << itr->first << std::endl;
         }
     }
 }

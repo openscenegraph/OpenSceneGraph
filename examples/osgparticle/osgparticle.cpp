@@ -348,7 +348,7 @@ int main(int argc, char **argv)
     osg::ArgumentParser arguments(&argc,argv);
     
     // set up the usage document, in case we need to print out how to use this program.
-    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getProgramName()+" [options] image_file_left_eye image_file_right_eye");
+    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] image_file_left_eye image_file_right_eye");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
     
 
@@ -377,7 +377,7 @@ int main(int argc, char **argv)
         arguments.writeErrorMessages(std::cout);
         return 1;
     }
-
+    
     osg::Group *root = new osg::Group;
     build_world(root);
    

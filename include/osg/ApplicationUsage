@@ -43,9 +43,9 @@ class SG_EXPORT ApplicationUsage
 
         enum Type
         {
-            COMMAND_LINE_OPTION,
-            ENVIRONMENTAL_VARIABLE,
-            KEYBOARD_MOUSE_BINDING
+            COMMAND_LINE_OPTION = 0x1,
+            ENVIRONMENTAL_VARIABLE = 0x2,
+            KEYBOARD_MOUSE_BINDING = 0x4
         };
         
         void addUsageExplanation(Type type,const std::string& option,const std::string& explanation);
@@ -74,7 +74,7 @@ class SG_EXPORT ApplicationUsage
 
         void write(std::ostream& output,const UsageMap& um,unsigned int widthOfOutput=80);
         
-        void write(std::ostream& output,unsigned int widthOfOutput=80);
+        void write(std::ostream& output,unsigned int type=COMMAND_LINE_OPTION|ENVIRONMENTAL_VARIABLE|KEYBOARD_MOUSE_BINDING, unsigned int widthOfOutput=80);
 
     protected:
     

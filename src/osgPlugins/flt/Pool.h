@@ -24,7 +24,8 @@ class ColorPool : public osg::Referenced
 
         ColorPool() {}
 
-        osg::Vec4 getColor(int nColorIndex);
+        osg::Vec4 getColor(int nColorIntensity);
+        osg::Vec4 getOldColor(int nColorIntensity);
         void addColor(int nIndex, const osg::Vec4& color);
 
     protected :

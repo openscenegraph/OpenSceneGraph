@@ -14,22 +14,62 @@
 using namespace flt;
 
 
-osg::Vec4 ColorPool::getColor(int nColorIndex)
+osg::Vec4 ColorPool::getColor(int nColorIntensity)
 {
+    // nColorIntensity:
+    // bit 0-6:  intensity
+    // bit 7-15  color index
+
     osg::Vec4 col(1,1,1,1);
 
-    if (nColorIndex >= 0)
+    if (nColorIntensity >= 0)
     {
-        int index = nColorIndex / 128;                          // = nColorIndex >> 7
-        float intensity = (nColorIndex % 128) / 128.0f;         // = nColorIndex & 0x7f
-
-        ColorName* cn = getColorName(index);
+        ColorName* cn = getColorName(nColorIntensity >> 7);
         if (cn)
             col = cn->getColor();
 
+        float intensity = (float)(nColorIntensity & 0x7f)/127.f;
         col[0] *= intensity;
         col[1] *= intensity;
         col[2] *= intensity;
+    }
+
+    return col;
+}
+
+
+// getColor for version 11, 12 & 13.
+osg::Vec4 ColorPool::getOldColor(int nColorIntensity)
+{
+    // nColorIntensity:
+    // bit 0-6:  intensity
+    // bit 7-11  color index
+    // bit 12    fixed intensity bit
+
+    osg::Vec4 col(1,1,1,1);
+
+    if (nColorIntensity >= 0)
+    {
+        int nIndex;
+        bool bFixedIntensity = (nColorIntensity & 0x1000) ? true : false;
+
+        if (bFixedIntensity)
+            nIndex = (nColorIntensity & 0x0fff)+(4096>>7);
+        else
+            nIndex = nColorIntensity >> 7;
+
+        ColorName* cn = getColorName(nIndex);
+        if (cn)
+            col = cn->getColor();
+
+        // intensity
+        if (!bFixedIntensity)
+        {
+            float intensity = (float)(nColorIntensity & 0x7f)/127.f;
+            col[0] *= intensity;
+            col[1] *= intensity;
+            col[2] *= intensity;
+        }
     }
 
     return col;

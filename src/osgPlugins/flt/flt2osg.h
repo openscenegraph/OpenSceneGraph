@@ -82,7 +82,7 @@ struct SMaterial;
 #define ADD_OLD_COLOR(DGSET,VERTEX,COLOR_POOL)                  \
     {                                                           \
         if (COLOR_POOL)                                         \
-            (DGSET)->addColor((COLOR_POOL)->getColor((VERTEX)->color_index)); \
+            (DGSET)->addColor((COLOR_POOL)->getOldColor((VERTEX)->color_index)); \
         else                                                    \
             (DGSET)->addColor(osg::Vec4(1,1,1,1));              \
     }

@@ -27,7 +27,7 @@ DatabasePager::DatabasePager()
     _threadPriorityDuringFrame = PRIORITY_MIN;
     _threadPriorityOutwithFrame = PRIORITY_NOMINAL;
 
-    _deleteRemovedSubgraphsInDatabaseThread = true;
+    _deleteRemovedSubgraphsInDatabaseThread = false;//true;
     
     _expiryDelay = 1.0;
 
@@ -550,19 +550,6 @@ void DatabasePager::removeExpiredSubgraphs(double currentFrameTime)
             //osg::notify(osg::INFO)<<"    PagedLOD "<<plod<<" refcount "<<plod->referenceCount()<<std::endl;
         }
     }
-     
-    // for all the subgraphs to remove find all the textures and drawables and
-    // strip them from the display lists.   
-    {
-        ReleaseTexturesAndDrawablesVisitor rtadv;
-        for(osg::NodeList::iterator nitr=childrenRemoved.begin();
-            nitr!=childrenRemoved.end();
-            ++nitr)
-        {
-            (*nitr)->accept(rtadv);
-        }
-    }
-
 
     if (osgDB::Registry::instance()->getSharedStateManager()) 
         osgDB::Registry::instance()->getSharedStateManager()->prune();
@@ -570,6 +557,16 @@ void DatabasePager::removeExpiredSubgraphs(double currentFrameTime)
     
     if (_deleteRemovedSubgraphsInDatabaseThread)
     {
+        // for all the subgraphs to remove find all the textures and drawables and
+        // strip them from the display lists.   
+        ReleaseTexturesAndDrawablesVisitor rtadv;
+        for(osg::NodeList::iterator nitr=childrenRemoved.begin();
+            nitr!=childrenRemoved.end();
+            ++nitr)
+        {
+            (*nitr)->accept(rtadv);
+        }
+
         // transfer the removed children over to the to delete list so the database thread can delete them.
         _childrenToDeleteListMutex.lock();
             _childrenToDeleteList.insert(_childrenToDeleteList.begin(),childrenRemoved.begin(),childrenRemoved.end());

@@ -1,0 +1,15 @@
+#ifndef IVE_CLUSTERCULLINGCALLBACK
+#define IVE_CLUSTERCULLINGCALLBACK 1
+
+#include <osg/Drawable>
+#include "ReadWrite.h"
+
+namespace ive{
+class ClusterCullingCallback : public osg::ClusterCullingCallback, public ReadWrite {
+public:
+	void write(DataOutputStream* out);
+	void read(DataInputStream* in);
+};
+}
+
+#endif

@@ -716,19 +716,19 @@ ViewerEventHandler::ViewerEventHandler(OsgCameraGroup* cg):
     _statsAndHelpDrawCallback = new StatsAndHelpDrawCallback(this,0);
     cam->addPostDrawCallback(_statsAndHelpDrawCallback);
 
+    std::string basename("saved_image");
+    std::string ext(".jpg");
     if (cfg->getNumberOfCameras()==1)
     {
-        SnapImageDrawCallback* snapImageDrawCallback = new SnapImageDrawCallback("saved_image.jpg");
+        SnapImageDrawCallback* snapImageDrawCallback = new SnapImageDrawCallback(basename+ext);
         cam->addPostDrawCallback(snapImageDrawCallback);
         _snapImageDrawCallbackList.push_back(snapImageDrawCallback);
     }
     else
     {
-        std::string basename("saved_image_");
-        std::string ext(".rgb");
         for(unsigned int i=0;i<cfg->getNumberOfCameras();++i)
         {
-            std::string filename(basename);
+            std::string filename(basename+"_");
             filename += ('0'+i);
             filename += ext;
             SnapImageDrawCallback* snapImageDrawCallback = new SnapImageDrawCallback(filename);

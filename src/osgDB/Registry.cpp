@@ -201,6 +201,18 @@ Registry::~Registry()
     // rest of the Registry.
     _databasePager = 0;
 
+    // clean up the SharedStateManager 
+    _sharedStateManager = 0;
+    
+    // object cache clear needed here to prevent crash in unref() of
+    // the objects it contains when running the TXP plugin.
+    // Not sure why, but perhaps there is is something in a TXP plugin
+    // which is deleted the data before its ref count hits zero, perhaps
+    // even some issue with objects be allocated by a plugin that is
+    // mainted after that plugin is deleted...  Robert Osfield, Jan 2004.
+    _objectCache.clear();
+
+
     // unload all the plugin before we finally destruct.
     closeAllLibraries();
 }
@@ -1831,6 +1843,7 @@ void Registry::removeExpiredObjectsInCache(double expiryTime)
         ritr!=objectsToRemove.end();
         ++ritr)
     {
+        // std::cout<<"Removing from Registry object cache '"<<*ritr<<"'"<<std::endl;
         _objectCache.erase(*ritr);
     }
         
@@ -1846,4 +1859,11 @@ DatabasePager* Registry::getOrCreateDatabasePager()
     if (!_databasePager) _databasePager = new DatabasePager;
     
     return _databasePager.get();
+}
+
+SharedStateManager* Registry::getOrCreateSharedStateManager()
+{
+    if (!_sharedStateManager) _sharedStateManager = new SharedStateManager;
+    
+    return _sharedStateManager.get();
 }

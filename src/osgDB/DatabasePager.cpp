@@ -27,16 +27,29 @@ DatabasePager::DatabasePager()
     _deleteRemovedSubgraphsInDatabaseThread = true;
     
     _expiryDelay = 1.0;
+
+    // make sure a SharedStateManager exists.
+    //osgDB::Registry::instance()->getOrCreateSharedStateManager();
+    
+    //if (osgDB::Registry::instance()->getSharedStateManager())
+        //osgDB::Registry::instance()->setUseObjectCacheHint(true);
 }
 
 DatabasePager::~DatabasePager()
 {
+
     //std::cout<<"DatabasePager::~DatabasePager()"<<std::endl;
     if( isRunning() )
     {
+
         // cancel the thread..
         cancel();
         //join();
+
+        
+        // release the frameBlock incase its holding up thread cancelation.
+        _frameBlock->release();
+
 
         // then wait for the the thread to stop running.
         while(isRunning())
@@ -308,14 +321,14 @@ void DatabasePager::run()
             // check if databaseRequest is still relevant
             if (_frameNumber-databaseRequest->_frameNumberLastRequest<=1)
             {
-        
+                       
                 // load the data, note safe to write to the databaseRequest since once 
                 // it is created this thread is the only one to write to the _loadedModel pointer.
                 osg::notify(osg::INFO)<<"In DatabasePager thread readNodeFile("<<databaseRequest->_fileName<<")"<<std::endl;
                 osg::Timer_t before = osg::Timer::instance()->tick();
                 databaseRequest->_loadedModel = osgDB::readNodeFile(databaseRequest->_fileName);
                 osg::notify(osg::INFO)<<"     node read in "<<osg::Timer::instance()->delta_m(before,osg::Timer::instance()->tick())<<" ms"<<std::endl;
-
+                
                 bool loadedObjectsNeedToBeCompiled = false;
 
                 if (databaseRequest->_loadedModel.valid() && !_activeGraphicsContexts.empty())
@@ -422,6 +435,12 @@ void DatabasePager::addLoadedDataToSceneGraph(double timeStamp)
         ++itr)
     {
         DatabaseRequest* databaseRequest = itr->get();
+
+        
+        if (osgDB::Registry::instance()->getSharedStateManager()) 
+            osgDB::Registry::instance()->getSharedStateManager()->share(databaseRequest->_loadedModel.get());
+
+        
         registerPagedLODs(databaseRequest->_loadedModel.get());
         
         osg::Group* group = databaseRequest->_groupForAddingLoadedSubgraph.get();
@@ -535,6 +554,10 @@ void DatabasePager::removeExpiredSubgraphs(double currentFrameTime)
     }
 
 
+    if (osgDB::Registry::instance()->getSharedStateManager()) 
+        osgDB::Registry::instance()->getSharedStateManager()->prune();
+
+    
     if (_deleteRemovedSubgraphsInDatabaseThread)
     {
         // transfer the removed children over to the to delete list so the database thread can delete them.

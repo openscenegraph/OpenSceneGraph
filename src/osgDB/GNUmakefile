@@ -17,6 +17,7 @@ CXXFILES =\
 	FieldReader.cpp\
 	FieldReaderIterator.cpp\
 	DotOsgWrapper.cpp\
+	SharedStateManager.cpp\
 
 
 LIBS += -losg $(OTHER_LIBS) $(DYNAMICLIBRARYLIB) 

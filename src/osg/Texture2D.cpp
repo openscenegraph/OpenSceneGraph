@@ -81,8 +81,10 @@ int Texture2D::compare(const StateAttribute& sa) const
     if (result!=0) return result;
 
     // compare each paramter in turn against the rhs.
+#if 1    
     COMPARE_StateAttribute_Parameter(_textureWidth)
     COMPARE_StateAttribute_Parameter(_textureHeight)
+#endif
     COMPARE_StateAttribute_Parameter(_subloadCallback)
 
     return 0; // passed all the above comparison macro's, must be equal.

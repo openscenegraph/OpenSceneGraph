@@ -279,7 +279,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "Demo osgconv"=.\Demos\osgunittests\osgunittests.dsp - Package Owner=<4>
+Project: "Demo osgunittests"=.\Demos\osgunittests\osgunittests.dsp - Package Owner=<4>
 
 Package=<5>
 {{{

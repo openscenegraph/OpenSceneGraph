@@ -23,7 +23,12 @@ SRC_DIRS = \
 	osgGL2\
 	osgFX\
 	osgProducer\
-	osgIntrospection\
+
+ifeq ($(COMPILE_INTROSPECTION),yes)
+SRC_DIRS += \
+        osgIntrospection\
+	osgWrappers
+endif
 
 ifeq ($(GDAL_INSTALLED),yes)
 SRC_DIRS += osgTerrain
@@ -31,7 +36,7 @@ endif
 
 SRC_DIRS += \
 	osgPlugins\
-	osgWrappers\
+        
 
 WRAPPER_DIRS = \
 	osg\
@@ -184,7 +189,6 @@ EXAMPLE_DIRS = \
 	osghangglide\
 	osghud\
 	osgimpostor\
-	osgintrospection\
 	osgkeyboard\
 	osgkeyboardmouse\
 	osglauncher\
@@ -233,6 +237,9 @@ EXAMPLE_DIRS = \
 	osgwindows\
 
 
+ifeq ($(COMPILE_INTROSPECTION),yes)
+    EXAMPLE_DIRS += osgintrospection
+endif
 
 ifeq ($(GDAL_INSTALLED),yes)
     EXAMPLE_DIRS += osgphotoalbum

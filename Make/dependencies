@@ -1,8 +1,13 @@
 ################################################################
 # Dependency library which have been installed on this system
 
+
+# should we compile osgIntrospection?
+COMPILE_INTROSPECTION = no
+
 # should we compile any of the examples?
 COMPILE_EXAMPLES ?= no
+
 
 # follows are dependenices on the various plugins.
 

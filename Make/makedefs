@@ -104,7 +104,7 @@ ifeq ($(OS),SunOS)
     GIF_LIBS          = -lgif 
     TIFF_LIB	    = -ltiff 
     JPEG_LIBS         = -ljpeg 
-    PNG_LIBS          = -lnpg -lz 
+    PNG_LIBS          = -lpng -lz 
     FREETYPE_LIB      = -lfreetype
     OTHER_LIBS        = 
 

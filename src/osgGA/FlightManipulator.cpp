@@ -282,11 +282,15 @@ bool FlightManipulator::calcMovement()
 
     if (_yawMode==YAW_AUTOMATICALLY_WHEN_BANKED)
     {
-        float bank = asinf(sv.z());
+        //float bank = asinf(sv.z());
+        float bank = asinf(sv *getUpVector());
         float yaw = inRadians(bank)*dt;
         
         osg::Quat yaw_rotate;
-        yaw_rotate.makeRotate(yaw,0.0f,0.0f,1.0f);
+        //yaw_rotate.makeRotate(yaw,0.0f,0.0f,1.0f);
+
+        yaw_rotate.makeRotate(yaw,getUpVector());
+
 
         delta_rotate = delta_rotate*yaw_rotate;
     }

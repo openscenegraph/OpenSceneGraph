@@ -23,47 +23,47 @@ namespace osg {
 class BoundingSphere;
 
 /** General purpose axis-aligned bounding box class for enclosing objects/vertices.
-    Used to bounding the leaf objects in the scene,
-    i.e. osg::Drawable's to assist in view frustum culling etc.
+  * Bounds leaf objects in a scene such as osg::Drawable objects. Used for frustum
+  * culling etc.
 */
 class SG_EXPORT BoundingBox
 {
     public:
     
-	/** The corner with the smallest values for each coordinate of the
-	    bounding box.*/
-	Vec3 _min;
-	/** The corner with the largest values for each coordinate of the
-	    bounding box.*/
-	Vec3 _max;
+    /** Minimum extent. (Smallest X, Y, and Z values of all coordinates.) */
+    Vec3 _min;
+    /** Maximum extent. (Greatest X, Y, and Z values of all coordinates.) */
+    Vec3 _max;
 
-        /** construct to invalid values to represent an unset bounding box.*/ 
+        /** Creates an uninitialized bounding box. */
         inline BoundingBox() : _min(FLT_MAX,FLT_MAX,FLT_MAX),
                         _max(-FLT_MAX,-FLT_MAX,-FLT_MAX) {}
     
-        /** construct to with specified min and max values.*/ 
+        /** Creates a bounding box initialized to the given extents. */
         inline BoundingBox(float xmin,float ymin,float zmin,
                     float xmax,float ymax,float zmax) :
                     _min(xmin,ymin,zmin),
                     _max(xmax,ymax,zmax) {}
 
-        /** construct to with specified min and max values.*/ 
+        /** Creates a bounding box initialized to the given extents. */
         inline BoundingBox(const Vec3& min,const Vec3& max) : 
                     _min(min),
                     _max(max) {}
 
-        /** initialize to invalid values to represent an unset bounding box.*/ 
+        /** Clear the bounding box. Erases existing minimum and maximum extents. */
         inline void init()
         {
             _min.set(FLT_MAX,FLT_MAX,FLT_MAX);
             _max.set(-FLT_MAX,-FLT_MAX,-FLT_MAX);
         }
-                      
+        
+        /** Returns true if the bounding box extents are valid, false otherwise. */              
         inline bool valid() const
         {
             return _max.x()>=_min.x() &&  _max.y()>=_min.y() &&  _max.z()>=_min.z();
         }
 
+        /** Sets the bounding box extents. */
         inline void set (float xmin,float ymin,float zmin,
                          float xmax,float ymax,float zmax)
         {
@@ -71,7 +71,7 @@ class SG_EXPORT BoundingBox
             _max.set(xmax,ymax,zmax);
         }
 
-        /** construct to with specified min and max values.*/ 
+        /** Sets the bounding box extents. */
         inline void set(const Vec3& min,const Vec3& max)
         {
             _min = min;
@@ -97,37 +97,37 @@ class SG_EXPORT BoundingBox
         inline float& zMax() { return _max.z(); }
         inline float zMax() const { return _max.z(); }
 
-        /** Calculate and return the center of the bounding box.*/
+        /** Calculates and returns the bounding box center. */
         inline const Vec3 center() const
         {
             return (_min+_max)*0.5f;
         }
 
-        /** Calculate and return the radius of the bounding box.*/
+        /** Calculates and returns the bounding box radius. */
         inline float radius() const
         {
             return sqrtf(radius2());
         }
 
-        /** Calculate and return the radius squared of the bounding box.
-            Note, radius2() is faster to calculate than radius().*/            
+        /** Calculates and returns the squared length of the bounding box radius.
+          * Note, radius2() is faster to calculate than radius(). */
         inline float radius2() const
         {
             return 0.25f*((_max-_min).length2());
         }
 
-        /** return the corner of the bounding box.
-            Position (pos) is specified by a number between 0 and 7,
-            the first bit toggles between x min and x max, second
-            bit toggles between y min and y max, third bit toggles
-            between z min and z max.*/
+        /** Returns a specific corner of the bounding box.
+          * pos specifies the corner as a number between 0 and 7.
+          * Each bit selects an axis, X, Y, or Z from least- to
+          * most-significant. Unset bits select the minimum value
+          * for that axis, and set bits select the maximum. */
         inline const Vec3 corner(unsigned int pos) const
         {
             return Vec3(pos&1?_max.x():_min.x(),pos&2?_max.y():_min.y(),pos&4?_max.z():_min.z());
         }
 
-        /** If the vertex is out-with the box expand to encompass vertex.
-            If this box is empty then move set this box's min max to vertex. */
+        /** Expands the bounding box to include the given coordinate.
+          * If the box is uninitialized, set its min and max extents to v. */
         inline void expandBy(const Vec3& v)
         {
             if(v.x()<_min.x()) _min.x() = v.x();
@@ -140,8 +140,9 @@ class SG_EXPORT BoundingBox
             if(v.z()>_max.z()) _max.z() = v.z();
         }
 
-        /** If the vertex is out-with the box expand to encompass vertex.
-            If this box is empty then move set this box's min max to vertex. */
+        /** Expands the bounding box to include the given coordinate.
+          * If the box is uninitialized, set its min and max extents to
+          * Vec3(x,y,z). */
         inline void expandBy(float x,float y,float z)
         {
             if(x<_min.x()) _min.x() = x;
@@ -154,23 +155,23 @@ class SG_EXPORT BoundingBox
             if(z>_max.z()) _max.z() = z;
         }
 
-        /** If incoming box is out-with the box expand to encompass incoming box.
-            If this box is empty then move set this box to incoming box. */
+        /** Expands this bounding box to include the given bounding box.
+          * If this box is uninitialized, set it equal to bb. */
         void expandBy(const BoundingBox& bb);
 
-        /** If incoming sphere is out-with the box expand to encompass incoming sphere.
-            If this box is empty then move set this box to encompass the sphere. */
+        /** Expands this bounding box to include the given sphere.
+          * If this box is uninitialized, set it to include sh. */
         void expandBy(const BoundingSphere& sh);
         
 
-        /** Compute the intesection of this bounding box with the specified bounding box.*/
+        /** Returns the intesection of this bounding box and the specified bounding box. */
         BoundingBox intersect(const BoundingBox& bb) const
         {    return osg::BoundingBox(osg::maximum(xMin(),bb.xMin()),osg::maximum(yMin(),bb.yMin()),osg::maximum(zMin(),bb.zMin()),
                                      osg::minimum(xMax(),bb.xMax()),osg::minimum(yMax(),bb.yMax()),osg::minimum(zMax(),bb.zMax()));
 
         }
 
-        /** return true if this bounding box with the specified bounding box.*/
+        /** Return true if this bounding box intersects the specified bounding box. */
         bool intersects(const BoundingBox& bb) const
         {    return osg::maximum(xMin(),bb.xMin()) <= osg::minimum(xMax(),bb.xMax()) &&
                     osg::maximum(yMin(),bb.yMin()) <= osg::minimum(yMax(),bb.yMax()) &&
@@ -178,7 +179,7 @@ class SG_EXPORT BoundingBox
 
         }
 
-        /** return true is vertex v is within the box.*/
+        /** Returns true if this bounding box contains the specified coordinate. */
         inline bool contains(const Vec3& v) const
         {
             return valid() && 

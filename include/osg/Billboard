@@ -19,8 +19,9 @@
 
 namespace osg {
 
-/** Billboard - a Geode which orientates its child osg::Drawable's to face
-    the eye point.  Typical uses are for trees, or particle explosions.
+/** Billboard is a derived form of Geode that orients its osg::Drawable
+  * children to face the eye point. Typical uses incllude trees and
+  * particle explosions,
 */
 class SG_EXPORT Billboard : public Geode
 {
@@ -34,7 +35,7 @@ class SG_EXPORT Billboard : public Geode
 
         Billboard();
         
-        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         Billboard(const Billboard&,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
         META_Node(osg, Billboard);
@@ -44,59 +45,57 @@ class SG_EXPORT Billboard : public Geode
         /** Get the billboard rotation mode. */
         inline Mode getMode() const { return _mode; }
 
-        /** Set the axis about which all the billboard's drawable rotate. Only utlized when mode==AXIAL_ROT*/
+        /** Set the rotation axis for the billboard's child Drawables.
+          * Only utlized when mode==AXIAL_ROT. */
         void setAxis(const Vec3& axis);
-        /** Get the axis about which all the billboard's drawable rotate. */
+        /** Get the rotation axis. */
         inline const Vec3& getAxis() const { return _axis; }
 
-        /** Set the normal which defines the billboard's drawable front face, when unrotated. */
+        /** This normal defines child Drawables' front face direction when unrotated. */
         void setNormal(const Vec3& normal);
-        /** Get the normal of billboard's drawable front face. */
+        /** Get the front face direction normal. */
         inline const Vec3& getNormal() const { return _normal; }
 
 
 #ifdef USE_DEPRECATED_API
-        /** Set the position of specified drawable. */
+        /** Set the specified child Drawable's position. */
         inline void setPos(unsigned int i,const Vec3& pos)      { _positionList[i] = pos; }
-        /** Get the position of specified drawable. */
+        /** Get the specified child Drawable's position. */
         inline const Vec3& getPos(unsigned int i) const         { return _positionList[i]; }
 #endif
-        
-        /** Set the position of specified drawable. */
+
+        /** Set the specified child Drawable's position. */
         inline void setPosition(unsigned int i,const Vec3& pos)      { _positionList[i] = pos; }
-        /** Get the position of specified drawable. */
+        /** Get the specified child Drawable's position. */
         inline const Vec3& getPosition(unsigned int i) const         { return _positionList[i]; }
 
-        /** PositionList represents a list of pivot points for each drawable.*/
+        /** Type definition for pivot point position list. */
         typedef std::vector<Vec3> PositionList;
         
-        /** Get the PositionList from the billboard.*/
+        /** Get the list of pivot point positions. */
         inline PositionList& getPositionList()             { return _positionList; }
         
-        /** Get a const PositionList from the billboard.*/
+        /** Get a const list of pivot point positions. */
         inline const PositionList& getPositionList() const { return _positionList; }
 
-        /** Add Drawable to Billboard with default position(0,0,0);
-         *  If gset not NULL and is not contained in Billboard then increment its 
-         *  reference count, and dirty the bounding box to cause it to recompute on 
-         *  next getBound() and return true for success.  Otherwise return false.
-         */
+        /** Add a Drawable with a default position of Vec3(0,0,0).
+          * Call the base-class Geode::addDrawble() to add the given Drawable
+          * gset as a child. If Geode::addDrawable() returns true, add the
+          * default position to the pivot point position list and return true.
+          * Otherwise, return false. */
         virtual bool addDrawable( Drawable *gset );
 
-        /** Add Drawable to Geode at position pos.
-         *  If gset not NULL and is not contained in Billboard then increment its 
-         *  reference count, and dirty the bounding box to cause it to recompute on 
-         *  next getBound() and return true for success.  Otherwise return false.
-         */
+        /** Add a Drawable with a specified position.
+          * Call the base-class Geode::addDrawble() to add the given Drawable
+          * gset as a child. If Geode::addDrawable() returns true, add the
+          * given position pos to the pivot point position list and return true.
+          * Otherwise, return false. */
         virtual bool addDrawable(Drawable *gset,const Vec3& pos);
 
-        /** Remove Drawable and associated position from Billboard.
-         *  If gset is contained in Billboard then remove it from the geoset
-         *  list and decrement its reference count, and dirty the 
-         *  bounding box to cause it to recompute on next getBound() and
-         *  return true for success.  If gset is not found then return false
-         *  and do not the reference count of gset is left unchanged.
-         */
+        /** Remove a Drawable and its associated position.
+          * If gset is a child, remove it, decrement its reference count,
+          * remove its pivot point position. and return true.
+          * Otherwise, return false. */
         virtual bool removeDrawable( Drawable *gset );
                 
 

@@ -25,9 +25,10 @@
 
 namespace osg {
 
-/** AnimationPath for specify the time varying transformation pathway to use when update camera and model objects.
-  * Subclassed from Transform::ComputeTransformCallback allows AnimationPath to
-  * be attached directly to Transform nodes to move subgraphs around the scene.
+/** AnimationPath encapsulates a time varying transformation pathway. Can be
+  * used for updating camera position and model object position.
+  * AnimationPathCallback can be attached directly to Transform nodes to
+  * move subgraphs around the scene.
 */
 class SG_EXPORT AnimationPath : public virtual osg::Object
 {
@@ -105,7 +106,7 @@ class SG_EXPORT AnimationPath : public virtual osg::Object
         };
         
 
-        /** get the transformation matrix for a point in time.*/        
+        /** Given a specific time, return the transformation matrix for a point. */
         bool getMatrix(double time,Matrixf& matrix) const
         {
             ControlPoint cp;
@@ -114,7 +115,7 @@ class SG_EXPORT AnimationPath : public virtual osg::Object
             return true;
         }
 
-        /** get the transformation matrix for a point in time.*/        
+        /** Given a specific time, return the transformation matrix for a point..*/
         bool getMatrix(double time,Matrixd& matrix) const
         {
             ControlPoint cp;
@@ -123,7 +124,7 @@ class SG_EXPORT AnimationPath : public virtual osg::Object
             return true;
         }
 
-        /** get the inverse transformation matrix for a point in time.*/        
+        /** Given a specific time, return the inverse transformation matrix for a point. */
         bool getInverse(double time,Matrixf& matrix) const
         {
             ControlPoint cp;
@@ -140,7 +141,7 @@ class SG_EXPORT AnimationPath : public virtual osg::Object
             return true;
         }
 
-        /** get the local ControlPoint frame for a point in time.*/
+        /** Given a specific time, return the local ControlPoint frame for a point. */
         virtual bool getInterpolatedControlPoint(double time,ControlPoint& controlPoint) const;
         
         void insert(double time,const ControlPoint& controlPoint);
@@ -169,10 +170,10 @@ class SG_EXPORT AnimationPath : public virtual osg::Object
         
         bool empty() const { return _timeControlPointMap.empty(); }
 
-        /** read the anumation path from a flat ascii file stream.*/
+        /** Read the animation path from a flat ASCII file stream. */
         void read(std::istream& in);
 
-        /** write the anumation path to a flat ascii file stream.*/
+        /** Write the animation path to a flat ASCII file stream. */
         void write(std::ostream& out) const;
 
     protected:
@@ -247,11 +248,12 @@ class SG_EXPORT AnimationPathCallback : public NodeCallback
 
         void setPause(bool pause);
 
-        /** get the animation time that is used to specify the position along the AnimationPath.
-          * Animation time is computed from the formula ((_latestTime-_firstTime)-_timeOffset)*_timeMultiplier.*/
+        /** Get the animation time that is used to specify the position along
+          * the AnimationPath. Animation time is computed from the formula:
+          *   ((_latestTime-_firstTime)-_timeOffset)*_timeMultiplier.*/
         double getAnimationTime() const;
 
-        /** implements the callback*/
+        /** Implements the callback. */
         virtual void operator()(Node* node, NodeVisitor* nv);
         
         void update(osg::Node& node);

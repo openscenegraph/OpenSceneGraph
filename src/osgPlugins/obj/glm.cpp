@@ -277,11 +277,9 @@ _glmReadMTLTextureOptions(GLMmodel* model, unsigned int materialIndex, char* lin
 {
   char *token;
   char seps[] = " \t\n\r\f\v";
-  std::cout<<"line ["<<line<<"]"<<std::endl;
   token = ::strtok(line, seps);
   while(NULL != token) 
   {
-    std::cout<<"token ["<<token<<"]"<<std::endl;
     switch(token[0])
     {
       case '-':
@@ -346,8 +344,6 @@ _glmReadMTLTextureOptions(GLMmodel* model, unsigned int materialIndex, char* lin
         if (0 != strlen(token))
         {
           model->materials[materialIndex].textureName = strdup(token);
-            std::cout<<"token ["<<token<<"]"<<std::endl;
-            std::cout<<"reading material ["<<model->materials[materialIndex].textureName<<"]"<<std::endl;
         }
     }
 

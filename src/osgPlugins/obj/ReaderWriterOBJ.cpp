@@ -591,18 +591,10 @@ osg::Drawable* ReaderWriterOBJ::makeDrawable_useSeperateIndices(GLMmodel* obj, G
 
     if (indexArraysEqual)
     {
-        //std::cout<<"Use draw element"<<std::endl;
-        
         geom->addPrimitiveSet(new osg::DrawElementsUInt(osg::PrimitiveSet::TRIANGLES,vertexIndices->begin(),vertexIndices->end()));
-
-        osgUtil::TriStripVisitor tsv;
-        tsv.stripify(*geom);
-
     }
     else
     {
-        //std::cout<<"Use sepeate indices arrays"<<std::endl;
-        
         geom->setVertexIndices(vertexIndices.get());
         if (needColors) geom->setColorIndices(vertexIndices.get());
         if (needNormals) geom->setNormalIndices(normalIndices.get());
@@ -612,6 +604,9 @@ osg::Drawable* ReaderWriterOBJ::makeDrawable_useSeperateIndices(GLMmodel* obj, G
         geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES,0,ntris*3));
 
     }
+
+    osgUtil::TriStripVisitor tsv;
+    tsv.stripify(*geom);
 
     if (obj->numnormals==0)
     {

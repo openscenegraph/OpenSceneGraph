@@ -14,13 +14,12 @@
 #define VERSION_0004 4
 #define VERSION_0005 5
 #define VERSION_0006 6
-
-/* Version 7 adds read/write of the DatabasePath to the 
-   PagedLOD node (OSG 0.9.8) */
 #define VERSION_0007 7
 
+#define VERSION_0008 8
 
-#define VERSION      VERSION_0007
+
+#define VERSION      VERSION_0008
 
 
 /* The BYTE_SEX tag is used to check the endian

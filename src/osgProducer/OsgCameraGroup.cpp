@@ -76,9 +76,9 @@ std::string extractCameraConfigFile(osg::ArgumentParser& arguments)
     if (arguments.read("-c",filename)) return findCameraConfigFile(filename);
 
     char *ptr;
-    if( (ptr = getenv( "PRODUCE_CAMERA_CONFIG_FILE" )) )
+    if( (ptr = getenv( "PRODUCER_CAMERA_CONFIG_FILE" )) )
     {
-        osg::notify(osg::DEBUG_INFO) << "PRODUCE_CAMERA_CONFIG_FILE("<<ptr<<")"<<std::endl;
+        osg::notify(osg::DEBUG_INFO) << "PRODUCER_CAMERA_CONFIG_FILE("<<ptr<<")"<<std::endl;
         return findCameraConfigFile(ptr);
     }
 

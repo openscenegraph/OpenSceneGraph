@@ -63,6 +63,8 @@ class ViewerEventHandler : public osgGA::GUIEventHandler
         
         bool            _displayHelp;
         FrameStatsMode  _frameStatsMode;
+        
+        bool            _firstTimeTogglingFullScreen;
 };
 
 }

@@ -32,7 +32,7 @@ void CollectOccludersVisitor::apply(osg::Node& node)
     // push the culling mode.
     pushCurrentMask();
     
-    traverse(node);
+    handle_cull_callbacks_and_traverse(node);
     
     // pop the culling mode.
     popCurrentMask();
@@ -49,7 +49,7 @@ void CollectOccludersVisitor::apply(osg::Transform& node)
     node.getLocalToWorldMatrix(*matrix,this);
     pushModelViewMatrix(matrix.get());
     
-    traverse(node);
+    handle_cull_callbacks_and_traverse(node);
 
     popModelViewMatrix();
 
@@ -67,7 +67,7 @@ void CollectOccludersVisitor::apply(osg::Projection& node)
     ref_ptr<osg::Matrix> matrix = createOrReuseMatrix(node.getMatrix());
     pushProjectionMatrix(matrix.get());
     
-    traverse(node);
+    handle_cull_callbacks_and_traverse(node);
 
     popProjectionMatrix();
 
@@ -91,7 +91,7 @@ void CollectOccludersVisitor::apply(osg::LOD& node)
     pushCurrentMask();
 
     //notify(INFO) << "selecting child "<<eval<< std::endl;
-    node.getChild(eval)->accept(*this);
+    handle_cull_callbacks_and_accept(node,node.getChild(eval));
 
     // pop the culling mode.
     popCurrentMask();
@@ -130,7 +130,7 @@ void CollectOccludersVisitor::apply(osg::OccluderNode& node)
         }
     }
 
-    traverse(node);
+    handle_cull_callbacks_and_traverse(node);
 
     // pop the culling mode.
     popCurrentMask();

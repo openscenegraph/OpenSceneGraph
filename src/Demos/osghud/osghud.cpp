@@ -340,8 +340,8 @@ int main( int argc, char **argv )
     set2dScene(modelview_abs);
 
     projection->addChild(modelview_abs);
-    projection->setAppCallback(osgNew MyCallback("App callback"));
-    projection->setCullCallback(osgNew MyCallback("Cull callback"));
+//     projection->setAppCallback(osgNew MyCallback("App callback"));
+//     projection->setCullCallback(osgNew MyCallback("Cull callback"));
 
     group->addChild(projection);
     

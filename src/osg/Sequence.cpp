@@ -1,5 +1,3 @@
-// -*-c++-*-
-
 #include <osg/Sequence>
 
 using namespace osg;

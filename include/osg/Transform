@@ -122,7 +122,7 @@ class SG_EXPORT Transform : public Group
 
         virtual const bool computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const
         {
-            if (_referenceFrame==RELATIVE_TO_ABSOLUTE)
+            if (_referenceFrame==RELATIVE_TO_PARENTS)
             {
                 return false;
             }
@@ -135,7 +135,7 @@ class SG_EXPORT Transform : public Group
         
         virtual const bool computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor*) const
         {
-            if (_referenceFrame==RELATIVE_TO_ABSOLUTE)
+            if (_referenceFrame==RELATIVE_TO_PARENTS)
             {
                 return false;
             }

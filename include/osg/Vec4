@@ -5,7 +5,7 @@
 #ifndef OSG_VEC4
 #define OSG_VEC4 1
 
-#include <osg/Math>
+#include <osg/Vec3>
 
 #include <iostream>
 
@@ -24,10 +24,23 @@ class Vec4
 	// Methods are defined here so that they are implicitly inlined
 
         Vec4() { _v[0]=0.0f; _v[1]=0.0f; _v[2]=0.0f; _v[3]=0.0f;}
+        
         Vec4(float x, float y, float z, float w)
         {
-            _v[0]=x; _v[1]=y; _v[2]=z; _v[3]=w;
+            _v[0]=x;
+            _v[1]=y;
+            _v[2]=z;
+            _v[3]=w;
         }
+
+        Vec4(const Vec3& v3,float w)
+        {
+            _v[0]=v3[0];
+            _v[1]=v3[1];
+            _v[2]=v3[2];
+            _v[3]=w;
+        }
+            
 
         float _v[4];
 
@@ -67,15 +80,21 @@ class Vec4
         inline float z() const { return _v[2]; }
         inline float w() const { return _v[3]; }
 
-        inline unsigned long asABGR() const { return clampTo((unsigned long)(_v[0]*255),0ul,255ul)<<24 |
-                                               clampTo((unsigned long)(_v[1]*255),0ul,255ul)<<16 |
-                                               clampTo((unsigned long)(_v[2]*255),0ul,255ul)<<8  |
-                                               clampTo((unsigned long)(_v[3]*255),0ul,255ul); }
+        inline unsigned long asABGR() const
+        {
+            return (unsigned long)clampTo((_v[0]*255.0f),0.0f,255.0f)<<24 |
+                   (unsigned long)clampTo((_v[1]*255.0f),0.0f,255.0f)<<16 |
+                   (unsigned long)clampTo((_v[2]*255.0f),0.0f,255.0f)<<8  |
+                   (unsigned long)clampTo((_v[3]*255.0f),0.0f,255.0f);
+        }
 
-        inline unsigned long asRGBA() const { return clampTo((unsigned long)(_v[3]*255),0ul,255ul)<<24 |
-                                               clampTo((unsigned long)(_v[2]*255),0ul,255ul)<<16 |
-                                               clampTo((unsigned long)(_v[1]*255),0ul,255ul)<<8  |
-                                               clampTo((unsigned long)(_v[0]*255),0ul,255ul); }
+        inline const unsigned long asRGBA() const
+        {
+            return (unsigned long)clampTo((_v[3]*255.0f),0.0f,255.0f)<<24 |
+                   (unsigned long)clampTo((_v[2]*255.0f),0.0f,255.0f)<<16 |
+                   (unsigned long)clampTo((_v[1]*255.0f),0.0f,255.0f)<<8  |
+                   (unsigned long)clampTo((_v[0]*255.0f),0.0f,255.0f);
+        }
 
 
         inline const bool valid() const { return !isNaN(); }

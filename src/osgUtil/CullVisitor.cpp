@@ -304,9 +304,8 @@ inline float distance(const osg::Vec3& coord,const osg::Matrix& matrix)
 }
 
 
-void CullVisitor::updateCalculatedNearFar(const osg::Matrix& matrix,const osg::Drawable& drawable)
+void CullVisitor::updateCalculatedNearFar(const osg::Matrix& matrix,const osg::BoundingBox& bb)
 {
-    const osg::BoundingBox& bb = drawable.getBound();
     float d_near = distance(bb.corner(_bbCornerNear),matrix);
     float d_far = distance(bb.corner(_bbCornerFar),matrix);
 
@@ -329,7 +328,6 @@ void CullVisitor::updateCalculatedNearFar(const osg::Matrix& matrix,const osg::D
     }
 
 }
-
 void CullVisitor::updateCalculatedNearFar(const osg::Vec3& pos)
 {
     float d;

@@ -33,6 +33,8 @@ class OSGUTIL_EXPORT RenderGraph : public osg::Referenced
         int                                 _depth;
         ChildList                           _children;
         LeafList                            _leaves;
+        
+        osg::ref_ptr<osg::Referenced>       _userData;
 
 
         RenderGraph():
@@ -53,6 +55,10 @@ class OSGUTIL_EXPORT RenderGraph : public osg::Referenced
         ~RenderGraph() {}
         
         RenderGraph* cloneType() const { return new RenderGraph; }
+        
+        void setUserData(osg::Referenced* obj) { _userData = obj; }
+        osg::Referenced* getUserData() { return _userData.get(); }
+        const osg::Referenced* getUserData() const { return _userData.get(); }
         
 
         /** return true if all of drawables, lights and children are empty.*/

@@ -238,6 +238,8 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
         }
 
 
+        osg::ClippingVolume& getCurrentClippingVolume() { return _modelviewClippingVolumeStack.back(); }
+
         inline bool isCulled(const osg::BoundingSphere& sp,CullingMode& mode)
         {
             if (!sp.isValid()) return true;
@@ -258,7 +260,10 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
             return !_modelviewClippingVolumeStack.back().contains(bb,mode);
         }
         
-	void updateCalculatedNearFar(const osg::Matrix& matrix,const osg::Drawable& drawable);
+        const CullingMode getCurrentCullingMode() const { return _cullingModeStack.back(); }
+
+	void updateCalculatedNearFar(const osg::Matrix& matrix,const osg::Drawable& drawable) { updateCalculatedNearFar(matrix,drawable.getBound()); }
+	void updateCalculatedNearFar(const osg::Matrix& matrix,const osg::BoundingBox& bb);
     	void updateCalculatedNearFar(const osg::Vec3& pos);
 		
         /** Add a drawable to current render graph.*/

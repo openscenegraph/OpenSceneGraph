@@ -8,6 +8,11 @@
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
 
+#include <stdint.h>
+
+typedef int32_t int32;
+typedef uint32_t uint32;
+
 /****************************************************************************
  *
  * Follows is code written by GWM and translated to fit with the OSG Ethos.
@@ -47,16 +52,16 @@ struct bmpheader {
 };
 
 struct BMPInfo {
-    long width;   //width of the image in pixels
-    long height;    //   height of the image in pixels
+    int32 width;   //width of the image in pixels
+    int32 height;    //   height of the image in pixels
     short planes;       //:word: number of planes (always 1)
     short Colorbits;       //word: number of bits used to describe color in each pixel
-    long compression;  //compression used
-    long ImageSize;    //image size in bytes
-    long XpixPerMeter; //pixels per meter in X
-    long YpixPerMeter; //pixels per meter in Y
-    long ColorUsed;   //number of colors used
-    long Important;   //number of "important" colors
+    int32 compression;  //compression used
+    int32 ImageSize;    //image size in bytes
+    int32 XpixPerMeter; //pixels per meter in X
+    int32 YpixPerMeter; //pixels per meter in Y
+    int32 ColorUsed;   //number of colors used
+    int32 Important;   //number of "important" colors
 //    unsigned char rgbquad[4];
  //   long os2stuff[6]; // storage for os2.1 with 64 bytes to be read.  Dont know what these are yet.
 };
@@ -86,7 +91,7 @@ bmp_error(char *buffer, int bufferlen)
 }
 
 /* byte order workarounds *sigh* */
-void swapbyte(long *i)
+void swapbyte(int32 *i)
 {
     char *vv=(char *)i;
     char tmp=vv[0];
@@ -96,7 +101,7 @@ void swapbyte(long *i)
     vv[1]=vv[2];
     vv[2]=tmp;
 }
-void swapbyte(unsigned long *i)
+void swapbyte(uint32 *i)
 {
     char *vv=(char *)i;
     char tmp=vv[0];
@@ -131,8 +136,7 @@ void swapbyte(short *i)
     vv[1]=tmp;
 }
 
-unsigned char *
-bmp_load(const char *filename,
+unsigned char *bmp_load(const char *filename,
 int *width_ret,
 int *height_ret,
 int *numComponents_ret)
@@ -171,14 +175,14 @@ int *numComponents_ret)
         }
     }
     if (hd.FileType == MB) {
-        long infsize;    //size of BMPinfo in bytes
+        int32 infsize;    //size of BMPinfo in bytes
         unsigned char *cols=NULL; // dynamic colour palette
         unsigned char *imbuff; // returned to sender & as read from the disk
-        fread((char *)&infsize, sizeof(long), 1, fp); // insert inside 'the file is bmp' clause
+        fread((char *)&infsize, sizeof(int32), 1, fp); // insert inside 'the file is bmp' clause
         if (swap) swapbyte(&infsize);
         unsigned char *hdr=new unsigned char[infsize]; // to hold the new header
-        fread((char *)hdr, 1,infsize-sizeof(long), fp);
-        long hsiz=sizeof(inf); // minimum of structure size & 
+        fread((char *)hdr, 1,infsize-sizeof(int32), fp);
+        int32 hsiz=sizeof(inf); // minimum of structure size & 
         if(infsize<=hsiz) hsiz=infsize;
         memcpy(&inf,hdr, hsiz/*-sizeof(long)*/); // copy only the bytes I can cope with
         delete [] hdr;
@@ -200,16 +204,16 @@ int *numComponents_ret)
             inf.height=ht;
             inf.planes=npln;
             inf.Colorbits=cbits;
-            inf.ColorUsed=(long)pow(2.0,(double)inf.Colorbits); // infer the colours
+            inf.ColorUsed=(int32)pow(2.0,(double)inf.Colorbits); // infer the colours
         }
         osg::notify(osg::INFO) << "readbmp " <<inf.width<< " "<<inf.height << std::endl;
         
         // previous size calculation, see new calcs below.
-        long size_prev = hd.siz[1]+hd.siz[0]*65536;
+        int32 size_prev = hd.siz[1]+hd.siz[0]*65536;
         osg::notify(osg::INFO) << "previous size calc = "<<size_prev<<"  hd.siz[1]="<<hd.siz[1]<<"  hd.siz[0]="<<hd.siz[0]<<std::endl;
         
         // order of size calculation swapped, by Christo Zietsman to fix size bug.
-        long size = hd.siz[1]*65536+hd.siz[0];
+        int32 size = hd.siz[1]*65536+hd.siz[0];
         osg::notify(osg::INFO) << "new size calc = "<<size<<"  hd.siz[1]="<<hd.siz[1]<<"  hd.siz[0]="<<hd.siz[0]<<std::endl;
 
         // handle size==0 in uncompressed 24-bit BMPs -Eric Hammil
@@ -249,9 +253,9 @@ int *numComponents_ret)
         if (ncomp>0) buffer = new unsigned char [(ncomp==BW?3:ncomp)*inf.width*inf.height]; // to be returned
         else buffer = new unsigned char [ 3*inf.width*inf.height]; // default full colour to be returned
         
-        unsigned long off=0;
-        unsigned long rowbytes=ncomp*sizeof(unsigned char)*inf.width;
-        unsigned long doff=(rowbytes)/4;
+        uint32 off=0;
+        uint32 rowbytes=ncomp*sizeof(unsigned char)*inf.width;
+        uint32 doff=(rowbytes)/4;
         if ((rowbytes%4)) doff++; // round up if needed
         doff*=4; // to find dword alignment
         for(int j=0; j<inf.height; j++) {
@@ -371,14 +375,14 @@ class ReaderWriterBMP : public osgDB::ReaderWriter
             if (!fp) return WriteResult::ERROR_IN_WRITING_FILE;
             // its easier for me to write a binary write using stdio than streams
             struct bmpheader hd;
-            unsigned long nx=img.s(),ny=img.t(); //  unsigned long ndep=img.r();
-            unsigned long size, wordsPerScan;
-            long infsize;    //size of BMPinfo in bytes
+            uint32 nx=img.s(),ny=img.t(); //  unsigned long ndep=img.r();
+            uint32 size, wordsPerScan;
+            int32 infsize;    //size of BMPinfo in bytes
             wordsPerScan=(nx*3+3)/4; // rounds up to next 32 bit boundary
             size=4*ny*wordsPerScan; // rounded to 4bytes * number of scan lines
             hd.FileType=MB;
             hd.Reserved1=hd.Reserved2=0; // offset to image
-            hd.offset[0]=sizeof(long)+sizeof(BMPInfo)+sizeof(hd); // 26; // offset to image
+            hd.offset[0]=sizeof(int32)+sizeof(BMPInfo)+sizeof(hd); // 26; // offset to image
             hd.offset[1]=0; // offset to image
   
             // previous way round.          
@@ -403,8 +407,8 @@ class ReaderWriterBMP : public osgDB::ReaderWriter
             inf.ColorUsed=0;   //number of colors used
             inf.Important=0;   //number of "important" colors
             // inf.os2stuff[6]; // allows os2.1 with 64 bytes to be read.  Dont know what these are yet.
-            infsize=sizeof(BMPInfo)+sizeof(long);
-            fwrite(&infsize, sizeof(long), 1, fp);
+            infsize=sizeof(BMPInfo)+sizeof(int32);
+            fwrite(&infsize, sizeof(int32), 1, fp);
             fwrite(&inf, sizeof(inf), 1, fp); // one dword shorter than the structure defined by MS
               // the infsize value (above) completes the structure.
             osg::notify(osg::INFO) << "save screen "<<fileName <<inf.width<< " "<<inf.height << std::endl;

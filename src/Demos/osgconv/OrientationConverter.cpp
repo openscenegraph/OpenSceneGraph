@@ -1,9 +1,7 @@
 #include <stdio.h>
 
-#include <osg/GeoSet>
-#include <osg/Geode>
-#include <osg/Billboard>
-#include <osg/LOD>
+#include <osg/Transform>
+#include <osgUtil/Optimizer>
 
 #include "OrientationConverter.h"
 
@@ -34,7 +32,7 @@ void OrientationConverter::setScale( const Vec3 &scale )
 }
 
 
-void OrientationConverter::convert( Node &node )
+Node* OrientationConverter::convert( Node *node )
 {
     // Order of operations here is :
     // 1. Translate to world origin (0,0,0)
@@ -44,38 +42,23 @@ void OrientationConverter::convert( Node &node )
     //        - translate to absolute translation in world coordinates
     //    else
     //        - translate back to model's original origin. 
-    BoundingSphere bs = node.getBound();
-    Matrix C = Matrix::translate( Vec3(0,0,0) - bs.center() );
+    BoundingSphere bs = node->getBound();
+    Matrix C = Matrix::translate( -bs.center() );
     if( _trans_set == false )
         T = Matrix::translate( bs.center() );
-    _cv.setMatrix( C * R * S * T );
 
-    node.accept(_cv);
-}
+    osg::Group* root = new osg::Group;
+    osg::Transform* transform = new osg::Transform;
 
+    transform->setType(osg::Transform::STATIC);
+    transform->setMatrix( C * R * S * T );
+    
+    root->addChild(transform);
+    transform->addChild(node);
 
-void OrientationConverter::ConvertVisitor::apply(osg::Geode& geode)
-{
-    for(int i=0;i<geode.getNumDrawables();++i)
-    {
-        geode.getDrawable(i)->applyAttributeOperation(_tf);
-    }
-}
-
-void OrientationConverter::ConvertVisitor::apply(osg::Billboard& billboard)
-{
-    osg::Vec3 axis = osg::Matrix::transform3x3(_tf._im,billboard.getAxis());
-    billboard.setAxis(axis);
-
-    for(int i=0;i<billboard.getNumDrawables();++i)
-    {
-        billboard.setPos(i,billboard.getPos(i)*_tf._m);
-        billboard.getDrawable(i)->applyAttributeOperation(_tf);
-    }
-}
-
-void OrientationConverter::ConvertVisitor::apply(osg::LOD& lod)
-{
-    lod.setCenter(lod.getCenter()*_tf._m);
-    traverse(lod);
+    osgUtil::Optimizer::FlattenStaticTransformsVisitor fstv;
+    node->accept(fstv);
+    fstv.removeTransforms();
+    
+    return root->getChild(0);
 }

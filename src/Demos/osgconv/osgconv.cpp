@@ -198,58 +198,28 @@ int main( int argc, char **argv )
 
     if( parse_args( argc, argv, fileNames, oc ) == false )
         return -1;
-
-    if (fileNames.size()==1)
+     
+    std::string fileNameOut("converted.osg");
+    if (fileNames.size()>1)
     {
-        osg::Node* root = osgDB::readNodeFile(fileNames.front());
+        fileNameOut = fileNames.back();
+        fileNames.pop_back();
+    }
 
-	if( do_convert )
-	    oc.convert( *root );
+    osg::Node* root = osgDB::readNodeFiles(fileNames);
+    
+    if( do_convert )
+	root = oc.convert( root );
 
-        if (root)
-        {
-            osgDB::writeNodeFile(*root,"converted.osg");
-            osg::notify(osg::NOTICE)<<"Data written to 'converted.osg'."<< std::endl;
-        }
-        else
-        {
-            osg::notify(osg::NOTICE)<<"Error no data loaded."<< std::endl;
-            return 1;
-        }
+    if (root)
+    {
+        osgDB::writeNodeFile(*root,fileNameOut);
+        osg::notify(osg::NOTICE)<<"Data written to '"<<fileNameOut<<"'."<< std::endl;
     }
     else
     {
-        std::string fileNameOut = fileNames.back();
-        fileNames.pop_back();
-
-        osg::Group* group = new osg::Group();
-        for(FileNameList::iterator itr=fileNames.begin();
-            itr<fileNames.end();
-            ++itr)
-        {
-            osg::Node* child = osgDB::readNodeFile(*itr);
-            if (child)
-            {
-                group->addChild(child);
-            }
-        }
-	if( do_convert )
-	    oc.convert(*group);
-
-        if (group->getNumChildren()==0)
-        {
-
-            osg::notify(osg::NOTICE)<<"Error no data loaded."<< std::endl;
-            return 1;
-        }
-        else if (group->getNumChildren()==1)
-        {
-            osgDB::writeNodeFile(*(group->getChild(0)),fileNameOut);
-        }
-        else
-        {
-            osgDB::writeNodeFile(*group,fileNameOut);
-        }
+        osg::notify(osg::NOTICE)<<"Error no data loaded."<< std::endl;
+        return 1;
     }
 
     return 0;

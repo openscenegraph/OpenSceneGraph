@@ -8,6 +8,13 @@ CXXFILES = \
     HeightFieldRenderer.cpp\
     Version.cpp\
 
+ifneq ("$(GDAL_INCLUDES)","")
+INC += $(GDAL_INCLUDES)
+endif
+
+ifneq ("$(GDAL_LIB_DIR)","")
+LDFLAGS += -L$(GDAL_LIB_DIR)
+endif
 
 DEF     += -DOSGTERRAIN_LIBRARY
 

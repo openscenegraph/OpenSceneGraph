@@ -526,8 +526,7 @@ void DatabasePager::run()
 
 void DatabasePager::addLoadedDataToSceneGraph(double timeStamp)
 {
-
-/*    
+/*  
     static double s_previous = timeStamp;
     double timeDelta = timeStamp-s_previous;
     if (timeDelta>0.02) 
@@ -596,6 +595,7 @@ void DatabasePager::addLoadedDataToSceneGraph(double timeStamp)
     osg::Texture::s_numberTextureReusedLastInLastFrame = 0;
     osg::Texture::s_numberNewTextureInLastFrame = 0;
     osg::Texture::s_numberDeletedTextureInLastFrame = 0;
+    osg::Drawable::s_numberDrawablesReusedLastInLastFrame = 0;
     osg::Drawable::s_numberNewDrawablesInLastFrame = 0;
     osg::Drawable::s_numberDeletedDrawablesInLastFrame = 0;
 }

@@ -352,7 +352,7 @@ void NodeTrackerManipulator::computeNodeCenterAndRotation(osg::Vec3d& nodeCenter
     computeNodeLocalToWorld(localToWorld);
     
     if (validateNodePath())
-        nodeCenter = _trackNodePath.back()->getBound().center()*localToWorld;
+        nodeCenter = osg::Vec3d(_trackNodePath.back()->getBound().center())*localToWorld;
     else
         nodeCenter = osg::Vec3d(0.0f,0.0f,0.0f)*localToWorld;
 
@@ -547,7 +547,7 @@ bool NodeTrackerManipulator::calcMovement()
     else if (buttonMask==GUIEventAdapter::MIDDLE_MOUSE_BUTTON ||
         buttonMask==(GUIEventAdapter::LEFT_MOUSE_BUTTON|GUIEventAdapter::RIGHT_MOUSE_BUTTON))
     {
-
+/*
         // pan model.
         double scale = -0.3f*_distance;
 
@@ -637,7 +637,7 @@ bool NodeTrackerManipulator::calcMovement()
                 osg::notify(osg::INFO)<<"New up orientation nearly inline - no need to rotate"<<std::endl;
             }
         }        
-
+*/
         return true;
     }
     else if (buttonMask==GUIEventAdapter::RIGHT_MOUSE_BUTTON)

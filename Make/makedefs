@@ -82,72 +82,74 @@ RECURSIVE_TARGETS = \
 	  docs\
 	  depend\
 
-#### SUN OS Specific definitions ifeq ($(OS),SunOS)
+#### SUN OS Specific definitions 
+ifeq ($(OS),SunOS)
 
-#### if useing g++ on a sun
-ifeq ($(COMPILER),gnu)
+  #### if useing g++ on a sun
+  ifeq ($(COMPILER),gnu)
 
-  C++               = g++
-  DEPARG            = -M
-  INC               += -I/usr/local/glut-3.7/include
-  DEF               += -W -Wall -fPIC -fpermissive
-  OPTF              = -O2
-  DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
-  SHARED            = -shared -fPIC 
-ifeq ($(ARCH),64)
-    ARCHARGS          = -m64 -DARCH64
-else
-    ARCHARGS          = 
+    C++               = g++
+    DEPARG            = -M
+    INC               += -I/usr/local/glut-3.7/include
+    DEF               += -W -Wall -fPIC -fpermissive
+    OPTF              = -O2
+    DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
+    SHARED            = -shared -fPIC 
+  ifeq ($(ARCH),64)
+      ARCHARGS          = -m64 -DARCH64
+  else
+      ARCHARGS          = 
+  endif
+    GLUT_LIB          = -L/usr/local/glut-3.7/lib/glut -lglut
+    GIF_LIBS          = -lgif 
+    TIFF_LIB	    = -ltiff 
+    JPEG_LIBS         = -ljpeg 
+    PNG_LIBS          = -lnpg -lz 
+    FREETYPE_LIB      = -lfreetype
+    OTHER_LIBS        = 
+
+  #### using forte compilers (default)
+  else
+
+    C++               = CC
+    DEPARG            = -xM1
+    INC               += 
+    DEF               += -features=extensions 
+    OPTF              = -xO4
+    DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
+    SHARED            = -G
+  ifeq ($(ARCH),64)
+      ARCHARGS          = -xarch=v9 -DARCH64
+  else
+      ARCHARGS          = 
+  endif
+    GLUT_LIB          = -lglut
+    OTHER_LIBS        = -lCstd
+    LINKARGS          =  
+
+    GIF_LIBS          = /usr/local/lib/libgif.a
+    TIFF_LIB	    = /usr/local/lib/libtiff.a
+    JPEG_LIBS         = /usr/local/lib/libjpeg.a
+    PNG_LIBS          = /usr/local/lib/libpng.a /usr/local/lib/libz.a
+    FREETYPE_LIB      = /usr/local/lib/libfreetype.a
+
+    DYNAMICLIBRARYLIB = -ldl
+    OSG_LIBS          = -losgGLUT -losgGA -losgDB -losgUtil -losg 
+
+    GL_LIBS           = -lGLU -lGL 
+    X_LIBS            = -lXext -lXmu -lXi -lX11 
+    SOCKET_LIBS       = -lsocket -lnsl
+
+    INSTBINCMD        = cp
+    INSTDEVCMD        = cp
+
+    INST_SYS_PREFIX   = /opt/OpenSceneGraph
+    INST_SHARE_PREFIX = /opt
+
+    MAKEDIST          = $(TOPDIR)/Make/makepkg
+
+  endif 
 endif
-  GLUT_LIB          = -L/usr/local/glut-3.7/lib/glut -lglut
-  GIF_LIBS          = -lgif 
-  TIFF_LIB	    = -ltiff 
-  JPEG_LIBS         = -ljpeg 
-  PNG_LIBS          = -lnpg -lz 
-  FREETYPE_LIB      = -lfreetype
-  OTHER_LIBS        = 
-
-#### using forte compilers (default)
-else
-
-  C++               = CC
-  DEPARG            = -xM1
-  INC               += 
-  DEF               += -features=extensions 
-  OPTF              = -xO4
-  DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
-  SHARED            = -G
-ifeq ($(ARCH),64)
-    ARCHARGS          = -xarch=v9 -DARCH64
-else
-    ARCHARGS          = 
-endif
-  GLUT_LIB          = -lglut
-  OTHER_LIBS        = -lCstd
-  LINKARGS          =  
-
-  GIF_LIBS          = /usr/local/lib/libgif.a
-  TIFF_LIB	    = /usr/local/lib/libtiff.a
-  JPEG_LIBS         = /usr/local/lib/libjpeg.a
-  PNG_LIBS          = /usr/local/lib/libpng.a /usr/local/lib/libz.a
-  FREETYPE_LIB      = /usr/local/lib/libfreetype.a
-
-  DYNAMICLIBRARYLIB = -ldl
-  OSG_LIBS          = -losgGLUT -losgGA -losgDB -losgUtil -losg 
-
-  GL_LIBS           = -lGLU -lGL 
-  X_LIBS            = -lXext -lXmu -lXi -lX11 
-  SOCKET_LIBS       = -lsocket -lnsl
-
-  INSTBINCMD        = cp
-  INSTDEVCMD        = cp
-
-  INST_SYS_PREFIX   = /opt/OpenSceneGraph
-  INST_SHARE_PREFIX = /opt
-
-  MAKEDIST          = $(TOPDIR)/Make/makepkg
-
-endif 
 
 #### IRIX Specific definitions
 ifeq ($(OS),IRIX)

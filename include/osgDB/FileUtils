@@ -36,6 +36,12 @@ enum FileType
     DIRECTORY,
 };
 
+// Make a new directory.  Returns true if directory exists or was created.
+extern OSGDB_EXPORT bool makeDirectory( const std::string &directoryPath );
+
+// Make a new directory for a given file.
+extern OSGDB_EXPORT bool makeDirectoryForFile( const std::string &filePath );
+    
 
 /** return true if a file exisits. */
 extern OSGDB_EXPORT bool fileExists(const std::string& filename);

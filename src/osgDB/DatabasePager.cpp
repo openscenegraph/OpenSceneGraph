@@ -302,7 +302,7 @@ struct SortFileRequestFunctor
 
 void DatabasePager::run()
 {
-    osg::notify(osg::NOTICE)<<"DatabasePager::run()"<<std::endl;
+    osg::notify(osg::INFO)<<"DatabasePager::run()"<<std::endl;
 
     // need to set the texture object manager to be able to reuse textures
     // by keeping deleted texture objects around for 10 seconds after being deleted.

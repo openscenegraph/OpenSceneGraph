@@ -46,7 +46,8 @@ Text::Text(const Text& text,const osg::CopyOp& copyop):
         _drawMode(text._drawMode),
         _boundingBoxType(text._boundingBoxType),
         _pos(text._pos),
-        _alignmentPos(text._alignmentPos)
+        _alignmentPos(text._alignmentPos),
+        _color(text._color)
 {
 }
 
@@ -111,6 +112,8 @@ setDefaults()
     
     _pos.set(0,0,0);
     _alignmentPos.set(0,0,0);
+    
+    _color.set(1.0f,1.0f,1.0f,1.0f);
     
     _fontType=UNDEF;
     _alignment=LEFT_BOTTOM;
@@ -190,6 +193,8 @@ void Text::drawImmediateMode(State& state)
     // draw boundingBox
     if(_drawMode & TEXT)
     {
+        glColor3fv(_color.ptr());
+
         Vec3    drawPos(_pos+_alignmentPos);
         glPushMatrix();
             switch(_fontType)

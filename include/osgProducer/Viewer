@@ -99,7 +99,7 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
         bool computePixelCoords(float x,float y,unsigned int cameraNum,float& pixel_x,float& pixel_y);
 
         /** compute, from normalized mouse coords, for sepecified Camera, the near and far points in worlds coords.*/
-        bool computeNearFar(float x,float y,unsigned int cameraNum,osg::Vec3& near, osg::Vec3& far);
+        bool computeNearFarPoints(float x,float y,unsigned int cameraNum,osg::Vec3& near, osg::Vec3& far);
         
         /** compute, from normalized mouse coords, for sepecified Camera, intersections with the scene.*/
         bool computeIntersections(float x,float y,unsigned int cameraNum,osgUtil::IntersectVisitor::HitList& hits);

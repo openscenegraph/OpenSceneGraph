@@ -4,10 +4,13 @@
 #include <osg/Texture2D>
 #include <osg/Geometry>
 #include <osg/MatrixTransform>
+#include <osg/PositionAttitudeTransform>
 #include <osg/BlendFunc>
+#include <osg/ClearNode>
 
 #include <osgUtil/Tesselator>
 #include <osgUtil/TransformCallback>
+#include <osgUtil/CullVisitor>
 
 #include <osgText/Text>
 
@@ -19,6 +22,87 @@
 #include <osgDB/ReadFile>
 
 //#include "CreateShadowedScene.h"
+
+class MyBillboardTransform : public osg::PositionAttitudeTransform
+{
+    public:
+    
+        MyBillboardTransform():
+            _axis(0.0f,0.0f,1.0f),
+            _normal(0.0f,-1.0f,0.0f)
+        {
+        }
+        
+        bool computeLocalToWorldMatrix(osg::Matrix& matrix,osg::NodeVisitor* nv) const
+        {
+        
+        
+            if (_referenceFrame==RELATIVE_TO_PARENTS)
+            {
+            
+                osg::Quat billboardRotation;
+                osgUtil::CullVisitor* cullvisitor = dynamic_cast<osgUtil::CullVisitor*>(nv);
+                if (cullvisitor)
+                {
+                    osg::Vec3 eyevector = cullvisitor->getEyeLocal()-_position;
+                    eyevector.normalize();
+                    
+                    osg::Vec3 side = _axis^_normal;
+                    side.normalize();
+                    
+                    float angle = acos(eyevector*side);
+                    billboardRotation.makeRotate(osg::PI_2-angle,_axis);
+                    
+                }
+            
+            
+                matrix.preMult(osg::Matrix::translate(-_pivotPoint)*
+                               osg::Matrix::rotate(_attitude)*
+                               osg::Matrix::rotate(billboardRotation)*
+                               osg::Matrix::translate(_position));
+            }
+            else // absolute
+            {
+                matrix = osg::Matrix::translate(-_pivotPoint)*
+                         osg::Matrix::rotate(_attitude)*
+                         osg::Matrix::translate(_position);
+            }
+            return true;
+        }
+
+
+        bool computeWorldToLocalMatrix(osg::Matrix& matrix,osg::NodeVisitor*) const
+        {
+        
+            if (_referenceFrame==RELATIVE_TO_PARENTS)
+            {
+                osg::Quat billboardRotation;
+                matrix.postMult(osg::Matrix::translate(-_position)*
+                                osg::Matrix::rotate(billboardRotation.inverse())*
+                                osg::Matrix::rotate(_attitude.inverse())*
+                                osg::Matrix::translate(_pivotPoint));
+            }
+            else // absolute
+            {
+                matrix = osg::Matrix::translate(-_position)*
+                         osg::Matrix::rotate(_attitude.inverse())*
+                         osg::Matrix::translate(_pivotPoint);
+            }
+            return true;
+        }
+        
+        void setAxis(const osg::Vec3& axis) { _axis = axis; }
+
+        void setNormal(const osg::Vec3& normal) { _normal = normal; }
+        
+    protected:
+    
+        virtual ~MyBillboardTransform() {}
+        
+        osg::Vec3 _axis;
+        osg::Vec3 _normal;
+};
+
 
 osg::Geometry* createWing(const osg::Vec3& left, const osg::Vec3& nose, const osg::Vec3& right,float chordRatio,const osg::Vec4& color)
 {
@@ -97,17 +181,28 @@ osg:: Node* createTextLeft(const osg::BoundingBox& bb)
     std::string font("fonts/arial.ttf");
 
     //osgText::Text* text = new  osgText::Text(new osgText::PolygonFont(font,80, 3));
-    osgText::Text* text = new  osgText::Text(new osgText::TextureFont(font,85));
+    osgText::Text* text = new  osgText::Text(new osgText::TextureFont(font,100));
  
     text->setText("OpenSceneGraph");
     text->setAlignment(osgText::Text::RIGHT_CENTER);
     text->setAxisAlignment(osgText::Text::XZ_PLANE);
-    text->setPosition(bb.center()-osg::Vec3((bb.xMax()-bb.xMin()),-(bb.yMax()-bb.yMin())*0.5f,(bb.zMax()-bb.zMin())*0.2f));
+    text->setPosition(bb.center()-osg::Vec3((bb.xMax()-bb.xMin()),-(bb.yMax()-bb.yMin())*0.5f,(bb.zMax()-bb.zMin())*0.3f));
     //text->setColor(osg::Vec4(0.37f,0.48f,0.67f,1.0f)); // Neil's orignal OSG colour
     text->setColor(osg::Vec4(0.20f,0.45f,0.60f,1.0f)); // OGL logo colour
 
 
-    osg::StateSet* stateset = text->getOrCreateStateSet();
+    osgText::Text* subscript = new  osgText::Text(new osgText::TextureFont(font,45));
+ 
+    subscript->setText("Professional Services");
+    subscript->setAlignment(osgText::Text::RIGHT_CENTER);
+    subscript->setAxisAlignment(osgText::Text::XZ_PLANE);
+    subscript->setPosition(bb.center()-osg::Vec3((bb.xMax()-bb.xMin())*3.5f,-(bb.yMax()-bb.yMin())*0.3f,(bb.zMax()-bb.zMin())*0.7f));
+    subscript->setColor(osg::Vec4(0.0f,0.0f,0.0f,1.0f)); // black
+
+
+
+
+    osg::StateSet* stateset = geode->getOrCreateStateSet();
 
 
     osg::BlendFunc *transp= new osg::BlendFunc();
@@ -120,6 +215,8 @@ osg:: Node* createTextLeft(const osg::BoundingBox& bb)
 
 
     geode->addDrawable( text );
+    geode->addDrawable( subscript );
+    
     return geode;
 }
 
@@ -127,7 +224,7 @@ osg:: Node* createGlobe(const osg::BoundingBox& bb,float ratio)
 {
     osg::Geode* geode = new osg::Geode();
 
-    osg::StateSet* stateset = new osg::StateSet();
+    osg::StateSet* stateset = geode->getOrCreateStateSet();
 
     osg::Image* image = osgDB::readImageFile("Images/land_shallow_topo_2048.jpg");
     if (image)
@@ -138,7 +235,9 @@ osg:: Node* createGlobe(const osg::BoundingBox& bb,float ratio)
 	stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
     }
     
-    geode->setStateSet( stateset );
+    osg::Material* material = new osg::Material;
+    stateset->setAttribute(material);    
+    
     
     // the globe
     geode->addDrawable(new osg::ShapeDrawable(new osg::Sphere(bb.center(),bb.radius()*ratio)));
@@ -274,13 +373,24 @@ osg::Node* createLogo()
     // create a group to hold the whole model.
     osg::Group* logo_group = new osg::Group;
 
-    // create a transform to orientate the box and globe.
-    osg::MatrixTransform* xform = new osg::MatrixTransform;
-    xform->setDataVariance(osg::Object::STATIC);
-    xform->setMatrix(osg::Matrix::translate(-bb.center())*
-                     osg::Matrix::rotate(-osg::inDegrees(45.0f),0.0f,0.0f,1.0f)*
-                     osg::Matrix::rotate(osg::inDegrees(45.0f),1.0f,0.0f,0.0f)*
-                     osg::Matrix::translate(bb.center()));
+    osg::Quat r1,r2;
+    r1.makeRotate(-osg::inDegrees(45.0f),0.0f,0.0f,1.0f);
+    r2.makeRotate(osg::inDegrees(45.0f),1.0f,0.0f,0.0f);
+
+
+    MyBillboardTransform* xform = new MyBillboardTransform;
+    xform->setPivotPoint(bb.center());
+    xform->setPosition(bb.center());
+    xform->setAttitude(r1*r2);
+
+
+//     // create a transform to orientate the box and globe.
+//     osg::MatrixTransform* xform = new osg::MatrixTransform;
+//     xform->setDataVariance(osg::Object::STATIC);
+//     xform->setMatrix(osg::Matrix::translate(-bb.center())*
+//                      osg::Matrix::rotate(-osg::inDegrees(45.0f),0.0f,0.0f,1.0f)*
+//                      osg::Matrix::rotate(osg::inDegrees(45.0f),1.0f,0.0f,0.0f)*
+//                      osg::Matrix::translate(bb.center()));
 
     // add the box and globe to it.
     //xform->addChild(createBox(bb,chordRatio));
@@ -297,13 +407,16 @@ osg::Node* createLogo()
     
     
     // create the backdrop to render the shadow to.
-    osg::Vec3 corner(-800.0f,150.0f,-100.0f);
+    osg::Vec3 corner(-900.0f,150.0f,-100.0f);
     osg::Vec3 top(0.0f,0.0f,300.0f); top += corner;
-    osg::Vec3 right(1000.0f,0.0f,0.0f); right += corner;
+    osg::Vec3 right(1100.0f,0.0f,0.0f); right += corner;
     
     
-    osg::Group* backdrop = new osg::Group;
-    backdrop->addChild(createBackdrop(corner,top,right));
+//     osg::Group* backdrop = new osg::Group;
+//     backdrop->addChild(createBackdrop(corner,top,right));
+
+    osg::ClearNode* backdrop = new osg::ClearNode;
+    backdrop->setClearColor(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
 
     //osg::Vec3 lightPosition(-500.0f,-2500.0f,500.0f);
     //osg::Node* scene = createShadowedScene(logo_group,backdrop,lightPosition,0.0f,0);

@@ -3,6 +3,8 @@
 #include <osg/StateSet>
 #include <osg/Texture>
 #include <osg/Drawable>
+#include <osg/Array>
+#include <osg/Primitive>
 
 using namespace osg;
 
@@ -71,4 +73,20 @@ Image* CopyOp::operator() (const Image* image) const
     if (image && _flags&DEEP_COPY_IMAGES)
         return dynamic_cast<Image*>(image->clone(*this));
     else return const_cast<Image*>(image);
+}
+
+Array* CopyOp::operator() (const Array* array) const
+{
+    if (array && _flags&DEEP_COPY_ARRAYS)
+        return dynamic_cast<Array*>(array->clone(*this));
+    else
+        return const_cast<Array*>(array);
+}
+
+Primitive* CopyOp::operator() (const Primitive* primitive) const
+{
+    if (primitive && _flags&DEEP_COPY_PRIMITIVES)
+        return dynamic_cast<Primitive*>(primitive->clone(*this));
+    else
+        return const_cast<Primitive*>(primitive);
 }

@@ -495,7 +495,7 @@ osg::Vec3 Model::computeNormal(const Element& element) const
 
 bool Model::needReverse(const Element& element) const
 {
-    if (element.normalIndices.empty()) return true;
+    if (element.normalIndices.empty()) return false;
     
     return computeNormal(element)*averageNormal(element) < 0.0f;
 }

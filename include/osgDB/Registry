@@ -298,7 +298,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         void setDataFilePathList(const FilePathList& filepath) { _dataFilePath = filepath; }
 
         /** Set the data file path using a single string deliminated either with ';' (Windows) or ':' (All other platforms), which is used when search for data files.*/
-        void setDataFilePathList(const std::string& paths) { _dataFilePath.clear(); convertStringPathIntoFilePathList(paths,_dataFilePath); }
+        void setDataFilePathList(const std::string& paths);
 
         /** get the data file path which is used when search for data files.*/
         FilePathList& getDataFilePathList() { return _dataFilePath; }
@@ -314,17 +314,13 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         void setLibraryFilePathList(const FilePathList& filepath) { _libraryFilePath = filepath; }
 
         /** Set the library file path using a single string deliminated either with ';' (Windows) or ':' (All other platforms), which is used when search for data files.*/
-        void setLibraryFilePathList(const std::string& paths) { _libraryFilePath.clear(); convertStringPathIntoFilePathList(paths,_libraryFilePath); }
+        void setLibraryFilePathList(const std::string& paths);
 
         /** get the library file path which is used when search for library (dso/dll's) files.*/
         FilePathList& getLibraryFilePathList() { return _libraryFilePath; }
         
         /** get the const library file path which is used when search for library (dso/dll's) files.*/
         const FilePathList& getLibraryFilePathList() const { return _libraryFilePath; }
-
-        /** convert a string containing a list of paths  deliminated either with ';' (Windows) or ':' (All other platforms) into FilePath represetation.*/
-        static void convertStringPathIntoFilePathList(const std::string& paths,FilePathList& filepath);
-
 
         /** For each object in the cache which has an reference count greater than 1 
           * (and therefore referenced by elsewhere in the application) set the time stamp

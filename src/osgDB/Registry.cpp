@@ -251,11 +251,20 @@ void Registry::initDataFilePathList()
     //PrintFilePathList(osg::notify(INFO),getDataFilePathList());
 }
 
+void Registry::setDataFilePathList(const std::string& paths)
+{
+    _dataFilePath.clear(); 
+    convertStringPathIntoFilePathList(paths,_dataFilePath);
+}
+
+void Registry::setLibraryFilePathList(const std::string& paths) { _libraryFilePath.clear(); convertStringPathIntoFilePathList(paths,_libraryFilePath); }
+
 #ifndef WIN32
 static osg::ApplicationUsageProxy Registry_e1(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_LIBRARY_PATH <path>[:path]..","Paths for locating libraries/ plugins");
 #else
 static osg::ApplicationUsageProxy Registry_e1(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_LIBRARY_PATH <path>[;path]..","Paths for locating libraries/ plugins");
 #endif
+
 
 void Registry::initLibraryFilePathList()
 {
@@ -273,84 +282,14 @@ void Registry::initLibraryFilePathList()
         //notify(DEBUG_INFO) << "OSG_LD_LIBRARY_PATH("<<ptr<<")"<<std::endl;
         setLibraryFilePathList(ptr);
     }
-
-#ifdef __sgi
-
-    convertStringPathIntoFilePathList("/usr/lib32/:/usr/local/lib32/",_libraryFilePath);
-
-    // bloody mess see rld(1) man page
-    #if (_MIPS_SIM == _MIPS_SIM_ABI32)
-
-
-    if( (ptr = getenv( "LD_LIBRARY_PATH" )))
-    {
-        convertStringPathIntoFilePathList(ptr,_libraryFilePath);
-    }
-
-    #elif (_MIPS_SIM == _MIPS_SIM_NABI32)
-
-    if( !(ptr = getenv( "LD_LIBRARYN32_PATH" )))
-        ptr = getenv( "LD_LIBRARY_PATH" );
-
-    if( ptr )
-    {
-        convertStringPathIntoFilePathList(ptr,_libraryFilePath);
-    }
-
-    #elif (_MIPS_SIM == _MIPS_SIM_ABI64)
-
-    if( !(ptr = getenv( "LD_LIBRARY64_PATH" )))
-        ptr = getenv( "LD_LIBRARY_PATH" );
-
-    if( ptr )
-    {
-        convertStringPathIntoFilePathList(ptr,_libraryFilePath);
-    }
-    #endif
     
-#elif defined(__CYGWIN__)
-
-
-    if ((ptr = getenv( "PATH" )))
-    {
-        convertStringPathIntoFilePathList(ptr,_libraryFilePath);
-    }
-
-    convertStringPathIntoFilePathList("/usr/bin/:/usr/local/bin/",_libraryFilePath);
-    
-#elif defined(WIN32)
-
-
-
-    if ((ptr = getenv( "PATH" )))
-    {
-        convertStringPathIntoFilePathList(ptr,_libraryFilePath);
-    }
-
-    convertStringPathIntoFilePathList("C:/Windows/System/",_libraryFilePath);
-
-#elif defined(__APPLE__)
-
-    if ((ptr = getenv( "DYLD_LIBRARY_PATH" )) )
-    {
-        convertStringPathIntoFilePathList(ptr, _libraryFilePath);
-    }
-
-#else   
-
-    if( (ptr = getenv( "LD_LIBRARY_PATH" )) )
-    {
-        convertStringPathIntoFilePathList(ptr,_libraryFilePath);
-    }
-
-    convertStringPathIntoFilePathList("/usr/lib/:/usr/local/lib/",_libraryFilePath);
-
-#endif
+    appendPlatformSpecificLibraryFilePaths(_libraryFilePath);
 
     //osg::notify(INFO)<<"Library FilePathList"<<std::endl;
     //PrintFilePathList(osg::notify(INFO),getLibraryFilePathList());
 
 }
+
 
 void Registry::readCommandLine(osg::ArgumentParser& arguments)
 {
@@ -1783,28 +1722,6 @@ ReaderWriter::WriteResult Registry::writeNodeImplementation(const Node& node,con
     return results.front();
 }
 
-void Registry::convertStringPathIntoFilePathList(const std::string& paths,FilePathList& filepath)
-{
-#if defined(WIN32) && !defined(__CYGWIN__)
-    char delimitor = ';';
-#else
-    char delimitor = ':';
-#endif
-
-    if (!paths.empty())
-    {
-        std::string::size_type start = 0;
-        std::string::size_type end;
-        while ((end = paths.find_first_of(delimitor,start))!=std::string::npos)
-        {
-            filepath.push_back(std::string(paths,start,end-start));
-            start = end+1;
-        }
-
-        filepath.push_back(std::string(paths,start,std::string::npos));
-    }
- 
-}
 
 void Registry::addEntryToObjectCache(const std::string& filename, osg::Object* object, double timestamp)
 {

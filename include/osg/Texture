@@ -117,6 +117,10 @@
 #define GL_MAX_TEXTURE_UNITS              0x84E2
 #endif
 
+#ifndef  GL_TEXTURE_DEPTH
+#define GL_TEXTURE_DEPTH                  0x8071
+#endif
+
 namespace osg {
 
 /** Texture base class which encapsulates OpenGl texture functionality which common betweent the various types of OpenGL textures.*/

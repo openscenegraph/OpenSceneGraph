@@ -107,3 +107,4 @@ SOURCE=..\..\..\src\osgPlugins\tga\ReaderWriterTGA.cpp
 # End Group
 # End Target
 # End Project
+

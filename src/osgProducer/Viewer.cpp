@@ -913,6 +913,21 @@ bool Viewer::selectCameraManipulatorByName( const std::string &name )
     return true;
 }
 
+osgGA::MatrixManipulator *Viewer::getCameraManipulatorByName( const std::string &name )
+{
+    osgGA::KeySwitchMatrixManipulator *ksm = getKeySwitchMatrixManipulator();
+    osgGA::KeySwitchMatrixManipulator::KeyManipMap &kmmap = ksm->getKeyManipMap();
+    osgGA::KeySwitchMatrixManipulator::KeyManipMap::iterator p;
+    for( p = kmmap.begin(); p != kmmap.end(); p++ )
+    {
+        osgGA::KeySwitchMatrixManipulator::NamedManipulator  nm = (*p).second;
+        if( nm.first == name )
+            return nm.second.get();
+    }
+    return 0L;
+}
+
+
 
 void Viewer::requestRedraw()
 {

@@ -47,10 +47,14 @@ class SG_EXPORT Timer {
         
 };
 
+};
 
 #ifdef WIN32
     #include <time.h>
     #pragma optimize("",off)
+
+namespace osg{
+
     inline Timer_t Timer::tick( void )
     {
         if (_useStandardClock) return clock();
@@ -72,6 +76,8 @@ class SG_EXPORT Timer {
         *((unsigned int*)&ts+1) = HighPart;
         return ts;
     }
+
+};
     #pragma optimize("",on)
     
 #elif defined(__linux) || defined(__FreeBSD__)
@@ -79,6 +85,9 @@ class SG_EXPORT Timer {
     #include <sys/time.h>
 
     #define CLK(x)      __asm__ volatile (".byte 0x0f, 0x31" : "=A" (x))
+
+namespace osg{
+
     inline Timer_t Timer::tick()
     {
         if (_useStandardClock)
@@ -92,10 +101,15 @@ class SG_EXPORT Timer {
             Timer_t x;CLK(x);return x;
         }
     }
-    
+
+};
+  
 #elif defined(__sgi)
 
     #include <sys/time.h>
+
+namespace osg{
+
     inline  Timer_t Timer::tick()
     {
         if (_useStandardClock)
@@ -109,23 +123,30 @@ class SG_EXPORT Timer {
             return *_sgiClockAddress;
         }
     }
+};
     
 #elif defined(unix)
 
     #include <sys/time.h>
+
+namespace osg{
     inline  Timer_t Timer::tick()
     {
         struct timeval tv;
         gettimeofday(&tv, NULL);
         return ((osg::Timer_t)tv.tv_sec)*1000000+(osg::Timer_t)tv.tv_usec;
     }
+};
 
 #else
 
     // no choice, always use std::clock()
+
+namespace osg{
+
     inline  Timer_t Timer::tick( void ) { return std::clock(); }
+};
 
 #endif
 
-};
 #endif

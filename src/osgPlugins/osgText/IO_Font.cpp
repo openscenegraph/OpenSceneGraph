@@ -31,7 +31,7 @@ bool Font_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
 
     fw.indent() << "parameters ";
     fw << myobj.getPointSize() << " " << myobj.getTextureSize() << " ";
-    fw << "\"" << myobj.getFontName() << "\"" << std::endl;
+    fw << fw.wrapString(myobj.getFontName()) << std::endl;
 
     return true;
 }

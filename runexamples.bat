@@ -4,11 +4,14 @@ osgversion
 echo osglogo
 osglogo
 
+echo osgviewer cow.osg
+osgviewer cow.osg
+
 echo osgfxbrowser dumptruck.osg
 osgfxbrowser dumptruck.osg
 
-echo osgviewer cow.osg
-osgviewer cow.osg
+echo osgshaders
+osgshaders
 
 echo osgkeyboard 
 osgkeyboard

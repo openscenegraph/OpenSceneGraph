@@ -27,6 +27,7 @@
 
 #include <osgUtil/TransformAttributeFunctor>
 #include <osgUtil/TriStripVisitor>
+#include <osgUtil/Tesselator>
 
 #include <typeinfo>
 #include <algorithm>
@@ -91,6 +92,9 @@ void Optimizer::optimize(osg::Node* node)
         if(str.find("~COPY_SHARED_NODES")!=std::string::npos) options ^= COPY_SHARED_NODES;
         else if(str.find("COPY_SHARED_NODES")!=std::string::npos) options |= COPY_SHARED_NODES;
 
+        if(str.find("~TESSELATE_GEOMETRY")!=std::string::npos) options ^= TESSELATE_GEOMETRY;
+        else if(str.find("TESSELATE_GEOMETRY")!=std::string::npos) options |= TESSELATE_GEOMETRY;
+
         if(str.find("~TRISTRIP_GEOMETRY")!=std::string::npos) options ^= TRISTRIP_GEOMETRY;
         else if(str.find("TRISTRIP_GEOMETRY")!=std::string::npos) options |= TRISTRIP_GEOMETRY;
 
@@ -106,6 +110,14 @@ void Optimizer::optimize(osg::Node* node)
 void Optimizer::optimize(osg::Node* node, unsigned int options)
 {
 
+    if (options & TESSELATE_GEOMETRY)
+    {
+        osg::notify(osg::INFO)<<"Optimizer::optimize() doing TESSELATE_GEOMETRY"<<std::endl;
+
+        TesselateVisitor tsv;
+        node->accept(tsv);        
+    }
+    
     if (options & COMBINE_ADJACENT_LODS)
     {
         osg::notify(osg::INFO)<<"Optimizer::optimize() doing COMBINE_ADJACENT_LODS"<<std::endl;
@@ -204,6 +216,23 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
         tsv.stripify();
     }
 
+}
+
+
+////////////////////////////////////////////////////////////////////////////
+// Tesselate geometry - eg break complex POLYGONS into triangles, strips, fans..
+////////////////////////////////////////////////////////////////////////////
+void Optimizer::TesselateVisitor::apply(osg::Geode& geode)
+{
+    for(unsigned int i=0;i<geode.getNumDrawables();++i)
+    {
+        osg::Geometry* geom = dynamic_cast<osg::Geometry*>(geode.getDrawable(i));
+        if (geom) {
+            osgUtil::Tesselator tesselator;
+            tesselator.retesselatePolygons(*geom);
+        }
+    }
+    traverse(geode);
 }
 
 

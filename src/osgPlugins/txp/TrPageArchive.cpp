@@ -164,17 +164,11 @@ void TrPageArchive::LoadMaterials()
             }
             else if( mode == trpgTexture::Local )
             {
-                ref_ptr<Texture2D> osg_texture = GetLocalTexture(image_helper,0, tex);
-                osg_texture->ref();
-                m_textures[i] = osg_texture;
-               // delete [] data;
+                m_textures[i] = GetLocalTexture(image_helper,0, tex);
             }
             else if( mode == trpgTexture::Template )
             {
-                ref_ptr<Texture2D> osg_texture = GetLocalTexture(image_helper,0, tex);
-                if (osg_texture.valid()) osg_texture->ref();
-                m_textures[i] = osg_texture;
-               // delete [] data;
+                m_textures[i] = GetLocalTexture(image_helper,0, tex);
             }
             else
             {

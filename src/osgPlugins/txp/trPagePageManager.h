@@ -35,6 +35,10 @@
 #include "WaitBlock.h"
 #include "TrPageArchive.h"
 
+// Dec 2002, Robert Osfield -> comment out now, as we actually do want to delete in the main thread
+// as the deletion of the display and texture object isn't thread safe.
+// #define USE_THREADLOOP_DELETE
+
 namespace txp
 {
 	/* Thread Identifier
@@ -136,8 +140,11 @@ namespace txp
 		std::vector<osg::Group *> toMergeParent;
 		// Unhook list is filled in by the paging thread
 		std::vector<osg::Group *> toUnhook;
+
+#ifdef USE_THREADLOOP_DELETE
 		// Main thread moves groups to the delete list as soon as they are unhooked
 		std::vector<osg::Group *> toDelete;
+#endif            
 	};
 };
 

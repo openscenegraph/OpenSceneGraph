@@ -99,6 +99,10 @@ SOURCE=..\..\src\osgGA\AnimationPathManipulator.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgGA\EventVisitor.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgGA\DriveManipulator.cpp
 # End Source File
 # Begin Source File
@@ -164,6 +168,10 @@ SOURCE=..\..\Include\osgGA\DriveManipulator
 # Begin Source File
 
 SOURCE=..\..\Include\osgGA\Export
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\osgGA\EventVisitor
 # End Source File
 # Begin Source File
 

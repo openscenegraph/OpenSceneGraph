@@ -326,12 +326,9 @@ void ConvertFromFLT::visitLongID(osg::Group& osgParent, LongIDRecord* rec)
 {
     SLongID *pSLongID = (SLongID*)rec->getData();
 
-    // these cout's are here for double checking whether handlng of the longID
-    // string is being managed corectly. 
-    // std::cout << "ConvertFromFLT::visitLongID '"<<std::string(pSLongID->szIdent,pSLongID->RecHeader.length()-4)<<"'"<<std::endl;
-    // std::cout << "ConvertFromFLT::visitLongID cstyle string '"<<pSLongID->szIdent<<"'"<<std::endl;
-
-    osgParent.setName(std::string(pSLongID->szIdent,rec->getBodyLength()));
+    unsigned int stingLength = strlen(pSLongID->szIdent);
+    if (stingLength>rec->getBodyLength()) stingLength=rec->getBodyLength();
+    osgParent.setName(std::string(pSLongID->szIdent,stingLength));
 }
 
 
@@ -342,20 +339,34 @@ void ConvertFromFLT::visitComment(osg::Group& osgParent, CommentRecord* rec)
     //std::cout << "ConvertFromFLT::visitComment '"<<std::string(pSComment->szComment,pSComment->RecHeader.length()-4)<<"'"<<std::endl;
     //std::cout << "ConvertFromFLT::visitComment cstyle string '"<<pSComment->szComment<<"'"<<std::endl;
 
-    char* commentline = pSComment->szComment;
-    char* eol;
-    int lineno = 1;
-    // add all lines followed by \n
-    while ( commentline && (eol = strchr( commentline, '\n' ) ) ) {
-        *eol = '\0';
-        osgParent.addDescription( commentline );
-        //std::cerr << "Line " << lineno << ": " << commentline << "\n";
-        ++lineno;
-        commentline = ++eol;
+    std::string commentfield(pSComment->szComment);
+    unsigned int front_of_line = 0;
+    unsigned int end_of_line = 0;
+    while (end_of_line<commentfield.size())
+    {
+        if (commentfield[end_of_line]=='\r')
+        {
+            osgParent.addDescription( std::string( commentfield, front_of_line, end_of_line-front_of_line) );
+        
+            if (end_of_line+1<commentfield.size() &&
+                commentfield[end_of_line+1]=='\n') ++end_of_line;
+
+            ++end_of_line;
+            front_of_line = end_of_line;
+        }
+        else if (commentfield[end_of_line]=='\n')
+        {
+            osgParent.addDescription( std::string( commentfield, front_of_line, end_of_line-front_of_line) );
+            ++end_of_line;
+            front_of_line = end_of_line;
+        }
+        else ++end_of_line;
     }
-    // add the last line
-    osgParent.addDescription( commentline );
-    //std::cerr << "Line " << lineno << ": " << commentline << "\n";
+    if (front_of_line<end_of_line)
+    {
+        osgParent.addDescription( std::string( commentfield, front_of_line, end_of_line-front_of_line) );
+    }
+    
 }
 
 

@@ -33,28 +33,35 @@ void PagedLOD::traverse(NodeVisitor& nv)
         case(NodeVisitor::TRAVERSE_ACTIVE_CHILDREN):
         {
             float distance = nv.getDistanceToEyePoint(getCenter(),true);
-            
-            // first check to see if any children can be directly traversed.
-            unsigned int numChildren = minimum(_children.size(),
-					_rangeList.size());
-            bool childTraversed = false;
-            for(unsigned int i=0;i<numChildren;++i)
+
+            int lastChildTraversed = -1;
+            bool needToLoadChild = false;
+            for(unsigned int i=0;i<_rangeList.size();++i)
             {    
                 if (_rangeList[i].first<=distance && distance<_rangeList[i].second)
                 {
-                    if (updateTimeStamp) _timeStampList[i]=timeStamp;
+                    if (i<_children.size())
+                    {
+                        if (updateTimeStamp) _timeStampList[i]=timeStamp;
 
-                    //std::cout<<"PagedLOD::traverse() - Selecting child "<<i<<std::endl;
-                    _children[i]->accept(nv);
-                    childTraversed = true;
+                        //std::cout<<"PagedLOD::traverse() - Selecting child "<<i<<std::endl;
+                        _children[i]->accept(nv);
+                        lastChildTraversed = (int)i;
+                    }
+                    else
+                    {
+                        needToLoadChild = true;
+                    }
                 }
             }
             
-            if (!childTraversed)
+            if (needToLoadChild)
             {
+                unsigned int numChildren = _children.size();
+                
                 //std::cout<<"PagedLOD::traverse() - falling back "<<std::endl;
                 // select the last valid child.
-                if (numChildren>0)
+                if (numChildren>0 && ((int)numChildren-1)!=lastChildTraversed)
                 {
                     //std::cout<<"    to child "<<numChildren-1<<std::endl;
                     if (updateTimeStamp) _timeStampList[numChildren-1]=timeStamp;

@@ -63,7 +63,6 @@ MpegImageStream::MpegImageStream(const char* fileName) : ImageStream()
 // Deconstructor: stop and terminate thread
 MpegImageStream::~MpegImageStream()
 {
-
     if( isRunning() )
     {
         quit(true);
@@ -269,12 +268,11 @@ void MpegImageStream::run()
                              MPEG3_RGB888, str);
 
             dirty(); //Image();
-            
+
             ++frameNumber;
             
             if (frameNumber>=_frames)
             {
-            
                 rewind(); 
                 //stop();
             }

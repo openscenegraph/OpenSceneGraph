@@ -29,6 +29,7 @@
 #define _MPEGIMAGESTREAM_H_
 
 #include <osg/ImageStream>
+#include <osg/Notify>
 
 #include <OpenThreads/Thread>
 #include <OpenThreads/Mutex>
@@ -56,11 +57,17 @@ namespace osg {
         {
             if (!isRunning()) start();
             
+            osg::notify(osg::NOTICE)<<"Play video"<<this<<std::endl;
+
             setCmd(THREAD_START);
         }
 
         /// Pause stream at current position.
-        virtual void pause() { setCmd(THREAD_STOP); }
+        virtual void pause()
+        {
+            osg::notify(osg::NOTICE)<<"Pause video"<<this<<std::endl;
+            setCmd(THREAD_STOP);
+        }
 
         /// Rewind stream to beginning.
         virtual void rewind() { setCmd(THREAD_REWIND); }

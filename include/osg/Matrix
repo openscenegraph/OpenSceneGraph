@@ -15,6 +15,16 @@ namespace osg {
 
 class Quat;
 
+/** The range of matrix modes that the scene graph might utilize.
+  * Similar in concept to different modes in OpenGL glMatrixMode().*/
+enum MatrixMode
+{
+    PROJECTION,
+    VIEW,
+    MODEL,
+    MODELVIEW
+};
+
 class SG_EXPORT Matrix : public Object
 {
 
@@ -37,14 +47,22 @@ class SG_EXPORT Matrix : public Object
 
         Matrix& operator = (const Matrix& );
 
-        int compare(const Matrix& m) const { ensureRealized();  m.ensureRealized(); return memcmp(_mat,m._mat,sizeof(_mat)); }
+        int compare(const Matrix& m) const { return memcmp(_mat,m._mat,sizeof(_mat)); }
 
         bool operator < (const Matrix& m) const { return compare(m)<0; }
         bool operator == (const Matrix& m) const { return compare(m)==0; }
         bool operator != (const Matrix& m) const { return compare(m)!=0; }
 
-        inline float& operator()(int row, int col) { ensureRealized(); return _mat[row][col]; }
-        inline float operator()(int row, int col) const { ensureRealized(); return _mat[row][col]; }
+        inline float& operator()(int row, int col) { return _mat[row][col]; }
+        inline float operator()(int row, int col) const { return _mat[row][col]; }
+
+        inline const bool valid() const { return !isNaN(); }
+        inline const bool isNaN() const { return osg::isNaN(_mat[0][0]) || osg::isNaN(_mat[0][1]) || osg::isNaN(_mat[0][2]) || osg::isNaN(_mat[0][3]) ||
+                                                 osg::isNaN(_mat[1][0]) || osg::isNaN(_mat[1][1]) || osg::isNaN(_mat[1][2]) || osg::isNaN(_mat[1][3]) ||
+                                                 osg::isNaN(_mat[2][0]) || osg::isNaN(_mat[2][1]) || osg::isNaN(_mat[2][2]) || osg::isNaN(_mat[2][3]) ||
+                                                 osg::isNaN(_mat[3][0]) || osg::isNaN(_mat[3][1]) || osg::isNaN(_mat[3][2]) || osg::isNaN(_mat[3][3]); }
+
+
 
         void set( float const * const );
         void set( float a00, float a01, float a02, float a03,
@@ -52,10 +70,8 @@ class SG_EXPORT Matrix : public Object
                   float a20, float a21, float a22, float a23,
                   float a30, float a31, float a32, float a33);
                   
-        float * ptr() { ensureRealized(); return (float *)_mat; }
-        const float * ptr() const { ensureRealized(); return (const float *)_mat; }
-
-        inline void ensureRealized() const { if (!fully_realized) const_cast<Matrix*>(this)->makeIdentity();}
+        float * ptr() { return (float *)_mat; }
+        const float * ptr() const { return (const float *)_mat; }
 
         void makeIdentity();
         
@@ -94,7 +110,7 @@ class SG_EXPORT Matrix : public Object
 
         void setTrans( float tx, float ty, float tz );
 	void setTrans( const Vec3& v );
-        Vec3 getTrans() const { ensureRealized(); return Vec3(_mat[3][0],_mat[3][1],_mat[3][2]); } 
+        Vec3 getTrans() const { return Vec3(_mat[3][0],_mat[3][1],_mat[3][2]); } 
 
     	/** apply apply an 3x3 transform of v*M[0..2,0..2]  */
     	inline static Vec3 transform3x3(const Vec3& v,const Matrix& m);
@@ -149,7 +165,6 @@ class SG_EXPORT Matrix : public Object
 
     private:
         float _mat[4][4];
-        bool fully_realized;
 
 };
 

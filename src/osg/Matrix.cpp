@@ -21,7 +21,10 @@ using namespace osg;
     +((a)._mat[r][3] * (b)._mat[3][c])
 
 
-Matrix::Matrix() : Object(), fully_realized(false) {}
+Matrix::Matrix() : Object()
+{
+    makeIdentity();
+}
 
 Matrix::Matrix( const Matrix& other) : Object()
 {
@@ -42,20 +45,19 @@ Matrix::Matrix( float a00, float a01, float a02, float a03,
     SET_ROW(1, a10, a11, a12, a13 )
     SET_ROW(2, a20, a21, a22, a23 )
     SET_ROW(3, a30, a31, a32, a33 )
-
-    fully_realized = true;
 }
 
 
-Matrix& Matrix::operator = (const Matrix& other ) {
+Matrix& Matrix::operator = (const Matrix& other )
+{
     if( &other == this ) return *this;
     set((const float*)other._mat);
     return *this;
 }
 
-void Matrix::set( float const * const def ) {
+void Matrix::set( float const * const def )
+{
     memcpy( _mat, def, sizeof(_mat) );
-    fully_realized = true;
 }
 
 
@@ -68,14 +70,10 @@ void Matrix::set( float a00, float a01, float a02, float a03,
     SET_ROW(1, a10, a11, a12, a13 )
     SET_ROW(2, a20, a21, a22, a23 )
     SET_ROW(3, a30, a31, a32, a33 )
-
-    fully_realized = true;
 }
 
 void Matrix::setTrans( float tx, float ty, float tz )
 {
-    ensureRealized();
-
     _mat[3][0] = tx;
     _mat[3][1] = ty;
     _mat[3][2] = tz;
@@ -95,8 +93,6 @@ void Matrix::makeIdentity()
     SET_ROW(1,    0, 1, 0, 0 )
     SET_ROW(2,    0, 0, 1, 0 )
     SET_ROW(3,    0, 0, 0, 1 )
-    
-    fully_realized = true;
 }
 
 void Matrix::makeScale( const Vec3& v )
@@ -110,8 +106,6 @@ void Matrix::makeScale( float x, float y, float z )
     SET_ROW(1,    0, y, 0, 0 )
     SET_ROW(2,    0, 0, z, 0 )
     SET_ROW(3,    0, 0, 0, 1 )
-
-    fully_realized = true;
 }
 
 void Matrix::makeTranslate( const Vec3& v )
@@ -125,8 +119,6 @@ void Matrix::makeTranslate( float x, float y, float z )
     SET_ROW(1,    0, 1, 0, 0 )
     SET_ROW(2,    0, 0, 1, 0 )
     SET_ROW(3,    x, y, z, 1 )
-
-    fully_realized = true;
 }
 
 void Matrix::makeRotate( const Vec3& from, const Vec3& to )
@@ -153,7 +145,6 @@ void Matrix::makeRotate( float angle, float x, float y, float z )
 void Matrix::makeRotate( const Quat& q )
 {
     q.get(*this);    
-    fully_realized = true;
 }
 
 void Matrix::makeRotate( float yaw, float pitch, float roll)
@@ -177,7 +168,8 @@ void Matrix::makeRotate( float yaw, float pitch, float roll)
 }
 
 void Matrix::mult( const Matrix& lhs, const Matrix& rhs )
-{
+{   
+
 // PRECONDITION: We assume neither &lhs nor &rhs == this
 // if it did, use preMult or postMult instead
     _mat[0][0] = INNER_PRODUCT(lhs, rhs, 0, 0);
@@ -196,17 +188,10 @@ void Matrix::mult( const Matrix& lhs, const Matrix& rhs )
     _mat[3][1] = INNER_PRODUCT(lhs, rhs, 3, 1);
     _mat[3][2] = INNER_PRODUCT(lhs, rhs, 3, 2);
     _mat[3][3] = INNER_PRODUCT(lhs, rhs, 3, 3);
-    fully_realized = true;
 }
 
 void Matrix::preMult( const Matrix& other )
 {
-    if( !fully_realized ) {
-        //act as if this were an identity Matrix
-        set((const float*)other._mat);
-        return;
-    }
-
     // brute force method requiring a copy
     //Matrix tmp(other* *this);
     // *this = tmp;
@@ -228,11 +213,6 @@ void Matrix::preMult( const Matrix& other )
 
 void Matrix::postMult( const Matrix& other )
 {
-    if( !fully_realized ) {
-        //act as if this were an identity Matrix
-        set((const float*)other._mat);
-        return;
-    }
     // brute force method requiring a copy
     //Matrix tmp(*this * other);
     // *this = tmp;
@@ -252,31 +232,31 @@ void Matrix::postMult( const Matrix& other )
 #undef SET_ROW
 #undef INNER_PRODUCT
 
-bool Matrix::invert( const Matrix& _m )
+bool Matrix::invert( const Matrix& other )
 {
-
-    if (&_m==this) 
+    if (&other==this) 
     {
-        Matrix tm(_m);
+        Matrix tm(other);
         return invert(tm);
     }
-    /*if ( _m._mat[0][3] == 0.0 
-        && _m._mat[1][3] == 0.0 
-        && _m._mat[2][3] == 0.0 
-        && _m._mat[3][3] == 1.0 )
-    {
-        return invertAffine( _m );
-    }*/
+
+//     if (   other._mat[0][3] == 0.0 
+//         && other._mat[1][3] == 0.0 
+//         && other._mat[2][3] == 0.0 
+//         && other._mat[3][3] == 1.0 )
+//     {
+//         return invertAffine( other );
+//     }
 
     // code lifted from VR Juggler.
     // not cleanly added, but seems to work.  RO.
-    const float*  a = reinterpret_cast<const float*>(_m._mat);
+    const float*  a = reinterpret_cast<const float*>(other._mat);
     float*  b = reinterpret_cast<float*>(_mat);
 
     int     n = 4;
     int     i, j, k;
     int     r[ 4], c[ 4], row[ 4], col[ 4];
-    float  m[ 4][ 4*2], pivot, max_m, tmp_m, fac;
+    float  m[ 4][ 4*2], pivot, maxother, tmpother, fac;
 
     /* Initialization */
     for ( i = 0; i < n; i ++ )
@@ -299,16 +279,16 @@ bool Matrix::invert( const Matrix& _m )
     for ( k = 0; k < n; k++ )
     {
         /* Choosing the pivot */
-        for ( i = 0, max_m = 0; i < n; i++ )
+        for ( i = 0, maxother = 0; i < n; i++ )
         {
             if ( row[ i]  ) continue;
             for ( j = 0; j < n; j++ )
             {
                 if ( col[ j] ) continue;
-                tmp_m = fabs( m[ i][j]);
-                if ( tmp_m > max_m)
+                tmpother = fabs( m[ i][j]);
+                if ( tmpother > maxother)
                 {
-                    max_m = tmp_m;
+                    maxother = tmpother;
                     r[ k] = i;
                     c[ k] = j;
                 }
@@ -319,8 +299,9 @@ bool Matrix::invert( const Matrix& _m )
 
         if ( fabs( pivot) <= 1e-20)
         {
-            notify(WARN) << "*** pivot = %f in mat_inv. ***"<<std::endl;
-            //abort( 0);
+            notify(WARN) << "Warning: pivot = "<< pivot <<" in Matrix::invert(), cannot compute inverse."<<std::endl;
+            notify(WARN) << "input matrix to Matrix::invert() was = "<< other <<std::endl;
+            makeIdentity();
             return false;
         }
 
@@ -358,14 +339,12 @@ bool Matrix::invert( const Matrix& _m )
         for ( j = 0; j < n; j++ )
             b[ i * n +  j] = m[ row[ i]][j + n];
 
-    fully_realized = true;
-
     return true;                 // It worked
 }
 
 const double PRECISION_LIMIT = 1.0e-15;
 
-bool Matrix::invertAffine( const Matrix& _m )
+bool Matrix::invertAffine( const Matrix& other )
 {
     // adapted from Graphics Gems II.
     // 
@@ -391,13 +370,13 @@ bool Matrix::invertAffine( const Matrix& _m )
         else neg += temp; \
     }
 
-    temp = _m._mat[0][0] * _m._mat[1][1] * _m._mat[2][2]; ACCUMULATE;
-    temp = _m._mat[0][1] * _m._mat[1][2] * _m._mat[2][0]; ACCUMULATE;
-    temp = _m._mat[0][2] * _m._mat[1][0] * _m._mat[2][1]; ACCUMULATE;
+    temp = other._mat[0][0] * other._mat[1][1] * other._mat[2][2]; ACCUMULATE;
+    temp = other._mat[0][1] * other._mat[1][2] * other._mat[2][0]; ACCUMULATE;
+    temp = other._mat[0][2] * other._mat[1][0] * other._mat[2][1]; ACCUMULATE;
 
-    temp = - _m._mat[0][2] * _m._mat[1][1] * _m._mat[2][0]; ACCUMULATE;
-    temp = - _m._mat[0][1] * _m._mat[1][0] * _m._mat[2][2]; ACCUMULATE;
-    temp = - _m._mat[0][0] * _m._mat[1][2] * _m._mat[2][1]; ACCUMULATE;
+    temp = - other._mat[0][2] * other._mat[1][1] * other._mat[2][0]; ACCUMULATE;
+    temp = - other._mat[0][1] * other._mat[1][0] * other._mat[2][2]; ACCUMULATE;
+    temp = - other._mat[0][0] * other._mat[1][2] * other._mat[2][1]; ACCUMULATE;
 
     det_1 = pos + neg;
 
@@ -410,27 +389,26 @@ bool Matrix::invertAffine( const Matrix& _m )
     // inverse is adj(A)/det(A)
     det_1 = 1.0 / det_1;
 
-    _mat[0][0] = (_m._mat[1][1] * _m._mat[2][2] - _m._mat[1][2] * _m._mat[2][1]) * det_1;
-    _mat[1][0] = (_m._mat[1][0] * _m._mat[2][2] - _m._mat[1][2] * _m._mat[2][0]) * det_1;
-    _mat[2][0] = (_m._mat[1][0] * _m._mat[2][1] - _m._mat[1][1] * _m._mat[2][0]) * det_1;
-    _mat[0][1] = (_m._mat[0][1] * _m._mat[2][2] - _m._mat[0][2] * _m._mat[2][1]) * det_1;
-    _mat[1][1] = (_m._mat[0][0] * _m._mat[2][2] - _m._mat[0][2] * _m._mat[2][0]) * det_1;
-    _mat[2][1] = (_m._mat[0][0] * _m._mat[2][1] - _m._mat[0][1] * _m._mat[2][0]) * det_1;
-    _mat[0][2] = (_m._mat[0][1] * _m._mat[1][2] - _m._mat[0][2] * _m._mat[1][1]) * det_1;
-    _mat[1][2] = (_m._mat[0][0] * _m._mat[1][2] - _m._mat[0][2] * _m._mat[1][0]) * det_1;
-    _mat[2][2] = (_m._mat[0][0] * _m._mat[1][1] - _m._mat[0][1] * _m._mat[1][0]) * det_1;
+    _mat[0][0] = (other._mat[1][1] * other._mat[2][2] - other._mat[1][2] * other._mat[2][1]) * det_1;
+    _mat[1][0] = (other._mat[1][0] * other._mat[2][2] - other._mat[1][2] * other._mat[2][0]) * det_1;
+    _mat[2][0] = (other._mat[1][0] * other._mat[2][1] - other._mat[1][1] * other._mat[2][0]) * det_1;
+    _mat[0][1] = (other._mat[0][1] * other._mat[2][2] - other._mat[0][2] * other._mat[2][1]) * det_1;
+    _mat[1][1] = (other._mat[0][0] * other._mat[2][2] - other._mat[0][2] * other._mat[2][0]) * det_1;
+    _mat[2][1] = (other._mat[0][0] * other._mat[2][1] - other._mat[0][1] * other._mat[2][0]) * det_1;
+    _mat[0][2] = (other._mat[0][1] * other._mat[1][2] - other._mat[0][2] * other._mat[1][1]) * det_1;
+    _mat[1][2] = (other._mat[0][0] * other._mat[1][2] - other._mat[0][2] * other._mat[1][0]) * det_1;
+    _mat[2][2] = (other._mat[0][0] * other._mat[1][1] - other._mat[0][1] * other._mat[1][0]) * det_1;
 
     // calculate -C * inv(A)
-    _mat[3][0] = -(_m._mat[3][0] * _mat[0][0] + _m._mat[3][1] * _mat[1][0] + _m._mat[3][2] * _mat[2][0] );
-    _mat[3][1] = -(_m._mat[3][0] * _mat[0][1] + _m._mat[3][1] * _mat[1][1] + _m._mat[3][2] * _mat[2][1] );
-    _mat[3][2] = -(_m._mat[3][0] * _mat[0][2] + _m._mat[3][1] * _mat[1][2] + _m._mat[3][2] * _mat[2][2] );
+    _mat[3][0] = -(other._mat[3][0] * _mat[0][0] + other._mat[3][1] * _mat[1][0] + other._mat[3][2] * _mat[2][0] );
+    _mat[3][1] = -(other._mat[3][0] * _mat[0][1] + other._mat[3][1] * _mat[1][1] + other._mat[3][2] * _mat[2][1] );
+    _mat[3][2] = -(other._mat[3][0] * _mat[0][2] + other._mat[3][1] * _mat[1][2] + other._mat[3][2] * _mat[2][2] );
 
     _mat[0][3] = 0.0;
     _mat[1][3] = 0.0;
     _mat[2][3] = 0.0;
     _mat[3][3] = 1.0;
 
-    fully_realized = true;
     return true;
 }
 

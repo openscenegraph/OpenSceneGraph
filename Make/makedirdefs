@@ -31,7 +31,6 @@ PLUGIN_DIRS = \
 	dds\
 	dw\
 	flt\
-	gdal\
 	lib3ds\
 	logo\
 	lwo\
@@ -52,6 +51,9 @@ PLUGIN_DIRS = \
 	zip\
         3dc\
         ive\
+
+# comment in if you have gdal installed
+#  PLUGIN_DIRS += gdal
 
 # comment in if you have japser (JPEG2000 library) installed.
 # PLUGIN_DIRS += jp2

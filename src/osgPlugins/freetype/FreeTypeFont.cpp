@@ -22,6 +22,10 @@ FreeTypeFont::FreeTypeFont(const std::string& filename, FT_Face face):
 {
 }
 
+FreeTypeFont::~FreeTypeFont()
+{
+}
+
 void FreeTypeFont::setSize(unsigned int width, unsigned int height)
 {
     FT_Error error = FT_Set_Pixel_Sizes( _face,   /* handle to face object            */
@@ -42,9 +46,13 @@ void FreeTypeFont::setSize(unsigned int width, unsigned int height)
 
 osgText::Font::Glyph* FreeTypeFont::getGlyph(unsigned int charcode)
 {
-    // search for glyph amoungst existing glyphs.
-    GlyphMap::iterator itr = _glyphMap.find(charcode);
-    if (itr!=_glyphMap.end()) return itr->second.get();
+    SizeGlyphMap::iterator itr = _sizeGlyphMap.find(SizePair(_width,_height));
+    if (itr!=_sizeGlyphMap.end())
+    {
+        GlyphMap& glyphmap = itr->second;    
+        GlyphMap::iterator gitr = glyphmap.find(charcode);
+        if (gitr!=glyphmap.end()) return gitr->second.get();
+    }
 
     FT_Error error = FT_Load_Char( _face, charcode, FT_LOAD_RENDER|FT_LOAD_NO_BITMAP );
     if (error)
@@ -83,13 +91,12 @@ osgText::Font::Glyph* FreeTypeFont::getGlyph(unsigned int charcode)
     
     FT_Glyph_Metrics* metrics = &(glyphslot->metrics);
 
-    glyph->setFont(this);
     glyph->setHorizontalBearing(osg::Vec2((float)metrics->horiBearingX/64.0f,(float)(metrics->horiBearingY-metrics->height)/64.0f)); // bottom left.
     glyph->setHorizontalAdvance((float)metrics->horiAdvance/64.0f);
     glyph->setVerticalBearing(osg::Vec2((float)metrics->vertBearingX/64.0f,(float)(metrics->vertBearingY-metrics->height)/64.0f)); // top middle.
     glyph->setVerticalAdvance((float)metrics->vertAdvance/64.0f);
 
-    addGlyph(charcode,glyph.get());
+    addGlyph(_width,_height,charcode,glyph.get());
 
     return glyph.get();
 

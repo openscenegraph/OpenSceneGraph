@@ -12,6 +12,7 @@
 */
 
 #include <osgText/Font>
+#include <osgText/Text>
 
 #include <osg/State>
 #include <osg/Notify>
@@ -82,11 +83,18 @@ Font::Font():
 
 Font::~Font()
 {
+    for(TextList::iterator itr=_textList.begin();
+        itr!=_textList.end();
+        ++itr)
+    {
+        Text* text = *itr;
+        text->_font.release();
+    }
 }
 
-void Font::addGlyph(unsigned int charcode, Glyph* glyph)
+void Font::addGlyph(unsigned int width, unsigned int height, unsigned int charcode, Glyph* glyph)
 {
-    _glyphMap[charcode]=glyph;
+    _sizeGlyphMap[SizePair(width,height)][charcode]=glyph;
     
     
     int posX=0,posY=0;
@@ -297,8 +305,8 @@ Font::Glyph::~Glyph() {}
 
 unsigned int Font::Glyph::getGlyphCode() const { return _glyphCode; }
 
-void Font::Glyph::setFont(Font* font) { _font = font; }
-Font* Font::Glyph::getFont() const { return _font; }
+// void Font::Glyph::setFont(Font* font) { _font = font; }
+// Font* Font::Glyph::getFont() const { return _font; }
 
 void Font::Glyph::setHorizontalBearing(const osg::Vec2& bearing) {  _horizontalBearing=bearing; }
 const osg::Vec2& Font::Glyph::getHorizontalBearing() const { return _horizontalBearing; }

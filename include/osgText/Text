@@ -182,6 +182,10 @@ public:
     /** Draw the text.*/
     virtual void drawImplementation(osg::State& state) const;
 
+    // make Font a friend to allow it set the _font to 0 if the font is 
+    // forcefully unloaded.
+    friend Font;
+
 protected:
 
     virtual ~Text();

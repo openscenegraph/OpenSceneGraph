@@ -13,6 +13,7 @@
 
 #include <osgUtil/Optimizer>
 #include <osgDB/ReadFile>
+#include <osgDB/Registry>
 #include <osgProducer/Viewer>
 
 #include <osg/Material>
@@ -49,7 +50,7 @@ osg::Group* createHUDText()
 
     osgText::Text* text4 = new osgText::Text;
     text4->setFont(osgText::readFontFile("fonts/times.ttf"));
-    text4->setFontSize(64,64);
+    text4->setFontSize(128,128);
     text4->setPosition(osg::Vec3(200.0f,200.0f,0.0f));
     text4->setLayout(osgText::Text::RIGHT_TO_LEFT);
     text4->setDrawMode(osgText::Text::TEXT|osgText::Text::ALIGNMENT|osgText::Text::BOUNDINGBOX);
@@ -126,7 +127,6 @@ osg::Group* create3DText()
 
 int main( int argc, char **argv )
 {
-
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
     
@@ -211,7 +211,7 @@ int main( int argc, char **argv )
 
     // set the scene to render
     viewer.setSceneData(rootNode.get());
-
+    
     // create the windows and run the threads.
     viewer.realize(Producer::CameraGroup::ThreadPerCamera);
 
@@ -228,6 +228,6 @@ int main( int argc, char **argv )
         viewer.frame();
         
     }
-    
+
     return 0;
 }

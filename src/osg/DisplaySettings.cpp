@@ -99,11 +99,7 @@ void DisplaySettings::setDefaults()
     _minimumNumberAlphaBits = 0;
     _minimumNumberStencilBits = 0;
     
-    #ifdef __sgi
-    _maxNumOfGraphicsContexts = 4;
-    #else
     _maxNumOfGraphicsContexts = 1;
-    #endif
 }
 
 ApplicationUsageProxy e0(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_STEREO_MODE <mode>","QUAD_BUFFER | ANAGLYPHIC | HORIZONTAL_SPLIT | VERTICAL_SPLIT | LEFT_EYE | RIGHT_EYE");

@@ -102,7 +102,7 @@ void CreateShadowTextureCullCallback::doPreRender(osg::Node& node, osgUtil::Cull
     osgUtil::RenderStage* previous_stage = cv.getCurrentRenderBin()->_stage;
 
     // set up the background color and clear mask.
-    rtts->setClearColor(osg::Vec4(1.0f,1.0f,1.0f,0.0f));
+    rtts->setClearColor(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
     rtts->setClearMask(previous_stage->getClearMask());
 
     // set up to charge the same RenderStageLighting is the parent previous stage.

@@ -27,7 +27,7 @@
 #include <osg/Point>
 #include <osg/Notify>
 
-#include <osgUtil/Tesselator>
+#include <osgUtil/Optimizer>
 
 #include <map>
 #include <algorithm>
@@ -317,17 +317,11 @@ osg::Geode* GeoSetBuilder::createOsgGeoSets(osg::Geode* geode)
         assert( stateset == geom->getStateSet() );
     }
 
-    osgUtil::Tesselator tesselator;
-    for(unsigned int i=0;i<geode->getNumDrawables();++i)
-    {
-        osg::Geometry* geom = dynamic_cast<osg::Geometry*>(geode->getDrawable(i));
-        if (geom) 
-        {
-            geom->computeCorrectBindingsAndArraySizes();
-            tesselator.retesselatePolygons(*geom);
-        }
-    }
-
+    osgUtil::Optimizer optimizer;
+    optimizer.optimize(geode, osgUtil::Optimizer::SHARE_DUPLICATE_STATE |
+                              osgUtil::Optimizer::MERGE_GEOMETRY |
+                              osgUtil::Optimizer::CHECK_GEOMETRY |
+                              osgUtil::Optimizer::TESSELATE_GEOMETRY);
     return geode;
 }
 

@@ -20,6 +20,7 @@
 #include <osg/BlendFunc>
 #include <osg/Depth>
 #include <osg/Projection>
+#include <osg/PolygonOffset>
 #include <osg/MatrixTransform>
 
 #include <osgText/Text>
@@ -29,12 +30,13 @@ osg::Node* createHUD()
 {
     osg::Geode* geode = new osg::Geode();
     
-    std::string timesFont("fonts/times.ttf");
+    std::string timesFont("fonts/arial.ttf");
 
     // turn lighting off for the text and disable depth test to ensure its always ontop.
     osg::StateSet* stateset = geode->getOrCreateStateSet();
     stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
-    stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
+    //stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
+    stateset->setAttribute(new osg::Depth(osg::Depth::LESS,0.0,0.0001));
 
     osg::Vec3 position(150.0f,800.0f,0.0f);
     osg::Vec3 delta(0.0f,-120.0f,0.0f);
@@ -94,7 +96,46 @@ osg::Node* createHUD()
         text->setText("And add an osg::ModelViewMatrix set to ABSOLUTE to ensure\nit remains independent from any external model view matrices.");
         
         position += delta;
-    }    
+    } 
+    
+    
+    
+    {
+        osg::BoundingBox bb;
+        for(unsigned int i=0;i<geode->getNumDrawables();++i)
+        {
+            bb.expandBy(geode->getDrawable(i)->getBound());
+        }
+
+        osg::Geometry* geom = new osg::Geometry;
+
+        osg::Vec3Array* vertices = new osg::Vec3Array;
+        float depth = bb.zMin()-0.1;
+        vertices->push_back(osg::Vec3(bb.xMin(),bb.yMax(),depth));
+        vertices->push_back(osg::Vec3(bb.xMin(),bb.yMin(),depth));
+        vertices->push_back(osg::Vec3(bb.xMax(),bb.yMin(),depth));
+        vertices->push_back(osg::Vec3(bb.xMax(),bb.yMax(),depth));
+        geom->setVertexArray(vertices);
+
+        osg::Vec3Array* normals = new osg::Vec3Array;
+        normals->push_back(osg::Vec3(0.0f,0.0f,1.0f));
+        geom->setNormalArray(normals);
+        geom->setNormalBinding(osg::Geometry::BIND_OVERALL);
+
+        osg::Vec4Array* colors = new osg::Vec4Array;
+        colors->push_back(osg::Vec4(1.0f,1.0,0.8f,0.2f));
+        geom->setColorArray(colors);
+        geom->setColorBinding(osg::Geometry::BIND_OVERALL);
+
+        geom->addPrimitiveSet(new osg::DrawArrays(GL_QUADS,0,4));
+        
+        osg::StateSet* stateset = geom->getOrCreateStateSet();
+        stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
+        //stateset->setAttribute(new osg::PolygonOffset(1.0f,1.0f),osg::StateAttribute::ON);
+        stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+
+        geode->addDrawable(geom);
+    }
 
     // create the hud.
     osg::MatrixTransform* modelview_abs = new osg::MatrixTransform;
@@ -166,6 +207,16 @@ int main( int argc, char **argv )
 
     // create the windows and run the threads.
     viewer.realize();
+
+    // set all the sceneview's up so that their left and right add cull masks are set up.
+    for(osgProducer::OsgCameraGroup::SceneHandlerList::iterator itr=viewer.getSceneHandlerList().begin();
+        itr!=viewer.getSceneHandlerList().end();
+        ++itr)
+    {
+        osgUtil::SceneView* sceneview = itr->get();
+        sceneview->setComputeNearFarMode(osgUtil::CullVisitor::DO_NOT_COMPUTE_NEAR_FAR);
+    }
+
 
     while( !viewer.done() )
     {

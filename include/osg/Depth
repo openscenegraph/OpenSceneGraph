@@ -25,15 +25,28 @@ class SG_EXPORT Depth : public StateAttribute
     public :
     
     
-        Depth();
+        enum Function
+        {
+            NEVER = GL_NEVER,
+            LESS = GL_LESS,
+            EQUAL = GL_EQUAL,
+            LEQUAL = GL_LEQUAL,
+            GREATER = GL_GREATER,
+            NOTEQUAL = GL_NOTEQUAL,
+            GEQUAL = GL_GEQUAL,
+            ALWAYS = GL_ALWAYS
+        };
+
+
+        Depth(Function func=LESS,double zNear=0.0, double zFar=1.0,bool writeMask=true);
         
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         Depth(const Depth& dp,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             StateAttribute(dp,copyop),
             _func(dp._func),
-            _depthWriteMask(dp._depthWriteMask),
             _zNear(dp._zNear),
-            _zFar(dp._zFar) {}
+            _zFar(dp._zFar),
+            _depthWriteMask(dp._depthWriteMask) {}
         
         
         META_StateAttribute(osg, Depth, DEPTH);
@@ -59,26 +72,10 @@ class SG_EXPORT Depth : public StateAttribute
             modes.push_back(GL_DEPTH_TEST);
         }
 
-        enum Function
-        {
-            NEVER = GL_NEVER,
-            LESS = GL_LESS,
-            EQUAL = GL_EQUAL,
-            LEQUAL = GL_LEQUAL,
-            GREATER = GL_GREATER,
-            NOTEQUAL = GL_NOTEQUAL,
-            GEQUAL = GL_GEQUAL,
-            ALWAYS = GL_ALWAYS
-        };
-
         inline void setFunction(Function func) { _func = func; }
         
         inline Function getFunction() const { return _func; }
                
-
-        inline void setWriteMask(bool mask) { _depthWriteMask = mask; }
-        
-        inline bool getWriteMask() const { return _depthWriteMask; }
 
         inline void setRange(double zNear, double zFar)
         {
@@ -89,6 +86,11 @@ class SG_EXPORT Depth : public StateAttribute
         inline double getZNear() const { return _zNear; }
         inline double getZFar() const { return _zFar; }
 
+        inline void setWriteMask(bool mask) { _depthWriteMask = mask; }
+        
+        inline bool getWriteMask() const { return _depthWriteMask; }
+
+
         virtual void apply(State& state) const;
 
     protected:
@@ -96,11 +98,11 @@ class SG_EXPORT Depth : public StateAttribute
         virtual ~Depth();
 
         Function            _func;
-        bool                _depthWriteMask;
         
         double              _zNear;
         double              _zFar;
 
+        bool                _depthWriteMask;
 };
 
 }

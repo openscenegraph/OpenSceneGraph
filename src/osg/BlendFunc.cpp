@@ -14,12 +14,17 @@
 
 using namespace osg;
 
-BlendFunc::BlendFunc()
+BlendFunc::BlendFunc():
+    _source_factor(SRC_ALPHA),
+    _destination_factor(ONE_MINUS_SRC_ALPHA)
 {
-    _source_factor      = SRC_ALPHA;
-    _destination_factor = ONE_MINUS_SRC_ALPHA;
 }
 
+BlendFunc::BlendFunc(GLenum source, GLenum destination):
+    _source_factor(source),
+    _destination_factor(destination)
+{
+}
 
 BlendFunc::~BlendFunc()
 {

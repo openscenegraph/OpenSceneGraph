@@ -15,13 +15,11 @@
 
 using namespace osgTerrain;
 
-CoordinateSystem::CoordinateSystem():
-    _type(GEOGRAPHIC)
+CoordinateSystem::CoordinateSystem()
 {
 }
 
-CoordinateSystem::CoordinateSystem(const std::string& WKT, Type type):
-    _type(type),
+CoordinateSystem::CoordinateSystem(const std::string& WKT):
     _WKT(WKT)
 {
 }

@@ -70,18 +70,18 @@ class OSGGA_EXPORT UFOManipulator : public osgGA::MatrixManipulator
         /** Set the current position with a matrix 
           \param matrix  A viewpoint matrix.
          */
-		virtual void setByMatrix( const osg::Matrix &matrix ) ;
+		virtual void setByMatrix( const osg::Matrixd &matrix ) ;
 
         /** Set the current position with the invers matrix
           \param invmatrix The inverse of a viewpoint matrix
           */
-		virtual void setByInverseMatrix( const osg::Matrix &invmat);
+		virtual void setByInverseMatrix( const osg::Matrixd &invmat);
 
         /** Get the current viewmatrix */
-		virtual osg::Matrix getMatrix() const;
+		virtual osg::Matrixd getMatrix() const;
 
         /** Get the current inverse view matrix */
-		virtual osg::Matrix getInverseMatrix() const ;
+		virtual osg::Matrixd getInverseMatrix() const ;
 
         /** Set the  subgraph this manipulator is driving the eye through.
             \param node     root of subgraph
@@ -116,9 +116,9 @@ class OSGGA_EXPORT UFOManipulator : public osgGA::MatrixManipulator
 	private:
         osg::ref_ptr<osg::Node> _node;
 		float       _viewAngle;
-		osg::Matrix _matrix;
-		osg::Matrix _inverseMatrix;
-        osg::Matrix _offset;
+		osg::Matrixd _matrix;
+		osg::Matrixd _inverseMatrix;
+        osg::Matrixd _offset;
 
         double    _minHeightAboveGround;
         double    _minDistanceInFront;

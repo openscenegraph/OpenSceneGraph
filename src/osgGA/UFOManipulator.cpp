@@ -66,24 +66,24 @@ const char* UFOManipulator::className() const
     return "UFO"; 
 }
 
-void UFOManipulator::setByMatrix( const osg::Matrix &mat ) 
+void UFOManipulator::setByMatrix( const osg::Matrixd &mat ) 
 {
     _inverseMatrix = mat;
     _matrix.invert( _inverseMatrix );
 }
 
-void UFOManipulator::setByInverseMatrix( const osg::Matrix &invmat) 
+void UFOManipulator::setByInverseMatrix( const osg::Matrixd &invmat) 
 {
     _matrix = invmat;
     _inverseMatrix.invert( _matrix );
 }
 
-osg::Matrix UFOManipulator::getMatrix() const
+osg::Matrixd UFOManipulator::getMatrix() const
 {
         return (_offset * _matrix);
 }
 
-osg::Matrix UFOManipulator::getInverseMatrix() const 
+osg::Matrixd UFOManipulator::getInverseMatrix() const 
 {
     return (_inverseMatrix * _offset);
 }

@@ -133,11 +133,19 @@ SOURCE=..\..\src\osg\Drawable.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\EarthSky.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\Fog.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\Osg\FrontFace.cpp
+SOURCE=..\..\src\osg\FrameStamp.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osg\FrontFace.cpp
 # End Source File
 # Begin Source File
 
@@ -275,6 +283,10 @@ SOURCE=..\..\src\osg\Transparency.cpp
 
 SOURCE=..\..\src\osg\Version.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osg\Viewport.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -294,6 +306,10 @@ SOURCE=..\..\Include\Osg\BoundingBox
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\BoundingSphere
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osg\BoundsChecking
 # End Source File
 # Begin Source File
 
@@ -325,11 +341,19 @@ SOURCE=..\..\Include\Osg\Drawable
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\osg\EarthSky
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\Include\Osg\Export
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\Fog
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osg\FrameStamp
 # End Source File
 # Begin Source File
 
@@ -353,6 +377,10 @@ SOURCE=..\..\Include\Osg\GLExtensions
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\osg\Glu
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\Include\Osg\Group
 # End Source File
 # Begin Source File
@@ -366,10 +394,6 @@ SOURCE=..\..\Include\Osg\Impostor
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\ImpostorSprite
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\Include\Osg\Input
 # End Source File
 # Begin Source File
 
@@ -393,6 +417,10 @@ SOURCE=..\..\Include\Osg\Material
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\osg\Math
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\Include\Osg\Matrix
 # End Source File
 # Begin Source File
@@ -406,6 +434,10 @@ SOURCE=..\..\include\osg\MemoryAdapter
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\Node
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osg\NodeCallback
 # End Source File
 # Begin Source File
 
@@ -458,6 +490,10 @@ SOURCE=..\..\Include\Osg\StateAttribute
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\StateSet
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osg\Statistics
 # End Source File
 # Begin Source File
 
@@ -514,6 +550,10 @@ SOURCE=..\..\Include\Osg\Vec4
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\Version
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osg\Viewport
 # End Source File
 # End Group
 # Begin Group "Resource Files"

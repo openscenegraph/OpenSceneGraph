@@ -1377,7 +1377,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "osgPlugin logo"=".\osgPlugins\logo\osgPlugin logo\osgPlugin logo.dsp" - Package Owner=<4>
+Project: "osgPlugin logo"=".\osgPlugins\logo\logo.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{

@@ -99,8 +99,7 @@ int main( int argc, char **argv )
 
             // standard LOD settings
             impostor->addChild(model);
-            impostor->setRange(0,0.0f);
-            impostor->setRange(1,1e7f);
+            impostor->setRange(0,0.0f,1e7f);
             impostor->setCenter(bs.center());
 
             // impostor specfic settings.

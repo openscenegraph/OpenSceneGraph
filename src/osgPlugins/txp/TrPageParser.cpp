@@ -489,8 +489,7 @@ void* lodRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     Vec3 osg_Center;
     osg_Center[0] = center.x;  osg_Center[1] = center.y;  osg_Center[2] = center.z;
     osg_Lod->setCenter(osg_Center);
-    osg_Lod->setRange(0,minRange);
-    osg_Lod->setRange(1,maxRange);
+    osg_Lod->setRange(0,minRange,maxRange);
     
     // Our LODs are binary so we need to add a group under this LOD and attach stuff
     //  to that instead of the LOD

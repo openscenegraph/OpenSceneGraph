@@ -6,9 +6,9 @@ using namespace osg;
 
 LOD::LOD(const LOD& lod,const CopyOp& copyop):
         Group(lod,copyop),
-        _rangeList(lod._rangeList),
-        _rangeList2(lod._rangeList2),
-        _center(lod._center)
+        _centerMode(lod._centerMode),
+        _userDefinedCenter(lod._userDefinedCenter),
+        _rangeList(lod._rangeList)
 {
 }
 
@@ -21,42 +21,51 @@ void LOD::traverse(NodeVisitor& nv)
             std::for_each(_children.begin(),_children.end(),NodeAcceptOp(nv));
             break;
         case(NodeVisitor::TRAVERSE_ACTIVE_CHILDREN):
-            if (_children.size()!=0) _children.front()->accept(nv);
-            break;
+        {
+            float distance = nv.getDistanceToEyePoint(getCenter(),true);
+            unsigned int numChildren = _children.size();
+            if (_rangeList.size()<numChildren) numChildren=_rangeList.size();
+            
+            for(unsigned int i=0;i<numChildren;++i)
+            {    
+                if (_rangeList[i].first<=distance && distance<_rangeList[i].second)
+                {
+                    _children[i]->accept(nv);
+                }
+            }
+           break;
+        }
         default:
             break;
     }
 }
 
-
-void LOD::setRange(unsigned int index, float range)
+bool LOD::addChild( Node *child )
 {
-    if (index<_rangeList.size()) _rangeList[index] = range;
-    else while (index>=_rangeList.size()) _rangeList.push_back(range);
-
-    if (index<_rangeList2.size()) _rangeList2[index] = range*range;
-    else while (index>=_rangeList2.size()) _rangeList2.push_back(range*range);
-}
-
-
-int LOD::evaluateLODChild(const Vec3& eye_local, float bias) const
-{
-    // For cache coherency, use _rangeList2 exclusively
-    if (_rangeList2.empty()) return -1;
-
-    // Test distance-squared against the stored array of squared ranges
-    float LODRange = (eye_local-_center).length2()*bias;
-    if (LODRange<_rangeList2[0]) return -1;
-
-    unsigned int end_marker = _rangeList2.size()-1;
-    if (end_marker>_children.size()) end_marker=_children.size();
-    for(unsigned int i=0;i<end_marker;++i)
+    if (Group::addChild(child))
     {
-        if (LODRange<_rangeList2[i+1])
-        {
-            return i;
-        }
+        float maxRange = 0.0f;
+        if (!_rangeList.empty()) maxRange=_rangeList.back().second;
+        if (_children.size()>_rangeList.size()) _rangeList.resize(_children.size(),MinMaxPair(maxRange,maxRange));
+        return true;
     }
-    return -1;
+    return false;
 }
 
+bool LOD::removeChild( Node *child )
+{
+    // find the child's position.
+    unsigned int pos=findChildNo(child);
+    if (pos==_children.size()) return false;
+    
+    _rangeList.erase(_rangeList.begin()+pos);
+    
+    return Group::removeChild(child);    
+}
+
+void LOD::setRange(unsigned int childNo, float min,float max)
+{
+    if (childNo>=_rangeList.size()) _rangeList.resize(childNo+1,MinMaxPair(min,min));
+    _rangeList[childNo].first=min;
+    _rangeList[childNo].second=max;
+}

@@ -24,13 +24,12 @@ using namespace osgUtil;
 void Optimizer::optimize(osg::Node* node, unsigned int options)
 {
 
-// temporarily commented out to prevent problems with combining FLT lod's inapporpriately,
-//     if (options & COMBINE_ADJACENT_LODS)
-//     {
-//         CombineLODsVisitor clv;
-//         node->accept(clv);        
-//         clv.combineLODs();
-//     }
+    if (options & COMBINE_ADJACENT_LODS)
+    {
+        CombineLODsVisitor clv;
+        node->accept(clv);        
+        clv.combineLODs();
+    }
     
     if (options & FLATTEN_STATIC_TRANSFORMS)
     {
@@ -560,7 +559,7 @@ void CollectLowestTransformsVisitor::doTransform(osg::Object* obj,osg::Matrix& m
         // adjust ranges to new scale.
         for(unsigned int i=0;i<lod->getNumRanges();++i)
         {
-            lod->setRange(i,lod->getRange(i)*ratio);
+            lod->setRange(i,lod->getMinRange(i)*ratio,lod->getMaxRange(i)*ratio);
         }
         
         lod->dirtyBound();
@@ -968,14 +967,7 @@ void Optimizer::CombineLODsVisitor::combineLODs()
             osg::LOD* lod = dynamic_cast<osg::LOD*>(child);
             if (lod)
             {
-                if (lod->getNumRanges()-1==lod->getNumChildren())
-                {
-                    lodChildren.insert(lod);
-                }
-                else
-                {
-                    // wonky LOD, numRanges should = numChildren+1
-                }
+                lodChildren.insert(lod);
             }
         }
 
@@ -983,29 +975,29 @@ void Optimizer::CombineLODsVisitor::combineLODs()
         {
             osg::BoundingBox bb;
             LODSet::iterator lod_itr;
+            float smallestRadius=FLT_MAX;
             for(lod_itr=lodChildren.begin();
                 lod_itr!=lodChildren.end();
                 ++lod_itr)
             {
-
+                float r = (*lod_itr)->getBound().radius();
+                if (r>=0 && r<smallestRadius) smallestRadius = r;
                 bb.expandBy((*lod_itr)->getCenter());
             }
-            if (bb.radius()<1e-2)
+            if (bb.radius()<smallestRadius*0.1f)
             {
                 typedef std::pair<float,float> RangePair;
                 typedef std::multimap<RangePair,osg::Node*> RangeMap;
                 RangeMap rangeMap;
-                float maxRange = 0.0f;
                 for(lod_itr=lodChildren.begin();
                     lod_itr!=lodChildren.end();
                     ++lod_itr)
                 {
 
                     osg::LOD* lod = *lod_itr;
-                    for(unsigned int i=0;i<lod->getNumRanges()-1;++i)
+                    for(unsigned int i=0;i<lod->getNumRanges();++i)
                     {
-                        if (maxRange<lod->getRange(i+1)) maxRange = lod->getRange(i+1);
-                        rangeMap.insert(RangeMap::value_type(RangePair(lod->getRange(i),lod->getRange(i+1)),lod->getChild(i)));
+                        rangeMap.insert(RangeMap::value_type(RangePair(lod->getMinRange(i),lod->getMaxRange(i)),lod->getChild(i)));
                     }
 
                 }
@@ -1020,10 +1012,9 @@ void Optimizer::CombineLODsVisitor::combineLODs()
                     c_itr!=rangeMap.end();
                     ++c_itr,++i)
                 {
-                    newLOD->setRange(i,c_itr->first.first);
+                    newLOD->setRange(i,c_itr->first.first,c_itr->first.second);
                     newLOD->addChild(c_itr->second);
                 }
-                newLOD->setRange(i,maxRange);
 
                 // add LOD into parent.
                 group->addChild(newLOD);

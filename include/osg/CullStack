@@ -140,7 +140,7 @@ class SG_EXPORT CullStack
         inline osg::Viewport* getViewport();
         inline osg::Matrix& getModelViewMatrix();
         inline osg::Matrix& getProjectionMatrix();
-        inline const osg::Matrix getWindowMatrix();
+        inline osg::Matrix getWindowMatrix();
         inline const osg::Matrix& getMVPW();
 
         inline const osg::Vec3& getEyeLocal() const { return _eyePointStack.back(); }
@@ -156,7 +156,7 @@ class SG_EXPORT CullStack
             const osg::Matrix& matrix = *_modelviewStack.back();
             return osg::Vec3(-matrix(0,2),-matrix(1,2),-matrix(2,2));
         }
-
+        
     protected:
     
         void pushCullingSet();
@@ -239,7 +239,7 @@ inline osg::Matrix& CullStack::getProjectionMatrix()
     }
 }
 
-inline const osg::Matrix CullStack::getWindowMatrix()
+inline osg::Matrix CullStack::getWindowMatrix()
 {
     if (!_viewportStack.empty())
     {

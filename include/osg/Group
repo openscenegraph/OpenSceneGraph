@@ -110,6 +110,18 @@ class SG_EXPORT Group : public Node
             return _children.end();
         }
 
+        /** Find the index number of child, return a value between
+          * 0 and _children.size()-1 if found, if not found then
+          * return _children.size().*/
+        inline unsigned int findChildNo( const Node* node ) const
+        {
+            for (unsigned int childNo=0;childNo<_children.size();++childNo)
+            {
+                if (_children[childNo]==node) return childNo;
+            }
+            return _children.size(); // node not found.
+        }
+
     protected:
 
         virtual ~Group();

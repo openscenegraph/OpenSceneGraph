@@ -132,6 +132,25 @@ void CullVisitor::reset()
     
 }
 
+float CullVisitor::getDistanceToEyePoint(const Vec3& pos, bool withLODBias) const
+{
+    if (withLODBias) return (pos-getEyeLocal()).length()*getLODBias();
+    else return (pos-getEyeLocal()).length();
+}
+
+inline float distance(const osg::Vec3& coord,const osg::Matrix& matrix)
+{
+    return -(coord[0]*matrix(0,2)+coord[1]*matrix(1,2)+coord[2]*matrix(2,2)+matrix(3,2));
+}
+
+float CullVisitor::getDistanceFromEyePoint(const osg::Vec3& pos, bool withLODBias) const
+{
+    const Matrix& matrix = *_modelviewStack.back();
+    float dist = distance(pos,matrix);
+    
+    if (withLODBias) return dist*getLODBias();
+    else return dist*getLODBias();
+}
 
 void CullVisitor::popProjectionMatrix()
 {
@@ -168,10 +187,6 @@ void CullVisitor::popProjectionMatrix()
     CullStack::popProjectionMatrix();
 }
 
-inline float distance(const osg::Vec3& coord,const osg::Matrix& matrix)
-{
-    return -(coord[0]*matrix(0,2)+coord[1]*matrix(1,2)+coord[2]*matrix(2,2)+matrix(3,2));
-}
 
 
 void CullVisitor::updateCalculatedNearFar(const osg::Matrix& matrix,const osg::BoundingBox& bb)
@@ -459,9 +474,6 @@ void CullVisitor::apply(LOD& node)
 {
     if (isCulled(node)) return;
 
-    int eval = node.evaluate(getEyeLocal(),_LODBias);
-    if (eval<0) return;
-
     // push the culling mode.
     pushCurrentMask();
 
@@ -469,8 +481,7 @@ void CullVisitor::apply(LOD& node)
     StateSet* node_state = node.getStateSet();
     if (node_state) pushStateSet(node_state);
 
-    //notify(INFO) << "selecting child "<<eval<< std::endl;
-    handle_cull_callbacks_and_accept(node,node.getChild(eval));
+    handle_cull_callbacks_and_traverse(node);
 
     // pop the node's state off the render graph stack.    
     if (node_state) popStateSet();
@@ -538,9 +549,6 @@ void CullVisitor::apply(Impostor& node)
 
     osg::Vec3 eyeLocal = getEyeLocal();
 
-    int eval = node.evaluate(eyeLocal,_LODBias);
-    if (eval<0) return;
-
     // push the culling mode.
     pushCurrentMask();
 
@@ -557,13 +565,13 @@ void CullVisitor::apply(Impostor& node)
     {
         // outwith the impostor distance threshold therefore simple
         // traverse the appropriate child of the LOD.
-        handle_cull_callbacks_and_accept(node,node.getChild(eval));
+        handle_cull_callbacks_and_traverse(node);
     }
     else if (_viewportStack.empty())
     {
         // need to use impostor but no valid viewport is defined to simply
         // default to using the LOD child as above.
-        handle_cull_callbacks_and_accept(node,node.getChild(eval));
+        handle_cull_callbacks_and_traverse(node);
     }
     else
     {    
@@ -623,7 +631,7 @@ void CullVisitor::apply(Impostor& node)
         {
            // no impostor has been selected or created so default to 
            // traversing the usual LOD selected child.
-            handle_cull_callbacks_and_accept(node,node.getChild(eval));
+            handle_cull_callbacks_and_traverse(node);
         }
                 
     }
@@ -645,7 +653,6 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
     const Matrix& matrix = getModelViewMatrix();
     const BoundingSphere& bs = node.getBound();
     osg::Vec3 eye_local = getEyeLocal();
-    int eval = node.evaluate(eye_local,_LODBias);
 
     if (!bs.valid())
     {
@@ -777,7 +784,7 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
     {
 
         // traversing the usual LOD selected child.
-        handle_cull_callbacks_and_accept(node,node.getChild(eval));
+        handle_cull_callbacks_and_traverse(node);
 
     }
 

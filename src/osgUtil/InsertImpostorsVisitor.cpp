@@ -96,9 +96,7 @@ void InsertImpostorsVisitor::insertImpostors()
 
                     // standard LOD settings
                     impostor->addChild(group);
-                    impostor->setRange(0,0.0f);
-                    impostor->setRange(1,1e7f);
-                    impostor->setCenter(bs.center());
+                    impostor->setRange(0,0.0f,1e7f);
                     
                     // impostor specfic settings.
                     impostor->setImpostorThresholdToBound(_impostorThresholdRatio);
@@ -147,14 +145,11 @@ void InsertImpostorsVisitor::insertImpostors()
                     for(unsigned int ci=0;ci<lod->getNumChildren();++ci)
                     {
                         impostor->addChild(lod->getChild(ci));
-                    }
-                    
-                    for(unsigned int ri=0;ri<lod->getNumRanges();++ri)
-                    {
-                        impostor->setRange(ri,lod->getRange(ri));
+                        impostor->setRange(ci,lod->getMinRange(ci),lod->getMaxRange(ci));
                     }
                     
                     impostor->setCenter(lod->getCenter());
+                    impostor->setCenterMode(lod->getCenterMode());
 
                     // impostor specfic settings.
                     impostor->setImpostorThresholdToBound(_impostorThresholdRatio);

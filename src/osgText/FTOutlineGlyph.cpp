@@ -20,7 +20,7 @@ FTOutlineGlyph::FTOutlineGlyph( FT_Glyph glyph)
 
 	vectoriser = new FTVectoriser( glyph);
 	
-	vectoriser->Ingest();
+	vectoriser->Process();
 	numContours = vectoriser->contours();
 	contourLength = new int[ numContours];
 	
@@ -31,7 +31,7 @@ FTOutlineGlyph::FTOutlineGlyph( FT_Glyph glyph)
 	
 	numPoints = vectoriser->points();
 	data = new double[ numPoints * 3];
-	vectoriser->Output( data);
+	vectoriser->MakeOutline( data);
 	
 	advance = glyph->advance.x >> 16;
 

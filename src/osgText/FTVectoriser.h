@@ -76,7 +76,7 @@ class FTGL_EXPORT ftPoint
 
 
 /**
- * ftPoint class is a container of points that describe an outline
+ * FTContour class is a container of points that describe an outline
  * point data.
  *
  * @see	FTOutlineGlyph
@@ -122,8 +122,9 @@ class FTGL_EXPORT FTContour
 		
 	private:
 		/**
-		* A 'max' number of points that this contour hods. Note it can
-		* hold more than this number.
+		* A 'max' number of points that this contour holds. Note however it
+		* can hold more than this number. It is just used to reserve space
+		* in the <vector>
 		*/
 		const unsigned int kMAXPOINTS;
 };
@@ -159,13 +160,13 @@ class FTGL_EXPORT FTVectoriser
 		 *
 		 * @return <code>true</code> on success
 		 */
-		bool Ingest();
+		bool Process();
 
 		/**
-		 * Copy the point data into a block of <code>doubles</code>
+		 * Copy the outline data into a block of <code>doubles</code>
 		 * @param d
 		 */
-		void Output( double* d);
+		void MakeOutline( double* d);
 
 		/**
 		 * Get the total count of points in this outline

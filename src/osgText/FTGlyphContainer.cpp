@@ -3,7 +3,7 @@
 #include	"FTFace.h"
 
 
-FTGlyphContainer::FTGlyphContainer( FTFace* f, int g, bool p)
+FTGlyphContainer::FTGlyphContainer( FTFace* f, unsigned int g, bool p)
 :	preCache( p),
 	numGlyphs( g),
 	face( f),
@@ -60,7 +60,7 @@ FT_Vector& FTGlyphContainer::render( unsigned int index, unsigned int next, FT_V
 		advance = glyphs[left]->Render( pen);
 	}
 	
-	kernAdvance.x = advance + kernAdvance.x; // FIXME float to long
+	kernAdvance.x = advance + kernAdvance.x;
 //	kernAdvance.y = advance.y + kernAdvance.y;
 	return kernAdvance;
 }

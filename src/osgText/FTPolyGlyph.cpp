@@ -2,8 +2,6 @@
 #include	"FTPolyGlyph.h"
 #include	"FTVectoriser.h"
 
-#include	"GL/glu.h"
-
 #ifndef CALLBACK
 #define CALLBACK
 #endif
@@ -61,7 +59,7 @@ FTPolyGlyph::FTPolyGlyph( FT_Glyph glyph)
 
 	vectoriser = new FTVectoriser( glyph);
 	
-	vectoriser->Ingest();
+	vectoriser->Process();
 	numContours = vectoriser->contours();
 	contourLength = new int[ numContours];
 	
@@ -72,7 +70,8 @@ FTPolyGlyph::FTPolyGlyph( FT_Glyph glyph)
 	
 	numPoints = vectoriser->points();
 	data = new double[ numPoints * 3];
-	vectoriser->Output( data);
+	// FIXME MakeMesh
+	vectoriser->MakeOutline( data);
 	
 	contourFlag = vectoriser->ContourFlag();
 	advance = glyph->advance.x >> 16;

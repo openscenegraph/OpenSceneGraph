@@ -6,7 +6,6 @@
 
 
 FTGLPolygonFont::FTGLPolygonFont()
-:	tempGlyph(0)
 {}
 
 
@@ -22,7 +21,7 @@ bool FTGLPolygonFont::MakeGlyphList()
 		
 		if( ftGlyph)
 		{
-			tempGlyph = new FTPolyGlyph( *ftGlyph);
+			FTPolyGlyph* tempGlyph = new FTPolyGlyph( *ftGlyph);
 			glyphList->Add( tempGlyph);
 		}
 		else

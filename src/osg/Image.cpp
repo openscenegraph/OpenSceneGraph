@@ -157,6 +157,7 @@ unsigned int Image::computeNumComponents(GLenum pixelFormat)
         case(GL_RGBA): return 4;
         case(GL_BGRA): return 4;
         case(GL_LUMINANCE): return 1;
+        case(GL_INTENSITY): return 1;
         case(GL_LUMINANCE_ALPHA): return 2;
         case(GL_HILO_NV): return 2;
         case(GL_DSDT_NV): return 2;

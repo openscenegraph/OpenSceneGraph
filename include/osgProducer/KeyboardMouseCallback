@@ -54,6 +54,8 @@ class OSGPRODUCER_EXPORT KeyboardMouseCallback : public Producer::KeyboardMouseC
 
 	virtual void specialKeyPress( Producer::KeyCharacter key);
 	virtual void specialKeyRelease( Producer::KeyCharacter key);
+        
+        virtual void shutdown();
 
 
         void setEscapeSetDone(bool esc) { _escapeKeySetsDone = esc; }

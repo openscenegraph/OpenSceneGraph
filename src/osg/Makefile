@@ -82,7 +82,9 @@ CXXFILES =\
 	TextureCubeMap.cpp\
 	Timer.cpp\
 	Transform.cpp\
+	UnitTestFramework.cpp\
 	Version.cpp\
+	Vec3.cpp\
 	Viewport.cpp\
 
 DEF     += -DSG_LIBRARY

@@ -93,6 +93,7 @@ DEMOS_DIRS = \
 	osgtexture1D\
 	osgtexture2D\
 	osgtexture3D\
+	osgunittests\
 	osgviews\
 	osgversion\
 	sgv

@@ -413,6 +413,14 @@ SOURCE=..\..\src\osg\BlendFunc.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\UnitTestFramework.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osg\Vec3.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\Version.cpp
 # End Source File
 # Begin Source File
@@ -802,6 +810,10 @@ SOURCE=..\..\Include\Osg\BlendFunc
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\Types
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\UnitTestFramework
 # End Source File
 # Begin Source File
 

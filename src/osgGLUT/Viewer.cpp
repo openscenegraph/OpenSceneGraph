@@ -129,17 +129,7 @@ Viewer::Viewer()
     
     _displaySettings = osgNew osg::DisplaySettings;
 
-
-
-
-
-
-
-
-
-
-
-
+    _recordingAnimationPath = false;
 
 }
 
@@ -392,20 +382,33 @@ float Viewer::app(unsigned int viewport)
     ea->adaptFrame(_frameStamp->getReferenceTime());
 
     bool handled = false;
-    for ( EventHandlerList::iterator eh =
-            _viewportList[viewport]._eventHandlerList.begin();
-            eh != _viewportList[viewport]._eventHandlerList.end(); eh++ ) {
-        if ( eh->valid() ) {
-            if ( (*eh)->handle(*ea,*this) ) {
+    for (EventHandlerList::iterator eh = _viewportList[viewport]._eventHandlerList.begin();
+         eh != _viewportList[viewport]._eventHandlerList.end(); 
+         eh++ )
+    {
+        if ( eh->valid() )
+        {
+            if ( (*eh)->handle(*ea,*this) )
+            {
                 handled = true;
                 break;
             }
         }
     }
-    if ( !handled ) {
+//    if ( !handled ) {
         _viewportList[viewport]._cameraManipulator->handle(*ea,*this);
-    }
+//    }
 
+
+    if (getRecordingAnimationPath() && getAnimationPath())
+    {
+        osg::Camera* camera = getViewportSceneView(viewport)->getCamera();
+        osg::Matrix matrix;
+        matrix.invert(camera->getModelViewMatrix());
+        osg::Quat quat;
+        quat.set(matrix);
+        getAnimationPath()->insert(_frameStamp->getReferenceTime(),osg::AnimationPath::ControlPoint(matrix.getTrans(),quat));
+    }
 
     // do app traversal.
     
@@ -912,7 +915,7 @@ void Viewer::keyboard(unsigned char key, int x, int y)
     if (key>='1' && key<='4')
     {
         int pos = key-'1';
-        selectCameraManipulator(pos);
+        selectCameraManipulator(pos,_focusedViewport);
     }
 
     osgUtil::SceneView* sceneView = getViewportSceneView(_focusedViewport);
@@ -1322,6 +1325,68 @@ void Viewer::keyboard(unsigned char key, int x, int y)
             }
             break;
 
+        case 'Z' :
+        case 'z' :
+        
+            if (getRecordingAnimationPath())
+            {
+                // have already been recording so switch of recording.
+                setRecordingAnimationPath(false);
+                
+                osg::notify(osg::NOTICE) << "Finished recording camera animation, press 'Z' to reply."<< std::endl;
+
+                if (getAnimationPath())
+                {
+                    std::ofstream fout("saved_animation.path");
+                    const AnimationPath::TimeControlPointMap& tcpm = getAnimationPath()->getTimeControlPointMap();
+                    for(AnimationPath::TimeControlPointMap::const_iterator tcpmitr=tcpm.begin();
+                        tcpmitr!=tcpm.end();
+                        ++tcpmitr)
+                    {
+                        const AnimationPath::ControlPoint& cp = tcpmitr->second;
+                        fout<<tcpmitr->first<<" "<<cp._position<<" "<<cp._rotation<<std::endl;
+                    }
+                    fout.close();
+                    
+                    osg::notify(osg::NOTICE) << "Saved camera animation to 'saved_animation.path'"<< std::endl;
+
+                }
+                
+            }
+            else if (key=='z') 
+            {
+                setRecordingAnimationPath(true);
+                setAnimationPath(new osg::AnimationPath());
+                getAnimationPath()->setLoopMode(osg::AnimationPath::LOOP);
+                osg::notify(osg::NOTICE) << "Recording camera animation, press 'z' to finish recording."<< std::endl;
+            }
+
+            if (key=='Z')
+            {
+                osgGA::AnimationPathManipulator* apm = 0;
+                int apmNo = 0;
+                CameraManipList& cmlist = _viewportList[_focusedViewport]._cameraManipList;
+                for(CameraManipList::iterator cmlitr=cmlist.begin();
+                    cmlitr!=cmlist.end() && apm==0;
+                    ++cmlitr,++apmNo)
+                {
+                    apm = dynamic_cast<osgGA::AnimationPathManipulator*>(cmlitr->get());
+                }
+
+                if (!apm)
+                {
+                    apm = new osgGA::AnimationPathManipulator();
+                    apmNo = registerCameraManipulator(apm,_focusedViewport);
+                }
+
+                apm->setAnimationPath(getAnimationPath());
+                apm->home(*ea,*this);
+
+                selectCameraManipulator(apmNo,_focusedViewport);
+            }
+
+            break;
+
         case 27 :
             
             _exit = true;
@@ -1412,6 +1477,12 @@ void Viewer::help(std::ostream& fout)
         <<"      it just maximizes the window and leaves the window's borders."<< std::endl
         <<"      If started in full screen mode on Linux, window will be borderless"<< std::endl
         <<"      and will resize down, but will remain borderless."<< std::endl
+        << std::endl
+        <<"y     Reduce fog density."<< std::endl
+        <<"Y     Increase fog density."<< std::endl
+        << std::endl
+        <<"z     Toggle recording of camera path."<< std::endl
+        <<"Z     Reply recorded camera path."<< std::endl
         <<"Space Reset scene to the default view."<< std::endl
         <<"Esc   Exit sgv."<< std::endl;
 }

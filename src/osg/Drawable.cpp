@@ -239,13 +239,13 @@ struct ComputeBound : public Drawable::PrimitiveFunctor
 {
         ComputeBound():_vertices(0) {}
         
-        virtual void setVertexArray(unsigned int,Vec3* vertices) { _vertices = vertices; }
+        virtual void setVertexArray(unsigned int,const Vec3* vertices) { _vertices = vertices; }
 
         virtual void drawArrays(GLenum,GLint first,GLsizei count)
         {
             if (_vertices)
             {
-                osg::Vec3* vert = _vertices+first;
+                const osg::Vec3* vert = _vertices+first;
                 for(;count>0;--count,++vert)
                 {
                     _bb.expandBy(*vert);
@@ -253,7 +253,7 @@ struct ComputeBound : public Drawable::PrimitiveFunctor
             }
         }
 
-        virtual void drawElements(GLenum,GLsizei count,GLubyte* indices)
+        virtual void drawElements(GLenum,GLsizei count,const GLubyte* indices)
         {
             if (_vertices)
             {
@@ -264,7 +264,7 @@ struct ComputeBound : public Drawable::PrimitiveFunctor
             }
         }
 
-        virtual void drawElements(GLenum,GLsizei count,GLushort* indices)
+        virtual void drawElements(GLenum,GLsizei count,const GLushort* indices)
         {
             if (_vertices)
             {
@@ -275,7 +275,7 @@ struct ComputeBound : public Drawable::PrimitiveFunctor
             }
         }
 
-        virtual void drawElements(GLenum,GLsizei count,GLuint* indices)
+        virtual void drawElements(GLenum,GLsizei count,const GLuint* indices)
         {
             if (_vertices)
             {
@@ -291,7 +291,7 @@ struct ComputeBound : public Drawable::PrimitiveFunctor
         virtual void vertex(float x,float y,float z) { _bb.expandBy(x,y,z); }
         virtual void end() {}
         
-        Vec3*           _vertices;
+        const Vec3*     _vertices;
         BoundingBox     _bb;
 };
 

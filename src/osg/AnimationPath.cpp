@@ -20,14 +20,14 @@ bool AnimationPath::getInterpolatedControlPoint(double time,ControlPoint& contro
             double fraction_part = modulated_time - floor(modulated_time);
             if (fraction_part>0.5) fraction_part = 1.0-fraction_part;
             
-            time = (fraction_part*2.0) * getPeriod();
+            time = getFirstTime()+(fraction_part*2.0) * getPeriod();
             break;
         }
         case(LOOP):
         {
             double modulated_time = (time - getFirstTime())/getPeriod();
             double fraction_part = modulated_time - floor(modulated_time);
-            time = fraction_part * getPeriod();
+            time = getFirstTime()+fraction_part * getPeriod();
             break;
         }
         case(NO_LOOPING):

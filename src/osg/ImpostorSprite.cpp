@@ -121,7 +121,13 @@ void ImpostorSprite::accept(AttributeFunctor& af)
     af.apply(TEXTURE_COORDS_0,4,_texcoords);
 }
 
-void ImpostorSprite::accept(PrimitiveFunctor& functor)
+void ImpostorSprite::accept(ConstAttributeFunctor& af) const
+{
+    af.apply(VERTICES,4,_coords);
+    af.apply(TEXTURE_COORDS_0,4,_texcoords);
+}
+
+void ImpostorSprite::accept(PrimitiveFunctor& functor) const
 {
     functor.setVertexArray(4,_coords);
     functor.drawArrays( GL_QUADS, 0, 4);

@@ -880,8 +880,32 @@ void GeoSet::accept(AttributeFunctor& auf)
     }
 }
 
+void GeoSet::accept(ConstAttributeFunctor& auf) const
+{
+    if (_numcoords == 0) computeNumVerts();
 
-void GeoSet::accept(PrimitiveFunctor& functor)
+    if (_coords && _numcoords)
+    {
+        auf.apply(VERTICES,_numcoords,_coords);
+    }
+    
+    if (_normals && _numnormals)
+    {
+        auf.apply(NORMALS,_numnormals,_normals);
+    }
+    
+    if (_colors && _numcolors)
+    {
+        auf.apply(COLORS,_numcolors,_colors);
+    }
+    
+    if (_tcoords && _numtcoords)
+    {
+        auf.apply(TEXTURE_COORDS_0,_numtcoords,_tcoords);
+    }
+}
+
+void GeoSet::accept(PrimitiveFunctor& functor) const
 {
     // will easily convert into a Geometry.
 

@@ -842,22 +842,105 @@ void Geometry::drawImmediateMode(State& state)
 
 }
 
+class AttrbuteFunctorArrayVisitor : public ArrayVisitor
+{
+    public:
+    
+        AttrbuteFunctorArrayVisitor(Drawable::AttributeFunctor& af):
+            _af(af) {}
+    
+        virtual ~AttrbuteFunctorArrayVisitor() {}
+
+        virtual void apply(ByteArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
+        virtual void apply(ShortArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
+        virtual void apply(IntArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
+        virtual void apply(UByteArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
+        virtual void apply(UShortArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
+        virtual void apply(UIntArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
+        virtual void apply(UByte4Array& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
+        virtual void apply(FloatArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
+        virtual void apply(Vec2Array& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
+        virtual void apply(Vec3Array& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
+        virtual void apply(Vec4Array& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
+    
+    
+        inline void apply(Drawable::AttributeType type,Array* array)
+        {
+            if (array)
+            {
+                _type = type;
+                array->accept(*this);
+            }
+        }
+    
+        Drawable::AttributeFunctor&   _af;
+        Drawable::AttributeType       _type;
+};
 
 void Geometry::accept(AttributeFunctor& af)
 {
-    if (_vertexArray.valid() && !_vertexArray->empty())
-    {
-        af.apply(VERTICES,_vertexArray->size(),&(_vertexArray->front()));
-    }
+    AttrbuteFunctorArrayVisitor afav(af);
     
-    if (_normalArray.valid() && !_normalArray->empty())
+    afav.apply(VERTICES,_vertexArray.get());
+    afav.apply(NORMALS,_normalArray.get());
+    afav.apply(COLORS,_colorArray.get());
+    
+    for(unsigned unit=0;unit<_texCoordList.size();++unit)
     {
-        af.apply(NORMALS,_normalArray->size(),&(_normalArray->front()));
+        afav.apply((AttributeType)(TEXTURE_COORDS_0+unit),_texCoordList[unit].first.get());
     }
-    // need to add other attriubtes
 }
 
-void Geometry::accept(PrimitiveFunctor& functor)
+class ConstAttrbuteFunctorArrayVisitor : public ConstArrayVisitor
+{
+    public:
+    
+        ConstAttrbuteFunctorArrayVisitor(Drawable::ConstAttributeFunctor& af):
+            _af(af) {}
+    
+        virtual ~ConstAttrbuteFunctorArrayVisitor() {}
+
+        virtual void apply(const ByteArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
+        virtual void apply(const ShortArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
+        virtual void apply(const IntArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
+        virtual void apply(const UByteArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
+        virtual void apply(const UShortArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
+        virtual void apply(const UIntArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
+        virtual void apply(const UByte4Array& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
+        virtual void apply(const FloatArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
+        virtual void apply(const Vec2Array& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
+        virtual void apply(const Vec3Array& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
+        virtual void apply(const Vec4Array& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
+    
+    
+        inline void apply(Drawable::AttributeType type,const Array* array)
+        {
+            if (array)
+            {
+                _type = type;
+                array->accept(*this);
+            }
+        }
+    
+        Drawable::ConstAttributeFunctor&    _af;
+        Drawable::AttributeType             _type;
+};
+
+void Geometry::accept(ConstAttributeFunctor& af) const
+{
+    ConstAttrbuteFunctorArrayVisitor afav(af);
+    
+    afav.apply(VERTICES,_vertexArray.get());
+    afav.apply(NORMALS,_normalArray.get());
+    afav.apply(COLORS,_colorArray.get());
+    
+    for(unsigned unit=0;unit<_texCoordList.size();++unit)
+    {
+        afav.apply((AttributeType)(TEXTURE_COORDS_0+unit),_texCoordList[unit].first.get());
+    }
+}
+
+void Geometry::accept(PrimitiveFunctor& functor) const
 {
     if (!_vertexArray.valid() || _vertexArray->empty()) return;
     
@@ -866,7 +949,7 @@ void Geometry::accept(PrimitiveFunctor& functor)
     {
         functor.setVertexArray(_vertexArray->size(),&(_vertexArray->front()));
 
-        for(PrimitiveSetList::iterator itr=_primitives.begin();
+        for(PrimitiveSetList::const_iterator itr=_primitives.begin();
             itr!=_primitives.end();
             ++itr)
         {
@@ -875,11 +958,11 @@ void Geometry::accept(PrimitiveFunctor& functor)
     }
     else
     {
-        for(PrimitiveSetList::iterator itr=_primitives.begin();
+        for(PrimitiveSetList::const_iterator itr=_primitives.begin();
             itr!=_primitives.end();
             ++itr)
         {
-            PrimitiveSet* primitiveset = itr->get();
+            const PrimitiveSet* primitiveset = itr->get();
             GLenum mode=primitiveset->getMode();
             switch(primitiveset->getType())
             {
@@ -977,7 +1060,8 @@ void Geometry::accept(PrimitiveFunctor& functor)
                 }
             }
         }
-    }    
+    }
+    return;
 }
 
 bool Geometry::verifyBindings() const

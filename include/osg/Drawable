@@ -284,22 +284,57 @@ class SG_EXPORT Drawable : public Object
             virtual void apply(AttributeType,unsigned int,Vec4*) {}
             virtual void apply(AttributeType,unsigned int,UByte4*) {}
         };
+        
+        
+        /** return true if the Drawable subclass supports accept(AttributeFunctor&).*/
+        virtual bool supports(AttributeFunctor&) const { return false; }
 
-        /** accept an AttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has.*/
+        /** accept an AttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has.
+          * return true if functor handled by drawable, return false on failure of drawable to generate functor calls.*/
         virtual void accept(AttributeFunctor&) {}
         
+
+        class ConstAttributeFunctor
+        {
+        public:
+        
+            virtual ~ConstAttributeFunctor() {}
+            
+            virtual void apply(AttributeType,const unsigned int,const GLbyte*) {}
+            virtual void apply(AttributeType,const unsigned int,const GLshort*) {}
+            virtual void apply(AttributeType,const unsigned int,const GLint*) {}
+
+            virtual void apply(AttributeType,const unsigned int,const GLubyte*) {}
+            virtual void apply(AttributeType,const unsigned int,const GLushort*) {}
+            virtual void apply(AttributeType,const unsigned int,const GLuint*) {}
+
+            virtual void apply(AttributeType,const unsigned int,const float*) {}
+            virtual void apply(AttributeType,const unsigned int,const Vec2*) {}
+            virtual void apply(AttributeType,const unsigned int,const Vec3*) {}
+            virtual void apply(AttributeType,const unsigned int,const Vec4*) {}
+            virtual void apply(AttributeType,const unsigned int,const UByte4*) {}
+        };
+
+        /** return true if the Drawable subclass supports accept(ConstAttributeFunctor&).*/
+        virtual bool supports(ConstAttributeFunctor&) const { return false; }
+
+        /** accept an AttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has.
+          * return true if functor handled by drawable, return false on failure of drawable to generate functor calls.*/
+        virtual void accept(ConstAttributeFunctor&) const {}
+
+
         class PrimitiveFunctor
         {
         public:
             
             virtual ~PrimitiveFunctor() {}
 
-            virtual void setVertexArray(unsigned int count,Vec3* vertices) = 0;
+            virtual void setVertexArray(unsigned int count,const Vec3* vertices) = 0;
             
             virtual void drawArrays(GLenum mode,GLint first,GLsizei count) = 0;
-            virtual void drawElements(GLenum mode,GLsizei count,GLubyte* indices) = 0;
-            virtual void drawElements(GLenum mode,GLsizei count,GLushort* indices) = 0;
-            virtual void drawElements(GLenum mode,GLsizei count,GLuint* indices) = 0;
+            virtual void drawElements(GLenum mode,GLsizei count,const GLubyte* indices) = 0;
+            virtual void drawElements(GLenum mode,GLsizei count,const GLushort* indices) = 0;
+            virtual void drawElements(GLenum mode,GLsizei count,const GLuint* indices) = 0;
             
             virtual void begin(GLenum mode) = 0;
             virtual void vertex(const Vec3& vert) = 0;
@@ -308,9 +343,14 @@ class SG_EXPORT Drawable : public Object
             
         };
         
-        /** accept a PrimtiveFunctor and call its methods to tell it about the interal primtives that this Drawable has.*/
-        virtual void accept(PrimitiveFunctor&) {}
+        /** return true if the Drawable subclass supports accept(PrimitiveFunctor&).*/
+        virtual bool supports(PrimitiveFunctor&) const { return false; }
 
+        /** accept a PrimtiveFunctor and call its methods to tell it about the interal primtives that this Drawable has.
+          * return true if functor handled by drawable, return false on failure of drawable to generate functor calls.
+          * Note, PrimtiveFunctor only provide const access of the primtives, as primitives may be procedurally generated
+          * so one cannot modify it.*/
+        virtual void accept(PrimitiveFunctor&) const {}
 
     protected:
 
@@ -422,7 +462,7 @@ public:
     
     virtual ~TriangleFunctor() {}
 
-    virtual void setVertexArray(unsigned int count,Vec3* vertices)
+    virtual void setVertexArray(unsigned int count,const Vec3* vertices)
     {
         _vertexArraySize = count;
         _vertexArrayPtr = vertices;
@@ -436,14 +476,14 @@ public:
         {
             case(GL_TRIANGLES):
             {
-                Vec3* vlast = &_vertexArrayPtr[first+count];
-                for(Vec3* vptr=&_vertexArrayPtr[first];vptr<vlast;vptr+=3)
+                const Vec3* vlast = &_vertexArrayPtr[first+count];
+                for(const Vec3* vptr=&_vertexArrayPtr[first];vptr<vlast;vptr+=3)
                     operator()(*(vptr),*(vptr+1),*(vptr+2));
                 break;
             }
             case(GL_TRIANGLE_STRIP):
             {
-                Vec3* vptr = &_vertexArrayPtr[first];
+                const Vec3* vptr = &_vertexArrayPtr[first];
                 for(GLsizei i=2;i<count;++i,++vptr)
                 {
 		    if ((i%2)) operator()(*(vptr),*(vptr+2),*(vptr+1));
@@ -453,7 +493,7 @@ public:
             }
             case(GL_QUADS):
             {
-                Vec3* vptr = &_vertexArrayPtr[first];
+                const Vec3* vptr = &_vertexArrayPtr[first];
                 for(GLsizei i=3;i<count;i+=4,vptr+=4)
                 {
                     operator()(*(vptr),*(vptr+1),*(vptr+2));
@@ -463,7 +503,7 @@ public:
             }
             case(GL_QUAD_STRIP):
             {
-                Vec3* vptr = &_vertexArrayPtr[first];
+                const Vec3* vptr = &_vertexArrayPtr[first];
                 for(GLsizei i=3;i<count;i+=2,vptr+=2)
                 {
                     operator()(*(vptr),*(vptr+1),*(vptr+2));
@@ -474,8 +514,8 @@ public:
             case(GL_POLYGON): // treat polygons as GL_TRIANGLE_FAN
             case(GL_TRIANGLE_FAN):
             {
-                Vec3* vfirst = &_vertexArrayPtr[first];
-                Vec3* vptr = vfirst+1;
+                const Vec3* vfirst = &_vertexArrayPtr[first];
+                const Vec3* vptr = vfirst+1;
                 for(GLsizei i=2;i<count;++i,++vptr)
                 {
                     operator()(*(vfirst),*(vptr),*(vptr+1));
@@ -492,11 +532,11 @@ public:
         }
     }
     
-    virtual void drawElements(GLenum mode,GLsizei count,GLubyte* indices)
+    virtual void drawElements(GLenum mode,GLsizei count,const GLubyte* indices)
     {
         if (indices==0 || count==0) return;
     
-        typedef GLubyte* IndexPointer;
+        typedef const GLubyte* IndexPointer;
     
         switch(mode)
         {
@@ -541,7 +581,7 @@ public:
             case(GL_TRIANGLE_FAN):
             {
                 IndexPointer iptr = indices;
-                Vec3& vfirst = _vertexArrayPtr[*iptr];
+                const Vec3& vfirst = _vertexArrayPtr[*iptr];
                 ++iptr;
                 for(GLsizei i=2;i<count;++i,++iptr)
                 {
@@ -559,11 +599,11 @@ public:
         }
     }    
 
-    virtual void drawElements(GLenum mode,GLsizei count,GLushort* indices)
+    virtual void drawElements(GLenum mode,GLsizei count,const GLushort* indices)
     {
         if (indices==0 || count==0) return;
     
-        typedef GLushort* IndexPointer;
+        typedef const GLushort* IndexPointer;
     
         switch(mode)
         {
@@ -610,7 +650,7 @@ public:
             case(GL_TRIANGLE_FAN):
             {
                 IndexPointer iptr = indices;
-                Vec3& vfirst = _vertexArrayPtr[*iptr];
+                const Vec3& vfirst = _vertexArrayPtr[*iptr];
                 ++iptr;
                 for(GLsizei i=2;i<count;++i,++iptr)
                 {
@@ -628,11 +668,11 @@ public:
         }
     }    
 
-    virtual void drawElements(GLenum mode,GLsizei count,GLuint* indices)
+    virtual void drawElements(GLenum mode,GLsizei count,const GLuint* indices)
     {
         if (indices==0 || count==0) return;
     
-        typedef GLuint* IndexPointer;
+        typedef const GLuint* IndexPointer;
     
         switch(mode)
         {
@@ -677,7 +717,7 @@ public:
             case(GL_TRIANGLE_FAN):
             {
                 IndexPointer iptr = indices;
-                Vec3& vfirst = _vertexArrayPtr[*iptr];
+                const Vec3& vfirst = _vertexArrayPtr[*iptr];
                 ++iptr;
                 for(GLsizei i=2;i<count;++i,++iptr)
                 {
@@ -722,7 +762,7 @@ protected:
 
 
     unsigned int        _vertexArraySize;
-    Vec3*               _vertexArrayPtr;
+    const Vec3*         _vertexArrayPtr;
 
     GLenum              _modeCache;
     std::vector<Vec3>   _vertexCache;

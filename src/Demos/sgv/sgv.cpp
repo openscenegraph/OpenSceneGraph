@@ -150,7 +150,10 @@ int main( int argc, char **argv )
     if( !pathfile.empty() ) {
 	osgGA::AnimationPathManipulator *apm = new osgGA::AnimationPathManipulator(pathfile);
 	if( apm->valid() ) 
-            viewer.registerCameraManipulator(apm);
+        {
+            unsigned int no = viewer.registerCameraManipulator(apm);
+            viewer.selectCameraManipulator(no);
+        }
 	else
 	    delete apm;
     }

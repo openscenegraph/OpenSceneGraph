@@ -12,7 +12,7 @@ class DrawShapeVisitor : public ConstShapeVisitor
 {
     public:
     
-    	DrawShapeVisitor(State& state,TessellationHints* hints):
+    	DrawShapeVisitor(State& state,const TessellationHints* hints):
 	    _state(state),
 	    _hints(hints) {}
     
@@ -29,7 +29,7 @@ class DrawShapeVisitor : public ConstShapeVisitor
     	virtual void apply(const CompositeShape&);
 	
 	State&	    	    _state;
-	TessellationHints*  _hints;
+	const TessellationHints*  _hints;
 };
 
 
@@ -802,7 +802,7 @@ class PrimitiveShapeVisitor : public ConstShapeVisitor
 {
     public:
     
-    	PrimitiveShapeVisitor(Drawable::PrimitiveFunctor& functor,TessellationHints* hints):
+    	PrimitiveShapeVisitor(Drawable::PrimitiveFunctor& functor,const TessellationHints* hints):
             _functor(functor),
 	    _hints(hints) {}
     
@@ -819,7 +819,7 @@ class PrimitiveShapeVisitor : public ConstShapeVisitor
     	virtual void apply(const CompositeShape&);
 	
         Drawable::PrimitiveFunctor& _functor;
-	TessellationHints*  _hints;
+	const TessellationHints*  _hints;
 };
 
 
@@ -1198,10 +1198,6 @@ void PrimitiveShapeVisitor::apply(const HeightField& field)
     float dx = field.getXInterval();
     float dy = field.getYInterval();
 
-    float du = 1.0f/((float)field.getNumColumns()-1.0f);
-    float dv = 1.0f/((float)field.getNumRows()-1.0f);
-
-    float vBase = 0.0f;
     for(unsigned int row=0;row<field.getNumRows()-1;++row)
     {
 
@@ -1264,11 +1260,11 @@ void ProceduralGeometry::drawImmediateMode(State& state)
     }
 }
 
-void ProceduralGeometry::accept(AttributeFunctor&)
+void ProceduralGeometry::accept(ConstAttributeFunctor&) const
 {
 }
 
-void ProceduralGeometry::accept(PrimitiveFunctor& pf)
+void ProceduralGeometry::accept(PrimitiveFunctor& pf) const
 {
     if (_shape.valid())
     {

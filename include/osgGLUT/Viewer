@@ -14,6 +14,7 @@
 #include <osgGA/GUIEventAdapter>
 #include <osgGA/CameraManipulator>
 #include <osgGA/GUIEventHandler>
+#include <osgGA/AnimationPathManipulator>
 
 #include <osgUtil/SceneView>
 
@@ -104,6 +105,14 @@ class OSGGLUT_EXPORT Viewer : public Window, public osgGA::GUIActionAdapter
         typedef std::vector<osg::ref_ptr<osgGA::CameraManipulator> > CameraManipList;
         typedef std::list<osg::ref_ptr<osgGA::GUIEventHandler> > EventHandlerList;
 
+
+        void setRecordingAnimationPath(bool on) { _recordingAnimationPath = on; }
+        bool getRecordingAnimationPath() const { return _recordingAnimationPath; }
+
+        void setAnimationPath(osg::AnimationPath* path) { _animationPath = path; }
+        osg::AnimationPath* getAnimationPath() { return _animationPath.get(); }
+        const osg::AnimationPath* getAnimationPath() const { return _animationPath.get(); }
+
     protected:
 
         virtual void clear();
@@ -176,6 +185,9 @@ class OSGGLUT_EXPORT Viewer : public Window, public osgGA::GUIActionAdapter
 
         osg::ref_ptr<osg::FrameStamp>       _frameStamp;
         osg::ref_ptr<osg::DisplaySettings>  _displaySettings;
+
+        bool                                _recordingAnimationPath;
+        osg::ref_ptr<osg::AnimationPath>    _animationPath;
 
 
 };

@@ -32,6 +32,8 @@
 
 #include <osgSim/MultiSwitch>
 #include <osgSim/DOFTransform>
+#include <osgSim/LightPointNode>
+
 
 #include <osgDB/FileUtils>
 #include <osgDB/FileNameUtils>
@@ -282,7 +284,11 @@ osg::Group* ConvertFromFLT::visitPrimaryNode(osg::Group& osgParent, PrimNodeReco
             }
             break;
             case LIGHT_POINT_OP:
+#ifdef USE_DEPRECATED_LIGHTPOINT
                 visitLightPoint(&geoSetBuilder, (LightPointRecord*)child);
+#else
+                visitLightPoint(osgParent, (LightPointRecord*)child);
+#endif
                 break;
             case GROUP_OP:
                 osgPrim = visitGroup(osgParent, (GroupRecord*)child);
@@ -1985,6 +1991,69 @@ void ConvertFromFLT::visitLightPoint(GeoSetBuilder* pBuilder, LightPointRecord* 
     addVertices(pBuilder, rec);
     pBuilder->addPrimitive();
 }
+
+
+void ConvertFromFLT::visitLightPoint(osg::Group& osgParent, LightPointRecord* rec)
+{
+    SLightPoint *pSLightPoint = (SLightPoint*)rec->getData();
+
+    GeoSetBuilder pBuilder;
+    DynGeoSet* dgset = pBuilder.getDynGeoSet();
+    dgset->setPrimType(osg::PrimitiveSet::POINTS);
+    dgset->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+    dgset->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+
+    osgSim::LightPointNode *lpNode = new osgSim::LightPointNode();
+    lpNode->setMinPixelSize( pSLightPoint->sfMinPixelSize);
+    lpNode->setMaxPixelSize( pSLightPoint->sfMaxPixelSize);
+
+    addVertices(&pBuilder, rec);
+
+    const DynGeoSet::CoordList& coords = dgset->getCoordList();
+    const DynGeoSet::ColorList& colors = dgset->getColorList();
+    const DynGeoSet::NormalList& norms = dgset->getNormalList();
+
+    float lobeVert = osg::DegreesToRadians( pSLightPoint->sfLobeVert );
+    float lobeHorz = osg::DegreesToRadians( pSLightPoint->sfLobeHoriz );
+    float pointRadius =  pSLightPoint->afActualPixelSize;
+
+    for ( unsigned int nl = 0; nl < coords.size(); nl++)
+    {
+       osg::Vec4 color( 1.0f, 1.0f, 1.0f, 1.0f);
+       if( nl < colors.size())  color = colors[nl];
+
+       osgSim::LightPoint lp( true, coords[ nl], color, 1.0f, pointRadius);
+
+       if( pSLightPoint->diDirection )
+       {
+          // calc elevation angles
+          osg::Vec3 normal( 1.0f, 0.0f, 0.0f);
+          if( nl < norms.size())  normal = norms[nl];
+   
+          float elevAngle = osg::PI_2 - acos( normal.z() );
+          if( normal.z() < 0.0f) elevAngle = -elevAngle;
+	  float minElevation = elevAngle - lobeVert/2.0f;
+	  float maxElevation = elevAngle + lobeVert/2.0f;
+
+	  // calc azimuth angles
+	  osg::Vec2 pNormal( normal.x(), normal.y() );
+	  float lng = pNormal.normalize();
+	  float azimAngle = acos( pNormal.y() );
+	  if( pNormal.y() > 0.0f ) azimAngle = - azimAngle;
+
+	  float minAzimuth = azimAngle - lobeHorz/2.0f;
+	  float maxAzimuth = azimAngle + lobeHorz/2.0f;
+
+	  float fadeRange = 0.0f;
+	  lp._sector = new osgSim::AzimElevationSector( minAzimuth, maxAzimuth, minElevation, maxElevation, fadeRange);
+       }
+
+       lpNode->addLightPoint( lp);
+    }
+
+    osgParent.addChild( lpNode);
+}
+
 
 
 void ConvertFromFLT::visitMesh ( osg::Group &parent, GeoSetBuilder *pBuilder, MeshRecord *rec )

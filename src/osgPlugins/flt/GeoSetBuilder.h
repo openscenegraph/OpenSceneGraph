@@ -125,6 +125,16 @@ class DynGeoSet : public osg::Referenced
         inline void addColor(const osg::Vec4& color)    { _colorList.push_back(color); }
         inline void addTCoord(const osg::Vec2& tcoord)  { _tcoordList.push_back(tcoord); }
 
+        typedef std::vector<osg::Vec3>  CoordList;
+        typedef std::vector<osg::Vec3>  NormalList;
+        typedef std::vector<osg::Vec4>  ColorList;
+        typedef std::vector<osg::Vec2>  TcoordList;
+
+	const CoordList&  getCoordList()    { return _coordList; }
+	const NormalList& getNormalList()   { return _normalList; }
+	const ColorList&  getColorList()    { return _colorList; }
+	const TcoordList& getTcoordList()   { return _tcoordList; }
+
         void append(DynGeoSet* source);
         void setBinding();
         
@@ -146,10 +156,6 @@ class DynGeoSet : public osg::Referenced
     private:
 
         typedef std::vector<int>        PrimLenList;
-        typedef std::vector<osg::Vec3>  CoordList;
-        typedef std::vector<osg::Vec3>  NormalList;
-        typedef std::vector<osg::Vec4>  ColorList;
-        typedef std::vector<osg::Vec2>  TcoordList;
 
         osg::ref_ptr<osg::Geometry>  _geom;
 

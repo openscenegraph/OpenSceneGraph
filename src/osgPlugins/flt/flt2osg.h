@@ -158,6 +158,7 @@ class ConvertFromFLT
         void visitMesh(osg::Group& osgParent,GeoSetBuilder* pParent, MeshRecord* rec);
         void visitMeshPrimitive(osg::Group& osgParent, MeshPrimitiveRecord* rec);
         void visitLightPoint(GeoSetBuilder* pBuilder, LightPointRecord* rec);
+	void visitLightPoint(osg::Group& osgParent, LightPointRecord* rec);
         int  visitVertexList(GeoSetBuilder* pParent, VertexListRecord* rec);
         int  visitLocalVertexPool(GeoSetBuilder* pBuilder, LocalVertexPoolRecord* rec);
 

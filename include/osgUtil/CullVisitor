@@ -100,17 +100,17 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         /** Get the impostor error threshold.*/
         float getImpostorPixelErrorThreshold() const { return _impostorPixelErrorThreshold; }
 
-        /** Set whether ImpsotorSprite's should be placed in a depth sorted bin for rendering.*/
+        /** Set whether ImpostorSprite's should be placed in a depth sorted bin for rendering.*/
         void setDepthSortImpostorSprites(bool doDepthSort) { _depthSortImpostorSprites = doDepthSort; }
 
-        /** Get whether ImpsotorSprite's are depth sorted bin for rendering.*/
+        /** Get whether ImpostorSprite's are depth sorted bin for rendering.*/
         bool setDepthSortImpostorSprites() const { return _depthSortImpostorSprites; }
 
-        /** Set the number of frames that an ImpsotorSprite's is kept whilst not being beyond,
+        /** Set the number of frames that an ImpostorSprite's is kept whilst not being beyond,
           * before being recycled.*/
         void setNumberOfFrameToKeepImpostorSprites(int numFrames) { _numFramesToKeepImpostorSprites = numFrames; }
 
-        /** Get the number of frames that an ImpsotorSprite's is kept whilst not being beyond,
+        /** Get the number of frames that an ImpostorSprite's is kept whilst not being beyond,
           * before being recycled.*/
         int getNumberOfFrameToKeepImpostorSprites() const { return _numFramesToKeepImpostorSprites; }
 

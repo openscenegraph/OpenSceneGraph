@@ -1,0 +1,88 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+ * Copyright (C) 2003 3Dlabs Inc. Ltd.
+ *
+ * This application is open source and may be redistributed and/or modified   
+ * freely and without restriction, both in commericial and non commericial
+ * applications, as long as this copyright notice is maintained.
+ * 
+ * This application is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+*/
+
+/* file:	include/osgGL2/UniformValue
+ * author:	Mike Weiblen 2003-09-18
+ *
+ * See http://www.3dlabs.com/opengl2/ for more information regarding
+ * the OpenGL Shading Language.
+*/
+
+#ifndef OSGGL2_UNIFORMVALUE
+#define OSGGL2_UNIFORMVALUE 1
+
+#include <osg/ref_ptr>
+#include <osg/Vec2>
+#include <osg/Vec3>
+#include <osg/Vec4>
+#include <osg/Referenced>
+
+#include <osgGL2/Extensions>
+
+#include <vector>
+
+
+namespace osgGL2 {
+
+///////////////////////////////////////////////////////////////////////////
+
+/** An abstract class to encapsulate a new value for a glUniform.
+  * osgGL2::ProgramObject.setUniform() constructs and sends a UniformValue
+  * to all its PCPOs (per-context glProgramObjects) to set the value of a
+  * glUniform; that value is propogated to the glProgramObjects during the
+  * next osgGL2::ProgramObject.apply().
+  * This class is for internal use by osgGL2::ProgramObject.
+  */
+
+class UniformValue : public osg::Referenced
+{
+    public:
+	virtual void apply( Extensions *ext, const GLhandleARB progObj ) const = 0;
+
+    protected:
+	UniformValue( const char* uniformName ) : _name( uniformName ) {};
+	virtual ~UniformValue() {};
+
+	int getLocation( Extensions *ext, const GLhandleARB progObj ) const;
+
+	std::string _name;
+};
+
+typedef std::vector< osg::ref_ptr<UniformValue> > UniformValueList;
+
+
+///////////////////////////////////////////////////////////////////////////
+
+#define META_UniformValue( typeName ) \
+class UniformValue_##typeName : public UniformValue \
+{ \
+    public: \
+	UniformValue_##typeName( const char* uniformName, typeName value ); \
+	virtual void apply( Extensions *ext, const GLhandleARB progObj ) const; \
+    protected: \
+	typeName _value; \
+}
+
+META_UniformValue( int );
+META_UniformValue( float );
+
+using namespace osg;
+META_UniformValue( Vec2 );
+META_UniformValue( Vec3 );
+META_UniformValue( Vec4 );
+
+}
+
+#endif
+
+/*EOF*/
+

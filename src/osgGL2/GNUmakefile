@@ -5,7 +5,8 @@ include $(TOPDIR)/Make/makedefs
 CXXFILES = \
 	Extensions.cpp \
 	Version.cpp \
-	ProgramObject.cpp
+	ProgramObject.cpp\
+	UniformValue.cpp
 
 
 DEF     += -DOSGGL2_LIBRARY

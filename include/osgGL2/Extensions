@@ -11,7 +11,7 @@
 */
 
 /* file:	include/osgGL2/Extensions
- * author:	Mike Weiblen 2003-07-14
+ * author:	Mike Weiblen 2003-09-12
  *
  * See http://www.3dlabs.com/opengl2/ for more information regarding
  * the OpenGL Shading Language.
@@ -152,17 +152,17 @@ class OSGGL2_EXPORT Extensions : public osg::Referenced
 	void glUniform2i(GLint location, GLint v0, GLint v1) const;
 	void glUniform3i(GLint location, GLint v0, GLint v1, GLint v2) const;
 	void glUniform4i(GLint location, GLint v0, GLint v1, GLint v2, GLint v3) const;
-	void glUniform1fv(GLint location, GLsizei count, GLfloat *value) const;
-	void glUniform2fv(GLint location, GLsizei count, GLfloat *value) const;
-	void glUniform3fv(GLint location, GLsizei count, GLfloat *value) const;
-	void glUniform4fv(GLint location, GLsizei count, GLfloat *value) const;
-	void glUniform1iv(GLint location, GLsizei count, GLint *value) const;
-	void glUniform2iv(GLint location, GLsizei count, GLint *value) const;
-	void glUniform3iv(GLint location, GLsizei count, GLint *value) const;
-	void glUniform4iv(GLint location, GLsizei count, GLint *value) const;
-	void glUniformMatrix2fv(GLint location, GLsizei count, GLboolean transpose, GLfloat *value) const;
-	void glUniformMatrix3fv(GLint location, GLsizei count, GLboolean transpose, GLfloat *value) const;
-	void glUniformMatrix4fv(GLint location, GLsizei count, GLboolean transpose, GLfloat *value) const;
+	void glUniform1fv(GLint location, GLsizei count, const GLfloat *value) const;
+	void glUniform2fv(GLint location, GLsizei count, const GLfloat *value) const;
+	void glUniform3fv(GLint location, GLsizei count, const GLfloat *value) const;
+	void glUniform4fv(GLint location, GLsizei count, const GLfloat *value) const;
+	void glUniform1iv(GLint location, GLsizei count, const GLint *value) const;
+	void glUniform2iv(GLint location, GLsizei count, const GLint *value) const;
+	void glUniform3iv(GLint location, GLsizei count, const GLint *value) const;
+	void glUniform4iv(GLint location, GLsizei count, const GLint *value) const;
+	void glUniformMatrix2fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value) const;
+	void glUniformMatrix3fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value) const;
+	void glUniformMatrix4fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value) const;
 	GLint glGetUniformLocation(GLhandleARB programObject, const GLcharARB *name) const;
 	GLint glGetAttribLocation(GLhandleARB programObj, const GLcharARB *name) const;
 	void glGetActiveUniform(GLhandleARB programObj, GLuint index, GLsizei maxLength, GLsizei *length, GLint *size, GLint *type, GLcharARB *name) const;

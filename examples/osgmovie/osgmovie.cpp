@@ -250,6 +250,8 @@ int main(int argc, char** argv)
         if (arguments.isString(i))
         {
             osg::Image* image = osgDB::readImageFile(arguments[i]);
+            osg::ImageStream* imagestream = dynamic_cast<osg::ImageStream*>(image);
+            if (imagestream) imagestream->play();
             geode->addDrawable(createTexturedQuadGeometry(pos,image->s(),image->t(),image));
             geode->getOrCreateStateSet()->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
             

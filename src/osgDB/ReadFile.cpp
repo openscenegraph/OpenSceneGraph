@@ -13,6 +13,7 @@
 #include <osg/Notify>
 #include <osg/Object>
 #include <osg/Image>
+#include <osg/ImageStream>
 #include <osg/Node>
 #include <osg/Group>
 #include <osg/Geode>
@@ -119,6 +120,17 @@ Node* osgDB::readNodeFiles(osg::ArgumentParser& arguments,const ReaderWriter::Op
     {
         osg::ref_ptr<osg::Image> image = readImageFile(filename.c_str(), options);
         if (image.valid()) nodeList.push_back(osg::createGeodeForImage(image.get()));
+    }
+
+    while (arguments.read("--movie",filename))
+    {
+        osg::ref_ptr<osg::Image> image = readImageFile(filename.c_str(), options);
+        osg::ref_ptr<osg::ImageStream> imageStream = dynamic_cast<osg::ImageStream*>(image.get());
+        if (image.valid())
+        {
+            imageStream->play();
+            nodeList.push_back(osg::createGeodeForImage(imageStream.get()));
+        }
     }
 
     while (arguments.read("--dem",filename))

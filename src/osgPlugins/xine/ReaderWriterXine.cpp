@@ -69,18 +69,24 @@ class XineImageStream : public osg::ImageStream
              
             _ready = false;
 
-            xine_play(_stream, 0, 0);
+            // play();
 
-            // imageStream->play();
-
-            while (!_ready)
-            {
-                osg::notify(osg::NOTICE)<<"waiting..."<<std::endl;
-                usleep(10000);
-            }
         }
 
-        virtual void play() { _status=PLAYING; }
+        virtual void play()
+        {
+            if (_status!=PLAYING)
+            {
+                osg::notify(osg::NOTICE)<<"XineImageStream::play()"<<std::endl;
+                xine_play(_stream, 0, 0);
+                while (!_ready)
+                {
+                    osg::notify(osg::NOTICE)<<"waiting..."<<std::endl;
+                    usleep(10000);
+                }
+            }
+            _status=PLAYING;
+        }
 
         virtual void pause() { _status=PAUSED; }
 

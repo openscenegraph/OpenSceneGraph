@@ -71,7 +71,7 @@ class ReaderWriterQT : public osgDB::ReaderWriter
                 // state on the ImageStream... will integrated as is right now
                 // to get things off the ground.
                 osg::QuicktimeImageStream* moov = new osg::QuicktimeImageStream(fileName);
-                moov->play();
+                // moov->play();
                 return moov;
             }
 

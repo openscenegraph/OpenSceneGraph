@@ -77,6 +77,18 @@ char *SanitizeSRS( const char *pszUserInput )
     return pszResult;
 }
 
+osg::Matrixd computeGeoTransForRange(double xMin, double xMax, double yMin, double yMax)
+{
+    osg::Matrixd matrix;
+    matrix(0,0) = xMax-xMin;
+    matrix(3,0) = xMin;
+
+    matrix(1,1) = yMax-yMin;
+    matrix(3,1) = yMin;
+    
+    return matrix;
+}
+
 
 void ellipsodeTransformTest(double latitude, double longitude, double height)
 {
@@ -178,7 +190,9 @@ int main( int argc, char **argv )
     std::string currentCS;
     osg::Matrixd geoTransform;
     bool geoTransformSet = false; 
-    
+    bool geoTransformScale = false; 
+    double xMin, xMax, yMin, yMax;
+         
     int pos = 1;
     while(pos<arguments.argc())
     {
@@ -215,6 +229,49 @@ int main( int argc, char **argv )
             dataset->setConvertFromGeographicToGeocentric(true);
             std::cout<<"--geocentric "<<currentCS<<std::endl;
         }
+
+        else if (arguments.read(pos, "--bluemarble-east"))
+        {
+            currentCS = SanitizeSRS("WGS84");
+            geoTransformSet = true;
+            geoTransformScale = true;
+            geoTransform = computeGeoTransForRange(0.0, 180.0, -90.0, 90.0);
+            
+            dataset->setConvertFromGeographicToGeocentric(true);
+            std::cout<<"--bluemarble-west"<<currentCS<<" matrix="<<geoTransform<<std::endl;
+        }
+
+        else if (arguments.read(pos, "--bluemarble-west"))
+        {
+            currentCS = SanitizeSRS("WGS84");
+            geoTransformSet = true;
+            geoTransformScale = true;
+            geoTransform = computeGeoTransForRange(-180.0, 0.0, -90.0, 90.0);
+            
+            dataset->setConvertFromGeographicToGeocentric(true);
+            std::cout<<"--bluemarble-west "<<currentCS<<" matrix="<<geoTransform<<std::endl;
+        }
+
+        else if (arguments.read(pos, "--whole-globe"))
+        {
+            currentCS = SanitizeSRS("WGS84");
+            geoTransformSet = true;
+            geoTransformScale = true;
+            geoTransform = computeGeoTransForRange(-180.0, 180.0, -90.0, 90.0);
+            
+            dataset->setConvertFromGeographicToGeocentric(true);
+            std::cout<<"--whole-globe "<<currentCS<<" matrix="<<geoTransform<<std::endl;
+        }
+
+        else if (arguments.read(pos, "--range", xMin, xMax, yMin, yMax))
+        {
+            geoTransformSet = true;
+            geoTransformScale = true;
+            geoTransform = computeGeoTransForRange( xMin, xMax, yMin, yMax);
+            
+            std::cout<<"--range, matrix="<<geoTransform<<std::endl;
+        }
+
         else if (arguments.read(pos, "--identity"))
         {
             geoTransformSet = false;
@@ -224,22 +281,26 @@ int main( int argc, char **argv )
         // x vector
         else if (arguments.read(pos, "--xx",geoTransform(0,0)))
         {
-            geoTransformSet = true;
+           geoTransformSet = true;
+           geoTransformScale = false;
             std::cout<<"--xx "<<geoTransform(0,0)<<std::endl;
         }
         else if (arguments.read(pos, "--xy",geoTransform(1,0)))
         {
             geoTransformSet = true;
+            geoTransformScale = false;
             std::cout<<"--xy "<<geoTransform(1,0)<<std::endl;
         }
         else if (arguments.read(pos, "--xz",geoTransform(2,0)))
         {
             geoTransformSet = true;
+            geoTransformScale = false;
             std::cout<<"--xz "<<geoTransform(2,0)<<std::endl;
         }
         else if (arguments.read(pos, "--xt",geoTransform(3,0)))
         {
             geoTransformSet = true;
+            geoTransformScale = false;
             std::cout<<"--xo "<<geoTransform(3,0)<<std::endl;
         }
 
@@ -247,21 +308,25 @@ int main( int argc, char **argv )
         else if (arguments.read(pos, "--yx",geoTransform(0,1)))
         {
             geoTransformSet = true;
+            geoTransformScale = false;
             std::cout<<"--yx "<<geoTransform(0,1)<<std::endl;
         }
         else if (arguments.read(pos, "--yy",geoTransform(1,1)))
         {
             geoTransformSet = true;
+            geoTransformScale = false;
             std::cout<<"--yy "<<geoTransform(1,1)<<std::endl;
         }
         else if (arguments.read(pos, "--yz",geoTransform(2,1)))
         {
             geoTransformSet = true;
+            geoTransformScale = false;
             std::cout<<"--yz "<<geoTransform(2,1)<<std::endl;
         }
         else if (arguments.read(pos, "--yt",geoTransform(3,1)))
         {
             geoTransformSet = true;
+            geoTransformScale = false;
             std::cout<<"--yt "<<geoTransform(3,1)<<std::endl;
         }
 
@@ -269,21 +334,25 @@ int main( int argc, char **argv )
         else if (arguments.read(pos, "--zx",geoTransform(0,2)))
         {
             geoTransformSet = true;
+            geoTransformScale = false;
             std::cout<<"--zx "<<geoTransform(0,2)<<std::endl;
         }
         else if (arguments.read(pos, "--zy",geoTransform(1,2)))
         {
             geoTransformSet = true;
+            geoTransformScale = false;
             std::cout<<"--zy "<<geoTransform(1,2)<<std::endl;
         }
         else if (arguments.read(pos, "--zz",geoTransform(2,2)))
         {
             geoTransformSet = true;
+            geoTransformScale = false;
             std::cout<<"--zz "<<geoTransform(2,2)<<std::endl;
         }
         else if (arguments.read(pos, "--zt",geoTransform(3,2)))
         {
             geoTransformSet = true;
+            geoTransformScale = false;
             std::cout<<"--zt "<<geoTransform(3,2)<<std::endl;
         }
 
@@ -344,7 +413,9 @@ int main( int argc, char **argv )
             if (geoTransformSet)
             {
                 std::cout<<"source->setGeoTransform "<<geoTransform<<std::endl;
-                source->setGeoTransformPolicy(osgTerrain::DataSet::Source::PREFER_CONFIG_SETTINGS);
+                source->setGeoTransformPolicy(geoTransformScale ? 
+                                osgTerrain::DataSet::Source::PREFER_CONFIG_SETTINGS_BUT_SCALE_BY_FILE_RESOLUTION : 
+                                osgTerrain::DataSet::Source::PREFER_CONFIG_SETTINGS);
                 source->setGeoTransform(geoTransform);
             }
 

@@ -47,7 +47,7 @@ void Sequence::setTime(int frame, float t)
         }
 }
 
-const float Sequence::getTime(int frame) const
+float Sequence::getTime(int frame) const
 {
     if (frame >= 0 && frame < (int) _frameTime.size())
         return _frameTime[frame];

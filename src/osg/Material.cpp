@@ -34,7 +34,7 @@ Material::~Material()
 }
 
 
-void Material::setAmbient( const Face face, const Vec4& ambient )
+void Material::setAmbient(Face face, const Vec4& ambient )
 {
     switch(face)
     {
@@ -60,7 +60,7 @@ void Material::setAmbient( const Face face, const Vec4& ambient )
 }
 
 
-const Vec4& Material::getAmbient(const Face face) const
+const Vec4& Material::getAmbient(Face face) const
 {
     switch(face)
     {
@@ -81,7 +81,7 @@ const Vec4& Material::getAmbient(const Face face) const
 }
 
 
-void Material::setDiffuse( const Face face, const Vec4& diffuse )
+void Material::setDiffuse(Face face, const Vec4& diffuse )
 {
     switch(face)
     {
@@ -108,7 +108,7 @@ void Material::setDiffuse( const Face face, const Vec4& diffuse )
 }
 
 
-const Vec4& Material::getDiffuse(const Face face) const
+const Vec4& Material::getDiffuse(Face face) const
 {
     switch(face)
     {
@@ -129,7 +129,7 @@ const Vec4& Material::getDiffuse(const Face face) const
 }
 
 
-void Material::setSpecular( const Face face, const Vec4& specular )
+void Material::setSpecular(Face face, const Vec4& specular )
 {
     switch(face)
     {
@@ -156,7 +156,7 @@ void Material::setSpecular( const Face face, const Vec4& specular )
 }
 
 
-const Vec4& Material::getSpecular(const Face face) const
+const Vec4& Material::getSpecular(Face face) const
 {
     switch(face)
     {
@@ -177,7 +177,7 @@ const Vec4& Material::getSpecular(const Face face) const
 }
 
 
-void Material::setEmission( const Face face, const Vec4& emission )
+void Material::setEmission(Face face, const Vec4& emission )
 {
     switch(face)
     {
@@ -204,7 +204,7 @@ void Material::setEmission( const Face face, const Vec4& emission )
 }
 
 
-const Vec4& Material::getEmission(const Face face) const
+const Vec4& Material::getEmission(Face face) const
 {
     switch(face)
     {
@@ -225,7 +225,7 @@ const Vec4& Material::getEmission(const Face face) const
 }
 
 
-void Material::setShininess( const Face face, float shininess )
+void Material::setShininess(Face face, float shininess )
 {
     clampBetweenRange(shininess,0.0f,128.0f,"Material::setShininess()");
     
@@ -251,7 +251,7 @@ void Material::setShininess( const Face face, float shininess )
 }
 
 
-const float Material::getShininess(const Face face) const
+float Material::getShininess(Face face) const
 {
     switch(face)
     {
@@ -271,7 +271,7 @@ const float Material::getShininess(const Face face) const
     return _shininessFront;
 }
 
-void Material::setTransparency(const Face face,float transparency)
+void Material::setTransparency(Face face,float transparency)
 {
    clampBetweenRange(transparency,0.0f,1.0f,"Material::setTransparency()");
 
@@ -292,7 +292,7 @@ void Material::setTransparency(const Face face,float transparency)
     }
 }        
 
-void Material::setAlpha(const Face face,float alpha)
+void Material::setAlpha(Face face,float alpha)
 {
    clampBetweenRange(alpha,0.0f,1.0f,"Material::setAlpha()");
 

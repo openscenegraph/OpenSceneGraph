@@ -5,7 +5,7 @@ using namespace osg;
 ClipNode::ClipNode()
 {
     _value = StateAttribute::ON;
-    _dstate = osgNew StateSet;
+    _stateset = osgNew StateSet;
 }
 
 ClipNode::ClipNode(const ClipNode& cn, const CopyOp& copyop):Group(cn,copyop)
@@ -42,7 +42,7 @@ void ClipNode::createClipBox(const BoundingBox& bb,unsigned int clipPlaneNumberB
 
 // Add a ClipPlane to a ClipNode. Return true if plane is added, 
 // return false if plane already exists in ClipNode, or clipplane is false.
-const bool ClipNode::addClipPlane(ClipPlane* clipplane)
+bool ClipNode::addClipPlane(ClipPlane* clipplane)
 {
     if (!clipplane) return false;
 
@@ -61,7 +61,7 @@ const bool ClipNode::addClipPlane(ClipPlane* clipplane)
 
 // Remove ClipPlane from a ClipNode. Return true if plane is removed, 
 // return false if plane does not exists in ClipNode.
-const bool ClipNode::removeClipPlane(ClipPlane* clipplane)
+bool ClipNode::removeClipPlane(ClipPlane* clipplane)
 {
     if (!clipplane) return false;
 
@@ -81,7 +81,7 @@ const bool ClipNode::removeClipPlane(ClipPlane* clipplane)
 
 // Remove ClipPlane, at specified index, from a ClipNode. Return true if plane is removed, 
 // return false if plane does not exists in ClipNode.
-const bool ClipNode::removeClipPlane(unsigned int pos)
+bool ClipNode::removeClipPlane(unsigned int pos)
 {
     if (pos<_planes.size())
     {
@@ -108,12 +108,12 @@ void ClipNode::setStateSetModes(StateSet& stateset,const StateAttribute::GLModeV
 
 void ClipNode::setLocalStateSetModes(const StateAttribute::GLModeValue value)
 {
-    if (!_dstate) _dstate = osgNew StateSet;
-    _dstate->setAllToInherit();
-    setStateSetModes(*_dstate,value);
+    if (!_stateset) _stateset = osgNew StateSet;
+    _stateset->setAllToInherit();
+    setStateSetModes(*_stateset,value);
 }
 
-const bool ClipNode::computeBound() const
+bool ClipNode::computeBound() const
 {
     return Group::computeBound();
 }

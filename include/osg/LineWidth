@@ -36,8 +36,9 @@ class SG_EXPORT LineWidth : public StateAttribute
             return 0; // passed all the above comparison macro's, must be equal.
         }
 
-        void setWidth(const float width);
-        inline const float getWidth() const { return _width; }
+        void setWidth(float width);
+        
+        inline float getWidth() const { return _width; }
 
         virtual void apply(State& state) const;
 

@@ -31,7 +31,7 @@ public :
     void setTime(int frame, float t);
 
     /** Get time for child */
-    const float getTime(int frame) const;
+    float getTime(int frame) const;
 
     /** Interval modes */
     enum LoopMode

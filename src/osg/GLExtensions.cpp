@@ -12,7 +12,7 @@
 #include <vector>
 #include <set>
 
-const bool osg::isGLExtensionSupported(const char *extension)
+bool osg::isGLExtensionSupported(const char *extension)
 {
     typedef std::set<std::string>  ExtensionSet;
     static ExtensionSet s_extensionSet;
@@ -52,7 +52,7 @@ const bool osg::isGLExtensionSupported(const char *extension)
     return result;
 }
 
-const bool osg::isGLUExtensionSupported(const char *extension)
+bool osg::isGLUExtensionSupported(const char *extension)
 {
     typedef std::set<std::string>  ExtensionSet;
     static ExtensionSet s_extensionSet;

@@ -301,9 +301,9 @@ bool Matrix::invert( const Matrix& mat )
     return true;
 }
 
-void Matrix::makeOrtho(const double left, const double right,
-                       const double bottom, const double top,
-                       const double zNear, const double zFar)
+void Matrix::makeOrtho(double left, double right,
+                       double bottom, double top,
+                       double zNear, double zFar)
 {
     // note transpose of Matrix wr.t OpenGL documentation, since the OSG use post multiplication rather than pre.
     double tx = -(right+left)/(right-left);
@@ -315,9 +315,9 @@ void Matrix::makeOrtho(const double left, const double right,
     SET_ROW(3,                tx,                ty,                 tz, 1.0f )
 }
 
-void Matrix::makeFrustum(const double left, const double right,
-                         const double bottom, const double top,
-                         const double zNear, const double zFar)
+void Matrix::makeFrustum(double left, double right,
+                         double bottom, double top,
+                         double zNear, double zFar)
 {
     // note transpose of Matrix wr.t OpenGL documentation, since the OSG use post multiplication rather than pre.
     double A = (right+left)/(right-left);
@@ -331,8 +331,8 @@ void Matrix::makeFrustum(const double left, const double right,
 }
 
 
-void Matrix::makePerspective(const double fovy,const double aspectRatio,
-                             const double zNear, const double zFar)
+void Matrix::makePerspective(double fovy,double aspectRatio,
+                             double zNear, double zFar)
 {
     // calculate the appropriate left, right etc.
     double tan_fovy = tan(DegreesToRadians(fovy*0.5));

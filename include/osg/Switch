@@ -45,11 +45,11 @@ class SG_EXPORT Switch : public Group
 	 * (first child == number 0) or SwitchType. Invalid values
 	 * will be ignored.
 	 */
-        inline void setValue(const int value) { _value = value; }
+        inline void setValue(int value) { _value = value; }
 	/**
 	 * Returns the number of the active child Node or the SwitchType.
 	 */
-        inline const int getValue() const { return _value; }
+        inline int getValue() const { return _value; }
 
     protected :
     

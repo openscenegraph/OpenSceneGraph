@@ -12,7 +12,7 @@ OccluderNode::OccluderNode(const OccluderNode& node,const CopyOp& copyop):
 {
 }
 
-const bool OccluderNode::computeBound() const
+bool OccluderNode::computeBound() const
 {
     bool result = Group::computeBound();
     

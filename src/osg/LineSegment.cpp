@@ -2,7 +2,7 @@
 
 using namespace osg;
 
-const bool LineSegment::intersectAndClip(Vec3& s,Vec3& e,const BoundingBox& bb)
+bool LineSegment::intersectAndClip(Vec3& s,Vec3& e,const BoundingBox& bb)
 {
     // compate s and e against the xMin to xMax range of bb.
     if (s.x()<=e.x())
@@ -122,7 +122,7 @@ const bool LineSegment::intersectAndClip(Vec3& s,Vec3& e,const BoundingBox& bb)
 }
 
 
-const bool LineSegment::intersect(const BoundingBox& bb) const
+bool LineSegment::intersect(const BoundingBox& bb) const
 {
     if (!bb.valid()) return false;
 
@@ -131,7 +131,7 @@ const bool LineSegment::intersect(const BoundingBox& bb) const
 }
 
 
-const bool LineSegment::intersect(const BoundingBox& bb,float& r1,float& r2) const
+bool LineSegment::intersect(const BoundingBox& bb,float& r1,float& r2) const
 {
     if (!bb.valid()) return false;
 
@@ -156,7 +156,7 @@ const bool LineSegment::intersect(const BoundingBox& bb,float& r1,float& r2) con
 }
 
 
-const bool LineSegment::intersect(const BoundingSphere& bs,float& r1,float& r2) const
+bool LineSegment::intersect(const BoundingSphere& bs,float& r1,float& r2) const
 {
     Vec3 sm = _s-bs._center;
     float c = sm.length2()-bs._radius*bs._radius;
@@ -185,7 +185,7 @@ const bool LineSegment::intersect(const BoundingSphere& bs,float& r1,float& r2) 
 }
 
 
-const bool LineSegment::intersect(const BoundingSphere& bs) const
+bool LineSegment::intersect(const BoundingSphere& bs) const
 {
     Vec3 sm = _s-bs._center;
     float c = sm.length2()-bs._radius*bs._radius;
@@ -215,7 +215,7 @@ const bool LineSegment::intersect(const BoundingSphere& bs) const
 }
 
 
-const bool LineSegment::intersect(const Vec3& v1,const Vec3& v2,const Vec3& v3,float& r)
+bool LineSegment::intersect(const Vec3& v1,const Vec3& v2,const Vec3& v3,float& r)
 {
     if (v1==v2 || v2==v3 || v1==v3) return false;
 

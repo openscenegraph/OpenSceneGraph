@@ -22,11 +22,11 @@ class OSGUTIL_EXPORT InsertImpostorsVisitor : public osg::NodeVisitor
         /// default to traversing all children.
         InsertImpostorsVisitor();
         
-        void setImpostorThresholdRatio(const float ratio) { _impostorThresholdRatio = ratio; }
-        const float getImpostorThresholdRatio() const { return _impostorThresholdRatio; }
+        void setImpostorThresholdRatio(float ratio) { _impostorThresholdRatio = ratio; }
+        float getImpostorThresholdRatio() const { return _impostorThresholdRatio; }
 
-        void setMaximumNumberOfNestedImpostors(const unsigned int num) { _maximumNumNestedImpostors = num; }
-        const unsigned int getMaximumNumberOfNestedImpostors() const { return _maximumNumNestedImpostors; }
+        void setMaximumNumberOfNestedImpostors(unsigned int num) { _maximumNumNestedImpostors = num; }
+        unsigned int getMaximumNumberOfNestedImpostors() const { return _maximumNumNestedImpostors; }
 
         /** empty visitor, make it ready for next traversal.*/        
         void reset();

@@ -320,7 +320,7 @@ sMStats    m_getMemoryStatistics()
 
     // ---------------------------------------------------------------------------------------------------------------------------------
 
-    static    const char    *ownerString(const char *sourceFile, const unsigned int sourceLine)
+    static    const char    *ownerString(const char *sourceFile, unsigned int sourceLine)
     {
         static    char    str[90];
         memset(str, 0, sizeof(str));
@@ -425,7 +425,7 @@ sMStats    m_getMemoryStatistics()
 
     // ---------------------------------------------------------------------------------------------------------------------------------
 
-    static    void    wipeWithPattern(sAllocUnit *allocUnit, unsigned long pattern, const unsigned int originalReportedSize = 0)
+    static    void    wipeWithPattern(sAllocUnit *allocUnit, unsigned long pattern, unsigned int originalReportedSize = 0)
     {
         // For a serious test run, we use wipes of random a random value. However, if this causes a crash, we don't want it to
         // crash in a differnt place each time, so we specifically DO NOT call srand. If, by chance your program calls srand(),
@@ -740,7 +740,7 @@ sMStats    m_getMemoryStatistics()
     // Used by the macros
     // ---------------------------------------------------------------------------------------------------------------------------------
 
-    void    m_setOwner(const char *file, const unsigned int line)
+    void    m_setOwner(const char *file, unsigned int line)
     {
         sourceFile = file;
         sourceLine = line;
@@ -1014,7 +1014,7 @@ sMStats    m_getMemoryStatistics()
     // Allocate memory and track it
     // ---------------------------------------------------------------------------------------------------------------------------------
 
-    void    *m_allocator(const char *sourceFile, const unsigned int sourceLine, const unsigned int allocationType, const size_t reportedSize)
+    void    *m_allocator(const char *sourceFile, unsigned int sourceLine, unsigned int allocationType, const size_t reportedSize)
     {
 
         // check that exists allocated units havn't been damaged.
@@ -1195,7 +1195,7 @@ sMStats    m_getMemoryStatistics()
     // Reallocate memory and track it
     // ---------------------------------------------------------------------------------------------------------------------------------
 
-    void    *m_reallocator(const char *sourceFile, const unsigned int sourceLine, const unsigned int reallocationType, const size_t reportedSize, void *reportedAddress)
+    void    *m_reallocator(const char *sourceFile, unsigned int sourceLine, unsigned int reallocationType, const size_t reportedSize, void *reportedAddress)
     {
         try
         {
@@ -1390,7 +1390,7 @@ sMStats    m_getMemoryStatistics()
     // Deallocate memory and track it
     // ---------------------------------------------------------------------------------------------------------------------------------
 
-    void    m_deallocator(const char *sourceFile, const unsigned int sourceLine, const unsigned int deallocationType, const void *reportedAddress)
+    void    m_deallocator(const char *sourceFile, unsigned int sourceLine, unsigned int deallocationType, const void *reportedAddress)
     {
         try
         {
@@ -1604,7 +1604,7 @@ sMStats    m_getMemoryStatistics()
 
     unsigned int    m_calcUnused(const sAllocUnit *allocUnit)
     {
-        const unsigned long    *ptr = (const unsigned long *) allocUnit->reportedAddress;
+        unsigned long    *ptr = (unsigned long *) allocUnit->reportedAddress;
         unsigned int        count = 0;
 
         for (unsigned int i = 0; i < allocUnit->reportedSize; i += sizeof(long), ptr++)
@@ -1652,7 +1652,7 @@ sMStats    m_getMemoryStatistics()
 
     // ---------------------------------------------------------------------------------------------------------------------------------
 
-    void    m_dumpMemoryReport(const char *filename, const bool overwrite)
+    void    m_dumpMemoryReport(const char *filename, bool overwrite)
     {
         // Open the report file
 
@@ -1726,17 +1726,17 @@ sMStats    m_getMemoryStatistics()
     // dummy implementation for optimized build.
     // ----------------------------------------------------------------------------------------------------------------
 
-    void        m_setOwner(const char *, const unsigned int ) { }
+    void        m_setOwner(const char *, unsigned int ) { }
     bool        &m_breakOnRealloc(void *) { static bool result=false; return result; }
     bool        &m_breakOnDealloc(void *) { static bool result=false; return result; }
     void         m_breakOnAllocation(unsigned int ) {} 
 
-    void  *m_allocator(const char *, const unsigned int ,
-                                         const unsigned int , const size_t ) { return 0L;}
-    void  *m_reallocator(const char *, const unsigned int ,
-                                          const unsigned int , const size_t , void *) { return 0L;}
-    void  m_deallocator(const char *, const unsigned int ,
-                                         const unsigned int , const void *) {}
+    void  *m_allocator(const char *, unsigned int ,
+                                         unsigned int , const size_t ) { return 0L;}
+    void  *m_reallocator(const char *, unsigned int ,
+                                          unsigned int , const size_t , void *) { return 0L;}
+    void  m_deallocator(const char *, unsigned int ,
+                                         unsigned int , const void *) {}
 
     bool        m_validateAddress(const void *)  { return true; }
     bool        m_validateAllocUnit(const sAllocUnit *)  { return true; }
@@ -1746,7 +1746,7 @@ sMStats    m_getMemoryStatistics()
     unsigned int    m_calcAllUnused() { return 0; }
 
     void        m_dumpAllocUnit(const sAllocUnit *, const char *) {}
-    void        m_dumpMemoryReport(const char *, const bool ) {}
+    void        m_dumpMemoryReport(const char *, bool ) {}
 
 #endif // OSG_USE_MEMORY_MANAGER
 

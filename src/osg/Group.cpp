@@ -210,7 +210,7 @@ bool Group::replaceChild( Node *origNode, Node *newNode )
 
 }
 
-const bool Group::computeBound() const
+bool Group::computeBound() const
 {
 
     _bsphere_computed = true;

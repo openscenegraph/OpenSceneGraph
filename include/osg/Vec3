@@ -26,11 +26,11 @@ class Vec3
 
         float _v[3];
 
-	inline const bool operator == (const Vec3& v) const { return _v[0]==v._v[0] && _v[1]==v._v[1] && _v[2]==v._v[2]; }
+	inline bool operator == (const Vec3& v) const { return _v[0]==v._v[0] && _v[1]==v._v[1] && _v[2]==v._v[2]; }
         
-        inline const bool operator != (const Vec3& v) const { return _v[0]!=v._v[0] || _v[1]!=v._v[1] || _v[2]!=v._v[2]; }
+        inline bool operator != (const Vec3& v) const { return _v[0]!=v._v[0] || _v[1]!=v._v[1] || _v[2]!=v._v[2]; }
 
-	inline const bool operator <  (const Vec3& v) const
+	inline bool operator <  (const Vec3& v) const
         {
             if (_v[0]<v._v[0]) return true;
             else if (_v[0]>v._v[0]) return false;
@@ -48,18 +48,18 @@ class Vec3
         }
 
         inline float& operator [] (int i) { return _v[i]; }
-        inline const float operator [] (int i) const { return _v[i]; }
+        inline float operator [] (int i) const { return _v[i]; }
 
         inline float& x() { return _v[0]; }
         inline float& y() { return _v[1]; }
         inline float& z() { return _v[2]; }
 
-        inline const float x() const { return _v[0]; }
-        inline const float y() const { return _v[1]; }
-        inline const float z() const { return _v[2]; }
+        inline float x() const { return _v[0]; }
+        inline float y() const { return _v[1]; }
+        inline float z() const { return _v[2]; }
 
-        inline const bool valid() const { return !isNaN(); }
-        inline const bool isNaN() const { return osg::isNaN(_v[0]) || osg::isNaN(_v[1]) || osg::isNaN(_v[2]); }
+        inline bool valid() const { return !isNaN(); }
+        inline bool isNaN() const { return osg::isNaN(_v[0]) || osg::isNaN(_v[1]) || osg::isNaN(_v[2]); }
 
         /// dot product
         inline float operator * (const Vec3& rhs) const
@@ -76,13 +76,13 @@ class Vec3
         }
 
         /// multiply by scalar
-        inline const Vec3 operator * (const float& rhs) const
+        inline const Vec3 operator * (float rhs) const
         {
             return Vec3(_v[0]*rhs, _v[1]*rhs, _v[2]*rhs);
         }
 
         /// unary multiply by scalar
-        inline Vec3& operator *= (const float& rhs)
+        inline Vec3& operator *= (float rhs)
         {
             _v[0]*=rhs;
             _v[1]*=rhs;
@@ -91,13 +91,13 @@ class Vec3
         }
 
         /// divide by scalar
-        inline const Vec3 operator / (const float& rhs) const
+        inline const Vec3 operator / (float rhs) const
         {
             return Vec3(_v[0]/rhs, _v[1]/rhs, _v[2]/rhs);
         }
 
         /// unary divide by scalar
-        inline Vec3& operator /= (const float& rhs)
+        inline Vec3& operator /= (float rhs)
         {
             _v[0]/=rhs;
             _v[1]/=rhs;
@@ -143,20 +143,20 @@ class Vec3
         }
 
         /// Length of the vector = sqrt( vec . vec )
-        inline const float length() const
+        inline float length() const
         {
             return sqrtf( _v[0]*_v[0] + _v[1]*_v[1] + _v[2]*_v[2] );
         }
 
         /// Length squared of the vector = vec . vec
-        inline const float length2() const
+        inline float length2() const
         {
             return _v[0]*_v[0] + _v[1]*_v[1] + _v[2]*_v[2];
         }
 
         /** normalize the vector so that it has length unity
             returns the previous length of the vector*/
-        inline const float normalize()
+        inline float normalize()
         {
             float norm = Vec3::length();
             if (norm>0.0f)

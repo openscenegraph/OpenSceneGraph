@@ -55,13 +55,13 @@ class SG_EXPORT ColorMask : public StateAttribute
             
         }
         
-        inline const bool getRedMask() const { return _red; }
+        inline bool getRedMask() const { return _red; }
 
-        inline const bool getGreenMask() const { return _green; }
+        inline bool getGreenMask() const { return _green; }
 
-        inline const bool getBlueMask() const { return _blue; }
+        inline bool getBlueMask() const { return _blue; }
         
-        inline const bool getAlphaMask() const { return _alpha; }
+        inline bool getAlphaMask() const { return _alpha; }
 
         virtual void apply(State& state) const;
 

@@ -42,11 +42,11 @@ class SG_EXPORT LineStipple : public StateAttribute
             modes.push_back(GL_LINE_STIPPLE);
         }
 
-        void setFactor(const int factor);
-        inline const int getFactor() const { return _factor; }
+        void setFactor(GLint factor);
+        inline GLint getFactor() const { return _factor; }
 
-        void setPattern(const unsigned short pattern);
-        inline const unsigned short getPattern() const { return _pattern; }
+        void setPattern(GLushort pattern);
+        inline GLushort getPattern() const { return _pattern; }
 
         virtual void apply(State& state) const;
 
@@ -55,8 +55,8 @@ class SG_EXPORT LineStipple : public StateAttribute
 
         virtual ~LineStipple();
 
-        int			_factor;
-        unsigned short	        _pattern;
+        GLint           _factor;
+        GLushort	_pattern;
 
 };
 

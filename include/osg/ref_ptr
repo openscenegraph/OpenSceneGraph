@@ -44,37 +44,37 @@ class ref_ptr
             return *this;
         }
 
-        inline const bool operator == (const ref_ptr& rp) const
+        inline bool operator == (const ref_ptr& rp) const
         {
             return (_ptr==rp._ptr);
         }
 
-        inline const bool operator == (const T* ptr) const
+        inline bool operator == (const T* ptr) const
         {
             return (_ptr==ptr);
         }
 
-        inline const bool operator != (const ref_ptr& rp) const
+        inline bool operator != (const ref_ptr& rp) const
         {
             return (_ptr!=rp._ptr);
         }
 
-        inline const bool operator != (const T* ptr) const
+        inline bool operator != (const T* ptr) const
         {
             return (_ptr!=ptr);
         }
 
-        inline const bool operator < (const ref_ptr& rp) const
+        inline bool operator < (const ref_ptr& rp) const
         {
             return (_ptr<rp._ptr);
         }
 
-        inline const bool operator > (const ref_ptr& rp) const
+        inline bool operator > (const ref_ptr& rp) const
         {
             return (_ptr>rp._ptr);
         }
 
-        inline const bool operator > (const T* ptr) const
+        inline bool operator > (const T* ptr) const
         {
             return (_ptr>ptr);
         }
@@ -87,9 +87,9 @@ class ref_ptr
 
         inline const T* operator->() const   { return _ptr; }
 
-	inline const bool operator!() const	{ return _ptr==0L; }
+	inline bool operator!() const	{ return _ptr==0L; }
 
-	inline const bool valid() const	{ return _ptr!=0L; }
+	inline bool valid() const	{ return _ptr!=0L; }
         
         inline T* get() { return _ptr; }
 

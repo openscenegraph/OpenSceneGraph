@@ -81,10 +81,10 @@ class SG_EXPORT ClipPlane : public StateAttribute
         void getClipPlane(double* plane) const;
 
 	/** Set the clip plane number. */
-        void setClipPlaneNum(const unsigned int num);
+        void setClipPlaneNum(unsigned int num);
 
 	/** Get the clip plane number. */
-        const unsigned int getClipPlaneNum() const;
+        unsigned int getClipPlaneNum() const;
 
 	/** Apply the clip plane's state to the OpenGL state machine. */
         virtual void apply(State& state) const;

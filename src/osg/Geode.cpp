@@ -33,7 +33,7 @@ Geode::~Geode()
     }
 }
 
-const bool Geode::addDrawable( Drawable *drawable )
+bool Geode::addDrawable( Drawable *drawable )
 {
     if (drawable && !containsDrawable(drawable))
     {
@@ -56,7 +56,7 @@ const bool Geode::addDrawable( Drawable *drawable )
 }
 
 
-const bool Geode::removeDrawable( Drawable *drawable )
+bool Geode::removeDrawable( Drawable *drawable )
 {
     DrawableList::iterator itr = findDrawable(drawable);
     if (itr!=_drawables.end())
@@ -80,7 +80,7 @@ const bool Geode::removeDrawable( Drawable *drawable )
 }
 
 
-const bool Geode::replaceDrawable( Drawable *origDrawable, Drawable *newDrawable )
+bool Geode::replaceDrawable( Drawable *origDrawable, Drawable *newDrawable )
 {
     if (newDrawable==NULL || origDrawable==newDrawable) return false;
 
@@ -115,7 +115,7 @@ const bool Geode::replaceDrawable( Drawable *origDrawable, Drawable *newDrawable
 }
 
 
-const bool Geode::computeBound() const
+bool Geode::computeBound() const
 {
     _bsphere.init();
 

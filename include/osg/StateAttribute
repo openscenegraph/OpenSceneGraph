@@ -29,7 +29,7 @@ class StateSet;
         virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const name *>(obj)!=NULL; } \
         virtual const char* libraryName() const { return #library; } \
         virtual const char* className() const { return #name; } \
-        virtual const Type getType() const { return type; }
+        virtual Type getType() const { return type; }
 
 /** COMPARE_StateAttribute_Types macro is a helper for implementing the StatateAtribute::compare(..) method.*/
 #define COMPARE_StateAttribute_Types(TYPE,rhs_attribute) \
@@ -178,7 +178,7 @@ class SG_EXPORT StateAttribute : public Object
         virtual const char* className() const { return "StateAttribute"; }
         
         /** return the Type identifier of the attribute's class type.*/
-        virtual const Type getType() const = 0;
+        virtual Type getType() const = 0;
 
         /** return true if StateAttribute is a type which controls texturing and needs to be issued w.r.t to specific texture unit.*/
         virtual bool isTextureAttribute() const { return false; }

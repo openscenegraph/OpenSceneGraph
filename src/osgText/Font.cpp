@@ -147,7 +147,7 @@ bool  Font::open(const char* font)
 }
 
 bool Font::
-create(osg::State& state,int pointSize,const unsigned int res)
+create(osg::State& state,int pointSize,unsigned int res)
 {
     _pointSize=pointSize;
     _res=res;

@@ -16,18 +16,18 @@ LineStipple::~LineStipple()
 {
 }
 
-void LineStipple::setFactor(const int factor)
+void LineStipple::setFactor(GLint factor)
 {
-  _factor = factor;
+    _factor = factor;
 }
   
-void LineStipple::setPattern(const unsigned short pattern)
+void LineStipple::setPattern(GLushort pattern)
 {
-  _pattern = pattern;
+    _pattern = pattern;
 }
 
 void LineStipple::apply(State&) const
 {
-  glLineStipple(_factor, _pattern);
+    glLineStipple(_factor, _pattern);
 }
 

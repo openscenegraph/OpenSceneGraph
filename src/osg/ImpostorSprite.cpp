@@ -39,7 +39,7 @@ ImpostorSprite::~ImpostorSprite()
     }
 }
 
-const float ImpostorSprite::calcPixelError(const Matrix& MVPW) const
+float ImpostorSprite::calcPixelError(const Matrix& MVPW) const
 {
     // find the maximum screen space pixel error between the control coords and the quad coners.
     float max_error_sqrd = 0.0f;
@@ -85,7 +85,7 @@ void ImpostorSprite::drawImmediateMode(State&)
 
 }
 
-const bool ImpostorSprite::computeBound() const
+bool ImpostorSprite::computeBound() const
 {
     _bbox.init();
     _bbox.expandBy(_coords[0]);

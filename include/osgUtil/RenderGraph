@@ -21,7 +21,7 @@ namespace osgUtil {
 
 struct LeafDepthSortFunctor
 {
-    const bool operator() (const osg::ref_ptr<RenderLeaf>& lhs,const osg::ref_ptr<RenderLeaf>& rhs)
+    bool operator() (const osg::ref_ptr<RenderLeaf>& lhs,const osg::ref_ptr<RenderLeaf>& rhs)
     {
         return (lhs->_depth>rhs->_depth);
     }
@@ -76,18 +76,18 @@ class OSGUTIL_EXPORT RenderGraph : public osg::Referenced
         
 
         /** return true if all of drawables, lights and children are empty.*/
-        inline const bool empty() const
+        inline bool empty() const
         {
             return _leaves.empty() && _children.empty();
         }
         
-        inline const bool leaves_empty() const
+        inline bool leaves_empty() const
         {
             return _leaves.empty();
         }
 
 
-        inline const float getAverageDistance() const
+        inline float getAverageDistance() const
         {
             if (_averageDistance==FLT_MAX && !_leaves.empty())
             {

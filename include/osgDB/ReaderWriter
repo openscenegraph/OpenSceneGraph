@@ -63,9 +63,9 @@ class OSGDB_EXPORT ReaderWriter : public osg::Referenced
                 osg::Image* getImage() { return dynamic_cast<osg::Image*>(_object.get()); }
                 osg::Node* getNode() { return dynamic_cast<osg::Node*>(_object.get()); }
                 
-                const bool validObject() { return _object.valid(); }
-                const bool validImage() { return getImage()!=0; }
-                const bool validNode() { return getNode()!=0; }
+                bool validObject() { return _object.valid(); }
+                bool validImage() { return getImage()!=0; }
+                bool validNode() { return getNode()!=0; }
 
                 osg::Object* takeObject() { osg::Object* obj = _object.get(); if (obj) { obj->ref(); _object=NULL; obj->unref_nodelete(); } return obj; }
                 osg::Image* takeImage() { osg::Image* image=dynamic_cast<osg::Image*>(_object.get()); if (image) { image->ref(); _object=NULL; image->unref_nodelete(); } return image; }
@@ -73,10 +73,10 @@ class OSGDB_EXPORT ReaderWriter : public osg::Referenced
 
                 const std::string& message() const { return _message; }
 
-                const ReadStatus status() const { return _status; }
-                const bool success() const { return _status==FILE_LOADED; }
-                const bool error() const { return _status==ERROR_IN_READING_FILE; }
-                const bool notHandled() const { return _status==FILE_NOT_HANDLED; }
+                ReadStatus status() const { return _status; }
+                bool success() const { return _status==FILE_LOADED; }
+                bool error() const { return _status==ERROR_IN_READING_FILE; }
+                bool notHandled() const { return _status==FILE_NOT_HANDLED; }
 
             protected:
             
@@ -104,10 +104,10 @@ class OSGDB_EXPORT ReaderWriter : public osg::Referenced
                 
                 const std::string& message() const { return _message; }
 
-                const WriteStatus status() const { return _status; }
-                const bool success() const { return _status==FILE_SAVED; }
-                const bool error() const { return _status==ERROR_IN_WRITING_FILE; }
-                const bool notHandled() const { return _status==FILE_NOT_HANDLED; }
+                WriteStatus status() const { return _status; }
+                bool success() const { return _status==FILE_SAVED; }
+                bool error() const { return _status==ERROR_IN_WRITING_FILE; }
+                bool notHandled() const { return _status==FILE_NOT_HANDLED; }
 
             protected:
             

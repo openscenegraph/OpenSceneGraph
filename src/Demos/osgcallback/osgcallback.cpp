@@ -83,7 +83,7 @@ class DrawableDrawCallback : public osg::Drawable::DrawCallback
 struct LODCallback : public osg::LOD::EvaluateLODCallback
 {
     /** Compute the child to select.*/
-    virtual const int evaluateLODChild(const osg::LOD* lod, const osg::Vec3& eye_local, const float bias) const
+    virtual int evaluateLODChild(const osg::LOD* lod, const osg::Vec3& eye_local, const float bias) const
     {
         std::cout<<"evaluateLODChild callback - pre lod->evaluateLODChild"<<std::endl;
         int result = lod->evaluateLODChild(eye_local,bias);
@@ -95,7 +95,7 @@ struct LODCallback : public osg::LOD::EvaluateLODCallback
 struct TransformCallback : public osg::Transform::ComputeTransformCallback
 {
     /** Get the transformation matrix which moves from local coords to world coords.*/
-    virtual const bool computeLocalToWorldMatrix(osg::Matrix& matrix,const osg::Transform* transform, osg::NodeVisitor* nv) const
+    virtual bool computeLocalToWorldMatrix(osg::Matrix& matrix,const osg::Transform* transform, osg::NodeVisitor* nv) const
     {
         std::cout<<"computeLocalToWorldMatrix - pre transform->computeLocalToWorldMatrix"<<std::endl;
         bool result = transform->computeLocalToWorldMatrix(matrix,nv);
@@ -104,7 +104,7 @@ struct TransformCallback : public osg::Transform::ComputeTransformCallback
     }
 
     /** Get the transformation matrix which moves from world coords to local coords.*/
-    virtual const bool computeWorldToLocalMatrix(osg::Matrix& matrix,const osg::Transform* transform, osg::NodeVisitor* nv) const 
+    virtual bool computeWorldToLocalMatrix(osg::Matrix& matrix,const osg::Transform* transform, osg::NodeVisitor* nv) const 
     {
         std::cout<<"computeWorldToLocalMatrix - pre transform->computeWorldToLocalMatrix"<<std::endl;
         bool result = transform->computeWorldToLocalMatrix(matrix,nv);

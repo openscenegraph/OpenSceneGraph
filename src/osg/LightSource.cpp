@@ -7,7 +7,7 @@ LightSource::LightSource():
 {
     // switch off culling of light source nodes by default.
     setCullingActive(false);
-    _dstate = osgNew StateSet;
+    _stateset = osgNew StateSet;
     _light = osgNew Light;
 }
 
@@ -25,7 +25,7 @@ void LightSource::setLight(StateAttribute* light)
 }
 
 // Set the GLModes on StateSet associated with the ClipPlanes.
-void LightSource::setStateSetModes(StateSet& stateset,const StateAttribute::GLModeValue value) const
+void LightSource::setStateSetModes(StateSet& stateset,StateAttribute::GLModeValue value) const
 {
     if (_light.valid())
     {
@@ -33,14 +33,14 @@ void LightSource::setStateSetModes(StateSet& stateset,const StateAttribute::GLMo
     }
 }
 
-void LightSource::setLocalStateSetModes(const StateAttribute::GLModeValue value)
+void LightSource::setLocalStateSetModes(StateAttribute::GLModeValue value)
 {
-    if (!_dstate) _dstate = osgNew StateSet;
-    _dstate->setAllToInherit();
-    setStateSetModes(*_dstate,value);
+    if (!_stateset) _stateset = osgNew StateSet;
+    _stateset->setAllToInherit();
+    setStateSetModes(*_stateset,value);
 }
 
-const bool LightSource::computeBound() const
+bool LightSource::computeBound() const
 {
     Group::computeBound();
     

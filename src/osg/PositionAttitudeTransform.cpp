@@ -6,7 +6,7 @@ PositionAttitudeTransform::PositionAttitudeTransform()
 {
 }
 
-const bool PositionAttitudeTransform::computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const
+bool PositionAttitudeTransform::computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const
 {
     if (_referenceFrame==RELATIVE_TO_PARENTS)
     {
@@ -24,7 +24,7 @@ const bool PositionAttitudeTransform::computeLocalToWorldMatrix(Matrix& matrix,N
 }
 
 
-const bool PositionAttitudeTransform::computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor*) const
+bool PositionAttitudeTransform::computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor*) const
 {
     if (_referenceFrame==RELATIVE_TO_PARENTS)
     {

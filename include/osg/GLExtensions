@@ -23,7 +23,7 @@ namespace osg {
   * note: Must only called within a valid OpenGL context,
   * undefined behavior may occur otherwise.
   */
-SG_EXPORT extern const bool isGLExtensionSupported(const char *extension);
+SG_EXPORT extern bool isGLExtensionSupported(const char *extension);
 
 /** return the address of the specified OpenGL function.
   * return NULL if function not supported by OpenGL library.
@@ -74,7 +74,7 @@ inline void* getGLExtensionFuncPtr(const char *funcName,const char *fallbackFunc
   * note: Must only called within a valid OpenGL context,
   * undefined behavior may occur otherwise.
   */
-SG_EXPORT extern const bool isGLUExtensionSupported(const char *extension);
+SG_EXPORT extern bool isGLUExtensionSupported(const char *extension);
 
 inline void* getGLUExtensionFuncPtr(const char *funcName)
 {

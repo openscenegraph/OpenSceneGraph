@@ -45,11 +45,11 @@ class SG_EXPORT PolygonOffset : public StateAttribute
             modes.push_back(GL_POLYGON_OFFSET_POINT);
         }
 
-        inline void setFactor(const float factor) { _factor = factor; }
-        inline const float getFactor() const { return _factor; }
+        inline void setFactor(float factor) { _factor = factor; }
+        inline float getFactor() const { return _factor; }
         
-        inline void setUnits(const float units) { _units = units; }
-        inline const float getUnits() const { return _units; }
+        inline void setUnits(float units) { _units = units; }
+        inline float getUnits() const { return _units; }
 
         virtual void apply(State& state) const;
 

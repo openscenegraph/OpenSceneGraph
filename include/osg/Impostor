@@ -72,10 +72,10 @@ class SG_EXPORT Impostor : public LOD
         inline void setImpostorThresholdToBound(float ratio=1.0f) { _impostorThreshold = getBound().radius()*ratio; }
 
         /* Get the Impostor threshold distance.*/
-        inline const float getImpostorThreshold() const { return _impostorThreshold; }
+        inline float getImpostorThreshold() const { return _impostorThreshold; }
 
         /* Get the Impostor threshold distance squared.*/
-        inline const float getImpostorThreshold2() const { return _impostorThreshold*_impostorThreshold; }
+        inline float getImpostorThreshold2() const { return _impostorThreshold*_impostorThreshold; }
 
         /** Find the ImposterSprite which fits the current eye point best.*/
         ImpostorSprite* findBestImpostorSprite(const osg::Vec3& currLocalEyePoint);
@@ -93,7 +93,7 @@ class SG_EXPORT Impostor : public LOD
 
         virtual ~Impostor() {}
 
-        virtual const bool computeBound() const;
+        virtual bool computeBound() const;
         
         ImpostorSpriteList  _impostorSpriteList;
 

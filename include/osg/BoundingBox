@@ -50,7 +50,7 @@ class SG_EXPORT BoundingBox
             _max.set(-FLT_MAX,-FLT_MAX,-FLT_MAX);
         }
                       
-        inline const bool valid() const
+        inline bool valid() const
         {
             return _max.x()>=_min.x();
         }
@@ -71,22 +71,22 @@ class SG_EXPORT BoundingBox
 
 
         inline float& xMin() { return _min.x(); }
-        inline const float xMin() const { return _min.x(); }
+        inline float xMin() const { return _min.x(); }
  
         inline float& yMin() { return _min.y(); }
-        inline const float yMin() const { return _min.y(); }
+        inline float yMin() const { return _min.y(); }
  
         inline float& zMin() { return _min.z(); }
-        inline const float zMin() const { return _min.z(); }
+        inline float zMin() const { return _min.z(); }
 
         inline float& xMax() { return _max.x(); }
-        inline const float xMax() const { return _max.x(); }
+        inline float xMax() const { return _max.x(); }
  
         inline float& yMax() { return _max.y(); }
-        inline const float yMax() const { return _max.y(); }
+        inline float yMax() const { return _max.y(); }
  
         inline float& zMax() { return _max.z(); }
-        inline const float zMax() const { return _max.z(); }
+        inline float zMax() const { return _max.z(); }
 
         /** Calculate and return the center of the bounding box.*/
         inline const Vec3 center() const
@@ -95,14 +95,14 @@ class SG_EXPORT BoundingBox
         }
 
         /** Calculate and return the radius of the bounding box.*/
-        inline const float radius() const
+        inline float radius() const
         {
             return sqrtf(radius2());
         }
 
         /** Calculate and return the radius squared of the bounding box.
             Note, radius2() is faster to calculate than radius().*/            
-        inline const float radius2() const
+        inline float radius2() const
         {
             return 0.25f*((_max-_min).length2());
         }
@@ -154,7 +154,7 @@ class SG_EXPORT BoundingBox
         void expandBy(const BoundingSphere& sh);
 
         /** return true is vertex v is within the box.*/
-        inline const bool contains(const Vec3& v) const
+        inline bool contains(const Vec3& v) const
         {
             return valid() && 
                    (v.x()>=_min.x() && v.x()<=_max.x()) &&

@@ -64,7 +64,7 @@ class SG_EXPORT Transform : public Group
           * headlight LightSources or Heads up displays. */
         void setReferenceFrame(ReferenceFrame rf);
         
-        const ReferenceFrame getReferenceFrame() const { return _referenceFrame; }
+        ReferenceFrame getReferenceFrame() const { return _referenceFrame; }
 
         
         /** Callback attached to an Transform to specify how to compute the
@@ -74,11 +74,11 @@ class SG_EXPORT Transform : public Group
         {
             /** Get the transformation matrix which moves from local coords
               * to world coords.*/
-            virtual const bool computeLocalToWorldMatrix(Matrix& matrix,const Transform* transform, NodeVisitor* nv) const = 0;
+            virtual bool computeLocalToWorldMatrix(Matrix& matrix,const Transform* transform, NodeVisitor* nv) const = 0;
 
             /** Get the transformation matrix which moves from world coords
               * to local coords.*/
-            virtual const bool computeWorldToLocalMatrix(Matrix& matrix,const Transform* transform, NodeVisitor* nv) const = 0;
+            virtual bool computeWorldToLocalMatrix(Matrix& matrix,const Transform* transform, NodeVisitor* nv) const = 0;
         };
 
         /** Set the ComputerTransfromCallback which allows users to attach
@@ -96,7 +96,7 @@ class SG_EXPORT Transform : public Group
         /** Get the transformation matrix which moves from local coords to
           * world coords.
           * Returns true if the Matrix passed in has been updated. */
-        inline const bool getLocalToWorldMatrix(Matrix& matrix,NodeVisitor* nv) const
+        inline bool getLocalToWorldMatrix(Matrix& matrix,NodeVisitor* nv) const
         {
             if (_computeTransformCallback.valid())
                 return _computeTransformCallback->computeLocalToWorldMatrix(matrix,this,nv);
@@ -107,7 +107,7 @@ class SG_EXPORT Transform : public Group
         /** Get the transformation matrix which moves from world coords to
           * local coords.
           * Return true if the Matrix passed in has been updated. */
-        inline const bool getWorldToLocalMatrix(Matrix& matrix,NodeVisitor* nv) const
+        inline bool getWorldToLocalMatrix(Matrix& matrix,NodeVisitor* nv) const
         {
             if (_computeTransformCallback.valid())
                 return _computeTransformCallback->computeWorldToLocalMatrix(matrix,this,nv);
@@ -115,7 +115,7 @@ class SG_EXPORT Transform : public Group
                 return computeWorldToLocalMatrix(matrix,nv);
         }
         
-        virtual const bool computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const
+        virtual bool computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const
         {
             if (_referenceFrame==RELATIVE_TO_PARENTS)
             {
@@ -128,7 +128,7 @@ class SG_EXPORT Transform : public Group
             }
         }
         
-        virtual const bool computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor*) const
+        virtual bool computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor*) const
         {
             if (_referenceFrame==RELATIVE_TO_PARENTS)
             {
@@ -149,7 +149,7 @@ class SG_EXPORT Transform : public Group
           * There is no need to override in subclasses from osg::Transform
           * since this computeBound() uses the underlying matrix (calling
           * computeMatrix if required.) */
-        virtual const bool computeBound() const;
+        virtual bool computeBound() const;
         
         
         ref_ptr<ComputeTransformCallback>   _computeTransformCallback;

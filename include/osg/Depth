@@ -63,23 +63,23 @@ class SG_EXPORT Depth : public StateAttribute
             ALWAYS = GL_ALWAYS
         };
 
-        inline void setFunction(const Function func) { _func = func; }
+        inline void setFunction(Function func) { _func = func; }
         
-        inline const Function getFunction() const { return _func; }
+        inline Function getFunction() const { return _func; }
                
 
-        inline void setWriteMask(const bool mask) { _depthWriteMask = mask; }
+        inline void setWriteMask(bool mask) { _depthWriteMask = mask; }
         
-        inline const bool getWriteMask() const { return _depthWriteMask; }
+        inline bool getWriteMask() const { return _depthWriteMask; }
 
-        inline void setRange(const double zNear, const double zFar)
+        inline void setRange(double zNear, double zFar)
         {
             _zNear = zNear;
             _zFar = zFar;
         }
 
-        inline const double getZNear() const { return _zNear; }
-        inline const double getZFar() const { return _zFar; }
+        inline double getZNear() const { return _zNear; }
+        inline double getZFar() const { return _zFar; }
 
         virtual void apply(State& state) const;
 

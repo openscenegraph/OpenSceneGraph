@@ -123,7 +123,7 @@ class OSGTEXT_EXPORT Text : public osg::Drawable
         virtual    ~Text();
 
         virtual void        setDefaults(void);
-        virtual const bool  computeBound(void) const;
+        virtual bool        computeBound(void) const;
         virtual void        calcBounds(osg::Vec3* min,osg::Vec3* max) const;
         void                initAlignment(osg::Vec3* min,osg::Vec3* max);
         bool                initAlignment(void);

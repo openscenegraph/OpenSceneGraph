@@ -15,5 +15,5 @@ BlendFunc::~BlendFunc()
 
 void BlendFunc::apply(State&) const
 {
-    glBlendFunc( (GLenum)_source_factor, (GLenum)_destination_factor );
+    glBlendFunc( _source_factor, _destination_factor );
 }

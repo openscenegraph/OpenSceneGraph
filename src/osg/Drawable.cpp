@@ -32,7 +32,7 @@ Drawable::Drawable()
 Drawable::Drawable(const Drawable& drawable,const CopyOp& copyop):
     Object(drawable,copyop),
     _parents(), // leave empty as parentList is managed by Geode
-    _dstate(copyop(drawable._dstate.get())),
+    _stateset(copyop(drawable._stateset.get())),
     _supportsDisplayList(drawable._supportsDisplayList),
     _useDisplayList(drawable._useDisplayList),
     _globjList(drawable._globjList),
@@ -56,6 +56,12 @@ void Drawable::removeParent(osg::Node* node)
 {
     ParentList::iterator pitr = std::find(_parents.begin(),_parents.end(),node);
     if (pitr!=_parents.end()) _parents.erase(pitr);
+}
+
+osg::StateSet* Drawable::getOrCreateStateSet()
+{
+    if (!_stateset) _stateset = osgNew StateSet;
+    return _stateset.get();
 }
 
 void Drawable::dirtyBound()
@@ -96,9 +102,9 @@ void Drawable::compile(State& state)
     }
 
     
-    if (_dstate.valid())
+    if (_stateset.valid())
     {
-        _dstate->compile(state);
+        _stateset->compile(state);
     }
 
     globj = glGenLists( 1 );
@@ -113,7 +119,7 @@ void Drawable::compile(State& state)
 
 }
 
-void Drawable::setSupportsDisplayList(const bool flag)
+void Drawable::setSupportsDisplayList(bool flag)
 {
     // if value unchanged simply return.
     if (_supportsDisplayList==flag) return;
@@ -134,7 +140,7 @@ void Drawable::setSupportsDisplayList(const bool flag)
     _supportsDisplayList=flag;
 }
 
-void Drawable::setUseDisplayList(const bool flag)
+void Drawable::setUseDisplayList(bool flag)
 {
     // if value unchanged simply return.
     if (_useDisplayList==flag) return;
@@ -288,7 +294,7 @@ struct ComputeBound : public Drawable::PrimitiveFunctor
         BoundingBox     _bb;
 };
 
-const bool Drawable::computeBound() const
+bool Drawable::computeBound() const
 {
     ComputeBound cb;
 

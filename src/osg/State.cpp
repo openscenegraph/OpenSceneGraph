@@ -245,12 +245,12 @@ void State::apply()
     }
 }
 
-void State::haveAppliedMode(const StateAttribute::GLMode mode,const StateAttribute::GLModeValue value)
+void State::haveAppliedMode(StateAttribute::GLMode mode,StateAttribute::GLModeValue value)
 {
     haveAppliedMode(_modeMap,mode,value);
 }
 
-void State::haveAppliedMode(const StateAttribute::GLMode mode)
+void State::haveAppliedMode(StateAttribute::GLMode mode)
 {
     haveAppliedMode(_modeMap,mode);
 }
@@ -260,28 +260,28 @@ void State::haveAppliedAttribute(const StateAttribute* attribute)
     haveAppliedAttribute(_attributeMap,attribute);
 }
 
-void State::haveAppliedAttribute(const StateAttribute::Type type)
+void State::haveAppliedAttribute(StateAttribute::Type type)
 {
     haveAppliedAttribute(_attributeMap,type);
 }
 
-const bool State::getLastAppliedMode(const StateAttribute::GLMode mode) const
+bool State::getLastAppliedMode(StateAttribute::GLMode mode) const
 {
     return getLastAppliedMode(_modeMap,mode);
 }
 
-const StateAttribute* State::getLastAppliedAttribute(const StateAttribute::Type type) const
+const StateAttribute* State::getLastAppliedAttribute(StateAttribute::Type type) const
 {
     return getLastAppliedAttribute(_attributeMap,type);
 }
 
 
-void State::haveAppliedTextureMode(unsigned int unit,const StateAttribute::GLMode mode,const StateAttribute::GLModeValue value)
+void State::haveAppliedTextureMode(unsigned int unit,StateAttribute::GLMode mode,StateAttribute::GLModeValue value)
 {
     haveAppliedMode(getOrCreateTextureModeMap(unit),mode,value);
 }
 
-void State::haveAppliedTextureMode(unsigned int unit,const StateAttribute::GLMode mode)
+void State::haveAppliedTextureMode(unsigned int unit,StateAttribute::GLMode mode)
 {
     haveAppliedMode(getOrCreateTextureModeMap(unit),mode);
 }
@@ -291,25 +291,25 @@ void State::haveAppliedTextureAttribute(unsigned int unit,const StateAttribute* 
     haveAppliedAttribute(getOrCreateTextureAttributeMap(unit),attribute);
 }
 
-void State::haveAppliedTextureAttribute(unsigned int unit,const StateAttribute::Type type)
+void State::haveAppliedTextureAttribute(unsigned int unit,StateAttribute::Type type)
 {
     haveAppliedAttribute(getOrCreateTextureAttributeMap(unit),type);
 }
 
-const bool State::getLastAppliedTextureMode(unsigned int unit,const StateAttribute::GLMode mode) const
+bool State::getLastAppliedTextureMode(unsigned int unit,StateAttribute::GLMode mode) const
 {
     if (unit>=_textureModeMapList.size()) return false;
     return getLastAppliedMode(_textureModeMapList[unit],mode);
 }
 
-const StateAttribute* State::getLastAppliedTextureAttribute(unsigned int unit,const StateAttribute::Type type) const
+const StateAttribute* State::getLastAppliedTextureAttribute(unsigned int unit,StateAttribute::Type type) const
 {
     if (unit>=_textureAttributeMapList.size()) return false;
     return getLastAppliedAttribute(_textureAttributeMapList[unit],type);
 }
 
 
-void State::haveAppliedMode(ModeMap& modeMap,const StateAttribute::GLMode mode,const StateAttribute::GLModeValue value)
+void State::haveAppliedMode(ModeMap& modeMap,StateAttribute::GLMode mode,StateAttribute::GLModeValue value)
 {
     ModeStack& ms = modeMap[mode];
 
@@ -320,7 +320,7 @@ void State::haveAppliedMode(ModeMap& modeMap,const StateAttribute::GLMode mode,c
 }
 
 /** mode has been set externally, update state to reflect this setting.*/
-void State::haveAppliedMode(ModeMap& modeMap,const StateAttribute::GLMode mode)
+void State::haveAppliedMode(ModeMap& modeMap,StateAttribute::GLMode mode)
 {
     ModeStack& ms = modeMap[mode];
 
@@ -346,7 +346,7 @@ void State::haveAppliedAttribute(AttributeMap& attributeMap,const StateAttribute
     }
 }
 
-void State::haveAppliedAttribute(AttributeMap& attributeMap,const StateAttribute::Type type)
+void State::haveAppliedAttribute(AttributeMap& attributeMap,StateAttribute::Type type)
 {
     
     AttributeMap::iterator itr = attributeMap.find(type);
@@ -360,7 +360,7 @@ void State::haveAppliedAttribute(AttributeMap& attributeMap,const StateAttribute
     }
 }
 
-const bool State::getLastAppliedMode(const ModeMap& modeMap,const StateAttribute::GLMode mode) const
+bool State::getLastAppliedMode(const ModeMap& modeMap,StateAttribute::GLMode mode) const
 {
     ModeMap::const_iterator itr = modeMap.find(mode);
     if (itr!=modeMap.end())
@@ -374,7 +374,7 @@ const bool State::getLastAppliedMode(const ModeMap& modeMap,const StateAttribute
     }
 }
 
-const StateAttribute* State::getLastAppliedAttribute(const AttributeMap& attributeMap,const StateAttribute::Type type) const
+const StateAttribute* State::getLastAppliedAttribute(const AttributeMap& attributeMap,StateAttribute::Type type) const
 {
     AttributeMap::const_iterator itr = attributeMap.find(type);
     if (itr!=attributeMap.end())

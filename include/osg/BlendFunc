@@ -57,17 +57,17 @@ class SG_EXPORT BlendFunc : public StateAttribute
             ZERO                 = GL_ZERO
         };
 
-        inline void setFunction( const int source, const int destination )
+        inline void setFunction( GLenum source, GLenum destination )
         {
             _source_factor = source;
             _destination_factor = destination;
         }
 
-        void setSource(const int source) { _source_factor = source; }
-        inline const int getSource() const { return _source_factor; }
+        void setSource(GLenum source) { _source_factor = source; }
+        inline GLenum getSource() const { return _source_factor; }
         
-        void setDestination(const int destination) { _destination_factor = destination; }
-        inline const int getDestination() const { return _destination_factor; }
+        void setDestination(GLenum destination) { _destination_factor = destination; }
+        inline GLenum getDestination() const { return _destination_factor; }
 
         virtual void apply(State& state) const;
 
@@ -75,8 +75,8 @@ class SG_EXPORT BlendFunc : public StateAttribute
 
         virtual ~BlendFunc();
 
-        int _source_factor;
-        int _destination_factor;
+        GLenum _source_factor;
+        GLenum _destination_factor;
 };
 
 }

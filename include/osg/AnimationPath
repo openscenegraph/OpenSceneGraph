@@ -45,7 +45,7 @@ class SG_EXPORT AnimationPath : public osg::Referenced
             osg::Quat _rotation;
             osg::Vec3 _scale;
             
-            inline void interpolate(const float ratio,const ControlPoint& first, const ControlPoint& second)
+            inline void interpolate(float ratio,const ControlPoint& first, const ControlPoint& second)
             {
                 float one_minus_ratio = 1.0f-ratio;
                 _position = first._position*one_minus_ratio + second._position*ratio;

@@ -483,7 +483,7 @@ void StateSet::merge(const StateSet& rhs)
 }
 
 
-void StateSet::setMode(const StateAttribute::GLMode mode, const StateAttribute::GLModeValue value)
+void StateSet::setMode(StateAttribute::GLMode mode, StateAttribute::GLModeValue value)
 {
     if (!s_textureGLModeSet.isTextureMode(mode))
     {
@@ -499,7 +499,7 @@ void StateSet::setMode(const StateAttribute::GLMode mode, const StateAttribute::
     }
 }
 
-void StateSet::setModeToInherit(const StateAttribute::GLMode mode)
+void StateSet::setModeToInherit(StateAttribute::GLMode mode)
 {
     if (!s_textureGLModeSet.isTextureMode(mode))
     {
@@ -516,7 +516,7 @@ void StateSet::setModeToInherit(const StateAttribute::GLMode mode)
 
 }
 
-const StateAttribute::GLModeValue StateSet::getMode(const StateAttribute::GLMode mode) const
+StateAttribute::GLModeValue StateSet::getMode(StateAttribute::GLMode mode) const
 {
     if (!s_textureGLModeSet.isTextureMode(mode))
     {
@@ -532,7 +532,7 @@ const StateAttribute::GLModeValue StateSet::getMode(const StateAttribute::GLMode
     }
 }
 
-void StateSet::setAttribute(StateAttribute *attribute, const StateAttribute::OverrideValue value)
+void StateSet::setAttribute(StateAttribute *attribute, StateAttribute::OverrideValue value)
 {
     if (attribute)
     {
@@ -551,7 +551,7 @@ void StateSet::setAttribute(StateAttribute *attribute, const StateAttribute::Ove
     }        
 }
 
-void StateSet::setAttributeAndModes(StateAttribute *attribute, const StateAttribute::GLModeValue value)
+void StateSet::setAttributeAndModes(StateAttribute *attribute, StateAttribute::GLModeValue value)
 {
     if (attribute)
     {
@@ -578,7 +578,7 @@ void StateSet::setAttributeAndModes(StateAttribute *attribute, const StateAttrib
     }
 }
 
-void StateSet::setAttributeToInherit(const StateAttribute::Type type)
+void StateSet::setAttributeToInherit(StateAttribute::Type type)
 {
     AttributeList::iterator itr = _attributeList.find(type);
     if (itr!=_attributeList.end())
@@ -588,28 +588,28 @@ void StateSet::setAttributeToInherit(const StateAttribute::Type type)
     }
 }
 
-StateAttribute* StateSet::getAttribute(const StateAttribute::Type type)
+StateAttribute* StateSet::getAttribute(StateAttribute::Type type)
 {
     return getAttribute(_attributeList,type);
 }
 
-const StateAttribute* StateSet::getAttribute(const StateAttribute::Type type) const
+const StateAttribute* StateSet::getAttribute(StateAttribute::Type type) const
 {
     return getAttribute(_attributeList,type);
 }
 
-const StateSet::RefAttributePair* StateSet::getAttributePair(const StateAttribute::Type type) const
+const StateSet::RefAttributePair* StateSet::getAttributePair(StateAttribute::Type type) const
 {
     return getAttributePair(_attributeList,type);
 }
 
-void StateSet::setAssociatedModes(const StateAttribute* attribute, const StateAttribute::GLModeValue value)
+void StateSet::setAssociatedModes(const StateAttribute* attribute, StateAttribute::GLModeValue value)
 {
     setAssociatedModes(_modeList,attribute,value);
 }
 
 
-void StateSet::setTextureMode(unsigned int unit,const StateAttribute::GLMode mode, const StateAttribute::GLModeValue value)
+void StateSet::setTextureMode(unsigned int unit,StateAttribute::GLMode mode, StateAttribute::GLModeValue value)
 {
     if (s_textureGLModeSet.isTextureMode(mode))
     {
@@ -625,7 +625,7 @@ void StateSet::setTextureMode(unsigned int unit,const StateAttribute::GLMode mod
     }
 }
 
-void StateSet::setTextureModeToInherit(unsigned int unit,const StateAttribute::GLMode mode)
+void StateSet::setTextureModeToInherit(unsigned int unit,StateAttribute::GLMode mode)
 {
     if (s_textureGLModeSet.isTextureMode(mode))
     {
@@ -643,7 +643,7 @@ void StateSet::setTextureModeToInherit(unsigned int unit,const StateAttribute::G
 }
 
 
-const StateAttribute::GLModeValue StateSet::getTextureMode(unsigned int unit,const StateAttribute::GLMode mode) const
+StateAttribute::GLModeValue StateSet::getTextureMode(unsigned int unit,StateAttribute::GLMode mode) const
 {
     if (s_textureGLModeSet.isTextureMode(mode))
     {
@@ -679,7 +679,7 @@ void StateSet::setTextureAttribute(unsigned int unit,StateAttribute *attribute, 
 }
 
 
-void StateSet::setTextureAttributeAndModes(unsigned int unit,StateAttribute *attribute, const StateAttribute::GLModeValue value)
+void StateSet::setTextureAttributeAndModes(unsigned int unit,StateAttribute *attribute, StateAttribute::GLModeValue value)
 {
     if (attribute)
     {
@@ -707,7 +707,7 @@ void StateSet::setTextureAttributeAndModes(unsigned int unit,StateAttribute *att
 }
 
 
-void StateSet::setTextureAttributeToInherit(unsigned int unit,const StateAttribute::Type type)
+void StateSet::setTextureAttributeToInherit(unsigned int unit,StateAttribute::Type type)
 {
     if (unit>=_textureAttributeList.size()) return;
     AttributeList& attributeList = _textureAttributeList[unit];
@@ -723,27 +723,27 @@ void StateSet::setTextureAttributeToInherit(unsigned int unit,const StateAttribu
 }
 
 
-StateAttribute* StateSet::getTextureAttribute(unsigned int unit,const StateAttribute::Type type)
+StateAttribute* StateSet::getTextureAttribute(unsigned int unit,StateAttribute::Type type)
 {
     if (unit>=_textureAttributeList.size()) return 0;
     return getAttribute(_textureAttributeList[unit],type);
 }
 
 
-const StateAttribute* StateSet::getTextureAttribute(unsigned int unit,const StateAttribute::Type type) const
+const StateAttribute* StateSet::getTextureAttribute(unsigned int unit,StateAttribute::Type type) const
 {
     if (unit>=_textureAttributeList.size()) return 0;
     return getAttribute(_textureAttributeList[unit],type);
 }
 
 
-const StateSet::RefAttributePair* StateSet::getTextureAttributePair(unsigned int unit,const StateAttribute::Type type) const
+const StateSet::RefAttributePair* StateSet::getTextureAttributePair(unsigned int unit,StateAttribute::Type type) const
 {
     if (unit>=_textureAttributeList.size()) return 0;
     return getAttributePair(_textureAttributeList[unit],type);
 }
 
-void StateSet::setAssociatedTextureModes(unsigned int unit,const StateAttribute* attribute, const StateAttribute::GLModeValue value)
+void StateSet::setAssociatedTextureModes(unsigned int unit,const StateAttribute* attribute, StateAttribute::GLModeValue value)
 {
     setAssociatedModes(getOrCreateTextureModeList(unit),attribute,value);
 }
@@ -798,13 +798,13 @@ void StateSet::setRendingBinToInherit()
     _binName = "";
 }
 
-void StateSet::setMode(ModeList& modeList,const StateAttribute::GLMode mode, const StateAttribute::GLModeValue value)
+void StateSet::setMode(ModeList& modeList,StateAttribute::GLMode mode, StateAttribute::GLModeValue value)
 {
     if ((value&StateAttribute::INHERIT)) setModeToInherit(modeList,mode);
     else modeList[mode] = value;
 }
 
-void StateSet::setModeToInherit(ModeList& modeList,const StateAttribute::GLMode mode)
+void StateSet::setModeToInherit(ModeList& modeList,StateAttribute::GLMode mode)
 {
     ModeList::iterator itr = modeList.find(mode);
     if (itr!=modeList.end())
@@ -813,7 +813,7 @@ void StateSet::setModeToInherit(ModeList& modeList,const StateAttribute::GLMode 
     }
 }
 
-const StateAttribute::GLModeValue StateSet::getMode(const ModeList& modeList,const StateAttribute::GLMode mode) const
+StateAttribute::GLModeValue StateSet::getMode(const ModeList& modeList,StateAttribute::GLMode mode) const
 {
     ModeList::const_iterator itr = modeList.find(mode);
     if (itr!=modeList.end())
@@ -824,7 +824,7 @@ const StateAttribute::GLModeValue StateSet::getMode(const ModeList& modeList,con
         return StateAttribute::INHERIT;
 }
 
-void StateSet::setAssociatedModes(ModeList& modeList,const StateAttribute* attribute, const StateAttribute::GLModeValue value)
+void StateSet::setAssociatedModes(ModeList& modeList,const StateAttribute* attribute, StateAttribute::GLModeValue value)
 {
     // get the associated modes.
     std::vector<StateAttribute::GLMode> modes;
@@ -848,7 +848,7 @@ void StateSet::setAttribute(AttributeList& attributeList,StateAttribute *attribu
 }
 
 
-StateAttribute* StateSet::getAttribute(AttributeList& attributeList,const StateAttribute::Type type)
+StateAttribute* StateSet::getAttribute(AttributeList& attributeList,StateAttribute::Type type)
 {
     AttributeList::iterator itr = attributeList.find(type);
     if (itr!=attributeList.end())
@@ -859,7 +859,7 @@ StateAttribute* StateSet::getAttribute(AttributeList& attributeList,const StateA
         return NULL;
 }
 
-const StateAttribute* StateSet::getAttribute(const AttributeList& attributeList,const StateAttribute::Type type) const
+const StateAttribute* StateSet::getAttribute(const AttributeList& attributeList,StateAttribute::Type type) const
 {
     AttributeList::const_iterator itr = attributeList.find(type);
     if (itr!=attributeList.end())
@@ -870,7 +870,7 @@ const StateAttribute* StateSet::getAttribute(const AttributeList& attributeList,
         return NULL;
 }
 
-const StateSet::RefAttributePair* StateSet::getAttributePair(const AttributeList& attributeList,const StateAttribute::Type type) const
+const StateSet::RefAttributePair* StateSet::getAttributePair(const AttributeList& attributeList,StateAttribute::Type type) const
 {
     AttributeList::const_iterator itr = attributeList.find(type);
     if (itr!=attributeList.end())

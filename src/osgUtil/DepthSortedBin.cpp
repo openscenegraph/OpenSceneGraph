@@ -32,7 +32,7 @@ void DepthSortedBin::reset()
 
 struct DepthSortFunctor2
 {
-    const bool operator() (const RenderLeaf* lhs,const RenderLeaf* rhs)
+    bool operator() (const RenderLeaf* lhs,const RenderLeaf* rhs)
     {
         return (lhs->_depth<rhs->_depth);
     }

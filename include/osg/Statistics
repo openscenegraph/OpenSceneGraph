@@ -78,13 +78,13 @@ class Statistics : public osg::Referenced, public osg::Drawable::PrimitiveFuncto
         
         void addDrawable() { numDrawables++;}
         void addMatrix() { nummat++;}
-        void addLight(const int np) { nlights+=np;}
-        void addImpostor(const int np) { nimpostor+= np; }
-        inline const int getBins() { return nbins;}
-        void setDepth(const int d) { depth=d; }
-        void addBins(const int np) { nbins+= np; }
+        void addLight(int np) { nlights+=np;}
+        void addImpostor(int np) { nimpostor+= np; }
+        inline int getBins() { return nbins;}
+        void setDepth(int d) { depth=d; }
+        void addBins(int np) { nbins+= np; }
 
-        void setBinNo(const int n) { _binNo=n;}       
+        void setBinNo(int n) { _binNo=n;}       
                 
 public:
                 

@@ -32,11 +32,11 @@ class UByte4
 
         unsigned char _v[4];
 
-        inline const bool operator == (const UByte4& v) const { return _v[0]==v._v[0] && _v[1]==v._v[1] && _v[2]==v._v[2] && _v[3]==v._v[3]; }
+        inline bool operator == (const UByte4& v) const { return _v[0]==v._v[0] && _v[1]==v._v[1] && _v[2]==v._v[2] && _v[3]==v._v[3]; }
 
-        inline const bool operator != (const UByte4& v) const { return _v[0]!=v._v[0] || _v[1]!=v._v[1] || _v[2]!=v._v[2] || _v[3]!=v._v[3]; }
+        inline bool operator != (const UByte4& v) const { return _v[0]!=v._v[0] || _v[1]!=v._v[1] || _v[2]!=v._v[2] || _v[3]!=v._v[3]; }
 
-        inline const bool operator <  (const UByte4& v) const
+        inline bool operator <  (const UByte4& v) const
         {
             if (_v[0]<v._v[0]) return true;
             else if (_v[0]>v._v[0]) return false;
@@ -55,8 +55,8 @@ class UByte4
             _v[0]=r; _v[1]=g; _v[2]=b; _v[3]=a;
         }
 
-        inline unsigned char& operator [] (const int i) { return _v[i]; }
-        inline unsigned char operator [] (const int i) const { return _v[i]; }
+        inline unsigned char& operator [] (unsigned int i) { return _v[i]; }
+        inline unsigned char operator [] (unsigned int i) const { return _v[i]; }
 
         inline unsigned char& r() { return _v[0]; }
         inline unsigned char& g() { return _v[1]; }
@@ -69,7 +69,7 @@ class UByte4
         inline unsigned char a() const { return _v[3]; }
 
         /// multiply by scalar
-        inline UByte4 operator * (const float rhs) const
+        inline UByte4 operator * (float rhs) const
         {
             UByte4 col(*this);
             col *= rhs;
@@ -77,7 +77,7 @@ class UByte4
         }
 
         /// unary multiply by scalar
-        inline UByte4& operator *= (const float rhs)
+        inline UByte4& operator *= (float rhs)
         {
             _v[0]=(unsigned char)((float)_v[0]*rhs);
             _v[1]=(unsigned char)((float)_v[1]*rhs);
@@ -87,7 +87,7 @@ class UByte4
         }
 
         /// divide by scalar
-        inline UByte4 operator / (const float rhs) const
+        inline UByte4 operator / (float rhs) const
         {
             UByte4 col(*this);
             col /= rhs;
@@ -95,7 +95,7 @@ class UByte4
         }
 
         /// unary divide by scalar
-        inline UByte4& operator /= (const float rhs)
+        inline UByte4& operator /= (float rhs)
         {
             float div = 1.0f/rhs;
             *this *= div;

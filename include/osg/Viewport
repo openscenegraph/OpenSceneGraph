@@ -46,7 +46,7 @@ class SG_EXPORT Viewport : public StateAttribute
             return 0; // passed all the above comparison macro's, must be equal.
         }
 
-        inline void setViewport(const int x,const int y,const int width,const int height)
+        inline void setViewport(int x,int y,int width,int height)
         {
             _x = x;
             _y = y;
@@ -62,16 +62,16 @@ class SG_EXPORT Viewport : public StateAttribute
             height = _height;
         }
 
-        inline const int x() const { return _x; }
-        inline const int y() const { return _y; }
-        inline const int width() const { return _width; }
-        inline const int height() const { return _height; }
+        inline int x() const { return _x; }
+        inline int y() const { return _y; }
+        inline int width() const { return _width; }
+        inline int height() const { return _height; }
 
-        inline const bool valid() const { return _width!=0 && _height!=0; }
+        inline bool valid() const { return _width!=0 && _height!=0; }
 
         /** Return the aspcetRatio of the viewport, which is equal to width/height.
           * If height is zero, the potental division by zero is avoid by simply returning 1.0f.*/
-        inline const float aspectRatio() const { if (_height!=0) return (float)_width/(float)_height; else return 1.0f; }
+        inline float aspectRatio() const { if (_height!=0) return (float)_width/(float)_height; else return 1.0f; }
         
         /** Compute the Window Matrix which takes projected coords into Window coordinates.
           * To converted local coodinates into window coordinates use v_window = v_local * MVPW matrix, 

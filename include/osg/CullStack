@@ -66,8 +66,8 @@ class SG_EXPORT CullStack
         /** Returns the current CullingMode.*/
         CullingMode getCullingMode() const { return _cullingMode; }
 
-        void setLODBias(const float bias) { _LODBias = bias; }
-        const float getLODBias() const    { return _LODBias; }
+        void setLODBias(float bias) { _LODBias = bias; }
+        float getLODBias() const    { return _LODBias; }
         
         void setSmallFeatureCullingPixelSize(float value) { _smallFeatureCullingPixelSize=value; }
         float getSmallFeatureCullingPixelSize() const { return _smallFeatureCullingPixelSize; }

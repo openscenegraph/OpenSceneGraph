@@ -86,19 +86,19 @@ class SG_EXPORT Node : public Object
           * prevent modification of the parent list.*/
         inline ParentList getParents() { return _parents; }
 
-        inline Group* getParent(const unsigned int i)  { return _parents[i]; }
+        inline Group* getParent(unsigned int i)  { return _parents[i]; }
         /**
          * Get a single const parent of node.
          * @param i index of the parent to get.
          * @return the parent i.
          */
-        inline const Group* getParent(const unsigned int i) const  { return _parents[i]; }
+        inline const Group* getParent(unsigned int i) const  { return _parents[i]; }
 
         /**
          * Get the number of parents of node.
          * @return the number of parents of this node.
          */
-        inline const unsigned int getNumParents() const { return _parents.size(); }
+        inline unsigned int getNumParents() const { return _parents.size(); }
 
 
         /** Set app node callback, called during app traversal. */
@@ -112,7 +112,7 @@ class SG_EXPORT Node : public Object
 
         /** Get the number of Children of this node which require App traversal,
           * since they have an AppCallback attached to them or their children.*/
-        inline const int getNumChildrenRequiringAppTraversal() const { return _numChildrenRequiringAppTraversal; }
+        inline unsigned int getNumChildrenRequiringAppTraversal() const { return _numChildrenRequiringAppTraversal; }
 
 
         /** Set cull node callback, called during cull traversal. */
@@ -127,32 +127,32 @@ class SG_EXPORT Node : public Object
         /** Set the view frustum/small feature culling of this node to be active or inactive.
           * The default value to true for _cullingActive. Used a guide
           * to the cull traversal.*/
-        void setCullingActive(const bool active);
+        void setCullingActive(bool active);
 
         /** Get the view frustum/small feature _cullingActive flag for this node. Used a guide
           * to the cull traversal.*/
-        inline const bool getCullingActive() const { return _cullingActive; }
+        inline bool getCullingActive() const { return _cullingActive; }
 
         /** Get the number of Children of this node which have culling disabled.*/
-        inline const int getNumChildrenWithCullingDisabled() const { return _numChildrenWithCullingDisabled; }
+        inline unsigned int getNumChildrenWithCullingDisabled() const { return _numChildrenWithCullingDisabled; }
 
         /** Return true if this node can be culled by view frustum, occlusion or small feature culling during the cull traversal.
           * note, return true only if no children have culling disabled, and the local _cullingActive flag is true.*/
-        inline const bool isCullingActive() const { return _numChildrenWithCullingDisabled==0 && _cullingActive && _bsphere.valid(); }
+        inline bool isCullingActive() const { return _numChildrenWithCullingDisabled==0 && _cullingActive && _bsphere.valid(); }
 
         /** Get the number of Children of this node which are or have OccluderNode's.*/
-        inline const int getNumChildrenWithOccluderNodes() const { return _numChildrenWithOccluderNodes; }
+        inline unsigned int getNumChildrenWithOccluderNodes() const { return _numChildrenWithOccluderNodes; }
 
         
         /** return true if this node is an OccluderNode or the subgraph below this node are OccluderNodes.*/
-        const bool containsOccluderNodes() const;
+        bool containsOccluderNodes() const;
 
 
         typedef unsigned int NodeMask;
         /** Set the node mask. Note, node mask is will be replaced by TraversalMask.*/
-        inline void setNodeMask(const NodeMask nm) { _nodeMask = nm; }
+        inline void setNodeMask(NodeMask nm) { _nodeMask = nm; }
         /** Get the node Mask. Note, node mask is will be replaced by TraversalMask.*/
-        inline const NodeMask getNodeMask() const { return _nodeMask; }
+        inline NodeMask getNodeMask() const { return _nodeMask; }
 
 
 
@@ -164,28 +164,28 @@ class SG_EXPORT Node : public Object
         /** Get the description list of the const node.*/        
         inline DescriptionList& getDescriptions() { return _descriptions; }
         /** Get a single const description of the const node.*/
-        inline const std::string& getDescription(const int i) const { return _descriptions[i]; }
+        inline const std::string& getDescription(unsigned int i) const { return _descriptions[i]; }
         /** Get a single description of the node.*/
-        inline std::string& getDescription(const int i) { return _descriptions[i]; }
+        inline std::string& getDescription(unsigned int i) { return _descriptions[i]; }
         /** Get the number of descriptions of the node.*/
-        inline const int getNumDescriptions() const { return _descriptions.size(); }
+        inline unsigned int getNumDescriptions() const { return _descriptions.size(); }
         /** Add a description string to the node.*/
         void addDescription(const std::string& desc) { _descriptions.push_back(desc); }
 
 
         /** set the node's StateSet.*/
-        inline void setStateSet(osg::StateSet* dstate) { _dstate = dstate; }
+        inline void setStateSet(osg::StateSet* dstate) { _stateset = dstate; }
 
         /** return the node's StateSet, if one does not already exist create it
           * set the node and return the newly created StateSet. This ensures
           * that a valid StateSet is always returned and can be used directly.*/
-        osg::StateSet* getValidStateSet();
+        osg::StateSet* getOrCreateStateSet();
 
         /** return the node's StateSet. returns NULL if a stateset is not attached.*/
-        inline osg::StateSet* getStateSet() { return _dstate.get(); }
+        inline osg::StateSet* getStateSet() { return _stateset.get(); }
 
         /** return the node's const StateSet. returns NULL if a stateset is not attached.*/
-        inline const osg::StateSet* getStateSet() const { return _dstate.get(); }
+        inline const osg::StateSet* getStateSet() const { return _stateset.get(); }
 
         /** get the bounding sphere of node.
            Using lazy evaluation computes the bounding sphere if it is 'dirty'.*/
@@ -216,7 +216,7 @@ class SG_EXPORT Node : public Object
         /** Compute the bounding sphere around Node's geometry or children.
             This method is automatically called by getBound() when the bounding
             sphere has been marked dirty via dirtyBound().*/
-        virtual const bool computeBound() const;
+        virtual bool computeBound() const;
 
         mutable BoundingSphere _bsphere;
         mutable bool _bsphere_computed;
@@ -231,23 +231,23 @@ class SG_EXPORT Node : public Object
         friend class osg::Drawable;
 
         ref_ptr<NodeCallback> _appCallback;
-        int _numChildrenRequiringAppTraversal;
-        void setNumChildrenRequiringAppTraversal(const int num);
+        unsigned int _numChildrenRequiringAppTraversal;
+        void setNumChildrenRequiringAppTraversal(unsigned int num);
 
         ref_ptr<NodeCallback> _cullCallback;
 
         bool _cullingActive;
-        int _numChildrenWithCullingDisabled;        
-        void setNumChildrenWithCullingDisabled(const int num);
+        unsigned int _numChildrenWithCullingDisabled;        
+        void setNumChildrenWithCullingDisabled(unsigned int num);
 
-        int _numChildrenWithOccluderNodes;        
-        void setNumChildrenWithOccluderNodes(const int num);
+        unsigned int _numChildrenWithOccluderNodes;        
+        void setNumChildrenWithOccluderNodes(unsigned int num);
 
         NodeMask _nodeMask;
         
         DescriptionList _descriptions;
 
-        ref_ptr<StateSet> _dstate;
+        ref_ptr<StateSet> _stateset;
 
 };
 

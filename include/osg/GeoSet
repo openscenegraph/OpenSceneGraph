@@ -90,19 +90,19 @@ class SG_EXPORT GeoSet : public Drawable
             
             IndexPointer() { _size=0;_is_ushort=true;_ptr._ushort = (GLushort*)0; }
             
-            inline const bool operator == (const IndexPointer& ip) const
+            inline bool operator == (const IndexPointer& ip) const
             {
                 return _size == ip._size &&
                        _is_ushort == ip._is_ushort &&
                        _ptr._ushort == ip._ptr._ushort;
             }
             
-            inline const bool valid() const
+            inline bool valid() const
             {
                 return _ptr._ushort != (GLushort*)0;
             }
 
-            inline const bool null() const
+            inline bool null() const
             {
                 return _ptr._ushort == (GLushort*)0;
             }
@@ -122,14 +122,14 @@ class SG_EXPORT GeoSet : public Drawable
             }
             
 
-            void set(const uint size,GLuint* data)
+            void set(uint size,GLuint* data)
             {
                 _size = size;
                 _is_ushort = false;
                 _ptr._uint = data;
             }
 
-            inline const uint maxIndex() const
+            inline uint maxIndex() const
             {
                 uint max = 0;            
                 if (_is_ushort)
@@ -145,7 +145,7 @@ class SG_EXPORT GeoSet : public Drawable
                 return max;
             }
             
-            inline const GLint operator [] (const GLuint pos) const
+            inline GLint operator [] (const GLuint pos) const
             {
                 if (_is_ushort) return _ptr._ushort[pos];
                 else return _ptr._uint[pos];
@@ -169,27 +169,27 @@ class SG_EXPORT GeoSet : public Drawable
 
 
         // data access methods.
-        inline void setNumPrims( const int n )                   { _numprims = n; }
-        inline const int getNumPrims() const                    { return _numprims; }
+        inline void setNumPrims( int n )                   { _numprims = n; }
+        inline int getNumPrims() const                    { return _numprims; }
 
-        void setPrimType( const PrimitiveType type );
-        inline const PrimitiveType getPrimType() const           { return _primtype; }
+        void setPrimType( PrimitiveType type );
+        inline PrimitiveType getPrimType() const           { return _primtype; }
 
         inline void setPrimLengths( int *lens )            { _primLengths = lens; }
         inline int  *getPrimLengths()                      { return _primLengths; }
-        inline const int *getPrimLengths() const           { return _primLengths; }
+        inline int *getPrimLengths() const           { return _primLengths; }
 
         void computeNumVerts() const;
 
         /** get the number of coords required by the defined primitives. */
-        inline const int getNumCoords()  const
+        inline int getNumCoords()  const
 	{ if( _numcoords == 0 ) computeNumVerts(); return _numcoords; }
         /** get a pointer to Vec3 coord array. */
         inline Vec3* getCoords()                           { return _coords; }
         /** get a const pointer to Vec3 coord array. */
         inline const Vec3* getCoords() const               { return _coords; }
         /** get the number of indices required by the defined primitives. */
-        inline const int getNumCoordIndices() const                     { return _cindex._size; }
+        inline int getNumCoordIndices() const                     { return _cindex._size; }
         /** get the coord index array. */
         inline IndexPointer& getCoordIndices()                    { return _cindex; }
         /** get the const coord index array. */
@@ -208,7 +208,7 @@ class SG_EXPORT GeoSet : public Drawable
         void setCoords( Vec3 *cp, IndexPointer& ip );
 
         /** get the number of normals required by the defined primitives and normals binding.*/
-        inline const int getNumNormals() const                    { return _numnormals; }
+        inline int getNumNormals() const                    { return _numnormals; }
         /** get a pointer to Vec3 normal array. */
         inline Vec3* getNormals()                           { return _normals; }
         /** get a const pointer to Vec3 normal array. */
@@ -228,11 +228,11 @@ class SG_EXPORT GeoSet : public Drawable
         /** set the normals and normal indices of the geoset.*/
         void setNormals( Vec3 *np, IndexPointer& ip );
         /** set the normals binding to the vertices/primitives/overall.*/
-        void setNormalBinding( const BindingType binding );
-        inline const BindingType getNormalBinding() const        { return _normal_binding; }
+        void setNormalBinding( BindingType binding );
+        inline BindingType getNormalBinding() const        { return _normal_binding; }
 
         /** get the number of colors required by the defined primitives and color binding.*/
-        inline const int getNumColors() const                    { return _numcolors; }
+        inline int getNumColors() const                    { return _numcolors; }
         /** get a pointer to Vec4 color array. */
         inline Vec4* getColors()                           { return _colors; }
         /** get a pointer to Vec4 color array. */
@@ -252,17 +252,17 @@ class SG_EXPORT GeoSet : public Drawable
         /** set the colors and color indices of the geoset.*/
         void setColors( Vec4 *cp, IndexPointer& ip );
         /** set the color binding to the vertices/primitives/overall.*/
-        void setColorBinding( const BindingType binding );
+        void setColorBinding( BindingType binding );
         inline BindingType getColorBinding() const         { return _color_binding; }
 
         /** get the number of texture coords required by the defined primitives and textures binding.*/
-        inline const int getNumTextureCoords() const               { return _numtcoords; }
+        inline int getNumTextureCoords() const               { return _numtcoords; }
         /** get a pointer to Vec4 color array. */
         inline Vec2* getTextureCoords()                      { return _tcoords; }
         /** get a pointer to Vec4 color array. */
         inline const Vec2* getTextureCoords() const          { return _tcoords; }
         /** get the number of texture coord indices required by the defined primitives and texture binding.*/
-        inline const int getNumTextureIndices() const              { return _tindex._size; }
+        inline int getNumTextureIndices() const              { return _tindex._size; }
         /** get the texture index array. */
         inline IndexPointer& getTextureIndices()             { return _tindex; }
         /** get the texture index array. */
@@ -276,29 +276,29 @@ class SG_EXPORT GeoSet : public Drawable
         /** set the texture coords and texture indices of the geoset.*/
         void setTextureCoords( Vec2 *tc, IndexPointer& ip );
         /** set the texture coord binding to the vertices/primitives/overall.*/
-        void setTextureBinding( const BindingType binding );
-        inline const BindingType getTextureBinding() const         { return _texture_binding; }
+        void setTextureBinding( BindingType binding );
+        inline BindingType getTextureBinding() const         { return _texture_binding; }
 
         /** get the number of texture coords required by the defined primitives and textures binding.*/
-        inline const int getNumInterleavedCoords() const               { return _numcoords; }
+        inline int getNumInterleavedCoords() const               { return _numcoords; }
         /** get a pointer to interleaved float array. */
         inline void* getInterleavedArray()                      { return _iarray; }
         /** get a const pointer to interleaved float array. */
         inline const void* getInterleavedArray() const          { return _iarray; }
         /** get the number of texture coord indices required by the defined primitives and texture binding.*/
-        inline const int getNumInterleavedIndices() const              { return _iaindex._size; }
+        inline int getNumInterleavedIndices() const              { return _iaindex._size; }
         /** get the texture index array. */
         inline IndexPointer& getInterleavedIndices()             { return _iaindex; }
         /** get the interleaved index array. */
         inline const IndexPointer& getInterleavedIndices() const { return _iaindex; }
         /** get the interleaved array storage format. */
-        inline const InterleaveArrayType getInterleavedFormat() const  { return _iaformat; }
+        inline InterleaveArrayType getInterleavedFormat() const  { return _iaformat; }
         
         /** set the interleaved arrays of the geoset.*/
-	void setInterleavedArray( const InterleaveArrayType format, float *ia ); 
-	void setInterleavedArray( const InterleaveArrayType format, float *ia, GLushort *iai ); 
-	void setInterleavedArray( const InterleaveArrayType format, float *ia, GLuint *iai ); 
-	void setInterleavedArray( const InterleaveArrayType format, float *ia, IndexPointer& iai ); 
+	void setInterleavedArray( InterleaveArrayType format, float *ia ); 
+	void setInterleavedArray( InterleaveArrayType format, float *ia, GLushort *iai ); 
+	void setInterleavedArray( InterleaveArrayType format, float *ia, GLuint *iai ); 
+	void setInterleavedArray( InterleaveArrayType format, float *ia, IndexPointer& iai ); 
 
         /** draw geoset directly ignoring an OpenGL display list which could be attached.
           * This is the internal draw method which does the drawing itself,
@@ -306,7 +306,7 @@ class SG_EXPORT GeoSet : public Drawable
           */
         virtual void drawImmediateMode(State& state);
 
-        const bool check() const;
+        bool check() const;
 
 
         /** function object which is used to handling the clean up of attribute arrays
@@ -345,7 +345,7 @@ class SG_EXPORT GeoSet : public Drawable
 
         virtual ~GeoSet();
 
-        virtual const bool computeBound() const;
+        virtual bool computeBound() const;
             
         ref_ptr<AttributeDeleteFunctor> _adf;
 

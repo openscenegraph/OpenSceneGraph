@@ -35,7 +35,7 @@ Node::Node(const Node& node,const CopyOp& copyop):
         _numChildrenWithOccluderNodes(0),
         _nodeMask(node._nodeMask), 
         _descriptions(node._descriptions),
-        _dstate(copyop(node._dstate.get()))
+        _stateset(copyop(node._stateset.get()))
 {
 }
 
@@ -70,10 +70,10 @@ void Node::ascend(NodeVisitor& nv)
     std::for_each(_parents.begin(),_parents.end(),NodeAcceptOp(nv));
 }
 
-osg::StateSet* Node::getValidStateSet()
+osg::StateSet* Node::getOrCreateStateSet()
 {
-    if (!_dstate) _dstate = osgNew StateSet;
-    return _dstate.get();
+    if (!_stateset) _stateset = osgNew StateSet;
+    return _stateset.get();
 }
 
 
@@ -117,7 +117,7 @@ void Node::setAppCallback(NodeCallback* nc)
 
 }
 
-void Node::setNumChildrenRequiringAppTraversal(const int num)
+void Node::setNumChildrenRequiringAppTraversal(unsigned int num)
 {
     // if no changes just return.
     if (_numChildrenRequiringAppTraversal==num) return;
@@ -154,7 +154,7 @@ void Node::setNumChildrenRequiringAppTraversal(const int num)
     
 }
 
-void Node::setCullingActive(const bool active)
+void Node::setCullingActive(bool active)
 {
     // if no changes just return.
     if (_cullingActive == active) return;
@@ -192,7 +192,7 @@ void Node::setCullingActive(const bool active)
     _cullingActive = active;
 }
 
-void Node::setNumChildrenWithCullingDisabled(const int num)
+void Node::setNumChildrenWithCullingDisabled(unsigned int num)
 {
     // if no changes just return.
     if (_numChildrenWithCullingDisabled==num) return;
@@ -229,7 +229,7 @@ void Node::setNumChildrenWithCullingDisabled(const int num)
 }
 
 
-void Node::setNumChildrenWithOccluderNodes(const int num)
+void Node::setNumChildrenWithOccluderNodes(unsigned int num)
 {
     // if no changes just return.
     if (_numChildrenWithOccluderNodes==num) return;
@@ -266,12 +266,12 @@ void Node::setNumChildrenWithOccluderNodes(const int num)
     
 }
 
-const bool Node::containsOccluderNodes() const
+bool Node::containsOccluderNodes() const
 {
     return _numChildrenWithOccluderNodes>0 || dynamic_cast<const OccluderNode*>(this);
 }
 
-const bool Node::computeBound() const
+bool Node::computeBound() const
 {
     _bsphere.init();
     return false;

@@ -57,13 +57,13 @@ class SG_EXPORT Group : public Node
         virtual bool replaceChild( Node *origChild, Node* newChild );
 
         /** return the number of chilren nodes.*/
-        inline const unsigned  int getNumChildren() const { return _children.size(); }
+        inline unsigned int getNumChildren() const { return _children.size(); }
 
         /** return child node at position i.*/
-        inline Node *getChild( const unsigned  int i ) { return _children[i].get(); }
+        inline Node *getChild( unsigned  int i ) { return _children[i].get(); }
 
         /** return child node at position i.*/
-        inline const Node *getChild( const unsigned  int i ) const { return _children[i].get(); }
+        inline const Node *getChild( unsigned  int i ) const { return _children[i].get(); }
 
         /** return true if node is contained within Group.*/
         inline bool containsNode( const Node* node ) const
@@ -111,7 +111,7 @@ class SG_EXPORT Group : public Node
 
         virtual ~Group();
 
-        virtual const bool computeBound() const;
+        virtual bool computeBound() const;
 
         ChildList _children;
 

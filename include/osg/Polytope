@@ -122,7 +122,7 @@ class SG_EXPORT Polytope
         }
 
         /** Check whether a vertex is contained with clipping set.*/
-        inline const bool contains(const osg::Vec3& v) const
+        inline bool contains(const osg::Vec3& v) const
         {
             if (!_maskStack.back()) return true;
             
@@ -138,7 +138,7 @@ class SG_EXPORT Polytope
         }
 
         /** Check whether any part of vertex list is contained with clipping set.*/
-        inline const bool contains(const std::vector<Vec3>& vertices)
+        inline bool contains(const std::vector<Vec3>& vertices)
         {
             if (!_maskStack.back()) return true;
 
@@ -165,7 +165,7 @@ class SG_EXPORT Polytope
             modifying the mask to turn off planes which wouldn't contribute to clipping
             of any internal objects.  This feature is used in osgUtil::CullVisitor
             to prevent redundant plane checking.*/
-        inline const bool contains(const osg::BoundingSphere& bs)
+        inline bool contains(const osg::BoundingSphere& bs)
         {
             if (!_maskStack.back()) return true;
 
@@ -192,7 +192,7 @@ class SG_EXPORT Polytope
             modifying the mask to turn off planes which wouldn't contribute to clipping
             of any internal objects.  This feature is used in osgUtil::CullVisitor
             to prevent redundant plane checking.*/
-        inline const bool contains(const osg::BoundingBox& bb)
+        inline bool contains(const osg::BoundingBox& bb)
         {
             if (!_maskStack.back()) return true;
 
@@ -215,7 +215,7 @@ class SG_EXPORT Polytope
         }
 
         /** Check whether all of vertex list is contained with clipping set.*/
-        inline const bool containsAllOf(const std::vector<Vec3>& vertices)
+        inline bool containsAllOf(const std::vector<Vec3>& vertices)
         {
             if (!_maskStack.back()) return false;
 
@@ -238,7 +238,7 @@ class SG_EXPORT Polytope
         }
 
         /** Check whether the entire bounding sphere is contained within clipping set.*/
-        inline const bool containsAllOf(const osg::BoundingSphere& bs)
+        inline bool containsAllOf(const osg::BoundingSphere& bs)
         {
             if (!_maskStack.back()) return false;
 
@@ -261,7 +261,7 @@ class SG_EXPORT Polytope
         }
         
         /** Check whether the entire bounding box is contained within clipping set.*/
-        inline const bool containsAllOf(const osg::BoundingBox& bb)
+        inline bool containsAllOf(const osg::BoundingBox& bb)
         {
             if (!_maskStack.back()) return false;
 

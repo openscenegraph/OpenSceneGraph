@@ -54,11 +54,11 @@ class SG_EXPORT PolygonMode : public StateAttribute
             FILL = GL_FILL
         };
 
-        void setMode(const Face face,const Mode mode);
+        void setMode(Face face,Mode mode);
         
-        const Mode getMode(const Face face) const;
+        Mode getMode(Face face) const;
     
-        inline const bool getFrontAndBack() const { return _frontAndBack; }
+        inline bool getFrontAndBack() const { return _frontAndBack; }
 
         virtual void apply(State& state) const;
         

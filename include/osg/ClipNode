@@ -31,18 +31,18 @@ class SG_EXPORT ClipNode : public Group
 
         /** Add a ClipPlane to a ClipNode. Return true if plane is added, 
           * return false if plane already exists in ClipNode, or clipplane is false.*/
-        const bool addClipPlane(ClipPlane* clipplane);
+        bool addClipPlane(ClipPlane* clipplane);
 
         /** Remove ClipPlane from a ClipNode. Return true if plane is removed, 
           * return false if plane does not exists in ClipNode.*/
-        const bool removeClipPlane(ClipPlane* clipplane);
+        bool removeClipPlane(ClipPlane* clipplane);
 
         /** Remove ClipPlane, at specified index, from a ClipNode. Return true if plane is removed, 
           * return false if plane does not exists in ClipNode.*/
-        const bool removeClipPlane(unsigned int pos);
+        bool removeClipPlane(unsigned int pos);
 
         /** return the number of ClipPlanes.*/
-        inline const unsigned  int getNumClipPlanes() const { return _planes.size(); }
+        inline unsigned  int getNumClipPlanes() const { return _planes.size(); }
 
 
         /** Get ClipPlane at specificed index position.*/
@@ -58,16 +58,16 @@ class SG_EXPORT ClipNode : public Group
         inline const ClipPlaneList& getClipPlaneList() const { return _planes; }
 
         /** Set the GLModes on StateSet associated with the ClipPlanes.*/
-        void setStateSetModes(StateSet&,const StateAttribute::GLModeValue) const;
+        void setStateSetModes(StateSet&,StateAttribute::GLModeValue) const;
 
         /** Set up the local StateSet */
-        void setLocalStateSetModes(const StateAttribute::GLModeValue=StateAttribute::ON);
+        void setLocalStateSetModes(StateAttribute::GLModeValue=StateAttribute::ON);
 
     protected:
 
         virtual ~ClipNode();
 
-        virtual const bool computeBound() const;
+        virtual bool computeBound() const;
 
         StateAttribute::GLModeValue _value;
         ClipPlaneList _planes;

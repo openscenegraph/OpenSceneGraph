@@ -137,6 +137,7 @@ Makedepend : $(CXXFILES) $(CFILES)
 ifeq ($(OS),IRIX)   
 	touch $@
 else
+ifeq (0,1) # This is an experiment
 	@ [ -d depend ] || mkdir depend
 	@ rm -f $@;
 	 for f in $?; do \
@@ -144,8 +145,9 @@ else
 	    $(C++) $(INC) $(DEPARG) > depend/$$ff ;\
 	    echo "include depend/$$ff" >> $@;\
 	done
-	
-#	$(C++) $(INC) $(DEPARG) $^ > $(MAKEDEPEND)
+else
+	$(C++) $(INC) $(DEPARG) $^ > $(MAKEDEPEND)
+endif
 endif
 
 

@@ -234,45 +234,15 @@ struct SortDynGeoSet
 osg::Geode* GeoSetBuilder::createOsgGeoSets(osg::Geode* geode)
 {
     if( geode == NULL) geode = _geode.get();
-
     if( geode == NULL) return geode;
 
-    DynGeoSetList::iterator itr;
-
-    if (_dynGeoSetList.size()==1)
+    for(DynGeoSetList::iterator itr = _dynGeoSetList.begin();
+        itr!=_dynGeoSetList.end();
+        ++itr)
     {
         osg::Geometry* geom = new osg::Geometry;
         geode->addDrawable(geom);
-        
-        _dynGeoSetList.front()->addToGeometry(geom);
-    }
-    else if (_dynGeoSetList.size()>1)
-    {
-        std::sort(_dynGeoSetList.begin(),_dynGeoSetList.end(),SortDynGeoSet());
-
-        osg::Geometry* geom = new osg::Geometry;
-        geode->addDrawable(geom);
-        _dynGeoSetList.front()->addToGeometry(geom);
-
-
-        static int counter=0;
-        itr = _dynGeoSetList.begin();
-        DynGeoSetList::iterator prev = itr++;
-        for(;
-            itr!=_dynGeoSetList.end();
-            ++itr)
-        {
-            if ((*itr)->compatible(*(*prev))==0)
-            {
-                (*itr)->addToGeometry(geom);
-                counter++;
-            } else
-            {
-                geom = new osg::Geometry;
-                geode->addDrawable(geom);
-                (*itr)->addToGeometry(geom);
-            }
-        }
+        (*itr)->addToGeometry(geom);
     }
 
     osgUtil::Tesselator tesselator;

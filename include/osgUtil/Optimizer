@@ -329,7 +329,14 @@ class OSGUTIL_EXPORT Optimizer
                 virtual void apply(osg::Billboard&) { /* don't do anything*/ }
 
                 static bool mergeGeode(osg::Geode& geode);
+
                 static bool mergeGeometry(osg::Geometry& lhs,osg::Geometry& rhs);
+
+                static bool mergePrimitive(osg::DrawArrays& lhs,osg::DrawArrays& rhs);
+                static bool mergePrimitive(osg::DrawArrayLengths& lhs,osg::DrawArrayLengths& rhs);
+                static bool mergePrimitive(osg::DrawElementsUByte& lhs,osg::DrawElementsUByte& rhs);
+                static bool mergePrimitive(osg::DrawElementsUShort& lhs,osg::DrawElementsUShort& rhs);
+                static bool mergePrimitive(osg::DrawElementsUInt& lhs,osg::DrawElementsUInt& rhs);
 
         };
 };

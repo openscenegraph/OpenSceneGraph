@@ -91,7 +91,8 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
         _fileRequestListMutex.unlock();
     }
     
-    if (!threadIsRunning())
+    //if (!threadIsRunning())
+    if (!isRunning())
     {
         std::cout<<"DatabasePager::startThread()"<<std::endl;
         startThread();

@@ -293,7 +293,7 @@ ifeq ($(OS),Linux)
   PF_XTRA_LIBS      = -L/usr/lib/libpfdb   -Xlinker -rpath /usr/lib/libpfdb \
                       -lpfdu -lpfutil -lpf 
   SOCKET_LIBS       = 
-  OTHER_LIBS        = -lpthread
+  OTHER_LIBS        = -lOpenThreads
   PNG_LIBS          = -lpng
   JPEG_LIBS         = -ljpeg
   TIFF_LIB          = -ltiff
@@ -469,7 +469,7 @@ else
   ARCHARGS          = 
   ARCHINST          = 
 endif
-  LINKARGS          = -lpthread
+  LINKARGS          = -lOpenThreads
   LIB_EXT           = sl
   PLUGIN_EXT        = sl
   DYNAMICLIBRARYLIB = -ldld

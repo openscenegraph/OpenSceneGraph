@@ -46,6 +46,12 @@
 #endif
 #endif
 
-#include <osg/MemoryManager>
+//#include <osg/MemoryManager>
+//#include <new>
+//#include <stdlib.h>
+#define osgNew new
+#define osgDelete delete
+#define osgFree free
+#define osgMalloc malloc
 
 #endif

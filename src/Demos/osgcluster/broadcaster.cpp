@@ -17,23 +17,24 @@
 #include <string.h>
 
 #if defined(__linux)
-#include <unistd.h>
-#  include <linux/sockios.h>
+    #include <unistd.h>
+    #include <linux/sockios.h>
 #elif defined(__FreeBSD__)
-#  include <sys/sockio.h>
+    #include <sys/sockio.h>
 #elif defined(__sgi)
-#  include <net/soioctl.h>
+    #include <net/soioctl.h>
 #elif defined(__CYGWIN__) 
-// nothing needed
+    // nothing needed
 #elif defined(__sun) 
-#  include <sys/sockio.h>
-#elif defined (__DARWIN_OSX__)   // added
-#  include <sys/sockio.h>         // added
-#elif defined (WIN32)   // added
-#  include <winsock.h>         // added
-#  include <stdio.h>         // added
+    #include <sys/sockio.h>
+#elif defined (__DARWIN_OSX__)
+    #include <sys/sockio.h>
+    #include <unistd.h>
+#elif defined (WIN32)
+    #include <winsock.h>
+    #include <stdio.h>
 #else
-#  error Teach me how to build on this system
+    #error Teach me how to build on this system
 #endif
 
 #include "broadcaster.h"

@@ -38,11 +38,11 @@ class TransformVisitor : public NodeVisitor
         {
             if (_coordMode==LOCAL_TO_WORLD)
             {
-                transform.getLocalToWorldMatrix(_matrix,this);
+                transform.computeLocalToWorldMatrix(_matrix,this);
             }
             else // worldToLocal
             {
-                transform.getWorldToLocalMatrix(_matrix,this);
+                transform.computeWorldToLocalMatrix(_matrix,this);
             }
         }
         
@@ -95,12 +95,6 @@ Matrix osg::computeEyeToLocal(const Matrix& modelview,NodePath& nodePath)
 
 
 
-
-
-
-
-
-
 Transform::Transform()
 {
     _referenceFrame = RELATIVE_TO_PARENTS;
@@ -108,7 +102,6 @@ Transform::Transform()
 
 Transform::Transform(const Transform& transform,const CopyOp& copyop):
     Group(transform,copyop),
-    _computeTransformCallback(transform._computeTransformCallback),
     _referenceFrame(transform._referenceFrame)
 {    
 }
@@ -136,7 +129,7 @@ bool Transform::computeBound() const
     // to handle this case gracefully, normally this should not be a problem.
     Matrix l2w;
 
-    getLocalToWorldMatrix(l2w,NULL);
+    computeLocalToWorldMatrix(l2w,NULL);
 
     Vec3 xdash = _bsphere._center;
     xdash.x() += _bsphere._radius;

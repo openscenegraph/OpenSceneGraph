@@ -393,7 +393,7 @@ void CullVisitor::apply(Billboard& node)
 
         RefMatrix* billboard_matrix = createOrReuseMatrix(modelview);
 
-        node.getMatrix(*billboard_matrix,eye_local,pos);
+        node.computeMatrix(*billboard_matrix,eye_local,pos);
 
 
         float d = distance(pos,modelview);
@@ -499,7 +499,7 @@ void CullVisitor::apply(Transform& node)
     if (node_state) pushStateSet(node_state);
 
     ref_ptr<RefMatrix> matrix = createOrReuseMatrix(getModelViewMatrix());
-    node.getLocalToWorldMatrix(*matrix,this);
+    node.computeLocalToWorldMatrix(*matrix,this);
     pushModelViewMatrix(matrix.get());
     
     handle_cull_callbacks_and_traverse(node);

@@ -46,27 +46,6 @@ class DrawableDrawCallback : public osg::Drawable::DrawCallback
         }
 };
 
-struct TransformCallback : public osg::Transform::ComputeTransformCallback
-{
-    /** Get the transformation matrix which moves from local coords to world coords.*/
-    virtual bool computeLocalToWorldMatrix(osg::Matrix& matrix,const osg::Transform* transform, osg::NodeVisitor* nv) const
-    {
-        std::cout<<"computeLocalToWorldMatrix - pre transform->computeLocalToWorldMatrix"<<std::endl;
-        bool result = transform->computeLocalToWorldMatrix(matrix,nv);
-        std::cout<<"computeLocalToWorldMatrix - post transform->computeLocalToWorldMatrix"<<std::endl;
-        return result;
-    }
-
-    /** Get the transformation matrix which moves from world coords to local coords.*/
-    virtual bool computeWorldToLocalMatrix(osg::Matrix& matrix,const osg::Transform* transform, osg::NodeVisitor* nv) const 
-    {
-        std::cout<<"computeWorldToLocalMatrix - pre transform->computeWorldToLocalMatrix"<<std::endl;
-        bool result = transform->computeWorldToLocalMatrix(matrix,nv);
-        std::cout<<"computeWorldToLocalMatrix - post transform->computeWorldToLocalMatrix"<<std::endl;
-        return result;
-    }
-};
-
 struct DrawableUpdateCallback : public osg::Drawable::UpdateCallback
 {
     virtual void update(osg::NodeVisitor*, osg::Drawable* drawable)
@@ -121,7 +100,6 @@ class InsertCallbacksVisitor : public osg::NodeVisitor
         
         virtual void apply(osg::Transform& node)
         {
-            node.setComputeTransformCallback(new TransformCallback());
             apply((osg::Node&)node);
         }
 };

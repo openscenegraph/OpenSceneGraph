@@ -127,7 +127,10 @@ void OsgCameraGroup::setUpSceneViewsWithData()
         else if (_scene_data.valid())
         {
             (*p)->setSceneData( _scene_data.get() );
-
+        }
+        else
+        {
+            (*p)->setSceneData( 0 );
         }
         
         (*p)->setFrameStamp( _frameStamp.get() );
@@ -135,7 +138,7 @@ void OsgCameraGroup::setUpSceneViewsWithData()
         (*p)->setBackgroundColor( _background_color );
         (*p)->setLODScale( _LODScale );
         (*p)->setFusionDistance( _fusionDistanceMode, _fusionDistanceValue );
-
+        (*p)->getState()->reset();
     }
 }
 

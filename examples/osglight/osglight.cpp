@@ -355,10 +355,9 @@ int main( int argc, char **argv )
         itr!=viewer.getSceneHandlerList().end();
         ++itr)
     {
-        osgUtil::SceneView* sceneview = *itr;
         // switch off small feature culling to prevent the light points from being culled.
+        osgUtil::SceneView* sceneview = itr->get();
         sceneview->setCullingMode( sceneview->getCullingMode() & ~osg::CullStack::SMALL_FEATURE_CULLING);
-        //sceneview->setCullingMode( 0);
     }
 
     while( !viewer.done() )

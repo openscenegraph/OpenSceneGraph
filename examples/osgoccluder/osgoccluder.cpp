@@ -347,7 +347,7 @@ int main( int argc, char **argv )
 
     if (manuallyCreateOccluders)
     {
-        osgUtil::SceneView* sceneview = viewer.getSceneHandlerList()[0];
+        osgUtil::SceneView* sceneview = viewer.getSceneHandlerList()[0].get();
     
         viewer.getEventHandlerList().push_front(new OccluderEventHandler(sceneview,rootnode));
     }

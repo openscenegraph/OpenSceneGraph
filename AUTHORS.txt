@@ -47,7 +47,7 @@ Ben Discoe <ben@vterrain.org>
         - png plugin.
         - fixes to OBJ plugin.
 
-Maroc Jez <marco.jez@arsenal.it>
+Marco Jez <marco.jez@arsenal.it>
         - osgParticle
         - IO support for osgText.
 

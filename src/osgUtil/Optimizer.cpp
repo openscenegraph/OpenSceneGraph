@@ -25,6 +25,7 @@
 #include <osg/Sequence>
 #include <osg/Switch>
 #include <osg/Texture>
+#include <osg/PagedLOD>
 
 #include <osgUtil/TransformAttributeFunctor>
 #include <osgUtil/TriStripVisitor>
@@ -37,26 +38,9 @@
 using namespace osgUtil;
 
 
-////////////////////////////////////////////////////////////////////////////
-// Overall Optimization function.
-////////////////////////////////////////////////////////////////////////////
-
-static bool isNodeEmpty(const osg::Node& node)
-{
-    if (node.getUserData()) return false;
-    if (node.getUpdateCallback()) return false;
-    if (node.getEventCallback()) return false;
-    if (node.getCullCallback()) return false;
-    if (node.getNumDescriptions()>0) return false;
-    if (node.getStateSet()) return false;
-    if (node.getNodeMask()!=0xffffffff) return false;
-    if (!node.getName().empty()) return false;
-    return true;
-}
 
 void Optimizer::reset()
 {
-    _permissibleOptimizationsMap.clear();
 }
 
 static osg::ApplicationUsageProxy Optimizer_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_OPTIMIZER \"<type> [<type>]\"","OFF | DEFAULT | FLATTEN_STATIC_TRANSFORMS | REMOVE_REDUNDANT_NODES | COMBINE_ADJACENT_LODS | SHARE_DUPLICATE_STATE | MERGE_GEOMETRY | SPATIALIZE_GROUPS  | COPY_SHARED_NODES  | TRISTRIP_GEOMETRY | OPTIMIZE_TEXTURE_SETTINGS");
@@ -501,15 +485,14 @@ void Optimizer::StateVisitor::optimize()
 // Flatten static transforms
 ////////////////////////////////////////////////////////////////////////////
 
-class CollectLowestTransformsVisitor : public osg::NodeVisitor
+class CollectLowestTransformsVisitor : public Optimizer::BaseOptimizerVisitor
 {
     public:
 
 
         CollectLowestTransformsVisitor(Optimizer* optimizer=0):
-                    osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_PARENTS),
-                    _transformFunctor(osg::Matrix()),
-                    _optimizer(optimizer) {}
+                    Optimizer::BaseOptimizerVisitor(optimizer,Optimizer::FLATTEN_STATIC_TRANSFORMS),
+                    _transformFunctor(osg::Matrix()) {}
 
         virtual void apply(osg::Node& node)
         {
@@ -587,16 +570,29 @@ class CollectLowestTransformsVisitor : public osg::NodeVisitor
         void disableTransform(osg::Transform* transform);
         bool removeTransforms(osg::Node* nodeWeCannotRemove);
 
-        inline bool isOperationPermissibleForObject(const osg::Object* object)
+        inline bool isOperationPermissibleForObject(const osg::Object* object) const
+        {
+            const osg::Drawable* drawable = dynamic_cast<const osg::Drawable*>(object);
+            if (drawable) return isOperationPermissibleForObject(drawable);
+            
+            const osg::Node* node = dynamic_cast<const osg::Node*>(object);
+            if (drawable) return isOperationPermissibleForObject(node);
+
+            return false;
+        }
+
+        inline bool isOperationPermissibleForObject(const osg::Drawable* drawable) const
         {
             // disable if cannot apply transform functor.
-            const osg::Drawable* drawable = dynamic_cast<const osg::Drawable*>(object);
             if (drawable && !drawable->supports(_transformFunctor)) return false;
+            return BaseOptimizerVisitor::isOperationPermissibleForObject(drawable);
+        }
             
+        inline bool isOperationPermissibleForObject(const osg::Node* node) const
+        {
             // disable if object is a light point node.
-            if (strcmp(object->className(),"LightPointNode")==0) return false;
-
-            return _optimizer ? _optimizer->isOperationPermissibleForObject(object,Optimizer::FLATTEN_STATIC_TRANSFORMS) :  true;
+            if (strcmp(node->className(),"LightPointNode")==0) return false;
+            return BaseOptimizerVisitor::isOperationPermissibleForObject(node);
         }
 
     protected:        
@@ -682,7 +678,6 @@ class CollectLowestTransformsVisitor : public osg::NodeVisitor
         void doTransform(osg::Object* obj,osg::Matrix& matrix);
         
         osgUtil::TransformAttributeFunctor _transformFunctor;
-        Optimizer*      _optimizer;
         TransformMap    _transformMap;
         ObjectMap       _objectMap;
         ObjectList      _currentObjectList;
@@ -1004,7 +999,7 @@ bool Optimizer::FlattenStaticTransformsVisitor::removeTransforms(osg::Node* node
 }
 
 ////////////////////////////////////////////////////////////////////////////
-// RemoveEmptyNodes.
+// CombineStatucTransforms
 ////////////////////////////////////////////////////////////////////////////
 
 void Optimizer::CombineStaticTransformsVisitor::apply(osg::MatrixTransform& transform)
@@ -1013,7 +1008,8 @@ void Optimizer::CombineStaticTransformsVisitor::apply(osg::MatrixTransform& tran
         transform.getNumChildren()==1 &&
         transform.getChild(0)->asTransform()!=0 &&
         transform.getChild(0)->asTransform()->asMatrixTransform()!=0 &&
-        transform.getChild(0)->asTransform()->getDataVariance()==osg::Object::STATIC)
+        transform.getChild(0)->asTransform()->getDataVariance()==osg::Object::STATIC &&
+        isOperationPermissibleForObject(&transform) && isOperationPermissibleForObject(transform.getChild(0)))
     {
         _transformSet.insert(&transform);
     }
@@ -1076,16 +1072,15 @@ void Optimizer::RemoveEmptyNodesVisitor::apply(osg::Geode& geode)
     for(int i=geode.getNumDrawables()-1;i>=0;--i)
     {
         osg::Geometry* geom = geode.getDrawable(i)->asGeometry();
-        if (geom && geom->empty())
+        if (geom && geom->empty() && isOperationPermissibleForObject(geom))
         {
            geode.removeDrawable(i);
         }
     }
 
-
     if (geode.getNumParents()>0)
     {
-        if (geode.getNumDrawables()==0 && isNodeEmpty(geode)) _redundantNodeList.insert(&geode);
+        if (geode.getNumDrawables()==0 && isOperationPermissibleForObject(&geode)) _redundantNodeList.insert(&geode);
     }
 }
 
@@ -1094,7 +1089,7 @@ void Optimizer::RemoveEmptyNodesVisitor::apply(osg::Group& group)
     if (group.getNumParents()>0)
     {
         // only remove empty groups, but not empty occluders.
-        if (group.getNumChildren()==0 && isNodeEmpty(group) && 
+        if (group.getNumChildren()==0 && isOperationPermissibleForObject(&group) && 
             (typeid(group)==typeid(osg::Group) || dynamic_cast<osg::Transform*>(&group)))
         {
             _redundantNodeList.insert(&group);
@@ -1154,7 +1149,7 @@ void Optimizer::RemoveRedundantNodesVisitor::apply(osg::Group& group)
         {
             if (group.getNumParents()>0 && group.getNumChildren()<=1)
             {
-                if (isNodeEmpty(group) && isOperationPermissibleForObject(&group))
+                if (isOperationPermissibleForObject(&group))
                 {
                     _redundantNodeList.insert(&group);
                 }
@@ -1223,13 +1218,16 @@ void Optimizer::RemoveRedundantNodesVisitor::removeRedundantNodes()
 ////////////////////////////////////////////////////////////////////////////
 void Optimizer::CombineLODsVisitor::apply(osg::LOD& lod)
 {
-    for(unsigned int i=0;i<lod.getNumParents();++i)
-    {
-        if (typeid(*lod.getParent(i))==typeid(osg::Group))
+    if (dynamic_cast<osg::PagedLOD*>(&lod)!=0)
+    {    
+        for(unsigned int i=0;i<lod.getNumParents();++i)
         {
-            if (isOperationPermissibleForObject(&lod))
+            if (typeid(*lod.getParent(i))==typeid(osg::Group))
             {
-                _groupList.insert(lod.getParent(i));
+                if (isOperationPermissibleForObject(&lod))
+                {
+                    _groupList.insert(lod.getParent(i));
+                }
             }
         }
     }

@@ -1,20 +1,24 @@
 OSG News (most significant items from ChangeLog)
 ================================================
 
-24th November 2004 - OpenSceneGraph-0.9.8
+26th November 2004 - OpenSceneGraph-0.9.8
 
     >>> Support for database archives, improved pager, 3d compressed textures
     
-    Database archives.
-    
     Improved pager support with better multi-processor stability and constant frame rate
     peformance.
+
+    Documentation moved to website, and now built with Doxygen.
     
     new STL plugin.
     
     new NET plugin
     
+    new OSGA plugin which provides database archive support.
+    
     OBJ plugin rewrite.
+    
+    new support for 3d texture compression using the GL_NV_texture_compression_vtc extension.
     
     Spelling and typo correction blitz on osg, osgDB and osgUtil libraries.
     
@@ -25,10 +29,13 @@ OSG News (most significant items from ChangeLog)
     
     General bug fixes.    
     
+    New OSX CGL support in Producer/osgProducer.
+    
     New examples:
         osgplanets
         osgspotlight
         osglauncher
+        osgmotionblur
 
 18th August 2004 - OpenSceneGraph-0.9.7-2
 

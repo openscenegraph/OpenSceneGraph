@@ -82,8 +82,6 @@ CullVisitor::CullVisitor()
     // overide the default node visitor mode.
     setTraversalMode(NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
 
-    _LODBias = 1.0f;
-
     //_tsm = LOOK_VECTOR_DISTANCE;
     _tsm = OBJECT_EYE_POINT_DISTANCE;
 
@@ -548,7 +546,7 @@ void CullVisitor::apply(osg::OccluderNode& node)
     // list, if so disable the appropriate ShadowOccluderVolume
     disableOccluder(_nodePath);
     
-    std::cout<<"We are in an Occlusion node"<<&node<<std::endl;
+    std::cout<<"CullVisitor:: We are in an Occlusion node"<<&node<<std::endl;
 
 
     if (isCulled(node)) return;

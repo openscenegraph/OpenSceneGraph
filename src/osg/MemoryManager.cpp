@@ -675,6 +675,8 @@ void    m_setOwner(const char *file, const unsigned int line, const char *func)
 
 #ifdef OSG_USE_MEMORY_MANAGER
 
+using namespace std;
+
 void    *operator new(size_t reportedSize) throw (std::bad_alloc)
 {
     #ifdef TEST_MEMORY_MANAGER
@@ -703,8 +705,8 @@ void    *operator new(size_t reportedSize) throw (std::bad_alloc)
         // There isn't a way to determine the new handler, except through setting it. So we'll just set it to NULL, then
         // set it back again.
 
-        std::new_handler    nh = std::set_new_handler(0);
-        std::set_new_handler(nh);
+        new_handler    nh = set_new_handler(0);
+        set_new_handler(nh);
 
         // If there is an error handler, call it
 
@@ -755,8 +757,8 @@ void    *operator new[](size_t reportedSize) throw (std::bad_alloc)
         // There isn't a way to determine the new handler, except through setting it. So we'll just set it to NULL, then
         // set it back again.
 
-        std::new_handler    nh = std::set_new_handler(0);
-        std::set_new_handler(nh);
+        new_handler    nh = set_new_handler(0);
+        set_new_handler(nh);
 
         // If there is an error handler, call it
 
@@ -813,8 +815,8 @@ void    *operator new(size_t reportedSize, const char *sourceFile, int sourceLin
         // There isn't a way to determine the new handler, except through setting it. So we'll just set it to NULL, then
         // set it back again.
 
-        std::new_handler    nh = std::set_new_handler(0);
-        std::set_new_handler(nh);
+        new_handler    nh = set_new_handler(0);
+        set_new_handler(nh);
 
         // If there is an error handler, call it
 
@@ -865,8 +867,8 @@ void    *operator new[](size_t reportedSize, const char *sourceFile, int sourceL
         // There isn't a way to determine the new handler, except through setting it. So we'll just set it to NULL, then
         // set it back again.
 
-        std::new_handler    nh = std::set_new_handler(0);
-        std::set_new_handler(nh);
+        new_handler    nh = set_new_handler(0);
+        set_new_handler(nh);
 
         // If there is an error handler, call it
 

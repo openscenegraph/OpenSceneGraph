@@ -1,0 +1,52 @@
+// -*- Mode: c++ -*-
+//C++ header - Open Scene Graph - Copyright (C) 1998-2002 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+
+#ifndef OSG_POLYGONSTIPPLE
+#define OSG_POLYGONSTIPPLE 1
+
+#include <osg/StateAttribute>
+
+namespace osg
+{
+
+class SG_EXPORT PolygonStipple : public StateAttribute
+{
+    public :
+
+        PolygonStipple();
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        PolygonStipple(const PolygonStipple& lw,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+
+        META_StateAttribute(osg, PolygonStipple, POLYGONSTIPPLE);
+
+        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
+        virtual int compare(const StateAttribute& sa) const;
+
+        virtual void getAssociatedModes(std::vector<GLMode>& modes) const 
+        {
+            modes.push_back(GL_POLYGON_STIPPLE);
+        }
+
+        /** set the mask up, copying 128 bytes (32x32 bitfield) from mask into the local _mask.*/
+        void setMask(const GLubyte* mask);
+
+        /** get a pointer to the mask.*/
+        inline const GLubyte* getMask() const {return _mask;}
+
+
+        virtual void apply(State& state) const;
+
+    protected :
+
+        virtual ~PolygonStipple();
+
+        GLubyte _mask[128];
+
+};
+
+}
+
+#endif

@@ -4,6 +4,7 @@
 #include <osg/Vec3>
 #include <osg/MatrixTransform>
 #include <osg/Texture2D>
+#include <osg/PolygonStipple>
 
 #include <osgDB/ReadFile>
 
@@ -489,6 +490,11 @@ osg::Node* createScene()
         polyGeom->addPrimitive(new osg::DrawArrays(osg::Primitive::TRIANGLE_STRIP,6,6));
         polyGeom->addPrimitive(new osg::DrawArrays(osg::Primitive::TRIANGLE_FAN,12,5));
         
+	// polygon stipple
+	osg::StateSet* stateSet = new osg::StateSet();
+	polyGeom->setStateSet(stateSet);
+	osg::PolygonStipple* polygonStipple = new osg::PolygonStipple;
+	stateSet->setAttributeAndModes(polygonStipple,osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
         
         printTriangles("Triangles/Strip/Fan",*polyGeom);
 

@@ -26,7 +26,7 @@ bool SectorPlacer_readLocalData(osg::Object &obj, osgDB::Input &fr)
 
     osgParticle::rangef r;
     if (fr[0].matchWord("radiusRange")) {
-        if (fr[1].getFloat(r.min) && fr[2].getFloat(r.max)) {
+        if (fr[1].getFloat(r.minimum) && fr[2].getFloat(r.maximum)) {
             myobj.setRadiusRange(r);
             fr += 3;
             itAdvanced = true;
@@ -34,7 +34,7 @@ bool SectorPlacer_readLocalData(osg::Object &obj, osgDB::Input &fr)
     }
 
     if (fr[0].matchWord("phiRange")) {
-        if (fr[1].getFloat(r.min) && fr[2].getFloat(r.max)) {
+        if (fr[1].getFloat(r.minimum) && fr[2].getFloat(r.maximum)) {
             myobj.setPhiRange(r);
             fr += 3;
             itAdvanced = true;
@@ -51,9 +51,9 @@ bool SectorPlacer_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     osgParticle::rangef r;
     
     r = myobj.getRadiusRange();
-    fw.indent() << "radiusRange " << r.min << " " << r.max << std::endl;
+    fw.indent() << "radiusRange " << r.minimum << " " << r.maximum << std::endl;
     r = myobj.getPhiRange();
-    fw.indent() << "phiRange " << r.min << " " << r.max << std::endl;
+    fw.indent() << "phiRange " << r.minimum << " " << r.maximum << std::endl;
 
     return true;
 }

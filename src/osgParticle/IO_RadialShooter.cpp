@@ -26,7 +26,7 @@ bool RadialShooter_readLocalData(osg::Object &obj, osgDB::Input &fr)
     osgParticle::rangef r;
 
     if (fr[0].matchWord("thetaRange")) {
-        if (fr[1].getFloat(r.min) && fr[2].getFloat(r.max)) {
+        if (fr[1].getFloat(r.minimum) && fr[2].getFloat(r.maximum)) {
             myobj.setThetaRange(r);
             fr += 3;
             itAdvanced = true;
@@ -34,7 +34,7 @@ bool RadialShooter_readLocalData(osg::Object &obj, osgDB::Input &fr)
     }
 
     if (fr[0].matchWord("phiRange")) {
-        if (fr[1].getFloat(r.min) && fr[2].getFloat(r.max)) {
+        if (fr[1].getFloat(r.minimum) && fr[2].getFloat(r.maximum)) {
             myobj.setPhiRange(r);
             fr += 3;
             itAdvanced = true;
@@ -42,7 +42,7 @@ bool RadialShooter_readLocalData(osg::Object &obj, osgDB::Input &fr)
     }
 
     if (fr[0].matchWord("initialSpeedRange")) {
-        if (fr[1].getFloat(r.min) && fr[2].getFloat(r.max)) {
+        if (fr[1].getFloat(r.minimum) && fr[2].getFloat(r.maximum)) {
             myobj.setInitialSpeedRange(r);
             fr += 3;
             itAdvanced = true;
@@ -58,11 +58,11 @@ bool RadialShooter_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     osgParticle::rangef r;
 
     r = myobj.getThetaRange();
-    fw.indent() << "thetaRange " << r.min << " " << r.max << std::endl;
+    fw.indent() << "thetaRange " << r.minimum << " " << r.maximum << std::endl;
     r = myobj.getPhiRange();
-    fw.indent() << "phiRange " << r.min << " " << r.max << std::endl;
+    fw.indent() << "phiRange " << r.minimum << " " << r.maximum << std::endl;
     r = myobj.getInitialSpeedRange();
-    fw.indent() << "initialSpeedRange " << r.min << " " << r.max << std::endl;
+    fw.indent() << "initialSpeedRange " << r.minimum << " " << r.maximum << std::endl;
 
     return true;
 }

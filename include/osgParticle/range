@@ -35,24 +35,24 @@ namespace osgParticle
     template<class T_> struct range {
     
         /// Lower bound.
-        T_ min;
+        T_ minimum;
         
         /// Higher bound.
-        T_ max;
+        T_ maximum;
 
         /// Construct the object by calling default constructors for min and max.
-        range() : min(T_()), max(T_()) {}
+        range() : minimum(T_()), maximum(T_()) {}
         
         /// Construct and initialize min and max directly.
-        range(const T_ &mn, const T_ &mx) : min(mn), max(mx) {}
+        range(const T_ &mn, const T_ &mx) : minimum(mn), maximum(mx) {}
 
         /// Set min and max.
-        void set(const T_ &mn, const T_ &mx) { min = mn; max = mx; }
+        void set(const T_ &mn, const T_ &mx) { minimum = mn; maximum = mx; }
 
         /// Get a random value between min and max.
         T_ get_random() const
         {
-            return min + (max - min) * rand() / RAND_MAX;
+            return minimum + (maximum - minimum) * rand() / RAND_MAX;
         }
 
     };

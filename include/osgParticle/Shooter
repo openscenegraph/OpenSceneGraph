@@ -1,0 +1,53 @@
+//C++ header - Open Scene Graph - Copyright (C) 1998-2002 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+//osgParticle - Copyright (C) 2002 Marco Jez
+
+#ifndef OSGPARTICLE_SHOOTER_
+#define OSGPARTICLE_SHOOTER_ 1
+
+#include <osg/CopyOp>
+#include <osg/Object>
+
+namespace osgParticle
+{
+
+    class Particle;
+
+    /**     An abstract base class used by ModularEmitter to "shoot" the particles after they have been placed. 
+        Descendants of this class must override the <CODE>shoot()</CODE> method.
+    */
+    class Shooter: public osg::Object {
+    public:
+        inline Shooter();
+        inline Shooter(const Shooter &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
+
+        virtual const char *className() const { return "Shooter"; }
+        virtual bool isSameKindAs(const osg::Object *obj) const { return dynamic_cast<const Shooter *>(obj) != 0; }
+
+        /**     Shoot a particle. Must be overriden by descendants.
+            This method should only set the velocity vector of particle <CODE>P</CODE>, leaving other
+            attributes unchanged.
+        */
+        virtual void shoot(Particle *P) const = 0;
+
+    protected:
+        virtual ~Shooter() {}
+        Shooter &operator=(const Shooter &) { return *this; }
+    };
+    
+    // INLINE FUNCTIONS
+    
+    inline Shooter::Shooter()
+    : osg::Object()
+    {
+    }
+    
+    inline Shooter::Shooter(const Shooter &copy, const osg::CopyOp &copyop)
+    : osg::Object(copy, copyop)
+    {
+    }
+
+}
+
+#endif

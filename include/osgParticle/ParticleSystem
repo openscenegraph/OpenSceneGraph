@@ -1,0 +1,318 @@
+//C++ header - Open Scene Graph - Copyright (C) 1998-2002 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+//osgParticle - Copyright (C) 2002 Marco Jez
+
+#ifndef OSGPARTICLE_PARTICLESYSTEM_
+#define OSGPARTICLE_PARTICLESYSTEM_ 1
+
+#include <osgParticle/Export>
+#include <osgParticle/Particle>
+
+#include <vector>
+#include <stack>
+#include <algorithm>
+#include <string>
+
+#include <osg/Object>
+#include <osg/Drawable>
+#include <osg/CopyOp>
+#include <osg/State>
+#include <osg/Vec3>
+#include <osg/Statistics>
+#include <osg/BoundingBox>
+
+namespace osgParticle
+{
+
+    /**    The heart of this class library; its purpose is to hold a set of particles and manage particle creation, update, rendering and destruction.
+        You can add this drawable to any <CODE>Geode</CODE> as you usually do with other
+        <CODE>Drawable</CODE> classes. Each instance of <CODE>ParticleSystem</CODE> is a separate set of
+        particles; it provides the interface for creating particles and iterating
+        through them (see the <CODE>Emitter</CODE> and <CODE>Program</CODE> classes).
+    */
+    class OSGPARTICLE_EXPORT ParticleSystem: public osg::Drawable {
+    public:
+
+        ParticleSystem();
+        ParticleSystem(const ParticleSystem &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
+
+        META_Object(ParticleSystem);
+
+        /// Get the default bounding box
+        inline const osg::BoundingBox &getDefaultBoundingBox() const;        
+        
+        /**    Set the default bounding box.
+            The default bounding box is used when a real bounding box cannot be computed, for example
+            because no particles has been updated yet.
+        */
+        inline void setDefaultBoundingBox(const osg::BoundingBox &bbox);
+
+        /// Get the double pass rendering flag.
+        inline bool getDoublePassRendering() const;
+        
+        /** Set the double pass rendering flag.
+            Double pass rendering avoids overdraw problems between particle systems
+            and other opaque objects. If you can render all the particle systems <U>after</U>
+            the opaque objects, then double pass is not necessary and can be turned off (best choice).
+            If you set the default attributes with <CODE>setDefaultAttributes</CODE>, then the particle
+            system will fall into a transparent bin.
+        */
+        inline void setDoublePassRendering(bool v);
+        
+        /// Return true if the particle system is frozen.
+        inline bool isFrozen() const;
+        
+        /**    Set or reset the <I>frozen</I> state.
+            When the particle system is frozen, emitters and programs won't do anything on it.
+        */
+        inline void setFrozen(bool v);
+
+        /// Get the number of allocated particles (alive + dead).
+        inline int numParticles() const;
+        
+        /// Get the number of dead particles.
+        inline int numDeadParticles() const;
+        
+        /// Get a pointer to the i-th particle.
+        inline Particle *getParticle(int i);
+        
+        /// Get a const pointer to the i-th particle.
+        inline const Particle *getParticle(int i) const;
+        
+        /// Create a new particle from the specified template (or the default one if <CODE>ptemplate</CODE> is null).
+        inline virtual Particle *createParticle(const Particle *ptemplate);
+        
+        /// Destroy the i-th particle.
+        inline virtual void destroyParticle(int i);
+        
+        /// Get the last frame number.
+        inline int getLastFrameNumber() const;
+
+        /// Get a reference to the default particle template.
+        inline const Particle &getDefaultParticleTemplate() const;
+        
+        /// Set the default particle template (particle is copied).
+        inline void setDefaultParticleTemplate(const Particle &p);
+        
+        /// Get whether the particle system can freeze when culled
+        inline bool getFreezeOnCull() const;
+        
+        /// Set whether the particle system can freeze when culled (default is true)
+        inline void setFreezeOnCull(bool v);
+        
+        /** A useful method to set the most common <CODE>StateAttribute</CODE>'s in one call.
+            If <CODE>texturefile</CODE> is empty, then texturing is turned off.
+        */
+        void setDefaultAttributes(const std::string &texturefile = "", bool emissive_particles = true, bool lighting = false);
+        
+        /// (<B>EXPERIMENTAL</B>) Get the level of detail.
+        inline int getLevelOfDetail() const;
+        
+        /** (<B>EXPERIMENTAL</B>) Set the level of detail. The total number of particles is divided by the detail value to
+            get the actual number of particles to be drawn. This value must be greater than zero.
+        */
+        inline void setLevelOfDetail(int v);
+
+        /// Update the particles. Don't call this directly, use a <CODE>ParticleSystemUpdater</CODE> instead.
+        virtual void update(double dt);
+
+        inline virtual bool getStats(osg::Statistics &stats);
+
+    protected:
+        virtual ~ParticleSystem();
+
+        ParticleSystem &operator=(const ParticleSystem &) { return *this; }
+
+        inline virtual const bool computeBound() const;
+        virtual void drawImmediateMode(osg::State &state);
+        inline void update_bounds(const osg::Vec3 &p);
+        void single_pass_render(const osg::Matrix &modelview);
+
+    private:
+        typedef std::vector<Particle> Particle_vector;
+        typedef std::stack<Particle*> Death_stack;
+
+        Particle_vector particles_;
+        Death_stack deadparts_;
+        
+        osg::BoundingBox def_bbox_;
+
+        bool doublepass_;
+        bool frozen_;
+        int display_list_id_;
+
+        osg::Vec3 bmin_;
+        osg::Vec3 bmax_;
+
+        bool reset_bounds_flag_;
+        bool bounds_computed_;
+
+        Particle def_ptemp_;
+        int last_frame_;
+        bool freeze_on_cull_;
+        
+        int detail_;
+        int draw_count_;
+        
+    };
+    
+    // INLINE FUNCTIONS
+
+    inline bool ParticleSystem::isFrozen() const
+    {
+        return frozen_;
+    }
+    
+    inline void ParticleSystem::setFrozen(bool v)
+    {
+        frozen_ = v;
+    }
+    
+    inline const osg::BoundingBox &ParticleSystem::getDefaultBoundingBox() const
+    {
+        return def_bbox_;
+    }
+    
+    inline void ParticleSystem::setDefaultBoundingBox(const osg::BoundingBox &bbox)
+    {
+        def_bbox_ = bbox;
+    }
+
+    inline bool ParticleSystem::getDoublePassRendering() const
+    {
+        return doublepass_;
+    }
+
+    inline void ParticleSystem::setDoublePassRendering(bool v)
+    {
+        doublepass_ = v;
+    }
+
+    inline int ParticleSystem::numParticles() const
+    {
+        return static_cast<int>(particles_.size());
+    }
+
+    inline int ParticleSystem::numDeadParticles() const
+    {
+        return static_cast<int>(deadparts_.size());
+    }
+
+    inline Particle *ParticleSystem::getParticle(int i)
+    {
+        return &particles_[i];
+    }
+
+    inline const Particle *ParticleSystem::getParticle(int i) const
+    {
+        return &particles_[i];
+    }
+
+    inline void ParticleSystem::destroyParticle(int i)
+    {
+        particles_[i].kill();
+    }
+    
+    inline int ParticleSystem::getLastFrameNumber() const
+    {
+        return last_frame_;
+    }
+
+    inline const bool ParticleSystem::computeBound() const
+    {        
+        if (!bounds_computed_) {
+            _bbox = def_bbox_;
+        } else {
+            _bbox._min = bmin_;
+            _bbox._max = bmax_;
+        }
+        _bbox_computed = true;
+        return true;
+    }
+
+    inline bool ParticleSystem::getStats(osg::Statistics &stats)
+    {
+        stats.addNumPrims(draw_count_);
+        return true;
+    }
+
+    inline void ParticleSystem::update_bounds(const osg::Vec3 &p)
+    {
+        if (reset_bounds_flag_) {
+            reset_bounds_flag_ = false;
+            bmin_ = p;
+            bmax_ = p;            
+        } else {
+            if (p.x() < bmin_.x()) bmin_.x() = p.x();
+            if (p.y() < bmin_.y()) bmin_.y() = p.y();
+            if (p.z() < bmin_.z()) bmin_.z() = p.z();
+            if (p.x() > bmax_.x()) bmax_.x() = p.x();
+            if (p.y() > bmax_.y()) bmax_.y() = p.y();
+            if (p.z() > bmax_.z()) bmax_.z() = p.z();
+            
+            if (!bounds_computed_) 
+                bounds_computed_ = true;
+        }
+    }
+
+    inline const Particle &ParticleSystem::getDefaultParticleTemplate() const
+    {
+        return def_ptemp_;
+    }
+
+    inline void ParticleSystem::setDefaultParticleTemplate(const Particle &p)
+    {
+        def_ptemp_ = p;
+    }
+    
+    inline bool ParticleSystem::getFreezeOnCull() const
+    {
+        return freeze_on_cull_;
+    }
+    
+    inline void ParticleSystem::setFreezeOnCull(bool v)
+    {
+        freeze_on_cull_ = v;
+    }
+    
+    inline int ParticleSystem::getLevelOfDetail() const
+    {
+        return detail_;
+    }
+    
+    inline void ParticleSystem::setLevelOfDetail(int v)
+    {
+        if (v < 1) v = 1;
+        detail_ = v;
+    }
+    
+    // I'm not sure this function should be inlined... 
+    
+    inline Particle *ParticleSystem::createParticle(const Particle *ptemplate)
+    {
+        // is there any dead particle?
+        if (!deadparts_.empty()) {
+
+            // retrieve a pointer to the last dead particle
+            Particle *P = deadparts_.top();
+
+            // create a new (alive) particle in the same place
+            *P = Particle(ptemplate? *ptemplate: def_ptemp_);
+
+            // remove the pointer from the death stack
+            deadparts_.pop();
+            return P;
+
+        } else {
+
+            // add a new particle to the vector
+            particles_.push_back(Particle(ptemplate? *ptemplate: def_ptemp_));
+            return &particles_.back();
+        }
+    }
+
+
+}
+
+#endif

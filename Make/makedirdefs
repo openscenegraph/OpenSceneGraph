@@ -11,6 +11,7 @@ SRC_DIRS = \
 	osgUtil\
 	osgDB\
 	osgGA\
+	osgParticle\
 	osgGLUT\
 	osgPlugins\
 	osgText\
@@ -74,6 +75,7 @@ DEMOS_DIRS = \
 	osgcube\
 	osghud\
 	osgimpostor\
+	osgparticle\
 	osgreflect\
 	osgscribe\
 	osgstereoimage\

@@ -1,0 +1,65 @@
+//C++ header - Open Scene Graph - Copyright (C) 1998-2002 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+//osgParticle - Copyright (C) 2002 Marco Jez
+
+#ifndef OSGPARTICLE_RANGE_
+#define OSGPARTICLE_RANGE_ 1
+
+#include <cstdlib>
+
+#include <osg/Vec2>
+#include <osg/Vec3>
+#include <osg/Vec4>
+
+namespace osgParticle
+{
+
+    /**
+        A simple struct template useful to store ranges of values as min/max pairs.
+        This struct template helps storing min/max ranges for values of any kind; class <CODE>T_</CODE> is
+        the type of values to be stored, and it must support operations <CODE>T_ + T_</CODE>, <CODE>T_ - T_</CODE>, 
+        and <CODE>T_ * float</CODE>, otherwise the <CODE>get_random()</CODE> method will not compile.
+        This struct could be extended to customize the random number generator (now it uses only 
+        <CODE>std::rand()</CODE>).
+    */
+    template<class T_> struct range {
+    
+        /// Lower bound.
+        T_ min;
+        
+        /// Higher bound.
+        T_ max;
+
+        /// Construct the object by calling default constructors for min and max.
+        range() : min(T_()), max(T_()) {}
+        
+        /// Construct and initialize min and max directly.
+        range(const T_ &mn, const T_ &mx) : min(mn), max(mx) {}
+
+        /// Set min and max.
+        void set(const T_ &mn, const T_ &mx) { min = mn; max = mx; }
+
+        /// Get a random value between min and max.
+        T_ get_random() const
+        {
+            return min + (max - min) * std::rand() / RAND_MAX;
+        }
+
+    };
+
+    /// Range of floats.
+    typedef range<float> rangef;
+    
+    /// Range of osg::Vec2s.
+    typedef range<osg::Vec2> rangev2;
+    
+    /// Range of osg::Vec3s.
+    typedef range<osg::Vec3> rangev3;
+    
+    /// Range of osg::Vec4s.
+    typedef range<osg::Vec4> rangev4;
+
+}
+
+#endif

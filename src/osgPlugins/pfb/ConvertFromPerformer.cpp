@@ -1013,8 +1013,7 @@ osg::Material* ConvertFromPerformer::visitMaterial(osg::StateSet* osgStateSet,pf
             case(PFMTL_CMODE_OFF): osgMaterial->setColorMode(osg::Material::OFF); break;
         }
 
-        float s = material->getShininess()/128.0f;
-        osgMaterial->setShininess(osg::Material::FRONT_AND_BACK,s);
+        osgMaterial->setShininess(osg::Material::FRONT_AND_BACK,material->getShininess());
 
         float a = material->getAlpha();
         float r,g,b;
@@ -1046,13 +1045,11 @@ osg::Material* ConvertFromPerformer::visitMaterial(osg::StateSet* osgStateSet,pf
             case(PFMTL_CMODE_OFF): osgMaterial->setColorMode(osg::Material::OFF); break;
         }
 
-        float s;
         float a;
         float r,g,b;
 
         // front material
-        s = front_mat->getShininess();
-        osgMaterial->setShininess(osg::Material::FRONT,s);
+        osgMaterial->setShininess(osg::Material::FRONT,front_mat->getShininess());
 
         a = front_mat->getAlpha();
 
@@ -1069,8 +1066,7 @@ osg::Material* ConvertFromPerformer::visitMaterial(osg::StateSet* osgStateSet,pf
         osgMaterial->setSpecular(osg::Material::FRONT,osg::Vec4(r,g,b,a));
 
         // back material
-        s = back_mat->getShininess();
-        osgMaterial->setShininess(osg::Material::BACK,s);
+        osgMaterial->setShininess(osg::Material::BACK,back_mat->getShininess());
 
         a = back_mat->getAlpha();
 

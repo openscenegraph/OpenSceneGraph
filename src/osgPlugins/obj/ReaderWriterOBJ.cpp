@@ -117,7 +117,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
                              osg::Vec4(omtl->emmissive[0], omtl->emmissive[1],
                                        omtl->emmissive[2], omtl->emmissive[3]));
             // note, osg shininess scales between 0.0 and 1.0.
-            mtl->setShininess(osg::Material::FRONT_AND_BACK, omtl->shininess/128.0f);
+            mtl->setShininess(osg::Material::FRONT_AND_BACK, omtl->shininess);
             
             stateset->setAttribute(mtl);
             

@@ -120,7 +120,7 @@ class SG_EXPORT Material : public StateAttribute
         /** Get the whether emission values are equal for front and back faces.*/
         inline const bool getEmissionFrontAndBack() const { return _emissionFrontAndBack; }
 
-        /** Set shininess of specified face(s) of the material, valid shininess range is 0.0 to 1.0.*/
+        /** Set shininess of specified face(s) of the material, valid shininess range is 0.0 to 128.0.*/
         void setShininess( const Face face, float shininess );
         /** Get the shininess value for specified face.*/
         const float getShininess(const Face face) const;
@@ -158,8 +158,8 @@ class SG_EXPORT Material : public StateAttribute
         Vec4 _emissionBack;                          // r, g, b, w
 
         bool _shininessFrontAndBack;
-        float  _shininessFront;                      // values 0 - 1.0
-        float  _shininessBack;                       // values 0 - 1.0
+        float  _shininessFront;                      // values 0 - 128.0
+        float  _shininessBack;                       // values 0 - 128.0
 
 };
 

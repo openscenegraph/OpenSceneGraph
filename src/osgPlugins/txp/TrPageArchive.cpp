@@ -198,7 +198,7 @@ void TrPageArchive::LoadMaterials()
 
                 float64 shinines;
                 mat->GetShininess(shinines);
-                osg_material->setShininess(Material::FRONT_AND_BACK , (float)shinines/128.0);
+                osg_material->setShininess(Material::FRONT_AND_BACK , (float)shinines);
                 
                 osg_material->setAlpha(Material::FRONT_AND_BACK ,(float)alpha);
                 osg_state_set->setAttributeAndModes(osg_material, StateAttribute::ON);

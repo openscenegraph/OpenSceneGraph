@@ -962,7 +962,7 @@ class ReaderWriterDW : public osgDB::ReaderWriter
                         matpalet[nmat].setspecular(spec);
                     } else if (strncmp(buff, "SmoothnessExponent:",19)==0) {
                         float spec=atof(buff+19);
-                        matpalet[nmat].setspecexp(spec/100.0f); // convert to 0-1 from percent
+                        matpalet[nmat].setspecexp(spec*128.0f/100.0f); // convert to 0-128 range from percent
                     } else if (strncmp(buff, "TextureWidthAndHeight:",22)==0) {
                         char *ct=strchr(buff+22,',');
                         float repx=atof(buff+23), repy=atof(ct+1);

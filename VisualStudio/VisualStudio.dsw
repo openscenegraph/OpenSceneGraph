@@ -324,6 +324,33 @@ Package=<4>
 
 ###############################################################################
 
+Project: "Example osgcameragroup"=.\examples\osgcameragroup\osgcameragroup.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "Example osgclip"=.\examples\osgclip\osgclip.dsp - Package Owner=<4>
 
 Package=<5>
@@ -453,6 +480,120 @@ Package=<4>
 
 ###############################################################################
 
+Project: "Example osgdem"=.\examples\osgdem\osgdem.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgTerrain
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osgdepthshadow"=.\examples\osgdepthshadow\osgdepthshadow.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osgdistortion"=.\examples\osgdistortion\osgdistortion.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osgforest"=.\examples\osgforest\osgforest.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgText
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "Example osgfxbrowser"=.\examples\osgfxbrowser\osgfxbrowser.dsp - Package Owner=<4>
 
 Package=<5>
@@ -570,36 +711,6 @@ Package=<4>
 
 ###############################################################################
 
-Project: "Example osgphotoalbum"=.\examples\osgphotoalbum\osgphotoalbum.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name Core osg
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgDB
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgGA
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgProducer
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgUtil
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgText
-    End Project Dependency
-}}}
-
-###############################################################################
-
 Project: "Example osghud"=.\examples\osghud\osghud.dsp - Package Owner=<4>
 
 Package=<5>
@@ -687,6 +798,33 @@ Package=<4>
 
 ###############################################################################
 
+Project: "Example osgkeyboardmouse"=.\examples\osgkeyboardmouse\osgkeyboardmouse.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgFX
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGL2
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "Example osglight"=.\examples\osglight\osglight.dsp - Package Owner=<4>
 
 Package=<5>
@@ -739,129 +877,6 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name Core osgUtil
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "Example osgpointsprite"=.\examples\osgpointsprite\osgpointsprite.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name Core osg
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgDB
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgGA
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgProducer
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgUtil
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "Example osgscalarbar"=.\examples\osgscalarbar\osgscalarbar.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name Core osg
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgDB
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgGA
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgSim
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgProducer
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgUtil
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "Example osgspheresegment"=.\examples\osgspheresegment\osgspheresegment.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name Core osg
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgDB
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgGA
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgSim
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgProducer
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgUtil
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "Example osgsimulation"=.\examples\osgsimulation\osgsimulation.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name Core osg
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgDB
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgGA
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgSim
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgParticle
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgProducer
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgUtil
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgText
     End Project Dependency
 }}}
 
@@ -1008,6 +1023,36 @@ Package=<4>
 
 ###############################################################################
 
+Project: "Example osgphotoalbum"=.\examples\osgphotoalbum\osgphotoalbum.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgText
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "Example osgpick"=.\examples\osgpick\osgpick.dsp - Package Owner=<4>
 
 Package=<5>
@@ -1038,7 +1083,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "Example osgprerender"=.\examples\osgprerender\osgprerender.dsp - Package Owner=<4>
+Project: "Example osgpointsprite"=.\examples\osgpointsprite\osgpointsprite.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -1065,7 +1110,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "Example osgdistortion"=.\examples\osgdistortion\osgdistortion.dsp - Package Owner=<4>
+Project: "Example osgprerender"=.\examples\osgprerender\osgprerender.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -1135,6 +1180,36 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osgscalarbar"=.\examples\osgscalarbar\osgscalarbar.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgSim
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name Core osgProducer
@@ -1260,33 +1335,6 @@ Package=<4>
 
 ###############################################################################
 
-Project: "Example osgdepthshadow"=.\examples\osgdepthshadow\osgdepthshadow.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name Core osg
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgDB
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgGA
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgProducer
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgUtil
-    End Project Dependency
-}}}
-
-###############################################################################
-
 Project: "Example osgshape"=.\examples\osgshape\osgshape.dsp - Package Owner=<4>
 
 Package=<5>
@@ -1314,7 +1362,61 @@ Package=<4>
 
 ###############################################################################
 
-Project: "Example osgforest"=.\examples\osgforest\osgforest.dsp - Package Owner=<4>
+Project: "Example osgsimple"=.\examples\osgsimple\osgsimple.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgFX
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGL2
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osgsimplepager"=.\examples\osgsimplepager\osgsimplepager.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgFX
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGL2
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osgsimplifier"=.\examples\osgsimplifier\osgsimplifier.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -1337,8 +1439,71 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name Core osgUtil
     End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osgsimulation"=.\examples\osgsimulation\osgsimulation.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgSim
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgParticle
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
     Begin Project Dependency
     Project_Dep_Name Core osgText
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Example osgspheresegment"=.\examples\osgspheresegment\osgspheresegment.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgSim
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
     End Project Dependency
 }}}
 
@@ -1659,171 +1824,6 @@ Package=<4>
 
 ###############################################################################
 
-Project: "Example osgdem"=.\examples\osgdem\osgdem.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name Core osg
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgDB
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgGA
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgProducer
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgUtil
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgTerrain
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "Example osgsimplifier"=.\examples\osgsimplifier\osgsimplifier.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name Core osg
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgDB
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgGA
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgProducer
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgUtil
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "Example osgcameragroup"=.\examples\osgcameragroup\osgcameragroup.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name Core osg
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgDB
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgGA
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgProducer
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgUtil
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "Example osgsimple"=.\examples\osgsimple\osgsimple.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name Core osg
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgDB
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgUtil
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgFX
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgGL2
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "Example osgkeyboardmouse"=.\examples\osgkeyboardmouse\osgkeyboardmouse.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name Core osg
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgDB
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgUtil
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgFX
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgGL2
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "Example osgsimplepager"=.\examples\osgsimplepager\osgsimplepager.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name Core osg
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgDB
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgUtil
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgFX
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgGL2
-    End Project Dependency
-}}}
-
-###############################################################################
-
 Project: "Example osgwindows"=.\examples\osgwindows\osgwindows.dsp - Package Owner=<4>
 
 Package=<5>
@@ -2023,6 +2023,27 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name Core osgText
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "osgPlugin gdal"=.\osgPlugins\gdal\gdal.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
     End Project Dependency
 }}}
 
@@ -2244,27 +2265,6 @@ Package=<4>
 
 ###############################################################################
 
-Project: "osgPlugin gdal"=.\osgPlugins\gdal\gdal.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name Core osg
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgDB
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgUtil
-    End Project Dependency
-}}}
-
-###############################################################################
-
 Project: "osgPlugin osg"=.\osgPlugins\osg\dot_osg.dsp - Package Owner=<4>
 
 Package=<5>
@@ -2457,43 +2457,25 @@ Package=<4>
 
 ###############################################################################
 
-Project: "osgPlugin scale"=.\osgPlugins\scale\scale.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name Core osg
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgDB
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "osgPlugin trans"=.\osgPlugins\trans\trans.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name Core osg
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Core osgDB
-    End Project Dependency
-}}}
-
-###############################################################################
-
 Project: "osgPlugin rot"=.\osgPlugins\rot\rot.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "osgPlugin scale"=.\osgPlugins\scale\scale.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -2548,6 +2530,24 @@ Package=<4>
 ###############################################################################
 
 Project: "osgPlugin tiff"=.\osgPlugins\tiff\tiff.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "osgPlugin trans"=.\osgPlugins\trans\trans.dsp - Package Owner=<4>
 
 Package=<5>
 {{{

@@ -6,7 +6,7 @@
    <title>Introduction to the OpenSceneGraph</title>
 </head>
 <body bgcolor="#FFFFFF">
-<img SRC="images/OpenSceneGraphBanner_Distribution.jpg" BORDER=0 height=77 width=640>
+<img SRC="images/OpenSceneGraphBanner_Distribution.jpg" BORDER=0>
 <table>
 <tr>
 <td><a href="index.html">Index</a></td>
@@ -36,8 +36,8 @@
 <h2>
 <u>Introduction to the OpenSceneGraph</u></h2>
 Welcome to OpenSceneGraph project!
-<p>The OpenSceneGraph is an Open Source (LGPL), Cross Platform (Windows,
-Linux, Mac OSX, FreeBSD, Irix, Solaris), Standard C++ and OpenGL based
+<p>The OpenSceneGraph is an Open Source <a href="../LICENSE.txt">(OSGPL)</a>, Cross Platform (Windows,
+Linux, Mac OSX, FreeBSD, Irix, Solaris and HP-UX), Standard C++ and OpenGL based
 graphics development library. Uses range from visual simulation, games,
 virtual reality, scientific visualization and graphics research. This page
 introduces what scene graphs are, why graphics developers use them, and
@@ -147,10 +147,12 @@ an application and bring in user data with a very small amount of code.
 have minimal dependency on any specific platform, requiring little more than
 Standard C++ and OpenGL. This has allowed the scene graph to be rapidly
 ported to a wide range of platforms - originally developed on IRIX, then
-ported to Linux, then to Windows, then FreeBSD, then Mac OSX and most recently
-Solaris! Being completely windowing system independent makes it easy for
-users to add their own window-specific libraries and applications on top.
-In the distribution there is already the osgProducer library, and in the Bazaar
+ported to Linux, then to Windows, then FreeBSD, Mac OSX, Solaris, HP-UX and 
+even a report of successful porting to PlayStation2! 
+<p>
+The core scene graph library being completely windowing system independent makes 
+it easy for users to add their own window-specific libraries and applications on top.
+In the distribution there is already the osgProducer library which integrates with <a href="http://www.andesengineering.com/Producer/">OpenProducer</a>, and in the Bazaar
 found at openscenegrph.org/download/ one can find examples of applications
 written on top of Qt, MFC, WxWindows and SDL. Users have also integrated it
 with Motif, and X.
@@ -166,9 +168,9 @@ subsystems. Support for multiple graphic context and multi-threading is all
 available out of the box via osgProducer - all the examples in the distribution
 can run multi-pipe just by use a simple configuation file.</ol>
 
-All the source to the OSG is published under the GNU Lesser General Public License
-(LGPL) which allows both open source and closed source projects to use,
-modify and distribute it freely as long its usage complies with the LGPL.
+All the source to the OSG is published under the Open Scene Graph Public License
+(a relaxed version on the LGPL) which allows both open source and closed source projects to use,
+modify and distribute it freely as long its usage complies with the OSGPL.
 The project has been developed over the last four years, initiated by Don
 Burns, and then taken over by Robert Osfield who continues to lead the project
 today. There are many other contributors to the library, for a full list
@@ -181,7 +183,7 @@ the quality of the source or support which once you get stuck in you grow
 to appreciate.
 <p>The project is currently in beta, which means the main core features are now in
 place, with a 1.0 release in second half of 2003. Despite the beta development status,
-the project has already earned the reputation the leading open source scene
+the project has already earned the reputation as the leading open source scene
 graph, and is establishing itself as a viable alternative to the commercial
 scene graphs. Numerous companies, university researchers and graphics enthusiasts
 have already adopted the OpenSceneGraph for their projects, all over the world.

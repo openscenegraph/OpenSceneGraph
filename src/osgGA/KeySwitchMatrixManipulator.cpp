@@ -1,27 +1,26 @@
-#include <osgGA/KeySwitchCameraManipulator>
+#include <osgGA/KeySwitchMatrixManipulator>
 #include <osg/Notify>
 
 using namespace osgGA;
 
-void KeySwitchCameraManipulator::addCameraManipulator(int key, std::string name, CameraManipulator *cm)
+void KeySwitchMatrixManipulator::addMatrixManipulator(int key, std::string name, MatrixManipulator *cm)
 {
     if(!cm) return;
 
-    _manips[key]=std::make_pair(name,osg::ref_ptr<CameraManipulator>(cm));
+    _manips[key]=std::make_pair(name,osg::ref_ptr<MatrixManipulator>(cm));
     if(!_current.valid()){
         _current=cm;
         _current->setNode(_current->getNode());
-        _current->setCamera(_current->getCamera());
     }
 }
 
-void KeySwitchCameraManipulator::addNumberedCameraManipulator(CameraManipulator *cm)
+void KeySwitchMatrixManipulator::addNumberedMatrixManipulator(MatrixManipulator *cm)
 {
     if(!cm) return;
-    addCameraManipulator('1'+_manips.size(),cm->className(),cm);
+    addMatrixManipulator('1'+_manips.size(),cm->className(),cm);
 }
 
-void KeySwitchCameraManipulator::selectCameraManipulator(unsigned int num)
+void KeySwitchMatrixManipulator::selectMatrixManipulator(unsigned int num)
 {
     unsigned int manipNo = 0;
     KeyManipMap::iterator itr;
@@ -38,13 +37,13 @@ void KeySwitchCameraManipulator::selectCameraManipulator(unsigned int num)
             if ( !itr->second.second->getNode() ) {
                 itr->second.second->setNode(_current->getNode());
             }
-            itr->second.second->setCamera(_current->getCamera());
+            itr->second.second->setByMatrix(_current->getMatrix());
         }
         _current = itr->second.second;
     }
 }
 
-void KeySwitchCameraManipulator::setNode(osg::Node* node)
+void KeySwitchMatrixManipulator::setNode(osg::Node* node)
 {
     for(KeyManipMap::iterator itr=_manips.begin();
         itr!=_manips.end();
@@ -55,21 +54,21 @@ void KeySwitchCameraManipulator::setNode(osg::Node* node)
     }
 }
 
-CameraManipulator* KeySwitchCameraManipulator::getCameraManipulator(unsigned int num)
+MatrixManipulator* KeySwitchMatrixManipulator::getMatrixManipulator(unsigned int num)
 {
     KeyManipMap::iterator itr = _manips.find(num); 
     if (itr!=_manips.end()) return itr->second.second.get(); 
     else return 0;
 }
 
-const CameraManipulator* KeySwitchCameraManipulator::getCameraManipulator(unsigned int num) const
+const MatrixManipulator* KeySwitchMatrixManipulator::getMatrixManipulator(unsigned int num) const
 {
     KeyManipMap::const_iterator itr = _manips.find(num); 
     if (itr!=_manips.end()) return itr->second.second.get(); 
     else return 0;
 }
 
-bool KeySwitchCameraManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& aa)
+bool KeySwitchMatrixManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& aa)
 {
     if(ea.getEventType()==GUIEventAdapter::KEYDOWN){
 
@@ -79,7 +78,7 @@ bool KeySwitchCameraManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapt
             if ( !it->second.second->getNode() ) {
                 it->second.second->setNode(_current->getNode());
             }
-            it->second.second->setCamera(_current->getCamera());
+            it->second.second->setByMatrix(_current->getMatrix());
             it->second.second->init(ea,aa);
             _current = it->second.second;
 
@@ -91,7 +90,7 @@ bool KeySwitchCameraManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapt
     return _current->handle(ea,aa);
 }
 
-void KeySwitchCameraManipulator::getUsage(osg::ApplicationUsage& usage) const
+void KeySwitchMatrixManipulator::getUsage(osg::ApplicationUsage& usage) const
 {
     for(KeyManipMap::const_iterator itr=_manips.begin();
         itr!=_manips.end();

@@ -28,6 +28,13 @@ class SG_EXPORT StateSet : public Object
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const StateSet*>(obj)!=NULL; }
         virtual const char* className() const { return "StateSet"; }
 
+        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
+        int compare(const StateSet& rhs) const;
+        
+        bool operator <  (const StateSet& rhs) const { return compare(rhs)<0; }
+        bool operator == (const StateSet& rhs) const { return compare(rhs)==0; }
+        bool operator != (const StateSet& rhs) const { return compare(rhs)!=0; }
+
         /** set all the modes to on or off so that it defines a 
             complete state, typically used for a default global state.*/
         void setGlobalDefaults();

@@ -83,6 +83,22 @@ bool Texture_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
+    if (fr[0].matchWord("useHardwareMipMapGeneration"))
+    {
+        if (fr[1].matchWord("TRUE")) 
+        {
+            texture.setUseHardwareMipMapGeneration(true);
+            fr +=2 ;
+            iteratorAdvanced = true;
+        }
+        else if (fr[1].matchWord("TRUE")) 
+        {
+            texture.setUseHardwareMipMapGeneration(false);
+            fr +=2 ;
+            iteratorAdvanced = true;
+        }
+    }
+
     Texture::InternalFormatMode mode;
     if (fr[0].matchWord("internalFormatMode") && Texture_matchInternalFormatModeStr(fr[1].getStr(),mode))
     {
@@ -117,7 +133,9 @@ bool Texture_writeLocalData(const Object& obj, Output& fw)
     fw.indent() << "min_filter " << Texture_getFilterStr(texture.getFilter(Texture::MIN_FILTER)) << std::endl;
     fw.indent() << "mag_filter " << Texture_getFilterStr(texture.getFilter(Texture::MAG_FILTER)) << std::endl;
     fw.indent() << "maxAnisotropy " << texture.getMaxAnisotropy() << std::endl;
-
+    
+    fw.indent() << "useHardwareMipMapGeneration "<< (texture.getUseHardwareMipMapGeneration()?"TRUE":"FALSE") << std::endl;
+            
     fw.indent() << "internalFormatMode " << Texture_getInternalFormatModeStr(texture.getInternalFormatMode()) << std::endl;
 
     if (texture.getInternalFormatMode()==Texture::USE_USER_DEFINED_FORMAT)

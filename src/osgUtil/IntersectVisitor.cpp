@@ -27,7 +27,7 @@ Hit::Hit(const Hit& hit)
     _localLineSegment = hit._localLineSegment;
     _nodePath = hit._nodePath;
     _geode = hit._geode;
-    _geoset = hit._geoset;
+    _drawable = hit._drawable;
     _matrix = hit._matrix;
     _inverse = hit._inverse;
 
@@ -58,7 +58,7 @@ Hit& Hit::operator = (const Hit& hit)
     _localLineSegment = hit._localLineSegment;
     _nodePath = hit._nodePath;
     _geode = hit._geode;
-    _geoset = hit._geoset;
+    _drawable = hit._drawable;
 
     _vecIndexList = hit._vecIndexList;
     _primitiveIndex = hit._primitiveIndex;
@@ -180,7 +180,8 @@ void IntersectVisitor::addLineSegment(LineSegment* seg)
     
     if (!seg->valid())
     {
-        notify(WARN)<<"Warning: invalid line segment passed to IntersectVisitor::addLineSegment(..), segment ignored.."<< std::endl;
+        notify(WARN)<<"Warning: invalid line segment passed to IntersectVisitor::addLineSegment(..)"<<std::endl;
+        notify(WARN)<<"         "<<seg->start()<<" "<<seg->end()<<" segment ignored.."<< std::endl;
         return;
     }
 
@@ -304,7 +305,16 @@ struct TriangleIntersect
     typedef std::multimap<float,std::pair<int,osg::Vec3> > TriangleHitList;
     TriangleHitList _thl;
 
+    TriangleIntersect()
+    {
+    }
+
     TriangleIntersect(const LineSegment& seg,float ratio=FLT_MAX)
+    {
+        set(seg,ratio);
+    }
+    
+    void set(const LineSegment& seg,float ratio=FLT_MAX)
     {
         _seg=new LineSegment(seg);
         _hit=false;
@@ -315,7 +325,6 @@ struct TriangleIntersect
         _d = _seg->end()-_seg->start();
         _length = _d.length();
         _d /= _length;
-
     }
 
     //   bool intersect(const Vec3& v1,const Vec3& v2,const Vec3& v3,float& r)
@@ -408,6 +417,14 @@ struct TriangleIntersect
 
         float r = d/_length;
 
+        if (!in.valid())
+        {
+            osg::notify(WARN)<<"Warning:: Picked up error in TriangleIntersect"<<std::endl;
+            osg::notify(WARN)<<"   ("<<v1<<",\t"<<v2<<",\t"<<v3<<")"<<std::endl;
+            osg::notify(WARN)<<"   ("<<r1<<",\t"<<r2<<",\t"<<r3<<")"<<std::endl;
+            return;
+        }
+
         _thl.insert(std::pair<const float,std::pair<int,osg::Vec3> >  (r,std::pair<int,osg::Vec3>(_index-1,normal)));
         _hit = true;
 
@@ -415,13 +432,13 @@ struct TriangleIntersect
 
 };
 
-bool IntersectVisitor::intersect(GeoSet& gset)
+bool IntersectVisitor::intersect(Drawable& drawable)
 {
     bool hitFlag = false;
 
     IntersectState* cis = _intersectStateStack.back().get();
 
-    const BoundingBox& bb = gset.getBound();
+    const BoundingBox& bb = drawable.getBound();
 
     for(IntersectState::LineSegmentList::iterator sitr=cis->_segList.begin();
         sitr!=cis->_segList.end();
@@ -429,8 +446,10 @@ bool IntersectVisitor::intersect(GeoSet& gset)
     {
         if (sitr->second->intersect(bb))
         {
-            TriangleIntersect ti(*sitr->second);
-            for_each_triangle(gset,ti);
+
+            TriangleFunctor<TriangleIntersect> ti;
+            ti.set(*sitr->second);
+            drawable.applyPrimitiveOperation(ti);
             if (ti._hit)
             {
 
@@ -442,7 +461,7 @@ bool IntersectVisitor::intersect(GeoSet& gset)
                     hit._nodePath = _nodePath;
                     hit._matrix = cis->_matrix;
                     hit._inverse = cis->_inverse;
-                    hit._geoset = &gset;
+                    hit._drawable = &drawable;
                     if (_nodePath.empty()) hit._geode = NULL;
                     else hit._geode = dynamic_cast<Geode*>(_nodePath.back());
 
@@ -470,49 +489,13 @@ bool IntersectVisitor::intersect(GeoSet& gset)
 
 }
 
-
 void IntersectVisitor::apply(Geode& geode)
 {
     if (!enterNode(geode)) return;
 
     for(int i = 0; i < geode.getNumDrawables(); i++ )
     {
-        osg::GeoSet* gset = dynamic_cast<osg::GeoSet*>(geode.getDrawable(i));
-        if (gset) intersect(*gset);
-        else
-        {
-            IntersectState* cis = _intersectStateStack.back().get();
-
-            // simply default to intersecting with bounding box.
-            for(IntersectState::LineSegmentList::iterator sitr=cis->_segList.begin();
-                sitr!=cis->_segList.end();
-                ++sitr)
-            {
-                if (sitr->second->intersect(geode.getDrawable(i)->getBound()))
-                {
-                    Hit hit;
-                    hit._nodePath = _nodePath;
-                    hit._matrix = cis->_matrix;
-                    hit._inverse = cis->_inverse;
-                    hit._geoset = NULL;
-                    if (_nodePath.empty()) hit._geode = NULL;
-                    else hit._geode = dynamic_cast<Geode*>(_nodePath.back());
-
-                    hit._ratio = 0.0f;
-                    hit._primitiveIndex = -1;
-                    hit._originalLineSegment = sitr->first;
-                    hit._localLineSegment = sitr->second;
-
-                    hit._intersectPoint = geode.getDrawable(i)->getBound().center();
-
-                    hit._intersectNormal.set(0.0,0.0,1.0);
-
-                    _segHitList[sitr->first.get()].push_back(hit);
-                    std::sort(_segHitList[sitr->first.get()].begin(),_segHitList[sitr->first.get()].end());
-
-                }
-            }
-        }
+        intersect(*geode.getDrawable(i));
     }
     
     leaveNode();

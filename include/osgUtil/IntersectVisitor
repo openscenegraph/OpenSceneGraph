@@ -8,7 +8,6 @@
 #include <osg/NodeVisitor>
 #include <osg/LineSegment>
 #include <osg/Geode>
-#include <osg/GeoSet>
 #include <osg/Matrix>
 
 #include <osgUtil/Export>
@@ -51,7 +50,7 @@ class OSGUTIL_EXPORT Hit
         osg::ref_ptr<osg::LineSegment>  _localLineSegment;
         osg::NodePath                   _nodePath;
         osg::ref_ptr<osg::Geode>        _geode;
-        osg::ref_ptr<osg::GeoSet>       _geoset;
+        osg::ref_ptr<osg::Drawable>     _drawable;
         osg::ref_ptr<osg::Matrix>       _matrix;
         osg::ref_ptr<osg::Matrix>       _inverse;
         
@@ -139,7 +138,7 @@ class OSGUTIL_EXPORT IntersectVisitor : public osg::NodeVisitor
 
         };
 
-        bool intersect(osg::GeoSet& gset);
+        bool intersect(osg::Drawable& gset);
 
         void pushMatrix(const osg::Matrix& matrix);
         void popMatrix();

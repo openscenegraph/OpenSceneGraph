@@ -1,5 +1,4 @@
 #include <osg/Geode>
-#include <osg/GeoSet>
 #include <osg/Geometry>
 #include <osg/Material>
 #include <osg/Vec3>
@@ -52,22 +51,6 @@ class MyTransformCallback : public osg::NodeCallback{
 
                         _previousTraversalNumber = nv->getTraversalNumber();
 
-// Some memory stress testing added by Steve to reveal crashes under Windows.
-//                         //  Start Added by SMW
-//                         osg::Transform* Tnode = (osg::Transform *)node;
-//                         int i;
-//                         osg::Node *n;
-//                         while (Tnode->getNumChildren() > 0)
-//                         {
-//                            n = Tnode->getChild(0);
-//                            Tnode->removeChild(n);
-//                         }
-//                         for (i = 0;i < 500;i++)
-//                         {
-//                             Tnode->addChild( createCube() );
-//                         }
-//                         //  End Added by SMW
-
                     }
                 }
             }
@@ -87,93 +70,6 @@ class MyTransformCallback : public osg::NodeCallback{
         osg::Timer_t        _orig_t;
 
 };
-
-osg::Geode* createCube()
-{
-    osg::Geode* geode = new osg::Geode();
-
-    // -------------------------------------------
-    // Set up a new GeoSet which will be our cube
-    // -------------------------------------------
-    osg::GeoSet* cube = new osg::GeoSet();
-
-    // set up the primitives
-    cube->setPrimType( osg::GeoSet::POLYGON );
-    cube->setNumPrims( 6 );      // the six square faces
-
-    // set up the primitive indices
-    int* cubeLengthList = new int[6];
-    cubeLengthList[0] = 4; // each side of the cube has 4 vertices
-    cubeLengthList[1] = 4;
-    cubeLengthList[2] = 4;
-    cubeLengthList[3] = 4;
-    cubeLengthList[4] = 4;
-    cubeLengthList[5] = 4;
-
-    cube->setPrimLengths( cubeLengthList );
-
-
-    // set up the coordinates.
-    osg::Vec3 *cubeCoords = new osg::Vec3[24];
-    cubeCoords[0].set( -1.0000f,   1.0000f,  -1.000f );
-    cubeCoords[1].set( 1.0000f,   1.0000f,  -1.0000f );
-    cubeCoords[2].set( 1.0000f,  -1.0000f,  -1.0000f );
-    cubeCoords[3].set( -1.0000f,  -1.0000f,  -1.000 );
-
-    cubeCoords[4].set( 1.0000f,   1.0000f,  -1.0000f );
-    cubeCoords[5].set( 1.0000f,   1.0000f,   1.0000f );
-    cubeCoords[6].set( 1.0000f,  -1.0000f,   1.0000f );
-    cubeCoords[7].set( 1.0000f,  -1.0000f,  -1.0000f );
-
-    cubeCoords[8].set( 1.0000f,   1.0000f,   1.0000f );
-    cubeCoords[9].set( -1.0000f,   1.0000f,   1.000f );
-    cubeCoords[10].set( -1.0000f,  -1.0000f,   1.000f );
-    cubeCoords[11].set( 1.0000f,  -1.0000f,   1.0000f );
-
-    cubeCoords[12].set( -1.0000f,   1.0000f,   1.000 );
-    cubeCoords[13].set( -1.0000f,   1.0000f,  -1.000 );
-    cubeCoords[14].set( -1.0000f,  -1.0000f,  -1.000 );
-    cubeCoords[15].set( -1.0000f,  -1.0000f,   1.000 );
-
-    cubeCoords[16].set( -1.0000f,   1.0000f,   1.000 );
-    cubeCoords[17].set( 1.0000f,   1.0000f,   1.0000f );
-    cubeCoords[18].set( 1.0000f,   1.0000f,  -1.0000f );
-    cubeCoords[19].set( -1.0000f,   1.0000f,  -1.000f );
-
-    cubeCoords[20].set( -1.0000f,  -1.0000f,   1.000f );
-    cubeCoords[21].set( -1.0000f,  -1.0000f,  -1.000f );
-    cubeCoords[22].set( 1.0000f,  -1.0000f,  -1.0000f );
-    cubeCoords[23].set( 1.0000f,  -1.0000f,   1.0000f );
-
-    cube->setCoords( cubeCoords );
-    
-    
-    // set up the normals.
-    osg::Vec3 *cubeNormals = new osg::Vec3[6];
-    cubeNormals[0].set(0.0f,0.0f,-1.0f);
-    cubeNormals[1].set(1.0f,0.0f,0.0f);
-    cubeNormals[2].set(0.0f,0.0f,1.0f);
-    cubeNormals[3].set(-1.0f,0.0f,0.0f);
-    cubeNormals[4].set(0.0f,1.0f,0.0f);
-    cubeNormals[5].set(0.0f,-1.0f,0.0f);
-    cube->setNormals( cubeNormals );
-    cube->setNormalBinding( osg::GeoSet::BIND_PERPRIM );
-
-    // ---------------------------------------
-    // Set up a StateSet to make the cube red
-    // ---------------------------------------
-    osg::StateSet* cubeState = new osg::StateSet();
-    osg::Material* redMaterial = new osg::Material();
-    osg::Vec4 red( 1.0f, 0.0f, 0.0f, 1.0f );
-    redMaterial->setDiffuse( osg::Material::FRONT_AND_BACK, red );
-    cubeState->setAttribute( redMaterial );
-
-    cube->setStateSet( cubeState );
-
-    geode->addDrawable( cube );
-    
-    return geode;
-}
 
 osg::Geode* createGeometryCube()
 {
@@ -280,7 +176,6 @@ int main( int argc, char **argv )
     viewer.readCommandLine(commandLine);
     
     osg::Transform* myTransform = new osg::Transform();
-//    myTransform->addChild( createCube() );
     myTransform->addChild( createGeometryCube() );
     
     // move node in a circle at 90 degrees a sec.

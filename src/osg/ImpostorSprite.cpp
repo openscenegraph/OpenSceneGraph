@@ -6,7 +6,7 @@
 #include <math.h>
 #include <float.h>
 
-#include <osg/GeoSet>
+#include <osg/Geometry>
 #include <osg/ImpostorSprite>
 #include <osg/Texture>
 #include <osg/TexEnv>

@@ -73,6 +73,8 @@ void Geometry::setTexCoordArray(unsigned int unit,AttributeArray* array)
         _texCoordList.resize(unit+1,0);
         
    _texCoordList[unit] = array;
+
+    dirtyDisplayList();
 }
 
 AttributeArray* Geometry::getTexCoordArray(unsigned int unit)
@@ -244,6 +246,22 @@ Drawable::AttributeBitMask Geometry::applyAttributeOperation(AttributeFunctor& )
 {
     return 0;
 }
+
+void Geometry::applyPrimitiveOperation(PrimitiveFunctor& functor)
+{
+    if (!_vertexArray.valid() || _vertexArray->empty()) return;
+    
+    functor.setVertexArray(_vertexArray->size(),&(_vertexArray->front()));
+    
+    for(PrimitiveList::iterator itr=_primitives.begin();
+        itr!=_primitives.end();
+        ++itr)
+    {
+        (*itr)->applyPrimitiveOperation(functor);
+    }
+    
+}
+
 
 const bool Geometry::computeBound() const
 {

@@ -22,7 +22,7 @@ struct LessPtr
 };
 
 // triangle functor.
-struct TriangleFunctor
+struct SmoothTriangleFunctor
 {
 
     osg::Vec3 *_coordBase;
@@ -31,7 +31,7 @@ struct TriangleFunctor
     typedef std::multiset<const osg::Vec3*,LessPtr> CoordinateSet;
     CoordinateSet _coordSet;
 
-    TriangleFunctor(osg::Vec3 *cb,int noVertices, osg::Vec3 *nb) : _coordBase(cb),_normalBase(nb)
+    SmoothTriangleFunctor(osg::Vec3 *cb,int noVertices, osg::Vec3 *nb) : _coordBase(cb),_normalBase(nb)
     {
         osg::Vec3* vptr = cb;
         for(int i=0;i<noVertices;++i)
@@ -116,7 +116,7 @@ void SmoothingVisitor::smooth(osg::GeoSet& gset)
             norms[j].set(0.0f,0.0f,0.0f);
         }
 
-        TriangleFunctor tf(coords,ncoords,norms);
+        SmoothTriangleFunctor tf(coords,ncoords,norms);
         for_each_triangle( gset, tf );
 
         for(j = 0; j < ncoords; j++ )

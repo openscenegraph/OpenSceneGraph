@@ -629,7 +629,7 @@ bool Primitve_writeLocalData(const Primitive& prim,Output& fw)
         case(UByteDrawElementsPrimitiveType):
             {
                 const UByteDrawElements& cprim = static_cast<const UByteDrawElements&>(prim);
-                fw<<cprim.className()<<" "<<Geometry_getPrimitiveModeStr(cprim.getMode())<<std::endl;
+                fw<<cprim.className()<<" "<<Geometry_getPrimitiveModeStr(cprim.getMode())<<" "<<cprim.size()<<std::endl;
                 Array_writeLocalData(fw,cprim.begin(),cprim.end());
                 return true;
             }
@@ -637,7 +637,7 @@ bool Primitve_writeLocalData(const Primitive& prim,Output& fw)
         case(UShortDrawElementsPrimitiveType):
             {
                 const UShortDrawElements& cprim = static_cast<const UShortDrawElements&>(prim);
-                fw<<cprim.className()<<" "<<Geometry_getPrimitiveModeStr(cprim.getMode())<<std::endl;
+                fw<<cprim.className()<<" "<<Geometry_getPrimitiveModeStr(cprim.getMode())<<" "<<cprim.size()<<std::endl;
                 Array_writeLocalData(fw,cprim.begin(),cprim.end());
                 return true;
             }
@@ -645,7 +645,7 @@ bool Primitve_writeLocalData(const Primitive& prim,Output& fw)
         case(UIntDrawElementsPrimitiveType):
             {
                 const UIntDrawElements& cprim = static_cast<const UIntDrawElements&>(prim);
-                fw<<cprim.className()<<" "<<Geometry_getPrimitiveModeStr(cprim.getMode())<<std::endl;
+                fw<<cprim.className()<<" "<<Geometry_getPrimitiveModeStr(cprim.getMode())<<" "<<cprim.size()<<std::endl;
                 Array_writeLocalData(fw,cprim.begin(),cprim.end());
                 return true;
             }

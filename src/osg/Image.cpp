@@ -5,7 +5,7 @@
 #include <osg/Notify>
 
 #include <osg/Geode>
-#include <osg/GeoSet>
+#include <osg/Geometry>
 #include <osg/StateSet>
 #include <osg/Texture>
 
@@ -491,35 +491,33 @@ Geode* osg::createGeodeForImage(osg::Image* image,const float s,const float t)
             dstate->setAttributeAndModes(texture,osg::StateAttribute::ON);
 
             // set up the geoset.
-            osg::GeoSet* gset = osgNew osg::GeoSet;
-            gset->setStateSet(dstate);
+            Geometry* geom = osgNew Geometry;
+            geom->setStateSet(dstate);
 
-            osg::Vec3* coords = osgNew Vec3[4];
-            coords[0].set(-x,0.0f,y);
-            coords[1].set(-x,0.0f,-y);
-            coords[2].set(x,0.0f,-y);
-            coords[3].set(x,0.0f,y);
-            gset->setCoords(coords);
+            Vec3Array* coords = osgNew Vec3Array(4);
+            (*coords)[0].set(-x,0.0f,y);
+            (*coords)[1].set(-x,0.0f,-y);
+            (*coords)[2].set(x,0.0f,-y);
+            (*coords)[3].set(x,0.0f,y);
+            geom->setVertexArray(coords);
 
-            osg::Vec2* tcoords = osgNew Vec2[4];
-            tcoords[0].set(0.0f,1.0f);
-            tcoords[1].set(0.0f,0.0f);
-            tcoords[2].set(1.0f,0.0f);
-            tcoords[3].set(1.0f,1.0f);
-            gset->setTextureCoords(tcoords);
-            gset->setTextureBinding(osg::GeoSet::BIND_PERVERTEX);
+            Vec2Array* tcoords = osgNew Vec2Array(4);
+            (*tcoords)[0].set(0.0f,1.0f);
+            (*tcoords)[1].set(0.0f,0.0f);
+            (*tcoords)[2].set(1.0f,0.0f);
+            (*tcoords)[3].set(1.0f,1.0f);
+            geom->setTexCoordArray(0,tcoords);
 
-            osg::Vec4* colours = osgNew Vec4[1];
-            colours->set(1.0f,1.0f,1.0,1.0f);
-            gset->setColors(colours);
-            gset->setColorBinding(osg::GeoSet::BIND_OVERALL);
+            osg::Vec4Array* colours = osgNew osg::Vec4Array(1);
+            (*colours)[0].set(1.0f,1.0f,1.0,1.0f);
+            geom->setColorArray(colours);
+            geom->setColorBinding(Geometry::BIND_OVERALL);
 
-            gset->setNumPrims(1);
-            gset->setPrimType(osg::GeoSet::QUADS);
+            geom->addPrimitive(osgNew DrawArrays(Primitive::QUADS,0,4));
 
             // set up the geode.
             osg::Geode* geode = osgNew osg::Geode;
-            geode->addDrawable(gset);
+            geode->addDrawable(geom);
 
             return geode;
 

@@ -76,6 +76,10 @@ class TemplateArray : public AttributeArray, public std::vector<T>
             AttributeArray(ta,copyop),
             std::vector<T>(ta) {}
         
+        TemplateArray(unsigned int no) : 
+            AttributeArray(ARRAYTYPE,DataSize,DataType),
+            std::vector<T>(no) {}
+
         TemplateArray(unsigned int no,T* ptr) : 
             AttributeArray(ARRAYTYPE,DataSize,DataType),
             std::vector<T>(ptr,ptr+no) {}
@@ -131,10 +135,14 @@ class Primitive : public Object
             POLYGON = GL_POLYGON
         };
 
-        Primitive(PrimitiveType primType=PrimitivePrimitiveType):_primitiveType(primType) {}
+        Primitive(PrimitiveType primType=PrimitivePrimitiveType,GLenum mode=0):
+            _primitiveType(primType),
+            _mode(mode) {}
     
         Primitive(const Primitive& prim,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
-            Object(prim,copyop) {}
+            Object(prim,copyop),
+            _primitiveType(prim._primitiveType),
+            _mode(prim._mode) {}
 
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Primitive*>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osg"; }
@@ -142,9 +150,17 @@ class Primitive : public Object
         
         PrimitiveType primitiveType() const { return _primitiveType; }
         
+        void setMode(GLenum mode) { _mode = mode; }
+        GLenum getMode() const { return _mode; }
+
         virtual void draw() const = 0;
         
+        virtual void applyPrimitiveOperation(Drawable::PrimitiveFunctor&) {}
+
+    protected:
+
         PrimitiveType _primitiveType;
+        GLenum  _mode;
 };
 
 class DrawArrays : public Primitive
@@ -152,18 +168,16 @@ class DrawArrays : public Primitive
     public:
 
         DrawArrays():
-            Primitive(DrawArraysPrimitiveType)
+            Primitive(DrawArraysPrimitiveType,0)
             {}
     
         DrawArrays(GLenum mode, GLint first, GLsizei count):
-            Primitive(DrawArraysPrimitiveType),
-            _mode(mode),
+            Primitive(DrawArraysPrimitiveType,mode),
             _first(first),
             _count(count) {}
 
         DrawArrays(const DrawArrays& da,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             Primitive(da,copyop),
-            _mode(da._mode),
             _first(da._first),
             _count(da._count) {}
 
@@ -174,30 +188,29 @@ class DrawArrays : public Primitive
         virtual const char* className() const { return "DrawArrays"; }
         
 
-        void set(GLenum mode, GLint first, GLsizei count)
+        void set(GLenum mode,GLint first, GLsizei count)
         {
             _mode = mode;
             _first = first;
             _count = count;
         }
 
-        void setMode(GLenum mode) { _mode = mode; }
-        GLenum getMode() const { return _mode; }
-        
         void setFirst(GLint first) { _first = first; }
         GLint getFirst() const { return _first; }
         
         void setCount(GLsizei count) { _count = count; }
         GLsizei getCount() const { return _count; }
 
-
-
         virtual void draw() const 
         {
             glDrawArrays(_mode,_first,_count);
         }
         
-        GLenum  _mode;
+        virtual void applyPrimitiveOperation(Drawable::PrimitiveFunctor& functor)
+        {
+            functor.drawArrays(_mode,_first,_count);
+        }
+
         GLint   _first;
         GLsizei _count;
 };
@@ -208,42 +221,44 @@ class DrawElements : public Primitive, public std::vector<T>
     public:
 
         DrawElements(GLenum mode=0):
-            Primitive(PRIMTYPE),
-            _mode(mode),
+            Primitive(PRIMTYPE,mode),
             _dataType(DataType) {}
     
         DrawElements(const DrawElements& array,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             Primitive(array,copyop),
             std::vector<T>(array),
-            _mode(array._mode),
             _dataType(array._dataType) {}
 
         DrawElements(GLenum mode,unsigned int no,T* ptr) : 
-            Primitive(PRIMTYPE),
+            Primitive(PRIMTYPE,mode),
             std::vector<T>(ptr,ptr+no),
-            _mode(mode),
+            _dataType(DataType) {}
+
+        DrawElements(GLenum mode,unsigned int no) : 
+            Primitive(PRIMTYPE,mode),
+            std::vector<T>(no),
             _dataType(DataType) {}
 
         DrawElements(GLenum mode, T* first,T* last) : 
-            Primitive(PRIMTYPE),
+            Primitive(PRIMTYPE,mode),
             std::vector<T>(first,last),
-            _mode(mode),
             _dataType(DataType) {}
 
         virtual Object* cloneType() const { return osgNew DrawElements(); }
         virtual Object* clone(const CopyOp& copyop) const { return osgNew DrawElements(*this,copyop); }        
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const DrawElements*>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osg"; }
-        
-        void setMode(GLenum mode) { _mode = mode; }
-        GLenum getMode() const { return _mode; }
 
         virtual void draw() const 
         {
             glDrawElements(_mode,size(),_dataType,&front());
         }
         
-        GLenum  _mode;
+        virtual void applyPrimitiveOperation(Drawable::PrimitiveFunctor& functor)
+        {
+            if (!empty()) functor.drawElements(_mode,size(),&front());
+        }
+
         GLenum  _dataType;
 };
 
@@ -255,8 +270,6 @@ typedef DrawElements<unsigned int,UIntDrawElementsPrimitiveType,GL_UNSIGNED_INT>
 /* ******************************************************************************************************************* */
 
 
-/** Experiemntal replacement for GeoSet.
-*/
 class SG_EXPORT Geometry : public Drawable
 {
     public:
@@ -280,15 +293,15 @@ class SG_EXPORT Geometry : public Drawable
             BIND_PER_VERTEX,
         };
                
-        void setVertexArray(Vec3Array* array) { _vertexArray = array; }
+        void setVertexArray(Vec3Array* array) { _vertexArray = array; dirtyDisplayList(); }
         Vec3Array* getVertexArray() { return _vertexArray.get(); }
         const Vec3Array* getVertexArray() const  { return _vertexArray.get(); }
 
 
-        void setNormalBinding(AttributeBinding ab) { _normalBinding = ab; }
+        void setNormalBinding(AttributeBinding ab) { _normalBinding = ab; dirtyDisplayList(); }
         AttributeBinding getNormalBinding() const { return _normalBinding; }
 
-        void setNormalArray(Vec3Array* array) { _normalArray = array; if (!_normalArray.valid()) _normalBinding=BIND_OFF; }
+        void setNormalArray(Vec3Array* array) { _normalArray = array; if (!_normalArray.valid()) _normalBinding=BIND_OFF; dirtyDisplayList(); }
         Vec3Array* getNormalArray() { return _normalArray.get(); }
         const Vec3Array* getNormalArray() const { return _normalArray.get(); }
 
@@ -296,7 +309,7 @@ class SG_EXPORT Geometry : public Drawable
         void setColorBinding(AttributeBinding ab) { _colorBinding = ab; }
         AttributeBinding getColorBinding() const { return _colorBinding; }
 
-        void setColorArray(AttributeArray* array) { _colorArray = array;  if (!_colorArray.valid()) _colorBinding=BIND_OFF; }
+        void setColorArray(AttributeArray* array) { _colorArray = array;  if (!_colorArray.valid()) _colorBinding=BIND_OFF; dirtyDisplayList(); }
         AttributeArray* getColorArray() { return _colorArray.get(); }
         const AttributeArray* getColorArray() const { return _colorArray.get(); }
 
@@ -315,11 +328,11 @@ class SG_EXPORT Geometry : public Drawable
 
         typedef std::vector< ref_ptr<Primitive> > PrimitiveList;
 
-        void setPrimitiveList(const PrimitiveList& primitives) { _primitives = primitives; }
+        void setPrimitiveList(const PrimitiveList& primitives) { _primitives = primitives; dirtyDisplayList(); }
         PrimitiveList& getPrimitiveList() { return _primitives; }
         const PrimitiveList& getPrimitiveList() const { return _primitives; }
 
-        void addPrimitive(Primitive* primitive) { if (primitive) _primitives.push_back(primitive); }
+        void addPrimitive(Primitive* primitive) { if (primitive) _primitives.push_back(primitive); dirtyDisplayList(); }
 
 
 
@@ -340,6 +353,7 @@ class SG_EXPORT Geometry : public Drawable
         /** return the attributes successully applied in applyAttributeUpdate.*/
         virtual AttributeBitMask applyAttributeOperation(AttributeFunctor& auf);
 
+        virtual void applyPrimitiveOperation(PrimitiveFunctor&);
 
     protected:
 

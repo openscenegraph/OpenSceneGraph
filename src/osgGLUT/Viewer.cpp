@@ -1158,8 +1158,8 @@ void Viewer::keyboard(unsigned char key, int x, int y)
                         if (key=='r' && geode)
                         {
                             // remove geoset..
-                            osg::GeoSet* gset = hitr->_geoset.get();
-                            osg::notify(osg::NOTICE) << "  geoset ("<<gset<<") "<<geode->removeDrawable(gset)<<")"<< std::endl;
+                            osg::Drawable* drawable = hitr->_drawable.get();
+                            osg::notify(osg::NOTICE) << "  drawable ("<<drawable<<") "<<geode->removeDrawable(drawable)<<")"<< std::endl;
                         }
 
                     }

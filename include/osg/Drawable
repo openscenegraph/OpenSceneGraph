@@ -33,7 +33,7 @@ class Node;
 #define USE_SEPERATE_COMPILE_AND_EXECUTE
 
 /** Pure virtual base class for drawable Geometry.  Contains no drawing primitives
-    directly, these are provided by subclasses such as GeoSet. State attributes 
+    directly, these are provided by subclasses such as osg::Geometry. State attributes 
     for a Drawable are maintained in StateSet which the Drawable maintains
     a referenced counted pointer to.  Both Drawable's and StateSet's can 
     be shared for optimal memory usage and graphics performance.
@@ -41,7 +41,7 @@ class Node;
     Subclasses should provide an instance of getStats(Statistics *st) if the subclass
     contains drawing primitives.  This member function should add the primitives it 
     draws into the Statistics class; for example add the number of quads, triangles etc
-    created.  For an example see GeoSet.cpp:
+    created.  For an example see Geometry.cpp:
      getStats(osgUtil::Statistics *stat).
     Failure to implement this routine will only result in the stats displayed for
     your drawable being wrong.
@@ -261,6 +261,26 @@ class SG_EXPORT Drawable : public Object
         virtual AttributeBitMask applyAttributeOperation(AttributeFunctor&) { return 0; }
         
 
+        class PrimitiveFunctor
+        {
+        public:
+            
+            virtual void setVertexArray(unsigned int count,Vec3* vertices) = 0;
+            
+            virtual void drawArrays(GLenum mode,GLint first,GLsizei count) = 0;
+            virtual void drawElements(GLenum mode,GLsizei count,unsigned char* indices) = 0;
+            virtual void drawElements(GLenum mode,GLsizei count,unsigned short* indices) = 0;
+            virtual void drawElements(GLenum mode,GLsizei count,unsigned int* indices) = 0;
+            
+            virtual void begin(GLenum mode) = 0;
+            virtual void vertex(const Vec3& vert) = 0;
+            virtual void vertex(float x,float y,float z) = 0;
+            virtual void end() = 0;
+            
+        };
+        
+        /** apply the internal geometry as basic primitives to a PrimitiveFunctor.*/
+        virtual void applyPrimitiveOperation(PrimitiveFunctor&) {}
 
 
     protected:
@@ -354,7 +374,329 @@ inline void Drawable::draw(State& state)
         else 
             drawImmediateMode(state);
     }
-}
+};
+
+template<class T>
+class TriangleFunctor : public Drawable::PrimitiveFunctor, public T
+{
+public:
+
+    TriangleFunctor()
+    {
+        _vertexArraySize=0;
+        _vertexArrayPtr=0;
+        _modeCache=0;
+    }
+    
+    virtual ~TriangleFunctor() {}
+
+    virtual void setVertexArray(unsigned int count,Vec3* vertices)
+    {
+        _vertexArraySize = count;
+        _vertexArrayPtr = vertices;
+    }
+
+    virtual void drawArrays(GLenum mode,GLint first,GLsizei count)
+    {
+        if (_vertexArrayPtr==0 && count==0) return;
+    
+        switch(mode)
+        {
+            case(GL_TRIANGLES):
+            {
+                Vec3* vlast = &_vertexArrayPtr[first+count];
+                for(Vec3* vptr=&_vertexArrayPtr[first];vptr<vlast;vptr+=3)
+                    operator()(*(vptr),*(vptr+1),*(vptr+2));
+                break;
+            }
+            case(GL_TRIANGLE_STRIP):
+            {
+                Vec3* vptr = &_vertexArrayPtr[first];
+                for(GLsizei i=2;i<count;++i,++vptr)
+                {
+		    if ((i%2)) operator()(*(vptr),*(vptr+2),*(vptr+1));
+		    else       operator()(*(vptr),*(vptr+1),*(vptr+2));
+                }
+                break;
+            }
+            case(GL_QUADS):
+            {
+                Vec3* vptr = &_vertexArrayPtr[first];
+                for(GLsizei i=3;i<count;i+=4,vptr+=4)
+                {
+                    operator()(*(vptr),*(vptr+1),*(vptr+2));
+                    operator()(*(vptr),*(vptr+2),*(vptr+3));
+                }
+                break;
+            }
+            case(GL_QUAD_STRIP):
+            {
+                Vec3* vptr = &_vertexArrayPtr[first];
+                for(GLsizei i=3;i<count;i+=2,vptr+=2)
+                {
+                    operator()(*(vptr),*(vptr+1),*(vptr+2));
+                    operator()(*(vptr),*(vptr+2),*(vptr+3));
+                }
+                break;
+            }
+            case(GL_POLYGON): // treat polygons as GL_TRIANGLE_FAN
+            case(GL_TRIANGLE_FAN):
+            {
+                Vec3* vfirst = &_vertexArrayPtr[first];
+                Vec3* vptr = vfirst+1;
+                for(GLsizei i=2;i<count;++i,++vptr)
+                {
+                    operator()(*(vfirst),*(vptr),*(vptr+1));
+                }
+                break;
+            }
+            case(GL_POINTS):
+            case(GL_LINES):
+            case(GL_LINE_STRIP):
+            case(GL_LINE_LOOP):
+            default:
+                // can't be converted into to triangles.
+                break;
+        }
+    }
+    
+    virtual void drawElements(GLenum mode,GLsizei count,unsigned char* indices)
+    {
+        if (indices==0 || count==0) return;
+    
+        typedef unsigned char* IndexPointer;
+    
+        switch(mode)
+        {
+            case(GL_TRIANGLES):
+            {
+                IndexPointer ilast = &indices[count];
+                for(IndexPointer  iptr=indices;iptr<ilast;iptr+=3)
+                    operator()(_vertexArrayPtr[*iptr],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)]);
+                break;
+            }
+            case(GL_TRIANGLE_STRIP):
+            {
+                IndexPointer iptr = indices;
+                for(GLsizei i=2;i<count;++i,++iptr)
+                {
+		    if ((i%2)) operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+2)],_vertexArrayPtr[*(iptr+1)]);
+		    else       operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)]);
+                }
+                break;
+            }
+            case(GL_QUADS):
+            {
+                IndexPointer iptr = indices;
+                for(GLsizei i=3;i<count;i+=4,iptr+=4)
+                {
+                    operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)]);
+                    operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+2)],_vertexArrayPtr[*(iptr+3)]);
+                }
+                break;
+            }
+            case(GL_QUAD_STRIP):
+            {
+                IndexPointer iptr = indices;
+                for(GLsizei i=3;i<count;i+=2,iptr+=2)
+                {
+                    operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)]);
+                    operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+2)],_vertexArrayPtr[*(iptr+3)]);
+                }
+                break;
+            }
+            case(GL_POLYGON): // treat polygons as GL_TRIANGLE_FAN
+            case(GL_TRIANGLE_FAN):
+            {
+                IndexPointer iptr = indices;
+                Vec3& vfirst = _vertexArrayPtr[*iptr];
+                ++iptr;
+                for(GLsizei i=2;i<count;++i,++iptr)
+                {
+                    operator()(vfirst,_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)]);
+                }
+                break;
+            }
+            case(GL_POINTS):
+            case(GL_LINES):
+            case(GL_LINE_STRIP):
+            case(GL_LINE_LOOP):
+            default:
+                // can't be converted into to triangles.
+                break;
+        }
+    }    
+
+    virtual void drawElements(GLenum mode,GLsizei count,unsigned short* indices)
+    {
+        if (indices==0 || count==0) return;
+    
+        typedef unsigned short* IndexPointer;
+    
+        switch(mode)
+        {
+            case(GL_TRIANGLES):
+            {
+                IndexPointer ilast = &indices[count];
+                for(IndexPointer  iptr=indices;iptr<ilast;iptr+=3)
+                {
+                    operator()(_vertexArrayPtr[*iptr],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)]);
+                }    
+                break;
+            }
+            case(GL_TRIANGLE_STRIP):
+            {
+                IndexPointer iptr = indices;
+                for(GLsizei i=2;i<count;++i,++iptr)
+                {
+		    if ((i%2)) operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+2)],_vertexArrayPtr[*(iptr+1)]);
+		    else       operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)]);
+                }
+                break;
+            }
+            case(GL_QUADS):
+            {
+                IndexPointer iptr = indices;
+                for(GLsizei i=3;i<count;i+=4,iptr+=4)
+                {
+                    operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)]);
+                    operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+2)],_vertexArrayPtr[*(iptr+3)]);
+                }
+                break;
+            }
+            case(GL_QUAD_STRIP):
+            {
+                IndexPointer iptr = indices;
+                for(GLsizei i=3;i<count;i+=2,iptr+=2)
+                {
+                    operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)]);
+                    operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+2)],_vertexArrayPtr[*(iptr+3)]);
+                }
+                break;
+            }
+            case(GL_POLYGON): // treat polygons as GL_TRIANGLE_FAN
+            case(GL_TRIANGLE_FAN):
+            {
+                IndexPointer iptr = indices;
+                Vec3& vfirst = _vertexArrayPtr[*iptr];
+                ++iptr;
+                for(GLsizei i=2;i<count;++i,++iptr)
+                {
+                    operator()(vfirst,_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)]);
+                }
+                break;
+            }
+            case(GL_POINTS):
+            case(GL_LINES):
+            case(GL_LINE_STRIP):
+            case(GL_LINE_LOOP):
+            default:
+                // can't be converted into to triangles.
+                break;
+        }
+    }    
+
+    virtual void drawElements(GLenum mode,GLsizei count,unsigned int* indices)
+    {
+        if (indices==0 || count==0) return;
+    
+        typedef unsigned int* IndexPointer;
+    
+        switch(mode)
+        {
+            case(GL_TRIANGLES):
+            {
+                IndexPointer ilast = &indices[count];
+                for(IndexPointer  iptr=indices;iptr<ilast;iptr+=3)
+                    operator()(_vertexArrayPtr[*iptr],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)]);
+                break;
+            }
+            case(GL_TRIANGLE_STRIP):
+            {
+                IndexPointer iptr = indices;
+                for(GLsizei i=2;i<count;++i,++iptr)
+                {
+		    if ((i%2)) operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+2)],_vertexArrayPtr[*(iptr+1)]);
+		    else       operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)]);
+                }
+                break;
+            }
+            case(GL_QUADS):
+            {
+                IndexPointer iptr = indices;
+                for(GLsizei i=3;i<count;i+=4,iptr+=4)
+                {
+                    operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)]);
+                    operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+2)],_vertexArrayPtr[*(iptr+3)]);
+                }
+                break;
+            }
+            case(GL_QUAD_STRIP):
+            {
+                IndexPointer iptr = indices;
+                for(GLsizei i=3;i<count;i+=2,iptr+=2)
+                {
+                    operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)]);
+                    operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+2)],_vertexArrayPtr[*(iptr+3)]);
+                }
+                break;
+            }
+            case(GL_POLYGON): // treat polygons as GL_TRIANGLE_FAN
+            case(GL_TRIANGLE_FAN):
+            {
+                IndexPointer iptr = indices;
+                Vec3& vfirst = _vertexArrayPtr[*iptr];
+                ++iptr;
+                for(GLsizei i=2;i<count;++i,++iptr)
+                {
+                    operator()(vfirst,_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)]);
+                }
+                break;
+            }
+            case(GL_POINTS):
+            case(GL_LINES):
+            case(GL_LINE_STRIP):
+            case(GL_LINE_LOOP):
+            default:
+                // can't be converted into to triangles.
+                break;
+        }
+    }    
+
+
+
+    /** begin(..),vertex(..) & end() are convinience methods for adapting 
+     *  non vertex array primitives to vertex array based primitives.
+     * this is done to simplify the implementation of primtive functor
+     * subclasses - users only need override drawArray and drawElements.*/
+    inline void begin(GLenum mode)
+    {
+        _modeCache = mode;
+        _vertexCache.clear();
+    }
+
+    inline void vertex(const Vec3& vert) { _vertexCache.push_back(vert); }
+    inline void vertex(float x,float y,float z) { _vertexCache.push_back(osg::Vec3(x,y,z)); }
+    inline void end()
+    {
+        if (!_vertexCache.empty())
+        {
+            setVertexArray(_vertexCache.size(),&_vertexCache.front());
+            drawArrays(_modeCache,0,_vertexCache.size());
+        }
+    }
+
+protected:
+
+
+    unsigned int        _vertexArraySize;
+    Vec3*               _vertexArrayPtr;
+
+    GLenum              _modeCache;
+    std::vector<Vec3>   _vertexCache;
+
+};
+
 
 }
 

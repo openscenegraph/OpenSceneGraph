@@ -155,6 +155,7 @@ EXAMPLE_DIRS = \
 	osgimpostor\
 	osgkeyboard\
 	osgkeyboardmouse\
+	osglauncher\
 	osglight\
 	osglightpoint\
 	osglogo\
@@ -162,7 +163,6 @@ EXAMPLE_DIRS = \
         osgmotionblur\
 	osgmultitexture\
 	osgoccluder\
-	osgpagedlod\
 	osgpagedlod\
 	osgparticle\
 	osgpick\
@@ -196,6 +196,9 @@ EXAMPLE_DIRS = \
 	osgviewer\
 	osgvolume\
 	osgwindows\
+
+#	osgspotlight\
+
 
 ifeq ($(GDAL_INSTALLED),yes)
     EXAMPLE_DIRS += osgphotoalbum

@@ -142,9 +142,9 @@ void trpgGeometry::SetVertices(int num,const float64 *data)
 void trpgGeometry::AddVertex(DataType type,trpg3dPoint &pt)
 {
 	if (type == FloatData) {
-		vertDataFloat.push_back(pt.x);
-		vertDataFloat.push_back(pt.y);
-		vertDataFloat.push_back(pt.z);
+		vertDataFloat.push_back(static_cast<float>(pt.x));
+		vertDataFloat.push_back(static_cast<float>(pt.y));
+		vertDataFloat.push_back(static_cast<float>(pt.z));
 	} else {
 		vertDataDouble.push_back(pt.x);
 		vertDataDouble.push_back(pt.y);
@@ -176,9 +176,9 @@ void trpgGeometry::SetNormals(int num,BindType bind,const float64 *data)
 void trpgGeometry::AddNormal(DataType type,trpg3dPoint &pt)
 {
 	if (type == FloatData) {
-		normDataFloat.push_back(pt.x);
-		normDataFloat.push_back(pt.y);
-		normDataFloat.push_back(pt.z);
+		normDataFloat.push_back(static_cast<float>(pt.x));
+		normDataFloat.push_back(static_cast<float>(pt.y));
+		normDataFloat.push_back(static_cast<float>(pt.z));
 	} else {
 		normDataDouble.push_back(pt.x);
 		normDataDouble.push_back(pt.y);
@@ -268,8 +268,8 @@ void trpgGeometry::AddTexCoord(DataType type,trpg2dPoint &pt, int n)
 	trpgTexData *td = &texData[n];
 
 	if (type == FloatData) {
-		td->floatData.push_back(pt.x);
-		td->floatData.push_back(pt.y);
+		td->floatData.push_back(static_cast<float>(pt.x));
+		td->floatData.push_back(static_cast<float>(pt.y));
 	} else {
 		td->doubleData.push_back(pt.x);
 		td->doubleData.push_back(pt.y);
@@ -284,8 +284,8 @@ void trpgGeometry::AddTexCoord(DataType type,std::vector<trpg2dPoint> &pts)
 		trpgTexData *td = &texData[loop];
 
 		if (type == FloatData) {
-			td->floatData.push_back(pts[loop].x);
-			td->floatData.push_back(pts[loop].y);
+			td->floatData.push_back(static_cast<float>(pts[loop].x));
+			td->floatData.push_back(static_cast<float>(pts[loop].y));
 		} else {
 			td->doubleData.push_back(pts[loop].x);
 			td->doubleData.push_back(pts[loop].y);
@@ -364,7 +364,7 @@ bool trpgGeometry::GetVertices(float32 *v) const
 			v[i] = vertDataFloat[i];
 	else
 		for (i=0;i<vertDataDouble.size();i++)
-			v[i] = vertDataDouble[i];
+			v[i] = static_cast<float32>(vertDataDouble[i]);
 	return true;
 }
 bool trpgGeometry::GetVertices(float64 *v) const
@@ -417,7 +417,7 @@ bool trpgGeometry::GetNormals(float32 *v) const
 			v[i] = normDataFloat[i];
 	else
 		for (i=0;i<normDataDouble.size();i++)
-			v[i] = normDataDouble[i];
+			v[i] = static_cast<float32>(normDataDouble[i]);
 	return true;
 }
 bool trpgGeometry::GetNormals(float64 *v) const

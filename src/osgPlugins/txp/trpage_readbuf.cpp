@@ -55,7 +55,7 @@ bool trpgReadBuffer::Get(int64 &ret)
 
 	if (!GetData((char *)&val,sizeof(int64)))  return false;
 	if (ness != cpuNess)
-		ret = trpg_byteswap_long(val);
+		ret = trpg_byteswap_llong(val);
 	else
 		ret = val;
 

@@ -87,7 +87,7 @@ EXE_EXT    =
 DOF        = $(OPTF)
 DEBUGDIR   = $(OS)$(ARCH).Debug
 OPTDIR     = $(OS)$(ARCH).Opt
-BININST    = bin
+BININST    = bin/$(OS)$(ARCH)/
 PLUGININST = lib/$(OS)$(ARCH)/osgPlugins
 LIBINST    = lib/$(OS)$(ARCH)
 

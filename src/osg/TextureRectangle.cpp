@@ -17,6 +17,19 @@
 #include <osg/GLU>
 #include <osg/Notify>
 
+#ifndef GL_UNPACK_CLIENT_STORAGE_APPLE
+#define GL_UNPACK_CLIENT_STORAGE_APPLE    0x85B2
+#endif
+
+#ifndef GL_APPLE_vertex_array_range
+#define GL_VERTEX_ARRAY_RANGE_APPLE       0x851D
+#define GL_VERTEX_ARRAY_RANGE_LENGTH_APPLE 0x851E
+#define GL_VERTEX_ARRAY_STORAGE_HINT_APPLE 0x851F
+#define GL_VERTEX_ARRAY_RANGE_POINTER_APPLE 0x8521
+#define GL_STORAGE_CACHED_APPLE           0x85BE
+#define GL_STORAGE_SHARED_APPLE           0x85BF
+#endif
+
 using namespace osg;
 
 TextureRectangle::TextureRectangle():
@@ -192,6 +205,7 @@ void TextureRectangle::applyTexImage_load(GLenum target, Image* image, State& st
     // get the contextID (user defined ID of 0 upwards) for the 
     // current OpenGL context.
     const unsigned int contextID = state.getContextID();
+    const Extensions* extensions = getExtensions(contextID,true);
 
     // update the modified tag to show that it is upto date.
     getModifiedTag(contextID) = image->getModifiedTag();
@@ -200,6 +214,17 @@ void TextureRectangle::applyTexImage_load(GLenum target, Image* image, State& st
     computeInternalFormat();
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, image->getPacking());
+
+    bool useClientStorage = extensions->isClientStorageSupported() && getClientStorageHint();
+    if (useClientStorage)
+    {
+        glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE,GL_TRUE);
+        glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_PRIORITY,0.0f);
+        
+        #ifdef GL_TEXTURE_STORAGE_HINT_APPLE    
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_STORAGE_HINT_APPLE , GL_STORAGE_CACHED_APPLE);
+        #endif
+    }
 
     // UH: ignoring compressed for now.
     glTexImage2D(target, 0, _internalFormat,
@@ -210,6 +235,11 @@ void TextureRectangle::applyTexImage_load(GLenum target, Image* image, State& st
     
     inwidth = image->s();
     inheight = image->t();
+
+    if (useClientStorage)
+    {
+        glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE,GL_FALSE);
+    }
 }
 
 void TextureRectangle::applyTexImage_subload(GLenum target, Image* image, State& state, GLsizei& inwidth, GLsizei& inheight, GLint& inInternalFormat) const

@@ -551,6 +551,10 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
             geom->addPrimitiveSet(new osg::DrawArrayLengths(GL_TRIANGLE_STRIP,0,np,plen));
             break;
             
+        case PFGS_TRIFANS :
+            geom->addPrimitiveSet(new osg::DrawArrayLengths(GL_TRIANGLE_FAN,0,np,plen));
+            break;
+
         case PFGS_FLAT_TRISTRIPS :
             geom->addPrimitiveSet(new osg::DrawArrayLengths(GL_TRIANGLE_STRIP,0,np,plen));
             break;
@@ -565,6 +569,12 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
 
         case PFGS_FLAT_LINESTRIPS :
             geom->addPrimitiveSet(new osg::DrawArrayLengths(GL_LINE_STRIP,0,np,plen));
+            break;
+
+        default:
+           std::cout << "ConvertFromPerformer::visitGeoSet: Osg can't convert primitive "
+                     << geoset->getPrimType()
+                     << std::endl;
             break;
 
     }
@@ -896,7 +906,8 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
 
             if(ilist)
             {
-                geom->setTexCoordIndices(0,new osg::UShortArray(nn,ilist));
+//                geom->setTexCoordIndices(0,new osg::UShortArray(nn,ilist));
+                geom->setColorIndices(new osg::UShortArray(nn,ilist));
             }
 
         }

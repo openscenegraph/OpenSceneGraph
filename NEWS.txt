@@ -1,6 +1,25 @@
 OSG News (most significant items from ChangeLog)
 ================================================
 
+    New 3dc points data cloud loader.
+    
+    New dds iamge loader.
+    
+    New pnm image loader.
+    
+    Support for vertex attribute in osg::Geometry.
+
+    TessellationHints now supported by ShapeDrawable.
+
+    Supported added for auto scaling and rotating text + peformance improvements.
+
+    New examples - osgtexturerectangle, osgslideshow, osgpoints, osgdemeter.
+
+    New native binary format.
+
+    Support added for Open Flight detail textures.
+
+
 28th April 2003  - OpenSceneGraph-0.9.4-2
 
     >>> Multi-threaded, multi-pipe support via integration with OpenProducer,

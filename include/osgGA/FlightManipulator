@@ -50,9 +50,14 @@ private:
         /** Add the current mouse GUIEvent to internal stack.*/
         void addMouseEvent(const GUIEventAdapter& ea);
 
+        void computeLocalDataFromCamera();
+
+        void computeCameraFromLocalData();
+
         /** For the give mouse movement calculate the movement of the camera.
             Return true is camera has moved and a redraw is required.*/
         bool calcMovement();
+
 
         // Internal event stack comprising last three mouse events.
         osg::ref_ptr<const GUIEventAdapter> _ga_t1;
@@ -64,6 +69,10 @@ private:
         float _velocity;
 
         YawControlMode _yawMode;
+        
+        osg::Vec3   _eye;
+        osg::Quat   _rotation;
+        float       _distance;
 
 };
 

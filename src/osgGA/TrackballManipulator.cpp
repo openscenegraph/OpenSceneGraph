@@ -10,6 +10,8 @@ TrackballManipulator::TrackballManipulator()
     _modelScale = 0.01f;
     _minimumZoomScale = 0.05f;
     _thrown = false;
+
+    _distance = 1.0f;
 }
 
 

@@ -24,15 +24,15 @@ public:
 
         virtual ~DriveManipulator();
 
-    virtual void setNode(osg::Node*);
+        virtual void setNode(osg::Node*);
 
-    virtual const osg::Node* getNode() const;
+        virtual const osg::Node* getNode() const;
 
-    virtual osg::Node* getNode();
+        virtual osg::Node* getNode();
 
-    virtual void home(const GUIEventAdapter& ea,GUIActionAdapter& us);
+        virtual void home(const GUIEventAdapter& ea,GUIActionAdapter& us);
 
-    virtual void init(const GUIEventAdapter& ea,GUIActionAdapter& us);
+        virtual void init(const GUIEventAdapter& ea,GUIActionAdapter& us);
 
         virtual bool handle(const GUIEventAdapter& ea,GUIActionAdapter& us);
 
@@ -43,6 +43,11 @@ private:
 
         /** Add the current mouse GUIEvent to internal stack.*/
         void addMouseEvent(const GUIEventAdapter& ea);
+
+        void computeLocalDataFromCamera();
+
+        void computeCameraFromLocalData();
+        void computeCameraFromLocalData(const osg::Vec3& lv,const osg::Vec3& up);
 
         /** For the give mouse movement calculate the movement of the camera.
         Return true is camera has moved and a redraw is required.*/
@@ -66,6 +71,9 @@ private:
 
         SpeedControlMode _speedMode;
 
+        osg::Vec3   _eye;
+        osg::Quat   _rotation;
+        float       _distance;
 };
 
 }

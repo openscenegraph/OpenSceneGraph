@@ -10,6 +10,8 @@ FlightManipulator::FlightManipulator()
     _modelScale = 0.01f;
     _velocity = 0.0f;
     _yawMode = YAW_AUTOMATICALLY_WHEN_BANKED;
+
+    _distance = 1.0f;
 }
 
 
@@ -59,6 +61,8 @@ void FlightManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
 
         us.requestWarpPointer((ea.getXmin()+ea.getXmax())/2,(ea.getYmin()+ea.getYmax())/2);
 
+        computeLocalDataFromCamera();
+
         flushMouseEventStack();
 
     }
@@ -76,6 +80,7 @@ void FlightManipulator::init(const GUIEventAdapter& ea,GUIActionAdapter& us)
 
     us.requestWarpPointer((ea.getXmin()+ea.getXmax())/2,(ea.getYmin()+ea.getYmax())/2);
 
+    computeLocalDataFromCamera();
 }
 
 
@@ -141,6 +146,16 @@ bool FlightManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
                 _camera->setFusionDistanceRatio(_camera->getFusionDistanceRatio()/1.25f);
                 return true;
             }
+            else if (ea.getKey()=='q')
+            {
+                _yawMode = YAW_AUTOMATICALLY_WHEN_BANKED;
+                return true;
+            }
+            else if (ea.getKey()=='a')
+            {
+                _yawMode = NO_AUTOMATIC_YAW;
+                return true;
+            }
             return false;
 
         case(GUIEventAdapter::FRAME):
@@ -172,6 +187,39 @@ void FlightManipulator::addMouseEvent(const GUIEventAdapter& ea)
     _ga_t0 = &ea;
 }
 
+
+void FlightManipulator::computeLocalDataFromCamera()
+{
+    // maths from gluLookAt/osg::Matrix::makeLookAt
+    osg::Vec3 f(_camera->getCenterPoint()-_camera->getEyePoint());
+    f.normalize();
+    osg::Vec3 s(f^_camera->getUpVector());
+    s.normalize();
+    osg::Vec3 u(s^f);
+    u.normalize();
+
+    osg::Matrix rotation_matrix(s[0],     u[0],     -f[0],     0.0f,
+                                s[1],     u[1],     -f[1],     0.0f,
+                                s[2],     u[2],     -f[2],     0.0f,
+                                0.0f,     0.0f,     0.0f,      1.0f);
+                   
+    _eye = _camera->getEyePoint();
+    _distance = _camera->getLookDistance();
+    _rotation.set(rotation_matrix);
+    _rotation = _rotation.inverse();
+     
+}
+
+void FlightManipulator::computeCameraFromLocalData()
+{
+    osg::Matrix new_rotation;
+    new_rotation.makeRotate(_rotation);
+    
+    osg::Vec3 up = osg::Vec3(0.0f,1.0f,0.0) * new_rotation;
+    osg::Vec3 center = (osg::Vec3(0.0f,0.0f,-_distance) * new_rotation) + _eye;
+
+    _camera->setLookAt(_eye,center,up);
+}
 
 bool FlightManipulator::calcMovement()
 {
@@ -217,29 +265,45 @@ bool FlightManipulator::calcMovement()
     float dx = _ga_t0->getX()-mx;
     float dy = _ga_t0->getY()-my;
 
-    osg::Vec3 center = _camera->getEyePoint();
-    osg::Vec3 sv = _camera->getSideVector();
-    osg::Vec3 lv = _camera->getLookVector();
+    osg::Matrix rotation_matrix;
+    rotation_matrix.makeRotate(_rotation);
+    
+    osg::Vec3 up = osg::Vec3(0.0f,1.0f,0.0) * rotation_matrix;
+    osg::Vec3 lv = osg::Vec3(0.0f,0.0f,-1.0f) * rotation_matrix;
+
+    osg::Vec3 sv = lv^up;
+    sv.normalize();
 
     float pitch = inDegrees(dy*0.15f*dt);
     float roll = inDegrees(dx*0.1f*dt);
 
-    osg::Matrix mat;
-    mat.makeTranslate(-center);
-    mat *= Matrix::rotate(pitch,sv.x(),sv.y(),sv.z());
-    mat *= Matrix::rotate(roll,lv.x(),lv.y(),lv.z());
+    osg::Quat delta_rotate;
+
+    osg::Quat roll_rotate;
+    osg::Quat pitch_rotate;
+
+    pitch_rotate.makeRotate(pitch,sv.x(),sv.y(),sv.z());
+    roll_rotate.makeRotate(roll,lv.x(),lv.y(),lv.z());
+
+    delta_rotate = pitch_rotate*roll_rotate;
+
     if (_yawMode==YAW_AUTOMATICALLY_WHEN_BANKED)
     {
         float bank = asinf(sv.z());
         float yaw = inRadians(bank)*dt;
-        mat *= Matrix::rotate(yaw,0.0f,0.0f,1.0f);
+        
+        osg::Quat yaw_rotate;
+        yaw_rotate.makeRotate(yaw,0.0f,0.0f,1.0f);
+
+        delta_rotate = delta_rotate*yaw_rotate;
     }
 
     lv *= (_velocity*dt);
 
-    mat *= Matrix::translate(center+lv);
+    _eye += lv;
+    _rotation = _rotation*delta_rotate;
 
-    _camera->transformLookAt(mat);
+    computeCameraFromLocalData();
 
     return true;
 }

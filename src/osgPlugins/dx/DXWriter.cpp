@@ -108,6 +108,8 @@
 #include <osg/TexEnv>
 #include <osg/CullFace>
 #include <osg/Billboard>
+#include <osg/Math>
+
 #include <osgDB/ReadFile>
 
 #include <iostream>
@@ -115,7 +117,6 @@
 #include <map>
 #include <string>
 #include <stdio.h>
-#include <math.h>
 #include <assert.h>
 #include <stdarg.h>
 #include <limits.h>
@@ -598,7 +599,7 @@ inline int IsNaNorInf( float f )
     case FP_PINF : return 1;
     default      : return 0;
   }
-#elif defined(__FreeBSD__) || defined(__linux) || defined(__CYGWIN__)
+#elif defined(__FreeBSD__) || defined(__linux) || defined(__CYGWIN__) || defined(__DARWIN_OSX__)
   return isnanf(f) || isinf(f);
 #elif defined(WIN32)
   return _isnan(f) || !_finite(f);

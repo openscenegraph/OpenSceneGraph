@@ -140,7 +140,15 @@ int main( int argc, char **argv )
 
     if (list)
     {        
-        std::cout<<"Cannot list at present."<<std::endl;
+        std::cout<<"List of files in archive:"<<std::endl;
+        const osgDB::Archive::FileNamePositionMap& indexMap = archive.getFileNamePositionMap();
+        for(osgDB::Archive::FileNamePositionMap::const_iterator itr=indexMap.begin();
+            itr!=indexMap.end();
+            ++itr)
+        {
+            std::cout<<"    "<<itr->first<<"\t"<<itr->second<<std::endl;
+        }
+
     }
     
     

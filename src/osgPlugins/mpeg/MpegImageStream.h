@@ -57,7 +57,7 @@ namespace osg {
         {
             if (!isRunning()) start();
             
-            osg::notify(osg::NOTICE)<<"Play video"<<this<<std::endl;
+            osg::notify(osg::INFO)<<"Play video"<<this<<std::endl;
 
             setCmd(THREAD_START);
         }
@@ -65,7 +65,7 @@ namespace osg {
         /// Pause stream at current position.
         virtual void pause()
         {
-            osg::notify(osg::NOTICE)<<"Pause video"<<this<<std::endl;
+            osg::notify(osg::INFO)<<"Pause video"<<this<<std::endl;
             setCmd(THREAD_STOP);
         }
 

@@ -81,7 +81,7 @@ public:
         ENCODING_UTF32,                     /// 32-bit signature
         ENCODING_UTF32_BE,                  /// 32-bit big-endian
         ENCODING_UTF32_LE,                  /// 32-bit little-endian
-        ENCODING_SIGNATURE,                 /// detect encoding from signature
+        ENCODING_SIGNATURE                  /// detect encoding from signature
     };
 
     /** Set the text using a Unicode encoded std::string, which is converted to an internal TextString.

@@ -12,13 +12,17 @@
 */
 
 #include <osgUtil/Optimizer>
+
 #include <osgDB/ReadFile>
-#include <osgDB/Registry>
+#include <osgDB/WriteFile>
+
 #include <osgProducer/Viewer>
 
 #include <osg/Geode>
 #include <osg/Projection>
 #include <osg/MatrixTransform>
+#include <osg/ShapeDrawable>
+#include <osg/Sequence>
 
 #include <osgText/Font>
 #include <osgText/Text>
@@ -27,9 +31,12 @@
 osg::Group* createHUDText()
 {
 
+    osg::Group* rootNode = new osg::Group;
+
     osgText::Font* font = osgText::readFontFile("fonts/arial.ttf");
 
     osg::Geode* geode  = new osg::Geode;
+    rootNode->addChild(geode);
 
     float windowHeight = 1024.0f;
     float windowWidth = 1280.0f;
@@ -141,17 +148,17 @@ osg::Group* createHUDText()
         osgText::Text* text = new osgText::Text;
         text->setFont(font);
         text->setColor(characterSizeColor);
-        text->setFontSize(15,15);
+        text->setFontSize(20,20);
         text->setPosition(cursor);
         
-        // use text that 15 units high.
-        text->setCharacterSize(15); // tiny
+        // use text that 20 units high.
+        text->setCharacterSize(20); // small
         
-        text->setText("text->setCharacterSize(15.0f); // tiny");
+        text->setText("text->setCharacterSize(15.0f); // small");
         geode->addDrawable(text);
     }
     
-    cursor.y() -= fontSizeCharacterSize;
+    cursor.y() -= 30.0f;
     {
         osgText::Text* text = new osgText::Text;
         text->setFont(font);
@@ -159,14 +166,14 @@ osg::Group* createHUDText()
         text->setFontSize(30,30);
         text->setPosition(cursor);
         
-        // use text that uses 10 by 10 texels as a target resolution for fonts.
-        text->setCharacterSize(30.0f); // tiny
+        // use text that 20 units high.
+        text->setCharacterSize(30.0f); // medium
         
-        text->setText("text->setCharacterSize(30.0f); // medium size");
+        text->setText("text->setCharacterSize(30.0f); // medium");
         geode->addDrawable(text);
     }
     
-    cursor.y() -= fontSizeCharacterSize;
+    cursor.y() -= 50.0f;
     {
         osgText::Text* text = new osgText::Text;
         text->setFont(font);
@@ -175,64 +182,51 @@ osg::Group* createHUDText()
         text->setPosition(cursor);
         
         // use text that uses 10 by 10 texels as a target resolution for fonts.
-        text->setCharacterSize(40.0f); // tiny
+        text->setCharacterSize(60.0f); // large
         
-        text->setText("text->setCharacterSize(40.0f); // big, but can go much bigger :-)");
+        text->setText("text->setCharacterSize(60.0f); // large");
         geode->addDrawable(text);
     }
 
 
+    cursor.x() = 500;
+    cursor.y() = margin;
 
-if (0)
-{
-    osgText::Text* text2 = new osgText::Text;
-    text2->setPosition(osg::Vec3(0.0f,50.0f,0.0f));
-    text2->setCharacterSize(12.0f);
-    text2->setText("10 PRINT \"Hello World\"");
-    geode->addDrawable(text2);
-
-    osgText::Text* text3 = new osgText::Text;
-    text3->setFont(osgText::readFontFile("fonts/arial.ttf"));
-    text3->setPosition(osg::Vec3(100.0f,100.0f,0.0f));
-    text3->setText("This is a test of text AVAV/.|¬!£$%^&*() - fonts/arial.ttf");
-    geode->addDrawable(text3);
-
-    osgText::Text* text4 = new osgText::Text;
-    text4->setFont(osgText::readFontFile("fonts/times.ttf"));
-    text4->setFontSize(128,128);
-    text4->setPosition(osg::Vec3(200.0f,200.0f,0.0f));
-    text4->setLayout(osgText::Text::RIGHT_TO_LEFT);
-    text4->setDrawMode(osgText::Text::TEXT|osgText::Text::ALIGNMENT|osgText::Text::BOUNDINGBOX);
-    text4->setText("This is a test of text AVAV/.|¬!£$%^&*() - fonts/times.ttf");
-    geode->addDrawable(text4);
-
-    osgText::Text* text5 = new osgText::Text;
-    text5->setFont(osgText::readFontFile("fonts/dirtydoz.ttf"));
-    text5->setPosition(osg::Vec3(300.0f,300.0f,0.0f));
-    text5->setColor(osg::Vec4(1.0f,0.0f,0.0f,1.0f));
-    text5->setLayout(osgText::Text::VERTICAL);
-    text5->setDrawMode(osgText::Text::TEXT|osgText::Text::ALIGNMENT|osgText::Text::BOUNDINGBOX);
-    text5->setText("This is a test of text AVAV/.|¬!£$%^&*() - fonts/dirtydoz.ttf");
-    geode->addDrawable(text5);
-}
-
-//     osgText::Text::TextString string;
-//     for(int i=0;i<2048;++i)
-//         string.push_back(i);
-// 
-//     osgText::Text* text6 = new osgText::Text;
-//     text6->setFont(osgText::readFontFile("/home/robert/Documents/GuopingSun/msmincho.ttc"));
-//     text6->setFontSize(64,64);
-//     text6->setText(string);
-//     text6->setPosition(osg::Vec3(00.0f,400.0f,0.0f));
-//     geode->addDrawable(text6);
-
+    osg::Sequence* sequence = new osg::Sequence;
+   
+    sequence->setMode(osg::Sequence::START);
+    sequence->setInterval(osg::Sequence::LOOP, 0, -1);
+    sequence->setDuration(1.0f, -1);
     
+//    osg::Group* sequence = new osg::Group;
+//    rootNode->addChild(sequence);
+   
+    {
+        for(unsigned int i=osgText::Text::LEFT_TOP;i<=osgText::Text::BASE_LINE;i++)
+        {
+            osg::Geode* alignmentGeode = new osg::Geode;
+            sequence->addChild(alignmentGeode);
+            sequence->setTime(i, 1.0f);
+
+            osgText::Text* text = new osgText::Text;
+            text->setFont(font);
+            text->setColor(characterSizeColor);
+            text->setPosition(cursor);
+            text->setDrawMode(osgText::Text::TEXT|osgText::Text::ALIGNMENT|osgText::Text::BOUNDINGBOX);
+            
+            text->setAlignment((osgText::Text::AlignmentType)i);
+            
+            text->setText("text->setAlignment();");
+            alignmentGeode->addDrawable(text);
+
+            cursor.y() += 40.0f;
 
 
-    osg::Group* rootNode = new osg::Group;
-    rootNode->addChild(geode);
-
+        }
+        
+    }
+    rootNode->addChild(sequence);
+            
     return rootNode;    
 }
 
@@ -261,12 +255,19 @@ osg::Group* create3DText()
     text3->setText("XZ_PLANE");
     geode->addDrawable(text3);
 
+
+    osg::Vec3 screenCenter(300.0f,00.0f,00.0f);
     osgText::Text* text4 = new osgText::Text;
     text4->setFont("fonts/times.ttf");
     text4->setAxisAlignment(osgText::Text::SCREEN);
-    text4->setPosition(osg::Vec3(00.0f,00.0f,00.0f));
+    text4->setPosition(screenCenter);
     text4->setText("SCREEN");
     geode->addDrawable(text4);
+
+    osg::ShapeDrawable* shape = new osg::ShapeDrawable(new osg::Sphere(osg::Vec3(screenCenter),2.0f));
+    shape->getOrCreateStateSet()->setMode(GL_LIGHTING,osg::StateAttribute::ON);
+    geode->addDrawable(shape);
+
 
     osg::Group* rootNode = new osg::Group;
     rootNode->addChild(geode);
@@ -361,6 +362,8 @@ int main( int argc, char **argv )
     // set the scene to render
     viewer.setSceneData(rootNode.get());
     
+    osgDB::writeNodeFile(*rootNode,"test.osg");
+
     // create the windows and run the threads.
     viewer.realize(Producer::CameraGroup::ThreadPerCamera);
 

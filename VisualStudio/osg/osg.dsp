@@ -125,6 +125,10 @@ SOURCE=..\..\src\osg\ColorMatrix.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\CopyOp.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\CullFace.cpp
 # End Source File
 # Begin Source File
@@ -357,11 +361,11 @@ SOURCE=..\..\Include\Osg\ColorMatrix
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\CullFace
+SOURCE=..\..\Include\Osg\CopyOp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\DeepCopy
+SOURCE=..\..\Include\Osg\CullFace
 # End Source File
 # Begin Source File
 
@@ -522,10 +526,6 @@ SOURCE=..\..\Include\Osg\Referenced
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\ShadeModel
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\Include\Osg\ShallowCopy
 # End Source File
 # Begin Source File
 

@@ -23,11 +23,17 @@ StateSet::StateSet()
 
 StateSet::StateSet(const StateSet& rhs,const Cloner& cloner):Object(rhs,cloner)
 {
-    // shallow copy right now, we should go through each attribute and 
-    // use the cloner instead of attribute list copy.. on the TODO list.  Robert. Jan 2002.
-
     _modeList = rhs._modeList;
-    _attributeList = rhs._attributeList;
+
+    for(AttributeList::const_iterator itr=rhs._attributeList.begin();
+        itr!=rhs._attributeList.end();
+        ++itr)
+    {
+        StateAttribute::Type type = itr->first;
+        const RefAttributePair& rap = itr->second;
+        StateAttribute* attr = cloner(rap.first.get());
+        if (attr) _attributeList[type]=RefAttributePair(attr,rap.second);
+    }
     
     _renderingHint = rhs._renderingHint;
 

@@ -21,7 +21,7 @@ Group::Group(const Group& group,const Cloner& cloner):
         ++itr)
     {
         Node* child = cloner(itr->get());
-        if (child) _children.push_back(child);
+        if (child) addChild(child);
     }
 }
 

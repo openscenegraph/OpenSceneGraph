@@ -66,8 +66,8 @@ GeoSet::GeoSet(const GeoSet& geoset,const Cloner& cloner):
     _flat_shaded_skip = geoset._flat_shaded_skip;
     if (geoset._primLengths)
     {
-        _primLengths = new int [_primlength];
-        memcpy(_primLengths,geoset._primLengths,_primlength);
+        _primLengths = new int [_numprims];
+        memcpy(_primLengths,geoset._primLengths,_numprims*sizeof(int));
     }
     else
     {
@@ -79,7 +79,7 @@ GeoSet::GeoSet(const GeoSet& geoset,const Cloner& cloner):
     if (geoset._coords)
     {
         _coords = new Vec3 [_numcoords];
-        memcpy(_coords,geoset._coords,_numcoords);
+        memcpy(_coords,geoset._coords,_numcoords*sizeof(Vec3));
     }
     else
     {
@@ -92,7 +92,7 @@ GeoSet::GeoSet(const GeoSet& geoset,const Cloner& cloner):
     if (geoset._normals)
     {
         _normals = new Vec3 [_numnormals];
-        memcpy(_normals,geoset._normals,_numnormals);
+        memcpy(_normals,geoset._normals,_numnormals*sizeof(Vec3));
     }
     else
     {
@@ -105,7 +105,7 @@ GeoSet::GeoSet(const GeoSet& geoset,const Cloner& cloner):
     if (geoset._colors)
     {
         _colors = new Vec4 [_numcolors];
-        memcpy(_colors,geoset._colors,_numcolors);
+        memcpy(_colors,geoset._colors,_numcolors*sizeof(Vec4));
     }
     else
     {
@@ -118,7 +118,7 @@ GeoSet::GeoSet(const GeoSet& geoset,const Cloner& cloner):
     if (geoset._tcoords)
     {
         _tcoords = new Vec2 [_numtcoords];
-        memcpy(_tcoords,geoset._tcoords,_numtcoords);
+        memcpy(_tcoords,geoset._tcoords,_numtcoords*sizeof(Vec2));
     }
     else
     {

@@ -160,10 +160,10 @@ class ConvertFromFLT
         osg::Group* visitInstanceDefinition(osg::Group& osgParent,InstanceDefinitionRecord* rec);
         osg::Group* visitInstanceReference(osg::Group& osgParent,InstanceReferenceRecord* rec);
 
-        void visitFace(GeoSetBuilder* pParent, FaceRecord* rec);
+        void visitFace(GeoSetBuilder* pParent, osg::Group& osgParent, FaceRecord* rec);
         void visitMesh(osg::Group& osgParent,GeoSetBuilder* pParent, MeshRecord* rec);
         void visitMeshPrimitive(osg::Group& osgParent, MeshPrimitiveRecord* rec);
-        void visitLightPoint(GeoSetBuilder* pBuilder, LightPointRecord* rec);
+        void visitLightPoint(GeoSetBuilder* pBuilder, osg::Group& osgParent, LightPointRecord* rec);
         void visitLightPoint(osg::Group& osgParent, LightPointRecord* rec);
         void visitLightPointIndex(osg::Group& osgParent, LightPointIndexRecord* rec);
         osg::Group* visitLightPointSystem(osg::Group& osgParent, LightPointSystemRecord* rec);
@@ -179,7 +179,7 @@ class ConvertFromFLT
     private:
 
         int addMeshPrimitives ( osg::Group &osgParent, GeoSetBuilder *pBuilder, MeshRecord *rec );
-        int addVertices(GeoSetBuilder* pBuilder, PrimNodeRecord* primRec);
+        int addVertices(GeoSetBuilder* pBuilder, osg::Group& osgParent, PrimNodeRecord* primRec);
         int addVertex(DynGeoSet* dgset, Record* rec);
         int addVertex(GeoSetBuilder* pBuilder, Record* rec) {return addVertex( pBuilder->getDynGeoSet(), rec);} ;
         Record* getVertexFromPool(int nOffset);

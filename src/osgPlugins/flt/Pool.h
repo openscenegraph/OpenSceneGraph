@@ -162,13 +162,14 @@ public:
     struct PoolLtPtAppearance : public osg::Referenced
     {
         unsigned int _iBackColorIdx;
-        float _sfIntensity;
+        float _bIntensity;
         float _sfMinPixelSize;
         float _sfMaxPixelSize;
         float _sfActualSize;
         int _iDirectionality;
         float _sfHLobeAngle;
         float _sfVLobeAngle;
+        float _sfLobeRollAngle;
     };
 
     LtPtAppearancePool()

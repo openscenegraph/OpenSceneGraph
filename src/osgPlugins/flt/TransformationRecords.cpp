@@ -42,6 +42,37 @@ void MatrixRecord::endian()
     }
 }
 
+////////////////////////////////////////////////////////////////////
+//
+//                           TranslateRecord
+//
+////////////////////////////////////////////////////////////////////
+
+RegisterRecordProxy<TranslateRecord> g_TranslateProxy;
+
+TranslateRecord::TranslateRecord()
+{
+}
+
+
+// virtual
+TranslateRecord::~TranslateRecord()
+{
+}
+
+
+// virtual
+void TranslateRecord::endian()
+{
+   STranslate *pSTranslate = (STranslate*)getData() ;
+   if ( pSTranslate)
+   {
+      pSTranslate->From.endian() ;
+      pSTranslate->Delta.endian() ;
+   }
+}
+
+
 #if 0
 ////////////////////////////////////////////////////////////////////
 //
@@ -64,31 +95,6 @@ RotatAboutEdgeRecord::~RotatAboutEdgeRecord()
 
 // virtual
 void RotatAboutEdgeRecord::endian()
-{
-}
-
-
-////////////////////////////////////////////////////////////////////
-//
-//                           TranslateRecord
-//
-////////////////////////////////////////////////////////////////////
-
-RegisterRecordProxy<TranslateRecord> g_TranslateProxy;
-
-TranslateRecord::TranslateRecord()
-{
-}
-
-
-// virtual
-TranslateRecord::~TranslateRecord()
-{
-}
-
-
-// virtual
-void TranslateRecord::endian()
 {
 }
 

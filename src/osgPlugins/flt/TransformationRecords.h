@@ -46,6 +46,41 @@ class MatrixRecord : public AncillaryRecord
         virtual void endian();
 };
 
+////////////////////////////////////////////////////////////////////
+//
+//                           TranslateRecord
+//
+////////////////////////////////////////////////////////////////////
+
+
+typedef struct TranslateTag
+{
+    SRecHeader  RecHeader;
+    int32       diReserved;
+    float64x3   From;           // reference FROM point
+    float64x3   Delta;          // Delta to translate node by
+} STranslate;
+
+
+class TranslateRecord : public AncillaryRecord
+{
+    public:
+        TranslateRecord();
+
+        virtual Record* clone() const { return new TranslateRecord(); }
+        virtual const char* className() const { return "TranslateRecord"; }
+        virtual int classOpcode() const { return TRANSLATE_OP; }
+        virtual size_t sizeofData() const { return sizeof(STranslate); }
+        virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
+//      virtual void traverse(RecordVisitor& rv);
+
+        virtual STranslate* getData() const { return (STranslate*)_pData; }
+
+    protected:
+        virtual ~TranslateRecord();
+
+        virtual void endian();
+};
 #if 0
 ////////////////////////////////////////////////////////////////////
 //
@@ -84,41 +119,6 @@ class RotatAboutEdgeRecord : public AncillaryRecord
 };
 
 
-////////////////////////////////////////////////////////////////////
-//
-//                           TranslateRecord
-//
-////////////////////////////////////////////////////////////////////
-
-
-struct STranslate
-{
-    SRecHeader  RecHeader;
-    int32       diReserved;
-    float64x3   From;           // reference FROM point
-    float64x3   Delta;          // Delta to translate node by
-};
-
-
-class TranslateRecord : public AncillaryRecord
-{
-    public:
-        TranslateRecord();
-
-        virtual Record* clone() const { return new TranslateRecord(); }
-        virtual const char* className() const { return "TranslateRecord"; }
-        virtual int classOpcode() const { return TRANSLATE_OP; }
-        virtual size_t sizeofData() const { return sizeof(STranslate); }
-        virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
-//      virtual void traverse(RecordVisitor& rv);
-
-        virtual STranslate* getData() const { return (STranslate*)_pData; }
-
-    protected:
-        virtual ~TranslateRecord();
-
-        virtual void endian();
-};
 
 ////////////////////////////////////////////////////////////////////
 //

@@ -221,3 +221,69 @@ bool ConeSector_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     return true;
 }
 
+/******************************************************************/
+
+bool DirectionalSector_readLocalData(osg::Object &obj, osgDB::Input &fr);
+bool DirectionalSector_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
+
+osgDB::RegisterDotOsgWrapperProxy DirectionalSector_Proxy
+(
+    new osgSim::DirectionalSector,
+    "DirectionalSector",
+    "Object DirectionalSector",
+    &DirectionalSector_readLocalData,
+    &DirectionalSector_writeLocalData,
+    osgDB::DotOsgWrapper::READ_AND_WRITE
+);
+
+bool DirectionalSector_readLocalData(osg::Object &obj, osgDB::Input &fr)
+{
+    bool iteratorAdvanced = false;
+    osgSim::DirectionalSector &sector = static_cast<osgSim::DirectionalSector &>(obj);
+
+    if (fr.matchSequence("direction %f %f %f"))
+    {
+        float x, y, z;
+
+        fr[1].getFloat(x);
+        fr[2].getFloat(y);
+        fr[3].getFloat(z);
+        fr += 4;
+        sector.setDirection(osg::Vec3(x, y, z));
+        iteratorAdvanced = true;
+    }
+    if (fr.matchSequence("angles %f %f %f %f"))
+    {
+        float horizangle;
+        float vertangle;
+        float rollangle;
+        float fadeangle;
+        fr[1].getFloat(horizangle);
+        fr[2].getFloat(vertangle);
+        fr[3].getFloat(rollangle);
+        fr[4].getFloat(fadeangle);
+        fr += 5;
+        sector.setHorizLobeAngle(horizangle);
+        sector.setVertLobeAngle(vertangle);
+        sector.setLobeRollAngle(rollangle);
+        sector.setFadeAngle(fadeangle);
+        iteratorAdvanced = true;
+    }
+    return iteratorAdvanced;
+}
+
+bool DirectionalSector_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
+{
+    const osgSim::DirectionalSector &sector = static_cast<const osgSim::DirectionalSector &>(obj);
+
+    const osg::Vec3& axis = sector.getDirection();
+    fw.indent()<<"direction "<<axis<<std::endl;
+
+    float horizangle = sector.getHorizLobeAngle();
+    float vertangle = sector.getVertLobeAngle();
+    float rollangle = sector.getLobeRollAngle();
+    float fadeangle = sector.getFadeAngle();
+    fw.indent()<<"angles "<<horizangle<<" "<<vertangle<<" "<<rollangle<<" "<<fadeangle<<std::endl;
+    return true;
+}
+

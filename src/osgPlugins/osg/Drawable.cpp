@@ -130,6 +130,11 @@ bool Drawable_writeLocalData(const Object& obj, Output& fw)
         fw.writeObject(*drawable.getUpdateCallback());
     }
 
+    if (drawable.getEventCallback())
+    {
+        fw.writeObject(*drawable.getEventCallback());
+    }
+
     if (drawable.getCullCallback())
     {
         fw.writeObject(*drawable.getCullCallback());

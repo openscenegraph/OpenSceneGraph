@@ -316,7 +316,7 @@ bool Text_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     {
         // do it the hardway...output each character as an int
         fw.indent() << "text "<<textstring.size()<<std::endl;;
-        writeArray(fw,textstring.begin(),textstring.end());
+        osgDB::writeArray(fw,textstring.begin(),textstring.end());
     }
 
     return true;

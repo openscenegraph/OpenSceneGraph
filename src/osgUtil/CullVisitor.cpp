@@ -135,8 +135,8 @@ void CullVisitor::reset()
     _eyePointStack.clear();
 
     // remove all accept the first element of the stack.
-    _cullingModeStack.erase(_cullingModeStack.begin()+1,_cullingModeStack.end());
-
+    //_cullingModeStack.erase(_cullingModeStack.begin()+1,_cullingModeStack.end());
+    _cullingModeStack.clear();
 
     // reset the calculated near far planes.
     _computeNearFar = COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES;

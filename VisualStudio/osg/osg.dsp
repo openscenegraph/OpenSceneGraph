@@ -581,6 +581,10 @@ SOURCE=..\..\Include\Osg\Quat
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\osg\fast_back_stack
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\include\osg\ref_ptr
 # End Source File
 # Begin Source File

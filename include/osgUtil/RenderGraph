@@ -15,9 +15,17 @@
 
 #include <set>
 #include <vector>
+#include <algorithm>
 
 namespace osgUtil {
 
+struct LeafDepthSortFunctor
+{
+    const bool operator() (const osg::ref_ptr<RenderLeaf>& lhs,const osg::ref_ptr<RenderLeaf>& rhs)
+    {
+        return (lhs->_depth>rhs->_depth);
+    }
+};
 
 class OSGUTIL_EXPORT RenderGraph : public osg::Referenced
 {
@@ -34,13 +42,16 @@ class OSGUTIL_EXPORT RenderGraph : public osg::Referenced
         ChildList                           _children;
         LeafList                            _leaves;
         
+        mutable float                       _averageDistance;
+        
         osg::ref_ptr<osg::Referenced>       _userData;
 
 
         RenderGraph():
             _parent(NULL), 
             _stateset(NULL), 
-            _depth(0)
+            _depth(0),
+            _averageDistance(0)
         {
         }
 
@@ -72,6 +83,29 @@ class OSGUTIL_EXPORT RenderGraph : public osg::Referenced
             return _leaves.empty();
         }
 
+
+        inline const float getAverageDistance() const
+        {
+            if (_averageDistance==FLT_MAX && !_leaves.empty())
+            {
+                _averageDistance = 0.0f;
+                for(LeafList::const_iterator itr=_leaves.begin();
+                    itr!=_leaves.end();
+                    ++itr)
+                {
+                   _averageDistance += (*itr)->_depth;
+                }
+                _averageDistance /= (float)_leaves.size();
+                
+            }
+            return _averageDistance;
+        }
+        
+        inline void sortFrontToBack()
+        {
+            std::sort(_leaves.begin(),_leaves.end(),LeafDepthSortFunctor());
+        }
+
         /** reset the internal contents of a RenderGraph, including deleting all children.*/
         void reset();
 
@@ -101,6 +135,7 @@ class OSGUTIL_EXPORT RenderGraph : public osg::Referenced
         {
             if (leaf)
             {
+                _averageDistance = FLT_MAX; // signify dirty.
                 _leaves.push_back(leaf);
                 leaf->_parent = this;
             }

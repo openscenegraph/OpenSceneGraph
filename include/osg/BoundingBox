@@ -170,6 +170,14 @@ class SG_EXPORT BoundingBox
 
         }
 
+        /** return true if this bounding box with the specified bounding box.*/
+        bool intersects(const BoundingBox& bb) const
+        {    return osg::maximum(xMin(),bb.xMin()) <= osg::minimum(xMax(),bb.xMax()) &&
+                    osg::maximum(yMin(),bb.yMin()) <= osg::minimum(yMax(),bb.yMax()) &&
+                    osg::maximum(zMin(),bb.zMin()) <= osg::minimum(zMax(),bb.zMax());
+
+        }
+
         /** return true is vertex v is within the box.*/
         inline bool contains(const Vec3& v) const
         {

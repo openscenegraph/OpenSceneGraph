@@ -219,29 +219,35 @@ class DataSet : public osg::Referenced
         {
         public:
             
-            CompositeSource() {};
+            CompositeSource(CompositeType type=GROUP):_type(type) {};
             
             typedef std::vector< osg::ref_ptr<Source> > SourceList;
             typedef std::vector< osg::ref_ptr< CompositeSource> > ChildList;
             
-            void setSortValue(double s) { _sortValue = s; }
-            double getSortValue() const { return _sortValue; }
+            void setType(CompositeType type) { _type = type; }
+            CompositeType getType() const { return _type; }
 
             void setSortValueFromSourceDataResolution();
 
-            void sort();            
+            void sort();
 
             class iterator
             {
             public:
+
+                enum IteratorMode
+                {
+                    ACTIVE,
+                    ALL
+                };
             
 
-                iterator(CompositeSource* composite)
+                iterator(CompositeSource* composite=0,IteratorMode mode=ALL):
+                    _iteratorMode(mode)
                 {
                     if (composite) 
                     {
                         _positionStack.push_back(IteratorPosition(composite));
-                        advance();
                     }
                 }
                 
@@ -254,21 +260,41 @@ class DataSet : public osg::Referenced
                     _positionStack = rhs._positionStack;
                 }
                 
+                bool operator == (const iterator& rhs) const
+                {
+                    return _positionStack == rhs._positionStack;
+                }
+
+                bool operator != (const iterator& rhs) const
+                {
+                    return _positionStack != rhs._positionStack;
+                }
+
                 bool valid() const
                 {
                     return !_positionStack.empty() && _positionStack.back().valid();
                 }
                                     
-                osg::ref_ptr<Source>& operator *()
+                CompositeSource& operator *()
                 {
-                    return valid()?_positionStack.back().currentSource():_nullSource;
+                    return *(valid()?_positionStack.back().current():0);
                 }
                 
-                osg::ref_ptr<Source>* operator ->()
+                CompositeSource* operator ->()
                 {
-                    return valid()?&(_positionStack.back().currentSource()):&_nullSource;
+                    return valid()?_positionStack.back().current():0;
                 }
                 
+                const CompositeSource& operator *() const
+                {
+                    return *(valid()?_positionStack.back().current():0);
+                }
+                
+                const CompositeSource* operator ->() const
+                {
+                    return valid()?_positionStack.back().current():0;
+                }
+
                 iterator& operator++()
                 {
                     advance(); 
@@ -289,17 +315,13 @@ class DataSet : public osg::Referenced
                     // simple advance to the next source
                     if (_positionStack.back().advance())
                     {
-                        if (_positionStack.back().currentSource().valid()) return true;
-
-                        if (_positionStack.back().currentChild())
+                        if (_positionStack.back().current())
                         {
-                            std::cout<<"Pushing IteratorPosition"<<std::endl;
-                            _positionStack.push_back(IteratorPosition(_positionStack.back().currentChild()));
+                            _positionStack.push_back(IteratorPosition(_positionStack.back().current()));
                             return advance();
                         }
                     }
  
-                    std::cout<<"Popping IteratorPosition"<<std::endl;
                     _positionStack.pop_back();
                     return advance();
                 }
@@ -325,53 +347,219 @@ class DataSet : public osg::Referenced
                         return *this;
                     }
 
-                
-                    osg::ref_ptr<Source>& currentSource()
+                    bool operator == (const IteratorPosition& rhs) const
                     {
-                        return  (_index>=0 && _index < (int)_composite->_sourceList.size())?_composite->_sourceList[_index]:_nullSource;
+                        return _composite == rhs._composite && _index == rhs._index;
+                    }
+                
+                    bool operator != (const IteratorPosition& rhs) const
+                    {
+                        return _composite != rhs._composite || _index != rhs._index;
                     }
 
-                    CompositeSource* currentChild()
+                    CompositeSource* current()
                     {
-                        return  (_index < (int)_composite->_sourceList.size())?0:
-                                (_index-_composite->_sourceList.size() < _composite->_children.size())?(_composite->_children[_index-_composite->_sourceList.size()].get()):0;
+                        if (_index==-1) return _composite;
+                        else return  (_index>=0 && _index < (int)_composite->_children.size())?_composite->_children[_index].get():0;
+                    }
+
+                    const CompositeSource* current() const
+                    {
+                        if (_index==-1) return _composite;
+                        else return  (_index>=0 && _index < (int)_composite->_children.size())?_composite->_children[_index].get():0;
                     }
 
                     bool valid() const
                     {
                         return _composite && 
-                               _index >= 0 &&
-                               _index < (int)(_composite->_sourceList.size()+_composite->_children.size());
+                               _index < (int)_composite->_children.size();
                     }
                     
-                    bool advance()
+                    inline bool advance()
                     {
-                        if (_index+1 < (int)(_composite->_sourceList.size()+_composite->_children.size()))
+                        return advanceToNextChild(*_composite,_index);
+                        
+//                         if (_index+1 < (int)_composite->_children.size())
+//                         {
+//                             ++_index;
+//                             return valid();
+//                         }
+//                         return false;
+                    }
+
+                    inline bool isActive(const CompositeSource& composite,int index)
+                    {
+                        return true;
+                    }
+
+                    inline bool advanceToNextChild(CompositeSource& composite, int& index)
+                    {
+                        ++index;
+                        while (index<(int)composite._children.size()) 
                         {
-                            ++_index;
-                            return valid();
+                            if (isActive(composite,index)) return true;
+                            ++index;
                         }
                         return false;
                     }
 
                     CompositeSource*                _composite;
                     int                             _index;
-                    osg::ref_ptr<Source>            _nullSource;
                 };
 
                 typedef std::vector<IteratorPosition> PositionStack;
-                PositionStack _positionStack;
-                osg::ref_ptr<Source>                _nullSource;
+                IteratorMode                        _iteratorMode;
+                PositionStack                       _positionStack;
             };
+        
+
+            template<class T>
+            class base_source_iterator
+            {
+            public:
             
+
+                base_source_iterator(CompositeSource* composite=0, T advancer=T()):
+                    _advancer(advancer),
+                    _compositeIterator(composite),
+                    _sourceIndex(-1)
+                {
+                    advance();
+                }
+                
+                base_source_iterator(const base_source_iterator& rhs):
+                    _advancer(rhs._advancer),
+                    _compositeIterator(rhs._compositeIterator),
+                    _sourceIndex(rhs._sourceIndex) {}
+
+                base_source_iterator& operator = (const base_source_iterator& rhs)
+                {
+                    if (&rhs==this) return *this;
+                    _advancer = rhs._advancer;
+                    _compositeIterator = rhs._compositeIterator;
+                    _sourceIndex = rhs._sourceIndex;
+                }
+                
+                bool operator == (const base_source_iterator& rhs) const
+                {
+                    return _compositeIterator == rhs._compositeIterator &&
+                           _sourceIndex == rhs._sourceIndex;
+                }
+
+                bool operator != (const base_source_iterator& rhs) const
+                {
+                    return _compositeIterator != rhs._compositeIterator ||
+                           _sourceIndex != rhs._sourceIndex;
+                }
+
+                bool valid() const
+                {
+                    return _compositeIterator.valid() && _sourceIndex < (int)_compositeIterator->_sourceList.size();
+                }
+                                    
+                osg::ref_ptr<Source>& operator *()
+                {
+                    return valid()?_compositeIterator->_sourceList[_sourceIndex]:_nullSource;
+                }
+                
+                osg::ref_ptr<Source>* operator ->()
+                {
+                    return &(valid()?_compositeIterator->_sourceList[_sourceIndex]:_nullSource);
+                }
+                
+                base_source_iterator& operator++()
+                {
+                    advance();
+                    return *this;
+                }
+                
+                base_source_iterator operator++(int)
+                {
+                    base_source_iterator tmp=*this; 
+                    advance(); 
+                    return tmp; 
+                }
+                
+                bool advance()
+                {
+                    if (!_compositeIterator.valid()) return false;
+                    
+                    if (_advancer.advanceToNextSource(*_compositeIterator,_sourceIndex)) return true;
+
+                    // at end of current CompositeSource, so need to advance to new one.
+                    _sourceIndex = -1;
+                    ++_compositeIterator;
+                    return advance();
+                }
+                               
+            protected:
             
-            
+                T                       _advancer;
+                iterator                _compositeIterator;
+                int                     _sourceIndex;
+                osg::ref_ptr<Source>    _nullSource;
+
+            };
+
+            struct DefaultSourceAdvancer
+            {
+                DefaultSourceAdvancer() {}
+                
+                bool isActive(const CompositeSource& composite,int index)
+                {
+                    return true;
+                }
+
+                inline bool advanceToNextSource(const CompositeSource& composite, int& index)
+                {
+                    return ++index<(int)composite._sourceList.size();
+                }
+            };
+        
+            struct LODSourceAdvancer
+            {
+                LODSourceAdvancer(float targetResolution=0.0f):
+                    _targetResolution(targetResolution) {}
+                
+                inline bool advanceToNextSource(const CompositeSource& composite, int& index)
+                {
+                    if (composite.getType()==GROUP)
+                    {
+                        return (++index<(int)composite._sourceList.size());
+                    }
+                    else
+                    {
+                        if (composite._sourceList.empty()) return false;
+                        if (index!=-1) return false; // we've already traversed this composite, only ever one valid LOD.
+                    
+                        // find source with resolution closest to target
+                        int foundIndex = 0;
+                        float closestResolution = fabsf(composite._sourceList[0]->getSortValue()-_targetResolution);
+                        for(int i=1;i<(int)composite._sourceList.size();++i)
+                        {
+                            float delta = fabsf(composite._sourceList[i]->getSortValue()-_targetResolution);
+                            if (delta<closestResolution)
+                            {
+                                foundIndex = i;
+                                closestResolution = delta;
+                            }
+                        }
+                        if (foundIndex==index) return false;
+                        index = foundIndex;
+                        return true;
+                    }
+                }
+                
+                float _targetResolution;
+            };
+
+            typedef base_source_iterator<DefaultSourceAdvancer> source_iterator;
+            typedef base_source_iterator<LODSourceAdvancer>     source_lod_iterator;
+           
             CompositeType   _type;
             SourceList      _sourceList;
             ChildList       _children;
-            float           _sortValue;
         };
-        
         
         
         class DestinationTile : public osg::Referenced, public SpatialProperties

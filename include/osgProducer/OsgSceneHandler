@@ -14,10 +14,14 @@
 #ifndef OSGPRODUCER_OSGSCENEHANDLER
 #define OSGPRODUCER_OSGSCENEHANDLER 1
 
-#include <osgProducer/Export>
+#include <osg/Timer>
+#include <osgUtil/SceneView>
 
 #include <Producer/Camera>
-#include <osgUtil/SceneView>
+
+#include <osgProducer/Export>
+
+
 
 namespace osgProducer {
 
@@ -99,6 +103,8 @@ class OSGPRODUCER_EXPORT OsgSceneHandler : public Producer::Camera::SceneHandler
         osg::ref_ptr<Callback> _clearCallback;
         osg::ref_ptr<Callback> _cullCallback;
         osg::ref_ptr<Callback> _drawCallback;
+        
+        osg::Timer_t           _frameStartTick;
 };
 
 }

@@ -13,6 +13,8 @@
 
 #include <OpenThreads/Mutex>
 
+#include <osgDB/Registry>
+
 #include <osgProducer/OsgSceneHandler>
 
 using namespace osgUtil;
@@ -39,6 +41,14 @@ void OsgSceneHandler::init()
 
 void OsgSceneHandler::clearImplementation(Producer::Camera& /*camera*/)
 {
+    _frameStartTick = osg::Timer::instance()->tick();
+
+    osgDB::DatabasePager* dp = osgDB::Registry::instance()->getDatabasePager();
+    if (dp)
+    {
+        dp->signalBeginFrame(getSceneView()->getState()->getFrameStamp());
+    }
+
     // no-op right now as scene view manages its own clear.
 }
 
@@ -63,7 +73,31 @@ void OsgSceneHandler::cullImplementation(Producer::Camera &cam)
 
 void OsgSceneHandler::drawImplementation(Producer::Camera &) 
 {
+    // dipatch the draw traversal of the scene graph
     _sceneView->SceneView::draw();
+    
+
+    // for the database pager now manage any GL object operations that are required.
+    osgDB::DatabasePager* dp = osgDB::Registry::instance()->getDatabasePager();
+    if (dp)
+    {
+        double timeForCullAndDraw = osg::Timer::instance()->delta_s(_frameStartTick, osg::Timer::instance()->tick());
+
+        double targetMaxFrameTime = 0.010; // 10ms.
+        
+        double availableTime = targetMaxFrameTime-timeForCullAndDraw;
+        // availableTime = 0.1; //  2.5 ms
+
+        if (availableTime>0.0)
+        {
+            dp->compileGLObjects(*(getSceneView()->getState()),availableTime);
+
+            // flush deleted GL objects.
+            getSceneView()->flushDeletedGLObjects(availableTime);
+        }
+
+        dp->signalEndFrame();
+    }    
 }
 
 void OsgSceneHandler::setContextID( int id )

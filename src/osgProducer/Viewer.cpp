@@ -478,77 +478,16 @@ bool Viewer::realize( ThreadingModel thread_model )
     return realize();
 }
 
-class DatabasePagerStartCullCallback : public OsgSceneHandler::Callback
+class PostSwapFinishCallback : public Producer::Camera::Callback
 {
 public:
 
-        DatabasePagerStartCullCallback() {}
+    PostSwapFinishCallback() {}
 
-       virtual void operator()(OsgSceneHandler& sh, Producer::Camera& camera)
-       {
-            osgDB::DatabasePager* dp = osgDB::Registry::instance()->getDatabasePager();
-            if (dp) dp->signalBeginFrame(sh.getSceneView()->getState()->getFrameStamp());
-
-            sh.cullImplementation(camera);
-
-       }
-};
-
-class DatabasePagerCompileCallback : public OsgSceneHandler::Callback
-{
-public:
-
-        DatabasePagerCompileCallback() {}
-
-       virtual void operator()(OsgSceneHandler& sh, Producer::Camera& camera)
-       {
-            
-            sh.drawImplementation(camera);
-
-            osgDB::DatabasePager* dp = osgDB::Registry::instance()->getDatabasePager();
-#if 1
-            double availableTime = 0.0025; //  2.5 ms
-
-            // compile any GL objects that are required.
-            if (dp) dp->compileGLObjects(*(sh.getSceneView()->getState()),availableTime);
-
-            // flush deleted GL objects.
-            sh.getSceneView()->flushDeletedGLObjects(availableTime);
-#endif
-
-            if (dp) dp->signalEndFrame();
-            
-
-       }
-};
-
-class PostSwapCompileCallback : public Producer::Camera::Callback
-{
-public:
-
-        PostSwapCompileCallback(osgUtil::SceneView* sceneView):
-            _sceneView(sceneView)
-        {}
-
-       virtual void operator()(const Producer::Camera&)
-       {
-#if 0            
-            osgDB::DatabasePager* dp = osgDB::Registry::instance()->getDatabasePager();
-
-            double availableTime = 0.0025; //  2.5 ms
-
-            // flush deleted GL objects.
-            _sceneView->flushDeletedGLObjects(availableTime);
-
-            // compile any GL objects that are required.
-            if (dp) dp->compileGLObjects(*(_sceneView->getState()),availableTime);
-#endif
-
-            // glFinish();            
-
-       }
-       
-       osg::ref_ptr<osgUtil::SceneView>     _sceneView;
+    virtual void operator()(const Producer::Camera&)
+    {
+        // glFinish();
+    }
 };
 
 bool Viewer::realize()
@@ -571,14 +510,7 @@ bool Viewer::realize()
         {
             // pass the database pager to the cull visitor so node can send requests to the pager.
             (*p)->getSceneView()->getCullVisitor()->setDatabaseRequestHandler(databasePager);
-            
-            (*p)->setCullCallback(new DatabasePagerStartCullCallback());
-
-            // set up a draw callback to pre compile any rendering object of database has loaded, 
-            // but not yet merged with the main scene graph.
-            (*p)->setDrawCallback(new DatabasePagerCompileCallback());
-
-            
+                        
             // tell the database pager which graphic context the compile of rendering objexts is needed.
             databasePager->setCompileGLObjectsForContextID((*p)->getSceneView()->getState()->getContextID(),true);
         }
@@ -588,7 +520,7 @@ bool Viewer::realize()
         for(unsigned int cameraNum=0;cameraNum<getNumberOfCameras();++cameraNum)
         {
             Producer::Camera* camera=getCamera(cameraNum);
-            camera->addPostSwapCallback(new PostSwapCompileCallback(_shvec[cameraNum]->getSceneView()));
+            camera->addPostSwapCallback(new PostSwapFinishCallback());
         }
 
     }

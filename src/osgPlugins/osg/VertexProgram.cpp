@@ -6,6 +6,8 @@
 #include "osgDB/Input"
 #include "osgDB/Output"
 
+#include "Matrix.h"
+
 using namespace osg;
 using namespace osgDB;
 using namespace std;
@@ -43,6 +45,19 @@ bool VertexProgram_readLocalData(Object& obj, Input& fr)
         fr += 6;
         iteratorAdvanced = true;
         vertexProgram.setProgramLocalParameter(index, vec);
+    }
+
+    if (fr[0].matchWord("Matrix"))
+    {
+        int index;
+        fr[1].getInt(index);
+	fr += 2;
+	osg::Matrix matrix;
+	if (readMatrix(matrix,fr))
+	{
+	    vertexProgram.setMatrix(index, matrix);
+	}
+        iteratorAdvanced = true;
     }
 
     if (fr.matchSequence("code {")) {
@@ -88,11 +103,19 @@ bool VertexProgram_writeLocalData(const Object& obj,Output& fw)
 {
     const VertexProgram& vertexProgram = static_cast<const VertexProgram&>(obj);
 
-    const VertexProgram::LocalParamList& lpl = vertexProgram.getLocalParamList();
+    const VertexProgram::LocalParamList& lpl = vertexProgram.getLocalParameters();
     VertexProgram::LocalParamList::const_iterator i;
     for(i=lpl.begin(); i!=lpl.end(); i++)
     {
         fw.indent() << "ProgramLocalParameter " << (*i).first << " " << (*i).second << std::endl;
+    }
+
+    const VertexProgram::MatrixList& mpl = vertexProgram.getMatrices();
+    VertexProgram::MatrixList::const_iterator mi;
+    for(mi=mpl.begin(); mi!=mpl.end(); mi++)
+    {
+        fw.indent() << "Matrix " << (*mi).first << " ";
+	writeMatrix((*mi).second,fw);
     }
 
 

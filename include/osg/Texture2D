@@ -81,7 +81,10 @@ class SG_EXPORT Texture2D : public Texture
             _textureHeight = height;
         }
 
+        void setTextureWidth(int width) { _textureWidth=width; }
         int getTextureWidth() const { return _textureWidth; }
+
+        void setTextureHeight(int height) { _textureHeight=height; }
         int getTextureHeight() const { return _textureHeight; }
 
         /** Deprecated. */

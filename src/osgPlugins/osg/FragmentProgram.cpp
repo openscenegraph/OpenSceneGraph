@@ -6,6 +6,8 @@
 #include "osgDB/Input"
 #include "osgDB/Output"
 
+#include "Matrix.h"
+
 using namespace osg;
 using namespace osgDB;
 using namespace std;
@@ -43,6 +45,19 @@ bool FragmentProgram_readLocalData(Object& obj, Input& fr)
         fr += 6;
         iteratorAdvanced = true;
         fragmentProgram.setProgramLocalParameter(index, vec);
+    }
+
+    if (fr[0].matchWord("Matrix"))
+    {
+        int index;
+        fr[1].getInt(index);
+	fr += 2;
+	osg::Matrix matrix;
+	if (readMatrix(matrix,fr))
+	{
+	    fragmentProgram.setMatrix(index, matrix);
+	}
+        iteratorAdvanced = true;
     }
 
     if (fr.matchSequence("code {"))
@@ -88,12 +103,21 @@ bool FragmentProgram_writeLocalData(const Object& obj,Output& fw)
 {
     const FragmentProgram& fragmentProgram = static_cast<const FragmentProgram&>(obj);
 
-    const FragmentProgram::LocalParamList& lpl = fragmentProgram.getLocalParamList();
+    const FragmentProgram::LocalParamList& lpl = fragmentProgram.getLocalParameters();
     FragmentProgram::LocalParamList::const_iterator i;
     for(i=lpl.begin(); i!=lpl.end(); i++)
     {
         fw.indent() << "ProgramLocalParameter " << (*i).first << " " << (*i).second << std::endl;
     }
+
+    const FragmentProgram::MatrixList& mpl = fragmentProgram.getMatrices();
+    FragmentProgram::MatrixList::const_iterator mi;
+    for(mi=mpl.begin(); mi!=mpl.end(); mi++)
+    {
+        fw.indent() << "Matrix " << (*mi).first << " ";
+	writeMatrix((*mi).second,fw);
+    }
+
     std::vector<std::string> lines;
     std::istringstream iss(fragmentProgram.getFragmentProgram());
     std::string line;

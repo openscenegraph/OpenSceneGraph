@@ -150,12 +150,6 @@ class SG_EXPORT VertexProgram : public StateAttribute
             return _vertexProgramIDList[contextID];
         }
 
-        /** Set the vertex program using C++ style string. */
-        inline void setVertexProgram( const std::string& program )
-        {
-            _vertexProgram = program;
-            dirtyVertexProgramObject();
-        }
         
         /** Set the vertex program using a C style string. */
         inline void setVertexProgram( const char* program ) 
@@ -163,10 +157,18 @@ class SG_EXPORT VertexProgram : public StateAttribute
             _vertexProgram = program; 
             dirtyVertexProgramObject();
         }
+
+        /** Set the vertex program using C++ style string. */
+        inline void setVertexProgram( const std::string& program )
+        {
+            _vertexProgram = program;
+            dirtyVertexProgramObject();
+        }
+
         /** Get the vertex program. */
         inline const std::string& getVertexProgram() const { return _vertexProgram; }
 
-        /** Set program parameters. */
+        /** Set Program Parameters */
         inline void setProgramLocalParameter(const GLuint index, const Vec4& p)
         {
             _programLocalParameters[index] = p;
@@ -174,18 +176,31 @@ class SG_EXPORT VertexProgram : public StateAttribute
 
         typedef std::map<GLuint,Vec4> LocalParamList;
 
+        /** Set list of Program Parameters */
+        inline void setLocalParameters(LocalParamList& lpl) { _programLocalParameters = lpl; }
+
         /** Get list of Program Parameters */
-        inline LocalParamList& getLocalParamList() { return _programLocalParameters; }
+        inline LocalParamList& getLocalParameters() { return _programLocalParameters; }
 
         /** Get const list of Program Parameters */
-        inline const LocalParamList& getLocalParamList() const { return _programLocalParameters; }
+        inline const LocalParamList& getLocalParameters() const { return _programLocalParameters; }
 
-
-        /** Set matrix. */
+        /** Matrix */
         inline void setMatrix(const GLenum mode, const Matrix& matrix)
         {
             _matrixList[mode] = matrix;
         }
+
+        typedef std::map<GLenum,Matrix> MatrixList;
+
+        /** Set list of Matrices */
+        inline void setMatrices(MatrixList& matrices) { _matrixList = matrices; }
+
+        /** Get list of Matrices */
+        inline MatrixList& getMatrices() { return _matrixList; }
+
+        /** Get list of Matrices */
+        inline const MatrixList& getMatrices() const { return _matrixList; }
 
         /** Force a recompile on next apply() of associated OpenGL vertex program objects. */
         void dirtyVertexProgramObject();        
@@ -278,7 +293,6 @@ class SG_EXPORT VertexProgram : public StateAttribute
 
         LocalParamList  _programLocalParameters;
 
-        typedef std::map<GLenum,Matrix> MatrixList;
         MatrixList  _matrixList;
 };
 

@@ -1,7 +1,7 @@
 install  : 
 	@rm -f $(INSTLOGFILE)
 	@$(MAKE) __instbin __instdev
-	@more $(INSTLOGFILE)
+	@cat $(INSTLOGFILE)
 
 instbin instdev : 
 	@$(MAKE) __$@
@@ -74,17 +74,17 @@ instlinks :
 	@rm -f $(INSTLOGFILE)
 	$(MAKE) INSTBINCMD="$(INSTLINKBINCMD)" __instbin
 	$(MAKE) INSTDEVCMD="$(INSTLINKDEVCMD)" __instdev
-	@more $(INSTLOGFILE)
+	@cat $(INSTLOGFILE)
 
 instlinksbin :
 	@rm -f $(INSTLOGFILE)
 	$(MAKE) INSTBINCMD="$(INSTLINKBINCMD)" __instbin
-	@more $(INSTLOGFILE)
+	@cat $(INSTLOGFILE)
 
 instlinksdev :
 	@rm -f $(INSTLOGFILE)
 	@$(MAKE) INSTDEVCMD="$(INSTLINKDEVCMD)" __instdev
-	@more $(INSTLOGFILE)
+	@cat $(INSTLOGFILE)
 
 
 instclean : instcleanbin instcleandev

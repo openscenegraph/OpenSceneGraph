@@ -1030,6 +1030,8 @@ void* labelRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
                         _parse->getCurrTop()->addChild(supGeode.get());
                      }
                      break;
+                 default:
+                    break;
                  }
 
                  

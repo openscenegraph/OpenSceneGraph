@@ -16,22 +16,16 @@
 using namespace osg;
 using namespace osgUtil;
 
-// comment if you are are working with vertex programs,
-// but it does break osgreflect demo and perhaps others, so keep an eye
-// out artifacts.
-// #define APPLY_MATRICES_BEFORE_STATE
-
 void RenderLeaf::render(State& state,RenderLeaf* previous)
 {
 
     if (previous)
     {
 
-#ifdef APPLY_MATRICES_BEFORE_STATE
         // apply matrices if required.
         state.applyProjectionMatrix(_projection.get());
         state.applyModelViewMatrix(_modelview.get());
-#endif        
+
         // apply state if required.
         RenderGraph* prev_rg = previous->_parent;
         RenderGraph* prev_rg_parent = prev_rg->_parent;
@@ -52,33 +46,20 @@ void RenderLeaf::render(State& state,RenderLeaf* previous)
 
         }
         
-#ifndef APPLY_MATRICES_BEFORE_STATE
-        // apply matrices if required.
-        state.applyProjectionMatrix(_projection.get());
-        state.applyModelViewMatrix(_modelview.get());
-#endif
 
         // draw the drawable
         _drawable->draw(state);
     }
     else
     {
-#ifdef APPLY_MATRICES_BEFORE_STATE
         // apply matrices if required.
         state.applyProjectionMatrix(_projection.get());
         state.applyModelViewMatrix(_modelview.get());
-#endif        
 
         // apply state if required.
          RenderGraph::moveRenderGraph(state,NULL,_parent->_parent);
 
         state.apply(_parent->_stateset);
-
-#ifndef APPLY_MATRICES_BEFORE_STATE
-        // apply matrices if required.
-        state.applyProjectionMatrix(_projection.get());
-        state.applyModelViewMatrix(_modelview.get());
-#endif
 
         // draw the drawable
         _drawable->draw(state);

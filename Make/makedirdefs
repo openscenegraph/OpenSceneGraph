@@ -83,6 +83,7 @@ EXAMPLE_DIRS = \
 	osgconv\
 	osghud\
 	osgtext\
+	osgreflect\
 	osgstereoimage\
 
 

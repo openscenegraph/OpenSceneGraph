@@ -33,7 +33,7 @@ Extensions::Extensions()
     setupGLExtensions();
 }
 
-Extensions::Extensions(const Extensions& rhs) : Referenced()
+Extensions::Extensions(const Extensions& rhs) : osg::Referenced()
 {
     _isShaderObjectsSupported = rhs._isShaderObjectsSupported;
     _isVertexShaderSupported = rhs._isVertexShaderSupported;

@@ -87,7 +87,7 @@
 
 #if (defined(WIN32) && !(defined(_MSC_VER) && (_MSC_VER >= 1300)) && !defined(__MINGW32__) ) || \
     defined (sun) || \
-    defined (__hpux__) || \
+    defined (__hpux) || \
     defined (APPLE_PRE_10_2)
 
     #ifndef floorf
@@ -212,3 +212,4 @@ inline float computeVolume(const T& f1,const T& f2,const T& f3,
 }
 
 #endif  // __OSG_MATH
+

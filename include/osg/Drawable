@@ -469,6 +469,27 @@ class SG_EXPORT Drawable : public Object
             
         };
         
+        class PrimitiveIndexFunctor
+        {
+        public:
+            
+            virtual ~PrimitiveIndexFunctor() {}
+
+            virtual void setVertexArray(unsigned int count,const Vec2* vertices) = 0;
+            virtual void setVertexArray(unsigned int count,const Vec3* vertices) = 0;
+            virtual void setVertexArray(unsigned int count,const Vec4* vertices) = 0;
+            
+            virtual void drawArrays(GLenum mode,GLint first,GLsizei count) = 0;
+            virtual void drawElements(GLenum mode,GLsizei count,const GLubyte* indices) = 0;
+            virtual void drawElements(GLenum mode,GLsizei count,const GLushort* indices) = 0;
+            virtual void drawElements(GLenum mode,GLsizei count,const GLuint* indices) = 0;
+            
+            virtual void begin(GLenum mode) = 0;
+            virtual void vertex(unsigned int pos) = 0;
+            virtual void end() = 0;
+            
+        };
+
         /** return true if the Drawable subclass supports accept(PrimitiveFunctor&).*/
         virtual bool supports(PrimitiveFunctor&) const { return false; }
 
@@ -477,6 +498,15 @@ class SG_EXPORT Drawable : public Object
           * Note, PrimtiveFunctor only provide const access of the primtives, as primitives may be procedurally generated
           * so one cannot modify it.*/
         virtual void accept(PrimitiveFunctor&) const {}
+
+        /** return true if the Drawable subclass supports accept(PrimitiveIndexFunctor&).*/
+        virtual bool supports(PrimitiveIndexFunctor&) const { return false; }
+
+        /** accept a PrimtiveIndexFunctor and call its methods to tell it about the interal primtives that this Drawable has.
+          * return true if functor handled by drawable, return false on failure of drawable to generate functor calls.
+          * Note, PrimtiveIndexFunctor only provide const access of the primtives, as primitives may be procedurally generated
+          * so one cannot modify it.*/
+        virtual void accept(PrimitiveIndexFunctor&) const {}
 
 
         /** Extensions class which encapsulates the querring of extensions and

@@ -133,6 +133,7 @@ class PrimitiveSet : public Object
         virtual void draw() const = 0;
         
         virtual void accept(Drawable::PrimitiveFunctor& functor) const = 0;
+        virtual void accept(Drawable::PrimitiveIndexFunctor& functor) const = 0;
         
         virtual unsigned int index(unsigned int pos) const = 0;
         virtual unsigned int getNumIndices() const = 0;
@@ -206,6 +207,7 @@ class SG_EXPORT DrawArrays : public PrimitiveSet
         virtual void draw() const;
         
         virtual void accept(Drawable::PrimitiveFunctor& functor) const;
+        virtual void accept(Drawable::PrimitiveIndexFunctor& functor) const;
         
         virtual unsigned int getNumIndices() const { return _count; }
         virtual unsigned int index(unsigned int pos) const { return _first+pos; }
@@ -261,6 +263,7 @@ class SG_EXPORT DrawArrayLengths : public PrimitiveSet, public VectorSizei
         virtual void draw() const;
         
         virtual void accept(Drawable::PrimitiveFunctor& functor) const;
+        virtual void accept(Drawable::PrimitiveIndexFunctor& functor) const;
         
         virtual unsigned int getNumIndices() const;
         virtual unsigned int index(unsigned int pos) const { return _first+pos; }
@@ -319,6 +322,7 @@ class SG_EXPORT DrawElementsUByte : public PrimitiveSet, public VectorUByte
         virtual void draw() const ;
         
         virtual void accept(Drawable::PrimitiveFunctor& functor) const;
+        virtual void accept(Drawable::PrimitiveIndexFunctor& functor) const;
 
         virtual unsigned int getNumIndices() const { return size(); }
         virtual unsigned int index(unsigned int pos) const { return (*this)[pos]; }
@@ -363,6 +367,7 @@ class SG_EXPORT DrawElementsUShort : public PrimitiveSet, public VectorUShort
         virtual void draw() const;
         
         virtual void accept(Drawable::PrimitiveFunctor& functor) const;
+        virtual void accept(Drawable::PrimitiveIndexFunctor& functor) const;
 
         virtual unsigned int getNumIndices() const { return size(); }
         virtual unsigned int index(unsigned int pos) const { return (*this)[pos]; }
@@ -406,6 +411,7 @@ class SG_EXPORT DrawElementsUInt : public PrimitiveSet, public VectorUInt
         virtual void draw() const;
         
         virtual void accept(Drawable::PrimitiveFunctor& functor) const;
+        virtual void accept(Drawable::PrimitiveIndexFunctor& functor) const;
 
         virtual unsigned int getNumIndices() const { return size(); }
         virtual unsigned int index(unsigned int pos) const { return (*this)[pos]; }

@@ -20,58 +20,40 @@
 namespace osg {
 
 template<class T>
-class TriangleIndexFunctor : public Drawable::PrimitiveFunctor, public T
+class TriangleIndexFunctor : public Drawable::PrimitiveIndexFunctor, public T
 {
 public:
 
 
     virtual void setVertexArray(unsigned int,const Vec2*) 
     {
-        notify(WARN)<<"TriangleIndexFunctor does not support Vec2* vertex arrays"<<std::endl;
     }
 
     virtual void setVertexArray(unsigned int ,const Vec3* )
     {
-        notify(WARN)<<"TriangleIndexFunctor does not support Vec3* vertex arrays"<<std::endl;
     }
 
     virtual void setVertexArray(unsigned int,const Vec4* ) 
     {
-        notify(WARN)<<"TriangleIndexFunctor does not support Vec4* vertex arrays"<<std::endl;
     }
 
-    virtual void begin(GLenum )
+    virtual void begin(GLenum mode)
     {
-        notify(WARN)<<"TriangleIndexFunctor::begin(GLenum mode) not implemented"<<std::endl;
+        _modeCache = mode;
+        _indexCache.clear();
     }
 
-    virtual void vertex(const Vec2& )
+    virtual void vertex(unsigned int vert)
     {
-        notify(WARN)<<"TriangleIndexFunctor::vertex(const Vec2& vert) not implemented"<<std::endl;
+        _indexCache.push_back(vert);
     }
-    virtual void vertex(const Vec3& )
-    {
-        notify(WARN)<<"TriangleIndexFunctor::vertex(const Vec3& vert) not implemented"<<std::endl;
-    }
-    virtual void vertex(const Vec4& )
-    {
-        notify(WARN)<<"TriangleIndexFunctor::vertex(const Vec4& vert) not implemented"<<std::endl;
-    }
-    virtual void vertex(float ,float )
-    {
-        notify(WARN)<<"TriangleIndexFunctor::vertex(float x,float y) not implemented"<<std::endl;
-    }
-    virtual void vertex(float ,float ,float )
-    {
-        notify(WARN)<<"TriangleIndexFunctor::vertex(float x,float y,float z) not implemented"<<std::endl;
-    }
-    virtual void vertex(float ,float ,float ,float )
-    {
-        notify(WARN)<<"TriangleIndexFunctor::vertex(float x,float y,float z,float w) not implemented"<<std::endl;
-    }
+
     virtual void end()
     {
-        notify(WARN)<<"TriangleIndexFunctor::end() not implemented"<<std::endl;
+        if (!_indexCache.empty())
+        {
+            drawArrays(_modeCache,0,_indexCache.size());
+        }
     }
 
     virtual void drawArrays(GLenum mode,GLint first,GLsizei count)
@@ -338,6 +320,8 @@ public:
         }
     }    
 
+    GLenum               _modeCache;
+    std::vector<GLuint>  _indexCache;
 };
 
 }

@@ -19,16 +19,19 @@ using namespace txp;
 
 int ReaderWriterTXP::_archiveId = 0;
 
-osgDB::ReaderWriter::ReadResult ReaderWriterTXP::readNode(const std::string& fileName, const osgDB::ReaderWriter::Options* options)
+osgDB::ReaderWriter::ReadResult ReaderWriterTXP::readNode(const std::string& file, const osgDB::ReaderWriter::Options* options)
 {
-    if( !acceptsExtension(osgDB::getFileExtension(fileName) ))
+    if( !acceptsExtension(osgDB::getFileExtension(file) ))
         return ReadResult::FILE_NOT_HANDLED;
 
-    std::string name = osgDB::getSimpleFileName(fileName);
+    std::string name = osgDB::getSimpleFileName(file);
 
     // We load archive.txp
     if (strncmp(name.c_str(),"archive",7)==0)
     {
+        std::string fileName = osgDB::findDataFile( file );
+        if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
+
         osg::ref_ptr<TXPNode> txpNode = new TXPNode;
         txpNode->setArchiveName(fileName);
         if (options) 
@@ -59,7 +62,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::readNode(const std::string& fil
         int x,y,lod;
         unsigned int id;
         sscanf(name.c_str(),"tile%d_%dx%d_%d",&lod,&x,&y,&id);
-        TXPArchive* archive = getArchive(id,osgDB::getFilePath(fileName));
+        TXPArchive* archive = getArchive(id,osgDB::getFilePath(file));
 
         TXPArchive::TileInfo info;
         if (!archive->getTileInfo(x,y,lod,info))
@@ -105,7 +108,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::readNode(const std::string& fil
         int x,y,lod;
         unsigned int id;
         sscanf(name.c_str(),"subtiles%d_%dx%d_%d",&lod,&x,&y,&id);
-        TXPArchive* archive = getArchive(id,osgDB::getFilePath(fileName));
+        TXPArchive* archive = getArchive(id,osgDB::getFilePath(file));
 
         osg::ref_ptr<osg::Group> subtiles = new osg::Group;
 

@@ -26,6 +26,11 @@ void KeyboardMouseCallback::keyPress( Producer::KeySymbol key )
 #endif
     }
     
+    if (_done)
+    {
+        // need to contact the viewer so pass on the abort..
+    }
+    
     osg::ref_ptr<EventAdapter> event = new EventAdapter;
     event->adaptKeyPress(getTime(),key);
     

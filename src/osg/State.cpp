@@ -23,7 +23,8 @@ State::State()
     _identity = new osg::RefMatrix(); // default RefMatrix constructs to identity.
     _projection = _identity;
     _modelView = _identity;
-    
+
+    _abortRenderingPtr = false;    
     _reportGLErrors = true;
 
     _currentActiveTextureUnit=0;

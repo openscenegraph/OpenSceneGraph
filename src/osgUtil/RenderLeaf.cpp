@@ -18,6 +18,12 @@ using namespace osgUtil;
 
 void RenderLeaf::render(State& state,RenderLeaf* previous)
 {
+    // don't draw this leaf if the abort rendering flag has been set.
+    if (state.getAbortRendering())
+    {
+        //cout << "early abort"<<endl;
+        return;
+    }
 
     if (previous)
     {

@@ -565,12 +565,21 @@ class SG_EXPORT State : public Referenced
         typedef std::vector<StateAttribute::GLModeValue>                        ValueVec;
         
         
+        /** Set flag for early termination of the draw traversal.*/
+        void setAbortRenderingPtr(bool* abortPtr) { _abortRenderingPtr = abortPtr; }
+
+        /** Get flag for early termination of the draw traversal, 
+          * if true steps should be taken to complete rendering early.*/
+        bool getAbortRendering() const { return _abortRenderingPtr!=0?(*_abortRenderingPtr):false; }
+
+        
         void setReportGLErrors(bool flag) { _reportGLErrors = flag; }
         bool getReportGLErrors() const { return _reportGLErrors; }
 
         bool checkGLErrors(const char* str) const;
         bool checkGLErrors(StateAttribute::GLMode mode) const;
         bool checkGLErrors(const StateAttribute* attribute) const;
+
 
     protected:
 
@@ -585,7 +594,7 @@ class SG_EXPORT State : public Referenced
         
         ref_ptr<DisplaySettings>    _displaySettings;
         
-
+        bool*                       _abortRenderingPtr;
         bool                        _reportGLErrors;
 
         struct ModeStack

@@ -1,9 +1,8 @@
 #include <osg/GL>
+#include <osg/GLU>
+
 #include <osg/Notify>
 #include <osgUtil/Tesselator>
-
-#include <GL/glu.h>
-
 
 using namespace osg;
 using namespace osgUtil;

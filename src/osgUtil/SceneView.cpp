@@ -6,7 +6,7 @@
 #include <osg/AlphaFunc>
 #include <osg/TexEnv>
 
-#include <GL/glu.h>
+#include <osg/GLU>
 
 using namespace osg;
 using namespace osgUtil;

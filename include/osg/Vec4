@@ -1,7 +1,7 @@
 #ifndef OSG_VEC4
 #define OSG_VEC4 1
 
-#include <math.h>
+#include <osg/Math>
 
 #ifdef OSG_USE_IO_DOT_H
 #include <iostream.h>

@@ -1,7 +1,7 @@
 #include <osg/State>
 #include <osg/Notify>
 
-#include <GL/glu.h>
+#include <osg/GLU>
 
 using namespace osg;
 

@@ -9,7 +9,7 @@
 #include <osg/Notify>
 #include <osg/GLExtensions>
 
-#include <GL/glu.h>
+#include <osg/GLU>
 
 using namespace osg;
 
@@ -176,7 +176,7 @@ void Texture::apply(State& state) const
     const uint contextID = state.getContextID();
 
     // get the globj for the current contextID.
-    uint& handle = getHandle(contextID);
+    GLuint& handle = getHandle(contextID);
 
     // For multi-texturing will need something like...
     // glActiveTextureARB((GLenum)(GL_TEXTURE0_ARB+_textureUnit));
@@ -548,7 +548,7 @@ void Texture::copyTexSubImage2D(State& state, int xoffset, int yoffset, int x, i
     const uint contextID = state.getContextID();
 
     // get the globj for the current contextID.
-    uint& handle = getHandle(contextID);
+    GLuint& handle = getHandle(contextID);
     
     if (handle)
     {

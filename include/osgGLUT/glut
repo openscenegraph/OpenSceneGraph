@@ -1,0 +1,10 @@
+#ifndef OSG_GLU
+#define OSG_GL 1
+
+#ifdef __APPLE__
+	#include </System/Library/Frameworks/GLUT.Framework/Versions/A/Headers/glut.h>
+#else
+	#include <GL/glut.h>
+#endif
+
+#endif  // __osgGL_h

@@ -56,6 +56,13 @@ irix.old:
 	ln -sf makerules.irix makerules 
 	$(MAKE)
 
+macosx:
+	cd Make;\
+	ln -sf makedefs.macosx makedefs;\
+	ln -sf makerules.macosx makerules
+	$(MAKE)
+
+
 help :
 	@echo Usage : 
 	@echo \	$(MAKE) 

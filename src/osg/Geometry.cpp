@@ -659,6 +659,14 @@ unsigned int Geometry::getPrimitiveSetIndex(const PrimitiveSet* primitiveset) co
 
 bool Geometry::computeFastPathsUsed()
 {
+    static bool s_DisableFastPathInDisplayLists = getenv("OSG_DISABLE_FAST_PATH_IN_DISPLAY_LISTS");
+    if (_useDisplayList && s_DisableFastPathInDisplayLists)
+    {
+        osg::notify(osg::DEBUG_INFO)<<"Geometry::computeFastPathsUsed() - Disabling fast paths in display lists"<<std::endl;
+        _fastPath = false;
+        return _fastPath;
+    }
+
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //
     // check to see if fast path can be used.

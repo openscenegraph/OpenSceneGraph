@@ -2873,7 +2873,7 @@ DataSet::DataSet()
     _geometryType = POLYGONAL;
     _textureType = COMPRESSED_TEXTURE;
     _maxAnisotropy = 1.0;
-    _mipMappingMode = MIP_MAPPING_HARDWARE;
+    _mipMappingMode = MIP_MAPPING_IMAGERY;
 
     _useLocalTileTransform = true;
     

@@ -157,7 +157,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
 		// note obj_x -> osg_x,
 		//      obj_y -> osg_z,
 		//      obj_z -> osg_y,
-        xform->setMatrix(osg::Matrix::trans(obj->position[0], obj->position[2], obj->position[1]));
+        xform->setMatrix(osg::Matrix::translate(obj->position[0], obj->position[2], obj->position[1]));
         osg_top = xform;
     }
     else

@@ -63,12 +63,6 @@ class SG_EXPORT Transform : public Group
             (*_matrix) =  (*_matrix) * mat;
             dirtyBound();
         }
-
-#ifdef USE_DEPRECATED_MATRIX_METHODS
-        void preScale( const float sx, const float sy, const float sz );
-        void preTranslate( const float tx, const float ty, const float tz );
-        void preRotate( const float deg, const float x, const float y, const float z );
-#endif
     
     protected :
     

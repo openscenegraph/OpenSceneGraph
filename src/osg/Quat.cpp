@@ -15,7 +15,7 @@ using namespace osg;
 
 /// Set the elements of the Quat to represent a rotation of angle
 /// (radians) around the axis (x,y,z)
-void Quat::makeRot( const float angle,
+void Quat::makeRotate( const float angle,
 const float x,
 const float y,
 const float z    )
@@ -31,9 +31,9 @@ const float z    )
 }
 
 
-void Quat::makeRot( const float angle, const Vec3& vec )
+void Quat::makeRotate( const float angle, const Vec3& vec )
 {
-    makeRot( angle, vec[0], vec[1], vec[2] );
+    makeRotate( angle, vec[0], vec[1], vec[2] );
 }
 
 
@@ -42,7 +42,7 @@ void Quat::makeRot( const float angle, const Vec3& vec )
 // and then use a cross product to get the rotation axis
 // Watch out for the two special cases of when the vectors
 // are co-incident or opposite in direction.
-void Quat::makeRot( const Vec3& from, const Vec3& to )
+void Quat::makeRotate( const Vec3& from, const Vec3& to )
 {
     const float epsilon = 0.00001f;
 
@@ -57,7 +57,7 @@ void Quat::makeRot( const Vec3& from, const Vec3& to )
         // cosangle is close to 1, so the vectors are close to being coincident
         // Need to generate an angle of zero with any vector we like
         // We'll choose (1,0,0)
-        makeRot( 0.0, 1.0, 0.0, 0.0 );
+        makeRotate( 0.0, 1.0, 0.0, 0.0 );
     }
     else
     if ( fabs(cosangle + 1.0) < epsilon )
@@ -87,7 +87,7 @@ void Quat::makeRot( const Vec3& from, const Vec3& to )
         // and that is the axis around which to rotate.
         Vec3 axis(from^to);
         float angle = acos( cosangle );
-        makeRot( angle, axis );
+        makeRotate( angle, axis );
     }
 }
 

@@ -8,30 +8,8 @@
 
 using namespace osg;
 
-
 #define DEG2RAD(x)    ((x)*M_PI/180.0)
 #define RAD2DEG(x)    ((x)*180.0/M_PI)
-
-
-// temporary #define's for warning that deprecated methods are being
-// used which should be replaced by the new variants.
-#define WARN_DEPRECATED
-//#define ABORT_DEPRECATED
-
-#ifdef WARN_DEPRECATED
-    #ifdef ABORT_DEPRECATED
-
-        #define DEPRECATED(message) \
-                notify(NOTICE) << message<<endl; \
-                abort();
-    #else
-        #define DEPRECATED(message) \
-                notify(NOTICE) << message<<endl;
-    #endif
-#else
-    #define DEPRECATED(message)
-#endif        
-
 
 #define SET_ROW(row, v1, v2, v3, v4 )    \
     _mat[(row)][0] = (v1); \
@@ -142,12 +120,12 @@ void Matrix::makeScale( float x, float y, float z )
     fully_realized = true;
 }
 
-void Matrix::makeTrans( const Vec3& v )
+void Matrix::makeTranslate( const Vec3& v )
 {
-    makeTrans( v[0], v[1], v[2] );
+    makeTranslate( v[0], v[1], v[2] );
 }
 
-void Matrix::makeTrans( float x, float y, float z )
+void Matrix::makeTranslate( float x, float y, float z )
 {
     SET_ROW(0,    1, 0, 0, 0 )
     SET_ROW(1,    0, 1, 0, 0 )
@@ -157,40 +135,35 @@ void Matrix::makeTrans( float x, float y, float z )
     fully_realized = true;
 }
 
-void Matrix::makeRot( const Vec3& from, const Vec3& to )
+void Matrix::makeRotate( const Vec3& from, const Vec3& to )
 {
     Quat quat;
-    quat.makeRot(from,to);
+    quat.makeRotate(from,to);
     quat.get(*this);
 }
 
-void Matrix::makeRot( float angle, const Vec3& axis )
+void Matrix::makeRotate( float angle, const Vec3& axis )
 {
     Quat quat;
-    quat.makeRot( angle, axis);
+    quat.makeRotate( angle, axis);
     quat.get(*this);
 }
 
-void Matrix::makeRot( float angle, float x, float y, float z ) 
+void Matrix::makeRotate( float angle, float x, float y, float z ) 
 {
     Quat quat;
-    quat.makeRot( angle, x, y, z);
+    quat.makeRotate( angle, x, y, z);
     quat.get(*this);
 }
 
-void Matrix::makeRot( const Quat& q )
+void Matrix::makeRotate( const Quat& q )
 {
     q.get(*this);    
     fully_realized = true;
 }
 
-void Matrix::makeRot( float yaw, float pitch, float roll)
+void Matrix::makeRotate( float yaw, float pitch, float roll)
 {
-#ifdef USE_DEGREES_INTERNALLY
-    yaw = DEG2RAD(yaw);
-    pitch = DEG2RAD(pitch);
-    roll = DEG2RAD(roll);
-#endif
 
     // lifted straight from SOLID library v1.01 Quaternion.h
     // available from http://www.win.tue.nl/~gino/solid/
@@ -467,87 +440,3 @@ bool Matrix::invertAffine( const Matrix& _m )
     return true;
 }
 
-#ifdef USE_DEPRECATED_MATRIX_METHODS
-
-//Deprecated methods 
-void Matrix::copy( const Matrix& other)
-{
-    DEPRECATED("Matrix::copy is deprecated.  Use = instead.")
-
-    (*this) = other;
-}
-void Matrix::preScale( float sx, float sy, float sz, const Matrix& m )
-{
-    DEPRECATED("Matrix::preScale is deprecated. Use result = (Matrix::scale * m) instead.")
-
-    (*this) = ( scale(sx,sy,sz) * m );
-}
-void Matrix::postScale( const Matrix& m, float sx, float sy, float sz )
-{
-    DEPRECATED("Matrix::postScale is deprecated.  Use result = (m * Matrix::scale()) instead.")
-
-    (*this) = ( m * scale(sx,sy,sz) );
-}
-void Matrix::preScale( float sx, float sy, float sz )
-{
-    DEPRECATED("Matrix::preScale is deprecated. Use M.preMult( Matrix::scale ) instead.")
-
-    preMult( scale(sx,sy,sz) );
-}
-void Matrix::postScale( float sx, float sy, float sz )
-{
-    DEPRECATED("Matrix::postScale is deprecated.  Use M.postMult( Matrix::scale ) instead.")
-
-    postMult( scale(sx,sy,sz) );
-}
-void Matrix::preTrans( float tx, float ty, float tz, const Matrix& m )
-{
-    DEPRECATED("Matrix::preTrans is deprecated.  Use result = Matrix::trans * m instead.")
-
-    (*this) = trans(tx,ty,tz) * m;
-}
-void Matrix::postTrans( const Matrix& m, float tx, float ty, float tz )
-{
-    DEPRECATED("Matrix::postTrans is deprecated.  Use result = m * Matrix::trans instead.")
-
-    (*this) = m * trans(tx,ty,tz);
-}
-
-void Matrix::preTrans( float tx, float ty, float tz )
-{
-    DEPRECATED("Matrix::preTrans is deprecated.  Use result = Matrix::trans * m instead.")
-
-    preMult( trans(tx,ty,tz) );
-}
-void Matrix::postTrans( float sx, float sy, float sz )
-{
-    DEPRECATED("Matrix::postTrans is deprecated.  Use result = m * Matrix::trans instead.")
-
-    postMult( trans(sx,sy,sz) );
-}
-void Matrix::preRot( float deg, float x, float y, float z, const Matrix& m  )
-{
-    DEPRECATED("Matrix::preRot is deprecated.  Use result = Matrix::rot * m instead.")
-
-    (*this) = rotate(deg,x,y,z) * m;
-}
-void Matrix::postRot( const Matrix& m, float deg, float x, float y, float z )
-{
-    DEPRECATED("Matrix::postRot is deprecated.  Use result = m * Matrix::rotate instead.")
-
-    (*this) = m * rotate(deg,x,y,z);
-}
-
-void Matrix::preRot( float deg, float x, float y, float z )
-{
-    DEPRECATED("Matrix::preRot is deprecated.  Use m.preMult( Matrix::rotate ) instead.")
-
-    preMult( rotate(deg,x,y,z) );
-}
-void Matrix::postRot( float deg, float x, float y, float z )
-{
-    DEPRECATED("Matrix::postRot is deprecated.  Use m.postMult( Matrix::rotate ) instead.")
-
-    postMult( rotate(deg,x,y,z) );
-}
-#endif

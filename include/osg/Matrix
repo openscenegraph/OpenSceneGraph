@@ -17,9 +17,6 @@ using std::ostream;
 using std::endl;
 #endif
 
-// temporary #define to keep backwards compatibility.
-//#define USE_DEPRECATED_MATRIX_METHODS
-
 namespace osg {
 
 class Quat;
@@ -71,17 +68,17 @@ class SG_EXPORT Matrix : public Object
         void makeScale( const Vec3& );
         void makeScale( float, float, float );
         
-        void makeTrans( const Vec3& );
-        void makeTrans( float, float, float );
+        void makeTranslate( const Vec3& );
+        void makeTranslate( float, float, float );
         //TODO: original preTrans was optimized (M=Tr*M)
         // but also has the assumption that M (this) is an affine transformation Matrix
         // can I still do something to optimize the same case now?
 
-        void makeRot( const Vec3& from, const Vec3& to );
-        void makeRot( float angle, const Vec3& axis );
-        void makeRot( float angle, float x, float y, float z );
-        void makeRot( const Quat& );
-        void makeRot( float, float, float ); //Euler angles
+        void makeRotate( const Vec3& from, const Vec3& to );
+        void makeRotate( float angle, const Vec3& axis );
+        void makeRotate( float angle, float x, float y, float z );
+        void makeRotate( const Quat& );
+        void makeRotate( float, float, float ); //Euler angles
 
         bool invert( const Matrix& );
         bool invertAffine( const Matrix& );
@@ -90,8 +87,8 @@ class SG_EXPORT Matrix : public Object
 	inline static Matrix identity( void );
         inline static Matrix scale( const Vec3& );
         inline static Matrix scale( float, float, float );
-        inline static Matrix trans( const Vec3& );
-        inline static Matrix trans( float, float, float );
+        inline static Matrix translate( const Vec3& );
+        inline static Matrix translate( float, float, float );
         inline static Matrix rotate( const Vec3&, const Vec3& );
         inline static Matrix rotate( float, float, float, float );
         inline static Matrix rotate( float angle, const Vec3& axis);
@@ -108,32 +105,10 @@ class SG_EXPORT Matrix : public Object
 	void setTrans( const Vec3& v );
         Vec3 getTrans() const { ensureRealized(); return Vec3(_mat[3][0],_mat[3][1],_mat[3][2]); } 
 
-#ifdef USE_DEPRECATED_MATRIX_METHODS
-
-        void copy( const Matrix& );
-        void preScale( float sx, float sy, float sz, const Matrix& m );
-        void postScale( const Matrix& m, float sx, float sy, float sz );
-        void preScale( float sx, float sy, float sz );
-        void postScale( float sx, float sy, float sz );
-
-        void preTrans( float tx, float ty, float tz, const Matrix& m );
-        void postTrans( const Matrix& m, float tx, float ty, float tz );
-        void preTrans( float tx, float ty, float tz);
-        void postTrans( float tx, float ty, float tz );
-
-        void preRot( float deg, float x, float y, float z, const Matrix& m  );
-        void postRot( const Matrix& m, float deg, float x, float y, float z );
-        void preRot( float deg, float x, float y, float z );
-        void postRot( float deg, float x, float y, float z );
-        
-#endif
-
     	/** apply apply an 3x3 transform of v*M[0..2,0..2]  */
     	inline static Vec3 transform3x3(const Vec3& v,const Matrix& m);
     	/** apply apply an 3x3 transform of M[0..2,0..2]*v  */
     	inline static Vec3 transform3x3(const Matrix& m,const Vec3& v);
-        
-//end of Deprecated methods 
 
 
         // basic Matrix multiplication, our workhorse methods.
@@ -201,40 +176,40 @@ inline Matrix Matrix::scale(const Vec3& v )
     return scale(v.x(), v.y(), v.z() );
 }
 
-inline Matrix Matrix::trans(float tx, float ty, float tz)
+inline Matrix Matrix::translate(float tx, float ty, float tz)
 {
     Matrix m;
-    m.makeTrans(tx,ty,tz);
+    m.makeTranslate(tx,ty,tz);
     return m;
 }
 
-inline Matrix Matrix::trans(const Vec3& v )
+inline Matrix Matrix::translate(const Vec3& v )
 {
-    return trans(v.x(), v.y(), v.z() );
+    return translate(v.x(), v.y(), v.z() );
 }
 
 inline Matrix Matrix::rotate( const Quat& q )
 {
     Matrix m;
-    m.makeRot( q );
+    m.makeRotate( q );
     return m;
 }
 inline Matrix Matrix::rotate(float angle, float x, float y, float z )
 {
     Matrix m;
-    m.makeRot(angle,x,y,z);
+    m.makeRotate(angle,x,y,z);
     return m;
 }
 inline Matrix Matrix::rotate(float angle, const Vec3& axis )
 {
     Matrix m;
-    m.makeRot(angle,axis);
+    m.makeRotate(angle,axis);
     return m;
 }
 inline Matrix Matrix::rotate(const Vec3& from, const Vec3& to )
 {
     Matrix m;
-    m.makeRot(from,to);
+    m.makeRotate(from,to);
     return m;
 }
 

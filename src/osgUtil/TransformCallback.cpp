@@ -32,9 +32,9 @@ void TransformCallback::operator() (osg::Node* node, osg::NodeVisitor* nv)
             double newTime = fs->getReferenceTime();
             float delta_angle = _angular_velocity*(newTime-_previousTime);
 
-            osg::Matrix mat = osg::Matrix::trans(-_pivot)*
+            osg::Matrix mat = osg::Matrix::translate(-_pivot)*
                               osg::Matrix::rotate(delta_angle,_axis)*
-                              osg::Matrix::trans(_pivot);
+                              osg::Matrix::translate(_pivot);
 
 
             // update the specified transform

@@ -367,9 +367,9 @@ int main( int argc, char **argv )
 
         osg::Transform* dcs = new osg::Transform;
         dcs->setStateSet(dstate);
-        dcs->preMult(osg::Matrix::trans(0.0f,0.0f,-z)*
+        dcs->preMult(osg::Matrix::translate(0.0f,0.0f,-z)*
                      osg::Matrix::scale(1.0f,1.0f,-1.0f)*
-                     osg::Matrix::trans(0.0f,0.0f,z));
+                     osg::Matrix::translate(0.0f,0.0f,z));
 
         dcs->addChild(loadedModelTransform);
 

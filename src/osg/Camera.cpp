@@ -678,7 +678,7 @@ void Camera::calculateMatricesAndClippingVolume() const
                 s[2],     u[2],     -f[2],     0.0f,
                 0.0f,     0.0f,     0.0f,      1.0f);
 
-            (*matrix) = Matrix::trans(-_eye[0], -_eye[1], -_eye[2]) * (*matrix);
+            (*matrix) = Matrix::translate(-_eye[0], -_eye[1], -_eye[2]) * (*matrix);
                         
             if (_modelToEyeTransform.valid())
             {
@@ -696,7 +696,7 @@ void Camera::calculateMatricesAndClippingVolume() const
 
     if (_useEyeOffset)
     {
-        (*_modelViewMatrix) = (*_modelViewMatrix) * Matrix::trans(-_eyeOffset*_focalLength/_screenDistance);
+        (*_modelViewMatrix) = (*_modelViewMatrix) * Matrix::translate(-_eyeOffset*_focalLength/_screenDistance);
     }
 
 

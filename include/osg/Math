@@ -7,8 +7,6 @@
 
 #include <math.h>
 
-// #define USE_DEGREES_INTERNALLY
-
 #if defined(WIN32) || defined (macintosh)
     #include <float.h>
     #define M_E             2.7182818284590452354
@@ -70,13 +68,8 @@
 
 namespace osg {
 
-#ifdef USE_DEGREES_INTERNALLY
-    inline double inDegrees(double angle) { return angle; } 
-    inline double inRadians(double angle) { return angle*180.0/M_PI; }
-#else
-    inline double inDegrees(double angle) { return angle*M_PI/180.0; }
-    inline double inRadians(double angle) { return angle; }
-#endif
+inline double inDegrees(double angle) { return angle*M_PI/180.0; }
+inline double inRadians(double angle) { return angle; }
 
 inline double DegreesToRadians(double angle) { return angle*M_PI/180.0; }
 inline double RadiansToDegrees(double angle) { return angle*180.0/M_PI; }

@@ -208,7 +208,7 @@ bool GliderManipulator::calcMovement()
     float roll = inDegrees(dx*0.1f*dt);
 
     osg::Matrix mat;
-    mat.makeTrans(-center);
+    mat.makeTranslate(-center);
     mat *= Matrix::rotate(pitch,sv.x(),sv.y(),sv.z());
     mat *= Matrix::rotate(roll,lv.x(),lv.y(),lv.z());
     if (_yawMode==YAW_AUTOMATICALLY_WHEN_BANKED)
@@ -220,7 +220,7 @@ bool GliderManipulator::calcMovement()
 
     lv *= (_velocity*dt);
 
-    mat *= Matrix::trans(center + lv);
+    mat *= Matrix::translate(center + lv);
 
     _camera->transformLookAt(mat);
 

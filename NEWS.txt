@@ -11,9 +11,9 @@ OSG News (most significant items from ChangeLog)
     The key new features of the 0.9.5 release are the new OpenGL2.0 nodekit, constant frame rate 
     database paging support,  classes,  and the new native .ive binary plugin which supports 
     both reading and writing of all core osg nodes, including inlining of compressed 
-    and non compressed imagery. 
+    and non-compressed imagery. 
     
-    The native database paging support,provided by the new osg::PageLOD and osgDB::DatabasePager,
+    The native database paging support, provided by the new osg::PageLOD and osgDB::DatabasePager,
     achieves constant frame rate through threading of the database reading, and time based 
     incremental compile and delete of display lists, vertex_buffer_objects and texture objects. 
     A new TextureObjectManager class also caches a list of expired texture objects for reuse, 
@@ -90,7 +90,7 @@ OSG News (most significant items from ChangeLog)
 	class.  This example depends upon the demeter terrain engine, which can be download from 
 	http://www.terrainengine.com.
 
-    Camera style convince set and get methods to osgUtil::SceneView, consolidating
+    Camera style convenience set and get methods to osgUtil::SceneView, consolidating
     previous functionality that was provided by both osg::SceneView and osg::Camara into one place.
     This move has made osg::Camera redundant so has it been removed to avoid confusion, 
     usage inconsistencies and bloat of core libraries.

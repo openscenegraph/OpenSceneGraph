@@ -16,7 +16,7 @@ ArgumentParser::ArgumentParser(int* argc,char **argv):
 
 std::string ArgumentParser::getApplicationName() const
 {
-    if (_argc>0) return std::string(_argv[0]);
+    if (_argc && *_argc>0 ) return std::string(_argv[0]);
     return "";
 }
 

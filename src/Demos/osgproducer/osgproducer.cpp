@@ -13,7 +13,6 @@
 #include <Producer/OsgSceneHandler>
 #include <Producer/InputArea>
 #include <Producer/KeyboardMouse>
-#include <Producer/Trackball>
 
 #include <osg/Timer>
 
@@ -23,6 +22,9 @@
 #include <osgDB/ReadFile>
 
 #include <osgGA/TrackballManipulator>
+#include <osgGA/FlightManipulator>
+#include <osgGA/DriveManipulator>
+#include <osgGA/KeySwitchCameraManipulator>
 #include <osgGA/StateSetManipulator>
 
 #if USE_MY_KEYBOARD_MOUSE_CALLBACK
@@ -123,23 +125,19 @@ int main( int argc, char **argv )
                                    (new Producer::KeyboardMouse(ia)) : 
                                    (new Producer::KeyboardMouse(cg->getCamera(0)->getRenderSurface()));
 
-#if USE_MY_KEYBOARD_MOUSE_CALLBACK
-    bool done = false;
-    MyKeyboardMouseCallback kbmcb(done);
-    kbm->setCallback( &kbmcb );
-    kbm->startThread();
-#else
+    // set up the time and frame counter.
+    unsigned int frameNumber = 0;
+    osg::Timer timer;
+    osg::Timer_t start_tick = timer.tick();
 
+    // set the keyboard mouse callback to catch the events from the windows.
     bool done = false;
     ProducerEventCallback kbmcb(done);
+    kbmcb.setStartTick(start_tick);
+    
+    // register the callback with the keyboard mouse manger.
     kbm->setCallback( &kbmcb );
     kbm->startThread();
-    
-#endif
-
-    Producer::Trackball tb;
-    tb.setOrientation( Producer::Trackball::Y_UP );
-
 
 
     // set the globa state
@@ -152,7 +150,7 @@ int main( int argc, char **argv )
     osg::LightSource* lightsource = new osg::LightSource;
     osg::Light* light = new osg::Light;
     lightsource->setLight(light);
-    lightsource->setReferenceFrame(osg::LightSource::RELATIVE_TO_ABSOLUTE);
+    lightsource->setReferenceFrame(osg::LightSource::RELATIVE_TO_ABSOLUTE); // headlight.
     lightsource->setLocalStateSetModes(osg::StateAttribute::ON);
 
     lightsource->addChild(loadedModel.get());
@@ -173,10 +171,6 @@ int main( int argc, char **argv )
     osgUtil::UpdateVisitor update;
     update.setFrameStamp(frameStamp.get());
 
-    // set up the time and frame counter.
-    unsigned int frameNumber = 0;
-    osg::Timer timer;
-    osg::Timer_t start_tick = timer.tick();
 
 
     // create a camera to use with the manipulators.
@@ -186,17 +180,36 @@ int main( int argc, char **argv )
     trackballManipulator->setCamera(old_style_osg_camera.get());
     trackballManipulator->setNode(loadedModel.get());
 
+    osg::ref_ptr<osgGA::FlightManipulator> flightManipulator = new osgGA::FlightManipulator;
+    flightManipulator->setCamera(old_style_osg_camera.get());
+    flightManipulator->setNode(loadedModel.get());
+
+    osg::ref_ptr<osgGA::DriveManipulator> driveManipulator = new osgGA::DriveManipulator;
+    driveManipulator->setCamera(old_style_osg_camera.get());
+    driveManipulator->setNode(loadedModel.get());
+
+
+    osg::ref_ptr<osgGA::KeySwitchCameraManipulator> keyswitchManipulator = new osgGA::KeySwitchCameraManipulator;
+    keyswitchManipulator->addNumberedCameraManipulator(trackballManipulator.get());
+    keyswitchManipulator->addNumberedCameraManipulator(flightManipulator.get());
+    keyswitchManipulator->addNumberedCameraManipulator(driveManipulator.get());
+
+
     osg::ref_ptr<osgGA::StateSetManipulator> statesetManipulator = new osgGA::StateSetManipulator;
     statesetManipulator->setStateSet(globalStateSet.get());
 
     // create an event handler list, we'll dispatch our event to these..
     typedef std::list< osg::ref_ptr<osgGA::GUIEventHandler> > EventHandlerList;
     EventHandlerList eventHandlerList;
-    eventHandlerList.push_back(trackballManipulator.get());
+    eventHandlerList.push_back(keyswitchManipulator.get());
     eventHandlerList.push_back(statesetManipulator.get());
 
     // create a dummy action adapter right now.
     ProducerActionAdapter actionAdapter;
+
+    osg::ref_ptr<ProducerEventAdapter> init_event = new ProducerEventAdapter;
+    init_event->adaptFrame(0.0);
+    keyswitchManipulator->getCurrentCameraManipulator()->home(*init_event,actionAdapter);
 
     while( !done )
     {
@@ -208,10 +221,6 @@ int main( int argc, char **argv )
         frameStamp->setFrameNumber(frameNumber);
         frameStamp->setReferenceTime(time_since_start);
         
-        // update the trackball
-        tb.input( kbmcb.mx(), kbmcb.my(), kbmcb.mbutton() );
-        
-
         // get the event since the last frame.
         ProducerEventCallback::EventQueue queue;
         kbmcb.getEventQueue(queue);

@@ -41,7 +41,9 @@ class ProducerEventCallback : public Producer::KeyboardMouseCallback
         float my()  { return _my; }
         unsigned int mbutton()  { return _mbutton; }
         
-        double getTime() { return 0.0f; }
+        void setStartTick(osg::Timer_t tick) { _startTick = tick; }
+        
+        double getTime() { return _timer.delta_s(_startTick,_timer.tick()); }
         
     private:
     
@@ -49,7 +51,8 @@ class ProducerEventCallback : public Producer::KeyboardMouseCallback
         unsigned int _mbutton;
         bool &_done;
 
-        osg::Timer      _timer;        
+        osg::Timer_t    _startTick;
+        osg::Timer      _timer;
         Producer::Mutex _eventQueueMutex;
         EventQueue      _eventQueue;
         

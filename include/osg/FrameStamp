@@ -38,8 +38,8 @@ class SG_EXPORT FrameStamp : public Referenced
         void setReferenceTime(double refTime) { _referenceTime = refTime; }
         double getReferenceTime() const { return _referenceTime; }
         
-        void setCalanderTime(const tm& calanderTime);
-        void getCalanderTime(tm& calanderTime) const;
+        void setCalanderTime(const std::tm& calanderTime);
+        void getCalanderTime(std::tm& calanderTime) const;
         
     protected:
     

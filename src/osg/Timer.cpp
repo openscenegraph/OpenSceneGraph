@@ -180,8 +180,14 @@ using namespace osg;
             _secsPerClick = (double)(cycleval)* 1e-12;
         }
     }
-#elif defined (__APPLE_CC__)       // MACOSX PJA
-#include <Carbon/Carbon.h>         // do I really have to link against the Carbon framework just for this?
+#elif defined (__APPLE_CC__)  || defined (macintosh)
+
+#if defined (__APPLE_CC__)
+	#include <Carbon/Carbon.h>         // do I really have to link against the Carbon framework just for this?
+#else	
+	#include <MacTypes.h>
+	#include <Timer.h>
+#endif
 
 Timer_t Timer::tick(void)
 {

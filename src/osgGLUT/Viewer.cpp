@@ -109,10 +109,8 @@ Viewer::Viewer()
 
     osg::notify(osg::INFO)<<"Scene Graph Viewer (sgv)"<<endl;
 
-#ifndef macintosh
     osg::notify(osg::INFO)<<"   '"<<osgGetLibraryName()<<"' Version "<<osgGetVersion()<<endl;
     osg::notify(osg::INFO)<<"   '"<<osgUtilGetLibraryName()<<"' Version "<<osgUtilGetVersion()<<endl;
-#endif
 
     _initialTick = _timer.tick();
     _frameTick = _initialTick;

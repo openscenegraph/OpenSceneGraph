@@ -110,6 +110,16 @@ OsgCameraGroup::OsgCameraGroup(osg::ArgumentParser& arguments):
 {
     _init();
     _applicationUsage = arguments.getApplicationUsage();
+    
+    for( unsigned int i = 0; i < _cfg->getNumberOfCameras(); i++ )
+    {
+        Producer::Camera *cam = _cfg->getCamera(i);
+        Producer::RenderSurface *rs = cam->getRenderSurface();
+        if (rs->getWindowName()==" *** RenderSurface *** ")
+        {
+            rs->setWindowName(arguments.getApplicationName());
+        }
+    }    
 }
 
 void OsgCameraGroup::_init()

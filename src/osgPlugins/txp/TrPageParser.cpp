@@ -761,7 +761,7 @@ void TrPageParser::LoadLocalMaterials()
         */
             int alphaFunc;
             mat->GetAlphaFunc(alphaFunc);
-            if( alphaFunc != trpgMaterial::None)
+            if( alphaFunc>=GL_NEVER && alphaFunc<=GL_ALWAYS)
             {
                 float64 ref;
                 mat->GetAlphaRef(ref);

@@ -11,6 +11,7 @@
 #define OSG_TEXTURE 1
 
 #include <osg/TextureBase>
+
 namespace osg {
 
 /** Texture state class which encapsulates OpenGl texture functionality.*/
@@ -202,6 +203,7 @@ class SG_EXPORT Texture : public TextureBase
 
 #else // USE_DEPRECATED_API
 
+#ifdef USE_DEPRECATED_API
 #include <osg/Texture2D>
 
 namespace osg {
@@ -209,5 +211,7 @@ namespace osg {
     typedef Texture2D Texture;
 
 }
+
+#endif
 
 #endif // USE_DEPRECATED_API

@@ -22,7 +22,7 @@
 #include <osg/Group>
 #include <osg/Geode>
 #include <osg/Group>
-#include <osg/Texture>
+#include <osg/Texture2D>
 #include <osg/Geometry>
 #include <osg/StateSet>
 
@@ -173,7 +173,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO1(const std::string
                         // create state
                         osg::StateSet* stateset = new osg::StateSet;
 
-                        osg::Texture* texture = new osg::Texture;
+                        osg::Texture2D* texture = new osg::Texture2D;
                         texture->setImage(image);
                         
                         stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);

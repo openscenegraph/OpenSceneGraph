@@ -1,5 +1,5 @@
 #include <osg/StateSet>
-#include <osg/Texture>
+#include <osg/Texture2D>
 #include <osg/TextureCubeMap>
 
 #include <osgDB/Registry>

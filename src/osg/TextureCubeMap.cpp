@@ -1,12 +1,7 @@
-#if defined(_MSC_VER)
-	#pragma warning( disable : 4786 )
-#endif
-
 #include <osg/GLExtensions>
 #include <osg/ref_ptr>
 #include <osg/Image>
 #include <osg/State>
-#include <osg/Texture>
 #include <osg/TextureCubeMap>
 
 #include <osg/GLU>

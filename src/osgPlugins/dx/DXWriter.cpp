@@ -104,7 +104,7 @@
 #include <osg/StateAttribute>
 #include <osg/StateSet>
 #include <osg/Material>
-#include <osg/Texture>
+#include <osg/Texture2D>
 #include <osg/TexEnv>
 #include <osg/CullFace>
 #include <osg/Billboard>
@@ -427,8 +427,8 @@ class MyStateSet
 
     // TEXTURE / TEXTURE_0
     const osg::Image *image;
-    osg::Texture::WrapMode   wrap_s, wrap_t;
-    osg::Texture::FilterMode min_filter, mag_filter;
+    osg::Texture2D::WrapMode   wrap_s, wrap_t;
+    osg::Texture2D::FilterMode min_filter, mag_filter;
 
     // TEXENV
     osg::TexEnv::Mode texture_func;
@@ -1999,12 +1999,13 @@ void MyStateSet::Query( const osg::StateSet &sset )
     shininess_f_and_b = mat.getShininessFrontAndBack();
   }
 
-  // TEXTURE / TEXTURE_0
-  attr = sset.getTextureAttribute(0, osg::StateAttribute::TEXTURE );
+  // TEXTURE / TEXTURE_0 
+  // ( and only for 2D textures right now... RO August 2002)
+  attr = dynamic_cast<const osg::Texture2D*>(sset.getTextureAttribute(0, osg::StateAttribute::TEXTURE ));
   if ( attr &&
        ( sset.getTextureMode(0, GL_TEXTURE_2D ) & osg::StateAttribute::ON )) {
 
-    const osg::Texture &texture = (const osg::Texture &) (*attr);
+    const osg::Texture2D &texture = (const osg::Texture2D &) (*attr);
 
     // NOTE:  If OSG failed to load the texture, we'll get a NULL right here
     image = texture.getImage();
@@ -2032,13 +2033,13 @@ void MyStateSet::Query( const osg::StateSet &sset )
     //       attribute "texture function" string ["decal"|"replace"|"modulate"
     //                                            "blend"]
 
-    wrap_s     = texture.getWrap( osg::Texture::WRAP_S );
-    wrap_t     = texture.getWrap( osg::Texture::WRAP_T );
-    min_filter = texture.getFilter( osg::Texture::MIN_FILTER );
-    mag_filter = texture.getFilter( osg::Texture::MAG_FILTER );
+    wrap_s     = texture.getWrap( osg::Texture2D::WRAP_S );
+    wrap_t     = texture.getWrap( osg::Texture2D::WRAP_T );
+    min_filter = texture.getFilter( osg::Texture2D::MIN_FILTER );
+    mag_filter = texture.getFilter( osg::Texture2D::MAG_FILTER );
 
     if ( texture.getInternalFormatMode() != 
-         osg::Texture::USE_IMAGE_DATA_FORMAT ) {
+         osg::Texture2D::USE_IMAGE_DATA_FORMAT ) {
       // FIXME:  When we generalize this, remove the static hack
       static int been_here = 0;
       if ( !been_here ) {

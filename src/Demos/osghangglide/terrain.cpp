@@ -2,7 +2,7 @@
 
 #include <osg/Geode>
 #include <osg/Geometry>
-#include <osg/Texture>
+#include <osg/Texture2D>
 #include <osg/TexEnv>
 #include <osg/StateSet>
 
@@ -110,7 +110,7 @@ Node *makeTerrain( void )
     }
 
 
-    Texture *tex = new Texture;
+    Texture2D *tex = new Texture2D;
 
     tex->setImage(osgDB::readImageFile("Images/lz.rgb"));
 

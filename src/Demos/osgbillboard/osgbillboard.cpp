@@ -2,7 +2,7 @@
 #include <osg/Geometry>
 #include <osg/Notify>
 #include <osg/MatrixTransform>
-#include <osg/Texture>
+#include <osg/Texture2D>
 #include <osg/Billboard>
 #include <osg/LineWidth>
 
@@ -59,7 +59,7 @@ osg::Drawable* createSquare(const osg::Vec3& corner,const osg::Vec3& width,const
     if (image)
     {
         osg::StateSet* stateset = new osg::StateSet;
-        osg::Texture* texture = new osg::Texture;
+        osg::Texture2D* texture = new osg::Texture2D;
         texture->setImage(image);
         stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
         geom->setStateSet(stateset);

@@ -2,7 +2,7 @@
 
 #include <osg/Geode>
 #include <osg/Geometry>
-#include <osg/Texture>
+#include <osg/Texture2D>
 #include <osg/TexEnv>
 #include <osg/Depth>
 #include <osg/StateSet>
@@ -48,11 +48,11 @@ Node *makeBase( void )
 
     geom->addPrimitive( new DrawArrays(Primitive::TRIANGLE_FAN,0,19) );
 
-    Texture *tex = new Texture;
+    Texture2D *tex = new Texture2D;
 
     tex->setImage(osgDB::readImageFile("Images/water.rgb"));
-    tex->setWrap( Texture::WRAP_S, Texture::REPEAT );
-    tex->setWrap( Texture::WRAP_T, Texture::REPEAT );
+    tex->setWrap( Texture2D::WRAP_S, Texture2D::REPEAT );
+    tex->setWrap( Texture2D::WRAP_T, Texture2D::REPEAT );
 
     StateSet *dstate = new StateSet;
     dstate->setMode( GL_LIGHTING, StateAttribute::OFF );

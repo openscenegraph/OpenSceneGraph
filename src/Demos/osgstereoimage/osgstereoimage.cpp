@@ -1,7 +1,6 @@
 #include <osg/Node>
 #include <osg/Notify>
 #include <osg/MatrixTransform>
-#include <osg/Texture>
 
 #include <osgGA/TrackballManipulator>
 #include <osgGA/FlightManipulator>

@@ -4,7 +4,7 @@
 #include <osg/AlphaFunc>
 #include <osg/Group>
 #include <osg/Image>
-#include <osg/Texture>
+#include <osg/Texture2D>
 #include <osg/Material>
 #include <osg/TexEnv>
 #include <osg/CullFace>
@@ -111,7 +111,7 @@ void TrPageArchive::LoadMaterials()
                 char texName[1024];  texName[0] = 0;
                 tex->GetName(texName,1023);
                 // Create a texture by name.
-                ref_ptr<Texture> osg_texture = new Texture();
+                ref_ptr<Texture2D> osg_texture = new Texture2D();
                 
                 // Load Texture and Create Texture State
                 std::string filename = osgDB::getSimpleFileName(texName);
@@ -138,14 +138,14 @@ void TrPageArchive::LoadMaterials()
             }
             else if( mode == trpgTexture::Local )
             {
-                ref_ptr<Texture> osg_texture = GetLocalTexture(image_helper,0, tex);
+                ref_ptr<Texture2D> osg_texture = GetLocalTexture(image_helper,0, tex);
                 osg_texture->ref();
                 m_textures[i] = osg_texture;
                // delete [] data;
             }
             else if( mode == trpgTexture::Template )
             {
-                ref_ptr<Texture> osg_texture = GetLocalTexture(image_helper,0, tex);
+                ref_ptr<Texture2D> osg_texture = GetLocalTexture(image_helper,0, tex);
                 if (osg_texture.valid()) osg_texture->ref();
                 m_textures[i] = osg_texture;
                // delete [] data;
@@ -251,11 +251,11 @@ void TrPageArchive::LoadMaterials()
                     int wrap_s, wrap_t;   
                     texEnv.GetWrap(wrap_s, wrap_t);
 
-                    Texture* osg_texture = m_textures[texId].get();
+                    Texture2D* osg_texture = m_textures[texId].get();
                     if(osg_texture)
                     {
-                        osg_texture->setWrap(Texture::WRAP_S, wrap_s == trpgTextureEnv::Repeat ? Texture::REPEAT: Texture::CLAMP );
-                        osg_texture->setWrap(Texture::WRAP_T, wrap_t == trpgTextureEnv::Repeat ? Texture::REPEAT: Texture::CLAMP );
+                        osg_texture->setWrap(Texture2D::WRAP_S, wrap_s == trpgTextureEnv::Repeat ? Texture2D::REPEAT: Texture2D::CLAMP );
+                        osg_texture->setWrap(Texture2D::WRAP_T, wrap_t == trpgTextureEnv::Repeat ? Texture2D::REPEAT: Texture2D::CLAMP );
                         osg_state_set->setTextureAttributeAndModes(ntex,osg_texture, StateAttribute::ON);
                 
                         if(osg_texture->getImage())

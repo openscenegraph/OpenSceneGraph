@@ -30,7 +30,7 @@
 #include <osg/NodeVisitor>
 #include <osg/LineSegment>
 #include <osg/PolygonMode>
-#include <osg/Texture>
+#include <osg/Texture2D>
 #include <osg/LightModel>
 #include <osg/ShadeModel>
 #include <osg/Notify>
@@ -1034,7 +1034,7 @@ void Viewer::keyboard(unsigned char key, int x, int y)
                 // thus causing them to all use the same texture attribute, hence
                 // preventing a state attribute change due to unused textures.
                 globalStateSet->setTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF);
-//                static osg::ref_ptr<osg::Texture> blank_texture = osgNew osg::Texture;
+//                static osg::ref_ptr<osg::Texture> blank_texture = osgNew osg::Texture2D;
 //                globalStateSet->setTextureAttribute(0,blank_texture.get());
             }
             break;

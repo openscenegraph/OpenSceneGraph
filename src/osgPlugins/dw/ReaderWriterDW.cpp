@@ -16,7 +16,7 @@
 #include <osg/Light>
 #include <osg/LightSource>
 #include <osg/Material>
-#include <osg/Texture>
+#include <osg/Texture2D>
 #include <osg/TexEnv>
 #include <osg/StateSet>
 #include <osg/Notify>
@@ -57,10 +57,10 @@ public:
                     //ctx=osgDB::readImageFile(nm);
                     if (ctx) {
                         ctx->setFileName(fname);
-                        tx=new Texture;
+                        tx=new Texture2D;
                         tx->setImage(ctx);
-                        tx->setWrap(Texture::WRAP_S, Texture::REPEAT);
-                        tx->setWrap(Texture::WRAP_T, Texture::REPEAT);
+                        tx->setWrap(Texture2D::WRAP_S, Texture2D::REPEAT);
+                        tx->setWrap(Texture2D::WRAP_T, Texture2D::REPEAT);
                     }
                     osg::TexEnv* texenv = new osg::TexEnv;
                     texenv->setMode(osg::TexEnv::MODULATE);
@@ -176,7 +176,7 @@ private:
     enum atten {NONE, INVERSE_DIST, INVERSE_SQUARE} atyp;
     float bright,halfIn,halfOut,falloff; // light brightness
     Image *ctx;
-    Texture *tx;
+    Texture2D *tx;
     int _lightnum;
     StateSet *dstate; // used to represent the dw material in OSG
 };

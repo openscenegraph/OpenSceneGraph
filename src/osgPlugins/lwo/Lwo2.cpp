@@ -26,7 +26,7 @@
 #include <osg/Notify>
 #include <osg/Geode>
 #include <osg/Group>
-#include <osg/Texture>
+#include <osg/Texture2D>
 #include <osg/Material>
 #include <osg/CullFace>
 
@@ -655,7 +655,7 @@ Lwo2::_generate_statesets_from_surfaces()
       notify(DEBUG_INFO) << "\tresult - " << image << endl;
       if (image)
         {
-          Texture* texture = new osg::Texture;
+          Texture2D* texture = new osg::Texture2D;
           texture->setImage(image);
           state_set->setTextureAttributeAndModes(0, texture, StateAttribute::ON);        
         }

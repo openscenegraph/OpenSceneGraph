@@ -2,7 +2,7 @@
 #include <osg/Geometry>
 #include <osg/Notify>
 #include <osg/MatrixTransform>
-#include <osg/Texture>
+#include <osg/Texture2D>
 #include <osg/BlendFunc>
 #include <osg/Stencil>
 #include <osg/ColorMask>
@@ -51,7 +51,7 @@ osg::StateSet* createMirrorTexturedState(const std::string& filename)
     osg::Image* image = osgDB::readImageFile(filename.c_str());
     if (image)
     {
-        osg::Texture* texture = new osg::Texture;
+        osg::Texture2D* texture = new osg::Texture2D;
         texture->setImage(image);
         dstate->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON|osg::StateAttribute::PROTECTED);
     }

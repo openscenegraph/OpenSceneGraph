@@ -4,7 +4,7 @@
 
 #include <osg/Notify>
 
-#include <osg/Texture>
+#include <osg/Texture2D>
 #include <osg/TexEnv>
 #include <osg/TexGen>
 
@@ -90,7 +90,7 @@ int main( int argc, char **argv )
     osg::Image* image = osgDB::readImageFile("Images/reflect.rgb");
     if (image)
     {
-        osg::Texture* texture = new osg::Texture;
+        osg::Texture2D* texture = new osg::Texture2D;
         texture->setImage(image);
 
         osg::TexGen* texgen = new osg::TexGen;

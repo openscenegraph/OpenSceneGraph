@@ -35,7 +35,7 @@
 #include <osg/GeoSet>
 #include <osg/StateSet>
 #include <osg/Material>
-#include <osg/Texture>
+#include <osg/Texture2D>
 #include <osg/MatrixTransform>
 #include <osg/BlendFunc>
 #include <osg/CullFace>
@@ -59,7 +59,7 @@
 
 class ObjectCache {
     typedef std::map<osg::ref_ptr<Material>, osg::ref_ptr<osg::Material> > MaterialMap;
-    typedef std::map<const char*, osg::ref_ptr<osg::Texture>, ltstr> TextureMap;
+    typedef std::map<const char*, osg::ref_ptr<osg::Texture2D>, ltstr> TextureMap;
     typedef std::map<osg::ref_ptr<MyNode>, osg::ref_ptr<osg::Node> > NodeMap;
 
     static MaterialMap materials;
@@ -90,12 +90,12 @@ public:
         return materials[_material].get();
     }
 
-    static osg::Texture* getTextura(const char* _texture) {
+    static osg::Texture2D* getTextura(const char* _texture) {
 	if (textures.find(_texture) == textures.end()) {
-	    osg::Texture *texture=new osg::Texture();
+	    osg::Texture2D *texture=new osg::Texture2D();
 	    texture->setImage(osgDB::readImageFile(_texture));
-	    texture->setWrap(osg::Texture::WRAP_S,osg::Texture::REPEAT);
-	    texture->setWrap(osg::Texture::WRAP_T,osg::Texture::REPEAT);
+	    texture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::REPEAT);
+	    texture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::REPEAT);
 	    osg::notify(osg::INFO) << "Loading texture " << _texture << std::endl;
 	    textures[_texture]=texture;
 	} 
@@ -246,7 +246,7 @@ void OSGVisitor::makeGeode(osg::Geode *geode, osg::Geometry *geometry, bool twoS
     if (texture_active!=0) {
         AtrString *filename=(AtrString*)texture_active->getAttribute("filename");
 	if (filename) {
-	    osg::Texture *texture=ObjectCache::getTextura(filename->getValue());
+	    osg::Texture2D *texture=ObjectCache::getTextura(filename->getValue());
 	    state->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
 	}
     }

@@ -13,7 +13,7 @@
 #include <osg/GeoSet>
 #include <osg/StateSet>
 #include <osg/Material>
-#include <osg/Texture>
+#include <osg/Texture2D>
 
 // Performer includes.
 #include <Performer/pf/pfNode.h>
@@ -48,7 +48,7 @@ class ConvertToPerformer : protected osg::NodeVisitor {
         pfGeoSet* visitGeoSet(osg::GeoSet* geoset);
         pfGeoState* visitStateSet(osg::StateSet* geostate);
         pfMaterial* visitMaterial(osg::Material* material);
-        pfTexture* visitTexture(osg::Texture* tex);
+        pfTexture* visitTexture(osg::Texture2D* tex);
 
 
         typedef std::map<osg::Object*,pfObject*> OsgObjectToPfObjectMap;

@@ -16,7 +16,7 @@
 #include <osg/Geode>
 #include <osg/StateSet>
 #include <osg/Material>
-#include <osg/Texture>
+#include <osg/Texture2D>
 #include <osg/TexEnv>
 #include <osg/CullFace>
 #include <osg/PolygonOffset>

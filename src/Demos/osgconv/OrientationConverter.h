@@ -16,16 +16,23 @@ class OrientationConverter {
     	OrientationConverter( const OrientationConverter& ) {}
 	OrientationConverter& operator = (const OrientationConverter& ) { return *this; }
 
-        osg::Matrix _mat;
 
 
 	class ConvertVisitor : public osg::NodeVisitor
 	{
 	    public :
-	    	ConvertVisitor() : osg::NodeVisitor(TRAVERSE_ALL_CHILDREN){}
+	    	ConvertVisitor() : osg::NodeVisitor(TRAVERSE_ALL_CHILDREN)
+		{
+		     _mat.makeIdent();
+		}
+
+		void setMatrix( osg::Matrix mat ) { _mat = mat; }
 
 		virtual void apply( osg::Node &node ) { traverse( node ); }
 		virtual void apply( osg::Geode &geode );
+
+	    private :
+         	osg::Matrix _mat;
 	};
 
 	ConvertVisitor _cv;

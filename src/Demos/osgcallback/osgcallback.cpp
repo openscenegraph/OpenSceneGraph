@@ -70,7 +70,7 @@ class CullCallback : public osg::NodeCallback
         }
 };
 
-class DrawableCallback : public osg::Drawable::DrawCallback
+class DrawableDrawCallback : public osg::Drawable::DrawCallback
 {
         virtual void drawImmediateMode(osg::State& state,osg::Drawable* drawable) const
         {
@@ -126,10 +126,18 @@ struct BillboardCallback : public osg::Billboard::ComputeBillboardCallback
     }
 };
 
+struct DrawableAppCallback : public osg::Drawable::AppCallback
+{
+    virtual void app(osg::NodeVisitor*, osg::Drawable* drawable)
+    {
+        std::cout<<"Drawable app callback "<<drawable<<std::endl;
+    }
+};
+
 struct DrawableCullCallback : public osg::Drawable::CullCallback
 {
     /** do customized cull code.*/
-    virtual bool cull(osg::NodeVisitor*, osg::Drawable* drawable, osg::State *state) const
+    virtual bool cull(osg::NodeVisitor*, osg::Drawable* drawable, osg::State* /*state*/) const
     {
         std::cout<<"Drawable cull callback "<<drawable<<std::endl;
         return false;
@@ -164,8 +172,9 @@ class InsertCallbacksVisitor : public osg::NodeVisitor
 
             for(int i=0;i<geode.getNumDrawables();++i)
             {
+                geode.getDrawable(i)->setAppCallback(new DrawableAppCallback());
                 geode.getDrawable(i)->setCullCallback(new DrawableCullCallback());
-                geode.getDrawable(i)->setDrawCallback(new DrawableCallback());
+                geode.getDrawable(i)->setDrawCallback(new DrawableDrawCallback());
             }
         }
         

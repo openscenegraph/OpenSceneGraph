@@ -380,7 +380,7 @@ void Optimizer::FlattenStaticTransformsVisitor::doTransform(osg::Object* obj,osg
         lod->setCenter(lod->getCenter()*matrix);
         
         // adjust ranges to new scale.
-        for(int i=0;i<lod->getNumRanges();++i)
+        for(unsigned int i=0;i<lod->getNumRanges();++i)
         {
             lod->setRange(i,lod->getRange(i)*ratio);
         }
@@ -528,16 +528,15 @@ void Optimizer::FlattenStaticTransformsVisitor::removeTransforms()
             osg::ref_ptr<osg::Transform> transform = titr->first;
             osg::ref_ptr<osg::Group>     group = osgNew osg::Group;
 
-            int i;
-            for(i=0;i<transform->getNumChildren();++i)
+            for(unsigned int i=0;i<transform->getNumChildren();++i)
             {
-                for(int j=0;j<transform->getNumParents();++j)
+                for(unsigned int j=0;j<transform->getNumParents();++j)
                 {
                     group->addChild(transform->getChild(i));
                 }
             }
 
-            for(i=transform->getNumParents()-1;i>=0;--i)
+            for(int i=transform->getNumParents()-1;i>=0;--i)
             {
                 transform->getParent(i)->replaceChild(transform.get(),group.get());
             }                
@@ -623,7 +622,7 @@ void Optimizer::RemoveRedundentNodesVisitor::removeRedundentNodes()
 ////////////////////////////////////////////////////////////////////////////
 void Optimizer::CombineLODsVisitor::apply(osg::LOD& lod)
 {
-    for(int i=0;i<lod.getNumParents();++i)
+    for(unsigned int i=0;i<lod.getNumParents();++i)
     {
         if (typeid(*lod.getParent(i))==typeid(osg::Group))
         {
@@ -646,7 +645,7 @@ void Optimizer::CombineLODsVisitor::combineLODs()
 
         LODSet    lodChildren;
 
-        for(int i=0;i<group->getNumChildren();++i)
+        for(unsigned int i=0;i<group->getNumChildren();++i)
         {
             osg::Node* child = group->getChild(i);
             osg::LOD* lod = dynamic_cast<osg::LOD*>(child);
@@ -686,7 +685,7 @@ void Optimizer::CombineLODsVisitor::combineLODs()
                 {
 
                     osg::LOD* lod = *lod_itr;
-                    for(int i=0;i<lod->getNumRanges()-1;++i)
+                    for(unsigned int i=0;i<lod->getNumRanges()-1;++i)
                     {
                         if (maxRange<lod->getRange(i+1)) maxRange = lod->getRange(i+1);
                         rangeMap.insert(RangeMap::value_type(RangePair(lod->getRange(i),lod->getRange(i+1)),lod->getChild(i)));

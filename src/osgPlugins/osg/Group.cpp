@@ -52,7 +52,7 @@ bool Group_writeLocalData(const Object& obj, Output& fw)
     const Group& group = static_cast<const Group&>(obj);
 
     fw.indent() << "num_children " << group.getNumChildren() << std::endl;
-    for(int i=0;i<group.getNumChildren();++i)
+    for(unsigned int i=0;i<group.getNumChildren();++i)
     {
         fw.writeObject(*group.getChild(i));
     }

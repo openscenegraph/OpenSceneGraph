@@ -144,12 +144,12 @@ void InsertImpostorsVisitor::insertImpostors()
                     osg::Impostor* impostor = osgNew Impostor;
 
                     // standard LOD settings
-                    for(int ci=0;ci<lod->getNumChildren();++ci)
+                    for(unsigned int ci=0;ci<lod->getNumChildren();++ci)
                     {
                         impostor->addChild(lod->getChild(ci));
                     }
                     
-                    for(int ri=0;ri<lod->getNumRanges();++ri)
+                    for(unsigned int ri=0;ri<lod->getNumRanges();++ri)
                     {
                         impostor->setRange(ri,lod->getRange(ri));
                     }

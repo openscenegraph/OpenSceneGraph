@@ -46,7 +46,7 @@ class SG_EXPORT LOD : public Group
         inline const float getRange(const unsigned int index) const { return _rangeList[index]; }
         
         /** returns the number of ranges currently set.*/
-        inline const int getNumRanges() const { return _rangeList.size(); }
+        inline const unsigned int getNumRanges() const { return _rangeList.size(); }
 
         /** Sets the object-space point which defines the center of the osg::LOD.  
             center is affected by any transforms in the hierarchy above the osg::LOD.*/

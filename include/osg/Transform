@@ -40,33 +40,26 @@ class SG_EXPORT Transform : public Group
 
         META_Node(Transform);
 
-        /** Range of types that the Transform can be.*/
-        enum Type
+        enum ReferenceFrame
         {
-            DYNAMIC,
-            STATIC
+            RELATIVE_TO_PARENTS,
+            ABSOLUTE
         };
         
-        /** Set the Transform Type, which can be DYNAMIC - the Matrix
-          * value is updated during the main loop, or STATIC - the Matrix
-          * is constant throughout the life of the main loop.  STATIC 
-          * Transforms can be optimized away is some instances, which
-          * can improve performance so unless you plan to modify the
-          * Matrix explicitly set the Matrix to STATIC.  The default
-          * value is DYNAMIC.*/
-        inline void setType(Type type) { _type = type; }
+        /** Set the transform's ReferenceFrame, either to be realtive to its parent reference frame, 
+          * or relative to an absolute coordinate frame. RELATIVE_TO_PARENTS is the default.
+          * Note,  setting the RefrenceFrame to be ABSOLUTE will also set the CullingActive flag on the
+          * transform, and hence all its parents, to false, therby disabling culling of it and all its
+          * parents.  This is neccessary to prevent inappropriate culling, but may impact of cull times
+          * if the absolute transform is deep in the scene graph, it is therefore recommend to only use
+          * abolsoute Transforms at the top of the scene, for such things as headlight LightSource's or
+          * Head up displays.*/
+        void setReferenceFrame(ReferenceFrame rf);
+        
+        const ReferenceFrame getReferenceFrame() const { return _referenceFrame; }
 
-        /** Get the Transform Type.*/
-        inline const Type getType() const { return _type; }
         
-
-        /** Set the matrix mode which tells traversers them how to treat this Transform - as Projection, View or Model transformation.*/
-        inline void setMatrixMode(MatrixMode mode) { _mode = mode; }
-        
-        /** Get the transform mode.*/
-        inline const MatrixMode getMatrixMode() const { return _mode; }
-        
-        /** Callback attached to an Transform to specifiy how to compute the modelview or projection transformation
+        /** Callback attached to an Transform to specifiy how to compute the modelview transformation
           * for the transform below the Transform node.*/
         struct ComputeTransformCallback : public osg::Referenced
         {
@@ -137,32 +130,28 @@ class SG_EXPORT Transform : public Group
         
         virtual const bool computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const
         {
-            if (_mode==VIEW)
+            if (_referenceFrame==RELATIVE_TO_PARENTS)
             {
-                computeInverse();
-                matrix = *_inverse;
-                return true;
+                matrix.preMult(*_matrix);
             }
-            else
+            else // absolute
             {
                 matrix = *_matrix;
-                return true;
             }
+            return true;
         }
 
         virtual const bool computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor*) const
         {
-            if (_mode==VIEW)
+            if (_referenceFrame==RELATIVE_TO_PARENTS)
             {
-                matrix = *_matrix;
-                return true;
+                matrix.postMult(*_inverse);
             }
-            else
+            else // absolute
             {
-                computeInverse();
                 matrix = *_inverse;
-                return true;
             }
+            return true;
         }
         
         inline void computeInverse() const
@@ -175,10 +164,10 @@ class SG_EXPORT Transform : public Group
         }
 
 
-        Type                                _type;
-        MatrixMode                          _mode;
+
         ref_ptr<ComputeTransformCallback>   _computeTransformCallback;
 
+        ReferenceFrame                      _referenceFrame;
         ref_ptr<Matrix>                     _matrix;
         mutable ref_ptr<Matrix>             _inverse;
         mutable bool                        _inverseDirty;        

@@ -34,7 +34,7 @@ class SG_EXPORT Object : public Referenced
             and therefore cannot be constructed on its own, only derived
             classes which override the clone and className methods are
             concrete classes and can be constructed.*/
-        Object() {}
+        inline Object():Referenced(),_dataVariance(DYNAMIC) {}
 
         /** Copy constructor, optional CopyOp object can be used to control
           * shallow vs deep copying of dynamic data.*/
@@ -53,6 +53,23 @@ class SG_EXPORT Object : public Referenced
         /** return the name of the object's class type. Must be defined
             by derived classes.*/
         virtual const char* className() const = 0;
+        
+
+        enum DataVariance
+        {
+            DYNAMIC,
+            STATIC
+        };
+        
+        /** Set the data variance of this object.
+           * Can be set to either STATIC for values that do not change over the lifetime of the object,
+           * or DYNAMIC for values that vary over the lifetime of the object. The DataVariance value
+           * can be used be routines such as optimzation codes that wish to share static data.*/
+        inline void setDataVariance(const DataVariance dv) { _dataVariance = dv; }
+
+        /** Get the data variance of this object.*/
+        inline const DataVariance getDataVariance() const { return _dataVariance; }
+
 
     protected:
 
@@ -64,6 +81,8 @@ class SG_EXPORT Object : public Referenced
             forcing all nodes to be created on the heap i.e Node* node
             = new Node().*/
         virtual ~Object() {}
+        
+         DataVariance _dataVariance;
 
     private:
 

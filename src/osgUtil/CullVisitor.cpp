@@ -577,8 +577,8 @@ void CullVisitor::apply(Transform& node)
     if (node_state) pushStateSet(node_state);
 
     ref_ptr<osg::Matrix> matrix = createOrReuseMatrix();
+    *matrix = *getCurrentMatrix();
     node.getLocalToWorldMatrix(*matrix,this);
-    matrix->postMult(*getCurrentMatrix());
     pushModelViewMatrix(matrix.get());
     
     traverse(node);

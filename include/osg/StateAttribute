@@ -149,19 +149,11 @@ class SG_EXPORT StateAttribute : public Object
             COLORMATRIX
         };
 
-        /** Range of types that the StateAttribute can be.*/
-        enum DataType
-        {
-            DYNAMIC,
-            STATIC
-        };
 
-
-
-        StateAttribute():_datatype(STATIC) {}
+        StateAttribute() { setDataVariance(STATIC); }
         
         StateAttribute(const StateAttribute& sa,const CopyOp& copyop=CopyOp::SHALLOW_COPY): 
-            Object(sa,copyop),_datatype(sa._datatype) {}
+            Object(sa,copyop) {}
         
 
         /** Clone the type of an attribute, with Object* return type.
@@ -180,10 +172,6 @@ class SG_EXPORT StateAttribute : public Object
         
         /** return the Type identifier of the attribute's class type.*/
         virtual const Type getType() const = 0;
-
-        
-        inline void setDataType(DataType type) { _datatype = type; }
-        inline const DataType getDataType() const { return _datatype; }
 
 
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
@@ -212,8 +200,6 @@ class SG_EXPORT StateAttribute : public Object
     protected:
     
         virtual ~StateAttribute() {}
-
-        DataType _datatype;
 
 };
 

@@ -50,9 +50,6 @@ class SG_EXPORT StateSet : public Object
             nodes which inherit all of their modes for the global state.*/
         void setAllToInherit();
         
-        inline void setDataType(osg::StateAttribute::DataType type) { _datatype = type; }
-        inline const osg::StateAttribute::DataType getDataType() const { return _datatype; }
-
        /** merge this stateset with stateset rhs, this overrides
           * the rhs if OVERRIDE is specified, otherwise rhs takes precedence.*/
         void merge(const StateSet& rhs);
@@ -171,8 +168,6 @@ class SG_EXPORT StateSet : public Object
         RenderBinMode   _binMode;
         int             _binNum;
         std::string     _binName;
-
-        osg::StateAttribute::DataType _datatype;
 
 };
 

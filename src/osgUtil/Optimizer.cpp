@@ -129,7 +129,7 @@ void Optimizer::StateVisitor::addStateSet(osg::StateSet* stateset,osg::Object* o
 void Optimizer::StateVisitor::apply(osg::Node& node)
 {
     osg::StateSet* ss = node.getStateSet();
-    if (ss && ss->getDataType()==osg::StateAttribute::STATIC) addStateSet(ss,&node);
+    if (ss && ss->getDataVariance()==osg::Object::STATIC) addStateSet(ss,&node);
 
     traverse(node);
 }
@@ -137,14 +137,14 @@ void Optimizer::StateVisitor::apply(osg::Node& node)
 void Optimizer::StateVisitor::apply(osg::Geode& geode)
 {
     osg::StateSet* ss = geode.getStateSet();
-    if (ss && ss->getDataType()==osg::StateAttribute::STATIC) addStateSet(ss,&geode);
+    if (ss && ss->getDataVariance()==osg::Object::STATIC) addStateSet(ss,&geode);
     for(int i=0;i<geode.getNumDrawables();++i)
     {
         osg::Drawable* drawable = geode.getDrawable(i);
         if (drawable)
         {
             ss = drawable->getStateSet();
-            if (ss && ss->getDataType()==osg::StateAttribute::STATIC) addStateSet(ss,drawable);
+            if (ss && ss->getDataVariance()==osg::Object::STATIC) addStateSet(ss,drawable);
         }
     }
 }
@@ -172,7 +172,7 @@ void Optimizer::StateVisitor::optimize()
                 aitr!=attributes.end();
                 ++aitr)
             {
-                if (aitr->second.first->getDataType()==osg::StateAttribute::STATIC)
+                if (aitr->second.first->getDataVariance()==osg::Object::STATIC)
                 {
                     _attributeToStateSetMap[aitr->second.first.get()].insert(sitr->first);
                 }
@@ -328,7 +328,7 @@ void Optimizer::FlattenStaticTransformsVisitor::apply(osg::LOD& lod)
 
 void Optimizer::FlattenStaticTransformsVisitor::apply(osg::Transform& transform)
 {
-    if (_ignoreDynamicTransforms && transform.getType()==osg::Transform::DYNAMIC) 
+    if (_ignoreDynamicTransforms && transform.getDataVariance()==osg::Object::DYNAMIC) 
     {
         // simple traverse the children as if this Transform didn't exist.
         traverse(transform);

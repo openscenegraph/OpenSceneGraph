@@ -17,16 +17,6 @@ namespace osg {
 
 class Quat;
 
-/** The range of matrix modes that the scene graph might utilize.
-  * Similar in concept to different modes in OpenGL glMatrixMode().*/
-enum MatrixMode
-{
-    PROJECTION,
-    VIEW,
-    MODEL,
-    MODELVIEW
-};
-
 class SG_EXPORT Matrix : public Object
 {
 
@@ -128,6 +118,7 @@ class SG_EXPORT Matrix : public Object
         inline static Matrix rotate( float, float, float, float );
         inline static Matrix rotate( float angle, const Vec3& axis);
         inline static Matrix rotate( const Quat&);
+        inline static Matrix inverse( const Matrix&);
         
         /** Create a orthographic projection. See glOrtho for further details.*/
         inline static Matrix ortho(const double left, const double right,
@@ -273,6 +264,13 @@ inline Matrix Matrix::rotate(const Vec3& from, const Vec3& to )
 {
     Matrix m;
     m.makeRotate(from,to);
+    return m;
+}
+
+inline Matrix inverse( const Matrix& matrix)
+{
+    Matrix m;
+    m.invert(matrix);
     return m;
 }
 

@@ -158,10 +158,10 @@ class SG_EXPORT NodeVisitor : public Referenced
         const NodePath& getNodePath() const { return _nodePath; }
         
         /** Get the Local To World Matrix from the NodePath for specified Transform::Mode, and u.*/
-        const bool getLocalToWorldMatrix(Matrix& matrix, MatrixMode mode,Node* node);
+        const bool getLocalToWorldMatrix(Matrix& matrix, Node* node);
         
         /** Get the World To Local Matrix from the NodePath for specified Transform::Mode.*/
-        const bool getWorldToLocalMatrix(Matrix& matrix, MatrixMode mode,Node* node);
+        const bool getWorldToLocalMatrix(Matrix& matrix, Node* node);
 
 
         virtual void apply(Node& node)       { traverse(node);}

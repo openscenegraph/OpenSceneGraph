@@ -50,7 +50,7 @@ Node* OrientationConverter::convert( Node *node )
     osg::Group* root = new osg::Group;
     osg::Transform* transform = new osg::Transform;
 
-    transform->setType(osg::Transform::STATIC);
+    transform->setDataVariance(osg::Object::STATIC);
     transform->setMatrix( C * R * S * T );
     
     root->addChild(transform);

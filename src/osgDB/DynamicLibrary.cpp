@@ -125,7 +125,7 @@ DynamicLibrary::getLibraryHandle( const std::string& libraryName)
             BIND_DEFERRED|BIND_FIRST|BIND_VERBOSE, 0);
     return handle;
 #else // other unix
-    handle = dlopen( libraryName.c_str(), RTLD_LAZY );
+    handle = dlopen( libraryName.c_str(), RTLD_LAZY | RTLD_GLOBAL);
 #endif
     return handle;
 }

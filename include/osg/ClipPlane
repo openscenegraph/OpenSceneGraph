@@ -61,7 +61,7 @@ class SG_EXPORT ClipPlane : public StateAttribute
             return 0; // Passed all the above comparison macros, so must be equal.
         }
 
-        virtual unsigned int getMember() { return _clipPlaneNum; }
+        virtual unsigned int getMember() const { return _clipPlaneNum; }
 
         virtual bool getModeUsage(ModeUsage& usage) const
         {

@@ -67,7 +67,7 @@ class SG_EXPORT Light : public StateAttribute
             return 0; // passed all the above comparison macro's, must be equal.
         }
 
-        virtual unsigned int getMember() { return _lightnum; }
+        virtual unsigned int getMember() const { return _lightnum; }
 
         virtual bool getModeUsage(ModeUsage& usage) const
         {

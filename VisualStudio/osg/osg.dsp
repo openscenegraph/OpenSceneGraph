@@ -179,6 +179,10 @@ SOURCE=..\..\src\osg\CopyOp.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\ClusterCullingCallback.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\CullFace.cpp
 # End Source File
 # Begin Source File
@@ -564,6 +568,10 @@ SOURCE=..\..\Include\Osg\CoordinateSystemNode
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\CopyOp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\ClusterCullingCallback
 # End Source File
 # Begin Source File
 

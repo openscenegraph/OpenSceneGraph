@@ -34,7 +34,7 @@
 #include <OpenThreads/Thread>
 #include <OpenThreads/Mutex>
 
-#define NUM_CMD_INDEX 4
+#define NUM_CMD_INDEX 20
 
 namespace osg {
 
@@ -70,7 +70,11 @@ namespace osg {
         }
 
         /// Rewind stream to beginning.
-        virtual void rewind() { setCmd(THREAD_REWIND); }
+        virtual void rewind()
+        {
+            osg::notify(osg::INFO)<<"Rewind video"<<this<<std::endl;
+            setCmd(THREAD_REWIND);
+        }
 
         virtual void quit(bool wiatForThreadToExit);
 

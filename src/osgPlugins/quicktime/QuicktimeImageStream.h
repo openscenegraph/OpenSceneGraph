@@ -30,7 +30,7 @@
 #include <OpenThreads/Thread>
 #include <OpenThreads/Mutex>
 
-#define NUM_CMD_INDEX 4
+#define NUM_CMD_INDEX 20
 
 namespace osg {
 

@@ -18,6 +18,7 @@
 
 #include <osg/Math>
 
+#include <iostream>
 
 /* defines */
 #define T(x) model->triangles[(x)]
@@ -210,6 +211,8 @@ _glmAddGroup(GLMmodel* model, char* name)
     group->next = model->groups;
     model->groups = group;
     model->numgroups++;
+
+    std::cout<<"_glmAddGroup="<<name<<std::endl;
   }
 
   return group;
@@ -607,6 +610,8 @@ _glmFirstPass(GLMmodel* model, FILE* file)
   unsigned int numcolors = 0;
   
   while(fscanf(file, "%s", buf) != EOF) {
+  
+  
     switch(buf[0]) {
     case '#':                /* comment */
       /* eat up rest of line */
@@ -720,6 +725,9 @@ _glmFirstPass(GLMmodel* model, FILE* file)
       fgets(buf, sizeof(buf), file);
       break;
     }
+
+    std::cout<<"line="<<buf<<std::endl;
+
   }
 
 #if 0
@@ -850,8 +858,8 @@ _glmSecondPass(GLMmodel* model, FILE* file)
       fgets(buf, sizeof(buf), file);
       char compositeName[128];
       createCompositeName(buf,compositeName);
-
       group = _glmFindGroup(model, compositeName);
+      std::cout<<"compositeName="<<compositeName<<"  group="<<group<<std::endl;
       group->material = material;
       firstGroup = false;
       break;

@@ -15,52 +15,72 @@
 
 #include <osg/Statistics>
 #include <osg/ImpostorSprite>
+#include <osg/Notify>
 
 #include <algorithm>
 
 using namespace osg;
 using namespace osgUtil;
 
+
+class RenderBinPrototypeList : public osg::Referenced, public std::map< std::string, osg::ref_ptr<RenderBin> > 
+{
+    public:
+	RenderBinPrototypeList() {osg::notify(osg::DEBUG_INFO)<<"constructing RenderBinPrototypeList"<<std::endl;}
+	~RenderBinPrototypeList() { osg::notify(osg::DEBUG_INFO)<<"destructing RenderBinPrototypeList"<<std::endl;}
+};
+
 // register a RenderStage prototype with the RenderBin prototype list.
 RegisterRenderBinProxy s_registerRenderBinProxy("RenderBin",new RenderBin(RenderBin::SORT_BY_STATE));
 RegisterRenderBinProxy s_registerDepthSortedBinProxy("DepthSortedBin",new RenderBin(RenderBin::SORT_BACK_TO_FRONT));
 
-typedef std::map< std::string, osg::ref_ptr<RenderBin> > RenderBinPrototypeList;
 
 RenderBinPrototypeList* renderBinPrototypeList()
 {
-    static RenderBinPrototypeList s_renderBinPrototypeList;
-    return &s_renderBinPrototypeList;
+    static osg::ref_ptr<RenderBinPrototypeList> s_renderBinPrototypeList = new  RenderBinPrototypeList;
+    return s_renderBinPrototypeList.get();
 }
 
 RenderBin* RenderBin::getRenderBinPrototype(const std::string& binName)
 {
-    RenderBinPrototypeList::iterator itr = renderBinPrototypeList()->find(binName);
-    if (itr != renderBinPrototypeList()->end()) return itr->second.get();
-    else return NULL;
+    RenderBinPrototypeList* list = renderBinPrototypeList();
+    if (list)
+    {
+        RenderBinPrototypeList::iterator itr = list->find(binName);
+        if (itr != list->end()) return itr->second.get();
+    }
+    return NULL;
 }
 
 RenderBin* RenderBin::createRenderBin(const std::string& binName)
 {
-    RenderBin* prototype = getRenderBinPrototype(binName);
-    if (prototype) return dynamic_cast<RenderBin*>(prototype->clone(osg::CopyOp::DEEP_COPY_ALL));
-    else return NULL;
+    RenderBinPrototypeList* list = renderBinPrototypeList();
+    if (list)
+    {
+        RenderBin* prototype = getRenderBinPrototype(binName);
+        if (prototype) return dynamic_cast<RenderBin*>(prototype->clone(osg::CopyOp::DEEP_COPY_ALL));
+    }
+    return NULL;
 }
 
 void RenderBin::addRenderBinPrototype(const std::string& binName,RenderBin* proto)
 {
-    if (proto)
+    osg::notify(osg::DEBUG_INFO)<<"addRenderBinPrototype "<<proto<<std::endl;
+    RenderBinPrototypeList* list = renderBinPrototypeList();
+    if (list && proto)
     {
-        (*renderBinPrototypeList())[binName] = proto;
+        (*list)[binName] = proto;
     }
 }
 
 void RenderBin::removeRenderBinPrototype(RenderBin* proto)
 {
-    if (proto)
+    osg::notify(osg::DEBUG_INFO)<<"removeRenderBinPrototype "<<proto<<std::endl;
+    RenderBinPrototypeList* list = renderBinPrototypeList();
+    if (list && proto)
     {
-        RenderBinPrototypeList::iterator itr = renderBinPrototypeList()->find(proto->className());
-        if (itr != renderBinPrototypeList()->end()) renderBinPrototypeList()->erase(itr);
+        RenderBinPrototypeList::iterator itr = list->find(proto->className());
+        if (itr != list->end()) list->erase(itr);
     }
 }
 

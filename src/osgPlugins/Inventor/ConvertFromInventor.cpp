@@ -439,7 +439,7 @@ osg::StateSet* ConvertFromInventor::getStateSet(SoCallbackAction* action)
 
     // Get the material colors
     action->getMaterial(ambient, diffuse, specular, emission,
-		        shininess, transparency, 0);
+                shininess, transparency, 0);
     
     // Set transparency
     if (transparency > 0)
@@ -602,6 +602,14 @@ ConvertFromInventor::convertIVTexToOSGTex(SoTexture2* soTex,
 
     // Create the osg image 
     osg::Image* osgTexImage = new osg::Image;
+    SbString iv_string;
+    soTex->filename.get(iv_string);
+    std::string str(iv_string.getString());
+    std::cout << str << " -> ";
+    if (str[0]=='\"') str.erase(str.begin());
+    if (str[str.size()-1]=='\"') str.erase(str.begin()+str.size()-1);
+    std::cout << str << std::endl;
+    osgTexImage->setFileName(str);
     GLenum formats[] = {GL_LUMINANCE, GL_LUMINANCE_ALPHA, GL_RGB, GL_RGBA};
     osgTexImage->setImage(soTexSize[0], soTexSize[1], 0, soTexNC,
             formats[soTexNC-1], GL_UNSIGNED_BYTE, imageData, 
@@ -880,7 +888,7 @@ void ConvertFromInventor::addVertex(SoCallbackAction* action,
 }
 
 void ConvertFromInventor::addTriangleCB(void* data, SoCallbackAction* action,
-	                                const SoPrimitiveVertex* v0,
+                                    const SoPrimitiveVertex* v0,
                                         const SoPrimitiveVertex* v1,
                                         const SoPrimitiveVertex* v2)
 {

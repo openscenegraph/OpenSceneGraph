@@ -216,7 +216,7 @@ endif
   INC               += 
   DEF               += -W -Wall
   OPTF              = -O2 
-  DBGF              = "-g -DOSG_USE_MEMORY_MANAGER"
+  DBGF              = -g -DOSG_USE_MEMORY_MANAGER
   SHARED            = -shared
   ARCHARGS          = 
   LINKARGS          = -L/usr/X11R6/lib

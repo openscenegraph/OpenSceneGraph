@@ -469,7 +469,7 @@ bool trpgrAppFile::Read(trpgMemReadBuffer *buf,int32 offset)
 
     // Byteswap if necessary
     if (ness != cpuNess)
-        trpg_byteswap_int(len);
+        len = trpg_byteswap_int(len);
 
     if (len < 0) {
         valid = false;
@@ -496,7 +496,7 @@ bool trpgrAppFile::Read(trpgMemReadBuffer *buf,int32 offset)
     check the length against the size of the memory
     passed into dataSize.
  */
-bool trpgrAppFile::Read(char *data,int32 offset,int32 dataSize)
+bool trpgrAppFile::Read(char *data,int32 offset,uint32 dataSize)
 {
     if (!valid)  return false;
 
@@ -516,7 +516,7 @@ bool trpgrAppFile::Read(char *data,int32 offset,int32 dataSize)
 
     // Byteswap if necessary
     if (ness != cpuNess)
-        trpg_byteswap_int(len);
+        len = trpg_byteswap_int(len);
 
     if (len < 0) {
         valid = false;

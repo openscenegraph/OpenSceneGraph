@@ -579,7 +579,7 @@ public:
     trpgrAppFile(trpgEndian,const char *);
     virtual ~trpgrAppFile(void);
     virtual bool Read(trpgMemReadBuffer *,int32 offset);
-    virtual bool Read(char *data,int32 offset,int32 dataSize);
+    virtual bool Read(char *data,int32 offset,uint32 dataSize);
 
     bool isValid(void) const;
 protected:

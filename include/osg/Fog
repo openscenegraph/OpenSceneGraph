@@ -9,6 +9,13 @@
 #include <osg/Types>
 #include <osg/Vec4>
 
+#ifndef GL_FOG_COORDINATE
+    #define GL_FOG_COORDINATE   0x8451
+#endif
+#ifndef GL_FRAGMENT_DEPTH
+    #define GL_FRAGMENT_DEPTH   0x8452
+#endif
+
 namespace osg {
 
 
@@ -26,7 +33,8 @@ class SG_EXPORT Fog : public StateAttribute
             _density(fog._density),
             _start(fog._start),
             _end(fog._end),
-            _color(fog._color) {}
+            _color(fog._color),
+            _fogCoordinateSource(fog._fogCoordinateSource) {}
 
         META_StateAttribute(osg, Fog,FOG);
         
@@ -43,6 +51,7 @@ class SG_EXPORT Fog : public StateAttribute
             COMPARE_StateAttribute_Parameter(_start)
             COMPARE_StateAttribute_Parameter(_end)
             COMPARE_StateAttribute_Parameter(_color)
+            COMPARE_StateAttribute_Parameter(_fogCoordinateSource)
 
             return 0; // passed all the above comparison macro's, must be equal.
         }
@@ -72,6 +81,15 @@ class SG_EXPORT Fog : public StateAttribute
 
         inline void  setColor( const Vec4 &color )      { _color = color; }
         inline const Vec4& getColor() const             { return _color; }
+        
+        enum FogCoordinateSource
+        {
+            FOG_COORDINATE = GL_FOG_COORDINATE,
+            FRAGMENT_DEPTH = GL_FRAGMENT_DEPTH
+        };
+        
+        inline void setFogCoordinateSource(GLint source) { _fogCoordinateSource = source; }
+        inline GLint getFogCoordinateSource() const { return _fogCoordinateSource; }
 
         virtual void apply(State& state) const;
 
@@ -79,11 +97,12 @@ class SG_EXPORT Fog : public StateAttribute
 
         virtual ~Fog();
 
-        Mode   _mode;
-        float  _density;
-        float  _start;
-        float  _end;
-        Vec4 _color;
+        Mode    _mode;
+        float   _density;
+        float   _start;
+        float   _end;
+        Vec4    _color;
+        GLint   _fogCoordinateSource;
 };
 
 }

@@ -76,6 +76,21 @@ bool Fog_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
+    if (fr[0].matchWord("fogCoordinateSource"))
+    {
+        if (fr[1].matchWord("FOG_COORDINATE"))
+        {
+            fog.setFogCoordinateSource(osg::Fog::FOG_COORDINATE);
+            fr+=2;
+            iteratorAdvanced = true;
+        } else if (fr[1].matchWord("FRAGMENT_DEPTH"))
+        {
+            fog.setFogCoordinateSource(osg::Fog::FRAGMENT_DEPTH);
+            fr+=2;
+            iteratorAdvanced = true;
+        }
+    }
+
     return iteratorAdvanced;
 }
 
@@ -89,6 +104,18 @@ bool Fog_writeLocalData(const Object& obj,Output& fw)
     fw.indent() << "start " << fog.getStart() << std::endl;
     fw.indent() << "end " << fog.getEnd() << std::endl;
     fw.indent() << "color " << fog.getColor() << std::endl;
+    switch(fog.getFogCoordinateSource())
+    {
+        case(Fog::FOG_COORDINATE):
+            fw.indent() << "fogCoordinateSource FOG_COORDINATE" << std::endl;
+            break;
+        case(Fog::FRAGMENT_DEPTH):
+            fw.indent() << "fogCoordinateSource FRAGMENT_DEPTH" << std::endl;
+            break;
+        default:
+            // unrecognized source type.
+            break;
+    }
     return true;
 }
 

@@ -197,6 +197,11 @@ Registry::Registry()
 
 Registry::~Registry()
 {
+    // switch off the pager and its associated thread before we clean up 
+    // rest of the Registry.
+    _databasePager = 0;
+
+    // unload all the plugin before we finally destruct.
     closeAllLibraries();
 }
 
@@ -1834,4 +1839,11 @@ void Registry::removeExpiredObjectsInCache(double expiryTime)
 void Registry::clearObjectCache()
 {
     _objectCache.clear();
+}
+
+DatabasePager* Registry::getOrCreateDatabasePager()
+{
+    if (!_databasePager) _databasePager = new DatabasePager;
+    
+    return _databasePager.get();
 }

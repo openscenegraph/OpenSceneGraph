@@ -20,6 +20,7 @@
 #include <osgDB/DynamicLibrary>
 #include <osgDB/ReaderWriter>
 #include <osgDB/DotOsgWrapper>
+#include <osgDB/DatabasePager>
 
 #include <vector>
 #include <map>
@@ -209,6 +210,16 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         DynamicLibrary*              getLibrary(const std::string& fileName);
 
         typedef std::vector< osg::ref_ptr<ReaderWriter> >               ReaderWriterList;
+        
+        
+        /** Set the DatabasePager.*/
+        void setDatabasePager(DatabasePager* databasePager) { _databasePager = databasePager; }
+
+        /** Get the DatabasePager, creating one if one is not already created.*/
+        DatabasePager* getOrCreateDatabasePager();
+        
+        /** Get the DatabasePager. Return 0 if no DatabasePager has been assigned.*/
+        DatabasePager* getDatabasePager() { return _databasePager.get(); }
 
     protected:
 
@@ -264,6 +275,8 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
         bool                _useObjectCacheHint;        
         ObjectCache         _objectCache;
+        
+        osg::ref_ptr<DatabasePager> _databasePager;
 
 };
 

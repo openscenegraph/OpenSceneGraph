@@ -203,7 +203,7 @@ bool ConeSector_readLocalData(osg::Object &obj, osgDB::Input &fr)
         fr[2].getFloat(fadeangle);
         fr += 3;
         sector.setAngle(angle, fadeangle);
-        iteratorAdvanced;
+        iteratorAdvanced = true;
     }
     return iteratorAdvanced;
 }

@@ -28,6 +28,58 @@ class ApplicationUsage;
 class SG_EXPORT ArgumentParser
 {
     public:
+
+        class Parameter
+        {
+        public:
+            enum ParameterType
+            {
+                FLOAT_PARAMETER,
+                DOUBLE_PARAMETER,
+                INT_PARAMETER,
+                UNSIGNED_INT_PARAMETER,
+                STRING_PARAMETER,
+            };
+        
+            union ValueUnion
+            {
+                float*          _float;
+                double*         _double;
+                int*            _int;
+                unsigned int*   _uint;
+                std::string*    _string;
+            };
+
+            Parameter(float& value) { _type = FLOAT_PARAMETER; _value._float = &value; }
+                
+            Parameter(double& value) { _type = DOUBLE_PARAMETER; _value._double = &value; }
+
+            Parameter(int& value) { _type = INT_PARAMETER; _value._int = &value; }
+
+            Parameter(unsigned int& value)  { _type = UNSIGNED_INT_PARAMETER; _value._uint = &value; }
+            
+            Parameter(std::string& value) { _type = STRING_PARAMETER; _value._string = &value; }
+
+            bool valid(const char* str) const;
+            bool assign(const char* str);
+
+        protected:
+        
+            ParameterType   _type;
+            ValueUnion      _value;
+        };
+
+        /** return return true if specified string is an option in the form of -option or --option .*/
+        static bool isOption(const char* str);
+        
+        /** return return true if string is any other string apart from an option.*/
+        static bool isString(const char* str);
+        
+        /** return return true if specified parameter is an number.*/
+        static bool isNumber(const char* str);
+
+    public:
+
         ArgumentParser(int* argc,char **argv);
 
         void setApplicationUsage(ApplicationUsage* usage) { _usage = usage; }
@@ -53,9 +105,6 @@ class SG_EXPORT ArgumentParser
           * return -1 when no string is found.*/      
         int find(const std::string& str) const;
 
-        /** return true if specified argument matches string.*/        
-        bool match(int pos, const std::string& str) const;
-
         /** return return true if specified parameter is an option in the form of -option or --option .*/
         bool isOption(int pos) const;
         
@@ -70,45 +119,25 @@ class SG_EXPORT ArgumentParser
         /** remove one or more arguments from the argv argument list, and decrement the argc respectively.*/
         void remove(int pos,int num=1);
         
+        /** return true if specified argument matches string.*/        
+        bool match(int pos, const std::string& str) const;
+
         /** search for an occurance of a string in the argument list, on sucess
           * remove that occurance from the list and return true, otherwise return false.*/
         bool read(const std::string& str);
+        bool read(const std::string& str, Parameter value1);
+        bool read(const std::string& str, Parameter value1, Parameter value2);
+        bool read(const std::string& str, Parameter value1, Parameter value2, Parameter value3);
+        bool read(const std::string& str, Parameter value1, Parameter value2, Parameter value3, Parameter value4);
 
-        /** search for an occurance of a string in the argument list followed by a string,
-          * on sucess set the value string with the second parameters and then
-          * remove the two entries from the list and return true, otherwise return false.*/
-        bool read(const std::string& str,std::string& value1);
 
-        /** search for an occurance of a string in the argument list followed by a two strings,
-          * on sucess set the value strings with the second & third parameters and then
-          * remove the three entries from the list and return true, otherwise return false.*/
-        bool read(const std::string& str,std::string& value1,std::string& value2);
-
-        /** search for an occurance of a string in the argument list followed by a three strings,
-          * on sucess set the value strings with the second & third & fourth parameters and then
-          * remove the four entries from the list and return true, otherwise return false.*/
-        bool read(const std::string& str,std::string& value1,std::string& value2,std::string& value3);
-        
-        
-        /** search for an occurance of a string in the argument list followed by a numeric value,
-          * on sucess set the values with the second parameter and then
-          * remove the two entries from the list and return true, otherwise return false.*/
-        bool read(const std::string& str,float& value);
-
-        /** search for an occurance of a string in the argument list followed by two numeric values,
-          * on sucess set the values with the second & third parameters and then
-          * remove the three entries from the list and return true, otherwise return false.*/
-        bool read(const std::string& str,float& value1,float& value2);
-
-        /** search for an occurance of a string in the argument list followed by three numeric values,
-          * on sucess set the values with the second & third & fourth parameters and then
-          * remove the four entries from the list and return true, otherwise return false.*/
-        bool read(const std::string& str,float& value1,float& value2,float& value3);
-
-        /** search for an occurance of a string in the argument list followed by three numeric values,
-          * on sucess set the values with the second & third & fourth parameters and then
-          * remove the four entries from the list and return true, otherwise return false.*/
-        bool read(const std::string& str,float& value1,float& value2,float& value3,float& value4);
+        /** if the argument value at the position pos matches specified string, and subsequent
+          * paramters are also matched then set the paramter values and remove the from the list of arguments.*/
+        bool read(int pos, const std::string& str);
+        bool read(int pos, const std::string& str, Parameter value1);
+        bool read(int pos, const std::string& str, Parameter value1, Parameter value2);
+        bool read(int pos, const std::string& str, Parameter value1, Parameter value2, Parameter value3);
+        bool read(int pos, const std::string& str, Parameter value1, Parameter value2, Parameter value3, Parameter value4);
 
 
         enum ErrorSeverity

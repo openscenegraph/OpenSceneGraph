@@ -7,50 +7,21 @@
 
 using namespace osg;
 
-ArgumentParser::ArgumentParser(int* argc,char **argv):
-    _argc(argc),
-    _argv(argv),
-    _usage(ApplicationUsage::instance())
+bool ArgumentParser::isOption(const char* str)
 {
+    return str && str[0]=='-';
 }
 
-std::string ArgumentParser::getApplicationName() const
+bool ArgumentParser::isString(const char* str)
 {
-    if (_argc && *_argc>0 ) return std::string(_argv[0]);
-    return "";
+    if (!str) return false;
+    return !isOption(str);
 }
 
-int ArgumentParser::find(const std::string& str) const
+bool ArgumentParser::isNumber(const char* str)
 {
-    for(int pos=1;pos<*_argc;++pos)
-    {
-        if (str==_argv[pos])
-        {
-            return pos;
-        }
-    }
-    return 0;
-}
+    if (!str) return false;
 
-bool ArgumentParser::match(int pos, const std::string& str) const
-{
-    return pos<*_argc && str==_argv[pos];
-}
-
-bool ArgumentParser::isOption(int pos) const
-{
-    return (pos<*_argc && _argv[pos][0]=='-');
-}
-
-bool ArgumentParser::isString(int pos) const
-{
-    return pos<*_argc && !isOption(pos);
-}
-
-bool ArgumentParser::isNumber(int pos) const
-{
-    if (pos>=*_argc) return false;
-    
     bool hadPlusMinus = false;
     bool hadDecimalPlace = false;
     bool hadExponent = false;
@@ -58,7 +29,7 @@ bool ArgumentParser::isNumber(int pos) const
     bool couldBeFloat = true;
     int noZeroToNine = 0;
 
-    const char* ptr = _argv[pos];
+    const char* ptr = str;
     
     // check if could be a hex number.
     if (strncmp(ptr,"0x",2)==0)
@@ -80,7 +51,8 @@ bool ArgumentParser::isNumber(int pos) const
         if (*ptr==0) return true;
     }
     
-    ptr = _argv[pos];
+    ptr = str;
+
     // check if a float or an int.
     while (*ptr!=0 && couldBeFloat)
     {
@@ -140,6 +112,89 @@ bool ArgumentParser::isNumber(int pos) const
     
 }
 
+bool ArgumentParser::Parameter::valid(const char* str) const
+{
+    switch(_type)
+    {
+    case Parameter::FLOAT_PARAMETER:        return isNumber(str); break;
+    case Parameter::DOUBLE_PARAMETER:       return isNumber(str); break;
+    case Parameter::INT_PARAMETER:          return isNumber(str); break;
+    case Parameter::UNSIGNED_INT_PARAMETER: return isNumber(str); break;
+    case Parameter::STRING_PARAMETER:       return isString(str); break;
+    }
+    return false;
+}
+
+bool ArgumentParser::Parameter::assign(const char* str)
+{
+    if (valid(str))
+    {
+        switch(_type)
+        {
+        case Parameter::FLOAT_PARAMETER:        *_value._float = atof(str); break;
+        case Parameter::DOUBLE_PARAMETER:       *_value._double = atof(str); break;
+        case Parameter::INT_PARAMETER:          *_value._int = atoi(str); break;
+        case Parameter::UNSIGNED_INT_PARAMETER: *_value._uint = atoi(str); break;
+        case Parameter::STRING_PARAMETER:       *_value._string = str; break;
+        }
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+
+
+ArgumentParser::ArgumentParser(int* argc,char **argv):
+    _argc(argc),
+    _argv(argv),
+    _usage(ApplicationUsage::instance())
+{
+}
+
+std::string ArgumentParser::getApplicationName() const
+{
+    if (_argc && *_argc>0 ) return std::string(_argv[0]);
+    return "";
+}
+
+ 
+bool ArgumentParser::isOption(int pos) const
+{
+    return pos<*_argc && isOption(_argv[pos]);
+}
+
+bool ArgumentParser::isString(int pos) const
+{
+    return pos < *_argc && isString(_argv[pos]);
+}
+
+bool ArgumentParser::isNumber(int pos) const
+{
+    return pos < *_argc && isNumber(_argv[pos]);
+}
+
+
+int ArgumentParser::find(const std::string& str) const
+{
+    for(int pos=1;pos<*_argc;++pos)
+    {
+        if (str==_argv[pos])
+        {
+            return pos;
+        }
+    }
+    return 0;
+}
+
+bool ArgumentParser::match(int pos, const std::string& str) const
+{
+    return pos<*_argc && str==_argv[pos];
+}
+
+
 bool ArgumentParser::containsOptions() const
 {
     for(int pos=1;pos<*_argc;++pos)
@@ -173,113 +228,163 @@ bool ArgumentParser::read(const std::string& str)
     return true;
 }
 
-bool ArgumentParser::read(const std::string& str,std::string& value1)
+bool ArgumentParser::read(const std::string& str, Parameter value1)
 {
     int pos=find(str);
     if (pos<=0) return false;
-    if (!isString(pos+1))
+    if (!value1.valid(_argv[pos+1]))
     {
         reportError("argument to `"+str+"` is missing");
         return false;
     }
-    value1 = _argv[pos+1];
+    value1.assign(_argv[pos+1]);
     remove(pos,2);
     return true;
 }
 
-bool ArgumentParser::read(const std::string& str,std::string& value1,std::string& value2)
+bool ArgumentParser::read(const std::string& str, Parameter value1, Parameter value2)
 {
     int pos=find(str);
     if (pos<=0) return false;
-    if (!isString(pos+1) || !isString(pos+2) )
+    if (!value1.valid(_argv[pos+1]) ||
+        !value2.valid(_argv[pos+2]))
     {
         reportError("argument to `"+str+"` is missing");
         return false;
     }
-    value1 = _argv[pos+1];
-    value2 = _argv[pos+2];
+    value1.assign(_argv[pos+1]);
+    value2.assign(_argv[pos+2]);
     remove(pos,3);
     return true;
 }
 
-bool ArgumentParser::read(const std::string& str,std::string& value1,std::string& value2,std::string& value3)
+bool ArgumentParser::read(const std::string& str, Parameter value1, Parameter value2, Parameter value3)
 {
     int pos=find(str);
     if (pos<=0) return false;
-    if (!isString(pos+1) || !isString(pos+2)  || !isString(pos+3))
+    if (!value1.valid(_argv[pos+1]) ||
+        !value2.valid(_argv[pos+2]) ||
+        !value2.valid(_argv[pos+3]))
     {
         reportError("argument to `"+str+"` is missing");
         return false;
     }
-    value1 = _argv[pos+1];
-    value2 = _argv[pos+2];
-    value3 = _argv[pos+3];
+    value1.assign(_argv[pos+1]);
+    value2.assign(_argv[pos+2]);
+    value3.assign(_argv[pos+3]);
     remove(pos,4);
     return true;
 }
 
-
-bool ArgumentParser::read(const std::string& str,float& value1)
+bool ArgumentParser::read(const std::string& str, Parameter value1, Parameter value2, Parameter value3, Parameter value4)
 {
     int pos=find(str);
     if (pos<=0) return false;
-    if (!isNumber(pos+1))
+    if (!value1.valid(_argv[pos+1]) ||
+        !value2.valid(_argv[pos+2]) ||
+        !value2.valid(_argv[pos+3]) ||
+        !value3.valid(_argv[pos+4]))
     {
         reportError("argument to `"+str+"` is missing");
         return false;
     }
-    value1 = atof(_argv[pos+1]);
-    remove(pos,2);
-    return true;
-}
-
-bool ArgumentParser::read(const std::string& str,float& value1,float& value2)
-{
-    int pos=find(str);
-    if (pos<=0) return false;
-    if (!isNumber(pos+1) || !isNumber(pos+2) )
-    {
-        reportError("argument to `"+str+"` is missing");
-        return false;
-    }
-    value1 = atof(_argv[pos+1]);
-    value2 = atof(_argv[pos+2]);
-    remove(pos,3);
-    return true;
-}
-
-bool ArgumentParser::read(const std::string& str,float& value1,float& value2,float& value3)
-{
-    int pos=find(str);
-    if (pos<=0) return false;
-    if (!isNumber(pos+1) || !isNumber(pos+2)  || !isNumber(pos+3))
-    {
-        reportError("argument to `"+str+"` is missing");
-        return false;
-    }
-    value1 = atof(_argv[pos+1]);
-    value2 = atof(_argv[pos+2]);
-    value3 = atof(_argv[pos+3]);
-    remove(pos,4);
-    return true;
-}
-
-bool ArgumentParser::read(const std::string& str,float& value1,float& value2,float& value3,float& value4)
-{
-    int pos=find(str);
-    if (pos<=0) return false;
-    if (!isNumber(pos+1) || !isNumber(pos+2)  || !isNumber(pos+3))
-    {
-        reportError("argument to `"+str+"` is missing");
-        return false;
-    }
-    value1 = atof(_argv[pos+1]);
-    value2 = atof(_argv[pos+2]);
-    value3 = atof(_argv[pos+3]);
-    value4 = atof(_argv[pos+4]);
+    value1.assign(_argv[pos+1]);
+    value2.assign(_argv[pos+2]);
+    value3.assign(_argv[pos+3]);
+    value4.assign(_argv[pos+4]);
     remove(pos,5);
     return true;
 }
+
+
+/** if the argument value at the psotion pos matches specified string, and subsequent
+  * paramters are also matched then set the paramter values and remove the from the list of arguments.*/
+bool ArgumentParser::read(int pos, const std::string& str)
+{
+    if (match(pos,str))
+    {
+        remove(pos,1);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool ArgumentParser::read(int pos, const std::string& str, Parameter value1)
+{
+    if (match(pos,str) &&
+        value1.valid(_argv[pos+1]))
+    {
+        value1.assign(_argv[pos+1]);
+        remove(pos,2);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool ArgumentParser::read(int pos, const std::string& str, Parameter value1, Parameter value2)
+{
+    if (match(pos,str) &&
+        value1.valid(_argv[pos+1]) &&
+        value2.valid(_argv[pos+2]))
+    {
+        value1.assign(_argv[pos+1]);
+        value2.assign(_argv[pos+2]);
+        remove(pos,3);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool ArgumentParser::read(int pos, const std::string& str, Parameter value1, Parameter value2, Parameter value3)
+{
+    if (match(pos,str) &&
+        value1.valid(_argv[pos+1]) &&
+        value2.valid(_argv[pos+2]) &&
+        value3.valid(_argv[pos+3]))
+    {
+        value1.assign(_argv[pos+1]);
+        value2.assign(_argv[pos+2]);
+        value3.assign(_argv[pos+3]);
+        remove(pos,4);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool ArgumentParser::read(int pos, const std::string& str, Parameter value1, Parameter value2, Parameter value3, Parameter value4)
+{
+    if (match(pos,str) &&
+        value1.valid(_argv[pos+1]) &&
+        value2.valid(_argv[pos+2]) &&
+        value3.valid(_argv[pos+3]) &&
+        value4.valid(_argv[pos+4]))
+    {
+        value1.assign(_argv[pos+1]);
+        value2.assign(_argv[pos+2]);
+        value3.assign(_argv[pos+3]);
+        value4.assign(_argv[pos+4]);
+        remove(pos,5);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+
 
 bool ArgumentParser::errors(ErrorSeverity severity) const
 {

@@ -344,13 +344,21 @@ osg::Node* SeamFinder::seamReplacement(osg::Node* node)
             seam->addChild(hiRes->getChild(0));    // high res
         }
   
-        if (nonSeamChildren.size())
+        if (nonSeamChildren.empty())
         {
-            std::cout<<"Alert *** need to place in a seperate osg::Group NOT the TXPSeamLOD"<<std::endl;
-            for (unsigned int i = 0; i < nonSeamChildren.size(); i++)
-                seam->addChild(nonSeamChildren[i]);
+            return seam;
         }
-        return seam;
+        else
+        {
+            osg::Group* newGroup = new osg::Group;
+
+            newGroup->addChild(seam);
+            
+            for (unsigned int i = 0; i < nonSeamChildren.size(); i++)
+                newGroup->addChild(nonSeamChildren[i]);
+                
+            return newGroup;
+        }
     }
 
     return node;

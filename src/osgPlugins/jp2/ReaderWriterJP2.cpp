@@ -178,6 +178,17 @@ class ReaderWriterJP2 : public osgDB::ReaderWriter
                 osgDB::equalCaseInsensitive(extension,"jpc");
         }
 
+        virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options)
+        {
+            return readImage(file,options);
+        }
+
+        virtual ReadResult readObject(std::istream& fin, const Options* options)
+        {
+            return readImage(fin,options);
+        }
+
+
         virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options)
         {
             std::string ext = osgDB::getFileExtension(file);
@@ -266,13 +277,15 @@ class ReaderWriterJP2 : public osgDB::ReaderWriter
             jas_stream_t* in = jas_stream_memopen((char*)sdata, ssize);
 
             char* opt = 0;
-            if(options)
+            if(options && !options->getOptionString().empty())
             {
                 opt = new char[options->getOptionString().size() + 1];
                 strcpy(opt, options->getOptionString().c_str());
             }
             jas_image_t* jimage = jas_image_decode(in, -1, opt); // last is the option string whatto put there?
             if(opt) delete[] opt;
+            
+            if (!jimage) return ReadResult::FILE_NOT_HANDLED; 
 
             int internalFormat = jimage->numcmpts_;
 
@@ -310,6 +323,22 @@ class ReaderWriterJP2 : public osgDB::ReaderWriter
 
             notify(INFO) << "image read ok "<<s<<"  "<<t<< std::endl;
             return image;
+        }
+
+        virtual WriteResult writeObject(const osg::Object& object,const std::string& file, const osgDB::ReaderWriter::Options* options)
+        {
+            const osg::Image* image = dynamic_cast<const osg::Image*>(&object);
+            if (!image) return WriteResult::FILE_NOT_HANDLED;
+
+            return writeImage(*image,file,options);
+        }
+
+        virtual WriteResult writeObject(const osg::Object& object,std::ostream& fout,const Options* options)
+        {
+            const osg::Image* image = dynamic_cast<const osg::Image*>(&object);
+            if (!image) return WriteResult::FILE_NOT_HANDLED;
+
+            return writeImage(*image,fout,options);
         }
 
         virtual WriteResult writeImage(const osg::Image &img,const std::string& fileName, const osgDB::ReaderWriter::Options* options)

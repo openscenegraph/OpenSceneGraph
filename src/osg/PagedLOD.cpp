@@ -47,7 +47,17 @@ void PagedLOD::setDatabasePath(const std::string& path)
         char& lastCharacter = _databasePath[_databasePath.size()-1];
         const char unixSlash = '/';
         const char winSlash = '\\';
-        
+
+        if (lastCharacter==winSlash)
+        {
+            lastCharacter = unixSlash;
+        }
+        else if (lastCharacter!=unixSlash)
+        {
+            _databasePath += unixSlash;
+        }
+
+/*        
         // make sure the last character is the appropriate slash 
 #ifdef WIN32       
         if (lastCharacter==unixSlash)
@@ -68,6 +78,7 @@ void PagedLOD::setDatabasePath(const std::string& path)
             _databasePath += unixSlash;
         }
 #endif
+*/
     }
 }
 

@@ -1044,7 +1044,28 @@ Package=<4>
 
 ###############################################################################
 
-Project: "osgPlugin flt"=.\osgPlugins\flt\flt.dsp - Package Owner=<4>
+Project: "osgPlugin geo"=.\osgPlugins\geo\geo.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "osgPlugin ac3d"=.\osgPlugins\ac3d\ac3d.dsp - Package Owner=<4>
 
 Package=<5>
 {{{

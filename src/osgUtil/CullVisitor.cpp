@@ -84,11 +84,7 @@ CullVisitor::CullVisitor()
     _LODBias = 1.0f;
 
 
-    // note all subsequent _cullingModeStack code assumes that there
-    // is a least this one value on the stack, therefore they never
-    // check whether the stack is empty. This shouldn't be a problem
-    // unless there is bug somewhere...
-    _cullingModeStack.push_back(ENABLE_ALL_CULLING);
+    _cullingMode = ENABLE_ALL_CULLING;
 
 
     //_tsm = LOOK_VECTOR_DISTANCE;
@@ -105,8 +101,6 @@ CullVisitor::CullVisitor()
     _numFramesToKeepImpostorSprites = 10;
     _impostorSpriteManager = osgNew ImpostorSpriteManager;
 
-    _windowToModelFactorDirty = true;
-    _windowToModelFactor = 1.0f;
     _smallFeatureCullingPixelSize = 3.0f;
 
 }
@@ -125,18 +119,14 @@ void CullVisitor::reset()
     // first unref all referenced objects and then empty the containers.
     //
     _projectionStack.clear();
-    _projectionPolytopeStack.clear();
-
     _modelviewStack.clear();
-    _modelviewPolytopeStack.clear();
-
     _viewportStack.clear();
-
     _eyePointStack.clear();
 
-    // remove all accept the first element of the stack.
-    //_cullingModeStack.erase(_cullingModeStack.begin()+1,_cullingModeStack.end());
-    _cullingModeStack.clear();
+
+    _clipspaceCullingStack.clear();
+    _projectionCullingStack.clear();
+    _modelviewCullingStack.clear();
 
     // reset the calculated near far planes.
     _computed_znear = FLT_MAX;
@@ -162,34 +152,54 @@ void CullVisitor::reset()
         (*itr)->reset();
     }
     
-    _windowToModelFactorDirty = true;
-    _windowToModelFactor = 1.0f;
 }
 
 void CullVisitor::pushCullingSet()
 {
-    _modelviewPolytopeStack.push_back();
-    osg::Polytope& cv = _modelviewPolytopeStack.back();
-    cv = _projectionPolytopeStack.back();
-
-    if (!_modelviewStack.empty()) cv.transformProvidingInverse(*_modelviewStack.back());
-
     _MVPW_Stack.push_back(0L);
-
-    _windowToModelFactorDirty = true;
     
+    const osg::Matrix& mvpw = getMVPW();
+    float scale = osg::Vec3(mvpw(0,0),mvpw(1,0),mvpw(2,0)).length();
+    Vec4 pixelSizeVector(mvpw(0,3),mvpw(1,3),mvpw(2,3),mvpw(3,3));
+    if (scale>0.0f) pixelSizeVector /= scale; 
 
-    if (_modelviewStack.empty()) _modelviewCullingStack.push_back(_projectionCullingStack.back());
-    else _modelviewCullingStack.push_back(osgNew osg::CullingSet(*_projectionCullingStack.back(),*_modelviewStack.back()));
+
+
+
+    if (_modelviewStack.empty()) 
+    {
+        _modelviewCullingStack.push_back(_projectionCullingStack.back());
+
+    }
+    else 
+    {
+// Need to account for window matrix...
+//        osg::Matrix& P = *_projectionStack.back();
+//         osg::Matrix& M = *_modelviewStack.back();
+//         
+//         float P00 = P(0,0);
+//         float P20 = P(2,0);
+//         osg::Vec3 scale(M(0,0)*P00 + M(0,2)*P20,
+//                         M(1,0)*P00 + M(1,2)*P20,
+//                         M(2,0)*P00 + M(2,2)*P20);
+//                         
+//         float P23 = P(2,3);
+//         float P33 = P(3,3);
+//         osg::Vec4 pixelSizeVector(M(0,2)*P23,
+//                                   M(1,2)*P23,
+//                                   M(2,2)*P23,
+//                                   M(3,2)*P23 + M(3,3)*P33);
+//                                   
+//         pixelSizeVector /= scale.length();
+        
+        _modelviewCullingStack.push_back(osgNew osg::CullingSet(*_projectionCullingStack.back(),*_modelviewStack.back(),pixelSizeVector));
+    }
     
 }
 
 void CullVisitor::popCullingSet()
 {
-    _modelviewPolytopeStack.pop_back();
     _MVPW_Stack.pop_back();
-    
-    _windowToModelFactorDirty = true;
     
     _modelviewCullingStack.pop_back();
 }
@@ -210,14 +220,10 @@ void CullVisitor::pushProjectionMatrix(Matrix* matrix)
 {
     _projectionStack.push_back(matrix);
     
-    _projectionPolytopeStack.push_back();
-    _projectionPolytopeStack.back().setToUnitFrustumWithoutNearFar();
-    _projectionPolytopeStack.back().transformProvidingInverse(*matrix);
-    
-    
     osg::CullingSet* cullingSet = osgNew osg::CullingSet();
     cullingSet->getFrustum().setToUnitFrustumWithoutNearFar();
     cullingSet->getFrustum().transformProvidingInverse(*matrix);
+    cullingSet->setSmallFeatureCullingPixelSize(_smallFeatureCullingPixelSize);
     
     _projectionCullingStack.push_back(cullingSet);
     
@@ -256,7 +262,6 @@ void CullVisitor::popProjectionMatrix()
     }
 
     _projectionStack.pop_back();
-    _projectionPolytopeStack.pop_back();
 
     _projectionCullingStack.pop_back();
 
@@ -368,13 +373,13 @@ void CullVisitor::updateCalculatedNearFar(const osg::Vec3& pos)
 
 void CullVisitor::setCullingMode(CullingMode mode)
 {
-    _cullingModeStack.back()=mode;
+    _cullingMode=mode;
 }
 
 
 CullVisitor::CullingMode CullVisitor::getCullingMode() const
 {
-    return _cullingModeStack.back();
+    return _cullingMode;
 }
 
 void CullVisitor::apply(Node& node)
@@ -455,37 +460,6 @@ void CullVisitor::apply(Geode& node)
         }
 
     }
-//     osg::Timer timer;
-//     osg::Timer_t ta = timer.tick();
-//     const osg::Matrix& mvpw = getMVPW();
-//     osg::Timer_t tb = timer.tick();
-// 
-//     const osg::BoundingSphere& sp = node.getBound();
-//     osg::Vec3 v = sp._center;
-//     float radius = sp._radius;
-//     osg::Timer_t t1 = timer.tick();
-//     bool result1 = pixelSize(v,sp.radius())<4.0f;
-//     osg::Timer_t t2 = timer.tick();
-//     
-//     const float _ratio2 = 0.002f*0.002f;
-//     osg::Vec3 delta(v-getEyeLocal());
-//     bool result2 = (sp.radius2()<delta.length2()*_ratio2);
-// 
-//     osg::Timer_t t3 = timer.tick();
-// 
-//     float W = v.x()*mvpw(0,3)+
-//               v.y()*mvpw(1,3)+
-//               v.z()*mvpw(2,3)+
-//                     mvpw(3,3);
-// 
-//     bool result3 = fabs(radius*_windowToModelFactor/W);
-// 
-//     osg::Timer_t t4 = timer.tick();
-//     
-//     cout << "time pixelSize = "<<t2-t1<<endl;
-//     cout << "     odl       = "<<t3-t2<<endl;
-//     cout << "     stripped  = "<<t4-t3<<endl;
-//     cout << "     getMVPW   = "<<tb-ta<<endl;
 
     // pop the node's state off the geostate stack.    
     if (node_state) popStateSet();
@@ -990,20 +964,12 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
 
     pushStateSet(dummyState.get());
 
-
-    // switch off the view frustum culling, since we will have
-    // the whole subgraph in view.
-    _cullingModeStack.push_back((_cullingModeStack.back() & ~VIEW_FRUSTUM_CULLING));
-
     {
 
         // traversing the usual LOD selected child.
         handle_cull_callbacks_and_accept(node,node.getChild(eval));
 
     }
-
-    // restore the culling mode.
-    popCurrentMask();
 
     popStateSet();
 

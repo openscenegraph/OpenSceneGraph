@@ -232,64 +232,29 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
 
         inline float pixelSize(const osg::Vec3& v, float const radius)
         {
-            const osg::Matrix& mvpw = getMVPW();
-            if (_windowToModelFactorDirty)
-            {
-                _windowToModelFactorDirty=false;
-                _windowToModelFactor = osg::Vec3(mvpw(0,0),mvpw(1,0),mvpw(2,0)).length();
-            }
-            float W = v.x()*mvpw(0,3)+
-                      v.y()*mvpw(1,3)+
-                      v.z()*mvpw(2,3)+
-                            mvpw(3,3);
-                            
-            return fabs(radius*_windowToModelFactor/W);
-
-        }
-
-        inline float pixelSize2(const osg::Vec3& v, float const radius)
-        {
-            const float R2 = osg::square(_viewportStack.back()->width()/osg::DegreesToRadians(38.0f))*1.15f;
-
-            //float p1 = fabs(radius*_windowToModelFactor/W);
-            return R2*radius*radius/(v-getEyeLocal()).length2();
-
+            return _modelviewCullingStack.back()->pixelSize(v,radius);
         }
 
         inline bool isCulled(const osg::Node& node)
         {
-            if (node.isCullingActive())
-            {
-                const osg::BoundingSphere& sp = node.getBound();
-                if (!(_modelviewPolytopeStack.back().contains(sp))) return true;
-//                if (pixelSize(sp.center(),sp.radius())<_smallFeatureCullingPixelSize) return true;
-                if (pixelSize2(sp.center(),sp.radius())<osg::square(_smallFeatureCullingPixelSize)) return true;
-            }
-            return false;
-            
+            return node.isCullingActive() && _modelviewCullingStack.back()->isCulled(node.getBound());
         }
 
         inline const bool isCulled(const osg::BoundingBox& bb)
         {
-            if (!bb.isValid()) return true;
-
-            //return !_modelviewPolytopeStack.back().contains(bb,mode);
-            return !_modelviewPolytopeStack.back().contains(bb);
-            //return false;
+            return bb.isValid() && _modelviewCullingStack.back()->isCulled(bb);
         }
         
         inline void pushCurrentMask()
         {
-            _modelviewPolytopeStack.back().pushCurrentMask();
+            _modelviewCullingStack.back()->pushCurrentMask();
         }
         
         inline void popCurrentMask()
         {
-            _modelviewPolytopeStack.back().popCurrentMask();
+            _modelviewCullingStack.back()->popCurrentMask();
         }
         
-        const CullingMode getCurrentCullingMode() const { return _cullingModeStack.back(); }
-
 	void updateCalculatedNearFar(const osg::Matrix& matrix,const osg::Drawable& drawable) { updateCalculatedNearFar(matrix,drawable.getBound()); }
 	void updateCalculatedNearFar(const osg::Matrix& matrix,const osg::BoundingBox& bb);
     	void updateCalculatedNearFar(const osg::Vec3& pos);
@@ -352,33 +317,22 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
         void popCullingSet();
 
         
-//         typedef std::vector<osg::Polytope>            PolytopeStack;
-//         typedef std::vector<osg::ref_ptr<osg::Matrix> >     MatrixStack;
-
         typedef osg::fast_back_stack<osg::Polytope>           PolytopeStack;
         typedef osg::fast_back_stack< osg::ref_ptr<osg::Matrix> >   MatrixStack;
 
         MatrixStack                                                 _projectionStack;
         MatrixStack                                                 _PW_Stack;
-        PolytopeStack                                               _projectionPolytopeStack;
 
         MatrixStack                                                 _modelviewStack;
         MatrixStack                                                 _MVPW_Stack;
-        PolytopeStack                                               _modelviewPolytopeStack;
-        
-        bool                                                        _windowToModelFactorDirty;
-        float                                                       _windowToModelFactor;
-                
-//        typedef std::vector<osg::ref_ptr<osg::Viewport> >   ViewportStack;
+                       
         typedef osg::fast_back_stack<osg::ref_ptr<osg::Viewport> >  ViewportStack;
         ViewportStack                                               _viewportStack;
         
-//        typedef std::vector<osg::Vec3>                      EyePointStack;
         typedef osg::fast_back_stack<osg::Vec3>                     EyePointStack;
         EyePointStack                                               _eyePointStack;
         
-        typedef osg::fast_back_stack<CullingMode>                   CullingModeStack;
-        CullingModeStack                                            _cullingModeStack;
+        CullingMode                                                 _cullingMode;
 
         typedef osg::fast_back_stack<osg::ref_ptr<osg::CullingSet> > CullingStack;
         CullingStack                                                _clipspaceCullingStack;

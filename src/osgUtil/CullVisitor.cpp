@@ -276,13 +276,14 @@ void CullVisitor::apply(Geode& node)
         }
 
 
-        if (_computeNearFar) updateCalculatedNearFar(matrix,*drawable);
+        if (_computeNearFar && bb.valid()) updateCalculatedNearFar(matrix,*drawable);
 
         // push the geoset's state on the geostate stack.    
         StateSet* stateset = drawable->getStateSet();
         if (stateset) pushStateSet(stateset);
 
-        addDrawableAndDepth(drawable,&matrix,distance(drawable->getBound().center(),matrix));
+        if (bb.valid()) addDrawableAndDepth(drawable,&matrix,distance(bb.center(),matrix));
+	else addDrawableAndDepth(drawable,&matrix,0.0f);
 
         if (stateset) popStateSet();
 

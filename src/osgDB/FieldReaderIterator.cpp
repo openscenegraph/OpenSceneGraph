@@ -472,6 +472,45 @@ bool FieldReaderIterator::readSequence(const char* keyword,osg::Vec4f& value)
     return false;
 }
 
+bool FieldReaderIterator::readSequence(const char* keyword,osg::Vec2d& value)
+{
+    if ((*this)[0].matchWord(keyword) &&
+        (*this)[1].getFloat(value[0]) &&
+        (*this)[2].getFloat(value[1]))
+    {
+        (*this)+=3;
+        return true;
+    }
+    return false;
+}
+
+bool FieldReaderIterator::readSequence(const char* keyword,osg::Vec3d& value)
+{
+    if ((*this)[0].matchWord(keyword) &&
+        (*this)[1].getFloat(value[0]) &&
+        (*this)[2].getFloat(value[1]) &&
+        (*this)[3].getFloat(value[2]))
+    {
+        (*this)+=4;
+        return true;
+    }
+    return false;
+}
+
+bool FieldReaderIterator::readSequence(const char* keyword,osg::Vec4d& value)
+{
+    if ((*this)[0].matchWord(keyword) &&
+        (*this)[1].getFloat(value[0]) &&
+        (*this)[2].getFloat(value[1]) &&
+        (*this)[3].getFloat(value[2]) &&
+        (*this)[4].getFloat(value[3]))
+    {
+        (*this)+=5;
+        return true;
+    }
+    return false;
+}
+
 bool FieldReaderIterator::readSequence(std::string& value)
 {
     if ((*this)[0].isString())
@@ -550,3 +589,38 @@ bool FieldReaderIterator::readSequence(osg::Vec4f& value)
 }
 
 
+bool FieldReaderIterator::readSequence(osg::Vec2d& value)
+{
+    if ((*this)[0].getFloat(value[0]) &&
+        (*this)[1].getFloat(value[1]))
+    {
+        (*this)+=2;
+        return true;
+    }
+    return false;
+}
+
+bool FieldReaderIterator::readSequence(osg::Vec3d& value)
+{
+    if ((*this)[0].getFloat(value[0]) &&
+        (*this)[1].getFloat(value[1]) &&
+        (*this)[2].getFloat(value[2]))
+    {
+        (*this)+=3;
+        return true;
+    }
+    return false;
+}
+
+bool FieldReaderIterator::readSequence(osg::Vec4d& value)
+{
+    if ((*this)[0].getFloat(value[0]) &&
+        (*this)[1].getFloat(value[1]) &&
+        (*this)[2].getFloat(value[2]) &&
+        (*this)[3].getFloat(value[3]))
+    {
+        (*this)+=4;
+        return true;
+    }
+    return false;
+}

@@ -1,7 +1,7 @@
 #ifndef BISON_PARSER_HPP
 # define BISON_PARSER_HPP
 
-#ifndef YYSTYPE
+//#ifndef YYSTYPE
 typedef union {
   char *s_value;
   float f_value;
@@ -13,10 +13,10 @@ typedef union {
   PolygonList *plist;
   Matrix matrix;
   int i_value;
-} yystype;
-# define YYSTYPE yystype
-# define YYSTYPE_IS_TRIVIAL 1
-#endif
+} YYSTYPE;
+//# define YYSTYPE yystype
+//# define YYSTYPE_IS_TRIVIAL 1
+//#endif
 # define	STRING	257
 # define	QUOTED_STRING	258
 # define	FLOAT	259

@@ -28,7 +28,7 @@
 #include "trpage_geom.h"
 #include "trpage_read.h"
 
-#if defined(_WIN32)
+#if defined(_WIN32) && !defined(__GNUC__)
 #define ALIGNMENT_WORKAROUND    false
 #else
 #define ALIGNMENT_WORKAROUND    true

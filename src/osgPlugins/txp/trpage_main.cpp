@@ -15,10 +15,10 @@
    */
 
 /* trpage_main.cpp
-	This file is here to provide a DLL Main.
-	Note: #ifdef this out on non-windows machines
-	*/
-#if defined(_WIN32)
+    This file is here to provide a DLL Main.
+    Note: #ifdef this out on non-windows machines
+    */
+#if defined(_WIN32) || defined(__CYGWIN__)
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #endif

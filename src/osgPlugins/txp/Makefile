@@ -1,23 +1,26 @@
 #!smake
+SHELL   = /bin/sh
+OSGHOME = $(shell cd ../../..; pwd)
+
 include $(OSGHOME)/Make/makedefs
 
 C++FILES = \
-    ReaderWriterTXP.cpp\
-    TrPageArchive.cpp\
-    TrPageParser.cpp\
-    trpage_basic.cpp\
-    trpage_geom.cpp\
-    trpage_header.cpp\
-    trpage_tile.cpp\
-    trpage_readbuf.cpp\
-    trpage_rarchive.cpp\
-    trpage_writebuf.cpp\
-    trpage_warchive.cpp\
-    trpage_parse.cpp\
-    trpage_nodes.cpp\
-    trpage_model.cpp\
-    trpage_material.cpp\
-
+	ReaderWriterTXP.cpp\
+	TrPageArchive.cpp\
+	TrPageParser.cpp\
+	trpage_basic.cpp\
+	trpage_geom.cpp\
+	trpage_header.cpp\
+	trpage_tile.cpp\
+	trpage_readbuf.cpp\
+	trpage_rarchive.cpp\
+	trpage_writebuf.cpp\
+	trpage_warchive.cpp\
+	trpage_parse.cpp\
+	trpage_nodes.cpp\
+	trpage_model.cpp\
+	trpage_material.cpp\
+	trpage_swap.cpp
 
 TARGET_BASENAME = osgdb_txp
 

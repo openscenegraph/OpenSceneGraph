@@ -18,6 +18,8 @@
 #include <osg/Group>
 #include <osg/Geometry>
 
+#include <osgUtil/TriStripVisitor>
+
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
 #include <osgDB/FileNameUtils>
@@ -1788,28 +1790,158 @@ osg::ShapeDrawable* DataSet::DestinationTile::createDrawableHeightField()
 
 osg::Geometry* DataSet::DestinationTile::createDrawablePolygonal()
 {
-    std::cout<<"--------- DataSet::DestinationTile::createSceneGeometry() ------------- "<<std::endl;
+    std::cout<<"--------- DataSet::DestinationTile::createDrawableGeometry() ------------- "<<std::endl;
 
-
-    bool heightFieldPresent = _terrain.valid() && _terrain->_heightField.valid();
-
-    if (!heightFieldPresent)
+    osg::ref_ptr<osg::HeightField> grid = 0;
+    
+    if (_terrain.valid() && _terrain->_heightField.valid())
     {
         std::cout<<"--- Have terrain build tile ----"<<std::endl;
-
-        osg::HeightField* grid = _terrain->_heightField.get();
-
-        osg::Geometry* geometry = new osg::Geometry;
-        
-        return geometry;
-        
+        grid = _terrain->_heightField.get();
     }
-    else 
+    else
+    {
+        grid = new osg::HeightField;
+        grid->allocate(2,2);
+        grid->setOrigin(osg::Vec3(_extents.xMin(),_extents.yMin(),0.0f));
+        grid->setXInterval(_extents.xMax()-_extents.xMin());
+        grid->setYInterval(_extents.yMax()-_extents.yMin());
+    }
+
+    if (!grid)
     {
         std::cout<<"**** No terrain to build tile from use flat terrain fallback ****"<<std::endl;
         
         return 0;
     }
+
+    bool createSkirt = true;
+
+    // compute sizes.
+    unsigned int numColumns = grid->getNumColumns();
+    unsigned int numRows = grid->getNumRows();
+    unsigned int numVerticesInBody = numColumns*numRows;
+    unsigned int numVerticesInSkirt = createSkirt ? numColumns*2 + numRows*2 - 4 : 0;
+    unsigned int numVertices = numVerticesInBody+numVerticesInSkirt;
+
+    osg::Vec3 skirtVector(0.0f,0.0f,-_extents.radius()*0.01f);
+
+    // create the geometry.
+    osg::Geometry* geometry = new osg::Geometry;
+    
+    osg::Vec3Array& v = *(new osg::Vec3Array(numVertices));
+    osg::Vec2Array& t = *(new osg::Vec2Array(numVertices));
+    osg::UByte4Array& color = *(new osg::UByte4Array(1));
+
+    color[0].set(255,255,255,255);
+
+    unsigned int vi=0;
+    unsigned int r,c;
+    for(r=0;r<numRows;++r)
+    {
+	for(c=0;c<numColumns;++c)
+	{
+	    v[vi] = grid->getVertex(c,r);
+	    t[vi].x() = (float)(c)/(float)(numColumns);
+	    t[vi].y() = (float)(r)/(float)(numRows);
+            ++vi;
+	}
+    }
+
+    geometry->setVertexArray(&v);
+    geometry->setColorArray(&color);
+    geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+    geometry->setTexCoordArray(0,&t);
+    
+    osg::DrawElementsUShort& drawElements = *(new osg::DrawElementsUShort(GL_TRIANGLES,2*3*(numColumns-1)*(numRows-1)));
+    geometry->addPrimitiveSet(&drawElements);
+    int ei=0;
+    for(r=0;r<numRows-1;++r)
+    {
+	for(c=0;c<numColumns-1;++c)
+	{
+            unsigned short i00 = (r)*numColumns+c;
+            unsigned short i10 = (r)*numColumns+c+1;
+            unsigned short i01 = (r+1)*numColumns+c;
+            unsigned short i11 = (r+1)*numColumns+c+1;
+
+            float diff_00_11 = fabsf(v[i00].z()-v[i11].z());
+            float diff_01_10 = fabsf(v[i01].z()-v[i10].z());
+            if (diff_00_11<diff_01_10)
+            {
+                // diagonal between 00 and 11
+	        drawElements[ei++] = i00;
+	        drawElements[ei++] = i10;
+	        drawElements[ei++] = i11;
+
+	        drawElements[ei++] = i00;
+	        drawElements[ei++] = i11;
+	        drawElements[ei++] = i01;
+            }
+            else
+            {
+                // diagonal between 01 and 10
+	        drawElements[ei++] = i01;
+	        drawElements[ei++] = i00;
+	        drawElements[ei++] = i10;
+
+	        drawElements[ei++] = i01;
+	        drawElements[ei++] = i10;
+	        drawElements[ei++] = i11;
+            }
+    	}
+    }
+
+    if (numVerticesInSkirt>0)
+    {
+        osg::DrawElementsUShort& skirtDrawElements = *(new osg::DrawElementsUShort(GL_QUAD_STRIP,2*numVerticesInSkirt+2));
+        geometry->addPrimitiveSet(&skirtDrawElements);
+        int ei=0;
+        int firstSkirtVertexIndex = vi;
+        // create bottom skirt vertices
+        r=0;
+        for(c=0;c<numColumns-1;++c)
+        {
+	    skirtDrawElements[ei++] = (r)*numColumns+c;
+	    skirtDrawElements[ei++] = vi;
+            v[vi] = v[(r)*numColumns+c]+skirtVector;
+            t[vi++] = t[(r)*numColumns+c];
+        }
+        // create right skirt vertices
+        c=numColumns-1;
+        for(r=0;r<numRows-1;++r)
+        {
+	    skirtDrawElements[ei++] = (r)*numColumns+c;
+	    skirtDrawElements[ei++] = vi;
+            v[vi] = v[(r)*numColumns+c]+skirtVector;
+            t[vi++] = t[(r)*numColumns+c];
+        }
+        // create top skirt vertices
+        r=numRows-1;
+        for(c=numColumns-1;c>0;--c)
+        {
+	    skirtDrawElements[ei++] = (r)*numColumns+c;
+	    skirtDrawElements[ei++] = vi;
+            v[vi] = v[(r)*numColumns+c]+skirtVector;
+            t[vi++] = t[(r)*numColumns+c];
+        }
+        // create left skirt vertices
+        c=0;
+        for(r=numRows-1;r>0;--r)
+        {
+	    skirtDrawElements[ei++] = (r)*numColumns+c;
+	    skirtDrawElements[ei++] = vi;
+            v[vi] = v[(r)*numColumns+c]+skirtVector;
+            t[vi++] = t[(r)*numColumns+c];
+        }
+        skirtDrawElements[ei++] = 0;
+        skirtDrawElements[ei++] = firstSkirtVertexIndex;
+    }    
+
+    osgUtil::TriStripVisitor tsv;
+    tsv.stripify(*geometry);
+
+    return geometry;
 }
 
 void DataSet::DestinationTile::readFrom(CompositeSource* sourceGraph)
@@ -2197,7 +2329,7 @@ DataSet::DataSet()
     
     _defaultColor.set(0.5f,0.5f,1.0f,1.0f);
     _databaseType = PagedLOD_DATABASE;
-    _geometryType = HEIGHT_FIELD;
+    _geometryType = POLYGONAL;
     _textureType = COMPRESSED_TEXTURE;
 
 }

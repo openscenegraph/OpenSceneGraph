@@ -28,8 +28,41 @@ using namespace osg;
 // static cache of deleted display lists which can only 
 // by completely deleted once the appropriate OpenGL context
 // is set.  Used osg::Drawable::deleteDisplayList(..) and flushDeletedDisplayLists(..) below.
-typedef std::map<GLuint,std::set<GLuint> > DeletedDisplayListCache;
+typedef std::vector<GLuint> DisplayListVector;
+typedef std::map<GLuint,DisplayListVector> DeletedDisplayListCache;
 static DeletedDisplayListCache s_deletedDisplayListCache;
+
+void Drawable::deleteDisplayList(uint contextID,uint globj)
+{
+    if (globj!=0)
+    {
+        // insert the globj into the cache for the appropriate context.
+        s_deletedDisplayListCache[contextID].push_back(globj);
+    }
+}
+
+/** flush all the cached display list which need to be deleted
+  * in the OpenGL context related to contextID.*/
+void Drawable::flushDeletedDisplayLists(uint contextID)
+{
+    DeletedDisplayListCache::iterator citr = s_deletedDisplayListCache.find(contextID);
+    if (citr!=s_deletedDisplayListCache.end())
+    {
+        DisplayListVector displayListSet;
+        
+        // this swap will transfer the content of and empty citr->second
+        // in one quick pointer change.
+        displayListSet.swap(citr->second);
+        
+        for(std::DisplayListVector::iterator gitr=displayListSet.begin();
+                                     gitr!=displayListSet.end();
+                                     ++gitr)
+        {
+            glDeleteLists(*gitr,1);
+        }
+    }
+}
+
 
 Drawable::Drawable()
 {
@@ -198,33 +231,6 @@ void Drawable::dirtyDisplayList()
     }
 }
 
-void Drawable::deleteDisplayList(uint contextID,uint globj)
-{
-    if (globj!=0)
-    {
-        // insert the globj into the cache for the appropriate context.
-        s_deletedDisplayListCache[contextID].insert(globj);
-    }
-}
-
-/** flush all the cached display list which need to be deleted
-  * in the OpenGL context related to contextID.*/
-void Drawable::flushDeletedDisplayLists(uint contextID)
-{
-    DeletedDisplayListCache::iterator citr = s_deletedDisplayListCache.find(contextID);
-    if (citr!=s_deletedDisplayListCache.end())
-    {
-        std::set<GLuint>& displayListSet = citr->second;
-        for(std::set<GLuint>::iterator gitr=displayListSet.begin();
-                                     gitr!=displayListSet.end();
-                                     ++gitr)
-        {
-            glDeleteLists(*gitr,1);
-        }
-
-        s_deletedDisplayListCache.erase(citr);
-    }
-}
 
 void Drawable::setUpdateCallback(UpdateCallback* ac)
 {

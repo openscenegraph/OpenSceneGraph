@@ -23,6 +23,44 @@ using namespace osg;
 #define GL_TEXTURE_WRAP_R                 0x8072
 #endif
 
+// static cache of deleted display lists which can only 
+// by completely deleted once the appropriate OpenGL context
+// is set.
+typedef std::vector<GLuint> TextureObjectVector;
+typedef std::map<osg::uint,TextureObjectVector> DeletedTextureObjectCache;
+static DeletedTextureObjectCache s_deletedTextureObjectCache;
+
+
+void Texture::deleteTextureObject(uint contextID,GLuint handle)
+{
+    if (handle!=0)
+    {
+        // insert the handle into the cache for the appropriate context.
+        s_deletedTextureObjectCache[contextID].push_back(handle);
+    }
+}
+
+
+void Texture::flushDeletedTextureObjects(uint contextID)
+{
+    DeletedTextureObjectCache::iterator citr = s_deletedTextureObjectCache.find(contextID);
+    if (citr!=s_deletedTextureObjectCache.end())
+    {
+        TextureObjectVector textureObjectSet;
+
+        // this swap will transfer the content of and empty citr->second
+        // in one quick pointer change.
+        textureObjectSet.swap(citr->second);
+        for(TextureObjectVector::iterator titr=textureObjectSet.begin();
+                                     titr!=textureObjectSet.end();
+                                     ++titr)
+        {
+            glDeleteTextures( 1L, &(*titr ));
+        }
+    }
+}
+
+
 Texture::Texture():
             _wrap_s(CLAMP),
             _wrap_t(CLAMP),
@@ -450,38 +488,6 @@ void Texture::applyTexImage2D(GLenum target, Image* image, State& state, GLsizei
 #include <map>
 #include <set>
 
-// static cache of deleted display lists which can only 
-// by completely deleted once the appropriate OpenGL context
-// is set.
-typedef std::map<osg::uint,std::set<GLuint> > DeletedTextureObjectCache;
-static DeletedTextureObjectCache s_deletedTextureObjectCache;
-
-
-void Texture::deleteTextureObject(uint contextID,GLuint handle)
-{
-    if (handle!=0)
-    {
-        // insert the handle into the cache for the appropriate context.
-        s_deletedTextureObjectCache[contextID].insert(handle);
-    }
-}
-
-
-void Texture::flushDeletedTextureObjects(uint contextID)
-{
-    DeletedTextureObjectCache::iterator citr = s_deletedTextureObjectCache.find(contextID);
-    if (citr!=s_deletedTextureObjectCache.end())
-    {
-        std::set<GLuint>& textureObjectSet = citr->second;
-        for(std::set<GLuint>::iterator titr=textureObjectSet.begin();
-                                     titr!=textureObjectSet.end();
-                                     ++titr)
-        {
-            glDeleteTextures( 1L, &(*titr ));
-        }
-        s_deletedTextureObjectCache.erase(citr);
-    }
-}
 
 void Texture::compile(State& state) const
 {

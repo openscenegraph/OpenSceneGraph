@@ -22,6 +22,11 @@ CXXFILES =\
 
 
 LIBS += -losg $(OTHER_LIBS) $(DYNAMICLIBRARYLIB) 
+
+ifeq ($(OS),Darwin)
+LIBS += ${CARBON_LIB}
+endif
+
 DEF  += -DOSGDB_LIBRARY
 
 TARGET_BASENAME = osgDB

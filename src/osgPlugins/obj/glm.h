@@ -48,6 +48,10 @@ struct GLMmaterial
   char*   textureName;                  /* name of any attached texture, add by RO */
   bool    textureReflection;            /* true if texture is a reflection map */    
   float   alpha;                /* alpha */
+  float   textureUScale;            /* Scaling along U */
+  float	  textureVScale;            /* Scaling along V */
+  float   textureUOffset;            /* Offset along U */
+  float	  textureVOffset;            /* Offset along V */
 
   void init()
   {

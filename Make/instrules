@@ -117,7 +117,6 @@ instcleandev :
 	  fi\
 	done
 
-
 __install :
 	@[ -n "$(INSTSRC)" ] || echo "Internal error (INSTSRC definition)"
 	@[ -n "$(INSTSRC)" ] && echo > /dev/null
@@ -131,11 +130,21 @@ __install :
 	  do\
 	    if [ -f $$f ] ; \
 	    then \
-	        echo $(INSTALL) $$THISDIR/$$f $(INSTDEST)/$$f;\
-	        $(INSTALL) $$THISDIR/$$f $(INSTDEST)/$$f;\
+	        INSTPATH=$$THISDIR/$$f; \
+		while [ -L $$INSTPATH ]; \
+		do \
+		    ll=`ls -l $$INSTPATH | cut -f2 -d">"`;\
+		    echo cd `dirname $$ll`;\
+		    cd `dirname $$ll`;\
+		    INSTPATH="`pwd`"/"`basename $$ll`";\
+		    cd $$THISDIR;\
+		done;\
+	        echo $(INSTALL) $$INSTPATH $(INSTDEST)/$$f;\
+	        $(INSTALL) $$INSTPATH $(INSTDEST)/$$f;\
 	    fi\
 	  done\
 	fi
+
 
 
 __instclean :

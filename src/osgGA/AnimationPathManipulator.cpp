@@ -86,6 +86,7 @@ bool AnimationPathManipulator::handle(const osgGA::GUIEventAdapter& ea,osgGA::GU
     case GUIEventAdapter::KEYDOWN:
             if (ea.getKey()==' ')
             {
+                _isPaused = false;
                 home(ea,us);
                 us.requestRedraw();
                 us.requestContinuousUpdate(false);

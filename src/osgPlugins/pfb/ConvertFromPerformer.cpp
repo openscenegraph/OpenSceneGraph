@@ -536,7 +536,7 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
 
         if(ilist)
         {
-            osg::ushort* osg_cindex = new osg::ushort [nv];
+            GLushort* osg_cindex = new GLushort [nv];
             for( i = 0; i < nv; i++ )
             {
                 osg_cindex[i] = ilist[i];
@@ -587,7 +587,7 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
 
         if(ilist)
         {
-            osg::ushort* osg_cindex = new osg::ushort [nn];
+            GLushort* osg_cindex = new GLushort [nn];
             for( i = 0; i < nn; i++ )
             {
                 osg_cindex[i] = ilist[i];
@@ -637,7 +637,7 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
 
         if(ilist)
         {
-            osg::ushort* osg_cindex = new osg::ushort [nn];
+            GLushort* osg_cindex = new GLushort [nn];
             for( i = 0; i < nn; i++ )
             {
                 osg_cindex[i] = ilist[i];
@@ -689,7 +689,7 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
 
         if(ilist)
         {
-            osg::ushort* osg_cindex = new osg::ushort [nn];
+            GLushort* osg_cindex = new GLushort [nn];
             for( i = 0; i < nn; i++ )
             {
                 osg_cindex[i] = ilist[i];

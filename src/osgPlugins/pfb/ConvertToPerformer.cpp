@@ -348,7 +348,7 @@ pfGeoSet* ConvertToPerformer::visitGeoSet(osg::GeoSet* geoset)
     }
 
     osg::Vec3 *coords = geoset->getCoords();
-    osg::ushort *ilist = cindex._ptr._ushort;
+    GLushort *ilist = cindex._ptr._ushort;
 
     // copy the vertex coordinates across.
     if( coords )

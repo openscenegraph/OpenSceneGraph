@@ -34,6 +34,7 @@
 #include <osgTXP/trpage_scene.h>
 #include <osgTXP/trpage_managers.h>
 #include <osgTXP/WaitBlock.h>
+#include <osgTXP/TrPageArchive.h>
 
 namespace txp
 {

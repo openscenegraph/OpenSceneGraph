@@ -189,6 +189,10 @@ class SG_EXPORT NodeVisitor : public Referenced
         /** Get the World To Local Matrix from the NodePath for specified Transform::Mode.*/
         virtual bool getWorldToLocalMatrix(Matrix& matrix, Node* node);
 
+        /** Get the eye point in local coordinates.
+          * Note, not all NodeVisitor implement this method, it is mainly cull visitors which will implement.*/
+        virtual osg::Vec3 getEyePoint() const { return Vec3(0.0f,0.0f,0.0f); }
+
         /** Get the distance from a point to the eye point, distance value in local coordinate system.
           * Note, not all NodeVisitor implement this method, it is mainly cull visitors which will implement.
           * If the getDistianceFromEyePoint(pos) is not implmented than a default value of 0.0 is returned.*/

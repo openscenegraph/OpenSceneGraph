@@ -98,6 +98,14 @@ SOURCE=..\..\..\src\osgPlugins\txp\ReaderWriterTXP.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\txp\TerrapageNode.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\txp\IO_TerrapageNode.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\txp\trpage_basic.cpp
 # End Source File
 # Begin Source File
@@ -195,6 +203,10 @@ SOURCE=..\..\..\src\osgPlugins\txp\TrPagePageManager.cpp
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\txp\ReaderWriterTXP.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\txp\TerrapageNode.h
 # End Source File
 # Begin Source File
 

@@ -166,5 +166,5 @@ namespace txp
         TrPageParser*parse;
     };
     
-}; // namespace txp
+} // namespace txp
 #endif

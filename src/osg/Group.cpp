@@ -261,10 +261,13 @@ bool Group::setChild( unsigned  int i, Node* newNode )
 bool Group::computeBound() const
 {
 
-    _bsphere_computed = true;
 
     _bsphere.init();
-    if (_children.empty()) return false;
+    if (_children.empty()) 
+    {
+        _bsphere_computed = true;
+        return false;
+    }
 
     // note, special handling of the case when a child is an Transform,
     // such that only Transforms which are relative to their parents coordinates frame (i.e this group)
@@ -284,7 +287,11 @@ bool Group::computeBound() const
         }
     }
 
-    if (!bb.valid()) return false;
+    if (!bb.valid()) 
+    {
+        _bsphere_computed = true;
+        return false;
+    }
 
     _bsphere._center = bb.center();
     _bsphere._radius = 0.0f;
@@ -299,5 +306,6 @@ bool Group::computeBound() const
         }
     }
 
+    _bsphere_computed = true;
     return true;
 }

@@ -93,7 +93,8 @@ void PagedLOD::read(DataInputStream* in){
                 // Read number of children.
                 int size = in->readInt();
                 // Read children.
-                for(int i=0; i<size; i++)
+		int i;
+                for(i=0; i<size; i++)
                 {
                     addChild(in->readNode());            
                 }
@@ -103,14 +104,14 @@ void PagedLOD::read(DataInputStream* in){
 		setCenter(in->readVec3());
 		// Read rangelist
 		size = in->readInt();
-		for(int i=0;i<size;i++){
+		for(i=0;i<size;i++){
 			float min = in->readFloat();
 			float max = in->readFloat();
 			setRange(i, min, max);
 		}
 
 		size = in->readInt();
-		for(int i=0;i<size;i++){
+		for(i=0;i<size;i++){
 			setFileName(i, in->readString());
 		}
 	}

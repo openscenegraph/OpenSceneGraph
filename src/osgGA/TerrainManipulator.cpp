@@ -40,7 +40,7 @@ void TerrainManipulator::setNode(osg::Node* node)
             boundingSphere._radius * minimumDistanceScale,
             0.00001f,1.0f);
             
-        osg::notify(osg::NOTICE)<<"Setting terrain manipulator _minimumDistance to "<<_minimumDistance<<std::endl;
+        osg::notify(osg::INFO)<<"Setting terrain manipulator _minimumDistance to "<<_minimumDistance<<std::endl;
     }
     
 }
@@ -569,7 +569,7 @@ void TerrainManipulator::clampOrientation()
 
         if (sideVector.length()<0.1)
         {
-            osg::notify(osg::NOTICE)<<"Side vector short "<<sideVector.length()<<std::endl;
+            osg::notify(osg::INFO)<<"Side vector short "<<sideVector.length()<<std::endl;
 
             sideVector = upVector^localUp;
             sideVector.normalize();

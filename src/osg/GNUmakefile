@@ -46,6 +46,7 @@ CXXFILES =\
 	Impostor.cpp\
 	ImpostorSprite.cpp\
 	LOD.cpp\
+	LogicOp.cpp\
 	Light.cpp\
 	LightModel.cpp\
 	LightSource.cpp\

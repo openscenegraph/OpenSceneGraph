@@ -292,6 +292,10 @@ SOURCE=..\..\src\osg\LOD.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\LogicOp.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\Material.cpp
 # End Source File
 # Begin Source File
@@ -713,7 +717,11 @@ SOURCE=..\..\Include\Osg\LineWidth
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\Lod
+SOURCE=..\..\Include\Osg\LOD
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\LogicOp
 # End Source File
 # Begin Source File
 

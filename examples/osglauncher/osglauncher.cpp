@@ -65,14 +65,14 @@ bool PickHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapte
     case(osgGA::GUIEventAdapter::FRAME):
     case(osgGA::GUIEventAdapter::MOVE):
     {
-        osg::notify(osg::NOTICE)<<"MOVE "<<ea.getX()<<ea.getY()<<std::endl;
+        //osg::notify(osg::NOTICE)<<"MOVE "<<ea.getX()<<ea.getY()<<std::endl;
         std::string picked_name = pick(ea.getX(),ea.getY());
         highlight(picked_name);
         return false;
     }
     case(osgGA::GUIEventAdapter::PUSH):
     {
-        osg::notify(osg::NOTICE)<<"PUSH "<<ea.getX()<<ea.getY()<<std::endl;
+        //osg::notify(osg::NOTICE)<<"PUSH "<<ea.getX()<<ea.getY()<<std::endl;
         std::string picked_name = pick(ea.getX(),ea.getY());
         if (!picked_name.empty())
         {
@@ -122,7 +122,7 @@ osg::Node* createHUD(osgText::Text* updateText)
     std::string timesFont("fonts/times.ttf");
     
     // turn lighting off for the text and disable depth test to ensure its always ontop.
-    osg::Vec3 position(150.0f,700.0f,0.0f);
+    osg::Vec3 position(50.0f,510.0f,0.0f);
     osg::Vec3 delta(0.0f,-60.0f,0.0f);
 
     { // this displays what has been selected
@@ -347,9 +347,8 @@ osg::Group* setupGraph()                                                        
     float zjump        = xjump;
     osg::Vec3 vScale( 0.5f, 0.5f, 0.5f );
     osg::Vec3 vPivot( 0.0f, 0.0f, 0.0f );    
-//    end positioning and sizes
 
-//    loop to run through Xampleliste
+//  run through Xampleliste
     int z = 1;
     for (OP i = Xamplelist.begin() ; i != Xamplelist.end() ; ++i, ++z)
     {
@@ -361,16 +360,16 @@ osg::Group* setupGraph()                                                        
         osg::PositionAttitudeTransform*    transX = getPATransformation(tmpCube, vPosition, vScale, vPivot);
         xGroup->addChild( transX );
         
-        // nächster punkt um einen cube zu zeichnen
+        // line feed
         if(z < itemsInLine)
             xnext += xjump;
         else
         {
             xnext = xstart;
             znext -= zjump;
-            z = 1;
+            z = 0;
         }
-    } // end loop to run through list    
+    } // end run through list    
     
     return xGroup;
 } // end setupGraph
@@ -413,7 +412,7 @@ int main( int argc, char **argv )
     osg::Matrix lookAt;
     lookAt.makeLookAt(osg::Vec3(0.0f, -4.0f, 0.0f), centerScope, osg::Vec3(0.0f, 0.0f, 1.0f));
 
-//    viewer.setView(lookAt);
+    //viewer.setView(lookAt);
         
     while( !viewer.done() )
     {
@@ -425,7 +424,7 @@ int main( int argc, char **argv )
         viewer.update();
 
         // to be able to turn scene, place next call before viewer.update()
-        // viewer.setView(lookAt);
+        viewer.setView(lookAt);
 
     
         // fire off the cull and draw traversals of the scene.

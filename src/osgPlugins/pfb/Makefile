@@ -45,6 +45,9 @@ LIBS = -losg -losgDB \
 #   (note: you may need to build libimage.so from libimage.a)
 # LIBS += -limage
 
+LOADABLE = $(OSGHOME)/lib/osgPlugins/$(TARGET_BASENAME).$(DL_EXT)
+LIB=
+
 TARGET_LOADER_FILES = osgPlugins/osgdb_pfb.$(SO_EXT)
 
 C++FLAGS += -g -I../../../include 

@@ -45,8 +45,6 @@ C++FILES = \
 
 TARGET_BASENAME = osgdb_flt
 
-TARGET_LIB_FILES = lib$(TARGET_BASENAME).$(DL_EXT)
-
 LIB = 
 LOADABLE = $(OSGHOME)/lib/osgPlugins/$(TARGET_BASENAME).$(DL_EXT)
 

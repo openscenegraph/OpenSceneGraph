@@ -53,22 +53,30 @@ void Archive::IndexBlock::allocateData(unsigned int blockSize)
     }
 }
 
-void Archive::IndexBlock::read(std::istream& in)
+Archive::IndexBlock* Archive::IndexBlock::read(std::istream& in)
 {
-    _filePosition = in.tellg();
-    in.read(reinterpret_cast<char*>(&_blockSize), sizeof(_blockSize));
-    in.read(reinterpret_cast<char*>(&_filePositionNextIndexBlock), sizeof(_filePositionNextIndexBlock));
-    in.read(reinterpret_cast<char*>(&_offsetOfNextAvailableSpace), sizeof(_offsetOfNextAvailableSpace));
+    if (!in) return 0;
 
-    allocateData(_blockSize);
-    if (_data)
+    osg::ref_ptr<IndexBlock> indexBlock = new IndexBlock;
+    indexBlock->_filePosition = in.tellg();
+    in.read(reinterpret_cast<char*>(&indexBlock->_blockSize), sizeof(indexBlock->_blockSize));
+    in.read(reinterpret_cast<char*>(&indexBlock->_filePositionNextIndexBlock), sizeof(indexBlock->_filePositionNextIndexBlock));
+    in.read(reinterpret_cast<char*>(&indexBlock->_offsetOfNextAvailableSpace), sizeof(indexBlock-> _offsetOfNextAvailableSpace));
+
+    indexBlock->allocateData(indexBlock->_blockSize);
+    if (indexBlock->_data)
     {
-        in.read(reinterpret_cast<char*>(_data),_blockSize);
+        in.read(reinterpret_cast<char*>(indexBlock->_data),indexBlock->_blockSize);
     }
     else
     {
         osg::notify(osg::NOTICE)<<"Allocation Problem in Archive::IndexBlock::read(std::istream& in)"<<std::endl;
+        return 0;
     }
+
+    osg::notify(osg::NOTICE)<<"Read index block"<<std::endl;
+    
+    return indexBlock.release();
     
 }
 
@@ -86,6 +94,9 @@ bool Archive::IndexBlock::getFileReferences(FileNamePositionMap& indexMap)
         ptr += sizeof(unsigned int);
         
         std::string filename(ptr, ptr+filename_size);
+        
+        // record this entry into the FileNamePositionMap
+        indexMap[filename] = position;
         
         ptr += filename_size;
     }
@@ -129,6 +140,8 @@ bool Archive::IndexBlock::addFileReference(pos_type position, const std::string&
             *ptr = filename[i];
         }
         
+        _offsetOfNextAvailableSpace = ptr-_data;
+        
         _requiresWrite = true;
 
         osg::notify(osg::NOTICE)<<"Archive::IndexBlock::addFileReference("<<(unsigned int)position<<", "<<filename<<")"<<std::endl;
@@ -144,6 +157,7 @@ void Archive::IndexBlock::setPositionNextIndexBlock(pos_type position)
 
 Archive::Archive()
 {
+    osg::notify(osg::NOTICE)<<"Don't forget endian...."<<std::endl;
 }
 
 Archive::~Archive()
@@ -151,7 +165,7 @@ Archive::~Archive()
     close();
 }
 
-void Archive::create(const std::string& filename, unsigned int indexBlockSize)
+bool Archive::create(const std::string& filename, unsigned int indexBlockSize)
 {
     _status = WRITE;
     _output.open(filename.c_str());
@@ -164,19 +178,82 @@ void Archive::create(const std::string& filename, unsigned int indexBlockSize)
         indexBlock->write(_output);
         _indexBlockList.push_back(indexBlock);
     }
+    return true;
 }
 
-void Archive::open(const std::string& filename, Status status)
+bool Archive::open(const std::string& filename, Status status)
 {
     if (status==READ)
     {
         _status = status;
         _input.open(filename.c_str());
+
+        if (_input)
+        {
+            osg::notify(osg::NOTICE)<<"trying Archive::open("<<filename<<")"<<std::endl;
+
+            char identifier[4];
+            _input.read(identifier,4);
+            bool validArchive = (identifier[0]=='o' && identifier[1]=='s' && identifier[2]=='g' && identifier[3]=='a');
+            
+            if (validArchive) 
+            {
+                _input.read(reinterpret_cast<char*>(&_version),sizeof(_version));
+                
+                IndexBlock *indexBlock = 0;
+                
+                while ( (indexBlock=Archive::IndexBlock::read(_input)) != 0)
+                {
+                    _indexBlockList.push_back(indexBlock);
+                    if (indexBlock->getPositionNextIndexBlock()==pos_type(0)) break;
+                    
+                    _input.seekg(indexBlock->getPositionNextIndexBlock());
+                }
+                
+                osg::notify(osg::NOTICE)<<"Archive::open("<<filename<<") succeeded"<<std::endl;
+                
+                // now need to build the filename map.
+                _indexMap.clear();                
+                for(IndexBlockList::iterator itr=_indexBlockList.begin();
+                    itr!=_indexBlockList.end();
+                    ++itr)
+                {
+                    (*itr)->getFileReferences(_indexMap);
+                }
+                
+                for(FileNamePositionMap::iterator mitr=_indexMap.begin();
+                    mitr!=_indexMap.end();
+                    ++mitr)
+                {
+                    osg::notify(osg::NOTICE)<<"    filename "<<(mitr->first)<<" pos="<<(int)(mitr->second)<<std::endl;
+                }
+
+
+                return true;
+            }
+        }
+
+        osg::notify(osg::NOTICE)<<"Archive::open("<<filename<<") failed"<<std::endl;
+
+        _input.close();
+        return false;
     }
     else // status==WRITE
     {
-        _status = status;
-        _output.open(filename.c_str());
+        if (open(filename,READ))
+        {
+            _input.close();
+            
+            _status = WRITE;
+            _output.open(filename.c_str());
+            
+            return true;
+        }
+        else // no file opened so resort to creating the archive.
+        {
+            return create(filename, 4096);
+        }
+        
     }
 }
 
@@ -184,6 +261,15 @@ void Archive::close()
 {
     _input.close();
     
+    if (_status==WRITE)
+    {
+        writeIndexBlocks();
+        _output.close();
+    }
+}
+
+void Archive::writeIndexBlocks()
+{
     if (_status==WRITE)
     {
         for(IndexBlockList::iterator itr=_indexBlockList.begin();
@@ -195,10 +281,8 @@ void Archive::close()
                 (*itr)->write(_output);
             }
         }
-        _output.close();
     }
 }
-
 
 bool Archive::fileExists(const std::string& filename) const
 {
@@ -265,6 +349,8 @@ ReaderWriter::ReadResult Archive::readObject(const std::string& fileName,const O
         osg::notify(osg::NOTICE)<<"Archive::readObject(obj, "<<fileName<<") failed, file not found in archive"<<std::endl;
         return ReadResult(ReadResult::FILE_NOT_FOUND);
     }
+    
+    _input.seekg(itr->second);
 
     ReaderWriter* rw = osgDB::Registry::instance()->getReaderWriterForExtension(getLowerCaseFileExtension(fileName));
     if (!rw)

@@ -44,10 +44,10 @@ class OSGDB_EXPORT Archive : public ReaderWriter
         };
 
         /** open the archive.*/
-        virtual void create(const std::string& filename, unsigned int indexBlockSize=4096);
+        virtual bool create(const std::string& filename, unsigned int indexBlockSize=4096);
 
         /** open the archive.*/
-        virtual void open(const std::string& filename, Status status);
+        virtual bool open(const std::string& filename, Status status);
 
         /** close the archive.*/
         virtual void close();
@@ -87,7 +87,7 @@ class OSGDB_EXPORT Archive : public ReaderWriter
             inline pos_type getPositionNextIndexBlock() const { return _filePositionNextIndexBlock; }
 
 
-            void read(std::istream& in);
+            static IndexBlock* read(std::istream& in);
             
             bool getFileReferences(FileNamePositionMap& indexMap);
             
@@ -123,8 +123,6 @@ class OSGDB_EXPORT Archive : public ReaderWriter
     
     
         typedef std::list< osg::ref_ptr<IndexBlock> >   IndexBlockList;
-        
-        void readIndexBlocks();
         
         void writeIndexBlocks();
         

@@ -21,6 +21,7 @@ Image::Image()
     _pixelFormat     = (unsigned int)0;
     _dataType        = (unsigned int)0;
     _packing         = 4;
+    _pixelSizeInBits = 0;
 
     _data = (unsigned char *)0L;
 
@@ -35,6 +36,7 @@ Image::Image(const Image& image,const CopyOp& copyop):
     _pixelFormat(image._pixelFormat),
     _dataType(image._dataType),
     _packing(image._packing),
+    _pixelSizeInBits(image._pixelSizeInBits),
     _data(0L),
     _modifiedTag(image._modifiedTag)
 {
@@ -64,6 +66,12 @@ void Image::setFileName(const std::string& fileName)
 }
 
 
+void Image::computePixelSize()
+{
+    // temporary code.. to be filled in properly ASAP. RO.
+    _pixelSizeInBits=32;
+}
+
 void Image::setImage(const int s,const int t,const int r,
                      const int internalFormat,
                      const unsigned int pixelFormat,
@@ -92,6 +100,8 @@ void Image::setImage(const int s,const int t,const int r,
     }
     else
         _packing = packing;
+        
+    computePixelSize();
 
     // test scaling...
     //    scaleImageTo(16,16,_r);
@@ -100,10 +110,52 @@ void Image::setImage(const int s,const int t,const int r,
 
 }
 
+void Image::readPixels(int x,int y,int width,int height,
+                       unsigned int pixelFormat,unsigned int dataType,
+                       const int packing)
+{
+    
+    if (width!=_s || height!=_s || _t != 1 ||
+        _pixelFormat!=pixelFormat ||
+        _dataType!=dataType)
+    {
+
+        if (_data) ::free(_data);
+
+        _s = width;
+        _t = height;
+        _r = 1;
+        _pixelFormat = pixelFormat;
+        _dataType = dataType;
+
+        if (packing<0)
+        {
+            if (_s%4==0)
+                _packing = 4;
+            else
+                _packing = 1;
+        }
+        else
+            _packing = packing;
+
+        computePixelSize();
+
+        // need to sort out what size to really use...
+        _data = (unsigned char *)malloc(2 * (_s+1)*(_t+1)*4);
+        
+    }
+
+    glPixelStorei(GL_PACK_ALIGNMENT,_packing);
+
+    glReadPixels(x,y,width,height,pixelFormat,dataType,_data);
+}
+
+
 void Image::scaleImage(const int s,const int t,const int /*r*/)
 {
     if (_data==NULL) return;
 
+    // need to sort out what size to really use...
     unsigned char* newData = (unsigned char *)malloc(2 * (s+1)*(t+1)*4);
 
     glPixelStorei(GL_PACK_ALIGNMENT,_packing);

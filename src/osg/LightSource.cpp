@@ -4,7 +4,8 @@ using namespace osg;
 
 LightSource::LightSource()
 {
-    _bsphere_computed = false;
+    // switch off culling of light source nodes by default.
+    setCullingActive(false);
 }
 
 

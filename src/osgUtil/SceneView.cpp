@@ -236,13 +236,6 @@ void SceneView::cullStage(osg::Camera* camera, osgUtil::CullVisitor* cullVisitor
     osg::Matrix* projection = osgNew osg::Matrix(camera->getProjectionMatrix());
     osg::Matrix* modelview = osgNew osg::Matrix(camera->getModelViewMatrix());
 
-
-    // take a copy of camera, and init it home
-    osg::Camera* local_camera = osgNew Camera(*camera);
-    local_camera->home(); 
-    local_camera->attachTransform(osg::Camera::NO_ATTACHED_TRANSFORM); 
-
-
     cullVisitor->setLODBias(_lodBias);
     cullVisitor->setEarthSky(NULL); // reset earth sky on each frame.
     
@@ -347,7 +340,6 @@ void SceneView::cullStage(osg::Camera* camera, osgUtil::CullVisitor* cullVisitor
             _far_plane = 1000.0f;
         }
 
-        local_camera->setNearFar(_near_plane,_far_plane);
         camera->setNearFar(_near_plane,_far_plane);
     }
 

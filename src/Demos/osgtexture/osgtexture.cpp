@@ -3,6 +3,7 @@
 #include <osg/Notify>
 #include <osg/Transform>
 #include <osg/Texture>
+#include <osg/DrawPixels>
 
 #include <osgUtil/TrackballManipulator>
 #include <osgUtil/FlightManipulator>
@@ -164,6 +165,23 @@ osg::Node* createLayer(const osg::Vec3& offset,osg::Image* image,osg::Node* geom
 
     osg::Vec3 local_offset(0.0f,0.0f,0.0f);
     osg::Vec3 local_delta(3.0f,0.0f,0.0f);
+
+//     // use DrawPixels drawable to draw a pixel image.
+//     {
+//     
+//         osg::DrawPixels* drawimage = osgNew osg::DrawPixels;
+//         drawimage->setPosition(local_offset);
+//         drawimage->setImage(image);
+//         
+//         osg::Geode* geode = osgNew osg::Geode;
+//         geode->addDrawable(drawimage);
+//     
+//         // add the transform node to root group node.
+//         top_transform->addChild(geode);
+// 
+//         local_offset += local_delta;
+//     }
+
 
     // defaults mipmapped texturing.
     {

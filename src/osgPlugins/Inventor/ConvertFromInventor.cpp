@@ -402,7 +402,7 @@ ConvertFromInventor::preLight(void* data, SoCallbackAction* action,
         SoSpotLight* spotLight = (SoSpotLight *) node;
 
         osgLight->setSpotExponent(spotLight->dropOffRate.getValue() * 128.0);
-        osgLight->setSpotCutoff(spotLight->cutOffAngle.getValue()*180.0/M_PI);
+        osgLight->setSpotCutoff(spotLight->cutOffAngle.getValue()*180.0/osg::PI);
 
         osg::Vec3 transVec;
         thisPtr->transformLight(action, spotLight->location.getValue(), transVec);
@@ -764,7 +764,7 @@ ConvertFromInventor::preRotor(void* data, SoCallbackAction *,
     osg::Vec3 axis(ivAxis[0], ivAxis[1], ivAxis[2]);
     osgUtil::TransformCallback* rotorCallback 
         = new osgUtil::TransformCallback(pivot, axis, 
-                                         2 * M_PI * ivRotor->speed.getValue());
+                                         2 * osg::PI * ivRotor->speed.getValue());
 
     // Set the app callback
     rotorTransform->setUpdateCallback(rotorCallback);

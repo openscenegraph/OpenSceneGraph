@@ -26,9 +26,11 @@ SlideShowConstructor::SlideShowConstructor()
 void SlideShowConstructor::createPresentation()
 {
     _titleHeight = _slideHeight*0.08f;
+    _titleWidth = _slideWidth*0.8f;
     _titleOrigin = _slideOrigin + osg::Vec3(_slideWidth*0.5f,0.0f,_slideHeight*0.98f-_titleHeight);
 
     _textHeight = _slideHeight*0.05f;
+    _textWidth = _slideWidth*0.8f;
     
     _textOrigin = _slideOrigin + osg::Vec3(_slideWidth*0.1f,0.0f,_titleOrigin.z()-2*_textHeight);
     _imageOrigin = _slideOrigin + osg::Vec3(_slideWidth*0.7f,0.0f,_titleOrigin.z()*0.5f);
@@ -124,6 +126,7 @@ void SlideShowConstructor::addLayer()
             text->setFont(_textFont);
             text->setColor(_textColor);
             text->setCharacterSize(_titleHeight);
+            text->setMaximumWidth(_titleWidth);
             text->setAxisAlignment(osgText::Text::XZ_PLANE);
             text->setAlignment(osgText::Text::CENTER_BASE_LINE);
             text->setPosition(_titleOrigin);
@@ -158,6 +161,7 @@ void SlideShowConstructor::addBullet(const std::string& bullet)
     text->setFont(_textFont);
     text->setColor(_textColor);
     text->setCharacterSize(_textHeight);
+    text->setMaximumWidth(_textWidth);
     text->setAxisAlignment(osgText::Text::XZ_PLANE);
     text->setAlignment(osgText::Text::BASE_LINE);
     text->setPosition(_textCursor);
@@ -165,7 +169,7 @@ void SlideShowConstructor::addBullet(const std::string& bullet)
     text->setText(bullet);
 
     osg::BoundingBox bb = text->getBound();
-    _textCursor.z() = bb.zMin()-_textHeight;
+    _textCursor.z() = bb.zMin()-_textHeight*1.5;
 
     geode->addDrawable(text);
     
@@ -184,6 +188,7 @@ void SlideShowConstructor::addParagraph(const std::string& paragraph)
     text->setFont(_textFont);
     text->setColor(_textColor);
     text->setCharacterSize(_textHeight);
+    text->setMaximumWidth(_textWidth);
     text->setAxisAlignment(osgText::Text::XZ_PLANE);
     text->setAlignment(osgText::Text::BASE_LINE);
     text->setPosition(_textCursor);
@@ -191,7 +196,7 @@ void SlideShowConstructor::addParagraph(const std::string& paragraph)
     text->setText(paragraph);
 
     osg::BoundingBox bb = text->getBound();
-    _textCursor.z() = bb.zMin()-_textHeight;
+    _textCursor.z() = bb.zMin()-_textHeight*1.5;
 
     geode->addDrawable(text);
     
@@ -211,8 +216,9 @@ void SlideShowConstructor::addImage(const std::string& filename,float height)
     
     float image_height = _slideHeight*0.6f;
     float image_width =  image_height*s/t;
+    float offset = height*image_height*0.1f;
     
-    osg::Vec3 pos = _imageCursor + osg::Vec3(-image_width*0.5f,-height*image_height*0.1f,-image_height*0.5f);
+    osg::Vec3 pos = _imageCursor + osg::Vec3(-image_width*0.5f+offset,-offset,-image_height*0.5f-offset);
 
     osg::Geometry* backgroundQuad = osg::createTexturedQuadGeometry(pos,
                                                     osg::Vec3(image_width,0.0f,0.0f),
@@ -236,7 +242,7 @@ void SlideShowConstructor::addModel(const std::string& filename,float scale,floa
     if (!_currentLayer) addLayer();
 
     osg::Node* model = osgDB::readNodeFile(filename);
-    
+
     if (!model) return;
 
     osg::Vec3 pos = _modelLeft*(1.0f-position) + _modelRight*position;

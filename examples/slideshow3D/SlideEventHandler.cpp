@@ -130,8 +130,7 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                 nextLayerOrSlide();
                 return true;
             }
-            else if (ea.getKey()=='p' || 
-                     ea.getKey()==osgGA::GUIEventAdapter::KEY_Up ||
+            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Up ||
                      ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Up)
             {
                 _autoSteppingActive = false;
@@ -148,8 +147,7 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                 nextSlide();
                 return true;
             }
-            else if (ea.getKey()=='P' || 
-                     ea.getKey()==osgGA::GUIEventAdapter::KEY_Left || 
+            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Left || 
                      ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Left || 
                      ea.getKey()==osgGA::GUIEventAdapter::KEY_Page_Up ||
                      ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Page_Up)

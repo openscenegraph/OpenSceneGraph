@@ -11,8 +11,11 @@
 
 <p>Welcome to OpenSceneGraph project!
 </p>
-<p>In this document I'll introduce what a scene graph is, what the OpenSceneGraph project encompasses, and provide tips on how to learn how to use it
-and to contact or contribute to the OpenSceneGraph community.
+<p>The OpenSceneGraph is an Open Source, Cross Platform (Widows, Linux, Mac OSX, FreeBSD, Irix, Solaris),
+Standard C++ and OpenGL based graphics development library, uses range from visual simulation, games,
+virtual reality, sceintific visualization and graphics research. This pages introduces a
+what scene graphs are, why graphics developers use them, and details about the OpenSceneGraph,
+project, how to learn how to use it and contribute to the OpenSceneGraph community.
 </p>
 
 <i>Robert Osfield,
@@ -25,10 +28,19 @@ April 2002.</i>
 </p>Its a tree! Quite simply one the best and most reusable datastructures invented.Typically drawn schematically as
 root at the top, leaves at the bottom. It all starts with a topmost root node which
 encompasses your whole virtual world, be it 2D or 3D. The world is then broken down
-into hierachy of nodes represent either a spatial grouping of objects,
-set the position of or animate objects,. or define a logical relationship between objects such as to manage
+into hierachy of nodes representing either a spatial grouping of objects,
+setting the position of objects, animating objects,. or define a logical relationship between objects such as to manage
 the various states of a traffic light.The leaves of the graph represent the phyical objects
 themselves, the drawable geometry and their material properties.
+</p>
+
+</p>A scene graph isn't a complete game or simulation engine, although may be one of the main
+components of such an engine, it's primary focus is representing your 3d worlds, and rendering it efficiently.  Physics models, collision detection and audio are left to other development libraries that a user will
+integrate with.. The fact that scene graphs don't typically integrate all these features
+is actually a really good thing, it aids interoprability with clients own applications
+and tools they wish to use and allows them to serve many varied markets from games, visual
+simulation, virtual reality, scientific and commerical visulasation, training thruogh to modelling
+programs.
 </p>
 
 <hr>
@@ -69,13 +81,38 @@ then moving from platform to platform can be a simple as recompiling your source
 automatically to account for differences in graphics performance across a range of machines,
 scene graphs also make it much easier to manage complex hardware configurations, such as clusters
 of graphics machines, or multiprocessor/multipipe systems such as SGI's Onyx. A good scene graph
-will allow the developer to concentrate on developing their own application while rendering
+will allow the developer to concentrate on developing their own application while the rendering
 framework of the scene graph handles the differnt underlying hardware configurations.
 </p>
 
 <hr>
 
-<h2>What the OpenSceneGraph encompasses?</h2>
+<h2>So what about the OpenSceneGraph project?</h2>
+
+<p>
+The OpenSceneGraph is Open Source, all the source to is published under the
+GNU Library General Public License (LGPL) which allows both open source and closed source
+projects to use, modify and distribute it freely as long its usage complies with the
+LGPL. The project has been developed over the last four years, initliated by Don Burns, and
+then taken over by Robert Osfield who leads the continues to lead project, there are many
+other contributors to the library, for a full list check out the AUTHORS file. Both Robert
+and Don now work on the OpenSceneGraph in a professional capaciity provide consultancy
+and bespoke developments ontop the library, and are also colloborating on the book.Work on
+the core scene graph and support of public mailing list remains unpaid as are the
+contributions of the rest of the communinity, but this hasn't impacted the quality of the
+source or support which once you get stuck in you grow to appreciate.
+</p>
+
+<p>
+The project itself is written entitely in Standard C++ and OpenGL, makes full use of STL
+and Design Patterns, and leverages the open source development model to provide clean, highly portable,
+and flexible scene graph. The project is current in alpha, which means part of the API are still to be
+developerd, or subjec to change, but the vast majority of the scene graph is there, and a beta will
+be published within the next few months, wiht a 1.0 release in late summer. Despite the
+alpha development status, the project has alrady earned the reputation as one of the leading
+open source scene graph, and is establishing itself a vialbe alternative to the commericial
+scene graphs. Numerous companies, university researchers and graphics enthusasts have
+already adopted their project, and a from all over the world.</p>
 
 <hr>
 

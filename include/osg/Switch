@@ -81,6 +81,8 @@ class SG_EXPORT Switch : public Group
     
         virtual ~Switch() {}
 
+        virtual bool computeBound() const;
+
         // This is effectively a bit mask.
         bool        _newChildDefaultValue;
         ValueList   _values;

@@ -11,6 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/Switch>
+#include <osg/BoundingBox>
+#include <osg/Transform>
 
 #include <algorithm>
 
@@ -163,6 +165,58 @@ bool Switch::setSingleChildOn(unsigned int pos)
     return true;
 }
 
+bool Switch::computeBound() const
+{
+    _bsphere.init();
+    if (_children.empty()) 
+    {
+        _bsphere_computed = true;
+        return false;
+    }
+
+    // note, special handling of the case when a child is an Transform,
+    // such that only Transforms which are relative to their parents coordinates frame (i.e this group)
+    // are handled, Transform relative to and absolute reference frame are ignored.
+
+    BoundingBox bb;
+    bb.init();
+    NodeList::const_iterator itr;
+    for(itr=_children.begin();
+        itr!=_children.end();
+        ++itr)
+    {
+        const osg::Transform* transform = (*itr)->asTransform();
+        if (!transform || transform->getReferenceFrame()==osg::Transform::RELATIVE_RF)
+        {
+            if( getChildValue((*itr).get()) == true )
+                bb.expandBy((*itr)->getBound());
+        }
+    }
+
+    if (!bb.valid()) 
+    {
+        _bsphere_computed = true;
+        return false;
+    }
+
+    _bsphere._center = bb.center();
+    _bsphere._radius = 0.0f;
+    for(itr=_children.begin();
+        itr!=_children.end();
+        ++itr)
+    {
+        const osg::Transform* transform = (*itr)->asTransform();
+        if (!transform || transform->getReferenceFrame()==osg::Transform::RELATIVE_RF)
+        {
+            if( getChildValue((*itr).get()) == true )
+                _bsphere.expandRadiusBy((*itr)->getBound());
+        }
+    }
+
+    _bsphere_computed = true;
+    return true;
+}
+
 #ifdef USE_DEPRECATED_API
 void Switch::setValue(int value)
 {
@@ -230,4 +284,5 @@ int Switch::getValue() const
     return firstChildSelected;
 
 }
+
 #endif

@@ -43,7 +43,7 @@ void TrackballManipulator::home(const GUIEventAdapter& ,GUIActionAdapter& us)
 
         const osg::BoundingSphere& boundingSphere=_node->getBound();
 
-        _camera->setView(boundingSphere._center+osg::Vec3( 0.0,-2.0f * boundingSphere._radius,0.0f),
+        _camera->setView(boundingSphere._center+osg::Vec3( 0.0,-3.0f * boundingSphere._radius,0.0f),
                         boundingSphere._center,
                         osg::Vec3(0.0f,0.0f,1.0f));
 
@@ -285,7 +285,7 @@ bool TrackballManipulator::calcMovement()
         else
         {
 
-            //            notify(DEBUG_INFO) << "Pushing forward"<<endl;
+            //            notify(DEBUG_INFO) << "Pushing forward"<<std::endl;
             // push the camera forward.
             float scale = 0.0015f*fd;
             osg::Vec3 dv = _camera->getLookVector()*(dy*scale);

@@ -116,7 +116,7 @@ Node *makeTank( void )
 
     tex->setWrap( Texture::WRAP_S, Texture::REPEAT );
     tex->setWrap( Texture::WRAP_T, Texture::REPEAT );
-    tex->setImage(osgDB::readImageFile("tank.rgb"));
+    tex->setImage(osgDB::readImageFile("Images/tank.rgb"));
 
     StateSet *dstate = new StateSet;
     dstate->setAttributeAndModes( tex, StateAttribute::ON );

@@ -43,7 +43,7 @@ void FlightManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
         const osg::BoundingSphere& boundingSphere=_node->getBound();
 
         _camera->setLookAt(
-            boundingSphere._center+osg::Vec3( 0.0,-2.0f * boundingSphere._radius,0.0f),
+            boundingSphere._center+osg::Vec3( 0.0,-3.0f * boundingSphere._radius,0.0f),
             boundingSphere._center,
             osg::Vec3(0.0f,0.0f,1.0f));
 

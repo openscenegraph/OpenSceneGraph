@@ -1,8 +1,13 @@
 #!smake
 SHELL=/bin/sh
 
+DIRS = osg osgDB osgUtil osgGLUT
 
-DIRS = osg osgDB osgUtil osgText osgGLUT Demos osgPlugins
+# comment out if you don't have the freetype and GLU1.3 library installed.
+DIRS += osgText
+
+DIRS += Demos
+DIRS += osgPlugins
 
 all :
 	for f in $(DIRS) ; do cd $$f; $(MAKE) || exit 1; cd ..; done

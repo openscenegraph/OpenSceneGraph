@@ -45,16 +45,8 @@ using namespace osgGLUT;
 #define        TEXT_COL_3D        osg::Vec4(.99,.3,.2,1)
 
 
-#ifdef WIN32
-std::string    ttfPath("./fonts/times.ttf");
-std::string    ttfPath1("./fonts/verdana.ttf");
-
-#else
-
-std::string    ttfPath("dirtydoz.ttf");
-std::string    ttfPath1("fudd.ttf");
-
-#endif
+std::string    ttfPath("fonts/dirtydoz.ttf");
+std::string    ttfPath1("fonts/fudd.ttf");
 
 int    gFontSize=18;
 int    gFontSize1=24;

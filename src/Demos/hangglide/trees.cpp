@@ -219,7 +219,7 @@ Node *makeTrees( void )
     struct _tree  *t;
 
     Texture *tex = new Texture;
-    tex->setImage(osgDB::readImageFile("tree0.rgba"));
+    tex->setImage(osgDB::readImageFile("Images/tree0.rgba"));
 
     StateSet *dstate = new StateSet;
     

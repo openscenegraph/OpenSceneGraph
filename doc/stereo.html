@@ -13,7 +13,7 @@ The OSG has support for stereo out of the box. Currently both anaglyphic
 stereo (i.e. red/green or red/cyan glasses) and quad buffered stereo (i.e.
 active stereo using shutter glasses, or passive stereo using polarised
 projectors &amp; glasses). It is planned to extend this support horizontal
-and virtical spli window based stereo implementations.
+and virtical split window stereo implementations.
 <p>Almost all OSG applications have the potential for stereo support simply
 by setting the relevent environmental variables, or via command line arguments.
 Little or no code changes will be required, the support is handled transparently
@@ -24,6 +24,7 @@ in this case refer to the VR toolkits handling of stereo, and do not invoke
 the OSG's native support, i.e. keep all the OSG's stereo specific environment
 varibles (below) set to OFF, or set the values to off within own your own
 applications.
+<br>
 <h3>
 The environmental variables of interest:</h3>
 
@@ -84,10 +85,9 @@ The environmental variables of interest:</h3>
 <td>set the eye seperation - interoccular distance (default shown.)</td>
 </tr>
 </table>
-
+<br>
 <h3>
 Command line arguments can be used to override these settings:</h3>
-&nbsp;
 <table CELLSPACING=5 >
 <tr>
 <td><b>-stereo</b></td>
@@ -129,7 +129,7 @@ Command line arguments can be used to override these settings:</h3>
 <td>Switch on QUAD_BUFFER stereo.</td>
 </tr>
 </table>
-
+<br>
 <h3>
 Examples:</h3>
 To invoke stereo from the comandline:

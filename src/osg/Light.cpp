@@ -12,16 +12,16 @@ Light::Light( void )
 
     init();
 
-    //     notify(DEBUG) << "_ambient "<<_ambient<<endl;
-    //     notify(DEBUG) << "_diffuse "<<_diffuse<<endl;
-    //     notify(DEBUG) << "_specular "<<_specular<<endl;
-    //     notify(DEBUG) << "_position "<<_position<<endl;
-    //     notify(DEBUG) << "_direction "<<_direction<<endl;
-    //     notify(DEBUG) << "_spot_exponent "<<_spot_exponent<<endl;
-    //     notify(DEBUG) << "_spot_cutoff "<<_spot_cutoff<<endl;
-    //     notify(DEBUG) << "_constant_attenuation "<<_constant_attenuation<<endl;
-    //     notify(DEBUG) << "_linear_attenuation "<<_linear_attenuation<<endl;
-    //     notify(DEBUG) << "_quadratic_attenuation "<<_quadratic_attenuation<<endl;
+    //     notify(DEBUG) << "_ambient "<<_ambient<<std::endl;
+    //     notify(DEBUG) << "_diffuse "<<_diffuse<<std::endl;
+    //     notify(DEBUG) << "_specular "<<_specular<<std::endl;
+    //     notify(DEBUG) << "_position "<<_position<<std::endl;
+    //     notify(DEBUG) << "_direction "<<_direction<<std::endl;
+    //     notify(DEBUG) << "_spot_exponent "<<_spot_exponent<<std::endl;
+    //     notify(DEBUG) << "_spot_cutoff "<<_spot_cutoff<<std::endl;
+    //     notify(DEBUG) << "_constant_attenuation "<<_constant_attenuation<<std::endl;
+    //     notify(DEBUG) << "_linear_attenuation "<<_linear_attenuation<<std::endl;
+    //     notify(DEBUG) << "_quadratic_attenuation "<<_quadratic_attenuation<<std::endl;
 }
 
 

@@ -89,7 +89,7 @@ Node *makeSky( void )
     gset->setPrimLengths( lengths );
 
     Texture *tex = new Texture;
-    tex->setImage(osgDB::readImageFile("white.rgb"));
+    tex->setImage(osgDB::readImageFile("Images/white.rgb"));
 
     StateSet *dstate = new StateSet;
 

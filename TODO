@@ -46,6 +46,31 @@ o Core OSG Library
         . manipulator decoration nodes?
         . spacial subdivision decoration nodes?
         
+        . improved osgUtil:TriStringVisitor to replace NvTriStrip code.
+        . update of osgText to latest FTGL.
+        . create osg::Drawable::PrimtiveFunrctor
+        . support for volume rendering.
+        . improved stereo support.
+        . occlusion culling.
+        . integrated osgEnv.
+        . implement a osg::CameraRelativeNode for earth sky/HUD's etc.
+        . thread safety.
+        . osgMultipipe.
+        . multi-textureing -> multi-pass support for platforms which do not
+          support multi-texturing.
+        . improve tri-intersection code.
+        . osgParticles - support for particle effects.
+        . osgAnimation - support for skinning etc.
+        . osgShader - suppor for shader languages.
+        . improved makefiles.
+        . improved impostor implementation - use depth textures?
+        . clean up multi-bin control.
+        . improve the node callback mechanism.
+        . osgUtil::MultiSceneView/Multi-channel configuration.
+        . support for node kits via the plugins mechanism.
+        . Added tracking of matrix stacks in osg::State.
+        . Added ImageGroup's which can be attached to textures for animation.
+        
     - Visitors
         . improve state sorting of opaque bins in osg::RenderBin.
         . add statistics visitor for logging the stats of the scene graph.
@@ -53,11 +78,9 @@ o Core OSG Library
         
     - IO/Plug-in support
         . improve the ascii parsing class osg::Field, osg::FieldReader etc.
-        . change the osg::Registry to timestamp registrations of objects/RW's.
         . add support for file path logging into osg::Input.
         . add binary data reading and writing into osg::Input/osg::Output to
           support part binary .osg files.
-        . return error messages of on failed loading/saving. 
         
         
 o Reader/writer plug-ins
@@ -66,10 +89,8 @@ o Reader/writer plug-ins
     - .dxf      Autocads ascii format.
     - .dem      digital elevation map.
     - .d3d?     MS's Direct 3D file formats if they have one..
-    - .bmp      Windows Bitmap files.
-    - .Z        Automatic unzipping of Unix Compress files.
-    - .tar      Automatic unpacking of directories and loading of contents.
-
+    - 3D Studio plugin to export to .osg.
+    - Miya plugin to export to .osg.
 
 o Viewers & Application plug-ins
   ===============================
@@ -144,3 +165,6 @@ o Work completed
     - osg::Plane class.
     - add osg::Camera class.
     - add osg::EarthSky class for rendering earth and sky backgrounds.
+    - return error messages of on failed loading/saving. 
+    - .bmp      Windows Bitmap files.
+    - .tar      Automatic unpacking of directories and loading of contents.

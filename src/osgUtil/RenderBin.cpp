@@ -20,7 +20,7 @@ RenderBinPrototypeList* renderBinPrototypeList()
 
 RenderBin* RenderBin::createRenderBin(const std::string& binName)
 {
-//    cout << "creating RB "<<binName<<endl;
+//    cout << "creating RB "<<binName<<std::endl;
 
     RenderBinPrototypeList::iterator itr = renderBinPrototypeList()->find(binName);
     if (itr != renderBinPrototypeList()->end()) return dynamic_cast<RenderBin*>(itr->second->clone());
@@ -32,7 +32,7 @@ void RenderBin::addRenderBinPrototype(RenderBin* proto)
     if (proto)
     {
         (*renderBinPrototypeList())[proto->className()] = proto;
-//        cout << "Adding RB "<<proto->className()<<endl;
+//        cout << "Adding RB "<<proto->className()<<std::endl;
     }
 }
 

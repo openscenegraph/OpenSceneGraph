@@ -66,7 +66,7 @@ Node *makeBase( void )
 
     Texture *tex = new Texture;
 
-    tex->setImage(osgDB::readImageFile("water.rgb"));
+    tex->setImage(osgDB::readImageFile("Images/water.rgb"));
     tex->setWrap( Texture::WRAP_S, Texture::REPEAT );
     tex->setWrap( Texture::WRAP_T, Texture::REPEAT );
 

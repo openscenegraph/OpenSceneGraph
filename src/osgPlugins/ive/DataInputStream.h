@@ -13,15 +13,17 @@
 #include <osg/Array>
 #include <osg/Matrix>
 #include <osg/Geometry>					   
+#include <osg/Image>
+#include <osg/StateSet>
+#include <osg/ref_ptr>
+
+#include <osgDB/ReaderWriter>
 
 #include "IveVersion.h"
 #include "DataTypeSize.h"	
 #include "Exception.h"
 
 
-#include <osg/Image>
-#include <osg/StateSet>
-#include <osg/ref_ptr>
 
 namespace ive{
 
@@ -30,6 +32,10 @@ class DataInputStream{
 public:
 	DataInputStream(std::istream* istream);
 	~DataInputStream();
+
+        void setOptions(const osgDB::ReaderWriter::Options* options) { _options = options; }
+        const osgDB::ReaderWriter::Options* getOptions() const { return _options.get(); }
+
 	unsigned int getVersion();
 	bool readBool();
 	char readChar();
@@ -92,6 +98,8 @@ private:
 	DrawableMap         _drawableMap;
 	ShapeMap            _shapeMap;
 	NodeMap             _nodeMap;
+        
+        osg::ref_ptr<const osgDB::ReaderWriter::Options> _options;
    
 };
 

@@ -32,7 +32,7 @@ class IVEReaderWriter : public ReaderWriter
             return readNode(istream,options);
         }
         
-        virtual ReadResult readNode(std::istream& fin, const Options*)
+        virtual ReadResult readNode(std::istream& fin, const Options* options)
         {
         #define IVE_CATCH_EXCEPTIONS
         #ifdef IVE_CATCH_EXCEPTIONS
@@ -40,6 +40,7 @@ class IVEReaderWriter : public ReaderWriter
         #endif
                 // Create datainputstream.
                 ive::DataInputStream in(&fin);
+                in.setOptions(options);
 
                 return in.readNode();
         #ifdef IVE_CATCH_EXCEPTIONS

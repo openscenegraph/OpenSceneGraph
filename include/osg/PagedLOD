@@ -43,6 +43,15 @@ class SG_EXPORT PagedLOD : public LOD
 
         virtual bool removeChild(Node *child);
         
+
+
+
+        /** Set the database path to prepend to children's filenames.*/
+        void setDatabasePath(const std::string& path);
+
+        /** Get the database path used to prepend to children's filenames.*/
+        inline const std::string& getDatabasePath() const { return _databasePath; }
+
         
         struct SG_EXPORT PerRangeData
         {
@@ -57,7 +66,7 @@ class SG_EXPORT PagedLOD : public LOD
         };
 
         typedef std::vector<PerRangeData> PerRangeDataList;
-
+        
         void setFileName(unsigned int childNo, const std::string& filename) { expandPerRangeDataTo(childNo); _perRangeDataList[childNo]._filename=filename; }
         const std::string& getFileName(unsigned int childNo) const { return _perRangeDataList[childNo]._filename; }
         unsigned int getNumFileNames() const { return _perRangeDataList.size(); }
@@ -111,6 +120,8 @@ class SG_EXPORT PagedLOD : public LOD
         virtual void rangeInserted(unsigned int pos);
         
         void expandPerRangeDataTo(unsigned int pos);
+
+        std::string         _databasePath;
 
         int                 _frameNumberOfLastTraversal;
         unsigned int        _numChildrenThatCannotBeExpired;

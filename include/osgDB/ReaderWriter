@@ -35,6 +35,7 @@ class OSGDB_EXPORT ReaderWriter : public osg::Referenced
         virtual const char* className() = 0;
         virtual bool acceptsExtension(const std::string& /*extension*/) { return false; }
 
+        /** Options base class used for passing options into plugins to control their operation.*/
         class Options : public osg::Referenced
         {
             public:
@@ -42,14 +43,24 @@ class OSGDB_EXPORT ReaderWriter : public osg::Referenced
                 Options() {}
                 Options(const std::string& str):_str(str) {}
                 
+                /** Set the general Options string.*/
                 void setOptionString(const std::string& str) { _str = str; }
+
+                /** Get the general Options string.*/
                 const std::string& getOptionString() const { return _str; }
+
+                /** Set the database path to use a hint of where to look when loading models.*/
+                void setDatabasePath(const std::string& str) { _databasePath = str; }
+
+                /** Get the database path which is used a hint of where to look when loading models.*/
+                const std::string& getDatabasePath() const { return _databasePath; }
 
             protected:
 
                 virtual ~Options() {}
 
                 std::string _str;
+                std::string _databasePath;
 
         };
 

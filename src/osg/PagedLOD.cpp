@@ -39,6 +39,38 @@ PagedLOD::PagedLOD(const PagedLOD& plod,const CopyOp& copyop):
 {
 }
 
+void PagedLOD::setDatabasePath(const std::string& path)
+{
+    _databasePath = path;
+    if (!_databasePath.empty())
+    {
+        char& lastCharacter = _databasePath[_databasePath.size()-1];
+        const char unixSlash = '/';
+        const char winSlash = '\\';
+        
+        // make sure the last character is the appropriate slash 
+#ifdef WIN32       
+        if (lastCharacter==unixSlash)
+        {
+            lastCharacter = winSlash;
+        }
+        else if (lastCharacter!=winSlash)
+        {
+            _databasePath += winSlash;
+        }
+#else
+        if (lastCharacter==winSlash)
+        {
+            lastCharacter = unixSlash;
+        }
+        else if (lastCharacter!=unixSlash)
+        {
+            _databasePath += unixSlash;
+        }
+#endif
+    }
+}
+
 
 void PagedLOD::traverse(NodeVisitor& nv)
 {
@@ -98,7 +130,15 @@ void PagedLOD::traverse(NodeVisitor& nv)
                     // modify the priority according to the child's priority offset and scale.
                     priority = _perRangeDataList[numChildren]._priorityOffset + priority * _perRangeDataList[numChildren]._priorityScale;
 
-                    nv.getDatabaseRequestHandler()->requestNodeFile(_perRangeDataList[numChildren]._filename,this,priority,nv.getFrameStamp());
+                    if (_databasePath.empty())
+                    {
+                        nv.getDatabaseRequestHandler()->requestNodeFile(_perRangeDataList[numChildren]._filename,this,priority,nv.getFrameStamp());
+                    }
+                    else
+                    {
+                        // prepend the databasePath to the childs filename.
+                        nv.getDatabaseRequestHandler()->requestNodeFile(_databasePath+_perRangeDataList[numChildren]._filename,this,priority,nv.getFrameStamp());
+                    }
                 }
                 
                 

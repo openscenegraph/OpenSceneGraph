@@ -171,6 +171,7 @@ void osgParticle::ParticleSystem::single_pass_render(osg::State & /*state*/, con
     
     i0->beginRender();
 
+    float scale = sqrtf(static_cast<float>(detail_));
     for (i=i0; i<end; i+=detail_) {
         if (i->isAlive()) {
             if (i->getShape() != i0->getShape()) {
@@ -182,10 +183,10 @@ void osgParticle::ParticleSystem::single_pass_render(osg::State & /*state*/, con
 
             switch (alignment_) {
                 case BILLBOARD:
-                    i->render(modelview.preMult(i->getPosition()), osg::Vec3(1, 0, 0), osg::Vec3(0, 1, 0), sqrtf(static_cast<float>(detail_)));
+                    i->render(modelview.preMult(i->getPosition()), osg::Vec3(1, 0, 0), osg::Vec3(0, 1, 0), scale);
                     break;
                 case FIXED:
-                    i->render(i->getPosition(), align_X_axis_, align_Y_axis_, sqrtf(static_cast<float>(detail_)));
+                    i->render(i->getPosition(), align_X_axis_, align_Y_axis_, scale);
                     break;
                 default: ;
             }            

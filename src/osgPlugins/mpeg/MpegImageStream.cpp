@@ -55,13 +55,10 @@ MpegImageStream::MpegImageStream(const char* fileName) : ImageStream()
 
     load(fileName);
 
-    ::pthread_mutex_init(&_mutex, NULL);
-    ::pthread_create(&_id, NULL, MpegImageStream::s_decode, this);
-
     if (fileName)
         setFileName(fileName);
 
-
+    startThread();
 }
 
 
@@ -69,9 +66,24 @@ MpegImageStream::MpegImageStream(const char* fileName) : ImageStream()
 MpegImageStream::~MpegImageStream()
 {
     stop();
+
     setCmd(THREAD_QUIT);
-    ::pthread_join(_id, NULL);
-    ::pthread_mutex_destroy(&_mutex);
+
+    if( isRunning() )
+    {
+
+        // cancel the thread..
+        cancel();
+        //join();
+
+        // then wait for the the thread to stop running.
+        while(isRunning())
+        {
+            osg::notify(osg::DEBUG_INFO)<<"Waiting for MpegImageStream to cancel"<<std::endl;
+            OpenThreads::Thread::YieldCurrentThread();
+        }
+        
+    }
 
     mpeg3_t* mpg = (mpeg3_t*)_mpg;
     if (mpg) {
@@ -109,14 +121,6 @@ MpegImageStream::ThreadCommand MpegImageStream::getCmd()
     return cmd;
 }
 
-
-/*
- * Decoder thread
- */
-void* MpegImageStream::s_decode(void* vp)
-{
-    return ((MpegImageStream*) vp)->decode(vp);
-}
 
 void MpegImageStream::load(const char* fileName)
 {
@@ -198,7 +202,7 @@ void MpegImageStream::load(const char* fileName)
 }
 
 
-void* MpegImageStream::decode(void*)
+void MpegImageStream::run()
 {
     bool playing = false;
     mpeg3_t* mpg = (mpeg3_t*)_mpg;
@@ -283,7 +287,4 @@ void* MpegImageStream::decode(void*)
         }
     }
 
-    // Cleanup decoder
-
-    return NULL;
 }

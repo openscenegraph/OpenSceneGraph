@@ -29,9 +29,9 @@
 #define _MPEGIMAGESTREAM_H_
 
 #include <osg/ImageStream>
-//#include "ImageStream.h"
 
-#include <pthread.h>
+#include <OpenThreads/Thread>
+#include <OpenThreads/Mutex>
 
 #define NUM_CMD_INDEX 4
 
@@ -40,7 +40,7 @@ namespace osg {
     /**
      * MPEG1/2 Image Stream class.
      */
-    class SG_EXPORT MpegImageStream : public osg::ImageStream
+    class SG_EXPORT MpegImageStream : public osg::ImageStream, public OpenThreads::Thread
     {
     public:
         MpegImageStream(const char* fileName = NULL);
@@ -52,13 +52,13 @@ namespace osg {
         virtual const char* className() const { return "MpegImageStream"; }
 
         /// Start or continue stream.
-        virtual inline void start() { setCmd(THREAD_START); }
+        virtual void start() { setCmd(THREAD_START); }
 
         /// Stop stream at current position.
-        virtual inline void stop() { setCmd(THREAD_STOP); }
+        virtual void stop() { setCmd(THREAD_STOP); }
 
         /// Rewind stream to beginning.
-        virtual inline void rewind() { setCmd(THREAD_REWIND); }
+        virtual void rewind() { setCmd(THREAD_REWIND); }
 
         /// Enable/disable MMX.
         inline void enableMMX(bool b) { _useMMX = b; }
@@ -81,6 +81,8 @@ namespace osg {
         
         void load(const char* fileName);
 
+        virtual void run();
+
     protected:
         virtual ~MpegImageStream();
 
@@ -101,12 +103,11 @@ namespace osg {
         ThreadCommand _cmd[NUM_CMD_INDEX];
         int _wrIndex, _rdIndex;
 
-        pthread_mutex_t _mutex;
-        pthread_t _id;
+        OpenThreads::Mutex _mutex;
 
         // Lock/unlock object.
-        inline void lock() { ::pthread_mutex_lock(&_mutex); }
-        inline void unlock() { ::pthread_mutex_unlock(&_mutex); }
+        inline void lock() { _mutex.lock(); }
+        inline void unlock() { _mutex.unlock(); }
 
         /// Set command.
         void setCmd(ThreadCommand cmd);
@@ -115,8 +116,6 @@ namespace osg {
         ThreadCommand getCmd();
 
         /// Decoder hook.
-        static void* s_decode(void*);
-        void* decode(void*);
         
         void* _mpg;
         unsigned char** _rows;

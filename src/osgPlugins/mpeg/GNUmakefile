@@ -5,7 +5,7 @@ CXXFILES =\
         MpegImageStream.cpp\
         ReaderWriterMPEG.cpp\
 
-MPEG_LIBS = -lmpeg3 -lpthread
+MPEG_LIBS = -lmpeg3
 
 LIBS  += $(OSG_LIBS) $(MPEG_LIBS) $(OTHER_LIBS)
 

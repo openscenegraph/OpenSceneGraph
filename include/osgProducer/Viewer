@@ -55,7 +55,7 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
             HEAD_LIGHT_SOURCE       = 16,
             SKY_LIGHT_SOURCE        = 32,
             STATS_MANIPULATOR       = 64,
-            FULLSCREEN_MANIPULATOR  = 128,
+            VIEWER_MANIPULATOR      = 128,
             ESCAPE_SETS_DONE        = 256,
             STANDARD_SETTINGS = TRACKBALL_MANIPULATOR|
                                 DRIVE_MANIPULATOR |
@@ -63,7 +63,7 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
                                 STATE_MANIPULATOR |
                                 HEAD_LIGHT_SOURCE |
                                 STATS_MANIPULATOR |
-                                FULLSCREEN_MANIPULATOR |
+                                VIEWER_MANIPULATOR |
                                 ESCAPE_SETS_DONE
         };
         

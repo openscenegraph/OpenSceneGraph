@@ -13,6 +13,8 @@
 #include <osgDB/FileNameUtils>
 #include <osgDB/ReadFile>
 
+#include <osgUtil/TriStripVisitor>
+
 //MIKEC debug only for PrintVisitor
 #include <osg/NodeVisitor>
 
@@ -616,6 +618,9 @@ osg::Drawable*   ReaderWriter3DS::createDrawable(Lib3dsMesh *m,FaceList& faceLis
     }
    
     geom->addPrimitiveSet(elements);
+
+    osgUtil::TriStripVisitor tsv;
+    tsv.stripify(*geom);
 
     return geom;
 }

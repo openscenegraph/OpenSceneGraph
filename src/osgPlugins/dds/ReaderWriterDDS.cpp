@@ -687,6 +687,9 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
     // Check for correct saving
     fout.write(reinterpret_cast<char*>(buffer), isize);
     
+    delete [] header;
+    delete [] buffer;
+
     if (fout.fail())
     {
         return false;

@@ -61,7 +61,8 @@ DataOutputStream::DataOutputStream(std::ostream * ostream)
     _ostream = ostream;
     if(!_ostream)
         throw Exception("DataOutputStream::DataOutputStream(): null pointer exception in argument.");
-    writeInt(VERSION);
+    writeUInt(ENDIAN_TYPE) ;
+    writeUInt(VERSION);
 }
 
 DataOutputStream::~DataOutputStream(){}

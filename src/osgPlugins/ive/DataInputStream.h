@@ -14,6 +14,7 @@
 #include <osg/Matrix>
 #include <osg/Geometry>					   
 
+#include "IveVersion.h"
 #include "DataTypeSize.h"	
 #include "Exception.h"
 
@@ -84,6 +85,8 @@ private:
 	StateAttributeMap   _stateAttributeMap;
 	DrawableMap         _drawableMap;
 	NodeMap             _nodeMap;
+   
+   int                 _byteswap ;
 };
 
 }

@@ -10,7 +10,4 @@
 #define LONGSIZE	4
 #define DOUBLESIZE	8
 
-// NOTE: Update anytime the binary format changes
-#define	VERSION 0x01
-
 #endif 

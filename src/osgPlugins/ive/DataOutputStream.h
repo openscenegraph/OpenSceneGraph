@@ -13,6 +13,7 @@
 #include <osg/Matrix>
 #include <osg/Geometry>
 
+#include "IveVersion.h"
 #include "DataTypeSize.h"
 #include "Exception.h"
 

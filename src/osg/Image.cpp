@@ -83,9 +83,9 @@ void Image::setFileName(const std::string& fileName)
     #define GL_UNSIGNED_INT_2_10_10_10_REV		0x8368
 #endif
 
-const bool Image::isPackedType(GLenum format)
+const bool Image::isPackedType(GLenum type)
 {
-    switch(format)
+    switch(type)
     {
         case(GL_UNSIGNED_BYTE_3_3_2):
         case(GL_UNSIGNED_BYTE_2_3_3_REV):
@@ -103,9 +103,9 @@ const bool Image::isPackedType(GLenum format)
     }    
 }
 
-const unsigned int Image::computeNumComponents(GLenum type)
+const unsigned int Image::computeNumComponents(GLenum format)
 {
-    switch(type)
+    switch(format)
     {
         case(GL_COLOR_INDEX): return 1;
         case(GL_STENCIL_INDEX): return 1;
@@ -333,6 +333,67 @@ void Image::scaleImage(const int s,const int t,const int r)
     
     ++_modifiedTag;
 }
+
+void Image::flipHorizontal(int image)
+{
+    if (_data==NULL)
+    {
+        notify(WARN) << "Error Image::flipVertical() do not succeed : cannot flip NULL image."<<std::endl;
+        return;
+    }
+
+    unsigned int elemSize = getPixelSizeInBits()/8;
+
+    for (int t=0; t<_t; ++t)
+    {
+        unsigned char* rowData = _data+t*getRowSizeInBytes()+image*getImageSizeInBytes();
+        unsigned char* left  = rowData ;
+        unsigned char* right = rowData + ((_s-1)*getPixelSizeInBits())/8;
+
+        while (left < right)
+        {
+            char tmp[32];  // max elem size is four floats
+            memcpy(tmp, left, elemSize);
+            memcpy(left, right, elemSize);
+            memcpy(right, tmp, elemSize);
+            left  += elemSize;
+            right -= elemSize;
+        }
+    }
+
+    ++_modifiedTag;
+}
+
+
+void Image::flipVertical(int image)
+{
+    if (_data==NULL)
+    {
+        notify(WARN) << "Error Image::flipVertical() do not succeed : cannot flip NULL image."<<std::endl;
+        return;
+    }
+
+    unsigned int rowSizeInBytes = getRowSizeInBytes();
+    unsigned int imageSizeInBytes = getImageSizeInBytes();
+    unsigned char* imageData = _data+image*imageSizeInBytes;
+
+    // make temp. buffer for one image
+    unsigned char *tmpData = (unsigned char*) osgMalloc(imageSizeInBytes);
+
+    for (int t=0; t<_t; ++t)
+    {
+        unsigned char* srcRowData = imageData+t*rowSizeInBytes;
+        unsigned char* dstRowData = tmpData+(_t-1-t)*rowSizeInBytes;
+        memcpy(dstRowData, srcRowData, rowSizeInBytes);
+    }
+
+    // insert fliped image
+    memcpy(imageData, tmpData, imageSizeInBytes);
+
+    ::free(tmpData);
+    ++_modifiedTag;
+}
+
 
 
 void Image::ensureValidSizeForTexturing()

@@ -835,6 +835,7 @@ bool ViewerEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActio
             {
                 if (ea.getKey()=='*') _cg->setLODScale( _cg->getLODScale() * 1.1f);
                 else _cg->setLODScale( _cg->getLODScale() / 1.1f);
+                std::cout<<"New LOD Scale = "<<_cg->getLODScale()<<std::endl;
                 return true;
             }
 

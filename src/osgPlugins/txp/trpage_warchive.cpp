@@ -677,7 +677,7 @@ bool trpgwArchive::WriteTile(unsigned int x,unsigned int y,unsigned int lod, flo
 			    return false;
 		}
 
-		int64 pos = tileFile->Pos();
+		int32 pos = static_cast<int32>(tileFile->Pos());
 		if (!tileFile->Append(head,buf))
 			return false;
 		// Keep track of the fact that this went here

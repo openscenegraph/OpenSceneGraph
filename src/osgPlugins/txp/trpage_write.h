@@ -273,7 +273,7 @@ public:
 	public:
 		int x,y,lod;    // Identifying info for tile
 		float zmin,zmax;
-		int64 offset;  // Offset into file
+		int32 offset;  // Offset into file
 	};
 	class TileFile {
 	public:

@@ -1768,107 +1768,75 @@ void DataSet::DestinationTile::optimizeResolution()
 
 osg::Node* DataSet::DestinationTile::createScene()
 {
-    osg::Geode* geode = new osg::Geode;
-
-    bool imagePresent = _imagery.valid() && _imagery->_image.valid();
-    
     if (_dataSet->getGeometryType()==HEIGHT_FIELD)
     {
-        osg::ShapeDrawable* shapeDrawable = createDrawableHeightField();
-        
-        if (shapeDrawable)
-        {
-            geode->addDrawable(shapeDrawable);
-
-            if (!imagePresent)
-            {
-                shapeDrawable->setColor(_dataSet->getDefaultColor());
-            }
-        }
+        return createHeightField();
     }
     else
     {
-        osg::Geometry* geometry = createDrawablePolygonal();
-        
-        if (geometry) 
-        {       
-            geode->addDrawable(geometry);
-        
-            if (!imagePresent)
-            {
-                osg::Vec4Array* colours = new osg::Vec4Array(1);
-                (*colours)[0] = _dataSet->getDefaultColor();
-
-                geometry->setColorArray(colours);
-                geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
-            }
-        }
+        return createPolygonal();
     }
-
-    if (imagePresent)
-    {
-        std::string imageName(_name+".rgb");
-        _imagery->_image->setFileName(imageName.c_str());
-
-        osg::StateSet* stateset = geode->getOrCreateStateSet();
-        osg::Image* image = _imagery->_image.get();
-
-	osg::Texture2D* texture = new osg::Texture2D;
-	texture->setImage(image);
-        texture->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP_TO_EDGE);
-        texture->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP_TO_EDGE);
-        texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
-        texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
-        texture->setMaxAnisotropy(8);
-	stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
-        
-        if (_dataSet->getTextureType()==COMPRESSED_TEXTURE)
-        {
-            texture->setInternalFormatMode(osg::Texture::USE_S3TC_DXT3_COMPRESSION);
-
-            osg::ref_ptr<osg::State> state = new osg::State;
-            texture->apply(*state);
-
-            image->readImageFromCurrentTexture();
-
-            texture->setInternalFormatMode(osg::Texture::USE_IMAGE_DATA_FORMAT);
-            
-        } else if (_dataSet->getTextureType()==RGB_16_BIT)
-        {
-
-            image->scaleImage(image->s(),image->t(),image->r(),GL_UNSIGNED_SHORT_5_6_5);
-
-        }
-
-        if (_dataSet->getDestinationTileExtension()!=".ive")
-        {
-            std::cout<<"Writing out imagery to "<<imageName<<std::endl;
-            osgDB::writeImageFile(*_imagery->_image,_imagery->_image->getFileName().c_str());
-        }
-
-    }
-
-    return geode;
-
-
 }
 
-osg::ShapeDrawable* DataSet::DestinationTile::createDrawableHeightField()
+osg::StateSet* DataSet::DestinationTile::createStateSet()
 {
+    if (!_imagery.valid() || !_imagery->_image.valid()) return 0;
 
-    bool heightFieldPresent = _terrain.valid() && _terrain->_heightField.valid();
+    std::string imageName(_name+".rgb");
+    _imagery->_image->setFileName(imageName.c_str());
 
-    if (heightFieldPresent)
+    osg::StateSet* stateset = new osg::StateSet;
+    osg::Image* image = _imagery->_image.get();
+
+    osg::Texture2D* texture = new osg::Texture2D;
+    texture->setImage(image);
+    texture->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP_TO_EDGE);
+    texture->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP_TO_EDGE);
+    texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
+    texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
+    texture->setMaxAnisotropy(8);
+    stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
+
+    if (_dataSet->getTextureType()==COMPRESSED_TEXTURE)
+    {
+        texture->setInternalFormatMode(osg::Texture::USE_S3TC_DXT3_COMPRESSION);
+
+        osg::ref_ptr<osg::State> state = new osg::State;
+        texture->apply(*state);
+
+        image->readImageFromCurrentTexture();
+
+        texture->setInternalFormatMode(osg::Texture::USE_IMAGE_DATA_FORMAT);
+
+    } else if (_dataSet->getTextureType()==RGB_16_BIT)
+    {
+
+        image->scaleImage(image->s(),image->t(),image->r(),GL_UNSIGNED_SHORT_5_6_5);
+
+    }
+
+    if (_dataSet->getDestinationTileExtension()!=".ive")
+    {
+        std::cout<<"Writing out imagery to "<<imageName<<std::endl;
+        osgDB::writeImageFile(*_imagery->_image,_imagery->_image->getFileName().c_str());
+    }
+
+    return stateset;
+}
+
+osg::Node* DataSet::DestinationTile::createHeightField()
+{
+    osg::ShapeDrawable* shapeDrawable = 0;
+
+    if (_terrain.valid() && _terrain->_heightField.valid())
     {
         std::cout<<"--- Have terrain build tile ----"<<std::endl;
 
         osg::HeightField* hf = _terrain->_heightField.get();
         
-        osg::ShapeDrawable* shapeDrawable = new osg::ShapeDrawable(hf);
+        shapeDrawable = new osg::ShapeDrawable(hf);
 
         hf->setSkirtHeight(shapeDrawable->getBound().radius()*0.01f);
-
-        return shapeDrawable;
     }
     else 
     {
@@ -1880,16 +1848,31 @@ osg::ShapeDrawable* DataSet::DestinationTile::createDrawableHeightField()
         hf->setXInterval(_extents.xMax()-_extents.xMin());
         hf->setYInterval(_extents.yMax()-_extents.yMin());
 
-
-        osg::ShapeDrawable* shapeDrawable = new osg::ShapeDrawable(hf);
+        shapeDrawable = new osg::ShapeDrawable(hf);
 
         hf->setSkirtHeight(shapeDrawable->getBound().radius()*0.01f);
-        
-        return shapeDrawable;
     }
+
+    if (!shapeDrawable) return 0;
+
+    osg::StateSet* stateset = createStateSet();
+    if (stateset)
+    {
+        shapeDrawable->setStateSet(stateset);
+    }
+    else
+    {
+        shapeDrawable->setColor(_dataSet->getDefaultColor());
+    }
+    
+    osg::Geode* geode = new osg::Geode;
+    geode->addDrawable(shapeDrawable);
+    
+    return geode;
+
 }
 
-osg::Geometry* DataSet::DestinationTile::createDrawablePolygonal()
+osg::Node* DataSet::DestinationTile::createPolygonal()
 {
     std::cout<<"--------- DataSet::DestinationTile::createDrawableGeometry() ------------- "<<std::endl;
 
@@ -2111,7 +2094,24 @@ osg::Geometry* DataSet::DestinationTile::createDrawablePolygonal()
     tsv.stripify(*geometry);
 #endif
 
-    return geometry;
+    osg::StateSet* stateset = createStateSet();
+    if (stateset)
+    {
+        geometry->setStateSet(stateset);
+    }
+    else
+    {
+        osg::Vec4Array* colours = new osg::Vec4Array(1);
+        (*colours)[0] = _dataSet->getDefaultColor();
+
+        geometry->setColorArray(colours);
+        geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+    }
+    
+    osg::Geode* geode = new osg::Geode;
+    geode->addDrawable(geometry);
+    
+    return geode;
 }
 
 void DataSet::DestinationTile::readFrom(CompositeSource* sourceGraph)
@@ -2540,7 +2540,7 @@ DataSet::DataSet()
     _databaseType = PagedLOD_DATABASE;
     _geometryType = POLYGONAL;
     _textureType = COMPRESSED_TEXTURE;
-
+    _useLocalTileTransform = true;
 }
 
 void DataSet::init()

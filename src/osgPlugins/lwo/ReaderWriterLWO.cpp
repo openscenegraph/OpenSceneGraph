@@ -70,11 +70,11 @@ osgDB::RegisterReaderWriterProxy<ReaderWriterLWO> g_lwoReaderWriterProxy;
 osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO2(const std::string& fileName, const osgDB::ReaderWriter::Options*)
 {
     std::auto_ptr<Lwo2> lwo2(new Lwo2());
-    lwo2->ReadFile(fileName);
-
-    osg::ref_ptr<Group> group = new osg::Group();
-    if (lwo2->GenerateGroup(*group)) return group.take();
-
+    if (lwo2->ReadFile(fileName))
+    {
+        osg::ref_ptr<Group> group = new osg::Group();
+        if (lwo2->GenerateGroup(*group)) return group.take();
+    }
     return ReadResult::FILE_NOT_HANDLED;
 }
 
@@ -110,7 +110,7 @@ struct GeometryCollection
 // read file and convert to OSG.
 osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO1(const std::string& fileName, const osgDB::ReaderWriter::Options*)
 {
-    lwObject* lw = lw_object_read(fileName.c_str());
+    lwObject* lw = lw_object_read(fileName.c_str(),osg::notify(osg::INFO));
     if (!lw)
         return ReadResult::FILE_NOT_HANDLED;
 

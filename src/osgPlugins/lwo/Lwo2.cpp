@@ -67,7 +67,7 @@ Lwo2::ReadFile( const string& filename )
   _fin.open(filename.c_str(), ios::in | ios::binary );
   if (!_fin.is_open())
     {
-      notify(FATAL) << "Can't open file '" << filename << "'" << endl;
+      notify(NOTICE) << "Can't open file '" << filename << "'" << endl;
       return false;
     }
 
@@ -75,7 +75,7 @@ Lwo2::ReadFile( const string& filename )
   // http://www.lightwave3d.com/developer/75lwsdk/docs/filefmts/eaiff85.html
   if (_read_long() != tag_FORM) 
     {
-      notify(FATAL) << "File '" << filename << "' is not IFF format file." << endl;
+      notify(INFO) << "File '" << filename << "' is not IFF format file." << endl;
       _fin.close();
       return false;
     }

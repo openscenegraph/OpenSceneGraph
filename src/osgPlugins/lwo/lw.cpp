@@ -239,7 +239,7 @@ gint lw_is_lwobject(const char *lw_file)
 }
 
 
-lwObject *lw_object_read(const char *lw_file)
+lwObject *lw_object_read(const char *lw_file, std::ostream& output)
 {
   FILE *f = NULL;
   lwObject *lw_object = NULL;
@@ -250,13 +250,13 @@ lwObject *lw_object_read(const char *lw_file)
   /* open file */
   f = fopen(lw_file, "rb");
   if (f == NULL) {
-    g_warning("can't open file %s", lw_file);
+    output << "can't open file "<<lw_file<<std::endl;
     return NULL;
   }
 
   /* check for headers */
   if (read_long(f) != ID_FORM) {
-    g_warning("file %s is not an IFF file", lw_file);
+    output << "file "<<lw_file<<" is not an IFF file"<<std::endl;
     fclose(f);
     return NULL;
   }
@@ -264,7 +264,7 @@ lwObject *lw_object_read(const char *lw_file)
   read_bytes += 4;
 
   if (read_long(f) != ID_LWOB) {
-    g_warning("file %s is not a LWOB file", lw_file);
+    output << "file "<<lw_file<<" is not a LWOB file"<<std::endl;
     fclose(f);
     return NULL;
   }

@@ -15,6 +15,7 @@
 #define OSG_CULLSTACK 1
 
 #include <osg/CullingSet>
+#include <osg/CullSettings>
 #include <osg/Viewport>
 #include <osg/fast_back_stack>
 
@@ -22,7 +23,7 @@ namespace osg {
 
 /** A CullStack class which accumulates the current project, modelview matrices
 and the CullingSet. */
-class SG_EXPORT CullStack
+class SG_EXPORT CullStack : public osg::CullSettings
 {
 
     public:
@@ -33,28 +34,6 @@ class SG_EXPORT CullStack
         ~CullStack();
     
         typedef std::vector<ShadowVolumeOccluder>   OccluderList;
-
-        enum CullingModeValues
-        {
-            NO_CULLING                  = 0x0,
-            VIEW_FRUSTUM_SIDES_CULLING  = 0x1,
-            NEAR_PLANE_CULLING          = 0x2,
-            FAR_PLANE_CULLING           = 0x4,
-            VIEW_FRUSTUM_CULLING        = VIEW_FRUSTUM_SIDES_CULLING|
-                                          NEAR_PLANE_CULLING|
-                                          FAR_PLANE_CULLING,
-            SMALL_FEATURE_CULLING       = 0x8,
-            SHADOW_OCCLUSION_CULLING    = 0x10,
-            DEFAULT_CULLING             = VIEW_FRUSTUM_SIDES_CULLING|
-                                          SMALL_FEATURE_CULLING|
-                                          SHADOW_OCCLUSION_CULLING,
-            ENABLE_ALL_CULLING          = VIEW_FRUSTUM_CULLING|
-                                          SMALL_FEATURE_CULLING|
-                                          SHADOW_OCCLUSION_CULLING
-        };
-        
-        typedef unsigned int CullingMode;
-        
 
         void reset();
         
@@ -74,19 +53,6 @@ class SG_EXPORT CullStack
         inline float getFrustumVolume() { if (_frustumVolume<0.0f) computeFrustumVolume(); return _frustumVolume; }
 
 
-        /** Sets the current CullingMode.*/
-        void setCullingMode(CullingMode mode) { _cullingMode = mode; }
-        
-        /** Returns the current CullingMode.*/
-        CullingMode getCullingMode() const { return _cullingMode; }
-
-        void setLODScale(float bias) { _LODScale = bias; }
-        float getLODScale() const    { return _LODScale; }
-        
-        void setSmallFeatureCullingPixelSize(float value) { _smallFeatureCullingPixelSize=value; }
-        float getSmallFeatureCullingPixelSize() const { return _smallFeatureCullingPixelSize; }
-    
-    
         /** Compute the pixel of an object at position v, with specified radius.*/
         float pixelSize(const Vec3& v,float radius) const
         {
@@ -178,10 +144,6 @@ class SG_EXPORT CullStack
     
         void pushCullingSet();
         void popCullingSet();
-
-        CullingMode                                                 _cullingMode;
-        float                                                       _LODScale;
-        float                                                       _smallFeatureCullingPixelSize;
 
         // base set of shadow volume occluder to use in culling.
         ShadowVolumeOccluderList                                    _occluderList;

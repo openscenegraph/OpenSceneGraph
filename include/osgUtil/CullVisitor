@@ -59,7 +59,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         virtual CullVisitor* cloneType() const { return new CullVisitor(); }
 
         virtual void reset();
-        
+
         virtual osg::Vec3 getEyePoint() const { return getEyeLocal(); }
         virtual float getDistanceToEyePoint(const osg::Vec3& pos, bool withLODScale) const;
         virtual float getDistanceFromEyePoint(const osg::Vec3& pos, bool withLODScale) const;
@@ -81,52 +81,6 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
 
         void setClearNode(const osg::ClearNode* earthSky) { _clearNode = earthSky; }
         const osg::ClearNode* getClearNode() const { return _clearNode.get(); }
-
-
-        /** Switch the creation of Impostors on or off.
-          * Setting active to false forces the CullVisitor to use the Impostor
-          * LOD children for rendering. Setting active to true forces the
-          * CullVisitor to create the appropriate pre-rendering stages which
-          * render to the ImpostorSprite's texture.*/
-        void setImpostorsActive(bool active) { _impostorActive = active; }
-        
-        /** Get whether impostors are active or not. */
-        bool getImpostorsActive() const { return _impostorActive; }
-
-        /** Set the impostor error threshold.
-          * Used in calculation of whether impostors remain valid.*/
-        void setImpostorPixelErrorThreshold(float numPixels) { _impostorPixelErrorThreshold=numPixels; }
-
-        /** Get the impostor error threshold.*/
-        float getImpostorPixelErrorThreshold() const { return _impostorPixelErrorThreshold; }
-
-        /** Set whether ImpostorSprite's should be placed in a depth sorted bin for rendering.*/
-        void setDepthSortImpostorSprites(bool doDepthSort) { _depthSortImpostorSprites = doDepthSort; }
-
-        /** Get whether ImpostorSprite's are depth sorted bin for rendering.*/
-        bool setDepthSortImpostorSprites() const { return _depthSortImpostorSprites; }
-
-        /** Set the number of frames that an ImpostorSprite's is kept whilst not being beyond,
-          * before being recycled.*/
-        void setNumberOfFrameToKeepImpostorSprites(int numFrames) { _numFramesToKeepImpostorSprites = numFrames; }
-
-        /** Get the number of frames that an ImpostorSprite's is kept whilst not being beyond,
-          * before being recycled.*/
-        int getNumberOfFrameToKeepImpostorSprites() const { return _numFramesToKeepImpostorSprites; }
-
-        enum ComputeNearFarMode
-        {
-            DO_NOT_COMPUTE_NEAR_FAR = 0,
-            COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES,
-            COMPUTE_NEAR_FAR_USING_PRIMITIVES
-        };
-
-        void setComputeNearFarMode(ComputeNearFarMode cnfm) { _computeNearFar=cnfm; } 
-        ComputeNearFarMode getComputeNearFarMode() const { return _computeNearFar;} 
-        
-        void setNearFarRatio(float ratio) { _nearFarRatio = ratio; }
-        float getNearFarRatio() const { return _nearFarRatio; }
-        
 
         /** Push state set on the current state group.
           * If the state exists in a child state group of the current
@@ -219,22 +173,6 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         virtual void popProjectionMatrix();
         
 
-        /** Callback for overriding the CullVisitor's default clamping of the projection matrix to computed near and far values.
-          * Note, both Matrixf and Matrixd versions of clampProjectionMatrixImplementation must be implemented as the CullVisitor
-          * can target either Matrix data type, configured at compile time.*/
-        struct ClampProjectionMatrixCallback : public osg::Referenced
-        {
-            virtual bool clampProjectionMatrixImplementation(osg::Matrixf& projection, double znear, double zfar) const = 0;
-            virtual bool clampProjectionMatrixImplementation(osg::Matrixd& projection, double znear, double zfar) const = 0;
-        };
-        
-        /** set the ClampProjectionMatrixCallback.*/
-        void setClampProjectionMatrixCallback(ClampProjectionMatrixCallback* cpmc) { _clampProjectionMatrixCallback = cpmc; }
-        /** get the non const ClampProjectionMatrixCallback.*/
-        ClampProjectionMatrixCallback* getClampProjectionMatrixCallback() { return _clampProjectionMatrixCallback.get(); }
-        /** get the const ClampProjectionMatrixCallback.*/
-        const ClampProjectionMatrixCallback* getClampProjectionMatrixCallback() const { return _clampProjectionMatrixCallback.get(); }
-
         /** CullVisitor's default clamping of the projection float matrix to computed near and far values.
           * Note, do not call this method directly, use clampProjectionMatrix(..) instead, unless you want to bypass the callback.*/
         virtual bool clampProjectionMatrixImplementation(osg::Matrixf& projection, double znear, double zfar) const;
@@ -314,27 +252,18 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
           * to generate the impostor texture. */
         osg::ImpostorSprite* createImpostorSprite(osg::Impostor& node);
 
+        osg::ref_ptr<const osg::ClearNode>                          _clearNode;
+
         osg::ref_ptr<RenderGraph>                                   _rootRenderGraph;
         RenderGraph*                                                _currentRenderGraph;
 
         osg::ref_ptr<RenderStage>                                   _rootRenderStage;        
         RenderBin*                                                  _currentRenderBin;
 
-        ComputeNearFarMode  _computeNearFar;
 
-        value_type               _nearFarRatio;
         value_type               _computed_znear;
         value_type               _computed_zfar;
         
-        osg::ref_ptr<ClampProjectionMatrixCallback> _clampProjectionMatrixCallback;
-        
-        osg::ref_ptr<const osg::ClearNode> _clearNode;
-	
-        bool    _impostorActive;
-        bool    _depthSortImpostorSprites;
-        float   _impostorPixelErrorThreshold;
-        int     _numFramesToKeepImpostorSprites;
-	
         
 	typedef std::vector< osg::ref_ptr<RenderLeaf> > RenderLeafList;
 	RenderLeafList _reuseRenderLeafList;

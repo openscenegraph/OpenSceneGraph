@@ -87,6 +87,10 @@ ifeq ($(LIBPNG_INSTALLED),yes)
   PLUGIN_DIRS += png
 endif
 
+ifeq ($(LIBMPEG3_INSTALLED),yes)
+    EXAMPLE_DIRS += mpeg
+endif
+
 
 ifeq ($(COIN_INSTALLED),yes)
     PLUGIN_DIRS += Inventor

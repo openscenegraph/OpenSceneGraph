@@ -172,6 +172,25 @@ bool Text::computeBound() const
     return true;
 }
 
+bool Text::supports(PrimitiveFunctor&) const
+{
+    return true;
+}
+
+void Text::accept(PrimitiveFunctor& functor) const
+{
+    Vec3 boundingVertices[4];
+    boundingVertices[0].set(_bbox._min._v[0],_bbox._max._v[1],_bbox._min._v[2]);
+    boundingVertices[1] = _bbox._min;
+    boundingVertices[2].set(_bbox._max._v[0],_bbox._min._v[1],_bbox._max._v[2]);
+    boundingVertices[3] = _bbox._max;
+
+    functor.setVertexArray(4,boundingVertices);
+    functor.drawArrays( GL_QUADS, 0, 4);
+    
+    cout << "done draw arrays"<<endl;
+}
+
 void Text::drawImplementation(State& state) const
 {
     if(!_init)

@@ -16,7 +16,7 @@
 using namespace osg;
 
 ImageStream::ImageStream():
-    _status(STOPPED)
+    _status(PAUSED)
 {
 }
 

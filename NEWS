@@ -2,10 +2,25 @@
 OSG News (most significant items from ChangeLog)
 ================================================
 
+
+    Geometry has been extended to all per primtive bindings and
+    per primitive set bindings of attributes, and indexing of attributes
+    with the same or different index lists for each attribute list.
+
+    From Macro Jez, new cubemap helper classes.
+
+    New osg::Shape geometry primitives added which allow the specification
+    of geometry in a form that can accelerate collision detection, and as
+    a way of specifiying the geometry to tesselate.  Shapes include 
+    Shere, Orintatble Box, Cone, Cylinder, Grid, TriangleMesh, ConvexHull
+    and CompositeShape which allows the storage of a heirachy of shapes. 
+    
+    From Geoff Michel, AC3D .wc and Carbon Graphics GEO .geo loaders.
+
     Support added for handling different extensions on different graphics
     contexts.
 
-    Sort callbacks added to osg::RenderStage.
+    Draw and Sort callbacks added to osg::RenderStage.
 
     Support for multitexturing added to OpenFlight loader.
 

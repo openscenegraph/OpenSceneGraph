@@ -426,7 +426,7 @@ class HeightField : public Shape
 
 	virtual float getHeight(unsigned int c,unsigned int r) const = 0;
 	
-	virtual Vec3 getNormal(unsigned int c,unsigned int r) const = 0;
+	virtual Vec3 getNormal(unsigned int c,unsigned int r) const;
 	
     	inline void setRotation(const Quat& quat) { _rotation = quat; }
     	inline const Quat& getRotation() const { return _rotation; }
@@ -469,11 +469,6 @@ class SG_EXPORT Grid : public HeightField
 	virtual float getHeight(unsigned int c,unsigned int r) const
 	{
 	   return _heights[c+r*_columns];
-	}
-	
-	virtual Vec3 getNormal(unsigned int,unsigned int) const 
-	{
-	    return osg::Vec3(0.0f,0.0f,1.0f);
 	}
 	
     protected:

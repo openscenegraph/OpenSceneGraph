@@ -68,6 +68,8 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
         RenderStage* getStage() { return _stage; }
         const RenderStage* getStage() const { return _stage; }
 
+	int getBinNum() const { return _binNum; }
+
         RenderGraphList& getRenderGraphList() { return _renderGraphList; }
         const RenderGraphList& getRenderGraphList() const { return _renderGraphList; }
 

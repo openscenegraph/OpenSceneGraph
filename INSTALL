@@ -270,15 +270,27 @@ Running the demos
 
     To run the viewer demo type (you made need to type rehash first under Unix) :
 
-        sgv dumptruck.osg
         sgv cow.osg
-        sgv e-s-bike.osg
 
         sgv lz.rgb
+
+          or
 
         sgv Spinnercar.flt
         sgv Alley.3ds
         sgv town_ogl_pfi.pfb
+
+          or
+
+        sgv -stereo cow.osg   (see doc/stereo.html for further details)
+        
+          or
+          
+        sgv -stencil cow.osg  (to turn on use of the stencil buffer and
+                               enable the overdraw stats mode.)
+          or
+          
+        sgv                   (with no arguments prints out usage to console.)
 
     Other run other demos type
     
@@ -308,10 +320,8 @@ Running the demos
           or
           
         osgviews glider.osg
+                  
         
-        To 
-          
-
     (Note: the file is picked up by checking the directories pointed to
     by $OSGFILEPATH)
 

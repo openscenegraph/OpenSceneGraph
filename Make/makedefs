@@ -45,8 +45,8 @@ MAKEDEPEND = ignore
 ####################################################################### 
 VERSION_MAJOR    = 0
 VERSION_MINOR    = 9
-VERSION_RELEASE  = 5
-VERSION_REVISION ?= 0
+VERSION_RELEASE  = 6
+VERSION_REVISION ?= 1
 ifneq (,$(OSG_VERSION_REVISION))
 VERSION_REVISION = $(OSG_VERSION_REVISION)
 endif

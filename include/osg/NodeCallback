@@ -39,9 +39,50 @@ class SG_EXPORT NodeCallback : public Referenced {
         /** Callback method call by the NodeVisitor when visiting a node.*/
         virtual void operator()(Node*, NodeVisitor*) {}
         
+        /** Call any nested callbacks and then traverse the scene graph. */
+        void traverse(Node* node,NodeVisitor* nv);
+        
+        void setNestedCallback(NodeCallback* nc) { _nestedCallback = nc; }
+        NodeCallback* getNestedCallback() { return _nestedCallback.get(); }
+        
+        inline void addNestedCallback(NodeCallback* nc)
+        {
+            if (nc)
+            {
+                if (_nestedCallback.valid())
+                {
+                    nc->addNestedCallback(_nestedCallback.get());
+                    _nestedCallback = nc;
+                }
+                else
+                {
+                    _nestedCallback = nc;
+                }
+            }
+        }
+        
+        inline void removeNestedCallback(NodeCallback* nc)
+        {
+            if (nc)
+            {
+                if (_nestedCallback==nc)
+                {
+                    NodeCallback* nested_nc = _nestedCallback->getNestedCallback();
+                    if (nested_nc) _nestedCallback = nc;
+                    else _nestedCallback = 0;
+                }
+                else
+                {
+                    _nestedCallback->removeNestedCallback(nc);
+                }
+            }
+        }
+        
    public:
 
         Requirements _requirements;
+        
+        ref_ptr<NodeCallback> _nestedCallback;
 };
 
 }; // namespace

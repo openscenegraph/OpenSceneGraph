@@ -77,7 +77,7 @@ class SG_EXPORT Matrix : public Object
         // can I still do something to optimize the same case now?
 
         void makeRot( const Vec3& from, const Vec3& to );
-        void makeRot( float angle, const Vec3& orientation );
+        void makeRot( float angle, const Vec3& axis );
         void makeRot( float angle, float x, float y, float z );
         void makeRot( const Quat& );
         void makeRot( float, float, float ); //Euler angles
@@ -92,6 +92,7 @@ class SG_EXPORT Matrix : public Object
         inline static Matrix trans( float, float, float );
         inline static Matrix rotate( const Vec3&, const Vec3& );
         inline static Matrix rotate( float, float, float, float );
+        inline static Matrix rotate( float angle, const Vec3& axis);
         inline static Matrix rotate( const Quat& );
 
         inline Vec3 preMult( const Vec3& v ) const;
@@ -215,7 +216,12 @@ inline Matrix Matrix::rotate(float angle, float x, float y, float z )
     m.makeRot(angle,x,y,z);
     return m;
 }
-
+inline Matrix Matrix::rotate(float angle, const Vec3& axis )
+{
+    Matrix m;
+    m.makeRot(angle,axis);
+    return m;
+}
 inline Matrix Matrix::rotate(const Vec3& from, const Vec3& to )
 {
     Matrix m;

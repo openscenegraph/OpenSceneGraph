@@ -31,6 +31,7 @@ C++FILES = \
 	Material.cpp\
 	Matrix.cpp\
 	Node.cpp\
+	NodeCallback.cpp\
 	NodeVisitor.cpp\
         Notify.cpp\
 	Object.cpp\

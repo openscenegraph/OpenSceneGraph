@@ -206,7 +206,7 @@ char *osgDB::findDSO( const char *name )
         }
         else
         {
-            return (char *)strdup(_name);
+            return (char *)strdup(name);
         }
     }
     #endif

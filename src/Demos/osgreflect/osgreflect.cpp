@@ -84,8 +84,7 @@ class TransformCallback : public osg::NodeCallback{
             }
             
             // must continue subgraph traversal.
-            nv->traverse(*node);
-
+            traverse(node,nv);
             
         }
         

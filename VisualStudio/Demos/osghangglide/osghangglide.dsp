@@ -105,10 +105,6 @@ SOURCE=..\..\..\Src\Demos\osghangglide\Hat.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\Demos\osghangglide\ReaderWriterFLY.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\Src\Demos\osghangglide\Sky.cpp
 # End Source File
 # Begin Source File

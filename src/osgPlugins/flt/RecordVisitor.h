@@ -26,6 +26,8 @@ class OldLodRecord;
 class DofRecord;
 class ObjectRecord;
 class FaceRecord;
+class MeshRecord;
+class MeshPrimitiveRecord;
 class VertexListRecord;
 class MorphVertexListRecord;
 class LightSourceRecord;
@@ -38,6 +40,7 @@ class ExternalRecord;
 class CommentRecord;
 class LongIDRecord;
 class VectorRecord;
+class LocalVertexPoolRecord;
 class OldVertexRecord;
 class OldVertexColorRecord;
 class OldVertexColorNormalRecord;
@@ -120,6 +123,8 @@ class RecordVisitor
         virtual void apply(DofRecord& rec)                  { apply((PrimNodeRecord&)rec); }
         virtual void apply(ObjectRecord& rec)               { apply((PrimNodeRecord&)rec); }
         virtual void apply(FaceRecord& rec)                 { apply((PrimNodeRecord&)rec); }
+        virtual void apply(MeshRecord& rec)                 { apply((PrimNodeRecord&)rec); }
+        virtual void apply(MeshPrimitiveRecord& rec)        { apply((PrimNodeRecord&)rec); }
         virtual void apply(VertexListRecord& rec)           { apply((PrimNodeRecord&)rec); }
         virtual void apply(MorphVertexListRecord& rec)      { apply((PrimNodeRecord&)rec); }
         virtual void apply(LightSourceRecord& rec)          { apply((PrimNodeRecord&)rec); }
@@ -132,6 +137,7 @@ class RecordVisitor
         virtual void apply(CommentRecord& rec)              { apply((Record&)rec); }
         virtual void apply(LongIDRecord& rec)               { apply((Record&)rec); }
         virtual void apply(VectorRecord& rec)               { apply((Record&)rec); }
+        virtual void apply(LocalVertexPoolRecord& rec)      { apply((Record&)rec); }
         virtual void apply(OldVertexRecord& rec)            { apply((Record&)rec); }
         virtual void apply(OldVertexColorRecord& rec)       { apply((Record&)rec); }
         virtual void apply(OldVertexColorNormalRecord& rec) { apply((Record&)rec); }

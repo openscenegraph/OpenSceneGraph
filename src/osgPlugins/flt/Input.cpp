@@ -1,3 +1,9 @@
+// Input.cpp
+
+#include <string>
+// #include <malloc.h>
+#include <assert.h>
+
 #include <osg/Notify>
 #include <osgDB/FileUtils>
 
@@ -180,14 +186,14 @@ Record* Input::readCreateRecord(FltFile* pFltFile)
     pRec->_pFltFile = pFltFile;
 
     #if 0
-    osg::notify(osg::ALWAYS) << "class=" << pRec->className();
-    osg::notify(osg::ALWAYS) << " op=" << pRec->getOpcode();
-    osg::notify(osg::ALWAYS) << " name=" << pRec->getName();
-    osg::notify(osg::ALWAYS) << " offset=" << offset() << std::endl;
+    osg::notify(osg::ALWAYS) << "class   = " << pRec->className();
+    osg::notify(osg::ALWAYS) << " op     = " << pRec->getOpcode();
+    osg::notify(osg::ALWAYS) << " name   = " << pRec->getName();
+    osg::notify(osg::ALWAYS) << " offset = " << offset() << std::endl;
     #endif
 
-    if (isLittleEndianMachine()) // From Intel with love  :-(
-        pRec->endian();
+    // Perform any post-read initializations.
+    pRec->postReadInit();
 
     return pRec;
 }

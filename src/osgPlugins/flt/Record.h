@@ -62,8 +62,9 @@ class Record : public osg::Referenced
         bool            isOfType(int op) const;
         Record*         getParent() const { return _pParent; }
         FltFile*        getFltFile()  { return _pFltFile; }
-        int             getFlightVersion();
+        int             getFlightVersion() const;
 
+        virtual void postReadInit();
 
         friend std::ostream& operator << (std::ostream& output, const Record& rec);
 

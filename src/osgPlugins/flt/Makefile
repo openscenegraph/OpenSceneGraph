@@ -16,6 +16,9 @@ CXXFILES =\
 	ExternalRecord.cpp\
 	Record.cpp\
 	FaceRecord.cpp\
+	LocalVertexPoolRecord.cpp\
+	MeshPrimitiveRecord.cpp\
+	MeshRecord.cpp\
 	RecordVisitor.cpp\
 	RoadRecords.cpp\
 	GeoSetBuilder.cpp\

@@ -117,6 +117,17 @@ void HeaderRecord::endian()
     ENDIAN( pHeader->dfLambertUpperLat );
     ENDIAN( pHeader->dfLambertLowerLat );
     ENDIAN( pHeader->iNextLightSource );
+
+    // New with 15.7
+    // Note: Don't use "getFltFile()->getFlightVersion()", it's not set yet.
+    if ( pHeader->diFormatRevLev >= 1570 )
+    {
+        ENDIAN( pHeader->iNextAdaptiveNodeID );
+        ENDIAN( pHeader->iNextCurveNodeID );
+        ENDIAN( pHeader->dfDatabaseDeltaZ );
+        ENDIAN( pHeader->dfRadius );
+        ENDIAN( pHeader->iNextMeshNodeID );
+    }
 }
 
 

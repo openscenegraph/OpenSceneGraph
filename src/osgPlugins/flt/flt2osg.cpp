@@ -22,6 +22,7 @@
 #include <osg/Texture>
 #include <osg/Image>
 #include <osg/Notify>
+#include <osg/GeoSet>
 
 #include <osg/DOFTransform>
 #include <osg/Sequence>
@@ -50,6 +51,8 @@
 #include "SwitchRecord.h"
 #include "ObjectRecord.h"
 #include "FaceRecord.h"
+#include "MeshRecord.h"
+#include "MeshPrimitiveRecord.h"
 #include "TransformationRecords.h"
 #include "ExternalRecord.h"
 #include "LightPointRecord.h"
@@ -57,6 +60,7 @@
 #include "GeoSetBuilder.h"
 #include "LongIDRecord.h"
 #include "InstanceRecords.h"
+#include "LocalVertexPoolRecord.h"
 
 
 
@@ -217,6 +221,14 @@ osg::Group* ConvertFromFLT::visitPrimaryNode(osg::Group& osgParent, PrimNodeReco
         {
             switch (child->getOpcode())
             {
+            case MESH_OP:
+
+                if( ((MeshRecord*)child)->getData()->swTemplateTrans == 2)  //Axis type rotate
+                    visitMesh(osgParent, &billboardBuilder, (MeshRecord*)child);
+                else
+                    visitMesh(osgParent, &geoSetBuilder, (MeshRecord*)child);
+                break;
+
             case FACE_OP:
             {
                 FaceRecord* fr = (FaceRecord*)child;
@@ -256,6 +268,14 @@ osg::Group* ConvertFromFLT::visitPrimaryNode(osg::Group& osgParent, PrimNodeReco
             case EXTERNAL_REFERENCE_OP:
                 osgPrim = visitExternal(osgParent, (ExternalRecord*)child);
                 break;
+
+            #ifdef _DEBUG
+            
+            default:
+              osg::notify(osg::INFO) << "In ConvertFromFLT::visitPrimaryNode(), unknown opcode: " << child->getOpcode() << std::endl;
+              break;
+
+            #endif
             }
         }
     }
@@ -901,18 +921,8 @@ osg::Group* ConvertFromFLT::visitObject(osg::Group& osgParent, ObjectRecord* rec
 }
 
 
-void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
+void ConvertFromFLT::setCullFaceAndWireframe ( const SFace *pSFace, osg::StateSet *osgStateSet, DynGeoSet *dgset )
 {
-    DynGeoSet* dgset = pBuilder->getDynGeoSet();
-    osg::StateSet* osgStateSet = dgset->getStateSet();
-    SFace *pSFace = (SFace*)rec->getData();
-    bool bBlend = false;
-
-    if (rec->getFlightVersion() > 13)
-    {
-        if (pSFace->dwFlags & FaceRecord::HIDDEN_BIT)
-            return;
-    }
 
     //
     // Cull face & wireframe
@@ -948,7 +958,11 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
             dgset->setPrimType(osg::Primitive::POINTS);
             break;
     }
+}
 
+
+void ConvertFromFLT::setDirectionalLight()
+{
     /*
         TODO:
 
@@ -963,7 +977,11 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
             break;
         }
     */
+}
 
+
+void ConvertFromFLT::setLightingAndColorBinding ( const FaceRecord *rec, const SFace *pSFace, osg::StateSet *osgStateSet, DynGeoSet *dgset )
+{
     //
     // Lighting and color binding
     //
@@ -1009,8 +1027,11 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
         osgStateSet->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
         dgset->setColorBinding( osg::Geometry::BIND_OVERALL /*BIND_PERPRIM*/ );
     }
+}
 
 
+void ConvertFromFLT::setColor ( FaceRecord *rec, SFace *pSFace, DynGeoSet *dgset, bool &bBlend )
+{
     //
     // Face Color
     //
@@ -1059,7 +1080,11 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
     if ((dgset->getColorBinding() == osg::Geometry::BIND_OVERALL)
     ||  (dgset->getColorBinding() == osg::Geometry::BIND_PER_PRIMITIVE))
         dgset->addColor(_faceColor);
+}
 
+
+void ConvertFromFLT::setMaterial ( FaceRecord *rec, SFace *pSFace, osg::StateSet *osgStateSet, bool &bBlend )
+{
     //
     // Material
     //
@@ -1114,7 +1139,6 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
             if (alpha < 1.0f) bBlend = true;
         }
     }
-
     //
     // Subface
     //
@@ -1132,7 +1156,11 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
             }
         }
     }
+}
 
+
+void ConvertFromFLT::setTexture ( FaceRecord *rec, SFace *pSFace, osg::StateSet *osgStateSet, DynGeoSet *dgset, bool &bBlend )
+{
     //
     // Texture
     //
@@ -1177,8 +1205,11 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
             }
         }
     }
+}
 
 
+void ConvertFromFLT::setTransparency ( osg::StateSet *osgStateSet, bool &bBlend )
+{
     //
     // Transparency
     //
@@ -1191,23 +1222,57 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
         osgStateSet->setMode(GL_BLEND, osg::StateAttribute::ON);
         osgStateSet->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
     }
+}
 
-    //
+
+void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
+{
+    DynGeoSet* dgset = pBuilder->getDynGeoSet();
+    osg::StateSet* osgStateSet = dgset->getStateSet();
+    SFace *pSFace = (SFace*)rec->getData();
+    bool bBlend = false;
+
+    if (rec->getFlightVersion() > 13)
+    {
+        if (pSFace->dwFlags & FaceRecord::HIDDEN_BIT)
+            return;
+    }
+
+    // Various properties.
+    setCullFaceAndWireframe ( pSFace, osgStateSet, dgset );
+    setDirectionalLight();
+    setLightingAndColorBinding ( rec, pSFace, osgStateSet, dgset );
+    setColor ( rec, pSFace, dgset, bBlend );
+    setMaterial ( rec, pSFace, osgStateSet, bBlend );
+
+    // Subface
+    if (rec->getParent()->isOfType(FACE_OP))
+    {
+        if (_nSubfaceLevel > 0)
+        {
+            osg::PolygonOffset* polyoffset = new osg::PolygonOffset;
+            if (polyoffset)
+            {
+                polyoffset->setFactor(-1.0f*_nSubfaceLevel);
+                polyoffset->setUnits(-20.0f*_nSubfaceLevel);
+                osgStateSet->setAttributeAndModes(polyoffset,osg::StateAttribute::ON);
+            }
+        }
+    }
+
+    // Texture.
+    setTexture ( rec, pSFace, osgStateSet, dgset, bBlend );
+
+    // Transparency
+    setTransparency ( osgStateSet, bBlend );
+
     // Vertices
-    //
-
     addVertices(pBuilder, rec);
 
-    //
     // Add face to builder GeoSet pool
-    //
-
     pBuilder->addPrimitive();
 
-    //
     // Look for subfaces
-    //
-
     {
         _nSubfaceLevel++;
         int n;
@@ -1241,6 +1306,10 @@ int ConvertFromFLT::addVertices(GeoSetBuilder* pBuilder, PrimNodeRecord* primRec
             vertices += visitVertexList(pBuilder, (VertexListRecord*)child);
             break;
         
+        case LOCAL_VERTEX_POOL_OP:
+            vertices += visitLocalVertexPool(pBuilder, (LocalVertexPoolRecord *)child);
+            break;
+
         default :
             vertices += addVertex(pBuilder, child);
             break;
@@ -1263,6 +1332,7 @@ int ConvertFromFLT::addVertices(GeoSetBuilder* pBuilder, PrimNodeRecord* primRec
     return vertices;
 }
 
+
 int ConvertFromFLT::visitVertexList(GeoSetBuilder* pBuilder, VertexListRecord* rec)
 {
     //DynGeoSet* dgset = pBuilder->getDynGeoSet();
@@ -1278,9 +1348,6 @@ int ConvertFromFLT::visitVertexList(GeoSetBuilder* pBuilder, VertexListRecord* r
 
     return vertices;
 }
-
-
-
 
 
 // Return 1 if record is a known vertex record else return 0.
@@ -1467,4 +1534,211 @@ void ConvertFromFLT::visitLightPoint(GeoSetBuilder* pBuilder, LightPointRecord* 
     // Visit vertices
     addVertices(pBuilder, rec);
     pBuilder->addPrimitive();
+}
+
+
+void ConvertFromFLT::visitMesh ( osg::Group &parent, GeoSetBuilder *pBuilder, MeshRecord *rec )
+{
+    DynGeoSet* dgset = pBuilder->getDynGeoSet();
+    osg::StateSet *osgStateSet = dgset->getStateSet();
+    SFace *pSFace = (SFace *) rec->getData();
+    bool bBlend = false;
+
+    // See if it's hidden.
+    if ( rec->getFlightVersion() > 13 && flt::hasBits ( pSFace->dwFlags, (uint32) MeshRecord::HIDDEN_BIT ) )
+        return;
+
+    // Set the various properties.
+    setCullFaceAndWireframe ( pSFace, osgStateSet, dgset );
+    setDirectionalLight();
+    setLightingAndColorBinding ( rec, pSFace, osgStateSet, dgset );
+    setColor ( rec, pSFace, dgset, bBlend );
+    setMaterial ( rec, pSFace, osgStateSet, bBlend );
+    setTexture ( rec, pSFace, osgStateSet, dgset, bBlend );
+    setTransparency ( osgStateSet, bBlend );
+
+    // Add the vertices.
+    addVertices ( pBuilder, rec );
+
+    // Add the mesh primitives.
+    addMeshPrimitives ( parent, pBuilder, rec );
+}
+
+
+int ConvertFromFLT::addMeshPrimitives ( osg::Group &parent, GeoSetBuilder *, MeshRecord *rec )
+{
+    // The count of the mesh primitives added.
+    int count = 0;
+
+    // Loop through all the children.
+    for ( int i = 0; i < rec->getNumChildren(); ++i )
+    {
+        // Get the i'th child.
+        Record *child = rec->getChild ( i );
+
+        // If it is a mesh primitive...
+        if ( MESH_PRIMITIVE_OP == child->getOpcode() )
+        {
+            // Visit this mesh primitive.
+            visitMeshPrimitive ( parent, (MeshPrimitiveRecord *) child );
+            ++count;
+        }
+    }
+
+    // Return the number of mesh primitives added.
+    return count;
+}
+
+
+int ConvertFromFLT::visitLocalVertexPool ( GeoSetBuilder *, LocalVertexPoolRecord *rec )
+{
+    // Make the given instance the current one.
+    rec->makeCurrent();
+
+    // We didn't add any vertices.
+    return 0;
+}
+
+
+void ConvertFromFLT::visitMeshPrimitive ( osg::Group &parent, MeshPrimitiveRecord *mesh )
+{
+    assert ( mesh );
+
+    osg::Geode *geode = new osg::Geode();
+    osg::Geometry *geometry = new osg::Geometry();
+    LocalVertexPoolRecord *pool = LocalVertexPoolRecord::getCurrent();
+    assert ( pool );
+
+    // Set the correct primitive type.
+    switch ( mesh->getData()->primitiveType )
+    {
+    case MeshPrimitiveRecord::TRIANGLE_STRIP:
+        geometry->addPrimitive ( new osg::DrawArrays(osg::Primitive::TRIANGLE_STRIP,0,mesh->getNumVertices()) );
+        break;
+    case MeshPrimitiveRecord::TRIANGLE_FAN:
+        geometry->addPrimitive ( new osg::DrawArrays(osg::Primitive::TRIANGLE_FAN,0,mesh->getNumVertices()) );
+        break;
+    case MeshPrimitiveRecord::QUADRILATERAL_STRIP:
+        geometry->addPrimitive ( new osg::DrawArrays(osg::Primitive::QUAD_STRIP,0,mesh->getNumVertices()) );
+        break;
+    case MeshPrimitiveRecord::INDEXED_POLYGON:
+        geometry->addPrimitive ( new osg::DrawArrays(osg::Primitive::POLYGON,0,mesh->getNumVertices()) );
+        break;
+    default:
+        assert ( 0 ); // What type is this?
+        return;
+    }
+
+    // Add the vertex properties.
+    setMeshCoordinates ( mesh->getNumVertices(), pool, mesh, geometry );
+    setMeshNormals     ( mesh->getNumVertices(), pool, mesh, geometry );
+
+    // Add the geoset to the geode.
+    geode->addDrawable ( geometry );
+
+    // Add the geode to the parent.
+    parent.addChild ( geode );
+}
+
+
+uint32 ConvertFromFLT::setMeshCoordinates ( const uint32 &numVerts, const LocalVertexPoolRecord *pool, MeshPrimitiveRecord *mesh, osg::Geometry *geometry )
+{
+    assert ( pool );
+    assert ( mesh );
+    assert ( geometry );
+
+    // If there aren't any coordinates...
+    if ( false == pool->hasAttribute ( LocalVertexPoolRecord::POSITION ) )
+        return 0;
+
+    // Allocate the vertices.
+    osg::Vec3Array *coords = new osg::Vec3Array(numVerts);
+    if ( NULL == coords )
+    {
+        assert ( 0 );
+        return false;
+    }
+
+    // Declare outside of loop.
+    uint32 i ( 0 ), index ( 0 );
+    float64 px, py, pz;
+
+    // Loop through all the coordinates.
+    for ( i = 0; i < numVerts; ++i )
+    {
+        // Get the i'th index into the vertex pool.
+        if ( !mesh->getVertexIndex ( i, index ) )
+        {
+            assert ( 0 ); // We stepped out of bounds.
+            break;
+        }
+
+        // Get the coordinate (using "index").
+        if ( !pool->getPosition ( index, px, py, pz ) )
+        {
+            assert ( 0 ); // We stepped out of bounds.
+            break;
+        }
+
+        // Add the coordinate.
+        (*coords)[i].set ( (float) px, (float) py, (float) pz );
+    }
+
+    // Set the mesh coordinates.
+    geometry->setVertexArray ( coords );
+
+    // Return the number of coordinates added.
+    return i;
+}
+
+
+uint32 ConvertFromFLT::setMeshNormals ( const uint32 &numVerts, const LocalVertexPoolRecord *pool, MeshPrimitiveRecord *mesh, osg::Geometry *geometry )
+{
+    assert ( pool );
+    assert ( mesh );
+    assert ( geometry );
+
+    // If there aren't any coordinates...
+    if ( false == pool->hasAttribute ( LocalVertexPoolRecord::NORMAL ) )
+        return 0;
+
+    // Allocate the normals.
+    osg::Vec3Array *normals = new osg::Vec3Array(numVerts);
+    if ( NULL == normals )
+    {
+        assert ( 0 );
+        return 0;
+    }
+
+    // Declare outside of loop.
+    uint32 i ( 0 ), index ( 0 );
+    float32 x, y, z;
+
+    // Loop through all the coordinates.
+    for ( i = 0; i < numVerts; ++i )
+    {
+        // Get the i'th index into the vertex pool.
+        if ( !mesh->getVertexIndex ( i, index ) )
+        {
+            assert ( 0 ); // We stepped out of bounds.
+            break;
+        }
+
+        // Get the coordinate (using "index").
+        if ( !pool->getNormal ( index, x, y, z ) )
+        {
+            assert ( 0 ); // We stepped out of bounds.
+            break;
+        }
+
+        // Add the coordinate.
+        (*normals)[i].set ( x, y, z );
+    }
+
+    // Set the mesh coordinates.
+    geometry->setNormalArray( normals );
+    geometry->setNormalBinding( osg::Geometry::BIND_PER_VERTEX );
+
+    // Return the number of coordinates added.
+    return i;
 }

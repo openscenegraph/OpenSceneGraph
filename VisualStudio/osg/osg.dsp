@@ -209,6 +209,10 @@ SOURCE=..\..\src\osg\Node.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\NodeCallback.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\NodeVisitor.cpp
 # End Source File
 # Begin Source File

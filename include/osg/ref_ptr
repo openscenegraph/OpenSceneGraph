@@ -21,18 +21,26 @@ class ref_ptr
         inline ref_ptr& operator = (const ref_ptr& rp)
         {
             if (_ptr==rp._ptr) return *this;
-            if (_ptr) _ptr->unref();
+            T* tmp_ptr = _ptr;
             _ptr = rp._ptr;
             if (_ptr) _ptr->ref();
+            // unref second to prevent any deletion of any object which might
+            // be referenced by the other object. i.e rp is child of the
+            // original _ptr.
+            if (tmp_ptr) tmp_ptr->unref();
             return *this;
         }
 
         inline ref_ptr& operator = (T* ptr)
         {
             if (_ptr==ptr) return *this;
-            if (_ptr) _ptr->unref();
+            T* tmp_ptr = _ptr;
             _ptr = ptr;
             if (_ptr) _ptr->ref();
+            // unref second to prevent any deletion of any object which might
+            // be referenced by the other object. i.e rp is child of the
+            // original _ptr.
+            if (tmp_ptr) tmp_ptr->unref();
             return *this;
         }
 

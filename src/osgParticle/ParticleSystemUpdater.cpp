@@ -24,16 +24,27 @@ void osgParticle::ParticleSystemUpdater::traverse(osg::NodeVisitor &nv)
 {
     osgUtil::CullVisitor *cv = dynamic_cast<osgUtil::CullVisitor *>(&nv);
     if (cv) {
-        double t = nv.getFrameStamp()->getReferenceTime();
-        if (t0_ != -1) {
-            ParticleSystem_Vector::iterator i;
-            for (i=psv_.begin(); i!=psv_.end(); ++i) {
-                if (!i->get()->isFrozen() && (i->get()->getLastFrameNumber() >= (nv.getFrameStamp()->getFrameNumber() - 1) || !i->get()->getFreezeOnCull())) {
-                    i->get()->update(t - t0_);
+        if (nv.getFrameStamp())
+        {
+            double t = nv.getFrameStamp()->getReferenceTime();
+            if (t0_ != -1)
+            {
+                ParticleSystem_Vector::iterator i;
+                for (i=psv_.begin(); i!=psv_.end(); ++i)
+                {
+                    if (!i->get()->isFrozen() && (i->get()->getLastFrameNumber() >= (nv.getFrameStamp()->getFrameNumber() - 1) || !i->get()->getFreezeOnCull()))
+                    {
+                        i->get()->update(t - t0_);
+                    }
                 }
             }
+            t0_ = t;
         }
-        t0_ = t;
+        else
+        {
+            osg::notify(osg::WARN) << "osgParticle::ParticleSystemUpdater::traverse(NodeVisitor&) requires a valid FrameStamp to function, particles not updated.\n";
+        }
+
     }
     Node::traverse(nv);
 }

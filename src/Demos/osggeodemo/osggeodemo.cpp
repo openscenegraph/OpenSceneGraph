@@ -16,6 +16,7 @@
 #include <osgGA/DriveManipulator>
 #include <osgGA/AnimationPathManipulator>
 
+#include <osgDB/WriteFile>
 
 #include <osgUtil/Optimizer>
 
@@ -65,8 +66,9 @@ class geodemoEventHandler : public osgGA::GUIEventHandler
 {
 public:
     
-    geodemoEventHandler( )     {speed=0; heading=0; mouse_x=mouse_y=0;}
-    
+    geodemoEventHandler( )     { mouse_x=mouse_y=0;}
+    virtual ~geodemoEventHandler( ) {}
+
     virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&)
     {
         mouse_x=ea.getX();
@@ -79,49 +81,47 @@ public:
     {
         v.visit(*this);
     }
-    void moveit(userVars *l)
-    {
-        std::vector<geoValue> *lvals=l->getvars();
-        for (std::vector<geoValue>::iterator itr=lvals->begin();
-        itr!=lvals->end();
-        ++itr) {// for each user var
-            if (itr->getName() == "xpos") {
-                itr->setVal((*itr->getValue())+speed*sin(heading));
-                //    std::cout << " nx " << (*itr->getValue()) ;
-            } else if (itr->getName() == "ypos") {
-                itr->setVal((*itr->getValue())+speed*cos(heading));
-                //    std::cout << " ny " << (*itr->getValue()) ;
-            } else if (itr->getName() == "sped") {
-                itr->setVal(0.00025*(mouse_y-300));
-                speed=(*itr->getValue());
-                //    std::cout << " nspd " << speed << std::endl;
-            } else if (itr->getName() == "heading") {
-                itr->setVal((*itr->getValue())-0.0001*(mouse_x-400));
-                heading=(*itr->getValue());
-                //    std::cout << " nhdg " << heading << std::endl;
-            } else if (itr->getName() == "conerot") {
-                itr->setVal((mouse_x-400));
-            } else if (itr->getName() == "planrot") {
-                itr->setVal((mouse_y-300)/200.0);
-            }
-        }
-    }
+    inline int getMouseX(void) {return mouse_x;}; 
+    inline int getMouseY(void) {return mouse_y;};
     
 private:
     int    mouse_x, mouse_y;
-    float speed, heading;
 };
 
 static geodemoEventHandler *ghand=NULL;
+inline double DEG2RAD(const double val) { return val*0.0174532925199432957692369076848861;}
+inline double RAD2DEG(const double val) { return val*57.2957795130823208767981548141052;}
 
-void moveit(const double t, userVars *l,userVars *e)
-{ // all the local and external variables declared in the geo modeller are here available.
-    ghand->moveit(l);
+double dodynamics(const double time, const double val, const std::string name)
+{ // Each local variable named 'name' declared in the geo modeller is passed into here.
+    // its current value is val; returns new value.  Time - elapsed time
+    static double heading,speed; // these are only required for my 'dynamics'
+    if (name == "xpos") {
+        return (val+speed*sin(heading));
+        //    std::cout << " nx " << (*itr->getValue()) ;
+    } else if (name == "ypos") {
+        return (val+speed*cos(heading));
+        //    std::cout << " ny " << (*itr->getValue()) ;
+    } else if (name == "sped") {
+        speed=(0.00025*(ghand->getMouseY()-300)); // (*itr->getValue());
+        return (speed);
+    } else if (name == "heading") {
+        heading-= 0.01*DEG2RAD(ghand->getMouseX()-400); // =DEG2RAD(*itr->getValue());
+        return (RAD2DEG(heading));
+    } else if (name == "conerot") {
+        return ((ghand->getMouseX()-400));
+    } else if (name == "planrot") {
+        return ((ghand->getMouseY()-300)/200.0);
+    } else if (name == "secint" || name == "minutehand"|| name == "hourhand") {
+    //    std::cout << " updating " << name << " " << val << std::endl;
+    }
+    return val;
 }
 
 int main( int argc, char **argv )
 {
     std::string pathfile;
+    float camera_fov=-1;
 
     // initialize the GLUT
     glutInit( &argc, argv );
@@ -142,6 +142,9 @@ int main( int argc, char **argv )
         }
         else
         pathfile = std::string(argv[++i]);
+    } else if( std::string(argv[i]) == "-fov" ) {
+        camera_fov=atof(argv[i+1]);
+        ++i; // skip the value
     }
     else 
         commandLine.push_back(argv[i]);
@@ -150,6 +153,28 @@ int main( int argc, char **argv )
     // initialize the viewer.
     osgGLUT::Viewer viewer;
     viewer.setWindowTitle(argv[0]);
+    
+    // geoff's path code.. needs replacing as it isn't cross platform.
+//     {
+//         char *gdpath=getenv("PATH");
+//         int lenpath=(gdpath ? strlen(gdpath):1) + strlen(argv[0]);
+//         char *nupath=new char[lenpath+20];
+// 
+//         strcpy(nupath,"PATH=");
+//         strcat(nupath,argv[0]);
+//         // strip the executable name (xxx.exe)
+//         char *epath=strrchr(nupath, '\\');
+//         if (epath) *epath='\0'; // remove executable
+//         else {
+//             epath=strrchr(nupath, '/');
+//             if (epath) *epath='\0'; // remove executable, UNIX style path
+//         }
+//         strcat(nupath,";");
+//         strcat(nupath,gdpath);
+//         _putenv(nupath);
+//         delete [] nupath;
+//     }
+//     std::cout << "Path " << getenv("PATH") << std::endl;
 
     // configure the viewer from the commandline arguments, and eat any
     // parameters that have been matched.
@@ -188,10 +213,9 @@ int main( int argc, char **argv )
     }
 
     geoHeader *gh = dynamic_cast<geoHeader *>(rootnode);
-    if (gh)
-    { // it is a geo file, so set function to update its animation variables.
+    if (gh) { // it is a geo file, so set function to update its animation variables.
         ghand=new geodemoEventHandler();
-        gh->setUserUpdate(moveit);
+        gh->setUserUpdate(dodynamics);
         viewer.prependEventHandler(ghand);
     } else { // maybe a group with geo models below.
         osg::Group *gpall=dynamic_cast<osg::Group *>(rootnode);
@@ -203,14 +227,18 @@ int main( int argc, char **argv )
                 if (gh)
                 {
                     ghand=new geodemoEventHandler();
-                    gh->setUserUpdate(moveit);
+                    gh->setUserUpdate(dodynamics);
                     viewer.prependEventHandler(ghand);
                 }
             }
         }
     }
-
-    // open the viewer window.
+    osgUtil::SceneView *sc=viewer.getViewportSceneView(0);
+    if (sc && camera_fov>0) {
+        osg::Camera *cm=sc->getCamera();
+        if (cm) cm->setFOV(camera_fov,camera_fov*(600.0f/800.0f),1.0f,1000.0f);
+    }
+        // open the viewer window.
     viewer.open();
     
     // fire up the event loop.

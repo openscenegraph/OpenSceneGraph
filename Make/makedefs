@@ -241,7 +241,7 @@ ifeq ($(OS),IRIX)
   GL_LIBS           = -lGLU -lGL 
   X_LIBS            = -lXext -lXi -lXmu -lX11
   SOCKET_LIBS       = 
-  OTHER_LIBS        = -lm
+  OTHER_LIBS        = -lm -lOpenThreads
   PNG_LIBS          = -lpng
   JPEG_LIBS         = -ljpeg
   TIFF_LIB          = -ltiff
@@ -486,7 +486,7 @@ else
   ARCHARGS          = 
   ARCHINST          = 
 endif
-  LINKARGS          = -lOpenThreads
+  LINKARGS          = 
   LIB_EXT           = sl
   PLUGIN_EXT        = sl
   DYNAMICLIBRARYLIB = -ldld
@@ -496,7 +496,7 @@ endif
   SOCKET_LIBS       = 
   # make sure that global constructors/destructors are called upon
   # shl_load() / shl_unload() - this is a gcc specific workaround
-  OTHER_LIBS        = -lm -Wl,+init -Wl,_GLOBAL__DI -Wl,+fini -Wl,_GLOBAL__DD
+  OTHER_LIBS        = -lm -Wl,+init -Wl,_GLOBAL__DI -Wl,+fini -Wl,_GLOBAL__DD -lOpenThreads
   FREETYPE_INCLUDE  = -I/opt/freetype/include -I/opt/freetype/include/freetype2
   FREETYPE_LIB      = -L/opt/freetype/lib -lfreetype
   PNG_INCLUDE       = -I/opt/libpng/include

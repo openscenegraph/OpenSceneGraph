@@ -72,7 +72,7 @@ parse_args( int argc, char **argv, FileNameList &fileNames,
             OrientationConverter &oc, osgDB::ReaderWriter::Options* options )
 {
     int nexti;
-    string opt = "";
+    std::string opt = "";
 
     for(int i = 1; i < argc; i=nexti )
     {

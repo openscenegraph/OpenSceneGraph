@@ -68,7 +68,7 @@ class SG_EXPORT Switch : public Group
         /** Set a single child to be on, switch off all other children.*/
         bool setSingleChildOn(unsigned int pos);
         
-#ifdef USE_DEPRECTATED_API
+#ifdef USE_DEPRECATED_API
 	/**
 	 * Special values for the Switch. Use these if you want to
 	 * turn on/off all child nodes.

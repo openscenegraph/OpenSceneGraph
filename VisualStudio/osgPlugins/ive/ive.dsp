@@ -142,6 +142,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\DrawArrays.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\ive\DrawElementsUByte.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\ive\DrawElementsUInt.cpp
 # End Source File
 # Begin Source File
@@ -355,6 +359,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\DrawArrayLengths.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\DrawArrays.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\DrawElementsUByte.h
 # End Source File
 # Begin Source File
 

@@ -28,6 +28,7 @@ public:
 	~DataOutputStream();
 	void writeBool(bool b);
 	void writeChar(char c);
+	void writeUChar(unsigned char c);
 	void writeUShort(unsigned short s);
 	void writeUInt(unsigned int s);
 	void writeInt(int i);

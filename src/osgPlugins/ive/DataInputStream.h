@@ -31,6 +31,7 @@ public:
 	~DataInputStream();
 	bool readBool();
 	char readChar();
+	unsigned char readUChar();
 	unsigned short readUShort();
 	unsigned int readUInt();
 	int readInt();

@@ -53,7 +53,7 @@ PLUGIN_DIRS = \
         ive\
 
 # comment in if you have gdal installed
-#  PLUGIN_DIRS += gdal
+PLUGIN_DIRS += gdal
 
 # comment in if you have japser (JPEG2000 library) installed.
 # PLUGIN_DIRS += jp2
@@ -127,6 +127,7 @@ EXAMPLE_DIRS = \
 	osganimate\
 	osgautotransform\
 	osgbillboard\
+	osgbluemarble\
 	osgcallback\
 	osgcameragroup\
 	osgclip\

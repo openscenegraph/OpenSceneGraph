@@ -17,6 +17,7 @@
 #include "Drawable.h"
 #include "DrawArrays.h"
 #include "DrawArrayLengths.h"
+#include "DrawElementsUByte.h"
 #include "DrawElementsUShort.h"
 #include "DrawElementsUInt.h"
 
@@ -45,6 +46,8 @@ void Geometry::write(DataOutputStream* out){
             ((ive::DrawArrays*)(getPrimitiveSet(i)))->write(out);
         else if(dynamic_cast<osg::DrawArrayLengths*>(getPrimitiveSet(i)))
             ((ive::DrawArrayLengths*)(getPrimitiveSet(i)))->write(out);
+        else if(dynamic_cast<osg::DrawElementsUByte*>(getPrimitiveSet(i)))
+            ((ive::DrawElementsUByte*)(getPrimitiveSet(i)))->write(out);
         else if(dynamic_cast<osg::DrawElementsUShort*>(getPrimitiveSet(i)))
             ((ive::DrawElementsUShort*)(getPrimitiveSet(i)))->write(out);
         else if(dynamic_cast<osg::DrawElementsUInt*>(getPrimitiveSet(i)))
@@ -178,6 +181,11 @@ void Geometry::read(DataInputStream* in){
             else if(primID==IVEDRAWARRAYLENGTHS){
                 prim = new osg::DrawArrayLengths();
                 ((ive::DrawArrayLengths*)(prim))->read(in);
+                addPrimitiveSet(prim);
+            }
+            else if(primID==IVEDRAWELEMENTSUBYTE){
+                prim = new osg::DrawElementsUByte();
+                ((ive::DrawElementsUByte*)(prim))->read(in);
                 addPrimitiveSet(prim);
             }
             else if(primID==IVEDRAWELEMENTSUSHORT){

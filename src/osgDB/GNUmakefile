@@ -10,6 +10,7 @@ CXXFILES =\
 	Registry.cpp\
 	Version.cpp\
 	WriteFile.cpp\
+	ImageOptions.cpp\
 	Input.cpp\
 	Output.cpp\
 	Field.cpp\

@@ -44,7 +44,7 @@ class FltFile : public osg::Referenced
         inline const bool useInternalTexturePalette() const  { return _useInternalTexturePalette; }
         inline const bool useInternalMaterialPalette() const { return _useInternalMaterialPalette; }
 
-        int getFlightVersion();
+        int getFlightVersion() const;
         inline HeaderRecord* getHeaderRecord() { return _headerRecord.get(); }
 
     protected:

@@ -37,7 +37,7 @@ Record::~Record()
 }
 
 
-int Record::getFlightVersion()
+int Record::getFlightVersion() const
 {
     if (_pFltFile)
         return _pFltFile->getFlightVersion();
@@ -62,6 +62,16 @@ Record* Record::cloneRecord(SRecHeader* pData)
 void Record::accept(RecordVisitor& rv)
 {
     rv.apply(*this);
+}
+
+
+void Record::postReadInit()
+{
+  // These two lines used to be the last thing in Input::readCreateRecord().
+  // Some records need a "post read" function called regardless of 
+  // the endian of the machine, so I moved it to here.
+  if ( flt::isLittleEndianMachine() ) // From Intel with love  :-(
+      this->endian();
 }
 
 

@@ -56,6 +56,9 @@ Ignore 76-82
 #define PUT_TRANSFORM_OP                82
 */
 #define EYEPOINT_TRACKPLANE_OP          83
+#define MESH_OP                         84
+#define LOCAL_VERTEX_POOL_OP            85
+#define MESH_PRIMITIVE_OP               86
 #define ROAD_SEGMENT_OP                 87
 #define ROAD_ZONE_OP                    88
 #define MORPH_VERTEX_LIST_OP            89

@@ -81,6 +81,18 @@ struct SHeader
                                 // 2 - Bessel
                                 // 3 - Clarke 1866
                                 // 4 - NAD 1927
+
+    // New with 15.7.0 ...
+    int16 iNextAdaptiveNodeID;    // Next Adaptive node ID number
+    int16 iNextCurveNodeID;       // Next Curve node ID number
+    int16 iReserved_5;            // Reserved
+    float64 dfDatabaseDeltaZ;     // Delta z to place database (used in 
+                                  // conjunction with existing Delta x and 
+                                  // Delta y values)
+    float64 dfRadius;             // Radius (distance from database origin to 
+                                  // farthest corner)
+    uint16 iNextMeshNodeID;       // Next Mesh node ID number
+    uint16 iReserved_6;           // Reserved
 };
 
 

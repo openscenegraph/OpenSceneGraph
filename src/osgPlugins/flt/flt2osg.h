@@ -16,7 +16,6 @@ class Object;
 class Group;
 class LOD;
 class Geode;
-class GeoSet;
 class Material;
 class Texture;
 class Vec4;
@@ -43,13 +42,17 @@ class DofRecord;
 class SwitchRecord;
 class ObjectRecord;
 class FaceRecord;
+class MeshRecord;
+class MeshPrimitiveRecord;
 class MatrixRecord;
 class ExternalRecord;
 class LightPointRecord;
 class VertexListRecord;
+class LocalVertexPoolRecord;
 class LongIDRecord;
 class InstanceDefinitionRecord;
 class InstanceReferenceRecord;
+struct SFace;
 
 //class GeoSetBuilder;
 
@@ -140,16 +143,31 @@ class ConvertFromFLT
         osg::Group* visitInstanceReference(osg::Group& osgParent,InstanceReferenceRecord* rec);
 
         void visitFace(GeoSetBuilder* pParent, FaceRecord* rec);
+        void visitMesh(osg::Group& osgParent,GeoSetBuilder* pParent, MeshRecord* rec);
+        void visitMeshPrimitive(osg::Group& osgParent, MeshPrimitiveRecord* rec);
         void visitLightPoint(GeoSetBuilder* pBuilder, LightPointRecord* rec);
         int  visitVertexList(GeoSetBuilder* pParent, VertexListRecord* rec);
+        int  visitLocalVertexPool(GeoSetBuilder* pBuilder, LocalVertexPoolRecord* rec);
 
     private:
 
+        int addMeshPrimitives ( osg::Group &osgParent, GeoSetBuilder *pBuilder, MeshRecord *rec );
         int addVertices(GeoSetBuilder* pBuilder, PrimNodeRecord* primRec);
         int addVertex(DynGeoSet* dgset, Record* rec);
         int addVertex(GeoSetBuilder* pBuilder, Record* rec) {return addVertex( pBuilder->getDynGeoSet(), rec);} ;
         Record* getVertexFromPool(int nOffset);
         void regisiterVertex(int nOffset, Record* pRec);
+        void visitFaceOrMeshCommonCode(GeoSetBuilder* pBuilder, FaceRecord* rec);
+        uint32 setMeshCoordinates ( const uint32 &numVerts, const LocalVertexPoolRecord *pool, MeshPrimitiveRecord *mesh, osg::Geometry *geometry );
+        uint32 setMeshNormals ( const uint32 &numVerts, const LocalVertexPoolRecord *pool, MeshPrimitiveRecord *mesh, osg::Geometry *geometry );
+
+        void setCullFaceAndWireframe ( const SFace *pSFace, osg::StateSet *osgStateSet, DynGeoSet *dgset );
+        void setDirectionalLight();
+        void setLightingAndColorBinding ( const FaceRecord *rec, const SFace *pSFace, osg::StateSet *osgStateSet, DynGeoSet *dgset );
+        void setColor ( FaceRecord *rec, SFace *pSFace, DynGeoSet *dgset, bool &bBlend );
+        void setMaterial ( FaceRecord *rec, SFace *pSFace, osg::StateSet *osgStateSet, bool &bBlend );
+        void setTexture ( FaceRecord *rec, SFace *pSFace, osg::StateSet *osgStateSet, DynGeoSet *dgset, bool &bBlend );
+        void setTransparency ( osg::StateSet *osgStateSet, bool &bBlend );
 
         typedef std::map<int,Record*> VertexPaletteOffsetMap;
         VertexPaletteOffsetMap _VertexPaletteOffsetMap;

@@ -9,6 +9,7 @@
 #include <osg/Vec4>
 
 #include <iostream>
+#include <assert.h>
 
 #if defined(__CYGWIN__) || defined(__MINGW32__)
 #include <sys/types.h>
@@ -202,8 +203,59 @@ struct SRecHeader
 };
 
 
+//////////////////////////////////////////////////////////////////////////
+//
+//  Perform a byte swap.
+//
+//////////////////////////////////////////////////////////////////////////
+
+template<class PointerType> inline void swapBytes ( const size_t &numBytes, PointerType *pointer )
+{
+  assert ( numBytes >= 2 );
+  assert ( pointer );
+  flt::endian2 ( (void *) pointer, numBytes, (void *) pointer, numBytes );
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+//
+//  Perform a byte swap on all elements in the array.
+//
+//////////////////////////////////////////////////////////////////////////
+
+template<class PointerType, class IndexType> inline void swapBytesArray ( const size_t &numBytes, const IndexType &numElements, PointerType *pointer )
+{
+  // For the way this function is being used, this should be true. If it 
+  // becomes necessary to pass in a "numBytes" that is not actually the number 
+  // of bytes at this pointer type, then remove this assertion.
+  // I pass in the "numBytes" instead of calculating it here for the purposes 
+  // of speeding it up. I didn't test the performance benefits, there may not 
+  // be any.
+  assert ( numBytes == sizeof ( PointerType ) );
+
+  // Loop through the array and byte-swap the elements.
+  for ( IndexType i = 0; i < numElements; ++i )
+  {
+    // Swap the byte order at the address of i'th element.
+    flt::swapBytes ( numBytes, &(pointer[i]) );
+  }
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+//
+//  See if the "bits" are in "number".
+//
+//////////////////////////////////////////////////////////////////////////
+
+template<class DataTypeNumber, class DataTypeBits> inline bool hasBits 
+  ( const DataTypeNumber &number, const DataTypeBits &bits )
+{
+  return ( ( number & bits ) == bits );
+}
+
+
 }; // end namespace flt
 
+
 #endif
-
-

@@ -213,7 +213,7 @@ void FltFile::readExternals()
 }
 
 
-int FltFile::getFlightVersion()
+int FltFile::getFlightVersion() const
 {
     if (_headerRecord.get())
     {

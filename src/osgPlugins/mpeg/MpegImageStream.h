@@ -52,10 +52,10 @@ namespace osg {
         virtual const char* className() const { return "MpegImageStream"; }
 
         /// Start or continue stream.
-        virtual void start() { setCmd(THREAD_START); }
+        virtual void play() { setCmd(THREAD_START); }
 
-        /// Stop stream at current position.
-        virtual void stop() { setCmd(THREAD_STOP); }
+        /// Pause stream at current position.
+        virtual void pause() { setCmd(THREAD_STOP); }
 
         /// Rewind stream to beginning.
         virtual void rewind() { setCmd(THREAD_REWIND); }

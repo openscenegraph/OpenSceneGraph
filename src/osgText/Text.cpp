@@ -25,12 +25,20 @@ using namespace osgText;
 struct TextCullCallback : public osg::Drawable::CullCallback
 {
 
+    struct PositionData
+    {    
+        PositionData():
+            _traversalNumber(-1),
+            _previousWidth(0),
+            _previousHeight(0) {}
+    
+        int         _traversalNumber;
+        int         _previousWidth;
+        int         _previousHeight;
+        osg::Vec3   _eyePosition;
+    };
+
     TextCullCallback(osgText::Text* text):
-        _firstTimeToInitEyePoint(true),
-        _previousWidth(0),
-        _previousHeight(0),
-        _lastUpdateContextID(0xffffffff),
-        _lastTraversalNumber(0xffffffff),
         _text(text) {}
 
     /** do customized cull code.*/
@@ -39,23 +47,12 @@ struct TextCullCallback : public osg::Drawable::CullCallback
         osgUtil::CullVisitor* cs = static_cast<osgUtil::CullVisitor*>(nv);
         if (!cs) return false;
         
-        
-        if (_lastTraversalNumber!=nv->getTraversalNumber())
-        {
-            _lastUpdateContextID = 0xffffffff;
-        }
-        
-        _lastTraversalNumber = nv->getTraversalNumber();
-
         unsigned int contextID = cs->getState() ? cs->getState()->getContextID() : 0;
-        if (_lastUpdateContextID<contextID)
-        {
-//            cout << "quiting early"<<endl;
-            return false;
-        }
-
-        int width = _previousWidth;
-        int height = _previousHeight;
+        
+        PositionData& positionData = _positions[contextID];
+        
+        int width = positionData._previousWidth;
+        int height = positionData._previousHeight;
 
         osg::Viewport* viewport = cs->getViewport();
         if (viewport)
@@ -66,61 +63,57 @@ struct TextCullCallback : public osg::Drawable::CullCallback
 
         osg::Vec3 eyePoint = cs->getEyeLocal();  
         
-        bool doUpdate = _firstTimeToInitEyePoint;
-        if (!_firstTimeToInitEyePoint)
+        bool doUpdate = positionData._traversalNumber==-1;
+        if (positionData._traversalNumber>=0)
         {
-            osg::Vec3 dv = _previousEyePoint-eyePoint;
+            osg::Vec3 dv = positionData._eyePosition-eyePoint;
             if (dv.length2()>_text->getAutoUpdateEyeMovementTolerance()*(eyePoint-_text->getPosition()).length2())
             {
                 doUpdate = true;
             }
-            else if (width!=_previousWidth || height!=_previousHeight)
+            else if (width!=positionData._previousWidth || height!=positionData._previousHeight)
             {
                 doUpdate = true;
             } 
         }
-        _firstTimeToInitEyePoint = false;
+        
+        positionData._traversalNumber = nv->getTraversalNumber();
+        positionData._previousWidth = width;
+        positionData._previousHeight = height;
         
         if (doUpdate)
         {            
 
-            _lastUpdateContextID = contextID;
+            float scale=_text->getScale(contextID);
 
             if (_text->getAutoScaleToLimitScreenSizeToFontResolution())
             {
                 float numPixels = cs->pixelSize(_text->getPosition(),_text->getCharacterHeight());
                 if (numPixels>_text->getFontHeight())
                 {
-                    _text->setScale(_text->getFontHeight()/numPixels);
+                    scale = _text->getFontHeight()/numPixels;
                 }
             
                 //float size = 1.0f/cs->pixelSize(_text->getPosition(),1.0f);
                 //_text->setScale(size);
             }
 
+            osg::Quat rotation = _text->getRotation(contextID);
             if (_text->getAutoRotateToScreen())
             {
-                osg::Quat rotation;
-                rotation.set(cs->getModelViewMatrix());            
-                _text->setRotation(rotation.inverse());
+                rotation.set(cs->getModelViewMatrix());
+                rotation = rotation.inverse();
             }
 
-            _previousEyePoint = eyePoint;
-            _previousWidth = width;
-            _previousHeight = height;
-            
+            _text->setScaleAndRotation(contextID,scale,rotation);
+
         }
 
         return false;
     }
-    
-    
-    mutable bool            _firstTimeToInitEyePoint;
-    mutable osg::Vec3       _previousEyePoint;
-    mutable int             _previousWidth;
-    mutable int             _previousHeight;
-    mutable unsigned int    _lastUpdateContextID;
-    mutable int             _lastTraversalNumber;
+
+    typedef osg::buffered_object<PositionData> PositionList;
+    mutable PositionList    _positions;
     mutable osgText::Text*  _text;
 
 };
@@ -135,8 +128,6 @@ Text::Text():
     _maximumWidth(0.0f),
     _maximumHeight(0.0f),
     _alignment(BASE_LINE),
-    _rotation(),
-    _scale(1.0f),
     _autoUpdateEyeMovementTolerance(0.0f),
     _autoRotateToScreen(false),
     _autoScaleToLimitScreenSizeToFontResolution(false),
@@ -145,6 +136,7 @@ Text::Text():
     _drawMode(TEXT)
 {
     setUseDisplayList(false);
+    setScale(1.0f);
 }
 
 Text::Text(const Text& text,const osg::CopyOp& copyop):
@@ -220,37 +212,46 @@ void  Text::setMaximumHeight(float maximumHeight)
 
 void Text::setText(const String& text)
 {
+    if (_text==text) return;
+    
     _text = text;
     computeGlyphRepresentation();
 }
 
 void Text::setText(const std::string& text)
 {
-    _text.set(text);
-    computeGlyphRepresentation();
+    setText(String(text));
+//     _text.set(text);
+//     computeGlyphRepresentation();
 }
 
 void Text::setText(const std::string& text,String::Encoding encoding)
 {
-    _text.set(text,encoding);
-    computeGlyphRepresentation();
+    setText(String(text,encoding));
+//     _text.set(text,encoding);
+//     computeGlyphRepresentation();
 }
     
 
 void Text::setText(const wchar_t* text)
 {
-    _text.set(text);
-    computeGlyphRepresentation();
+    setText(String(text));
+//     _text.set(text);
+//     computeGlyphRepresentation();
 }
 
 void Text::setPosition(const osg::Vec3& pos)
 {
+    if (_position==pos) return;
+
     _position = pos;
     computePositions();
 }
 
 void Text::setAlignment(AlignmentType alignment)
 {
+    if (_alignment==alignment) return;
+    
     _alignment = alignment;
     computePositions();
 }
@@ -275,30 +276,64 @@ void Text::setAxisAlignment(AxisAlignment axis)
     }
 }
 
-void Text::setAutoRotateToScreen(bool autoRotateToScreen)
-{
-    _autoRotateToScreen = autoRotateToScreen;
-    setUpAutoCallback();
-}
-
 void Text::setRotation(const osg::Quat& quat)
 {
-    _rotation = quat;
-    computePositions();
+    for(unsigned int i=0;i<_rotation.size();++i)
+    {
+        setRotation(i,quat);
+    } 
 }
 
-void Text::setAutoScaleToLimitScreenSizeToFontResolution(bool autoScaleToScreen)
+void Text::setRotation(unsigned int contextID, const osg::Quat& quat)
 {
-    _autoScaleToLimitScreenSizeToFontResolution = autoScaleToScreen;
-    setUpAutoCallback();
+    if (_rotation[contextID]==quat) return;
+    
+    _rotation[contextID] = quat;
+    computePositions(contextID);
 }
 
 void Text::setScale(float scale)
 {
-    _scale = scale;
-    setUpAutoCallback();
-    computePositions();
+    for(unsigned int i=0;i<_scale.size();++i)
+    {
+        setScale(i,scale);
+    } 
 }
+
+void Text::setScale(unsigned int contextID, float scale)
+{
+    if (_scale[contextID]==scale) return;
+    
+    _scale[contextID] = scale;
+    computePositions(contextID);
+}
+
+void Text::setScaleAndRotation(unsigned int contextID, float scale,const osg::Quat& quat)
+{
+    if (_scale[contextID]==scale && _rotation[contextID]==quat) return;
+    
+    _scale[contextID] = scale;
+    _rotation[contextID] = quat;
+    
+    computePositions(contextID);
+}
+
+void Text::setAutoScaleToLimitScreenSizeToFontResolution(bool autoScaleToScreen)
+{
+    if (_autoScaleToLimitScreenSizeToFontResolution==autoScaleToScreen) return;
+
+    _autoScaleToLimitScreenSizeToFontResolution = autoScaleToScreen;
+    setUpAutoCallback();
+}
+
+void Text::setAutoRotateToScreen(bool autoRotateToScreen)
+{
+    if (_autoRotateToScreen==autoRotateToScreen) return;
+    
+    _autoRotateToScreen = autoRotateToScreen;
+    setUpAutoCallback();
+}
+
 
 void Text::setUpAutoCallback()
 {
@@ -314,6 +349,8 @@ void Text::setUpAutoCallback()
 
 void Text::setLayout(Layout layout)
 {
+    if (_layout==layout) return;
+
     _layout = layout;
     computeGlyphRepresentation();
 }
@@ -325,6 +362,8 @@ void Text::setColor(const osg::Vec4& color)
 
 void Text::setDrawMode(unsigned int mode) 
 { 
+    if (_drawMode==mode) return;
+
     if (_drawMode&3 != mode&3)
     {
         _drawMode=mode;
@@ -348,10 +387,15 @@ bool Text::computeBound() const
 
     if (_textBB.valid())
     {
-        _bbox.expandBy(osg::Vec3(_textBB.xMin(),_textBB.yMin(),_textBB.zMin())*_matrix);
-        _bbox.expandBy(osg::Vec3(_textBB.xMax(),_textBB.yMin(),_textBB.zMin())*_matrix);
-        _bbox.expandBy(osg::Vec3(_textBB.xMax(),_textBB.yMax(),_textBB.zMin())*_matrix);
-        _bbox.expandBy(osg::Vec3(_textBB.xMin(),_textBB.yMax(),_textBB.zMin())*_matrix);
+    
+        for(unsigned int i=0;i<_matrix.size();++i)
+        {
+            osg::Matrix& matrix = _matrix[i];
+            _bbox.expandBy(osg::Vec3(_textBB.xMin(),_textBB.yMin(),_textBB.zMin())*matrix);
+            _bbox.expandBy(osg::Vec3(_textBB.xMax(),_textBB.yMin(),_textBB.zMin())*matrix);
+            _bbox.expandBy(osg::Vec3(_textBB.xMax(),_textBB.yMax(),_textBB.zMin())*matrix);
+            _bbox.expandBy(osg::Vec3(_textBB.xMin(),_textBB.yMax(),_textBB.zMin())*matrix);
+        }
     }
     
     _bbox_computed = true;
@@ -558,7 +602,16 @@ void Text::computeGlyphRepresentation()
     computePositions();
 }
 
+
 void Text::computePositions()
+{
+    for(unsigned int i=0;i<_matrix.size();++i)
+    {
+        computePositions(i);
+    }
+}
+
+void Text::computePositions(unsigned int contextID)
 {
 
     switch(_alignment)
@@ -578,22 +631,24 @@ void Text::computePositions()
     case CENTER_BASE_LINE:  _offset.set((_textBB.xMax()+_textBB.xMin())*0.5f,0.0f,0.0f); break;
     case RIGHT_BASE_LINE:  _offset.set((_textBB.xMax()+_textBB.xMin()),0.0f,0.0f); break;
     }
+    
+    osg::Matrix& matrix = _matrix[contextID];
 
-    if (_scale!=1.0f || !_rotation.zeroRotation())
+    if (_scale[contextID]!=1.0f || !_rotation[contextID].zeroRotation())
     {
-        _matrix.makeTranslate(-_offset);
+        matrix.makeTranslate(-_offset);
 
-        if (_scale!=1.0f)
-            _matrix.postMult(osg::Matrix::scale(_scale,_scale,_scale));
-        if (!_rotation.zeroRotation())
-            _matrix.postMult(osg::Matrix::rotate(_rotation));
+        if (_scale[contextID]!=1.0f)
+            matrix.postMult(osg::Matrix::scale(_scale[contextID],_scale[contextID],_scale[contextID]));
+        if (!_rotation[contextID].zeroRotation())
+            matrix.postMult(osg::Matrix::rotate(_rotation[contextID]));
 
 
-        _matrix.postMult(osg::Matrix::translate(_position));
+        matrix.postMult(osg::Matrix::translate(_position));
     }
     else
     {
-        _matrix.makeTranslate(_position-_offset);
+        matrix.makeTranslate(_position-_offset);
     }
 
 
@@ -604,7 +659,7 @@ void Text::computePositions()
     {
         GlyphQuads& glyphquad = titr->second;
         GlyphQuads::Coords2& coords2 = glyphquad._coords;
-        GlyphQuads::Coords3& transformedCoords = glyphquad._transformedCoords;
+        GlyphQuads::Coords3& transformedCoords = glyphquad._transformedCoords[contextID];
         
         unsigned int numCoords = coords2.size();
         if (numCoords!=transformedCoords.size())
@@ -614,11 +669,11 @@ void Text::computePositions()
         
         for(unsigned int i=0;i<numCoords;++i)
         {
-            transformedCoords[i] = osg::Vec3(coords2[i].x(),coords2[i].y(),0.0f)*_matrix;
+            transformedCoords[i] = osg::Vec3(coords2[i].x(),coords2[i].y(),0.0f)*matrix;
         }
     }
 
-    _normal = osg::Matrix::transform3x3(osg::Vec3(0.0f,0.0f,1.0f),_matrix);
+    _normal = osg::Matrix::transform3x3(osg::Vec3(0.0f,0.0f,1.0f),matrix);
     _normal.normalize();
 
     dirtyBound();    
@@ -626,8 +681,8 @@ void Text::computePositions()
 
 void Text::drawImplementation(osg::State& state) const
 {
-    
-   
+    unsigned int contextID = state.getContextID();
+
     glNormal3fv(_normal.ptr());
     glColor4fv(_color.ptr());
 
@@ -645,7 +700,7 @@ void Text::drawImplementation(osg::State& state) const
 
             const GlyphQuads& glyphquad = titr->second;
 
-            state.setVertexPointer( 3, GL_FLOAT, 0, &(glyphquad._transformedCoords.front()));
+            state.setVertexPointer( 3, GL_FLOAT, 0, &(glyphquad._transformedCoords[contextID].front()));
             state.setTexCoordPointer( 0, 2, GL_FLOAT, 0, &(glyphquad._texcoords.front()));
 
             glDrawArrays(GL_QUADS,0,glyphquad._coords.size());
@@ -674,7 +729,7 @@ void Text::drawImplementation(osg::State& state) const
                 Font::Glyph* glyph = *gitr;
                 
 
-                glRasterPos3fv(glyphquad._transformedCoords[ci].ptr());
+                glRasterPos3fv(glyphquad._transformedCoords[contextID][ci].ptr());
 
                 glyph->draw(state);
 
@@ -690,10 +745,12 @@ void Text::drawImplementation(osg::State& state) const
         {
             state.applyTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::OFF);
             
-            osg::Vec3 c00(osg::Vec3(_textBB.xMin(),_textBB.yMin(),_textBB.zMin())*_matrix);
-            osg::Vec3 c10(osg::Vec3(_textBB.xMax(),_textBB.yMin(),_textBB.zMin())*_matrix);
-            osg::Vec3 c11(osg::Vec3(_textBB.xMax(),_textBB.yMax(),_textBB.zMin())*_matrix);
-            osg::Vec3 c01(osg::Vec3(_textBB.xMin(),_textBB.yMax(),_textBB.zMin())*_matrix);
+            osg::Matrix& matrix = _matrix[contextID];
+
+            osg::Vec3 c00(osg::Vec3(_textBB.xMin(),_textBB.yMin(),_textBB.zMin())*matrix);
+            osg::Vec3 c10(osg::Vec3(_textBB.xMax(),_textBB.yMin(),_textBB.zMin())*matrix);
+            osg::Vec3 c11(osg::Vec3(_textBB.xMax(),_textBB.yMax(),_textBB.zMin())*matrix);
+            osg::Vec3 c01(osg::Vec3(_textBB.xMin(),_textBB.yMax(),_textBB.zMin())*matrix);
 
         
             glColor4f(1.0f,1.0f,0.0f,1.0f);
@@ -710,12 +767,14 @@ void Text::drawImplementation(osg::State& state) const
     {
         glColor4f(1.0f,0.0f,1.0f,1.0f);
 
-        float cursorsize = _characterHeight*0.5f*_scale;
+        float cursorsize = _characterHeight*0.5f*_scale[contextID];
 
-        osg::Vec3 hl(osg::Vec3(_offset.x()-cursorsize,_offset.y(),_offset.z())*_matrix);
-        osg::Vec3 hr(osg::Vec3(_offset.x()+cursorsize,_offset.y(),_offset.z())*_matrix);
-        osg::Vec3 vt(osg::Vec3(_offset.x(),_offset.y()-cursorsize,_offset.z())*_matrix);
-        osg::Vec3 vb(osg::Vec3(_offset.x(),_offset.y()+cursorsize,_offset.z())*_matrix);
+        osg::Matrix& matrix = _matrix[contextID];
+
+        osg::Vec3 hl(osg::Vec3(_offset.x()-cursorsize,_offset.y(),_offset.z())*matrix);
+        osg::Vec3 hr(osg::Vec3(_offset.x()+cursorsize,_offset.y(),_offset.z())*matrix);
+        osg::Vec3 vt(osg::Vec3(_offset.x(),_offset.y()-cursorsize,_offset.z())*matrix);
+        osg::Vec3 vb(osg::Vec3(_offset.x(),_offset.y()+cursorsize,_offset.z())*matrix);
 
         state.applyTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::OFF);
         
@@ -739,7 +798,7 @@ void Text::accept(osg::Drawable::ConstAttributeFunctor& af) const
         ++titr)
     {
         const GlyphQuads& glyphquad = titr->second;
-        af.apply(osg::Drawable::VERTICES,glyphquad._transformedCoords.size(),&(glyphquad._transformedCoords.front()));
+        af.apply(osg::Drawable::VERTICES,glyphquad._transformedCoords[0].size(),&(glyphquad._transformedCoords[0].front()));
         af.apply(osg::Drawable::TEXTURE_COORDS_0,glyphquad._texcoords.size(),&(glyphquad._texcoords.front()));
     }
 }
@@ -752,8 +811,8 @@ void Text::accept(osg::Drawable::PrimitiveFunctor& pf) const
     {
         const GlyphQuads& glyphquad = titr->second;
 
-        pf.setVertexArray(glyphquad._transformedCoords.size(),&(glyphquad._transformedCoords.front()));
-        pf.drawArrays(GL_QUADS,0,glyphquad._transformedCoords.size());
+        pf.setVertexArray(glyphquad._transformedCoords[0].size(),&(glyphquad._transformedCoords[0].front()));
+        pf.drawArrays(GL_QUADS,0,glyphquad._transformedCoords[0].size());
             
 //         pf.begin(GL_QUADS);
 //         for(GlyphQuads::Coords3::const_iterator itr = glyphquad._transformedCoords.begin();

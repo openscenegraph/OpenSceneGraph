@@ -152,9 +152,9 @@ bool Text_readLocalData(osg::Object &obj, osgDB::Input &fr)
         itAdvanced = true;
     }
 
-    if (fr.matchSequence("autoScaleToScreen TRUE"))
+    if (fr.matchSequence("autoScaleToLimitScreenSizeToFontResolution TRUE"))
     {
-        text.setAutoScaleToScreen(true);
+        text.setAutoScaleToLimitScreenSizeToFontResolution(true);
         fr += 2;
         itAdvanced = true;
     }
@@ -316,9 +316,9 @@ bool Text_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
         fw.indent() << "autoRotateToScreen TRUE"<< std::endl;
     }
 
-    if (text.getAutoScaleToScreen())
+    if (text.getAutoScaleToLimitScreenSizeToFontResolution())
     {
-        fw.indent() << "autoScaleToScreen TRUE"<< std::endl;
+        fw.indent() << "autoScaleToLimitScreenSizeToFontResolution TRUE"<< std::endl;
     }
 
     // layout

@@ -54,6 +54,12 @@ class SG_EXPORT Quat
             makeRotate(angle1,axis1,angle2,axis2,angle3,axis3);
         }
 
+        inline bool operator == (const Quat& rhs) const { return _fv==rhs._fv; }
+
+        inline bool operator != (const Quat& rhs) const { return _fv!=rhs._fv; }
+
+        inline bool operator <  (const Quat& rhs) const { return _fv<rhs._fv; }
+
      /* ----------------------------------
 	   Methods to access data members
 	---------------------------------- */

@@ -62,7 +62,7 @@ osg::Node* createLabel2(const osg::Vec3& pos, float size, const std::string& lab
         text->setCharacterSize(size);
         text->setAlignment(osgText::Text::CENTER_CENTER);
         text->setAutoRotateToScreen(true);
-        text->setAutoScaleToScreen(true);
+        text->setAutoScaleToLimitScreenSizeToFontResolution(true);
         text->setDrawMode(osgText::Text::TEXT_PIXMAP);
         text->setText(label);
         
@@ -87,7 +87,7 @@ osg::Node* createLabel3(const osg::Vec3& pos, float size, const std::string& lab
         text->setCharacterSize(size);
         text->setAlignment(osgText::Text::CENTER_CENTER);
         text->setAutoRotateToScreen(true);
-        text->setAutoScaleToScreen(true);
+        text->setAutoScaleToLimitScreenSizeToFontResolution(true);
         text->setText(label);
         
     }
@@ -242,4 +242,32 @@ int main( int argc, char **argv )
     viewer.sync();
     
     return 0;
+
+
+//     osg::Node* obj = new osg::Node;
+//     cout << "obj = "<<obj<<endl;
+//     cout << "sizeof(obj) = "<<sizeof(*obj)<<endl;
+//     cout << "sizeof(osg::Object) = "<<sizeof(osg::Object)<<endl;
+//     cout << "sizeof(osg::Referenced) = "<<sizeof(osg::Referenced)<<endl;
+//     cout << "vtbl = "<<*((unsigned int*)obj)<<endl;
+//     cout << "next = "<<*((unsigned int*)obj+1)<<endl;
+// 
+//     osg::Node* obj2 = new osg::Node;
+//     obj2->ref();
+//     obj2->ref();
+//     obj2->ref();
+//     cout << "obj = "<<obj2<<endl;
+//     cout << "sizeof(obj) = "<<sizeof(*obj)<<endl;
+//     cout << "sizeof(osg::Object) = "<<sizeof(osg::Object)<<endl;
+//     cout << "sizeof(osg::Referenced) = "<<sizeof(osg::Referenced)<<endl;
+//     cout << "vtbl = "<<*((unsigned int*)obj2)<<endl;
+//     cout << "next = "<<*((unsigned int*)obj2+1)<<endl;
+// 
+//     osg::Group* obj3 = new osg::Group;
+//     cout << "obj = "<<obj3<<endl;
+//     cout << "sizeof(obj) = "<<sizeof(*obj3)<<endl;
+//     cout << "sizeof(osg::Object) = "<<sizeof(osg::Object)<<endl;
+//     cout << "sizeof(osg::Referenced) = "<<sizeof(osg::Referenced)<<endl;
+//     cout << "vtbl = "<<*((unsigned int*)obj3)<<endl;
+//     cout << "next = "<<*((unsigned int*)obj3+1)<<endl;
 }

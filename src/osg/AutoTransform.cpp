@@ -30,8 +30,8 @@ AutoTransform::AutoTransform(const AutoTransform& pat,const CopyOp& copyop):
     Transform(pat,copyop),
     _position(pat._position),
     _pivotPoint(pat._pivotPoint),
-    _rotation(pat._rotation),
-    _scale(pat._scale)
+    _scale(pat._scale),
+    _rotation(pat._rotation)
 {
 //    setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);            
 }

@@ -46,12 +46,14 @@ class SG_EXPORT CollectOccludersVisitor : public osg::NodeVisitor, public osg::C
         virtual void apply(osg::LOD& node);
         virtual void apply(osg::OccluderNode& node);
 
-        /** Set the minimum shadow occluder volume that an active occluder must have.
-          * volume is units relative the clip space volume where 1.0 is the whole clip space.*/
+        /** Sets the minimum shadow occluder volume that an active occluder
+		  * must have. vol is units relative the clip space volume where 1.0
+		  * is the whole clip space. */
         void setMinimumShadowOccluderVolume(float vol) { _minimumShadowOccluderVolume = vol; }
         float getMinimumShadowOccluderVolume() const { return _minimumShadowOccluderVolume; }
 
-        /** Set the maximum number of occluders to have active for culling purposes.*/
+        /** Sets the maximum number of occluders to have active for culling
+		  * purposes. */
         void setMaximumNumberOfActiveOccluders(unsigned int num) { _maximumNumberOfActiveOccluders = num; }
         unsigned int getMaximumNumberOfActiveOccluders() const { return _maximumNumberOfActiveOccluders; }
 
@@ -62,18 +64,18 @@ class SG_EXPORT CollectOccludersVisitor : public osg::NodeVisitor, public osg::C
         ShadowVolumeOccluderSet& getCollectedOccluderSet() { return _occluderSet; }
         const ShadowVolumeOccluderSet& getCollectedOccluderSet() const { return _occluderSet; }
 
-        /** remove occluded occluders for the collected occluders list,
-          * and then discard of all but MaximumNumberOfActiveOccluders of occluders,
-          * discarding the occluders with the lowests shadow occluder volume .*/
+        /** Removes occluded occluders for the collected occluders list, then
+		  * discards all but MaximumNumberOfActiveOccluders of occluders,
+          * discarding the occluders with the lowests shadow occluder volume. */
         void removeOccludedOccluders();
 
 
     protected:
 
-        /** prevent unwanted copy construction.*/
+        /** Prevents unwanted copy construction. */
         //CollectOccludersVisitor(const CollectOccludersVisitor&):osg::NodeVisitor(),osg::CullStack() {}
 
-        /** prevent unwanted copy operator.*/
+        /** Prevents unwanted copy operator. */
         CollectOccludersVisitor& operator = (const CollectOccludersVisitor&) { return *this; }
         
         inline void handle_cull_callbacks_and_traverse(osg::Node& node)

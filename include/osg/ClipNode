@@ -34,42 +34,42 @@ class SG_EXPORT ClipNode : public Group
 
         META_Node(osg, ClipNode);
 	
-	/** Create a 6 clip planes to create a clip box.*/
-	void createClipBox(const BoundingBox& bb,unsigned int clipPlaneNumberBase=0);
+        /** Creates six clip planes corresponding to the given BoundingBox. */
+        void createClipBox(const BoundingBox& bb,unsigned int clipPlaneNumberBase=0);
 
 
-        /** Add a ClipPlane to a ClipNode. Return true if plane is added, 
-          * return false if plane already exists in ClipNode, or clipplane is false.*/
+        /** Adds the clipplane. Returns true on success, and false if the plane
+		  * has already been added, or if clipplane is NULL. */
         bool addClipPlane(ClipPlane* clipplane);
 
-        /** Remove ClipPlane from a ClipNode. Return true if plane is removed, 
-          * return false if plane does not exists in ClipNode.*/
+        /** Removes the clipplane. Returns true on success, false if clipplane
+		  * isn't in this ClipNode.*/
         bool removeClipPlane(ClipPlane* clipplane);
 
-        /** Remove ClipPlane, at specified index, from a ClipNode. Return true if plane is removed, 
-          * return false if plane does not exists in ClipNode.*/
+        /** Remove the ClipPlane with the given index. Returns true on success,
+		  * false if pos is not a valid plane index. */
         bool removeClipPlane(unsigned int pos);
 
-        /** return the number of ClipPlanes.*/
+        /** Returns the number of ClipPlanes. */
         inline unsigned  int getNumClipPlanes() const { return _planes.size(); }
 
 
-        /** Get ClipPlane at specificed index position.*/
+        /** Get ClipPlane at the given index position. */
         inline ClipPlane* getClipPlane(unsigned int pos) { return _planes[pos].get(); }
 
-        /** Get const ClipPlane at specificed index position.*/
+        /** Get const ClipPlane at the given index position. */
         inline const ClipPlane* getClipPlane(unsigned int pos) const { return _planes[pos].get(); }
 
-        /** Get the ClipPlaneList.*/
+        /** Get the ClipPlaneList. */
         inline ClipPlaneList& getClipPlaneList() { return _planes; }
 
-        /** Get the const ClipPlaneList.*/
+        /** Get the const ClipPlaneList. */
         inline const ClipPlaneList& getClipPlaneList() const { return _planes; }
 
-        /** Set the GLModes on StateSet associated with the ClipPlanes.*/
+        /** Set the GLModes for all ClipPlanes, on the StateSet. */
         void setStateSetModes(StateSet&,StateAttribute::GLModeValue) const;
 
-        /** Set up the local StateSet */
+        /** Set up the local StateSet. */
         void setLocalStateSetModes(StateAttribute::GLModeValue=StateAttribute::ON);
 
     protected:

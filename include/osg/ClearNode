@@ -19,15 +19,13 @@
 
 namespace osg {
 
-/** ClearNode is a Group node which controls the clearing of the color and depth
-  * buffers at the start of each frame.
-  * The earth sky by default is empty and simply holds the clear color of
-  * the background. However, if the uses wants to add their own clearing of
-  * the color and depth buffers then the children can be added, and the
-  * background clear turned off. The ClearNode by default has StateSet attached
-  * to it which sets the default ClearNode bin number to -1, so that all drawables
-  * below it are placed in a separate bin from the rest of the scene graph, and
-  * are rendered prior to standard opaque and transparent drawables.
+/** A Group node for clearing the color and depth buffers. Use setClearColor
+  * to change the clear color, and setRequiresClear to disable/enable the call
+  * clearing. You might want to disable clearing if you perform your clear by
+  * drawing fullscreen geometry. If you do this, add child nodes to perform
+  * such drawing. The default StateSet associated with this node places
+  * children in render bin -1 to ensure that children are rendered prior to
+  * the rest of the scene graph.
 */
 class SG_EXPORT ClearNode : public Group
 {
@@ -43,16 +41,16 @@ class SG_EXPORT ClearNode : public Group
 
         META_Node(osg, ClearNode);
 
-	/** Sets the flag which control whether a glClear is required at the beginning of each frame. */
+        /** Enable/disable clearing via glClear. */
         inline void setRequiresClear(bool requiresClear) { _requiresClear = requiresClear; }
 
-	/** Gets the flag which control whether a glClear is required at the beginning of each frame. */
+        /** Gets whether clearing is enabled or disabled. */
         inline bool getRequiresClear() const { return _requiresClear; }
 
-	/** Sets the clear color. */
+        /** Sets the clear color. */
         inline void setClearColor(const Vec4& color) { _clearColor = color; }
 
-	/** Returns the clear color. */
+        /** Returns the clear color. */
         inline const Vec4& getClearColor() const { return _clearColor; }
 
     protected :

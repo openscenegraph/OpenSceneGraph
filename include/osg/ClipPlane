@@ -19,7 +19,8 @@
 
 namespace osg {
 
-/** ClipPlane state class which encapsulates OpenGL glClipPlane() functionality.*/
+/** Encapsulates OpenGL glClipPlane().
+*/
 class SG_EXPORT ClipPlane : public StateAttribute
 {
     public :
@@ -29,7 +30,7 @@ class SG_EXPORT ClipPlane : public StateAttribute
         inline ClipPlane(unsigned int no,const Plane& plane)   { setClipPlaneNum(no); setClipPlane(plane); }
         inline ClipPlane(unsigned int no,double a,double b,double c,double d)  { setClipPlaneNum(no); setClipPlane(a,b,c,d); }
 
-        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         ClipPlane(const ClipPlane& cp,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             StateAttribute(cp,copyop)
         {
@@ -42,21 +43,21 @@ class SG_EXPORT ClipPlane : public StateAttribute
         
         META_StateAttribute(osg, ClipPlane, (Type)(CLIPPLANE+_clipPlaneNum));
         
-        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
+        /** Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
         virtual int compare(const StateAttribute& sa) const
         {
-            // check the types are equal and then create the rhs variable
-            // used by the COMPARE_StateAttribute_Paramter macro's below.
+            // Check for equal types, then create the rhs variable
+            // used by the COMPARE_StateAttribute_Paramter macros below.
             COMPARE_StateAttribute_Types(ClipPlane,sa)
 
-            // compare each paramter in turn against the rhs.
+            // Compare each parameter in turn against the rhs.
             COMPARE_StateAttribute_Parameter(_clipPlaneNum)
             COMPARE_StateAttribute_Parameter(_clipPlane[0])
             COMPARE_StateAttribute_Parameter(_clipPlane[1])
             COMPARE_StateAttribute_Parameter(_clipPlane[2])
             COMPARE_StateAttribute_Parameter(_clipPlane[3])
 
-            return 0; // passed all the above comparison macro's, must be equal.
+            return 0; // Passed all the above comparison macros, so must be equal.
         }
 
         virtual bool getModeUsage(ModeUsage& usage) const
@@ -66,37 +67,37 @@ class SG_EXPORT ClipPlane : public StateAttribute
         }
 
 
-	/** Set the clip plane, using a Vec4 to define plane. */
+        /** Defines the clip plane with the given Vec4. */
         void setClipPlane(const Vec4& plane);
 
-	/** Set the clip plane, using a Plane to define plane. */
+        /** Defines this plane with the given Plane. */
         void setClipPlane(const Plane& plane);
 
-	/** Set the clip plane, using a double[4] to define plane. */
+        /** Defines the clip plane with the given double[4]. */
         void setClipPlane(const double* plane);
 
-	/** Set the clip plane, using a a to define plane. */
+        /** Defines the plane as [ a b c d ]. */
         void setClipPlane(double a,double b,double c,double d)
         {
             _clipPlane[0]=a;_clipPlane[1]=b;_clipPlane[2]=c;_clipPlane[3]=d;
         }
 
-	/** Get the clip plane, values entered into a Vec4 passed to the getClipPlane. */
+        /** Gets the clip plane as a Vec4. */
         void getClipPlane(Vec4& plane) const;
 
-	/** Get the clip plane, values entered into a Plane passed to the getClipPlane. */
+        /** Gets the clip plane as a Plane. */
         void getClipPlane(Plane& plane) const;
 
-	/** Get the clip plane, values entered into a double[4] passed to the getClipPlane. */
+        /** Gets the clip plane as an array of doubles. */
         void getClipPlane(double* plane) const;
 
-	/** Set the clip plane number. */
+        /** Sets the clip plane number. */
         void setClipPlaneNum(unsigned int num);
 
-	/** Get the clip plane number. */
+        /** Gets the clip plane number. */
         unsigned int getClipPlaneNum() const;
 
-	/** Apply the clip plane's state to the OpenGL state machine. */
+        /** Applies the clip plane's state to the OpenGL state machine. */
         virtual void apply(State& state) const;
 
     protected :

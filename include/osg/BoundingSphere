@@ -22,10 +22,10 @@ namespace osg {
 class BoundingBox;
 
 /** General purpose bounding sphere class for enclosing nodes/objects/vertices.
-    Used to bound internal osg::Node's in the scene,
-    to assist in view frustum culling etc.  Similar in function to BoundingBox
-    but is quicker for evaluating culling, but generally encloses a greater volume
-    than a BoundingBox so will not cull so aggressively.
+  * Bounds internal osg::Nodes in the scene, assists in view frustum culling,
+  * etc. Similar in function to BoundingBox, it's quicker for evaluating
+  * culling but generally will not cull as aggressively because it encloses a
+  * greater volume.
 */
 class SG_EXPORT BoundingSphere
 {
@@ -34,87 +34,81 @@ class SG_EXPORT BoundingSphere
         Vec3 _center;
         float _radius;
 
-        /** construct to invalid values to represent an unset bounding sphere.*/ 
+        /** Construct a default bounding sphere with radius to -1.0f, representing an invalid/unset bounding sphere.*/ 
         BoundingSphere() : _center(0.0f,0.0f,0.0f),_radius(-1.0f) {}
     
-        /** construct to specified bounding sphere.*/ 
+        /** Creates a bounding sphere initialized to the given extents. */
         BoundingSphere(const Vec3& center,float radius) : _center(center),_radius(radius) {}
 
-        /** initialize to invalid values to represent an unset bounding sphere.*/ 
+        /** Clear the bounding sphere. Reset to default values. */
         inline void init()
         {
             _center.set(0.0f,0.0f,0.0f);
             _radius = -1.0f;
         }
 
-        /** return true if the bounding sphere contains valid values,
-            false if the bounding sphere is effectively unset.*/
+        /** Returns true of the bounding sphere extents are valid, false
+          * otherwise. */
         inline bool valid() const { return _radius>=0.0f; }
 
-        /** set bounding sphere.*/ 
+        /** Set the bounding sphere to the given center/radius. */ 
         inline void set(const Vec3& center,float radius)
         {
             _center = center;
             _radius = radius;
         }
 
-        /** return the center of the bounding sphere.*/
+        /** Returns the center of the bounding sphere. */
         inline Vec3& center() { return _center; }
-        /** return the const center of the bounding sphere.*/
+        /** Returns the const center of the bounding sphere. */
         inline const Vec3& center() const { return _center; }
 
-        /** return the radius of the bounding sphere.*/
+        /** Returns the radius of the bounding sphere. */
         inline float& radius() { return _radius; }
-
-        /** return the const radius of the bounding sphere.*/
+        /** Returns the const radius of the bounding sphere. */
         inline float radius() const { return _radius; }
         
-        /** return the radius squared. 
-            Note, for performance reasons, assumes the calling method has ensured 
-            that the sphere is valid before calling radius2(), i.e. has _radius>=0.0,
-            as it does not check th validity of sphere and will erroneously return a positive value.*/
+        /** Returns the squared length of the radius. Note, For performance
+          * reasons, the calling method is responsible for checking to make
+          * sure the sphere is valid. */
         inline float radius2() const { return _radius*_radius; }
-        
-        /** If the vertex is out-with the sphere expand to encompass vertex.
-            Calculates the combination of movement of center and radius which
-            minimizes the radius increase. If this sphere is empty then
-            move the center to v and set radius to 0.*/
+
+        /** Expands the sphere to encompass the given point. Repositions the
+          * sphere center to minimize the radius increase. If the sphere is
+          * uninitialized, set its center to v and radius to zero. */
         void expandBy(const Vec3& v);
 
-        /** If the vertex is outwith the sphere expand radius to ecompass vertex.
-            Unlike update, does not move the center, just increasing the radius.
-            If this sphere is empty then move the centrer to v and set radius to 0 */
+        /** Expands the sphere to encompass the given point. Does not
+          * reposition the sphere center. If the sphere is
+          * uninitialized, set its center to v and radius to zero. */
         void expandRadiusBy(const Vec3& v);
 
-        /** If incomming sphere is outwith the sphere expand to ecompass incomming sphere.
-            calculates the combination of movement of center and radius which
-            minimizes the radius increase. If this sphere is empty then
-            move the centrer to v and set radius to 0.*/
+        /** Expands the sphere to encompass the given sphere. Repositions the
+          * sphere center to minimize the radius increase. If the sphere is
+          * uninitialized, set its center and radius to match sh. */
         void expandBy(const BoundingSphere& sh);
 
-        /** If incomming sphere is outwith the sphere expand radius to ecompass incomming sphere.
-            Unlike update, does not move the center, just increasing the radius.
-            If this sphere is empty then move the centrer to v and set radius to 0. */
+        /** Expands the sphere to encompass the given sphere. Does not
+          * repositions the sphere center. If the sphere is
+          * uninitialized, set its center and radius to match sh. */
         void expandRadiusBy(const BoundingSphere& sh);
 
-        /** If incomming box is outwith the sphere expand to ecompass incomming box.
-            calculates the combination of movement of center and radius which
-            minimizes the radius increase. If this boz is empty then
-            move the centrer to v and set radius to 0.*/
+        /** Expands the sphere to encompass the given box. Repositions the
+          * sphere center to minimize the radius increase. */
         void expandBy(const BoundingBox& bb);
 
-        /** If incomming box is outwith the sphere expand radius to ecompass incomming box.
-            Unlike update, does not move the center, just increasing the radius.
-            If this sphere is empty then move the centrer to v and set radius to 0. */
+        /** Expands the sphere to encompass the given box. Does not
+          * repositions the sphere center. */
         void expandRadiusBy(const BoundingBox& bb);
 
-        /** return true is vertex v is within the sphere.*/
+        /** Returns true if v is within the sphere. */
         inline bool contains(const Vec3& v) const
         {
             return valid() && ((v-_center).length2()<=radius2());
         }
 
-        /** return true if bounding sphere's intersect each other.*/
+        /** Returns true if there is a non-empty intersection with the given
+          * bounding sphere. */
         inline bool intersects( const BoundingSphere& bs ) const
         {
             return valid() && bs.valid() &&

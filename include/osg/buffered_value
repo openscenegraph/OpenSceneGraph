@@ -19,9 +19,9 @@
 
 namespace osg {
 
-/** Simple buffered value array which is used for values that need to multibuffered on
-  * one per graphics context basis.*/
-  
+/** Implements a simple buffered value for values that need to be buffered on
+  * a per graphics context basis.
+*/  
 template<class T>
 class buffered_value
 {

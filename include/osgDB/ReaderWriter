@@ -44,13 +44,20 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
         virtual bool acceptsExtension(const std::string& /*extension*/) { return false; }
 
         /** Options base class used for passing options into plugins to control their operation.*/
-        class Options : public osg::Referenced
+        class Options : public osg::Object
         {
             public:
 
                 Options() {}
                 Options(const std::string& str):_str(str) {}
                 
+                Options(const Options& options,const osg::CopyOp copyop=osg::CopyOp::SHALLOW_COPY):
+                    Object(options,copyop),
+                    _str(options._str),
+                    _databasePath(options._databasePath) {}
+
+                META_Object(osgDB,Options);
+
                 /** Set the general Options string.*/
                 void setOptionString(const std::string& str) { _str = str; }
 

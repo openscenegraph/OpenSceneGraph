@@ -26,6 +26,22 @@ class OSGDB_EXPORT ImageOptions : public osgDB::ReaderWriter::Options
         
         ImageOptions(const std::string& str);
             
+        ImageOptions(const ImageOptions& options,const osg::CopyOp copyop=osg::CopyOp::SHALLOW_COPY):
+            Options(options,copyop),
+            _sourceImageSamplingMode(options._sourceImageSamplingMode),
+            _sourceImageWindowMode(options._sourceImageWindowMode),
+            _sourceRatioWindow(options._sourceRatioWindow),
+            _sourcePixelWindow(options._sourcePixelWindow),
+            _destinationImage(options._destinationImage),
+            _destinationImageWindowMode(options._destinationImageWindowMode),
+            _destinationRatioWindow(options._destinationRatioWindow),
+            _destinationPixelWindow(options._destinationPixelWindow),
+            _destinationDataType(options._destinationDataType),
+            _destinationPixelFormat(options._destinationPixelFormat) {}
+          
+
+        META_Object(osgDB,ImageOptions);
+
         /** RatioWindow stores the window (as ratios of 0.0 to 1.0) from the overall imagery from which to extract the osg::Image*/
         struct RatioWindow
         {

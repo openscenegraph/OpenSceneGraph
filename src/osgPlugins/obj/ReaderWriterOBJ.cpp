@@ -152,11 +152,13 @@ osgDB::RegisterReaderWriterProxy<ReaderWriterOBJ> g_objReaderWriterProxy;
 
 
 // read file and convert to OSG.
-osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*)
+osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& file, const osgDB::ReaderWriter::Options*)
 {
-    std::string ext = osgDB::getFileExtension(fileName);
+    std::string ext = osgDB::getLowerCaseFileExtension(file);
     if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
+    std::string fileName = osgDB::findDataFile( file );
+    if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
     GLMmodel* obj = glmReadOBJ((char*) fileName.c_str());
     if (!obj)

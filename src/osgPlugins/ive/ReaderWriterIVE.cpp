@@ -4,6 +4,7 @@
 #include <osg/Notify>
 
 #include <osgDB/FileNameUtils>
+#include <osgDB/FileUtils>
 #include <osgDB/Registry>
 
 using namespace osg;
@@ -19,10 +20,13 @@ class IVEReaderWriter : public ReaderWriter
             return equalCaseInsensitive(extension,"ive");
         }
 
-        virtual ReadResult readNode(const std::string& fileName, const Options* options)
+        virtual ReadResult readNode(const std::string& file, const Options* options)
         {
-            std::string ext = getFileExtension(fileName);
+            std::string ext = osgDB::getLowerCaseFileExtension(file);
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
+
+            std::string fileName = osgDB::findDataFile( file );
+            if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
     
             std::ifstream istream(fileName.c_str(), std::ios::in | std::ios::binary);
             return readNode(istream,options);

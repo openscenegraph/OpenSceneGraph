@@ -153,6 +153,7 @@ EXAMPLE_DIRS = \
 	osgpagedlod\
 	osgpick\
 	osgpoints\
+#	osgphotoalbum\
 	osgprerender\
 	osgprerendercubemap\
 	osgreflect\

@@ -21,7 +21,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::readNode(const std::string& fil
     if( !acceptsExtension(osgDB::getFileExtension(fileName) ))
         return ReadResult::FILE_NOT_HANDLED;
 
-	osg::ref_ptr<txp::TerrapageNode> pager = new TerrapageNode;
+    osg::ref_ptr<txp::TerrapageNode> pager = new TerrapageNode;
 
     pager->setDatabaseName(fileName);
     

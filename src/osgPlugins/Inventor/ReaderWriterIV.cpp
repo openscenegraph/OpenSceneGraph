@@ -20,12 +20,14 @@ ReaderWriterIV::ReaderWriterIV()
 
 // Read file and convert to OSG
 osgDB::ReaderWriter::ReadResult 
-ReaderWriterIV::readNode(const std::string& fileName,
+ReaderWriterIV::readNode(const std::string& file,
                          const osgDB::ReaderWriter::Options*)
 {
-    std::string ext = osgDB::getLowerCaseFileExtension(fileName);
-    if (!acceptsExtension(ext)) 
-        return ReadResult::FILE_NOT_HANDLED;
+    std::string ext = osgDB::getLowerCaseFileExtension(file);
+    if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
+
+    std::string fileName = osgDB::findDataFile( file );
+    if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
     osg::notify(osg::INFO) << "osgDB::ReaderWriterIV::readNode() Reading file " 
                            << fileName.data() << std::endl;

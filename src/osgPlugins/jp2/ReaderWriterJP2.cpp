@@ -178,13 +178,16 @@ class ReaderWriterJP2 : public osgDB::ReaderWriter
                 osgDB::equalCaseInsensitive(extension,"jpc");
         }
 
-        virtual ReadResult readImage(const std::string& fileName, const osgDB::ReaderWriter::Options* options)
+        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options)
         {
-            std::string ext = osgDB::getFileExtension(fileName);
+            std::string ext = osgDB::getFileExtension(file);
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
-            if(!osgDB::fileExists(fileName))
+            std::string fileName = osgDB::findDataFile( file );
+            if(fileName.empty())
             {
+                // note from Robert, Dec03, I find returning a valid image when no
+                // file exists a bit odd...
                 osg::Image *img = new osg::Image;
                 img->setFileName(fileName);
                 return img;

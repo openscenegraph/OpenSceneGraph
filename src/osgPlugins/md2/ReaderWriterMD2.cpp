@@ -23,6 +23,7 @@
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
 #include <osgDB/FileNameUtils>
+#include <osgDB/FileUtils>
 
 #include <string.h>
 #include <fcntl.h>
@@ -59,9 +60,15 @@ public:
 osgDB::RegisterReaderWriterProxy<ReaderWriterMD2> g_readerWriter_MD2_Proxy;
 
 osgDB::ReaderWriter::ReadResult
-ReaderWriterMD2::readNode (const std::string& filename,
+ReaderWriterMD2::readNode (const std::string& file,
 			   const osgDB::ReaderWriter::Options*)
 {
+    std::string ext = osgDB::getLowerCaseFileExtension(file);
+    if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
+
+    std::string filename = osgDB::findDataFile( file );
+    if (filename.empty()) return ReadResult::FILE_NOT_FOUND;
+
     return load_md2 (filename.data());
 }
 

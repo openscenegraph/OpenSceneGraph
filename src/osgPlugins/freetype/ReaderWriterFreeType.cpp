@@ -1,4 +1,5 @@
 #include <osgDB/FileNameUtils>
+#include <osgDB/FileUtils>
 #include <osgDB/Registry>
 
 #include "FreeTypeLibrary.h"
@@ -21,10 +22,13 @@ class ReaderWriterFreeType : public osgDB::ReaderWriter
                    osgDB::equalCaseInsensitive(extension,"fnt");    // Windows bitmap fonts
         }
 
-        virtual ReadResult readObject(const std::string& fileName, const osgDB::ReaderWriter::Options*)
+        virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options*)
         {
-            std::string ext = osgDB::getFileExtension(fileName);
+            std::string ext = osgDB::getLowerCaseFileExtension(file);
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
+
+            std::string fileName = osgDB::findDataFile( file );
+            if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
             
             osgText::Font* font = FreeTypeLibrary::instance()->getFont(fileName,0);
             

@@ -61,6 +61,7 @@ class OSGDB_EXPORT ReaderWriter : public osg::Referenced
                 enum ReadStatus
                 {
                     FILE_NOT_HANDLED,
+                    FILE_NOT_FOUND,
                     FILE_LOADED,
                     ERROR_IN_READING_FILE
                 };
@@ -93,6 +94,7 @@ class OSGDB_EXPORT ReaderWriter : public osg::Referenced
                 bool success() const { return _status==FILE_LOADED; }
                 bool error() const { return _status==ERROR_IN_READING_FILE; }
                 bool notHandled() const { return _status==FILE_NOT_HANDLED; }
+                bool notFound() const { return _status==FILE_NOT_FOUND; }
 
             protected:
             

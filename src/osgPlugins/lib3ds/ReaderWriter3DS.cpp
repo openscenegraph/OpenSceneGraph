@@ -86,7 +86,7 @@ class ReaderWriter3DS : public osgDB::ReaderWriter
         virtual const char* className() { return "3DS Auto Studio Reader"; }
         virtual bool acceptsExtension(const std::string& extension) { return osgDB::equalCaseInsensitive(extension,"3ds"); }
 
-        virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*);
+        virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options*);
 
         typedef std::vector<int> FaceList;
         typedef std::map<std::string,osg::StateSet*> GeoStateMap;
@@ -394,8 +394,14 @@ osg::Node* ReaderWriter3DS::processNode(StateSetMap drawStateMap,Lib3dsFile *f,L
 }
 
 
-osgDB::ReaderWriter::ReadResult ReaderWriter3DS::readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*)
+osgDB::ReaderWriter::ReadResult ReaderWriter3DS::readNode(const std::string& file, const osgDB::ReaderWriter::Options*)
 {
+
+    std::string ext = osgDB::getLowerCaseFileExtension(file);
+    if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
+
+    std::string fileName = osgDB::findDataFile( file );
+    if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
     Lib3dsFile *f = lib3ds_file_load(fileName.c_str());
     if (f==NULL) return ReadResult::FILE_NOT_HANDLED;

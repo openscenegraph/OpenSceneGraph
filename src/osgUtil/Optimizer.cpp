@@ -900,7 +900,7 @@ bool Optimizer::CombineStaticTransformsVisitor::removeTransforms(osg::Node* node
         if (itr!=_transformSet.end()) _transformSet.erase(itr);
     }
     
-    std::cout<<"Have found "<<_transformSet.size()<<" static Transform pairs to flatten"<<std::endl;
+    osg::notify(osg::INFO)<<"Have found "<<_transformSet.size()<<" static Transform pairs to flatten"<<std::endl;
     
     bool transformRemoved = false;
 

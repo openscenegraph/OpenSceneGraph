@@ -4,6 +4,8 @@
 #include <osg/Geode>
 #include <osg/Geometry>
 
+namespace osgfxbrowser {
+
 struct Rect {
 	float x0, y0, x1, y1;
 	Rect() {}
@@ -43,5 +45,7 @@ private:
 	Rect rect_;
 	std::string caption_;
 };
+
+}
 
 #endif

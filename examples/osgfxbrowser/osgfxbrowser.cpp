@@ -48,7 +48,7 @@ public:
 RotateCallback *rotate_cb;
 
 
-class EffectPanel: public Frame {
+class EffectPanel: public osgfxbrowser::Frame {
 public:
 
 	class KeyboardHandler: public osgGA::GUIEventHandler {
@@ -151,7 +151,7 @@ public:
 	}
 
 protected:
-	void rebuild_client_area(const Rect &client_rect)
+	void rebuild_client_area(const osgfxbrowser::Rect &client_rect)
 	{
                 float zPos = -0.1; // note from Robert, was 0.1f, but now must be -0.1f to keep text visible??#!? due
                                    // to some other change in the OSG not tracked down yet...
@@ -252,7 +252,7 @@ EffectPanel *build_gui(osg::Group *root)
 
 	osg::ref_ptr<EffectPanel> effect_panel = new EffectPanel;
 	effect_panel->setCaption("osgFX Effect Browser");
-	effect_panel->setRect(Rect(20, 20, 1000, 280));	
+	effect_panel->setRect(osgfxbrowser::Rect(20, 20, 1000, 280));	
 
 	hud->addChild(effect_panel.get());
 

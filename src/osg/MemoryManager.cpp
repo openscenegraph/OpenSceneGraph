@@ -192,7 +192,6 @@ static        unsigned int    currentAllocationCount = 0;
 static        unsigned int    breakOnAllocationCount = 0;
 static        sMStats        stats;
 static    const    char        *sourceFile            = "??";
-static    const    char        *sourceFunc            = "??";
 static        unsigned int    sourceLine             = 0;
 static        bool        staticDeinitTime       = false;
 static        sAllocUnit    **reservoirBuffer      = NULL;
@@ -279,11 +278,11 @@ static    const char    *sourceFileStripper(const char *sourceFile)
 
 // ---------------------------------------------------------------------------------------------------------------------------------
 
-static    const char    *ownerString(const char *sourceFile, const unsigned int sourceLine, const char *sourceFunc)
+static    const char    *ownerString(const char *sourceFile, const unsigned int sourceLine)
 {
     static    char    str[90];
     memset(str, 0, sizeof(str));
-    sprintf(str, "%s(%05d)::%s", sourceFileStripper(sourceFile), sourceLine, sourceFunc);
+    sprintf(str, "%s(%05d)", sourceFileStripper(sourceFile), sourceLine);
     return str;
 }
 
@@ -444,7 +443,6 @@ static    void    resetGlobals()
 {
     sourceFile = "??";
     sourceLine = 0;
-    sourceFunc = "??";
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------------
@@ -501,7 +499,7 @@ static    void    dumpAllocations(FILE *fp)
                 allocationTypes[ptr->allocationType],
                 ptr->breakOnDealloc ? 'Y':'N',
                 ptr->breakOnRealloc ? 'Y':'N',
-                ownerString(ptr->sourceFile, ptr->sourceLine, ptr->sourceFunc));
+                ownerString(ptr->sourceFile, ptr->sourceLine));
             ptr = ptr->next;
         }
     }
@@ -656,11 +654,10 @@ void    m_breakOnAllocation(unsigned int count)
 // Used by the macros
 // ---------------------------------------------------------------------------------------------------------------------------------
 
-void    m_setOwner(const char *file, const unsigned int line, const char *func)
+void    m_setOwner(const char *file, const unsigned int line)
 {
     sourceFile = file;
     sourceLine = line;
-    sourceFunc = func;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------------
@@ -690,7 +687,7 @@ void    *operator new(size_t reportedSize) throw (std::bad_alloc)
     {
         // Try the allocation
 
-        void    *ptr = m_allocator(sourceFile, sourceLine, sourceFunc, m_alloc_new, reportedSize);
+        void    *ptr = m_allocator(sourceFile, sourceLine, m_alloc_new, reportedSize);
         if (ptr)
         {
             #ifdef TEST_MEMORY_MANAGER
@@ -742,7 +739,7 @@ void    *operator new[](size_t reportedSize) throw (std::bad_alloc)
     {
         // Try the allocation
 
-        void    *ptr = m_allocator(sourceFile, sourceLine, sourceFunc, m_alloc_new_array, reportedSize);
+        void    *ptr = m_allocator(sourceFile, sourceLine, m_alloc_new_array, reportedSize);
         if (ptr)
         {
             #ifdef TEST_MEMORY_MANAGER
@@ -800,7 +797,7 @@ void    *operator new(size_t reportedSize, const char *sourceFile, int sourceLin
     {
         // Try the allocation
 
-        void    *ptr = m_allocator(sourceFile, sourceLine, "??", m_alloc_new, reportedSize);
+        void    *ptr = m_allocator(sourceFile, sourceLine, m_alloc_new, reportedSize);
         if (ptr)
         {
             #ifdef TEST_MEMORY_MANAGER
@@ -852,7 +849,7 @@ void    *operator new[](size_t reportedSize, const char *sourceFile, int sourceL
     {
         // Try the allocation
 
-        void    *ptr = m_allocator(sourceFile, sourceLine, "??", m_alloc_new_array, reportedSize);
+        void    *ptr = m_allocator(sourceFile, sourceLine, m_alloc_new_array, reportedSize);
         if (ptr)
         {
             #ifdef TEST_MEMORY_MANAGER
@@ -903,7 +900,7 @@ void    operator delete(void *reportedAddress) throw ()
 
     if (!reportedAddress) return;
 
-    m_deallocator(sourceFile, sourceLine, sourceFunc, m_alloc_delete, reportedAddress);
+    m_deallocator(sourceFile, sourceLine, m_alloc_delete, reportedAddress);
 
     #ifdef TEST_MEMORY_MANAGER
     log("EXIT : delete");
@@ -922,7 +919,7 @@ void    operator delete[](void *reportedAddress) throw ()
 
     if (!reportedAddress) return;
 
-    m_deallocator(sourceFile, sourceLine, sourceFunc, m_alloc_delete_array, reportedAddress);
+    m_deallocator(sourceFile, sourceLine, m_alloc_delete_array, reportedAddress);
 
     #ifdef TEST_MEMORY_MANAGER
     log("EXIT : delete[]");
@@ -936,7 +933,7 @@ void    operator delete[](void *reportedAddress) throw ()
 // Allocate memory and track it
 // ---------------------------------------------------------------------------------------------------------------------------------
 
-void    *m_allocator(const char *sourceFile, const unsigned int sourceLine, const char *sourceFunc, const unsigned int allocationType, const size_t reportedSize)
+void    *m_allocator(const char *sourceFile, const unsigned int sourceLine, const unsigned int allocationType, const size_t reportedSize)
 {
     try
     {
@@ -950,7 +947,7 @@ void    *m_allocator(const char *sourceFile, const unsigned int sourceLine, cons
 
         // Log the request
 
-        if (alwaysLogAll) log("%05d %-40s %8s            : %s", currentAllocationCount, ownerString(sourceFile, sourceLine, sourceFunc), allocationTypes[allocationType], memorySizeString(reportedSize));
+        if (alwaysLogAll) log("%05d %-40s %8s            : %s", currentAllocationCount, ownerString(sourceFile, sourceLine), allocationTypes[allocationType], memorySizeString(reportedSize));
 
         // If you hit this assert, you requested a breakpoint on a specific allocation count
         m_assert(currentAllocationCount != breakOnAllocationCount);
@@ -1024,8 +1021,6 @@ void    *m_allocator(const char *sourceFile, const unsigned int sourceLine, cons
         au->allocationNumber  = currentAllocationCount;
         if (sourceFile) strncpy(au->sourceFile, sourceFileStripper(sourceFile), sizeof(au->sourceFile) - 1);
         else        strcpy (au->sourceFile, "??");
-        if (sourceFunc) strncpy(au->sourceFunc, sourceFunc, sizeof(au->sourceFunc) - 1);
-        else        strcpy (au->sourceFunc, "??");
 
         // We don't want to assert with random failures, because we want the application to deal with them.
 
@@ -1115,7 +1110,7 @@ void    *m_allocator(const char *sourceFile, const unsigned int sourceLine, cons
 // Reallocate memory and track it
 // ---------------------------------------------------------------------------------------------------------------------------------
 
-void    *m_reallocator(const char *sourceFile, const unsigned int sourceLine, const char *sourceFunc, const unsigned int reallocationType, const size_t reportedSize, void *reportedAddress)
+void    *m_reallocator(const char *sourceFile, const unsigned int sourceLine, const unsigned int reallocationType, const size_t reportedSize, void *reportedAddress)
 {
     try
     {
@@ -1127,7 +1122,7 @@ void    *m_reallocator(const char *sourceFile, const unsigned int sourceLine, co
 
         if (!reportedAddress)
         {
-            return m_allocator(sourceFile, sourceLine, sourceFunc, reallocationType, reportedSize);
+            return m_allocator(sourceFile, sourceLine, reallocationType, reportedSize);
         }
 
         // Increase our allocation count
@@ -1139,7 +1134,7 @@ void    *m_reallocator(const char *sourceFile, const unsigned int sourceLine, co
 
         // Log the request
 
-        if (alwaysLogAll) log("%05d %-40s %8s(%010p): %s", currentAllocationCount, ownerString(sourceFile, sourceLine, sourceFunc), allocationTypes[reallocationType], reportedAddress, memorySizeString(reportedSize));
+        if (alwaysLogAll) log("%05d %-40s %8s(%010p): %s", currentAllocationCount, ownerString(sourceFile, sourceLine), allocationTypes[reallocationType], reportedAddress, memorySizeString(reportedSize));
 
         // Locate the existing allocation unit
 
@@ -1219,8 +1214,6 @@ void    *m_reallocator(const char *sourceFile, const unsigned int sourceLine, co
         au->allocationNumber  = currentAllocationCount;
         if (sourceFile) strncpy(au->sourceFile, sourceFileStripper(sourceFile), sizeof(au->sourceFile) - 1);
         else        strcpy (au->sourceFile, "??");
-        if (sourceFunc) strncpy(au->sourceFunc, sourceFunc, sizeof(au->sourceFunc) - 1);
-        else        strcpy (au->sourceFunc, "??");
 
         // The reallocation may cause the address to change, so we should relocate our allocation unit within the hash table
 
@@ -1312,7 +1305,7 @@ void    *m_reallocator(const char *sourceFile, const unsigned int sourceLine, co
 // Deallocate memory and track it
 // ---------------------------------------------------------------------------------------------------------------------------------
 
-void    m_deallocator(const char *sourceFile, const unsigned int sourceLine, const char *sourceFunc, const unsigned int deallocationType, const void *reportedAddress)
+void    m_deallocator(const char *sourceFile, const unsigned int sourceLine, const unsigned int deallocationType, const void *reportedAddress)
 {
     try
     {
@@ -1322,7 +1315,7 @@ void    m_deallocator(const char *sourceFile, const unsigned int sourceLine, con
 
         // Log the request
 
-        if (alwaysLogAll) log("      %-40s %8s(%010p)", ownerString(sourceFile, sourceLine, sourceFunc), allocationTypes[deallocationType], reportedAddress);
+        if (alwaysLogAll) log("      %-40s %8s(%010p)", ownerString(sourceFile, sourceLine), allocationTypes[deallocationType], reportedAddress);
 
         // Go get the allocation unit
 
@@ -1564,7 +1557,7 @@ void    m_dumpAllocUnit(const sAllocUnit *allocUnit, const char *prefix)
     log("%sAddress (actual)  : %010p",       prefix, allocUnit->actualAddress);
     log("%sSize (reported)   : 0x%08X (%s)", prefix, allocUnit->reportedSize, memorySizeString(allocUnit->reportedSize));
     log("%sSize (actual)     : 0x%08X (%s)", prefix, allocUnit->actualSize, memorySizeString(allocUnit->actualSize));
-    log("%sOwner             : %s(%d)::%s",  prefix, allocUnit->sourceFile, allocUnit->sourceLine, allocUnit->sourceFunc);
+    log("%sOwner             : %s(%d)",  prefix, allocUnit->sourceFile, allocUnit->sourceLine);
     log("%sAllocation type   : %s",          prefix, allocationTypes[allocUnit->allocationType]);
     log("%sAllocation number : %d",          prefix, allocUnit->allocationNumber);
 }

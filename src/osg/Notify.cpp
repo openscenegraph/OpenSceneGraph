@@ -39,7 +39,8 @@ bool osg::initNotifyLevel()
 
     g_NotifyLevel = osg::NOTICE; // Default value
 
-    char *OSGNOTIFYLEVEL=getenv("OSGNOTIFYLEVEL");
+    char* OSGNOTIFYLEVEL=getenv("OSG_NOTIFY_LEVEL");
+    if (!OSGNOTIFYLEVEL) OSGNOTIFYLEVEL=getenv("OSGNOTIFYLEVEL");
     if(OSGNOTIFYLEVEL)
     {
 

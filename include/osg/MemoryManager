@@ -20,14 +20,6 @@
 #include <new>
 
 // ---------------------------------------------------------------------------------------------------------------------------------
-// For systems that don't have the __FUNCTION__ variable, we can just define it here
-// ---------------------------------------------------------------------------------------------------------------------------------
-
-#ifndef __FUNCTION__
-#define    __FUNCTION__ "??"
-#endif
-
-// ---------------------------------------------------------------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------------------------------------------------------------
 
@@ -79,7 +71,7 @@ SG_EXPORT extern const    unsigned int    m_alloc_free;
 // Used by the macros
 // ---------------------------------------------------------------------------------------------------------------------------------
 
-SG_EXPORT extern void        m_setOwner(const char *file, const unsigned int line, const char *func);
+SG_EXPORT extern void        m_setOwner(const char *file, const unsigned int line);
 
 // ---------------------------------------------------------------------------------------------------------------------------------
 // Allocation breakpoints
@@ -93,11 +85,11 @@ SG_EXPORT extern void            m_breakOnAllocation(unsigned int count);
 // The meat of the memory tracking software
 // ---------------------------------------------------------------------------------------------------------------------------------
 
-SG_EXPORT extern void        *m_allocator(const char *sourceFile, const unsigned int sourceLine, const char *sourceFunc,
+SG_EXPORT extern void        *m_allocator(const char *sourceFile, const unsigned int sourceLine,
                  const unsigned int allocationType, const size_t reportedSize);
-SG_EXPORT extern void        *m_reallocator(const char *sourceFile, const unsigned int sourceLine, const char *sourceFunc,
+SG_EXPORT extern void        *m_reallocator(const char *sourceFile, const unsigned int sourceLine,
                    const unsigned int reallocationType, const size_t reportedSize, void *reportedAddress);
-SG_EXPORT extern void        m_deallocator(const char *sourceFile, const unsigned int sourceLine, const char *sourceFunc,
+SG_EXPORT extern void        m_deallocator(const char *sourceFile, const unsigned int sourceLine,
                   const unsigned int deallocationType, const void *reportedAddress);
 
 // ---------------------------------------------------------------------------------------------------------------------------------
@@ -140,12 +132,12 @@ SG_EXPORT extern sMStats        m_getMemoryStatistics();
     // Macros -- "Kids, please don't try this at home. We're trained professionals here." :)
     // ---------------------------------------------------------------------------------------------------------------------------------
 
-    #define    osgNew            (m_setOwner  (__FILE__,__LINE__,__FUNCTION__),false) ? NULL : new
-    #define    osgDelete        (m_setOwner  (__FILE__,__LINE__,__FUNCTION__),false) ? m_setOwner("",0,"") : delete
-    #define    osgMalloc(sz)        m_allocator  (__FILE__,__LINE__,__FUNCTION__,m_alloc_malloc,sz)
-    #define    osgCalloc(sz)        m_allocator  (__FILE__,__LINE__,__FUNCTION__,m_alloc_calloc,sz)
-    #define    osgRealloc(ptr,sz)  m_reallocator(__FILE__,__LINE__,__FUNCTION__,m_alloc_realloc,sz,ptr)
-    #define    osgFree(ptr)        m_deallocator(__FILE__,__LINE__,__FUNCTION__,m_alloc_free,ptr)
+    #define    osgNew              (m_setOwner  (__FILE__,__LINE__),false) ? NULL : new
+    #define    osgDelete           (m_setOwner  (__FILE__,__LINE__),false) ? m_setOwner("",0) : delete
+    #define    osgMalloc(sz)        m_allocator  (__FILE__,__LINE__,m_alloc_malloc,sz)
+    #define    osgCalloc(sz)        m_allocator  (__FILE__,__LINE__,m_alloc_calloc,sz)
+    #define    osgRealloc(ptr,sz)   m_reallocator(__FILE__,__LINE__,m_alloc_realloc,sz,ptr)
+    #define    osgFree(ptr)         m_deallocator(__FILE__,__LINE__,m_alloc_free,ptr)
 
 #else
 

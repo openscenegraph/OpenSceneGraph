@@ -1,0 +1,6 @@
+
+default : $(DIRS)
+	@for f in $(DIRS); do cd $$f; $(MAKE) $@ || exit 1; cd ..; done
+
+$(ALL_TARGETS) :  $(DIRS)
+	@for f in $(DIRS); do cd $$f; $(MAKE) $@ || exit 1; cd ..; done

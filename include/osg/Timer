@@ -138,7 +138,7 @@ class SG_EXPORT Timer {
 
     #include <sys/time.h>
 
-#ifdef __ia64
+#if defined(__ia64) || defined(__x86_64__) || defined(__powerpc)
     #define CLK(x)        ((x)=0)
 #else
     #define CLK(x)      __asm__ volatile (".byte 0x0f, 0x31" : "=A" (x))

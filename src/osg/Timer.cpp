@@ -160,7 +160,7 @@ const Timer* Timer::instance()
 
     Timer::Timer()
     {
-#if defined(__ia64) || defined(__x86_64__)
+#if defined(__ia64) || defined(__x86_64__) || defined(__powerpc)
         _useStandardClock = true;
 #else
         _useStandardClock = true;

@@ -24,9 +24,24 @@ class SG_EXPORT AlphaFunc : public StateAttribute
 {
     public :
     
-    
+        enum ComparisonFunction {
+            NEVER = GL_NEVER,
+            LESS = GL_LESS,
+            EQUAL = GL_EQUAL,
+            LEQUAL = GL_LEQUAL,
+            GREATER = GL_GREATER,
+            NOTEQUAL = GL_NOTEQUAL,
+            GEQUAL = GL_GEQUAL,
+            ALWAYS = GL_ALWAYS
+        };
+
+
         AlphaFunc();
         
+        AlphaFunc(ComparisonFunction func,float ref):
+            _comparisonFunc(func),
+            _referenceValue(ref) {}
+
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         AlphaFunc(const AlphaFunc& af,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             StateAttribute(af,copyop),
@@ -54,17 +69,6 @@ class SG_EXPORT AlphaFunc : public StateAttribute
             usage.usesMode(GL_ALPHA_TEST);
             return true;
         }
-
-        enum ComparisonFunction {
-            NEVER = GL_NEVER,
-            LESS = GL_LESS,
-            EQUAL = GL_EQUAL,
-            LEQUAL = GL_LEQUAL,
-            GREATER = GL_GREATER,
-            NOTEQUAL = GL_NOTEQUAL,
-            GEQUAL = GL_GEQUAL,
-            ALWAYS = GL_ALWAYS
-        };
 
         inline void setFunction(ComparisonFunction func,float ref)
         {

@@ -51,7 +51,7 @@ void TestManipulator::home(const GUIEventAdapter& ,GUIActionAdapter& us)
         const osg::BoundingSphere& boundingSphere=_node->getBound();
 
         computePosition(boundingSphere.center()+osg::Vec3(0.0f, 0.0f, 20.0f),
-			osg::Vec3(0.0f, 1.0f, 20.0f),
+			osg::Vec3(0.0f, 1.0f, 0.0f),
 			osg::Vec3(0.0f,  0.0f,  1.0f));
 
         us.requestRedraw();

@@ -10,6 +10,10 @@ OSG News (most significant items from ChangeLog)
 
     osgSim a seperate add-on library adds support for navigational light points.
     
+    osgGA (Gui Abstrabtion) library introduced to provide classes for adatping
+    different GUI toolkits to work with a standard set of manipulators for
+    modifying the scene, such as camera and state manipulators.
+    
     Support for NodeKits.
 
 

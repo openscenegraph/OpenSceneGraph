@@ -3,6 +3,7 @@
 #include <osg/Group>
 #include <osg/BoundingBox>
 #include <osg/Transform>
+#include <osg/OccluderNode>
 
 #include <algorithm>
 
@@ -80,6 +81,14 @@ bool Group::addChild( Node *child )
                 );
         }
 
+        if (child->getNumChildrenWithOccluderNodes()>0 ||
+            dynamic_cast<osg::OccluderNode*>(child))
+        {
+            setNumChildrenWithOccluderNodes(
+                getNumChildrenWithOccluderNodes()+1
+                );
+        }
+
         return true;
     }
     else return false;
@@ -111,6 +120,14 @@ bool Group::removeChild( Node *child )
         {
             setNumChildrenWithCullingDisabled(
                 getNumChildrenWithCullingDisabled()-1
+                );
+        }
+
+        if (child->getNumChildrenWithOccluderNodes()>0 ||
+            dynamic_cast<osg::OccluderNode*>(child))
+        {
+            setNumChildrenWithOccluderNodes(
+                getNumChildrenWithOccluderNodes()-1
                 );
         }
 

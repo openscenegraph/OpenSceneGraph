@@ -12,6 +12,7 @@ CXXFILES =\
 	ClipPlane.cpp\
 	ColorMask.cpp\
 	ColorMatrix.cpp\
+	CollectOccludersVisitor.cpp\
 	ConvexPlanerPolygon.cpp\
 	ConvexPlanerOccluder.cpp\
 	CopyOp.cpp\

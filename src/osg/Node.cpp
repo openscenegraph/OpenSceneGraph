@@ -2,6 +2,7 @@
 #include <osg/Group>
 #include <osg/NodeVisitor>
 #include <osg/Notify>
+#include <osg/OccluderNode>
 
 #include <algorithm>
 
@@ -17,6 +18,7 @@ Node::Node()
     _cullingActive = true;
     _numChildrenWithCullingDisabled = 0;
 
+    _numChildrenWithOccluderNodes = 0;
 }
 
 Node::Node(const Node& node,const CopyOp& copyop):
@@ -30,6 +32,7 @@ Node::Node(const Node& node,const CopyOp& copyop):
         _cullCallback(node._cullCallback),
         _cullingActive(node._cullingActive),
         _numChildrenWithCullingDisabled(0), // assume no children yet.
+        _numChildrenWithOccluderNodes(0),
         _userData(copyop(node._userData.get())),
         _nodeMask(node._nodeMask), 
         _descriptions(node._descriptions),
@@ -226,6 +229,48 @@ void Node::setNumChildrenWithCullingDisabled(const int num)
     _numChildrenWithCullingDisabled=num;
 }
 
+
+void Node::setNumChildrenWithOccluderNodes(const int num)
+{
+    // if no changes just return.
+    if (_numChildrenWithOccluderNodes==num) return;
+
+    // note, if this node is a OccluderNode then the
+    // parents won't be affected by any changes to
+    // _numChildrenWithOccluderNodes so no need to inform them.
+    if (!dynamic_cast<OccluderNode*>(this) && !_parents.empty())
+    {
+    
+        // need to pass on changes to parents.        
+        int delta = 0;
+        if (_numChildrenWithOccluderNodes>0) --delta;
+        if (num>0) ++delta;
+        if (delta!=0)
+        {
+            // the number of callbacks has changed, need to pass this
+            // on to parents so they know whether app traversal is
+            // reqired on this subgraph.
+            for(ParentList::iterator itr =_parents.begin();
+                itr != _parents.end();
+                ++itr)
+            {    
+                (*itr)->setNumChildrenWithOccluderNodes(
+                    (*itr)->getNumChildrenWithOccluderNodes()+delta
+                    );
+            }
+
+        }
+    }
+    
+    // finally update this objects value.
+    _numChildrenWithOccluderNodes=num;
+    
+}
+
+const bool Node::containsOccluderNodes() const
+{
+    return _numChildrenWithOccluderNodes>0 || dynamic_cast<const OccluderNode*>(this);
+}
 
 const bool Node::computeBound() const
 {

@@ -159,6 +159,35 @@ void EventAdapter::adaptKeyPress( double time, Producer::KeySymbol key)
     _eventType = KEYDOWN;
     _time = time;
     _key = key;
+    
+    switch(key)
+    {
+        case(KEY_Shift_L):      _s_modKeyMask = MODKEY_LEFT_SHIFT | _s_modKeyMask; break;
+        case(KEY_Shift_R):      _s_modKeyMask = MODKEY_RIGHT_SHIFT | _s_modKeyMask; break;
+        case(KEY_Control_L):    _s_modKeyMask = MODKEY_LEFT_CTRL | _s_modKeyMask; break;
+        case(KEY_Control_R):    _s_modKeyMask = MODKEY_RIGHT_CTRL | _s_modKeyMask; break;
+        case(KEY_Meta_L):       _s_modKeyMask = MODKEY_LEFT_META | _s_modKeyMask; break;
+        case(KEY_Meta_R):       _s_modKeyMask = MODKEY_RIGHT_META | _s_modKeyMask; break;
+        case(KEY_Alt_L):        _s_modKeyMask = MODKEY_LEFT_ALT | _s_modKeyMask; break;
+        case(KEY_Alt_R):        _s_modKeyMask = MODKEY_LEFT_ALT | _s_modKeyMask; break;
+
+        case(KEY_Caps_Lock):
+        {
+            if ((_s_modKeyMask & MODKEY_CAPS_LOCK)!=0) 
+                _s_modKeyMask = ~MODKEY_CAPS_LOCK & _s_modKeyMask;
+            else 
+                _s_modKeyMask = MODKEY_CAPS_LOCK | _s_modKeyMask; 
+            break;
+        }
+        case(KEY_Num_Lock):
+        {
+            if ((_s_modKeyMask & MODKEY_NUM_LOCK)!=0)
+                 _s_modKeyMask = ~MODKEY_NUM_LOCK & _s_modKeyMask;
+            else
+                 _s_modKeyMask = MODKEY_NUM_LOCK | _s_modKeyMask;
+            break;
+        }
+    }        
 
     copyStaticVariables();
 }
@@ -169,6 +198,18 @@ void EventAdapter::adaptKeyRelease( double time, Producer::KeySymbol key)
     _eventType = KEYUP;
     _time = time;
     _key = key;
+
+    switch(key)
+    {
+        case(KEY_Shift_L):      _s_modKeyMask = ~MODKEY_LEFT_SHIFT & _s_modKeyMask; break;
+        case(KEY_Shift_R):      _s_modKeyMask = ~MODKEY_RIGHT_SHIFT & _s_modKeyMask; break;
+        case(KEY_Control_L):    _s_modKeyMask = ~MODKEY_LEFT_CTRL & _s_modKeyMask; break;
+        case(KEY_Control_R):    _s_modKeyMask = ~MODKEY_RIGHT_CTRL & _s_modKeyMask; break;
+        case(KEY_Meta_L):       _s_modKeyMask = ~MODKEY_LEFT_META & _s_modKeyMask; break;
+        case(KEY_Meta_R):       _s_modKeyMask = ~MODKEY_RIGHT_META & _s_modKeyMask; break;
+        case(KEY_Alt_L):        _s_modKeyMask = ~MODKEY_LEFT_ALT & _s_modKeyMask; break;
+        case(KEY_Alt_R):        _s_modKeyMask = ~MODKEY_LEFT_ALT & _s_modKeyMask; break;
+    }        
 
     copyStaticVariables();
 }

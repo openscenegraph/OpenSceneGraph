@@ -189,6 +189,8 @@ osg::Node* TXPNode::addPagedLODTile(int x, int y, int lod)
 
     osg::PagedLOD* pagedLOD = new osg::PagedLOD;
     pagedLOD->setFileName(0,pagedLODfile);
+    pagedLOD->setPriorityOffset(0,1.0f);
+    pagedLOD->setPriorityScale(0,1.0f);
     pagedLOD->setRange(0,0.0,info.maxRange);
     pagedLOD->setCenter(info.center);
     pagedLOD->setRadius(info.radius);

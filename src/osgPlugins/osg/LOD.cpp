@@ -46,15 +46,12 @@ bool LOD_readLocalData(Object& obj, Input& fr)
 
         // set up coordinates.
         int entry = fr[0].getNoNestedBrackets();
-        int capacity;
-
         if (matchFirst)
         {
             fr += 2;
         }
-        else if (fr[1].getInt(capacity))
+        else
         {
-            lod.getRangeList().reserve(capacity);
             fr += 3;
         }
 
@@ -86,15 +83,12 @@ bool LOD_readLocalData(Object& obj, Input& fr)
 
         // set up coordinates.
         int entry = fr[0].getNoNestedBrackets();
-        int capacity;
-
         if (matchFirst)
         {
             fr += 2;
         }
-        else if (fr[1].getInt(capacity))
+        else
         {
-            lod.getRangeList().reserve(capacity);
             fr += 3;
         }
 

@@ -21,32 +21,129 @@
 // for the grid data..
 #include "../osghangglide/terrain_coords.h"
 
-class Tree : public osg::Referenced
+// class to create the forest and manage the movement between various techniques.
+class ForestTechniqueManager : public osg::Referenced
 {
 public:
 
-    Tree():
-        _color(255,255,255,255),
-        _width(1.0f),
-        _height(1.0f),
-        _type(0) {}
+    ForestTechniqueManager() {}
 
-    Tree(const osg::Vec3& position, const osg::UByte4& color, float width, float height, unsigned int type):
-        _position(position),
-        _color(color),
-        _width(width),
-        _height(height),
-        _type(type) {}
+    class Tree : public osg::Referenced
+    {
+    public:
 
-    osg::Vec3       _position;
-    osg::UByte4     _color;
-    float           _width;
-    float           _height;
-    unsigned int    _type;
+        Tree():
+            _color(255,255,255,255),
+            _width(1.0f),
+            _height(1.0f),
+            _type(0) {}
+
+        Tree(const osg::Vec3& position, const osg::UByte4& color, float width, float height, unsigned int type):
+            _position(position),
+            _color(color),
+            _width(width),
+            _height(height),
+            _type(type) {}
+
+        osg::Vec3       _position;
+        osg::UByte4     _color;
+        float           _width;
+        float           _height;
+        unsigned int    _type;
+    };
+
+    typedef std::vector< osg::ref_ptr<Tree> > TreeList;
+
+    float random(float min,float max) { return min + (max-min)*(float)rand()/(float)RAND_MAX; }
+    int random(int min,int max) { return min + (int)((float)(max-min)*(float)rand()/(float)RAND_MAX); }
+
+    osg::Geode* createTerrain(const osg::Vec3& origin, const osg::Vec3& size);
+
+    void createTreeList(osg::Node* terrain,const osg::Vec3& origin, const osg::Vec3& size,unsigned int numTreesToCreate,TreeList& trees);
+
+    osg::Geometry* createSprite( float w, float h, osg::UByte4 color );
+
+    osg::Geometry* createOrthogonalQuads( const osg::Vec3& pos, float w, float h, osg::UByte4 color );
+
+    osg::Node* createScene();
+    
+    void advanceToNextTechnique(int delta=1)
+    {
+        if (_techniqueSwitch.valid())
+        {
+            _currentTechnique = (_currentTechnique + delta)%_techniqueSwitch->getNumChildren();
+            _techniqueSwitch->setSingleChildOn(_currentTechnique);
+        }
+    }
+    
+    osg::ref_ptr<osg::Switch>   _techniqueSwitch;
+    int                         _currentTechnique;
+    
+
 };
 
+// event handler to capture keyboard events and use them to advance the technique used for rendering
+class TechniqueEventHandler : public osgGA::GUIEventHandler, public osg::NodeCallback
+{
+public:
 
-osg::Geode* createTerrain(const osg::Vec3& origin, const osg::Vec3& size)
+    TechniqueEventHandler(ForestTechniqueManager* ttm=0) { _ForestTechniqueManager = ttm; }
+    
+    META_Object(osgforestApp,TechniqueEventHandler);
+
+    virtual void accept(osgGA::GUIEventHandlerVisitor& v) { v.visit(*this); }
+
+    virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&);
+    
+    virtual void getUsage(osg::ApplicationUsage& usage) const;
+
+protected:
+
+    ~TechniqueEventHandler() {}
+    
+    TechniqueEventHandler(const TechniqueEventHandler&,const osg::CopyOp&) {}
+    
+    osg::ref_ptr<ForestTechniqueManager> _ForestTechniqueManager;
+
+        
+};
+
+bool TechniqueEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&)
+{
+    switch(ea.getEventType())
+    {
+        case(osgGA::GUIEventAdapter::KEYDOWN):
+        {
+            if (ea.getKey()=='n' ||
+                ea.getKey()==osgGA::GUIEventAdapter::KEY_Right || 
+                ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Right)
+            {
+                _ForestTechniqueManager->advanceToNextTechnique(1);
+                return true;
+            }
+            else if (ea.getKey()=='p' ||
+                     ea.getKey()==osgGA::GUIEventAdapter::KEY_Left || 
+                     ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Left)
+            {
+                _ForestTechniqueManager->advanceToNextTechnique(-1);
+                return true;
+            }
+            return false;
+        }
+
+        default:
+            return false;
+    }
+}
+
+void TechniqueEventHandler::getUsage(osg::ApplicationUsage& usage) const
+{
+    usage.addKeyboardMouseBinding("n or Left Arrow","Advance to next technique");
+    usage.addKeyboardMouseBinding("p or Right Array","Move to previous technique");
+}
+
+
+osg::Geode* ForestTechniqueManager::createTerrain(const osg::Vec3& origin, const osg::Vec3& size)
 {
     osg::Geode* geode = new osg::Geode();
 
@@ -166,12 +263,7 @@ osg::Geode* createTerrain(const osg::Vec3& origin, const osg::Vec3& size)
     return geode;
 }
 
-typedef std::vector< osg::ref_ptr<Tree> > TreeList;
-
-float random(float min,float max) { return min + (max-min)*(float)rand()/(float)RAND_MAX; }
-int random(int min,int max) { return min + (int)((float)(max-min)*(float)rand()/(float)RAND_MAX); }
-
-void createTreeList(osg::Node* terrain,const osg::Vec3& origin, const osg::Vec3& size,unsigned int numTreesToCreate,TreeList& trees)
+void ForestTechniqueManager::createTreeList(osg::Node* terrain,const osg::Vec3& origin, const osg::Vec3& size,unsigned int numTreesToCreate,TreeList& trees)
 {
 
     float max_TreeHeight = sqrtf(size.length2()/(float)numTreesToCreate);
@@ -218,7 +310,7 @@ void createTreeList(osg::Node* terrain,const osg::Vec3& origin, const osg::Vec3&
     }
 }
 
-osg::Geometry* createSprite( float w, float h, osg::UByte4 color )
+osg::Geometry* ForestTechniqueManager::createSprite( float w, float h, osg::UByte4 color )
 {
     // set up the coords
     osg::Vec3Array& v = *(new osg::Vec3Array(4));
@@ -251,7 +343,7 @@ osg::Geometry* createSprite( float w, float h, osg::UByte4 color )
     return geom;
 }
 
-osg::Geometry* createOrthogonalQuads( const osg::Vec3& pos, float w, float h, osg::UByte4 color )
+osg::Geometry* ForestTechniqueManager::createOrthogonalQuads( const osg::Vec3& pos, float w, float h, osg::UByte4 color )
 {
     // set up the coords
     osg::Vec3Array& v = *(new osg::Vec3Array(8));
@@ -298,7 +390,7 @@ osg::Geometry* createOrthogonalQuads( const osg::Vec3& pos, float w, float h, os
     return geom;
 }
 
-osg::Node* createScene()
+osg::Node* ForestTechniqueManager::createScene()
 {
     osg::Vec3 origin(0.0f,0.0f,0.0f);
     osg::Vec3 size(1000.0f,1000.0f,200.0f);
@@ -329,7 +421,7 @@ osg::Node* createScene()
     }
     
 
-    osg::Switch* switchNode = new osg::Switch;
+    _techniqueSwitch = new osg::Switch;
     
     {
         osg::Billboard* billboard = new osg::Billboard;
@@ -343,7 +435,7 @@ osg::Node* createScene()
             billboard->addDrawable(createSprite(tree._width,tree._height,tree._color),tree._position);    
         }
     
-        switchNode->addChild(billboard);
+        _techniqueSwitch->addChild(billboard);
     }
 
     {
@@ -358,7 +450,7 @@ osg::Node* createScene()
             geode->addDrawable(createOrthogonalQuads(tree._position,tree._width,tree._height,tree._color));
         }
         
-        switchNode->addChild(geode);
+        _techniqueSwitch->addChild(geode);
     }
 
     {
@@ -383,15 +475,17 @@ osg::Node* createScene()
             transform_group->addChild(transform);
         }
         
-        switchNode->addChild(transform_group);
+        _techniqueSwitch->addChild(transform_group);
     }
     
-    switchNode->setSingleChildOn(1);
+    _currentTechnique = 0;
+    _techniqueSwitch->setSingleChildOn(_currentTechnique);
+    
 
     osg::Group* scene = new osg::Group;
     
     scene->addChild(terrain.get());
-    scene->addChild(switchNode);
+    scene->addChild(_techniqueSwitch.get());
 
     return scene;
 }
@@ -412,6 +506,10 @@ int main( int argc, char **argv )
 
     // set up the value with sensible default event handlers.
     viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
+    
+    osg::ref_ptr<ForestTechniqueManager> ttm = new ForestTechniqueManager;
+    
+    viewer.getEventHandlerList().push_front(new TechniqueEventHandler(ttm.get()));
 
     // get details on keyboard and mouse bindings used by the viewer.
     viewer.getUsage(*arguments.getApplicationUsage());
@@ -433,7 +531,7 @@ int main( int argc, char **argv )
         return 1;
     }
     
-    osg::Node* node = createScene();
+    osg::Node* node = ttm->createScene();
 
     // add model to viewer.
     viewer.setSceneData( node );

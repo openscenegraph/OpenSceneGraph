@@ -25,6 +25,9 @@ CullStack::CullStack()
     _bbCornerFar = 7;
     _currentReuseMatrixIndex=0;
     _identity = new RefMatrix();
+
+    _index_modelviewCullingStack = 0;
+    _back_modelviewCullingStack = 0;
 }
 
 
@@ -32,7 +35,6 @@ CullStack::~CullStack()
 {
     reset();
 }
-
 
 void CullStack::reset()
 {
@@ -48,8 +50,11 @@ void CullStack::reset()
 
     _clipspaceCullingStack.clear();
     _projectionCullingStack.clear();
-    _modelviewCullingStack.clear();
-    
+
+    //_modelviewCullingStack.clear();
+    _index_modelviewCullingStack=0;
+    _back_modelviewCullingStack = 0;
+
     osg::Vec3 lookVector(0.0,0.0,-1.0);
     
     _bbCornerFar = (lookVector.x()>=0?1:0) |
@@ -59,14 +64,17 @@ void CullStack::reset()
     _bbCornerNear = (~_bbCornerFar)&7;
 }
 
+
 void CullStack::pushCullingSet()
 {
     _MVPW_Stack.push_back(0L);
-    
-    if (_modelviewStack.empty()) 
-    {
-        _modelviewCullingStack.push_back(_projectionCullingStack.back());
 
+    if (_index_modelviewCullingStack==0) 
+    {
+        if (_modelviewCullingStack.empty())
+            _modelviewCullingStack.push_back(CullingSet());
+
+        _modelviewCullingStack[_index_modelviewCullingStack++].set(_projectionCullingStack.back());
     }
     else 
     {
@@ -104,11 +112,19 @@ void CullStack::pushCullingSet()
         float scaleRatio  = 0.701f/sqrtf(scale_00.length2()+scale_10.length2());
 
         pixelSizeVector *= scaleRatio;
+
         
-        _modelviewCullingStack.push_back(new osg::CullingSet(*_projectionCullingStack.back(),*_modelviewStack.back(),pixelSizeVector));
+        if (_index_modelviewCullingStack>=_modelviewCullingStack.size()) 
+        {
+            _modelviewCullingStack.push_back(CullingSet());
+        }
+        
+        _modelviewCullingStack[_index_modelviewCullingStack++].set(_projectionCullingStack.back(),*_modelviewStack.back(),pixelSizeVector);
         
     }
     
+    _back_modelviewCullingStack = &_modelviewCullingStack[_index_modelviewCullingStack-1];
+
 //     const osg::Polytope& polytope = _modelviewCullingStack.back()->getFrustum();
 //     const osg::Polytope::PlaneList& pl = polytope.getPlaneList();
 //     std::cout <<"new cull stack"<<std::endl;
@@ -119,13 +135,16 @@ void CullStack::pushCullingSet()
 //         std::cout << "    plane "<<*pl_itr<<std::endl;
 //     }
 
+
 }
 
 void CullStack::popCullingSet()
 {
     _MVPW_Stack.pop_back();
     
-    _modelviewCullingStack.pop_back();
+    --_index_modelviewCullingStack;
+    if (_index_modelviewCullingStack>0) _back_modelviewCullingStack = &_modelviewCullingStack[_index_modelviewCullingStack-1];
+
 }
 
 void CullStack::pushViewport(osg::Viewport* viewport)
@@ -144,17 +163,18 @@ void CullStack::pushProjectionMatrix(RefMatrix* matrix)
 {
     _projectionStack.push_back(matrix);
     
-    osg::CullingSet* cullingSet = new osg::CullingSet();
+    _projectionCullingStack.push_back(osg::CullingSet());
+    osg::CullingSet& cullingSet = _projectionCullingStack.back();
     
     // set up view frustum.
-    cullingSet->getFrustum().setToUnitFrustum(((_cullingMode&NEAR_PLANE_CULLING)!=0),((_cullingMode&FAR_PLANE_CULLING)!=0));
-    cullingSet->getFrustum().transformProvidingInverse(*matrix);
+    cullingSet.getFrustum().setToUnitFrustum(((_cullingMode&NEAR_PLANE_CULLING)!=0),((_cullingMode&FAR_PLANE_CULLING)!=0));
+    cullingSet.getFrustum().transformProvidingInverse(*matrix);
     
     // set the culling mask ( There should be a more elegant way!)  Nikolaus H.
-    cullingSet->setCullingMask(_cullingMode);
+    cullingSet.setCullingMask(_cullingMode);
 
     // set the small feature culling.
-    cullingSet->setSmallFeatureCullingPixelSize(_smallFeatureCullingPixelSize);
+    cullingSet.setSmallFeatureCullingPixelSize(_smallFeatureCullingPixelSize);
     
     // set up the relevant occluders which a related to this projection.
     for(ShadowVolumeOccluderList::iterator itr=_occluderList.begin();
@@ -165,12 +185,11 @@ void CullStack::pushProjectionMatrix(RefMatrix* matrix)
         if (itr->matchProjectionMatrix(*matrix))
         {
             //std::cout << " ** activating occluder"<<std::endl;
-            cullingSet->addOccluder(*itr);
+            cullingSet.addOccluder(*itr);
         }
     }
     
     
-    _projectionCullingStack.push_back(cullingSet);
 
     // need to recompute frustum volume.
     _frustumVolume = -1.0f;

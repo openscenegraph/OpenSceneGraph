@@ -2025,7 +2025,7 @@ bool _verifyBindings(const osg::Geometry& geom, const A& arrayData)
 }
 
 template<class A>
-bool _computeCorrectBindingsAndArraySizes(const osg::Geometry& geom, A& arrayData, const char* arrayName)
+void _computeCorrectBindingsAndArraySizes(const osg::Geometry& geom, A& arrayData, const char* arrayName)
 {
     if (!geom.getVertexArray() || geom.getVertexArray()==0)
     {

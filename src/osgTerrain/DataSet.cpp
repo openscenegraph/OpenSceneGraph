@@ -17,6 +17,7 @@
 #include <osg/Texture2D>
 #include <osg/Group>
 #include <osg/Geometry>
+#include <osg/MatrixTransform>
 
 #include <osgUtil/SmoothingVisitor>
 #include <osgUtil/TriStripVisitor>
@@ -625,7 +626,7 @@ void DataSet::SourceData::readHeightField(DestinationData& destination)
             else
             {
                 std::cout<<"We have no Scale"<<std::endl;
-                // scale = xyInDegrees ? 1.0f/111319.0f : 1.0f;
+                scale = (xyInDegrees /*&& !destination._dataSet->getConvertFromGeographicToGeocentric()*/) ? 1.0f/111319.0f : 1.0f;
             }
             
             std::cout<<"********* getLinearUnits = "<<getLinearUnits(_cs.get())<<std::endl;
@@ -1797,7 +1798,9 @@ osg::StateSet* DataSet::DestinationTile::createStateSet()
     texture->setMaxAnisotropy(8);
     stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
 
-    if (_dataSet->getTextureType()==COMPRESSED_TEXTURE)
+    bool inlineImageFile = _dataSet->getDestinationTileExtension()==".ive";
+
+    if (inlineImageFile && _dataSet->getTextureType()==COMPRESSED_TEXTURE)
     {
         texture->setInternalFormatMode(osg::Texture::USE_S3TC_DXT3_COMPRESSION);
 
@@ -1815,7 +1818,7 @@ osg::StateSet* DataSet::DestinationTile::createStateSet()
 
     }
 
-    if (_dataSet->getDestinationTileExtension()!=".ive")
+    if (!inlineImageFile)
     {
         std::cout<<"Writing out imagery to "<<imageName<<std::endl;
         osgDB::writeImageFile(*_imagery->_image,_imagery->_image->getFileName().c_str());
@@ -1872,6 +1875,18 @@ osg::Node* DataSet::DestinationTile::createHeightField()
 
 }
 
+
+static osg::Vec3 computeLocalPosition(const osg::Matrixd& localToWorld, double X, double Y, double Z)
+{
+    X -= localToWorld(3,0);
+    Y -= localToWorld(3,1);
+    Z -= localToWorld(3,2);
+    return osg::Vec3(X*localToWorld(0,0) + Y*localToWorld(0,1) + Z*localToWorld(0,2),
+                     X*localToWorld(1,0) + Y*localToWorld(1,1) + Z*localToWorld(1,2),
+                     X*localToWorld(2,0) + Y*localToWorld(2,1) + Z*localToWorld(2,2));
+}
+
+
 osg::Node* DataSet::DestinationTile::createPolygonal()
 {
     std::cout<<"--------- DataSet::DestinationTile::createDrawableGeometry() ------------- "<<std::endl;
@@ -1909,7 +1924,6 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
     unsigned int numVerticesInSkirt = createSkirt ? numColumns*2 + numRows*2 - 4 : 0;
     unsigned int numVertices = numVerticesInBody+numVerticesInSkirt;
 
-    osg::Vec3 skirtVector(0.0f,0.0f,-_extents.radius()*0.01f);
 
     // create the geometry.
     osg::Geometry* geometry = new osg::Geometry;
@@ -1922,65 +1936,107 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
 
     osg::Vec3Array* n = 0; // new osg::Vec3Array(numVertices);
     
-    bool needConversion = _dataSet->getConvertFromGeographicToGeocentric();
-    if (needConversion) std::cout<<">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> need to do conversion <<<<<<<<<<<<<<<<<<<< "<<std::endl;
+    
+    float skirtRatio = 0.01f;
+    osg::Matrixd localToWorld;
+    osg::Vec3 skirtVector(0.0f,0.0f,0.0f);
+
+    osgTerrain::EllipsodeTransform& et = _dataSet->getEllipsodeTransform();
+    bool mapLatLongsToXYZ = _dataSet->getConvertFromGeographicToGeocentric();
+    bool useLocalToTileTransform = _dataSet->getUseLocalTileTransform();
+    
+    if (useLocalToTileTransform)
+    {
+        if (mapLatLongsToXYZ)
+        {
+            double midLong = grid->getOrigin().x()+grid->getXInterval()*((double)(numColumns-1))*0.5;
+            double midLat = grid->getOrigin().y()+grid->getYInterval()*((double)(numRows-1))*0.5;
+            double midZ = grid->getOrigin().z();
+            et.computeLocalToWorldTransform(osg::DegreesToRadians(midLat),osg::DegreesToRadians(midLong),midZ,localToWorld);
+            
+            double minLong = grid->getOrigin().x();
+            double minLat = grid->getOrigin().y();
+
+            double minX,minY,minZ;
+            et.convertLatLongHeightToXYZ(osg::DegreesToRadians(minLat),osg::DegreesToRadians(minLong),midZ,minX,minY,minZ);
+            
+            double midX,midY;
+            et.convertLatLongHeightToXYZ(osg::DegreesToRadians(midLat),osg::DegreesToRadians(midLong),midZ,midX,midY,midZ);
+            
+            double length = sqrt((midX-minX)*(midX-minX) + (midY-minY)*(midY-minY)); 
+            
+            skirtVector.set(0.0f,0.0f,-length*skirtRatio);
+        }
+        else
+        {
+            double midX = grid->getOrigin().x()+grid->getXInterval()*((double)(numColumns-1))*0.5;
+            double midY = grid->getOrigin().y()+grid->getYInterval()*((double)(numRows-1))*0.5;
+            double midZ = grid->getOrigin().z();
+            localToWorld.makeTranslate(midX,midY,midZ);
+            skirtVector.set(0.0f,0.0f,-_extents.radius()*skirtRatio);
+        }    
+    }
+    else if (mapLatLongsToXYZ) 
+    {
+        // no local to tile transform + mapping from lat+longs to XYZ so we need to use
+        // a rotatated skirt vector - use the gravity vector.
+        double midLong = grid->getOrigin().x()+grid->getXInterval()*((double)(numColumns-1))*0.5;
+        double midLat = grid->getOrigin().y()+grid->getYInterval()*((double)(numRows-1))*0.5;
+        double midZ = grid->getOrigin().z();
+        double X,Y,Z;
+        et.convertLatLongHeightToXYZ(osg::DegreesToRadians(midLat),osg::DegreesToRadians(midLong),midZ,X,Y,Z);
+        osg::Vec3 gravitationVector = et.computeGavitationVector(X,Y,Z);
+        gravitationVector.normalize();
+        skirtVector = gravitationVector * _extents.radius()* skirtRatio;
+    }
+    else
+    {
+        skirtVector.set(0.0f,0.0f,-_extents.radius()*skirtRatio);
+    }
 
 
     unsigned int vi=0;
     unsigned int r,c;
     
-    if (needConversion)
+    // populate the vertex/normal/texcoord arrays from the grid.
+    double orig_X = grid->getOrigin().x();
+    double delta_X = grid->getXInterval();
+    double orig_Y = grid->getOrigin().y();
+    double delta_Y = grid->getYInterval();
+    double orig_Z = grid->getOrigin().z();
+
+    for(r=0;r<numRows;++r)
     {
-        double orig_longitude = grid->getOrigin().x();
-        double delta_longitude = grid->getXInterval();
+	for(c=0;c<numColumns;++c)
+	{
+            double X = orig_X + delta_X*(double)c;
+            double Y = orig_Y + delta_Y*(double)r;
+            double Z = orig_Z + grid->getHeight(c,r);
 
-        double orig_latitude = grid->getOrigin().y();
-        double delta_latitude = grid->getYInterval();
-        
-        double orig_height = grid->getOrigin().z();
-
-        osgTerrain::EllipsodeTransform& et = _dataSet->getEllipsodeTransform();
-
-        for(r=0;r<numRows;++r)
-        {
-	    for(c=0;c<numColumns;++c)
-	    {
-                double longitude = orig_longitude + delta_longitude*(double)c;
-                double latitude = orig_latitude + delta_latitude*(double)r;
-                double height = orig_height + grid->getHeight(c,r);
-                double X,Y,Z;
-
-                et.convertLatLongHeightToXYZ(osg::DegreesToRadians(latitude),osg::DegreesToRadians(longitude),height,
+            if (mapLatLongsToXYZ)
+            {
+                et.convertLatLongHeightToXYZ(osg::DegreesToRadians(Y),osg::DegreesToRadians(X),Z,
                                              X,Y,Z);
-                
+            }
+#if 1
+            if (useLocalToTileTransform)
+            {
+                v[vi] = computeLocalPosition(localToWorld,X,Y,Z);
+            }
+            else
+#endif
+            {
 	        v[vi].set(X,Y,Z);
+            }
 
-                // note normal will need rotating.
-                if (n) (*n)[vi] = grid->getNormal(c,r);
+            // note normal will need rotating.
+            if (n) (*n)[vi] = grid->getNormal(c,r);
 
-	        t[vi].x() = (c==numColumns-1)? 1.0f : (float)(c)/(float)(numColumns-1);
-	        t[vi].y() = (r==numRows-1)? 1.0f : (float)(r)/(float)(numRows-1);
+	    t[vi].x() = (c==numColumns-1)? 1.0f : (float)(c)/(float)(numColumns-1);
+	    t[vi].y() = (r==numRows-1)? 1.0f : (float)(r)/(float)(numRows-1);
 
-                ++vi;
-	    }
-        }
-    }
-    else
-    {
-        for(r=0;r<numRows;++r)
-        {
-	    for(c=0;c<numColumns;++c)
-	    {
-	        v[vi] = grid->getVertex(c,r);
-
-                if (n) (*n)[vi] = grid->getNormal(c,r);
-
-	        t[vi].x() = (c==numColumns-1)? 1.0f : (float)(c)/(float)(numColumns-1);
-	        t[vi].y() = (r==numRows-1)? 1.0f : (float)(r)/(float)(numRows-1);
-
-                ++vi;
-	    }
-        }
+            ++vi;
+	}
     }
     
     //geometry->setUseDisplayList(false);
@@ -2035,9 +2091,8 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
     	}
     }
 
-    osgUtil::SmoothingVisitor sv;
-    sv.smooth(*geometry);
-
+//    osgUtil::SmoothingVisitor sv;
+//    sv.smooth(*geometry);
 
     if (numVerticesInSkirt>0)
     {
@@ -2089,7 +2144,7 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
         skirtDrawElements[ei++] = firstSkirtVertexIndex;
     }    
 
-#if 1
+#if 0
     osgUtil::TriStripVisitor tsv;
     tsv.stripify(*geometry);
 #endif
@@ -2110,8 +2165,18 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
     
     osg::Geode* geode = new osg::Geode;
     geode->addDrawable(geometry);
-    
-    return geode;
+
+    if (useLocalToTileTransform)
+    {
+        osg::MatrixTransform* mt = new osg::MatrixTransform;
+        mt->setMatrix(localToWorld);
+        mt->addChild(geode);
+        return mt;
+    }
+    else
+    {
+        return geode;
+    }
 }
 
 void DataSet::DestinationTile::readFrom(CompositeSource* sourceGraph)

@@ -471,6 +471,14 @@ void SceneView::cullStage(osg::Matrix* projection,osg::Matrix* modelview,osgUtil
 void SceneView::draw()
 {
 
+    // note, to support multi-pipe systems the deletion of OpenGL display list
+    // and texture objects is deferred until the OpenGL context is the correct
+    // context for when the object were originally created.  Here we know what
+    // context we are in so can flush the appropriate caches.
+    osg::Drawable::flushDeletedDisplayLists(_state->getContextID());
+    osg::Texture::flushDeletedTextureObjects(_state->getContextID());
+
+    RenderLeaf* previous = NULL;
     if (_displaySettings.valid() && _displaySettings->getStereo()) 
     {
     
@@ -481,12 +489,14 @@ void SceneView::draw()
 
                 _globalState->setAttribute(_viewport.get());
 
-                glDrawBuffer(GL_BACK_LEFT);
-                drawStage(_renderStageLeft.get());
+                _renderStageLeft->drawPreRenderStages(*_state,previous);
+                _renderStageRight->drawPreRenderStages(*_state,previous);
 
+                glDrawBuffer(GL_BACK_LEFT);
+                _renderStageLeft->draw(*_state,previous);
 
                 glDrawBuffer(GL_BACK_RIGHT);
-                drawStage(_renderStageRight.get());
+                _renderStageRight->draw(*_state,previous);
 
             }
             break;
@@ -495,24 +505,30 @@ void SceneView::draw()
                 
                 _globalState->setAttribute(_viewport.get());
 
+                _renderStageLeft->drawPreRenderStages(*_state,previous);
+                _renderStageRight->drawPreRenderStages(*_state,previous);
+
                 // draw left eye.
                 osg::ref_ptr<osg::ColorMask> red = osgNew osg::ColorMask;
                 red->setMask(true,false,false,true);
                 _globalState->setAttribute(red.get());
                 _renderStageLeft->setColorMask(red.get());
-                drawStage(_renderStageLeft.get());
+                _renderStageLeft->draw(*_state,previous);
 
                 // draw right eye.
                 osg::ref_ptr<osg::ColorMask> green = osgNew osg::ColorMask;
                 green->setMask(false,true,true,true);
                 _globalState->setAttribute(green.get());
                 _renderStageRight->setColorMask(green.get());
-                drawStage(_renderStageRight.get());
+                _renderStageRight->draw(*_state,previous);
 
             }
             break;
         case(osg::DisplaySettings::HORIZONTAL_SPLIT):
             {
+                _renderStageLeft->drawPreRenderStages(*_state,previous);
+                _renderStageRight->drawPreRenderStages(*_state,previous);
+
                 int separation = _displaySettings->getSplitStereoHorizontalSeparation();
 
                 int left_half_width = (_viewport->width()-separation)/2;
@@ -532,27 +548,30 @@ void SceneView::draw()
                 {
                     _globalState->setAttribute(viewportLeft.get());
                     _renderStageLeft->setViewport(viewportLeft.get());
-                    drawStage(_renderStageLeft.get());
+                    _renderStageLeft->draw(*_state,previous);
 
                     _globalState->setAttribute(viewportRight.get());
                     _renderStageRight->setViewport(viewportRight.get());
-                    drawStage(_renderStageRight.get());
+                    _renderStageRight->draw(*_state,previous);
                 }
                 else
                 {
                     _globalState->setAttribute(viewportRight.get());
                     _renderStageLeft->setViewport(viewportRight.get());
-                    drawStage(_renderStageLeft.get());
+                    _renderStageLeft->draw(*_state,previous);
 
                     _globalState->setAttribute(viewportLeft.get());
                     _renderStageRight->setViewport(viewportLeft.get());
-                    drawStage(_renderStageRight.get());
+                    _renderStageRight->draw(*_state,previous);
                 }
 
             }
             break;
         case(osg::DisplaySettings::VERTICAL_SPLIT):
             {
+
+                _renderStageLeft->drawPreRenderStages(*_state,previous);
+                _renderStageRight->drawPreRenderStages(*_state,previous);
 
                 int separation = _displaySettings->getSplitStereoVerticalSeparation();
 
@@ -572,21 +591,21 @@ void SceneView::draw()
                 {
                     _globalState->setAttribute(viewportTop.get());
                     _renderStageLeft->setViewport(viewportTop.get());
-                    drawStage(_renderStageLeft.get());
+                    _renderStageLeft->draw(*_state,previous);
 
                     _globalState->setAttribute(viewportBottom.get());
                     _renderStageRight->setViewport(viewportBottom.get());
-                    drawStage(_renderStageRight.get());
+                    _renderStageRight->draw(*_state,previous);
                 }
                 else
                 {
                     _globalState->setAttribute(viewportBottom.get());
                     _renderStageLeft->setViewport(viewportBottom.get());
-                    drawStage(_renderStageLeft.get());
+                    _renderStageLeft->draw(*_state,previous);
 
                     _globalState->setAttribute(viewportTop.get());
                     _renderStageRight->setViewport(viewportTop.get());
-                    drawStage(_renderStageRight.get());
+                    _renderStageRight->draw(*_state,previous);
                 }
             }
             break;
@@ -594,7 +613,8 @@ void SceneView::draw()
             {
                 osg::notify(osg::NOTICE)<<"Warning: stereo camera mode not implemented yet."<< std::endl;
                 _globalState->setAttribute(_viewport.get());
-                drawStage(_renderStageLeft.get());
+                _renderStageLeft->drawPreRenderStages(*_state,previous);
+                _renderStageLeft->draw(*_state,previous);
             }
             break;
         }
@@ -607,45 +627,16 @@ void SceneView::draw()
         _globalState->setAttribute(cmask.get());
 
         // bog standard draw.
-        drawStage(_renderStage.get());
+        _renderStage->drawPreRenderStages(*_state,previous);
+        _renderStage->draw(*_state,previous);
     }
 
-//     const osg::Polytope& polytope = _state->getViewFrustum();
-//     const osg::Polytope::PlaneList& pl = polytope.getPlaneList();
-//     std::cout <<"draw frustum"<<std::endl;
-//     for(osg::Polytope::PlaneList::const_iterator pl_itr=pl.begin();
-//         pl_itr!=pl.end();
-//         ++pl_itr)
-//     {
-//         std::cout << "    plane "<<*pl_itr<<std::endl;
-//     }
-
-}
-
-void SceneView::drawStage(osgUtil::RenderStage* renderStage)
-{
-    if (!_sceneData || !_viewport->valid()) return;
-
-
-    // note, to support multi-pipe systems the deletion of OpenGL display list
-    // and texture objects is deferred until the OpenGL context is the correct
-    // context for when the object were originally created.  Here we know what
-    // context we are in so can flush the appropriate caches.
-    osg::Drawable::flushDeletedDisplayLists(_state->getContextID());
-    osg::Texture::flushDeletedTextureObjects(_state->getContextID());
-
-    RenderLeaf* previous = NULL;
-    
-    renderStage->draw(*_state,previous);
-        
     GLenum errorNo = glGetError();
     if (errorNo!=GL_NO_ERROR)
     {
         osg::notify(WARN)<<"Warning: detected OpenGL error '"<<gluErrorString(errorNo)<<"'"<< std::endl;
     }
-    
 }
-
 
 /** Calculate, via glUnProject, the object coordinates of a window point.
     Note, current implementation requires that SceneView::draw() has been previously called

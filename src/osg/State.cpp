@@ -8,6 +8,9 @@ using namespace osg;
 State::State()
 {
     _contextID = 0;
+    _identity = new osg::Matrix(); // default Matrix constructs to identity.
+    _modelView = _identity;
+    _projection = _identity;
 }
 
 State::~State()
@@ -45,6 +48,9 @@ void State::reset()
 //    _attributeMap.clear();
 
     _drawStateStack.clear();
+    
+    _modelView = _identity;
+    _projection = _identity;
 }
 
 void State::pushStateSet(const StateSet* dstate)

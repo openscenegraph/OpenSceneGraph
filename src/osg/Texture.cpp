@@ -462,11 +462,11 @@ void Texture::applyTexImage(GLenum target, Image* image, State& state) const
         
         // calculate texture dimension
         _textureWidth = 1;
-        for (; _textureWidth < (_subloadOffsX + width); _textureWidth <<= 1)
+        for (; _textureWidth < (static_cast<GLsizei>(_subloadOffsX) + width); _textureWidth <<= 1)
             ;
 
         _textureHeight = 1;
-        for (; _textureHeight < (_subloadOffsY + height); _textureHeight <<= 1)
+        for (; _textureHeight < (static_cast<GLsizei>(_subloadOffsY) + height); _textureHeight <<= 1)
             ;
 
         // reserve appropriate texture memory

@@ -370,7 +370,7 @@ class SG_EXPORT Texture : public StateAttribute
         Vec4 _borderColor;
 
         // subloaded images can have different texture and image sizes.
-        mutable unsigned int _textureWidth, _textureHeight;
+        mutable GLsizei _textureWidth, _textureHeight;
 
         SubloadMode _subloadMode;
         GLint _subloadOffsX, _subloadOffsY;

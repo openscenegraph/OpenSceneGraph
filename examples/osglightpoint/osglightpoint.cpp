@@ -1,7 +1,7 @@
 #include <osg/GL>
 #include <osgProducer/Viewer>
 
-#include <osg/Transform>
+#include <osg/MatrixTransform>
 #include <osg/Billboard>
 #include <osg/Geode>
 #include <osg/Group>
@@ -59,7 +59,10 @@ osg::Node* createLightPointsDatabase()
     end._position.set(500.0f,-500.0f,0.0f);
     end._color.set(1.0f,1.0f,1.0f,1.0f);
     
-    osg::Transform* transform = new osg::Transform;
+    osg::MatrixTransform* transform = new osg::MatrixTransform;
+    
+    transform->setDataVariance(osg::Object::STATIC);
+    transform->setMatrix(osg::Matrix::scale(0.1,0.1,0.1));
 
     osg::Vec3 start_delta(0.0f,10.0f,0.0f);
     osg::Vec3 end_delta(0.0f,10.0f,1.0f);

@@ -54,12 +54,12 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
             DRIVE_MANIPULATOR       = 2,
             FLIGHT_MANIPULATOR      = 4,
             TERRAIN_MANIPULATOR     = 8,
-            STATE_MANIPULATOR       = 16,
-            HEAD_LIGHT_SOURCE       = 32,
-            SKY_LIGHT_SOURCE        = 64,
-            STATS_MANIPULATOR       = 128,
-            VIEWER_MANIPULATOR      = 256,
-            ESCAPE_SETS_DONE        = 512,
+            STATE_MANIPULATOR       = 32,
+            HEAD_LIGHT_SOURCE       = 64,
+            SKY_LIGHT_SOURCE        = 128,
+            STATS_MANIPULATOR       = 256,
+            VIEWER_MANIPULATOR      = 512,
+            ESCAPE_SETS_DONE        = 1024,
             STANDARD_SETTINGS = TRACKBALL_MANIPULATOR|
                                 DRIVE_MANIPULATOR |
                                 FLIGHT_MANIPULATOR |

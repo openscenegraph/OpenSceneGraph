@@ -46,33 +46,34 @@ bool areCoordinateSystemEquivilant(const osgTerrain::CoordinateSystem* lhs,const
     // use compare on ProjectionRef strings.
     if (*lhs == *rhs) return true;
     
-    char** stringList = new char* [2];
-    stringList[0] = strdup(lhs->getProjectionRef().c_str());
-    stringList[1] = 0;
+    // set up LHS SpatialReference
+    char* projection_string = strdup(lhs->getProjectionRef().c_str());
+    char* importString = projection_string;
     
     OGRSpatialReference lhsSR;
-    lhsSR.importFromWkt(stringList);
+    lhsSR.importFromWkt(&importString);
     
-    free(stringList[0]);
-    stringList[0] = 0;
+    free(projection_string);
+
+    // set up RHS SpatialReference
+    projection_string = strdup(rhs->getProjectionRef().c_str());
+    importString = projection_string;
 
     OGRSpatialReference rhsSR;
-    stringList[0] = strdup(lhs->getProjectionRef().c_str());
-    stringList[1] = 0;
+    rhsSR.importFromWkt(&importString);
 
-    rhsSR.importFromWkt(stringList);
-
-    free(stringList[0]);
-    stringList[0] = 0;
+    free(projection_string);
     
-    delete stringList;
-
     int result = lhsSR.IsSame(&rhsSR);
 
-//     std::cout<<"areCoordinateSystemEquivilant "<<std::endl
-//              <<"LHS = "<<lhs->getProjectionRef()<<std::endl
-//              <<"RHS = "<<rhs->getProjectionRef()<<std::endl
-//              <<"rsults = "<<result<<std::endl;
+#if 0
+    int result2 = lhsSR.IsSameGeogCS(&rhsSR);
+
+     std::cout<<"areCoordinateSystemEquivilant "<<std::endl
+              <<"LHS = "<<lhs->getProjectionRef()<<std::endl
+              <<"RHS = "<<rhs->getProjectionRef()<<std::endl
+              <<"result = "<<result<<"  result2 = "<<result2<<std::endl;
+#endif
     return result;
 }
 
@@ -196,9 +197,15 @@ const DataSet::SpatialProperties& DataSet::SourceData::computeSpatialProperties(
 {
     // check to see it exists in the _spatialPropertiesMap first.
     SpatialPropertiesMap::const_iterator itr = _spatialPropertiesMap.find(cs);
-    if (itr!=_spatialPropertiesMap.end()) return itr->second;
+    if (itr!=_spatialPropertiesMap.end()) 
+    {
+        return itr->second;
+    }
 
-    if (areCoordinateSystemEquivilant(_cs.get(),cs)) return *this;
+    if (areCoordinateSystemEquivilant(_cs.get(),cs))
+    {
+        return *this;
+    }
 
     if (_cs.valid() && cs)
     {
@@ -249,6 +256,7 @@ const DataSet::SpatialProperties& DataSet::SourceData::computeSpatialProperties(
 
             GDALDestroyGenImgProjTransformer( hTransformArg );
 
+            sp._extents.init();
             sp._extents.expandBy( osg::Vec3(0.0,0.0,0.0)*sp._geoTransform);
             sp._extents.expandBy( osg::Vec3(nPixels,nLines,0.0)*sp._geoTransform);
 
@@ -361,14 +369,14 @@ void DataSet::SourceData::readImage(DestinationData& destination)
             }
             else
             {
-                unsigned char* imageCache = new unsigned char[destWidth*destHeight*3];
+                unsigned char* tempImage = new unsigned char[destWidth*destHeight*3];
 
-                bandRed->RasterIO(GF_Read,windowX,_numValuesY-(windowY+windowHeight),windowWidth,windowHeight,(void*)(imageCache+0),destWidth,destHeight,targetGDALType,pixelSpace,pixelSpace*destWidth);
-                bandGreen->RasterIO(GF_Read,windowX,_numValuesY-(windowY+windowHeight),windowWidth,windowHeight,(void*)(imageCache+1),destWidth,destHeight,targetGDALType,pixelSpace,pixelSpace*destWidth);
-                bandBlue->RasterIO(GF_Read,windowX,_numValuesY-(windowY+windowHeight),windowWidth,windowHeight,(void*)(imageCache+2),destWidth,destHeight,targetGDALType,pixelSpace,pixelSpace*destWidth);
+                bandRed->RasterIO(GF_Read,windowX,_numValuesY-(windowY+windowHeight),windowWidth,windowHeight,(void*)(tempImage+0),destWidth,destHeight,targetGDALType,pixelSpace,pixelSpace*destWidth);
+                bandGreen->RasterIO(GF_Read,windowX,_numValuesY-(windowY+windowHeight),windowWidth,windowHeight,(void*)(tempImage+1),destWidth,destHeight,targetGDALType,pixelSpace,pixelSpace*destWidth);
+                bandBlue->RasterIO(GF_Read,windowX,_numValuesY-(windowY+windowHeight),windowWidth,windowHeight,(void*)(tempImage+2),destWidth,destHeight,targetGDALType,pixelSpace,pixelSpace*destWidth);
 
                 // now copy into destination image
-                unsigned char* sourceRowPtr = imageCache;
+                unsigned char* sourceRowPtr = tempImage;
                 unsigned int sourceRowDelta = pixelSpace*destWidth;
                 unsigned char* destinationRowPtr = imageData;
                 unsigned int destinationRowDelta = lineSpace;
@@ -384,7 +392,7 @@ void DataSet::SourceData::readImage(DestinationData& destination)
                         col<destWidth;
                         ++col, sourceColumnPtr+=pixelSpace, destinationColumnPtr+=pixelSpace)
                     {
-#if 1
+#if 0
                         unsigned int sourceTotal = sourceColumnPtr[0]+sourceColumnPtr[1]+sourceColumnPtr[2];
                         unsigned int destinationTotal = destinationColumnPtr[0]+destinationColumnPtr[1]+destinationColumnPtr[2];
                     
@@ -407,7 +415,7 @@ void DataSet::SourceData::readImage(DestinationData& destination)
                     }
                 }
 
-                delete [] imageCache;
+                delete [] tempImage;
 
             }
         }
@@ -430,7 +438,7 @@ void DataSet::SourceData::readHeightField(DestinationData& destination)
 
         if (!intersect_bb.valid())
         {
-            std::cout<<"Reading image but it does not intesection destination - ignoring"<<std::endl;
+            std::cout<<"Reading height field but it does not intesection destination - ignoring"<<std::endl;
             return;
         }
         
@@ -476,33 +484,74 @@ void DataSet::SourceData::readHeightField(DestinationData& destination)
 	else if (!bandSelected && bandGreen) bandSelected = bandGreen;
 	else if (!bandSelected && bandBlue) bandSelected = bandBlue;
 
-        bool xyInDegrees = true;        
-        float heightRatio = xyInDegrees ? 1.0f/111319.0f : 1.0f;
-
         if (bandSelected)
         {
+        
+            bool xyInDegrees = false;
+
+            int success = 0;
+            float noDataValue = bandSelected->GetNoDataValue(&success);
+            if (success)
+            {
+                std::cout<<"We have NoDataValue = "<<noDataValue<<std::endl;
+            }
+            else
+            {
+                std::cout<<"We have no NoDataValue"<<std::endl;
+                noDataValue = 0.0f;
+            }
+
+            float offset = bandSelected->GetOffset(&success);
+            if (success)
+            {
+                std::cout<<"We have Offset = "<<offset<<std::endl;
+            }
+            else
+            {
+                std::cout<<"We have no Offset"<<std::endl;
+                offset = 0.0f;
+            }
+
+            float scale = bandSelected->GetScale(&success);
+            if (success)
+            {
+                std::cout<<"We have Scale = "<<scale<<std::endl;
+            }
+            else
+            {
+                std::cout<<"We have no Scale"<<std::endl;
+                scale = xyInDegrees ? 1.0f/111319.0f : 1.0f;
+            }
+
+            // read data into temporary array
+            float* heightData = new float [ destWidth*destHeight ];
+
             // raad the data.
             osg::HeightField* hf = destination._heightField.get();
-            void* floatdata = (void*)(&(hf->getHeight(destX,destY+destHeight-1))); // start at the top
-
-            unsigned int numBytesPerZvalue = 4;
-            int lineSpace=-(hf->getNumColumns()*numBytesPerZvalue); //and work down (note - sign)
 
             std::cout<<"reading height field"<<std::endl;
-            bandSelected->RasterIO(GF_Read,windowX,_numValuesY-(windowY+windowHeight),windowWidth,windowHeight,floatdata,destWidth,destHeight,GDT_Float32,numBytesPerZvalue,lineSpace);
+            //bandSelected->RasterIO(GF_Read,windowX,_numValuesY-(windowY+windowHeight),windowWidth,windowHeight,floatdata,destWidth,destHeight,GDT_Float32,numBytesPerZvalue,lineSpace);
+            bandSelected->RasterIO(GF_Read,windowX,_numValuesY-(windowY+windowHeight),windowWidth,windowHeight,heightData,destWidth,destHeight,GDT_Float32,0,0);
 
             std::cout<<"    scaling height field"<<std::endl;
-	    for(int r=destY;r<destY+destHeight;++r)
+
+            float noDataValueFill = 0.0f;
+            bool ignoreNoDataValue = true;
+
+            float* heightPtr = heightData;            
+	    for(int r=destY+destHeight-1;r>=destY;--r)
 	    {
 		for(int c=destX;c<destX+destWidth;++c)
 		{
-//                    if (hf->getHeight(c,r)==0.0) std::cout<<".";
-//                    else std::cout<<"** "<<hf->getHeight(c,r)<<" **"<<std::endl;
-                    hf->setHeight(c,r,hf->getHeight(c,r)*heightRatio);
+                    float h = *heightPtr++;
+                    if (h!=noDataValue) hf->setHeight(c,r,offset + h*scale);
+                    else if (!ignoreNoDataValue) hf->setHeight(c,r,noDataValueFill);
 		}
 	    }
+            
+            delete [] heightData;
+           
         }
-
 
     }
 }
@@ -1372,6 +1421,43 @@ void DataSet::DestinationTile::equalizeBoundaries()
     equalizeEdge(ABOVE);
 }
 
+
+void DataSet::DestinationTile::optimizeResolution()
+{
+    if (_terrain.valid() && _terrain->_heightField.valid())
+    {
+        osg::HeightField* hf = _terrain->_heightField.get();
+    
+        // compute min max of height field
+        float minHeight = hf->getHeight(0,0);
+        float maxHeight = minHeight;
+        for(unsigned int r=0;r<hf->getNumRows();++r)
+        {
+	    for(unsigned int c=0;c<hf->getNumColumns();++c)
+	    {
+                float h = hf->getHeight(c,r);
+                if (h<minHeight) minHeight = h;
+                if (h>maxHeight) maxHeight = h;
+	    }
+        }
+
+        if (minHeight==maxHeight)
+        {
+            std::cout<<"******* We have a flat tile ******* "<<std::endl;
+
+            hf->allocate(2,2);
+            hf->setOrigin(osg::Vec3(_extents.xMin(),_extents.yMin(),0.0f));
+            hf->setXInterval(_extents.xMax()-_extents.xMin());
+            hf->setYInterval(_extents.yMax()-_extents.yMin());
+            hf->setHeight(0,0,minHeight);
+            hf->setHeight(1,0,minHeight);
+            hf->setHeight(1,1,minHeight);
+            hf->setHeight(0,1,minHeight);
+
+        }
+    }
+}
+
 osg::Node* DataSet::DestinationTile::createScene()
 {
 
@@ -1436,9 +1522,12 @@ osg::Node* DataSet::DestinationTile::createScene()
 
 void DataSet::DestinationTile::readFrom(CompositeSource* sourceGraph)
 {
+    allocate();
+
     std::cout<<"DestinationTile::readFrom() "<<std::endl;
     for(CompositeSource::source_iterator itr(sourceGraph);itr.valid();++itr)
     {
+    
         SourceData* data = (*itr)->getSourceData();
         if (data)
         {
@@ -1447,6 +1536,9 @@ void DataSet::DestinationTile::readFrom(CompositeSource* sourceGraph)
             if (_terrain.valid()) data->read(*_terrain);
         }
     }
+
+    optimizeResolution();
+
 }
 
 void DataSet::DestinationTile::addRequiredResolutions(CompositeSource* sourceGraph)
@@ -1731,13 +1823,17 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(osgTerrain::Coord
 
     DataSet::CompositeDestination* destinationGraph = new DataSet::CompositeDestination(cs,extents);
 
-    destinationGraph->_maxVisibleDistance = extents.radius()*10.0f;
+    destinationGraph->_maxVisibleDistance = extents.radius()*11.0f;
 
     // first create the topmost tile
 
     // create the name
     std::ostringstream os;
     os << _tileBasename << "_L"<<currentLevel<<"_X"<<currentX<<"_Y"<<currentY;
+
+    //std::cout<<"Setting _tile._cs to "<<cs->getProjectionRef()<<std::endl;
+    
+    
 
     DestinationTile* tile = new DestinationTile;
     tile->_name = os.str();
@@ -1750,7 +1846,6 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(osgTerrain::Coord
     tile->setMaximumImagerySize(maxImageSize,maxImageSize);
     tile->setMaximumTerrainSize(maxTerrainSize,maxTerrainSize);
     tile->computeMaximumSourceResolution(_sourceGraph.get());
-    tile->allocate();
 
     insertTileToQuadMap(tile);
 
@@ -1793,6 +1888,14 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(osgTerrain::Coord
         unsigned int newLevel = currentLevel+1;
         unsigned int newX = currentX*2;
         unsigned int newY = currentY*2;
+
+        if (needToDivideX && needToDivideY)
+        {
+            float aspectRatio = (extents.yMax()- extents.yMin())/(extents.xMax()- extents.xMin());
+            
+            if (aspectRatio>1.414) needToDivideX = false;
+            else if (aspectRatio<.707) needToDivideY = false;
+        }
 
         if (needToDivideX && needToDivideY)
         {
@@ -1848,16 +1951,82 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(osgTerrain::Coord
             {
                 (*citr)->_maxVisibleDistance = cutOffDistance;
             }
-           
 
         }
         else if (needToDivideX)
         {
             std::cout<<"Need to Divide X only"<<std::endl;
+
+            // create two tiles.
+            osg::BoundingBox left(extents.xMin(),extents.yMin(),extents.zMin(),xCenter,extents.yMax(),extents.zMax());
+            osg::BoundingBox right(xCenter,extents.yMin(),extents.zMin(),extents.xMax(),extents.yMax(),extents.zMax());
+
+            destinationGraph->_children.push_back(createDestinationGraph(cs,
+                                                                         left,
+                                                                         maxImageSize,
+                                                                         maxTerrainSize,
+                                                                         newLevel,
+                                                                         newX,
+                                                                         newY,
+                                                                         maxNumLevels));
+
+            destinationGraph->_children.push_back(createDestinationGraph(cs,
+                                                                         right,
+                                                                         maxImageSize,
+                                                                         maxTerrainSize,
+                                                                         newLevel,
+                                                                         newX+1,
+                                                                         newY,
+                                                                         maxNumLevels));
+
+                                                                         
+            // Set all there max distance to the same value to ensure the same LOD bining.
+            float cutOffDistance = destinationGraph->_maxVisibleDistance*0.5f;
+            
+            for(CompositeDestination::ChildList::iterator citr=destinationGraph->_children.begin();
+                citr!=destinationGraph->_children.end();
+                ++citr)
+            {
+                (*citr)->_maxVisibleDistance = cutOffDistance;
+            }
+
         }
         else if (needToDivideY)
         {
             std::cout<<"Need to Divide Y only"<<std::endl;
+
+            // create two tiles.
+            osg::BoundingBox top(extents.xMin(),yCenter,extents.zMin(),extents.xMax(),extents.yMax(),extents.zMax());
+            osg::BoundingBox bottom(extents.xMin(),extents.yMin(),extents.zMin(),extents.xMax(),yCenter,extents.zMax());
+
+            destinationGraph->_children.push_back(createDestinationGraph(cs,
+                                                                         bottom,
+                                                                         maxImageSize,
+                                                                         maxTerrainSize,
+                                                                         newLevel,
+                                                                         newX,
+                                                                         newY,
+                                                                         maxNumLevels));
+
+            destinationGraph->_children.push_back(createDestinationGraph(cs,
+                                                                         top,
+                                                                         maxImageSize,
+                                                                         maxTerrainSize,
+                                                                         newLevel,
+                                                                         newX,
+                                                                         newY+1,
+                                                                         maxNumLevels));
+                                                                         
+            // Set all there max distance to the same value to ensure the same LOD bining.
+            float cutOffDistance = destinationGraph->_maxVisibleDistance*0.5f;
+            
+            for(CompositeDestination::ChildList::iterator citr=destinationGraph->_children.begin();
+                citr!=destinationGraph->_children.end();
+                ++citr)
+            {
+                (*citr)->_maxVisibleDistance = cutOffDistance;
+            }
+
         }
         else
         {

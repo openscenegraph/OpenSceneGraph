@@ -115,7 +115,7 @@ int main( int argc, char **argv )
     }
 
 
-    if (false)
+    if (true)
     {
         // set up the coordinate system
         OGRSpatialReference     oSRS;

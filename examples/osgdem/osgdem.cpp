@@ -29,9 +29,33 @@
 #include <osgProducer/Viewer>
 #include <osg/Switch>
 
-#include "DataSet.h"
+#include <osgTerrain/DataSet>
 
 #include <ogr_spatialref.h>
+
+char *SanitizeSRS( const char *pszUserInput )
+
+{
+    OGRSpatialReferenceH hSRS;
+    char *pszResult = NULL;
+
+    CPLErrorReset();
+    
+    hSRS = OSRNewSpatialReference( NULL );
+    if( OSRSetFromUserInput( hSRS, pszUserInput ) == OGRERR_NONE )
+        OSRExportToWkt( hSRS, &pszResult );
+    else
+    {
+        CPLError( CE_Failure, CPLE_AppDefined,
+                  "Translating source or target SRS failed:\n%s",
+                  pszUserInput );
+        exit( 1 );
+    }
+    
+    OSRDestroySpatialReference( hSRS );
+
+    return pszResult;
+}
 
 
 int main( int argc, char **argv )
@@ -58,22 +82,22 @@ int main( int argc, char **argv )
     }
 
     // create DataSet.
-    osg::ref_ptr<DataSet> dataset = new DataSet;
+    osg::ref_ptr<osgTerrain::DataSet> dataset = new osgTerrain::DataSet;
 
     std::string filename;
     while (arguments.read("-d",filename))
     {
-        if (!filename.empty()) dataset->addSource(new DataSet::Source(DataSet::Source::HEIGHT_FIELD,filename));
+        if (!filename.empty()) dataset->addSource(new osgTerrain::DataSet::Source(osgTerrain::DataSet::Source::HEIGHT_FIELD,filename));
     }
     
     while (arguments.read("-t",filename))
     {
-        if (!filename.empty()) dataset->addSource(new DataSet::Source(DataSet::Source::IMAGE,filename));
+        if (!filename.empty()) dataset->addSource(new osgTerrain::DataSet::Source(osgTerrain::DataSet::Source::IMAGE,filename));
     }
 
     while (arguments.read("-m",filename))
     {
-        if (!filename.empty()) dataset->addSource(new DataSet::Source(DataSet::Source::MODEL,filename));
+        if (!filename.empty()) dataset->addSource(new osgTerrain::DataSet::Source(osgTerrain::DataSet::Source::MODEL,filename));
     }
 
     float x,y,w,h;
@@ -104,7 +128,10 @@ int main( int argc, char **argv )
     while (arguments.read("-l",numLevels)) {}
 
     float verticalScale;
-    while (arguments.read("-v",verticalScale)) {}
+    while (arguments.read("-v",verticalScale))
+    {
+        dataset->setVerticalScale(verticalScale);
+    }
 
 
     // if user request help write it out to cout.
@@ -114,8 +141,13 @@ int main( int argc, char **argv )
         return 1;
     }
 
-
-    if (true)
+    std::string def;
+    while (arguments.read("-s_srs",def))
+    {
+        dataset->setDestinationCoordinateSystem(SanitizeSRS(def.c_str()) );
+    }
+    
+    if (false)
     {
         // set up the coordinate system
         OGRSpatialReference     oSRS;

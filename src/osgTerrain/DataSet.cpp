@@ -11,7 +11,6 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#include "DataSet.h"
 
 #include <osg/Geode>
 #include <osg/ShapeDrawable>
@@ -23,13 +22,85 @@
 #include <osgDB/WriteFile>
 #include <osgDB/FileNameUtils>
 
+#include <osgTerrain/DataSet>
+
+// GDAL includes
 #include <gdal_priv.h>
-#include "cpl_string.h"
+#include <cpl_string.h>
 #include <gdalwarper.h>
-
-#include <sstream>
-
 #include <ogr_spatialref.h>
+
+// standard library includes
+#include <sstream>
+#include <iostream>
+
+
+using namespace osgTerrain;
+
+
+enum CoordinateSystemType
+{
+    GEOGRAPHIC,
+    PROJECTED,
+    LOCAL
+};
+
+CoordinateSystemType getCoordinateSystemType(const osgTerrain::CoordinateSystem* lhs)
+{
+    // set up LHS SpatialReference
+    char* projection_string = strdup(lhs->getProjectionRef().c_str());
+    char* importString = projection_string;
+    
+    OGRSpatialReference lhsSR;
+    lhsSR.importFromWkt(&importString);
+    
+    free(projection_string);
+
+    if (lhsSR.IsGeographic()) return GEOGRAPHIC;
+    if (lhsSR.IsProjected()) return PROJECTED;
+    if (lhsSR.IsLocal()) return LOCAL;
+    return PROJECTED;
+}
+
+double getAngularUnits(const osgTerrain::CoordinateSystem* lhs)
+{
+    // set up LHS SpatialReference
+    char* projection_string = strdup(lhs->getProjectionRef().c_str());
+    char* importString = projection_string;
+    
+    OGRSpatialReference lhsSR;
+    lhsSR.importFromWkt(&importString);
+    
+    free(projection_string);
+
+    char* str;
+    double result = lhsSR.GetAngularUnits(&str);
+    std::cout<<"lhsSR.GetAngularUnits("<<str<<") "<<result<<std::endl;
+
+    return result;
+}
+
+double getLinearUnits(const osgTerrain::CoordinateSystem* lhs)
+{
+    // set up LHS SpatialReference
+    char* projection_string = strdup(lhs->getProjectionRef().c_str());
+    char* importString = projection_string;
+    
+    OGRSpatialReference lhsSR;
+    lhsSR.importFromWkt(&importString);
+    
+    free(projection_string);
+
+    char* str;
+    double result = lhsSR.GetLinearUnits(&str);
+    std::cout<<"lhsSR.GetLinearUnits("<<str<<") "<<result<<std::endl;
+
+    std::cout<<"lhsSR.IsGeographic() "<<lhsSR.IsGeographic()<<std::endl;
+    std::cout<<"lhsSR.IsProjected() "<<lhsSR.IsProjected()<<std::endl;
+    std::cout<<"lhsSR.IsLocal() "<<lhsSR.IsLocal()<<std::endl;
+    
+    return result;
+}
 
 bool areCoordinateSystemEquivilant(const osgTerrain::CoordinateSystem* lhs,const osgTerrain::CoordinateSystem* rhs)
 {
@@ -489,6 +560,17 @@ void DataSet::SourceData::readHeightField(DestinationData& destination)
         
             bool xyInDegrees = false;
 
+            CoordinateSystemType cst = getCoordinateSystemType(_cs.get());
+            if (cst==GEOGRAPHIC)
+            {
+                xyInDegrees = true;
+            }
+
+
+            if (bandSelected->GetUnitType()) std::cout << "bandSelected->GetUnitType()=" << bandSelected->GetUnitType()<<std::endl;
+            else std::cout << "bandSelected->GetUnitType()= null" <<std::endl;
+            
+
             int success = 0;
             float noDataValue = bandSelected->GetNoDataValue(&success);
             if (success)
@@ -522,6 +604,8 @@ void DataSet::SourceData::readHeightField(DestinationData& destination)
                 std::cout<<"We have no Scale"<<std::endl;
                 scale = xyInDegrees ? 1.0f/111319.0f : 1.0f;
             }
+            
+            std::cout<<"********* getLinearUnits = "<<getLinearUnits(_cs.get())<<std::endl;
 
             // read data into temporary array
             float* heightData = new float [ destWidth*destHeight ];
@@ -765,11 +849,70 @@ DataSet::Source* DataSet::Source::doReproject(const std::string& filename, osgTe
     psWO->panSrcBands = (int *) CPLMalloc(psWO->nBandCount*sizeof(int));
     psWO->panDstBands = (int *) CPLMalloc(psWO->nBandCount*sizeof(int));
 
-    for(int i = 0; i < psWO->nBandCount; i++ )
+    int i;
+    for(i = 0; i < psWO->nBandCount; i++ )
     {
         psWO->panSrcBands[i] = i+1;
         psWO->panDstBands[i] = i+1;
     }
+
+
+/* -------------------------------------------------------------------- */
+/*      Setup no datavalue                                              */
+/* -----------------------------------------------------`--------------- */
+
+    
+    // check to see if no value values exist in source datasets.
+    int numNoDataValues = 0;
+    for(i = 0; i < _sourceData->_gdalDataSet->GetRasterCount(); i++ )
+    {
+        int success = 0;
+        GDALRasterBand* band = _sourceData->_gdalDataSet->GetRasterBand(i+1);
+        band->GetNoDataValue(&success);
+        if (success) ++numNoDataValues;
+    }
+    
+    if (numNoDataValues)
+    {
+        // no data values exist, so populate the no data arrays.
+        
+        psWO->padfSrcNoDataReal = (double*) CPLMalloc(psWO->nBandCount*sizeof(double));
+        psWO->padfSrcNoDataImag = (double*) CPLMalloc(psWO->nBandCount*sizeof(double));
+        
+        psWO->padfDstNoDataReal = (double*) CPLMalloc(psWO->nBandCount*sizeof(double));
+        psWO->padfDstNoDataImag = (double*) CPLMalloc(psWO->nBandCount*sizeof(double));
+        
+        for(i = 0; i < _sourceData->_gdalDataSet->GetRasterCount(); i++ )
+        {
+            int success = 0;
+            GDALRasterBand* band = _sourceData->_gdalDataSet->GetRasterBand(i+1);
+            double noDataValue = band->GetNoDataValue(&success);
+            double new_noDataValue = 0.0;
+            if (success)
+            {
+                std::cout<<"\tassinging no data value "<<noDataValue<<" to band "<<i+1<<std::endl;
+            
+                psWO->padfSrcNoDataReal[i] = noDataValue;
+                psWO->padfSrcNoDataImag[i] = 0.0;
+                psWO->padfDstNoDataReal[i] = new_noDataValue;
+                psWO->padfDstNoDataImag[i] = 0.0;
+                
+                GDALRasterBandH band = GDALGetRasterBand(hDstDS,i+1);
+                GDALSetRasterNoDataValue( band, new_noDataValue);
+            }
+        }    
+
+#if 0        
+        psWO->papszWarpOptions = (char**)CPLMalloc(2*sizeof(char*));
+        psWO->papszWarpOptions[0] = strdup("INIT_DEST=NO_DATA");
+        psWO->papszWarpOptions[1] = 0;
+#endif
+
+#if 0        
+        psWO->pfnSrcValidityMaskFunc = (GDALMaskFunc)GDALWarpNoDataMasker;
+#endif        
+    }
+    
 
 /* -------------------------------------------------------------------- */
 /*      Initialize and execute the warp.                                */

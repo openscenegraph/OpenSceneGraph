@@ -26,6 +26,9 @@
 
 #include <gdal_priv.h>
 
+namespace osgTerrain
+{
+
 class DataSet : public osg::Referenced
 {
     public:
@@ -770,6 +773,9 @@ class DataSet : public osg::Referenced
 
         void loadSources();
         
+        void setVerticalScale(float verticalScale) { _verticalScale=verticalScale; }
+        float getVerticalScale() const { return _verticalScale; }
+        
         void setDestinationCoordinateSystem(const std::string& wellKnownText) { _coordinateSystem = new osgTerrain::CoordinateSystem(wellKnownText); }
         void setDestinationCoordinateSystem(osgTerrain::CoordinateSystem* cs) { _coordinateSystem = cs; }
         
@@ -813,6 +819,8 @@ class DataSet : public osg::Referenced
         
         QuadMap                                     _quadMap;
 
+        float                                       _verticalScale;
+            
         osg::ref_ptr<osgTerrain::CoordinateSystem>  _coordinateSystem;
         osg::Matrixd                                _geoTransform;
         osg::BoundingBox                            _extents;
@@ -824,5 +832,7 @@ class DataSet : public osg::Referenced
         osg::ref_ptr<osg::Node>                     _rootNode;
         
 };
+
+}
 
 #endif

@@ -137,8 +137,7 @@ Makedepend : $(CXXFILES) $(CFILES)
 ifeq ($(OS),IRIX)   
 	touch $@
 else
-	echo HELLO... Dont forget to reset Makedpeend in makerules
-#	$(C++) $(INC) $(DEPARG) $^ > $(MAKEDEPEND)
+	$(C++) $(INC) $(DEPARG) $^ > $(MAKEDEPEND)
 endif
 
 

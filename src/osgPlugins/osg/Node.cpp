@@ -110,6 +110,27 @@ bool Node_readLocalData(Object& obj, Input& fr)
 
     }
 
+    while (fr.matchSequence("EventCallback {"))
+    {
+        int entry = fr[0].getNoNestedBrackets();
+        fr += 2;
+
+        while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
+        {
+            NodeCallback* nodecallback = dynamic_cast<NodeCallback*>(fr.readObjectOfType(*s_nodecallback));
+            if (nodecallback) {
+                if (node.getEventCallback() == NULL) {
+                    node.setEventCallback(nodecallback);
+                } else {
+                    node.getEventCallback()->addNestedCallback(nodecallback);
+                }
+            }
+            else ++fr;
+        }
+        iteratorAdvanced = true;
+
+    }
+
     while (fr.matchSequence("CullCallbacks {"))
     {
         int entry = fr[0].getNoNestedBrackets();
@@ -179,6 +200,15 @@ bool Node_writeLocalData(const Object& obj, Output& fw)
         fw.indent() << "UpdateCallbacks {" << std::endl;
         fw.moveIn();
         fw.writeObject(*node.getUpdateCallback());
+        fw.moveOut();
+        fw.indent() << "}" << std::endl;
+    }
+
+    if (node.getEventCallback())
+    {
+        fw.indent() << "EventCallbacks {" << std::endl;
+        fw.moveIn();
+        fw.writeObject(*node.getEventCallback());
         fw.moveOut();
         fw.indent() << "}" << std::endl;
     }

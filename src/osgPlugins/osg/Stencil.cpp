@@ -6,6 +6,7 @@
 
 using namespace osg;
 using namespace osgDB;
+using namespace std;
 
 // forward declare functions to use later.
 bool Stencil_readLocalData(Object& obj, Input& fr);
@@ -106,13 +107,13 @@ bool Stencil_writeLocalData(const Object& obj,Output& fw)
 
     fw.indent() << "function " << Stencil_getFuncStr(stencil.getFunction()) << std::endl;
     fw.indent() << "functionRef " << stencil.getFunctionRef() << std::endl;
-    fw.indent() << "functionMask 0x" << std::hex << stencil.getFunctionMask() << std::dec << std::endl;
+    fw.indent() << "functionMask 0x" << hex << stencil.getFunctionMask() << dec << std::endl;
     
     fw.indent() << "stencilFailOperation " << Stencil_getOperationStr(stencil.getStencilFailOperation()) << std::endl;
     fw.indent() << "stencilPassAndDepthFailOperation " << Stencil_getOperationStr(stencil.getStencilPassAndDepthFailOperation()) << std::endl;
     fw.indent() << "stencilPassAndDepthPassOperation " << Stencil_getOperationStr(stencil.getStencilPassAndDepthPassOperation()) << std::endl;
     
-    fw.indent() << "writeMask 0x" << std::hex << stencil.getWriteMask() << std::dec << std::endl;
+    fw.indent() << "writeMask 0x" << hex << stencil.getWriteMask() << dec << std::endl;
 
     return true;
 }

@@ -6,6 +6,10 @@ echo osgunittests
 osgunittests
 more memleaks.log
 
+echo osglogo
+osglogo
+more memleaks.log
+
 echo sgv osgcool.osg
 sgv osgcool.osg
 more memleaks.log

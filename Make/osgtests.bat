@@ -1,6 +1,9 @@
 echo osgversion
 osgversion
 
+echo osglogo
+osglogo
+
 echo sgv osgcool.osg
 sgv osgcool.osg
 

@@ -66,6 +66,11 @@ class SG_EXPORT Transform : public Group
         /** Get the transform mode.*/
         inline const MatrixMode getMatrixMode() const { return _mode; }
         
+        /** Does the tranform set up the projection matrix.*/
+        inline const bool isProjectionTransform() const { return _mode==PROJECTION; }
+
+        /** Does the tranform set up the modelview matrix.*/
+        inline const bool isModelViewTransform() const { return _mode!=PROJECTION; }
 
         /** Callback attached to an Transform to specifiy how to compute the modelview or projection transformation
           * for the transform below the Transform node.*/
@@ -115,16 +120,16 @@ class SG_EXPORT Transform : public Group
         
 
         /** Set the transform's matrix.*/
-        void setMatrix(const Matrix& mat) { (*_matrix) = mat; dirtyBound(); }
+        void setMatrix(const Matrix& mat) { (*_matrix) = mat; _inverseDirty=true; dirtyBound(); }
         
         /** Get the transform's matrix. */
         inline const Matrix& getMatrix() const { return *_matrix; }
 
         /** preMult transform.*/
-        void preMult(const Matrix& mat) { _matrix->preMult(mat); dirtyBound(); }
+        void preMult(const Matrix& mat) { _matrix->preMult(mat); _inverseDirty=true; dirtyBound(); }
         
         /** postMult transform.*/
-        void postMult(const Matrix& mat)  { _matrix->postMult(mat); dirtyBound(); }
+        void postMult(const Matrix& mat)  { _matrix->postMult(mat); _inverseDirty=true; dirtyBound(); }
     
 
     protected :
@@ -138,14 +143,41 @@ class SG_EXPORT Transform : public Group
         
         virtual const bool computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const
         {
-            matrix = *_matrix;
-            return true;
+            if (_mode==VIEW)
+            {
+                computeInverse();
+                matrix = *_inverse;
+                return true;
+            }
+            else
+            {
+                matrix = *_matrix;
+                return true;
+            }
         }
 
         virtual const bool computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor*) const
         {
-            matrix.invert(*_matrix);
-            return true;
+            if (_mode==VIEW)
+            {
+                matrix = *_matrix;
+                return true;
+            }
+            else
+            {
+                computeInverse();
+                matrix = *_inverse;
+                return true;
+            }
+        }
+        
+        inline void computeInverse() const
+        {
+            if (_inverseDirty)
+            {
+                _inverse->invert(*_matrix);
+                _inverseDirty = false;
+            }
         }
 
 
@@ -154,7 +186,8 @@ class SG_EXPORT Transform : public Group
         ref_ptr<ComputeTransformCallback>   _computeTransformCallback;
 
         ref_ptr<Matrix>                     _matrix;
-        
+        mutable ref_ptr<Matrix>             _inverse;
+        mutable bool                        _inverseDirty;        
 
 };
 

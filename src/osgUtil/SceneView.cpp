@@ -205,8 +205,27 @@ void SceneView::cull()
     
     if (_camera.valid())
     {
-        _camera->adjustAspectRatio(_viewport->aspectRatio());
-        
+
+        if (_displaySettings.valid() && _displaySettings->getStereo())
+        {
+            switch(_displaySettings->getStereoMode())
+            {
+            case(osg::DisplaySettings::HORIZONTAL_SPLIT):
+                _camera->adjustAspectRatio(0.5*_viewport->aspectRatio());
+                break;
+            case(osg::DisplaySettings::VERTICAL_SPLIT):
+                _camera->adjustAspectRatio(2*_viewport->aspectRatio());
+                break;
+            default:
+                _camera->adjustAspectRatio(_viewport->aspectRatio());
+                break;
+            }
+        }
+        else
+        {
+            _camera->adjustAspectRatio(_viewport->aspectRatio());
+        }
+       
         if (_displaySettings.valid())
             _camera->setScreenDistance(_displaySettings->getScreenDistance());
         

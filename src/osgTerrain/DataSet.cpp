@@ -721,6 +721,26 @@ void DataSet::Source::assignCoordinateSystemAndGeoTransformAccordingToParameterP
         std::cout<<"assigning GeoTransform from Source to Data."<<_geoTransform<<std::endl;
 
     }
+    else if (getGeoTransformPolicy()==PREFER_CONFIG_SETTINGS_BUT_SCALE_BY_FILE_RESOLUTION)
+    {
+    
+        // scale the x and y axis.
+        double div_x = 1.0/(double)(_sourceData->_numValuesX - 1);
+        double div_y = 1.0/(double)(_sourceData->_numValuesY - 1);
+    
+        _geoTransform(0,0) *= div_x;
+        _geoTransform(1,0) *= div_x;
+        _geoTransform(2,0) *= div_x;
+    
+        _geoTransform(0,1) *= div_y;
+        _geoTransform(1,1) *= div_y;
+        _geoTransform(2,1) *= div_y;
+
+        _sourceData->_geoTransform = _geoTransform;
+
+        std::cout<<"assigning GeoTransform from Source to Data."<<_geoTransform<<std::endl;
+
+    }
     else
     {
         _geoTransform = _sourceData->_geoTransform;
@@ -2208,8 +2228,11 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
         geometry->setColorArray(colours);
         geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
     }
+
+    unsigned int targetMaxNumVertices = 2048;
+    float sample_ratio = (numVertices <= targetMaxNumVertices) ? 1.0f : (float)targetMaxNumVertices/(float)numVertices; 
     
-    osgUtil::Simplifier simplifier(0.5f,geometry->getBound().radius()/2000.0f);
+    osgUtil::Simplifier simplifier(sample_ratio,geometry->getBound().radius()/2000.0f);
     
     simplifier.simplify(*geometry, pointsToProtectDuringSimplification);  // this will replace the normal vector with a new one
 
@@ -2439,7 +2462,7 @@ osg::Node* DataSet::CompositeDestination::createScene()
         if (childNum==0)
         {
             // by deafult make the first child have a very visible distance so its always seen
-            maxVisibleDistance = 1e8;
+            maxVisibleDistance = 1e10;
         }
         else
         {

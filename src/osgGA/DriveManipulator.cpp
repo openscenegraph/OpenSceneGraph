@@ -105,6 +105,7 @@ void DriveManipulator::computeHomePosition()
 
         // check to see if any obstruction in front.
         osgUtil::IntersectVisitor iv;
+        iv.setTraversalMask(_intersectTraversalMask);
 
         bool positionSet = false;
 
@@ -223,6 +224,7 @@ void DriveManipulator::init(const GUIEventAdapter& ea,GUIActionAdapter& us)
 
     // check to see if any obstruction in front.
     osgUtil::IntersectVisitor iv;
+    iv.setTraversalMask(_intersectTraversalMask);
 
     bool positionSet = false;
 
@@ -574,6 +576,8 @@ bool DriveManipulator::calcMovement()
 
         // check to see if any obstruction in front.
         osgUtil::IntersectVisitor iv;
+        iv.setTraversalMask(_intersectTraversalMask);
+    
         osg::ref_ptr<osg::LineSegment> segForward = new osg::LineSegment;
         segForward->set(_eye,_eye+lv*(signedBuffer+distanceToMove));
         iv.addLineSegment(segForward.get());

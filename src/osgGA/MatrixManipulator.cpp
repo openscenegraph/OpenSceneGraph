@@ -9,6 +9,8 @@ MatrixManipulator::MatrixManipulator()
 {
     _minimumDistance = 0.001;
     
+    _intersectTraversalMask = 0xffffffff;
+
     _autoComputeHomePosition = true;
         
     _homeEye.set(0.0,-1.0,0.0);

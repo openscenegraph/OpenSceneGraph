@@ -17,12 +17,7 @@
 
 #include <osg/Export>
 
-// #define THREAD_SAFE_REF_UNREF 1
-
-#ifdef THREAD_SAFE_REF_UNREF
-    #include <OpenThreads/ScopedLock>
-    #include <OpenThreads/Mutex>
-#endif
+#include <OpenThreads/Mutex>
 
 namespace osg {
 
@@ -36,6 +31,8 @@ class SG_EXPORT Referenced
 {
 
     public:
+
+
         Referenced() 
         {
            
@@ -47,6 +44,38 @@ class SG_EXPORT Referenced
 
         inline Referenced& operator = (const Referenced&) { return *this; }
 
+
+
+        /** increment the reference count by one, indicating that 
+            this object has another pointer which is referencing it.*/
+        void ref() const;
+        
+        /** decrement the reference count by one, indicating that 
+            a pointer to this object is referencing it.  If the
+            reference count goes to zero, it is assumed that this object
+            is no longer referenced and is automatically deleted.*/
+        void unref() const;
+        
+        /** decrement the reference count by one, indicating that 
+            a pointer to this object is referencing it.  However, do
+            not delete it, even if ref count goes to 0.  Warning, unref_nodelete() 
+            should only be called if the user knows exactly who will
+            be resonsible for, one should prefer unref() over unref_nodelete() 
+            as the later can lead to memory leaks.*/
+        void unref_nodelete() const;
+        
+        /** return the number pointers currently referencing this object. */
+        inline int referenceCount() const { return _refCount; }
+
+
+    public:
+
+        /** Set whether reference counting should be use a mutex to create thread reference counting.*/
+        static void setThreadSafeReferenceCounting(bool enableThreadSafeReferenceCounting);
+        
+        /** Get whether reference counting is active.*/
+        static bool getThreadSafeReferenceCounting();
+
         friend class DeleteHandler;
 
         /** Set a DeleteHandler to which deletion of all referenced counted objects
@@ -56,41 +85,12 @@ class SG_EXPORT Referenced
         /** Get a DeleteHandler.*/
         static DeleteHandler* getDeleteHandler();
 
-
-        /** increment the reference count by one, indicating that 
-            this object has another pointer which is referencing it.*/
-        inline void ref() const
-        { 
-#ifdef THREAD_SAFE_REF_UNREF
-            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_refMutex); 
-#endif
-            ++_refCount;
-        }
-        
-        /** decrement the reference count by one, indicating that 
-            a pointer to this object is referencing it.  If the
-            reference count goes to zero, it is assumed that this object
-            is no longer referenced and is automatically deleted.*/
-        inline void unref() const;
-        
-        /** decrement the reference count by one, indicating that 
-            a pointer to this object is referencing it.  However, do
-            not delete it, even if ref count goes to 0.  Warning, unref_nodelete() 
-            should only be called if the user knows exactly who will
-            be resonsible for, one should prefer unref() over unref_nodelete() 
-            as the later can lead to memory leaks.*/
-        inline void unref_nodelete() const { --_refCount; }
-        
-        /** return the number pointers currently referencing this object. */
-        inline int referenceCount() const { return _refCount; }
-
        
     protected:
         virtual ~Referenced();
         
-#ifdef THREAD_SAFE_REF_UNREF
         mutable OpenThreads::Mutex  _refMutex;
-#endif
+
         mutable int                 _refCount;
         
 };
@@ -121,22 +121,6 @@ class DeleteHandler
         virtual void requestDelete(const Referenced* object) { doDelete(object); }
 };
 
-inline void Referenced::unref() const
-{
-    bool needDelete = false;
-    {
-#ifdef THREAD_SAFE_REF_UNREF
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_refMutex); 
-#endif
-        --_refCount;
-        needDelete = _refCount<=0;
-    }
-    if (needDelete)
-    {
-        if (getDeleteHandler()) getDeleteHandler()->requestDelete(this);
-        else delete this;
-    }
-}
 
 }
 

@@ -24,7 +24,7 @@ SceneView::SceneView(DisplaySettings* ds)
     _computeNearFar = CullVisitor::COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES;
 
     _cullingMode = osg::CullStack::ENABLE_ALL_CULLING;
-    _LODBias = 1.0f;
+    _LODScale = 1.0f;
     _smallFeatureCullingPixelSize = 3.0f;
 
     _fusionDistanceMode = USE_CAMERA_FUSION_DISTANCE;
@@ -245,6 +245,22 @@ void SceneView::cull()
     if (!projection) projection = osgNew osg::Matrix();
     if (!modelview)  modelview  = osgNew osg::Matrix();
 
+    if (!_cullVisitor)
+    {
+        osg::notify(osg::INFO) << "Warning: no valid osgUtil::SceneView:: attached, creating a default CullVisitor automatically."<< std::endl;
+        _cullVisitor = osgNew CullVisitor;
+    }
+    if (!_rendergraph)
+    {
+        osg::notify(osg::INFO) << "Warning: no valid osgUtil::SceneView:: attached, creating a global default RenderGraph automatically."<< std::endl;
+        _rendergraph = osgNew RenderGraph;
+    }
+    if (!_renderStage)
+    {
+        osg::notify(osg::INFO) << "Warning: no valid osgUtil::SceneView::_renderStage attached, creating a default RenderStage automatically."<< std::endl;
+        _renderStage = osgNew RenderStage;
+    }
+
     if (_displaySettings.valid() && _displaySettings->getStereo()) 
     {
 
@@ -269,74 +285,114 @@ void SceneView::cull()
         float sd = _displaySettings->getScreenDistance();
         float es = 0.5f*iod*(fusionDistance/sd);
 
-        if (!_cullVisitorLeft.valid()) _cullVisitorLeft = dynamic_cast<CullVisitor*>(_cullVisitor->cloneType());
-        if (!_rendergraphLeft.valid()) _rendergraphLeft = dynamic_cast<RenderGraph*>(_rendergraph->cloneType());
-        if (!_renderStageLeft.valid()) _renderStageLeft = dynamic_cast<RenderStage*>(_renderStage->clone(osg::CopyOp::DEEP_COPY_ALL));
-
-        if (!_cullVisitorRight.valid()) _cullVisitorRight = dynamic_cast<CullVisitor*>(_cullVisitor->cloneType());
-        if (!_rendergraphRight.valid()) _rendergraphRight = dynamic_cast<RenderGraph*>(_rendergraph->cloneType());
-        if (!_renderStageRight.valid()) _renderStageRight = dynamic_cast<RenderStage*>(_renderStage->clone(osg::CopyOp::DEEP_COPY_ALL));
-
-        
-        // set up the left eye.
-        osg::ref_ptr<osg::Matrix> projectionLeft = osgNew osg::Matrix(osg::Matrix(1.0f,0.0f,0.0f,0.0f,
-                                                                      0.0f,1.0f,0.0f,0.0f,
-                                                                      iod/(2.0f*sd),0.0f,1.0f,0.0f,
-                                                                      0.0f,0.0f,0.0f,1.0f)*
-                                                          (*projection));
-        
-        
-        osg::ref_ptr<osg::Matrix> modelviewLeft = osgNew osg::Matrix( (*modelview) *
-                                                         osg::Matrix(1.0f,0.0f,0.0f,0.0f,
-                                                                     0.0f,1.0f,0.0f,0.0f,
-                                                                     0.0f,0.0f,1.0f,0.0f,
-                                                                     es,0.0f,0.0f,1.0f));
-        
-        _cullVisitorLeft->setTraversalMask(_cullMaskLeft);
-        cullStage(projectionLeft.get(),modelviewLeft.get(),_cullVisitorLeft.get(),_rendergraphLeft.get(),_renderStageLeft.get());
-
-
-        // set up the right eye.
-        osg::ref_ptr<osg::Matrix> projectionRight = osgNew osg::Matrix(osg::Matrix(1.0f,0.0f,0.0f,0.0f,
-                                                                      0.0f,1.0f,0.0f,0.0f,
-                                                                      -iod/(2.0f*sd),0.0f,1.0f,0.0f,
-                                                                      0.0f,0.0f,0.0f,1.0f)*
-                                                          (*projection));
-
-        osg::ref_ptr<osg::Matrix> modelviewRight = osgNew osg::Matrix( (*modelview) *
-                                                         osg::Matrix(1.0f,0.0f,0.0f,0.0f,
-                                                                     0.0f,1.0f,0.0f,0.0f,
-                                                                     0.0f,0.0f,1.0f,0.0f,
-                                                                     -es,0.0f,0.0f,1.0f));
-
-        _cullVisitorRight->setTraversalMask(_cullMaskRight);
-        cullStage(projectionRight.get(),modelviewRight.get(),_cullVisitorRight.get(),_rendergraphRight.get(),_renderStageRight.get());
-
-
-        if (_camera.valid() && _computeNearFar != CullVisitor::DO_NOT_COMPUTE_NEAR_FAR)
+        if (_displaySettings->getStereoMode()==osg::DisplaySettings::LEFT_EYE)
         {
-            // clamp the camera to the near/far computed in cull traversal.
-            _camera->setNearFar(_cullVisitorRight->getCalculatedNearPlane(),_cullVisitorRight->getCalculatedFarPlane());
+            // set up the left eye.
+            osg::ref_ptr<osg::Matrix> projectionLeft = osgNew osg::Matrix(osg::Matrix(1.0f,0.0f,0.0f,0.0f,
+                                                                          0.0f,1.0f,0.0f,0.0f,
+                                                                          iod/(2.0f*sd),0.0f,1.0f,0.0f,
+                                                                          0.0f,0.0f,0.0f,1.0f)*
+                                                              (*projection));
+
+
+            osg::ref_ptr<osg::Matrix> modelviewLeft = osgNew osg::Matrix( (*modelview) *
+                                                             osg::Matrix(1.0f,0.0f,0.0f,0.0f,
+                                                                         0.0f,1.0f,0.0f,0.0f,
+                                                                         0.0f,0.0f,1.0f,0.0f,
+                                                                         es,0.0f,0.0f,1.0f));
+
+            _cullVisitor->setTraversalMask(_cullMaskLeft);
+            cullStage(projectionLeft.get(),modelviewLeft.get(),_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
+
+            if (_camera.valid() && _computeNearFar != CullVisitor::DO_NOT_COMPUTE_NEAR_FAR)
+            {
+                // clamp the camera to the near/far computed in cull traversal.
+                _camera->setNearFar(_cullVisitor->getCalculatedNearPlane(),_cullVisitor->getCalculatedFarPlane());
+            }
+        }
+        else if (_displaySettings->getStereoMode()==osg::DisplaySettings::RIGHT_EYE)
+        {
+            // set up the right eye.
+            osg::ref_ptr<osg::Matrix> projectionRight = osgNew osg::Matrix(osg::Matrix(1.0f,0.0f,0.0f,0.0f,
+                                                                          0.0f,1.0f,0.0f,0.0f,
+                                                                          -iod/(2.0f*sd),0.0f,1.0f,0.0f,
+                                                                          0.0f,0.0f,0.0f,1.0f)*
+                                                              (*projection));
+
+            osg::ref_ptr<osg::Matrix> modelviewRight = osgNew osg::Matrix( (*modelview) *
+                                                             osg::Matrix(1.0f,0.0f,0.0f,0.0f,
+                                                                         0.0f,1.0f,0.0f,0.0f,
+                                                                         0.0f,0.0f,1.0f,0.0f,
+                                                                         -es,0.0f,0.0f,1.0f));
+
+            _cullVisitor->setTraversalMask(_cullMaskRight);
+            cullStage(projectionRight.get(),modelviewRight.get(),_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
+
+
+            if (_camera.valid() && _computeNearFar != CullVisitor::DO_NOT_COMPUTE_NEAR_FAR)
+            {
+                // clamp the camera to the near/far computed in cull traversal.
+                _camera->setNearFar(_cullVisitor->getCalculatedNearPlane(),_cullVisitor->getCalculatedFarPlane());
+            }
+        }
+        else
+        {
+
+            if (!_cullVisitorLeft.valid()) _cullVisitorLeft = dynamic_cast<CullVisitor*>(_cullVisitor->cloneType());
+            if (!_rendergraphLeft.valid()) _rendergraphLeft = dynamic_cast<RenderGraph*>(_rendergraph->cloneType());
+            if (!_renderStageLeft.valid()) _renderStageLeft = dynamic_cast<RenderStage*>(_renderStage->clone(osg::CopyOp::DEEP_COPY_ALL));
+
+            if (!_cullVisitorRight.valid()) _cullVisitorRight = dynamic_cast<CullVisitor*>(_cullVisitor->cloneType());
+            if (!_rendergraphRight.valid()) _rendergraphRight = dynamic_cast<RenderGraph*>(_rendergraph->cloneType());
+            if (!_renderStageRight.valid()) _renderStageRight = dynamic_cast<RenderStage*>(_renderStage->clone(osg::CopyOp::DEEP_COPY_ALL));
+
+
+            // set up the left eye.
+            osg::ref_ptr<osg::Matrix> projectionLeft = osgNew osg::Matrix(osg::Matrix(1.0f,0.0f,0.0f,0.0f,
+                                                                          0.0f,1.0f,0.0f,0.0f,
+                                                                          iod/(2.0f*sd),0.0f,1.0f,0.0f,
+                                                                          0.0f,0.0f,0.0f,1.0f)*
+                                                              (*projection));
+
+
+            osg::ref_ptr<osg::Matrix> modelviewLeft = osgNew osg::Matrix( (*modelview) *
+                                                             osg::Matrix(1.0f,0.0f,0.0f,0.0f,
+                                                                         0.0f,1.0f,0.0f,0.0f,
+                                                                         0.0f,0.0f,1.0f,0.0f,
+                                                                         es,0.0f,0.0f,1.0f));
+
+            _cullVisitorLeft->setTraversalMask(_cullMaskLeft);
+            cullStage(projectionLeft.get(),modelviewLeft.get(),_cullVisitorLeft.get(),_rendergraphLeft.get(),_renderStageLeft.get());
+
+
+            // set up the right eye.
+            osg::ref_ptr<osg::Matrix> projectionRight = osgNew osg::Matrix(osg::Matrix(1.0f,0.0f,0.0f,0.0f,
+                                                                          0.0f,1.0f,0.0f,0.0f,
+                                                                          -iod/(2.0f*sd),0.0f,1.0f,0.0f,
+                                                                          0.0f,0.0f,0.0f,1.0f)*
+                                                              (*projection));
+
+            osg::ref_ptr<osg::Matrix> modelviewRight = osgNew osg::Matrix( (*modelview) *
+                                                             osg::Matrix(1.0f,0.0f,0.0f,0.0f,
+                                                                         0.0f,1.0f,0.0f,0.0f,
+                                                                         0.0f,0.0f,1.0f,0.0f,
+                                                                         -es,0.0f,0.0f,1.0f));
+
+            _cullVisitorRight->setTraversalMask(_cullMaskRight);
+            cullStage(projectionRight.get(),modelviewRight.get(),_cullVisitorRight.get(),_rendergraphRight.get(),_renderStageRight.get());
+
+
+            if (_camera.valid() && _computeNearFar != CullVisitor::DO_NOT_COMPUTE_NEAR_FAR)
+            {
+                // clamp the camera to the near/far computed in cull traversal.
+                _camera->setNearFar(_cullVisitorRight->getCalculatedNearPlane(),_cullVisitorRight->getCalculatedFarPlane());
+            }
+            
         }
 
     }
     else
     {
-        if (!_cullVisitor)
-        {
-            osg::notify(osg::INFO) << "Warning: no valid osgUtil::SceneView:: attached, creating a default CullVisitor automatically."<< std::endl;
-            _cullVisitor = osgNew CullVisitor;
-        }
-        if (!_rendergraph)
-        {
-            osg::notify(osg::INFO) << "Warning: no valid osgUtil::SceneView:: attached, creating a global default RenderGraph automatically."<< std::endl;
-            _rendergraph = osgNew RenderGraph;
-        }
-        if (!_renderStage)
-        {
-            osg::notify(osg::INFO) << "Warning: no valid osgUtil::SceneView::_renderStage attached, creating a default RenderStage automatically."<< std::endl;
-            _renderStage = osgNew RenderStage;
-        }
 
         _cullVisitor->setTraversalMask(_cullMask);
         cullStage(projection.get(),modelview.get(),_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
@@ -410,7 +466,7 @@ void SceneView::cullStage(osg::Matrix* projection,osg::Matrix* modelview,osgUtil
 
     cullVisitor->setCullingMode(_cullingMode);
     cullVisitor->setComputeNearFarMode(_computeNearFar);
-    cullVisitor->setLODBias(_LODBias);
+    cullVisitor->setLODScale(_LODScale);
     cullVisitor->setSmallFeatureCullingPixelSize(_smallFeatureCullingPixelSize);
 
     cullVisitor->setClearNode(NULL); // reset earth sky on each frame.
@@ -638,12 +694,17 @@ void SceneView::draw()
                 }
             }
             break;
+        case(osg::DisplaySettings::RIGHT_EYE):
+        case(osg::DisplaySettings::LEFT_EYE):
+            {
+                _globalState->setAttribute(_viewport.get());
+                _renderStage->drawPreRenderStages(*_state,previous);
+                _renderStage->draw(*_state,previous);
+            }
+            break;
         default:
             {
                 osg::notify(osg::NOTICE)<<"Warning: stereo camera mode not implemented yet."<< std::endl;
-                _globalState->setAttribute(_viewport.get());
-                _renderStageLeft->drawPreRenderStages(*_state,previous);
-                _renderStageLeft->draw(*_state,previous);
             }
             break;
         }
@@ -651,9 +712,9 @@ void SceneView::draw()
     else
     {
         _globalState->setAttribute(_viewport.get());
-        osg::ref_ptr<osg::ColorMask> cmask = osgNew osg::ColorMask;
-        cmask->setMask(true,true,true,true);
-        _globalState->setAttribute(cmask.get());
+//         osg::ref_ptr<osg::ColorMask> cmask = osgNew osg::ColorMask;
+//         cmask->setMask(true,true,true,true);
+//         _globalState->setAttribute(cmask.get());
 
         // bog standard draw.
         _renderStage->drawPreRenderStages(*_state,previous);

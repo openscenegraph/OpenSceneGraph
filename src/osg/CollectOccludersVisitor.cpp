@@ -32,19 +32,19 @@ void CollectOccludersVisitor::reset()
     CullStack::reset();
 }
 
-float CollectOccludersVisitor::getDistanceToEyePoint(const Vec3& pos, bool withLODBias) const
+float CollectOccludersVisitor::getDistanceToEyePoint(const Vec3& pos, bool withLODScale) const
 {
-    if (withLODBias) return (pos-getEyeLocal()).length()*getLODBias();
+    if (withLODScale) return (pos-getEyeLocal()).length()*getLODScale();
     else return (pos-getEyeLocal()).length();
 }
 
-float CollectOccludersVisitor::getDistanceFromEyePoint(const Vec3& pos, bool withLODBias) const
+float CollectOccludersVisitor::getDistanceFromEyePoint(const Vec3& pos, bool withLODScale) const
 {
     const Matrix& matrix = *_modelviewStack.back();
     float dist = -(pos[0]*matrix(0,2)+pos[1]*matrix(1,2)+pos[2]*matrix(2,2)+matrix(3,2));
     
-    if (withLODBias) return dist*getLODBias();
-    else return dist*getLODBias();
+    if (withLODScale) return dist*getLODScale();
+    else return dist*getLODScale();
 }
 
 void CollectOccludersVisitor::apply(osg::Node& node)

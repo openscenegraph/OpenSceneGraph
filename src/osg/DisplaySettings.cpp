@@ -129,6 +129,16 @@ void DisplaySettings::readEnvironmentalVariables()
         {
             _stereoMode = VERTICAL_SPLIT;
         }
+        else
+        if (strcmp(ptr,"LEFT_EYE")==0)
+        {
+            _stereoMode = LEFT_EYE;
+        }
+        else
+        if (strcmp(ptr,"RIGHT_EYE")==0)
+        {
+            _stereoMode = RIGHT_EYE;
+        }
     }
 
     if( (ptr = getenv("OSG_STEREO")) != 0)
@@ -230,6 +240,8 @@ void DisplaySettings::readCommandLine(std::vector<std::string>& commandLine)
                 else if (*itr=="QUAD_BUFFER") { _stereo = true;_stereoMode = QUAD_BUFFER; ++itr; }
                 else if (*itr=="HORIZONTAL_SPLIT") { _stereo = true;_stereoMode = HORIZONTAL_SPLIT; ++itr; }
                 else if (*itr=="VERTICAL_SPLIT") { _stereo = true;_stereoMode = VERTICAL_SPLIT; ++itr; }
+                else if (*itr=="LEFT_EYE") { _stereo = true;_stereoMode = LEFT_EYE; ++itr; }
+                else if (*itr=="RIGHT_EYE") { _stereo = true;_stereoMode = RIGHT_EYE; ++itr; }
                 else if (*itr=="ON") { _stereo = true; ++itr; }
                 else if (*itr=="OFF") { _stereo = false; ++itr; }
             }

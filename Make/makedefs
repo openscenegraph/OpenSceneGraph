@@ -291,9 +291,10 @@ ifeq ($(OS),Darwin)
   LIB_EXT            = dylib
   QUICKTIME	    = -framework QuickTime $(CARBON_LIB)
   TIFF_LIB	    = -ltiff
-  SRC_DIRS          = osg osgUtil osgDB \
-                        osgGA osgGLUT \
-                        osgPlugins osgParticle \
+  # src libs which require external libs: osgText
+  SRC_DIRS          = osg osgUtil osgDB osgParticle\
+                        osgGA   osgGLUT \
+                        osgPlugins \
                         Demos
   LIBVERSION	    =  -dylib_current_version 0.9.1
 

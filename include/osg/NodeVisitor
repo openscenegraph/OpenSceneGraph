@@ -192,12 +192,12 @@ class SG_EXPORT NodeVisitor : public Referenced
         /** Get the distance from a point to the eye point, distance value in local coordinate system.
           * Note, not all NodeVisitor implement this method, it is mainly cull visitors which will implement.
           * If the getDistianceFromEyePoint(pos) is not implmented than a default value of 0.0 is returned.*/
-        virtual float getDistanceToEyePoint(const Vec3& /*pos*/, bool /*useLODBias*/) const { return 0.0f; }
+        virtual float getDistanceToEyePoint(const Vec3& /*pos*/, bool /*useLODScale*/) const { return 0.0f; }
 
         /** Get the distance of a point from the eye point, distance value in the eye coordinate system.
           * Note, not all NodeVisitor implement this method, it is mainly cull visitors which will implement.
           * If the getDistianceFromEyePoint(pos) is not implmented than a default value of 0.0 is returned.*/
-        virtual float getDistanceFromEyePoint(const Vec3& /*pos*/, bool /*useLODBias*/) const { return 0.0f; }
+        virtual float getDistanceFromEyePoint(const Vec3& /*pos*/, bool /*useLODScale*/) const { return 0.0f; }
 
         virtual void apply(Node& node)                      { traverse(node);}
         

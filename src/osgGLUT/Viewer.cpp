@@ -958,11 +958,11 @@ void Viewer::keyboard(unsigned char key, int x, int y)
             break;
 
         case '/' :
-            if (sceneView->getLODBias()>0.5) sceneView->setLODBias(sceneView->getLODBias()/1.5f);
+            if (sceneView->getLODScale()>0.5) sceneView->setLODScale(sceneView->getLODScale()/1.5f);
             break;
 
         case '*' :
-            if (sceneView->getLODBias()<30) sceneView->setLODBias(sceneView->getLODBias()*1.5f);
+            if (sceneView->getLODScale()<30) sceneView->setLODScale(sceneView->getLODScale()*1.5f);
             break;
 
         case '+' :

@@ -48,8 +48,8 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
 
         virtual void reset();
         
-        virtual float getDistanceToEyePoint(const osg::Vec3& pos, bool withLODBias) const;
-        virtual float getDistanceFromEyePoint(const osg::Vec3& pos, bool withLODBias) const;
+        virtual float getDistanceToEyePoint(const osg::Vec3& pos, bool withLODScale) const;
+        virtual float getDistanceFromEyePoint(const osg::Vec3& pos, bool withLODScale) const;
 
         virtual void apply(osg::Node&);
         virtual void apply(osg::Geode& node);

@@ -38,11 +38,11 @@ namespace osgGL2 {
   * GL2 Objects to cached until they can be deleted
   * by the OpenGL context in which they were created, specified
   * by contextID.*/
-void DeleteObject(unsigned int contextID, GLhandleARB handle);
+extern OSGGL2_EXPORT void DeleteObject(unsigned int contextID, GLhandleARB handle);
 
 /** flush all the cached glProgramObjects which need to be deleted
   * in the OpenGL context related to contextID.*/
-void FlushDeletedGL2Objects(unsigned int contextID);
+extern OSGGL2_EXPORT void FlushDeletedGL2Objects(unsigned int contextID);
 
 
 ///////////////////////////////////////////////////////////////////////////

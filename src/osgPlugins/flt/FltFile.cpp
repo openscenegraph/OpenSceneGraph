@@ -115,8 +115,8 @@ bool FltFile::readModel(const std::string& fileName)
 
 bool FltFile::readFile(const std::string& fileName)
 {
-    FileInput fin;
 
+    FileInput fin;
     if (!fin.open(fileName)) 
     {
         // havn't found file, look in OSGFILEPATH
@@ -195,7 +195,26 @@ bool FltFile::readFile(const std::string& fileName)
                     pExternalFltFile = Registry::instance()->getFltFile(filename);
                     if (pExternalFltFile == NULL)
                     {
-                        pExternalFltFile = new FltFile(pColorPool, pTexturePool, pMaterialPool);
+                        //Path for Nested external references
+                        std::string filePath = osgDB::getFilePath(filename);
+                        std::string pushAndPopPath;
+                        //If absolute path
+                        if( (filePath.length()>0 && filePath.find_first_of("/\\")==0) ||
+                            (filePath.length()>2 && filePath.substr(1,1)==":" && filePath.find_first_of("/\\")==2) )
+                        {
+                            pushAndPopPath = filePath;
+                        }
+                        else
+                        {
+                            osgDB::FilePathList fpl = osgDB::getDataFilePathList();
+                            pushAndPopPath = fpl.empty() ? "." : fpl.front();
+                            if(pushAndPopPath.empty()) pushAndPopPath = ".";
+                            pushAndPopPath += "/" + filePath;
+                        }
+                        osgDB::PushAndPopDataPath tmpfile(pushAndPopPath);
+
+
+                        pExternalFltFile = new FltFile(pColorPool, pTexturePool, pMaterialPool);                        
                         pExternalFltFile->readModel(filename);
                     }
                     Registry::instance()->addFltFile(filename, pExternalFltFile);

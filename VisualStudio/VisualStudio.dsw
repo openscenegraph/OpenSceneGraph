@@ -2460,7 +2460,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "osgPlugin scale"=.\osgPlugins\scale\scale.dsp - Package Owner=<4>
+Project: "osgPlugin rot"=.\osgPlugins\rot\rot.dsp - Package Owner=<4>
 
 Package=<5>
 {{{

@@ -350,6 +350,8 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph)
     osg::Texture* texture = new osg::Texture;
     texture->setSubloadMode(osg::Texture::IF_DIRTY);
     texture->setImage(image);
+    texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
+    texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
     stateset->setTextureAttributeAndModes(0, texture,osg::StateAttribute::ON);
 
 //     {    

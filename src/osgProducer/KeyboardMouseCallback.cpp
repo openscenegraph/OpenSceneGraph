@@ -12,26 +12,14 @@ using namespace osgProducer;
 void KeyboardMouseCallback::keyPress( Producer::KeySymbol key )
 {
 
-    if (_escapeKeySetsDone)
-    {
-        switch( key )
-        {
-    #ifdef XK_MISCELLANY // XWindows keydefs
-            case XK_Escape:
-                _done = true;
-                break;
-    #endif
-    #ifdef WIN32
-             case VK_ESCAPE:
-                _done = true;
-                break;
-    #endif
-        }
-    }
            
     osg::ref_ptr<EventAdapter> event = new EventAdapter;
     event->adaptKeyPress(getTime(),key);
-    
+
+    // check against adapted key symbol.    
+    if (_escapeKeySetsDone && 
+        event->getKey()==osgGA::GUIEventAdapter::KEY_Escape) _done = true;
+
     _eventQueueMutex.lock();
     _eventQueue.push_back(event);
     _eventQueueMutex.unlock();

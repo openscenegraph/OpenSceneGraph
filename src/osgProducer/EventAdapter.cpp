@@ -157,7 +157,7 @@ void EventAdapter::adaptKeyPress( double time, Producer::KeySymbol key)
 {
     _eventType = KEYDOWN;
     _time = time;
-    _key = key;
+    _key = adaptKeySymbol(key);
 
     copyStaticVariables();
 }
@@ -167,7 +167,7 @@ void EventAdapter::adaptKeyRelease( double time, Producer::KeySymbol key)
     // we won't handle this correctly right now.. GUIEventAdapter isn't up to it
     _eventType = KEYUP;
     _time = time;
-    _key = key;
+    _key = adaptKeySymbol(key);
 
     copyStaticVariables();
 }
@@ -182,3 +182,18 @@ void EventAdapter::adaptFrame(double time)
 
     copyStaticVariables();
 }
+
+int EventAdapter::adaptKeySymbol(Producer::KeySymbol key)
+{
+    #ifdef WIN32
+        // need to implement some kind of mapping, perhaps using an std::map?
+        if (key==VK_ESCAPE) return KEY_Escape;
+        return key;
+        
+    #else
+        // assume Producer is working under X11, so we have a 1:1 mapping
+        // between X11 key symbols and osgGA::GUIEventAdapter::KeySymbols.
+        return key;
+    #endif
+}
+

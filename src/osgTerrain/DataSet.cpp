@@ -1391,8 +1391,6 @@ DataSet::DestinationTile::DestinationTile():
     _maxSourceLevel(0),
     _imagery_maxNumColumns(4096),
     _imagery_maxNumRows(4096),
-    _imagery_maxSourceResolutionX(0.0f),
-    _imagery_maxSourceResolutionY(0.0f),
     _terrain_maxNumColumns(1024),
     _terrain_maxNumRows(1024),
     _terrain_maxSourceResolutionX(0.0f),
@@ -1440,20 +1438,23 @@ void DataSet::DestinationTile::computeMaximumSourceResolution(CompositeSource* s
 
                 switch((*itr)->getType())
                 {
-                case(Source::IMAGE):
-                    if (_imagery_maxSourceResolutionX==0.0f) _imagery_maxSourceResolutionX=sourceResolutionX;
-                    else _imagery_maxSourceResolutionX=osg::minimum(_imagery_maxSourceResolutionX,sourceResolutionX);
-                    if (_imagery_maxSourceResolutionY==0.0f) _imagery_maxSourceResolutionY=sourceResolutionY;
-                    else _imagery_maxSourceResolutionY=osg::minimum(_imagery_maxSourceResolutionY,sourceResolutionY);
-                    break;
-                case(Source::HEIGHT_FIELD):
-                    if (_terrain_maxSourceResolutionX==0.0f) _terrain_maxSourceResolutionX=sourceResolutionX;
-                    else _terrain_maxSourceResolutionX=osg::minimum(_terrain_maxSourceResolutionX,sourceResolutionX);
-                    if (_terrain_maxSourceResolutionY==0.0f) _terrain_maxSourceResolutionY=sourceResolutionY;
-                    else _terrain_maxSourceResolutionY=osg::minimum(_terrain_maxSourceResolutionY,sourceResolutionY);
-                    break;
-                default:
-                    break;
+                    case(Source::IMAGE):
+                    {
+                        ImageData& imageData = getImageData(source->getLayer());
+                        if (imageData._imagery_maxSourceResolutionX==0.0f) imageData._imagery_maxSourceResolutionX=sourceResolutionX;
+                        else imageData._imagery_maxSourceResolutionX=osg::minimum(imageData._imagery_maxSourceResolutionX,sourceResolutionX);
+                        if (imageData._imagery_maxSourceResolutionY==0.0f) imageData._imagery_maxSourceResolutionY=sourceResolutionY;
+                        else imageData._imagery_maxSourceResolutionY=osg::minimum(imageData._imagery_maxSourceResolutionY,sourceResolutionY);
+                        break;
+                    }
+                    case(Source::HEIGHT_FIELD):
+                        if (_terrain_maxSourceResolutionX==0.0f) _terrain_maxSourceResolutionX=sourceResolutionX;
+                        else _terrain_maxSourceResolutionX=osg::minimum(_terrain_maxSourceResolutionX,sourceResolutionX);
+                        if (_terrain_maxSourceResolutionY==0.0f) _terrain_maxSourceResolutionY=sourceResolutionY;
+                        else _terrain_maxSourceResolutionY=osg::minimum(_terrain_maxSourceResolutionY,sourceResolutionY);
+                        break;
+                    default:
+                        break;
                 }
             }
         }
@@ -1461,14 +1462,14 @@ void DataSet::DestinationTile::computeMaximumSourceResolution(CompositeSource* s
 }
 
 
-bool DataSet::DestinationTile::computeImageResolution(unsigned int& numColumns, unsigned int& numRows, double& resX, double& resY)
+bool DataSet::DestinationTile::computeImageResolution(unsigned int layer, unsigned int& numColumns, unsigned int& numRows, double& resX, double& resY)
 {
-    if (_imagery_maxSourceResolutionX!=0.0f && _imagery_maxSourceResolutionY!=0.0f &&
+    ImageData& imageData = getImageData(layer);
+    if (imageData._imagery_maxSourceResolutionX!=0.0f && imageData._imagery_maxSourceResolutionY!=0.0f &&
         _imagery_maxNumColumns!=0 && _imagery_maxNumRows!=0)
     {
-
-        unsigned int numColumnsAtFullRes = 1+(unsigned int)ceilf((_extents.xMax()-_extents.xMin())/_imagery_maxSourceResolutionX);
-        unsigned int numRowsAtFullRes = 1+(unsigned int)ceilf((_extents.yMax()-_extents.yMin())/_imagery_maxSourceResolutionY);
+        unsigned int numColumnsAtFullRes = 1+(unsigned int)ceilf((_extents.xMax()-_extents.xMin())/imageData._imagery_maxSourceResolutionX);
+        unsigned int numRowsAtFullRes = 1+(unsigned int)ceilf((_extents.yMax()-_extents.yMin())/imageData._imagery_maxSourceResolutionY);
         unsigned int numColumnsRequired = osg::minimum(_imagery_maxNumColumns,numColumnsAtFullRes);
         unsigned int numRowsRequired    = osg::minimum(_imagery_maxNumRows,numRowsAtFullRes);
 
@@ -1509,34 +1510,40 @@ void DataSet::DestinationTile::allocate()
 {
     unsigned int texture_numColumns, texture_numRows;
     double texture_dx, texture_dy;
-    if (computeImageResolution(texture_numColumns,texture_numRows,texture_dx,texture_dy))
+    for(unsigned int layerNum=0;
+        layerNum<_imagery.size();
+        ++layerNum)
     {
-
-        _imagery = new DestinationData(_dataSet);
-        _imagery->_cs = _cs;
-        _imagery->_extents = _extents;
-        _imagery->_geoTransform.set(texture_dx,      0.0,               0.0,0.0,
-                                    0.0,             -texture_dy,       0.0,0.0,
-                                    0.0,             0.0,               1.0,1.0,
-                                    _extents.xMin(), _extents.yMax(),   0.0,1.0);
-
-
-        _imagery->_image = new osg::Image;
-
-        std::string imageExension(".dds"); // ".rgb"
-        //std::string imageExension(".jp2"); // ".rgb"
-        std::string imageName(_name+imageExension);
-        _imagery->_image->setFileName(imageName.c_str());
-
-        _imagery->_image->allocateImage(texture_numColumns,texture_numRows,1,GL_RGB,GL_UNSIGNED_BYTE);
-        unsigned char* data = _imagery->_image->data();
-        unsigned int totalSize = _imagery->_image->getTotalSizeInBytesIncludingMipmaps();
-        for(unsigned int i=0;i<totalSize;++i)
+        if (computeImageResolution(layerNum,texture_numColumns,texture_numRows,texture_dx,texture_dy))
         {
-            *(data++) = 0;
+
+            ImageData& imageData = getImageData(layerNum);
+
+            imageData._imagery = new DestinationData(_dataSet);
+            imageData._imagery->_cs = _cs;
+            imageData._imagery->_extents = _extents;
+            imageData._imagery->_geoTransform.set(texture_dx,      0.0,               0.0,0.0,
+                                        0.0,             -texture_dy,       0.0,0.0,
+                                        0.0,             0.0,               1.0,1.0,
+                                        _extents.xMin(), _extents.yMax(),   0.0,1.0);
+
+
+            imageData._imagery->_image = new osg::Image;
+
+            std::string imageExension(".dds"); // ".rgb"
+            //std::string imageExension(".jp2"); // ".rgb"
+            std::string imageName(_name+imageExension);
+            imageData._imagery->_image->setFileName(imageName.c_str());
+
+            imageData._imagery->_image->allocateImage(texture_numColumns,texture_numRows,1,GL_RGB,GL_UNSIGNED_BYTE);
+            unsigned char* data = imageData._imagery->_image->data();
+            unsigned int totalSize = imageData._imagery->_image->getTotalSizeInBytesIncludingMipmaps();
+            for(unsigned int i=0;i<totalSize;++i)
+            {
+                *(data++) = 0;
+            }
         }
     }
-
 
     unsigned int dem_numColumns, dem_numRows;
     double dem_dx, dem_dy;
@@ -1652,13 +1659,106 @@ void DataSet::DestinationTile::equalizeCorner(Position position)
     // if there is only one valid corner to process then there is nothing to equalize against so return.
     if (cornersToProcess.size()==1) return;
     
-    typedef std::pair<osg::Image*,Position> ImageCornerPair;
-    typedef std::vector<ImageCornerPair> ImageCornerList;
+
+    for(unsigned int layerNum=0;
+        layerNum<_imagery.size();
+        ++layerNum)
+    {
+    
+        typedef std::pair<osg::Image*,Position> ImageCornerPair;
+        typedef std::vector<ImageCornerPair> ImageCornerList;
+
+        ImageCornerList imagesToProcess;
+
+        for(itr=cornersToProcess.begin();
+            itr!=cornersToProcess.end();
+            ++itr)
+        {
+            TileCornerPair& tcp = *itr;
+            if (layerNum<tcp.first->_imagery.size())
+            {
+                ImageData& imageData = tcp.first->_imagery[layerNum];
+                if (imageData._imagery.valid() && imageData._imagery->_image.valid())
+                {
+                    imagesToProcess.push_back(ImageCornerPair(imageData._imagery->_image.get(),tcp.second));
+                }
+            }
+        }
+
+        if (imagesToProcess.size()>1)
+        {
+            int red = 0;
+            int green = 0;
+            int blue = 0;
+            // accumulate colours.
+            ImageCornerList::iterator iitr;
+            for(iitr=imagesToProcess.begin();
+                iitr!=imagesToProcess.end();
+                ++iitr)
+            {
+                ImageCornerPair& icp = *iitr;
+                unsigned char* data=0;
+                switch(icp.second)
+                {
+                case LEFT_BELOW:
+                    data = icp.first->data(0,0);
+                    break;
+                case BELOW_RIGHT:
+                    data = icp.first->data(icp.first->s()-1,0);
+                    break;
+                case RIGHT_ABOVE:
+                    data = icp.first->data(icp.first->s()-1,icp.first->t()-1);
+                    break;
+                case ABOVE_LEFT:
+                    data = icp.first->data(0,icp.first->t()-1);
+                    break;
+                default :
+                    break;
+                }
+                red += *(data++);
+                green += *(data++);
+                blue += *(data);
+            }
+
+            // divide them.
+            red /= imagesToProcess.size();
+            green /= imagesToProcess.size();
+            blue /= imagesToProcess.size();
+            
+            // apply colour to corners.
+            for(iitr=imagesToProcess.begin();
+                iitr!=imagesToProcess.end();
+                ++iitr)
+            {
+                ImageCornerPair& icp = *iitr;
+                unsigned char* data=0;
+                switch(icp.second)
+                {
+                case LEFT_BELOW:
+                    data = icp.first->data(0,0);
+                    break;
+                case BELOW_RIGHT:
+                    data = icp.first->data(icp.first->s()-1,0);
+                    break;
+                case RIGHT_ABOVE:
+                    data = icp.first->data(icp.first->s()-1,icp.first->t()-1);
+                    break;
+                case ABOVE_LEFT:
+                    data = icp.first->data(0,icp.first->t()-1);
+                    break;
+                default :
+                    break;
+                }
+                *(data++) = red;
+                *(data++) = green;
+                *(data) = blue;
+            }
+
+        }
+    }    
     
     typedef std::pair<osg::HeightField*,Position> HeightFieldCornerPair;
     typedef std::vector<HeightFieldCornerPair> HeightFieldCornerList;
-
-    ImageCornerList imagesToProcess;
     HeightFieldCornerList heightFieldsToProcess;
     
     for(itr=cornersToProcess.begin();
@@ -1666,87 +1766,13 @@ void DataSet::DestinationTile::equalizeCorner(Position position)
         ++itr)
     {
         TileCornerPair& tcp = *itr;
-        if (tcp.first->_imagery.valid() && tcp.first->_imagery->_image.valid())
-        {
-            imagesToProcess.push_back(ImageCornerPair(tcp.first->_imagery->_image.get(),tcp.second));
-        }
-        
         if (tcp.first->_terrain.valid() && tcp.first->_terrain->_heightField.valid())
         {
             heightFieldsToProcess.push_back(HeightFieldCornerPair(tcp.first->_terrain->_heightField.get(),tcp.second));
         }
     }
 
-    if (imagesToProcess.size()>1)
-    {
-        int red = 0;
-        int green = 0;
-        int blue = 0;
-        // accumulate colours.
-        ImageCornerList::iterator iitr;
-        for(iitr=imagesToProcess.begin();
-            iitr!=imagesToProcess.end();
-            ++iitr)
-        {
-            ImageCornerPair& icp = *iitr;
-            unsigned char* data=0;
-            switch(icp.second)
-            {
-            case LEFT_BELOW:
-                data = icp.first->data(0,0);
-                break;
-            case BELOW_RIGHT:
-                data = icp.first->data(icp.first->s()-1,0);
-                break;
-            case RIGHT_ABOVE:
-                data = icp.first->data(icp.first->s()-1,icp.first->t()-1);
-                break;
-            case ABOVE_LEFT:
-                data = icp.first->data(0,icp.first->t()-1);
-                break;
-            default :
-                break;
-            }
-            red += *(data++);
-            green += *(data++);
-            blue += *(data);
-        }
 
-        // divide them.
-        red /= imagesToProcess.size();
-        green /= imagesToProcess.size();
-        blue /= imagesToProcess.size();
-        // apply colour to corners.
-        for(iitr=imagesToProcess.begin();
-            iitr!=imagesToProcess.end();
-            ++iitr)
-        {
-            ImageCornerPair& icp = *iitr;
-            unsigned char* data=0;
-            switch(icp.second)
-            {
-            case LEFT_BELOW:
-                data = icp.first->data(0,0);
-                break;
-            case BELOW_RIGHT:
-                data = icp.first->data(icp.first->s()-1,0);
-                break;
-            case RIGHT_ABOVE:
-                data = icp.first->data(icp.first->s()-1,icp.first->t()-1);
-                break;
-            case ABOVE_LEFT:
-                data = icp.first->data(0,icp.first->t()-1);
-                break;
-            default :
-                break;
-            }
-            *(data++) = red;
-            *(data++) = green;
-            *(data) = blue;
-        }
-        
-    }
-    
     if (heightFieldsToProcess.size()>1)
     {
         float height = 0;
@@ -1840,103 +1866,112 @@ void DataSet::DestinationTile::equalizeEdge(Position position)
     
     tile2->_equalized[position2]=true;
     
-    osg::Image* image1 = _imagery.valid()?_imagery->_image.get() : 0;
-    osg::Image* image2 = tile2->_imagery.valid()?tile2->_imagery->_image.get() : 0;
-
-    //my_notify(osg::INFO)<<"Equalizing edge "<<edgeString(position)<<" of \t"<<_level<<"\t"<<_tileX<<"\t"<<_tileY
-    //         <<"  neighbour "<<tile2->_level<<"\t"<<tile2->_tileX<<"\t"<<tile2->_tileY<<std::endl;
-             
-             
-//   if (_tileY==0) return;
-
-    if (image1 && image2 && 
-        image1->getPixelFormat()==image2->getPixelFormat() &&
-        image1->getDataType()==image2->getDataType() &&
-        image1->getPixelFormat()==GL_RGB &&
-        image1->getDataType()==GL_UNSIGNED_BYTE)
+    for(unsigned int layerNum=0;
+        layerNum<_imagery.size();
+        ++layerNum)
     {
+        if (layerNum>=tile2->_imagery.size()) continue;
+        if (!(tile2->_imagery[layerNum]._imagery.valid())) continue;
+    
 
-        //my_notify(osg::INFO)<<"   Equalizing image1= "<<image1<<                         " with image2 = "<<image2<<std::endl;
-        //my_notify(osg::INFO)<<"              data1 = 0x"<<std::hex<<(int)image1->data()<<" with data2  = 0x"<<(int)image2->data()<<std::endl;
+        osg::Image* image1 = _imagery[layerNum]._imagery->_image.get();
+        osg::Image* image2 = tile2->_imagery[layerNum]._imagery->_image.get();
 
-        unsigned char* data1 = 0;
-        unsigned char* data2 = 0;
-        unsigned int delta1 = 0;
-        unsigned int delta2 = 0;
-        int num = 0;
-        
-        switch(position)
+        //my_notify(osg::INFO)<<"Equalizing edge "<<edgeString(position)<<" of \t"<<_level<<"\t"<<_tileX<<"\t"<<_tileY
+        //         <<"  neighbour "<<tile2->_level<<"\t"<<tile2->_tileX<<"\t"<<tile2->_tileY<<std::endl;
+
+
+    //   if (_tileY==0) return;
+
+        if (image1 && image2 && 
+            image1->getPixelFormat()==image2->getPixelFormat() &&
+            image1->getDataType()==image2->getDataType() &&
+            image1->getPixelFormat()==GL_RGB &&
+            image1->getDataType()==GL_UNSIGNED_BYTE)
         {
-        case LEFT:
-            data1 = image1->data(0,1); // LEFT hand side
-            delta1 = image1->getRowSizeInBytes();
-            data2 = image2->data(image2->s()-1,1); // RIGHT hand side
-            delta2 = image2->getRowSizeInBytes();
-            num = (image1->t()==image2->t())?image2->t()-2:0; // note miss out corners.
-            //my_notify(osg::INFO)<<"       left "<<num<<std::endl;
-            break;
-        case BELOW:
-            data1 = image1->data(1,0); // BELOW hand side
-            delta1 = 3;
-            data2 = image2->data(1,image2->t()-1); // ABOVE hand side
-            delta2 = 3;
-            num = (image1->s()==image2->s())?image2->s()-2:0; // note miss out corners.
-            //my_notify(osg::INFO)<<"       below "<<num<<std::endl;
-            break;
-        case RIGHT:
-            data1 = image1->data(image1->s()-1,1); // LEFT hand side
-            delta1 = image1->getRowSizeInBytes();
-            data2 = image2->data(0,1); // RIGHT hand side
-            delta2 = image2->getRowSizeInBytes();
-            num = (image1->t()==image2->t())?image2->t()-2:0; // note miss out corners.
-            //my_notify(osg::INFO)<<"       right "<<num<<std::endl;
-            break;
-        case ABOVE:
-            data1 = image1->data(1,image1->t()-1); // ABOVE hand side
-            delta1 = 3;
-            data2 = image2->data(1,0); // BELOW hand side
-            delta2 = 3;
-            num = (image1->s()==image2->s())?image2->s()-2:0; // note miss out corners.
-            //my_notify(osg::INFO)<<"       above "<<num<<std::endl;
-            break;
-        default :
-            //my_notify(osg::INFO)<<"       default "<<num<<std::endl;
-            break;
+
+            //my_notify(osg::INFO)<<"   Equalizing image1= "<<image1<<                         " with image2 = "<<image2<<std::endl;
+            //my_notify(osg::INFO)<<"              data1 = 0x"<<std::hex<<(int)image1->data()<<" with data2  = 0x"<<(int)image2->data()<<std::endl;
+
+            unsigned char* data1 = 0;
+            unsigned char* data2 = 0;
+            unsigned int delta1 = 0;
+            unsigned int delta2 = 0;
+            int num = 0;
+
+            switch(position)
+            {
+            case LEFT:
+                data1 = image1->data(0,1); // LEFT hand side
+                delta1 = image1->getRowSizeInBytes();
+                data2 = image2->data(image2->s()-1,1); // RIGHT hand side
+                delta2 = image2->getRowSizeInBytes();
+                num = (image1->t()==image2->t())?image2->t()-2:0; // note miss out corners.
+                //my_notify(osg::INFO)<<"       left "<<num<<std::endl;
+                break;
+            case BELOW:
+                data1 = image1->data(1,0); // BELOW hand side
+                delta1 = 3;
+                data2 = image2->data(1,image2->t()-1); // ABOVE hand side
+                delta2 = 3;
+                num = (image1->s()==image2->s())?image2->s()-2:0; // note miss out corners.
+                //my_notify(osg::INFO)<<"       below "<<num<<std::endl;
+                break;
+            case RIGHT:
+                data1 = image1->data(image1->s()-1,1); // LEFT hand side
+                delta1 = image1->getRowSizeInBytes();
+                data2 = image2->data(0,1); // RIGHT hand side
+                delta2 = image2->getRowSizeInBytes();
+                num = (image1->t()==image2->t())?image2->t()-2:0; // note miss out corners.
+                //my_notify(osg::INFO)<<"       right "<<num<<std::endl;
+                break;
+            case ABOVE:
+                data1 = image1->data(1,image1->t()-1); // ABOVE hand side
+                delta1 = 3;
+                data2 = image2->data(1,0); // BELOW hand side
+                delta2 = 3;
+                num = (image1->s()==image2->s())?image2->s()-2:0; // note miss out corners.
+                //my_notify(osg::INFO)<<"       above "<<num<<std::endl;
+                break;
+            default :
+                //my_notify(osg::INFO)<<"       default "<<num<<std::endl;
+                break;
+            }
+
+            for(int i=0;i<num;++i)
+            {
+                unsigned char red =   (unsigned char)((((int)*data1+ (int)*data2)/2));
+                unsigned char green = (unsigned char)((((int)*(data1+1))+ (int)(*(data2+1)))/2);
+                unsigned char blue =  (unsigned char)((((int)*(data1+2))+ (int)(*(data2+2)))/2);
+    #if 1
+                *data1 = red;
+                *(data1+1) = green;
+                *(data1+2) = blue;
+
+                *data2 = red;
+                *(data2+1) = green;
+                *(data2+2) = blue;
+    #endif
+
+    #if 0
+                *data1 = 255;
+                *(data1+1) = 0;
+                *(data1+2) = 0;
+
+                *data2 = 0;
+                *(data2+1) = 0;
+                *(data2+2) = 0;
+    #endif
+                data1 += delta1;
+                data2 += delta2;
+
+                //my_notify(osg::INFO)<<"    equalizing colour "<<(int)data1<<"  "<<(int)data2<<std::endl;
+
+            }
+
         }
-
-        for(int i=0;i<num;++i)
-        {
-            unsigned char red =   (unsigned char)((((int)*data1+ (int)*data2)/2));
-            unsigned char green = (unsigned char)((((int)*(data1+1))+ (int)(*(data2+1)))/2);
-            unsigned char blue =  (unsigned char)((((int)*(data1+2))+ (int)(*(data2+2)))/2);
-#if 1
-            *data1 = red;
-            *(data1+1) = green;
-            *(data1+2) = blue;
-
-            *data2 = red;
-            *(data2+1) = green;
-            *(data2+2) = blue;
-#endif
-
-#if 0
-            *data1 = 255;
-            *(data1+1) = 0;
-            *(data1+2) = 0;
-
-            *data2 = 0;
-            *(data2+1) = 0;
-            *(data2+2) = 0;
-#endif
-            data1 += delta1;
-            data2 += delta2;
-
-            //my_notify(osg::INFO)<<"    equalizing colour "<<(int)data1<<"  "<<(int)data2<<std::endl;
-
-        }
-
     }
-
+    
     osg::HeightField* heightField1 = _terrain.valid()?_terrain->_heightField.get():0;
     osg::HeightField* heightField2 = tile2->_terrain.valid()?tile2->_terrain->_heightField.get():0;
 
@@ -2080,91 +2115,122 @@ osg::Node* DataSet::DestinationTile::createScene()
 
 osg::StateSet* DataSet::DestinationTile::createStateSet()
 {
-    if (!_imagery.valid() || !_imagery->_image.valid()) return 0;
+    if (_imagery.empty()) return 0;
 
-    std::string imageExension(".dds"); // ".rgb"
-    //std::string imageExension(".jp2"); // ".rgb"
-    std::string imageName(_name+imageExension);
-    _imagery->_image->setFileName(imageName.c_str());
+    unsigned int numValidImagerLayers = 0;
+    unsigned int layerNum;
+    for(layerNum=0;
+        layerNum<_imagery.size();
+        ++layerNum)
+    {
+        if (_imagery[layerNum]._imagery.valid() && 
+            _imagery[layerNum]._imagery->_image.valid())
+        {
+            ++numValidImagerLayers;
+        }
+    }
+    
+    if (numValidImagerLayers==0) return 0;
 
     osg::StateSet* stateset = new osg::StateSet;
-    osg::Image* image = _imagery->_image.get();
 
-    osg::Texture2D* texture = new osg::Texture2D;
-    texture->setImage(image);
-    texture->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP_TO_EDGE);
-    texture->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP_TO_EDGE);
-    switch (_dataSet->getMipMappingMode())
+    for(layerNum=0;
+        layerNum<_imagery.size();
+        ++layerNum)
     {
-      case(DataSet::NO_MIP_MAPPING):
-        {
-            texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
-            texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
-        }
-        break;
-      case(DataSet::MIP_MAPPING_HARDWARE):
-        {
-            texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR_MIPMAP_LINEAR);
-            texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
-        }
-        break;
-      case(DataSet::MIP_MAPPING_IMAGERY):
-        {
-            texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR_MIPMAP_LINEAR);
-            texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
-        }
-        break;
-    }        
-
-    texture->setMaxAnisotropy(_dataSet->getMaxAnisotropy());
-    stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
-
-    bool inlineImageFile = _dataSet->getDestinationTileExtension()==".ive";
-    bool compressedImageSupported = inlineImageFile || imageExension==".dds";
-    bool mipmapImageSupported = inlineImageFile;
-
-    if (compressedImageSupported && 
-        _dataSet->getTextureType()==COMPRESSED_TEXTURE &&
-        (image->getPixelFormat()==GL_RGB || image->getPixelFormat()==GL_RGBA))
-    {
-        texture->setInternalFormatMode(osg::Texture::USE_S3TC_DXT3_COMPRESSION);
-
-        osg::ref_ptr<osg::State> state = new osg::State;
+        ImageData& imageData = _imagery[layerNum];
         
-        // force the mip mapping off temporay if we intend the graphics hardware to do the mipmapping.
-        if (_dataSet->getMipMappingMode()==DataSet::MIP_MAPPING_HARDWARE)
-            texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
-
-        // get OpenGL driver to create texture from image.
-        texture->apply(*state);
-
-        image->readImageFromCurrentTexture(0,true);
-
-        // restore the mip mapping mode.
-        if (_dataSet->getMipMappingMode()==DataSet::MIP_MAPPING_HARDWARE)
-            texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR_MIPMAP_LINEAR);
-
-        texture->setInternalFormatMode(osg::Texture::USE_IMAGE_DATA_FORMAT);
-
+        if (!imageData._imagery.valid() || !imageData._imagery->_image.valid()) continue;
         
-        texture->dirtyTextureObject();
-        
-        my_notify(osg::INFO)<<">>>>>>>>>>>>>>>compressed image.<<<<<<<<<<<<<<"<<std::endl;
+        osg::Image* image = imageData._imagery->_image.get();
 
+        std::string imageExension(".dds"); // ".rgb"
+        //std::string imageExension(".jp2"); // ".rgb"
+        std::string imageName = _name;
+        if (layerNum>0)
+        {
+            imageName += "_l";
+            imageName += char('0'+layerNum);
+        }
+        imageName += imageExension;
+        image->setFileName(imageName.c_str());
+
+        osg::Texture2D* texture = new osg::Texture2D;
+        texture->setImage(image);
+        texture->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP_TO_EDGE);
+        texture->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP_TO_EDGE);
+        switch (_dataSet->getMipMappingMode())
+        {
+          case(DataSet::NO_MIP_MAPPING):
+            {
+                texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
+                texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
+            }
+            break;
+          case(DataSet::MIP_MAPPING_HARDWARE):
+            {
+                texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR_MIPMAP_LINEAR);
+                texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
+            }
+            break;
+          case(DataSet::MIP_MAPPING_IMAGERY):
+            {
+                texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR_MIPMAP_LINEAR);
+                texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
+            }
+            break;
+        }        
+
+        texture->setMaxAnisotropy(_dataSet->getMaxAnisotropy());
+        stateset->setTextureAttributeAndModes(layerNum,texture,osg::StateAttribute::ON);
+
+        bool inlineImageFile = _dataSet->getDestinationTileExtension()==".ive";
+        bool compressedImageSupported = inlineImageFile || imageExension==".dds";
+        bool mipmapImageSupported = inlineImageFile;
+
+        if (compressedImageSupported && 
+            _dataSet->getTextureType()==COMPRESSED_TEXTURE &&
+            (image->getPixelFormat()==GL_RGB || image->getPixelFormat()==GL_RGBA))
+        {
+            texture->setInternalFormatMode(osg::Texture::USE_S3TC_DXT3_COMPRESSION);
+
+            osg::ref_ptr<osg::State> state = new osg::State;
+
+            // force the mip mapping off temporay if we intend the graphics hardware to do the mipmapping.
+            if (_dataSet->getMipMappingMode()==DataSet::MIP_MAPPING_HARDWARE)
+                texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
+
+            // get OpenGL driver to create texture from image.
+            texture->apply(*state);
+
+            image->readImageFromCurrentTexture(0,true);
+
+            // restore the mip mapping mode.
+            if (_dataSet->getMipMappingMode()==DataSet::MIP_MAPPING_HARDWARE)
+                texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR_MIPMAP_LINEAR);
+
+            texture->setInternalFormatMode(osg::Texture::USE_IMAGE_DATA_FORMAT);
+
+
+            texture->dirtyTextureObject();
+
+            my_notify(osg::INFO)<<">>>>>>>>>>>>>>>compressed image.<<<<<<<<<<<<<<"<<std::endl;
+
+        }
+        else
+        {
+            if (_dataSet->getTextureType()==RGB_16_BIT && image->getPixelFormat()==GL_RGB)
+            {
+                image->scaleImage(image->s(),image->t(),image->r(),GL_UNSIGNED_SHORT_5_6_5);
+            }
+
+            if (mipmapImageSupported && _dataSet->getMipMappingMode()==DataSet::MIP_MAPPING_IMAGERY)
+            {
+                my_notify(osg::NOTICE)<<"Non compressed mipmapped not yet supported yet"<<std::endl;        
+            }
+        }
     }
-    else
-    {
-        if (_dataSet->getTextureType()==RGB_16_BIT && image->getPixelFormat()==GL_RGB)
-        {
-            image->scaleImage(image->s(),image->t(),image->r(),GL_UNSIGNED_SHORT_5_6_5);
-        }
-        
-        if (mipmapImageSupported && _dataSet->getMipMappingMode()==DataSet::MIP_MAPPING_IMAGERY)
-        {
-            my_notify(osg::NOTICE)<<"Non compressed mipmapped not yet supported yet"<<std::endl;        
-        }
-    }
-
+    
     return stateset;
 }
 
@@ -2482,7 +2548,18 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
 
     geometry->setColorArray(&color);
     geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
-    geometry->setTexCoordArray(0,&t);
+
+    for(unsigned int layerNum=0;
+        layerNum<_imagery.size();
+        ++layerNum)
+    {
+        ImageData& imageData = _imagery[layerNum];
+        if (imageData._imagery.valid() && imageData._imagery->_image.valid()) 
+        {
+            geometry->setTexCoordArray(layerNum,&t);
+        }
+    }
+
     
     osg::DrawElementsUShort& drawElements = *(new osg::DrawElementsUShort(GL_TRIANGLES,2*3*(numColumns-1)*(numRows-1)));
     geometry->addPrimitiveSet(&drawElements);
@@ -2720,12 +2797,17 @@ void DataSet::DestinationTile::readFrom(CompositeSource* sourceGraph)
         Source* source = itr->get();
         if (source && _level>=source->getMinLevel() && _level<=source->getMaxLevel()) 
         {
+            unsigned int layerNum = source->getLayer();
             SourceData* data = (*itr)->getSourceData();
             if (data)
             {
                 my_notify(osg::INFO)<<"DataSet::DestinationTile::readFrom -> SourceData::read() "<<std::endl;
                 my_notify(osg::INFO)<<"    destination._level="<<_level<<"\t"<<source->getMinLevel()<<"\t"<<source->getMaxLevel()<<std::endl;
-                if (_imagery.valid()) data->read(*_imagery);
+                if (layerNum<_imagery.size() &&
+                    _imagery[layerNum]._imagery.valid())
+                {
+                    data->read(*(_imagery[layerNum]._imagery));
+                }
                 if (_terrain.valid()) data->read(*_terrain);
             }
         }
@@ -2737,7 +2819,7 @@ void DataSet::DestinationTile::readFrom(CompositeSource* sourceGraph)
 
 void DataSet::DestinationTile::unrefData()
 {
-    _imagery = 0;
+    _imagery.clear();
     _terrain = 0;
     _models = 0;
 }
@@ -2753,7 +2835,7 @@ void DataSet::DestinationTile::addRequiredResolutions(CompositeSource* sourceGra
             {
                 unsigned int numCols,numRows;
                 double resX, resY;
-                if (computeImageResolution(numCols,numRows,resX,resY))
+                if (computeImageResolution(source->getLayer(),numCols,numRows,resX,resY))
                 {
                     source->addRequiredResolution(resX,resY);
                 }
@@ -3366,18 +3448,23 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(CompositeDestinat
         bool needToDivideX = false;
         bool needToDivideY = false;
 
-        unsigned int texture_numColumns;
-        unsigned int texture_numRows;
-        double texture_dx;
-        double texture_dy;
         // note, resolutionSensitivityScale should probably be customizable.. will consider this option for later inclusion.
         double resolutionSensitivityScale = 0.9;
-        if (tile->computeImageResolution(texture_numColumns,texture_numRows,texture_dx,texture_dy))
+        for(unsigned int layerNum=0;
+            layerNum<tile->_imagery.size();
+            ++layerNum)
         {
-            if (texture_dx*resolutionSensitivityScale>tile->_imagery_maxSourceResolutionX) needToDivideX = true;
-            if (texture_dy*resolutionSensitivityScale>tile->_imagery_maxSourceResolutionY) needToDivideY = true;
+            unsigned int texture_numColumns;
+            unsigned int texture_numRows;
+            double texture_dx;
+            double texture_dy;
+            if (tile->computeImageResolution(layerNum,texture_numColumns,texture_numRows,texture_dx,texture_dy))
+            {
+                if (texture_dx*resolutionSensitivityScale>tile->_imagery[layerNum]._imagery_maxSourceResolutionX) needToDivideX = true;
+                if (texture_dy*resolutionSensitivityScale>tile->_imagery[layerNum]._imagery_maxSourceResolutionY) needToDivideY = true;
+            }
         }
-        
+                
         unsigned int dem_numColumns;
         unsigned int dem_numRows;
         double dem_dx;

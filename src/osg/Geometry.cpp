@@ -160,22 +160,23 @@ class DrawFogCoord : public osg::ConstValueVisitor
 {
     public:
     
-        DrawFogCoord(const FloatArray* fogcoords,const IndexArray* indices,
-                        FogCoordProc fogCoordProc):
+        DrawFogCoord(const Array* fogcoords,const IndexArray* indices,FogCoordProc fogCoordProc):
             _fogcoords(fogcoords),
             _indices(indices),
             _glFogCoord1fv(fogCoordProc) {}
     
         void operator () (unsigned int pos)
         {
-            if (_indices) _glFogCoord1fv(&(*_fogcoords)[_indices->index(pos)]);
-            else _glFogCoord1fv(&(*_fogcoords)[pos]);
+            if (_indices) _fogcoords->accept(_indices->index(pos),*this);
+            else _fogcoords->accept(pos,*this);
         }
 
-        const FloatArray*   _fogcoords;
+        virtual void apply(const GLfloat& v) { _glFogCoord1fv(&v); }
+
+        const Array*        _fogcoords;
         const IndexArray*   _indices;
 
-        FogCoordProc _glFogCoord1fv;
+        FogCoordProc        _glFogCoord1fv;
 };
 
 

@@ -87,6 +87,7 @@ CXXFILES =\
 	UnitTestFramework.cpp\
 	Version.cpp\
 	Vec3.cpp\
+	VertexProgram.cpp\
 	Viewport.cpp\
 
 DEF     += -DSG_LIBRARY

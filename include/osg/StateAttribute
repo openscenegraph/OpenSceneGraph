@@ -151,7 +151,10 @@ class SG_EXPORT StateAttribute : public Object
             CLIPPLANE_4,
             CLIPPLANE_5,
             
-            COLORMATRIX
+            COLORMATRIX,
+            
+            VERTEXPROGRAM,
+            FRAGMENTPROGRAM
         };
 
 

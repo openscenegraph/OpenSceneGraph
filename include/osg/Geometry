@@ -90,9 +90,9 @@ class SG_EXPORT Geometry : public Drawable
         void setFogCoordBinding(AttributeBinding ab) { _fogCoordBinding = ab; _fastPathComputed=false;}
         AttributeBinding getFogCoordBinding() const { return _fogCoordBinding; }
 
-        void setFogCoordArray(FloatArray* array) { _fogCoordArray = array; if (!_fogCoordArray.valid()) _fogCoordBinding=BIND_OFF; dirtyDisplayList(); }
-        FloatArray* getFogCoordArray() { return _fogCoordArray.get(); }
-        const FloatArray* getFogCoordArray() const { return _fogCoordArray.get(); }
+        void setFogCoordArray(Array* array) { _fogCoordArray = array; if (!_fogCoordArray.valid()) _fogCoordBinding=BIND_OFF; dirtyDisplayList(); }
+        Array* getFogCoordArray() { return _fogCoordArray.get(); }
+        const Array* getFogCoordArray() const { return _fogCoordArray.get(); }
 
 
         void setFogCoordIndices(IndexArray* array) { _fogCoordIndices = array; dirtyDisplayList(); }
@@ -205,7 +205,7 @@ class SG_EXPORT Geometry : public Drawable
         ref_ptr<IndexArray>         _secondaryColorIndices;
 
         mutable AttributeBinding    _fogCoordBinding;
-        ref_ptr<FloatArray>         _fogCoordArray;
+        ref_ptr<Array>              _fogCoordArray;
         ref_ptr<IndexArray>         _fogCoordIndices;
         
         TexCoordArrayList           _texCoordList;

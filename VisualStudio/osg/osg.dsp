@@ -429,6 +429,10 @@ SOURCE=..\..\src\osg\Vec3.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\VertexProgram.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\Version.cpp
 # End Source File
 # Begin Source File
@@ -846,6 +850,10 @@ SOURCE=..\..\Include\Osg\Vec3
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\Vec4
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\VertexProgram
 # End Source File
 # Begin Source File
 

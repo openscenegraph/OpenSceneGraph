@@ -38,7 +38,7 @@ class Vec3d
 
         inline Vec3d(const Vec3f& vec) { _v[0]=vec._v[0]; _v[1]=vec._v[1]; _v[2]=vec._v[2];}
         
-        inline operator Vec3f() const { return Vec3f((float)_v[0],(float)_v[1],(float)_v[2]);}
+        inline operator Vec3f() const { return Vec3f(static_cast<float>(_v[0]),static_cast<float>(_v[1]),static_cast<float>(_v[2]));}
 
         Vec3d(value_type x,value_type y,value_type z) { _v[0]=x; _v[1]=y; _v[2]=z; }
 
@@ -166,7 +166,7 @@ class Vec3d
         /// Length of the vector = sqrt( vec . vec )
         inline value_type length() const
         {
-            return sqrtf( _v[0]*_v[0] + _v[1]*_v[1] + _v[2]*_v[2] );
+            return sqrt( _v[0]*_v[0] + _v[1]*_v[1] + _v[2]*_v[2] );
         }
 
         /// Length squared of the vector = vec . vec

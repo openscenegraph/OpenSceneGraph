@@ -3,6 +3,8 @@
 #include <osgDB/WriteFile>
 #include <osgText/Text>
 
+#include <algorithm>
+
 using namespace osgProducer;
 
 class DrawCallback : public Producer::CameraGroup::StatsHandler, public Producer::Camera::Callback
@@ -65,13 +67,17 @@ protected:
     void displayStats();
     void createStatsText();
     
+    typedef std::vector<double> CameraTimes;
+
     bool        _statsInitialized;
     osg::ref_ptr<osgText::Text> _frameRateLabelText;
     osg::ref_ptr<osgText::Text> _frameRateCounterText;
-    TextList    _statsLabelList;
-    TextList    _updateTimeText;
-    TextList    _cullTimeText;
-    TextList    _drawTimeText;
+    TextList                    _statsLabelList;
+    osg::ref_ptr<osgText::Text> _updateTimeText;
+    CameraTimes                 _cullTimes;
+    TextList                    _cullTimeText;
+    CameraTimes                 _drawTimes;
+    TextList                    _drawTimeText;
 
     std::vector <Producer::CameraGroup::FrameStats> _fs;
     unsigned int _index;
@@ -334,6 +340,8 @@ void DrawCallback::displayStats()
         
         // update and draw the frame rate text.
         
+        char tmpText[128];
+
         _frameRateLabelText->draw(*(osh->getState()));
 
         if (_fs.size()>1)
@@ -341,15 +349,15 @@ void DrawCallback::displayStats()
             unsigned int lindex = (_index + 1) % _fs.size();
             double timeForFrames = (_fs[_index]._startOfFrame-_fs[lindex]._startOfFrame);
             double timePerFrame = timeForFrames/(double)(_fs.size()-1);
-            char frameRateText[128];
-            sprintf(frameRateText,"%4.2f",1.0/timePerFrame);
-            _frameRateCounterText->setText(frameRateText);
+            sprintf(tmpText,"%4.2f",1.0/timePerFrame);
+            _frameRateCounterText->setText(tmpText);
         }
         _frameRateCounterText->draw(*(osh->getState()));
         
 
         if (_veh->getFrameStatsMode()>=ViewerEventHandler::CAMERA_STATS)
         {
+
             TextList::iterator itr;
             for(itr=_statsLabelList.begin();
                 itr!=_statsLabelList.end();
@@ -357,22 +365,45 @@ void DrawCallback::displayStats()
             {
                 (*itr)->draw(*(osh->getState()));
             }
-            for(itr=_updateTimeText.begin();
-                itr!=_updateTimeText.end();
-                ++itr)
+
+            double updateTime = 0.0;
+            std::fill(_cullTimes.begin(),_cullTimes.end(),0.0);
+            std::fill(_drawTimes.begin(),_drawTimes.end(),0.0);
+
+            for(unsigned int frame = 0; frame < _fs.size(); frame++ )
             {
+	        Producer::CameraGroup::FrameStats fs = _fs[frame];
+                updateTime += (fs._endOfUpdate-fs._startOfUpdate);
+
+	        for(unsigned int i = 0; i < fs.getNumFrameTimeStampSets(); i++ )
+                {
+	            Producer::Camera::FrameTimeStampSet fts = fs.getFrameTimeStampSet(i);
+
+	            _cullTimes[i] += fts[Producer::Camera::EndCull]-fts[Producer::Camera::BeginCull];
+	            _drawTimes[i] += fts[Producer::Camera::EndDraw]-fts[Producer::Camera::BeginDraw];
+                }
+            }
+
+            sprintf(tmpText,"%4.2f",1000.0*updateTime/(double)_fs.size());
+            _updateTimeText->setText(tmpText);
+
+            _updateTimeText->draw(*(osh->getState()));
+
+            CameraTimes::iterator titr;
+            for(itr=_cullTimeText.begin(),titr = _cullTimes.begin();
+                itr!=_cullTimeText.end() && titr!=_cullTimes.end();
+                ++itr,++titr)
+            {
+                sprintf(tmpText,"%4.2f",1000.0*(*titr)/(double)_fs.size());
+                (*itr)->setText(tmpText);
                 (*itr)->draw(*(osh->getState()));
             }
-            for(itr=_cullTimeText.begin();
-                itr!=_cullTimeText.end();
-                ++itr)
+            for(itr=_drawTimeText.begin(),titr = _drawTimes.begin();
+                itr!=_drawTimeText.end() && titr!=_cullTimes.end();
+                ++itr,++titr)
             {
-                (*itr)->draw(*(osh->getState()));
-            }
-            for(itr=_drawTimeText.begin();
-                itr!=_drawTimeText.end();
-                ++itr)
-            {
+                sprintf(tmpText,"%4.2f",1000.0*(*titr)/(double)_fs.size());
+                (*itr)->setText(tmpText);
                 (*itr)->draw(*(osh->getState()));
             }
         }
@@ -393,7 +424,7 @@ void DrawCallback::displayStats()
         glMatrixMode( GL_PROJECTION );
         glPushMatrix();
         glLoadIdentity();
-        glOrtho( -.01, .128, 600.0, -10.0, -1.0, 1.0 ); 
+        glOrtho( -.025, .128, 600.0, -10.0, -1.0, 1.0 ); 
 
         glPushAttrib( GL_ENABLE_BIT );
         glDisable( GL_LIGHTING );
@@ -433,7 +464,7 @@ void DrawCallback::displayStats()
 	        x1 = fts[Producer::Camera::BeginCull] - zero;
 	        x2 = fts[Producer::Camera::EndCull]   - zero;
 
- 	        glColor4f( 0.0, 0.0, 1.0, 0.5 );
+ 	        glColor4f( 0.0, 1.0, 1.0, 0.5 );
 	        glVertex2d( x1, y1);
 	        glVertex2d( x2, y1);
 	        glVertex2d( x2, y2);
@@ -442,7 +473,7 @@ void DrawCallback::displayStats()
 	        x1 = fts[Producer::Camera::BeginDraw] - zero;
 	        x2 = fts[Producer::Camera::EndDraw]   - zero;
 
- 	        glColor4f( 1.0, 0.0, 0.0, 0.5 );
+ 	        glColor4f( 1.0, 1.0, 0.0, 0.5 );
 	        glVertex2d( x1, y1);
 	        glVertex2d( x2, y1);
 	        glVertex2d( x2, y2);
@@ -503,33 +534,137 @@ void DrawCallback::createStatsText()
 {
     _statsInitialized = true;
 
-    osg::Vec3 pos(10.0f,1000.0f,0.0f);
-    osg::Vec4 color(1.0f,1.0f,1.0f,1.0f);
     float characterSize = 20.0f;
+
+    osg::Vec4 colorFR(1.0f,1.0f,1.0f,1.0f);
+    osg::Vec4 colorUpdate( 0.0f,1.0f,0.0f,1.0f);
+    osg::Vec4 colorCull( 0.0f,1.0f,1.0f,1.0f);
+    osg::Vec4 colorDraw( 1.0f,1.0f,0.0f,1.0f);
     
+    float leftPos = 10.0f;
+    
+    osg::Vec3 pos(leftPos,1000.0f,0.0f);
+
     _frameRateLabelText = new osgText::Text;
     _frameRateLabelText->setFont("fonts/arial.ttf");
-    _frameRateLabelText->setColor(color);
+    _frameRateLabelText->setColor(colorFR);
     _frameRateLabelText->setCharacterSize(characterSize);
     _frameRateLabelText->setPosition(pos);
     _frameRateLabelText->setAlignment(osgText::Text::BASE_LINE);
-    _frameRateLabelText->setText("Frame Rate :");
+    _frameRateLabelText->setText("Frame Rate: ");
 
     pos.x() = _frameRateLabelText->getBound().xMax();
 
     _frameRateCounterText = new osgText::Text;
     _frameRateCounterText->setFont("fonts/arial.ttf");
-    _frameRateCounterText->setColor(color);
+    _frameRateCounterText->setColor(colorFR);
     _frameRateCounterText->setCharacterSize(characterSize);
     _frameRateCounterText->setPosition(pos);
     _frameRateCounterText->setAlignment(osgText::Text::BASE_LINE);
-                _frameRateCounterText->setText("01234567890");
+    _frameRateCounterText->setText("0123456789.");
 
-/*    _statsLabelList;
-    _updateTimeText;
-    _cullTimeText;
-    _drawTimeText;
-*/
+
+    pos.x() = leftPos;
+    pos.y() -= characterSize;
+
+    {
+        osgText::Text* text = new osgText::Text;
+        text->setFont("fonts/arial.ttf");
+        text->setColor(colorUpdate);
+        text->setFontSize(characterSize,characterSize);
+        text->setCharacterSize(characterSize);
+        text->setPosition(pos);
+        text->setAlignment(osgText::Text::BASE_LINE);
+        text->setText("Update: ");
+
+        _statsLabelList.push_back(text);
+        
+        pos.x() = text->getBound().xMax();
+
+        _updateTimeText = new osgText::Text;
+
+        _updateTimeText->setFont("fonts/arial.ttf");
+        _updateTimeText->setColor(colorUpdate);
+        _updateTimeText->setFontSize(characterSize,characterSize);
+        _updateTimeText->setCharacterSize(characterSize);
+        _updateTimeText->setPosition(pos);
+        _updateTimeText->setAlignment(osgText::Text::BASE_LINE);
+        _updateTimeText->setText("0123456789.");
+        
+    }
+
+    pos.x() = leftPos;
+    pos.y() -= characterSize;
+
+    _cullTimes.clear();
+    _drawTimes.clear();
+
+    OsgCameraGroup* ocg = _veh->getOsgCameraGroup();
+    Producer::CameraConfig* cfg = ocg->getCameraConfig();
+    for (unsigned int i=0;i<cfg->getNumberOfCameras(); ++i )
+    {
+        pos.x() = leftPos;
+
+        osgText::Text* cullLabel = new osgText::Text;
+        cullLabel->setFont("fonts/arial.ttf");
+        cullLabel->setColor(colorCull);
+        cullLabel->setFontSize(characterSize,characterSize);
+        cullLabel->setCharacterSize(characterSize);
+        cullLabel->setPosition(pos);
+        cullLabel->setAlignment(osgText::Text::BASE_LINE);
+        cullLabel->setText("Cull: ");
+
+        _statsLabelList.push_back(cullLabel);
+        
+        pos.x() = cullLabel->getBound().xMax();
+
+        osgText::Text* cullField = new osgText::Text;
+
+        cullField->setFont("fonts/arial.ttf");
+        cullField->setColor(colorCull);
+        cullField->setFontSize(characterSize,characterSize);
+        cullField->setCharacterSize(characterSize);
+        cullField->setPosition(pos);
+        cullField->setAlignment(osgText::Text::BASE_LINE);
+        cullField->setText("1000.00");
+        
+        _cullTimes.push_back(0.0);
+        
+        _cullTimeText.push_back(cullField);
+
+        pos.x() = cullField->getBound().xMax();
+
+
+        osgText::Text* drawLabel = new osgText::Text;
+        drawLabel->setFont("fonts/arial.ttf");
+        drawLabel->setColor(colorDraw);
+        drawLabel->setFontSize(characterSize,characterSize);
+        drawLabel->setCharacterSize(characterSize);
+        drawLabel->setPosition(pos);
+        drawLabel->setAlignment(osgText::Text::BASE_LINE);
+        drawLabel->setText("Draw: ");
+
+        _statsLabelList.push_back(drawLabel);
+        
+        pos.x() = drawLabel->getBound().xMax();
+
+        osgText::Text* drawField = new osgText::Text;
+
+        drawField->setFont("fonts/arial.ttf");
+        drawField->setColor(colorDraw);
+        drawField->setFontSize(characterSize,characterSize);
+        drawField->setCharacterSize(characterSize);
+        drawField->setPosition(pos);
+        drawField->setAlignment(osgText::Text::BASE_LINE);
+        drawField->setText("1000.00");
+        
+        _drawTimeText.push_back(drawField);
+
+        _drawTimes.push_back(0.0);
+
+        pos.x() = cullField->getBound().xMax();
+    }
+
 
 }
 

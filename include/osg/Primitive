@@ -16,11 +16,11 @@ class Primitive : public Object
     
         enum Type
         {
-            PrimitiveType                      = 0,
-            DrawArraysPrimitiveType             = 1,
-            UByteDrawElementsPrimitiveType      = 2,
-            UShortDrawElementsPrimitiveType     = 3,
-            UIntDrawElementsPrimitiveType       = 4,
+            PrimitiveType,
+            DrawArraysPrimitiveType,
+            UByteDrawElementsPrimitiveType,
+            UShortDrawElementsPrimitiveType,
+            UIntDrawElementsPrimitiveType
         };
 
         enum Mode

@@ -853,6 +853,9 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
         void setVerticalScale(float verticalScale) { _verticalScale = verticalScale; }
         float getVerticalScale() const { return _verticalScale; }
                
+        void setSkirtRatio(float skirtRatio) { _skirtRatio = skirtRatio; }
+        float getSkirtRatio() const { return _skirtRatio; }
+
         void setDefaultColor(const osg::Vec4& defaultColor) { _defaultColor = defaultColor; }
         const osg::Vec4& getDefaultColor() const { return _defaultColor; }
 
@@ -960,6 +963,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
         float                                       _maximumVisiableDistanceOfTopLevel;
 	float                                       _radiusToMaxVisibleDistanceRatio;
         float                                       _verticalScale;
+        float                                       _skirtRatio;
             
         osg::ref_ptr<osg::CoordinateSystemNode>     _destinationCoordinateSystem;
         osg::ref_ptr<osg::CoordinateSystemNode>     _intermediateCoordinateSystem;

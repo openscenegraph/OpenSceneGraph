@@ -34,22 +34,28 @@ namespace osgFX
      */
     class OSGFX_EXPORT Validator: public osg::StateAttribute {
     public:
+		enum {
+			VALIDATOR = 0x56616C69
+		};
+		
         Validator();
         Validator(Effect *effect);
         Validator(const Validator &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
 
-        META_StateAttribute(osgFX, Validator, 0x56616C69);
+        META_StateAttribute(osgFX, Validator, VALIDATOR);
 
         void apply(osg::State &state) const;
 
         inline int compare(const osg::StateAttribute &sa) const;
+        
+        inline void disable() { effect_ = 0; }
 
     protected:
         virtual ~Validator() {}
         Validator &operator=(const Validator &) { return *this; }
 
     private:
-        mutable osg::ref_ptr<Effect> effect_;
+        mutable Effect *effect_;
     };
 
     // INLINE METHODS
@@ -59,8 +65,8 @@ namespace osgFX
         const Validator *v = dynamic_cast<const Validator *>(&sa);
         if (!v) return -1;
 
-        if (effect_.get() < v->effect_.get()) return -1;
-        if (effect_.get() > v->effect_.get()) return 1;
+        if (effect_ < v->effect_) return -1;
+        if (effect_ > v->effect_) return 1;
 
         return 0;
     }

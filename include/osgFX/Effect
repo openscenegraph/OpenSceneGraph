@@ -52,10 +52,9 @@ namespace osgFX
      selected either manually, with selectTechnique(), or automatically, in which
      case the first technique that is supported by all active rendering contexts 
      is chosen.
-     If you are an Effect user, then simply use it as a single-child group.
-     Create an instance of your desired effect, add it to your scene graph (it
-     is a Node) and call its setChild() method to set its child node as you 
-     would do with a Group.
+     If you are an Effect user, then simply use it as a node group. Create an 
+     instance of your desired effect, add it to your scene graph and call its 
+     addChild() method to add a child node as you would do with a Group.
      If you are an Effect developer, you will have to implement the method
      define_techniques() to define the different techniques that can be used
      for obtaining the desired effect. In define_techniques() you will usually
@@ -64,7 +63,7 @@ namespace osgFX
      techniques added first will have higher priority and will be used first as
      soon as all rendering contexts support it.
      */
-    class OSGFX_EXPORT Effect: public osg::Node {
+    class OSGFX_EXPORT Effect: public osg::Group {
     public:
         Effect();
         Effect(const Effect &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
@@ -95,15 +94,6 @@ namespace osgFX
         */
         inline virtual void setUpDemo()   {}
 
-        /** get the const child node */
-        inline const osg::Node *getChild() const;
-
-        /** get the child node */
-        inline osg::Node *getChild();
-
-        /** set the child node */
-        inline void setChild(osg::Node *child);
-
         /** get the number of techniques defined for this effect */
         inline int getNumTechniques() const;
         
@@ -123,14 +113,16 @@ namespace osgFX
         /** select a technique or enable automatic detection */
         inline void selectTechnique(int i = AUTO_DETECT);
 
-        virtual void traverse(osg::NodeVisitor &nv);
+		/** custom traversal */
+        virtual void traverse(osg::NodeVisitor &nv);        
+
+        /** default traversal */
+        inline void inherited_traverse(osg::NodeVisitor &nv);
 
     protected:
-        virtual ~Effect() {}
+        virtual ~Effect();
         Effect &operator=(const Effect &) { return *this; }
-
-        virtual bool computeBound() const;
-        
+       
         /** force rebuilding of techniques on next traversal */
         inline void dirtyTechniques();
 
@@ -144,7 +136,7 @@ namespace osgFX
          this method.
          */
         virtual bool define_techniques() = 0;
-
+        
     private:
         friend class Validator;
 
@@ -157,11 +149,11 @@ namespace osgFX
 
         // use int instead of bool to avoid errors
         mutable osg::buffered_value<int> tech_selected_;
+        
         int global_sel_tech_;
 
         bool techs_defined_;
 
-        osg::ref_ptr<osg::Node> child_;
         osg::ref_ptr<osg::Geode> dummy_for_validation_;
         
         void build_dummy_node();
@@ -179,33 +171,6 @@ namespace osgFX
         enabled_ = v;
     }
     
-    inline const osg::Node *Effect::getChild() const
-    {
-        return child_.get();
-    }
-
-    inline osg::Node *Effect::getChild()
-    {
-        return child_.get();
-    }
-
-    inline void Effect::setChild(osg::Node *child)
-    {
-        child_ = child;
-        setNumChildrenRequiringUpdateTraversal(0);
-        setNumChildrenWithCullingDisabled(0);
-        setNumChildrenWithOccluderNodes(0);
-        if (child) {
-            if (child->getNumChildrenRequiringUpdateTraversal() > 0 || child->getUpdateCallback())
-                setNumChildrenRequiringUpdateTraversal(1);
-            if (child->getNumChildrenWithCullingDisabled() > 0 || !child->getCullingActive())
-                setNumChildrenWithCullingDisabled(1);
-            if (child->getNumChildrenWithOccluderNodes() > 0 || dynamic_cast<osg::OccluderNode *>(child))
-                setNumChildrenWithOccluderNodes(1);
-        }
-        dirtyBound();
-    }
-
     inline int Effect::getNumTechniques() const
     {
         return static_cast<int>(techs_.size());
@@ -239,6 +204,12 @@ namespace osgFX
     inline void Effect::dirtyTechniques()
     {
         techs_defined_ = false;
+    }
+    
+    inline void Effect::inherited_traverse(osg::NodeVisitor &nv)
+    {
+		typedef osg::Group inherited;
+		inherited::traverse(nv);
     }
 
 }

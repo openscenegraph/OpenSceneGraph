@@ -25,11 +25,11 @@ namespace osgFX
 {
 
 	/**
-     This effect makes surfaces appear bumpy. The child node must use two textures, 
+     This effect makes surfaces appear bumpy. Children nodes must use two textures, 
      one for diffuse color and one for the normal map (which can be created 
      from a height map with tools like nVIDIA's normal map generator). Furthermore, 
      tangent-space basis vectors must be created and assigned to each Geometry; this 
-     can be done quickly by calling BumpMapping::prepareChild(). Note that both 
+     can be done quickly by calling BumpMapping::prepareChildren(). Note that both 
      diffuse and normal map textures must have corresponding UV maps defined in 
      Geometry objects.
      This effect defines a preferred technique which uses ARB vertex & fragment 
@@ -46,11 +46,11 @@ namespace osgFX
         
             "Bump Mapping", 
             
-            "This effect makes surfaces appear bumpy. The child node must use two textures, "
+            "This effect makes surfaces appear bumpy. Children nodes must use two textures, "
             "one for diffuse color and one for the normal map (which can be created "
             "from a height map with tools like nVIDIA's normal map generator). Furthermore, "
             "tangent-space basis vectors must be created and assigned to each Geometry; this "
-            "can be done quickly by calling BumpMapping::prepareChild(). Note that both "
+            "can be done quickly by calling BumpMapping::prepareChildren(). Note that both "
             "diffuse and normal map textures must have corresponding UV maps defined in "
             "Geometry objects.\n"
             "This effect defines a preferred technique which uses ARB vertex & fragment "
@@ -79,22 +79,22 @@ namespace osgFX
         /** set the texture unit that contains normal map texture. Default is 0 */
         inline void setNormalMapTextureUnit(int n);
         
-        /** get the diffuse color texture that overrides the child's texture */
+        /** get the diffuse color texture that overrides children's texture */
         inline osg::Texture2D *getOverrideDiffuseTexture();
         
-        /** get the const diffuse color texture that overrides the child's texture */
+        /** get the const diffuse color texture that overrides children's texture */
         inline const osg::Texture2D *getOverrideDiffuseTexture() const;
         
-        /** set the diffuse color texture that overrides the child's texture */
+        /** set the diffuse color texture that overrides children's texture */
         inline void setOverrideDiffuseTexture(osg::Texture2D *texture);
         
-        /** get the normal map texture that overrides the child's texture */
+        /** get the normal map texture that overrides children's texture */
         inline osg::Texture2D *getOverrideNormalMapTexture();
         
-        /** get the const normal map texture that overrides the child's texture */
+        /** get the const normal map texture that overrides children's texture */
         inline const osg::Texture2D *getOverrideNormalMapTexture() const;
 
-        /** set the normal map texture that overrides the child's texture */
+        /** set the normal map texture that overrides children's texture */
         inline void setOverrideNormalMapTexture(osg::Texture2D *texture);
         
         /**
@@ -106,8 +106,8 @@ namespace osgFX
         /** prepare a Node for bump lighting, calling prepareGeometry() for each Geometry */
         void prepareNode(osg::Node *node);
         
-        /** prepare the current child for bump lighting. Actually calls prepareNode(getChild()) */
-        void prepareChild();
+        /** prepare children for bump lighting. Actually calls prepareNode() for each child */
+        void prepareChildren();
         
         /** set up a demo environment with predefined diffuse and normal maps, as well as texture coordinates */
         void setUpDemo();

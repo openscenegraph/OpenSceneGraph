@@ -11,7 +11,7 @@ osgDB::RegisterDotOsgWrapperProxy BumpMapping_Proxy
 (
 	new osgFX::BumpMapping,
 	"osgFX::BumpMapping",
-	"Object Node osgFX::Effect osgFX::BumpMapping",
+	"Object Node Group osgFX::Effect osgFX::BumpMapping",
     BumpMapping_readLocalData,
     BumpMapping_writeLocalData
 );

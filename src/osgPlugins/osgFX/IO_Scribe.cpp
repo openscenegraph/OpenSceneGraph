@@ -11,7 +11,7 @@ osgDB::RegisterDotOsgWrapperProxy Scribe_Proxy
 (
 	new osgFX::Scribe,
     "osgFX::Scribe",
-	"Object Node osgFX::Effect osgFX::Scribe",
+	"Object Node Group osgFX::Effect osgFX::Scribe",
     Scribe_readLocalData,
     Scribe_writeLocalData
 );

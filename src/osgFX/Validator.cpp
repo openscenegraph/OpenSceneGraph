@@ -6,7 +6,8 @@
 using namespace osgFX;
 
 Validator::Validator()
-:    osg::StateAttribute()
+:    osg::StateAttribute(),
+	effect_(0)
 {
 }
 
@@ -18,13 +19,13 @@ Validator::Validator(Effect *effect)
 
 Validator::Validator(const Validator &copy, const osg::CopyOp &copyop)
 :    osg::StateAttribute(copy, copyop),
-    effect_(static_cast<Effect *>(copyop(copy.effect_.get())))
+    effect_(static_cast<Effect *>(copyop(copy.effect_)))
 {
 }
 
 void Validator::apply(osg::State &state) const
 {
-    if (!effect_.valid()) return;
+    if (!effect_) return;
 
     if (effect_->tech_selected_[state.getContextID()] == 0) {
         Effect::Technique_list::iterator i;

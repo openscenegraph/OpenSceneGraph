@@ -599,22 +599,23 @@ void BumpMapping::prepareNode(osg::Node *node)
     node->accept(tv);
 }
 
-void BumpMapping::prepareChild()
+void BumpMapping::prepareChildren()
 {
-    if (getChild())
-        prepareNode(getChild());
+	for (unsigned i=0; i<getNumChildren(); ++i)
+		prepareNode(getChild(i));
 }
 
 void BumpMapping::setUpDemo()
 {
     // generate texture coordinates
     TexCoordGenerator tcg(diffuseunit_, normalunit_);
-    getChild()->accept(tcg);
+    for (unsigned i=0; i<getNumChildren(); ++i)
+		getChild(i)->accept(tcg);
 
     // set up diffuse texture
     if (!diffuse_tex_.valid()) {
         diffuse_tex_ = new osg::Texture2D;
-        diffuse_tex_->setImage(osgDB::readImageFile("whitemetal_diffuse.jpg"));
+        diffuse_tex_->setImage(osgDB::readImageFile("Images/whitemetal_diffuse.jpg"));
         diffuse_tex_->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR_MIPMAP_LINEAR);
         diffuse_tex_->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);
         diffuse_tex_->setWrap(osg::Texture::WRAP_S, osg::Texture::REPEAT);
@@ -625,7 +626,7 @@ void BumpMapping::setUpDemo()
     // set up normal map texture
     if (!normal_tex_.valid()) {
         normal_tex_ = new osg::Texture2D;
-        normal_tex_->setImage(osgDB::readImageFile("whitemetal_normal.jpg"));
+        normal_tex_->setImage(osgDB::readImageFile("Images/whitemetal_normal.jpg"));
         normal_tex_->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR_MIPMAP_LINEAR);
         normal_tex_->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);
         normal_tex_->setWrap(osg::Texture::WRAP_S, osg::Texture::REPEAT);
@@ -634,7 +635,7 @@ void BumpMapping::setUpDemo()
     }
 
     // generate tangent-space basis vector
-    prepareChild();
+    prepareChildren();
 
     // recreate techniques on next step
     dirtyTechniques();

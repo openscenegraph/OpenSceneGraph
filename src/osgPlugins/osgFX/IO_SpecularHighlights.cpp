@@ -11,7 +11,7 @@ osgDB::RegisterDotOsgWrapperProxy SpecularHighlights_Proxy
 (
 	new osgFX::SpecularHighlights,
     "osgFX::SpecularHighlights",
-	"Object Node osgFX::Effect osgFX::SpecularHighlights",
+	"Object Node Group osgFX::Effect osgFX::SpecularHighlights",
     SpecularHighlights_readLocalData,
     SpecularHighlights_writeLocalData
 );

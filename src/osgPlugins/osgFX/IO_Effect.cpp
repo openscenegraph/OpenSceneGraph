@@ -11,7 +11,7 @@ osgDB::RegisterDotOsgWrapperProxy Effect_Proxy
 (
 	0,
     "osgFX::Effect",
-	"Object Node osgFX::Effect",
+	"Object Node Group osgFX::Effect",
     Effect_readLocalData,
     Effect_writeLocalData
 );
@@ -46,11 +46,6 @@ bool Effect_readLocalData(osg::Object &obj, osgDB::Input &fr)
 		}
 	}
 
-	osg::ref_ptr<osg::Node> node = static_cast<osg::Node *>(fr.readObjectOfType(osgDB::type_wrapper<osg::Node>()));
-	if (node.valid()) {
-		myobj.setChild(node.get());
-	}
-
 	return itAdvanced;
 }
 
@@ -65,7 +60,6 @@ bool Effect_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
 	} else {
 		fw << myobj.getSelectedTechnique() << "\n";
 	}
-	fw.writeObject(*myobj.getChild());
 
     return true;
 }

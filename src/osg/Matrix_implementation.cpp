@@ -608,7 +608,7 @@ void Matrix_implementation::makeOrtho(double left, double right,
 
 bool Matrix_implementation::getOrtho(double& left, double& right,
                       double& bottom, double& top,
-                      double& zNear, double& zFar)
+                      double& zNear, double& zFar) const
 {
     if (_mat[0][3]!=0.0 || _mat[1][3]!=0.0 || _mat[2][3]!=0.0 || _mat[3][3]!=1.0) return false;
 
@@ -642,7 +642,7 @@ void Matrix_implementation::makeFrustum(double left, double right,
 
 bool Matrix_implementation::getFrustum(double& left, double& right,
                                        double& bottom, double& top,
-                                       double& zNear, double& zFar)
+                                       double& zNear, double& zFar) const
 {
     if (_mat[0][3]!=0.0 || _mat[1][3]!=0.0 || _mat[2][3]!=-1.0 || _mat[3][3]!=0.0) return false;
 
@@ -673,7 +673,7 @@ void Matrix_implementation::makePerspective(double fovy,double aspectRatio,
 }
 
 bool Matrix_implementation::getPerspective(double& fovy,double& aspectRatio,
-                                           double& zNear, double& zFar)
+                                           double& zNear, double& zFar) const
 {
     double right  =  0.0;
     double left   =  0.0;
@@ -706,7 +706,7 @@ void Matrix_implementation::makeLookAt(const Vec3& eye,const Vec3& center,const 
     preMult(Matrix_implementation::translate(-eye));
 }
 
-void Matrix_implementation::getLookAt(Vec3& eye,Vec3& center,Vec3& up,value_type lookDistance)
+void Matrix_implementation::getLookAt(Vec3& eye,Vec3& center,Vec3& up,value_type lookDistance) const
 {
     Matrix_implementation inv;
     inv.invert(*this);

@@ -1,9 +1,11 @@
 Welcome to the OpenSceneGraph (OSG).
 
-For information on the project, this distribution, how to compile and
-run libraries and examples, and for documention open up index.html
-in your perfered html browser.
+For up to date information on the project, how to compile and run libraries 
+and examples, and see the documentation on the OpenSceneGraph website.
+
+    http://www.openscenegraph.org
+  
 
 Robert Osfield. 
 robert@openscenegraph.com
-April 2002.
+November 2004.

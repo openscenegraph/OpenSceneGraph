@@ -1,6 +1,28 @@
 OSG News (most significant items from ChangeLog)
 ================================================
 
+16th November 2004 - OpenSceneGraph-0.9.8
+
+    >>> Support for database archives, improved pager, 3d compressed textures
+    
+    Database archives.
+    
+    Improved pager support with better multi-processor stability and constant frame rate
+    peformance.
+    
+    STL import.
+    
+    Spelling and typo correction blitz on osg, osgDB and osgUtil libraries.
+    
+    NodeTrackManipulator improved.
+
+    General bug fixes.    
+    
+    New examples:
+        osgplanets
+        osgspotlight
+        osglauncher
+
 18th August 2004 - OpenSceneGraph-0.9.7-2
 
     Build fixes for VisualStudio6.0.  

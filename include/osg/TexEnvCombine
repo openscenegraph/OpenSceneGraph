@@ -19,7 +19,7 @@
 #include <osg/Vec3>
 #include <osg/Vec4>
 
-// if not defined by gl.h use the definition found in:
+// If not defined by gl.h use the definition found in:
 // http://oss.sgi.com/projects/ogl-sample/registry/ARB/texture_env_combine.txt
 #ifndef GL_ARB_texture_env_combine
 #define GL_COMBINE_ARB                                     0x8570
@@ -57,14 +57,15 @@
 
 namespace osg {
 
-/** TexEnvCombine - encapsulates the OpenGL glTexEnvCombine (texture environment) state.*/
+/** TexEnvCombine encapsulates the OpenGL glTexEnvCombine (texture
+  * environment) state. */
 class SG_EXPORT TexEnvCombine : public StateAttribute
 {
     public :
 
         TexEnvCombine();
         
-        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         TexEnvCombine(const TexEnvCombine& texenv,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             StateAttribute(texenv,copyop),
             _needsTexEnvCrossbar(texenv._needsTexEnvCrossbar),
@@ -92,14 +93,14 @@ class SG_EXPORT TexEnvCombine : public StateAttribute
 
         virtual bool isTextureAttribute() const { return true; }
 
-        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
+        /** Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
         virtual int compare(const StateAttribute& sa) const
         {
-            // check the types are equal and then create the rhs variable
-            // used by the COMPARE_StateAttribute_Paramter macro's below.
+            // Check for equal types, then create the rhs variable
+            // used by the COMPARE_StateAttribute_parameter macros below.
             COMPARE_StateAttribute_Types(TexEnvCombine,sa)
 
-            // compare each paramter in turn against the rhs.
+            // Compare each parameter in turn against the rhs.
             COMPARE_StateAttribute_Parameter(_needsTexEnvCrossbar)
             COMPARE_StateAttribute_Parameter(_combine_RGB)
             COMPARE_StateAttribute_Parameter(_combine_Alpha)
@@ -119,7 +120,7 @@ class SG_EXPORT TexEnvCombine : public StateAttribute
             COMPARE_StateAttribute_Parameter(_scale_Alpha)
             COMPARE_StateAttribute_Parameter(_constantColor)
 
-            return 0; // passed all the above comparison macro's, must be equal.
+            return 0; // Passed all the above comparison macros, so must be equal.
         }
 
 
@@ -207,7 +208,8 @@ class SG_EXPORT TexEnvCombine : public StateAttribute
         void setConstantColor( const Vec4& color ) { _constantColor = color; }
         const Vec4& getConstantColor() const { return _constantColor; }
 
-        /** Set the constant color attribute up to light direction to be used in DOT3 combine operation.*/
+        /** Set the constant color attribute to the given light direction
+          * for use with DOT3 combine operation. */
         void setConstantColorAsLightDirection(const Vec3& direction)
         {
             _constantColor.set((direction.x()+1.0f)*0.5f,(direction.y()+1.0f)*0.5f,(direction.z()+1.0f)*0.5f,1.0f);

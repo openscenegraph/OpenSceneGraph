@@ -18,10 +18,10 @@
 
 namespace osg {
 
-/** Switch is a Group node which allows switching between children.
-    Typical uses would be for objects which might need to be rendered
-    differently at different times, for instance a switch could be used 
-    to represent the different states of a traffic light.
+/** Switch is a Group node that allows switching between children.
+  * Typical uses would be for objects which might need to be rendered
+  * differently at different times, for instance a switch could be used 
+  * to represent the different states of a traffic light.
 */
 class SG_EXPORT Switch : public Group
 {
@@ -30,7 +30,7 @@ class SG_EXPORT Switch : public Group
 
         Switch();
 
-        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         Switch(const Switch&,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
         META_Node(osg, Switch);
@@ -59,20 +59,20 @@ class SG_EXPORT Switch : public Group
         
         bool getChildValue(const Node* child) const;
 
-        /** Set all the children off (false), and set the new default child value to off (false).*/
+        /** Set all the children off (false), and set the new default child
+          * value to off (false). */
         bool setAllChildrenOff();
         
-        /** Set all the children on (true), and set the new default child value to on (true).*/
+        /** Set all the children on (true), and set the new default child
+          * value to on (true). */
         bool setAllChildrenOn();
         
-        /** Set a single child to be on, switch off all other children.*/
+        /** Set a single child on, switch off all other children. */
         bool setSingleChildOn(unsigned int pos);
         
 #ifdef USE_DEPRECATED_API
-	/**
-	 * Special values for the Switch. Use these if you want to
-	 * turn on/off all child nodes.
-	 */
+        /** Special values for the Switch. Use these if you want to
+          * turn on/off all child nodes. */
         enum Values {
                 /** All children turned on. */
 		ALL_CHILDREN_ON=-1,
@@ -82,17 +82,12 @@ class SG_EXPORT Switch : public Group
                 MULTIPLE_CHILDREN_ON=-3
         };
 
-	/**
-	 * Selects the active child Node or enables a special
-	 * SwitchType mode. 
-         * @param value the number of the active child
-	 * (first child == number 0) or SwitchType. Invalid values
-	 * will be ignored.
-	 */
+        /** Selects the active child Node or enables a special SwitchType mode.
+          * @param value the number of the active child (first child == number
+          * 0) or SwitchType. Invalid values will be ignored. */
         void setValue(int value);
 
         int getValue() const;
-        
 #endif        
 
         typedef std::vector<bool>   ValueList;
@@ -103,7 +98,7 @@ class SG_EXPORT Switch : public Group
     
         virtual ~Switch() {}
 
-        // this is effectively a bit mask.
+        // This is effectively a bit mask.
         bool        _newChildDefaultValue;
         ValueList   _values;
 };

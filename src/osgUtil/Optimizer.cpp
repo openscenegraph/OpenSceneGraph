@@ -24,6 +24,7 @@
 #include <osg/OccluderNode>
 #include <osg/Sequence>
 #include <osg/Switch>
+#include <osg/Texture>
 
 #include <osgUtil/TransformAttributeFunctor>
 #include <osgUtil/TriStripVisitor>
@@ -56,7 +57,7 @@ void Optimizer::reset()
     _permissableOptimizationsMap.clear();
 }
 
-static osg::ApplicationUsageProxy Optimizer_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_OPTIMIZER \"<type> [<type>]\"","DEFAULT | FLATTEN_STATIC_TRANSFORMS | REMOVE_REDUNDANT_NODES | COMBINE_ADJACENT_LODS | SHARE_DUPLICATE_STATE | MERGE_GEOMETRY | SPATIALIZE_GROUPS  | COPY_SHARED_NODES  | TRISTRIP_GEOMETRY");
+static osg::ApplicationUsageProxy Optimizer_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_OPTIMIZER \"<type> [<type>]\"","DEFAULT | FLATTEN_STATIC_TRANSFORMS | REMOVE_REDUNDANT_NODES | COMBINE_ADJACENT_LODS | SHARE_DUPLICATE_STATE | MERGE_GEOMETRY | SPATIALIZE_GROUPS  | COPY_SHARED_NODES  | TRISTRIP_GEOMETRY | OPTIMIZE_TEXTURE_SETTINGS");
 
 void Optimizer::optimize(osg::Node* node)
 {
@@ -98,6 +99,11 @@ void Optimizer::optimize(osg::Node* node)
         if(str.find("~TRISTRIP_GEOMETRY")!=std::string::npos) options ^= TRISTRIP_GEOMETRY;
         else if(str.find("TRISTRIP_GEOMETRY")!=std::string::npos) options |= TRISTRIP_GEOMETRY;
 
+        if(str.find("~OPTIMIZE_TEXTURE_SETTINGS")!=std::string::npos) options ^= OPTIMIZE_TEXTURE_SETTINGS;
+        else if(str.find("OPTIMIZE_TEXTURE_SETTINGS")!=std::string::npos) options |= OPTIMIZE_TEXTURE_SETTINGS;
+
+
+
     }
     else
     {
@@ -127,6 +133,17 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
         clv.combineLODs();
     }
     
+    if (options & OPTIMIZE_TEXTURE_SETTINGS)
+    {
+        osg::notify(osg::INFO)<<"Optimizer::optimize() doing OPTIMIZE_TEXTURE_SETTINGS"<<std::endl;
+
+        TextureVisitor tv(true,true, // unref image 
+                          true,true, // client storage
+                          false,1.0, // anisotropic filtering
+                          this );
+        node->accept(tv);
+    }
+
     if (options & SHARE_DUPLICATE_STATE)
     {
         osg::notify(osg::INFO)<<"Optimizer::optimize() doing SHARE_DUPLICATE_STATE"<<std::endl;
@@ -215,7 +232,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
         node->accept(tsv);
         tsv.stripify();
     }
-
+    
 }
 
 
@@ -2150,4 +2167,84 @@ void Optimizer::CopySharedSubgraphsVisitor::copySharedNodes()
             if (new_node) node->getParent(i)->replaceChild(node,new_node);
         }
     }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////
+//
+//  Set the attributes of textures up.
+//
+
+
+void Optimizer::TextureVisitor::apply(osg::Node& node)
+{
+    
+    osg::StateSet* ss = node.getStateSet();
+    if (ss && 
+        isOperationPermissableForObject(&node) &&
+        isOperationPermissableForObject(ss))
+    {
+        apply(*ss);
+    }
+
+    traverse(node);
+}
+
+void Optimizer::TextureVisitor::apply(osg::Geode& geode)
+{
+    if (!isOperationPermissableForObject(&geode)) return;
+
+    osg::StateSet* ss = geode.getStateSet();
+    
+    if (ss && isOperationPermissableForObject(ss))
+    {
+        apply(*ss);
+    }
+
+    for(unsigned int i=0;i<geode.getNumDrawables();++i)
+    {
+        osg::Drawable* drawable = geode.getDrawable(i);
+        if (drawable)
+        {
+            ss = drawable->getStateSet();
+            if (ss &&
+               isOperationPermissableForObject(drawable) &&
+               isOperationPermissableForObject(ss))
+            {
+                apply(*ss);
+            }
+        }
+    }
+}
+
+void Optimizer::TextureVisitor::apply(osg::StateSet& stateset)
+{
+    for(unsigned int i=0;i<stateset.getTextureAttributeList().size();++i)
+    {
+        osg::StateAttribute* sa = stateset.getTextureAttribute(i,osg::StateAttribute::TEXTURE);
+        osg::Texture* texture = dynamic_cast<osg::Texture*>(sa);
+        if (texture && isOperationPermissableForObject(texture))
+        {
+            apply(*texture);
+        }
+    }
+}
+
+void Optimizer::TextureVisitor::apply(osg::Texture& texture)
+{
+    if (_changeAutoUnRef)
+    {
+        texture.setUnRefImageDataAfterApply(_valueAutoUnRef);
+    }
+    
+    if (_changeClientImageStorage)
+    {
+        texture.setClientStorageHint(_valueClientImageStorage);
+    }
+    
+    if (_changeAnisotropy)
+    {
+        texture.setMaxAnisotropy(_valueAnisotropy);
+    }
+
 }

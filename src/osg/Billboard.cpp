@@ -70,6 +70,12 @@ void Billboard::updateCache()
         else if (_axis==Vec3(0.0f,0.0,1.0f) && _normal==Vec3(0.0f,-1.0,0.0f)) _cachedMode = AXIAL_ROT_Z_AXIS;
         else                                                                  _cachedMode = AXIAL_ROT;
     }
+    else if( _mode == POINT_ROT_WORLD )
+    {
+        if(_axis==Vec3(0.0f, 0.0, 1.0f) && _normal==Vec3(0.0f, -1.0f, 0.0f))  _cachedMode = POINT_ROT_WORLD_Z_AXIS;
+        else _cachedMode = _mode;
+       
+    }
     else _cachedMode = _mode;
     
     _side = _axis^_normal;
@@ -225,6 +231,29 @@ bool Billboard::computeMatrix(Matrix& modelview, const Vec3& eye_local, const Ve
                 }
             }
             break;
+        }
+        case(POINT_ROT_WORLD_Z_AXIS):
+        {
+           // float rotation_about_z = atan2( -ev.y(), ev.x() );
+           // float xy_distance = sqrt( ev.x()*ev.x() + ev.y()*ev.y() );
+           // float rotation_from_xy = atan2( xy_distance, -ev.z() );
+
+           Vec2   about_z( -ev.y(), ev.x() );
+           if( about_z.normalize() == 0.0f ) about_z.x() = 1.0f;
+           float  xy_distance = sqrt( ev.x()*ev.x() + ev.y()*ev.y() );
+           Vec2   from_xy( xy_distance, -ev.z() );
+           if( from_xy.normalize() == 0.0f ) from_xy.x() = 1.0f;
+
+           matrix(0,0) =  about_z.x();
+           matrix(0,1) =  about_z.y();
+           matrix(1,0) = -about_z.y()*from_xy.x();
+           matrix(1,1) =  about_z.x()*from_xy.x();
+           matrix(1,2) =  from_xy.y();
+           matrix(2,0) =  about_z.y()*from_xy.y();
+           matrix(2,1) = -about_z.x()*from_xy.y();
+           matrix(2,2) =  from_xy.x();
+
+           break;
         }
     }
 

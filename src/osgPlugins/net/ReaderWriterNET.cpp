@@ -1,18 +1,19 @@
 #include <iostream>
+#include <fstream>
 #include <sstream>
 
 #include <osg/Notify>
 
 #include <osgDB/Input>
-
 #include <osgDB/Registry>
 #include <osgDB/FileNameUtils>
 #include <osgDB/ReadFile>
+#include <osgDB/WriteFile>
 #include <osgDB/FileUtils>
 #include <osg/MatrixTransform>
 #include <osg/Group>
-
 #include "sockinet.h"
+#include "makeDir.h"
 
  /*
   *  Semantics:
@@ -47,7 +48,8 @@ class NetReader : public osgDB::ReaderWriter
         virtual ReadResult readNode(const std::string& inFileName, const Options *options )
         {
             std::string hostname;
-            std::string server_prefix;
+            std::string serverPrefix;
+            std::string localCacheDir;
             int port = 80;
 
             if (options)
@@ -68,12 +70,21 @@ class NetReader : public osgDB::ReaderWriter
                         port = atoi( opt.substr(index+1).c_str() );
                     }
                     else if( opt.substr( 0, index ) == "server_prefix" ||
-                             opt.substr( 0, index ) == "server_prefix" )
+                             opt.substr( 0, index ) == "SERVER_PREFIX" ||
+                             opt.substr( 0, index ) == "prefix" ||
+                             opt.substr( 0, index ) == "PREFIX" )
                     {
-                        server_prefix = opt.substr(index+1);
+                        serverPrefix = opt.substr(index+1);
+                    }
+                    else if( opt.substr( 0, index ) == "local_cache_dir" ||
+                             opt.substr( 0, index ) == "LOCAL_CACHE_DIR" )
+                    {
+                        localCacheDir = opt.substr(index+1);
                     }
                 }
             }
+
+            ReadResult readResult = ReadResult::FILE_NOT_HANDLED;
 
             /* * we accept all extensions
             std::string ext = osgDB::getFileExtension(inFileName);
@@ -106,6 +117,30 @@ class NetReader : public osgDB::ReaderWriter
                 fileName = fileName.substr( 0, rindex );
             }
 
+            if( !serverPrefix.empty() )
+                fileName = serverPrefix + '/' + fileName;
+
+            // Invoke the reader corresponding to the extension
+            osgDB::ReaderWriter *reader = 
+                    osgDB::Registry::instance()->getReaderWriterForExtension( osgDB::getFileExtension(fileName));
+            if( reader == 0L )
+                return ReadResult::FILE_NOT_HANDLED;
+
+            // Before we go to the network, lets see if it is in local cache, if cache
+            // was specified
+            if( !localCacheDir.empty() )
+            {
+                std::string cacheFile = localCacheDir + '/' + fileName;
+                if( osgDB::fileExists( cacheFile ))
+                {
+                    std::ifstream  in(cacheFile.c_str());
+                    readResult = reader->readNode( in );
+                    in.close();
+                    return readResult;
+                }
+            }
+
+            // Fetch from the network
             iosockinet  sio (sockbuf::sock_stream);
             try {
                 sio->connect( hostname.c_str(), port );
@@ -115,9 +150,6 @@ class NetReader : public osgDB::ReaderWriter
                 osg::notify(osg::WARN) << "osgPlugin .net reader: Unable to connect to host " << hostname << std::endl;
                 return ReadResult::FILE_NOT_FOUND;
             }
-
-            if( !server_prefix.empty() )
-                fileName = server_prefix + '/' + fileName;
 
             sio << "GET /" << fileName << " HTTP/1.1\n" << "Host:\n\n";
             sio.flush();
@@ -176,13 +208,21 @@ class NetReader : public osgDB::ReaderWriter
 
             } while( linebuff[0] != '\r' );
 
+            /*
             // Invoke the reader corresponding to the extension
             osgDB::ReaderWriter *reader = 
                     osgDB::Registry::instance()->getReaderWriterForExtension( osgDB::getFileExtension(fileName));
+                    */
 
-            ReadResult readResult = ReadResult::FILE_NOT_HANDLED;
             if( reader != 0L )
                 readResult = reader->readNode( sio );
+
+            if( !localCacheDir.empty() )
+            {
+                std::string cacheFile = localCacheDir + '/' + fileName;
+                if( TemporaryFileUtils::makeDirectory( cacheFile ) )
+                    osgDB::writeNodeFile( *(readResult.getNode()), cacheFile );
+            }
 
             return readResult;
         }

@@ -419,6 +419,8 @@ void GeoSet::computeNumVerts() const
 
 const bool GeoSet::computeBound() const
 {
+    _bbox.init();
+
     if( _iaformat == IA_OFF && _coords == (Vec3 *)0 ) return false;
 
     if( _numcoords == 0 )
@@ -430,7 +432,6 @@ const bool GeoSet::computeBound() const
         return false;
 
     Vec3 center(0.0f,0.0f,0.0f);
-    _bbox.init();
 
     int i;
     if( _iaformat == IA_OFF )
@@ -1005,7 +1006,7 @@ void GeoSet::applyPrimitiveOperation(PrimitiveFunctor& functor)
                     if (_cindex._is_ushort)
                         functor.drawElements( (GLenum)_oglprimtype, _primLengths[i],&_cindex._ptr._ushort[index] );
                     else
-                        functor.drawElements( (GLenum)_oglprimtype, _primLengths[i],&_cindex._ptr._ushort[index] );
+                        functor.drawElements( (GLenum)_oglprimtype, _primLengths[i],&_cindex._ptr._uint[index] );
                 }
                 else
                     functor.drawArrays( (GLenum)_oglprimtype, index, _primLengths[i] );

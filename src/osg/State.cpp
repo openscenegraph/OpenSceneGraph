@@ -35,7 +35,8 @@ void State::reset()
     _modeMap[GL_DEPTH_TEST].global_default_value = true;
     _modeMap[GL_DEPTH_TEST].changed = true;
     
-    // go through all active StateAttribute's, applying where appropriate.
+    // go through all active StateAttribute's, setting to change to force update,
+    // the idea is to leave only the global defaults left.
     for(AttributeMap::iterator aitr=_attributeMap.begin();
         aitr!=_attributeMap.end();
         ++aitr)
@@ -44,9 +45,33 @@ void State::reset()
         as.attributeVec.clear();
         as.last_applied_attribute = NULL;
         as.changed = true;
-    }        
+    }
+    
+    // we can do a straight clear, we arn't intrested in GL_DEPTH_TEST defaults in texture modes.
+    for(TextureModeMapList::iterator tmmItr=_textureModeMapList.begin();
+        tmmItr!=_textureModeMapList.end();
+        ++tmmItr)
+    {
+        tmmItr->clear();
+    }
 
-//    _attributeMap.clear();
+    // empty all the texture attributes as per normal attributes, leaving only the global defaults left.
+    for(TextureAttributeMapList::iterator tamItr=_textureAttributeMapList.begin();
+        tamItr!=_textureAttributeMapList.end();
+        ++tamItr)
+    {
+        AttributeMap& attributeMap = *tamItr;
+        // go through all active StateAttribute's, setting to change to force update.
+        for(AttributeMap::iterator aitr=attributeMap.begin();
+            aitr!=attributeMap.end();
+            ++aitr)
+        {
+            AttributeStack& as = aitr->second;
+            as.attributeVec.clear();
+            as.last_applied_attribute = NULL;
+            as.changed = true;
+        }
+    }
 
     _drawStateStack.clear();
     
@@ -59,62 +84,24 @@ void State::pushStateSet(const StateSet* dstate)
     _drawStateStack.push_back(dstate);
     if (dstate)
     {
-        // iterator through all OpenGL modes in incomming StateSet
-        // for each GLMode entry push it to the back of the appropriate
-        // mode stack, taking into consideration current override status.
-        const StateSet::ModeList& ds_modeList = dstate->getModeList();
-        for(StateSet::ModeList::const_iterator mitr=ds_modeList.begin();
-            mitr!=ds_modeList.end();
-            ++mitr)
+
+        pushModeList(_modeMap,dstate->getModeList());
+
+        // iterator through texture modes.        
+        unsigned int unit;
+        const StateSet::TextureModeList& ds_textureModeList = dstate->getTextureModeList();
+        for(unit=0;unit<ds_textureModeList.size();++unit)
         {
-            // get the mode stack for incomming GLmode {mitr->first}.
-            ModeStack& ms = _modeMap[mitr->first];
-            if (ms.valueVec.empty())
-            {
-                // first pair so simply push incomming pair to back.
-                ms.valueVec.push_back(mitr->second);
-            }
-            else if (ms.valueVec.back() & StateAttribute::OVERRIDE) // check the existing override flag 
-            {
-                // push existing back since override keeps the previoius value.
-                ms.valueVec.push_back(ms.valueVec.back());
-            }
-            else 
-            {
-                // no override on so simply push incomming pair to back.
-                ms.valueVec.push_back(mitr->second);
-            }
-            ms.changed = true;
+            pushModeList(getOrCreateTextureModeMap(unit),ds_textureModeList[unit]);
         }
-        
-        // iterator through all StateAttribute's in incomming StateSet
-        // for each Type entry push it to the back of the appropriate
-        // attribute stack, taking into consideration current override status.
-        const StateSet::AttributeList& ds_attributeList = dstate->getAttributeList();
-        for(StateSet::AttributeList::const_iterator aitr=ds_attributeList.begin();
-            aitr!=ds_attributeList.end();
-            ++aitr)
+
+        pushAttributeList(_attributeMap,dstate->getAttributeList());
+
+        // iterator through texture attributes.
+        const StateSet::TextureAttributeList& ds_textureAttributeList = dstate->getTextureAttributeList();
+        for(unit=0;unit<ds_textureAttributeList.size();++unit)
         {
-            // get the attribute stack for incomming type {aitr->first}.
-            AttributeStack& as = _attributeMap[aitr->first];
-            if (as.attributeVec.empty())
-            {
-                // first pair so simply push incomming pair to back.
-                as.attributeVec.push_back(
-                    AttributePair(aitr->second.first.get(),aitr->second.second));
-            }
-            else if (as.attributeVec.back().second & StateAttribute::OVERRIDE) // check the existing override flag 
-            {
-                // push existing back since override keeps the previoius value.
-                as.attributeVec.push_back(as.attributeVec.back());
-            }
-            else 
-            {
-                // no override on so simply push incomming pair to back.
-                as.attributeVec.push_back(
-                    AttributePair(aitr->second.first.get(),aitr->second.second));
-            }
-            as.changed = true;
+            pushAttributeList(getOrCreateTextureAttributeMap(unit),ds_textureAttributeList[unit]);
         }
 
     }
@@ -129,38 +116,23 @@ void State::popStateSet()
     if (dstate)
     {
 
-        // iterator through all OpenGL modes in incomming StateSet
-        // for each GLMode entry pop_back of the appropriate
-        // mode stack.
-        const StateSet::ModeList& ds_modeList = dstate->getModeList();
-        for(StateSet::ModeList::const_iterator mitr=ds_modeList.begin();
-            mitr!=ds_modeList.end();
-            ++mitr)
+        popModeList(_modeMap,dstate->getModeList());
+
+        // iterator through texture modes.        
+        unsigned int unit;
+        const StateSet::TextureModeList& ds_textureModeList = dstate->getTextureModeList();
+        for(unit=0;unit<ds_textureModeList.size();++unit)
         {
-            // get the mode stack for incomming GLmode {mitr->first}.
-            ModeStack& ms = _modeMap[mitr->first];
-            if (!ms.valueVec.empty())
-            {
-                ms.valueVec.pop_back();
-            }
-            ms.changed = true;
+            popModeList(getOrCreateTextureModeMap(unit),ds_textureModeList[unit]);
         }
-        
-        // iterator through all StateAttribute's in incomming StateSet
-        // for each Type entry pop_back of the appropriate
-        // attribute stack.
-        const StateSet::AttributeList& ds_attributeList = dstate->getAttributeList();
-        for(StateSet::AttributeList::const_iterator aitr=ds_attributeList.begin();
-            aitr!=ds_attributeList.end();
-            ++aitr)
+
+        popAttributeList(_attributeMap,dstate->getAttributeList());
+
+        // iterator through texture attributes.
+        const StateSet::TextureAttributeList& ds_textureAttributeList = dstate->getTextureAttributeList();
+        for(unit=0;unit<ds_textureAttributeList.size();++unit)
         {
-            // get the attribute stack for incomming type {aitr->first}.
-            AttributeStack& as = _attributeMap[aitr->first];
-            if (!as.attributeVec.empty())
-            {
-                as.attributeVec.pop_back();
-            }
-            as.changed = true;
+            popAttributeList(getOrCreateTextureAttributeMap(unit),ds_textureAttributeList[unit]);
         }
     }
     
@@ -209,253 +181,28 @@ void State::apply(const StateSet* dstate)
     if (dstate)
     {
 
-        // then handle mode changes.
+        applyModeList(_modeMap,dstate->getModeList());
+        applyAttributeList(_attributeMap,dstate->getAttributeList());
+
+        const StateSet::TextureModeList& ds_textureModeList = dstate->getTextureModeList();
+        const StateSet::TextureAttributeList& ds_textureAttributeList = dstate->getTextureAttributeList();
+
+        unsigned int unit;
+        unsigned int unitMax = std::max(ds_textureModeList.size(),ds_textureAttributeList.size());
+        unitMax = std::max(unitMax,_textureModeMapList.size());
+        unitMax = std::max(unitMax,_textureAttributeMapList.size());
+        for(unit=0;unit<unitMax;++unit)
         {
-            const StateSet::ModeList& ds_modeList = dstate->getModeList();
-
-            StateSet::ModeList::const_iterator ds_mitr = ds_modeList.begin();
-            ModeMap::iterator this_mitr=_modeMap.begin();
-
-            while (this_mitr!=_modeMap.end() && ds_mitr!=ds_modeList.end())
+            if (setActiveTextureUnit(unit))
             {
-                if (this_mitr->first<ds_mitr->first)
-                {
-
-                    // note GLMode = this_mitr->first
-                    ModeStack& ms = this_mitr->second;
-                    if (ms.changed)
-                    {
-                        ms.changed = false;
-                        if (!ms.valueVec.empty())
-                        {
-                            bool new_value = ms.valueVec.back() & StateAttribute::ON;
-                            applyMode(this_mitr->first,new_value,ms);
-                        }
-                        else
-                        {
-                            // assume default of disabled.
-                            applyMode(this_mitr->first,ms.global_default_value,ms);
-
-                        }
-            
-                    }
-
-                    ++this_mitr;
-
-                }
-                else if (ds_mitr->first<this_mitr->first)
-                {
-
-                    // ds_mitr->first is a new mode, therefore 
-                    // need to insert a new mode entry for ds_mistr->first.
-                    ModeStack& ms = _modeMap[ds_mitr->first];
-
-                    bool new_value = ds_mitr->second & StateAttribute::ON;
-                    applyMode(ds_mitr->first,new_value,ms);
-
-                    // will need to disable this mode on next apply so set it to changed.
-                    ms.changed = true;
-
-                    ++ds_mitr;
-
-                }
-                else
-                {
-                    // this_mitr & ds_mitr refer to the same mode, check the overide
-                    // if any otherwise just apply the incomming mode.
-
-                    ModeStack& ms = this_mitr->second;
-
-                    if (!ms.valueVec.empty() && ms.valueVec.back() & StateAttribute::OVERRIDE)
-                    {
-                        // override is on, there just treat as a normal apply on modes.
-
-                        if (ms.changed)
-                        {
-                            ms.changed = false;
-                            bool new_value = ms.valueVec.back() & StateAttribute::ON;
-                            applyMode(this_mitr->first,new_value,ms);
-        
-                        }
-                    }
-                    else
-                    {
-                        // no override on or no previous entry, therefore consider incomming mode.
-                        bool new_value = ds_mitr->second & StateAttribute::ON;
-                        if (applyMode(ds_mitr->first,new_value,ms))
-                        {
-                            ms.changed = true;
-                        }
-                    }
-                    
-                    ++this_mitr;
-                    ++ds_mitr;
-                }
-            }
-
-            // iterator over the remaining state modes to apply any previous changes.
-            for(;
-                this_mitr!=_modeMap.end();
-                ++this_mitr)
-            {
-                // note GLMode = this_mitr->first
-                ModeStack& ms = this_mitr->second;
-                if (ms.changed)
-                {
-                    ms.changed = false;
-                    if (!ms.valueVec.empty())
-                    {
-                        bool new_value = ms.valueVec.back() & StateAttribute::ON;
-                        applyMode(this_mitr->first,new_value,ms);
-                    }
-                    else
-                    {
-                        // assume default of disabled.
-                        applyMode(this_mitr->first,ms.global_default_value,ms);
-
-                    }
-            
-                }
-            }        
-
-            // iterator over the remaining incomming modes to apply any new mode.
-            for(;
-                ds_mitr!=ds_modeList.end();
-                ++ds_mitr)
-            {
-                ModeStack& ms = _modeMap[ds_mitr->first];
-
-                bool new_value = ds_mitr->second & StateAttribute::ON;
-                applyMode(ds_mitr->first,new_value,ms);
-
-                // will need to disable this mode on next apply so set it to changed.
-                ms.changed = true;
+                if (unit<ds_textureModeList.size()) applyModeList(getOrCreateTextureModeMap(unit),ds_textureModeList[unit]);
+                else if (unit<_textureModeMapList.size()) applyModeMap(_textureModeMapList[unit]);
+                
+                if (unit<ds_textureAttributeList.size()) applyAttributeList(getOrCreateTextureAttributeMap(unit),ds_textureAttributeList[unit]);
+                else if (unit<_textureAttributeMapList.size()) applyAttributeMap(_textureAttributeMapList[unit]);
             }
         }
-
-
-
-        // first handle attribute changes
-        {
-            const StateSet::AttributeList& ds_attributeList = dstate->getAttributeList();
-            StateSet::AttributeList::const_iterator ds_aitr=ds_attributeList.begin();
-
-            AttributeMap::iterator this_aitr=_attributeMap.begin();
-
-            while (this_aitr!=_attributeMap.end() && ds_aitr!=ds_attributeList.end())
-            {
-                if (this_aitr->first<ds_aitr->first)
-                {
-
-                    // note attribute type = this_aitr->first
-                    AttributeStack& as = this_aitr->second;
-                    if (as.changed)
-                    {
-                        as.changed = false;
-                        if (!as.attributeVec.empty())
-                        {
-                            const StateAttribute* new_attr = as.attributeVec.back().first;
-                            applyAttribute(new_attr,as);
-                        }
-                        else
-                        {
-                            applyGlobalDefaultAttribute(as);
-                        }
-                    }
-
-                    ++this_aitr;
-
-                }
-                else if (ds_aitr->first<this_aitr->first)
-                {
-
-                    // ds_mitr->first is a new attribute, therefore 
-                    // need to insert a new attribute entry for ds_aistr->first.
-                    AttributeStack& as = _attributeMap[ds_aitr->first];
-
-                    const StateAttribute* new_attr = ds_aitr->second.first.get();
-                    applyAttribute(new_attr,as);
-
-                    // will need to disable this mode on next apply so set it to changed.
-                    as.changed = true;
-
-                    ++ds_aitr;
-
-                }
-                else
-                {
-                    // this_mitr & ds_mitr refer to the same mode, check the overide
-                    // if any otherwise just apply the incomming mode.
-
-                    AttributeStack& as = this_aitr->second;
-
-                    if (!as.attributeVec.empty() && as.attributeVec.back().second)
-                    {
-                        // override is os, there just treat as a normal apply on modes.
-
-                        if (as.changed)
-                        {
-                            as.changed = false;
-                            const StateAttribute* new_attr = as.attributeVec.back().first;
-                            applyAttribute(new_attr,as);
-                        }
-                    }
-                    else
-                    {
-                        // no override on or no previous entry, therefore consider incomming mode.
-                        const StateAttribute* new_attr = ds_aitr->second.first.get();
-                        if (applyAttribute(new_attr,as))
-                        {
-                            as.changed = true;
-                        }
-                    }
-                    
-                    ++this_aitr;
-                    ++ds_aitr;
-                }
-            }
-
-            // iterator over the remaining state modes to apply any previous changes.
-            for(;
-                this_aitr!=_attributeMap.end();
-                ++this_aitr)
-            {
-                // note attribute type = this_aitr->first
-                AttributeStack& as = this_aitr->second;
-                if (as.changed)
-                {
-                    as.changed = false;
-                    if (!as.attributeVec.empty())
-                    {
-                        const StateAttribute* new_attr = as.attributeVec.back().first;
-                        applyAttribute(new_attr,as);
-                    }
-                    else
-                    {
-                        applyGlobalDefaultAttribute(as);
-                    }
-                }
-            }        
-
-            // iterator over the remaining incomming modes to apply any new mode.
-            for(;
-                ds_aitr!=ds_attributeList.end();
-                ++ds_aitr)
-            {
-                // ds_mitr->first is a new attribute, therefore 
-                // need to insert a new attribute entry for ds_aistr->first.
-                AttributeStack& as = _attributeMap[ds_aitr->first];
-
-                const StateAttribute* new_attr = ds_aitr->second.first.get();
-                applyAttribute(new_attr,as);
-
-                // will need to update this attribute on next apply so set it to changed.
-                as.changed = true;
-            }
-        }
-
-
-
+    
     }
     else
     {
@@ -470,58 +217,90 @@ void State::apply()
 
     // go through all active OpenGL modes, enabling/disable where
     // appropriate.
-    for(ModeMap::iterator mitr=_modeMap.begin();
-        mitr!=_modeMap.end();
-        ++mitr)
-    {
-        // note GLMode = mitr->first
-        ModeStack& ms = mitr->second;
-        if (ms.changed)
-        {
-            ms.changed = false;
-            if (!ms.valueVec.empty())
-            {
-                bool new_value = ms.valueVec.back() & StateAttribute::ON;
-                applyMode(mitr->first,new_value,ms);
-            }
-            else
-            {
-                // assume default of disabled.
-                applyMode(mitr->first,ms.global_default_value,ms);
-            }
-            
-        }
-    }        
-
+    applyModeMap(_modeMap);
 
     // go through all active StateAttribute's, applying where appropriate.
-    for(AttributeMap::iterator aitr=_attributeMap.begin();
-        aitr!=_attributeMap.end();
-        ++aitr)
+    applyAttributeMap(_attributeMap);
+       
+    unsigned int unit;
+    unsigned int unitMax = std::max(_textureModeMapList.size(),_textureAttributeMapList.size());
+    for(unit=0;unit<unitMax;++unit)
     {
-        AttributeStack& as = aitr->second;
-        if (as.changed)
+        if (setActiveTextureUnit(unit))
         {
-            as.changed = false;
-            if (!as.attributeVec.empty())
-            {
-                const StateAttribute* new_attr = as.attributeVec.back().first;
-                applyAttribute(new_attr,as);
-            }
-            else
-            {
-                applyGlobalDefaultAttribute(as);
-            }
-            
+            if (unit<_textureModeMapList.size()) applyModeMap(_textureModeMapList[unit]);
+            if (unit<_textureAttributeMapList.size()) applyAttributeMap(_textureAttributeMapList[unit]);
         }
-    }        
-    
+    }
 }
 
-/** mode has been set externally, update state to reflect this setting.*/
 void State::haveAppliedMode(const StateAttribute::GLMode mode,const StateAttribute::GLModeValue value)
 {
-    ModeStack& ms = _modeMap[mode];
+    haveAppliedMode(_modeMap,mode,value);
+}
+
+void State::haveAppliedMode(const StateAttribute::GLMode mode)
+{
+    haveAppliedMode(_modeMap,mode);
+}
+
+void State::haveAppliedAttribute(const StateAttribute* attribute)
+{
+    haveAppliedAttribute(_attributeMap,attribute);
+}
+
+void State::haveAppliedAttribute(const StateAttribute::Type type)
+{
+    haveAppliedAttribute(_attributeMap,type);
+}
+
+const bool State::getLastAppliedMode(const StateAttribute::GLMode mode) const
+{
+    return getLastAppliedMode(_modeMap,mode);
+}
+
+const StateAttribute* State::getLastAppliedAttribute(const StateAttribute::Type type) const
+{
+    return getLastAppliedAttribute(_attributeMap,type);
+}
+
+
+void State::haveAppliedTextureMode(unsigned int unit,const StateAttribute::GLMode mode,const StateAttribute::GLModeValue value)
+{
+    haveAppliedMode(getOrCreateTextureModeMap(unit),mode,value);
+}
+
+void State::haveAppliedTextureMode(unsigned int unit,const StateAttribute::GLMode mode)
+{
+    haveAppliedMode(getOrCreateTextureModeMap(unit),mode);
+}
+
+void State::haveAppliedTextureAttribute(unsigned int unit,const StateAttribute* attribute)
+{
+    haveAppliedAttribute(getOrCreateTextureAttributeMap(unit),attribute);
+}
+
+void State::haveAppliedTextureAttribute(unsigned int unit,const StateAttribute::Type type)
+{
+    haveAppliedAttribute(getOrCreateTextureAttributeMap(unit),type);
+}
+
+const bool State::getLastAppliedTextureMode(unsigned int unit,const StateAttribute::GLMode mode) const
+{
+    if (unit>=_textureModeMapList.size()) return false;
+    return getLastAppliedMode(_textureModeMapList[unit],mode);
+}
+
+const StateAttribute* State::getLastAppliedTextureAttribute(unsigned int unit,const StateAttribute::Type type) const
+{
+    if (unit>=_textureAttributeMapList.size()) return false;
+    return getLastAppliedAttribute(_textureAttributeMapList[unit],type);
+}
+
+
+void State::haveAppliedMode(ModeMap& modeMap,const StateAttribute::GLMode mode,const StateAttribute::GLModeValue value)
+{
+    ModeStack& ms = modeMap[mode];
 
     ms.last_applied_value = value & StateAttribute::ON;
 
@@ -530,9 +309,9 @@ void State::haveAppliedMode(const StateAttribute::GLMode mode,const StateAttribu
 }
 
 /** mode has been set externally, update state to reflect this setting.*/
-void State::haveAppliedMode(const StateAttribute::GLMode mode)
+void State::haveAppliedMode(ModeMap& modeMap,const StateAttribute::GLMode mode)
 {
-    ModeStack& ms = _modeMap[mode];
+    ModeStack& ms = modeMap[mode];
 
     // don't know what last applied value is can't apply it.
     // assume that it has changed by toggle the value of last_applied_value.
@@ -543,11 +322,11 @@ void State::haveAppliedMode(const StateAttribute::GLMode mode)
 }
 
 /** attribute has been applied externally, update state to reflect this setting.*/
-void State::haveAppliedAttribute(const StateAttribute* attribute)
+void State::haveAppliedAttribute(AttributeMap& attributeMap,const StateAttribute* attribute)
 {
     if (attribute)
     {
-        AttributeStack& as = _attributeMap[attribute->getType()];
+        AttributeStack& as = attributeMap[attribute->getType()];
 
         as.last_applied_attribute = attribute;
 
@@ -556,11 +335,11 @@ void State::haveAppliedAttribute(const StateAttribute* attribute)
     }
 }
 
-void State::haveAppliedAttribute(const StateAttribute::Type type)
+void State::haveAppliedAttribute(AttributeMap& attributeMap,const StateAttribute::Type type)
 {
     
-    AttributeMap::iterator itr = _attributeMap.find(type);
-    if (itr!=_attributeMap.end())
+    AttributeMap::iterator itr = attributeMap.find(type);
+    if (itr!=attributeMap.end())
     {
         AttributeStack& as = itr->second;
         as.last_applied_attribute = 0L;
@@ -570,10 +349,10 @@ void State::haveAppliedAttribute(const StateAttribute::Type type)
     }
 }
 
-const bool State::getLastAppliedMode(const StateAttribute::GLMode mode) const
+const bool State::getLastAppliedMode(const ModeMap& modeMap,const StateAttribute::GLMode mode) const
 {
-    ModeMap::const_iterator itr = _modeMap.find(mode);
-    if (itr!=_modeMap.end())
+    ModeMap::const_iterator itr = modeMap.find(mode);
+    if (itr!=modeMap.end())
     {
         const ModeStack& ms = itr->second;
         return ms.last_applied_value;
@@ -584,10 +363,10 @@ const bool State::getLastAppliedMode(const StateAttribute::GLMode mode) const
     }
 }
 
-const StateAttribute* State::getLastAppliedAttribute(const StateAttribute::Type type) const
+const StateAttribute* State::getLastAppliedAttribute(const AttributeMap& attributeMap,const StateAttribute::Type type) const
 {
-    AttributeMap::const_iterator itr = _attributeMap.find(type);
-    if (itr!=_attributeMap.end())
+    AttributeMap::const_iterator itr = attributeMap.find(type);
+    if (itr!=attributeMap.end())
     {
         const AttributeStack& as = itr->second;
         return as.last_applied_attribute;
@@ -597,7 +376,6 @@ const StateAttribute* State::getLastAppliedAttribute(const StateAttribute::Type 
         return NULL;
     }
 }
-
 
 Polytope State::getViewFrustum() const
 {

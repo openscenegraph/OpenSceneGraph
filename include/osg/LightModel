@@ -6,7 +6,6 @@
 #define OSG_LIGHTMODEL 1
 
 #include <osg/StateAttribute>
-#include <osg/StateSet>
 #include <osg/Vec4>
 
 namespace osg {

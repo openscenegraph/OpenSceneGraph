@@ -102,7 +102,7 @@ void ClipNode::setStateSetModes(StateSet& stateset,const StateAttribute::GLModeV
         itr!=_planes.end();
         ++itr)
     {
-        (*itr)->setStateSetModes(stateset,value);
+        stateset.setAssociatedModes(itr->get(),value);
     }
 }
 

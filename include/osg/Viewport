@@ -6,7 +6,6 @@
 #define OSG_VIEWPORT 1
 
 #include <osg/StateAttribute>
-#include <osg/StateSet>
 #include <osg/Types>
 #include <osg/Matrix>
 

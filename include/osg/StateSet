@@ -157,7 +157,9 @@ class SG_EXPORT StateSet : public Object
         inline const TextureAttributeList& getTextureAttributeList() const { return _textureAttributeList; }
 
 
-
+        void setAssociatedModes(const StateAttribute* attribute, const StateAttribute::GLModeValue value);
+        
+        void setAssociatedTextureModes(unsigned int unit,const StateAttribute* attribute, const StateAttribute::GLModeValue value);
 
         enum RenderingHint
         {
@@ -230,6 +232,21 @@ class SG_EXPORT StateSet : public Object
             if (unit>=_textureAttributeList.size()) _textureAttributeList.resize(unit+1);
             return _textureAttributeList[unit];
         }
+        
+        int compareModes(const ModeList& lhs,const ModeList& rhs);
+        int compareAttributePtrs(const AttributeList& lhs,const AttributeList& rhs);
+        int compareAttributeContents(const AttributeList& lhs,const AttributeList& rhs);
+
+        void setMode(ModeList& modeList,const StateAttribute::GLMode mode, const StateAttribute::GLModeValue value);
+        void setModeToInherit(ModeList& modeList,const StateAttribute::GLMode mode);
+        const StateAttribute::GLModeValue getMode(const ModeList& modeList,const StateAttribute::GLMode mode) const;
+        void setAssociatedModes(ModeList& modeList,const StateAttribute* attribute, const StateAttribute::GLModeValue value);
+
+        void setAttribute(AttributeList& attributeList,StateAttribute *attribute, const StateAttribute::OverrideValue value=StateAttribute::OFF);
+
+        StateAttribute* getAttribute(AttributeList& attributeList,const StateAttribute::Type type);
+        const StateAttribute* getAttribute(const AttributeList& attributeList,const StateAttribute::Type type) const;
+        const RefAttributePair* getAttributePair(const AttributeList& attributeList,const StateAttribute::Type type) const;
 
         int                                 _renderingHint;
 

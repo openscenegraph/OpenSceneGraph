@@ -120,11 +120,9 @@ class SG_EXPORT State : public Referenced
 
         inline const bool applyTextureMode(unsigned int unit, const StateAttribute::GLMode mode,const bool enabled)
         {
-            if (unit>=_textureModeMapList.size()) _textureModeMapList.resize(unit);
-            ModeMap& modeMap = _textureModeMapList[unit];
-            
+            ModeMap& modeMap = getOrCreateTextureModeMap(unit);
             ModeStack& ms = modeMap[mode];
-            ms.changed = true;    
+            ms.changed = true;
             return applyMode(mode,enabled,ms);
         }
 
@@ -138,9 +136,7 @@ class SG_EXPORT State : public Referenced
 
         inline const bool applyTextureAttribute(unsigned int unit, const StateAttribute* attribute)
         {
-            if (unit>=_textureAttributeMapList.size()) _textureAttributeMapList.resize(unit);
-            AttributeMap& attributeMap = _textureAttributeMapList[unit];
-            
+            AttributeMap& attributeMap = getOrCreateTextureAttributeMap(unit);
             AttributeStack& as = attributeMap[attribute->getType()];
             as.changed = true;
             return applyAttribute(attribute,as);
@@ -505,6 +501,7 @@ class SG_EXPORT State : public Referenced
                 return false;
         }
 
+
         typedef std::map<StateAttribute::GLMode,ModeStack>      ModeMap;
         typedef std::vector<ModeMap>                            TextureModeMapList;
 
@@ -516,10 +513,10 @@ class SG_EXPORT State : public Referenced
 
         ModeMap                                                 _modeMap;
         AttributeMap                                            _attributeMap;
-        
+
         TextureModeMapList                                      _textureModeMapList;
         TextureAttributeMapList                                 _textureAttributeMapList;
-        
+       
         StateSetStack                                           _drawStateStack;
         
         struct EnabledArrayPair
@@ -543,7 +540,418 @@ class SG_EXPORT State : public Referenced
         unsigned int                _currentActiveTextureUnit;
         unsigned int                _currentClientActiveTextureUnit;
         
+        inline ModeMap& getOrCreateTextureModeMap(unsigned int unit)
+        {        
+            if (unit>=_textureModeMapList.size()) _textureModeMapList.resize(unit+1);
+            return _textureModeMapList[unit];
+        }
+
+
+        inline AttributeMap& getOrCreateTextureAttributeMap(unsigned int unit)
+        {        
+            if (unit>=_textureAttributeMapList.size()) _textureAttributeMapList.resize(unit+1);
+            return _textureAttributeMapList[unit];
+        }
+        
+        inline void pushModeList(ModeMap& modeMap,const StateSet::ModeList& modeList);
+        inline void pushAttributeList(AttributeMap& attributeMap,const StateSet::AttributeList& attributeList);
+        
+        inline void popModeList(ModeMap& modeMap,const StateSet::ModeList& modeList);
+        inline void popAttributeList(AttributeMap& attributeMap,const StateSet::AttributeList& attributeList);
+
+        inline void applyModeList(ModeMap& modeMap,const StateSet::ModeList& modeList);
+        inline void applyAttributeList(AttributeMap& attributeMap,const StateSet::AttributeList& attributeList);
+        
+        inline void applyModeMap(ModeMap& modeMap);
+        inline void applyAttributeMap(AttributeMap& attributeMap);
+
+        void haveAppliedMode(ModeMap& modeMap,const StateAttribute::GLMode mode,const StateAttribute::GLModeValue value);
+        void haveAppliedMode(ModeMap& modeMap,const StateAttribute::GLMode mode);
+        void haveAppliedAttribute(AttributeMap& attributeMap,const StateAttribute* attribute);
+        void haveAppliedAttribute(AttributeMap& attributeMap,const StateAttribute::Type type);
+        const bool getLastAppliedMode(const ModeMap& modeMap,const StateAttribute::GLMode mode) const;
+        const StateAttribute* getLastAppliedAttribute(const AttributeMap& attributeMap,const StateAttribute::Type type) const;
+
 };
+
+inline void State::pushModeList(ModeMap& modeMap,const StateSet::ModeList& modeList)
+{
+    for(StateSet::ModeList::const_iterator mitr=modeList.begin();
+        mitr!=modeList.end();
+        ++mitr)
+    {
+        // get the mode stack for incomming GLmode {mitr->first}.
+        ModeStack& ms = modeMap[mitr->first];
+        if (ms.valueVec.empty())
+        {
+            // first pair so simply push incomming pair to back.
+            ms.valueVec.push_back(mitr->second);
+        }
+        else if (ms.valueVec.back() & StateAttribute::OVERRIDE) // check the existing override flag 
+        {
+            // push existing back since override keeps the previoius value.
+            ms.valueVec.push_back(ms.valueVec.back());
+        }
+        else 
+        {
+            // no override on so simply push incomming pair to back.
+            ms.valueVec.push_back(mitr->second);
+        }
+        ms.changed = true;
+    }
+}
+
+inline void State::pushAttributeList(AttributeMap& attributeMap,const StateSet::AttributeList& attributeList)
+{
+    for(StateSet::AttributeList::const_iterator aitr=attributeList.begin();
+        aitr!=attributeList.end();
+        ++aitr)
+    {
+        // get the attribute stack for incomming type {aitr->first}.
+        AttributeStack& as = attributeMap[aitr->first];
+        if (as.attributeVec.empty())
+        {
+            // first pair so simply push incomming pair to back.
+            as.attributeVec.push_back(
+                AttributePair(aitr->second.first.get(),aitr->second.second));
+        }
+        else if (as.attributeVec.back().second & StateAttribute::OVERRIDE) // check the existing override flag 
+        {
+            // push existing back since override keeps the previoius value.
+            as.attributeVec.push_back(as.attributeVec.back());
+        }
+        else 
+        {
+            // no override on so simply push incomming pair to back.
+            as.attributeVec.push_back(
+                AttributePair(aitr->second.first.get(),aitr->second.second));
+        }
+        as.changed = true;
+    }
+}
+
+inline void State::popModeList(ModeMap& modeMap,const StateSet::ModeList& modeList)
+{
+    for(StateSet::ModeList::const_iterator mitr=modeList.begin();
+        mitr!=modeList.end();
+        ++mitr)
+    {
+        // get the mode stack for incomming GLmode {mitr->first}.
+        ModeStack& ms = modeMap[mitr->first];
+        if (!ms.valueVec.empty())
+        {
+            ms.valueVec.pop_back();
+        }
+        ms.changed = true;
+    }
+}
+
+inline void State::popAttributeList(AttributeMap& attributeMap,const StateSet::AttributeList& attributeList)
+{
+    for(StateSet::AttributeList::const_iterator aitr=attributeList.begin();
+        aitr!=attributeList.end();
+        ++aitr)
+    {
+        // get the attribute stack for incomming type {aitr->first}.
+        AttributeStack& as = attributeMap[aitr->first];
+        if (!as.attributeVec.empty())
+        {
+            as.attributeVec.pop_back();
+        }
+        as.changed = true;
+    }
+}
+
+inline void State::applyModeList(ModeMap& modeMap,const StateSet::ModeList& modeList)
+{
+    StateSet::ModeList::const_iterator ds_mitr = modeList.begin();
+    ModeMap::iterator this_mitr=modeMap.begin();
+
+    while (this_mitr!=modeMap.end() && ds_mitr!=modeList.end())
+    {
+        if (this_mitr->first<ds_mitr->first)
+        {
+
+            // note GLMode = this_mitr->first
+            ModeStack& ms = this_mitr->second;
+            if (ms.changed)
+            {
+                ms.changed = false;
+                if (!ms.valueVec.empty())
+                {
+                    bool new_value = ms.valueVec.back() & StateAttribute::ON;
+                    applyMode(this_mitr->first,new_value,ms);
+                }
+                else
+                {
+                    // assume default of disabled.
+                    applyMode(this_mitr->first,ms.global_default_value,ms);
+
+                }
+
+            }
+
+            ++this_mitr;
+
+        }
+        else if (ds_mitr->first<this_mitr->first)
+        {
+
+            // ds_mitr->first is a new mode, therefore 
+            // need to insert a new mode entry for ds_mistr->first.
+            ModeStack& ms = modeMap[ds_mitr->first];
+
+            bool new_value = ds_mitr->second & StateAttribute::ON;
+            applyMode(ds_mitr->first,new_value,ms);
+
+            // will need to disable this mode on next apply so set it to changed.
+            ms.changed = true;
+
+            ++ds_mitr;
+
+        }
+        else
+        {
+            // this_mitr & ds_mitr refer to the same mode, check the overide
+            // if any otherwise just apply the incomming mode.
+
+            ModeStack& ms = this_mitr->second;
+
+            if (!ms.valueVec.empty() && ms.valueVec.back() & StateAttribute::OVERRIDE)
+            {
+                // override is on, there just treat as a normal apply on modes.
+
+                if (ms.changed)
+                {
+                    ms.changed = false;
+                    bool new_value = ms.valueVec.back() & StateAttribute::ON;
+                    applyMode(this_mitr->first,new_value,ms);
+
+                }
+            }
+            else
+            {
+                // no override on or no previous entry, therefore consider incomming mode.
+                bool new_value = ds_mitr->second & StateAttribute::ON;
+                if (applyMode(ds_mitr->first,new_value,ms))
+                {
+                    ms.changed = true;
+                }
+            }
+
+            ++this_mitr;
+            ++ds_mitr;
+        }
+    }
+
+    // iterator over the remaining state modes to apply any previous changes.
+    for(;
+        this_mitr!=modeMap.end();
+        ++this_mitr)
+    {
+        // note GLMode = this_mitr->first
+        ModeStack& ms = this_mitr->second;
+        if (ms.changed)
+        {
+            ms.changed = false;
+            if (!ms.valueVec.empty())
+            {
+                bool new_value = ms.valueVec.back() & StateAttribute::ON;
+                applyMode(this_mitr->first,new_value,ms);
+            }
+            else
+            {
+                // assume default of disabled.
+                applyMode(this_mitr->first,ms.global_default_value,ms);
+
+            }
+
+        }
+    }        
+
+    // iterator over the remaining incomming modes to apply any new mode.
+    for(;
+        ds_mitr!=modeList.end();
+        ++ds_mitr)
+    {
+        ModeStack& ms = modeMap[ds_mitr->first];
+
+        bool new_value = ds_mitr->second & StateAttribute::ON;
+        applyMode(ds_mitr->first,new_value,ms);
+
+        // will need to disable this mode on next apply so set it to changed.
+        ms.changed = true;
+    }
+}
+
+inline void State::applyAttributeList(AttributeMap& attributeMap,const StateSet::AttributeList& attributeList)
+{
+    StateSet::AttributeList::const_iterator ds_aitr=attributeList.begin();
+
+    AttributeMap::iterator this_aitr=attributeMap.begin();
+
+    while (this_aitr!=attributeMap.end() && ds_aitr!=attributeList.end())
+    {
+        if (this_aitr->first<ds_aitr->first)
+        {
+
+            // note attribute type = this_aitr->first
+            AttributeStack& as = this_aitr->second;
+            if (as.changed)
+            {
+                as.changed = false;
+                if (!as.attributeVec.empty())
+                {
+                    const StateAttribute* new_attr = as.attributeVec.back().first;
+                    applyAttribute(new_attr,as);
+                }
+                else
+                {
+                    applyGlobalDefaultAttribute(as);
+                }
+            }
+
+            ++this_aitr;
+
+        }
+        else if (ds_aitr->first<this_aitr->first)
+        {
+
+            // ds_mitr->first is a new attribute, therefore 
+            // need to insert a new attribute entry for ds_aistr->first.
+            AttributeStack& as = attributeMap[ds_aitr->first];
+
+            const StateAttribute* new_attr = ds_aitr->second.first.get();
+            applyAttribute(new_attr,as);
+
+            // will need to disable this mode on next apply so set it to changed.
+            as.changed = true;
+
+            ++ds_aitr;
+
+        }
+        else
+        {
+            // this_mitr & ds_mitr refer to the same mode, check the overide
+            // if any otherwise just apply the incomming mode.
+
+            AttributeStack& as = this_aitr->second;
+
+            if (!as.attributeVec.empty() && as.attributeVec.back().second)
+            {
+                // override is os, there just treat as a normal apply on modes.
+
+                if (as.changed)
+                {
+                    as.changed = false;
+                    const StateAttribute* new_attr = as.attributeVec.back().first;
+                    applyAttribute(new_attr,as);
+                }
+            }
+            else
+            {
+                // no override on or no previous entry, therefore consider incomming mode.
+                const StateAttribute* new_attr = ds_aitr->second.first.get();
+                if (applyAttribute(new_attr,as))
+                {
+                    as.changed = true;
+                }
+            }
+
+            ++this_aitr;
+            ++ds_aitr;
+        }
+    }
+
+    // iterator over the remaining state modes to apply any previous changes.
+    for(;
+        this_aitr!=attributeMap.end();
+        ++this_aitr)
+    {
+        // note attribute type = this_aitr->first
+        AttributeStack& as = this_aitr->second;
+        if (as.changed)
+        {
+            as.changed = false;
+            if (!as.attributeVec.empty())
+            {
+                const StateAttribute* new_attr = as.attributeVec.back().first;
+                applyAttribute(new_attr,as);
+            }
+            else
+            {
+                applyGlobalDefaultAttribute(as);
+            }
+        }
+    }        
+
+    // iterator over the remaining incomming modes to apply any new mode.
+    for(;
+        ds_aitr!=attributeList.end();
+        ++ds_aitr)
+    {
+        // ds_mitr->first is a new attribute, therefore 
+        // need to insert a new attribute entry for ds_aistr->first.
+        AttributeStack& as = attributeMap[ds_aitr->first];
+
+        const StateAttribute* new_attr = ds_aitr->second.first.get();
+        applyAttribute(new_attr,as);
+
+        // will need to update this attribute on next apply so set it to changed.
+        as.changed = true;
+    }
+
+}
+
+inline void State::applyModeMap(ModeMap& modeMap)
+{
+    for(ModeMap::iterator mitr=modeMap.begin();
+        mitr!=modeMap.end();
+        ++mitr)
+    {
+        // note GLMode = mitr->first
+        ModeStack& ms = mitr->second;
+        if (ms.changed)
+        {
+            ms.changed = false;
+            if (!ms.valueVec.empty())
+            {
+                bool new_value = ms.valueVec.back() & StateAttribute::ON;
+                applyMode(mitr->first,new_value,ms);
+            }
+            else
+            {
+                // assume default of disabled.
+                applyMode(mitr->first,ms.global_default_value,ms);
+            }
+            
+        }
+    }        
+}
+
+inline void State::applyAttributeMap(AttributeMap& attributeMap)
+{
+    for(AttributeMap::iterator aitr=attributeMap.begin();
+        aitr!=attributeMap.end();
+        ++aitr)
+    {
+        AttributeStack& as = aitr->second;
+        if (as.changed)
+        {
+            as.changed = false;
+            if (!as.attributeVec.empty())
+            {
+                const StateAttribute* new_attr = as.attributeVec.back().first;
+                applyAttribute(new_attr,as);
+            }
+            else
+            {
+                applyGlobalDefaultAttribute(as);
+            }
+            
+        }
+    }        
+}
 
 }
 

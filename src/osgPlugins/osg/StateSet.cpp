@@ -221,7 +221,7 @@ bool GeoState_readLocalData(Object& obj, Input& fr)
         statset.setAttribute(attribute);
         
         if (attribute->getType()==StateAttribute::TEXGEN) 
-            attribute->setStateSetModes(statset,texgening);
+            statset.setAssociatedModes(attribute,texgening);
             
         iteratorAdvanced = true;
     }
@@ -347,6 +347,74 @@ bool StateSet_readLocalData(Object& obj, Input& fr)
         stateset.setAttribute(attribute);
         iteratorAdvanced = true;
     }
+    
+    while(fr.matchSequence("textureUnit %i {"))
+    {
+        int entry = fr[0].getNoNestedBrackets();
+
+        unsigned int unit=0;
+        fr[1].getUInt(unit);
+        fr+=3;
+        
+        while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
+        {
+            bool localIteratorAdvanced = false;
+            
+            bool readingMode = true;
+            StateAttribute::GLModeValue value;
+            while (readingMode)
+            {
+                readingMode=false;
+                if (fr[0].isInt())
+                {
+                    if (StateSet_matchModeStr(fr[1].getStr(),value))
+                    {
+                        int mode;
+                        fr[0].getInt(mode);
+                        stateset.setTextureMode(unit,(StateAttribute::GLMode)mode,value);
+                        fr+=2;
+                        localIteratorAdvanced = true;
+                        readingMode=true;
+                    }
+                }
+                else
+                if (fr[0].getStr())
+                {
+                    if (StateSet_matchModeStr(fr[1].getStr(),value))
+                    {
+                        GLNameToGLModeMap::iterator nitr = s_GLNameToGLModeMap.find(fr[0].getStr());
+                        if (nitr!=s_GLNameToGLModeMap.end())
+                        {
+                            StateAttribute::GLMode mode = nitr->second;
+                            stateset.setTextureMode(unit,mode,value);
+                            fr+=2;
+                            localIteratorAdvanced = true;
+                            readingMode=true;
+                        }
+                    }
+                } 
+            }
+            
+            StateAttribute* attribute = NULL;
+            while((attribute=fr.readStateAttribute())!=NULL)
+            {
+                stateset.setTextureAttribute(unit,attribute);
+                localIteratorAdvanced = true;
+            }
+            
+            if (!localIteratorAdvanced)
+                fr.advanceOverCurrentFieldOrBlock();
+        }
+        
+        // skip over trailing '}'
+        ++fr;
+        
+        iteratorAdvanced = true;
+
+    }
+    
+    
+    
 
     return iteratorAdvanced;
 }
@@ -408,6 +476,49 @@ bool StateSet_writeLocalData(const Object& obj, Output& fw)
         ++sitr)
     {
         fw.writeObject(*(sitr->second.first));
+    }
+    
+    const StateSet::TextureModeList& tml = stateset.getTextureModeList();    
+    const StateSet::TextureAttributeList& tal = stateset.getTextureAttributeList();
+    unsigned int maxUnit = std::max(tml.size(),tal.size());
+    for(unsigned int unit=0;unit<maxUnit;++unit)
+    {
+        fw.indent()<<"textureUnit "<<unit<<" {"<< std::endl;
+        fw.moveIn();
+        
+        if (unit<tml.size())
+        {
+            const StateSet::ModeList& ml = tml[unit];
+            for(StateSet::ModeList::const_iterator mitr=ml.begin();
+                mitr!=ml.end();
+                ++mitr)
+            {
+                 GLModeToGLNameMap::iterator nitr = s_GLModeToGLNameMap.find(mitr->first);
+                 if (nitr!=s_GLModeToGLNameMap.end())
+                 {
+                     fw.indent() << nitr->second << " " << StateSet_getModeStr(mitr->second) << std::endl;
+                 }
+                 else
+                 {
+                    // no name defined for GLMode so just pass its value to fw.
+		                 fw.indent() << "0x" << std::hex << (osg::uint)mitr->first << std::dec <<" " << StateSet_getModeStr(mitr->second) << std::endl;
+                 }
+            }
+        }
+        
+        if (unit<tal.size())
+        {
+            const StateSet::AttributeList& sl = tal[unit];
+            for(StateSet::AttributeList::const_iterator sitr=sl.begin();
+                sitr!=sl.end();
+                ++sitr)
+            {
+                fw.writeObject(*(sitr->second.first));
+            }
+        }
+        
+        fw.moveOut();
+        fw.indent()<<"}"<< std::endl;
     }
 
     return true;

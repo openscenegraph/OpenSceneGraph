@@ -6,7 +6,6 @@
 #define OSG_DEPTH 1
 
 #include <osg/StateAttribute>
-#include <osg/StateSet>
 #include <osg/Types>
 
 namespace osg {
@@ -47,9 +46,9 @@ class SG_EXPORT Depth : public StateAttribute
             return 0; // passed all the above comparison macro's, must be equal.
         }
 
-        virtual void setStateSetModes(StateSet& ds,const GLModeValue value) const
+        virtual void getAssociatedModes(std::vector<GLMode>& modes) const 
         {
-            ds.setMode(GL_DEPTH_TEST,value);
+            modes.push_back(GL_DEPTH_TEST);
         }
 
         enum Function

@@ -6,7 +6,6 @@
 #define OSG_DRAWABLE 1
 
 #include <osg/BoundingBox>
-#include <osg/StateSet>
 #include <osg/State>
 #include <osg/Types>
 #include <osg/Vec2>

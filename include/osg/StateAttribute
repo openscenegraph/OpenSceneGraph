@@ -10,6 +10,7 @@
 #include <osg/GL>
 
 #include <typeinfo>
+#include <vector>
 
 namespace osg {
 
@@ -174,6 +175,8 @@ class SG_EXPORT StateAttribute : public Object
         /** return the Type identifier of the attribute's class type.*/
         virtual const Type getType() const = 0;
 
+        /** return true if StateAttribute is a type which controls texturing and needs to be issued w.r.t to specific texture unit.*/
+        virtual bool isTextureAttribute() const { return false; }
 
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
         virtual int compare(const StateAttribute& sa) const = 0;
@@ -181,9 +184,10 @@ class SG_EXPORT StateAttribute : public Object
         bool operator <  (const StateAttribute& rhs) const { return compare(rhs)<0; }
         bool operator == (const StateAttribute& rhs) const { return compare(rhs)==0; }
         bool operator != (const StateAttribute& rhs) const { return compare(rhs)!=0; }
-
         
-        virtual void setStateSetModes(StateSet&,const GLModeValue) const 
+
+        /** return the modes associated with this StateSet*/        
+        virtual void getAssociatedModes(std::vector<GLMode>& /*modes*/) const 
         {
             // default to no GLMode's associated with use of the StateAttribute.
         }

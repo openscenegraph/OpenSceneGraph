@@ -7,7 +7,6 @@
 
 #include <osg/Vec4>
 #include <osg/StateAttribute>
-#include <osg/StateSet>
 
 namespace osg {
 /** Material - encapsulates OpenGL glMaterial state.*/
@@ -69,12 +68,12 @@ class SG_EXPORT Material : public StateAttribute
             return 0; // passed all the above comparison macro's, must be equal.
         }
 
-        virtual void setStateSetModes(StateSet& ds,const GLModeValue value) const
+        virtual void getAssociatedModes(std::vector<GLMode>& modes) const 
         {
             // Have to think about the role of _colorMode
             // in setting the colormaterial... also need to take the
             // color material enable/disable out of the the apply()...
-            ds.setMode(GL_COLOR_MATERIAL,value);
+            modes.push_back(GL_COLOR_MATERIAL);
         }
 
         virtual void apply(State& state) const;

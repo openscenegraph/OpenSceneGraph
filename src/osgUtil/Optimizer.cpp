@@ -72,7 +72,9 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
     if (options & SHARE_DUPLICATE_STATE)
     {
     #if (defined(_MSC_VER) && _MSC_VER<1300 && !defined(_STLPORT_VERSION))
-        osg::notify(osg::INFO)<<"Warning: VisualStudio 6.0 build, unable to run state optimizer"<<std::endl; 
+        osg::notify(osg::NOTICE)<<"Warning: VisualStudio 6.0 native STL build, unable to run state optimizer due to bugs in its STL."<<std::endl; 
+        osg::notify(osg::NOTICE)<<"         This may impare performance significantly for larger models.  It is recommend that one "<<std::endl; 
+        osg::notify(osg::NOTICE)<<"         compiles against STLport or use Visual Studio .NET compiler which also fix these VS 6.0 STL bugs "<<std::endl; 
     #else
         StateVisitor osv;
         node->accept(osv);
@@ -216,8 +218,11 @@ void Optimizer::StateVisitor::optimize()
 
     {
         // create map from state attributes to stateset which contain them.
-        typedef std::set<osg::StateSet*>                    StateSetList;
+        typedef std::pair<osg::StateSet*,unsigned int>      StateSetUnitPair;
+        typedef std::set<StateSetUnitPair>                  StateSetList;
         typedef std::map<osg::StateAttribute*,StateSetList> AttributeToStateSetMap;
+        
+        const unsigned int NON_TEXTURE_ATTRIBUTE = 0xffffffff;
         
         AttributeToStateSetMap _attributeToStateSetMap;
 
@@ -234,9 +239,26 @@ void Optimizer::StateVisitor::optimize()
             {
                 if (aitr->second.first->getDataVariance()==osg::Object::STATIC)
                 {
-                    _attributeToStateSetMap[aitr->second.first.get()].insert(sitr->first);
+                    _attributeToStateSetMap[aitr->second.first.get()].insert(StateSetUnitPair(sitr->first,NON_TEXTURE_ATTRIBUTE));
                 }
             }
+
+
+            osg::StateSet::TextureAttributeList& texAttributes = sitr->first->getTextureAttributeList();
+            for(unsigned int unit=0;unit<texAttributes.size();++unit)
+            {
+                osg::StateSet::AttributeList& attributes = texAttributes[unit];
+                for(osg::StateSet::AttributeList::iterator aitr= attributes.begin();
+                    aitr!=attributes.end();
+                    ++aitr)
+                {
+                    if (aitr->second.first->getDataVariance()==osg::Object::STATIC)
+                    {
+                        _attributeToStateSetMap[aitr->second.first.get()].insert(StateSetUnitPair(sitr->first,unit));
+                    }
+                }
+            }
+
         }
 
         if (_attributeToStateSetMap.size()<2)
@@ -284,8 +306,10 @@ void Optimizer::StateVisitor::optimize()
                     ++sitr)
                 {
                     osg::notify(osg::INFO) << "       replace duplicate "<<*current<<" with "<<*first_unique<< std::endl;
-                    osg::StateSet* stateset = *sitr;
-                    stateset->setAttribute(*first_unique);
+                    osg::StateSet* stateset = sitr->first;
+                    unsigned int unit = sitr->second;
+                    if (unit==NON_TEXTURE_ATTRIBUTE) stateset->setAttribute(*first_unique);
+                    else stateset->setTextureAttribute(unit,*first_unique);
                 }
             }
             else first_unique = current;

@@ -6,7 +6,6 @@
 #define OSG_POLYGONOFFSET 1
 
 #include <osg/StateAttribute>
-#include <osg/StateSet>
 
 namespace osg {
 
@@ -39,11 +38,11 @@ class SG_EXPORT PolygonOffset : public StateAttribute
             return 0; // passed all the above comparison macro's, must be equal.
         }
 
-        virtual void setStateSetModes(StateSet& ds,const GLModeValue value) const
+        virtual void getAssociatedModes(std::vector<GLMode>& modes) const 
         {
-            ds.setMode(GL_POLYGON_OFFSET_FILL,value);
-            ds.setMode(GL_POLYGON_OFFSET_LINE,value);
-            ds.setMode(GL_POLYGON_OFFSET_POINT,value);
+            modes.push_back(GL_POLYGON_OFFSET_FILL);
+            modes.push_back(GL_POLYGON_OFFSET_LINE);
+            modes.push_back(GL_POLYGON_OFFSET_POINT);
         }
 
         inline void setFactor(const float factor) { _factor = factor; }

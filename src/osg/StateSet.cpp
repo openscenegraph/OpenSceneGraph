@@ -230,6 +230,73 @@ int StateSet::compare(const StateSet& rhs,bool compareAttributeContents) const
     return 0;
 }
 
+int StateSet::compareModes(const ModeList& lhs,const ModeList& rhs)
+{
+    ModeList::const_iterator lhs_mode_itr = lhs.begin();
+    ModeList::const_iterator rhs_mode_itr = rhs.begin();
+    while (lhs_mode_itr!=lhs.end() && rhs_mode_itr!=rhs.end())
+    {
+        if      (lhs_mode_itr->first<rhs_mode_itr->first) return -1;
+        else if (rhs_mode_itr->first<lhs_mode_itr->first) return 1;
+        if      (lhs_mode_itr->second<rhs_mode_itr->second) return -1;
+        else if (rhs_mode_itr->second<lhs_mode_itr->second) return 1;
+        ++lhs_mode_itr;
+        ++rhs_mode_itr;
+    }
+    if (lhs_mode_itr==lhs.end())
+    {
+        if (rhs_mode_itr!=rhs.end()) return -1;
+    }
+    else if (rhs_mode_itr == rhs.end()) return 1;
+    return 0;
+}
+
+int StateSet::compareAttributePtrs(const AttributeList& lhs,const AttributeList& rhs)
+{
+    AttributeList::const_iterator lhs_attr_itr = lhs.begin();
+    AttributeList::const_iterator rhs_attr_itr = rhs.begin();
+    while (lhs_attr_itr!=lhs.end() && rhs_attr_itr!=rhs.end())
+    {
+        if      (lhs_attr_itr->first<rhs_attr_itr->first) return -1;
+        else if (rhs_attr_itr->first<lhs_attr_itr->first) return 1;
+        if      (lhs_attr_itr->second.first<rhs_attr_itr->second.first) return -1;
+        else if (rhs_attr_itr->second.first<lhs_attr_itr->second.first) return 1;
+        if      (lhs_attr_itr->second.second<rhs_attr_itr->second.second) return -1;
+        else if (rhs_attr_itr->second.second<lhs_attr_itr->second.second) return 1;
+        ++lhs_attr_itr;
+        ++rhs_attr_itr;
+    }
+    if (lhs_attr_itr==lhs.end())
+    {
+        if (rhs_attr_itr!=rhs.end()) return -1;
+    }
+    else if (rhs_attr_itr == rhs.end()) return 1;
+    return 0;
+}
+
+int StateSet::compareAttributeContents(const AttributeList& lhs,const AttributeList& rhs)
+{
+    AttributeList::const_iterator lhs_attr_itr = lhs.begin();
+    AttributeList::const_iterator rhs_attr_itr = rhs.begin();
+    while (lhs_attr_itr!=lhs.end() && rhs_attr_itr!=rhs.end())
+    {
+        if      (lhs_attr_itr->first<rhs_attr_itr->first) return -1;
+        else if (rhs_attr_itr->first<lhs_attr_itr->first) return 1;
+        if      (*(lhs_attr_itr->second.first)<*(rhs_attr_itr->second.first)) return -1;
+        else if (*(rhs_attr_itr->second.first)<*(lhs_attr_itr->second.first)) return 1;
+        if      (lhs_attr_itr->second.second<rhs_attr_itr->second.second) return -1;
+        else if (rhs_attr_itr->second.second<lhs_attr_itr->second.second) return 1;
+        ++lhs_attr_itr;
+        ++rhs_attr_itr;
+    }
+    if (lhs_attr_itr==lhs.end())
+    {
+        if (rhs_attr_itr!=rhs.end()) return -1;
+    }
+    else if (rhs_attr_itr == rhs.end()) return 1;
+    return 0;
+}
+
 void StateSet::setGlobalDefaults()
 {    
     _renderingHint = DEFAULT_BIN;
@@ -244,30 +311,6 @@ void StateSet::setGlobalDefaults()
     Material *material       = osgNew Material;
     material->setColorMode(Material::AMBIENT_AND_DIFFUSE);
     setAttributeAndModes(material,StateAttribute::ON);
-/*
-    setMode(GL_LIGHTING,StateAttribute::OFF);
-    setMode(GL_FOG,StateAttribute::OFF);
-    setMode(GL_POINT_SMOOTH,StateAttribute::OFF);
-    
-    setMode(GL_TEXTURE_2D,StateAttribute::OFF);
-    
-    setMode(GL_TEXTURE_GEN_S,StateAttribute::OFF);
-    setMode(GL_TEXTURE_GEN_T,StateAttribute::OFF);
-    setMode(GL_TEXTURE_GEN_R,StateAttribute::OFF);
-    setMode(GL_TEXTURE_GEN_Q,StateAttribute::OFF);
-
-    setAttributeAndModes(osgNew AlphaFunc,StateAttribute::OFF);
-    setAttributeAndModes(osgNew CullFace,StateAttribute::ON);
-    setAttributeAndModes(osgNew FrontFace,StateAttribute::ON);
-
-    Material *material       = osgNew Material;
-    material->setColorMode(Material::AMBIENT_AND_DIFFUSE);
-    setAttributeAndModes(material,StateAttribute::ON);
-    
-    setAttributeAndModes(osgNew PolygonMode,StateAttribute::OFF);
-    setAttributeAndModes(osgNew Transparency,StateAttribute::OFF);
-    setAttributeAndModes(osgNew Depth,StateAttribute::ON);
-*/
 }
 
 
@@ -402,45 +445,60 @@ void StateSet::merge(const StateSet& rhs)
 
 void StateSet::setMode(const StateAttribute::GLMode mode, const StateAttribute::GLModeValue value)
 {
-    if ((value&StateAttribute::INHERIT)) setModeToInherit(mode);
-    else _modeList[mode] = value;
+    setMode(_modeList,mode,value);
 }
 
 void StateSet::setModeToInherit(const StateAttribute::GLMode mode)
 {
-    ModeList::iterator itr = _modeList.find(mode);
-    if (itr!=_modeList.end())
-    {
-        _modeList.erase(itr);
-    }
+    setModeToInherit(_modeList,mode);
 }
 
 const StateAttribute::GLModeValue StateSet::getMode(const StateAttribute::GLMode mode) const
 {
-    ModeList::const_iterator itr = _modeList.find(mode);
-    if (itr!=_modeList.end())
-    {
-        return itr->second;
-    }
-    else
-        return StateAttribute::INHERIT;
+    return getMode(_modeList,mode);
 }
 
 void StateSet::setAttribute(StateAttribute *attribute, const StateAttribute::OverrideValue value)
 {
     if (attribute)
     {
-        if ((value&StateAttribute::INHERIT)) setAttributeToInherit(attribute->getType());
-        else _attributeList[attribute->getType()] = RefAttributePair(attribute,value&StateAttribute::OVERRIDE);
-    }
+        if (!attribute->isTextureAttribute())
+        {
+            setAttribute(_attributeList,attribute,value);
+        }
+        else
+        {
+            notify(NOTICE)<<"Warning: texture attribute '"<<attribute->className()<<"'passed to setAttribute(attr,value), "<<std::endl;
+            notify(NOTICE)<<"         assuming setTextureAttribute(unit=0,attr,value) instead."<<std::endl;
+            notify(NOTICE)<<"         please change calling code to use appropriate call."<<std::endl;
+            setTextureAttribute(0,attribute,value);
+        }
+    }        
 }
 
 void StateSet::setAttributeAndModes(StateAttribute *attribute, const StateAttribute::GLModeValue value)
 {
     if (attribute)
     {
-        _attributeList[attribute->getType()] = RefAttributePair(attribute,value&StateAttribute::OVERRIDE);
-        attribute->setStateSetModes(*this,value);
+        if (!attribute->isTextureAttribute())
+        {
+            if (value&StateAttribute::INHERIT)
+            {
+                setAttributeToInherit(attribute->getType());
+            }    
+            else
+            {
+                setAttribute(_attributeList,attribute,value);
+                setAssociatedModes(_modeList,attribute,value);
+            }
+        }
+        else
+        {
+            notify(NOTICE)<<"Warning: texture attribute '"<<attribute->className()<<"' passed to setAttributeAndModes(attr,value), "<<std::endl;
+            notify(NOTICE)<<"         assuming setTextureAttributeAndModes(unit=0,attr,value) instead."<<std::endl;
+            notify(NOTICE)<<"         please change calling code to use appropriate call."<<std::endl;
+            setTextureAttributeAndModes(0,attribute,value);
+        }
     }
 }
 
@@ -449,86 +507,65 @@ void StateSet::setAttributeToInherit(const StateAttribute::Type type)
     AttributeList::iterator itr = _attributeList.find(type);
     if (itr!=_attributeList.end())
     {
-        itr->second.first->setStateSetModes(*this,StateAttribute::INHERIT);
+        setAssociatedModes(_modeList,itr->second.first.get(),StateAttribute::INHERIT);
         _attributeList.erase(itr);
     }
 }
 
 StateAttribute* StateSet::getAttribute(const StateAttribute::Type type)
 {
-    AttributeList::iterator itr = _attributeList.find(type);
-    if (itr!=_attributeList.end())
-    {
-        return itr->second.first.get();
-    }
-    else
-        return NULL;
+    return getAttribute(_attributeList,type);
 }
 
 const StateAttribute* StateSet::getAttribute(const StateAttribute::Type type) const
 {
-    AttributeList::const_iterator itr = _attributeList.find(type);
-    if (itr!=_attributeList.end())
-    {
-        return itr->second.first.get();
-    }
-    else
-        return NULL;
+    return getAttribute(_attributeList,type);
 }
 
 const StateSet::RefAttributePair* StateSet::getAttributePair(const StateAttribute::Type type) const
 {
-    AttributeList::const_iterator itr = _attributeList.find(type);
-    if (itr!=_attributeList.end())
-    {
-        return &(itr->second);
-    }
-    else
-        return NULL;
+    return getAttributePair(_attributeList,type);
 }
 
+void StateSet::setAssociatedModes(const StateAttribute* attribute, const StateAttribute::GLModeValue value)
+{
+    setAssociatedModes(_modeList,attribute,value);
+}
 
 
 void StateSet::setTextureMode(unsigned int unit,const StateAttribute::GLMode mode, const StateAttribute::GLModeValue value)
 {
-    ModeList& modeList = getOrCreateTextureModeList(unit);
-    if ((value&StateAttribute::INHERIT)) setTextureModeToInherit(unit,mode);
-    else modeList[mode] = value;
+    setMode(getOrCreateTextureModeList(unit),mode,value);
 }
 
 void StateSet::setTextureModeToInherit(unsigned int unit,const StateAttribute::GLMode mode)
 {
     if (unit>=_textureModeList.size()) return;
-    ModeList& modeList = _textureModeList[unit];
-    ModeList::iterator itr = modeList.find(mode);
-    if (itr!=modeList.end())
-    {
-        modeList.erase(itr);
-    }
+    setModeToInherit(_textureModeList[unit],mode);
 }
 
 
 const StateAttribute::GLModeValue StateSet::getTextureMode(unsigned int unit,const StateAttribute::GLMode mode) const
 {
     if (unit>=_textureModeList.size()) return StateAttribute::INHERIT;
-    
-    const ModeList& modeList = _textureModeList[unit];
-    ModeList::const_iterator itr = modeList.find(mode);
-    if (itr!=modeList.end())
-    {
-        return itr->second;
-    }
-    else
-        return StateAttribute::INHERIT;
+    return getMode(_textureModeList[unit],mode);
 }
 
 void StateSet::setTextureAttribute(unsigned int unit,StateAttribute *attribute, const StateAttribute::OverrideValue value)
 {
     if (attribute)
     {
-        AttributeList& attributeList = getOrCreateTextureAttributeList(unit);
-        if ((value&StateAttribute::INHERIT)) setAttributeToInherit(attribute->getType());
-        else attributeList[attribute->getType()] = RefAttributePair(attribute,value&StateAttribute::OVERRIDE);
+        if (attribute->isTextureAttribute())
+        {
+            setAttribute(getOrCreateTextureAttributeList(unit),attribute,value);
+        }
+        else
+        {
+            notify(NOTICE)<<"Warning: texture attribute '"<<attribute->className()<<"' passed to setTextureAttribute(unit,attr,value), "<<std::endl;
+            notify(NOTICE)<<"         assuming setAttribute(attr,value) instead."<<std::endl;
+            notify(NOTICE)<<"         please change calling code to use appropriate call."<<std::endl;
+            setAttribute(attribute,value);
+        }
     }
 }
 
@@ -537,9 +574,26 @@ void StateSet::setTextureAttributeAndModes(unsigned int unit,StateAttribute *att
 {
     if (attribute)
     {
-        AttributeList& attributeList = getOrCreateTextureAttributeList(unit);
-        attributeList[attribute->getType()] = RefAttributePair(attribute,value&StateAttribute::OVERRIDE);
-        attribute->setStateSetModes(*this,value);
+    
+        if (attribute->isTextureAttribute())
+        {
+            if (value&StateAttribute::INHERIT)
+            {
+                setTextureAttributeToInherit(unit,attribute->getType());
+            }
+            else
+            {
+                setAttribute(getOrCreateTextureAttributeList(unit),attribute,value);
+                setAssociatedModes(getOrCreateTextureModeList(unit),attribute,value);
+            }
+        }
+        else
+        {
+            notify(NOTICE)<<"Warning: non texture attribute '"<<attribute->className()<<"' passed to setTextureAttributeAndModes(unit,attr,value), "<<std::endl;
+            notify(NOTICE)<<"         assuming setAttributeAndModes(attr,value) instead."<<std::endl;
+            notify(NOTICE)<<"         please change calling code to use appropriate call."<<std::endl;
+            setAttribute(attribute,value);
+        }
     }
 }
 
@@ -551,7 +605,10 @@ void StateSet::setTextureAttributeToInherit(unsigned int unit,const StateAttribu
     AttributeList::iterator itr = attributeList.find(type);
     if (itr!=attributeList.end())
     {
-        itr->second.first->setStateSetModes(*this,StateAttribute::INHERIT);
+        if (unit<_textureModeList.size())
+        {
+            setAssociatedModes(_textureModeList[unit],itr->second.first.get(),StateAttribute::INHERIT);
+        }
         attributeList.erase(itr);
     }
 }
@@ -560,44 +617,27 @@ void StateSet::setTextureAttributeToInherit(unsigned int unit,const StateAttribu
 StateAttribute* StateSet::getTextureAttribute(unsigned int unit,const StateAttribute::Type type)
 {
     if (unit>=_textureAttributeList.size()) return 0;
-    AttributeList& attributeList = _textureAttributeList[unit];
-    AttributeList::iterator itr = attributeList.find(type);
-    if (itr!=attributeList.end())
-    {
-        return itr->second.first.get();
-    }
-    else
-        return NULL;
+    return getAttribute(_textureAttributeList[unit],type);
 }
 
 
 const StateAttribute* StateSet::getTextureAttribute(unsigned int unit,const StateAttribute::Type type) const
 {
     if (unit>=_textureAttributeList.size()) return 0;
-    const AttributeList& attributeList = _textureAttributeList[unit];
-    AttributeList::const_iterator itr = attributeList.find(type);
-    if (itr!=attributeList.end())
-    {
-        return itr->second.first.get();
-    }
-    else
-        return NULL;
+    return getAttribute(_textureAttributeList[unit],type);
 }
 
 
 const StateSet::RefAttributePair* StateSet::getTextureAttributePair(unsigned int unit,const StateAttribute::Type type) const
 {
     if (unit>=_textureAttributeList.size()) return 0;
-    const AttributeList& attributeList = _textureAttributeList[unit];
-    AttributeList::const_iterator itr = attributeList.find(type);
-    if (itr!=attributeList.end())
-    {
-        return &(itr->second);
-    }
-    else
-        return NULL;
+    return getAttributePair(_textureAttributeList[unit],type);
 }
 
+void StateSet::setAssociatedTextureModes(unsigned int unit,const StateAttribute* attribute, const StateAttribute::GLModeValue value)
+{
+    setAssociatedModes(getOrCreateTextureModeList(unit),attribute,value);
+}
 
 
 void StateSet::compile(State& state) const
@@ -649,7 +689,88 @@ void StateSet::setRendingBinToInherit()
     _binName = "";
 }
 
+void StateSet::setMode(ModeList& modeList,const StateAttribute::GLMode mode, const StateAttribute::GLModeValue value)
+{
+    if ((value&StateAttribute::INHERIT)) setModeToInherit(modeList,mode);
+    else modeList[mode] = value;
+}
 
+void StateSet::setModeToInherit(ModeList& modeList,const StateAttribute::GLMode mode)
+{
+    ModeList::iterator itr = modeList.find(mode);
+    if (itr!=modeList.end())
+    {
+        modeList.erase(itr);
+    }
+}
+
+const StateAttribute::GLModeValue StateSet::getMode(const ModeList& modeList,const StateAttribute::GLMode mode) const
+{
+    ModeList::const_iterator itr = modeList.find(mode);
+    if (itr!=modeList.end())
+    {
+        return itr->second;
+    }
+    else
+        return StateAttribute::INHERIT;
+}
+
+void StateSet::setAssociatedModes(ModeList& modeList,const StateAttribute* attribute, const StateAttribute::GLModeValue value)
+{
+    // get the associated modes.
+    std::vector<StateAttribute::GLMode> modes;
+    attribute->getAssociatedModes(modes);
+
+    // set the modes on the StateSet.
+    for(std::vector<StateAttribute::GLMode>::iterator itr=modes.begin();
+        itr!=modes.end();
+        ++itr)
+    {
+        setMode(modeList,*itr,value);
+    }
+}
+
+void StateSet::setAttribute(AttributeList& attributeList,StateAttribute *attribute, const StateAttribute::OverrideValue value)
+{
+    if (attribute)
+    {
+        attributeList[attribute->getType()] = RefAttributePair(attribute,value&StateAttribute::OVERRIDE);
+    }
+}
+
+
+StateAttribute* StateSet::getAttribute(AttributeList& attributeList,const StateAttribute::Type type)
+{
+    AttributeList::iterator itr = attributeList.find(type);
+    if (itr!=attributeList.end())
+    {
+        return itr->second.first.get();
+    }
+    else
+        return NULL;
+}
+
+const StateAttribute* StateSet::getAttribute(const AttributeList& attributeList,const StateAttribute::Type type) const
+{
+    AttributeList::const_iterator itr = attributeList.find(type);
+    if (itr!=attributeList.end())
+    {
+        return itr->second.first.get();
+    }
+    else
+        return NULL;
+}
+
+const StateSet::RefAttributePair* StateSet::getAttributePair(const AttributeList& attributeList,const StateAttribute::Type type) const
+{
+    AttributeList::const_iterator itr = attributeList.find(type);
+    if (itr!=attributeList.end())
+    {
+        return &(itr->second);
+    }
+    else
+        return NULL;
+}
 
 
 

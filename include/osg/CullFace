@@ -7,7 +7,6 @@
 
 #include <osg/GL>
 #include <osg/StateAttribute>
-#include <osg/StateSet>
 
 namespace osg {
 
@@ -39,9 +38,9 @@ class SG_EXPORT CullFace : public StateAttribute
             return 0; // passed all the above comparison macro's, must be equal.
         }
 
-        virtual void setStateSetModes(StateSet& ds,const GLModeValue value) const
+        virtual void getAssociatedModes(std::vector<GLMode>& modes) const 
         {
-            ds.setMode(GL_CULL_FACE,value);
+            modes.push_back(GL_CULL_FACE);
         }
 
         enum Mode {

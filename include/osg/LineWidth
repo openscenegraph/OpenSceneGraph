@@ -6,7 +6,6 @@
 #define OSG_LineWidth 1
 
 #include <osg/StateAttribute>
-#include <osg/StateSet>
 
 namespace osg {
 

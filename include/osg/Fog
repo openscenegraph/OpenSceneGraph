@@ -6,7 +6,6 @@
 #define OSG_FOG 1
 
 #include <osg/StateAttribute>
-#include <osg/StateSet>
 #include <osg/Types>
 #include <osg/Vec4>
 
@@ -48,9 +47,9 @@ class SG_EXPORT Fog : public StateAttribute
             return 0; // passed all the above comparison macro's, must be equal.
         }
 
-        virtual void setStateSetModes(StateSet& ds,const GLModeValue value) const
+        virtual void getAssociatedModes(std::vector<GLMode>& modes) const 
         {
-            ds.setMode(GL_FOG,value);
+            modes.push_back(GL_FOG);
         }
 
         enum Mode {

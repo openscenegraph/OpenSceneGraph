@@ -6,7 +6,6 @@
 #define OSG_LIGHT 1
 
 #include <osg/StateAttribute>
-#include <osg/StateSet>
 #include <osg/Vec3>
 #include <osg/Vec4>
 
@@ -59,9 +58,9 @@ class SG_EXPORT Light : public StateAttribute
             return 0; // passed all the above comparison macro's, must be equal.
         }
 
-        virtual void setStateSetModes(StateSet& ds,const GLModeValue value) const
+        virtual void getAssociatedModes(std::vector<GLMode>& modes) const 
         {
-            ds.setMode(GL_LIGHT0+_lightnum,value);
+            modes.push_back(GL_LIGHT0+_lightnum);
         }
 
         /** Set which OpenGL light to operate on.*/

@@ -465,6 +465,9 @@ void ConvertFromFLT::visitTexturePalette(osg::Group& , TexturePaletteRecord* rec
         pTexturePool->addTexture(nIndex, osgStateSet);
         return;     // Texture already loaded
     }
+    
+    
+    unsigned int unit = 0;
 
     // Read texture and attribute file
     osg::ref_ptr<osg::Image> image = osgDB::readImageFile(pFilename);
@@ -490,26 +493,28 @@ void ConvertFromFLT::visitTexturePalette(osg::Group& , TexturePaletteRecord* rec
             osg::Texture* osgTexture = new osg::Texture;
             osgTexture->setWrap(osg::Texture::WRAP_S,osg::Texture::REPEAT);
             osgTexture->setWrap(osg::Texture::WRAP_T,osg::Texture::REPEAT);
-            osgStateSet->setAttributeAndModes(osgTexture,osg::StateAttribute::ON);
+            osgStateSet->setTextureAttributeAndModes( unit, osgTexture,osg::StateAttribute::ON);
 
             osg::TexEnv* osgTexEnv = new osg::TexEnv;
             osgTexEnv->setMode(osg::TexEnv::MODULATE);
-            osgStateSet->setAttribute( osgTexEnv );
+            osgStateSet->setTextureAttribute( unit, osgTexEnv );
         }
 
-        osg::Texture *osgTexture = dynamic_cast<osg::Texture*>(osgStateSet->getAttribute( osg::StateAttribute::TEXTURE));
+        osg::Texture *osgTexture = dynamic_cast<osg::Texture*>(osgStateSet->getTextureAttribute( unit, osg::StateAttribute::TEXTURE));
         if (osgTexture == NULL)
         {
             osgTexture = new osg::Texture;
-            osgStateSet->setAttributeAndModes(osgTexture,osg::StateAttribute::ON);
+            osgStateSet->setTextureAttributeAndModes( unit, osgTexture,osg::StateAttribute::ON);
         }
 
         osgTexture->setImage(image.get());
 
         // Add new texture to registry pool
+        // ( umm... should this have reference to the texture unit? RO. July2002)
         Registry::instance()->addTexture(pFilename, osgStateSet);
 
         // Also add to local pool to be able to get texture by index.
+        // ( umm... should this have reference to the texture unit? RO. July2002)
         pTexturePool->addTexture(nIndex, osgStateSet);
     }
 }
@@ -913,7 +918,7 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
                 osgStateSet->merge(*textureStateSet);
 
                 // Alpha channel in texture?
-                osg::Texture *osgTexture = dynamic_cast<osg::Texture*>(textureStateSet->getAttribute( osg::StateAttribute::TEXTURE));
+                osg::Texture *osgTexture = dynamic_cast<osg::Texture*>(textureStateSet->getTextureAttribute( 0, osg::StateAttribute::TEXTURE));
                 if (osgTexture)
                 {
                     osg::Image* osgImage = osgTexture->getImage();
@@ -931,7 +936,7 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
                 {
                     osg::TexGen* osgTexGen = new osg::TexGen;
                     osgTexGen->setMode(osg::TexGen::SPHERE_MAP);
-                    osgStateSet->setAttributeAndModes(osgTexGen,osg::StateAttribute::ON);
+                    osgStateSet->setTextueAttributeAndModes( 0, osgTexGen,osg::StateAttribute::ON);
                 }
 #endif
 

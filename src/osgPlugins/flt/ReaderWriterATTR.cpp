@@ -661,9 +661,16 @@ StateSet* Attr::createOsgStateSet()
 //        break;
     }
 
-
-    osgStateSet->setAttribute( osgTexEnv );
-    osgStateSet->setAttributeAndModes( osgTexture, StateAttribute::ON );
+    // I have just ported the two below set*Attribute lines to use the new
+    // texture attribute methods, however this tieing to the texture unit 0
+    // is probably inappropriate.  Perhaps it would be better to create a 
+    // StateSet to store the texture an modes, it is probably best
+    // to use an intermediate data structure for the flt loader to use to
+    // encapsulate ATTR files. Need to speak to Brede about this issue.
+    // Robert Osfield, July 9th 2002.
+    
+    osgStateSet->setTextureAttribute( 0, osgTexEnv );
+    osgStateSet->setTextureAttributeAndModes( 0, osgTexture, StateAttribute::ON );
 
     return osgStateSet;
 }
